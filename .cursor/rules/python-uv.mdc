@@ -1,0 +1,46 @@
+---
+description: Use uv (not pip) for all Python/API work in this repo
+globs: apps/api/**,**/*.py,.github/workflows/**
+alwaysApply: true
+---
+
+# Python tooling — use uv
+
+This monorepo manages the FastAPI app (`apps/api`) with **[uv](https://docs.astral.sh/uv/)**. Do not use `pip`, `pip install`, or `python -m pip` in docs, CI, Docker, or agent-run commands.
+
+## Install / sync dependencies
+
+From `apps/api`:
+
+```bash
+uv sync --extra dev
+```
+
+Commit `apps/api/uv.lock` when dependencies change.
+
+## Run commands
+
+Always prefix tools with `uv run` (from `apps/api`):
+
+```bash
+uv run uvicorn app.main:app --reload --port 8000
+uv run alembic upgrade head
+uv run pytest
+uv run ruff check app tests
+```
+
+## Examples
+
+```bash
+# ❌ BAD
+pip install -e "./apps/api[dev]"
+python -m pytest
+uvicorn app.main:app --reload
+
+# ✅ GOOD
+cd apps/api && uv sync --extra dev
+cd apps/api && uv run pytest
+cd apps/api && uv run uvicorn app.main:app --reload --port 8000
+```
+
+Docker and GitHub Actions must use `uv sync` and `uv run` the same way.
