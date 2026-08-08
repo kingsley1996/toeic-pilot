@@ -8,6 +8,9 @@
 > **Trạng thái:** 6/6 P0 đã đóng (commit `6677022`). Sprint 1 hoàn tất: 7/10 mục P1 đã xử lý.
 > Còn lại: P1-3 (test frontend/e2e), P1-7 (token trong localStorage), P1-8 (rate limiting) — xem [mục 8](#8-lộ-trình-đề-xuất).
 > Test: 1 → **62**. Gate CI: 4 → **13**.
+>
+> **§7b (audio) ĐÃ QUYẾT** 2026-08-08 → [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
+> Chặn Phase 2 giảm từ **hai** xuống còn **một**: chỉ còn thiết kế data model (§7a).
 
 ---
 
@@ -53,7 +56,7 @@ Bảng điểm:
 | DevOps / Docker | 4/10 | 7/10 | 8/10 | Migration tự chạy, healthcheck gating. Vẫn thiếu prod target, chạy root |
 | CI | 5/10 | 7/10 | 9/10 | 4 job, 13 gate, gồm chống drift + build/boot Docker |
 | Tài liệu (`PLAN.md`/`ARCHITECTURE.md`) | 6/10 | 6/10 | 6/10 | Không đổi — vẫn thiếu data model và acceptance criteria |
-| **Sẵn sàng cho Phase 2** | **Chưa** | **Chưa** | **Chưa** | Nền kỹ thuật đã đủ. Chặn duy nhất còn lại: **thiết kế data model** (7a) và **kế hoạch audio/nội dung** (7b) |
+| **Sẵn sàng cho Phase 2** | **Chưa** | **Chưa** | **Chưa** | Nền kỹ thuật đã đủ. §7b (audio) đã quyết → [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md). Chặn duy nhất còn lại: **thiết kế data model** (§7a) |
 
 ---
 
@@ -493,7 +496,7 @@ Ruff chỉ bật `["E", "F", "I", "UP"]` — không có bugbear (`B`), không c�
 | P2-9 | `turbo.json` task `dev` không có `dependsOn` → clone mới chạy `pnpm dev` có race giữa `shared` watch và `web` dev | `turbo.json:11-14` |
 | P2-10 | Thiếu `LICENSE` (README ghi "TBD"), `.editorconfig`, `CODEOWNERS`, PR template, Dependabot/Renovate | root |
 | P2-11 | Không có i18n dù người dùng mục tiêu là người Việt học TOEIC. Toàn bộ UI đang tiếng Anh | `apps/web` |
-| P2-12 | Không có ADR (Architecture Decision Records) — các quyết định lớn sắp tới (chọn LLM provider, vector store, storage audio) cần được ghi lại | `planning/` |
+| P2-12 | 🟡 Đã có ADR đầu tiên: [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A (storage audio). Còn thiếu ADR cho **data model** (§7a), **LLM provider** và **vector store** | `planning/` |
 
 ---
 
@@ -559,9 +562,15 @@ Nếu code trước, thiết kế sau, sẽ phải refactor toàn bộ ở giữ
 
 **Khuyến nghị:** dành 1 sprint riêng cho việc này, output là một ADR + migration Alembic + ERD, trước khi viết bất kỳ endpoint Phase 2 nào.
 
-#### 7b. Không có kế hoạch audio & nội dung — rủi ro số 2
+#### 7b. Không có kế hoạch audio & nội dung — ✅ ĐÃ QUYẾT (2026-08-08)
 
-Đây là lỗ hổng kiến trúc mà cả `PLAN.md` lẫn `ARCHITECTURE.md` đều không nhắc:
+> **Quyết định đầy đủ nằm ở [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A** (thay cho ADR-002).
+>
+> Tóm tắt: storage dùng **thư mục local + serve tĩnh ở dev**, nâng lên **Cloudflare R2** khi có domain trên DNS Cloudflare — vì `pub-*.r2.dev` bị rate-limit và không được CDN cache, nên vào R2 sớm không mang lại lợi ích gì. Nguồn audio: **chỉ TTS** (`edge-tts`), bỏ cào ở MVP — vì dictation cần transcript làm đáp án chấm bài nên phải có text trước dù thế nào. Sinh **offline** lúc seed, phục vụ bằng **URL công khai cố định** ⇒ runtime API không gọi object store lần nào. **Không thêm service nào** vào Compose.
+>
+> Điều §7a phải biết trước: 4 giọng TOEIC làm một cột FK đơn không đủ — sẽ cần bảng nối `vocabulary_audio(entry_id, audio_asset_id, accent)`.
+
+Bốn câu hỏi gốc đặt ra trong review (giữ lại làm ngữ cảnh):
 
 - **Dictation cần audio.** Listening Part 1–4 cần audio. Nguồn ở đâu?
 - **Stack không có object storage.** Không S3, không R2, không CDN. Postgres không phải chỗ để lưu file mp3.
@@ -662,8 +671,10 @@ Ngoài phạm vi P0 nhưng làm cùng vì cần để chứng minh fix: fixture 
 - [ ] P2-7: bỏ fallback `pnpm install --frozen-lockfile || pnpm install`
 
 ### Sprint 2 — "Thiết kế dữ liệu" (1 tuần) ← **quan trọng nhất, và giờ là thứ duy nhất chặn Phase 2**
+
+ADR-002 (audio) đã xong. Còn lại data model và AI.
 - [ ] ADR-001: Data model cho Learning Hub + TOEIC Practice (ERD đầy đủ)
-- [ ] ADR-002: Storage cho audio (S3/R2 + CDN) và nguồn nội dung + bản quyền
+- [x] ~~ADR-002: Storage cho audio và nguồn nội dung~~ → [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A (2026-08-08)
 - [ ] ADR-003: LLM provider, routing tiers, ngân sách token/user
 - [ ] Migration Alembic cho toàn bộ schema domain
 - [ ] Cập nhật `packages/shared` + `ARCHITECTURE.md` (thêm ERD)
@@ -693,7 +704,7 @@ Mỗi Epic chỉ được coi là xong khi:
 
 *(Cập nhật 2026-08-08 sau khi đóng P0 và hoàn tất Sprint 1.)*
 
-Nền kỹ thuật giờ đã vững: 6/6 P0 và 7/10 P1 đã đóng, test từ 1 lên 62, CI từ 4 lên 13 gate. Nhưng kết luận cốt lõi của review **không đổi**: điểm đáng lo không nằm ở code, mà ở **những gì chưa được quyết định** — data model, nguồn nội dung + audio, chiến lược AI. Không dòng code nào ở hai sprint vừa rồi động tới ba thứ đó.
+Nền kỹ thuật giờ đã vững: 6/6 P0 và 7/10 P1 đã đóng, test từ 1 lên 62, CI từ 4 lên 13 gate. Kết luận cốt lõi của review vẫn đúng — điểm đáng lo không nằm ở code mà ở **những gì chưa được quyết định** — nhưng danh sách đó **đã ngắn đi một mục**: audio/nội dung đã chốt ngày 2026-08-08 ([`PHASE2-AUDIO.md`](PHASE2-AUDIO.md)). Còn lại **hai**: data model (§7a) và chiến lược AI (§7g).
 
 Ba bài học lặp lại đủ nhiều để đáng ghi lại:
 
@@ -705,7 +716,7 @@ Ba bài học lặp lại đủ nhiều để đáng ghi lại:
 
 Ba việc tiếp theo, theo thứ tự:
 
-1. **Thiết kế data model + chốt nguồn nội dung/audio** (Sprint 2) — giờ là thứ **duy nhất** chặn Phase 2. Mọi lý do kỹ thuật để trì hoãn đã được dọn.
+1. **Thiết kế data model** (§7a, Sprint 2) — giờ là thứ **duy nhất** còn chặn Phase 2. Audio đã có lời giải, nền kỹ thuật đã dọn; không còn lý do nào để trì hoãn.
 2. **Vertical slice AI sớm** (7f) — phần rủi ro nhất; hạ tầng observability đã sẵn sàng để đo nó.
 3. **Rate limiting** (P1-8) — phải có **trước** khi endpoint LLM đầu tiên tồn tại, không phải sau.
 
