@@ -1,13 +1,13 @@
 # Phase 2 — Hạ tầng Audio
 
-**Trạng thái:** Đã chốt quyết định (2026-08-08) · Chưa triển khai
+**Trạng thái:** Đã chốt quyết định (2026-08-08) · **Đã triển khai xong (2026-08-09)**
 **Thay thế cho:** `ADR-002` mà `REVIEW-OPUS.md` §8 Sprint 2 yêu cầu
 **Liên quan:** `REVIEW-OPUS.md` §7b (rủi ro kiến trúc số 2), §7a (data model — vẫn đang mở)
 
 Tài liệu này có hai phần với vòng đời khác nhau:
 
 - **Phần A — Quyết định kiến trúc.** Còn giá trị sau khi triển khai xong. Đọc lại sau 6 tháng vẫn phải trả lời được "vì sao lại làm thế này".
-- **Phần B — Checklist thực thi.** Hết hạn ngay khi làm xong. Xoá hoặc thu gọn thành một dòng khi Phase 2 kết thúc.
+- **Phần B — Nhật ký triển khai.** Checklist đã hết hạn và được thu gọn thành bản ghi kết quả + các chỗ lệch so với kế hoạch.
 
 ---
 ---
@@ -120,9 +120,9 @@ Bốn điều dưới đây là những chỗ dễ làm sai và hậu quả khô
 
 Image production build bằng `uv sync --frozen --no-dev`, **không có** extra `content`. Job `docker` trong CI chạy `from app.main import app`. Nếu pipeline rò rỉ vào chuỗi import runtime, image sẽ chết vì thiếu `edge-tts`.
 
-`app/content/__init__.py` phải **rỗng**. `app/models/audio.py` chỉ import sqlalchemy.
+`app/content/__init__.py` phải **rỗng**. `app/models/audio.py` chỉ import sqlalchemy và `app.core.media` (thuần stdlib).
 
-Job `docker` chính là cái bẫy an toàn cho quy tắc này — nó đỏ ngay khi có ai vi phạm.
+Có hai cái bẫy an toàn cho quy tắc này. `tests/test_content_isolation.py` chạy `import app.main` trong subprocess rồi soi `sys.modules` — dưới một giây, ngay trên máy dev. Job `docker` bắt được bằng cách boot image thật, chậm hơn nhưng là bằng chứng cuối cùng.
 
 ### A4.2 — `source_hash` là hash của INPUT, không phải hash của bytes
 
@@ -137,6 +137,8 @@ source_hash = sha256(source_text | voice | engine | engine_version)
 ### A4.3 — `voice` lưu trong DB và trong hash là voice LOGIC, không phải ID của nhà cung cấp
 
 Lưu `us_female_1`, **không** lưu `en-US-JennyNeural`. Adapter của từng engine tự map logic → ID nhà cung cấp.
+
+Ràng buộc này đã trả cổ tức ngay trong lúc triển khai: `en-AU-WilliamNeural` bị Microsoft đổi tên thành `en-AU-WilliamMultilingualNeural`. Vì hash tính trên tên logic, sửa một dòng trong bảng map là xong — không asset nào phải sinh lại.
 
 Nếu ID nhà cung cấp lọt vào hash, ngày đổi sang Piper/Azure sẽ làm **mọi `source_hash` cũ vô hiệu**, buộc sinh lại toàn bộ thư viện audio. Đây chính là khác biệt giữa một abstraction dùng được và một abstraction trang trí.
 
@@ -187,122 +189,49 @@ Nhưng có một điều §7a phải biết trước:
 ---
 ---
 
-# PHẦN B — CHECKLIST THỰC THI
+# PHẦN B — NHẬT KÝ TRIỂN KHAI
 
-> ⚠️ **Phần này hết hạn khi triển khai xong.** Khi Phase 2 kết thúc, xoá toàn bộ Phần B và thay bằng một dòng ghi ngày hoàn thành. Phần A giữ lại.
+> Checklist gốc đã hoàn thành ngày **2026-08-09** và được thay bằng bản ghi này.
+> Phần A ở trên vẫn là tài liệu sống. Phần B chỉ còn giá trị tra cứu "đã làm gì, lệch chỗ nào".
 
-## B1. Files cần tạo
+## B1. Kết quả
 
-### Runtime — không thêm dependency nào
-
-| File | Nội dung |
+| Hạng mục | Kết quả |
 |---|---|
-| `apps/api/app/core/media.py` | Thuần stdlib. `source_hash(text, voice, engine, engine_version) -> str` · `storage_key_for(source_hash, ext="mp3") -> str` (dạng `audio/{h[:2]}/{h}.mp3`) · `public_audio_url(storage_key) -> str` — **phải xử lý dấu `/` thừa ở cuối base URL** (lỗi double-slash kinh điển). Đặt ở `core` để cả test lẫn `app/content` import được mà không cần extra |
-| `apps/api/app/models/audio.py` | `AudioAsset`. Chỉ import sqlalchemy. Theo style `Mapped[...]` của `app/models/user.py` |
-| `apps/api/alembic/versions/002_audio_assets.py` | `revision="002_audio_assets"`, **`down_revision="001_initial"`** (revision id thật, không phải tên file) |
+| Naming content-addressed | `app/core/media.py` — thuần stdlib, cả runtime lẫn pipeline đều import được |
+| Bảng | `audio_asset` + migration `002_audio_assets` (`down_revision="001_initial"`), `upgrade`/`downgrade` đều chạy sạch trên Postgres |
+| Pipeline offline | `app/content/{settings,tts,storage,manifest,generate,seed}.py`, sau extra `content` |
+| Nội dung mẫu | 16 clip đã sinh thật bằng edge-tts (3 từ × 4 giọng + 4 câu dictation), phủ đủ 4 accent |
+| Manifest | `apps/api/content/manifest/audio_assets.jsonl` — commit vào repo, sắp xếp theo hash |
+| Phục vụ | `/media` mount, **chỉ khi `environment == "development"`**; 200 + `audio/mpeg`, 206 cho Range |
+| Test | 62 → **119** (2 test `external` bị deselect mặc định) |
+| CI | job `api` đổi sang `uv sync --extra dev --extra content` |
+| Service mới | **không có** — đúng như A2.1 |
 
-Schema `audio_asset`:
+## B2. Những chỗ lệch so với checklist gốc
 
-| Cột | Kiểu | Ghi chú |
-|---|---|---|
-| `id` | UUID | PK |
-| `storage_key` | String(512) | unique |
-| `source_hash` | String(64) | unique, index — xem A4.2 |
-| `mime_type` | String(64) | |
-| `size_bytes` | Integer | |
-| `duration_ms` | Integer | |
-| `source` | String(16) | `tts`/`scraped`/`uploaded` + CHECK constraint. **Không** dùng native enum — Alembic downgrade với enum type rất phiền |
-| `engine` | String(32) | vd `edge-tts` |
-| `engine_version` | String(32) | |
-| `voice` | String(32) | **logic**, vd `us_female_1` — xem A4.3 |
-| `accent` | String(8) | BCP-47 |
-| `source_text` | Text nullable | + comment cảnh báo — xem A4.4 |
-| `created_at` | DateTime(tz) | |
+Năm chỗ. Bốn cái đầu là cải thiện phát hiện lúc làm; cái cuối là lỗi thật mà test bắt được.
 
-### Content pipeline — extra `content`, cô lập hoàn toàn
+1. **Tách thêm `app/content/manifest.py`.** Checklist để hàm đọc/ghi manifest nằm trong `generate.py`. Nhưng `seed.py` cũng cần chúng, mà `seed` phải chạy được trong image production. Import ngược từ `generate` sẽ kéo theo cả chuỗi phụ thuộc của pipeline. Module riêng thuần stdlib giải quyết gọn, và chỗ này cũng là nơi đặt `validate_record()` — dùng chung bởi cả `seed` lẫn test CI.
 
-| File | Nội dung |
-|---|---|
-| `apps/api/app/content/__init__.py` | **Rỗng.** Xem A4.1 |
-| `apps/api/app/content/settings.py` | `ContentSettings(BaseSettings)`: `object_store_dir`, `tts_engine_version`, (để dành) `r2_*`. **Không đụng `app.core.config`** — credential ghi bucket không được nằm trong env của process phục vụ HTTP |
-| `apps/api/app/content/tts.py` | `TTSEngine` Protocol (`name`, `version`, `synthesize(text, voice) -> bytes`). `LOGICAL_VOICES` map `us_female_1 → {"edge": "en-US-…", "accent": "en-US"}`, đủ 4 accent. `EdgeTTSEngine` có retry + backoff |
-| `apps/api/app/content/storage.py` | `ObjectStore` Protocol (`put(key, data, content_type)`). `LocalDirStore` bây giờ; `S3ObjectStore` khi làm A5 |
-| `apps/api/app/content/generate.py` | CLI `python -m app.content.generate --input <jsonl> [--dry-run]`. Đọc spec → `source_hash` → skip nếu đã có trong manifest → synth → `mutagen` đọc duration → `put` → append manifest. **Không chạm DB** |
-| `apps/api/app/content/seed.py` | CLI `python -m app.content.seed`. Đọc manifest → upsert theo `source_hash`. **Chỉ stdlib + sqlalchemy** |
-| `apps/api/content/sources/*.jsonl` | Input spec (text + voice logic) |
-| `apps/api/content/manifest/audio_assets.jsonl` | Artifact commit vào repo |
+2. **`ObjectStore` có thêm `exists()`.** Checklist chỉ ghi `put()`. Nhưng manifest được commit còn file mp3 thì `.gitignore` — nên trên một bản clone mới, entry tồn tại mà bytes thì không. Nếu chỉ skip theo manifest, những entry đó sẽ **không bao giờ** được sinh lại. Điều kiện skip đúng là *có trong manifest* **và** *có file trong store*. Có test riêng cho tình huống này.
 
-### Tests
+3. **Thêm `tests/test_content_isolation.py`.** A4.1 trước đó chỉ được bảo vệ bởi job `docker` trong CI — đúng nhưng chậm và chỉ đỏ sau khi đã push. Test này chạy `import app.main` trong subprocess rồi soi `sys.modules`, mất chưa tới một giây. (Phải là subprocess: chính session test này có import `app.content` ở chỗ khác, kiểm tra in-process sẽ báo rò rỉ giả.) Đã xác nhận nó đỏ khi cố tình vi phạm.
 
-`tests/test_media.py` · `tests/test_audio_model.py` · `tests/test_content_manifest.py` · `tests/test_tts_external.py` (marker `external`)
+4. **Thêm `alembic/script.py.mako`.** File này thiếu trong repo, nghĩa là lệnh `alembic revision --autogenerate` mà `CLAUDE.md` ghi trong mục Commands **chưa bao giờ tạo được file**. Phát hiện khi dùng autogenerate để kiểm tra model và migration `002` có khớp nhau không.
 
-## B2. Files cần sửa
+5. **`en-AU-WilliamNeural` không còn tồn tại** — Microsoft đã đổi tên thành `en-AU-WilliamMultilingualNeural`. `tests/test_tts_external.py` bắt được bằng cách đối chiếu `LOGICAL_VOICES` với catalogue thật. Đây chính là chỗ A4.3 trả cổ tức: vì hash tính trên **tên logic**, đổi id nhà cung cấp không làm hỏng một asset nào đã sinh — chỉ sửa một dòng trong bảng map. Nếu id nhà cung cấp nằm trong hash thì đã phải sinh lại toàn bộ thư viện.
 
-| File | Thay đổi |
-|---|---|
-| `apps/api/app/core/config.py` | Thêm **duy nhất** `audio_public_base_url: str = "http://localhost:8000/media"`. Không thêm secret nào |
-| `apps/api/app/main.py` | Mount `StaticFiles` tại `/media`, **có guard `settings.environment == "development"`**. Starlette có sẵn, không thêm dep |
-| `app/models/__init__.py` · `alembic/env.py` · `tests/conftest.py` | Import `AudioAsset` ở **cả ba** chỗ. `CLAUDE.md` đã ghi: thiếu chỗ thứ ba là "no such table" trong test |
-| `apps/api/pyproject.toml` | Group `content = ["edge-tts>=7", "mutagen>=1.47"]` (thêm `boto3` khi làm A5) · mypy overrides cho `edge_tts.*`/`mutagen.*` theo khuôn `jose.*` đang có · marker `external` · `addopts = -m "not external"` |
-| `.env.example` | `AUDIO_PUBLIC_BASE_URL=` · block `R2_*` comment rõ *"content pipeline only — API runtime không cần"* |
-| `.github/workflows/ci.yml` | Job `api`: `uv sync --extra dev --extra content`. Không có thì mypy/ruff bỏ sót `app/content/` |
-| `docker/docker-compose.yml` | **Không thêm service.** Chỉ thêm `AUDIO_PUBLIC_BASE_URL` vào `environment` của `api` |
-| `CLAUDE.md` | Mục storage/content + quy tắc cô lập import (A4.1) |
+## B3. Đã kiểm chứng bằng cách chạy thật
 
-## B3. Thứ tự triển khai
+- `generate` chạy hai lần: lần hai skip 16/16, không gọi TTS
+- `seed` chạy hai lần: `16 inserted` → `0 inserted · 16 unchanged`, `count(*)` không đổi
+- `curl -I` trên `/media/...`: **200** + `content-type: audio/mpeg`; với `Range: bytes=0-1024` trả **206** ⇒ tua được
+- 12 file vocabulary có 12 md5 khác nhau (kích thước byte trùng nhau chỉ vì mp3 CBR cùng độ dài 1,776 s)
+- Image production: `edge_tts` và `mutagen` **vắng mặt**; `from app.main import app` chạy được; `app.content.seed` import được; `app.content.generate` hỏng đúng chỗ gọi `mutagen`
+- `alembic upgrade head` → `downgrade base` → `upgrade head` sạch; `--autogenerate` cho diff rỗng ⇒ model và migration khớp nhau
 
-1. `app/core/media.py` + `tests/test_media.py` — thuần stdlib, xanh ngay, không phụ thuộc gì
-2. `models/audio.py` + migration 002 + import ở 3 chỗ + `tests/test_audio_model.py`
-3. `app/content/{settings,tts,storage}.py` + `generate.py` — verify bằng `--dry-run` rồi sinh thật ~10 clip
-4. `seed.py` + manifest + `tests/test_content_manifest.py`
-5. `main.py` mount + config + `.env.example` + `pyproject.toml` + CI + `CLAUDE.md`
+## B4. Chưa làm (có chủ ý)
 
-Job `contract` **không đổi ở cả 5 bước** vì chưa có endpoint mới. Khoảnh khắc §7a lộ `audio_url` ra response mới phải chạy `pnpm gen:api-types`, commit kết quả, và thêm entry vào `API_ROUTES`.
-
-## B4. Verification
-
-### Test tự động — theo convention hiện có (`apps/api/tests/conftest.py`)
-
-- **Pure unit, không fixture:** `source_hash()` tất định (2 lần cùng input ⇒ cùng kết quả; đổi voice ⇒ đổi hash) · `public_audio_url()` với base URL **có và không có** dấu `/` cuối
-- **Dùng `db_session`** (SQLite/StaticPool có sẵn): unique constraint trên `source_hash` và `storage_key` · **chạy `seed` hai lần cho ra cùng số hàng** — đây là test giá trị nhất, nó chính là thứ chứng minh idempotency
-- **Manifest validation, không cần mạng:** mỗi dòng có `storage_key == storage_key_for(source_hash)` và `accent` thuộc 4 giá trị hợp lệ. Bắt được manifest sửa tay
-- **Marker `external`** (khác `integration` vốn nghĩa "cần Postgres thật"): test gọi edge-tts thật, mặc định deselect. **CI tuyệt đối không gọi edge-tts**
-
-### Kiểm chứng end-to-end thủ công
-
-```bash
-cd apps/api && uv sync --extra dev --extra content
-
-uv run alembic upgrade head
-docker compose -f ../../docker/docker-compose.yml exec -T postgres \
-  psql -U toeic -d toeic -c '\d audio_asset'
-
-uv run python -m app.content.generate --input content/sources/sample.jsonl --dry-run
-uv run python -m app.content.generate --input content/sources/sample.jsonl
-uv run python -m app.content.generate --input content/sources/sample.jsonl   # lần 2 phải skip toàn bộ
-
-uv run python -m app.content.seed
-uv run python -m app.content.seed                    # lần 2: số hàng không đổi
-
-uv run uvicorn app.main:app --port 8000 &
-curl -sI http://localhost:8000/media/audio/ab/abc….mp3            # 200 + Content-Type: audio/mpeg
-curl -sI -H 'Range: bytes=0-1024' http://localhost:8000/media/…   # 206 ⇒ tua được
-```
-
-### Kiểm chứng cô lập import — quan trọng nhất, bảo vệ image production
-
-```bash
-docker build -f docker/api.Dockerfile -t toeic-api:audio .
-docker run --rm -e RUN_MIGRATIONS=0 -e DATABASE_URL=sqlite+pysqlite:///:memory: \
-  toeic-api:audio .venv/bin/python -c "from app.main import app; print('ok')"
-```
-
-Image build bằng `--no-dev` nên **không có** `edge-tts`/`mutagen`. Lệnh này xanh ⇒ chứng minh `app.content` không rò rỉ vào chuỗi import runtime (A4.1).
-
-### Gate đầy đủ — 13 gate hiện có phải giữ xanh
-
-```bash
-cd apps/api && uv run ruff check app tests && uv run ruff format --check app tests \
-  && uv run mypy && uv run pytest
-cd ../.. && pnpm format:check && pnpm --filter @toeic-pilot/web lint && pnpm build
-```
+- **`S3ObjectStore` / R2** — chặn bởi điều kiện tiên quyết ở A5: phải có domain trên DNS Cloudflare. Biến `R2_*` đã có sẵn trong `.env.example` dưới dạng comment.
+- **Nội dung thật** — 16 clip hiện tại là mẫu để chứng minh đường ống chạy được, không phải giáo trình. Nội dung thật phụ thuộc vào data model (§7a).

@@ -12,9 +12,9 @@ from sqlalchemy import create_engine  # noqa: E402
 from sqlalchemy.orm import Session, sessionmaker  # noqa: E402
 from sqlalchemy.pool import StaticPool  # noqa: E402
 
+from app import models  # noqa: E402,F401 — registers every table on Base.metadata
 from app.core.database import Base, get_db  # noqa: E402
 from app.main import app  # noqa: E402
-from app.models import User  # noqa: E402,F401 — register the table on Base.metadata
 
 
 @pytest.fixture()

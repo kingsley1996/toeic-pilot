@@ -36,6 +36,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
+      AUDIO_PUBLIC_BASE_URL: http://localhost:8000/media
     ports:
       - "8000:8000"
     depends_on:
@@ -49,6 +50,10 @@ services:
       - ../apps/api/alembic.ini:/app/apps/api/alembic.ini
       - ../apps/api/pyproject.toml:/app/apps/api/pyproject.toml
       - ../apps/api/uv.lock:/app/apps/api/uv.lock
+      # Generated audio lives on the host (it is gitignored and produced by the
+      # offline pipeline, which does not run in this container). No new service:
+      # serving it is a static mount, not a dependency.
+      - ../apps/api/media:/app/apps/api/media
     command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/apps/api/app
     healthcheck:
       # /ready (not /health) so a dependent only starts once Postgres is actually reachable.

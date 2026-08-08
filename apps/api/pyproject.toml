@@ -25,6 +25,12 @@ dev = [
     "ruff>=0.8.0",
     "mypy>=1.13.0",
 ]
+# Offline content pipeline only. The production image is built with --no-dev and
+# without this extra, so nothing reachable from app.main may import app.content.
+content = [
+    "edge-tts>=7.0.0",
+    "mutagen>=1.47.0",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -45,7 +51,12 @@ testpaths = ["tests"]
 pythonpath = ["."]
 markers = [
     "integration: needs a live PostgreSQL (skipped automatically when absent)",
+    "external: calls a third-party network service; never run in CI",
 ]
+# Deselect `external` by default so a bare `pytest` cannot reach out to Microsoft's
+# TTS endpoint. Note that an explicit -m on the command line replaces this, so the
+# external tests also guard themselves on an env var.
+addopts = '-m "not external"'
 
 [tool.uv]
 package = true
@@ -60,5 +71,13 @@ disallow_untyped_decorators = false
 warn_return_any = false
 
 [[tool.mypy.overrides]]
-module = ["jose.*"]
+module = ["jose.*", "edge_tts.*"]
 ignore_missing_imports = true
+
+# mutagen ships partial annotations: `MP3.__init__` is untyped and `.info` is
+# declared Optional, so strict mode rejects the one call we make. Skipping the
+# follow-through treats the package as Any rather than sprinkling per-line ignores.
+[[tool.mypy.overrides]]
+module = ["mutagen.*"]
+ignore_missing_imports = true
+follow_imports = "skip"

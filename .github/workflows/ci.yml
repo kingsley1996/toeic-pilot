@@ -50,7 +50,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install API
-        run: uv sync --extra dev
+        # --extra content so ruff and mypy actually see app/content/; without it
+        # the pipeline's imports fail to resolve and the checks quietly skip it.
+        run: uv sync --extra dev --extra content
       - name: Ruff (lint)
         run: uv run ruff check app tests
       - name: Ruff (format)

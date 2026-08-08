@@ -68,6 +68,53 @@ The current repository implements Phase 1 scaffolding: auth, basic user model, w
 - Small pytest test suite exists under `apps/api/tests` (health test). Running tests inside the container succeeded: `1 passed, 2 warnings`.
 - CI is described in README (GitHub Actions) to run API tests with services, lints and frontend checks.
 
+## Data model
+
+Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). Migration `003_domain_schema`. Chưa có endpoint nào chạy trên schema này.
+
+Hình dạng bị chi phối bởi cấu trúc đề TOEIC chứ không bởi một abstraction gọn hơn: **part 3, 4, 6, 7 nhóm nhiều câu dưới một kích thích dùng chung** (`question_set`), còn part 1, 2, 5 thì không; **part 2 có 3 đáp án và không in gì cả**.
+
+```mermaid
+erDiagram
+    users ||--o{ dictation_attempt : "làm"
+    users ||--o{ attempt : "làm"
+    users ||--o{ vocabulary_review_state : "có tiến độ"
+    users ||--o{ vocabulary_review_log : "ghi lại"
+
+    audio_asset ||--o{ vocabulary_audio : "phát âm"
+    audio_asset ||--o{ dictation_item : "nghe"
+    audio_asset ||--o{ question : "part 1-2"
+    audio_asset ||--o{ question_set : "part 3-4"
+
+    topic ||--o{ vocabulary_topic : "gom"
+    topic ||--o{ dictation_item : "gom"
+    vocabulary_entry ||--o{ vocabulary_topic : "thuộc"
+    vocabulary_entry ||--o{ vocabulary_audio : "có"
+    vocabulary_entry ||--o{ vocabulary_review_state : "được ôn"
+    vocabulary_entry ||--o{ vocabulary_review_log : "được ôn"
+
+    dictation_item ||--o{ dictation_attempt : "được làm"
+
+    question_set ||--o{ question : "nhóm (part 3,4,6,7)"
+    question ||--o{ question_option : "có 3-4"
+    question ||--o{ practice_test_question : "xuất hiện trong"
+    question ||--o{ attempt_item : "được trả lời"
+    practice_test ||--o{ practice_test_question : "gồm"
+    practice_test ||--o{ attempt : "được làm"
+    attempt ||--o{ attempt_item : "gồm"
+    question_option ||--o{ attempt_item : "được chọn"
+```
+
+## Audio & content pipeline
+
+Quyết định kiến trúc: [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A.
+
+Audio được sinh **offline** bằng `edge-tts`, đặt tên content-addressed theo hash của *input* tổng hợp, ghi vào `content/manifest/audio_assets.jsonl` (commit vào repo) rồi nạp vào DB bằng `python -m app.content.seed`. Runtime **không bao giờ** gọi object store: URL phát chỉ là phép ghép chuỗi `{AUDIO_PUBLIC_BASE_URL}/{storage_key}`.
+
+Không có service mới nào trong Compose. `/media` chỉ được mount khi `environment == "development"`; ở nơi khác audio đi thẳng từ CDN. Tuyệt đối không proxy audio qua FastAPI — sẽ mất range request (không tua được) và đốt băng thông của API.
+
+Toàn bộ pipeline nằm sau extra `content` và **không được** lọt vào chuỗi import của `app/main.py`: image production build `--no-dev` nên không có `edge-tts`.
+
 ## AI layer (planned)
 
 - Placeholder module: `apps/api/app/ai`.

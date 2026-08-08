@@ -13,17 +13,17 @@ Two companion documents carry the engineering state, and both are worth reading 
 - **`planning/REVIEW-OPUS.md`** — running engineering review: open issue list (P0/P1/P2) and the sprint roadmap.
 - **`planning/PHASE2-AUDIO.md`** — audio architecture decisions (Part A, durable) and the implementation checklist (Part B, expires on completion).
 
-### Current state (2026-08-08)
+### Current state (2026-08-09)
 
 Phase 1 (scaffolding + auth) is done and hardened. Two remediation passes have landed: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md`.
 
-Product features are **not** built yet. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer. There is no domain model beyond `User` — no questions, tests, attempts, vocabulary, or progress tables.
+Sprint 2 is in progress. **Audio infrastructure is built** — `planning/PHASE2-AUDIO.md` Part B is complete: `audio_asset` (migration `002`), the content-addressed naming in `app/core/media.py`, the offline `app/content/` pipeline behind the `content` extra, a committed manifest, and a development-only `/media` mount. Part A remains the durable record of *why*; read §A4 before changing any of it.
 
-**Phase 2 is blocked on one decision, not on code: there is no data model** for Learning Hub / TOEIC Practice (`REVIEW-OPUS.md` §7a). Design it before writing any Phase 2 endpoint.
+Product features are still **not** built. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer.
 
-Audio was the second blocker and is now **decided but not built** — `planning/PHASE2-AUDIO.md`. Keep those two apart: the decisions are recorded, while the repo still has no object storage, no `audio_asset` table, no TTS dependency, and no media handling of any kind. Read Part A before touching audio; §A4 records four invariants that are easy to violate and whose consequences do not surface immediately.
+**The data model is designed and migrated** — `planning/ADR-001-DATA-MODEL.md`, migration `003`. That closes `REVIEW-OPUS.md` §7a, which was the last thing blocking Phase 2. Thirteen tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, and attempts. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) are designed on paper only in Part C, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
-One of those decisions constrains §7a directly: TOEIC needs four accents, so a single FK column will not do — vocabulary will need a join table (`PHASE2-AUDIO.md` §A6).
+Nothing is built *on top of* the schema yet: no Phase 2 endpoints, no content beyond the 16 sample clips, and `packages/shared` is therefore unchanged (the contract is generated from endpoints, and there are none). Two gaps are named rather than solved — Part 1 needs photographs and there is no image plan at all (ADR-001 §A6.1, the same hole audio was in), and the score conversion table does not exist (§A6.2).
 
 Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for Phase 4, since an unmetered LLM endpoint is an unmetered bill.
 
@@ -36,7 +36,9 @@ cd apps/api
 uv sync --extra dev
 
 uv run uvicorn app.main:app --reload --port 8000
-uv run pytest                              # 62 tests
+uv sync --extra dev --extra content         # add the offline content pipeline
+
+uv run pytest                              # 150 tests
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 uv run pytest tests/test_auth.py::test_x -v
 uv run ruff check app tests
@@ -44,6 +46,12 @@ uv run ruff format app tests
 uv run mypy                                # strict; config in pyproject.toml
 uv run alembic upgrade head
 uv run alembic revision --autogenerate -m "..."
+
+# Offline content pipeline — needs --extra content, never runs at request time
+uv run python -m app.content.generate --input content/sources/<spec>.jsonl --dry-run
+uv run python -m app.content.generate --input content/sources/<spec>.jsonl
+uv run python -m app.content.seed          # manifest -> audio_asset rows
+TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external   # calls edge-tts for real
 ```
 
 Tests default to SQLite in-memory (`tests/conftest.py` sets `DATABASE_URL` before the app imports). Tests marked `integration` need real PostgreSQL and **skip automatically** when it is unreachable; point them elsewhere with `TEST_DATABASE_URL`. CI runs them for real against a Postgres service.
@@ -85,7 +93,16 @@ docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 
 **bcrypt's 72-byte limit is enforced explicitly.** `app/core/security.py` raises `PasswordTooLongError` and `app/schemas/auth.py` turns it into a 422. The limit is measured in **bytes, not characters** — a 40-character Vietnamese password is 120 bytes. Do not "fix" this by truncating: older pins truncated silently, which meant only a prefix of the password ever authenticated. Existing `$2b$` hashes from the previous passlib stack still verify; `tests/test_security.py` pins a real one as a golden value.
 
-**Database.** `app/core/database.py` exposes `engine` / `SessionLocal` / `Base` (SQLAlchemy 2.0 `Mapped[...]` style — follow `app/models/user.py`). Routes take a session via the `get_db` dependency. **Alembic owns the schema**; `metadata.create_all` runs only when `environment == "development"`. New models must be imported somewhere reachable from `app/main.py` so their tables register on `Base.metadata`.
+**Database.** `app/core/database.py` exposes `engine` / `SessionLocal` / `Base` (SQLAlchemy 2.0 `Mapped[...]` style — follow `app/models/user.py`). Routes take a session via the `get_db` dependency. **Alembic owns the schema**; `metadata.create_all` runs only when `environment == "development"`. New models must be re-exported from `app/models/__init__.py` — that one package import is what `app/main.py`, `alembic/env.py` and `tests/conftest.py` all rely on to register tables on `Base.metadata`. A model missing from it produces "no such table" in tests and an empty autogenerate diff.
+
+**Domain model.** Designed in `planning/ADR-001-DATA-MODEL.md` and created by migration `003`; there are no endpoints over it yet. Shared column vocabulary (`PublishableMixin`, status/difficulty CHECK helpers) lives in `app/models/mixins.py`. Two shapes look wrong until you check the exam (ADR-001 §A2):
+
+- `question.set_id` is **nullable** — only parts 3, 4, 6 and 7 group questions under a shared stimulus. A CHECK requires it for exactly those parts.
+- `question.prompt_text` and `question_option.content` are **nullable** — part 2 prints nothing at all and has three options rather than four. Null is the correct value there, not missing data.
+
+Audio hangs off two levels for the same reason: parts 1–2 on `question`, parts 3–4 on `question_set`.
+
+`app/models/validators.py` holds the three content rules no declarative constraint can express (ADR-001 §B4): at *least* one correct option, the per-part option count, and `question.part` matching its set's part. The partial unique index only rules out *more* than one correct answer — a question with none inserts cleanly and can never be answered correctly.
 
 **Health vs readiness.** `/health` is liveness and deliberately checks nothing — a database outage must not get the container restarted. `/ready` queries Postgres and pings Redis, returning 503 when Postgres is down. Redis is a soft dependency everywhere: startup logs a warning and `/ready` reports `degraded` rather than failing.
 
@@ -93,12 +110,23 @@ docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 
 **Vector store.** pgvector is enabled by the initial migration but unused so far; it is there for Phase 4 RAG.
 
+**Audio and the content pipeline.** Decisions live in `planning/PHASE2-AUDIO.md` Part A; read §A4 before changing anything here, because all four invariants fail silently. The shape:
+
+- `app/core/media.py` — content-addressed naming, pure stdlib, imported by *both* sides. `source_hash` fingerprints the synthesis **input** (text | logical voice | engine | engine version), never the mp3 bytes: TTS is not byte-deterministic, so hashing output would break idempotency. `voice` is a **logical** name (`us_female_1`), never a provider id (`en-US-JennyNeural`) — that indirection is what kept the library intact when `en-AU-WilliamNeural` was renamed upstream.
+- `app/models/audio.py` — `audio_asset`, deliberately independent of the domain schema. The dependency runs domain → asset. `source_text` is **not** the grading answer key; dictation grades against `dictation_item.transcript`.
+- `app/content/**` — the offline pipeline, behind the optional `content` extra. `generate` synthesises and writes `content/manifest/audio_assets.jsonl`; `seed` reads that manifest and upserts rows by `source_hash`. Generation happens **offline**, so an edge-tts outage blocks new content rather than breaking what already exists.
+- The manifest is committed; the mp3s under `apps/api/media/` are gitignored. `generate` therefore skips only when the manifest entry *and* the file both exist — otherwise a fresh clone would never re-render them.
+- Serving is a string join: `{audio_public_base_url}/{storage_key}`. The API never calls the object store at request time, and audio must **never** be proxied through FastAPI — that loses range requests and burns the API's bandwidth. `/media` is mounted only when `environment == "development"`.
+
+**Nothing reachable from `app/main.py` may import `app.content`.** The production image is built `--no-dev` without the `content` extra, so a leak breaks container startup rather than the build. `tests/test_content_isolation.py` catches it in a subprocess in under a second; the `docker` CI job catches it the slow way. Shared code belongs in `app/core/`.
+
 **Monorepo wiring.** pnpm workspaces + Turborepo for JS/TS. `apps/api` is a separate `uv` project outside the turbo graph, so cross-cutting scripts (`scripts/generate-api-types.sh`) drive both toolchains.
 
 ## Testing conventions
 
 - Backend tests live in `apps/api/tests/`. `conftest.py` provides `db_session` (SQLite via `StaticPool` — required, or each connection gets a private empty database) and `client` (overrides `get_db`).
 - Tests needing PostgreSQL are marked `integration` and skip cleanly without it.
+- Tests calling a third-party service are marked `external` and are deselected by `addopts`. **CI must never run them.** Because an explicit `-m` on the command line replaces `addopts` entirely — including the documented `pytest -m "not integration"` — they also self-guard on `TOEIC_ALLOW_EXTERNAL_TTS=1`.
 - **A concurrency test that just fires N threads does not test concurrency here.** The first writer commits before the others reach the advisory pre-check, so the `IntegrityError` branch is never entered and the test passes even with the fix removed. `tests/test_concurrency.py` uses a `threading.Barrier` between the pre-check and the commit to force a genuine race.
 - **When fixing a bug, verify the new test fails without the fix** — `git stash push -- <file>` or `git show HEAD~1:<file>`, run, confirm red, restore. Editing the file by string replacement to "revert" it is easy to get silently wrong.
 
@@ -121,3 +149,6 @@ Branch protection is **not yet enabled**; a green CI that nothing enforces is on
 - **`eslint.config.mjs` must not use `FlatCompat`.** `eslint-config-next@16` ships native flat configs; wrapping them in `FlatCompat` throws `Converting circular structure to JSON` and takes CI down.
 - Empty directories survive a `git` revert. An `apps/web/src/app/learning/**` skeleton outlived a reverted Phase 2 attempt for exactly this reason and went unnoticed for two sprints (it has since been deleted). Next.js only routes a directory that contains a `page.tsx`, so such leftovers are inert — and therefore invisible until someone looks.
 - Prettier deliberately ignores `*.md` and `planning/**` so prose edits stay out of code diffs.
+- **`alembic/` is not linted or type-checked.** CI runs `ruff check app tests` and mypy over `app` only, so migrations follow `001`'s existing style (`typing.Union`, `typing.Sequence`) rather than the modern syntax ruff would demand elsewhere. `alembic/script.py.mako` was missing until Sprint 2, which meant the documented `alembic revision --autogenerate` had never actually been able to write a file.
+- **`tests/test_concurrency.py` runs `create_all` against the real dev Postgres.** After a test run with Postgres up, the dev database holds every table in `Base.metadata` — so `alembic revision --autogenerate` compares against a schema that already matches and emits an *empty* migration. Reset before generating: `psql -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'` then `alembic upgrade head`.
+- **edge-tts voice ids drift.** They are provider ids, not ours, and Microsoft retires them without notice. `tests/test_tts_external.py` checks every `LOGICAL_VOICES` entry against the live catalogue — run it (`TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external`) before any bulk generation, because a stale id otherwise fails one clip at a time in the middle of a long run.

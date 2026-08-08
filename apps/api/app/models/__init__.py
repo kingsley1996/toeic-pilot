@@ -1,3 +1,44 @@
+from app.models.audio import AudioAsset
+from app.models.dictation import DictationAttempt, DictationItem
+from app.models.practice import (
+    Attempt,
+    AttemptItem,
+    PracticeTest,
+    PracticeTestQuestion,
+    Question,
+    QuestionOption,
+    QuestionSet,
+)
+from app.models.topic import Topic
 from app.models.user import User
+from app.models.vocabulary import (
+    VocabularyAudio,
+    VocabularyEntry,
+    VocabularyReviewLog,
+    VocabularyReviewState,
+    VocabularyTopic,
+)
 
-__all__ = ["User"]
+# Every model must be reachable from here: this is the single import that
+# registers the tables on Base.metadata for app.main, alembic/env.py and the test
+# fixture alike. A model missing from this list produces "no such table" in tests
+# and an empty autogenerate diff in Alembic.
+__all__ = [
+    "Attempt",
+    "AttemptItem",
+    "AudioAsset",
+    "DictationAttempt",
+    "DictationItem",
+    "PracticeTest",
+    "PracticeTestQuestion",
+    "Question",
+    "QuestionOption",
+    "QuestionSet",
+    "Topic",
+    "User",
+    "VocabularyAudio",
+    "VocabularyEntry",
+    "VocabularyReviewLog",
+    "VocabularyReviewState",
+    "VocabularyTopic",
+]

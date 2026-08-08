@@ -37,5 +37,11 @@ Thumbs.db
 # Turbo
 .turbo/
 
+# Generated audio. The manifest (content/manifest/) IS committed; the mp3s are
+# not — they are reproducible from the spec files and would otherwise grow the
+# repository without bound. `generate` re-renders anything the manifest claims
+# but the store is missing.
+apps/api/media/
+
 # Logs
 *.log

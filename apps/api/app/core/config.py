@@ -3,6 +3,8 @@ from pathlib import Path
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.core.media import DEFAULT_MEDIA_ROOT
+
 # config.py -> core -> app -> apps/api -> apps -> <repo root>
 _API_DIR = Path(__file__).resolve().parents[2]
 _REPO_ROOT = _API_DIR.parents[1]
@@ -34,6 +36,15 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     log_level: str = "INFO"
     log_format: str = "json"  # "json" for shipping, "text" for local reading
+    # Prefix for playable audio URLs. In development this points at the /media
+    # mount served by this app; in production it is the CDN/object-store origin.
+    # The API only ever concatenates it with a storage key — it never calls the
+    # object store at request time, so no bucket credential belongs in this file.
+    audio_public_base_url: str = "http://localhost:8000/media"
+    # Directory backing the development-only /media mount. Shares its default
+    # with the content pipeline so the two cannot drift apart; in production
+    # nothing is mounted and audio is served straight from the CDN origin.
+    media_root: Path = DEFAULT_MEDIA_ROOT
 
     @property
     def is_production(self) -> bool:

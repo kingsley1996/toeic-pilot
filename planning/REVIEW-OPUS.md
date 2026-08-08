@@ -1,6 +1,7 @@
 # TOEIC Pilot — Review tổng thể
 
 **Ngày review:** 2026-08-08
+**Cập nhật:** 2026-08-09 — Sprint 2: ADR-001 (data model) + hạ tầng audio; test 62 → 150
 **Cập nhật:** 2026-08-08 — đã sửa toàn bộ P0 và hoàn tất Sprint 1 (P1-1, P1-2, P1-4, P1-5, P1-6, P1-9, P1-10)
 **Phạm vi:** toàn bộ repo (`apps/api`, `apps/web`, `packages/shared`, `docker/`, `.github/`) + `planning/ARCHITECTURE.md` + `planning/PLAN.md`
 **Người review:** Claude (Opus 5)
@@ -9,8 +10,9 @@
 > Còn lại: P1-3 (test frontend/e2e), P1-7 (token trong localStorage), P1-8 (rate limiting) — xem [mục 8](#8-lộ-trình-đề-xuất).
 > Test: 1 → **62**. Gate CI: 4 → **13**.
 >
-> **§7b (audio) ĐÃ QUYẾT** 2026-08-08 → [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
-> Chặn Phase 2 giảm từ **hai** xuống còn **một**: chỉ còn thiết kế data model (§7a).
+> **§7b (audio) ĐÃ QUYẾT** 2026-08-08 và **ĐÃ TRIỂN KHAI** 2026-08-09 → [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
+> **§7a (data model) ĐÃ QUYẾT** 2026-08-09 → [`planning/ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md), migration `003`.
+> **Phase 2 không còn bị chặn bởi thứ gì.** Còn lại §7g (chiến lược AI) — chặn Phase 4, không chặn Phase 2.
 
 ---
 
@@ -44,6 +46,8 @@ Nhưng có một khoảng cách rất lớn giữa **hạ tầng đã có** và 
 
 > Toàn bộ `PLAN.md` (Learning Hub, TOEIC Practice, AI Study Planner, AI Coach) **chưa có một dòng thiết kế dữ liệu nào**. Không có ERD, không có schema câu hỏi/đề thi/lượt làm bài/từ vựng/tiến độ. Không có kế hoạch cho **audio** — mà Dictation và Listening Part 1–4 thì không thể tồn tại nếu không có audio storage/CDN. Đây là rủi ro kiến trúc lớn nhất của dự án, lớn hơn tất cả các bug code cộng lại.
 
+*(Cập nhật 2026-08-09: cả hai đã được xử lý ở Sprint 2 — [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) và [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). Đoạn trên giữ nguyên làm ngữ cảnh của bản review gốc.)*
+
 Bảng điểm:
 
 | Hạng mục | Review | Sau P0 | Sau Sprint 1 | Ghi chú |
@@ -56,7 +60,7 @@ Bảng điểm:
 | DevOps / Docker | 4/10 | 7/10 | 8/10 | Migration tự chạy, healthcheck gating. Vẫn thiếu prod target, chạy root |
 | CI | 5/10 | 7/10 | 9/10 | 4 job, 13 gate, gồm chống drift + build/boot Docker |
 | Tài liệu (`PLAN.md`/`ARCHITECTURE.md`) | 6/10 | 6/10 | 6/10 | Không đổi — vẫn thiếu data model và acceptance criteria |
-| **Sẵn sàng cho Phase 2** | **Chưa** | **Chưa** | **Chưa** | Nền kỹ thuật đã đủ. §7b (audio) đã quyết → [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md). Chặn duy nhất còn lại: **thiết kế data model** (§7a) |
+| **Sẵn sàng cho Phase 2** | **Chưa** | **Chưa** | **Chưa** → **Rồi** (Sprint 2) | §7b (audio) đã quyết **và đã build**; §7a (data model) đã quyết **và đã migrate**. Không còn thứ gì chặn Phase 2 |
 
 ---
 
@@ -546,9 +550,17 @@ Cuối file ghi *"Prepared by: automated repository audit (assistant)"* và có 
 
 ### Thiếu sót nghiêm trọng
 
-#### 7a. Không có data model — rủi ro số 1 của dự án
+#### 7a. Không có data model — ✅ ĐÃ QUYẾT (2026-08-09)
 
-Phase 2 và 3 yêu cầu: Dictation, Vocabulary by topic, Practice by Part, Full Mock Test. Không có gì trong đó khả thi nếu chưa thiết kế:
+> **Thiết kế đầy đủ nằm ở [`planning/ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md)**, đã hiện thực hoá bằng migration `003_domain_schema` (13 bảng).
+>
+> Điều quan trọng nhất mà bản review gốc chưa nêu: **part 3, 4, 6, 7 nhóm nhiều câu dưới một kích thích dùng chung** (đoạn hội thoại, bài nói, đoạn văn), còn part 1, 2, 5 thì không. Coi mỗi câu hỏi là một thực thể độc lập thì không có chỗ đặt audio của Part 3 — và đó chính là cuộc refactor giữa Phase 3 mà mục này cảnh báo. Thêm nữa: **part 2 có 3 đáp án chứ không phải 4, và không in cả đề lẫn đáp án**.
+>
+> Đã đưa vào migration: vocabulary + topic + audio 4 accent, spaced repetition (SM-2), dictation, question/option/question_set, practice test, attempt. Bảng Phase 4–5 chỉ thiết kế trên giấy vì chiều `vector(n)` phụ thuộc embedding model mà ADR-003 chưa chọn.
+>
+> **Hai lỗ hổng mới lộ ra, chưa giải quyết:** Part 1 cần **ảnh** và dự án không có kế hoạch nào cho ảnh — đúng lỗ hổng §7b từng gặp với audio, lặp lại nguyên xi (ADR-001 §A6.1). Và **bảng quy đổi điểm** chưa tồn tại (§A6.2).
+
+Danh sách gốc đặt ra trong review (giữ lại làm ngữ cảnh) — Phase 2 và 3 yêu cầu Dictation, Vocabulary by topic, Practice by Part, Full Mock Test, không gì khả thi nếu chưa thiết kế:
 
 - Câu hỏi (question) — thuộc Part nào (1–7), loại gì, đáp án, giải thích, độ khó
 - Đề thi (test) và quan hệ với câu hỏi
@@ -560,7 +572,7 @@ Phase 2 và 3 yêu cầu: Dictation, Vocabulary by topic, Practice by Part, Full
 
 Nếu code trước, thiết kế sau, sẽ phải refactor toàn bộ ở giữa Phase 3.
 
-**Khuyến nghị:** dành 1 sprint riêng cho việc này, output là một ADR + migration Alembic + ERD, trước khi viết bất kỳ endpoint Phase 2 nào.
+~~**Khuyến nghị:** dành 1 sprint riêng cho việc này, output là một ADR + migration Alembic + ERD, trước khi viết bất kỳ endpoint Phase 2 nào.~~ → đã làm ở Sprint 2: ADR-001 + migration `003` + ERD (mermaid, ADR-001 §B1).
 
 #### 7b. Không có kế hoạch audio & nội dung — ✅ ĐÃ QUYẾT (2026-08-08)
 
@@ -670,14 +682,19 @@ Ngoài phạm vi P0 nhưng làm cùng vì cần để chứng minh fix: fixture 
 - [ ] P2-6: Dockerfile production (multi-stage, non-root, bỏ `gcc`/`libpq-dev` thừa)
 - [ ] P2-7: bỏ fallback `pnpm install --frozen-lockfile || pnpm install`
 
-### Sprint 2 — "Thiết kế dữ liệu" (1 tuần) ← **quan trọng nhất, và giờ là thứ duy nhất chặn Phase 2**
+### Sprint 2 — "Thiết kế dữ liệu" — 🟡 GẦN XONG (2026-08-09)
 
-ADR-002 (audio) đã xong. Còn lại data model và AI.
-- [ ] ADR-001: Data model cho Learning Hub + TOEIC Practice (ERD đầy đủ)
+**Phase 2 không còn bị chặn.** Chỉ còn ADR-003 (chiến lược AI), mà nó chặn Phase 4 chứ không chặn Phase 2.
+
+- [x] ADR-001: Data model cho Learning Hub + TOEIC Practice (ERD đầy đủ) → [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md)
 - [x] ~~ADR-002: Storage cho audio và nguồn nội dung~~ → [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A (2026-08-08)
+- [x] **Ngoài phạm vi ban đầu:** triển khai luôn toàn bộ hạ tầng audio (`PHASE2-AUDIO.md` Phần B) — `audio_asset`, pipeline offline, manifest, mount `/media`
+- [x] Migration Alembic cho toàn bộ schema domain → `002_audio_assets` + `003_domain_schema` (14 bảng mới)
+- [x] Cập nhật `ARCHITECTURE.md` (thêm ERD)
 - [ ] ADR-003: LLM provider, routing tiers, ngân sách token/user
-- [ ] Migration Alembic cho toàn bộ schema domain
-- [ ] Cập nhật `packages/shared` + `ARCHITECTURE.md` (thêm ERD)
+- [x] ~~Cập nhật `packages/shared`~~ — **không áp dụng**: contract sinh từ endpoint, mà Sprint 2 không thêm endpoint nào. Chạy `pnpm gen:api-types` vào đúng lúc endpoint Phase 2 đầu tiên xuất hiện
+
+Test: 62 → **150**. Hai lỗ hổng mới được ghi nhận chứ chưa giải: ảnh cho Part 1 (ADR-001 §A6.1) và bảng quy đổi điểm (§A6.2).
 
 ### Sprint 3+ — Phase 2 + vertical slice AI
 - [ ] Learning Hub (Vocabulary + Dictation) theo schema đã chốt
