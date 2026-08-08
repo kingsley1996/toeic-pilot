@@ -1,0 +1,39 @@
+# Dependencies / virtualenvs — must never overwrite what the image builds
+**/node_modules
+**/.venv
+**/venv
+.pnpm-store
+
+# Build output
+**/.next
+**/dist
+**/build
+**/*.egg-info
+
+# Caches
+**/.turbo
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.coverage
+**/htmlcov
+
+# Secrets — compose passes these via env_file, they must not be baked into layers
+.env
+.env.local
+.env.*.local
+
+# VCS / editor / OS
+.git
+.gitignore
+.github
+.idea
+.vscode
+**/.DS_Store
+Thumbs.db
+
+# Docs & logs
+planning
+*.log

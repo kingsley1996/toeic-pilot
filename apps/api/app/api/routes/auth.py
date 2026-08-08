@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -25,7 +26,16 @@ def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
     user = User(email=body.email.lower(), hashed_password=get_password_hash(body.password))
     db.add(user)
-    db.commit()
+    # The check above is advisory: two concurrent registrations both pass it and
+    # only the unique index on users.email stops the second one. Without this the
+    # loser of that race gets a 500 instead of the 409 the check already decided on.
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Email already registered"
+        ) from None
     db.refresh(user)
     return _user_public(user)
 
