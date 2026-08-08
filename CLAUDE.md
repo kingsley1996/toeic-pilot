@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TOEIC Pilot — an AI-powered TOEIC learning platform. Polyglot monorepo: FastAPI backend (`apps/api`), Next.js frontend (`apps/web`), shared TS contract (`packages/shared`), Postgres + pgvector, Redis.
 
-**`planning/PLAN.md` is the product spec and the source of truth for scope.** Work proceeds phase by phase; do not implement a later phase's features while an earlier one is open unless asked. `planning/REVIEW-OPUS.md` is a running engineering review with the open issue list (P0/P1/P2) and the sprint roadmap — read it before planning work.
+**`planning/PLAN.md` is the product spec and the source of truth for scope.** Work proceeds phase by phase; do not implement a later phase's features while an earlier one is open unless asked.
+
+Two companion documents carry the engineering state, and both are worth reading before planning work:
+
+- **`planning/REVIEW-OPUS.md`** — running engineering review: open issue list (P0/P1/P2) and the sprint roadmap.
+- **`planning/PHASE2-AUDIO.md`** — audio architecture decisions (Part A, durable) and the implementation checklist (Part B, expires on completion).
 
 ### Current state (2026-08-08)
 
@@ -14,10 +19,11 @@ Phase 1 (scaffolding + auth) is done and hardened. Two remediation passes have l
 
 Product features are **not** built yet. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer. There is no domain model beyond `User` — no questions, tests, attempts, vocabulary, or progress tables.
 
-**The only things blocking Phase 2 are decisions, not code:**
+**Phase 2 is blocked on one decision, not on code: there is no data model** for Learning Hub / TOEIC Practice (`REVIEW-OPUS.md` §7a). Design it before writing any Phase 2 endpoint.
 
-1. **No data model** for Learning Hub / TOEIC Practice (`REVIEW-OPUS.md` §7a). Design it before writing any Phase 2 endpoint.
-2. **No plan for audio storage or content sourcing** (§7b). Dictation and Listening Parts 1–4 need audio; the stack has no object storage or CDN, and TOEIC content licensing is unresolved.
+Audio was the second blocker and is now **decided but not built** — `planning/PHASE2-AUDIO.md`. Keep those two apart: the decisions are recorded, while the repo still has no object storage, no `audio_asset` table, no TTS dependency, and no media handling of any kind. Read Part A before touching audio; §A4 records four invariants that are easy to violate and whose consequences do not surface immediately.
+
+One of those decisions constrains §7a directly: TOEIC needs four accents, so a single FK column will not do — vocabulary will need a join table (`PHASE2-AUDIO.md` §A6).
 
 Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for Phase 4, since an unmetered LLM endpoint is an unmetered bill.
 
@@ -113,5 +119,5 @@ Branch protection is **not yet enabled**; a green CI that nothing enforces is on
 
 - **`.dockerignore` is load-bearing.** Without it, `COPY apps/api ./` overwrote the image's Linux virtualenv with the host's macOS one and the container could not start at all. Never remove `**/.venv`, `**/node_modules`, or `**/dist` from it.
 - **`eslint.config.mjs` must not use `FlatCompat`.** `eslint-config-next@16` ships native flat configs; wrapping them in `FlatCompat` throws `Converting circular structure to JSON` and takes CI down.
-- Empty directories survive a `git` revert. A leftover `apps/web/src/app/learning/**` skeleton outlived a reverted Phase 2 attempt for exactly this reason.
+- Empty directories survive a `git` revert. An `apps/web/src/app/learning/**` skeleton outlived a reverted Phase 2 attempt for exactly this reason and went unnoticed for two sprints (it has since been deleted). Next.js only routes a directory that contains a `page.tsx`, so such leftovers are inert — and therefore invisible until someone looks.
 - Prettier deliberately ignores `*.md` and `planning/**` so prose edits stay out of code diffs.
