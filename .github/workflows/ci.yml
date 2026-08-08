@@ -37,6 +37,7 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: postgresql+psycopg://toeic:toeic@localhost:5432/toeic
+      TEST_DATABASE_URL: postgresql+psycopg://toeic:toeic@localhost:5432/toeic
       REDIS_URL: redis://localhost:6379/0
       SECRET_KEY: ci-test-secret
     steps:
@@ -50,10 +51,18 @@ jobs:
           python-version: "3.12"
       - name: Install API
         run: uv sync --extra dev
-      - name: Ruff
+      - name: Ruff (lint)
         run: uv run ruff check app tests
+      - name: Ruff (format)
+        run: uv run ruff format --check app tests
+      - name: Mypy
+        run: uv run mypy
+      - name: Alembic migrations apply cleanly
+        run: uv run alembic upgrade head
       - name: Pytest
-        run: uv run pytest
+        # Postgres is a service here, so the integration-marked concurrency tests
+        # run for real rather than skipping.
+        run: uv run pytest -v
 
   web:
     runs-on: ubuntu-latest
@@ -67,7 +76,9 @@ jobs:
           node-version: "20"
           cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+      - name: Prettier
+        run: pnpm format:check
       - name: Build shared package
         run: pnpm --filter @toeic-pilot/shared build
       - name: Lint web
@@ -76,3 +87,52 @@ jobs:
         run: pnpm --filter @toeic-pilot/web build
         env:
           NEXT_PUBLIC_API_URL: http://localhost:8000
+
+  contract:
+    # Guards against the drift in planning/REVIEW-OPUS.md P1-4: shared TypeScript
+    # types must stay generated from the API's OpenAPI schema, never hand-edited.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "apps/api/uv.lock"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+      - name: Install
+        run: |
+          pnpm install --frozen-lockfile
+          (cd apps/api && uv sync --extra dev)
+      - name: Regenerate API types
+        run: ./scripts/generate-api-types.sh
+      - name: Fail if the committed contract is stale
+        run: |
+          if ! git diff --exit-code -- packages/shared/openapi.json packages/shared/src/api-types.ts; then
+            echo "::error::API contract changed but generated files were not committed."
+            echo "Run 'pnpm gen:api-types' and commit the result."
+            exit 1
+          fi
+
+  docker:
+    # P0-2 shipped a broken image that still built successfully; only running it
+    # revealed the problem. Build and boot both images on every PR.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f docker/api.Dockerfile -t toeic-api:ci .
+      - name: Build web image
+        run: docker build -f docker/web.Dockerfile -t toeic-web:ci .
+      - name: API image actually starts
+        run: |
+          docker run --rm -e RUN_MIGRATIONS=0 -e DATABASE_URL=sqlite+pysqlite:///:memory: \
+            toeic-api:ci .venv/bin/python -c "from app.main import app; print('import ok')"

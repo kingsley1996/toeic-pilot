@@ -1,0 +1,17 @@
+node_modules
+.next
+dist
+.turbo
+pnpm-lock.yaml
+apps/api/.venv
+apps/api/uv.lock
+.claude
+
+# Generated from the API's OpenAPI schema — formatting is the generator's business.
+packages/shared/src/api-types.ts
+packages/shared/openapi.json
+
+# Prose is reviewed by humans; reformatting it churns tables and mixes doc edits
+# into code diffs. Markdown style is left to the editor/markdownlint.
+*.md
+planning/**

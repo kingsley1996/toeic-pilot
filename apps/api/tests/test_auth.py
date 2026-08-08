@@ -142,3 +142,30 @@ def test_me_with_well_formed_but_unknown_uuid_returns_401(client: TestClient):
     response = client.get("/api/v1/auth/me", headers=auth_header(token))
     assert response.status_code == 401
     assert response.json()["detail"] == "User not found"
+
+
+# --- password length boundary (P1-1) --------------------------------------
+
+
+def test_register_password_at_byte_limit_is_accepted(client: TestClient):
+    at_limit = "a" * 72
+    assert register(client, password=at_limit).status_code == 201
+    assert login(client, password=at_limit).status_code == 200
+
+
+def test_register_over_long_password_returns_422_not_500(client: TestClient):
+    response = register(client, password="a" * 73)
+    assert response.status_code == 422
+    assert "72 bytes" in response.text
+
+
+def test_register_multibyte_password_counted_in_bytes(client: TestClient):
+    # 40 chars but 120 UTF-8 bytes — a char-based limit would wrongly allow this.
+    response = register(client, password="đ" * 40)
+    assert response.status_code == 422
+
+
+def test_login_with_absurdly_long_password_returns_401_not_500(client: TestClient):
+    register(client)
+    response = login(client, password="a" * 5000)
+    assert response.status_code == 401

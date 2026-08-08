@@ -52,7 +52,8 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-lg px-4 py-12">
       <h1 className="text-2xl font-bold">Dashboard</h1>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        Signed in as <span className="font-medium text-zinc-900 dark:text-zinc-100">{user.email}</span>
+        Signed in as{" "}
+        <span className="font-medium text-zinc-900 dark:text-zinc-100">{user.email}</span>
       </p>
       <p className="mt-4 text-sm text-zinc-500">Learning modules will appear here in Phase 2+.</p>
       <button

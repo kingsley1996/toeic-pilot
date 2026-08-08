@@ -11,8 +11,8 @@ export default function Home() {
           Learn English daily. Prepare for TOEIC with AI coaching.
         </h1>
         <p className="max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-          Monorepo stack: Next.js, FastAPI, PostgreSQL + pgvector, Redis. Auth and shared
-          packages are wired; product modules ship in later epics.
+          Monorepo stack: Next.js, FastAPI, PostgreSQL + pgvector, Redis. Auth and shared packages
+          are wired; product modules ship in later epics.
         </p>
         <div className="flex flex-wrap gap-3 pt-2">
           <Link

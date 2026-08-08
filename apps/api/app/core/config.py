@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 60 * 24 * 7
     algorithm: str = "HS256"
     cors_origins: list[str] = ["http://localhost:3000"]
+    log_level: str = "INFO"
+    log_format: str = "json"  # "json" for shipping, "text" for local reading
 
     @property
     def is_production(self) -> bool:

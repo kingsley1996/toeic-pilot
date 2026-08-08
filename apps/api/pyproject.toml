@@ -2,7 +2,7 @@
 name = "toeic-api"
 version = "0.1.0"
 description = "TOEIC Pilot FastAPI backend"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
@@ -12,8 +12,7 @@ dependencies = [
     "pydantic>=2.10.0",
     "pydantic-settings>=2.6.0",
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4",
-    "bcrypt<4.1",
+    "bcrypt>=4.2.0",
     "email-validator>=2.2.0",
     "redis>=5.2.0",
     "httpx>=0.28.0",
@@ -24,6 +23,7 @@ dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.24.0",
     "ruff>=0.8.0",
+    "mypy>=1.13.0",
 ]
 
 [build-system]
@@ -43,6 +43,22 @@ select = ["E", "F", "I", "UP"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "integration: needs a live PostgreSQL (skipped automatically when absent)",
+]
 
 [tool.uv]
 package = true
+
+[tool.mypy]
+python_version = "3.12"
+files = ["app"]
+strict = true
+# SQLAlchemy/FastAPI decorators are typed well enough that these two would only
+# produce noise on framework call sites we do not control.
+disallow_untyped_decorators = false
+warn_return_any = false
+
+[[tool.mypy.overrides]]
+module = ["jose.*"]
+ignore_missing_imports = true

@@ -13,8 +13,12 @@ RUN uv sync --frozen --no-dev
 
 COPY apps/api ./
 
+COPY docker/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
+RUN chmod +x /usr/local/bin/api-entrypoint.sh
+
 ENV PYTHONPATH=/app/apps/api
 
 EXPOSE 8000
 
+ENTRYPOINT ["/usr/local/bin/api-entrypoint.sh"]
 CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

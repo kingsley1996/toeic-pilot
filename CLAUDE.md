@@ -4,69 +4,114 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-TOEIC Pilot — an AI-powered TOEIC learning platform. Polyglot monorepo: FastAPI backend (`apps/api`), Next.js frontend (`apps/web`), shared TS types (`packages/shared`), Postgres+pgvector, Redis. Currently at **Phase 1 (scaffolding)**: monorepo, Docker, CI, and basic email/password auth only. Learning Hub, TOEIC Practice, AI Study Planner, and AI Coach (the actual product) are not yet built — `apps/api/app/ai` is an empty placeholder package for the future AI layer (LLM router, prompt engine, RAG engine, memory service, tool registry).
+TOEIC Pilot — an AI-powered TOEIC learning platform. Polyglot monorepo: FastAPI backend (`apps/api`), Next.js frontend (`apps/web`), shared TS contract (`packages/shared`), Postgres + pgvector, Redis.
 
-`planning/PLAN.md` is the product spec and single source of truth for scope. Development proceeds by Epic/Phase (see PLAN.md §7) — do not implement features from a later phase while an earlier one is in progress unless explicitly asked.
+**`planning/PLAN.md` is the product spec and the source of truth for scope.** Work proceeds phase by phase; do not implement a later phase's features while an earlier one is open unless asked. `planning/REVIEW-OPUS.md` is a running engineering review with the open issue list (P0/P1/P2) and the sprint roadmap — read it before planning work.
+
+### Current state (2026-08-08)
+
+Phase 1 (scaffolding + auth) is done and hardened. Two remediation passes have landed: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md`.
+
+Product features are **not** built yet. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer. There is no domain model beyond `User` — no questions, tests, attempts, vocabulary, or progress tables.
+
+**The only things blocking Phase 2 are decisions, not code:**
+
+1. **No data model** for Learning Hub / TOEIC Practice (`REVIEW-OPUS.md` §7a). Design it before writing any Phase 2 endpoint.
+2. **No plan for audio storage or content sourcing** (§7b). Dictation and Listening Parts 1–4 need audio; the stack has no object storage or CDN, and TOEIC content licensing is unresolved.
+
+Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for Phase 4, since an unmetered LLM endpoint is an unmetered bill.
 
 ## Commands
 
-### Python API (`apps/api`) — always use `uv`, never `pip`/bare `python`
+### Python API (`apps/api`) — always `uv`, never `pip` or bare `python`
 
 ```bash
 cd apps/api
-uv sync --extra dev                          # install deps (commit uv.lock after dependency changes)
+uv sync --extra dev
+
 uv run uvicorn app.main:app --reload --port 8000
-uv run pytest                                # all tests
-uv run pytest tests/test_health.py           # single file
-uv run pytest tests/test_health.py::test_x -v  # single test
-uv run ruff check app tests                  # lint (rules: E, F, I, UP; line-length 100)
-uv run alembic upgrade head                  # apply migrations
-uv run alembic revision --autogenerate -m "..."  # new migration
+uv run pytest                              # 62 tests
+uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
+uv run pytest tests/test_auth.py::test_x -v
+uv run ruff check app tests
+uv run ruff format app tests
+uv run mypy                                # strict; config in pyproject.toml
+uv run alembic upgrade head
+uv run alembic revision --autogenerate -m "..."
 ```
 
-Tests run against SQLite in-memory by default (`tests/conftest.py` sets `DATABASE_URL` before app import if not already set) — no Postgres needed for local `pytest`. CI runs against real Postgres/Redis service containers.
+Tests default to SQLite in-memory (`tests/conftest.py` sets `DATABASE_URL` before the app imports). Tests marked `integration` need real PostgreSQL and **skip automatically** when it is unreachable; point them elsewhere with `TEST_DATABASE_URL`. CI runs them for real against a Postgres service.
 
-### Web / monorepo root — pnpm + Turborepo
+### Monorepo — pnpm + Turborepo
 
 ```bash
 pnpm install
-pnpm dev                                     # turbo dev, all workspace packages
-pnpm --filter @toeic-pilot/web dev           # web only (Turbopack)
+pnpm dev                                   # turbo dev
+pnpm --filter @toeic-pilot/web dev
+pnpm build                                 # shared builds before web
 pnpm --filter @toeic-pilot/web lint
-pnpm build                                   # turbo build (shared must build before web)
-pnpm --filter @toeic-pilot/shared build      # rebuild shared types after editing packages/shared/src
+pnpm format / pnpm format:check            # prettier; markdown is excluded on purpose
+pnpm gen:api-types                         # regenerate the shared contract — see below
 ```
 
-### Full stack via Docker
+### Full stack
 
 ```bash
 cp .env.example .env
-docker compose -f docker/docker-compose.yml up --build      # postgres, redis, api, web
-docker compose -f docker/docker-compose.yml up postgres redis -d  # infra only, for local dev servers
+docker compose -f docker/docker-compose.yml up --build
+docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 ```
 
-The `api` and `web` services bind-mount source (`apps/api/app`, `apps/web`, `packages/shared`) so container dev servers hot-reload; only `pyproject.toml`/`uv.lock`/`package.json` changes require a rebuild.
+`api` runs `alembic upgrade head` via `docker/api-entrypoint.sh` before uvicorn binds (`RUN_MIGRATIONS=0` skips it). `web` waits for `api` to report healthy, and `api`'s healthcheck hits `/ready`, so nothing starts until Postgres is genuinely reachable. Source is bind-mounted for hot reload; only dependency-manifest changes need a rebuild.
 
 ## Architecture
 
-**Request flow**: Next.js pages (`apps/web/src/app/**`) → `apiFetch()` wrapper (`apps/web/src/lib/api.ts`) → FastAPI routes (`apps/api/app/api/routes/*.py`) using paths/types from `@toeic-pilot/shared` (`packages/shared/src/index.ts`, exports `API_ROUTES` and request/response TS types — **the frontend never hardcodes API paths or shapes**; add new endpoints there first). Any change to a backend request/response contract should be mirrored in `packages/shared/src/index.ts` and rebuilt (`pnpm --filter @toeic-pilot/shared build`) so the web app picks up the new types.
+**Request flow.** Next.js pages (`apps/web/src/app/**`) → `apiFetch()` (`apps/web/src/lib/api.ts`) → FastAPI routes (`apps/api/app/api/routes/*.py`), using paths and types from `@toeic-pilot/shared`. The frontend never hardcodes an API path or response shape.
 
-**Auth**: JWT bearer tokens (`python-jose`), password hashing via `passlib`/bcrypt. `app/core/security.py` creates/decodes tokens; `app/api/deps.py::get_current_user` is the FastAPI dependency that resolves the bearer token → DB user for protected routes. Frontend stores the token via `apps/web/src/lib/auth-storage.ts` and attaches it through `apiFetch`'s `token` option.
+**The shared contract is generated, not written.** `packages/shared/src/api-types.ts` and `packages/shared/openapi.json` are produced by `pnpm gen:api-types` from FastAPI's own OpenAPI schema. `src/index.ts` only re-exports friendly aliases (`UserPublic`, `TokenResponse`, …) plus the hand-maintained `API_ROUTES` map.
 
-**Config**: `app/core/config.py` (`pydantic-settings`) loads `.env` into a single `settings` singleton — add new env-driven config there, not via `os.environ` reads scattered in code.
+- **Never hand-edit `api-types.ts` or `openapi.json`.** Change the Pydantic schema, then regenerate and commit both files. The `contract` CI job regenerates and fails on any diff.
+- `apps/web` imports the package's **compiled `dist/`**, not `src/`. A stale `dist` can satisfy imports and hide drift, which is why `prebuild` wipes it.
 
-**DB**: `app/core/database.py` defines `engine`/`SessionLocal`/`Base` (SQLAlchemy 2.0 `DeclarativeBase`, `Mapped[...]` style — follow `app/models/user.py` as the pattern for new models). Routes get a session via the `get_db` dependency. `app/main.py`'s lifespan calls `Base.metadata.create_all` on startup for dev convenience — Alembic (`apps/api/alembic/`) is the source of truth for schema and must be used for anything beyond local scratch work. New models must be imported in `app/main.py` (or an equivalent import point) so their tables register with `Base.metadata` before `create_all`/autogenerate runs.
+**Config.** `app/core/config.py` holds one `settings` singleton (`pydantic-settings`); add env-driven config there rather than reading `os.environ` around the codebase. `env_file` uses **absolute** paths (repo root, then `apps/api`) because a relative `.env` silently resolves against the CWD — which broke the documented dev flow. Real env vars still outrank both, which is how Compose injects values. `ENVIRONMENT=production` refuses to boot on the default `SECRET_KEY`.
 
-**Redis**: `app/core/redis_client.py::get_redis()` — connection is a soft dependency; app startup logs a warning and continues if Redis is unreachable rather than failing.
+**Auth.** JWT bearer tokens (`python-jose`); passwords hashed with the `bcrypt` library directly. `app/api/deps.py::get_current_user` resolves the token to a user; it parses `sub` as a UUID first, because comparing arbitrary text to a UUID column makes Postgres raise and surface as a 500.
 
-**Vector store**: Postgres via `pgvector` extension (image `pgvector/pgvector:pg16`), enabled in the initial Alembic migration. Intended for future embeddings/RAG work (Phase 4), not yet used by any route.
+**bcrypt's 72-byte limit is enforced explicitly.** `app/core/security.py` raises `PasswordTooLongError` and `app/schemas/auth.py` turns it into a 422. The limit is measured in **bytes, not characters** — a 40-character Vietnamese password is 120 bytes. Do not "fix" this by truncating: older pins truncated silently, which meant only a prefix of the password ever authenticated. Existing `$2b$` hashes from the previous passlib stack still verify; `tests/test_security.py` pins a real one as a golden value.
 
-**Monorepo wiring**: pnpm workspaces (`apps/*`, `packages/*`) + Turborepo (`turbo.json`) for JS/TS; the Python API is a separate `uv`-managed project under `apps/api` and is not part of the pnpm/turbo graph. `pnpm build` builds `packages/shared` before `apps/web` (turbo `dependsOn: ["^build"]`) since web imports shared's compiled output (`dist/`), not its source.
+**Database.** `app/core/database.py` exposes `engine` / `SessionLocal` / `Base` (SQLAlchemy 2.0 `Mapped[...]` style — follow `app/models/user.py`). Routes take a session via the `get_db` dependency. **Alembic owns the schema**; `metadata.create_all` runs only when `environment == "development"`. New models must be imported somewhere reachable from `app/main.py` so their tables register on `Base.metadata`.
+
+**Health vs readiness.** `/health` is liveness and deliberately checks nothing — a database outage must not get the container restarted. `/ready` queries Postgres and pings Redis, returning 503 when Postgres is down. Redis is a soft dependency everywhere: startup logs a warning and `/ready` reports `degraded` rather than failing.
+
+**Logging.** `app/core/logging.py` provides a JSON formatter, a text formatter for local reading (`LOG_FORMAT`), and `RequestContextMiddleware`, which assigns or accepts an `X-Request-ID`, exposes it through a `ContextVar`, echoes it on the response, and logs one line per request. This exists now specifically so Phase 4's LLM calls are traceable from day one.
+
+**Vector store.** pgvector is enabled by the initial migration but unused so far; it is there for Phase 4 RAG.
+
+**Monorepo wiring.** pnpm workspaces + Turborepo for JS/TS. `apps/api` is a separate `uv` project outside the turbo graph, so cross-cutting scripts (`scripts/generate-api-types.sh`) drive both toolchains.
+
+## Testing conventions
+
+- Backend tests live in `apps/api/tests/`. `conftest.py` provides `db_session` (SQLite via `StaticPool` — required, or each connection gets a private empty database) and `client` (overrides `get_db`).
+- Tests needing PostgreSQL are marked `integration` and skip cleanly without it.
+- **A concurrency test that just fires N threads does not test concurrency here.** The first writer commits before the others reach the advisory pre-check, so the `IntegrityError` branch is never entered and the test passes even with the fix removed. `tests/test_concurrency.py` uses a `threading.Barrier` between the pre-check and the commit to force a genuine race.
+- **When fixing a bug, verify the new test fails without the fix** — `git stash push -- <file>` or `git show HEAD~1:<file>`, run, confirm red, restore. Editing the file by string replacement to "revert" it is easy to get silently wrong.
 
 ## CI (`.github/workflows/ci.yml`)
 
-Two independent jobs on push/PR to `main`/`master`:
-- **api**: Postgres (pgvector) + Redis service containers → `uv sync --extra dev` → `ruff check app tests` → `pytest`.
-- **web**: pnpm install → build `@toeic-pilot/shared` → lint `@toeic-pilot/web` → build `@toeic-pilot/web`.
+Four jobs, all required:
 
-Both must pass; there is no combined/integration CI job yet.
+| Job | Checks |
+|---|---|
+| `api` | ruff lint, ruff format, mypy strict, `alembic upgrade head`, pytest (with Postgres + Redis services, so integration tests run) |
+| `web` | prettier, build shared, eslint, build web |
+| `contract` | regenerates the API types and fails if the committed ones differ |
+| `docker` | builds both images **and boots the API image** — a broken image once built fine and only failed at runtime |
+
+Branch protection is **not yet enabled**; a green CI that nothing enforces is only a suggestion.
+
+## Gotchas worth knowing
+
+- **`.dockerignore` is load-bearing.** Without it, `COPY apps/api ./` overwrote the image's Linux virtualenv with the host's macOS one and the container could not start at all. Never remove `**/.venv`, `**/node_modules`, or `**/dist` from it.
+- **`eslint.config.mjs` must not use `FlatCompat`.** `eslint-config-next@16` ships native flat configs; wrapping them in `FlatCompat` throws `Converting circular structure to JSON` and takes CI down.
+- Empty directories survive a `git` revert. A leftover `apps/web/src/app/learning/**` skeleton outlived a reverted Phase 2 attempt for exactly this reason.
+- Prettier deliberately ignores `*.md` and `planning/**` so prose edits stay out of code diffs.

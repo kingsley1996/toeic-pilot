@@ -5,7 +5,9 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "gen:api-types": "./scripts/generate-api-types.sh"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
