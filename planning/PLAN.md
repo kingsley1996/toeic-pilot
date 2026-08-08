@@ -178,6 +178,12 @@ Production
 - Monitoring
 - Deployment
 
+**Execution order differs from this list, deliberately.** The phases above describe
+what the product contains. The order the work is actually done in — Learning Hub
+and TOEIC Practice first, the AI layer last — is decided in
+[`ROADMAP.md`](ROADMAP.md) §2, which also records what that ordering costs:
+the riskiest part of the product stays unproven until roughly 70% of the way in.
+
 ---
 
 ## 8. Success Criteria
@@ -193,68 +199,18 @@ The MVP is considered complete when
 
 ---
 
-## 9. Current status (2026-08-07)
+## 9. Status and progress
 
-- **Date:** 2026-08-07
-- **Actions performed:**
-	- Added project environment file: `.env` at repository root.
-	- Updated `docker/docker-compose.yml` to make the `apps/api` volume writable (removed `:ro`).
-	- Started the full stack with Docker Compose (Postgres, Redis, API, Web).
-- **Containers / health:**
-	- `postgres` (pgvector) — healthy
-	- `redis` — healthy
-	- `api` — running (Uvicorn, reload enabled)
-	- `web` — running (Next.js dev server)
-- **Local URLs:**
-	- API: http://localhost:8000
-	- Web: http://localhost:3000
-- **Commands executed:**
-	- `docker compose -f docker/docker-compose.yml up --build -d`
-	- `docker compose -f docker/docker-compose.yml ps`
-	- `docker logs docker-api-1 --tail 200`
-	- `docker logs docker-web-1 --tail 200`
-- **Notes / Next steps:**
-	- Run API tests: `cd apps/api && python -m pytest -q` (requires Python deps).
-	- Optionally tail logs: `docker compose -f docker/docker-compose.yml logs -f`.
-	- Implement any DB migrations if needed (alembic).
+Deliberately **not** in this document. `PLAN.md` is the product specification; a
+status log mixed into it goes stale on contact and dilutes the "single source of
+truth" claim made in section 6 (the problem `REVIEW-OPUS.md` §7h named).
 
----
+Current progress, the sprint plan and the open task list live in one place:
 
-## 10. Code progress (quick audit)
+**→ [`ROADMAP.md`](ROADMAP.md)**
 
-Summary of implemented functionality (codebase state):
-
-- **Monorepo & tooling**: repository structured as monorepo with `apps/`, `packages/`, `docker/` and a `pnpm` workspace for frontend and shared packages.
-- **Infrastructure**: Docker + Docker Compose configured for `postgres` (pgvector), `redis`, `api`, and `web`. `docker-compose` builds and runs the stack locally.
-- **API (FastAPI)**:
-	- Project scaffolded under `apps/api` with `pyproject.toml`, `uv`/uvicorn-based container image, and a working development virtualenv created at container startup.
-	- Basic routes implemented: `health` (`/health`, `/ready`) and `auth` endpoints (`/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/me`).
-	- `User` model implemented (`apps/api/app/models/user.py`) with UUID PK, email, hashed password, and created_at.
-	- Security utilities: password hashing/verification and JWT creation/decoding (`app/core/security.py`).
-	- Dependency for current user retrieval with bearer token support (`app/api/deps.py`).
-	- Database connectivity via SQLAlchemy and `settings` configured (`app/core/database.py`, `app/core/config.py`).
-	- Tests: basic health test present and passing inside the container (`apps/api/tests/test_health.py`).
-
-- **Web (Next.js)**:
-	- Frontend scaffold under `apps/web` using Next.js 16 and Turbopack.
-	- Auth UI pages implemented: `/login`, `/register`, and a protected `/dashboard` that calls the API `me` endpoint.
-	- Shared types/utilities consumed from `packages/shared`.
-
-- **AI layer & product features:**
-	- `apps/api/app/ai` exists as a placeholder — full AI capabilities (LLM router, RAG, prompt engine, memory service) are not yet implemented (Phase 4).
-	- Learning modules, TOEIC practice, study planner, and AI coach functionalities are not implemented yet (Phase 2–4 work remaining).
-
-Open items / Suggested next steps:
-
-- Implement Alembic migrations and run migrations as part of startup (there is an `alembic/` folder with initial migration). Ensure migrations are applied in the `api` container on boot when required.
-- Add seed data or admin account creation for dev convenience.
-- Implement core Phase 2 features (Learning Hub) and Phase 3 (TOEIC Practice) on backend + frontend.
-- Design and implement AI layer (Phase 4): RAG, LLM router, prompt engine, memory, tool registry.
-- Add CI (tests, linting) and automated Docker image builds.
-- Improve observability (metrics, tracing) and production deployment configuration.
-
-Test & verification performed during this audit:
-
-- Started Docker Compose stack and confirmed services healthy.
-- Ran `pytest` inside the running `api` container: `1 passed, 2 warnings`.
+Architecture decisions and their reasoning live in the ADRs:
+[`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) ·
+[`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) (audio, ADR-002) ·
+[`ADR-004-IMAGES.md`](ADR-004-IMAGES.md)
 

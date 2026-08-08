@@ -30,6 +30,7 @@ dev = [
 content = [
     "edge-tts>=7.0.0",
     "mutagen>=1.47.0",
+    "pillow>=11.0.0",
 ]
 
 [build-system]
@@ -78,6 +79,6 @@ ignore_missing_imports = true
 # declared Optional, so strict mode rejects the one call we make. Skipping the
 # follow-through treats the package as Any rather than sprinkling per-line ignores.
 [[tool.mypy.overrides]]
-module = ["mutagen.*"]
+module = ["mutagen.*", "PIL.*"]
 ignore_missing_imports = true
 follow_imports = "skip"

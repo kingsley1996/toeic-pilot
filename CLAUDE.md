@@ -8,10 +8,14 @@ TOEIC Pilot — an AI-powered TOEIC learning platform. Polyglot monorepo: FastAP
 
 **`planning/PLAN.md` is the product spec and the source of truth for scope.** Work proceeds phase by phase; do not implement a later phase's features while an earlier one is open unless asked.
 
-Two companion documents carry the engineering state, and both are worth reading before planning work:
+**`planning/ROADMAP.md` is the single tracker** — sprints, tasks, real status, and what each finished sprint actually cost. Read it first; update it when you finish something. Nothing else in `planning/` carries status.
 
-- **`planning/REVIEW-OPUS.md`** — running engineering review: open issue list (P0/P1/P2) and the sprint roadmap.
-- **`planning/PHASE2-AUDIO.md`** — audio architecture decisions (Part A, durable) and the implementation checklist (Part B, expires on completion).
+The rest carry decisions and their reasoning:
+
+- **`planning/ADR-001-DATA-MODEL.md`** — the domain schema and why it has the shape it has.
+- **`planning/PHASE2-AUDIO.md`** — audio architecture (this is ADR-002); Part A is the durable record, Part B the implementation log.
+- **`planning/ADR-004-IMAGES.md`** — photographs for Part 1, licensing, and the fetch pipeline.
+- **`planning/REVIEW-OPUS.md`** — an engineering review dated 2026-08-08. A snapshot, not a tracker; its §8 roadmap is superseded by `ROADMAP.md`.
 
 ### Current state (2026-08-09)
 
@@ -21,9 +25,11 @@ Sprint 2 is in progress. **Audio infrastructure is built** — `planning/PHASE2-
 
 Product features are still **not** built. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer.
 
-**The data model is designed and migrated** — `planning/ADR-001-DATA-MODEL.md`, migration `003`. That closes `REVIEW-OPUS.md` §7a, which was the last thing blocking Phase 2. Thirteen tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, and attempts. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) are designed on paper only in Part C, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
+**The data model is designed and migrated** — `planning/ADR-001-DATA-MODEL.md`, migrations `003` and `004`. That closes `REVIEW-OPUS.md` §7a, the last thing blocking Phase 2. Twenty tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, attempts, media assets and score conversion. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) are designed on paper only in Part C, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
-Nothing is built *on top of* the schema yet: no Phase 2 endpoints, no content beyond the 16 sample clips, and `packages/shared` is therefore unchanged (the contract is generated from endpoints, and there are none). Two gaps are named rather than solved — Part 1 needs photographs and there is no image plan at all (ADR-001 §A6.1, the same hole audio was in), and the score conversion table does not exist (§A6.2).
+Nothing is built *on top of* the schema yet: **no product endpoints at all** (the five that exist are auth and health), and `packages/shared` is therefore unchanged — the contract is generated from endpoints, and there are none. The sample content — 16 audio clips, 3 photographs — exists to prove the pipelines run, not to teach anyone.
+
+**The real bottleneck for the next two sprints is content, not code.** Writing the vocabulary endpoints takes days; authoring 500 words with examples and four-accent audio takes much longer.
 
 Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for Phase 4, since an unmetered LLM endpoint is an unmetered bill.
 
@@ -38,7 +44,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload --port 8000
 uv sync --extra dev --extra content         # add the offline content pipeline
 
-uv run pytest                              # 150 tests
+uv run pytest                              # 191 tests
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 uv run pytest tests/test_auth.py::test_x -v
 uv run ruff check app tests
@@ -50,7 +56,9 @@ uv run alembic revision --autogenerate -m "..."
 # Offline content pipeline — needs --extra content, never runs at request time
 uv run python -m app.content.generate --input content/sources/<spec>.jsonl --dry-run
 uv run python -m app.content.generate --input content/sources/<spec>.jsonl
-uv run python -m app.content.seed          # manifest -> audio_asset rows
+uv run python -m app.content.images --input content/sources/images/<spec>.jsonl
+uv run python -m app.content.seed          # manifests -> audio_asset / image_asset rows
+uv run python -m app.content.seed_scores   # default raw -> scaled score curve
 TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external   # calls edge-tts for real
 ```
 
@@ -102,7 +110,13 @@ docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 
 Audio hangs off two levels for the same reason: parts 1–2 on `question`, parts 3–4 on `question_set`.
 
-`app/models/validators.py` holds the three content rules no declarative constraint can express (ADR-001 §B4): at *least* one correct option, the per-part option count, and `question.part` matching its set's part. The partial unique index only rules out *more* than one correct answer — a question with none inserts cleanly and can never be answered correctly.
+`app/models/validators.py` holds the content rules no declarative constraint can express (ADR-001 §B4): at *least* one correct option, the per-part option count, `question.part` matching its set's part, and the printing rules. The partial unique index only rules out *more* than one correct answer — a question with none inserts cleanly and can never be answered correctly.
+
+**Parts 1 and 2 print nothing.** ETS states it outright for both: the statements and responses are spoken only, never printed. Part 1's test book shows the photograph alone; part 2's shows nothing. So `prompt_text` and `question_option.content` are NULL for both — part 1 just also has an image and four options rather than three.
+
+**Images (ADR-004).** `image_asset` mirrors `audio_asset` but is a separate table on purpose: merged, more than half the columns would always be NULL. `license`, `attribution` and `source_url` are NOT NULL because most openly-licensed photographs are CC-BY — usable only *with* credit — and storing the credit is not enough: any endpoint serving a Part 1 image must return it and the UI must render it. `app/content/images.py` fetches from a hand-curated spec file rather than a search API, because a photograph still needs a human to decide whether four statements can be written about it.
+
+**Scoring (`app/services/scoring.py`).** The raw-to-scaled curve lives in `score_scale` / `score_conversion` rather than in code: TOEIC curves differ per form, and a scoring bug should be fixable by editing a row. Lookups **refuse to guess** — a missing conversion raises rather than interpolating, because a silently wrong score is stored permanently on the attempt and the learner cannot tell it is wrong. The seeded default is an approximation and says so in `source_note`; ETS publishes no official table.
 
 **Health vs readiness.** `/health` is liveness and deliberately checks nothing — a database outage must not get the container restarted. `/ready` queries Postgres and pings Redis, returning 503 when Postgres is down. Redis is a soft dependency everywhere: startup logs a warning and `/ready` reports `degraded` rather than failing.
 
@@ -151,4 +165,6 @@ Branch protection is **not yet enabled**; a green CI that nothing enforces is on
 - Prettier deliberately ignores `*.md` and `planning/**` so prose edits stay out of code diffs.
 - **`alembic/` is not linted or type-checked.** CI runs `ruff check app tests` and mypy over `app` only, so migrations follow `001`'s existing style (`typing.Union`, `typing.Sequence`) rather than the modern syntax ruff would demand elsewhere. `alembic/script.py.mako` was missing until Sprint 2, which meant the documented `alembic revision --autogenerate` had never actually been able to write a file.
 - **`tests/test_concurrency.py` runs `create_all` against the real dev Postgres.** After a test run with Postgres up, the dev database holds every table in `Base.metadata` — so `alembic revision --autogenerate` compares against a schema that already matches and emits an *empty* migration. Reset before generating: `psql -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'` then `alembic upgrade head`.
+- **The dev `api` container recreates the schema on every reload.** It runs uvicorn with `--reload` and `environment=development`, so editing anything under `app/` restarts it and runs `create_all` against the dev Postgres — which will rebuild the tables you just dropped to generate a migration. `docker compose stop api` before doing migration work.
+- **Public archives rate-limit and require a User-Agent.** Wikimedia returns 403 to httpx's default UA and 429 partway through a bulk run. `app/content/images.py` sends an identifying UA and paces itself; a failed image is reported and skipped rather than aborting the run, so the successes survive and the next run picks up only what is missing.
 - **edge-tts voice ids drift.** They are provider ids, not ours, and Microsoft retires them without notice. `tests/test_tts_external.py` checks every `LOGICAL_VOICES` entry against the live catalogue — run it (`TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external`) before any bulk generation, because a stale id otherwise fails one clip at a time in the middle of a long run.

@@ -44,7 +44,13 @@ QUESTION_SOURCES = ("original", "generated", "licensed")
 TEST_KINDS = ("full", "mini")
 ATTEMPT_MODES = ("full_test", "part_practice")
 
-# Part 2 is the exception everywhere: three options, none of them printed.
+# Parts whose options exist only in the audio. ETS prints neither the four
+# statements of part 1 nor the three responses of part 2; part 1's test book
+# shows the photograph alone. So `prompt_text` and `question_option.content` are
+# NULL for both — the correct value, not missing data.
+UNPRINTED_PARTS = (1, 2)
+
+# Part 2 is the one part with three options rather than four.
 PART_2_OPTION_COUNT = 3
 DEFAULT_OPTION_COUNT = 4
 
@@ -115,10 +121,12 @@ class Question(Base, PublishableMixin):
     audio_asset_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("audio_asset.id", ondelete="RESTRICT"), nullable=True
     )
-    # Part 1 photographs. A named gap, not a solution: the project has no image
-    # pipeline, no source and no decision yet — the same hole audio was in before
-    # PHASE2-AUDIO. See ADR-001 A6.1.
-    image_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    # Part 1 photographs (ADR-004). An FK rather than a URL string: a bare URL
+    # has nowhere to record the licence and attribution that CC-BY requires, and
+    # it invites hotlinking someone else's server.
+    image_asset_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
+    )
     explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
     difficulty: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=3)
     # What the question tests ("inference", "verb-tense"). This is the raw
@@ -189,6 +197,13 @@ class PracticeTest(Base, PublishableMixin):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     kind: Mapped[str] = mapped_column(String(16), nullable=False, default="full")
     time_limit_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Which raw-to-scaled curve this form uses. Real TOEIC forms differ, so the
+    # scale belongs to the test rather than to the application.
+    score_scale_slug: Mapped[str] = mapped_column(
+        ForeignKey("score_scale.slug", ondelete="RESTRICT"),
+        nullable=False,
+        server_default="default",
+    )
 
     def __repr__(self) -> str:
         return f"<PracticeTest {self.slug}>"
@@ -262,6 +277,7 @@ class Attempt(Base):
     items: Mapped[list["AttemptItem"]] = relationship(
         back_populates="attempt", cascade="all, delete-orphan"
     )
+    test: Mapped["PracticeTest | None"] = relationship()
 
     def __repr__(self) -> str:
         return f"<Attempt {self.mode} user={self.user_id}>"

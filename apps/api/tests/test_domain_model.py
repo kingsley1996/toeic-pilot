@@ -20,6 +20,7 @@ from app.models import (
     AudioAsset,
     DictationAttempt,
     DictationItem,
+    ImageAsset,
     PracticeTest,
     Question,
     QuestionOption,
@@ -32,6 +33,7 @@ from app.models import (
     VocabularyReviewState,
     VocabularyTopic,
 )
+from app.models.practice import UNPRINTED_PARTS
 from app.models.validators import expected_option_count, validate_question
 
 
@@ -52,6 +54,25 @@ def make_audio(session: Session, marker: str = "a") -> AudioAsset:
     session.add(asset)
     session.flush()
     return asset
+
+
+def make_image(session: Session, marker: str = "i") -> ImageAsset:
+    digest = (marker * 64)[:64]
+    image = ImageAsset(
+        storage_key=f"image/{digest[:2]}/{digest}.jpg",
+        source_hash=digest,
+        mime_type="image/jpeg",
+        size_bytes=180_000,
+        width=1280,
+        height=853,
+        source="sourced",
+        source_url="https://commons.wikimedia.org/wiki/File:Example.jpg",
+        license="CC BY-SA 4.0",
+        attribution="Photo by Someone, CC BY-SA 4.0, via Wikimedia Commons",
+    )
+    session.add(image)
+    session.flush()
+    return image
 
 
 def make_user(session: Session, email: str = "learner@example.com") -> User:
@@ -84,7 +105,7 @@ def make_question(
 ) -> Question:
     question = Question(
         part=part,
-        prompt_text=None if part == 2 else "The report ____ due on Friday.",
+        prompt_text=None if part in UNPRINTED_PARTS else "The report ____ due on Friday.",
         difficulty=3,
         source="original",
         status="published",
@@ -95,7 +116,7 @@ def make_question(
         question.options.append(
             QuestionOption(
                 label="ABCD"[index],
-                content=None if part == 2 else f"option {index}",
+                content=None if part in UNPRINTED_PARTS else f"option {index}",
                 is_correct=index < correct,
             )
         )
@@ -426,6 +447,33 @@ def test_part_1_without_a_photograph_is_rejected(db_session: Session) -> None:
     asset = make_audio(db_session)
     question = make_question(db_session, part=1, audio_asset_id=asset.id)
     assert "part 1 questions need a photograph" in validate_question(question)
+
+
+def test_part_1_prints_the_photograph_and_nothing_else(db_session: Session) -> None:
+    # ETS: "The statements will not be printed in your test book." Part 1 shows
+    # the picture; all four statements are audio only — same as part 2, but with
+    # four options instead of three.
+    asset = make_audio(db_session)
+    image = make_image(db_session)
+    question = make_question(db_session, part=1, audio_asset_id=asset.id, image_asset_id=image.id)
+    assert validate_question(question) == []
+    assert len(question.options) == 4
+
+
+def test_part_1_with_a_printed_prompt_is_rejected(db_session: Session) -> None:
+    asset = make_audio(db_session)
+    image = make_image(db_session)
+    question = make_question(db_session, part=1, audio_asset_id=asset.id, image_asset_id=image.id)
+    question.prompt_text = "What is the man doing?"
+    assert any("prints no prompt" in problem for problem in validate_question(question))
+
+
+def test_part_1_with_printed_options_is_rejected(db_session: Session) -> None:
+    asset = make_audio(db_session)
+    image = make_image(db_session)
+    question = make_question(db_session, part=1, audio_asset_id=asset.id, image_asset_id=image.id)
+    question.options[0].content = "A man is fixing a bicycle."
+    assert any("prints no options" in problem for problem in validate_question(question))
 
 
 def test_part_5_needs_neither_audio_nor_a_photograph(db_session: Session) -> None:

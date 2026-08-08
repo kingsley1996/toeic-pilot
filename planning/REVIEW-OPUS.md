@@ -12,7 +12,10 @@
 >
 > **§7b (audio) ĐÃ QUYẾT** 2026-08-08 và **ĐÃ TRIỂN KHAI** 2026-08-09 → [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
 > **§7a (data model) ĐÃ QUYẾT** 2026-08-09 → [`planning/ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md), migration `003`.
-> **Phase 2 không còn bị chặn bởi thứ gì.** Còn lại §7g (chiến lược AI) — chặn Phase 4, không chặn Phase 2.
+> Hai lỗ hổng mà §7a tự phát hiện cũng đã đóng cùng ngày: ảnh Part 1 → [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), bảng quy đổi điểm → `ADR-001` §A6.2.
+> **Phase 2 không còn bị chặn bởi thứ gì.** Còn lại §7g (chiến lược AI) — theo lộ trình mới thì nó thuộc sprint cuối.
+>
+> 📍 **Tài liệu này là một bản review, không phải bảng theo dõi.** Trạng thái hiện tại và các sprint: **[`ROADMAP.md`](ROADMAP.md)**.
 
 ---
 
@@ -644,6 +647,10 @@ Ba kỹ thuật nên đưa vào thiết kế AI Layer ngay từ đầu:
 ---
 
 ## 8. Lộ trình đề xuất
+
+> ⚠️ **Mục này là ảnh chụp ngày 2026-08-08 và không được cập nhật tiếp.**
+> Lộ trình sống, danh sách task và trạng thái thật nằm ở **[`ROADMAP.md`](ROADMAP.md)**.
+> Giữ lại phần dưới làm ngữ cảnh lịch sử: nó cho thấy lúc review, việc gì được coi là quan trọng.
 
 ### Sprint 0 — "Cầm máu" — ✅ HOÀN THÀNH 2026-08-08
 

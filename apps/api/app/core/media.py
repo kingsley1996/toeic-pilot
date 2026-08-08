@@ -18,6 +18,7 @@ from pathlib import Path
 _FIELD_SEP = "\x1f"
 
 AUDIO_KEY_PREFIX = "audio"
+IMAGE_KEY_PREFIX = "image"
 
 # Kept as plain tuples rather than a native PostgreSQL enum: adding a value to a
 # native enum needs its own migration, and Alembic downgrades across enum types
@@ -38,6 +39,10 @@ _API_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_MEDIA_ROOT = _API_DIR / "media"
 
 
+def _digest(*fields: str) -> str:
+    return hashlib.sha256(_FIELD_SEP.join(fields).encode("utf-8")).hexdigest()
+
+
 def source_hash(text: str, voice: str, engine: str, engine_version: str) -> str:
     """Fingerprint the INPUT to a synthesis, never the resulting bytes.
 
@@ -50,11 +55,28 @@ def source_hash(text: str, voice: str, engine: str, engine_version: str) -> str:
     (``en-US-JennyNeural``). Provider ids in the hash would invalidate every
     existing asset the day the engine changes — see A4.3.
     """
-    payload = _FIELD_SEP.join((text, voice, engine, engine_version))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return _digest(text, voice, engine, engine_version)
 
 
-def storage_key_for(source_hash_value: str, ext: str = "mp3") -> str:
+def image_source_hash(source_url: str, transform_version: str) -> str:
+    """Fingerprint a sourced image by where it came from and how it is processed.
+
+    Hashing the downloaded bytes would be defensible — unlike TTS, a download is
+    reproducible — but we never store those bytes. The pipeline resizes and
+    re-encodes first, and Pillow makes no promise that two versions produce
+    identical output. Hashing the result would therefore invalidate the whole
+    library on a routine dependency bump, exactly the failure A4.2 avoids for
+    audio.
+
+    `transform_version` is the deliberate manual knob, the counterpart of
+    `tts_engine_version`: bump it when you actually want everything re-fetched.
+    """
+    return _digest(source_url, transform_version, "image")
+
+
+def storage_key_for(
+    source_hash_value: str, ext: str = "mp3", prefix: str = AUDIO_KEY_PREFIX
+) -> str:
     """Object-store key for an asset: ``audio/ab/abcdef....mp3``.
 
     The two-character shard keeps a local directory listing usable once the
@@ -62,7 +84,11 @@ def storage_key_for(source_hash_value: str, ext: str = "mp3") -> str:
     """
     if len(source_hash_value) < 2:
         raise ValueError(f"source_hash is too short to shard: {source_hash_value!r}")
-    return f"{AUDIO_KEY_PREFIX}/{source_hash_value[:2]}/{source_hash_value}.{ext}"
+    return f"{prefix}/{source_hash_value[:2]}/{source_hash_value}.{ext}"
+
+
+def image_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
+    return storage_key_for(source_hash_value, ext=ext, prefix=IMAGE_KEY_PREFIX)
 
 
 def public_audio_url(storage_key: str, base_url: str | None = None) -> str:

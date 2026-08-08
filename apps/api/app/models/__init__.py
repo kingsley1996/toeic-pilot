@@ -1,5 +1,6 @@
 from app.models.audio import AudioAsset
 from app.models.dictation import DictationAttempt, DictationItem
+from app.models.image import ImageAsset
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -9,6 +10,7 @@ from app.models.practice import (
     QuestionOption,
     QuestionSet,
 )
+from app.models.scoring import ScoreConversion, ScoreScale
 from app.models.topic import Topic
 from app.models.user import User
 from app.models.vocabulary import (
@@ -29,11 +31,14 @@ __all__ = [
     "AudioAsset",
     "DictationAttempt",
     "DictationItem",
+    "ImageAsset",
     "PracticeTest",
     "PracticeTestQuestion",
     "Question",
     "QuestionOption",
     "QuestionSet",
+    "ScoreConversion",
+    "ScoreScale",
     "Topic",
     "User",
     "VocabularyAudio",

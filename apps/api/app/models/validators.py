@@ -21,6 +21,7 @@ from app.models.practice import (
     DEFAULT_OPTION_COUNT,
     GROUPED_PARTS,
     PART_2_OPTION_COUNT,
+    UNPRINTED_PARTS,
     Question,
 )
 
@@ -78,16 +79,20 @@ def validate_question(question: Question) -> list[str]:
         stimulus = question.question_set
         if stimulus is not None and stimulus.audio_asset_id is None:
             problems.append(f"part {part} needs audio on its question_set")
-    if part == 1 and not question.image_url:
+    if part == 1 and question.image_asset_id is None:
         problems.append("part 1 questions need a photograph")
 
-    # --- part 2 prints nothing --------------------------------------------
-    if part == 2:
+    # --- parts 1 and 2 print nothing --------------------------------------
+    # ETS is explicit about both: "The statements will not be printed in your
+    # test book and will be spoken only one time" (part 1), and the same wording
+    # for the three responses in part 2. Part 1's test book shows the photograph
+    # and nothing else; part 2's shows nothing at all.
+    if part in UNPRINTED_PARTS:
         if question.prompt_text is not None:
-            problems.append("part 2 prints no prompt; prompt_text must be null")
+            problems.append(f"part {part} prints no prompt; prompt_text must be null")
         printed = [option.label for option in options if option.content is not None]
         if printed:
-            problems.append(f"part 2 prints no options, but {sorted(printed)} have content")
+            problems.append(f"part {part} prints no options, but {sorted(printed)} have content")
     elif question.prompt_text is None:
         problems.append(f"part {part} questions need prompt_text")
 

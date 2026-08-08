@@ -34,6 +34,22 @@ class ContentSettings(BaseSettings):
     # regeneration. Bump this only when you actually want everything re-synthesised.
     tts_engine_version: str = "1"
 
+    # Wikimedia — the most likely source of openly-licensed photographs — returns
+    # 403 to clients that do not identify themselves, and their policy asks for a
+    # contact address. A default library User-Agent simply does not work.
+    http_user_agent: str = (
+        "ToeicPilot-content/1.0 (offline content pipeline; contact: dev@localhost)"
+    )
+
+    # Public archives rate-limit bulk downloads: Wikimedia returned 429 partway
+    # through the very first three-image run. A pause between fetches costs
+    # nothing in an offline pipeline and keeps us a well-behaved client.
+    image_fetch_delay_seconds: float = 1.5
+
+    # The image counterpart of tts_engine_version, and the same warning applies:
+    # it feeds the source hash, so bumping it re-fetches the whole image library.
+    image_transform_version: str = "1"
+
     tts_max_attempts: int = 4
     tts_backoff_seconds: float = 2.0
 

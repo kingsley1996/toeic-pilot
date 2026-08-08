@@ -1,6 +1,6 @@
 # ADR-001 — Data model cho Learning Hub và TOEIC Practice
 
-**Trạng thái:** Đã chốt · 2026-08-09
+**Trạng thái:** Đã chốt · 2026-08-09 · A6.1 và A6.2 đã đóng cùng ngày
 **Giải quyết:** `REVIEW-OPUS.md` §7a — thứ **duy nhất** còn chặn Phase 2
 **Liên quan:** `PHASE2-AUDIO.md` §A6 (bắt buộc bảng nối 4 accent) · §A4.4 (`source_text` không phải đáp án chấm bài)
 
@@ -167,15 +167,31 @@ Quên lọc thì nội dung nháp và nội dung đã rút xuống sẽ đi th�
 
 Ba điều dưới đây **cố ý** nằm ngoài phạm vi, nhưng phải được nhìn thấy chứ không phải bị bỏ quên.
 
-### A6.1 — Part 1 cần ảnh, và không có kế hoạch nào cho ảnh
+### A6.1 — Part 1 cần ảnh — ✅ ĐÃ QUYẾT (2026-08-09)
+
+> Lời giải đầy đủ: [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md). Bảng `image_asset` (migration `004`), pipeline tải + chuẩn hoá, `license`/`attribution`/`source_url` đều NOT NULL. `question.image_url` đã đổi thành `question.image_asset_id`.
+>
+> Viết ADR-004 còn lộ ra một lỗi mà mục này che khuất: **Part 1 không in gì ngoài ảnh** — bốn câu mô tả chỉ có trong audio, đúng như Part 2. Validator trước đó bắt Part 1 phải có `prompt_text`. Lỗi sống được vì Part 1 chưa dựng nổi: không ai chạm vào phần mình không build được. Đã sửa cùng ngày.
+
+Nội dung gốc của mục này (giữ làm ngữ cảnh):
+
+### A6.1-cũ — Part 1 cần ảnh, và không có kế hoạch nào cho ảnh
 
 Đây là **đúng lỗ hổng mà §7b đã gặp với audio**, lặp lại nguyên xi với hình ảnh: repo không có xử lý ảnh, không có nguồn, không có quyết định. Part 1 có 6 câu mỗi đề — nhỏ về số lượng, nhưng không có ảnh thì Part 1 **không tồn tại**.
 
 Schema chỉ để sẵn `question.image_url` nullable. Đó không phải lời giải, chỉ là chỗ trống có tên. Cần một quyết định riêng — và nếu đi theo tiền lệ của audio, nó nên là một tài liệu riêng trước khi viết dòng code Part 1 đầu tiên.
 
-### A6.2 — Bảng quy đổi điểm chưa có
+### A6.2 — Bảng quy đổi điểm — ✅ ĐÃ QUYẾT (2026-08-09)
 
-`attempt` có cột chứa điểm quy đổi nhưng chưa có bảng tra. ETS không công bố bảng chính thức cho từng đề. Ba lựa chọn — bảng xấp xỉ hằng số trong code, bảng theo từng `practice_test`, hoặc bảng riêng — chưa chọn. Phần B đặt cột ở `attempt` để lựa chọn nào cũng dùng được.
+Chọn **bảng riêng trong database**: `score_scale` (slug, tên, `source_note` NOT NULL) + `score_conversion` (scale, section, số câu đúng → điểm quy đổi), và `practice_test.score_scale_slug` chọn đường cong cho từng đề.
+
+Vì sao là bảng chứ không phải hằng số trong code: đường cong TOEIC **khác nhau theo từng đề**, nên một đường cong cứng trong code là sai ngay từ đầu; và một lỗi chấm điểm phải sửa được bằng cách sửa một hàng, không phải bằng một lần release.
+
+`source_note` NOT NULL vì ETS **không công bố** bảng chính thức — mọi bảng ở đây đều là xấp xỉ từ một nguồn nào đó. Khi học viên thắc mắc về điểm, cột này là câu trả lời cho "con số này ở đâu ra".
+
+Bảng mặc định được seed bằng `python -m app.content.seed_scores`: nội suy tuyến tính giữa các mốc được công bố rộng rãi, làm tròn về bội số của 5. Các **mốc** là thứ để review — mười hai con số cãi nhau được, hai trăm hàng nội suy thì không.
+
+Logic chấm ở `app/services/scoring.py`. Nó **từ chối đoán**: thiếu hàng quy đổi thì ném `ScaleNotFoundError` chứ không nội suy — một điểm số sai âm thầm tệ hơn một lỗi hiện rõ, vì nó được lưu vĩnh viễn vào lượt làm bài và học viên không có cách nào biết là sai.
 
 ### A6.3 — Chưa có nội dung thật
 
@@ -359,7 +375,7 @@ Ba cột `passage` rời thay vì một mảng: Part 7 tối đa 3 đoạn và m
 | `position` | SmallInt nullable | thứ tự trong set |
 | `prompt_text` | Text nullable | **null với part 2** — xem A2 |
 | `audio_asset_id` | UUID FK → `audio_asset` nullable | part 1, 2 — xem A4.3 |
-| `image_url` | String(512) nullable | part 1 — xem A6.1 |
+| `image_asset_id` | UUID FK → `image_asset` nullable | part 1 — RESTRICT, xem [`ADR-004`](ADR-004-IMAGES.md) |
 | `explanation` | Text nullable | |
 | `difficulty` | SmallInt | 1–5 + CHECK |
 | `skill_tag` | String(32) nullable | vd `inference`, `verb-tense` — nguyên liệu phân tích điểm yếu |
@@ -384,7 +400,7 @@ UNIQUE `(question_id, label)` · partial unique `(question_id) WHERE is_correct`
 
 ### `practice_test` / `practice_test_question`
 
-`practice_test`: `id`, `slug` (unique), `title`, `kind` (`full`/`mini` + CHECK), `time_limit_seconds`, `status`, timestamps.
+`practice_test`: `id`, `slug` (unique), `title`, `kind` (`full`/`mini` + CHECK), `time_limit_seconds`, `score_scale_slug` (FK → `score_scale`, mặc định `default` — xem A6.2), `status`, timestamps.
 
 `practice_test_question`: PK ghép `(test_id, question_id)`, cột `position` NOT NULL, UNIQUE `(test_id, position)`.
 
