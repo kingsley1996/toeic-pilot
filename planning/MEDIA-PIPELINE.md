@@ -211,11 +211,13 @@ Hai lớp bảo vệ: `tests/test_content_isolation.py` chạy `import app.main`
 
 | | |
 |---|---|
-| Clip audio | **16** — 3 từ × 4 accent + 4 câu dictation, phủ đủ 4 accent |
+| Clip audio | **38** — 3 từ × {headword, example} × 4 accent + 4 câu dictation, phủ đủ 4 accent |
 | Ảnh | **3** — Wikimedia Commons, CC BY 4.0 / CC BY-SA 3.0 / CC BY 2.0 |
-| Manifest | `content/manifest/audio_assets.jsonl`, `image_assets.jsonl` — commit vào repo |
-| File media | `apps/api/media/` — **gitignore**, không commit |
-| Test | 191, trong đó 2 test `external` gọi edge-tts thật và **mặc định bị deselect** |
+| Manifest | `content/manifest/audio_assets.jsonl` (38 dòng), `image_assets.jsonl` (3 dòng) — commit vào repo |
+| File media | `apps/api/media/` — 41 file, **gitignore**, không commit |
+| Test | 271 thu thập, 269 chạy; 2 test `external` gọi edge-tts thật và **mặc định bị deselect** |
+
+*(số liệu kiểm lại 2026-08-09)*
 
 Toàn bộ số này là **mẫu chứng minh đường ống chạy được**, không phải nội dung để dạy ai.
 
@@ -250,23 +252,38 @@ Ghi file bằng write-then-rename (lượt chạy bị ngắt không để lại
 
 ## 10. Điểm yếu
 
-Xếp theo mức độ nghiêm trọng. Ba cái đầu là **lỗi thật**, không phải giới hạn đã biết.
+Xếp theo mức độ nghiêm trọng.
 
-### 10.1 — 🔴 Audio lệch khỏi text mà không có gì phát hiện
+**§10.1 đã được sửa** (xem bên dưới). Hai lỗi thật còn lại là **§10.2** và **§10.3** — phần còn lại là giới hạn đã biết.
 
-`vocabulary_audio` chỉ có `(entry_id, kind, accent) → audio_asset_id`. **Không có gì nối audio với phiên bản text đã sinh ra nó.**
+### 10.1 — ✅ ĐÃ SỬA · Audio lệch khỏi text
+
+**Vấn đề.** `vocabulary_audio` chỉ có `(entry_id, kind, accent) → audio_asset_id`. **Không có gì nối audio với phiên bản text đã sinh ra nó.**
 
 Sửa `vocabulary_entry.headword` từ `recieve` thành `receive` ⇒ audio vẫn đọc `recieve`, hàng nối vẫn trỏ tới nó, không có cảnh báo nào. Học viên nghe một đằng nhìn một nẻo.
 
 Với `dictation_item.transcript` thì nặng hơn: transcript **là đáp án chấm bài**. Sửa transcript mà audio giữ nguyên ⇒ học viên nghe câu cũ, bị chấm theo câu mới.
 
-Đây là biến thể của cái bẫy `PHASE2-AUDIO` §A4.4 mà tài liệu đó chưa phủ.
-
-**Chữa được và không cần thêm cột nào** — nhờ mục 2.2:
+**Đã sửa, và không cần thêm cột nào** — nhờ mục 2.2. `app/services/media_state.py` tính lại hash từ text hiện tại rồi so với `audio_asset.source_hash`:
 
 ```python
-sha256(text_hiện_tại │ voice │ engine │ version) != audio_asset.source_hash  ⇒ audio đã cũ
+sha256(text_hiện_tại │ voice │ engine │ version) != audio_asset.source_hash  ⇒ stale
 ```
+
+Ba chỗ dùng nó:
+
+| Chỗ | Làm gì |
+|---|---|
+| `POST /admin/{loại}/{id}/publish` | **Từ chối publish** nếu bất kỳ clip nào `missing` hoặc `stale` |
+| `GET /admin/{loại}` | Trả trạng thái từng clip; `/admin` render thành badge `missing`/`stale`/`current` |
+| `app/content/backfill_audio.py` | Hàng đợi của worker **là** câu truy vấn này — nên chạy lại chỉ tìm thấy ít việc hơn, không có bảng hàng đợi, không có trạng thái retry |
+
+Hai chi tiết dễ làm sai nếu ai đó viết lại chỗ này:
+
+- `engine` và `engine_version` lấy từ **chính hàng asset**, không phải từ settings. Câu hỏi ở đây là *"clip này có được tạo từ text này không"* — chuyện đúng/sai. *"Clip này có được tạo bởi engine hiện tại không"* là câu hỏi khác, chuyện sinh lại, và nó **không được** chặn publish: tăng `tts_engine_version` không làm audio cũ đọc sai từ.
+- Dictation so với `item.transcript`, **không bao giờ** so với `audio_asset.source_text` — `source_text` chỉ ghi lại thứ đã đưa cho TTS, còn transcript mới là đáp án (`PHASE2-AUDIO` §A4.4).
+
+**Còn hở:** cổng chỉ chặn ở **thời điểm publish**. Sửa text của một mục **đã published** thì nó vẫn đang published với audio đã lệch — không có gì tự hạ nó xuống `draft`. Hiện phải chạy `backfill_audio` để phát hiện.
 
 ### 10.2 — 🔴 Không sinh được clip nhiều giọng ⇒ Part 2 và Part 3 bất khả thi
 
@@ -358,9 +375,13 @@ Và `attribution` hiện **chưa được hiển thị ở đâu cả** vì chư
 | `app/content/generate.py` | CLI sinh audio |
 | `app/content/images.py` | CLI tải + chuẩn hoá ảnh |
 | `app/content/seed.py` | Manifest → DB. Chỉ stdlib + sqlalchemy |
+| `app/content/backfill_audio.py` | Worker ngoài luồng: sinh audio cho nội dung DB đang thiếu hoặc đã lệch. Hàng đợi là một **câu truy vấn**, không phải một bảng |
+| `app/services/media_state.py` | Clip còn khớp text không? **Được API import**, nên chỉ phụ thuộc `app.core` + `app.models` |
 | `tests/test_media.py` | Hash và đặt tên |
 | `tests/test_content_pipeline.py` | Logic skip/sinh của audio, engine giả |
 | `tests/test_images.py` | Chuẩn hoá, giấy phép, chịu lỗi |
 | `tests/test_content_manifest.py` | Validate manifest + tính idempotent của seed |
 | `tests/test_content_isolation.py` | Ranh giới `app.main` ↮ `app.content` |
 | `tests/test_tts_external.py` | Đối chiếu `LOGICAL_VOICES` với catalogue thật (marker `external`) |
+| `tests/test_services.py` | Trong đó có `media_state`: `missing` / `stale` / `current` |
+| `tests/test_admin_api.py` | Cổng publish từ chối audio thiếu/lệch |

@@ -1,7 +1,9 @@
 # Learning Hub — đặc tả tạm thời
 
-**Trạng thái:** 🟡 **TẠM THỜI** · 2026-08-09
+**Trạng thái:** 🟡 **TẠM THỜI** · cập nhật 2026-08-09
 **Mục đích:** ghi lại bộ mặc định đã chọn để xây, **không** phải để chốt trên giấy
+
+> **Đã dựng xong theo đúng đặc tả này** — 8 endpoint học viên, 4 trang (`/learn`, `/learn/vocabulary`, `/learn/review`, `/learn/dictation`), SM-2 ở `app/services/srs.py`, chấm dictation ở `app/services/dictation.py`. Cái chưa có là **nội dung để dùng thử**: 3 từ và 4 câu. Nên §5 dưới đây vẫn là dự đoán chứ chưa phải quan sát — chưa ai học đủ lâu để biết 20 từ mới/ngày là nhiều hay ít.
 
 > Tài liệu này tồn tại để **bị sửa**. Nó là bộ gọn nhất chạy được đầu-cuối, dựng lên để dùng thử rồi chỉnh — không phải kết quả của một vòng thiết kế. Mỗi lựa chọn dưới đây đều có ghi phương án thay thế đã cân nhắc, để lúc sửa không phải nghĩ lại từ đầu.
 >

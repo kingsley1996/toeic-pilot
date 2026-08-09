@@ -148,6 +148,8 @@ Nó là text đã đưa vào TTS, tồn tại để tính hash và sinh lại. K
 
 Nếu lẫn lộn hai thứ này, sẽ có hai bản sao lệch nhau và không ai biết bản nào đúng. Phải ghi comment cảnh báo ngay trong model.
 
+**Cập nhật 2026-08-09 — hai bản sao *có thể* lệch nhau thật, và giờ đã có cái phát hiện.** Sửa `transcript` mà không sinh lại audio ⇒ học viên nghe câu cũ nhưng bị chấm theo câu mới. `app/services/media_state.py` bắt được bằng cách tính lại `source_hash` từ transcript hiện tại và so với `audio_asset.source_hash` — không cần thêm cột nào, thuần tuý là cổ tức của A4.2. Cổng publish từ chối nội dung lệch; `backfill_audio` sinh lại. Nó so với **`dictation_item.transcript`**, không bao giờ với `source_text` — đúng như mục này quy định. Chi tiết: [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.1.
+
 ## A5. Đường nâng cấp lên Cloudflare R2
 
 Điều kiện tiên quyết: **có domain trên DNS Cloudflare**. Không có thì R2 không mang lại lợi ích gì so với hiện tại.

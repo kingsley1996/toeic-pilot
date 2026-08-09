@@ -18,15 +18,20 @@ The rest carry decisions and their reasoning:
 - **`planning/ADR-005-CONTENT-TOOLING.md`** — the admin UI for importing past papers: why a custom admin rather than a headless CMS, why paste-and-parse, and why parse never writes to the database.
 - **`planning/REVIEW-OPUS.md`** — an engineering review dated 2026-08-08. A snapshot, not a tracker; its §8 roadmap is superseded by `ROADMAP.md`.
 
-One description of *current behaviour* rather than of a decision:
+Two descriptions of *current behaviour* rather than of decisions:
 
-- **`planning/MEDIA-PIPELINE.md`** — how audio and images actually work end to end today, plus an honest strengths/weaknesses list. Read §10 before extending either pipeline: three of the weaknesses there are real defects, not known limitations.
+- **`planning/ARCHITECTURE.md`** — what the system is made of right now: components, routers, services, file map, and the last verification run. Read it for orientation; `ROADMAP.md` still owns status.
+- **`planning/MEDIA-PIPELINE.md`** — how audio and images actually work end to end today, plus an honest strengths/weaknesses list. Read §10 before extending either pipeline: **§10.2 (no multi-voice clips — this blocks Parts 2 and 3) and §10.3 (images are not reproducible) are real defects**, not known limitations. §10.1 was one too and is now fixed by `app/services/media_state.py`.
+
+And one provisional spec:
+
+- **`planning/SPEC-LEARNING-HUB.md`** — the defaults the Learning Hub was built to (SM-2 grades, session limits, dictation grading). Explicitly built to be changed after real use; its §5 lists what will probably need to move.
 
 ### Current state (2026-08-09)
 
 Phase 1 (scaffolding + auth) is done and hardened: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md` are closed.
 
-**The media pipelines are built** — `PHASE2-AUDIO.md` (audio, offline TTS in four accents) and `ADR-004-IMAGES.md` (Part 1 photographs, fetched and normalised, licence and attribution required). Both sit behind the optional `content` extra and neither may be imported by the API. `planning/MEDIA-PIPELINE.md` describes how they actually behave, including three real defects in §10.
+**The media pipelines are built** — `PHASE2-AUDIO.md` (audio, offline TTS in four accents) and `ADR-004-IMAGES.md` (Part 1 photographs, fetched and normalised, licence and attribution required). Both sit behind the optional `content` extra and neither may be imported by the API. `planning/MEDIA-PIPELINE.md` describes how they actually behave, including two real defects still open in §10.
 
 **The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, migrations `003`–`006`. Twenty tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, attempts, media assets, roles and score conversion. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
@@ -38,9 +43,9 @@ Three things to know before extending it:
 - **`require_role` is a dependency, never an in-body check** — a check in the handler is the one someone forgets to copy into the next route, and the failure mode is an admin endpoint open to every learner. Every admin endpoint has a test asserting a learner gets 403.
 - **The API cannot generate audio.** It cannot even import the TTS pipeline (A4.1), and synchronous synthesis would drag in a job queue that A2.5 deliberately avoided. `backfill_audio` runs out of band and its work queue is a *query* — "content whose audio is missing or no longer matches its text" — so there is no queue table, no retry state, and re-running simply finds less to do.
 
-**What is missing is content, not features.** Two words and two dictation sentences exist: enough to prove the path, nowhere near enough to teach anyone. Authoring several hundred entries is the real remaining work, and it is why the admin tooling came first.
+**What is missing is content, not features.** Three words and four dictation sentences exist (38 audio clips, 3 images): enough to prove the path, nowhere near enough to teach anyone. Authoring several hundred entries is the real remaining work, and it is why the admin tooling came first.
 
-**TOEIC Practice is not built.** The schema is there; no endpoints, no question importer, no exam UI. Real TOEIC papers are ETS copyright, and ETS licenses electronic use per year through its general counsel — `question.source` is NOT NULL precisely so provenance is answered per row: `original` means written to the format (formats are not copyrightable, specific text is), `licensed` means permission actually obtained. **Do not default that field anywhere in code or UI.**
+**TOEIC Practice is not built.** The schema is there; no endpoints, no question importer, no exam UI. One blocker is not obvious from the schema: **the audio pipeline cannot produce a clip with more than one voice in it** (`MEDIA-PIPELINE.md` §10.2), so Part 2 (question in one voice, three responses in another) and Part 3 (a two-to-three-speaker conversation, the largest part at 39 questions) have no way to get audio at all. Settle that before starting the exam work, not on discovering it mid-sprint. Real TOEIC papers are ETS copyright, and ETS licenses electronic use per year through its general counsel — `question.source` is NOT NULL precisely so provenance is answered per row: `original` means written to the format (formats are not copyrightable, specific text is), `licensed` means permission actually obtained. **Do not default that field anywhere in code or UI.**
 
 **The frontend has a design system, not per-page styling.** `src/components/ui.tsx` holds the primitives, colours come from CSS variables in `globals.css` (so light and dark are one definition rather than a `dark:` twin on every element), and `src/lib/session.tsx` resolves who is signed in *once* for the whole app. Three things follow from that and are easy to undo by accident:
 
@@ -61,7 +66,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload --port 8000
 uv sync --extra dev --extra content         # add the offline content pipeline
 
-uv run pytest                              # 269 tests
+uv run pytest                              # 271 collected: 269 run + 2 `external` deselected
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 uv run pytest tests/test_auth.py::test_x -v
 uv run ruff check app tests

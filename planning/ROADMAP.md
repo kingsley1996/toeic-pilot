@@ -3,8 +3,8 @@
 > **Đây là file theo dõi duy nhất của dự án.** Sprint, task, trạng thái thật của code — tất cả ở đây.
 > Cập nhật **ngay khi** hoàn thành một task, không để dồn.
 >
-> Các tài liệu khác có vai trò khác và **không** chứa trạng thái:
-> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc · `ADR-*.md` / `PHASE2-AUDIO.md` = quyết định + lý do · `REVIEW-OPUS.md` = review kỹ thuật (ảnh chụp 2026-08-08, không cập nhật tiếp)
+> Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
+> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` / `PHASE2-AUDIO` (= ADR-002) / `ADR-004` / `ADR-005` = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `SPEC-LEARNING-HUB.md` = bộ mặc định tạm thời của Learning Hub, dựng để sửa · `REVIEW-OPUS.md` = review kỹ thuật (ảnh chụp 2026-08-08, không cập nhật tiếp)
 
 **Cập nhật lần cuối:** 2026-08-09
 
@@ -16,21 +16,26 @@
 |---|---|
 | **Phase hiện tại** | Sprint 3 + 4 đã chạy được đầu-cuối cho **từ vựng và dictation** |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
-| **Test** | 269 (267 chạy + 2 `external` deselect mặc định) |
+| **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
+| **Test** | 271 thu thập — **269 chạy** + 2 `external` deselect mặc định |
 | **Gate CI** | 13, tất cả xanh |
 | **Migration** | `001` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` |
 | **Bảng** | 20 |
-| **Endpoint** | **25** — auth, health, Learning Hub (học viên), Content admin |
+| **Endpoint** | **25** — auth (3), health (2), Learning Hub (8), Content admin (12) |
+| **Media** | 38 clip audio, 3 ảnh |
+| **Nội dung thật** | **3 từ vựng, 4 câu dictation** ← nút thắt |
+
+**Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` 269 passed / 2 deselected · `ruff check` sạch · `ruff format --check` 66 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm gen:api-types` sinh lại **không drift**.
 
 ### Điều quan trọng nhất cần biết
 
 **Vòng đời nội dung đã khép kín và chạy thật.** Admin dán từ → lưu ở `draft` → worker sinh audio 4 accent → publish (bị chặn nếu audio thiếu hoặc lệch) → học viên ôn tập bằng flashcard SM-2 và làm dictation có chấm theo từng từ. Đã chạy đầu-cuối qua stack Docker, không phải chỉ qua test.
 
-**Thiếu là nội dung, không phải tính năng.** Hiện có 2 từ và 2 câu dictation — đủ để chứng minh đường đi, không đủ để dạy ai.
+**Thiếu là nội dung, không phải tính năng.** Hiện có **3 từ và 4 câu dictation** — đủ để chứng minh đường đi, không đủ để dạy ai.
 
 **Nút thắt thật là nội dung, không phải code.** Viết endpoint từ vựng mất vài ngày; soạn 500 từ có nghĩa, ví dụ và audio 4 giọng thì lâu hơn nhiều. Đó là lý do Sprint 3 là **công cụ nhập nội dung** chứ không phải Learning Hub: không có công cụ thì không có dữ liệu để test endpoint bằng gì ngoài fixture, và việc soạn nội dung không chạy song song được với việc code.
 
-**Một cột đang ở trạng thái chết.** `question.status = 'draft'` được thiết kế để nội dung phải qua duyệt, nhưng chưa có gì thực hiện được động tác duyệt — nên `draft` hiện là trạng thái không ai thoát ra được. Sprint 3 đóng chỗ này.
+**`draft` đã có lối ra — nhưng chỉ cho hai loại nội dung.** `vocabulary_entry` và `dictation_item` publish được qua `POST /admin/{loại}/{id}/publish`, và cổng publish **từ chối** khi audio thiếu hoặc lệch khỏi text. `question.status` thì vẫn là trạng thái không ai thoát ra được, vì chưa có endpoint nào chạm tới `question` — đóng ở Sprint 5.
 
 ---
 
@@ -39,13 +44,15 @@
 Đã sắp lại theo yêu cầu: **Learning Hub và TOEIC Practice trước, AI layer sau cùng.**
 
 ```
-Sprint 3  Content Tooling       ← tiếp theo (admin UI nhập đề)
-Sprint 4  Learning Hub
-Sprint 5  TOEIC Practice
+Sprint 3  Content Tooling       🟡 từ vựng + dictation XONG · phần question còn nợ
+Sprint 4  Learning Hub          🟡 backend + frontend XONG · thiếu nội dung
+Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
 Sprint 8  Analytics & Production
 ```
+
+Sprint 3 và 4 chạy chồng lên nhau chứ không nối tiếp: mỗi phần công cụ nhập vừa xong là phần học viên tương ứng dựng được ngay. Cái còn nợ của Sprint 3 — trình nhập **câu hỏi** — không chặn Learning Hub, nó chặn Sprint 5, nên nó chuyển sang làm cùng Sprint 5.
 
 ### ⚠️ Rủi ro đã biết của thứ tự này
 
@@ -60,7 +67,9 @@ Nếu muốn giảm rủi ro sớm hơn: chèn một lát cắt AI mỏng **mộ
 
 ---
 
-## 3. Sprint 3 — Content Tooling · 🟡 phần từ vựng + dictation ĐÃ XONG
+## 3. Sprint 3 — Content Tooling · 🟡 từ vựng + dictation XONG · question CÒN NỢ
+
+> **Đọc mục này cho đúng:** tất cả các ô chưa tick dưới đây nói về trình nhập **câu hỏi TOEIC** (part 1–7), không phải về từ vựng/dictation. Phần từ vựng và dictation đã đầy đủ parse → commit → publish, cả backend lẫn `/admin` UI. Phần question chuyển sang làm cùng Sprint 5, vì nó chặn Sprint 5 chứ không chặn gì khác.
 
 **Mục tiêu:** admin nhập được một đề hoàn chỉnh trong vài giờ, và nội dung phải qua duyệt trước khi học viên thấy.
 
@@ -83,13 +92,14 @@ Nguồn là PDF **có lớp text** ⇒ dán thẳng, không cần OCR.
 - [x] Dependency `require_role` — **là dependency, không phải kiểm tra trong thân hàm**, vì thân hàm dễ quên khi thêm route
 - [x] `POST /admin/{vocabulary,dictation}/parse` — nhận text thô + đáp án, trả cấu trúc đã parse kèm lỗi `validate_question()`. **Không ghi database**
 - [x] `POST /admin/{vocabulary,dictation}` — commit, luôn `draft` — ghi ở trạng thái `draft`, không có đường tắt ra `published`
-- [x] CRUD cho `vocabulary_entry`, `dictation_item`, `topic` · [ ] `question*` (Sprint 5)
+- [x] CRUD cho `vocabulary_entry`, `dictation_item`, `topic` · [ ] `question*` (→ Sprint 5)
 - [x] `POST /admin/{vocabulary,dictation}/{id}/publish` — chỉ `admin`, **chặn khi audio thiếu/lệch**
 - [x] `uv run python -m app.content.backfill_audio` — worker ngoài luồng, hàng đợi là một câu truy vấn
 - [ ] Parser: `Questions X-Y refer to the following …` mở `question_set`; `NNN.` mở câu; `(A)`–`(D)` là phương án
 
 ### Frontend `/admin`
-- [ ] Màn dán: chọn part, ô text đề, ô text đáp án riêng
+- [x] Màn dán **từ vựng và dictation** — ô text dán hàng loạt, chọn topic, xem trước rồi mới lưu (`/admin/vocabulary`, `/admin/dictation`)
+- [ ] Màn dán **câu hỏi**: chọn part, ô text đề, ô text đáp án riêng
 - [ ] **Cảnh báo Part 1 và 2 phải dán từ phần audioscript** — phần đề của hai part này trong PDF gần như trống, ai không biết sẽ tưởng parser hỏng
 - [x] Lưới review: lỗi hiện ngay tại dòng
 - [ ] Editor từng câu **có xem trước** — bắt buộc cho Part 1: không nhìn thấy ảnh thì không viết được bốn câu mô tả
@@ -97,10 +107,12 @@ Nguồn là PDF **có lớp text** ⇒ dán thẳng, không cần OCR.
 - [ ] Trường `source` **không được pre-select** — đây là cột duy nhất mà giá trị sai gây hậu quả pháp lý
 
 ### Test
-- [ ] Parser: đề đúng chuẩn, đề thiếu đáp án, đánh số nhảy cóc, stimulus thiếu
+- [x] Parser từ vựng + dictation: dòng đúng, dòng thiếu cột, dòng rỗng (`tests/test_services.py`)
+- [ ] Parser câu hỏi: đề đúng chuẩn, đề thiếu đáp án, đánh số nhảy cóc, stimulus thiếu
 - [x] Mỗi endpoint admin: `learner` nhận **403**
-- [ ] `editor` không publish được
+- [x] `editor` không publish được — publish là `require_role("admin")`
 - [x] Commit luôn cho ra `status='draft'`
+- [x] Publish bị chặn khi audio `missing` hoặc `stale`
 
 ### Định nghĩa hoàn thành
 Một admin dán 7 part từ PDF, sửa những chỗ parser bắt sai, publish, và nội dung xuất hiện đúng ở API — trong khi tài khoản `learner` không chạm được vào bất kỳ endpoint admin nào.
@@ -131,10 +143,12 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] `/learn/dictation` — phát, nhập, diff tô màu
 - [x] **Revamp UI (2026-08-09)** — hệ token màu sáng/tối, bộ component dùng chung, app shell có nav theo vai trò, skeleton thay cho chữ "Loading…", empty state nói rõ bước tiếp theo, `not-found` và `error` boundary
 
-### Nội dung
-- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — **nút thắt duy nhất còn lại**
-- [ ] Sinh audio 4 accent × {headword, example} cho toàn bộ
-- [ ] Soạn ≥ 50 câu dictation
+### Nội dung — **việc duy nhất còn lại của sprint này**
+- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **3**
+- [ ] Sinh audio 4 accent × {headword, example} cho toàn bộ — hiện có **38 clip**
+- [ ] Soạn ≥ 50 câu dictation — hiện có **4**
+
+Công cụ để làm việc này đã xong và đã chạy thật: dán ở `/admin`, `backfill_audio` sinh audio ngoài luồng, publish chặn nếu audio chưa khớp. Không còn code nào chặn phần này.
 
 ### Hợp đồng & chất lượng
 - [x] `pnpm gen:api-types` — đã chạy, sinh lại cho ra file y hệt
@@ -149,6 +163,21 @@ Học viên tạo tài khoản, học một chủ đề, ôn lại hôm sau và 
 ## 5. Sprint 5 — TOEIC Practice
 
 **Mục tiêu:** luyện theo part và làm đề đầy đủ, có điểm quy đổi.
+
+### ⛔ Chặn phải gỡ trước, không phải sau
+
+**Đường ống audio hiện không sinh được clip nhiều giọng** (`MEDIA-PIPELINE` §10.2). `SpecItem` là `(text, voice)` — một text, một giọng, một file; `voices: [...]` chỉ nhân bản **cùng một text** ra nhiều accent, không diễn đạt được "lượt 1 giọng nam, lượt 2 giọng nữ".
+
+| Part | Cần | Hiện tại |
+|---|---|---|
+| 1 | 1 giọng đọc 4 câu | ✅ |
+| 4 | 1 giọng độc thoại | ✅ |
+| 2 | câu hỏi 1 giọng + 3 đáp giọng khác | ❌ |
+| 3 | hội thoại 2–3 giọng | ❌ |
+
+Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bước ghép audio, mà repo **cố ý** không có `ffmpeg`. Đây là quyết định cần ra **trước** khi bắt đầu Sprint 5, không phải khi phát hiện Part 2 không sinh nổi audio.
+
+**Việc nhập câu hỏi còn nợ từ Sprint 3** (parser + màn dán + trường `source` không pre-select) làm cùng sprint này — không có nó thì không có đề để test bằng gì ngoài fixture.
 
 ### Backend
 - [ ] `GET /api/v1/practice/parts/{part}` — bốc câu hỏi, tôn trọng `question_set` với part 3, 4, 6, 7
@@ -248,19 +277,31 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 
 | Mục | Ở đâu | Ghi chú |
 |---|---|---|
-| Chưa có nội dung thật | `ADR-001` §A6.3 | Nút thắt lớn nhất của dự án. Sprint 3 xây **công cụ**; nội dung vẫn phải soạn |
-| Chưa có vai trò người dùng | `ADR-005` §3.5 | `users` chưa có `role`; mọi tài khoản hiện tại ngang quyền nhau |
-| Chưa có audit trail cho nội dung | `ADR-005` §3.6 | Không trả lời được "ai duyệt câu này". Bổ sung sau thì nội dung cũ vĩnh viễn không truy nguyên được |
-| `draft` là trạng thái không thoát ra được | `ADR-001` §A4.8 | Cột được thiết kế cho một quy trình duyệt chưa tồn tại. Sprint 3 đóng |
+| **Chưa có nội dung thật** | `ADR-001` §A6.3 | Nút thắt lớn nhất của dự án. 3 từ, 4 câu dictation. Công cụ đã xong — chỉ còn việc soạn |
+| Rate limiting | P1-8 → **Sprint 6** | Chặn cứng endpoint LLM đầu tiên |
+| Token trong `localStorage` | P1-7 → **Sprint 6** | Cũng là chỗ đầu tiên Redis thật sự được dùng (refresh token + denylist) |
+| Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 269 test |
+| Branch protection chưa bật | Sprint 0 → **Sprint 6** | Cần quyền admin repo. 13 gate xanh mà không ai bắt buộc thì chỉ là gợi ý |
+| `draft` chưa có lối ra cho `question` | `ADR-001` §A4.8 | Từ vựng và dictation **đã có** cổng publish. `question` thì chưa có endpoint nào — Sprint 5 |
 | Bản quyền đề ETS | `ADR-005` §2 | `question.source` phải điền đúng ở **từng hàng**. `original` = soạn mới theo cấu trúc; `licensed` = đã thật sự xin phép |
-| Rate limiting | P1-8 → Sprint 5 | Chặn cứng Sprint 6 |
-| Token trong `localStorage` | P1-7 → Sprint 5 | |
-| Không có test frontend/e2e | P1-3 → Sprint 5 | 0% coverage phía web |
-| Branch protection chưa bật | Sprint 0 → Sprint 5 | Cần quyền admin repo |
+| Audio nhiều giọng bất khả thi | `MEDIA-PIPELINE` §10.2 | `SpecItem` là `(text, voice)` — không diễn đạt được hội thoại. **Chặn Part 2 và Part 3**, tức chặn phần lớn Sprint 5 |
+| Ảnh không tái tạo được | `MEDIA-PIPELINE` §10.3 | Đầu vào là URL của người khác; `media/` bị gitignore ⇒ với ảnh, thư mục media là **bản sao duy nhất** |
+| `attribution` chưa được render ở đâu | `ADR-004` §4.2 · `MEDIA-PIPELINE` §10.10 | Lưu ghi công mà không hiện ra vẫn là vi phạm CC-BY. Chưa có endpoint ảnh nào nên chưa vi phạm — sẽ vi phạm ngay khi Part 1 lên |
+| `question_set` không có chỗ chứa ảnh | `MEDIA-PIPELINE` §10.7 | Part 7 đôi khi có biểu đồ/biểu mẫu |
+| Không có gì kiểm chứng media còn phục vụ được | `MEDIA-PIPELINE` §10.8 | `/ready` không kiểm media. Sai `AUDIO_PUBLIC_BASE_URL` ⇒ mọi media 404 mà container vẫn healthy |
+| `seed` không bao giờ xoá | `MEDIA-PIPELINE` §10.4 | Xoá dòng khỏi manifest ⇒ hàng DB ở lại vĩnh viễn, trỏ tới file không bao giờ được tạo lại |
+| Không có đường upload media | `MEDIA-PIPELINE` §10.5 | `AUDIO_SOURCES`/`IMAGE_SOURCES` đã có giá trị `uploaded` — schema hỗ trợ, đường đi chưa xây |
 | Bảng quy đổi là **xấp xỉ** | `score_scale.source_note` | Không phải bảng chính thức của ETS. Cần scale riêng cho từng đề trước khi trình bày như điểm ước lượng chính thức |
-| `PLAN.md` §9–§10 là nhật ký lẫn trong spec | `REVIEW-OPUS.md` §7h | Đã chuyển vào file này; xoá khỏi `PLAN.md` |
 | Chưa có acceptance criteria cho từng Epic | `REVIEW-OPUS.md` §7c | Mục 3–5 ở trên là bước đầu |
-| Chưa có ảnh cho Part 7 | `ADR-004` §5 | Đề thật đôi khi có biểu đồ/bảng biểu |
+
+### Đã đóng kể từ lần cập nhật trước
+
+| Mục | Đóng bằng gì |
+|---|---|
+| ~~Chưa có vai trò người dùng~~ | `users.role` + CHECK, migration `005`, dependency `require_role` |
+| ~~Chưa có audit trail cho nội dung~~ | `PublishableMixin` (`created_by`, `published_by`, `published_at`) trên mọi bảng nội dung |
+| ~~Audio lệch khỏi text mà không có gì phát hiện~~ | `app/services/media_state.py` + cổng publish. `MEDIA-PIPELINE` §10.1 |
+| ~~`PLAN.md` §9–§10 là nhật ký lẫn trong spec~~ | Đã chuyển hết vào file này; `PLAN.md` §9 giờ chỉ trỏ sang đây |
 
 ---
 
