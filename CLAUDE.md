@@ -23,6 +23,8 @@ Two descriptions of *current behaviour* rather than of decisions:
 - **`planning/ARCHITECTURE.md`** — what the system is made of right now: components, routers, services, file map, and the last verification run. Read it for orientation; `ROADMAP.md` still owns status.
 - **`planning/MEDIA-PIPELINE.md`** — how audio and images actually work end to end today, plus an honest strengths/weaknesses list. Read §10 before extending either pipeline: **§10.2 (no multi-voice clips — this blocks Parts 2 and 3) and §10.3 (images are not reproducible) are real defects**, not known limitations. §10.1 was one too and is now fixed by `app/services/media_state.py`.
 
+- **`planning/DESIGN-SYSTEM.md`** — the UI design system: colour tokens (contrast-verified, light and dark), type, the four-accent categorical scale, Lucide icon rules, component specs. **Written but not yet implemented** — `apps/web` still runs the old tokens; §13 is the migration list.
+
 And one provisional spec:
 
 - **`planning/SPEC-LEARNING-HUB.md`** — the defaults the Learning Hub was built to (SM-2 grades, session limits, dictation grading). Explicitly built to be changed after real use; its §5 lists what will probably need to move.
