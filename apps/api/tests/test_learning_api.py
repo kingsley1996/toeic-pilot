@@ -22,6 +22,7 @@ from app.models import (
     VocabularyEntry,
     VocabularyReviewLog,
     VocabularyReviewState,
+    VocabularyTopic,
 )
 from app.services.srs import GRADE_FORGOT, GRADE_GOOD
 from tests.test_domain_model import make_audio
@@ -322,3 +323,131 @@ def test_a_draft_item_cannot_be_attempted(
         headers=headers,
     )
     assert response.status_code == 404
+
+
+# --- vocabulary progress ---------------------------------------------------
+
+
+def test_vocabulary_progress_requires_authentication(client: TestClient) -> None:
+    assert client.get("/api/v1/vocabulary-progress").status_code == 401
+
+
+def test_progress_path_is_not_swallowed_by_the_entry_id_route(
+    client: TestClient, headers: dict[str, str]
+) -> None:
+    """`/vocabulary/{entry_id}` would parse "progress" as a UUID and 422.
+
+    The hyphenated path is what avoids it; a 422 here means someone moved the
+    endpoint under `/vocabulary/` and the route order started mattering.
+    """
+    assert client.get("/api/v1/vocabulary-progress", headers=headers).status_code == 200
+
+
+def test_a_word_never_reviewed_counts_as_new(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    make_word(db_session, "invoice", marker="a")
+
+    body = client.get("/api/v1/vocabulary-progress", headers=headers).json()
+    assert (body["total"], body["new"], body["learning"], body["mastered"]) == (1, 1, 0, 0)
+    assert body["due"] == 0, "a word never reviewed is not due, it is unstarted"
+    assert body["entries"][0]["mastery"] == "new"
+
+
+def test_a_short_interval_is_learning_and_a_long_one_is_mastered(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    learning = make_word(db_session, "invoice", marker="a")
+    mastered = make_word(db_session, "warehouse", marker="b")
+    for entry, interval in ((learning, 6), (mastered, 21)):
+        db_session.add(
+            VocabularyReviewState(
+                user_id=learner.id,
+                entry_id=entry.id,
+                interval_days=interval,
+                repetitions=3,
+                due_at=datetime.now(UTC) + timedelta(days=interval),
+            )
+        )
+    db_session.commit()
+
+    body = client.get("/api/v1/vocabulary-progress", headers=headers).json()
+    assert (body["learning"], body["mastered"], body["new"]) == (1, 1, 0)
+    by_id = {row["entry_id"]: row["mastery"] for row in body["entries"]}
+    assert by_id[str(learning.id)] == "learning"
+    assert by_id[str(mastered.id)] == "mastered"
+
+
+def test_forgetting_a_mastered_word_demotes_it(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """A lapse resets the interval to one day, so mastery has to follow it down.
+
+    Keying off `repetitions` instead would leave the word claiming to be
+    mastered forever — the count only ever grows.
+    """
+    entry = make_word(db_session, "invoice", marker="a")
+    db_session.add(
+        VocabularyReviewState(
+            user_id=learner.id,
+            entry_id=entry.id,
+            interval_days=1,
+            repetitions=0,
+            lapses=1,
+            due_at=datetime.now(UTC) + timedelta(days=1),
+        )
+    )
+    db_session.commit()
+
+    body = client.get("/api/v1/vocabulary-progress", headers=headers).json()
+    assert body["mastered"] == 0
+    assert body["entries"][0]["mastery"] == "learning"
+
+
+def test_progress_counts_only_the_topic_being_viewed(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """The denominator must match the list, or "12/40" can never reach 40."""
+    topic = Topic(slug="business", name="Business", status="published")
+    db_session.add(topic)
+    inside = make_word(db_session, "invoice", marker="a")
+    make_word(db_session, "elsewhere", marker="b")
+    db_session.flush()
+    db_session.add(VocabularyTopic(entry_id=inside.id, topic_id=topic.id))
+    db_session.commit()
+
+    listed = client.get("/api/v1/vocabulary?topic=business").json()
+    body = client.get("/api/v1/vocabulary-progress?topic=business", headers=headers).json()
+    assert body["total"] == len(listed) == 1
+
+
+def test_draft_words_are_not_counted(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    make_word(db_session, "invoice", status="published", marker="a")
+    make_word(db_session, "unfinished", status="draft", marker="b")
+
+    assert client.get("/api/v1/vocabulary-progress", headers=headers).json()["total"] == 1
+
+
+def test_another_learners_progress_does_not_leak(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    entry = make_word(db_session, "invoice", marker="a")
+    other = User(email="other@example.com", hashed_password="x", role="learner")
+    db_session.add(other)
+    db_session.flush()
+    db_session.add(
+        VocabularyReviewState(
+            user_id=other.id,
+            entry_id=entry.id,
+            interval_days=40,
+            repetitions=5,
+            due_at=datetime.now(UTC) + timedelta(days=40),
+        )
+    )
+    db_session.commit()
+
+    body = client.get("/api/v1/vocabulary-progress", headers=headers).json()
+    assert body["mastered"] == 0, "another learner's mastery must not show here"
+    assert body["new"] == 1

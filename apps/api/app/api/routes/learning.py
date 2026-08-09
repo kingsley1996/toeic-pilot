@@ -49,11 +49,24 @@ from app.schemas.learning import (
     StoryProgress,
     TopicPublic,
     VocabularyDetail,
+    VocabularyMastery,
+    VocabularyProgress,
     VocabularySummary,
     WordDiff,
 )
 from app.services import dictation as dictation_grader
-from app.services.srs import GRADES, MAX_SESSION_CARDS, NEW_CARDS_PER_DAY, ReviewState, review
+from app.services.srs import (
+    GRADES,
+    MASTERY_LEARNING,
+    MASTERY_LEVELS,
+    MASTERY_MASTERED,
+    MASTERY_NEW,
+    MAX_SESSION_CARDS,
+    NEW_CARDS_PER_DAY,
+    ReviewState,
+    mastery,
+    review,
+)
 
 router = APIRouter(tags=["learning"])
 
@@ -153,6 +166,96 @@ def get_vocabulary(entry_id: uuid.UUID, db: Session = Depends(get_db)) -> Vocabu
     if entry is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     return _detail(entry)
+
+
+# --- vocabulary progress --------------------------------------------------
+
+# `/vocabulary-progress`, không phải `/vocabulary/progress`: route
+# `/vocabulary/{entry_id}` khai `entry_id: uuid.UUID` nên sẽ bắt "progress"
+# trước và trả 422. Cùng cái bẫy đã gặp ở `/dictation/topics`.
+
+
+@router.get("/vocabulary-progress", response_model=VocabularyProgress)
+def vocabulary_progress(
+    topic: str | None = Query(default=None, description="topic slug"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> VocabularyProgress:
+    """Trạng thái thuộc/chưa thuộc của học viên trên tập từ đang xem.
+
+    Lọc theo cùng tiêu chí `published` + topic như `GET /vocabulary`, nếu không
+    mẫu số sẽ đếm cả những từ mà danh sách không hề hiện ra, và "đã thuộc 12/40"
+    sẽ không bao giờ chạm tới 40.
+    """
+    query = select(VocabularyEntry.id).where(VocabularyEntry.status == PUBLISHED)
+    if topic is not None:
+        query = query.join(VocabularyTopic, VocabularyTopic.entry_id == VocabularyEntry.id).join(
+            Topic,
+            (Topic.id == VocabularyTopic.topic_id) & (Topic.slug == topic),
+        )
+    entry_ids = list(db.scalars(query).all())
+
+    states: dict[uuid.UUID, VocabularyReviewState] = {}
+    if entry_ids:
+        states = {
+            state.entry_id: state
+            for state in db.scalars(
+                select(VocabularyReviewState).where(
+                    VocabularyReviewState.user_id == current_user.id,
+                    VocabularyReviewState.entry_id.in_(entry_ids),
+                )
+            ).all()
+        }
+
+    # "Đến hạn chưa" phải so sánh TRONG SQL, không phải trong Python: cột khai
+    # `DateTime(timezone=True)` nên Postgres trả về datetime có tz, còn SQLite
+    # (bộ test) trả về naive, và so hai loại đó với nhau thì TypeError. Cùng
+    # khuôn với `_completed_items` của dictation: một tập id lấy thẳng từ SQL.
+    now = datetime.now(UTC)
+    due_ids: set[uuid.UUID] = set()
+    if entry_ids:
+        due_ids = set(
+            db.scalars(
+                select(VocabularyReviewState.entry_id).where(
+                    VocabularyReviewState.user_id == current_user.id,
+                    VocabularyReviewState.entry_id.in_(entry_ids),
+                    VocabularyReviewState.due_at <= now,
+                )
+            ).all()
+        )
+
+    counts = {level: 0 for level in MASTERY_LEVELS}
+    entries: list[VocabularyMastery] = []
+
+    for entry_id in entry_ids:
+        state = states.get(entry_id)
+        level = mastery(
+            ReviewState(
+                ease_factor=state.ease_factor,
+                interval_days=state.interval_days,
+                repetitions=state.repetitions,
+                lapses=state.lapses,
+            )
+            if state is not None
+            else None
+        )
+        counts[level] += 1
+        # Một từ chưa từng ôn thì chưa "đến hạn" — nó chỉ đang chờ được học lần
+        # đầu, và trộn hai thứ đó sẽ làm con số đến hạn nhảy vọt ngay ngày đầu
+        # tiên của một chủ đề mới. `due_ids` chỉ chứa từ đã có state nên điều
+        # kiện này tự đúng.
+        entries.append(
+            VocabularyMastery(entry_id=str(entry_id), mastery=level, is_due=entry_id in due_ids)
+        )
+
+    return VocabularyProgress(
+        total=len(entry_ids),
+        new=counts[MASTERY_NEW],
+        learning=counts[MASTERY_LEARNING],
+        mastered=counts[MASTERY_MASTERED],
+        due=len(due_ids),
+        entries=entries,
+    )
 
 
 # --- review session -------------------------------------------------------

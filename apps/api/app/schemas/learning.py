@@ -45,6 +45,39 @@ class VocabularyDetail(VocabularySummary):
     example_audio: list[AudioClip]
 
 
+class VocabularyMastery(BaseModel):
+    """Trạng thái của một học viên trên MỘT từ."""
+
+    entry_id: str
+    # `new` / `learning` / `mastered` — suy ra từ `interval_days`, xem
+    # `srs.mastery`. Không có cột nào lưu giá trị này.
+    mastery: str
+    # Tách khỏi `mastery` vì hai chuyện khác nhau: một từ đã thuộc vẫn đến hạn
+    # ôn lại, và một từ đang học thì chưa chắc đến hạn hôm nay.
+    is_due: bool
+
+
+class VocabularyProgress(BaseModel):
+    """Tiến độ từ vựng của học viên, theo chủ đề hoặc trên toàn bộ.
+
+    Suy ra từ `vocabulary_review_state` chứ không đọc bảng tiến độ nào — cùng lý
+    do đã ghi ở [`StoryProgress`]: một bảng ghi song song sẽ lệch khỏi lịch sử ôn
+    tập mà không có gì phát hiện ra.
+
+    Đây là endpoint RIÊNG, có auth, chứ không phải thêm cột vào `GET /vocabulary`
+    vốn là endpoint công khai. Nhét trạng thái người dùng vào đó thì với khách
+    chưa đăng nhập, mọi từ sẽ mang giá trị `new` — một lời nói dối, chứ không
+    phải "chưa có dữ liệu".
+    """
+
+    total: int
+    new: int
+    learning: int
+    mastered: int
+    due: int
+    entries: list[VocabularyMastery]
+
+
 class ReviewCard(VocabularyDetail):
     """A card in a review session.
 

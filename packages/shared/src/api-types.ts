@@ -552,6 +552,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Vocabulary Progress
+         * @description Trạng thái thuộc/chưa thuộc của học viên trên tập từ đang xem.
+         *
+         *     Lọc theo cùng tiêu chí `published` + topic như `GET /vocabulary`, nếu không
+         *     mẫu số sẽ đếm cả những từ mà danh sách không hề hiện ra, và "đã thuộc 12/40"
+         *     sẽ không bao giờ chạm tới 40.
+         */
+        get: operations["vocabulary_progress_api_v1_vocabulary_progress_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-review/session": {
         parameters: {
             query?: never;
@@ -1327,6 +1351,18 @@ export interface components {
             /** Phonetic */
             phonetic: string | null;
         };
+        /**
+         * VocabularyMastery
+         * @description Trạng thái của một học viên trên MỘT từ.
+         */
+        VocabularyMastery: {
+            /** Entry Id */
+            entry_id: string;
+            /** Is Due */
+            is_due: boolean;
+            /** Mastery */
+            mastery: string;
+        };
         /** VocabularyParseResponse */
         VocabularyParseResponse: {
             /** Error Count */
@@ -1335,6 +1371,33 @@ export interface components {
             ok_count: number;
             /** Rows */
             rows: components["schemas"]["VocabularyRow"][];
+        };
+        /**
+         * VocabularyProgress
+         * @description Tiến độ từ vựng của học viên, theo chủ đề hoặc trên toàn bộ.
+         *
+         *     Suy ra từ `vocabulary_review_state` chứ không đọc bảng tiến độ nào — cùng lý
+         *     do đã ghi ở [`StoryProgress`]: một bảng ghi song song sẽ lệch khỏi lịch sử ôn
+         *     tập mà không có gì phát hiện ra.
+         *
+         *     Đây là endpoint RIÊNG, có auth, chứ không phải thêm cột vào `GET /vocabulary`
+         *     vốn là endpoint công khai. Nhét trạng thái người dùng vào đó thì với khách
+         *     chưa đăng nhập, mọi từ sẽ mang giá trị `new` — một lời nói dối, chứ không
+         *     phải "chưa có dữ liệu".
+         */
+        VocabularyProgress: {
+            /** Due */
+            due: number;
+            /** Entries */
+            entries: components["schemas"]["VocabularyMastery"][];
+            /** Learning */
+            learning: number;
+            /** Mastered */
+            mastered: number;
+            /** New */
+            new: number;
+            /** Total */
+            total: number;
         };
         /** VocabularyRow */
         VocabularyRow: {
@@ -2613,6 +2676,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VocabularySummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vocabulary_progress_api_v1_vocabulary_progress_get: {
+        parameters: {
+            query?: {
+                /** @description topic slug */
+                topic?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyProgress"];
                 };
             };
             /** @description Validation Error */

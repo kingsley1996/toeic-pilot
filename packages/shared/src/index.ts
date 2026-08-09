@@ -24,6 +24,8 @@ export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
+export type VocabularyProgress = components["schemas"]["VocabularyProgress"];
+export type VocabularyMastery = components["schemas"]["VocabularyMastery"];
 export type ReviewCard = components["schemas"]["ReviewCard"];
 export type ReviewSession = components["schemas"]["ReviewSession"];
 export type ReviewResult = components["schemas"]["ReviewResult"];
@@ -58,6 +60,9 @@ export const API_ROUTES = {
   vocabulary: "/api/v1/vocabulary",
   vocabularyDetail: (id: string) => `/api/v1/vocabulary/${id}`,
   reviewSession: "/api/v1/vocabulary-review/session",
+  // Gạch nối, không phải `/vocabulary/progress`: route `/vocabulary/{entry_id}`
+  // sẽ bắt "progress" trước rồi 422 khi parse nó thành UUID.
+  vocabularyProgress: "/api/v1/vocabulary-progress",
   submitReview: (id: string) => `/api/v1/vocabulary/${id}/review`,
   dictation: "/api/v1/dictation",
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,

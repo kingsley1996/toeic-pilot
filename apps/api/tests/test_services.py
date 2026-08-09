@@ -247,3 +247,26 @@ def test_bumping_the_engine_version_does_not_make_audio_stale(db_session: Sessio
     for row in entry.audio:
         assert row.asset.engine_version == "1"
     assert vocabulary_is_publishable(entry)
+
+
+def test_the_mastery_boundary_is_exactly_the_interval_threshold() -> None:
+    """21 days is the line; 20 is still learning.
+
+    Pinned as a unit test because an off-by-one here is invisible in the UI —
+    the badge just says "đang học" for a word the learner has in fact learned.
+    """
+    from app.services.srs import (
+        MASTERED_INTERVAL_DAYS,
+        MASTERY_LEARNING,
+        MASTERY_MASTERED,
+        MASTERY_NEW,
+        ReviewState,
+        mastery,
+    )
+
+    assert mastery(None) == MASTERY_NEW
+    assert mastery(ReviewState(interval_days=MASTERED_INTERVAL_DAYS - 1)) == MASTERY_LEARNING
+    assert mastery(ReviewState(interval_days=MASTERED_INTERVAL_DAYS)) == MASTERY_MASTERED
+    # A brand-new state row with no interval yet is being learned, not new: the
+    # row only exists because the learner has already seen the word.
+    assert mastery(ReviewState()) == MASTERY_LEARNING
