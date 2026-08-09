@@ -39,6 +39,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/dictation/sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation Sections Admin */
+        get: operations["list_dictation_sections_admin_api_v1_admin_dictation_sections_get"];
+        put?: never;
+        /** Create Dictation Section */
+        post: operations["create_dictation_section_api_v1_admin_dictation_sections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/sections/{section_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Dictation Section */
+        delete: operations["delete_dictation_section_api_v1_admin_dictation_sections__section_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Dictation Section */
+        patch: operations["update_dictation_section_api_v1_admin_dictation_sections__section_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/sections/{section_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Dictation Section */
+        post: operations["publish_dictation_section_api_v1_admin_dictation_sections__section_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/stories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation Stories Admin */
+        get: operations["list_dictation_stories_admin_api_v1_admin_dictation_stories_get"];
+        put?: never;
+        /** Create Dictation Story */
+        post: operations["create_dictation_story_api_v1_admin_dictation_stories_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/stories/{story_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Dictation Story */
+        delete: operations["delete_dictation_story_api_v1_admin_dictation_stories__story_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Dictation Story */
+        patch: operations["update_dictation_story_api_v1_admin_dictation_stories__story_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/stories/{story_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Dictation Story */
+        post: operations["publish_dictation_story_api_v1_admin_dictation_stories__story_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/stories/{story_id}/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reorder Story Items */
+        post: operations["reorder_story_items_api_v1_admin_dictation_stories__story_id__reorder_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation Topics Admin */
+        get: operations["list_dictation_topics_admin_api_v1_admin_dictation_topics_get"];
+        put?: never;
+        /** Create Dictation Topic */
+        post: operations["create_dictation_topic_api_v1_admin_dictation_topics_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Dictation Topic */
+        delete: operations["delete_dictation_topic_api_v1_admin_dictation_topics__topic_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Dictation Topic */
+        patch: operations["update_dictation_topic_api_v1_admin_dictation_topics__topic_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/topics/{topic_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Dictation Topic */
+        post: operations["publish_dictation_topic_api_v1_admin_dictation_topics__topic_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/dictation/{item_id}": {
         parameters: {
             query?: never;
@@ -49,7 +225,8 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Dictation Item */
+        delete: operations["delete_dictation_item_api_v1_admin_dictation__item_id__delete"];
         options?: never;
         head?: never;
         /** Update Dictation */
@@ -221,8 +398,84 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Dictation */
+        /**
+         * List Dictation
+         * @description Danh sách phẳng các câu đã xuất bản.
+         *
+         *     `standalone=true` lọc lấy những câu chưa thuộc story nào. Có tham số này vì
+         *     cây topic→section→story ra đời sau: nếu luồng duyệt chỉ đi theo cây, mọi câu
+         *     có từ trước sẽ biến mất khỏi tầm mắt học viên mà không có gì báo. Mặc định
+         *     giữ nguyên hành vi cũ để không phá những chỗ đang gọi.
+         */
         get: operations["list_dictation_api_v1_dictation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation-sections/{section_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Dictation Section */
+        get: operations["get_dictation_section_api_v1_dictation_sections__section_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation-stories/{story_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Dictation Story */
+        get: operations["get_dictation_story_api_v1_dictation_stories__story_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation-topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation Topics */
+        get: operations["list_dictation_topics_api_v1_dictation_topics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation-topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Dictation Topic */
+        get: operations["get_dictation_topic_api_v1_dictation_topics__topic_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -441,10 +694,14 @@ export interface components {
             difficulty: number;
             /** Id */
             id: string;
+            /** Position */
+            position?: number | null;
             /** Publishable */
             publishable: boolean;
             /** Status */
             status: string;
+            /** Story Id */
+            story_id?: string | null;
             /** Transcript */
             transcript: string;
         };
@@ -457,6 +714,8 @@ export interface components {
             difficulty: number;
             /** Rows */
             rows: components["schemas"]["DictationRow"][];
+            /** Story Id */
+            story_id?: string | null;
             /** Topic Id */
             topic_id?: string | null;
         };
@@ -472,6 +731,8 @@ export interface components {
             id: string;
             /** Topic Id */
             topic_id: string | null;
+            /** Transcript */
+            transcript: string;
             /** Word Count */
             word_count: number;
         };
@@ -494,6 +755,8 @@ export interface components {
             diff: components["schemas"]["WordDiff"][];
             /** Expected */
             expected: number;
+            /** Is Complete */
+            is_complete: boolean;
             /** Matched */
             matched: number;
             /** Transcript */
@@ -511,6 +774,175 @@ export interface components {
             /** Transcript */
             transcript: string;
         };
+        /** DictationSectionAdmin */
+        DictationSectionAdmin: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Status */
+            status: string;
+            /** Story Count */
+            story_count: number;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Name */
+            topic_name: string;
+        };
+        /** DictationSectionCreate */
+        DictationSectionCreate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Topic Id */
+            topic_id: string;
+        };
+        /** DictationSectionDetail */
+        DictationSectionDetail: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Stories */
+            stories: components["schemas"]["DictationStorySummary"][];
+            /** Story Count */
+            story_count: number;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Name */
+            topic_name: string;
+        };
+        /** DictationSectionPublic */
+        DictationSectionPublic: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Story Count */
+            story_count: number;
+        };
+        /** DictationSectionUpdate */
+        DictationSectionUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Status */
+            status?: string | null;
+            /** Topic Id */
+            topic_id?: string | null;
+        };
+        /** DictationStoryAdmin */
+        DictationStoryAdmin: {
+            /** Description */
+            description: string | null;
+            /** Difficulty */
+            difficulty: number;
+            /** Id */
+            id: string;
+            /** Item Count */
+            item_count: number;
+            /** Position */
+            position: number;
+            /** Publishable */
+            publishable: boolean;
+            /** Published Item Count */
+            published_item_count: number;
+            /** Section Id */
+            section_id: string;
+            /** Section Name */
+            section_name: string;
+            /** Status */
+            status: string;
+            /** Title */
+            title: string;
+            /** Topic Name */
+            topic_name: string;
+        };
+        /** DictationStoryCreate */
+        DictationStoryCreate: {
+            /** Description */
+            description?: string | null;
+            /**
+             * Difficulty
+             * @default 3
+             */
+            difficulty: number;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Section Id */
+            section_id: string;
+            /** Title */
+            title: string;
+        };
+        /** DictationStoryDetail */
+        DictationStoryDetail: {
+            /** Description */
+            description: string | null;
+            /** Difficulty */
+            difficulty: number;
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["StoryItem"][];
+            progress: components["schemas"]["StoryProgress"];
+            /** Section Id */
+            section_id: string;
+            /** Section Name */
+            section_name: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Name */
+            topic_name: string;
+        };
+        /** DictationStorySummary */
+        DictationStorySummary: {
+            /** Description */
+            description: string | null;
+            /** Difficulty */
+            difficulty: number;
+            /** Id */
+            id: string;
+            progress: components["schemas"]["StoryProgress"];
+            /** Title */
+            title: string;
+        };
+        /** DictationStoryUpdate */
+        DictationStoryUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Difficulty */
+            difficulty?: number | null;
+            /** Position */
+            position?: number | null;
+            /** Section Id */
+            section_id?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Title */
+            title?: string | null;
+        };
         /** DictationSubmit */
         DictationSubmit: {
             /** Submitted Text */
@@ -527,10 +959,86 @@ export interface components {
             /** Word Count */
             word_count: number;
         };
+        /** DictationTopicAdmin */
+        DictationTopicAdmin: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Section Count */
+            section_count: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+        };
+        /** DictationTopicCreate */
+        DictationTopicCreate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Slug */
+            slug: string;
+        };
+        /** DictationTopicDetail */
+        DictationTopicDetail: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Section Count */
+            section_count: number;
+            /** Sections */
+            sections: components["schemas"]["DictationSectionPublic"][];
+            /** Slug */
+            slug: string;
+        };
+        /** DictationTopicPublic */
+        DictationTopicPublic: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Section Count */
+            section_count: number;
+            /** Slug */
+            slug: string;
+        };
+        /** DictationTopicUpdate */
+        DictationTopicUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: string | null;
+        };
         /** DictationUpdate */
         DictationUpdate: {
             /** Difficulty */
             difficulty?: number | null;
+            /** Status */
+            status?: string | null;
+            /** Story Id */
+            story_id?: string | null;
             /** Topic Id */
             topic_id?: string | null;
             /** Transcript */
@@ -615,6 +1123,48 @@ export interface components {
              * @description One of [0, 3, 4, 5]
              */
             grade: number;
+        };
+        /**
+         * StoryItem
+         * @description Một câu trong story, kèm việc học viên đã làm đúng nó hay chưa.
+         */
+        StoryItem: {
+            /** Audio Url */
+            audio_url: string;
+            /** Completed */
+            completed: boolean;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Id */
+            id: string;
+            /** Position */
+            position: number;
+            /** Transcript */
+            transcript: string;
+            /** Word Count */
+            word_count: number;
+        };
+        /**
+         * StoryProgress
+         * @description Tiến độ của một học viên trên một story: đã làm đúng bao nhiêu câu.
+         *
+         *     Suy ra từ `dictation_attempt` chứ không đọc từ bảng tiến độ nào: một bảng ghi
+         *     song song sẽ lệch khỏi lịch sử làm bài mà không có gì phát hiện.
+         *
+         *     Không còn điểm trung bình. Dictation đo được đúng một chuyện một cách đáng
+         *     tin — nghe ra hay chưa — và một con số như "89%" không nói cho người học biết
+         *     nên đi tiếp hay nghe lại. "3/6 câu đã xong" thì nói được.
+         */
+        StoryProgress: {
+            /** Completed Items */
+            completed_items: number;
+            /** Total Items */
+            total_items: number;
+        };
+        /** StoryReorder */
+        StoryReorder: {
+            /** Item Ids */
+            item_ids: string[];
         };
         /** TokenResponse */
         TokenResponse: {
@@ -930,6 +1480,514 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DictationParseResponse"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dictation_sections_admin_api_v1_admin_dictation_sections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSectionAdmin"][];
+                };
+            };
+        };
+    };
+    create_dictation_section_api_v1_admin_dictation_sections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationSectionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dictation_section_api_v1_admin_dictation_sections__section_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                section_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_dictation_section_api_v1_admin_dictation_sections__section_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                section_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationSectionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_dictation_section_api_v1_admin_dictation_sections__section_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                section_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dictation_stories_admin_api_v1_admin_dictation_stories_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationStoryAdmin"][];
+                };
+            };
+        };
+    };
+    create_dictation_story_api_v1_admin_dictation_stories_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationStoryCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationStoryAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dictation_story_api_v1_admin_dictation_stories__story_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                story_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_dictation_story_api_v1_admin_dictation_stories__story_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                story_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationStoryUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationStoryAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_dictation_story_api_v1_admin_dictation_stories__story_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                story_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationStoryAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_story_items_api_v1_admin_dictation_stories__story_id__reorder_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                story_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoryReorder"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dictation_topics_admin_api_v1_admin_dictation_topics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicAdmin"][];
+                };
+            };
+        };
+    };
+    create_dictation_topic_api_v1_admin_dictation_topics_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationTopicCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dictation_topic_api_v1_admin_dictation_topics__topic_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_dictation_topic_api_v1_admin_dictation_topics__topic_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationTopicUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_dictation_topic_api_v1_admin_dictation_topics__topic_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dictation_item_api_v1_admin_dictation__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
@@ -1304,6 +2362,8 @@ export interface operations {
             query?: {
                 /** @description topic slug */
                 topic?: string | null;
+                /** @description only sentences that belong to no story */
+                standalone?: boolean;
                 limit?: number;
                 offset?: number;
             };
@@ -1320,6 +2380,119 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dictation_section_api_v1_dictation_sections__section_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                section_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSectionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dictation_story_api_v1_dictation_stories__story_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                story_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationStoryDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dictation_topics_api_v1_dictation_topics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicPublic"][];
+                };
+            };
+        };
+    };
+    get_dictation_topic_api_v1_dictation_topics__topic_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationTopicDetail"];
                 };
             };
             /** @description Validation Error */

@@ -91,6 +91,16 @@ class DictationSummary(BaseModel):
 class DictationDetail(DictationSummary):
     audio_url: str
     duration_ms: int
+    transcript: str
+    """The answer key, sent to the browser on purpose.
+
+    Grading runs on the client so feedback is instant, which means the answer is
+    readable in the network tab before the learner types. That is a deliberate
+    trade for a self-study tool: the only person the shortcut cheats is the
+    learner. It is **not** acceptable for anything scored competitively — if
+    dictation ever becomes part of a graded test, this field has to go and the
+    grading has to move back behind the API.
+    """
 
 
 class DictationSubmit(BaseModel):
@@ -109,3 +119,86 @@ class DictationResult(BaseModel):
     expected: int
     transcript: str
     diff: list[WordDiff]
+    is_complete: bool
+    """Đã gõ đúng từng từ, không thiếu không thừa.
+
+    `accuracy` vẫn được trả về và vẫn được lưu — nó là lịch sử, và bỏ đi thì
+    không tính lại được. Nhưng giao diện không hiện nó nữa: câu trả lời người
+    học cần là "đúng chưa", không phải "được bao nhiêu phần trăm".
+    """
+
+
+# --- cây dictation: topic -> section -> story -> item ---------------------
+
+
+class StoryProgress(BaseModel):
+    """Tiến độ của một học viên trên một story: đã làm đúng bao nhiêu câu.
+
+    Suy ra từ `dictation_attempt` chứ không đọc từ bảng tiến độ nào: một bảng ghi
+    song song sẽ lệch khỏi lịch sử làm bài mà không có gì phát hiện.
+
+    Không còn điểm trung bình. Dictation đo được đúng một chuyện một cách đáng
+    tin — nghe ra hay chưa — và một con số như "89%" không nói cho người học biết
+    nên đi tiếp hay nghe lại. "3/6 câu đã xong" thì nói được.
+    """
+
+    total_items: int
+    completed_items: int
+
+
+class DictationTopicPublic(BaseModel):
+    id: str
+    slug: str
+    name: str
+    description: str | None
+    section_count: int
+
+
+class DictationSectionPublic(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    story_count: int
+
+
+class DictationTopicDetail(DictationTopicPublic):
+    sections: list[DictationSectionPublic]
+
+
+class DictationStorySummary(BaseModel):
+    id: str
+    title: str
+    description: str | None
+    difficulty: int
+    progress: StoryProgress
+
+
+class DictationSectionDetail(DictationSectionPublic):
+    topic_id: str
+    topic_name: str
+    stories: list[DictationStorySummary]
+
+
+class StoryItem(BaseModel):
+    """Một câu trong story, kèm việc học viên đã làm đúng nó hay chưa."""
+
+    id: str
+    position: int
+    word_count: int
+    audio_url: str
+    duration_ms: int
+    transcript: str
+    completed: bool
+
+
+class DictationStoryDetail(BaseModel):
+    id: str
+    title: str
+    description: str | None
+    difficulty: int
+    section_id: str
+    section_name: str
+    topic_id: str
+    topic_name: str
+    items: list[StoryItem]
+    progress: StoryProgress

@@ -12,6 +12,7 @@
  */
 
 import {
+  Archive,
   CircleAlert,
   CircleCheck,
   CircleDashed,
@@ -193,11 +194,25 @@ export function StatusTag({
 
 /** Trạng thái xuất bản, khớp với `PublishableMixin` ở backend. */
 export function PublishTag({ status }: { status: string }) {
-  return status === "published" ? (
-    <StatusTag tone="ok" icon={CircleCheck}>
-      đã xuất bản
-    </StatusTag>
-  ) : (
+  // BA trạng thái, không phải hai. `archived` từng rơi vào nhánh else và hiện ra
+  // là "nháp" — nói ngược hẳn sự thật: nháp là chưa từng lên sóng, còn archived
+  // là đã lên rồi và được gỡ xuống. Người biên tập nhìn vào không phân biệt được
+  // nội dung chưa xong với nội dung đã rút.
+  if (status === "published") {
+    return (
+      <StatusTag tone="ok" icon={CircleCheck}>
+        đã xuất bản
+      </StatusTag>
+    );
+  }
+  if (status === "archived") {
+    return (
+      <StatusTag tone="warn" icon={Archive}>
+        đã lưu trữ
+      </StatusTag>
+    );
+  }
+  return (
     <StatusTag tone="neutral" icon={CircleDashed}>
       nháp
     </StatusTag>

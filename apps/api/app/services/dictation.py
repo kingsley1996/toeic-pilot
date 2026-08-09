@@ -60,6 +60,18 @@ class GradeResult:
     matched: int
     expected: int
     diff: list[WordResult]
+    is_complete: bool
+    """Bài nộp khớp đáp án từng từ, không thiếu và không thừa.
+
+    Đây là thứ tiến độ đếm, chứ không phải `accuracy`. Hai lý do:
+
+    * `accuracy` là `matched / expected`, nên gõ đủ câu RỒI GÕ THÊM vẫn ra 100%.
+      Gõ cả câu hai lần cũng vậy. Một con số nói "hoàn hảo" cho một bài rõ ràng
+      chưa hoàn hảo là con số không dùng được để đánh dấu hoàn thành.
+    * Dictation đo được một chuyện duy nhất một cách đáng tin: nghe ra hay chưa.
+      89% không nói lên điều gì hành động được — người học không biết nên đi tiếp
+      hay nghe lại. "Đúng rồi" thì nói được.
+    """
 
     def as_json(self) -> list[dict[str, str]]:
         """Shape stored in `dictation_attempt.word_diff`, so the UI can re-render
@@ -104,4 +116,7 @@ def grade(transcript: str, submitted: str) -> GradeResult:
         matched=matched,
         expected=expected,
         diff=diff,
+        # Không có `missing` và không có `extra`. Kiểm trên `diff` chứ không so
+        # `matched == expected`, vì phép so đó bỏ sót đúng cái bẫy `extra`.
+        is_complete=expected > 0 and all(item.op == "match" for item in diff),
     )

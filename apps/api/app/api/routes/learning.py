@@ -19,6 +19,9 @@ from app.core.media import public_audio_url
 from app.models import (
     DictationAttempt,
     DictationItem,
+    DictationSection,
+    DictationStory,
+    DictationTopic,
     Topic,
     User,
     VocabularyEntry,
@@ -30,12 +33,20 @@ from app.schemas.learning import (
     AudioClip,
     DictationDetail,
     DictationResult,
+    DictationSectionDetail,
+    DictationSectionPublic,
+    DictationStoryDetail,
+    DictationStorySummary,
     DictationSubmit,
     DictationSummary,
+    DictationTopicDetail,
+    DictationTopicPublic,
     ReviewCard,
     ReviewResult,
     ReviewSession,
     ReviewSubmit,
+    StoryItem,
+    StoryProgress,
     TopicPublic,
     VocabularyDetail,
     VocabularySummary,
@@ -287,11 +298,24 @@ def submit_review(
 @router.get("/dictation", response_model=list[DictationSummary])
 def list_dictation(
     topic: str | None = Query(default=None, description="topic slug"),
+    standalone: bool = Query(
+        default=False,
+        description="only sentences that belong to no story",
+    ),
     limit: int = Query(default=50, ge=1, le=200),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
 ) -> list[DictationSummary]:
+    """Danh sách phẳng các câu đã xuất bản.
+
+    `standalone=true` lọc lấy những câu chưa thuộc story nào. Có tham số này vì
+    cây topic→section→story ra đời sau: nếu luồng duyệt chỉ đi theo cây, mọi câu
+    có từ trước sẽ biến mất khỏi tầm mắt học viên mà không có gì báo. Mặc định
+    giữ nguyên hành vi cũ để không phá những chỗ đang gọi.
+    """
     query = select(DictationItem).where(DictationItem.status == PUBLISHED)
+    if standalone:
+        query = query.where(DictationItem.story_id.is_(None))
     if topic is not None:
         query = query.join(Topic, (Topic.id == DictationItem.topic_id) & (Topic.slug == topic))
     items = db.scalars(
@@ -322,8 +346,10 @@ def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> Dictatio
         # published item cannot lack audio. Treated as absent rather than crashing
         # so a constraint that somehow got dropped degrades to a 404, not a 500.
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item has no audio")
-    # The transcript is deliberately absent: it is the answer, and sending it to
-    # the browser before the learner types would make the exercise pointless.
+    # The transcript ships with the item so the client can grade without a round
+    # trip. See DictationDetail.transcript for what that costs and why it is
+    # acceptable here; the server still re-grades every submitted attempt, so the
+    # stored score never depends on anything the browser claims.
     return DictationDetail(
         id=str(item.id),
         difficulty=item.difficulty,
@@ -331,6 +357,7 @@ def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> Dictatio
         word_count=len(dictation_grader.normalise(item.transcript)),
         audio_url=public_audio_url(item.asset.storage_key),
         duration_ms=item.asset.duration_ms,
+        transcript=item.transcript,
     )
 
 
@@ -358,6 +385,7 @@ def submit_dictation(
         # impossible to re-grade an old attempt under new rules.
         submitted_text=body.submitted_text,
         accuracy=result.accuracy,
+        is_complete=result.is_complete,
         word_diff=result.as_json(),
     )
     db.add(attempt)
@@ -371,4 +399,226 @@ def submit_dictation(
         expected=result.expected,
         transcript=item.transcript,
         diff=[WordDiff(op=item_.op, word=item_.word) for item_ in result.diff],
+        is_complete=result.is_complete,
+    )
+
+
+# --- cây dictation ---------------------------------------------------------
+#
+# Đường dẫn dùng dấu gạch nối (`/dictation-topics`) chứ không lồng vào
+# (`/dictation/topics`), theo đúng tiền lệ `/vocabulary-review/session` đã có.
+# Không phải để cho đẹp: `/dictation/{item_id}` khai `item_id: uuid.UUID`, nên
+# `/dictation/topics` sẽ bị route đó bắt trước và trả 422 khi cố parse "topics"
+# thành UUID. Đặt route tĩnh trước route động cũng chữa được, nhưng khi đó thứ
+# tự khai báo trở thành một thứ ngầm mà người sắp xếp lại file sẽ phá.
+#
+# Bốn tầng, và MỖI tầng đều phải lọc `status = 'published'`. Quên một tầng là đủ
+# để nội dung nháp lọt ra: một story nháp nằm dưới section đã publish vẫn hiện
+# nếu chỉ lọc ở section. Kiểu lỗi này im lặng — không ai báo cáo được vì nội dung
+# trông hoàn toàn bình thường (ADR-001 §A5.3).
+
+
+def _completed_items(db: Session, user_id: uuid.UUID, item_ids: list[uuid.UUID]) -> set[uuid.UUID]:
+    """Những câu học viên đã gõ đúng ít nhất một lần.
+
+    `DISTINCT` vì làm lại một câu nhiều lần vẫn là một câu. Xong rồi thì xong —
+    làm lại sau đó không gỡ mất trạng thái đã hoàn thành, vì việc họ từng nghe ra
+    được là chuyện đã xảy ra.
+    """
+    if not item_ids:
+        return set()
+    rows = db.scalars(
+        select(DictationAttempt.item_id)
+        .where(
+            DictationAttempt.user_id == user_id,
+            DictationAttempt.item_id.in_(item_ids),
+            DictationAttempt.is_complete.is_(True),
+        )
+        .distinct()
+    ).all()
+    return set(rows)
+
+
+@router.get("/dictation-topics", response_model=list[DictationTopicPublic])
+def list_dictation_topics(db: Session = Depends(get_db)) -> list[DictationTopicPublic]:
+    published_sections = (
+        select(func.count(DictationSection.id))
+        .where(
+            DictationSection.topic_id == DictationTopic.id,
+            DictationSection.status == PUBLISHED,
+        )
+        .scalar_subquery()
+    )
+    rows = db.execute(
+        select(DictationTopic, published_sections.label("section_count"))
+        .where(DictationTopic.status == PUBLISHED)
+        .order_by(DictationTopic.position, DictationTopic.name)
+    ).all()
+    return [
+        DictationTopicPublic(
+            id=str(topic.id),
+            slug=topic.slug,
+            name=topic.name,
+            description=topic.description,
+            section_count=count,
+        )
+        for topic, count in rows
+    ]
+
+
+@router.get("/dictation-topics/{topic_id}", response_model=DictationTopicDetail)
+def get_dictation_topic(topic_id: uuid.UUID, db: Session = Depends(get_db)) -> DictationTopicDetail:
+    topic = db.scalars(
+        select(DictationTopic).where(
+            DictationTopic.id == topic_id, DictationTopic.status == PUBLISHED
+        )
+    ).first()
+    if topic is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+
+    published_stories = (
+        select(func.count(DictationStory.id))
+        .where(
+            DictationStory.section_id == DictationSection.id,
+            DictationStory.status == PUBLISHED,
+        )
+        .scalar_subquery()
+    )
+    rows = db.execute(
+        select(DictationSection, published_stories.label("story_count"))
+        .where(
+            DictationSection.topic_id == topic.id,
+            DictationSection.status == PUBLISHED,
+        )
+        .order_by(DictationSection.position, DictationSection.name)
+    ).all()
+
+    return DictationTopicDetail(
+        id=str(topic.id),
+        slug=topic.slug,
+        name=topic.name,
+        description=topic.description,
+        section_count=len(rows),
+        sections=[
+            DictationSectionPublic(
+                id=str(section.id),
+                name=section.name,
+                description=section.description,
+                story_count=count,
+            )
+            for section, count in rows
+        ],
+    )
+
+
+@router.get("/dictation-sections/{section_id}", response_model=DictationSectionDetail)
+def get_dictation_section(
+    section_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DictationSectionDetail:
+    section = db.scalars(
+        select(DictationSection)
+        .join(DictationTopic, DictationTopic.id == DictationSection.topic_id)
+        .where(
+            DictationSection.id == section_id,
+            DictationSection.status == PUBLISHED,
+            # Topic nháp thì cả nhánh dưới nó chưa được coi là đã xuất bản.
+            DictationTopic.status == PUBLISHED,
+        )
+        .options(selectinload(DictationSection.topic))
+    ).first()
+    if section is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found")
+
+    stories = db.scalars(
+        select(DictationStory)
+        .where(DictationStory.section_id == section.id, DictationStory.status == PUBLISHED)
+        .order_by(DictationStory.position, DictationStory.title)
+        .options(selectinload(DictationStory.items))
+    ).all()
+
+    summaries: list[DictationStorySummary] = []
+    for story in stories:
+        item_ids = [item.id for item in story.items if item.status == PUBLISHED]
+        done = _completed_items(db, user.id, item_ids)
+        summaries.append(
+            DictationStorySummary(
+                id=str(story.id),
+                title=story.title,
+                description=story.description,
+                difficulty=story.difficulty,
+                progress=StoryProgress(total_items=len(item_ids), completed_items=len(done)),
+            )
+        )
+
+    return DictationSectionDetail(
+        id=str(section.id),
+        name=section.name,
+        description=section.description,
+        story_count=len(summaries),
+        topic_id=str(section.topic_id),
+        topic_name=section.topic.name,
+        stories=summaries,
+    )
+
+
+@router.get("/dictation-stories/{story_id}", response_model=DictationStoryDetail)
+def get_dictation_story(
+    story_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DictationStoryDetail:
+    story = db.scalars(
+        select(DictationStory)
+        .join(DictationSection, DictationSection.id == DictationStory.section_id)
+        .join(DictationTopic, DictationTopic.id == DictationSection.topic_id)
+        .where(
+            DictationStory.id == story_id,
+            DictationStory.status == PUBLISHED,
+            DictationSection.status == PUBLISHED,
+            DictationTopic.status == PUBLISHED,
+        )
+        .options(selectinload(DictationStory.section).selectinload(DictationSection.topic))
+    ).first()
+    if story is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Story not found")
+
+    items = db.scalars(
+        select(DictationItem)
+        .where(
+            DictationItem.story_id == story.id,
+            DictationItem.status == PUBLISHED,
+        )
+        .order_by(DictationItem.position)
+        .options(selectinload(DictationItem.asset))
+    ).all()
+
+    item_ids = [item.id for item in items]
+    done = _completed_items(db, user.id, item_ids)
+
+    return DictationStoryDetail(
+        id=str(story.id),
+        title=story.title,
+        description=story.description,
+        difficulty=story.difficulty,
+        section_id=str(story.section_id),
+        section_name=story.section.name,
+        topic_id=str(story.section.topic_id),
+        topic_name=story.section.topic.name,
+        items=[
+            StoryItem(
+                id=str(item.id),
+                # `position` là NOT NULL bất cứ khi nào story_id có giá trị —
+                # CHECK ck_dictation_item_story_position bảo đảm điều đó.
+                position=item.position or 0,
+                word_count=len(dictation_grader.normalise(item.transcript)),
+                audio_url=public_audio_url(item.asset.storage_key) if item.asset else "",
+                duration_ms=item.asset.duration_ms if item.asset else 0,
+                transcript=item.transcript,
+                completed=item.id in done,
+            )
+            for item in items
+        ],
+        progress=StoryProgress(total_items=len(items), completed_items=len(done)),
     )

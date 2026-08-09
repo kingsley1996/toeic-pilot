@@ -14,7 +14,7 @@ TOEIC Pilot is a polyglot monorepo containing:
 - `docker` — Dockerfiles and Docker Compose for local/integration environment
 - `planning` — product spec, roadmap, and architecture decision records
 
-**Đã chạy đầu-cuối:** auth + RBAC, đường ống media offline (audio 4 accent, ảnh CC), schema domain 20 bảng, công cụ nhập nội dung cho từ vựng/dictation, và Learning Hub (từ vựng có phát âm, ôn tập SM-2, dictation chấm theo từ).
+**Đã chạy đầu-cuối:** auth + RBAC, đường ống media offline (audio 4 accent, ảnh CC), schema domain 23 bảng, công cụ nhập nội dung cho từ vựng/dictation kèm cây phân cấp 4 tầng, và Learning Hub (từ vựng có phát âm, ôn tập SM-2, dictation chấm ở client theo từng từ).
 
 **Chưa dựng:** TOEIC Practice (schema đã có, chưa có endpoint và chưa có trình nhập câu hỏi) và toàn bộ AI layer (`app/ai` vẫn là package rỗng). Chi tiết ở [`ROADMAP.md`](ROADMAP.md) §5–§7.
 
@@ -30,21 +30,23 @@ TOEIC Pilot is a polyglot monorepo containing:
 
 **Backend (apps/api)**
 
-25 endpoint, bốn router:
+46 endpoint, bốn router:
 
 | Router | Đường dẫn | Nội dung |
 |---|---|---|
-| `health.py` | `/health`, `/ready` | liveness (không kiểm gì) và readiness (Postgres + Redis) |
-| `auth.py` | `/api/v1/auth/*` | register, login, me |
-| `learning.py` | `/api/v1/{topics,vocabulary,vocabulary-review,dictation}` | Learning Hub cho học viên — chỉ trả `published` |
-| `admin.py` | `/api/v1/admin/*` | parse / commit / CRUD / publish cho `vocabulary`, `dictation`, `topic` |
+| `health.py` (2) | `/health`, `/ready` | liveness (không kiểm gì) và readiness (Postgres + Redis) |
+| `auth.py` (3) | `/api/v1/auth/*` | register, login, me |
+| `learning.py` (12) | `/api/v1/{topics,vocabulary,vocabulary-review,dictation}` + `/dictation-{topics,sections,stories}` | Learning Hub cho học viên — **mỗi tầng tự lọc `published`** |
+| `admin.py` (29) | `/api/v1/admin/*` | parse / commit / CRUD / publish / xoá cho `vocabulary`, `dictation`, `topic`, và cây `dictation_{topic,section,story}` |
+
+**Cây dictation dùng đường dẫn gạch nối** (`/dictation-topics`), không lồng vào `/dictation/...`. Không phải để cho đẹp: `/dictation/{item_id}` khai `item_id: uuid.UUID`, nên `/dictation/topics` sẽ bị route đó bắt trước và trả 422 khi cố parse `"topics"` thành UUID. Đặt route tĩnh trước route động cũng chữa được, nhưng khi đó thứ tự khai báo trở thành một ràng buộc ngầm mà người sắp xếp lại file sẽ phá. Cùng tiền lệ với `/vocabulary-review/session`.
 
 - **`app/services/` giữ phần logic không phải HTTP** và thuần đủ để test không cần session: `srs.py` (SM-2), `dictation.py` (chuẩn hoá + diff bằng `SequenceMatcher`), `media_state.py` (clip này còn khớp text không?), `content_import.py` (parser dán), `scoring.py` (raw → scaled).
 - **`require_role` là dependency, không phải kiểm tra trong thân hàm** — kiểm tra trong thân hàm là thứ người ta quên copy sang route kế tiếp, và hậu quả là một endpoint admin mở cho mọi học viên. Mỗi endpoint admin có test khẳng định `learner` nhận 403.
 - SQLAlchemy 2.0 (`Mapped[...]`), session qua dependency `get_db`. **Alembic sở hữu schema**; `metadata.create_all` chỉ chạy khi `environment == "development"`.
 - `app/core/config.py` giữ **một** singleton `settings` (`pydantic-settings`), `env_file` dùng đường dẫn tuyệt đối. `ENVIRONMENT=production` từ chối khởi động trên `SECRET_KEY` mặc định.
 - `app/core/logging.py` — JSON formatter, text formatter cho đọc local, và `RequestContextMiddleware` gán/nhận `X-Request-ID`, phát qua `ContextVar`, log một dòng mỗi request. Có sẵn từ bây giờ để các lời gọi LLM của Phase 4 truy vết được từ ngày đầu.
-- Migrations: `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional`.
+- Migrations: `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag`.
 
 **Persistence & Cache**
 
@@ -105,7 +107,7 @@ Audit trail đi kèm qua `PublishableMixin` (`created_by`, `published_by`, `publ
 
 ## Data model
 
-Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). **20 bảng**, tạo bởi migration `003`–`006`.
+Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). **23 bảng**, tạo bởi migration `003`–`008`.
 
 Phần từ vựng và dictation **đã có endpoint chạy trên nó**. Phần question / attempt / practice test thì chưa — schema có, endpoint không (Sprint 5). Bốn bảng của Phase 4–5 (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) mới chỉ tồn tại trên giấy, vì chiều `vector(n)` phụ thuộc vào embedding model mà ADR-003 chưa chọn — và đổi model nghĩa là tính lại toàn bộ corpus.
 
@@ -198,12 +200,12 @@ Backend (`apps/api/`):
 | `app/api/routes/` | `health.py`, `auth.py`, `learning.py`, `admin.py` |
 | `app/api/deps.py` | `get_db`, `get_current_user`, `require_role` |
 | `app/schemas/` | Pydantic I/O: `auth.py`, `learning.py`, `admin.py` — nguồn của contract sinh ra |
-| `app/services/` | `srs.py`, `dictation.py`, `media_state.py`, `content_import.py`, `scoring.py` |
-| `app/models/` | 20 bảng; `mixins.py` giữ từ vựng cột dùng chung, `validators.py` giữ luật nội dung. **Model mới phải re-export từ `__init__.py`** |
+| `app/services/` | `srs.py`, `dictation.py` (bộ chấm — **có bản song sinh ở `apps/web/src/lib/dictation.ts`**), `media_state.py`, `content_import.py`, `scoring.py` |
+| `app/models/` | 23 bảng; `mixins.py` giữ từ vựng cột dùng chung, `validators.py` giữ luật nội dung. **Model mới phải re-export từ `__init__.py`** |
 | `app/core/` | `config.py`, `database.py`, `security.py`, `logging.py`, `redis_client.py`, `media.py` |
 | `app/content/` | Pipeline offline sau extra `content`: `generate`, `images`, `seed`, `seed_scores`, `backfill_audio`, `tts`, `storage`, `manifest`, `settings` |
 | `app/ai/` | Rỗng — chờ ADR-003 |
-| `alembic/` | Migration `001`–`006`. **Không được lint và không được type-check** |
+| `alembic/` | Migration `001`–`008`. **Không được lint và không được type-check** |
 | `content/manifest/` | `audio_assets.jsonl`, `image_assets.jsonl` — commit vào repo |
 | `media/` | File mp3/jpg — **gitignore** |
 
@@ -211,15 +213,20 @@ Frontend (`apps/web/src/`):
 
 | Đường dẫn | Vai trò |
 |---|---|
-| `app/` | Route: `login`, `register`, `dashboard`, `learn/**`, `admin/**`, `not-found`, `error` |
+| `app/` | 16 route: `login`, `register`, `dashboard`, `learn/**` (gồm cây dictation 4 tầng), `admin/**`, `not-found`, `error` |
 | `app/admin/layout.tsx` | Khu quản trị dùng khung riêng; `AppShell` tự nhường chỗ ở đường dẫn `/admin` |
+| `app/learn/dictation/{topics,sections,stories}/[id]` | Ba tầng duyệt cây; `standalone/` giữ câu chưa thuộc bài nào |
 | `app/globals.css` | Token màu — sáng/tối là **một** định nghĩa |
 | `components/ui.tsx` | Primitive của design system |
-| `components/app-shell.tsx` | Nav theo vai trò |
-| `components/admin-shell.tsx` | Khung khu quản trị: thanh trên riêng + sidebar. **Không** có nav khu học |
+| `components/app-shell.tsx` | Khung khu học. **Không** chứa nav quản trị — chỉ một nút `Quản trị` |
+| `components/admin-shell.tsx` | Khung khu quản trị: thanh trên riêng + sidebar |
 | `components/nav.tsx` | `NavLink`, `activeHref`, `SessionControls` — dùng chung cho cả hai khung |
-| `components/audio-button.tsx`, `admin-bits.tsx` | Phát audio; lưới review + badge trạng thái audio |
-| `lib/api.ts`, `lib/session.tsx`, `lib/auth-storage.ts` | Fetch wrapper, phiên đăng nhập, lưu token |
+| `components/dictation-exercise.tsx` | Một câu dictation: nghe, gõ, chấm tại chỗ. Dùng chung cho luồng cây và câu lẻ |
+| `components/story-progress.tsx`, `breadcrumbs.tsx` | Tiến độ theo bài; đường quay lui trong cây |
+| `components/destructive-button.tsx` | Nút xoá hai bước, nói rõ hậu quả thay vì "Bạn có chắc không?" |
+| `components/audio-button.tsx`, `admin-bits.tsx`, `theme-toggle.tsx` | Chip 4 giọng; lưới review + badge audio; chọn sáng/tối |
+| `lib/dictation.ts` | **Bản port từng bước của `app/services/dictation.py`** — sửa một bên phải sửa bên kia |
+| `lib/api.ts`, `lib/session.tsx`, `lib/auth-storage.ts`, `lib/theme.ts` | Fetch wrapper, phiên đăng nhập, lưu token, lưu lựa chọn theme |
 
 Shared & infra:
 
@@ -249,14 +256,18 @@ Danh sách task đầy đủ ở [`ROADMAP.md`](ROADMAP.md) §6–§8 và §10. 
 
 | | |
 |---|---|
-| `uv run pytest` | **269 passed, 2 deselected** (2 test `external` gọi edge-tts thật) |
+| `uv run pytest` | **294 passed, 2 deselected** (2 test `external` gọi edge-tts thật) |
+| Trong đó `integration` | 3 test chạy trên PostgreSQL thật, qua `TEST_DATABASE_URL` trỏ vào database riêng |
 | `uv run ruff check app tests` | sạch |
-| `uv run ruff format --check` | 66 file đã đúng định dạng |
+| `uv run ruff format --check` | 67 file đã đúng định dạng |
 | `uv run mypy` | strict, 46 file, không lỗi |
-| `pnpm --filter @toeic-pilot/web lint` | sạch |
+| `alembic upgrade → downgrade → upgrade` | sạch tới `008` |
+| `pnpm --filter @toeic-pilot/web lint` · `pnpm build` | sạch · xanh |
 | `pnpm gen:api-types` | sinh lại cho ra file y hệt — contract không drift |
-| Endpoint trong `openapi.json` | 25 |
-| Media | 38 clip audio, 3 ảnh |
+| Bộ chấm dictation | client và server khớp **20/20 ca** (diff, matched, expected, accuracy, is_complete) |
+| Endpoint trong `openapi.json` | 46 |
+| Bảng | 23 |
+| Media | 67 clip audio, 3 ảnh |
 
 ## Appendix — local commands
 

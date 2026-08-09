@@ -323,8 +323,20 @@ Một khái niệm dùng **một** icon trong toàn app. Bảng này là bảng 
 | Lỗi / bị từ chối | `OctagonAlert` |
 | Tài khoản | `UserRound` |
 | Thoát | `LogOut` |
-| Menu (mobile) | `Menu` |
+| Menu (mobile) · Đóng | `Menu` · `X` |
 | Khu biên soạn nội dung | `SquarePen` |
+| Cây nội dung | `FolderTree` |
+| Phần (section) · Bài (story) | `Layers` · `FileText` |
+| Kiểm tra bài | `Check` |
+| Lưu trữ · Bỏ lưu trữ | `Archive` · `ArchiveRestore` |
+| Sửa · Xoá | `Pencil` · `Trash2` |
+| Đổi thứ tự | `ArrowUp` · `ArrowDown` |
+| Quay lui | `ArrowLeft` · `ChevronRight` (breadcrumb) · `ChevronDown` (mở rộng) |
+| Lỗi trong một trường | `CircleAlert` |
+| Ghi chú, hướng dẫn | `Info` · `Terminal` (lệnh CLI) |
+| Không tìm thấy trang | `Compass` |
+| Chưa tới hạn ôn | `CalendarCheck` |
+| Theme sáng · tối · theo hệ thống | `Sun` · `Moon` · `Monitor` |
 
 Ba icon trạng thái audio (`CircleCheck` / `CircleDashed` / `CircleSlash` / `TriangleAlert`) khớp thẳng với `AudioState` trong `app/services/media_state.py`. **Giữ chúng khớp nhau** — thêm trạng thái ở backend thì thêm icon ở đây.
 
@@ -446,7 +458,85 @@ Ba ràng buộc:
 `components/nav.tsx` giữ `NavLink`, `activeHref` và `SessionControls` để hai
 khung dùng chung — nếu không, chúng sẽ trôi khỏi nhau ngay lần sửa thứ hai.
 
-### 9.8 Skeleton
+### 9.8 Đối chiếu dictation
+
+Hai màu, đúng như người dùng yêu cầu: **xanh `ok` = đúng**, **cam `warn` = chưa
+đúng**. Không dùng `alert` — sai một từ khi nghe là chuyện bình thường của việc
+học, không phải một lỗi hệ thống, và màu đỏ thẫm ở đây sẽ đọc như hỏng hóc.
+
+Nhưng "chưa đúng" có **hai** kiểu mà người học cần phân biệt, nên chúng dùng
+chung màu cam và tách nhau bằng kiểu chữ:
+
+| Trạng thái | Màu | Kiểu chữ |
+|---|---|---|
+| Đúng | `ok` | thường |
+| Nghe sót — từ đáng lẽ phải có | `warn` | **gạch ngang** |
+| Gõ thừa — từ đã gõ nhưng không có | `warn` | *in nghiêng* |
+| Chưa gõ tới | `ink-faint` | `***` font data |
+
+**Gạch bỏ nằm trên từ GÕ SAI, không nằm trên từ đúng.** Ban đầu nó nằm nhầm chỗ:
+`missing` — tức là từ của *đáp án* mà người học chưa gõ ra — bị gạch bỏ. Ở ngay
+vị trí họ đang gõ dở, dòng đó đọc thành "từ này sai", trong khi đó chính là từ họ
+cần gõ. Gạch bỏ theo quy ước nghĩa là "bỏ cái này đi", nên nó thuộc về `extra`.
+
+Giờ dòng đối chiếu đọc được thành câu:
+
+```
+… nine  o'clock tomorrow   o̶c̶l̶o̶c̶k̶ ̶t̶o̶m̶o̶r̶o̶w̶  morning
+        ^^^^ đậm: cần gõ    ^^^^ gạch: bạn đã gõ
+```
+
+Mù màu lục-cam là kiểu phổ biến, nên kiểu chữ không phải trang trí mà là kênh
+thông tin thứ hai bắt buộc (§11.3). Chú giải bên dưới cũng in đúng kiểu chữ của
+từng trạng thái chứ không chỉ có ô màu.
+
+**Từ chưa gõ tới bị che bằng `*`.** Không có nó, bấm Kiểm tra khi mới gõ 4 trên
+10 từ sẽ in ra cả 10 — tức là phát đáp án cho đúng phần người ta chưa nghe ra.
+Dấu sao dùng font `data`, màu `ink-faint`, không gạch không nghiêng: nó là một
+chỗ trống, không phải một phán xét. Chú giải có **bốn** mục chứ không ba, nếu
+không thì dấu sao trông như một loại lỗi thứ tư.
+
+Ranh giới là **số từ đã gõ**, tính theo vị trí trong câu đáp án — không phải vị
+trí trong `diff`. Cách hiển nhiên ("che mọi thứ sau mục cuối cùng học viên đóng
+góp") **sai**, vì `SequenceMatcher` gom cả đoạn còn lại vào một khối `replace`
+và đặt toàn bộ `missing` trước `extra`; nó che 0 từ ở đúng ca hay gặp nhất — gõ
+dở và gõ sai từ cuối. Chi tiết ở `maskUnreached`.
+
+Việc che là **hiển thị thuần tuý**: `accuracy` vẫn tính trên cả câu, nên con số
+học viên nhìn thấy vẫn khớp con số server ghi lại.
+
+**Không hiện phần trăm.** Dictation đo được đúng một chuyện một cách đáng tin —
+nghe ra hay chưa. "89%" không nói cho người học biết nên đi tiếp hay nghe lại;
+"Đúng rồi" thì nói được, và bảng đối chiếu vẫn ở đó cho lần chưa đúng. Con số
+vẫn được tính và lưu (lịch sử phải chấm lại được), chỉ là không đưa lên màn hình.
+
+**Từ gõ sai được gạch chân lượn sóng ngay trong ô nhập.** `<textarea>` không tô
+được từng từ bên trong, nên cách duy nhất là một `<div>` chép lại đoạn chữ nằm
+dưới và textarea nằm trên với chữ trong suốt — chỉ còn con trỏ và vùng chọn là
+thật. Hai lớp phải khớp đến từng pixel (cùng cỡ chữ, padding, độ dày viền,
+`whitespace-pre-wrap`, và cuộn đồng bộ), nếu không chữ sẽ trôi khỏi gạch chân.
+Kiểu lượn sóng là quy ước "lỗi chính tả" mà ai cũng đã đọc được sẵn.
+
+**Một lần bấm phím = một việc.** Lần Enter làm câu trở thành đúng chỉ được
+chấm, không được đi tiếp — khoảnh khắc "xong một câu" phải được nhìn thấy. Nếu
+không, giữ phím dù chỉ nửa giây là trình duyệt tự lặp `keydown`: lần đầu chấm ra
+đúng, lần ngay sau đã thấy `is_complete` nên nhảy sang câu khác, và người học
+không kịp biết mình vừa làm xong. Hai lớp chặn: bỏ qua `event.repeat`, và chỉ mở
+khoá đi tiếp khi `keyup` — muốn sang câu sau thì phải bấm một lần nữa thật sự.
+
+**Enter làm việc tiếp theo, dù việc đó là gì** — chưa đúng thì kiểm tra, đúng rồi
+thì sang câu sau. Cả bài chạy được bằng bàn phím mà không rời tay khỏi chỗ gõ,
+mà gõ là việc duy nhất người học đang làm ở đây. Shift+Enter vẫn xuống dòng:
+cướp hẳn một phím quen thuộc mà không chừa đường lui chỉ đúng cho tới lúc có
+người thật sự cần nó. Sau khi bấm nút Kiểm tra, con trỏ được trả về ô nhập —
+nếu không, Enter kế tiếp sẽ bấm lại chính cái nút vừa bấm.
+
+Kết quả nằm **ngay dưới ô nhập, trong cùng một khối** — mắt không phải rời khỏi
+chỗ vừa gõ để đọc kết quả của chính nó. Ô nhập không bị khoá sau khi chấm: sửa
+rồi chấm lại là cách người ta thực sự dùng một bài dictation. Khi văn bản đã
+đổi mà chưa chấm lại, bảng **tự nói nó đang mô tả đoạn cũ** thay vì im lặng sai.
+
+### 9.9 Skeleton
 
 Giữ nguyên cách tiếp cận của hệ cũ — đây là chỗ hệ cũ làm đúng. Khối có **đúng hình dạng** của nội dung sắp tới, `recess`, nhấp nháy 1.4s. Không bao giờ dùng chữ "Đang tải…".
 

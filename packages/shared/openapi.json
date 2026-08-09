@@ -87,6 +87,17 @@
             "title": "Id",
             "type": "string"
           },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
           "publishable": {
             "title": "Publishable",
             "type": "boolean"
@@ -94,6 +105,17 @@
           "status": {
             "title": "Status",
             "type": "string"
+          },
+          "story_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Story Id"
           },
           "transcript": {
             "title": "Transcript",
@@ -126,6 +148,17 @@
             },
             "title": "Rows",
             "type": "array"
+          },
+          "story_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Story Id"
           },
           "topic_id": {
             "anyOf": [
@@ -174,6 +207,10 @@
             ],
             "title": "Topic Id"
           },
+          "transcript": {
+            "title": "Transcript",
+            "type": "string"
+          },
           "word_count": {
             "title": "Word Count",
             "type": "integer"
@@ -185,7 +222,8 @@
           "topic_id",
           "word_count",
           "audio_url",
-          "duration_ms"
+          "duration_ms",
+          "transcript"
         ],
         "title": "DictationDetail",
         "type": "object"
@@ -237,6 +275,10 @@
             "title": "Expected",
             "type": "integer"
           },
+          "is_complete": {
+            "title": "Is Complete",
+            "type": "boolean"
+          },
           "matched": {
             "title": "Matched",
             "type": "integer"
@@ -252,7 +294,8 @@
           "matched",
           "expected",
           "transcript",
-          "diff"
+          "diff",
+          "is_complete"
         ],
         "title": "DictationResult",
         "type": "object"
@@ -281,6 +324,548 @@
           "transcript"
         ],
         "title": "DictationRow",
+        "type": "object"
+      },
+      "DictationSectionAdmin": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "story_count": {
+            "title": "Story Count",
+            "type": "integer"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_name": {
+            "title": "Topic Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "topic_id",
+          "topic_name",
+          "name",
+          "description",
+          "position",
+          "status",
+          "story_count"
+        ],
+        "title": "DictationSectionAdmin",
+        "type": "object"
+      },
+      "DictationSectionCreate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic_id",
+          "name"
+        ],
+        "title": "DictationSectionCreate",
+        "type": "object"
+      },
+      "DictationSectionDetail": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "stories": {
+            "items": {
+              "$ref": "#/components/schemas/DictationStorySummary"
+            },
+            "title": "Stories",
+            "type": "array"
+          },
+          "story_count": {
+            "title": "Story Count",
+            "type": "integer"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_name": {
+            "title": "Topic Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "story_count",
+          "topic_id",
+          "topic_name",
+          "stories"
+        ],
+        "title": "DictationSectionDetail",
+        "type": "object"
+      },
+      "DictationSectionPublic": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "story_count": {
+            "title": "Story Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "story_count"
+        ],
+        "title": "DictationSectionPublic",
+        "type": "object"
+      },
+      "DictationSectionUpdate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          }
+        },
+        "title": "DictationSectionUpdate",
+        "type": "object"
+      },
+      "DictationStoryAdmin": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "item_count": {
+            "title": "Item Count",
+            "type": "integer"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "publishable": {
+            "title": "Publishable",
+            "type": "boolean"
+          },
+          "published_item_count": {
+            "title": "Published Item Count",
+            "type": "integer"
+          },
+          "section_id": {
+            "title": "Section Id",
+            "type": "string"
+          },
+          "section_name": {
+            "title": "Section Name",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "topic_name": {
+            "title": "Topic Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "section_id",
+          "section_name",
+          "topic_name",
+          "title",
+          "description",
+          "position",
+          "difficulty",
+          "status",
+          "item_count",
+          "published_item_count",
+          "publishable"
+        ],
+        "title": "DictationStoryAdmin",
+        "type": "object"
+      },
+      "DictationStoryCreate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "default": 3,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "section_id": {
+            "title": "Section Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section_id",
+          "title"
+        ],
+        "title": "DictationStoryCreate",
+        "type": "object"
+      },
+      "DictationStoryDetail": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StoryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/StoryProgress"
+          },
+          "section_id": {
+            "title": "Section Id",
+            "type": "string"
+          },
+          "section_name": {
+            "title": "Section Name",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_name": {
+            "title": "Topic Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "difficulty",
+          "section_id",
+          "section_name",
+          "topic_id",
+          "topic_name",
+          "items",
+          "progress"
+        ],
+        "title": "DictationStoryDetail",
+        "type": "object"
+      },
+      "DictationStorySummary": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/StoryProgress"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "difficulty",
+          "progress"
+        ],
+        "title": "DictationStorySummary",
+        "type": "object"
+      },
+      "DictationStoryUpdate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "difficulty": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difficulty"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "section_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Section Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "DictationStoryUpdate",
         "type": "object"
       },
       "DictationSubmit": {
@@ -331,6 +916,247 @@
         "title": "DictationSummary",
         "type": "object"
       },
+      "DictationTopicAdmin": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "section_count": {
+            "title": "Section Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "position",
+          "status",
+          "section_count"
+        ],
+        "title": "DictationTopicAdmin",
+        "type": "object"
+      },
+      "DictationTopicCreate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "DictationTopicCreate",
+        "type": "object"
+      },
+      "DictationTopicDetail": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "section_count": {
+            "title": "Section Count",
+            "type": "integer"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/DictationSectionPublic"
+            },
+            "title": "Sections",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "section_count",
+          "sections"
+        ],
+        "title": "DictationTopicDetail",
+        "type": "object"
+      },
+      "DictationTopicPublic": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "section_count": {
+            "title": "Section Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "section_count"
+        ],
+        "title": "DictationTopicPublic",
+        "type": "object"
+      },
+      "DictationTopicUpdate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "title": "DictationTopicUpdate",
+        "type": "object"
+      },
       "DictationUpdate": {
         "properties": {
           "difficulty": {
@@ -345,6 +1171,28 @@
               }
             ],
             "title": "Difficulty"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "story_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Story Id"
           },
           "topic_id": {
             "anyOf": [
@@ -587,6 +1435,85 @@
           "grade"
         ],
         "title": "ReviewSubmit",
+        "type": "object"
+      },
+      "StoryItem": {
+        "description": "Một câu trong story, kèm việc học viên đã làm đúng nó hay chưa.",
+        "properties": {
+          "audio_url": {
+            "title": "Audio Url",
+            "type": "string"
+          },
+          "completed": {
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "transcript": {
+            "title": "Transcript",
+            "type": "string"
+          },
+          "word_count": {
+            "title": "Word Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "position",
+          "word_count",
+          "audio_url",
+          "duration_ms",
+          "transcript",
+          "completed"
+        ],
+        "title": "StoryItem",
+        "type": "object"
+      },
+      "StoryProgress": {
+        "description": "Tiến độ của một học viên trên một story: đã làm đúng bao nhiêu câu.\n\nSuy ra từ `dictation_attempt` chứ không đọc từ bảng tiến độ nào: một bảng ghi\nsong song sẽ lệch khỏi lịch sử làm bài mà không có gì phát hiện.\n\nKhông còn điểm trung bình. Dictation đo được đúng một chuyện một cách đáng\ntin — nghe ra hay chưa — và một con số như \"89%\" không nói cho người học biết\nnên đi tiếp hay nghe lại. \"3/6 câu đã xong\" thì nói được.",
+        "properties": {
+          "completed_items": {
+            "title": "Completed Items",
+            "type": "integer"
+          },
+          "total_items": {
+            "title": "Total Items",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_items",
+          "completed_items"
+        ],
+        "title": "StoryProgress",
+        "type": "object"
+      },
+      "StoryReorder": {
+        "properties": {
+          "item_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Item Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "item_ids"
+        ],
+        "title": "StoryReorder",
         "type": "object"
       },
       "TokenResponse": {
@@ -1398,7 +2325,765 @@
         ]
       }
     },
+    "/api/v1/admin/dictation/sections": {
+      "get": {
+        "operationId": "list_dictation_sections_admin_api_v1_admin_dictation_sections_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationSectionAdmin"
+                  },
+                  "title": "Response List Dictation Sections Admin Api V1 Admin Dictation Sections Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Dictation Sections Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_dictation_section_api_v1_admin_dictation_sections_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationSectionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationSectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Dictation Section",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/sections/{section_id}": {
+      "delete": {
+        "operationId": "delete_dictation_section_api_v1_admin_dictation_sections__section_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "section_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Section Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Dictation Section",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_dictation_section_api_v1_admin_dictation_sections__section_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "section_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Section Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationSectionUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationSectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Dictation Section",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/sections/{section_id}/publish": {
+      "post": {
+        "operationId": "publish_dictation_section_api_v1_admin_dictation_sections__section_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "section_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Section Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationSectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Dictation Section",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/stories": {
+      "get": {
+        "operationId": "list_dictation_stories_admin_api_v1_admin_dictation_stories_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationStoryAdmin"
+                  },
+                  "title": "Response List Dictation Stories Admin Api V1 Admin Dictation Stories Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Dictation Stories Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_dictation_story_api_v1_admin_dictation_stories_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationStoryCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationStoryAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Dictation Story",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/stories/{story_id}": {
+      "delete": {
+        "operationId": "delete_dictation_story_api_v1_admin_dictation_stories__story_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "story_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Story Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Dictation Story",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_dictation_story_api_v1_admin_dictation_stories__story_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "story_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Story Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationStoryUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationStoryAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Dictation Story",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/stories/{story_id}/publish": {
+      "post": {
+        "operationId": "publish_dictation_story_api_v1_admin_dictation_stories__story_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "story_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Story Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationStoryAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Dictation Story",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/stories/{story_id}/reorder": {
+      "post": {
+        "operationId": "reorder_story_items_api_v1_admin_dictation_stories__story_id__reorder_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "story_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Story Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoryReorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationAdmin"
+                  },
+                  "title": "Response Reorder Story Items Api V1 Admin Dictation Stories  Story Id  Reorder Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reorder Story Items",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/topics": {
+      "get": {
+        "operationId": "list_dictation_topics_admin_api_v1_admin_dictation_topics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationTopicAdmin"
+                  },
+                  "title": "Response List Dictation Topics Admin Api V1 Admin Dictation Topics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Dictation Topics Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_dictation_topic_api_v1_admin_dictation_topics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationTopicCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Dictation Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/topics/{topic_id}": {
+      "delete": {
+        "operationId": "delete_dictation_topic_api_v1_admin_dictation_topics__topic_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Dictation Topic",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_dictation_topic_api_v1_admin_dictation_topics__topic_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationTopicUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Dictation Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/topics/{topic_id}/publish": {
+      "post": {
+        "operationId": "publish_dictation_topic_api_v1_admin_dictation_topics__topic_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Dictation Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/dictation/{item_id}": {
+      "delete": {
+        "operationId": "delete_dictation_item_api_v1_admin_dictation__item_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Dictation Item",
+        "tags": [
+          "admin"
+        ]
+      },
       "patch": {
         "operationId": "update_dictation_api_v1_admin_dictation__item_id__patch",
         "parameters": [
@@ -1915,6 +3600,7 @@
     },
     "/api/v1/dictation": {
       "get": {
+        "description": "Danh sách phẳng các câu đã xuất bản.\n\n`standalone=true` lọc lấy những câu chưa thuộc story nào. Có tham số này vì\ncây topic→section→story ra đời sau: nếu luồng duyệt chỉ đi theo cây, mọi câu\ncó từ trước sẽ biến mất khỏi tầm mắt học viên mà không có gì báo. Mặc định\ngiữ nguyên hành vi cũ để không phá những chỗ đang gọi.",
         "operationId": "list_dictation_api_v1_dictation_get",
         "parameters": [
           {
@@ -1933,6 +3619,18 @@
               ],
               "description": "topic slug",
               "title": "Topic"
+            }
+          },
+          {
+            "description": "only sentences that belong to no story",
+            "in": "query",
+            "name": "standalone",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "only sentences that belong to no story",
+              "title": "Standalone",
+              "type": "boolean"
             }
           },
           {
@@ -1986,6 +3684,170 @@
           }
         },
         "summary": "List Dictation",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation-sections/{section_id}": {
+      "get": {
+        "operationId": "get_dictation_section_api_v1_dictation_sections__section_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "section_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Section Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationSectionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Dictation Section",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation-stories/{story_id}": {
+      "get": {
+        "operationId": "get_dictation_story_api_v1_dictation_stories__story_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "story_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Story Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationStoryDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Dictation Story",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation-topics": {
+      "get": {
+        "operationId": "list_dictation_topics_api_v1_dictation_topics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationTopicPublic"
+                  },
+                  "title": "Response List Dictation Topics Api V1 Dictation Topics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Dictation Topics",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation-topics/{topic_id}": {
+      "get": {
+        "operationId": "get_dictation_topic_api_v1_dictation_topics__topic_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationTopicDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Dictation Topic",
         "tags": [
           "learning"
         ]

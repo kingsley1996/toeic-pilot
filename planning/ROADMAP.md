@@ -14,23 +14,26 @@
 
 | | |
 |---|---|
-| **Phase hiện tại** | Sprint 3 + 4 đã chạy được đầu-cuối cho **từ vựng và dictation** |
+| **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
 | **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | 271 thu thập — **269 chạy** + 2 `external` deselect mặc định |
+| **Test** | 296 thu thập — **294 chạy** + 2 `external` deselect mặc định |
 | **Gate CI** | 13, tất cả xanh |
-| **Migration** | `001` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` |
-| **Bảng** | 20 |
-| **Endpoint** | **25** — auth (3), health (2), Learning Hub (8), Content admin (12) |
-| **Media** | 38 clip audio, 3 ảnh |
-| **Nội dung thật** | **3 từ vựng, 4 câu dictation** ← nút thắt |
-| **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)) · 12/12 route dựng tĩnh |
+| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` |
+| **Bảng** | 23 |
+| **Endpoint** | **46** — auth (3), health (2), học viên (12), admin (29) |
+| **Trang web** | 16 route |
+| **Media** | 67 clip audio, 3 ảnh (`apps/api/media/`: 70 file) |
+| **Nội dung trong repo** | **3 từ vựng, 4 câu dictation** trong `content/sources/` ← nút thắt |
+| **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
 
-**Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` 269 passed / 2 deselected — **gồm cả 3 test `integration` chạy trên PostgreSQL thật** (`tests/test_concurrency.py`, dùng `TEST_DATABASE_URL` trỏ vào một database riêng để không làm bẩn dev DB) · `ruff check` sạch · `ruff format --check` 66 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm gen:api-types` sinh lại **không drift**.
+**Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` **294 passed / 2 deselected** — gồm cả 3 test `integration` chạy trên PostgreSQL thật (`tests/test_concurrency.py`, dùng `TEST_DATABASE_URL` trỏ vào database riêng để không làm bẩn dev DB) · `ruff check` sạch · `ruff format --check` 67 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm build` xanh · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade → downgrade → upgrade` sạch tới `008`.
 
 ### Điều quan trọng nhất cần biết
 
-**Vòng đời nội dung đã khép kín và chạy thật.** Admin dán từ → lưu ở `draft` → worker sinh audio 4 accent → publish (bị chặn nếu audio thiếu hoặc lệch) → học viên ôn tập bằng flashcard SM-2 và làm dictation có chấm theo từng từ. Đã chạy đầu-cuối qua stack Docker, không phải chỉ qua test.
+**Vòng đời nội dung đã khép kín và chạy thật.** Admin dán từ → lưu ở `draft` → worker sinh audio 4 accent → publish (bị chặn nếu audio thiếu hoặc lệch) → học viên ôn tập bằng flashcard SM-2 và làm dictation. Đã chạy đầu-cuối qua stack Docker, không phải chỉ qua test.
+
+**Dictation có cây phân cấp riêng và chấm ở client.** `dictation_topic → section → story → item`, câu có thứ tự trong bài, tiến độ theo bài. Chấm chạy trong trình duyệt (`apps/web/src/lib/dictation.ts`, bản port từng bước của bộ chấm Python — 20/20 ca kiểm khớp tuyệt đối), server vẫn chấm lại và điểm của server mới là bản được lưu. Giao diện **không hiện phần trăm**: chỉ "đúng rồi / chưa đúng" và "3/6 câu đã xong".
 
 **Thiếu là nội dung, không phải tính năng.** Hiện có **3 từ và 4 câu dictation** — đủ để chứng minh đường đi, không đủ để dạy ai.
 
@@ -47,6 +50,7 @@
 ```
 Sprint 3  Content Tooling       🟡 từ vựng + dictation XONG · phần question còn nợ
 Sprint 4  Learning Hub          🟡 backend + frontend XONG · thiếu nội dung
+Sprint 4b Dictation phân cấp    ✅ XONG (mục 4b)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -146,11 +150,13 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] **Design system + revamp vòng 2 (2026-08-09)** — [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md), triển khai trên toàn bộ 12 route. Bỏ mặc định của công cụ (Geist, indigo, `rounded-xl`, `shadow-sm`); token màu kiểm bằng công thức WCAG; 17 emoji → Lucide; thang bốn giọng US/UK/AU/CA; **nút chuyển sáng/tối ba trạng thái**; landing page dựng lại quanh cơ chế chấm từng từ
 - [x] **Đã kiểm thật toàn bộ trang cần đăng nhập (2026-08-09)** — dựng nội dung thật qua chính API admin, đi hết 8 trang, thử cổng publish và cả bốn trạng thái badge audio. Ba lỗi chỉ lộ ra khi chạy: nav xuống dòng ở vai trò `admin`, một icon dùng cho hai khái niệm, và một import lệch khỏi JSX mà `next dev` không bắt (`DESIGN-SYSTEM` §13.4)
 - [x] **Tách khu quản trị thành dashboard riêng (2026-08-09)** — `/admin/**` có `AdminShell` với thanh trên và sidebar riêng; header khu học trở về 3 mục cộng **một** nút `Quản trị` chỉ hiện với `editor`/`admin`. Đã kiểm bằng tài khoản `learner` thật: không thấy nút, `/admin/**` redirect về `/dashboard`, và endpoint trả 403 — cả ba lớp đều giữ
+- [x] **Dictation: chấm ở client + đối chiếu từng từ (2026-08-09)** — `lib/dictation.ts` là bản port từng bước của bộ chấm Python; **20/20 ca kiểm khớp tuyệt đối** (diff, matched, expected, accuracy), gồm đảo thứ tự từ, từ lặp, nháy cong, chữ có dấu. Kết quả hiện ngay dưới ô nhập, xanh = đúng / cam = chưa đúng. Chỉ lần kiểm tra **đầu tiên** được ghi nhận — đã xác nhận trong Postgres: bấm hai lần, DB có đúng một hàng, và điểm server ghi (90.00) khớp con số client hiện
+- [x] **Che từ chưa gõ tới (2026-08-09)** — bấm Kiểm tra khi gõ dở từng in nguyên đáp án. Bản sửa đầu tiên của chính tôi **vẫn sai** ở ca gõ dở + sai từ cuối (che 0 từ), phát hiện nhờ chạy thử chứ không nhờ đọc code; ranh giới đúng là số từ đã gõ, không phải vị trí trong diff. Parity với server giữ nguyên 20/20 sau khi sửa
 - [x] **Sửa một lỗi accessibility có thật** — viền ô nhập cũ chỉ đạt 1.48 tương phản (WCAG 1.4.11 đòi 3.0), tức gần như vô hình với người thị lực kém. Token `rule-strong` mới đạt 3.09–3.64
 
 ### Nội dung — **việc duy nhất còn lại của sprint này**
 - [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **3**
-- [ ] Sinh audio 4 accent × {headword, example} cho toàn bộ — hiện có **38 clip**
+- [ ] Sinh audio 4 accent × {headword, example} cho toàn bộ — hiện có **67 clip**
 - [ ] Soạn ≥ 50 câu dictation — hiện có **4**
 
 Công cụ để làm việc này đã xong và đã chạy thật: dán ở `/admin`, `backfill_audio` sinh audio ngoài luồng, publish chặn nếu audio chưa khớp. Không còn code nào chặn phần này.
@@ -164,6 +170,45 @@ Công cụ để làm việc này đã xong và đã chạy thật: dán ở `/a
 Học viên tạo tài khoản, học một chủ đề, ôn lại hôm sau và thấy đúng những từ đến hạn, làm dictation và nhận điểm chính xác.
 
 ---
+
+## 4b. Dictation — phân cấp nội dung · ✅ ĐÃ XONG (2026-08-09)
+
+```
+dictation_topic          Short stories · Conversation · TOEIC Listening
+   └── dictation_section  admin tự đặt tên: "Unit 1", "Level A", "Tuần 3"
+        └── dictation_story   một bài văn liền mạch
+             └── dictation_item   các câu CÓ THỨ TỰ (position), mỗi câu một audio
+```
+
+### Đã làm
+- [x] Migration `007_dictation_hierarchy` — 3 bảng mới + `story_id`/`position` trên `dictation_item`, CHECK `(story_id IS NULL) = (position IS NULL)`. Chu trình upgrade → downgrade → upgrade sạch
+- [x] 4 endpoint duyệt cây cho học viên, **mỗi tầng tự lọc `published`**
+- [x] 6 endpoint admin: tạo + xuất bản cho cả ba tầng
+- [x] Dán câu vào story: mỗi dòng thành một câu theo đúng thứ tự, nối tiếp sau câu đã có
+- [x] Cổng publish story: **từ chối 409** khi chưa có câu nào đã xuất bản
+- [x] Tiến độ theo story, **suy ra từ `dictation_attempt`** — không có bảng tiến độ song song
+- [x] Frontend: 4 trang duyệt + breadcrumb + dải câu + màn quản trị cây
+- [x] Câu chưa thuộc bài nào vẫn với tới được qua `?standalone=true` và lối "Câu lẻ" tự ẩn khi hết
+- [x] 23 test mới (`tests/test_dictation_tree.py`), tổng **294**
+
+### Sửa / xoá / sắp xếp (2026-08-09)
+- [x] PATCH + DELETE cho cả ba tầng; sửa tên ngay tại chỗ trên màn cây
+- [x] Chuyển câu vào bài hoặc gỡ ra thành câu lẻ (`story_id: ""`), `position` tự đặt cuối
+- [x] Đổi thứ tự câu bằng mũi tên — gửi **cả danh sách** nên không có lúc nào hai câu trùng số
+- [x] Xoá câu đã có người làm bị **chặn 409**, chỉ sang `archived`
+- [x] Xoá bài/phần/chủ đề **không xoá câu**: chúng trở lại thành câu lẻ
+- [x] Nút xoá hai bước, nói rõ hậu quả ("Xoá cả 3 phần?") thay vì "Bạn có chắc không?"
+- [x] **Sửa lỗi Enter nhảy câu (2026-08-09)** — lần bấm làm câu trở thành đúng bị nhảy luôn sang câu sau vì giữ phím sinh ra `keydown` tự lặp. Chặn bằng `event.repeat` + chỉ mở khoá khi `keyup`: một lần bấm = một việc
+- [x] **Hoàn thiện UX dictation (2026-08-09)** — gạch bỏ chuyển từ từ-đúng sang từ-gõ-sai (mã hoá cũ bị ngược); Enter kiểm tra, và Enter lần nữa khi đã đúng thì sang câu sau; từ gõ sai được gạch chân lượn sóng ngay trong ô nhập bằng lớp phủ khớp pixel
+- [x] **Đơn giản hoá luồng dictation (2026-08-09)** — bỏ điểm số khỏi giao diện, chỉ còn "đúng rồi / chưa đúng" và tiến độ "3/6 câu đã xong". Migration `008` thêm `dictation_attempt.is_complete`; tiến độ đếm cột đó chứ không đếm `accuracy = 100`, vì gõ đủ rồi gõ thêm vẫn cho 100. Bỏ luôn luật "chỉ lần kiểm tra đầu tiên được ghi nhận" — nó sinh ra để chống nâng điểm, mà giờ không còn điểm để nâng
+- [x] **Lưu trữ / Bỏ lưu trữ** ngay cạnh nút Xoá, và `PublishTag` có đủ **ba** trạng thái — `archived` từng hiện ra là "nháp", nói ngược hẳn sự thật
+- [x] Thông báo 409 khi xoá được dịch sang tiếng Việt và chỉ đúng nút đang nằm cạnh
+- [x] Giọng đọc theo **story**, không theo từng câu — một bài văn không còn bị bốn giọng đọc luân phiên
+
+### Ba thứ chỉ lộ ra khi chạy thật
+1. **`/dictation/topics` bị `/dictation/{item_id}` bắt trước** và 422 khi parse "topics" thành UUID. Đổi sang đường dẫn gạch nối, theo tiền lệ `/vocabulary-review/session`.
+2. **`create_all` của container dev đã kịp tạo 3 bảng mới** trước khi kịp dừng nó — đúng cái bẫy `CLAUDE.md` ghi. Phải drop rồi mới autogenerate được.
+3. **Autogenerate sinh khoá ngoại không tên**, kéo theo `drop_constraint(None, ...)` ở `downgrade` — câu lệnh không bao giờ chạy được. Chỉ lộ khi có người thật sự downgrade.
 
 ## 5. Sprint 5 — TOEIC Practice
 
@@ -285,7 +330,9 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 | **Chưa có nội dung thật** | `ADR-001` §A6.3 | Nút thắt lớn nhất của dự án. 3 từ, 4 câu dictation. Công cụ đã xong — chỉ còn việc soạn |
 | Rate limiting | P1-8 → **Sprint 6** | Chặn cứng endpoint LLM đầu tiên |
 | Token trong `localStorage` | P1-7 → **Sprint 6** | Cũng là chỗ đầu tiên Redis thật sự được dùng (refresh token + denylist) |
-| Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 269 test. Revamp giao diện vừa rồi **không có lưới an toàn nào** ngoài typecheck và lint |
+| Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 294 test. Revamp giao diện vừa rồi **không có lưới an toàn nào** ngoài typecheck và lint |
+| Đổi chính sách giọng không sửa audio cũ | `backfill_audio.voice_for_dictation` | `media_state` cố ý chỉ hỏi "clip có khớp text không". Story thu trước bản sửa vẫn giữ giọng lẫn lộn cho tới khi gỡ liên kết và backfill lại |
+| Chưa chọn được giọng cho từng story | `backfill_audio.py` | Giọng suy ra từ `story_id`, nhất quán nhưng admin không chọn được "bài này giọng Anh" |
 | Chưa kiểm giao diện ở viewport hẹp | `DESIGN-SYSTEM` §13.3 | Breakpoint đúng trong code, chưa quan sát được ở 360px |
 | Branch protection chưa bật | Sprint 0 → **Sprint 6** | Cần quyền admin repo. 13 gate xanh mà không ai bắt buộc thì chỉ là gợi ý |
 | `draft` chưa có lối ra cho `question` | `ADR-001` §A4.8 | Từ vựng và dictation **đã có** cổng publish. `question` thì chưa có endpoint nào — Sprint 5 |

@@ -12,6 +12,16 @@ export type HTTPValidationError = components["schemas"]["HTTPValidationError"];
 // Learning Hub
 export type TopicPublic = components["schemas"]["TopicPublic"];
 export type AudioClip = components["schemas"]["AudioClip"];
+export type DictationTopicPublic = components["schemas"]["DictationTopicPublic"];
+export type DictationTopicDetail = components["schemas"]["DictationTopicDetail"];
+export type DictationSectionDetail = components["schemas"]["DictationSectionDetail"];
+export type DictationStoryDetail = components["schemas"]["DictationStoryDetail"];
+export type DictationStorySummary = components["schemas"]["DictationStorySummary"];
+export type StoryItem = components["schemas"]["StoryItem"];
+export type StoryProgress = components["schemas"]["StoryProgress"];
+export type DictationTopicAdmin = components["schemas"]["DictationTopicAdmin"];
+export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin"];
+export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
 export type ReviewCard = components["schemas"]["ReviewCard"];
@@ -53,6 +63,13 @@ export const API_ROUTES = {
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,
   submitDictation: (id: string) => `/api/v1/dictation/${id}/attempts`,
 
+  // Cây dictation. Gạch nối chứ không lồng vào `/dictation/...`: đường dẫn động
+  // `/dictation/{item_id}` khai kiểu UUID và sẽ bắt mất `/dictation/topics`.
+  dictationTopics: "/api/v1/dictation-topics",
+  dictationTopic: (id: string) => `/api/v1/dictation-topics/${id}`,
+  dictationSection: (id: string) => `/api/v1/dictation-sections/${id}`,
+  dictationStory: (id: string) => `/api/v1/dictation-stories/${id}`,
+
   // Content admin
   adminTopics: "/api/v1/admin/topics",
   adminVocabulary: "/api/v1/admin/vocabulary",
@@ -63,4 +80,14 @@ export const API_ROUTES = {
   adminDictationParse: "/api/v1/admin/dictation/parse",
   adminDictationItem: (id: string) => `/api/v1/admin/dictation/${id}`,
   adminDictationPublish: (id: string) => `/api/v1/admin/dictation/${id}/publish`,
+  adminDictationTopics: "/api/v1/admin/dictation/topics",
+  adminDictationTopicPublish: (id: string) => `/api/v1/admin/dictation/topics/${id}/publish`,
+  adminDictationSections: "/api/v1/admin/dictation/sections",
+  adminDictationSectionPublish: (id: string) => `/api/v1/admin/dictation/sections/${id}/publish`,
+  adminDictationStories: "/api/v1/admin/dictation/stories",
+  adminDictationStoryPublish: (id: string) => `/api/v1/admin/dictation/stories/${id}/publish`,
+  adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
+  adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
+  adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,
+  adminDictationStoryReorder: (id: string) => `/api/v1/admin/dictation/stories/${id}/reorder`,
 } as const;

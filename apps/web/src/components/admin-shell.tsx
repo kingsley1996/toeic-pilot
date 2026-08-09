@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Headphones, Library, SquarePen } from "lucide-react";
+import { ArrowLeft, FolderTree, Headphones, Library, SquarePen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,6 +18,7 @@ const ADMIN_LINKS: NavItem[] = [
   { href: "/admin", label: "Tổng quan", Icon: SquarePen },
   { href: "/admin/vocabulary", label: "Từ vựng", Icon: Library },
   { href: "/admin/dictation", label: "Câu nghe", Icon: Headphones },
+  { href: "/admin/dictation/tree", label: "Cây nội dung", Icon: FolderTree },
 ];
 
 /**

@@ -45,8 +45,13 @@ VOICE_FOR_ACCENT = {
     "en-CA": "ca_male_1",
 }
 
-# Dictation gets variety instead, chosen from the item's own id so the same
-# sentence always comes back in the same voice.
+# Dictation gets variety instead — but the unit of variety is the **story**, not
+# the sentence. A story is one continuous passage, and rotating the speaker
+# between its sentences makes it sound like four people reading alternate lines
+# of the same paragraph.
+#
+# Standalone sentences keep per-sentence variety: there the point is to meet all
+# four accents, and each sentence stands alone anyway.
 DICTATION_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
 
 
@@ -65,7 +70,14 @@ class Counts:
 
 
 def voice_for_dictation(item: DictationItem) -> str:
-    return DICTATION_VOICES[item.id.int % len(DICTATION_VOICES)]
+    """One voice per story; per sentence only when the sentence stands alone.
+
+    Derived from an id rather than stored, so it needs no column and never
+    drifts: the same story always comes back in the same voice, and re-running
+    the backfill after an edit does not silently re-cast the narrator.
+    """
+    key = item.story_id if item.story_id is not None else item.id
+    return DICTATION_VOICES[key.int % len(DICTATION_VOICES)]
 
 
 class AudioFactory:

@@ -8,11 +8,17 @@ from app.models.mixins import PublishableMixin, status_check
 
 
 class Topic(Base, PublishableMixin):
-    """A subject a learner browses by — shared between vocabulary and dictation.
+    """A subject a learner browses vocabulary by.
 
-    One table rather than one per feature: learners think in subjects ("travel"),
-    not in product modules, and the same subject should mean the same thing on
-    both sides of the Learning Hub.
+    It was designed to be shared with dictation, on the reasoning that learners
+    think in subjects ("travel") rather than in product modules. Dictation has
+    since grown its own tree (`DictationTopic` → section → story) because the two
+    classify along different axes: vocabulary groups by *subject*, dictation by
+    *kind of listening* ("short stories", "conversation"). Sharing one table put
+    "Short stories" in the vocabulary subject filter, where it means nothing.
+
+    `dictation_item.topic_id` still points here and is still honoured, so
+    sentences that predate the tree keep working.
     """
 
     __tablename__ = "topic"

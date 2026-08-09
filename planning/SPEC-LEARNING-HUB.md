@@ -70,10 +70,20 @@ Mỗi lần ôn ghi **hai** chỗ: cập nhật `vocabulary_review_state` (hiệ
 
 ## 3. Dictation — học viên
 
+> ⚠️ **Mục này đã bị vượt qua ở ba chỗ.** Nó ghi lại bộ mặc định ban đầu; phần
+> đã thay ghi ngay dưới đây, và mô tả hiện trạng đầy đủ nằm ở
+> [`ROADMAP.md`](ROADMAP.md) §4b:
+>
+> | Đặc tả này nói | Thực tế bây giờ |
+> |---|---|
+> | Gom theo `topic` dùng chung với từ vựng | Cây riêng `dictation_topic → section → story → item`, câu có thứ tự trong bài |
+> | Chấm ở server, hiện `accuracy` | Chấm ở **client** (`apps/web/src/lib/dictation.ts`), giao diện **không hiện phần trăm** |
+> | Thuật toán "LCS" | `difflib.SequenceMatcher` — **không phải** LCS thường; hai thuật toán tô màu những từ khác nhau |
+
 ### 3.1 Làm bài
 Một bài = **một câu**. Nghe (không giới hạn số lần), gõ lại, nộp. Không chỉnh tốc độ ở vòng này.
 
-Gom theo chủ đề, dùng chung bảng `topic` với từ vựng.
+~~Gom theo chủ đề, dùng chung bảng `topic` với từ vựng.~~ → cây riêng, xem bảng trên.
 
 ### 3.2 Chấm
 
@@ -90,7 +100,11 @@ Lưu `submitted_text` **nguyên văn**, không lưu bản đã chuẩn hoá: chu
 `word_diff` lưu JSONB để UI tô lại màu mà không phải chấm lại.
 
 ### 3.3 Sau khi nộp
-Hiện transcript đúng, tô màu từng từ (khớp / thiếu / thừa), và `accuracy`. Cho làm lại — mỗi lần là một hàng `dictation_attempt` mới, không ghi đè.
+Tô màu từng từ (khớp / thiếu / thừa) và cho làm lại — mỗi lần là một hàng
+`dictation_attempt` mới, không ghi đè.
+
+Hai chỗ đã đổi: **không hiện `accuracy`** (chỉ "đúng rồi / chưa đúng"), và
+transcript chỉ hiện khi người học tự mở `Xem đáp án` chứ không bung ra ngay.
 
 **Chấm theo `dictation_item.transcript`, không phải `audio_asset.source_text`.** Hai cột này thường giống nhau, và đó chính là cái bẫy.
 

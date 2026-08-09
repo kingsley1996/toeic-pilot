@@ -115,6 +115,19 @@ Trong DB và trong hash chỉ có `us_female_1`. ID nhà cung cấp nằm gọn 
 
 Điều này đã trả cổ tức thật: Microsoft đổi tên `en-AU-WilliamNeural` thành `en-AU-WilliamMultilingualNeural`, và toàn bộ việc phải làm là sửa một dòng trong bảng map — không asset nào phải sinh lại.
 
+**Dictation chọn giọng theo STORY, không theo từng câu.** `voice_for_dictation`
+lấy khoá từ `story_id` nếu câu thuộc một bài, chỉ rơi về `item.id` với câu lẻ.
+Ban đầu nó lấy theo `item.id` cho mọi trường hợp, và kết quả là một bài văn liền
+mạch bị bốn giọng đọc luân phiên từng câu — đã thấy thật trong dev DB: sáu câu
+của một story dùng ba giọng khác nhau.
+
+Suy ra từ id chứ không lưu thành cột, nên không cần migration và không bao giờ
+lệch. Nhưng đổi chính sách **không** làm mới audio đã có: `media_state` cố ý chỉ
+hỏi "clip này có khớp text không", không hỏi "có đúng chính sách hiện tại
+không". Story thu trước bản sửa giữ nguyên giọng lẫn lộn cho tới khi gỡ liên kết
+audio rồi chạy lại `backfill_audio`.
+
+
 ### 3.3 Sinh
 
 `EdgeTTSEngine.synthesize()` gọi `asyncio.run()` quanh `edge_tts.Communicate(...).stream()`, gom các chunk `type == "audio"`. Retry với backoff luỹ thừa, mặc định 4 lần, hệ số 2s.
@@ -211,13 +224,15 @@ Hai lớp bảo vệ: `tests/test_content_isolation.py` chạy `import app.main`
 
 | | |
 |---|---|
-| Clip audio | **38** — 3 từ × {headword, example} × 4 accent + 4 câu dictation, phủ đủ 4 accent |
+| Clip audio | **67** — 3 từ × {headword, example} × 4 accent, cộng các câu dictation |
 | Ảnh | **3** — Wikimedia Commons, CC BY 4.0 / CC BY-SA 3.0 / CC BY 2.0 |
-| Manifest | `content/manifest/audio_assets.jsonl` (38 dòng), `image_assets.jsonl` (3 dòng) — commit vào repo |
-| File media | `apps/api/media/` — 41 file, **gitignore**, không commit |
-| Test | 271 thu thập, 269 chạy; 2 test `external` gọi edge-tts thật và **mặc định bị deselect** |
+| Manifest | `content/manifest/audio_assets.jsonl` (67 dòng), `image_assets.jsonl` (3 dòng) — commit vào repo |
+| File media | `apps/api/media/` — 70 file, **gitignore**, không commit |
+| Test | 296 thu thập, 294 chạy; 2 test `external` gọi edge-tts thật và **mặc định bị deselect** |
 
 *(số liệu kiểm lại 2026-08-09)*
+
+Con số clip tăng từ 38 lên 67 trong lúc dựng và kiểm cây dictation: mỗi câu mới cần một clip, và một đợt phải sinh lại vì **giọng đọc chuyển sang chọn theo story** thay vì theo từng câu (§3.2).
 
 Toàn bộ số này là **mẫu chứng minh đường ống chạy được**, không phải nội dung để dạy ai.
 

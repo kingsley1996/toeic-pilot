@@ -242,13 +242,19 @@ def test_draft_dictation_is_invisible(client: TestClient, db_session: Session) -
     assert len(client.get("/api/v1/dictation").json()) == 1
 
 
-def test_the_transcript_is_not_sent_before_the_answer(
+def test_the_transcript_ships_with_the_item_for_client_side_grading(
     client: TestClient, db_session: Session
 ) -> None:
-    # Sending the answer to the browser would make the exercise pointless.
+    """The answer key is sent on purpose, and this test is the record of that.
+
+    It used to assert the opposite. Grading moved to the client so feedback is
+    instant, which requires the answer in the browser — the trade is written up
+    on `DictationDetail.transcript`. Pinning it here means the day someone needs
+    the answer hidden again, they change a decision rather than discover one.
+    """
     item = make_dictation(db_session)
     body = client.get(f"/api/v1/dictation/{item.id}").json()
-    assert "transcript" not in body
+    assert body["transcript"] == "The report is due Friday."
     assert body["word_count"] == 5
     assert body["audio_url"].endswith(".mp3")
 
