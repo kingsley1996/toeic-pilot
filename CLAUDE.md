@@ -23,7 +23,7 @@ Two descriptions of *current behaviour* rather than of decisions:
 - **`planning/ARCHITECTURE.md`** — what the system is made of right now: components, routers, services, file map, and the last verification run. Read it for orientation; `ROADMAP.md` still owns status.
 - **`planning/MEDIA-PIPELINE.md`** — how audio and images actually work end to end today, plus an honest strengths/weaknesses list. Read §10 before extending either pipeline: **§10.2 (no multi-voice clips — this blocks Parts 2 and 3) and §10.3 (images are not reproducible) are real defects**, not known limitations. §10.1 was one too and is now fixed by `app/services/media_state.py`.
 
-- **`planning/DESIGN-SYSTEM.md`** — the UI design system: colour tokens (contrast-verified, light and dark), type, the four-accent categorical scale, Lucide icon rules, component specs. **Written but not yet implemented** — `apps/web` still runs the old tokens; §13 is the migration list.
+- **`planning/DESIGN-SYSTEM.md`** — the UI design system, **implemented across all of `apps/web`**: contrast-verified colour tokens for light and dark, the three-state theme switch, type (Archivo / Be Vietnam Pro / IBM Plex Mono, all with the `vietnamese` subset), the four-accent categorical scale, Lucide icon rules, component specs. Three rules there are load-bearing and fail quietly: **no `box-shadow`**, **one 4px radius** (the Tailwind scale is replaced, so `rounded-lg` emits nothing), and **`rule-strong` for component boundaries** — `rule` is decorative and does not meet the 3:1 that WCAG 1.4.11 requires of an input border.
 
 And one provisional spec:
 

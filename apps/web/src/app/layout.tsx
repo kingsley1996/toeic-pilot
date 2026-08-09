@@ -1,13 +1,37 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Be_Vietnam_Pro, IBM_Plex_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/app-shell";
 import { SessionProvider } from "@/lib/session";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+/*
+ * `subsets` PHẢI có "vietnamese" ở cả ba font. Thiếu nó thì `ế` `ộ` `ữ` rơi về
+ * font hệ thống và một dòng chữ sẽ lẫn hai kiểu chữ khác nhau — rất dễ lọt vì
+ * chữ tiếng Anh trông vẫn hoàn hảo. Đã xác minh cả ba có subset này.
+ */
+const display = Archivo({
+  variable: "--font-display",
+  subsets: ["latin", "vietnamese"],
+  weight: ["600"],
+  display: "swap",
+});
+
+const body = Be_Vietnam_Pro({
+  variable: "--font-body",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "600"],
+  display: "swap",
+});
+
+const data = IBM_Plex_Mono({
+  variable: "--font-data",
+  subsets: ["latin", "vietnamese"],
+  weight: ["500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "TOEIC Pilot",
@@ -16,11 +40,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* The provider wraps the shell as well as the pages: the header reads
-            the same session the pages do, which is what stops it advertising
-            "Log in" to someone who is already signed in. */}
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        {/* Đặt data-theme trước khi trang vẽ, nếu không người chọn theme tối sẽ
+            thấy một nháy trắng mỗi lần tải. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className={`${display.variable} ${body.variable} ${data.variable}`}>
+        {/* Provider bọc cả shell lẫn các trang: header đọc đúng phiên mà các
+            trang đọc, và đó là thứ ngăn nó mời "Đăng nhập" với người đã đăng
+            nhập rồi. */}
         <SessionProvider>
           <AppShell>{children}</AppShell>
         </SessionProvider>

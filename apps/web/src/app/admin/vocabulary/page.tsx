@@ -7,18 +7,21 @@ import {
   type VocabularyAdmin,
   type VocabularyParseResponse,
 } from "@toeic-pilot/shared";
+import { Library, Send } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-import { AudioBadge, BackfillHint, ParsePreview } from "@/components/admin-bits";
+import { BackfillHint, ParsePreview } from "@/components/admin-bits";
 import {
   Alert,
-  Badge,
+  AudioTag,
   Button,
-  Card,
   EmptyState,
   Field,
   Page,
   PageHeader,
+  Panel,
+  PublishTag,
+  SectionHeader,
   Select,
   SkeletonList,
   Spinner,
@@ -30,7 +33,7 @@ import { useRequireSession } from "@/lib/session";
 const PLACEHOLDER = `invoice | noun | /ˈɪnvɔɪs/ | a bill for goods | hóa đơn | Please pay the invoice. | Vui lòng thanh toán.
 deadline | noun | /ˈdedlaɪn/ | the latest time | hạn chót`;
 
-/** One stale clip is enough to block publishing, so the worst state is the one shown. */
+/** Một clip lệch là đủ để chặn publish, nên trạng thái xấu nhất là trạng thái được hiện. */
 function worstAudioState(entry: VocabularyAdmin): string {
   const states = entry.audio.map((slot) => slot.state);
   if (states.length === 0 || states.includes("missing")) return "missing";
@@ -69,8 +72,8 @@ export default function AdminVocabularyPage() {
     setError(null);
     setBusy(true);
     try {
-      // Parsing writes nothing: the rows come back for review, and only what the
-      // editor approves is sent to the commit endpoint.
+      // Parse KHÔNG ghi gì cả: các dòng quay về để xem lại, và chỉ những gì
+      // biên tập viên duyệt mới được gửi sang endpoint commit.
       setParsed(
         await apiFetch<VocabularyParseResponse>(API_ROUTES.adminVocabularyParse, {
           method: "POST",
@@ -141,11 +144,11 @@ export default function AdminVocabularyPage() {
       )}
       {notice && (
         <div className="mb-4">
-          <Alert tone="success">{notice}</Alert>
+          <Alert tone="ok">{notice}</Alert>
         </div>
       )}
 
-      <Card className="p-5">
+      <Panel className="p-5">
         <Field
           label="Dán hàng loạt"
           hint="headword | pos | phonetic | meaning_en | meaning_vi | example | example_vi"
@@ -155,7 +158,7 @@ export default function AdminVocabularyPage() {
             onChange={(event) => setRaw(event.target.value)}
             rows={6}
             placeholder={PLACEHOLDER}
-            className="font-mono text-xs"
+            className="font-data text-small"
           />
         </Field>
         <div className="mt-4 flex flex-wrap items-end gap-3">
@@ -174,7 +177,7 @@ export default function AdminVocabularyPage() {
             </Select>
           </Field>
         </div>
-      </Card>
+      </Panel>
 
       {parsed && (
         <>
@@ -182,9 +185,11 @@ export default function AdminVocabularyPage() {
             parsed={parsed}
             render={(row) => (
               <>
-                <span className="font-medium">{row.headword || "—"}</span>
-                <span className="ml-2 text-xs text-text-subtle">{row.part_of_speech}</span>
-                {row.meaning_vi && <span className="ml-2 text-text-muted">· {row.meaning_vi}</span>}
+                <span className="font-semibold">{row.headword || "—"}</span>
+                <span className="ml-2 text-label uppercase text-ink-faint">
+                  {row.part_of_speech}
+                </span>
+                {row.meaning_vi && <span className="ml-2 text-ink-muted">· {row.meaning_vi}</span>}
               </>
             )}
           />
@@ -199,13 +204,13 @@ export default function AdminVocabularyPage() {
         </>
       )}
 
-      <section className="mt-10">
-        <h2 className="mb-3 text-lg font-semibold">Tất cả từ</h2>
+      <section className="mt-12">
+        <SectionHeader title="Tất cả từ" />
         {!entries && <SkeletonList rows={3} />}
 
         {entries?.length === 0 && (
           <EmptyState
-            icon="🗂️"
+            icon={Library}
             title="Chưa có từ nào"
             description="Dán vài dòng ở trên để bắt đầu."
           />
@@ -213,39 +218,40 @@ export default function AdminVocabularyPage() {
 
         <div className="space-y-2">
           {entries?.map((entry) => (
-            <Card key={entry.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
+            <Panel key={entry.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <div className="min-w-0 flex-1">
-                <span className="font-medium">{entry.headword}</span>
-                <span className="ml-2 text-xs text-text-subtle">{entry.part_of_speech}</span>
-                <p className="truncate text-sm text-text-muted">{entry.meaning_vi}</p>
+                <span className="font-semibold">{entry.headword}</span>
+                <span className="ml-2 text-label uppercase text-ink-faint">
+                  {entry.part_of_speech}
+                </span>
+                <p className="truncate text-small text-ink-muted">{entry.meaning_vi}</p>
               </div>
-              <Badge tone={entry.status === "published" ? "success" : "neutral"}>
-                {entry.status}
-              </Badge>
-              <AudioBadge state={worstAudioState(entry)} />
+              <PublishTag status={entry.status} />
+              <AudioTag state={worstAudioState(entry)} />
               {entry.status !== "published" && (
                 <Button
                   size="sm"
-                  variant="success"
                   disabled={!entry.publishable || !canPublish}
                   onClick={() => void publish(entry.id)}
+                  // Nút mờ CHÍNH LÀ thông báo — nên nó phải nói được vì sao.
                   title={
                     !canPublish
                       ? "Chỉ admin mới publish được"
                       : entry.publishable
-                        ? "Publish"
+                        ? "Xuất bản từ này"
                         : "Audio chưa khớp với text"
                   }
                 >
-                  Publish
+                  <Send size={14} strokeWidth={2} aria-hidden />
+                  Xuất bản
                 </Button>
               )}
-            </Card>
+            </Panel>
           ))}
         </div>
       </section>
 
-      <div className="mt-10">
+      <div className="mt-12">
         <BackfillHint />
       </div>
     </Page>

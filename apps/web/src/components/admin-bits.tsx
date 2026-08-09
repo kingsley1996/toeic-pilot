@@ -1,38 +1,38 @@
 "use client";
 
 import type { VocabularyParseResponse } from "@toeic-pilot/shared";
+import { CircleAlert, Terminal } from "lucide-react";
 
-import { Alert, Badge, Card } from "@/components/ui";
+import { Alert, Panel, Tag, cx } from "@/components/ui";
 
-/**
- * How ready a piece of content's audio is.
- *
- * `stale` is the one worth understanding: the clip exists but was made from an
- * older version of the text, so it says the wrong words. For a dictation that
- * matters twice over, because the transcript is also the answer key — the
- * learner would be marked against a sentence they were never played.
- */
-export function AudioBadge({ state }: { state: string }) {
-  if (state === "current") return <Badge tone="success">audio sẵn sàng</Badge>;
-  if (state === "stale") return <Badge tone="warning">audio đã cũ</Badge>;
-  return <Badge tone="neutral">chưa có audio</Badge>;
-}
-
-/** The command that fills in whatever is missing. */
+/** Lệnh sinh ra phần audio còn thiếu. */
 export function BackfillHint() {
   return (
-    <Alert tone="brand">
-      Audio không sinh từ giao diện này. Nội dung mới lưu ở dạng nháp; chạy trong{" "}
-      <code className="font-mono">apps/api</code>:{" "}
-      <code className="font-mono">uv run python -m app.content.backfill_audio</code>. Chỉ publish
-      được khi audio khớp đúng với text hiện tại.
+    <Alert tone="info">
+      <span className="flex items-center gap-1.5 font-semibold text-ink">
+        <Terminal size={14} strokeWidth={2} aria-hidden />
+        Audio không sinh từ giao diện này
+      </span>
+      <p className="mt-1">
+        Nội dung mới lưu ở dạng nháp. Chạy trong{" "}
+        <code className="font-data text-ink">apps/api</code>:{" "}
+        <code className="font-data text-ink">uv run python -m app.content.backfill_audio</code>. Chỉ
+        publish được khi audio khớp đúng với text hiện tại.
+      </p>
     </Alert>
   );
 }
 
 type ParsedRow = { line: number; problems?: string[] | null };
 
-/** Shared review grid: the parse result before anything is written. */
+/**
+ * Lưới xem lại kết quả parse — trước khi bất cứ thứ gì được ghi.
+ *
+ * Dòng chữ "Chưa có gì được ghi vào cơ sở dữ liệu" không phải trấn an: parse và
+ * commit là hai endpoint tách rời và parse KHÔNG BAO GIỜ ghi database
+ * (ADR-005 §5.1). Xem trước rồi mới quyết định là toàn bộ lý do công cụ này
+ * tồn tại.
+ */
 export function ParsePreview<T extends ParsedRow>({
   parsed,
   render,
@@ -42,32 +42,36 @@ export function ParsePreview<T extends ParsedRow>({
 }) {
   const rows = parsed.rows as T[];
   return (
-    <Card className="mt-4 overflow-hidden">
-      <div className="flex items-center gap-3 border-b border-border px-5 py-3">
-        <Badge tone="success">{parsed.ok_count} hợp lệ</Badge>
-        {parsed.error_count > 0 && <Badge tone="danger">{parsed.error_count} lỗi</Badge>}
-        <span className="text-xs text-text-subtle">Chưa có gì được ghi vào cơ sở dữ liệu</span>
+    <Panel className="mt-4 overflow-hidden">
+      <div className="flex flex-wrap items-center gap-2 border-b border-rule bg-recess px-4 py-2.5">
+        <Tag tone="ok">{parsed.ok_count} hợp lệ</Tag>
+        {parsed.error_count > 0 && <Tag tone="alert">{parsed.error_count} lỗi</Tag>}
+        <span className="text-small text-ink-muted">Chưa có gì được ghi vào cơ sở dữ liệu</span>
       </div>
-      <ul className="divide-y divide-border">
-        {rows.map((row) => (
-          <li
-            key={row.line}
-            className={row.problems?.length ? "bg-danger-soft/40 px-5 py-3" : "px-5 py-3"}
-          >
-            <div className="flex items-start gap-3">
-              <span className="w-6 shrink-0 text-right text-xs text-text-subtle tabular-nums">
-                {row.line}
-              </span>
-              <div className="min-w-0 flex-1 text-sm">{render(row)}</div>
-            </div>
-            {row.problems?.map((problem) => (
-              <p key={problem} className="ml-9 mt-1 text-xs text-danger">
-                ⚠ {problem}
-              </p>
-            ))}
-          </li>
-        ))}
+      <ul className="divide-y divide-rule">
+        {rows.map((row) => {
+          const broken = Boolean(row.problems?.length);
+          return (
+            <li key={row.line} className={cx("px-4 py-2.5", broken && "bg-alert-tint/50")}>
+              <div className="flex items-start gap-3">
+                <span className="w-6 shrink-0 text-right font-data text-small text-ink-faint">
+                  {row.line}
+                </span>
+                <div className="min-w-0 flex-1 text-body">{render(row)}</div>
+              </div>
+              {row.problems?.map((problem) => (
+                <p
+                  key={problem}
+                  className="ml-9 mt-1 flex items-center gap-1.5 text-small text-alert"
+                >
+                  <CircleAlert size={14} strokeWidth={2} className="shrink-0" aria-hidden />
+                  {problem}
+                </p>
+              ))}
+            </li>
+          );
+        })}
       </ul>
-    </Card>
+    </Panel>
   );
 }

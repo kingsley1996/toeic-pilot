@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import { Button, Field, FieldError, Input, Panel, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -29,48 +30,64 @@ export default function RegisterPage() {
       });
       router.push("/login");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Registration failed");
+      setError(err instanceof ApiError ? err.message : "Không tạo được tài khoản.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="text-2xl font-bold">Create account</h1>
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        <label className="block text-sm">
-          Email
-          <input
-            name="email"
-            type="email"
-            required
-            className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="block text-sm">
-          Password
-          <input
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+    <div className="mx-auto w-full max-w-sm px-4 py-12 sm:py-20">
+      <p className="text-label font-semibold uppercase text-action-ink">Tài khoản</p>
+      <h1 className="mt-1.5">Tạo tài khoản</h1>
+      <p className="mt-2 text-ink-muted">Miễn phí. Bắt đầu học được ngay.</p>
+
+      <Panel className="mt-7 p-5">
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          <Field label="Email">
+            <Input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="ban@vidu.com"
+            />
+          </Field>
+          {/*
+           * Giới hạn của bcrypt tính theo BYTE chứ không theo ký tự, và chữ có
+           * dấu tốn 3 byte mỗi ký tự — nên một mật khẩu tiếng Việt 24 ký tự đã
+           * chạm trần 72 byte. Máy chủ trả 422 chứ không cắt bớt âm thầm; nói
+           * trước ở đây rẻ hơn là để người dùng gặp lỗi rồi mới đoán.
+           */}
+          <Field
+            label="Mật khẩu"
+            hint="Ít nhất 8 ký tự. Mật khẩu có dấu tiếng Việt tốn nhiều chỗ hơn, tối đa khoảng 24 ký tự."
+          >
+            <Input
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+            />
+          </Field>
+
+          {error && <FieldError>{error}</FieldError>}
+
+          <Button type="submit" size="lg" disabled={loading} className="w-full">
+            {loading && <Spinner />}
+            {loading ? "Đang tạo…" : "Tạo tài khoản"}
+          </Button>
+        </form>
+      </Panel>
+
+      <p className="mt-5 text-small text-ink-muted">
+        Đã có tài khoản?{" "}
+        <Link
+          href="/login"
+          className="font-semibold text-action-ink underline-offset-2 hover:underline"
         >
-          {loading ? "Creating…" : "Sign up"}
-        </button>
-      </form>
-      <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-        Already have an account?{" "}
-        <Link href="/login" className="text-blue-600 hover:underline">
-          Log in
+          Đăng nhập
         </Link>
       </p>
     </div>

@@ -1,32 +1,40 @@
 "use client";
 
+import { BookOpen, Headphones, Library, LogOut, Menu, RotateCcw, SquarePen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { Button, ButtonLink, Skeleton, cx } from "@/components/ui";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { ButtonLink, IconButton, Skeleton, cx } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
+/*
+ * Icon theo khái niệm, không theo trang. Một khái niệm dùng MỘT icon trong toàn
+ * app (DESIGN-SYSTEM §8.4) — bảng này và bảng ở tài liệu phải khớp nhau.
+ */
 const LEARN_LINKS = [
-  { href: "/learn", label: "Learning Hub" },
-  { href: "/learn/review", label: "Ôn tập" },
-  { href: "/learn/dictation", label: "Dictation" },
+  { href: "/learn", label: "Learning Hub", Icon: BookOpen },
+  { href: "/learn/review", label: "Ôn tập", Icon: RotateCcw },
+  { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
 ];
 
 const ADMIN_LINKS = [
-  { href: "/admin", label: "Nội dung" },
-  { href: "/admin/vocabulary", label: "Từ vựng" },
-  { href: "/admin/dictation", label: "Câu nghe" },
+  { href: "/admin", label: "Nội dung", Icon: SquarePen },
+  { href: "/admin/vocabulary", label: "Từ vựng", Icon: Library },
+  { href: "/admin/dictation", label: "Câu nghe", Icon: Headphones },
 ];
 
 function NavLink({
   href,
   label,
+  Icon,
   active,
   onClick,
 }: {
   href: string;
   label: string;
+  Icon: typeof BookOpen;
   active: boolean;
   onClick?: () => void;
 }) {
@@ -36,10 +44,11 @@ function NavLink({
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       className={cx(
-        "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
-        active ? "bg-brand-soft text-brand-text" : "text-text-muted hover:bg-surface-sunken",
+        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
+        active ? "bg-action-tint text-action-ink" : "text-ink-muted hover:bg-recess hover:text-ink",
       )}
     >
+      <Icon size={16} strokeWidth={1.75} aria-hidden />
       {label}
     </Link>
   );
@@ -48,9 +57,21 @@ function NavLink({
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { status, user, canEdit, logout } = useSession();
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  /*
+   * Menu mobile được đóng dấu bằng đường dẫn mà nó được mở ra trên đó, nên điều
+   * hướng làm nó tự đóng THEO SUY DIỄN — không cần effect.
+   *
+   * Cách hiển nhiên là `useEffect(() => setMenuOpen(false), [pathname])`, nhưng
+   * đó là setState đồng bộ trong thân effect: một lượt render dây chuyền, và
+   * lint `react-hooks/set-state-in-effect` chặn đúng chỗ này. Cách dưới đây còn
+   * đúng cho MỌI kiểu điều hướng, kể cả bấm logo hay quay lại bằng nút back —
+   * chứ không chỉ cho những link có gắn onClick.
+   */
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const menuOpen = openedAt === pathname;
+  const setMenuOpen = (open: boolean) => setOpenedAt(open ? pathname : null);
 
-  // Deepest match wins, so /learn/review does not also light up /learn.
+  // Khớp sâu nhất thắng, để /learn/review không đồng thời làm sáng /learn.
   const links = [...LEARN_LINKS, ...(canEdit ? ADMIN_LINKS : [])];
   const activeHref = links
     .map((link) => link.href)
@@ -59,20 +80,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-4">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+      {/* Header dính dùng MỘT đường kẻ ở đáy, không đổ bóng (§6.3). */}
+      <header className="sticky top-0 z-20 border-b border-rule bg-ground/85 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
+          >
+            {/* Dấu vuông, không phải tròn: bo góc 4px là ngôn ngữ của cả hệ. */}
             <span
               aria-hidden
-              className="grid h-7 w-7 place-items-center rounded-lg bg-brand text-sm text-white"
+              className="grid h-7 w-7 place-items-center rounded bg-action font-data text-small text-on-action"
             >
               T
             </span>
-            TOEIC Pilot
+            <span className="hidden sm:inline">TOEIC Pilot</span>
           </Link>
 
           {status === "authenticated" && (
-            <nav className="ml-2 hidden items-center gap-1 md:flex">
+            <nav className="ml-1 hidden items-center gap-0.5 lg:flex">
               {links.map((link) => (
                 <NavLink key={link.href} {...link} active={link.href === activeHref} />
               ))}
@@ -80,14 +106,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
 
           <div className="ml-auto flex items-center gap-2">
-            {/* "loading" renders a placeholder rather than the signed-out
-                buttons. Guessing wrong here is what made the old header offer
-                "Log in" to people who were already signed in. */}
-            {status === "loading" && <Skeleton className="h-8 w-28" />}
+            <ThemeToggle />
+
+            {/* "loading" dựng một khối giữ chỗ chứ không dựng nút của người chưa
+                đăng nhập. Đoán sai ở đây chính là thứ từng khiến header mời
+                "Đăng nhập" với người đã đăng nhập rồi. */}
+            {status === "loading" && <Skeleton className="h-8 w-24" />}
 
             {status === "anonymous" && (
               <>
-                <ButtonLink href="/login" variant="ghost" size="sm">
+                <ButtonLink href="/login" variant="quiet" size="sm">
                   Đăng nhập
                 </ButtonLink>
                 <ButtonLink href="/register" size="sm">
@@ -99,39 +127,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {status === "authenticated" && user && (
               <>
                 <div className="hidden text-right sm:block">
-                  <p className="text-xs font-medium leading-tight">{user.email}</p>
-                  <p className="text-[11px] uppercase tracking-wide text-text-subtle">
+                  <p className="text-small font-semibold leading-tight">{user.email}</p>
+                  <p className="font-data text-label uppercase leading-tight text-ink-faint">
                     {user.role}
                   </p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  Thoát
-                </Button>
-                <button
-                  type="button"
-                  aria-label="Menu"
+                <IconButton icon={LogOut} aria-label="Thoát" onClick={logout} />
+                <IconButton
+                  icon={menuOpen ? X : Menu}
+                  aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
                   aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen((open) => !open)}
-                  className="rounded-lg p-2 text-text-muted hover:bg-surface-sunken md:hidden"
-                >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
-                    <path strokeWidth="2" strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
-                  </svg>
-                </button>
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="lg:hidden"
+                />
               </>
             )}
           </div>
         </div>
 
         {status === "authenticated" && menuOpen && (
-          <nav className="flex flex-col gap-1 border-t border-border px-4 py-3 md:hidden">
+          <nav className="flex flex-col gap-0.5 border-t border-rule bg-panel px-4 py-3 lg:hidden">
             {links.map((link) => (
-              <NavLink
-                key={link.href}
-                {...link}
-                active={link.href === activeHref}
-                onClick={() => setMenuOpen(false)}
-              />
+              <NavLink key={link.href} {...link} active={link.href === activeHref} />
             ))}
           </nav>
         )}
@@ -139,8 +156,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border py-6">
-        <p className="mx-auto max-w-5xl px-4 text-xs text-text-subtle">
+      <footer className="border-t border-rule py-6">
+        <p className="mx-auto max-w-5xl px-4 text-small text-ink-faint">
           TOEIC Pilot — nội dung học do đội ngũ tự biên soạn.
         </p>
       </footer>

@@ -1,35 +1,42 @@
 "use client";
 
 import { API_ROUTES, type ReviewCard, type ReviewSession } from "@toeic-pilot/shared";
+import { CalendarCheck, CircleCheck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { AccentRow } from "@/components/audio-button";
 import {
   Alert,
-  Badge,
   Button,
   ButtonLink,
-  Card,
   EmptyState,
+  Kbd,
+  Meter,
   Page,
+  Panel,
   Skeleton,
+  Tag,
   cx,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
 /**
- * SM-2 quality grades, four buttons rather than the original six.
+ * Bốn mức chất lượng SM-2, thay cho sáu mức của bản gốc.
  *
- * 0, 1 and 2 all mean "forgot" and nobody can report the difference between them
- * reliably, so they collapse into one. The survivors keep their original
- * arithmetic meaning, which is why the numbers jump from 0 to 3.
+ * 0, 1 và 2 đều có nghĩa "quên" và không ai phân biệt được ba mức đó một cách
+ * đáng tin, nên chúng gộp làm một. Ba mức còn lại giữ nguyên ý nghĩa số học,
+ * và đó là lý do dãy số nhảy từ 0 lên 3.
+ *
+ * Thang này là THỨ TỰ (kém → tốt), không phải phân loại — nên màu chạy thành
+ * một dải alert → ok chứ không phải bốn sắc rời rạc. Bốn nút tô đặc bốn màu
+ * cũng sẽ tranh mất chỗ với màu hành động, vốn chỉ dành cho "việc cần làm".
  */
 const GRADES = [
-  { grade: 0, label: "Quên", hint: "Lại từ đầu", key: "1", className: "bg-danger text-white" },
-  { grade: 3, label: "Khó", hint: "Chật vật", key: "2", className: "bg-warning text-white" },
-  { grade: 4, label: "Được", hint: "Nhớ ra", key: "3", className: "bg-brand text-white" },
-  { grade: 5, label: "Dễ", hint: "Nhớ ngay", key: "4", className: "bg-success text-white" },
+  { grade: 0, label: "Quên", hint: "Lại từ đầu", key: "1", bar: "bg-alert" },
+  { grade: 3, label: "Khó", hint: "Chật vật", key: "2", bar: "bg-warn" },
+  { grade: 4, label: "Được", hint: "Nhớ ra", key: "3", bar: "bg-ink-muted" },
+  { grade: 5, label: "Dễ", hint: "Nhớ ngay", key: "4", bar: "bg-ok" },
 ];
 
 export default function ReviewPage() {
@@ -79,9 +86,9 @@ export default function ReviewPage() {
     [card, token, saving],
   );
 
-  // Space to flip, 1–4 to grade. A review session is dozens of identical
-  // decisions in a row; reaching for the mouse each time is the difference
-  // between a tool and a chore.
+  // Space để lật, 1–4 để chấm. Một phiên ôn là hàng chục quyết định giống hệt
+  // nhau nối tiếp; phải với tay ra chuột mỗi lần là khác biệt giữa một công cụ
+  // và một việc vặt.
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       if (!card) return;
@@ -118,8 +125,9 @@ export default function ReviewPage() {
   if (cards.length === 0) {
     return (
       <Page className="max-w-2xl">
+        {/* Về LỊCH, không phải về thành tựu — nên icon là lịch. */}
         <EmptyState
-          icon="✅"
+          icon={CalendarCheck}
           title="Không còn từ nào đến hạn"
           description="Lịch ôn tập giãn ra theo trí nhớ của bạn, nên hôm nay trống là đúng. Quay lại vào ngày mai."
           action={<ButtonLink href="/learn">Về Learning Hub</ButtonLink>}
@@ -131,8 +139,9 @@ export default function ReviewPage() {
   if (index >= cards.length) {
     return (
       <Page className="max-w-2xl">
+        {/* Về HOÀN THÀNH — icon khác hẳn trạng thái trên, vì hai chuyện khác nhau. */}
         <EmptyState
-          icon="🎉"
+          icon={CircleCheck}
           title={`Xong ${cards.length} thẻ`}
           description="Mỗi lần trả lời đã được ghi lại, và lịch ôn kế tiếp đã được tính."
           action={
@@ -148,23 +157,16 @@ export default function ReviewPage() {
     );
   }
 
-  const progress = (index / cards.length) * 100;
-
   return (
     <Page className="max-w-2xl">
-      <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between text-sm text-text-muted">
-          <span className="tabular-nums">
-            {index + 1} / {cards.length}
-          </span>
-          {card?.is_new && <Badge tone="brand">từ mới</Badge>}
+      <div className="mb-6 flex items-center gap-4">
+        <div className="flex-1">
+          <Meter value={index} max={cards.length} ticks={Math.min(cards.length, 8)} />
         </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-surface-sunken">
-          <div
-            className="h-full rounded-full bg-brand transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <span className="shrink-0 font-data text-small text-ink-muted">
+          {index + 1}/{cards.length}
+        </span>
+        {card?.is_new && <Tag tone="action">từ mới</Tag>}
       </div>
 
       {error && (
@@ -173,23 +175,25 @@ export default function ReviewPage() {
         </div>
       )}
 
-      <Card className="px-6 py-10 text-center sm:px-10">
-        <p className="text-4xl font-bold tracking-tight">{card?.headword}</p>
-        <p className="mt-1 text-sm text-text-subtle">{card?.part_of_speech}</p>
-        {card?.phonetic && <p className="mt-2 font-mono text-text-muted">{card.phonetic}</p>}
+      <Panel className="px-6 py-10 text-center sm:px-10">
+        <p className="font-display text-readout leading-none">{card?.headword}</p>
+        <p className="mt-3 text-label font-semibold uppercase text-ink-faint">
+          {card?.part_of_speech}
+        </p>
+        {card?.phonetic && <p className="mt-2 font-data text-ink-muted">{card.phonetic}</p>}
 
         <AccentRow clips={card?.headword_audio ?? []} className="mt-5 justify-center" />
 
         {flipped ? (
-          <div className="animate-rise mt-8 border-t border-border pt-6 text-left">
-            <p className="text-xl font-medium">{card?.meaning_vi}</p>
-            <p className="mt-1 text-sm text-text-muted">{card?.meaning_en}</p>
+          <div className="animate-settle mt-8 border-t border-rule pt-6 text-left">
+            <p className="text-title">{card?.meaning_vi}</p>
+            <p className="mt-1 text-small text-ink-muted">{card?.meaning_en}</p>
 
             {card?.example && (
-              <div className="mt-5 rounded-lg bg-surface-sunken p-4">
+              <div className="mt-5 rounded border border-rule bg-recess p-4">
                 <p className="italic">{card.example}</p>
                 {card.example_vi && (
-                  <p className="mt-1 text-sm text-text-muted">{card.example_vi}</p>
+                  <p className="mt-1 text-small text-ink-muted">{card.example_vi}</p>
                 )}
                 <AccentRow clips={card.example_audio} className="mt-3" />
               </div>
@@ -198,13 +202,13 @@ export default function ReviewPage() {
         ) : (
           <Button variant="secondary" size="lg" className="mt-8" onClick={() => setFlipped(true)}>
             Lật thẻ
-            <kbd className="ml-1 rounded border border-border-strong px-1.5 text-[10px]">Space</kbd>
+            <Kbd>Space</Kbd>
           </Button>
         )}
-      </Card>
+      </Panel>
 
       {flipped && (
-        <div className="animate-rise mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="animate-settle mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {GRADES.map((entry) => (
             <button
               key={entry.grade}
@@ -212,15 +216,17 @@ export default function ReviewPage() {
               disabled={saving}
               onClick={() => void submit(entry.grade)}
               className={cx(
-                "rounded-lg px-2 py-3 transition-opacity hover:opacity-90 disabled:opacity-40",
-                entry.className,
+                "flex items-center gap-3 rounded border border-rule-strong bg-panel px-3 py-2.5 text-left transition-colors",
+                "hover:bg-recess disabled:cursor-not-allowed disabled:opacity-45",
               )}
             >
-              <span className="block text-sm font-semibold">{entry.label}</span>
-              <span className="block text-xs opacity-80">{entry.hint}</span>
-              <kbd className="mt-1 inline-block rounded bg-black/20 px-1.5 text-[10px]">
-                {entry.key}
-              </kbd>
+              {/* Vạch màu mã hoá thứ hạng; chữ mới là thứ mang nghĩa. */}
+              <span aria-hidden className={cx("h-8 w-1 shrink-0 rounded-none", entry.bar)} />
+              <span className="min-w-0 flex-1">
+                <span className="block text-small font-semibold">{entry.label}</span>
+                <span className="block text-label uppercase text-ink-faint">{entry.hint}</span>
+              </span>
+              <Kbd>{entry.key}</Kbd>
             </button>
           ))}
         </div>

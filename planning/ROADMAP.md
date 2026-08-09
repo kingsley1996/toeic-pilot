@@ -24,6 +24,7 @@
 | **Endpoint** | **25** — auth (3), health (2), Learning Hub (8), Content admin (12) |
 | **Media** | 38 clip audio, 3 ảnh |
 | **Nội dung thật** | **3 từ vựng, 4 câu dictation** ← nút thắt |
+| **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)) · 12/12 route dựng tĩnh |
 
 **Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` 269 passed / 2 deselected · `ruff check` sạch · `ruff format --check` 66 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm gen:api-types` sinh lại **không drift**.
 
@@ -141,7 +142,10 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] `/learn/vocabulary` — chọn accent, phát bằng `Audio` thuần
 - [x] `/learn/review` — flashcard 4 nút
 - [x] `/learn/dictation` — phát, nhập, diff tô màu
-- [x] **Revamp UI (2026-08-09)** — hệ token màu sáng/tối, bộ component dùng chung, app shell có nav theo vai trò, skeleton thay cho chữ "Loading…", empty state nói rõ bước tiếp theo, `not-found` và `error` boundary
+- [x] **Revamp UI vòng 1 (2026-08-09)** — hệ token màu sáng/tối, bộ component dùng chung, app shell có nav theo vai trò, skeleton thay cho chữ "Loading…", empty state nói rõ bước tiếp theo, `not-found` và `error` boundary
+- [x] **Design system + revamp vòng 2 (2026-08-09)** — [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md), triển khai trên toàn bộ 12 route. Bỏ mặc định của công cụ (Geist, indigo, `rounded-xl`, `shadow-sm`); token màu kiểm bằng công thức WCAG; 17 emoji → Lucide; thang bốn giọng US/UK/AU/CA; **nút chuyển sáng/tối ba trạng thái**; landing page dựng lại quanh cơ chế chấm từng từ
+- [x] **Đã kiểm thật toàn bộ trang cần đăng nhập (2026-08-09)** — dựng nội dung thật qua chính API admin, đi hết 8 trang, thử cổng publish và cả bốn trạng thái badge audio. Ba lỗi chỉ lộ ra khi chạy: nav xuống dòng ở vai trò `admin`, một icon dùng cho hai khái niệm, và một import lệch khỏi JSX mà `next dev` không bắt (`DESIGN-SYSTEM` §13.4)
+- [x] **Sửa một lỗi accessibility có thật** — viền ô nhập cũ chỉ đạt 1.48 tương phản (WCAG 1.4.11 đòi 3.0), tức gần như vô hình với người thị lực kém. Token `rule-strong` mới đạt 3.09–3.64
 
 ### Nội dung — **việc duy nhất còn lại của sprint này**
 - [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **3**
@@ -280,7 +284,8 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 | **Chưa có nội dung thật** | `ADR-001` §A6.3 | Nút thắt lớn nhất của dự án. 3 từ, 4 câu dictation. Công cụ đã xong — chỉ còn việc soạn |
 | Rate limiting | P1-8 → **Sprint 6** | Chặn cứng endpoint LLM đầu tiên |
 | Token trong `localStorage` | P1-7 → **Sprint 6** | Cũng là chỗ đầu tiên Redis thật sự được dùng (refresh token + denylist) |
-| Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 269 test |
+| Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 269 test. Revamp giao diện vừa rồi **không có lưới an toàn nào** ngoài typecheck và lint |
+| Chưa kiểm giao diện ở viewport hẹp | `DESIGN-SYSTEM` §13.3 | Breakpoint đúng trong code, chưa quan sát được ở 360px |
 | Branch protection chưa bật | Sprint 0 → **Sprint 6** | Cần quyền admin repo. 13 gate xanh mà không ai bắt buộc thì chỉ là gợi ý |
 | `draft` chưa có lối ra cho `question` | `ADR-001` §A4.8 | Từ vựng và dictation **đã có** cổng publish. `question` thì chưa có endpoint nào — Sprint 5 |
 | Bản quyền đề ETS | `ADR-005` §2 | `question.source` phải điền đúng ở **từng hàng**. `original` = soạn mới theo cấu trúc; `licensed` = đã thật sự xin phép |

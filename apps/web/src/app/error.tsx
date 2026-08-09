@@ -1,14 +1,16 @@
 "use client";
 
+import { TriangleAlert } from "lucide-react";
+
 import { Button, ButtonLink, EmptyState, Page } from "@/components/ui";
 
 /**
- * The last line of defence.
+ * Tuyến phòng thủ cuối.
  *
- * Without it, a render error in any page replaces the whole app with Next.js's
- * default screen — no navigation, no way back. `reset` re-renders the segment,
- * which is enough for the transient failures (a dropped fetch, a bad response)
- * that cause most of these.
+ * Không có nó, một lỗi render ở bất kỳ trang nào sẽ thay cả app bằng màn hình
+ * mặc định của Next.js — không điều hướng, không đường quay lại. `reset` dựng
+ * lại segment, đủ cho những lỗi tạm thời (fetch rớt, response hỏng) vốn gây ra
+ * phần lớn các trường hợp này.
  */
 export default function ErrorBoundary({
   error,
@@ -20,7 +22,7 @@ export default function ErrorBoundary({
   return (
     <Page className="max-w-xl">
       <EmptyState
-        icon="⚠️"
+        icon={TriangleAlert}
         title="Có lỗi xảy ra"
         description={
           <>
@@ -28,7 +30,7 @@ export default function ErrorBoundary({
             {error.digest && (
               <>
                 {" "}
-                Mã lỗi: <code className="font-mono text-xs">{error.digest}</code>
+                Mã lỗi: <code className="font-data text-ink">{error.digest}</code>
               </>
             )}
           </>

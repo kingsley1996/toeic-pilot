@@ -3,88 +3,203 @@
 @tailwind utilities;
 
 /*
- * One palette, two themes. Everything else in the app refers to these names
- * rather than to zinc-700 or blue-600 directly, so a colour decision lives in
- * one place instead of being re-made in every component.
+ * Bảng token — nguồn sự thật là planning/DESIGN-SYSTEM.md §3.
  *
- * `--brand` is indigo rather than the default blue: it stays legible against
- * both surfaces at the same weight, which plain blue does not.
+ * Ba trạng thái theme, không phải hai:
+ *   :root                                        -> sáng, và là mặc định khi theo hệ thống
+ *   @media (dark) :root:not([data-theme="light"]) -> theo hệ thống, hệ thống đang tối
+ *   :root[data-theme="dark"]                      -> người dùng ép tối, thắng mọi thứ
+ *
+ * Không màu nào được định nghĩa DUY NHẤT bên trong khối media hoặc khối
+ * [data-theme] — làm vậy thì một trong ba trạng thái sẽ thiếu màu.
+ *
+ * Mọi giá trị đã được kiểm bằng công thức tương phản WCAG 2.1, không chọn bằng
+ * mắt. Đổi một hex ở đây là đổi một lời hứa về khả năng đọc; kiểm lại trước.
  */
 :root {
-  --surface: 255 255 255;
-  --surface-raised: 255 255 255;
-  --surface-sunken: 250 250 250;
-  --border: 228 228 231;
-  --border-strong: 212 212 216;
+  --ground: 233 237 240;
+  --panel: 255 255 255;
+  --recess: 221 227 232;
+  --rule: 203 212 219;
+  --rule-strong: 115 137 153;
 
-  --text: 24 24 27;
-  --text-muted: 113 113 122;
-  --text-subtle: 161 161 170;
+  --ink: 15 23 29;
+  --ink-muted: 74 89 100;
+  --ink-faint: 94 108 119;
 
-  --brand: 79 70 229;
-  --brand-hover: 67 56 202;
-  --brand-soft: 238 242 255;
-  --brand-text: 67 56 202;
+  --action: 194 52 15;
+  --action-hover: 168 43 11;
+  --action-ink: 154 39 9;
+  --action-tint: 252 237 232;
+  --on-action: 255 255 255;
 
-  --success: 22 163 74;
-  --success-soft: 240 253 244;
-  --warning: 217 119 6;
-  --warning-soft: 255 251 235;
-  --danger: 220 38 38;
-  --danger-soft: 254 242 242;
+  --ok: 23 105 74;
+  --ok-tint: 228 241 234;
+  --warn: 138 90 6;
+  --warn-tint: 251 240 220;
+  --alert: 163 18 32;
+  --alert-tint: 251 233 234;
+
+  --accent-us: 19 57 101;
+  --accent-uk: 95 57 139;
+  --accent-au: 12 106 94;
+  --accent-ca: 151 105 6;
+
+  --overlay-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --surface: 9 9 11;
-    --surface-raised: 24 24 27;
-    --surface-sunken: 9 9 11;
-    --border: 39 39 42;
-    --border-strong: 63 63 70;
+  :root:not([data-theme="light"]) {
+    --ground: 13 19 23;
+    --panel: 21 29 34;
+    --recess: 8 12 15;
+    --rule: 36 48 55;
+    --rule-strong: 87 110 126;
 
-    --text: 244 244 245;
-    --text-muted: 161 161 170;
-    --text-subtle: 113 113 122;
+    --ink: 232 238 242;
+    --ink-muted: 154 170 181;
+    --ink-faint: 121 135 146;
 
-    --brand: 129 140 248;
-    --brand-hover: 165 180 252;
-    --brand-soft: 30 27 75;
-    --brand-text: 199 210 254;
+    --action: 255 107 61;
+    --action-hover: 255 131 85;
+    --action-ink: 255 138 95;
+    --action-tint: 42 17 9;
+    --on-action: 22 11 5;
 
-    --success: 74 222 128;
-    --success-soft: 5 46 22;
-    --warning: 251 191 36;
-    --warning-soft: 69 26 3;
-    --danger: 248 113 113;
-    --danger-soft: 69 10 10;
+    --ok: 75 214 155;
+    --ok-tint: 11 42 30;
+    --warn: 232 169 60;
+    --warn-tint: 46 32 7;
+    --alert: 248 122 130;
+    --alert-tint: 46 13 16;
+
+    --accent-us: 65 135 214;
+    --accent-uk: 165 123 213;
+    --accent-au: 49 185 166;
+    --accent-ca: 228 185 92;
+
+    --overlay-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+
+    color-scheme: dark;
   }
 }
 
+/* Y hệt khối trên. Tách ra để nút chuyển theme thắng được cả hai chiều: ép tối
+   khi hệ thống đang sáng, và ép sáng khi hệ thống đang tối. */
+:root[data-theme="dark"] {
+  --ground: 13 19 23;
+  --panel: 21 29 34;
+  --recess: 8 12 15;
+  --rule: 36 48 55;
+  --rule-strong: 87 110 126;
+
+  --ink: 232 238 242;
+  --ink-muted: 154 170 181;
+  --ink-faint: 121 135 146;
+
+  --action: 255 107 61;
+  --action-hover: 255 131 85;
+  --action-ink: 255 138 95;
+  --action-tint: 42 17 9;
+  --on-action: 22 11 5;
+
+  --ok: 75 214 155;
+  --ok-tint: 11 42 30;
+  --warn: 232 169 60;
+  --warn-tint: 46 32 7;
+  --alert: 248 122 130;
+  --alert-tint: 46 13 16;
+
+  --accent-us: 65 135 214;
+  --accent-uk: 165 123 213;
+  --accent-au: 49 185 166;
+  --accent-ca: 228 185 92;
+
+  --overlay-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+
+  color-scheme: dark;
+}
+
 @layer base {
-  body {
-    @apply bg-surface text-text antialiased;
-    font-feature-settings: "cv11", "ss01";
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* A visible focus ring on every interactive element, keyboard-only so it does
-     not fire on mouse clicks. Without it the app is unusable without a mouse. */
+  body {
+    @apply bg-ground text-ink antialiased;
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6667; /* 25px */
+  }
+
+  /*
+   * Không line-height nào dưới 1.25, kể cả tiêu đề lớn.
+   *
+   * Tiếng Việt chồng HAI tầng dấu lên một nguyên âm — `ế` `ộ` `ữ` `ậ` mang cả
+   * dấu phụ âm lẫn dấu thanh. Thiết kế cho tiếng Anh thường đặt display ở
+   * 1.0–1.1; ở đây làm vậy sẽ cắt cụt dấu hoặc để hai dòng chạm nhau.
+   */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    line-height: 2.375rem;
+    letter-spacing: -0.015em;
+  }
+
+  h2 {
+    font-size: 1.375rem;
+    line-height: 1.875rem;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+    line-height: 1.625rem;
+  }
+
+  /* Số phải thẳng cột. Số nhảy cột khi cập nhật phá vỡ cảm giác "thiết bị đo"
+     nhanh hơn bất cứ thứ gì khác. */
+  .font-data,
+  th,
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Vòng focus hiện trên MỌI phần tử tương tác, chỉ với bàn phím. Không có nó
+     thì app không dùng được nếu không có chuột. */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-surface;
+    outline: 2px solid rgb(var(--action));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Bỏ vòng focus mặc định của trình duyệt khi bấm chuột, giữ lại cho bàn phím. */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
 @layer utilities {
-  /* Used by the flashcard when it flips and by list items as they arrive, so
-     content does not simply pop into place. */
-  .animate-rise {
-    animation: rise 0.18s ease-out;
+  /* Ngoại lệ đổ bóng duy nhất: lớp phủ thật (modal, popover, menu). §6.3 */
+  .shadow-overlay {
+    box-shadow: var(--overlay-shadow);
   }
 }
 
-@keyframes rise {
+/* Bảng chấm dictation hiện ra từng từ, trái sang phải — vì đó chính là cách
+   người ta nghe lại câu. Khoảnh khắc dàn dựng DUY NHẤT trong toàn app (§7). */
+@keyframes settle {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(3px);
   }
   to {
     opacity: 1;
@@ -92,8 +207,17 @@
   }
 }
 
+.animate-settle {
+  animation: settle 200ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

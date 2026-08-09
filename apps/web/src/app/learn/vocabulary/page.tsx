@@ -6,19 +6,20 @@ import {
   type VocabularyDetail,
   type VocabularySummary,
 } from "@toeic-pilot/shared";
+import { ChevronDown, Library } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 import { AccentRow } from "@/components/audio-button";
 import {
   Alert,
-  Badge,
   ButtonLink,
-  Card,
   EmptyState,
   Page,
   PageHeader,
+  Panel,
   SkeletonList,
+  Tag,
   cx,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
@@ -28,14 +29,13 @@ function VocabularyBrowser() {
   const topicSlug = useSearchParams().get("topic");
   const { canEdit } = useSession();
   const [topics, setTopics] = useState<TopicPublic[]>([]);
-  // Stamped with the topic it belongs to, so switching topic makes the previous
-  // list stale by derivation. Clearing it from the effect instead would be a
-  // synchronous setState in an effect body — a cascading render, and a moment
-  // where the old topic's words are shown under the new topic's heading.
-  const [loaded, setLoaded] = useState<{
-    topic: string | null;
-    words: VocabularySummary[];
-  } | null>(null);
+  // Đóng dấu chủ đề mà nó thuộc về, nên đổi chủ đề là danh sách cũ tự trở nên
+  // lỗi thời theo suy diễn. Xoá nó từ trong effect sẽ là một setState đồng bộ
+  // trong thân effect — một lượt render dây chuyền, và một khoảnh khắc mà từ
+  // của chủ đề cũ hiện dưới tiêu đề của chủ đề mới.
+  const [loaded, setLoaded] = useState<{ topic: string | null; words: VocabularySummary[] } | null>(
+    null,
+  );
   const [openId, setOpenId] = useState<string | null>(null);
   const [detail, setDetail] = useState<VocabularyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -79,9 +79,8 @@ function VocabularyBrowser() {
         }
       />
 
-      {/* The filter lives on the page rather than only in the URL: arriving here
-          from a bookmark used to leave no way to change topic or get back to the
-          full list. */}
+      {/* Bộ lọc nằm trên trang chứ không chỉ ở URL: đến đây từ một bookmark thì
+          trước đây không còn cách nào đổi chủ đề hay quay về danh sách đầy đủ. */}
       {topics.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-2">
           <ButtonLink
@@ -113,7 +112,7 @@ function VocabularyBrowser() {
 
       {words?.length === 0 && (
         <EmptyState
-          icon="🗂️"
+          icon={Library}
           title={activeTopic ? `Chủ đề ${activeTopic.name} chưa có từ nào` : "Chưa có từ nào"}
           description={
             canEdit
@@ -128,45 +127,53 @@ function VocabularyBrowser() {
         {words?.map((word) => {
           const open = openId === word.id;
           return (
-            <Card key={word.id} className={cx("overflow-hidden", open && "border-brand")}>
+            <Panel key={word.id} className={cx("overflow-hidden", open && "border-rule-strong")}>
               <button
                 type="button"
                 onClick={() => toggle(word.id)}
                 aria-expanded={open}
-                className="flex w-full items-center gap-3 px-5 py-4 text-left hover:bg-surface-sunken"
+                className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-recess"
               >
                 <div className="min-w-0 flex-1">
                   <span className="font-semibold">{word.headword}</span>
                   {word.phonetic && (
-                    <span className="ml-2 font-mono text-sm text-text-subtle">{word.phonetic}</span>
+                    <span className="ml-2 font-data text-small text-ink-faint">
+                      {word.phonetic}
+                    </span>
                   )}
                 </div>
-                <span className="hidden truncate text-sm text-text-muted sm:block">
+                <span className="hidden truncate text-small text-ink-muted sm:block">
                   {word.meaning_vi}
                 </span>
-                <Badge>{word.part_of_speech}</Badge>
-                <span
+                <Tag>{word.part_of_speech}</Tag>
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.75}
                   aria-hidden
-                  className={cx("text-text-subtle transition-transform", open && "rotate-180")}
-                >
-                  ▾
-                </span>
+                  className={cx(
+                    "shrink-0 text-ink-faint transition-transform",
+                    open && "rotate-180",
+                  )}
+                />
               </button>
 
               {open && (
-                <div className="animate-rise border-t border-border bg-surface-sunken px-5 py-4">
+                <div className="animate-settle border-t border-rule bg-recess px-4 py-4">
                   {!detail ? (
                     <SkeletonList rows={1} />
                   ) : (
                     <>
-                      <p className="font-medium sm:hidden">{detail.meaning_vi}</p>
-                      <p className="text-sm text-text-muted">{detail.meaning_en}</p>
-                      <AccentRow clips={detail.headword_audio} className="mt-3" />
+                      <p className="font-semibold sm:hidden">{detail.meaning_vi}</p>
+                      <p className="text-small text-ink-muted">{detail.meaning_en}</p>
+                      {/* `showMissing` để giọng chưa có clip vẫn hiện ở dạng vô
+                          hiệu hoá — người học cần biết nó tồn tại nhưng chưa
+                          được thu, chứ không tưởng app chỉ có ba giọng. */}
+                      <AccentRow clips={detail.headword_audio} showMissing className="mt-3" />
                       {detail.example && (
-                        <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+                        <div className="mt-4 rounded border border-rule bg-panel p-4">
                           <p className="italic">{detail.example}</p>
                           {detail.example_vi && (
-                            <p className="mt-1 text-sm text-text-muted">{detail.example_vi}</p>
+                            <p className="mt-1 text-small text-ink-muted">{detail.example_vi}</p>
                           )}
                           <AccentRow clips={detail.example_audio} className="mt-3" />
                         </div>
@@ -175,7 +182,7 @@ function VocabularyBrowser() {
                   )}
                 </div>
               )}
-            </Card>
+            </Panel>
           );
         })}
       </div>
@@ -184,9 +191,9 @@ function VocabularyBrowser() {
 }
 
 export default function VocabularyPage() {
-  // useSearchParams opts the route out of static rendering unless it sits inside
-  // a Suspense boundary; without this the build warns and the page ships as a
-  // dynamic route for no reason.
+  // useSearchParams đẩy route ra khỏi render tĩnh trừ khi nó nằm trong một
+  // Suspense boundary; không có cái này thì build cảnh báo và trang bị ship
+  // dưới dạng dynamic route mà chẳng để làm gì.
   return (
     <Suspense
       fallback={

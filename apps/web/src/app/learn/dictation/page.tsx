@@ -6,50 +6,41 @@ import {
   type DictationResult,
   type DictationSummary,
 } from "@toeic-pilot/shared";
+import { Headphones, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
   Alert,
-  Badge,
   Button,
   ButtonLink,
-  Card,
   EmptyState,
+  IconButton,
   Page,
   PageHeader,
+  Panel,
   SkeletonList,
   Spinner,
+  Tag,
   Textarea,
   cx,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useRequireSession, useSession } from "@/lib/session";
 
-/** How each word of the comparison is drawn. */
+/** Mỗi từ của phần đối chiếu được vẽ thế nào. */
 const DIFF_STYLE: Record<string, string> = {
-  match: "text-success",
-  missing: "text-danger line-through decoration-2",
-  extra: "text-warning italic",
+  match: "text-ink",
+  missing: "text-alert line-through decoration-2",
+  extra: "text-warn italic",
 };
 
-function Score({ value }: { value: string }) {
-  const numeric = Number(value);
-  const tone = numeric >= 90 ? "success" : numeric >= 60 ? "warning" : "danger";
-  return (
-    <div className="flex items-baseline gap-2">
-      <span
-        className={cx(
-          "text-4xl font-bold tabular-nums",
-          tone === "success" && "text-success",
-          tone === "warning" && "text-warning",
-          tone === "danger" && "text-danger",
-        )}
-      >
-        {numeric.toFixed(0)}%
-      </span>
-    </div>
-  );
-}
+/*
+ * Câu dài hơn ngần này thì bỏ hiệu ứng lệch nhịp và hiện cùng lúc: quá số này,
+ * chờ xem kết quả trở thành chờ đợi chứ không còn là nhịp đọc.
+ */
+const STAGGER_LIMIT_WORDS = 25;
+const STAGGER_STEP_MS = 24;
+const STAGGER_CAP_MS = 600;
 
 export default function DictationPage() {
   const { status, token } = useRequireSession();
@@ -102,20 +93,18 @@ export default function DictationPage() {
     );
   }
 
-  // --- one exercise ------------------------------------------------------
+  // --- một bài -----------------------------------------------------------
 
   if (active) {
+    const stagger = result !== null && result.diff.length <= STAGGER_LIMIT_WORDS;
+
     return (
       <Page className="max-w-2xl">
         <PageHeader
           eyebrow="Dictation"
           title="Nghe và gõ lại"
           description={`${active.word_count} từ · nghe lại bao nhiêu lần cũng được`}
-          actions={
-            <Button variant="ghost" size="sm" onClick={() => setActive(null)}>
-              Đóng
-            </Button>
-          }
+          actions={<IconButton icon={X} aria-label="Đóng bài" onClick={() => setActive(null)} />}
         />
 
         {error && (
@@ -124,9 +113,9 @@ export default function DictationPage() {
           </div>
         )}
 
-        <Card className="p-6">
-          {/* Native controls give scrubbing and replay for nothing, and need no
-              CORS on the media origin. */}
+        <Panel className="p-5">
+          {/* Controls gốc của trình duyệt cho sẵn tua và phát lại, và không đòi
+              CORS trên nguồn media. */}
           <audio controls src={active.audio_url} className="w-full" />
 
           <Textarea
@@ -144,57 +133,95 @@ export default function DictationPage() {
               Nộp bài
             </Button>
           )}
-        </Card>
+        </Panel>
 
         {result && (
-          <Card className="animate-rise mt-4 p-6">
-            <div className="flex items-end justify-between">
-              <Score value={result.accuracy} />
-              <p className="text-sm text-text-muted">
-                đúng {result.matched}/{result.expected} từ
+          <Panel className="mt-3 overflow-hidden">
+            <div className="flex items-center justify-between border-b border-rule bg-recess px-4 py-2">
+              <span className="text-label font-semibold uppercase text-ink-muted">
+                Kết quả chấm
+              </span>
+              <span className="font-data text-label uppercase text-ink-faint">theo từng từ</span>
+            </div>
+
+            <div className="px-5 py-5">
+              {/*
+               * Từng từ hiện ra, trái sang phải — vì đó chính là cách người ta
+               * nghe lại câu. Khoảnh khắc dàn dựng DUY NHẤT của cả app; mọi
+               * chuyển động khác chỉ là đổi màu 120ms.
+               */}
+              <p className="text-subtitle leading-9">
+                {result.diff.map((word, position) => (
+                  <span
+                    key={`${word.op}-${position}`}
+                    className={cx(stagger && "animate-settle", DIFF_STYLE[word.op])}
+                    style={
+                      stagger
+                        ? {
+                            animationDelay: `${Math.min(position * STAGGER_STEP_MS, STAGGER_CAP_MS)}ms`,
+                          }
+                        : undefined
+                    }
+                  >
+                    {word.word}{" "}
+                  </span>
+                ))}
               </p>
-            </div>
 
-            <p className="mt-5 text-lg leading-8">
-              {result.diff.map((word, position) => (
-                <span key={`${word.op}-${position}`} className={DIFF_STYLE[word.op]}>
-                  {word.word}{" "}
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-small text-ink-muted">
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden className="h-2 w-2 bg-ink" /> đúng
                 </span>
-              ))}
-            </p>
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden className="h-2 w-2 bg-alert" /> nghe sót
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden className="h-2 w-2 bg-warn" /> gõ thừa
+                </span>
+              </div>
 
-            <div className="mt-3 flex flex-wrap gap-3 text-xs text-text-muted">
-              <span className="text-success">■ đúng</span>
-              <span className="text-danger">■ thiếu / sai</span>
-              <span className="text-warning">■ thừa</span>
-            </div>
+              {/* Con số để trần, không tô màu theo ngưỡng. Nó là một SỐ ĐO, và
+                  phần đánh giá đã nằm ở bảng đối chiếu ngay trên. */}
+              <div className="mt-5 flex items-end justify-between border-t border-rule pt-4">
+                <div>
+                  <p className="text-label font-semibold uppercase text-ink-faint">Độ chính xác</p>
+                  <p className="font-data text-readout leading-none text-ink">
+                    {Number(result.accuracy).toFixed(0)}
+                    <span className="text-title text-ink-faint">%</span>
+                  </p>
+                </div>
+                <p className="font-data text-small text-ink-muted">
+                  {result.matched}/{result.expected} từ
+                </p>
+              </div>
 
-            <div className="mt-5 rounded-lg bg-surface-sunken p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-text-subtle">Đáp án</p>
-              <p className="mt-1">{result.transcript}</p>
-            </div>
+              <div className="mt-5 rounded border border-rule bg-recess p-4">
+                <p className="text-label font-semibold uppercase text-ink-faint">Đáp án</p>
+                <p className="mt-1">{result.transcript}</p>
+              </div>
 
-            <div className="mt-5 flex gap-2">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setResult(null);
-                  setTyped("");
-                }}
-              >
-                Làm lại
-              </Button>
-              <Button variant="ghost" onClick={() => setActive(null)}>
-                Bài khác
-              </Button>
+              <div className="mt-5 flex gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setResult(null);
+                    setTyped("");
+                  }}
+                >
+                  Làm lại
+                </Button>
+                <Button variant="quiet" onClick={() => setActive(null)}>
+                  Bài khác
+                </Button>
+              </div>
             </div>
-          </Card>
+          </Panel>
         )}
       </Page>
     );
   }
 
-  // --- the list ----------------------------------------------------------
+  // --- danh sách ---------------------------------------------------------
 
   return (
     <Page className="max-w-2xl">
@@ -213,7 +240,7 @@ export default function DictationPage() {
 
       {items?.length === 0 && (
         <EmptyState
-          icon="🎧"
+          icon={Headphones}
           title="Chưa có bài nghe nào"
           description={
             canEdit
@@ -226,25 +253,21 @@ export default function DictationPage() {
 
       <div className="space-y-2">
         {items?.map((item, position) => (
-          <Card key={item.id}>
+          <Panel key={item.id} className="overflow-hidden">
             <button
               type="button"
               onClick={() => open(item.id)}
-              className="flex w-full items-center gap-4 px-5 py-4 text-left hover:bg-surface-sunken"
+              className="flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-recess"
             >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand-text tabular-nums">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule bg-recess font-data text-small text-ink-muted">
                 {position + 1}
               </span>
-              <span className="flex-1 text-sm text-text-muted">{item.word_count} từ</span>
-              <Badge
-                tone={
-                  item.difficulty <= 2 ? "success" : item.difficulty >= 4 ? "danger" : "neutral"
-                }
-              >
+              <span className="flex-1 text-small text-ink-muted">{item.word_count} từ</span>
+              <Tag tone={item.difficulty <= 2 ? "ok" : item.difficulty >= 4 ? "alert" : "neutral"}>
                 độ khó {item.difficulty}
-              </Badge>
+              </Tag>
             </button>
-          </Card>
+          </Panel>
         ))}
       </div>
     </Page>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import { Button, Field, FieldError, Input, Panel, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { setAccessToken } from "@/lib/auth-storage";
 
@@ -31,48 +32,56 @@ export default function LoginPage() {
       setAccessToken(token.access_token);
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Login failed");
+      setError(err instanceof ApiError ? err.message : "Không đăng nhập được.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="text-2xl font-bold">Log in</h1>
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        <label className="block text-sm">
-          Email
-          <input
-            name="email"
-            type="email"
-            required
-            className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="block text-sm">
-          Password
-          <input
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+    <div className="mx-auto w-full max-w-sm px-4 py-12 sm:py-20">
+      <p className="text-label font-semibold uppercase text-action-ink">Tài khoản</p>
+      <h1 className="mt-1.5">Đăng nhập</h1>
+      <p className="mt-2 text-ink-muted">Tiếp tục phiên ôn tập của bạn.</p>
+
+      <Panel className="mt-7 p-5">
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          <Field label="Email">
+            <Input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="ban@vidu.com"
+            />
+          </Field>
+          <Field label="Mật khẩu">
+            <Input
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="current-password"
+            />
+          </Field>
+
+          {/* Lỗi không bao giờ chỉ là màu: có icon, có viền, có chữ. */}
+          {error && <FieldError>{error}</FieldError>}
+
+          <Button type="submit" size="lg" disabled={loading} className="w-full">
+            {loading && <Spinner />}
+            {loading ? "Đang đăng nhập…" : "Đăng nhập"}
+          </Button>
+        </form>
+      </Panel>
+
+      <p className="mt-5 text-small text-ink-muted">
+        Chưa có tài khoản?{" "}
+        <Link
+          href="/register"
+          className="font-semibold text-action-ink underline-offset-2 hover:underline"
         >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-      <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-        No account?{" "}
-        <Link href="/register" className="text-blue-600 hover:underline">
-          Sign up
+          Tạo tài khoản
         </Link>
       </p>
     </div>

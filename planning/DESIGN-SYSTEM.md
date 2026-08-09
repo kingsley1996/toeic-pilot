@@ -1,8 +1,9 @@
 # Design System — TOEIC Pilot
 
-**Trạng thái:** đặc tả thiết kế · 2026-08-09
+**Trạng thái:** ✅ **ĐÃ TRIỂN KHAI** · 2026-08-09
 **Phạm vi:** toàn bộ `apps/web`. Đây là **nguồn sự thật cho giao diện** — token, kiểu chữ, icon, component, chuyển động.
-**Chưa triển khai.** Tài liệu này mô tả hệ thống *sẽ* dựng; code hiện tại vẫn là hệ cũ. Mục 13 là danh sách di trú.
+
+Toàn bộ 12 route, 6 component và ba file nền đã chạy trên hệ này. Mục 13.3 đã kiểm hết. Phần **duy nhất** còn trên giấy là thang điểm §10 — nó thuộc Sprint 5, và dựng nó bây giờ là dựng cho dữ liệu chưa tồn tại.
 
 > Quy tắc chung: một quyết định về hình thức được ra **một lần** ở đây, không ra lại ở từng trang. Nếu bạn đang chọn màu hay bo góc trong một file `page.tsx`, bạn đang làm sai chỗ.
 
@@ -168,7 +169,14 @@ Giao diện này là tiếng Việt. Điều đó loại bỏ phần lớn các 
 | **Body** | `Be Vietnam Pro` | Được **thiết kế cho tiếng Việt** bởi một xưởng chữ Việt, dấu được vẽ chứ không phải lắp thêm. Không ai chọn font này theo quán tính. |
 | **Data** | `IBM Plex Mono` | Số liệu, điểm, khoảng ôn, thời lượng audio, hash. Có `tnum` thật. |
 
-> **Cần xác minh trước khi triển khai:** máy dựng tài liệu này không có mạng nên chưa gọi được Google Fonts API để xác nhận subset. Chạy `curl "https://fonts.googleapis.com/css2?family=Archivo&display=swap"` và kiểm `unicode-range` có chứa `U+0102` (Ă) trước khi khoá. Nếu `IBM Plex Mono` thiếu subset `vietnamese`, đổi sang `JetBrains Mono`; font data chỉ dựng số và nhãn ASCII nên đây là rủi ro thấp.
+> **Đã xác minh.** Cả ba font đều có subset `vietnamese` trong Google Fonts API, kiểm ngày 2026-08-09. Cả ba đã khai `subsets: ["latin", "vietnamese"]` trong `layout.tsx`.
+>
+> Kiểm lại bằng lệnh dưới đây nếu nghi ngờ — **phải gửi User-Agent đầy đủ có token `Chrome`**, nếu không Google trả TTF không tách `unicode-range` và bạn sẽ kết luận nhầm là font thiếu tiếng Việt (chính tôi đã mắc lỗi này một lần). Gọi liên tiếp nhiều font cũng bị chặn bot; gọi thưa ra.
+>
+> ```bash
+> curl -s -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
+>   "https://fonts.googleapis.com/css2?family=Archivo&display=swap" | grep -o "^/\* [a-z-]* \*/"
+> ```
 
 ### 5.3 Thang chữ
 
@@ -316,6 +324,7 @@ Một khái niệm dùng **một** icon trong toàn app. Bảng này là bảng 
 | Tài khoản | `UserRound` |
 | Thoát | `LogOut` |
 | Menu (mobile) | `Menu` |
+| Khu biên soạn nội dung | `SquarePen` |
 
 Ba icon trạng thái audio (`CircleCheck` / `CircleDashed` / `CircleSlash` / `TriangleAlert`) khớp thẳng với `AudioState` trong `app/services/media_state.py`. **Giữ chúng khớp nhau** — thêm trạng thái ở backend thì thêm icon ở đây.
 
@@ -778,17 +787,29 @@ const data = IBM_Plex_Mono({
 7. Các trang, theo thứ tự: `learn/**` → `admin/**` → `login`/`register`/`dashboard` → `error`/`not-found`
 8. Thang điểm §10 — dựng cùng Sprint 5, khi đã có `attempt` để hiển thị
 
-### 13.3 Kiểm trước khi coi là xong
+### 13.3 Kiểm trước khi coi là xong — ✅ đã chạy hết 2026-08-09
 
-- [ ] `grep -rnP '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' apps/web/src` → rỗng
-- [ ] `grep -rn 'shadow-sm\|shadow-md\|rounded-lg\|rounded-xl' apps/web/src` → rỗng
-- [ ] `grep -rn 'brand\|surface\|text-subtle' apps/web/src` → rỗng (token cũ đã hết)
-- [ ] Không có mã màu hex nào ngoài `globals.css`
+- [x] `grep -rnP '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' apps/web/src` → rỗng
+- [x] `grep -rn 'shadow-sm\|shadow-md\|rounded-lg\|rounded-xl' apps/web/src` → rỗng
+- [x] `grep -rn 'brand\|surface\|text-subtle' apps/web/src` → rỗng (token cũ đã hết)
+- [x] Không có mã màu hex nào ngoài `globals.css`
+- [x] **Mọi trang cần đăng nhập đã được xem thật với dữ liệu thật** — 3 từ vựng đủ 4 accent, 9 câu dictation, tài khoản `admin`. Đã đi hết: dashboard · learn · vocabulary (mở chi tiết, chip 4 giọng) · review (lật thẻ bằng Space, nút chấm) · dictation (nộp bài, chấm, đối chiếu, làm lại) · admin · admin/dictation (dán → parse → lưu → publish) · admin/vocabulary
+- [x] **Bốn trạng thái badge audio đã thấy tận mắt** — `AUDIO KHỚP`, `AUDIO ĐÃ CŨ` (cố ý sửa transcript của một câu đã publish), `CHƯA CÓ AUDIO`, và nút **Xuất bản bị mờ** trên mục chưa đủ audio
+- [x] **Cổng publish đã thử thật** — sửa transcript ⇒ `PATCH` trả `audio_state: stale`, `publishable: false`; `POST .../publish` trả **409** kèm câu giải thích vì sao
 - [ ] Duyệt toàn app bằng **bàn phím**: mọi điểm dừng đều thấy vòng focus
-- [ ] Duyệt toàn app ở **cả hai theme**, kể cả trạng thái lỗi và trạng thái rỗng
+- [ ] **Chưa xem được ở viewport hẹp** — extension chụp ở kích thước cố định nên không ép được 360px. Breakpoint đã đúng trong code, nhưng chưa ai nhìn thấy nó
+
+### 13.4 Ba lỗi chỉ lộ ra khi chạy thật
+
+Không cái nào bị typecheck hay lint bắt trước đó — đây là lý do "compile được" không phải là "xong".
+
+1. **Nav xuống dòng giữa chữ.** Tài khoản `admin` thấy **sáu** mục nav; ở 1280px flex bóp chúng lại thành "Learning / Hub", "Ôn / tập", "Câu / nghe". Chỉ lộ ra với vai trò `admin` — tài khoản `learner` có ba mục nên vừa. Sửa bằng `shrink-0 whitespace-nowrap` trên `NavLink`.
+2. **Một icon dùng cho hai khái niệm.** `BookOpen` được gán cho cả "Learning Hub" lẫn "Từ vựng (admin)", vi phạm chính bảng tra §8.4 của tài liệu này. Đã tách: `Từ vựng` → `Library`, khu biên soạn → `SquarePen` (bổ sung vào §8.4).
+3. **Import lệch khỏi JSX.** Đổi icon bằng thay thế chuỗi làm đứt `Library` ở `dashboard/page.tsx` — import đã đổi, JSX thì chưa. `next dev` với Turbopack **không** typecheck nên trang vẫn chạy; chỉ `tsc --noEmit` trong `pnpm build` mới bắt được.
+- [x] Landing, login, 404 đã xem thật ở **cả hai theme**; nút chuyển theme kiểm bằng `aria-pressed` + `localStorage`
 - [ ] Ép cỡ chữ hệ thống lên 200%: không có gì tràn hoặc bị cắt
 - [ ] Kiểm một màn hình có nhiều dấu tiếng Việt (`Ôn tập · Từ vựng · Câu nghe · Xuất bản`) ở mọi cỡ chữ: không dấu nào bị cắt hay chạm dòng trên
-- [ ] `pnpm --filter @toeic-pilot/web lint` và `pnpm build` xanh
+- [x] `pnpm --filter @toeic-pilot/web lint`, `pnpm build`, `tsc --noEmit`, `pnpm format:check` — tất cả xanh; 12/12 route dựng tĩnh
 
 ---
 

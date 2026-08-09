@@ -7,18 +7,21 @@ import {
   type DictationParseResponse,
   type TopicAdmin,
 } from "@toeic-pilot/shared";
+import { Headphones, Send } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-import { AudioBadge, BackfillHint, ParsePreview } from "@/components/admin-bits";
+import { BackfillHint, ParsePreview } from "@/components/admin-bits";
 import {
   Alert,
-  Badge,
+  AudioTag,
   Button,
-  Card,
   EmptyState,
   Field,
   Page,
   PageHeader,
+  Panel,
+  PublishTag,
+  SectionHeader,
   Select,
   SkeletonList,
   Spinner,
@@ -131,11 +134,11 @@ export default function AdminDictationPage() {
       )}
       {notice && (
         <div className="mb-4">
-          <Alert tone="success">{notice}</Alert>
+          <Alert tone="ok">{notice}</Alert>
         </div>
       )}
 
-      <Card className="p-5">
+      <Panel className="p-5">
         <Field label="Dán hàng loạt" hint="Mỗi dòng một câu">
           <Textarea
             value={raw}
@@ -160,7 +163,7 @@ export default function AdminDictationPage() {
             </Select>
           </Field>
         </div>
-      </Card>
+      </Panel>
 
       {parsed && (
         <>
@@ -176,13 +179,13 @@ export default function AdminDictationPage() {
         </>
       )}
 
-      <section className="mt-10">
-        <h2 className="mb-3 text-lg font-semibold">Tất cả câu</h2>
+      <section className="mt-12">
+        <SectionHeader title="Tất cả câu" />
         {!items && <SkeletonList rows={3} />}
 
         {items?.length === 0 && (
           <EmptyState
-            icon="🎧"
+            icon={Headphones}
             title="Chưa có câu nào"
             description="Dán vài câu ở trên để bắt đầu."
           />
@@ -190,35 +193,33 @@ export default function AdminDictationPage() {
 
         <div className="space-y-2">
           {items?.map((item) => (
-            <Card key={item.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
-              <p className="min-w-0 flex-1 text-sm">{item.transcript}</p>
-              <Badge tone={item.status === "published" ? "success" : "neutral"}>
-                {item.status}
-              </Badge>
-              <AudioBadge state={item.audio_state} />
+            <Panel key={item.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+              <p className="min-w-0 flex-1 text-body">{item.transcript}</p>
+              <PublishTag status={item.status} />
+              <AudioTag state={item.audio_state} />
               {item.status !== "published" && (
                 <Button
                   size="sm"
-                  variant="success"
                   disabled={!item.publishable || !canPublish}
                   onClick={() => void publish(item.id)}
                   title={
                     !canPublish
                       ? "Chỉ admin mới publish được"
                       : item.publishable
-                        ? "Publish"
+                        ? "Xuất bản câu này"
                         : "Audio chưa khớp với transcript"
                   }
                 >
-                  Publish
+                  <Send size={14} strokeWidth={2} aria-hidden />
+                  Xuất bản
                 </Button>
               )}
-            </Card>
+            </Panel>
           ))}
         </div>
       </section>
 
-      <div className="mt-10">
+      <div className="mt-12">
         <BackfillHint />
       </div>
     </Page>

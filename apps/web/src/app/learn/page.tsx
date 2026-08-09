@@ -1,15 +1,17 @@
 "use client";
 
 import { API_ROUTES, type TopicPublic } from "@toeic-pilot/shared";
+import { BookOpen, Headphones, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
   Alert,
   ButtonLink,
-  CardLink,
   EmptyState,
   Page,
   PageHeader,
+  PanelLink,
+  SectionHeader,
   SkeletonList,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
@@ -35,35 +37,31 @@ export default function LearnPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <CardLink href="/learn/review">
-          <div aria-hidden className="text-2xl">
-            🔁
-          </div>
-          <h2 className="mt-3 font-semibold">Ôn tập từ vựng</h2>
-          <p className="mt-1 text-sm text-text-muted">
+        <PanelLink href="/learn/review">
+          <RotateCcw size={16} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+          <h2 className="mt-3 text-subtitle">Ôn tập từ vựng</h2>
+          <p className="mt-1 text-small text-ink-muted">
             Lặp lại ngắt quãng — đến hạn trước, rồi mới đến từ mới.
           </p>
-        </CardLink>
-        <CardLink href="/learn/dictation">
-          <div aria-hidden className="text-2xl">
-            🎧
-          </div>
-          <h2 className="mt-3 font-semibold">Dictation</h2>
-          <p className="mt-1 text-sm text-text-muted">
+        </PanelLink>
+        <PanelLink href="/learn/dictation">
+          <Headphones size={16} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+          <h2 className="mt-3 text-subtitle">Dictation</h2>
+          <p className="mt-1 text-small text-ink-muted">
             Nghe, gõ lại, và đối chiếu từng từ với đáp án.
           </p>
-        </CardLink>
+        </PanelLink>
       </div>
 
-      <section className="mt-10">
-        <h2 className="mb-3 text-lg font-semibold">Chủ đề</h2>
+      <section className="mt-12">
+        <SectionHeader title="Chủ đề" />
 
         {error && <Alert>{error}</Alert>}
         {!topics && !error && <SkeletonList rows={3} />}
 
         {topics?.length === 0 && (
           <EmptyState
-            icon="📚"
+            icon={BookOpen}
             title="Chưa có chủ đề nào được xuất bản"
             description={
               canEdit
@@ -76,12 +74,12 @@ export default function LearnPage() {
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {topics?.map((topic) => (
-            <CardLink key={topic.id} href={`/learn/vocabulary?topic=${topic.slug}`}>
-              <h3 className="font-medium">{topic.name}</h3>
+            <PanelLink key={topic.id} href={`/learn/vocabulary?topic=${topic.slug}`}>
+              <h3>{topic.name}</h3>
               {topic.description && (
-                <p className="mt-1 text-sm text-text-muted">{topic.description}</p>
+                <p className="mt-1 text-small text-ink-muted">{topic.description}</p>
               )}
-            </CardLink>
+            </PanelLink>
           ))}
         </div>
       </section>
