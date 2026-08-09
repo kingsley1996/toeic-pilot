@@ -16,7 +16,14 @@ COPY . .
 # packages/shared/dist is .dockerignore'd (host build artifacts must not leak in),
 # so the image builds it itself — apps/web imports the compiled output, not src.
 RUN pnpm --filter @toeic-pilot/shared build
+COPY docker/web-entrypoint.sh /usr/local/bin/web-entrypoint.sh
+RUN chmod +x /usr/local/bin/web-entrypoint.sh
+
 WORKDIR /app/apps/web
 EXPOSE 3000
 ENV NODE_ENV=development
+# The entrypoint reconciles node_modules with the lockfile before handing over —
+# without it, a dependency added after the volumes were created is invisible to
+# the container no matter how many times the image is rebuilt.
+ENTRYPOINT ["/usr/local/bin/web-entrypoint.sh"]
 CMD ["pnpm", "dev"]

@@ -70,6 +70,13 @@ uv sync --extra dev --extra content         # add the offline content pipeline
 
 uv run pytest                              # 271 collected: 269 run + 2 `external` deselected
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
+
+# The three `integration` tests default to the DEV database, and they run
+# `create_all` on it — which is what makes `alembic revision --autogenerate`
+# emit an empty migration afterwards. Point them at a scratch database instead:
+docker compose -f ../../docker/docker-compose.yml exec -T postgres \
+  psql -U toeic -d postgres -c 'CREATE DATABASE toeic_test;'
+TEST_DATABASE_URL="postgresql+psycopg://toeic:toeic@localhost:5432/toeic_test" uv run pytest
 uv run pytest tests/test_auth.py::test_x -v
 uv run ruff check app tests
 uv run ruff format app tests
@@ -108,6 +115,17 @@ cp .env.example .env
 docker compose -f docker/docker-compose.yml up --build
 docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 ```
+
+**`docker/web-entrypoint.sh` runs `pnpm install` before the dev server**, for the same reason `api-entrypoint.sh` runs Alembic before uvicorn: a container must not serve against a state it has not reconciled. Adding a JS dependency therefore needs nothing special — `up -d` is enough, and the install costs ~2s on a warm volume.
+
+It exists because `web` mounts `node_modules` as **named volumes**, and Docker seeds a named volume from the image only when the volume is *empty*. Without the entrypoint, `up --build` installs the new package into the fresh image and then mounts yesterday's volume straight over it, and the container fails with `Module not found` for a package that is plainly in `package.json` — which sends you looking at the package, the import and the bundler, none of which are wrong.
+
+Two consequences worth knowing:
+
+- The install is `--frozen-lockfile`, so if `package.json` and `pnpm-lock.yaml` disagree the container **refuses to start** with a message telling you to run `pnpm install` on the host. That is deliberate: booting with a guessed dependency tree is how the original bug hid for a whole session.
+- The entrypoint also rebuilds `@toeic-pilot/shared`. The bind mount hides the `dist/` the image built, and `apps/web` imports the compiled output — so on a fresh clone with no host build there would be no `dist` at all.
+
+**Do not run `pnpm dev` on the host while the `web` container is up.** `apps/web` is bind-mounted, so both write the same `apps/web/.next`, and a cache written by one confuses the other.
 
 `api` runs `alembic upgrade head` via `docker/api-entrypoint.sh` before uvicorn binds (`RUN_MIGRATIONS=0` skips it). `web` waits for `api` to report healthy, and `api`'s healthcheck hits `/ready`, so nothing starts until Postgres is genuinely reachable. Source is bind-mounted for hot reload; only dependency-manifest changes need a rebuild.
 

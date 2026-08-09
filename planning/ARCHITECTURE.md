@@ -212,9 +212,12 @@ Frontend (`apps/web/src/`):
 | Đường dẫn | Vai trò |
 |---|---|
 | `app/` | Route: `login`, `register`, `dashboard`, `learn/**`, `admin/**`, `not-found`, `error` |
+| `app/admin/layout.tsx` | Khu quản trị dùng khung riêng; `AppShell` tự nhường chỗ ở đường dẫn `/admin` |
 | `app/globals.css` | Token màu — sáng/tối là **một** định nghĩa |
 | `components/ui.tsx` | Primitive của design system |
 | `components/app-shell.tsx` | Nav theo vai trò |
+| `components/admin-shell.tsx` | Khung khu quản trị: thanh trên riêng + sidebar. **Không** có nav khu học |
+| `components/nav.tsx` | `NavLink`, `activeHref`, `SessionControls` — dùng chung cho cả hai khung |
 | `components/audio-button.tsx`, `admin-bits.tsx` | Phát audio; lưới review + badge trạng thái audio |
 | `lib/api.ts`, `lib/session.tsx`, `lib/auth-storage.ts` | Fetch wrapper, phiên đăng nhập, lưu token |
 
@@ -225,7 +228,9 @@ Shared & infra:
 | `packages/shared/src/api-types.ts`, `openapi.json` | **Sinh ra — không sửa tay** |
 | `packages/shared/src/index.ts` | Alias + `API_ROUTES` (viết tay) |
 | `scripts/generate-api-types.sh` | Chạy cả hai toolchain |
-| `docker/docker-compose.yml`, `api.Dockerfile`, `web.Dockerfile`, `api-entrypoint.sh` | Stack local |
+| `docker/docker-compose.yml`, `api.Dockerfile`, `web.Dockerfile` | Stack local |
+| `docker/api-entrypoint.sh` | Chạy `alembic upgrade head` trước khi uvicorn bind |
+| `docker/web-entrypoint.sh` | Chạy `pnpm install --frozen-lockfile` + build `shared` trước khi dev server chạy — `node_modules` là named volume nên không tự cập nhật theo image |
 | `.github/workflows/ci.yml` | 4 job: `api`, `web`, `contract`, `docker` |
 
 ## Khoảng trống đã biết

@@ -1,62 +1,32 @@
 "use client";
 
-import { BookOpen, Headphones, Library, LogOut, Menu, RotateCcw, SquarePen, X } from "lucide-react";
+import { BookOpen, Headphones, Menu, RotateCcw, SquarePen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { ThemeToggle } from "@/components/theme-toggle";
-import { ButtonLink, IconButton, Skeleton, cx } from "@/components/ui";
+import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
+import { ButtonLink, IconButton, cx } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
 /*
- * Icon theo khái niệm, không theo trang. Một khái niệm dùng MỘT icon trong toàn
- * app (DESIGN-SYSTEM §8.4) — bảng này và bảng ở tài liệu phải khớp nhau.
+ * Chỉ điều hướng của khu HỌC. Các trang quản trị có khung riêng
+ * (`components/admin-shell.tsx`) và cố ý không nằm ở đây: trộn hai bộ nav lại
+ * đẩy header lên sáu mục ở vai trò admin, và quan trọng hơn là xoá mất ranh
+ * giới giữa "đang học" và "đang sửa nội dung người khác sẽ học".
+ *
+ * Icon theo khái niệm, không theo trang — bảng tra ở DESIGN-SYSTEM §8.4.
  */
-const LEARN_LINKS = [
+const LEARN_LINKS: NavItem[] = [
   { href: "/learn", label: "Learning Hub", Icon: BookOpen },
   { href: "/learn/review", label: "Ôn tập", Icon: RotateCcw },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
 ];
 
-const ADMIN_LINKS = [
-  { href: "/admin", label: "Nội dung", Icon: SquarePen },
-  { href: "/admin/vocabulary", label: "Từ vựng", Icon: Library },
-  { href: "/admin/dictation", label: "Câu nghe", Icon: Headphones },
-];
-
-function NavLink({
-  href,
-  label,
-  Icon,
-  active,
-  onClick,
-}: {
-  href: string;
-  label: string;
-  Icon: typeof BookOpen;
-  active: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      aria-current={active ? "page" : undefined}
-      className={cx(
-        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
-        active ? "bg-action-tint text-action-ink" : "text-ink-muted hover:bg-recess hover:text-ink",
-      )}
-    >
-      <Icon size={16} strokeWidth={1.75} aria-hidden />
-      {label}
-    </Link>
-  );
-}
-
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { status, user, canEdit, logout } = useSession();
+  const { status, canEdit } = useSession();
   const pathname = usePathname();
+
   /*
    * Menu mobile được đóng dấu bằng đường dẫn mà nó được mở ra trên đó, nên điều
    * hướng làm nó tự đóng THEO SUY DIỄN — không cần effect.
@@ -64,19 +34,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
    * Cách hiển nhiên là `useEffect(() => setMenuOpen(false), [pathname])`, nhưng
    * đó là setState đồng bộ trong thân effect: một lượt render dây chuyền, và
    * lint `react-hooks/set-state-in-effect` chặn đúng chỗ này. Cách dưới đây còn
-   * đúng cho MỌI kiểu điều hướng, kể cả bấm logo hay quay lại bằng nút back —
-   * chứ không chỉ cho những link có gắn onClick.
+   * đúng cho MỌI kiểu điều hướng, kể cả bấm logo hay quay lại bằng nút back.
    */
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const menuOpen = openedAt === pathname;
   const setMenuOpen = (open: boolean) => setOpenedAt(open ? pathname : null);
 
-  // Khớp sâu nhất thắng, để /learn/review không đồng thời làm sáng /learn.
-  const links = [...LEARN_LINKS, ...(canEdit ? ADMIN_LINKS : [])];
-  const activeHref = links
-    .map((link) => link.href)
-    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
-    .sort((a, b) => b.length - a.length)[0];
+  // Khu quản trị tự dựng khung của nó. Không lồng hai header vào nhau.
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return <>{children}</>;
+  }
+
+  const active = activeHref(LEARN_LINKS, pathname);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -98,20 +67,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
 
           {status === "authenticated" && (
-            <nav className="ml-1 hidden items-center gap-0.5 lg:flex">
-              {links.map((link) => (
-                <NavLink key={link.href} {...link} active={link.href === activeHref} />
+            <nav className="ml-1 hidden items-center gap-0.5 md:flex">
+              {LEARN_LINKS.map((link) => (
+                <NavLink key={link.href} {...link} active={link.href === active} />
               ))}
             </nav>
           )}
 
           <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
-
-            {/* "loading" dựng một khối giữ chỗ chứ không dựng nút của người chưa
-                đăng nhập. Đoán sai ở đây chính là thứ từng khiến header mời
-                "Đăng nhập" với người đã đăng nhập rồi. */}
-            {status === "loading" && <Skeleton className="h-8 w-24" />}
+            {/*
+             * MỘT cánh cửa vào khu quản trị, không phải ba mục nav. Chỉ hiện với
+             * người thực sự mở được nó — học viên không được chỉ vào một cánh
+             * cửa họ không mở được.
+             */}
+            {status === "authenticated" && canEdit && (
+              <ButtonLink
+                href="/admin"
+                variant="secondary"
+                size="sm"
+                className="hidden sm:inline-flex"
+              >
+                <SquarePen size={14} strokeWidth={2} aria-hidden />
+                Quản trị
+              </ButtonLink>
+            )}
 
             {status === "anonymous" && (
               <>
@@ -124,32 +103,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </>
             )}
 
-            {status === "authenticated" && user && (
-              <>
-                <div className="hidden text-right sm:block">
-                  <p className="text-small font-semibold leading-tight">{user.email}</p>
-                  <p className="font-data text-label uppercase leading-tight text-ink-faint">
-                    {user.role}
-                  </p>
-                </div>
-                <IconButton icon={LogOut} aria-label="Thoát" onClick={logout} />
-                <IconButton
-                  icon={menuOpen ? X : Menu}
-                  aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
-                  aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="lg:hidden"
-                />
-              </>
+            <SessionControls />
+
+            {status === "authenticated" && (
+              <IconButton
+                icon={menuOpen ? X : Menu}
+                aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="md:hidden"
+              />
             )}
           </div>
         </div>
 
         {status === "authenticated" && menuOpen && (
-          <nav className="flex flex-col gap-0.5 border-t border-rule bg-panel px-4 py-3 lg:hidden">
-            {links.map((link) => (
-              <NavLink key={link.href} {...link} active={link.href === activeHref} />
+          <nav className="flex flex-col gap-0.5 border-t border-rule bg-panel px-4 py-3 md:hidden">
+            {LEARN_LINKS.map((link) => (
+              <NavLink key={link.href} {...link} active={link.href === active} />
             ))}
+            {canEdit && (
+              <NavLink
+                href="/admin"
+                label="Quản trị nội dung"
+                Icon={SquarePen}
+                active={false}
+                className={cx("mt-1 border-t border-rule pt-3")}
+              />
+            )}
           </nav>
         )}
       </header>

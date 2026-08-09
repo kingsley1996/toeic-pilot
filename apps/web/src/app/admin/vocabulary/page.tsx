@@ -132,7 +132,6 @@ export default function AdminVocabularyPage() {
   return (
     <Page>
       <PageHeader
-        eyebrow="Nội dung"
         title="Từ vựng"
         description="Dán nhiều dòng để tạo, sửa từng từ, rồi xuất bản khi audio đã sẵn sàng."
       />

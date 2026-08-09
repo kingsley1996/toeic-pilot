@@ -23,7 +23,7 @@ import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
 export default function AdminPage() {
-  const { status, token, user, canPublish } = useRequireSession({ canEdit: true });
+  const { status, token, canPublish } = useRequireSession({ canEdit: true });
   const [topics, setTopics] = useState<TopicAdmin[] | null>(null);
   const [slug, setSlug] = useState("");
   const [name, setName] = useState("");
@@ -68,14 +68,12 @@ export default function AdminPage() {
   return (
     <Page>
       <PageHeader
-        eyebrow="Quản lý nội dung"
-        title="Biên soạn"
+        title="Tổng quan"
         description="Nhập hàng loạt, xem lại, rồi xuất bản."
         actions={
-          <Tag tone={canPublish ? "action" : "neutral"}>
-            {user?.role}
-            {!canPublish && " · không publish được"}
-          </Tag>
+          // Vai trò đã hiện ở thanh trên; ở đây chỉ nói thứ editor cần biết
+          // trước khi soạn xong rồi mới phát hiện mình không bấm được nút.
+          !canPublish ? <Tag tone="warn">chỉ admin mới xuất bản được</Tag> : undefined
         }
       />
 

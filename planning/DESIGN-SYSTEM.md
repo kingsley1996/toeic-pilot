@@ -410,7 +410,43 @@ Lỗi: viền `alert` + một dòng `small` màu `alert` **có icon** `OctagonAl
 
 Mọi trạng thái rỗng phải nói **bước tiếp theo**. "Không có dữ liệu" không nói gì mà người đọc chưa tự biết.
 
-### 9.7 Skeleton
+### 9.7 Hai khung, không phải một
+
+Khu học và khu quản trị là hai nơi khác nhau, và giao diện nói điều đó bằng cấu
+trúc chứ không bằng màu.
+
+```
+KHU HỌC (AppShell)                    KHU QUẢN TRỊ (AdminShell)
+┌──────────────────────────────┐      ┌──────────────────────────────┐
+│ logo  Hub Ôn tập Dictation   │      │ ← Về khu học │ Quản trị  ADMIN│
+│              [Quản trị] user │      │                         user │
+├──────────────────────────────┤      ├──────────┬───────────────────┤
+│                              │      │ Tổng quan│                   │
+│         nội dung             │      │ Từ vựng  │   nội dung        │
+│                              │      │ Câu nghe │                   │
+└──────────────────────────────┘      └──────────┴───────────────────┘
+   không sidebar                          có sidebar
+```
+
+**Sidebar là tín hiệu.** Phía học viên không có; phía quản trị có. Người dùng
+biết mình đang ở đâu mà không cần thêm một màu hay một kiểu chữ nào — đúng
+nguyên tắc §6.3: độ nổi và phân vùng đến từ cấu trúc, không từ trang trí.
+
+Ba ràng buộc:
+
+- **Trang quản trị không nằm trên nav chính.** Trộn hai bộ nav đẩy header lên
+  sáu mục ở vai trò `admin` (đúng lỗi §13.4.1), và tệ hơn là xoá mất ranh giới
+  giữa *đang học* và *đang sửa nội dung người khác sẽ học*.
+- **Đúng MỘT cánh cửa vào**, nút `Quản trị` ở khu điều khiển người dùng — không
+  phải ba mục nav. Nó chỉ hiện với người thực sự mở được: học viên không được
+  chỉ vào một cánh cửa họ không mở được.
+- **Lối ra luôn hiện.** `← Về khu học` là mục đầu tiên của thanh trên. Một khu
+  quản trị không có đường về là một ngõ cụt.
+
+`components/nav.tsx` giữ `NavLink`, `activeHref` và `SessionControls` để hai
+khung dùng chung — nếu không, chúng sẽ trôi khỏi nhau ngay lần sửa thứ hai.
+
+### 9.8 Skeleton
 
 Giữ nguyên cách tiếp cận của hệ cũ — đây là chỗ hệ cũ làm đúng. Khối có **đúng hình dạng** của nội dung sắp tới, `recess`, nhấp nháy 1.4s. Không bao giờ dùng chữ "Đang tải…".
 

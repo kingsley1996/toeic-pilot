@@ -122,7 +122,6 @@ export default function AdminDictationPage() {
   return (
     <Page>
       <PageHeader
-        eyebrow="Nội dung"
         title="Câu nghe"
         description="Transcript vừa là nguồn sinh audio vừa là đáp án chấm bài — sửa nó là audio cũ thành sai."
       />
