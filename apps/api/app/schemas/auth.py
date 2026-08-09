@@ -39,4 +39,8 @@ class TokenResponse(BaseModel):
 class UserPublic(BaseModel):
     id: str
     email: EmailStr
+    # Exposed so the frontend can decide what to render rather than discovering
+    # a 403 after the fact. It is a display hint only: every admin endpoint
+    # enforces the role server-side through `require_role`.
+    role: str
     created_at: str

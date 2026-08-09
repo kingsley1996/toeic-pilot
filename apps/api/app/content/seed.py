@@ -1,6 +1,6 @@
 """Load the audio manifest into the database.
 
-    python -m app.content.seed [--manifest <path>]
+    uv run python -m app.content.seed [--manifest <path>]
 
 Split from `generate` on purpose. Generation runs on a developer's machine and
 needs edge-tts; seeding runs wherever the database happens to live — including

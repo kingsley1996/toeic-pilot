@@ -1,6 +1,377 @@
 {
   "components": {
     "schemas": {
+      "AudioClip": {
+        "properties": {
+          "accent": {
+            "title": "Accent",
+            "type": "string"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accent",
+          "url",
+          "duration_ms"
+        ],
+        "title": "AudioClip",
+        "type": "object"
+      },
+      "AudioSlotState": {
+        "properties": {
+          "accent": {
+            "title": "Accent",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "accent",
+          "state"
+        ],
+        "title": "AudioSlotState",
+        "type": "object"
+      },
+      "CommitResult": {
+        "properties": {
+          "created": {
+            "title": "Created",
+            "type": "integer"
+          },
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "skipped": {
+            "title": "Skipped",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "created",
+          "skipped",
+          "problems"
+        ],
+        "title": "CommitResult",
+        "type": "object"
+      },
+      "DictationAdmin": {
+        "properties": {
+          "audio_state": {
+            "title": "Audio State",
+            "type": "string"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "publishable": {
+            "title": "Publishable",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "transcript": {
+            "title": "Transcript",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "transcript",
+          "difficulty",
+          "status",
+          "audio_state",
+          "publishable"
+        ],
+        "title": "DictationAdmin",
+        "type": "object"
+      },
+      "DictationCommit": {
+        "properties": {
+          "difficulty": {
+            "default": 3,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/DictationRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "title": "DictationCommit",
+        "type": "object"
+      },
+      "DictationDetail": {
+        "properties": {
+          "audio_url": {
+            "title": "Audio Url",
+            "type": "string"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          },
+          "word_count": {
+            "title": "Word Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "difficulty",
+          "topic_id",
+          "word_count",
+          "audio_url",
+          "duration_ms"
+        ],
+        "title": "DictationDetail",
+        "type": "object"
+      },
+      "DictationParseResponse": {
+        "properties": {
+          "error_count": {
+            "title": "Error Count",
+            "type": "integer"
+          },
+          "ok_count": {
+            "title": "Ok Count",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/DictationRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok_count",
+          "error_count",
+          "rows"
+        ],
+        "title": "DictationParseResponse",
+        "type": "object"
+      },
+      "DictationResult": {
+        "properties": {
+          "accuracy": {
+            "title": "Accuracy",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "diff": {
+            "items": {
+              "$ref": "#/components/schemas/WordDiff"
+            },
+            "title": "Diff",
+            "type": "array"
+          },
+          "expected": {
+            "title": "Expected",
+            "type": "integer"
+          },
+          "matched": {
+            "title": "Matched",
+            "type": "integer"
+          },
+          "transcript": {
+            "title": "Transcript",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "accuracy",
+          "matched",
+          "expected",
+          "transcript",
+          "diff"
+        ],
+        "title": "DictationResult",
+        "type": "object"
+      },
+      "DictationRow": {
+        "properties": {
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "problems": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "transcript": {
+            "title": "Transcript",
+            "type": "string"
+          }
+        },
+        "required": [
+          "line",
+          "transcript"
+        ],
+        "title": "DictationRow",
+        "type": "object"
+      },
+      "DictationSubmit": {
+        "properties": {
+          "submitted_text": {
+            "title": "Submitted Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "submitted_text"
+        ],
+        "title": "DictationSubmit",
+        "type": "object"
+      },
+      "DictationSummary": {
+        "properties": {
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          },
+          "word_count": {
+            "title": "Word Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "difficulty",
+          "topic_id",
+          "word_count"
+        ],
+        "title": "DictationSummary",
+        "type": "object"
+      },
+      "DictationUpdate": {
+        "properties": {
+          "difficulty": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difficulty"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          },
+          "transcript": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript"
+          }
+        },
+        "title": "DictationUpdate",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -12,6 +383,210 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ParseRequest": {
+        "properties": {
+          "raw_text": {
+            "title": "Raw Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "raw_text"
+        ],
+        "title": "ParseRequest",
+        "type": "object"
+      },
+      "ReviewCard": {
+        "description": "A card in a review session.\n\n`is_new` drives the daily new-card cap: without knowing which cards are new,\nthe session cannot enforce a limit, and an uncapped queue of new words builds\na review debt the learner meets a fortnight later.",
+        "properties": {
+          "cefr_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cefr Level"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "example": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example"
+          },
+          "example_audio": {
+            "items": {
+              "$ref": "#/components/schemas/AudioClip"
+            },
+            "title": "Example Audio",
+            "type": "array"
+          },
+          "example_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example Vi"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "headword_audio": {
+            "items": {
+              "$ref": "#/components/schemas/AudioClip"
+            },
+            "title": "Headword Audio",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_new": {
+            "title": "Is New",
+            "type": "boolean"
+          },
+          "meaning_en": {
+            "title": "Meaning En",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "part_of_speech",
+          "phonetic",
+          "meaning_vi",
+          "meaning_en",
+          "example",
+          "example_vi",
+          "cefr_level",
+          "difficulty",
+          "headword_audio",
+          "example_audio",
+          "is_new"
+        ],
+        "title": "ReviewCard",
+        "type": "object"
+      },
+      "ReviewResult": {
+        "properties": {
+          "due_at": {
+            "title": "Due At",
+            "type": "string"
+          },
+          "ease_factor": {
+            "title": "Ease Factor",
+            "type": "string"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "integer"
+          },
+          "interval_days": {
+            "title": "Interval Days",
+            "type": "integer"
+          },
+          "lapses": {
+            "title": "Lapses",
+            "type": "integer"
+          },
+          "repetitions": {
+            "title": "Repetitions",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entry_id",
+          "grade",
+          "interval_days",
+          "repetitions",
+          "lapses",
+          "ease_factor",
+          "due_at"
+        ],
+        "title": "ReviewResult",
+        "type": "object"
+      },
+      "ReviewSession": {
+        "properties": {
+          "cards": {
+            "items": {
+              "$ref": "#/components/schemas/ReviewCard"
+            },
+            "title": "Cards",
+            "type": "array"
+          },
+          "due_count": {
+            "title": "Due Count",
+            "type": "integer"
+          },
+          "new_count": {
+            "title": "New Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "due_count",
+          "new_count",
+          "cards"
+        ],
+        "title": "ReviewSession",
+        "type": "object"
+      },
+      "ReviewSubmit": {
+        "properties": {
+          "grade": {
+            "description": "One of [0, 3, 4, 5]",
+            "title": "Grade",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "grade"
+        ],
+        "title": "ReviewSubmit",
         "type": "object"
       },
       "TokenResponse": {
@@ -30,6 +605,129 @@
           "access_token"
         ],
         "title": "TokenResponse",
+        "type": "object"
+      },
+      "TopicAdmin": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "position",
+          "status"
+        ],
+        "title": "TopicAdmin",
+        "type": "object"
+      },
+      "TopicCreate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "TopicCreate",
+        "type": "object"
+      },
+      "TopicPublic": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "position"
+        ],
+        "title": "TopicPublic",
         "type": "object"
       },
       "UserLogin": {
@@ -65,11 +763,16 @@
           "id": {
             "title": "Id",
             "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
           }
         },
         "required": [
           "id",
           "email",
+          "role",
           "created_at"
         ],
         "title": "UserPublic",
@@ -134,6 +837,432 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      },
+      "VocabularyAdmin": {
+        "properties": {
+          "audio": {
+            "items": {
+              "$ref": "#/components/schemas/AudioSlotState"
+            },
+            "title": "Audio",
+            "type": "array"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "publishable": {
+            "title": "Publishable",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "part_of_speech",
+          "meaning_vi",
+          "status",
+          "audio",
+          "publishable"
+        ],
+        "title": "VocabularyAdmin",
+        "type": "object"
+      },
+      "VocabularyCommit": {
+        "description": "Rows to write, after review.\n\nThe client sends back the (possibly edited) parse result rather than the raw\npaste, so what gets written is exactly what was on screen.",
+        "properties": {
+          "difficulty": {
+            "default": 3,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/VocabularyRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "title": "VocabularyCommit",
+        "type": "object"
+      },
+      "VocabularyDetail": {
+        "properties": {
+          "cefr_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cefr Level"
+          },
+          "difficulty": {
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "example": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example"
+          },
+          "example_audio": {
+            "items": {
+              "$ref": "#/components/schemas/AudioClip"
+            },
+            "title": "Example Audio",
+            "type": "array"
+          },
+          "example_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example Vi"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "headword_audio": {
+            "items": {
+              "$ref": "#/components/schemas/AudioClip"
+            },
+            "title": "Headword Audio",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "meaning_en": {
+            "title": "Meaning En",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "part_of_speech",
+          "phonetic",
+          "meaning_vi",
+          "meaning_en",
+          "example",
+          "example_vi",
+          "cefr_level",
+          "difficulty",
+          "headword_audio",
+          "example_audio"
+        ],
+        "title": "VocabularyDetail",
+        "type": "object"
+      },
+      "VocabularyParseResponse": {
+        "properties": {
+          "error_count": {
+            "title": "Error Count",
+            "type": "integer"
+          },
+          "ok_count": {
+            "title": "Ok Count",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/VocabularyRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok_count",
+          "error_count",
+          "rows"
+        ],
+        "title": "VocabularyParseResponse",
+        "type": "object"
+      },
+      "VocabularyRow": {
+        "properties": {
+          "example": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example"
+          },
+          "example_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example Vi"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "meaning_en": {
+            "title": "Meaning En",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          },
+          "problems": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          }
+        },
+        "required": [
+          "line",
+          "headword",
+          "part_of_speech",
+          "meaning_en",
+          "meaning_vi"
+        ],
+        "title": "VocabularyRow",
+        "type": "object"
+      },
+      "VocabularySummary": {
+        "properties": {
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "part_of_speech",
+          "phonetic",
+          "meaning_vi"
+        ],
+        "title": "VocabularySummary",
+        "type": "object"
+      },
+      "VocabularyUpdate": {
+        "properties": {
+          "difficulty": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difficulty"
+          },
+          "example": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example"
+          },
+          "example_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example Vi"
+          },
+          "headword": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headword"
+          },
+          "meaning_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meaning En"
+          },
+          "meaning_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meaning Vi"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          }
+        },
+        "title": "VocabularyUpdate",
+        "type": "object"
+      },
+      "WordDiff": {
+        "properties": {
+          "op": {
+            "title": "Op",
+            "type": "string"
+          },
+          "word": {
+            "title": "Word",
+            "type": "string"
+          }
+        },
+        "required": [
+          "op",
+          "word"
+        ],
+        "title": "WordDiff",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -149,6 +1278,533 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/dictation": {
+      "get": {
+        "operationId": "list_dictation_admin_api_v1_admin_dictation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationAdmin"
+                  },
+                  "title": "Response List Dictation Admin Api V1 Admin Dictation Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Dictation Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "commit_dictation_api_v1_admin_dictation_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationCommit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Commit Dictation",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/parse": {
+      "post": {
+        "operationId": "parse_dictation_paste_api_v1_admin_dictation_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationParseResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Parse Dictation Paste",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/{item_id}": {
+      "patch": {
+        "operationId": "update_dictation_api_v1_admin_dictation__item_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Dictation",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/dictation/{item_id}/publish": {
+      "post": {
+        "operationId": "publish_dictation_api_v1_admin_dictation__item_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Dictation",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/topics": {
+      "get": {
+        "operationId": "list_topics_api_v1_admin_topics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TopicAdmin"
+                  },
+                  "title": "Response List Topics Api V1 Admin Topics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Topics",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_topic_api_v1_admin_topics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/vocabulary": {
+      "get": {
+        "operationId": "list_vocabulary_admin_api_v1_admin_vocabulary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VocabularyAdmin"
+                  },
+                  "title": "Response List Vocabulary Admin Api V1 Admin Vocabulary Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Vocabulary Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "commit_vocabulary_api_v1_admin_vocabulary_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VocabularyCommit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Commit Vocabulary",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/vocabulary/parse": {
+      "post": {
+        "description": "Parse a paste and report every problem. Writes nothing.",
+        "operationId": "parse_vocabulary_paste_api_v1_admin_vocabulary_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyParseResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Parse Vocabulary Paste",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/vocabulary/{entry_id}": {
+      "patch": {
+        "operationId": "update_vocabulary_api_v1_admin_vocabulary__entry_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VocabularyUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Vocabulary",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/vocabulary/{entry_id}/publish": {
+      "post": {
+        "operationId": "publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Vocabulary",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/auth/login": {
       "post": {
         "operationId": "login_api_v1_auth_login_post",
@@ -254,6 +1910,440 @@
         "summary": "Register",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/dictation": {
+      "get": {
+        "operationId": "list_dictation_api_v1_dictation_get",
+        "parameters": [
+          {
+            "description": "topic slug",
+            "in": "query",
+            "name": "topic",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "topic slug",
+              "title": "Topic"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DictationSummary"
+                  },
+                  "title": "Response List Dictation Api V1 Dictation Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Dictation",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation/{item_id}": {
+      "get": {
+        "operationId": "get_dictation_api_v1_dictation__item_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Dictation",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/dictation/{item_id}/attempts": {
+      "post": {
+        "operationId": "submit_dictation_api_v1_dictation__item_id__attempts_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DictationSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DictationResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Dictation",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/topics": {
+      "get": {
+        "operationId": "list_topics_api_v1_topics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TopicPublic"
+                  },
+                  "title": "Response List Topics Api V1 Topics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Topics",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary": {
+      "get": {
+        "operationId": "list_vocabulary_api_v1_vocabulary_get",
+        "parameters": [
+          {
+            "description": "topic slug",
+            "in": "query",
+            "name": "topic",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "topic slug",
+              "title": "Topic"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VocabularySummary"
+                  },
+                  "title": "Response List Vocabulary Api V1 Vocabulary Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Vocabulary",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary-review/session": {
+      "get": {
+        "description": "Cards due now, then new ones up to the daily cap.\n\nDue before new on purpose: reviewing what is about to be forgotten is worth\nmore than meeting something for the first time, and if the session is cut\nshort it should be the new words that wait.",
+        "operationId": "review_session_api_v1_vocabulary_review_session_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Review Session",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary/{entry_id}": {
+      "get": {
+        "operationId": "get_vocabulary_api_v1_vocabulary__entry_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vocabulary",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary/{entry_id}/review": {
+      "post": {
+        "operationId": "submit_review_api_v1_vocabulary__entry_id__review_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Review",
+        "tags": [
+          "learning"
         ]
       }
     },

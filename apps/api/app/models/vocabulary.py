@@ -20,6 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.core.media import AUDIO_ACCENTS
+from app.models.audio import AudioAsset  # noqa: F401 — resolves the relationship below
 from app.models.mixins import PublishableMixin, TimestampMixin, difficulty_check, status_check
 
 PARTS_OF_SPEECH = ("noun", "verb", "adjective", "adverb", "preposition", "phrase")
@@ -117,6 +118,9 @@ class VocabularyAudio(Base):
     )
 
     entry: Mapped["VocabularyEntry"] = relationship(back_populates="audio")
+    # Needed to tell whether the clip still matches the text: the check compares
+    # a hash recomputed from the current headword against the asset's stored one.
+    asset: Mapped["AudioAsset"] = relationship()
 
 
 class VocabularyReviewState(Base, TimestampMixin):

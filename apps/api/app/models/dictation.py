@@ -15,10 +15,11 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import JSON
 
 from app.core.database import Base
+from app.models.audio import AudioAsset
 from app.models.mixins import PublishableMixin, difficulty_check, status_check
 
 # JSONB on PostgreSQL, plain JSON on the SQLite used by the test fixture.
@@ -28,13 +29,23 @@ _JSON_TYPE = JSONB().with_variant(JSON(), "sqlite")
 class DictationItem(Base, PublishableMixin):
     __tablename__ = "dictation_item"
     __table_args__ = (
+        # A published item must have audio. Expressible as a CHECK because the
+        # link is a single column, unlike vocabulary, where "has all four accents"
+        # spans rows in another table and only the publish endpoint can enforce it.
+        CheckConstraint(
+            "status <> 'published' OR audio_asset_id IS NOT NULL",
+            name="ck_dictation_item_published_has_audio",
+        ),
         difficulty_check("dictation_item"),
         status_check("dictation_item"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    audio_asset_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("audio_asset.id", ondelete="RESTRICT"), nullable=False
+    # Nullable because a draft exists before its audio does: the editor writes the
+    # transcript, the offline worker synthesises it later. The CHECK above is what
+    # stops that intermediate state from reaching a learner.
+    audio_asset_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("audio_asset.id", ondelete="RESTRICT"), nullable=True
     )
     # THE ANSWER KEY. `audio_asset.source_text` is the string that was fed to TTS
     # and exists only so an asset can be re-derived; the two are usually
@@ -46,6 +57,10 @@ class DictationItem(Base, PublishableMixin):
         ForeignKey("topic.id", ondelete="SET NULL"), nullable=True
     )
     difficulty: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=3)
+
+    # Same purpose as VocabularyAudio.asset: the publish gate compares a hash
+    # recomputed from the current transcript against the asset's stored one.
+    asset: Mapped["AudioAsset | None"] = relationship()
 
     def __repr__(self) -> str:
         return f"<DictationItem {self.transcript[:40]!r}>"

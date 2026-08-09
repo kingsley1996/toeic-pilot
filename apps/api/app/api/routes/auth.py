@@ -15,6 +15,9 @@ def _user_public(user: User) -> UserPublic:
     return UserPublic(
         id=str(user.id),
         email=user.email,
+        # Never taken from the request: a signup that can choose its own role is
+        # not a role system. It only ever comes off the stored row.
+        role=user.role,
         created_at=user.created_at.isoformat(),
     )
 

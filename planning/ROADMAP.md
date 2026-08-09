@@ -14,19 +14,23 @@
 
 | | |
 |---|---|
-| **Phase hiện tại** | Sprint 3 sắp bắt đầu — Learning Hub |
+| **Phase hiện tại** | Sprint 3 + 4 đã chạy được đầu-cuối cho **từ vựng và dictation** |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
-| **Test** | 191 (189 chạy + 2 `external` deselect mặc định) |
+| **Test** | 269 (267 chạy + 2 `external` deselect mặc định) |
 | **Gate CI** | 13, tất cả xanh |
-| **Migration** | `001_initial` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` |
-| **Bảng** | 20 (users + 19 bảng domain/media/scoring) |
-| **Endpoint** | 5 — chỉ auth và health. **Chưa có endpoint sản phẩm nào** |
+| **Migration** | `001` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` |
+| **Bảng** | 20 |
+| **Endpoint** | **25** — auth, health, Learning Hub (học viên), Content admin |
 
 ### Điều quan trọng nhất cần biết
 
-**Hạ tầng đã xong; sản phẩm thì chưa bắt đầu.** Schema đầy đủ, đường ống audio và ảnh chạy được, bảng quy đổi điểm đã có. Nhưng chưa có một endpoint sản phẩm nào và **chưa có nội dung thật** — 16 clip audio và 3 ảnh hiện tại chỉ để chứng minh đường ống hoạt động.
+**Vòng đời nội dung đã khép kín và chạy thật.** Admin dán từ → lưu ở `draft` → worker sinh audio 4 accent → publish (bị chặn nếu audio thiếu hoặc lệch) → học viên ôn tập bằng flashcard SM-2 và làm dictation có chấm theo từng từ. Đã chạy đầu-cuối qua stack Docker, không phải chỉ qua test.
 
-**Nút thắt thật của Sprint 3–4 là nội dung, không phải code.** Viết endpoint từ vựng mất vài ngày; soạn 500 từ có nghĩa, ví dụ, và audio 4 giọng thì lâu hơn nhiều. Lên kế hoạch theo đó.
+**Thiếu là nội dung, không phải tính năng.** Hiện có 2 từ và 2 câu dictation — đủ để chứng minh đường đi, không đủ để dạy ai.
+
+**Nút thắt thật là nội dung, không phải code.** Viết endpoint từ vựng mất vài ngày; soạn 500 từ có nghĩa, ví dụ và audio 4 giọng thì lâu hơn nhiều. Đó là lý do Sprint 3 là **công cụ nhập nội dung** chứ không phải Learning Hub: không có công cụ thì không có dữ liệu để test endpoint bằng gì ngoài fixture, và việc soạn nội dung không chạy song song được với việc code.
+
+**Một cột đang ở trạng thái chết.** `question.status = 'draft'` được thiết kế để nội dung phải qua duyệt, nhưng chưa có gì thực hiện được động tác duyệt — nên `draft` hiện là trạng thái không ai thoát ra được. Sprint 3 đóng chỗ này.
 
 ---
 
@@ -35,65 +39,114 @@
 Đã sắp lại theo yêu cầu: **Learning Hub và TOEIC Practice trước, AI layer sau cùng.**
 
 ```
-Sprint 3  Learning Hub          ← tiếp theo
-Sprint 4  TOEIC Practice
-Sprint 5  Hardening & bảo mật   ← bắt buộc trước AI
-Sprint 6  AI Layer
-Sprint 7  Analytics & Production
+Sprint 3  Content Tooling       ← tiếp theo (admin UI nhập đề)
+Sprint 4  Learning Hub
+Sprint 5  TOEIC Practice
+Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
+Sprint 7  AI Layer
+Sprint 8  Analytics & Production
 ```
 
 ### ⚠️ Rủi ro đã biết của thứ tự này
 
 `REVIEW-OPUS.md` §7f khuyến nghị chèn một **lát cắt AI mỏng sớm** để giảm rủi ro. Đẩy toàn bộ AI về Sprint 6 nghĩa là phần **khó nhất, khác biệt nhất và rủi ro nhất** của sản phẩm chưa được kiểm chứng cho tới khi dự án đã đi được ~70%. Nếu tới lúc đó mới phát hiện RAG không đủ tốt hoặc chi phí quá cao thì đã muộn.
 
-Đây là lựa chọn có ý thức, không phải sơ suất. Hai thứ giảm thiểu, đã đưa vào Sprint 5:
+Đây là lựa chọn có ý thức, không phải sơ suất. Hai thứ giảm thiểu, đã đưa vào Sprint 6:
 
 1. **Rate limiting** (P1-8) phải xong **trước** endpoint LLM đầu tiên. Endpoint LLM không đo đếm là hoá đơn không giới hạn.
 2. **`ai_interaction`** (đếm token + chi phí) phải tồn tại từ request LLM đầu tiên, không phải sau. Không đo được thì không cải thiện được; không đếm được thì không giới hạn được.
 
-Nếu muốn giảm rủi ro sớm hơn: chèn một lát cắt AI mỏng **một** use case (ví dụ "giải thích một câu ngữ pháp") vào cuối Sprint 4. Mục tiêu không phải ship mà là xác nhận kiến trúc và đo chi phí thật.
+Nếu muốn giảm rủi ro sớm hơn: chèn một lát cắt AI mỏng **một** use case (ví dụ "giải thích một câu ngữ pháp") vào cuối Sprint 5. Mục tiêu không phải ship mà là xác nhận kiến trúc và đo chi phí thật.
 
 ---
 
-## 3. Sprint 3 — Learning Hub
+## 3. Sprint 3 — Content Tooling · 🟡 phần từ vựng + dictation ĐÃ XONG
+
+**Mục tiêu:** admin nhập được một đề hoàn chỉnh trong vài giờ, và nội dung phải qua duyệt trước khi học viên thấy.
+
+Quyết định đầy đủ: [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md).
+
+Không có sprint này thì Sprint 4–5 không có dữ liệu để test bằng gì ngoài fixture, và việc soạn nội dung — nút thắt thật của dự án — không thể bắt đầu song song với việc code.
+
+### Tại sao công cụ này nhỏ hơn vẻ ngoài
+
+Đề TOEIC thật thuộc bản quyền ETS, nên audio và ảnh gốc **không dùng lại được**. Nghe như một hạn chế, nhưng nó cắt bỏ phần lớn công cụ: audio sinh lại từ transcript bằng pipeline đã có, ảnh thay bằng ảnh CC qua `ADR-004`. Trình nhập **chỉ xử lý văn bản** — không upload file, không cắt audio, không quản lý media.
+
+Nguồn là PDF **có lớp text** ⇒ dán thẳng, không cần OCR.
+
+### Schema
+- [x] `users.role` ∈ `learner`/`editor`/`admin` + CHECK, mặc định `learner`
+- [x] `created_by`, `published_by`, `published_at` trên mọi bảng nội dung (qua `PublishableMixin`)
+- [x] Migration `005` + `006` (dictation cho phép chưa có audio)
+
+### Backend
+- [x] Dependency `require_role` — **là dependency, không phải kiểm tra trong thân hàm**, vì thân hàm dễ quên khi thêm route
+- [x] `POST /admin/{vocabulary,dictation}/parse` — nhận text thô + đáp án, trả cấu trúc đã parse kèm lỗi `validate_question()`. **Không ghi database**
+- [x] `POST /admin/{vocabulary,dictation}` — commit, luôn `draft` — ghi ở trạng thái `draft`, không có đường tắt ra `published`
+- [x] CRUD cho `vocabulary_entry`, `dictation_item`, `topic` · [ ] `question*` (Sprint 5)
+- [x] `POST /admin/{vocabulary,dictation}/{id}/publish` — chỉ `admin`, **chặn khi audio thiếu/lệch**
+- [x] `uv run python -m app.content.backfill_audio` — worker ngoài luồng, hàng đợi là một câu truy vấn
+- [ ] Parser: `Questions X-Y refer to the following …` mở `question_set`; `NNN.` mở câu; `(A)`–`(D)` là phương án
+
+### Frontend `/admin`
+- [ ] Màn dán: chọn part, ô text đề, ô text đáp án riêng
+- [ ] **Cảnh báo Part 1 và 2 phải dán từ phần audioscript** — phần đề của hai part này trong PDF gần như trống, ai không biết sẽ tưởng parser hỏng
+- [x] Lưới review: lỗi hiện ngay tại dòng
+- [ ] Editor từng câu **có xem trước** — bắt buộc cho Part 1: không nhìn thấy ảnh thì không viết được bốn câu mô tả
+- [x] Bảng nội dung có badge audio (`missing`/`stale`/`current`) + nút publish
+- [ ] Trường `source` **không được pre-select** — đây là cột duy nhất mà giá trị sai gây hậu quả pháp lý
+
+### Test
+- [ ] Parser: đề đúng chuẩn, đề thiếu đáp án, đánh số nhảy cóc, stimulus thiếu
+- [x] Mỗi endpoint admin: `learner` nhận **403**
+- [ ] `editor` không publish được
+- [x] Commit luôn cho ra `status='draft'`
+
+### Định nghĩa hoàn thành
+Một admin dán 7 part từ PDF, sửa những chỗ parser bắt sai, publish, và nội dung xuất hiện đúng ở API — trong khi tài khoản `learner` không chạm được vào bất kỳ endpoint admin nào.
+
+---
+
+## 4. Sprint 4 — Learning Hub · 🟡 backend + frontend ĐÃ XONG
 
 **Mục tiêu:** học viên đăng nhập được, học từ vựng theo chủ đề có phát âm 4 giọng, làm bài dictation và được chấm.
 
 Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và nội dung.
 
 ### Backend
-- [ ] `GET /api/v1/topics` — chỉ trả `status='published'`
-- [ ] `GET /api/v1/vocabulary` — lọc theo topic, phân trang
-- [ ] `GET /api/v1/vocabulary/{id}` — kèm 4 accent audio và câu ví dụ
-- [ ] `GET /api/v1/vocabulary/review` — các từ đến hạn ôn (index `ix_vocabulary_review_state_due`)
-- [ ] `POST /api/v1/vocabulary/{id}/review` — chấm SM-2, ghi `state` **và** `log`
-- [ ] `GET /api/v1/dictation` + `GET /api/v1/dictation/{id}`
-- [ ] `POST /api/v1/dictation/{id}/attempt` — chấm theo `dictation_item.transcript`, **không** theo `audio_asset.source_text`
-- [ ] Thuật toán SM-2 trong `app/services/` + test cho từng nhánh (đúng/sai/quên lại)
-- [ ] Thuật toán chấm dictation: chuẩn hoá, so khớp từng từ, sinh `word_diff`
+- [x] `GET /api/v1/topics`
+- [x] `GET /api/v1/vocabulary` — lọc theo topic, phân trang
+- [x] `GET /api/v1/vocabulary/{id}` — kèm 4 accent audio
+- [x] `GET /api/v1/vocabulary-review/session` — đến hạn trước, rồi từ mới, giới hạn 20/ngày
+- [x] `POST /api/v1/vocabulary/{id}/review` — SM-2, ghi `state` **và** `log`
+- [x] `GET /api/v1/dictation` + `/{id}` — **không trả transcript**
+- [x] `POST /api/v1/dictation/{id}/attempts` — chấm theo `transcript`, giữ nguyên văn bài nộp
+- [x] `app/services/srs.py` — SM-2 thuần hàm, có test từng nhánh
+- [x] `app/services/dictation.py` — chuẩn hoá, `SequenceMatcher`, `word_diff`
 
 ### Frontend
-- [ ] Trang danh sách chủ đề
-- [ ] Trang học từ vựng — chọn accent, phát audio bằng thẻ `<audio>` native
-- [ ] Phiên ôn tập SRS
-- [ ] Trang dictation — phát audio, nhập, xem kết quả tô màu
+- [x] `/learn` — chủ đề + lối vào
+- [x] `/learn/vocabulary` — chọn accent, phát bằng `Audio` thuần
+- [x] `/learn/review` — flashcard 4 nút
+- [x] `/learn/dictation` — phát, nhập, diff tô màu
+- [x] **Revamp UI (2026-08-09)** — hệ token màu sáng/tối, bộ component dùng chung, app shell có nav theo vai trò, skeleton thay cho chữ "Loading…", empty state nói rõ bước tiếp theo, `not-found` và `error` boundary
 
 ### Nội dung
-- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề (nút thắt thật)
+- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — **nút thắt duy nhất còn lại**
 - [ ] Sinh audio 4 accent × {headword, example} cho toàn bộ
 - [ ] Soạn ≥ 50 câu dictation
 
 ### Hợp đồng & chất lượng
-- [ ] `pnpm gen:api-types` — **lần đầu tiên thật sự cần chạy**, vì đây là endpoint sản phẩm đầu tiên
-- [ ] Thêm entry vào `API_ROUTES` trong `packages/shared/src/index.ts`
-- [ ] Test cho mỗi endpoint đọc: nội dung `draft` **không** lọt ra (`ADR-001` §A5.3)
+- [x] `pnpm gen:api-types` — đã chạy, sinh lại cho ra file y hệt
+- [x] `API_ROUTES` đã có đủ 17 lối vào mới
+- [x] Test `draft` không lọt ra, cho mọi endpoint đọc
 
 ### Định nghĩa hoàn thành
 Học viên tạo tài khoản, học một chủ đề, ôn lại hôm sau và thấy đúng những từ đến hạn, làm dictation và nhận điểm chính xác.
 
 ---
 
-## 4. Sprint 4 — TOEIC Practice
+## 5. Sprint 5 — TOEIC Practice
 
 **Mục tiêu:** luyện theo part và làm đề đầy đủ, có điểm quy đổi.
 
@@ -104,7 +157,7 @@ Học viên tạo tài khoản, học một chủ đề, ôn lại hôm sau và 
 - [ ] `POST /api/v1/attempts/{id}/submit` — chốt, gọi `score_attempt()`
 - [ ] `GET /api/v1/attempts/{id}` — kết quả kèm giải thích
 - [ ] `GET /api/v1/tests` — danh sách đề
-- [ ] Trình nhập nội dung dùng `validators.validate_question()` — ba ràng buộc ở `ADR-001` §B4 chỉ có hiệu lực nếu có thứ gọi tới nó
+- [ ] *(Trình nhập nội dung đã chuyển sang Sprint 3 — [`ADR-005`](ADR-005-CONTENT-TOOLING.md). Ba ràng buộc ở `ADR-001` §B4 có hiệu lực từ đó.)*
 
 ### Frontend
 - [ ] Giao diện làm bài: đồng hồ đếm ngược, điều hướng câu, đánh dấu xem lại
@@ -123,9 +176,9 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 ---
 
-## 5. Sprint 5 — Hardening & bảo mật
+## 6. Sprint 6 — Hardening & bảo mật
 
-**Phải xong trước Sprint 6.** Đây không phải sprint "dọn dẹp": nó chứa các điều kiện tiên quyết cứng của AI layer.
+**Phải xong trước Sprint 7.** Đây không phải sprint "dọn dẹp": nó chứa các điều kiện tiên quyết cứng của AI layer.
 
 - [ ] **P1-8 Rate limiting** — bắt buộc trước endpoint LLM đầu tiên
 - [ ] **P1-7** Token sang httpOnly cookie + refresh token + denylist trên Redis (Redis hiện chưa dùng vào việc gì)
@@ -137,7 +190,7 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 ---
 
-## 6. Sprint 6 — AI Layer
+## 7. Sprint 7 — AI Layer
 
 **Chặn bởi:** ADR-003 chưa viết.
 
@@ -153,7 +206,7 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 ---
 
-## 7. Sprint 7 — Analytics & Production
+## 8. Sprint 8 — Analytics & Production
 
 - [ ] Dashboard tiến độ, Learning Memory
 - [ ] `user_progress` (nên là view suy ra từ `attempt`, không phải bảng ghi song song)
@@ -163,7 +216,7 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 ---
 
-## 8. Đã xong
+## 9. Đã xong
 
 ### Sprint 0 — Cầm máu · 2026-08-08
 6/6 P0. ESLint crash, `.dockerignore`, đường dẫn `.env`, validator `SECRET_KEY`, parse UUID, race khi register. Chi tiết: `REVIEW-OPUS.md` §3.
@@ -191,26 +244,30 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 
 ---
 
-## 9. Nợ kỹ thuật đang mở
+## 10. Nợ kỹ thuật đang mở
 
 | Mục | Ở đâu | Ghi chú |
 |---|---|---|
-| Chưa có nội dung thật | `ADR-001` §A6.3 | Nút thắt lớn nhất của Sprint 3–4 |
+| Chưa có nội dung thật | `ADR-001` §A6.3 | Nút thắt lớn nhất của dự án. Sprint 3 xây **công cụ**; nội dung vẫn phải soạn |
+| Chưa có vai trò người dùng | `ADR-005` §3.5 | `users` chưa có `role`; mọi tài khoản hiện tại ngang quyền nhau |
+| Chưa có audit trail cho nội dung | `ADR-005` §3.6 | Không trả lời được "ai duyệt câu này". Bổ sung sau thì nội dung cũ vĩnh viễn không truy nguyên được |
+| `draft` là trạng thái không thoát ra được | `ADR-001` §A4.8 | Cột được thiết kế cho một quy trình duyệt chưa tồn tại. Sprint 3 đóng |
+| Bản quyền đề ETS | `ADR-005` §2 | `question.source` phải điền đúng ở **từng hàng**. `original` = soạn mới theo cấu trúc; `licensed` = đã thật sự xin phép |
 | Rate limiting | P1-8 → Sprint 5 | Chặn cứng Sprint 6 |
 | Token trong `localStorage` | P1-7 → Sprint 5 | |
 | Không có test frontend/e2e | P1-3 → Sprint 5 | 0% coverage phía web |
 | Branch protection chưa bật | Sprint 0 → Sprint 5 | Cần quyền admin repo |
 | Bảng quy đổi là **xấp xỉ** | `score_scale.source_note` | Không phải bảng chính thức của ETS. Cần scale riêng cho từng đề trước khi trình bày như điểm ước lượng chính thức |
 | `PLAN.md` §9–§10 là nhật ký lẫn trong spec | `REVIEW-OPUS.md` §7h | Đã chuyển vào file này; xoá khỏi `PLAN.md` |
-| Chưa có acceptance criteria cho từng Epic | `REVIEW-OPUS.md` §7c | Mục 3 và 4 ở trên là bước đầu |
+| Chưa có acceptance criteria cho từng Epic | `REVIEW-OPUS.md` §7c | Mục 3–5 ở trên là bước đầu |
 | Chưa có ảnh cho Part 7 | `ADR-004` §5 | Đề thật đôi khi có biểu đồ/bảng biểu |
 
 ---
 
-## 10. Cách cập nhật file này
+## 11. Cách cập nhật file này
 
 1. Tick task **ngay khi xong**, đừng để dồn cuối sprint.
-2. Sprint kết thúc → gom xuống mục 8 kèm số liệu thật (số test, số migration), không phải mô tả chung chung.
-3. **Lỗi phát hiện nhờ chạy thật thì ghi lại** — mục 8 quý ở chỗ đó, không phải ở danh sách tính năng.
+2. Sprint kết thúc → gom xuống mục 9 kèm số liệu thật (số test, số migration), không phải mô tả chung chung.
+3. **Lỗi phát hiện nhờ chạy thật thì ghi lại** — mục 9 quý ở chỗ đó, không phải ở danh sách tính năng.
 4. Quyết định kiến trúc thì viết ADR, **đừng** viết vào đây; ở đây chỉ để link tới.
 5. Đổi số liệu ở mục 1 mỗi lần thêm migration hoặc thêm nhóm test.

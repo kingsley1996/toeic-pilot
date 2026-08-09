@@ -2,20 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * One palette, two themes. Everything else in the app refers to these names
+ * rather than to zinc-700 or blue-600 directly, so a colour decision lives in
+ * one place instead of being re-made in every component.
+ *
+ * `--brand` is indigo rather than the default blue: it stays legible against
+ * both surfaces at the same weight, which plain blue does not.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface: 255 255 255;
+  --surface-raised: 255 255 255;
+  --surface-sunken: 250 250 250;
+  --border: 228 228 231;
+  --border-strong: 212 212 216;
+
+  --text: 24 24 27;
+  --text-muted: 113 113 122;
+  --text-subtle: 161 161 170;
+
+  --brand: 79 70 229;
+  --brand-hover: 67 56 202;
+  --brand-soft: 238 242 255;
+  --brand-text: 67 56 202;
+
+  --success: 22 163 74;
+  --success-soft: 240 253 244;
+  --warning: 217 119 6;
+  --warning-soft: 255 251 235;
+  --danger: 220 38 38;
+  --danger-soft: 254 242 242;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --surface: 9 9 11;
+    --surface-raised: 24 24 27;
+    --surface-sunken: 9 9 11;
+    --border: 39 39 42;
+    --border-strong: 63 63 70;
+
+    --text: 244 244 245;
+    --text-muted: 161 161 170;
+    --text-subtle: 113 113 122;
+
+    --brand: 129 140 248;
+    --brand-hover: 165 180 252;
+    --brand-soft: 30 27 75;
+    --brand-text: 199 210 254;
+
+    --success: 74 222 128;
+    --success-soft: 5 46 22;
+    --warning: 251 191 36;
+    --warning-soft: 69 26 3;
+    --danger: 248 113 113;
+    --danger-soft: 69 10 10;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    @apply bg-surface text-text antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /* A visible focus ring on every interactive element, keyboard-only so it does
+     not fire on mouse clicks. Without it the app is unusable without a mouse. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer utilities {
+  /* Used by the flashcard when it flips and by list items as they arrive, so
+     content does not simply pop into place. */
+  .animate-rise {
+    animation: rise 0.18s ease-out;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
 }

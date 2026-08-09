@@ -1,6 +1,6 @@
 """Fetch and normalise openly-licensed photographs for TOEIC Part 1.
 
-    python -m app.content.images --input content/sources/images/<spec>.jsonl [--dry-run]
+    uv run python -m app.content.images --input content/sources/images/<spec>.jsonl [--dry-run]
 
 Deliberately not a search integration (ADR-004 §2.1). A Part 1 item only works
 when the photograph and its four spoken statements fit each other, with three

@@ -1,6 +1,6 @@
 """Offline audio generation.
 
-    python -m app.content.generate --input content/sources/sample.jsonl [--dry-run]
+    uv run python -m app.content.generate --input content/sources/sample.jsonl [--dry-run]
 
 Reads a spec file, synthesises whatever is missing, writes the audio into the
 object store, and records each asset in the manifest. It never touches the

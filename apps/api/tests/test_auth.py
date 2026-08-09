@@ -169,3 +169,29 @@ def test_login_with_absurdly_long_password_returns_401_not_500(client: TestClien
     register(client)
     response = login(client, password="a" * 5000)
     assert response.status_code == 401
+
+
+def test_me_reports_the_role(client: TestClient, db_session: Session) -> None:
+    # The frontend needs this to decide whether to offer the admin area at all;
+    # without it a learner discovers the boundary as a 403.
+    client.post(
+        "/api/v1/auth/register",
+        json={"email": "roles@example.com", "password": "supersecret123"},
+    )
+    token = client.post(
+        "/api/v1/auth/login",
+        json={"email": "roles@example.com", "password": "supersecret123"},
+    ).json()["access_token"]
+
+    body = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}).json()
+    assert body["role"] == "learner"
+
+
+def test_registration_cannot_choose_a_role(client: TestClient, db_session: Session) -> None:
+    # A self-service signup that picks its own role is not a role system.
+    response = client.post(
+        "/api/v1/auth/register",
+        json={"email": "sneaky@example.com", "password": "supersecret123", "role": "admin"},
+    )
+    assert response.status_code == 201
+    assert response.json()["role"] == "learner"

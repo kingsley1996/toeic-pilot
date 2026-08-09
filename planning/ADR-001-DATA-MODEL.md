@@ -189,11 +189,19 @@ Vì sao là bảng chứ không phải hằng số trong code: đường cong TO
 
 `source_note` NOT NULL vì ETS **không công bố** bảng chính thức — mọi bảng ở đây đều là xấp xỉ từ một nguồn nào đó. Khi học viên thắc mắc về điểm, cột này là câu trả lời cho "con số này ở đâu ra".
 
-Bảng mặc định được seed bằng `python -m app.content.seed_scores`: nội suy tuyến tính giữa các mốc được công bố rộng rãi, làm tròn về bội số của 5. Các **mốc** là thứ để review — mười hai con số cãi nhau được, hai trăm hàng nội suy thì không.
+Bảng mặc định được seed bằng `uv run python -m app.content.seed_scores`: nội suy tuyến tính giữa các mốc được công bố rộng rãi, làm tròn về bội số của 5. Các **mốc** là thứ để review — mười hai con số cãi nhau được, hai trăm hàng nội suy thì không.
 
 Logic chấm ở `app/services/scoring.py`. Nó **từ chối đoán**: thiếu hàng quy đổi thì ném `ScaleNotFoundError` chứ không nội suy — một điểm số sai âm thầm tệ hơn một lỗi hiện rõ, vì nó được lưu vĩnh viễn vào lượt làm bài và học viên không có cách nào biết là sai.
 
-### A6.3 — Chưa có nội dung thật
+### A6.3 — Chưa có nội dung thật — 🟡 CƠ CHẾ ĐÃ QUYẾT (2026-08-09)
+
+> Phần *cơ chế* đã có lời giải: [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md) — admin UI dán-và-parse, nội dung vào ở `draft` rồi qua duyệt. Phần *nội dung* thì vẫn phải soạn; công cụ không sinh ra câu hỏi.
+>
+> ADR-005 cũng đóng một mâu thuẫn mà §A4.8 để lại: `status='draft'` được thiết kế cho một quy trình duyệt **chưa tồn tại**, nên tới giờ nó là trạng thái không ai thoát ra được.
+
+Nội dung gốc của mục này (giữ làm ngữ cảnh):
+
+### A6.3-cũ — Chưa có nội dung thật
 
 Schema không sinh ra câu hỏi. 16 clip từ Sprint 2 là mẫu chứng minh đường ống, không phải giáo trình. Nguồn nội dung thật gắn chặt với A4.7 (bản quyền) và cần quyết định riêng.
 

@@ -38,7 +38,7 @@ def raw_to_scaled(session: Session, scale_slug: str, section: str, raw_correct: 
     if scaled is None:
         raise ScaleNotFoundError(
             f"scale {scale_slug!r} has no {section} row for {raw_correct} correct; "
-            f"seed it with: python -m app.content.seed_scores"
+            f"seed it with: uv run python -m app.content.seed_scores"
         )
     return scaled
 

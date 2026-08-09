@@ -4,6 +4,165 @@
  */
 
 export interface paths {
+    "/api/v1/admin/dictation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation Admin */
+        get: operations["list_dictation_admin_api_v1_admin_dictation_get"];
+        put?: never;
+        /** Commit Dictation */
+        post: operations["commit_dictation_api_v1_admin_dictation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse Dictation Paste */
+        post: operations["parse_dictation_paste_api_v1_admin_dictation_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Dictation */
+        patch: operations["update_dictation_api_v1_admin_dictation__item_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/dictation/{item_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Dictation */
+        post: operations["publish_dictation_api_v1_admin_dictation__item_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Topics */
+        get: operations["list_topics_api_v1_admin_topics_get"];
+        put?: never;
+        /** Create Topic */
+        post: operations["create_topic_api_v1_admin_topics_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vocabulary Admin */
+        get: operations["list_vocabulary_admin_api_v1_admin_vocabulary_get"];
+        put?: never;
+        /** Commit Vocabulary */
+        post: operations["commit_vocabulary_api_v1_admin_vocabulary_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse Vocabulary Paste
+         * @description Parse a paste and report every problem. Writes nothing.
+         */
+        post: operations["parse_vocabulary_paste_api_v1_admin_vocabulary_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Vocabulary */
+        patch: operations["update_vocabulary_api_v1_admin_vocabulary__entry_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary/{entry_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Vocabulary */
+        post: operations["publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -49,6 +208,149 @@ export interface paths {
         put?: never;
         /** Register */
         post: operations["register_api_v1_auth_register_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dictation */
+        get: operations["list_dictation_api_v1_dictation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Dictation */
+        get: operations["get_dictation_api_v1_dictation__item_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dictation/{item_id}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Dictation */
+        post: operations["submit_dictation_api_v1_dictation__item_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Topics */
+        get: operations["list_topics_api_v1_topics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vocabulary */
+        get: operations["list_vocabulary_api_v1_vocabulary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary-review/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Review Session
+         * @description Cards due now, then new ones up to the daily cap.
+         *
+         *     Due before new on purpose: reviewing what is about to be forgotten is worth
+         *     more than meeting something for the first time, and if the session is cut
+         *     short it should be the new words that wait.
+         */
+        get: operations["review_session_api_v1_vocabulary_review_session_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vocabulary */
+        get: operations["get_vocabulary_api_v1_vocabulary__entry_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/{entry_id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Review */
+        post: operations["submit_review_api_v1_vocabulary__entry_id__review_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -104,10 +406,215 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AudioClip */
+        AudioClip: {
+            /** Accent */
+            accent: string;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Url */
+            url: string;
+        };
+        /** AudioSlotState */
+        AudioSlotState: {
+            /** Accent */
+            accent: string;
+            /** Kind */
+            kind: string;
+            /** State */
+            state: string;
+        };
+        /** CommitResult */
+        CommitResult: {
+            /** Created */
+            created: number;
+            /** Problems */
+            problems: string[];
+            /** Skipped */
+            skipped: number;
+        };
+        /** DictationAdmin */
+        DictationAdmin: {
+            /** Audio State */
+            audio_state: string;
+            /** Difficulty */
+            difficulty: number;
+            /** Id */
+            id: string;
+            /** Publishable */
+            publishable: boolean;
+            /** Status */
+            status: string;
+            /** Transcript */
+            transcript: string;
+        };
+        /** DictationCommit */
+        DictationCommit: {
+            /**
+             * Difficulty
+             * @default 3
+             */
+            difficulty: number;
+            /** Rows */
+            rows: components["schemas"]["DictationRow"][];
+            /** Topic Id */
+            topic_id?: string | null;
+        };
+        /** DictationDetail */
+        DictationDetail: {
+            /** Audio Url */
+            audio_url: string;
+            /** Difficulty */
+            difficulty: number;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Id */
+            id: string;
+            /** Topic Id */
+            topic_id: string | null;
+            /** Word Count */
+            word_count: number;
+        };
+        /** DictationParseResponse */
+        DictationParseResponse: {
+            /** Error Count */
+            error_count: number;
+            /** Ok Count */
+            ok_count: number;
+            /** Rows */
+            rows: components["schemas"]["DictationRow"][];
+        };
+        /** DictationResult */
+        DictationResult: {
+            /** Accuracy */
+            accuracy: string;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Diff */
+            diff: components["schemas"]["WordDiff"][];
+            /** Expected */
+            expected: number;
+            /** Matched */
+            matched: number;
+            /** Transcript */
+            transcript: string;
+        };
+        /** DictationRow */
+        DictationRow: {
+            /** Line */
+            line: number;
+            /**
+             * Problems
+             * @default []
+             */
+            problems: string[];
+            /** Transcript */
+            transcript: string;
+        };
+        /** DictationSubmit */
+        DictationSubmit: {
+            /** Submitted Text */
+            submitted_text: string;
+        };
+        /** DictationSummary */
+        DictationSummary: {
+            /** Difficulty */
+            difficulty: number;
+            /** Id */
+            id: string;
+            /** Topic Id */
+            topic_id: string | null;
+            /** Word Count */
+            word_count: number;
+        };
+        /** DictationUpdate */
+        DictationUpdate: {
+            /** Difficulty */
+            difficulty?: number | null;
+            /** Topic Id */
+            topic_id?: string | null;
+            /** Transcript */
+            transcript?: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ParseRequest */
+        ParseRequest: {
+            /** Raw Text */
+            raw_text: string;
+        };
+        /**
+         * ReviewCard
+         * @description A card in a review session.
+         *
+         *     `is_new` drives the daily new-card cap: without knowing which cards are new,
+         *     the session cannot enforce a limit, and an uncapped queue of new words builds
+         *     a review debt the learner meets a fortnight later.
+         */
+        ReviewCard: {
+            /** Cefr Level */
+            cefr_level: string | null;
+            /** Difficulty */
+            difficulty: number;
+            /** Example */
+            example: string | null;
+            /** Example Audio */
+            example_audio: components["schemas"]["AudioClip"][];
+            /** Example Vi */
+            example_vi: string | null;
+            /** Headword */
+            headword: string;
+            /** Headword Audio */
+            headword_audio: components["schemas"]["AudioClip"][];
+            /** Id */
+            id: string;
+            /** Is New */
+            is_new: boolean;
+            /** Meaning En */
+            meaning_en: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Phonetic */
+            phonetic: string | null;
+        };
+        /** ReviewResult */
+        ReviewResult: {
+            /** Due At */
+            due_at: string;
+            /** Ease Factor */
+            ease_factor: string;
+            /** Entry Id */
+            entry_id: string;
+            /** Grade */
+            grade: number;
+            /** Interval Days */
+            interval_days: number;
+            /** Lapses */
+            lapses: number;
+            /** Repetitions */
+            repetitions: number;
+        };
+        /** ReviewSession */
+        ReviewSession: {
+            /** Cards */
+            cards: components["schemas"]["ReviewCard"][];
+            /** Due Count */
+            due_count: number;
+            /** New Count */
+            new_count: number;
+        };
+        /** ReviewSubmit */
+        ReviewSubmit: {
+            /**
+             * Grade
+             * @description One of [0, 3, 4, 5]
+             */
+            grade: number;
         };
         /** TokenResponse */
         TokenResponse: {
@@ -118,6 +625,48 @@ export interface components {
              * @default bearer
              */
             token_type: string;
+        };
+        /** TopicAdmin */
+        TopicAdmin: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+        };
+        /** TopicCreate */
+        TopicCreate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Slug */
+            slug: string;
+        };
+        /** TopicPublic */
+        TopicPublic: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
         };
         /** UserLogin */
         UserLogin: {
@@ -140,6 +689,8 @@ export interface components {
             email: string;
             /** Id */
             id: string;
+            /** Role */
+            role: string;
         };
         /** UserRegister */
         UserRegister: {
@@ -164,6 +715,138 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** VocabularyAdmin */
+        VocabularyAdmin: {
+            /** Audio */
+            audio: components["schemas"]["AudioSlotState"][];
+            /** Headword */
+            headword: string;
+            /** Id */
+            id: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Publishable */
+            publishable: boolean;
+            /** Status */
+            status: string;
+        };
+        /**
+         * VocabularyCommit
+         * @description Rows to write, after review.
+         *
+         *     The client sends back the (possibly edited) parse result rather than the raw
+         *     paste, so what gets written is exactly what was on screen.
+         */
+        VocabularyCommit: {
+            /**
+             * Difficulty
+             * @default 3
+             */
+            difficulty: number;
+            /** Rows */
+            rows: components["schemas"]["VocabularyRow"][];
+            /** Topic Id */
+            topic_id?: string | null;
+        };
+        /** VocabularyDetail */
+        VocabularyDetail: {
+            /** Cefr Level */
+            cefr_level: string | null;
+            /** Difficulty */
+            difficulty: number;
+            /** Example */
+            example: string | null;
+            /** Example Audio */
+            example_audio: components["schemas"]["AudioClip"][];
+            /** Example Vi */
+            example_vi: string | null;
+            /** Headword */
+            headword: string;
+            /** Headword Audio */
+            headword_audio: components["schemas"]["AudioClip"][];
+            /** Id */
+            id: string;
+            /** Meaning En */
+            meaning_en: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Phonetic */
+            phonetic: string | null;
+        };
+        /** VocabularyParseResponse */
+        VocabularyParseResponse: {
+            /** Error Count */
+            error_count: number;
+            /** Ok Count */
+            ok_count: number;
+            /** Rows */
+            rows: components["schemas"]["VocabularyRow"][];
+        };
+        /** VocabularyRow */
+        VocabularyRow: {
+            /** Example */
+            example?: string | null;
+            /** Example Vi */
+            example_vi?: string | null;
+            /** Headword */
+            headword: string;
+            /** Line */
+            line: number;
+            /** Meaning En */
+            meaning_en: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Phonetic */
+            phonetic?: string | null;
+            /**
+             * Problems
+             * @default []
+             */
+            problems: string[];
+        };
+        /** VocabularySummary */
+        VocabularySummary: {
+            /** Headword */
+            headword: string;
+            /** Id */
+            id: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Phonetic */
+            phonetic: string | null;
+        };
+        /** VocabularyUpdate */
+        VocabularyUpdate: {
+            /** Difficulty */
+            difficulty?: number | null;
+            /** Example */
+            example?: string | null;
+            /** Example Vi */
+            example_vi?: string | null;
+            /** Headword */
+            headword?: string | null;
+            /** Meaning En */
+            meaning_en?: string | null;
+            /** Meaning Vi */
+            meaning_vi?: string | null;
+            /** Phonetic */
+            phonetic?: string | null;
+        };
+        /** WordDiff */
+        WordDiff: {
+            /** Op */
+            op: string;
+            /** Word */
+            word: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -173,6 +856,363 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_dictation_admin_api_v1_admin_dictation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationAdmin"][];
+                };
+            };
+        };
+    };
+    commit_dictation_api_v1_admin_dictation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationCommit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_dictation_paste_api_v1_admin_dictation_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationParseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_dictation_api_v1_admin_dictation__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_dictation_api_v1_admin_dictation__item_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_topics_api_v1_admin_topics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicAdmin"][];
+                };
+            };
+        };
+    };
+    create_topic_api_v1_admin_topics_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TopicCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_vocabulary_admin_api_v1_admin_vocabulary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAdmin"][];
+                };
+            };
+        };
+    };
+    commit_vocabulary_api_v1_admin_vocabulary_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyCommit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_vocabulary_paste_api_v1_admin_vocabulary_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyParseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_vocabulary_api_v1_admin_vocabulary__entry_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
@@ -246,6 +1286,257 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dictation_api_v1_dictation_get: {
+        parameters: {
+            query?: {
+                /** @description topic slug */
+                topic?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dictation_api_v1_dictation__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_dictation_api_v1_dictation__item_id__attempts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DictationSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_topics_api_v1_topics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicPublic"][];
+                };
+            };
+        };
+    };
+    list_vocabulary_api_v1_vocabulary_get: {
+        parameters: {
+            query?: {
+                /** @description topic slug */
+                topic?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularySummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_session_api_v1_vocabulary_review_session_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vocabulary_api_v1_vocabulary__entry_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_review_api_v1_vocabulary__entry_id__review_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResult"];
                 };
             };
             /** @description Validation Error */

@@ -5,9 +5,10 @@ hand-written status CHECK constraints is thirteen chances to spell one of them
 differently. These helpers exist so the schema says the same thing every time.
 """
 
+import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, String, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 # Publication state, not soft delete. The real need is "not visible to learners
@@ -52,3 +53,18 @@ class PublishableMixin(TimestampMixin):
     """
 
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="draft", index=True)
+
+    # Who wrote it and who let it out. This is a product with more than one
+    # editor, so when a wrong answer reaches a learner the first question is "who
+    # approved this" — and a column added later leaves every existing row
+    # permanently untraceable.
+    #
+    # SET NULL rather than CASCADE: deleting a staff account must not delete the
+    # content they wrote. Losing the attribution is bad; losing the lesson is worse.
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    published_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

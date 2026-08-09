@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Callable
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -47,3 +48,24 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+
+def require_role(*allowed: str) -> Callable[[User], User]:
+    """Gate an endpoint on the caller's role.
+
+    A dependency rather than a check inside the handler, and deliberately so: a
+    check in the body is one someone forgets to copy when they add the next
+    route, and the failure mode is an admin endpoint quietly open to every
+    signed-up learner. As a dependency it is visible in the signature and in the
+    generated OpenAPI.
+    """
+
+    def dependency(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Requires one of these roles: {', '.join(allowed)}",
+            )
+        return current_user
+
+    return dependency

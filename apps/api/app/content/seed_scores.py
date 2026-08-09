@@ -1,6 +1,6 @@
 """Seed the default raw-to-scaled score conversion.
 
-    python -m app.content.seed_scores
+    uv run python -m app.content.seed_scores
 
 ETS does not publish official conversion tables, and each real form has its own.
 What is seeded here is an **approximation**, built by linear interpolation

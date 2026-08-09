@@ -15,23 +15,40 @@ The rest carry decisions and their reasoning:
 - **`planning/ADR-001-DATA-MODEL.md`** — the domain schema and why it has the shape it has.
 - **`planning/PHASE2-AUDIO.md`** — audio architecture (this is ADR-002); Part A is the durable record, Part B the implementation log.
 - **`planning/ADR-004-IMAGES.md`** — photographs for Part 1, licensing, and the fetch pipeline.
+- **`planning/ADR-005-CONTENT-TOOLING.md`** — the admin UI for importing past papers: why a custom admin rather than a headless CMS, why paste-and-parse, and why parse never writes to the database.
 - **`planning/REVIEW-OPUS.md`** — an engineering review dated 2026-08-08. A snapshot, not a tracker; its §8 roadmap is superseded by `ROADMAP.md`.
+
+One description of *current behaviour* rather than of a decision:
+
+- **`planning/MEDIA-PIPELINE.md`** — how audio and images actually work end to end today, plus an honest strengths/weaknesses list. Read §10 before extending either pipeline: three of the weaknesses there are real defects, not known limitations.
 
 ### Current state (2026-08-09)
 
-Phase 1 (scaffolding + auth) is done and hardened. Two remediation passes have landed: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md`.
+Phase 1 (scaffolding + auth) is done and hardened: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md` are closed.
 
-Sprint 2 is in progress. **Audio infrastructure is built** — `planning/PHASE2-AUDIO.md` Part B is complete: `audio_asset` (migration `002`), the content-addressed naming in `app/core/media.py`, the offline `app/content/` pipeline behind the `content` extra, a committed manifest, and a development-only `/media` mount. Part A remains the durable record of *why*; read §A4 before changing any of it.
+**The media pipelines are built** — `PHASE2-AUDIO.md` (audio, offline TTS in four accents) and `ADR-004-IMAGES.md` (Part 1 photographs, fetched and normalised, licence and attribution required). Both sit behind the optional `content` extra and neither may be imported by the API. `planning/MEDIA-PIPELINE.md` describes how they actually behave, including three real defects in §10.
 
-Product features are still **not** built. `apps/api/app/ai/` is an empty placeholder for the Phase 4 AI layer.
+**The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, migrations `003`–`006`. Twenty tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, attempts, media assets, roles and score conversion. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
-**The data model is designed and migrated** — `planning/ADR-001-DATA-MODEL.md`, migrations `003` and `004`. That closes `REVIEW-OPUS.md` §7a, the last thing blocking Phase 2. Twenty tables cover vocabulary (with SM-2 spaced repetition), dictation, questions/options/sets, practice tests, attempts, media assets and score conversion. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) are designed on paper only in Part C, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
+**Vocabulary and dictation work end to end.** An editor pastes rows, they land as `draft`, `app/content/backfill_audio.py` synthesises the four accents out of band, publishing is refused until every clip matches its text, and a learner reviews with SM-2 flashcards and takes dictations graded word by word. Verified through the running Docker stack, not just in tests.
 
-Nothing is built *on top of* the schema yet: **no product endpoints at all** (the five that exist are auth and health), and `packages/shared` is therefore unchanged — the contract is generated from endpoints, and there are none. The sample content — 16 audio clips, 3 photographs — exists to prove the pipelines run, not to teach anyone.
+Three things to know before extending it:
 
-**The real bottleneck for the next two sprints is content, not code.** Writing the vocabulary endpoints takes days; authoring 500 words with examples and four-accent audio takes much longer.
+- **`app/services/`** holds the logic that is not HTTP: `srs.py` (SM-2, pure arithmetic), `dictation.py` (normalise + `SequenceMatcher` diff), `media_state.py` (is this clip still the right one?), `content_import.py` (paste parsers). All pure enough to test without a session.
+- **`require_role` is a dependency, never an in-body check** — a check in the handler is the one someone forgets to copy into the next route, and the failure mode is an admin endpoint open to every learner. Every admin endpoint has a test asserting a learner gets 403.
+- **The API cannot generate audio.** It cannot even import the TTS pipeline (A4.1), and synchronous synthesis would drag in a job queue that A2.5 deliberately avoided. `backfill_audio` runs out of band and its work queue is a *query* — "content whose audio is missing or no longer matches its text" — so there is no queue table, no retry state, and re-running simply finds less to do.
 
-Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for Phase 4, since an unmetered LLM endpoint is an unmetered bill.
+**What is missing is content, not features.** Two words and two dictation sentences exist: enough to prove the path, nowhere near enough to teach anyone. Authoring several hundred entries is the real remaining work, and it is why the admin tooling came first.
+
+**TOEIC Practice is not built.** The schema is there; no endpoints, no question importer, no exam UI. Real TOEIC papers are ETS copyright, and ETS licenses electronic use per year through its general counsel — `question.source` is NOT NULL precisely so provenance is answered per row: `original` means written to the format (formats are not copyrightable, specific text is), `licensed` means permission actually obtained. **Do not default that field anywhere in code or UI.**
+
+**The frontend has a design system, not per-page styling.** `src/components/ui.tsx` holds the primitives, colours come from CSS variables in `globals.css` (so light and dark are one definition rather than a `dark:` twin on every element), and `src/lib/session.tsx` resolves who is signed in *once* for the whole app. Three things follow from that and are easy to undo by accident:
+
+- **Auth has three states, not two.** `loading` is distinct from `anonymous`, because localStorage does not exist during the server render. Collapsing them is what made the old header offer "Log in" to people who were already signed in, and a `? :` on `status === "authenticated"` reintroduces it — the else branch fires while still loading.
+- **`useRequireSession({ canEdit: true })` redirects rather than showing a 403.** Someone who never had access should not be told they were refused. The server still enforces every boundary through `require_role`; this only decides what is worth rendering.
+- **`status` in the session is derived, not stored.** Writing it from an effect cascades renders and lets it drift out of step with the token it describes. The `react-hooks/set-state-in-effect` lint rule enforces this and will reject the shortcut.
+
+Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for the AI layer, since an unmetered LLM endpoint is an unmetered bill.
 
 ## Commands
 
@@ -44,7 +61,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload --port 8000
 uv sync --extra dev --extra content         # add the offline content pipeline
 
-uv run pytest                              # 191 tests
+uv run pytest                              # 269 tests
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 uv run pytest tests/test_auth.py::test_x -v
 uv run ruff check app tests
@@ -59,6 +76,7 @@ uv run python -m app.content.generate --input content/sources/<spec>.jsonl
 uv run python -m app.content.images --input content/sources/images/<spec>.jsonl
 uv run python -m app.content.seed          # manifests -> audio_asset / image_asset rows
 uv run python -m app.content.seed_scores   # default raw -> scaled score curve
+uv run python -m app.content.backfill_audio [--dry-run]   # audio for content the DB is missing
 TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external   # calls edge-tts for real
 ```
 
@@ -165,6 +183,7 @@ Branch protection is **not yet enabled**; a green CI that nothing enforces is on
 - Prettier deliberately ignores `*.md` and `planning/**` so prose edits stay out of code diffs.
 - **`alembic/` is not linted or type-checked.** CI runs `ruff check app tests` and mypy over `app` only, so migrations follow `001`'s existing style (`typing.Union`, `typing.Sequence`) rather than the modern syntax ruff would demand elsewhere. `alembic/script.py.mako` was missing until Sprint 2, which meant the documented `alembic revision --autogenerate` had never actually been able to write a file.
 - **`tests/test_concurrency.py` runs `create_all` against the real dev Postgres.** After a test run with Postgres up, the dev database holds every table in `Base.metadata` — so `alembic revision --autogenerate` compares against a schema that already matches and emits an *empty* migration. Reset before generating: `psql -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'` then `alembic upgrade head`.
+- **Editing text silently invalidates its audio, and the publish gate is what catches it.** `vocabulary_audio` records no link to the *version* of the text a clip was made from, so renaming a headword leaves a recording of the old word in place. `app/services/media_state.py` detects it by recomputing the hash from the current text and comparing against `audio_asset.source_hash` — no extra column, purely a dividend of hashing the input (A4.2). For dictation it matters more: the transcript is the answer key, so a stale clip grades learners on a sentence they were never played.
 - **The dev `api` container recreates the schema on every reload.** It runs uvicorn with `--reload` and `environment=development`, so editing anything under `app/` restarts it and runs `create_all` against the dev Postgres — which will rebuild the tables you just dropped to generate a migration. `docker compose stop api` before doing migration work.
 - **Public archives rate-limit and require a User-Agent.** Wikimedia returns 403 to httpx's default UA and 429 partway through a bulk run. `app/content/images.py` sends an identifying UA and paces itself; a failed image is reported and skipped rather than aborting the run, so the successes survive and the next run picks up only what is missing.
 - **edge-tts voice ids drift.** They are provider ids, not ours, and Microsoft retires them without notice. `tests/test_tts_external.py` checks every `LOGICAL_VOICES` entry against the live catalogue — run it (`TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external`) before any bulk generation, because a stale id otherwise fails one clip at a time in the middle of a long run.
