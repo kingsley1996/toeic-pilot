@@ -1,4 +1,5 @@
 from datetime import UTC, date, datetime, timedelta
+from decimal import Decimal
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -394,6 +395,46 @@ def test_stats_start_empty_and_are_shaped_right(client: TestClient):
     assert body["reviews_total"] == 0
     assert body["dictation_completed"] == 0
     assert body["current_streak"] == 0
-    # Fourteen days, oldest first, so the UI never has to sort or fill gaps.
-    assert len(body["recent"]) == 14
-    assert body["recent"][0]["date"] < body["recent"][-1]["date"]
+    # Thưa: chưa học ngày nào thì lịch rỗng, chứ không phải 365 hàng số 0.
+    assert body["calendar"] == []
+    # Lưới do trình duyệt dựng, nên nó cần đúng hai thứ này và không cần gì thêm.
+    assert body["window_days"] == 365
+    assert body["today"]
+
+
+def test_the_calendar_only_carries_days_with_activity(client: TestClient, db_session: Session):
+    """Thưa chứ không đặc, và ngày trong lịch phải là ngày TRONG múi giờ hồ sơ.
+
+    Một lượt ôn lúc 23:30 giờ Hà Nội là 16:30 UTC cùng ngày, nhưng một lượt lúc
+    00:30 là 17:30 UTC của ngày HÔM TRƯỚC — nếu lịch tính theo UTC thì ô sáng
+    lên nằm sai một cột so với chuỗi ngày, và không có gì báo.
+    """
+    import uuid as uuidlib
+
+    from app.models.vocabulary import VocabularyReviewLog
+
+    headers = signed_in(client)
+    user = db_session.query(User).filter(User.email == EMAIL).one()
+
+    entry_id = uuidlib.uuid4()
+    # 17:30 UTC = 00:30 hôm sau ở Asia/Ho_Chi_Minh (UTC+7).
+    late = datetime.now(UTC).replace(hour=17, minute=30, second=0, microsecond=0) - timedelta(
+        days=2
+    )
+    db_session.add(
+        VocabularyReviewLog(
+            user_id=user.id,
+            entry_id=entry_id,
+            grade=4,
+            interval_days=1,
+            ease_factor=Decimal("2.50"),
+            reviewed_at=late,
+        )
+    )
+    db_session.commit()
+
+    body = client.get("/api/v1/profile/stats", headers=headers).json()
+    assert len(body["calendar"]) == 1
+    assert body["calendar"][0]["reviews"] == 1
+    # Ngày địa phương đi TRƯỚC một ngày so với ngày UTC của cùng mốc thời gian.
+    assert body["calendar"][0]["date"] == (late + timedelta(hours=7)).date().isoformat()

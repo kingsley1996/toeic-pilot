@@ -461,10 +461,21 @@ export function Field({
   children: ReactNode;
 }) {
   return (
-    <label className="block">
+    /*
+     * Cột dọc với ô nhập bị `mt-auto` đẩy xuống đáy.
+     *
+     * Không phải chi tiết thẩm mỹ: khi hai `Field` nằm cạnh nhau trong một lưới
+     * và chú thích của chúng dài ngắn khác nhau, bố cục khối sẽ đặt hai ô nhập ở
+     * hai độ cao khác nhau — hàng trông như bị lệch, và nó lệch nhiều hay ít tuỳ
+     * vào độ rộng màn hình nên rất dễ tưởng là lỗi ngẫu nhiên. Ô lưới mặc định
+     * đã kéo giãn đủ chiều cao, nên chỉ cần đẩy ô nhập về đáy là chúng thẳng
+     * hàng. Ở bố cục một cột thì không có khoảng trống thừa nên `mt-auto` không
+     * làm gì cả.
+     */
+    <label className="flex h-full flex-col">
       <span className="text-small font-semibold">{label}</span>
       {hint && <span className="mt-0.5 block text-small text-ink-muted">{hint}</span>}
-      <div className="mt-1.5">{children}</div>
+      <div className="mt-auto pt-1.5">{children}</div>
     </label>
   );
 }
@@ -566,5 +577,68 @@ export function Avatar({
     >
       {initialsOf(name, email)}
     </span>
+  );
+}
+
+/**
+ * Một giá trị đã lưu, trình bày để ĐỌC chứ không phải để sửa.
+ *
+ * Trang hồ sơ trước đây bày cả mục tiêu ôn thi ra dưới dạng biểu mẫu, và một
+ * biểu mẫu luôn nói cùng một điều: "chỗ này đang chờ bạn nhập". Với người đã
+ * điền xong từ tuần trước thì đó là câu sai — họ mở trang để XEM mình đặt mục
+ * tiêu bao nhiêu, chứ không phải để gõ lại.
+ *
+ * Khi chưa có giá trị thì ô tự chuyển thành lời mời, vì "—" trả lời rằng không
+ * có gì ở đây mà không nói phải làm gì tiếp.
+ */
+export function ValueTile({
+  Icon,
+  label,
+  value,
+  unit,
+  hint,
+  empty,
+  numeric = true,
+}: {
+  Icon: LucideIcon;
+  label: string;
+  value: ReactNode | null;
+  unit?: string;
+  hint?: string;
+  empty: string;
+  /**
+   * Số đo dùng IBM Plex Mono tabular; chữ thì không.
+   *
+   * Mono là kiểu chữ của **số liệu** (§5.2) — nó tồn tại để các chữ số thẳng cột
+   * và không nhảy ngang khi giá trị đổi. Đặt một cụm như "Cả bốn giọng" vào đó
+   * thì được một dòng chữ giãn bất thường, trông như lỗi font chứ không như một
+   * lựa chọn. Đơn vị đi kèm cũng vậy: "40" là số đo, "phút" thì không.
+   */
+  numeric?: boolean;
+}) {
+  const filled = value !== null && value !== undefined && value !== "";
+  return (
+    <div className="rounded border border-rule bg-panel p-4">
+      <div className="flex items-center gap-2 text-ink-muted">
+        <Icon size={15} strokeWidth={1.75} aria-hidden />
+        <span className="text-label font-semibold uppercase tracking-wide">{label}</span>
+      </div>
+      {filled ? (
+        <>
+          <p
+            className={cx(
+              "mt-2.5 font-semibold leading-tight",
+              numeric ? "font-data text-[1.5rem] leading-none tabular-nums" : "text-subtitle",
+            )}
+          >
+            {value}
+            {unit && <span className="ml-1.5 text-body font-normal text-ink-faint">{unit}</span>}
+          </p>
+          {hint && <p className="mt-1.5 text-small text-ink-faint">{hint}</p>}
+        </>
+      ) : (
+        <p className="mt-2.5 text-small text-ink-faint">{empty}</p>
+      )}
+    </div>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { ChevronDown, LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, IconButton, Skeleton, Tag, cx } from "@/components/ui";
+import { Avatar, Skeleton, Tag, cx } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
 export type NavItem = { href: string; label: string; Icon: LucideIcon };
@@ -51,6 +53,116 @@ export function activeHref(items: NavItem[], pathname: string): string | undefin
 }
 
 /**
+ * Menu tài khoản.
+ *
+ * Đóng theo BA đường, và cả ba đều cần: Escape (bàn phím), bấm ra ngoài
+ * (chuột), và điều hướng. Thiếu đường thứ ba thì bấm "Hồ sơ" sẽ sang trang mới
+ * với menu vẫn còn mở đè lên trên — lỗi trông như menu bị kẹt.
+ *
+ * Đóng-khi-điều-hướng suy ra từ `pathname` chứ không viết bằng effect, cùng thủ
+ * thuật menu mobile ở `app-shell.tsx` dùng: `useEffect(() => setOpen(false),
+ * [pathname])` là setState đồng bộ trong thân effect, thứ mà lint
+ * `react-hooks/set-state-in-effect` chặn đúng chỗ này.
+ */
+function UserMenu({ showRole }: { showRole: boolean }) {
+  const { user, logout } = useSession();
+  const pathname = usePathname();
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const open = openedAt === pathname;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) setOpenedAt(null);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpenedAt(null);
+    }
+    // `mousedown`, không phải `click`: bấm vào một nút khác phải đóng menu TRƯỚC
+    // khi nút đó xử lý, nếu không menu còn nằm đè lúc trang đã đổi bên dưới.
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  if (!user) return null;
+  const name = user.profile.display_name ?? user.email;
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpenedAt(open ? null : pathname)}
+        className={cx(
+          "flex items-center gap-2 rounded border px-1.5 py-1 transition-colors",
+          open ? "border-rule-strong bg-recess" : "border-transparent hover:bg-recess",
+        )}
+      >
+        <Avatar id={user.id} name={user.profile.display_name} email={user.email} size="sm" />
+        <span className="hidden max-w-[10rem] truncate text-small font-semibold sm:block">
+          {name}
+        </span>
+        <ChevronDown
+          size={14}
+          strokeWidth={2}
+          aria-hidden
+          className={cx("text-ink-faint transition-transform", open && "rotate-180")}
+        />
+      </button>
+
+      {open && (
+        /*
+         * `shadow-overlay` là MỘT trong ba ngoại lệ của luật cấm đổ bóng (§6.3):
+         * lớp phủ thật cần tách khỏi nội dung bên dưới, và ở đây viền không đủ
+         * vì menu nằm đè lên chữ chứ không nằm cạnh.
+         */
+        <div
+          role="menu"
+          className="shadow-overlay absolute right-0 top-[calc(100%+6px)] z-30 w-60 rounded border border-rule-strong bg-panel py-1"
+        >
+          <div className="border-b border-rule px-3 pb-2 pt-1.5">
+            <p className="truncate text-small font-semibold">{name}</p>
+            <p className="truncate text-label text-ink-faint">{user.email}</p>
+            {showRole && (
+              <Tag tone="action" className="mt-1.5">
+                {user.role}
+              </Tag>
+            )}
+          </div>
+
+          <Link
+            href="/profile"
+            role="menuitem"
+            className="flex items-center gap-2.5 px-3 py-2 text-small hover:bg-recess"
+          >
+            <UserRound size={15} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
+            Hồ sơ
+          </Link>
+
+          <div className="my-1 border-t border-rule" />
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={logout}
+            className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-small text-alert hover:bg-recess"
+          >
+            <LogOut size={15} strokeWidth={1.75} aria-hidden />
+            Đăng xuất
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * Danh tính, theme và lối thoát — giống nhau ở cả hai khu vực.
  *
  * `loading` dựng một khối giữ chỗ chứ không dựng nút của người chưa đăng nhập:
@@ -58,49 +170,13 @@ export function activeHref(items: NavItem[], pathname: string): string | undefin
  * đăng nhập rồi.
  */
 export function SessionControls({ showRole = false }: { showRole?: boolean }) {
-  const { status, user, logout } = useSession();
+  const { status } = useSession();
 
   return (
     <div className="flex items-center gap-2">
       <ThemeToggle />
       {status === "loading" && <Skeleton className="h-8 w-24" />}
-      {status === "authenticated" && user && (
-        <>
-          {/*
-           * Cả khối danh tính là một liên kết tới hồ sơ. Trước đây nó chỉ là chữ
-           * in ra, nên không có đường nào vào trang hồ sơ ngoài việc gõ tay URL
-           * — và chỗ người dùng bấm để tìm tài khoản của mình luôn là tên mình ở
-           * góc trên bên phải.
-           */}
-          <Link
-            href="/profile"
-            className="flex items-center gap-2 rounded px-1 py-0.5 hover:bg-recess"
-          >
-            <div className="hidden text-right sm:block">
-              {/*
-               * Tên hiển thị nếu có, không thì email. Không đặt sẵn email làm
-               * tên trong database: đổ về lúc hiển thị thì sửa được, còn ghi
-               * email vào cột tên thì về sau không phân biệt nổi đâu là tên
-               * thật, đâu là giá trị điền tạm.
-               */}
-              <p className="text-small font-semibold leading-tight">
-                {user.profile.display_name ?? user.email}
-              </p>
-              {showRole ? (
-                <Tag tone="action" className="mt-0.5">
-                  {user.role}
-                </Tag>
-              ) : (
-                <p className="font-data text-label uppercase leading-tight text-ink-faint">
-                  {user.role}
-                </p>
-              )}
-            </div>
-            <Avatar id={user.id} name={user.profile.display_name} email={user.email} size="sm" />
-          </Link>
-          <IconButton icon={LogOut} aria-label="Thoát" onClick={logout} />
-        </>
-      )}
+      {status === "authenticated" && <UserMenu showRole={showRole} />}
     </div>
   );
 }

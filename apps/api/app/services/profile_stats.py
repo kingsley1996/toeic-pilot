@@ -31,8 +31,9 @@ PUBLISHED = "published"
 # còn lại là kéo toàn bộ lịch sử ôn tập về Python ở mỗi lần mở trang hồ sơ.
 STREAK_WINDOW_DAYS = 365
 
-# Số ngày hiện trên biểu đồ hoạt động của trang hồ sơ.
-RECENT_DAYS = 14
+# Lưới hoạt động phủ đúng cửa sổ dùng để tính chuỗi ngày. Hai con số phải bằng
+# nhau: lưới hiện một ngày mà phép tính chuỗi không nhìn thấy là lưới nói dối.
+CALENDAR_DAYS = STREAK_WINDOW_DAYS
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -181,13 +182,13 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
     active = set(review_days) | set(dictation_days)
     current_streak, longest_streak = compute_streaks(active, today)
 
-    recent = [
+    calendar = [
         StudyDay(
             date=day,
             reviews=review_days.get(day, 0),
             dictation_items=dictation_days.get(day, 0),
         )
-        for day in (today - timedelta(days=offset) for offset in range(RECENT_DAYS - 1, -1, -1))
+        for day in sorted(active)
     ]
 
     return LearningStats(
@@ -200,5 +201,7 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
         current_streak=current_streak,
         longest_streak=longest_streak,
         active_days=len(active),
-        recent=recent,
+        today=today,
+        window_days=CALENDAR_DAYS,
+        calendar=calendar,
     )

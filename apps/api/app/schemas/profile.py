@@ -108,7 +108,16 @@ class LearningStats(BaseModel):
     current_streak: int
     longest_streak: int
     active_days: int
-    recent: list[StudyDay]
+
+    # Hôm nay THEO MÚI GIỜ CỦA HỌC VIÊN. Gửi kèm chứ không để trình duyệt tự
+    # tính: lưới lịch phải khớp với chuỗi ngày ở trên, mà chuỗi ngày do máy chủ
+    # tính. Để hai bên tự tính riêng thì đồng hồ lệch hoặc múi giờ trình duyệt
+    # khác múi giờ hồ sơ là ô "hôm nay" nằm sai cột, không ai báo.
+    today: date
+    window_days: int
+    # THƯA — chỉ những ngày CÓ hoạt động. Một năm đặc là 365 hàng mà phần lớn
+    # toàn số 0; lưới là thứ trình duyệt dựng được từ `today` và `window_days`.
+    calendar: list[StudyDay]
 
 
 __all__ = [

@@ -1240,6 +1240,13 @@
             "title": "Active Days",
             "type": "integer"
           },
+          "calendar": {
+            "items": {
+              "$ref": "#/components/schemas/StudyDay"
+            },
+            "title": "Calendar",
+            "type": "array"
+          },
           "current_streak": {
             "title": "Current Streak",
             "type": "integer"
@@ -1256,16 +1263,14 @@
             "title": "Longest Streak",
             "type": "integer"
           },
-          "recent": {
-            "items": {
-              "$ref": "#/components/schemas/StudyDay"
-            },
-            "title": "Recent",
-            "type": "array"
-          },
           "reviews_total": {
             "title": "Reviews Total",
             "type": "integer"
+          },
+          "today": {
+            "format": "date",
+            "title": "Today",
+            "type": "string"
           },
           "vocabulary_due": {
             "title": "Vocabulary Due",
@@ -1277,6 +1282,10 @@
           },
           "vocabulary_total": {
             "title": "Vocabulary Total",
+            "type": "integer"
+          },
+          "window_days": {
+            "title": "Window Days",
             "type": "integer"
           }
         },
@@ -1290,7 +1299,9 @@
           "current_streak",
           "longest_streak",
           "active_days",
-          "recent"
+          "today",
+          "window_days",
+          "calendar"
         ],
         "title": "LearningStats",
         "type": "object"

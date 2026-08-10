@@ -68,7 +68,10 @@ export default function TodayPage() {
     <Page>
       <PageHeader
         eyebrow="Hôm nay"
-        title={`Chào ${user.email.split("@")[0]}`}
+        /* Tên hiển thị nếu có. Phần đầu email chỉ là phương án chót — người
+           đã đặt tên rồi mà vẫn bị chào bằng "profile-e2e-1786347396" thì lời
+           chào đó phản tác dụng. */
+        title={`Chào ${user.profile.display_name ?? user.email.split("@")[0]}`}
         description="Ôn những từ sắp quên trước, rồi mới gặp từ mới."
         actions={<Tag tone={canEdit ? "action" : "neutral"}>{user.role}</Tag>}
       />

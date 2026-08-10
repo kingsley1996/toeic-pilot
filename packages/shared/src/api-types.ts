@@ -1200,6 +1200,8 @@ export interface components {
         LearningStats: {
             /** Active Days */
             active_days: number;
+            /** Calendar */
+            calendar: components["schemas"]["StudyDay"][];
             /** Current Streak */
             current_streak: number;
             /** Dictation Attempts */
@@ -1208,16 +1210,21 @@ export interface components {
             dictation_completed: number;
             /** Longest Streak */
             longest_streak: number;
-            /** Recent */
-            recent: components["schemas"]["StudyDay"][];
             /** Reviews Total */
             reviews_total: number;
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
             /** Vocabulary Due */
             vocabulary_due: number;
             /** Vocabulary Mastered */
             vocabulary_mastered: number;
             /** Vocabulary Total */
             vocabulary_total: number;
+            /** Window Days */
+            window_days: number;
         };
         /** ParseRequest */
         ParseRequest: {

@@ -17,7 +17,7 @@
 | **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
 | **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | 364 thu thập — **362 chạy** + 2 `external` deselect mặc định |
+| **Test** | 365 thu thập — **363 chạy** + 2 `external` deselect mặc định |
 | **Gate CI** | 13, tất cả xanh |
 | **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` → `009_user_profile` |
 | **Bảng** | 24 |
@@ -243,14 +243,34 @@ Chèn trước Sprint 5 chứ không phải sau, vì `PLAN.md` §3.3 nói AI Stu
 ### Frontend
 - [x] Trang `/profile` — hồ sơ, mục tiêu, tuỳ chọn, thống kê, đổi mật khẩu
 - [x] `Avatar` sinh từ chữ cái đầu, màu suy từ **id** chứ không từ tên (đổi tên mà đổi màu thì người dùng tưởng nhìn nhầm tài khoản). **Vuông**, không tròn — §6.2 chỉ có một bán kính
-- [x] Header hiện tên hiển thị thay cho email, và cả khối là liên kết vào `/profile`
 - [x] `session.refresh()` — hồ sơ nằm trong phiên nên lưu xong phải đọc lại, nếu không header vẫn hiện tên cũ
+- [x] `/learn` chào bằng tên hiển thị, không còn bằng phần đầu email
 
-### Test — 25 test mới (359 tổng)
+### Vòng thứ hai: giao diện (2026-08-10)
+- [x] **Menu tài khoản ở header** thay cho khối chữ tĩnh — `shadow-overlay`, một trong **ba** ngoại lệ của luật cấm đổ bóng (§6.3). Đóng theo ba đường: Escape, bấm ra ngoài, và điều hướng; đường thứ ba suy từ `pathname` chứ không viết bằng effect, cùng thủ thuật menu mobile ở `app-shell.tsx`
+- [x] **`ContributionGraph`** kiểu lịch đóng góp, phủ **365 ngày**. `LearningStats` đổi `recent: StudyDay[14]` thành `calendar` **thưa** (chỉ ngày có hoạt động) + `today` + `window_days`. Gửi thưa vì một năm đặc là 365 hàng mà phần lớn toàn số 0; gửi kèm `today` **theo múi giờ hồ sơ** vì lưới phải khớp với chuỗi ngày do máy chủ tính — để trình duyệt tự tính thì đồng hồ lệch hoặc múi giờ trình duyệt khác múi giờ hồ sơ là ô "hôm nay" nằm sai cột và không ai báo
+- [x] Thang màu lưới dùng `ok` chứ **không** dùng `action`: chu sa là màu của hành động (§2.1), ba trăm ô chu sa sẽ đánh nhau với chính nút Lưu ở cuối trang
+- [x] Ngưỡng bốn bậc là **số lượt tuyệt đối**, không phải phân vị — phân vị làm một ngày đã qua nhạt đi vì hôm nay học nhiều, tức là thang đo tự viết lại quá khứ
+- [x] **`TargetScale`** — dựng đúng thành phần chữ ký §10: vạch chia là sáu bậc năng lực ETS thật, `radius-none`, vạch mục tiêu là vạch riêng chứ không phải điểm cuối. Và tôn trọng luật đi kèm: **chưa có điểm ước tính thì nói thẳng**, không vẽ 0, không nội suy
+- [x] Khối danh tính dùng bậc nền `recess`, không phải card `panel` nổi — đó là cách hệ này diễn đạt độ sâu thay cho đổ bóng
+
+### Vòng thứ ba: xem trước, sửa sau (2026-08-10)
+- [x] **Sửa lỗi lệch của `Field`** — chú thích một dòng cạnh chú thích hai dòng đẩy hai ô nhập xuống hai độ cao khác nhau, và độ lệch đổi theo bề rộng màn hình nên trông như trục trặc ngẫu nhiên. Nay là cột flex với `mt-auto` ở ô nhập; bố cục một cột không có khoảng thừa nên không đổi gì
+- [x] **`Modal`** dựng trên `<dialog>` gốc — có sẵn bẫy tiêu điểm, Escape và `inert`, ba thứ mà bản tự viết bằng `div` hầu như luôn thiếu
+- [x] **Sự kiện `cancel` KHÔNG nổi bọt, nên prop `onCancel` của React không bao giờ chạy.** Escape đóng hộp thoại ở tầng trình duyệt còn state React vẫn tưởng nó đang mở, và lần bấm Sửa kế tiếp không mở ra gì. Đã phát hiện khi thử tay, không phải khi đọc code. Nay gắn listener bằng `addEventListener` trong effect
+- [x] Tên hiển thị + múi giờ chuyển lên **khối danh tính**, sửa qua hộp thoại thay vì biểu mẫu dài
+- [x] Mục tiêu và cách học chuyển sang **ô hiển thị** (`ValueTile`) — biểu mẫu luôn nói "chỗ này đang chờ bạn nhập", câu đó sai với người đã điền xong từ tuần trước
+- [x] Trạng thái rỗng của mục tiêu là lời mời **"Đặt mục tiêu ngay"** chứ không phải dấu `—` (§9.6)
+- [x] `ValueTile` phân biệt số đo với chữ: mono tabular là kiểu chữ của **số liệu** (§5.2), đặt "Cả bốn giọng" vào đó thì trông như lỗi font
+- [x] `TargetScale` bỏ phần in lại con số — ô "Điểm mục tiêu" ngay trên đã có; thay bằng **dải tên sáu bậc năng lực**, thứ duy nhất trả lời được "850 đứng ở đâu"
+- [x] Icon theo đúng bảng tra §8.4: `Pencil` cho Sửa, `UserRound` cho Tài khoản (trước đó dùng nhầm `User`)
+
+### Test — 26 test mới (363 tổng)
 - [x] Đăng ký tạo hàng hồ sơ · null xoá được trường · null bị bỏ qua với cột NOT NULL
 - [x] Điểm mục tiêu không chia hết cho 5 → 422 · múi giờ không có thật → 422
 - [x] Token cũ chết sau khi đổi mật khẩu · token thay thế sống · mật khẩu chưa đổi thì phiên không bị đụng
 - [x] Số học chuỗi ngày tách thành hàm thuần `compute_streaks`, test không cần database
+- [x] Lịch chỉ chứa ngày **có** hoạt động, và ngày trong lịch là ngày **theo múi giờ hồ sơ** — một lượt ôn lúc 00:30 giờ Hà Nội thuộc ngày hôm đó, không thuộc ngày UTC hôm trước
 
 ### Một thứ chỉ lộ ra khi chạy thật
 **`create_all` của container dev lại tạo `user_profile` trước khi alembic kịp chạy** — đúng cái bẫy đã ghi ở mục 4b và trong `CLAUDE.md`, lần thứ hai. Lần này còn khó thấy hơn: `create_all` tạo được **bảng mới** nhưng không thêm được **cột mới vào bảng cũ**, nên `users.password_changed_at` vẫn thiếu trong khi `user_profile` đã có. Phải drop bảng rồi mới cho alembic chạy lại.
