@@ -41,6 +41,8 @@ from app.schemas.learning import (
     DictationSummary,
     DictationTopicDetail,
     DictationTopicPublic,
+    RecallResult,
+    RecallSubmit,
     ReviewCard,
     ReviewResult,
     ReviewSession,
@@ -49,11 +51,26 @@ from app.schemas.learning import (
     StoryProgress,
     TopicPublic,
     VocabularyDetail,
+    VocabularyMastery,
+    VocabularyProgress,
     VocabularySummary,
     WordDiff,
 )
 from app.services import dictation as dictation_grader
-from app.services.srs import GRADES, MAX_SESSION_CARDS, NEW_CARDS_PER_DAY, ReviewState, review
+from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
+from app.services.srs import (
+    GRADES,
+    MASTERY_LEARNING,
+    MASTERY_LEVELS,
+    MASTERY_MASTERED,
+    MASTERY_NEW,
+    MAX_SESSION_CARDS,
+    NEW_CARDS_PER_DAY,
+    ReviewOutcome,
+    ReviewState,
+    mastery,
+    review,
+)
 
 router = APIRouter(tags=["learning"])
 
@@ -155,12 +172,176 @@ def get_vocabulary(entry_id: uuid.UUID, db: Session = Depends(get_db)) -> Vocabu
     return _detail(entry)
 
 
+# --- vocabulary progress --------------------------------------------------
+
+# `/vocabulary-progress`, không phải `/vocabulary/progress`: route
+# `/vocabulary/{entry_id}` khai `entry_id: uuid.UUID` nên sẽ bắt "progress"
+# trước và trả 422. Cùng cái bẫy đã gặp ở `/dictation/topics`.
+
+
+@router.get("/vocabulary-progress", response_model=VocabularyProgress)
+def vocabulary_progress(
+    topic: str | None = Query(default=None, description="topic slug"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> VocabularyProgress:
+    """Trạng thái thuộc/chưa thuộc của học viên trên tập từ đang xem.
+
+    Lọc theo cùng tiêu chí `published` + topic như `GET /vocabulary`, nếu không
+    mẫu số sẽ đếm cả những từ mà danh sách không hề hiện ra, và "đã thuộc 12/40"
+    sẽ không bao giờ chạm tới 40.
+    """
+    query = select(VocabularyEntry.id).where(VocabularyEntry.status == PUBLISHED)
+    if topic is not None:
+        query = query.join(VocabularyTopic, VocabularyTopic.entry_id == VocabularyEntry.id).join(
+            Topic,
+            (Topic.id == VocabularyTopic.topic_id) & (Topic.slug == topic),
+        )
+    entry_ids = list(db.scalars(query).all())
+
+    states: dict[uuid.UUID, VocabularyReviewState] = {}
+    if entry_ids:
+        states = {
+            state.entry_id: state
+            for state in db.scalars(
+                select(VocabularyReviewState).where(
+                    VocabularyReviewState.user_id == current_user.id,
+                    VocabularyReviewState.entry_id.in_(entry_ids),
+                )
+            ).all()
+        }
+
+    # "Đến hạn chưa" phải so sánh TRONG SQL, không phải trong Python: cột khai
+    # `DateTime(timezone=True)` nên Postgres trả về datetime có tz, còn SQLite
+    # (bộ test) trả về naive, và so hai loại đó với nhau thì TypeError. Cùng
+    # khuôn với `_completed_items` của dictation: một tập id lấy thẳng từ SQL.
+    now = datetime.now(UTC)
+    due_ids: set[uuid.UUID] = set()
+    if entry_ids:
+        due_ids = set(
+            db.scalars(
+                select(VocabularyReviewState.entry_id).where(
+                    VocabularyReviewState.user_id == current_user.id,
+                    VocabularyReviewState.entry_id.in_(entry_ids),
+                    VocabularyReviewState.due_at <= now,
+                )
+            ).all()
+        )
+
+    counts = {level: 0 for level in MASTERY_LEVELS}
+    entries: list[VocabularyMastery] = []
+
+    for entry_id in entry_ids:
+        state = states.get(entry_id)
+        level = mastery(
+            ReviewState(
+                ease_factor=state.ease_factor,
+                interval_days=state.interval_days,
+                repetitions=state.repetitions,
+                lapses=state.lapses,
+            )
+            if state is not None
+            else None
+        )
+        counts[level] += 1
+        # Một từ chưa từng ôn thì chưa "đến hạn" — nó chỉ đang chờ được học lần
+        # đầu, và trộn hai thứ đó sẽ làm con số đến hạn nhảy vọt ngay ngày đầu
+        # tiên của một chủ đề mới. `due_ids` chỉ chứa từ đã có state nên điều
+        # kiện này tự đúng.
+        entries.append(
+            VocabularyMastery(entry_id=str(entry_id), mastery=level, is_due=entry_id in due_ids)
+        )
+
+    return VocabularyProgress(
+        total=len(entry_ids),
+        new=counts[MASTERY_NEW],
+        learning=counts[MASTERY_LEARNING],
+        mastered=counts[MASTERY_MASTERED],
+        due=len(due_ids),
+        entries=entries,
+    )
+
+
+# --- ghi một lượt ôn tập ---------------------------------------------------
+
+# Dùng chung cho hai lối vào: thẻ lật (`/review`, người học tự chấm) và gõ lại
+# (`/recall`, máy chấm). Tách ra vì phần ghi state + log là thứ PHẢI giống hệt
+# nhau ở cả hai — hai bản sao thì bản nào quên ghi log sẽ làm mất lịch sử, và
+# không có gì báo cho biết ngoài việc sau này không hiệu chỉnh lại được thuật
+# toán nữa.
+
+
+def _published_entry(db: Session, entry_id: uuid.UUID) -> VocabularyEntry:
+    entry = db.scalars(
+        select(VocabularyEntry).where(
+            VocabularyEntry.id == entry_id, VocabularyEntry.status == PUBLISHED
+        )
+    ).first()
+    if entry is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
+    return entry
+
+
+def _apply_review(
+    db: Session, user_id: uuid.UUID, entry_id: uuid.UUID, grade: int
+) -> ReviewOutcome:
+    state = db.get(VocabularyReviewState, (user_id, entry_id))
+    current = (
+        ReviewState(state.ease_factor, state.interval_days, state.repetitions, state.lapses)
+        if state
+        else ReviewState()
+    )
+    now = datetime.now(UTC)
+    outcome = review(current, grade, now)
+
+    if state is None:
+        state = VocabularyReviewState(user_id=user_id, entry_id=entry_id)
+        db.add(state)
+    state.ease_factor = outcome.ease_factor
+    state.interval_days = outcome.interval_days
+    state.repetitions = outcome.repetitions
+    state.lapses = outcome.lapses
+    state.due_at = outcome.due_at
+    state.last_reviewed_at = now
+
+    # The log is written every time, even though the state already holds the same
+    # numbers: the state is overwritten on the next review, and without the
+    # history there is no way to retune the algorithm and re-evaluate it.
+    db.add(
+        VocabularyReviewLog(
+            user_id=user_id,
+            entry_id=entry_id,
+            grade=grade,
+            interval_days=outcome.interval_days,
+            ease_factor=outcome.ease_factor,
+        )
+    )
+    db.commit()
+    return outcome
+
+
+def _review_result(entry_id: uuid.UUID, grade: int, outcome: ReviewOutcome) -> ReviewResult:
+    return ReviewResult(
+        entry_id=str(entry_id),
+        grade=grade,
+        interval_days=outcome.interval_days,
+        repetitions=outcome.repetitions,
+        lapses=outcome.lapses,
+        ease_factor=str(outcome.ease_factor),
+        due_at=outcome.due_at.isoformat(),
+    )
+
+
 # --- review session -------------------------------------------------------
 
 
 @router.get("/vocabulary-review/session", response_model=ReviewSession)
 def review_session(
     limit: int = Query(default=MAX_SESSION_CARDS, ge=1, le=MAX_SESSION_CARDS),
+    include_new: bool = Query(
+        default=True,
+        description="False = chỉ những từ học viên đã gặp, không kèm từ mới",
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ReviewSession:
@@ -169,6 +350,12 @@ def review_session(
     Due before new on purpose: reviewing what is about to be forgotten is worth
     more than meeting something for the first time, and if the session is cut
     short it should be the new words that wait.
+
+    `include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ
+    lại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát
+    duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi
+    vào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi
+    đọc code.
     """
     now = datetime.now(UTC)
 
@@ -197,7 +384,9 @@ def review_session(
         )
         or 0
     )
-    new_budget = max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids)))
+    new_budget = (
+        max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids))) if include_new else 0
+    )
 
     new_entries: list[VocabularyEntry] = []
     if new_budget:
@@ -240,55 +429,35 @@ def submit_review(
             detail=f"grade must be one of {list(GRADES)}",
         )
 
-    entry = db.scalars(
-        select(VocabularyEntry).where(
-            VocabularyEntry.id == entry_id, VocabularyEntry.status == PUBLISHED
-        )
-    ).first()
-    if entry is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
+    entry = _published_entry(db, entry_id)
+    outcome = _apply_review(db, current_user.id, entry.id, body.grade)
+    return _review_result(entry.id, body.grade, outcome)
 
-    state = db.get(VocabularyReviewState, (current_user.id, entry_id))
-    current = (
-        ReviewState(state.ease_factor, state.interval_days, state.repetitions, state.lapses)
-        if state
-        else ReviewState()
-    )
-    now = datetime.now(UTC)
-    outcome = review(current, body.grade, now)
 
-    if state is None:
-        state = VocabularyReviewState(user_id=current_user.id, entry_id=entry_id)
-        db.add(state)
-    state.ease_factor = outcome.ease_factor
-    state.interval_days = outcome.interval_days
-    state.repetitions = outcome.repetitions
-    state.lapses = outcome.lapses
-    state.due_at = outcome.due_at
-    state.last_reviewed_at = now
+@router.post("/vocabulary/{entry_id}/recall", response_model=RecallResult)
+def submit_recall(
+    entry_id: uuid.UUID,
+    body: RecallSubmit,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> RecallResult:
+    """Gõ lại từ: máy chấm, rồi điểm SM-2 được suy ra từ kết quả.
 
-    # The log is written every time, even though the state already holds the same
-    # numbers: the state is overwritten on the next review, and without the
-    # history there is no way to retune the algorithm and re-evaluate it.
-    db.add(
-        VocabularyReviewLog(
-            user_id=current_user.id,
-            entry_id=entry_id,
-            grade=body.grade,
-            interval_days=outcome.interval_days,
-            ease_factor=outcome.ease_factor,
-        )
-    )
-    db.commit()
-
-    return ReviewResult(
-        entry_id=str(entry_id),
-        grade=body.grade,
-        interval_days=outcome.interval_days,
-        repetitions=outcome.repetitions,
-        lapses=outcome.lapses,
-        ease_factor=str(outcome.ease_factor),
-        due_at=outcome.due_at.isoformat(),
+    Đây là điểm khác biệt duy nhất so với `/review`, và là lý do endpoint này
+    tồn tại: thẻ lật hỏi "bạn có nhớ không" rồi ghi thẳng câu trả lời, nên
+    người học có thể lật thẻ, nghĩ "à đúng rồi tôi biết mà", bấm Dễ và không
+    học được gì. Ở đây phải viết ra được trước đã.
+    """
+    entry = _published_entry(db, entry_id)
+    judgement = judge(body.typed, entry.headword)
+    verdict = VERDICT_UNKNOWN if body.give_up else judgement.verdict
+    grade = grade_for(verdict, easy=body.easy)
+    outcome = _apply_review(db, current_user.id, entry.id, grade)
+    return RecallResult(
+        **_review_result(entry.id, grade, outcome).model_dump(),
+        verdict=verdict,
+        expected=judgement.expected,
+        typed=judgement.typed,
     )
 
 

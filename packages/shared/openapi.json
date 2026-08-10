@@ -1948,6 +1948,30 @@
         "title": "VocabularyDetail",
         "type": "object"
       },
+      "VocabularyMastery": {
+        "description": "Trạng thái của một học viên trên MỘT từ.",
+        "properties": {
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "is_due": {
+            "title": "Is Due",
+            "type": "boolean"
+          },
+          "mastery": {
+            "title": "Mastery",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entry_id",
+          "mastery",
+          "is_due"
+        ],
+        "title": "VocabularyMastery",
+        "type": "object"
+      },
       "VocabularyParseResponse": {
         "properties": {
           "error_count": {
@@ -1972,6 +1996,48 @@
           "rows"
         ],
         "title": "VocabularyParseResponse",
+        "type": "object"
+      },
+      "VocabularyProgress": {
+        "description": "Tiến độ từ vựng của học viên, theo chủ đề hoặc trên toàn bộ.\n\nSuy ra từ `vocabulary_review_state` chứ không đọc bảng tiến độ nào — cùng lý\ndo đã ghi ở [`StoryProgress`]: một bảng ghi song song sẽ lệch khỏi lịch sử ôn\ntập mà không có gì phát hiện ra.\n\nĐây là endpoint RIÊNG, có auth, chứ không phải thêm cột vào `GET /vocabulary`\nvốn là endpoint công khai. Nhét trạng thái người dùng vào đó thì với khách\nchưa đăng nhập, mọi từ sẽ mang giá trị `new` — một lời nói dối, chứ không\nphải \"chưa có dữ liệu\".",
+        "properties": {
+          "due": {
+            "title": "Due",
+            "type": "integer"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/VocabularyMastery"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "learning": {
+            "title": "Learning",
+            "type": "integer"
+          },
+          "mastered": {
+            "title": "Mastered",
+            "type": "integer"
+          },
+          "new": {
+            "title": "New",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "new",
+          "learning",
+          "mastered",
+          "due",
+          "entries"
+        ],
+        "title": "VocabularyProgress",
         "type": "object"
       },
       "VocabularyRow": {
@@ -4052,6 +4118,63 @@
           }
         },
         "summary": "List Vocabulary",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary-progress": {
+      "get": {
+        "description": "Trạng thái thuộc/chưa thuộc của học viên trên tập từ đang xem.\n\nLọc theo cùng tiêu chí `published` + topic như `GET /vocabulary`, nếu không\nmẫu số sẽ đếm cả những từ mà danh sách không hề hiện ra, và \"đã thuộc 12/40\"\nsẽ không bao giờ chạm tới 40.",
+        "operationId": "vocabulary_progress_api_v1_vocabulary_progress_get",
+        "parameters": [
+          {
+            "description": "topic slug",
+            "in": "query",
+            "name": "topic",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "topic slug",
+              "title": "Topic"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyProgress"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Vocabulary Progress",
         "tags": [
           "learning"
         ]

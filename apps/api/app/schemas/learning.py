@@ -45,6 +45,39 @@ class VocabularyDetail(VocabularySummary):
     example_audio: list[AudioClip]
 
 
+class VocabularyMastery(BaseModel):
+    """Trạng thái của một học viên trên MỘT từ."""
+
+    entry_id: str
+    # `new` / `learning` / `mastered` — suy ra từ `interval_days`, xem
+    # `srs.mastery`. Không có cột nào lưu giá trị này.
+    mastery: str
+    # Tách khỏi `mastery` vì hai chuyện khác nhau: một từ đã thuộc vẫn đến hạn
+    # ôn lại, và một từ đang học thì chưa chắc đến hạn hôm nay.
+    is_due: bool
+
+
+class VocabularyProgress(BaseModel):
+    """Tiến độ từ vựng của học viên, theo chủ đề hoặc trên toàn bộ.
+
+    Suy ra từ `vocabulary_review_state` chứ không đọc bảng tiến độ nào — cùng lý
+    do đã ghi ở [`StoryProgress`]: một bảng ghi song song sẽ lệch khỏi lịch sử ôn
+    tập mà không có gì phát hiện ra.
+
+    Đây là endpoint RIÊNG, có auth, chứ không phải thêm cột vào `GET /vocabulary`
+    vốn là endpoint công khai. Nhét trạng thái người dùng vào đó thì với khách
+    chưa đăng nhập, mọi từ sẽ mang giá trị `new` — một lời nói dối, chứ không
+    phải "chưa có dữ liệu".
+    """
+
+    total: int
+    new: int
+    learning: int
+    mastered: int
+    due: int
+    entries: list[VocabularyMastery]
+
+
 class ReviewCard(VocabularyDetail):
     """A card in a review session.
 
@@ -77,6 +110,35 @@ class ReviewResult(BaseModel):
     lapses: int
     ease_factor: str
     due_at: str
+
+
+class RecallSubmit(BaseModel):
+    """Một lần gõ lại từ."""
+
+    typed: str = Field(description="Nguyên văn học viên gõ, không chuẩn hoá trước")
+    # Thứ DUY NHẤT người học còn tự khai — và chỉ có tác dụng khi bài gõ đã
+    # đúng. Nói "dễ" trong lúc viết sai không nâng được điểm: server kiểm trước
+    # rồi mới xét cờ này.
+    easy: bool = False
+    # "Tôi chưa biết" — bỏ qua việc chấm và ghi thẳng điểm 0. Không có nó thì
+    # người học buộc phải bịa một câu trả lời để đi tiếp.
+    give_up: bool = False
+
+
+class RecallResult(ReviewResult):
+    """Kết quả chấm + lượt ôn đã ghi.
+
+    Kế thừa `ReviewResult` vì một lần gõ lại CHÍNH LÀ một lượt ôn: nó chạy qua
+    đúng SM-2 đó và ghi đúng `vocabulary_review_log` đó. Khác biệt duy nhất là
+    điểm do máy suy ra thay vì do người học tự bấm.
+    """
+
+    # `correct` / `typo` / `wrong` / `unknown` — `unknown` là học viên tự nói
+    # chưa biết, khác với đoán sai.
+    verdict: str
+    # Dạng đã chuẩn hoá của mục từ, trả về để giao diện đối chiếu từng ký tự.
+    expected: str
+    typed: str
 
 
 class DictationSummary(BaseModel):

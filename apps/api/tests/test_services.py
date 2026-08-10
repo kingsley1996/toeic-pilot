@@ -247,3 +247,82 @@ def test_bumping_the_engine_version_does_not_make_audio_stale(db_session: Sessio
     for row in entry.audio:
         assert row.asset.engine_version == "1"
     assert vocabulary_is_publishable(entry)
+
+
+def test_the_mastery_boundary_is_exactly_the_interval_threshold() -> None:
+    """21 days is the line; 20 is still learning.
+
+    Pinned as a unit test because an off-by-one here is invisible in the UI —
+    the badge just says "đang học" for a word the learner has in fact learned.
+    """
+    from app.services.srs import (
+        MASTERED_INTERVAL_DAYS,
+        MASTERY_LEARNING,
+        MASTERY_MASTERED,
+        MASTERY_NEW,
+        ReviewState,
+        mastery,
+    )
+
+    assert mastery(None) == MASTERY_NEW
+    assert mastery(ReviewState(interval_days=MASTERED_INTERVAL_DAYS - 1)) == MASTERY_LEARNING
+    assert mastery(ReviewState(interval_days=MASTERED_INTERVAL_DAYS)) == MASTERY_MASTERED
+    # A brand-new state row with no interval yet is being learned, not new: the
+    # row only exists because the learner has already seen the word.
+    assert mastery(ReviewState()) == MASTERY_LEARNING
+
+
+def test_failing_a_word_on_first_sight_is_not_a_lapse() -> None:
+    """You cannot forget what you never learned.
+
+    `lapses` is documented on `VocabularyReviewState` as the signal AI Coach
+    reads to name a weakness. Counting first contact there would report that a
+    learner keeps forgetting words nobody ever taught them — and the typing mode
+    makes this the COMMON case, since a new word has no way to be answered
+    right.
+    """
+    from app.services.srs import GRADE_FORGOT, ReviewState, review
+
+    now = datetime(2026, 8, 10, tzinfo=UTC)
+
+    fresh = review(ReviewState(), GRADE_FORGOT, now)
+    assert fresh.lapses == 0
+    assert fresh.repetitions == 0
+    assert fresh.interval_days == 1, "vẫn phải quay lại ngày mai"
+
+    # Và trượt LẦN NỮA vẫn chưa phải quên: từ này chưa đúng lần nào.
+    # `interval_days` không phân biệt được ca này — thẻ trượt lần đầu cũng được
+    # đặt interval = 1 — nên điều kiện phải dựa vào `repetitions`/`lapses`.
+    again = review(
+        ReviewState(interval_days=fresh.interval_days, repetitions=0, lapses=0),
+        GRADE_FORGOT,
+        now,
+    )
+    assert again.lapses == 0
+
+
+def test_forgetting_a_word_that_was_learned_still_counts() -> None:
+    """Và nhánh kia phải giữ nguyên — nếu không thì `lapses` chết hẳn."""
+    from app.services.srs import GRADE_FORGOT, GRADE_GOOD, ReviewState, review
+
+    now = datetime(2026, 8, 10, tzinfo=UTC)
+
+    learned = review(ReviewState(), GRADE_GOOD, now)
+    assert learned.repetitions == 1
+    forgotten = review(
+        ReviewState(
+            ease_factor=learned.ease_factor,
+            interval_days=learned.interval_days,
+            repetitions=learned.repetitions,
+            lapses=learned.lapses,
+        ),
+        GRADE_FORGOT,
+        now,
+    )
+    assert forgotten.lapses == 1
+
+    # Một thẻ đã lapse thì `repetitions` về 0 nhưng `interval_days` là 1 — lần
+    # trượt tiếp theo vẫn phải tính, nếu không thì chỉ đếm được đúng một lapse
+    # cho mỗi từ mãi mãi.
+    again = review(ReviewState(interval_days=1, repetitions=0, lapses=1), GRADE_FORGOT, now)
+    assert again.lapses == 2

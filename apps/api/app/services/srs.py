@@ -37,6 +37,19 @@ SECOND_INTERVAL_DAYS = 6
 NEW_CARDS_PER_DAY = 20
 MAX_SESSION_CARDS = 100
 
+# A word counts as learned once its interval reaches three weeks. The threshold
+# is Anki's "mature card" line and is measured in INTERVAL, not repetitions:
+# repetitions only counts how many times the word came up, while the interval is
+# what the algorithm actually believes about the memory. It also demotes
+# correctly — a lapse resets the interval to one day, so a word that was learned
+# and then forgotten stops claiming to be learned.
+MASTERED_INTERVAL_DAYS = 21
+
+MASTERY_NEW = "new"
+MASTERY_LEARNING = "learning"
+MASTERY_MASTERED = "mastered"
+MASTERY_LEVELS = (MASTERY_NEW, MASTERY_LEARNING, MASTERY_MASTERED)
+
 
 @dataclass(frozen=True)
 class ReviewState:
@@ -69,6 +82,22 @@ def next_ease(current: Decimal, grade: int) -> Decimal:
     return max(updated, MIN_EASE)
 
 
+def mastery(state: ReviewState | None) -> str:
+    """How far along one word is, derived rather than stored.
+
+    `None` means the learner has never reviewed the word, which is genuinely
+    different from having reviewed it and got it wrong: the first is `new`, the
+    second is `learning` with the interval knocked back to a day. A stored
+    column would have to be kept in step with every review and would drift the
+    first time a review row was deleted, exactly as `StoryProgress` avoids.
+    """
+    if state is None:
+        return MASTERY_NEW
+    if state.interval_days >= MASTERED_INTERVAL_DAYS:
+        return MASTERY_MASTERED
+    return MASTERY_LEARNING
+
+
 def review(state: ReviewState, grade: int, now: datetime) -> ReviewOutcome:
     """Apply one review and return the new state.
 
@@ -83,11 +112,27 @@ def review(state: ReviewState, grade: int, now: datetime) -> ReviewOutcome:
     if grade < PASSING_GRADE:
         # Forgetting resets the schedule but keeps the ease penalty, so a card
         # that has been forgotten repeatedly comes back faster than a fresh one.
+        #
+        # A lapse is FORGETTING, and you cannot forget what you never learned.
+        # Failing a word on first sight used to count as one, which is wrong on
+        # its own terms (Anki counts lapses only once a card has left the
+        # learning stage) and wrong for what the column is FOR: `lapses` is
+        # documented on the model as the signal AI Coach reads to name a
+        # weakness. Counting first contact there would tell the coach a learner
+        # keeps forgetting words they have simply never been taught.
+        #
+        # Điều kiện là `repetitions` hoặc `lapses`, KHÔNG phải `interval_days`.
+        # Một thẻ trượt ngay lần đầu cũng được đặt `interval = 1`, nên lấy
+        # interval làm dấu hiệu "đã từng học" sẽ tính lapse cho lần trượt thứ
+        # hai của một từ chưa bao giờ đúng lần nào. `lapses > 0` mới là thứ
+        # phân biệt được "interval = 1 vì vừa quên" với "interval = 1 vì chưa
+        # từng thuộc".
+        learned_before = state.repetitions > 0 or state.lapses > 0
         return ReviewOutcome(
             ease_factor=ease,
             interval_days=FIRST_INTERVAL_DAYS,
             repetitions=0,
-            lapses=state.lapses + 1,
+            lapses=state.lapses + 1 if learned_before else state.lapses,
             due_at=now + timedelta(days=FIRST_INTERVAL_DAYS),
         )
 
