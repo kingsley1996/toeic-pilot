@@ -66,18 +66,16 @@ def count_raw(session: Session, attempt: Attempt) -> dict[str, int]:
 def score_attempt(session: Session, attempt: Attempt) -> Attempt:
     """Fill in the raw and scaled scores on a submitted attempt.
 
-    Only meaningful for a full test: a part-practice run covers one part, so a
-    section score computed from it would be a number that looks like a TOEIC
+    Only meaningful for a full test: a partial run covers a subset of parts, so
+    a section score computed from it would be a number that looks like a TOEIC
     score without being one — and it would land in the learner's progress chart
     as if it were.
     """
-    if attempt.mode != "full_test":
+    if attempt.scope != "full":
         raise ValueError(
-            "only a full_test attempt can be scaled; part practice covers one part "
+            "only a full-scope attempt can be scaled; a partial run covers some parts "
             "and has no section score"
         )
-    if attempt.test is None:
-        raise ValueError("a full_test attempt must reference a practice_test")
 
     counts = count_raw(session, attempt)
     scale = attempt.test.score_scale_slug

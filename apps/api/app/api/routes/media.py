@@ -87,14 +87,7 @@ def image_ticket(body: UploadTicketRequest) -> UploadTicket:
     source_hash = upload_source_hash(str(uuid.uuid4()))
     storage_key = image_storage_key_for(source_hash, ext=body.ext)
     ticket = get_driver("image").ticket(storage_key)
-    return UploadTicket(
-        upload_url=ticket.upload_url,
-        fields=ticket.fields,
-        storage_key=ticket.storage_key,
-        max_bytes=ticket.max_bytes,
-        allowed_formats=list(ticket.allowed_formats),
-        expires_at=ticket.expires_at,
-    )
+    return UploadTicket.of(ticket)
 
 
 @router.post(

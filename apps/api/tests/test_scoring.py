@@ -112,7 +112,7 @@ def build_attempt(session: Session) -> Attempt:
     test = PracticeTest(slug="mock-1", title="Mock 1", kind="full")
     session.add(test)
     session.flush()
-    attempt = Attempt(user_id=user.id, mode="full_test", test_id=test.id)
+    attempt = Attempt(user_id=user.id, test_id=test.id)
     session.add(attempt)
     session.flush()
     return attempt
@@ -174,17 +174,20 @@ def test_scoring_fills_in_raw_and_scaled(db_session: Session) -> None:
     assert attempt.total_scaled == attempt.listening_scaled + attempt.reading_scaled
 
 
-def test_part_practice_cannot_be_scaled(db_session: Session) -> None:
+def test_a_partial_attempt_cannot_be_scaled(db_session: Session) -> None:
     # A section score computed from one part would look like a TOEIC score
     # without being one, and would land in the learner's progress chart as if it
     # were.
     seed_scales(db_session)
     user = make_user(db_session)
-    attempt = Attempt(user_id=user.id, mode="part_practice", part=5)
+    test = PracticeTest(slug="mock-partial", title="Mock", kind="full")
+    db_session.add(test)
+    db_session.flush()
+    attempt = Attempt(user_id=user.id, test_id=test.id, scope="partial")
     db_session.add(attempt)
     db_session.flush()
 
-    with pytest.raises(ValueError, match="only a full_test attempt"):
+    with pytest.raises(ValueError, match="only a full-scope attempt"):
         score_attempt(db_session, attempt)
 
 

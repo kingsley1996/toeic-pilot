@@ -3,6 +3,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from app.core.storage import ALLOWED_IMAGE_FORMATS
+from app.core.storage import UploadTicket as DriverTicket
 
 ImageExtension = Literal["jpg", "jpeg", "png", "webp"]
 
@@ -23,6 +24,31 @@ class UploadTicket(BaseModel):
     max_bytes: int
     allowed_formats: list[str]
     expires_at: int
+    # Cloudinary và driver local nhận multipart POST; object store S3 nhận PUT
+    # thẳng vào URL đã ký, và khi đó `fields` là các header bắt buộc chứ không
+    # phải trường form. Frontend phải đọc trường này thay vì đoán theo môi
+    # trường — cùng một môi trường có thể chạy hai nhà cung cấp khác nhau cho
+    # ảnh và cho audio (§2.2).
+    method: Literal["POST", "PUT"] = "POST"
+
+    @classmethod
+    def of(cls, ticket: DriverTicket) -> "UploadTicket":
+        """Chuyển vé của driver thành vé trên dây.
+
+        Là một classmethod chứ không phải sáu dòng gán lặp ở mỗi route, vì kiểu
+        hỏng của bản lặp đã xảy ra thật: thêm `method` vào driver mà quên sửa
+        một trong hai route thì route đó im lặng phát vé POST cho một URL PUT,
+        và lỗi chỉ hiện ra ở nhà cung cấp dưới dạng 403.
+        """
+        return cls(
+            upload_url=ticket.upload_url,
+            fields=ticket.fields,
+            storage_key=ticket.storage_key,
+            max_bytes=ticket.max_bytes,
+            allowed_formats=list(ticket.allowed_formats),
+            expires_at=ticket.expires_at,
+            method=ticket.method,
+        )
 
 
 class ImageConfirm(BaseModel):

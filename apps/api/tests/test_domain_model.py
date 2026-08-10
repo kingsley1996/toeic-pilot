@@ -17,6 +17,7 @@ from app.core.media import AUDIO_ACCENTS
 from app.models import (
     Attempt,
     AttemptItem,
+    AttemptPart,
     AudioAsset,
     DictationAttempt,
     DictationItem,
@@ -93,6 +94,14 @@ def make_entry(session: Session, headword: str = "invoice", pos: str = "noun") -
     session.add(entry)
     session.flush()
     return entry
+
+
+def make_test(session: Session) -> PracticeTest:
+    """Đề tối thiểu để treo một lượt làm vào. Slug duy nhất cho mỗi lần gọi."""
+    test = PracticeTest(slug=f"mock-{uuid.uuid4().hex[:8]}", title="Mock", kind="full")
+    session.add(test)
+    session.flush()
+    return test
 
 
 def make_question(
@@ -337,19 +346,39 @@ def test_question_source_is_constrained(db_session: Session) -> None:
 # --- attempts -------------------------------------------------------------
 
 
-def test_part_practice_must_not_reference_a_test(db_session: Session) -> None:
+def test_an_attempt_always_belongs_to_a_test(db_session: Session) -> None:
+    """Luyện một tập part là "đề này, những part ấy" — vẫn thuộc một đề.
+
+    Mô hình cũ tách "cả đề" khỏi "một part rời" và cấm tổ hợp ở giữa, nên màn
+    chọn phần muốn làm không lưu được. Đổi lại, giờ mọi lượt làm đều có `test_id`.
+    """
     user = make_user(db_session)
-    test = PracticeTest(slug="mock-1", title="Mock 1", kind="full")
-    db_session.add(test)
-    db_session.flush()
-    db_session.add(Attempt(user_id=user.id, mode="part_practice", part=5, test_id=test.id))
+    db_session.add(Attempt(user_id=user.id, test_id=None))
     with pytest.raises(IntegrityError):
         db_session.commit()
 
 
-def test_full_test_must_reference_a_test(db_session: Session) -> None:
+def test_a_partial_attempt_records_the_parts_it_covers(db_session: Session) -> None:
     user = make_user(db_session)
-    db_session.add(Attempt(user_id=user.id, mode="full_test", test_id=None))
+    test = PracticeTest(slug="mock-1", title="Mock 1", kind="full")
+    db_session.add(test)
+    db_session.flush()
+
+    attempt = Attempt(user_id=user.id, test_id=test.id, scope="partial")
+    attempt.parts = [AttemptPart(part=5), AttemptPart(part=6), AttemptPart(part=7)]
+    db_session.add(attempt)
+    db_session.commit()
+
+    assert sorted(p.part for p in attempt.parts) == [5, 6, 7]
+
+
+def test_submitted_and_submitted_at_cannot_disagree(db_session: Session) -> None:
+    """Hai cột nói cùng một chuyện thì không được phép nói khác nhau."""
+    user = make_user(db_session)
+    test = PracticeTest(slug="mock-3", title="Mock 3", kind="full")
+    db_session.add(test)
+    db_session.flush()
+    db_session.add(Attempt(user_id=user.id, test_id=test.id, status="submitted"))
     with pytest.raises(IntegrityError):
         db_session.commit()
 
@@ -359,7 +388,7 @@ def test_an_unanswered_item_is_recorded_not_omitted(db_session: Session) -> None
     # signal; it must survive as a row, not as a missing row.
     user = make_user(db_session)
     question = make_question(db_session, part=5)
-    attempt = Attempt(user_id=user.id, mode="part_practice", part=5)
+    attempt = Attempt(user_id=user.id, test_id=make_test(db_session).id, scope="partial")
     db_session.add(attempt)
     db_session.flush()
     attempt.items.append(AttemptItem(question_id=question.id, position=1))
@@ -373,7 +402,7 @@ def test_an_unanswered_item_is_recorded_not_omitted(db_session: Session) -> None
 def test_a_question_cannot_be_served_twice_in_one_attempt(db_session: Session) -> None:
     user = make_user(db_session)
     question = make_question(db_session, part=5)
-    attempt = Attempt(user_id=user.id, mode="part_practice", part=5)
+    attempt = Attempt(user_id=user.id, test_id=make_test(db_session).id, scope="partial")
     db_session.add(attempt)
     db_session.flush()
     attempt.items.append(AttemptItem(question_id=question.id, position=1))
@@ -391,7 +420,6 @@ def test_scaled_scores_are_stored_on_the_attempt(db_session: Session) -> None:
     db_session.flush()
     attempt = Attempt(
         user_id=user.id,
-        mode="full_test",
         test_id=test.id,
         listening_raw=80,
         reading_raw=70,

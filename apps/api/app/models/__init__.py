@@ -10,11 +10,13 @@ from app.models.image import ImageAsset
 from app.models.practice import (
     Attempt,
     AttemptItem,
+    AttemptPart,
     PracticeTest,
     PracticeTestQuestion,
     Question,
     QuestionOption,
     QuestionSet,
+    TestCollection,
 )
 from app.models.profile import UserProfile
 from app.models.scoring import ScoreConversion, ScoreScale
@@ -35,6 +37,7 @@ from app.models.vocabulary import (
 __all__ = [
     "Attempt",
     "AttemptItem",
+    "AttemptPart",
     "AudioAsset",
     "DictationAttempt",
     "DictationItem",
@@ -49,6 +52,7 @@ __all__ = [
     "QuestionSet",
     "ScoreConversion",
     "ScoreScale",
+    "TestCollection",
     "Topic",
     "User",
     "UserProfile",

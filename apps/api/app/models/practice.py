@@ -185,6 +185,40 @@ class QuestionOption(Base):
         return f"<QuestionOption {self.label}{'*' if self.is_correct else ''}>"
 
 
+class TestCollection(Base, PublishableMixin):
+    """Một "bộ đề" — nhóm các đề phát hành cùng nhau.
+
+    Có bảng riêng thay vì hai cột chuỗi trên `practice_test`, vì gom nhóm bằng
+    chuỗi nghĩa là gõ sai một ký tự sẽ sinh ra một bộ đề mới mà không ai định
+    tạo, và không có gì phát hiện ra ngoài việc danh sách bỗng dài thêm một mục.
+    """
+
+    __tablename__ = "test_collection"
+    __table_args__ = (
+        status_check("test_collection"),
+        CheckConstraint(
+            "year IS NULL OR year BETWEEN 2000 AND 2100", name="ck_test_collection_year"
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Nhãn hiển thị của nơi phát hành. KHÔNG phải `question.source` — cột kia
+    # trả lời câu hỏi bản quyền theo từng câu và không được lẫn với nhãn này.
+    source_tag: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    year: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    position: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+
+    tests: Mapped[list["PracticeTest"]] = relationship(
+        back_populates="collection", order_by="PracticeTest.position"
+    )
+
+    def __repr__(self) -> str:
+        return f"<TestCollection {self.slug}>"
+
+
 class PracticeTest(Base, PublishableMixin):
     __tablename__ = "practice_test"
     __table_args__ = (
@@ -195,6 +229,14 @@ class PracticeTest(Base, PublishableMixin):
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Nullable: một đề lẻ phải tồn tại được mà không cần bịa ra một bộ đề chỉ có
+    # một phần tử.
+    collection_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("test_collection.id", ondelete="SET NULL"), nullable=True
+    )
+    position: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    collection: Mapped["TestCollection | None"] = relationship(back_populates="tests")
     kind: Mapped[str] = mapped_column(String(16), nullable=False, default="full")
     time_limit_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # Which raw-to-scaled curve this form uses. Real TOEIC forms differ, so the
@@ -236,16 +278,18 @@ class Attempt(Base):
 
     __tablename__ = "attempt"
     __table_args__ = (
-        CheckConstraint("mode IN ('full_test', 'part_practice')", name="ck_attempt_mode"),
-        # The two modes carry different fields, and neither should borrow the
-        # other's. Practice by part is not a test and must not invent a row in
-        # `practice_test` just to have something to point at.
+        CheckConstraint("scope IN ('full', 'partial')", name="ck_attempt_scope"),
+        CheckConstraint("review_mode IN ('exam', 'practice')", name="ck_attempt_review_mode"),
         CheckConstraint(
-            "(mode = 'full_test' AND test_id IS NOT NULL AND part IS NULL)"
-            " OR (mode = 'part_practice' AND part IS NOT NULL AND test_id IS NULL)",
-            name="ck_attempt_mode_fields",
+            "status IN ('in_progress', 'submitted', 'expired', 'abandoned')",
+            name="ck_attempt_status",
         ),
-        CheckConstraint("part IS NULL OR part BETWEEN 1 AND 7", name="ck_attempt_part"),
+        # Nộp rồi thì phải có mốc nộp, và ngược lại. Hai cột nói cùng một chuyện
+        # nên chúng không được phép nói khác nhau.
+        CheckConstraint(
+            "(status IN ('submitted', 'expired')) = (submitted_at IS NOT NULL)",
+            name="ck_attempt_submitted_consistent",
+        ),
         Index("ix_attempt_user_started", "user_id", "started_at"),
     )
 
@@ -253,11 +297,27 @@ class Attempt(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    mode: Mapped[str] = mapped_column(String(16), nullable=False)
-    test_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("practice_test.id", ondelete="RESTRICT"), nullable=True
+    # LUÔN thuộc một đề. Mô hình cũ tách "làm cả đề" khỏi "luyện một part" và
+    # bắt phải chọn một trong hai, nên nó cấm đúng tổ hợp mà giao diện cho phép:
+    # một đề, một TẬP part. Luyện theo part giờ là `scope='partial'`, và vì thế
+    # vẫn giữ được liên kết tới đề — thứ mô hình cũ đánh mất.
+    test_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("practice_test.id", ondelete="RESTRICT"), nullable=False
     )
-    part: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    scope: Mapped[str] = mapped_column(String(16), nullable=False, default="full")
+    # Trục THỨ HAI, không phải cách gọi khác của `scope`: phạm vi trả lời "làm
+    # phần nào", cái này trả lời "có được xem đáp án khi đang làm không".
+    review_mode: Mapped[str] = mapped_column(String(16), nullable=False, default="exam")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="in_progress")
+    # Thời gian đã dùng, cộng dồn qua các lần tạm dừng. KHÔNG suy ra từ
+    # `now() - started_at`: lượt làm tạm dừng được, nên đồng hồ treo tường sẽ ăn
+    # mất thời gian người học không hề ngồi trước màn hình.
+    elapsed_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    resumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    parts: Mapped[list["AttemptPart"]] = relationship(
+        cascade="all, delete-orphan", back_populates="attempt"
+    )
 
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -277,10 +337,10 @@ class Attempt(Base):
     items: Mapped[list["AttemptItem"]] = relationship(
         back_populates="attempt", cascade="all, delete-orphan"
     )
-    test: Mapped["PracticeTest | None"] = relationship()
+    test: Mapped["PracticeTest"] = relationship()
 
     def __repr__(self) -> str:
-        return f"<Attempt {self.mode} user={self.user_id}>"
+        return f"<Attempt {self.scope}/{self.review_mode} user={self.user_id}>"
 
 
 class AttemptItem(Base):
@@ -314,7 +374,32 @@ class AttemptItem(Base):
     # corrected after a learner has sat the test, and a past result must keep the
     # verdict it had at the time. Same reasoning as the scaled scores above.
     is_correct: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    # "Đánh dấu" để quay lại. Nằm ở đây chứ không ở bảng riêng: nó chỉ có nghĩa
+    # trong phạm vi một lượt làm và biến mất cùng lượt làm đó.
+    flagged: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     time_spent_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     attempt: Mapped["Attempt"] = relationship(back_populates="items")
+
+
+class AttemptPart(Base):
+    """Các part người học đã chọn cho lượt làm này.
+
+    Bảng riêng thay vì một cột mảng: đây là quan hệ một-nhiều thật, và một cột
+    mảng sẽ không có ràng buộc nào ngăn số 9 lọt vào.
+
+    `scope='full'` thì bảng này RỖNG, không phải chứa đủ bảy hàng. Liệt kê đủ
+    bảy nghĩa là một đề rút gọn sau này (chỉ có part 5-7) sẽ trông giống hệt một
+    lượt làm cả đề, và hai thứ đó không giống nhau.
+    """
+
+    __tablename__ = "attempt_part"
+    __table_args__ = (CheckConstraint("part BETWEEN 1 AND 7", name="ck_attempt_part_range"),)
+
+    attempt_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("attempt.id", ondelete="CASCADE"), primary_key=True
+    )
+    part: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+
+    attempt: Mapped["Attempt"] = relationship(back_populates="parts")

@@ -291,7 +291,7 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 ### Phạm vi đã chốt
 - [x] Ảnh Part 1 do biên tập viên đưa · Avatar · Audio thu người thật · Ảnh minh hoạ từ vựng
 - [x] **Không làm video** — `PLAN.md` không nhắc tới nó ở đâu, và TOEIC L&R không có phần hình động
-- [x] Tách nhà cung cấp: **Cloudinary cho ảnh, R2 cho audio** — hai loại file này có hình dạng chi phí ngược nhau (ADR-006 §2.2)
+- [x] Tách nhà cung cấp: **Cloudinary cho ảnh, object store cho audio** — hai loại file này có hình dạng chi phí ngược nhau (ADR-006 §2.2). Sửa 2026-08-10: driver mang tên **giao thức** (`s3`), không mang tên nhà cung cấp — §2.8
 
 ### Việc
 - [x] `app/core/storage.py` — giao diện driver + driver đĩa local. **Không** đặt trong `app/content/`: code chạy lúc có request mà nằm đó sẽ phá `test_content_isolation`
@@ -308,7 +308,11 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 - [x] Trang `/admin/media` — thư viện ảnh, ba trường bản quyền bắt buộc, ghi công **hiện ra** chứ không chỉ được lưu (ADR-004 §4.2)
 - [x] `Avatar` nhận `src`; header và trang hồ sơ dùng ảnh thật, thiếu thì rơi về chữ cái đầu
 - [x] **Đã chạy thật lên Cloudinary** cả hai luồng (ảnh nội dung + avatar) qua chính các endpoint
-- [ ] Driver R2 (audio) — vẫn chặn bởi việc chưa có domain trên Cloudflare DNS (`PHASE2-AUDIO` §A5)
+- [x] **Driver `s3` (audio)** — một driver cho Supabase / B2 / R2 / DO Spaces / MinIO; nhà cung cấp là `S3_ENDPOINT_URL`, không phải một nhánh `if` trong code (ADR-006 §2.8). Địa chỉ **kiểu đường dẫn** + SigV4, có test ghim: mặc định virtual-host của boto3 hỏng ở Supabase và hiện ra dưới dạng lỗi DNS
+- [x] `app/content/push_media.py` — đẩy media sinh sẵn lên object store, chạy lại là no-op, `Cache-Control: immutable`. Audio sinh offline là bài toán **triển khai**, không phải bài toán upload (§2.8a)
+- [x] `verify()` **xoá** object quá cỡ thay vì chỉ từ chối — presigned PUT không ghim được dung lượng (§2.8b)
+- [ ] Chạy thật một vòng lên Supabase (chờ credential) — Cloudinary đã chạy thật rồi, đường S3 thì chưa
+- [ ] Cron ping giữ project Supabase khỏi tự ngủ sau 7 ngày (§2.8 — kiểu hỏng là *chỉ audio 404*)
 - [ ] Lệnh đối chiếu file mồ côi (§10.4 giờ tốn tiền hàng tháng)
 
 ---
@@ -316,6 +320,24 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 ## 5. Sprint 5 — TOEIC Practice
 
 **Mục tiêu:** luyện theo part và làm đề đầy đủ, có điểm quy đổi.
+
+### Schema đã sửa cho khớp thiết kế (2026-08-10) — migration `011_mock_test`
+
+Đối chiếu `planning/capture-screen/*.png` với `ADR-001` cho ra **một chặn cứng và năm chỗ thiếu**.
+
+**Chặn cứng: `ck_attempt_mode_fields` cấm đúng thứ giao diện cho phép.** Ràng buộc cũ buộc chọn giữa "cả một đề" (`test_id`, `part` NULL) và "một part rời không thuộc đề nào" (`part`, `test_id` NULL). Màn chọn phần muốn làm sinh ra tổ hợp thứ ba — **một đề, một TẬP part** — và tổ hợp đó bị database từ chối. Không sửa thì tính năng không lưu được.
+
+- [x] `attempt.test_id` thành **NOT NULL** — luyện theo part giờ là "đề này, những part ấy", nên vẫn giữ liên kết tới đề, thứ mô hình cũ đánh mất
+- [x] Bỏ `mode`/`part`; thêm `scope` ('full'/'partial') + bảng `attempt_part`. `scope='full'` thì bảng part **rỗng**, không phải chứa đủ bảy hàng — liệt kê đủ bảy sẽ làm một đề rút gọn sau này trông giống hệt một lượt làm cả đề
+- [x] `review_mode` ('exam'/'practice') là **trục thứ hai**: phạm vi trả lời "làm phần nào", cái này trả lời "có được xem đáp án khi đang làm không"
+- [x] `status` + `elapsed_seconds` + `resumed_at` cho tạm dừng. Thời gian **cộng dồn**, không tính bằng `now() - started_at`: lượt làm tạm dừng được, nên đồng hồ treo tường sẽ ăn mất thời gian người học không ngồi trước màn hình
+- [x] CHECK `(status IN ('submitted','expired')) = (submitted_at IS NOT NULL)` — hai cột nói cùng một chuyện thì không được nói khác nhau
+- [x] `attempt_item.flagged` cho nút "Đánh dấu"
+- [x] Bảng `test_collection` cho "bộ đề" (màn hình 1–2), `practice_test.collection_id` **nullable** để đề lẻ vẫn tồn tại được
+
+**Phần khớp sẵn, không phải sửa gì:** Part 1 (ảnh + 4 đáp án, không chữ), Part 2 (audio từng câu, 3 đáp án), Part 3/4 (một audio cho cụm), Part 6/7 (`passage`/`passage_2`/`passage_3`), đánh số 1–200 qua `practice_test_question.position`.
+
+**Một chỗ cố ý KHÔNG sao chép:** trang tham khảo hiển thị đoạn văn Part 6/7 bằng **ảnh scan**. Giữ nguyên `ADR-005` — ngữ liệu là **văn bản**. Ảnh chữ thì trình đọc màn hình không đọc được, không phóng to trên điện thoại, không tìm kiếm được, và AI Coach ở Sprint 7 không trích dẫn lại được. Trang kia dùng ảnh vì họ scan đề gốc — mà đề gốc thuộc bản quyền ETS, đúng thứ `question.source` sinh ra để chặn.
 
 ### ⛔ Chặn phải gỡ trước, không phải sau
 
@@ -392,7 +414,7 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 - [ ] Dashboard tiến độ, Learning Memory
 - [ ] `user_progress` (nên là view suy ra từ `attempt`, không phải bảng ghi song song)
-- [ ] Cloudflare R2 (`PHASE2-AUDIO.md` §A5) — chặn bởi việc phải có domain trên DNS Cloudflare
+- [ ] ~~Cloudflare R2~~ → đã thay bằng driver `s3` ở mục 4d; nhà cung cấp giờ là một biến môi trường (ADR-006 §2.8)
 - [ ] Chính sách PII: bài làm của học viên sẽ được gửi sang LLM provider (§7h)
 - [ ] Monitoring, deployment
 

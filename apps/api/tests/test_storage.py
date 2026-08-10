@@ -8,6 +8,7 @@ from app.core.storage import (
     ALLOWED_IMAGE_FORMATS,
     CloudinaryDriver,
     LocalDiskDriver,
+    S3Driver,
     StorageError,
     local_signature_valid,
     read_dimensions,
@@ -144,3 +145,40 @@ def test_dimensions_come_from_the_header_or_not_at_all():
     """
     assert read_dimensions(png(1200, 800)) == (1200, 800)
     assert read_dimensions(b"not an image at all") is None
+
+
+def s3_driver() -> S3Driver:
+    return S3Driver(
+        kind="audio",
+        endpoint_url="https://abcdefgh.supabase.co/storage/v1/s3",
+        region="auto",
+        bucket="media",
+        access_key_id="key",
+        secret_access_key="secret",
+        base_url="https://abcdefgh.supabase.co/storage/v1/object/public/media",
+    )
+
+
+def test_presigned_url_addresses_the_bucket_by_path_not_subdomain():
+    """Mặc định của boto3 là kiểu virtual-host, và nó SAI với Supabase/MinIO.
+
+    Đáng ghim vì kiểu hỏng của nó dẫn người ta đi sai hướng: bucket bị ghép thành
+    `media.abcdefgh.supabase.co`, một tên không phân giải được, nên lỗi hiện ra
+    là DNS chứ không phải cấu hình — và người ta đi kiểm mạng thay vì kiểm code.
+    """
+    url = s3_driver().ticket("audio/ab/abcd.mp3").upload_url
+
+    assert "/media/audio/ab/abcd.mp3" in url
+    assert "media.abcdefgh.supabase.co" not in url
+    assert "X-Amz-Signature" in url
+
+
+def test_the_playable_url_is_a_plain_join():
+    """Mọi URL audio trong ứng dụng đi qua đây, và nó KHÔNG được gọi mạng.
+
+    Đó là điều khiến audio không phải đi qua FastAPI: dựng URL phát là nối chuỗi
+    thuần, nên `get_driver(...).public_url(...)` an toàn ở giữa một request.
+    """
+    assert s3_driver().public_url("audio/ab/abcd.mp3") == (
+        "https://abcdefgh.supabase.co/storage/v1/object/public/media/audio/ab/abcd.mp3"
+    )

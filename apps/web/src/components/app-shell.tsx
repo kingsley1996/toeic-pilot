@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Headphones, House, Menu, SquarePen, X } from "lucide-react";
+import { BookOpen, FileText, Headphones, House, Menu, SquarePen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -35,6 +35,7 @@ const LEARN_LINKS: NavItem[] = [
   { href: "/learn", label: "Hôm nay", Icon: House },
   { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
+  { href: "/learn/tests", label: "Luyện thi", Icon: FileText },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {

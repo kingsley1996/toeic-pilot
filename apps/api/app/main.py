@@ -8,7 +8,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app import models  # noqa: F401 — registers every table on Base.metadata
-from app.api.routes import admin, auth, health, learning, media, profile
+from app.api.routes import (
+    admin,
+    attempt,
+    auth,
+    health,
+    learning,
+    media,
+    practice,
+    profile,
+)
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.logging import RequestContextMiddleware, configure_logging
@@ -55,6 +64,8 @@ app.include_router(health.router)
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning.router, prefix="/api/v1")
+app.include_router(practice.router, prefix="/api/v1")
+app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
 

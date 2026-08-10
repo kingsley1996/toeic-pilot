@@ -93,6 +93,7 @@ uv run python -m app.content.images --input content/sources/images/<spec>.jsonl
 uv run python -m app.content.seed          # manifests -> audio_asset / image_asset rows
 uv run python -m app.content.seed_scores   # default raw -> scaled score curve
 uv run python -m app.content.backfill_audio [--dry-run]   # audio for content the DB is missing
+uv run python -m app.content.push_media [--dry-run]       # local media -> object store (S3 protocol)
 TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external   # calls edge-tts for real
 ```
 
@@ -216,6 +217,11 @@ An error that names a way out has to have that way out **reachable from where th
 - `app/content/**` — the offline pipeline, behind the optional `content` extra. `generate` synthesises and writes `content/manifest/audio_assets.jsonl`; `seed` reads that manifest and upserts rows by `source_hash`. Generation happens **offline**, so an edge-tts outage blocks new content rather than breaking what already exists.
 - The manifest is committed; the mp3s under `apps/api/media/` are gitignored. `generate` therefore skips only when the manifest entry *and* the file both exist — otherwise a fresh clone would never re-render them.
 - Serving is a string join: `{audio_public_base_url}/{storage_key}`. The API never calls the object store at request time, and audio must **never** be proxied through FastAPI — that loses range requests and burns the API's bandwidth. `/media` is mounted only when `environment == "development"`.
+
+  Read that rule as narrowly as it was meant (ADR-006 §2.9): it bans an endpoint that *re-serves bytes fetched from the object store*. It does **not** ban the `/media` static mount — Starlette's `FileResponse` sets `accept-ranges`, parses `Range`, and returns 206/416, so a static mount loses nothing. What is left is a bandwidth argument, which is about scale rather than correctness. Do not let the rule talk you out of a legitimate option.
+
+- **The provider is a config value, not a code branch** (ADR-006 §2.8). One `s3` driver covers Supabase, B2, R2, DO Spaces, Wasabi and MinIO; `S3_ENDPOINT_URL` decides which. Two settings are load-bearing and fail misleadingly: boto3 defaults to **virtual-host addressing**, which turns the bucket into a subdomain and surfaces as a *DNS* failure rather than a config one, and Supabase requires **SigV4**. `tests/test_storage.py` pins the addressing style for exactly that reason.
+- **Generated audio never touches the upload path.** `app/content/push_media.py` syncs it — a deploy problem. The ticket/verify flow of §2.3 exists for bytes arriving from a machine we do not control, which today means nothing (§2.8a).
 
 **Nothing reachable from `app/main.py` may import `app.content`.** The production image is built `--no-dev` without the `content` extra, so a leak breaks container startup rather than the build. `tests/test_content_isolation.py` catches it in a subprocess in under a second; the `docker` CI job catches it the slow way. Shared code belongs in `app/core/`.
 

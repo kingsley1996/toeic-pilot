@@ -54,3 +54,20 @@ def test_production_with_strong_secret_is_accepted():
 def test_development_tolerates_the_default_secret():
     settings = _settings(environment="development", secret_key=DEFAULT_SECRET_KEY)
     assert not settings.is_production
+
+
+# --- ADR-006: nửa vời thì hỏng lúc khởi động, không phải lúc ai đó bấm Tải lên
+
+
+def test_s3_driver_without_credentials_refuses_to_boot():
+    """Nếu không nổ ở đây, nó sẽ nổ ở request đầu tiên của một biên tập viên.
+
+    Ràng buộc bắt cả hai driver, không riêng audio: từ khi `s3` dùng chung một
+    bộ khoá cho cả ảnh lẫn audio, đặt mỗi `IMAGE_STORAGE_DRIVER=s3` cũng đủ để
+    cấu hình thành nửa vời.
+    """
+    with pytest.raises(ValidationError, match="S3_BUCKET"):
+        _settings(audio_storage_driver="s3", s3_endpoint_url="https://x.supabase.co/storage/v1/s3")
+
+    with pytest.raises(ValidationError, match="S3_ENDPOINT_URL"):
+        _settings(image_storage_driver="s3")

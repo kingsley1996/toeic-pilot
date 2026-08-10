@@ -53,8 +53,8 @@ class Settings(BaseSettings):
     # tuyến tính theo số học viên. Mô hình giá của hai loại dịch vụ này ngược
     # nhau, nên ép chúng dùng chung một nơi là chọn sai ở một trong hai đầu
     # (ADR-006 §2.2).
-    image_storage_driver: str = "local"  # "local" | "cloudinary"
-    audio_storage_driver: str = "local"  # "local" | "r2"
+    image_storage_driver: str = "local"  # "local" | "cloudinary" | "s3"
+    audio_storage_driver: str = "local"  # "local" | "s3"
 
     # Tiền tố URL công khai của ảnh. Cùng vai trò với `audio_public_base_url`:
     # runtime chỉ NỐI CHUỖI, không bao giờ gọi object store lúc có request.
@@ -67,10 +67,19 @@ class Settings(BaseSettings):
     cloudinary_api_secret: SecretStr = SecretStr("")
     cloudinary_folder: str = "toeic-pilot"
 
-    r2_account_id: str = ""
-    r2_bucket: str = ""
-    r2_access_key_id: str = ""
-    r2_secret_access_key: SecretStr = SecretStr("")
+    # Object store nói giao thức S3. MỘT bộ biến dùng chung cho cả hai loại
+    # media, vì endpoint và cặp khoá là của tài khoản chứ không của loại file;
+    # cái tách riêng theo loại là *driver nào được chọn* và *URL công khai nào
+    # được nối vào*, và hai thứ đó đã có biến riêng ở trên.
+    #
+    # Cố ý không đặt tên theo nhà cung cấp. `S3_ENDPOINT_URL` quyết định đó là
+    # Supabase, B2, R2, DO Spaces hay MinIO — đổi nhà cung cấp là đổi một dòng
+    # env, không phải sửa code.
+    s3_endpoint_url: str = ""
+    s3_region: str = "auto"
+    s3_bucket: str = ""
+    s3_access_key_id: str = ""
+    s3_secret_access_key: SecretStr = SecretStr("")
 
     @property
     def is_production(self) -> bool:
@@ -105,19 +114,19 @@ class Settings(BaseSettings):
             ]
             if missing:
                 raise ValueError("IMAGE_STORAGE_DRIVER=cloudinary needs: " + ", ".join(missing))
-        if self.audio_storage_driver == "r2":
+        if "s3" in {self.image_storage_driver, self.audio_storage_driver}:
             missing = [
                 name
                 for name, value in (
-                    ("R2_ACCOUNT_ID", self.r2_account_id),
-                    ("R2_BUCKET", self.r2_bucket),
-                    ("R2_ACCESS_KEY_ID", self.r2_access_key_id),
-                    ("R2_SECRET_ACCESS_KEY", self.r2_secret_access_key.get_secret_value()),
+                    ("S3_ENDPOINT_URL", self.s3_endpoint_url),
+                    ("S3_BUCKET", self.s3_bucket),
+                    ("S3_ACCESS_KEY_ID", self.s3_access_key_id),
+                    ("S3_SECRET_ACCESS_KEY", self.s3_secret_access_key.get_secret_value()),
                 )
                 if not value
             ]
             if missing:
-                raise ValueError("AUDIO_STORAGE_DRIVER=r2 needs: " + ", ".join(missing))
+                raise ValueError("STORAGE_DRIVER=s3 needs: " + ", ".join(missing))
         return self
 
 

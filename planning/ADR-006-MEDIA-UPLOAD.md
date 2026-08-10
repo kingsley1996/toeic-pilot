@@ -1,6 +1,6 @@
 # ADR-006 — Đường upload media
 
-> **Trạng thái:** đã quyết 2026-08-10 · **Thay thế:** không · **Liên quan:** [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) (= ADR-002), [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.5
+> **Trạng thái:** đã quyết 2026-08-10, sửa §2.2 ngày 2026-08-10 (xem §2.8) · **Thay thế:** không · **Liên quan:** [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) (= ADR-002), [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.5
 >
 > Đóng nợ §10.5: *"`AUDIO_SOURCES` và `IMAGE_SOURCES` đều đã có giá trị `uploaded` — schema hỗ trợ, đường đi thì chưa xây."*
 
@@ -36,14 +36,18 @@ Bốn nhu cầu cụ thể, tất cả đều đã hoặc sắp có thật:
 
 Gộp chúng vào một `POST /media/upload` chung nghe gọn hơn và sai ở cả hai đầu: hoặc avatar bị lôi qua quy trình bản quyền vô nghĩa, hoặc ảnh Part 1 đi vòng qua cổng duyệt. Nên có **hai nhóm endpoint**, và chúng chỉ dùng chung đúng một thứ — lớp lưu trữ.
 
-### 2.2 Tách nhà cung cấp: Cloudinary cho ảnh, R2 cho audio
+### 2.2 Tách nhà cung cấp: Cloudinary cho ảnh, object store cho audio
+
+> **Đã sửa 2026-08-10.** Bản đầu viết "R2 cho audio" và đó là một sai lầm về *cách diễn đạt quyết định*, không phải về quyết định. Xem §2.8.
 
 Không phải vì thích nhiều nhà cung cấp, mà vì **hai loại file này có hình dạng chi phí ngược nhau**:
 
 - **Ảnh** cần biến đổi (crop avatar, nhiều kích cỡ, WebP/AVIF), dung lượng nhỏ, băng thông thấp. Cloudinary bán đúng thứ đó.
 - **Audio** không cần biến đổi gì — một mp3 phát nguyên trạng — nhưng **ngốn băng thông**. Một đề TOEIC đầy đủ có ~100 clip nghe; vài trăm học viên luyện mỗi ngày là hàng chục GB egress/tháng, tăng tuyến tính theo số người dùng.
 
-Mô hình credit của Cloudinary quy đổi lưu trữ, băng thông và số lần biến đổi về **cùng một đơn vị**, nên băng thông audio sẽ ăn vào hạn mức của ảnh. Cloudflare R2 **không tính phí egress** — đó là khác biệt về bản chất mô hình giá, không phải chênh vài phần trăm.
+Mô hình credit của Cloudinary quy đổi lưu trữ, băng thông và số lần biến đổi về **cùng một đơn vị**, nên băng thông audio sẽ ăn vào hạn mức của ảnh.
+
+Và đây mới là lập luận sống lâu nhất, vì nó **không phụ thuộc quy mô**: credit là một hồ chung, nên một đợt cao điểm luyện nghe làm hỏng *upload ảnh*. Triệu chứng xuất hiện rất xa nguyên nhân — người ta đi tìm lỗi ở đường ảnh, trong khi thứ đã tiêu hết hạn mức là audio. Object store tính riêng băng thông thì không có kiểu hỏng đó.
 
 > Bảng giá cụ thể của cả hai bên thay đổi theo thời gian. Con số phải kiểm lại tại thời điểm triển khai; điều **không** đổi là hình dạng: ảnh = biến đổi, audio = băng thông.
 
@@ -106,6 +110,49 @@ Kèm theo hai điều dễ vi phạm:
 Ảnh chữ cái đầu hiện tại không cần hạ tầng nào và không có rủi ro nào. Avatar thật là **nội dung do người dùng tải lên và hiển thị cho người khác** ⇒ cần một đường báo cáo/gỡ.
 
 Quyết định: làm avatar, nhưng **`user_profile.avatar_storage_key` nullable và ảnh chữ cái đầu vẫn là mặc định** — nó vừa là dự phòng khi chưa upload, vừa là thứ để rơi về khi một ảnh bị gỡ.
+
+### 2.8 Driver mang tên **giao thức**, không mang tên nhà cung cấp
+
+Bản đầu của ADR này gọi driver audio là "driver R2", và `get_driver` có hẳn một nhánh `if driver == "r2"`. Cái tên đó **đóng băng một quyết định thương mại vào mã nguồn**: đổi nhà cung cấp hoá ra phải sửa code, trong khi thứ thật sự khác nhau giữa R2, Supabase Storage, Backblaze B2, DO Spaces, Wasabi và MinIO chỉ là **một endpoint và một cặp khoá**. Tất cả đều nói S3.
+
+Driver vì thế tên là `s3`, và nhà cung cấp là giá trị của `S3_ENDPOINT_URL`.
+
+Điều này có giá trị thực tế ngay: R2 là lựa chọn duy nhất có ma sát phụ — URL `r2.dev` bị rate-limit và không dùng cho production, nên nó bắt buộc phải có custom domain **nằm trên DNS của Cloudflare**, đúng thứ đã chặn mục 4d suốt. Với driver theo giao thức, ràng buộc đó không còn là ràng buộc của kiến trúc nữa.
+
+**Lựa chọn hiện tại: Supabase Storage** (gói free: 1 GB lưu, 5 GB egress/tháng, không cần thẻ tín dụng). Quy ra đơn vị của dự án, ở 48 kbps: 1 GB ≈ 46 giờ audio ≈ 70–80 đề đầy đủ phần nghe; 5 GB egress ≈ 300–400 lượt làm phần nghe mỗi tháng. Egress **phẳng** là điểm hơn B2 ở giai đoạn này — B2 cho 3× dung lượng đang lưu, tức rộng rãi khi đã có nhiều nội dung và chật đúng lúc còn ít.
+
+**Bẫy phải biết trước:** project free của Supabase **tự ngủ sau 7 ngày không có request**, và storage ngủ theo. Kiểu hỏng khó chẩn đoán: web chạy, Postgres chạy (nó vẫn ở Docker của ta), **chỉ audio 404**. Cần cron ping giữ nhịp.
+
+#### 2.8a Audio sinh sẵn KHÔNG cần đường upload
+
+Hai bài toán bị gọi chung một cái tên, và tách ra thì việc nhẹ hẳn:
+
+| | Audio sinh offline | Audio người thật thu |
+|---|---|---|
+| Byte đi từ | máy dev, đã nằm trên đĩa | máy ta không kiểm soát |
+| Cần gì | **đồng bộ** — `app/content/push_media.py` | vé + chữ ký + xác minh (§2.3) |
+| Chặn bởi | không gì | §10.2, và nó là bài toán sản xuất |
+
+Nghĩa là **đường tới production không đi qua §2.3**. `push_media` đẩy thẳng bằng khoá ghi, chạy ở máy dev sau `--extra content`, và khoá ghi không cần có mặt trong môi trường của tiến trình HTTP.
+
+Nó đặt `Cache-Control: public, max-age=31536000, immutable` — hợp lệ vì khoá là content-addressed, một khoá luôn trỏ tới đúng một file không bao giờ đổi nội dung. Với hạn mức 5 GB egress thì đây không phải tinh chỉnh, nó là khác biệt giữa "đủ dùng" và "hết hạn mức giữa tháng".
+
+#### 2.8b Presigned PUT không ghim được dung lượng — và bù ở đâu
+
+Một chỗ yếu hơn Cloudinary, phải nói thẳng: chữ ký của presigned PUT **không mang được `content-length-range`** như policy của form POST. Nên §2.4 ("ghim ràng buộc, không ký séc trắng") ở đường S3 chỉ ghim được khoá, Content-Type và hạn dùng.
+
+Trần dung lượng được bù ở hai chỗ khác:
+
+1. **Giới hạn kích thước của chính bucket**, đặt ở bảng điều khiển nhà cung cấp. Đây là hàng rào thật sự, và nó nằm ngoài code — nhớ đặt.
+2. **`verify()` xoá file quá cỡ** thay vì chỉ từ chối. Từ chối suông để lại một object không ai tham chiếu tới nhưng vẫn tính tiền hàng tháng — đúng loại file mồ côi mà §4 đã ghi là chưa có đường dọn.
+
+### 2.9 `StaticFiles` **có** hỗ trợ Range — luật cũ bị đọc rộng hơn ý nó
+
+`CLAUDE.md` viết *"audio must never be proxied through FastAPI — that loses range requests and burns the API's bandwidth"*. Kiểm lại trên Starlette 1.4.1 đang cài: `FileResponse` đặt `accept-ranges: bytes`, phân tích header `Range`, trả 206 và trả 416 khi không thoả. **Mount `/media` không hề mất range request.**
+
+Luật đó đúng cho một endpoint tự viết đọc byte từ object store rồi phát lại — chỗ đó thật sự mất range và thật sự đốt băng thông của API. Nó **không** đúng cho một mount static đọc đĩa local. Lý do thật còn lại chỉ là băng thông, tức là chuyện *quy mô*, không phải chuyện đúng/sai.
+
+Ghi lại để lần sau không ai tự chặn mình khỏi một phương án hợp lệ vì một luật được đọc rộng hơn ý nó.
 
 ## 3. Ràng buộc bất biến
 

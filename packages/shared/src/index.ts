@@ -38,6 +38,15 @@ export type StudyDay = components["schemas"]["StudyDay"];
 export type UploadTicket = components["schemas"]["UploadTicket"];
 export type ImageAssetPublic = components["schemas"]["ImageAssetPublic"];
 export type ImageConfirm = components["schemas"]["ImageConfirm"];
+export type CollectionSummary = components["schemas"]["CollectionSummary"];
+export type CollectionDetail = components["schemas"]["CollectionDetail"];
+export type TestSummary = components["schemas"]["TestSummary"];
+export type TestDetail = components["schemas"]["TestDetail"];
+export type PartBreakdown = components["schemas"]["PartBreakdown"];
+export type AttemptState = components["schemas"]["AttemptState"];
+export type AttemptResult = components["schemas"]["AttemptResult"];
+export type QuestionPublic = components["schemas"]["QuestionPublic"];
+export type AttemptPartProgress = components["schemas"]["AttemptPartProgress"];
 export type DictationSummary = components["schemas"]["DictationSummary"];
 export type DictationDetail = components["schemas"]["DictationDetail"];
 export type DictationResult = components["schemas"]["DictationResult"];
@@ -74,6 +83,18 @@ export const API_ROUTES = {
 
   // Thư viện ảnh. Upload đi THẲNG tới nhà cung cấp; API chỉ ký vé và ghi
   // nhận (ADR-006 §2.3), nên không có đường nào ở đây nhận byte của file.
+  // Luyện thi TOEIC. Công khai: danh sách đề là thứ người ta xem TRƯỚC khi
+  // quyết định đăng ký, nên bắt đăng nhập để nhìn sẽ chặn đúng nhóm người mà
+  // trang này tồn tại để thuyết phục.
+  testCollections: "/api/v1/test-collections",
+  testCollection: (slug: string) => `/api/v1/test-collections/${slug}`,
+  practiceTest: (slug: string) => `/api/v1/practice-tests/${slug}`,
+  attempts: "/api/v1/attempts",
+  attempt: (id: string) => `/api/v1/attempts/${id}`,
+  attemptAnswer: (id: string, questionId: string) =>
+    `/api/v1/attempts/${id}/questions/${questionId}`,
+  attemptSubmit: (id: string) => `/api/v1/attempts/${id}/submit`,
+
   adminImages: "/api/v1/admin/media/images",
   adminImageTicket: "/api/v1/admin/media/images/ticket",
   adminImageConfirm: "/api/v1/admin/media/images/confirm",

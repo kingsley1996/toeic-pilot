@@ -21,6 +21,12 @@ dependencies = [
     # extra: thiếu nó thì `LocalDiskDriver.ticket()` trỏ tới một route không tồn
     # tại, và người mới sẽ phải có tài khoản Cloudinary mới chạy được dự án.
     "python-multipart>=0.0.20",
+    # Ký URL upload và hỏi lại object store ở bước xác nhận (ADR-006 §2.3).
+    # Ở dependency chính chứ không ở extra `content`: `app/core/storage.py` chạy
+    # lúc có request, và đặt nó sau extra sẽ vi phạm đúng ranh giới mà
+    # `tests/test_content_isolation.py` canh. Ký presigned URL là tính toán
+    # thuần cục bộ — không có lượt đi mạng nào ở bước phát vé.
+    "boto3>=1.35.0",
 ]
 
 [project.optional-dependencies]
@@ -77,7 +83,7 @@ disallow_untyped_decorators = false
 warn_return_any = false
 
 [[tool.mypy.overrides]]
-module = ["jose.*", "edge_tts.*"]
+module = ["jose.*", "edge_tts.*", "boto3.*", "botocore.*"]
 ignore_missing_imports = true
 
 # mutagen ships partial annotations: `MP3.__init__` is untyped and `.info` is

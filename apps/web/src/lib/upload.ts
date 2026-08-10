@@ -5,10 +5,18 @@ import { ApiError, apiFetch } from "@/lib/api";
 /*
  * Ba bước phía trình duyệt của luồng upload (ADR-006 §2.3).
  *
- * Bước POST file đi THẲNG tới nhà cung cấp và cố ý KHÔNG dùng `apiFetch`: hàm
+ * Bước gửi file đi THẲNG tới nhà cung cấp và cố ý KHÔNG dùng `apiFetch`: hàm
  * đó gắn `Content-Type: application/json` và token của ta vào mọi request, mà
  * cả hai đều sai ở đây — Cloudinary cần multipart do trình duyệt tự đặt kèm
  * boundary, và gửi token của mình sang máy chủ bên thứ ba là rò rỉ.
+ *
+ * Có HAI hình dạng, và vé nói rõ là hình dạng nào (§2.8):
+ *
+ *   POST  multipart, `fields` là các trường form đã được ký  — Cloudinary, local
+ *   PUT   body là file thô, `fields` là các HEADER bắt buộc  — object store S3
+ *
+ * Đọc `ticket.method` chứ đừng đoán theo môi trường: cùng một môi trường có thể
+ * chạy hai nhà cung cấp khác nhau cho ảnh và cho audio.
  */
 
 export type UploadOutcome = { storageKey: string };
@@ -17,13 +25,20 @@ export type UploadOutcome = { storageKey: string };
 export class UploadError extends Error {}
 
 async function putToProvider(ticket: UploadTicket, file: File): Promise<void> {
-  const form = new FormData();
-  // Mọi trường trong vé đều đã nằm trong chữ ký. Sửa bất kỳ giá trị nào — kể cả
-  // thêm một trường — cũng làm chữ ký hỏng, và đó là điều mong muốn.
-  for (const [key, value] of Object.entries(ticket.fields)) form.append(key, value);
-  form.append("file", file);
+  // Mọi giá trị trong vé đều đã nằm trong chữ ký, ở cả hai hình dạng. Sửa bất
+  // kỳ giá trị nào — kể cả thêm một trường — cũng làm chữ ký hỏng, và đó là
+  // điều mong muốn.
+  let request: RequestInit;
+  if (ticket.method === "PUT") {
+    request = { method: "PUT", headers: ticket.fields, body: file };
+  } else {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(ticket.fields)) form.append(key, value);
+    form.append("file", file);
+    request = { method: "POST", body: form };
+  }
 
-  const response = await fetch(ticket.upload_url, { method: "POST", body: form });
+  const response = await fetch(ticket.upload_url, request);
   if (!response.ok) {
     let detail = `HTTP ${response.status}`;
     try {

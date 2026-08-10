@@ -406,6 +406,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start Attempt */
+        post: operations["start_attempt_api_v1_attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Attempt */
+        get: operations["read_attempt_api_v1_attempts__attempt_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/questions/{question_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Save Answer */
+        patch: operations["save_answer_api_v1_attempts__attempt_id__questions__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Attempt */
+        post: operations["submit_attempt_api_v1_attempts__attempt_id__submit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -609,6 +677,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/practice-tests/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Test */
+        get: operations["read_test_api_v1_practice_tests__slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profile": {
         parameters: {
             query?: never;
@@ -721,6 +806,40 @@ export interface paths {
          *     gọi `/auth/me` ở mọi lần tải trang — sẽ kéo theo chúng ở khắp mọi nơi.
          */
         get: operations["read_stats_api_v1_profile_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/test-collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Collections */
+        get: operations["list_collections_api_v1_test_collections_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/test-collections/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Collection */
+        get: operations["read_collection_api_v1_test_collections__slug__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -953,6 +1072,95 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnswerSubmit */
+        AnswerSubmit: {
+            /** Flagged */
+            flagged?: boolean | null;
+            /** Selected Option Id */
+            selected_option_id?: string | null;
+        };
+        /** AttemptPartProgress */
+        AttemptPartProgress: {
+            /** Answered */
+            answered: number;
+            /** First Number */
+            first_number: number;
+            /** Last Number */
+            last_number: number;
+            /** Part */
+            part: number;
+            /** Section */
+            section: string;
+            /** Title */
+            title: string;
+            /** Total */
+            total: number;
+        };
+        /** AttemptResult */
+        AttemptResult: {
+            /** Correct Count */
+            correct_count: number;
+            /** Id */
+            id: string;
+            /** Listening Raw */
+            listening_raw: number | null;
+            /** Listening Scaled */
+            listening_scaled: number | null;
+            /** Question Count */
+            question_count: number;
+            /** Reading Raw */
+            reading_raw: number | null;
+            /** Reading Scaled */
+            reading_scaled: number | null;
+            /** Scale Note */
+            scale_note: string | null;
+            /** Status */
+            status: string;
+            /** Total Scaled */
+            total_scaled: number | null;
+        };
+        /** AttemptStart */
+        AttemptStart: {
+            /**
+             * Parts
+             * @default []
+             */
+            parts: number[];
+            /**
+             * Review Mode
+             * @default exam
+             */
+            review_mode: string;
+            /** Test Slug */
+            test_slug: string;
+        };
+        /** AttemptState */
+        AttemptState: {
+            /** Answered Count */
+            answered_count: number;
+            /** Id */
+            id: string;
+            /** Parts */
+            parts: components["schemas"]["AttemptPartProgress"][];
+            /** Question Count */
+            question_count: number;
+            /** Questions */
+            questions: components["schemas"]["QuestionPublic"][];
+            /** Remaining Seconds */
+            remaining_seconds: number | null;
+            /** Review Mode */
+            review_mode: string;
+            /** Scope */
+            scope: string;
+            /** Status */
+            status: string;
+            /** Test Slug */
+            test_slug: string;
+            /** Test Title */
+            test_title: string;
+            /** Time Limit Seconds */
+            time_limit_seconds: number | null;
+        };
         /** AudioClip */
         AudioClip: {
             /** Accent */
@@ -984,6 +1192,46 @@ export interface components {
             file: string;
             /** Signature */
             signature: string;
+        };
+        /** CollectionDetail */
+        CollectionDetail: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Slug */
+            slug: string;
+            /** Source Tag */
+            source_tag: string | null;
+            /** Test Count */
+            test_count: number;
+            /** Tests */
+            tests: components["schemas"]["TestSummary"][];
+            /** Title */
+            title: string;
+            /** Year */
+            year: number | null;
+        };
+        /** CollectionSummary */
+        CollectionSummary: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Slug */
+            slug: string;
+            /** Source Tag */
+            source_tag: string | null;
+            /** Test Count */
+            test_count: number;
+            /** Title */
+            title: string;
+            /** Year */
+            year: number | null;
         };
         /** CommitResult */
         CommitResult: {
@@ -1447,10 +1695,35 @@ export interface components {
             /** Window Days */
             window_days: number;
         };
+        /** OptionPublic */
+        OptionPublic: {
+            /** Content */
+            content: string | null;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
         /** ParseRequest */
         ParseRequest: {
             /** Raw Text */
             raw_text: string;
+        };
+        /**
+         * PartBreakdown
+         * @description Một dòng của bảng SECTION / PART / TYPE / QUESTIONS.
+         */
+        PartBreakdown: {
+            /** Has Content */
+            has_content: boolean;
+            /** Part */
+            part: number;
+            /** Question Count */
+            question_count: number;
+            /** Section */
+            section: string;
+            /** Title */
+            title: string;
         };
         /** PasswordChange */
         PasswordChange: {
@@ -1458,6 +1731,49 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /**
+         * QuestionPublic
+         * @description Một câu như người làm bài nhìn thấy.
+         *
+         *     **Không có `is_correct`.** Đây là điểm khác hẳn dictation: `DictationDetail`
+         *     cố ý gửi cả đáp án xuống trình duyệt vì chấm ở client cho phản hồi tức thì,
+         *     và tài liệu ghi rõ điều đó chấp nhận được cho tự học nhưng **không** cho thứ
+         *     gì được chấm điểm. Bài thi thử thì được chấm điểm, và điểm đó nằm lại trong
+         *     lịch sử của người học — nên đáp án chỉ rời máy chủ khi bài đã nộp, hoặc khi
+         *     người dùng tự chọn chế độ Luyện tập.
+         */
+        QuestionPublic: {
+            /** Audio Url */
+            audio_url: string | null;
+            /** Correct Option Id */
+            correct_option_id?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Flagged */
+            flagged: boolean;
+            /** Id */
+            id: string;
+            /** Image Alt */
+            image_alt: string | null;
+            /** Image Url */
+            image_url: string | null;
+            /** Number */
+            number: number;
+            /** Options */
+            options: components["schemas"]["OptionPublic"][];
+            /** Part */
+            part: number;
+            /** Passages */
+            passages: string[];
+            /** Prompt Text */
+            prompt_text: string | null;
+            /** Selected Option Id */
+            selected_option_id: string | null;
+            /** Set Id */
+            set_id: string | null;
+            /** Set Title */
+            set_title: string | null;
         };
         /**
          * RecallResult
@@ -1637,6 +1953,46 @@ export interface components {
             /** Reviews */
             reviews: number;
         };
+        /** TestDetail */
+        TestDetail: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Parts */
+            parts: components["schemas"]["PartBreakdown"][];
+            /** Question Count */
+            question_count: number;
+            /** Slug */
+            slug: string;
+            /** Time Limit Seconds */
+            time_limit_seconds: number | null;
+            /** Title */
+            title: string;
+        };
+        /** TestSummary */
+        TestSummary: {
+            /** Attempt Count */
+            attempt_count: number;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Question Count */
+            question_count: number;
+            /** Slug */
+            slug: string;
+            /** Time Limit Seconds */
+            time_limit_seconds: number | null;
+            /** Title */
+            title: string;
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -1704,6 +2060,12 @@ export interface components {
             };
             /** Max Bytes */
             max_bytes: number;
+            /**
+             * Method
+             * @default POST
+             * @enum {string}
+             */
+            method: "POST" | "PUT";
             /** Storage Key */
             storage_key: string;
             /** Upload Url */
@@ -2964,6 +3326,137 @@ export interface operations {
             };
         };
     };
+    start_attempt_api_v1_attempts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttemptStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_attempt_api_v1_attempts__attempt_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_answer_api_v1_attempts__attempt_id__questions__question_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_attempt_api_v1_attempts__attempt_id__submit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
@@ -3298,6 +3791,37 @@ export interface operations {
             };
         };
     };
+    read_test_api_v1_practice_tests__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     read_profile_api_v1_profile_get: {
         parameters: {
             query?: never;
@@ -3453,6 +3977,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LearningStats"];
+                };
+            };
+        };
+    };
+    list_collections_api_v1_test_collections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionSummary"][];
+                };
+            };
+        };
+    };
+    read_collection_api_v1_test_collections__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

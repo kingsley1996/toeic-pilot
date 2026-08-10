@@ -18,7 +18,7 @@ import hmac
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol
 
 import httpx
 
@@ -57,11 +57,20 @@ class UploadTicket:
     upload_url: str
     # Các trường đi kèm trong multipart form. Với Cloudinary đây là chữ ký và
     # mọi tham số đã được ký; đổi bất kỳ giá trị nào cũng làm chữ ký hỏng.
+    #
+    # Với `method="PUT"` thì đây là các HEADER trình duyệt bắt buộc phải gửi,
+    # không phải trường form — và chúng cũng đã nằm trong chữ ký, nên gửi thiếu
+    # hoặc gửi khác đều bị nhà cung cấp trả 403.
     fields: dict[str, str]
     storage_key: str
     max_bytes: int
     allowed_formats: tuple[str, ...]
     expires_at: int
+    # Cloudinary và driver local nhận multipart POST; object store kiểu S3 nhận
+    # PUT thẳng vào URL đã ký. Frontend phải đọc trường này chứ không đoán theo
+    # môi trường, vì cùng một môi trường có thể chạy hai nhà cung cấp khác nhau
+    # cho ảnh và cho audio (§2.2).
+    method: Literal["POST", "PUT"] = "POST"
 
 
 @dataclass(frozen=True)
@@ -223,7 +232,7 @@ class LocalDiskDriver:
         dimensions = read_dimensions(payload) if self.kind == "image" else None
         return StoredObject(
             storage_key=storage_key,
-            mime_type=_guess_mime(storage_key),
+            mime_type=guess_mime(storage_key),
             size_bytes=len(payload),
             width=dimensions[0] if dimensions else None,
             height=dimensions[1] if dimensions else None,
@@ -378,6 +387,161 @@ class CloudinaryDriver:
         return f"{self.base_url.rstrip('/')}/{self.folder.strip('/')}/{storage_key.lstrip('/')}"
 
 
+# --- driver S3 (mọi object store nói giao thức S3) ---------------------------
+
+
+@dataclass
+class S3Driver:
+    """Supabase Storage, Backblaze B2, R2, DO Spaces, Wasabi, MinIO — một driver.
+
+    Cố ý KHÔNG mang tên nhà cung cấp. Bản đầu của ADR-006 gọi nó là "driver R2",
+    và cái tên đó đóng băng một quyết định thương mại vào mã nguồn: đổi nhà cung
+    cấp hoá ra phải sửa code, trong khi thứ thật sự khác nhau chỉ là một endpoint
+    và một cặp khoá. Ở đây nhà cung cấp là **giá trị cấu hình**.
+
+    Hai chi tiết bắt buộc, cả hai đều hỏng theo kiểu khó truy nếu làm sai:
+
+    - **Địa chỉ kiểu đường dẫn.** Mặc định của boto3 là kiểu virtual-host, tức
+      ghép bucket thành `<bucket>.<host>`. Đúng với AWS, sai với Supabase
+      (`<ref>.supabase.co/storage/v1/s3`) và MinIO, nơi bucket là một đoạn
+      đường dẫn. Triệu chứng khi sai không phải "cấu hình sai" mà là **DNS
+      không phân giải được** — nên người ta đi kiểm mạng thay vì kiểm cấu hình.
+    - **SigV4.** Supabase từ chối các phiên bản chữ ký cũ hơn.
+    """
+
+    kind: MediaKind
+    endpoint_url: str
+    region: str
+    bucket: str
+    access_key_id: str
+    secret_access_key: str
+    base_url: str
+    # Dựng ở lần dùng đầu tiên, không phải lúc import: một triển khai chỉ dùng
+    # Cloudinary cho ảnh không nên trả giá khởi động cho một driver nó không gọi.
+    _client: Any = field(default=None, init=False, repr=False, compare=False)
+
+    @property
+    def client(self) -> Any:
+        if self._client is None:
+            import boto3
+            from botocore.config import Config
+
+            self._client = boto3.client(
+                "s3",
+                endpoint_url=self.endpoint_url,
+                region_name=self.region,
+                aws_access_key_id=self.access_key_id,
+                aws_secret_access_key=self.secret_access_key,
+                config=Config(
+                    signature_version="s3v4",
+                    s3={"addressing_style": "path"},
+                    retries={"max_attempts": 3, "mode": "standard"},
+                ),
+            )
+        return self._client
+
+    def ticket(self, storage_key: str) -> UploadTicket:
+        """URL PUT đã ký, hạn dùng ngắn, ghim sẵn khoá và Content-Type.
+
+        Một chỗ yếu hơn Cloudinary phải nói thẳng ra: **presigned PUT không mang
+        được `content-length-range`** như policy của form POST, nên chữ ký này
+        KHÔNG chặn được file quá cỡ. Trần dung lượng vì thế được áp ở hai nơi
+        khác — giới hạn kích thước của chính bucket (đặt ở bảng điều khiển nhà
+        cung cấp, và đó là hàng rào thật sự), cộng với `verify()` bên dưới, chỗ
+        file quá cỡ bị xoá chứ không chỉ bị từ chối.
+        """
+        expires_at = int(time.time()) + TICKET_TTL_SECONDS
+        mime = guess_mime(storage_key)
+        try:
+            url = self.client.generate_presigned_url(
+                "put_object",
+                Params={"Bucket": self.bucket, "Key": storage_key, "ContentType": mime},
+                ExpiresIn=TICKET_TTL_SECONDS,
+                HttpMethod="PUT",
+            )
+        except Exception as error:  # botocore gói lỗi cấu hình vào nhiều lớp
+            raise StorageError(f"Không ký được vé upload: {error}") from error
+        return UploadTicket(
+            upload_url=str(url),
+            fields={"Content-Type": mime},
+            storage_key=storage_key,
+            max_bytes=_max_bytes(self.kind),
+            allowed_formats=_allowed_formats(self.kind),
+            expires_at=expires_at,
+            method="PUT",
+        )
+
+    def verify(self, storage_key: str) -> StoredObject:
+        """Hỏi lại object store, đúng như §2.3 yêu cầu — không tin lời trình duyệt."""
+        head = self._head(storage_key)
+        size_bytes = int(head.get("ContentLength", 0))
+
+        # File quá cỡ bị XOÁ, không chỉ bị từ chối. Từ chối suông để lại một
+        # object không ai tham chiếu tới nhưng vẫn tính tiền hàng tháng — đúng
+        # thứ file mồ côi mà ADR-006 §4 đã ghi là chưa có đường dọn.
+        if size_bytes > _max_bytes(self.kind):
+            self.delete(storage_key)
+            raise StorageError(
+                f"Object vượt trần {_max_bytes(self.kind)} byte và đã bị xoá: {storage_key}"
+            )
+
+        width = height = None
+        if self.kind == "image":
+            # Kích thước ảnh không có trong HEAD, nên đọc phần đầu file và tự
+            # phân tích header — cùng `read_dimensions` mà driver local dùng,
+            # nên hai đường cho ra cùng một con số. Lấy 64 KB đầu là dư: header
+            # PNG/JPEG/WebP nằm trong vài trăm byte đầu tiên.
+            dimensions = read_dimensions(self._head_bytes(storage_key))
+            if dimensions:
+                width, height = dimensions
+
+        return StoredObject(
+            storage_key=storage_key,
+            # Không tin `ContentType` do người upload khai: nó là thứ trình duyệt
+            # gửi lên, còn đuôi file thì do `storage_key` quyết định, mà khoá đó
+            # là của ta (§2.5).
+            mime_type=guess_mime(storage_key),
+            size_bytes=size_bytes,
+            width=width,
+            height=height,
+        )
+
+    def delete(self, storage_key: str) -> None:
+        try:
+            self.client.delete_object(Bucket=self.bucket, Key=storage_key)
+        except Exception as error:
+            raise StorageError(f"Object store từ chối lệnh xoá: {error}") from error
+
+    def public_url(self, storage_key: str) -> str:
+        # Nối chuỗi, y như driver local. Runtime KHÔNG BAO GIỜ gọi object store
+        # để dựng URL phát — đó là điều khiến audio không phải đi qua FastAPI.
+        return f"{self.base_url.rstrip('/')}/{storage_key.lstrip('/')}"
+
+    def _head(self, storage_key: str) -> dict[str, Any]:
+        from botocore.exceptions import ClientError
+
+        try:
+            return dict(self.client.head_object(Bucket=self.bucket, Key=storage_key))
+        except ClientError as error:
+            status = error.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            if status in (403, 404):
+                # 403 cũng gộp vào đây: bucket riêng tư trả 403 thay vì 404 cho
+                # khoá không tồn tại, để không tiết lộ khoá nào có thật.
+                raise StorageError(f"No object at {storage_key}") from error
+            raise StorageError(f"Object store từ chối tra cứu: {error}") from error
+        except Exception as error:
+            raise StorageError(f"Object store không truy cập được: {error}") from error
+
+    def _head_bytes(self, storage_key: str, length: int = 65_536) -> bytes:
+        try:
+            response = self.client.get_object(
+                Bucket=self.bucket, Key=storage_key, Range=f"bytes=0-{length - 1}"
+            )
+            return bytes(response["Body"].read())
+        except Exception as error:
+            raise StorageError(f"Không đọc được phần đầu của {storage_key}: {error}") from error
+
+
 # --- dùng chung -------------------------------------------------------------
 
 
@@ -409,7 +573,7 @@ _MIME_BY_EXT = {
 }
 
 
-def _guess_mime(storage_key: str) -> str:
+def guess_mime(storage_key: str) -> str:
     ext = storage_key.rsplit(".", 1)[-1].lower()
     return _MIME_BY_EXT.get(ext, "application/octet-stream")
 
@@ -449,8 +613,20 @@ def get_driver(kind: MediaKind) -> StorageDriver:
             base_url=settings.image_public_base_url,
         )
 
-    if driver == "r2":
-        raise StorageError("R2 driver chưa được triển khai — xem ROADMAP mục 4d")
+    if driver == "s3":
+        return S3Driver(
+            kind=kind,
+            endpoint_url=settings.s3_endpoint_url,
+            region=settings.s3_region,
+            bucket=settings.s3_bucket,
+            access_key_id=settings.s3_access_key_id,
+            secret_access_key=settings.s3_secret_access_key.get_secret_value(),
+            base_url=(
+                settings.image_public_base_url
+                if kind == "image"
+                else settings.audio_public_base_url
+            ),
+        )
 
     if driver != "local":
         raise StorageError(f"Unknown storage driver: {driver}")

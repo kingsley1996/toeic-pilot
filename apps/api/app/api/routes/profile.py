@@ -111,14 +111,7 @@ def avatar_ticket(
     """
     storage_key = avatar_storage_key_for(upload_source_hash(str(uuid.uuid4())), ext=body.ext)
     ticket = get_driver("image").ticket(storage_key)
-    return UploadTicket(
-        upload_url=ticket.upload_url,
-        fields=ticket.fields,
-        storage_key=ticket.storage_key,
-        max_bytes=ticket.max_bytes,
-        allowed_formats=list(ticket.allowed_formats),
-        expires_at=ticket.expires_at,
-    )
+    return UploadTicket.of(ticket)
 
 
 @router.post("/profile/avatar", response_model=UserProfilePublic)
