@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from app.core.media import source_hash
 from app.core.security import create_access_token
 from app.models import DictationItem, User, VocabularyAudio, VocabularyEntry
+from app.models.image import ImageAsset
 from tests.test_domain_model import make_audio
 
 PASTE = (
@@ -76,6 +77,17 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/test-collections/x/publish", None),
     ("GET", "/api/v1/admin/tests", None),
     ("PATCH", "/api/v1/admin/tests/x", {"title": "X"}),
+    ("GET", "/api/v1/admin/tests/x/sets", None),
+    (
+        "PATCH",
+        "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000",
+        {"explanation": "x"},
+    ),
+    (
+        "POST",
+        "/api/v1/admin/question-sets/00000000-0000-0000-0000-000000000000/passage-image",
+        {"slot": 1},
+    ),
     ("POST", "/api/v1/admin/tests", {"slug": "x", "title": "X"}),
     ("GET", "/api/v1/admin/tests/x", None),
     ("GET", "/api/v1/admin/tests/x/questions", None),
@@ -454,3 +466,53 @@ def test_a_collection_refuses_to_publish_with_no_published_test(
     refused = client.post("/api/v1/admin/test-collections/rong/publish", headers=headers)
     assert refused.status_code == 409
     assert "chưa có đề nào" in refused.json()["detail"]
+
+
+def test_a_passage_image_without_alt_text_is_refused(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Ảnh làm ngữ liệu bắt buộc có chữ thay ảnh — khác hẳn ảnh Part 1.
+
+    Ở Part 1 mô tả quá kỹ là lộ đáp án. Ở Part 6/7 thì ảnh *là* ngữ liệu, nên
+    thiếu chữ thay ảnh là một câu hỏi người dùng máy đọc màn hình không trả lời
+    được. Đó không phải bất tiện, đó là không làm được bài.
+    """
+    headers = auth("admin")
+    client.post("/api/v1/admin/tests", json={"slug": "alt-test", "title": "Alt"}, headers=headers)
+    parsed = client.post(
+        "/api/v1/admin/tests/alt-test/parts/7/parse",
+        json={"raw_text": _reading_paste()},
+        headers=headers,
+    ).json()
+    client.post(
+        "/api/v1/admin/tests/alt-test/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    (stimulus,) = client.get("/api/v1/admin/tests/alt-test/sets", headers=headers).json()
+    # Ô rỗng vẫn trả về, để người soạn có chỗ bấm vào mà gắn ảnh.
+    assert [passage["slot"] for passage in stimulus["passages"]] == [1, 2, 3]
+
+    blank = ImageAsset(
+        storage_key="image/aa/blank.jpg",
+        source_hash="a" * 64,
+        mime_type="image/jpeg",
+        size_bytes=10,
+        width=10,
+        height=10,
+        source="uploaded",
+        source_url="https://example.com",
+        license="CC0",
+        attribution="Ai đó",
+        alt_text=None,
+    )
+    db_session.add(blank)
+    db_session.commit()
+
+    refused = client.post(
+        f"/api/v1/admin/question-sets/{stimulus['id']}/passage-image",
+        json={"slot": 2, "image_id": str(blank.id)},
+        headers=headers,
+    )
+    assert refused.status_code == 409
+    assert "chữ thay ảnh" in refused.json()["detail"]

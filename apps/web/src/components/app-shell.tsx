@@ -55,8 +55,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const menuOpen = openedAt === pathname;
   const setMenuOpen = (open: boolean) => setOpenedAt(open ? pathname : null);
 
-  // Khu quản trị tự dựng khung của nó. Không lồng hai header vào nhau.
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+  /*
+   * Hai khu tự dựng khung của chúng, và ở đây phải nhường hẳn chỗ.
+   *
+   * - **Quản trị** có nav riêng (`admin-shell.tsx`); lồng hai header vào nhau
+   *   là hai hàng điều hướng chồng lên nhau.
+   * - **Màn làm bài** thì mạnh hơn thế: nó cố ý KHÔNG có lối đi đâu khác. Một
+   *   thanh nav mời người đang thi bấm sang "Từ vựng" giữa lúc đồng hồ đang
+   *   chạy — và bài thi vẫn tính giờ ở máy chủ trong lúc họ đi. Thanh trên cùng
+   *   của màn đó chỉ có hai đường ra, Nộp bài và Thoát, và đó là chủ ý.
+   *
+   * Bỏ khung cũng gỡ luôn hai header `sticky top-0` chồng nhau.
+   */
+  const bareLayout =
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname.startsWith("/learn/attempts/");
+  if (bareLayout) {
     return <>{children}</>;
   }
 

@@ -227,6 +227,19 @@ nổi       panel     + rule
 nổi+chọn  panel     + rule-strong
 ```
 
+**Cần một vòng nhấn mà không phải focus?** Dùng **pseudo-element** — `after:absolute after:-inset-[3px] after:rounded after:border-2`. Cả hai lối hiển nhiên hơn đều đã có chủ:
+
+| Lối | Vì sao không được |
+|---|---|
+| `ring` của Tailwind | biên dịch ra `box-shadow` → rơi thẳng vào lệnh cấm ở trên |
+| `outline` | **thuộc về hệ thống focus** (§11) |
+
+Vế thứ hai đắt hơn nó trông, và tài liệu này từng khuyên nhầm đúng chỗ đó. `:focus:not(:focus-visible) { outline: none }` có độ đặc hiệu **(0,2,0)**, nặng hơn utility `.outline-2` **(0,1,0)** — nên nó thắng, bất kể thứ tự. Bấm chuột vào một `<button>` cho `:focus` mà **không** cho `:focus-visible`, nghĩa là vòng bị xoá **đúng trên phần tử vừa được bấm**, và chỉ hiện lại khi phần tử đó mất focus.
+
+Kiểu hỏng của nó không chỉ ra nguyên nhân: người dùng thấy vòng không bao giờ nằm ở ô mình bấm mà nhấp nháy sang ô bên cạnh, nên chỗ đầu tiên ai cũng đi tìm là logic state — trong khi state hoàn toàn đúng (`aria-current` đúng ô suốt thời gian đó).
+
+Nhớ thêm `pointer-events-none` cho pseudo-element, và chừa đệm cho nó nếu phần tử nằm trong vùng `overflow` — nó vẽ ra ngoài hộp, nên vùng cuộn sẽ cắt. Ô "câu đang xem" ở lưới màn làm bài là ví dụ.
+
 Ba ngoại lệ duy nhất, không có ngoại lệ thứ tư:
 
 1. **Vòng focus** (§11)

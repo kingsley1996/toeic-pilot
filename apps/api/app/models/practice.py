@@ -78,6 +78,25 @@ class QuestionSet(Base, PublishableMixin):
     passage: Mapped[str | None] = mapped_column(Text, nullable=True)
     passage_2: Mapped[str | None] = mapped_column(Text, nullable=True)
     passage_3: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Một ảnh cho MỖI ô ngữ liệu, không phải một ảnh cho cả cụm.
+    #
+    # Lý do lấy thẳng từ lập luận ba cột ở trên: thứ tự mang nghĩa. Một cột ảnh
+    # dùng chung sẽ không diễn đạt được "ngữ liệu 1 là biểu đồ, ngữ liệu 2 là
+    # email" — mà đó đúng là hình dạng bài đọc đôi hay gặp nhất.
+    #
+    # Phần lớn ngữ liệu KHÔNG cần ảnh, và không nên có: bảng giá, lịch trình,
+    # mẫu đơn đều viết thành văn bản được, và bản văn bản đọc được bằng máy đọc
+    # màn hình, phóng to được, tìm được. Ảnh dành cho chỗ quan hệ không gian
+    # mang nghĩa — biểu đồ, sơ đồ mặt bằng, bản đồ.
+    passage_image_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
+    )
+    passage_2_image_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
+    )
+    passage_3_image_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
+    )
     title: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     questions: Mapped[list["Question"]] = relationship(

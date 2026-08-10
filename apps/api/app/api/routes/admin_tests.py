@@ -23,8 +23,9 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import require_role
 from app.core.database import get_db
 from app.core.media import public_audio_url
-from app.core.storage import get_driver
+from app.core.storage import StorageDriver, get_driver
 from app.models import (
+    ImageAsset,
     PracticeTest,
     PracticeTestQuestion,
     Question,
@@ -39,9 +40,13 @@ from app.schemas.admin import (
     CollectionCreate,
     GroupDraft,
     ParseRequest,
+    PassageAdmin,
+    PassageImageAssign,
     QuestionAdmin,
     QuestionDraft,
+    QuestionEdit,
     QuestionOptionDraft,
+    SetAdmin,
     TestAdmin,
     TestCreate,
     TestPartCommit,
@@ -424,6 +429,142 @@ def commit_part(
     return _as_admin(db, test)
 
 
+@router.get("/tests/{slug}/sets", response_model=list[SetAdmin])
+def list_test_sets(
+    slug: str, db: Session = Depends(get_db), _: User = Depends(can_edit)
+) -> list[SetAdmin]:
+    test = _test_or_404(db, slug)
+    seen: dict[uuid.UUID, QuestionSet] = {}
+    for _link, question in _rows(db, test.id):
+        if question.question_set is not None:
+            seen[question.question_set.id] = question.question_set
+    driver = get_driver("image")
+    images = _images_for(db, list(seen.values()))
+    return [_set_admin(stimulus, images, driver) for stimulus in seen.values()]
+
+
+@router.patch("/questions/{question_id}", response_model=QuestionAdmin)
+def edit_question(
+    question_id: uuid.UUID,
+    body: QuestionEdit,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> QuestionAdmin:
+    """Sửa một câu đã dán. Nửa sau của ADR-007 §2.3.
+
+    Dán tạo hàng loạt; form sửa những thứ dán không diễn đạt được — đổi đáp án
+    đúng, viết giải thích, sửa một lựa chọn gõ nhầm.
+    """
+    question = db.get(Question, question_id, options=[selectinload(Question.options)])
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
+
+    changes = body.model_dump(exclude_unset=True)
+
+    contents = changes.pop("options", None)
+    if contents:
+        by_label = {option.label: option for option in question.options}
+        for label, content in contents.items():
+            if label not in by_label:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Câu này không có lựa chọn {label!r}",
+                )
+            by_label[label].content = content
+
+    correct = changes.pop("correct_label", None)
+    if correct:
+        labels = {option.label for option in question.options}
+        if correct not in labels:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Đáp án {correct!r} không có trong {sorted(labels)}",
+            )
+        for option in question.options:
+            option.is_correct = option.label == correct
+
+    for field_name, value in changes.items():
+        setattr(question, field_name, value)
+
+    problems = validate_question(question)
+    if problems:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="; ".join(problems))
+
+    # Sửa một câu ĐÃ xuất bản sẽ đưa nó về nháp. Không phải để phiền: nội dung
+    # đã tới tay người học vừa đổi, và người duyệt nó lần trước duyệt một thứ
+    # khác. Cột `published_by` tồn tại để trả lời "ai cho cái này ra ngoài".
+    if question.status == "published":
+        question.status = "draft"
+        question.published_by = None
+        question.published_at = None
+
+    db.commit()
+    link = db.scalars(
+        select(PracticeTestQuestion).where(PracticeTestQuestion.question_id == question.id)
+    ).first()
+    if link is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
+        )
+    return _question_admin(link, question, get_driver("image"))
+
+
+@router.post("/question-sets/{set_id}/passage-image", response_model=SetAdmin)
+def assign_passage_image(
+    set_id: uuid.UUID,
+    body: PassageImageAssign,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> SetAdmin:
+    """Gắn hoặc gỡ ảnh cho một ô ngữ liệu (ADR-007 §2.3b)."""
+    stimulus = db.get(QuestionSet, set_id)
+    if stimulus is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cụm này")
+    # Chỉ Part 7 có ảnh. Part 6 là Text Completion: **một** đoạn văn có các chỗ
+    # trống, và nội dung của nó là chữ — không có biểu đồ hay sơ đồ nào để gắn.
+    # Cho phép gắn ở đây là mở một đường tạo ra cụm không tồn tại trong đề thật.
+    if stimulus.part != 7:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"Chỉ Part 7 có ảnh ngữ liệu; cụm này là Part {stimulus.part}. "
+                "Part 6 là một đoạn văn có các chỗ trống, toàn chữ."
+            ),
+        )
+    if body.slot not in (1, 2, 3):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Ô ngữ liệu phải là 1, 2 hoặc 3"
+        )
+
+    column = _PASSAGE_IMAGE_COLUMNS[body.slot]
+    if body.image_id is None:
+        setattr(stimulus, column, None)
+    else:
+        asset = db.get(ImageAsset, uuid.UUID(body.image_id))
+        if asset is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có ảnh này")
+        # Ảnh làm ngữ liệu BẮT BUỘC có chữ thay ảnh, khác với ảnh Part 1.
+        #
+        # Ở Part 1 nội dung ảnh chính là thứ không được mô tả quá kỹ — mô tả kỹ
+        # là lộ đáp án. Ở Part 6/7 thì ngược hẳn: ảnh *là* ngữ liệu, nên thiếu
+        # chữ thay ảnh là một câu hỏi mà người dùng máy đọc màn hình không trả
+        # lời được. Đó không phải bất tiện, đó là không làm được bài.
+        if not (asset.alt_text or "").strip():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "Ảnh này chưa có chữ thay ảnh (alt text). Ảnh làm ngữ liệu bắt buộc "
+                    "phải có, vì nó là nội dung người học cần đọc — thêm ở Thư viện ảnh "
+                    "rồi quay lại."
+                ),
+            )
+        setattr(stimulus, column, asset.id)
+
+    db.commit()
+    return _set_admin(stimulus, _images_for(db, [stimulus]), get_driver("image"))
+
+
 @router.post("/questions/{question_id}/publish", response_model=QuestionAdmin)
 def publish_question(
     question_id: uuid.UUID,
@@ -547,4 +688,58 @@ def _as_admin(db: Session, test: PracticeTest) -> TestAdmin:
         collection_slug=collection_slug,
         question_count=len(rows),
         parts=parts,
+    )
+
+
+_PASSAGE_IMAGE_COLUMNS = {
+    1: "passage_image_id",
+    2: "passage_2_image_id",
+    3: "passage_3_image_id",
+}
+_PASSAGE_TEXT_COLUMNS = {1: "passage", 2: "passage_2", 3: "passage_3"}
+
+
+def _images_for(db: Session, sets: list[QuestionSet]) -> dict[uuid.UUID, ImageAsset]:
+    ids = {
+        asset_id
+        for stimulus in sets
+        for asset_id in (
+            stimulus.passage_image_id,
+            stimulus.passage_2_image_id,
+            stimulus.passage_3_image_id,
+        )
+        if asset_id
+    }
+    if not ids:
+        return {}
+    return {
+        asset.id: asset
+        for asset in db.scalars(select(ImageAsset).where(ImageAsset.id.in_(ids))).all()
+    }
+
+
+def _set_admin(
+    stimulus: QuestionSet, images: dict[uuid.UUID, ImageAsset], driver: StorageDriver
+) -> SetAdmin:
+    passages: list[PassageAdmin] = []
+    for slot in (1, 2, 3):
+        text = getattr(stimulus, _PASSAGE_TEXT_COLUMNS[slot])
+        image_id = getattr(stimulus, _PASSAGE_IMAGE_COLUMNS[slot])
+        asset = images.get(image_id) if image_id else None
+        # Ô rỗng vẫn trả về: người soạn cần một chỗ trống để bấm vào mà gắn ảnh.
+        passages.append(
+            PassageAdmin(
+                slot=slot,
+                text=text,
+                image_id=str(asset.id) if asset else None,
+                image_url=driver.public_url(asset.storage_key) if asset else None,
+                image_alt=asset.alt_text if asset else None,
+            )
+        )
+    return SetAdmin(
+        id=str(stimulus.id),
+        part=stimulus.part,
+        title=stimulus.title,
+        status=stimulus.status,
+        passages=passages,
     )

@@ -187,7 +187,15 @@ QUESTION_MARKER = "[QUESTION]"
 SET_ALIASES = ("[NGỮ LIỆU]", "[NGU LIEU]")
 QUESTION_ALIASES = ("[CÂU]", "[CAU]")
 QUESTION_SOURCES = ("original", "licensed")
-MAX_PASSAGES = 3
+# Số đoạn văn tối đa của một cụm, theo ĐÚNG format từng part:
+#
+#   Part 6 — Text Completion: **một** đoạn văn có các chỗ trống, mỗi chỗ trống
+#            là một câu hỏi. Không có bài hai đoạn, và không có ảnh.
+#   Part 7 — Reading Comprehension: bài một đoạn, hai đoạn hoặc ba đoạn.
+#
+# Cho Part 6 nhận nhiều đoạn là mở đường cho một cụm không tồn tại trong đề
+# thật, và người soạn sẽ chỉ phát hiện khi so với đề mẫu.
+MAX_PASSAGES = {6: 1, 7: 3}
 
 _KEYS = {
     "đáp án": "answer",
@@ -441,7 +449,10 @@ def _check_group(group: ParsedGroup, part: int) -> None:
 
     if not group.passages:
         group.problems.append(f"Part {part} cần ít nhất một khối {SET_MARKER}")
-    if len(group.passages) > MAX_PASSAGES:
+
+    limit = MAX_PASSAGES[part]
+    if len(group.passages) > limit:
         group.problems.append(
-            f"tối đa {MAX_PASSAGES} đoạn văn cho một cụm, đang có {len(group.passages)}"
+            f"Part {part} tối đa {limit} đoạn văn cho một cụm, đang có {len(group.passages)}"
+            + (" — Part 6 là một đoạn văn có nhiều chỗ trống" if part == 6 else "")
         )

@@ -316,6 +316,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/question-sets/{set_id}/passage-image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Assign Passage Image
+         * @description Gắn hoặc gỡ ảnh cho một ô ngữ liệu (ADR-007 §2.3b).
+         */
+        post: operations["assign_passage_image_api_v1_admin_question_sets__set_id__passage_image_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/questions/{question_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Edit Question
+         * @description Sửa một câu đã dán. Nửa sau của ADR-007 §2.3.
+         *
+         *     Dán tạo hàng loạt; form sửa những thứ dán không diễn đạt được — đổi đáp án
+         *     đúng, viết giải thích, sửa một lựa chọn gõ nhầm.
+         */
+        patch: operations["edit_question_api_v1_admin_questions__question_id__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/questions/{question_id}/publish": {
         parameters: {
             query?: never;
@@ -492,6 +535,23 @@ export interface paths {
         };
         /** List Test Questions */
         get: operations["list_test_questions_api_v1_admin_tests__slug__questions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/sets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Test Sets */
+        get: operations["list_test_sets_api_v1_admin_tests__slug__sets_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1962,6 +2022,52 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** PassageAdmin */
+        PassageAdmin: {
+            /** Image Alt */
+            image_alt: string | null;
+            /** Image Id */
+            image_id: string | null;
+            /** Image Url */
+            image_url: string | null;
+            /** Slot */
+            slot: number;
+            /** Text */
+            text: string | null;
+        };
+        /**
+         * PassageImageAssign
+         * @description Gắn hoặc gỡ ảnh cho MỘT ô ngữ liệu.
+         *
+         *     `slot` là 1..3, khớp với `passage`/`passage_2`/`passage_3`. `image_id` null
+         *     nghĩa là gỡ ảnh ra.
+         */
+        PassageImageAssign: {
+            /** Image Id */
+            image_id?: string | null;
+            /** Slot */
+            slot: number;
+        };
+        /**
+         * PassagePublic
+         * @description Một ô ngữ liệu: văn bản, ảnh, hoặc cả hai.
+         *
+         *     Là một object chứ không phải một chuỗi, vì ngữ liệu Part 7 có thể là một
+         *     biểu đồ — và một biểu đồ không nhét vào `list[str]` được mà không mất đúng
+         *     những thứ đi kèm nó: chữ thay ảnh, và dòng ghi công.
+         */
+        PassagePublic: {
+            /** Image Alt */
+            image_alt: string | null;
+            /** Image Attribution */
+            image_attribution: string | null;
+            /** Image License */
+            image_license: string | null;
+            /** Image Url */
+            image_url: string | null;
+            /** Text */
+            text: string | null;
+        };
         /** PasswordChange */
         PasswordChange: {
             /** Current Password */
@@ -2015,6 +2121,26 @@ export interface components {
             /** Source Note */
             source_note?: string | null;
         };
+        /**
+         * QuestionEdit
+         * @description Sửa một câu sau khi dán. `exclude_unset` ở nơi gọi — xem `TestUpdate`.
+         */
+        QuestionEdit: {
+            /** Correct Label */
+            correct_label?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Options */
+            options?: {
+                [key: string]: string;
+            } | null;
+            /** Prompt Text */
+            prompt_text?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Source Note */
+            source_note?: string | null;
+        };
         /** QuestionOptionDraft */
         QuestionOptionDraft: {
             /** Content */
@@ -2061,7 +2187,7 @@ export interface components {
             /** Part */
             part: number;
             /** Passages */
-            passages: string[];
+            passages: components["schemas"]["PassagePublic"][];
             /** Prompt Text */
             prompt_text: string | null;
             /** Selected Option Id */
@@ -2191,6 +2317,19 @@ export interface components {
              * @description One of [0, 3, 4, 5]
              */
             grade: number;
+        };
+        /** SetAdmin */
+        SetAdmin: {
+            /** Id */
+            id: string;
+            /** Part */
+            part: number;
+            /** Passages */
+            passages: components["schemas"]["PassageAdmin"][];
+            /** Status */
+            status: string;
+            /** Title */
+            title: string | null;
         };
         /**
          * StoryItem
@@ -3509,6 +3648,76 @@ export interface operations {
             };
         };
     };
+    assign_passage_image_api_v1_admin_question_sets__set_id__passage_image_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                set_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PassageImageAssign"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_question_api_v1_admin_questions__question_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuestionEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     publish_question_api_v1_admin_questions__question_id__publish_post: {
         parameters: {
             query?: never;
@@ -3863,6 +4072,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["QuestionAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_test_sets_api_v1_admin_tests__slug__sets_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetAdmin"][];
                 };
             };
             /** @description Validation Error */

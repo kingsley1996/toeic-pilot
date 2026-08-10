@@ -114,3 +114,33 @@ def test_a_paste_that_matches_nothing_is_refused_not_reported_as_valid():
     """
     with pytest.raises(ValueError, match="Không nhận ra dòng nào"):
         parse_reading_part("The board approved the budget.\n(A) annual\n", 5)
+
+
+def test_part_6_is_one_passage_with_blanks_not_a_multi_passage_set():
+    """Part 6 và Part 7 là hai format khác nhau, không phải hai biến thể.
+
+    Part 6 (Text Completion) là **một** đoạn văn có các chỗ trống, mỗi chỗ trống
+    là một câu hỏi — không có bài hai đoạn và không có ảnh. Part 7 mới có bài
+    một/hai/ba đoạn. Cho Part 6 nhận nhiều đoạn là mở đường cho một cụm không
+    tồn tại trong đề thật, và người soạn chỉ phát hiện khi so với đề mẫu.
+    """
+    two = """[PASSAGE] Đoạn 1
+First text.
+
+[PASSAGE] Đoạn 2
+Second text.
+
+[QUESTION]
+(131)
+(A) a
+(B) b
+(C) c
+(D) d
+answer: A
+source: original
+"""
+    (six,) = parse_reading_part(two, 6)
+    assert any("tối đa 1 đoạn văn" in problem for problem in six.problems)
+
+    (seven,) = parse_reading_part(two, 7)
+    assert seven.ok

@@ -4,11 +4,13 @@ import {
   API_ROUTES,
   type CollectionAdmin,
   type GroupDraft,
+  type ImageAssetPublic,
   type QuestionAdmin,
+  type SetAdmin,
   type TestAdmin,
   type TestPartParseResponse,
 } from "@toeic-pilot/shared";
-import { ArrowLeft, Check, CircleAlert, Copy, Send } from "lucide-react";
+import { ArrowLeft, Check, CircleAlert, Copy, ImageIcon, Pencil, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -18,6 +20,8 @@ import {
   Button,
   EmptyState,
   Page,
+  Field,
+  Input,
   Panel,
   PublishTag,
   SectionHeader,
@@ -57,17 +61,30 @@ source: original
 explanation: Cần một tính từ bổ nghĩa cho "budget".`,
   6: `[PASSAGE] Thư báo lịch bảo trì
 Dear tenants,
-The lobby entrance will be closed ____ Wednesday.
+
+The lobby entrance will be closed (131) ____ Wednesday. During this time,
+please use the side entrance on Le Loi Street. Deliveries will (132) ____ be
+redirected there. We expect the work to finish by Friday.
 
 [QUESTION]
-Chỗ trống số 131
+(131)
 (A) since
 (B) from
 (C) during
 (D) until
 answer: B
 source: original
-explanation: "from + mốc thời gian" chỉ thời điểm bắt đầu.`,
+explanation: "from + mốc thời gian" chỉ thời điểm bắt đầu.
+
+[QUESTION]
+(132)
+(A) also
+(B) never
+(C) rarely
+(D) instead
+answer: A
+source: original
+explanation: Câu này bổ sung thêm một việc cùng chiều với câu trước.`,
   7: `[PASSAGE] Thông báo bảo trì
 The lobby entrance will be closed from Wednesday.
 Please use the side entrance on Le Loi Street.
@@ -90,6 +107,9 @@ export default function AdminTestPage() {
 
   const [test, setTest] = useState<TestAdmin | null>(null);
   const [collections, setCollections] = useState<CollectionAdmin[]>([]);
+  const [sets, setSets] = useState<SetAdmin[]>([]);
+  const [library, setLibrary] = useState<ImageAssetPublic[]>([]);
+  const [editing, setEditing] = useState<string | null>(null);
   const [questions, setQuestions] = useState<QuestionAdmin[] | null>(null);
   const [part, setPart] = useState<number>(5);
   const [raw, setRaw] = useState("");
@@ -108,6 +128,12 @@ export default function AdminTestPage() {
         .catch(() => {});
       apiFetch<CollectionAdmin[]>(API_ROUTES.adminTestCollections, { token: t })
         .then(setCollections)
+        .catch(() => {});
+      apiFetch<SetAdmin[]>(API_ROUTES.adminTestSets(slug), { token: t })
+        .then(setSets)
+        .catch(() => {});
+      apiFetch<ImageAssetPublic[]>(API_ROUTES.adminImages, { token: t })
+        .then(setLibrary)
         .catch(() => {});
     },
     [slug],
@@ -181,6 +207,33 @@ export default function AdminTestPage() {
           body: JSON.stringify({ collection_slug: target === NO_COLLECTION ? null : target }),
         }),
       setTest,
+    );
+
+  const saveQuestion = (id: string, changes: Record<string, unknown>) =>
+    run(
+      () =>
+        apiFetch<QuestionAdmin>(API_ROUTES.adminQuestion(id), {
+          method: "PATCH",
+          token: token ?? undefined,
+          body: JSON.stringify(changes),
+        }),
+      () => {
+        setEditing(null);
+        if (token) refresh(token);
+      },
+    );
+
+  const assignPassageImage = (setId: string, slot: number, imageId: string | null) =>
+    run(
+      () =>
+        apiFetch<SetAdmin>(API_ROUTES.adminPassageImage(setId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ slot, image_id: imageId }),
+        }),
+      () => {
+        if (token) refresh(token);
+      },
     );
 
   const publishTest = () =>
@@ -359,6 +412,34 @@ export default function AdminTestPage() {
         {parsed && <GroupPreview parsed={parsed} />}
       </section>
 
+      {part !== 5 && (
+        <section className="mt-10">
+          <SectionHeader title={`Ngữ liệu Part ${part}`} />
+          {sets.filter((stimulus) => stimulus.part === part).length === 0 ? (
+            <p className="text-small text-ink-muted">Phần này chưa có cụm nào.</p>
+          ) : (
+            <div className="space-y-3">
+              {sets
+                .filter((stimulus) => stimulus.part === part)
+                .map((stimulus) => (
+                  <SetPanel
+                    key={stimulus.id}
+                    stimulus={stimulus}
+                    library={library}
+                    busy={busy}
+                    onAssign={(slot, imageId) =>
+                      void assignPassageImage(stimulus.id, slot, imageId)
+                    }
+                    // Chỉ Part 7 có ảnh. Part 6 là Text Completion — một đoạn
+                    // văn có các chỗ trống, toàn chữ.
+                    allowImages={part === 7}
+                  />
+                ))}
+            </div>
+          )}
+        </section>
+      )}
+
       <section className="mt-10">
         <SectionHeader
           title={`Câu hỏi Part ${part}`}
@@ -407,22 +488,40 @@ export default function AdminTestPage() {
                       </p>
                     ))}
                   </div>
-                  {canPublish && question.status !== "published" && (
+                  <div className="flex shrink-0 items-center gap-2">
                     <Button
                       size="sm"
-                      variant="secondary"
-                      onClick={() => void publishQuestion(question.id)}
-                      disabled={busy || question.problems.length > 0}
-                      title={
-                        question.problems.length > 0
-                          ? "Sửa các lỗi ở trên rồi mới xuất bản được"
-                          : undefined
-                      }
+                      variant="quiet"
+                      onClick={() => setEditing(editing === question.id ? null : question.id)}
                     >
-                      Xuất bản
+                      <Pencil size={13} strokeWidth={2} aria-hidden />
+                      {editing === question.id ? "Đóng" : "Sửa"}
                     </Button>
-                  )}
+                    {canPublish && question.status !== "published" && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => void publishQuestion(question.id)}
+                        disabled={busy || question.problems.length > 0}
+                        title={
+                          question.problems.length > 0
+                            ? "Sửa các lỗi ở trên rồi mới xuất bản được"
+                            : undefined
+                        }
+                      >
+                        Xuất bản
+                      </Button>
+                    )}
+                  </div>
                 </div>
+
+                {editing === question.id && (
+                  <QuestionEditor
+                    question={question}
+                    busy={busy}
+                    onSave={(changes) => void saveQuestion(question.id, changes)}
+                  />
+                )}
               </Panel>
             ))}
           </div>
@@ -558,6 +657,172 @@ function CopyFormatButton({ template, part }: { template: string; part: number }
           </>
         )}
       </Button>
+    </div>
+  );
+}
+
+function SetPanel({
+  stimulus,
+  library,
+  busy,
+  onAssign,
+  allowImages,
+}: {
+  stimulus: SetAdmin;
+  library: ImageAssetPublic[];
+  busy: boolean;
+  onAssign: (slot: number, imageId: string | null) => void;
+  allowImages: boolean;
+}) {
+  // Part 6 chỉ có MỘT đoạn văn; hiện ba ô là mô tả sai format, và nó mời người
+  // soạn điền vào hai ô không tồn tại trong đề thật.
+  const slots = allowImages ? stimulus.passages : stimulus.passages.slice(0, 1);
+
+  return (
+    <Panel className="p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="font-semibold">{stimulus.title ?? "Cụm không tên"}</p>
+        <PublishTag status={stimulus.status} />
+      </div>
+
+      <div className="mt-3 space-y-3">
+        {slots.map((passage) => (
+          <div key={passage.slot} className="rounded border border-rule p-3">
+            <p className="text-label font-semibold uppercase text-ink-muted">
+              Ngữ liệu {passage.slot}
+            </p>
+
+            {passage.text ? (
+              <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-small text-ink-muted">
+                {passage.text}
+              </p>
+            ) : (
+              <p className="mt-1 text-small text-ink-faint">— không có văn bản —</p>
+            )}
+
+            {passage.image_url && (
+              <div className="mt-2 flex items-start gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={passage.image_url}
+                  alt={passage.image_alt ?? ""}
+                  className="h-20 w-28 rounded border border-rule object-cover"
+                />
+                <p className="min-w-0 flex-1 text-small text-ink-muted">{passage.image_alt}</p>
+              </div>
+            )}
+
+            <div className={cx("mt-2 flex flex-wrap items-center gap-2", !allowImages && "hidden")}>
+              <ImageIcon size={14} strokeWidth={1.75} aria-hidden className="text-ink-faint" />
+              <Select
+                value={passage.image_id ?? ""}
+                onChange={(event) => onAssign(passage.slot, event.target.value || null)}
+                disabled={busy}
+                className="w-auto"
+              >
+                <option value="">— không có ảnh —</option>
+                {library.map((image) => (
+                  <option key={image.id} value={image.id}>
+                    {image.alt_text?.slice(0, 60) || image.storage_key.slice(-12)}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Nói ra ngay tại chỗ, vì đây là chỗ người ta sắp làm sai: phần lớn ngữ
+          liệu KHÔNG cần ảnh, và bản văn bản thì tốt hơn thật. */}
+      <p className="mt-3 text-small text-ink-muted">
+        {allowImages
+          ? "Bảng giá, lịch trình, mẫu đơn nên viết thành văn bản — đọc được bằng máy đọc màn hình, phóng to và tìm kiếm được. Ảnh dành cho biểu đồ, sơ đồ, bản đồ."
+          : "Part 6 là một đoạn văn có các chỗ trống, mỗi chỗ trống là một câu hỏi. Không có ảnh và không có bài nhiều đoạn."}
+      </p>
+    </Panel>
+  );
+}
+
+function QuestionEditor({
+  question,
+  busy,
+  onSave,
+}: {
+  question: QuestionAdmin;
+  busy: boolean;
+  onSave: (changes: Record<string, unknown>) => void;
+}) {
+  const [prompt, setPrompt] = useState(question.prompt_text ?? "");
+  const [explanation, setExplanation] = useState(question.explanation ?? "");
+  const [correct, setCorrect] = useState(
+    question.options.find((option) => option.is_correct)?.label ?? "A",
+  );
+  const [options, setOptions] = useState<Record<string, string>>(
+    Object.fromEntries(question.options.map((option) => [option.label, option.content])),
+  );
+
+  return (
+    <div className="mt-3 border-t border-rule pt-3">
+      <Field label="Đề bài">
+        <Textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={2} />
+      </Field>
+
+      <div className="mt-3 space-y-2">
+        {question.options.map((option) => (
+          <div key={option.label} className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCorrect(option.label)}
+              aria-pressed={correct === option.label}
+              title="Đặt làm đáp án đúng"
+              className={cx(
+                "grid h-8 w-8 shrink-0 place-items-center rounded border font-semibold",
+                correct === option.label
+                  ? "border-ok bg-ok-tint text-ok"
+                  : "border-rule-strong text-ink-muted hover:border-ok",
+              )}
+            >
+              {option.label}
+            </button>
+            <Input
+              value={options[option.label] ?? ""}
+              onChange={(event) => setOptions({ ...options, [option.label]: event.target.value })}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-3">
+        <Field label="Giải thích" hint="Viết tiếng Việt — người học sẽ đọc nó.">
+          <Textarea
+            value={explanation}
+            onChange={(event) => setExplanation(event.target.value)}
+            rows={2}
+          />
+        </Field>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <Button
+          size="sm"
+          onClick={() =>
+            onSave({
+              prompt_text: prompt,
+              explanation: explanation || null,
+              correct_label: correct,
+              options,
+            })
+          }
+          disabled={busy}
+        >
+          Lưu
+        </Button>
+        {/* Sửa một câu đã xuất bản sẽ đưa nó về nháp, và người soạn phải biết
+            trước khi bấm — không phải phát hiện sau khi cái badge đổi màu. */}
+        {question.status === "published" && (
+          <span className="text-small text-warn">Lưu xong câu này quay về trạng thái nháp</span>
+        )}
+      </div>
     </div>
   );
 }

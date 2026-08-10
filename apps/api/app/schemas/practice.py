@@ -120,6 +120,24 @@ class OptionPublic(BaseModel):
     content: str | None
 
 
+class PassagePublic(BaseModel):
+    """Một ô ngữ liệu: văn bản, ảnh, hoặc cả hai.
+
+    Là một object chứ không phải một chuỗi, vì ngữ liệu Part 7 có thể là một
+    biểu đồ — và một biểu đồ không nhét vào `list[str]` được mà không mất đúng
+    những thứ đi kèm nó: chữ thay ảnh, và dòng ghi công.
+    """
+
+    text: str | None
+    image_url: str | None
+    # Bắt buộc khi có ảnh. Một biểu đồ không có chữ thay ảnh là một câu hỏi mà
+    # người dùng máy đọc màn hình KHÔNG trả lời được — khác hẳn ảnh Part 1, nơi
+    # nội dung ảnh chính là thứ không được mô tả quá kỹ.
+    image_alt: str | None
+    image_attribution: str | None
+    image_license: str | None
+
+
 class QuestionPublic(BaseModel):
     """Một câu như người làm bài nhìn thấy.
 
@@ -150,7 +168,7 @@ class QuestionPublic(BaseModel):
     # buộc client tự khử trùng lặp, nên chỉ câu ĐẦU của cụm mang nó.
     set_id: str | None
     set_title: str | None
-    passages: list[str]
+    passages: list[PassagePublic]
     options: list[OptionPublic]
 
     selected_option_id: str | None

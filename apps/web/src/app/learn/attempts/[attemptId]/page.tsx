@@ -11,9 +11,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Modal } from "@/components/modal";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Alert, Button, EmptyState, Page, Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { type Block, clock, groupQuestions } from "@/lib/attempt";
+import { type Block, clock, credit, groupQuestions } from "@/lib/attempt";
 import { useRequireSession } from "@/lib/session";
 
 /*
@@ -44,9 +45,19 @@ export default function AttemptRunnerPage() {
   const [activePart, setActivePart] = useState<number | null>(null);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [result, setResult] = useState<AttemptResult | null>(null);
-  const [confirming, setConfirming] = useState(false);
+  // Hai lối rời màn: nộp bài, và bỏ đi. Một state ba giá trị chứ không hai cờ
+  // riêng — hai hộp thoại không bao giờ được mở cùng lúc.
+  const [confirming, setConfirming] = useState<"submit" | "exit" | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /*
+   * Câu đang xem — đặt bằng CÚ BẤM, không suy ra từ cuộn.
+   *
+   * Cuộn qua một câu không có nghĩa là đang làm câu đó, nên dấu hiệu bám theo
+   * khung nhìn cứ nhảy trong khi người ta chỉ đang đọc lướt. Đánh dấu chỗ đứng
+   * phải là thứ người dùng tự đặt.
+   */
+  const [current, setCurrent] = useState<number | null>(null);
 
   // Cuộn tới một câu ở part khác cần đổi tab trước rồi mới cuộn được. Giữ ở ref
   // chứ không ở state: ghi state trong effect là đúng thứ `react-hooks/
@@ -100,7 +111,7 @@ export default function AttemptRunnerPage() {
       setError("Không nộp được bài. Kiểm tra kết nối rồi thử lại.");
     } finally {
       setSubmitting(false);
-      setConfirming(false);
+      setConfirming(null);
     }
   }, [applyState, attemptId, fetchState, submitting, token]);
 
@@ -119,6 +130,27 @@ export default function AttemptRunnerPage() {
     const timer = window.setTimeout(() => setRemaining((value) => (value ?? 1) - 1), 1000);
     return () => window.clearTimeout(timer);
   }, [remaining, result, submit]);
+
+  /*
+   * Tải lại trang hay đóng tab thì `router` không biết gì — chỉ `beforeunload`
+   * chặn được, và nó dùng hộp thoại của TRÌNH DUYỆT (không đổi được lời).
+   *
+   * Chỉ gắn khi bài đang làm dở: hỏi lại sau khi đã nộp là chặn người ta rời
+   * khỏi một trang không còn gì để mất, và một cảnh báo vô cớ dạy người dùng
+   * bấm bỏ qua mọi cảnh báo về sau.
+   */
+  useEffect(() => {
+    // Tính tại chỗ thay vì dùng `done`: biến đó khai báo bên dưới.
+    const finished = result !== null || state?.status !== "in_progress";
+    if (finished) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      // Vẫn cần cho trình duyệt cũ; trình duyệt hiện đại bỏ qua nội dung.
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [result, state]);
 
   useEffect(() => {
     const target = pendingScroll.current;
@@ -139,6 +171,8 @@ export default function AttemptRunnerPage() {
   async function choose(question: QuestionPublic, optionId: string) {
     if (!token || done) return;
     const next = question.selected_option_id === optionId ? null : optionId;
+    // Trả lời xong thì câu đó đã có trạng thái riêng; dấu "đang xem" hết việc.
+    setCurrent(null);
     patch(question.id, { selected_option_id: next });
     try {
       await apiFetch(API_ROUTES.attemptAnswer(attemptId, question.id), {
@@ -182,6 +216,7 @@ export default function AttemptRunnerPage() {
   }
 
   function jumpTo(question: QuestionPublic) {
+    setCurrent(question.number);
     if (question.part === activePart) {
       document
         .getElementById(`q-${question.number}`)
@@ -226,15 +261,19 @@ export default function AttemptRunnerPage() {
 
           <div className="flex shrink-0 items-center gap-2">
             {!done && (
-              <Button size="sm" onClick={() => setConfirming(true)} disabled={submitting}>
+              <Button size="sm" onClick={() => setConfirming("submit")} disabled={submitting}>
                 <Send size={14} strokeWidth={2} aria-hidden />
                 Nộp bài
               </Button>
             )}
-            <Button size="sm" variant="secondary" onClick={() => router.push(`/learn/tests`)}>
+            <Button size="sm" variant="secondary" onClick={() => setConfirming("exit")}>
               <LogOut size={14} strokeWidth={2} aria-hidden />
               Thoát
             </Button>
+            {/* Chọn theme ngay tại đây: màn làm bài cố ý không có header của khu
+                học, nên đây là nơi DUY NHẤT đổi được — và một bài thi 120 phút
+                là đúng lúc người ta muốn chuyển sang nền tối. */}
+            <ThemeToggle />
           </div>
         </div>
 
@@ -259,6 +298,7 @@ export default function AttemptRunnerPage() {
                 key={block.key}
                 block={block}
                 done={done}
+                onView={setCurrent}
                 onChoose={choose}
                 onFlag={toggleFlag}
               />
@@ -266,12 +306,12 @@ export default function AttemptRunnerPage() {
           )}
         </main>
 
-        <QuestionGrid state={state} answered={answered} activePart={activePart} onJump={jumpTo} />
+        <QuestionGrid state={state} answered={answered} current={current} onJump={jumpTo} />
       </div>
 
       <Modal
-        open={confirming}
-        onClose={() => setConfirming(false)}
+        open={confirming === "submit"}
+        onClose={() => setConfirming(null)}
         title="Nộp bài?"
         description={
           answered < state.question_count
@@ -280,11 +320,32 @@ export default function AttemptRunnerPage() {
         }
       >
         <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => setConfirming(false)}>
+          <Button variant="secondary" onClick={() => setConfirming(null)}>
             Quay lại làm tiếp
           </Button>
           <Button onClick={() => void submit()} disabled={submitting}>
             {submitting ? "Đang nộp…" : "Nộp bài"}
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={confirming === "exit"}
+        onClose={() => setConfirming(null)}
+        title="Thoát khỏi bài thi?"
+        /*
+         * Nói ĐÚNG cái mất, không doạ chung chung. Đáp án đã lưu ở máy chủ ngay
+         * lúc chọn, nên rời đi không mất bài — nhưng đồng hồ vẫn chạy ở máy chủ,
+         * và hết giờ thì bài tự nộp dù người ta đang ở đâu.
+         */
+        description="Đáp án đã chọn được lưu rồi, nên bạn quay lại làm tiếp được. Nhưng đồng hồ vẫn chạy khi bạn rời đi, và hết giờ thì bài tự nộp."
+      >
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" onClick={() => setConfirming(null)}>
+            Ở lại làm tiếp
+          </Button>
+          <Button variant="destructive" onClick={() => router.push("/learn/tests")}>
+            Thoát
           </Button>
         </div>
       </Modal>
@@ -420,11 +481,13 @@ function ResultBanner({ result }: { result: AttemptResult }) {
 function StimulusBlock({
   block,
   done,
+  onView,
   onChoose,
   onFlag,
 }: {
   block: Block;
   done: boolean;
+  onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
 }) {
@@ -435,6 +498,7 @@ function StimulusBlock({
           key={question.id}
           question={question}
           done={done}
+          onView={onView}
           onChoose={onChoose}
           onFlag={onFlag}
         />
@@ -489,11 +553,30 @@ function StimulusBlock({
         )}
 
         {block.passages.map((passage, index) => (
-          <article
-            key={index}
-            className="whitespace-pre-wrap rounded border border-rule bg-panel p-4 text-small leading-relaxed"
-          >
-            {passage}
+          <article key={index} className="rounded border border-rule bg-panel p-4">
+            {passage.text && (
+              <p className="whitespace-pre-wrap text-small leading-relaxed">{passage.text}</p>
+            )}
+            {passage.image_url && (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={passage.image_url}
+                  alt={passage.image_alt ?? ""}
+                  className={cx(
+                    "max-h-[60vh] w-full rounded border border-rule object-contain",
+                    passage.text && "mt-3",
+                  )}
+                />
+                {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,
+                    không riêng Part 1 (ADR-004 §4.2). */}
+                {credit(passage.image_attribution, passage.image_license) && (
+                  <p className="mt-1.5 text-label text-ink-faint">
+                    {credit(passage.image_attribution, passage.image_license)}
+                  </p>
+                )}
+              </>
+            )}
           </article>
         ))}
       </div>
@@ -506,11 +589,13 @@ function StimulusBlock({
 function QuestionCard({
   question,
   done,
+  onView,
   onChoose,
   onFlag,
 }: {
   question: QuestionPublic;
   done: boolean;
+  onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
 }) {
@@ -522,6 +607,12 @@ function QuestionCard({
   return (
     <div
       id={`q-${question.number}`}
+      // Bấm vào thẻ để đánh dấu đang xem câu này. Bỏ qua cú bấm phát ra từ một
+      // nút bên trong — chọn đáp án hay đánh dấu có ý nghĩa riêng của chúng, và
+      // để chúng nổi lên đây sẽ ghi đè lại đúng thứ vừa được xử lý.
+      onClick={(event) => {
+        if (!(event.target as HTMLElement).closest("button")) onView(question.number);
+      }}
       className="scroll-mt-32 rounded border border-rule-strong bg-panel p-4"
     >
       <div className="flex items-start justify-between gap-3">
@@ -610,12 +701,12 @@ function QuestionCard({
 function QuestionGrid({
   state,
   answered,
-  activePart,
+  current,
   onJump,
 }: {
   state: AttemptState;
   answered: number;
-  activePart: number | null;
+  current: number | null;
   onJump: (question: QuestionPublic) => void;
 }) {
   const percent = state.question_count ? Math.round((answered / state.question_count) * 100) : 0;
@@ -633,7 +724,10 @@ function QuestionGrid({
           <div className="h-full rounded bg-action" style={{ width: `${percent}%` }} />
         </div>
 
-        <div className="mt-4 max-h-[calc(100dvh-16rem)] space-y-4 overflow-y-auto">
+        {/* Đệm trong vùng cuộn để vòng "đang xem" có chỗ: nó vẽ NGOÀI hộp, mà
+            `overflow-y-auto` cắt cả hai chiều — không có đệm thì ô ở rìa hiện
+            một vòng đứt đoạn, đọc như lỗi vẽ chứ không như một trạng thái. */}
+        <div className="mt-4 max-h-[calc(100dvh-16rem)] space-y-4 overflow-y-auto p-1.5">
           {state.parts.map((part) => (
             <div key={part.part}>
               <p className="text-label font-semibold uppercase text-ink-muted">
@@ -647,21 +741,20 @@ function QuestionGrid({
                       key={question.id}
                       type="button"
                       onClick={() => onJump(question)}
-                      title={question.flagged ? "Đã đánh dấu" : undefined}
-                      className={cx(
-                        "relative h-8 rounded border font-data text-small tabular-nums",
-                        question.selected_option_id
-                          ? "border-action bg-action-tint text-action-ink"
-                          : "border-rule text-ink-muted hover:border-rule-strong",
-                        activePart === question.part && "opacity-100",
-                      )}
+                      aria-current={current === question.number ? "true" : undefined}
+                      title={gridTitle(question, current === question.number)}
+                      className={gridClass(question, current === question.number)}
                     >
                       {question.number}
                       {/* Đánh dấu là một chấm ở góc, không phải một màu nền
                           khác: câu vừa được đánh dấu vừa đã trả lời là chuyện
                           bình thường, và hai trạng thái đó phải cùng đọc được. */}
                       {question.flagged && (
-                        <span className="absolute right-0.5 top-0.5 h-1.5 w-1.5 rounded-full bg-warn" />
+                        // Viền cùng màu nền để chấm tách khỏi ô kể cả khi ô đã
+                        // được tô — trên nền `action-tint` nó nhoè vào, và
+                        // trạng thái đánh dấu biến mất đúng ở những câu hay
+                        // được đánh dấu nhất.
+                        <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-pill border border-panel bg-warn" />
                       )}
                     </button>
                   ))}
@@ -669,7 +762,82 @@ function QuestionGrid({
             </div>
           ))}
         </div>
+
+        <Legend />
       </div>
     </aside>
+  );
+}
+
+/* Bốn trạng thái dùng ba KÊNH thị giác khác nhau, nên chúng chồng lên nhau
+ * được mà vẫn đọc riêng ra được:
+ *
+ *   nền + viền   chưa trả lời  <->  đã trả lời   (loại trừ nhau)
+ *   vòng ngoài   đang xem                        (chồng lên cả hai)
+ *   chấm góc     đánh dấu                        (chồng lên cả hai)
+ *
+ * Dùng cùng một kênh cho hai trạng thái độc lập là cách chắc chắn nhất để một
+ * trong hai biến mất khi cả hai cùng đúng.
+ */
+function gridClass(question: QuestionPublic, isCurrent: boolean): string {
+  return cx(
+    "relative h-8 rounded border font-data text-small tabular-nums",
+    question.selected_option_id
+      ? "border-action bg-action-tint font-semibold text-action-ink"
+      : "border-rule bg-panel text-ink-muted hover:border-rule-strong",
+    /*
+     * Vòng vẽ bằng PSEUDO-ELEMENT, không phải `outline` và cũng không `ring`.
+     * Cả hai lối kia đều đã có chủ:
+     *
+     *   `ring` của Tailwind biên dịch ra box-shadow — §6.3 chỉ chừa box-shadow
+     *   cho vòng focus, header dính và lớp phủ thật.
+     *
+     *   `outline` thuộc về hệ thống focus. `globals.css` có
+     *   `:focus:not(:focus-visible) { outline: none }`, và selector đó nặng
+     *   (0,2,0) hơn utility `.outline-2` (0,1,0) nên nó THẮNG. Bấm chuột vào
+     *   một `<button>` cho `:focus` mà không cho `:focus-visible`, tức vòng bị
+     *   xoá đúng trên ô vừa bấm — nhìn từ phía người dùng là vòng không bao giờ
+     *   nằm ở ô mình bấm mà nhấp nháy sang ô bên cạnh.
+     */
+    isCurrent &&
+      "after:pointer-events-none after:absolute after:-inset-[3px] after:rounded after:border-2 after:border-action-ink",
+  );
+}
+
+function gridTitle(question: QuestionPublic, isCurrent: boolean): string {
+  const states = [
+    question.selected_option_id ? "đã trả lời" : "chưa trả lời",
+    ...(isCurrent ? ["đang xem"] : []),
+    ...(question.flagged ? ["đã đánh dấu"] : []),
+  ];
+  return `Câu ${question.number} — ${states.join(", ")}`;
+}
+
+function Legend() {
+  return (
+    // Chú giải chứ không để người dùng tự đoán: bốn trạng thái mà chỉ có màu
+    // sắc phân biệt thì người mới nhìn không biết cái nào nghĩa là gì, và họ
+    // đang giữa một bài thi tính giờ.
+    <ul className="mt-4 space-y-1.5 border-t border-rule pt-3 text-small text-ink-muted">
+      {[
+        { label: "Chưa trả lời", box: "border-rule bg-panel", dot: false },
+        { label: "Đã trả lời", box: "border-action bg-action-tint", dot: false },
+        {
+          label: "Đang xem",
+          box: "border-rule bg-panel after:pointer-events-none after:absolute after:-inset-[3px] after:rounded after:border-2 after:border-action-ink",
+          dot: false,
+        },
+        { label: "Đã đánh dấu", box: "border-rule bg-panel", dot: true },
+      ].map((item) => (
+        <li key={item.label} className="flex items-center gap-2.5">
+          <span className={cx("relative h-4 w-4 shrink-0 rounded border", item.box)}>
+            {item.dot && (
+              <span className="absolute -right-1 -top-1 h-2 w-2 rounded-pill border border-panel bg-warn" />
+            )}
+          </span>
+          {item.label}
+        </li>
+      ))}
+    </ul>
   );
 }

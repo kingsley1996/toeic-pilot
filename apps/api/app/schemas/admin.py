@@ -382,3 +382,41 @@ class TestUpdate(BaseModel):
     description: str | None = None
     collection_slug: str | None = None
     time_limit_seconds: int | None = None
+
+
+class QuestionEdit(BaseModel):
+    """Sửa một câu sau khi dán. `exclude_unset` ở nơi gọi — xem `TestUpdate`."""
+
+    prompt_text: str | None = None
+    explanation: str | None = None
+    source: str | None = None
+    source_note: str | None = None
+    correct_label: str | None = None
+    options: dict[str, str] | None = None
+
+
+class PassageImageAssign(BaseModel):
+    """Gắn hoặc gỡ ảnh cho MỘT ô ngữ liệu.
+
+    `slot` là 1..3, khớp với `passage`/`passage_2`/`passage_3`. `image_id` null
+    nghĩa là gỡ ảnh ra.
+    """
+
+    slot: int
+    image_id: str | None = None
+
+
+class PassageAdmin(BaseModel):
+    slot: int
+    text: str | None
+    image_id: str | None
+    image_url: str | None
+    image_alt: str | None
+
+
+class SetAdmin(BaseModel):
+    id: str
+    part: int
+    title: str | None
+    status: str
+    passages: list[PassageAdmin]

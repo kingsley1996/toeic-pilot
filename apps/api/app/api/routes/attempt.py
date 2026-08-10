@@ -26,7 +26,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.core.media import public_audio_url
-from app.core.storage import get_driver
+from app.core.storage import StorageDriver, get_driver
 from app.models.audio import AudioAsset
 from app.models.image import ImageAsset
 from app.models.practice import (
@@ -36,6 +36,7 @@ from app.models.practice import (
     PracticeTest,
     PracticeTestQuestion,
     Question,
+    QuestionSet,
 )
 from app.models.user import User
 from app.schemas.practice import (
@@ -46,6 +47,7 @@ from app.schemas.practice import (
     AttemptStart,
     AttemptState,
     OptionPublic,
+    PassagePublic,
     QuestionPublic,
     section_of,
 )
@@ -136,6 +138,41 @@ def _load(db: Session, attempt_id: uuid.UUID, user: User) -> Attempt:
     return attempt
 
 
+def _passages(
+    stimulus: QuestionSet,
+    images: dict[uuid.UUID, ImageAsset],
+    image_driver: StorageDriver,
+) -> list[PassagePublic]:
+    """Các ô ngữ liệu theo đúng thứ tự, bỏ ô rỗng.
+
+    Một ô được giữ khi nó có văn bản HOẶC có ảnh. Lọc theo mỗi văn bản như bản
+    cũ sẽ làm một biểu đồ không kèm chú thích biến mất khỏi đề — và câu hỏi về
+    nó vẫn còn nguyên đó.
+    """
+    slots = (
+        (stimulus.passage, stimulus.passage_image_id),
+        (stimulus.passage_2, stimulus.passage_2_image_id),
+        (stimulus.passage_3, stimulus.passage_3_image_id),
+    )
+    out: list[PassagePublic] = []
+    for text, image_id in slots:
+        asset = images.get(image_id) if image_id else None
+        if not text and asset is None:
+            continue
+        out.append(
+            PassagePublic(
+                text=text,
+                image_url=image_driver.public_url(asset.storage_key) if asset else None,
+                image_alt=asset.alt_text if asset else None,
+                # Ghi công đi kèm ảnh ở MỌI nơi ảnh xuất hiện, không chỉ Part 1:
+                # CC-BY cho dùng *với điều kiện* ghi công (ADR-004 §4.2).
+                image_attribution=asset.attribution if asset else None,
+                image_license=asset.license if asset else None,
+            )
+        )
+    return out
+
+
 def _state(db: Session, attempt: Attempt) -> AttemptState:
     rows = db.execute(
         # Lấy cả `number`: nó là con số người học nhìn thấy, còn `position` chỉ
@@ -166,6 +203,21 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         if q.question_set is not None and q.question_set.audio_asset_id
     }
     image_ids = {q.image_asset_id for _, q in in_scope if q.image_asset_id}
+    # Ảnh ngữ liệu nạp cùng lượt với ảnh câu hỏi. Tra lẻ từng ô sẽ là ba lượt đi
+    # lại database cho mỗi cụm Part 7, và một đề đầy đủ có hàng chục cụm.
+    for _, question in in_scope:
+        stimulus_set = question.question_set
+        if stimulus_set is None:
+            continue
+        image_ids |= {
+            asset_id
+            for asset_id in (
+                stimulus_set.passage_image_id,
+                stimulus_set.passage_2_image_id,
+                stimulus_set.passage_3_image_id,
+            )
+            if asset_id
+        }
     audio_by_id = {
         a.id: a
         for a in (
@@ -226,11 +278,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
                 set_id=str(stimulus.id) if stimulus is not None else None,
                 set_title=stimulus.title if first_of_set and stimulus is not None else None,
                 passages=(
-                    [
-                        text
-                        for text in (stimulus.passage, stimulus.passage_2, stimulus.passage_3)
-                        if text
-                    ]
+                    _passages(stimulus, image_by_id, image_driver)
                     if first_of_set and stimulus is not None
                     else []
                 ),

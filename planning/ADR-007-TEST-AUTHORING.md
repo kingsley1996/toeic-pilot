@@ -78,6 +78,37 @@ Bậc thứ ba tồn tại vì một bộ đề mở ra rỗng không là thứ 
 
 `PATCH /admin/tests/{slug}` phân biệt khoá **vắng mặt** với khoá **bằng null**, qua `exclude_unset`: vắng nghĩa là đừng đụng tới, null nghĩa là gỡ khỏi bộ. Một phép gộp `giá trị or cũ` không phân biệt được hai thứ đó, và lỗi thì im lặng — lệnh gỡ trả về 200 mà không đổi gì.
 
+### 2.3c Ảnh ngữ liệu là chuyện của **Part 7**, không phải Part 6
+
+> **Sửa cùng ngày.** Bản đầu của mục này gộp Part 6 và Part 7 làm một và cho cả hai tối đa ba đoạn văn kèm ảnh. Sai format, và sai theo kiểu công cụ *mời* người soạn tạo ra thứ không tồn tại trong đề thật.
+
+Hai part này là hai format khác nhau, không phải hai biến thể của một format:
+
+| | Part 6 — Text Completion | Part 7 — Reading Comprehension |
+|---|---|---|
+| Ngữ liệu | **đúng một** đoạn văn có các chỗ trống | bài **một, hai hoặc ba** đoạn |
+| Câu hỏi là | mỗi chỗ trống một câu | câu hỏi về nội dung |
+| Ảnh | **không** | có, khi ngữ liệu là biểu đồ / sơ đồ / bản đồ |
+
+Trình dán chặn Part 6 quá một đoạn, và endpoint gắn ảnh **từ chối mọi cụm không phải Part 7**. Màn quản trị chỉ hiện một ô ngữ liệu cho Part 6 và không hiện ô chọn ảnh — hiện ba ô là mô tả sai format, và nó mời người soạn điền vào hai ô không có thật.
+
+Còn với Part 7, quyết định cũ vẫn đứng: ngữ liệu là **văn bản**, không phải ảnh chụp đề — vì trình đọc màn hình, phóng to trên điện thoại, tìm kiếm, AI Coach trích dẫn, và bản quyền. Nhưng nó nói về việc *không scan cả tờ đề*, và không phủ được trường hợp ngữ liệu **bản thân nó là hình**.
+
+Bảng giá, lịch trình, mẫu đơn, quảng cáo đều viết thành văn bản được, và bản văn bản **tốt hơn**. Ảnh dành cho chỗ quan hệ không gian mang nghĩa: **biểu đồ, sơ đồ mặt bằng, bản đồ**.
+
+**Một ảnh cho MỖI ô ngữ liệu**, không phải một ảnh cho cả cụm — `passage_image_id`, `passage_2_image_id`, `passage_3_image_id`. Lý do lấy thẳng từ lập luận ba cột của ADR-001: **thứ tự mang nghĩa**. Một cột ảnh dùng chung không nói được "ngữ liệu 1 là biểu đồ, ngữ liệu 2 là email" — mà đó đúng là hình dạng bài đọc đôi của Part 7. Mỗi ô khi đó là văn bản, hoặc ảnh, hoặc cả hai.
+
+Cột nằm trên `question_set` nên về mặt schema Part 6 cũng có; chặn nằm ở tầng ứng dụng, vì một CHECK ràng vào `part` sẽ phải sửa migration mỗi lần ETS đổi format.
+
+Hai ràng buộc không phải tuỳ chọn:
+
+- **`alt_text` bắt buộc** cho ảnh làm ngữ liệu, và endpoint từ chối gắn ảnh thiếu nó. Đây là chỗ Part 6/7 **ngược hẳn** Part 1: ở Part 1, mô tả quá kỹ là lộ đáp án; ở Part 6/7, ảnh *là* ngữ liệu, nên thiếu chữ thay ảnh là một câu hỏi mà người dùng máy đọc màn hình **không trả lời được**. Không phải bất tiện — là không làm được bài.
+- **Ghi công hiện ra** ở mọi nơi ảnh xuất hiện, không riêng Part 1 (ADR-004 §4.2).
+
+`_passages` giữ một ô khi nó có văn bản **hoặc** có ảnh. Lọc theo mỗi văn bản như bản đầu sẽ làm một biểu đồ không kèm chú thích biến mất khỏi đề — trong khi câu hỏi về nó vẫn còn nguyên đó.
+
+FK là **RESTRICT**: xoá một ảnh đang làm ngữ liệu sẽ lấy đi thứ người học cần để trả lời, và `SET NULL` biến việc đó thành im lặng.
+
 ### 2.4 Ảnh Part 1 gắn từ thư viện, không tải lên trong luồng soạn đề
 
 `/admin/media` đã có: tải lên, ba trường bản quyền bắt buộc, ghi công hiện ra. Luồng soạn đề chỉ **chọn** từ đó.

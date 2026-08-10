@@ -1,4 +1,4 @@
-import type { QuestionPublic } from "@toeic-pilot/shared";
+import type { PassagePublic, QuestionPublic } from "@toeic-pilot/shared";
 
 /**
  * Một khối ngữ liệu và các câu hỏi thuộc về nó.
@@ -15,7 +15,7 @@ export type Block = {
   imageUrl: string | null;
   imageAlt: string | null;
   imageCredit: string | null;
-  passages: string[];
+  passages: PassagePublic[];
   questions: QuestionPublic[];
   /** Có gì để hiện ở cột trái không. Part 2 và 5 thì không. */
   hasStimulus: boolean;

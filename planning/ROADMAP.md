@@ -372,6 +372,10 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] Màn quản trị dựng theo **cây** thay vì danh sách phẳng; đề chưa thuộc bộ nào hiện riêng kèm cảnh báo người học không thấy
 - [x] Nút **Chép mẫu** định dạng cho từng part, dùng chính chuỗi đang làm placeholder nên hai bản không thể lệch nhau
 
+- [x] **Ảnh cho ngữ liệu Part 7** — migration `013`, một ảnh cho *mỗi* ô để giữ thứ tự (ADR-007 §2.3c). `alt_text` bắt buộc: ảnh làm ngữ liệu mà thiếu chữ thay ảnh là câu hỏi người dùng máy đọc màn hình không trả lời được
+- [x] **Form sửa từng câu** — nửa sau của §2.3: đổi đáp án đúng, sửa lựa chọn, viết giải thích. Sửa một câu đã xuất bản thì nó **quay về nháp**, và giao diện nói trước khi bấm
+- [x] Chọn ảnh ngữ liệu từ thư viện `/admin/media`, kèm dòng nhắc rằng bảng giá và lịch trình nên viết thành văn bản
+
 **Lượt 1 (Part 5, 6, 7) xong.** Còn lượt 2: Part 1–4 + tải audio lên (ADR-007 §2.7).
 
 ### Backend

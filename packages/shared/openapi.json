@@ -2145,6 +2145,161 @@
         "title": "PartBreakdown",
         "type": "object"
       },
+      "PassageAdmin": {
+        "properties": {
+          "image_alt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Alt"
+          },
+          "image_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Id"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "slot": {
+            "title": "Slot",
+            "type": "integer"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "slot",
+          "text",
+          "image_id",
+          "image_url",
+          "image_alt"
+        ],
+        "title": "PassageAdmin",
+        "type": "object"
+      },
+      "PassageImageAssign": {
+        "description": "Gắn hoặc gỡ ảnh cho MỘT ô ngữ liệu.\n\n`slot` là 1..3, khớp với `passage`/`passage_2`/`passage_3`. `image_id` null\nnghĩa là gỡ ảnh ra.",
+        "properties": {
+          "image_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Id"
+          },
+          "slot": {
+            "title": "Slot",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "title": "PassageImageAssign",
+        "type": "object"
+      },
+      "PassagePublic": {
+        "description": "Một ô ngữ liệu: văn bản, ảnh, hoặc cả hai.\n\nLà một object chứ không phải một chuỗi, vì ngữ liệu Part 7 có thể là một\nbiểu đồ — và một biểu đồ không nhét vào `list[str]` được mà không mất đúng\nnhững thứ đi kèm nó: chữ thay ảnh, và dòng ghi công.",
+        "properties": {
+          "image_alt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Alt"
+          },
+          "image_attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Attribution"
+          },
+          "image_license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image License"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "text",
+          "image_url",
+          "image_alt",
+          "image_attribution",
+          "image_license"
+        ],
+        "title": "PassagePublic",
+        "type": "object"
+      },
       "PasswordChange": {
         "properties": {
           "current_password": {
@@ -2339,6 +2494,82 @@
         "title": "QuestionDraft",
         "type": "object"
       },
+      "QuestionEdit": {
+        "description": "Sửa một câu sau khi dán. `exclude_unset` ở nơi gọi — xem `TestUpdate`.",
+        "properties": {
+          "correct_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Label"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "options": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Options"
+          },
+          "prompt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Text"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "source_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Note"
+          }
+        },
+        "title": "QuestionEdit",
+        "type": "object"
+      },
       "QuestionOptionDraft": {
         "properties": {
           "content": {
@@ -2467,7 +2698,7 @@
           },
           "passages": {
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/PassagePublic"
             },
             "title": "Passages",
             "type": "array"
@@ -2810,6 +3041,49 @@
           "grade"
         ],
         "title": "ReviewSubmit",
+        "type": "object"
+      },
+      "SetAdmin": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "passages": {
+            "items": {
+              "$ref": "#/components/schemas/PassageAdmin"
+            },
+            "title": "Passages",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "id",
+          "part",
+          "title",
+          "status",
+          "passages"
+        ],
+        "title": "SetAdmin",
         "type": "object"
       },
       "StoryItem": {
@@ -5511,6 +5785,124 @@
         ]
       }
     },
+    "/api/v1/admin/question-sets/{set_id}/passage-image": {
+      "post": {
+        "description": "Gắn hoặc gỡ ảnh cho một ô ngữ liệu (ADR-007 §2.3b).",
+        "operationId": "assign_passage_image_api_v1_admin_question_sets__set_id__passage_image_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PassageImageAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assign Passage Image",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/questions/{question_id}": {
+      "patch": {
+        "description": "Sửa một câu đã dán. Nửa sau của ADR-007 §2.3.\n\nDán tạo hàng loạt; form sửa những thứ dán không diễn đạt được — đổi đáp án\nđúng, viết giải thích, sửa một lựa chọn gõ nhầm.",
+        "operationId": "edit_question_api_v1_admin_questions__question_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Edit Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/questions/{question_id}/publish": {
       "post": {
         "operationId": "publish_question_api_v1_admin_questions__question_id__publish_post",
@@ -6077,6 +6469,57 @@
           }
         ],
         "summary": "List Test Questions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/sets": {
+      "get": {
+        "operationId": "list_test_sets_api_v1_admin_tests__slug__sets_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SetAdmin"
+                  },
+                  "title": "Response List Test Sets Api V1 Admin Tests  Slug  Sets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Test Sets",
         "tags": [
           "admin"
         ]
