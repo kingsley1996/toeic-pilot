@@ -53,6 +53,14 @@ class UserProfilePublic(BaseModel):
     minutes_per_day: int | None
     daily_new_limit: int | None
     preferred_accent: str | None
+    # URL, không phải `storage_key`. Frontend không bao giờ được tự ghép URL từ
+    # khoá: chỉ driver biết tiền tố thư mục mà Cloudinary đòi, và ghép ở phía
+    # client nghĩa là quy tắc đó bị nhân bản ra một nơi không có test nào phủ.
+    avatar_url: str | None
+
+
+class AvatarConfirm(BaseModel):
+    storage_key: str
 
 
 class UserProfileUpdate(BaseModel):

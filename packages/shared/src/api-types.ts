@@ -250,6 +250,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/media/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Images
+         * @description Thư viện ảnh đã tải lên, mới nhất trước.
+         *
+         *     Không lọc theo `source`: ảnh lấy từ kho CC (`sourced`) và ảnh tự đưa lên
+         *     (`uploaded`) cùng là ảnh dùng được cho một câu hỏi, và tách hai danh sách sẽ
+         *     khiến biên tập viên phải nhớ mình đã thêm ảnh nào bằng đường nào.
+         */
+        get: operations["list_images_api_v1_admin_media_images_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/media/images/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Image Confirm */
+        post: operations["image_confirm_api_v1_admin_media_images_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/media/images/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Image Ticket
+         * @description Cấp một vé upload đã ký.
+         *
+         *     Khoá do PHÍA TA sinh, từ một id ngẫu nhiên — client không được chọn nơi file
+         *     sẽ nằm. Để client đặt khoá thì một người có vé hợp lệ có thể ghi đè lên
+         *     đường dẫn của người khác, và chữ ký khi đó chỉ chứng minh "ai đó được phép
+         *     upload", không chứng minh "được phép upload vào đúng chỗ này".
+         */
+        post: operations["image_ticket_api_v1_admin_media_images_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/topics": {
         parameters: {
             query?: never;
@@ -577,6 +643,67 @@ export interface paths {
         patch: operations["update_profile_api_v1_profile_patch"];
         trace?: never;
     };
+    "/api/v1/profile/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Avatar Confirm
+         * @description Gắn ảnh vừa tải lên vào hồ sơ.
+         *
+         *     Vẫn hỏi lại nhà cung cấp (§2.3): không có bước đó thì đây là đường ghi một
+         *     chuỗi tuỳ ý vào `avatar_storage_key`, và giao diện sẽ hiện ảnh vỡ cho tới
+         *     khi có người để ý.
+         *
+         *     Khoá phải nằm dưới `avatar/`. Thiếu kiểm tra này thì một người có thể trỏ
+         *     avatar của mình vào một ảnh nội dung, và lệnh dọn ảnh mồ côi sau này sẽ xoá
+         *     mất thứ đang được dùng.
+         */
+        post: operations["avatar_confirm_api_v1_profile_avatar_post"];
+        /**
+         * Avatar Remove
+         * @description Gỡ avatar, rơi về ảnh chữ cái đầu.
+         *
+         *     KHÔNG xoá file khỏi kho ngay tại đây. Xoá đồng bộ nghĩa là một request của
+         *     người dùng phải chờ một dịch vụ bên ngoài trả lời, và nếu nó lỗi thì hồ sơ
+         *     vẫn giữ ảnh cũ trong khi người dùng đã thấy thông báo thành công. File mồ
+         *     côi để lệnh đối chiếu dọn — đó là việc nó sinh ra để làm (§10.4).
+         */
+        delete: operations["avatar_remove_api_v1_profile_avatar_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profile/avatar/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Avatar Ticket
+         * @description Vé upload avatar — mọi học viên đều xin được.
+         *
+         *     Khác với ảnh nội dung, đường này KHÔNG đòi vai trò editor: đây là media của
+         *     chính người dùng. Đổi lại, khoá nằm dưới tiền tố `avatar/` riêng, nên một
+         *     lệnh dọn nhắm vào ảnh nội dung không thể chạm nhầm vào đây (ADR-006 §2.1).
+         */
+        post: operations["avatar_ticket_api_v1_profile_avatar_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profile/stats": {
         parameters: {
             query?: never;
@@ -770,6 +897,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/media-upload/{storage_key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Local Upload
+         * @description Đứng thay nhà cung cấp khi chạy local.
+         *
+         *     Nhận đúng hình dạng multipart mà Cloudinary nhận, nên mã frontend không phải
+         *     rẽ nhánh theo môi trường — và do đó đường đi được dùng ở dev chính là đường
+         *     đi được kiểm ở production, chứ không phải một bản mô phỏng gần giống.
+         *
+         *     Không kèm `Depends(get_current_user)`: quyền đã nằm trong chữ ký của vé, và
+         *     vé chỉ cấp cho `editor`/`admin`. Đó cũng là cách nhà cung cấp thật hoạt động
+         *     — họ không biết gì về phiên đăng nhập của ta.
+         */
+        post: operations["local_upload_media_upload__storage_key__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ready": {
         parameters: {
             query?: never;
@@ -815,6 +970,20 @@ export interface components {
             kind: string;
             /** State */
             state: string;
+        };
+        /** AvatarConfirm */
+        AvatarConfirm: {
+            /** Storage Key */
+            storage_key: string;
+        };
+        /** Body_local_upload_media_upload__storage_key__post */
+        Body_local_upload_media_upload__storage_key__post: {
+            /** Expires At */
+            expires_at: number;
+            /** File */
+            file: string;
+            /** Signature */
+            signature: string;
         };
         /** CommitResult */
         CommitResult: {
@@ -1188,6 +1357,58 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** ImageAssetPublic */
+        ImageAssetPublic: {
+            /** Alt Text */
+            alt_text: string | null;
+            /** Attribution */
+            attribution: string;
+            /** Height */
+            height: number;
+            /** Id */
+            id: string;
+            /** License */
+            license: string;
+            /** Mime Type */
+            mime_type: string;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Source */
+            source: string;
+            /** Source Url */
+            source_url: string;
+            /** Storage Key */
+            storage_key: string;
+            /** Url */
+            url: string;
+            /** Width */
+            width: number;
+        };
+        /**
+         * ImageConfirm
+         * @description Bước 4: báo đã tải xong, kèm thông tin bản quyền.
+         *
+         *     Ba trường bản quyền là **bắt buộc**, khớp với ba cột NOT NULL trên
+         *     `image_asset`. ADR-004 §2 nêu lý do: phần lớn ảnh mở là CC-BY — được dùng
+         *     *với điều kiện* ghi công — và thông tin đó chỉ ghi lại trung thực được vào
+         *     đúng lúc người ta thêm ảnh, khi trang nguồn còn đang mở.
+         *
+         *     Với ảnh tự chụp thì `source_url` là nơi giữ bản gốc và `license` ghi rõ là
+         *     của mình; trường này không phải thủ tục, nó là câu trả lời cho "ai được phép
+         *     dùng ảnh này".
+         */
+        ImageConfirm: {
+            /** Alt Text */
+            alt_text?: string | null;
+            /** Attribution */
+            attribution: string;
+            /** License */
+            license: string;
+            /** Source Url */
+            source_url: string;
+            /** Storage Key */
+            storage_key: string;
+        };
         /**
          * LearningStats
          * @description Derived on read, every time, from the attempt and review tables.
@@ -1468,6 +1689,35 @@ export interface components {
             /** Slug */
             slug: string;
         };
+        /**
+         * UploadTicket
+         * @description Vé để trình duyệt tự tải file lên, không đi qua API (ADR-006 §2.3).
+         */
+        UploadTicket: {
+            /** Allowed Formats */
+            allowed_formats: string[];
+            /** Expires At */
+            expires_at: number;
+            /** Fields */
+            fields: {
+                [key: string]: string;
+            };
+            /** Max Bytes */
+            max_bytes: number;
+            /** Storage Key */
+            storage_key: string;
+            /** Upload Url */
+            upload_url: string;
+        };
+        /** UploadTicketRequest */
+        UploadTicketRequest: {
+            /**
+             * Ext
+             * @default jpg
+             * @enum {string}
+             */
+            ext: "jpg" | "jpeg" | "png" | "webp";
+        };
         /** UserLogin */
         UserLogin: {
             /**
@@ -1484,6 +1734,8 @@ export interface components {
          *     the sense of being visible to other users, and no endpoint serves it by id.
          */
         UserProfilePublic: {
+            /** Avatar Url */
+            avatar_url: string | null;
             /** Daily New Limit */
             daily_new_limit: number | null;
             /** Display Name */
@@ -2409,6 +2661,104 @@ export interface operations {
             };
         };
     };
+    list_images_api_v1_admin_media_images_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImageAssetPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    image_confirm_api_v1_admin_media_images_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImageConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImageAssetPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    image_ticket_api_v1_admin_media_images_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_topics_api_v1_admin_topics_get: {
         parameters: {
             query?: never;
@@ -3001,6 +3351,92 @@ export interface operations {
             };
         };
     };
+    avatar_confirm_api_v1_profile_avatar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AvatarConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfilePublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    avatar_remove_api_v1_profile_avatar_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfilePublic"];
+                };
+            };
+        };
+    };
+    avatar_ticket_api_v1_profile_avatar_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     read_stats_api_v1_profile_stats_get: {
         parameters: {
             query?: never;
@@ -3259,6 +3695,43 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    local_upload_media_upload__storage_key__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storage_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_local_upload_media_upload__storage_key__post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -14,6 +14,7 @@ from sqlalchemy.pool import StaticPool  # noqa: E402
 
 from app import models  # noqa: E402,F401 — registers every table on Base.metadata
 from app.core.database import Base, get_db  # noqa: E402
+from app.core.redis_client import get_redis  # noqa: E402
 from app.main import app  # noqa: E402
 
 
@@ -36,9 +37,39 @@ def db_session() -> Generator[Session, None, None]:
         engine.dispose()
 
 
+class FakeRedis:
+    """Đủ dùng cho bộ đếm giới hạn tần suất, không hơn.
+
+    Bộ test không dựng Redis, và bộ giới hạn cố ý **fail closed** — Redis là thứ
+    duy nhất đứng giữa một tài khoản và hoá đơn Cloudinary, nên cho qua khi nó
+    hỏng là mất tiền. Nghĩa là không có bản giả thì mọi test chạm endpoint có
+    giới hạn đều nhận 503, và cám dỗ khi đó là bật `fail_open` — tức là tắt luôn
+    thứ đang cần được test.
+    """
+
+    def __init__(self) -> None:
+        self.counters: dict[str, int] = {}
+
+    def incr(self, key: str) -> int:
+        self.counters[key] = self.counters.get(key, 0) + 1
+        return self.counters[key]
+
+    def expire(self, key: str, seconds: int) -> bool:
+        return True
+
+    def ttl(self, key: str) -> int:
+        return 60
+
+
 @pytest.fixture()
-def client(db_session: Session) -> Generator[TestClient, None, None]:
+def fake_redis() -> FakeRedis:
+    return FakeRedis()
+
+
+@pytest.fixture()
+def client(db_session: Session, fake_redis: FakeRedis) -> Generator[TestClient, None, None]:
     app.dependency_overrides[get_db] = lambda: db_session
+    app.dependency_overrides[get_redis] = lambda: fake_redis
     try:
         yield TestClient(app)
     finally:

@@ -553,18 +553,42 @@ export function Avatar({
   id,
   name,
   email,
+  src,
   size = "md",
   className,
 }: {
   id: string;
   name?: string | null;
   email: string;
+  /** Ảnh đã tải lên. Thiếu thì rơi về chữ cái đầu — đó là mặc định, không phải lỗi. */
+  src?: string | null;
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
   const box = { sm: "h-7 w-7 text-label", md: "h-9 w-9 text-small", lg: "h-16 w-16 text-title" }[
     size
   ];
+
+  if (src) {
+    /*
+     * `<img>` thường, không phải `next/image`.
+     *
+     * Ảnh nằm trên một host bên ngoài mà `next.config.ts` chưa khai trong
+     * `images.remotePatterns`, và khai nó ở đó nghĩa là mỗi lần đổi nhà cung
+     * cấp lại phải sửa cấu hình build. Cloudinary đã tối ưu và phục vụ qua CDN
+     * rồi — cho Next tối ưu lại một lần nữa là trả tiền hai lần cho cùng việc.
+     */
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        className={cx("shrink-0 rounded object-cover", box, className)}
+      />
+    );
+  }
+
   return (
     <span
       aria-hidden

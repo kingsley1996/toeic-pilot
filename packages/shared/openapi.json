@@ -47,6 +47,43 @@
         "title": "AudioSlotState",
         "type": "object"
       },
+      "AvatarConfirm": {
+        "properties": {
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "storage_key"
+        ],
+        "title": "AvatarConfirm",
+        "type": "object"
+      },
+      "Body_local_upload_media_upload__storage_key__post": {
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "integer"
+          },
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          },
+          "signature": {
+            "title": "Signature",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expires_at",
+          "signature",
+          "file"
+        ],
+        "title": "Body_local_upload_media_upload__storage_key__post",
+        "type": "object"
+      },
       "CommitResult": {
         "properties": {
           "created": {
@@ -1233,6 +1270,126 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "ImageAssetPublic": {
+        "properties": {
+          "alt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt Text"
+          },
+          "attribution": {
+            "title": "Attribution",
+            "type": "string"
+          },
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "license": {
+            "title": "License",
+            "type": "string"
+          },
+          "mime_type": {
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "storage_key",
+          "url",
+          "mime_type",
+          "size_bytes",
+          "width",
+          "height",
+          "source",
+          "source_url",
+          "license",
+          "attribution",
+          "alt_text"
+        ],
+        "title": "ImageAssetPublic",
+        "type": "object"
+      },
+      "ImageConfirm": {
+        "description": "Bước 4: báo đã tải xong, kèm thông tin bản quyền.\n\nBa trường bản quyền là **bắt buộc**, khớp với ba cột NOT NULL trên\n`image_asset`. ADR-004 §2 nêu lý do: phần lớn ảnh mở là CC-BY — được dùng\n*với điều kiện* ghi công — và thông tin đó chỉ ghi lại trung thực được vào\nđúng lúc người ta thêm ảnh, khi trang nguồn còn đang mở.\n\nVới ảnh tự chụp thì `source_url` là nơi giữ bản gốc và `license` ghi rõ là\ncủa mình; trường này không phải thủ tục, nó là câu trả lời cho \"ai được phép\ndùng ảnh này\".",
+        "properties": {
+          "alt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt Text"
+          },
+          "attribution": {
+            "minLength": 1,
+            "title": "Attribution",
+            "type": "string"
+          },
+          "license": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "License",
+            "type": "string"
+          },
+          "source_url": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "title": "Source Url",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "storage_key",
+          "source_url",
+          "license",
+          "attribution"
+        ],
+        "title": "ImageConfirm",
+        "type": "object"
+      },
       "LearningStats": {
         "description": "Derived on read, every time, from the attempt and review tables.\n\nThere is no statistics table and there should not be one. The same reasoning\nis already written on `StoryProgress` and `VocabularyProgress`: a counter\nmaintained alongside the history drifts from it the first time a row is\ndeleted or re-graded, and nothing anywhere reports the disagreement.",
         "properties": {
@@ -1858,6 +2015,68 @@
         "title": "TopicPublic",
         "type": "object"
       },
+      "UploadTicket": {
+        "description": "Vé để trình duyệt tự tải file lên, không đi qua API (ADR-006 §2.3).",
+        "properties": {
+          "allowed_formats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Allowed Formats",
+            "type": "array"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "integer"
+          },
+          "fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Fields",
+            "type": "object"
+          },
+          "max_bytes": {
+            "title": "Max Bytes",
+            "type": "integer"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "upload_url": {
+            "title": "Upload Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "upload_url",
+          "fields",
+          "storage_key",
+          "max_bytes",
+          "allowed_formats",
+          "expires_at"
+        ],
+        "title": "UploadTicket",
+        "type": "object"
+      },
+      "UploadTicketRequest": {
+        "properties": {
+          "ext": {
+            "default": "jpg",
+            "enum": [
+              "jpg",
+              "jpeg",
+              "png",
+              "webp"
+            ],
+            "title": "Ext",
+            "type": "string"
+          }
+        },
+        "title": "UploadTicketRequest",
+        "type": "object"
+      },
       "UserLogin": {
         "properties": {
           "email": {
@@ -1880,6 +2099,17 @@
       "UserProfilePublic": {
         "description": "A learner's own profile. Never anyone else's — nothing here is public in\nthe sense of being visible to other users, and no endpoint serves it by id.",
         "properties": {
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
           "daily_new_limit": {
             "anyOf": [
               {
@@ -1964,7 +2194,8 @@
           "exam_date",
           "minutes_per_day",
           "daily_new_limit",
-          "preferred_accent"
+          "preferred_accent",
+          "avatar_url"
         ],
         "title": "UserProfilePublic",
         "type": "object"
@@ -3659,6 +3890,165 @@
         ]
       }
     },
+    "/api/v1/admin/media/images": {
+      "get": {
+        "description": "Thư viện ảnh đã tải lên, mới nhất trước.\n\nKhông lọc theo `source`: ảnh lấy từ kho CC (`sourced`) và ảnh tự đưa lên\n(`uploaded`) cùng là ảnh dùng được cho một câu hỏi, và tách hai danh sách sẽ\nkhiến biên tập viên phải nhớ mình đã thêm ảnh nào bằng đường nào.",
+        "operationId": "list_images_api_v1_admin_media_images_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ImageAssetPublic"
+                  },
+                  "title": "Response List Images Api V1 Admin Media Images Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Images",
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/api/v1/admin/media/images/confirm": {
+      "post": {
+        "operationId": "image_confirm_api_v1_admin_media_images_confirm_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageAssetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Image Confirm",
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/api/v1/admin/media/images/ticket": {
+      "post": {
+        "description": "Cấp một vé upload đã ký.\n\nKhoá do PHÍA TA sinh, từ một id ngẫu nhiên — client không được chọn nơi file\nsẽ nằm. Để client đặt khoá thì một người có vé hợp lệ có thể ghi đè lên\nđường dẫn của người khác, và chữ ký khi đó chỉ chứng minh \"ai đó được phép\nupload\", không chứng minh \"được phép upload vào đúng chỗ này\".",
+        "operationId": "image_ticket_api_v1_admin_media_images_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Image Ticket",
+        "tags": [
+          "media"
+        ]
+      }
+    },
     "/api/v1/admin/topics": {
       "get": {
         "operationId": "list_topics_api_v1_admin_topics_get",
@@ -4543,6 +4933,125 @@
         ]
       }
     },
+    "/api/v1/profile/avatar": {
+      "delete": {
+        "description": "Gỡ avatar, rơi về ảnh chữ cái đầu.\n\nKHÔNG xoá file khỏi kho ngay tại đây. Xoá đồng bộ nghĩa là một request của\nngười dùng phải chờ một dịch vụ bên ngoài trả lời, và nếu nó lỗi thì hồ sơ\nvẫn giữ ảnh cũ trong khi người dùng đã thấy thông báo thành công. File mồ\ncôi để lệnh đối chiếu dọn — đó là việc nó sinh ra để làm (§10.4).",
+        "operationId": "avatar_remove_api_v1_profile_avatar_delete",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfilePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Avatar Remove",
+        "tags": [
+          "profile"
+        ]
+      },
+      "post": {
+        "description": "Gắn ảnh vừa tải lên vào hồ sơ.\n\nVẫn hỏi lại nhà cung cấp (§2.3): không có bước đó thì đây là đường ghi một\nchuỗi tuỳ ý vào `avatar_storage_key`, và giao diện sẽ hiện ảnh vỡ cho tới\nkhi có người để ý.\n\nKhoá phải nằm dưới `avatar/`. Thiếu kiểm tra này thì một người có thể trỏ\navatar của mình vào một ảnh nội dung, và lệnh dọn ảnh mồ côi sau này sẽ xoá\nmất thứ đang được dùng.",
+        "operationId": "avatar_confirm_api_v1_profile_avatar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvatarConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfilePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Avatar Confirm",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/avatar/ticket": {
+      "post": {
+        "description": "Vé upload avatar — mọi học viên đều xin được.\n\nKhác với ảnh nội dung, đường này KHÔNG đòi vai trò editor: đây là media của\nchính người dùng. Đổi lại, khoá nằm dưới tiền tố `avatar/` riêng, nên một\nlệnh dọn nhắm vào ảnh nội dung không thể chạm nhầm vào đây (ADR-006 §2.1).",
+        "operationId": "avatar_ticket_api_v1_profile_avatar_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Avatar Ticket",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
     "/api/v1/profile/stats": {
       "get": {
         "description": "Thống kê học tập, tính lại mỗi lần đọc.\n\nTách khỏi `GET /profile` chứ không gộp vào: hồ sơ là vài cột đọc thẳng, còn\nphần này quét bảng lượt ôn và lượt dictation. Gộp lại thì mỗi lần sửa tên\nhiển thị cũng phải trả giá cho toàn bộ phép đếm, và `SessionProvider` — vốn\ngọi `/auth/me` ở mọi lần tải trang — sẽ kéo theo chúng ở khắp mọi nơi.",
@@ -4976,6 +5485,61 @@
         "summary": "Health",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/media-upload/{storage_key}": {
+      "post": {
+        "description": "Đứng thay nhà cung cấp khi chạy local.\n\nNhận đúng hình dạng multipart mà Cloudinary nhận, nên mã frontend không phải\nrẽ nhánh theo môi trường — và do đó đường đi được dùng ở dev chính là đường\nđi được kiểm ở production, chứ không phải một bản mô phỏng gần giống.\n\nKhông kèm `Depends(get_current_user)`: quyền đã nằm trong chữ ký của vé, và\nvé chỉ cấp cho `editor`/`admin`. Đó cũng là cách nhà cung cấp thật hoạt động\n— họ không biết gì về phiên đăng nhập của ta.",
+        "operationId": "local_upload_media_upload__storage_key__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storage_key",
+            "required": true,
+            "schema": {
+              "title": "Storage Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_local_upload_media_upload__storage_key__post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Local Upload Media Upload  Storage Key  Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Local Upload",
+        "tags": [
+          "media"
         ]
       }
     },

@@ -17,9 +17,9 @@
 | **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
 | **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | 365 thu thập — **363 chạy** + 2 `external` deselect mặc định |
+| **Test** | 378 thu thập — **376 chạy** + 2 `external` deselect mặc định |
 | **Gate CI** | 13, tất cả xanh |
-| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` → `009_user_profile` |
+| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` → `009_user_profile` → `010_avatar` |
 | **Bảng** | 24 |
 | **Endpoint** | **52** — auth (4), health (2), học viên (14), hồ sơ (3), admin (29) |
 | **Trang web** | 18 route |
@@ -52,6 +52,7 @@ Sprint 3  Content Tooling       🟡 từ vựng + dictation XONG · phần ques
 Sprint 4  Learning Hub          🟡 backend + frontend XONG · thiếu nội dung
 Sprint 4b Dictation phân cấp    ✅ XONG (mục 4b)
 Sprint 4c Hồ sơ người dùng      ✅ XONG (mục 4c)
+Sprint 4d Media upload          🟡 ĐANG LÀM (mục 4d)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -274,6 +275,41 @@ Chèn trước Sprint 5 chứ không phải sau, vì `PLAN.md` §3.3 nói AI Stu
 
 ### Một thứ chỉ lộ ra khi chạy thật
 **`create_all` của container dev lại tạo `user_profile` trước khi alembic kịp chạy** — đúng cái bẫy đã ghi ở mục 4b và trong `CLAUDE.md`, lần thứ hai. Lần này còn khó thấy hơn: `create_all` tạo được **bảng mới** nhưng không thêm được **cột mới vào bảng cũ**, nên `users.password_changed_at` vẫn thiếu trong khi `user_profile` đã có. Phải drop bảng rồi mới cho alembic chạy lại.
+
+---
+
+## 4d. Sprint media upload · 🟡 ĐANG LÀM
+
+**Mục tiêu:** đưa được vào hệ thống một file do con người tạo ra — ảnh tự chụp, ảnh đã mua bản quyền, bản thu giọng người thật.
+
+Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md). Đóng nợ `MEDIA-PIPELINE` §10.5.
+
+### ⚠️ Đọc trước khi tưởng sprint này gỡ xong Sprint 5
+
+**Nó KHÔNG gỡ §10.2.** Clip nhiều giọng cho Part 2/3 vẫn là blocker, và không nhà cung cấp lưu trữ nào giải quyết được. Upload audio thu người thật là *đường vòng sản xuất*, không phải lời giải kỹ thuật — xem ADR-006 §5.
+
+### Phạm vi đã chốt
+- [x] Ảnh Part 1 do biên tập viên đưa · Avatar · Audio thu người thật · Ảnh minh hoạ từ vựng
+- [x] **Không làm video** — `PLAN.md` không nhắc tới nó ở đâu, và TOEIC L&R không có phần hình động
+- [x] Tách nhà cung cấp: **Cloudinary cho ảnh, R2 cho audio** — hai loại file này có hình dạng chi phí ngược nhau (ADR-006 §2.2)
+
+### Việc
+- [x] `app/core/storage.py` — giao diện driver + driver đĩa local. **Không** đặt trong `app/content/`: code chạy lúc có request mà nằm đó sẽ phá `test_content_isolation`
+- [x] Driver Cloudinary (ảnh), chọn bằng cấu hình; thiếu credential thì API **từ chối khởi động** kèm tên biến còn thiếu
+- [x] Endpoint xin vé, ghim `public_id` + định dạng + biến đổi đầu vào + hạn dùng ngắn
+- [x] Endpoint xác nhận, **có xác minh lại với nhà cung cấp** — không tin lời trình duyệt (ADR-006 §2.3)
+- [x] Tước EXIF, chặn SVG, giới hạn cạnh dài ở incoming transformation
+- [x] **P1-8 rate limiting**, fail **closed**: Redis là thứ duy nhất đứng giữa một tài khoản và hoá đơn, nên cho qua khi nó hỏng là mất tiền
+- [x] `read_dimensions` thuần stdlib — driver local phải điền được `width`/`height` (NOT NULL) mà không kéo Pillow vào runtime
+- [x] **Đã chạy thật lên Cloudinary một vòng** và sửa hai lỗi chỉ dịch vụ thật mới bộc lộ (ADR-006 §2.4b, và `image/jpg` không phải MIME hợp lệ)
+- [x] Migration `010_avatar` — `user_profile.avatar_storage_key` nullable; ảnh chữ cái đầu vẫn là mặc định và là chỗ rơi về khi ảnh bị gỡ
+- [x] Avatar dùng tiền tố khoá **`avatar/`** riêng, và endpoint gắn avatar **từ chối khoá ngoài vùng đó** — thiếu kiểm tra này thì một người trỏ avatar vào ảnh nội dung, và lệnh dọn ảnh mồ côi sau này sẽ xoá mất thứ đang dùng
+- [x] Gỡ avatar **không** xoá file đồng bộ: request của người dùng không nên chờ một dịch vụ bên ngoài, và nếu nó lỗi thì hồ sơ giữ ảnh cũ trong khi người dùng đã thấy báo thành công
+- [x] Trang `/admin/media` — thư viện ảnh, ba trường bản quyền bắt buộc, ghi công **hiện ra** chứ không chỉ được lưu (ADR-004 §4.2)
+- [x] `Avatar` nhận `src`; header và trang hồ sơ dùng ảnh thật, thiếu thì rơi về chữ cái đầu
+- [x] **Đã chạy thật lên Cloudinary** cả hai luồng (ảnh nội dung + avatar) qua chính các endpoint
+- [ ] Driver R2 (audio) — vẫn chặn bởi việc chưa có domain trên Cloudflare DNS (`PHASE2-AUDIO` §A5)
+- [ ] Lệnh đối chiếu file mồ côi (§10.4 giờ tốn tiền hàng tháng)
 
 ---
 

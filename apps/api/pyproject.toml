@@ -16,6 +16,11 @@ dependencies = [
     "email-validator>=2.2.0",
     "redis>=5.2.0",
     "httpx>=0.28.0",
+    # Chỉ dùng cho route nhận file ở môi trường dev (`/media-upload`), thứ được
+    # gắn khi environment=development. Vẫn để ở dependency chính chứ không ở
+    # extra: thiếu nó thì `LocalDiskDriver.ticket()` trỏ tới một route không tồn
+    # tại, và người mới sẽ phải có tài khoản Cloudinary mới chạy được dự án.
+    "python-multipart>=0.0.20",
 ]
 
 [project.optional-dependencies]

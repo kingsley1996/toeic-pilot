@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app import models  # noqa: F401 — registers every table on Base.metadata
-from app.api.routes import admin, auth, health, learning, profile
+from app.api.routes import admin, auth, health, learning, media, profile
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.logging import RequestContextMiddleware, configure_logging
@@ -56,6 +56,7 @@ app.include_router(auth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
+app.include_router(media.router, prefix="/api/v1")
 
 # Development only. Everywhere else audio is served from the object store or CDN
 # named by AUDIO_PUBLIC_BASE_URL, and the API never sees the request — routing it
@@ -67,3 +68,7 @@ if settings.environment == "development":
     # otherwise fail to boot the API at all.
     settings.media_root.mkdir(parents=True, exist_ok=True)
     app.mount("/media", StaticFiles(directory=settings.media_root), name="media")
+    # Đường NHẬN file của driver local, đứng thay nhà cung cấp khi chạy máy mình.
+    # Cùng điều kiện với mount ở trên, và vì cùng một lý do: ở production file đi
+    # thẳng tới Cloudinary/R2 và không byte nào chạy qua tiến trình này.
+    app.include_router(media.local_upload_router)

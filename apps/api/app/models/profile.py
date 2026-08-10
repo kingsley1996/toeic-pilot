@@ -92,3 +92,11 @@ class UserProfile(Base, TimestampMixin):
     # changes, and nothing would report that.
     daily_new_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
     preferred_accent: Mapped[str | None] = mapped_column(String(8), nullable=True)
+
+    # Ảnh đại diện đã tải lên. NULL là trạng thái bình thường, không phải dữ
+    # liệu thiếu: ảnh chữ cái đầu vẫn là mặc định, và cột này rơi về NULL khi
+    # một ảnh bị gỡ (ADR-006 §2.7).
+    #
+    # Không có hàng `image_asset`: avatar là media của người dùng, không có bản
+    # quyền để ghi và không qua cổng duyệt (ADR-006 §2.1).
+    avatar_storage_key: Mapped[str | None] = mapped_column(String(512), nullable=True)

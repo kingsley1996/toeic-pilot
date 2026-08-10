@@ -35,6 +35,9 @@ export type UserProfileUpdate = components["schemas"]["UserProfileUpdate"];
 export type PasswordChange = components["schemas"]["PasswordChange"];
 export type LearningStats = components["schemas"]["LearningStats"];
 export type StudyDay = components["schemas"]["StudyDay"];
+export type UploadTicket = components["schemas"]["UploadTicket"];
+export type ImageAssetPublic = components["schemas"]["ImageAssetPublic"];
+export type ImageConfirm = components["schemas"]["ImageConfirm"];
 export type DictationSummary = components["schemas"]["DictationSummary"];
 export type DictationDetail = components["schemas"]["DictationDetail"];
 export type DictationResult = components["schemas"]["DictationResult"];
@@ -66,6 +69,14 @@ export const API_ROUTES = {
   // chính người đang đăng nhập, không phải trang cá nhân công khai.
   profile: "/api/v1/profile",
   profileStats: "/api/v1/profile/stats",
+  avatarTicket: "/api/v1/profile/avatar/ticket",
+  avatar: "/api/v1/profile/avatar",
+
+  // Thư viện ảnh. Upload đi THẲNG tới nhà cung cấp; API chỉ ký vé và ghi
+  // nhận (ADR-006 §2.3), nên không có đường nào ở đây nhận byte của file.
+  adminImages: "/api/v1/admin/media/images",
+  adminImageTicket: "/api/v1/admin/media/images/ticket",
+  adminImageConfirm: "/api/v1/admin/media/images/confirm",
 
   // Learning Hub
   topics: "/api/v1/topics",

@@ -19,6 +19,10 @@ _FIELD_SEP = "\x1f"
 
 AUDIO_KEY_PREFIX = "audio"
 IMAGE_KEY_PREFIX = "image"
+# Tiền tố riêng cho avatar: media người dùng và media nội dung nằm hai nhánh
+# khác nhau ngay ở đường dẫn, nên một lệnh dọn nhắm vào nhánh này không thể vô
+# tình chạm vào nhánh kia.
+AVATAR_KEY_PREFIX = "avatar"
 
 # Kept as plain tuples rather than a native PostgreSQL enum: adding a value to a
 # native enum needs its own migration, and Alembic downgrades across enum types
@@ -91,6 +95,10 @@ def image_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
     return storage_key_for(source_hash_value, ext=ext, prefix=IMAGE_KEY_PREFIX)
 
 
+def avatar_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
+    return storage_key_for(source_hash_value, ext=ext, prefix=AVATAR_KEY_PREFIX)
+
+
 def public_audio_url(storage_key: str, base_url: str | None = None) -> str:
     """Join the public base URL and a storage key into a playable URL.
 
@@ -106,3 +114,17 @@ def public_audio_url(storage_key: str, base_url: str | None = None) -> str:
 
         base_url = settings.audio_public_base_url
     return f"{base_url.rstrip('/')}/{storage_key.lstrip('/')}"
+
+
+def upload_source_hash(upload_id: str, transform_version: str = "1") -> str:
+    """Danh tính của một lần upload — **không** phải địa chỉ nội dung.
+
+    Mọi `source_hash` khác trong hệ băm *đầu vào sinh ra file*: text + giọng cho
+    audio, URL nguồn + phiên bản biến đổi cho ảnh lấy về. Nhờ vậy sinh lại cho
+    ra đúng khoá cũ, và `media_state` phát hiện được clip đã lệch khỏi text.
+
+    File do người tải lên không có đầu vào nào như thế. Nó không tái tạo được —
+    đó chính là lý do phải upload — nên ở đây `source_hash` chỉ còn giữ vai trò
+    khoá duy nhất, và nó băm một id ngẫu nhiên do phía ta sinh ra.
+    """
+    return _digest("upload", upload_id, transform_version)

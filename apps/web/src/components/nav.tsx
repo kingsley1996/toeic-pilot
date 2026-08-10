@@ -104,7 +104,13 @@ function UserMenu({ showRole }: { showRole: boolean }) {
           open ? "border-rule-strong bg-recess" : "border-transparent hover:bg-recess",
         )}
       >
-        <Avatar id={user.id} name={user.profile.display_name} email={user.email} size="sm" />
+        <Avatar
+          id={user.id}
+          name={user.profile.display_name}
+          email={user.email}
+          src={user.profile.avatar_url}
+          size="sm"
+        />
         <span className="hidden max-w-[10rem] truncate text-small font-semibold sm:block">
           {name}
         </span>

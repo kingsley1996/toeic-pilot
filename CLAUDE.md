@@ -223,6 +223,17 @@ An error that names a way out has to have that way out **reachable from where th
 
 ## Testing conventions
 
+**Test the flows that matter, and stop.** The bar for a new test is that a plausible future change would break it *and* that breakage would matter. Tests that exist to raise a count, restate a type signature, or pin a detail nobody would ever change are cost with no return: they slow the suite, they have to be updated by hand every time the code moves, and a wall of green from tests that assert nothing is worse than a smaller suite you trust.
+
+**Do not build elaborate scaffolding to make a test possible.** Hand-rolled fakes of third-party services, fixtures that mutate global settings, generated binary fixtures, multi-step orchestration to reach one assertion — when a test needs that much machinery, the machinery becomes the thing being maintained, and it drifts from the real system it is imitating without anything reporting it. Prefer the version of the test that fits in one screen. If a flow can only be checked with real credentials against a real service, **run it once by hand and write down what you learned** — a note in the ADR outlives a fragile test that nobody dares run.
+
+A short checklist before adding one:
+
+- Would this fail for a *real* defect, or only for a rewrite that changes nothing?
+- Is the setup longer than the assertion? That is usually a design smell in the code, not a reason for a bigger fixture.
+- Is a nearby test already covering this path? Extend it instead of adding a sibling.
+
+
 - Backend tests live in `apps/api/tests/`. `conftest.py` provides `db_session` (SQLite via `StaticPool` — required, or each connection gets a private empty database) and `client` (overrides `get_db`).
 - Tests needing PostgreSQL are marked `integration` and skip cleanly without it.
 - Tests calling a third-party service are marked `external` and are deselected by `addopts`. **CI must never run them.** Because an explicit `-m` on the command line replaces `addopts` entirely — including the documented `pytest -m "not integration"` — they also self-guard on `TOEIC_ALLOW_EXTERNAL_TTS=1`.

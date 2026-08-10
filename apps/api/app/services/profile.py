@@ -7,6 +7,7 @@ hại cho tới lần đầu có ai đó thêm chiều import ngược lại.
 
 from sqlalchemy.orm import Session
 
+from app.core.storage import get_driver
 from app.models.profile import UserProfile
 from app.models.user import User
 from app.schemas.profile import UserProfilePublic
@@ -42,4 +43,9 @@ def profile_public(profile: UserProfile) -> UserProfilePublic:
         minutes_per_day=profile.minutes_per_day,
         daily_new_limit=profile.daily_new_limit,
         preferred_accent=profile.preferred_accent,
+        avatar_url=(
+            get_driver("image").public_url(profile.avatar_storage_key)
+            if profile.avatar_storage_key
+            else None
+        ),
     )

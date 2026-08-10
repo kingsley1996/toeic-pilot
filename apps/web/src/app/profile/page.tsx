@@ -20,8 +20,10 @@ import {
   Pencil,
   RotateCcw,
   Target,
+  Trash2,
+  Upload,
 } from "lucide-react";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { ContributionGraph } from "@/components/contribution-graph";
 import { Modal } from "@/components/modal";
@@ -47,6 +49,7 @@ import {
 import { ApiError, apiFetch } from "@/lib/api";
 import { setAccessToken } from "@/lib/auth-storage";
 import { useRequireSession } from "@/lib/session";
+import { messageFor, uploadAvatar } from "@/lib/upload";
 
 /*
  * Danh sách múi giờ rút gọn, không phải toàn bộ IANA.
@@ -165,6 +168,10 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [savedNote, setSavedNote] = useState<string | null>(null);
 
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+
   const [pwSaving, setPwSaving] = useState(false);
   const [pwDone, setPwDone] = useState(false);
   const [pwError, setPwError] = useState<string | null>(null);
@@ -216,6 +223,41 @@ export default function ProfilePage() {
     },
     [token, refresh],
   );
+
+  const onPickAvatar = useCallback(
+    async (file: File) => {
+      if (!token) return;
+      setAvatarError(null);
+      setAvatarBusy(true);
+      try {
+        await uploadAvatar(file, token);
+        // Avatar nằm trong phiên (nó đi kèm hồ sơ), nên header chỉ đổi sau khi
+        // đọc lại — không gọi thì ảnh mới chỉ hiện ở đây, không hiện trên nav.
+        refresh();
+      } catch (err) {
+        setAvatarError(messageFor(err, "Không tải được ảnh."));
+      } finally {
+        setAvatarBusy(false);
+        // Xoá giá trị input để chọn LẠI đúng file vừa rồi vẫn kích hoạt onChange.
+        if (fileInput.current) fileInput.current.value = "";
+      }
+    },
+    [token, refresh],
+  );
+
+  const onRemoveAvatar = useCallback(async () => {
+    if (!token) return;
+    setAvatarError(null);
+    setAvatarBusy(true);
+    try {
+      await apiFetch(API_ROUTES.avatar, { method: "DELETE", token });
+      refresh();
+    } catch (err) {
+      setAvatarError(messageFor(err, "Không gỡ được ảnh."));
+    } finally {
+      setAvatarBusy(false);
+    }
+  }, [token, refresh]);
 
   const closeModal = useCallback(() => {
     setEditing(null);
@@ -289,6 +331,11 @@ export default function ProfilePage() {
           <Alert tone="ok">{savedNote}</Alert>
         </div>
       )}
+      {avatarError && (
+        <div className="mb-6">
+          <Alert tone="alert">{avatarError}</Alert>
+        </div>
+      )}
 
       {/*
        * Khối danh tính: nền `recess` chứ không `panel`.
@@ -298,7 +345,46 @@ export default function ProfilePage() {
        */}
       <section className="rounded border border-rule bg-recess p-5 sm:p-6">
         <div className="flex flex-wrap items-start gap-5">
-          <Avatar id={user.id} name={profile.display_name} email={user.email} size="lg" />
+          <div className="flex flex-col items-center gap-2">
+            <Avatar
+              id={user.id}
+              name={profile.display_name}
+              email={user.email}
+              src={profile.avatar_url}
+              size="lg"
+            />
+            <div className="flex items-center gap-1">
+              {/* Input file ẩn: điều khiển gốc của trình duyệt không tạo kiểu
+                  được, nên nút thật là cái nhãn bên cạnh. */}
+              <input
+                ref={fileInput}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void onPickAvatar(file);
+                }}
+              />
+              <button
+                type="button"
+                disabled={avatarBusy}
+                onClick={() => fileInput.current?.click()}
+                className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-label font-semibold text-ink-muted transition-colors hover:bg-panel hover:text-ink disabled:opacity-50"
+              >
+                {avatarBusy ? <Spinner /> : <Upload size={12} strokeWidth={2} aria-hidden />}
+                {profile.avatar_url ? "Đổi ảnh" : "Tải ảnh"}
+              </button>
+              {profile.avatar_url && (
+                <IconButton
+                  icon={Trash2}
+                  aria-label="Gỡ ảnh đại diện"
+                  disabled={avatarBusy}
+                  onClick={() => void onRemoveAvatar()}
+                />
+              )}
+            </div>
+          </div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-start gap-3">
