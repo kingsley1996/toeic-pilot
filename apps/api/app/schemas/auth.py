@@ -3,6 +3,7 @@ from typing import Annotated
 from pydantic import AfterValidator, BaseModel, EmailStr, Field
 
 from app.core.security import BCRYPT_MAX_BYTES
+from app.schemas.profile import UserProfilePublic
 
 
 def _within_bcrypt_limit(value: str) -> str:
@@ -36,6 +37,15 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class PasswordChange(BaseModel):
+    # The current password is required even though the caller is already
+    # authenticated. A valid token proves this browser was signed in at some
+    # point, not that whoever is holding it now knows the password — and that
+    # gap is the entire case this endpoint exists to close.
+    current_password: str
+    new_password: Password
+
+
 class UserPublic(BaseModel):
     id: str
     email: EmailStr
@@ -44,3 +54,9 @@ class UserPublic(BaseModel):
     # enforces the role server-side through `require_role`.
     role: str
     created_at: str
+    # Embedded rather than left to a second request. `SessionProvider` resolves
+    # the signed-in user exactly once for the whole app, and the header needs a
+    # name to render on that first paint — a separate /profile fetch would put a
+    # second loading state inside the one place the app has already decided to
+    # have only one.
+    profile: UserProfilePublic

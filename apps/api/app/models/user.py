@@ -28,3 +28,15 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    # Set the moment the password changes, and compared against the token's `iat`
+    # so every token issued before that moment stops working. Without it "đổi mật
+    # khẩu" is theatre: the user changes it *because* they think someone else has
+    # a session, the UI says it worked, and the other session keeps running until
+    # the token expires on its own schedule.
+    #
+    # NULL means the password has never been changed, and no token is checked
+    # against anything — which is what lets this ship without logging out every
+    # existing session, since tokens minted before this column carry no `iat`.
+    password_changed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )

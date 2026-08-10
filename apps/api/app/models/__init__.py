@@ -16,6 +16,7 @@ from app.models.practice import (
     QuestionOption,
     QuestionSet,
 )
+from app.models.profile import UserProfile
 from app.models.scoring import ScoreConversion, ScoreScale
 from app.models.topic import Topic
 from app.models.user import User
@@ -50,6 +51,7 @@ __all__ = [
     "ScoreScale",
     "Topic",
     "User",
+    "UserProfile",
     "VocabularyAudio",
     "VocabularyEntry",
     "VocabularyReviewLog",

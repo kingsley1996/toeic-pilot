@@ -6,7 +6,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import decode_access_token
+from app.core.security import PASSWORD_CLAIM, decode_access_token, password_epoch
 from app.models.user import User
 
 security = HTTPBearer(auto_error=False)
@@ -45,6 +45,14 @@ def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # Equality, not recency: see `password_epoch` for why an "issued after" test
+    # cannot be made correct at one-second resolution.
+    if payload.get(PASSWORD_CLAIM, 0) != password_epoch(user.password_changed_at):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token issued before the password was changed",
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user

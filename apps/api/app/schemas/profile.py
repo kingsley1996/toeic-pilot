@@ -1,0 +1,120 @@
+from datetime import date
+from typing import Annotated
+from zoneinfo import available_timezones
+
+from pydantic import AfterValidator, BaseModel, Field
+
+from app.core.media import AUDIO_ACCENTS
+from app.models.profile import (
+    MAX_DISPLAY_NAME,
+    MAX_TARGET_SCORE,
+    MIN_TARGET_SCORE,
+    TARGET_SCORE_STEP,
+)
+
+SUPPORTED_LOCALES = ("vi", "en")
+
+
+def _known_timezone(value: str) -> str:
+    # Checked against the system's own IANA database rather than a list we keep,
+    # because a list we keep goes stale the next time a country changes its rules.
+    # `available_timezones()` builds a set, so it is looked up once per call and
+    # not worth caching for a field that changes about once per user per lifetime.
+    if value not in available_timezones():
+        raise ValueError(f"Unknown time zone: {value}")
+    return value
+
+
+def _whole_step_score(value: int) -> int:
+    if value % TARGET_SCORE_STEP != 0:
+        raise ValueError(
+            f"TOEIC scores go in steps of {TARGET_SCORE_STEP}; {value} is not one that exists."
+        )
+    return value
+
+
+TimeZone = Annotated[str, Field(max_length=64), AfterValidator(_known_timezone)]
+TargetScore = Annotated[
+    int, Field(ge=MIN_TARGET_SCORE, le=MAX_TARGET_SCORE), AfterValidator(_whole_step_score)
+]
+DisplayName = Annotated[str, Field(min_length=1, max_length=MAX_DISPLAY_NAME)]
+
+
+class UserProfilePublic(BaseModel):
+    """A learner's own profile. Never anyone else's — nothing here is public in
+    the sense of being visible to other users, and no endpoint serves it by id.
+    """
+
+    display_name: str | None
+    timezone: str
+    locale: str
+    target_score: int | None
+    exam_date: date | None
+    minutes_per_day: int | None
+    daily_new_limit: int | None
+    preferred_accent: str | None
+
+
+class UserProfileUpdate(BaseModel):
+    """A partial update. Every field is optional in two different ways.
+
+    `None` means **clear this**, and an absent key means **leave it alone**. They
+    are not the same thing, and a plain `field or existing` merge cannot tell them
+    apart — which is how "xoá ngày thi" turns into a no-op that nobody reports.
+    The route reads `model_dump(exclude_unset=True)` so absence stays visible.
+
+    `timezone` and `locale` are `NOT NULL` in the table, so they take a value or
+    stay as they are; there is no meaningful "no time zone".
+    """
+
+    display_name: DisplayName | None = None
+    timezone: TimeZone | None = None
+    locale: str | None = Field(default=None, pattern="^(" + "|".join(SUPPORTED_LOCALES) + ")$")
+    target_score: TargetScore | None = None
+    exam_date: date | None = None
+    minutes_per_day: int | None = Field(default=None, ge=5, le=480)
+    daily_new_limit: int | None = Field(default=None, ge=1, le=200)
+    preferred_accent: str | None = Field(
+        default=None, pattern="^(" + "|".join(AUDIO_ACCENTS) + ")$"
+    )
+
+
+class StudyDay(BaseModel):
+    """One day of activity, in the learner's own time zone."""
+
+    date: date
+    reviews: int
+    dictation_items: int
+
+
+class LearningStats(BaseModel):
+    """Derived on read, every time, from the attempt and review tables.
+
+    There is no statistics table and there should not be one. The same reasoning
+    is already written on `StoryProgress` and `VocabularyProgress`: a counter
+    maintained alongside the history drifts from it the first time a row is
+    deleted or re-graded, and nothing anywhere reports the disagreement.
+    """
+
+    vocabulary_total: int
+    vocabulary_mastered: int
+    vocabulary_due: int
+    reviews_total: int
+    dictation_completed: int
+    dictation_attempts: int
+    # Consecutive days up to and including today, counted in `timezone`. A streak
+    # computed in UTC breaks for every learner who studies in the evening, since
+    # their day ends at 17:00 UTC.
+    current_streak: int
+    longest_streak: int
+    active_days: int
+    recent: list[StudyDay]
+
+
+__all__ = [
+    "LearningStats",
+    "StudyDay",
+    "SUPPORTED_LOCALES",
+    "UserProfilePublic",
+    "UserProfileUpdate",
+]
