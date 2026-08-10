@@ -590,6 +590,12 @@ export interface paths {
          *     Due before new on purpose: reviewing what is about to be forgotten is worth
          *     more than meeting something for the first time, and if the session is cut
          *     short it should be the new words that wait.
+         *
+         *     `include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ
+         *     lại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát
+         *     duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi
+         *     vào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi
+         *     đọc code.
          */
         get: operations["review_session_api_v1_vocabulary_review_session_get"];
         put?: never;
@@ -611,6 +617,31 @@ export interface paths {
         get: operations["get_vocabulary_api_v1_vocabulary__entry_id__get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/{entry_id}/recall": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit Recall
+         * @description Gõ lại từ: máy chấm, rồi điểm SM-2 được suy ra từ kết quả.
+         *
+         *     Đây là điểm khác biệt duy nhất so với `/review`, và là lý do endpoint này
+         *     tồn tại: thẻ lật hỏi "bạn có nhớ không" rồi ghi thẳng câu trả lời, nên
+         *     người học có thể lật thẻ, nghĩ "à đúng rồi tôi biết mà", bấm Dễ và không
+         *     học được gì. Ở đây phải viết ra được trước đã.
+         */
+        post: operations["submit_recall_api_v1_vocabulary__entry_id__recall_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1077,6 +1108,57 @@ export interface components {
         ParseRequest: {
             /** Raw Text */
             raw_text: string;
+        };
+        /**
+         * RecallResult
+         * @description Kết quả chấm + lượt ôn đã ghi.
+         *
+         *     Kế thừa `ReviewResult` vì một lần gõ lại CHÍNH LÀ một lượt ôn: nó chạy qua
+         *     đúng SM-2 đó và ghi đúng `vocabulary_review_log` đó. Khác biệt duy nhất là
+         *     điểm do máy suy ra thay vì do người học tự bấm.
+         */
+        RecallResult: {
+            /** Due At */
+            due_at: string;
+            /** Ease Factor */
+            ease_factor: string;
+            /** Entry Id */
+            entry_id: string;
+            /** Expected */
+            expected: string;
+            /** Grade */
+            grade: number;
+            /** Interval Days */
+            interval_days: number;
+            /** Lapses */
+            lapses: number;
+            /** Repetitions */
+            repetitions: number;
+            /** Typed */
+            typed: string;
+            /** Verdict */
+            verdict: string;
+        };
+        /**
+         * RecallSubmit
+         * @description Một lần gõ lại từ.
+         */
+        RecallSubmit: {
+            /**
+             * Easy
+             * @default false
+             */
+            easy: boolean;
+            /**
+             * Give Up
+             * @default false
+             */
+            give_up: boolean;
+            /**
+             * Typed
+             * @description Nguyên văn học viên gõ, không chuẩn hoá trước
+             */
+            typed: string;
         };
         /**
          * ReviewCard
@@ -2725,6 +2807,8 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                /** @description False = chỉ những từ học viên đã gặp, không kèm từ mới */
+                include_new?: boolean;
             };
             header?: never;
             path?: never;
@@ -2770,6 +2854,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VocabularyDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_recall_api_v1_vocabulary__entry_id__recall_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecallSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecallResult"];
                 };
             };
             /** @description Validation Error */

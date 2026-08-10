@@ -29,6 +29,7 @@ export type VocabularyMastery = components["schemas"]["VocabularyMastery"];
 export type ReviewCard = components["schemas"]["ReviewCard"];
 export type ReviewSession = components["schemas"]["ReviewSession"];
 export type ReviewResult = components["schemas"]["ReviewResult"];
+export type RecallResult = components["schemas"]["RecallResult"];
 export type DictationSummary = components["schemas"]["DictationSummary"];
 export type DictationDetail = components["schemas"]["DictationDetail"];
 export type DictationResult = components["schemas"]["DictationResult"];
@@ -64,6 +65,7 @@ export const API_ROUTES = {
   // sẽ bắt "progress" trước rồi 422 khi parse nó thành UUID.
   vocabularyProgress: "/api/v1/vocabulary-progress",
   submitReview: (id: string) => `/api/v1/vocabulary/${id}/review`,
+  submitRecall: (id: string) => `/api/v1/vocabulary/${id}/recall`,
   dictation: "/api/v1/dictation",
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,
   submitDictation: (id: string) => `/api/v1/dictation/${id}/attempts`,

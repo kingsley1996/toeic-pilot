@@ -114,7 +114,7 @@ export function useSession(): Session {
 
 /**
  * Sends anonymous visitors to /login, and — when `canEdit` is asked for — anyone
- * without it back to the dashboard.
+ * without it back to /learn, the home of the learner area.
  *
  * Redirecting rather than showing a 403 is the point: someone who never had
  * access should simply not be there, not be told they were refused. The server
@@ -132,7 +132,7 @@ export function useRequireSession(options: { canEdit?: boolean } = {}): Session 
       return;
     }
     if (session.status === "authenticated" && needsEdit && !session.canEdit) {
-      router.replace("/dashboard");
+      router.replace("/learn");
     }
   }, [session.status, session.canEdit, needsEdit, router]);
 

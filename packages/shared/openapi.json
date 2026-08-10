@@ -1246,6 +1246,90 @@
         "title": "ParseRequest",
         "type": "object"
       },
+      "RecallResult": {
+        "description": "Kết quả chấm + lượt ôn đã ghi.\n\nKế thừa `ReviewResult` vì một lần gõ lại CHÍNH LÀ một lượt ôn: nó chạy qua\nđúng SM-2 đó và ghi đúng `vocabulary_review_log` đó. Khác biệt duy nhất là\nđiểm do máy suy ra thay vì do người học tự bấm.",
+        "properties": {
+          "due_at": {
+            "title": "Due At",
+            "type": "string"
+          },
+          "ease_factor": {
+            "title": "Ease Factor",
+            "type": "string"
+          },
+          "entry_id": {
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "expected": {
+            "title": "Expected",
+            "type": "string"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "integer"
+          },
+          "interval_days": {
+            "title": "Interval Days",
+            "type": "integer"
+          },
+          "lapses": {
+            "title": "Lapses",
+            "type": "integer"
+          },
+          "repetitions": {
+            "title": "Repetitions",
+            "type": "integer"
+          },
+          "typed": {
+            "title": "Typed",
+            "type": "string"
+          },
+          "verdict": {
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entry_id",
+          "grade",
+          "interval_days",
+          "repetitions",
+          "lapses",
+          "ease_factor",
+          "due_at",
+          "verdict",
+          "expected",
+          "typed"
+        ],
+        "title": "RecallResult",
+        "type": "object"
+      },
+      "RecallSubmit": {
+        "description": "Một lần gõ lại từ.",
+        "properties": {
+          "easy": {
+            "default": false,
+            "title": "Easy",
+            "type": "boolean"
+          },
+          "give_up": {
+            "default": false,
+            "title": "Give Up",
+            "type": "boolean"
+          },
+          "typed": {
+            "description": "Nguyên văn học viên gõ, không chuẩn hoá trước",
+            "title": "Typed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "typed"
+        ],
+        "title": "RecallSubmit",
+        "type": "object"
+      },
       "ReviewCard": {
         "description": "A card in a review session.\n\n`is_new` drives the daily new-card cap: without knowing which cards are new,\nthe session cannot enforce a limit, and an uncapped queue of new words builds\na review debt the learner meets a fortnight later.",
         "properties": {
@@ -4182,7 +4266,7 @@
     },
     "/api/v1/vocabulary-review/session": {
       "get": {
-        "description": "Cards due now, then new ones up to the daily cap.\n\nDue before new on purpose: reviewing what is about to be forgotten is worth\nmore than meeting something for the first time, and if the session is cut\nshort it should be the new words that wait.",
+        "description": "Cards due now, then new ones up to the daily cap.\n\nDue before new on purpose: reviewing what is about to be forgotten is worth\nmore than meeting something for the first time, and if the session is cut\nshort it should be the new words that wait.\n\n`include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ\nlại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát\nduy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi\nvào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi\nđọc code.",
         "operationId": "review_session_api_v1_vocabulary_review_session_get",
         "parameters": [
           {
@@ -4195,6 +4279,18 @@
               "minimum": 1,
               "title": "Limit",
               "type": "integer"
+            }
+          },
+          {
+            "description": "False = chỉ những từ học viên đã gặp, không kèm từ mới",
+            "in": "query",
+            "name": "include_new",
+            "required": false,
+            "schema": {
+              "default": true,
+              "description": "False = chỉ những từ học viên đã gặp, không kèm từ mới",
+              "title": "Include New",
+              "type": "boolean"
             }
           }
         ],
@@ -4269,6 +4365,65 @@
           }
         },
         "summary": "Get Vocabulary",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary/{entry_id}/recall": {
+      "post": {
+        "description": "Gõ lại từ: máy chấm, rồi điểm SM-2 được suy ra từ kết quả.\n\nĐây là điểm khác biệt duy nhất so với `/review`, và là lý do endpoint này\ntồn tại: thẻ lật hỏi \"bạn có nhớ không\" rồi ghi thẳng câu trả lời, nên\nngười học có thể lật thẻ, nghĩ \"à đúng rồi tôi biết mà\", bấm Dễ và không\nhọc được gì. Ở đây phải viết ra được trước đã.",
+        "operationId": "submit_recall_api_v1_vocabulary__entry_id__recall_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecallSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecallResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Recall",
         "tags": [
           "learning"
         ]

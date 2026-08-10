@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Headphones, Menu, RotateCcw, SquarePen, X } from "lucide-react";
+import { BookOpen, Headphones, House, Menu, SquarePen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -17,9 +17,23 @@ import { useSession } from "@/lib/session";
  *
  * Icon theo khái niệm, không theo trang — bảng tra ở DESIGN-SYSTEM §8.4.
  */
+/*
+ * Ba mục NGANG HÀNG: một việc hôm nay, và hai kho nội dung. Không mục nào chứa
+ * mục nào.
+ *
+ * Bộ cũ là "Learning Hub · Ôn tập · Dictation", và đó là một lỗi phân loại:
+ * Ôn tập và Dictation nằm BÊN TRONG Learning Hub, nên người dùng không đoán
+ * được nên bấm cái nào. Nó cũng khiến `/dashboard` — nơi đăng nhập đẩy tới và
+ * là chỗ DUY NHẤT hiện số từ cần ôn — không có mặt ở đâu trong nav cả.
+ *
+ * `Ôn tập` và `Gõ lại từ` cố ý KHÔNG có ở đây: chúng là hai CHẾ ĐỘ của cùng một
+ * hàng đợi SM-2, không phải hai nơi chốn. Đặt chúng thành mục nav là hứa hẹn hai
+ * hoạt động, trong khi mở cái nào trước thì cái đó tiêu hết hàng đợi của ngày và
+ * cái còn lại hiện "không còn từ nào đến hạn".
+ */
 const LEARN_LINKS: NavItem[] = [
-  { href: "/learn", label: "Learning Hub", Icon: BookOpen },
-  { href: "/learn/review", label: "Ôn tập", Icon: RotateCcw },
+  { href: "/learn", label: "Hôm nay", Icon: House },
+  { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
 ];
 
@@ -52,8 +66,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Header dính dùng MỘT đường kẻ ở đáy, không đổ bóng (§6.3). */}
       <header className="sticky top-0 z-20 border-b border-rule bg-ground/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
+          {/* Đã đăng nhập thì logo về NHÀ, không về trang giới thiệu: bấm logo
+              rồi rơi vào một trang bán hàng là chuyện chỉ xảy ra với người đã
+              là người dùng rồi. */}
           <Link
-            href="/"
+            href={status === "authenticated" ? "/learn" : "/"}
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
             {/* Dấu vuông, không phải tròn: bo góc 4px là ngôn ngữ của cả hệ. */}

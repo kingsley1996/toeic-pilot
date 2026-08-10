@@ -1,12 +1,18 @@
 "use client";
 
-import { API_ROUTES, type UserPublic, type UserRegister } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type TokenResponse,
+  type UserPublic,
+  type UserRegister,
+} from "@toeic-pilot/shared";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { Button, Field, FieldError, Input, Panel, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
+import { setAccessToken } from "@/lib/auth-storage";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,7 +34,29 @@ export default function RegisterPage() {
         method: "POST",
         body: JSON.stringify(body),
       });
-      router.push("/login");
+      /*
+       * Đăng nhập luôn bằng chính thông tin vừa nhập. Trước đây trang này đẩy
+       * thẳng sang `/login`, nên người dùng phải gõ lại đúng email và mật khẩu
+       * họ vừa đặt xong ba giây trước — trong khi ngay phía trên có dòng "Miễn
+       * phí. Bắt đầu học được ngay."
+       *
+       * `register` trả về `UserPublic` chứ không trả token, nên phải gọi thêm
+       * một lượt. Đổi nó thành trả token thì sạch hơn nhưng là đổi hợp đồng đã
+       * có test; một request nữa ở đây rẻ hơn nhiều.
+       *
+       * Nếu bước đăng nhập hỏng thì tài khoản VẪN đã tạo xong, nên rơi về
+       * `/login` là đúng — người dùng đăng nhập tay và không mất gì.
+       */
+      try {
+        const token = await apiFetch<TokenResponse>(API_ROUTES.login, {
+          method: "POST",
+          body: JSON.stringify(body),
+        });
+        setAccessToken(token.access_token);
+        router.push("/learn");
+      } catch {
+        router.push("/login");
+      }
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Không tạo được tài khoản.");
     } finally {
