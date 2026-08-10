@@ -300,18 +300,36 @@ Hai chi tiết dễ làm sai nếu ai đó viết lại chỗ này:
 
 **Còn hở:** cổng chỉ chặn ở **thời điểm publish**. Sửa text của một mục **đã published** thì nó vẫn đang published với audio đã lệch — không có gì tự hạ nó xuống `draft`. Hiện phải chạy `backfill_audio` để phát hiện.
 
-### 10.2 — 🔴 Không sinh được clip nhiều giọng ⇒ Part 2 và Part 3 bất khả thi
+### 10.2 — ✅ ĐÃ GỠ (2026-08-10) — clip nhiều giọng cho Part 2 và Part 3
 
-`SpecItem` là `(text, voice)`: một text, một giọng, một clip. `voices: [...]` chỉ nhân bản cùng một text ra nhiều accent. Không có cách nào diễn đạt "lượt 1 giọng nam, lượt 2 giọng nữ, ghép thành một file".
+> Mục này từng là blocker lớn nhất của Sprint 5 và được nhắc lại ở `CLAUDE.md`, `ADR-006` §5 và `ROADMAP` mục 4d. Giữ nguyên phần mô tả cũ bên dưới vì lập luận vẫn đúng — chỉ kết luận "bất khả thi" là sai.
 
-| Part | Cần | Hiện tại |
-|---|---|---|
-| 1 | 1 giọng đọc 4 câu | ✅ |
-| 4 | 1 giọng độc thoại | ✅ |
-| 2 | câu hỏi 1 giọng + 3 đáp giọng khác | ❌ |
-| 3 | hội thoại 2–3 giọng | ❌ |
+**Vấn đề (vẫn đúng như đã mô tả):** `SpecItem` là `(text, voice)` — một text, một giọng, một clip. `voices: [...]` chỉ nhân bản cùng một text ra nhiều accent. Không diễn đạt được "lượt 1 giọng nam, lượt 2 giọng nữ, ghép thành một file".
 
-Part 3 là part đông câu nhất (39 câu). Cần bước ghép audio, mà repo cố ý không có `ffmpeg`. Cũng không có cách kiểm soát khoảng lặng giữa các lượt nói.
+| Part | Cần | Trước | Nay |
+|---|---|---|---|
+| 1 | 1 giọng đọc 4 câu | ✅ | ✅ |
+| 4 | 1 giọng độc thoại | ✅ | ✅ |
+| 2 | câu hỏi 1 giọng + 3 đáp giọng khác | ❌ | ✅ |
+| 3 | hội thoại 2–3 giọng | ❌ | ✅ |
+
+**Vì sao nó không thật sự bất khả thi.** Ghi chú cũ nói đúng thứ còn thiếu — *"cần bước ghép audio, mà repo cố ý không có ffmpeg"* — nhưng rút ra kết luận rộng hơn tiền đề. "Repo không có ffmpeg" đúng ở chỗ nó cần đúng: **ảnh production không có và không cần**. Đường ống nội dung thì chạy offline, sau extra `content`, nơi edge-tts đã là một điều kiện tiên quyết của máy soạn nội dung. ffmpeg là cùng loại điều kiện đó.
+
+**Cách làm.**
+
+- Spec có thêm dạng thứ hai: `{"turns": [{text, voice}, ...], "gap_ms": N}`. Hai dạng cũ không đổi.
+- `conversation_source_hash` băm **cả danh sách lượt** cùng `gap_ms` — thứ tự có tính, số lượt có tính, và tiền tố `"conversation"` giữ cho hội thoại một lượt không trùng hash với một clip đơn.
+- `app/content/audio_join.py` nối ở mức khung (`-c copy`), với khoảng lặng **sinh theo đúng tham số đo được của lượt đầu**.
+
+**Ba điều học được khi chạy thật, không đoán ra được:**
+
+1. **Phép kiểm độ dài không bắt được lệch tham số.** Bản đầu chỉ đối chiếu độ dài file ra với tổng mong đợi. Thử nối 24 kHz mono với 44.1 kHz stereo: ffmpeg **không báo lỗi**, ffprobe vẫn đọc ra độ dài gần đúng, phép kiểm lọt — nhưng phần sau phát sai tốc độ. Tham số phải được kiểm **thẳng**, không suy ra từ triệu chứng. Khi lệch thì mã lại thay vì từ chối, vì ca lệch có thật: trộn bản thu người thật vào giữa các lượt TTS.
+2. **`gap_ms` là phần CỘNG THÊM.** edge-tts tự chèn ~1,1 s đệm ở mỗi ranh giới lượt. Đo bằng `silencedetect`: `gap_ms=600` cho ra khoảng lặng thật ~1,74 s. Nên `gap_ms=0` không phải là không có khoảng lặng — nó là ~1,1 s, vốn đã là nhịp hội thoại tự nhiên.
+3. **Trộn accent trong một clip là hợp lệ và cần thiết** — Part 2 cố ý hỏi ở accent này và đáp ở accent khác. Nhưng `audio_asset.accent` giữ đúng một giá trị, nên khi các lượt khác accent thì spec **phải khai** `"accent"`. Chọn hộ sẽ ghi một giá trị trông như dữ liệu thật mà không ai từng cân nhắc.
+
+**Đã sinh thật:** `content/sources/demo_part2_responses.jsonl` (3 câu Part 2) và `demo_part3_conversations.jsonl` (2 hội thoại Part 3). Kiểm bằng `silencedetect`: clip Part 2 dài 16,8 s có đúng 3 khoảng lặng nội bộ; hội thoại Part 3 dài 39,6 s có đúng 3 ranh giới người nói.
+
+**Còn lại:** `audio_asset.voice` của clip nhiều giọng là `"multi"`, nên `media_state.clip_state` không xác minh được nó — nhưng cũng chưa cần: `media_state` chỉ soi `dictation_item` và `vocabulary_audio`, còn clip hội thoại gắn vào `question`/`question_set`. Khi Part 3 có bản ghi lời lưu trong database thì sẽ cần một phép kiểm tương ứng.
 
 ### 10.3 — 🔴 Ảnh **không** tái tạo được, dù audio thì có
 

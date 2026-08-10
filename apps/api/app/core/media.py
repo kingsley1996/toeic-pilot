@@ -10,6 +10,7 @@ it is; both invariants are easy to break and neither breaks loudly.
 """
 
 import hashlib
+from collections.abc import Sequence
 from pathlib import Path
 
 # Unit separator. A printable delimiter such as "|" would let a source text
@@ -28,6 +29,12 @@ AVATAR_KEY_PREFIX = "avatar"
 # native enum needs its own migration, and Alembic downgrades across enum types
 # are painful enough that a CHECK constraint is the cheaper trade.
 AUDIO_SOURCES = ("tts", "scraped", "uploaded")
+
+# Giá trị của `audio_asset.voice` cho một clip nhiều giọng. Cột đó chỉ giữ được
+# một giọng, mà câu hỏi "clip này giọng nào" không có câu trả lời đơn cho một
+# đoạn hội thoại — nên nó trả lời trung thực là "nhiều", và chi tiết từng lượt
+# nằm ở `source_text` dưới dạng có nhãn.
+MULTI_VOICE = "multi"
 
 # BCP-47 tags for the four accents TOEIC listening requires. Free text here would
 # make "en-us", "US" and "American" all look like distinct accents to a query.
@@ -60,6 +67,39 @@ def source_hash(text: str, voice: str, engine: str, engine_version: str) -> str:
     existing asset the day the engine changes — see A4.3.
     """
     return _digest(text, voice, engine, engine_version)
+
+
+def conversation_source_hash(
+    turns: Sequence[tuple[str, str]],
+    gap_ms: int,
+    engine: str,
+    engine_version: str,
+) -> str:
+    """Fingerprint a clip made of several turns, each in its own voice.
+
+    Same principle as `source_hash` — băm ĐẦU VÀO, không băm bytes — nhưng đầu
+    vào ở đây là cả danh sách lượt nói. Ba điều phải nằm trong hash, và bỏ sót
+    bất kỳ cái nào cũng hỏng im lặng:
+
+    - **Thứ tự các lượt.** Đảo hai lượt là một đoạn hội thoại khác hẳn. Vì
+      `_digest` nối các trường bằng `\x1f` theo đúng thứ tự truyền vào, thứ tự
+      đã nằm trong hash — nhưng chỉ khi ta trải các lượt ra chứ không sắp xếp.
+    - **`gap_ms`.** Khoảng lặng giữa các lượt là một phần của file phát ra. Đổi
+      nó mà hash không đổi thì lần sinh sau sẽ "bỏ qua vì đã có", và bản thu cũ
+      với nhịp cũ ở lại vĩnh viễn.
+    - **Số lượt** (`len`). Không có nó, [("ab",v)] và [("a",v),("b",v)]... thực
+      ra vẫn khác nhau nhờ `\x1f`, nhưng ghi số lượt vào là hàng rào rẻ tiền
+      cho mọi cách trải phẳng mà ai đó sửa về sau.
+
+    Chuỗi mở đầu `"conversation"` giữ cho một hội thoại MỘT lượt không bao giờ
+    băm trùng với một clip đơn cùng text và giọng. Trùng thì hai thứ được tạo
+    bằng hai đường khác nhau — một cái đi qua ffmpeg, một cái không — sẽ dùng
+    chung một `storage_key`, và cái tới sau lặng lẽ thắng.
+    """
+    fields: list[str] = ["conversation", str(len(turns)), str(gap_ms), engine, engine_version]
+    for text, voice in turns:
+        fields.extend((text, voice))
+    return _digest(*fields)
 
 
 def image_source_hash(source_url: str, transform_version: str) -> str:

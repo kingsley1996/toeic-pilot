@@ -13,7 +13,13 @@ from app.content.generate import generate, read_spec
 from app.content.manifest import read_manifest
 from app.content.storage import LocalDirStore
 from app.content.tts import LOGICAL_VOICES, accent_for
-from app.core.media import AUDIO_ACCENTS, source_hash, storage_key_for
+from app.core.media import (
+    AUDIO_ACCENTS,
+    MULTI_VOICE,
+    conversation_source_hash,
+    source_hash,
+    storage_key_for,
+)
 
 
 class FakeEngine:
@@ -86,7 +92,7 @@ def test_read_spec_accepts_a_single_voice(tmp_path: Path) -> None:
     [
         ({"voice": "us_female_1"}, "non-empty 'text'"),
         ({"text": "  ", "voice": "us_female_1"}, "non-empty 'text'"),
-        ({"text": "invoice"}, "needs 'voice' or 'voices'"),
+        ({"text": "invoice"}, "needs 'voice', 'voices' or 'turns'"),
         ({"text": "invoice", "voice": "martian_female_1"}, "unknown logical voice"),
     ],
 )
@@ -217,3 +223,84 @@ def test_store_rejects_a_key_that_escapes_the_root(tmp_path: Path) -> None:
     store = LocalDirStore(root=tmp_path / "media")
     with pytest.raises(ValueError, match="escapes the store root"):
         store.put("../../etc/passwd", b"nope", "audio/mpeg")
+
+
+# --- hội thoại nhiều giọng (MEDIA-PIPELINE §10.2) -------------------------
+
+
+def fake_join(parts: list[bytes], gap_ms: int) -> bytes:
+    return f"::gap{gap_ms}::".encode().join(parts)
+
+
+def test_conversation_hash_follows_order_and_gap() -> None:
+    """Hai thứ mà bỏ sót khỏi hash sẽ hỏng theo cùng một kiểu im lặng.
+
+    Đảo hai lượt hoặc đổi khoảng lặng đều cho ra một file khác hẳn. Nếu hash
+    không đổi theo, lần sinh sau sẽ "bỏ qua vì đã có" và bản thu cũ ở lại vĩnh
+    viễn — không lỗi, không cảnh báo, chỉ là nội dung sai.
+    """
+    a = [("Where is the meeting?", "us_female_1"), ("Third floor.", "us_male_1")]
+    digest = conversation_source_hash(a, 700, "fake-tts", "1")
+
+    assert conversation_source_hash(list(reversed(a)), 700, "fake-tts", "1") != digest
+    assert conversation_source_hash(a, 500, "fake-tts", "1") != digest
+    # Và một hội thoại một lượt không được trùng với một clip đơn cùng text:
+    # hai đường tạo khác nhau dùng chung storage_key thì cái tới sau thắng.
+    single = [("Third floor.", "us_male_1")]
+    assert conversation_source_hash(single, 0, "fake-tts", "1") != source_hash(
+        "Third floor.", "us_male_1", "fake-tts", "1"
+    )
+
+
+def test_mixed_accents_must_be_declared_not_guessed(tmp_path: Path) -> None:
+    """Part 2 cố ý trộn accent, nên không cấm — nhưng cũng không đoán hộ.
+
+    `audio_asset.accent` giữ đúng một giá trị. Lấy đại accent của lượt đầu sẽ
+    tạo ra một con số trông như dữ liệu thật mà không ai từng cân nhắc.
+    """
+    turns = [
+        {"text": "Where is the meeting?", "voice": "us_female_1"},
+        {"text": "Third floor.", "voice": "uk_male_1"},
+    ]
+    with pytest.raises(ValueError, match='khai rõ "accent"'):
+        list(read_spec(write_spec(tmp_path, [{"turns": turns}])))
+
+    (item,) = list(read_spec(write_spec(tmp_path, [{"turns": turns, "accent": "en-GB"}])))
+    assert item.accent == "en-GB"
+
+
+def test_generate_renders_a_conversation_as_one_asset(tmp_path: Path) -> None:
+    spec = write_spec(
+        tmp_path,
+        [
+            {
+                "gap_ms": 500,
+                "turns": [
+                    {"text": "Where is the meeting?", "voice": "us_female_1"},
+                    {"text": "Third floor.", "voice": "us_male_1"},
+                ],
+            }
+        ],
+    )
+    engine = FakeEngine()
+    manifest_path = tmp_path / "manifest.jsonl"
+
+    counts = generate(
+        spec,
+        engine=engine,
+        store=LocalDirStore(root=tmp_path / "media"),
+        manifest_path=manifest_path,
+        duration_probe=fake_duration,
+        joiner=fake_join,
+    )
+
+    assert counts == {"total": 1, "skipped": 0, "generated": 1}
+    assert len(engine.calls) == 2, "mỗi lượt phải là một lần gọi TTS riêng"
+
+    (record,) = read_manifest(manifest_path).values()
+    assert record["voice"] == MULTI_VOICE
+    assert record["accent"] == "en-US"
+    # Bản ghi lời mang nhãn giọng: nối trơn sẽ mất đúng thông tin cần nhất.
+    assert record["source_text"] == (
+        "[us_female_1] Where is the meeting?\n[us_male_1] Third floor."
+    )

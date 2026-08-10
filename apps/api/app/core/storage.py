@@ -285,9 +285,16 @@ class CloudinaryDriver:
         payload = "&".join(f"{key}={params[key]}" for key in sorted(params))
         return hashlib.sha1(f"{payload}{self.api_secret}".encode()).hexdigest()  # noqa: S324
 
-    def ticket(self, storage_key: str) -> UploadTicket:
-        timestamp = int(time.time())
-        signed: dict[str, str] = {
+    def _signed_params(self, storage_key: str, timestamp: int) -> dict[str, str]:
+        """Ràng buộc được ký, dùng chung cho CẢ hai đường lên Cloudinary.
+
+        Một hàm chứ không hai bản sao: đường trình duyệt (`ticket`) và đường
+        công cụ offline (`upload_file`) phải tạo ra object giống hệt nhau. Nếu
+        chúng khai khác nhau — khác `transformation`, khác `allowed_formats` —
+        thì ảnh do biên tập viên tải lên và ảnh do đường ống lấy về sẽ được xử
+        lý khác nhau, mà không có gì trong hệ thống nói ra điều đó.
+        """
+        return {
             "timestamp": str(timestamp),
             # KHÔNG gửi `folder`. Gửi nó thì Cloudinary tự ghép thư mục vào
             # trước `public_id` ở tài khoản dùng chế độ thư mục cố định, nhưng
@@ -307,10 +314,16 @@ class CloudinaryDriver:
             ),
             "overwrite": "false",
         }
+
+    @property
+    def _upload_url(self) -> str:
+        return f"https://api.cloudinary.com/v1_1/{self.cloud_name}/{self.resource_type}/upload"
+
+    def ticket(self, storage_key: str) -> UploadTicket:
+        timestamp = int(time.time())
+        signed = self._signed_params(storage_key, timestamp)
         return UploadTicket(
-            upload_url=(
-                f"https://api.cloudinary.com/v1_1/{self.cloud_name}/{self.resource_type}/upload"
-            ),
+            upload_url=self._upload_url,
             fields={**signed, "api_key": self.api_key, "signature": self._signature(signed)},
             storage_key=storage_key,
             max_bytes=_max_bytes(self.kind),
@@ -370,6 +383,35 @@ class CloudinaryDriver:
             )
         except httpx.HTTPError as error:
             raise StorageError(f"Cloudinary unreachable: {error}") from error
+
+    def upload_file(self, storage_key: str, path: Path) -> None:
+        """Đẩy một file từ đĩa lên Cloudinary. **Chỉ dành cho công cụ offline.**
+
+        Không nằm trong `StorageDriver`, cùng lý do với `LocalDiskDriver.write`:
+        §2.3 nói byte không bao giờ đi qua FastAPI, và đưa một đường ghi byte
+        vào giao diện chung sẽ biến thứ chỉ dùng ở `app/content/**` thành thứ
+        trông như gọi được từ một request handler.
+
+        Nó tồn tại vì ADR-004 vẫn còn hiệu lực: `app/content/images.py` lấy ảnh
+        CC về đĩa, và nếu không có đường này thì mọi ảnh nó lấy về đều không
+        bao giờ tới được production — đường duy nhất còn lại là biên tập viên
+        tự tải từng tấm qua màn quản trị, đúng thứ ADR-004 dựng ra để tránh.
+        """
+        timestamp = int(time.time())
+        signed = self._signed_params(storage_key, timestamp)
+        try:
+            response = httpx.post(
+                self._upload_url,
+                data={**signed, "api_key": self.api_key, "signature": self._signature(signed)},
+                files={"file": (path.name, path.read_bytes(), guess_mime(storage_key))},
+                timeout=self.timeout_seconds * 6,
+            )
+        except httpx.HTTPError as error:
+            raise StorageError(f"Cloudinary unreachable: {error}") from error
+        if response.status_code >= 400:
+            raise StorageError(
+                f"Cloudinary từ chối upload: {response.status_code} {response.text[:200]}"
+            )
 
     def _remote_id(self, storage_key: str) -> str:
         """Id của object bên Cloudinary: thư mục + khoá, đã bỏ phần mở rộng.
@@ -516,6 +558,29 @@ class S3Driver:
         # Nối chuỗi, y như driver local. Runtime KHÔNG BAO GIỜ gọi object store
         # để dựng URL phát — đó là điều khiến audio không phải đi qua FastAPI.
         return f"{self.base_url.rstrip('/')}/{storage_key.lstrip('/')}"
+
+    def upload_file(self, storage_key: str, path: Path) -> None:
+        """Đẩy một file từ đĩa lên object store. **Chỉ dành cho công cụ offline.**
+
+        Cùng lý do với `CloudinaryDriver.upload_file` và `LocalDiskDriver.write`:
+        không nằm trong `StorageDriver`, vì §2.3 nói byte không đi qua FastAPI.
+        """
+        try:
+            self.client.upload_file(
+                str(path),
+                self.bucket,
+                storage_key,
+                ExtraArgs={
+                    "ContentType": guess_mime(storage_key),
+                    # Khoá là địa chỉ nội dung, nên một khoá luôn trỏ tới đúng
+                    # một file không bao giờ đổi — điều kiện để nói với CDN rằng
+                    # nó được giữ mãi. Với hạn mức egress của gói free thì đây
+                    # không phải tinh chỉnh.
+                    "CacheControl": "public, max-age=31536000, immutable",
+                },
+            )
+        except Exception as error:
+            raise StorageError(f"Không đẩy được {storage_key}: {error}") from error
 
     def _head(self, storage_key: str) -> dict[str, Any]:
         from botocore.exceptions import ClientError

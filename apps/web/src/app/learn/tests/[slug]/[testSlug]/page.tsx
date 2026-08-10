@@ -1,9 +1,14 @@
 "use client";
 
-import { API_ROUTES, type PartBreakdown, type TestDetail } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type AttemptState,
+  type PartBreakdown,
+  type TestDetail,
+} from "@toeic-pilot/shared";
 import { ArrowLeft, BookOpen, Clock, FileText, Headphones, Users } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import {
@@ -38,7 +43,10 @@ const MODES: Array<{ value: ReviewMode; title: string; description: string }> = 
 
 export default function TestDetailPage() {
   const params = useParams<{ slug: string; testSlug: string }>();
-  const { status } = useSession();
+  const router = useRouter();
+  const { status, token } = useSession();
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
   const [test, setTest] = useState<TestDetail | null>(null);
   const [missing, setMissing] = useState(false);
   const [mode, setMode] = useState<ReviewMode>("exam");
@@ -74,6 +82,30 @@ export default function TestDetailPage() {
     : available
         .filter((part) => chosen.has(part.part))
         .reduce((sum, part) => sum + part.question_count, 0);
+
+  async function start() {
+    if (!token || starting) return;
+    setStarting(true);
+    setStartError(null);
+    try {
+      const attempt = await apiFetch<AttemptState>(API_ROUTES.attempts, {
+        method: "POST",
+        token,
+        body: JSON.stringify({
+          test_slug: params.testSlug,
+          review_mode: mode,
+          // Rỗng = làm CẢ ĐỀ, khớp với `scope='full'` ở schema. Gửi đủ bảy
+          // part để nói "làm tất" sẽ tạo ra bảy hàng `attempt_part` mô tả đúng
+          // thứ mà việc không có hàng nào đã mô tả rồi.
+          parts: isFullTest ? [] : [...chosen],
+        }),
+      });
+      router.push(`/learn/attempts/${attempt.id}`);
+    } catch {
+      setStartError("Không mở được đề. Kiểm tra kết nối rồi thử lại.");
+      setStarting(false);
+    }
+  }
 
   function toggle(part: number) {
     setChosen((current) => {
@@ -152,8 +184,7 @@ export default function TestDetailPage() {
             <span className="font-semibold">
               {blocked.map((part) => `Part ${part.part}`).join(" và ")}
             </span>
-            . Phần nghe của hai part đó cần bản thu nhiều giọng trong cùng một file — đường ống
-            audio hiện chưa làm được, nên chúng chưa có nội dung.
+            . Câu hỏi cho những phần đó đang được biên soạn.
           </Alert>
         </div>
       )}
@@ -268,10 +299,21 @@ export default function TestDetailPage() {
             Bài thi tự động nộp khi hết giờ. Bạn có thể tạm dừng và làm tiếp sau.
           </p>
 
+          {startError && (
+            <div className="mt-4">
+              <Alert tone="alert">{startError}</Alert>
+            </div>
+          )}
+
           <div className="mt-4">
             {status === "authenticated" ? (
-              <Button size="lg" className="w-full" disabled={available.length === 0}>
-                Bắt đầu làm bài
+              <Button
+                size="lg"
+                className="w-full"
+                disabled={available.length === 0 || starting}
+                onClick={() => void start()}
+              >
+                {starting ? "Đang mở đề…" : "Bắt đầu làm bài"}
               </Button>
             ) : (
               /* Chưa đăng nhập thì mời đăng nhập chứ không giấu nút đi: người

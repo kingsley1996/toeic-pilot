@@ -328,6 +328,9 @@ Một khái niệm dùng **một** icon trong toàn app. Bảng này là bảng 
 | Cây nội dung | `FolderTree` |
 | Phần (section) · Bài (story) | `Layers` · `FileText` |
 | Kiểm tra bài | `Check` |
+| Đánh dấu câu hỏi | `Flag` (tô đặc khi đang bật) |
+| Nộp bài | `Send` (dùng chung với Xuất bản: cùng là "gửi đi, không lấy lại được") |
+| Đồng hồ, giới hạn giờ | `Clock` |
 | Lưu trữ · Bỏ lưu trữ | `Archive` · `ArchiveRestore` |
 | Sửa · Xoá | `Pencil` · `Trash2` |
 | Đổi thứ tự | `ArrowUp` · `ArrowDown` |

@@ -96,6 +96,14 @@ class QuestionPublic(BaseModel):
     audio_url: str | None
     image_url: str | None
     image_alt: str | None
+    # Ghi công BẮT BUỘC đi kèm ảnh, không phải trường trang trí.
+    #
+    # Phần lớn ảnh mở là CC-BY: được dùng *với điều kiện* ghi công. `image_asset`
+    # để `license`/`attribution` NOT NULL chính vì thế, nhưng lưu lại thôi chưa
+    # đủ — endpoint nào phục vụ ảnh cũng phải trả kèm, và giao diện phải hiện ra
+    # (ADR-004 §4.2). Lưu mà không hiện vẫn là vi phạm giấy phép.
+    image_attribution: str | None
+    image_license: str | None
     # Ngữ liệu dùng chung. Lặp lại trên từng câu của cụm sẽ tốn băng thông và
     # buộc client tự khử trùng lặp, nên chỉ câu ĐẦU của cụm mang nó.
     set_id: str | None

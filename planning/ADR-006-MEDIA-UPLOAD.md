@@ -146,6 +146,21 @@ Trần dung lượng được bù ở hai chỗ khác:
 1. **Giới hạn kích thước của chính bucket**, đặt ở bảng điều khiển nhà cung cấp. Đây là hàng rào thật sự, và nó nằm ngoài code — nhớ đặt.
 2. **`verify()` xoá file quá cỡ** thay vì chỉ từ chối. Từ chối suông để lại một object không ai tham chiếu tới nhưng vẫn tính tiền hàng tháng — đúng loại file mồ côi mà §4 đã ghi là chưa có đường dọn.
 
+### 2.8c Ảnh chỉ sống ở Cloudinary — kể cả ảnh do đường ống lấy về
+
+Quyết định 2026-08-10: **không có đường ảnh local nào ở production.** `IMAGE_STORAGE_DRIVER=cloudinary`, và đó là nơi duy nhất ảnh tồn tại.
+
+Điều này để lộ một lỗ hổng mà không màn hình nào từng chạm tới, cho tới khi màn làm bài dựng xong: `app/content/images.py` lấy ảnh CC về **đĩa local**, `seed` ghi hàng `image_asset` với khoá local, rồi `public_url` dựng một URL Cloudinary cho file **chưa bao giờ được tải lên đó**. Kết quả là ảnh Part 1 hỏng — và nó hỏng im lặng suốt nhiều sprint, vì chưa có gì hiển thị ảnh nội dung.
+
+Cách gỡ là `CloudinaryDriver.upload_file`, dùng bởi `push_media`. Không nằm trong `StorageDriver`, cùng lý do với `LocalDiskDriver.write`: §2.3 nói byte không đi qua FastAPI, và đưa một đường ghi byte vào giao diện chung sẽ biến thứ chỉ dùng ở `app/content/**` thành thứ trông như gọi được từ một request handler.
+
+Không làm thế thì ADR-004 mất đường ra production: mọi ảnh đường ống lấy về sẽ không bao giờ tới được người học, và lối duy nhất còn lại là biên tập viên tự tải từng tấm qua màn quản trị — đúng thứ ADR-004 dựng ra để tránh.
+
+Hai chi tiết đáng giữ:
+
+- **Cả hai đường lên Cloudinary dùng chung một hàm ký** (`_signed_params`). Đường trình duyệt và đường offline phải tạo ra object giống hệt nhau; hai bản sao sẽ lệch ở `transformation` hoặc `allowed_formats` mà không có gì báo. Đã kiểm: ảnh đẩy bằng `push_media` ra 239 131 byte từ file gốc 259 780 — tức `q_auto` và `fl_strip_profile` đã chạy, y như một lượt upload từ trình duyệt.
+- **`push_media` không so dung lượng với Cloudinary.** Cloudinary chuẩn hoá ảnh lúc nhận, nên kích thước ở đích luôn khác trên đĩa. Với ảnh, "có mặt" đã là đủ — khoá là địa chỉ nội dung.
+
 ### 2.9 `StaticFiles` **có** hỗ trợ Range — luật cũ bị đọc rộng hơn ý nó
 
 `CLAUDE.md` viết *"audio must never be proxied through FastAPI — that loses range requests and burns the API's bandwidth"*. Kiểm lại trên Starlette 1.4.1 đang cài: `FileResponse` đặt `accept-ranges: bytes`, phân tích header `Range`, trả 206 và trả 416 khi không thoả. **Mount `/media` không hề mất range request.**
@@ -172,6 +187,8 @@ Bốn thứ hỏng âm thầm nếu ai đó vi phạm:
 
 ## 5. Điều ADR này KHÔNG giải quyết
 
-**§10.2 — không sinh được clip nhiều giọng — vẫn là blocker của Sprint 5.** Không nhà cung cấp lưu trữ nào giải quyết nó. Upload audio thu bởi người thật là *đường vòng* (thu sẵn cả đoạn hội thoại rồi tải lên), không phải lời giải: nó đổi bài toán kỹ thuật thành bài toán sản xuất nội dung, và bài toán sản xuất thì đắt hơn.
+**§10.2 — clip nhiều giọng.** ADR này không gỡ nó, và câu đó vẫn đúng: **không nhà cung cấp lưu trữ nào giải quyết một bài toán sinh file.**
 
-Đừng bước vào Sprint 5 với niềm tin rằng ADR này đã gỡ xong đường đi cho Part 2 và Part 3.
+> Cập nhật 2026-08-10: §10.2 **đã được gỡ**, bằng một đường hoàn toàn khác — `app/content/audio_join.py`, ghép bằng ffmpeg ngoài luồng. Điều ADR này khẳng định vẫn nguyên giá trị; nó chỉ không còn là blocker của Sprint 5.
+
+Bản gốc còn viết rằng upload audio thu bởi người thật là *đường vòng*, không phải lời giải — vì nó đổi bài toán kỹ thuật thành bài toán sản xuất nội dung, mà sản xuất thì đắt hơn. Điều đó vẫn đúng, và giờ upload chỉ còn là lựa chọn về **chất lượng giọng**, không phải lối thoát duy nhất.

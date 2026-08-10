@@ -2045,6 +2045,28 @@
             ],
             "title": "Image Alt"
           },
+          "image_attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Attribution"
+          },
+          "image_license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image License"
+          },
           "image_url": {
             "anyOf": [
               {
@@ -2131,6 +2153,8 @@
           "audio_url",
           "image_url",
           "image_alt",
+          "image_attribution",
+          "image_license",
           "set_id",
           "set_title",
           "passages",

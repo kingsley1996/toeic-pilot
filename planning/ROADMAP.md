@@ -286,7 +286,7 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 
 ### ⚠️ Đọc trước khi tưởng sprint này gỡ xong Sprint 5
 
-**Nó KHÔNG gỡ §10.2.** Clip nhiều giọng cho Part 2/3 vẫn là blocker, và không nhà cung cấp lưu trữ nào giải quyết được. Upload audio thu người thật là *đường vòng sản xuất*, không phải lời giải kỹ thuật — xem ADR-006 §5.
+**Nó KHÔNG gỡ §10.2** — và cũng không cần nữa. Sprint media upload không đụng tới clip nhiều giọng, đúng như đã ghi; §10.2 được gỡ riêng bằng `app/content/audio_join.py` (ffmpeg, offline). Lập luận cũ vẫn đúng ở chỗ nó đúng: **không nhà cung cấp lưu trữ nào giải quyết một bài toán sinh file.**
 
 ### Phạm vi đã chốt
 - [x] Ảnh Part 1 do biên tập viên đưa · Avatar · Audio thu người thật · Ảnh minh hoạ từ vựng
@@ -341,7 +341,7 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 
 ### ⛔ Chặn phải gỡ trước, không phải sau
 
-**Đường ống audio hiện không sinh được clip nhiều giọng** (`MEDIA-PIPELINE` §10.2). `SpecItem` là `(text, voice)` — một text, một giọng, một file; `voices: [...]` chỉ nhân bản **cùng một text** ra nhiều accent, không diễn đạt được "lượt 1 giọng nam, lượt 2 giọng nữ".
+**~~Đường ống audio không sinh được clip nhiều giọng~~ — ĐÃ GỠ 2026-08-10** (`MEDIA-PIPELINE` §10.2). Spec có thêm dạng `{"turns": [...], "gap_ms": N}`, `conversation_source_hash` băm cả danh sách lượt, `app/content/audio_join.py` ghép bằng ffmpeg. Đã sinh thật 3 câu Part 2 và 2 hội thoại Part 3.
 
 | Part | Cần | Hiện tại |
 |---|---|---|
@@ -356,16 +356,21 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 
 ### Backend
 - [ ] `GET /api/v1/practice/parts/{part}` — bốc câu hỏi, tôn trọng `question_set` với part 3, 4, 6, 7
-- [ ] `POST /api/v1/attempts` — mở lượt làm, sinh `attempt_item` cho **toàn bộ** câu được phục vụ
-- [ ] `PATCH /api/v1/attempts/{id}/items/{item_id}` — lưu lựa chọn
-- [ ] `POST /api/v1/attempts/{id}/submit` — chốt, gọi `score_attempt()`
-- [ ] `GET /api/v1/attempts/{id}` — kết quả kèm giải thích
-- [ ] `GET /api/v1/tests` — danh sách đề
+- [x] `POST /api/v1/attempts` — mở lượt làm, sinh `attempt_item` cho **toàn bộ** câu được phục vụ. Câu bỏ trống được tạo hàng ngay và chấm là **sai**, không phải bỏ qua: ô trống ở cuối Part 7 là dữ kiện (hết giờ), không phải dữ liệu thiếu
+- [x] `PATCH /api/v1/attempts/{id}/questions/{question_id}` — lưu lựa chọn và cờ đánh dấu (khoá theo `question_id`, thứ frontend đã cầm sẵn, không phải `item_id` nội bộ)
+- [x] `POST /api/v1/attempts/{id}/submit` — chốt, gọi `score_attempt()`. Hết giờ thì tự chốt ở **request kế tiếp**, không cần tiến trình nền (A2.5 cố ý tránh job queue)
+- [x] `GET /api/v1/attempts/{id}` — trạng thái lượt làm. **Không kèm `correct_option_id` khi đang thi** — ngược với dictation, và có lý do: bài thi có điểm, mà điểm nằm lại trong lịch sử người học. Lượt làm của người khác trả **404 chứ không 403**
+- [x] `GET /api/v1/test-collections` + `/practice-tests/{slug}` — bộ đề và cấu trúc đề
 - [ ] *(Trình nhập nội dung đã chuyển sang Sprint 3 — [`ADR-005`](ADR-005-CONTENT-TOOLING.md). Ba ràng buộc ở `ADR-001` §B4 có hiệu lực từ đó.)*
 
 ### Frontend
-- [ ] Giao diện làm bài: đồng hồ đếm ngược, điều hướng câu, đánh dấu xem lại
-- [ ] Part 1 hiển thị ảnh + **ghi công** (`ADR-004` §4.2 — lưu attribution mà không hiện ra vẫn là vi phạm CC-BY)
+- [x] **Màn làm bài** (`/learn/attempts/[attemptId]`) — thanh part có badge tiến độ, lưới câu ở thanh bên chia theo part kèm khoảng số, đồng hồ đếm ngược, nút Đánh dấu, nộp bài có xác nhận, và bảng kết quả tại chỗ với đáp án đúng hiện ra sau khi nộp
+- [x] Nút "Bắt đầu làm bài" gọi `POST /attempts` rồi chuyển sang màn làm bài
+- [x] Đã chạy thật trong trình duyệt: mở đề → chọn đáp án → đánh dấu → đổi part → nộp → xem đáp án
+- [x] **Ảnh Part 1** — đã sửa bằng `CloudinaryDriver.upload_file` + `push_media`; ảnh do `images.py` lấy về giờ có đường lên Cloudinary, giữ nguyên `storage_key` nên hàng asset và liên kết câu hỏi không phải đụng tới (ADR-006 §2.8c)
+- [x] **Ghi công ảnh hiện ra dưới ảnh** (`ADR-004` §4.2) — `QuestionPublic` trả kèm `image_attribution`/`image_license`. Lưu mà không hiện vẫn là vi phạm CC-BY, và trước hôm nay schema thậm chí không gửi hai trường đó xuống
+- [x] Chặn chiều cao ảnh: ảnh dọc đẩy trình phát audio xuống dưới màn hình, ở một phần thi tính bằng giây
+- [x] Part 1 hiển thị ảnh + **ghi công** (`ADR-004` §4.2 — lưu attribution mà không hiện ra vẫn là vi phạm CC-BY)
 - [ ] Part 2 chỉ hiện A/B/C, không hiện chữ
 - [ ] Part 3, 4, 6, 7 hiện kích thích dùng chung cho cả nhóm câu
 - [ ] Trang kết quả: điểm từng section, điểm tổng, giải thích từng câu
@@ -462,7 +467,7 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 | Branch protection chưa bật | Sprint 0 → **Sprint 6** | Cần quyền admin repo. 13 gate xanh mà không ai bắt buộc thì chỉ là gợi ý |
 | `draft` chưa có lối ra cho `question` | `ADR-001` §A4.8 | Từ vựng và dictation **đã có** cổng publish. `question` thì chưa có endpoint nào — Sprint 5 |
 | Bản quyền đề ETS | `ADR-005` §2 | `question.source` phải điền đúng ở **từng hàng**. `original` = soạn mới theo cấu trúc; `licensed` = đã thật sự xin phép |
-| Audio nhiều giọng bất khả thi | `MEDIA-PIPELINE` §10.2 | `SpecItem` là `(text, voice)` — không diễn đạt được hội thoại. **Chặn Part 2 và Part 3**, tức chặn phần lớn Sprint 5 |
+| ~~Audio nhiều giọng bất khả thi~~ ✅ gỡ 2026-08-10 | `MEDIA-PIPELINE` §10.2 | Dạng spec `turns` + ghép bằng ffmpeg ngoài luồng. Part 2 và Part 3 đã có đường ra audio |
 | Ảnh không tái tạo được | `MEDIA-PIPELINE` §10.3 | Đầu vào là URL của người khác; `media/` bị gitignore ⇒ với ảnh, thư mục media là **bản sao duy nhất** |
 | `attribution` chưa được render ở đâu | `ADR-004` §4.2 · `MEDIA-PIPELINE` §10.10 | Lưu ghi công mà không hiện ra vẫn là vi phạm CC-BY. Chưa có endpoint ảnh nào nên chưa vi phạm — sẽ vi phạm ngay khi Part 1 lên |
 | `question_set` không có chỗ chứa ảnh | `MEDIA-PIPELINE` §10.7 | Part 7 đôi khi có biểu đồ/biểu mẫu |

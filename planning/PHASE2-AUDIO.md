@@ -150,6 +150,18 @@ Nếu lẫn lộn hai thứ này, sẽ có hai bản sao lệch nhau và không 
 
 **Cập nhật 2026-08-09 — hai bản sao *có thể* lệch nhau thật, và giờ đã có cái phát hiện.** Sửa `transcript` mà không sinh lại audio ⇒ học viên nghe câu cũ nhưng bị chấm theo câu mới. `app/services/media_state.py` bắt được bằng cách tính lại `source_hash` từ transcript hiện tại và so với `audio_asset.source_hash` — không cần thêm cột nào, thuần tuý là cổ tức của A4.2. Cổng publish từ chối nội dung lệch; `backfill_audio` sinh lại. Nó so với **`dictation_item.transcript`**, không bao giờ với `source_text` — đúng như mục này quy định. Chi tiết: [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.1.
 
+### A4.5 — Hash của một clip nhiều giọng phải mang cả DANH SÁCH lượt, có thứ tự
+
+Hệ quả trực tiếp của A4.2, thêm vào 2026-08-10 khi §10.2 được gỡ.
+
+`conversation_source_hash(turns, gap_ms, engine, engine_version)` băm từng cặp `(text, voice)` **theo đúng thứ tự xuất hiện**, kèm `gap_ms` và số lượt. Ba thứ trong đó, bỏ cái nào cũng hỏng im lặng theo cùng một kiểu — lần sinh sau "bỏ qua vì đã có" trong khi nội dung đã khác:
+
+- **Thứ tự.** Đảo hai lượt là một đoạn hội thoại khác.
+- **`gap_ms`.** Khoảng lặng là một phần của file phát ra.
+- **Tiền tố `"conversation"`.** Không có nó, một hội thoại *một lượt* băm trùng với một clip đơn cùng text và giọng — hai thứ tạo bằng hai đường khác nhau dùng chung một `storage_key`, và cái tới sau lặng lẽ thắng.
+
+`audio_asset.voice` của clip loại này là `"multi"`, nên `media_state.clip_state` **không xác minh được nó**. Hiện chưa cần: `media_state` chỉ soi `dictation_item` và `vocabulary_audio`, còn clip hội thoại gắn vào `question`/`question_set`. Sẽ cần khi Part 3 có bản ghi lời lưu trong database.
+
 ## A5. Đường nâng cấp lên Cloudflare R2
 
 Điều kiện tiên quyết: **có domain trên DNS Cloudflare**. Không có thì R2 không mang lại lợi ích gì so với hiện tại.
@@ -232,6 +244,23 @@ Năm chỗ. Bốn cái đầu là cải thiện phát hiện lúc làm; cái cu�
 - 12 file vocabulary có 12 md5 khác nhau (kích thước byte trùng nhau chỉ vì mp3 CBR cùng độ dài 1,776 s)
 - Image production: `edge_tts` và `mutagen` **vắng mặt**; `from app.main import app` chạy được; `app.content.seed` import được; `app.content.generate` hỏng đúng chỗ gọi `mutagen`
 - `alembic upgrade head` → `downgrade base` → `upgrade head` sạch; `--autogenerate` cho diff rỗng ⇒ model và migration khớp nhau
+
+## B5. Ghép clip nhiều giọng — đã kiểm chứng bằng cách chạy thật (2026-08-10)
+
+Chạy tay, không dựng test, đúng theo luật ở `CLAUDE.md`: *"nếu một luồng chỉ kiểm được với dịch vụ thật thì chạy một lần bằng tay và ghi lại điều học được"*. Ở đây "dịch vụ thật" là ffmpeg cộng edge-tts, và bộ khung để kiểm tự động sẽ đắt hơn thứ nó bảo vệ.
+
+| Kiểm | Kết quả |
+|---|---|
+| Nối 3 clip edge-tts cùng tham số, `-c copy` | 8304 ms, mong đợi 8236 ms — lệch do làm tròn biên khung |
+| Nối 24 kHz mono với 44.1 kHz stereo | Lệch tham số ⇒ tự mã lại, ra 24 kHz mono, độ dài đúng |
+| Part 2 đã sinh (`gap_ms=600`) | 16,8 s, `silencedetect` thấy đúng 3 khoảng lặng nội bộ |
+| Part 3 đã sinh (`gap_ms=450`) | 39,6 s, đúng 3 ranh giới người nói |
+| Phát từ Supabase | 200 · `audio/mpeg` · 237 692 byte · 39,576 s |
+
+**Điều học được mà không đoán ra trước:**
+
+1. **Đối chiếu độ dài KHÔNG bắt được lệch tham số.** Bản đầu của `join_turns` chỉ so độ dài file ra với tổng mong đợi. Nối 24 kHz mono với 44.1 kHz stereo: ffmpeg không báo lỗi, ffprobe vẫn đọc ra độ dài gần đúng, phép kiểm lọt — nhưng phần sau phát sai tốc độ. Phải kiểm **tham số**, không kiểm triệu chứng. Phép so độ dài vẫn giữ, nhưng chỉ còn là lưới thứ hai cho hỏng nặng.
+2. **`gap_ms` là phần cộng thêm, không phải tổng.** edge-tts đệm ~1,1 s ở mỗi ranh giới lượt. `gap_ms=0` cho ra ~1,1 s, vốn đã là nhịp tự nhiên.
 
 ## B4. Chưa làm (có chủ ý)
 

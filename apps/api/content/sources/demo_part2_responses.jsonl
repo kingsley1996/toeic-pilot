@@ -1,0 +1,10 @@
+// Part 2 — Question-Response. Mỗi dòng là MỘT câu hỏi: lời hỏi ở một giọng,
+// ba câu đáp ở giọng khác, ghép thành một clip liền (MEDIA-PIPELINE §10.2).
+//
+// Nội dung `original`: viết theo ĐỊNH DẠNG của đề thi, không sao chép đề thật.
+// Định dạng không có bản quyền, câu chữ cụ thể thì có — xem CLAUDE.md.
+//
+// Accent được khai rõ vì lời hỏi và lời đáp cố ý khác accent, đúng như đề thật.
+{"accent": "en-US", "gap_ms": 600, "turns": [{"text": "Number seven. Where did you put the sales report?", "voice": "us_female_1"}, {"text": "(A) On your desk, next to the printer.", "voice": "uk_male_1"}, {"text": "(B) Yes, I finished it last night.", "voice": "uk_male_1"}, {"text": "(C) About thirty copies, I think.", "voice": "uk_male_1"}]}
+{"accent": "en-GB", "gap_ms": 600, "turns": [{"text": "Number eight. When does the training session start?", "voice": "uk_female_1"}, {"text": "(A) In the conference room upstairs.", "voice": "us_male_1"}, {"text": "(B) Not until nine thirty.", "voice": "us_male_1"}, {"text": "(C) She registered last Friday.", "voice": "us_male_1"}]}
+{"accent": "en-AU", "gap_ms": 600, "turns": [{"text": "Number nine. Why was the shipment delayed?", "voice": "au_female_1"}, {"text": "(A) The supplier ran out of packaging.", "voice": "ca_male_1"}, {"text": "(B) To the warehouse on Nguyen Hue Street.", "voice": "ca_male_1"}, {"text": "(C) It costs about two hundred dollars.", "voice": "ca_male_1"}]}

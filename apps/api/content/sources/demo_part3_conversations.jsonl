@@ -1,0 +1,9 @@
+// Part 3 — Conversations. Hai đến ba người nói, một clip liền. Đây là part
+// đông câu nhất của đề thật (39 câu), và là lý do chính §10.2 đáng gỡ.
+//
+// Nội dung `original`, viết theo định dạng đề — không sao chép đề thật.
+//
+// Các lượt cùng accent nên không cần khai "accent": hội thoại ở đây là giữa
+// hai người cùng vùng, còn đổi accent giữa các người nói là chuyện của Part 2.
+{"gap_ms": 450, "turns": [{"text": "Questions thirty-two through thirty-four refer to the following conversation. Hi, I'm calling about the office chairs we ordered last week. The invoice says they shipped on Monday, but nothing has arrived yet.", "voice": "us_female_1"}, {"text": "I'm sorry about that. Let me pull up the tracking number. It looks like the delivery was held at our warehouse because the street address was incomplete.", "voice": "us_male_1"}, {"text": "That's strange. We've used the same address for three years, and every other order has come through fine.", "voice": "us_female_1"}, {"text": "I'll correct it now and have the order sent out this afternoon. You should receive everything by Thursday morning.", "voice": "us_male_1"}]}
+{"gap_ms": 450, "turns": [{"text": "Questions thirty-five through thirty-seven refer to the following conversation. Good morning. I'd like to book the meeting room on the fourth floor for Thursday afternoon.", "voice": "uk_male_1"}, {"text": "Let me check the calendar. Thursday afternoon is already reserved for the quarterly review, but the room on the second floor is free from two o'clock.", "voice": "uk_female_1"}, {"text": "That should work. We'll need seating for twelve and a projector, if one is available.", "voice": "uk_male_1"}, {"text": "The projector is built in. I'll send you a confirmation by email before the end of the day.", "voice": "uk_female_1"}]}

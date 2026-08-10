@@ -215,6 +215,8 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
                     else None
                 ),
                 image_alt=image_asset.alt_text if image_asset is not None else None,
+                image_attribution=image_asset.attribution if image_asset is not None else None,
+                image_license=image_asset.license if image_asset is not None else None,
                 set_id=str(stimulus.id) if stimulus is not None else None,
                 set_title=stimulus.title if first_of_set and stimulus is not None else None,
                 passages=(

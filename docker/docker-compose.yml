@@ -36,7 +36,15 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
-      AUDIO_PUBLIC_BASE_URL: http://localhost:8000/media
+      # AUDIO_PUBLIC_BASE_URL cố ý KHÔNG có ở đây. Khối `environment` đè lên
+      # `env_file`, nên đặt nó ở đây — kể cả dưới dạng ${VAR:-default} — làm
+      # .env bị bỏ qua một cách im lặng: sửa .env, khởi động lại, không gì thay
+      # đổi. Dạng ${VAR:-default} cũng không cứu được, vì Compose nội suy từ
+      # .env của THƯ MỤC DỰ ÁN (`docker/`), không phải từ `env_file`.
+      # Mặc định đã nằm ở app/core/config.py; .env là nơi ghi đè nó.
+      #
+      # DATABASE_URL và REDIS_URL thì phải ở đây, vì chúng trỏ tới tên service
+      # của Compose và khác hẳn giá trị dùng trên host.
     ports:
       - "8000:8000"
     depends_on:

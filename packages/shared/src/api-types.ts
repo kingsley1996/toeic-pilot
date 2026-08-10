@@ -1756,6 +1756,10 @@ export interface components {
             id: string;
             /** Image Alt */
             image_alt: string | null;
+            /** Image Attribution */
+            image_attribution: string | null;
+            /** Image License */
+            image_license: string | null;
             /** Image Url */
             image_url: string | null;
             /** Number */
