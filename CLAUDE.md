@@ -127,7 +127,9 @@ Two consequences worth knowing:
 - The install is `--frozen-lockfile`, so if `package.json` and `pnpm-lock.yaml` disagree the container **refuses to start** with a message telling you to run `pnpm install` on the host. That is deliberate: booting with a guessed dependency tree is how the original bug hid for a whole session.
 - The entrypoint also rebuilds `@toeic-pilot/shared`. The bind mount hides the `dist/` the image built, and `apps/web` imports the compiled output — so on a fresh clone with no host build there would be no `dist` at all.
 
-**Do not run `pnpm dev` on the host while the `web` container is up.** `apps/web` is bind-mounted, so both write the same `apps/web/.next`, and a cache written by one confuses the other.
+**Do not run `pnpm dev` — or `pnpm build` — on the host while the `web` container is up.** `apps/web` is bind-mounted, so both write the same `apps/web/.next`, and a cache written by one confuses the other. `build` is the nastier of the two, and stopping the container first does **not** save you: the production artefacts it leaves behind (`BUILD_ID`, `prerender-manifest.json`, `required-server-files.json`) stay in `.next`, the dev server started afterwards reads the mixed cache, prints `✓ Ready in 292ms` exactly as it always does, and then hangs on every request without logging a single error — so the one output you would check to diagnose it looks entirely healthy. The fix is `rm -rf apps/web/.next`, then restart the container.
+
+That matters most when reproducing the `web` CI job locally, because its last step *is* `pnpm --filter @toeic-pilot/web build`. Run that step inside a container, or delete `.next` immediately afterwards.
 
 `api` runs `alembic upgrade head` via `docker/api-entrypoint.sh` before uvicorn binds (`RUN_MIGRATIONS=0` skips it). `web` waits for `api` to report healthy, and `api`'s healthcheck hits `/ready`, so nothing starts until Postgres is genuinely reachable. Source is bind-mounted for hot reload; only dependency-manifest changes need a rebuild.
 
