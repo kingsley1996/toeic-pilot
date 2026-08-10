@@ -112,11 +112,27 @@ def review(state: ReviewState, grade: int, now: datetime) -> ReviewOutcome:
     if grade < PASSING_GRADE:
         # Forgetting resets the schedule but keeps the ease penalty, so a card
         # that has been forgotten repeatedly comes back faster than a fresh one.
+        #
+        # A lapse is FORGETTING, and you cannot forget what you never learned.
+        # Failing a word on first sight used to count as one, which is wrong on
+        # its own terms (Anki counts lapses only once a card has left the
+        # learning stage) and wrong for what the column is FOR: `lapses` is
+        # documented on the model as the signal AI Coach reads to name a
+        # weakness. Counting first contact there would tell the coach a learner
+        # keeps forgetting words they have simply never been taught.
+        #
+        # Điều kiện là `repetitions` hoặc `lapses`, KHÔNG phải `interval_days`.
+        # Một thẻ trượt ngay lần đầu cũng được đặt `interval = 1`, nên lấy
+        # interval làm dấu hiệu "đã từng học" sẽ tính lapse cho lần trượt thứ
+        # hai của một từ chưa bao giờ đúng lần nào. `lapses > 0` mới là thứ
+        # phân biệt được "interval = 1 vì vừa quên" với "interval = 1 vì chưa
+        # từng thuộc".
+        learned_before = state.repetitions > 0 or state.lapses > 0
         return ReviewOutcome(
             ease_factor=ease,
             interval_days=FIRST_INTERVAL_DAYS,
             repetitions=0,
-            lapses=state.lapses + 1,
+            lapses=state.lapses + 1 if learned_before else state.lapses,
             due_at=now + timedelta(days=FIRST_INTERVAL_DAYS),
         )
 

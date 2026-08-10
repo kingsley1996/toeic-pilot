@@ -112,6 +112,35 @@ class ReviewResult(BaseModel):
     due_at: str
 
 
+class RecallSubmit(BaseModel):
+    """Một lần gõ lại từ."""
+
+    typed: str = Field(description="Nguyên văn học viên gõ, không chuẩn hoá trước")
+    # Thứ DUY NHẤT người học còn tự khai — và chỉ có tác dụng khi bài gõ đã
+    # đúng. Nói "dễ" trong lúc viết sai không nâng được điểm: server kiểm trước
+    # rồi mới xét cờ này.
+    easy: bool = False
+    # "Tôi chưa biết" — bỏ qua việc chấm và ghi thẳng điểm 0. Không có nó thì
+    # người học buộc phải bịa một câu trả lời để đi tiếp.
+    give_up: bool = False
+
+
+class RecallResult(ReviewResult):
+    """Kết quả chấm + lượt ôn đã ghi.
+
+    Kế thừa `ReviewResult` vì một lần gõ lại CHÍNH LÀ một lượt ôn: nó chạy qua
+    đúng SM-2 đó và ghi đúng `vocabulary_review_log` đó. Khác biệt duy nhất là
+    điểm do máy suy ra thay vì do người học tự bấm.
+    """
+
+    # `correct` / `typo` / `wrong` / `unknown` — `unknown` là học viên tự nói
+    # chưa biết, khác với đoán sai.
+    verdict: str
+    # Dạng đã chuẩn hoá của mục từ, trả về để giao diện đối chiếu từng ký tự.
+    expected: str
+    typed: str
+
+
 class DictationSummary(BaseModel):
     id: str
     difficulty: int
