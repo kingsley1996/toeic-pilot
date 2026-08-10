@@ -104,9 +104,6 @@ export default function HomePage() {
                 <ButtonLink href="/learn" size="lg">
                   Vào học
                 </ButtonLink>
-                <ButtonLink href="/dashboard" variant="secondary" size="lg">
-                  Bảng điều khiển
-                </ButtonLink>
               </>
             )}
             {status === "anonymous" && (
