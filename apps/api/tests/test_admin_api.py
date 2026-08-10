@@ -71,6 +71,22 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/dictation/parse", {"raw_text": "a"}),
     ("POST", "/api/v1/admin/dictation", {"rows": []}),
     ("GET", "/api/v1/admin/dictation", None),
+    ("GET", "/api/v1/admin/test-collections", None),
+    ("POST", "/api/v1/admin/test-collections", {"slug": "x", "title": "X"}),
+    ("POST", "/api/v1/admin/test-collections/x/publish", None),
+    ("GET", "/api/v1/admin/tests", None),
+    ("PATCH", "/api/v1/admin/tests/x", {"title": "X"}),
+    ("POST", "/api/v1/admin/tests", {"slug": "x", "title": "X"}),
+    ("GET", "/api/v1/admin/tests/x", None),
+    ("GET", "/api/v1/admin/tests/x/questions", None),
+    ("POST", "/api/v1/admin/tests/x/parts/7/parse", {"raw_text": "a"}),
+    ("POST", "/api/v1/admin/tests/x/parts", {"part": 7, "groups": []}),
+    ("POST", "/api/v1/admin/tests/x/publish", None),
+    (
+        "POST",
+        "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/publish",
+        None,
+    ),
 ]
 
 
@@ -301,3 +317,140 @@ def test_the_database_also_refuses_a_published_item_without_audio(db_session: Se
     db_session.add(item)
     with pytest.raises(IntegrityError):
         db_session.commit()
+
+
+# --- soạn đề: cổng chặn hai tầng (ADR-007 §2.8) -----------------------------
+
+
+def _reading_paste() -> str:
+    return """[PASSAGE] Thông báo
+The lobby entrance will be closed from Wednesday.
+
+[QUESTION]
+What is the notice mainly about?
+(A) A change of address
+(B) Building maintenance
+(C) A new tenant
+(D) A rent increase
+answer: B
+source: original
+explanation: Đoạn văn nói về việc đóng cửa sảnh để bảo trì.
+"""
+
+
+def test_a_test_refuses_to_publish_while_a_question_is_still_draft(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Chặn ở tầng đề, không chỉ tầng câu.
+
+    Cùng lý do cây dictation lọc `published` ở cả bốn tầng: một câu nháp nằm
+    trong đề đã publish sẽ lọt ra tới người học, và nội dung đó trông hoàn toàn
+    bình thường — không có gì để phát hiện.
+    """
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "gate-test", "title": "Gate", "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        "/api/v1/admin/tests/gate-test/parts/7/parse",
+        json={"raw_text": _reading_paste()},
+        headers=headers,
+    ).json()
+    committed = client.post(
+        "/api/v1/admin/tests/gate-test/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    assert committed.status_code == 201
+
+    refused = client.post("/api/v1/admin/tests/gate-test/publish", headers=headers)
+    assert refused.status_code == 409
+    # Lời từ chối phải nêu ĐÚNG câu nào, không chỉ "còn câu chưa xuất bản":
+    # người soạn cần biết đi sửa ở đâu, và số câu là cách họ định vị.
+    assert "147" in refused.json()["detail"]
+
+
+def test_commit_refuses_a_paste_that_still_has_problems(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "gate-test-2", "title": "Gate 2", "kind": "mini"},
+        headers=headers,
+    )
+    # `source:` bị bỏ đi — không có giá trị mặc định ở bất kỳ tầng nào (§2.5).
+    parsed = client.post(
+        "/api/v1/admin/tests/gate-test-2/parts/7/parse",
+        json={"raw_text": _reading_paste().replace("source: original\n", "")},
+        headers=headers,
+    ).json()
+    assert parsed["error_count"] == 1
+
+    refused = client.post(
+        "/api/v1/admin/tests/gate-test-2/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+
+
+def test_moving_a_test_between_collections_and_out_of_one(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Khoá vắng mặt và khoá bằng null là hai chuyện khác nhau.
+
+    `collection_slug: null` là cách gỡ đề khỏi bộ. Một phép gộp `giá trị or cũ`
+    không phân biệt được nó với "không gửi khoá này", và lỗi thì im lặng: lệnh
+    gỡ trả về 200 mà không đổi gì.
+    """
+    headers = auth("admin")
+    for slug in ("bo-a", "bo-b"):
+        assert (
+            client.post(
+                "/api/v1/admin/test-collections",
+                json={"slug": slug, "title": slug.upper()},
+                headers=headers,
+            ).status_code
+            == 201
+        )
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "di-chuyen", "title": "Di chuyển", "collection_slug": "bo-a"},
+        headers=headers,
+    )
+
+    moved = client.patch(
+        "/api/v1/admin/tests/di-chuyen", json={"collection_slug": "bo-b"}, headers=headers
+    )
+    assert moved.json()["collection_slug"] == "bo-b"
+
+    # Sửa tên mà KHÔNG gửi collection_slug: bộ đề phải giữ nguyên.
+    renamed = client.patch(
+        "/api/v1/admin/tests/di-chuyen", json={"title": "Tên mới"}, headers=headers
+    )
+    assert renamed.json() == {**moved.json(), "title": "Tên mới"}
+
+    removed = client.patch(
+        "/api/v1/admin/tests/di-chuyen", json={"collection_slug": None}, headers=headers
+    )
+    assert removed.json()["collection_slug"] is None
+
+
+def test_a_collection_refuses_to_publish_with_no_published_test(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Tầng thứ ba của cùng một cổng chặn.
+
+    Bộ đề mở ra rỗng không là thứ người học không giải thích được, và không có
+    gì trong giao diện nói cho họ biết vì sao.
+    """
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/test-collections", json={"slug": "rong", "title": "Rỗng"}, headers=headers
+    )
+    refused = client.post("/api/v1/admin/test-collections/rong/publish", headers=headers)
+    assert refused.status_code == 409
+    assert "chưa có đề nào" in refused.json()["detail"]

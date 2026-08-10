@@ -6,6 +6,8 @@ game of whack-a-mole. Nothing here writes to the database — the parse result i
 shown for review first (ADR-005 §3.4).
 """
 
+import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from app.models.vocabulary import PARTS_OF_SPEECH
@@ -143,3 +145,303 @@ def parse_dictation(raw: str) -> list[ParsedDictation]:
 
         rows.append(row)
     return rows
+
+
+# --- đề thi: Part 5, 6, 7 (ADR-007 §2.3) ------------------------------------
+#
+# Định dạng khối, không phải phân tách bằng dấu gạch đứng như vocabulary. Lý do
+# là hình dạng dữ liệu: một câu hỏi có đề bài nhiều dòng, bốn đáp án, và có thể
+# một đoạn văn dài dùng chung. Ép vào một dòng ngăn bằng "|" sẽ tạo ra những
+# dòng dài vài trăm ký tự mà mắt người không soát được — mà soát được chính là
+# lý do bước xem trước tồn tại.
+#
+#   [PASSAGE] Tiêu đề tuỳ chọn       <- chỉ Part 6/7; lặp lại tối đa 3 lần
+#   <văn bản>
+#
+#   [QUESTION]
+#   <đề bài, có thể nhiều dòng>
+#   (A) ...
+#   (B) ...
+#   (C) ...
+#   (D) ...
+#   answer: B
+#   source: original
+#   explanation: ...                 <- tuỳ chọn, nội dung viết TIẾNG VIỆT
+#
+# Một [PASSAGE] xuất hiện SAU một [QUESTION] mở một cụm mới; nhiều [PASSAGE] liền
+# nhau thì cùng thuộc một cụm (Part 7 có bài đọc đôi và đọc ba).
+
+# Mốc và khoá đều bằng **tiếng Anh ASCII thuần**, và đó là một quyết định chứ
+# không phải thói quen: bản đầu dùng `[CÂU]` và `[NGỮ LIỆU]`, rồi hỏng ngay lần
+# dùng đầu tiên vì macOS trả chữ Â ở dạng phân rã — chuỗi dán vào dài 6 ký tự
+# thay vì 5 trong khi hiện lên **giống hệt**. ASCII không có dạng phân rã, nên
+# cả lớp lỗi đó biến mất thay vì được vá.
+#
+# Nó cũng dễ soát hơn: mốc nổi bật khỏi phần nội dung tiếng Anh xung quanh, và
+# một dòng sai chính tả nhìn ra được ngay.
+SET_MARKER = "[PASSAGE]"
+QUESTION_MARKER = "[QUESTION]"
+
+# Dạng tiếng Việt vẫn được nhận, để nội dung soạn dở theo bản cũ không mất.
+# Không phải định dạng chính, và thông báo lỗi chỉ nêu dạng tiếng Anh.
+SET_ALIASES = ("[NGỮ LIỆU]", "[NGU LIEU]")
+QUESTION_ALIASES = ("[CÂU]", "[CAU]")
+QUESTION_SOURCES = ("original", "licensed")
+MAX_PASSAGES = 3
+
+_KEYS = {
+    "đáp án": "answer",
+    "dap an": "answer",
+    "answer": "answer",
+    "nguồn": "source",
+    "nguon": "source",
+    "source": "source",
+    "giải thích": "explanation",
+    "giai thich": "explanation",
+    "explanation": "explanation",
+    "ghi chú nguồn": "source_note",
+    "source_note": "source_note",
+}
+_OPTION_LINE = re.compile(r"^\(([A-D])\)\s*(.*)$")
+
+
+def _fold(text: str) -> str:
+    """Bỏ dấu và viết hoa, để so khớp mốc không phụ thuộc cách gõ.
+
+    Mốc chính thức giờ là ASCII (`[QUESTION]`), nên phần bỏ dấu chỉ còn phục vụ
+    các dạng tiếng Việt cũ. Phần **viết hoa** thì vẫn cần cho cả hai: `[question]`
+    gõ thường là chuyện bình thường.
+
+    Vì sao vẫn giữ sau khi mốc đã là ASCII: nó ghi lại cách hỏng đã xảy ra thật.
+    macOS trả chữ Â ở dạng phân rã, nên `"[CÂU]"` dán từ một số ứng dụng dài 6
+    ký tự chứ không phải 5 — trong khi hai chuỗi hiện lên **giống hệt nhau**.
+    """
+    decomposed = unicodedata.normalize("NFD", text)
+    return "".join(char for char in decomposed if not unicodedata.combining(char)).upper()
+
+
+_SET_FOLDED = tuple(_fold(marker) for marker in (SET_MARKER, *SET_ALIASES))
+_QUESTION_FOLDED = tuple(_fold(marker) for marker in (QUESTION_MARKER, *QUESTION_ALIASES))
+
+
+@dataclass
+class ParsedOption:
+    label: str
+    content: str
+    is_correct: bool
+
+
+@dataclass
+class ParsedQuestion:
+    line: int
+    prompt_text: str = ""
+    options: list[ParsedOption] = field(default_factory=list)
+    source: str = ""
+    source_note: str | None = None
+    explanation: str | None = None
+    problems: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.problems
+
+
+@dataclass
+class ParsedGroup:
+    """Một cụm: ngữ liệu dùng chung (nếu có) và các câu thuộc về nó.
+
+    Part 5 cũng đi qua hình dạng này, mỗi cụm đúng một câu và không có ngữ liệu
+    — nên nơi ghi vào database chỉ có một đường, và `question_set` là NULL đúng
+    ở chỗ ADR-001 §A2 nói nó phải NULL.
+    """
+
+    line: int
+    title: str | None = None
+    passages: list[str] = field(default_factory=list)
+    questions: list[ParsedQuestion] = field(default_factory=list)
+    problems: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.problems and all(question.ok for question in self.questions)
+
+
+def parse_reading_part(raw: str, part: int) -> list[ParsedGroup]:
+    """Tách nội dung dán thành các cụm. **Không ghi gì vào database** (ADR-005).
+
+    Trả về mọi vấn đề tìm được thay vì dừng ở lỗi đầu tiên: người dán 30 câu
+    muốn biết hết một lượt, không phải đập chuột từng con.
+    """
+    if part not in (5, 6, 7):
+        raise ValueError(f"parse_reading_part chỉ nhận part 5, 6, 7 — nhận được {part}")
+
+    # Chuẩn hoá về NFC một lần ở đây, nên phần nội dung được lưu cũng đồng nhất:
+    # hai chuỗi NFC/NFD hiện lên giống hệt nhau nhưng `==` trả về False, và sự
+    # khác biệt đó sẽ đi thẳng vào `prompt_text` rồi nằm im tới lúc có ai đó so
+    # sánh chuỗi.
+    raw = unicodedata.normalize("NFC", raw)
+
+    groups: list[ParsedGroup] = []
+    current: ParsedGroup | None = None
+    buffer: list[str] = []
+    mode: str | None = None
+    start_line = 0
+
+    def flush() -> None:
+        nonlocal buffer, mode, current
+        if mode is None:
+            buffer = []
+            return
+        text = "\n".join(buffer).strip()
+        if mode == "passage" and current is not None:
+            if text:
+                current.passages.append(text)
+            else:
+                current.problems.append(f"dòng {start_line}: {SET_MARKER} không có nội dung")
+        elif mode == "question" and current is not None:
+            current.questions.append(_parse_question_block(text, start_line, part))
+        buffer = []
+        mode = None
+
+    for lineno, line in enumerate(raw.splitlines(), start=1):
+        stripped = line.strip()
+
+        folded = _fold(stripped)
+
+        if folded.startswith(_SET_FOLDED):
+            flush()
+            # Ngữ liệu mở cụm mới CHỈ khi cụm hiện tại đã có câu hỏi. Nhiều khối
+            # ngữ liệu liền nhau là bài đọc đôi/ba của Part 7, không phải hai cụm.
+            if current is None or current.questions:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            title = stripped.partition("]")[2].strip()
+            if title and current.title is None:
+                current.title = title
+            mode, start_line = "passage", lineno
+            continue
+
+        if folded.startswith(_QUESTION_FOLDED):
+            flush()
+            if current is None:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            # Part 5 không có ngữ liệu, nên mỗi câu là một cụm riêng.
+            elif part == 5 and current.questions:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            mode, start_line = "question", lineno
+            continue
+
+        if mode is not None:
+            buffer.append(line)
+
+    flush()
+
+    if not groups and raw.strip():
+        # Im lặng ở đây chính là lỗi đã xảy ra thật: dán 10 câu, nhận về 0 cụm
+        # và 0 lỗi, tức giao diện báo "hợp lệ" cho một thứ nó không đọc được
+        # dòng nào. Không nhận ra gì là một kết quả, và nó phải được nói ra.
+        raise ValueError(
+            f"Không nhận ra dòng nào. Mỗi câu phải bắt đầu bằng một dòng "
+            f"{QUESTION_MARKER}" + (f", và ngữ liệu bằng {SET_MARKER}" if part != 5 else "") + "."
+        )
+
+    for group in groups:
+        _check_group(group, part)
+    return groups
+
+
+def _parse_question_block(text: str, line: int, part: int) -> ParsedQuestion:
+    question = ParsedQuestion(line=line)
+    prompt: list[str] = []
+    answer: str | None = None
+
+    for raw_line in text.splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            continue
+
+        option = _OPTION_LINE.match(stripped)
+        if option:
+            label, content = option.group(1), option.group(2).strip()
+            question.options.append(ParsedOption(label=label, content=content, is_correct=False))
+            continue
+
+        key, _, value = stripped.partition(":")
+        field_name = _KEYS.get(key.strip().lower())
+        if field_name and value.strip():
+            if field_name == "answer":
+                answer = value.strip().upper()
+            elif field_name == "source":
+                question.source = value.strip().lower()
+            elif field_name == "explanation":
+                question.explanation = value.strip()
+            else:
+                question.source_note = value.strip()
+            continue
+
+        # Chưa có đáp án nào thì đây còn là đề bài; sau đó thì là dòng lạc.
+        if question.options:
+            question.problems.append(f"không hiểu dòng {stripped[:40]!r}")
+        else:
+            prompt.append(stripped)
+
+    question.prompt_text = " ".join(prompt).strip()
+    _check_question(question, answer, part)
+    return question
+
+
+def _check_question(question: ParsedQuestion, answer: str | None, part: int) -> None:
+    if not question.prompt_text:
+        # Part 5, 6, 7 đều IN đề bài — `validate_question` cũng đòi đúng thế,
+        # nên trình dán không được nới lỏng hơn cổng chặn ở tầng dưới.
+        question.problems.append("thiếu đề bài")
+
+    labels = [option.label for option in question.options]
+    if len(question.options) != 4:
+        question.problems.append(f"cần đúng 4 đáp án, đang có {len(question.options)}")
+    if len(set(labels)) != len(labels):
+        question.problems.append("đáp án bị trùng nhãn")
+    if any(not option.content for option in question.options):
+        question.problems.append(f"part {part} in đáp án, nên đáp án không được để trống")
+
+    if answer is None:
+        question.problems.append("thiếu dòng 'answer:'")
+    elif answer not in labels:
+        question.problems.append(f"đáp án {answer!r} không có trong các nhãn {sorted(labels)}")
+    else:
+        for option in question.options:
+            option.is_correct = option.label == answer
+
+    # `source` KHÔNG có giá trị mặc định, ở bất kỳ tầng nào (ADR-007 §2.5).
+    # Trả lời sai câu "nội dung này ở đâu ra" là rủi ro pháp lý, và một giá trị
+    # mặc định là cách chắc chắn nhất để không ai từng trả lời nó.
+    if not question.source:
+        question.problems.append(
+            "thiếu dòng 'source:' — phải là 'original' (tự viết theo định dạng) "
+            "hoặc 'licensed' (đã xin được phép)"
+        )
+    elif question.source not in QUESTION_SOURCES:
+        question.problems.append(
+            f"nguồn {question.source!r} không hợp lệ; phải là một trong {list(QUESTION_SOURCES)}"
+        )
+
+
+def _check_group(group: ParsedGroup, part: int) -> None:
+    if not group.questions:
+        group.problems.append("cụm này không có câu hỏi nào")
+
+    if part == 5:
+        if group.passages:
+            group.problems.append("Part 5 không có ngữ liệu dùng chung")
+        if len(group.questions) > 1:
+            group.problems.append("Part 5 mỗi câu đứng riêng, không gom cụm")
+        return
+
+    if not group.passages:
+        group.problems.append(f"Part {part} cần ít nhất một khối {SET_MARKER}")
+    if len(group.passages) > MAX_PASSAGES:
+        group.problems.append(
+            f"tối đa {MAX_PASSAGES} đoạn văn cho một cụm, đang có {len(group.passages)}"
+        )

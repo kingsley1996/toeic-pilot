@@ -47,6 +47,13 @@ export type AttemptState = components["schemas"]["AttemptState"];
 export type AttemptResult = components["schemas"]["AttemptResult"];
 export type QuestionPublic = components["schemas"]["QuestionPublic"];
 export type AttemptPartProgress = components["schemas"]["AttemptPartProgress"];
+export type TestAdmin = components["schemas"]["TestAdmin"];
+export type CollectionAdmin = components["schemas"]["CollectionAdmin"];
+export type TestPartSummary = components["schemas"]["TestPartSummary"];
+export type QuestionAdmin = components["schemas"]["QuestionAdmin"];
+export type TestPartParseResponse = components["schemas"]["TestPartParseResponse"];
+export type GroupDraft = components["schemas"]["GroupDraft"];
+export type QuestionDraft = components["schemas"]["QuestionDraft"];
 export type DictationSummary = components["schemas"]["DictationSummary"];
 export type DictationDetail = components["schemas"]["DictationDetail"];
 export type DictationResult = components["schemas"]["DictationResult"];
@@ -136,6 +143,17 @@ export const API_ROUTES = {
   adminDictationSectionPublish: (id: string) => `/api/v1/admin/dictation/sections/${id}/publish`,
   adminDictationStories: "/api/v1/admin/dictation/stories",
   adminDictationStoryPublish: (id: string) => `/api/v1/admin/dictation/stories/${id}/publish`,
+  // Soạn đề thi (ADR-007). `parse` không ghi gì; `parts` mới là đường ghi.
+  adminTestCollections: "/api/v1/admin/test-collections",
+  adminTestCollectionPublish: (slug: string) => `/api/v1/admin/test-collections/${slug}/publish`,
+  adminTests: "/api/v1/admin/tests",
+  adminTest: (slug: string) => `/api/v1/admin/tests/${slug}`,
+  adminTestQuestions: (slug: string) => `/api/v1/admin/tests/${slug}/questions`,
+  adminTestPartParse: (slug: string, part: number) =>
+    `/api/v1/admin/tests/${slug}/parts/${part}/parse`,
+  adminTestParts: (slug: string) => `/api/v1/admin/tests/${slug}/parts`,
+  adminTestPublish: (slug: string) => `/api/v1/admin/tests/${slug}/publish`,
+  adminQuestionPublish: (id: string) => `/api/v1/admin/questions/${id}/publish`,
   adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
   adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
   adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,

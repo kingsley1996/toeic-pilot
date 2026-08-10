@@ -5,6 +5,8 @@ differ per form and a scoring mistake should be fixable without a release. These
 tests cover the seeded default curve and the refusal to guess.
 """
 
+import uuid
+
 import pytest
 from sqlalchemy.orm import Session
 
@@ -20,6 +22,7 @@ from app.models import (
 )
 from app.models.practice import GROUPED_PARTS
 from app.models.scoring import MAX_SECTION_SCORE, MIN_SECTION_SCORE
+from app.schemas.practice import suggest_numbers
 from app.services.scoring import ScaleNotFoundError, count_raw, raw_to_scaled, score_attempt
 from tests.test_domain_model import make_audio, make_question, make_user
 
@@ -213,3 +216,47 @@ def test_options_are_not_consulted_when_scoring(db_session: Session) -> None:
     db_session.flush()
 
     assert count_raw(db_session, attempt)["reading"] == 1
+
+
+# --- số câu chính thức (ADR-007 §2.6) ---------------------------------------
+
+
+def test_suggested_numbers_follow_the_part_ranges_and_skip():
+    """Đề rút gọn nhảy cóc, và đó là hành vi đúng.
+
+    Một câu Part 1 rồi ba câu Part 5 phải ra 1, 101, 102, 103 — không phải
+    1, 2, 3, 4. Người học đối chiếu "câu 101 là Part 5" với sách, và đánh lại
+    từ 1 làm họ không đối chiếu được.
+    """
+    assert suggest_numbers([1, 5, 5, 5]) == [1, 101, 102, 103]
+    assert suggest_numbers([7]) == [147]
+
+
+def test_overflowing_a_part_range_raises_instead_of_bleeding_into_the_next():
+    """Câu thứ 7 của Part 1 mang số 7 sẽ đè lên Part 2.
+
+    Ném lỗi ở đây vì cái đè đó chỉ lộ ra ở một UniqueConstraint, với thông báo
+    không nhắc gì tới part — và người soạn sẽ đi tìm lỗi ở chỗ khác.
+    """
+    with pytest.raises(ValueError, match="Part 1 chỉ có 6 chỗ"):
+        suggest_numbers([1] * 7)
+
+
+def test_a_mini_test_is_never_scaled(db_session: Session) -> None:
+    """Đề rút gọn không có thang quy đổi, và đây là lỗi đã xảy ra thật.
+
+    `scope == "full"` chỉ trả lời "có làm hết đề này không". Một đề 10 câu toàn
+    Part 5 thoả điều kiện đó, nên bản cũ đem `reading_raw = 6` tra bảng dựng cho
+    100 câu (chạm sàn) và `listening_raw = 0` cho một phần đề không hề có (cũng
+    chạm sàn) — ra "Nghe 5 · Đọc 5 · Tổng 10" cho một người làm đúng 60%.
+    """
+    seed_scales(db_session)
+    test = PracticeTest(slug="mini-1", title="Mini", kind="mini", status="published")
+    db_session.add(test)
+    db_session.flush()
+    attempt = Attempt(user_id=uuid.uuid4(), test_id=test.id, scope="full", review_mode="exam")
+    db_session.add(attempt)
+    db_session.flush()
+
+    with pytest.raises(ValueError, match="no TOEIC conversion"):
+        score_attempt(db_session, attempt)

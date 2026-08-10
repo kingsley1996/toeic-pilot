@@ -354,6 +354,26 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 
 **Việc nhập câu hỏi còn nợ từ Sprint 3** (parser + màn dán + trường `source` không pre-select) làm cùng sprint này — không có nó thì không có đề để test bằng gì ngoài fixture.
 
+### Soạn đề — lượt 1: Part 5, 6, 7 (ADR-007) · ✅ backend xong 2026-08-10
+- [x] Migration `012` — `practice_test_question.number`, tách khỏi `position`. `attempt.py` đọc cột này thay cho `enumerate(start=1)`, nên luyện riêng Part 5 hiện **101–130** chứ không phải 1–30
+- [x] `suggest_numbers` + `PART_NUMBER_RANGES` — gợi ý theo khoảng chuẩn, **ném lỗi** khi tràn part thay vì đè sang part sau
+- [x] `parse_reading_part` — định dạng khối `[NGỮ LIỆU]` / `[CÂU]`; nhiều `[NGỮ LIỆU]` liền nhau là bài đọc đôi/ba của **một** cụm, không phải nhiều cụm
+- [x] `source` không có mặc định ở bất kỳ tầng nào; trình dán từ chối cả lô nếu thiếu (ADR-007 §2.5)
+- [x] 8 endpoint quản trị: tạo đề, dán/xem trước, ghi, liệt kê câu, xuất bản câu, xuất bản đề — tất cả đã có mặt trong bảng `ADMIN_CALLS` khẳng định learner nhận 403
+- [x] **Cổng chặn hai tầng**: câu không publish được khi `validate_question` còn báo lỗi; đề không publish được khi còn câu nháp, và lời từ chối **nêu đúng số câu**
+- [x] Đã chạy thật: tạo đề → dán Part 7 → ghi (số 147, 148) → publish bị từ chối 409 → publish từng câu → publish đề 200. Đề nháp trả 404 cho người học
+- [x] **Màn quản trị `/admin/tests`** — danh sách + tạo đề, và `/admin/tests/[slug]` với thanh part, ô dán, xem trước theo cụm, ghi, xuất bản từng câu và xuất bản đề
+- [x] Part 1–4 **hiện ra nhưng khoá**, kèm `title` nói vì sao — giấu đi thì người soạn tưởng đề chỉ có ba phần và đó là thiết kế
+- [x] Placeholder của ô dán là một ví dụ đúng định dạng cho từng part: định dạng khối chỉ dạy được bằng cách cho xem
+- [x] Đã chạy thật trong trình duyệt: tạo đề → dán (một câu thiếu `nguồn:`) → xem trước bắt lỗi và **giấu nút Ghi** → sửa → ghi (số 101, 102) → xuất bản từng câu → xuất bản đề
+
+- [x] **Tầng bộ đề** — `GET/POST /admin/test-collections`, `POST /{slug}/publish`, và `PATCH /admin/tests/{slug}` để chuyển đề vào bộ hoặc gỡ ra. Thiếu tầng này thì đề tạo ra là đề mồ côi, và người học không có đường nào tới nó
+- [x] Cổng chặn thành **ba bậc**: câu → đề → bộ đề. Bộ đề không xuất bản được khi chưa có đề nào đã xuất bản
+- [x] Màn quản trị dựng theo **cây** thay vì danh sách phẳng; đề chưa thuộc bộ nào hiện riêng kèm cảnh báo người học không thấy
+- [x] Nút **Chép mẫu** định dạng cho từng part, dùng chính chuỗi đang làm placeholder nên hai bản không thể lệch nhau
+
+**Lượt 1 (Part 5, 6, 7) xong.** Còn lượt 2: Part 1–4 + tải audio lên (ADR-007 §2.7).
+
 ### Backend
 - [ ] `GET /api/v1/practice/parts/{part}` — bốc câu hỏi, tôn trọng `question_set` với part 3, 4, 6, 7
 - [x] `POST /api/v1/attempts` — mở lượt làm, sinh `attempt_item` cho **toàn bộ** câu được phục vụ. Câu bỏ trống được tạo hàng ngay và chấm là **sai**, không phải bỏ qua: ô trống ở cuối Part 7 là dữ kiện (hết giờ), không phải dữ liệu thiếu

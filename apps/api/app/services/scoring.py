@@ -9,8 +9,16 @@ only knows how to look one up and how to count what a learner got right.
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.practice import LISTENING_PARTS, Attempt, AttemptItem, Question
+from app.models.practice import (
+    LISTENING_PARTS,
+    Attempt,
+    AttemptItem,
+    PracticeTestQuestion,
+    Question,
+)
 from app.models.scoring import SECTIONS, ScoreConversion
+
+_READING_PARTS = (5, 6, 7)
 
 DEFAULT_SCALE_SLUG = "default"
 
@@ -77,7 +85,31 @@ def score_attempt(session: Session, attempt: Attempt) -> Attempt:
             "and has no section score"
         )
 
+    # `scope == "full"` chỉ trả lời "có làm hết đề này không", KHÔNG trả lời
+    # "đề này có phải một đề đầy đủ không". Hai câu đó khác nhau, và nhầm chúng
+    # là một sinh ra đúng thứ docstring trên vừa cảnh báo:
+    #
+    #   Đề rút gọn 10 câu, toàn Part 5, làm đúng 6 -> scope='full'
+    #   -> reading_raw = 6 đem tra bảng dựng cho 100 câu -> chạm sàn
+    #   -> listening_raw = 0 cho một phần đề KHÔNG HỀ CÓ  -> chạm sàn
+    #   -> "Nghe 5 · Đọc 5 · Tổng 10"
+    #
+    # Ba con số trông y hệt điểm TOEIC. Người học làm đúng 60% và được báo là
+    # chạm sàn, kèm một điểm Nghe cho phần họ chưa từng nghe.
+    if attempt.test.kind != "full":
+        raise ValueError(
+            f"a {attempt.test.kind!r} test has no TOEIC conversion: the scale is built for "
+            f"a 200-question form, so a shorter test would be read as a near-zero raw score"
+        )
+
     counts = count_raw(session, attempt)
+
+    # Và một đề tự khai là `full` nhưng thiếu hẳn một phần thì cũng không quy
+    # đổi được: điểm 5 của phần vắng mặt là điểm sàn cho một bài chưa từng thi.
+    for section, raw in counts.items():
+        if raw == 0 and not _has_section(session, attempt, section):
+            raise ValueError(f"test has no {section} questions; there is no {section} score")
+
     scale = attempt.test.score_scale_slug
 
     attempt.listening_raw = counts["listening"]
@@ -86,3 +118,24 @@ def score_attempt(session: Session, attempt: Attempt) -> Attempt:
     attempt.reading_scaled = raw_to_scaled(session, scale, "reading", counts["reading"])
     attempt.total_scaled = attempt.listening_scaled + attempt.reading_scaled
     return attempt
+
+
+def _has_section(session: Session, attempt: Attempt, section: str) -> bool:
+    """Đề này có câu nào thuộc phần Nghe / Đọc không.
+
+    Hỏi ĐỀ chứ không hỏi lượt làm: một người bỏ trống cả phần Nghe vẫn phải
+    nhận điểm sàn của phần đó — đó là kết quả thật. Còn một đề không có phần
+    Nghe thì không có gì để chấm.
+    """
+    parts = LISTENING_PARTS if section == "listening" else _READING_PARTS
+    return bool(
+        session.scalar(
+            select(Question.id)
+            .join(PracticeTestQuestion, PracticeTestQuestion.question_id == Question.id)
+            .where(
+                PracticeTestQuestion.test_id == attempt.test_id,
+                Question.part.in_(parts),
+            )
+            .limit(1)
+        )
+    )

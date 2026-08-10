@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from pydantic import BaseModel
 
 # Tên hiển thị của từng phần. Ở backend chứ không ở frontend: nó cũng là thứ
@@ -14,6 +16,46 @@ PART_TITLES: dict[int, str] = {
 }
 
 LISTENING_PARTS = (1, 2, 3, 4)
+
+# Khoảng số câu chuẩn của một đề TOEIC 200 câu.
+#
+# Dùng để GỢI Ý số lúc lắp đề, không phải để suy ra nó: giá trị chốt nằm ở
+# `practice_test_question.number` (ADR-007 §2.6). Đề rút gọn sẽ nhảy cóc — một
+# câu Part 1 rồi ba câu Part 5 cho ra 1, 101, 102, 103 — và số nhảy cóc phải là
+# thứ có người nhìn thấy và đồng ý.
+PART_NUMBER_RANGES: dict[int, tuple[int, int]] = {
+    1: (1, 6),
+    2: (7, 31),
+    3: (32, 70),
+    4: (71, 100),
+    5: (101, 130),
+    6: (131, 146),
+    7: (147, 200),
+}
+
+
+def suggest_numbers(parts: Sequence[int]) -> list[int]:
+    """Số gợi ý cho một danh sách câu hỏi, theo thứ tự xuất hiện.
+
+    Mỗi part đếm từ đầu khoảng của nó. Vượt khoảng thì **ném lỗi** thay vì đếm
+    tiếp: câu thứ 7 của Part 1 mang số 7 sẽ đè lên Part 2, và cái đè đó chỉ lộ
+    ra ở một `UniqueConstraint` với thông báo không nhắc gì tới part.
+    """
+    used: dict[int, int] = {}
+    numbers: list[int] = []
+    for part in parts:
+        if part not in PART_NUMBER_RANGES:
+            raise ValueError(f"part {part} không hợp lệ")
+        first, last = PART_NUMBER_RANGES[part]
+        offset = used.get(part, 0)
+        if first + offset > last:
+            raise ValueError(
+                f"Part {part} chỉ có {last - first + 1} chỗ ({first}-{last}), "
+                f"đang cố xếp câu thứ {offset + 1}"
+            )
+        used[part] = offset + 1
+        numbers.append(first + offset)
+    return numbers
 
 
 def section_of(part: int) -> str:

@@ -49,6 +49,7 @@ from app.models.practice import (
     TestCollection,
 )
 from app.models.validators import validate_question
+from app.schemas.practice import suggest_numbers
 
 COLLECTION_SLUG = "demo-2026"
 TEST_SLUG = "demo-2026-test-1"
@@ -333,9 +334,18 @@ def build(session: Session) -> PracticeTest:
 
     session.add_all(ordered)
     session.flush()
-    for position, question in enumerate(ordered, start=1):
+    # Số câu theo khoảng chuẩn của từng part, không phải 1..N. Đề demo rút gọn
+    # nên nó nhảy cóc — 1, rồi 71, 72, 73, rồi 101… — và đó chính là con số
+    # người học đối chiếu được với sách.
+    numbers = suggest_numbers([question.part for question in ordered])
+    for position, (question, number) in enumerate(zip(ordered, numbers, strict=True), start=1):
         session.add(
-            PracticeTestQuestion(test_id=test.id, question_id=question.id, position=position)
+            PracticeTestQuestion(
+                test_id=test.id,
+                question_id=question.id,
+                position=position,
+                number=number,
+            )
         )
     return test
 

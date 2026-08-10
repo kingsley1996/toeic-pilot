@@ -369,6 +369,131 @@
         "title": "Body_local_upload_media_upload__storage_key__post",
         "type": "object"
       },
+      "CollectionAdmin": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "published_test_count": {
+            "title": "Published Test Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "source_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Tag"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "test_count": {
+            "title": "Test Count",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "description",
+          "source_tag",
+          "year",
+          "status",
+          "test_count",
+          "published_test_count"
+        ],
+        "title": "CollectionAdmin",
+        "type": "object"
+      },
+      "CollectionCreate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "source_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Tag"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "required": [
+          "slug",
+          "title"
+        ],
+        "title": "CollectionCreate",
+        "type": "object"
+      },
       "CollectionDetail": {
         "properties": {
           "attempt_count": {
@@ -1688,6 +1813,55 @@
         "title": "DictationUpdate",
         "type": "object"
       },
+      "GroupDraft": {
+        "description": "Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.\n\nPart 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên\nđường ghi vào database chỉ có một nhánh.",
+        "properties": {
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "passages": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Passages",
+            "type": "array"
+          },
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionDraft"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "line",
+          "passages",
+          "questions",
+          "problems"
+        ],
+        "title": "GroupDraft",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1988,6 +2162,204 @@
           "new_password"
         ],
         "title": "PasswordChange",
+        "type": "object"
+      },
+      "QuestionAdmin": {
+        "properties": {
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Url"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionOptionDraft"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "prompt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Text"
+          },
+          "set_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Set Id"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "part",
+          "number",
+          "position",
+          "prompt_text",
+          "options",
+          "source",
+          "explanation",
+          "status",
+          "set_id",
+          "audio_url",
+          "image_url",
+          "problems"
+        ],
+        "title": "QuestionAdmin",
+        "type": "object"
+      },
+      "QuestionDraft": {
+        "properties": {
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionOptionDraft"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "prompt_text": {
+            "title": "Prompt Text",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Note"
+          }
+        },
+        "required": [
+          "line",
+          "prompt_text",
+          "options",
+          "source",
+          "problems"
+        ],
+        "title": "QuestionDraft",
+        "type": "object"
+      },
+      "QuestionOptionDraft": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "is_correct": {
+            "title": "Is Correct",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "content",
+          "is_correct"
+        ],
+        "title": "QuestionOptionDraft",
         "type": "object"
       },
       "QuestionPublic": {
@@ -2544,6 +2916,144 @@
         "title": "StudyDay",
         "type": "object"
       },
+      "TestAdmin": {
+        "properties": {
+          "collection_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Slug"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/TestPartSummary"
+            },
+            "title": "Parts",
+            "type": "array"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "time_limit_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Limit Seconds"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "description",
+          "kind",
+          "status",
+          "time_limit_seconds",
+          "collection_slug",
+          "question_count",
+          "parts"
+        ],
+        "title": "TestAdmin",
+        "type": "object"
+      },
+      "TestCreate": {
+        "properties": {
+          "collection_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Slug"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "kind": {
+            "default": "full",
+            "title": "Kind",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "time_limit_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Limit Seconds"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title"
+        ],
+        "title": "TestCreate",
+        "type": "object"
+      },
       "TestDetail": {
         "properties": {
           "attempt_count": {
@@ -2614,6 +3124,96 @@
         "title": "TestDetail",
         "type": "object"
       },
+      "TestPartCommit": {
+        "properties": {
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupDraft"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "part",
+          "groups"
+        ],
+        "title": "TestPartCommit",
+        "type": "object"
+      },
+      "TestPartParseResponse": {
+        "properties": {
+          "error_count": {
+            "title": "Error Count",
+            "type": "integer"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupDraft"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "ok_count": {
+            "title": "Ok Count",
+            "type": "integer"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "part",
+          "ok_count",
+          "error_count",
+          "groups"
+        ],
+        "title": "TestPartParseResponse",
+        "type": "object"
+      },
+      "TestPartSummary": {
+        "properties": {
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "problem_count": {
+            "title": "Problem Count",
+            "type": "integer"
+          },
+          "published_count": {
+            "title": "Published Count",
+            "type": "integer"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "section": {
+            "title": "Section",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "part",
+          "title",
+          "section",
+          "question_count",
+          "published_count",
+          "problem_count"
+        ],
+        "title": "TestPartSummary",
+        "type": "object"
+      },
       "TestSummary": {
         "properties": {
           "attempt_count": {
@@ -2674,6 +3274,57 @@
           "attempt_count"
         ],
         "title": "TestSummary",
+        "type": "object"
+      },
+      "TestUpdate": {
+        "description": "Sửa phần vỏ của đề. `model_dump(exclude_unset=True)` ở nơi gọi.\n\nKhoá vắng mặt nghĩa là *đừng đụng tới*, khoá bằng null nghĩa là *xoá đi* —\n`collection_slug: null` là cách gỡ đề ra khỏi bộ. Gộp hai thứ đó lại thì\nlệnh gỡ trở thành lệnh không làm gì, và nó trả về 200 nên không ai biết.",
+        "properties": {
+          "collection_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Slug"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "time_limit_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Limit Seconds"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "TestUpdate",
         "type": "object"
       },
       "TokenResponse": {
@@ -4857,6 +5508,577 @@
         "summary": "Image Ticket",
         "tags": [
           "media"
+        ]
+      }
+    },
+    "/api/v1/admin/questions/{question_id}/publish": {
+      "post": {
+        "operationId": "publish_question_api_v1_admin_questions__question_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/test-collections": {
+      "get": {
+        "operationId": "list_collections_admin_api_v1_admin_test_collections_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CollectionAdmin"
+                  },
+                  "title": "Response List Collections Admin Api V1 Admin Test Collections Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Collections Admin",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_collection_api_v1_admin_test_collections_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Collection",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/test-collections/{slug}/publish": {
+      "post": {
+        "description": "Tầng thứ ba của cùng một cổng chặn.\n\nBộ đề không xuất bản được khi chưa có đề nào đã xuất bản — nếu không, người\nhọc thấy một bộ đề mở ra rỗng không, và không có gì nói cho họ biết vì sao.\nCùng luật với cây dictation lọc `published` ở cả bốn tầng.",
+        "operationId": "publish_collection_api_v1_admin_test_collections__slug__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Collection",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests": {
+      "get": {
+        "operationId": "list_tests_api_v1_admin_tests_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TestAdmin"
+                  },
+                  "title": "Response List Tests Api V1 Admin Tests Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Tests",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_test_api_v1_admin_tests_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Test",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}": {
+      "get": {
+        "operationId": "get_test_api_v1_admin_tests__slug__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Test",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Sửa vỏ đề, gồm cả chuyển đề sang bộ khác hoặc gỡ khỏi bộ.\n\nPhân biệt khoá VẮNG MẶT với khoá bằng null, qua `exclude_unset`: vắng nghĩa\nlà đừng đụng tới, null nghĩa là xoá. Một phép gộp `giá trị or cũ` không phân\nbiệt được hai thứ đó, và lỗi thì im lặng — lệnh gỡ đề khỏi bộ trả về 200 mà\nkhông đổi gì, nên không ai phát hiện cho tới lần tải lại trang.",
+        "operationId": "update_test_api_v1_admin_tests__slug__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Test",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/parts": {
+      "post": {
+        "description": "Ghi các cụm đã xem trước vào đề. Luôn ghi ở trạng thái `draft`.",
+        "operationId": "commit_part_api_v1_admin_tests__slug__parts_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestPartCommit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Commit Part",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/parts/{part}/parse": {
+      "post": {
+        "description": "Phân tích nội dung dán và báo MỌI vấn đề. Không ghi gì (ADR-005 §3.4).",
+        "operationId": "parse_part_paste_api_v1_admin_tests__slug__parts__part__parse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestPartParseResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Parse Part Paste",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/publish": {
+      "post": {
+        "description": "Xuất bản đề. Từ chối khi còn bất kỳ câu nào chưa xuất bản.\n\nChặn ở tầng đề *và* tầng câu, cùng lý do cây dictation lọc `published` ở cả\nbốn tầng: một câu nháp nằm trong đề đã publish sẽ lọt ra, và nội dung đó\ntrông hoàn toàn bình thường — không có gì để phát hiện.",
+        "operationId": "publish_test_api_v1_admin_tests__slug__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Test",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/questions": {
+      "get": {
+        "operationId": "list_test_questions_api_v1_admin_tests__slug__questions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QuestionAdmin"
+                  },
+                  "title": "Response List Test Questions Api V1 Admin Tests  Slug  Questions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Test Questions",
+        "tags": [
+          "admin"
         ]
       }
     },

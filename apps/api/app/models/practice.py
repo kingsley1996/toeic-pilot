@@ -262,6 +262,7 @@ class PracticeTestQuestion(Base):
     __tablename__ = "practice_test_question"
     __table_args__ = (
         UniqueConstraint("test_id", "position", name="uq_practice_test_question_position"),
+        UniqueConstraint("test_id", "number", name="uq_practice_test_question_number"),
     )
 
     test_id: Mapped[uuid.UUID] = mapped_column(
@@ -271,6 +272,16 @@ class PracticeTestQuestion(Base):
         ForeignKey("question.id", ondelete="RESTRICT"), primary_key=True
     )
     position: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    # Số câu chính thức, TÁCH khỏi `position`.
+    #
+    # `position` là thứ tự trình bày; `number` là con số người học nhìn thấy và
+    # nói ra — "câu 32 là Part 3". Với đề đầy đủ hai thứ trùng nhau, nên trông
+    # như thừa; với đề rút gọn thì không: một đề mini gồm một câu Part 1 và ba
+    # câu Part 5 có position 1–4 nhưng number 1, 101, 102, 103.
+    #
+    # Lưu chứ không suy ra, vì số nhảy cóc phải là thứ có người nhìn thấy và
+    # đồng ý — không phải thứ một hàm tính ra sau lưng (ADR-007 §2.6).
+    number: Mapped[int] = mapped_column(SmallInteger, nullable=False)
 
 
 class Attempt(Base):

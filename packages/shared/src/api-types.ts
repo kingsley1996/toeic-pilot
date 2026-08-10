@@ -316,6 +316,190 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/questions/{question_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Question */
+        post: operations["publish_question_api_v1_admin_questions__question_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/test-collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Collections Admin */
+        get: operations["list_collections_admin_api_v1_admin_test_collections_get"];
+        put?: never;
+        /** Create Collection */
+        post: operations["create_collection_api_v1_admin_test_collections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/test-collections/{slug}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish Collection
+         * @description Tầng thứ ba của cùng một cổng chặn.
+         *
+         *     Bộ đề không xuất bản được khi chưa có đề nào đã xuất bản — nếu không, người
+         *     học thấy một bộ đề mở ra rỗng không, và không có gì nói cho họ biết vì sao.
+         *     Cùng luật với cây dictation lọc `published` ở cả bốn tầng.
+         */
+        post: operations["publish_collection_api_v1_admin_test_collections__slug__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tests */
+        get: operations["list_tests_api_v1_admin_tests_get"];
+        put?: never;
+        /** Create Test */
+        post: operations["create_test_api_v1_admin_tests_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Test */
+        get: operations["get_test_api_v1_admin_tests__slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Test
+         * @description Sửa vỏ đề, gồm cả chuyển đề sang bộ khác hoặc gỡ khỏi bộ.
+         *
+         *     Phân biệt khoá VẮNG MẶT với khoá bằng null, qua `exclude_unset`: vắng nghĩa
+         *     là đừng đụng tới, null nghĩa là xoá. Một phép gộp `giá trị or cũ` không phân
+         *     biệt được hai thứ đó, và lỗi thì im lặng — lệnh gỡ đề khỏi bộ trả về 200 mà
+         *     không đổi gì, nên không ai phát hiện cho tới lần tải lại trang.
+         */
+        patch: operations["update_test_api_v1_admin_tests__slug__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/parts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Commit Part
+         * @description Ghi các cụm đã xem trước vào đề. Luôn ghi ở trạng thái `draft`.
+         */
+        post: operations["commit_part_api_v1_admin_tests__slug__parts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/parts/{part}/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse Part Paste
+         * @description Phân tích nội dung dán và báo MỌI vấn đề. Không ghi gì (ADR-005 §3.4).
+         */
+        post: operations["parse_part_paste_api_v1_admin_tests__slug__parts__part__parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish Test
+         * @description Xuất bản đề. Từ chối khi còn bất kỳ câu nào chưa xuất bản.
+         *
+         *     Chặn ở tầng đề *và* tầng câu, cùng lý do cây dictation lọc `published` ở cả
+         *     bốn tầng: một câu nháp nằm trong đề đã publish sẽ lọt ra, và nội dung đó
+         *     trông hoàn toàn bình thường — không có gì để phát hiện.
+         */
+        post: operations["publish_test_api_v1_admin_tests__slug__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Test Questions */
+        get: operations["list_test_questions_api_v1_admin_tests__slug__questions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/topics": {
         parameters: {
             query?: never;
@@ -1193,6 +1377,40 @@ export interface components {
             /** Signature */
             signature: string;
         };
+        /** CollectionAdmin */
+        CollectionAdmin: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Published Test Count */
+            published_test_count: number;
+            /** Slug */
+            slug: string;
+            /** Source Tag */
+            source_tag: string | null;
+            /** Status */
+            status: string;
+            /** Test Count */
+            test_count: number;
+            /** Title */
+            title: string;
+            /** Year */
+            year: number | null;
+        };
+        /** CollectionCreate */
+        CollectionCreate: {
+            /** Description */
+            description?: string | null;
+            /** Slug */
+            slug: string;
+            /** Source Tag */
+            source_tag?: string | null;
+            /** Title */
+            title: string;
+            /** Year */
+            year?: number | null;
+        };
         /** CollectionDetail */
         CollectionDetail: {
             /** Attempt Count */
@@ -1600,6 +1818,25 @@ export interface components {
             /** Transcript */
             transcript?: string | null;
         };
+        /**
+         * GroupDraft
+         * @description Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.
+         *
+         *     Part 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên
+         *     đường ghi vào database chỉ có một nhánh.
+         */
+        GroupDraft: {
+            /** Line */
+            line: number;
+            /** Passages */
+            passages: string[];
+            /** Problems */
+            problems: string[];
+            /** Questions */
+            questions: components["schemas"]["QuestionDraft"][];
+            /** Title */
+            title?: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -1731,6 +1968,61 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /** QuestionAdmin */
+        QuestionAdmin: {
+            /** Audio Url */
+            audio_url: string | null;
+            /** Explanation */
+            explanation: string | null;
+            /** Id */
+            id: string;
+            /** Image Url */
+            image_url: string | null;
+            /** Number */
+            number: number;
+            /** Options */
+            options: components["schemas"]["QuestionOptionDraft"][];
+            /** Part */
+            part: number;
+            /** Position */
+            position: number;
+            /** Problems */
+            problems: string[];
+            /** Prompt Text */
+            prompt_text: string | null;
+            /** Set Id */
+            set_id: string | null;
+            /** Source */
+            source: string;
+            /** Status */
+            status: string;
+        };
+        /** QuestionDraft */
+        QuestionDraft: {
+            /** Explanation */
+            explanation?: string | null;
+            /** Line */
+            line: number;
+            /** Options */
+            options: components["schemas"]["QuestionOptionDraft"][];
+            /** Problems */
+            problems: string[];
+            /** Prompt Text */
+            prompt_text: string;
+            /** Source */
+            source: string;
+            /** Source Note */
+            source_note?: string | null;
+        };
+        /** QuestionOptionDraft */
+        QuestionOptionDraft: {
+            /** Content */
+            content: string;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Label */
+            label: string;
         };
         /**
          * QuestionPublic
@@ -1957,6 +2249,47 @@ export interface components {
             /** Reviews */
             reviews: number;
         };
+        /** TestAdmin */
+        TestAdmin: {
+            /** Collection Slug */
+            collection_slug: string | null;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Parts */
+            parts: components["schemas"]["TestPartSummary"][];
+            /** Question Count */
+            question_count: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Time Limit Seconds */
+            time_limit_seconds: number | null;
+            /** Title */
+            title: string;
+        };
+        /** TestCreate */
+        TestCreate: {
+            /** Collection Slug */
+            collection_slug?: string | null;
+            /** Description */
+            description?: string | null;
+            /**
+             * Kind
+             * @default full
+             */
+            kind: string;
+            /** Slug */
+            slug: string;
+            /** Time Limit Seconds */
+            time_limit_seconds?: number | null;
+            /** Title */
+            title: string;
+        };
         /** TestDetail */
         TestDetail: {
             /** Attempt Count */
@@ -1978,6 +2311,39 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** TestPartCommit */
+        TestPartCommit: {
+            /** Groups */
+            groups: components["schemas"]["GroupDraft"][];
+            /** Part */
+            part: number;
+        };
+        /** TestPartParseResponse */
+        TestPartParseResponse: {
+            /** Error Count */
+            error_count: number;
+            /** Groups */
+            groups: components["schemas"]["GroupDraft"][];
+            /** Ok Count */
+            ok_count: number;
+            /** Part */
+            part: number;
+        };
+        /** TestPartSummary */
+        TestPartSummary: {
+            /** Part */
+            part: number;
+            /** Problem Count */
+            problem_count: number;
+            /** Published Count */
+            published_count: number;
+            /** Question Count */
+            question_count: number;
+            /** Section */
+            section: string;
+            /** Title */
+            title: string;
+        };
         /** TestSummary */
         TestSummary: {
             /** Attempt Count */
@@ -1996,6 +2362,24 @@ export interface components {
             time_limit_seconds: number | null;
             /** Title */
             title: string;
+        };
+        /**
+         * TestUpdate
+         * @description Sửa phần vỏ của đề. `model_dump(exclude_unset=True)` ở nơi gọi.
+         *
+         *     Khoá vắng mặt nghĩa là *đừng đụng tới*, khoá bằng null nghĩa là *xoá đi* —
+         *     `collection_slug: null` là cách gỡ đề ra khỏi bộ. Gộp hai thứ đó lại thì
+         *     lệnh gỡ trở thành lệnh không làm gì, và nó trả về 200 nên không ai biết.
+         */
+        TestUpdate: {
+            /** Collection Slug */
+            collection_slug?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Time Limit Seconds */
+            time_limit_seconds?: number | null;
+            /** Title */
+            title?: string | null;
         };
         /** TokenResponse */
         TokenResponse: {
@@ -3112,6 +3496,373 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_question_api_v1_admin_questions__question_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_collections_admin_api_v1_admin_test_collections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionAdmin"][];
+                };
+            };
+        };
+    };
+    create_collection_api_v1_admin_test_collections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_collection_api_v1_admin_test_collections__slug__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_tests_api_v1_admin_tests_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"][];
+                };
+            };
+        };
+    };
+    create_test_api_v1_admin_tests_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_test_api_v1_admin_tests__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_test_api_v1_admin_tests__slug__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    commit_part_api_v1_admin_tests__slug__parts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestPartCommit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_part_paste_api_v1_admin_tests__slug__parts__part__parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestPartParseResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_test_api_v1_admin_tests__slug__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_test_questions_api_v1_admin_tests__slug__questions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"][];
                 };
             };
             /** @description Validation Error */

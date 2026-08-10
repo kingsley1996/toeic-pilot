@@ -138,7 +138,10 @@ def _load(db: Session, attempt_id: uuid.UUID, user: User) -> Attempt:
 
 def _state(db: Session, attempt: Attempt) -> AttemptState:
     rows = db.execute(
-        select(PracticeTestQuestion.position, Question)
+        # Lấy cả `number`: nó là con số người học nhìn thấy, còn `position` chỉ
+        # là thứ tự trình bày. Hai thứ trùng nhau ở đề đầy đủ và khác nhau ở đề
+        # rút gọn, nên dùng nhầm sẽ đúng cho tới đúng lúc nó sai (ADR-007 §2.6).
+        select(PracticeTestQuestion.number, Question)
         .join(Question, Question.id == PracticeTestQuestion.question_id)
         .options(
             selectinload(Question.options),
@@ -149,7 +152,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     ).all()
 
     answered_by_question = {item.question_id: item for item in attempt.items}
-    in_scope = [(pos, q) for pos, q in rows if q.id in answered_by_question]
+    in_scope = [(number, q) for number, q in rows if q.id in answered_by_question]
 
     reveal = attempt.review_mode == "practice" or attempt.status != "in_progress"
     correct_ids = _correct_option_ids(db, [q.id for _, q in in_scope]) if reveal else {}
@@ -184,7 +187,10 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     questions: list[QuestionPublic] = []
     seen_sets: set[uuid.UUID] = set()
 
-    for number, (_, question) in enumerate(in_scope, start=1):
+    # Số câu đọc từ đề, KHÔNG đánh lại từ 1. Luyện riêng Part 5 của một đề đầy
+    # đủ phải hiện 101-130, vì đó là con số người học đọc thấy trong mọi tài
+    # liệu — đánh lại từ 1 làm họ không đối chiếu được với sách.
+    for number, question in in_scope:
         item = answered_by_question[question.id]
         stimulus = question.question_set
         # Ngữ liệu chỉ đi kèm câu ĐẦU của cụm: lặp lại trên cả ba câu là ba lần
@@ -401,6 +407,13 @@ def submit_attempt(
     note = None
     if attempt.scope != "full":
         note = "Chỉ làm một phần của đề nên không quy đổi ra điểm TOEIC."
+    elif attempt.test.kind != "full":
+        # Nói ra CHÍNH XÁC vì sao, chứ không chỉ "không có điểm": người học vừa
+        # làm đúng 6/10 và cần biết đó không phải kết quả tệ, chỉ là đề rút gọn
+        # không có thang quy đổi.
+        note = (
+            "Đề rút gọn không quy đổi ra điểm TOEIC — thang điểm được dựng cho đề đầy đủ 200 câu."
+        )
     elif attempt.total_scaled is None:
         note = "Đề này chưa có bảng quy đổi điểm, nên chỉ có số câu đúng."
 

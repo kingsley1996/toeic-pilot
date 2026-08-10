@@ -252,3 +252,133 @@ class StoryReorder(BaseModel):
     số, và không cần ràng buộc duy nhất trên `(story_id, position)` để chống lại
     chính mình.
     """
+
+
+# --- đề thi (ADR-007) -------------------------------------------------------
+
+
+class QuestionOptionDraft(BaseModel):
+    label: str
+    content: str
+    is_correct: bool
+
+
+class QuestionDraft(BaseModel):
+    line: int
+    prompt_text: str
+    options: list[QuestionOptionDraft]
+    source: str
+    source_note: str | None = None
+    explanation: str | None = None
+    problems: list[str]
+
+
+class GroupDraft(BaseModel):
+    """Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.
+
+    Part 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên
+    đường ghi vào database chỉ có một nhánh.
+    """
+
+    line: int
+    title: str | None = None
+    passages: list[str]
+    questions: list[QuestionDraft]
+    problems: list[str]
+
+
+class TestPartParseResponse(BaseModel):
+    part: int
+    ok_count: int
+    error_count: int
+    groups: list[GroupDraft]
+
+
+class TestPartCommit(BaseModel):
+    part: int
+    groups: list[GroupDraft]
+
+
+class TestCreate(BaseModel):
+    slug: str
+    title: str
+    description: str | None = None
+    collection_slug: str | None = None
+    kind: str = "full"
+    time_limit_seconds: int | None = None
+
+
+class QuestionAdmin(BaseModel):
+    id: str
+    part: int
+    number: int
+    position: int
+    prompt_text: str | None
+    options: list[QuestionOptionDraft]
+    source: str
+    explanation: str | None
+    status: str
+    set_id: str | None
+    audio_url: str | None
+    image_url: str | None
+    # Vì sao câu này chưa xuất bản được. Rỗng nghĩa là sẵn sàng.
+    #
+    # Hiện ra thay vì chỉ làm mờ nút Publish: nút mờ nói "chưa được", danh sách
+    # này nói "vì sao" — và không có vế thứ hai thì người soạn phải đoán.
+    problems: list[str]
+
+
+class TestPartSummary(BaseModel):
+    part: int
+    title: str
+    section: str
+    question_count: int
+    published_count: int
+    problem_count: int
+
+
+class TestAdmin(BaseModel):
+    id: str
+    slug: str
+    title: str
+    description: str | None
+    kind: str
+    status: str
+    time_limit_seconds: int | None
+    collection_slug: str | None
+    question_count: int
+    parts: list[TestPartSummary]
+
+
+class CollectionCreate(BaseModel):
+    slug: str
+    title: str
+    description: str | None = None
+    source_tag: str | None = None
+    year: int | None = None
+
+
+class CollectionAdmin(BaseModel):
+    id: str
+    slug: str
+    title: str
+    description: str | None
+    source_tag: str | None
+    year: int | None
+    status: str
+    test_count: int
+    published_test_count: int
+
+
+class TestUpdate(BaseModel):
+    """Sửa phần vỏ của đề. `model_dump(exclude_unset=True)` ở nơi gọi.
+
+    Khoá vắng mặt nghĩa là *đừng đụng tới*, khoá bằng null nghĩa là *xoá đi* —
+    `collection_slug: null` là cách gỡ đề ra khỏi bộ. Gộp hai thứ đó lại thì
+    lệnh gỡ trở thành lệnh không làm gì, và nó trả về 200 nên không ai biết.
+    """
+
+    title: str | None = None
+    description: str | None = None
+    collection_slug: str | None = None
+    time_limit_seconds: int | None = None
