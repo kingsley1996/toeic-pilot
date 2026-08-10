@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
-import { IconButton, Skeleton, Tag, cx } from "@/components/ui";
+import { Avatar, IconButton, Skeleton, Tag, cx } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
 export type NavItem = { href: string; label: string; Icon: LucideIcon };
@@ -66,18 +66,38 @@ export function SessionControls({ showRole = false }: { showRole?: boolean }) {
       {status === "loading" && <Skeleton className="h-8 w-24" />}
       {status === "authenticated" && user && (
         <>
-          <div className="hidden text-right sm:block">
-            <p className="text-small font-semibold leading-tight">{user.email}</p>
-            {showRole ? (
-              <Tag tone="action" className="mt-0.5">
-                {user.role}
-              </Tag>
-            ) : (
-              <p className="font-data text-label uppercase leading-tight text-ink-faint">
-                {user.role}
+          {/*
+           * Cả khối danh tính là một liên kết tới hồ sơ. Trước đây nó chỉ là chữ
+           * in ra, nên không có đường nào vào trang hồ sơ ngoài việc gõ tay URL
+           * — và chỗ người dùng bấm để tìm tài khoản của mình luôn là tên mình ở
+           * góc trên bên phải.
+           */}
+          <Link
+            href="/profile"
+            className="flex items-center gap-2 rounded px-1 py-0.5 hover:bg-recess"
+          >
+            <div className="hidden text-right sm:block">
+              {/*
+               * Tên hiển thị nếu có, không thì email. Không đặt sẵn email làm
+               * tên trong database: đổ về lúc hiển thị thì sửa được, còn ghi
+               * email vào cột tên thì về sau không phân biệt nổi đâu là tên
+               * thật, đâu là giá trị điền tạm.
+               */}
+              <p className="text-small font-semibold leading-tight">
+                {user.profile.display_name ?? user.email}
               </p>
-            )}
-          </div>
+              {showRole ? (
+                <Tag tone="action" className="mt-0.5">
+                  {user.role}
+                </Tag>
+              ) : (
+                <p className="font-data text-label uppercase leading-tight text-ink-faint">
+                  {user.role}
+                </p>
+              )}
+            </div>
+            <Avatar id={user.id} name={user.profile.display_name} email={user.email} size="sm" />
+          </Link>
           <IconButton icon={LogOut} aria-label="Thoát" onClick={logout} />
         </>
       )}

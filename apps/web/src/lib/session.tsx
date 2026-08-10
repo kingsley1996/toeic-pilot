@@ -26,6 +26,17 @@ type Session = {
   canEdit: boolean;
   /** admin only — publishing decides what learners actually see. */
   canPublish: boolean;
+  /**
+   * Đọc lại `/auth/me`.
+   *
+   * Cần vì hồ sơ nằm TRONG phiên: sửa tên hiển thị mà không gọi lại thì header
+   * vẫn hiện tên cũ cho tới lần tải trang sau, và người dùng sẽ bấm Lưu thêm
+   * vài lần nữa vì tưởng chưa ăn.
+   *
+   * Đổi mật khẩu KHÔNG cần gọi: nó thay token, mà token là thứ effect bên dưới
+   * đang theo dõi, nên vòng đọc lại tự chạy.
+   */
+  refresh: () => void;
   logout: () => void;
 };
 
@@ -53,6 +64,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const token = useSyncExternalStore(subscribeToToken, getAccessToken, serverSnapshot);
   const [user, setUser] = useState<UserPublic | null>(null);
   const [rejected, setRejected] = useState(false);
+  // Bộ đếm chứ không phải cờ boolean: hai lần lưu liên tiếp phải chạy hai lượt
+  // đọc, còn cờ bật-tắt sẽ nuốt mất lượt thứ hai.
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!token) return;
@@ -71,7 +85,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, [token, reloadKey]);
+
+  const refresh = useCallback(() => setReloadKey((key) => key + 1), []);
 
   const router = useRouter();
   const logout = useCallback(() => {
@@ -96,9 +112,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       token: token ?? null,
       canEdit: user?.role === "editor" || user?.role === "admin",
       canPublish: user?.role === "admin",
+      refresh,
       logout,
     }),
-    [status, user, token, logout],
+    [status, user, token, refresh, logout],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

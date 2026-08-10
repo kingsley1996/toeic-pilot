@@ -1233,6 +1233,68 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "LearningStats": {
+        "description": "Derived on read, every time, from the attempt and review tables.\n\nThere is no statistics table and there should not be one. The same reasoning\nis already written on `StoryProgress` and `VocabularyProgress`: a counter\nmaintained alongside the history drifts from it the first time a row is\ndeleted or re-graded, and nothing anywhere reports the disagreement.",
+        "properties": {
+          "active_days": {
+            "title": "Active Days",
+            "type": "integer"
+          },
+          "current_streak": {
+            "title": "Current Streak",
+            "type": "integer"
+          },
+          "dictation_attempts": {
+            "title": "Dictation Attempts",
+            "type": "integer"
+          },
+          "dictation_completed": {
+            "title": "Dictation Completed",
+            "type": "integer"
+          },
+          "longest_streak": {
+            "title": "Longest Streak",
+            "type": "integer"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/StudyDay"
+            },
+            "title": "Recent",
+            "type": "array"
+          },
+          "reviews_total": {
+            "title": "Reviews Total",
+            "type": "integer"
+          },
+          "vocabulary_due": {
+            "title": "Vocabulary Due",
+            "type": "integer"
+          },
+          "vocabulary_mastered": {
+            "title": "Vocabulary Mastered",
+            "type": "integer"
+          },
+          "vocabulary_total": {
+            "title": "Vocabulary Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "vocabulary_total",
+          "vocabulary_mastered",
+          "vocabulary_due",
+          "reviews_total",
+          "dictation_completed",
+          "dictation_attempts",
+          "current_streak",
+          "longest_streak",
+          "active_days",
+          "recent"
+        ],
+        "title": "LearningStats",
+        "type": "object"
+      },
       "ParseRequest": {
         "properties": {
           "raw_text": {
@@ -1244,6 +1306,25 @@
           "raw_text"
         ],
         "title": "ParseRequest",
+        "type": "object"
+      },
+      "PasswordChange": {
+        "properties": {
+          "current_password": {
+            "title": "Current Password",
+            "type": "string"
+          },
+          "new_password": {
+            "minLength": 8,
+            "title": "New Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "PasswordChange",
         "type": "object"
       },
       "RecallResult": {
@@ -1600,6 +1681,31 @@
         "title": "StoryReorder",
         "type": "object"
       },
+      "StudyDay": {
+        "description": "One day of activity, in the learner's own time zone.",
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "dictation_items": {
+            "title": "Dictation Items",
+            "type": "integer"
+          },
+          "reviews": {
+            "title": "Reviews",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date",
+          "reviews",
+          "dictation_items"
+        ],
+        "title": "StudyDay",
+        "type": "object"
+      },
       "TokenResponse": {
         "properties": {
           "access_token": {
@@ -1760,6 +1866,205 @@
         "title": "UserLogin",
         "type": "object"
       },
+      "UserProfilePublic": {
+        "description": "A learner's own profile. Never anyone else's — nothing here is public in\nthe sense of being visible to other users, and no endpoint serves it by id.",
+        "properties": {
+          "daily_new_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily New Limit"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Date"
+          },
+          "locale": {
+            "title": "Locale",
+            "type": "string"
+          },
+          "minutes_per_day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes Per Day"
+          },
+          "preferred_accent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Accent"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "display_name",
+          "timezone",
+          "locale",
+          "target_score",
+          "exam_date",
+          "minutes_per_day",
+          "daily_new_limit",
+          "preferred_accent"
+        ],
+        "title": "UserProfilePublic",
+        "type": "object"
+      },
+      "UserProfileUpdate": {
+        "description": "A partial update. Every field is optional in two different ways.\n\n`None` means **clear this**, and an absent key means **leave it alone**. They\nare not the same thing, and a plain `field or existing` merge cannot tell them\napart — which is how \"xoá ngày thi\" turns into a no-op that nobody reports.\nThe route reads `model_dump(exclude_unset=True)` so absence stays visible.\n\n`timezone` and `locale` are `NOT NULL` in the table, so they take a value or\nstay as they are; there is no meaningful \"no time zone\".",
+        "properties": {
+          "daily_new_limit": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily New Limit"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Date"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "pattern": "^(vi|en)$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "minutes_per_day": {
+            "anyOf": [
+              {
+                "maximum": 480.0,
+                "minimum": 5.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes Per Day"
+          },
+          "preferred_accent": {
+            "anyOf": [
+              {
+                "pattern": "^(en-US|en-GB|en-AU|en-CA)$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Accent"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "maximum": 990.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "title": "UserProfileUpdate",
+        "type": "object"
+      },
       "UserPublic": {
         "properties": {
           "created_at": {
@@ -1775,6 +2080,9 @@
             "title": "Id",
             "type": "string"
           },
+          "profile": {
+            "$ref": "#/components/schemas/UserProfilePublic"
+          },
           "role": {
             "title": "Role",
             "type": "string"
@@ -1784,7 +2092,8 @@
           "id",
           "email",
           "role",
-          "created_at"
+          "created_at",
+          "profile"
         ],
         "title": "UserPublic",
         "type": "object"
@@ -3707,6 +4016,53 @@
         ]
       }
     },
+    "/api/v1/auth/password": {
+      "post": {
+        "description": "Đổi mật khẩu, và cắt mọi phiên khác đang mở.\n\nTrả về token MỚI chứ không trả 204. Ghi `password_changed_at` làm mọi token\nphát hành trước đó hết hiệu lực — kể cả token vừa dùng để gọi chính endpoint\nnày — nên nếu không đưa lại token thì người dùng đổi mật khẩu xong sẽ bị\nđăng xuất ngay tại chỗ, và trông y hệt như một lỗi.",
+        "operationId": "change_password_api_v1_auth_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Change Password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/register": {
       "post": {
         "operationId": "register_api_v1_auth_register_post",
@@ -4101,6 +4457,105 @@
         "summary": "Submit Dictation",
         "tags": [
           "learning"
+        ]
+      }
+    },
+    "/api/v1/profile": {
+      "get": {
+        "description": "Hồ sơ của CHÍNH người đang đăng nhập.\n\nKhông có biến thể nhận id: hồ sơ ở đây là dữ liệu riêng — mục tiêu điểm, ngày\nthi, thời gian học mỗi ngày — chứ không phải trang cá nhân công khai. Một\nendpoint `/profile/{user_id}` sẽ phải trả lời câu hỏi \"ai được xem của ai\",\nvà câu hỏi đó chưa có lý do tồn tại.",
+        "operationId": "read_profile_api_v1_profile_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfilePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Profile",
+        "tags": [
+          "profile"
+        ]
+      },
+      "patch": {
+        "description": "Cập nhật một phần hồ sơ.\n\n`exclude_unset=True` là điểm mấu chốt, không phải chi tiết: nó giữ được khác\nbiệt giữa \"không gửi trường này\" và \"gửi null để xoá trường này\". Nếu gộp\nbằng `giá_trị or giá_trị_cũ` thì thao tác xoá ngày thi sẽ im lặng không làm\ngì cả, và người dùng chỉ phát hiện ra khi tải lại trang.",
+        "operationId": "update_profile_api_v1_profile_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfilePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/stats": {
+      "get": {
+        "description": "Thống kê học tập, tính lại mỗi lần đọc.\n\nTách khỏi `GET /profile` chứ không gộp vào: hồ sơ là vài cột đọc thẳng, còn\nphần này quét bảng lượt ôn và lượt dictation. Gộp lại thì mỗi lần sửa tên\nhiển thị cũng phải trả giá cho toàn bộ phép đếm, và `SessionProvider` — vốn\ngọi `/auth/me` ở mọi lần tải trang — sẽ kéo theo chúng ở khắp mọi nơi.",
+        "operationId": "read_stats_api_v1_profile_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearningStats"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Stats",
+        "tags": [
+          "profile"
         ]
       }
     },

@@ -374,6 +374,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change Password
+         * @description Đổi mật khẩu, và cắt mọi phiên khác đang mở.
+         *
+         *     Trả về token MỚI chứ không trả 204. Ghi `password_changed_at` làm mọi token
+         *     phát hành trước đó hết hiệu lực — kể cả token vừa dùng để gọi chính endpoint
+         *     này — nên nếu không đưa lại token thì người dùng đổi mật khẩu xong sẽ bị
+         *     đăng xuất ngay tại chỗ, và trông y hệt như một lỗi.
+         */
+        post: operations["change_password_api_v1_auth_password_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/register": {
         parameters: {
             query?: never;
@@ -512,6 +537,65 @@ export interface paths {
         put?: never;
         /** Submit Dictation */
         post: operations["submit_dictation_api_v1_dictation__item_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Profile
+         * @description Hồ sơ của CHÍNH người đang đăng nhập.
+         *
+         *     Không có biến thể nhận id: hồ sơ ở đây là dữ liệu riêng — mục tiêu điểm, ngày
+         *     thi, thời gian học mỗi ngày — chứ không phải trang cá nhân công khai. Một
+         *     endpoint `/profile/{user_id}` sẽ phải trả lời câu hỏi "ai được xem của ai",
+         *     và câu hỏi đó chưa có lý do tồn tại.
+         */
+        get: operations["read_profile_api_v1_profile_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Profile
+         * @description Cập nhật một phần hồ sơ.
+         *
+         *     `exclude_unset=True` là điểm mấu chốt, không phải chi tiết: nó giữ được khác
+         *     biệt giữa "không gửi trường này" và "gửi null để xoá trường này". Nếu gộp
+         *     bằng `giá_trị or giá_trị_cũ` thì thao tác xoá ngày thi sẽ im lặng không làm
+         *     gì cả, và người dùng chỉ phát hiện ra khi tải lại trang.
+         */
+        patch: operations["update_profile_api_v1_profile_patch"];
+        trace?: never;
+    };
+    "/api/v1/profile/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Stats
+         * @description Thống kê học tập, tính lại mỗi lần đọc.
+         *
+         *     Tách khỏi `GET /profile` chứ không gộp vào: hồ sơ là vài cột đọc thẳng, còn
+         *     phần này quét bảng lượt ôn và lượt dictation. Gộp lại thì mỗi lần sửa tên
+         *     hiển thị cũng phải trả giá cho toàn bộ phép đếm, và `SessionProvider` — vốn
+         *     gọi `/auth/me` ở mọi lần tải trang — sẽ kéo theo chúng ở khắp mọi nơi.
+         */
+        get: operations["read_stats_api_v1_profile_stats_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1104,10 +1188,48 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * LearningStats
+         * @description Derived on read, every time, from the attempt and review tables.
+         *
+         *     There is no statistics table and there should not be one. The same reasoning
+         *     is already written on `StoryProgress` and `VocabularyProgress`: a counter
+         *     maintained alongside the history drifts from it the first time a row is
+         *     deleted or re-graded, and nothing anywhere reports the disagreement.
+         */
+        LearningStats: {
+            /** Active Days */
+            active_days: number;
+            /** Current Streak */
+            current_streak: number;
+            /** Dictation Attempts */
+            dictation_attempts: number;
+            /** Dictation Completed */
+            dictation_completed: number;
+            /** Longest Streak */
+            longest_streak: number;
+            /** Recent */
+            recent: components["schemas"]["StudyDay"][];
+            /** Reviews Total */
+            reviews_total: number;
+            /** Vocabulary Due */
+            vocabulary_due: number;
+            /** Vocabulary Mastered */
+            vocabulary_mastered: number;
+            /** Vocabulary Total */
+            vocabulary_total: number;
+        };
         /** ParseRequest */
         ParseRequest: {
             /** Raw Text */
             raw_text: string;
+        };
+        /** PasswordChange */
+        PasswordChange: {
+            /** Current Password */
+            current_password: string;
+            /** New Password */
+            new_password: string;
         };
         /**
          * RecallResult
@@ -1272,6 +1394,21 @@ export interface components {
             /** Item Ids */
             item_ids: string[];
         };
+        /**
+         * StudyDay
+         * @description One day of activity, in the learner's own time zone.
+         */
+        StudyDay: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Dictation Items */
+            dictation_items: number;
+            /** Reviews */
+            reviews: number;
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -1334,6 +1471,59 @@ export interface components {
             /** Password */
             password: string;
         };
+        /**
+         * UserProfilePublic
+         * @description A learner's own profile. Never anyone else's — nothing here is public in
+         *     the sense of being visible to other users, and no endpoint serves it by id.
+         */
+        UserProfilePublic: {
+            /** Daily New Limit */
+            daily_new_limit: number | null;
+            /** Display Name */
+            display_name: string | null;
+            /** Exam Date */
+            exam_date: string | null;
+            /** Locale */
+            locale: string;
+            /** Minutes Per Day */
+            minutes_per_day: number | null;
+            /** Preferred Accent */
+            preferred_accent: string | null;
+            /** Target Score */
+            target_score: number | null;
+            /** Timezone */
+            timezone: string;
+        };
+        /**
+         * UserProfileUpdate
+         * @description A partial update. Every field is optional in two different ways.
+         *
+         *     `None` means **clear this**, and an absent key means **leave it alone**. They
+         *     are not the same thing, and a plain `field or existing` merge cannot tell them
+         *     apart — which is how "xoá ngày thi" turns into a no-op that nobody reports.
+         *     The route reads `model_dump(exclude_unset=True)` so absence stays visible.
+         *
+         *     `timezone` and `locale` are `NOT NULL` in the table, so they take a value or
+         *     stay as they are; there is no meaningful "no time zone".
+         */
+        UserProfileUpdate: {
+            /** Daily New Limit */
+            daily_new_limit?: number | null;
+            /** Display Name */
+            display_name?: string | null;
+            /** Exam Date */
+            exam_date?: string | null;
+            /** Locale */
+            locale?: string | null;
+            /** Minutes Per Day */
+            minutes_per_day?: number | null;
+            /** Preferred Accent */
+            preferred_accent?: string | null;
+            /** Target Score */
+            target_score?: number | null;
+            /** Timezone */
+            timezone?: string | null;
+        };
         /** UserPublic */
         UserPublic: {
             /** Created At */
@@ -1345,6 +1535,7 @@ export interface components {
             email: string;
             /** Id */
             id: string;
+            profile: components["schemas"]["UserProfilePublic"];
             /** Role */
             role: string;
         };
@@ -2469,6 +2660,39 @@ export interface operations {
             };
         };
     };
+    change_password_api_v1_auth_password_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     register_api_v1_auth_register_post: {
         parameters: {
             query?: never;
@@ -2713,6 +2937,79 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_profile_api_v1_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfilePublic"];
+                };
+            };
+        };
+    };
+    update_profile_api_v1_profile_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserProfileUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfilePublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_stats_api_v1_profile_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LearningStats"];
                 };
             };
         };

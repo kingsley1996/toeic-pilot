@@ -500,3 +500,71 @@ export function Kbd({ children }: { children: ReactNode }) {
     </kbd>
   );
 }
+
+/*
+ * Avatar dựng tại chỗ từ chữ cái đầu — không có ảnh tải lên, và cố ý chưa có.
+ *
+ * Ảnh đại diện thật kéo theo nơi lưu trữ, resize, giới hạn dung lượng và câu
+ * hỏi kiểm duyệt; đó là một sprint chứ không phải một component. Chữ cái đầu
+ * không cần hạ tầng nào, không gọi ra ngoài (CSP của trang chặn) và vẫn phân
+ * biệt được người này với người kia trong danh sách.
+ *
+ * VUÔNG, không tròn (§6.2). Một bán kính 4px là ngôn ngữ của cả hệ, và
+ * `rounded-full` ở đây sẽ là hình duy nhất trong toàn ứng dụng phá lệ đó.
+ */
+const AVATAR_TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
+
+/** Chữ cái đầu của từ đầu và từ cuối: "Đặng Ngọc Linh" → "ĐL". */
+export function initialsOf(name: string | null | undefined, fallback: string): string {
+  const words = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) {
+    // Phần trước @ của email. Không hiện cả email: avatar là một ô 32px.
+    return (fallback.split("@")[0]?.slice(0, 2) || "?").toLocaleUpperCase("vi");
+  }
+  const first = words[0]!.charAt(0);
+  const last = words.length > 1 ? words[words.length - 1]!.charAt(0) : "";
+  return (first + last).toLocaleUpperCase("vi");
+}
+
+/**
+ * Màu suy ra từ id, không phải từ tên.
+ *
+ * Đổi tên hiển thị mà avatar đổi màu theo thì người dùng sẽ tưởng mình vừa nhìn
+ * nhầm tài khoản. Id không đổi trong suốt vòng đời tài khoản, nên màu cũng vậy.
+ */
+function toneFor(seed: string): string {
+  let sum = 0;
+  for (let i = 0; i < seed.length; i += 1) sum = (sum + seed.charCodeAt(i)) % 1024;
+  return AVATAR_TONES[sum % AVATAR_TONES.length]!;
+}
+
+export function Avatar({
+  id,
+  name,
+  email,
+  size = "md",
+  className,
+}: {
+  id: string;
+  name?: string | null;
+  email: string;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  const box = { sm: "h-7 w-7 text-label", md: "h-9 w-9 text-small", lg: "h-16 w-16 text-title" }[
+    size
+  ];
+  return (
+    <span
+      aria-hidden
+      className={cx(
+        "grid shrink-0 place-items-center rounded font-data font-semibold text-panel",
+        toneFor(id),
+        box,
+        className,
+      )}
+    >
+      {initialsOf(name, email)}
+    </span>
+  );
+}

@@ -17,12 +17,12 @@
 | **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
 | **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | 305 thu thập — **303 chạy** + 2 `external` deselect mặc định |
+| **Test** | 364 thu thập — **362 chạy** + 2 `external` deselect mặc định |
 | **Gate CI** | 13, tất cả xanh |
-| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` |
-| **Bảng** | 23 |
-| **Endpoint** | **47** — auth (3), health (2), học viên (13), admin (29) |
-| **Trang web** | 16 route |
+| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` → `009_user_profile` |
+| **Bảng** | 24 |
+| **Endpoint** | **52** — auth (4), health (2), học viên (14), hồ sơ (3), admin (29) |
+| **Trang web** | 18 route |
 | **Media** | **387** clip audio, 3 ảnh (`apps/api/media/`: 390 file) |
 | **Nội dung trong repo** | **43 từ vựng** (42 thuộc Business), 4 câu dictation ← vẫn là nút thắt |
 | **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
@@ -51,6 +51,7 @@
 Sprint 3  Content Tooling       🟡 từ vựng + dictation XONG · phần question còn nợ
 Sprint 4  Learning Hub          🟡 backend + frontend XONG · thiếu nội dung
 Sprint 4b Dictation phân cấp    ✅ XONG (mục 4b)
+Sprint 4c Hồ sơ người dùng      ✅ XONG (mục 4c)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -212,6 +213,49 @@ dictation_topic          Short stories · Conversation · TOEIC Listening
 1. **`/dictation/topics` bị `/dictation/{item_id}` bắt trước** và 422 khi parse "topics" thành UUID. Đổi sang đường dẫn gạch nối, theo tiền lệ `/vocabulary-review/session`.
 2. **`create_all` của container dev đã kịp tạo 3 bảng mới** trước khi kịp dừng nó — đúng cái bẫy `CLAUDE.md` ghi. Phải drop rồi mới autogenerate được.
 3. **Autogenerate sinh khoá ngoại không tên**, kéo theo `drop_constraint(None, ...)` ở `downgrade` — câu lệnh không bao giờ chạy được. Chỉ lộ khi có người thật sự downgrade.
+
+## 4c. Hồ sơ người dùng · ✅ ĐÃ XONG (2026-08-10)
+
+**Mục tiêu:** người học có danh tính, mục tiêu và tuỳ chọn — và tài khoản có đường tự quản lý.
+
+Chèn trước Sprint 5 chứ không phải sau, vì `PLAN.md` §3.3 nói AI Study Planner cần **điểm hiện tại, điểm mục tiêu, thời gian học mỗi ngày**. Đó chính là dữ liệu hồ sơ. Dựng mặt tiếp nhận trước thì tới Sprint 7 planner đã có dữ liệu thật để đọc, thay vì một biểu mẫu trống để đi xin.
+
+### Schema — migration `009_user_profile`
+- [x] Bảng `user_profile` **1-1**, khoá chính chính là khoá ngoại tới `users.id`
+- [x] Hàng hồ sơ tạo trong **cùng transaction** với đăng ký, không tạo lười; migration backfill mọi tài khoản có sẵn
+- [x] `users.password_changed_at` — nullable, **không** backfill bằng `now()`
+- [x] `daily_new_limit` NULL = "theo mặc định hệ thống", **không** phải bản sao của số 20 hôm nay. `SPEC-LEARNING-HUB` §5 nói thẳng con số đó sẽ đổi; sao chép vào từng hàng sẽ ghim mọi học viên cũ vào số cũ đúng ngày nó đổi
+
+### Backend
+- [x] `GET /profile`, `PATCH /profile`, `GET /profile/stats`, `POST /auth/password`
+- [x] `UserPublic` nhúng luôn hồ sơ — `SessionProvider` chỉ giải quyết phiên **một lần**, thêm một request nữa là thêm một trạng thái đang tải vào đúng chỗ đã quyết định chỉ có một
+- [x] PATCH phân biệt **khoá vắng mặt** với **khoá mang null** qua `exclude_unset` — gộp kiểu `giá_trị or giá_trị_cũ` biến thao tác xoá thành lệnh không làm gì mà vẫn trả 200
+- [x] Thống kê **suy ra mỗi lần đọc**, không có bảng đếm — cùng lý do đã ghi ba lần cho `StoryProgress` và `VocabularyProgress`
+- [x] Múi giờ kiểm theo CSDL IANA của hệ thống, không theo danh sách tự giữ
+
+### Thu hồi token khi đổi mật khẩu
+- [x] Claim riêng `pwc` mang **thế hệ mật khẩu**, so **bằng nhau** chứ không so "phát hành sau"
+- [x] Đo bằng **micro-giây**. Đây là điểm không hiển nhiên: `iat` chỉ có độ phân giải 1 giây, nên token phát hành cùng giây với lần đổi không phân biệt được — phép so theo thứ tự hoặc thả lọt token đó, hoặc từ chối chính token thay thế mà lần đổi vừa cấp
+- [x] Không có claim = thế hệ 0, nên triển khai **không** đăng xuất người đang đăng nhập
+- [x] `POST /auth/password` trả **token mới**, không trả 204 — không trả thì người dùng đổi mật khẩu xong bị đăng xuất tại chỗ và trông hệt như lỗi
+- [x] Sai mật khẩu hiện tại trả **403 chứ không 401**: token vẫn hợp lệ, thứ bị từ chối là hành động
+
+### Frontend
+- [x] Trang `/profile` — hồ sơ, mục tiêu, tuỳ chọn, thống kê, đổi mật khẩu
+- [x] `Avatar` sinh từ chữ cái đầu, màu suy từ **id** chứ không từ tên (đổi tên mà đổi màu thì người dùng tưởng nhìn nhầm tài khoản). **Vuông**, không tròn — §6.2 chỉ có một bán kính
+- [x] Header hiện tên hiển thị thay cho email, và cả khối là liên kết vào `/profile`
+- [x] `session.refresh()` — hồ sơ nằm trong phiên nên lưu xong phải đọc lại, nếu không header vẫn hiện tên cũ
+
+### Test — 25 test mới (359 tổng)
+- [x] Đăng ký tạo hàng hồ sơ · null xoá được trường · null bị bỏ qua với cột NOT NULL
+- [x] Điểm mục tiêu không chia hết cho 5 → 422 · múi giờ không có thật → 422
+- [x] Token cũ chết sau khi đổi mật khẩu · token thay thế sống · mật khẩu chưa đổi thì phiên không bị đụng
+- [x] Số học chuỗi ngày tách thành hàm thuần `compute_streaks`, test không cần database
+
+### Một thứ chỉ lộ ra khi chạy thật
+**`create_all` của container dev lại tạo `user_profile` trước khi alembic kịp chạy** — đúng cái bẫy đã ghi ở mục 4b và trong `CLAUDE.md`, lần thứ hai. Lần này còn khó thấy hơn: `create_all` tạo được **bảng mới** nhưng không thêm được **cột mới vào bảng cũ**, nên `users.password_changed_at` vẫn thiếu trong khi `user_profile` đã có. Phải drop bảng rồi mới cho alembic chạy lại.
+
+---
 
 ## 5. Sprint 5 — TOEIC Practice
 

@@ -30,6 +30,11 @@ export type ReviewCard = components["schemas"]["ReviewCard"];
 export type ReviewSession = components["schemas"]["ReviewSession"];
 export type ReviewResult = components["schemas"]["ReviewResult"];
 export type RecallResult = components["schemas"]["RecallResult"];
+export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
+export type UserProfileUpdate = components["schemas"]["UserProfileUpdate"];
+export type PasswordChange = components["schemas"]["PasswordChange"];
+export type LearningStats = components["schemas"]["LearningStats"];
+export type StudyDay = components["schemas"]["StudyDay"];
 export type DictationSummary = components["schemas"]["DictationSummary"];
 export type DictationDetail = components["schemas"]["DictationDetail"];
 export type DictationResult = components["schemas"]["DictationResult"];
@@ -55,6 +60,12 @@ export const API_ROUTES = {
   register: "/api/v1/auth/register",
   login: "/api/v1/auth/login",
   me: "/api/v1/auth/me",
+  changePassword: "/api/v1/auth/password",
+
+  // Hồ sơ người dùng. Không có biến thể nhận id: đây là dữ liệu riêng của
+  // chính người đang đăng nhập, không phải trang cá nhân công khai.
+  profile: "/api/v1/profile",
+  profileStats: "/api/v1/profile/stats",
 
   // Learning Hub
   topics: "/api/v1/topics",
