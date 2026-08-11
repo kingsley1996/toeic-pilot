@@ -429,6 +429,16 @@ class VoiceOption(BaseModel):
     accent: str
 
 
+class ArchiveRequest(BaseModel):
+    """Cất đi hay lấy lại.
+
+    Lưu trữ chứ không xoá là lối thoát mà lời từ chối 409 chỉ tới, nên nó phải
+    bấm được từ đúng chỗ người ta vừa bị từ chối (`CONTENT_STATUSES`).
+    """
+
+    archived: bool
+
+
 class SetEdit(BaseModel):
     """Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.
 

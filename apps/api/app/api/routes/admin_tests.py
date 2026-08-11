@@ -16,7 +16,7 @@ import uuid
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
@@ -25,6 +25,8 @@ from app.core.database import get_db
 from app.core.media import LOGICAL_VOICE_ACCENTS, public_audio_url, script_fingerprint
 from app.core.storage import StorageDriver, get_driver
 from app.models import (
+    Attempt,
+    AttemptItem,
     AudioAsset,
     ImageAsset,
     PracticeTest,
@@ -37,6 +39,7 @@ from app.models import (
 )
 from app.models.validators import validate_question
 from app.schemas.admin import (
+    ArchiveRequest,
     CollectionAdmin,
     CollectionCreate,
     GroupDraft,
@@ -208,6 +211,78 @@ def publish_collection(
 # --- đề ---------------------------------------------------------------------
 
 
+def _archive(row: Question | PracticeTest | TestCollection, archived: bool) -> None:
+    """Cất đi, hoặc lấy lại về nháp.
+
+    Lấy lại KHÔNG trả về `published`: thứ vừa được cất đi phải qua cổng xuất bản
+    một lần nữa, vì lý do nó bị cất có thể chính là lý do nó không nên xuất hiện.
+    """
+    row.status = "archived" if archived else "draft"
+    if archived:
+        row.published_by = None
+        row.published_at = None
+
+
+def _blocked_by(count: int | None, what: str, noun: str) -> None:
+    """Từ chối xoá, và chỉ đúng lối thoát.
+
+    Lời từ chối chỉ xong khi thứ nó đòi hỏi nằm trong tầm với của người đang đọc
+    — nên câu này nói tên trạng thái, và giao diện có nút Lưu trữ ngay cạnh nút
+    Xoá. Bài học đã trả giá một lần với dictation, nơi 409 bảo "chuyển sang
+    archived" trong khi màn quản trị không có nút archive nào.
+    """
+    if count:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                f"Không xoá được: {count} {what} đang tham chiếu {noun} này. "
+                f"Lưu trữ thay vì xoá — nó biến mất khỏi mắt người học mà không "
+                f"làm mồ côi lịch sử làm bài."
+            ),
+        )
+
+
+@router.post("/test-collections/{slug}/archive", response_model=CollectionAdmin)
+def archive_collection(
+    slug: str,
+    body: ArchiveRequest,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
+) -> CollectionAdmin:
+    collection = _collection_or_404(db, slug)
+    _archive(collection, body.archived)
+    db.commit()
+    return _collection_admin(db, collection)
+
+
+@router.delete("/test-collections/{slug}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_collection(
+    slug: str, db: Session = Depends(get_db), _: User = Depends(can_publish)
+) -> None:
+    """Xoá một bộ đề rỗng.
+
+    `practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên
+    trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người
+    học tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.
+    Đó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới
+    thấy. Nên chặn ở đây, và nói ra còn mấy đề.
+    """
+    collection = _collection_or_404(db, slug)
+    tests = db.scalar(
+        select(func.count(PracticeTest.id)).where(PracticeTest.collection_id == collection.id)
+    )
+    if tests:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                f"Bộ đề này còn {tests} đề. Chuyển chúng sang bộ khác trước — xoá bộ đề "
+                f"không xoá đề, nhưng đề không thuộc bộ nào thì người học không thấy nữa."
+            ),
+        )
+    db.delete(collection)
+    db.commit()
+
+
 @router.get("/tests", response_model=list[TestAdmin])
 def list_tests(db: Session = Depends(get_db), _: User = Depends(can_edit)) -> list[TestAdmin]:
     tests = db.scalars(select(PracticeTest).order_by(PracticeTest.created_at.desc())).all()
@@ -281,13 +356,97 @@ def update_test(
     return _as_admin(db, test)
 
 
+@router.post("/tests/{slug}/archive", response_model=TestAdmin)
+def archive_test(
+    slug: str,
+    body: ArchiveRequest,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
+) -> TestAdmin:
+    test = _test_or_404(db, slug)
+    _archive(test, body.archived)
+    db.commit()
+    return _as_admin(db, test)
+
+
+@router.delete("/tests/{slug}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_test(slug: str, db: Session = Depends(get_db), _: User = Depends(can_publish)) -> None:
+    """Xoá một đề cùng câu hỏi và cụm của nó.
+
+    Hai điều dễ làm sai ở đây, và cả hai đều im lặng:
+
+    **Câu hỏi phải xoá tay, không trông vào CASCADE.**
+    `practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —
+    nhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở
+    bất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó
+    nằm lại trong database vĩnh viễn, không ai với tới để xoá.
+
+    **Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng
+    liên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp
+    lệ — xoá theo sẽ moi ruột đề còn lại.
+    """
+    test = _test_or_404(db, slug)
+    _blocked_by(
+        db.scalar(select(func.count(Attempt.id)).where(Attempt.test_id == test.id)),
+        "lượt làm bài",
+        "đề",
+    )
+
+    rows = _rows(db, test.id)
+    question_ids = [question.id for _, question in rows]
+    if question_ids:
+        # Câu nào còn được đề khác dùng thì để nguyên.
+        shared = {
+            question_id
+            for question_id in db.scalars(
+                select(PracticeTestQuestion.question_id).where(
+                    PracticeTestQuestion.question_id.in_(question_ids),
+                    PracticeTestQuestion.test_id != test.id,
+                )
+            )
+        }
+        doomed = [qid for qid in question_ids if qid not in shared]
+        set_ids = {q.set_id for _, q in rows if q.set_id and q.id not in shared}
+
+        # Gỡ liên kết TRƯỚC: `practice_test_question.question_id` là RESTRICT,
+        # nên xoá câu khi hàng liên kết còn đó sẽ nổ IntegrityError.
+        db.query(PracticeTestQuestion).filter(PracticeTestQuestion.test_id == test.id).delete(
+            synchronize_session=False
+        )
+        db.flush()
+        if doomed:
+            db.query(Question).filter(Question.id.in_(doomed)).delete(synchronize_session=False)
+            db.flush()
+        _drop_empty_sets(db, set_ids)
+
+    db.delete(test)
+    db.commit()
+
+
+def _drop_empty_sets(db: Session, set_ids: set[uuid.UUID]) -> None:
+    """Xoá những cụm vừa mất hết câu.
+
+    Một cụm rỗng không hiện ở màn nào và không ai với tới được, nên để lại là
+    tích rác — cùng lý do phải xoá câu tay thay vì trông vào CASCADE của đề.
+    """
+    for set_id in set_ids:
+        remaining = db.scalar(select(func.count(Question.id)).where(Question.set_id == set_id))
+        if not remaining:
+            stimulus = db.get(QuestionSet, set_id)
+            if stimulus is not None:
+                db.delete(stimulus)
+    db.flush()
+
+
 @router.get("/tests/{slug}/questions", response_model=list[QuestionAdmin])
 def list_test_questions(
     slug: str, db: Session = Depends(get_db), _: User = Depends(can_edit)
 ) -> list[QuestionAdmin]:
     test = _test_or_404(db, slug)
     image_driver = get_driver("image")
-    return [_question_admin(link, question, image_driver) for link, question in _rows(db, test.id)]
+    rows = _rows(db, test.id)
+    assets = _assets_for(db, [question for _, question in rows])
+    return [_question_admin(link, question, image_driver, assets) for link, question in rows]
 
 
 @router.post("/tests/{slug}/parts/{part}/parse", response_model=TestPartParseResponse)
@@ -570,7 +729,7 @@ def edit_question(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
         )
-    return _question_admin(link, question, get_driver("image"))
+    return _question_admin(link, question, get_driver("image"), _assets_for(db, [question]))
 
 
 @router.patch("/question-sets/{set_id}", response_model=SetAdmin)
@@ -719,7 +878,9 @@ def assign_question_audio(
     # người ta NHÌN THẤY (ADR-007 §2.7).
     _record_attachment(question, attached=bool(body.asset_id))
     db.commit()
-    return _question_admin(_link_or_409(db, question.id), question, get_driver("image"))
+    return _question_admin(
+        _link_or_409(db, question.id), question, get_driver("image"), _assets_for(db, [question])
+    )
 
 
 @router.post("/question-sets/{set_id}/audio", response_model=SetAdmin)
@@ -762,7 +923,64 @@ def assign_question_image(
         )
     question.image_asset_id = _asset_or_404(db, ImageAsset, body.asset_id)
     db.commit()
-    return _question_admin(_link_or_409(db, question.id), question, get_driver("image"))
+    return _question_admin(
+        _link_or_409(db, question.id), question, get_driver("image"), _assets_for(db, [question])
+    )
+
+
+@router.post("/questions/{question_id}/archive", response_model=QuestionAdmin)
+def archive_question(
+    question_id: uuid.UUID,
+    body: ArchiveRequest,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
+) -> QuestionAdmin:
+    question = db.get(Question, question_id, options=[selectinload(Question.options)])
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
+    _archive(question, body.archived)
+    db.commit()
+    return _question_admin(
+        _link_or_409(db, question.id), question, get_driver("image"), _assets_for(db, [question])
+    )
+
+
+@router.delete("/questions/{question_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_question(
+    question_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+) -> None:
+    """Xoá một câu khỏi đề.
+
+    `attempt_item.question_id` là RESTRICT, nên xoá một câu đã có người trả lời
+    sẽ nổ IntegrityError. Chặn trước và chỉ sang `archived` — cùng khuôn với câu
+    dictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch
+    sử làm bài của họ.
+
+    **Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành
+    trống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn "số chưa dùng
+    trong khoảng của part". Dồn số lại là suy ra số câu thay vì lưu nó — đúng
+    thứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.
+    """
+    question = db.get(Question, question_id)
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
+
+    _blocked_by(
+        db.scalar(select(func.count(AttemptItem.id)).where(AttemptItem.question_id == question.id)),
+        "lượt trả lời",
+        "câu",
+    )
+
+    set_id = question.set_id
+    # Gỡ liên kết trước: `practice_test_question.question_id` là RESTRICT.
+    db.query(PracticeTestQuestion).filter(PracticeTestQuestion.question_id == question.id).delete(
+        synchronize_session=False
+    )
+    db.delete(question)
+    db.flush()
+    if set_id is not None:
+        _drop_empty_sets(db, {set_id})
+    db.commit()
 
 
 @router.post("/questions/{question_id}/publish", response_model=QuestionAdmin)
@@ -797,7 +1015,7 @@ def publish_question(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
         )
-    return _question_admin(link, question, get_driver("image"))
+    return _question_admin(link, question, get_driver("image"), _assets_for(db, [question]))
 
 
 @router.post("/tests/{slug}/publish", response_model=TestAdmin)
@@ -835,14 +1053,19 @@ def _question_admin(
     link: PracticeTestQuestion,
     question: Question,
     image_driver: StorageDriver,
-    assets: dict[uuid.UUID, AudioAsset | ImageAsset] | None = None,
+    # BẮT BUỘC, không có mặc định. Bản đầu để `= None` và không call site nào
+    # truyền, nên `lookup` luôn rỗng và MỌI câu hỏi trả về `audio_url=None`,
+    # `image_url=None` — media đã gắn xong vẫn hiện "chưa có". Một tham số tuỳ
+    # chọn mà thiếu nó thì kết quả vẫn hợp lệ, chỉ sai, là thứ không ai phát
+    # hiện; thiếu một tham số bắt buộc thì mypy chặn ngay.
+    assets: dict[uuid.UUID, AudioAsset | ImageAsset],
 ) -> QuestionAdmin:
     stimulus = question.question_set
     # Ai đang giữ bản thu của câu này: chính nó (Part 1, 2) hay cụm (Part 3, 4).
     owner: Question | QuestionSet = (
         stimulus if question.part in (3, 4) and stimulus is not None else question
     )
-    lookup: dict[uuid.UUID, AudioAsset | ImageAsset] = assets or {}
+    lookup = assets
     audio_id = question.audio_asset_id or (stimulus.audio_asset_id if stimulus else None)
     audio = lookup.get(audio_id) if audio_id else None
     image = lookup.get(question.image_asset_id) if question.image_asset_id else None

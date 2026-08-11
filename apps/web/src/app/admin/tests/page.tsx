@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ROUTES, type CollectionAdmin, type TestAdmin } from "@toeic-pilot/shared";
-import { ClipboardList, FileText, FolderTree, Send } from "lucide-react";
+import { ClipboardList, FileText, FolderTree, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -21,6 +21,7 @@ import {
   Tag,
   cx,
 } from "@/components/ui";
+import { Modal } from "@/components/modal";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -111,6 +112,23 @@ export default function AdminTestsPage() {
         setSlug("");
         setTitle("");
       },
+    );
+
+  const archiveCollection = (target: string, archived: boolean) =>
+    run(() =>
+      apiFetch(API_ROUTES.adminCollectionArchive(target), {
+        method: "POST",
+        token: token ?? undefined,
+        body: JSON.stringify({ archived }),
+      }),
+    );
+
+  const deleteCollection = (target: string) =>
+    run(() =>
+      apiFetch(API_ROUTES.adminCollection(target), {
+        method: "DELETE",
+        token: token ?? undefined,
+      }),
     );
 
   const publishCollection = (target: string) =>
@@ -258,6 +276,8 @@ export default function AdminTestsPage() {
                 canPublish={canPublish}
                 busy={busy}
                 onPublish={() => void publishCollection(collection.slug)}
+                onArchive={(archived) => void archiveCollection(collection.slug, archived)}
+                onDelete={() => void deleteCollection(collection.slug)}
               />
             ))}
 
@@ -289,13 +309,19 @@ function CollectionBlock({
   canPublish,
   busy,
   onPublish,
+  onArchive,
+  onDelete,
 }: {
   collection: CollectionAdmin;
   tests: TestAdmin[];
   canPublish: boolean;
   busy: boolean;
   onPublish: () => void;
+  onArchive: (archived: boolean) => void;
+  onDelete: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
+
   return (
     <Panel className="p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -328,7 +354,59 @@ function CollectionBlock({
             Xuất bản bộ
           </Button>
         )}
+        {canPublish && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="quiet"
+              onClick={() => onArchive(collection.status !== "archived")}
+              disabled={busy}
+            >
+              {collection.status === "archived" ? "Bỏ lưu trữ" : "Lưu trữ"}
+            </Button>
+            <Button
+              size="sm"
+              variant="quiet"
+              onClick={() => setConfirming(true)}
+              disabled={busy}
+              // Xoá bộ đề KHÔNG xoá đề trong nó, và endpoint từ chối khi bộ còn
+              // đề — nói trước ở đây để người ta không bấm rồi mới biết.
+              title={
+                collection.test_count > 0
+                  ? "Còn đề trong bộ — chuyển chúng sang bộ khác trước"
+                  : undefined
+              }
+            >
+              <Trash2 size={13} strokeWidth={1.75} aria-hidden />
+            </Button>
+          </div>
+        )}
       </div>
+
+      <Modal
+        open={confirming}
+        onClose={() => setConfirming(false)}
+        title={`Xoá bộ đề ${collection.title}?`}
+        // Cấp duy nhất mà database không chặn: xoá bộ đề chỉ gỡ liên kết, đề
+        // vẫn còn — nhưng đề không thuộc bộ nào thì người học không thấy nữa.
+        description="Bộ đề phải rỗng mới xoá được. Xoá bộ không xoá đề, nhưng đề không thuộc bộ nào thì người học không còn đường tới."
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="destructive"
+            onClick={() => {
+              setConfirming(false);
+              onDelete();
+            }}
+            disabled={busy}
+          >
+            Xoá bộ đề
+          </Button>
+          <Button variant="quiet" onClick={() => setConfirming(false)} disabled={busy}>
+            Huỷ
+          </Button>
+        </div>
+      </Modal>
 
       <div className="mt-3 space-y-2 border-l-2 border-rule pl-3">
         {tests.length === 0 ? (

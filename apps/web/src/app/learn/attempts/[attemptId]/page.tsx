@@ -535,9 +535,9 @@ function StimulusBlock({
         {/* Ghi công là ĐIỀU KIỆN của giấy phép, không phải chú thích tuỳ chọn:
             ảnh CC-BY chỉ được dùng khi có ghi công (ADR-004 §4.2). Lưu vào
             database mà không hiện ra vẫn là vi phạm. */}
-        {block.imageUrl && block.imageCredit && (
+        {/* {block.imageUrl && block.imageCredit && (
           <p className="text-label text-ink-faint">{block.imageCredit}</p>
-        )}
+        )} */}
 
         {block.audioUrl && (
           // `controls` gốc của trình duyệt, không tự dựng player: nó đã có tua,
@@ -570,11 +570,11 @@ function StimulusBlock({
                 />
                 {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,
                     không riêng Part 1 (ADR-004 §4.2). */}
-                {credit(passage.image_attribution, passage.image_license) && (
+                {/* {credit(passage.image_attribution, passage.image_license) && (
                   <p className="mt-1.5 text-label text-ink-faint">
                     {credit(passage.image_attribution, passage.image_license)}
                   </p>
-                )}
+                )} */}
               </>
             )}
           </article>

@@ -29,6 +29,20 @@
         "title": "AnswerSubmit",
         "type": "object"
       },
+      "ArchiveRequest": {
+        "description": "Cất đi hay lấy lại.\n\nLưu trữ chứ không xoá là lối thoát mà lời từ chối 409 chỉ tới, nên nó phải\nbấm được từ đúng chỗ người ta vừa bị từ chối (`CONTENT_STATUSES`).",
+        "properties": {
+          "archived": {
+            "title": "Archived",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "archived"
+        ],
+        "title": "ArchiveRequest",
+        "type": "object"
+      },
       "AttemptPartProgress": {
         "properties": {
           "answered": {
@@ -6330,6 +6344,46 @@
       }
     },
     "/api/v1/admin/questions/{question_id}": {
+      "delete": {
+        "description": "Xoá một câu khỏi đề.\n\n`attempt_item.question_id` là RESTRICT, nên xoá một câu đã có người trả lời\nsẽ nổ IntegrityError. Chặn trước và chỉ sang `archived` — cùng khuôn với câu\ndictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch\nsử làm bài của họ.\n\n**Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành\ntrống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn \"số chưa dùng\ntrong khoảng của part\". Dồn số lại là suy ra số câu thay vì lưu nó — đúng\nthứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.",
+        "operationId": "delete_question_api_v1_admin_questions__question_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Question",
+        "tags": [
+          "admin"
+        ]
+      },
       "patch": {
         "description": "Sửa một câu đã dán. Nửa sau của ADR-007 §2.3.\n\nDán tạo hàng loạt; form sửa những thứ dán không diễn đạt được — đổi đáp án\nđúng, viết giải thích, sửa một lựa chọn gõ nhầm.",
         "operationId": "edit_question_api_v1_admin_questions__question_id__patch",
@@ -6383,6 +6437,64 @@
           }
         ],
         "summary": "Edit Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/questions/{question_id}/archive": {
+      "post": {
+        "operationId": "archive_question_api_v1_admin_questions__question_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Archive Question",
         "tags": [
           "admin"
         ]
@@ -6628,6 +6740,104 @@
         ]
       }
     },
+    "/api/v1/admin/test-collections/{slug}": {
+      "delete": {
+        "description": "Xoá một bộ đề rỗng.\n\n`practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên\ntrong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người\nhọc tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.\nĐó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới\nthấy. Nên chặn ở đây, và nói ra còn mấy đề.",
+        "operationId": "delete_collection_api_v1_admin_test_collections__slug__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Collection",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/test-collections/{slug}/archive": {
+      "post": {
+        "operationId": "archive_collection_api_v1_admin_test_collections__slug__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Archive Collection",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/test-collections/{slug}/publish": {
       "post": {
         "description": "Tầng thứ ba của cùng một cổng chặn.\n\nBộ đề không xuất bản được khi chưa có đề nào đã xuất bản — nếu không, người\nhọc thấy một bộ đề mở ra rỗng không, và không có gì nói cho họ biết vì sao.\nCùng luật với cây dictation lọc `published` ở cả bốn tầng.",
@@ -6751,6 +6961,45 @@
       }
     },
     "/api/v1/admin/tests/{slug}": {
+      "delete": {
+        "description": "Xoá một đề cùng câu hỏi và cụm của nó.\n\nHai điều dễ làm sai ở đây, và cả hai đều im lặng:\n\n**Câu hỏi phải xoá tay, không trông vào CASCADE.**\n`practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —\nnhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở\nbất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó\nnằm lại trong database vĩnh viễn, không ai với tới để xoá.\n\n**Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng\nliên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp\nlệ — xoá theo sẽ moi ruột đề còn lại.",
+        "operationId": "delete_test_api_v1_admin_tests__slug__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Test",
+        "tags": [
+          "admin"
+        ]
+      },
       "get": {
         "operationId": "get_test_api_v1_admin_tests__slug__get",
         "parameters": [
@@ -6848,6 +7097,63 @@
           }
         ],
         "summary": "Update Test",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/archive": {
+      "post": {
+        "operationId": "archive_test_api_v1_admin_tests__slug__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Archive Test",
         "tags": [
           "admin"
         ]

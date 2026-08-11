@@ -25,7 +25,7 @@ import {
   Upload,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -45,6 +45,7 @@ import {
   Textarea,
   cx,
 } from "@/components/ui";
+import { Modal } from "@/components/modal";
 import { ApiError, apiFetch } from "@/lib/api";
 import { uploadAudio } from "@/lib/audio-upload";
 import { uploadImage } from "@/lib/image-upload";
@@ -69,6 +70,11 @@ const LISTENING = [1, 2, 3, 4];
 const GROUPED = [3, 4, 6, 7];
 // Các part có ảnh ở đâu đó: Part 1 trên câu, Part 3, 4, 7 trên cụm.
 const WITH_IMAGES = [1, 3, 4, 7];
+const PROVENANCE_LABELS = {
+  source_url: "Nguồn ảnh",
+  license: "Giấy phép",
+  attribution: "Ghi công",
+} as const;
 
 const NO_COLLECTION = "__none__";
 
@@ -160,6 +166,7 @@ explanation: Đoạn văn nói về việc đóng cửa sảnh để bảo trì.
 
 export default function AdminTestPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const slug = params.slug;
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
 
@@ -182,16 +189,45 @@ export default function AdminTestPage() {
   // vừa gửi dropdown đó.
   const [voices, setVoices] = useState<VoiceOption[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
+  // Id của thứ đang chờ xác nhận xoá; `"test"` nghĩa là cả đề.
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  // Lời từ chối của lần xoá gần nhất, in TRONG hộp thoại. Băng lỗi chung nằm
+  // ở đầu trang — tức là **sau lớp phủ của `<dialog>`**, nên một cú 409 ở đây
+  // là hoàn toàn vô hình.
+  const [deleteRefusal, setDeleteRefusal] = useState<string | null>(null);
   // Accent của bản thu sắp tải lên. Người học lọc nội dung theo nó, nên nó là
   // dữ liệu thật — và không ai ngoài người tải lên biết bản thu giọng gì.
   const [accent, setAccent] = useState("en-US");
   const [questions, setQuestions] = useState<QuestionAdmin[] | null>(null);
-  const [part, setPart] = useState<number>(5);
+  // `null` = chưa chọn tay, tự suy ra. Trước đây đây là `useState(5)` cứng —
+  // di tích của lượt 1, khi mới chỉ có Part 5, 6, 7. Hệ quả: mọi đề đều mở ra ở
+  // Part 5, kể cả đề chỉ có nội dung Nghe, nên người soạn luôn nhìn vào một tab
+  // trống và phải tự đoán mình đang thiếu gì.
+  const [partOverride, setPartOverride] = useState<number | null>(null);
   const [raw, setRaw] = useState("");
   const [parsed, setParsed] = useState<TestPartParseResponse | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Ba trường xuất xứ là NOT NULL ở `image_asset` và không có mặc định ở tầng
+  // nào, nên thiếu bất kỳ trường nào là chưa tải lên được. Tính ở đây một lần
+  // thay vì để mỗi ô tự hỏi.
+  const missing = (["source_url", "license", "attribution"] as const).filter(
+    (key) => !provenance[key].trim(),
+  );
+  const imagesBlocked = missing.length
+    ? `Điền ${missing.map((key) => PROVENANCE_LABELS[key]).join(", ")} ở đầu trang trước khi tải ảnh.`
+    : null;
+
+  // Part đang xem: người soạn chọn gì thì theo nấy, chưa chọn thì mở ở part
+  // ĐẦU TIÊN có câu. Suy ra chứ không ghi vào state qua effect —
+  // `react-hooks/set-state-in-effect` chặn đúng lối tắt đó, và một state ghi từ
+  // effect sẽ lệch pha với dữ liệu nó mô tả.
+  const firstUsedPart = questions?.length
+    ? Math.min(...questions.map((question) => question.part))
+    : null;
+  const part = partOverride ?? firstUsedPart ?? 1;
 
   const refresh = useCallback(
     (t: string) => {
@@ -230,7 +266,19 @@ export default function AdminTestPage() {
     setError(null);
     setNotice(null);
     try {
-      done?.(await work());
+      // `await work()` phải là CÂU LỆNH RIÊNG, không được nằm làm đối số của
+      // `done?.(...)`.
+      //
+      // Optional call ngắt mạch cả đối số: khi `done` là `undefined`,
+      // `done?.(await work())` bỏ qua luôn việc tính đối số, nên **`work()`
+      // không bao giờ chạy** — mà hàm vẫn đi tiếp và `return null`, tức là báo
+      // THÀNH CÔNG cho một việc chưa hề xảy ra.
+      //
+      // Nó chỉ cắn ở những lời gọi không truyền `done`, nên phần lớn màn hình
+      // vẫn chạy đúng và lỗi ẩn rất lâu: nút Xoá đề báo "đã xoá" trong khi
+      // database còn nguyên và server không nhận request nào.
+      const value = await work();
+      done?.(value);
       return null;
     } catch (problem) {
       const message = problem instanceof ApiError ? problem.message : "Có lỗi xảy ra.";
@@ -425,6 +473,59 @@ export default function AdminTestPage() {
       },
     );
 
+  const archiveTest = (archived: boolean) =>
+    run(
+      () =>
+        apiFetch<TestAdmin>(API_ROUTES.adminTestArchive(slug), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ archived }),
+        }),
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  // KHÔNG tự chuyển hướng. Điều hướng ngầm là thứ nói dối được: nếu vì bất cứ
+  // lý do gì mà lệnh xoá không chạy, người dùng vẫn thấy trang đổi và tin rằng
+  // đề đã bị xoá — trong khi nó còn nguyên. Chuyển trang chỉ xảy ra khi người
+  // dùng bấm, sau khi đã đọc kết quả.
+  const deleteTest = async () => {
+    const problem = await run(() =>
+      apiFetch<void>(API_ROUTES.adminTest(slug), { method: "DELETE", token: token ?? undefined }),
+    );
+    setDeleteRefusal(problem);
+    if (problem !== null) return;
+    setConfirmDelete(null);
+    router.push("/admin/tests");
+  };
+
+  const archiveQuestion = (questionId: string, archived: boolean) =>
+    run(
+      () =>
+        apiFetch<QuestionAdmin>(API_ROUTES.adminQuestionArchive(questionId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ archived }),
+        }),
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const deleteQuestion = (questionId: string) =>
+    run(
+      () =>
+        apiFetch<void>(API_ROUTES.adminQuestion(questionId), {
+          method: "DELETE",
+          token: token ?? undefined,
+        }),
+      () => {
+        setConfirmDelete(null);
+        if (token) refresh(token);
+      },
+    );
+
   const requestAudio = () =>
     run(
       () =>
@@ -542,8 +643,90 @@ export default function AdminTestPage() {
               Xuất bản đề
             </Button>
           )}
+          {/* Lưu trữ đứng NGAY CẠNH Xoá, không nằm đâu khác: lời từ chối 409
+              chỉ sang `archived`, và một lối thoát chỉ có giá trị khi nó ở
+              trong tầm tay người vừa bị từ chối. */}
+          {canPublish && (
+            <>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => void archiveTest(test.status !== "archived")}
+                disabled={busy}
+              >
+                {test.status === "archived" ? "Bỏ lưu trữ" : "Lưu trữ"}
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => {
+                  setDeleteRefusal(null);
+                  setConfirmDelete("test");
+                }}
+                disabled={busy}
+              >
+                <Trash2 size={14} strokeWidth={1.75} aria-hidden />
+                Xoá đề
+              </Button>
+            </>
+          )}
         </div>
       </div>
+
+      <Modal
+        open={confirmDelete === "test"}
+        onClose={() => {
+          setDeleteRefusal(null);
+          setConfirmDelete(null);
+        }}
+        title={`Xoá đề ${test.title}?`}
+        description={
+          `${questions?.length ?? 0} câu hỏi và các cụm của chúng sẽ bị xoá theo. ` +
+          "Đề đã có người làm thì không xoá được — lưu trữ thay vì xoá."
+        }
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="destructive" onClick={() => void deleteTest()} disabled={busy}>
+            Xoá đề và {questions?.length ?? 0} câu
+          </Button>
+          <Button
+            variant="quiet"
+            onClick={() => {
+              setDeleteRefusal(null);
+              setConfirmDelete(null);
+            }}
+            disabled={busy}
+          >
+            Huỷ
+          </Button>
+        </div>
+
+        {/* Lời từ chối phải in TRONG hộp thoại: băng lỗi chung nằm ở đầu trang,
+            tức là sau lớp phủ của `<dialog>`, nên một cú 409 ở đó vô hình. Và
+            nút Lưu trữ — thứ lời từ chối nêu tên — phải ở ngay cạnh nó, không
+            phải ở đầu trang sau lớp phủ. */}
+        {deleteRefusal && (
+          <div className="mt-3">
+            <FieldError>{deleteRefusal}</FieldError>
+            <div className="mt-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={async () => {
+                  const problem = await archiveTest(true);
+                  if (problem === null) {
+                    setDeleteRefusal(null);
+                    setConfirmDelete(null);
+                  }
+                }}
+                disabled={busy}
+              >
+                Lưu trữ đề thay vì xoá
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {error && (
         <div className="mt-4">
@@ -567,7 +750,7 @@ export default function AdminTestPage() {
               type="button"
 
               onClick={() => {
-                setPart(value);
+                setPartOverride(value);
                 setParsed(null);
               }}
 
@@ -621,6 +804,13 @@ export default function AdminTestPage() {
               onChange={(e) => setProvenance({ ...provenance, attribution: e.target.value })}
             />
           </Field>
+          {/* Nói ra ở ĐÂY, chỗ phải sửa — không chỉ ở nút tải lên, chỗ phát hiện
+              ra vấn đề. Ba cột này NOT NULL và không có mặc định ở tầng nào. */}
+          {imagesBlocked && (
+            <p className="text-small text-warn sm:col-span-3">
+              Cả ba trường đều bắt buộc — chưa đủ thì chưa tải ảnh lên được.
+            </p>
+          )}
         </div>
       )}
 
@@ -680,6 +870,7 @@ export default function AdminTestPage() {
                       uploadPassageImage(stimulus.id, slot, file, alt)
                     }
                     onRemoveImage={(slot) => removePassageImage(stimulus.id, slot)}
+                    blocked={imagesBlocked}
                     // Chỉ Part 7 có ảnh. Part 6 là Text Completion — một đoạn
                     // văn có các chỗ trống, toàn chữ.
                     allowImages={part === 7}
@@ -771,8 +962,57 @@ export default function AdminTestPage() {
                         Xuất bản
                       </Button>
                     )}
+                    {canPublish && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="quiet"
+                          onClick={() =>
+                            void archiveQuestion(question.id, question.status !== "archived")
+                          }
+                          disabled={busy}
+                        >
+                          {question.status === "archived" ? "Bỏ lưu trữ" : "Lưu trữ"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="quiet"
+                          onClick={() => setConfirmDelete(question.id)}
+                          disabled={busy}
+                          aria-label={`Xoá câu ${question.number}`}
+                        >
+                          <Trash2 size={14} strokeWidth={1.75} aria-hidden />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
+
+                <Modal
+                  open={confirmDelete === question.id}
+                  onClose={() => setConfirmDelete(null)}
+                  title={`Xoá câu ${question.number}?`}
+                  // Số câu để lại chỗ trống chứ không dồn — nói ra, vì người
+                  // soạn sẽ tự hỏi ngay và câu trả lời quyết định họ có dán lại
+                  // được không.
+                  description={
+                    `Ô ${question.number} sẽ trống và lần dán sau lấy lại đúng ô đó; ` +
+                    "các câu khác giữ nguyên số. Câu đã có người trả lời thì không xoá được."
+                  }
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="destructive"
+                      onClick={() => void deleteQuestion(question.id)}
+                      disabled={busy}
+                    >
+                      Xoá câu {question.number}
+                    </Button>
+                    <Button variant="quiet" onClick={() => setConfirmDelete(null)} disabled={busy}>
+                      Huỷ
+                    </Button>
+                  </div>
+                </Modal>
 
                 {/* Part 1 và 2: bản thu nằm trên CHÍNH câu, vì mỗi câu là một
                     clip riêng — không có cụm nào để treo nó lên (ADR-001 §A4.3). */}
@@ -812,6 +1052,7 @@ export default function AdminTestPage() {
                       // Part 1 KHÔNG có chữ thay ảnh: bức ảnh chính là câu hỏi,
                       // nên mô tả nó là đưa luôn đáp án.
                       needsAlt={false}
+                      blocked={imagesBlocked}
                       onUpload={(file, alt) => uploadQuestionImage(question.id, file, alt)}
                       onRemove={() => removeQuestionImage(question.id)}
                     />
@@ -931,12 +1172,15 @@ function ImageUpload({
   busy,
   hasImage,
   needsAlt,
+  blocked,
   onUpload,
   onRemove,
 }: {
   busy: boolean;
   hasImage: boolean;
   needsAlt: boolean;
+  /** Lý do chưa tải lên được, hoặc null. Xem `send`. */
+  blocked: string | null;
   onUpload: (file: File, alt: string | null) => Promise<string | null>;
   onRemove: () => Promise<string | null>;
 }) {
@@ -944,9 +1188,17 @@ function ImageUpload({
   const [refusal, setRefusal] = useState<string | null>(null);
 
   async function send(file: File) {
+    // Chặn TRƯỚC khi tải lên, không phải sau. Bước xác nhận từ chối thiếu xuất
+    // xứ bằng 422, nhưng lúc đó file đã nằm trên Cloudinary rồi — và nó ở lại
+    // đó, không ai trỏ tới, không ai biết để dọn.
+    //
+    // Luật này đã áp cho chữ thay ảnh ngay từ đầu; không áp cho xuất xứ là một
+    // chỗ sót, và nó nổ ngay lần tải ảnh Part 1 đầu tiên.
+    if (blocked) {
+      setRefusal(blocked);
+      return;
+    }
     if (needsAlt && !alt.trim()) {
-      // Chặn trước khi tải lên, không phải sau: file đã nằm trên Cloudinary rồi
-      // mới báo thiếu chữ thay ảnh sẽ để lại một object không ai trỏ tới.
       setRefusal("Cần chữ thay ảnh trước khi tải lên.");
       return;
     }
@@ -1061,6 +1313,7 @@ function SetPanel({
   busy,
   onUploadImage,
   onRemoveImage,
+  blocked,
   onUploadAudio,
   onSaveScript,
   voices,
@@ -1070,6 +1323,7 @@ function SetPanel({
   busy: boolean;
   onUploadImage: (slot: number, file: File, alt: string | null) => Promise<string | null>;
   onRemoveImage: (slot: number) => Promise<string | null>;
+  blocked: string | null;
   onUploadAudio: (file: File) => void;
   onSaveScript: (script: TurnDraft[]) => Promise<string | null>;
   voices: VoiceOption[];
@@ -1141,6 +1395,7 @@ function SetPanel({
                 // mô tả nó cũng không lộ gì, vì vẫn phải nghe (Part 3/4) hoặc
                 // vẫn phải đọc phần còn lại (Part 7).
                 needsAlt
+                blocked={blocked}
                 onUpload={(file, alt) => onUploadImage(passage.slot, file, alt)}
                 onRemove={() => onRemoveImage(passage.slot)}
               />

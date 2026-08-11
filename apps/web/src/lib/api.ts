@@ -10,11 +10,25 @@ export class ApiError extends Error {
   }
 }
 
+type ValidationIssue = { msg: string; loc?: (string | number)[] };
+
+/**
+ * Lỗi 422 của FastAPI có TÊN TRƯỜNG trong `loc`, và bỏ nó đi là bỏ đi toàn bộ
+ * thông tin hữu ích: ba trường trống cùng lúc cho ra ba dòng "String should have
+ * at least 1 character" giống hệt nhau, không dòng nào nói trường nào.
+ *
+ * `loc` là ["body", "source_url"], nên phần tử cuối là cái cần.
+ */
+function issueText(issue: ValidationIssue): string {
+  const field = issue.loc?.filter((part) => part !== "body").at(-1);
+  return field ? `${field}: ${issue.msg}` : issue.msg;
+}
+
 async function parseError(response: Response): Promise<string> {
   try {
-    const data = (await response.json()) as { detail?: string | { msg: string }[] };
+    const data = (await response.json()) as { detail?: string | ValidationIssue[] };
     if (typeof data.detail === "string") return data.detail;
-    if (Array.isArray(data.detail)) return data.detail.map((d) => d.msg).join(", ");
+    if (Array.isArray(data.detail)) return data.detail.map(issueText).join(" · ");
   } catch {
     /* ignore */
   }

@@ -20,7 +20,7 @@ import uuid
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user
@@ -356,10 +356,27 @@ def start_attempt(
     if test is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có đề này")
 
+    # Lọc `published` ở CẢ HAI tầng: câu, và cụm mà câu thuộc về.
+    #
+    # Lọc mỗi câu là chưa đủ, và chỗ hở im lặng: một câu đã xuất bản nằm dưới
+    # một cụm còn nháp sẽ mang theo cả ngữ liệu lẫn bản thu của cụm đó ra ngoài
+    # (`_passages` đọc thẳng từ `question_set`). Người học thấy một bài đọc chưa
+    # ai duyệt, và nội dung đó trông hoàn toàn bình thường — không có gì để phát
+    # hiện. Đúng hình dạng lỗ rò cây dictation đã có, và đó là lý do cây ấy lọc
+    # `published` ở cả bốn tầng.
+    #
+    # `outerjoin` chứ không `join`: `question.set_id` là NULL ở Part 1, 2 và 5 —
+    # câu đứng riêng, không có cụm nào để duyệt. `join` thường sẽ lặng lẽ loại
+    # sạch ba part đó khỏi mọi lượt làm bài.
     rows = db.execute(
         select(PracticeTestQuestion.position, Question.id, Question.part)
         .join(Question, Question.id == PracticeTestQuestion.question_id)
-        .where(PracticeTestQuestion.test_id == test.id, Question.status == PUBLISHED)
+        .outerjoin(QuestionSet, QuestionSet.id == Question.set_id)
+        .where(
+            PracticeTestQuestion.test_id == test.id,
+            Question.status == PUBLISHED,
+            or_(Question.set_id.is_(None), QuestionSet.status == PUBLISHED),
+        )
         .order_by(PracticeTestQuestion.position)
     ).all()
 

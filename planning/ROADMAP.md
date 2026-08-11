@@ -393,6 +393,24 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [ ] Nội dung Part 1–4 thật (mới có mẫu demo)
 - [x] `app/content/import_media.py` — gắn hàng loạt audio/ảnh có sẵn vào một đề đã dán. Khớp theo số trong tên file, `--dry-run` in bảng khớp, file thừa hoặc ô trống thì **dừng** chứ không nhập một nửa. Ghi `source="uploaded"` nên worker TTS không bao giờ đè lên
 
+### Đóng lỗ đã biết · 🟢 xong 2026-08-11
+- [x] **Lọc `question_set.status` phía người học.** `POST /attempts` chỉ lọc câu, nên câu đã xuất bản dưới cụm nháp mang cả ngữ liệu lẫn bản thu của cụm ra ngoài. Dùng `outerjoin` — `set_id` là NULL ở Part 1, 2, 5 nên `join` thường sẽ loại sạch ba part đó khỏi mọi lượt làm bài, hỏng nặng hơn lỗ nó vá. `tests/test_attempts.py` khoá cả hai chiều (file này trước đó **không tồn tại** — API lượt làm bài chưa có test nào)
+- [x] **`app/content/reconcile_media.py`** — tìm asset không còn ai trỏ tới. Chỉ báo cáo; `--delete-rows` xoá hàng database, **không** đụng object trên nhà cung cấp. Chạy thật trên dev DB: 39 bản thu + 1 ảnh mồ côi từ các đề probe đã xoá và một lần tải ảnh hỏng
+- [ ] Xoá object trên nhà cung cấp — cần liệt kê bucket (S3 làm được, Cloudinary phải qua Admin API riêng), và là thao tác không hoàn tác nên chưa tự động hoá
+- [ ] Ping giữ Supabase khỏi ngủ (Sprint 4d)
+
+### Xoá / lưu trữ nội dung đề · 🟢 xong 2026-08-11
+- [x] Ba cấp, ba luật khác nhau vì ràng buộc khoá ngoại khác nhau. **Bộ đề là cấp nguy hiểm nhất**: `collection_id` là SET NULL nên xoá không lỗi, không mất dữ liệu, chỉ lặng lẽ cắt đường người học tới từng đề bên trong — chặn khi bộ còn đề. Đề và câu thì database chặn thật (RESTRICT), nên kiểm trước rồi trả 409 chỉ sang `archived`
+- [x] Xoá đề phải xoá câu và cụm **bằng tay**: `practice_test_question.test_id` là CASCADE nên hàng liên kết tự mất, còn `question` sống sót và không hiện ở màn quản trị nào nữa. Chỉ xoá câu mà đề này là đề duy nhất dùng nó
+- [x] Số câu để lại **chỗ trống**, không dồn — `commit_part` chọn "số chưa dùng trong khoảng", nên ô vừa xoá được lấy lại ở lần dán sau (ADR-007 §2.6)
+- [x] Nút Lưu trữ nằm ngay cạnh nút Xoá ở cả ba cấp, và lời từ chối 409 in **trong hộp thoại** kèm nút lưu trữ — băng lỗi chung nằm sau lớp phủ `<dialog>` nên vô hình đúng lúc cần đọc
+
+### 🐞 `done?.(await work())` — báo thành công cho việc chưa xảy ra
+- [x] **Optional call ngắt mạch cả đối số.** Khi `done` là `undefined`, `done?.(await work())` bỏ qua luôn việc tính đối số nên `work()` **không bao giờ chạy**, hàm rơi xuống `return null`, và bên gọi được báo thành công. Sửa: `const value = await work(); done?.(value);`
+- [x] Chỉ cắn ở lời gọi không truyền `done` — 18/19 chỗ trong màn soạn đề có `done` nên vẫn chạy đúng, đúng một chỗ không: nút **Xoá đề**. Nó báo "đã xoá", chuyển trang, để lại đề nguyên trong database, và **không có request nào trong log server lẫn tab Network**
+- [x] `run` sinh đôi ở `admin/tests/page.tsx` viết `await work()` thành câu lệnh riêng — đó là lý do xoá *bộ đề* chạy được còn xoá *đề* thì không. Sự bất đối xứng ấy mới là manh mối
+- [x] Đã quét toàn bộ `apps/web` và `packages/shared`: không còn chỗ nào khác dùng mẫu này
+
 ### Lượt 3 — sinh audio bằng TTS · 🟢 xong
 - [x] `backfill_questions` — lời thoại trên CÂU (Part 1, 2) và trên CỤM (Part 3, 4), băm qua `conversation_source_hash`, ghép bằng ffmpeg. Một lượt nói thì bỏ qua ffmpeg luôn
 - [x] **`AudioState.EXTERNAL`** — bản thu tải lên không bao giờ bị ghi đè. Phép kiểm cũ `is not CURRENT` khiến clip tải lên (hash băm id ngẫu nhiên) rơi vào nhánh sinh lại; đã có test và đã xác nhận nó đỏ khi gỡ lá chắn. Lỗi này có thật cho cả vocabulary lẫn dictation, không riêng câu hỏi

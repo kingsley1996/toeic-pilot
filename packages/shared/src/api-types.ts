@@ -440,7 +440,21 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete Question
+         * @description Xoá một câu khỏi đề.
+         *
+         *     `attempt_item.question_id` là RESTRICT, nên xoá một câu đã có người trả lời
+         *     sẽ nổ IntegrityError. Chặn trước và chỉ sang `archived` — cùng khuôn với câu
+         *     dictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch
+         *     sử làm bài của họ.
+         *
+         *     **Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành
+         *     trống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn "số chưa dùng
+         *     trong khoảng của part". Dồn số lại là suy ra số câu thay vì lưu nó — đúng
+         *     thứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.
+         */
+        delete: operations["delete_question_api_v1_admin_questions__question_id__delete"];
         options?: never;
         head?: never;
         /**
@@ -451,6 +465,23 @@ export interface paths {
          *     đúng, viết giải thích, sửa một lựa chọn gõ nhầm.
          */
         patch: operations["edit_question_api_v1_admin_questions__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/questions/{question_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Question */
+        post: operations["archive_question_api_v1_admin_questions__question_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/questions/{question_id}/audio": {
@@ -528,6 +559,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/test-collections/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Collection
+         * @description Xoá một bộ đề rỗng.
+         *
+         *     `practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên
+         *     trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người
+         *     học tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.
+         *     Đó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới
+         *     thấy. Nên chặn ở đây, và nói ra còn mấy đề.
+         */
+        delete: operations["delete_collection_api_v1_admin_test_collections__slug__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/test-collections/{slug}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Collection */
+        post: operations["archive_collection_api_v1_admin_test_collections__slug__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/test-collections/{slug}/publish": {
         parameters: {
             query?: never;
@@ -581,7 +655,23 @@ export interface paths {
         get: operations["get_test_api_v1_admin_tests__slug__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete Test
+         * @description Xoá một đề cùng câu hỏi và cụm của nó.
+         *
+         *     Hai điều dễ làm sai ở đây, và cả hai đều im lặng:
+         *
+         *     **Câu hỏi phải xoá tay, không trông vào CASCADE.**
+         *     `practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —
+         *     nhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở
+         *     bất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó
+         *     nằm lại trong database vĩnh viễn, không ai với tới để xoá.
+         *
+         *     **Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng
+         *     liên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp
+         *     lệ — xoá theo sẽ moi ruột đề còn lại.
+         */
+        delete: operations["delete_test_api_v1_admin_tests__slug__delete"];
         options?: never;
         head?: never;
         /**
@@ -594,6 +684,23 @@ export interface paths {
          *     không đổi gì, nên không ai phát hiện cho tới lần tải lại trang.
          */
         patch: operations["update_test_api_v1_admin_tests__slug__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/tests/{slug}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Test */
+        post: operations["archive_test_api_v1_admin_tests__slug__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/tests/{slug}/parts": {
@@ -1484,6 +1591,17 @@ export interface components {
             flagged?: boolean | null;
             /** Selected Option Id */
             selected_option_id?: string | null;
+        };
+        /**
+         * ArchiveRequest
+         * @description Cất đi hay lấy lại.
+         *
+         *     Lưu trữ chứ không xoá là lối thoát mà lời từ chối 409 chỉ tới, nên nó phải
+         *     bấm được từ đúng chỗ người ta vừa bị từ chối (`CONTENT_STATUSES`).
+         */
+        ArchiveRequest: {
+            /** Archived */
+            archived: boolean;
         };
         /** AttemptPartProgress */
         AttemptPartProgress: {
@@ -4109,6 +4227,35 @@ export interface operations {
             };
         };
     };
+    delete_question_api_v1_admin_questions__question_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     edit_question_api_v1_admin_questions__question_id__patch: {
         parameters: {
             query?: never;
@@ -4121,6 +4268,41 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["QuestionEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_question_api_v1_admin_questions__question_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArchiveRequest"];
             };
         };
         responses: {
@@ -4298,6 +4480,70 @@ export interface operations {
             };
         };
     };
+    delete_collection_api_v1_admin_test_collections__slug__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_collection_api_v1_admin_test_collections__slug__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArchiveRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     publish_collection_api_v1_admin_test_collections__slug__publish_post: {
         parameters: {
             query?: never;
@@ -4413,6 +4659,35 @@ export interface operations {
             };
         };
     };
+    delete_test_api_v1_admin_tests__slug__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_test_api_v1_admin_tests__slug__patch: {
         parameters: {
             query?: never;
@@ -4425,6 +4700,41 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["TestUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_test_api_v1_admin_tests__slug__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArchiveRequest"];
             };
         };
         responses: {

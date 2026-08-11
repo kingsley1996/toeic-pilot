@@ -4,15 +4,27 @@ Two things are checked on every endpoint, because both fail silently:
 a learner must get 403, and an import must never land as `published`.
 """
 
+import uuid
 from collections.abc import Callable
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.media import source_hash
 from app.core.security import create_access_token
-from app.models import AudioAsset, DictationItem, User, VocabularyAudio, VocabularyEntry
+from app.models import (
+    Attempt,
+    AudioAsset,
+    DictationItem,
+    PracticeTest,
+    Question,
+    QuestionSet,
+    User,
+    VocabularyAudio,
+    VocabularyEntry,
+)
 from app.models.image import ImageAsset
 from tests.test_domain_model import make_audio
 
@@ -77,6 +89,16 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/test-collections", {"slug": "x", "title": "X"}),
     ("POST", "/api/v1/admin/test-collections/x/publish", None),
     ("GET", "/api/v1/admin/tests", None),
+    ("POST", "/api/v1/admin/test-collections/x/archive", {"archived": True}),
+    ("DELETE", "/api/v1/admin/test-collections/x", None),
+    ("POST", "/api/v1/admin/tests/x/archive", {"archived": True}),
+    ("DELETE", "/api/v1/admin/tests/x", None),
+    (
+        "POST",
+        "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/archive",
+        {"archived": True},
+    ),
+    ("DELETE", "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000", None),
     ("PATCH", "/api/v1/admin/tests/x", {"title": "X"}),
     ("GET", "/api/v1/admin/tests/x/sets", None),
     (
@@ -758,3 +780,207 @@ def test_a_listening_set_takes_one_graphic_and_only_slot_one(
     )
     assert refused.status_code == 400
     assert "một hình" in refused.json()["detail"]
+
+
+def _make_test_with_one_question(
+    client: TestClient, headers: dict[str, str], slug: str
+) -> dict[str, object]:
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": slug, "title": slug, "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts/7/parse",
+        json={"raw_text": _reading_paste()},
+        headers=headers,
+    ).json()
+    client.post(
+        f"/api/v1/admin/tests/{slug}/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    (question,) = client.get(f"/api/v1/admin/tests/{slug}/questions", headers=headers).json()
+    assert isinstance(question, dict)
+    return question
+
+
+def test_deleting_a_test_takes_its_questions_and_sets_with_it(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Không được để lại câu mồ côi.
+
+    `practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất,
+    nhưng `question` thì sống sót — và một câu không thuộc đề nào KHÔNG hiện ở
+    màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó nằm lại
+    trong database vĩnh viễn và không ai với tới để dọn.
+    """
+    headers = auth("admin")
+    question = _make_test_with_one_question(client, headers, "gone-test")
+    question_id = uuid.UUID(str(question["id"]))
+    set_id = uuid.UUID(str(question["set_id"]))
+
+    assert client.delete("/api/v1/admin/tests/gone-test", headers=headers).status_code == 204
+
+    assert db_session.get(Question, question_id) is None
+    # Cụm rỗng cũng phải đi theo: nó không hiện ở đâu và không ai với tới được.
+    assert db_session.get(QuestionSet, set_id) is None
+
+
+def test_a_test_with_attempts_refuses_deletion_and_names_the_way_out(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """`attempt.test_id` là RESTRICT: xoá thẳng sẽ là IntegrityError → 500.
+
+    Và lời từ chối phải nêu lối thoát, vì nó có thật: `archived` giấu đề khỏi
+    người học mà không làm mồ côi lịch sử làm bài của họ.
+    """
+    headers = auth("admin")
+    _make_test_with_one_question(client, headers, "sat-test")
+
+    test = db_session.scalars(select(PracticeTest).where(PracticeTest.slug == "sat-test")).one()
+    auth("learner")  # fixture tạo user theo vai trò khi được gọi
+    learner = db_session.scalars(select(User).where(User.role == "learner")).one()
+    db_session.add(Attempt(user_id=learner.id, test_id=test.id))
+    db_session.commit()
+
+    refused = client.delete("/api/v1/admin/tests/sat-test", headers=headers)
+    assert refused.status_code == 409
+    assert "Lưu trữ" in refused.json()["detail"]
+
+    # Và lối thoát đó phải dùng được ngay.
+    archived = client.post(
+        "/api/v1/admin/tests/sat-test/archive", json={"archived": True}, headers=headers
+    )
+    assert archived.status_code == 200
+    assert archived.json()["status"] == "archived"
+
+
+def test_a_collection_with_tests_refuses_deletion(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Cấp duy nhất mà database KHÔNG chặn, nên phải chặn ở đây.
+
+    `practice_test.collection_id` là SET NULL: xoá bộ đề không lỗi, không mất
+    dữ liệu, và lặng lẽ cắt đường của người học tới từng đề bên trong — vì đề
+    không thuộc bộ nào thì không xuất hiện ở đâu cả.
+    """
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "box", "title": "Bộ đề"},
+        headers=headers,
+    )
+    _make_test_with_one_question(client, headers, "in-box")
+    client.patch("/api/v1/admin/tests/in-box", json={"collection_slug": "box"}, headers=headers)
+
+    refused = client.delete("/api/v1/admin/test-collections/box", headers=headers)
+    assert refused.status_code == 409
+    assert "còn 1 đề" in refused.json()["detail"]
+
+
+def test_deleting_a_question_frees_its_number_for_the_next_paste(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Số câu để lại CHỖ TRỐNG, không dồn lại.
+
+    `commit_part` chọn "số chưa dùng trong khoảng của part", nên ô vừa xoá được
+    lấy lại ở lần dán sau. Dồn số là suy ra số câu thay vì lưu nó (ADR-007 §2.6)
+    và sẽ đổi tên những câu không ai đụng vào.
+    """
+    headers = auth("admin")
+    question = _make_test_with_one_question(client, headers, "gap-test")
+    assert question["number"] == 147
+
+    assert (
+        client.delete(f"/api/v1/admin/questions/{question['id']}", headers=headers).status_code
+        == 204
+    )
+
+    parsed = client.post(
+        "/api/v1/admin/tests/gap-test/parts/7/parse",
+        json={"raw_text": _reading_paste()},
+        headers=headers,
+    ).json()
+    client.post(
+        "/api/v1/admin/tests/gap-test/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    (again,) = client.get("/api/v1/admin/tests/gap-test/questions", headers=headers).json()
+    assert again["number"] == 147
+
+
+def test_attached_media_actually_reaches_the_question_list(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Gắn xong rồi thì danh sách câu phải THẤY nó.
+
+    `_question_admin` dựng URL từ một bản đồ asset truyền vào. Bản đầu để tham
+    số đó tuỳ chọn (`= None`) và không call site nào truyền — nên `lookup` luôn
+    rỗng và mọi câu trả về `audio_url=None`. Media gắn xong vẫn hiện "chưa có
+    bản thu", và không có gì báo vì phản hồi vẫn hợp lệ, chỉ sai.
+    """
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "media-list", "title": "Media", "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        "/api/v1/admin/tests/media-list/parts/1/parse",
+        json={
+            "raw_text": (
+                "[QUESTION]\nvoice: us_female_1\n"
+                "Look at the picture marked number one in your test book.\n"
+                "(A) A man is painting a wall.\n(B) A man is climbing a ladder.\n"
+                "(C) A man is washing a car.\n(D) A man is planting a tree.\n"
+                "answer: B\nsource: original\n"
+            )
+        },
+        headers=headers,
+    ).json()
+    client.post(
+        "/api/v1/admin/tests/media-list/parts",
+        json={"part": 1, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    (question,) = client.get("/api/v1/admin/tests/media-list/questions", headers=headers).json()
+
+    clip = AudioAsset(
+        storage_key="audio/bb/one.mp3",
+        source_hash="e" * 64,
+        voice="uploaded",
+        accent="en-US",
+        engine="uploaded",
+        engine_version="-",
+        duration_ms=4000,
+        size_bytes=90,
+        source="uploaded",
+    )
+    photo = ImageAsset(
+        storage_key="image/bb/one.jpg",
+        source_hash="f" * 64,
+        mime_type="image/jpeg",
+        size_bytes=90,
+        width=640,
+        height=480,
+        source="uploaded",
+        source_url="https://example.com",
+        license="CC0",
+        attribution="Ai đó",
+    )
+    db_session.add_all([clip, photo])
+    db_session.commit()
+
+    for path, body in (
+        (f"/api/v1/admin/questions/{question['id']}/audio", {"asset_id": str(clip.id)}),
+        (f"/api/v1/admin/questions/{question['id']}/image", {"asset_id": str(photo.id)}),
+    ):
+        assert client.post(path, json=body, headers=headers).status_code == 200
+
+    (after,) = client.get("/api/v1/admin/tests/media-list/questions", headers=headers).json()
+    assert after["audio_url"] is not None
+    assert after["image_url"] is not None
+    # Và cổng chặn không còn kêu thiếu media nữa.
+    assert after["problems"] == []
