@@ -258,3 +258,59 @@ def test_login_stops_answering_after_too_many_attempts(client: TestClient) -> No
     # `Retry-After` là phần khiến 429 dùng được: không có nó, client chỉ biết
     # "bị chặn" mà không biết chờ bao lâu, và cách xử lý phổ biến nhất là thử lại ngay.
     assert refused.headers.get("Retry-After")
+
+
+# --- logout ---------------------------------------------------------------
+
+
+def test_logout_makes_the_same_token_stop_working(client: TestClient):
+    """Đăng xuất phải thu hồi token, không chỉ xoá nó khỏi trình duyệt.
+
+    Đây là lỗ thật của P1-7, và nó không dính gì tới XSS: trước bản này `logout`
+    chỉ là `localStorage.removeItem` ở phía client, nên token vẫn sống thêm tới
+    bảy ngày. Máy dùng chung, một phiên trình duyệt được khôi phục, hay một
+    token lọt vào log — tất cả vẫn vào được, trong khi giao diện đã nói là đã
+    đăng xuất.
+    """
+    register(client)
+    token = login(client).json()["access_token"]
+
+    assert client.get("/api/v1/auth/me", headers=auth_header(token)).status_code == 200
+    assert client.post("/api/v1/auth/logout", headers=auth_header(token)).status_code == 204
+    assert client.get("/api/v1/auth/me", headers=auth_header(token)).status_code == 401
+
+
+def test_logout_does_not_touch_the_other_sessions(client: TestClient):
+    """Thu hồi MỘT phiên, không phải mọi phiên.
+
+    Đây chính là chỗ khác biệt với `pwc`: đổi mật khẩu đăng xuất mọi thiết bị,
+    và trước bản này đó là công cụ thu hồi duy nhất tồn tại. Đăng xuất trên máy
+    ở thư viện mà rớt luôn phiên trên điện thoại là một sản phẩm khác.
+    """
+    register(client)
+    laptop = login(client).json()["access_token"]
+    phone = login(client).json()["access_token"]
+
+    client.post("/api/v1/auth/logout", headers=auth_header(laptop))
+
+    assert client.get("/api/v1/auth/me", headers=auth_header(phone)).status_code == 200
+
+
+def test_logout_still_returns_204_when_redis_is_down(client: TestClient, fake_redis):
+    """Redis hỏng thì đăng xuất vẫn phải báo thành công.
+
+    Redis là phụ thuộc mềm ở khắp nơi khác, và trả 503 ở đây sẽ khiến giao diện
+    giữ người dùng ở lại trạng thái đã đăng nhập — đúng cái trạng thái họ vừa
+    bảo là muốn thoát ra. Client xoá token của mình dù thế nào; danh sách thu
+    hồi là lớp phòng thủ thứ hai chứ không phải lớp duy nhất.
+    """
+    import redis as redis_lib
+
+    register(client)
+    token = login(client).json()["access_token"]
+
+    def boom(*args: object, **kwargs: object) -> None:
+        raise redis_lib.RedisError("down")
+
+    fake_redis.setex = boom
+    assert client.post("/api/v1/auth/logout", headers=auth_header(token)).status_code == 204

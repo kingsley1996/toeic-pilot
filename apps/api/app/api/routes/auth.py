@@ -1,19 +1,26 @@
+import logging
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+import redis
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, security
 from app.core.database import get_db
 from app.core.rate_limit import Quota, rate_limit, rate_limit_anonymous
+from app.core.redis_client import get_redis
 from app.core.security import (
     PASSWORD_CLAIM,
+    TOKEN_ID_CLAIM,
     create_access_token,
+    decode_access_token,
     get_password_hash,
     password_epoch,
     verify_password,
 )
+from app.core.token_denylist import revoke
 from app.models.profile import UserProfile
 from app.models.user import User
 from app.schemas.auth import (
@@ -24,6 +31,8 @@ from app.schemas.auth import (
     UserRegister,
 )
 from app.services.profile import ensure_profile, profile_public
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -164,3 +173,34 @@ def change_password(
             extra={PASSWORD_CLAIM: password_epoch(current_user.password_changed_at)},
         )
     )
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+def logout(
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
+    # Phụ thuộc này là thứ bắt buộc phải có token hợp lệ; giá trị trả về không
+    # dùng tới. Không có nó thì bất kỳ ai cũng gọi được endpoint với một `jti`
+    # tự bịa và ghi rác vào Redis.
+    _: User = Depends(get_current_user),
+    client: redis.Redis = Depends(get_redis),
+) -> Response:
+    """Thu hồi đúng token đang dùng để gọi request này.
+
+    Chỉ phiên này, không phải mọi phiên: đăng xuất ở máy thư viện mà rớt luôn
+    phiên trên điện thoại là một sản phẩm khác. Cắt tất cả là việc của
+    `/auth/password`.
+
+    **Luôn trả 204, kể cả khi Redis hỏng.** Trả 503 sẽ khiến giao diện giữ người
+    dùng ở lại đúng cái trạng thái họ vừa bảo là muốn thoát ra. Client xoá token
+    của mình dù thế nào; danh sách thu hồi là lớp phòng thủ thứ hai, cho những
+    bản sao của token mà trình duyệt này không xoá được.
+    """
+    payload = decode_access_token(credentials.credentials) if credentials else None
+    token_id = (payload or {}).get(TOKEN_ID_CLAIM)
+    expires_at = (payload or {}).get("exp")
+    if token_id is not None and expires_at is not None:
+        try:
+            revoke(client, str(token_id), datetime.fromtimestamp(float(expires_at), UTC))
+        except redis.RedisError:
+            logger.warning("token_denylist_unavailable")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

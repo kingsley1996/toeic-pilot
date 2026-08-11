@@ -62,7 +62,35 @@ Three things to know before extending it:
 - **`useRequireSession({ canEdit: true })` redirects rather than showing a 403.** Someone who never had access should not be told they were refused. The server still enforces every boundary through `require_role`; this only decides what is worth rendering.
 - **`status` in the session is derived, not stored.** Writing it from an effect cascades renders and lets it drift out of step with the token it describes. The `react-hooks/set-state-in-effect` lint rule enforces this and will reject the shortcut.
 
-Still open from P1: frontend/e2e tests (P1-3), token in `localStorage` (P1-7), rate limiting (P1-8) — the last is a hard prerequisite for the AI layer, since an unmetered LLM endpoint is an unmetered bill.
+**Logging out revokes the token, and the mechanism is per-session rather than per-account.**
+Tokens carry a `jti`; `POST /auth/logout` writes it to a Redis denylist with a TTL equal
+to the token's own remaining life, and `get_current_user` refuses anything on the list.
+This is the half of P1-7 that was real: before it, "Đăng xuất" only cleared
+`localStorage`, so the token stayed valid for its full seven days — a shared computer or
+a restored browser session walked straight back in while the UI said otherwise. `pwc`
+could not cover this, because it is a per-account *generation* and can only express
+"revoke everything", which is the wrong tool for leaving one machine.
+
+Three parts of it fail quietly if changed:
+
+- **The denylist fails open.** A Redis outage means revoked tokens work again; failing
+  closed would mean *nobody* works, turning a soft dependency hard on the hottest path
+  there is. Same trade as `rate_limit_anonymous`, opposite to `rate_limit` — there Redis
+  is the only thing between an account and a bill.
+- **A token with no `jti` is allowed through**, exactly as a missing `pwc` reads as
+  generation zero. That is what let this ship without signing out every live session.
+- **`/auth/logout` always returns 204**, including when Redis is down. A 503 would leave
+  the browser holding a token and the UI holding a signed-in user — the state they just
+  asked to leave. The client clears its own token unconditionally; the denylist is the
+  second layer, for copies of the token this browser cannot reach.
+
+The other half — httpOnly cookies and refresh tokens — is **deferred with a written
+reason** rather than pending: `ROADMAP.md` P1-7b. Short version: cookies exist to survive
+XSS, this app has no third-party script and one `dangerouslySetInnerHTML` rendering a
+constant, and cookies would introduce CSRF in exchange. **Add any third-party script and
+that reasoning expires.**
+
+Still open from P1: token in `localStorage` (P1-7b, deferred above).
 
 ## Commands
 
@@ -122,6 +150,7 @@ pnpm dev                                   # turbo dev
 pnpm --filter @toeic-pilot/web dev
 pnpm build                                 # shared builds before web
 pnpm --filter @toeic-pilot/web lint
+pnpm --filter @toeic-pilot/web exec tsc --noEmit   # eslint does NOT typecheck — see below
 pnpm format / pnpm format:check            # prettier; markdown is excluded on purpose
 pnpm gen:api-types                         # regenerate the shared contract — see below
 pnpm --filter @toeic-pilot/web test:e2e    # Playwright — needs the docker stack up
@@ -136,7 +165,18 @@ docker compose -f docker/docker-compose.yml up --build
 docker compose -f docker/docker-compose.yml up postgres redis -d   # infra only
 ```
 
-**`docker/web-entrypoint.sh` runs `pnpm install` before the dev server**, for the same reason `api-entrypoint.sh` runs Alembic before uvicorn: a container must not serve against a state it has not reconciled. Adding a JS dependency therefore needs nothing special — `up -d` is enough, and the install costs ~2s on a warm volume.
+**`docker/web-entrypoint.sh` runs `pnpm install` before the dev server**, for the same reason `api-entrypoint.sh` runs Alembic before uvicorn: a container must not serve against a state it has not reconciled. Adding a JS dependency needs `up -d --build`, **not** `up -d`. The reason is a
+detail of the mounts: compose bind-mounts `apps/web` and `packages/shared` from the
+host but **not the repo root**, so `/app/pnpm-lock.yaml` is whatever the image was
+built with while `apps/web/package.json` is live from the host. The entrypoint's
+frozen-lockfile check therefore compares two files from *different* sources, and a
+new dependency makes them disagree until the image is rebuilt. Once rebuilt, the
+install costs ~2s on a warm volume.
+
+That check fires late and looks like something else. A container running from before
+the dependency was added never re-runs it, so the stack keeps working; the refusal
+only appears at the next `restart`, pointing at a lockfile the host has had correct
+all along. `@playwright/test` sat in exactly that state for a sprint.
 
 It exists because `web` mounts `node_modules` as **named volumes**, and Docker seeds a named volume from the image only when the volume is *empty*. Without the entrypoint, `up --build` installs the new package into the fresh image and then mounts yesterday's volume straight over it, and the container fails with `Module not found` for a package that is plainly in `package.json` — which sends you looking at the package, the import and the bundler, none of which are wrong.
 
@@ -264,6 +304,16 @@ An error that names a way out has to have that way out **reachable from where th
 
 **When a screen only needs the count, read `total`, never `items.length`.** `/learn/dictation` labelled its standalone-sentence link from the array length, which pins at 50 the moment there are more — "50 câu" over 130. It now asks for `limit=1` and shows `total`.
 
+**`pnpm lint` is eslint alone and does not typecheck. Running it is not "the frontend is checked".**
+`API_ROUTES` is a **flat** map, so `API_ROUTES.auth.logout` is a `TypeError` on an
+`undefined` — and because it threw on the callback's first line, the logout button
+cleared nothing, signed nobody out, and did not even reach `router.push`. Clicking it
+simply did nothing, which reads as a dead button rather than as a crash. `tsc` reports it
+as `TS2339: Property 'auth' does not exist`; eslint exits 0. CI's `web` job builds, so it
+would have caught it — one push later than the person who wrote it. Run `tsc --noEmit`
+before claiming a frontend change is verified, and prefer an e2e over both when the
+change lives at a seam: `e2e/auth.spec.ts` now clicks the real button.
+
 **`apiFetch<T>` takes its type from the caller, so changing a response shape is invisible to `tsc`.** Turning six list endpoints into `Page[T]` broke eight frontend call sites and the compiler reported nothing — the generic is supplied at the call, never inferred from the route, so `apiFetch<Thing[]>` happily mislabels an envelope. A green typecheck after a contract change on a list endpoint is a false negative; grep for the route constants and fix each caller by hand.
 
 **Offset pagination requires a *total* order, or rows silently duplicate and vanish.** `ORDER BY headword` looks deterministic and is not: `vocabulary_entry` is unique on *(headword, part_of_speech)*, so two rows can tie, their relative order is undefined between queries, and with `LIMIT/OFFSET` one row then appears on two pages while another appears on none — with no error anywhere. Every paginated query ends with `id` as a tiebreaker. `tests/test_attempts.py` walks three pages and asserts the union covers each row exactly once.
@@ -307,6 +357,10 @@ Two habits fall out of it. A destructive action should prove success from someth
 **Nothing reachable from `app/main.py` may import `app.content`.** The production image is built `--no-dev` without the `content` extra, so a leak breaks container startup rather than the build. `tests/test_content_isolation.py` catches it in a subprocess in under a second; the `docker` CI job catches it the slow way. Shared code belongs in `app/core/`.
 
 **Monorepo wiring.** pnpm workspaces + Turborepo for JS/TS. `apps/api` is a separate `uv` project outside the turbo graph, so cross-cutting scripts (`scripts/generate-api-types.sh`) drive both toolchains.
+
+**The production API image needs no compiler.** `gcc` and `libpq-dev` sat in `api.Dockerfile` to build psycopg — but the dependency is `psycopg[binary]`, whose wheel already bundles libpq, so nothing was ever compiled. Dropping them plus splitting builder/runtime took the image from 510MB to 321MB and removed a C toolchain from the process that serves HTTP. The image runs as uid 10001; `uv` stays in the runtime stage on purpose, because the dev compose service overrides CMD with `uv run uvicorn --reload` and removing it would save megabytes at the cost of the development loop. `UV_FROZEN=1` plus `--no-sync` keeps startup from ever resolving dependencies over the network.
+
+The worker image drops the same two packages but **stays root**, deliberately: it writes to `media/` and `content/` through host bind mounts, and a non-root user loses write access to the two directories it exists to write to — the quick fix for that is `chmod 777`, which is worse. It also serves no requests.
 
 **Auth endpoints are rate limited by IP, and the quotas are sized around who gets blocked *wrongly*.** The pre-existing `rate_limit` keys on `user.id`, which cannot cover `/login` — that endpoint exists precisely because there is no user yet — so `rate_limit_anonymous` keys on the client address. Vietnamese mobile networks run CGNAT and thousands of subscribers share one public address, as do schools and internet cafés; a tight limit blocks a class signing up together long before it blocks an attacker, and blocked real users never file a report, they just leave. Be honest about the ceiling: this cuts a dictionary attack from thousands a minute to six and stops naive scripts, but a botnet rotating addresses walks straight through. Real brute-force defence needs per-account counting, which opens an account-lockout vector instead — that trade is written up in the docstring, not overlooked.
 

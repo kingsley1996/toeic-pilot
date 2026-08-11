@@ -18,11 +18,22 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app/apps/api
 
-# ffmpeg là điều kiện tiên quyết của MÁY SOẠN NỘI DUNG, cùng loại với "phải có
-# mạng để gọi edge-tts" — xem `app/content/audio_join.py`. Chỉ ảnh này cần.
+# CHỈ ffmpeg. `gcc` và `libpq-dev` từng nằm ở đây do sao chép từ ảnh API, và ở
+# đó chúng cũng thừa: dependency là `psycopg[binary]`, wheel đã đóng gói sẵn
+# libpq nên không có gì để biên dịch (P2-6).
+#
+# ffmpeg thì thật sự cần, và chỉ ảnh này cần: nó là điều kiện tiên quyết của máy
+# soạn nội dung, cùng loại với "phải có mạng để gọi edge-tts" — xem
+# `app/content/audio_join.py`.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev gcc ffmpeg \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
+
+# Vẫn chạy bằng root, khác ảnh API, và đây là chỗ đã cân nhắc chứ không phải bỏ
+# sót: worker GHI vào `apps/api/media` và `apps/api/content` qua bind mount của
+# máy host. Đổi sang user thường sẽ làm nó mất quyền ghi vào đúng hai thư mục nó
+# tồn tại để ghi, và cách sửa nhanh khi đó là `chmod 777` — tệ hơn hẳn. Nó cũng
+# không phục vụ request nào, nên bề mặt tấn công khác hẳn ảnh API.
 
 COPY apps/api/pyproject.toml apps/api/uv.lock ./
 RUN uv sync --frozen --no-dev --extra content

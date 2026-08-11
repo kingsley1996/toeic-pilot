@@ -45,3 +45,44 @@ test("đăng nhập sai mật khẩu thì báo lỗi và ở lại trang", async
   // `Incorrect email or password`, và giao diện in nguyên `ApiError.message`.
   await expect(page.getByText(/Incorrect email or password/i)).toBeVisible();
 });
+
+test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được", async ({ page }) => {
+  /*
+   * Bài này tồn tại vì một lỗi đã lọt: `logout` gọi `API_ROUTES.auth.logout`
+   * trong khi map đó PHẲNG, nên nó ném TypeError ngay dòng đầu — trước cả
+   * `clearAccessToken()`. Bấm Đăng xuất không xảy ra gì cả. Không thứ nào bắt
+   * được: eslint không kiểm kiểu, và không bài e2e nào chạm tới nút đó.
+   *
+   * Nó cũng canh nửa còn lại — token bị THU HỒI ở máy chủ chứ không chỉ bị xoá
+   * khỏi trình duyệt. Xoá phía client thì `localStorage.clear()` cũng làm được;
+   * thứ đáng kiểm là bản sao của token có còn dùng được hay không.
+   */
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/learn$/);
+
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  expect(token).toBeTruthy();
+
+  await page.locator("[aria-haspopup='menu']").first().click();
+  await page.getByRole("menuitem", { name: "Đăng xuất" }).click();
+
+  // KHÔNG ghim URL đích. `logout` đẩy về "/", nhưng `/learn` cũng tự đá ra
+  // /login ngay khi phiên thành ẩn danh, nên trang cuối cùng tuỳ vào cái nào
+  // chạy trước — một chi tiết không phải trọng tâm của bài này.
+  await expect(page).not.toHaveURL(/\/learn/);
+  expect(
+    await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token")),
+  ).toBeNull();
+
+  // Nửa quan trọng: bản sao của token phải bị máy chủ từ chối.
+  const status = await page.evaluate(async (bearer) => {
+    const response = await fetch("http://localhost:8000/api/v1/auth/me", {
+      headers: { Authorization: `Bearer ${bearer}` },
+    });
+    return response.status;
+  }, token);
+  expect(status).toBe(401);
+});

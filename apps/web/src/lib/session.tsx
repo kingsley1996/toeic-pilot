@@ -91,10 +91,26 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const router = useRouter();
   const logout = useCallback(() => {
+    /*
+     * Báo máy chủ TRƯỚC khi xoá, vì request cần đúng token sắp bị vứt đi —
+     * `apiFetch` nhận token qua tham số nên không có cuộc đua nào với
+     * localStorage.
+     *
+     * **Không `await`.** Xoá phía client là vô điều kiện: bắt người dùng chờ
+     * một vòng mạng để thoát ra, rồi giữ họ lại ở trạng thái đã đăng nhập nếu
+     * vòng đó hỏng, còn tệ hơn chính cái lỗ đang được vá. Thu hồi phía máy chủ
+     * là lớp thứ hai, cho những bản sao của token mà trình duyệt này không với
+     * tới được.
+     */
+    if (token) {
+      void apiFetch(API_ROUTES.logout, { method: "POST", token }).catch(() => {
+        /* mạng hỏng hay Redis hỏng đều không được cản người dùng thoát ra */
+      });
+    }
     clearAccessToken();
     setUser(null);
     router.push("/");
-  }, [router]);
+  }, [router, token]);
 
   const status: SessionStatus =
     token === undefined

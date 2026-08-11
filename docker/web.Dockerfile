@@ -6,7 +6,12 @@ FROM base AS deps
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
-RUN pnpm install --frozen-lockfile || pnpm install
+# KHÔNG có `|| pnpm install` dự phòng (P2-7). Nhánh dự phòng đó biến một lỗi ồn
+# ào — package.json và lockfile lệch nhau — thành một lần build im lặng thành
+# công với cây phụ thuộc do máy build tự đoán. Ảnh chạy được, phiên bản khác với
+# lockfile, và không ai biết cho tới khi một thư viện hành xử khác ở production.
+# `web-entrypoint.sh` đã theo đúng luật này từ trước; chỗ này là chỗ sót.
+RUN pnpm install --frozen-lockfile
 
 FROM base AS runner
 COPY --from=deps /app/node_modules ./node_modules

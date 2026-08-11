@@ -8656,6 +8656,26 @@
         ]
       }
     },
+    "/api/v1/auth/logout": {
+      "post": {
+        "description": "Thu hồi đúng token đang dùng để gọi request này.\n\nChỉ phiên này, không phải mọi phiên: đăng xuất ở máy thư viện mà rớt luôn\nphiên trên điện thoại là một sản phẩm khác. Cắt tất cả là việc của\n`/auth/password`.\n\n**Luôn trả 204, kể cả khi Redis hỏng.** Trả 503 sẽ khiến giao diện giữ người\ndùng ở lại đúng cái trạng thái họ vừa bảo là muốn thoát ra. Client xoá token\ncủa mình dù thế nào; danh sách thu hồi là lớp phòng thủ thứ hai, cho những\nbản sao của token mà trình duyệt này không xoá được.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/me": {
       "get": {
         "operationId": "me_api_v1_auth_me_get",
