@@ -1,3 +1,4 @@
+import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -43,6 +44,9 @@ def get_password_hash(password: str) -> str:
 # agree on the spelling, and a typo would simply stop revoking anything.
 PASSWORD_CLAIM = "pwc"
 
+# Định danh của một token, để thu hồi đúng một phiên. Xem `token_denylist`.
+TOKEN_ID_CLAIM = "jti"
+
 _EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
 
 
@@ -82,7 +86,15 @@ def password_epoch(changed_at: datetime | None) -> int:
 def create_access_token(subject: str, extra: dict[str, Any] | None = None) -> str:
     now = datetime.now(UTC)
     expire = now + timedelta(minutes=settings.access_token_expire_minutes)
-    to_encode: dict[str, Any] = {"sub": subject, "exp": expire, "iat": now}
+    # `jti` định danh CHÍNH token này, khác hẳn `pwc` vốn định danh cả một thế
+    # hệ mật khẩu. Không có nó thì không có gì để thu hồi một phiên riêng lẻ, và
+    # công cụ duy nhất còn lại là đổi mật khẩu — thứ đăng xuất mọi thiết bị.
+    to_encode: dict[str, Any] = {
+        "sub": subject,
+        "exp": expire,
+        "iat": now,
+        TOKEN_ID_CLAIM: uuid.uuid4().hex,
+    }
     if extra:
         to_encode.update(extra)
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)

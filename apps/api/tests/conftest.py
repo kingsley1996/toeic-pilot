@@ -49,6 +49,7 @@ class FakeRedis:
 
     def __init__(self) -> None:
         self.counters: dict[str, int] = {}
+        self.values: dict[str, str] = {}
 
     def incr(self, key: str) -> int:
         self.counters[key] = self.counters.get(key, 0) + 1
@@ -59,6 +60,13 @@ class FakeRedis:
 
     def ttl(self, key: str) -> int:
         return 60
+
+    def setex(self, key: str, seconds: int, value: str) -> bool:
+        self.values[key] = value
+        return True
+
+    def exists(self, key: str) -> int:
+        return 1 if key in self.values else 0
 
 
 @pytest.fixture()

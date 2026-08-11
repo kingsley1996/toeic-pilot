@@ -485,13 +485,35 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 - [x] `client_ip` đọc hop **cuối** của `X-Forwarded-For`, và `trust_forwarded_for` mặc định **tắt** — tin header khi không có proxy nghĩa là ai cũng tự khai khoá của mình
 - [x] Hạn mức nới rộng sau khi e2e phơi ra vấn đề thật: 5 lượt đăng ký/10 phút chặn một lớp học đăng ký cùng lúc trước khi chặn được máy dò (CGNAT). Nay 20 đăng ký, 60 đăng nhập
 - [ ] Đếm theo **tài khoản** cho `/login` — chặn được botnet xoay IP, nhưng mở đường khoá tài khoản người khác. Chưa làm, có chủ ý
-- [ ] **P1-7** Token sang httpOnly cookie + refresh token + denylist trên Redis (Redis hiện chưa dùng vào việc gì)
+- [x] **P1-7a** `POST /auth/logout` + `jti` + danh sách thu hồi trên Redis — **xong**
+- [ ] **P1-7b** Token sang httpOnly cookie + refresh token — **hoãn có chủ đích, không phải bỏ quên**
+
+  P1-7 ban đầu gộp ba việc vào một, với lý do "token nằm trong `localStorage`".
+  Đo lại thì lý do đó không đứng vững, còn *một phần* của nó thì đứng vững —
+  nên nó tách làm hai.
+
+  **Vì sao hoãn phần cookie.** Cookie `httpOnly` tồn tại để sống sót qua XSS, và
+  bề mặt XSS đo được là gần bằng không: không script bên thứ ba, không CDN,
+  không analytics, một chỗ `dangerouslySetInnerHTML` duy nhất render một hằng
+  số. Đổi lại, cookie **mang vào CSRF** vì nó tự động gửi kèm. Đó là đổi một rủi
+  ro gần bằng không lấy một rủi ro trước đó bằng không, cộng chi phí viết lại
+  `apiFetch`, `session.tsx`, mọi nơi gọi và cả e2e.
+
+  **Điều kiện để mở lại:** (1) `SameSite`/`Domain` phụ thuộc vào chuyện API sẽ ở
+  cùng site với web hay khác — quyết định bây giờ là quyết định khi chưa có đầu
+  vào; (2) refresh token chỉ có nghĩa nếu token chính được rút ngắn, mà rút ngắn
+  từ 7 ngày xuống vài giờ là một quyết định về trải nghiệm chứ không phải về bảo
+  mật. Việc nào tới trước thì mở lại mục này.
+
+  **Xuất hiện script bên thứ ba nào — analytics, CDN, widget nhúng — thì lập
+  luận trên hết hiệu lực ngay**, vì nó dựng lại đúng cái vector đang không có.
 - [x] **P1-3** Playwright e2e — 4 spec: đăng ký→khu học, đăng nhập sai, một vòng làm bài (mở đề→trả lời→nộp→kết quả→xem lại + bộ lọc), và lượt đang dở hiện ở `/learn` lẫn `/learn/attempts`. Chạy trên ngăn xếp docker thật, có job CI riêng
 - [x] Mỗi spec đã được kiểm **đỏ** trước khi tin: tái hiện lỗi `Page[T]` làm test lượt-đang-dở đỏ, khôi phục thì xanh
 - [ ] Test component/unit cho frontend — chưa làm, và có chủ ý: bốn lỗi giao diện của sprint này đều ở CHỖ NỐI, không lỗi nào nằm trong một component đơn lẻ
 - [ ] **Bật branch protection** — treo từ Sprint 0, cần quyền admin repo. 13 gate không bắt buộc thì chỉ là gợi ý
-- [ ] P2-6 Dockerfile production: multi-stage, non-root, bỏ `gcc`/`libpq-dev` thừa
-- [ ] P2-7 Bỏ fallback `pnpm install --frozen-lockfile || pnpm install`
+- [x] **P2-6** Ảnh API hai tầng, chạy uid 10001, bỏ `gcc` + `libpq-dev`. Hai gói đó chưa bao giờ cần: dependency là `psycopg[binary]`, wheel đã đóng gói sẵn libpq. **510MB → 321MB**. Đã kiểm khởi động thật, nối được Postgres và Redis, alembic chạy được bằng user thường, và luồng `--reload` của compose dev vẫn nguyên
+- [x] Ảnh worker cũng bỏ `gcc`/`libpq-dev` (chỉ giữ ffmpeg). Vẫn chạy root **có chủ ý**: nó ghi vào `media/` và `content/` qua bind mount của host, đổi sang user thường là mất quyền ghi vào đúng hai thư mục nó tồn tại để ghi
+- [x] **P2-7** Bỏ `|| pnpm install` ở `web.Dockerfile`. Nhánh dự phòng biến một lỗi ồn ào — lockfile lệch `package.json` — thành một lần build im lặng thành công với cây phụ thuộc do máy build tự đoán. `web-entrypoint.sh` đã đúng luật này từ trước; đây là chỗ sót
 - [ ] Bảng `ai_interaction` (token, chi phí, latency, `request_id`) — dựng **trước** khi có request LLM
 
 ---
@@ -556,7 +578,7 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 |---|---|---|
 | **Nội dung vẫn quá mỏng** | `ADR-001` §A6.3 | Vẫn là nút thắt lớn nhất, nhưng đã bớt gắt: **43 từ trên 1 chủ đề** (mục tiêu ≥ 300 trên ≥ 6) và **4 câu dictation**. Công cụ đã xong — chỉ còn việc soạn |
 | Rate limiting | P1-8 → **Sprint 6** | Chặn cứng endpoint LLM đầu tiên |
-| Token trong `localStorage` | P1-7 → **Sprint 6** | Cũng là chỗ đầu tiên Redis thật sự được dùng (refresh token + denylist) |
+| Token trong `localStorage` | P1-7b → **hoãn có điều kiện** | Bề mặt XSS đo được gần bằng không; cookie mang CSRF vào đổi lại. Phần có thật — đăng xuất không thu hồi — đã xong ở P1-7a |
 | Không có test frontend/e2e | P1-3 → **Sprint 6** | 0% coverage phía web. Backend thì 294 test. Revamp giao diện vừa rồi **không có lưới an toàn nào** ngoài typecheck và lint |
 | Đổi chính sách giọng không sửa audio cũ | `backfill_audio.voice_for_dictation` | `media_state` cố ý chỉ hỏi "clip có khớp text không". Story thu trước bản sửa vẫn giữ giọng lẫn lộn cho tới khi gỡ liên kết và backfill lại |
 | Chưa chọn được giọng cho từng story | `backfill_audio.py` | Giọng suy ra từ `story_id`, nhất quán nhưng admin không chọn được "bài này giọng Anh" |

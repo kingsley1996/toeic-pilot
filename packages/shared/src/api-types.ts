@@ -1055,6 +1055,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Thu hồi đúng token đang dùng để gọi request này.
+         *
+         *     Chỉ phiên này, không phải mọi phiên: đăng xuất ở máy thư viện mà rớt luôn
+         *     phiên trên điện thoại là một sản phẩm khác. Cắt tất cả là việc của
+         *     `/auth/password`.
+         *
+         *     **Luôn trả 204, kể cả khi Redis hỏng.** Trả 503 sẽ khiến giao diện giữ người
+         *     dùng ở lại đúng cái trạng thái họ vừa bảo là muốn thoát ra. Client xoá token
+         *     của mình dù thế nào; danh sách thu hồi là lớp phòng thủ thứ hai, cho những
+         *     bản sao của token mà trình duyệt này không xoá được.
+         */
+        post: operations["logout_api_v1_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/me": {
         parameters: {
             query?: never;
@@ -5615,6 +5644,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    logout_api_v1_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

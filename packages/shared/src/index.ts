@@ -101,6 +101,7 @@ export const API_ROUTES = {
   login: "/api/v1/auth/login",
   me: "/api/v1/auth/me",
   changePassword: "/api/v1/auth/password",
+  logout: "/api/v1/auth/logout",
 
   // Hồ sơ người dùng. Không có biến thể nhận id: đây là dữ liệu riêng của
   // chính người đang đăng nhập, không phải trang cá nhân công khai.
