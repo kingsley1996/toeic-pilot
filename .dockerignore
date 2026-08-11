@@ -37,3 +37,11 @@ Thumbs.db
 # Docs & logs
 planning
 *.log
+
+# Media sinh ra bởi pipeline offline, KHÔNG phải mã nguồn. Nó sống ở object
+# store; ảnh không cần và không được mang theo. Bỏ sót dòng này có hai giá:
+# ảnh production phình theo đúng những gì máy dev tình cờ có (9.1MB lúc phát
+# hiện), và — tệ hơn — thư mục có sẵn khiến `main.py` không phải tạo nó, nên
+# một lỗi quyền ghi chỉ nổ ở máy checkout sạch, tức là ở CI chứ không ở đây.
+# Worker vẫn ghi vào thư mục này bình thường: nó tới qua bind mount lúc chạy.
+apps/api/media/

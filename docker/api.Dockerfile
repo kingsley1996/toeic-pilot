@@ -43,6 +43,17 @@ COPY --chown=toeic:toeic apps/api ./
 COPY docker/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
 RUN chmod +x /usr/local/bin/api-entrypoint.sh
 
+# `WORKDIR` tạo /app/apps/api bằng root, và `COPY --chown` chỉ đổi chủ NHỮNG THỨ
+# NÓ CHÉP VÀO — không đổi chủ chính thư mục cha. Nên uid 10001 đọc được mọi thứ
+# bên trong mà không tạo được gì mới, và `app/main.py` tạo `media/` ngay lúc
+# import ở chế độ development thì đổ `PermissionError` trước khi app kịp tồn tại.
+#
+# Lỗi này KHÔNG hiện ra ở máy đã từng chạy pipeline nội dung: `apps/api/media`
+# có sẵn trong build context nên nó được chép vào (đúng chủ), và `mkdir` thành
+# no-op. Chỉ một lần checkout sạch mới lộ — tức là chỉ ở CI. Nay `.dockerignore`
+# loại thư mục đó ra, nên hai môi trường dựng từ cùng một đầu vào.
+RUN mkdir -p /app/apps/api/media && chown toeic:toeic /app/apps/api /app/apps/api/media
+
 ENV PYTHONPATH=/app/apps/api \
     # `uv run` cần chỗ ghi cache; không có HOME ghi được thì nó đổ ở người dùng
     # thường. Trỏ vào thư mục của chính user thay vì để nó tự tìm.
