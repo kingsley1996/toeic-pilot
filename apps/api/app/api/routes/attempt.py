@@ -19,8 +19,8 @@ request đầu tiên sau khi hết giờ sẽ chốt bài thay vì nhận thêm 
 import uuid
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import or_, select
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user
@@ -39,6 +39,7 @@ from app.models.practice import (
     QuestionSet,
 )
 from app.models.user import User
+from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.practice import (
     PART_TITLES,
     AnswerSubmit,
@@ -46,6 +47,7 @@ from app.schemas.practice import (
     AttemptResult,
     AttemptStart,
     AttemptState,
+    AttemptSummary,
     OptionPublic,
     PassagePublic,
     QuestionPublic,
@@ -325,6 +327,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         remaining_seconds=_remaining(attempt),
         answered_count=sum(1 for q in questions if q.selected_option_id is not None),
         question_count=len(questions),
+        elapsed_seconds=attempt.elapsed_seconds,
         parts=parts,
         questions=questions,
     )
@@ -414,6 +417,91 @@ def start_attempt(
     return _state(db, attempt)
 
 
+@router.get("", response_model=Page[AttemptSummary])
+def list_attempts(
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Page[AttemptSummary]:
+    """Lịch sử làm bài của chính người đang đăng nhập, mới nhất trước.
+
+    **Không tự chốt bài hết giờ ở đây.** `GET /{id}` có làm điều đó, và đúng —
+    mở một lượt đã quá giờ thì nó phải được chấm. Nhưng làm thế trong danh sách
+    nghĩa là một lần mở trang lịch sử ghi hàng chục hàng vào database, và một
+    GET không nên có tác dụng phụ ở quy mô đó. Ở đây chỉ ĐỌC: `remaining_seconds`
+    bằng 0 là dấu hiệu để giao diện nói "đã quá giờ", còn việc chốt để lần mở
+    lượt đó lo.
+
+    Đếm gộp bằng hai truy vấn, không phải hai truy vấn mỗi lượt: một trang lịch
+    sử 50 lượt sẽ là một trăm lượt đi lại database cho mấy con số.
+    """
+    mine = select(Attempt).where(Attempt.user_id == current_user.id)
+    total = count_rows(db, mine)
+    attempts = (
+        db.scalars(
+            mine
+            # Khoá phụ để thứ tự là TOÀN PHẦN. Hai lượt mở trong cùng một giây
+            # có thứ tự không xác định, và với LIMIT/OFFSET thì đó là một lượt
+            # xuất hiện hai lần còn một lượt biến mất.
+            .order_by(Attempt.started_at.desc(), Attempt.id.desc())
+            .limit(limit)
+            .offset(offset)
+        )
+        .unique()
+        .all()
+    )
+    if not attempts:
+        return page_of([], total, limit, offset)
+
+    ids = [attempt.id for attempt in attempts]
+    tallies = {
+        attempt_id: (asked, answered, correct)
+        for attempt_id, asked, answered, correct in db.execute(
+            select(
+                AttemptItem.attempt_id,
+                func.count(AttemptItem.id),
+                func.count(AttemptItem.selected_option_id),
+                func.count(1).filter(AttemptItem.is_correct.is_(True)),
+            )
+            .where(AttemptItem.attempt_id.in_(ids))
+            .group_by(AttemptItem.attempt_id)
+        ).all()
+    }
+
+    out: list[AttemptSummary] = []
+    for attempt in attempts:
+        # `asked`, KHÔNG phải `total`: `total` ở hàm này là tổng số lượt của cả
+        # danh sách, và gán đè lên nó ở đây làm `page_of` trả về số câu của lượt
+        # cuối cùng. Một con số trông hợp lý và sai — kiểu hỏng không ai soi ra
+        # khi đọc lướt.
+        asked, answered, correct = tallies.get(attempt.id, (0, 0, 0))
+        out.append(
+            AttemptSummary(
+                id=str(attempt.id),
+                test_slug=attempt.test.slug,
+                test_title=attempt.test.title,
+                collection_slug=(
+                    attempt.test.collection.slug if attempt.test.collection is not None else None
+                ),
+                status=attempt.status,
+                scope=attempt.scope,
+                review_mode=attempt.review_mode,
+                started_at=attempt.started_at,
+                submitted_at=attempt.submitted_at,
+                question_count=asked,
+                answered_count=answered,
+                # Số câu đúng chỉ tồn tại sau khi chốt: `is_correct` được ghi ở
+                # `_finalise`, nên với bài đang dở nó toàn NULL và một số 0 ở đây
+                # sẽ đọc như "làm sai hết".
+                correct_count=correct if attempt.status != "in_progress" else None,
+                total_scaled=attempt.total_scaled,
+                remaining_seconds=_remaining(attempt),
+            )
+        )
+    return page_of(out, total, limit, offset)
+
+
 @router.get("/{attempt_id}", response_model=AttemptState)
 def read_attempt(
     attempt_id: uuid.UUID,
@@ -456,18 +544,14 @@ def save_answer(
     return _state(db, attempt)
 
 
-@router.post("/{attempt_id}/submit", response_model=AttemptResult)
-def submit_attempt(
-    attempt_id: uuid.UUID,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> AttemptResult:
-    attempt = _load(db, attempt_id, current_user)
-    if attempt.status == "in_progress":
-        _finalise(db, attempt, "submitted")
-        db.commit()
-        db.refresh(attempt)
+def _result(attempt: Attempt) -> AttemptResult:
+    """Kết quả của một lượt đã chốt.
 
+    Tách khỏi endpoint nộp bài để `GET .../result` dùng chung: tải lại trang kết
+    quả phải cho ra đúng những con số vừa thấy, và hai bản sao của phép dựng ấy
+    sẽ trôi khỏi nhau ở đúng chỗ khó nhận ra nhất — dòng giải thích vì sao không
+    có điểm quy đổi.
+    """
     correct = sum(1 for item in attempt.items if item.is_correct)
     note = None
     if attempt.scope != "full":
@@ -487,6 +571,7 @@ def submit_attempt(
         status=attempt.status,
         correct_count=correct,
         question_count=len(attempt.items),
+        elapsed_seconds=attempt.elapsed_seconds,
         listening_raw=attempt.listening_raw,
         reading_raw=attempt.reading_raw,
         listening_scaled=attempt.listening_scaled,
@@ -494,3 +579,38 @@ def submit_attempt(
         total_scaled=attempt.total_scaled,
         scale_note=note,
     )
+
+
+@router.post("/{attempt_id}/submit", response_model=AttemptResult)
+def submit_attempt(
+    attempt_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> AttemptResult:
+    attempt = _load(db, attempt_id, current_user)
+    if attempt.status == "in_progress":
+        _finalise(db, attempt, "submitted")
+        db.commit()
+        db.refresh(attempt)
+    return _result(attempt)
+
+
+@router.get("/{attempt_id}/result", response_model=AttemptResult)
+def read_result(
+    attempt_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> AttemptResult:
+    """Kết quả của một lượt đã nộp.
+
+    Tồn tại để tải lại trang không làm mất bảng kết quả: `POST /submit` trả kết
+    quả đúng một lần, nên nếu không có đường đọc lại thì một lần F5 sẽ đưa người
+    học sang màn xem đáp án mà không hiểu vì sao điểm biến mất.
+
+    Lượt CHƯA nộp thì 409 chứ không trả kết quả rỗng: một bảng điểm toàn số 0
+    cho bài đang làm dở là thứ đọc như bài đã bị chấm.
+    """
+    attempt = _load(db, attempt_id, current_user)
+    if attempt.status == "in_progress":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Lượt làm này chưa nộp")
+    return _result(attempt)

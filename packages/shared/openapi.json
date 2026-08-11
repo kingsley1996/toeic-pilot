@@ -92,6 +92,10 @@
             "title": "Correct Count",
             "type": "integer"
           },
+          "elapsed_seconds": {
+            "title": "Elapsed Seconds",
+            "type": "integer"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -176,6 +180,7 @@
           "status",
           "correct_count",
           "question_count",
+          "elapsed_seconds",
           "listening_raw",
           "reading_raw",
           "listening_scaled",
@@ -216,6 +221,10 @@
         "properties": {
           "answered_count": {
             "title": "Answered Count",
+            "type": "integer"
+          },
+          "elapsed_seconds": {
+            "title": "Elapsed Seconds",
             "type": "integer"
           },
           "id": {
@@ -294,10 +303,127 @@
           "remaining_seconds",
           "answered_count",
           "question_count",
+          "elapsed_seconds",
           "parts",
           "questions"
         ],
         "title": "AttemptState",
+        "type": "object"
+      },
+      "AttemptSummary": {
+        "description": "Một lượt làm bài trong danh sách lịch sử.\n\nCố ý KHÔNG mang danh sách câu: một trang lịch sử vài chục lượt mà mỗi lượt\nkéo theo hai trăm câu là vài megabyte cho một màn hình chỉ cần mấy con số.\nMuốn xem câu thì mở lượt đó ra.",
+        "properties": {
+          "answered_count": {
+            "title": "Answered Count",
+            "type": "integer"
+          },
+          "collection_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Slug"
+          },
+          "correct_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Count"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "remaining_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Seconds"
+          },
+          "review_mode": {
+            "title": "Review Mode",
+            "type": "string"
+          },
+          "scope": {
+            "title": "Scope",
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "test_slug": {
+            "title": "Test Slug",
+            "type": "string"
+          },
+          "test_title": {
+            "title": "Test Title",
+            "type": "string"
+          },
+          "total_scaled": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Scaled"
+          }
+        },
+        "required": [
+          "id",
+          "test_slug",
+          "test_title",
+          "collection_slug",
+          "status",
+          "scope",
+          "review_mode",
+          "started_at",
+          "submitted_at",
+          "question_count",
+          "answered_count",
+          "correct_count",
+          "total_scaled",
+          "remaining_seconds"
+        ],
+        "title": "AttemptSummary",
         "type": "object"
       },
       "AudioAssetPublic": {
@@ -2233,6 +2359,254 @@
           "content"
         ],
         "title": "OptionPublic",
+        "type": "object"
+      },
+      "Page_AttemptSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AttemptSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[AttemptSummary]",
+        "type": "object"
+      },
+      "Page_DictationAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DictationAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[DictationAdmin]",
+        "type": "object"
+      },
+      "Page_DictationSectionAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DictationSectionAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[DictationSectionAdmin]",
+        "type": "object"
+      },
+      "Page_DictationStoryAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DictationStoryAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[DictationStoryAdmin]",
+        "type": "object"
+      },
+      "Page_DictationSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DictationSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[DictationSummary]",
+        "type": "object"
+      },
+      "Page_TestAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TestAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[TestAdmin]",
+        "type": "object"
+      },
+      "Page_VocabularyAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VocabularyAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[VocabularyAdmin]",
+        "type": "object"
+      },
+      "Page_VocabularySummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VocabularySummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[VocabularySummary]",
         "type": "object"
       },
       "ParseRequest": {
@@ -4972,20 +5346,51 @@
     "/api/v1/admin/dictation": {
       "get": {
         "operationId": "list_dictation_admin_api_v1_admin_dictation_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DictationAdmin"
-                  },
-                  "title": "Response List Dictation Admin Api V1 Admin Dictation Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_DictationAdmin_"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -5091,21 +5496,53 @@
     },
     "/api/v1/admin/dictation/sections": {
       "get": {
+        "description": "Phần của cây dictation.\n\nNhóm B chứ không phải nhóm \"có trần\", dù nó trông giống một bảng phân loại:\nsố phần là chủ đề NHÂN số phần mỗi chủ đề, nên nó phình theo nội dung chứ\nkhông dừng ở một con số do miền nghiệp vụ đặt ra.\n\n`position` và `name` đều không duy nhất, nên thiếu `id` thì lật trang sẽ lặp\nmột phần và nuốt một phần khác.",
         "operationId": "list_dictation_sections_admin_api_v1_admin_dictation_sections_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DictationSectionAdmin"
-                  },
-                  "title": "Response List Dictation Sections Admin Api V1 Admin Dictation Sections Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_DictationSectionAdmin_"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -5311,20 +5748,51 @@
     "/api/v1/admin/dictation/stories": {
       "get": {
         "operationId": "list_dictation_stories_admin_api_v1_admin_dictation_stories_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DictationStoryAdmin"
-                  },
-                  "title": "Response List Dictation Stories Admin Api V1 Admin Dictation Stories Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_DictationStoryAdmin_"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -6889,20 +7357,51 @@
     "/api/v1/admin/tests": {
       "get": {
         "operationId": "list_tests_api_v1_admin_tests_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/TestAdmin"
-                  },
-                  "title": "Response List Tests Api V1 Admin Tests Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_TestAdmin_"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -7511,20 +8010,51 @@
     "/api/v1/admin/vocabulary": {
       "get": {
         "operationId": "list_vocabulary_admin_api_v1_admin_vocabulary_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/VocabularyAdmin"
-                  },
-                  "title": "Response List Vocabulary Admin Api V1 Admin Vocabulary Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_VocabularyAdmin_"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -7767,6 +8297,66 @@
       }
     },
     "/api/v1/attempts": {
+      "get": {
+        "description": "Lịch sử làm bài của chính người đang đăng nhập, mới nhất trước.\n\n**Không tự chốt bài hết giờ ở đây.** `GET /{id}` có làm điều đó, và đúng —\nmở một lượt đã quá giờ thì nó phải được chấm. Nhưng làm thế trong danh sách\nnghĩa là một lần mở trang lịch sử ghi hàng chục hàng vào database, và một\nGET không nên có tác dụng phụ ở quy mô đó. Ở đây chỉ ĐỌC: `remaining_seconds`\nbằng 0 là dấu hiệu để giao diện nói \"đã quá giờ\", còn việc chốt để lần mở\nlượt đó lo.\n\nĐếm gộp bằng hai truy vấn, không phải hai truy vấn mỗi lượt: một trang lịch\nsử 50 lượt sẽ là một trăm lượt đi lại database cho mấy con số.",
+        "operationId": "list_attempts_api_v1_attempts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AttemptSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Attempts",
+        "tags": [
+          "attempt"
+        ]
+      },
       "post": {
         "operationId": "start_attempt_api_v1_attempts_post",
         "requestBody": {
@@ -7923,6 +8513,55 @@
           }
         ],
         "summary": "Save Answer",
+        "tags": [
+          "attempt"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/result": {
+      "get": {
+        "description": "Kết quả của một lượt đã nộp.\n\nTồn tại để tải lại trang không làm mất bảng kết quả: `POST /submit` trả kết\nquả đúng một lần, nên nếu không có đường đọc lại thì một lần F5 sẽ đưa người\nhọc sang màn xem đáp án mà không hiểu vì sao điểm biến mất.\n\nLượt CHƯA nộp thì 409 chứ không trả kết quả rỗng: một bảng điểm toàn số 0\ncho bài đang làm dở là thứ đọc như bài đã bị chấm.",
+        "operationId": "read_result_api_v1_attempts__attempt_id__result_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttemptResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Result",
         "tags": [
           "attempt"
         ]
@@ -8195,11 +8834,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DictationSummary"
-                  },
-                  "title": "Response List Dictation Api V1 Dictation Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_DictationSummary_"
                 }
               }
             },
@@ -8890,11 +9525,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/VocabularySummary"
-                  },
-                  "title": "Response List Vocabulary Api V1 Vocabulary Get",
-                  "type": "array"
+                  "$ref": "#/components/schemas/Page_VocabularySummary_"
                 }
               }
             },

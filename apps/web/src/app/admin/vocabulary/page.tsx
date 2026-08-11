@@ -5,6 +5,7 @@ import {
   type CommitResult,
   type TopicAdmin,
   type VocabularyAdmin,
+  type VocabularyAdminPage,
   type VocabularyParseResponse,
 } from "@toeic-pilot/shared";
 import { Library, Send } from "lucide-react";
@@ -19,6 +20,7 @@ import {
   Field,
   Page,
   PageHeader,
+  Pager,
   Panel,
   PublishTag,
   SectionHeader,
@@ -41,6 +43,10 @@ function worstAudioState(entry: VocabularyAdmin): string {
   return "current";
 }
 
+// Khớp với `DEFAULT_LIMIT` ở `app/schemas/common.py`. Máy chủ vẫn là nơi
+// quyết định; con số ở đây chỉ để tính nhãn "51–100 trên 342".
+const PAGE_SIZE = 50;
+
 export default function AdminVocabularyPage() {
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
   const [raw, setRaw] = useState("");
@@ -48,15 +54,25 @@ export default function AdminVocabularyPage() {
   const [topics, setTopics] = useState<TopicAdmin[]>([]);
   const [topicId, setTopicId] = useState("");
   const [entries, setEntries] = useState<VocabularyAdmin[] | null>(null);
+  // Vị trí và tổng số đi cùng nhau: thiếu `total` thì giao diện chỉ có hai lựa
+  // chọn tệ — im lặng cắt cụt ở 50 hàng, hoặc tải hết.
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const refresh = useCallback((t: string) => {
-    apiFetch<VocabularyAdmin[]>(API_ROUTES.adminVocabulary, { token: t })
-      .then(setEntries)
-      .catch(() => setError("Không tải được danh sách từ."));
-  }, []);
+  const refresh = useCallback(
+    (t: string, at = offset) => {
+      apiFetch<VocabularyAdminPage>(`${API_ROUTES.adminVocabulary}?offset=${at}`, { token: t })
+        .then((page) => {
+          setEntries(page.items);
+          setTotal(page.total);
+        })
+        .catch(() => setError("Không tải được danh sách từ."));
+    },
+    [offset],
+  );
 
   useEffect(() => {
     if (!token) return;
@@ -248,6 +264,16 @@ export default function AdminVocabularyPage() {
             </Panel>
           ))}
         </div>
+
+        <Pager
+          total={total}
+          limit={PAGE_SIZE}
+          offset={offset}
+          onOffset={(next) => {
+            setOffset(next);
+            if (token) refresh(token, next);
+          }}
+        />
       </section>
 
       <div className="mt-12">

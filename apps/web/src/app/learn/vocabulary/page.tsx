@@ -4,11 +4,12 @@ import {
   API_ROUTES,
   type TopicPublic,
   type VocabularyDetail,
+  type VocabularyPage as VocabularyListPage,
   type VocabularyProgress,
   type VocabularySummary,
 } from "@toeic-pilot/shared";
 import { ChevronDown, Circle, CircleCheck, CircleDot, Library } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 import { AccentRow } from "@/components/audio-button";
@@ -19,6 +20,7 @@ import {
   Meter,
   Page,
   PageHeader,
+  Pager,
   Panel,
   SkeletonList,
   StatusTag,
@@ -46,16 +48,27 @@ const MASTERY = {
 type MasteryLevel = keyof typeof MASTERY;
 
 function VocabularyBrowser() {
-  const topicSlug = useSearchParams().get("topic");
+  const router = useRouter();
+  const params = useSearchParams();
+  const topicSlug = params.get("topic");
+  // `offset` ở URL chứ không ở state, cùng lý do `topic` ở đó: đổi chủ đề là
+  // một lần điều hướng, và link chủ đề không mang `offset` — nên chuyển chủ đề
+  // TỰ về trang đầu. Giữ ở state thì đang ở trang 3 của "Business" mà bấm sang
+  // một chủ đề chỉ có 5 từ sẽ ra danh sách rỗng, trông y như chủ đề đó không
+  // có từ nào. Nút Back và F5 cũng đúng theo.
+  const offset = Math.max(0, Number(params.get("offset") ?? 0) || 0);
   const { canEdit, token } = useSession();
   const [topics, setTopics] = useState<TopicPublic[]>([]);
   // Đóng dấu chủ đề mà nó thuộc về, nên đổi chủ đề là danh sách cũ tự trở nên
   // lỗi thời theo suy diễn. Xoá nó từ trong effect sẽ là một setState đồng bộ
   // trong thân effect — một lượt render dây chuyền, và một khoảnh khắc mà từ
   // của chủ đề cũ hiện dưới tiêu đề của chủ đề mới.
-  const [loaded, setLoaded] = useState<{ topic: string | null; words: VocabularySummary[] } | null>(
-    null,
-  );
+  const [total, setTotal] = useState(0);
+  const [loaded, setLoaded] = useState<{
+    topic: string | null;
+    offset: number;
+    words: VocabularySummary[];
+  } | null>(null);
   // Đóng dấu chủ đề y như `loaded`, và vì đúng lý do đó: nếu không, đổi chủ đề
   // sẽ hiện tiến độ của chủ đề cũ dưới tiêu đề chủ đề mới — một con số sai mà
   // trông hoàn toàn hợp lý.
@@ -74,11 +87,15 @@ function VocabularyBrowser() {
   }, []);
 
   useEffect(() => {
-    const query = topicSlug ? `?topic=${encodeURIComponent(topicSlug)}` : "";
-    apiFetch<VocabularySummary[]>(`${API_ROUTES.vocabulary}${query}`)
-      .then((list) => setLoaded({ topic: topicSlug, words: list }))
+    const parts = [topicSlug ? `topic=${encodeURIComponent(topicSlug)}` : "", `offset=${offset}`];
+    const query = `?${parts.filter(Boolean).join("&")}`;
+    apiFetch<VocabularyListPage>(`${API_ROUTES.vocabulary}${query}`)
+      .then((page) => {
+        setLoaded({ topic: topicSlug, offset, words: page.items });
+        setTotal(page.total);
+      })
       .catch(() => setError("Không tải được danh sách từ."));
-  }, [topicSlug]);
+  }, [topicSlug, offset]);
 
   // Tiến độ chỉ tồn tại khi đã đăng nhập. Khách vãng lai vẫn duyệt được từ —
   // `GET /vocabulary` là endpoint công khai — nhưng không có gì để hiện, và
@@ -91,7 +108,9 @@ function VocabularyBrowser() {
       .catch(() => {});
   }, [token, topicSlug]);
 
-  const words = loaded?.topic === topicSlug ? loaded.words : null;
+  // Đóng dấu CẢ hai: danh sách của trang trước dưới nhãn trang sau cũng sai y
+  // như danh sách chủ đề cũ dưới tiêu đề chủ đề mới.
+  const words = loaded?.topic === topicSlug && loaded.offset === offset ? loaded.words : null;
   // `token &&` chứ không xoá state trong effect: đăng xuất phải làm tiến độ biến
   // mất, nhưng một `setState` đồng bộ trong thân effect là một lượt render dây
   // chuyền và bị `react-hooks/set-state-in-effect` chặn thẳng. Suy diễn thì
@@ -271,9 +290,23 @@ function VocabularyBrowser() {
           );
         })}
       </div>
+
+      <Pager
+        total={total}
+        limit={PAGE_SIZE}
+        offset={offset}
+        onOffset={(next) => {
+          const parts = [topicSlug ? `topic=${topicSlug}` : "", next ? `offset=${next}` : ""];
+          const query = parts.filter(Boolean).join("&");
+          router.push(query ? `/learn/vocabulary?${query}` : "/learn/vocabulary");
+        }}
+      />
     </Page>
   );
 }
+
+// Khớp `DEFAULT_LIMIT` ở `app/schemas/common.py`; máy chủ vẫn là nơi quyết định.
+const PAGE_SIZE = 50;
 
 export default function VocabularyPage() {
   // useSearchParams đẩy route ra khỏi render tĩnh trừ khi nó nằm trong một

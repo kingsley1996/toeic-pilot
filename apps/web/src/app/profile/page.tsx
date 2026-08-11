@@ -23,6 +23,7 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
+import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { ContributionGraph } from "@/components/contribution-graph";
@@ -505,7 +506,21 @@ export default function ProfilePage() {
 
       {/* --- thống kê ----------------------------------------------------- */}
       <section className="mt-10">
-        <SectionHeader title="Bạn đã học được gì" />
+        <SectionHeader
+          title="Bạn đã học được gì"
+          /* Chỉ một đường dẫn, không phải danh sách. Hồ sơ trả lời "tôi đã học
+             được gì" bằng số liệu; lịch sử làm bài là danh sách có nút bấm, và
+             trộn hai loại đó lại thì trang này dài ra mà nút cần tìm vẫn khó
+             thấy. */
+          aside={
+            <Link
+              href="/learn/attempts"
+              className="text-small font-semibold text-ink-muted hover:text-ink"
+            >
+              Lịch sử làm bài
+            </Link>
+          }
+        />
         {stats ? (
           <>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

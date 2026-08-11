@@ -1,6 +1,11 @@
 "use client";
 
-import { API_ROUTES, type CollectionAdmin, type TestAdmin } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type CollectionAdmin,
+  type TestAdmin,
+  type TestAdminPage,
+} from "@toeic-pilot/shared";
 import { ClipboardList, FileText, FolderTree, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -50,10 +55,19 @@ export default function AdminTestsPage() {
   const [collectionForm, setCollectionForm] = useState({ slug: "", title: "", year: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 0 = không bị cắt; khác 0 là tổng số thật.
+  const [truncated, setTruncated] = useState(0);
 
   const refresh = useCallback((t: string) => {
-    apiFetch<TestAdmin[]>(API_ROUTES.adminTests, { token: t })
-      .then(setTests)
+    // Màn này render CÂY — bộ đề chứa đề — nên không phân trang danh sách phẳng
+    // được: trang 2 sẽ hiện một bộ với 3 trong 8 đề của nó và không có gì nói
+    // rằng còn thiếu. Lấy tối đa một trang, và nếu vẫn không đủ thì NÓI RA thay
+    // vì lặng lẽ dựng một cái cây khuyết.
+    apiFetch<TestAdminPage>(`${API_ROUTES.adminTests}?limit=200`, { token: t })
+      .then((page) => {
+        setTests(page.items);
+        setTruncated(page.total > page.items.length ? page.total : 0);
+      })
       .catch(() => setError("Không tải được danh sách đề."));
     apiFetch<CollectionAdmin[]>(API_ROUTES.adminTestCollections, { token: t })
       .then(setCollections)
@@ -156,6 +170,13 @@ export default function AdminTestsPage() {
         title="Đề thi"
         description="Bộ đề chứa đề, đề chứa câu hỏi. Mỗi tầng xuất bản riêng, và tầng trên bị chặn khi tầng dưới còn nháp."
       />
+
+      {truncated > 0 && (
+        <Alert tone="warn">
+          Đang hiện 200 đề đầu trong tổng số {truncated}. Màn này dựng theo cây bộ đề nên chưa lật
+          trang được — cần lọc theo bộ đề trước khi danh sách vượt quá đây.
+        </Alert>
+      )}
 
       {error && (
         <div className="mb-4">

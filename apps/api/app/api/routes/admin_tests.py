@@ -15,7 +15,7 @@ dependency chứ không bao giờ là một phép kiểm trong thân hàm.
 import uuid
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
@@ -62,6 +62,7 @@ from app.schemas.admin import (
     TurnDraft,
     VoiceOption,
 )
+from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.practice import PART_NUMBER_RANGES, PART_TITLES, section_of
 from app.services.content_import import parse_listening_part, parse_reading_part
 
@@ -283,10 +284,20 @@ def delete_collection(
     db.commit()
 
 
-@router.get("/tests", response_model=list[TestAdmin])
-def list_tests(db: Session = Depends(get_db), _: User = Depends(can_edit)) -> list[TestAdmin]:
-    tests = db.scalars(select(PracticeTest).order_by(PracticeTest.created_at.desc())).all()
-    return [_as_admin(db, test) for test in tests]
+@router.get("/tests", response_model=Page[TestAdmin])
+def list_tests(
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> Page[TestAdmin]:
+    query = select(PracticeTest)
+    tests = db.scalars(
+        query.order_by(PracticeTest.created_at.desc(), PracticeTest.id.desc())
+        .limit(limit)
+        .offset(offset)
+    ).all()
+    return page_of([_as_admin(db, test) for test in tests], count_rows(db, query), limit, offset)
 
 
 @router.post("/tests", response_model=TestAdmin, status_code=status.HTTP_201_CREATED)

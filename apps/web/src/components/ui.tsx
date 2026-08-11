@@ -504,6 +504,57 @@ export function Select({ className, ...props }: ComponentProps<"select">) {
 }
 
 /** Phím tắt hiển thị trong giao diện. */
+/**
+ * Điều hướng trang cho danh sách phân trang.
+ *
+ * Luôn hiện **vị trí tuyệt đối** ("51–100 trên 342") chứ không chỉ số trang:
+ * "trang 2" không nói được còn bao nhiêu, và chỗ hỏng của bản trước đúng là ở
+ * đó — danh sách lấy 50 hàng rồi im lặng bỏ phần còn lại, người dùng không có
+ * cách nào biết là còn.
+ *
+ * Tự ẩn khi chỉ có một trang: một thanh điều hướng luôn hiện với hai nút luôn
+ * mờ là nhiễu.
+ */
+export function Pager({
+  total,
+  limit,
+  offset,
+  onOffset,
+}: {
+  total: number;
+  limit: number;
+  offset: number;
+  onOffset: (next: number) => void;
+}) {
+  if (total <= limit) return null;
+  const from = offset + 1;
+  const to = Math.min(offset + limit, total);
+
+  return (
+    <nav className="mt-4 flex flex-wrap items-center gap-3" aria-label="Phân trang">
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() => onOffset(Math.max(0, offset - limit))}
+        disabled={offset === 0}
+      >
+        Trước
+      </Button>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() => onOffset(offset + limit)}
+        disabled={to >= total}
+      >
+        Sau
+      </Button>
+      <span className="font-data text-small tabular-nums text-ink-muted">
+        {from}–{to} trên {total}
+      </span>
+    </nav>
+  );
+}
+
 export function Kbd({ children }: { children: ReactNode }) {
   return (
     <kbd className="rounded border border-rule-strong px-1.5 py-px font-data text-[0.625rem] text-ink-muted">

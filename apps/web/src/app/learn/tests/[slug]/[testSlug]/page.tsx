@@ -242,13 +242,29 @@ export default function TestDetailPage() {
             <SectionHeader
               title="Chọn phần muốn làm"
               aside={
-                <button
-                  type="button"
-                  onClick={() => setChosen(new Set())}
-                  className="text-small font-semibold text-ink-muted hover:text-ink"
-                >
-                  Bỏ chọn
-                </button>
+                <div className="flex items-center gap-3">
+                  {/* "Chọn tất cả" và "Bỏ chọn" cho ra CÙNG một lượt làm bài —
+                      không chọn part nào đã nghĩa là làm cả đề. Vẫn giữ cả hai
+                      vì chúng trả lời hai câu khác nhau: một cái để tích hết
+                      cho thấy rõ mình sắp làm những gì, một cái để xoá lựa chọn
+                      dở dang. Ô tích rỗng mà lại làm cả đề là thứ gây ngờ vực
+                      nếu không có cách nào tự nhìn thấy. */}
+                  <button
+                    type="button"
+                    onClick={() => setChosen(new Set(available.map((part) => part.part)))}
+                    disabled={available.length === 0}
+                    className="text-small font-semibold text-ink-muted hover:text-ink disabled:opacity-50"
+                  >
+                    Chọn tất cả
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChosen(new Set())}
+                    className="text-small font-semibold text-ink-muted hover:text-ink"
+                  >
+                    Bỏ chọn
+                  </button>
+                </div>
               }
             />
             <Panel className="p-4">

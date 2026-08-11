@@ -13,7 +13,7 @@ Two rules run through everything here, both from ADR-005:
 import uuid
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
@@ -58,6 +58,7 @@ from app.schemas.admin import (
     VocabularyRow,
     VocabularyUpdate,
 )
+from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.services.content_import import parse_dictation, parse_vocabulary
 from app.services.media_state import (
     dictation_audio_state,
@@ -223,16 +224,29 @@ def commit_vocabulary(
     return CommitResult(created=created, skipped=skipped, problems=problems)
 
 
-@router.get("/vocabulary", response_model=list[VocabularyAdmin])
+@router.get("/vocabulary", response_model=Page[VocabularyAdmin])
 def list_vocabulary_admin(
-    db: Session = Depends(get_db), _: User = Depends(can_edit)
-) -> list[VocabularyAdmin]:
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> Page[VocabularyAdmin]:
+    query = select(VocabularyEntry)
     entries = db.scalars(
-        select(VocabularyEntry)
-        .options(selectinload(VocabularyEntry.audio))
-        .order_by(VocabularyEntry.status, VocabularyEntry.headword)
+        query.options(selectinload(VocabularyEntry.audio))
+        # `id` khép thứ tự lại thành toàn phần: `headword` KHÔNG duy nhất (khoá
+        # duy nhất là cặp headword + part_of_speech), nên thiếu nó thì lật trang
+        # sẽ lặp một từ và nuốt mất một từ khác, không lỗi nào được ném ra.
+        .order_by(VocabularyEntry.status, VocabularyEntry.headword, VocabularyEntry.id)
+        .limit(limit)
+        .offset(offset)
     ).all()
-    return [_vocabulary_admin(entry) for entry in entries]
+    return page_of(
+        [_vocabulary_admin(entry) for entry in entries],
+        count_rows(db, query),
+        limit,
+        offset,
+    )
 
 
 @router.patch("/vocabulary/{entry_id}", response_model=VocabularyAdmin)
@@ -357,16 +371,24 @@ def commit_dictation(
     return CommitResult(created=created, skipped=skipped, problems=problems)
 
 
-@router.get("/dictation", response_model=list[DictationAdmin])
+@router.get("/dictation", response_model=Page[DictationAdmin])
 def list_dictation_admin(
-    db: Session = Depends(get_db), _: User = Depends(can_edit)
-) -> list[DictationAdmin]:
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> Page[DictationAdmin]:
+    query = select(DictationItem)
     items = db.scalars(
-        select(DictationItem)
-        .options(selectinload(DictationItem.asset))
-        .order_by(DictationItem.status, DictationItem.difficulty)
+        query.options(selectinload(DictationItem.asset))
+        # Đây là chỗ thiếu khoá phụ đau nhất: `difficulty` là số nguyên 1-5, nên
+        # gần như mọi hàng đều trùng khoá sắp xếp và thứ tự giữa hai truy vấn
+        # gần như chắc chắn khác nhau.
+        .order_by(DictationItem.status, DictationItem.difficulty, DictationItem.id)
+        .limit(limit)
+        .offset(offset)
     ).all()
-    return [_dictation_admin(item) for item in items]
+    return page_of([_dictation_admin(item) for item in items], count_rows(db, query), limit, offset)
 
 
 @router.patch("/dictation/{item_id}", response_model=DictationAdmin)
@@ -505,21 +527,36 @@ def create_dictation_topic(
     )
 
 
-@router.get("/dictation/sections", response_model=list[DictationSectionAdmin])
+@router.get("/dictation/sections", response_model=Page[DictationSectionAdmin])
 def list_dictation_sections_admin(
-    db: Session = Depends(get_db), _: User = Depends(can_edit)
-) -> list[DictationSectionAdmin]:
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> Page[DictationSectionAdmin]:
+    """Phần của cây dictation.
+
+    Nhóm B chứ không phải nhóm "có trần", dù nó trông giống một bảng phân loại:
+    số phần là chủ đề NHÂN số phần mỗi chủ đề, nên nó phình theo nội dung chứ
+    không dừng ở một con số do miền nghiệp vụ đặt ra.
+
+    `position` và `name` đều không duy nhất, nên thiếu `id` thì lật trang sẽ lặp
+    một phần và nuốt một phần khác.
+    """
     counts = (
         select(func.count(DictationStory.id))
         .where(DictationStory.section_id == DictationSection.id)
         .scalar_subquery()
     )
+    query = select(DictationSection)
     rows = db.execute(
         select(DictationSection, counts.label("n"))
         .options(selectinload(DictationSection.topic))
-        .order_by(DictationSection.position, DictationSection.name)
+        .order_by(DictationSection.position, DictationSection.name, DictationSection.id)
+        .limit(limit)
+        .offset(offset)
     ).all()
-    return [
+    sections = [
         DictationSectionAdmin(
             id=str(s.id),
             topic_id=str(s.topic_id),
@@ -532,6 +569,7 @@ def list_dictation_sections_admin(
         )
         for s, n in rows
     ]
+    return page_of(sections, count_rows(db, query), limit, offset)
 
 
 @router.post(
@@ -593,16 +631,23 @@ def _story_admin(db: Session, story: DictationStory) -> DictationStoryAdmin:
     )
 
 
-@router.get("/dictation/stories", response_model=list[DictationStoryAdmin])
+@router.get("/dictation/stories", response_model=Page[DictationStoryAdmin])
 def list_dictation_stories_admin(
-    db: Session = Depends(get_db), _: User = Depends(can_edit)
-) -> list[DictationStoryAdmin]:
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> Page[DictationStoryAdmin]:
+    query = select(DictationStory)
     stories = db.scalars(
-        select(DictationStory)
-        .options(selectinload(DictationStory.section).selectinload(DictationSection.topic))
-        .order_by(DictationStory.position, DictationStory.title)
+        query.options(selectinload(DictationStory.section).selectinload(DictationSection.topic))
+        .order_by(DictationStory.position, DictationStory.title, DictationStory.id)
+        .limit(limit)
+        .offset(offset)
     ).all()
-    return [_story_admin(db, story) for story in stories]
+    return page_of(
+        [_story_admin(db, story) for story in stories], count_rows(db, query), limit, offset
+    )
 
 
 @router.post(

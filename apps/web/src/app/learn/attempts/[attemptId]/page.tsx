@@ -6,13 +6,13 @@ import {
   type AttemptState,
   type QuestionPublic,
 } from "@toeic-pilot/shared";
-import { BookOpen, Clock, Flag, Headphones, LogOut, Send } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Flag, Headphones, LogOut, Send } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Modal } from "@/components/modal";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Alert, Button, EmptyState, Page, Skeleton, cx } from "@/components/ui";
+import { Alert, Button, ButtonLink, EmptyState, Page, Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { type Block, clock, credit, groupQuestions } from "@/lib/attempt";
 import { useRequireSession } from "@/lib/session";
@@ -43,6 +43,11 @@ export default function AttemptRunnerPage() {
   const [state, setState] = useState<AttemptState | null>(null);
   const [failed, setFailed] = useState(false);
   const [activePart, setActivePart] = useState<number | null>(null);
+  // Sau khi nộp, trang này có hai mặt: bảng kết quả và bài đã chấm. Mặc định là
+  // kết quả — "tôi được bao nhiêu" là câu hỏi đầu tiên, xem lại từng câu là câu
+  // thứ hai.
+  const [view, setView] = useState<"result" | "review">("result");
+  const [filter, setFilter] = useState<ReviewFilter>("all");
   const [remaining, setRemaining] = useState<number | null>(null);
   const [result, setResult] = useState<AttemptResult | null>(null);
   // Hai lối rời màn: nộp bài, và bỏ đi. Một state ba giá trị chứ không hai cờ
@@ -85,7 +90,20 @@ export default function AttemptRunnerPage() {
     let cancelled = false;
     fetchState()
       .then((data) => {
-        if (!cancelled) applyState(data);
+        if (cancelled) return;
+        applyState(data);
+        // Mở lại một lượt ĐÃ nộp thì cũng phải thấy bảng kết quả. `POST /submit`
+        // trả kết quả đúng một lần, nên không đọc lại ở đây thì một lần F5 sẽ
+        // đưa người học thẳng sang màn xem đáp án và điểm biến mất không lý do.
+        if (data.status !== "in_progress") {
+          apiFetch<AttemptResult>(API_ROUTES.attemptResult(attemptId), { token })
+            .then((finished) => {
+              if (!cancelled) setResult(finished);
+            })
+            .catch(() => {
+              /* không có kết quả thì vẫn xem lại bài được */
+            });
+        }
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
@@ -93,7 +111,7 @@ export default function AttemptRunnerPage() {
     return () => {
       cancelled = true;
     };
-  }, [applyState, fetchState, token]);
+  }, [applyState, attemptId, fetchState, token]);
 
   const submit = useCallback(async () => {
     if (!token || submitting) return;
@@ -161,11 +179,13 @@ export default function AttemptRunnerPage() {
 
   const answered = state?.questions.filter((q) => q.selected_option_id).length ?? 0;
   const done = result !== null || state?.status === "submitted" || state?.status === "expired";
+  const flaggedCount = state?.questions.filter((q) => q.flagged).length ?? 0;
 
-  const visible = useMemo(
-    () => (state ? state.questions.filter((q) => q.part === activePart) : []),
-    [state, activePart],
-  );
+  const visible = useMemo(() => {
+    if (!state) return [];
+    const inPart = state.questions.filter((q) => q.part === activePart);
+    return inPart.filter((q) => matchesFilter(q, filter));
+  }, [state, activePart, filter]);
   const blocks = useMemo(() => groupQuestions(visible), [visible]);
 
   async function choose(question: QuestionPublic, optionId: string) {
@@ -286,39 +306,73 @@ export default function AttemptRunnerPage() {
         </div>
       )}
 
-      {result && <ResultBanner result={result} />}
-
-      <div className="mx-auto flex w-full max-w-[110rem] gap-6 px-4 py-6">
-        <main className="min-w-0 flex-1 space-y-8">
-          {blocks.length === 0 ? (
-            <p className="text-ink-muted">Phần này không có câu nào trong lượt làm của bạn.</p>
-          ) : (
-            blocks.map((block) => (
-              <StimulusBlock
-                key={block.key}
-                block={block}
-                done={done}
-                onView={setCurrent}
-                onChoose={choose}
-                onFlag={toggleFlag}
-              />
-            ))
+      {done && view === "result" && result ? (
+        <ResultScreen result={result} state={state} onReview={() => setView("review")} />
+      ) : (
+        <>
+          {done && (
+            <ReviewToolbar
+              filter={filter}
+              onFilter={setFilter}
+              shown={visible.length}
+              onBack={result ? () => setView("result") : null}
+            />
           )}
-        </main>
 
-        <QuestionGrid state={state} answered={answered} current={current} onJump={jumpTo} />
-      </div>
+          <div className="mx-auto flex w-full max-w-[110rem] gap-6 px-4 py-6">
+            <main className="min-w-0 flex-1 space-y-8">
+              {blocks.length === 0 ? (
+                <p className="text-ink-muted">
+                  {done && filter !== "all"
+                    ? "Không có câu nào khớp bộ lọc trong phần này."
+                    : "Phần này không có câu nào trong lượt làm của bạn."}
+                </p>
+              ) : (
+                blocks.map((block) => (
+                  <StimulusBlock
+                    key={block.key}
+                    block={block}
+                    done={done}
+                    onView={setCurrent}
+                    onChoose={choose}
+                    onFlag={toggleFlag}
+                  />
+                ))
+              )}
+            </main>
+
+            <QuestionGrid state={state} answered={answered} current={current} onJump={jumpTo} />
+          </div>
+        </>
+      )}
 
       <Modal
         open={confirming === "submit"}
         onClose={() => setConfirming(null)}
         title="Nộp bài?"
-        description={
-          answered < state.question_count
-            ? `Bạn còn ${state.question_count - answered} câu chưa trả lời. Câu bỏ trống được tính là sai.`
-            : "Bạn đã trả lời hết các câu."
-        }
+        description="Nộp rồi thì không quay lại làm tiếp được. Câu bỏ trống tính là sai."
       >
+        {/* Bốn con số, không phải một câu văn. Người sắp nộp bài cần đối chiếu
+            nhanh xem còn sót gì — và "còn 3 câu chưa trả lời" giấu mất chuyện
+            họ đã đánh dấu 5 câu để quay lại mà chưa quay lại. */}
+        <dl className="mb-4 grid grid-cols-2 gap-x-4 gap-y-2 text-small sm:grid-cols-4">
+          <Tally label="Đã trả lời" value={`${answered}/${state.question_count}`} />
+          <Tally
+            label="Chưa trả lời"
+            value={state.question_count - answered}
+            tone={answered < state.question_count ? "warn" : undefined}
+          />
+          <Tally
+            label="Đã đánh dấu"
+            value={flaggedCount}
+            tone={flaggedCount > 0 ? "warn" : undefined}
+          />
+          <Tally
+            label="Thời gian còn"
+            value={remaining === null ? "không giới hạn" : formatClock(remaining)}
+          />
+        </dl>
+
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={() => setConfirming(null)}>
             Quay lại làm tiếp
@@ -349,6 +403,102 @@ export default function AttemptRunnerPage() {
           </Button>
         </div>
       </Modal>
+    </div>
+  );
+}
+
+type ReviewFilter = "all" | "wrong" | "blank" | "flagged";
+
+const FILTERS: { value: ReviewFilter; label: string }[] = [
+  { value: "all", label: "Tất cả" },
+  { value: "wrong", label: "Câu sai" },
+  { value: "blank", label: "Bỏ trống" },
+  { value: "flagged", label: "Đã đánh dấu" },
+];
+
+/**
+ * Câu này có lọt qua bộ lọc đang chọn không.
+ *
+ * "Sai" và "bỏ trống" là hai thứ KHÁC nhau ở đây, dù chấm điểm thì cả hai đều
+ * không được điểm: bỏ trống là hết giờ hoặc bỏ qua, còn sai là đã cân nhắc rồi
+ * chọn nhầm — và hai loại đó cần đọc lại theo hai kiểu khác nhau.
+ */
+function matchesFilter(question: QuestionPublic, filter: ReviewFilter): boolean {
+  if (filter === "all") return true;
+  if (filter === "flagged") return question.flagged;
+  if (filter === "blank") return question.selected_option_id === null;
+  return (
+    question.selected_option_id !== null &&
+    question.correct_option_id !== null &&
+    question.selected_option_id !== question.correct_option_id
+  );
+}
+
+/** Giây -> "42 phút 15 giây", cho chỗ đọc chậm chứ không phải đồng hồ đếm ngược. */
+function formatClock(seconds: number): string {
+  const safe = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(safe / 60);
+  return minutes ? `${minutes} phút ${safe % 60} giây` : `${safe} giây`;
+}
+
+function Tally({ label, value, tone }: { label: string; value: string | number; tone?: "warn" }) {
+  return (
+    <div>
+      <dt className="text-label uppercase text-ink-faint">{label}</dt>
+      <dd className={cx("font-data tabular-nums", tone === "warn" ? "text-warn" : "text-ink")}>
+        {value}
+      </dd>
+    </div>
+  );
+}
+
+/**
+ * Thanh lọc khi xem lại bài đã chấm.
+ *
+ * Bộ lọc chạy TRONG part đang mở, không cắt ngang cả đề: người xem lại vẫn đi
+ * theo cấu trúc đề, và "câu sai của Part 3" là câu hỏi thật, còn "câu sai thứ
+ * mười bảy của cả bài" thì không.
+ */
+function ReviewToolbar({
+  filter,
+  onFilter,
+  shown,
+  onBack,
+}: {
+  filter: ReviewFilter;
+  onFilter: (value: ReviewFilter) => void;
+  shown: number;
+  onBack: (() => void) | null;
+}) {
+  return (
+    <div className="border-b border-rule bg-recess px-4 py-2.5">
+      <div className="mx-auto flex w-full max-w-[110rem] flex-wrap items-center gap-2">
+        {onBack && (
+          <Button size="sm" variant="secondary" onClick={onBack}>
+            <ArrowLeft size={14} strokeWidth={2} aria-hidden />
+            Kết quả
+          </Button>
+        )}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {FILTERS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onFilter(option.value)}
+              aria-pressed={filter === option.value}
+              className={cx(
+                "rounded border px-2.5 py-1 text-small font-semibold",
+                filter === option.value
+                  ? "border-rule-strong bg-panel text-ink"
+                  : "border-transparent text-ink-muted hover:text-ink",
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <span className="font-data text-small tabular-nums text-ink-faint">{shown} câu</span>
+      </div>
     </div>
   );
 }
@@ -437,42 +587,139 @@ function PartTabs({
   );
 }
 
-function ResultBanner({ result }: { result: AttemptResult }) {
+/**
+ * Bảng kết quả sau khi nộp.
+ *
+ * Thay cho danh sách câu chứ không nằm đè lên nó: câu hỏi đầu tiên sau khi nộp
+ * là "tôi được bao nhiêu", còn xem lại từng câu là việc thứ hai và có nút riêng.
+ *
+ * Điểm quy đổi chỉ hiện khi máy chủ THẬT SỰ gửi. `scoring.py` từ chối quy đổi
+ * một đề rút gọn — bảng điểm dựng cho 200 câu, nên đề 40 câu tra vào đó sẽ chạm
+ * sàn và in ra "Nghe 5 · Đọc 5" cho một người làm đúng 60%. Chỗ trống đó được
+ * lấp bằng `scale_note` nói lý do, không phải bằng số 0.
+ */
+function ResultScreen({
+  result,
+  state,
+  onReview,
+}: {
+  result: AttemptResult;
+  state: AttemptState;
+  onReview: () => void;
+}) {
+  const answered = state.questions.filter((q) => q.selected_option_id).length;
+  const flagged = state.questions.filter((q) => q.flagged).length;
+  const percent = result.question_count
+    ? Math.round((result.correct_count / result.question_count) * 100)
+    : 0;
+
+  // Đúng/tổng theo từng part, tính từ chính danh sách câu — sau khi nộp mỗi câu
+  // đã mang `correct_option_id`, nên không cần endpoint thống kê riêng.
+  const byPart = state.parts.map((part) => {
+    const questions = state.questions.filter((q) => q.part === part.part);
+    const correct = questions.filter(
+      (q) => q.selected_option_id !== null && q.selected_option_id === q.correct_option_id,
+    ).length;
+    return { ...part, correct, count: questions.length };
+  });
+
   return (
-    <div className="border-b border-rule-strong bg-recess px-4 py-5">
-      <div className="mx-auto flex w-full max-w-[110rem] flex-wrap items-end gap-x-10 gap-y-4">
-        <div>
-          <p className="text-label uppercase text-ink-muted">Số câu đúng</p>
-          <p className="font-data text-2xl tabular-nums">
-            {result.correct_count}
-            <span className="text-ink-faint">/{result.question_count}</span>
-          </p>
-        </div>
-        {result.listening_scaled !== null && (
+    <div className="mx-auto w-full max-w-3xl px-4 py-8">
+      <p className="text-label uppercase text-ink-muted">Kết quả</p>
+      <h1 className="mt-1 text-title">{state.test_title}</h1>
+
+      <div className="mt-6 rounded border border-rule-strong bg-panel p-5">
+        <div className="flex flex-wrap items-end gap-x-10 gap-y-4">
           <div>
-            <p className="text-label uppercase text-ink-muted">Nghe</p>
-            <p className="font-data text-2xl tabular-nums">{result.listening_scaled}</p>
-          </div>
-        )}
-        {result.reading_scaled !== null && (
-          <div>
-            <p className="text-label uppercase text-ink-muted">Đọc</p>
-            <p className="font-data text-2xl tabular-nums">{result.reading_scaled}</p>
-          </div>
-        )}
-        {result.total_scaled !== null && (
-          <div>
-            <p className="text-label uppercase text-ink-muted">Tổng quy đổi</p>
-            <p className="font-data text-2xl font-semibold tabular-nums text-action-ink">
-              {result.total_scaled}
+            <p className="text-label uppercase text-ink-muted">Số câu đúng</p>
+            <p className="font-data text-3xl font-semibold tabular-nums">
+              {result.correct_count}
+              <span className="text-ink-faint">/{result.question_count}</span>
             </p>
           </div>
-        )}
-        {/* Vì sao KHÔNG có điểm quy đổi, khi không có. `scoring.py` từ chối đoán,
-            nên giao diện phải nói ra lý do thay vì hiện số 0. */}
+          <div>
+            <p className="text-label uppercase text-ink-muted">Độ chính xác</p>
+            <p className="font-data text-3xl tabular-nums">{percent}%</p>
+          </div>
+          {result.total_scaled !== null && (
+            <div>
+              <p className="text-label uppercase text-ink-muted">Tổng quy đổi</p>
+              <p className="font-data text-3xl font-semibold tabular-nums text-action-ink">
+                {result.total_scaled}
+              </p>
+            </div>
+          )}
+          {result.listening_scaled !== null && (
+            <div>
+              <p className="text-label uppercase text-ink-muted">Nghe</p>
+              <p className="font-data text-2xl tabular-nums">{result.listening_scaled}</p>
+            </div>
+          )}
+          {result.reading_scaled !== null && (
+            <div>
+              <p className="text-label uppercase text-ink-muted">Đọc</p>
+              <p className="font-data text-2xl tabular-nums">{result.reading_scaled}</p>
+            </div>
+          )}
+        </div>
+
+        <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-rule pt-4 sm:grid-cols-4">
+          <Tally label="Đã trả lời" value={`${answered}/${result.question_count}`} />
+          <Tally
+            label="Bỏ trống"
+            value={result.question_count - answered}
+            tone={answered < result.question_count ? "warn" : undefined}
+          />
+          <Tally label="Đã đánh dấu" value={flagged} />
+          <Tally label="Thời gian đã dùng" value={formatClock(result.elapsed_seconds)} />
+        </dl>
+
         {result.scale_note && (
-          <p className="max-w-xl text-small text-ink-muted">{result.scale_note}</p>
+          <p className="mt-4 rounded border border-rule bg-recess p-3 text-small text-ink-muted">
+            {result.scale_note}
+          </p>
         )}
+      </div>
+
+      <section className="mt-8">
+        <h2 className="text-label font-semibold uppercase text-ink-muted">Theo từng phần</h2>
+        <div className="mt-3 space-y-2">
+          {byPart
+            .filter((part) => part.count > 0)
+            .map((part) => {
+              const share = part.count ? Math.round((part.correct / part.count) * 100) : 0;
+              return (
+                <div
+                  key={part.part}
+                  className="flex items-center gap-3 rounded border border-rule bg-panel px-3 py-2.5"
+                >
+                  <span className="w-28 shrink-0 text-small font-semibold">
+                    Part {part.part}
+                    <span className="ml-1.5 font-normal text-ink-faint">{part.section}</span>
+                  </span>
+                  <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-pill bg-recess">
+                    <div
+                      className={cx("h-full", share >= 50 ? "bg-ok" : "bg-warn")}
+                      style={{ width: `${share}%` }}
+                    />
+                  </div>
+                  <span className="w-20 shrink-0 text-right font-data text-small tabular-nums">
+                    {part.correct}/{part.count}
+                  </span>
+                  <span className="w-12 shrink-0 text-right font-data text-small tabular-nums text-ink-muted">
+                    {share}%
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+      </section>
+
+      <div className="mt-8 flex flex-wrap gap-2">
+        <Button onClick={onReview}>Xem chi tiết từng câu</Button>
+        <ButtonLink href="/learn/tests" variant="secondary">
+          Về danh sách đề
+        </ButtonLink>
       </div>
     </div>
   );
@@ -535,9 +782,9 @@ function StimulusBlock({
         {/* Ghi công là ĐIỀU KIỆN của giấy phép, không phải chú thích tuỳ chọn:
             ảnh CC-BY chỉ được dùng khi có ghi công (ADR-004 §4.2). Lưu vào
             database mà không hiện ra vẫn là vi phạm. */}
-        {/* {block.imageUrl && block.imageCredit && (
+        {block.imageUrl && block.imageCredit && (
           <p className="text-label text-ink-faint">{block.imageCredit}</p>
-        )} */}
+        )}
 
         {block.audioUrl && (
           // `controls` gốc của trình duyệt, không tự dựng player: nó đã có tua,
@@ -570,11 +817,11 @@ function StimulusBlock({
                 />
                 {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,
                     không riêng Part 1 (ADR-004 §4.2). */}
-                {/* {credit(passage.image_attribution, passage.image_license) && (
+                {credit(passage.image_attribution, passage.image_license) && (
                   <p className="mt-1.5 text-label text-ink-faint">
                     {credit(passage.image_attribution, passage.image_license)}
                   </p>
-                )} */}
+                )}
               </>
             )}
           </article>

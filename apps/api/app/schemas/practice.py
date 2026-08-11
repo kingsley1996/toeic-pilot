@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -202,6 +203,10 @@ class AttemptState(BaseModel):
     remaining_seconds: int | None
     answered_count: int
     question_count: int
+    # Thời gian đã dùng, cộng dồn qua các lần tạm dừng — KHÔNG suy ra từ
+    # `now() - started_at`, vì lượt làm tạm dừng được và đồng hồ treo tường sẽ
+    # ăn mất thời gian người học không hề ngồi trước màn hình.
+    elapsed_seconds: int
     parts: list[AttemptPartProgress]
     questions: list[QuestionPublic]
 
@@ -213,11 +218,40 @@ class AnswerSubmit(BaseModel):
     flagged: bool | None = None
 
 
+class AttemptSummary(BaseModel):
+    """Một lượt làm bài trong danh sách lịch sử.
+
+    Cố ý KHÔNG mang danh sách câu: một trang lịch sử vài chục lượt mà mỗi lượt
+    kéo theo hai trăm câu là vài megabyte cho một màn hình chỉ cần mấy con số.
+    Muốn xem câu thì mở lượt đó ra.
+    """
+
+    id: str
+    test_slug: str
+    test_title: str
+    collection_slug: str | None
+    status: str
+    scope: str
+    review_mode: str
+    started_at: datetime
+    submitted_at: datetime | None
+    question_count: int
+    answered_count: int
+    # NULL khi bài chưa nộp — số câu đúng của một bài đang làm dở là thông tin
+    # không được phép có, vì nó chính là đáp án.
+    correct_count: int | None
+    total_scaled: int | None
+    # Còn bao nhiêu giây, cho lượt đang dở. Đây là lý do khối "đang làm dở" tồn
+    # tại trên trang chủ: đồng hồ chạy ở máy chủ dù người học đã đóng tab.
+    remaining_seconds: int | None
+
+
 class AttemptResult(BaseModel):
     id: str
     status: str
     correct_count: int
     question_count: int
+    elapsed_seconds: int
     listening_raw: int | None
     reading_raw: int | None
     listening_scaled: int | None

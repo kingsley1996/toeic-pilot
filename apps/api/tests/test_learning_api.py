@@ -112,7 +112,7 @@ def test_draft_vocabulary_is_invisible(client: TestClient, db_session: Session) 
     make_word(db_session, "invoice", status="published", marker="a")
     make_word(db_session, "unfinished", status="draft", marker="b")
 
-    headwords = [row["headword"] for row in client.get("/api/v1/vocabulary").json()]
+    headwords = [row["headword"] for row in client.get("/api/v1/vocabulary").json()["items"]]
     assert headwords == ["invoice"]
 
 
@@ -240,7 +240,7 @@ def test_a_draft_entry_never_enters_a_session(
 def test_draft_dictation_is_invisible(client: TestClient, db_session: Session) -> None:
     make_dictation(db_session, "The report is due Friday.", marker="d")
     make_dictation(db_session, "Not ready yet at all.", status="draft", marker="e")
-    assert len(client.get("/api/v1/dictation").json()) == 1
+    assert client.get("/api/v1/dictation").json()["total"] == 1
 
 
 def test_the_transcript_ships_with_the_item_for_client_side_grading(
@@ -416,7 +416,7 @@ def test_progress_counts_only_the_topic_being_viewed(
     db_session.add(VocabularyTopic(entry_id=inside.id, topic_id=topic.id))
     db_session.commit()
 
-    listed = client.get("/api/v1/vocabulary?topic=business").json()
+    listed = client.get("/api/v1/vocabulary?topic=business").json()["items"]
     body = client.get("/api/v1/vocabulary-progress?topic=business", headers=headers).json()
     assert body["total"] == len(listed) == 1
 

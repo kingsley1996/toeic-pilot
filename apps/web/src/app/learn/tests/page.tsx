@@ -4,7 +4,15 @@ import { API_ROUTES, type CollectionSummary } from "@toeic-pilot/shared";
 import { BookOpen, ChevronRight, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { EmptyState, Page, PageHeader, PanelLink, Skeleton, Tag } from "@/components/ui";
+import {
+  ButtonLink,
+  EmptyState,
+  Page,
+  PageHeader,
+  PanelLink,
+  Skeleton,
+  Tag,
+} from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 
 /*
@@ -39,6 +47,14 @@ export default function TestCollectionsPage() {
         eyebrow="Luyện thi"
         title="Đề thi thử TOEIC"
         description="Đề đầy đủ bảy phần Nghe và Đọc, chấm điểm tự động và quy đổi theo thang của từng đề."
+        /* Đường vào lịch sử đặt ở ĐÂY vì đây là chỗ người ta tới khi nghĩ "đề
+           thi của tôi" — nav bên trái chỉ có bốn mục và thêm mục thứ năm cho
+           một trang chỉ mở sau khi đã làm bài là đổi sai thứ tự ưu tiên. */
+        actions={
+          <ButtonLink href="/learn/attempts" variant="secondary" size="sm">
+            Lịch sử làm bài
+          </ButtonLink>
+        }
       />
 
       {collections === null ? (

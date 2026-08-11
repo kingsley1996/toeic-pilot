@@ -1,7 +1,14 @@
 "use client";
 
-import { API_ROUTES, type ReviewSession, type VocabularyProgress } from "@toeic-pilot/shared";
-import { BookOpen, CalendarCheck, Headphones, Keyboard, RotateCcw } from "lucide-react";
+import {
+  API_ROUTES,
+  type AttemptPage,
+  type AttemptSummary,
+  type ReviewSession,
+  type VocabularyProgress,
+} from "@toeic-pilot/shared";
+import { BookOpen, CalendarCheck, Clock, Headphones, Keyboard, RotateCcw } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import {
@@ -15,6 +22,7 @@ import {
   Tag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { clock } from "@/lib/attempt";
 import { useRequireSession } from "@/lib/session";
 
 /**
@@ -34,6 +42,10 @@ export default function TodayPage() {
   const { status, user, token, canEdit } = useRequireSession();
   const [session, setSession] = useState<ReviewSession | null>(null);
   const [progress, setProgress] = useState<VocabularyProgress | null>(null);
+  // Bài thi đang dở. Đứng trên trang chủ chứ không nằm sau hai cú bấm: đồng hồ
+  // của nó chạy ở MÁY CHỦ, nên đóng tab không dừng bài — chỉ làm mất đường quay
+  // lại. Không nhắc ở đây thì bài tự hết giờ rồi bị chấm với phần lớn câu bỏ trống.
+  const [unfinished, setUnfinished] = useState<AttemptSummary[]>([]);
 
   useEffect(() => {
     if (!token) return;
@@ -44,6 +56,9 @@ export default function TodayPage() {
       .catch(() => {});
     apiFetch<VocabularyProgress>(API_ROUTES.vocabularyProgress, { token })
       .then(setProgress)
+      .catch(() => {});
+    apiFetch<AttemptPage>(API_ROUTES.attempts, { token })
+      .then((page) => setUnfinished(page.items.filter((row) => row.status === "in_progress")))
       .catch(() => {});
   }, [token]);
 
@@ -75,6 +90,43 @@ export default function TodayPage() {
         description="Ôn những từ sắp quên trước, rồi mới gặp từ mới."
         actions={<Tag tone={canEdit ? "action" : "neutral"}>{user.role}</Tag>}
       />
+
+      {unfinished.length > 0 && (
+        <Panel className="mb-4 border-warn p-4">
+          <p className="flex items-center gap-1.5 text-label font-semibold uppercase text-warn">
+            <Clock size={12} strokeWidth={2} aria-hidden />
+            Đang làm dở
+          </p>
+          <div className="mt-2 space-y-1.5">
+            {unfinished.slice(0, 3).map((row) => (
+              <div key={row.id} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="font-semibold">{row.test_title}</span>
+                <span className="font-data text-small tabular-nums text-ink-muted">
+                  {row.answered_count}/{row.question_count} câu
+                </span>
+                <span className="text-small text-ink-muted">
+                  {row.remaining_seconds === null
+                    ? "không giới hạn giờ"
+                    : row.remaining_seconds === 0
+                      ? "đã quá giờ"
+                      : `còn ${clock(row.remaining_seconds)}`}
+                </span>
+                <ButtonLink href={`/learn/attempts/${row.id}`} size="sm" className="ml-auto">
+                  Làm tiếp
+                </ButtonLink>
+              </div>
+            ))}
+          </div>
+          {unfinished.length > 3 && (
+            <Link
+              href="/learn/attempts"
+              className="mt-2 inline-block text-small font-semibold text-action-ink"
+            >
+              Xem cả {unfinished.length} bài đang dở
+            </Link>
+          )}
+        </Panel>
+      )}
 
       <Panel className="p-5 sm:p-6">
         <p className="flex items-center gap-1.5 text-label font-semibold uppercase text-ink-faint">

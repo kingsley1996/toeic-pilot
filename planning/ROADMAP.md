@@ -393,6 +393,32 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [ ] Nội dung Part 1–4 thật (mới có mẫu demo)
 - [x] `app/content/import_media.py` — gắn hàng loạt audio/ảnh có sẵn vào một đề đã dán. Khớp theo số trong tên file, `--dry-run` in bảng khớp, file thừa hoặc ô trống thì **dừng** chứ không nhập một nửa. Ghi `source="uploaded"` nên worker TTS không bao giờ đè lên
 
+### Phân trang · 🟢 xong 2026-08-11
+- [x] **Thứ tự toàn phần.** `ORDER BY headword` và `ORDER BY started_at DESC` đều KHÔNG duy nhất, nên với LIMIT/OFFSET một hàng hiện ở hai trang còn hàng khác biến mất — im lặng. Thêm `id` làm khoá phụ. Dictation vốn đã đúng
+- [x] `app/schemas/common.py` — `Page[T]`, `count_rows`, `page_of`, và **quy tắc ba nhóm**: có trần trong miền → mảng trần; phình theo nội dung hoặc theo sử dụng → `Page[T]`
+- [x] `/attempts` trả `Page[AttemptSummary]`, thêm `offset` (trước đó chỉ có `limit`, tức chỉ cắt cụt chứ không phân trang được)
+- [x] 🐞 `total` bị vòng lặp bên dưới gán đè thành số câu của lượt cuối — trả về 1 cho 5 hàng. Đổi tên biến trong vòng lặp thành `asked`
+- [x] Nhóm B: `/admin/vocabulary`, `/admin/dictation`, `/admin/dictation/stories`, `/admin/tests` trả `Page[T]`, đều thêm `id` làm khoá phụ. `/admin/dictation` là chỗ thiếu khoá phụ đau nhất — nó sắp theo `difficulty` (số nguyên 1–5) nên gần như mọi hàng đều trùng khoá
+- [x] `/learning/vocabulary` và `/learning/dictation` đổi sang `Page[T]`
+- [x] `Pager` dùng chung ở `components/ui.tsx` — luôn hiện **vị trí tuyệt đối** ("51–100 trên 342"), tự ẩn khi chỉ có một trang
+- [x] 8 nơi gọi ở frontend đã đọc `.items`. **TSC không bắt được thay đổi này**: `apiFetch<T>` nhận kiểu từ nơi gọi chứ không suy ra từ route, nên hợp đồng đổi mà trình biên dịch im lặng — phải đi tìm bằng tay
+- [x] Nối `Pager` vào các màn danh sách phẳng: `/admin/vocabulary`, `/admin/dictation`, `/learn/vocabulary`, `/learn/dictation/standalone`
+- [x] `/learn/vocabulary` giữ `offset` **trong URL**, cùng chỗ với `topic`. Link chủ đề không mang `offset` nên đổi chủ đề tự về trang đầu — giữ ở state thì đang ở trang 3 của một chủ đề rồi bấm sang chủ đề chỉ có 5 từ sẽ ra danh sách rỗng, trông y như chủ đề đó không có từ nào. Back và F5 cũng đúng theo
+- [x] 🐞 `/learn/dictation` đếm câu lẻ bằng `items.length` — con số đó đứng yên ở 50 khi vượt một trang. Đổi sang `total` của máy chủ, và chỉ xin `limit=1` vì trang đó chỉ cần con số
+- [x] `/admin/dictation/sections` — ban đầu tôi xếp nhầm vào nhóm "có trần" vì nó trông như một bảng phân loại. Nó không: số phần là chủ đề **nhân** số phần mỗi chủ đề, nên phình theo nội dung. Nay `Page[T]`, kèm `id` làm khoá phụ (`position` và `name` đều không duy nhất)
+- [x] **Hai màn dạng cây KHÔNG phân trang**: `/admin/tests` (bộ đề → đề) và cây dictation (chủ đề → phần → bài). Cắt trang một danh sách phẳng rồi gom thành cây sẽ hiện một bộ với 3 trong 8 đề và không nói gì. Chúng xin `limit=200` và **hiện cảnh báo** nếu vẫn không đủ, thay vì lặng lẽ dựng cây khuyết
+
+### Màn kết quả, xem lại bài, lịch sử làm bài · 🟢 xong 2026-08-11
+- [x] "Chọn tất cả" ở màn chọn part, đứng cạnh "Bỏ chọn"
+- [x] Modal xác nhận nộp bài mang **bốn** con số: đã trả lời, chưa trả lời, đã đánh dấu, thời gian còn. Câu cũ "còn N câu chưa trả lời" giấu mất chuyện người ta đã đánh dấu vài câu để quay lại mà chưa quay lại
+- [x] Màn kết quả thay hẳn danh sách câu: đúng/tổng, độ chính xác, bỏ trống, đánh dấu, thời gian đã dùng, và đúng/tổng **theo từng part** — tính từ chính danh sách câu, không cần endpoint thống kê. Điểm quy đổi chỉ hiện khi máy chủ thật sự gửi
+- [x] Xem lại từng câu, có bộ lọc **tất cả / câu sai / bỏ trống / đã đánh dấu**, lọc trong part đang mở
+- [x] `GET /attempts/{id}/result` — `POST /submit` trả kết quả đúng một lần, nên không có đường đọc lại thì một lần F5 làm điểm biến mất. Dùng chung một hàm dựng với submit
+- [x] **`GET /attempts`** + màn `/learn/attempts`. Dev DB có **26 lượt `in_progress`** so với 17 đã nộp — mỗi lượt là một bài đồng hồ vẫn chạy ở máy chủ mà người học không có đường quay lại. Khối "đang làm dở" đặt ở `/learn` vì thế; `/profile` chỉ một dòng link
+- [x] Danh sách **không** tự chốt bài quá giờ: `GET /{id}` có làm, nhưng làm thế trong danh sách là một lần mở trang ghi hàng chục hàng vào database
+- [x] `correct_count` là NULL khi bài chưa nộp — với bài đang dở, "đúng mấy câu" chính là đáp án
+- [x] **Bật lại hiển thị ghi công ảnh.** Hai khối `attribution` đang bị comment trong `HEAD`; CC-BY cho dùng *với điều kiện* ghi công, và ADR-004 §4.2 nói rõ lưu mà không hiện vẫn là vi phạm
+
 ### Đóng lỗ đã biết · 🟢 xong 2026-08-11
 - [x] **Lọc `question_set.status` phía người học.** `POST /attempts` chỉ lọc câu, nên câu đã xuất bản dưới cụm nháp mang cả ngữ liệu lẫn bản thu của cụm ra ngoài. Dùng `outerjoin` — `set_id` là NULL ở Part 1, 2, 5 nên `join` thường sẽ loại sạch ba part đó khỏi mọi lượt làm bài, hỏng nặng hơn lỗ nó vá. `tests/test_attempts.py` khoá cả hai chiều (file này trước đó **không tồn tại** — API lượt làm bài chưa có test nào)
 - [x] **`app/content/reconcile_media.py`** — tìm asset không còn ai trỏ tới. Chỉ báo cáo; `--delete-rows` xoá hàng database, **không** đụng object trên nhà cung cấp. Chạy thật trên dev DB: 39 bản thu + 1 ảnh mồ côi từ các đề probe đã xoá và một lần tải ảnh hỏng

@@ -46,7 +46,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Dictation Sections Admin */
+        /**
+         * List Dictation Sections Admin
+         * @description Phần của cây dictation.
+         *
+         *     Nhóm B chứ không phải nhóm "có trần", dù nó trông giống một bảng phân loại:
+         *     số phần là chủ đề NHÂN số phần mỗi chủ đề, nên nó phình theo nội dung chứ
+         *     không dừng ở một con số do miền nghiệp vụ đặt ra.
+         *
+         *     `position` và `name` đều không duy nhất, nên thiếu `id` thì lật trang sẽ lặp
+         *     một phần và nuốt một phần khác.
+         */
         get: operations["list_dictation_sections_admin_api_v1_admin_dictation_sections_get"];
         put?: never;
         /** Create Dictation Section */
@@ -926,7 +936,21 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List Attempts
+         * @description Lịch sử làm bài của chính người đang đăng nhập, mới nhất trước.
+         *
+         *     **Không tự chốt bài hết giờ ở đây.** `GET /{id}` có làm điều đó, và đúng —
+         *     mở một lượt đã quá giờ thì nó phải được chấm. Nhưng làm thế trong danh sách
+         *     nghĩa là một lần mở trang lịch sử ghi hàng chục hàng vào database, và một
+         *     GET không nên có tác dụng phụ ở quy mô đó. Ở đây chỉ ĐỌC: `remaining_seconds`
+         *     bằng 0 là dấu hiệu để giao diện nói "đã quá giờ", còn việc chốt để lần mở
+         *     lượt đó lo.
+         *
+         *     Đếm gộp bằng hai truy vấn, không phải hai truy vấn mỗi lượt: một trang lịch
+         *     sử 50 lượt sẽ là một trăm lượt đi lại database cho mấy con số.
+         */
+        get: operations["list_attempts_api_v1_attempts_get"];
         put?: never;
         /** Start Attempt */
         post: operations["start_attempt_api_v1_attempts_post"];
@@ -968,6 +992,33 @@ export interface paths {
         head?: never;
         /** Save Answer */
         patch: operations["save_answer_api_v1_attempts__attempt_id__questions__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/result": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Result
+         * @description Kết quả của một lượt đã nộp.
+         *
+         *     Tồn tại để tải lại trang không làm mất bảng kết quả: `POST /submit` trả kết
+         *     quả đúng một lần, nên nếu không có đường đọc lại thì một lần F5 sẽ đưa người
+         *     học sang màn xem đáp án mà không hiểu vì sao điểm biến mất.
+         *
+         *     Lượt CHƯA nộp thì 409 chứ không trả kết quả rỗng: một bảng điểm toàn số 0
+         *     cho bài đang làm dở là thứ đọc như bài đã bị chấm.
+         */
+        get: operations["read_result_api_v1_attempts__attempt_id__result_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/attempts/{attempt_id}/submit": {
@@ -1624,6 +1675,8 @@ export interface components {
         AttemptResult: {
             /** Correct Count */
             correct_count: number;
+            /** Elapsed Seconds */
+            elapsed_seconds: number;
             /** Id */
             id: string;
             /** Listening Raw */
@@ -1662,6 +1715,8 @@ export interface components {
         AttemptState: {
             /** Answered Count */
             answered_count: number;
+            /** Elapsed Seconds */
+            elapsed_seconds: number;
             /** Id */
             id: string;
             /** Parts */
@@ -1684,6 +1739,47 @@ export interface components {
             test_title: string;
             /** Time Limit Seconds */
             time_limit_seconds: number | null;
+        };
+        /**
+         * AttemptSummary
+         * @description Một lượt làm bài trong danh sách lịch sử.
+         *
+         *     Cố ý KHÔNG mang danh sách câu: một trang lịch sử vài chục lượt mà mỗi lượt
+         *     kéo theo hai trăm câu là vài megabyte cho một màn hình chỉ cần mấy con số.
+         *     Muốn xem câu thì mở lượt đó ra.
+         */
+        AttemptSummary: {
+            /** Answered Count */
+            answered_count: number;
+            /** Collection Slug */
+            collection_slug: string | null;
+            /** Correct Count */
+            correct_count: number | null;
+            /** Id */
+            id: string;
+            /** Question Count */
+            question_count: number;
+            /** Remaining Seconds */
+            remaining_seconds: number | null;
+            /** Review Mode */
+            review_mode: string;
+            /** Scope */
+            scope: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /** Status */
+            status: string;
+            /** Submitted At */
+            submitted_at: string | null;
+            /** Test Slug */
+            test_slug: string;
+            /** Test Title */
+            test_title: string;
+            /** Total Scaled */
+            total_scaled: number | null;
         };
         /** AudioAssetPublic */
         AudioAssetPublic: {
@@ -2352,6 +2448,94 @@ export interface components {
             id: string;
             /** Label */
             label: string;
+        };
+        /** Page[AttemptSummary] */
+        Page_AttemptSummary_: {
+            /** Items */
+            items: components["schemas"]["AttemptSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[DictationAdmin] */
+        Page_DictationAdmin_: {
+            /** Items */
+            items: components["schemas"]["DictationAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[DictationSectionAdmin] */
+        Page_DictationSectionAdmin_: {
+            /** Items */
+            items: components["schemas"]["DictationSectionAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[DictationStoryAdmin] */
+        Page_DictationStoryAdmin_: {
+            /** Items */
+            items: components["schemas"]["DictationStoryAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[DictationSummary] */
+        Page_DictationSummary_: {
+            /** Items */
+            items: components["schemas"]["DictationSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[TestAdmin] */
+        Page_TestAdmin_: {
+            /** Items */
+            items: components["schemas"]["TestAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[VocabularyAdmin] */
+        Page_VocabularyAdmin_: {
+            /** Items */
+            items: components["schemas"]["VocabularyAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[VocabularySummary] */
+        Page_VocabularySummary_: {
+            /** Items */
+            items: components["schemas"]["VocabularySummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
         };
         /** ParseRequest */
         ParseRequest: {
@@ -3312,7 +3496,10 @@ export type $defs = Record<string, never>;
 export interface operations {
     list_dictation_admin_api_v1_admin_dictation_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3325,7 +3512,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DictationAdmin"][];
+                    "application/json": components["schemas"]["Page_DictationAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -3398,7 +3594,10 @@ export interface operations {
     };
     list_dictation_sections_admin_api_v1_admin_dictation_sections_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3411,7 +3610,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DictationSectionAdmin"][];
+                    "application/json": components["schemas"]["Page_DictationSectionAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -3546,7 +3754,10 @@ export interface operations {
     };
     list_dictation_stories_admin_api_v1_admin_dictation_stories_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3559,7 +3770,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DictationStoryAdmin"][];
+                    "application/json": components["schemas"]["Page_DictationStoryAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -4577,7 +4797,10 @@ export interface operations {
     };
     list_tests_api_v1_admin_tests_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4590,7 +4813,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TestAdmin"][];
+                    "application/json": components["schemas"]["Page_TestAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -4977,7 +5209,10 @@ export interface operations {
     };
     list_vocabulary_admin_api_v1_admin_vocabulary_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4990,7 +5225,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VocabularyAdmin"][];
+                    "application/json": components["schemas"]["Page_VocabularyAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -5147,6 +5391,38 @@ export interface operations {
             };
         };
     };
+    list_attempts_api_v1_attempts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AttemptSummary_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     start_attempt_api_v1_attempts_post: {
         parameters: {
             query?: never;
@@ -5234,6 +5510,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_result_api_v1_attempts__attempt_id__result_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptResult"];
                 };
             };
             /** @description Validation Error */
@@ -5419,7 +5726,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DictationSummary"][];
+                    "application/json": components["schemas"]["Page_DictationSummary_"];
                 };
             };
             /** @description Validation Error */
@@ -5893,7 +6200,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VocabularySummary"][];
+                    "application/json": components["schemas"]["Page_VocabularySummary_"];
                 };
             };
             /** @description Validation Error */

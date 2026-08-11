@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ROUTES, type DictationSummary, type DictationTopicPublic } from "@toeic-pilot/shared";
+import { API_ROUTES, type DictationPage, type DictationTopicPublic } from "@toeic-pilot/shared";
 import { BookOpen, Headphones } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,10 @@ export default function DictationTopicsPage() {
   const { status } = useRequireSession();
   const { canEdit } = useSession();
   const [topics, setTopics] = useState<DictationTopicPublic[] | null>(null);
-  const [standalone, setStandalone] = useState<DictationSummary[]>([]);
+  // Chỉ cần CON SỐ, không cần danh sách — nên giữ `total` của máy chủ chứ không
+  // đếm mảng đã bị cắt trang. `items.length` sẽ đứng yên ở 50 khi câu lẻ vượt
+  // một trang, và nhãn "50 câu" cho 130 câu là sai mà trông hoàn toàn hợp lý.
+  const [standaloneCount, setStandaloneCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,8 +33,8 @@ export default function DictationTopicsPage() {
       .catch(() => setError("Không tải được danh sách chủ đề."));
     // Câu chưa thuộc bài nào. Lối vào này chỉ hiện khi thật sự còn câu lẻ, nên
     // nó tự biến mất khi mọi thứ đã được xếp vào bài.
-    apiFetch<DictationSummary[]>(`${API_ROUTES.dictation}?standalone=true`)
-      .then(setStandalone)
+    apiFetch<DictationPage>(`${API_ROUTES.dictation}?standalone=true&limit=1`)
+      .then((page) => setStandaloneCount(page.total))
       .catch(() => {});
   }, []);
 
@@ -86,7 +89,7 @@ export default function DictationTopicsPage() {
         ))}
       </div>
 
-      {standalone.length > 0 && (
+      {standaloneCount > 0 && (
         <PanelLink href="/learn/dictation/standalone" className="mt-3 flex items-center gap-4">
           <Headphones
             size={16}
@@ -101,7 +104,7 @@ export default function DictationTopicsPage() {
             </span>
           </span>
           <span className="shrink-0 font-data text-small text-ink-faint">
-            {standalone.length} câu
+            {standaloneCount} câu
           </span>
         </PanelLink>
       )}

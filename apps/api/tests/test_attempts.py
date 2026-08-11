@@ -13,7 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token
-from app.models import PracticeTest, QuestionSet, User
+from app.models import Attempt, PracticeTest, QuestionSet, User
 
 # Part 7: một ngữ liệu dùng chung sinh ra `question_set`, đúng thứ cần để kiểm
 # bộ lọc hai tầng. Không cần audio hay ảnh nên nó xuất bản được ngay.
@@ -173,3 +173,92 @@ def test_a_draft_test_is_not_startable(
     db_session.commit()
 
     assert start(client, auth("learner")).status_code == 404
+
+
+def test_the_history_never_reveals_correct_counts_while_a_test_is_in_progress(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """`correct_count` phải là NULL cho bài chưa nộp.
+
+    Nó không chỉ là số liệu thiếu — với bài đang làm dở, "đúng mấy câu" CHÍNH LÀ
+    đáp án: mở danh sách ở tab khác, đổi một lựa chọn, tải lại và xem con số
+    nhích lên là dò được từng câu.
+    """
+    published_test(client, auth("admin"))
+    learner = auth("learner")
+    assert start(client, learner).status_code == 201
+
+    page = client.get("/api/v1/attempts", headers=learner).json()
+    (row,) = page["items"]
+
+    assert row["status"] == "in_progress"
+    assert row["correct_count"] is None
+    assert row["question_count"] == 1
+
+
+def test_the_history_shows_only_your_own_attempts(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    published_test(client, auth("admin"))
+    assert start(client, auth("learner")).status_code == 201
+
+    stranger = User(email="khac@example.com", hashed_password="x", role="learner")
+    db_session.add(stranger)
+    db_session.commit()
+    headers = {"Authorization": f"Bearer {create_access_token(str(stranger.id))}"}
+
+    assert client.get("/api/v1/attempts", headers=headers).json()["items"] == []
+
+
+def test_listing_does_not_finalise_an_expired_attempt(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Danh sách CHỈ đọc.
+
+    `GET /{id}` chốt bài quá giờ, và đúng — mở nó ra thì phải chấm. Nhưng làm
+    thế trong danh sách nghĩa là một lần mở trang lịch sử ghi hàng chục hàng vào
+    database, và một GET không nên có tác dụng phụ ở quy mô đó.
+    """
+    published_test(client, auth("admin"))
+    learner = auth("learner")
+    start(client, learner)
+
+    test = db_session.scalars(select(PracticeTest)).one()
+    test.time_limit_seconds = 1
+    attempt = db_session.scalars(select(Attempt)).one()
+    attempt.elapsed_seconds = 9999
+    db_session.commit()
+
+    page = client.get("/api/v1/attempts", headers=learner).json()
+    (row,) = page["items"]
+
+    assert row["remaining_seconds"] == 0
+    assert row["status"] == "in_progress"
+    db_session.refresh(attempt)
+    assert attempt.status == "in_progress"
+
+
+def test_the_history_pages_without_dropping_or_repeating_a_row(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Lật trang phải phủ đúng mỗi hàng một lần.
+
+    Điều kiện là thứ tự TOÀN PHẦN. `started_at DESC` một mình không đủ: hai lượt
+    mở trong cùng một giây có thứ tự tương đối không xác định, nên với
+    LIMIT/OFFSET một lượt hiện ở cả hai trang còn một lượt biến mất — im lặng,
+    không lỗi nào được ném ra. Khoá phụ `id` là thứ khép kín nó.
+    """
+    published_test(client, auth("admin"))
+    learner = auth("learner")
+    for _ in range(5):
+        assert start(client, learner).status_code == 201
+
+    first = client.get("/api/v1/attempts?limit=2&offset=0", headers=learner).json()
+    second = client.get("/api/v1/attempts?limit=2&offset=2", headers=learner).json()
+    third = client.get("/api/v1/attempts?limit=2&offset=4", headers=learner).json()
+
+    assert first["total"] == 5
+    assert [len(page["items"]) for page in (first, second, third)] == [2, 2, 1]
+
+    seen = [row["id"] for page in (first, second, third) for row in page["items"]]
+    assert len(set(seen)) == 5

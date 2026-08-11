@@ -1,12 +1,26 @@
 "use client";
 
-import { API_ROUTES, type DictationDetail, type DictationSummary } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type DictationDetail,
+  type DictationPage,
+  type DictationSummary,
+} from "@toeic-pilot/shared";
 import { Headphones } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DictationExercise } from "@/components/dictation-exercise";
-import { Alert, EmptyState, Page, PageHeader, Panel, SkeletonList, Tag } from "@/components/ui";
+import {
+  Alert,
+  EmptyState,
+  Page,
+  PageHeader,
+  Pager,
+  Panel,
+  SkeletonList,
+  Tag,
+} from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -18,17 +32,25 @@ import { useRequireSession } from "@/lib/session";
  * ở trong tầm với cho tới khi admin gán vào bài — và tự biến mất khi không còn
  * câu nào lẻ, nên nó không trở thành một lối đi thứ hai phải bảo trì mãi.
  */
+// Khớp `DEFAULT_LIMIT` ở `app/schemas/common.py`.
+const PAGE_SIZE = 50;
+
 export default function StandaloneDictationPage() {
   const { status } = useRequireSession();
   const [items, setItems] = useState<DictationSummary[] | null>(null);
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
   const [active, setActive] = useState<DictationDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    apiFetch<DictationSummary[]>(`${API_ROUTES.dictation}?standalone=true`)
-      .then(setItems)
+    apiFetch<DictationPage>(`${API_ROUTES.dictation}?standalone=true&offset=${offset}`)
+      .then((page) => {
+        setItems(page.items);
+        setTotal(page.total);
+      })
       .catch(() => setError("Không tải được danh sách câu."));
-  }, []);
+  }, [offset]);
 
   if (status !== "authenticated") {
     return (
@@ -100,6 +122,7 @@ export default function StandaloneDictationPage() {
               </button>
             </Panel>
           ))}
+          <Pager total={total} limit={PAGE_SIZE} offset={offset} onOffset={setOffset} />
         </div>
       )}
     </Page>

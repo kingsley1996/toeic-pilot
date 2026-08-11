@@ -4,8 +4,10 @@ import {
   API_ROUTES,
   type CommitResult,
   type DictationAdmin,
+  type DictationAdminPage,
   type DictationParseResponse,
   type DictationStoryAdmin,
+  type DictationStoryAdminPage,
   type TopicAdmin,
 } from "@toeic-pilot/shared";
 import { Archive, ArchiveRestore, ArrowDown, ArrowUp, Headphones, Send } from "lucide-react";
@@ -21,6 +23,7 @@ import {
   Field,
   Page,
   PageHeader,
+  Pager,
   Panel,
   PublishTag,
   SectionHeader,
@@ -35,6 +38,9 @@ import { useRequireSession } from "@/lib/session";
 const PLACEHOLDER = `The quarterly report is due before the end of the month.
 Please submit your expense claims to the finance department.`;
 
+// Khớp `DEFAULT_LIMIT` ở `app/schemas/common.py`.
+const PAGE_SIZE = 50;
+
 export default function AdminDictationPage() {
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
   const [raw, setRaw] = useState("");
@@ -44,23 +50,31 @@ export default function AdminDictationPage() {
   const [stories, setStories] = useState<DictationStoryAdmin[]>([]);
   const [storyId, setStoryId] = useState("");
   const [items, setItems] = useState<DictationAdmin[] | null>(null);
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const refresh = useCallback((t: string) => {
-    apiFetch<DictationAdmin[]>(API_ROUTES.adminDictation, { token: t })
-      .then(setItems)
-      .catch(() => setError("Không tải được danh sách câu."));
-  }, []);
+  const refresh = useCallback(
+    (t: string, at = offset) => {
+      apiFetch<DictationAdminPage>(`${API_ROUTES.adminDictation}?offset=${at}`, { token: t })
+        .then((page) => {
+          setItems(page.items);
+          setTotal(page.total);
+        })
+        .catch(() => setError("Không tải được danh sách câu."));
+    },
+    [offset],
+  );
 
   useEffect(() => {
     if (!token) return;
     apiFetch<TopicAdmin[]>(API_ROUTES.adminTopics, { token })
       .then(setTopics)
       .catch(() => {});
-    apiFetch<DictationStoryAdmin[]>(API_ROUTES.adminDictationStories, { token })
-      .then(setStories)
+    apiFetch<DictationStoryAdminPage>(API_ROUTES.adminDictationStories, { token })
+      .then((page) => setStories(page.items))
       .catch(() => {});
     refresh(token);
   }, [token, refresh]);
@@ -393,6 +407,16 @@ export default function AdminDictationPage() {
             </Panel>
           ))}
         </div>
+
+        <Pager
+          total={total}
+          limit={PAGE_SIZE}
+          offset={offset}
+          onOffset={(next) => {
+            setOffset(next);
+            if (token) refresh(token, next);
+          }}
+        />
       </section>
 
       <div className="mt-12">

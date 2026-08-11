@@ -29,6 +29,7 @@ from app.models import (
     VocabularyReviewState,
     VocabularyTopic,
 )
+from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.learning import (
     AudioClip,
     DictationDetail,
@@ -143,21 +144,28 @@ def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
 # --- vocabulary -----------------------------------------------------------
 
 
-@router.get("/vocabulary", response_model=list[VocabularySummary])
+@router.get("/vocabulary", response_model=Page[VocabularySummary])
 def list_vocabulary(
     topic: str | None = Query(default=None, description="topic slug"),
-    limit: int = Query(default=50, ge=1, le=200),
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
-) -> list[VocabularySummary]:
+) -> Page[VocabularySummary]:
     query = select(VocabularyEntry).where(VocabularyEntry.status == PUBLISHED)
     if topic is not None:
         query = query.join(VocabularyTopic, VocabularyTopic.entry_id == VocabularyEntry.id).join(
             Topic,
             (Topic.id == VocabularyTopic.topic_id) & (Topic.slug == topic),
         )
-    entries = db.scalars(query.order_by(VocabularyEntry.headword).limit(limit).offset(offset)).all()
-    return [_summary(entry) for entry in entries]
+    # `id` làm khoá phụ, không phải trang trí: `headword` KHÔNG duy nhất — khoá
+    # duy nhất là cặp (headword, part_of_speech), nên "invoice" danh từ và
+    # "invoice" động từ có thứ tự tương đối *không xác định* giữa hai truy vấn.
+    # Với LIMIT/OFFSET, điều đó nghĩa là một từ hiện ở cả trang 1 lẫn trang 2 còn
+    # một từ khác không hiện ở đâu cả — và không có lỗi nào được ném ra.
+    entries = db.scalars(
+        query.order_by(VocabularyEntry.headword, VocabularyEntry.id).limit(limit).offset(offset)
+    ).all()
+    return page_of([_summary(entry) for entry in entries], count_rows(db, query), limit, offset)
 
 
 @router.get("/vocabulary/{entry_id}", response_model=VocabularyDetail)
@@ -464,17 +472,17 @@ def submit_recall(
 # --- dictation ------------------------------------------------------------
 
 
-@router.get("/dictation", response_model=list[DictationSummary])
+@router.get("/dictation", response_model=Page[DictationSummary])
 def list_dictation(
     topic: str | None = Query(default=None, description="topic slug"),
     standalone: bool = Query(
         default=False,
         description="only sentences that belong to no story",
     ),
-    limit: int = Query(default=50, ge=1, le=200),
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
-) -> list[DictationSummary]:
+) -> Page[DictationSummary]:
     """Danh sách phẳng các câu đã xuất bản.
 
     `standalone=true` lọc lấy những câu chưa thuộc story nào. Có tham số này vì
@@ -490,15 +498,20 @@ def list_dictation(
     items = db.scalars(
         query.order_by(DictationItem.difficulty, DictationItem.id).limit(limit).offset(offset)
     ).all()
-    return [
-        DictationSummary(
-            id=str(item.id),
-            difficulty=item.difficulty,
-            topic_id=str(item.topic_id) if item.topic_id else None,
-            word_count=len(dictation_grader.normalise(item.transcript)),
-        )
-        for item in items
-    ]
+    return page_of(
+        [
+            DictationSummary(
+                id=str(item.id),
+                difficulty=item.difficulty,
+                topic_id=str(item.topic_id) if item.topic_id else None,
+                word_count=len(dictation_grader.normalise(item.transcript)),
+            )
+            for item in items
+        ],
+        count_rows(db, query),
+        limit,
+        offset,
+    )
 
 
 @router.get("/dictation/{item_id}", response_model=DictationDetail)

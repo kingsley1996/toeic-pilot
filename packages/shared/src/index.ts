@@ -45,6 +45,20 @@ export type TestDetail = components["schemas"]["TestDetail"];
 export type PartBreakdown = components["schemas"]["PartBreakdown"];
 export type AttemptState = components["schemas"]["AttemptState"];
 export type AttemptResult = components["schemas"]["AttemptResult"];
+export type AttemptSummary = components["schemas"]["AttemptSummary"];
+/**
+ * Một trang kết quả. Chỉ endpoint nào PHÌNH được mới bọc phong bì này — danh
+ * sách có trần trong miền nghiệp vụ (giọng đọc, câu của một đề) vẫn trả mảng
+ * trần. Xem `app/schemas/common.py` để biết quy tắc phân nhóm.
+ */
+export type AttemptPage = components["schemas"]["Page_AttemptSummary_"];
+export type VocabularyPage = components["schemas"]["Page_VocabularySummary_"];
+export type DictationPage = components["schemas"]["Page_DictationSummary_"];
+export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"];
+export type DictationAdminPage = components["schemas"]["Page_DictationAdmin_"];
+export type DictationStoryAdminPage = components["schemas"]["Page_DictationStoryAdmin_"];
+export type DictationSectionAdminPage = components["schemas"]["Page_DictationSectionAdmin_"];
+export type TestAdminPage = components["schemas"]["Page_TestAdmin_"];
 export type QuestionPublic = components["schemas"]["QuestionPublic"];
 export type PassagePublic = components["schemas"]["PassagePublic"];
 export type AttemptPartProgress = components["schemas"]["AttemptPartProgress"];
@@ -104,6 +118,7 @@ export const API_ROUTES = {
   testCollection: (slug: string) => `/api/v1/test-collections/${slug}`,
   practiceTest: (slug: string) => `/api/v1/practice-tests/${slug}`,
   attempts: "/api/v1/attempts",
+  attemptResult: (id: string) => `/api/v1/attempts/${id}/result`,
   attempt: (id: string) => `/api/v1/attempts/${id}`,
   attemptAnswer: (id: string, questionId: string) =>
     `/api/v1/attempts/${id}/questions/${questionId}`,

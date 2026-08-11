@@ -3,7 +3,9 @@
 import {
   API_ROUTES,
   type DictationSectionAdmin,
+  type DictationSectionAdminPage,
   type DictationStoryAdmin,
+  type DictationStoryAdminPage,
   type DictationTopicAdmin,
 } from "@toeic-pilot/shared";
 import { Check, Pencil, Send, X } from "lucide-react";
@@ -40,6 +42,8 @@ export default function AdminDictationTreePage() {
   const [sections, setSections] = useState<DictationSectionAdmin[]>([]);
   const [stories, setStories] = useState<DictationStoryAdmin[]>([]);
   const [error, setError] = useState<string | null>(null);
+  // 0 = không bị cắt; khác 0 là tổng số bài thật.
+  const [truncated, setTruncated] = useState(0);
 
   const [topicForm, setTopicForm] = useState({ slug: "", name: "" });
   const [sectionForm, setSectionForm] = useState({ topic_id: "", name: "" });
@@ -49,11 +53,20 @@ export default function AdminDictationTreePage() {
     void apiFetch<DictationTopicAdmin[]>(API_ROUTES.adminDictationTopics, { token: t })
       .then(setTopics)
       .catch(() => setError("Không tải được cây nội dung."));
-    void apiFetch<DictationSectionAdmin[]>(API_ROUTES.adminDictationSections, { token: t })
-      .then(setSections)
+    void apiFetch<DictationSectionAdminPage>(`${API_ROUTES.adminDictationSections}?limit=200`, {
+      token: t,
+    })
+      .then((page) => setSections(page.items))
       .catch(() => {});
-    void apiFetch<DictationStoryAdmin[]>(API_ROUTES.adminDictationStories, { token: t })
-      .then(setStories)
+    // Cùng lý do như `/admin/tests`: đây là CÂY (chủ đề → phần → bài), nên cắt
+    // trang danh sách bài phẳng sẽ dựng ra một cây khuyết mà không nói gì.
+    void apiFetch<DictationStoryAdminPage>(`${API_ROUTES.adminDictationStories}?limit=200`, {
+      token: t,
+    })
+      .then((page) => {
+        setStories(page.items);
+        setTruncated(page.total > page.items.length ? page.total : 0);
+      })
       .catch(() => {});
   }, []);
 
@@ -167,6 +180,13 @@ export default function AdminDictationTreePage() {
         title="Cây nội dung"
         description="Chủ đề → phần → bài. Xuất bản từ dưới lên: bài trước, rồi phần, rồi chủ đề."
       />
+
+      {truncated > 0 && (
+        <Alert tone="warn">
+          Đang hiện 200 bài đầu trong tổng số {truncated}. Màn này dựng theo cây nên chưa lật trang
+          được.
+        </Alert>
+      )}
 
       {error && (
         <div className="mb-4">
