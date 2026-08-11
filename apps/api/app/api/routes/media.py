@@ -18,8 +18,7 @@ import uuid
 from typing import Annotated
 
 import redis
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
@@ -229,24 +228,6 @@ async def local_upload(
 
     driver.write(storage_key, payload)
     return {"storage_key": storage_key, "bytes": len(payload)}
-
-
-@router.get("/images", response_model=list[ImageAssetPublic], dependencies=[Depends(can_edit)])
-def list_images(
-    limit: int = Query(default=50, ge=1, le=200),
-    offset: int = Query(default=0, ge=0),
-    db: Session = Depends(get_db),
-) -> list[ImageAssetPublic]:
-    """Thư viện ảnh đã tải lên, mới nhất trước.
-
-    Không lọc theo `source`: ảnh lấy từ kho CC (`sourced`) và ảnh tự đưa lên
-    (`uploaded`) cùng là ảnh dùng được cho một câu hỏi, và tách hai danh sách sẽ
-    khiến biên tập viên phải nhớ mình đã thêm ảnh nào bằng đường nào.
-    """
-    rows = db.scalars(
-        select(ImageAsset).order_by(ImageAsset.created_at.desc()).limit(limit).offset(offset)
-    ).all()
-    return [_asset_public(row) for row in rows]
 
 
 @router.post(

@@ -4,7 +4,6 @@ import {
   API_ROUTES,
   type CollectionAdmin,
   type GroupDraft,
-  type ImageAssetPublic,
   type QuestionAdmin,
   type SetAdmin,
   type TurnDraft,
@@ -19,7 +18,6 @@ import {
   Check,
   CircleAlert,
   Copy,
-  ImageIcon,
   Pencil,
   Plus,
   Send,
@@ -49,6 +47,7 @@ import {
 } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { uploadAudio } from "@/lib/audio-upload";
+import { uploadImage } from "@/lib/image-upload";
 import { useRequireSession } from "@/lib/session";
 
 /*
@@ -68,6 +67,8 @@ const UNPRINTED = [1, 2];
 const LISTENING = [1, 2, 3, 4];
 // Part 3, 4, 6, 7 gom nhiều câu dưới một ngữ liệu dùng chung (ADR-001 §A2).
 const GROUPED = [3, 4, 6, 7];
+// Các part có ảnh ở đâu đó: Part 1 trên câu, Part 3, 4, 7 trên cụm.
+const WITH_IMAGES = [1, 3, 4, 7];
 
 const NO_COLLECTION = "__none__";
 
@@ -165,7 +166,17 @@ export default function AdminTestPage() {
   const [test, setTest] = useState<TestAdmin | null>(null);
   const [collections, setCollections] = useState<CollectionAdmin[]>([]);
   const [sets, setSets] = useState<SetAdmin[]>([]);
-  const [library, setLibrary] = useState<ImageAssetPublic[]>([]);
+  // Xuất xứ của những ảnh sắp tải lên, dùng chung cho cả lô — cùng khuôn với ô
+  // chọn accent ngay bên cạnh. Ba trường này là NOT NULL và không có mặc định ở
+  // bất kỳ tầng nào; đặt ở đầu trang để một bộ đề sáu ảnh Part 1 khai một lần
+  // thay vì sáu lần, mà vẫn là người khai chứ không phải code đoán.
+  //
+  // `alt_text` KHÔNG ở đây: nó mô tả riêng từng bức, nên nó nằm trên từng ô.
+  const [provenance, setProvenance] = useState({
+    source_url: "",
+    license: "",
+    attribution: "",
+  });
   // Danh sách giọng lấy từ server, không chép sang đây: hai bản sao sẽ trôi
   // khỏi nhau và người soạn chọn được một giọng rồi ăn 400 từ chính server
   // vừa gửi dropdown đó.
@@ -195,9 +206,6 @@ export default function AdminTestPage() {
         .catch(() => {});
       apiFetch<SetAdmin[]>(API_ROUTES.adminTestSets(slug), { token: t })
         .then(setSets)
-        .catch(() => {});
-      apiFetch<ImageAssetPublic[]>(API_ROUTES.adminImages, { token: t })
-        .then(setLibrary)
         .catch(() => {});
       apiFetch<VoiceOption[]>(API_ROUTES.adminVoices, { token: t })
         .then(setVoices)
@@ -299,19 +307,6 @@ export default function AdminTestPage() {
       },
     );
 
-  const assignPassageImage = (setId: string, slot: number, imageId: string | null) =>
-    run(
-      () =>
-        apiFetch<SetAdmin>(API_ROUTES.adminPassageImage(setId), {
-          method: "POST",
-          token: token ?? undefined,
-          body: JSON.stringify({ slot, image_id: imageId }),
-        }),
-      () => {
-        if (token) refresh(token);
-      },
-    );
-
   const saveSetScript = (setId: string, script: TurnDraft[]) =>
     run(
       () =>
@@ -370,14 +365,61 @@ export default function AdminTestPage() {
       },
     );
 
-  const assignQuestionImage = (questionId: string, imageId: string | null) =>
+  // Gỡ ảnh CHỈ tháo liên kết; hàng `image_asset` và object trên Cloudinary ở
+  // lại. Xoá hẳn cần biết chắc không còn ai trỏ tới — ảnh là content-addressed
+  // nên hai câu dùng chung một bức là chuyện bình thường, và xoá nhầm là mất
+  // ảnh của một câu khác. Dọn file mồ côi là việc riêng, chạy ngoài luồng.
+  const removeQuestionImage = (questionId: string) =>
     run(
       () =>
         apiFetch<QuestionAdmin>(API_ROUTES.adminQuestionImage(questionId), {
           method: "POST",
           token: token ?? undefined,
-          body: JSON.stringify({ asset_id: imageId }),
+          body: JSON.stringify({ asset_id: null }),
         }),
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const removePassageImage = (setId: string, slot: number) =>
+    run(
+      () =>
+        apiFetch<SetAdmin>(API_ROUTES.adminPassageImage(setId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ slot, image_id: null }),
+        }),
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const uploadQuestionImage = (questionId: string, file: File, alt: string | null) =>
+    run(
+      async () => {
+        const asset = await uploadImage(file, { ...provenance, alt_text: alt }, token ?? "");
+        return apiFetch<QuestionAdmin>(API_ROUTES.adminQuestionImage(questionId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ asset_id: asset.id }),
+        });
+      },
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const uploadPassageImage = (setId: string, slot: number, file: File, alt: string | null) =>
+    run(
+      async () => {
+        const asset = await uploadImage(file, { ...provenance, alt_text: alt }, token ?? "");
+        return apiFetch<SetAdmin>(API_ROUTES.adminPassageImage(setId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ slot, image_id: asset.id }),
+        });
+      },
       () => {
         if (token) refresh(token);
       },
@@ -559,6 +601,29 @@ export default function AdminTestPage() {
         </div>
       )}
 
+      {WITH_IMAGES.includes(part) && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <Field label="Nguồn ảnh" hint="URL nơi giữ bản gốc.">
+            <Input
+              value={provenance.source_url}
+              onChange={(e) => setProvenance({ ...provenance, source_url: e.target.value })}
+            />
+          </Field>
+          <Field label="Giấy phép" hint="CC0, CC-BY, hoặc 'tự chụp'.">
+            <Input
+              value={provenance.license}
+              onChange={(e) => setProvenance({ ...provenance, license: e.target.value })}
+            />
+          </Field>
+          <Field label="Ghi công" hint="Tên tác giả hoặc nguồn.">
+            <Input
+              value={provenance.attribution}
+              onChange={(e) => setProvenance({ ...provenance, attribution: e.target.value })}
+            />
+          </Field>
+        </div>
+      )}
+
       <section className="mt-6">
         <SectionHeader
           title={`Dán nội dung Part ${part}`}
@@ -610,11 +675,11 @@ export default function AdminTestPage() {
                   <SetPanel
                     key={stimulus.id}
                     stimulus={stimulus}
-                    library={library}
                     busy={busy}
-                    onAssign={(slot, imageId) =>
-                      void assignPassageImage(stimulus.id, slot, imageId)
+                    onUploadImage={(slot, file, alt) =>
+                      uploadPassageImage(stimulus.id, slot, file, alt)
                     }
+                    onRemoveImage={(slot) => removePassageImage(stimulus.id, slot)}
                     // Chỉ Part 7 có ảnh. Part 6 là Text Completion — một đoạn
                     // văn có các chỗ trống, toàn chữ.
                     allowImages={part === 7}
@@ -652,7 +717,13 @@ export default function AdminTestPage() {
                       <PublishTag status={question.status} />
                       <Tag>{question.source}</Tag>
                     </div>
-                    <p className="mt-1.5 text-small">{question.prompt_text}</p>
+                    {question.prompt_text ? (
+                      <p className="mt-1.5 text-small">{question.prompt_text}</p>
+                    ) : (
+                      <p className="mt-1.5 text-small text-ink-faint">
+                        Đọc lên, không in — nội dung ở lời thoại
+                      </p>
+                    )}
                     <ul className="mt-2 space-y-0.5">
                       {question.options.map((option) => (
                         <li
@@ -662,7 +733,7 @@ export default function AdminTestPage() {
                             option.is_correct ? "font-semibold text-ok" : "text-ink-muted",
                           )}
                         >
-                          ({option.label}) {option.content}
+                          ({option.label}){option.content ? ` ${option.content}` : ""}
                         </li>
                       ))}
                     </ul>
@@ -735,29 +806,15 @@ export default function AdminTestPage() {
                         Chưa có ảnh — Part 1 chưa xuất bản được.
                       </p>
                     )}
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <ImageIcon
-                        size={14}
-                        strokeWidth={1.75}
-                        aria-hidden
-                        className="text-ink-faint"
-                      />
-                      <Select
-                        value={library.find((i) => i.url === question.image_url)?.id ?? ""}
-                        onChange={(event) =>
-                          void assignQuestionImage(question.id, event.target.value || null)
-                        }
-                        disabled={busy}
-                        className="w-auto"
-                      >
-                        <option value="">— chưa chọn ảnh —</option>
-                        {library.map((image) => (
-                          <option key={image.id} value={image.id}>
-                            {image.alt_text?.slice(0, 60) || image.storage_key.slice(-12)}
-                          </option>
-                        ))}
-                      </Select>
-                    </div>
+                    <ImageUpload
+                      busy={busy}
+                      hasImage={question.image_url !== null}
+                      // Part 1 KHÔNG có chữ thay ảnh: bức ảnh chính là câu hỏi,
+                      // nên mô tả nó là đưa luôn đáp án.
+                      needsAlt={false}
+                      onUpload={(file, alt) => uploadQuestionImage(question.id, file, alt)}
+                      onRemove={() => removeQuestionImage(question.id)}
+                    />
                   </div>
                 )}
 
@@ -788,15 +845,17 @@ function GroupPreview({ parsed }: { parsed: TestPartParseResponse }) {
       </div>
       <ul className="divide-y divide-rule">
         {parsed.groups.map((group) => (
-          <GroupRow key={group.line} group={group} />
+          <GroupRow key={group.line} group={group} part={parsed.part} />
         ))}
       </ul>
     </Panel>
   );
 }
 
-function GroupRow({ group }: { group: GroupDraft }) {
+function GroupRow({ group, part }: { group: GroupDraft; part: number }) {
   const broken = group.problems.length > 0 || group.questions.some((q) => q.problems.length > 0);
+  // Part 1 và 2 không in gì; chữ của chúng nằm trong lời thoại bên dưới.
+  const printed = part !== 1 && part !== 2;
   return (
     <li className={cx("px-4 py-3", broken && "bg-alert-tint/50")}>
       {group.title && <p className="text-small font-semibold">{group.title}</p>}
@@ -824,14 +883,21 @@ function GroupRow({ group }: { group: GroupDraft }) {
               {question.line}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-small">{question.prompt_text || <em>thiếu đề bài</em>}</p>
+              {/* NULL là giá trị ĐÚNG ở Part 1/2, không phải dữ liệu thiếu — in
+                  "thiếu đề bài" ở đó là báo lỗi cho một câu hoàn toàn ổn, ngay
+                  tại bước người ta đang soát xem có gì sai không. */}
+              {printed ? (
+                <p className="text-small">{question.prompt_text || <em>thiếu đề bài</em>}</p>
+              ) : (
+                <p className="text-small text-ink-faint">Đọc lên, không in — xem Lời thoại</p>
+              )}
               <p className="mt-0.5 text-small text-ink-muted">
                 {question.options.map((option) => (
                   <span
                     key={option.label}
                     className={cx("mr-3", option.is_correct && "font-semibold text-ok")}
                   >
-                    ({option.label}) {option.content}
+                    ({option.label}){option.content ? ` ${option.content}` : ""}
                   </span>
                 ))}
               </p>
@@ -846,6 +912,89 @@ function GroupRow({ group }: { group: GroupDraft }) {
         </div>
       ))}
     </li>
+  );
+}
+
+/**
+ * Tải một bức ảnh lên NGAY TẠI Ô nó thuộc về.
+ *
+ * Thay cho luồng cũ: tải lên một thư viện chung rồi quay lại chọn từ dropdown.
+ * Dropdown đó hỏng theo số lượng — hai chục ảnh là còn tìm được, hai trăm thì
+ * nhãn duy nhất phân biệt được chúng là mười hai ký tự cuối của `storage_key`,
+ * và chọn nhầm ảnh **khớp thành công**, không có gì báo.
+ *
+ * Xuất xứ (nguồn, giấy phép, ghi công) khai một lần ở đầu trang cho cả lô, vì
+ * một bộ đề thường lấy ảnh từ cùng một nguồn. `alt_text` thì ở đây, vì nó mô tả
+ * riêng bức này.
+ */
+function ImageUpload({
+  busy,
+  hasImage,
+  needsAlt,
+  onUpload,
+  onRemove,
+}: {
+  busy: boolean;
+  hasImage: boolean;
+  needsAlt: boolean;
+  onUpload: (file: File, alt: string | null) => Promise<string | null>;
+  onRemove: () => Promise<string | null>;
+}) {
+  const [alt, setAlt] = useState("");
+  const [refusal, setRefusal] = useState<string | null>(null);
+
+  async function send(file: File) {
+    if (needsAlt && !alt.trim()) {
+      // Chặn trước khi tải lên, không phải sau: file đã nằm trên Cloudinary rồi
+      // mới báo thiếu chữ thay ảnh sẽ để lại một object không ai trỏ tới.
+      setRefusal("Cần chữ thay ảnh trước khi tải lên.");
+      return;
+    }
+    setRefusal(await onUpload(file, alt.trim() || null));
+  }
+
+  return (
+    <div className="mt-2">
+      {needsAlt && (
+        <Field label="Chữ thay ảnh" hint="Mô tả nội dung hình. Bắt buộc.">
+          <Input value={alt} onChange={(event) => setAlt(event.target.value)} />
+        </Field>
+      )}
+
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <label className="inline-flex cursor-pointer items-center gap-2 text-small font-semibold text-action-ink">
+          <Upload size={14} strokeWidth={2} aria-hidden />
+          {hasImage ? "Thay ảnh" : "Tải ảnh lên"}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+            disabled={busy}
+            className="hidden"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              // Xoá giá trị để chọn LẠI cùng một file vẫn kích hoạt onChange —
+              // thứ người ta làm ngay sau một lần tải lên thất bại.
+              event.target.value = "";
+              if (file) void send(file);
+            }}
+          />
+        </label>
+
+        {hasImage && (
+          <Button
+            size="sm"
+            variant="quiet"
+            onClick={async () => setRefusal(await onRemove())}
+            disabled={busy}
+          >
+            <Trash2 size={14} strokeWidth={1.75} aria-hidden />
+            Gỡ ảnh
+          </Button>
+        )}
+      </div>
+
+      {refusal && <FieldError>{refusal}</FieldError>}
+    </div>
   );
 }
 
@@ -909,18 +1058,18 @@ function CopyFormatButton({ template, part }: { template: string; part: number }
 
 function SetPanel({
   stimulus,
-  library,
   busy,
-  onAssign,
+  onUploadImage,
+  onRemoveImage,
   onUploadAudio,
   onSaveScript,
   voices,
   allowImages,
 }: {
   stimulus: SetAdmin;
-  library: ImageAssetPublic[];
   busy: boolean;
-  onAssign: (slot: number, imageId: string | null) => void;
+  onUploadImage: (slot: number, file: File, alt: string | null) => Promise<string | null>;
+  onRemoveImage: (slot: number) => Promise<string | null>;
   onUploadAudio: (file: File) => void;
   onSaveScript: (script: TurnDraft[]) => Promise<string | null>;
   voices: VoiceOption[];
@@ -928,6 +1077,11 @@ function SetPanel({
 }) {
   // Part 6 chỉ có MỘT đoạn văn; hiện ba ô là mô tả sai format, và nó mời người
   // soạn điền vào hai ô không tồn tại trong đề thật.
+  // Ba hình dạng, không phải hai. Part 7: tối đa ba ngữ liệu, chữ và ảnh. Part
+  // 6: **một** đoạn văn, toàn chữ. Part 3/4: **một** hình dùng chung cho cả cụm
+  // ("Look at the graphic") và không in chữ nào — nên hiện ô văn bản ở đó là mô
+  // tả sai format và mời người soạn gõ vào chỗ đề thật để trống.
+  const graphic = stimulus.part === 3 || stimulus.part === 4;
   const slots = allowImages ? stimulus.passages : stimulus.passages.slice(0, 1);
 
   return (
@@ -950,20 +1104,21 @@ function SetPanel({
         />
       )}
 
-      <div className={cx("mt-3 space-y-3", stimulus.part <= 4 && "hidden")}>
+      <div className={cx("mt-3 space-y-3", stimulus.part <= 2 && "hidden")}>
         {slots.map((passage) => (
           <div key={passage.slot} className="rounded border border-rule p-3">
             <p className="text-label font-semibold uppercase text-ink-muted">
-              Ngữ liệu {passage.slot}
+              {graphic ? "Hình đi kèm" : `Ngữ liệu ${passage.slot}`}
             </p>
 
-            {passage.text ? (
-              <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-small text-ink-muted">
-                {passage.text}
-              </p>
-            ) : (
-              <p className="mt-1 text-small text-ink-faint">— không có văn bản —</p>
-            )}
+            {!graphic &&
+              (passage.text ? (
+                <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-small text-ink-muted">
+                  {passage.text}
+                </p>
+              ) : (
+                <p className="mt-1 text-small text-ink-faint">— không có văn bản —</p>
+              ))}
 
             {passage.image_url && (
               <div className="mt-2 flex items-start gap-3">
@@ -977,32 +1132,31 @@ function SetPanel({
               </div>
             )}
 
-            <div className={cx("mt-2 flex flex-wrap items-center gap-2", !allowImages && "hidden")}>
-              <ImageIcon size={14} strokeWidth={1.75} aria-hidden className="text-ink-faint" />
-              <Select
-                value={passage.image_id ?? ""}
-                onChange={(event) => onAssign(passage.slot, event.target.value || null)}
-                disabled={busy}
-                className="w-auto"
-              >
-                <option value="">— không có ảnh —</option>
-                {library.map((image) => (
-                  <option key={image.id} value={image.id}>
-                    {image.alt_text?.slice(0, 60) || image.storage_key.slice(-12)}
-                  </option>
-                ))}
-              </Select>
-            </div>
+            {(allowImages || graphic) && (
+              <ImageUpload
+                busy={busy}
+                hasImage={passage.image_url !== null}
+                // Ngược hẳn Part 1: ở đây ảnh LÀ ngữ liệu, nên thiếu chữ thay
+                // ảnh là một câu người dùng máy đọc màn hình không làm được — mà
+                // mô tả nó cũng không lộ gì, vì vẫn phải nghe (Part 3/4) hoặc
+                // vẫn phải đọc phần còn lại (Part 7).
+                needsAlt
+                onUpload={(file, alt) => onUploadImage(passage.slot, file, alt)}
+                onRemove={() => onRemoveImage(passage.slot)}
+              />
+            )}
           </div>
         ))}
       </div>
 
       {/* Nói ra ngay tại chỗ, vì đây là chỗ người ta sắp làm sai: phần lớn ngữ
           liệu KHÔNG cần ảnh, và bản văn bản thì tốt hơn thật. */}
-      <p className={cx("mt-3 text-small text-ink-muted", stimulus.part <= 4 && "hidden")}>
-        {allowImages
-          ? "Bảng giá, lịch trình, mẫu đơn nên viết thành văn bản — đọc được bằng máy đọc màn hình, phóng to và tìm kiếm được. Ảnh dành cho biểu đồ, sơ đồ, bản đồ."
-          : "Part 6 là một đoạn văn có các chỗ trống, mỗi chỗ trống là một câu hỏi. Không có ảnh và không có bài nhiều đoạn."}
+      <p className={cx("mt-3 text-small text-ink-muted", stimulus.part <= 2 && "hidden")}>
+        {graphic
+          ? "Chỉ vài cụm cuối Part 3/4 có hình. Chữ thay ảnh là bắt buộc và không lộ đáp án ở đây — người học vẫn phải nghe mới trả lời được."
+          : allowImages
+            ? "Bảng giá, lịch trình, mẫu đơn nên viết thành văn bản — đọc được bằng máy đọc màn hình, phóng to và tìm kiếm được. Ảnh dành cho biểu đồ, sơ đồ, bản đồ."
+            : "Part 6 là một đoạn văn có các chỗ trống, mỗi chỗ trống là một câu hỏi. Không có ảnh và không có bài nhiều đoạn."}
       </p>
     </Panel>
   );
@@ -1023,14 +1177,25 @@ function QuestionEditor({
     question.options.find((option) => option.is_correct)?.label ?? "A",
   );
   const [options, setOptions] = useState<Record<string, string>>(
-    Object.fromEntries(question.options.map((option) => [option.label, option.content])),
+    Object.fromEntries(question.options.map((option) => [option.label, option.content ?? ""])),
   );
+
+  // Part 1 và 2 KHÔNG in gì cả, nên ở đó không có đề bài và không có nội dung
+  // đáp án để sửa — chữ của chúng nằm trong lời thoại, sửa ở khung Lời thoại.
+  //
+  // Không phải chuyện gọn mắt: hai ô đó gửi `""` lên server, mà `""` không phải
+  // NULL, nên `validate_question` từ chối và câu Part 1/2 nào cũng không lưu
+  // nổi. Ẩn ô đi mà vẫn gửi khoá thì vẫn hỏng y hệt — nên khoá cũng bị bỏ khỏi
+  // payload bên dưới.
+  const printed = question.part !== 1 && question.part !== 2;
 
   return (
     <div className="mt-3 border-t border-rule pt-3">
-      <Field label="Đề bài">
-        <Textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={2} />
-      </Field>
+      {printed && (
+        <Field label="Đề bài">
+          <Textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={2} />
+        </Field>
+      )}
 
       <div className="mt-3 space-y-2">
         {question.options.map((option) => (
@@ -1049,10 +1214,16 @@ function QuestionEditor({
             >
               {option.label}
             </button>
-            <Input
-              value={options[option.label] ?? ""}
-              onChange={(event) => setOptions({ ...options, [option.label]: event.target.value })}
-            />
+            {printed ? (
+              <Input
+                value={options[option.label] ?? ""}
+                onChange={(event) => setOptions({ ...options, [option.label]: event.target.value })}
+              />
+            ) : (
+              <span className="text-small text-ink-faint">
+                đọc lên, không in — sửa ở khung Lời thoại
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -1071,12 +1242,19 @@ function QuestionEditor({
         <Button
           size="sm"
           onClick={() =>
-            onSave({
-              prompt_text: prompt,
-              explanation: explanation || null,
-              correct_label: correct,
-              options,
-            })
+            onSave(
+              // `exclude_unset` ở server phân biệt "vắng mặt" với "null", nên
+              // với Part 1/2 phải BỎ HẲN hai khoá này — gửi `""` là ghi một
+              // chuỗi rỗng vào cột buộc phải NULL, và câu sẽ không lưu được.
+              printed
+                ? {
+                    prompt_text: prompt,
+                    explanation: explanation || null,
+                    correct_label: correct,
+                    options,
+                  }
+                : { explanation: explanation || null, correct_label: correct },
+            )
           }
           disabled={busy}
         >

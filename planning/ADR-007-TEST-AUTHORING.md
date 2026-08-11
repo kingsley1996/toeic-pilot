@@ -111,7 +111,9 @@ FK là **RESTRICT**: xoá một ảnh đang làm ngữ liệu sẽ lấy đi th�
 
 ### 2.4 Ảnh Part 1 gắn từ thư viện, không tải lên trong luồng soạn đề
 
-`/admin/media` đã có: tải lên, ba trường bản quyền bắt buộc, ghi công hiện ra. Luồng soạn đề chỉ **chọn** từ đó.
+> **Sửa 2026-08-11.** Câu dưới mô tả luồng cũ và luồng đó đã bị xoá. Thư viện `/admin/media` hỏng theo số lượng: hai chục ảnh còn chọn được, hai trăm thì nhãn duy nhất phân biệt chúng trong dropdown là mười hai ký tự cuối của `storage_key` — và **chọn nhầm ảnh khớp thành công**, không có gì báo. Nay ảnh được tải lên **ngay tại ô nó thuộc về**, sau khi dán chữ; ba trường bản quyền khai một lần ở đầu trang cho cả lô, `alt_text` khai theo từng bức vì nó mô tả riêng bức đó. Nhập hàng loạt thì dùng `import_media` (xem [`import_media.md`](import_media.md)).
+
+~~`/admin/media` đã có: tải lên, ba trường bản quyền bắt buộc, ghi công hiện ra. Luồng soạn đề chỉ **chọn** từ đó.~~
 
 Tách ra vì bản quyền là quyết định riêng: người chọn ảnh cho câu hỏi và người chịu trách nhiệm giấy phép không nhất thiết là một, và ADR-004 §2.2 nói giấy phép chỉ ghi lại trung thực được vào **đúng lúc** thêm ảnh, khi trang nguồn còn đang mở.
 

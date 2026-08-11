@@ -109,7 +109,6 @@ export const API_ROUTES = {
     `/api/v1/attempts/${id}/questions/${questionId}`,
   attemptSubmit: (id: string) => `/api/v1/attempts/${id}/submit`,
 
-  adminImages: "/api/v1/admin/media/images",
   adminImageTicket: "/api/v1/admin/media/images/ticket",
   adminImageConfirm: "/api/v1/admin/media/images/confirm",
   adminAudioTicket: "/api/v1/admin/media/audio/ticket",

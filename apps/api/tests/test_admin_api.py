@@ -711,3 +711,50 @@ def test_an_unknown_voice_is_refused_at_the_form_not_at_synthesis(
     )
     assert refused.status_code == 400
     assert "us_female_1" in refused.json()["detail"]
+
+
+def test_a_listening_set_takes_one_graphic_and_only_slot_one(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Vài cụm cuối Part 3/4 có một hình dùng chung ("Look at the graphic").
+
+    Ảnh về CỤM chứ không về câu: đề in nó một lần cạnh cả ba câu, đúng như đoạn
+    văn Part 7. Nhưng chỉ MỘT hình — mở ba ô ở đây là mời người soạn điền vào
+    hai ô không tồn tại trong đề thật.
+    """
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "graphic-test")
+
+    chart = ImageAsset(
+        storage_key="image/aa/chart.png",
+        source_hash="d" * 64,
+        mime_type="image/png",
+        size_bytes=10,
+        width=10,
+        height=10,
+        source="uploaded",
+        source_url="https://example.com",
+        license="CC0",
+        attribution="Ai đó",
+        # Bắt buộc, và ở đây KHÔNG lộ đáp án: người học vẫn phải nghe mới trả lời
+        # được. Khác Part 1, nơi bức ảnh chính là toàn bộ câu hỏi.
+        alt_text="Lịch trình phòng họp",
+    )
+    db_session.add(chart)
+    db_session.commit()
+
+    attached = client.post(
+        f"/api/v1/admin/question-sets/{stimulus['id']}/passage-image",
+        json={"slot": 1, "image_id": str(chart.id)},
+        headers=headers,
+    )
+    assert attached.status_code == 200
+    assert attached.json()["passages"][0]["image_url"] is not None
+
+    refused = client.post(
+        f"/api/v1/admin/question-sets/{stimulus['id']}/passage-image",
+        json={"slot": 2, "image_id": str(chart.id)},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert "một hình" in refused.json()["detail"]

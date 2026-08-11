@@ -170,8 +170,12 @@ def test_part_1_and_2_put_their_text_in_the_script_not_on_screen():
     (group,) = parse_listening_part(PART1, 1)
     (question,) = group.questions
     assert group.ok
-    assert question.prompt_text == ""
-    assert [option.content for option in question.options] == ["", "", "", ""]
+    # `None`, KHÔNG phải `""`. Bản đầu của test này ghim `""` và đó là lý do lỗi
+    # sống sót: `validate_question` hỏi `is not None`, nên `""` đọc ra là "có in,
+    # in ra số 0 ký tự" và mọi câu Part 1/2 bị từ chối ở bước ghi. Hai nửa mỗi
+    # nửa xanh theo test của riêng nó, và không test nào đi qua ranh giới.
+    assert question.prompt_text is None
+    assert [option.content for option in question.options] == [None, None, None, None]
     # Lời dẫn + bốn câu đọc, tất cả cùng một giọng.
     assert len(question.script) == 5
     assert {turn.voice for turn in question.script} == {"us_female_1"}
@@ -225,3 +229,38 @@ def test_a_script_line_without_a_voice_is_refused():
     # không ai biết bản thu phải nghe như thế nào.
     (group,) = parse_listening_part(PART1.replace("voice: us_female_1\n", ""), 1)
     assert not group.ok
+
+
+def test_a_pasted_part_1_question_passes_the_gate_it_will_meet_at_commit() -> None:
+    """Trình dán và cổng chặn phải đồng ý với nhau về "không in gì".
+
+    Đây là test đi qua RANH GIỚI, và là thứ đã thiếu. `parse_listening_part` có
+    test riêng, `validate_question` có test riêng, cả hai xanh — trong khi cái
+    thứ nhất sinh ra `""` còn cái thứ hai đòi `None`, nên Part 1 chưa bao giờ
+    ghi vào được. Lỗi chỉ lộ ra khi có người thật dán một câu Part 1.
+
+    Lọc bỏ lỗi thiếu media đúng như `commit_part` làm: lúc vừa dán thì chưa ai
+    gắn được audio hay ảnh.
+    """
+    from app.models import Question, QuestionOption
+    from app.models.validators import validate_question
+
+    (group,) = parse_listening_part(PART1, 1)
+    (draft,) = group.questions
+    assert group.ok
+
+    question = Question(
+        part=1,
+        prompt_text=draft.prompt_text,
+        source=draft.source,
+        options=[
+            QuestionOption(label=o.label, content=o.content, is_correct=o.is_correct)
+            for o in draft.options
+        ],
+    )
+    problems = [
+        problem
+        for problem in validate_question(question)
+        if "audio" not in problem and "photograph" not in problem
+    ]
+    assert problems == []

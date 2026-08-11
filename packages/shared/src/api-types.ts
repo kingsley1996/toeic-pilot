@@ -319,30 +319,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/admin/media/images": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List Images
-         * @description Thư viện ảnh đã tải lên, mới nhất trước.
-         *
-         *     Không lọc theo `source`: ảnh lấy từ kho CC (`sourced`) và ảnh tự đưa lên
-         *     (`uploaded`) cùng là ảnh dùng được cho một câu hỏi, và tách hai danh sách sẽ
-         *     khiến biên tập viên phải nhớ mình đã thêm ảnh nào bằng đường nào.
-         */
-        get: operations["list_images_api_v1_admin_media_images_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/admin/media/images/confirm": {
         parameters: {
             query?: never;
@@ -2387,7 +2363,7 @@ export interface components {
             /** Problems */
             problems: string[];
             /** Prompt Text */
-            prompt_text: string;
+            prompt_text: string | null;
             /**
              * Script
              * @default []
@@ -2423,7 +2399,7 @@ export interface components {
         /** QuestionOptionDraft */
         QuestionOptionDraft: {
             /** Content */
-            content: string;
+            content: string | null;
             /** Is Correct */
             is_correct: boolean;
             /** Label */
@@ -3949,38 +3925,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadTicket"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_images_api_v1_admin_media_images_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ImageAssetPublic"][];
                 };
             };
             /** @description Validation Error */

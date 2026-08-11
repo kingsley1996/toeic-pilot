@@ -305,7 +305,7 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 - [x] Migration `010_avatar` — `user_profile.avatar_storage_key` nullable; ảnh chữ cái đầu vẫn là mặc định và là chỗ rơi về khi ảnh bị gỡ
 - [x] Avatar dùng tiền tố khoá **`avatar/`** riêng, và endpoint gắn avatar **từ chối khoá ngoài vùng đó** — thiếu kiểm tra này thì một người trỏ avatar vào ảnh nội dung, và lệnh dọn ảnh mồ côi sau này sẽ xoá mất thứ đang dùng
 - [x] Gỡ avatar **không** xoá file đồng bộ: request của người dùng không nên chờ một dịch vụ bên ngoài, và nếu nó lỗi thì hồ sơ giữ ảnh cũ trong khi người dùng đã thấy báo thành công
-- [x] Trang `/admin/media` — thư viện ảnh, ba trường bản quyền bắt buộc, ghi công **hiện ra** chứ không chỉ được lưu (ADR-004 §4.2)
+- [x] ~~Trang `/admin/media` — thư viện ảnh~~ **đã xoá 2026-08-11**: dropdown chọn ảnh hỏng theo số lượng, và chọn nhầm thì khớp thành công. Thay bằng tải lên tại chỗ; ba trường bản quyền vẫn bắt buộc, vẫn hiện ghi công (ADR-004 §4.2)
 - [x] `Avatar` nhận `src`; header và trang hồ sơ dùng ảnh thật, thiếu thì rơi về chữ cái đầu
 - [x] **Đã chạy thật lên Cloudinary** cả hai luồng (ảnh nội dung + avatar) qua chính các endpoint
 - [x] **Driver `s3` (audio)** — một driver cho Supabase / B2 / R2 / DO Spaces / MinIO; nhà cung cấp là `S3_ENDPOINT_URL`, không phải một nhánh `if` trong code (ADR-006 §2.8). Địa chỉ **kiểu đường dẫn** + SigV4, có test ghim: mặc định virtual-host của boto3 hỏng ở Supabase và hiện ra dưới dạng lỗi DNS
@@ -374,7 +374,7 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 
 - [x] **Ảnh cho ngữ liệu Part 7** — migration `013`, một ảnh cho *mỗi* ô để giữ thứ tự (ADR-007 §2.3c). `alt_text` bắt buộc: ảnh làm ngữ liệu mà thiếu chữ thay ảnh là câu hỏi người dùng máy đọc màn hình không trả lời được
 - [x] **Form sửa từng câu** — nửa sau của §2.3: đổi đáp án đúng, sửa lựa chọn, viết giải thích. Sửa một câu đã xuất bản thì nó **quay về nháp**, và giao diện nói trước khi bấm
-- [x] Chọn ảnh ngữ liệu từ thư viện `/admin/media`, kèm dòng nhắc rằng bảng giá và lịch trình nên viết thành văn bản
+- [x] Tải ảnh ngữ liệu lên ngay tại ô, kèm dòng nhắc rằng bảng giá và lịch trình nên viết thành văn bản
 
 **Lượt 1 (Part 5, 6, 7) xong.**
 
@@ -391,6 +391,7 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] Lời từ chối in **ngay dưới nút Lưu**, không chỉ ở băng lỗi đầu trang — cách form cả màn hình thì bấm Lưu rồi thấy không có gì xảy ra. Lưu thất bại **giữ nguyên** bản nháp đang gõ
 - [x] Sửa một câu Part 1–4 khi **chưa** gắn bản thu: trước đó `edit_question` soát đủ `validate_question` nên mọi câu Part 1–4 đều "thiếu audio" và không sửa nổi lỗi chính tả cho tới khi đã thu xong — tức là phải thu lại. Nay dùng chung bộ lọc với lúc ghi
 - [ ] Nội dung Part 1–4 thật (mới có mẫu demo)
+- [x] `app/content/import_media.py` — gắn hàng loạt audio/ảnh có sẵn vào một đề đã dán. Khớp theo số trong tên file, `--dry-run` in bảng khớp, file thừa hoặc ô trống thì **dừng** chứ không nhập một nửa. Ghi `source="uploaded"` nên worker TTS không bao giờ đè lên
 
 ### Lượt 3 — sinh audio bằng TTS · 🟢 xong
 - [x] `backfill_questions` — lời thoại trên CÂU (Part 1, 2) và trên CỤM (Part 3, 4), băm qua `conversation_source_hash`, ghép bằng ffmpeg. Một lượt nói thì bỏ qua ffmpeg luôn

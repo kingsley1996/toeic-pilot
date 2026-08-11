@@ -261,7 +261,10 @@ class StoryReorder(BaseModel):
 
 class QuestionOptionDraft(BaseModel):
     label: str
-    content: str
+    # `str | None`, không phải `str`. Đây là chỗ lỗi cũ bắt đầu: hình dạng
+    # xem-trước không nói được "không in gì", nên trình dán phải bịa ra `""`, mà
+    # `validate_question` đòi NULL — Part 1 và 2 không bao giờ ghi vào được.
+    content: str | None
     is_correct: bool
 
 
@@ -272,7 +275,7 @@ class TurnDraft(BaseModel):
 
 class QuestionDraft(BaseModel):
     line: int
-    prompt_text: str
+    prompt_text: str | None
     options: list[QuestionOptionDraft]
     source: str
     source_note: str | None = None

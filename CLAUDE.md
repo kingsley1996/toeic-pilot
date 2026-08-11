@@ -26,6 +26,10 @@ Two descriptions of *current behaviour* rather than of decisions:
 
 - **`planning/DESIGN-SYSTEM.md`** — the UI design system, **implemented across all of `apps/web`**: contrast-verified colour tokens for light and dark, the three-state theme switch, type (Archivo / Be Vietnam Pro / IBM Plex Mono, all with the `vietnamese` subset), the four-accent categorical scale, Lucide icon rules, component specs. Three rules there are load-bearing and fail quietly: **no `box-shadow`**, **one 4px radius** (the Tailwind scale is replaced, so `rounded-lg` emits nothing), and **`rule-strong` for component boundaries** — `rule` is decorative and does not meet the 3:1 that WCAG 1.4.11 requires of an input border.
 
+One runbook rather than a decision record:
+
+- **`planning/import_media.md`** — how to get audio and images you already have onto a pasted test: directory layout, what the number in a filename means under each `--match` mode, the per-part counts, and the exact commands. Read §2 before renaming anything; the naming rules exist because two plausible readings of a filename both match *successfully* and put the media on the wrong question.
+
 And one provisional spec:
 
 - **`planning/SPEC-LEARNING-HUB.md`** — the defaults the Learning Hub was built to (SM-2 grades, session limits, dictation grading). Explicitly built to be changed after real use; its §5 lists what will probably need to move.
@@ -100,6 +104,10 @@ uv run python -m app.content.backfill_audio [--dry-run] [--only questions]  # au
 uv run python -m app.content.tts_worker --once            # one sweep, then exit
 uv run python -m app.content.tts_worker                   # long-running: Redis doorbell + 300s sweep
 uv run python -m app.content.push_media [--dry-run]       # local media -> its provider (images: Cloudinary, audio: S3)
+# Bulk-attach audio/images you already have to a pasted test. Dry-run first.
+uv run python -m app.content.import_media audio --test <slug> --dir <dir> --accent en-US --dry-run
+uv run python -m app.content.import_media image --test <slug> --dir <dir> \
+    --source-url ... --license ... --attribution ...
 TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -m external   # calls edge-tts for real
 ```
 
@@ -180,6 +188,12 @@ Audio hangs off two levels for the same reason: parts 1–2 on `question`, parts
 
 `app/models/validators.py` holds the content rules no declarative constraint can express (ADR-001 §B4): at *least* one correct option, the per-part option count, `question.part` matching its set's part, and the printing rules. The partial unique index only rules out *more* than one correct answer — a question with none inserts cleanly and can never be answered correctly.
 
+**"Prints nothing" is spelled `None`, never `""`, and every layer must agree.** `validate_question` asks `is not None`, so an empty string reads as "printed, zero characters long" and is refused. The paste parser emitted `""` for a whole sprint — with a comment beside it claiming it emitted `None` — because `QuestionDraft.prompt_text` and `QuestionOptionDraft.content` were typed `str`, so the preview contract could not express the distinction at all. Every other layer (`QuestionPublic`, `QuestionAdmin`, `QuestionEdit`, `OptionPublic`) already had `str | None`; the draft was the one shape that lost it, and Part 1 and 2 could therefore never be committed.
+
+Two things kept that alive. The parser had a test asserting `== ""` and the validator had a test asserting `is not None`; **each half was green against its own test and no test crossed the boundary**. And the admin editor sent `prompt_text: ""` on every save, so even a hand-fixed row could not be edited afterwards — for unprinted parts it now omits the key entirely, which is what `exclude_unset` needs to tell "leave alone" from "clear". `tests/test_content_import.py::test_a_pasted_part_1_question_passes_the_gate_it_will_meet_at_commit` is the crossing test; it reproduces the original error message exactly when the fix is removed.
+
+A NULL prompt is also **not** missing data in the UI. Rendering "thiếu đề bài" for a Part 1 question flags a perfectly correct row as broken, in the one view built for spotting broken rows.
+
 **Parts 1 and 2 print nothing.** ETS states it outright for both: the statements and responses are spoken only, never printed. Part 1's test book shows the photograph alone; part 2's shows nothing. So `prompt_text` and `question_option.content` are NULL for both — part 1 just also has an image and four options rather than three.
 
 **Images (ADR-004).** `image_asset` mirrors `audio_asset` but is a separate table on purpose: merged, more than half the columns would always be NULL. `license`, `attribution` and `source_url` are NOT NULL because most openly-licensed photographs are CC-BY — usable only *with* credit — and storing the credit is not enough: any endpoint serving a Part 1 image must return it and the UI must render it. `app/content/images.py` fetches from a hand-curated spec file rather than a search API, because a photograph still needs a human to decide whether four statements can be written about it.
@@ -238,6 +252,20 @@ An error that names a way out has to have that way out **reachable from where th
 **Editing a set's script sends the set *and every question under it* back to draft.** The publish gate inspects questions one at a time, so demoting only the set leaves its questions published inside a released test, playing a recording of the old script. `PATCH /admin/question-sets/{id}` exists because without it Parts 3 and 4 had no way to change a script at all — one wrong word meant deleting the group and re-pasting — which also meant the stale warning had nothing that could ever trigger it. Part 1/2 scripts live on the question and go through `QuestionEdit`; sending `audio_script` to a Part 3/4 question is refused with a pointer to the set.
 
 **Authoring-time validation is not publish-time validation.** `_authoring_problems` drops the "missing audio"/"missing photograph" complaints, and both `commit_part` and `edit_question` use it. Running the full `validate_question` on edit means every Part 1–4 question is invalid until its recording exists, so a typo in a script cannot be fixed until after it has been recorded — i.e. it has to be recorded twice. The real gate is still publish.
+
+**Images are uploaded at the slot they belong to; there is no image library.** `/admin/media` existed and was deleted: a "pick from library" dropdown degrades with volume, and past a couple of hundred images the only label distinguishing two entries is the tail of the `storage_key` — so picking the wrong photograph *succeeds*, silently, and shows a learner a picture nobody wrote questions about. The upload path is unchanged (ADR-006 §2.3 ticket → direct POST → confirm); only the point of use moved. The three provenance fields are declared once per page for the batch, because a paper's images usually share a source; `alt_text` stays per-image because it describes that one picture. Bulk import is `import_media`.
+
+**Parts 3 and 4 carry a graphic on the *set*, not on the question.** The last few conversations in Part 3 and talks in Part 4 print a chart, schedule or floor plan once beside all three questions, and one question says "Look at the graphic". That is the same shape as a Part 7 passage, so it reuses `question_set.passage_image_id` — `assign_passage_image` accepts parts 3, 4 and 7, with **slot 1 only** outside part 7 (three slots there would invite content the exam does not have). Part 1's photograph stays on the question, because there every question has its own. The learner-facing path needed no change: `_passages` already keeps a slot that has an image but no text.
+
+**Alt text is required for a Part 3/4 graphic and deliberately absent for a Part 1 photograph.** The two look like the same rule and are opposites. A Part 1 photo *is* the question, so describing it hands over the answer. A Part 3/4 graphic is data you must read *and* combine with the audio, so a description gives nothing away — and without it the question is unanswerable with a screen reader.
+
+**`--match index` looks up by position, never by zip.** The filename's number is the item's position within its part (`part2/10_….mp3` is the 10th Part 2 question, i.e. question 16). Zipping files onto slots only works when every slot has a file, which is false for Part 3/4 graphics where only the last few sets have one — zip would put set 11's floor plan on set 1, match cleanly, and report success. Empty slots are therefore expected (and tolerated) for `image --part 3|4`, and an error everywhere else.
+
+**`import_media` refuses to do half the job.** Bulk-attaching files to a pasted test matches on the number in the filename, and any leftover file or unfilled slot stops the run rather than importing what matched. A half-import leaves a test missing a couple of recordings, and the gap surfaces only when a learner reaches that exact question. `--dry-run` prints the full mapping table; `--match order` zips sorted files onto slots when the names carry no usable number.
+
+**A `part N` label in a filename is stripped before the question number is read.** `part3_32.mp3` parsed naively gives `3` — and `3` is not a harmless miss, because Part 1 spans questions 1–6, so it matches successfully and staples a Part 3 conversation onto a Part 1 photo question. Silent *wrong* matches are worse than loud misses, which is why `_PART_LABEL` runs first and why the number taken afterwards is the **first** one (`32-34.mp3` is the set that opens at 32; the last number matches no set at all).
+
+**Imported audio must be written with `source="uploaded"`.** That is what puts it in `AudioState.EXTERNAL` and stops the TTS worker regenerating over it on its next sweep. Recording it as `tts` would hand a human voice to edge-tts, discoverable only by pressing play.
 
 **The TTS worker is a separate image, and that separation is the point.** `docker/worker.Dockerfile` carries ffmpeg and the `content` extra; `api.Dockerfile` carries neither. Merging them would not break anything on the day it happened — it would break on the day someone noticed `app.content` was already installed and imported it into a request handler "since it's right there", putting edge-tts, ffmpeg and a network call on the serving path. A separate image gives A4.1 a physical shape instead of a convention someone has to remember.
 

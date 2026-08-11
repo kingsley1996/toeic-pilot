@@ -244,14 +244,17 @@ class ParsedTurn:
 @dataclass
 class ParsedOption:
     label: str
-    content: str
+    # None nghĩa là KHÔNG IN — giá trị đúng của Part 1 và 2, không phải dữ liệu
+    # thiếu (ADR-001 §A2). Chuỗi rỗng không thay được: `validate_question` hỏi
+    # `is not None`, nên `""` là "có in, in ra số 0 ký tự" và bị từ chối.
+    content: str | None
     is_correct: bool
 
 
 @dataclass
 class ParsedQuestion:
     line: int
-    prompt_text: str = ""
+    prompt_text: str | None = None
     options: list[ParsedOption] = field(default_factory=list)
     source: str = ""
     source_note: str | None = None
@@ -616,7 +619,7 @@ def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion
                 # thoại, còn `content` để None — đó là giá trị đúng theo ADR-001
                 # §A2, không phải dữ liệu thiếu.
                 spoken.append(ParsedTurn(text=content, voice=voice or ""))
-                question.options.append(ParsedOption(label=label, content="", is_correct=False))
+                question.options.append(ParsedOption(label=label, content=None, is_correct=False))
             else:
                 question.options.append(
                     ParsedOption(label=label, content=content, is_correct=False)
@@ -650,7 +653,9 @@ def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion
         else:
             lead.append(stripped)
 
-    question.prompt_text = " ".join(lead).strip()
+    # `or None`: không có dòng đề bài nào thì giá trị đúng là NULL, không phải
+    # chuỗi rỗng. Part 1/2 luôn rơi vào nhánh này vì phần chữ đã đi vào lời thoại.
+    question.prompt_text = " ".join(lead).strip() or None
     question.script = spoken
     _check_listening_question(question, answer, part)
     return question

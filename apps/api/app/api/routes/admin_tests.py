@@ -633,20 +633,36 @@ def assign_passage_image(
     stimulus = db.get(QuestionSet, set_id)
     if stimulus is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cụm này")
-    # Chỉ Part 7 có ảnh. Part 6 là Text Completion: **một** đoạn văn có các chỗ
-    # trống, và nội dung của nó là chữ — không có biểu đồ hay sơ đồ nào để gắn.
-    # Cho phép gắn ở đây là mở một đường tạo ra cụm không tồn tại trong đề thật.
-    if stimulus.part != 7:
+    # Part 3, 4 và 7 — không phải chỉ Part 7.
+    #
+    # Vài cụm cuối Part 3 và Part 4 có một hình đi kèm (bảng giá, lịch trình, sơ
+    # đồ mặt bằng) và một câu trong cụm nói "Look at the graphic". Hình đó là
+    # ngữ liệu DÙNG CHUNG của cả cụm, đúng như đoạn văn của Part 7: đề in nó một
+    # lần cạnh cả ba câu. Nên nó về `question_set`, không về `question` — chỗ
+    # ảnh Part 1 ở, nơi mỗi câu có ảnh riêng.
+    #
+    # Part 6 vẫn không: Text Completion là **một** đoạn văn có các chỗ trống,
+    # toàn chữ. Part 1 cũng không, vì ảnh của nó ở trên câu.
+    if stimulus.part not in (3, 4, 7):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
-                f"Chỉ Part 7 có ảnh ngữ liệu; cụm này là Part {stimulus.part}. "
-                "Part 6 là một đoạn văn có các chỗ trống, toàn chữ."
+                f"Part {stimulus.part} không có ảnh ngữ liệu. "
+                "Part 1 gắn ảnh trên CÂU; Part 6 là một đoạn văn có chỗ trống, toàn chữ."
             ),
         )
-    if body.slot not in (1, 2, 3):
+    # Part 7 tối đa ba ngữ liệu (email, thư trả lời, lịch trình). Part 3 và 4
+    # chỉ có đúng một hình — mở ba ô ở đó là mời người soạn điền vào hai ô không
+    # tồn tại trong đề thật, cùng lỗi đã sửa cho Part 6.
+    max_slot = 3 if stimulus.part == 7 else 1
+    if body.slot not in range(1, max_slot + 1):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Ô ngữ liệu phải là 1, 2 hoặc 3"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Ô ngữ liệu phải là 1, 2 hoặc 3"
+                if max_slot == 3
+                else f"Cụm Part {stimulus.part} chỉ có một hình, nên ô phải là 1"
+            ),
         )
 
     column = _PASSAGE_IMAGE_COLUMNS[body.slot]
