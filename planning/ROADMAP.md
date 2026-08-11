@@ -514,18 +514,28 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 - [x] **P2-6** Ảnh API hai tầng, chạy uid 10001, bỏ `gcc` + `libpq-dev`. Hai gói đó chưa bao giờ cần: dependency là `psycopg[binary]`, wheel đã đóng gói sẵn libpq. **510MB → 321MB**. Đã kiểm khởi động thật, nối được Postgres và Redis, alembic chạy được bằng user thường, và luồng `--reload` của compose dev vẫn nguyên
 - [x] Ảnh worker cũng bỏ `gcc`/`libpq-dev` (chỉ giữ ffmpeg). Vẫn chạy root **có chủ ý**: nó ghi vào `media/` và `content/` qua bind mount của host, đổi sang user thường là mất quyền ghi vào đúng hai thư mục nó tồn tại để ghi
 - [x] **P2-7** Bỏ `|| pnpm install` ở `web.Dockerfile`. Nhánh dự phòng biến một lỗi ồn ào — lockfile lệch `package.json` — thành một lần build im lặng thành công với cây phụ thuộc do máy build tự đoán. `web-entrypoint.sh` đã đúng luật này từ trước; đây là chỗ sót
-- [ ] Bảng `ai_interaction` (token, chi phí, latency, `request_id`) — dựng **trước** khi có request LLM
+- [x] Bảng `ai_interaction` (token, chi phí, latency, `request_id`) — migration `015`, dựng **trước** request LLM đầu tiên đúng như §7d. `cached_tokens` tách riêng vì prompt caching tính giá khác và gộp vào thì không đo được nó có hiệu quả không. `cost_usd` là `Numeric(12,6)` chứ không phải float — tiền cộng dồn qua hàng trăm nghìn hàng thì sai số nhị phân tích lại thành con số không khớp hoá đơn. **Không có bảng `ai_usage`**: hạn mức đọc trong request nên thuộc về Redis, báo cáo thì suy ra từ sổ cái này
 
 ---
 
 ## 7. Sprint 7 — AI Layer
 
-**Chặn bởi:** ADR-003 chưa viết.
+**ADR-003 đã viết** (`planning/ADR-003-AI-LAYER.md`, 2026-08-12). Ba quyết định định hình sprint này:
+hai nhà cung cấp định tuyến theo chi phí · embedding mã nguồn mở chạy offline, **`vector(1024)`** ·
+**lát cắt mỏng không RAG trước**.
 
-- [ ] **ADR-003** — chọn LLM provider, phân tầng routing, ngân sách token/user (`REVIEW-OPUS.md` §7g, §7d)
-- [ ] Chốt embedding model → mới tạo được `knowledge_chunk`/`learning_memory` (chiều `vector(n)` là quyết định một chiều: đổi model = tính lại toàn bộ corpus)
-- [ ] Migration cho các bảng ở `ADR-001` Phần C
-- [ ] RAG: nguồn corpus, chunking, đánh giá retrieval
+Điều quan trọng nhất trong ADR đó là một sự thật đo được, không phải một lựa chọn: dự án có
+**17 câu hỏi có explanation**. Retrieval trên ngần đó không truy hồi được gì, và §7e đòi eval đi
+cùng tính năng — nên RAG bị chặn bởi **ngữ liệu**, không phải bởi kỹ thuật. Ngưỡng mở khoá được
+ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ngữ pháp riêng ≥200 mục.
+
+- [x] **ADR-003** — hai nhà cung cấp + định tuyến theo chi phí, ngân sách token, chính sách gửi dữ liệu
+- [x] Chốt embedding model → **`vector(1024)`** (`bge-m3` / `multilingual-e5-large`, chạy offline trong `app/content/` y như edge-tts). `knowledge_chunk`/`learning_memory` hết bị chặn
+- [ ] **Lát cắt mỏng — làm TRƯỚC:** Coach giải thích một câu học viên vừa làm sai, dùng ngữ cảnh có cấu trúc từ database. Mục tiêu không phải ship mà là xác nhận kiến trúc và **đo chi phí thật**
+- [ ] Bộ đếm ngân sách token trên Redis, **fail closed** (ngược với bộ giới hạn đăng nhập: ở đây Redis là thứ duy nhất đứng giữa một tài khoản và hoá đơn)
+- [ ] Eval harness — **cùng lúc** với endpoint Coach đầu tiên, không phải sau
+- [ ] Migration cho `knowledge_chunk`/`learning_memory` — hoãn tới khi làm RAG, vì chưa có gì ghi vào chúng
+- [ ] RAG: nguồn corpus, chunking, đánh giá retrieval — **chặn bởi ngữ liệu**, ngưỡng ở ADR-003 §3.3
 - [ ] Structured output cho study plan và kết quả chấm
 - [ ] AI Coach: giải thích ngữ pháp/từ vựng, phân tích điểm mạnh yếu
 - [ ] AI Study Planner

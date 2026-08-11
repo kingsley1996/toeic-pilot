@@ -1,3 +1,4 @@
+from app.models.ai import AI_INTERACTION_STATUSES, AiInteraction
 from app.models.audio import AudioAsset
 from app.models.dictation import (
     DictationAttempt,
@@ -35,6 +36,8 @@ from app.models.vocabulary import (
 # fixture alike. A model missing from this list produces "no such table" in tests
 # and an empty autogenerate diff in Alembic.
 __all__ = [
+    "AI_INTERACTION_STATUSES",
+    "AiInteraction",
     "Attempt",
     "AttemptItem",
     "AttemptPart",
