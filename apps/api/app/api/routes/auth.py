@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
+from app.core.rate_limit import Quota, rate_limit, rate_limit_anonymous
 from app.core.security import (
     PASSWORD_CLAIM,
     create_access_token,
@@ -39,7 +40,34 @@ def _user_public(db: Session, user: User) -> UserPublic:
     )
 
 
-@router.post("/register", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
+# Hạn mức RỘNG, và con số này được chọn bằng cách hỏi "ai bị chặn oan" trước khi
+# hỏi "ai bị chặn đúng".
+#
+# Khoá theo IP, mà ở Việt Nam mạng di động chạy CGNAT: hàng nghìn thuê bao dùng
+# chung một địa chỉ công cộng. Quán net, trường học, văn phòng cũng vậy. Đặt
+# chặt thì thứ hỏng trước tiên không phải máy dò mật khẩu mà là một lớp học đăng
+# ký cùng lúc — và người dùng thật bị chặn thì không ai báo lại, họ chỉ bỏ đi.
+#
+# Nên hãy thành thật về việc bộ này làm được gì: nó cắt một vòng dò từ điển từ
+# hàng nghìn lần/phút xuống 6 lần/phút, và nó chặn script ngây thơ. Nó KHÔNG
+# chặn được botnet xoay IP. Chống dò mật khẩu thật sự cần đếm theo tài khoản,
+# mà đếm theo tài khoản lại mở đường khoá tài khoản người khác — xem
+# `rate_limit_anonymous`. Đây là chỗ đã cân nhắc, không phải chỗ bỏ sót.
+LOGIN_QUOTA = Quota(limit=60, window_seconds=60 * 10)
+# Tạo tài khoản hàng loạt là cách rẻ nhất bơm rác vào database, nhưng vẫn phải
+# đủ chỗ cho một lớp học đăng ký cùng lúc từ một đường mạng.
+REGISTER_QUOTA = Quota(limit=20, window_seconds=60 * 10)
+# Đổi mật khẩu ĐÃ đăng nhập, nhưng vẫn cần giới hạn: nó xác minh mật khẩu hiện
+# tại, nên nó cũng là một cửa dò — chỉ khác là kẻ dò phải có token hợp lệ trước.
+PASSWORD_QUOTA = Quota(limit=10, window_seconds=60 * 10)
+
+
+@router.post(
+    "/register",
+    response_model=UserPublic,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(rate_limit_anonymous("register", REGISTER_QUOTA))],
+)
 def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
     existing = db.query(User).filter(User.email == body.email.lower()).first()
     if existing:
@@ -71,7 +99,11 @@ def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
     return _user_public(db, user)
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+    dependencies=[Depends(rate_limit_anonymous("login", LOGIN_QUOTA))],
+)
 def login(body: UserLogin, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(User).filter(User.email == body.email.lower()).first()
     if user is None or not verify_password(body.password, user.hashed_password):
@@ -93,7 +125,11 @@ def me(
     return _user_public(db, current_user)
 
 
-@router.post("/password", response_model=TokenResponse)
+@router.post(
+    "/password",
+    response_model=TokenResponse,
+    dependencies=[Depends(rate_limit("password", PASSWORD_QUOTA))],
+)
 def change_password(
     body: PasswordChange,
     db: Session = Depends(get_db),

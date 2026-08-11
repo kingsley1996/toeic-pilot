@@ -195,3 +195,66 @@ def test_registration_cannot_choose_a_role(client: TestClient, db_session: Sessi
     )
     assert response.status_code == 201
     assert response.json()["role"] == "learner"
+
+
+# --- P1-8: giới hạn tần suất cho cửa đăng nhập ----------------------------
+
+
+def test_client_ip_reads_the_last_forwarded_hop_not_the_first() -> None:
+    """Phần tử CUỐI của `X-Forwarded-For`, không phải phần tử đầu.
+
+    Client tự thêm được bao nhiêu mục tuỳ thích vào đầu chuỗi. Đọc mục đầu —
+    cách hầu hết ví dụ trên mạng viết — nghĩa là kẻ tấn công tự đặt khoá giới
+    hạn của mình và mỗi request lại là một khoá mới. Giới hạn khi đó trông như
+    đang bảo vệ mà không chặn được gì.
+    """
+    from app.core.config import settings
+    from app.core.rate_limit import client_ip
+
+    request = _request_with(headers={"x-forwarded-for": "9.9.9.9, 10.0.0.1, 203.0.113.7"})
+    original = settings.trust_forwarded_for
+    try:
+        settings.trust_forwarded_for = True
+        assert client_ip(request) == "203.0.113.7"
+    finally:
+        settings.trust_forwarded_for = original
+
+
+def test_forwarded_header_is_ignored_unless_a_proxy_is_declared() -> None:
+    """Mặc định TẮT, và mặc định đó là phần bảo mật.
+
+    Không có proxy nào đứng trước mà vẫn tin header thì bất kỳ ai cũng tự khai
+    IP của mình — tức là tự cấp cho mình hạn mức không giới hạn.
+    """
+    from app.core.config import settings
+    from app.core.rate_limit import client_ip
+
+    request = _request_with(headers={"x-forwarded-for": "9.9.9.9"})
+    assert settings.trust_forwarded_for is False
+    assert client_ip(request) == "198.51.100.4"
+
+
+def _request_with(headers: dict[str, str]):  # type: ignore[no-untyped-def]
+    from starlette.requests import Request
+
+    raw = [(k.encode(), v.encode()) for k, v in headers.items()]
+    return Request({"type": "http", "headers": raw, "client": ("198.51.100.4", 1234)})
+
+
+def test_login_stops_answering_after_too_many_attempts(client: TestClient) -> None:
+    """Đoán mật khẩu phải có trần.
+
+    Trước đây `/login` không có giới hạn nào: bộ `rate_limit` cũ khoá theo
+    `user.id`, mà `/login` tồn tại chính vì chưa có người dùng nào để khoá.
+    """
+    from app.api.routes.auth import LOGIN_QUOTA
+
+    body = {"email": "khong-ton-tai@example.com", "password": "sai-mat-khau-123"}
+    for _ in range(LOGIN_QUOTA.limit):
+        assert client.post("/api/v1/auth/login", json=body).status_code == 401
+
+    refused = client.post("/api/v1/auth/login", json=body)
+    assert refused.status_code == 429
+    # `Retry-After` là phần khiến 429 dùng được: không có nó, client chỉ biết
+    # "bị chặn" mà không biết chờ bao lâu, và cách xử lý phổ biến nhất là thử lại ngay.
+    assert refused.headers.get("Retry-After")

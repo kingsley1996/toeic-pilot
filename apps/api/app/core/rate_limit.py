@@ -11,15 +11,19 @@ và sai số tệ nhất của nó — gấp đôi hạn mức quanh ranh giới
 để đánh đổi ở đây. Chúng ta đang chặn lạm dụng, không đang tính cước.
 """
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 
 import redis
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 
 from app.api.deps import get_current_user
+from app.core.config import settings
 from app.core.redis_client import get_redis
 from app.models.user import User
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -54,6 +58,70 @@ def check(client: redis.Redis, key: str, quota: Quota) -> None:
     if used > quota.limit:
         ttl = int(client.ttl(key))
         raise RateLimitExceeded(retry_after=max(ttl, 1))
+
+
+def client_ip(request: Request) -> str:
+    """IP của client, dùng làm khoá cho endpoint chưa đăng nhập.
+
+    `request.client.host` là **hop gần nhất**. Sau một reverse proxy đó là IP
+    của proxy, nên mọi người dùng sẽ chung một khoá và giới hạn biến thành giới
+    hạn toàn hệ thống.
+
+    Lấy phần tử **cuối cùng** của `X-Forwarded-For`, không phải phần tử đầu.
+    Client tự thêm được bao nhiêu mục tuỳ thích vào đầu chuỗi; mục cuối là thứ
+    proxy của chính ta ghi vào, và đó là địa chỉ duy nhất trong chuỗi mà client
+    không giả được. Đọc mục đầu — cách mọi ví dụ trên mạng viết — là để lộ
+    nguyên cái khoá cho kẻ tấn công tự đặt.
+    """
+    if settings.trust_forwarded_for:
+        forwarded = request.headers.get("x-forwarded-for", "")
+        hops = [hop.strip() for hop in forwarded.split(",") if hop.strip()]
+        if hops:
+            return hops[-1]
+    return request.client.host if request.client else "unknown"
+
+
+def rate_limit_anonymous(bucket: str, quota: Quota) -> Callable[[Request, redis.Redis], None]:
+    """Giới hạn theo IP cho endpoint KHÔNG yêu cầu đăng nhập.
+
+    `rate_limit` khoá theo `user.id` và vì thế không dùng được ở đây: `/login`
+    tồn tại chính là để chưa có người dùng nào. Không có bộ này thì số lần đoán
+    mật khẩu là vô hạn, và đó là lỗ P1-8 thật sự — phần upload đã được che từ
+    trước.
+
+    Khoá theo IP có cái giá đã ghi ở `rate_limit`: một văn phòng dùng chung một
+    IP sẽ dùng chung hạn mức. Nên hạn mức ở đây phải rộng rãi — đủ cho vài người
+    gõ nhầm mật khẩu, chật với một máy dò.
+
+    **KHÔNG khoá thêm theo email.** Nó chặn được kẻ tấn công phân tán qua nhiều
+    IP, nhưng mở ra một đường khoá tài khoản người khác: đốt hạn mức của một
+    email là chủ nhân của nó không đăng nhập được. Đổi một lỗ khó khai thác lấy
+    một lỗ dễ khai thác thì không đáng.
+
+    **`fail_open=True`**, ngược với `rate_limit`. Ở đó Redis là thứ duy nhất
+    đứng giữa một tài khoản và hoá đơn, nên chặn khi hỏng là đúng. Ở đây chặn
+    khi hỏng nghĩa là **không ai đăng nhập được** — một phụ thuộc mềm kéo sập
+    toàn bộ sản phẩm. Redis chết thì mở cửa sổ dò mật khẩu trong lúc đó, và đó
+    là cái giá nhỏ hơn.
+    """
+
+    def dependency(
+        request: Request,
+        client: redis.Redis = Depends(get_redis),
+    ) -> None:
+        key = f"ratelimit:{bucket}:{client_ip(request)}"
+        try:
+            check(client, key, quota)
+        except RateLimitExceeded as exceeded:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Quá nhiều lần thử. Thử lại sau ít phút.",
+                headers={"Retry-After": str(exceeded.retry_after)},
+            ) from None
+        except redis.RedisError:
+            logger.warning("rate_limit_unavailable", extra={"bucket": bucket})
+
+    return dependency
 
 
 def rate_limit(bucket: str, quota: Quota, fail_open: bool = False) -> Callable[..., None]:

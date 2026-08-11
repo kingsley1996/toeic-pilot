@@ -102,20 +102,20 @@ Nguồn là PDF **có lớp text** ⇒ dán thẳng, không cần OCR.
 - [x] CRUD cho `vocabulary_entry`, `dictation_item`, `topic` · [ ] `question*` (→ Sprint 5)
 - [x] `POST /admin/{vocabulary,dictation}/{id}/publish` — chỉ `admin`, **chặn khi audio thiếu/lệch**
 - [x] `uv run python -m app.content.backfill_audio` — worker ngoài luồng, hàng đợi là một câu truy vấn
-- [ ] Parser: `Questions X-Y refer to the following …` mở `question_set`; `NNN.` mở câu; `(A)`–`(D)` là phương án
+- [x] ~~Parser~~ **đã làm khác thiết kế ban đầu**: mốc là `[PASSAGE]`/`[QUESTION]`/`[SCRIPT]` do người soạn gõ, không phải dò câu tiếng Anh trong PDF (ADR-007 §2.2). Parser: `Questions X-Y refer to the following …` mở `question_set`; `NNN.` mở câu; `(A)`–`(D)` là phương án
 
 ### Frontend `/admin`
 - [x] Màn dán **từ vựng và dictation** — ô text dán hàng loạt, chọn topic, xem trước rồi mới lưu (`/admin/vocabulary`, `/admin/dictation`)
-- [ ] Màn dán **câu hỏi**: chọn part, ô text đề, ô text đáp án riêng
-- [ ] **Cảnh báo Part 1 và 2 phải dán từ phần audioscript** — phần đề của hai part này trong PDF gần như trống, ai không biết sẽ tưởng parser hỏng
+- [x] Màn dán **câu hỏi**: chọn part, ô text đề, ô text đáp án riêng
+- [x] **Cảnh báo Part 1 và 2 phải dán từ phần audioscript** — phần đề của hai part này trong PDF gần như trống, ai không biết sẽ tưởng parser hỏng
 - [x] Lưới review: lỗi hiện ngay tại dòng
-- [ ] Editor từng câu **có xem trước** — bắt buộc cho Part 1: không nhìn thấy ảnh thì không viết được bốn câu mô tả
+- [x] Editor từng câu **có xem trước** — bắt buộc cho Part 1: không nhìn thấy ảnh thì không viết được bốn câu mô tả
 - [x] Bảng nội dung có badge audio (`missing`/`stale`/`current`) + nút publish
-- [ ] Trường `source` **không được pre-select** — đây là cột duy nhất mà giá trị sai gây hậu quả pháp lý
+- [x] Trường `source` **không được pre-select** — đây là cột duy nhất mà giá trị sai gây hậu quả pháp lý
 
 ### Test
 - [x] Parser từ vựng + dictation: dòng đúng, dòng thiếu cột, dòng rỗng (`tests/test_services.py`)
-- [ ] Parser câu hỏi: đề đúng chuẩn, đề thiếu đáp án, đánh số nhảy cóc, stimulus thiếu
+- [x] Parser câu hỏi: đề đúng chuẩn, đề thiếu đáp án, đánh số nhảy cóc, stimulus thiếu
 - [x] Mỗi endpoint admin: `learner` nhận **403**
 - [x] `editor` không publish được — publish là `require_role("admin")`
 - [x] Commit luôn cho ra `status='draft'`
@@ -160,9 +160,9 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] **Sửa một lỗi accessibility có thật** — viền ô nhập cũ chỉ đạt 1.48 tương phản (WCAG 1.4.11 đòi 3.0), tức gần như vô hình với người thị lực kém. Token `rule-strong` mới đạt 3.09–3.64
 
 ### Nội dung — **việc duy nhất còn lại của sprint này**
-- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **43** trên **1** chủ đề (Business, 2026-08-10)
+- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **43** trên **2** chủ đề (2026-08-11)
 - [x] Sinh audio 4 accent × {headword, example} cho toàn bộ số từ đang có — **387 clip**, 0 lỗi
-- [ ] Soạn ≥ 50 câu dictation — hiện có **4**
+- [ ] Soạn ≥ 50 câu dictation — hiện có **15** (2026-08-11)
 
 Công cụ để làm việc này đã xong và đã chạy thật: dán ở `/admin`, `backfill_audio` sinh audio ngoài luồng, publish chặn nếu audio chưa khớp. Không còn code nào chặn phần này.
 
@@ -311,9 +311,9 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 - [x] **Driver `s3` (audio)** — một driver cho Supabase / B2 / R2 / DO Spaces / MinIO; nhà cung cấp là `S3_ENDPOINT_URL`, không phải một nhánh `if` trong code (ADR-006 §2.8). Địa chỉ **kiểu đường dẫn** + SigV4, có test ghim: mặc định virtual-host của boto3 hỏng ở Supabase và hiện ra dưới dạng lỗi DNS
 - [x] `app/content/push_media.py` — đẩy media sinh sẵn lên object store, chạy lại là no-op, `Cache-Control: immutable`. Audio sinh offline là bài toán **triển khai**, không phải bài toán upload (§2.8a)
 - [x] `verify()` **xoá** object quá cỡ thay vì chỉ từ chối — presigned PUT không ghim được dung lượng (§2.8b)
-- [ ] Chạy thật một vòng lên Supabase (chờ credential) — Cloudinary đã chạy thật rồi, đường S3 thì chưa
+- [x] Chạy thật một vòng lên Supabase — Cloudinary đã chạy thật rồi, đường S3 thì chưa
 - [ ] Cron ping giữ project Supabase khỏi tự ngủ sau 7 ngày (§2.8 — kiểu hỏng là *chỉ audio 404*)
-- [ ] Lệnh đối chiếu file mồ côi (§10.4 giờ tốn tiền hàng tháng)
+- [x] Lệnh đối chiếu file mồ côi — `app/content/reconcile_media.py` (§10.4 giờ tốn tiền hàng tháng)
 
 ---
 
@@ -423,7 +423,6 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] **Lọc `question_set.status` phía người học.** `POST /attempts` chỉ lọc câu, nên câu đã xuất bản dưới cụm nháp mang cả ngữ liệu lẫn bản thu của cụm ra ngoài. Dùng `outerjoin` — `set_id` là NULL ở Part 1, 2, 5 nên `join` thường sẽ loại sạch ba part đó khỏi mọi lượt làm bài, hỏng nặng hơn lỗ nó vá. `tests/test_attempts.py` khoá cả hai chiều (file này trước đó **không tồn tại** — API lượt làm bài chưa có test nào)
 - [x] **`app/content/reconcile_media.py`** — tìm asset không còn ai trỏ tới. Chỉ báo cáo; `--delete-rows` xoá hàng database, **không** đụng object trên nhà cung cấp. Chạy thật trên dev DB: 39 bản thu + 1 ảnh mồ côi từ các đề probe đã xoá và một lần tải ảnh hỏng
 - [ ] Xoá object trên nhà cung cấp — cần liệt kê bucket (S3 làm được, Cloudinary phải qua Admin API riêng), và là thao tác không hoàn tác nên chưa tự động hoá
-- [ ] Ping giữ Supabase khỏi ngủ (Sprint 4d)
 
 ### Xoá / lưu trữ nội dung đề · 🟢 xong 2026-08-11
 - [x] Ba cấp, ba luật khác nhau vì ràng buộc khoá ngoại khác nhau. **Bộ đề là cấp nguy hiểm nhất**: `collection_id` là SET NULL nên xoá không lỗi, không mất dữ liệu, chỉ lặng lẽ cắt đường người học tới từng đề bên trong — chặn khi bộ còn đề. Đề và câu thì database chặn thật (RESTRICT), nên kiểm trước rồi trả 409 chỉ sang `archived`
@@ -445,7 +444,7 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] `docker/worker.Dockerfile` — ảnh RIÊNG có ffmpeg 7.1.5 + extra `content`. Không gộp với ảnh API, để ranh giới A4.1 có hình dạng vật lý thay vì chỉ là quy ước
 - [x] Nút "Sinh audio còn thiếu" trong màn soạn đề
 - [x] **Đã chạy thật**: dán cụm Part 3 ba lượt nói → bấm chuông → worker thức dậy trong 0s → một clip 15,3s ba giọng → `audio_may_be_stale=False`. Hai cụm có bản thu tải lên: worker không đụng vào
-- [ ] **Chưa lọc `question_set.status` ở phía người học.** `POST /attempts` lọc `Question.status == published` nhưng không lọc trạng thái của cụm, nên một câu đã xuất bản dưới cụm nháp sẽ mang cả ngữ liệu lẫn bản thu của cụm đó ra ngoài. Hôm nay **không với tới được qua API** — `publish_question` kéo cụm lên cùng, `edit_set` hạ cả hai xuống cùng — nhưng đó đúng là cách lỗ rò của cây dictation bắt đầu, và không có gì báo khi nó mở ra
+- [x] ~~Chưa lọc `question_set.status`~~ **đã vá 2026-08-11**, xem mục *Đóng lỗ đã biết*. Nguyên văn: `POST /attempts` lọc `Question.status == published` nhưng không lọc trạng thái của cụm, nên một câu đã xuất bản dưới cụm nháp sẽ mang cả ngữ liệu lẫn bản thu của cụm đó ra ngoài. Hôm nay **không với tới được qua API** — `publish_question` kéo cụm lên cùng, `edit_set` hạ cả hai xuống cùng — nhưng đó đúng là cách lỗ rò của cây dictation bắt đầu, và không có gì báo khi nó mở ra
 
 ### Backend
 - [ ] `GET /api/v1/practice/parts/{part}` — bốc câu hỏi, tôn trọng `question_set` với part 3, 4, 6, 7
@@ -464,9 +463,9 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] **Ghi công ảnh hiện ra dưới ảnh** (`ADR-004` §4.2) — `QuestionPublic` trả kèm `image_attribution`/`image_license`. Lưu mà không hiện vẫn là vi phạm CC-BY, và trước hôm nay schema thậm chí không gửi hai trường đó xuống
 - [x] Chặn chiều cao ảnh: ảnh dọc đẩy trình phát audio xuống dưới màn hình, ở một phần thi tính bằng giây
 - [x] Part 1 hiển thị ảnh + **ghi công** (`ADR-004` §4.2 — lưu attribution mà không hiện ra vẫn là vi phạm CC-BY)
-- [ ] Part 2 chỉ hiện A/B/C, không hiện chữ
-- [ ] Part 3, 4, 6, 7 hiện kích thích dùng chung cho cả nhóm câu
-- [ ] Trang kết quả: điểm từng section, điểm tổng, giải thích từng câu
+- [x] Part 2 chỉ hiện A/B/C, không hiện chữ
+- [x] Part 3, 4, 6, 7 hiện kích thích dùng chung cho cả nhóm câu
+- [x] Trang kết quả: điểm từng section, điểm tổng, giải thích từng câu
 
 ### Nội dung
 - [ ] ≥ 1 đề đầy đủ 200 câu, hoặc ≥ 40 câu mỗi part cho chế độ luyện tập
@@ -482,9 +481,14 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 **Phải xong trước Sprint 7.** Đây không phải sprint "dọn dẹp": nó chứa các điều kiện tiên quyết cứng của AI layer.
 
-- [ ] **P1-8 Rate limiting** — bắt buộc trước endpoint LLM đầu tiên
+- [x] **P1-8 Rate limiting** — `/login`, `/register`, `/password`. Bộ cũ khoá theo `user.id` nên không che được `/login`: endpoint đó tồn tại vì chưa có người dùng nào. Thêm `rate_limit_anonymous` khoá theo IP
+- [x] `client_ip` đọc hop **cuối** của `X-Forwarded-For`, và `trust_forwarded_for` mặc định **tắt** — tin header khi không có proxy nghĩa là ai cũng tự khai khoá của mình
+- [x] Hạn mức nới rộng sau khi e2e phơi ra vấn đề thật: 5 lượt đăng ký/10 phút chặn một lớp học đăng ký cùng lúc trước khi chặn được máy dò (CGNAT). Nay 20 đăng ký, 60 đăng nhập
+- [ ] Đếm theo **tài khoản** cho `/login` — chặn được botnet xoay IP, nhưng mở đường khoá tài khoản người khác. Chưa làm, có chủ ý
 - [ ] **P1-7** Token sang httpOnly cookie + refresh token + denylist trên Redis (Redis hiện chưa dùng vào việc gì)
-- [ ] **P1-3** Test frontend + Playwright e2e cho luồng auth và một luồng học
+- [x] **P1-3** Playwright e2e — 4 spec: đăng ký→khu học, đăng nhập sai, một vòng làm bài (mở đề→trả lời→nộp→kết quả→xem lại + bộ lọc), và lượt đang dở hiện ở `/learn` lẫn `/learn/attempts`. Chạy trên ngăn xếp docker thật, có job CI riêng
+- [x] Mỗi spec đã được kiểm **đỏ** trước khi tin: tái hiện lỗi `Page[T]` làm test lượt-đang-dở đỏ, khôi phục thì xanh
+- [ ] Test component/unit cho frontend — chưa làm, và có chủ ý: bốn lỗi giao diện của sprint này đều ở CHỖ NỐI, không lỗi nào nằm trong một component đơn lẻ
 - [ ] **Bật branch protection** — treo từ Sprint 0, cần quyền admin repo. 13 gate không bắt buộc thì chỉ là gợi ý
 - [ ] P2-6 Dockerfile production: multi-stage, non-root, bỏ `gcc`/`libpq-dev` thừa
 - [ ] P2-7 Bỏ fallback `pnpm install --frozen-lockfile || pnpm install`

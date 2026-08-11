@@ -45,3 +45,7 @@ apps/api/media/
 
 # Logs
 *.log
+
+# Playwright
+apps/web/test-results/
+apps/web/playwright-report/

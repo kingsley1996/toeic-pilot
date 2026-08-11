@@ -30,6 +30,16 @@ class Settings(BaseSettings):
     api_port: int = 8000
     database_url: str = "postgresql+psycopg://toeic:toeic@localhost:5432/toeic"
     redis_url: str = "redis://localhost:6379/0"
+
+    # Có tin `X-Forwarded-For` để lấy IP client hay không.
+    #
+    # Mặc định TẮT, và mặc định đó là phần bảo mật chứ không phải sự thận trọng
+    # thừa: header này do client gửi. Tin nó khi KHÔNG có proxy nào đứng trước
+    # nghĩa là bất kỳ ai cũng tự khai IP của mình, và giới hạn tần suất theo IP
+    # trở thành thứ trông như đang bảo vệ mà không chặn được gì.
+    #
+    # Bật nó lên khi và chỉ khi có reverse proxy của chính bạn đứng trước API.
+    trust_forwarded_for: bool = False
     secret_key: str = DEFAULT_SECRET_KEY
     access_token_expire_minutes: int = 60 * 24 * 7
     algorithm: str = "HS256"

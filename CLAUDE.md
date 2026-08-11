@@ -124,6 +124,8 @@ pnpm build                                 # shared builds before web
 pnpm --filter @toeic-pilot/web lint
 pnpm format / pnpm format:check            # prettier; markdown is excluded on purpose
 pnpm gen:api-types                         # regenerate the shared contract — see below
+pnpm --filter @toeic-pilot/web test:e2e    # Playwright — needs the docker stack up
+pnpm --filter @toeic-pilot/web test:e2e:ui # same, with the inspector
 ```
 
 ### Full stack
@@ -305,6 +307,20 @@ Two habits fall out of it. A destructive action should prove success from someth
 **Nothing reachable from `app/main.py` may import `app.content`.** The production image is built `--no-dev` without the `content` extra, so a leak breaks container startup rather than the build. `tests/test_content_isolation.py` catches it in a subprocess in under a second; the `docker` CI job catches it the slow way. Shared code belongs in `app/core/`.
 
 **Monorepo wiring.** pnpm workspaces + Turborepo for JS/TS. `apps/api` is a separate `uv` project outside the turbo graph, so cross-cutting scripts (`scripts/generate-api-types.sh`) drive both toolchains.
+
+**Auth endpoints are rate limited by IP, and the quotas are sized around who gets blocked *wrongly*.** The pre-existing `rate_limit` keys on `user.id`, which cannot cover `/login` — that endpoint exists precisely because there is no user yet — so `rate_limit_anonymous` keys on the client address. Vietnamese mobile networks run CGNAT and thousands of subscribers share one public address, as do schools and internet cafés; a tight limit blocks a class signing up together long before it blocks an attacker, and blocked real users never file a report, they just leave. Be honest about the ceiling: this cuts a dictionary attack from thousands a minute to six and stops naive scripts, but a botnet rotating addresses walks straight through. Real brute-force defence needs per-account counting, which opens an account-lockout vector instead — that trade is written up in the docstring, not overlooked.
+
+Two details are load-bearing. `client_ip` reads the **last** `X-Forwarded-For` hop, not the first: a client can prepend as many entries as it likes, and the final one is what your own proxy wrote. And `trust_forwarded_for` defaults to **off** — trusting the header with no proxy in front lets every caller declare its own key, which is worse than no limit because it looks protected. Unlike the upload limiter, the auth one **fails open** when Redis is down: there, Redis is all that stands between an account and your bill, so failing closed is right; here, failing closed means nobody can sign in at all — a soft dependency taking down the product.
+
+## End-to-end tests
+
+`apps/web/e2e/` runs Playwright **against the running docker stack** — it does not start its own server. Playwright's `webServer` can only bring up `next dev`, while a learning flow also needs the API, Postgres and Redis; standing up half the stack is the fastest way to a red suite that says nothing about the code. `docker compose up` first, then `pnpm --filter @toeic-pilot/web test:e2e`.
+
+**E2E rather than component tests, deliberately.** Every frontend bug this project has produced lived at a *seam*, and none of them would fail a render test: a delete button whose handler silently never ran, attached media rendering as "chưa có" because a lookup map was never passed, six endpoints changing shape while `tsc` stayed green, `""` where the database required NULL. Backend tests were green through all of it.
+
+The specs cover the two flows the ROADMAP asks for — register→learn, and open a test→answer→submit→results→review — plus the unfinished-attempt surfaces. Each test registers its own account with a timestamped email, because `users.email` is UNIQUE and a shared fixture account makes the second run fail for a reason that has nothing to do with the code. The exam flow uses the seeded demo test rather than building content: creating one needs an admin, and `register` deliberately cannot grant a role, so seeding an admin inside the test would be more scaffolding than the thing under test.
+
+**A green e2e proves nothing until you have seen it go red.** Each spec here was checked by reintroducing the bug it exists to catch — the `Page[T]` envelope regression turns the unfinished-attempt test red, and restoring the fix turns it green.
 
 ## Testing conventions
 
