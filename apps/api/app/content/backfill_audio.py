@@ -364,7 +364,10 @@ def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
     # manifest chưa được ghi và toàn bộ phần đã tổng hợp trước đó mất trắng.
     # Chỉ đòi khi thật sự có clip nhiều lượt — lời thoại một lượt không đi qua
     # ffmpeg (xem `get_or_create_conversation`).
-    if not factory.dry_run and any(len(owner.audio_script or []) > 1 for owner, _ in owners):
+    # Cùng lý do như `generate`: chỉ đòi ffmpeg khi bộ ghép THẬT sẽ chạy. Test
+    # tiêm `joiner` riêng chính là để không cần ffmpeg.
+    needs_ffmpeg = any(len(owner.audio_script or []) > 1 for owner, _ in owners)
+    if not factory.dry_run and factory.joiner is join_turns and needs_ffmpeg:
         require_ffmpeg()
 
     done = 0

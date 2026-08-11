@@ -142,6 +142,14 @@ jobs:
       - name: Migrations
         working-directory: apps/api
         run: uv run alembic upgrade head
+      - name: Seed thang điểm
+        # PHẢI chạy trước `seed_demo_test`. `practice_test.score_scale_slug` mặc
+        # định là `'default'` với một khoá ngoại NOT NULL trỏ vào `score_scale`,
+        # nên trên một database trắng việc tạo đề đổ ngay bằng ForeignKeyViolation.
+        # Lỗi này không hiện ở máy dev vì thang điểm đã được seed từ lâu ở đó —
+        # đúng loại lỗi chỉ CI mới thấy.
+        working-directory: apps/api
+        run: uv run python -m app.content.seed_scores
       - name: Seed đề demo
         # E2E cần MỘT đề đã xuất bản để có gì mà làm. Seed chứ không tạo qua API
         # admin: tài khoản admin không đăng ký được (`register` cố ý không cho

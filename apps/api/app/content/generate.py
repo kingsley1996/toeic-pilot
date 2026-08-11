@@ -214,7 +214,12 @@ def generate(
     # nó bật ra ở đoạn hội thoại thứ tư mươi thì manifest chưa được ghi và toàn
     # bộ phần đã tổng hợp trước đó mất trắng — `write_manifest` chỉ chạy ở cuối.
     items = list(read_spec(spec_path))
-    if not dry_run and any(isinstance(item, ConversationItem) for item in items):
+    # `joiner is join_turns` — chốt này bảo vệ ĐƯỜNG FFMPEG THẬT, nên khi bên gọi
+    # đã tiêm một bộ ghép khác thì không có gì để bảo vệ. Thiếu điều kiện đó,
+    # chốt vô hiệu hoá luôn chính cái seam sinh ra để test chạy được ở máy không
+    # có ffmpeg — và nó hỏng đúng ở CI, nơi không ai cài ffmpeg, trong khi máy
+    # dev có sẵn nên vẫn xanh.
+    if not dry_run and joiner is join_turns and any(isinstance(i, ConversationItem) for i in items):
         require_ffmpeg()
 
     for item in items:

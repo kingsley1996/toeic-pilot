@@ -23,9 +23,11 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base, get_db
+from app.core.redis_client import get_redis
 from app.core.security import get_password_hash as real_get_password_hash
 from app.main import app
 from app.models import User  # noqa: F401 — registers the table
+from tests.conftest import FakeRedis
 
 POSTGRES_URL = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://toeic:toeic@localhost:5432/toeic"
@@ -62,6 +64,19 @@ def pg_client(pg_engine):
             session.close()
 
     app.dependency_overrides[get_db] = override_get_db
+    # Ghi đè cả Redis, không chỉ database.
+    #
+    # `/register` có giới hạn tần suất theo IP (P1-8), và `TestClient` luôn gửi
+    # cùng một địa chỉ — nên dùng Redis THẬT ở đây biến bộ đếm thành trạng thái
+    # dùng chung giữa các test và giữa các lần chạy. Ba test này đã đỏ đúng như
+    # thế: cả 12 request trả 429 vì bộ đếm còn nguyên từ lần chạy trước, và lỗi
+    # chỉ hiện ở CI nơi có Redis thật, không hiện ở lệnh `-m "not integration"`
+    # vẫn chạy hằng ngày.
+    #
+    # Thứ đang được kiểm ở đây là cuộc đua trên chỉ mục duy nhất, không phải
+    # giới hạn tần suất. Cho nó một bộ đếm sạch mỗi test là trả lại cho test
+    # đúng phạm vi của nó.
+    app.dependency_overrides[get_redis] = lambda: FakeRedis()
     try:
         yield
     finally:
