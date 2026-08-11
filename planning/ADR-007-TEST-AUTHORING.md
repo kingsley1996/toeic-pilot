@@ -1,6 +1,6 @@
 # ADR-007 — Đường đưa một đề thi vào hệ thống
 
-> **Trạng thái:** đã quyết 2026-08-10, sửa thứ tự §2.7 cùng ngày (xem §2.7) · **Thay thế:** không · **Liên quan:** [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) §A2/§B4, [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md), [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md), [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) §A4, [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.2
+> **Trạng thái:** đã quyết 2026-08-10, sửa thứ tự §2.7 cùng ngày, sửa cách phát hiện lệch 2026-08-11 (xem §2.7) · **Thay thế:** không · **Liên quan:** [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) §A2/§B4, [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md), [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md), [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) §A4, [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.2
 
 ---
 
@@ -152,9 +152,24 @@ Hai thứ khoanh vùng được nó, và cả hai đều rẻ:
 - Màn quản trị hiện **ngày tải lên** cạnh ngày sửa câu hỏi lần cuối. Sửa sau khi tải là thứ nhìn ra được.
 - Sửa `prompt_text` hoặc kịch bản của một câu đã có audio tải lên thì **cảnh báo**, không chặn.
 
+> **Sửa 2026-08-11 — cảnh báo dựa trên vân tay, không dựa trên cặp mốc thời gian.**
+>
+> Gạch đầu dòng thứ nhất ở trên mô tả cách làm đầu tiên: so `audio_attached_at` với `updated_at`. Nó **không dùng được**, vì hai lý do rời nhau, và cả hai chỉ lộ ra khi thử thật:
+>
+> - **Hai chiếc đồng hồ.** `audio_attached_at` do Python ghi, `updated_at` do database ghi qua `func.now()`. Phép so phụ thuộc hai đồng hồ khớp nhau; lệch theo chiều xấu là *mọi thứ* báo lệch ngay khi vừa gắn.
+> - **Độ phân giải.** `CURRENT_TIMESTAMP` của SQLite chỉ có một giây. Sửa trong cùng giây với lúc gắn thì im lặng. (Cùng hình dạng với vấn đề `iat` của claim `pwc`.)
+>
+> Thay bằng `question.audio_script_hash` / `question_set.audio_script_hash`: **vân tay của lời thoại tại lúc gắn** (`script_fingerprint` ở `app/core/media.py`), so với vân tay hiện tại. Không cần đồng hồ nào, và **chính xác hơn** — nó chỉ kêu khi thứ bản thu ứng với thật sự đổi, nên sửa một dấu phẩy trong phần giải thích không còn báo lệch oan. Cảnh báo oan là cách nhanh nhất dạy người ta bấm bỏ qua mọi cảnh báo.
+>
+> Nó cũng tự tắt: sửa lời thoại về đúng như cũ thì cảnh báo biến mất, vì bản thu lại khớp thật. Cặp mốc thời gian không bao giờ làm được điều đó.
+>
+> **Và lời thoại phải sửa được thì cảnh báo mới có nghĩa.** `PATCH /admin/question-sets/{id}` tồn tại vì thế. Trước nó, Part 3/4 không có đường nào đổi lời thoại — sai một chữ thì phải xoá cả cụm rồi dán lại — nên cảnh báo đúng luật mà không bao giờ có gì kích hoạt. Sửa lời thoại hạ **cả cụm lẫn các câu của nó** về nháp: cổng xuất bản soát từng câu, nên hạ mỗi cụm sẽ để các câu ở lại trong đề đã phát hành, nghe bản thu ứng với lời thoại cũ.
+
 #### 2.7b Sinh tự động (TTS) — mảnh riêng, làm sau
 
-Khi làm tới, hình dạng là thế này:
+> **Đã làm 2026-08-11.** Hình dạng dưới đây giữ nguyên, không phải sửa gì. Ba điều chỉ lộ ra khi dựng thật, ghi lại ở cuối mục.
+
+Hình dạng là thế này:
 
 API **không thể** sinh audio — `app/main.py` không được import `app.content` (A4.1), ảnh production không có extra `content`, edge-tts cần mạng, ffmpeg cần cài. Đây là ràng buộc, không phải thiếu sót.
 
@@ -173,6 +188,12 @@ Redis/worker chết → vòng quét định kỳ vẫn bắt được, chỉ mu�
 Redis ở đây là phụ thuộc **mềm**, giống mọi chỗ khác trong dự án (`/ready` báo `degraded` chứ không fail). Nút hỏng thì nội dung vẫn được sinh, chỉ chậm hơn.
 
 **Cái giá thật:** một tiến trình chạy dài mới, có ffmpeg và mạng — hạ tầng mới, không phải code mới. Vì §2.7 đã đảo thứ tự, cái giá này **không còn nằm trên đường tới một đề chạy được**; nó chỉ phải trả khi thật sự muốn TTS.
+
+**Ba thứ chỉ lộ ra khi dựng thật:**
+
+- **`AudioState` thiếu một trạng thái, và thiếu nó là một lỗi có thật cho cả vocabulary lẫn dictation.** Phép kiểm cũ là `is not CURRENT`. Một clip *tải lên* có `source_hash` băm id ngẫu nhiên nên không đời nào khớp text — nó rơi thẳng vào nhánh sinh lại, và giọng người bị thay bằng giọng máy mà không ai biết cho tới khi bật lên nghe. Nay có `AudioState.EXTERNAL` và `_REGENERATE = (MISSING, STALE)`.
+- **`AudioFactory` không test được.** `probe_duration_ms` cần mp3 thật, `join_turns` cần ffmpeg — nên trước khi có hai seam `duration_probe`/`joiner` (đúng hai seam `generate()` đã có sẵn), không nhánh nào của lớp đó chạy được ngoài một máy đã cài đủ đồ.
+- **Worker phải ghi `audio_script_hash` khi gắn.** Quên là mọi clip tự sinh bật cảnh báo "lời thoại đã đổi" ngay khi vừa ra đời — một cảnh báo luôn bật là một cảnh báo người ta học cách bỏ qua.
 
 Một điểm cộng của việc làm sau: đường TTS **có** `audio_script` nên `media_state` xác minh được nó, tức là cổng chặn ở §2.8 mạnh trở lại cho phần nội dung sinh tự động. Hai đường vì thế có hai mức bảo đảm khác nhau, và `audio_asset.source` (`tts` hay `uploaded`) chính là chỗ phân biệt.
 

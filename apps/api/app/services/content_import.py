@@ -10,6 +10,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
+from app.core.media import LOGICAL_VOICE_ACCENTS
 from app.models.vocabulary import PARTS_OF_SPEECH
 
 # Pipe-delimited because the fields are short and a paste from a spreadsheet or a
@@ -233,6 +234,14 @@ _QUESTION_FOLDED = tuple(_fold(marker) for marker in (QUESTION_MARKER, *QUESTION
 
 
 @dataclass
+class ParsedTurn:
+    """Một lượt nói trong bản thu: ai nói, nói gì."""
+
+    text: str
+    voice: str
+
+
+@dataclass
 class ParsedOption:
     label: str
     content: str
@@ -247,6 +256,8 @@ class ParsedQuestion:
     source: str = ""
     source_note: str | None = None
     explanation: str | None = None
+    # Chỉ Part 1 và 2: lời thoại của riêng câu này.
+    script: list[ParsedTurn] = field(default_factory=list)
     problems: list[str] = field(default_factory=list)
 
     @property
@@ -266,6 +277,8 @@ class ParsedGroup:
     line: int
     title: str | None = None
     passages: list[str] = field(default_factory=list)
+    # Chỉ Part 3 và 4: bản thu dùng chung cho cả cụm.
+    script: list[ParsedTurn] = field(default_factory=list)
     questions: list[ParsedQuestion] = field(default_factory=list)
     problems: list[str] = field(default_factory=list)
 
@@ -456,3 +469,242 @@ def _check_group(group: ParsedGroup, part: int) -> None:
             f"Part {part} tối đa {limit} đoạn văn cho một cụm, đang có {len(group.passages)}"
             + (" — Part 6 là một đoạn văn có nhiều chỗ trống" if part == 6 else "")
         )
+
+
+# --- đề thi: Part 1, 2, 3, 4 (phần Nghe) ------------------------------------
+#
+# Ngữ pháp khác phần Đọc ở một điểm gốc rễ: **Part 1 và 2 không in gì cả**. ETS
+# nói rõ cho cả hai — lời dẫn và các câu đáp chỉ được ĐỌC LÊN, không in trong đề
+# — nên `prompt_text` và `question_option.content` phải NULL, và thứ biên tập
+# viên gõ vào chính là LỜI THOẠI.
+#
+#   [SCRIPT] Tiêu đề tuỳ chọn        <- chỉ Part 3/4: ngữ liệu nói dùng chung
+#   voice: us_female_1
+#   Hi, I'm calling about the chairs we ordered.
+#   voice: us_male_1
+#   I'm sorry about that.
+#
+#   [QUESTION]
+#   <Part 3/4: đề bài IN ra · Part 1/2: lời dẫn được ĐỌC>
+#   (A) ...                          <- Part 1/2: lời đọc · Part 3/4: đáp án in
+#   (B) ...
+#   (C) ...
+#   (D) ...                          <- Part 2 chỉ có ba đáp án
+#   answer: B
+#   source: original
+#
+# `voice:` là công tắc: mọi dòng sau nó thuộc giọng đó, cho tới `voice:` kế
+# tiếp. Một luật cho cả bốn part, thay vì bốn cú pháp phải nhớ riêng.
+
+SCRIPT_MARKER = "[SCRIPT]"
+SCRIPT_ALIASES = ("[LỜI THOẠI]", "[LOI THOAI]")
+_SCRIPT_FOLDED = tuple(_fold(marker) for marker in (SCRIPT_MARKER, *SCRIPT_ALIASES))
+
+# Part 1 và 2 in ra con số 0 chữ. Part 3 và 4 in đề bài và đáp án như phần Đọc.
+UNPRINTED_PARTS = (1, 2)
+LISTENING_OPTION_COUNT = {1: 4, 2: 3, 3: 4, 4: 4}
+
+
+def parse_listening_part(raw: str, part: int) -> list[ParsedGroup]:
+    """Tách nội dung dán của phần Nghe. **Không ghi gì vào database.**"""
+    if part not in LISTENING_OPTION_COUNT:
+        raise ValueError(f"parse_listening_part chỉ nhận part 1-4 — nhận được {part}")
+
+    raw = unicodedata.normalize("NFC", raw)
+    groups: list[ParsedGroup] = []
+    current: ParsedGroup | None = None
+    buffer: list[str] = []
+    mode: str | None = None
+    start_line = 0
+
+    def flush() -> None:
+        nonlocal buffer, mode, current
+        if mode is not None and current is not None:
+            text = "\n".join(buffer).strip()
+            if mode == "script":
+                current.script = _parse_turns(text, start_line, current)
+            else:
+                current.questions.append(_parse_listening_question(text, start_line, part))
+        buffer = []
+        mode = None
+
+    for lineno, line in enumerate(raw.splitlines(), start=1):
+        stripped = line.strip()
+        folded = _fold(stripped)
+
+        if folded.startswith(_SCRIPT_FOLDED):
+            flush()
+            if current is None or current.questions:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            title = stripped.partition("]")[2].strip()
+            if title and current.title is None:
+                current.title = title
+            mode, start_line = "script", lineno
+            continue
+
+        if folded.startswith(_QUESTION_FOLDED):
+            flush()
+            if current is None:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            # Part 1 và 2: mỗi câu là một cụm riêng, đúng như Part 5.
+            elif part in UNPRINTED_PARTS and current.questions:
+                current = ParsedGroup(line=lineno)
+                groups.append(current)
+            mode, start_line = "question", lineno
+            continue
+
+        if mode is not None:
+            buffer.append(line)
+
+    flush()
+
+    if not groups and raw.strip():
+        raise ValueError(
+            f"Không nhận ra dòng nào. Mỗi câu phải bắt đầu bằng {QUESTION_MARKER}"
+            + (f", và lời thoại dùng chung bằng {SCRIPT_MARKER}" if part in (3, 4) else "")
+            + "."
+        )
+
+    for group in groups:
+        _check_listening_group(group, part)
+    return groups
+
+
+def _parse_turns(text: str, line: int, group: ParsedGroup) -> list[ParsedTurn]:
+    """Các lượt nói, theo công tắc `voice:`."""
+    turns: list[ParsedTurn] = []
+    voice: str | None = None
+    for raw_line in text.splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            continue
+        key, _, value = stripped.partition(":")
+        if key.strip().lower() in ("voice", "giọng", "giong") and value.strip():
+            voice = value.strip()
+            if voice not in LOGICAL_VOICE_ACCENTS:
+                group.problems.append(
+                    f"dòng {line}: giọng {voice!r} không có; "
+                    f"các giọng: {sorted(LOGICAL_VOICE_ACCENTS)}"
+                )
+            continue
+        if voice is None:
+            group.problems.append(f"dòng {line}: cần một dòng 'voice:' trước lời thoại")
+            return turns
+        turns.append(ParsedTurn(text=stripped, voice=voice))
+    return turns
+
+
+def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion:
+    question = ParsedQuestion(line=line)
+    lead: list[str] = []
+    answer: str | None = None
+    voice: str | None = None
+    spoken: list[ParsedTurn] = []
+
+    for raw_line in text.splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            continue
+
+        option = _OPTION_LINE.match(stripped)
+        if option:
+            label, content = option.group(1), option.group(2).strip()
+            if part in UNPRINTED_PARTS:
+                # Đáp án của Part 1/2 được ĐỌC chứ không in: nội dung đi vào lời
+                # thoại, còn `content` để None — đó là giá trị đúng theo ADR-001
+                # §A2, không phải dữ liệu thiếu.
+                spoken.append(ParsedTurn(text=content, voice=voice or ""))
+                question.options.append(ParsedOption(label=label, content="", is_correct=False))
+            else:
+                question.options.append(
+                    ParsedOption(label=label, content=content, is_correct=False)
+                )
+            continue
+
+        key, _, value = stripped.partition(":")
+        field_name = _KEYS.get(key.strip().lower())
+        if key.strip().lower() in ("voice", "giọng", "giong") and value.strip():
+            voice = value.strip()
+            if voice not in LOGICAL_VOICE_ACCENTS:
+                question.problems.append(f"giọng {voice!r} không có trong danh sách")
+            continue
+        if field_name and value.strip():
+            if field_name == "answer":
+                answer = value.strip().upper()
+            elif field_name == "source":
+                question.source = value.strip().lower()
+            elif field_name == "explanation":
+                question.explanation = value.strip()
+            else:
+                question.source_note = value.strip()
+            continue
+
+        if question.options:
+            question.problems.append(f"không hiểu dòng {stripped[:40]!r}")
+        elif part in UNPRINTED_PARTS:
+            # Part 1: lời dẫn ("Look at the picture marked number one…").
+            # Part 2: chính câu hỏi được đọc lên.
+            spoken.append(ParsedTurn(text=stripped, voice=voice or ""))
+        else:
+            lead.append(stripped)
+
+    question.prompt_text = " ".join(lead).strip()
+    question.script = spoken
+    _check_listening_question(question, answer, part)
+    return question
+
+
+def _check_listening_question(question: ParsedQuestion, answer: str | None, part: int) -> None:
+    expected = LISTENING_OPTION_COUNT[part]
+    labels = [option.label for option in question.options]
+    if len(question.options) != expected:
+        question.problems.append(f"Part {part} cần đúng {expected} đáp án, đang có {len(labels)}")
+    if len(set(labels)) != len(labels):
+        question.problems.append("đáp án bị trùng nhãn")
+
+    if part in UNPRINTED_PARTS:
+        # `prompt_text` PHẢI rỗng: `validate_question` từ chối câu Part 1/2 có
+        # đề bài, và trình dán không được nới lỏng hơn cổng chặn ở tầng dưới.
+        if question.prompt_text:
+            question.problems.append(f"Part {part} không in đề bài; phần chữ thuộc về lời thoại")
+        if not question.script:
+            question.problems.append(f"Part {part} cần lời thoại — đây là toàn bộ nội dung câu")
+        if any(not turn.voice for turn in question.script):
+            question.problems.append("cần một dòng 'voice:' trước lời thoại")
+    else:
+        if not question.prompt_text:
+            question.problems.append(f"Part {part} in đề bài, nên không được để trống")
+        if any(not option.content for option in question.options):
+            question.problems.append(f"Part {part} in đáp án, nên đáp án không được để trống")
+
+    if answer is None:
+        question.problems.append("thiếu dòng 'answer:'")
+    elif answer not in labels:
+        question.problems.append(f"đáp án {answer!r} không có trong {sorted(labels)}")
+    else:
+        for option in question.options:
+            option.is_correct = option.label == answer
+
+    if not question.source:
+        question.problems.append("thiếu dòng 'source:' — phải là 'original' hoặc 'licensed'")
+    elif question.source not in QUESTION_SOURCES:
+        question.problems.append(f"nguồn {question.source!r} không hợp lệ")
+
+
+def _check_listening_group(group: ParsedGroup, part: int) -> None:
+    if not group.questions:
+        group.problems.append("cụm này không có câu hỏi nào")
+
+    if part in UNPRINTED_PARTS:
+        if group.script:
+            group.problems.append(f"Part {part} để lời thoại trên từng câu, không dùng cụm")
+        if len(group.questions) > 1:
+            group.problems.append(f"Part {part} mỗi câu đứng riêng")
+        return
+
+    # Part 3 và 4: một bản thu dùng chung cho cả cụm, gắn ở `question_set`
+    # (ADR-001 §A4.3). Không có lời thoại thì không có gì để thu.
+    if not group.script:
+        group.problems.append(f"Part {part} cần một khối {SCRIPT_MARKER} cho cả cụm")

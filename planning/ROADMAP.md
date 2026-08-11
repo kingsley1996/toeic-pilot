@@ -376,7 +376,31 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] **Form sửa từng câu** — nửa sau của §2.3: đổi đáp án đúng, sửa lựa chọn, viết giải thích. Sửa một câu đã xuất bản thì nó **quay về nháp**, và giao diện nói trước khi bấm
 - [x] Chọn ảnh ngữ liệu từ thư viện `/admin/media`, kèm dòng nhắc rằng bảng giá và lịch trình nên viết thành văn bản
 
-**Lượt 1 (Part 5, 6, 7) xong.** Còn lượt 2: Part 1–4 + tải audio lên (ADR-007 §2.7).
+**Lượt 1 (Part 5, 6, 7) xong.**
+
+### Lượt 2 — Part 1–4 + tải audio lên · 🟢 xong (còn nội dung thật)
+- [x] Migration `014` — `audio_script` (JSON lượt nói), `audio_attached_at` và `audio_script_hash` trên cả `question` lẫn `question_set`. Part 1 và 2 không in gì, nên thứ người soạn gõ vào là **lời thoại** và trước đó nó không có chỗ nào để ở
+- [x] `parse_listening_part` — `voice:` là công tắc, một ngữ pháp cho cả bốn part. Part 1/2 để lời thoại trên **câu**, Part 3/4 để trên **cụm** (`[SCRIPT]`)
+- [x] Tải audio từ trình duyệt qua luồng vé/xác minh (ADR-006 §2.3). **Presigned PUT chạy đúng ngay lần đầu** với Supabase — khác lần Cloudinary, không phải sửa gì
+- [x] Ba đường gắn media: audio→câu (Part 1, 2), audio→cụm (Part 3, 4), ảnh→câu (Part 1); mỗi đường từ chối sai part kèm lý do
+- [x] Màn quản trị mở khoá Part 1–4, hiện lời thoại cạnh trình phát, chọn accent, chọn ảnh Part 1
+- [x] Đã chạy thật: dán Part 3 → ghi → publish **409 "part 3 needs audio on its question_set"** → tải bản thu → gắn → publish 200
+- [x] **Sửa được lời thoại.** `PATCH /admin/question-sets/{id}` (Part 3/4) và `audio_script` trên `QuestionEdit` (Part 1/2), kèm ô sửa ngay cạnh trình phát. Sửa lời thoại hạ **cả cụm lẫn các câu của nó** về nháp — cổng xuất bản soát từng câu, nên hạ mỗi cụm sẽ để các câu ở lại trong đề đã phát hành
+- [x] **Cảnh báo lệch đổi sang so vân tay** (`audio_script_hash`), không so cặp mốc thời gian. Cách cũ phụ thuộc đồng hồ Python khớp đồng hồ database, và trên SQLite — độ phân giải một giây — sửa ngay sau khi gắn thì im lặng; đã thấy nó fail thật trước khi đổi. Vân tay còn chính xác hơn: sửa dấu phẩy trong phần giải thích không báo oan nữa, và sửa lời thoại **về đúng như cũ** thì cảnh báo tự tắt — đã kiểm trên trình duyệt
+- [x] `GET /admin/voices` — danh sách giọng đi qua API thay vì chép sang frontend. Hai bản sao sẽ trôi khỏi nhau và người soạn chọn được một giọng rồi ăn 400 từ chính server vừa gửi dropdown
+- [x] Lời từ chối in **ngay dưới nút Lưu**, không chỉ ở băng lỗi đầu trang — cách form cả màn hình thì bấm Lưu rồi thấy không có gì xảy ra. Lưu thất bại **giữ nguyên** bản nháp đang gõ
+- [x] Sửa một câu Part 1–4 khi **chưa** gắn bản thu: trước đó `edit_question` soát đủ `validate_question` nên mọi câu Part 1–4 đều "thiếu audio" và không sửa nổi lỗi chính tả cho tới khi đã thu xong — tức là phải thu lại. Nay dùng chung bộ lọc với lúc ghi
+- [ ] Nội dung Part 1–4 thật (mới có mẫu demo)
+
+### Lượt 3 — sinh audio bằng TTS · 🟢 xong
+- [x] `backfill_questions` — lời thoại trên CÂU (Part 1, 2) và trên CỤM (Part 3, 4), băm qua `conversation_source_hash`, ghép bằng ffmpeg. Một lượt nói thì bỏ qua ffmpeg luôn
+- [x] **`AudioState.EXTERNAL`** — bản thu tải lên không bao giờ bị ghi đè. Phép kiểm cũ `is not CURRENT` khiến clip tải lên (hash băm id ngẫu nhiên) rơi vào nhánh sinh lại; đã có test và đã xác nhận nó đỏ khi gỡ lá chắn. Lỗi này có thật cho cả vocabulary lẫn dictation, không riêng câu hỏi
+- [x] Chuông Redis `POST /admin/media/audio/requests` → **202**, không phải 200: API không sinh audio được. Redis chết vẫn 202, chỉ khác `queued` — vòng quét định kỳ vẫn bắt được việc
+- [x] `app/content/tts_worker.py` — chuông ở luồng riêng, vòng quét 300s là cái đảm bảo, một lượt hỏng chỉ thành một dòng log. SIGTERM để `docker stop` không cắt ngang lúc đang ghi manifest
+- [x] `docker/worker.Dockerfile` — ảnh RIÊNG có ffmpeg 7.1.5 + extra `content`. Không gộp với ảnh API, để ranh giới A4.1 có hình dạng vật lý thay vì chỉ là quy ước
+- [x] Nút "Sinh audio còn thiếu" trong màn soạn đề
+- [x] **Đã chạy thật**: dán cụm Part 3 ba lượt nói → bấm chuông → worker thức dậy trong 0s → một clip 15,3s ba giọng → `audio_may_be_stale=False`. Hai cụm có bản thu tải lên: worker không đụng vào
+- [ ] **Chưa lọc `question_set.status` ở phía người học.** `POST /attempts` lọc `Question.status == published` nhưng không lọc trạng thái của cụm, nên một câu đã xuất bản dưới cụm nháp sẽ mang cả ngữ liệu lẫn bản thu của cụm đó ra ngoài. Hôm nay **không với tới được qua API** — `publish_question` kéo cụm lên cùng, `edit_set` hạ cả hai xuống cùng — nhưng đó đúng là cách lỗ rò của cây dictation bắt đầu, và không có gì báo khi nó mở ra
 
 ### Backend
 - [ ] `GET /api/v1/practice/parts/{part}` — bốc câu hỏi, tôn trọng `question_set` với part 3, 4, 6, 7

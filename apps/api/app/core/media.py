@@ -40,6 +40,25 @@ MULTI_VOICE = "multi"
 # make "en-us", "US" and "American" all look like distinct accents to a query.
 AUDIO_ACCENTS = ("en-US", "en-GB", "en-AU", "en-CA")
 
+# Tên giọng LOGIC và accent của nó. Ở `core` chứ không ở `content/tts.py`, vì
+# hai phía đều cần và chỉ `core` là chỗ cả hai import được: trình dán đề chạy
+# lúc có REQUEST và phải kiểm tên giọng, còn `app.content` nằm sau extra
+# `content` mà ảnh production không có (A4.1).
+#
+# Ánh xạ sang id của nhà cung cấp (`en-US-JennyNeural`) thì KHÔNG ở đây — đó
+# đúng là thứ A4.3 nói phải giữ ở phía offline, để đổi engine không làm hỏng
+# hash của mọi asset đã sinh.
+LOGICAL_VOICE_ACCENTS: dict[str, str] = {
+    "us_female_1": "en-US",
+    "us_male_1": "en-US",
+    "uk_female_1": "en-GB",
+    "uk_male_1": "en-GB",
+    "au_female_1": "en-AU",
+    "au_male_1": "en-AU",
+    "ca_female_1": "en-CA",
+    "ca_male_1": "en-CA",
+}
+
 # media.py -> core -> app -> apps/api
 _API_DIR = Path(__file__).resolve().parents[2]
 
@@ -67,6 +86,57 @@ def source_hash(text: str, voice: str, engine: str, engine_version: str) -> str:
     existing asset the day the engine changes — see A4.3.
     """
     return _digest(text, voice, engine, engine_version)
+
+
+# Khoảng lặng CỘNG THÊM giữa hai lượt nói, khi không có gì nói khác đi.
+#
+# "Cộng thêm" là chỗ dễ hiểu nhầm nhất, nên đo thật rồi ghi lại: edge-tts tự
+# chèn khoảng **1,1 giây** đệm ở mỗi ranh giới lượt (cuối lượt trước + đầu lượt
+# sau). Đo bằng `silencedetect` trên clip Part 2 đã sinh: đặt `gap_ms=600` cho
+# ra khoảng lặng thật ~1,74 s. Nên `gap_ms=0` KHÔNG phải là không có khoảng
+# lặng — nó là ~1,1 s, vốn đã là một nhịp hội thoại tự nhiên.
+#
+# Ai chỉnh con số này mà chờ nó là tổng sẽ thấy nội dung nghe lê thê mà không
+# hiểu vì sao, nên đừng bỏ đoạn ghi chú này đi.
+#
+# Nó nằm TRONG `conversation_source_hash`, nên đổi con số ở đây sẽ làm mọi đoạn
+# hội thoại không tự khai `gap_ms` phải sinh lại — cùng loại với
+# `tts_engine_version`.
+#
+# Ở `core` chứ không ở `app/content/generate.py` vì `app/services/media_state.py`
+# cũng cần nó để hỏi "clip này có còn khớp lời thoại không", mà `media_state` do
+# API import nên không được chạm vào `app.content` (A4.1). Cùng lý do đã dời
+# `LOGICAL_VOICE_ACCENTS` sang đây.
+DEFAULT_GAP_MS = 700
+
+
+def script_fingerprint(turns: Sequence[tuple[str, str]] | None) -> str | None:
+    """Vân tay của LỜI THOẠI, để biết bản thu đã gắn có còn ứng với nó không.
+
+    Khác `conversation_source_hash`: cái kia băm đầu vào của một lần *tổng hợp*
+    — có engine, có khoảng lặng — để trả lời "đã sinh clip này chưa". Cái này
+    chỉ hỏi "chữ và giọng có đổi không", vì bản thu tải lên KHÔNG do ta sinh ra:
+    `source_hash` của nó băm một id ngẫu nhiên và không suy ngược về lời thoại
+    được (ADR-007 §2.7).
+
+    Cặp mốc thời gian không thay được nó. `audio_attached_at` do đồng hồ Python
+    ghi, `updated_at` do đồng hồ database ghi qua `func.now()`, nên phép so sánh
+    phụ thuộc hai chiếc đồng hồ khớp nhau — lệch vài giây theo chiều xấu là mọi
+    thứ báo lệch ngay khi vừa gắn. Trên SQLite `CURRENT_TIMESTAMP` lại chỉ có độ
+    phân giải một giây, nên sửa xong trong cùng giây với lúc gắn thì im lặng.
+    Vân tay không cần đồng hồ nào cả, và nó chỉ đổi khi thứ bản thu ứng với đổi:
+    sửa một dấu phẩy trong phần giải thích không còn làm nó kêu oan.
+
+    Không có lượt nói nào thì không có gì để đối chiếu, nên trả về None chứ
+    không phải hash của chuỗi rỗng — "chưa có lời thoại" chỉ nên có một cách
+    viết trong database.
+    """
+    if not turns:
+        return None
+    fields: list[str] = ["script", str(len(turns))]
+    for text, voice in turns:
+        fields.extend((text, voice))
+    return _digest(*fields)
 
 
 def conversation_source_hash(

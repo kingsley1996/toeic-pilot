@@ -89,3 +89,48 @@ class ImageAssetPublic(BaseModel):
 
 
 ALLOWED_IMAGE_FORMAT_LIST = list(ALLOWED_IMAGE_FORMATS)
+
+
+AudioExtension = Literal["mp3", "m4a", "wav"]
+
+
+class AudioTicketRequest(BaseModel):
+    ext: AudioExtension = "mp3"
+
+
+class AudioConfirm(BaseModel):
+    """Bước 4 cho audio tải lên (ADR-006 §2.3).
+
+    `duration_ms` do TRÌNH DUYỆT khai, và đó là ngoại lệ có chủ ý với luật "không
+    tin lời trình duyệt". Luật đó bảo vệ những thứ quyết định *tính đúng đắn* —
+    file có tồn tại không, đúng định dạng không, bao nhiêu byte — và ba thứ đó
+    vẫn được hỏi lại kho lưu trữ. Độ dài clip thì chỉ dùng để vẽ thanh phát; đo
+    nó ở máy chủ cần đọc khung mp3, mà thư viện làm việc đó nằm sau extra
+    `content` — tức là đúng thứ tiến trình HTTP không được import (A4.1).
+    """
+
+    storage_key: str
+    duration_ms: int
+    # Người học lọc nội dung theo accent, nên nó là dữ liệu thật chứ không phải
+    # nhãn trang trí — và không ai ngoài người tải lên biết bản thu giọng gì.
+    accent: str
+    voice: str = "uploaded"
+
+
+class AudioRequestAck(BaseModel):
+    """Chuông đã kêu hay chưa — KHÔNG phải audio đã có hay chưa.
+
+    `queued=False` nghĩa là Redis không với tới được, không phải là thất bại:
+    vòng quét định kỳ của worker vẫn tìm ra cùng số việc đó, chỉ muộn hơn.
+    """
+
+    queued: bool
+
+
+class AudioAssetPublic(BaseModel):
+    id: str
+    storage_key: str
+    url: str
+    duration_ms: int
+    accent: str
+    voice: str

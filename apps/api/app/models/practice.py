@@ -14,6 +14,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -28,6 +29,7 @@ from sqlalchemy import (
     func,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -88,6 +90,34 @@ class QuestionSet(Base, PublishableMixin):
     # mẫu đơn đều viết thành văn bản được, và bản văn bản đọc được bằng máy đọc
     # màn hình, phóng to được, tìm được. Ảnh dành cho chỗ quan hệ không gian
     # mang nghĩa — biểu đồ, sơ đồ mặt bằng, bản đồ.
+    # Lời thoại của bản thu, dạng [{"text": ..., "voice": ...}] theo thứ tự nói.
+    #
+    # Part 1 và 2 **không in gì cả** — ETS chỉ đọc lên — nên `prompt_text` và
+    # `question_option.content` đều phải NULL. Thứ biên tập viên gõ vào chính là
+    # lời thoại, và trước cột này nó không có chỗ nào để ở.
+    #
+    # JSON lượt nói chứ không phải một khối văn bản: nó ghi được ai nói câu nào,
+    # thứ người soát bản thu cần, và là đúng hình dạng `conversation_source_hash`
+    # sẽ đọc khi đường TTS được làm (ADR-007 §2.1, §2.7b).
+    #
+    # `JSON` với biến thể `JSONB` cho Postgres: production dùng JSONB (nhị phân,
+    # đánh chỉ mục được), còn test chạy trên SQLite — nơi `JSONB` không tồn tại
+    # và mọi bảng sẽ không tạo được.
+    audio_script: Mapped[list[dict[str, str]] | None] = mapped_column(
+        JSON().with_variant(JSONB, "postgresql"), nullable=True
+    )
+    # Thời điểm gắn audio, để màn quản trị đặt cạnh `updated_at` mà cảnh báo.
+    #
+    # Cần cột riêng chứ không so với `audio_asset.created_at`: gắn một bản thu
+    # cũ vào câu vừa sửa sẽ báo lệch oan, mà cảnh báo oan là cách nhanh nhất dạy
+    # người ta bấm bỏ qua mọi cảnh báo (ADR-007 §2.7).
+    audio_attached_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # Vân tay của lời thoại TẠI LÚC GẮN bản thu. So nó với vân tay hiện tại là
+    # cách duy nhất biết bản thu còn ứng với lời thoại hay không — xem
+    # `script_fingerprint`, phần nói vì sao cặp mốc thời gian không làm được.
+    audio_script_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     passage_image_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
     )
@@ -143,6 +173,34 @@ class Question(Base, PublishableMixin):
     # Part 1 photographs (ADR-004). An FK rather than a URL string: a bare URL
     # has nowhere to record the licence and attribution that CC-BY requires, and
     # it invites hotlinking someone else's server.
+    # Lời thoại của bản thu, dạng [{"text": ..., "voice": ...}] theo thứ tự nói.
+    #
+    # Part 1 và 2 **không in gì cả** — ETS chỉ đọc lên — nên `prompt_text` và
+    # `question_option.content` đều phải NULL. Thứ biên tập viên gõ vào chính là
+    # lời thoại, và trước cột này nó không có chỗ nào để ở.
+    #
+    # JSON lượt nói chứ không phải một khối văn bản: nó ghi được ai nói câu nào,
+    # thứ người soát bản thu cần, và là đúng hình dạng `conversation_source_hash`
+    # sẽ đọc khi đường TTS được làm (ADR-007 §2.1, §2.7b).
+    #
+    # `JSON` với biến thể `JSONB` cho Postgres: production dùng JSONB (nhị phân,
+    # đánh chỉ mục được), còn test chạy trên SQLite — nơi `JSONB` không tồn tại
+    # và mọi bảng sẽ không tạo được.
+    audio_script: Mapped[list[dict[str, str]] | None] = mapped_column(
+        JSON().with_variant(JSONB, "postgresql"), nullable=True
+    )
+    # Thời điểm gắn audio, để màn quản trị đặt cạnh `updated_at` mà cảnh báo.
+    #
+    # Cần cột riêng chứ không so với `audio_asset.created_at`: gắn một bản thu
+    # cũ vào câu vừa sửa sẽ báo lệch oan, mà cảnh báo oan là cách nhanh nhất dạy
+    # người ta bấm bỏ qua mọi cảnh báo (ADR-007 §2.7).
+    audio_attached_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # Vân tay của lời thoại TẠI LÚC GẮN bản thu. So nó với vân tay hiện tại là
+    # cách duy nhất biết bản thu còn ứng với lời thoại hay không — xem
+    # `script_fingerprint`, phần nói vì sao cặp mốc thời gian không làm được.
+    audio_script_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     image_asset_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("image_asset.id", ondelete="RESTRICT"), nullable=True
     )

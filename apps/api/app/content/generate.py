@@ -27,6 +27,7 @@ from app.content.storage import LocalDirStore, ObjectStore
 from app.content.tts import LOGICAL_VOICES, EdgeTTSEngine, TTSEngine, accent_for
 from app.core.media import (
     AUDIO_ACCENTS,
+    DEFAULT_GAP_MS,
     MULTI_VOICE,
     conversation_source_hash,
     source_hash,
@@ -37,21 +38,7 @@ logger = logging.getLogger(__name__)
 
 MIME_TYPE = "audio/mpeg"
 
-# Khoảng lặng CỘNG THÊM giữa hai lượt nói, khi spec không nói rõ.
-#
-# "Cộng thêm" là chỗ dễ hiểu nhầm nhất, nên đo thật rồi ghi lại: edge-tts tự
-# chèn khoảng **1,1 giây** đệm ở mỗi ranh giới lượt (cuối lượt trước + đầu lượt
-# sau). Đo bằng `silencedetect` trên clip Part 2 đã sinh: đặt `gap_ms=600` cho
-# ra khoảng lặng thật ~1,74 s. Nên `gap_ms=0` KHÔNG phải là không có khoảng
-# lặng — nó là ~1,1 s, vốn đã là một nhịp hội thoại tự nhiên.
-#
-# Ai chỉnh con số này mà chờ nó là tổng sẽ thấy nội dung nghe lê thê mà không
-# hiểu vì sao, nên đừng bỏ đoạn ghi chú này đi.
-#
-# Nó nằm TRONG `conversation_source_hash`, nên đổi con số ở đây sẽ làm mọi đoạn
-# hội thoại không tự khai `gap_ms` phải sinh lại — cùng loại với
-# `tts_engine_version`. Muốn thử nhịp khác thì đặt `gap_ms` trên từng dòng spec.
-DEFAULT_GAP_MS = 700
+# `DEFAULT_GAP_MS` ở `app/core/media.py` — `media_state` cũng cần nó.
 
 
 @dataclass(frozen=True)

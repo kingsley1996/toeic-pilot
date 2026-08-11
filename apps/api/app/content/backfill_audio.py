@@ -19,20 +19,44 @@ out of sync — re-running simply finds less to do.
 
 import argparse
 import sys
+import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.content.audio_join import join_turns, require_ffmpeg
 from app.content.generate import probe_duration_ms
 from app.content.manifest import DEFAULT_MANIFEST_PATH, read_manifest, write_manifest
 from app.content.settings import ContentSettings, content_settings
 from app.content.storage import LocalDirStore, ObjectStore
 from app.content.tts import LOGICAL_VOICES, EdgeTTSEngine, TTSEngine
 from app.core.database import SessionLocal
-from app.core.media import AUDIO_ACCENTS, source_hash, storage_key_for
-from app.models import AudioAsset, DictationItem, VocabularyAudio, VocabularyEntry
-from app.services.media_state import AudioState, dictation_audio_state, vocabulary_audio_slots
+from app.core.media import (
+    AUDIO_ACCENTS,
+    DEFAULT_GAP_MS,
+    MULTI_VOICE,
+    conversation_source_hash,
+    script_fingerprint,
+    source_hash,
+    storage_key_for,
+)
+from app.models import (
+    AudioAsset,
+    DictationItem,
+    Question,
+    QuestionSet,
+    VocabularyAudio,
+    VocabularyEntry,
+)
+from app.services.media_state import (
+    AudioState,
+    dictation_audio_state,
+    script_state,
+    vocabulary_audio_slots,
+)
 
 MIME_TYPE = "audio/mpeg"
 
@@ -53,6 +77,15 @@ VOICE_FOR_ACCENT = {
 # Standalone sentences keep per-sentence variety: there the point is to meet all
 # four accents, and each sentence stands alone anyway.
 DICTATION_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
+
+
+# Hai trạng thái này, và CHỈ hai. `CURRENT` thì không có việc gì để làm; còn
+# `EXTERNAL` là bản thu người tải lên — ghi đè nó là lặng lẽ thay giọng người
+# bằng giọng máy, và không ai biết cho tới khi bật lên nghe.
+#
+# Trước khi có `EXTERNAL`, phép kiểm là `is not CURRENT`, nên một clip tải lên
+# (hash băm id ngẫu nhiên, không đời nào khớp text) rơi thẳng vào nhánh sinh lại.
+_REGENERATE = (AudioState.MISSING, AudioState.STALE)
 
 
 @dataclass
@@ -95,12 +128,20 @@ class AudioFactory:
         manifest: dict[str, dict[str, object]],
         *,
         dry_run: bool = False,
+        duration_probe: Callable[[bytes], int] = probe_duration_ms,
+        joiner: Callable[[list[bytes], int], bytes] = join_turns,
     ) -> None:
         self.session = session
         self.engine = engine
         self.store = store
         self.manifest = manifest
         self.dry_run = dry_run
+        # Hai seam giống hệt `generate()`, và vì cùng lý do: mutagen cần mp3
+        # thật, ffmpeg cần mp3 thật, còn thứ đáng kiểm ở đây là quyết định sinh
+        # hay bỏ qua và hàng manifest đi kèm. Không có chúng thì không nhánh nào
+        # của lớp này chạy được ngoài một máy đã cài đủ đồ.
+        self.duration_probe = duration_probe
+        self.joiner = joiner
         self.counts = Counts()
 
     def get_or_create(self, text: str, voice: str) -> AudioAsset | None:
@@ -131,7 +172,7 @@ class AudioFactory:
         key = storage_key_for(digest)
         try:
             data = self.engine.synthesize(text, voice)
-            duration = probe_duration_ms(data)
+            duration = self.duration_probe(data)
         except Exception as exc:  # edge-tts surfaces a wide range of failures
             # Keep going: one bad clip must not discard a long run's progress.
             print(f"  FAILED {voice} {text[:50]!r}: {exc}", file=sys.stderr)
@@ -161,6 +202,89 @@ class AudioFactory:
         print(f"  synthesised {voice:<14} {text[:60]!r}")
         return asset
 
+    def get_or_create_conversation(
+        self, turns: list[tuple[str, str]], gap_ms: int = DEFAULT_GAP_MS
+    ) -> AudioAsset | None:
+        """Bản thu của một lời thoại nhiều lượt, mỗi lượt một giọng.
+
+        Song song với `get_or_create`, khác đúng ở chỗ băm và ở bước ghép. Vẫn
+        content-addressed, nên hai cụm có lời thoại giống hệt dùng chung một
+        clip — và sinh lại sau khi sửa một chữ chỉ tốn đúng lời thoại đó.
+        """
+        digest = conversation_source_hash(turns, gap_ms, self.engine.name, self.engine.version)
+
+        existing = self.session.scalar(select(AudioAsset).where(AudioAsset.source_hash == digest))
+        if existing is not None:
+            self.counts.reused += 1
+            return existing
+
+        recorded = self.manifest.get(digest)
+        if recorded is not None and self.store.exists(str(recorded["storage_key"])):
+            asset = AudioAsset(**recorded)
+            self.session.add(asset)
+            self.session.flush()
+            self.counts.reused += 1
+            return asset
+
+        if self.dry_run:
+            print(f"  would synthesise {len(turns)} lượt nói, {_accent_of(turns)}")
+            self.counts.synthesised += 1
+            return None
+
+        key = storage_key_for(digest)
+        try:
+            rendered = [self.engine.synthesize(text, voice) for text, voice in turns]
+            # Một lượt thì không có ranh giới nào để chèn khoảng lặng, nên bỏ qua
+            # ffmpeg luôn: kết quả y hệt, và máy soạn nội dung chưa cài ffmpeg
+            # vẫn làm được phần đơn giọng.
+            data = rendered[0] if len(rendered) == 1 else self.joiner(rendered, gap_ms)
+            duration = self.duration_probe(data)
+        except Exception as exc:  # edge-tts và ffmpeg đều hỏng theo nhiều kiểu
+            print(f"  FAILED hội thoại {len(turns)} lượt: {exc}", file=sys.stderr)
+            self.counts.failed += 1
+            return None
+
+        self.store.put(key, data, MIME_TYPE)
+        record = {
+            "storage_key": key,
+            "source_hash": digest,
+            "mime_type": MIME_TYPE,
+            "size_bytes": len(data),
+            "duration_ms": duration,
+            "source": "tts",
+            "engine": self.engine.name,
+            "engine_version": self.engine.version,
+            # Cột `voice` chỉ chứa một giá trị, mà clip này có nhiều giọng.
+            "voice": MULTI_VOICE,
+            "accent": _accent_of(turns),
+            "source_text": "\n".join(f"[{voice}] {text}" for text, voice in turns),
+        }
+        self.manifest[digest] = record
+
+        asset = AudioAsset(**record)
+        self.session.add(asset)
+        self.session.flush()
+        self.counts.synthesised += 1
+        print(f"  synthesised {len(turns)} lượt nói -> {key}")
+        return asset
+
+
+def _accent_of(turns: list[tuple[str, str]]) -> str:
+    """Accent ghi lên clip nhiều giọng.
+
+    Cột `accent` chỉ chứa một giá trị. Đồng giọng thì hiển nhiên; lệch giọng —
+    đúng hình dạng Part 2, câu hỏi một accent và ba câu đáp accent khác — thì
+    lấy accent của **lượt đầu**.
+
+    Ở đường spec file, `MEDIA-PIPELINE` §10.2 bắt khai `accent` thay vì chọn hộ.
+    Ở đây nới ra được vì người dùng khác nhau: từ vựng lọc THEO accent (bốn
+    accent cho mỗi từ, và chọn sai là hỏng đúng thứ người học đang so sánh), còn
+    audio của câu hỏi thì không ai lọc — nó chỉ đi kèm đúng câu đó. Chỗ này
+    accent là mô tả, không phải khoá tra cứu.
+    """
+    accents = [LOGICAL_VOICES[voice].accent for _, voice in turns]
+    return accents[0]
+
 
 def backfill_vocabulary(factory: AudioFactory, limit: int | None) -> None:
     entries = factory.session.scalars(
@@ -169,9 +293,7 @@ def backfill_vocabulary(factory: AudioFactory, limit: int | None) -> None:
 
     done = 0
     for entry in entries:
-        slots = [
-            slot for slot in vocabulary_audio_slots(entry) if slot.state is not AudioState.CURRENT
-        ]
+        slots = [slot for slot in vocabulary_audio_slots(entry) if slot.state in _REGENERATE]
         if not slots:
             continue
         print(f"{entry.headword} ({entry.part_of_speech}): {len(slots)} clip(s) needed")
@@ -212,7 +334,7 @@ def backfill_dictation(factory: AudioFactory, limit: int | None) -> None:
 
     done = 0
     for item in items:
-        if dictation_audio_state(item) is AudioState.CURRENT:
+        if dictation_audio_state(item) not in _REGENERATE:
             continue
         print(f"dictation: {item.transcript[:60]!r}")
         asset = factory.get_or_create(item.transcript, voice_for_dictation(item))
@@ -226,19 +348,104 @@ def backfill_dictation(factory: AudioFactory, limit: int | None) -> None:
             break
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Synthesise audio the database is missing.")
-    parser.add_argument("--dry-run", action="store_true", help="report without calling TTS")
-    parser.add_argument("--limit", type=int, default=None, help="stop after N items per kind")
-    parser.add_argument(
-        "--only",
-        choices=("vocabulary", "dictation"),
-        default=None,
-        help="restrict to one kind of content",
-    )
-    args = parser.parse_args(argv)
+def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
+    """Audio cho lời thoại đã soạn: Part 1, 2 trên CÂU và Part 3, 4 trên CỤM.
 
-    settings: ContentSettings = content_settings
+    Hai nguồn chứ không một, vì bản thu treo ở hai tầng khác nhau (ADR-001 §A4.3):
+    Part 1 và 2 mỗi câu một clip, Part 3 và 4 một bài nói dùng chung cho cả cụm.
+
+    Chỉ đụng vào thứ có `audio_script`. Câu chưa ai gõ lời thoại không phải là
+    thiếu dữ liệu — nó chỉ chưa được soạn tới.
+    """
+    owners = _script_owners(factory.session)
+    assets = _assets_by_id(factory.session, owners)
+
+    # Kiểm ffmpeg MỘT LẦN ở đầu, không để nó nổ ở cụm thứ bốn mươi: lúc đó
+    # manifest chưa được ghi và toàn bộ phần đã tổng hợp trước đó mất trắng.
+    # Chỉ đòi khi thật sự có clip nhiều lượt — lời thoại một lượt không đi qua
+    # ffmpeg (xem `get_or_create_conversation`).
+    if not factory.dry_run and any(len(owner.audio_script or []) > 1 for owner, _ in owners):
+        require_ffmpeg()
+
+    done = 0
+    for owner, label in owners:
+        script = owner.audio_script or []
+        if not script:
+            continue
+        asset = assets.get(owner.audio_asset_id) if owner.audio_asset_id else None
+        if script_state(script, asset) not in _REGENERATE:
+            continue
+
+        print(f"{label}: {len(script)} lượt nói")
+        turns = [(turn["text"], turn["voice"]) for turn in script]
+        made = factory.get_or_create_conversation(turns)
+        if made is None:
+            continue
+
+        owner.audio_asset_id = made.id
+        # Chốt luôn "bản thu này gắn cho lời thoại nào", đúng như đường tải lên
+        # làm. Không có nó, cảnh báo lệch ở màn quản trị sẽ kêu ngay với chính
+        # clip vừa sinh đúng cho lời thoại đó.
+        owner.audio_attached_at = datetime.now(UTC)
+        owner.audio_script_hash = script_fingerprint(turns)
+        factory.counts.linked += 1
+
+        done += 1
+        if limit is not None and done >= limit:
+            return
+
+
+_ScriptOwner = Question | QuestionSet
+
+
+def _script_owners(session: Session) -> list[tuple[_ScriptOwner, str]]:
+    """Mọi thứ mang lời thoại, kèm nhãn đọc được để in ra tiến độ."""
+    questions = session.scalars(
+        select(Question)
+        .where(Question.audio_script.is_not(None), Question.part.in_((1, 2)))
+        .order_by(Question.created_at)
+    ).all()
+    sets = session.scalars(
+        select(QuestionSet)
+        .where(QuestionSet.audio_script.is_not(None), QuestionSet.part.in_((3, 4)))
+        .order_by(QuestionSet.created_at)
+    ).all()
+
+    owners: list[tuple[_ScriptOwner, str]] = [(q, f"câu Part {q.part}") for q in questions]
+    owners += [(st, f"cụm Part {st.part} · {st.title or 'không tên'}") for st in sets]
+    return owners
+
+
+def _assets_by_id(
+    session: Session, owners: list[tuple[_ScriptOwner, str]]
+) -> dict[uuid.UUID, AudioAsset]:
+    """Nạp bản thu đang gắn, một lượt.
+
+    `Question` và `QuestionSet` chỉ có cột `audio_asset_id`, không có quan hệ ORM
+    tới `audio_asset` — bảng asset cố ý độc lập với schema nghiệp vụ, phụ thuộc
+    chạy một chiều nghiệp vụ → asset (PHASE2-AUDIO §A4). Nên tra tay, và tra một
+    lượt thay vì mỗi cụm một lần đi lại database.
+    """
+    ids = {owner.audio_asset_id for owner, _ in owners if owner.audio_asset_id}
+    if not ids:
+        return {}
+    return {a.id: a for a in session.scalars(select(AudioAsset).where(AudioAsset.id.in_(ids)))}
+
+
+def run_backfill(
+    *,
+    only: str | None = None,
+    limit: int | None = None,
+    dry_run: bool = False,
+    settings: ContentSettings | None = None,
+) -> Counts:
+    """Một lượt quét đầy đủ. Dùng chung cho CLI và cho worker chạy dài.
+
+    Tách khỏi `main` để worker gọi được cùng một đường: hai bản sao của "quét
+    những gì" sẽ trôi khỏi nhau, và cái trôi là cái không ai chạy bằng tay nên
+    không ai phát hiện.
+    """
+    settings = settings or content_settings
     manifest = read_manifest(DEFAULT_MANIFEST_PATH)
 
     with SessionLocal() as session:
@@ -247,27 +454,46 @@ def main(argv: list[str] | None = None) -> int:
             EdgeTTSEngine(settings),
             LocalDirStore(root=settings.object_store_dir),
             manifest,
-            dry_run=args.dry_run,
+            dry_run=dry_run,
         )
-        if args.only != "dictation":
-            backfill_vocabulary(factory, args.limit)
-        if args.only != "vocabulary":
-            backfill_dictation(factory, args.limit)
+        if only in (None, "vocabulary"):
+            backfill_vocabulary(factory, limit)
+        if only in (None, "dictation"):
+            backfill_dictation(factory, limit)
+        if only in (None, "questions"):
+            backfill_questions(factory, limit)
 
-        if args.dry_run:
+        if dry_run:
             session.rollback()
         else:
             session.commit()
 
-    if not args.dry_run:
-        # The manifest stays in step so the corpus is still reproducible from the
-        # repository, even though the database is the source of truth for the text.
+    if not dry_run:
+        # Manifest giữ nhịp với database để kho nội dung vẫn dựng lại được từ
+        # repository, dù database mới là nguồn sự thật cho phần chữ.
         write_manifest(DEFAULT_MANIFEST_PATH, manifest)
 
-    print(f"\n{factory.counts.as_line()}")
+    return factory.counts
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Synthesise audio the database is missing.")
+    parser.add_argument("--dry-run", action="store_true", help="report without calling TTS")
+    parser.add_argument("--limit", type=int, default=None, help="stop after N items per kind")
+    parser.add_argument(
+        "--only",
+        choices=("vocabulary", "dictation", "questions"),
+        default=None,
+        help="restrict to one kind of content",
+    )
+    args = parser.parse_args(argv)
+
+    counts = run_backfill(only=args.only, limit=args.limit, dry_run=args.dry_run)
+
+    print(f"\n{counts.as_line()}")
     if unknown := set(AUDIO_ACCENTS) - set(VOICE_FOR_ACCENT):
         print(f"warning: no voice configured for {sorted(unknown)}", file=sys.stderr)
-    return 1 if factory.counts.failed else 0
+    return 1 if counts.failed else 0
 
 
 if __name__ == "__main__":

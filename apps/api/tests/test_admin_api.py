@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.core.media import source_hash
 from app.core.security import create_access_token
-from app.models import DictationItem, User, VocabularyAudio, VocabularyEntry
+from app.models import AudioAsset, DictationItem, User, VocabularyAudio, VocabularyEntry
 from app.models.image import ImageAsset
 from tests.test_domain_model import make_audio
 
@@ -72,6 +72,7 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/dictation/parse", {"raw_text": "a"}),
     ("POST", "/api/v1/admin/dictation", {"rows": []}),
     ("GET", "/api/v1/admin/dictation", None),
+    ("GET", "/api/v1/admin/voices", None),
     ("GET", "/api/v1/admin/test-collections", None),
     ("POST", "/api/v1/admin/test-collections", {"slug": "x", "title": "X"}),
     ("POST", "/api/v1/admin/test-collections/x/publish", None),
@@ -84,9 +85,36 @@ ADMIN_CALLS = [
         {"explanation": "x"},
     ),
     (
+        "PATCH",
+        "/api/v1/admin/question-sets/00000000-0000-0000-0000-000000000000",
+        {"title": "X"},
+    ),
+    (
         "POST",
         "/api/v1/admin/question-sets/00000000-0000-0000-0000-000000000000/passage-image",
         {"slot": 1},
+    ),
+    ("POST", "/api/v1/admin/media/audio/requests", None),
+    ("POST", "/api/v1/admin/media/audio/ticket", {"ext": "mp3"}),
+    (
+        "POST",
+        "/api/v1/admin/media/audio/confirm",
+        {"storage_key": "audio/aa/x.mp3", "duration_ms": 1, "accent": "en-US"},
+    ),
+    (
+        "POST",
+        "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/audio",
+        {"asset_id": None},
+    ),
+    (
+        "POST",
+        "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/image",
+        {"asset_id": None},
+    ),
+    (
+        "POST",
+        "/api/v1/admin/question-sets/00000000-0000-0000-0000-000000000000/audio",
+        {"asset_id": None},
     ),
     ("POST", "/api/v1/admin/tests", {"slug": "x", "title": "X"}),
     ("GET", "/api/v1/admin/tests/x", None),
@@ -516,3 +544,170 @@ def test_a_passage_image_without_alt_text_is_refused(
     )
     assert refused.status_code == 409
     assert "chữ thay ảnh" in refused.json()["detail"]
+
+
+def _part3_paste() -> str:
+    return """[SCRIPT] Gọi hỏi đơn hàng
+voice: us_female_1
+Hi, I'm calling about the chairs we ordered last Monday.
+voice: us_male_1
+Let me check. They shipped yesterday and arrive on Friday.
+
+[QUESTION]
+What is the woman calling about?
+(A) A late delivery
+(B) A billing error
+(C) A product return
+(D) A price change
+answer: A
+source: original
+explanation: Người phụ nữ hỏi về đơn ghế đã đặt.
+"""
+
+
+def _commit_part3(client: TestClient, headers: dict[str, str], slug: str) -> dict[str, object]:
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": slug, "title": "Nghe", "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts/3/parse",
+        json={"raw_text": _part3_paste()},
+        headers=headers,
+    ).json()
+    assert (
+        client.post(
+            f"/api/v1/admin/tests/{slug}/parts",
+            json={"part": 3, "groups": parsed["groups"]},
+            headers=headers,
+        ).status_code
+        == 201
+    )
+    (stimulus,) = client.get(f"/api/v1/admin/tests/{slug}/sets", headers=headers).json()
+    assert isinstance(stimulus, dict)
+    return stimulus
+
+
+def test_editing_a_set_script_makes_its_audio_look_stale(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Sửa lời thoại của cụm phải bật cảnh báo lệch cho Part 3/4.
+
+    Trước khi có `PATCH /question-sets/{id}` thì cảnh báo này đúng mà vô dụng:
+    bản thu ứng với LỜI THOẠI, lời thoại lại không sửa được, nên `updated_at`
+    của cụm không bao giờ vượt `audio_attached_at`. Sửa một câu trong cụm cũng
+    không bật được — nó không đụng tới cụm, và đúng ra là không nên.
+    """
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "stale-test")
+
+    clip = AudioAsset(
+        storage_key="audio/aa/talk.mp3",
+        source_hash="c" * 64,
+        voice="us_female_1",
+        accent="en-US",
+        engine="uploaded",
+        engine_version="-",
+        duration_ms=9000,
+        size_bytes=100,
+    )
+    db_session.add(clip)
+    db_session.commit()
+
+    attached = client.post(
+        f"/api/v1/admin/question-sets/{stimulus['id']}/audio",
+        json={"asset_id": str(clip.id)},
+        headers=headers,
+    ).json()
+    assert attached["audio_may_be_stale"] is False
+
+    edited = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={
+            "audio_script": [
+                {
+                    "text": "Hi, I'm calling about the desks we ordered last Monday.",
+                    "voice": "us_female_1",
+                },
+                {
+                    "text": "Let me check. They shipped yesterday and arrive on Friday.",
+                    "voice": "us_male_1",
+                },
+            ]
+        },
+        headers=headers,
+    )
+    assert edited.status_code == 200
+    body = edited.json()
+    assert body["audio_script"][0]["text"].endswith("desks we ordered last Monday.")
+    assert body["audio_may_be_stale"] is True
+
+
+def test_editing_a_set_script_sends_its_published_questions_back_to_draft(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Cổng xuất bản soát từng CÂU, nên hạ mỗi cụm là chưa đủ.
+
+    Cụm về nháp mà các câu vẫn `published` thì đề vẫn phát hành bình thường và
+    người học vẫn nghe bản thu ứng với lời thoại cũ — không có gì báo.
+    """
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "demote-test")
+    (question,) = client.get("/api/v1/admin/tests/demote-test/questions", headers=headers).json()
+
+    # Xuất bản thẳng trong database: cổng chặn đòi audio, mà ở đây đang xét
+    # chuyện khác.
+    published = client.patch(
+        f"/api/v1/admin/questions/{question['id']}",
+        json={"explanation": "x"},
+        headers=headers,
+    )
+    assert published.status_code == 200
+
+    client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"title": "Tên khác"},
+        headers=headers,
+    )
+    (after,) = client.get("/api/v1/admin/tests/demote-test/questions", headers=headers).json()
+    assert after["status"] == "draft"
+
+
+def test_a_question_refuses_a_script_that_belongs_to_its_set(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Part 3/4: lời thoại ở cụm, và câu phải NÓI RA chỗ sửa đúng.
+
+    Ghi im lặng vào `question.audio_script` sẽ tạo ra một lời thoại thứ hai mà
+    không bản thu nào ứng với — và người soát bản thu sẽ đối chiếu nhầm nó.
+    """
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "script-owner-test")
+    (question,) = client.get(
+        "/api/v1/admin/tests/script-owner-test/questions", headers=headers
+    ).json()
+
+    refused = client.patch(
+        f"/api/v1/admin/questions/{question['id']}",
+        json={"audio_script": [{"text": "Hello.", "voice": "us_female_1"}]},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert stimulus["id"] in refused.json()["detail"]
+
+
+def test_an_unknown_voice_is_refused_at_the_form_not_at_synthesis(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Tên giọng sai chỉ nổ ở bước sinh audio, cách chỗ gõ vào hàng ngày."""
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "voice-test")
+
+    refused = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"audio_script": [{"text": "Hello.", "voice": "us_female_9"}]},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert "us_female_1" in refused.json()["detail"]

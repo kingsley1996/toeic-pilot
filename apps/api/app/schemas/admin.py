@@ -1,5 +1,7 @@
 """Request and response shapes for the content admin surface."""
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -263,6 +265,11 @@ class QuestionOptionDraft(BaseModel):
     is_correct: bool
 
 
+class TurnDraft(BaseModel):
+    text: str
+    voice: str
+
+
 class QuestionDraft(BaseModel):
     line: int
     prompt_text: str
@@ -270,6 +277,8 @@ class QuestionDraft(BaseModel):
     source: str
     source_note: str | None = None
     explanation: str | None = None
+    # Chỉ Part 1 và 2: lời thoại của riêng câu này.
+    script: list[TurnDraft] = []
     problems: list[str]
 
 
@@ -283,6 +292,8 @@ class GroupDraft(BaseModel):
     line: int
     title: str | None = None
     passages: list[str]
+    # Chỉ Part 3 và 4: bản thu dùng chung của cả cụm.
+    script: list[TurnDraft] = []
     questions: list[QuestionDraft]
     problems: list[str]
 
@@ -321,6 +332,13 @@ class QuestionAdmin(BaseModel):
     set_id: str | None
     audio_url: str | None
     image_url: str | None
+    audio_script: list[TurnDraft] = []
+    audio_attached_at: datetime | None = None
+    updated_at: datetime | None = None
+    # Câu được sửa SAU khi gắn audio. Không phải cổng chặn — hash của file tải
+    # lên không suy ngược ra lời thoại được, nên thứ duy nhất làm được là cho
+    # người soạn nhìn thấy (ADR-007 §2.7).
+    audio_may_be_stale: bool = False
     # Vì sao câu này chưa xuất bản được. Rỗng nghĩa là sẵn sàng.
     #
     # Hiện ra thay vì chỉ làm mờ nút Publish: nút mờ nói "chưa được", danh sách
@@ -393,6 +411,31 @@ class QuestionEdit(BaseModel):
     source_note: str | None = None
     correct_label: str | None = None
     options: dict[str, str] | None = None
+    # Chỉ Part 1 và 2. Part 3/4 giữ lời thoại ở cụm, và endpoint từ chối thẳng
+    # thay vì ghi vào một cột không ai đọc — xem `edit_question`.
+    #
+    # Danh sách rỗng nghĩa là XOÁ lời thoại; vắng mặt nghĩa là để nguyên. Phân
+    # biệt được là nhờ `exclude_unset`, giống `TestUpdate`.
+    audio_script: list[TurnDraft] | None = None
+
+
+class VoiceOption(BaseModel):
+    """Một giọng logic — tên ta đặt, không phải id của nhà cung cấp (A4.3)."""
+
+    name: str
+    accent: str
+
+
+class SetEdit(BaseModel):
+    """Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.
+
+    Lời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán
+    lại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint
+    này, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.
+    """
+
+    title: str | None = None
+    audio_script: list[TurnDraft] | None = None
 
 
 class PassageImageAssign(BaseModel):
@@ -420,3 +463,14 @@ class SetAdmin(BaseModel):
     title: str | None
     status: str
     passages: list[PassageAdmin]
+    audio_url: str | None = None
+    audio_script: list[TurnDraft] = []
+    audio_attached_at: datetime | None = None
+    updated_at: datetime | None = None
+    audio_may_be_stale: bool = False
+
+
+class MediaAssign(BaseModel):
+    """Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra."""
+
+    asset_id: str | None = None

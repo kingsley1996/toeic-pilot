@@ -250,6 +250,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/media/audio/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Audio Confirm */
+        post: operations["audio_confirm_api_v1_admin_media_audio_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/media/audio/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request Audio
+         * @description Đánh chuông cho worker TTS. **Không** sinh audio ở đây (ADR-007 §2.7b).
+         *
+         *     202 chứ không 200, và đó là điều duy nhất cần hiểu về endpoint này: nó
+         *     KHÔNG hứa audio đã có. API không sinh audio được — không import được
+         *     `app.content` (A4.1), ảnh production không có edge-tts lẫn ffmpeg.
+         *
+         *     Không ghi bảng nào. Hàng đợi vẫn là *câu hỏi* "nội dung nào thiếu audio",
+         *     nên bấm mười lần cũng không tạo ra mười job — worker chỉ hỏi lại database
+         *     sớm hơn.
+         *
+         *     Chuông không kêu (Redis chết) vẫn trả 202, chỉ khác `queued`. Vòng quét định
+         *     kỳ vẫn bắt được việc; nói dối rằng thất bại sẽ khiến biên tập viên bấm lại
+         *     một thứ vốn đã sẽ chạy.
+         */
+        post: operations["request_audio_api_v1_admin_media_audio_requests_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/media/audio/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Audio Ticket
+         * @description Vé upload cho audio. Khoá do phía ta sinh, y như đường ảnh.
+         */
+        post: operations["audio_ticket_api_v1_admin_media_audio_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/media/images": {
         parameters: {
             query?: never;
@@ -316,6 +385,55 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/question-sets/{set_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Edit Set
+         * @description Sửa một cụm đã dán: tên cụm và lời thoại.
+         *
+         *     Lời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói
+         *     Part 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và
+         *     bản thu đã gắn.
+         *
+         *     Nó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản
+         *     thu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại
+         *     còn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`
+         *     và cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.
+         */
+        patch: operations["edit_set_api_v1_admin_question_sets__set_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/question-sets/{set_id}/audio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Assign Set Audio
+         * @description Gắn bản thu cho cả cụm — Part 3 và 4.
+         */
+        post: operations["assign_set_audio_api_v1_admin_question_sets__set_id__audio_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/question-sets/{set_id}/passage-image": {
         parameters: {
             query?: never;
@@ -357,6 +475,46 @@ export interface paths {
          *     đúng, viết giải thích, sửa một lựa chọn gõ nhầm.
          */
         patch: operations["edit_question_api_v1_admin_questions__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/questions/{question_id}/audio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Assign Question Audio
+         * @description Gắn bản thu cho một câu — Part 1 và 2, nơi mỗi câu là một clip riêng.
+         */
+        post: operations["assign_question_audio_api_v1_admin_questions__question_id__audio_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/questions/{question_id}/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Assign Question Image
+         * @description Gắn bức ảnh của câu Part 1, chọn từ thư viện (ADR-007 §2.4).
+         */
+        post: operations["assign_question_image_api_v1_admin_questions__question_id__image_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/questions/{question_id}/publish": {
@@ -644,6 +802,34 @@ export interface paths {
         put?: never;
         /** Publish Vocabulary */
         post: operations["publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Voices
+         * @description Các giọng dùng được, cho ô chọn giọng lúc sửa lời thoại.
+         *
+         *     Đi qua API chứ không chép sang frontend: chép là hai danh sách, và cái chép
+         *     sẽ trôi khỏi `LOGICAL_VOICE_ACCENTS` mà không gì báo — người soạn chọn một
+         *     giọng có trong dropdown rồi ăn 400 từ chính server vừa gửi dropdown đó.
+         *
+         *     `LOGICAL_VOICE_ACCENTS` nằm ở `app/core/media.py` chứ không ở
+         *     `app/content/tts.py` chính vì lúc này: không gì với tới được từ `app.main`
+         *     mà import `app.content` (A4.1).
+         */
+        get: operations["list_voices_api_v1_admin_voices_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1405,6 +1591,21 @@ export interface components {
             /** Time Limit Seconds */
             time_limit_seconds: number | null;
         };
+        /** AudioAssetPublic */
+        AudioAssetPublic: {
+            /** Accent */
+            accent: string;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Id */
+            id: string;
+            /** Storage Key */
+            storage_key: string;
+            /** Url */
+            url: string;
+            /** Voice */
+            voice: string;
+        };
         /** AudioClip */
         AudioClip: {
             /** Accent */
@@ -1414,6 +1615,41 @@ export interface components {
             /** Url */
             url: string;
         };
+        /**
+         * AudioConfirm
+         * @description Bước 4 cho audio tải lên (ADR-006 §2.3).
+         *
+         *     `duration_ms` do TRÌNH DUYỆT khai, và đó là ngoại lệ có chủ ý với luật "không
+         *     tin lời trình duyệt". Luật đó bảo vệ những thứ quyết định *tính đúng đắn* —
+         *     file có tồn tại không, đúng định dạng không, bao nhiêu byte — và ba thứ đó
+         *     vẫn được hỏi lại kho lưu trữ. Độ dài clip thì chỉ dùng để vẽ thanh phát; đo
+         *     nó ở máy chủ cần đọc khung mp3, mà thư viện làm việc đó nằm sau extra
+         *     `content` — tức là đúng thứ tiến trình HTTP không được import (A4.1).
+         */
+        AudioConfirm: {
+            /** Accent */
+            accent: string;
+            /** Duration Ms */
+            duration_ms: number;
+            /** Storage Key */
+            storage_key: string;
+            /**
+             * Voice
+             * @default uploaded
+             */
+            voice: string;
+        };
+        /**
+         * AudioRequestAck
+         * @description Chuông đã kêu hay chưa — KHÔNG phải audio đã có hay chưa.
+         *
+         *     `queued=False` nghĩa là Redis không với tới được, không phải là thất bại:
+         *     vòng quét định kỳ của worker vẫn tìm ra cùng số việc đó, chỉ muộn hơn.
+         */
+        AudioRequestAck: {
+            /** Queued */
+            queued: boolean;
+        };
         /** AudioSlotState */
         AudioSlotState: {
             /** Accent */
@@ -1422,6 +1658,15 @@ export interface components {
             kind: string;
             /** State */
             state: string;
+        };
+        /** AudioTicketRequest */
+        AudioTicketRequest: {
+            /**
+             * Ext
+             * @default mp3
+             * @enum {string}
+             */
+            ext: "mp3" | "m4a" | "wav";
         };
         /** AvatarConfirm */
         AvatarConfirm: {
@@ -1894,6 +2139,11 @@ export interface components {
             problems: string[];
             /** Questions */
             questions: components["schemas"]["QuestionDraft"][];
+            /**
+             * Script
+             * @default []
+             */
+            script: components["schemas"]["TurnDraft"][];
             /** Title */
             title?: string | null;
         };
@@ -1992,6 +2242,14 @@ export interface components {
             /** Window Days */
             window_days: number;
         };
+        /**
+         * MediaAssign
+         * @description Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.
+         */
+        MediaAssign: {
+            /** Asset Id */
+            asset_id?: string | null;
+        };
         /** OptionPublic */
         OptionPublic: {
             /** Content */
@@ -2077,6 +2335,18 @@ export interface components {
         };
         /** QuestionAdmin */
         QuestionAdmin: {
+            /** Audio Attached At */
+            audio_attached_at?: string | null;
+            /**
+             * Audio May Be Stale
+             * @default false
+             */
+            audio_may_be_stale: boolean;
+            /**
+             * Audio Script
+             * @default []
+             */
+            audio_script: components["schemas"]["TurnDraft"][];
             /** Audio Url */
             audio_url: string | null;
             /** Explanation */
@@ -2103,6 +2373,8 @@ export interface components {
             source: string;
             /** Status */
             status: string;
+            /** Updated At */
+            updated_at?: string | null;
         };
         /** QuestionDraft */
         QuestionDraft: {
@@ -2116,6 +2388,11 @@ export interface components {
             problems: string[];
             /** Prompt Text */
             prompt_text: string;
+            /**
+             * Script
+             * @default []
+             */
+            script: components["schemas"]["TurnDraft"][];
             /** Source */
             source: string;
             /** Source Note */
@@ -2126,6 +2403,8 @@ export interface components {
          * @description Sửa một câu sau khi dán. `exclude_unset` ở nơi gọi — xem `TestUpdate`.
          */
         QuestionEdit: {
+            /** Audio Script */
+            audio_script?: components["schemas"]["TurnDraft"][] | null;
             /** Correct Label */
             correct_label?: string | null;
             /** Explanation */
@@ -2320,6 +2599,20 @@ export interface components {
         };
         /** SetAdmin */
         SetAdmin: {
+            /** Audio Attached At */
+            audio_attached_at?: string | null;
+            /**
+             * Audio May Be Stale
+             * @default false
+             */
+            audio_may_be_stale: boolean;
+            /**
+             * Audio Script
+             * @default []
+             */
+            audio_script: components["schemas"]["TurnDraft"][];
+            /** Audio Url */
+            audio_url?: string | null;
             /** Id */
             id: string;
             /** Part */
@@ -2330,6 +2623,22 @@ export interface components {
             status: string;
             /** Title */
             title: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /**
+         * SetEdit
+         * @description Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.
+         *
+         *     Lời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán
+         *     lại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint
+         *     này, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.
+         */
+        SetEdit: {
+            /** Audio Script */
+            audio_script?: components["schemas"]["TurnDraft"][] | null;
+            /** Title */
+            title?: string | null;
         };
         /**
          * StoryItem
@@ -2571,6 +2880,13 @@ export interface components {
             position: number;
             /** Slug */
             slug: string;
+        };
+        /** TurnDraft */
+        TurnDraft: {
+            /** Text */
+            text: string;
+            /** Voice */
+            voice: string;
         };
         /**
          * UploadTicket
@@ -2873,6 +3189,16 @@ export interface components {
             meaning_vi?: string | null;
             /** Phonetic */
             phonetic?: string | null;
+        };
+        /**
+         * VoiceOption
+         * @description Một giọng logic — tên ta đặt, không phải id của nhà cung cấp (A4.3).
+         */
+        VoiceOption: {
+            /** Accent */
+            accent: string;
+            /** Name */
+            name: string;
         };
         /** WordDiff */
         WordDiff: {
@@ -3550,6 +3876,92 @@ export interface operations {
             };
         };
     };
+    audio_confirm_api_v1_admin_media_audio_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AudioConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AudioAssetPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_audio_api_v1_admin_media_audio_requests_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AudioRequestAck"];
+                };
+            };
+        };
+    };
+    audio_ticket_api_v1_admin_media_audio_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AudioTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_images_api_v1_admin_media_images_get: {
         parameters: {
             query?: {
@@ -3648,6 +4060,76 @@ export interface operations {
             };
         };
     };
+    edit_set_api_v1_admin_question_sets__set_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                set_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assign_set_audio_api_v1_admin_question_sets__set_id__audio_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                set_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MediaAssign"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     assign_passage_image_api_v1_admin_question_sets__set_id__passage_image_post: {
         parameters: {
             query?: never;
@@ -3695,6 +4177,76 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["QuestionEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assign_question_audio_api_v1_admin_questions__question_id__audio_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MediaAssign"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assign_question_image_api_v1_admin_questions__question_id__image_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MediaAssign"];
             };
         };
         responses: {
@@ -4317,6 +4869,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_voices_api_v1_admin_voices_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceOption"][];
                 };
             };
         };

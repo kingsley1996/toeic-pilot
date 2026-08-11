@@ -8,7 +8,7 @@ import unicodedata
 
 import pytest
 
-from app.services.content_import import parse_reading_part
+from app.services.content_import import parse_listening_part, parse_reading_part
 
 # --- đề thi: Part 5, 6, 7 (ADR-007) -----------------------------------------
 
@@ -144,3 +144,84 @@ source: original
 
     (seven,) = parse_reading_part(two, 7)
     assert seven.ok
+
+
+# --- phần Nghe: Part 1-4 ----------------------------------------------------
+
+PART1 = """[QUESTION]
+voice: us_female_1
+Look at the picture marked number one in your test book.
+(A) The woman is sitting at a picnic table.
+(B) The woman is reading a newspaper.
+(C) The woman is loading a truck.
+(D) The woman is walking along a path.
+answer: A
+source: original
+"""
+
+
+def test_part_1_and_2_put_their_text_in_the_script_not_on_screen():
+    """ETS nói rõ: lời dẫn và các câu đáp của Part 1, 2 chỉ được ĐỌC LÊN.
+
+    Nên `prompt_text` phải rỗng và `content` của đáp án phải rỗng — đó là giá
+    trị ĐÚNG (ADR-001 §A2), không phải dữ liệu thiếu. Trình dán không được nới
+    lỏng hơn `validate_question`, thứ sẽ từ chối một câu Part 1 có đề bài.
+    """
+    (group,) = parse_listening_part(PART1, 1)
+    (question,) = group.questions
+    assert group.ok
+    assert question.prompt_text == ""
+    assert [option.content for option in question.options] == ["", "", "", ""]
+    # Lời dẫn + bốn câu đọc, tất cả cùng một giọng.
+    assert len(question.script) == 5
+    assert {turn.voice for turn in question.script} == {"us_female_1"}
+
+
+def test_part_2_has_three_options_and_switches_voice_midway():
+    raw = """[QUESTION]
+voice: us_female_1
+Where did you put the sales report?
+voice: uk_male_1
+(A) On your desk, next to the printer.
+(B) Yes, I finished it last night.
+(C) About thirty copies, I think.
+answer: A
+source: original
+"""
+    (group,) = parse_listening_part(raw, 2)
+    (question,) = group.questions
+    assert group.ok
+    assert len(question.options) == 3
+    # Câu hỏi một giọng, ba câu đáp giọng khác — đúng format Part 2.
+    assert [turn.voice for turn in question.script] == [
+        "us_female_1",
+        "uk_male_1",
+        "uk_male_1",
+        "uk_male_1",
+    ]
+
+
+def test_part_3_needs_a_shared_script_on_the_set():
+    """Part 3 và 4 gắn bản thu ở `question_set`, không ở từng câu (ADR-001 §A4.3).
+
+    Không có lời thoại thì không có gì để thu, và cụm đó sẽ không bao giờ xuất
+    bản được — nên trình dán nói ra ngay thay vì để phát hiện ở cổng chặn.
+    """
+    raw = """[QUESTION]
+What is the woman calling about?
+(A) A late delivery
+(B) A billing error
+(C) A product return
+(D) A price change
+answer: A
+source: original
+"""
+    (group,) = parse_listening_part(raw, 3)
+    assert any("[SCRIPT]" in problem for problem in group.problems)
+
+
+def test_a_script_line_without_a_voice_is_refused():
+    # Giọng là một phần của bản thu, không phải chi tiết trang trí: thiếu nó thì
+    # không ai biết bản thu phải nghe như thế nào.
+    (group,) = parse_listening_part(PART1.replace("voice: us_female_1\n", ""), 1)
+    assert not group.ok

@@ -72,8 +72,12 @@ export async function uploadViaTicket(
   ticketPath: string,
   file: File,
   token: string,
+  // Đuôi mặc định khi tên file không có. Phải truyền vào chứ không cứng "jpg":
+  // endpoint audio chỉ nhận mp3/m4a/wav, nên một mặc định của ảnh sẽ làm nó trả
+  // 422 với thông báo nói về `ext` chứ không nói về file.
+  defaultExt = "jpg",
 ): Promise<UploadOutcome> {
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? defaultExt;
   const ticket = await apiFetch<UploadTicket>(ticketPath, {
     method: "POST",
     token,

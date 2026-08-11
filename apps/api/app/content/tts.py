@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from app.content.settings import ContentSettings, content_settings
+from app.core.media import LOGICAL_VOICE_ACCENTS
 
 logger = logging.getLogger(__name__)
 
@@ -34,15 +35,23 @@ class LogicalVoice:
 
 # TOEIC listening uses four accents (US / UK / AU / CA), so a single voice is
 # never enough — the domain schema needs a join table, not an FK column.
+# Id của nhà cung cấp, khoá theo tên giọng logic. Danh sách tên và accent nằm ở
+# `app/core/media.py` vì phía runtime cũng cần; chỉ phần ánh xạ sang edge-tts ở
+# lại đây, đúng như A4.3 yêu cầu.
+_EDGE_IDS: dict[str, str] = {
+    "us_female_1": "en-US-JennyNeural",
+    "us_male_1": "en-US-GuyNeural",
+    "uk_female_1": "en-GB-SoniaNeural",
+    "uk_male_1": "en-GB-RyanNeural",
+    "au_female_1": "en-AU-NatashaNeural",
+    "au_male_1": "en-AU-WilliamMultilingualNeural",
+    "ca_female_1": "en-CA-ClaraNeural",
+    "ca_male_1": "en-CA-LiamNeural",
+}
+
 LOGICAL_VOICES: dict[str, LogicalVoice] = {
-    "us_female_1": LogicalVoice(accent="en-US", edge="en-US-JennyNeural"),
-    "us_male_1": LogicalVoice(accent="en-US", edge="en-US-GuyNeural"),
-    "uk_female_1": LogicalVoice(accent="en-GB", edge="en-GB-SoniaNeural"),
-    "uk_male_1": LogicalVoice(accent="en-GB", edge="en-GB-RyanNeural"),
-    "au_female_1": LogicalVoice(accent="en-AU", edge="en-AU-NatashaNeural"),
-    "au_male_1": LogicalVoice(accent="en-AU", edge="en-AU-WilliamMultilingualNeural"),
-    "ca_female_1": LogicalVoice(accent="en-CA", edge="en-CA-ClaraNeural"),
-    "ca_male_1": LogicalVoice(accent="en-CA", edge="en-CA-LiamNeural"),
+    name: LogicalVoice(accent=accent, edge=_EDGE_IDS[name])
+    for name, accent in LOGICAL_VOICE_ACCENTS.items()
 }
 
 

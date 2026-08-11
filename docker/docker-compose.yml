@@ -75,6 +75,36 @@ services:
       retries: 5
       start_period: 40s
 
+  # Worker TTS — ảnh RIÊNG, có ffmpeg và extra `content`. Xem docker/worker.Dockerfile.
+  #
+  # Không `ports`, không `healthcheck`, và không service nào `depends_on` nó:
+  # worker tắt thì nội dung chỉ chậm có audio, không có gì hỏng. Đó chính là
+  # điểm của thiết kế chuông ở ADR-007 §2.7b.
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../apps/api/app:/app/apps/api/app
+      # Cùng thư mục media với `api`: worker GHI vào đây, api ĐỌC ra. Đó là lý
+      # do `/media` chỉ mount tĩnh ở development — production thì `push_media`
+      # đẩy lên object store và api không bao giờ phục vụ byte nào.
+      - ../apps/api/media:/app/apps/api/media
+      # Manifest được commit vào git, nên worker phải ghi ra cây nguồn thật chứ
+      # không ghi vào lớp ảnh rồi mất khi container bị dựng lại.
+      - ../apps/api/content:/app/apps/api/content
+    restart: unless-stopped
+
   web:
     build:
       context: ..

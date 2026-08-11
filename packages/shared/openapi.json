@@ -286,6 +286,44 @@
         "title": "AttemptState",
         "type": "object"
       },
+      "AudioAssetPublic": {
+        "properties": {
+          "accent": {
+            "title": "Accent",
+            "type": "string"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "voice": {
+            "title": "Voice",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "storage_key",
+          "url",
+          "duration_ms",
+          "accent",
+          "voice"
+        ],
+        "title": "AudioAssetPublic",
+        "type": "object"
+      },
       "AudioClip": {
         "properties": {
           "accent": {
@@ -309,6 +347,49 @@
         "title": "AudioClip",
         "type": "object"
       },
+      "AudioConfirm": {
+        "description": "Bước 4 cho audio tải lên (ADR-006 §2.3).\n\n`duration_ms` do TRÌNH DUYỆT khai, và đó là ngoại lệ có chủ ý với luật \"không\ntin lời trình duyệt\". Luật đó bảo vệ những thứ quyết định *tính đúng đắn* —\nfile có tồn tại không, đúng định dạng không, bao nhiêu byte — và ba thứ đó\nvẫn được hỏi lại kho lưu trữ. Độ dài clip thì chỉ dùng để vẽ thanh phát; đo\nnó ở máy chủ cần đọc khung mp3, mà thư viện làm việc đó nằm sau extra\n`content` — tức là đúng thứ tiến trình HTTP không được import (A4.1).",
+        "properties": {
+          "accent": {
+            "title": "Accent",
+            "type": "string"
+          },
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          },
+          "voice": {
+            "default": "uploaded",
+            "title": "Voice",
+            "type": "string"
+          }
+        },
+        "required": [
+          "storage_key",
+          "duration_ms",
+          "accent"
+        ],
+        "title": "AudioConfirm",
+        "type": "object"
+      },
+      "AudioRequestAck": {
+        "description": "Chuông đã kêu hay chưa — KHÔNG phải audio đã có hay chưa.\n\n`queued=False` nghĩa là Redis không với tới được, không phải là thất bại:\nvòng quét định kỳ của worker vẫn tìm ra cùng số việc đó, chỉ muộn hơn.",
+        "properties": {
+          "queued": {
+            "title": "Queued",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "queued"
+        ],
+        "title": "AudioRequestAck",
+        "type": "object"
+      },
       "AudioSlotState": {
         "properties": {
           "accent": {
@@ -330,6 +411,22 @@
           "state"
         ],
         "title": "AudioSlotState",
+        "type": "object"
+      },
+      "AudioTicketRequest": {
+        "properties": {
+          "ext": {
+            "default": "mp3",
+            "enum": [
+              "mp3",
+              "m4a",
+              "wav"
+            ],
+            "title": "Ext",
+            "type": "string"
+          }
+        },
+        "title": "AudioTicketRequest",
         "type": "object"
       },
       "AvatarConfirm": {
@@ -1841,6 +1938,14 @@
             "title": "Questions",
             "type": "array"
           },
+          "script": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TurnDraft"
+            },
+            "title": "Script",
+            "type": "array"
+          },
           "title": {
             "anyOf": [
               {
@@ -2066,6 +2171,24 @@
           "calendar"
         ],
         "title": "LearningStats",
+        "type": "object"
+      },
+      "MediaAssign": {
+        "description": "Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.",
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          }
+        },
+        "title": "MediaAssign",
         "type": "object"
       },
       "OptionPublic": {
@@ -2321,6 +2444,31 @@
       },
       "QuestionAdmin": {
         "properties": {
+          "audio_attached_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Attached At"
+          },
+          "audio_may_be_stale": {
+            "default": false,
+            "title": "Audio May Be Stale",
+            "type": "boolean"
+          },
+          "audio_script": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TurnDraft"
+            },
+            "title": "Audio Script",
+            "type": "array"
+          },
           "audio_url": {
             "anyOf": [
               {
@@ -2413,6 +2561,18 @@
           "status": {
             "title": "Status",
             "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
           }
         },
         "required": [
@@ -2468,6 +2628,14 @@
             "title": "Prompt Text",
             "type": "string"
           },
+          "script": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TurnDraft"
+            },
+            "title": "Script",
+            "type": "array"
+          },
           "source": {
             "title": "Source",
             "type": "string"
@@ -2497,6 +2665,20 @@
       "QuestionEdit": {
         "description": "Sửa một câu sau khi dán. `exclude_unset` ở nơi gọi — xem `TestUpdate`.",
         "properties": {
+          "audio_script": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TurnDraft"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Script"
+          },
           "correct_label": {
             "anyOf": [
               {
@@ -3045,6 +3227,42 @@
       },
       "SetAdmin": {
         "properties": {
+          "audio_attached_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Attached At"
+          },
+          "audio_may_be_stale": {
+            "default": false,
+            "title": "Audio May Be Stale",
+            "type": "boolean"
+          },
+          "audio_script": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TurnDraft"
+            },
+            "title": "Audio Script",
+            "type": "array"
+          },
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Url"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -3074,6 +3292,18 @@
               }
             ],
             "title": "Title"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
           }
         },
         "required": [
@@ -3084,6 +3314,38 @@
           "passages"
         ],
         "title": "SetAdmin",
+        "type": "object"
+      },
+      "SetEdit": {
+        "description": "Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.\n\nLời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán\nlại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint\nnày, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.",
+        "properties": {
+          "audio_script": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TurnDraft"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Script"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "SetEdit",
         "type": "object"
       },
       "StoryItem": {
@@ -3740,6 +4002,24 @@
           "position"
         ],
         "title": "TopicPublic",
+        "type": "object"
+      },
+      "TurnDraft": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "voice": {
+            "title": "Voice",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "voice"
+        ],
+        "title": "TurnDraft",
         "type": "object"
       },
       "UploadTicket": {
@@ -4608,6 +4888,25 @@
           }
         },
         "title": "VocabularyUpdate",
+        "type": "object"
+      },
+      "VoiceOption": {
+        "description": "Một giọng logic — tên ta đặt, không phải id của nhà cung cấp (A4.3).",
+        "properties": {
+          "accent": {
+            "title": "Accent",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "accent"
+        ],
+        "title": "VoiceOption",
         "type": "object"
       },
       "WordDiff": {
@@ -5626,6 +5925,126 @@
         ]
       }
     },
+    "/api/v1/admin/media/audio/confirm": {
+      "post": {
+        "operationId": "audio_confirm_api_v1_admin_media_audio_confirm_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AudioConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AudioAssetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Audio Confirm",
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/api/v1/admin/media/audio/requests": {
+      "post": {
+        "description": "Đánh chuông cho worker TTS. **Không** sinh audio ở đây (ADR-007 §2.7b).\n\n202 chứ không 200, và đó là điều duy nhất cần hiểu về endpoint này: nó\nKHÔNG hứa audio đã có. API không sinh audio được — không import được\n`app.content` (A4.1), ảnh production không có edge-tts lẫn ffmpeg.\n\nKhông ghi bảng nào. Hàng đợi vẫn là *câu hỏi* \"nội dung nào thiếu audio\",\nnên bấm mười lần cũng không tạo ra mười job — worker chỉ hỏi lại database\nsớm hơn.\n\nChuông không kêu (Redis chết) vẫn trả 202, chỉ khác `queued`. Vòng quét định\nkỳ vẫn bắt được việc; nói dối rằng thất bại sẽ khiến biên tập viên bấm lại\nmột thứ vốn đã sẽ chạy.",
+        "operationId": "request_audio_api_v1_admin_media_audio_requests_post",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AudioRequestAck"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Request Audio",
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/api/v1/admin/media/audio/ticket": {
+      "post": {
+        "description": "Vé upload cho audio. Khoá do phía ta sinh, y như đường ảnh.",
+        "operationId": "audio_ticket_api_v1_admin_media_audio_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AudioTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Audio Ticket",
+        "tags": [
+          "media"
+        ]
+      }
+    },
     "/api/v1/admin/media/images": {
       "get": {
         "description": "Thư viện ảnh đã tải lên, mới nhất trước.\n\nKhông lọc theo `source`: ảnh lấy từ kho CC (`sourced`) và ảnh tự đưa lên\n(`uploaded`) cùng là ảnh dùng được cho một câu hỏi, và tách hai danh sách sẽ\nkhiến biên tập viên phải nhớ mình đã thêm ảnh nào bằng đường nào.",
@@ -5785,6 +6204,124 @@
         ]
       }
     },
+    "/api/v1/admin/question-sets/{set_id}": {
+      "patch": {
+        "description": "Sửa một cụm đã dán: tên cụm và lời thoại.\n\nLời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói\nPart 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và\nbản thu đã gắn.\n\nNó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản\nthu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại\ncòn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`\nvà cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.",
+        "operationId": "edit_set_api_v1_admin_question_sets__set_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Edit Set",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/question-sets/{set_id}/audio": {
+      "post": {
+        "description": "Gắn bản thu cho cả cụm — Part 3 và 4.",
+        "operationId": "assign_set_audio_api_v1_admin_question_sets__set_id__audio_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assign Set Audio",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/question-sets/{set_id}/passage-image": {
       "post": {
         "description": "Gắn hoặc gỡ ảnh cho một ô ngữ liệu (ADR-007 §2.3b).",
@@ -5898,6 +6435,124 @@
           }
         ],
         "summary": "Edit Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/questions/{question_id}/audio": {
+      "post": {
+        "description": "Gắn bản thu cho một câu — Part 1 và 2, nơi mỗi câu là một clip riêng.",
+        "operationId": "assign_question_audio_api_v1_admin_questions__question_id__audio_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assign Question Audio",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/questions/{question_id}/image": {
+      "post": {
+        "description": "Gắn bức ảnh của câu Part 1, chọn từ thư viện (ADR-007 §2.4).",
+        "operationId": "assign_question_image_api_v1_admin_questions__question_id__image_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaAssign"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Assign Question Image",
         "tags": [
           "admin"
         ]
@@ -6821,6 +7476,37 @@
           }
         ],
         "summary": "Publish Vocabulary",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/voices": {
+      "get": {
+        "description": "Các giọng dùng được, cho ô chọn giọng lúc sửa lời thoại.\n\nĐi qua API chứ không chép sang frontend: chép là hai danh sách, và cái chép\nsẽ trôi khỏi `LOGICAL_VOICE_ACCENTS` mà không gì báo — người soạn chọn một\ngiọng có trong dropdown rồi ăn 400 từ chính server vừa gửi dropdown đó.\n\n`LOGICAL_VOICE_ACCENTS` nằm ở `app/core/media.py` chứ không ở\n`app/content/tts.py` chính vì lúc này: không gì với tới được từ `app.main`\nmà import `app.content` (A4.1).",
+        "operationId": "list_voices_api_v1_admin_voices_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VoiceOption"
+                  },
+                  "title": "Response List Voices Api V1 Admin Voices Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Voices",
         "tags": [
           "admin"
         ]

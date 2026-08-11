@@ -17,14 +17,23 @@ trả 404 (ADR-006 §2.4b), và chính bước này bắt được.
 import uuid
 from typing import Annotated
 
+import redis
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
+from app.core.audio_jobs import ring
 from app.core.database import get_db
-from app.core.media import image_storage_key_for, upload_source_hash
+from app.core.media import (
+    AUDIO_ACCENTS,
+    image_storage_key_for,
+    public_audio_url,
+    storage_key_for,
+    upload_source_hash,
+)
 from app.core.rate_limit import Quota, rate_limit
+from app.core.redis_client import get_redis
 from app.core.storage import (
     LOCAL_UPLOAD_PATH,
     MAX_IMAGE_BYTES,
@@ -33,8 +42,13 @@ from app.core.storage import (
     get_driver,
     local_signature_valid,
 )
+from app.models.audio import AudioAsset
 from app.models.image import ImageAsset
 from app.schemas.media import (
+    AudioAssetPublic,
+    AudioConfirm,
+    AudioRequestAck,
+    AudioTicketRequest,
     ImageAssetPublic,
     ImageConfirm,
     UploadTicket,
@@ -145,9 +159,34 @@ def image_confirm(
 
 # --- nhận file ở môi trường dev ---------------------------------------------
 
+
 # Router RIÊNG, và `app/main.py` chỉ gắn nó khi environment == "development" —
 # cùng luật với mount `/media`. Ở production không có route này: file đi thẳng
 # tới nhà cung cấp và không byte nào chạy qua FastAPI (ADR-006 §2.3).
+@router.post(
+    "/audio/requests",
+    response_model=AudioRequestAck,
+    status_code=status.HTTP_202_ACCEPTED,
+    dependencies=[Depends(can_edit)],
+)
+def request_audio(client: redis.Redis = Depends(get_redis)) -> AudioRequestAck:
+    """Đánh chuông cho worker TTS. **Không** sinh audio ở đây (ADR-007 §2.7b).
+
+    202 chứ không 200, và đó là điều duy nhất cần hiểu về endpoint này: nó
+    KHÔNG hứa audio đã có. API không sinh audio được — không import được
+    `app.content` (A4.1), ảnh production không có edge-tts lẫn ffmpeg.
+
+    Không ghi bảng nào. Hàng đợi vẫn là *câu hỏi* "nội dung nào thiếu audio",
+    nên bấm mười lần cũng không tạo ra mười job — worker chỉ hỏi lại database
+    sớm hơn.
+
+    Chuông không kêu (Redis chết) vẫn trả 202, chỉ khác `queued`. Vòng quét định
+    kỳ vẫn bắt được việc; nói dối rằng thất bại sẽ khiến biên tập viên bấm lại
+    một thứ vốn đã sẽ chạy.
+    """
+    return AudioRequestAck(queued=ring(client))
+
+
 local_upload_router = APIRouter(tags=["media"])
 
 
@@ -208,3 +247,78 @@ def list_images(
         select(ImageAsset).order_by(ImageAsset.created_at.desc()).limit(limit).offset(offset)
     ).all()
     return [_asset_public(row) for row in rows]
+
+
+@router.post(
+    "/audio/ticket",
+    response_model=UploadTicket,
+    dependencies=[Depends(can_edit), Depends(rate_limit("media-ticket", TICKET_QUOTA))],
+)
+def audio_ticket(body: AudioTicketRequest) -> UploadTicket:
+    """Vé upload cho audio. Khoá do phía ta sinh, y như đường ảnh."""
+    source_hash = upload_source_hash(str(uuid.uuid4()))
+    return UploadTicket.of(get_driver("audio").ticket(storage_key_for(source_hash, ext=body.ext)))
+
+
+@router.post(
+    "/audio/confirm",
+    response_model=AudioAssetPublic,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(can_edit), Depends(rate_limit("media-confirm", CONFIRM_QUOTA))],
+)
+def audio_confirm(body: AudioConfirm, db: Session = Depends(get_db)) -> AudioAssetPublic:
+    existing = db.query(AudioAsset).filter(AudioAsset.storage_key == body.storage_key).one_or_none()
+    if existing is not None:
+        # Gọi lại cho cùng một khoá là chuyện bình thường — mạng chập chờn,
+        # người dùng bấm hai lần. Trả hàng đã có thay vì 409.
+        return _audio_public(existing)
+
+    if body.accent not in AUDIO_ACCENTS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Accent phải là một trong {list(AUDIO_ACCENTS)}",
+        )
+    if body.duration_ms <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Độ dài clip phải lớn hơn 0"
+        )
+
+    try:
+        stored = get_driver("audio").verify(body.storage_key)
+    except StorageError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Chưa thấy file trên kho lưu trữ: {error}",
+        ) from None
+
+    asset = AudioAsset(
+        storage_key=body.storage_key,
+        source_hash=body.storage_key.rsplit("/", 1)[-1].rsplit(".", 1)[0],
+        mime_type=stored.mime_type,
+        size_bytes=stored.size_bytes,
+        duration_ms=body.duration_ms,
+        # `uploaded`, không phải `tts`. Đây là chỗ hai đường phân biệt nhau, và
+        # nó quyết định `media_state` có xác minh được clip hay không: hash của
+        # file tải lên băm một id ngẫu nhiên, nên không suy ngược ra text được
+        # (ADR-007 §2.7).
+        source="uploaded",
+        engine="upload",
+        engine_version="1",
+        voice=body.voice,
+        accent=body.accent,
+        source_text=None,
+    )
+    db.add(asset)
+    db.commit()
+    return _audio_public(asset)
+
+
+def _audio_public(asset: AudioAsset) -> AudioAssetPublic:
+    return AudioAssetPublic(
+        id=str(asset.id),
+        storage_key=asset.storage_key,
+        url=public_audio_url(asset.storage_key),
+        duration_ms=asset.duration_ms,
+        accent=asset.accent,
+        voice=asset.voice,
+    )

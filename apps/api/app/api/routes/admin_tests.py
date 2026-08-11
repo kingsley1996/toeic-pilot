@@ -22,9 +22,10 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import require_role
 from app.core.database import get_db
-from app.core.media import public_audio_url
+from app.core.media import LOGICAL_VOICE_ACCENTS, public_audio_url, script_fingerprint
 from app.core.storage import StorageDriver, get_driver
 from app.models import (
+    AudioAsset,
     ImageAsset,
     PracticeTest,
     PracticeTestQuestion,
@@ -39,6 +40,7 @@ from app.schemas.admin import (
     CollectionAdmin,
     CollectionCreate,
     GroupDraft,
+    MediaAssign,
     ParseRequest,
     PassageAdmin,
     PassageImageAssign,
@@ -47,15 +49,18 @@ from app.schemas.admin import (
     QuestionEdit,
     QuestionOptionDraft,
     SetAdmin,
+    SetEdit,
     TestAdmin,
     TestCreate,
     TestPartCommit,
     TestPartParseResponse,
     TestPartSummary,
     TestUpdate,
+    TurnDraft,
+    VoiceOption,
 )
 from app.schemas.practice import PART_NUMBER_RANGES, PART_TITLES, section_of
-from app.services.content_import import parse_reading_part
+from app.services.content_import import parse_listening_part, parse_reading_part
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -63,6 +68,10 @@ can_edit = require_role("editor", "admin")
 can_publish = require_role("admin")
 
 READING_PARTS = (5, 6, 7)
+LISTENING_PARTS = (1, 2, 3, 4)
+# Part 3, 4, 6, 7 gom nhiều câu dưới một ngữ liệu dùng chung; ba part còn lại
+# thì mỗi câu đứng riêng (ADR-001 §A2).
+GROUPED_PARTS = (3, 4, 6, 7)
 
 
 def _test_or_404(db: Session, slug: str) -> PracticeTest:
@@ -110,6 +119,24 @@ def _collection_admin(db: Session, collection: TestCollection) -> CollectionAdmi
         test_count=len(tests),
         published_test_count=sum(1 for test in tests if test.status == "published"),
     )
+
+
+@router.get("/voices", response_model=list[VoiceOption])
+def list_voices(_: User = Depends(can_edit)) -> list[VoiceOption]:
+    """Các giọng dùng được, cho ô chọn giọng lúc sửa lời thoại.
+
+    Đi qua API chứ không chép sang frontend: chép là hai danh sách, và cái chép
+    sẽ trôi khỏi `LOGICAL_VOICE_ACCENTS` mà không gì báo — người soạn chọn một
+    giọng có trong dropdown rồi ăn 400 từ chính server vừa gửi dropdown đó.
+
+    `LOGICAL_VOICE_ACCENTS` nằm ở `app/core/media.py` chứ không ở
+    `app/content/tts.py` chính vì lúc này: không gì với tới được từ `app.main`
+    mà import `app.content` (A4.1).
+    """
+    return [
+        VoiceOption(name=name, accent=accent)
+        for name, accent in sorted(LOGICAL_VOICE_ACCENTS.items())
+    ]
 
 
 @router.get("/test-collections", response_model=list[CollectionAdmin])
@@ -268,14 +295,15 @@ def parse_part_paste(
     slug: str, part: int, body: ParseRequest, _: User = Depends(can_edit)
 ) -> TestPartParseResponse:
     """Phân tích nội dung dán và báo MỌI vấn đề. Không ghi gì (ADR-005 §3.4)."""
-    if part not in READING_PARTS:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Lượt này mới làm Part {', '.join(map(str, READING_PARTS))}",
-        )
+    if part not in (*LISTENING_PARTS, *READING_PARTS):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Part phải từ 1 đến 7")
 
     try:
-        parsed = parse_reading_part(body.raw_text, part)
+        parsed = (
+            parse_listening_part(body.raw_text, part)
+            if part in LISTENING_PARTS
+            else parse_reading_part(body.raw_text, part)
+        )
     except ValueError as problem:
         # 400 chứ không 500: nội dung dán sai định dạng là lỗi của dữ liệu vào,
         # và người dán cần đọc được câu giải thích chứ không phải "Internal
@@ -289,6 +317,7 @@ def parse_part_paste(
             line=group.line,
             title=group.title,
             passages=group.passages,
+            script=[TurnDraft(text=turn.text, voice=turn.voice) for turn in group.script],
             problems=group.problems,
             questions=[
                 QuestionDraft(
@@ -305,6 +334,9 @@ def parse_part_paste(
                     source=question.source,
                     source_note=question.source_note,
                     explanation=question.explanation,
+                    script=[
+                        TurnDraft(text=turn.text, voice=turn.voice) for turn in question.script
+                    ],
                     problems=question.problems,
                 )
                 for question in group.questions
@@ -330,11 +362,8 @@ def commit_part(
     user: User = Depends(can_edit),
 ) -> TestAdmin:
     """Ghi các cụm đã xem trước vào đề. Luôn ghi ở trạng thái `draft`."""
-    if body.part not in READING_PARTS:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Lượt này mới làm Part {', '.join(map(str, READING_PARTS))}",
-        )
+    if body.part not in (*LISTENING_PARTS, *READING_PARTS):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Part phải từ 1 đến 7")
     test = _test_or_404(db, slug)
 
     existing = _rows(db, test.id)
@@ -354,7 +383,7 @@ def commit_part(
             )
 
         stimulus: QuestionSet | None = None
-        if body.part in (6, 7):
+        if body.part in GROUPED_PARTS:
             passages = group.passages + [None, None, None]
             stimulus = QuestionSet(
                 part=body.part,
@@ -362,6 +391,11 @@ def commit_part(
                 passage=passages[0],
                 passage_2=passages[1],
                 passage_3=passages[2],
+                # Part 3 và 4 gắn bản thu ở CỤM, không ở từng câu (ADR-001 A4.3):
+                # một bài nói dùng chung cho ba câu, nên lời thoại cũng vậy.
+                audio_script=(
+                    [{"text": turn.text, "voice": turn.voice} for turn in group.script] or None
+                ),
                 status="draft",
                 created_by=user.id,
             )
@@ -390,6 +424,11 @@ def commit_part(
                 # (ADR-007 §2.5). Trình dán đã từ chối lô thiếu nó.
                 source=draft.source,
                 source_note=draft.source_note,
+                # Part 1 và 2: lời thoại nằm trên chính câu, vì mỗi câu là một
+                # bản thu riêng và không có cụm nào để treo nó lên.
+                audio_script=(
+                    [{"text": turn.text, "voice": turn.voice} for turn in draft.script] or None
+                ),
                 status="draft",
                 created_by=user.id,
                 options=[
@@ -402,7 +441,11 @@ def commit_part(
             db.add(question)
             db.flush()
 
-            problems = validate_question(question)
+            # Lọc bỏ lỗi thiếu media: lúc vừa dán thì chưa ai gắn audio hay ảnh
+            # được, và chặn ở đây sẽ khiến Part 1-4 không bao giờ ghi vào được.
+            # Cổng chặn thật nằm ở bước xuất bản, nơi `validate_question` chạy
+            # đầy đủ — cùng luật đã áp cho vocabulary và dictation.
+            problems = _authoring_problems(question)
             if problems:
                 db.rollback()
                 raise HTTPException(
@@ -461,6 +504,25 @@ def edit_question(
 
     changes = body.model_dump(exclude_unset=True)
 
+    # Lời thoại chỉ nằm trên CÂU ở Part 1 và 2. Part 3/4 treo nó ở cụm vì cả cụm
+    # dùng chung một bản thu, nên ghi vào đây sẽ tạo ra một lời thoại thứ hai mà
+    # không bản thu nào ứng với — và người soát sẽ tin vào cái sai.
+    if "audio_script" in changes:
+        if question.part in (3, 4):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    "Part 3 và 4 dùng chung một bản thu cho cả cụm nên lời thoại ở cụm; "
+                    f"sửa tại PATCH /admin/question-sets/{question.set_id}"
+                ),
+            )
+        if question.part not in (1, 2):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Part {question.part} không có bản thu nên không có lời thoại",
+            )
+        changes["audio_script"] = _script_or_400(body.audio_script or [])
+
     contents = changes.pop("options", None)
     if contents:
         by_label = {option.label: option for option in question.options}
@@ -486,7 +548,11 @@ def edit_question(
     for field_name, value in changes.items():
         setattr(question, field_name, value)
 
-    problems = validate_question(question)
+    # Cùng bộ lọc như lúc ghi, và vì cùng một lý do: bản thu chưa gắn thì mọi
+    # câu Part 1-4 đều "thiếu audio", nên soát đủ ở đây sẽ khiến một lỗi chính
+    # tả trong lời thoại không sửa được cho tới khi đã thu xong — tức là phải
+    # thu lại. Cổng chặn thật vẫn ở bước xuất bản.
+    problems = _authoring_problems(question)
     if problems:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="; ".join(problems))
@@ -494,10 +560,7 @@ def edit_question(
     # Sửa một câu ĐÃ xuất bản sẽ đưa nó về nháp. Không phải để phiền: nội dung
     # đã tới tay người học vừa đổi, và người duyệt nó lần trước duyệt một thứ
     # khác. Cột `published_by` tồn tại để trả lời "ai cho cái này ra ngoài".
-    if question.status == "published":
-        question.status = "draft"
-        question.published_by = None
-        question.published_at = None
+    _demote(question)
 
     db.commit()
     link = db.scalars(
@@ -508,6 +571,55 @@ def edit_question(
             status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
         )
     return _question_admin(link, question, get_driver("image"))
+
+
+@router.patch("/question-sets/{set_id}", response_model=SetAdmin)
+def edit_set(
+    set_id: uuid.UUID,
+    body: SetEdit,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> SetAdmin:
+    """Sửa một cụm đã dán: tên cụm và lời thoại.
+
+    Lời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói
+    Part 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và
+    bản thu đã gắn.
+
+    Nó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản
+    thu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại
+    còn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`
+    và cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.
+    """
+    stimulus = db.get(QuestionSet, set_id)
+    if stimulus is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cụm này")
+
+    changes = body.model_dump(exclude_unset=True)
+    if not changes:
+        return _set_admin(stimulus, _images_for(db, [stimulus]), get_driver("image"))
+
+    if "audio_script" in changes:
+        if stimulus.part not in (3, 4):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Part {stimulus.part} không có bản thu nên không có lời thoại",
+            )
+        stimulus.audio_script = _script_or_400(body.audio_script or [])
+    if "title" in changes:
+        stimulus.title = body.title
+
+    # Hạ cả cụm LẪN các câu thuộc nó về nháp. Sửa lời thoại là sửa thứ người học
+    # đang nghe, và người duyệt lần trước đã duyệt một bài nói khác — trong khi
+    # cổng xuất bản chỉ soát từng câu, nên không hạ câu xuống thì cụm về nháp mà
+    # các câu vẫn nằm trong đề đã phát hành.
+    _demote(stimulus)
+    for question in db.scalars(select(Question).where(Question.set_id == stimulus.id)):
+        _demote(question)
+
+    db.commit()
+    db.refresh(stimulus)
+    return _set_admin(stimulus, _images_for(db, [stimulus]), get_driver("image"))
 
 
 @router.post("/question-sets/{set_id}/passage-image", response_model=SetAdmin)
@@ -563,6 +675,78 @@ def assign_passage_image(
 
     db.commit()
     return _set_admin(stimulus, _images_for(db, [stimulus]), get_driver("image"))
+
+
+@router.post("/questions/{question_id}/audio", response_model=QuestionAdmin)
+def assign_question_audio(
+    question_id: uuid.UUID,
+    body: MediaAssign,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> QuestionAdmin:
+    """Gắn bản thu cho một câu — Part 1 và 2, nơi mỗi câu là một clip riêng."""
+    question = db.get(Question, question_id, options=[selectinload(Question.options)])
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
+    if question.part not in (1, 2):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"Part {question.part} gắn bản thu ở CỤM, không ở từng câu — "
+                "một bài nói dùng chung cho nhiều câu (ADR-001 §A4.3)."
+            ),
+        )
+    question.audio_asset_id = _asset_or_404(db, AudioAsset, body.asset_id)
+    # Ghi lại lời thoại tại lúc gắn, để sau này biết bản thu còn ứng với nó
+    # không. Không phải cổng chặn: hash của file tải lên băm một id ngẫu nhiên
+    # nên không suy ngược ra lời thoại được, và thứ duy nhất làm được là cho
+    # người ta NHÌN THẤY (ADR-007 §2.7).
+    _record_attachment(question, attached=bool(body.asset_id))
+    db.commit()
+    return _question_admin(_link_or_409(db, question.id), question, get_driver("image"))
+
+
+@router.post("/question-sets/{set_id}/audio", response_model=SetAdmin)
+def assign_set_audio(
+    set_id: uuid.UUID,
+    body: MediaAssign,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> SetAdmin:
+    """Gắn bản thu cho cả cụm — Part 3 và 4."""
+    stimulus = db.get(QuestionSet, set_id)
+    if stimulus is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cụm này")
+    if stimulus.part not in (3, 4):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cụm Part {stimulus.part} không mang bản thu",
+        )
+    stimulus.audio_asset_id = _asset_or_404(db, AudioAsset, body.asset_id)
+    _record_attachment(stimulus, attached=bool(body.asset_id))
+    db.commit()
+    return _set_admin(stimulus, _images_for(db, [stimulus]), get_driver("image"))
+
+
+@router.post("/questions/{question_id}/image", response_model=QuestionAdmin)
+def assign_question_image(
+    question_id: uuid.UUID,
+    body: MediaAssign,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> QuestionAdmin:
+    """Gắn bức ảnh của câu Part 1, chọn từ thư viện (ADR-007 §2.4)."""
+    question = db.get(Question, question_id, options=[selectinload(Question.options)])
+    if question is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
+    if question.part != 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Chỉ Part 1 có ảnh trên câu; câu này là Part {question.part}",
+        )
+    question.image_asset_id = _asset_or_404(db, ImageAsset, body.asset_id)
+    db.commit()
+    return _question_admin(_link_or_409(db, question.id), question, get_driver("image"))
 
 
 @router.post("/questions/{question_id}/publish", response_model=QuestionAdmin)
@@ -632,10 +816,20 @@ def publish_test(
 
 
 def _question_admin(
-    link: PracticeTestQuestion, question: Question, image_driver: object
+    link: PracticeTestQuestion,
+    question: Question,
+    image_driver: StorageDriver,
+    assets: dict[uuid.UUID, AudioAsset | ImageAsset] | None = None,
 ) -> QuestionAdmin:
     stimulus = question.question_set
+    # Ai đang giữ bản thu của câu này: chính nó (Part 1, 2) hay cụm (Part 3, 4).
+    owner: Question | QuestionSet = (
+        stimulus if question.part in (3, 4) and stimulus is not None else question
+    )
+    lookup: dict[uuid.UUID, AudioAsset | ImageAsset] = assets or {}
     audio_id = question.audio_asset_id or (stimulus.audio_asset_id if stimulus else None)
+    audio = lookup.get(audio_id) if audio_id else None
+    image = lookup.get(question.image_asset_id) if question.image_asset_id else None
     return QuestionAdmin(
         id=str(question.id),
         part=question.part,
@@ -652,9 +846,19 @@ def _question_admin(
         explanation=question.explanation,
         status=question.status,
         set_id=str(stimulus.id) if stimulus else None,
-        # URL dựng bằng nối chuỗi, không gọi object store lúc có request.
-        audio_url=public_audio_url(f"audio/{audio_id}") if audio_id else None,
-        image_url=None,
+        # URL dựng từ `storage_key` THẬT, nối chuỗi, không gọi object store lúc
+        # có request. Bản đầu nối id của asset vào `audio/` — một URL trông hợp
+        # lệ và luôn 404, mà 404 của audio thì chỉ lộ ra khi có người bấm phát.
+        audio_url=public_audio_url(audio.storage_key) if audio else None,
+        image_url=image_driver.public_url(image.storage_key) if image else None,
+        # Part 3/4 treo bản thu VÀ lời thoại ở cụm, nên ba trường dưới phải đọc
+        # từ cụm. Đọc từ câu thì chúng luôn rỗng và `audio_may_be_stale` luôn
+        # False — cảnh báo đúng luật mà không bao giờ hiện, ở đúng chỗ người
+        # soạn nhìn vào nhiều nhất là danh sách câu.
+        audio_script=_turns(owner.audio_script),
+        audio_attached_at=owner.audio_attached_at,
+        updated_at=owner.updated_at,
+        audio_may_be_stale=_may_be_stale(owner),
         problems=validate_question(question),
     )
 
@@ -699,8 +903,13 @@ _PASSAGE_IMAGE_COLUMNS = {
 _PASSAGE_TEXT_COLUMNS = {1: "passage", 2: "passage_2", 3: "passage_3"}
 
 
-def _images_for(db: Session, sets: list[QuestionSet]) -> dict[uuid.UUID, ImageAsset]:
-    ids = {
+def _images_for(db: Session, sets: list[QuestionSet]) -> dict[uuid.UUID, ImageAsset | AudioAsset]:
+    """Ảnh ngữ liệu VÀ bản thu của các cụm, nạp một lượt.
+
+    Tra lẻ từng ô sẽ là bốn lượt đi lại database cho mỗi cụm, và một đề đầy đủ
+    có hàng chục cụm.
+    """
+    image_ids = {
         asset_id
         for stimulus in sets
         for asset_id in (
@@ -710,22 +919,49 @@ def _images_for(db: Session, sets: list[QuestionSet]) -> dict[uuid.UUID, ImageAs
         )
         if asset_id
     }
-    if not ids:
-        return {}
-    return {
-        asset.id: asset
-        for asset in db.scalars(select(ImageAsset).where(ImageAsset.id.in_(ids))).all()
+    audio_ids = {s.audio_asset_id for s in sets if s.audio_asset_id}
+    return _load_assets(db, image_ids, audio_ids)
+
+
+def _assets_for(db: Session, questions: list[Question]) -> dict[uuid.UUID, ImageAsset | AudioAsset]:
+    image_ids = {q.image_asset_id for q in questions if q.image_asset_id}
+    audio_ids = {q.audio_asset_id for q in questions if q.audio_asset_id} | {
+        q.question_set.audio_asset_id
+        for q in questions
+        if q.question_set is not None and q.question_set.audio_asset_id
     }
+    return _load_assets(db, image_ids, audio_ids)
+
+
+def _load_assets(
+    db: Session, image_ids: set[uuid.UUID], audio_ids: set[uuid.UUID]
+) -> dict[uuid.UUID, ImageAsset | AudioAsset]:
+    out: dict[uuid.UUID, ImageAsset | AudioAsset] = {}
+    if image_ids:
+        out.update(
+            {a.id: a for a in db.scalars(select(ImageAsset).where(ImageAsset.id.in_(image_ids)))}
+        )
+    if audio_ids:
+        out.update(
+            {a.id: a for a in db.scalars(select(AudioAsset).where(AudioAsset.id.in_(audio_ids)))}
+        )
+    return out
 
 
 def _set_admin(
-    stimulus: QuestionSet, images: dict[uuid.UUID, ImageAsset], driver: StorageDriver
+    stimulus: QuestionSet,
+    images: dict[uuid.UUID, ImageAsset | AudioAsset],
+    driver: StorageDriver,
 ) -> SetAdmin:
     passages: list[PassageAdmin] = []
     for slot in (1, 2, 3):
         text = getattr(stimulus, _PASSAGE_TEXT_COLUMNS[slot])
         image_id = getattr(stimulus, _PASSAGE_IMAGE_COLUMNS[slot])
-        asset = images.get(image_id) if image_id else None
+        found = images.get(image_id) if image_id else None
+        # Thu hẹp kiểu tường minh: bản đồ asset chứa cả ảnh lẫn audio, và một
+        # `image_id` trỏ vào bản thu là dữ liệu hỏng chứ không phải chuyện bình
+        # thường — bỏ qua còn hơn dựng một ô ngữ liệu không có chữ thay ảnh.
+        asset = found if isinstance(found, ImageAsset) else None
         # Ô rỗng vẫn trả về: người soạn cần một chỗ trống để bấm vào mà gắn ảnh.
         passages.append(
             PassageAdmin(
@@ -736,10 +972,131 @@ def _set_admin(
                 image_alt=asset.alt_text if asset else None,
             )
         )
+    audio = images.get(stimulus.audio_asset_id) if stimulus.audio_asset_id else None
     return SetAdmin(
         id=str(stimulus.id),
         part=stimulus.part,
         title=stimulus.title,
         status=stimulus.status,
         passages=passages,
+        audio_url=public_audio_url(audio.storage_key) if audio else None,
+        audio_script=_turns(stimulus.audio_script),
+        audio_attached_at=stimulus.audio_attached_at,
+        updated_at=stimulus.updated_at,
+        audio_may_be_stale=_may_be_stale(stimulus),
     )
+
+
+def _asset_or_404(db: Session, model: type, asset_id: str | None) -> uuid.UUID | None:
+    if asset_id is None:
+        return None
+    asset = db.get(model, uuid.UUID(asset_id))
+    if asset is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có asset này")
+    return uuid.UUID(asset_id)
+
+
+def _link_or_409(db: Session, question_id: uuid.UUID) -> PracticeTestQuestion:
+    link = db.scalars(
+        select(PracticeTestQuestion).where(PracticeTestQuestion.question_id == question_id)
+    ).first()
+    if link is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
+        )
+    return link
+
+
+def _turns(script: list[dict[str, str]] | None) -> list[TurnDraft]:
+    return [TurnDraft(text=turn["text"], voice=turn["voice"]) for turn in script or []]
+
+
+def _authoring_problems(question: Question) -> list[str]:
+    """Lỗi nội dung, trừ những lỗi chỉ media mới chữa được.
+
+    Lúc đang soạn thì chưa ai gắn audio hay ảnh được, nên chặn vì thiếu chúng sẽ
+    khiến Part 1-4 không bao giờ ghi hay sửa được. Cổng chặn đầy đủ nằm ở bước
+    xuất bản, nơi `validate_question` chạy trọn vẹn — cùng luật đã áp cho
+    vocabulary và dictation.
+    """
+    return [
+        problem
+        for problem in validate_question(question)
+        if "audio" not in problem and "photograph" not in problem
+    ]
+
+
+def _demote(row: Question | QuestionSet) -> None:
+    """Đưa nội dung đã xuất bản về nháp sau khi sửa.
+
+    Không phải để phiền: thứ đã tới tay người học vừa đổi, và người duyệt nó lần
+    trước duyệt một thứ khác. `published_by` tồn tại để trả lời "ai cho cái này
+    ra ngoài", nên giữ lại tên người duyệt bản cũ là ghi sai chính câu đó.
+    """
+    if row.status == "published":
+        row.status = "draft"
+        row.published_by = None
+        row.published_at = None
+
+
+def _script_or_400(turns: list[TurnDraft]) -> list[dict[str, str]] | None:
+    """Đổi lời thoại từ form sang hình dạng lưu, từ chối giọng không có thật.
+
+    Tên giọng sai không gây lỗi gì ở đây — nó chỉ nổ ở bước sinh audio, cách chỗ
+    gõ vào hàng ngày, trong một lô dài mà một clip hỏng dễ trôi qua. Chặn ngay
+    lúc gõ, khi người soạn còn nhớ mình vừa gõ gì.
+
+    Kiểm theo `LOGICAL_VOICE_ACCENTS` ở `app/core/media.py` chứ không theo
+    `LOGICAL_VOICES` của `app/content/tts.py`: không gì với tới được từ
+    `app.main` mà import `app.content` (A4.1), và đó chính là lý do bảng tên
+    giọng đã được dời sang `core`.
+
+    Danh sách rỗng trả về None, không phải `[]`: cột nullable, và "không có lời
+    thoại" chỉ nên có một cách viết trong database.
+    """
+    cleaned: list[dict[str, str]] = []
+    for index, turn in enumerate(turns, start=1):
+        text = turn.text.strip()
+        if not text:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Lượt nói {index} không có chữ nào",
+            )
+        if turn.voice not in LOGICAL_VOICE_ACCENTS:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Lượt nói {index}: không có giọng {turn.voice!r}. "
+                    f"Các giọng dùng được: {', '.join(sorted(LOGICAL_VOICE_ACCENTS))}"
+                ),
+            )
+        cleaned.append({"text": text, "voice": turn.voice})
+    return cleaned or None
+
+
+def _record_attachment(row: Question | QuestionSet, *, attached: bool) -> None:
+    """Chốt "bản thu này được gắn cho lời thoại nào" ngay lúc gắn."""
+    row.audio_attached_at = datetime.now(UTC) if attached else None
+    row.audio_script_hash = _fingerprint(row.audio_script) if attached else None
+
+
+def _fingerprint(script: list[dict[str, str]] | None) -> str | None:
+    return script_fingerprint([(turn["text"], turn["voice"]) for turn in script or []])
+
+
+def _may_be_stale(row: Question | QuestionSet) -> bool:
+    """Bản thu đang gắn có còn ứng với lời thoại hiện tại không.
+
+    Chưa gắn gì thì không có gì để lệch. Còn lại là một phép so vân tay, không
+    phải so hai mốc thời gian: `audio_attached_at` do đồng hồ Python ghi còn
+    `updated_at` do đồng hồ database ghi, nên phiên bản cũ của hàm này phụ thuộc
+    hai chiếc đồng hồ khớp nhau, và trên SQLite — độ phân giải một giây — sửa
+    ngay sau khi gắn thì nó im lặng. Chi tiết ở `script_fingerprint`.
+
+    Đổi lại còn chính xác hơn: nó chỉ kêu khi thứ bản thu ứng với thật sự đổi.
+    Sửa một dấu phẩy trong phần giải thích không còn báo lệch oan, mà cảnh báo
+    oan là cách nhanh nhất dạy người ta bấm bỏ qua mọi cảnh báo.
+    """
+    if row.audio_asset_id is None:
+        return False
+    return row.audio_script_hash != _fingerprint(row.audio_script)

@@ -7,10 +7,25 @@ import {
   type ImageAssetPublic,
   type QuestionAdmin,
   type SetAdmin,
+  type TurnDraft,
+  type VoiceOption,
   type TestAdmin,
+  type AudioRequestAck,
   type TestPartParseResponse,
 } from "@toeic-pilot/shared";
-import { ArrowLeft, Check, CircleAlert, Copy, ImageIcon, Pencil, Send } from "lucide-react";
+import {
+  ArrowLeft,
+  AudioLines,
+  Check,
+  CircleAlert,
+  Copy,
+  ImageIcon,
+  Pencil,
+  Plus,
+  Send,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -19,6 +34,7 @@ import {
   Alert,
   Button,
   EmptyState,
+  FieldError,
   Page,
   Field,
   Input,
@@ -32,6 +48,7 @@ import {
   cx,
 } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
+import { uploadAudio } from "@/lib/audio-upload";
 import { useRequireSession } from "@/lib/session";
 
 /*
@@ -44,12 +61,63 @@ import { useRequireSession } from "@/lib/session";
  * tự thì mắt người không soát được, mà soát được mới là điểm của bước này.
  */
 
-// Lượt 1 mới làm phần Đọc. Part 1–4 cần audio và thuộc lượt 2 (ADR-007 §3b).
-const PARTS = [5, 6, 7] as const;
+const PARTS = [1, 2, 3, 4, 5, 6, 7] as const;
+// Part 1 và 2 KHÔNG in gì cả — ETS chỉ đọc lên — nên chúng không có ngữ liệu
+// dùng chung, và phần chữ người soạn gõ vào là lời thoại (ADR-007 §2.1).
+const UNPRINTED = [1, 2];
+const LISTENING = [1, 2, 3, 4];
+// Part 3, 4, 6, 7 gom nhiều câu dưới một ngữ liệu dùng chung (ADR-001 §A2).
+const GROUPED = [3, 4, 6, 7];
 
 const NO_COLLECTION = "__none__";
 
 const PLACEHOLDER: Record<number, string> = {
+  1: `[QUESTION]
+voice: us_female_1
+Look at the picture marked number one in your test book.
+(A) The woman is sitting at a picnic table.
+(B) The woman is reading a newspaper.
+(C) The woman is loading a truck.
+(D) The woman is walking along a path.
+answer: A
+source: original`,
+  2: `[QUESTION]
+voice: us_female_1
+Where did you put the sales report?
+voice: uk_male_1
+(A) On your desk, next to the printer.
+(B) Yes, I finished it last night.
+(C) About thirty copies, I think.
+answer: A
+source: original`,
+  3: `[SCRIPT] Hội thoại về đơn hàng ghế
+voice: us_female_1
+Hi, I'm calling about the office chairs we ordered last week.
+voice: us_male_1
+I'm sorry about that. Let me pull up the tracking number.
+
+[QUESTION]
+What is the woman calling about?
+(A) A late delivery
+(B) A billing error
+(C) A product return
+(D) A price change
+answer: A
+source: original
+explanation: Cô ấy gọi vì đơn ghế chưa tới.`,
+  4: `[SCRIPT] Thông báo bảo trì sảnh
+voice: uk_male_1
+Attention, all tenants. Maintenance work on the lobby entrance
+will begin this Wednesday and continue through Friday.
+
+[QUESTION]
+Where would this announcement most likely be heard?
+(A) In an office building
+(B) At an airport
+(C) In a factory
+(D) At a school
+answer: A
+source: original`,
   5: `[QUESTION]
 The board approved the ____ budget for the next quarter.
 (A) annual
@@ -63,8 +131,7 @@ explanation: Cần một tính từ bổ nghĩa cho "budget".`,
 Dear tenants,
 
 The lobby entrance will be closed (131) ____ Wednesday. During this time,
-please use the side entrance on Le Loi Street. Deliveries will (132) ____ be
-redirected there. We expect the work to finish by Friday.
+please use the side entrance on Le Loi Street.
 
 [QUESTION]
 (131)
@@ -74,17 +141,7 @@ redirected there. We expect the work to finish by Friday.
 (D) until
 answer: B
 source: original
-explanation: "from + mốc thời gian" chỉ thời điểm bắt đầu.
-
-[QUESTION]
-(132)
-(A) also
-(B) never
-(C) rarely
-(D) instead
-answer: A
-source: original
-explanation: Câu này bổ sung thêm một việc cùng chiều với câu trước.`,
+explanation: "from + mốc thời gian" chỉ thời điểm bắt đầu.`,
   7: `[PASSAGE] Thông báo bảo trì
 The lobby entrance will be closed from Wednesday.
 Please use the side entrance on Le Loi Street.
@@ -109,7 +166,14 @@ export default function AdminTestPage() {
   const [collections, setCollections] = useState<CollectionAdmin[]>([]);
   const [sets, setSets] = useState<SetAdmin[]>([]);
   const [library, setLibrary] = useState<ImageAssetPublic[]>([]);
+  // Danh sách giọng lấy từ server, không chép sang đây: hai bản sao sẽ trôi
+  // khỏi nhau và người soạn chọn được một giọng rồi ăn 400 từ chính server
+  // vừa gửi dropdown đó.
+  const [voices, setVoices] = useState<VoiceOption[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
+  // Accent của bản thu sắp tải lên. Người học lọc nội dung theo nó, nên nó là
+  // dữ liệu thật — và không ai ngoài người tải lên biết bản thu giọng gì.
+  const [accent, setAccent] = useState("en-US");
   const [questions, setQuestions] = useState<QuestionAdmin[] | null>(null);
   const [part, setPart] = useState<number>(5);
   const [raw, setRaw] = useState("");
@@ -135,6 +199,9 @@ export default function AdminTestPage() {
       apiFetch<ImageAssetPublic[]>(API_ROUTES.adminImages, { token: t })
         .then(setLibrary)
         .catch(() => {});
+      apiFetch<VoiceOption[]>(API_ROUTES.adminVoices, { token: t })
+        .then(setVoices)
+        .catch(() => {});
     },
     [slug],
   );
@@ -143,15 +210,24 @@ export default function AdminTestPage() {
     if (token) refresh(token);
   }, [token, refresh]);
 
-  async function run<T>(work: () => Promise<T>, done?: (value: T) => void) {
-    if (!token || busy) return;
+  // Trả về lời từ chối, `null` là thành công — chứ không nuốt kết quả. Form sửa
+  // lời thoại cần cả hai: chỉ đóng khi server đã nhận (đóng dù thất bại là ném
+  // đi đoạn hội thoại người ta vừa gõ, đúng lúc họ cần gõ lại nó nhất), và in
+  // được lời từ chối NGAY CẠNH nút bấm. Băng lỗi chung nằm tận đầu trang, cách
+  // form cả màn hình: bấm Lưu rồi thấy không có gì xảy ra thì không ai nghĩ tới
+  // việc cuộn lên tìm.
+  async function run<T>(work: () => Promise<T>, done?: (value: T) => void): Promise<string | null> {
+    if (!token || busy) return "Đang bận.";
     setBusy(true);
     setError(null);
     setNotice(null);
     try {
       done?.(await work());
+      return null;
     } catch (problem) {
-      setError(problem instanceof ApiError ? problem.message : "Có lỗi xảy ra.");
+      const message = problem instanceof ApiError ? problem.message : "Có lỗi xảy ra.";
+      setError(message);
+      return message;
     } finally {
       setBusy(false);
     }
@@ -236,6 +312,92 @@ export default function AdminTestPage() {
       },
     );
 
+  const saveSetScript = (setId: string, script: TurnDraft[]) =>
+    run(
+      () =>
+        apiFetch<SetAdmin>(API_ROUTES.adminQuestionSet(setId), {
+          method: "PATCH",
+          token: token ?? undefined,
+          body: JSON.stringify({ audio_script: script }),
+        }),
+      () => {
+        setNotice("Đã lưu lời thoại. Cụm và các câu của nó quay về nháp.");
+        if (token) refresh(token);
+      },
+    );
+
+  const saveQuestionScript = (questionId: string, script: TurnDraft[]) =>
+    run(
+      () =>
+        apiFetch<QuestionAdmin>(API_ROUTES.adminQuestion(questionId), {
+          method: "PATCH",
+          token: token ?? undefined,
+          body: JSON.stringify({ audio_script: script }),
+        }),
+      () => {
+        setNotice("Đã lưu lời thoại.");
+        if (token) refresh(token);
+      },
+    );
+
+  const uploadSetAudio = (setId: string, file: File) =>
+    run(
+      async () => {
+        const asset = await uploadAudio(file, accent, token ?? "");
+        return apiFetch<SetAdmin>(API_ROUTES.adminSetAudio(setId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ asset_id: asset.id }),
+        });
+      },
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const uploadQuestionAudio = (questionId: string, file: File) =>
+    run(
+      async () => {
+        const asset = await uploadAudio(file, accent, token ?? "");
+        return apiFetch<QuestionAdmin>(API_ROUTES.adminQuestionAudio(questionId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ asset_id: asset.id }),
+        });
+      },
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const assignQuestionImage = (questionId: string, imageId: string | null) =>
+    run(
+      () =>
+        apiFetch<QuestionAdmin>(API_ROUTES.adminQuestionImage(questionId), {
+          method: "POST",
+          token: token ?? undefined,
+          body: JSON.stringify({ asset_id: imageId }),
+        }),
+      () => {
+        if (token) refresh(token);
+      },
+    );
+
+  const requestAudio = () =>
+    run(
+      () =>
+        apiFetch<AudioRequestAck>(API_ROUTES.adminAudioRequests, {
+          method: "POST",
+          token: token ?? undefined,
+        }),
+      (ack) =>
+        setNotice(
+          ack.queued
+            ? "Đã xếp hàng. Worker sẽ sinh audio cho lời thoại còn thiếu — tải lại trang sau một lát."
+            : "Chuông không tới được worker, nhưng vòng quét định kỳ vẫn sẽ tìm ra. Có thể mất vài phút.",
+        ),
+    );
+
   const publishTest = () =>
     run(
       () =>
@@ -315,20 +477,30 @@ export default function AdminTestPage() {
             )}
           </div>
         </div>
-        {canPublish && test.status !== "published" && (
-          <Button
-            onClick={() => void publishTest()}
-            disabled={busy || !allPublished}
-            title={
-              allPublished
-                ? undefined
-                : "Còn câu chưa xuất bản — xuất bản từng câu trước, rồi mới xuất bản đề"
-            }
-          >
-            <Send size={14} strokeWidth={2} aria-hidden />
-            Xuất bản đề
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Nút này KHÔNG sinh audio — nó đánh chuông. API không sinh được
+              (A4.1), nên câu chữ phải nói đúng thứ vừa xảy ra: đã xếp hàng.
+              Viết "đã sinh audio" ở đây là hứa một thứ chưa xảy ra, và biên tập
+              viên sẽ bấm Xuất bản ngay sau đó rồi ăn 409. */}
+          <Button variant="secondary" onClick={() => void requestAudio()} disabled={busy}>
+            <AudioLines size={14} strokeWidth={2} aria-hidden />
+            Sinh audio còn thiếu
           </Button>
-        )}
+          {canPublish && test.status !== "published" && (
+            <Button
+              onClick={() => void publishTest()}
+              disabled={busy || !allPublished}
+              title={
+                allPublished
+                  ? undefined
+                  : "Còn câu chưa xuất bản — xuất bản từng câu trước, rồi mới xuất bản đề"
+              }
+            >
+              <Send size={14} strokeWidth={2} aria-hidden />
+              Xuất bản đề
+            </Button>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -345,19 +517,18 @@ export default function AdminTestPage() {
       {/* Thanh part. Part 1–4 hiện ra nhưng khoá lại, chứ không giấu đi: giấu
           thì người soạn tưởng đề chỉ có ba phần và đó là thiết kế. */}
       <div className="mt-6 flex flex-wrap items-center gap-1.5">
-        {[1, 2, 3, 4, 5, 6, 7].map((value) => {
-          const reading = PARTS.includes(value as (typeof PARTS)[number]);
+        {PARTS.map((value) => {
           const summary = test.parts.find((p) => p.part === value);
           return (
             <button
               key={value}
               type="button"
-              disabled={!reading}
+
               onClick={() => {
                 setPart(value);
                 setParsed(null);
               }}
-              title={reading ? undefined : "Phần nghe thuộc lượt sau — cần audio"}
+
               className={cx(
                 "inline-flex items-center gap-1.5 rounded border px-3 py-1.5 text-small font-semibold disabled:opacity-45",
                 part === value
@@ -375,6 +546,18 @@ export default function AdminTestPage() {
           );
         })}
       </div>
+
+      {LISTENING.includes(part) && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-small text-ink-muted">Accent của bản thu sắp tải lên</span>
+          <Select value={accent} onChange={(e) => setAccent(e.target.value)} className="w-auto">
+            <option value="en-US">Mỹ (en-US)</option>
+            <option value="en-GB">Anh (en-GB)</option>
+            <option value="en-AU">Úc (en-AU)</option>
+            <option value="en-CA">Canada (en-CA)</option>
+          </Select>
+        </div>
+      )}
 
       <section className="mt-6">
         <SectionHeader
@@ -412,9 +595,11 @@ export default function AdminTestPage() {
         {parsed && <GroupPreview parsed={parsed} />}
       </section>
 
-      {part !== 5 && (
+      {GROUPED.includes(part) && (
         <section className="mt-10">
-          <SectionHeader title={`Ngữ liệu Part ${part}`} />
+          <SectionHeader
+            title={LISTENING.includes(part) ? `Lời thoại Part ${part}` : `Ngữ liệu Part ${part}`}
+          />
           {sets.filter((stimulus) => stimulus.part === part).length === 0 ? (
             <p className="text-small text-ink-muted">Phần này chưa có cụm nào.</p>
           ) : (
@@ -433,6 +618,9 @@ export default function AdminTestPage() {
                     // Chỉ Part 7 có ảnh. Part 6 là Text Completion — một đoạn
                     // văn có các chỗ trống, toàn chữ.
                     allowImages={part === 7}
+                    onUploadAudio={(file) => void uploadSetAudio(stimulus.id, file)}
+                    onSaveScript={(script) => saveSetScript(stimulus.id, script)}
+                    voices={voices}
                   />
                 ))}
             </div>
@@ -514,6 +702,64 @@ export default function AdminTestPage() {
                     )}
                   </div>
                 </div>
+
+                {/* Part 1 và 2: bản thu nằm trên CHÍNH câu, vì mỗi câu là một
+                    clip riêng — không có cụm nào để treo nó lên (ADR-001 §A4.3). */}
+                {UNPRINTED.includes(question.part) && (
+                  <AudioPanel
+                    script={question.audio_script}
+                    audioUrl={question.audio_url ?? null}
+                    stale={question.audio_may_be_stale}
+                    attachedAt={question.audio_attached_at ?? null}
+                    busy={busy}
+                    voices={voices}
+                    onUpload={(file) => void uploadQuestionAudio(question.id, file)}
+                    onSaveScript={(script) => saveQuestionScript(question.id, script)}
+                  />
+                )}
+
+                {question.part === 1 && (
+                  <div className="mt-3 rounded border border-rule p-3">
+                    <p className="text-label font-semibold uppercase text-ink-muted">Bức ảnh</p>
+                    {question.image_url ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={question.image_url}
+                          alt=""
+                          className="mt-2 h-28 w-40 rounded border border-rule object-cover"
+                        />
+                      </>
+                    ) : (
+                      <p className="mt-1 text-small text-warn">
+                        Chưa có ảnh — Part 1 chưa xuất bản được.
+                      </p>
+                    )}
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <ImageIcon
+                        size={14}
+                        strokeWidth={1.75}
+                        aria-hidden
+                        className="text-ink-faint"
+                      />
+                      <Select
+                        value={library.find((i) => i.url === question.image_url)?.id ?? ""}
+                        onChange={(event) =>
+                          void assignQuestionImage(question.id, event.target.value || null)
+                        }
+                        disabled={busy}
+                        className="w-auto"
+                      >
+                        <option value="">— chưa chọn ảnh —</option>
+                        {library.map((image) => (
+                          <option key={image.id} value={image.id}>
+                            {image.alt_text?.slice(0, 60) || image.storage_key.slice(-12)}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                )}
 
                 {editing === question.id && (
                   <QuestionEditor
@@ -666,12 +912,18 @@ function SetPanel({
   library,
   busy,
   onAssign,
+  onUploadAudio,
+  onSaveScript,
+  voices,
   allowImages,
 }: {
   stimulus: SetAdmin;
   library: ImageAssetPublic[];
   busy: boolean;
   onAssign: (slot: number, imageId: string | null) => void;
+  onUploadAudio: (file: File) => void;
+  onSaveScript: (script: TurnDraft[]) => Promise<string | null>;
+  voices: VoiceOption[];
   allowImages: boolean;
 }) {
   // Part 6 chỉ có MỘT đoạn văn; hiện ba ô là mô tả sai format, và nó mời người
@@ -685,7 +937,20 @@ function SetPanel({
         <PublishTag status={stimulus.status} />
       </div>
 
-      <div className="mt-3 space-y-3">
+      {!allowImages && stimulus.part <= 4 && (
+        <AudioPanel
+          script={stimulus.audio_script}
+          audioUrl={stimulus.audio_url ?? null}
+          stale={stimulus.audio_may_be_stale}
+          attachedAt={stimulus.audio_attached_at ?? null}
+          busy={busy}
+          voices={voices}
+          onUpload={onUploadAudio}
+          onSaveScript={onSaveScript}
+        />
+      )}
+
+      <div className={cx("mt-3 space-y-3", stimulus.part <= 4 && "hidden")}>
         {slots.map((passage) => (
           <div key={passage.slot} className="rounded border border-rule p-3">
             <p className="text-label font-semibold uppercase text-ink-muted">
@@ -734,7 +999,7 @@ function SetPanel({
 
       {/* Nói ra ngay tại chỗ, vì đây là chỗ người ta sắp làm sai: phần lớn ngữ
           liệu KHÔNG cần ảnh, và bản văn bản thì tốt hơn thật. */}
-      <p className="mt-3 text-small text-ink-muted">
+      <p className={cx("mt-3 text-small text-ink-muted", stimulus.part <= 4 && "hidden")}>
         {allowImages
           ? "Bảng giá, lịch trình, mẫu đơn nên viết thành văn bản — đọc được bằng máy đọc màn hình, phóng to và tìm kiếm được. Ảnh dành cho biểu đồ, sơ đồ, bản đồ."
           : "Part 6 là một đoạn văn có các chỗ trống, mỗi chỗ trống là một câu hỏi. Không có ảnh và không có bài nhiều đoạn."}
@@ -823,6 +1088,209 @@ function QuestionEditor({
           <span className="text-small text-warn">Lưu xong câu này quay về trạng thái nháp</span>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Lời thoại và bản thu của một câu (Part 1, 2) hoặc một cụm (Part 3, 4).
+ *
+ * Lời thoại hiện ra ngay cạnh nút tải lên, vì đó là thứ người soạn phải đối
+ * chiếu: `media_state` KHÔNG xác minh được audio tải lên — hash của nó băm một
+ * id ngẫu nhiên nên không suy ngược ra text — nên mắt người là lớp kiểm duy
+ * nhất còn lại (ADR-007 §2.7).
+ *
+ * Và nó phải SỬA được ngay tại đây. Không có ô sửa thì sai một chữ chỉ còn cách
+ * xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và bản thu đã gắn.
+ */
+function AudioPanel({
+  script,
+  audioUrl,
+  stale,
+  attachedAt,
+  busy,
+  voices,
+  onUpload,
+  onSaveScript,
+}: {
+  script: TurnDraft[];
+  audioUrl: string | null;
+  stale: boolean;
+  attachedAt: string | null;
+  busy: boolean;
+  voices: VoiceOption[];
+  onUpload: (file: File) => void;
+  onSaveScript: (script: TurnDraft[]) => Promise<string | null>;
+}) {
+  // `null` nghĩa là không sửa. Một cờ boolean riêng cạnh bản nháp sẽ có hai
+  // nguồn sự thật cho cùng một câu hỏi, và chúng lệch nhau được.
+  const [draft, setDraft] = useState<TurnDraft[] | null>(null);
+  // Lời từ chối của lần lưu gần nhất, in ngay dưới nút Lưu. Băng lỗi chung ở
+  // đầu trang vẫn hiện, nhưng nó cách chỗ này cả màn hình.
+  const [refusal, setRefusal] = useState<string | null>(null);
+  const fallbackVoice = voices[0]?.name ?? "us_female_1";
+
+  const patch = (index: number, turn: Partial<TurnDraft>) =>
+    setDraft((current) =>
+      (current ?? []).map((item, at) => (at === index ? { ...item, ...turn } : item)),
+    );
+
+  async function save() {
+    if (!draft) return;
+    // Đóng CHỈ khi server đã nhận. Giọng sai hay lượt rỗng đều bị từ chối ở
+    // server, và lời từ chối đó vô dụng nếu ô nhập đã biến mất cùng nội dung.
+    const problem = await onSaveScript(draft);
+    setRefusal(problem);
+    if (problem === null) setDraft(null);
+  }
+
+  return (
+    <div className="mt-3 rounded border border-rule p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-label font-semibold uppercase text-ink-muted">Lời thoại</p>
+        {draft === null && (
+          <Button
+            size="sm"
+            variant="quiet"
+            onClick={() => {
+              setRefusal(null);
+              setDraft(script.map((t) => ({ ...t })));
+            }}
+          >
+            <Pencil size={14} strokeWidth={1.75} aria-hidden />
+            Sửa
+          </Button>
+        )}
+      </div>
+
+      {draft === null ? (
+        script.length === 0 ? (
+          <p className="mt-1 text-small text-ink-faint">— chưa có lời thoại —</p>
+        ) : (
+          <ul className="mt-1.5 space-y-1">
+            {script.map((turn, index) => (
+              <li key={index} className="text-small">
+                <span className="font-data text-label text-ink-faint">{turn.voice}</span>{" "}
+                {turn.text}
+              </li>
+            ))}
+          </ul>
+        )
+      ) : (
+        <div className="mt-2 space-y-2">
+          {draft.map((turn, index) => (
+            <div key={index} className="flex items-start gap-2">
+              {/* Bề rộng đặt ở lớp bọc, không đặt lên chính control: `CONTROL`
+                  đã có `w-full`, và hai lớp width cùng tồn tại thì thứ tự trong
+                  file CSS quyết định chứ không phải thứ tự viết ở đây — nên
+                  `w-40` trên `<Select>` thua im lặng và ô nhập bị bóp còn vài
+                  pixel. */}
+              <div className="w-44 shrink-0">
+                <Select
+                  value={turn.voice}
+                  aria-label={`Giọng của lượt ${index + 1}`}
+                  onChange={(event) => patch(index, { voice: event.target.value })}
+                >
+                  {/* Giọng hiện tại luôn có mặt, kể cả khi nó đã bị gỡ khỏi danh
+                    sách: một option biến mất sẽ lặng lẽ đổi giọng của lượt này
+                    sang giọng đầu bảng khi người ta lưu. */}
+                  {!voices.some((voice) => voice.name === turn.voice) && (
+                    <option value={turn.voice}>{turn.voice}</option>
+                  )}
+                  {voices.map((voice) => (
+                    <option key={voice.name} value={voice.name}>
+                      {voice.name} · {voice.accent}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div className="min-w-0 flex-1">
+                <Textarea
+                  rows={2}
+                  value={turn.text}
+                  aria-label={`Lời của lượt ${index + 1}`}
+                  onChange={(event) => patch(index, { text: event.target.value })}
+                />
+              </div>
+              <Button
+                size="sm"
+                variant="quiet"
+                aria-label={`Xoá lượt ${index + 1}`}
+                onClick={() => setDraft(draft.filter((_, at) => at !== index))}
+              >
+                <Trash2 size={14} strokeWidth={1.75} aria-hidden />
+              </Button>
+            </div>
+          ))}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="quiet"
+              onClick={() => setDraft([...draft, { text: "", voice: fallbackVoice }])}
+            >
+              <Plus size={14} strokeWidth={1.75} aria-hidden />
+              Thêm lượt
+            </Button>
+            <Button size="sm" onClick={() => void save()} disabled={busy}>
+              Lưu lời thoại
+            </Button>
+            <Button
+              size="sm"
+              variant="quiet"
+              onClick={() => {
+                setRefusal(null);
+                setDraft(null);
+              }}
+              disabled={busy}
+            >
+              Huỷ
+            </Button>
+          </div>
+          {refusal ? (
+            <FieldError>{refusal}</FieldError>
+          ) : (
+            <p className="text-small text-ink-faint">
+              Lưu xong, nội dung quay về nháp — bản thu đang gắn ứng với lời thoại cũ.
+            </p>
+          )}
+        </div>
+      )}
+
+      {audioUrl ? (
+        <audio src={audioUrl} controls preload="metadata" className="mt-3 w-full" />
+      ) : (
+        <p className="mt-3 text-small text-warn">Chưa có bản thu — chưa xuất bản được.</p>
+      )}
+
+      {/* Cảnh báo chứ không chặn. Hash của file tải lên không suy ngược ra lời
+          thoại, nên không có cách nào biết CHẮC là nó lệch — chỉ biết lời thoại
+          đã đổi kể từ lúc gắn, và nói ra điều đó vẫn hơn im lặng. */}
+      {stale && (
+        <p className="mt-2 text-small text-warn">
+          Lời thoại đã đổi sau khi gắn bản thu
+          {attachedAt && ` (gắn lúc ${new Date(attachedAt).toLocaleString("vi-VN")})`} — nghe lại
+          hoặc thu lại cho khớp.
+        </p>
+      )}
+
+      <label className="mt-3 inline-flex cursor-pointer items-center gap-2 text-small font-semibold text-action-ink">
+        <Upload size={14} strokeWidth={2} aria-hidden />
+        {audioUrl ? "Thay bản thu" : "Tải bản thu lên"}
+        <input
+          type="file"
+          accept="audio/mpeg,audio/mp4,audio/wav,.mp3,.m4a,.wav"
+          disabled={busy}
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            // Xoá giá trị để chọn LẠI cùng một file vẫn kích hoạt onChange —
+            // thứ người ta làm ngay sau khi một lần tải lên thất bại.
+            event.target.value = "";
+            if (file) onUpload(file);
+          }}
+        />
+      </label>
     </div>
   );
 }

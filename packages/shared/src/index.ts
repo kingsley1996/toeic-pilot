@@ -51,6 +51,10 @@ export type AttemptPartProgress = components["schemas"]["AttemptPartProgress"];
 export type TestAdmin = components["schemas"]["TestAdmin"];
 export type CollectionAdmin = components["schemas"]["CollectionAdmin"];
 export type SetAdmin = components["schemas"]["SetAdmin"];
+export type AudioAssetPublic = components["schemas"]["AudioAssetPublic"];
+export type TurnDraft = components["schemas"]["TurnDraft"];
+export type VoiceOption = components["schemas"]["VoiceOption"];
+export type AudioRequestAck = components["schemas"]["AudioRequestAck"];
 export type PassageAdmin = components["schemas"]["PassageAdmin"];
 export type TestPartSummary = components["schemas"]["TestPartSummary"];
 export type QuestionAdmin = components["schemas"]["QuestionAdmin"];
@@ -108,6 +112,8 @@ export const API_ROUTES = {
   adminImages: "/api/v1/admin/media/images",
   adminImageTicket: "/api/v1/admin/media/images/ticket",
   adminImageConfirm: "/api/v1/admin/media/images/confirm",
+  adminAudioTicket: "/api/v1/admin/media/audio/ticket",
+  adminAudioConfirm: "/api/v1/admin/media/audio/confirm",
 
   // Learning Hub
   topics: "/api/v1/topics",
@@ -159,7 +165,13 @@ export const API_ROUTES = {
   adminQuestionPublish: (id: string) => `/api/v1/admin/questions/${id}/publish`,
   adminQuestion: (id: string) => `/api/v1/admin/questions/${id}`,
   adminTestSets: (slug: string) => `/api/v1/admin/tests/${slug}/sets`,
+  adminQuestionSet: (setId: string) => `/api/v1/admin/question-sets/${setId}`,
+  adminVoices: "/api/v1/admin/voices",
+  adminAudioRequests: "/api/v1/admin/media/audio/requests",
   adminPassageImage: (setId: string) => `/api/v1/admin/question-sets/${setId}/passage-image`,
+  adminQuestionAudio: (id: string) => `/api/v1/admin/questions/${id}/audio`,
+  adminQuestionImage: (id: string) => `/api/v1/admin/questions/${id}/image`,
+  adminSetAudio: (setId: string) => `/api/v1/admin/question-sets/${setId}/audio`,
   adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
   adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
   adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,
