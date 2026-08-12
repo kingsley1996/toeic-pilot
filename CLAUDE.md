@@ -15,7 +15,8 @@ The rest carry decisions and their reasoning:
 - **`planning/ADR-001-DATA-MODEL.md`** — the domain schema and why it has the shape it has.
 - **`planning/PHASE2-AUDIO.md`** — audio architecture (this is ADR-002); Part A is the durable record, Part B the implementation log.
 - **`planning/ADR-003-AI-LAYER.md`** — the AI layer's three one-way decisions: two providers routed by cost, an **offline open-source embedding model at `vector(1024)`**, and a **thin non-RAG slice first**. The last one is driven by a measured fact rather than a preference — the project has **17 questions with an explanation**, so retrieval has nothing to retrieve and §7e's "eval alongside the feature" cannot conclude anything. RAG is blocked by *content*, not by engineering, and §3.3 writes the unblocking threshold as a number. Read §3.4 before adding any LLM call: the token budget **fails closed**, opposite to the auth rate limiter, because there Redis is the only thing between an account and your bill.
-- **`planning/AI-ENGINEERING-PLAN.md`** — how the AI layer earns `PLAN.md`'s claim of "production AI engineering rather than an LLM chatbot". Its load-bearing section is §3: **an explanation of a question is the same for every learner**, so the common path is *precomputed offline* through the existing `app/content/` shape and costs nothing per request — 600 explanations generated once, not 600 per learner. §2 is the other half and matters more than it looks: scoring, SM-2, score conversion and dictation diffing must **never** touch an LLM, because they are exact today and would become approximate. Read §0 before planning any AI feature — `skill_tag` is filled on **0 of 40** questions and `target_score` on **3 of 53** profiles, so weakness analysis has no dimension to group by and the planner has no input.
+- **`planning/toeic_question_label_taxonomy.md`** — the question label taxonomy, **hand-maintained and the source of truth**. `app/services/labels.py` is *generated* from it, and `tests/test_labels.py` re-parses the document to compare code, Vietnamese label and part list one by one. Without that test a label added to the document but not regenerated is simultaneously "decided" and "rejected by the system".
+- **`planning/AI-ENGINEERING-PLAN.md`** — how the AI layer earns `PLAN.md`'s claim of "production AI engineering rather than an LLM chatbot". Its load-bearing section is §3: **an explanation of a question is the same for every learner**, so the common path is *precomputed offline* through the existing `app/content/` shape and costs nothing per request — 600 explanations generated once, not 600 per learner. §2 is the other half and matters more than it looks: scoring, SM-2, score conversion and dictation diffing must **never** touch an LLM, because they are exact today and would become approximate. Read §0 before planning any AI feature — `target_score` is filled on **3 of 53** profiles, so the planner still has no input. Its §9b KPI thresholds were written for a provisional 8-tag set and **no longer match the code**: the real taxonomy has 72 codes, so "smallest tag ≥5%" would flag everything. Accuracy is now measured per facet.
 - **`planning/ADR-004-IMAGES.md`** — photographs for Part 1, licensing, and the fetch pipeline.
 - **`planning/ADR-007-TEST-AUTHORING.md`** — how a TOEIC test gets into the system: the audio script lives on the question, not in a spec file beside it (which is what kills the `LIKE 'prefix%'` lookup `seed_demo_test.py` still uses), paste-then-form authoring, canonical question numbers stored rather than derived, and audio generation reached by a Redis doorbell over a query-shaped work queue.
 - **`planning/ADR-005-CONTENT-TOOLING.md`** — the admin UI for importing past papers: why a custom admin rather than a headless CMS, why paste-and-parse, and why parse never writes to the database.
@@ -133,6 +134,9 @@ uv run python -m app.content.seed_scores   # default raw -> scaled score curve
 uv run python -m app.content.backfill_audio [--dry-run] [--only questions]  # audio the DB is missing
 uv run python -m app.content.tts_worker --once            # one sweep, then exit
 uv run python -m app.content.tts_worker                   # long-running: Redis doorbell + 300s sweep
+uv run python -m app.content.enrich_skills --dry-run       # gán nhãn: in ra, không ghi
+uv run python -m app.content.enrich_skills --limit 5       # một lượt thử nhỏ (áp cho cả set lẫn câu)
+uv run python -m app.content.skilltag_worker --once        # worker gắn nhãn: một lượt rồi thoát
 uv run python -m app.content.push_media [--dry-run]       # local media -> its provider (images: Cloudinary, audio: S3)
 uv run python -m app.content.reconcile_media [--delete-rows]  # media nothing points at any more
 # Bulk-attach audio/images you already have to a pasted test. Dry-run first.
@@ -363,6 +367,59 @@ Two habits fall out of it. A destructive action should prove success from someth
 **The production API image needs no compiler.** `gcc` and `libpq-dev` sat in `api.Dockerfile` to build psycopg — but the dependency is `psycopg[binary]`, whose wheel already bundles libpq, so nothing was ever compiled. Dropping them plus splitting builder/runtime took the image from 510MB to 321MB and removed a C toolchain from the process that serves HTTP. The image runs as uid 10001; `uv` stays in the runtime stage on purpose, because the dev compose service overrides CMD with `uv run uvicorn --reload` and removing it would save megabytes at the cost of the development loop. `UV_FROZEN=1` plus `--no-sync` keeps startup from ever resolving dependencies over the network.
 
 The worker image drops the same two packages but **stays root**, deliberately: it writes to `media/` and `content/` through host bind mounts, and a non-root user loses write access to the two directories it exists to write to — the quick fix for that is `chmod 777`, which is worse. It also serves no requests.
+
+**Question labels are multi-dimensional, and one scalar column cannot hold them.** The
+taxonomy (`planning/toeic_question_label_taxonomy.md`) has **72 codes across 6 facets**, and a
+single Part 6 question carries three at once — question type, passage form, grammar. The old
+`question.skill_tag` column is gone; labels live in `question_label` and `question_set_label`
+(migration `019`). Four things about that shape are load-bearing:
+
+- **The primary key is `(owner_id, facet)`**, and that is where "exactly one label per facet" is
+  *enforced* rather than remembered. It also means a code written under the wrong facet **overwrites**
+  the label of another facet instead of creating a row — silently losing the old one.
+- **Four facets live on `question_set`, not on `question`**: topic (Part 3), speech type (Part 4),
+  passage type (Parts 6–7), passage structure (Part 7). Three questions of one Part 3 conversation
+  always share a topic because it is a property of the conversation. Hanging them on the question
+  lets the schema *permit* three different topics for one conversation, and per-topic statistics
+  would count one conversation three times. Same reasoning as ADR-001 §A4.3 for Part 3/4 audio.
+- **`proposed_code` is never touched when a human edits `code`.** It is the only column that
+  separates "somebody looked at it" from "somebody had to *fix* it", which is the accuracy KPI.
+- **A code can be real, on the right facet, and still wrong for the part.** `GRAMMAR_NOUN` exists
+  for Part 5 and not for Part 6 — Part 6 tests five grammar points, Part 5 tests eleven. Every
+  write path checks all three (exists, right facet, valid for this part) because all three failures
+  are silent.
+
+**The confirm button is not a convenience — without it the accuracy KPI is structurally 0%.**
+A `<select>`'s `onChange` fires only when the value *changes*, so if reviewing were only possible
+by editing, every recorded review would be a correction, `code` would never equal `proposed_code`,
+and "machine correct" would read 0% forever — the one number the screen exists to measure. The most
+common review action is confirming the machine was right; it has to be a click.
+
+**Enrichment labels one facet per call, and the queue is still a query.** `app/content/enrich_skills.py`
+asks "which questions and sets are missing at least one applicable facet", so re-running finds less
+to do and there is no job table. One call per facet rather than one call for all six: merging them
+is cheaper in calls but makes all six wrong when the model slips once, forces a full retry instead
+of retrying the failed facet, and loses the per-facet menu narrowing that keeps the model from
+offering `GRAMMAR_NOUN` for a Part 3 question. It commits **per label**, not at the end of the run —
+a 200-question run is tens of minutes, and batching means one interrupt discards all of it.
+
+**Two kinds of HTTP 429, and merging them is expensive.** `LLMQuotaExhausted` is separate from
+transient overload: a daily cap does not clear in thirty seconds, so backing off against it grinds
+through every remaining item, fails identically each time, and buries the one line naming the cause.
+OpenRouter's free tier is **50 calls per day**, which is not enough for a single 40-question run —
+that is why Ollama runs locally. In `classify`, `except LLMQuotaExhausted` must come **before**
+`except LLMError`; it is a subclass, and reversing the order swallows it.
+
+**`ollama_base_url` differs between host and container, and both values are correct.** The CLI on
+the host needs `localhost:11434`; inside a container `localhost` is the container itself, so the
+worker needs `host.docker.internal:11434`. `.env` carries the host value and compose's `environment:`
+block overrides it for the worker — the same precedence trap documented for `env_file` above.
+
+**Never bind-mount `../apps/api` into a container — mount `../apps/api/app`.** The whole directory
+includes `.venv`, and `uv run` inside the container finds a macOS virtualenv, deletes it, and builds
+a Linux one **over the host's**. Every later `uv run` on the host then fails with
+`broken symbolic link to /usr/local/bin/python3.12`, a message that never mentions Docker. The TTS
+worker has always mounted only `app/`; that is why.
 
 **Auth endpoints are rate limited by IP, and the quotas are sized around who gets blocked *wrongly*.** The pre-existing `rate_limit` keys on `user.id`, which cannot cover `/login` — that endpoint exists precisely because there is no user yet — so `rate_limit_anonymous` keys on the client address. Vietnamese mobile networks run CGNAT and thousands of subscribers share one public address, as do schools and internet cafés; a tight limit blocks a class signing up together long before it blocks an attacker, and blocked real users never file a report, they just leave. Be honest about the ceiling: this cuts a dictionary attack from thousands a minute to six and stops naive scripts, but a botnet rotating addresses walks straight through. Real brute-force defence needs per-account counting, which opens an account-lockout vector instead — that trade is written up in the docstring, not overlooked.
 
