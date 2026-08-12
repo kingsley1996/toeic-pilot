@@ -149,6 +149,24 @@ ADMIN_CALLS = [
         "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/publish",
         None,
     ),
+    # Tầng AI. Nút gắn nhãn CHẠY ĐƯỢC VIỆC TỐN TIỀN, nên nó phải chịu đúng cổng
+    # phân quyền như mọi thứ khác — và cổng đó là một dependency, không phải một
+    # phép kiểm trong thân hàm, vì phép kiểm trong thân hàm là thứ người ta quên
+    # chép sang route tiếp theo.
+    ("POST", "/api/v1/admin/ai/skill-tags/requests", None),
+    ("GET", "/api/v1/admin/ai/stats", None),
+    ("GET", "/api/v1/admin/ai/labels", None),
+    ("GET", "/api/v1/admin/ai/labels/catalog", None),
+    (
+        "PATCH",
+        "/api/v1/admin/ai/labels/00000000-0000-0000-0000-000000000000",
+        {"facet": "question_type", "code": "PART_5_GRAMMAR"},
+    ),
+    (
+        "PATCH",
+        "/api/v1/admin/ai/set-labels/00000000-0000-0000-0000-000000000000",
+        {"facet": "topic", "code": "PART_3_HOUSING"},
+    ),
 ]
 
 

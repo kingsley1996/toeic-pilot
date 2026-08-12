@@ -342,6 +342,9 @@ class QuestionAdmin(BaseModel):
     # lên không suy ngược ra lời thoại được, nên thứ duy nhất làm được là cho
     # người soạn nhìn thấy (ADR-007 §2.7).
     audio_may_be_stale: bool = False
+    # Nhãn kỹ năng KHÔNG còn ở đây. Bộ phân loại thật có sáu mặt và một câu mang
+    # nhiều nhãn cùng lúc, nên nó không nhét vừa vài trường vô hướng — nó sống ở
+    # `question_label` và được phục vụ qua `/admin/ai/labels`.
     # Vì sao câu này chưa xuất bản được. Rỗng nghĩa là sẵn sàng.
     #
     # Hiện ra thay vì chỉ làm mờ nút Publish: nút mờ nói "chưa được", danh sách

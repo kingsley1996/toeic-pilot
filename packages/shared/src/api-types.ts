@@ -4,6 +4,144 @@
  */
 
 export interface paths {
+    "/api/v1/admin/ai/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Labels
+         * @description Câu hỏi kèm nhãn của chính nó và nhãn của ngữ liệu dùng chung.
+         *
+         *     `disagreeing` là bộ lọc đáng giá nhất: những mặt người đã sửa khác nhãn máy
+         *     đề xuất. Mỗi hàng ở đó là một lần máy sai, và đọc mười hàng như thế nói
+         *     nhiều hơn một con số phần trăm.
+         */
+        get: operations["list_labels_api_v1_admin_ai_labels_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/labels/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Label Catalog
+         * @description Mảng trần, không bọc `Page`.
+         *
+         *     Bộ nhãn bị chặn trên bởi chính miền — 72 mã khai báo trong mã nguồn, sinh từ
+         *     `planning/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân
+         *     trang ở `schemas/common.py`: bọc lại "cho nhất quán" bắt giao diện xử lý một
+         *     trường hợp không thể xảy ra.
+         */
+        get: operations["label_catalog_api_v1_admin_ai_labels_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/labels/{question_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Review Question Label
+         * @description Xác nhận hoặc sửa nhãn của MỘT mặt trên một câu hỏi.
+         *
+         *     **`proposed_code` không bị đụng tới.** Đó là điều khiến KPI độ đúng đo được:
+         *     giữ lại nhãn máy đề xuất sau khi người sửa là cách duy nhất biết người đó đã
+         *     phải sửa hay chỉ xác nhận.
+         */
+        patch: operations["review_question_label_api_v1_admin_ai_labels__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/ai/set-labels/{set_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Review Set Label
+         * @description Nhãn của ngữ liệu dùng chung — sửa MỘT lần cho cả nhóm câu.
+         *
+         *     Đây chính là lý do bốn mặt này không treo trên câu: sửa chủ đề một hội thoại
+         *     Part 3 là một thao tác, không phải ba thao tác phải nhớ làm cho đủ.
+         */
+        patch: operations["review_set_label_api_v1_admin_ai_set_labels__set_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/ai/skill-tags/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request Skill Tags
+         * @description Đánh chuông cho worker gắn nhãn. **Không** gắn nhãn ở đây.
+         *
+         *     202 chứ không 200: nó không hứa nhãn đã có. Không ghi bảng nào — hàng đợi
+         *     vẫn là *câu hỏi* "câu nào còn thiếu nhãn", nên bấm mười lần không tạo mười
+         *     job. Redis chết vẫn trả 202 với `queued=false`, vì vòng quét định kỳ của
+         *     worker tìm được đúng ngần ấy việc.
+         */
+        post: operations["request_skill_tags_api_v1_admin_ai_skill_tags_requests_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Llm Stats */
+        get: operations["llm_stats_api_v1_admin_ai_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/dictation": {
         parameters: {
             query?: never;
@@ -2342,6 +2480,43 @@ export interface components {
             /** Transcript */
             transcript?: string | null;
         };
+        /** FacetAccuracy */
+        FacetAccuracy: {
+            /** Agreeing */
+            agreeing: number;
+            /** Facet */
+            facet: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Labelled */
+            labelled: number;
+            /** Reviewed */
+            reviewed: number;
+        };
+        /** FacetCatalog */
+        FacetCatalog: {
+            /** Key */
+            key: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Labels */
+            labels: components["schemas"]["LabelCatalogItem"][];
+            /** Owner */
+            owner: string;
+        };
+        /** FacetShare */
+        FacetShare: {
+            /** Code */
+            code: string;
+            /** Count */
+            count: number;
+            /** Facet */
+            facet: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Share */
+            share: number;
+        };
         /**
          * GroupDraft
          * @description Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.
@@ -2423,6 +2598,41 @@ export interface components {
             /** Storage Key */
             storage_key: string;
         };
+        /** LabelCatalogItem */
+        LabelCatalogItem: {
+            /** Code */
+            code: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Parts */
+            parts: number[];
+        };
+        /** LabelValue */
+        LabelValue: {
+            /** Code */
+            code: string;
+            /** Facet */
+            facet: string;
+            /** Proposed Code */
+            proposed_code?: string | null;
+            /** Reviewed At */
+            reviewed_at?: string | null;
+            /** Reviewed By */
+            reviewed_by?: string | null;
+        };
+        /**
+         * LabelWrite
+         * @description Ghi nhãn cho MỘT mặt.
+         *
+         *     Một mặt mỗi lần, không phải cả bộ: người duyệt xác nhận từng mặt một, và gửi
+         *     cả bộ sẽ khiến một mặt chưa xem cũng bị đóng dấu "đã kiểm".
+         */
+        LabelWrite: {
+            /** Code */
+            code: string;
+            /** Facet */
+            facet: string;
+        };
         /**
          * LearningStats
          * @description Derived on read, every time, from the attempt and review tables.
@@ -2460,6 +2670,43 @@ export interface components {
             vocabulary_total: number;
             /** Window Days */
             window_days: number;
+        };
+        /** LlmStatsPublic */
+        LlmStatsPublic: {
+            /** Budget Hit Users */
+            budget_hit_users: number;
+            /** By Feature */
+            by_feature: components["schemas"]["UsageRow"][];
+            /** By Model */
+            by_model: components["schemas"]["UsageRow"][];
+            /** Cached Tokens */
+            cached_tokens: number;
+            /** Completion Tokens */
+            completion_tokens: number;
+            /** Cost Usd */
+            cost_usd: string;
+            /** Distribution */
+            distribution: components["schemas"]["FacetShare"][];
+            /** Error Calls */
+            error_calls: number;
+            /** Facets */
+            facets: components["schemas"]["FacetAccuracy"][];
+            /** Latency P50 Ms */
+            latency_p50_ms: number;
+            /** Latency P95 Ms */
+            latency_p95_ms: number;
+            /** Ok Calls */
+            ok_calls: number;
+            /** Prompt Tokens */
+            prompt_tokens: number;
+            /** Questions Labelled */
+            questions_labelled: number;
+            /** Questions Total */
+            questions_total: number;
+            /** Refused Calls */
+            refused_calls: number;
+            /** Total Calls */
+            total_calls: number;
         };
         /**
          * MediaAssign
@@ -2526,6 +2773,17 @@ export interface components {
         Page_DictationSummary_: {
             /** Items */
             items: components["schemas"]["DictationSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[QuestionLabelRow] */
+        Page_QuestionLabelRow_: {
+            /** Items */
+            items: components["schemas"]["QuestionLabelRow"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -2726,6 +2984,30 @@ export interface components {
             source?: string | null;
             /** Source Note */
             source_note?: string | null;
+        };
+        /** QuestionLabelRow */
+        QuestionLabelRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Labels */
+            labels: components["schemas"]["LabelValue"][];
+            /** Part */
+            part: number;
+            /** Prompt Text */
+            prompt_text: string | null;
+            /** Question Number */
+            question_number: number | null;
+            /** Set Id */
+            set_id: string | null;
+            /** Set Labels */
+            set_labels: components["schemas"]["LabelValue"][];
+            /** Test Slug */
+            test_slug: string | null;
+            /** Test Title */
+            test_title: string | null;
         };
         /** QuestionOptionDraft */
         QuestionOptionDraft: {
@@ -2946,6 +3228,11 @@ export interface components {
             audio_script?: components["schemas"]["TurnDraft"][] | null;
             /** Title */
             title?: string | null;
+        };
+        /** SkillTagRequestAck */
+        SkillTagRequestAck: {
+            /** Queued */
+            queued: boolean;
         };
         /**
          * StoryItem
@@ -3229,6 +3516,19 @@ export interface components {
              * @enum {string}
              */
             ext: "jpg" | "jpeg" | "png" | "webp";
+        };
+        /** UsageRow */
+        UsageRow: {
+            /** Calls */
+            calls: number;
+            /** Completion Tokens */
+            completion_tokens: number;
+            /** Cost Usd */
+            cost_usd: string;
+            /** Key */
+            key: string;
+            /** Prompt Tokens */
+            prompt_tokens: number;
         };
         /** UserLogin */
         UserLogin: {
@@ -3523,6 +3823,169 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_labels_api_v1_admin_ai_labels_get: {
+        parameters: {
+            query?: {
+                state?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_QuestionLabelRow_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    label_catalog_api_v1_admin_ai_labels_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FacetCatalog"][];
+                };
+            };
+        };
+    };
+    review_question_label_api_v1_admin_ai_labels__question_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LabelWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabelValue"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_set_label_api_v1_admin_ai_set_labels__set_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                set_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LabelWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabelValue"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_skill_tags_api_v1_admin_ai_skill_tags_requests_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillTagRequestAck"];
+                };
+            };
+        };
+    };
+    llm_stats_api_v1_admin_ai_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LlmStatsPublic"];
+                };
+            };
+        };
+    };
     list_dictation_admin_api_v1_admin_dictation_get: {
         parameters: {
             query?: {

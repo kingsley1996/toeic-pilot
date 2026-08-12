@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from app import models  # noqa: F401 — registers every table on Base.metadata
 from app.api.routes import (
     admin,
+    admin_ai,
     admin_tests,
     attempt,
     auth,
@@ -69,6 +70,7 @@ app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
+app.include_router(admin_ai.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
 
 # Development only. Everywhere else audio is served from the object store or CDN

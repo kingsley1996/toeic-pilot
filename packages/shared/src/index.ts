@@ -90,6 +90,10 @@ export type CommitResult = components["schemas"]["CommitResult"];
 export type VocabularyAdmin = components["schemas"]["VocabularyAdmin"];
 export type DictationAdmin = components["schemas"]["DictationAdmin"];
 export type AudioSlotState = components["schemas"]["AudioSlotState"];
+export type LlmStats = components["schemas"]["LlmStatsPublic"];
+export type QuestionLabelRow = components["schemas"]["QuestionLabelRow"];
+export type FacetCatalog = components["schemas"]["FacetCatalog"];
+export type LabelValue = components["schemas"]["LabelValue"];
 
 // Escape hatch for callers that need a shape not aliased above.
 export type { components, paths } from "./api-types";
@@ -194,5 +198,13 @@ export const API_ROUTES = {
   adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
   adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
   adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,
+  // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa
+  // nhãn đã có; API không gắn nhãn được (không import nổi `app.content`).
+  adminAiStats: "/api/v1/admin/ai/stats",
+  adminAiLabels: "/api/v1/admin/ai/labels",
+  adminAiLabelCatalog: "/api/v1/admin/ai/labels/catalog",
+  adminAiSkillTagRequests: "/api/v1/admin/ai/skill-tags/requests",
+  adminAiLabelReview: (id: string) => `/api/v1/admin/ai/labels/${id}`,
+  adminAiSetLabelReview: (id: string) => `/api/v1/admin/ai/set-labels/${id}`,
   adminDictationStoryReorder: (id: string) => `/api/v1/admin/dictation/stories/${id}/reorder`,
 } as const;

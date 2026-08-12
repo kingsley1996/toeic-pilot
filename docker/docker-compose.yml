@@ -105,6 +105,37 @@ services:
       - ../apps/api/content:/app/apps/api/content
     restart: unless-stopped
 
+  # Cùng ẢNH với worker TTS (đã có extra `content`), khác CMD. Tiến trình riêng
+  # chứ không nhét chung: hai loại việc khác nhau, và gộp lại thì mỗi tiếng
+  # chuông sinh audio sẽ đánh thức cả nhánh gắn nhãn đi hỏi một câu không có việc.
+  skilltag-worker:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
+      REDIS_URL: redis://redis:6379/0
+      # `localhost` trong container là chính container đó. Đặt ở đây chứ không ở
+      # `.env` vì `.env` còn phục vụ CLI chạy trên host, nơi tên này không phân
+      # giải được — `environment:` ghi đè `env_file`, nên hai đường chạy có hai
+      # giá trị đúng cho từng nơi.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    volumes:
+      # CHỈ thư mục nguồn, không phải cả `apps/api`. Mount cả thư mục sẽ đắp
+      # luôn `.venv` của host lên `.venv` của ảnh — rồi `uv run` trong container
+      # thấy một venv macOS, xoá nó đi và dựng lại một venv Linux ĐÈ LÊN MÁY
+      # HOST. Sau đó mọi lệnh `uv run` trên host hỏng với "broken symbolic link
+      # to /usr/local/bin/python3.12", một thông báo không hề nhắc tới Docker.
+      # Worker TTS đã mount đúng như thế này từ đầu; đây là chỗ tôi chép sai.
+      - ../apps/api/app:/app/apps/api/app
+    command: ["uv", "run", "python", "-m", "app.content.skilltag_worker"]
+    restart: unless-stopped
+
   web:
     build:
       context: ..
