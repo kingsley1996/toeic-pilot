@@ -30,6 +30,7 @@ export function CoachChat({ attemptId, token }: { attemptId: string; token: stri
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Chỉ nạp lịch sử khi người dùng thật sự mở hộp. Nạp sẵn cho mọi lượt xem lại
   // là một lượt đi mạng cho một hộp phần lớn người không mở.
@@ -53,6 +54,22 @@ export function CoachChat({ attemptId, token }: { attemptId: string; token: stri
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [messages, busy]);
+
+  /*
+   * Chiều cao ô nhập bám theo `draft`, KHÔNG đặt trong `onChange`.
+   *
+   * Đặt `el.style.height` lúc gõ là để một mẩu trạng thái DOM nằm ngoài quyền
+   * sở hữu của React: gửi xong `setDraft("")` xoá chữ nhưng không chạm tới
+   * chiều cao, nên ô rỗng vẫn cao như lúc còn ba dòng và trông như chưa clear.
+   * Cùng họ với luật "suy ra, đừng ghi song song" — hai nguồn sự thật cho một
+   * thứ thì sẽ có ngày lệch.
+   */
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+  }, [draft]);
 
   async function send() {
     const text = draft.trim();
@@ -190,16 +207,23 @@ export function CoachChat({ attemptId, token }: { attemptId: string; token: stri
         >
           <textarea
             value={draft}
-            onChange={(event) => {
-              setDraft(event.target.value);
-              // Tự giãn theo nội dung: một ô một dòng buộc người ta cuộn trong
-              // chính thứ họ đang gõ.
-              const el = event.target;
-              el.style.height = "auto";
-              el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
-            }}
+            ref={inputRef}
+            onChange={(event) => setDraft(event.target.value)}
             onKeyDown={(event) => {
-              // Enter gửi, Shift+Enter xuống dòng — quy ước của mọi hộp chat.
+              /*
+               * Enter gửi, Shift+Enter xuống dòng — quy ước của mọi hộp chat.
+               *
+               * `isComposing` là phép kiểm BẮT BUỘC với một sản phẩm tiếng Việt.
+               * Khi gõ Telex hay VNI, Enter giữa chừng một từ là phím XÁC NHẬN
+               * của bộ gõ, không phải phím gửi. Không chặn thì: ta gửi một từ
+               * chưa hoàn chỉnh, xoá ô nhập, rồi bộ gõ commit chữ vào ô và
+               * `onChange` điền text trở lại SAU khi đã xoá — nhìn ra ngoài
+               * đúng như "gửi xong mà chữ vẫn còn".
+               *
+               * Cùng vấn đề với tiếng Nhật, Trung, Hàn; khác ở chỗ tiếng Việt
+               * gõ dấu gần như mọi từ nên nó xảy ra liên tục chứ không thi thoảng.
+               */
+              if (event.nativeEvent.isComposing) return;
               if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
                 void send();
