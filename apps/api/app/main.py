@@ -14,6 +14,7 @@ from app.api.routes import (
     admin_tests,
     attempt,
     auth,
+    coach,
     health,
     learning,
     media,
@@ -68,6 +69,7 @@ app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
+app.include_router(coach.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")

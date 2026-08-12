@@ -94,6 +94,7 @@ export type LlmStats = components["schemas"]["LlmStatsPublic"];
 export type QuestionLabelRow = components["schemas"]["QuestionLabelRow"];
 export type FacetCatalog = components["schemas"]["FacetCatalog"];
 export type AiFeatureRow = components["schemas"]["AiFeatureRow"];
+export type CoachExplanation = components["schemas"]["CoachExplanationPublic"];
 export type KnownModel = components["schemas"]["KnownModel"];
 export type LabelValue = components["schemas"]["LabelValue"];
 
@@ -203,6 +204,11 @@ export const API_ROUTES = {
   // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa
   // nhãn đã có; API không gắn nhãn được (không import nổi `app.content`).
   adminAiStats: "/api/v1/admin/ai/stats",
+  // Coach — chỉ dùng được sau khi lượt làm bài đã nộp; máy chủ trả 409 nếu chưa.
+  coachExplain: (attemptId: string, questionId: string) =>
+    `/api/v1/attempts/${attemptId}/items/${questionId}/coach`,
+  coachFeedback: (attemptId: string, questionId: string) =>
+    `/api/v1/attempts/${attemptId}/items/${questionId}/coach/feedback`,
   adminAiFeatures: "/api/v1/admin/ai/features",
   adminAiFeature: (key: string) => `/api/v1/admin/ai/features/${key}`,
   adminAiModels: "/api/v1/admin/ai/models",

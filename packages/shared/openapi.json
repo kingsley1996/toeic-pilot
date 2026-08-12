@@ -711,6 +711,58 @@
         "title": "Body_local_upload_media_upload__storage_key__post",
         "type": "object"
       },
+      "CoachExplanationPublic": {
+        "properties": {
+          "body": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Body",
+            "type": "object"
+          },
+          "helpful": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Helpful"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "body"
+        ],
+        "title": "CoachExplanationPublic",
+        "type": "object"
+      },
+      "CoachFeedbackWrite": {
+        "properties": {
+          "explanation_id": {
+            "format": "uuid",
+            "title": "Explanation Id",
+            "type": "string"
+          },
+          "helpful": {
+            "title": "Helpful",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "explanation_id",
+          "helpful"
+        ],
+        "title": "CoachFeedbackWrite",
+        "type": "object"
+      },
       "CollectionAdmin": {
         "properties": {
           "description": {
@@ -9443,6 +9495,133 @@
         "summary": "Read Attempt",
         "tags": [
           "attempt"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach": {
+      "post": {
+        "operationId": "explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachExplanationPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Explain Question",
+        "tags": [
+          "coach"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach/feedback": {
+      "post": {
+        "description": "Một người một phiếu — khoá chính `(explanation_id, user_id)` lo việc đó.\n\nKhông có ràng buộc ấy thì một người bấm mười lần làm lệch đúng con số duy\nnhất đo được chất lượng.",
+        "operationId": "rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoachFeedbackWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachExplanationPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Rate Explanation",
+        "tags": [
+          "coach"
         ]
       }
     },

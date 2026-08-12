@@ -1185,6 +1185,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Explain Question */
+        post: operations["explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rate Explanation
+         * @description Một người một phiếu — khoá chính `(explanation_id, user_id)` lo việc đó.
+         *
+         *     Không có ràng buộc ấy thì một người bấm mười lần làm lệch đúng con số duy
+         *     nhất đo được chất lượng.
+         */
+        post: operations["rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/attempts/{attempt_id}/questions/{question_id}": {
         parameters: {
             query?: never;
@@ -2147,6 +2187,30 @@ export interface components {
             file: string;
             /** Signature */
             signature: string;
+        };
+        /** CoachExplanationPublic */
+        CoachExplanationPublic: {
+            /** Body */
+            body: {
+                [key: string]: string;
+            };
+            /** Helpful */
+            helpful?: boolean | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** CoachFeedbackWrite */
+        CoachFeedbackWrite: {
+            /**
+             * Explanation Id
+             * Format: uuid
+             */
+            explanation_id: string;
+            /** Helpful */
+            helpful: boolean;
         };
         /** CollectionAdmin */
         CollectionAdmin: {
@@ -6157,6 +6221,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachExplanationPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CoachFeedbackWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachExplanationPublic"];
                 };
             };
             /** @description Validation Error */

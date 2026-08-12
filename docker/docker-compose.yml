@@ -36,6 +36,11 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
+      # Coach chạy LÚC CÓ REQUEST, nên chính API cũng gọi Ollama — và trong
+      # container `localhost` là chính container đó. Đây là lần thứ hai cùng một
+      # cái bẫy: worker đã được vá, api thì quên, và triệu chứng là một câu 503
+      # lịch sự không nhắc gì tới Docker.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
       # AUDIO_PUBLIC_BASE_URL cố ý KHÔNG có ở đây. Khối `environment` đè lên
       # `env_file`, nên đặt nó ở đây — kể cả dưới dạng ${VAR:-default} — làm
       # .env bị bỏ qua một cách im lặng: sửa .env, khởi động lại, không gì thay

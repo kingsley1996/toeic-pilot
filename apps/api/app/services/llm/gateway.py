@@ -146,6 +146,44 @@ class Gateway:
             self.budget.charge(self.redis_client, str(user_id), micro_usd(cost))
         return result
 
+    def note_cache_hit(
+        self,
+        *,
+        feature: str,
+        provider: str,
+        model: str,
+        user_id: uuid.UUID | None = None,
+        prompt_version: str | None = None,
+        request_id: str | None = None,
+    ) -> None:
+        """Ghi một lượt PHỤC VỤ TỪ CACHE — không gọi model, chi phí 0.
+
+        Bỏ hàng này đi thì `cache_hit` mãi mãi rỗng, và câu hỏi "cache có làm chi
+        phí giảm theo thời gian không" — đòn bẩy chi phí lớn thứ hai của cả tầng
+        — không có số nào trả lời. Nó cũng làm mẫu số của mọi tỉ lệ khác sai:
+        tỉ lệ hỏng tính trên số lượt GỌI sẽ khác hẳn tỉ lệ hỏng tính trên số lần
+        người dùng thực sự yêu cầu.
+        """
+        session = self.session_factory()
+        try:
+            session.add(
+                AiInteraction(
+                    user_id=user_id,
+                    feature=feature,
+                    provider=provider,
+                    model=model,
+                    cost_usd=Decimal(0),
+                    latency_ms=0,
+                    status="ok",
+                    cache_hit=True,
+                    prompt_version=prompt_version,
+                    request_id=request_id,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
     def _record(
         self,
         *,
