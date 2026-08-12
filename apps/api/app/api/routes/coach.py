@@ -22,13 +22,23 @@ from app.core.ai_budget import BudgetExceeded, BudgetUnavailable
 from app.core.database import SessionLocal, get_db
 from app.core.rate_limit import Quota, rate_limit
 from app.core.redis_client import get_redis
+from app.models.chat import CoachConversation, CoachMessage
 from app.models.coach import CoachExplanation, CoachFeedback
 from app.models.practice import Attempt, AttemptItem, Question
 from app.models.user import User
-from app.schemas.coach import CoachExplanationPublic, CoachFeedbackWrite
+from app.schemas.coach import (
+    ChatAsk,
+    ChatMessagePublic,
+    ChatTurn,
+    CoachExplanationPublic,
+    CoachFeedbackWrite,
+)
 from app.services.ai_features import resolver_for
+from app.services.chat import MAX_QUESTION_CHARS, ask
 from app.services.coach import CoachUnavailable, NothingToExplain, explain
 from app.services.llm.base import FeatureDisabled, LLMError
+from app.services.llm.gateway import Gateway
+from app.services.retrieval import AnchoredRetriever
 
 logger = logging.getLogger(__name__)
 
@@ -98,28 +108,7 @@ def explain_question(
     if question is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu hỏi này")
 
-    from app.core.ai_budget import Budget
-    from app.core.config import settings
-    from app.services.llm.gateway import Gateway
-    from app.services.llm.ollama import OllamaProvider
-    from app.services.llm.openrouter import OpenRouterProvider
-    from app.services.llm.router import Tier
-
-    providers: dict[str, object] = {"ollama": OllamaProvider(settings.ollama_base_url)}
-    if settings.openrouter_api_key:
-        providers["openrouter"] = OpenRouterProvider(settings.openrouter_api_key)
-
-    gateway = Gateway(
-        providers=providers,  # type: ignore[arg-type]
-        routes={
-            Tier.CHEAP: _split(settings.llm_tier_cheap),
-            Tier.STRONG: _split(settings.llm_tier_strong),
-        },
-        budget=Budget(limit_micro=settings.ai_daily_budget_micro_usd),
-        redis_client=get_redis(),
-        session_factory=SessionLocal,
-        resolve_feature=resolver_for(db),
-    )
+    gateway = _gateway_for(db)
 
     try:
         result = explain(
@@ -213,6 +202,161 @@ def _public(db: Session, row: CoachExplanation, user: User) -> CoachExplanationP
     )
 
 
+def _gateway_for(db: Session) -> Gateway:
+    """Dựng gateway cho một request.
+
+    Chỉ dựng adapter của nhà cung cấp thật sự có cấu hình — bắt phải có khoá của
+    mọi nhà cung cấp mới chạy được là một rào cản không cần thiết cho môi trường
+    chỉ dùng model chạy tại máy.
+    """
+    from app.core.ai_budget import Budget
+    from app.core.config import settings
+    from app.services.llm.gateway import Gateway
+    from app.services.llm.ollama import OllamaProvider
+    from app.services.llm.openrouter import OpenRouterProvider
+    from app.services.llm.router import Tier
+
+    providers: dict[str, object] = {"ollama": OllamaProvider(settings.ollama_base_url)}
+    if settings.openrouter_api_key:
+        providers["openrouter"] = OpenRouterProvider(settings.openrouter_api_key)
+
+    return Gateway(
+        providers=providers,  # type: ignore[arg-type]
+        routes={
+            Tier.CHEAP: _split(settings.llm_tier_cheap),
+            Tier.STRONG: _split(settings.llm_tier_strong),
+        },
+        budget=Budget(limit_micro=settings.ai_daily_budget_micro_usd),
+        redis_client=get_redis(),
+        session_factory=SessionLocal,
+        resolve_feature=resolver_for(db),
+    )
+
+
 def _split(value: str) -> tuple[str, str]:
     provider, _, model = value.partition("/")
     return provider, model
+
+
+# Hạn mức riêng cho hỏi đáp, CHẶT HƠN giải thích: giải thích cache được nên chi
+# phí hội tụ về 0, còn mỗi câu hỏi là một lượt gọi mới không bao giờ rẻ đi.
+CHAT_QUOTA = Quota(limit=40, window_seconds=3600)
+
+
+@router.post(
+    "/{attempt_id}/chat",
+    response_model=ChatTurn,
+    dependencies=[Depends(rate_limit("coach-chat", CHAT_QUOTA, fail_open=False))],
+)
+def chat(
+    attempt_id: uuid.UUID,
+    body: ChatAsk,
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ChatTurn:
+    """Hỏi đáp NEO vào lượt làm bài, và tuỳ chọn neo thêm vào một câu.
+
+    Không có RAG: ngữ cảnh đến từ `AnchoredRetriever`, tất định và kiểm chứng
+    được. Ngày có ngữ liệu, chỉ đổi retriever được tiêm vào — endpoint, prompt
+    và giao diện giữ nguyên.
+    """
+    attempt = _owned_submitted_attempt(db, attempt_id, user)
+    message = body.message.strip()
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Câu hỏi đang trống."
+        )
+    if len(message) > MAX_QUESTION_CHARS:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Câu hỏi dài quá {MAX_QUESTION_CHARS} ký tự.",
+        )
+    if body.question_id is not None:
+        exists = db.scalars(
+            select(AttemptItem).where(
+                AttemptItem.attempt_id == attempt.id,
+                AttemptItem.question_id == body.question_id,
+            )
+        ).first()
+        if exists is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Câu này không có trong lượt làm bài",
+            )
+
+    conversation = db.scalars(
+        select(CoachConversation).where(
+            CoachConversation.user_id == user.id,
+            CoachConversation.attempt_id == attempt.id,
+            CoachConversation.question_id == body.question_id,
+        )
+    ).first()
+    if conversation is None:
+        conversation = CoachConversation(
+            user_id=user.id, attempt_id=attempt.id, question_id=body.question_id
+        )
+        db.add(conversation)
+        db.commit()
+
+    try:
+        turn = ask(
+            db,
+            _gateway_for(db),
+            AnchoredRetriever(db),
+            conversation=conversation,
+            question=message,
+            request_id=request.headers.get("x-request-id"),
+        )
+    except FeatureDisabled:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Trợ giảng đang tạm tắt."
+        ) from None
+    except BudgetExceeded:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Bạn đã dùng hết hạn mức AI trong ngày. Thử lại vào ngày mai.",
+        ) from None
+    except (BudgetUnavailable, LLMError):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Trợ giảng tạm thời không phản hồi. Thử lại sau ít phút.",
+        ) from None
+
+    return ChatTurn(
+        conversation_id=conversation.id,
+        question=ChatMessagePublic(id=turn.question.id, role="user", content=turn.question.content),
+        answer=ChatMessagePublic(id=turn.answer.id, role="assistant", content=turn.answer.content),
+    )
+
+
+@router.get("/{attempt_id}/chat", response_model=list[ChatMessagePublic])
+def chat_history(
+    attempt_id: uuid.UUID,
+    question_id: uuid.UUID | None = None,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[ChatMessagePublic]:
+    """Mảng trần: một cuộc trò chuyện quanh một câu hỏi có trần tự nhiên.
+
+    Trả về TOÀN BỘ lịch sử để người học đọc lại, khác với cửa sổ `HISTORY_TURNS`
+    gửi cho model — hai con số khác nhau vì phục vụ hai mục đích khác nhau, và
+    gộp chúng lại sẽ khiến việc rút ngắn cửa sổ chi phí làm mất lịch sử của
+    người dùng.
+    """
+    attempt = _owned_submitted_attempt(db, attempt_id, user)
+    conversation = db.scalars(
+        select(CoachConversation).where(
+            CoachConversation.user_id == user.id,
+            CoachConversation.attempt_id == attempt.id,
+            CoachConversation.question_id == question_id,
+        )
+    ).first()
+    if conversation is None:
+        return []
+    rows = db.scalars(
+        select(CoachMessage)
+        .where(CoachMessage.conversation_id == conversation.id)
+        .order_by(CoachMessage.position)
+    )
+    return [ChatMessagePublic(id=r.id, role=r.role, content=r.content) for r in rows]

@@ -207,6 +207,7 @@ export const API_ROUTES = {
   // Coach — chỉ dùng được sau khi lượt làm bài đã nộp; máy chủ trả 409 nếu chưa.
   coachExplain: (attemptId: string, questionId: string) =>
     `/api/v1/attempts/${attemptId}/items/${questionId}/coach`,
+  coachChat: (attemptId: string) => `/api/v1/attempts/${attemptId}/chat`,
   coachFeedback: (attemptId: string, questionId: string) =>
     `/api/v1/attempts/${attemptId}/items/${questionId}/coach/feedback`,
   adminAiFeatures: "/api/v1/admin/ai/features",

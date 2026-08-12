@@ -16,6 +16,7 @@ import { Alert, Button, ButtonLink, EmptyState, Page, Skeleton, cx } from "@/com
 import { apiFetch } from "@/lib/api";
 import { type Block, clock, credit, groupQuestions } from "@/lib/attempt";
 import { CoachBlock } from "@/components/coach-block";
+import { CoachChat } from "@/components/coach-chat";
 import { useRequireSession } from "@/lib/session";
 
 /*
@@ -396,6 +397,10 @@ export default function AttemptRunnerPage() {
           </Button>
         </div>
       </Modal>
+
+      {/* Chỉ sau khi nộp: máy chủ trả 409 nếu chưa, và một hộp chat bấm được
+          rồi báo lỗi là một lời mời hỏng. */}
+      {done && <CoachChat attemptId={attemptId} token={token} />}
 
       <Modal
         open={confirming === "exit" && !done}

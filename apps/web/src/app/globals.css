@@ -274,3 +274,42 @@
     background: linear-gradient(100deg, rgb(var(--accent-uk)), rgb(var(--action)));
   }
 }
+
+/*
+ * Ba chấm "đang gõ" — ngôn ngữ quen thuộc của mọi ứng dụng chat.
+ *
+ * Dùng thay một spinner vì hai thứ nói hai điều khác nhau: spinner nói "hệ
+ * thống đang bận", còn ba chấm nói "phía bên kia đang soạn". Ở một hộp trò
+ * chuyện, điều thứ hai mới đúng và nó đặt kỳ vọng về thời gian chờ.
+ */
+@keyframes chat-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.chat-dot {
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+
+.chat-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-dot {
+    animation: none;
+    opacity: 0.55;
+  }
+}
