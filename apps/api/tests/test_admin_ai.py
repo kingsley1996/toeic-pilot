@@ -183,3 +183,83 @@ def test_chuong_cua_tra_202_chu_khong_phai_200(
     """202 là lời hứa đúng: đã nhận yêu cầu, chưa hứa nhãn đã có."""
     response = client.post("/api/v1/admin/ai/skill-tags/requests", headers=auth("admin"))
     assert response.status_code == 202
+
+
+def test_chi_chon_duoc_model_CO_GIA(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """`cost_usd` ném lỗi với model lạ chứ không ghi 0 — hành vi đúng, nhưng nó
+    phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+
+    Không có phép kiểm này thì một lần gõ nhầm tên model làm mọi lượt gọi của
+    tính năng đó hỏng, và thông báo lỗi nói về bảng giá chứ không nói về ô vừa
+    bấm lưu.
+    """
+    response = client.put(
+        "/api/v1/admin/ai/features/coach_explain",
+        json={"provider": "ollama", "model": "model-khong-ton-tai", "enabled": True},
+        headers=auth("admin"),
+    )
+    assert response.status_code == 422
+    assert "bảng giá" in response.json()["detail"]
+
+
+def test_tinh_nang_khong_co_trong_ma_thi_404(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Danh sách tính năng nằm trong MÃ, không trong database.
+
+    Để nó ở database thì giao diện cho phép tạo một tính năng không ai xử lý —
+    một hàng cấu hình trỏ vào hư không, trông hoàn toàn hợp lệ.
+    """
+    response = client.put(
+        "/api/v1/admin/ai/features/tinh_nang_bia",
+        json={"provider": "ollama", "model": "gemma3:latest", "enabled": True},
+        headers=auth("admin"),
+    )
+    assert response.status_code == 404
+
+
+def test_chua_cau_hinh_thi_bao_la_CHUA_CAU_HINH_chu_khong_bo_trong(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Ô trống đọc như "chưa dùng được", trong khi tính năng vẫn đang chạy bằng
+    cấu hình từ biến môi trường."""
+    rows = client.get("/api/v1/admin/ai/features", headers=auth("admin")).json()
+    coach = next(r for r in rows if r["key"] == "coach_explain")
+    assert coach["configured"] is False
+    assert coach["provider"] is None
+    assert coach["enabled"] is True
+
+
+def test_tat_mot_tinh_nang_thi_gateway_TU_CHOI_va_ghi_so(db_session: Session, fake_redis) -> None:
+    """Tắt có chủ ý khác hẳn nhà cung cấp hỏng: thử lại bao nhiêu lần cũng thế.
+
+    Và lượt bị chặn vẫn phải thành một hàng trong sổ — bỏ nó thì không ai biết
+    một tính năng đã tắt bao lâu và chặn bao nhiêu lượt, mà câu đó luôn được hỏi
+    ngay sau khi có người phàn nàn.
+    """
+    import pytest
+    from sqlalchemy.orm import sessionmaker
+
+    from app.core.ai_budget import Budget
+    from app.models.ai import AiInteraction
+    from app.services.llm.base import FeatureDisabled, LLMRequest
+    from app.services.llm.fake import FakeProvider
+    from app.services.llm.gateway import Gateway
+    from app.services.llm.router import Tier
+
+    gateway = Gateway(
+        providers={"fake": FakeProvider()},
+        routes={Tier.CHEAP: ("fake", "fake-1"), Tier.STRONG: ("fake", "fake-1")},
+        budget=Budget(limit_micro=10_000_000),
+        redis_client=fake_redis,  # type: ignore[arg-type]
+        session_factory=sessionmaker(bind=db_session.get_bind()),
+        resolve_feature=lambda _f: ("fake", "fake-1", False),
+    )
+    with pytest.raises(FeatureDisabled):
+        gateway.run(LLMRequest(system="s", user="u"), feature="coach_explain", tier=Tier.CHEAP)
+
+    (row,) = db_session.query(AiInteraction).all()
+    assert row.status == "refused"
+    assert "đang tắt" in (row.error or "")

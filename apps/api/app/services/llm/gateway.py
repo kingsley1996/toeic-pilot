@@ -26,9 +26,16 @@ from sqlalchemy.orm import Session
 
 from app.core.ai_budget import Budget, BudgetExceeded, BudgetUnavailable, micro_usd
 from app.models.ai import AiInteraction
-from app.services.llm.base import LLMError, LLMRequest, LLMResult, Provider, Usage
+from app.services.llm.base import (
+    FeatureDisabled,
+    LLMError,
+    LLMRequest,
+    LLMResult,
+    Provider,
+    Usage,
+)
 from app.services.llm.pricing import cost_usd
-from app.services.llm.router import Tier, route_for
+from app.services.llm.router import Route, Tier, route_for
 
 __all__ = ["Gateway"]
 
@@ -40,6 +47,11 @@ class Gateway:
     budget: Budget
     redis_client: redis.Redis
     session_factory: Callable[[], Session]
+    # Tra cấu hình theo TÍNH NĂNG. Trả `None` nghĩa là tính năng chưa được cấu
+    # hình riêng và rơi về bảng tầng ở `routes`. Là một hàm tiêm vào chứ không
+    # phải truy vấn thẳng, cùng lý do `session_factory` là seam: nếu không, mọi
+    # test chạm gateway đều phải dựng một hàng cấu hình.
+    resolve_feature: Callable[[str], tuple[str, str, bool] | None] | None = None
 
     def run(
         self,
@@ -52,6 +64,27 @@ class Gateway:
         request_id: str | None = None,
     ) -> LLMResult:
         route = route_for(tier, dict(self.routes))
+        override = self.resolve_feature(feature) if self.resolve_feature else None
+        if override is not None:
+            provider_name, model, enabled = override
+            if not enabled:
+                # Ghi lại việc TỪ CHỐI. Bỏ hàng này thì không ai biết một tính
+                # năng đã bị tắt bao lâu và chặn bao nhiêu lượt — và câu hỏi đó
+                # luôn được hỏi ngay sau khi có người phàn nàn.
+                self._record(
+                    feature=feature,
+                    route=route,
+                    usage=Usage(),
+                    cost=Decimal(0),
+                    latency_ms=0,
+                    status="refused",
+                    error=f"tính năng {feature} đang tắt",
+                    user_id=user_id,
+                    prompt_version=prompt_version,
+                    request_id=request_id,
+                )
+                raise FeatureDisabled(f"Tính năng {feature} đang tắt")
+            route = Route(tier=tier, provider=provider_name, model=model)
 
         if user_id is not None:
             try:

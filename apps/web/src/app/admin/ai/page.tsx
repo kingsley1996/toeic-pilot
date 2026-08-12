@@ -57,46 +57,46 @@ export default function AdminAiPage() {
   return (
     <Page>
       <PageHeader
-        title="Tầng AI"
-        description="Chi phí, độ tin cậy và độ trễ của mọi lượt gọi mô hình. Sổ cái là nguồn sự thật — không có bảng tổng nào ghi song song."
+        title="AI layer"
+        description="Cost, reliability and latency of every model call. The ledger is the source of truth — no summary table is written alongside it."
       />
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <ValueTile
           Icon={Coins}
-          label="Chi phí đã tiêu"
+          label="Spent"
           value={stats ? money(stats.cost_usd) : null}
-          hint={`${stats?.total_calls ?? 0} lượt gọi đã ghi sổ`}
-          empty="chưa có lượt nào"
+          hint={`${stats?.total_calls ?? 0} calls recorded`}
+          empty="no calls yet"
         />
         <ValueTile
           Icon={ShieldAlert}
-          label="Tỉ lệ hỏng"
+          label="Failure rate"
           value={stats ? pct(errorRate) : null}
-          hint={`${stats?.error_calls ?? 0} hỏng · ${stats?.refused_calls ?? 0} bị chặn vì hết hạn mức`}
-          empty="chưa có lượt nào"
+          hint={`${stats?.error_calls ?? 0} failed · ${stats?.refused_calls ?? 0} refused by the budget`}
+          empty="no calls yet"
         />
         <ValueTile
           Icon={Gauge}
-          label="Độ trễ (p95)"
+          label="Latency (p95)"
           value={stats ? (stats.latency_p95_ms / 1000).toFixed(1) : null}
-          unit="giây"
-          hint={stats ? `trung vị ${(stats.latency_p50_ms / 1000).toFixed(1)}s` : undefined}
-          empty="chưa có số"
+          unit="s"
+          hint={stats ? `median ${(stats.latency_p50_ms / 1000).toFixed(1)}s` : undefined}
+          empty="no data yet"
         />
         <ValueTile
           Icon={Activity}
-          label="Token vào / ra"
+          label="Tokens in / out"
           value={stats ? `${stats.prompt_tokens} / ${stats.completion_tokens}` : null}
-          hint={`${stats?.cached_tokens ?? 0} token đọc lại từ cache`}
-          empty="chưa có số"
+          hint={`${stats?.cached_tokens ?? 0} tokens read from cache`}
+          empty="no data yet"
           numeric={false}
         />
       </section>
 
       <section className="mt-10 grid gap-3 lg:grid-cols-2">
         <div>
-          <SectionHeader title="Theo tính năng" />
+          <SectionHeader title="By feature" />
           <UsageTable rows={stats?.by_feature ?? []} />
         </div>
         <div>
@@ -105,17 +105,17 @@ export default function AdminAiPage() {
            * được câu hỏi mà định tuyến sinh ra: đổi việc X sang model rẻ hơn
            * thì tiết kiệm bao nhiêu.
            */}
-          <SectionHeader title="Theo model" />
+          <SectionHeader title="By model" />
           <UsageTable rows={stats?.by_model ?? []} />
         </div>
       </section>
 
       <section className="mt-10">
         <SectionHeader
-          title="Độ đúng theo mặt phân loại"
+          title="Accuracy by facet"
           aside={
             <span className="text-small text-ink-muted">
-              {stats?.questions_labelled ?? 0} / {stats?.questions_total ?? 0} câu đã có nhãn
+              {stats?.questions_labelled ?? 0} / {stats?.questions_total ?? 0} questions labelled
             </span>
           }
         />
@@ -123,11 +123,11 @@ export default function AdminAiPage() {
       </section>
 
       {(stats?.budget_hit_users ?? 0) > 0 && (
-        <Panel className="mt-10 border-warn">
+        <Panel className="mt-10 border-warn p-4">
           <p className="text-small">
-            <strong>{stats?.budget_hit_users}</strong> tài khoản đã chạm trần chi tiêu trong 30 ngày
-            qua. Hạn mức cố ý chặn khi Redis hỏng — ở đây Redis là thứ duy nhất đứng giữa một tài
-            khoản và hoá đơn.
+            <strong>{stats?.budget_hit_users}</strong> accounts hit the spending cap in the last 30
+            days. The budget deliberately fails closed when Redis is down — here Redis is the only
+            thing standing between an account and your bill.
           </p>
         </Panel>
       )}
@@ -141,7 +141,7 @@ function UsageTable({
   rows: { key: string; calls: number; cost_usd: string; prompt_tokens: number }[];
 }) {
   if (rows.length === 0) {
-    return <Panel className="text-small text-ink-muted">Chưa có lượt gọi nào.</Panel>;
+    return <Panel className="p-4 text-small text-ink-muted">No calls yet.</Panel>;
   }
   return (
     <Panel className="overflow-x-auto p-0">
@@ -151,7 +151,7 @@ function UsageTable({
             <tr key={row.key} className="border-b border-rule last:border-0">
               <td className="px-4 py-2.5 font-data text-label">{row.key}</td>
               <td className="px-4 py-2.5 text-right tabular-nums text-ink-muted">
-                {row.calls} lượt
+                {row.calls} calls
               </td>
               <td className="px-4 py-2.5 text-right font-data tabular-nums">
                 {money(row.cost_usd)}

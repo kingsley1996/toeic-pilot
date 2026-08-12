@@ -1,6 +1,111 @@
 {
   "components": {
     "schemas": {
+      "AiFeatureRow": {
+        "properties": {
+          "configured": {
+            "default": false,
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "description_vi": {
+            "title": "Description Vi",
+            "type": "string"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "updated_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By"
+          }
+        },
+        "required": [
+          "key",
+          "label_vi",
+          "description_vi"
+        ],
+        "title": "AiFeatureRow",
+        "type": "object"
+      },
+      "AiFeatureWrite": {
+        "properties": {
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "model": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Model",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "AiFeatureWrite",
+        "type": "object"
+      },
       "AnswerSubmit": {
         "properties": {
           "flagged": {
@@ -2335,6 +2440,24 @@
           "attribution"
         ],
         "title": "ImageConfirm",
+        "type": "object"
+      },
+      "KnownModel": {
+        "properties": {
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "KnownModel",
         "type": "object"
       },
       "LabelCatalogItem": {
@@ -5821,6 +5944,95 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/ai/features": {
+      "get": {
+        "description": "Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.\n\nNhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn\nhàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.",
+        "operationId": "list_features_api_v1_admin_ai_features_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AiFeatureRow"
+                  },
+                  "title": "Response List Features Api V1 Admin Ai Features Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Features",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/features/{feature}": {
+      "put": {
+        "description": "Đổi nhà cung cấp/model của một tính năng, hoặc tắt hẳn nó.\n\n**Không có trường khoá API ở đây, và sẽ không bao giờ có.** Một ô nhập khoá\ntrên giao diện là một khoá sẽ lọt vào log, ảnh chụp màn hình và bản sao lưu.",
+        "operationId": "set_feature_api_v1_admin_ai_features__feature__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feature",
+            "required": true,
+            "schema": {
+              "title": "Feature",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiFeatureWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiFeatureRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Feature",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
     "/api/v1/admin/ai/labels": {
       "get": {
         "description": "Câu hỏi kèm nhãn của chính nó và nhãn của ngữ liệu dùng chung.\n\n`disagreeing` là bộ lọc đáng giá nhất: những mặt người đã sửa khác nhãn máy\nđề xuất. Mỗi hàng ở đó là một lần máy sai, và đọc mười hàng như thế nói\nnhiều hơn một con số phần trăm.",
@@ -5979,6 +6191,37 @@
           }
         ],
         "summary": "Review Question Label",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/models": {
+      "get": {
+        "description": "Chỉ model có trong bảng giá.\n\nCho gõ tay tên model nghĩa là một lần gõ nhầm làm mọi lượt gọi của tính năng\nđó hỏng ngay — `cost_usd` ném lỗi với model lạ chứ không ghi 0. Hành vi đó\nđúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.",
+        "operationId": "list_models_api_v1_admin_ai_models_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/KnownModel"
+                  },
+                  "title": "Response List Models Api V1 Admin Ai Models Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Models",
         "tags": [
           "admin-ai"
         ]

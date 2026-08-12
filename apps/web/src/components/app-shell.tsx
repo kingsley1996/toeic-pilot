@@ -1,12 +1,12 @@
 "use client";
 
-import { BookOpen, FileText, Headphones, House, Menu, SquarePen, X } from "lucide-react";
+import { BookOpen, FileText, Headphones, House, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
-import { ButtonLink, IconButton, cx } from "@/components/ui";
+import { ButtonLink, IconButton } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
 /*
@@ -39,7 +39,7 @@ const LEARN_LINKS: NavItem[] = [
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { status, canEdit } = useSession();
+  const { status } = useSession();
   const pathname = usePathname();
 
   /*
@@ -108,23 +108,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
 
           <div className="ml-auto flex items-center gap-2">
-            {/*
-             * MỘT cánh cửa vào khu quản trị, không phải ba mục nav. Chỉ hiện với
-             * người thực sự mở được nó — học viên không được chỉ vào một cánh
-             * cửa họ không mở được.
-             */}
-            {status === "authenticated" && canEdit && (
-              <ButtonLink
-                href="/admin"
-                variant="secondary"
-                size="sm"
-                className="hidden sm:inline-flex"
-              >
-                <SquarePen size={14} strokeWidth={2} aria-hidden />
-                Quản trị
-              </ButtonLink>
-            )}
-
             {status === "anonymous" && (
               <>
                 <ButtonLink href="/login" variant="quiet" size="sm">
@@ -155,15 +138,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {LEARN_LINKS.map((link) => (
               <NavLink key={link.href} {...link} active={link.href === active} />
             ))}
-            {canEdit && (
-              <NavLink
-                href="/admin"
-                label="Quản trị nội dung"
-                Icon={SquarePen}
-                active={false}
-                className={cx("mt-1 border-t border-rule pt-3")}
-              />
-            )}
           </nav>
         )}
       </header>

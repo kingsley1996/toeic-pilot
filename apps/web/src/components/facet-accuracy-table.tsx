@@ -17,17 +17,19 @@ import { Panel } from "@/components/ui";
  */
 export function FacetAccuracyTable({ facets }: { facets: LlmStats["facets"] }) {
   if (facets.length === 0) {
-    return <Panel className="text-small text-ink-muted">Chưa có nhãn nào.</Panel>;
+    return <Panel className="p-4 text-small text-ink-muted">No labels yet.</Panel>;
   }
   return (
     <Panel className="overflow-x-auto p-0">
       <table className="w-full min-w-[520px] text-small">
         <thead>
           <tr className="border-b border-rule-strong text-label uppercase text-ink-faint">
-            <th className="whitespace-nowrap px-4 py-2.5 text-left font-semibold">Mặt phân loại</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">Đã gắn</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">Đã kiểm</th>
-            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">Máy đúng</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-left font-semibold">Facet</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">Labelled</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">Reviewed</th>
+            <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">
+              Machine correct
+            </th>
           </tr>
         </thead>
         <tbody>

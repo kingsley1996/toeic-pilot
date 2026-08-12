@@ -4,6 +4,52 @@
  */
 
 export interface paths {
+    "/api/v1/admin/ai/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Features
+         * @description Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.
+         *
+         *     Nhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn
+         *     hàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.
+         */
+        get: operations["list_features_api_v1_admin_ai_features_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/features/{feature}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Feature
+         * @description Đổi nhà cung cấp/model của một tính năng, hoặc tắt hẳn nó.
+         *
+         *     **Không có trường khoá API ở đây, và sẽ không bao giờ có.** Một ô nhập khoá
+         *     trên giao diện là một khoá sẽ lọt vào log, ảnh chụp màn hình và bản sao lưu.
+         */
+        put: operations["set_feature_api_v1_admin_ai_features__feature__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/ai/labels": {
         parameters: {
             query?: never;
@@ -75,6 +121,30 @@ export interface paths {
          *     phải sửa hay chỉ xác nhận.
          */
         patch: operations["review_question_label_api_v1_admin_ai_labels__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/ai/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Models
+         * @description Chỉ model có trong bảng giá.
+         *
+         *     Cho gõ tay tên model nghĩa là một lần gõ nhầm làm mọi lượt gọi của tính năng
+         *     đó hỏng ngay — `cost_usd` ném lỗi với model lạ chứ không ghi 0. Hành vi đó
+         *     đúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+         */
+        get: operations["list_models_api_v1_admin_ai_models_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/ai/set-labels/{set_id}": {
@@ -1803,6 +1873,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AiFeatureRow */
+        AiFeatureRow: {
+            /**
+             * Configured
+             * @default false
+             */
+            configured: boolean;
+            /** Description Vi */
+            description_vi: string;
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Key */
+            key: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Model */
+            model?: string | null;
+            /** Provider */
+            provider?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Updated By */
+            updated_by?: string | null;
+        };
+        /** AiFeatureWrite */
+        AiFeatureWrite: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Model */
+            model: string;
+            /** Provider */
+            provider: string;
+        };
         /** AnswerSubmit */
         AnswerSubmit: {
             /** Flagged */
@@ -2597,6 +2706,13 @@ export interface components {
             source_url: string;
             /** Storage Key */
             storage_key: string;
+        };
+        /** KnownModel */
+        KnownModel: {
+            /** Model */
+            model: string;
+            /** Provider */
+            provider: string;
         };
         /** LabelCatalogItem */
         LabelCatalogItem: {
@@ -3823,6 +3939,61 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_features_api_v1_admin_ai_features_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiFeatureRow"][];
+                };
+            };
+        };
+    };
+    set_feature_api_v1_admin_ai_features__feature__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiFeatureWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiFeatureRow"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_labels_api_v1_admin_ai_labels_get: {
         parameters: {
             query?: {
@@ -3907,6 +4078,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_models_api_v1_admin_ai_models_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KnownModel"][];
                 };
             };
         };

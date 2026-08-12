@@ -15,7 +15,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Protocol
 
-__all__ = ["LLMError", "LLMQuotaExhausted", "LLMRequest", "LLMResult", "Provider", "Usage"]
+__all__ = [
+    "FeatureDisabled",
+    "LLMError",
+    "LLMQuotaExhausted",
+    "LLMRequest",
+    "LLMResult",
+    "Provider",
+    "Usage",
+]
 
 
 class LLMError(RuntimeError):
@@ -35,6 +43,17 @@ class LLMQuotaExhausted(LLMError):
     ngày thì chờ bao lâu trong một lượt chạy cũng vô nghĩa. Gộp lại thì một lượt
     chạy 200 câu sẽ nghiến qua 800 lượt gọi chắc chắn hỏng, mất hàng chục phút,
     rồi báo 200 lỗi giống hệt nhau — che mất đúng một dòng nói lên nguyên nhân.
+    """
+
+
+class FeatureDisabled(LLMError):
+    """Tính năng bị tắt từ giao diện quản trị.
+
+    Là lớp con của `LLMError` để không nơi gọi nào quên bắt, nhưng là loại
+    riêng vì cách xử lý khác hẳn: nhà cung cấp hỏng thì thử lại có nghĩa, còn
+    tắt có chủ ý thì thử lại bao nhiêu lần cũng thế. Nó cũng phải hiện ra với
+    người dùng như "tạm thời không dùng được" chứ **không phải giả vờ thành
+    công** — một tính năng tắt mà giao diện im lặng là một tính năng hỏng.
     """
 
 

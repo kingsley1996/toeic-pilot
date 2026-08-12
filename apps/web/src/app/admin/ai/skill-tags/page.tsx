@@ -31,10 +31,10 @@ type Envelope<T> = { items: T[]; total: number; limit: number; offset: number };
 type Filter = "all" | "unlabelled" | "unreviewed" | "disagreeing";
 
 const FILTERS: { value: Filter; label: string }[] = [
-  { value: "all", label: "Tất cả" },
-  { value: "unlabelled", label: "Chưa có nhãn" },
-  { value: "unreviewed", label: "Chưa ai kiểm" },
-  { value: "disagreeing", label: "Người đã sửa" },
+  { value: "all", label: "All" },
+  { value: "unlabelled", label: "Unlabelled" },
+  { value: "unreviewed", label: "Unreviewed" },
+  { value: "disagreeing", label: "Corrected" },
 ];
 
 function pct(value: number): string {
@@ -115,11 +115,11 @@ export default function SkillTagsPage() {
       // trả 202 vì API không gắn nhãn được — nó chỉ rung chuông cho worker.
       setNotice(
         ack.queued
-          ? "Đã báo worker. Nhãn sẽ xuất hiện dần — tải lại trang sau ít phút."
-          : "Đã ghi nhận. Chuông không tới được worker, nhưng vòng quét định kỳ vẫn sẽ chạy.",
+          ? "The worker has been notified. Labels appear gradually — reload in a few minutes."
+          : "Recorded. The doorbell did not reach the worker, but its periodic sweep will still run.",
       );
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Không gửi được yêu cầu");
+      setError(caught instanceof Error ? caught.message : "Could not send the request");
     } finally {
       setBusy(false);
     }
@@ -141,7 +141,7 @@ export default function SkillTagsPage() {
       setReloadKey((key) => key + 1);
       setEditing(null);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Không lưu được nhãn");
+      setError(caught instanceof Error ? caught.message : "Could not save the label");
     }
   }
 
@@ -161,12 +161,12 @@ export default function SkillTagsPage() {
   return (
     <Page>
       <PageHeader
-        title="Gắn nhãn kỹ năng"
-        description="Máy đề xuất, người xác nhận. Chênh lệch giữa hai cột chính là KPI độ đúng."
+        title="Skill labels"
+        description="The machine proposes, a human confirms. The gap between the two columns is the accuracy KPI."
         actions={
           <Button onClick={ringDoorbell} disabled={busy}>
             <Bell size={15} strokeWidth={1.75} aria-hidden />
-            {busy ? "Đang gửi…" : "Chạy gắn nhãn"}
+            {busy ? "Sending…" : "Run labelling"}
           </Button>
         }
       />
@@ -185,35 +185,35 @@ export default function SkillTagsPage() {
       <section className="grid gap-3 sm:grid-cols-2">
         <ValueTile
           Icon={Tags}
-          label="Câu đã có nhãn"
+          label="Questions labelled"
           value={stats ? pct(coverage) : null}
-          hint={`${stats?.questions_labelled ?? 0} / ${stats?.questions_total ?? 0} câu — ngưỡng bắt buộc 100%`}
-          empty="chưa có câu hỏi"
+          hint={`${stats?.questions_labelled ?? 0} / ${stats?.questions_total ?? 0} questions — the bar is 100%`}
+          empty="no questions yet"
         />
         <ValueTile
           Icon={ListChecks}
-          label="Nhãn đã có người kiểm"
+          label="Labels reviewed"
           value={stats ? String(reviewed) : null}
           unit={`/ ${labelled}`}
-          hint="đếm theo NHÃN, không theo câu: một câu Part 6 có ba nhãn phải kiểm riêng từng cái"
-          empty="chưa có nhãn nào"
+          hint="counted by LABEL, not by question — a Part 6 question has three, each reviewed separately"
+          empty="no labels yet"
         />
       </section>
 
       <section className="mt-10">
-        <SectionHeader title="Độ đúng theo mặt phân loại" />
+        <SectionHeader title="Accuracy by facet" />
         <FacetAccuracyTable facets={stats?.facets ?? []} />
       </section>
 
       <section className="mt-10">
         <SectionHeader
-          title="Duyệt nhãn"
+          title="Review labels"
           aside={
             <Select
               className="w-auto"
               value={filter}
               onChange={(event) => setFilter(event.target.value as Filter)}
-              aria-label="Lọc câu hỏi"
+              aria-label="Filter questions"
             >
               {FILTERS.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -227,15 +227,15 @@ export default function SkillTagsPage() {
           <SkeletonList rows={5} />
         ) : rows.items.length === 0 ? (
           <EmptyState
-            title="Không có câu nào"
-            description="Đổi bộ lọc, hoặc bấm Chạy gắn nhãn để worker xử lý những câu còn thiếu."
+            title="Nothing here"
+            description="Change the filter, or press Run labelling so the worker picks up what is missing."
           />
         ) : (
           <>
             {truncated > 0 && (
               <p className="mb-3 rounded border border-warn bg-warn-tint px-3.5 py-2.5 text-small">
-                Đang hiện {limit} câu đầu trong tổng số {truncated}. Màn này dựng theo cây đề → part
-                nên chưa lật trang được — lọc bớt trước khi danh sách vượt quá đây.
+                Showing the first {limit} of {truncated}. This screen is a test → part tree, so it
+                cannot paginate yet — narrow the filter before the list outgrows this.
               </p>
             )}
             <div className="space-y-2">
@@ -265,7 +265,7 @@ export default function SkillTagsPage() {
                                 </span>
                                 <span className="min-w-0 flex-1 truncate">
                                   {row.prompt_text ?? (
-                                    <span className="text-ink-faint">chỉ đọc bằng audio</span>
+                                    <span className="text-ink-faint">spoken only</span>
                                   )}
                                 </span>
                                 <span className="flex shrink-0 flex-wrap gap-1">
@@ -279,7 +279,7 @@ export default function SkillTagsPage() {
                                     </Tag>
                                   ))}
                                   {row.labels.length === 0 && row.set_labels.length === 0 && (
-                                    <span className="text-ink-faint">chưa có</span>
+                                    <span className="text-ink-faint">none</span>
                                   )}
                                 </span>
                               </button>
@@ -339,16 +339,16 @@ function ReviewDialog({
     <Modal
       open
       onClose={onClose}
-      title={`Câu ${row.question_number ?? "?"} · Part ${row.part}`}
+      title={`Question ${row.question_number ?? "?"} · Part ${row.part}`}
       description={row.test_title ?? undefined}
     >
       <div className="space-y-4">
         <div>
-          <p className="text-label font-semibold uppercase tracking-wide text-ink-muted">Đề bài</p>
+          <p className="text-label font-semibold uppercase tracking-wide text-ink-muted">Prompt</p>
           <p className="mt-1 text-small">
             {row.prompt_text ?? (
               <span className="text-ink-faint">
-                Phần này không in đề — nội dung chỉ đọc bằng audio.
+                This part prints no prompt — it is spoken only.
               </span>
             )}
           </p>
@@ -391,12 +391,14 @@ function FacetPicker({
           {facet.owner === "set" && (
             // Nói rõ phạm vi TRƯỚC khi bấm: sửa chủ đề một hội thoại Part 3 đổi
             // nhãn của cả ba câu, và người duyệt không đoán ra điều đó từ giao diện.
-            <span className="ml-2 font-normal normal-case text-ink-faint">áp cho cả nhóm câu</span>
+            <span className="ml-2 font-normal normal-case text-ink-faint">
+              applies to the whole set
+            </span>
           )}
         </p>
         {value?.proposed_code && value.proposed_code !== value.code && (
           <span className="font-data text-label text-ink-faint">
-            máy đoán {value.proposed_code}
+            machine said {value.proposed_code}
           </span>
         )}
       </div>
@@ -408,7 +410,7 @@ function FacetPicker({
           aria-label={facet.label_vi}
         >
           <option value="" disabled>
-            chưa chọn
+            not set
           </option>
           {usable.map((label) => (
             <option key={label.code} value={label.code}>
@@ -423,9 +425,9 @@ function FacetPicker({
            * vào KPI độ đúng. Không có nút này thì hành động hay gặp nhất khi
            * duyệt — xác nhận máy đúng — là bất khả thi, và KPI vĩnh viễn 0%.
            */}
-          {changed ? "Lưu nhãn mới" : "Xác nhận đúng"}
+          {changed ? "Save new label" : "Confirm correct"}
         </Button>
-        {value?.reviewed_at && <Tag tone="ok">đã kiểm</Tag>}
+        {value?.reviewed_at && <Tag tone="ok">reviewed</Tag>}
       </div>
     </div>
   );
@@ -488,16 +490,16 @@ function groupRows(rows: QuestionLabelRow[]): TestGroup[] {
       .sort((a, b) => a.part - b.part);
     const [labels, reviewed] = countLabels(list);
     groups.push({
-      key: key || "(chưa thuộc đề)",
-      title: list[0].test_title ?? "Chưa thuộc đề nào",
+      key: key || "(no test)",
+      title: list[0].test_title ?? "Not in any test",
       parts,
       labels,
       reviewed,
     });
   }
   return groups.sort((a, b) => {
-    if (a.key === "(chưa thuộc đề)") return 1;
-    if (b.key === "(chưa thuộc đề)") return -1;
+    if (a.key === "(no test)") return 1;
+    if (b.key === "(no test)") return -1;
     return a.title.localeCompare(b.title, "vi");
   });
 }
@@ -507,7 +509,7 @@ function Counted({ done, total }: { done: number; total: number }) {
   return (
     <span className="whitespace-nowrap font-data text-label text-ink-faint">
       <span className={total > 0 && done === total ? "text-ok" : "text-ink-muted"}>{done}</span> /{" "}
-      {total} nhãn đã kiểm
+      {total} labels reviewed
     </span>
   );
 }

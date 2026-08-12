@@ -19,11 +19,15 @@ from app.api.deps import require_role
 from app.core.ai_jobs import ring
 from app.core.database import get_db
 from app.core.redis_client import get_redis
+from app.models.ai_config import AiFeatureConfig
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.practice import PracticeTest, PracticeTestQuestion, Question
 from app.models.user import User
 from app.schemas.ai import (
+    AiFeatureRow,
+    AiFeatureWrite,
     FacetCatalog,
+    KnownModel,
     LabelCatalogItem,
     LabelValue,
     LabelWrite,
@@ -32,8 +36,10 @@ from app.schemas.ai import (
     SkillTagRequestAck,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
+from app.services.ai_features import FEATURES
 from app.services.ai_stats import collect
 from app.services.labels import FACETS, LABELS, facets_for
+from app.services.llm.pricing import known_models
 
 router = APIRouter(prefix="/admin/ai", tags=["admin-ai"])
 
@@ -57,6 +63,100 @@ def request_skill_tags(
     worker tìm được đúng ngần ấy việc.
     """
     return SkillTagRequestAck(queued=ring(client))
+
+
+@router.get("/features", response_model=list[AiFeatureRow])
+def list_features(_: User = Depends(can_edit), db: Session = Depends(get_db)) -> list[AiFeatureRow]:
+    """Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.
+
+    Nhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn
+    hàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.
+    """
+    rows = {row.feature: row for row in db.scalars(select(AiFeatureConfig))}
+    names = (
+        {
+            user_id: email
+            for user_id, email in db.execute(
+                select(User.id, User.email).where(
+                    User.id.in_([r.updated_by for r in rows.values() if r.updated_by])
+                )
+            ).all()
+        }
+        if rows
+        else {}
+    )
+    return [
+        AiFeatureRow(
+            key=feature.key,
+            label_vi=feature.label_vi,
+            description_vi=feature.description_vi,
+            provider=rows[feature.key].provider if feature.key in rows else None,
+            model=rows[feature.key].model if feature.key in rows else None,
+            enabled=rows[feature.key].enabled if feature.key in rows else True,
+            configured=feature.key in rows,
+            updated_at=rows[feature.key].updated_at if feature.key in rows else None,
+            updated_by=(names.get(rows[feature.key].updated_by) if feature.key in rows else None),
+        )
+        for feature in FEATURES
+    ]
+
+
+@router.get("/models", response_model=list[KnownModel])
+def list_models(_: User = Depends(can_edit)) -> list[KnownModel]:
+    """Chỉ model có trong bảng giá.
+
+    Cho gõ tay tên model nghĩa là một lần gõ nhầm làm mọi lượt gọi của tính năng
+    đó hỏng ngay — `cost_usd` ném lỗi với model lạ chứ không ghi 0. Hành vi đó
+    đúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+    """
+    return [KnownModel(provider=p, model=m) for p, m in known_models()]
+
+
+@router.put("/features/{feature}", response_model=AiFeatureRow)
+def set_feature(
+    feature: str,
+    body: AiFeatureWrite,
+    editor: User = Depends(can_edit),
+    db: Session = Depends(get_db),
+) -> AiFeatureRow:
+    """Đổi nhà cung cấp/model của một tính năng, hoặc tắt hẳn nó.
+
+    **Không có trường khoá API ở đây, và sẽ không bao giờ có.** Một ô nhập khoá
+    trên giao diện là một khoá sẽ lọt vào log, ảnh chụp màn hình và bản sao lưu.
+    """
+    if not any(f.key == feature for f in FEATURES):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Không có tính năng {feature!r}"
+        )
+    if (body.provider, body.model) not in known_models():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Chưa có giá cho {body.provider}/{body.model} — thêm vào bảng giá trước",
+        )
+
+    row = db.get(AiFeatureConfig, feature)
+    if row is None:
+        row = AiFeatureConfig(feature=feature)
+        db.add(row)
+    row.provider = body.provider
+    row.model = body.model
+    row.enabled = body.enabled
+    row.updated_by = editor.id
+    db.commit()
+    db.refresh(row)
+
+    spec = next(f for f in FEATURES if f.key == feature)
+    return AiFeatureRow(
+        key=spec.key,
+        label_vi=spec.label_vi,
+        description_vi=spec.description_vi,
+        provider=row.provider,
+        model=row.model,
+        enabled=row.enabled,
+        configured=True,
+        updated_at=row.updated_at,
+        updated_by=editor.email,
+    )
 
 
 @router.get("/stats", response_model=LlmStatsPublic)

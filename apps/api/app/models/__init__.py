@@ -1,4 +1,5 @@
 from app.models.ai import AI_INTERACTION_STATUSES, AiInteraction
+from app.models.ai_config import AiFeatureConfig
 from app.models.audio import AudioAsset
 from app.models.dictation import (
     DictationAttempt,
@@ -38,6 +39,7 @@ from app.models.vocabulary import (
 # and an empty autogenerate diff in Alembic.
 __all__ = [
     "AI_INTERACTION_STATUSES",
+    "AiFeatureConfig",
     "AiInteraction",
     "Attempt",
     "AttemptItem",

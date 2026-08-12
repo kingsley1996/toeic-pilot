@@ -3,6 +3,7 @@
 import {
   ArrowLeft,
   ClipboardList,
+  Cpu,
   FolderTree,
   Headphones,
   Library,
@@ -27,19 +28,22 @@ import { useRequireSession } from "@/lib/session";
 type AdminNavItem = NavItem & { children?: NavItem[] };
 
 const ADMIN_LINKS: AdminNavItem[] = [
-  { href: "/admin", label: "Tổng quan", Icon: SquarePen },
-  { href: "/admin/vocabulary", label: "Từ vựng", Icon: Library },
-  { href: "/admin/dictation", label: "Câu nghe", Icon: Headphones },
-  { href: "/admin/dictation/tree", label: "Cây nội dung", Icon: FolderTree },
-  { href: "/admin/tests", label: "Đề thi", Icon: ClipboardList },
+  { href: "/admin", label: "Overview", Icon: SquarePen },
+  { href: "/admin/vocabulary", label: "Vocabulary", Icon: Library },
+  { href: "/admin/dictation", label: "Dictation", Icon: Headphones },
+  { href: "/admin/dictation/tree", label: "Content tree", Icon: FolderTree },
+  { href: "/admin/tests", label: "Tests", Icon: ClipboardList },
   {
     href: "/admin/ai",
-    label: "Tầng AI",
+    label: "AI layer",
     Icon: Sparkles,
     // Gắn nhãn chỉ là MỘT việc của tầng AI, không phải cả tầng. Để nó ngang
     // hàng với "Tầng AI" ở menu chính sẽ ngụ ý hai khu riêng biệt, rồi mục thứ
     // hai (giải thích câu sai) và thứ ba (kế hoạch học) sẽ không biết đặt đâu.
-    children: [{ href: "/admin/ai/skill-tags", label: "Gắn nhãn kỹ năng", Icon: Tags }],
+    children: [
+      { href: "/admin/ai/skill-tags", label: "Skill labels", Icon: Tags },
+      { href: "/admin/ai/providers", label: "Providers", Icon: Cpu },
+    ],
   },
 ];
 
@@ -82,13 +86,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             className="inline-flex shrink-0 items-center gap-2 rounded px-2 py-1.5 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink"
           >
             <ArrowLeft size={16} strokeWidth={1.75} aria-hidden />
-            <span className="hidden sm:inline">Về khu học</span>
+            <span className="hidden sm:inline">Back to learning</span>
           </Link>
 
           <span aria-hidden className="h-5 w-px shrink-0 bg-rule" />
 
           <p className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight">
-            Quản trị nội dung
+            Content admin
             <Tag tone="action" className="hidden sm:inline-flex">
               admin
             </Tag>
@@ -110,7 +114,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 gap-0 px-0 lg:px-4">
         <aside className="hidden w-52 shrink-0 border-r border-rule py-8 pr-4 lg:block">
-          <p className="mb-2 px-2.5 text-label font-semibold uppercase text-ink-faint">Nội dung</p>
+          <p className="mb-2 px-2.5 text-label font-semibold uppercase text-ink-faint">Content</p>
           <nav className="flex flex-col gap-0.5">
             {ADMIN_LINKS.map((item) => (
               <Fragment key={item.href}>
@@ -146,7 +150,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t border-rule py-6">
         <p className="mx-auto max-w-6xl px-4 text-small text-ink-faint">
-          Nội dung lưu ở dạng nháp cho tới khi được xuất bản. Audio sinh ngoài luồng.
+          Content stays in draft until it is published. Audio is generated out of band.
         </p>
       </footer>
     </div>
