@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
     google_api_key: str | None = None
+    openrouter_api_key: str | None = None
+    # `localhost` khi chạy pipeline từ dòng lệnh trên máy; container phải dùng
+    # `host.docker.internal`. Là cấu hình chính vì lý do đó.
+    ollama_base_url: str = "http://localhost:11434"
     secret_key: str = DEFAULT_SECRET_KEY
     access_token_expire_minutes: int = 60 * 24 * 7
     algorithm: str = "HS256"

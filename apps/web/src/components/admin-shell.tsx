@@ -1,7 +1,17 @@
 "use client";
 
-import { ArrowLeft, ClipboardList, FolderTree, Headphones, Library, SquarePen } from "lucide-react";
+import {
+  ArrowLeft,
+  ClipboardList,
+  FolderTree,
+  Headphones,
+  Library,
+  Sparkles,
+  SquarePen,
+  Tags,
+} from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 import { usePathname } from "next/navigation";
 
 import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
@@ -14,13 +24,28 @@ import { useRequireSession } from "@/lib/session";
  * chật (sáu mục ở vai trò admin) vừa xoá mất ranh giới giữa "đang học" và "đang
  * sửa nội dung người khác sẽ học".
  */
-const ADMIN_LINKS: NavItem[] = [
+type AdminNavItem = NavItem & { children?: NavItem[] };
+
+const ADMIN_LINKS: AdminNavItem[] = [
   { href: "/admin", label: "Tổng quan", Icon: SquarePen },
   { href: "/admin/vocabulary", label: "Từ vựng", Icon: Library },
   { href: "/admin/dictation", label: "Câu nghe", Icon: Headphones },
   { href: "/admin/dictation/tree", label: "Cây nội dung", Icon: FolderTree },
   { href: "/admin/tests", label: "Đề thi", Icon: ClipboardList },
+  {
+    href: "/admin/ai",
+    label: "Tầng AI",
+    Icon: Sparkles,
+    // Gắn nhãn chỉ là MỘT việc của tầng AI, không phải cả tầng. Để nó ngang
+    // hàng với "Tầng AI" ở menu chính sẽ ngụ ý hai khu riêng biệt, rồi mục thứ
+    // hai (giải thích câu sai) và thứ ba (kế hoạch học) sẽ không biết đặt đâu.
+    children: [{ href: "/admin/ai/skill-tags", label: "Gắn nhãn kỹ năng", Icon: Tags }],
+  },
 ];
+
+// Phẳng hoá để `activeHref` thấy cả mục con. Nó sắp theo độ dài giảm dần nên
+// đường dẫn con luôn thắng đường dẫn cha — không cần luật riêng.
+const ALL_LINKS: NavItem[] = ADMIN_LINKS.flatMap((item) => [item, ...(item.children ?? [])]);
 
 /**
  * Khung của khu quản trị nội dung.
@@ -36,7 +61,7 @@ const ADMIN_LINKS: NavItem[] = [
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const { status, canEdit } = useRequireSession({ canEdit: true });
   const pathname = usePathname();
-  const active = activeHref(ADMIN_LINKS, pathname);
+  const active = activeHref(ALL_LINKS, pathname);
 
   if (status !== "authenticated" || !canEdit) {
     return (
@@ -77,7 +102,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         {/* Dưới lg, sidebar trở thành một hàng ngang cuộn được — vẫn là cùng một
             bộ mục, không phải một menu thứ hai phải bảo trì riêng. */}
         <nav className="flex gap-1 overflow-x-auto border-t border-rule px-4 py-2 lg:hidden">
-          {ADMIN_LINKS.map((item) => (
+          {ALL_LINKS.map((item) => (
             <NavLink key={item.href} {...item} active={item.href === active} />
           ))}
         </nav>
@@ -88,12 +113,30 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <p className="mb-2 px-2.5 text-label font-semibold uppercase text-ink-faint">Nội dung</p>
           <nav className="flex flex-col gap-0.5">
             {ADMIN_LINKS.map((item) => (
-              <NavLink
-                key={item.href}
-                {...item}
-                active={item.href === active}
-                className="justify-start"
-              />
+              <Fragment key={item.href}>
+                <NavLink
+                  href={item.href}
+                  label={item.label}
+                  Icon={item.Icon}
+                  active={item.href === active}
+                  className="justify-start"
+                />
+                {/* Mục con chỉ hiện khi đang ở trong khu đó. Hiện thường trực sẽ
+                  làm sidebar dài ra vì những việc người dùng chưa quan tâm, và
+                  mỗi tính năng AI mới lại thêm một dòng nữa. */}
+                {item.children && (active === item.href || active?.startsWith(`${item.href}/`)) && (
+                  <div className="ml-3 flex flex-col gap-0.5 border-l border-rule pl-2">
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.href}
+                        {...child}
+                        active={child.href === active}
+                        className="justify-start"
+                      />
+                    ))}
+                  </div>
+                )}
+              </Fragment>
             ))}
           </nav>
         </aside>

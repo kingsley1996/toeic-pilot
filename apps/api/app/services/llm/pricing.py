@@ -38,6 +38,10 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # Tier miễn phí và model chạy tại máy: giá thật bằng 0. Vẫn phải có mặt ở
     # đây, vì thiếu thì `cost_usd` sẽ ném lỗi và chặn cả đường phát triển.
     ("google", "gemini-2.5-flash"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    # Model chạy trên máy: chi phí biên bằng 0 thật, không phải bằng 0 vì
+    # chưa ai điền giá. Token vẫn được ghi để ngoại suy nếu đổi sang model tính tiền.
+    ("ollama", "llama3.2:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    ("ollama", "gemma3:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),
     ("ollama", "qwen2.5"): (Decimal("0"), Decimal("0"), Decimal("0")),
     ("fake", "fake-1"): (Decimal("0"), Decimal("0"), Decimal("0")),
 }
@@ -53,6 +57,14 @@ def cost_usd(provider: str, model: str, usage: Usage) -> Decimal:
     phát hiện — cùng lập luận với `scoring.py`, nơi thiếu bảng quy đổi thì ném
     lỗi chứ không nội suy (nguyên tắc N4: từ chối đoán).
     """
+    # Model có hậu tố `:free` của OpenRouter có giá bằng 0 theo đúng công bố của
+    # họ — nhận ra nó KHÔNG phải là đoán, đó là đọc một dấu hiệu tường minh.
+    # Model OpenRouter không có hậu tố đó vẫn phải tra bảng như mọi model khác,
+    # nếu không thì một lần gõ nhầm tên model sẽ ghi chi phí 0 cho một lượt gọi
+    # có tính tiền.
+    if provider == "openrouter" and model.endswith(":free"):
+        return Decimal("0.000000")
+
     try:
         rate_in, rate_out, rate_cached = _RATES[(provider, model)]
     except KeyError:

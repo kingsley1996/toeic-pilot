@@ -209,7 +209,9 @@ class Question(Base, PublishableMixin):
     # What the question tests ("inference", "verb-tense"). This is the raw
     # material for telling a learner *what* they are weak at rather than only
     # which part they score badly on.
-    skill_tag: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    # Nhãn kỹ năng KHÔNG còn ở đây. Bộ phân loại thật (72 mã, 6 mặt) không nhét
+    # vừa một cột vô hướng: một câu Part 6 mang ba nhãn cùng lúc. Xem
+    # `app/models/labels.py` và `planning/toeic_question_label_taxonomy.md`.
     # NOT NULL on purpose. Real TOEIC material is ETS copyright, and that is a
     # legal exposure rather than a technical one. Requiring provenance forces the
     # question to be answered while someone still knows the answer; backfilling

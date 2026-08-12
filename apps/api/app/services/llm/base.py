@@ -15,7 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Protocol
 
-__all__ = ["LLMError", "LLMRequest", "LLMResult", "Provider", "Usage"]
+__all__ = ["LLMError", "LLMQuotaExhausted", "LLMRequest", "LLMResult", "Provider", "Usage"]
 
 
 class LLMError(RuntimeError):
@@ -24,6 +24,17 @@ class LLMError(RuntimeError):
     Cố ý là một loại lỗi riêng chứ không để `httpx.HTTPError` trồi lên: nơi gọi
     cần phân biệt "nhà cung cấp hỏng" với "mã của ta hỏng", vì cái thứ nhất có
     đường lui (đổi tầng, phục vụ bản đã tính trước) còn cái thứ hai thì không.
+    """
+
+
+class LLMQuotaExhausted(LLMError):
+    """Hết hạn mức của kỳ tính (ngày, tháng) — KHÁC với quá tải tạm thời.
+
+    Phân biệt hai thứ này là bắt buộc chứ không phải cho gọn: cả hai đều trả
+    HTTP 429, nhưng quá tải tạm thời thì lùi vài giây là qua, còn hết hạn mức
+    ngày thì chờ bao lâu trong một lượt chạy cũng vô nghĩa. Gộp lại thì một lượt
+    chạy 200 câu sẽ nghiến qua 800 lượt gọi chắc chắn hỏng, mất hàng chục phút,
+    rồi báo 200 lỗi giống hệt nhau — che mất đúng một dòng nói lên nguyên nhân.
     """
 
 

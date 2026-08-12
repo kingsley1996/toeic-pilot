@@ -2050,6 +2050,103 @@
         "title": "DictationUpdate",
         "type": "object"
       },
+      "FacetAccuracy": {
+        "properties": {
+          "agreeing": {
+            "title": "Agreeing",
+            "type": "integer"
+          },
+          "facet": {
+            "title": "Facet",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "labelled": {
+            "title": "Labelled",
+            "type": "integer"
+          },
+          "reviewed": {
+            "title": "Reviewed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "facet",
+          "label_vi",
+          "labelled",
+          "reviewed",
+          "agreeing"
+        ],
+        "title": "FacetAccuracy",
+        "type": "object"
+      },
+      "FacetCatalog": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelCatalogItem"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "owner": {
+            "title": "Owner",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label_vi",
+          "owner",
+          "labels"
+        ],
+        "title": "FacetCatalog",
+        "type": "object"
+      },
+      "FacetShare": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "facet": {
+            "title": "Facet",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "share": {
+            "title": "Share",
+            "type": "number"
+          }
+        },
+        "required": [
+          "facet",
+          "code",
+          "label_vi",
+          "count",
+          "share"
+        ],
+        "title": "FacetShare",
+        "type": "object"
+      },
       "GroupDraft": {
         "description": "Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.\n\nPart 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên\nđường ghi vào database chỉ có một nhánh.",
         "properties": {
@@ -2240,6 +2337,107 @@
         "title": "ImageConfirm",
         "type": "object"
       },
+      "LabelCatalogItem": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "parts": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Parts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code",
+          "label_vi",
+          "parts"
+        ],
+        "title": "LabelCatalogItem",
+        "type": "object"
+      },
+      "LabelValue": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "facet": {
+            "title": "Facet",
+            "type": "string"
+          },
+          "proposed_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proposed Code"
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed At"
+          },
+          "reviewed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed By"
+          }
+        },
+        "required": [
+          "facet",
+          "code"
+        ],
+        "title": "LabelValue",
+        "type": "object"
+      },
+      "LabelWrite": {
+        "description": "Ghi nhãn cho MỘT mặt.\n\nMột mặt mỗi lần, không phải cả bộ: người duyệt xác nhận từng mặt một, và gửi\ncả bộ sẽ khiến một mặt chưa xem cũng bị đóng dấu \"đã kiểm\".",
+        "properties": {
+          "code": {
+            "maxLength": 48,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "facet": {
+            "maxLength": 24,
+            "minLength": 1,
+            "title": "Facet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "facet",
+          "code"
+        ],
+        "title": "LabelWrite",
+        "type": "object"
+      },
       "LearningStats": {
         "description": "Derived on read, every time, from the attempt and review tables.\n\nThere is no statistics table and there should not be one. The same reasoning\nis already written on `StoryProgress` and `VocabularyProgress`: a counter\nmaintained alongside the history drifts from it the first time a row is\ndeleted or re-graded, and nothing anywhere reports the disagreement.",
         "properties": {
@@ -2311,6 +2509,112 @@
           "calendar"
         ],
         "title": "LearningStats",
+        "type": "object"
+      },
+      "LlmStatsPublic": {
+        "properties": {
+          "budget_hit_users": {
+            "title": "Budget Hit Users",
+            "type": "integer"
+          },
+          "by_feature": {
+            "items": {
+              "$ref": "#/components/schemas/UsageRow"
+            },
+            "title": "By Feature",
+            "type": "array"
+          },
+          "by_model": {
+            "items": {
+              "$ref": "#/components/schemas/UsageRow"
+            },
+            "title": "By Model",
+            "type": "array"
+          },
+          "cached_tokens": {
+            "title": "Cached Tokens",
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "title": "Completion Tokens",
+            "type": "integer"
+          },
+          "cost_usd": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "distribution": {
+            "items": {
+              "$ref": "#/components/schemas/FacetShare"
+            },
+            "title": "Distribution",
+            "type": "array"
+          },
+          "error_calls": {
+            "title": "Error Calls",
+            "type": "integer"
+          },
+          "facets": {
+            "items": {
+              "$ref": "#/components/schemas/FacetAccuracy"
+            },
+            "title": "Facets",
+            "type": "array"
+          },
+          "latency_p50_ms": {
+            "title": "Latency P50 Ms",
+            "type": "integer"
+          },
+          "latency_p95_ms": {
+            "title": "Latency P95 Ms",
+            "type": "integer"
+          },
+          "ok_calls": {
+            "title": "Ok Calls",
+            "type": "integer"
+          },
+          "prompt_tokens": {
+            "title": "Prompt Tokens",
+            "type": "integer"
+          },
+          "questions_labelled": {
+            "title": "Questions Labelled",
+            "type": "integer"
+          },
+          "questions_total": {
+            "title": "Questions Total",
+            "type": "integer"
+          },
+          "refused_calls": {
+            "title": "Refused Calls",
+            "type": "integer"
+          },
+          "total_calls": {
+            "title": "Total Calls",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_calls",
+          "ok_calls",
+          "error_calls",
+          "refused_calls",
+          "cost_usd",
+          "prompt_tokens",
+          "completion_tokens",
+          "cached_tokens",
+          "latency_p50_ms",
+          "latency_p95_ms",
+          "by_feature",
+          "by_model",
+          "facets",
+          "distribution",
+          "questions_total",
+          "questions_labelled",
+          "budget_hit_users"
+        ],
+        "title": "LlmStatsPublic",
         "type": "object"
       },
       "MediaAssign": {
@@ -2514,6 +2818,37 @@
           "offset"
         ],
         "title": "Page[DictationSummary]",
+        "type": "object"
+      },
+      "Page_QuestionLabelRow_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionLabelRow"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[QuestionLabelRow]",
         "type": "object"
       },
       "Page_TestAdmin_": {
@@ -3147,6 +3482,102 @@
         "title": "QuestionEdit",
         "type": "object"
       },
+      "QuestionLabelRow": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelValue"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "prompt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Text"
+          },
+          "question_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Number"
+          },
+          "set_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Set Id"
+          },
+          "set_labels": {
+            "items": {
+              "$ref": "#/components/schemas/LabelValue"
+            },
+            "title": "Set Labels",
+            "type": "array"
+          },
+          "test_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Slug"
+          },
+          "test_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Title"
+          }
+        },
+        "required": [
+          "id",
+          "part",
+          "question_number",
+          "prompt_text",
+          "test_slug",
+          "test_title",
+          "set_id",
+          "labels",
+          "set_labels"
+        ],
+        "title": "QuestionLabelRow",
+        "type": "object"
+      },
       "QuestionOptionDraft": {
         "properties": {
           "content": {
@@ -3748,6 +4179,19 @@
           }
         },
         "title": "SetEdit",
+        "type": "object"
+      },
+      "SkillTagRequestAck": {
+        "properties": {
+          "queued": {
+            "title": "Queued",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "queued"
+        ],
+        "title": "SkillTagRequestAck",
         "type": "object"
       },
       "StoryItem": {
@@ -4493,6 +4937,40 @@
           }
         },
         "title": "UploadTicketRequest",
+        "type": "object"
+      },
+      "UsageRow": {
+        "properties": {
+          "calls": {
+            "title": "Calls",
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "title": "Completion Tokens",
+            "type": "integer"
+          },
+          "cost_usd": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "prompt_tokens": {
+            "title": "Prompt Tokens",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "calls",
+          "cost_usd",
+          "prompt_tokens",
+          "completion_tokens"
+        ],
+        "title": "UsageRow",
         "type": "object"
       },
       "UserLogin": {
@@ -5343,6 +5821,281 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/ai/labels": {
+      "get": {
+        "description": "Câu hỏi kèm nhãn của chính nó và nhãn của ngữ liệu dùng chung.\n\n`disagreeing` là bộ lọc đáng giá nhất: những mặt người đã sửa khác nhãn máy\nđề xuất. Mỗi hàng ở đó là một lần máy sai, và đọc mười hàng như thế nói\nnhiều hơn một con số phần trăm.",
+        "operationId": "list_labels_api_v1_admin_ai_labels_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "default": "all",
+              "pattern": "^(all|unlabelled|unreviewed|disagreeing)$",
+              "title": "State",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_QuestionLabelRow_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Labels",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/labels/catalog": {
+      "get": {
+        "description": "Mảng trần, không bọc `Page`.\n\nBộ nhãn bị chặn trên bởi chính miền — 72 mã khai báo trong mã nguồn, sinh từ\n`planning/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân\ntrang ở `schemas/common.py`: bọc lại \"cho nhất quán\" bắt giao diện xử lý một\ntrường hợp không thể xảy ra.",
+        "operationId": "label_catalog_api_v1_admin_ai_labels_catalog_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FacetCatalog"
+                  },
+                  "title": "Response Label Catalog Api V1 Admin Ai Labels Catalog Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Label Catalog",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/labels/{question_id}": {
+      "patch": {
+        "description": "Xác nhận hoặc sửa nhãn của MỘT mặt trên một câu hỏi.\n\n**`proposed_code` không bị đụng tới.** Đó là điều khiến KPI độ đúng đo được:\ngiữ lại nhãn máy đề xuất sau khi người sửa là cách duy nhất biết người đó đã\nphải sửa hay chỉ xác nhận.",
+        "operationId": "review_question_label_api_v1_admin_ai_labels__question_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LabelWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LabelValue"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Review Question Label",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/set-labels/{set_id}": {
+      "patch": {
+        "description": "Nhãn của ngữ liệu dùng chung — sửa MỘT lần cho cả nhóm câu.\n\nĐây chính là lý do bốn mặt này không treo trên câu: sửa chủ đề một hội thoại\nPart 3 là một thao tác, không phải ba thao tác phải nhớ làm cho đủ.",
+        "operationId": "review_set_label_api_v1_admin_ai_set_labels__set_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "set_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Set Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LabelWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LabelValue"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Review Set Label",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/skill-tags/requests": {
+      "post": {
+        "description": "Đánh chuông cho worker gắn nhãn. **Không** gắn nhãn ở đây.\n\n202 chứ không 200: nó không hứa nhãn đã có. Không ghi bảng nào — hàng đợi\nvẫn là *câu hỏi* \"câu nào còn thiếu nhãn\", nên bấm mười lần không tạo mười\njob. Redis chết vẫn trả 202 với `queued=false`, vì vòng quét định kỳ của\nworker tìm được đúng ngần ấy việc.",
+        "operationId": "request_skill_tags_api_v1_admin_ai_skill_tags_requests_post",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillTagRequestAck"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Request Skill Tags",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/stats": {
+      "get": {
+        "operationId": "llm_stats_api_v1_admin_ai_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlmStatsPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Llm Stats",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
     "/api/v1/admin/dictation": {
       "get": {
         "operationId": "list_dictation_admin_api_v1_admin_dictation_get",

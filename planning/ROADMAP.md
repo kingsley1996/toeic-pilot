@@ -537,7 +537,16 @@ ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ng
   - `refused` và `error` đều được ghi thành hàng: chỉ ghi lượt thành công thì tỉ lệ hỏng của nhà cung cấp bằng 0 trong mọi báo cáo, và không biết hạn mức đang cắn ai
   - model lạ thì `cost_usd` **ném lỗi** chứ không ghi 0 (N4, giống `scoring.py`)
   - prompt là tệp có phiên bản, phiên bản là **hash nội dung** chứ không phải số tự tăng — số tự tăng thì có ngày ai đó sửa mà quên tăng
-- [ ] **Lát cắt mỏng — tiếp theo:** Coach giải thích một câu học viên vừa làm sai, dùng ngữ cảnh có cấu trúc từ database. Mục tiêu không phải ship mà là xác nhận kiến trúc và **đo chi phí thật**
+- [x] **Lát B — bộ nhãn câu hỏi** (`app/services/labels.py`, `app/models/labels.py`, migration `019`, `/admin/ai/skill-tags`)
+  - phân loại thật ở `planning/toeic_question_label_taxonomy.md`: **72 mã, 6 mặt**. Một câu Part 6 mang ba nhãn cùng lúc, nên cột vô hướng `question.skill_tag` không chứa nổi — đã bỏ hẳn. Thêm nữa `PART_1_PERSON_AND_OBJECT_DESCRIPTION` dài 36 ký tự, tràn `String(32)`
+  - module nhãn **sinh từ tài liệu**, và `tests/test_labels.py` đọc lại tài liệu để so từng mã. Thiếu nó thì một nhãn thêm vào tài liệu mà quên sinh lại vừa "đã được quyết" vừa "bị hệ thống từ chối"
+  - khoá chính `(chủ_thể, facet)` **thi hành** luật đúng-một-nhãn-mỗi-mặt; bốn mặt ngữ liệu chung nằm ở `question_set_label` vì ba câu của một hội thoại Part 3 luôn cùng chủ đề
+  - ba phép kiểm ở mọi đường ghi, vì ba kiểu sai đều im lặng: mã bịa, mã sai mặt (ghi đè nhãn khác qua khoá chính), mã sai part (`GRAMMAR_NOUN` có ở Part 5, không có ở Part 6)
+  - **nút "Xác nhận đúng" là bắt buộc**: `onChange` chỉ nổ khi giá trị đổi, nên không có nó thì mọi lượt kiểm đều là lượt sửa và KPI độ đúng vĩnh viễn 0% — chính thứ màn hình đó sinh ra để đo
+  - **Ollama chạy tại máy** thay OpenRouter free: tier miễn phí cho 50 lượt/ngày, không đủ cho một lượt 40 câu. `LLMQuotaExhausted` tách khỏi 429 quá tải tạm thời
+- [ ] **Chạy đủ nhãn cho toàn bộ ngữ liệu** — mới 2 câu và 8 nhóm có nhãn từ lượt kiểm thử
+- [ ] **Viết lại `AI-ENGINEERING-PLAN` §9b** — các ngưỡng ở đó (nhãn nhỏ nhất ≥5%, lớn nhất ≤30%, `khac` <5%) hiệu chỉnh cho bộ 8 nhãn tạm và **không còn khớp mã**: với 72 mã thì mọi mã dưới 5%. Mã đã chuyển sang đo độ đúng **theo từng mặt**; tài liệu thì chưa
+- [ ] **Lát C — Coach:** Coach giải thích một câu học viên vừa làm sai, dùng ngữ cảnh có cấu trúc từ database. Mục tiêu không phải ship mà là xác nhận kiến trúc và **đo chi phí thật**
 - [ ] Bộ đếm ngân sách token trên Redis, **fail closed** (ngược với bộ giới hạn đăng nhập: ở đây Redis là thứ duy nhất đứng giữa một tài khoản và hoá đơn)
 - [ ] Eval harness — **cùng lúc** với endpoint Coach đầu tiên, không phải sau
 - [ ] Migration cho `knowledge_chunk`/`learning_memory` — hoãn tới khi làm RAG, vì chưa có gì ghi vào chúng

@@ -309,6 +309,133 @@ chi phí nếu A chưa ghi sổ.
 
 ---
 
+## 9b. KPI cho lát B — làm giàu dữ liệu
+
+Đo ngày 2026-08-12, sau khi **loại 21 lượt của tài khoản e2e** (trung bình đúng
+1 câu mỗi lượt — chính bộ test tạo ra chúng, và tính chung vào thì mọi trung
+bình đều sai):
+
+| | |
+|---|---|
+| Người thật | 45 lượt · 111 câu đã trả lời · **trung bình 4.7 câu/lượt** |
+| Lượt dài nhất | 17 câu |
+| Ngữ liệu | 40 câu hỏi · **120 phương án sai** · Part 5 chiếm 16/40 |
+
+### B1 — Độ phủ · ngưỡng **100%**, không phải 95%
+
+Mọi câu hỏi đã publish phải có `skill_tag`. Không đặt 95% vì một câu thiếu nhãn
+**biến mất im lặng khỏi mọi `GROUP BY`** — báo cáo vẫn ra một con số trông hợp
+lý, chỉ là nó bỏ sót. Không ai nhìn thấy phần bị bỏ sót.
+
+Lời giải thích thì khác: pipeline phải **thử** 100% và **sinh được ≥98%**. Vài
+câu hỏng được báo cáo rồi bỏ qua chứ không làm sập cả lượt chạy — cùng cách
+`images.py` xử lý một ảnh tải hỏng, và vì cùng lý do: một lượt chạy dài mà đổ ở
+câu thứ 180 thì mất cả 179 câu trước.
+
+### B2 — Hình dạng bộ nhãn · nơi hỏng tinh vi nhất
+
+Bộ nhãn quá mịn thì mỗi nhãn chỉ còn một hai câu, và học viên **không bao giờ
+trả lời đủ** để báo cáo điểm yếu có nghĩa. Bộ nhãn quá thô thì mọi thứ là "ngữ
+pháp" và báo cáo không nói được gì. Bốn ràng buộc, kiểm được bằng một câu SQL:
+
+| Ràng buộc | Ngưỡng | Vì sao |
+|---|---|---|
+| Số nhãn | <100 câu → **6–8** · 100–300 → 10–14 · >300 → tối đa 20 | Bộ nhãn **giãn theo ngữ liệu**. Chia nhỏ về sau chỉ là chạy lại pipeline, vì hàng đợi là một truy vấn |
+| Nhãn nhỏ nhất | **≥5%** ngữ liệu | Dưới mức đó học viên không gặp đủ câu để con số nói lên điều gì |
+| Nhãn lớn nhất | **≤30%** | Một nhãn ôm một phần ba thì nó không phân biệt được gì |
+| Nhãn `khác` | **<5%** | Đây là **cảm biến**: `khác` phình lên nghĩa là bộ nhãn thiếu, không phải nội dung lạ |
+
+Với 40 câu hôm nay, luật này làm việc thật ngay: Part 5 có 16 câu, nếu để chung
+một nhãn "ngữ pháp" là 40% — vượt trần, buộc phải tách thành thì, hoà hợp
+chủ–vị, từ loại, giới từ…
+
+### B3 — Độ đúng của nhãn · ngưỡng **≥90%**
+
+Đo bằng cách gắn nhãn tay rồi so. Với 40 câu thì **gắn tay toàn bộ** — rẻ và cho
+chắc chắn; từ 200 câu trở lên thì lấy mẫu 40.
+
+**Tham chiếu ghi một TẬP nhãn chấp nhận được, không phải một nhãn.** Một câu
+TOEIC có thể kiểm cả thì lẫn hoà hợp chủ–vị cùng lúc; đòi khớp đúng một nhãn là
+phạt máy vì một câu hỏi vốn có hai câu trả lời đúng. KPI là *nhãn máy đoán ∈ tập
+chấp nhận được*.
+
+Vì sao 90 mà không phải 95: với mẫu 40, 90% nghĩa là **tối đa 4 câu sai**. Phân
+biệt 90% với 95% cần cỡ mẫu lớn hơn nhiều so với mức gắn tay nổi — đặt một con
+số mà phép đo không phân giải được là diễn.
+
+### B4 — Tính nhất quán · ngưỡng **≥98%**
+
+Chạy hai lượt ở `temperature=0`, so hai kết quả. Không ổn định ở đây nghĩa là
+một phần của nhãn là **nhiễu**, và mọi `GROUP BY` về sau thừa hưởng nguyên phần
+nhiễu đó mà không có gì báo.
+
+### B5 — Lời giải thích · **cổng 100%**, không phải chỉ tiêu phần trăm
+
+Năm khẳng định tất định ở §6.1 — nêu đúng chữ cái đáp án, có nhắc phương án
+người học chọn, tiếng Việt, độ dài trong khoảng, không bịa ngoài đề. Đây là
+**cổng**: không đạt thì sinh lại, không phải hạ chuẩn xuống 95%.
+
+Lý do đặt cứng: một lời giải thích trôi chảy nhưng **nêu sai chữ cái đáp án** là
+lỗi tệ nhất mà sản phẩm này có thể mắc — nó dạy sai, và người học tin. Nó bị bắt
+bằng một phép so sánh chuỗi, nên không có cớ nào để cho qua.
+
+### B6 — Tỉ lệ phải sửa tay · ngưỡng **≥70% dùng được ngay**
+
+KPI mà người ta hay quên, và là KPI **kinh tế** thật sự của cả lát này. Mọi đầu
+ra đều đi qua cổng duyệt `draft`, nên câu hỏi đúng không phải "máy viết có hay
+không" mà là: **đáng duyệt hơn hay đáng viết tay hơn?**
+
+Nếu người duyệt phải viết lại một nửa thì pipeline không tiết kiệm được gì —
+đọc và sửa một bản nháp tệ tốn công ngang viết mới. Nên: ≥70% được publish mà
+không sửa hoặc chỉ sửa vặt. Dưới ngưỡng đó, vấn đề nằm ở prompt chứ không ở
+người duyệt.
+
+### B7 — Chi phí · **đo, không đặt chỉ tiêu**
+
+Lát B là lần đầu có số thật. Nhưng phép nhân sơ bộ đã trả lời được một câu quan
+trọng — với một đề 200 câu, khoảng 400 lượt gọi (một cho nhãn, một cho cả ba
+phương án sai của mỗi câu), tầm 1500 token vào và 400 ra mỗi lượt:
+
+| | Model rẻ | Model mạnh |
+|---|---|---|
+| Toàn bộ đề 200 câu | ~**0,2 USD** | ~**4 USD** |
+
+**Nên chi phí KHÔNG phải ràng buộc của T3, và kết luận đi ngược trực giác: lát
+làm giàu dùng model MẠNH.** Nó chạy một lần, kết quả được duyệt rồi phục vụ mãi
+mãi, và bốn đô cho một đề là rẻ hơn nhiều so với công người sửa lại một bản nháp
+kém. Tầng rẻ tồn tại cho đường *lúc request*, không phải cho đây.
+
+### B8 — Vận hành
+
+- Chạy lại được, và chạy lại chỉ tìm thấy ít việc hơn — hàng đợi là một **truy
+  vấn**, không phải bảng job, y như `backfill_audio`
+- Một câu hỏng không làm sập cả lượt
+- **Không gì tự publish.** Tất cả rơi vào `draft`
+
+### Mức tối thiểu để coi là xong
+
+| | Bắt buộc | Mong muốn |
+|---|---|---|
+| Độ phủ nhãn | 100% | — |
+| Sinh được lời giải thích | ≥98% | 100% |
+| Số nhãn | 6–8 (ở 40 câu) | — |
+| Nhãn nhỏ nhất / lớn nhất / `khác` | ≥5% / ≤30% / <5% | — |
+| Độ đúng của nhãn | **≥90%** trên mẫu gắn tay | ≥95% |
+| Nhất quán giữa hai lượt chạy | **≥98%** | 100% |
+| Cổng tất định của lời giải thích | **100%** | — |
+| Dùng được ngay, không sửa | **≥70%** | ≥85% |
+
+### Một điều KPI này KHÔNG hứa
+
+Gắn nhãn đạt hết các ngưỡng trên **vẫn chưa** làm cho phân tích điểm yếu chạy
+được. Người thật đang trả lời trung bình 4.7 câu mỗi lượt, lượt dài nhất 17 câu
+— nên chưa ai có đủ dữ liệu để nói "bạn yếu thì quá khứ hoàn thành" mà không
+phải đoán. Đó là **cổng riêng của lát D**, và nó phải được viết ra ở đó: không
+báo cáo một nhãn cho tới khi học viên đã trả lời đủ số câu mang nhãn đó. Lát B
+làm cho việc ấy *khả thi*; nó không làm cho việc ấy *đúng*.
+
+---
+
 ## 10. Điều đã biết là sẽ phải sửa
 
 Ghi rõ ra để chúng không lặng lẽ thành vĩnh viễn — cùng lý do `SPEC-LEARNING-HUB.md`

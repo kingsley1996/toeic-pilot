@@ -8,6 +8,7 @@ from app.models.dictation import (
     DictationTopic,
 )
 from app.models.image import ImageAsset
+from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -51,8 +52,10 @@ __all__ = [
     "PracticeTest",
     "PracticeTestQuestion",
     "Question",
+    "QuestionLabel",
     "QuestionOption",
     "QuestionSet",
+    "QuestionSetLabel",
     "ScoreConversion",
     "ScoreScale",
     "TestCollection",

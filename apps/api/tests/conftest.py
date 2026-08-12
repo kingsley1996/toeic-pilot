@@ -71,6 +71,9 @@ class FakeRedis:
     def get(self, key: str) -> str | None:
         return self.values.get(key)
 
+    def publish(self, channel: str, message: str) -> int:
+        return 0
+
     def incrby(self, key: str, amount: int) -> int:
         total = int(self.values.get(key, 0)) + amount
         self.values[key] = str(total)
