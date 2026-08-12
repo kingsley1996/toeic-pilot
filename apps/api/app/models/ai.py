@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -94,6 +95,25 @@ class AiInteraction(Base):
 
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="ok")
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Bản prompt đã tạo ra câu trả lời này — hash nội dung, không phải số tự
+    # tăng (xem `services/llm/prompts`). Không có cột này thì một câu trả lời tệ
+    # trong log không truy được về nguyên nhân, và cổng hồi quy của bộ eval
+    # không có gì để so "tụt kể từ bản nào".
+    prompt_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    # Số tool model đã gọi trong lượt này. Nhồi sẵn ngữ cảnh và để model tự tra
+    # là hai chi phí rất khác nhau, và không đếm thì không phân biệt được.
+    tool_calls: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Số lần phải gọi lại vì đầu ra không hợp schema. Đây là tín hiệu nói model
+    # ở tầng rẻ có đủ dùng không — tỉ lệ cao nghĩa là đang trả tiền hai lần.
+    retries: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Phục vụ từ cache thì vẫn ghi một hàng, với chi phí 0. Bỏ hàng đó đi thì
+    # không đo được cache có hiệu quả không — mà đó là đòn bẩy chi phí lớn thứ
+    # hai của cả tầng này.
+    cache_hit: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     # Nối vào `X-Request-ID` mà `RequestContextMiddleware` đã gán. Đây chính là
     # thứ `app/core/logging.py` được dựng sẵn từ Phase 1 để phục vụ: một dòng

@@ -531,7 +531,13 @@ ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ng
 
 - [x] **ADR-003** — hai nhà cung cấp + định tuyến theo chi phí, ngân sách token, chính sách gửi dữ liệu
 - [x] Chốt embedding model → **`vector(1024)`** (`bge-m3` / `multilingual-e5-large`, chạy offline trong `app/content/` y như edge-tts). `knowledge_chunk`/`learning_memory` hết bị chặn
-- [ ] **Lát cắt mỏng — làm TRƯỚC:** Coach giải thích một câu học viên vừa làm sai, dùng ngữ cảnh có cấu trúc từ database. Mục tiêu không phải ship mà là xác nhận kiến trúc và **đo chi phí thật**
+- [x] **Lát A — bộ khung** (`app/services/llm/`, `app/core/ai_budget.py`, migration `016`). Không SDK của nhà cung cấp nào: `httpx` đã có sẵn, và ADR-003 §3.1 chốt bộ định tuyến là một hàm chọn tầng chứ không phải tầng trừu tượng hoá SDK — dùng httpx thẳng là cách giữ đúng lời đó mà không thêm gì vào ảnh production
+  - sổ cái ghi bằng **phiên làm việc riêng**: tiền đã tiêu là sự thật đã xảy ra, ghi chung phiên thì một lỗi ở bước sau cuốn luôn bản ghi chi phí đi — hoá đơn vẫn tới nhưng sổ không có dòng nào. Có test đỏ khi đổi sang dùng chung phiên
+  - hạn mức **fail closed**, kiểm đỏ bằng cách cho nó fail open
+  - `refused` và `error` đều được ghi thành hàng: chỉ ghi lượt thành công thì tỉ lệ hỏng của nhà cung cấp bằng 0 trong mọi báo cáo, và không biết hạn mức đang cắn ai
+  - model lạ thì `cost_usd` **ném lỗi** chứ không ghi 0 (N4, giống `scoring.py`)
+  - prompt là tệp có phiên bản, phiên bản là **hash nội dung** chứ không phải số tự tăng — số tự tăng thì có ngày ai đó sửa mà quên tăng
+- [ ] **Lát cắt mỏng — tiếp theo:** Coach giải thích một câu học viên vừa làm sai, dùng ngữ cảnh có cấu trúc từ database. Mục tiêu không phải ship mà là xác nhận kiến trúc và **đo chi phí thật**
 - [ ] Bộ đếm ngân sách token trên Redis, **fail closed** (ngược với bộ giới hạn đăng nhập: ở đây Redis là thứ duy nhất đứng giữa một tài khoản và hoá đơn)
 - [ ] Eval harness — **cùng lúc** với endpoint Coach đầu tiên, không phải sau
 - [ ] Migration cho `knowledge_chunk`/`learning_memory` — hoãn tới khi làm RAG, vì chưa có gì ghi vào chúng

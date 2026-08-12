@@ -40,6 +40,19 @@ class Settings(BaseSettings):
     #
     # Bật nó lên khi và chỉ khi có reverse proxy của chính bạn đứng trước API.
     trust_forwarded_for: bool = False
+
+    # --- Tầng AI (ADR-003) -------------------------------------------------
+    # Model cho từng tầng là CẤU HÌNH chứ không phải mã: đổi model là việc vận
+    # hành, không nên là một lần sửa mã cộng một lần triển khai.
+    llm_tier_cheap: str = "fake/fake-1"
+    llm_tier_strong: str = "fake/fake-1"
+    # Trần chi tiêu mỗi học viên mỗi ngày, tính bằng micro-USD (1_000_000 = 1 USD).
+    # Con số này là TẠM và có chủ ý: đặt nó trước khi biết một lượt Coach tốn
+    # bao nhiêu là đoán, và lát A tồn tại để đo (AI-ENGINEERING-PLAN §10).
+    ai_daily_budget_micro_usd: int = 50_000
+    anthropic_api_key: str | None = None
+    openai_api_key: str | None = None
+    google_api_key: str | None = None
     secret_key: str = DEFAULT_SECRET_KEY
     access_token_expire_minutes: int = 60 * 24 * 7
     algorithm: str = "HS256"

@@ -68,6 +68,14 @@ class FakeRedis:
     def exists(self, key: str) -> int:
         return 1 if key in self.values else 0
 
+    def get(self, key: str) -> str | None:
+        return self.values.get(key)
+
+    def incrby(self, key: str, amount: int) -> int:
+        total = int(self.values.get(key, 0)) + amount
+        self.values[key] = str(total)
+        return total
+
 
 @pytest.fixture()
 def fake_redis() -> FakeRedis:
