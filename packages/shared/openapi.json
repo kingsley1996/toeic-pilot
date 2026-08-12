@@ -711,6 +711,77 @@
         "title": "Body_local_upload_media_upload__storage_key__post",
         "type": "object"
       },
+      "ChatAsk": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "question_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Id"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "ChatAsk",
+        "type": "object"
+      },
+      "ChatMessagePublic": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "content"
+        ],
+        "title": "ChatMessagePublic",
+        "type": "object"
+      },
+      "ChatTurn": {
+        "properties": {
+          "answer": {
+            "$ref": "#/components/schemas/ChatMessagePublic"
+          },
+          "conversation_id": {
+            "format": "uuid",
+            "title": "Conversation Id",
+            "type": "string"
+          },
+          "question": {
+            "$ref": "#/components/schemas/ChatMessagePublic"
+          }
+        },
+        "required": [
+          "conversation_id",
+          "question",
+          "answer"
+        ],
+        "title": "ChatTurn",
+        "type": "object"
+      },
       "CoachExplanationPublic": {
         "properties": {
           "body": {
@@ -9495,6 +9566,133 @@
         "summary": "Read Attempt",
         "tags": [
           "attempt"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/chat": {
+      "get": {
+        "description": "Mảng trần: một cuộc trò chuyện quanh một câu hỏi có trần tự nhiên.\n\nTrả về TOÀN BỘ lịch sử để người học đọc lại, khác với cửa sổ `HISTORY_TURNS`\ngửi cho model — hai con số khác nhau vì phục vụ hai mục đích khác nhau, và\ngộp chúng lại sẽ khiến việc rút ngắn cửa sổ chi phí làm mất lịch sử của\nngười dùng.",
+        "operationId": "chat_history_api_v1_attempts__attempt_id__chat_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Question Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ChatMessagePublic"
+                  },
+                  "title": "Response Chat History Api V1 Attempts  Attempt Id  Chat Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat History",
+        "tags": [
+          "coach"
+        ]
+      },
+      "post": {
+        "description": "Hỏi đáp NEO vào lượt làm bài, và tuỳ chọn neo thêm vào một câu.\n\nKhông có RAG: ngữ cảnh đến từ `AnchoredRetriever`, tất định và kiểm chứng\nđược. Ngày có ngữ liệu, chỉ đổi retriever được tiêm vào — endpoint, prompt\nvà giao diện giữ nguyên.",
+        "operationId": "chat_api_v1_attempts__attempt_id__chat_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatTurn"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat",
+        "tags": [
+          "coach"
         ]
       }
     },

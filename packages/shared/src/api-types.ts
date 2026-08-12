@@ -1185,6 +1185,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/attempts/{attempt_id}/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chat History
+         * @description Mảng trần: một cuộc trò chuyện quanh một câu hỏi có trần tự nhiên.
+         *
+         *     Trả về TOÀN BỘ lịch sử để người học đọc lại, khác với cửa sổ `HISTORY_TURNS`
+         *     gửi cho model — hai con số khác nhau vì phục vụ hai mục đích khác nhau, và
+         *     gộp chúng lại sẽ khiến việc rút ngắn cửa sổ chi phí làm mất lịch sử của
+         *     người dùng.
+         */
+        get: operations["chat_history_api_v1_attempts__attempt_id__chat_get"];
+        put?: never;
+        /**
+         * Chat
+         * @description Hỏi đáp NEO vào lượt làm bài, và tuỳ chọn neo thêm vào một câu.
+         *
+         *     Không có RAG: ngữ cảnh đến từ `AnchoredRetriever`, tất định và kiểm chứng
+         *     được. Ngày có ngữ liệu, chỉ đổi retriever được tiêm vào — endpoint, prompt
+         *     và giao diện giữ nguyên.
+         */
+        post: operations["chat_api_v1_attempts__attempt_id__chat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/attempts/{attempt_id}/items/{question_id}/coach": {
         parameters: {
             query?: never;
@@ -2187,6 +2220,35 @@ export interface components {
             file: string;
             /** Signature */
             signature: string;
+        };
+        /** ChatAsk */
+        ChatAsk: {
+            /** Message */
+            message: string;
+            /** Question Id */
+            question_id?: string | null;
+        };
+        /** ChatMessagePublic */
+        ChatMessagePublic: {
+            /** Content */
+            content: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Role */
+            role: string;
+        };
+        /** ChatTurn */
+        ChatTurn: {
+            answer: components["schemas"]["ChatMessagePublic"];
+            /**
+             * Conversation Id
+             * Format: uuid
+             */
+            conversation_id: string;
+            question: components["schemas"]["ChatMessagePublic"];
         };
         /** CoachExplanationPublic */
         CoachExplanationPublic: {
@@ -6221,6 +6283,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_history_api_v1_attempts__attempt_id__chat_get: {
+        parameters: {
+            query?: {
+                question_id?: string | null;
+            };
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessagePublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_api_v1_attempts__attempt_id__chat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatAsk"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatTurn"];
                 };
             };
             /** @description Validation Error */
