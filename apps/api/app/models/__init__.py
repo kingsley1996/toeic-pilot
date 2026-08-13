@@ -1,5 +1,8 @@
 from app.models.ai import AI_INTERACTION_STATUSES, AiInteraction
+from app.models.ai_config import AiFeatureConfig
 from app.models.audio import AudioAsset
+from app.models.chat import CHAT_ROLES, CoachConversation, CoachMessage
+from app.models.coach import COACH_STATUSES, CoachExplanation, CoachFeedback
 from app.models.dictation import (
     DictationAttempt,
     DictationItem,
@@ -38,10 +41,17 @@ from app.models.vocabulary import (
 # and an empty autogenerate diff in Alembic.
 __all__ = [
     "AI_INTERACTION_STATUSES",
+    "AiFeatureConfig",
     "AiInteraction",
     "Attempt",
     "AttemptItem",
+    "CHAT_ROLES",
+    "COACH_STATUSES",
     "AttemptPart",
+    "CoachConversation",
+    "CoachExplanation",
+    "CoachMessage",
+    "CoachFeedback",
     "AudioAsset",
     "DictationAttempt",
     "DictationItem",

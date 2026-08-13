@@ -1,6 +1,111 @@
 {
   "components": {
     "schemas": {
+      "AiFeatureRow": {
+        "properties": {
+          "configured": {
+            "default": false,
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "description_vi": {
+            "title": "Description Vi",
+            "type": "string"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "updated_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated By"
+          }
+        },
+        "required": [
+          "key",
+          "label_vi",
+          "description_vi"
+        ],
+        "title": "AiFeatureRow",
+        "type": "object"
+      },
+      "AiFeatureWrite": {
+        "properties": {
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "model": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Model",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "AiFeatureWrite",
+        "type": "object"
+      },
       "AnswerSubmit": {
         "properties": {
           "flagged": {
@@ -604,6 +709,129 @@
           "file"
         ],
         "title": "Body_local_upload_media_upload__storage_key__post",
+        "type": "object"
+      },
+      "ChatAsk": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "question_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Id"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "ChatAsk",
+        "type": "object"
+      },
+      "ChatMessagePublic": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "content"
+        ],
+        "title": "ChatMessagePublic",
+        "type": "object"
+      },
+      "ChatTurn": {
+        "properties": {
+          "answer": {
+            "$ref": "#/components/schemas/ChatMessagePublic"
+          },
+          "conversation_id": {
+            "format": "uuid",
+            "title": "Conversation Id",
+            "type": "string"
+          },
+          "question": {
+            "$ref": "#/components/schemas/ChatMessagePublic"
+          }
+        },
+        "required": [
+          "conversation_id",
+          "question",
+          "answer"
+        ],
+        "title": "ChatTurn",
+        "type": "object"
+      },
+      "CoachExplanationPublic": {
+        "properties": {
+          "body": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Body",
+            "type": "object"
+          },
+          "helpful": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Helpful"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "body"
+        ],
+        "title": "CoachExplanationPublic",
+        "type": "object"
+      },
+      "CoachFeedbackWrite": {
+        "properties": {
+          "explanation_id": {
+            "format": "uuid",
+            "title": "Explanation Id",
+            "type": "string"
+          },
+          "helpful": {
+            "title": "Helpful",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "explanation_id",
+          "helpful"
+        ],
+        "title": "CoachFeedbackWrite",
         "type": "object"
       },
       "CollectionAdmin": {
@@ -2335,6 +2563,24 @@
           "attribution"
         ],
         "title": "ImageConfirm",
+        "type": "object"
+      },
+      "KnownModel": {
+        "properties": {
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "title": "KnownModel",
         "type": "object"
       },
       "LabelCatalogItem": {
@@ -5821,6 +6067,95 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/ai/features": {
+      "get": {
+        "description": "Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.\n\nNhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn\nhàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.",
+        "operationId": "list_features_api_v1_admin_ai_features_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AiFeatureRow"
+                  },
+                  "title": "Response List Features Api V1 Admin Ai Features Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Features",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/features/{feature}": {
+      "put": {
+        "description": "Đổi nhà cung cấp/model của một tính năng, hoặc tắt hẳn nó.\n\n**Không có trường khoá API ở đây, và sẽ không bao giờ có.** Một ô nhập khoá\ntrên giao diện là một khoá sẽ lọt vào log, ảnh chụp màn hình và bản sao lưu.",
+        "operationId": "set_feature_api_v1_admin_ai_features__feature__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feature",
+            "required": true,
+            "schema": {
+              "title": "Feature",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiFeatureWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiFeatureRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Feature",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
     "/api/v1/admin/ai/labels": {
       "get": {
         "description": "Câu hỏi kèm nhãn của chính nó và nhãn của ngữ liệu dùng chung.\n\n`disagreeing` là bộ lọc đáng giá nhất: những mặt người đã sửa khác nhãn máy\nđề xuất. Mỗi hàng ở đó là một lần máy sai, và đọc mười hàng như thế nói\nnhiều hơn một con số phần trăm.",
@@ -5979,6 +6314,37 @@
           }
         ],
         "summary": "Review Question Label",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/models": {
+      "get": {
+        "description": "Chỉ model có trong bảng giá.\n\nCho gõ tay tên model nghĩa là một lần gõ nhầm làm mọi lượt gọi của tính năng\nđó hỏng ngay — `cost_usd` ném lỗi với model lạ chứ không ghi 0. Hành vi đó\nđúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.",
+        "operationId": "list_models_api_v1_admin_ai_models_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/KnownModel"
+                  },
+                  "title": "Response List Models Api V1 Admin Ai Models Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Models",
         "tags": [
           "admin-ai"
         ]
@@ -9200,6 +9566,260 @@
         "summary": "Read Attempt",
         "tags": [
           "attempt"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/chat": {
+      "get": {
+        "description": "Mảng trần: một cuộc trò chuyện quanh một câu hỏi có trần tự nhiên.\n\nTrả về TOÀN BỘ lịch sử để người học đọc lại, khác với cửa sổ `HISTORY_TURNS`\ngửi cho model — hai con số khác nhau vì phục vụ hai mục đích khác nhau, và\ngộp chúng lại sẽ khiến việc rút ngắn cửa sổ chi phí làm mất lịch sử của\nngười dùng.",
+        "operationId": "chat_history_api_v1_attempts__attempt_id__chat_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Question Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ChatMessagePublic"
+                  },
+                  "title": "Response Chat History Api V1 Attempts  Attempt Id  Chat Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat History",
+        "tags": [
+          "coach"
+        ]
+      },
+      "post": {
+        "description": "Hỏi đáp NEO vào lượt làm bài, và tuỳ chọn neo thêm vào một câu.\n\nKhông có RAG: ngữ cảnh đến từ `AnchoredRetriever`, tất định và kiểm chứng\nđược. Ngày có ngữ liệu, chỉ đổi retriever được tiêm vào — endpoint, prompt\nvà giao diện giữ nguyên.",
+        "operationId": "chat_api_v1_attempts__attempt_id__chat_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatTurn"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat",
+        "tags": [
+          "coach"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach": {
+      "post": {
+        "operationId": "explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachExplanationPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Explain Question",
+        "tags": [
+          "coach"
+        ]
+      }
+    },
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach/feedback": {
+      "post": {
+        "description": "Một người một phiếu — khoá chính `(explanation_id, user_id)` lo việc đó.\n\nKhông có ràng buộc ấy thì một người bấm mười lần làm lệch đúng con số duy\nnhất đo được chất lượng.",
+        "operationId": "rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoachFeedbackWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachExplanationPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Rate Explanation",
+        "tags": [
+          "coach"
         ]
       }
     },

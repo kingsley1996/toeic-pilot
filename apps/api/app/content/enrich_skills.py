@@ -33,6 +33,7 @@ from app.core.config import settings
 from app.core.database import SessionLocal
 from app.models import Question, QuestionSet
 from app.models.labels import QuestionLabel, QuestionSetLabel
+from app.services.ai_features import resolver_for
 from app.services.labels import Facet, codes_for, facets_for
 from app.services.llm.base import (
     LLMError,
@@ -231,6 +232,11 @@ def main(argv: list[str] | None = None) -> int:
             budget=Budget(limit_micro=settings.ai_daily_budget_micro_usd),
             redis_client=get_redis(),
             session_factory=SessionLocal,
+            # Cấu hình theo tính năng ở `/admin/ai/providers` GHI ĐÈ bảng tầng.
+            # Không nối dòng này thì màn cấu hình lưu được, hiện ra được, và
+            # không ảnh hưởng gì tới thứ thật sự chạy — kiểu hỏng tệ nhất, vì
+            # mọi thứ trông như đang hoạt động.
+            resolve_feature=resolver_for(session),
         )
         tier = Tier(args.tier)
         tally: dict[str, int] = {}

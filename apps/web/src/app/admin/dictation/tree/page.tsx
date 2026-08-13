@@ -135,6 +135,10 @@ export default function AdminDictationTreePage() {
           autoFocus
           onChange={(e) => setEditing({ id, value: e.target.value })}
           onKeyDown={(e) => {
+            // Bỏ qua Enter khi bộ gõ đang ghép chữ: gõ Telex hay VNI thì Enter
+            // giữa chừng một từ là phím XÁC NHẬN của bộ gõ, không phải phím lưu
+            // — không chặn thì tên chủ đề bị lưu ở dạng dở dang.
+            if (e.nativeEvent.isComposing) return;
             if (e.key === "Enter" && editing.value.trim()) save(editing.value.trim());
             if (e.key === "Escape") setEditing(null);
           }}

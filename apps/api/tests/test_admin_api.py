@@ -155,6 +155,13 @@ ADMIN_CALLS = [
     # chép sang route tiếp theo.
     ("POST", "/api/v1/admin/ai/skill-tags/requests", None),
     ("GET", "/api/v1/admin/ai/stats", None),
+    ("GET", "/api/v1/admin/ai/features", None),
+    ("GET", "/api/v1/admin/ai/models", None),
+    (
+        "PUT",
+        "/api/v1/admin/ai/features/coach_explain",
+        {"provider": "ollama", "model": "gemma3:latest", "enabled": True},
+    ),
     ("GET", "/api/v1/admin/ai/labels", None),
     ("GET", "/api/v1/admin/ai/labels/catalog", None),
     (

@@ -60,7 +60,7 @@ export function DestructiveButton({
         {confirmLabel}
       </Button>
       <Button size="sm" variant="quiet" onClick={() => setArmed(false)}>
-        Huỷ
+        Cancel
       </Button>
     </span>
   );

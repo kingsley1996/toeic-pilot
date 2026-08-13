@@ -4,6 +4,52 @@
  */
 
 export interface paths {
+    "/api/v1/admin/ai/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Features
+         * @description Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.
+         *
+         *     Nhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn
+         *     hàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.
+         */
+        get: operations["list_features_api_v1_admin_ai_features_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/features/{feature}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Feature
+         * @description Đổi nhà cung cấp/model của một tính năng, hoặc tắt hẳn nó.
+         *
+         *     **Không có trường khoá API ở đây, và sẽ không bao giờ có.** Một ô nhập khoá
+         *     trên giao diện là một khoá sẽ lọt vào log, ảnh chụp màn hình và bản sao lưu.
+         */
+        put: operations["set_feature_api_v1_admin_ai_features__feature__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/ai/labels": {
         parameters: {
             query?: never;
@@ -75,6 +121,30 @@ export interface paths {
          *     phải sửa hay chỉ xác nhận.
          */
         patch: operations["review_question_label_api_v1_admin_ai_labels__question_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/ai/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Models
+         * @description Chỉ model có trong bảng giá.
+         *
+         *     Cho gõ tay tên model nghĩa là một lần gõ nhầm làm mọi lượt gọi của tính năng
+         *     đó hỏng ngay — `cost_usd` ném lỗi với model lạ chứ không ghi 0. Hành vi đó
+         *     đúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+         */
+        get: operations["list_models_api_v1_admin_ai_models_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/ai/set-labels/{set_id}": {
@@ -1115,6 +1185,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/attempts/{attempt_id}/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chat History
+         * @description Mảng trần: một cuộc trò chuyện quanh một câu hỏi có trần tự nhiên.
+         *
+         *     Trả về TOÀN BỘ lịch sử để người học đọc lại, khác với cửa sổ `HISTORY_TURNS`
+         *     gửi cho model — hai con số khác nhau vì phục vụ hai mục đích khác nhau, và
+         *     gộp chúng lại sẽ khiến việc rút ngắn cửa sổ chi phí làm mất lịch sử của
+         *     người dùng.
+         */
+        get: operations["chat_history_api_v1_attempts__attempt_id__chat_get"];
+        put?: never;
+        /**
+         * Chat
+         * @description Hỏi đáp NEO vào lượt làm bài, và tuỳ chọn neo thêm vào một câu.
+         *
+         *     Không có RAG: ngữ cảnh đến từ `AnchoredRetriever`, tất định và kiểm chứng
+         *     được. Ngày có ngữ liệu, chỉ đổi retriever được tiêm vào — endpoint, prompt
+         *     và giao diện giữ nguyên.
+         */
+        post: operations["chat_api_v1_attempts__attempt_id__chat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Explain Question */
+        post: operations["explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/attempts/{attempt_id}/items/{question_id}/coach/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rate Explanation
+         * @description Một người một phiếu — khoá chính `(explanation_id, user_id)` lo việc đó.
+         *
+         *     Không có ràng buộc ấy thì một người bấm mười lần làm lệch đúng con số duy
+         *     nhất đo được chất lượng.
+         */
+        post: operations["rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/attempts/{attempt_id}/questions/{question_id}": {
         parameters: {
             query?: never;
@@ -1803,6 +1946,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AiFeatureRow */
+        AiFeatureRow: {
+            /**
+             * Configured
+             * @default false
+             */
+            configured: boolean;
+            /** Description Vi */
+            description_vi: string;
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Key */
+            key: string;
+            /** Label Vi */
+            label_vi: string;
+            /** Model */
+            model?: string | null;
+            /** Provider */
+            provider?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Updated By */
+            updated_by?: string | null;
+        };
+        /** AiFeatureWrite */
+        AiFeatureWrite: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Model */
+            model: string;
+            /** Provider */
+            provider: string;
+        };
         /** AnswerSubmit */
         AnswerSubmit: {
             /** Flagged */
@@ -2038,6 +2220,59 @@ export interface components {
             file: string;
             /** Signature */
             signature: string;
+        };
+        /** ChatAsk */
+        ChatAsk: {
+            /** Message */
+            message: string;
+            /** Question Id */
+            question_id?: string | null;
+        };
+        /** ChatMessagePublic */
+        ChatMessagePublic: {
+            /** Content */
+            content: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Role */
+            role: string;
+        };
+        /** ChatTurn */
+        ChatTurn: {
+            answer: components["schemas"]["ChatMessagePublic"];
+            /**
+             * Conversation Id
+             * Format: uuid
+             */
+            conversation_id: string;
+            question: components["schemas"]["ChatMessagePublic"];
+        };
+        /** CoachExplanationPublic */
+        CoachExplanationPublic: {
+            /** Body */
+            body: {
+                [key: string]: string;
+            };
+            /** Helpful */
+            helpful?: boolean | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** CoachFeedbackWrite */
+        CoachFeedbackWrite: {
+            /**
+             * Explanation Id
+             * Format: uuid
+             */
+            explanation_id: string;
+            /** Helpful */
+            helpful: boolean;
         };
         /** CollectionAdmin */
         CollectionAdmin: {
@@ -2597,6 +2832,13 @@ export interface components {
             source_url: string;
             /** Storage Key */
             storage_key: string;
+        };
+        /** KnownModel */
+        KnownModel: {
+            /** Model */
+            model: string;
+            /** Provider */
+            provider: string;
         };
         /** LabelCatalogItem */
         LabelCatalogItem: {
@@ -3823,6 +4065,61 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_features_api_v1_admin_ai_features_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiFeatureRow"][];
+                };
+            };
+        };
+    };
+    set_feature_api_v1_admin_ai_features__feature__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiFeatureWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiFeatureRow"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_labels_api_v1_admin_ai_labels_get: {
         parameters: {
             query?: {
@@ -3907,6 +4204,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_models_api_v1_admin_ai_models_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KnownModel"][];
                 };
             };
         };
@@ -5966,6 +6283,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttemptState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_history_api_v1_attempts__attempt_id__chat_get: {
+        parameters: {
+            query?: {
+                question_id?: string | null;
+            };
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessagePublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_api_v1_attempts__attempt_id__chat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatAsk"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatTurn"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    explain_question_api_v1_attempts__attempt_id__items__question_id__coach_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachExplanationPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rate_explanation_api_v1_attempts__attempt_id__items__question_id__coach_feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+                question_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CoachFeedbackWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachExplanationPublic"];
                 };
             };
             /** @description Validation Error */

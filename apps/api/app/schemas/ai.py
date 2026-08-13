@@ -9,6 +9,9 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 
 __all__ = [
+    "AiFeatureRow",
+    "AiFeatureWrite",
+    "KnownModel",
     "FacetAccuracy",
     "FacetCatalog",
     "LabelValue",
@@ -119,3 +122,29 @@ class LlmStatsPublic(BaseModel):
     questions_total: int
     questions_labelled: int
     budget_hit_users: int
+
+
+class KnownModel(BaseModel):
+    provider: str
+    model: str
+
+
+class AiFeatureRow(BaseModel):
+    key: str
+    label_vi: str
+    description_vi: str
+    provider: str | None = None
+    model: str | None = None
+    enabled: bool = True
+    # `null` nghĩa là chưa cấu hình riêng — tính năng rơi về bảng tầng ở biến
+    # môi trường. Giao diện phải nói rõ điều đó chứ không hiện một ô trống, vì
+    # ô trống đọc như "chưa dùng được" trong khi nó vẫn đang chạy.
+    configured: bool = False
+    updated_at: datetime | None = None
+    updated_by: str | None = None
+
+
+class AiFeatureWrite(BaseModel):
+    provider: str = Field(min_length=1, max_length=32)
+    model: str = Field(min_length=1, max_length=64)
+    enabled: bool = True

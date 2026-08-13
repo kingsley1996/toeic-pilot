@@ -19,7 +19,7 @@ from decimal import Decimal
 
 from app.services.llm.base import Usage
 
-__all__ = ["UnknownModel", "cost_usd"]
+__all__ = ["UnknownModel", "cost_usd", "known_models"]
 
 
 class UnknownModel(LookupError):
@@ -38,12 +38,14 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # Tier miễn phí và model chạy tại máy: giá thật bằng 0. Vẫn phải có mặt ở
     # đây, vì thiếu thì `cost_usd` sẽ ném lỗi và chặn cả đường phát triển.
     ("google", "gemini-2.5-flash"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    ("openrouter", "openai/gpt-oss-20b:free"): (Decimal("0"), Decimal("0"), Decimal("0")),
     # Model chạy trên máy: chi phí biên bằng 0 thật, không phải bằng 0 vì
     # chưa ai điền giá. Token vẫn được ghi để ngoại suy nếu đổi sang model tính tiền.
     ("ollama", "llama3.2:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),
     ("ollama", "gemma3:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),
     ("ollama", "qwen2.5"): (Decimal("0"), Decimal("0"), Decimal("0")),
     ("fake", "fake-1"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    ("fake", "fake-2"): (Decimal("0"), Decimal("0"), Decimal("0")),
 }
 
 _MILLION = Decimal("1000000")
@@ -77,3 +79,14 @@ def cost_usd(provider: str, model: str, usage: Usage) -> Decimal:
     total = Decimal(billed_prompt) * rate_in + Decimal(usage.completion) * rate_out
     total += Decimal(usage.cached) * (rate_cached if rate_cached is not None else rate_in)
     return (total / _MILLION).quantize(Decimal("0.000001"))
+
+
+def known_models() -> list[tuple[str, str]]:
+    """Các cặp (nhà cung cấp, model) mà hệ thống biết giá.
+
+    Giao diện quản trị **chỉ được đưa ra danh sách này**. Cho gõ tay tên model
+    nghĩa là một lần gõ nhầm sẽ làm mọi lượt gọi của tính năng đó hỏng ngay —
+    `cost_usd` ném lỗi với model lạ chứ không ghi 0, và đó là hành vi đúng
+    (nguyên tắc N4), nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+    """
+    return sorted(_RATES)

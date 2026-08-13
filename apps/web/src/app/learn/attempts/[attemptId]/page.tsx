@@ -15,6 +15,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Alert, Button, ButtonLink, EmptyState, Page, Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { type Block, clock, credit, groupQuestions } from "@/lib/attempt";
+import { CoachBlock } from "@/components/coach-block";
+import { CoachChat } from "@/components/coach-chat";
 import { useRequireSession } from "@/lib/session";
 
 /*
@@ -286,9 +288,20 @@ export default function AttemptRunnerPage() {
                 Nộp bài
               </Button>
             )}
-            <Button size="sm" variant="secondary" onClick={() => setConfirming("exit")}>
+            {/*
+             * Sau khi nộp thì rời đi KHÔNG mất gì: đáp án đã lưu, điểm đã chốt,
+             * và lượt làm bài vẫn nằm trong lịch sử. Một hộp thoại xác nhận cho
+             * một hành động không mất gì là nhiễu — và tệ hơn, nó dạy người dùng
+             * bấm qua hộp thoại mà không đọc, đúng lúc ta cần họ đọc là lúc bài
+             * còn dở.
+             */}
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => (done ? router.push("/learn/tests") : setConfirming("exit"))}
+            >
               <LogOut size={14} strokeWidth={2} aria-hidden />
-              Thoát
+              {done ? "Xong" : "Thoát"}
             </Button>
             {/* Chọn theme ngay tại đây: màn làm bài cố ý không có header của khu
                 học, nên đây là nơi DUY NHẤT đổi được — và một bài thi 120 phút
@@ -333,6 +346,8 @@ export default function AttemptRunnerPage() {
                     key={block.key}
                     block={block}
                     done={done}
+                    attemptId={attemptId}
+                    token={token}
                     onView={setCurrent}
                     onChoose={choose}
                     onFlag={toggleFlag}
@@ -383,8 +398,12 @@ export default function AttemptRunnerPage() {
         </div>
       </Modal>
 
+      {/* Chỉ sau khi nộp: máy chủ trả 409 nếu chưa, và một hộp chat bấm được
+          rồi báo lỗi là một lời mời hỏng. */}
+      {done && <CoachChat attemptId={attemptId} token={token} />}
+
       <Modal
-        open={confirming === "exit"}
+        open={confirming === "exit" && !done}
         onClose={() => setConfirming(null)}
         title="Thoát khỏi bài thi?"
         /*
@@ -728,12 +747,16 @@ function ResultScreen({
 function StimulusBlock({
   block,
   done,
+  attemptId,
+  token,
   onView,
   onChoose,
   onFlag,
 }: {
   block: Block;
   done: boolean;
+  attemptId: string;
+  token: string | null;
   onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
@@ -745,6 +768,8 @@ function StimulusBlock({
           key={question.id}
           question={question}
           done={done}
+          attemptId={attemptId}
+          token={token}
           onView={onView}
           onChoose={onChoose}
           onFlag={onFlag}
@@ -836,12 +861,16 @@ function StimulusBlock({
 function QuestionCard({
   question,
   done,
+  attemptId,
+  token,
   onView,
   onChoose,
   onFlag,
 }: {
   question: QuestionPublic;
   done: boolean;
+  attemptId: string;
+  token: string | null;
   onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
@@ -941,6 +970,19 @@ function QuestionCard({
           {question.explanation}
         </p>
       )}
+
+      {/*
+       * Chỉ hiện SAU KHI NỘP, và chỉ cho câu làm sai hoặc bỏ trống.
+       *
+       * Trước khi nộp thì máy chủ trả 409 — nhưng giao diện không được dựa vào
+       * đó: một nút bấm được rồi báo lỗi là một nút hứa sai. Và câu làm ĐÚNG thì
+       * không có gì để chẩn đoán; đưa nút ra đó chỉ mời người ta đốt hạn mức.
+       */}
+      {done &&
+        question.correct_option_id !== null &&
+        question.selected_option_id !== question.correct_option_id && (
+          <CoachBlock attemptId={attemptId} questionId={question.id} token={token} />
+        )}
     </div>
   );
 }

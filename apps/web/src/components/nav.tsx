@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, LogOut, UserRound } from "lucide-react";
+import { ChevronDown, LogOut, SquarePen, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -65,7 +65,7 @@ export function activeHref(items: NavItem[], pathname: string): string | undefin
  * `react-hooks/set-state-in-effect` chặn đúng chỗ này.
  */
 function UserMenu({ showRole }: { showRole: boolean }) {
-  const { user, logout } = useSession();
+  const { user, logout, canEdit } = useSession();
   const pathname = usePathname();
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const open = openedAt === pathname;
@@ -150,6 +150,31 @@ function UserMenu({ showRole }: { showRole: boolean }) {
             <UserRound size={15} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
             Hồ sơ
           </Link>
+
+          {/*
+           * Cửa vào khu quản trị nằm TRONG menu tài khoản, không phải một nút
+           * riêng trên header. Nó là thứ dùng vài lần một ngày bởi một số ít
+           * người, còn header là chỗ dành cho việc học — một nút thường trực ở
+           * đó lấy chỗ của điều hướng thật và nói với mọi học viên rằng có một
+           * khu vực họ không vào được.
+           *
+           * Chỉ hiện với người thực sự mở được nó. Máy chủ vẫn chặn bằng
+           * `require_role` dù giao diện có hiện hay không; đây chỉ quyết định
+           * cái gì đáng vẽ ra.
+           */}
+          {canEdit && (
+            <>
+              <div className="my-1 border-t border-rule" />
+              <Link
+                href="/admin"
+                role="menuitem"
+                className="flex items-center gap-2.5 px-3 py-2 text-small hover:bg-recess"
+              >
+                <SquarePen size={15} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
+                Quản trị nội dung
+              </Link>
+            </>
+          )}
 
           <div className="my-1 border-t border-rule" />
 

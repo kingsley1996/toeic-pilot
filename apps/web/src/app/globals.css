@@ -221,3 +221,95 @@
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Viền gradient chạy cho khối AI — ngoại lệ CÓ Ý THỨC của §6 hệ thống thiết kế.
+ *
+ * Ba luật vẫn được giữ: không `box-shadow`, bán kính vẫn 4px, và màu lấy từ
+ * `--accent-uk` đã có trong bảng — không thêm một sắc tím thứ hai vào hệ. Nhờ
+ * dùng token, nó tự đúng ở cả chế độ sáng lẫn tối mà không cần khai báo hai lần.
+ *
+ * Kỹ thuật: một lớp bọc có `padding: 1px` mang gradient xoay, và con của nó đắp
+ * nền `panel` lên giữa — nên "viền" thực ra là 1px gradient lộ ra ở mép. Cách
+ * này không cần `background-clip` với `border-box`, thứ hỏng lặng lẽ trên vài
+ * trình duyệt khi phần tử có nền trong suốt.
+ */
+@property --ai-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes ai-border-spin {
+  to {
+    --ai-angle: 360deg;
+  }
+}
+
+.ai-border {
+  border-radius: 4px;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--ai-angle),
+    rgb(var(--accent-uk)),
+    rgb(var(--action)),
+    rgb(var(--accent-uk)),
+    rgb(var(--rule)),
+    rgb(var(--accent-uk))
+  );
+  animation: ai-border-spin 5s linear infinite;
+}
+
+/* Nền gradient cho nút. Tím sang đỏ gạch — hai màu đã có, không phải màu mới. */
+.ai-fill {
+  background-image: linear-gradient(100deg, rgb(var(--accent-uk)), rgb(var(--action-ink)));
+  color: rgb(var(--on-action));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-border {
+    animation: none;
+    /* Đứng yên vẫn phải LÀ một viền gradient, không phải một viền xám: người
+       tắt hiệu ứng chuyển động không đồng nghĩa với người muốn giao diện khác. */
+    background: linear-gradient(100deg, rgb(var(--accent-uk)), rgb(var(--action)));
+  }
+}
+
+/*
+ * Ba chấm "đang gõ" — ngôn ngữ quen thuộc của mọi ứng dụng chat.
+ *
+ * Dùng thay một spinner vì hai thứ nói hai điều khác nhau: spinner nói "hệ
+ * thống đang bận", còn ba chấm nói "phía bên kia đang soạn". Ở một hộp trò
+ * chuyện, điều thứ hai mới đúng và nó đặt kỳ vọng về thời gian chờ.
+ */
+@keyframes chat-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.chat-dot {
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+
+.chat-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-dot {
+    animation: none;
+    opacity: 0.55;
+  }
+}

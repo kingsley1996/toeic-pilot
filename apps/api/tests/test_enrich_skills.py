@@ -154,3 +154,23 @@ def test_cau_part_7_duoc_kem_doan_van_cua_nhom(db_session):
     described = _describe(question)
     assert "elevator will be out of service" in described
     assert "Thông báo" in described
+
+
+def test_cau_hinh_theo_tinh_nang_GHI_DE_bang_tang(db_session, fake_redis):
+    """Màn cấu hình phải ảnh hưởng thứ THẬT SỰ chạy.
+
+    Không nối `resolve_feature` vào gateway thì cấu hình lưu được, hiện ra được,
+    và không đổi gì cả — kiểu hỏng tệ nhất, vì mọi thứ trông như đang hoạt động.
+    """
+    provider = FakeProvider(reply='{"code": "PART_5_GRAMMAR", "ly_do": "x"}')
+    gateway = Gateway(
+        providers={"fake": provider},
+        routes={Tier.CHEAP: ("fake", "fake-1"), Tier.STRONG: ("fake", "fake-1")},
+        budget=Budget(limit_micro=10_000_000),
+        redis_client=fake_redis,
+        session_factory=sessionmaker(bind=db_session.get_bind()),
+        resolve_feature=lambda _f: ("fake", "fake-2", True),
+    )
+    classify(gateway, facet("question_type"), 5, "…", Tier.STRONG)
+    ((_sent, model),) = provider.seen
+    assert model == "fake-2"  # từ cấu hình, không phải "fake-1" của bảng tầng
