@@ -266,6 +266,10 @@ class QuestionOptionDraft(BaseModel):
     # `validate_question` đòi NULL — Part 1 và 2 không bao giờ ghi vào được.
     content: str | None
     is_correct: bool
+    # Bản dịch tiếng Việt, từ dòng `-> …` dưới đáp án.
+    content_vi: str | None = None
+    # Lời ĐỌC của Part 1/2 — `content` vẫn None ở đó.
+    spoken_text: str | None = None
 
 
 class TurnDraft(BaseModel):
@@ -417,6 +421,12 @@ class QuestionEdit(BaseModel):
     source_note: str | None = None
     correct_label: str | None = None
     options: dict[str, str] | None = None
+    # Bản dịch tiếng Việt theo nhãn đáp án. KHÁC `options` ở một chỗ: nó sửa
+    # được ở MỌI part, kể cả Part 1 và 2 — ở đó bản dịch dịch LỜI ĐỌC chứ không
+    # dịch chữ in, nên nó có nội dung để dịch trong khi `options` thì không.
+    #
+    # Chuỗi rỗng nghĩa là XOÁ bản dịch (ghi NULL), khác với vắng mặt là để nguyên.
+    translations: dict[str, str] | None = None
     # Chỉ Part 1 và 2. Part 3/4 giữ lời thoại ở cụm, và endpoint từ chối thẳng
     # thay vì ghi vào một cột không ai đọc — xem `edit_question`.
     #

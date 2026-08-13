@@ -2894,6 +2894,17 @@
             ],
             "title": "Content"
           },
+          "content_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Vi"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -2901,6 +2912,17 @@
           "label": {
             "title": "Label",
             "type": "string"
+          },
+          "spoken_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spoken Text"
           }
         },
         "required": [
@@ -3723,6 +3745,20 @@
               }
             ],
             "title": "Source Note"
+          },
+          "translations": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Translations"
           }
         },
         "title": "QuestionEdit",
@@ -3837,6 +3873,17 @@
             ],
             "title": "Content"
           },
+          "content_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Vi"
+          },
           "is_correct": {
             "title": "Is Correct",
             "type": "boolean"
@@ -3844,6 +3891,17 @@
           "label": {
             "title": "Label",
             "type": "string"
+          },
+          "spoken_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spoken Text"
           }
         },
         "required": [

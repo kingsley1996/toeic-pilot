@@ -193,8 +193,20 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     answered_by_question = {item.question_id: item for item in attempt.items}
     in_scope = [(number, q) for number, q in rows if q.id in answered_by_question]
 
-    reveal = attempt.review_mode == "practice" or attempt.status != "in_progress"
-    correct_ids = _correct_option_ids(db, [q.id for _, q in in_scope]) if reveal else {}
+    # Lộ đáp án là quyết định TỪNG CÂU, không phải một cờ cho cả lượt làm.
+    #
+    # Nộp rồi thì lộ hết — không còn gì để đo. Đang làm ở chế độ Luyện tập thì
+    # chỉ lộ câu người học đã chọn: Part 1 và 2 không in gì ra đề, nên "lộ" ở đó
+    # có nghĩa là gửi kèm nguyên văn lời đọc, và gửi trước lúc họ bấm nghe thì
+    # bài tập nghe không còn đo cái nó định đo. Luyện thi thì không lộ gì cả.
+    #
+    # Gác ở máy chủ chứ không phải ở giao diện: giấu bằng CSS vẫn để nguyên văn
+    # nằm trong payload, mở tab Network là đọc được.
+    submitted = attempt.status != "in_progress"
+    practice = attempt.review_mode == "practice"
+    correct_ids = (
+        _correct_option_ids(db, [q.id for _, q in in_scope]) if submitted or practice else {}
+    )
 
     # Nạp asset bằng MỘT truy vấn cho mỗi loại. `Question` chỉ có cột id chứ
     # không có relationship, nên không nạp trước ở đây thì thành N+1 — và với
@@ -246,6 +258,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     # liệu — đánh lại từ 1 làm họ không đối chiếu được với sách.
     for number, question in in_scope:
         item = answered_by_question[question.id]
+        reveal = submitted or (practice and item.selected_option_id is not None)
         stimulus = question.question_set
         # Ngữ liệu chỉ đi kèm câu ĐẦU của cụm: lặp lại trên cả ba câu là ba lần
         # cùng một đoạn văn trên đường truyền, và client sẽ phải tự khử trùng lặp.
@@ -285,7 +298,17 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
                     else []
                 ),
                 options=[
-                    OptionPublic(id=str(option.id), label=option.label, content=option.content)
+                    OptionPublic(
+                        id=str(option.id),
+                        label=option.label,
+                        content=option.content,
+                        # Gác bằng ĐÚNG `reveal` đã dùng cho `correct_option_id`
+                        # và `explanation`, không phải một luật thứ hai: hai luật
+                        # cho cùng một câu hỏi "được lộ chưa" thì sẽ có ngày lệch,
+                        # và cái lệch sẽ là cái lộ sớm.
+                        content_vi=option.content_vi if reveal else None,
+                        spoken_text=option.spoken_text if reveal else None,
+                    )
                     for option in sorted(question.options, key=lambda o: o.label)
                 ],
                 selected_option_id=(

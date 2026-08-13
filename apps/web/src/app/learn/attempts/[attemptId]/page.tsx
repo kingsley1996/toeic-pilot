@@ -197,11 +197,27 @@ export default function AttemptRunnerPage() {
     setCurrent(null);
     patch(question.id, { selected_option_id: next });
     try {
-      await apiFetch(API_ROUTES.attemptAnswer(attemptId, question.id), {
+      const fresh = await apiFetch<AttemptState>(API_ROUTES.attemptAnswer(attemptId, question.id), {
         method: "PATCH",
         token,
         body: JSON.stringify({ selected_option_id: next }),
       });
+      /*
+       * Ở chế độ Luyện tập, máy chủ chỉ gửi lời giải SAU khi câu đó đã có đáp
+       * án — với Part 1 và 2 thì "lời giải" bao gồm cả nguyên văn lời đọc, và
+       * gửi sớm là xoá mất phần nghe. Nên phải lấy lại đúng câu vừa trả lời.
+       *
+       * Lấy một câu chứ không thay cả `state`: lần bấm kế tiếp có thể đã xảy ra
+       * trong lúc chờ, và bản trả về này sẽ ghi đè ngược lên nó.
+       */
+      const updated = fresh.questions.find((q) => q.id === question.id);
+      if (updated) {
+        patch(question.id, {
+          options: updated.options,
+          correct_option_id: updated.correct_option_id,
+          explanation: updated.explanation,
+        });
+      }
     } catch {
       // Trả lại giá trị cũ: một ô tick sai sự thật tệ hơn một thông báo lỗi,
       // vì nó khiến người làm bài tin rằng câu đó đã được ghi nhận.
@@ -879,6 +895,14 @@ function QuestionCard({
   // đó là giá trị đúng chứ không phải dữ liệu thiếu, nên giao diện thu về những
   // ô chữ cái thay vì hiện bốn dòng trống.
   const lettersOnly = question.options.every((option) => option.content === null);
+  // Chỉ khi đã lộ, máy chủ mới gửi kèm lời đọc và bản dịch — và ô chữ cái rộng
+  // 48px không chứa nổi một câu, nên chữ tràn ra ngoài rồi đè lên ô bên cạnh.
+  // Lộ rồi thì bố cục phải quay về danh sách đầy chiều ngang; ô chữ cái chỉ
+  // đúng ở đúng trạng thái nó được dựng cho, là lúc chưa có gì để đọc.
+  const spoken = question.options.some(
+    (option) => option.spoken_text !== null || option.content_vi !== null,
+  );
+  const chips = lettersOnly && !spoken;
 
   return (
     <div
@@ -917,7 +941,7 @@ function QuestionCard({
         <p className="mt-2 whitespace-pre-wrap leading-relaxed">{question.prompt_text}</p>
       )}
 
-      <div className={cx("mt-3", lettersOnly ? "flex flex-wrap gap-2" : "space-y-2")}>
+      <div className={cx("mt-3", chips ? "flex flex-wrap gap-2" : "space-y-2")}>
         {question.options.map((option) => {
           const chosen = question.selected_option_id === option.id;
           const correct = question.correct_option_id === option.id;
@@ -935,7 +959,7 @@ function QuestionCard({
               aria-pressed={chosen}
               className={cx(
                 "rounded border text-left disabled:cursor-default",
-                lettersOnly ? "h-10 w-12 font-semibold" : "flex w-full items-start gap-3 p-3",
+                chips ? "h-10 w-12 font-semibold" : "flex w-full items-start gap-3 p-3",
                 revealed && correct
                   ? "border-ok bg-ok-tint text-ok"
                   : revealed && chosen
@@ -945,7 +969,12 @@ function QuestionCard({
                       : "border-rule bg-panel hover:border-rule-strong",
               )}
             >
-              {lettersOnly ? (
+              {chips ? (
+                /*
+                 * Part 1 và 2: lúc làm bài chỉ có chữ cái, vì đề thi không in
+                 * gì — đọc được bốn câu trả lời thì phần kiểm kỹ năng NGHE
+                 * không còn đo thứ nó định đo.
+                 */
                 <span className="block text-center">{option.label}</span>
               ) : (
                 <>
@@ -957,7 +986,17 @@ function QuestionCard({
                   >
                     {option.label}
                   </span>
-                  <span className="leading-relaxed">{option.content}</span>
+                  <span className="min-w-0 leading-relaxed">
+                    {option.content ?? option.spoken_text}
+                    {/* Bản dịch xuống dòng riêng, cỡ nhỏ hơn: nó là chú thích
+                        cho nguyên văn chứ không phải một đáp án thứ hai. Cùng
+                        dòng thì mắt đọc thành một câu song ngữ dài. */}
+                    {option.content_vi && (
+                      <span className="mt-0.5 block text-small text-ink-muted">
+                        {option.content_vi}
+                      </span>
+                    )}
+                  </span>
                 </>
               )}
             </button>

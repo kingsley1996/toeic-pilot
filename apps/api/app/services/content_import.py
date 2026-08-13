@@ -162,7 +162,9 @@ def parse_dictation(raw: str) -> list[ParsedDictation]:
 #   [QUESTION]
 #   <đề bài, có thể nhiều dòng>
 #   (A) ...
+#   -> <bản dịch tiếng Việt của (A)>   <- tuỳ chọn, dòng ngay dưới đáp án
 #   (B) ...
+#   -> ...
 #   (C) ...
 #   (D) ...
 #   answer: B
@@ -213,6 +215,20 @@ _KEYS = {
 }
 _OPTION_LINE = re.compile(r"^\(([A-D])\)\s*(.*)$")
 
+# Dòng dịch nghĩa, đặt NGAY DƯỚI đáp án nó dịch:
+#
+#   (B) was reviewed
+#   -> đã được xem xét
+#
+# Mốc ASCII `->` theo đúng luật đã áp cho `[QUESTION]`, và nhận thêm `→` vì
+# người soạn hay dán mũi tên thật từ tài liệu khác. Không đáp án tiếng Anh nào
+# bắt đầu bằng hai ký tự đó, nên không có chỗ nhập nhằng.
+#
+# Một dòng riêng chứ không phải `(B) was reviewed | đã được xem xét`: cặp
+# nguyên văn — bản dịch xếp dọc thì mắt soát được theo cột, mà soát được chính
+# là lý do bước xem trước tồn tại.
+_TRANSLATION_LINE = re.compile(r"^(?:->|→)\s*(.+)$")
+
 
 def _fold(text: str) -> str:
     """Bỏ dấu và viết hoa, để so khớp mốc không phụ thuộc cách gõ.
@@ -249,6 +265,12 @@ class ParsedOption:
     # `is not None`, nên `""` là "có in, in ra số 0 ký tự" và bị từ chối.
     content: str | None
     is_correct: bool
+    # Bản dịch tiếng Việt, dán bằng dòng `-> …` ngay dưới đáp án.
+    content_vi: str | None = None
+    # Lời ĐỌC của Part 1/2. `content` vẫn None ở đó vì đề thi không in gì; cột
+    # này giữ nghĩa "được nói ra" để chế độ Luyện tập hiện lại được sau khi học
+    # viên đã chọn.
+    spoken_text: str | None = None
 
 
 @dataclass
@@ -386,6 +408,18 @@ def _parse_question_block(text: str, line: int, part: int) -> ParsedQuestion:
         if not stripped:
             continue
 
+        translation = _TRANSLATION_LINE.match(stripped)
+        if translation:
+            # Gắn vào đáp án NGAY TRÊN nó. Không có đáp án nào phía trên thì đây
+            # là một dòng lạc chỗ, và báo lỗi ngay tốt hơn là gắn thầm vào đáp án
+            # gần nhất — gắn nhầm thì bản dịch hiện dưới câu khác và không gì báo.
+            if not question.options:
+                raise ValueError(
+                    f"Câu ở dòng {line}: dòng dịch `->` phải nằm ngay dưới một đáp án."
+                )
+            question.options[-1].content_vi = translation.group(1).strip()
+            continue
+
         option = _OPTION_LINE.match(stripped)
         if option:
             label, content = option.group(1), option.group(2).strip()
@@ -490,10 +524,16 @@ def _check_group(group: ParsedGroup, part: int) -> None:
 #   [QUESTION]
 #   <Part 3/4: đề bài IN ra · Part 1/2: lời dẫn được ĐỌC>
 #   (A) ...                          <- Part 1/2: lời đọc · Part 3/4: đáp án in
+#   -> <bản dịch>                    <- tuỳ chọn, dòng ngay dưới đáp án
 #   (B) ...
 #   (C) ...
 #   (D) ...                          <- Part 2 chỉ có ba đáp án
 #   answer: B
+#
+# Ở Part 1 và 2, dòng `(A) …` vừa đi vào lời thoại (để sinh audio) vừa được giữ
+# trên chính đáp án dưới dạng "lời đọc". `content` vẫn NULL vì đề thi không in
+# gì — nhưng nhờ vậy chế độ Luyện tập hiện lại được lời đọc và bản dịch sau khi
+# học viên đã chọn, còn Luyện thi thì không lộ chữ nào.
 #   source: original
 #
 # `voice:` là công tắc: mọi dòng sau nó thuộc giọng đó, cho tới `voice:` kế
@@ -611,6 +651,15 @@ def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion
         if not stripped:
             continue
 
+        translation = _TRANSLATION_LINE.match(stripped)
+        if translation:
+            if not question.options:
+                raise ValueError(
+                    f"Câu ở dòng {question.line}: dòng dịch `->` phải nằm ngay dưới một đáp án."
+                )
+            question.options[-1].content_vi = translation.group(1).strip()
+            continue
+
         option = _OPTION_LINE.match(stripped)
         if option:
             label, content = option.group(1), option.group(2).strip()
@@ -619,7 +668,14 @@ def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion
                 # thoại, còn `content` để None — đó là giá trị đúng theo ADR-001
                 # §A2, không phải dữ liệu thiếu.
                 spoken.append(ParsedTurn(text=content, voice=voice or ""))
-                question.options.append(ParsedOption(label=label, content=None, is_correct=False))
+                # `content` vẫn None (đề thi không in gì), nhưng lời đọc được
+                # giữ THÊM trên chính đáp án. Suy ngược từ `script` bằng chỉ số
+                # không dùng được: Part 1 không có câu dẫn nên option i ↔ turn i,
+                # còn Part 2 có nên lệch một — và độ lệch còn phụ thuộc người
+                # soạn dán bao nhiêu dòng dẫn, một biến tự do.
+                question.options.append(
+                    ParsedOption(label=label, content=None, is_correct=False, spoken_text=content)
+                )
             else:
                 question.options.append(
                     ParsedOption(label=label, content=content, is_correct=False)

@@ -119,6 +119,16 @@ class OptionPublic(BaseModel):
     label: str
     # NULL ở part 1 và 2 — ETS không in đáp án của hai part đó, chỉ đọc lên.
     content: str | None
+    # Hai trường dưới đây CHỈ có khi được phép lộ: chế độ Luyện tập, hoặc sau
+    # khi đã nộp. Cùng luật đang áp cho `correct_option_id` và `explanation`.
+    #
+    # Gửi bản dịch lúc đang thi là làm hỏng chính thứ bài thi đo: một câu từ
+    # vựng Part 5 chỉ cần đọc bản dịch là chọn được, và điểm số thôi so sánh
+    # được với đề thật.
+    content_vi: str | None = None
+    # Lời đọc của Part 1/2. Lộ nó lúc đang làm bài là in đáp án của một phần
+    # kiểm kỹ năng NGHE ra màn hình.
+    spoken_text: str | None = None
 
 
 class PassagePublic(BaseModel):

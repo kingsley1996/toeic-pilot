@@ -83,9 +83,13 @@ const PLACEHOLDER: Record<number, string> = {
 voice: us_female_1
 Look at the picture marked number one in your test book.
 (A) The woman is sitting at a picnic table.
+-> Người phụ nữ đang ngồi ở bàn dã ngoại.
 (B) The woman is reading a newspaper.
+-> Người phụ nữ đang đọc báo.
 (C) The woman is loading a truck.
+-> Người phụ nữ đang chất hàng lên xe tải.
 (D) The woman is walking along a path.
+-> Người phụ nữ đang đi bộ trên lối đi.
 answer: A
 source: original`,
   2: `[QUESTION]
@@ -93,8 +97,11 @@ voice: us_female_1
 Where did you put the sales report?
 voice: uk_male_1
 (A) On your desk, next to the printer.
+-> Trên bàn anh, cạnh máy in.
 (B) Yes, I finished it last night.
+-> Vâng, tôi làm xong tối qua.
 (C) About thirty copies, I think.
+-> Khoảng ba mươi bản, tôi nghĩ vậy.
 answer: A
 source: original`,
   3: `[SCRIPT] Hội thoại về đơn hàng ghế
@@ -106,9 +113,13 @@ I'm sorry about that. Let me pull up the tracking number.
 [QUESTION]
 What is the woman calling about?
 (A) A late delivery
+-> Giao hàng trễ
 (B) A billing error
+-> Sai sót hoá đơn
 (C) A product return
+-> Trả lại hàng
 (D) A price change
+-> Thay đổi giá
 answer: A
 source: original
 explanation: Cô ấy gọi vì đơn ghế chưa tới.`,
@@ -120,17 +131,25 @@ will begin this Wednesday and continue through Friday.
 [QUESTION]
 Where would this announcement most likely be heard?
 (A) In an office building
+-> Trong một toà nhà văn phòng
 (B) At an airport
+-> Ở sân bay
 (C) In a factory
+-> Trong một nhà máy
 (D) At a school
+-> Ở một trường học
 answer: A
 source: original`,
   5: `[QUESTION]
 The board approved the ____ budget for the next quarter.
 (A) annual
+-> thường niên — tính từ
 (B) annually
+-> hằng năm — trạng từ
 (C) annualize
+-> quy đổi theo năm — động từ
 (D) annuity
+-> khoản niên kim — danh từ
 answer: A
 source: original
 explanation: Cần một tính từ bổ nghĩa cho "budget".`,
@@ -143,9 +162,13 @@ please use the side entrance on Le Loi Street.
 [QUESTION]
 (131)
 (A) since
+-> từ khi — mốc quá khứ
 (B) from
+-> từ — mốc bắt đầu
 (C) during
+-> trong suốt
 (D) until
+-> cho đến khi
 answer: B
 source: original
 explanation: "from + mốc thời gian" chỉ thời điểm bắt đầu.`,
@@ -156,9 +179,13 @@ Please use the side entrance on Le Loi Street.
 [QUESTION]
 What is the notice mainly about?
 (A) A change of address
+-> Thay đổi địa chỉ
 (B) Building maintenance
+-> Bảo trì toà nhà
 (C) A new tenant
+-> Một người thuê mới
 (D) A rent increase
+-> Tăng tiền thuê
 answer: B
 source: original
 explanation: Đoạn văn nói về việc đóng cửa sảnh để bảo trì.`,
@@ -829,6 +856,14 @@ export default function AdminTestPage() {
           <span className="font-data">explanation:</span>. Phần giải thích thì viết tiếng Việt —
           người học sẽ đọc nó.
         </p>
+        {/* Dòng dịch là tuỳ chọn nhưng phải nói ra ở đây: nó không có khoá đứng
+            trước như các mốc kia, nên người soạn không đoán ra được nếu chỉ nhìn
+            mẫu mà không đọc chú thích. */}
+        <p className="mb-2 text-small text-ink-muted">
+          Ngay dưới mỗi đáp án có thể thêm một dòng bắt đầu bằng{" "}
+          <span className="font-data">-&gt;</span> để ghi bản dịch tiếng Việt của đáp án đó — tuỳ
+          chọn, và học viên chỉ nhìn thấy nó ở chế độ luyện tập.
+        </p>
         <Textarea
           value={raw}
           onChange={(event) => setRaw(event.target.value)}
@@ -1434,6 +1469,9 @@ function QuestionEditor({
   const [options, setOptions] = useState<Record<string, string>>(
     Object.fromEntries(question.options.map((option) => [option.label, option.content ?? ""])),
   );
+  const [translations, setTranslations] = useState<Record<string, string>>(
+    Object.fromEntries(question.options.map((option) => [option.label, option.content_vi ?? ""])),
+  );
 
   // Part 1 và 2 KHÔNG in gì cả, nên ở đó không có đề bài và không có nội dung
   // đáp án để sửa — chữ của chúng nằm trong lời thoại, sửa ở khung Lời thoại.
@@ -1476,9 +1514,42 @@ function QuestionEditor({
               />
             ) : (
               <span className="text-small text-ink-faint">
-                đọc lên, không in — sửa ở khung Lời thoại
+                {/* Part 1/2 không in đáp án, nhưng LỜI ĐỌC thì có — hiện nó ở
+                    đây để người soạn biết mình đang dịch câu nào. */}
+                {option.spoken_text ?? "đọc lên, không in — sửa ở khung Lời thoại"}
               </span>
             )}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {/*
+         * Bản dịch tách thành một khối riêng, không xen giữa các đáp án.
+         *
+         * Xen vào thì hàng đáp án dài gấp đôi và việc hay làm nhất — soát xem
+         * đáp án đúng đã chọn chưa — bị đẩy ra xa nhau. Ở đây người soạn dịch
+         * cả bốn câu một lượt, đúng nhịp thật của việc dịch.
+         *
+         * Hiện ở MỌI part, khác ô nội dung: Part 1/2 không in đáp án nhưng vẫn
+         * có lời đọc để dịch, và bản dịch đó hiện cho học viên ở chế độ Luyện tập.
+         */}
+        <p className="text-label font-semibold uppercase tracking-wide text-ink-muted">
+          Dịch nghĩa từng đáp án
+        </p>
+        {question.options.map((option) => (
+          <div key={option.label} className="flex items-center gap-2">
+            <span className="w-8 shrink-0 text-center font-data text-small text-ink-faint">
+              {option.label}
+            </span>
+            <Input
+              value={translations[option.label] ?? ""}
+              placeholder="để trống nếu chưa dịch"
+              aria-label={`Dịch nghĩa đáp án ${option.label}`}
+              onChange={(event) =>
+                setTranslations({ ...translations, [option.label]: event.target.value })
+              }
+            />
           </div>
         ))}
       </div>
@@ -1507,8 +1578,15 @@ function QuestionEditor({
                     explanation: explanation || null,
                     correct_label: correct,
                     options,
+                    translations,
                   }
-                : { explanation: explanation || null, correct_label: correct },
+                : {
+                    explanation: explanation || null,
+                    correct_label: correct,
+                    // `translations` đi kèm CẢ ở Part 1/2, khác `options`: chỗ
+                    // này dịch lời đọc, và lời đọc thì hai part đó có.
+                    translations,
+                  },
             )
           }
           disabled={busy}

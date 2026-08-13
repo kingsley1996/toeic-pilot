@@ -262,3 +262,120 @@ def test_the_history_pages_without_dropping_or_repeating_a_row(
 
     seen = [row["id"] for page in (first, second, third) for row in page["items"]]
     assert len(set(seen)) == 5
+
+
+def test_ban_dich_KHONG_lo_khi_dang_thi(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Chế độ Luyện thi: `content_vi` và `spoken_text` phải là None cho tới khi nộp.
+
+    Gửi bản dịch lúc đang làm bài là làm hỏng chính thứ bài thi đo — một câu từ
+    vựng Part 5 chỉ cần đọc bản dịch là chọn được, còn Part 1/2 thì lời đọc
+    chính là đáp án của một phần kiểm kỹ năng NGHE.
+    """
+    from app.models.practice import QuestionOption
+
+    published_test(client, auth("admin"))
+    option = db_session.query(QuestionOption).first()
+    assert option is not None
+    option.content_vi = "bản dịch bí mật"
+    option.spoken_text = "spoken secret"
+    db_session.commit()
+
+    started = start(client, auth("learner")).json()
+    served = started["questions"][0]["options"]
+    assert all(o["content_vi"] is None for o in served)
+    assert all(o["spoken_text"] is None for o in served)
+
+
+PASTE_PART_5 = """[QUESTION]
+The board approved the ____ budget for the next quarter.
+(A) annual
+-> thường niên
+(B) annually
+-> hằng năm
+(C) annualize
+-> quy đổi theo năm
+(D) annuity
+-> khoản niên kim
+answer: A
+source: original
+
+[QUESTION]
+She finished the report ____ than her colleagues.
+(A) fast
+-> nhanh
+(B) faster
+-> nhanh hơn
+(C) fastest
+-> nhanh nhất
+(D) fastly
+-> (không phải từ có thật)
+answer: B
+source: original
+"""
+
+
+def test_luyen_tap_chi_lo_dap_an_cua_cau_da_tra_loi(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Chế độ Luyện tập lộ theo TỪNG CÂU, không phải cả lượt làm.
+
+    Lộ cả lượt ngay từ đầu là hỏng đúng thứ bài tập đo: với Part 1 và 2 thì
+    "lộ" nghĩa là gửi kèm nguyên văn lời đọc, nên người học đọc được bốn câu
+    trả lời trước khi bấm nghe. Với Part 5 thì bản dịch nói thẳng đáp án.
+
+    Gác ở máy chủ chứ không ở giao diện — giấu bằng CSS vẫn để nguyên văn nằm
+    trong payload.
+    """
+    admin = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "luyentap", "title": "Đề luyện tập", "kind": "mini"},
+        headers=admin,
+    )
+    add_part(client, admin, "luyentap", 5, PASTE_PART_5)
+    for question in client.get("/api/v1/admin/tests/luyentap/questions", headers=admin).json():
+        assert (
+            client.post(
+                f"/api/v1/admin/questions/{question['id']}/publish", headers=admin
+            ).status_code
+            == 200
+        )
+    assert client.post("/api/v1/admin/tests/luyentap/publish", headers=admin).status_code == 200
+
+    learner = auth("learner")
+    state = client.post(
+        "/api/v1/attempts",
+        json={"test_slug": "luyentap", "parts": [], "review_mode": "practice"},
+        headers=learner,
+    ).json()
+    assert len(state["questions"]) == 2
+
+    # Chưa trả lời câu nào: không câu nào được lộ, kể cả ở chế độ Luyện tập.
+    for question in state["questions"]:
+        assert question["correct_option_id"] is None
+        assert all(o["content_vi"] is None for o in question["options"])
+
+    answered, untouched = state["questions"]
+    after = client.patch(
+        f"/api/v1/attempts/{state['id']}/questions/{answered['id']}",
+        json={"selected_option_id": answered["options"][0]["id"]},
+        headers=learner,
+    ).json()
+
+    now_answered = next(q for q in after["questions"] if q["id"] == answered["id"])
+    now_untouched = next(q for q in after["questions"] if q["id"] == untouched["id"])
+
+    assert now_answered["correct_option_id"] is not None
+    assert any(o["content_vi"] for o in now_answered["options"])
+    # Câu bên cạnh vẫn kín: lộ theo câu, không theo lượt làm.
+    assert now_untouched["correct_option_id"] is None
+    assert all(o["content_vi"] is None for o in now_untouched["options"])
+
+    # Nộp bài thì lộ hết — không còn gì để đo nữa.
+    client.post(f"/api/v1/attempts/{state['id']}/submit", headers=learner)
+    submitted = client.get(f"/api/v1/attempts/{state['id']}", headers=learner).json()
+    for question in submitted["questions"]:
+        assert question["correct_option_id"] is not None
+        assert any(o["content_vi"] for o in question["options"])

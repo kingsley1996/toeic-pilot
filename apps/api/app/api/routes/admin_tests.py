@@ -498,6 +498,8 @@ def parse_part_paste(
                             label=option.label,
                             content=option.content,
                             is_correct=option.is_correct,
+                            content_vi=option.content_vi,
+                            spoken_text=option.spoken_text,
                         )
                         for option in question.options
                     ],
@@ -603,7 +605,11 @@ def commit_part(
                 created_by=user.id,
                 options=[
                     QuestionOption(
-                        label=option.label, content=option.content, is_correct=option.is_correct
+                        label=option.label,
+                        content=option.content,
+                        is_correct=option.is_correct,
+                        content_vi=option.content_vi,
+                        spoken_text=option.spoken_text,
                     )
                     for option in draft.options
                 ],
@@ -703,6 +709,20 @@ def edit_question(
                     detail=f"Câu này không có lựa chọn {label!r}",
                 )
             by_label[label].content = content
+
+    translations = changes.pop("translations", None)
+    if translations is not None:
+        by_label = {option.label: option for option in question.options}
+        for label, text in translations.items():
+            if label not in by_label:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Đáp án {label!r} không có trong {sorted(by_label)}",
+                )
+            # Chuỗi rỗng -> NULL, không phải "". Cùng luật `content` đang theo:
+            # `""` nghĩa là "có bản dịch, dài 0 ký tự", và nó sẽ render thành một
+            # dòng trống dưới đáp án mà không ai hiểu ở đâu ra.
+            by_label[label].content_vi = text.strip() or None
 
     correct = changes.pop("correct_label", None)
     if correct:
@@ -1088,7 +1108,11 @@ def _question_admin(
         prompt_text=question.prompt_text,
         options=[
             QuestionOptionDraft(
-                label=option.label, content=option.content or "", is_correct=option.is_correct
+                label=option.label,
+                content=option.content or "",
+                is_correct=option.is_correct,
+                content_vi=option.content_vi,
+                spoken_text=option.spoken_text,
             )
             for option in sorted(question.options, key=lambda option: option.label)
         ],

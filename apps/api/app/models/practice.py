@@ -256,6 +256,23 @@ class QuestionOption(Base):
     label: Mapped[str] = mapped_column(String(1), nullable=False)
     # NULL for part 2: the options exist only in the audio.
     content: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Bản dịch tiếng Việt của đáp án. Tách khỏi `content` chứ không nhét chung
+    # một chuỗi: hai thứ hiện ở hai thời điểm khác nhau — nguyên văn hiện ngay,
+    # bản dịch chỉ hiện khi được phép lộ (chế độ Luyện tập, hoặc sau khi nộp).
+    # Gộp lại thì không có cách nào giấu một nửa.
+    content_vi: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Lời ĐỌC của Part 1 và 2. `content` vẫn NULL ở hai part đó vì đề thi không
+    # in gì (ADR-001 §A2) — cột này giữ đúng nghĩa "được nói ra", tách hẳn khỏi
+    # "được in ra". Nhờ vậy chế độ Luyện tập hiện lại được lời đọc sau khi học
+    # viên đã chọn, mà bài thi thật vẫn không lộ chữ nào.
+    #
+    # Không suy từ `question.audio_script` được: lời thoại là một danh sách theo
+    # thứ tự, và ghép nó với đáp án bằng chỉ số là một liên kết ngầm sẽ lệch
+    # ngay lần đầu ai đó chèn thêm một lượt dẫn.
+    spoken_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+
     is_correct: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     question: Mapped["Question"] = relationship(back_populates="options")

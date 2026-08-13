@@ -264,3 +264,81 @@ def test_a_pasted_part_1_question_passes_the_gate_it_will_meet_at_commit() -> No
         if "audio" not in problem and "photograph" not in problem
     ]
     assert problems == []
+
+
+# --- dòng dịch nghĩa `->` --------------------------------------------------
+
+
+def test_dong_dich_gan_vao_dung_dap_an_ngay_tren_no() -> None:
+    """Phần Đọc: mỗi `->` thuộc về đáp án đứng ngay trên."""
+    groups = parse_reading_part(
+        "[QUESTION]\n"
+        "The report ____ yesterday.\n"
+        "(A) reviewed\n"
+        "-> đã xem xét\n"
+        "(B) was reviewed\n"
+        "-> đã được xem xét\n"
+        "(C) reviewing\n"
+        "(D) review\n"
+        "answer: B\n"
+        "source: original\n",
+        part=5,
+    )
+    options = groups[0].questions[0].options
+    assert [o.content_vi for o in options] == ["đã xem xét", "đã được xem xét", None, None]
+
+
+def test_mui_ten_that_cung_duoc_nhan() -> None:
+    """Người soạn hay dán `→` từ tài liệu khác — bác nó là bắt gõ lại tay."""
+    groups = parse_reading_part(
+        "[QUESTION]\nX ____ Y.\n(A) a\n→ chữ a\n(B) b\n(C) c\n(D) d\nanswer: A\nsource: original\n",
+        part=5,
+    )
+    assert groups[0].questions[0].options[0].content_vi == "chữ a"
+
+
+def test_dong_dich_LAC_CHO_bi_bao_loi_chu_khong_gan_tham() -> None:
+    """Gắn vào đáp án gần nhất thì bản dịch hiện dưới câu khác, và không gì báo.
+
+    Một dòng `->` trước bất kỳ đáp án nào là người soạn gõ nhầm chỗ; nói ra ngay
+    rẻ hơn nhiều so với để họ phát hiện lúc học viên đọc.
+    """
+    with pytest.raises(ValueError, match="ngay dưới một đáp án"):
+        parse_reading_part(
+            "[QUESTION]\n-> dịch trước khi có đáp án\n(A) a\n(B) b\n(C) c\n(D) d\n"
+            "answer: A\nsource: original\n",
+            part=5,
+        )
+
+
+def test_part_2_giu_content_NULL_nhung_van_luu_loi_doc_va_ban_dich() -> None:
+    """Bất biến của ADR-001 §A2 không được lung lay vì tính năng mới.
+
+    Part 2 không in gì — `content` phải là None, nếu không `validate_question`
+    từ chối và cả phần đó không ghi vào được. Lời đọc đi vào `spoken_text`, một
+    cột mang nghĩa khác hẳn, nên chế độ Luyện tập hiện lại được mà bài thi thật
+    vẫn không lộ chữ nào.
+    """
+    groups = parse_listening_part(
+        "[QUESTION]\n"
+        "Where is the nearest pharmacy?\n"
+        "(A) On Fifth Street.\n"
+        "-> Ở phố Năm.\n"
+        "(B) Yes, I think so.\n"
+        "-> Vâng, tôi nghĩ vậy.\n"
+        "(C) At three o'clock.\n"
+        "-> Lúc ba giờ.\n"
+        "answer: A\n"
+        "source: original\n",
+        part=2,
+    )
+    options = groups[0].questions[0].options
+    assert [o.content for o in options] == [None, None, None]
+    assert [o.spoken_text for o in options] == [
+        "On Fifth Street.",
+        "Yes, I think so.",
+        "At three o'clock.",
+    ]
+    assert options[0].content_vi == "Ở phố Năm."
+    # Lời đọc vẫn phải vào lời thoại để TTS sinh audio — hai chỗ, hai mục đích.
+    assert "On Fifth Street." in [turn.text for turn in groups[0].questions[0].script]

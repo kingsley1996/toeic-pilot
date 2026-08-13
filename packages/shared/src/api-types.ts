@@ -2962,10 +2962,14 @@ export interface components {
         OptionPublic: {
             /** Content */
             content: string | null;
+            /** Content Vi */
+            content_vi?: string | null;
             /** Id */
             id: string;
             /** Label */
             label: string;
+            /** Spoken Text */
+            spoken_text?: string | null;
         };
         /** Page[AttemptSummary] */
         Page_AttemptSummary_: {
@@ -3226,6 +3230,10 @@ export interface components {
             source?: string | null;
             /** Source Note */
             source_note?: string | null;
+            /** Translations */
+            translations?: {
+                [key: string]: string;
+            } | null;
         };
         /** QuestionLabelRow */
         QuestionLabelRow: {
@@ -3255,10 +3263,14 @@ export interface components {
         QuestionOptionDraft: {
             /** Content */
             content: string | null;
+            /** Content Vi */
+            content_vi?: string | null;
             /** Is Correct */
             is_correct: boolean;
             /** Label */
             label: string;
+            /** Spoken Text */
+            spoken_text?: string | null;
         };
         /**
          * QuestionPublic
