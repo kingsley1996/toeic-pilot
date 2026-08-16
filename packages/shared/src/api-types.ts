@@ -1093,6 +1093,121 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/vocabulary-collection-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vocabulary Collection Items */
+        get: operations["list_vocabulary_collection_items_api_v1_admin_vocabulary_collection_items_get"];
+        put?: never;
+        /** Create Vocabulary Collection Item */
+        post: operations["create_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary-collection-items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Vocabulary Collection Item
+         * @description Xoá cuốn sách: topic bên trong quay về "chưa xếp" (SET NULL, làm tay cho
+         *     đồng nhất SQLite/Postgres), từ vựng không bị đụng vì chúng gắn với topic.
+         */
+        delete: operations["delete_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Vocabulary Collection Item */
+        patch: operations["update_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary-collection-items/{item_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Vocabulary Collection Item */
+        post: operations["publish_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary-collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vocabulary Collections */
+        get: operations["list_vocabulary_collections_api_v1_admin_vocabulary_collections_get"];
+        put?: never;
+        /** Create Vocabulary Collection */
+        post: operations["create_vocabulary_collection_api_v1_admin_vocabulary_collections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary-collections/{collection_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Vocabulary Collection
+         * @description Xoá tuyển tập: item con CASCADE đi theo (schema), topic được gỡ về NULL
+         *     bằng tay để SQLite/Postgres cư xử giống nhau trong test — xoá tuyển tập
+         *     không bao giờ xoá chủ đề.
+         */
+        delete: operations["delete_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Vocabulary Collection */
+        patch: operations["update_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/vocabulary-collections/{collection_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Vocabulary Collection */
+        post: operations["publish_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/vocabulary/parse": {
         parameters: {
             query?: never;
@@ -1786,6 +1901,57 @@ export interface paths {
         };
         /** List Vocabulary */
         get: operations["list_vocabulary_api_v1_vocabulary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary-collection-items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vocabulary Collection Item */
+        get: operations["get_vocabulary_collection_item_api_v1_vocabulary_collection_items__item_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary-collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vocabulary Collections */
+        get: operations["list_vocabulary_collections_api_v1_vocabulary_collections_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary-collections/{collection_ref}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vocabulary Collection */
+        get: operations["get_vocabulary_collection_api_v1_vocabulary_collections__collection_ref__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3727,6 +3893,10 @@ export interface components {
         };
         /** TopicAdmin */
         TopicAdmin: {
+            /** Collection Item Id */
+            collection_item_id: string | null;
+            /** Collection Item Name */
+            collection_item_name: string | null;
             /** Description */
             description: string | null;
             /** Entry Count */
@@ -3744,6 +3914,8 @@ export interface components {
         };
         /** TopicCreate */
         TopicCreate: {
+            /** Collection Item Id */
+            collection_item_id?: string | null;
             /** Description */
             description?: string | null;
             /** Name */
@@ -3758,6 +3930,8 @@ export interface components {
         };
         /** TopicPublic */
         TopicPublic: {
+            /** Collection Item Id */
+            collection_item_id?: string | null;
             /** Description */
             description: string | null;
             /** Entry Count */
@@ -3773,6 +3947,8 @@ export interface components {
         };
         /** TopicUpdate */
         TopicUpdate: {
+            /** Collection Item Id */
+            collection_item_id?: string | null;
             /** Description */
             description?: string | null;
             /** Name */
@@ -3959,6 +4135,137 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** VocabularyCollectionAdmin */
+        VocabularyCollectionAdmin: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Item Count */
+            item_count: number;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+        };
+        /** VocabularyCollectionCreate */
+        VocabularyCollectionCreate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Slug */
+            slug: string;
+        };
+        /** VocabularyCollectionDetail */
+        VocabularyCollectionDetail: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["VocabularyCollectionItemPublic"][];
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
+        };
+        /** VocabularyCollectionItemAdmin */
+        VocabularyCollectionItemAdmin: {
+            /** Collection Id */
+            collection_id: string;
+            /** Collection Name */
+            collection_name: string;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Status */
+            status: string;
+            /** Topic Count */
+            topic_count: number;
+        };
+        /** VocabularyCollectionItemCreate */
+        VocabularyCollectionItemCreate: {
+            /** Collection Id */
+            collection_id: string;
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+        };
+        /** VocabularyCollectionItemPublic */
+        VocabularyCollectionItemPublic: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Topic Count */
+            topic_count: number;
+        };
+        /** VocabularyCollectionItemUpdate */
+        VocabularyCollectionItemUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Status */
+            status?: string | null;
+        };
+        /** VocabularyCollectionPublic */
+        VocabularyCollectionPublic: {
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Topic Count */
+            topic_count: number;
+        };
+        /** VocabularyCollectionUpdate */
+        VocabularyCollectionUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: string | null;
+        };
         /**
          * VocabularyCommit
          * @description Rows to write, after review.
@@ -4003,6 +4310,23 @@ export interface components {
             part_of_speech: string;
             /** Phonetic */
             phonetic: string | null;
+        };
+        /** VocabularyItemDetail */
+        VocabularyItemDetail: {
+            /** Collection Id */
+            collection_id: string;
+            /** Collection Name */
+            collection_name: string;
+            /** Description */
+            description: string | null;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Topics */
+            topics: components["schemas"]["TopicPublic"][];
         };
         /**
          * VocabularyMastery
@@ -6218,6 +6542,302 @@ export interface operations {
             };
         };
     };
+    list_vocabulary_collection_items_api_v1_admin_vocabulary_collection_items_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionItemAdmin"][];
+                };
+            };
+        };
+    };
+    create_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyCollectionItemCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionItemAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyCollectionItemUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionItemAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_vocabulary_collection_item_api_v1_admin_vocabulary_collection_items__item_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionItemAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_vocabulary_collections_api_v1_admin_vocabulary_collections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionAdmin"][];
+                };
+            };
+        };
+    };
+    create_vocabulary_collection_api_v1_admin_vocabulary_collections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyCollectionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyCollectionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_vocabulary_collection_api_v1_admin_vocabulary_collections__collection_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     parse_vocabulary_paste_api_v1_admin_vocabulary_parse_post: {
         parameters: {
             query?: never;
@@ -7301,6 +7921,88 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Page_VocabularySummary_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vocabulary_collection_item_api_v1_vocabulary_collection_items__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyItemDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_vocabulary_collections_api_v1_vocabulary_collections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionPublic"][];
+                };
+            };
+        };
+    };
+    get_vocabulary_collection_api_v1_vocabulary_collections__collection_ref__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection_ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionDetail"];
                 };
             };
             /** @description Validation Error */

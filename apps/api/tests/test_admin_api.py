@@ -182,6 +182,50 @@ ADMIN_CALLS = [
         "/api/v1/admin/ai/set-labels/00000000-0000-0000-0000-000000000000",
         {"facet": "topic", "code": "PART_3_HOUSING"},
     ),
+    # Cây từ vựng (collection -> collection_item -> topic). Mọi nút chịu cùng cổng
+    # phân quyền như phần còn lại: editor viết, admin quyết định thứ được học viên
+    # thấy (publish/delete).
+    ("GET", "/api/v1/admin/vocabulary-collections", None),
+    ("POST", "/api/v1/admin/vocabulary-collections", {"slug": "x", "name": "X"}),
+    (
+        "PATCH",
+        "/api/v1/admin/vocabulary-collections/00000000-0000-0000-0000-000000000000",
+        {"name": "X"},
+    ),
+    (
+        "DELETE",
+        "/api/v1/admin/vocabulary-collections/00000000-0000-0000-0000-000000000000",
+        None,
+    ),
+    (
+        "POST",
+        "/api/v1/admin/vocabulary-collections/00000000-0000-0000-0000-000000000000/publish",
+        None,
+    ),
+    ("GET", "/api/v1/admin/vocabulary-collection-items", None),
+    (
+        "POST",
+        "/api/v1/admin/vocabulary-collection-items",
+        {
+            "collection_id": "00000000-0000-0000-0000-000000000000",
+            "name": "X",
+        },
+    ),
+    (
+        "PATCH",
+        "/api/v1/admin/vocabulary-collection-items/00000000-0000-0000-0000-000000000000",
+        {"name": "X"},
+    ),
+    (
+        "DELETE",
+        "/api/v1/admin/vocabulary-collection-items/00000000-0000-0000-0000-000000000000",
+        None,
+    ),
+    (
+        "POST",
+        "/api/v1/admin/vocabulary-collection-items/00000000-0000-0000-0000-000000000000/publish",
+        None,
+    ),
 ]
 
 

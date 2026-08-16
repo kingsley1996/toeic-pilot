@@ -10,6 +10,9 @@ class TopicCreate(BaseModel):
     name: str = Field(min_length=1, max_length=128)
     description: str | None = None
     position: int = 0
+    # Không gửi = chủ đề "chưa xếp". Khác với TopicUpdate ở chỗ "" không có nghĩa
+    # gì ở đây (PATCH mới cần phân biệt "để nguyên" / "gỡ"), nên không cần quy ước.
+    collection_item_id: str | None = None
 
 
 class TopicAdmin(BaseModel):
@@ -22,11 +25,67 @@ class TopicAdmin(BaseModel):
     # Đếm cả nháp: admin nhìn thấy mọi thứ, và con số này trả lời câu "xoá chủ
     # đề này thì chuyện gì xảy ra" trước khi ai đó bấm nút xoá.
     entry_count: int
+    collection_item_id: str | None
+    collection_item_name: str | None
 
 
 class TopicUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=128)
     slug: str | None = Field(default=None, min_length=1, max_length=64)
+    description: str | None = None
+    position: int | None = None
+    status: str | None = None
+    # "" = gỡ chủ đề khỏi cuốn đang chứa; UUID = xếp vào cuốn đó; không gửi =
+    # để nguyên (phân biệt qua exclude_unset — không thể dùng `None` vì "gỡ"
+    # chính là đặt về None).
+    collection_item_id: str | None = Field(default=None)
+
+
+class VocabularyCollectionCreate(BaseModel):
+    slug: str = Field(min_length=1, max_length=64)
+    name: str = Field(min_length=1, max_length=128)
+    description: str | None = None
+    position: int = 0
+
+
+class VocabularyCollectionAdmin(BaseModel):
+    id: str
+    slug: str
+    name: str
+    description: str | None
+    position: int
+    status: str
+    item_count: int
+
+
+class VocabularyCollectionUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=128)
+    slug: str | None = Field(default=None, min_length=1, max_length=64)
+    description: str | None = None
+    position: int | None = None
+    status: str | None = None
+
+
+class VocabularyCollectionItemCreate(BaseModel):
+    collection_id: str
+    name: str = Field(min_length=1, max_length=128)
+    description: str | None = None
+    position: int = 0
+
+
+class VocabularyCollectionItemAdmin(BaseModel):
+    id: str
+    collection_id: str
+    collection_name: str
+    name: str
+    description: str | None
+    position: int
+    status: str
+    topic_count: int
+
+
+class VocabularyCollectionItemUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=128)
     description: str | None = None
     position: int | None = None
     status: str | None = None

@@ -11,6 +11,11 @@ export type HTTPValidationError = components["schemas"]["HTTPValidationError"];
 
 // Learning Hub
 export type TopicPublic = components["schemas"]["TopicPublic"];
+export type VocabularyCollectionPublic = components["schemas"]["VocabularyCollectionPublic"];
+export type VocabularyCollectionItemPublic =
+  components["schemas"]["VocabularyCollectionItemPublic"];
+export type VocabularyCollectionDetail = components["schemas"]["VocabularyCollectionDetail"];
+export type VocabularyItemDetail = components["schemas"]["VocabularyItemDetail"];
 export type AudioClip = components["schemas"]["AudioClip"];
 export type DictationTopicPublic = components["schemas"]["DictationTopicPublic"];
 export type DictationTopicDetail = components["schemas"]["DictationTopicDetail"];
@@ -82,6 +87,8 @@ export type WordDiff = components["schemas"]["WordDiff"];
 
 // Content admin
 export type TopicAdmin = components["schemas"]["TopicAdmin"];
+export type VocabularyCollectionAdmin = components["schemas"]["VocabularyCollectionAdmin"];
+export type VocabularyCollectionItemAdmin = components["schemas"]["VocabularyCollectionItemAdmin"];
 export type VocabularyRow = components["schemas"]["VocabularyRow"];
 export type DictationRow = components["schemas"]["DictationRow"];
 export type VocabularyParseResponse = components["schemas"]["VocabularyParseResponse"];
@@ -147,6 +154,12 @@ export const API_ROUTES = {
   vocabularyProgress: "/api/v1/vocabulary-progress",
   submitReview: (id: string) => `/api/v1/vocabulary/${id}/review`,
   submitRecall: (id: string) => `/api/v1/vocabulary/${id}/recall`,
+
+  // Cây từ vựng: collection -> collection_item -> topic. Gạch nối, không lồng vào
+  // `/vocabulary/...` (cùng luật với `dictation-topics` bên dưới).
+  vocabularyCollections: "/api/v1/vocabulary-collections",
+  vocabularyCollection: (id: string) => `/api/v1/vocabulary-collections/${id}`,
+  vocabularyCollectionItem: (id: string) => `/api/v1/vocabulary-collection-items/${id}`,
   dictation: "/api/v1/dictation",
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,
   submitDictation: (id: string) => `/api/v1/dictation/${id}/attempts`,
@@ -161,6 +174,14 @@ export const API_ROUTES = {
   // Content admin
   adminTopics: "/api/v1/admin/topics",
   adminTopic: (id: string) => `/api/v1/admin/topics/${id}`,
+  adminVocabularyCollections: "/api/v1/admin/vocabulary-collections",
+  adminVocabularyCollection: (id: string) => `/api/v1/admin/vocabulary-collections/${id}`,
+  adminVocabularyCollectionPublish: (id: string) =>
+    `/api/v1/admin/vocabulary-collections/${id}/publish`,
+  adminVocabularyCollectionItems: "/api/v1/admin/vocabulary-collection-items",
+  adminVocabularyCollectionItem: (id: string) => `/api/v1/admin/vocabulary-collection-items/${id}`,
+  adminVocabularyCollectionItemPublish: (id: string) =>
+    `/api/v1/admin/vocabulary-collection-items/${id}/publish`,
   adminVocabulary: "/api/v1/admin/vocabulary",
   adminVocabularyParse: "/api/v1/admin/vocabulary/parse",
   adminVocabularyItem: (id: string) => `/api/v1/admin/vocabulary/${id}`,

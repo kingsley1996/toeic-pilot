@@ -20,6 +20,46 @@ class TopicPublic(BaseModel):
     # card và con số này là câu trả lời cho "vào đây có gì để học" — một chủ đề
     # 0 từ phải nói thẳng điều đó thay vì mở ra một trang trống.
     entry_count: int
+    # Cuốn sách chứa chủ đề này (collection → collection_item → topic).
+    # NULL = chủ đề chưa được xếp vào cuốn nào; màn từ vựng liệt kê chúng riêng.
+    collection_item_id: str | None = None
+
+
+class VocabularyCollectionItemPublic(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    position: int
+    topic_count: int
+
+
+class VocabularyCollectionPublic(BaseModel):
+    id: str
+    slug: str
+    name: str
+    description: str | None
+    position: int
+    topic_count: int
+
+
+class VocabularyCollectionDetail(BaseModel):
+    id: str
+    slug: str
+    name: str
+    description: str | None
+    position: int
+    items: list[VocabularyCollectionItemPublic]
+
+
+class VocabularyItemDetail(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    position: int
+    topics: list[TopicPublic]
+    # Cha của tầng này — cần cho breadcrumb "Từ vựng → <tuyển tập> → <cuốn sách>".
+    collection_id: str
+    collection_name: str
 
 
 class AudioClip(BaseModel):

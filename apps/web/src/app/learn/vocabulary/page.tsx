@@ -1,7 +1,12 @@
 "use client";
 
-import { API_ROUTES, type TopicPublic, type VocabularyProgress } from "@toeic-pilot/shared";
-import { BookOpen, Library, RotateCcw } from "lucide-react";
+import {
+  API_ROUTES,
+  type TopicPublic,
+  type VocabularyCollectionPublic,
+  type VocabularyProgress,
+} from "@toeic-pilot/shared";
+import { BookOpen, Library, Layers, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -10,16 +15,42 @@ import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 
 /*
- * Trang từ vựng là một lưới CHỦ ĐỀ, không còn là cuốn từ điển phẳng.
+ * Trang từ vựng mở ra ở tầng TUYỂN TẬP (collection), không còn là danh sách chủ
+ * đề phẳng: học viên nghĩ "học bộ TOEIC 600 từ" trước khi nghĩ "chủ đề nào".
+ * Từ vựng → tuyển tập → cuốn sách → chủ đề → trang từ.
  *
- * Danh sách từ chuyển xuống trang riêng `/learn/vocabulary/[slug]`: một chủ đề
- * 300 từ không phải thứ để đọc một mạch, nó là thứ để CHỌN rồi vào. Lưới card
- * trả lời câu hỏi "mình đang ở đâu với từng chủ đề" — mỗi card mang con số và,
- * khi đã đăng nhập, một thanh tiến độ thay cho lời hứa suông.
+ * Chủ đề chưa được xếp vào cuốn nào (collection_item_id = null) vẫn liệt kê ở
+ * đây thay vì biến mất — dữ liệu cũ không mất dấu khi cây phân cấp ra đời.
  */
-const TOPIC_TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
+const TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
 
-function TopicCard({
+function CollectionCard({
+  collection,
+  index,
+}: {
+  collection: VocabularyCollectionPublic;
+  index: number;
+}) {
+  const tone = TONES[index % TONES.length]!;
+  return (
+    <PanelLink
+      href={`/learn/vocabulary/collections/${collection.id}`}
+      className="flex flex-col p-6"
+    >
+      <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
+      <h2 className="mt-4 text-subtitle">{collection.name}</h2>
+      {collection.description && (
+        <p className="mt-1.5 text-small text-ink-muted">{collection.description}</p>
+      )}
+      <p className="mt-3 flex items-center gap-1.5 font-data text-small tabular-nums text-ink-faint">
+        <Layers size={13} strokeWidth={2} aria-hidden />
+        {collection.topic_count} chủ đề
+      </p>
+    </PanelLink>
+  );
+}
+
+function UnfiledTopicCard({
   topic,
   index,
   progress,
@@ -28,11 +59,11 @@ function TopicCard({
   index: number;
   progress: VocabularyProgress | null;
 }) {
-  const tone = TOPIC_TONES[index % TOPIC_TONES.length]!;
+  const tone = TONES[index % TONES.length]!;
   return (
     <PanelLink href={`/learn/vocabulary/${topic.slug}`} className="flex flex-col p-6">
       <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
-      <h2 className="mt-4 text-subtitle">{topic.name}</h2>
+      <h3 className="mt-4 text-subtitle">{topic.name}</h3>
       {topic.description && <p className="mt-1.5 text-small text-ink-muted">{topic.description}</p>}
       <p className="mt-3 font-data text-small tabular-nums text-ink-faint">
         {topic.entry_count} từ
@@ -59,29 +90,34 @@ function TopicCard({
   );
 }
 
-function VocabularyTopics() {
+function VocabularyLanding() {
   const { token } = useSession();
+  const [collections, setCollections] = useState<VocabularyCollectionPublic[] | null>(null);
   const [topics, setTopics] = useState<TopicPublic[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Tiến độ theo chủ đề, chỉ xin khi đã đăng nhập — endpoint có auth. Map đóng dấu
-  // token: đăng nhập/đăng xuất phải đổi đúng thứ hiện ra mà không cần xoá state
-  // trong effect.
+  // Tiến độ chỉ xin cho chủ đề CHƯA XẾP (đăng nhập mới có), map đóng dấu token để
+  // đăng nhập/đăng xuất đổi đúng thứ hiện ra mà không cần xoá state trong effect.
   const [progressByTopic, setProgressByTopic] = useState<{
     token: string;
     data: Record<string, VocabularyProgress | null>;
   }>({ token: "", data: {} });
 
   useEffect(() => {
+    apiFetch<VocabularyCollectionPublic[]>(API_ROUTES.vocabularyCollections)
+      .then(setCollections)
+      .catch(() => setError("Không tải được danh sách tuyển tập."));
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then(setTopics)
       .catch(() => setError("Không tải được danh sách chủ đề."));
   }, []);
 
+  const unfiled = (topics ?? []).filter((topic) => topic.collection_item_id === null);
+
   useEffect(() => {
-    if (!token || !topics) return;
+    if (!token || unfiled.length === 0) return;
     let stale = false;
     Promise.all(
-      topics.map((topic) =>
+      unfiled.map((topic) =>
         apiFetch<VocabularyProgress>(
           `${API_ROUTES.vocabularyProgress}?topic=${encodeURIComponent(topic.slug)}`,
           { token },
@@ -91,12 +127,13 @@ function VocabularyTopics() {
       if (stale) return;
       setProgressByTopic({
         token,
-        data: Object.fromEntries(topics.map((topic, index) => [topic.slug, rows[index] ?? null])),
+        data: Object.fromEntries(unfiled.map((topic, index) => [topic.slug, rows[index] ?? null])),
       });
     });
     return () => {
       stale = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, topics]);
 
   const progressFor = (slug: string) =>
@@ -106,8 +143,8 @@ function VocabularyTopics() {
     <Page>
       <PageHeader
         eyebrow="Từ vựng"
-        title="Chủ đề"
-        description="Chọn một chủ đề để học từ, nghe phát âm bốn giọng và chơi minigame."
+        title="Tuyển tập"
+        description="Chọn một tuyển tập để học từ theo cuốn sách, nghe phát âm bốn giọng và chơi minigame."
       />
 
       {error && (
@@ -115,7 +152,7 @@ function VocabularyTopics() {
           <Alert>{error}</Alert>
         </div>
       )}
-      {!topics && !error && (
+      {!collections && !error && (
         <div className="grid gap-4 sm:grid-cols-2">
           {Array.from({ length: 4 }, (_, index) => (
             <Skeleton key={index} className="h-44" />
@@ -123,24 +160,38 @@ function VocabularyTopics() {
         </div>
       )}
 
-      {topics?.length === 0 && (
+      <div className="grid gap-4 sm:grid-cols-2">
+        {collections?.map((collection, index) => (
+          <CollectionCard key={collection.id} collection={collection} index={index} />
+        ))}
+      </div>
+
+      {collections?.length === 0 && (
         <EmptyState
           icon={Library}
-          title="Chưa có chủ đề nào"
+          title="Chưa có tuyển tập nào"
           description="Nội dung đang được biên soạn. Quay lại sau nhé."
         />
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {topics?.map((topic, index) => (
-          <TopicCard
-            key={topic.id}
-            topic={topic}
-            index={index}
-            progress={token ? progressFor(topic.slug) : null}
-          />
-        ))}
-      </div>
+      {unfiled.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-heading text-ink">Chủ đề khác</h2>
+          <p className="mt-1 text-small text-ink-muted">
+            Các chủ đề chưa được xếp vào tuyển tập nào.
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {unfiled.map((topic, index) => (
+              <UnfiledTopicCard
+                key={topic.id}
+                topic={topic}
+                index={index}
+                progress={token ? progressFor(topic.slug) : null}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {topics && topics.length > 0 && (
         <div className="mt-6 flex flex-wrap items-center gap-3 rounded border border-rule bg-panel p-5">
@@ -150,7 +201,7 @@ function VocabularyTopics() {
               Xem toàn bộ từ vựng
             </p>
             <p className="mt-0.5 text-small text-ink-muted">
-              Duyệt cả {topics.length} chủ đề trong một danh sách.
+              Duyệt mọi chủ đề trong một danh sách.
             </p>
           </div>
           <Link
@@ -166,5 +217,5 @@ function VocabularyTopics() {
 }
 
 export default function VocabularyPage() {
-  return <VocabularyTopics />;
+  return <VocabularyLanding />;
 }

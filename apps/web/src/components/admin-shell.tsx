@@ -30,6 +30,7 @@ type AdminNavItem = NavItem & { children?: NavItem[] };
 const ADMIN_LINKS: AdminNavItem[] = [
   { href: "/admin", label: "Overview", Icon: SquarePen },
   { href: "/admin/vocabulary", label: "Vocabulary", Icon: Library },
+  { href: "/admin/vocabulary/tree", label: "Vocabulary tree", Icon: FolderTree },
   { href: "/admin/dictation", label: "Dictation", Icon: Headphones },
   { href: "/admin/dictation/tree", label: "Content tree", Icon: FolderTree },
   { href: "/admin/tests", label: "Tests", Icon: ClipboardList },

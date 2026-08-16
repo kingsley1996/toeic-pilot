@@ -24,6 +24,8 @@ from app.models import (
     DictationTopic,
     Topic,
     User,
+    VocabularyCollection,
+    VocabularyCollectionItem,
     VocabularyEntry,
     VocabularyReviewLog,
     VocabularyReviewState,
@@ -51,7 +53,11 @@ from app.schemas.learning import (
     StoryItem,
     StoryProgress,
     TopicPublic,
+    VocabularyCollectionDetail,
+    VocabularyCollectionItemPublic,
+    VocabularyCollectionPublic,
     VocabularyDetail,
+    VocabularyItemDetail,
     VocabularyMastery,
     VocabularyProgress,
     VocabularySummary,
@@ -124,15 +130,15 @@ def _entry_query() -> Select[tuple[VocabularyEntry]]:
 # --- topics ---------------------------------------------------------------
 
 
-@router.get("/topics", response_model=list[TopicPublic])
-def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
-    topics = db.scalars(
-        select(Topic).where(Topic.status == PUBLISHED).order_by(Topic.position, Topic.name)
-    ).all()
-    # Số từ ĐÃ XUẤT BẢN: card của học viên hứa hẹn một con số, và con số đó chỉ
-    # được đếm trên thứ họ bấm vào mà thấy được. Đếm cả nháp sẽ treo lên card một
-    # lời hứa trang bên trong không giữ được.
-    counts = {
+def _published_entry_counts(db: Session) -> dict[uuid.UUID, int]:
+    """topic_id -> số từ ĐÃ XUẤT BẢN trong topic đó.
+
+    Dùng chung cho danh sách topic phẳng lẫn cây collection → item → topic:
+    card của học viên hứa hẹn một con số, và con số đó chỉ được đếm trên thứ họ
+    bấm vào mà thấy được. Đếm cả nháp sẽ treo lên card một lời hứa trang bên
+    trong không giữ được.
+    """
+    return {
         topic_id: count
         for topic_id, count in db.execute(
             select(VocabularyTopic.topic_id, func.count(VocabularyTopic.entry_id))
@@ -141,17 +147,162 @@ def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
             .group_by(VocabularyTopic.topic_id)
         ).all()
     }
-    return [
-        TopicPublic(
-            id=str(topic.id),
-            slug=topic.slug,
-            name=topic.name,
-            description=topic.description,
-            position=topic.position,
-            entry_count=counts.get(topic.id, 0),
+
+
+def _visible_topic_counts(db: Session) -> dict[uuid.UUID, int]:
+    """item_id -> số topic published nằm trong cuốn sách đó (trục topic)."""
+    return {
+        item_id: count
+        for item_id, count in db.execute(
+            select(Topic.collection_item_id, func.count(Topic.id))
+            .where(
+                Topic.status == PUBLISHED,
+                Topic.collection_item_id.is_not(None),
+            )
+            .group_by(Topic.collection_item_id)
+        ).all()
+    }
+
+
+def _topic_public(topic: Topic, entry_count: int) -> TopicPublic:
+    return TopicPublic(
+        id=str(topic.id),
+        slug=topic.slug,
+        name=topic.name,
+        description=topic.description,
+        position=topic.position,
+        entry_count=entry_count,
+        collection_item_id=str(topic.collection_item_id) if topic.collection_item_id else None,
+    )
+
+
+@router.get("/topics", response_model=list[TopicPublic])
+def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
+    # Danh sách topic không lọc theo tầng collection/item: đây là trục phẳng
+    # "toàn bộ" + nguồn cho phần "chủ đề chưa xếp" trên trang từ vựng.
+    topics = db.scalars(
+        select(Topic).where(Topic.status == PUBLISHED).order_by(Topic.position, Topic.name)
+    ).all()
+    counts = _published_entry_counts(db)
+    return [_topic_public(topic, counts.get(topic.id, 0)) for topic in topics]
+
+
+# --- vocabulary tree (collection -> collection_item -> topic) --------------
+#
+# Lọc `published` Ở TỪNG TẦNG — học viên không được thấy item draft dưới
+# collection published, và ngược lại (cùng khuôn cây dictation:
+# tests/test_dictation_tree.py ghim đủ bốn hướng).
+
+
+@router.get("/vocabulary-collections", response_model=list[VocabularyCollectionPublic])
+def list_vocabulary_collections(db: Session = Depends(get_db)) -> list[VocabularyCollectionPublic]:
+    collections = db.scalars(
+        select(VocabularyCollection)
+        .where(VocabularyCollection.status == PUBLISHED)
+        .order_by(VocabularyCollection.position, VocabularyCollection.name)
+        .options(selectinload(VocabularyCollection.items))
+    ).all()
+    # Số chủ đề HỌC VIÊN ĐƯỢC THẤY: chỉ topic published nằm trong item published
+    # của chính collection đó. Đếm mọi topic (kể cả dưới item draft) sẽ hứa một
+    # trang mà nút mở ra không mở được.
+    topics_per_item = _visible_topic_counts(db)
+    out: list[VocabularyCollectionPublic] = []
+    for collection in collections:
+        item_ids = [item.id for item in collection.items if item.status == PUBLISHED]
+        out.append(
+            VocabularyCollectionPublic(
+                id=str(collection.id),
+                slug=collection.slug,
+                name=collection.name,
+                description=collection.description,
+                position=collection.position,
+                topic_count=sum(topics_per_item.get(item_id, 0) for item_id in item_ids),
+            )
         )
-        for topic in topics
-    ]
+    return out
+
+
+def _published_collection(db: Session, ref: str) -> VocabularyCollection:
+    """Học viên đi vào bằng slug ("toeic-vocabulary"); ID cũng mở được.
+
+    Slug là URL ổn định và dễ đọc — đúng tiền lệ route topic của chính màn từ
+    vựng — nên endpoint nhận cả hai thay vì bắt UUID và 422 trước slug.
+    """
+    collection: VocabularyCollection | None
+    try:
+        collection = db.get(VocabularyCollection, uuid.UUID(ref))
+    except ValueError:
+        collection = db.scalar(
+            select(VocabularyCollection).where(VocabularyCollection.slug == ref)
+        )
+    if collection is None or collection.status != PUBLISHED:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Collection not found")
+    return collection
+
+
+@router.get("/vocabulary-collections/{collection_ref}", response_model=VocabularyCollectionDetail)
+def get_vocabulary_collection(
+    collection_ref: str, db: Session = Depends(get_db)
+) -> VocabularyCollectionDetail:
+    collection = _published_collection(db, collection_ref)
+    items = db.scalars(
+        select(VocabularyCollectionItem)
+        .where(
+            VocabularyCollectionItem.collection_id == collection.id,
+            VocabularyCollectionItem.status == PUBLISHED,
+        )
+        .order_by(VocabularyCollectionItem.position, VocabularyCollectionItem.name)
+    ).all()
+    topics_per_item = _visible_topic_counts(db)
+    return VocabularyCollectionDetail(
+        id=str(collection.id),
+        slug=collection.slug,
+        name=collection.name,
+        description=collection.description,
+        position=collection.position,
+        items=[
+            VocabularyCollectionItemPublic(
+                id=str(item.id),
+                name=item.name,
+                description=item.description,
+                position=item.position,
+                topic_count=topics_per_item.get(item.id, 0),
+            )
+            for item in items
+        ],
+    )
+
+
+@router.get("/vocabulary-collection-items/{item_id}", response_model=VocabularyItemDetail)
+def get_vocabulary_collection_item(
+    item_id: uuid.UUID, db: Session = Depends(get_db)
+) -> VocabularyItemDetail:
+    item = db.get(VocabularyCollectionItem, item_id)
+    # Item draft => 404 DÙ collection cha đã published — không lộ qua cửa sau.
+    if item is None or item.status != PUBLISHED:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Collection item not found"
+        )
+    collection = db.get(VocabularyCollection, item.collection_id)
+    if collection is None or collection.status != PUBLISHED:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Collection item not found"
+        )
+    topics = db.scalars(
+        select(Topic)
+        .where(Topic.collection_item_id == item_id, Topic.status == PUBLISHED)
+        .order_by(Topic.position, Topic.name)
+    ).all()
+    counts = _published_entry_counts(db)
+    return VocabularyItemDetail(
+        id=str(item.id),
+        name=item.name,
+        description=item.description,
+        position=item.position,
+        topics=[_topic_public(topic, counts.get(topic.id, 0)) for topic in topics],
+        collection_id=str(collection.id),
+        collection_name=collection.name,
+    )
 
 
 # --- vocabulary -----------------------------------------------------------

@@ -29,6 +29,8 @@ from app.models.topic import Topic
 from app.models.user import User
 from app.models.vocabulary import (
     VocabularyAudio,
+    VocabularyCollection,
+    VocabularyCollectionItem,
     VocabularyEntry,
     VocabularyReviewLog,
     VocabularyReviewState,
@@ -73,6 +75,8 @@ __all__ = [
     "User",
     "UserProfile",
     "VocabularyAudio",
+    "VocabularyCollection",
+    "VocabularyCollectionItem",
     "VocabularyEntry",
     "VocabularyReviewLog",
     "VocabularyReviewState",

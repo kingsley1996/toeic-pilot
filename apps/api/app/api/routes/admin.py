@@ -28,6 +28,8 @@ from app.models import (
     DictationTopic,
     Topic,
     User,
+    VocabularyCollection,
+    VocabularyCollectionItem,
     VocabularyEntry,
     VocabularyTopic,
 )
@@ -54,6 +56,12 @@ from app.schemas.admin import (
     TopicCreate,
     TopicUpdate,
     VocabularyAdmin,
+    VocabularyCollectionAdmin,
+    VocabularyCollectionCreate,
+    VocabularyCollectionItemAdmin,
+    VocabularyCollectionItemCreate,
+    VocabularyCollectionItemUpdate,
+    VocabularyCollectionUpdate,
     VocabularyCommit,
     VocabularyParseResponse,
     VocabularyRow,
@@ -84,6 +92,8 @@ def _topic_admin(topic: Topic, entry_count: int) -> TopicAdmin:
         position=topic.position,
         status=topic.status,
         entry_count=entry_count,
+        collection_item_id=str(topic.collection_item_id) if topic.collection_item_id else None,
+        collection_item_name=topic.collection_item.name if topic.collection_item else None,
     )
 
 
@@ -134,15 +144,48 @@ def _dictation_admin(item: DictationItem) -> DictationAdmin:
 
 @router.get("/topics", response_model=list[TopicAdmin])
 def list_topics(db: Session = Depends(get_db), _: User = Depends(can_edit)) -> list[TopicAdmin]:
-    topics = db.scalars(select(Topic).order_by(Topic.position, Topic.name)).all()
+    topics = db.scalars(
+        select(Topic)
+        .options(selectinload(Topic.collection_item))
+        .order_by(Topic.position, Topic.name)
+    ).all()
     counts = _entry_counts(db)
     return [_topic_admin(topic, counts.get(topic.id, 0)) for topic in topics]
+
+
+def _get_collection_item(db: Session, item_id: str, detail: str) -> VocabularyCollectionItem:
+    try:
+        item_pk = uuid.UUID(item_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail) from None
+    item = db.get(VocabularyCollectionItem, item_pk)
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+    return item
+
+
+def _get_collection(db: Session, collection_id: str, detail: str) -> VocabularyCollection:
+    try:
+        pk = uuid.UUID(collection_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail) from None
+    collection = db.get(VocabularyCollection, pk)
+    if collection is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+    return collection
 
 
 @router.post("/topics", response_model=TopicAdmin, status_code=status.HTTP_201_CREATED)
 def create_topic(
     body: TopicCreate, db: Session = Depends(get_db), user: User = Depends(can_edit)
 ) -> TopicAdmin:
+    # Topic gắn vào cuốn nào phải tồn tại thực — FK không có gì bảo vệ lúc insert
+    # trên SQLite nên kiểm tra ở đây trước khi commit.
+    collection_item_id: uuid.UUID | None = None
+    if body.collection_item_id:
+        collection_item_id = _get_collection_item(
+            db, body.collection_item_id, "Collection item not found"
+        ).id
     topic = Topic(
         slug=body.slug,
         name=body.name,
@@ -152,6 +195,7 @@ def create_topic(
         # an empty topic is harmless, so they go live immediately.
         status="published",
         created_by=user.id,
+        collection_item_id=collection_item_id,
     )
     db.add(topic)
     try:
@@ -176,6 +220,16 @@ def update_topic(
     if topic is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
     _apply(topic, body, ("name", "slug", "description", "position", "status"))
+    # Quy ước gửi lên: "" = gỡ khỏi cuốn; UUID = xếp vào cuốn; không gửi = để
+    # nguyên. `None` không dùng để gỡ vì exclude_unset không phân biệt được
+    # "không gửi" với gửi null.
+    data = body.model_dump(exclude_unset=True)
+    if "collection_item_id" in data:
+        raw = data["collection_item_id"]
+        if raw == "":
+            topic.collection_item_id = None
+        elif raw:
+            topic.collection_item_id = _get_collection_item(db, raw, "Collection item not found").id
     try:
         db.commit()
     except IntegrityError:
@@ -211,6 +265,272 @@ def delete_topic(
         update(DictationItem).where(DictationItem.topic_id == topic.id).values(topic_id=None)
     )
     db.delete(topic)
+    db.commit()
+
+
+# --- vocabulary tree (collection -> collection_item) -----------------------
+
+
+def _collection_admin(
+    collection: VocabularyCollection, item_count: int
+) -> VocabularyCollectionAdmin:
+    return VocabularyCollectionAdmin(
+        id=str(collection.id),
+        slug=collection.slug,
+        name=collection.name,
+        description=collection.description,
+        position=collection.position,
+        status=collection.status,
+        item_count=item_count,
+    )
+
+
+def _collection_item_admin(
+    item: VocabularyCollectionItem, topic_count: int
+) -> VocabularyCollectionItemAdmin:
+    return VocabularyCollectionItemAdmin(
+        id=str(item.id),
+        collection_id=str(item.collection_id),
+        collection_name=item.collection.name,
+        name=item.name,
+        description=item.description,
+        position=item.position,
+        status=item.status,
+        topic_count=topic_count,
+    )
+
+
+def _item_counts(db: Session) -> tuple[dict[uuid.UUID, int], dict[uuid.UUID, int]]:
+    """(collection_id -> số item, item_id -> số topic) trong hai truy vấn."""
+    items_per_collection = {
+        collection_id: count
+        for collection_id, count in db.execute(
+            select(
+                VocabularyCollectionItem.collection_id,
+                func.count(VocabularyCollectionItem.id),
+            ).group_by(VocabularyCollectionItem.collection_id)
+        ).all()
+    }
+    topics_per_item = {
+        item_id: count
+        for item_id, count in db.execute(
+            select(Topic.collection_item_id, func.count(Topic.id))
+            .where(Topic.collection_item_id.is_not(None))
+            .group_by(Topic.collection_item_id)
+        ).all()
+    }
+    return items_per_collection, topics_per_item
+
+
+@router.get("/vocabulary-collections", response_model=list[VocabularyCollectionAdmin])
+def list_vocabulary_collections(
+    db: Session = Depends(get_db), _: User = Depends(can_edit)
+) -> list[VocabularyCollectionAdmin]:
+    collections = db.scalars(
+        select(VocabularyCollection).order_by(
+            VocabularyCollection.position, VocabularyCollection.name
+        )
+    ).all()
+    items_per_collection, _topics_per_item = _item_counts(db)
+    return [
+        _collection_admin(collection, items_per_collection.get(collection.id, 0))
+        for collection in collections
+    ]
+
+
+@router.post(
+    "/vocabulary-collections",
+    response_model=VocabularyCollectionAdmin,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_vocabulary_collection(
+    body: VocabularyCollectionCreate, db: Session = Depends(get_db), user: User = Depends(can_edit)
+) -> VocabularyCollectionAdmin:
+    # Cùng luật với dictation section/store: tầng trung gian sinh ra ở trạng thái
+    # draft — người học không thấy gì cho tới khi admin publish (không như topic
+    # tự publish vì "topic trống vô hại" là ngoại lệ duy nhất).
+    collection = VocabularyCollection(
+        slug=body.slug,
+        name=body.name,
+        description=body.description,
+        position=body.position,
+        status="draft",
+        created_by=user.id,
+    )
+    db.add(collection)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Vocabulary collection {body.slug!r} already exists",
+        ) from None
+    db.refresh(collection)
+    return _collection_admin(collection, 0)
+
+
+@router.post(
+    "/vocabulary-collections/{collection_id}/publish", response_model=VocabularyCollectionAdmin
+)
+def publish_vocabulary_collection(
+    collection_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(can_publish)
+) -> VocabularyCollectionAdmin:
+    collection = db.get(VocabularyCollection, collection_id)
+    if collection is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection not found"
+        )
+    collection.status = "published"
+    collection.published_by = user.id
+    collection.published_at = datetime.now(UTC)
+    db.commit()
+    items_per_collection, _topics_per_item = _item_counts(db)
+    return _collection_admin(collection, items_per_collection.get(collection.id, 0))
+
+
+@router.patch("/vocabulary-collections/{collection_id}", response_model=VocabularyCollectionAdmin)
+def update_vocabulary_collection(
+    collection_id: uuid.UUID,
+    body: VocabularyCollectionUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> VocabularyCollectionAdmin:
+    collection = db.get(VocabularyCollection, collection_id)
+    if collection is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection not found"
+        )
+    _apply(collection, body, ("name", "slug", "description", "position", "status"))
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Slug already exists"
+        ) from None
+    db.refresh(collection)
+    items_per_collection, _topics_per_item = _item_counts(db)
+    return _collection_admin(collection, items_per_collection.get(collection.id, 0))
+
+
+@router.delete("/vocabulary-collections/{collection_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_vocabulary_collection(
+    collection_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+) -> None:
+    """Xoá tuyển tập: item con CASCADE đi theo (schema), topic được gỡ về NULL
+    bằng tay để SQLite/Postgres cư xử giống nhau trong test — xoá tuyển tập
+    không bao giờ xoá chủ đề."""
+    collection = db.get(VocabularyCollection, collection_id)
+    if collection is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection not found"
+        )
+    item_ids = [item.id for item in collection.items]
+    if item_ids:
+        db.execute(
+            update(Topic)
+            .where(Topic.collection_item_id.in_(item_ids))
+            .values(collection_item_id=None)
+        )
+    db.delete(collection)
+    db.commit()
+
+
+@router.get("/vocabulary-collection-items", response_model=list[VocabularyCollectionItemAdmin])
+def list_vocabulary_collection_items(
+    db: Session = Depends(get_db), _: User = Depends(can_edit)
+) -> list[VocabularyCollectionItemAdmin]:
+    items = db.scalars(
+        select(VocabularyCollectionItem)
+        .options(selectinload(VocabularyCollectionItem.collection))
+        .order_by(VocabularyCollectionItem.collection_id, VocabularyCollectionItem.position)
+    ).all()
+    _items_per_collection, topics_per_item = _item_counts(db)
+    return [_collection_item_admin(item, topics_per_item.get(item.id, 0)) for item in items]
+
+
+@router.post(
+    "/vocabulary-collection-items",
+    response_model=VocabularyCollectionItemAdmin,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_vocabulary_collection_item(
+    body: VocabularyCollectionItemCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(can_edit),
+) -> VocabularyCollectionItemAdmin:
+    collection = _get_collection(db, body.collection_id, "Vocabulary collection not found")
+    item = VocabularyCollectionItem(
+        collection_id=collection.id,
+        name=body.name,
+        description=body.description,
+        position=body.position,
+        status="draft",
+        created_by=user.id,
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return _collection_item_admin(item, 0)
+
+
+@router.post(
+    "/vocabulary-collection-items/{item_id}/publish",
+    response_model=VocabularyCollectionItemAdmin,
+)
+def publish_vocabulary_collection_item(
+    item_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(can_publish)
+) -> VocabularyCollectionItemAdmin:
+    item = db.get(VocabularyCollectionItem, item_id)
+    if item is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection item not found"
+        )
+    item.status = "published"
+    item.published_by = user.id
+    item.published_at = datetime.now(UTC)
+    db.commit()
+    _items_per_collection, topics_per_item = _item_counts(db)
+    return _collection_item_admin(item, topics_per_item.get(item.id, 0))
+
+
+@router.patch(
+    "/vocabulary-collection-items/{item_id}", response_model=VocabularyCollectionItemAdmin
+)
+def update_vocabulary_collection_item(
+    item_id: uuid.UUID,
+    body: VocabularyCollectionItemUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> VocabularyCollectionItemAdmin:
+    item = db.get(VocabularyCollectionItem, item_id)
+    if item is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection item not found"
+        )
+    _apply(item, body, ("name", "description", "position", "status"))
+    db.commit()
+    db.refresh(item)
+    _items_per_collection, topics_per_item = _item_counts(db)
+    return _collection_item_admin(item, topics_per_item.get(item.id, 0))
+
+
+@router.delete("/vocabulary-collection-items/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_vocabulary_collection_item(
+    item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+) -> None:
+    """Xoá cuốn sách: topic bên trong quay về "chưa xếp" (SET NULL, làm tay cho
+    đồng nhất SQLite/Postgres), từ vựng không bị đụng vì chúng gắn với topic."""
+    item = db.get(VocabularyCollectionItem, item_id)
+    if item is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection item not found"
+        )
+    db.execute(
+        update(Topic).where(Topic.collection_item_id == item.id).values(collection_item_id=None)
+    )
+    db.delete(item)
     db.commit()
 
 

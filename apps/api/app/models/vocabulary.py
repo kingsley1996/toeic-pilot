@@ -22,6 +22,7 @@ from app.core.database import Base
 from app.core.media import AUDIO_ACCENTS
 from app.models.audio import AudioAsset  # noqa: F401 — resolves the relationship below
 from app.models.mixins import PublishableMixin, TimestampMixin, difficulty_check, status_check
+from app.models.topic import Topic  # noqa: F401 — target của VocabularyCollectionItem.topics
 
 PARTS_OF_SPEECH = ("noun", "verb", "adjective", "adverb", "preposition", "phrase")
 CEFR_LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
@@ -72,6 +73,63 @@ class VocabularyEntry(Base, PublishableMixin):
 
     def __repr__(self) -> str:
         return f"<VocabularyEntry {self.headword} ({self.part_of_speech})>"
+
+
+class VocabularyCollection(Base, PublishableMixin):
+    """Tầng trên cùng của cây từ vựng: "Từ vựng thông dụng", "Từ vựng TOEIC".
+
+    Bảng riêng chứ không phải cột thêm trên `topic` (bảng chủ đề): `topic` là
+    trục *chủ đề* ("Business", "Travel"), collection là trục *tuyển tập* — học viên
+    nghĩ "học bộ TOEIC 600 từ" trước khi nghĩ "chủ đề nào". Cùng khuôn với cây
+    dictation (`dictation_topic` → section → story), vì từ vựng giờ cũng có ba
+    tầng duyệt: collection → collection_item → topic.
+    """
+
+    __tablename__ = "vocabulary_collection"
+    __table_args__ = (status_check("vocabulary_collection"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    items: Mapped[list["VocabularyCollectionItem"]] = relationship(
+        back_populates="collection",
+        order_by="VocabularyCollectionItem.position",
+        cascade="all, delete-orphan",
+    )
+
+    def __repr__(self) -> str:
+        return f"<VocabularyCollection {self.slug}>"
+
+
+class VocabularyCollectionItem(Base, PublishableMixin):
+    """Tầng giữa: một cuốn sách trong collection — "600 từ vựng TOEIC cơ bản".
+
+    Không có slug (đúng tiền lệ `DictationSection`): không ai deep-link tới một
+    cuốn sách, URL dùng UUID. Thêm slug chỉ kéo thêm ràng buộc duy nhất-trong-
+    phạm-vi-cha mà không đổi được gì.
+    """
+
+    __tablename__ = "vocabulary_collection_item"
+    __table_args__ = (status_check("vocabulary_collection_item"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    collection_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("vocabulary_collection.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    collection: Mapped["VocabularyCollection"] = relationship(back_populates="items")
+    # `passive_deletes=True`: xoá cuốn sách thì các topic bên trong trở về "chưa
+    # xếp" (SET NULL), KHÔNG bị xoá — để database lo thay vì ORM gỡ tay.
+    topics: Mapped[list["Topic"]] = relationship(order_by="Topic.position", passive_deletes=True)
+
+    def __repr__(self) -> str:
+        return f"<VocabularyCollectionItem {self.name!r}>"
 
 
 class VocabularyTopic(Base):
