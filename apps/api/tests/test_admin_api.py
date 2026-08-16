@@ -266,6 +266,49 @@ def test_commit_creates_drafts_only(
     assert statuses == {"draft"}
 
 
+def test_commit_saves_good_rows_even_when_a_later_one_duplicates(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Reproduces the real failure: one duplicate mid-batch used to roll back
+    every row already flushed in the request while `created` still counted
+    them — the response said success and half the paste never landed."""
+    headers = auth("editor")
+    seed = client.post(
+        "/api/v1/admin/vocabulary",
+        json={
+            "rows": [
+                {
+                    "line": 1,
+                    "headword": "invoice",
+                    "part_of_speech": "noun",
+                    "meaning_en": "a bill",
+                    "meaning_vi": "hóa đơn",
+                    "problems": [],
+                }
+            ]
+        },
+        headers=headers,
+    )
+    assert seed.json()["created"] == 1
+
+    rows = client.post(
+        "/api/v1/admin/vocabulary/parse",
+        json={
+            "raw_text": "deadline | noun | | the latest time | hạn chót\n"
+            "invoice | noun | | a bill | hóa đơn\n"
+            "warehouse | noun | | a storage building | nhà kho\n"
+        },
+        headers=headers,
+    ).json()["rows"]
+
+    body = client.post("/api/v1/admin/vocabulary", json={"rows": rows}, headers=headers).json()
+    assert body["created"] == 2
+    assert body["skipped"] == 1
+    assert body["problems"] == ["line 2: 'invoice' (noun) already exists"]
+    headwords = {entry.headword for entry in db_session.query(VocabularyEntry).all()}
+    assert headwords == {"invoice", "deadline", "warehouse"}
+
+
 def test_commit_skips_rows_that_still_have_problems(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:

@@ -1,0 +1,42 @@
+boarding pass | noun | /ˈbɔːrdɪŋ pæs/ | a document allowing a passenger onto a plane | thẻ lên máy bay | Please have your boarding pass ready at the gate. | Vui lòng chuẩn bị sẵn thẻ lên máy bay tại cửa ra.
+departure | noun | /dɪˈpɑːrtʃər/ | the act of leaving, especially of a plane or train | giờ khởi hành | The departure time has been moved to six forty-five. | Giờ khởi hành được dời sang sáu giờ bốn mươi lăm phút.
+baggage | noun | /ˈbæɡɪdʒ/ | bags and suitcases a traveller carries | hành lý | Checked baggage is limited to twenty kilograms. | Hành lý ký gửi được giới hạn hai mươi kilôgam.
+layover | noun | /ˈleɪoʊvər/ | a period of waiting between two flights | thời gian quá cảnh | We had a short layover in Bangkok before flying on. | Chúng tôi có thời gian quá cảnh ngắn ở Bangkok trước khi bay tiếp.
+customs | noun | /ˈkʌstəmz/ | the place where officials check goods entering a country | hải quan | You must declare all goods at customs. | Bạn phải khai báo mọi hàng hoá tại hải quan.
+passport | noun | /ˈpæspɔːrt/ | an official document that proves your identity | hộ chiếu | Your passport must be valid for six more months. | Hộ chiếu của bạn phải còn hiệu lực thêm sáu tháng.
+round trip | noun | /ˌraʊnd ˈtrɪp/ | a journey to a place and back again | chuyến đi khứ hồi | I booked a round trip from Hanoi to Da Nang. | Tôi đã đặt vé khứ hồi từ Hà Nội đi Đà Nẵng.
+fare | noun | /fer/ | the price of a ticket | giá vé | Fares are cheaper if you book at least three weeks ahead. | Giá vé rẻ hơn nếu bạn đặt trước ít nhất ba tuần.
+platform | noun | /ˈplætfɔːrm/ | the area beside a train track where passengers wait | sân ga, bến tàu | The train to Hue leaves from platform number two. | Tàu đi Huế khởi hành từ sân ga số hai.
+cruise | noun | /kruːz/ | a holiday spent travelling on a ship | du thuyền, chuyến du ngoạn | The cruise stops at three coastal cities. | Chuyến du thuyền dừng tại ba thành phố ven biển.
+excursion | noun | /ɪkˈskɜːrʒn/ | a short trip taken for pleasure | chuyến tham quan ngắn | An excursion to the old town leaves every morning. | Một chuyến tham quan phố cổ khởi hành mỗi buổi sáng.
+luggage | noun | /ˈlʌɡɪdʒ/ | the bags a traveller takes on a journey | hành lý, túi xách | Leave your luggage at the front desk after checkout. | Hãy gửi hành lý ở quầy lễ tân sau khi trả phòng.
+reservation | noun | /ˌrezərˈveɪʃn/ | an arrangement to have something kept for you | đặt chỗ trước | The reservation is under the name Nguyen Van Nam. | Đặt chỗ được ghi dưới tên Nguyễn Văn Nam.
+delay | noun | /dɪˈleɪ/ | a situation when something is late | sự chậm trễ | The flight had a delay of forty minutes. | Chuyến bay bị chậm bốn mươi phút.
+cancellation | noun | /ˌkænslˈeɪʃn/ | a decision to stop something planned | sự huỷ bỏ | Weather caused the cancellation of the evening ferry. | Thời tiết khiến chuyến phà buổi tối bị huỷ.
+sightseeing | noun | /ˈsaɪtsiːɪŋ/ | the activity of visiting interesting places | tham quan, ngắm cảnh | We spent the whole day sightseeing in the old quarter. | Chúng tôi dành cả ngày tham quan khu phố cổ.
+destination | noun | /ˌdestɪˈneɪʃn/ | the place someone is going to | điểm đến | Popular destinations include Phu Quoc and Da Lat. | Các điểm đến được ưa chuộng gồm Phú Quốc và Đà Lạt.
+route | noun | /ruːt/ | the way taken to get somewhere | tuyến đường, lộ trình | A new bus route connects the airport to the city. | Một tuyến xe buýt mới nối sân bay với thành phố.
+check in | verb | /ˌtʃek ˈɪn/ | to register at a hotel or an airport desk | làm thủ tục | Passengers should check in two hours before departure. | Hành khách nên làm thủ tục trước giờ khởi hành hai tiếng.
+set off | verb | /ˌset ˈɔːf/ | to begin a journey | khởi hành | We set off early to avoid the morning traffic. | Chúng tôi khởi hành sớm để tránh kẹt xe buổi sáng.
+sightsee | verb | /ˈsaɪtsiː/ | to visit interesting places in an area | đi tham quan | Tourists often sightsee along the riverside at night. | Du khách thường đi tham quan ven sông vào ban đêm.
+explore | verb | /ɪkˈsplɔːr/ | to travel around a place to learn about it | khám phá | We plan to explore the floating market tomorrow. | Chúng tôi định khám phá chợ nổi vào ngày mai.
+declare | verb | /dɪˈkler/ | to officially state goods you are bringing in | khai báo hải quan | Travellers must declare items over the duty-free limit. | Du khách phải khai báo hàng hoá vượt định mức miễn thuế.
+embark | verb | /ɪmˈbɑːrk/ | to get on a ship or start a journey | lên tàu, bắt đầu hành trình | Guests embark at noon and sail at two o'clock. | Khách lên tàu lúc giữa trưa và nhổ neo lúc hai giờ.
+pack | verb | /pæk/ | to put things into bags for a trip | sắp xếp hành lý | Remember to pack a warm jacket for the mountain trip. | Nhớ mang theo áo khoác ấm cho chuyến đi núi.
+board | verb | /bɔːrd/ | to get on a plane, ship or train | lên máy bay, tàu, xe | Passengers may board from gate nine. | Hành khách có thể lên máy bay tại cửa số chín.
+transfer | verb | /trænsˈfɜːr/ | to change from one vehicle to another | chuyển tiếp, đổi chuyến | You will transfer in Singapore on the way home. | Bạn sẽ đổi chuyến ở Singapore trên đường về.
+overcrowded | adjective | /ˌoʊvərˈkraʊdɪd/ | too full of people | quá đông đúc | The beach gets overcrowded on public holidays. | Bãi biển quá đông đúc vào các ngày lễ.
+scenic | adjective | /ˈsiːnɪk/ | having beautiful natural views | có cảnh đẹp | The train follows a scenic route through the hills. | Con tàu chạy theo tuyến đường có cảnh đẹp qua những ngọn đồi.
+overseas | adjective | /ˌoʊvərˈsiːz/ | in or to a foreign country | ở nước ngoài | Overseas travel requires a valid passport. | Du lịch nước ngoài cần hộ chiếu còn hiệu lực.
+convenient | adjective | /kənˈviːniənt/ | fitting your needs and saving you effort | thuận tiện | The hotel is convenient for early morning flights. | Khách sạn rất thuận tiện cho các chuyến bay sáng sớm.
+comfortable | adjective | /ˈkʌmftəbl/ | giving you ease and no pain or worry | thoải mái | The new train seats are wide and comfortable. | Ghế tàu mới rộng và thoải mái.
+picturesque | adjective | /ˌpɪktʃəˈresk/ | attractive like a picture | đẹp như tranh | The picturesque village attracts many photographers. | Ngôi làng đẹp như tranh thu hút nhiều nhiếp ảnh gia.
+remote | adjective | /rɪˈmoʊt/ | far away from towns and cities | hẻo lánh, xa xôi | The remote island has no electricity yet. | Hòn đảo hẻo lánh vẫn chưa có điện.
+frequent | adjective | /ˈfriːkwənt/ | happening often | thường xuyên | Frequent travellers can join our loyalty club. | Du khách đi lại thường xuyên có thể tham gia câu lạc bộ thân thiết.
+directly | adverb | /daɪˈrektli/ | with no stops in between | thẳng, trực tiếp | The flight goes directly to Busan without stopping. | Chuyến bay bay thẳng đến Busan không dừng.
+abroad | adverb | /əˈbrɔːd/ | to or in a foreign country | ra nước ngoài | She has studied abroad for three years. | Cô ấy đã du học ba năm.
+round-trip | adverb | /ˌraʊnd ˈtrɪp/ | to a place and back again | khứ hồi | The ticket costs less when purchased round-trip. | Vé rẻ hơn khi mua khứ hồi.
+off the beaten path | phrase | /ˌɔːf ðə ˈbiːtn pæθ/ | away from places most people visit | xa rời các điểm du lịch quen thuộc | The guidebook lists cafés off the beaten path. | Sách hướng dẫn liệt kê các quán cà phê xa rời điểm quen thuộc.
+set out | phrase | /ˌset ˈaʊt/ | to begin a journey | lên đường, khởi hành | The tour group sets out at seven sharp. | Đoàn tham quan khởi hành đúng bảy giờ.
+get around | phrase | /ˌɡet əˈraʊnd/ | to move from place to place | di chuyển, đi lại | It is easy to get around the city by metro. | Di chuyển trong thành phố bằng tàu điện ngầm rất dễ dàng.
+drop off | phrase | /ˌdrɑːp ˈɔːf/ | to leave someone or something at a place | thả xuống, đưa đến | The shuttle drops off guests at the main entrance. | Xe trung chuyển đưa khách xuống ngay cửa chính.

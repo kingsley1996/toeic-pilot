@@ -49,3 +49,6 @@ apps/api/media/
 # Playwright
 apps/web/test-results/
 apps/web/playwright-report/
+
+# Ralph Loop state
+.opencode/ralph-loop.local.md

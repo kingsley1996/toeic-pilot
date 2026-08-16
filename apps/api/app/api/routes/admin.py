@@ -205,11 +205,20 @@ def commit_vocabulary(
             status="draft",
             created_by=user.id,
         )
-        db.add(entry)
         try:
-            db.flush()
+            # A savepoint per row, and the `add` INSIDE it. Two failure shapes
+            # that the older `flush` then `rollback` got wrong: rolling the whole
+            # transaction back discarded every row already flushed in this
+            # request while the counter still claimed them — a paste with one
+            # duplicate mid-list saved nothing and reported full success — and a
+            # pending add left outside the failed savepoint deactivates the
+            # session, so the next row could not even be tried.
+            with db.begin_nested():
+                db.add(entry)
+                db.flush()
         except IntegrityError:
-            db.rollback()
+            # Rolling back the savepoint discards just this row; the rest of the
+            # batch survives.
             skipped += 1
             problems.append(
                 f"line {row.line}: {row.headword!r} ({row.part_of_speech}) already exists"

@@ -1,0 +1,42 @@
+account | noun | /əˈkaʊnt/ | a record of money held by a bank | tài khoản ngân hàng | You can open an account with your ID card. | Bạn có thể mở tài khoản bằng thẻ căn cước.
+withdrawal | noun | /wɪðˈdrɔːəl/ | the act of taking money out of an account | việc rút tiền | The daily withdrawal limit is ten million dong. | Hạn mức rút tiền hằng ngày là mười triệu đồng.
+deposit | noun | /dɪˈpɑːzɪt/ | money paid into an account | tiền gửi, khoản đặt cọc | A deposit of five hundred thousand secures the booking. | Khoản đặt cọc năm trăm nghìn đồng giữ chỗ đặt trước.
+interest | noun | /ˈɪntrəst/ | money paid by a bank for keeping your money with it | tiền lãi | The savings account earns interest every month. | Tài khoản tiết kiệm nhận tiền lãi hằng tháng.
+mortgage | noun | /ˈmɔːrɡɪdʒ/ | a loan used to buy a house | khoản vay mua nhà | Their mortgage runs for twenty years. | Khoản vay mua nhà của họ kéo dài hai mươi năm.
+loan | noun | /loʊn/ | money borrowed that must be paid back | khoản vay | Small businesses can apply for a loan online. | Doanh nghiệp nhỏ có thể đăng ký khoản vay trực tuyến.
+transaction | noun | /trænˈzækʃn/ | an act of moving money between accounts | giao dịch | The transaction was completed within seconds. | Giao dịch được hoàn tất trong vài giây.
+statement | noun | /ˈsteɪtmənt/ | a record of money going in and out of an account | sao kê | The bank sends statements on the first of each month. | Ngân hàng gửi sao kê vào ngày một hằng tháng.
+balance | noun | /ˈbæləns/ | the amount of money in an account | số dư | Check your balance before making a payment. | Hãy kiểm tra số dư trước khi thanh toán.
+currency | noun | /ˈkɜːrənsi/ | the system of money used in a country | tiền tệ, đơn vị tiền | Prices are listed in the local currency. | Giá được niêm yết bằng đơn vị tiền địa phương.
+exchange rate | noun | /ɪksˈtʃeɪndʒ reɪt/ | the value of one currency compared to another | tỷ giá hối đoái | The exchange rate changes slightly every day. | Tỷ giá hối đoái thay đổi nhẹ mỗi ngày.
+branch | noun | /bræntʃ/ | one of the local offices of a bank or company | chi nhánh ngân hàng | The nearest branch is on Le Loi street. | Chi nhánh gần nhất nằm trên đường Lê Lợi.
+profit | noun | /ˈprɑːfɪt/ | money that remains after all costs are paid | lợi nhuận | The company reported a record profit this year. | Công ty báo cáo lợi nhuận kỷ lục năm nay.
+revenue | noun | /ˈrevənuː/ | the total income a business receives | doanh thu | Online sales now make up half of total revenue. | Doanh thu trực tuyến giờ chiếm một nửa tổng doanh thu.
+tax | noun | /tæks/ | money that people must pay to the government | thuế | Sales tax is added at the checkout. | Thuế bán hàng được tính tại quầy thanh toán.
+asset | noun | /ˈæset/ | something valuable that a person or company owns | tài sản | The firm manages assets worth ten million dollars. | Công ty quản lý khối tài sản trị giá mười triệu đô la.
+debt | noun | /det/ | money that is owed to someone else | khoản nợ | The business paid off all its debts in March. | Doanh nghiệp đã trả hết nợ vào tháng Ba.
+fund | noun | /fʌnd/ | money saved for a particular purpose | quỹ | A training fund supports employee courses. | Một quỹ đào tạo hỗ trợ các khoá học của nhân viên.
+share | noun | /ʃer/ | one part of the ownership of a company | cổ phần | Employees may buy shares at a reduced price. | Nhân viên có thể mua cổ phần với giá ưu đãi.
+investment | noun | /ɪnˈvestmənt/ | money put into something to gain profit | khoản đầu tư | New equipment is a long-term investment. | Thiết bị mới là một khoản đầu tư dài hạn.
+withdraw | verb | /wɪðˈdrɔː/ | to take money out of an account | rút tiền | She withdrew some cash from the ATM near the gate. | Cô ấy rút một ít tiền mặt từ cây ATM gần cổng.
+deposit | verb | /dɪˈpɑːzɪt/ | to pay money into an account | gửi tiền vào | You can deposit your salary into any of our branches. | Bạn có thể gửi lương vào bất kỳ chi nhánh nào của chúng tôi.
+invest | verb | /ɪnˈvest/ | to put money into something to gain profit | đầu tư | The family invested in a small apartment downtown. | Gia đình đã đầu tư một căn hộ nhỏ ở trung tâm.
+borrow | verb | /ˈbɑːroʊ/ | to receive money that must be paid back | vay | They borrowed money to expand the factory. | Họ vay tiền để mở rộng nhà máy.
+overdraw | verb | /ˌoʊvərˈdrɔː/ | to take more money out than the account holds | rút quá số dư | The card declined because the account was overdrawn. | Thẻ bị từ chối vì tài khoản đã vượt quá số dư.
+repay | verb | /riːˈpeɪ/ | to pay back money that was borrowed | hoàn trả, trả nợ | The loan must be repaid within thirty-six months. | Khoản vay phải được hoàn trả trong vòng ba mươi sáu tháng.
+bill | verb | /bɪl/ | to send someone a written request for payment | gửi hoá đơn | The supplier bills us on the fifteenth of each month. | Nhà cung cấp gửi hoá đơn cho chúng tôi vào ngày mười lăm hằng tháng.
+owe | verb | /oʊ/ | to need to pay money that was received | nợ | The store owes its supplier for last month's stock. | Cửa hàng còn nợ nhà cung cấp tiền hàng tháng trước.
+solvent | adjective | /ˈsɑːlvənt/ | having enough money to pay all debts | có khả năng thanh toán | The bank stayed solvent throughout the crisis. | Ngân hàng vẫn đủ khả năng thanh toán trong suốt khủng hoảng.
+profitable | adjective | /ˈprɑːfɪtəbl/ | producing profit | có lãi | The export deal proved highly profitable. | Thương vụ xuất khẩu tỏ ra rất có lãi.
+fiscal | adjective | /ˈfɪskl/ | relating to government money and taxes | thuộc tài chính nhà nước, tài khoá | The fiscal year begins in July for this firm. | Năm tài khoá của công ty này bắt đầu vào tháng Bảy.
+liquid | adjective | /ˈlɪkwɪd/ | easily changed into cash | có tính thanh khoản | Keep enough liquid funds for daily payments. | Giữ đủ quỹ thanh khoản cho chi trả hằng ngày.
+steady | adjective | /ˈstedi/ | not changing suddenly | ổn định, đều đặn | The fund has delivered steady returns for five years. | Quỹ mang lại lợi nhuận ổn định suốt năm năm.
+overdue | adjective | /ˌoʊvərˈduː/ | not paid by the expected time | quá hạn thanh toán | Overdue invoices will carry a late fee. | Hoá đơn quá hạn sẽ bị tính phí trễ.
+lucrative | adjective | /ˈluːkrətɪv/ | producing a lot of profit | sinh lời | A contract with the port proved extremely lucrative. | Hợp đồng với cảng tỏ ra cực kỳ sinh lời.
+economical | adjective | /ˌiːkəˈnɑːmɪkl/ | avoiding waste and keeping costs low | tiết kiệm, kinh tế | This printer is economical on ink cartridges. | Máy in này tiết kiệm hộp mực.
+monthly | adverb | /ˈmʌnθli/ | once every month | hằng tháng | Interest is credited monthly on savings accounts. | Lãi được ghi có hằng tháng vào tài khoản tiết kiệm.
+by cheque | phrase | /baɪ tʃek/ | paid with a written bank order | bằng séc, bằng chi phiếu | Rent may be paid by cheque or bank transfer. | Tiền thuê có thể trả bằng séc hoặc chuyển khoản.
+in the red | phrase | /ɪn ðə red/ | owing more money than is available | thua lỗ, âm tiền | The store ran in the red for its first year. | Cửa hàng kinh doanh thua lỗ trong năm đầu tiên.
+pay off | phrase | /ˌpeɪ ˈɔːf/ | to pay the full amount still owed | trả hết nợ | They plan to pay off the car loan by December. | Họ định trả hết khoản vay mua xe trước tháng Mười Hai.
+break even | phrase | /ˌbreɪk ˈiːvn/ | to earn exactly as much as is spent | hoà vốn | The café expects to break even by June. | Quán cà phê dự kiến hoà vốn vào tháng Sáu.
+line of credit | phrase | /ˌlaɪn əv ˈkredɪt/ | an arrangement to borrow up to a fixed amount | hạn mức tín dụng | The business keeps a line of credit for emergencies. | Doanh nghiệp giữ một hạn mức tín dụng cho trường hợp khẩn cấp.

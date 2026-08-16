@@ -1,0 +1,40 @@
+lease | noun | /liːs/ | a legal agreement to use a building for a fixed time | hợp đồng thuê | The lease on the office expires next summer. | Hợp đồng thuê văn phòng hết hạn vào mùa hè tới.
+landlord | noun | /ˈlændlɔːrd/ | the owner of a house or room that is rented | chủ nhà, chủ cho thuê | Call the landlord if the heating breaks down. | Hãy gọi chủ nhà nếu hệ thống sưởi gặp hỏng hóc.
+tenant | noun | /ˈtenənt/ | a person who pays to live in a place | người thuê nhà | Tenants must give two months' notice before leaving. | Người thuê phải báo trước hai tháng trước khi dọn đi.
+rent | noun | /rent/ | money paid regularly to live in a place | tiền thuê | The monthly rent includes water but not electricity. | Tiền thuê hằng tháng đã bao gồm nước nhưng chưa gồm điện.
+furniture | noun | /ˈfɜːrnɪtʃər/ | movable things such as beds and tables in a home | đồ nội thất | The flat is let with all its furniture. | Căn hộ được cho thuê kèm toàn bộ đồ nội thất.
+appliance | noun | /əˈplaɪəns/ | a machine used in a home, such as a fridge | thiết bị gia dụng | The kitchen comes with modern appliances. | Nhà bếp được trang bị thiết bị gia dụng hiện đại.
+driveway | noun | /ˈdraɪwweɪ/ | a short private road leading to a house | lối vào nhà có chỗ đậu xe | Delivery trucks should park on the driveway. | Xe giao hàng nên đậu ở lối vào nhà.
+basement | noun | /ˈbeɪsmənt/ | the room under a building | tầng hầm | Old files are stored in the basement. | Hồ sơ cũ được cất ở tầng hầm.
+utility | noun | /juːˈtɪləti/ | a service such as water or electricity for a home | dịch vụ tiện ích, điện nước | Utility bills rose sharply this winter. | Hoá đơn điện nước tăng mạnh mùa đông này.
+neighbourhood | noun | /ˈneɪbərhʊd/ | the area around where someone lives | khu dân cư, vùng lân cận | The neighbourhood has a park and a school. | Khu dân cư có công viên và trường học.
+renovation | noun | /ˌrenəˈveɪʃn/ | the work of repairing and improving a building | việc cải tạo | The renovation of the lobby took three weeks. | Việc cải tạo sảnh mất ba tuần.
+balcony | noun | /ˈbælkəni/ | an outside area attached to an upper floor | ban công | Morning coffee on the balcony is a daily habit. | Uống cà phê sáng ngoài ban công là thói quen hằng ngày.
+ceiling | noun | /ˈsiːlɪŋ/ | the top inside surface of a room | trần nhà | The ceiling needs repainting after the leak. | Trần nhà cần sơn lại sau trận dột.
+garden | noun | /ˈɡɑːrdn/ | a piece of land beside a house for plants | vườn, khu vườn | She grows vegetables in the back garden. | Cô ấy trồng rau ở khu vườn phía sau.
+suburb | noun | /ˈsʌbɜːrb/ | an area of houses outside a city centre | vùng ngoại ô | They moved to a quieter suburb last year. | Năm ngoái họ chuyển ra vùng ngoại ô yên tĩnh hơn.
+fence | noun | /fens/ | a structure built around a garden or yard | hàng rào | The neighbours built a new wooden fence. | Hàng xóm dựng một hàng rào gỗ mới.
+curtain | noun | /ˈkɜːrtn/ | a cloth hung over a window | rèm cửa | Please pull the curtains before sunset. | Vui lòng kéo rèm trước lúc hoàng hôn.
+shelter | noun | /ˈʃeltər/ | a place that protects people from weather or danger | nơi trú ẩn, chỗ che | The garden shed doubles as a bike shelter. | Nhà kho trong vườn kiêm luôn chỗ để xe đạp.
+plumbing | noun | /ˈplʌmɪŋ/ | the pipes and systems that carry water in a building | hệ thống ống nước | The plumbing in the old block needs updating. | Hệ thống ống nước ở khu nhà cũ cần được nâng cấp.
+wiring | noun | /ˈwaɪərɪŋ/ | the electrical cables in a building | hệ thống dây điện | Have the wiring checked before moving in. | Hãy kiểm tra hệ thống điện trước khi chuyển đến.
+rent | verb | /rent/ | to pay money to use a building or object | thuê | We rent a two-bedroom flat near the city. | Chúng tôi thuê căn hộ hai phòng ngủ gần trung tâm.
+furnish | verb | /ˈfɜːrnɪʃ/ | to put furniture into a room or building | trang bị nội thất | The owner agreed to furnish the studio before June. | Chủ nhà đồng ý trang bị nội thất cho căn hộ studio trước tháng Sáu.
+relocate | verb | /ˌriːloʊˈkeɪt/ | to move to a different place | chuyển đến nơi khác | The branch will relocate across town in May. | Chi nhánh sẽ chuyển sang phía bên kia thành phố vào tháng Năm.
+maintain | verb | /meɪnˈteɪn/ | to keep something in good condition by checking it | bảo trì, duy trì | The building company maintains the lift every month. | Công ty quản lý toà nhà bảo trì thang máy hằng tháng.
+install | verb | /ɪnˈstɔːl/ | to fit a piece of equipment into position | lắp đặt | Technicians installed air conditioning in every room. | Kỹ thuật viên đã lắp máy lạnh trong mọi phòng.
+paint | verb | /peɪnt/ | to cover a surface with colour | sơn | The hallway will be painted a light grey. | Hành lang sẽ được sơn màu xám nhạt.
+measure | verb | /ˈmeʒər/ | to find the size of something | đo đạc | Measure the window before ordering new curtains. | Hãy đo cửa sổ trước khi đặt rèm mới.
+insulate | verb | /ˈɪnsəleɪt/ | to protect a building from heat loss or noise | cách nhiệt, cách âm | New windows will insulate the room from street noise. | Cửa sổ mới sẽ cách âm cho căn phòng khỏi tiếng ồn đường phố.
+furnished | adjective | /ˈfɜːrnɪʃt/ | containing furniture and ready to live in | có sẵn nội thất | Furnished rooms cost slightly more each month. | Phòng có sẵn nội thất giá cao hơn một chút mỗi tháng.
+cozy | adjective | /ˈkoʊzi/ | warm, comfortable and pleasant | ấm cúng | The attic room is small but cozy. | Căn phòng áp mái nhỏ nhưng ấm cúng.
+airy | adjective | /ˈeri/ | with plenty of fresh air and light | thoáng đãng | The top floor is bright and airy. | Tầng trên cùng sáng sủa và thoáng đãng.
+damp | adjective | /dæmp/ | slightly wet, often in an unpleasant way | ẩm ướt | The wall behind the wardrobe felt damp. | Bức tường sau tủ quần áo có cảm giác ẩm ướt.
+spare | adjective | /sper/ | extra and not being used | trống, dự phòng | Guests can sleep in the spare bedroom. | Khách có thể ngủ ở phòng ngủ trống.
+sturdy | adjective | /ˈstɜːrdi/ | strong and not easily broken | chắc chắn | The sturdy door frame was made of solid oak. | Khung cửa chắc chắn được làm từ gỗ sồi nguyên khối.
+neatly | adverb | /ˈniːtli/ | in an orderly, tidy way | gọn gàng | Books were arranged neatly on the shelf. | Sách được xếp gọn gàng trên kệ.
+outdoors | adverb | /ˌaʊtˈdɔːrz/ | outside a building | ở ngoài trời | Children played outdoors all afternoon. | Bọn trẻ chơi ngoài trời suốt cả buổi chiều.
+move in | phrase | /ˌmuːv ˈɪn/ | to start living in a new place | chuyển đến ở | We can move in on the first of March. | Chúng tôi có thể chuyển đến ở vào ngày một tháng Ba.
+move out | phrase | /ˌmuːv ˈaʊt/ | to leave the place where you live | chuyển đi nơi khác | The previous tenant moved out last weekend. | Người thuê trước đã chuyển đi cuối tuần rồi.
+split the rent | phrase | /ˌsplɪt ðə ˈrent/ | to share the cost of rent between people | chia tiền thuê nhà | The two roommates split the rent equally. | Hai người bạn cùng phòng chia đều tiền thuê nhà.
+fix up | phrase | /ˌfɪks ˈʌp/ | to repair or improve something quickly | sửa chữa, tân trang | He fixed up the old shed into a workshop. | Anh ấy tân trang nhà kho cũ thành xưởng làm việc.

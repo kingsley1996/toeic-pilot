@@ -1,0 +1,41 @@
+orchestra | noun | /ˈɔːrkɪstrə/ | a large group of musicians playing together | dàn nhạc giao hưởng | The orchestra performed the symphony twice this week. | Dàn nhạc giao hưởng đã biểu diễn bản giao hưởng hai lần trong tuần này.
+concert | noun | /ˈkɑːnsərt/ | a public musical performance | buổi hoà nhạc | Tickets for the concert sold out within an hour. | Vé buổi hoà nhạc đã bán hết trong vòng một giờ.
+composer | noun | /kəmˈpoʊzər/ | a person who writes music | nhà soạn nhạc | The composer wrote the piece for a film soundtrack. | Nhà soạn nhạc đã viết tác phẩm này cho nhạc phim.
+lyrics | noun | /ˈlɪrɪks/ | the words of a song | lời bài hát | The lyrics were displayed on the big screen. | Lời bài hát được chiếu trên màn hình lớn.
+melody | noun | /ˈmelədi/ | the main tune of a piece of music | giai điệu | The melody is simple enough to hum along to. | Giai điệu đủ đơn giản để ngân nga theo.
+rhythm | noun | /ˈrɪðəm/ | the regular strong beat in music | nhịp điệu | The drums set the rhythm for the whole band. | Tiếng trống giữ nhịp cho cả ban nhạc.
+choir | noun | /ˈkwaɪər/ | a group of people who sing together | dàn đồng ca | The school choir sings at the spring festival. | Dàn đồng ca của trường hát tại lễ hội mùa xuân.
+performer | noun | /pərˈfɔːrmər/ | a person who sings or plays in public | người biểu diễn | The performer thanked the audience at the end. | Người biểu diễn đã cảm ơn khán giả vào cuối buổi.
+audience | noun | /ˈɔːdiəns/ | the people who watch a performance | khán giả | The audience clapped along to the final song. | Khán giả vỗ tay theo bài hát cuối cùng.
+instrument | noun | /ˈɪnstrəmənt/ | an object used for making music | nhạc cụ | She learned to play three instruments as a child. | Cô ấy học chơi ba loại nhạc cụ từ nhỏ.
+recital | noun | /rɪˈsaɪtl/ | a short performance of music by one person or group | buổi độc tấu, buổi biểu diễn nhỏ | Parents attended the piano recital on Sunday. | Phụ huynh dự buổi độc tấu piano vào Chủ nhật.
+rehearsal | noun | /rɪˈhɜːrsl/ | a practice session before a real performance | buổi tập dượt | The final rehearsal ran late into the night. | Buổi tập cuối kéo dài đến tận khuya.
+soundtrack | noun | /ˈsaʊndtræk/ | the music recorded for a film | nhạc phim | The soundtrack won an award last year. | Nhạc phim đã giành một giải thưởng năm ngoái.
+encore | noun | /ˈɑːŋkɔːr/ | an extra piece performed after applause | tiết mục biểu diễn thêm theo yêu cầu | The band played two encores before leaving. | Ban nhạc chơi thêm hai tiết mục theo yêu cầu trước khi rời sân khấu.
+acoustics | noun | /əˈkuːstɪks/ | how sound behaves in a room or building | đặc tính âm thanh | The hall is famous for its excellent acoustics. | Hội trường nổi tiếng nhờ đặc tính âm thanh tuyệt hảo.
+perform | verb | /pərˈfɔːrm/ | to sing or play music for an audience | biểu diễn | The group performs live every Saturday evening. | Nhóm biểu diễn trực tiếp mỗi tối thứ Bảy.
+rehearse | verb | /rɪˈhɜːrs/ | to practise before a performance | tập dượt | The choir rehearsed the new piece all week. | Dàn đồng ca đã tập bài mới suốt cả tuần.
+compose | verb | /kəmˈpoʊz/ | to write a piece of music | soạn nhạc | He composed the theme song for the TV show. | Anh ấy soạn bài hát chủ đề cho chương trình truyền hình.
+conduct | verb | /kənˈdʌkt/ | to lead an orchestra by moving the hands | chỉ huy dàn nhạc | A guest conductor will lead tonight's show. | Một nhạc trưởng khách mời sẽ chỉ huy buổi diễn tối nay.
+record | verb | /rɪˈkɔːrd/ | to make a permanent copy of sound | thu âm | The band recorded the album in a tiny studio. | Ban nhạc thu âm album trong một phòng thu nhỏ.
+tune | verb | /tuːn/ | to adjust an instrument so it plays correct notes | chỉnh dây, lên dây | The violinist tuned her instrument before the show. | Nghệ sĩ vĩ cầm lên dây đàn trước buổi diễn.
+applaud | verb | /əˈplɔːd/ | to clap hands to show approval | vỗ tay tán thưởng | The crowd applauded loudly after each song. | Đám đông vỗ tay ròn rã sau mỗi bài hát.
+broadcast | verb | /ˈbrɔːdkæst/ | to send out a programme on radio or TV | phát sóng | The concert was broadcast live nationwide. | Buổi hoà nhạc được phát sóng trực tiếp toàn quốc.
+harmonious | adjective | /hɑːrˈmoʊniəs/ | forming a pleasing combination | hài hoà | The choir's voices sounded warm and harmonious. | Giọng của dàn đồng ca nghe ấm và hài hoà.
+catchy | adjective | /ˈkætʃi/ | easy to remember, of a song | dễ nhớ, bắt tai | The chorus has a catchy tune everyone knows. | Điệp khúc có giai điệu bắt tai ai cũng thuộc.
+live | adjective | /laɪv/ | performed in front of an audience, not recorded | trực tiếp, biểu diễn thật | The festival features three nights of live music. | Lễ hội có ba đêm nhạc biểu diễn trực tiếp.
+acoustic | adjective | /əˈkuːstɪk/ | made by instruments without electronic power | mộc, không dùng điện | She prefers acoustic guitars over electric ones. | Cô ấy thích đàn guitar mộc hơn đàn điện.
+melodic | adjective | /məˈlɑːdɪk/ | having a pleasant tune | du dương | The melodic intro drew the whole crowd in. | Khúc dạo du dương cuốn hút cả đám đông.
+upbeat | adjective | /ˈʌpbiːt/ | fast and cheerful, of music | sôi động | Upbeat songs kept people dancing all evening. | Những bài hát sôi động khiến mọi người nhảy suốt buổi tối.
+classical | adjective | /ˈklæsɪkl/ | relating to traditional serious music | cổ điển | Classical music fills the concert hall every night. | Nhạc cổ điển tràn ngập khán phòng mỗi đêm.
+rhythmical | adverb | /rðɪmɪkli/ | with a regular beat | theo nhịp, đều đặn | The audience clapped rhythmically with the band. | Khán giả vỗ tay đều đặn theo ban nhạc.
+loudly | adverb | /ˈlaʊdli/ | with a lot of sound | to, lớn tiếng | Fans sang the chorus loudly outside the hall. | Người hâm mộ hát điệp khúc thật to bên ngoài khán phòng.
+in tune | phrase | /ɪn tuːn/ | singing or playing the correct notes | đúng tông, đúng cao độ | The whole group stayed in tune throughout. | Cả nhóm giữ đúng tông suốt buổi biểu diễn.
+sing along | phrase | /ˌsɪŋ əˈlɔːŋ/ | to sing together with music or a performer | hát theo | Everyone in the crowd sang along to the hit. | Cả đám đông cùng hát theo bài hit.
+out of print | phrase | /ˌaʊt əv ˈprɪnt/ | no longer being published or sold | ngừng phát hành | The vinyl is long out of print and rare now. | Đĩa than đã ngừng phát hành từ lâu và giờ rất hiếm.
+venue manager | phrase | /ˈvenjuː ˈmænɪdʒər/ | the person in charge of a concert location | người quản lý địa điểm biểu diễn | The venue manager checked the sound system twice. | Người quản lý địa điểm đã kiểm tra hệ thống âm thanh hai lần.
+sell out | phrase | /ˌsel ˈaʊt/ | to have all tickets bought | bán hết vé | The show sold out within minutes of going on sale. | Đêm diễn bán hết vé chỉ vài phút sau khi mở bán.
+hit single | phrase | /ˌhɪt ˈsɪŋɡl/ | a very popular released song | đĩa đơn ăn khách | Their hit single topped the charts for weeks. | Đĩa đơn ăn khách của họ đứng đầu bảng xếp hạng nhiều tuần.
+debut | noun | /deɪˈbjuː/ | a first public appearance | lần ra mắt | The young pianist's debut drew a full hall. | Buổi ra mắt của nghệ sĩ piano trẻ chật kín khán phòng.
+duet | noun | /duˈet/ | a song sung by two people | bản song ca | The duet closed the first half of the concert. | Bản song ca khép lại nửa đầu buổi hoà nhạc.
+solo | noun | /ˈsoʊloʊ/ | a performance by one person alone | tiết mục đơn ca, độc tấu | The guitarist took a long solo near the end. | Nghệ sĩ guitar có một đoạn độc tấu dài gần cuối.

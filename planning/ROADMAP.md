@@ -6,7 +6,7 @@
 > Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
 > `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` / `PHASE2-AUDIO` (= ADR-002) / `ADR-004` / `ADR-005` = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện (đã viết, **chưa triển khai**) · `SPEC-LEARNING-HUB.md` = bộ mặc định tạm thời của Learning Hub, dựng để sửa · `REVIEW-OPUS.md` = review kỹ thuật (ảnh chụp 2026-08-08, không cập nhật tiếp)
 
-**Cập nhật lần cuối:** 2026-08-10
+**Cập nhật lần cuối:** 2026-08-16
 
 ---
 
@@ -23,8 +23,8 @@
 | **Bảng** | 24 |
 | **Endpoint** | **52** — auth (4), health (2), học viên (14), hồ sơ (3), admin (29) |
 | **Trang web** | 18 route |
-| **Media** | **387** clip audio, 3 ảnh (`apps/api/media/`: 390 file) |
-| **Nội dung trong repo** | **43 từ vựng** (42 thuộc Business), 4 câu dictation ← vẫn là nút thắt |
+| **Media** | **2 506** clip audio (hàng `audio_asset`), 3 ảnh |
+| **Nội dung trong repo** | **303 từ vựng / 7 chủ đề** (tất cả published), 15 câu dictation |
 | **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
 
 **Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` **294 passed / 2 deselected** — gồm cả 3 test `integration` chạy trên PostgreSQL thật (`tests/test_concurrency.py`, dùng `TEST_DATABASE_URL` trỏ vào database riêng để không làm bẩn dev DB) · `ruff check` sạch · `ruff format --check` 67 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm build` xanh · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade → downgrade → upgrade` sạch tới `008`.
@@ -35,7 +35,7 @@
 
 **Dictation có cây phân cấp riêng và chấm ở client.** `dictation_topic → section → story → item`, câu có thứ tự trong bài, tiến độ theo bài. Chấm chạy trong trình duyệt (`apps/web/src/lib/dictation.ts`, bản port từng bước của bộ chấm Python — 20/20 ca kiểm khớp tuyệt đối), server vẫn chấm lại và điểm của server mới là bản được lưu. Giao diện **không hiện phần trăm**: chỉ "đúng rồi / chưa đúng" và "3/6 câu đã xong".
 
-**Thiếu là nội dung, không phải tính năng.** Hiện có **3 từ và 4 câu dictation** — đủ để chứng minh đường đi, không đủ để dạy ai.
+**Đủ nội dung từ vựng để dạy.** Hiện có **303 từ vựng đã xuất bản / 7 chủ đề** (mỗi chủ đề ≥ 40 từ, trộn đủ 5 loại từ), 2 420 hàng `vocabulary_audio` và audio đã đẩy lên object store — bấm nghe là kêu. Phần thiếu còn lại là **50 câu dictation** (đang có 15).
 
 **Nút thắt thật là nội dung, không phải code.** Viết endpoint từ vựng mất vài ngày; soạn 500 từ có nghĩa, ví dụ và audio 4 giọng thì lâu hơn nhiều. Đó là lý do Sprint 3 là **công cụ nhập nội dung** chứ không phải Learning Hub: không có công cụ thì không có dữ liệu để test endpoint bằng gì ngoài fixture, và việc soạn nội dung không chạy song song được với việc code.
 
@@ -160,8 +160,8 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] **Sửa một lỗi accessibility có thật** — viền ô nhập cũ chỉ đạt 1.48 tương phản (WCAG 1.4.11 đòi 3.0), tức gần như vô hình với người thị lực kém. Token `rule-strong` mới đạt 3.09–3.64
 
 ### Nội dung — **việc duy nhất còn lại của sprint này**
-- [ ] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **43** trên **2** chủ đề (2026-08-11)
-- [x] Sinh audio 4 accent × {headword, example} cho toàn bộ số từ đang có — **387 clip**, 0 lỗi
+- [x] Soạn ≥ 300 từ vựng cho ≥ 6 chủ đề — hiện có **303** trên **7** chủ đề (2026-08-16): Business 42 · Office 50 · Marketing 45 · Travel 42 · Finance 42 · Music 41 · Housing 40. File dán lưu trong `apps/api/content/sources/vocabulary_{office,marketing,travel,finance,housing,music}.paste.txt`
+- [x] Sinh audio 4 accent × {headword, example} cho toàn bộ số từ đang có — **2 420** hàng `vocabulary_audio` (lượt 2026-08-16 sinh 2 072 clip mới, 8 clip tái sử dụng, 0 lỗi)
 - [ ] Soạn ≥ 50 câu dictation — hiện có **15** (2026-08-11)
 
 Công cụ để làm việc này đã xong và đã chạy thật: dán ở `/admin`, `backfill_audio` sinh audio ngoài luồng, publish chặn nếu audio chưa khớp. Không còn code nào chặn phần này.
