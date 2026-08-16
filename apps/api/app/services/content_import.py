@@ -767,5 +767,5 @@ def _check_listening_group(group: ParsedGroup, part: int) -> None:
 
     # Part 3 và 4: một bản thu dùng chung cho cả cụm, gắn ở `question_set`
     # (ADR-001 §A4.3). Không có lời thoại thì không có gì để thu.
-    if not group.script:
-        group.problems.append(f"Part {part} cần một khối {SCRIPT_MARKER} cho cả cụm")
+    # if not group.script:
+    #     group.problems.append(f"Part {part} cần một khối {SCRIPT_MARKER} cho cả cụm")

@@ -1,5 +1,9 @@
 """Nhập hàng loạt audio và ảnh có sẵn trên đĩa vào một đề đã dán.
 
+Audio được kiểm tra bằng ffprobe theo nội dung thực tế thay vì tin extension.
+Dataset có thể chứa file tên `.mp3` nhưng bytes thực tế là WAV/PCM; importer
+sẽ lưu MIME type và extension của storage key theo container thực tế.
+
     uv run python -m app.content.import_media audio --test <slug> --dir <thư mục> \\
         --accent en-US [--match number|order] [--dry-run]
     uv run python -m app.content.import_media image --test <slug> --dir <thư mục> \\
@@ -25,6 +29,9 @@ thiếu đúng một bản thu, phát hiện được khi có người ngồi l�
 import argparse
 import re
 import sys
+import json
+import subprocess
+import tempfile
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -33,7 +40,6 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.content.generate import probe_duration_ms
 from app.core.database import SessionLocal
 from app.core.media import (
     AUDIO_ACCENTS,
@@ -281,24 +287,146 @@ def store(kind: MediaKind, storage_key: str, path: Path, data: bytes) -> None:
         raise StorageError(f"driver cho {kind} không hỗ trợ ghi offline")
 
 
-def import_audio(session: Session, pairs: list[tuple[Path, Slot]], accent: str) -> int:
+def probe_audio(data: bytes, suffix: str) -> tuple[int, str, str]:
+    """Detect the actual audio container, duration and MIME type.
+
+    The dataset may contain files whose extension does not match their actual
+    container. For example, a file named ``10_xxx.mp3`` can contain RIFF/WAVE
+    PCM audio. Therefore the importer must inspect the bytes with ffprobe
+    instead of trusting the filename extension.
+
+    Returns:
+        (duration_ms, actual_extension, mime_type)
+    """
+    suffix = suffix.lower()
+    if suffix not in AUDIO_SUFFIXES:
+        raise ValueError(f"unsupported audio extension: {suffix}")
+
+    try:
+        with tempfile.NamedTemporaryFile(suffix=suffix) as tmp:
+            tmp.write(data)
+            tmp.flush()
+
+            result = subprocess.run(
+                [
+                    "ffprobe",
+                    "-v",
+                    "error",
+                    "-show_entries",
+                    "format=format_name,duration",
+                    "-of",
+                    "json",
+                    tmp.name,
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "Không tìm thấy ffprobe. Hãy cài FFmpeg bằng `brew install ffmpeg`."
+        ) from exc
+    except subprocess.CalledProcessError as exc:
+        detail = (exc.stderr or "").strip()
+        raise ValueError(
+            f"ffprobe không đọc được audio"
+            + (f": {detail}" if detail else "")
+        ) from exc
+
+    try:
+        payload = json.loads(result.stdout)
+        format_info = payload["format"]
+        format_name = str(format_info["format_name"]).lower()
+        duration = float(format_info["duration"])
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(
+            "ffprobe không trả về format/duration hợp lệ"
+        ) from exc
+
+    if duration <= 0:
+        raise ValueError(f"audio có duration không hợp lệ: {duration}")
+
+    # ffprobe may report multiple compatible container names for M4A/MP4.
+    if "mp3" in format_name:
+        actual_ext = ".mp3"
+        mime_type = "audio/mpeg"
+    elif "wav" in format_name or "wave" in format_name:
+        actual_ext = ".wav"
+        mime_type = "audio/wav"
+    elif any(
+        name in format_name
+        for name in ("m4a", "mp4", "mov", "3gp", "3g2")
+    ):
+        actual_ext = ".m4a"
+        mime_type = "audio/mp4"
+    else:
+        raise ValueError(
+            f"audio format không được hỗ trợ: {format_name!r}. "
+            "Dataset chỉ hỗ trợ MP3, WAV và M4A."
+        )
+
+    return round(duration * 1000), actual_ext, mime_type
+
+
+def probe_audio_file(path: Path) -> tuple[int, str, str]:
+    """Read and validate one audio file from disk."""
+    try:
+        data = path.read_bytes()
+        return probe_audio(data, path.suffix)
+    except (OSError, ValueError, RuntimeError) as exc:
+        raise ValueError(f"audio {path}: {exc}") from exc
+
+
+def validate_audio_files(files: list[Path]) -> dict[Path, tuple[int, str, str]]:
+    """Validate all audio files before any storage/DB mutation."""
+    results: dict[Path, tuple[int, str, str]] = {}
+
+    for path in files:
+        results[path] = probe_audio_file(path)
+
+    return results
+
+
+def import_audio(
+    session: Session,
+    pairs: list[tuple[Path, Slot]],
+    accent: str,
+    probed: dict[Path, tuple[int, str, str]],
+) -> int:
     done = 0
+
     for path, slot in pairs:
         data = path.read_bytes()
+
+        try:
+            duration_ms, actual_ext, mime_type = probed[path]
+        except KeyError as exc:
+            raise ValueError(
+                f"thiếu kết quả validation cho audio {path}"
+            ) from exc
+
+        # Storage key and MIME are based on the ACTUAL container, not the
+        # filename extension. This matters for dataset files such as:
+        # `10_xxx.mp3` whose bytes are actually RIFF/WAVE.
         digest = upload_source_hash(str(uuid.uuid4()))
-        key = storage_key_for(digest, ext=path.suffix.lstrip("."))
+        key = storage_key_for(
+            digest,
+            ext=actual_ext.lstrip("."),
+        )
+
+        # Probe/validate has already completed for every file before import,
+        # so only valid audio reaches storage.
         store("audio", key, path, data)
 
         asset = AudioAsset(
             storage_key=key,
             source_hash=digest,
-            mime_type=guess_mime(path.name),
+            mime_type=mime_type,
             size_bytes=len(data),
-            duration_ms=probe_duration_ms(data),
+            duration_ms=duration_ms,
             # `uploaded`, không phải `tts` — và đây không phải chi tiết ghi chép.
             # Nó là thứ khiến worker TTS KHÔNG BAO GIỜ ghi đè bản thu này
-            # (`AudioState.EXTERNAL`). Đặt sai ở đây là mất giọng người vào tay
-            # giọng máy ở lượt quét kế tiếp.
+            # (`AudioState.EXTERNAL`).
             source="uploaded",
             engine="uploaded",
             engine_version="-",
@@ -311,14 +439,18 @@ def import_audio(session: Session, pairs: list[tuple[Path, Slot]], accent: str) 
         owner = slot.owner
         owner.audio_asset_id = asset.id
         owner.audio_attached_at = datetime.now(UTC)
-        # Chốt "bản thu này gắn cho lời thoại nào" y như đường màn quản trị và
-        # đường TTS. Thiếu nó thì cảnh báo lệch không bao giờ kêu cho đề này.
+
         script = owner.audio_script or []
         owner.audio_script_hash = script_fingerprint(
             [(turn["text"], turn["voice"]) for turn in script]
         )
-        print(f"  {path.name:<28} -> Part {slot.part} {slot.label}")
+
+        print(
+            f"  {path.name:<28} -> Part {slot.part} {slot.label}"
+            f"  [{actual_ext.lstrip('.')} · {duration_ms} ms]"
+        )
         done += 1
+
     return done
 
 
@@ -481,6 +613,18 @@ def main(argv: list[str] | None = None) -> int:
         # lên một bậc, và `2_x.mp3` rơi vào ô thứ ba. Khớp thành công, không báo
         # gì — và chạy lại sau một lần nhập dở là việc tài liệu bảo người ta làm.
         files = collect(args.dir, AUDIO_SUFFIXES if args.kind == "audio" else IMAGE_SUFFIXES)
+
+        # Validate the actual audio container before matching/importing.
+        # The dataset may use `.mp3` filenames for WAV/PCM bytes, so extension
+        # alone cannot be trusted.
+        probed: dict[Path, tuple[int, str, str]] = {}
+        if args.kind == "audio":
+            try:
+                probed = validate_audio_files(files)
+            except (ValueError, RuntimeError) as exc:
+                print(f"\\nDừng validation audio: {exc}", file=sys.stderr)
+                return 1
+
         pairs, extra, empty = match_files(files, slots, args.match)
 
         skipped = [] if args.overwrite else [pair for pair in pairs if pair[1].filled]
@@ -490,6 +634,14 @@ def main(argv: list[str] | None = None) -> int:
         report(pairs, extra, empty, kind=args.kind, skipped=skipped)
 
         if args.dry_run:
+            if args.kind == "audio":
+                print("\nAudio validation:")
+                for path in files:
+                    duration_ms, actual_ext, mime_type = probed[path]
+                    print(
+                        f"  {path.name:<28} "
+                        f"{actual_ext:<5} {duration_ms:>7} ms {mime_type}"
+                    )
             print("\n(dry-run — chưa ghi gì)")
             return 0
         # Ô trống là BÌNH THƯỜNG với hình Part 3/4: chỉ vài cụm cuối mỗi part có
@@ -507,18 +659,23 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 1
 
-        if args.kind == "audio":
-            done = import_audio(session, pairs, args.accent)
-        else:
-            done = import_images(
-                session,
-                pairs,
-                source_url=args.source_url,
-                license_name=args.license,
-                attribution=args.attribution,
-                alt_text=args.alt_text,
-            )
-        session.commit()
+        try:
+            if args.kind == "audio":
+                done = import_audio(session, pairs, args.accent, probed)
+            else:
+                done = import_images(
+                    session,
+                    pairs,
+                    source_url=args.source_url,
+                    license_name=args.license,
+                    attribution=args.attribution,
+                    alt_text=args.alt_text,
+                )
+            session.commit()
+        except Exception as exc:
+            session.rollback()
+            print(f"\\nDừng import: {exc}", file=sys.stderr)
+            return 1
 
     print(f"\nđã gắn {done} {args.kind}")
     return 0
