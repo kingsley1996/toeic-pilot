@@ -14,7 +14,7 @@ import uuid
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func, select, update
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
@@ -52,6 +52,7 @@ from app.schemas.admin import (
     StoryReorder,
     TopicAdmin,
     TopicCreate,
+    TopicUpdate,
     VocabularyAdmin,
     VocabularyCommit,
     VocabularyParseResponse,
@@ -74,7 +75,7 @@ can_edit = require_role("editor", "admin")
 can_publish = require_role("admin")
 
 
-def _topic_admin(topic: Topic) -> TopicAdmin:
+def _topic_admin(topic: Topic, entry_count: int) -> TopicAdmin:
     return TopicAdmin(
         id=str(topic.id),
         slug=topic.slug,
@@ -82,7 +83,22 @@ def _topic_admin(topic: Topic) -> TopicAdmin:
         description=topic.description,
         position=topic.position,
         status=topic.status,
+        entry_count=entry_count,
     )
+
+
+def _entry_counts(db: Session) -> dict[uuid.UUID, int]:
+    """topic_id → số từ gắn vào (mọi trạng thái).
+
+    Một truy vấn cho cả danh sách thay vì N truy vấn: chủ đề là bảng nhỏ nhưng
+    trang admin liệt kê tất cả cùng lúc.
+    """
+    rows = db.execute(
+        select(VocabularyTopic.topic_id, func.count(VocabularyTopic.entry_id)).group_by(
+            VocabularyTopic.topic_id
+        )
+    ).all()
+    return {topic_id: count for topic_id, count in rows}
 
 
 def _vocabulary_admin(entry: VocabularyEntry) -> VocabularyAdmin:
@@ -119,7 +135,8 @@ def _dictation_admin(item: DictationItem) -> DictationAdmin:
 @router.get("/topics", response_model=list[TopicAdmin])
 def list_topics(db: Session = Depends(get_db), _: User = Depends(can_edit)) -> list[TopicAdmin]:
     topics = db.scalars(select(Topic).order_by(Topic.position, Topic.name)).all()
-    return [_topic_admin(topic) for topic in topics]
+    counts = _entry_counts(db)
+    return [_topic_admin(topic, counts.get(topic.id, 0)) for topic in topics]
 
 
 @router.post("/topics", response_model=TopicAdmin, status_code=status.HTTP_201_CREATED)
@@ -145,7 +162,56 @@ def create_topic(
             status_code=status.HTTP_409_CONFLICT, detail=f"Topic {body.slug!r} already exists"
         ) from None
     db.refresh(topic)
-    return _topic_admin(topic)
+    return _topic_admin(topic, 0)
+
+
+@router.patch("/topics/{topic_id}", response_model=TopicAdmin)
+def update_topic(
+    topic_id: uuid.UUID,
+    body: TopicUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> TopicAdmin:
+    topic = db.get(Topic, topic_id)
+    if topic is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+    _apply(topic, body, ("name", "slug", "description", "position", "status"))
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Slug already exists"
+        ) from None
+    db.refresh(topic)
+    return _topic_admin(topic, _entry_counts(db).get(topic.id, 0))
+
+
+@router.delete("/topics/{topic_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_topic(
+    topic_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+) -> None:
+    """Xoá chủ đề, KHÔNG xoá từ.
+
+    `vocabulary_topic` và `dictation_item.topic_id` đều gắn `ondelete=CASCADE` /
+    `SET NULL` sẵn, nên xoá chủ đề chỉ gỡ liên kết — các từ vẫn còn trong màn
+    quản lý (không topic), không có dữ liệu học tập nào bị đụng. Cùng nguyên tắc
+    với việc xoá bài dictation không xoá câu. Đăng nhập mức admin, không phải
+    editor, vì đây là xoá thứ người học đang nhìn thấy.
+    """
+    topic = db.get(Topic, topic_id)
+    if topic is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+    # Gỡ liên kết BẰNG TAY thay vì dựa vào ON DELETE trong schema. Postgres sẽ
+    # CASCADE/SET NULL giúp, nhưng SQLite (bộ test) không thực thi khoá ngoại mặc
+    # định, và làm thẳng thì hai database cư xử giống hệt nhau — không có cái bẫy
+    # "test xanh, prod khác" nằm chờ.
+    db.execute(delete(VocabularyTopic).where(VocabularyTopic.topic_id == topic.id))
+    db.execute(
+        update(DictationItem).where(DictationItem.topic_id == topic.id).values(topic_id=None)
+    )
+    db.delete(topic)
+    db.commit()
 
 
 # --- vocabulary -----------------------------------------------------------

@@ -1,10 +1,12 @@
 "use client";
 
 import { API_ROUTES, type TopicAdmin } from "@toeic-pilot/shared";
-import { Headphones, Library } from "lucide-react";
+import { Headphones, Library, Pencil } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { BackfillHint } from "@/components/admin-bits";
+import { DestructiveButton } from "@/components/destructive-button";
+import { Modal } from "@/components/modal";
 import {
   Alert,
   Button,
@@ -16,7 +18,9 @@ import {
   PanelLink,
   PublishTag,
   SectionHeader,
+  Select,
   SkeletonList,
+  Spinner,
   Tag,
 } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
@@ -27,6 +31,7 @@ export default function AdminPage() {
   const [topics, setTopics] = useState<TopicAdmin[] | null>(null);
   const [slug, setSlug] = useState("");
   const [name, setName] = useState("");
+  const [editing, setEditing] = useState<TopicAdmin | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback((t: string) => {
@@ -53,6 +58,17 @@ export default function AdminPage() {
       refresh(token);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Không tạo được chủ đề.");
+    }
+  }
+
+  async function deleteTopic(topicId: string) {
+    if (!token) return;
+    setError(null);
+    try {
+      await apiFetch<void>(API_ROUTES.adminTopic(topicId), { method: "DELETE", token });
+      refresh(token);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Không xoá được chủ đề.");
     }
   }
 
@@ -134,13 +150,31 @@ export default function AdminPage() {
         {topics && topics.length > 0 && (
           <ul className="mt-4 space-y-2">
             {topics.map((topic) => (
-              <Panel key={topic.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-                <span className="font-semibold">{topic.name}</span>
-                <span className="font-data text-small text-ink-faint">/{topic.slug}</span>
-                <span className="ml-auto">
-                  <PublishTag status={topic.status} />
-                </span>
-              </Panel>
+              <li key={topic.id}>
+                <Panel className="flex flex-wrap items-center gap-3 px-4 py-3">
+                  <span className="font-semibold">{topic.name}</span>
+                  <span className="font-data text-small text-ink-faint">/{topic.slug}</span>
+                  <span className="text-small text-ink-muted">{topic.entry_count} từ</span>
+                  <div className="ml-auto flex flex-wrap items-center gap-2">
+                    <PublishTag status={topic.status} />
+                    <Button size="sm" variant="quiet" onClick={() => setEditing(topic)}>
+                      <Pencil size={14} strokeWidth={2} aria-hidden />
+                      Sửa
+                    </Button>
+                    <DestructiveButton
+                      label="Xoá"
+                      confirmLabel={
+                        topic.entry_count > 0
+                          ? `Xoá chủ đề? ${topic.entry_count} từ vẫn được giữ`
+                          : "Xoá chủ đề?"
+                      }
+                      onConfirm={() => void deleteTopic(topic.id)}
+                      disabled={!canPublish}
+                      title={canPublish ? "Xoá chủ đề này" : "Chỉ admin mới xoá được"}
+                    />
+                  </div>
+                </Panel>
+              </li>
             ))}
           </ul>
         )}
@@ -156,6 +190,99 @@ export default function AdminPage() {
       <div className="mt-12">
         <BackfillHint />
       </div>
+
+      {editing && (
+        <TopicEditModal
+          topic={editing}
+          token={token ?? ""}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            if (token) refresh(token);
+          }}
+        />
+      )}
     </Page>
+  );
+}
+
+function TopicEditModal({
+  topic,
+  token,
+  onClose,
+  onSaved,
+}: {
+  topic: TopicAdmin;
+  token: string;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(topic.name);
+  const [slug, setSlug] = useState(topic.slug);
+  const [description, setDescription] = useState(topic.description ?? "");
+  const [status, setStatus] = useState(topic.status);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    setBusy(true);
+    setError(null);
+    try {
+      await apiFetch<TopicAdmin>(API_ROUTES.adminTopic(topic.id), {
+        method: "PATCH",
+        token,
+        body: JSON.stringify({
+          name,
+          slug,
+          description: description.trim() === "" ? null : description,
+          status,
+        }),
+      });
+      onSaved();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Không lưu được.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title={`Sửa chủ đề “${topic.name}”`}
+      description={`${topic.entry_count} từ đang gán vào chủ đề này.`}
+    >
+      <div className="space-y-4">
+        <Field label="Tên hiển thị">
+          <Input value={name} onChange={(event) => setName(event.target.value)} />
+        </Field>
+        <Field label="Slug" hint="dùng trong URL — đổi slug làm link cũ của học viên 404">
+          <Input value={slug} onChange={(event) => setSlug(event.target.value)} />
+        </Field>
+        <Field label="Mô tả" hint="để trống nếu không có">
+          <Input value={description} onChange={(event) => setDescription(event.target.value)} />
+        </Field>
+        <Field label="Trạng thái" hint="nháp = học viên không thấy chủ đề này">
+          <Select value={status} onChange={(event) => setStatus(event.target.value)}>
+            <option value="published">published</option>
+            <option value="draft">draft</option>
+            <option value="archived">archived</option>
+          </Select>
+        </Field>
+
+        {error && <Alert>{error}</Alert>}
+
+        <div className="flex justify-end gap-2 border-t border-rule pt-4">
+          <Button variant="secondary" onClick={onClose}>
+            Huỷ
+          </Button>
+          <Button disabled={!name.trim() || !slug.trim() || busy} onClick={() => void save()}>
+            {busy && <Spinner />}
+            Lưu
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 }

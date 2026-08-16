@@ -21,9 +21,11 @@ from app.models import (
     PracticeTest,
     Question,
     QuestionSet,
+    Topic,
     User,
     VocabularyAudio,
     VocabularyEntry,
+    VocabularyTopic,
 )
 from app.models.image import ImageAsset
 from tests.test_domain_model import make_audio
@@ -78,6 +80,12 @@ def give_audio(session: Session, entry: VocabularyEntry, marker: str = "a") -> N
 ADMIN_CALLS = [
     ("GET", "/api/v1/admin/topics", None),
     ("POST", "/api/v1/admin/topics", {"slug": "x", "name": "X"}),
+    (
+        "PATCH",
+        "/api/v1/admin/topics/00000000-0000-0000-0000-000000000000",
+        {"name": "X"},
+    ),
+    ("DELETE", "/api/v1/admin/topics/00000000-0000-0000-0000-000000000000", None),
     ("POST", "/api/v1/admin/vocabulary/parse", {"raw_text": "a"}),
     ("POST", "/api/v1/admin/vocabulary", {"rows": []}),
     ("GET", "/api/v1/admin/vocabulary", None),
@@ -210,6 +218,91 @@ def test_an_editor_cannot_publish(
 
     response = client.post(f"/api/v1/admin/vocabulary/{entry.id}/publish", headers=auth("editor"))
     assert response.status_code == 403
+
+
+# --- topic CRUD ---------------------------------------------------------
+
+
+def _make_topic(db: Session, slug: str, name: str) -> Topic:
+    topic = Topic(slug=slug, name=name, status="published")
+    db.add(topic)
+    db.commit()
+    db.refresh(topic)
+    return topic
+
+
+def test_editing_a_topic_keeps_its_words(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    topic = _make_topic(db_session, "biz", "Business")
+    entry = VocabularyEntry(
+        headword="invoice", part_of_speech="noun", meaning_en="a bill", meaning_vi="hóa đơn"
+    )
+    db_session.add(entry)
+    db_session.commit()
+    db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    db_session.commit()
+
+    response = client.patch(
+        f"/api/v1/admin/topics/{topic.id}",
+        json={"name": "Kinh doanh", "position": 3},
+        headers=auth("editor"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["name"] == "Kinh doanh"
+    assert body["position"] == 3
+    assert body["entry_count"] == 1
+
+    refreshed = db_session.get(Topic, topic.id)
+    assert refreshed is not None and refreshed.name == "Kinh doanh"
+    assert db_session.get(VocabularyEntry, entry.id) is not None
+
+
+def test_duplicate_topic_slug_is_a_conflict(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    _make_topic(db_session, "biz", "Business")
+    topic = _make_topic(db_session, "travel", "Travel")
+    response = client.patch(
+        f"/api/v1/admin/topics/{topic.id}", json={"slug": "biz"}, headers=auth("editor")
+    )
+    assert response.status_code == 409
+
+
+def test_deleting_a_topic_unties_words_but_keeps_them(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    topic = _make_topic(db_session, "biz", "Business")
+    entry = VocabularyEntry(
+        headword="invoice", part_of_speech="noun", meaning_en="a bill", meaning_vi="hóa đơn"
+    )
+    db_session.add(entry)
+    db_session.commit()
+    db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    dict_item = DictationItem(transcript="The meeting is at noon.", topic_id=topic.id)
+    db_session.add(dict_item)
+    db_session.commit()
+
+    response = client.delete(f"/api/v1/admin/topics/{topic.id}", headers=auth("admin"))
+    assert response.status_code == 204
+
+    db_session.expire_all()
+    assert db_session.get(Topic, topic.id) is None
+    # Từ và câu nghe sống sót, chỉ mất liên kết chủ đề.
+    assert db_session.get(VocabularyEntry, entry.id) is not None
+    assert db_session.query(VocabularyTopic).count() == 0
+    assert db_session.get(DictationItem, dict_item.id).topic_id is None
+
+
+def test_an_editor_cannot_delete_a_topic(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    # Xoá thứ người học đang thấy là quyền của admin, như publish.
+    topic = _make_topic(db_session, "biz", "Business")
+    response = client.delete(f"/api/v1/admin/topics/{topic.id}", headers=auth("editor"))
+    assert response.status_code == 403
+    assert db_session.get(Topic, topic.id) is not None
 
 
 # --- parse ----------------------------------------------------------------

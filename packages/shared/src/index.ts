@@ -160,6 +160,7 @@ export const API_ROUTES = {
 
   // Content admin
   adminTopics: "/api/v1/admin/topics",
+  adminTopic: (id: string) => `/api/v1/admin/topics/${id}`,
   adminVocabulary: "/api/v1/admin/vocabulary",
   adminVocabularyParse: "/api/v1/admin/vocabulary/parse",
   adminVocabularyItem: (id: string) => `/api/v1/admin/vocabulary/${id}`,

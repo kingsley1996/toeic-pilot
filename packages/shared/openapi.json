@@ -5044,6 +5044,10 @@
             ],
             "title": "Description"
           },
+          "entry_count": {
+            "title": "Entry Count",
+            "type": "integer"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -5071,7 +5075,8 @@
           "name",
           "description",
           "position",
-          "status"
+          "status",
+          "entry_count"
         ],
         "title": "TopicAdmin",
         "type": "object"
@@ -5127,6 +5132,10 @@
             ],
             "title": "Description"
           },
+          "entry_count": {
+            "title": "Entry Count",
+            "type": "integer"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -5149,9 +5158,75 @@
           "slug",
           "name",
           "description",
-          "position"
+          "position",
+          "entry_count"
         ],
         "title": "TopicPublic",
+        "type": "object"
+      },
+      "TopicUpdate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "title": "TopicUpdate",
         "type": "object"
       },
       "TurnDraft": {
@@ -9209,6 +9284,104 @@
           }
         ],
         "summary": "Create Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/topics/{topic_id}": {
+      "delete": {
+        "description": "Xoá chủ đề, KHÔNG xoá từ.\n\n`vocabulary_topic` và `dictation_item.topic_id` đều gắn `ondelete=CASCADE` /\n`SET NULL` sẵn, nên xoá chủ đề chỉ gỡ liên kết — các từ vẫn còn trong màn\nquản lý (không topic), không có dữ liệu học tập nào bị đụng. Cùng nguyên tắc\nvới việc xoá bài dictation không xoá câu. Đăng nhập mức admin, không phải\neditor, vì đây là xoá thứ người học đang nhìn thấy.",
+        "operationId": "delete_topic_api_v1_admin_topics__topic_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Topic",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_topic_api_v1_admin_topics__topic_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Topic",
         "tags": [
           "admin"
         ]

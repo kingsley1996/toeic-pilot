@@ -105,6 +105,22 @@ def test_only_published_topics_are_listed(client: TestClient, db_session: Sessio
     assert slugs == ["business"]
 
 
+def test_topic_entry_count_excludes_drafts(client: TestClient, db_session: Session) -> None:
+    # Card của học viên hứa một con số; một từ nháp bên trong không được tính
+    # vào lời hứa đó — người học bấm vào sẽ không thấy nó.
+    topic = Topic(slug="business", name="Business", status="published")
+    db_session.add(topic)
+    db_session.commit()
+    published = make_word(db_session, "invoice", status="published", marker="a")
+    draft = make_word(db_session, "unfinished", status="draft", marker="b")
+    for entry in (published, draft):
+        db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    db_session.commit()
+
+    [body] = client.get("/api/v1/topics").json()
+    assert body["entry_count"] == 1
+
+
 # --- vocabulary -----------------------------------------------------------
 
 

@@ -129,6 +129,18 @@ def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
     topics = db.scalars(
         select(Topic).where(Topic.status == PUBLISHED).order_by(Topic.position, Topic.name)
     ).all()
+    # Số từ ĐÃ XUẤT BẢN: card của học viên hứa hẹn một con số, và con số đó chỉ
+    # được đếm trên thứ họ bấm vào mà thấy được. Đếm cả nháp sẽ treo lên card một
+    # lời hứa trang bên trong không giữ được.
+    counts = {
+        topic_id: count
+        for topic_id, count in db.execute(
+            select(VocabularyTopic.topic_id, func.count(VocabularyTopic.entry_id))
+            .join(VocabularyEntry, VocabularyEntry.id == VocabularyTopic.entry_id)
+            .where(VocabularyEntry.status == PUBLISHED)
+            .group_by(VocabularyTopic.topic_id)
+        ).all()
+    }
     return [
         TopicPublic(
             id=str(topic.id),
@@ -136,6 +148,7 @@ def list_topics(db: Session = Depends(get_db)) -> list[TopicPublic]:
             name=topic.name,
             description=topic.description,
             position=topic.position,
+            entry_count=counts.get(topic.id, 0),
         )
         for topic in topics
     ]

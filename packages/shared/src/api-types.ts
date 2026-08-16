@@ -1048,6 +1048,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Topic
+         * @description Xoá chủ đề, KHÔNG xoá từ.
+         *
+         *     `vocabulary_topic` và `dictation_item.topic_id` đều gắn `ondelete=CASCADE` /
+         *     `SET NULL` sẵn, nên xoá chủ đề chỉ gỡ liên kết — các từ vẫn còn trong màn
+         *     quản lý (không topic), không có dữ liệu học tập nào bị đụng. Cùng nguyên tắc
+         *     với việc xoá bài dictation không xoá câu. Đăng nhập mức admin, không phải
+         *     editor, vì đây là xoá thứ người học đang nhìn thấy.
+         */
+        delete: operations["delete_topic_api_v1_admin_topics__topic_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Topic */
+        patch: operations["update_topic_api_v1_admin_topics__topic_id__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/vocabulary": {
         parameters: {
             query?: never;
@@ -3702,6 +3729,8 @@ export interface components {
         TopicAdmin: {
             /** Description */
             description: string | null;
+            /** Entry Count */
+            entry_count: number;
             /** Id */
             id: string;
             /** Name */
@@ -3731,6 +3760,8 @@ export interface components {
         TopicPublic: {
             /** Description */
             description: string | null;
+            /** Entry Count */
+            entry_count: number;
             /** Id */
             id: string;
             /** Name */
@@ -3739,6 +3770,19 @@ export interface components {
             position: number;
             /** Slug */
             slug: string;
+        };
+        /** TopicUpdate */
+        TopicUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: string | null;
         };
         /** TurnDraft */
         TurnDraft: {
@@ -6027,6 +6071,70 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_topic_api_v1_admin_topics__topic_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_topic_api_v1_admin_topics__topic_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TopicUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

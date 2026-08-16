@@ -19,6 +19,17 @@ class TopicAdmin(BaseModel):
     description: str | None
     position: int
     status: str
+    # Đếm cả nháp: admin nhìn thấy mọi thứ, và con số này trả lời câu "xoá chủ
+    # đề này thì chuyện gì xảy ra" trước khi ai đó bấm nút xoá.
+    entry_count: int
+
+
+class TopicUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=128)
+    slug: str | None = Field(default=None, min_length=1, max_length=64)
+    description: str | None = None
+    position: int | None = None
+    status: str | None = None
 
 
 class ParseRequest(BaseModel):

@@ -16,6 +16,10 @@ class TopicPublic(BaseModel):
     name: str
     description: str | None
     position: int
+    # Số từ đã xuất bản trong chủ đề. Trang chủ đề của học viên là một lưới
+    # card và con số này là câu trả lời cho "vào đây có gì để học" — một chủ đề
+    # 0 từ phải nói thẳng điều đó thay vì mở ra một trang trống.
+    entry_count: int
 
 
 class AudioClip(BaseModel):
