@@ -1,7 +1,7 @@
 """option translation
 
-Revision ID: 020_option_translation
-Revises: 019_question_labels
+Revision ID: 023_option_translation
+Revises: 022_coach_chat
 Create Date: 2026-08-13 20:05:29.279177
 """
 
@@ -10,8 +10,8 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 from alembic import op
 
-revision: str = '020_option_translation'
-down_revision: Union[str, None] = '019_question_labels'
+revision: str = '023_option_translation'
+down_revision: Union[str, None] = '022_coach_chat'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
