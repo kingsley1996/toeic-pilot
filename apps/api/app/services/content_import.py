@@ -765,7 +765,7 @@ def _check_listening_group(group: ParsedGroup, part: int) -> None:
             group.problems.append(f"Part {part} mỗi câu đứng riêng")
         return
 
-    # Part 3 và 4: một bản thu dùng chung cho cả cụm, gắn ở `question_set`
-    # (ADR-001 §A4.3). Không có lời thoại thì không có gì để thu.
-    # if not group.script:
-    #     group.problems.append(f"Part {part} cần một khối {SCRIPT_MARKER} cho cả cụm")
+    # Part 3 và 4 gắn bản thu dùng chung ở `question_set` (ADR-001 §A4.3) —
+    # nhưng audio có thể gắn SAU khi dán bằng `import_media`, nên thiếu lời thoại
+    # ở đây không còn là lỗi: cổng chặn đầy đủ nằm ở bước xuất bản
+    # (`validate_question`).

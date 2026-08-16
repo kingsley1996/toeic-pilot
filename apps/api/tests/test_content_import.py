@@ -205,11 +205,11 @@ source: original
     ]
 
 
-def test_part_3_needs_a_shared_script_on_the_set():
-    """Part 3 và 4 gắn bản thu ở `question_set`, không ở từng câu (ADR-001 §A4.3).
-
-    Không có lời thoại thì không có gì để thu, và cụm đó sẽ không bao giờ xuất
-    bản được — nên trình dán nói ra ngay thay vì để phát hiện ở cổng chặn.
+def test_a_part_3_group_pasted_without_a_script_is_accepted():
+    """Part 3 và 4 gắn bản thu dùng chung ở `question_set` (ADR-001 §A4.3),
+    nhưng bản thu thường gắn SAU khi dán bằng `import_media` — nên `[SCRIPT]`
+    lúc dán là TUỲ CHỌN, không còn bắt buộc. Cổng chặn đầy đủ (thiếu audio thì
+    không xuất bản được) nằm ở bước xuất bản với `validate_question`.
     """
     raw = """[QUESTION]
 What is the woman calling about?
@@ -221,7 +221,8 @@ answer: A
 source: original
 """
     (group,) = parse_listening_part(raw, 3)
-    assert any("[SCRIPT]" in problem for problem in group.problems)
+    assert not any("[SCRIPT]" in problem for problem in group.problems)
+    assert group.ok
 
 
 def test_a_script_line_without_a_voice_is_refused():
