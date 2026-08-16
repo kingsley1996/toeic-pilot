@@ -15,6 +15,7 @@ import {
   Button,
   EmptyState,
   Field,
+  FieldError,
   Input,
   Page,
   PageHeader,
@@ -78,16 +79,21 @@ export default function AdminTestsPage() {
     if (token) refresh(token);
   }, [token, refresh]);
 
-  async function run(work: () => Promise<unknown>, after?: () => void) {
-    if (!token || busy) return;
+  async function run(work: () => Promise<unknown>, after?: () => void): Promise<string | null> {
+    if (!token || busy) return "Đang bận.";
     setBusy(true);
     setError(null);
     try {
+      // `await work()` là câu lệnh riêng — xem chú thích ở trang chi tiết đề:
+      // nhét nó vào đối số của `done?.(...)` thì công việc không bao giờ chạy.
       await work();
       after?.();
       refresh(token);
+      return null;
     } catch (problem) {
-      setError(problem instanceof ApiError ? problem.message : "Có lỗi xảy ra.");
+      const message = problem instanceof ApiError ? problem.message : "Có lỗi xảy ra.";
+      setError(message);
+      return message;
     } finally {
       setBusy(false);
     }
@@ -137,9 +143,9 @@ export default function AdminTestsPage() {
       }),
     );
 
-  const deleteCollection = (target: string) =>
+  const deleteCollection = (target: string, force = false) =>
     run(() =>
-      apiFetch(API_ROUTES.adminCollection(target), {
+      apiFetch(API_ROUTES.adminCollection(target) + (force ? "?force=true" : ""), {
         method: "DELETE",
         token: token ?? undefined,
       }),
@@ -298,7 +304,7 @@ export default function AdminTestsPage() {
                 busy={busy}
                 onPublish={() => void publishCollection(collection.slug)}
                 onArchive={(archived) => void archiveCollection(collection.slug, archived)}
-                onDelete={() => void deleteCollection(collection.slug)}
+                onDelete={(force) => deleteCollection(collection.slug, force)}
               />
             ))}
 
@@ -339,9 +345,12 @@ function CollectionBlock({
   busy: boolean;
   onPublish: () => void;
   onArchive: (archived: boolean) => void;
-  onDelete: () => void;
+  onDelete: (force?: boolean) => Promise<string | null>;
 }) {
   const [confirming, setConfirming] = useState(false);
+  // Từ chối xoá phải in TRONG hộp thoại: băng lỗi chung nằm sau lớp phủ
+  // `<dialog>`, nên một cú 409 hiện ở đầu trang là vô hình.
+  const [refusal, setRefusal] = useState<string | null>(null);
 
   return (
     <Panel className="p-4">
@@ -406,7 +415,10 @@ function CollectionBlock({
 
       <Modal
         open={confirming}
-        onClose={() => setConfirming(false)}
+        onClose={() => {
+          setRefusal(null);
+          setConfirming(false);
+        }}
         title={`Xoá bộ đề ${collection.title}?`}
         // Cấp duy nhất mà database không chặn: xoá bộ đề chỉ gỡ liên kết, đề
         // vẫn còn — nhưng đề không thuộc bộ nào thì người học không thấy nữa.
@@ -415,18 +427,46 @@ function CollectionBlock({
         <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="destructive"
-            onClick={() => {
-              setConfirming(false);
-              onDelete();
+            onClick={async () => {
+              const problem = await onDelete();
+              if (problem === null) setConfirming(false);
+              else setRefusal(problem);
             }}
             disabled={busy}
           >
             Xoá bộ đề
           </Button>
-          <Button variant="quiet" onClick={() => setConfirming(false)} disabled={busy}>
+          <Button
+            variant="quiet"
+            onClick={() => {
+              setRefusal(null);
+              setConfirming(false);
+            }}
+            disabled={busy}
+          >
             Huỷ
           </Button>
         </div>
+
+        {refusal && (
+          <div className="mt-3">
+            <FieldError>{refusal}</FieldError>
+            <div className="mt-2">
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={async () => {
+                  const problem = await onDelete(true);
+                  if (problem === null) setConfirming(false);
+                }}
+                disabled={busy}
+                title="Xoá bộ đề cùng mọi đề, câu hỏi và lượt làm bài bên trong — chỉ dùng khi dọn dữ liệu thử"
+              >
+                Xoá cưỡng chế (mất đề và lịch sử làm bài)
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
 
       <div className="mt-3 space-y-2 border-l-2 border-rule pl-3">

@@ -936,6 +936,148 @@ def test_deleting_a_question_frees_its_number_for_the_next_paste(
     assert again["number"] == 147
 
 
+# --- xoá cưỡng chế (force): dev xoá được nội dung đã có người làm -------------
+
+
+def _publish(client: TestClient, headers: dict[str, str], slug: str) -> None:
+    for question in client.get(f"/api/v1/admin/tests/{slug}/questions", headers=headers).json():
+        assert (
+            client.post(
+                f"/api/v1/admin/questions/{question['id']}/publish", headers=headers
+            ).status_code
+            == 200
+        )
+    assert client.post(f"/api/v1/admin/tests/{slug}/publish", headers=headers).status_code == 200
+
+
+def _attempt_with_answer(
+    client: TestClient, headers: dict[str, str], learner: dict[str, str], slug: str
+) -> str:
+    """Một lượt làm thật, đã trả lời một câu — tức là có `attempt_item`."""
+    state = client.post(
+        "/api/v1/attempts",
+        json={"test_slug": slug, "parts": [], "review_mode": "exam"},
+        headers=learner,
+    )
+    assert state.status_code == 201, state.json()
+    body = state.json()
+    (question,) = body["questions"]
+    answered = client.patch(
+        f"/api/v1/attempts/{body['id']}/questions/{question['id']}",
+        json={"selected_option_id": question["options"][0]["id"]},
+        headers=learner,
+    )
+    assert answered.status_code == 200, answered.json()
+    return str(body["id"])
+
+
+def test_force_deleting_a_test_removes_its_attempts_questions_and_sets(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """`?force=true` là lối thoát cho giai đoạn dev: xoá cả lịch sử làm bài.
+
+    Không force thì 409 như trước — và có force thì KHÔNG được để lại gì: lượt
+    làm, câu trả lời, câu hỏi, cụm và chính đề đó.
+    """
+    from app.models import AttemptItem, QuestionOption
+
+    headers = auth("admin")
+    question = _make_test_with_one_question(client, headers, "wipe-test")
+    question_id = uuid.UUID(str(question["id"]))
+    set_id = uuid.UUID(str(question["set_id"]))
+    _publish(client, headers, "wipe-test")
+    attempt_id = _attempt_with_answer(client, headers, auth("learner"), "wipe-test")
+
+    still_refused = client.delete("/api/v1/admin/tests/wipe-test", headers=headers)
+    assert still_refused.status_code == 409
+
+    wiped = client.delete("/api/v1/admin/tests/wipe-test?force=true", headers=headers)
+    assert wiped.status_code == 204
+
+    assert db_session.get(Attempt, uuid.UUID(attempt_id)) is None
+    assert db_session.scalars(select(AttemptItem)).all() == []
+    assert db_session.scalars(select(QuestionOption)).all() == []
+    assert db_session.get(Question, question_id) is None
+    assert db_session.get(QuestionSet, set_id) is None
+
+
+def test_force_deleting_a_question_removes_its_answers(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Xoá câu đã có người trả lời: câu trả lời phải đi trước (RESTRICT)."""
+    from app.models import AttemptItem
+
+    headers = auth("admin")
+    question = _make_test_with_one_question(client, headers, "wipe-q")
+    question_id = uuid.UUID(str(question["id"]))
+    _publish(client, headers, "wipe-q")
+    _attempt_with_answer(client, headers, auth("learner"), "wipe-q")
+
+    refused = client.delete(f"/api/v1/admin/questions/{question['id']}", headers=headers)
+    assert refused.status_code == 409
+
+    wiped = client.delete(f"/api/v1/admin/questions/{question['id']}?force=true", headers=headers)
+    assert wiped.status_code == 204
+
+    assert db_session.get(Question, question_id) is None
+    assert db_session.scalars(select(AttemptItem)).all() == []
+    # Đề chỉ có đúng câu đó: lượt làm rỗng cũng không được để lại.
+    assert db_session.scalars(select(Attempt)).all() == []
+
+
+def test_force_deleting_a_collection_takes_its_tests_and_attempts(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Cây ba tầng đi cả cây: bộ đề -> đề -> câu, kèm lượt làm ở dưới."""
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "wipe-box", "title": "Bộ đề"},
+        headers=headers,
+    )
+    _make_test_with_one_question(client, headers, "wipe-in-box")
+    client.patch(
+        "/api/v1/admin/tests/wipe-in-box",
+        json={"collection_slug": "wipe-box"},
+        headers=headers,
+    )
+    _publish(client, headers, "wipe-in-box")
+    _attempt_with_answer(client, headers, auth("learner"), "wipe-in-box")
+
+    still_refused = client.delete("/api/v1/admin/test-collections/wipe-box", headers=headers)
+    assert still_refused.status_code == 409
+
+    wiped = client.delete("/api/v1/admin/test-collections/wipe-box?force=true", headers=headers)
+    assert wiped.status_code == 204
+
+    assert db_session.scalars(select(PracticeTest)).all() == []
+    assert db_session.scalars(select(Question)).all() == []
+    assert db_session.scalars(select(Attempt)).all() == []
+
+
+def test_force_delete_is_refused_in_production(
+    client: TestClient,
+    auth: Callable[[str], dict[str, str]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Lịch sử học viên là bất khả xâm phạm: force chỉ tồn tại ngoài production."""
+    from app.core.config import Settings
+
+    monkeypatch.setattr(Settings, "is_production", property(lambda self: True))
+
+    headers = auth("admin")
+    _make_test_with_one_question(client, headers, "prod-test")
+    _publish(client, headers, "prod-test")
+    _attempt_with_answer(client, headers, auth("learner"), "prod-test")
+
+    refused = client.delete("/api/v1/admin/tests/prod-test?force=true", headers=headers)
+    assert refused.status_code == 403
+    assert "production" in refused.json()["detail"]
+
+    # Và production vẫn chặn cả đường thường.
+    assert client.delete("/api/v1/admin/tests/prod-test", headers=headers).status_code == 409
+
+
 def test_attached_media_actually_reaches_the_question_list(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:

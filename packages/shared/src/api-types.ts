@@ -667,6 +667,9 @@ export interface paths {
          *     dictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch
          *     sử làm bài của họ.
          *
+         *     `force=true` xoá luôn các lượt trả lời câu này (chỉ ngoài production): giai
+         *     đoạn dev dọn nội dung thử; production giữ nguyên RESTRICT qua đường 403.
+         *
          *     **Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành
          *     trống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn "số chưa dùng
          *     trong khoảng của part". Dồn số lại là suy ra số câu thay vì lưu nó — đúng
@@ -789,13 +792,17 @@ export interface paths {
         post?: never;
         /**
          * Delete Collection
-         * @description Xoá một bộ đề rỗng.
+         * @description Xoá một bộ đề.
          *
-         *     `practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên
-         *     trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người
-         *     học tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.
-         *     Đó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới
-         *     thấy. Nên chặn ở đây, và nói ra còn mấy đề.
+         *     Mặc định chỉ xoá được bộ đề RỖNG. `practice_test.collection_id` là **SET
+         *     NULL**, nên xoá một bộ đề còn đề bên trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu
+         *     — nó chỉ lặng lẽ cắt đường của người học tới từng đề trong đó, vì đề không
+         *     thuộc bộ nào thì không xuất hiện ở đâu. Đó là kiểu hỏng tệ nhất trong ba
+         *     cấp: không có gì báo, và phải mở từng đề mới thấy. Nên chặn ở đây, và nói ra
+         *     còn mấy đề.
+         *
+         *     `force=true` xoá luôn mọi đề bên trong kèm câu hỏi và lượt làm (chỉ ngoài
+         *     production) — cây ba tầng đi cả cây.
          */
         delete: operations["delete_collection_api_v1_admin_test_collections__slug__delete"];
         options?: never;
@@ -888,6 +895,10 @@ export interface paths {
          *     **Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng
          *     liên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp
          *     lệ — xoá theo sẽ moi ruột đề còn lại.
+         *
+         *     `force=true` xoá luôn mọi lượt làm bài (chỉ ngoài production): giai đoạn dev
+         *     cần dọn sạch đề thử mà tài khoản thử đã làm qua; production thì lịch sử học
+         *     viên là bất khả xâm phạm.
          */
         delete: operations["delete_test_api_v1_admin_tests__slug__delete"];
         options?: never;
@@ -5270,7 +5281,9 @@ export interface operations {
     };
     delete_question_api_v1_admin_questions__question_id__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                force?: boolean;
+            };
             header?: never;
             path: {
                 question_id: string;
@@ -5523,7 +5536,9 @@ export interface operations {
     };
     delete_collection_api_v1_admin_test_collections__slug__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                force?: boolean;
+            };
             header?: never;
             path: {
                 slug: string;
@@ -5714,7 +5729,9 @@ export interface operations {
     };
     delete_test_api_v1_admin_tests__slug__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                force?: boolean;
+            };
             header?: never;
             path: {
                 slug: string;

@@ -7990,7 +7990,7 @@
     },
     "/api/v1/admin/questions/{question_id}": {
       "delete": {
-        "description": "Xoá một câu khỏi đề.\n\n`attempt_item.question_id` là RESTRICT, nên xoá một câu đã có người trả lời\nsẽ nổ IntegrityError. Chặn trước và chỉ sang `archived` — cùng khuôn với câu\ndictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch\nsử làm bài của họ.\n\n**Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành\ntrống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn \"số chưa dùng\ntrong khoảng của part\". Dồn số lại là suy ra số câu thay vì lưu nó — đúng\nthứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.",
+        "description": "Xoá một câu khỏi đề.\n\n`attempt_item.question_id` là RESTRICT, nên xoá một câu đã có người trả lời\nsẽ nổ IntegrityError. Chặn trước và chỉ sang `archived` — cùng khuôn với câu\ndictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch\nsử làm bài của họ.\n\n`force=true` xoá luôn các lượt trả lời câu này (chỉ ngoài production): giai\nđoạn dev dọn nội dung thử; production giữ nguyên RESTRICT qua đường 403.\n\n**Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành\ntrống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn \"số chưa dùng\ntrong khoảng của part\". Dồn số lại là suy ra số câu thay vì lưu nó — đúng\nthứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.",
         "operationId": "delete_question_api_v1_admin_questions__question_id__delete",
         "parameters": [
           {
@@ -8001,6 +8001,16 @@
               "format": "uuid",
               "title": "Question Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
             }
           }
         ],
@@ -8387,7 +8397,7 @@
     },
     "/api/v1/admin/test-collections/{slug}": {
       "delete": {
-        "description": "Xoá một bộ đề rỗng.\n\n`practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên\ntrong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người\nhọc tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.\nĐó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới\nthấy. Nên chặn ở đây, và nói ra còn mấy đề.",
+        "description": "Xoá một bộ đề.\n\nMặc định chỉ xoá được bộ đề RỖNG. `practice_test.collection_id` là **SET\nNULL**, nên xoá một bộ đề còn đề bên trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu\n— nó chỉ lặng lẽ cắt đường của người học tới từng đề trong đó, vì đề không\nthuộc bộ nào thì không xuất hiện ở đâu. Đó là kiểu hỏng tệ nhất trong ba\ncấp: không có gì báo, và phải mở từng đề mới thấy. Nên chặn ở đây, và nói ra\ncòn mấy đề.\n\n`force=true` xoá luôn mọi đề bên trong kèm câu hỏi và lượt làm (chỉ ngoài\nproduction) — cây ba tầng đi cả cây.",
         "operationId": "delete_collection_api_v1_admin_test_collections__slug__delete",
         "parameters": [
           {
@@ -8397,6 +8407,16 @@
             "schema": {
               "title": "Slug",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
             }
           }
         ],
@@ -8638,7 +8658,7 @@
     },
     "/api/v1/admin/tests/{slug}": {
       "delete": {
-        "description": "Xoá một đề cùng câu hỏi và cụm của nó.\n\nHai điều dễ làm sai ở đây, và cả hai đều im lặng:\n\n**Câu hỏi phải xoá tay, không trông vào CASCADE.**\n`practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —\nnhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở\nbất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó\nnằm lại trong database vĩnh viễn, không ai với tới để xoá.\n\n**Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng\nliên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp\nlệ — xoá theo sẽ moi ruột đề còn lại.",
+        "description": "Xoá một đề cùng câu hỏi và cụm của nó.\n\nHai điều dễ làm sai ở đây, và cả hai đều im lặng:\n\n**Câu hỏi phải xoá tay, không trông vào CASCADE.**\n`practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —\nnhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở\nbất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó\nnằm lại trong database vĩnh viễn, không ai với tới để xoá.\n\n**Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng\nliên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp\nlệ — xoá theo sẽ moi ruột đề còn lại.\n\n`force=true` xoá luôn mọi lượt làm bài (chỉ ngoài production): giai đoạn dev\ncần dọn sạch đề thử mà tài khoản thử đã làm qua; production thì lịch sử học\nviên là bất khả xâm phạm.",
         "operationId": "delete_test_api_v1_admin_tests__slug__delete",
         "parameters": [
           {
@@ -8648,6 +8668,16 @@
             "schema": {
               "title": "Slug",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
             }
           }
         ],

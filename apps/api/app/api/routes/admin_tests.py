@@ -21,12 +21,14 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import require_role
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.media import LOGICAL_VOICE_ACCENTS, public_audio_url, script_fingerprint
 from app.core.storage import StorageDriver, get_driver
 from app.models import (
     Attempt,
     AttemptItem,
+    AttemptPart,
     AudioAsset,
     ImageAsset,
     PracticeTest,
@@ -243,6 +245,78 @@ def _blocked_by(count: int | None, what: str, noun: str) -> None:
         )
 
 
+def _force_delete_guard(force: bool) -> None:
+    """Cờ `force` chỉ tồn tại cho môi trường dev — nơi nội dung thử thay đổi
+    hàng ngày và lịch sử làm bài của tài khoản thử không đáng giữ.
+
+    Ở production nó là 403: dữ liệu học viên là thật, và RESTRICT tồn tại chính
+    là để không ai xoá nhầm nó. Đừng nới luật này thành "chỉ cảnh báo".
+    """
+    if force and settings.is_production:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Xoá cưỡng chế chỉ khả dụng ngoài môi trường production.",
+        )
+
+
+def _purge_attempts_of_test(db: Session, test_id: uuid.UUID) -> None:
+    """Xoá mọi lượt làm của một đề, trước khi xoá chính đề đó.
+
+    `attempt_item.selected_option_id` là RESTRICT trỏ sang `question_option`, nên
+    **option phải sống cho tới khi item biến mất**: xoá câu trước rồi mới xoá
+    lượt làm là IntegrityError. Thứ tự: item/part (kèm attempt qua CASCADE của
+    `items`) → attempt. `coach_conversation` tự đi theo attempt qua CASCADE của
+    database.
+    """
+    attempt_ids = list(db.scalars(select(Attempt.id).where(Attempt.test_id == test_id)))
+    if not attempt_ids:
+        return
+    db.query(AttemptItem).filter(AttemptItem.attempt_id.in_(attempt_ids)).delete(
+        synchronize_session=False
+    )
+    db.query(AttemptPart).filter(AttemptPart.attempt_id.in_(attempt_ids)).delete(
+        synchronize_session=False
+    )
+    db.query(Attempt).filter(Attempt.id.in_(attempt_ids)).delete(synchronize_session=False)
+    db.flush()
+
+
+def _purge_answers_to_question(db: Session, question_id: uuid.UUID) -> None:
+    """Xoá mọi lượt trả lời một câu, trên TẤT CẢ các đề có chứa nó.
+
+    `attempt_item` là bản ghi kết quả, không phải quan hệ sở hữu, nên xoá nó
+    không kéo theo lượt làm — một lượt làm vẫn còn nguyên các câu khác. Nhưng
+    một lượt `scope='partial'` mà chỉ gồm đúng câu này thì sau khi xoá sẽ là
+    một lượt rỗng, nên những lượt như vậy xoá luôn (items rồi attempt).
+
+    `coach_explanation` và `coach_feedback` đi theo question/option qua CASCADE
+    của database; xoá option phải SAU khi `attempt_item.selected_option_id`
+    (RESTRICT) đã dọn xong.
+    """
+    item_rows = db.execute(
+        select(AttemptItem.id, AttemptItem.attempt_id).where(AttemptItem.question_id == question_id)
+    ).all()
+    if not item_rows:
+        return
+    item_ids = [row[0] for row in item_rows]
+    db.query(AttemptItem).filter(AttemptItem.id.in_(item_ids)).delete(synchronize_session=False)
+    db.flush()
+
+    touched_attempt_ids = {row[1] for row in item_rows}
+    empties = [
+        attempt_id
+        for attempt_id in touched_attempt_ids
+        if db.scalar(select(func.count(AttemptItem.id)).where(AttemptItem.attempt_id == attempt_id))
+        == 0
+    ]
+    if empties:
+        db.query(AttemptPart).filter(AttemptPart.attempt_id.in_(empties)).delete(
+            synchronize_session=False
+        )
+        db.query(Attempt).filter(Attempt.id.in_(empties)).delete(synchronize_session=False)
+        db.flush()
+
+
 @router.post("/test-collections/{slug}/archive", response_model=CollectionAdmin)
 def archive_collection(
     slug: str,
@@ -258,28 +332,38 @@ def archive_collection(
 
 @router.delete("/test-collections/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_collection(
-    slug: str, db: Session = Depends(get_db), _: User = Depends(can_publish)
+    slug: str,
+    force: bool = Query(default=False),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
 ) -> None:
-    """Xoá một bộ đề rỗng.
+    """Xoá một bộ đề.
 
-    `practice_test.collection_id` là **SET NULL**, nên xoá một bộ đề còn đề bên
-    trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu — nó chỉ lặng lẽ cắt đường của người
-    học tới từng đề trong đó, vì đề không thuộc bộ nào thì không xuất hiện ở đâu.
-    Đó là kiểu hỏng tệ nhất trong ba cấp: không có gì báo, và phải mở từng đề mới
-    thấy. Nên chặn ở đây, và nói ra còn mấy đề.
+    Mặc định chỉ xoá được bộ đề RỖNG. `practice_test.collection_id` là **SET
+    NULL**, nên xoá một bộ đề còn đề bên trong KHÔNG nổ lỗi và KHÔNG mất dữ liệu
+    — nó chỉ lặng lẽ cắt đường của người học tới từng đề trong đó, vì đề không
+    thuộc bộ nào thì không xuất hiện ở đâu. Đó là kiểu hỏng tệ nhất trong ba
+    cấp: không có gì báo, và phải mở từng đề mới thấy. Nên chặn ở đây, và nói ra
+    còn mấy đề.
+
+    `force=true` xoá luôn mọi đề bên trong kèm câu hỏi và lượt làm (chỉ ngoài
+    production) — cây ba tầng đi cả cây.
     """
+    _force_delete_guard(force)
     collection = _collection_or_404(db, slug)
-    tests = db.scalar(
-        select(func.count(PracticeTest.id)).where(PracticeTest.collection_id == collection.id)
-    )
-    if tests:
+    tests = db.scalars(
+        select(PracticeTest).where(PracticeTest.collection_id == collection.id)
+    ).all()
+    if tests and not force:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=(
-                f"Bộ đề này còn {tests} đề. Chuyển chúng sang bộ khác trước — xoá bộ đề "
+                f"Bộ đề này còn {len(tests)} đề. Chuyển chúng sang bộ khác trước — xoá bộ đề "
                 f"không xoá đề, nhưng đề không thuộc bộ nào thì người học không thấy nữa."
             ),
         )
+    for test in tests:
+        _delete_test_core(db, test, force=force)
     db.delete(collection)
     db.commit()
 
@@ -381,7 +465,12 @@ def archive_test(
 
 
 @router.delete("/tests/{slug}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_test(slug: str, db: Session = Depends(get_db), _: User = Depends(can_publish)) -> None:
+def delete_test(
+    slug: str,
+    force: bool = Query(default=False),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
+) -> None:
     """Xoá một đề cùng câu hỏi và cụm của nó.
 
     Hai điều dễ làm sai ở đây, và cả hai đều im lặng:
@@ -395,13 +484,42 @@ def delete_test(slug: str, db: Session = Depends(get_db), _: User = Depends(can_
     **Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng
     liên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp
     lệ — xoá theo sẽ moi ruột đề còn lại.
+
+    `force=true` xoá luôn mọi lượt làm bài (chỉ ngoài production): giai đoạn dev
+    cần dọn sạch đề thử mà tài khoản thử đã làm qua; production thì lịch sử học
+    viên là bất khả xâm phạm.
     """
+    _force_delete_guard(force)
     test = _test_or_404(db, slug)
-    _blocked_by(
-        db.scalar(select(func.count(Attempt.id)).where(Attempt.test_id == test.id)),
-        "lượt làm bài",
-        "đề",
-    )
+    _delete_test_core(db, test, force=force)
+    db.commit()
+
+
+def _delete_test_core(db: Session, test: PracticeTest, force: bool) -> None:
+    """Xoá một đề cùng câu hỏi và cụm của nó, không commit.
+
+    Hai điều dễ làm sai ở đây, và cả hai đều im lặng:
+
+    **Câu hỏi phải xoá tay, không trông vào CASCADE.**
+    `practice_test_question.test_id` là CASCADE nên hàng liên kết tự biến mất —
+    nhưng `question` thì sống sót, và một câu không thuộc đề nào sẽ không hiện ở
+    bất kỳ màn quản trị nào (`_link_or_409` giả định nó phải thuộc một đề). Nó
+    nằm lại trong database vĩnh viễn, không ai với tới để xoá.
+
+    **Nhưng chỉ xoá câu mà đề NÀY là đề duy nhất dùng nó.** Khoá chính của bảng
+    liên kết là (test_id, question_id), nên một câu dùng chung cho hai đề là hợp
+    lệ — xoá theo sẽ moi ruột đề còn lại.
+
+    `force` xoá luôn mọi lượt làm bài; gọi hàm này với `force=True` chỉ hợp lệ
+    SAU `_force_delete_guard`.
+    """
+    attempts = db.scalar(select(func.count(Attempt.id)).where(Attempt.test_id == test.id))
+    if attempts:
+        if not force:
+            _blocked_by(attempts, "lượt làm bài", "đề")
+        # Xoá lượt làm TRƯỚC khi xoá câu: `attempt_item.selected_option_id` là
+        # RESTRICT trỏ sang option, nên option phải còn khi item bị xoá.
+        _purge_attempts_of_test(db, test.id)
 
     rows = _rows(db, test.id)
     question_ids = [question.id for _, question in rows]
@@ -426,12 +544,17 @@ def delete_test(slug: str, db: Session = Depends(get_db), _: User = Depends(can_
         )
         db.flush()
         if doomed:
+            # Xoá tay cả option: xoá hàng loạt (`Query.delete`) KHÔNG đi qua
+            # cascade của ORM — để mặc nó thì phụ thuộc CASCADE của database,
+            # còn một hàng mồ côi thì nằm lại mà không ai thấy.
+            db.query(QuestionOption).filter(QuestionOption.question_id.in_(doomed)).delete(
+                synchronize_session=False
+            )
             db.query(Question).filter(Question.id.in_(doomed)).delete(synchronize_session=False)
             db.flush()
         _drop_empty_sets(db, set_ids)
 
     db.delete(test)
-    db.commit()
 
 
 def _drop_empty_sets(db: Session, set_ids: set[uuid.UUID]) -> None:
@@ -978,7 +1101,10 @@ def archive_question(
 
 @router.delete("/questions/{question_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_question(
-    question_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+    question_id: uuid.UUID,
+    force: bool = Query(default=False),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
 ) -> None:
     """Xoá một câu khỏi đề.
 
@@ -987,20 +1113,28 @@ def delete_question(
     dictation, và cùng lý do: gỡ khỏi tầm mắt người học mà không làm mồ côi lịch
     sử làm bài của họ.
 
+    `force=true` xoá luôn các lượt trả lời câu này (chỉ ngoài production): giai
+    đoạn dev dọn nội dung thử; production giữ nguyên RESTRICT qua đường 403.
+
     **Số câu để lại chỗ trống, không đánh số lại.** Xoá câu 105 thì ô 105 thành
     trống và lần dán sau lấy đúng ô đó, vì `commit_part` vốn chọn "số chưa dùng
     trong khoảng của part". Dồn số lại là suy ra số câu thay vì lưu nó — đúng
     thứ ADR-007 §2.6 cấm, và nó sẽ đổi tên của những câu không ai đụng vào.
     """
+    _force_delete_guard(force)
     question = db.get(Question, question_id)
     if question is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có câu này")
 
-    _blocked_by(
-        db.scalar(select(func.count(AttemptItem.id)).where(AttemptItem.question_id == question.id)),
-        "lượt trả lời",
-        "câu",
+    replies = db.scalar(
+        select(func.count(AttemptItem.id)).where(AttemptItem.question_id == question.id)
     )
+    if replies:
+        if not force:
+            _blocked_by(replies, "lượt trả lời", "câu")
+        # Dọn TRƯỚC khi xoá câu và option của nó: `selected_option_id` là
+        # RESTRICT, nên option phải còn khi item bị xoá.
+        _purge_answers_to_question(db, question.id)
 
     set_id = question.set_id
     # Gỡ liên kết trước: `practice_test_question.question_id` là RESTRICT.

@@ -517,9 +517,12 @@ export default function AdminTestPage() {
   // lý do gì mà lệnh xoá không chạy, người dùng vẫn thấy trang đổi và tin rằng
   // đề đã bị xoá — trong khi nó còn nguyên. Chuyển trang chỉ xảy ra khi người
   // dùng bấm, sau khi đã đọc kết quả.
-  const deleteTest = async () => {
+  const deleteTest = async (force = false) => {
     const problem = await run(() =>
-      apiFetch<void>(API_ROUTES.adminTest(slug), { method: "DELETE", token: token ?? undefined }),
+      apiFetch<void>(API_ROUTES.adminTest(slug) + (force ? "?force=true" : ""), {
+        method: "DELETE",
+        token: token ?? undefined,
+      }),
     );
     setDeleteRefusal(problem);
     if (problem !== null) return;
@@ -540,10 +543,10 @@ export default function AdminTestPage() {
       },
     );
 
-  const deleteQuestion = (questionId: string) =>
+  const deleteQuestion = (questionId: string, force = false) =>
     run(
       () =>
-        apiFetch<void>(API_ROUTES.adminQuestion(questionId), {
+        apiFetch<void>(API_ROUTES.adminQuestion(questionId) + (force ? "?force=true" : ""), {
           method: "DELETE",
           token: token ?? undefined,
         }),
@@ -552,6 +555,15 @@ export default function AdminTestPage() {
         if (token) refresh(token);
       },
     );
+
+  // Từ chối xoá MỘT câu, in TRONG hộp thoại của chính câu đó — cùng lý do có
+  // `deleteRefusal` cho đề: băng lỗi chung nằm sau lớp phủ `<dialog>`.
+  const [questionDeleteRefusal, setQuestionDeleteRefusal] = useState<string | null>(null);
+
+  const tryDeleteQuestion = async (questionId: string, force = false) => {
+    const problem = await deleteQuestion(questionId, force);
+    setQuestionDeleteRefusal(problem);
+  };
 
   const requestAudio = () =>
     run(
@@ -735,7 +747,7 @@ export default function AdminTestPage() {
         {deleteRefusal && (
           <div className="mt-3">
             <FieldError>{deleteRefusal}</FieldError>
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <Button
                 size="sm"
                 variant="secondary"
@@ -749,6 +761,18 @@ export default function AdminTestPage() {
                 disabled={busy}
               >
                 Lưu trữ đề thay vì xoá
+              </Button>
+              {/* Lối thoát cho giai đoạn dev: xoá cả lượt làm bài của tài khoản
+                  thử. Server từ chối ở production, nên nút này vô hại khi lên
+                  thật. */}
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => void deleteTest(true)}
+                disabled={busy}
+                title="Xoá đề cùng mọi lượt làm bài — chỉ dùng khi dọn dữ liệu thử"
+              >
+                Xoá cưỡng chế (mất lịch sử làm bài)
               </Button>
             </div>
           </div>
@@ -1025,7 +1049,10 @@ export default function AdminTestPage() {
 
                 <Modal
                   open={confirmDelete === question.id}
-                  onClose={() => setConfirmDelete(null)}
+                  onClose={() => {
+                    setQuestionDeleteRefusal(null);
+                    setConfirmDelete(null);
+                  }}
                   title={`Xoá câu ${question.number}?`}
                   // Số câu để lại chỗ trống chứ không dồn — nói ra, vì người
                   // soạn sẽ tự hỏi ngay và câu trả lời quyết định họ có dán lại
@@ -1038,15 +1065,39 @@ export default function AdminTestPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Button
                       variant="destructive"
-                      onClick={() => void deleteQuestion(question.id)}
+                      onClick={() => void tryDeleteQuestion(question.id)}
                       disabled={busy}
                     >
                       Xoá câu {question.number}
                     </Button>
-                    <Button variant="quiet" onClick={() => setConfirmDelete(null)} disabled={busy}>
+                    <Button
+                      variant="quiet"
+                      onClick={() => {
+                        setQuestionDeleteRefusal(null);
+                        setConfirmDelete(null);
+                      }}
+                      disabled={busy}
+                    >
                       Huỷ
                     </Button>
                   </div>
+
+                  {questionDeleteRefusal && (
+                    <div className="mt-3">
+                      <FieldError>{questionDeleteRefusal}</FieldError>
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => void tryDeleteQuestion(question.id, true)}
+                          disabled={busy}
+                          title="Xoá câu cùng các lượt trả lời nó — chỉ dùng khi dọn dữ liệu thử"
+                        >
+                          Xoá cưỡng chế (mất câu trả lời)
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </Modal>
 
                 {/* Part 1 và 2: bản thu nằm trên CHÍNH câu, vì mỗi câu là một
