@@ -27,10 +27,10 @@ thiếu đúng một bản thu, phát hiện được khi có người ngồi l�
 """
 
 import argparse
-import re
-import sys
 import json
+import re
 import subprocess
+import sys
 import tempfile
 import uuid
 from dataclasses import dataclass
@@ -329,8 +329,7 @@ def probe_audio(data: bytes, suffix: str) -> tuple[int, str, str]:
     except subprocess.CalledProcessError as exc:
         detail = (exc.stderr or "").strip()
         raise ValueError(
-            f"ffprobe không đọc được audio"
-            + (f": {detail}" if detail else "")
+            "ffprobe không đọc được audio" + (f": {detail}" if detail else "")
         ) from exc
 
     try:
@@ -339,9 +338,7 @@ def probe_audio(data: bytes, suffix: str) -> tuple[int, str, str]:
         format_name = str(format_info["format_name"]).lower()
         duration = float(format_info["duration"])
     except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
-        raise ValueError(
-            "ffprobe không trả về format/duration hợp lệ"
-        ) from exc
+        raise ValueError("ffprobe không trả về format/duration hợp lệ") from exc
 
     if duration <= 0:
         raise ValueError(f"audio có duration không hợp lệ: {duration}")
@@ -353,16 +350,12 @@ def probe_audio(data: bytes, suffix: str) -> tuple[int, str, str]:
     elif "wav" in format_name or "wave" in format_name:
         actual_ext = ".wav"
         mime_type = "audio/wav"
-    elif any(
-        name in format_name
-        for name in ("m4a", "mp4", "mov", "3gp", "3g2")
-    ):
+    elif any(name in format_name for name in ("m4a", "mp4", "mov", "3gp", "3g2")):
         actual_ext = ".m4a"
         mime_type = "audio/mp4"
     else:
         raise ValueError(
-            f"audio format không được hỗ trợ: {format_name!r}. "
-            "Dataset chỉ hỗ trợ MP3, WAV và M4A."
+            f"audio format không được hỗ trợ: {format_name!r}. Dataset chỉ hỗ trợ MP3, WAV và M4A."
         )
 
     return round(duration * 1000), actual_ext, mime_type
@@ -401,9 +394,7 @@ def import_audio(
         try:
             duration_ms, actual_ext, mime_type = probed[path]
         except KeyError as exc:
-            raise ValueError(
-                f"thiếu kết quả validation cho audio {path}"
-            ) from exc
+            raise ValueError(f"thiếu kết quả validation cho audio {path}") from exc
 
         # Storage key and MIME are based on the ACTUAL container, not the
         # filename extension. This matters for dataset files such as:
@@ -638,10 +629,7 @@ def main(argv: list[str] | None = None) -> int:
                 print("\nAudio validation:")
                 for path in files:
                     duration_ms, actual_ext, mime_type = probed[path]
-                    print(
-                        f"  {path.name:<28} "
-                        f"{actual_ext:<5} {duration_ms:>7} ms {mime_type}"
-                    )
+                    print(f"  {path.name:<28} {actual_ext:<5} {duration_ms:>7} ms {mime_type}")
             print("\n(dry-run — chưa ghi gì)")
             return 0
         # Ô trống là BÌNH THƯỜNG với hình Part 3/4: chỉ vài cụm cuối mỗi part có
