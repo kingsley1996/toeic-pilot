@@ -39,6 +39,8 @@ export type ReviewSession = components["schemas"]["ReviewSession"];
 export type ReviewResult = components["schemas"]["ReviewResult"];
 export type RecallResult = components["schemas"]["RecallResult"];
 export type RecallCheck = components["schemas"]["RecallCheck"];
+export type BackdropPublic = components["schemas"]["BackdropPublic"];
+export type BackdropUpdate = components["schemas"]["BackdropUpdate"];
 export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
 export type UserProfileUpdate = components["schemas"]["UserProfileUpdate"];
 export type PasswordChange = components["schemas"]["PasswordChange"];
@@ -165,6 +167,11 @@ export const API_ROUTES = {
   // Danh sách ván học của chính học viên, mới động vào trước. Mảng trần: số ván
   // không vượt quá số chủ đề đã xuất bản (nhóm A của `schemas/common.py`).
   vocabularyTopicSessions: "/api/v1/vocabulary-topic-sessions",
+
+  // Nền lưới động: đường ĐỌC công khai (khách xem trang giới thiệu cũng thấy
+  // nền này), đường GHI nằm dưới /admin.
+  backdrop: "/api/v1/backdrop",
+  adminBackdrop: "/api/v1/admin/backdrop",
 
   // Cây từ vựng: collection -> collection_item -> topic. Gạch nối, không lồng vào
   // `/vocabulary/...` (cùng luật với `dictation-topics` bên dưới).

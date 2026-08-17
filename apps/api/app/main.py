@@ -12,6 +12,7 @@ from app.api.routes import (
     admin,
     admin_ai,
     admin_tests,
+    appearance,
     attempt,
     auth,
     coach,
@@ -74,6 +75,7 @@ app.include_router(admin.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
+app.include_router(appearance.router, prefix="/api/v1")
 
 # Development only. Everywhere else audio is served from the object store or CDN
 # named by AUDIO_PUBLIC_BASE_URL, and the API never sees the request — routing it

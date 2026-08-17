@@ -212,6 +212,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/backdrop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Backdrop
+         * @description `require_role` là DEPENDENCY, không phải một lệnh kiểm trong thân hàm.
+         *
+         *     Kiểm trong thân hàm là thứ người ta quên chép sang route kế tiếp, và kiểu
+         *     hỏng của nó là một endpoint quản trị mở cho mọi học viên.
+         */
+        put: operations["update_backdrop_api_v1_admin_backdrop_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/dictation": {
         parameters: {
             query?: never;
@@ -1577,6 +1600,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/backdrop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Backdrop
+         * @description KHÔNG đòi đăng nhập: nền này hiện cả trên trang giới thiệu.
+         *
+         *     Bắt xác thực ở đây sẽ làm khách chưa đăng nhập rơi về nền mặc định, nên cấu
+         *     hình quản trị viên vừa đặt lại không áp dụng cho đúng nhóm người nhìn thấy
+         *     trang nhiều nhất. Cấu hình này không phải bí mật — nó mô tả thứ ai cũng
+         *     nhìn thấy.
+         */
+        get: operations["read_backdrop_api_v1_backdrop_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dictation": {
         parameters: {
             query?: never;
@@ -2500,6 +2548,55 @@ export interface components {
         AvatarConfirm: {
             /** Storage Key */
             storage_key: string;
+        };
+        /**
+         * BackdropPublic
+         * @description Đường đọc CÔNG KHAI: khách chưa đăng nhập cũng thấy nền này.
+         *
+         *     Không trả `updated_by` hay `updated_at` — người xem trang giới thiệu không
+         *     cần biết ai chỉnh nền lúc mấy giờ, và tên người chỉnh là dữ liệu nội bộ.
+         */
+        BackdropPublic: {
+            /**
+             * Color
+             * @description One of ['action', 'ok', 'warn', 'alert', 'accent-us', 'accent-uk', 'accent-au', 'accent-ca']
+             */
+            color: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Spark Count */
+            spark_count: number;
+            /** Speed Percent */
+            speed_percent: number;
+            /** Twinkle Count */
+            twinkle_count: number;
+        };
+        /**
+         * BackdropUpdate
+         * @description Những gì quản trị viên chỉnh được.
+         *
+         *     Không có toạ độ: vị trí tia và đốm sinh từ một bảng cố định phía giao diện,
+         *     còn ở đây chỉ là SỐ LƯỢNG. Cho nhập toạ độ nghĩa là toạ độ phải hợp lệ với
+         *     mọi kích thước màn hình, mà lúc lưu thì không có màn hình nào để kiểm.
+         *
+         *     `color` là TÊN TOKEN, không phải mã màu. Mỗi token có sẵn giá trị cho nền
+         *     sáng và nền tối, nên đổi màu vẫn giữ nguyên lời hứa về tương phản; một mã
+         *     hex hợp lệ vẫn có thể chìm nghỉm ở chế độ còn lại mà không có gì báo.
+         */
+        BackdropUpdate: {
+            /**
+             * Color
+             * @description One of ['action', 'ok', 'warn', 'alert', 'accent-us', 'accent-uk', 'accent-au', 'accent-ca']
+             */
+            color: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Spark Count */
+            spark_count: number;
+            /** Speed Percent */
+            speed_percent: number;
+            /** Twinkle Count */
+            twinkle_count: number;
         };
         /** Body_local_upload_media_upload__storage_key__post */
         Body_local_upload_media_upload__storage_key__post: {
@@ -4875,6 +4972,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LlmStatsPublic"];
+                };
+            };
+        };
+    };
+    update_backdrop_api_v1_admin_backdrop_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BackdropUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackdropPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -7605,6 +7735,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_backdrop_api_v1_backdrop_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackdropPublic"];
                 };
             };
         };

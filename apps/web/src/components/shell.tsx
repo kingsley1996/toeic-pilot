@@ -3,11 +3,14 @@
 import { LogOut, Menu, SquarePen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
 import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, ButtonLink, IconButton, Skeleton, Tag } from "@/components/ui";
+import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 
 /**
@@ -26,6 +29,158 @@ import { useSession } from "@/lib/session";
  */
 
 export type ShellNavItem = NavItem & { children?: NavItem[] };
+
+/*
+ * Nền động, đo bằng SỐ Ô lưới chứ không bằng pixel hay phần trăm: lưới là bội
+ * số của 32px kể từ gốc khung cố định, nên chỉ số ô mới đảm bảo tia và đốm nằm
+ * đúng trên đường kẻ ở mọi kích thước màn hình. Phần trăm sẽ trôi lệch khỏi
+ * lưới ngay khi đổi chiều rộng cửa sổ, và một vệt sáng trôi CẠNH lưới thì mắt
+ * đọc ra là sai ngay.
+ */
+const GRID_CELL = 32;
+
+/*
+ * Bảng vị trí CỐ ĐỊNH; cấu hình quản trị chỉ chọn lấy bao nhiêu phần tử đầu.
+ *
+ * Vị trí không lưu trong database, và đó là chủ ý: một toạ độ lưu sẵn phải hợp
+ * lệ với mọi kích thước màn hình, mà lúc lưu thì không có màn hình nào để kiểm.
+ * Ở đây thứ tự đã được chọn sao cho phần tử đầu nằm bên trái — màn hình hẹp
+ * vẫn thấy — rồi mới lan dần sang phải.
+ *
+ * `col`/`row` là góc trên-trái, `size` là cạnh hình vuông, tính bằng ô. Chu
+ * kỳ lẻ nhau và lệch pha, nên các tia không bao giờ rơi vào một nhịp đều đặn —
+ * nền mà mắt bắt được nhịp là nền đã hỏng.
+ */
+const METEORS = [
+  // Điểm xuất phát tính bằng ô lưới, và ô ÂM là hợp lệ: sao băng phải bắt đầu
+  // ngoài khung rồi mới lao vào, nếu không nó "hiện ra" giữa trời.
+  //
+  // Cùng một góc cho tất cả — mưa sao băng thật toả ra từ một hướng, và mỗi vệt
+  // một góc trông như nhiễu chứ không như một hiện tượng. Chu kỳ lẻ nhau để các
+  // vệt không rơi thành nhịp đều đặn; `delay` rải chúng ra trong một vòng.
+  { left: -8, top: 1, duration: 11, delay: 0 },
+  { left: 14, top: -10, duration: 17, delay: 5 },
+  { left: -12, top: 12, duration: 14, delay: 9 },
+  { left: 30, top: -14, duration: 21, delay: 3 },
+  { left: 6, top: -18, duration: 19, delay: 13 },
+  { left: 22, top: 6, duration: 25, delay: 17 },
+] as const;
+
+const METEOR_ANGLE = "34deg";
+const METEOR_TRAVEL = "150vmax";
+
+/*
+ * Đốm sáng ở giao điểm lưới. Mỗi đốm chỉ loé một nhịp ngắn trong cả chu kỳ, và
+ * đỉnh sáng đặt SỚM (6% chu kỳ) chứ không muộn: đặt muộn thì lần loé ĐẦU TIÊN
+ * bị lùi gần trọn một chu kỳ, và đo thật thì hai trong năm đốm chưa hề sáng sau
+ * 20 giây mở trang.
+ */
+const TWINKLES = [
+  { col: 7, row: 5, duration: 9, delay: 1 },
+  { col: 14, row: 11, duration: 13, delay: 5 },
+  { col: 21, row: 4, duration: 11, delay: 3 },
+  { col: 31, row: 16, duration: 17, delay: 8 },
+  { col: 37, row: 8, duration: 15, delay: 12 },
+  { col: 4, row: 18, duration: 10, delay: 6 },
+  { col: 25, row: 21, duration: 14, delay: 2 },
+  { col: 11, row: 2, duration: 12, delay: 9 },
+  { col: 33, row: 25, duration: 16, delay: 4 },
+  { col: 18, row: 27, duration: 18, delay: 11 },
+  { col: 29, row: 6, duration: 19, delay: 7 },
+  { col: 2, row: 12, duration: 21, delay: 14 },
+] as const;
+
+/*
+ * Giá trị rơi về khi chưa đọc được cấu hình. Phải KHỚP `BACKDROP_DEFAULTS` phía
+ * máy chủ — hai bộ mặc định lệch nhau nghĩa là trang nhấp nháy đổi hình một lần
+ * ngay sau khi tải xong, mà không có gì báo.
+ */
+const BACKDROP_FALLBACK: BackdropPublic = {
+  spark_count: 2,
+  twinkle_count: 5,
+  color: "action",
+  speed_percent: 100,
+  enabled: true,
+};
+
+/**
+ * Chu kỳ sau khi áp hệ số tốc độ.
+ *
+ * Chia chứ không nhân: `speed_percent` là TỐC ĐỘ, nên số càng lớn thì chu kỳ
+ * càng ngắn. Làm ngược lại thì thanh chỉnh "nhanh hơn" cho ra hiệu ứng chậm
+ * hơn — một lỗi không ai báo vì nó vẫn chạy, chỉ sai chiều.
+ */
+function scaled(seconds: number, speedPercent: number): string {
+  return `${((seconds * 100) / speedPercent).toFixed(2)}s`;
+}
+
+/**
+ * Nền lưới + tia sáng + đốm lấp lánh, dựng một lần cho mỗi khung.
+ *
+ * `aria-hidden` và `pointer-events-none`: nó không mang thông tin và không được
+ * chắn cú bấm nào. Màn làm bài KHÔNG có nền này — nó dùng `bareLayout` nên
+ * không đi qua đây, và đó là chủ ý: một vệt sáng chuyển động sau lưng người
+ * đang tính giờ làm bài là thứ duy nhất trong app cạnh tranh trực tiếp với sự
+ * tập trung.
+ *
+ * Cấu hình đọc từ endpoint CÔNG KHAI, nên khách xem trang giới thiệu cũng thấy
+ * đúng thứ quản trị viên vừa đặt. Hỏng thì rơi về mặc định chứ không mất nền.
+ */
+function GridBackdrop() {
+  const [config, setConfig] = useState<BackdropPublic>(BACKDROP_FALLBACK);
+  useEffect(() => {
+    apiFetch<BackdropPublic>(API_ROUTES.backdrop)
+      .then(setConfig)
+      .catch(() => {});
+  }, []);
+
+  // Lưới tĩnh vẫn ở lại khi tắt hiệu ứng: `enabled=false` tắt phần CHUYỂN ĐỘNG,
+  // không tắt nền.
+  const meteors = config.enabled ? METEORS.slice(0, config.spark_count) : [];
+  const twinkles = config.enabled ? TWINKLES.slice(0, config.twinkle_count) : [];
+
+  return (
+    <div
+      aria-hidden
+      className="grid-backdrop"
+      style={{ "--spark-color": `var(--${config.color})` } as React.CSSProperties}
+    >
+      {meteors.map((meteor) => (
+        <span
+          key={`${meteor.left}-${meteor.top}`}
+          className="grid-meteor"
+          style={
+            {
+              left: `${meteor.left * GRID_CELL}px`,
+              top: `${meteor.top * GRID_CELL}px`,
+              "--meteor-angle": METEOR_ANGLE,
+              "--meteor-travel": METEOR_TRAVEL,
+              "--meteor-duration": scaled(meteor.duration, config.speed_percent),
+              "--meteor-delay": scaled(meteor.delay, config.speed_percent),
+            } as React.CSSProperties
+          }
+        >
+          <span className="grid-meteor-body" />
+        </span>
+      ))}
+
+      {twinkles.map((dot) => (
+        <span
+          key={`t-${dot.col}-${dot.row}`}
+          className="grid-twinkle"
+          style={
+            {
+              left: `${dot.col * GRID_CELL}px`,
+              top: `${dot.row * GRID_CELL}px`,
+              "--twinkle-duration": scaled(dot.duration, config.speed_percent),
+              "--twinkle-delay": scaled(dot.delay, config.speed_percent),
+            } as React.CSSProperties
+          }
+        />
+      ))}
+    </div>
+  );
+}
 
 /** Phẳng hoá để `activeHref` thấy cả mục con; nó tự ưu tiên khớp sâu nhất. */
 function flatten(links: ShellNavItem[]): NavItem[] {
@@ -229,6 +384,7 @@ export function SidebarShell({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <GridBackdrop />
       {/* Header mỏng: logo, chỗ cắm riêng của từng khu, đổi sáng/tối. Danh tính
           và đăng xuất KHÔNG ở đây — chúng nằm dưới đáy sidebar. */}
       <header className="sticky top-0 z-30 border-b border-rule bg-ground/85 backdrop-blur">
@@ -332,6 +488,7 @@ export function TopBarShell({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <GridBackdrop />
       <header className="sticky top-0 z-20 border-b border-rule bg-ground/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
           <Link

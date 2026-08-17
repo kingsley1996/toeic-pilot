@@ -60,6 +60,10 @@ Sprint 4e Học từ vựng theo chủ đề 🟡 ĐANG LÀM, chưa commit (mụ
 Sprint 4f Trang chủ -> /dashboard  ✅ XONG (mục 4f)
 Sprint 4g Sidebar thay nav ngang   ✅ XONG (mục 4g)
 Sprint 4h Dashboard khối từ vựng   ✅ XONG (mục 4h)
+Sprint 4i Trang giới thiệu         ✅ XONG (mục 4i)
+Sprint 4j Chỉnh nền từ admin       ✅ XONG (mục 4j)
+Sprint 4k Sửa tia sáng bị giật     ✅ XONG (mục 4k)
+Sprint 4l Sao băng + chỉnh tốc độ  ✅ XONG (mục 4l)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -463,6 +467,114 @@ Cả hai đều không có test nào bắt được — tìm ra bằng cách ch�
 ### Kiểm
 - [x] `pytest` **631 passed** (1 test mới cho endpoint liệt kê) · `tsc`, `eslint`, `prettier` sạch · `gen:api-types` không drift · Playwright **7 bài xanh**
 - [x] Ảnh chụp thật ở 1280×900 và 390px, cho **hai** trạng thái: tài khoản mới tinh (mọi số bằng 0) và tài khoản đã chấm 6 từ (303 tổng · 297/4/2 · chuỗi 1 ngày)
+
+---
+
+## 4i. Trang giới thiệu dựng lại · ✅ XONG (2026-08-17)
+
+- [x] Nền lưới kỹ thuật — ban đầu chỉ sau hero, sau đó **mở ra toàn khung** kèm tia sáng chạy dọc cạnh lưới (`.grid-backdrop` + `.grid-spark`), xem [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) §9.7b
+- [x] Nội dung sắp lại theo **ba khu học có thật**: Từ vựng · Dictation · Luyện đề, đúng ba mục của thanh điều hướng
+- [x] Thêm mục **lịch ôn năm bậc**, bày đúng dãy nút học viên thật sự bấm
+- [x] Số từ và số chủ đề **đọc từ máy chủ**, không viết cứng
+
+**Trang giới thiệu mô tả một cấu trúc khác với cấu trúc thật là dạy sai người dùng ngay trước khi họ bước vào.** Bản cũ chỉ nói về dictation — hero, bốn giọng, và một vòng ba bước toàn là nghe-gõ — trong khi phần có nhiều nội dung nhất giờ là từ vựng (303 từ / 7 chủ đề) và luồng làm đề đã chạy đầu-cuối.
+
+**Số liệu đọc từ `total`, không phải tổng `entry_count`.** `vocabulary_topic` là quan hệ nhiều-nhiều, nên cộng `entry_count` của các chủ đề là đếm *lượt thuộc chủ đề*: một từ xếp vào hai chủ đề sẽ được cộng hai lần và trang khoe nhiều từ hơn số thật. Bản đầu tiên của tôi mắc đúng lỗi này (302 thay vì 303, và chỉ trùng khớp vì tình cờ có một từ chưa xếp chủ đề). Viết cứng con số thì tệ hơn nữa — nó đúng đúng một lần rồi sai mãi mà không gì báo, y như bảng số liệu ở mục 1 từng lệch cả chục migration.
+
+**Một khẳng định sai đã bị bắt trước khi lên trang.** Bản nháp viết "Từ vựng và dictation cùng chạy trên một bộ lịch ôn, nên học bên nào cũng làm bên kia vơi đi". Sai: chỉ **từ vựng** chạy SM-2; dictation đếm câu đã hoàn thành và **không có ngày đến hạn**. Câu đúng cho hai chế độ *thẻ lật* và *gõ lại* — chúng dùng chung một hàng đợi — chứ không cho hai khu. Gộp cho gọn ở đây là hứa một cơ chế không tồn tại.
+
+**Dòng hiện trạng cập nhật.** Câu cũ nói "phần luyện đề TOEIC đầy đủ chưa mở"; nay luồng làm bài chạy đủ (mở đề → trả lời → nộp → chấm → xem lại từng câu), nên thứ còn thiếu là **nội dung** chứ không phải tính năng — hiện 2 đề / 55 câu, và 6 câu dictation đã xuất bản.
+
+**Lưới mở ra toàn khung, và điều đó lật ngược lập luận tôi vừa viết.** Bản đầu giới hạn lưới ở riêng trang giới thiệu vì "một lưới sau bảng điểm là nhiễu thị giác trên đúng thứ người dùng đang cố đọc". Chủ dự án quyết định ngược lại. Lập luận cũ không bị vứt đi mà đổi thành **ràng buộc về cường độ**: alpha hạ xuống 0.5, và mọi tham số của tia (chu kỳ lẻ nhau, lệch pha, đặt theo số ô) tồn tại để giữ nền dưới ngưỡng cạnh tranh với chữ. §9.7b ghi lại cả quyết định lẫn cái giá của nó thay vì để tài liệu mâu thuẫn với code.
+
+**Hai nơi cố ý không có nền này:** màn làm bài (dùng `bareLayout`, và một vệt sáng chuyển động sau lưng người đang tính giờ là thứ duy nhất cạnh tranh trực tiếp với sự tập trung), và người bật `prefers-reduced-motion` — tia bị **tắt hẳn** chứ không rút thời lượng về 0.01ms, vì với `iteration-count: 1` nó sẽ đứng lại ở cuối đường thành một vệt sáng bất động giữa màn hình.
+
+**Lưới riêng của trang giới thiệu đã gỡ.** Giữ cả hai sẽ chồng hai bộ đường kẻ lệch pha lên nhau — trông như lỗi render chứ không như một lưới đậm hơn.
+
+**Chỉnh theo phản hồi, ba lượt.** (1) Ô lưới **32px** thay vì 64px, alpha hạ 0.5 → 0.4 để lưới dày hơn mà không nặng hơn. (2) Còn hai tia, cả hai đều dọc. (3) Tia đổi hẳn thành **chạy vòng theo cạnh lưới** — phải, xuống, trái, lên — bằng `offset-path`, cộng thêm **đốm sáng thỉnh thoảng loé** ở giao điểm lưới.
+
+**Số tia, số đốm và màu sửa được từ `/admin/appearance`** (mục 4j).
+
+### Hai lỗi thời gian, cả hai chỉ lộ ra khi ĐO chứ không khi đọc code
+- **Tia đứng yên trong suốt `animation-delay`.** Chưa chạy thì phần tử giữ style thường của nó (nằm ở gốc, chưa vào đường dẫn), nên tia có `delay: 8s` **đứng bất động tám giây** rồi mới chạy — trông đúng như một vạch sáng bị kẹt. `animation-fill-mode: backwards` bắt nó nhận khung hình đầu tiên ngay từ đầu. Lộ ra vì hai ảnh chụp liên tiếp thấy một vạch bất động ở **cùng một chỗ**, mà một tia đang chạy thì không thể như vậy.
+- **Hai trong năm đốm chưa hề sáng sau 20 giây.** Đỉnh sáng ban đầu đặt ở 94% chu kỳ, nên lần loé ĐẦU TIÊN của mỗi đốm bị lùi gần trọn một chu kỳ. Dời đỉnh về 6% cho cùng một kết quả nhìn thấy nhưng đốm sống ngay sau `delay`. Không bắt được bằng ảnh chụp — phải lấy mẫu `opacity` của từng đốm trong 20 giây rồi so đỉnh; sau khi sửa cả năm đều đạt 0.85.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch · Playwright **7 bài xanh**
+- [x] `CSS.supports("offset-path", …)` hỏi thẳng trình duyệt thay vì đoán; hộp bao của tia đo được đúng `y = 96px` = hàng 3 × 32px, tức nó nằm trên đường kẻ chứ không cạnh đường kẻ
+- [x] Ảnh chụp bốn mốc thời gian: tia đi hết cạnh trên, xuống cạnh phải, rồi ngược lại cạnh dưới — vòng khép kín
+
+---
+
+## 4j. Chỉnh nền lưới từ khu quản trị · ✅ XONG (2026-08-17)
+
+- [x] Migration `027_backdrop_setting` — bảng một hàng, `CHECK (id = 1)`
+- [x] `GET /api/v1/backdrop` (**công khai**) và `PUT /api/v1/admin/backdrop` (`require_role`)
+- [x] Trang `/admin/appearance`: số tia, số đốm, màu, và công tắc tắt chuyển động
+- [x] 4 test mới (`tests/test_appearance.py`)
+
+**Một hàng duy nhất, do DATABASE bảo đảm.** `CHECK (id = 1)` chứ không phải quy ước "nhớ đừng chèn hàng thứ hai" — hàng thứ hai sẽ xuất hiện vào đúng ngày ai đó viết một script seed, và từ đó `LIMIT 1` trả về cái nào là chuyện của thứ tự vật lý. Không lỗi, chỉ sai.
+
+**Đường đọc KHÔNG đòi đăng nhập.** Bắt xác thực ở đây làm khách chưa đăng nhập rơi về nền mặc định, tức cấu hình vừa đặt không áp cho đúng nhóm nhìn thấy trang nhiều nhất. Cấu hình này không phải bí mật — nó mô tả thứ ai cũng nhìn thấy.
+
+**Không lưu toạ độ, chỉ lưu SỐ LƯỢNG.** Vị trí sinh từ một bảng cố định trong `shell.tsx`; một toạ độ lưu sẵn phải hợp lệ với mọi kích thước màn hình, mà lúc lưu thì không có màn hình nào để kiểm.
+
+**Màu là TÊN TOKEN, không phải mã hex.** Mỗi token có sẵn giá trị cho nền sáng và nền tối, nên đổi màu vẫn giữ nguyên lời hứa tương phản. Một ô nhập hex hỏng đúng ở chỗ không ai thử: người chỉnh ở chế độ sáng chọn một màu đẹp, cùng màu đó chìm nghỉm hoặc chói gắt trên nền tối, và không gì báo vì nó vẫn là một màu hợp lệ.
+
+**Ba thứ cố ý KHÔNG cho chỉnh:** cỡ ô, alpha và mask. Chúng được canh theo cỡ chữ và khoảng cách panel (§9.7b), nên một thanh trượt lên chúng là thanh trượt lên khả năng đọc của mọi trang phía sau.
+
+**Hai bộ mặc định phải khớp nhau.** `BACKDROP_DEFAULTS` phía máy chủ và `BACKDROP_FALLBACK` phía giao diện: lệch nhau thì trang nhấp nháy đổi hình một lần ngay sau khi tải xong, và không có gì báo. Migration chèn sẵn hàng id=1 nên đường đọc công khai (không có quyền ghi) không bao giờ phải rơi về giá trị cứng.
+
+### Kiểm
+- [x] `pytest` **635 passed** · `ruff`, `mypy` sạch · `alembic upgrade head` + `alembic check` trên database trắng: không lệch model
+- [x] `tsc`, `eslint`, `prettier` sạch · `gen:api-types` không drift · Playwright **7 bài xanh**
+- [x] **Chạy thật qua chính UI**: đăng nhập admin → đổi 5 tia / 10 đốm / màu `accent-au` → bấm Save → `GET /backdrop` trả đúng giá trị mới → mở `/dashboard` và đếm DOM: **5 `.grid-spark`, 10 `.grid-twinkle`, `--spark-color` = `49 185 166`** (đúng giá trị tối của `accent-au`)
+
+---
+
+## 4k. Tia sáng bị giật — nguyên nhân và cách sửa · ✅ XONG (2026-08-17)
+
+Phản hồi: *"các tia sáng chuyển động không mượt, bị giật và có khi đứng"*. Hai nguyên nhân độc lập, và **cả hai chỉ tìm ra bằng cách đo**.
+
+### 1. Animation chạy sai luồng
+`offset-path` + `offset-distance` là cách gọn nhất để cho một phần tử chạy vòng theo đường, và nó **không hợp thành được**. Chrome chỉ hợp thành `transform`, `opacity`, `filter`; `offsetDistance` chạy ở main thread, nên tia khựng theo đúng mọi việc JS đang làm — chính là triệu chứng "có khi đứng". Kiểm bằng `getAnimations()[0].effect.getKeyframes()`: trước là `offsetDistance`, sau là `transform`.
+
+Bốn cạnh giờ nằm trong một bộ keyframes `translate() rotate()`, góc bẻ bằng hai keyframe cách nhau 0.2%. Kéo theo một ràng buộc mới: đường đi phải là **hình vuông**, vì phần trăm trong keyframes là hằng số nên bốn cạnh chia đều thời gian.
+
+### 2. Tia đi chậm hơn một pixel mỗi khung hình
+Đây mới là phần bất ngờ. Sau khi chuyển sang `transform`, đo được **60fps, không rơi khung nào** — mà vẫn không mượt. Con số giải thích: **0.538 px/khung**. Một vệt dày 1px nhích nửa pixel mỗi khung thì khử răng cưa phân bổ lại độ sáng giữa hai hàng pixel ở mỗi khung, và mắt đọc ra là rung. Chu kỳ rút lại để tốc độ quanh **1 px/khung** — đo lại: 0.975 và 1.012.
+
+Luật rút ra, đã ghi vào §9.7b: **muốn tia chậm hơn thì phải làm nó dày hơn, không phải kéo dài chu kỳ.**
+
+### Hai phép đo SAI, ghi lại để không lặp
+Cả hai đều "chạy được" và đều cho kết luận vô nghĩa:
+- **`getBoundingClientRect()` trước/sau khi chặn main thread.** Trong một tác vụ đồng bộ không có lần tính lại style nào, nên hai lần đọc luôn bằng nhau — bất kể animation chạy ở đâu. Nó trả `false` cho *cả* bản cũ lẫn bản mới.
+- **Chụp màn hình trong lúc chặn main thread.** `Page.captureScreenshot` cũng phải qua main thread, nên hai ảnh chỉ được chụp *sau* khi hết chặn, ở hai thời điểm khác nhau → luôn khác nhau. Cũng cho `true` cho cả hai bản.
+
+Thứ kiểm được thật là **tên thuộc tính đang được animate** (một sự thật đọc trực tiếp từ API) và **số px mỗi khung hình** (một đại lượng nói đúng cái mắt nhìn thấy).
+
+---
+
+## 4l. Sao băng + chỉnh tốc độ · ✅ XONG (2026-08-17)
+
+- [x] Tia chạy vòng theo cạnh lưới → **sao băng** lao chéo qua khung rồi tắt
+- [x] Migration `028_backdrop_speed` — `speed_percent`, hệ số 25–300%
+- [x] `/admin/appearance` thêm ô **Speed**; hệ số áp cho cả sao băng lẫn đốm sáng
+
+**Tốc độ là HỆ SỐ phần trăm, không phải số giây.** Mỗi vệt có chu kỳ gốc riêng, cố ý lẻ nhau để chúng không rơi vào một nhịp đều đặn — thứ mắt bắt được và bắt đầu theo dõi. Một ô nhập "số giây" sẽ san phẳng đúng đặc tính đó. Hệ số giữ nguyên tỉ lệ giữa chúng. Số càng lớn càng **nhanh** (chu kỳ bị chia), nên cột tên là `speed` chứ không phải `duration`.
+
+**Sàn 25% không tuỳ tiện:** dưới nữa thì vệt đi chậm tới mức rung thay vì trôi (§9.7b, luật px-mỗi-khung). Chỉnh chậm quá không cho ra hiệu ứng êm hơn mà cho ra hiệu ứng hỏng — nên nó bị chặn ở tầng schema chứ không để người dùng tự phát hiện.
+
+**Sao băng dùng hai lớp lồng nhau:** lớp ngoài chỉ xoay (đặt hướng rơi), lớp trong chỉ trượt. Gộp vào một `transform` cũng chạy, nhưng khi đó mỗi keyframe phải lặp lại góc xoay, và cái bị quên khi đổi góc là keyframe cuối — vệt sẽ xoay từ từ trong lúc rơi. Quãng đường tính bằng `vmax` chứ không phải pixel: số pixel đủ dài trên laptop sẽ hụt trên màn rộng, vệt tắt giữa trời.
+
+### Một lần vấp đúng cái bẫy đã ghi sẵn trong CLAUDE.md
+Thêm cột `speed_percent` xong thì `/backdrop` trả **500**: `column backdrop_setting.speed_percent does not exist`. Dev DB ở revision `026` trong khi `create_all` (chạy mỗi lần container `--reload`) đã dựng sẵn bảng `backdrop_setting` **thiếu cột mới** — `create_all` tạo được bảng mới nhưng không thêm được cột vào bảng đã có. Chạy `alembic upgrade` thẳng sẽ chết ở "relation already exists". Cách đúng đã có sẵn trong tài liệu: **dừng `api`, drop bảng do `create_all` dựng, rồi để Alembic chạy**, xong mới bật lại.
+
+### Kiểm
+- [x] `pytest` **635 passed** · `ruff`, `mypy` sạch · `alembic upgrade head` + `alembic check` trên database trắng: không lệch model
+- [x] `tsc`, `eslint`, `prettier` sạch · `gen:api-types` không drift · Playwright **7 bài xanh**
+- [x] **Chạy thật qua chính UI**: đổi 4 sao băng + tốc độ 2x → `--meteor-duration` đo được **5.50s** (đúng một nửa của 11s gốc), DOM dựng đúng 4 vệt, thuộc tính animate là `["transform","opacity"]`, và tốc độ khi bay là **17–32 px/khung** — trên ngưỡng rung rất xa
+- [x] Chụp được đúng khoảnh khắc **hai vệt đang bay**: đầu sáng, đuôi mờ, hướng chéo xuống phải
 
 ---
 

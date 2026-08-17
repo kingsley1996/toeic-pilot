@@ -490,6 +490,82 @@ Dưới `lg`, sidebar thành ngăn kéo phủ toàn màn, dựng từ **cùng m�
 `components/nav.tsx` giữ `NavLink`, `activeHref` và `SessionControls` để hai
 khung dùng chung — nếu không, chúng sẽ trôi khỏi nhau ngay lần sửa thứ hai.
 
+### 9.7b Nền lưới và sao băng
+
+Thêm 2026-08-17, sửa nhiều lượt trong ngày. Lưới phủ **toàn bộ khung ứng dụng**;
+trên nền lưới có **sao băng** lao chéo qua rồi tắt, cộng vài **đốm sáng** loé lên
+ở giao điểm lưới. Bản đầu giới hạn lưới ở riêng trang giới thiệu với lập luận
+"một lưới sau bảng điểm là nhiễu thị giác"; lập luận đó không bị vứt đi mà đổi
+thành một **ràng buộc về cường độ** — nền càng phủ rộng thì càng phải mờ.
+
+```
+┌─────────┬────────────────────────────────┐
+│ ┼──┼──┼─┼──┼──┼───┼──┼──┼──┼──┼──┼──┼──┼ │  lưới cố định, phủ hết khung
+│ sidebar │ ┌───────────┐  ╲              │
+│ ┼──┼──┼─┼─│  panel    │───╲─────────┼── │  sao băng lao chéo rồi tắt
+│ ────────┼─│  (đục)    │    ╲        ┼   │
+│ ┼──┼──┼─┼ └───────────┘     ·       ┼   │  · đốm loé ở giao điểm
+└─────────┴────────────────────────────────┘
+```
+
+**Ba luật dưới đây là loại hỏng-im-lặng, không phải sở thích.**
+
+1. **Chỉ được animate `transform`, `opacity` hoặc `filter`.** Đó là tập thuộc
+   tính Chrome hợp thành được; mọi thứ khác chạy ở main thread và khựng theo mọi
+   việc JS đang làm. Bản đầu của hiệu ứng dùng `offset-path` +
+   `offset-distance` — ngắn gọn hơn hẳn để đọc, và sai đúng ở điểm này. Kiểm
+   nhanh: `el.getAnimations()[0].effect.getKeyframes()` phải cho ra `transform`
+   (và `opacity`), không phải thứ gì khác.
+2. **Có SÀN tốc độ, tính bằng px mỗi khung hình.** Đo ở một bản trước: 60fps,
+   không rơi khung nào, mà vẫn không mượt — vì vệt chỉ nhích **0.538 px/khung**.
+   Một đường mảnh đi dưới một pixel mỗi khung thì khử răng cưa phân bổ lại độ
+   sáng giữa hai hàng pixel ở mỗi khung, và mắt đọc ra là rung. Muốn chậm hơn
+   thì phải làm vệt **dày** hơn, không phải kéo dài chu kỳ. Sao băng hiện chạy
+   17–32 px/khung, tức là rất an toàn.
+3. **`animation-fill-mode: backwards` là bắt buộc** với mọi thứ có
+   `animation-delay`. Không có nó, suốt thời gian trễ phần tử giữ style thường
+   của nó — tức đứng bất động ở điểm xuất phát — rồi mới chạy. Trông y như một
+   vạch sáng bị kẹt.
+
+Bốn chi tiết còn lại:
+
+- **Lưới vẽ bằng `repeating-linear-gradient` trên token `--rule`**, không phải
+  ảnh nền: nó tự đổi theo sáng/tối cùng mọi đường kẻ khác. `position: fixed` nên
+  không lộ mép trên trang dài. `z-index: -10` đặt nó trên nền `body` nhưng dưới
+  nội dung — hệ quả phải nhớ: **khung ngoài của shell không được có nền riêng**.
+- **Ô 32px = 8 × 4px**, đúng thang khoảng cách của hệ. Đốm sáng đặt theo **số ô**
+  nên luôn rơi trúng giao điểm; lệch một pixel là mắt đọc ra ngay.
+- **Sao băng dùng hai lớp lồng nhau**: lớp ngoài chỉ xoay (đặt hướng rơi), lớp
+  trong chỉ trượt. Gộp vào một `transform` cũng chạy, nhưng khi đó mỗi keyframe
+  phải lặp lại góc xoay, và cái bị quên khi đổi góc là keyframe cuối — vệt sẽ
+  xoay từ từ trong lúc rơi. Quãng đường tính bằng **`vmax`**, không phải pixel:
+  một con số pixel đủ dài trên laptop sẽ hụt trên màn rộng, vệt tắt giữa trời.
+- **Vệt chỉ hiện ~18% chu kỳ.** Phần còn lại là trời trống — một vệt sáng chạy
+  liên tục không phải sao băng mà là một thanh trượt. Đốm sáng cũng vậy, và đỉnh
+  sáng của chúng đặt **sớm** trong chu kỳ (6%): đặt muộn thì lần loé đầu tiên bị
+  lùi gần trọn một chu kỳ, đo thật thì hai trong năm đốm chưa hề sáng sau 20 giây.
+
+**Sửa được từ `/admin/appearance`:** số sao băng, số đốm, màu, và **hệ số tốc
+độ**. Tốc độ là *phần trăm* chứ không phải số giây — mỗi vệt có chu kỳ gốc riêng,
+cố ý lẻ nhau để không rơi vào một nhịp đều đặn, và một ô nhập "số giây" sẽ san
+phẳng đúng thứ đó. Màu chỉ chọn trong **token**, không nhận mã hex: mỗi token có
+sẵn giá trị cho nền sáng và nền tối, còn một hex hợp lệ vẫn có thể chìm nghỉm ở
+chế độ còn lại mà không có gì báo. **Không** cho chỉnh cỡ ô, alpha và mask —
+chúng canh theo cỡ chữ và khoảng cách panel, nên thanh trượt lên chúng là thanh
+trượt lên khả năng đọc của mọi trang phía sau.
+
+**Hai nơi không có hiệu ứng động:** màn làm bài (dùng `bareLayout`, và một vệt
+sáng sau lưng người đang tính giờ là thứ duy nhất cạnh tranh trực tiếp với sự tập
+trung), và người bật `prefers-reduced-motion` — tắt **hẳn** bằng `display: none`
+chứ không rút thời lượng về 0.01ms, vì với `iteration-count: 1` vệt sẽ đứng lại ở
+cuối đường thành một vạch bất động giữa màn hình.
+
+**Hai phép đo SAI, ghi lại để không lặp.** `getBoundingClientRect()` và
+`Page.captureScreenshot` đều phải đi qua main thread, nên khi main thread bị chặn
+chúng chỉ trả trạng thái cũ hoặc bị xếp hàng lại phía sau — không phân biệt được
+composited với không, và cùng cho một kết quả cho cả bản đúng lẫn bản sai. Thứ
+kiểm được thật là **tên thuộc tính đang được animate** và **số px mỗi khung**.
+
 ### 9.8 Đối chiếu dictation
 
 Hai màu, đúng như người dùng yêu cầu: **xanh `ok` = đúng**, **cam `warn` = chưa

@@ -194,6 +194,147 @@
   }
 }
 
+/* Nền lưới kỹ thuật của TOÀN BỘ khung ứng dụng.
+ *
+ * Vẽ bằng hai `repeating-linear-gradient` trên chính token `--rule`, nên nó tự
+ * đổi theo sáng/tối cùng mọi đường kẻ khác trong app — một ảnh nền sẽ phải làm
+ * và bảo trì hai bản, rồi bản tối là bản bị quên. Không đổ bóng, không gradient
+ * màu: §6.3 nói độ nổi đến từ viền và bậc nền.
+ *
+ * `position: fixed` chứ không cuộn theo trang. Một lưới cuộn cùng nội dung sẽ
+ * lộ chỗ bắt đầu và chỗ kết thúc trên trang dài, và phải chọn một chiều cao —
+ * chọn sai thì có một đường cắt ngang giữa màn hình. Cố định thì không có mép
+ * nào để lộ.
+ *
+ * `z-index: -10` đặt nó TRÊN nền của `body` nhưng DƯỚI mọi nội dung: phần tử
+ * con có z-index âm vẽ sau background của cha và trước các phần tử trong luồng.
+ * Vì thế khung ngoài của shell không được có nền riêng, nếu không nó che mất.
+ *
+ * Ô 32px = 8 × 4px, đúng thang khoảng cách của hệ. Lưới càng dày thì tổng lượng
+ * mực trên màn hình càng lớn, nên alpha phải hạ theo — 0.4 ở đây thay cho 0.5
+ * của lưới 64px, để nền dày hơn mà không nặng hơn. */
+.grid-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, rgb(var(--rule) / 0.4) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(to bottom, rgb(var(--rule) / 0.4) 0 1px, transparent 1px 32px);
+}
+
+/* Sao băng: một vệt sáng lao chéo qua khung rồi tắt.
+ *
+ * Chỉ động `transform` và `opacity`, và đó là YÊU CẦU chứ không phải tối ưu.
+ * Chrome chỉ hợp thành được `transform`, `opacity`, `filter`; mọi thứ khác chạy
+ * ở main thread và khựng theo đúng mọi việc JS đang làm. Bản đầu của hiệu ứng
+ * này dùng `offset-path` + `offset-distance` — ngắn gọn hơn hẳn để đọc, và sai
+ * ở đúng điểm đó. Kiểm nhanh: `el.getAnimations()[0].effect.getKeyframes()`
+ * phải cho ra `transform`/`opacity`, không phải thứ gì khác.
+ *
+ * HAI lớp lồng nhau, mỗi lớp một việc: lớp ngoài chỉ XOAY (đứng yên, đặt hướng
+ * rơi), lớp trong chỉ TRƯỢT theo trục x của hệ đã xoay. Gộp cả hai vào một
+ * `transform: translate() rotate()` cũng chạy, nhưng khi đó mỗi keyframe phải
+ * lặp lại góc xoay — và cái bị quên khi đổi góc là keyframe cuối, làm vệt sáng
+ * xoay từ từ trong lúc rơi.
+ *
+ * Quãng đường tính bằng `vmax` chứ không bằng pixel: nó phải cắt hết khung ở
+ * mọi kích thước màn hình, và một con số pixel cố định sẽ đủ dài trên laptop
+ * rồi hụt trên màn rộng — vệt tắt giữa trời.
+ *
+ * Vệt chỉ hiện trong ~18% chu kỳ. Phần còn lại là trời trống, và đó là nghĩa
+ * của "thỉnh thoảng có một vệt": một vệt sáng chạy liên tục không phải sao
+ * băng mà là một thanh trượt. */
+.grid-meteor {
+  position: absolute;
+  /* Xoay quanh chính điểm xuất phát, không quanh tâm: `transform-origin` mặc
+     định là tâm, và với một phần tử dài thì tâm nằm giữa đường bay — toạ độ
+     đặt vào sẽ không còn là chỗ vệt bắt đầu. */
+  transform-origin: 0 0;
+  transform: rotate(var(--meteor-angle));
+}
+
+.grid-meteor-body {
+  display: block;
+  height: 2px;
+  width: 11rem;
+  /* Đầu sáng nằm ở mép PHẢI — cùng phía với chiều trượt — nên đuôi kéo lại
+     phía sau. Đảo gradient là được một vệt bay lùi, và mắt đọc ra ngay. */
+  background: linear-gradient(to right, transparent, rgb(var(--spark-color, var(--action)) / 0.85));
+  will-change: transform, opacity;
+  animation: meteor-fall var(--meteor-duration) linear var(--meteor-delay) infinite backwards;
+}
+
+@keyframes meteor-fall {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.9;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  18% {
+    transform: translateX(var(--meteor-travel));
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(var(--meteor-travel));
+    opacity: 0;
+  }
+}
+
+/* Đốm sáng ở giao điểm lưới, thỉnh thoảng loé lên.
+ *
+ * Vuông chứ không tròn — bán kính 4px là ngôn ngữ của cả hệ, và ở cỡ 3px thì
+ * `rounded-full` biến nó thành một chấm mờ không còn thuộc về lưới nữa.
+ * `margin` âm 1px kéo tâm đốm trùng đúng giao điểm của hai đường kẻ 1px; thiếu
+ * bước này thì đốm nằm lệch xuống dưới sang phải, và mắt đọc ra ngay.
+ *
+ * Phần lớn chu kỳ là opacity 0: đó là nghĩa của "thỉnh thoảng". Một đốm sáng
+ * liên tục là một chấm bẩn trên màn hình. */
+.grid-twinkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  margin: -1px 0 0 -1px;
+  background: rgb(var(--spark-color, var(--action)));
+  opacity: 0;
+  animation: twinkle var(--twinkle-duration) ease-in-out var(--twinkle-delay) infinite;
+}
+
+/* Đỉnh sáng đặt SỚM trong chu kỳ (6%), không phải cuối (94%). Cùng một kết quả
+   nhìn thấy — loé một nhịp rồi tối phần lớn thời gian — nhưng đặt ở cuối thì
+   lần loé ĐẦU TIÊN của mỗi đốm bị lùi gần trọn một chu kỳ: đo thật thì hai
+   trong năm đốm chưa hề sáng sau 20 giây mở trang. Đặt sớm thì đốm bắt đầu
+   sống ngay sau `--twinkle-delay`, còn quãng tối dài nằm ở phía sau. */
+@keyframes twinkle {
+  0%,
+  12%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  6% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
+/* Tắt HẲN chứ không rút thời lượng về 0.01ms như khối chung phía dưới: với
+   `iteration-count: 1` thì tia chạy hết một vòng tức thì rồi đứng lại ở cuối
+   đường — một vệt sáng bất động giữa màn hình, trông như lỗi render. Khác
+   `.ai-border`, ở đây trạng thái đứng yên không mang thông tin gì. */
+@media (prefers-reduced-motion: reduce) {
+  .grid-meteor,
+  .grid-twinkle {
+    display: none;
+  }
+}
+
 /* Bảng chấm dictation hiện ra từng từ, trái sang phải — vì đó chính là cách
    người ta nghe lại câu. Khoảnh khắc dàn dựng DUY NHẤT trong toàn app (§7). */
 @keyframes settle {

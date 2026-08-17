@@ -687,6 +687,88 @@
         "title": "AvatarConfirm",
         "type": "object"
       },
+      "BackdropPublic": {
+        "description": "Đường đọc CÔNG KHAI: khách chưa đăng nhập cũng thấy nền này.\n\nKhông trả `updated_by` hay `updated_at` — người xem trang giới thiệu không\ncần biết ai chỉnh nền lúc mấy giờ, và tên người chỉnh là dữ liệu nội bộ.",
+        "properties": {
+          "color": {
+            "description": "One of ['action', 'ok', 'warn', 'alert', 'accent-us', 'accent-uk', 'accent-au', 'accent-ca']",
+            "title": "Color",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "spark_count": {
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Spark Count",
+            "type": "integer"
+          },
+          "speed_percent": {
+            "maximum": 300.0,
+            "minimum": 25.0,
+            "title": "Speed Percent",
+            "type": "integer"
+          },
+          "twinkle_count": {
+            "maximum": 12.0,
+            "minimum": 0.0,
+            "title": "Twinkle Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "spark_count",
+          "twinkle_count",
+          "color",
+          "speed_percent",
+          "enabled"
+        ],
+        "title": "BackdropPublic",
+        "type": "object"
+      },
+      "BackdropUpdate": {
+        "description": "Những gì quản trị viên chỉnh được.\n\nKhông có toạ độ: vị trí tia và đốm sinh từ một bảng cố định phía giao diện,\ncòn ở đây chỉ là SỐ LƯỢNG. Cho nhập toạ độ nghĩa là toạ độ phải hợp lệ với\nmọi kích thước màn hình, mà lúc lưu thì không có màn hình nào để kiểm.\n\n`color` là TÊN TOKEN, không phải mã màu. Mỗi token có sẵn giá trị cho nền\nsáng và nền tối, nên đổi màu vẫn giữ nguyên lời hứa về tương phản; một mã\nhex hợp lệ vẫn có thể chìm nghỉm ở chế độ còn lại mà không có gì báo.",
+        "properties": {
+          "color": {
+            "description": "One of ['action', 'ok', 'warn', 'alert', 'accent-us', 'accent-uk', 'accent-au', 'accent-ca']",
+            "title": "Color",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "spark_count": {
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Spark Count",
+            "type": "integer"
+          },
+          "speed_percent": {
+            "maximum": 300.0,
+            "minimum": 25.0,
+            "title": "Speed Percent",
+            "type": "integer"
+          },
+          "twinkle_count": {
+            "maximum": 12.0,
+            "minimum": 0.0,
+            "title": "Twinkle Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "spark_count",
+          "twinkle_count",
+          "color",
+          "speed_percent",
+          "enabled"
+        ],
+        "title": "BackdropUpdate",
+        "type": "object"
+      },
       "Body_local_upload_media_upload__storage_key__post": {
         "properties": {
           "expires_at": {
@@ -7296,6 +7378,53 @@
         ]
       }
     },
+    "/api/v1/admin/backdrop": {
+      "put": {
+        "description": "`require_role` là DEPENDENCY, không phải một lệnh kiểm trong thân hàm.\n\nKiểm trong thân hàm là thứ người ta quên chép sang route kế tiếp, và kiểu\nhỏng của nó là một endpoint quản trị mở cho mọi học viên.",
+        "operationId": "update_backdrop_api_v1_admin_backdrop_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackdropUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackdropPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Backdrop",
+        "tags": [
+          "appearance"
+        ]
+      }
+    },
     "/api/v1/admin/dictation": {
       "get": {
         "operationId": "list_dictation_admin_api_v1_admin_dictation_get",
@@ -11562,6 +11691,28 @@
         "summary": "Register",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/backdrop": {
+      "get": {
+        "description": "KHÔNG đòi đăng nhập: nền này hiện cả trên trang giới thiệu.\n\nBắt xác thực ở đây sẽ làm khách chưa đăng nhập rơi về nền mặc định, nên cấu\nhình quản trị viên vừa đặt lại không áp dụng cho đúng nhóm người nhìn thấy\ntrang nhiều nhất. Cấu hình này không phải bí mật — nó mô tả thứ ai cũng\nnhìn thấy.",
+        "operationId": "read_backdrop_api_v1_backdrop_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackdropPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read Backdrop",
+        "tags": [
+          "appearance"
         ]
       }
     },
