@@ -10,6 +10,8 @@ export type UserLogin = components["schemas"]["UserLogin"];
 export type HTTPValidationError = components["schemas"]["HTTPValidationError"];
 
 // Learning Hub
+export type TopicSession = components["schemas"]["TopicSession"];
+export type TopicSessionSubmit = components["schemas"]["TopicSessionSubmit"];
 export type TopicPublic = components["schemas"]["TopicPublic"];
 export type VocabularyCollectionPublic = components["schemas"]["VocabularyCollectionPublic"];
 export type VocabularyCollectionItemPublic =
@@ -35,6 +37,7 @@ export type ReviewCard = components["schemas"]["ReviewCard"];
 export type ReviewSession = components["schemas"]["ReviewSession"];
 export type ReviewResult = components["schemas"]["ReviewResult"];
 export type RecallResult = components["schemas"]["RecallResult"];
+export type RecallCheck = components["schemas"]["RecallCheck"];
 export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
 export type UserProfileUpdate = components["schemas"]["UserProfileUpdate"];
 export type PasswordChange = components["schemas"]["PasswordChange"];
@@ -154,6 +157,10 @@ export const API_ROUTES = {
   vocabularyProgress: "/api/v1/vocabulary-progress",
   submitReview: (id: string) => `/api/v1/vocabulary/${id}/review`,
   submitRecall: (id: string) => `/api/v1/vocabulary/${id}/recall`,
+  // Chỉ chấm chính tả, không ghi điểm: luồng học tự chấm năm nút dùng.
+  recallCheck: (id: string) => `/api/v1/vocabulary/${id}/recall-check`,
+  // Bàn cờ học tới đâu của một chủ đề, lưu TRÊN SERVER theo (user, topic).
+  vocabularyTopicSession: (topicId: string) => `/api/v1/vocabulary-topic-sessions/${topicId}`,
 
   // Cây từ vựng: collection -> collection_item -> topic. Gạch nối, không lồng vào
   // `/vocabulary/...` (cùng luật với `dictation-topics` bên dưới).

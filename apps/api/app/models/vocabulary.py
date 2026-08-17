@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    JSON,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -16,6 +17,7 @@ from sqlalchemy import (
     Uuid,
     func,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -23,6 +25,9 @@ from app.core.media import AUDIO_ACCENTS
 from app.models.audio import AudioAsset  # noqa: F401 — resolves the relationship below
 from app.models.mixins import PublishableMixin, TimestampMixin, difficulty_check, status_check
 from app.models.topic import Topic  # noqa: F401 — target của VocabularyCollectionItem.topics
+
+# JSONB trên Postgres, JSON trên SQLite của bộ test — đúng khuôn `coach._JSON`.
+_JSON = JSON().with_variant(JSONB(), "postgresql")
 
 PARTS_OF_SPEECH = ("noun", "verb", "adjective", "adverb", "preposition", "phrase")
 CEFR_LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
@@ -224,7 +229,10 @@ class VocabularyReviewLog(Base):
 
     __tablename__ = "vocabulary_review_log"
     __table_args__ = (
-        CheckConstraint("grade BETWEEN 0 AND 5", name="ck_vocabulary_review_log_grade"),
+        # 0-5: chất lượng nhớ của SM-2 gốc (0/1/2 "quên" gộp thành 0); 6 =
+        # "thành thạo" — học viên khẳng định thuộc, interval nhảy thẳng lên
+        # ngưỡng đã-thuộc (xem `srs.review`).
+        CheckConstraint("grade BETWEEN 0 AND 6", name="ck_vocabulary_review_log_grade"),
         Index("ix_vocabulary_review_log_user_entry", "user_id", "entry_id"),
     )
 
@@ -243,3 +251,33 @@ class VocabularyReviewLog(Base):
     reviewed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+class VocabularyTopicSession(Base, TimestampMixin):
+    """Bàn cờ học theo chủ đề của MỘT học viên: thứ tự từ + đang học tới đâu.
+
+    Lưu trên server chứ không phải localStorage: trạng thái "học tới đâu" là dữ
+    liệu người dùng, phải thấy được rõ ràng trong DB và đi theo tài khoản — đổi
+    trình duyệt hay xoá cache cũng không mất chỗ. Ba module (gõ từ / thẻ lật /
+    trắc nghiệm) học CHUNG một luồng nên bàn cờ thuộc về chủ đề, không thuộc về
+    module.
+
+    Không suy ra từ `VocabularyReviewState` được: state chỉ biết từ nào ĐÃ chấm,
+    không biết các từ còn lại xếp hàng theo thứ tự nào. `entry_ids` là danh sách
+    id (không phải FK): từ bị gỡ khỏi chủ đề thì id thành mồ côi, và phía đọc
+    đối chiếu với hồ từ hiện tại rồi xáo lại nếu lệch — thà xáo lại còn hơn nối
+    tiếp một bàn cờ sai. `position = len(entry_ids)` nghĩa là ván đã xong.
+    """
+
+    __tablename__ = "vocabulary_topic_session"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    topic_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("topic.id", ondelete="CASCADE"), primary_key=True
+    )
+    entry_ids: Mapped[list[str]] = mapped_column(_JSON, nullable=False)
+    # Vị trí của từ đang học trong `entry_ids` (0-indexed); bằng chiều dài mảng
+    # khi đã chấm xong cả ván.
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

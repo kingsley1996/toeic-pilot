@@ -4087,6 +4087,50 @@
         "title": "QuestionPublic",
         "type": "object"
       },
+      "RecallCheck": {
+        "description": "Kết quả chấm gõ-đúng/sai, KHÔNG ghi lượt ôn nào.\n\nPhục vụ luồng học theo chủ đề: máy chấm xong, học viên nhìn câu trả lời\nthật rồi mới tự chấm mức độ nhớ bằng năm nút chuẩn. Ghi điểm ở đây sẽ làm\ntừ đó bị tính hai lần trong cùng một lượt.",
+        "properties": {
+          "expected": {
+            "title": "Expected",
+            "type": "string"
+          },
+          "typed": {
+            "title": "Typed",
+            "type": "string"
+          },
+          "verdict": {
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "expected",
+          "typed"
+        ],
+        "title": "RecallCheck",
+        "type": "object"
+      },
+      "RecallCheckSubmit": {
+        "description": "Một lần gõ NHỜ CHẤM, chưa ghi điểm.\n\nKhác `RecallSubmit` ở chỗ KHÔNG có `easy`: điểm SM-2 ở đây là năm nút\nhọc viên tự chọn SAU khi thấy kết quả, không phải hai trạng thái easy/không.",
+        "properties": {
+          "give_up": {
+            "default": false,
+            "title": "Give Up",
+            "type": "boolean"
+          },
+          "typed": {
+            "description": "Nguyên văn học viên gõ, không chuẩn hoá trước",
+            "title": "Typed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "typed"
+        ],
+        "title": "RecallCheckSubmit",
+        "type": "object"
+      },
       "RecallResult": {
         "description": "Kết quả chấm + lượt ôn đã ghi.\n\nKế thừa `ReviewResult` vì một lần gõ lại CHÍNH LÀ một lượt ôn: nó chạy qua\nđúng SM-2 đó và ghi đúng `vocabulary_review_log` đó. Khác biệt duy nhất là\nđiểm do máy suy ra thay vì do người học tự bấm.",
         "properties": {
@@ -4351,7 +4395,7 @@
       "ReviewSubmit": {
         "properties": {
           "grade": {
-            "description": "One of [0, 3, 4, 5]",
+            "description": "One of [0, 3, 4, 5, 6]",
             "title": "Grade",
             "type": "integer"
           }
@@ -5208,6 +5252,59 @@
           "entry_count"
         ],
         "title": "TopicPublic",
+        "type": "object"
+      },
+      "TopicSession": {
+        "description": "Bàn cờ đã lưu, trả lại cho client nối tiếp ván đang dở.\n\n`done` suy ra từ `position` so với chiều dài mảng — không lưu thành cột, vì\nmột giá trị lưu song song sẽ lệch khỏi cặp (entry_ids, position) ngay lần ghi\nđầu tiên quên cập nhật cả hai.",
+        "properties": {
+          "done": {
+            "title": "Done",
+            "type": "boolean"
+          },
+          "entry_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Entry Ids",
+            "type": "array"
+          },
+          "position": {
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entry_ids",
+          "position",
+          "done"
+        ],
+        "title": "TopicSession",
+        "type": "object"
+      },
+      "TopicSessionSubmit": {
+        "description": "Lưu lại bàn cờ của một chủ đề cho học viên.\n\n`entry_ids` là THỨ TỰ HỌC của ván (không phải tập hợp), `position` là chỉ\nsố của từ đang học trong danh sách đó — bằng `len(entry_ids)` khi đã chấm\nxong cả ván. Hai invariant này được kiểm ở đây để không bao giờ lọt một bàn\ncờ trỏ ra ngoài mảng vào DB.",
+        "properties": {
+          "entry_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Entry Ids",
+            "type": "array"
+          },
+          "position": {
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entry_ids",
+          "position"
+        ],
+        "title": "TopicSessionSubmit",
         "type": "object"
       },
       "TopicUpdate": {
@@ -12411,6 +12508,112 @@
         ]
       }
     },
+    "/api/v1/vocabulary-topic-sessions/{topic_id}": {
+      "get": {
+        "description": "Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.\n\n404 cho cả topic không tồn tại và \"chưa từng lưu\" — từ phía client hai thứ\ngiống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy\nnháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.",
+        "operationId": "get_topic_session_api_v1_vocabulary_topic_sessions__topic_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Topic Session",
+        "tags": [
+          "learning"
+        ]
+      },
+      "put": {
+        "description": "Ghi lại bàn cờ sau mỗi lần chấm một từ — upsert theo (user, topic).",
+        "operationId": "put_topic_session_api_v1_vocabulary_topic_sessions__topic_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicSessionSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Topic Session",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
     "/api/v1/vocabulary/{entry_id}": {
       "get": {
         "operationId": "get_vocabulary_api_v1_vocabulary__entry_id__get",
@@ -12508,6 +12711,60 @@
           }
         ],
         "summary": "Submit Recall",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary/{entry_id}/recall-check": {
+      "post": {
+        "description": "Gõ lại từ: máy chấm đúng/sai, nhưng KHÔNG ghi lượt ôn.\n\nPhục vụ luồng học theo chủ đề với năm nút chấm chuẩn: máy chỉ làm phần nó\ngiỏi — kiểm tra gõ đúng không — rồi trả câu trả lời thật cho học viên nhìn.\nMức độ nhớ sau đó do học viên tự chấm ở năm nút, ghi qua `/review`. Ghi\nđiểm ở đây sẽ tính từ này hai lần trong cùng một lượt.\n\nKhông đòi đăng nhập: endpoint này KHÔNG ghi gì và từ đã xuất bản vốn đã công\nkhai ở `GET /vocabulary/{id}`. Ghi điểm mới là thứ cần tài khoản.",
+        "operationId": "check_recall_api_v1_vocabulary__entry_id__recall_check_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecallCheckSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecallCheck"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Recall",
         "tags": [
           "learning"
         ]

@@ -5,7 +5,9 @@ TypeScript then gets `string` for both, which is what the frontend wants anyway
 since JSON has neither a UUID nor a date type.
 """
 
-from pydantic import BaseModel, Field
+import uuid
+
+from pydantic import BaseModel, Field, model_validator
 
 from app.services.srs import GRADES
 
@@ -122,6 +124,36 @@ class VocabularyProgress(BaseModel):
     entries: list[VocabularyMastery]
 
 
+class TopicSessionSubmit(BaseModel):
+    """Lưu lại bàn cờ của một chủ đề cho học viên.
+
+    `entry_ids` là THỨ TỰ HỌC của ván (không phải tập hợp), `position` là chỉ
+    số của từ đang học trong danh sách đó — bằng `len(entry_ids)` khi đã chấm
+    xong cả ván. Hai invariant này được kiểm ở đây để không bao giờ lọt một bàn
+    cờ trỏ ra ngoài mảng vào DB.
+    """
+
+    entry_ids: list[uuid.UUID]
+    position: int = Field(ge=0)
+
+    @model_validator(mode="after")
+    def _position_within_board(self) -> "TopicSessionSubmit":
+        if self.position > len(self.entry_ids):
+            raise ValueError("position must not exceed the number of entries")
+        return self
+
+
+class TopicSession(TopicSessionSubmit):
+    """Bàn cờ đã lưu, trả lại cho client nối tiếp ván đang dở.
+
+    `done` suy ra từ `position` so với chiều dài mảng — không lưu thành cột, vì
+    một giá trị lưu song song sẽ lệch khỏi cặp (entry_ids, position) ngay lần ghi
+    đầu tiên quên cập nhật cả hai.
+    """
+
+    done: bool
+
+
 class ReviewCard(VocabularyDetail):
     """A card in a review session.
 
@@ -140,8 +172,8 @@ class ReviewSession(BaseModel):
 
 
 class ReviewSubmit(BaseModel):
-    # 0 forgot · 3 hard · 4 good · 5 easy. SM-2's 1 and 2 are rejected: the
-    # four-button UI cannot produce them, so accepting them would record
+    # 0 forgot · 3 hard · 4 good · 5 easy · 6 mastered. SM-2's 1 and 2 are
+    # rejected: the button UI cannot produce them, so accepting them would record
     # something the learner never clicked.
     grade: int = Field(description=f"One of {list(GRADES)}")
 
@@ -167,6 +199,30 @@ class RecallSubmit(BaseModel):
     # "Tôi chưa biết" — bỏ qua việc chấm và ghi thẳng điểm 0. Không có nó thì
     # người học buộc phải bịa một câu trả lời để đi tiếp.
     give_up: bool = False
+
+
+class RecallCheckSubmit(BaseModel):
+    """Một lần gõ NHỜ CHẤM, chưa ghi điểm.
+
+    Khác `RecallSubmit` ở chỗ KHÔNG có `easy`: điểm SM-2 ở đây là năm nút
+    học viên tự chọn SAU khi thấy kết quả, không phải hai trạng thái easy/không.
+    """
+
+    typed: str = Field(description="Nguyên văn học viên gõ, không chuẩn hoá trước")
+    give_up: bool = False
+
+
+class RecallCheck(BaseModel):
+    """Kết quả chấm gõ-đúng/sai, KHÔNG ghi lượt ôn nào.
+
+    Phục vụ luồng học theo chủ đề: máy chấm xong, học viên nhìn câu trả lời
+    thật rồi mới tự chấm mức độ nhớ bằng năm nút chuẩn. Ghi điểm ở đây sẽ làm
+    từ đó bị tính hai lần trong cùng một lượt.
+    """
+
+    verdict: str
+    expected: str
+    typed: str
 
 
 class RecallResult(ReviewResult):

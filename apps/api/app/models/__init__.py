@@ -35,6 +35,7 @@ from app.models.vocabulary import (
     VocabularyReviewLog,
     VocabularyReviewState,
     VocabularyTopic,
+    VocabularyTopicSession,
 )
 
 # Every model must be reachable from here: this is the single import that
@@ -81,4 +82,5 @@ __all__ = [
     "VocabularyReviewLog",
     "VocabularyReviewState",
     "VocabularyTopic",
+    "VocabularyTopicSession",
 ]

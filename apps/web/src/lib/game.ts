@@ -12,14 +12,17 @@ import { apiFetch } from "@/lib/api";
  * đứng yên. Đúng = grade 4 (good), sai = grade 0 (forgot): cùng thang SM-2 mà
  * thẻ lật chấm, nên một từ ghép đúng ở đây cũng đến hạn ôn lại y như khi tự
  * chấm "good" trên thẻ. Lỗi ghi im lặng bỏ qua: game là tự luyện tập, và một
- * request hỏng thì không được phá cả màn chơi.
+ * request hỏng thì không được phá cả màn chơi. Trả về promise để nơi nào cần
+ * số liệu TIẾN ĐỘ ĐÃ GHI (progress meter) biết lúc nào đáng đọc lại.
  */
-export function recordReview(token: string, entryId: string, grade: number): void {
-  apiFetch<ReviewResult>(API_ROUTES.submitReview(entryId), {
+export function recordReview(token: string, entryId: string, grade: number): Promise<void> {
+  return apiFetch<ReviewResult>(API_ROUTES.submitReview(entryId), {
     method: "POST",
     token,
     body: JSON.stringify({ grade }),
-  }).catch(() => {});
+  })
+    .then(() => {})
+    .catch(() => {});
 }
 
 /** Xáo trộn bản sao của mảng (Fisher–Yates), không đụng mảng gốc. */

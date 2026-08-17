@@ -6,7 +6,7 @@
 > Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
 > `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` / `PHASE2-AUDIO` (= ADR-002) / `ADR-004` / `ADR-005` = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện (đã viết, **chưa triển khai**) · `SPEC-LEARNING-HUB.md` = bộ mặc định tạm thời của Learning Hub, dựng để sửa · `REVIEW-OPUS.md` = review kỹ thuật (ảnh chụp 2026-08-08, không cập nhật tiếp)
 
-**Cập nhật lần cuối:** 2026-08-16
+**Cập nhật lần cuối:** 2026-08-17
 
 ---
 
@@ -14,18 +14,21 @@
 
 | | |
 |---|---|
-| **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng |
+| **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng; đang làm **4e — học từ vựng theo chủ đề** |
 | **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
 | **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | 378 thu thập — **376 chạy** + 2 `external` deselect mặc định |
+| **Test** | **630 chạy** + 2 `external` deselect mặc định (đo 2026-08-17) |
+| **E2E** | 4 file, 11 bài — **7 chạy**, 4 bài trong `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
 | **Gate CI** | 13, tất cả xanh |
-| **Migration** | `001_initial_users` → `002_audio_assets` → `003_domain_schema` → `004_images_and_scoring` → `005_roles_and_audit` → `006_dictation_audio_optional` → `007_dictation_hierarchy` → `008_dictation_completion_flag` → `009_user_profile` → `010_avatar` |
-| **Bảng** | 24 |
-| **Endpoint** | **52** — auth (4), health (2), học viên (14), hồ sơ (3), admin (29) |
-| **Trang web** | 18 route |
-| **Media** | **2 506** clip audio (hàng `audio_asset`), 3 ảnh |
+| **Migration** | **26 bản**, mới nhất `026_vocabulary_topic_session`. `alembic check` trên database trắng: không lệch model |
+| **Bảng** | 37 |
+| **Endpoint** | **128** — 81 admin, 47 còn lại (đếm từ `packages/shared/openapi.json`) |
+| **Trang web** | 35 route |
+| **Media** | **2 506** clip audio (hàng `audio_asset`), 10 ảnh |
 | **Nội dung trong repo** | **303 từ vựng / 7 chủ đề** (tất cả published), 15 câu dictation |
 | **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
+
+**Kiểm chứng lại ngày 2026-08-17** (phần từ vựng, xem mục 4e): `pytest` **630 passed / 2 deselected** · `ruff check` + `ruff format --check` (135 file) + `mypy` strict (96 file) sạch · `tsc --noEmit`, `eslint`, `prettier --check` sạch · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade head` chạy hết `026` trên database trắng và `alembic check` báo **không lệch model** · Playwright **7 bài chạy, xanh** (4 bài `vocabulary.spec.ts` skip) · gọi thật `vocabulary-topic-sessions`, `recall-check` và `review` grade 6 trên stack đang chạy.
 
 **Kiểm chứng lại toàn bộ ngày 2026-08-09:** `pytest` **294 passed / 2 deselected** — gồm cả 3 test `integration` chạy trên PostgreSQL thật (`tests/test_concurrency.py`, dùng `TEST_DATABASE_URL` trỏ vào database riêng để không làm bẩn dev DB) · `ruff check` sạch · `ruff format --check` 67 file đúng · `mypy` strict 46 file không lỗi · `pnpm lint` sạch · `pnpm build` xanh · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade → downgrade → upgrade` sạch tới `008`.
 
@@ -53,6 +56,7 @@ Sprint 4  Learning Hub          🟡 backend + frontend XONG · thiếu nội du
 Sprint 4b Dictation phân cấp    ✅ XONG (mục 4b)
 Sprint 4c Hồ sơ người dùng      ✅ XONG (mục 4c)
 Sprint 4d Media upload          🟡 ĐANG LÀM (mục 4d)
+Sprint 4e Học từ vựng theo chủ đề 🟡 ĐANG LÀM, chưa commit (mục 4e)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -314,6 +318,62 @@ Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.m
 - [x] Chạy thật một vòng lên Supabase — Cloudinary đã chạy thật rồi, đường S3 thì chưa
 - [ ] Cron ping giữ project Supabase khỏi tự ngủ sau 7 ngày (§2.8 — kiểu hỏng là *chỉ audio 404*)
 - [x] Lệnh đối chiếu file mồ côi — `app/content/reconcile_media.py` (§10.4 giờ tốn tiền hàng tháng)
+
+---
+
+## 4e. Học từ vựng theo chủ đề · 🟡 ĐANG LÀM (chưa commit tính tới 2026-08-17)
+
+**Mục tiêu:** biến trang từ vựng từ *một cuốn từ điển có nút phát* thành *một chỗ để học*, đi qua từng từ theo chủ đề.
+
+Trước đó chỉ có hai lối vào rời rạc — thẻ lật `/learn/review` (hàng đợi SM-2 toàn cục) và hai minigame ghép/trắc nghiệm. Không lối nào trả lời được câu hỏi thường gặp nhất: *hôm nay học chủ đề Business, học tới từ nào rồi?*
+
+### Schema
+- [x] Migration `025_review_log_grade_mastered` — nới `ck_vocabulary_review_log_grade` từ `0..5` lên `0..6`
+- [x] Migration `026_vocabulary_topic_session` — bảng `vocabulary_topic_session`, khoá chính `(user_id, topic_id)`, `entry_ids` JSON/JSONB + `position`
+
+**`entry_ids` cố ý KHÔNG phải khoá ngoại.** Nó là *thứ tự học* của một ván, không phải quan hệ. Khoá ngoại vào `vocabulary_entry` sẽ chặn việc gỡ một từ khỏi chủ đề chỉ vì có ai đó đang học dở nó. Đổi lại, id thành mồ côi được — nên phía đọc đối chiếu với hồ từ hiện tại và **xáo lại bàn mới nếu lệch**, thà xáo lại còn hơn nối tiếp một bàn cờ sai.
+
+**`done` suy ra, không lưu.** Nó là `position >= len(entry_ids)`. Một cột lưu song song sẽ lệch khỏi cặp `(entry_ids, position)` ngay lần ghi đầu tiên quên cập nhật cả hai — cùng lý do đã ghi cho `StoryProgress` và `VocabularyProgress`.
+
+### Backend
+- [x] `GET` / `PUT /api/v1/vocabulary-topic-sessions/{topic_id}` — upsert bàn cờ theo `(user, topic)`, lọc `published`, 404 khi chưa từng lưu
+- [x] `POST /api/v1/vocabulary/{id}/recall-check` — máy chấm chính tả, **không ghi lượt ôn nào**
+- [x] `srs.GRADE_MASTERED = 6` — bậc "Thành thạo", đặt `interval_days` **cứng** ở `MASTERED_INTERVAL_DAYS`
+
+**Bàn cờ nằm trên máy chủ chứ không phải `localStorage`.** "Học tới đâu" là dữ liệu của người dùng: phải đi theo tài khoản, thấy được trong database, và không bốc hơi khi đổi trình duyệt hay xoá cache. Không suy ra được từ `vocabulary_review_state` — state chỉ biết từ nào *đã* chấm, không biết các từ còn lại xếp hàng theo thứ tự nào.
+
+**Grade 6 là lần duy nhất điểm không đo TRÍ NHỚ mà đo một QUYẾT ĐỊNH.** Học viên khẳng định "thuộc rồi", và engine tôn trọng bằng cách nhảy thẳng lên mốc đã-thuộc thay vì bắt chờ ba tuần — nên interval đặt cứng ở ngưỡng chứ không nhân với hệ số cũ. Ease vẫn đi công thức chuẩn (tính như `GRADE_EASY`), và vẫn tính là một lượt pass.
+
+**`recall-check` tách khỏi `recall` vì nếu không thì một từ bị tính điểm hai lần trong một lượt.** Máy chỉ làm phần nó giỏi — kiểm tra gõ đúng không — rồi trả đáp án thật; mức độ nhớ do học viên tự chấm ở năm nút, ghi qua `/review`. Endpoint này **không đòi đăng nhập** vì nó không ghi gì, và từ đã xuất bản vốn công khai ở `GET /vocabulary/{id}`.
+
+### Frontend
+- [x] `_games.tsx` — gom `MatchGame`/`QuizGame` từ hai trang minigame về một chỗ, thêm `TopicSession`
+- [x] Trang cuốn sách hai cột: danh sách chủ đề bên trái, ba module (Gõ từ · Thẻ lật · Trắc nghiệm) qua tabs bên phải, kèm thanh tiến độ đọc lại từ máy chủ sau mỗi lượt chấm
+- [x] Thẻ lật xoay 3D quanh trục Y, nghĩa nằm trên mặt sau — không mọc thêm nội dung bên dưới
+
+**Ba module dùng CHUNG một bàn cờ, và bàn cờ thuộc về chủ đề chứ không thuộc về tab.** Chuyển gõ từ → thẻ lật là đổi *cách tương tác* với cùng một từ, không phải bắt đầu lại. Vì bàn cờ nằm trên máy chủ, chuyện này đúng cả khi component bị dựng lại.
+
+### Ba lỗi tiềm ẩn đã sửa (2026-08-17)
+- [x] **Lượt ghi bàn cờ bắn song song có thể lưu lùi một từ.** Mỗi `PUT` ghi đè toàn bộ `position`; chấm nhanh bằng phím 1–5 là hai request cách nhau vài chục mili-giây, và nếu cái `position=4` về sau cái `position=5` thì bản ghi cuối *vẫn hợp lệ, chỉ là sai*, không có gì báo. Các lượt ghi giờ nối đuôi nhau qua một hàng đợi promise
+- [x] **Nhiễu trắc nghiệm trùng nghĩa.** Hai từ khác nhau vẫn dịch ra cùng một tiếng Việt (trong kho: "quảng cáo", "thường xuyên"), nên lọc nhiễu theo id mà không lọc theo nghĩa sinh ra hai ô chữ y hệt — chỉ một ô được tô đúng, kèm cảnh báo `key` trùng của React. Gộp về `buildOptions` dùng chung cho cả hai màn trắc nghiệm
+- [x] **Thẻ lật đọc lộ đáp án cho trình đọc màn hình.** `backface-visibility` chỉ giấu khỏi *mắt*; mặt sau vẫn nằm trong cây accessibility nên người dùng screen reader nghe thấy nghĩa **trước khi** được hỏi có nhớ nghĩa không — mất luôn bài tập. Dùng `inert` trên mặt đang quay đi: che khỏi cây a11y, khoá tương tác, **và** tự đẩy focus ra. `aria-hidden` không làm hai việc sau, và đặt nó lên chính cái nút vừa bấm còn là vi phạm ARIA
+
+### Test
+- [x] 6 test backend mới (`test_learning_api.py`, `test_services.py`) — round-trip bàn cờ, tách theo học viên, từ chối topic nháp và `position` vượt mảng, đòi đăng nhập, grade 6 lên thẳng đã-thuộc, `recall-check` không ghi gì
+- [x] `e2e/vocabulary-learn.spec.ts` — 2 bài, **đếm request thật** thay vì tin con số trên màn hình
+
+**Bài e2e tự bỏ qua theo điều kiện lúc chạy**, chứ không tắt cứng như `vocabulary.spec.ts`: nó hỏi API xem có chủ đề nào ≥ 4 từ không, có thì chạy thật, không thì bỏ qua kèm lý do nói rõ thiếu gì. Một bài bị tắt cứng thì không bao giờ chạy lại, kể cả sau khi CI đã seed được dữ liệu.
+
+### Đã gây lại lỗi để xem test có đỏ không — và hai lần nó không đỏ
+Gây lại 4 lỗi, chỉ 2 làm test đỏ. Hai lần còn lại đã sửa **bài test** thay vì tự khen:
+
+- **Cho `key` của component kèm theo tab** (tức dựng lại mỗi lần đổi tab) — **vẫn xanh**, vì bàn cờ nằm trên máy chủ nên lần dựng lại đọc về đúng chỗ cũ. Bài test kiểm *hành vi* "không mất chỗ", không kiểm cơ chế nào tạo ra nó; cái làm nó đỏ thật là đặt lại `index` khi `mode` đổi. Đã ghi lại đúng như vậy trong docstring của file.
+- **Bỏ lọc nhiễu theo nghĩa, chạy 3 lượt** — **xanh cả ba**. Nhiễu bốc 3 trong hơn 40 từ, nên dù hồ từ có cặp trùng nghĩa thì xác suất cả cặp rơi vào một câu chỉ vài phần nghìn. Đã **xoá** khẳng định "các đáp án phải khác nhau": một dòng gần như không bao giờ đỏ là chi phí không đổi lấy gì. Quy tắc đó sống bằng lập luận viết tại `buildOptions`
+
+### Còn lại
+- [ ] Chạy `alembic upgrade head` trên môi trường thật (mới chỉ chạy trên database trắng và trên stack dev)
+- [ ] Bàn cờ ghép từ (`MatchGame`) hiện không có lối vào từ trang chủ đề — vẫn tới được qua `/learn/vocabulary/match/{slug}`. Nó ghép **nhiều từ cùng lúc** nên không nhét vào luồng năm nút được; muốn bày lại thì cho nó một tab riêng, đừng ép qua `TopicSession`
+- [ ] Hồ từ tải với `limit=200`. Chủ đề lớn nhất hiện có 50 từ nên chưa chạm trần, nhưng vượt 200 thì ván chỉ gồm 200 từ đầu và **không có gì nói ra điều đó** — đúng loại lỗi mà luật "màn hình dựng cây thì hiện thông báo khi `total` vượt số trả về" đã viết cho chỗ khác
 
 ---
 

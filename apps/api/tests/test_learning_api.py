@@ -24,7 +24,7 @@ from app.models import (
     VocabularyReviewState,
     VocabularyTopic,
 )
-from app.services.srs import GRADE_FORGOT, GRADE_GOOD, GRADE_HARD
+from app.services.srs import GRADE_FORGOT, GRADE_GOOD, GRADE_HARD, GRADE_MASTERED
 from tests.test_domain_model import make_audio
 
 
@@ -469,6 +469,117 @@ def test_another_learners_progress_does_not_leak(
     assert body["new"] == 1
 
 
+# --- chỗ học theo chủ đề ------------------------------------------------------
+
+
+def _make_business_topic(db_session: Session) -> Topic:
+    topic = Topic(slug="business", name="Business", status="published")
+    db_session.add(topic)
+    db_session.commit()
+    return topic
+
+
+def test_a_saved_session_round_trip_keeps_exactly_the_board_and_position(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """Bàn cờ học tới đâu phải được LƯU TRÊN SERVER đúng y nguyên.
+
+    Ghim vì đây là thứ giữ chỗ cho học viên qua F5 và qua các module: nếu PUT
+    mất một from-id hay GET trả sai `position`, học viên quay lại sẽ gặp từ sai
+    và con số tiến độ đứng yên mà không ai hiểu vì sao.
+    """
+    topic = _make_business_topic(db_session)
+    words = [
+        make_word(db_session, word, marker=m) for word, m in (("invoice", "a"), ("warehouse", "b"))
+    ]
+    for word in words:
+        db_session.add(VocabularyTopic(entry_id=word.id, topic_id=topic.id))
+    db_session.commit()
+
+    order = [str(words[1].id), str(words[0].id)]
+    saved = client.put(
+        f"/api/v1/vocabulary-topic-sessions/{topic.id}",
+        json={"entry_ids": order, "position": 1},
+        headers=headers,
+    )
+    assert saved.status_code == 200
+    assert saved.json() == {"entry_ids": order, "position": 1, "done": False}
+
+    body = client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=headers).json()
+    assert body == {"entry_ids": order, "position": 1, "done": False}
+
+    # Chạm từ cuối: position = len = đã xong ván.
+    body = client.put(
+        f"/api/v1/vocabulary-topic-sessions/{topic.id}",
+        json={"entry_ids": order, "position": 2},
+        headers=headers,
+    ).json()
+    assert body["done"] is True
+
+
+def test_a_topic_sesion_is_per_learner_and_starts_absent(
+    client: TestClient,
+    db_session: Session,
+    headers: dict[str, str],
+    learner: User,
+) -> None:
+    topic = _make_business_topic(db_session)
+    entry = make_word(db_session, marker="a")
+    db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    db_session.commit()
+
+    # Chưa từng lưu: 404 — client hiểu là "xáo một bàn mới".
+    assert (
+        client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=headers).status_code
+        == 404
+    )
+
+    client.put(
+        f"/api/v1/vocabulary-topic-sessions/{topic.id}",
+        json={"entry_ids": [str(entry.id)], "position": 1},
+        headers=headers,
+    )
+
+    other = User(email="other-session@example.com", hashed_password="x", role="learner")
+    db_session.add(other)
+    db_session.commit()
+    other_headers = {"Authorization": f"Bearer {create_access_token(str(other.id))}"}
+    assert (
+        client.get(
+            f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=other_headers
+        ).status_code
+        == 404
+    )
+
+
+def test_topic_sessions_reject_draft_topics_and_bad_positions(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    draft = Topic(slug="secret", name="Not ready", status="draft")
+    db_session.add(draft)
+    db_session.commit()
+    assert (
+        client.get(f"/api/v1/vocabulary-topic-sessions/{draft.id}", headers=headers).status_code
+        == 404
+    )
+
+    published = _make_business_topic(db_session)
+    entry = make_word(db_session, marker="a")
+    db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=published.id))
+    db_session.commit()
+    response = client.put(
+        f"/api/v1/vocabulary-topic-sessions/{published.id}",
+        json={"entry_ids": [str(entry.id)], "position": 2},
+        headers=headers,
+    )
+    assert response.status_code == 422, "position không được vượt ra ngoài bàn cờ"
+
+
+def test_topic_sessions_require_authentication(client: TestClient, db_session: Session) -> None:
+    topic = _make_business_topic(db_session)
+    assert client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}").status_code == 401
+
+
 # --- gõ lại từ -------------------------------------------------------------
 
 
@@ -557,6 +668,59 @@ def test_recall_on_a_draft_entry_is_404(
         f"/api/v1/vocabulary/{entry.id}/recall", json={"typed": "unfinished"}, headers=headers
     )
     assert response.status_code == 404
+
+
+def test_review_with_mastered_marks_the_word_learned_at_once(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """Nút "Thành thạo" đưa từ thẳng lên đã-thuộc — interval 21 ngày."""
+    entry = make_word(db_session, "invoice", marker="a")
+    body = client.post(
+        f"/api/v1/vocabulary/{entry.id}/review", json={"grade": GRADE_MASTERED}, headers=headers
+    ).json()
+    assert body["interval_days"] == 21
+
+    progress = client.get("/api/v1/vocabulary-progress", headers=headers).json()
+    assert progress["mastered"] == 1
+    assert progress["learning"] == 0
+
+
+def test_recall_check_judges_the_word_without_recording_anything(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """/recall-check chỉ chấm đúng/sai: không state, không log, không đổi tiến độ.
+
+    Luồng học theo chủ đề cần máy chấm (typing) rồi người học tự chấm mức độ nhớ
+    ở năm nút. Nếu /recall-check cũng ghi điểm thì mỗi từ bị tính hai lần trong
+    cùng một lượt — và đây là thứ không có nút bấm nào nhìn thấy, ghim bằng test.
+    """
+    entry = make_word(db_session, "invoice", marker="a")
+    body = client.post(
+        f"/api/v1/vocabulary/{entry.id}/recall-check", json={"typed": "invoice"}, headers=headers
+    ).json()
+    assert body["verdict"] == "correct"
+    assert body["expected"] == "invoice"
+
+    body = client.post(
+        f"/api/v1/vocabulary/{entry.id}/recall-check", json={"typed": "warehouse"}, headers=headers
+    ).json()
+    assert body["verdict"] == "wrong"
+
+    # Không có bất kỳ dấu vết nào được ghi lại.
+    assert db_session.query(VocabularyReviewState).count() == 0
+    assert db_session.query(VocabularyReviewLog).count() == 0
+    assert client.get("/api/v1/vocabulary-progress", headers=headers).json()["new"] == 1
+
+    # Từ nháp vẫn 404 — cổng đăng bài không nới lỏng.
+    draft = make_word(db_session, "unfinished", status="draft", marker="b")
+    assert (
+        client.post(
+            f"/api/v1/vocabulary/{draft.id}/recall-check",
+            json={"typed": "unfinished"},
+            headers=headers,
+        ).status_code
+        == 404
+    )
 
 
 def test_recall_moves_the_word_out_of_new_in_progress(

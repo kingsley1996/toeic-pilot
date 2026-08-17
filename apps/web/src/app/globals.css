@@ -211,6 +211,37 @@
   animation: settle 200ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
+/* Thẻ lật 3D của module flashcard: cả tấm thẻ là đích bấm, mặt sau mang câu trả
+   lời, xoay quanh trục Y tại chỗ. Giữ chuẩn của hệ thống: viền `rule-strong`
+   3:1, bán kính 4px (`.rounded`), không đổ bóng. Khối
+   `prefers-reduced-motion` bên dưới rút transition về 0.01ms, nên người bị
+   chóng mặt nhận được cú lật tức thời thay vì một vòng xoay. */
+.flip-scene {
+  perspective: 1200px;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 400ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -2014,6 +2014,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-topic-sessions/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Topic Session
+         * @description Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.
+         *
+         *     404 cho cả topic không tồn tại và "chưa từng lưu" — từ phía client hai thứ
+         *     giống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy
+         *     nháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.
+         */
+        get: operations["get_topic_session_api_v1_vocabulary_topic_sessions__topic_id__get"];
+        /**
+         * Put Topic Session
+         * @description Ghi lại bàn cờ sau mỗi lần chấm một từ — upsert theo (user, topic).
+         */
+        put: operations["put_topic_session_api_v1_vocabulary_topic_sessions__topic_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary/{entry_id}": {
         parameters: {
             query?: never;
@@ -2050,6 +2078,34 @@ export interface paths {
          *     học được gì. Ở đây phải viết ra được trước đã.
          */
         post: operations["submit_recall_api_v1_vocabulary__entry_id__recall_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/{entry_id}/recall-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check Recall
+         * @description Gõ lại từ: máy chấm đúng/sai, nhưng KHÔNG ghi lượt ôn.
+         *
+         *     Phục vụ luồng học theo chủ đề với năm nút chấm chuẩn: máy chỉ làm phần nó
+         *     giỏi — kiểm tra gõ đúng không — rồi trả câu trả lời thật cho học viên nhìn.
+         *     Mức độ nhớ sau đó do học viên tự chấm ở năm nút, ghi qua `/review`. Ghi
+         *     điểm ở đây sẽ tính từ này hai lần trong cùng một lượt.
+         *
+         *     Không đòi đăng nhập: endpoint này KHÔNG ghi gì và từ đã xuất bản vốn đã công
+         *     khai ở `GET /vocabulary/{id}`. Ghi điểm mới là thứ cần tài khoản.
+         */
+        post: operations["check_recall_api_v1_vocabulary__entry_id__recall_check_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3524,6 +3580,41 @@ export interface components {
             set_title: string | null;
         };
         /**
+         * RecallCheck
+         * @description Kết quả chấm gõ-đúng/sai, KHÔNG ghi lượt ôn nào.
+         *
+         *     Phục vụ luồng học theo chủ đề: máy chấm xong, học viên nhìn câu trả lời
+         *     thật rồi mới tự chấm mức độ nhớ bằng năm nút chuẩn. Ghi điểm ở đây sẽ làm
+         *     từ đó bị tính hai lần trong cùng một lượt.
+         */
+        RecallCheck: {
+            /** Expected */
+            expected: string;
+            /** Typed */
+            typed: string;
+            /** Verdict */
+            verdict: string;
+        };
+        /**
+         * RecallCheckSubmit
+         * @description Một lần gõ NHỜ CHẤM, chưa ghi điểm.
+         *
+         *     Khác `RecallSubmit` ở chỗ KHÔNG có `easy`: điểm SM-2 ở đây là năm nút
+         *     học viên tự chọn SAU khi thấy kết quả, không phải hai trạng thái easy/không.
+         */
+        RecallCheckSubmit: {
+            /**
+             * Give Up
+             * @default false
+             */
+            give_up: boolean;
+            /**
+             * Typed
+             * @description Nguyên văn học viên gõ, không chuẩn hoá trước
+             */
+            typed: string;
+        };
+        /**
          * RecallResult
          * @description Kết quả chấm + lượt ôn đã ghi.
          *
@@ -3640,7 +3731,7 @@ export interface components {
         ReviewSubmit: {
             /**
              * Grade
-             * @description One of [0, 3, 4, 5]
+             * @description One of [0, 3, 4, 5, 6]
              */
             grade: number;
         };
@@ -3944,6 +4035,37 @@ export interface components {
             position: number;
             /** Slug */
             slug: string;
+        };
+        /**
+         * TopicSession
+         * @description Bàn cờ đã lưu, trả lại cho client nối tiếp ván đang dở.
+         *
+         *     `done` suy ra từ `position` so với chiều dài mảng — không lưu thành cột, vì
+         *     một giá trị lưu song song sẽ lệch khỏi cặp (entry_ids, position) ngay lần ghi
+         *     đầu tiên quên cập nhật cả hai.
+         */
+        TopicSession: {
+            /** Done */
+            done: boolean;
+            /** Entry Ids */
+            entry_ids: string[];
+            /** Position */
+            position: number;
+        };
+        /**
+         * TopicSessionSubmit
+         * @description Lưu lại bàn cờ của một chủ đề cho học viên.
+         *
+         *     `entry_ids` là THỨ TỰ HỌC của ván (không phải tập hợp), `position` là chỉ
+         *     số của từ đang học trong danh sách đó — bằng `len(entry_ids)` khi đã chấm
+         *     xong cả ván. Hai invariant này được kiểm ở đây để không bao giờ lọt một bàn
+         *     cờ trỏ ra ngoài mảng vào DB.
+         */
+        TopicSessionSubmit: {
+            /** Entry Ids */
+            entry_ids: string[];
+            /** Position */
+            position: number;
         };
         /** TopicUpdate */
         TopicUpdate: {
@@ -8081,6 +8203,72 @@ export interface operations {
             };
         };
     };
+    get_topic_session_api_v1_vocabulary_topic_sessions__topic_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_topic_session_api_v1_vocabulary_topic_sessions__topic_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TopicSessionSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_vocabulary_api_v1_vocabulary__entry_id__get: {
         parameters: {
             query?: never;
@@ -8134,6 +8322,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecallResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_recall_api_v1_vocabulary__entry_id__recall_check_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecallCheckSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecallCheck"];
                 };
             };
             /** @description Validation Error */

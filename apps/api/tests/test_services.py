@@ -272,6 +272,30 @@ def test_the_mastery_boundary_is_exactly_the_interval_threshold() -> None:
     assert mastery(ReviewState()) == MASTERY_LEARNING
 
 
+def test_marking_a_word_mastered_jumps_straight_to_the_mastered_interval() -> None:
+    """Bậc "Thành thạo" (grade 6) đưa interval thẳng lên ngưỡng đã-thuộc.
+
+    Ghim vì nếu grade 6 bị xử lý như một bậc pass thường (1 → 6 → ×EF) thì lần
+    đầu tiên bấm Thành thạo chỉ cho interval 1 ngày, và mastery() vẫn đọc là
+    learning — ô "Thành thạo" sẽ không bao giờ đưa từ lên "đã thuộc" như nó hứa.
+    """
+    from app.services.srs import (
+        GRADE_MASTERED,
+        MASTERED_INTERVAL_DAYS,
+        MASTERY_MASTERED,
+        ReviewState,
+        mastery,
+        review,
+    )
+
+    now = datetime(2026, 8, 10, tzinfo=UTC)
+    out = review(ReviewState(), GRADE_MASTERED, now)
+    assert out.interval_days == MASTERED_INTERVAL_DAYS
+    assert out.repetitions == 1, "lượt Thành thạo vẫn là một lượt pass"
+    assert out.lapses == 0
+    assert mastery(ReviewState(interval_days=out.interval_days)) == MASTERY_MASTERED
+
+
 def test_failing_a_word_on_first_sight_is_not_a_lapse() -> None:
     """You cannot forget what you never learned.
 

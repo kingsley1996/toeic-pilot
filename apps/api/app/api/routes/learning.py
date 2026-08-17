@@ -30,6 +30,7 @@ from app.models import (
     VocabularyReviewLog,
     VocabularyReviewState,
     VocabularyTopic,
+    VocabularyTopicSession,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.learning import (
@@ -44,6 +45,8 @@ from app.schemas.learning import (
     DictationSummary,
     DictationTopicDetail,
     DictationTopicPublic,
+    RecallCheck,
+    RecallCheckSubmit,
     RecallResult,
     RecallSubmit,
     ReviewCard,
@@ -53,6 +56,8 @@ from app.schemas.learning import (
     StoryItem,
     StoryProgress,
     TopicPublic,
+    TopicSession,
+    TopicSessionSubmit,
     VocabularyCollectionDetail,
     VocabularyCollectionItemPublic,
     VocabularyCollectionPublic,
@@ -232,9 +237,7 @@ def _published_collection(db: Session, ref: str) -> VocabularyCollection:
     try:
         collection = db.get(VocabularyCollection, uuid.UUID(ref))
     except ValueError:
-        collection = db.scalar(
-            select(VocabularyCollection).where(VocabularyCollection.slug == ref)
-        )
+        collection = db.scalar(select(VocabularyCollection).where(VocabularyCollection.slug == ref))
     if collection is None or collection.status != PUBLISHED:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Collection not found")
     return collection
@@ -434,6 +437,62 @@ def vocabulary_progress(
     )
 
 
+# --- lưu chỗ học theo chủ đề -------------------------------------------------
+
+# Đường dẫn gạch nối, không lồng vào `/vocabulary/...` — cùng cái bẫy UUID đã
+# ghi ở `/vocabulary-progress`: `/vocabulary/{entry_id}` sẽ bắt "topic-sessions"
+# trước và trả 422.
+
+
+def _topic_session_public(session: VocabularyTopicSession) -> TopicSession:
+    entry_ids = [uuid.UUID(raw) for raw in session.entry_ids]
+    done = session.position >= len(entry_ids)
+    return TopicSession(entry_ids=entry_ids, position=session.position, done=done)
+
+
+@router.get("/vocabulary-topic-sessions/{topic_id}", response_model=TopicSession)
+def get_topic_session(
+    topic_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> TopicSession:
+    """Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.
+
+    404 cho cả topic không tồn tại và "chưa từng lưu" — từ phía client hai thứ
+    giống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy
+    nháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.
+    """
+    topic = db.scalars(select(Topic).where(Topic.id == topic_id, Topic.status == PUBLISHED)).first()
+    if topic is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+    session = db.get(VocabularyTopicSession, (current_user.id, topic_id))
+    if session is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No saved session")
+    return _topic_session_public(session)
+
+
+@router.put("/vocabulary-topic-sessions/{topic_id}", response_model=TopicSession)
+def put_topic_session(
+    topic_id: uuid.UUID,
+    body: TopicSessionSubmit,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> TopicSession:
+    """Ghi lại bàn cờ sau mỗi lần chấm một từ — upsert theo (user, topic)."""
+    topic = db.scalars(select(Topic).where(Topic.id == topic_id, Topic.status == PUBLISHED)).first()
+    if topic is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+
+    session = db.get(VocabularyTopicSession, (current_user.id, topic_id))
+    if session is None:
+        session = VocabularyTopicSession(user_id=current_user.id, topic_id=topic_id)
+        db.add(session)
+    session.entry_ids = [str(entry_id) for entry_id in body.entry_ids]
+    session.position = body.position
+    db.commit()
+    return _topic_session_public(session)
+
+
 # --- ghi một lượt ôn tập ---------------------------------------------------
 
 # Dùng chung cho hai lối vào: thẻ lật (`/review`, người học tự chấm) và gõ lại
@@ -627,6 +686,32 @@ def submit_recall(
     outcome = _apply_review(db, current_user.id, entry.id, grade)
     return RecallResult(
         **_review_result(entry.id, grade, outcome).model_dump(),
+        verdict=verdict,
+        expected=judgement.expected,
+        typed=judgement.typed,
+    )
+
+
+@router.post("/vocabulary/{entry_id}/recall-check", response_model=RecallCheck)
+def check_recall(
+    entry_id: uuid.UUID,
+    body: RecallCheckSubmit,
+    db: Session = Depends(get_db),
+) -> RecallCheck:
+    """Gõ lại từ: máy chấm đúng/sai, nhưng KHÔNG ghi lượt ôn.
+
+    Phục vụ luồng học theo chủ đề với năm nút chấm chuẩn: máy chỉ làm phần nó
+    giỏi — kiểm tra gõ đúng không — rồi trả câu trả lời thật cho học viên nhìn.
+    Mức độ nhớ sau đó do học viên tự chấm ở năm nút, ghi qua `/review`. Ghi
+    điểm ở đây sẽ tính từ này hai lần trong cùng một lượt.
+
+    Không đòi đăng nhập: endpoint này KHÔNG ghi gì và từ đã xuất bản vốn đã công
+    khai ở `GET /vocabulary/{id}`. Ghi điểm mới là thứ cần tài khoản.
+    """
+    entry = _published_entry(db, entry_id)
+    judgement = judge(body.typed, entry.headword)
+    verdict = VERDICT_UNKNOWN if body.give_up else judgement.verdict
+    return RecallCheck(
         verdict=verdict,
         expected=judgement.expected,
         typed=judgement.typed,

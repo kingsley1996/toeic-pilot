@@ -299,9 +299,7 @@ def test_creating_a_collection_with_a_duplicate_slug_is_a_conflict(
     assert response.status_code == 409
 
 
-def test_collection_detail_opens_by_slug_or_id(
-    client: TestClient, db_session: Session
-) -> None:
+def test_collection_detail_opens_by_slug_or_id(client: TestClient, db_session: Session) -> None:
     # Slug là URL thật của trang tuyển tập; endpoint 422 trước slug là lỗi chính
     # người dùng gặp khi bấm vào card.
     collection, _, _ = build_tree(db_session)

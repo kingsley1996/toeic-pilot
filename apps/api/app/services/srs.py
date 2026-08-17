@@ -7,7 +7,10 @@ session and re-runnable over historical logs when the parameters change.
 Grades follow the four-button convention rather than SM-2's original 0-5 scale.
 The original distinguishes three flavours of "forgot" that no learner can report
 reliably, so 0/1/2 collapse to one button; the surviving values keep their
-original arithmetic meaning.
+original arithmetic meaning. Grade 6 ("thành thạo") is a deliberate extension: it
+is the one place where the learner asserts "I own this word", and the engine
+honours that by jumping the interval straight to the mastered threshold — the
+same state SM-2 would reach only after weeks of passing reviews.
 """
 
 from dataclasses import dataclass
@@ -18,8 +21,11 @@ GRADE_FORGOT = 0
 GRADE_HARD = 3
 GRADE_GOOD = 4
 GRADE_EASY = 5
+# "Thành thạo": học viên khẳng định đã thuộc. Không phải một mức chất lượng của
+# SM-2 gốc — là quyết định chủ động đưa thẻ thẳng lên mốc MASTERED.
+GRADE_MASTERED = 6
 
-GRADES = (GRADE_FORGOT, GRADE_HARD, GRADE_GOOD, GRADE_EASY)
+GRADES = (GRADE_FORGOT, GRADE_HARD, GRADE_GOOD, GRADE_EASY, GRADE_MASTERED)
 
 # Below 1.30 the interval stops growing meaningfully and the card churns forever.
 MIN_EASE = Decimal("1.30")
@@ -134,6 +140,22 @@ def review(state: ReviewState, grade: int, now: datetime) -> ReviewOutcome:
             repetitions=0,
             lapses=state.lapses + 1 if learned_before else state.lapses,
             due_at=now + timedelta(days=FIRST_INTERVAL_DAYS),
+        )
+
+    if grade == GRADE_MASTERED:
+        # "Thành thạo" = học viên khẳng định đã thuộc, và engine tôn trọng điều
+        # đó bằng cách nhảy thẳng lên mốc đã-thuộc thay vì bắt chờ ba tuần. Đây
+        # là lần duy nhất điểm không đo chất lượng của TRÍ NHỚ mà đo một quyết
+        # định — nên interval đặt CỨNG ở ngưỡng, không nhân với hệ số cũ.
+        # Ease vẫn đi công thức chuẩn (chỉ số càng thấp càng thấy dễ), và lần
+        # này vẫn tính là một lượt pass: `repetitions` nhích lên.
+        ease = next_ease(state.ease_factor, GRADE_EASY)
+        return ReviewOutcome(
+            ease_factor=ease,
+            interval_days=MASTERED_INTERVAL_DAYS,
+            repetitions=state.repetitions + 1,
+            lapses=state.lapses,
+            due_at=now + timedelta(days=MASTERED_INTERVAL_DAYS),
         )
 
     repetitions = state.repetitions + 1

@@ -37,17 +37,19 @@ And one provisional spec:
 
 - **`planning/SPEC-LEARNING-HUB.md`** — the defaults the Learning Hub was built to (SM-2 grades, session limits, dictation grading). Explicitly built to be changed after real use; its §5 lists what will probably need to move.
 
-### Current state (2026-08-09)
+### Current state (2026-08-17)
 
 Phase 1 (scaffolding + auth) is done and hardened: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md` are closed.
 
 **The media pipelines are built** — `PHASE2-AUDIO.md` (audio, offline TTS in four accents) and `ADR-004-IMAGES.md` (Part 1 photographs, fetched and normalised, licence and attribution required). Both sit behind the optional `content` extra and neither may be imported by the API. `planning/MEDIA-PIPELINE.md` describes how they actually behave, including two real defects still open in §10.
 
-**The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, migrations `003`–`008`. Twenty-three tables cover vocabulary (with SM-2 spaced repetition), dictation and its four-level tree, questions/options/sets, practice tests, attempts, media assets, roles and score conversion. Phase 4–5 tables (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
+**The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, starting at migration `003`. **37 tables** as of `026` (measured off `Base.metadata`, 2026-08-17) cover vocabulary (with SM-2 spaced repetition and per-topic learning sessions), dictation and its four-level tree, questions/options/sets and their label taxonomy, practice tests, attempts, media assets, roles, score conversion, and the AI coach. `study_plan`, `learning_memory` and `knowledge_chunk` still exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
 **Vocabulary and dictation work end to end.** An editor pastes rows, they land as `draft`, `app/content/backfill_audio.py` synthesises the audio out of band, publishing is refused until every clip matches its text, and a learner reviews with SM-2 flashcards and works through dictation. Verified through the running Docker stack, not just in tests.
 
 **Dictation has its own four-level tree and grades in the browser.** `dictation_topic → dictation_section → dictation_story → dictation_item`, with `item.position` ordering the sentences inside a story and progress tracked per story. The whole of `apps/web/src/lib/dictation.ts` is a step-for-step port of `app/services/dictation.py`; the server still re-grades every submission and its number is the one stored. The UI shows no percentage at all — only "đúng rồi / chưa đúng" and "3/6 câu đã xong".
+
+**Vocabulary is learned topic by topic, and the learner's place in a topic lives on the server** (`vocabulary_topic_session`, migration `026`; ROADMAP §4e). Three modules — typing, flashcard, quiz — share one board and one self-grading step; see "Learning vocabulary by topic" below for the four invariants that fail quietly.
 
 Three things to know before extending it:
 
@@ -106,7 +108,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload --port 8000
 uv sync --extra dev --extra content         # add the offline content pipeline
 
-uv run pytest                              # 296 collected: 294 run + 2 `external` deselected
+uv run pytest                              # 632 collected: 630 run + 2 `external` deselected
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 
 # The three `integration` tests default to the DEV database, and they run
@@ -248,6 +250,24 @@ A NULL prompt is also **not** missing data in the UI. Rendering "thiếu đề b
 **Images (ADR-004).** `image_asset` mirrors `audio_asset` but is a separate table on purpose: merged, more than half the columns would always be NULL. `license`, `attribution` and `source_url` are NOT NULL because most openly-licensed photographs are CC-BY — usable only *with* credit — and storing the credit is not enough: any endpoint serving a Part 1 image must return it and the UI must render it. `app/content/images.py` fetches from a hand-curated spec file rather than a search API, because a photograph still needs a human to decide whether four statements can be written about it.
 
 **Scoring (`app/services/scoring.py`).** The raw-to-scaled curve lives in `score_scale` / `score_conversion` rather than in code: TOEIC curves differ per form, and a scoring bug should be fixable by editing a row. Lookups **refuse to guess** — a missing conversion raises rather than interpolating, because a silently wrong score is stored permanently on the attempt and the learner cannot tell it is wrong. The seeded default is an approximation and says so in `source_note`; ETS publishes no official table.
+
+### Learning vocabulary by topic
+
+**The learner's place in a topic is server state, not browser state.** `vocabulary_topic_session` is keyed `(user_id, topic_id)` and holds `entry_ids` — the *order* of the round — plus `position`, the number of words already graded. It is not `localStorage` because "how far I got" is user data: it must follow the account, be visible in the database, and survive a cleared cache. It cannot be derived from `vocabulary_review_state` either — state knows which words have been graded, not what order the remaining ones are queued in.
+
+**`entry_ids` is deliberately not a foreign key.** It is an ordering, not a relationship, and an FK into `vocabulary_entry` would block removing a word from a topic just because someone is mid-round on it. The cost is orphaned ids, so the read path reconciles the saved board against the current pool and **reshuffles a fresh one if they disagree** — a new round beats resuming a board that points at the wrong words. `done` is derived (`position >= len(entry_ids)`), never stored, for the same reason as `StoryProgress`.
+
+**Grade 6 is the one grade that measures a decision rather than a memory.** `GRADE_MASTERED` is an extension beyond SM-2's 0–5: the learner asserts "I own this word" and the engine honours it by setting `interval_days` **hard** to `MASTERED_INTERVAL_DAYS` instead of multiplying the old one. Ease still goes through the normal formula (computed as `GRADE_EASY`), and it still counts as a passing repetition. Migration `025` widened the CHECK to `0..6`; its downgrade will fail if any grade-6 row exists, which is correct — that data is genuinely invalid under the old scale.
+
+**`/recall-check` exists so a word is not scored twice in one turn.** The typing module asks the machine to do the part it is good at — did I spell it right — and returns the real answer; the learner then self-grades on the five buttons, and *that* is what `/review` records. Scoring inside `recall-check` would count the word twice. It takes no auth on purpose: it writes nothing, and a published word is already public at `GET /vocabulary/{id}`. Note this is a different endpoint from `/recall`, which does record.
+
+**The board belongs to the topic, not to the tab.** Typing, flashcard and quiz are three ways of meeting the same word in the same round; switching modules must not restart anything. Because the board is on the server this holds even when the component remounts — which also means a test that only switches tabs cannot catch a remount bug. What breaks the invariant for real is resetting `index` on a `mode` change.
+
+**Writes to the board must be serialised.** Every `PUT` overwrites the whole `position`, and grading quickly on keys 1–5 fires two requests tens of milliseconds apart. If `position=4` lands after `position=5` the stored board goes *backwards* one word — the last write is still valid, just wrong, and nothing reports it. `persistBoard` chains its writes through one promise for that reason; it stays fire-and-forget toward the caller, because a failed save should cost a place marker, not stall the round.
+
+**Quiz distractors are filtered by meaning, not just by id.** Two different words translate to the same Vietnamese ("quảng cáo", "thường xuyên" each belong to two entries today), so filtering only on `entry.id` can put two identical strings on screen with just one of them scored correct — plus a duplicate React `key`. `buildOptions` dedupes on the text and is shared by both quiz surfaces. When the pool cannot supply three distinct meanings the question simply has fewer options, on purpose.
+
+**A 3D-flipped face is hidden from eyes, not from screen readers.** `backface-visibility` leaves the back of a flashcard in the accessibility tree, so a screen-reader user hears the meaning before being asked whether they remember it — the exercise is gone. The face turned away carries `inert`, which removes it from the a11y tree, blocks interaction **and** moves focus out. `aria-hidden` does neither of the last two, and putting it on the button the user just clicked is itself an ARIA violation.
 
 **Dictation is graded twice, and the two graders must agree.** `apps/web/src/lib/dictation.ts` is a step-for-step port of `apps/api/app/services/dictation.py` — the client grades so feedback is instant, the server re-grades every submitted attempt, and the server's row is the one stored. Drift is worse than it looks: the client decides whether to say "đúng rồi" while the server decides whether the sentence counts as done, so the two can disagree about whether a learner just finished something. Nobody reports that; they assume they misread. Three things make the port non-obvious: Python's `\w` is Unicode and JavaScript's is ASCII (hence `\p{L}\p{N}_` with the `u` flag), the order is lowercase-then-strip, and the diff is `difflib.SequenceMatcher` — **not** an ordinary LCS, so a hand-rolled diff highlights different words. Change one file, change the other, and re-run the parity check.
 
@@ -431,9 +451,15 @@ Two details are load-bearing. `client_ip` reads the **last** `X-Forwarded-For` h
 
 **E2E rather than component tests, deliberately.** Every frontend bug this project has produced lived at a *seam*, and none of them would fail a render test: a delete button whose handler silently never ran, attached media rendering as "chưa có" because a lookup map was never passed, six endpoints changing shape while `tsc` stayed green, `""` where the database required NULL. Backend tests were green through all of it.
 
-The specs cover the two flows the ROADMAP asks for — register→learn, and open a test→answer→submit→results→review — plus the unfinished-attempt surfaces. Each test registers its own account with a timestamped email, because `users.email` is UNIQUE and a shared fixture account makes the second run fail for a reason that has nothing to do with the code. The exam flow uses the seeded demo test rather than building content: creating one needs an admin, and `register` deliberately cannot grant a role, so seeding an admin inside the test would be more scaffolding than the thing under test.
+The specs cover the flows the ROADMAP asks for — register→learn; open a test→answer→submit→results→review; and learn a vocabulary topic→self-grade→reload and resume — plus the unfinished-attempt surfaces. Each test registers its own account with a timestamped email, because `users.email` is UNIQUE and a shared fixture account makes the second run fail for a reason that has nothing to do with the code. The exam flow uses the seeded demo test rather than building content: creating one needs an admin, and `register` deliberately cannot grant a role, so seeding an admin inside the test would be more scaffolding than the thing under test.
+
+**Skip on a condition asked at run time, not on a hard `true`.** `vocabulary.spec.ts` is disabled with `test.skip(true, …)` because CI runs a blank database, and the cost of that is that it never runs again — not even once CI can seed. `vocabulary-learn.spec.ts` asks the API instead whether a topic with enough words exists, so it runs for real on the dev stack and skips with a message naming what is missing everywhere else. Same shape as the `integration` marker on the API side.
 
 **A green e2e proves nothing until you have seen it go red.** Each spec here was checked by reintroducing the bug it exists to catch — the `Page[T]` envelope regression turns the unfinished-attempt test red, and restoring the fix turns it green.
+
+**Expect some of those red checks to stay green, and fix the test rather than the story.** Of four bugs reintroduced against the vocabulary-learning spec, two never turned it red. Giving the component a per-tab `key` (remount on every tab switch) stayed green because the board lives on the server, so the remount reads the right place back — the test pins the *behaviour* "you do not lose your place", and the docstring now says so instead of claiming it catches remounts. Removing the meaning-based distractor filter also stayed green across three runs: three distractors drawn from forty-odd words make the chance of both halves of a duplicate pair landing on one question a few in a thousand. That assertion was deleted. An assertion that cannot realistically fail is cost without return, and leaving it in while believing it protects you is worse than not having it.
+
+**Re-running the suite hits the auth rate limiter, and the failure names the wrong thing.** `rate_limit_anonymous` keys on the client IP, and every spec registers a fresh account, so a few consecutive runs start failing at `POST /auth/register` with 429. What you see is `expect(page).toHaveURL(/\/learn$/)` failing in *every* test including ones unrelated to your change. Clear it with `docker compose exec redis redis-cli DEL ratelimit:register:<ip>` (`--scan --pattern 'ratelimit:*'` finds the key).
 
 ## Testing conventions
 
