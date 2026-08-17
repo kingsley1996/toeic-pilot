@@ -8,8 +8,8 @@ import {
   type VocabularySummary,
 } from "@toeic-pilot/shared";
 import { Gamepad2, Keyboard, Layers, Library } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
@@ -49,6 +49,12 @@ type TabId = (typeof TABS)[number]["id"];
 function CollectionItemDetail() {
   const itemId = String(useParams<{ collectionItemId: string }>().collectionItemId ?? "");
   const { token } = useSession();
+  /* `?topic=<slug>` mở thẳng một chủ đề cụ thể thay vì chủ đề đầu tiên. Cần cho
+     lối "học tiếp" trên trang chủ: nếu học viên đang dở chủ đề thứ tư của cuốn
+     sách, dẫn họ về cuốn sách rồi mở chủ đề đầu tiên là ném họ ra khỏi đúng chỗ
+     họ vừa rời đi. Chỉ là giá trị KHỞI TẠO — bấm sang chủ đề khác không viết
+     lại URL, vì làm thế sẽ nhồi lịch sử trình duyệt bằng từng cú bấm tab. */
+  const wantedSlug = useSearchParams().get("topic");
 
   const [detail, setDetail] = useState<VocabularyItemDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -80,14 +86,18 @@ function CollectionItemDetail() {
         // `activeSlug === null` làm cờ. Đặt ở đây chứ không phải một effect
         // riêng: không có vòng re-render nào ngoài vòng tải dữ liệu.
         if (body.topics.length > 0) {
-          setActiveSlug((current) => current ?? body.topics[0]!.slug);
+          // Slug trong URL chỉ được dùng khi nó THUỘC cuốn sách này; một slug
+          // lạc (chủ đề đã chuyển sách, link cũ) rơi về chủ đề đầu tiên chứ
+          // không để trang trống.
+          const wanted = body.topics.find((topic) => topic.slug === wantedSlug);
+          setActiveSlug((current) => current ?? wanted?.slug ?? body.topics[0]!.slug);
         }
       })
       .catch(() => setError("Không tải được cuốn sách này."));
     return () => {
       stale = true;
     };
-  }, [itemId]);
+  }, [itemId, wantedSlug]);
 
   const topics = detail?.topics ?? [];
   const activeTopic = topics.find((topic) => topic.slug === activeSlug) ?? topics[0] ?? null;
@@ -365,5 +375,18 @@ function TopicModules({
 }
 
 export default function CollectionItemDetailPage() {
-  return <CollectionItemDetail />;
+  // useSearchParams đẩy route ra khỏi render tĩnh trừ khi nó nằm trong một
+  // Suspense boundary — cùng lý do đã ghi ở `/learn/vocabulary/[slug]`.
+  return (
+    <Suspense
+      fallback={
+        <Page>
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="mt-6 h-64" />
+        </Page>
+      }
+    >
+      <CollectionItemDetail />
+    </Suspense>
+  );
 }

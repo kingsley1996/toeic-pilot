@@ -12,6 +12,7 @@ export type HTTPValidationError = components["schemas"]["HTTPValidationError"];
 // Learning Hub
 export type TopicSession = components["schemas"]["TopicSession"];
 export type TopicSessionSubmit = components["schemas"]["TopicSessionSubmit"];
+export type TopicSessionSummary = components["schemas"]["TopicSessionSummary"];
 export type TopicPublic = components["schemas"]["TopicPublic"];
 export type VocabularyCollectionPublic = components["schemas"]["VocabularyCollectionPublic"];
 export type VocabularyCollectionItemPublic =
@@ -161,6 +162,9 @@ export const API_ROUTES = {
   recallCheck: (id: string) => `/api/v1/vocabulary/${id}/recall-check`,
   // Bàn cờ học tới đâu của một chủ đề, lưu TRÊN SERVER theo (user, topic).
   vocabularyTopicSession: (topicId: string) => `/api/v1/vocabulary-topic-sessions/${topicId}`,
+  // Danh sách ván học của chính học viên, mới động vào trước. Mảng trần: số ván
+  // không vượt quá số chủ đề đã xuất bản (nhóm A của `schemas/common.py`).
+  vocabularyTopicSessions: "/api/v1/vocabulary-topic-sessions",
 
   // Cây từ vựng: collection -> collection_item -> topic. Gạch nối, không lồng vào
   // `/vocabulary/...` (cùng luật với `dictation-topics` bên dưới).

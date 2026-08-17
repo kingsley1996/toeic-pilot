@@ -59,6 +59,7 @@ Sprint 4d Media upload          🟡 ĐANG LÀM (mục 4d)
 Sprint 4e Học từ vựng theo chủ đề 🟡 ĐANG LÀM, chưa commit (mục 4e)
 Sprint 4f Trang chủ -> /dashboard  ✅ XONG (mục 4f)
 Sprint 4g Sidebar thay nav ngang   ✅ XONG (mục 4g)
+Sprint 4h Dashboard khối từ vựng   ✅ XONG (mục 4h)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -427,6 +428,41 @@ Cộng thêm một chi tiết thừa: trong `/admin/**`, sidebar vẫn hiện "Q
 - [x] `tsc`, `eslint`, `prettier` sạch · Playwright **7 bài xanh**
 - [x] Ảnh chụp thật ở 1280×860 và 390×780: `/dashboard`, `/learn/vocabulary`, `/` (thanh trên, không đổi), `/admin/ai/skill-tags` (mục con lồng vẫn đúng), và ngăn kéo mobile đóng/mở
 - [x] `e2e/auth.spec.ts` sửa theo: đăng xuất giờ là nút ở đáy sidebar, không còn là mục trong menu xổ
+
+---
+
+## 4h. Dashboard — khối từ vựng dựng lại · ✅ XONG (2026-08-17)
+
+Dựng theo ảnh mẫu ở [`improve-ui/`](improve-ui/): hai cột — trái là **Thống kê học tập** (lưới 2×2 số liệu + lối vào ôn tập), phải là **Trạng thái từ vựng** (thanh xếp chồng ba mức + số từng mức + tổng). Thay cho ô "Cần ôn hôm nay" một-con-số-to và ô "Từ vựng" nhỏ trước đây.
+
+### Ba phần của ảnh mẫu KHÔNG dựng, ba lý do khác nhau
+- **Đấu trường từ vựng** — tính năng chưa tồn tại. Không phải chuyện giao diện, nên không có gì để dựng.
+- **Độ chính xác (93%)** — **dữ liệu không có**. `vocabulary_review_log` có ghi `grade` nên tỉ lệ nhớ được là *tính được*, nhưng không endpoint nào trả nó về. Dựng ô đó bằng một con số suy từ thứ khác sẽ cho một tỉ lệ trông như đo được mà không đo gì cả. Ô thứ tư dùng **chuỗi ngày** — số liệu thật, đã có sẵn trong `LearningStats`. Mở khoá bằng cách thêm `reviews_correct` vào `gather_stats`.
+
+### "Tiếp tục học" — dựng sau, cùng endpoint của nó
+Ban đầu bỏ qua vì thiếu dữ liệu, rồi làm nốt: thêm **`GET /api/v1/vocabulary-topic-sessions`** liệt kê ván học của chính học viên, mới động vào trước.
+
+- Mảng trần chứ không `Page[T]`: số ván của MỘT học viên bị chặn trên bởi số chủ đề đã xuất bản, vì khoá chính là `(user, topic)` — nhóm (A) của `schemas/common.py`.
+- **Không trả `entry_ids`.** Danh sách đó dài bằng cả chủ đề (40–50 id) và chỉ có ích cho màn đang học; nhét vào để hiện một dòng "3/41 từ" là gửi vài nghìn ký tự cho một con số.
+- **Lọc `published` ở chủ đề**, và **outer join** sang cuốn sách: `topic.collection_item_id` nullable nên chủ đề chưa xếp vẫn có ván hợp lệ, và inner join sẽ nuốt mất chúng.
+- Trang cuốn sách nhận thêm **`?topic=<slug>`**. Không có nó thì "Học tiếp" dẫn về cuốn sách rồi mở chủ đề ĐẦU TIÊN — ném học viên ra khỏi đúng chỗ họ vừa rời đi. Slug lạc (chủ đề đã chuyển sách, link cũ) rơi về chủ đề đầu tiên chứ không để trang trống.
+- Khối này **chỉ hiện khi thật sự có ván dở**; không có thì biến mất hẳn, chứ không rơi về "tuyển tập đầu tiên".
+
+Đã chạy thật đầu-cuối trên stack dev: học dở 3 từ của chủ đề **thứ hai** trong cuốn sách → dashboard hiện "600 từ vựng thiết yếu cho TOEIC · Music · 3/41 từ" → bấm Học tiếp → về đúng chủ đề Music, đúng từ 4/41 (không phải Business, chủ đề đầu danh sách).
+
+### Hai chỗ lệch khỏi ảnh mẫu, có chủ đích
+- **Huy hiệu icon VUÔNG bo 4px**, không tròn. Bán kính 4px là ngôn ngữ của cả hệ và thang Tailwind đã bị thay, nên một `rounded-full` ở đây sẽ là ngoại lệ duy nhất trong toàn bộ giao diện.
+- **Không dùng gradient.** Ảnh mẫu tô gradient tím–hồng cho nút đấu trường; hệ này không có gradient nào và §6.3 nói độ nổi đến từ cấu trúc chứ không từ trang trí.
+
+### Hai lỗi chỉ lộ ra khi nhìn số thật
+Cả hai đều không có test nào bắt được — tìm ra bằng cách chụp màn hình một tài khoản mới và một tài khoản đã chấm vài từ:
+
+- **Thanh xếp chồng nuốt mất phần nhỏ.** Với kho 303 từ, 2 từ đã thuộc là 0.66% — làm tròn xuống thành **không pixel nào**, nên thanh nói "chưa thuộc gì cả" trong khi con số ngay dưới nó nói 2. Phần khác 0 giờ có `minWidth: 3px`: ba pixel không đọc được tỉ lệ, nhưng đúng ở chỗ quan trọng hơn — có hay không có.
+- **Số 0 vẫn bị tô màu.** Một "0" màu xanh lá dưới nhãn "Đã thuộc" đọc như thể có gì đó đã xong. Màu chỉ đặt khi số khác 0.
+
+### Kiểm
+- [x] `pytest` **631 passed** (1 test mới cho endpoint liệt kê) · `tsc`, `eslint`, `prettier` sạch · `gen:api-types` không drift · Playwright **7 bài xanh**
+- [x] Ảnh chụp thật ở 1280×900 và 390px, cho **hai** trạng thái: tài khoản mới tinh (mọi số bằng 0) và tài khoản đã chấm 6 từ (303 tổng · 297/4/2 · chuỗi 1 ngày)
 
 ---
 

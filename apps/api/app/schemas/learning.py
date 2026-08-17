@@ -154,6 +154,29 @@ class TopicSession(TopicSessionSubmit):
     done: bool
 
 
+class TopicSessionSummary(BaseModel):
+    """Một ván đang lưu, kèm đủ ngữ cảnh để dựng lối "học tiếp" mà không phải
+    gọi thêm hai endpoint nữa.
+
+    KHÔNG trả `entry_ids`. Danh sách đó dài bằng cả chủ đề (40–50 id) và chỉ có
+    ích cho màn đang học; nhét nó vào một danh sách để hiện một dòng "còn 12/42
+    từ" là gửi vài nghìn ký tự cho một con số.
+
+    `collection_item_*` là NULL được: `topic.collection_item_id` nullable, nên
+    một chủ đề chưa xếp vào cuốn sách nào vẫn có ván học hợp lệ. Phía đọc phải
+    rơi về tên chủ đề, không được coi cuốn sách là chắc chắn có.
+    """
+
+    topic_id: uuid.UUID
+    topic_slug: str
+    topic_name: str
+    collection_item_id: uuid.UUID | None
+    collection_item_name: str | None
+    total: int
+    position: int
+    done: bool
+
+
 class ReviewCard(VocabularyDetail):
     """A card in a review session.
 

@@ -58,6 +58,7 @@ from app.schemas.learning import (
     TopicPublic,
     TopicSession,
     TopicSessionSubmit,
+    TopicSessionSummary,
     VocabularyCollectionDetail,
     VocabularyCollectionItemPublic,
     VocabularyCollectionPublic,
@@ -448,6 +449,53 @@ def _topic_session_public(session: VocabularyTopicSession) -> TopicSession:
     entry_ids = [uuid.UUID(raw) for raw in session.entry_ids]
     done = session.position >= len(entry_ids)
     return TopicSession(entry_ids=entry_ids, position=session.position, done=done)
+
+
+@router.get("/vocabulary-topic-sessions", response_model=list[TopicSessionSummary])
+def list_topic_sessions(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[TopicSessionSummary]:
+    """Các ván học của học viên này, mới động vào trước.
+
+    Mảng trần chứ không phải `Page[T]`: số ván của MỘT học viên không thể vượt
+    quá số chủ đề đã xuất bản (hiện là 7), vì khoá chính là `(user, topic)`.
+    Đây là nhóm (A) của `schemas/common.py` — bị chặn trên bởi chính miền dữ
+    liệu. Bọc envelope ở đây bắt frontend xử lý một trường hợp không xảy ra
+    được. Xét lại nếu số chủ đề lên tới hàng trăm.
+
+    Lọc `published` ở CẢ chủ đề: một chủ đề bị rút về nháp mà vẫn hiện trong
+    "học tiếp" sẽ dẫn học viên tới một trang 404.
+    """
+    rows = db.execute(
+        select(VocabularyTopicSession, Topic, VocabularyCollectionItem)
+        .join(Topic, Topic.id == VocabularyTopicSession.topic_id)
+        # OUTER: `topic.collection_item_id` nullable — chủ đề chưa xếp vào cuốn
+        # sách nào vẫn có ván học hợp lệ, và inner join sẽ nuốt mất chúng.
+        .outerjoin(
+            VocabularyCollectionItem,
+            VocabularyCollectionItem.id == Topic.collection_item_id,
+        )
+        .where(
+            VocabularyTopicSession.user_id == current_user.id,
+            Topic.status == PUBLISHED,
+        )
+        .order_by(VocabularyTopicSession.updated_at.desc(), VocabularyTopicSession.topic_id)
+    ).all()
+
+    return [
+        TopicSessionSummary(
+            topic_id=topic.id,
+            topic_slug=topic.slug,
+            topic_name=topic.name,
+            collection_item_id=item.id if item else None,
+            collection_item_name=item.name if item else None,
+            total=len(session.entry_ids),
+            position=session.position,
+            done=session.position >= len(session.entry_ids),
+        )
+        for session, topic, item in rows
+    ]
 
 
 @router.get("/vocabulary-topic-sessions/{topic_id}", response_model=TopicSession)

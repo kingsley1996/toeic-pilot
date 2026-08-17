@@ -2014,6 +2014,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-topic-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Topic Sessions
+         * @description Các ván học của học viên này, mới động vào trước.
+         *
+         *     Mảng trần chứ không phải `Page[T]`: số ván của MỘT học viên không thể vượt
+         *     quá số chủ đề đã xuất bản (hiện là 7), vì khoá chính là `(user, topic)`.
+         *     Đây là nhóm (A) của `schemas/common.py` — bị chặn trên bởi chính miền dữ
+         *     liệu. Bọc envelope ở đây bắt frontend xử lý một trường hợp không xảy ra
+         *     được. Xét lại nếu số chủ đề lên tới hàng trăm.
+         *
+         *     Lọc `published` ở CẢ chủ đề: một chủ đề bị rút về nháp mà vẫn hiện trong
+         *     "học tiếp" sẽ dẫn học viên tới một trang 404.
+         */
+        get: operations["list_topic_sessions_api_v1_vocabulary_topic_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-topic-sessions/{topic_id}": {
         parameters: {
             query?: never;
@@ -4066,6 +4095,40 @@ export interface components {
             entry_ids: string[];
             /** Position */
             position: number;
+        };
+        /**
+         * TopicSessionSummary
+         * @description Một ván đang lưu, kèm đủ ngữ cảnh để dựng lối "học tiếp" mà không phải
+         *     gọi thêm hai endpoint nữa.
+         *
+         *     KHÔNG trả `entry_ids`. Danh sách đó dài bằng cả chủ đề (40–50 id) và chỉ có
+         *     ích cho màn đang học; nhét nó vào một danh sách để hiện một dòng "còn 12/42
+         *     từ" là gửi vài nghìn ký tự cho một con số.
+         *
+         *     `collection_item_*` là NULL được: `topic.collection_item_id` nullable, nên
+         *     một chủ đề chưa xếp vào cuốn sách nào vẫn có ván học hợp lệ. Phía đọc phải
+         *     rơi về tên chủ đề, không được coi cuốn sách là chắc chắn có.
+         */
+        TopicSessionSummary: {
+            /** Collection Item Id */
+            collection_item_id: string | null;
+            /** Collection Item Name */
+            collection_item_name: string | null;
+            /** Done */
+            done: boolean;
+            /** Position */
+            position: number;
+            /**
+             * Topic Id
+             * Format: uuid
+             */
+            topic_id: string;
+            /** Topic Name */
+            topic_name: string;
+            /** Topic Slug */
+            topic_slug: string;
+            /** Total */
+            total: number;
         };
         /** TopicUpdate */
         TopicUpdate: {
@@ -8199,6 +8262,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_topic_sessions_api_v1_vocabulary_topic_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicSessionSummary"][];
                 };
             };
         };

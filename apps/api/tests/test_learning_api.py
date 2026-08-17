@@ -19,6 +19,8 @@ from app.models import (
     Topic,
     User,
     VocabularyAudio,
+    VocabularyCollection,
+    VocabularyCollectionItem,
     VocabularyEntry,
     VocabularyReviewLog,
     VocabularyReviewState,
@@ -578,6 +580,57 @@ def test_topic_sessions_reject_draft_topics_and_bad_positions(
 def test_topic_sessions_require_authentication(client: TestClient, db_session: Session) -> None:
     topic = _make_business_topic(db_session)
     assert client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}").status_code == 401
+    assert client.get("/api/v1/vocabulary-topic-sessions").status_code == 401
+
+
+def test_listing_sessions_carries_the_book_and_hides_unpublished_topics(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """Danh sách ván học phải mang theo TÊN CUỐN SÁCH và bỏ chủ đề đã rút.
+
+    Ghim hai thứ mà lỗi của chúng đều im lặng. Thiếu `collection_item_*` thì lối
+    "học tiếp" trên trang chủ phải gọi thêm hai endpoint nữa mới biết bấm vào
+    đâu — hoặc tệ hơn, nó đoán. Và một chủ đề bị rút về nháp mà vẫn hiện trong
+    danh sách sẽ dẫn học viên tới một trang 404, trong khi danh sách trông vẫn
+    hoàn toàn bình thường.
+    """
+    collection = VocabularyCollection(slug="toeic", name="Từ vựng TOEIC", status="published")
+    db_session.add(collection)
+    db_session.flush()
+    book = VocabularyCollectionItem(
+        collection_id=collection.id, name="600 từ vựng thiết yếu", status="published"
+    )
+    db_session.add(book)
+    db_session.flush()
+
+    inside = Topic(slug="business", name="Business", status="published", collection_item_id=book.id)
+    # Chưa xếp vào cuốn sách nào — `collection_item_id` nullable, và ván học của
+    # nó vẫn hợp lệ. Inner join sẽ nuốt mất trường hợp này.
+    loose = Topic(slug="misc", name="Chủ đề lẻ", status="published")
+    drafted = Topic(slug="draft-topic", name="Nháp", status="draft")
+    db_session.add_all([inside, loose, drafted])
+    db_session.commit()
+
+    for topic in (inside, loose, drafted):
+        word = make_word(db_session, f"w-{topic.slug}", marker=topic.slug[0])
+        client.put(
+            f"/api/v1/vocabulary-topic-sessions/{topic.id}",
+            json={"entry_ids": [str(word.id)], "position": 0},
+            headers=headers,
+        )
+
+    body = client.get("/api/v1/vocabulary-topic-sessions", headers=headers).json()
+    by_slug = {row["topic_slug"]: row for row in body}
+
+    assert "draft-topic" not in by_slug, "chủ đề nháp không được dẫn học viên vào trang 404"
+    assert by_slug["business"]["collection_item_name"] == "600 từ vựng thiết yếu"
+    assert by_slug["business"]["collection_item_id"] == str(book.id)
+    assert by_slug["misc"]["collection_item_id"] is None
+    assert by_slug["business"]["total"] == 1
+    assert by_slug["business"]["done"] is False
+    # `entry_ids` cố ý KHÔNG có trong danh sách: nó dài bằng cả chủ đề và chỉ
+    # cần cho màn đang học.
+    assert "entry_ids" not in by_slug["business"]
 
 
 # --- gõ lại từ -------------------------------------------------------------
