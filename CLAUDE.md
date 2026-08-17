@@ -67,6 +67,13 @@ Three things to know before extending it:
 - **`useRequireSession({ canEdit: true })` redirects rather than showing a 403.** Someone who never had access should not be told they were refused. The server still enforces every boundary through `require_role`; this only decides what is worth rendering.
 - **`status` in the session is derived, not stored.** Writing it from an effect cascades renders and lets it drift out of step with the token it describes. The `react-hooks/set-state-in-effect` lint rule enforces this and will reject the shortcut.
 
+**The learner's home is `/dashboard`; everything they study is under `/learn/**`.** Login, registration and `useRequireSession`'s refusal path all land on `/dashboard`, and `/learn` is a server redirect kept because it was the destination for many sprints and is in people's history and bookmarks. Only the hub moved — `/learn/vocabulary`, `/learn/dictation`, `/learn/tests`, `/learn/review`, `/learn/typing` and `/learn/attempts` keep their paths, because a dashboard and a place to study are different things and `/dashboard/vocabulary` would name the second one wrongly.
+
+Two consequences, one of which is silent:
+
+- **The logo always points at `/`, even when signed in.** It used to point at the hub; that was reverted deliberately (ROADMAP §4f), so do not "fix" it back. The way home is the first nav item, which is always visible to a signed-in user.
+- **`activeHref` matches on path prefixes, so a nav item whose siblings live elsewhere needs `NavItem.covers`.** `/learn/review`, `/learn/typing` and `/learn/attempts` are modes opened *from* the hub but no longer sit under its path, so prefix matching cannot reach them; without `covers` the whole nav bar goes dark on those pages while the page itself is perfectly correct — nobody calls that a bug, they just lose their place. `covers` participates in matching only; `activeHref` still returns the item's `href`.
+
 **Logging out revokes the token, and the mechanism is per-session rather than per-account.**
 Tokens carry a `jti`; `POST /auth/logout` writes it to a Redis denylist with a TTL equal
 to the token's own remaining life, and `get_current_user` refuses anything on the list.

@@ -663,7 +663,7 @@ export default function PreviewAttemptResultPage() {
               Luyện Part 7 đoạn kép
             </ButtonLink>
             <Link
-              href="/learn"
+              href="/dashboard"
               className="text-small font-semibold text-action-ink underline-offset-2 hover:underline"
             >
               Đặt kế hoạch 14 ngày tới mục tiêu 800

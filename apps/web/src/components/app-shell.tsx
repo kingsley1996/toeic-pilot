@@ -32,7 +32,14 @@ import { useSession } from "@/lib/session";
  * cái còn lại hiện "không còn từ nào đến hạn".
  */
 const LEARN_LINKS: NavItem[] = [
-  { href: "/learn", label: "Hôm nay", Icon: House },
+  // `covers`: ba chế độ mở ra từ trang chủ nhưng không nằm dưới `/dashboard`.
+  // Không khai báo thì mở "Ôn tập" xong cả thanh nav tắt đèn.
+  {
+    href: "/dashboard",
+    label: "Hôm nay",
+    Icon: House,
+    covers: ["/learn/review", "/learn/typing", "/learn/attempts"],
+  },
   { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
   { href: "/learn/tests", label: "Luyện thi", Icon: FileText },
@@ -82,11 +89,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Header dính dùng MỘT đường kẻ ở đáy, không đổ bóng (§6.3). */}
       <header className="sticky top-0 z-20 border-b border-rule bg-ground/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
-          {/* Đã đăng nhập thì logo về NHÀ, không về trang giới thiệu: bấm logo
-              rồi rơi vào một trang bán hàng là chuyện chỉ xảy ra với người đã
-              là người dùng rồi. */}
+          {/* Logo LUÔN về trang giới thiệu, kể cả khi đã đăng nhập. Quy ước
+              chung của web là logo = gốc của site, và người đã đăng nhập vẫn có
+              lý do thật để tới đó (đọc lại giới thiệu, gửi link cho người
+              khác). Đường về nhà không mất: mục nav đầu tiên, "Hôm nay", trỏ
+              thẳng `/dashboard` và luôn hiện khi đã đăng nhập. */}
           <Link
-            href={status === "authenticated" ? "/learn" : "/"}
+            href="/"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
             {/* Dấu vuông, không phải tròn: bo góc 4px là ngôn ngữ của cả hệ. */}

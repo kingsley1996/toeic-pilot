@@ -173,7 +173,7 @@ export default function TypingPage() {
           action={
             <div className="flex gap-2">
               <ButtonLink href="/learn/review">Học bằng thẻ lật</ButtonLink>
-              <ButtonLink href="/learn" variant="secondary">
+              <ButtonLink href="/dashboard" variant="secondary">
                 Về trang chính
               </ButtonLink>
             </div>
@@ -193,7 +193,7 @@ export default function TypingPage() {
           action={
             <div className="flex gap-2">
               <Button onClick={() => token && void load(token)}>Tải phiên mới</Button>
-              <ButtonLink href="/learn" variant="secondary">
+              <ButtonLink href="/dashboard" variant="secondary">
                 Về Learning Hub
               </ButtonLink>
             </div>

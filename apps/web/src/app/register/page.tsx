@@ -53,7 +53,7 @@ export default function RegisterPage() {
           body: JSON.stringify(body),
         });
         setAccessToken(token.access_token);
-        router.push("/learn");
+        router.push("/dashboard");
       } catch {
         router.push("/login");
       }

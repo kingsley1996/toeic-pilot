@@ -165,7 +165,7 @@ export function useRequireSession(options: { canEdit?: boolean } = {}): Session 
       return;
     }
     if (session.status === "authenticated" && needsEdit && !session.canEdit) {
-      router.replace("/learn");
+      router.replace("/dashboard");
     }
   }, [session.status, session.canEdit, needsEdit, router]);
 

@@ -10,7 +10,21 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, Skeleton, Tag, cx } from "@/components/ui";
 import { useSession } from "@/lib/session";
 
-export type NavItem = { href: string; label: string; Icon: LucideIcon };
+export type NavItem = {
+  href: string;
+  label: string;
+  Icon: LucideIcon;
+  /**
+   * Đường dẫn khác cũng thuộc về mục này, khi chúng KHÔNG nằm dưới `href`.
+   *
+   * Cần thiết từ lúc trang chủ chuyển sang `/dashboard`: `/learn/review`,
+   * `/learn/typing` và `/learn/attempts` là những chế độ mở ra TỪ trang chủ
+   * nhưng không còn nằm dưới đường dẫn của nó, nên quy tắc tiền tố không với
+   * tới. Thiếu trường này thì mở "Ôn tập" xong cả thanh nav tắt hết đèn, và
+   * người dùng mất dấu mình đang ở đâu — một lỗi im lặng, vì trang vẫn đúng.
+   */
+  covers?: string[];
+};
 
 /**
  * Một mục điều hướng, dùng chung cho cả header học viên lẫn sidebar quản trị.
@@ -44,12 +58,20 @@ export function NavLink({
   );
 }
 
-/** Khớp sâu nhất thắng, để `/learn/review` không đồng thời làm sáng `/learn`. */
+/**
+ * Mục nav nào đang mở, theo tiền tố — khớp SÂU NHẤT thắng, để `/learn/vocabulary`
+ * không đồng thời làm sáng một mục cha.
+ *
+ * So khớp trên `href` cùng với `covers`, nhưng trả về `href`: `covers` chỉ nói
+ * "đường dẫn này thuộc về mục kia", không phải một đích đến thứ hai.
+ */
 export function activeHref(items: NavItem[], pathname: string): string | undefined {
-  return items
-    .map((item) => item.href)
-    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
-    .sort((a, b) => b.length - a.length)[0];
+  const matches = items.flatMap((item) =>
+    [item.href, ...(item.covers ?? [])]
+      .filter((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+      .map((prefix) => ({ href: item.href, depth: prefix.length })),
+  );
+  return matches.sort((a, b) => b.depth - a.depth)[0]?.href;
 }
 
 /**

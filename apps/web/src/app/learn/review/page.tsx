@@ -130,7 +130,7 @@ export default function ReviewPage() {
           icon={CalendarCheck}
           title="Không còn từ nào đến hạn"
           description="Lịch ôn tập giãn ra theo trí nhớ của bạn, nên hôm nay trống là đúng. Quay lại vào ngày mai."
-          action={<ButtonLink href="/learn">Về Learning Hub</ButtonLink>}
+          action={<ButtonLink href="/dashboard">Về trang chủ</ButtonLink>}
         />
       </Page>
     );
@@ -147,7 +147,7 @@ export default function ReviewPage() {
           action={
             <div className="flex gap-2">
               <Button onClick={() => token && void load(token)}>Tải phiên mới</Button>
-              <ButtonLink href="/learn" variant="secondary">
+              <ButtonLink href="/dashboard" variant="secondary">
                 Về Learning Hub
               </ButtonLink>
             </div>

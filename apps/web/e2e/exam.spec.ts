@@ -26,7 +26,7 @@ async function signUp(page: import("@playwright/test").Page): Promise<void> {
     .fill(`e2e-${Date.now()}-${Math.floor(Math.random() * 1e4)}@example.com`);
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
-  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page).toHaveURL(/\/dashboard$/);
 }
 
 test("làm một đề rồi nộp thì thấy kết quả và xem lại được từng câu", async ({ page }) => {
@@ -88,7 +88,7 @@ test("lượt đang dở hiện ở trang chủ và ở lịch sử làm bài", 
    * máy chủ, nên đóng tab không dừng bài — chỉ làm mất đường quay lại. Dev DB
    * từng có 26 lượt dở so với 17 lượt đã nộp, và không màn nào hiện chúng.
    */
-  await page.goto("/learn");
+  await page.goto("/dashboard");
   await expect(page.getByText(/đang làm dở/i)).toBeVisible();
   await expect(page.getByRole("link", { name: "Làm tiếp" }).first()).toBeVisible();
 

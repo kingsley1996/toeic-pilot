@@ -101,7 +101,7 @@ export default function HomePage() {
             )}
             {status === "authenticated" && (
               <>
-                <ButtonLink href="/learn" size="lg">
+                <ButtonLink href="/dashboard" size="lg">
                   Vào học
                 </ButtonLink>
               </>

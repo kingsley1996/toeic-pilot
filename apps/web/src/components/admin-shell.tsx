@@ -83,7 +83,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4">
           {/* Lối ra luôn hiện. Khu quản trị là ngõ cụt nếu không có đường về. */}
           <Link
-            href="/learn"
+            href="/dashboard"
             className="inline-flex shrink-0 items-center gap-2 rounded px-2 py-1.5 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink"
           >
             <ArrowLeft size={16} strokeWidth={1.75} aria-hidden />

@@ -19,7 +19,7 @@ test("đăng ký xong thì vào thẳng khu học và đã đăng nhập", async
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
 
-  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page).toHaveURL(/\/dashboard$/);
 
   /*
    * Kiểm ĐÃ ĐĂNG NHẬP, không chỉ kiểm URL.
@@ -30,6 +30,27 @@ test("đăng ký xong thì vào thẳng khu học và đã đăng nhập", async
    * phiên đã thực sự phân giải.
    */
   await expect(page.getByRole("heading", { name: /chào/i })).toBeVisible();
+
+  /*
+   * Logo trỏ về trang giới thiệu KỂ CẢ khi đã đăng nhập — quy ước chung của web
+   * là logo = gốc của site. Trước đây nó trỏ về khu học, và đổi lại là một quyết
+   * định có chủ đích, không phải sơ suất; ghim ở đây để lần sau ai đó "sửa" nó
+   * về trạng thái cũ thì có chỗ đọc được lý do.
+   */
+  await expect(page.getByRole("link", { name: "TOEIC Pilot" })).toHaveAttribute("href", "/");
+
+  /*
+   * Nav phải sáng đúng mục, và trang chủ giờ ở `/dashboard` trong khi các chế độ
+   * ôn tập vẫn ở `/learn/*` — tức quy tắc "tiền tố của href" KHÔNG còn với tới
+   * chúng. `NavItem.covers` là thứ bắc cầu; bỏ nó đi thì mở "Ôn tập" xong cả
+   * thanh nav tắt đèn, người dùng mất dấu mình đang ở đâu, và trang thì vẫn
+   * đúng nên không ai gọi đó là lỗi.
+   */
+  const today = page.getByRole("link", { name: "Hôm nay" }).first();
+  await expect(today).toHaveAttribute("aria-current", "page");
+
+  await page.goto("/learn/review");
+  await expect(today).toHaveAttribute("aria-current", "page");
 });
 
 test("đăng nhập sai mật khẩu thì báo lỗi và ở lại trang", async ({ page }) => {
@@ -61,7 +82,7 @@ test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được
   await page.getByLabel("Email").fill(freshEmail());
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
-  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page).toHaveURL(/\/dashboard$/);
 
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();
@@ -69,10 +90,10 @@ test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được
   await page.locator("[aria-haspopup='menu']").first().click();
   await page.getByRole("menuitem", { name: "Đăng xuất" }).click();
 
-  // KHÔNG ghim URL đích. `logout` đẩy về "/", nhưng `/learn` cũng tự đá ra
+  // KHÔNG ghim URL đích. `logout` đẩy về "/", nhưng `/dashboard` cũng tự đá ra
   // /login ngay khi phiên thành ẩn danh, nên trang cuối cùng tuỳ vào cái nào
   // chạy trước — một chi tiết không phải trọng tâm của bài này.
-  await expect(page).not.toHaveURL(/\/learn/);
+  await expect(page).not.toHaveURL(/\/dashboard/);
   expect(
     await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token")),
   ).toBeNull();

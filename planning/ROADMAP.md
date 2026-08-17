@@ -23,7 +23,7 @@
 | **Migration** | **26 bản**, mới nhất `026_vocabulary_topic_session`. `alembic check` trên database trắng: không lệch model |
 | **Bảng** | 37 |
 | **Endpoint** | **128** — 81 admin, 47 còn lại (đếm từ `packages/shared/openapi.json`) |
-| **Trang web** | 35 route |
+| **Trang web** | 35 route — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
 | **Media** | **2 506** clip audio (hàng `audio_asset`), 10 ảnh |
 | **Nội dung trong repo** | **303 từ vựng / 7 chủ đề** (tất cả published), 15 câu dictation |
 | **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
@@ -57,6 +57,7 @@ Sprint 4b Dictation phân cấp    ✅ XONG (mục 4b)
 Sprint 4c Hồ sơ người dùng      ✅ XONG (mục 4c)
 Sprint 4d Media upload          🟡 ĐANG LÀM (mục 4d)
 Sprint 4e Học từ vựng theo chủ đề 🟡 ĐANG LÀM, chưa commit (mục 4e)
+Sprint 4f Trang chủ -> /dashboard  ✅ XONG (mục 4f)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -158,7 +159,7 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] **Tách khu quản trị thành dashboard riêng (2026-08-09)** — `/admin/**` có `AdminShell` với thanh trên và sidebar riêng; header khu học trở về 3 mục cộng **một** nút `Quản trị` chỉ hiện với `editor`/`admin`. Đã kiểm bằng tài khoản `learner` thật: không thấy nút, `/admin/**` redirect về `/dashboard`, và endpoint trả 403 — cả ba lớp đều giữ
 - [x] **Dictation: chấm ở client + đối chiếu từng từ (2026-08-09)** — `lib/dictation.ts` là bản port từng bước của bộ chấm Python; **20/20 ca kiểm khớp tuyệt đối** (diff, matched, expected, accuracy), gồm đảo thứ tự từ, từ lặp, nháy cong, chữ có dấu. Kết quả hiện ngay dưới ô nhập, xanh = đúng / cam = chưa đúng. Chỉ lần kiểm tra **đầu tiên** được ghi nhận — đã xác nhận trong Postgres: bấm hai lần, DB có đúng một hàng, và điểm server ghi (90.00) khớp con số client hiện
 - [x] **Che từ chưa gõ tới (2026-08-09)** — bấm Kiểm tra khi gõ dở từng in nguyên đáp án. Bản sửa đầu tiên của chính tôi **vẫn sai** ở ca gõ dở + sai từ cuối (che 0 từ), phát hiện nhờ chạy thử chứ không nhờ đọc code; ranh giới đúng là số từ đã gõ, không phải vị trí trong diff. Parity với server giữ nguyên 20/20 sau khi sửa
-- [x] **Gộp hai trang hub, sửa lại điều hướng (2026-08-10)** — `/dashboard` và `/learn` cũ làm cùng một việc mà không trang nào bao trùm trang kia: số "cần ôn hôm nay" chỉ có ở `/dashboard`, lối vào "Gõ lại từ" chỉ có ở `/learn`, và `/dashboard` **không nằm trong nav** nên rời khỏi nó một lần là không quay lại được — con số đáng lẽ điều khiển hành vi mỗi ngày lại nằm ở chỗ khó tới nhất. Giờ `/learn` là nhà duy nhất ("Hôm nay"), `/dashboard` chuyển hướng ở server (giữ route vì nó nằm trong bookmark và lịch sử của người đang dùng). Nav đổi từ `Learning Hub · Ôn tập · Dictation` — một lỗi phân loại, vì hai mục sau nằm BÊN TRONG mục đầu — sang ba mục ngang hàng `Hôm nay · Từ vựng · Dictation`. `Ôn tập`/`Gõ lại từ` rời khỏi nav vì chúng là hai **chế độ** của cùng một hàng đợi SM-2: mở cái nào trước thì cái đó tiêu hết hàng đợi của ngày, và cái còn lại hiện "không còn từ nào đến hạn". Logo khi đã đăng nhập trỏ `/learn` thay vì trang giới thiệu
+- [x] **Gộp hai trang hub, sửa lại điều hướng (2026-08-10)** — `/dashboard` và `/learn` cũ làm cùng một việc mà không trang nào bao trùm trang kia: số "cần ôn hôm nay" chỉ có ở `/dashboard`, lối vào "Gõ lại từ" chỉ có ở `/learn`, và `/dashboard` **không nằm trong nav** nên rời khỏi nó một lần là không quay lại được — con số đáng lẽ điều khiển hành vi mỗi ngày lại nằm ở chỗ khó tới nhất. Giờ `/learn` là nhà duy nhất ("Hôm nay"), `/dashboard` chuyển hướng ở server (giữ route vì nó nằm trong bookmark và lịch sử của người đang dùng). Nav đổi từ `Learning Hub · Ôn tập · Dictation` — một lỗi phân loại, vì hai mục sau nằm BÊN TRONG mục đầu — sang ba mục ngang hàng `Hôm nay · Từ vựng · Dictation`. `Ôn tập`/`Gõ lại từ` rời khỏi nav vì chúng là hai **chế độ** của cùng một hàng đợi SM-2: mở cái nào trước thì cái đó tiêu hết hàng đợi của ngày, và cái còn lại hiện "không còn từ nào đến hạn". Logo khi đã đăng nhập trỏ `/learn` thay vì trang giới thiệu — **hai chi tiết cuối đã đảo ngược ngày 2026-08-17, xem mục 4f**; phần gộp hai trang hub và bộ ba mục nav thì giữ nguyên
 - [x] **Nội dung Business đầu tiên có thật (2026-08-10)** — 40 từ soạn mới, rải đủ 5 loại từ (noun 13 · verb 11 · adj 8 · adv 4 · phrase 4) vì trắc nghiệm cần ≥ 4 từ **cùng `part_of_speech`** mới sinh nổi distractor. Nhập qua chính API admin (parse 40/40, commit 40 draft), `backfill_audio` sinh **320 clip · 0 lỗi**, rồi publish 40/40. Kiểm danh mục giọng edge-tts **trước** khi chạy hàng loạt, đúng như `CLAUDE.md` dặn — một voice id lỗi thời sẽ hỏng từng clip một giữa chừng
 - [x] **Từ vựng có trạng thái thuộc/chưa thuộc + lối vào (2026-08-10)** — `GET /vocabulary-progress` (có auth) và `srs.mastery()`; ba mức `new`/`learning`/`mastered` **suy ra từ `interval_days ≥ 21`**, không phải từ `repetitions` — số lần ôn chỉ tăng nên một từ đã quên vẫn mãi khoe là đã thuộc, còn interval bị lapse kéo về 1 ngày nên tự hạ cấp. Endpoint **riêng** chứ không thêm cột vào `/vocabulary` công khai: với khách chưa đăng nhập thì mọi từ hoá ra `new`, đó là nói dối chứ không phải thiếu dữ liệu. Trang từ vựng thôi là một cuốn từ điển — có thanh "Đã thuộc 0/42", badge từng dòng và nút vào ôn tập
 - [x] **Sửa một lỗi accessibility có thật** — viền ô nhập cũ chỉ đạt 1.48 tương phản (WCAG 1.4.11 đòi 3.0), tức gần như vô hình với người thị lực kém. Token `rule-strong` mới đạt 3.09–3.64
@@ -374,6 +375,29 @@ Gây lại 4 lỗi, chỉ 2 làm test đỏ. Hai lần còn lại đã sửa **b
 - [ ] Chạy `alembic upgrade head` trên môi trường thật (mới chỉ chạy trên database trắng và trên stack dev)
 - [ ] Bàn cờ ghép từ (`MatchGame`) hiện không có lối vào từ trang chủ đề — vẫn tới được qua `/learn/vocabulary/match/{slug}`. Nó ghép **nhiều từ cùng lúc** nên không nhét vào luồng năm nút được; muốn bày lại thì cho nó một tab riêng, đừng ép qua `TopicSession`
 - [ ] Hồ từ tải với `limit=200`. Chủ đề lớn nhất hiện có 50 từ nên chưa chạm trần, nhưng vượt 200 thì ván chỉ gồm 200 từ đầu và **không có gì nói ra điều đó** — đúng loại lỗi mà luật "màn hình dựng cây thì hiện thông báo khi `total` vượt số trả về" đã viết cho chỗ khác
+
+---
+
+## 4f. Trang chủ về `/dashboard`, logo về landing · ✅ XONG (2026-08-17)
+
+**Đảo ngược hai chi tiết** của quyết định 2026-08-10 ở mục 4 (theo yêu cầu). Phần gộp hai trang hub và bộ ba mục nav ngang hàng **không** đổi.
+
+- [x] Trang chủ khu học chuyển từ `/learn` sang **`/dashboard`**; `/learn` giữ lại làm redirect ở server
+- [x] Logo **luôn** trỏ `/`, kể cả khi đã đăng nhập
+- [x] `NavItem.covers` — mục nav nhận thêm những đường dẫn thuộc về nó mà không nằm dưới `href`
+
+**Chỉ trang hub đổi; các trang con giữ nguyên `/learn/**`.** `/learn/vocabulary`, `/learn/dictation`, `/learn/tests`, `/learn/review`, `/learn/typing`, `/learn/attempts` không đụng tới. Lý do là hai cái tên mô tả hai thứ khác nhau: trang hub là một *bảng điều khiển* nên `dashboard` gọi đúng nó, còn các trang con thật sự là *nơi học* nên `/learn/...` mới đúng. Đổi cả cây sẽ phải sửa hơn 30 file và làm hỏng mọi URL người dùng đã bookmark, để đổi lấy một cái tên tệ hơn (`/dashboard/vocabulary`).
+
+**`/learn` là redirect chứ không phải 404** — đúng cái lý do `/dashboard` từng được giữ lại hồi tháng 8: đó là địa chỉ đăng nhập đẩy tới suốt nhiều sprint nên nó nằm trong lịch sử và bookmark. Lần này mũi tên chỉ quay đầu.
+
+### Một thứ suýt hỏng im lặng
+`activeHref` khớp theo **tiền tố của `href`**. Khi trang chủ còn ở `/learn`, ba trang `/learn/review`, `/learn/typing`, `/learn/attempts` tự động làm sáng mục "Hôm nay" vì chúng nằm dưới `/learn/`. Chuyển sang `/dashboard` là quy tắc tiền tố **không còn với tới chúng**: mở "Ôn tập" thì cả thanh nav tắt đèn, người dùng mất dấu mình đang ở đâu — và trang thì vẫn đúng nên không ai gọi đó là lỗi. `NavItem.covers` bắc cầu chỗ đó; `covers` chỉ để so khớp, `activeHref` vẫn trả về `href`.
+
+### Kiểm
+- [x] Hai khẳng định mới trong `e2e/auth.spec.ts`: logo có `href="/"`, và "Hôm nay" giữ `aria-current="page"` cả trên `/dashboard` lẫn `/learn/review`
+- [x] **Đã gây lại cả hai lỗi và cả hai đều đỏ** — trả logo về `/dashboard` khi đã đăng nhập → đỏ ở khẳng định logo; bỏ `covers` → đỏ ở `aria-current` (`Expected: "page" · Received: ""`)
+- [x] `curl` trên stack đang chạy: `/dashboard` → 200, `/learn` → **307 → `/dashboard`**, `/learn/vocabulary` → 200
+- [x] Playwright 7 bài xanh · `tsc`, `eslint`, `prettier` sạch
 
 ---
 

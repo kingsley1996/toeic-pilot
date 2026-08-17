@@ -30,7 +30,7 @@ export default function LoginPage() {
         body: JSON.stringify(body),
       });
       setAccessToken(token.access_token);
-      router.push("/learn");
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Không đăng nhập được.");
     } finally {

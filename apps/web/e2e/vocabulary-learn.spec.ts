@@ -78,7 +78,7 @@ async function signUp(page: Page): Promise<void> {
     .fill(`vocab-learn-${Date.now()}-${Math.floor(Math.random() * 1e4)}@example.com`);
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
-  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page).toHaveURL(/\/dashboard$/);
 }
 
 /** "Từ 3/42" — bộ đếm là thứ duy nhất nói ván đang đứng ở đâu. */
