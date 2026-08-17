@@ -58,6 +58,7 @@ Sprint 4c Hồ sơ người dùng      ✅ XONG (mục 4c)
 Sprint 4d Media upload          🟡 ĐANG LÀM (mục 4d)
 Sprint 4e Học từ vựng theo chủ đề 🟡 ĐANG LÀM, chưa commit (mục 4e)
 Sprint 4f Trang chủ -> /dashboard  ✅ XONG (mục 4f)
+Sprint 4g Sidebar thay nav ngang   ✅ XONG (mục 4g)
 Sprint 5  TOEIC Practice        ← tiếp theo
 Sprint 6  Hardening & bảo mật   ← bắt buộc trước AI
 Sprint 7  AI Layer
@@ -398,6 +399,34 @@ Gây lại 4 lỗi, chỉ 2 làm test đỏ. Hai lần còn lại đã sửa **b
 - [x] **Đã gây lại cả hai lỗi và cả hai đều đỏ** — trả logo về `/dashboard` khi đã đăng nhập → đỏ ở khẳng định logo; bỏ `covers` → đỏ ở `aria-current` (`Expected: "page" · Received: ""`)
 - [x] `curl` trên stack đang chạy: `/dashboard` → 200, `/learn` → **307 → `/dashboard`**, `/learn/vocabulary` → 200
 - [x] Playwright 7 bài xanh · `tsc`, `eslint`, `prettier` sạch
+
+---
+
+## 4g. Sidebar thay cho thanh nav ngang · ✅ XONG (2026-08-17)
+
+- [x] `components/shell.tsx` — `SidebarShell` + `TopBarShell`, dùng chung cho **cả** khu học lẫn khu quản trị
+- [x] Mọi trang trong ứng dụng đổi sang sidebar trái cố định: bộ mục + danh tính + đăng xuất
+- [x] Ba trang **ngoài** ứng dụng (`/`, `/login`, `/register`) giữ thanh trên như cũ, kể cả menu tài khoản
+- [x] `admin-shell.tsx` bỏ layout riêng, chuyển sang dùng `SidebarShell` với bộ mục của nó
+
+**Chọn khung theo ĐƯỜNG DẪN, không theo trạng thái phiên.** Phiên chỉ phân giải được sau khi JS chạy, nên chọn theo nó sẽ dựng một khung rồi đổi sang khung kia ngay trước mắt người dùng — biến thể layout của cái bẫy ba-trạng-thái. Ba trang dùng thanh trên là ba trang đứng ngoài ứng dụng: trang giới thiệu nói chuyện với người chưa có tài khoản, còn `/login` và `/register` là cánh cửa vào.
+
+**Hai khung gộp làm một, hai BỘ MỤC thì không.** `links` là tham số. Trộn bộ mục của học viên với của biên tập viên sẽ xoá mất ranh giới giữa *đang học* và *đang sửa nội dung người khác sẽ học*. Đây cũng là chỗ `DESIGN-SYSTEM.md` §9.7 phải viết lại: trước đây "có sidebar hay không" chính là tín hiệu phân biệt hai khu, giờ tín hiệu chuyển sang **nội dung** của sidebar.
+
+**Danh tính và đăng xuất rời khỏi menu xổ.** Sidebar có sẵn chiều cao cho hai dòng nhìn thấy được; header cao 4rem thì không, và đó mới là lý do bản cũ phải giấu chúng sau một cú bấm. `SessionControls`/`UserMenu` vẫn còn — nhưng chỉ cho ba trang thanh trên: bỏ hẳn thì người đã đăng nhập đứng ở trang giới thiệu không còn lối nào xem hồ sơ hay đăng xuất.
+
+### Hai lỗi chỉ lộ ra khi nhìn ảnh chụp
+Test xanh hết, còn cả hai lỗi dưới đây thì không test nào bắt được — chúng được tìm ra bằng cách chụp màn hình thật ở 1280px và 390px rồi nhìn:
+
+- **Tên và email in trùng nhau.** `display_name` là nullable và phần lớn tài khoản chưa đặt, nên `name ?? email` rồi in thêm dòng `email` cho ra **cùng một chuỗi hai lần**. Menu xổ cũ giấu được chuyện này vì nó chỉ mở khi được bấm; sidebar thì hiện thường trực, và ở đó nó trông như lỗi dữ liệu. Dòng email giờ chỉ hiện khi có tên hiển thị riêng.
+- **Khối tài khoản thiếu `shrink-0`.** Trong flex column nó có thể bị co lại khi bộ mục dài; giờ vùng mục là phần `flex-1` tự cuộn, còn khối tài khoản khoá cứng ở đáy.
+
+Cộng thêm một chi tiết thừa: trong `/admin/**`, sidebar vẫn hiện "Quản trị nội dung" trỏ về chính nơi đang đứng — đã ẩn khi đang ở trong khu đó.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch · Playwright **7 bài xanh**
+- [x] Ảnh chụp thật ở 1280×860 và 390×780: `/dashboard`, `/learn/vocabulary`, `/` (thanh trên, không đổi), `/admin/ai/skill-tags` (mục con lồng vẫn đúng), và ngăn kéo mobile đóng/mở
+- [x] `e2e/auth.spec.ts` sửa theo: đăng xuất giờ là nút ở đáy sidebar, không còn là mục trong menu xổ
 
 ---
 

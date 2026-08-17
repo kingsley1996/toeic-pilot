@@ -69,10 +69,15 @@ Three things to know before extending it:
 
 **The learner's home is `/dashboard`; everything they study is under `/learn/**`.** Login, registration and `useRequireSession`'s refusal path all land on `/dashboard`, and `/learn` is a server redirect kept because it was the destination for many sprints and is in people's history and bookmarks. Only the hub moved — `/learn/vocabulary`, `/learn/dictation`, `/learn/tests`, `/learn/review`, `/learn/typing` and `/learn/attempts` keep their paths, because a dashboard and a place to study are different things and `/dashboard/vocabulary` would name the second one wrongly.
 
-Two consequences, one of which is silent:
+**One shell, two sets of links.** `src/components/shell.tsx` holds both layouts and both areas use them: `TopBarShell` for the three pages *outside* the app (`/`, `/login`, `/register`) and `SidebarShell` for everything else, `/admin/**` included. Which one renders is decided by **pathname, never by session status** — status only resolves after JS runs, so choosing on it builds one layout and then swaps to the other in front of the user, the layout-shaped version of the three-state trap. The *links* stay separate per area, because merging a learner's nav with an editor's erases the line between studying and editing what others will study. Below `lg` the sidebar becomes a drawer built from the same `SidebarContent`; a hand-written mobile menu is always the one that gets forgotten when a link is added.
+
+Identity and logout live at the **bottom of the sidebar**, not behind a dropdown — a sidebar has the height for two visible rows and a 4rem header does not, which is why the old design had to hide them behind a click. `SessionControls`/`UserMenu` survive for the three top-bar pages only; delete them and a signed-in visitor on the landing page has no way to reach their profile or sign out without first re-entering the app.
+
+Three consequences, one of which is silent:
 
 - **The logo always points at `/`, even when signed in.** It used to point at the hub; that was reverted deliberately (ROADMAP §4f), so do not "fix" it back. The way home is the first nav item, which is always visible to a signed-in user.
 - **`activeHref` matches on path prefixes, so a nav item whose siblings live elsewhere needs `NavItem.covers`.** `/learn/review`, `/learn/typing` and `/learn/attempts` are modes opened *from* the hub but no longer sit under its path, so prefix matching cannot reach them; without `covers` the whole nav bar goes dark on those pages while the page itself is perfectly correct — nobody calls that a bug, they just lose their place. `covers` participates in matching only; `activeHref` still returns the item's `href`.
+- **A `display_name` is usually NULL, so `name ?? email` printed above `email` renders the same string twice.** The old dropdown hid this because it only opened on a click; a sidebar shows it permanently, where it reads as broken data rather than as an identity block. The second line renders only when there is a distinct display name.
 
 **Logging out revokes the token, and the mechanism is per-session rather than per-account.**
 Tokens carry a `jti`; `POST /auth/logout` writes it to a Redis denylist with a TTL equal

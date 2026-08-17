@@ -87,8 +87,10 @@ test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();
 
-  await page.locator("[aria-haspopup='menu']").first().click();
-  await page.getByRole("menuitem", { name: "Đăng xuất" }).click();
+  // Đăng xuất nằm ở ĐÁY SIDEBAR, không còn sau một menu xổ: các trang trong ứng
+  // dụng dùng khung có cột trái, và khối tài khoản ở đáy cột đó. Menu xổ vẫn
+  // còn, nhưng chỉ trên ba trang dùng thanh trên (`/`, `/login`, `/register`).
+  await page.getByRole("button", { name: "Đăng xuất" }).first().click();
 
   // KHÔNG ghim URL đích. `logout` đẩy về "/", nhưng `/dashboard` cũng tự đá ra
   // /login ngay khi phiên thành ẩn danh, nên trang cuối cùng tuỳ vào cái nào

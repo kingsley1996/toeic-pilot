@@ -439,38 +439,53 @@ Lỗi: viền `alert` + một dòng `small` màu `alert` **có icon** `OctagonAl
 
 Mọi trạng thái rỗng phải nói **bước tiếp theo**. "Không có dữ liệu" không nói gì mà người đọc chưa tự biết.
 
-### 9.7 Hai khung, không phải một
+### 9.7 Một khung, hai bộ mục
 
-Khu học và khu quản trị là hai nơi khác nhau, và giao diện nói điều đó bằng cấu
-trúc chứ không bằng màu.
+**Sửa lại 2026-08-17.** Bản trước của mục này dựng HAI khung: khu học dùng thanh
+trên, khu quản trị dùng sidebar, và chính sự khác nhau đó là tín hiệu "bạn đang
+ở đâu". Nay cả hai dùng chung `components/shell.tsx`; tín hiệu chuyển sang **nội
+dung của sidebar** (bộ mục + nhãn "Học" / "Content" + thẻ vai trò) chứ không còn
+là sự có mặt của nó. Lý do đổi: thanh trên hết chỗ ở bốn mục, và danh tính +
+đăng xuất phải nằm sau một menu xổ vì header cao 4rem không chứa nổi chúng.
 
 ```
-KHU HỌC (AppShell)                    KHU QUẢN TRỊ (AdminShell)
+NGOÀI ỨNG DỤNG (TopBarShell)          TRONG ỨNG DỤNG (SidebarShell)
+/ · /login · /register                mọi trang còn lại, cả /admin/**
 ┌──────────────────────────────┐      ┌──────────────────────────────┐
-│ logo  Hub Ôn tập Dictation   │      │ ← Về khu học │ Quản trị  ADMIN│
-│              [Quản trị] user │      │                         user │
+│ logo  Hôm nay Từ vựng …  user│      │ logo            [khu]   ◐    │
 ├──────────────────────────────┤      ├──────────┬───────────────────┤
-│                              │      │ Tổng quan│                   │
-│         nội dung             │      │ Từ vựng  │   nội dung        │
-│                              │      │ Câu nghe │                   │
+│                              │      │ HỌC      │                   │
+│         nội dung             │      │ Hôm nay  │    nội dung       │
+│                              │      │ Từ vựng  │                   │
+│                              │      │ Dictation│                   │
+│                              │      │ Luyện thi│                   │
+│                              │      ├──────────┤                   │
+│                              │      │ ● user   │                   │
+│                              │      │ ↪ Đăng xuất                  │
 └──────────────────────────────┘      └──────────┴───────────────────┘
-   không sidebar                          có sidebar
 ```
 
-**Sidebar là tín hiệu.** Phía học viên không có; phía quản trị có. Người dùng
-biết mình đang ở đâu mà không cần thêm một màu hay một kiểu chữ nào — đúng
-nguyên tắc §6.3: độ nổi và phân vùng đến từ cấu trúc, không từ trang trí.
+Bốn ràng buộc:
 
-Ba ràng buộc:
+- **Chọn khung theo ĐƯỜNG DẪN, không theo trạng thái phiên.** Phiên chỉ phân
+  giải được sau khi JS chạy, nên chọn theo nó sẽ dựng một khung rồi đổi sang
+  khung kia ngay trước mắt người dùng — biến thể layout của cái bẫy
+  ba-trạng-thái ở §13.4.
+- **Ba trang ngoài ứng dụng dùng thanh trên.** Trang giới thiệu nói chuyện với
+  người chưa có tài khoản; `/login` và `/register` là cánh cửa vào. Dựng một cột
+  điều hướng đầy mục cho người chưa bước qua cửa là mời họ bấm vào những nơi sẽ
+  đá họ ngược về đây.
+- **Hai bộ mục vẫn tách bạch.** `links` là tham số của khung. Trộn chúng lại xoá
+  mất ranh giới giữa *đang học* và *đang sửa nội dung người khác sẽ học*. Cửa
+  vào khu quản trị nằm trong khối **tài khoản** ở đáy sidebar, không phải trong
+  bộ mục học, và chỉ hiện với người thực sự mở được nó — đồng thời **ẩn khi đã ở
+  trong `/admin`**, vì ở đó nó trỏ về chính chỗ đang đứng.
+- **Lối ra luôn hiện.** `← Back to learning` là mục trên cùng của sidebar quản
+  trị. Một khu quản trị không có đường về là một ngõ cụt — và logo thì đi về
+  trang giới thiệu chứ không về khu học.
 
-- **Trang quản trị không nằm trên nav chính.** Trộn hai bộ nav đẩy header lên
-  sáu mục ở vai trò `admin` (đúng lỗi §13.4.1), và tệ hơn là xoá mất ranh giới
-  giữa *đang học* và *đang sửa nội dung người khác sẽ học*.
-- **Đúng MỘT cánh cửa vào**, nút `Quản trị` ở khu điều khiển người dùng — không
-  phải ba mục nav. Nó chỉ hiện với người thực sự mở được: học viên không được
-  chỉ vào một cánh cửa họ không mở được.
-- **Lối ra luôn hiện.** `← Về khu học` là mục đầu tiên của thanh trên. Một khu
-  quản trị không có đường về là một ngõ cụt.
+Dưới `lg`, sidebar thành ngăn kéo phủ toàn màn, dựng từ **cùng một**
+`SidebarContent`. Một menu mobile viết riêng luôn là menu bị quên khi thêm mục.
 
 `components/nav.tsx` giữ `NavLink`, `activeHref` và `SessionControls` để hai
 khung dùng chung — nếu không, chúng sẽ trôi khỏi nhau ngay lần sửa thứ hai.
