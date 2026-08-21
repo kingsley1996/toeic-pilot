@@ -4,29 +4,29 @@
 > Cập nhật **ngay khi** hoàn thành một task, không để dồn.
 >
 > Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
-> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` / `PHASE2-AUDIO` (= ADR-002) / `ADR-004` / `ADR-005` = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện (đã viết, **chưa triển khai**) · `SPEC-LEARNING-HUB.md` = bộ mặc định tạm thời của Learning Hub, dựng để sửa · `REVIEW-OPUS.md` = review kỹ thuật (ảnh chụp 2026-08-08, không cập nhật tiếp)
+> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` … `ADR-007` (`PHASE2-AUDIO` = ADR-002) = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện, **đã triển khai toàn bộ `apps/web`** · `SPEC-LEARNING-HUB.md` và `SPEC-AI-COACH.md` = bộ mặc định tạm thời, dựng để sửa · `toeic_question_label_taxonomy.md` = bảng nhãn câu hỏi, **sửa tay và là nguồn sự thật** · `import_media.md` = runbook gắn media vào đề đã dán · `REVIEW-OPUS.md` và `qwen3p8-review.md` = hai bản review kỹ thuật, **ảnh chụp theo ngày, không cập nhật tiếp**
 
-**Cập nhật lần cuối:** 2026-08-17
+**Cập nhật lần cuối:** 2026-08-21
 
 ---
 
 ## 1. Đang ở đâu
 
+Số liệu dưới đây **đo trên `main` ngày 2026-08-21**, không phải ước lượng.
+
 | | |
 |---|---|
-| **Phase hiện tại** | Sprint 3 + 4 chạy đầu-cuối cho **từ vựng và dictation**; dictation đã có cây phân cấp 4 tầng; đang làm **4e — học từ vựng theo chủ đề** |
-| **Chặn Phase 2** | **Không còn gì.** Cả hai blocker đã gỡ (audio, data model) |
-| **Sprint kế tiếp** | Sprint 5 — TOEIC Practice (kèm phần question của Sprint 3 còn nợ) |
-| **Test** | **630 chạy** + 2 `external` deselect mặc định (đo 2026-08-17) |
-| **E2E** | 4 file, 11 bài — **7 chạy**, 4 bài trong `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
-| **Gate CI** | 13, tất cả xanh |
-| **Migration** | **26 bản**, mới nhất `026_vocabulary_topic_session`. `alembic check` trên database trắng: không lệch model |
-| **Bảng** | 37 |
-| **Endpoint** | **128** — 81 admin, 47 còn lại (đếm từ `packages/shared/openapi.json`) |
-| **Trang web** | 35 route — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
-| **Media** | **2 506** clip audio (hàng `audio_asset`), 10 ảnh |
-| **Nội dung trong repo** | **303 từ vựng / 7 chủ đề** (tất cả published), 15 câu dictation |
-| **Giao diện** | Design system đã triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)); 3 route dictation dùng tham số động, còn lại dựng tĩnh |
+| **Trạng thái** | Từ vựng, dictation và luyện đề chạy đầu-cuối trên nội dung thật. Lớp AI đã gắn nhãn câu hỏi và sinh giải thích. Còn thiếu: **RAG** (chặn bởi nội dung, xem `ADR-003` §3.3) |
+| **Test API** | **637 chạy** + 2 `external` deselect mặc định |
+| **E2E** | 5 tệp, **16 bài** — 12 chạy, 4 bài `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
+| **Gate CI** | 4 job (`api`, `web`, `contract`, `docker`), tất cả xanh. Branch protection **chưa bật** |
+| **Migration** | **29 bản**, mới nhất `029_profile_pet` |
+| **Bảng** | **38** (đo từ `Base.metadata`) |
+| **Endpoint** | **131 thao tác HTTP trên 106 đường dẫn** — 82 admin, 49 còn lại (đếm từ `packages/shared/openapi.json`) |
+| **Trang web** | **36 route** — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
+| **Media** | **2 506** clip audio (`audio_asset`), 10 ảnh |
+| **Nội dung** | **303 từ vựng / 7 chủ đề**, 15 câu dictation, 55 câu hỏi (34 có giải thích), 2 đề luyện |
+| **Giao diện** | Design system triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)) |
 
 **Kiểm chứng lại ngày 2026-08-17** (phần từ vựng, xem mục 4e): `pytest` **630 passed / 2 deselected** · `ruff check` + `ruff format --check` (135 file) + `mypy` strict (96 file) sạch · `tsc --noEmit`, `eslint`, `prettier --check` sạch · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade head` chạy hết `026` trên database trắng và `alembic check` báo **không lệch model** · Playwright **7 bài chạy, xanh** (4 bài `vocabulary.spec.ts` skip) · gọi thật `vocabulary-topic-sessions`, `recall-check` và `review` grade 6 trên stack đang chạy.
 
@@ -786,6 +786,55 @@ Thay bộ dino và bức tranh đi mượn bằng bộ **tự sinh tại máy**,
 - [x] Chạm mép ảnh ra, kẹp, khung rỗng: **0** trên cả 22 khung
 
 **Bộ rex CHƯA nối vào Petland** — con mèo vẫn đang chạy. `walk` không có clip riêng: theo lối thoát mà `petland-sprite.ts` thiết kế sẵn, ý định `walk` trỏ vào clip `run` ở fps thấp hơn.
+
+
+---
+
+## 4t. Chọn thú cưng · ✅ XONG (2026-08-21)
+
+- [x] `user_profile.pet` (migration **029**), nullable, không `server_default`
+- [x] `PetId` ở `app/schemas/profile.py` — danh sách mascot đi qua OpenAPI ra TypeScript
+- [x] `petland-sprite.ts` thành sổ đăng ký `Record<MascotId, Mascot>`
+- [x] `MascotPicker` trong thanh tiêu đề bảng Petland
+- [x] `check-petland-fit.mjs` duyệt **mọi** mascot thay vì một thư mục cố định
+- [x] `e2e/petland.spec.ts` thêm bài kiểm chọn + nạp lại trang
+
+**Danh sách mascot sống ở backend dù mỹ thuật nằm ở frontend.** Khai `PetId` phía API nghĩa là nó đi qua OpenAPI thành một union TypeScript, nên `Record<MascotId, Mascot>` thiếu một con là lỗi `tsc` — không phải một `undefined` lộ ra lúc chạy. Cố ý **không** thêm CHECK trong cơ sở dữ liệu: đó là chỗ thứ hai phải nhớ sửa mỗi lần thêm mascot, và chỗ bị quên luôn là chỗ báo lỗi muộn nhất.
+
+**Cột nullable, không giá trị mặc định ở phía máy chủ.** NULL nghĩa là "chưa chọn" và frontend rơi về con mặc định của nó, nên đổi mặc định là mọi người chưa từng chọn đi theo — cùng cái bẫy `daily_new_limit` tránh, và hỏng lặng lẽ y hệt.
+
+**Petland lần đầu gọi API, đảo lại điều §4m ghi.** Câu "Petland KHÔNG gọi API" đúng ở thời điểm đó vì không có gì trong nó thuộc về tài khoản. Con mascot thì có: "pet của tôi" phải theo tài khoản qua mọi thiết bị và sống sót qua việc xoá cache, nên nó **không** nằm ở `localStorage` như chủ đề sáng/tối — cái đó là sở thích theo *thiết bị*. Lần đọc hồ sơ hỏng thì im lặng rơi về mặc định: một góc thú cưng không mở được vì mạng chập là cái giá quá đắt cho một tuỳ chọn trang trí.
+
+**Mascot đọc qua ref bên trong vòng lặp, không qua closure.** Vòng `requestAnimationFrame` có danh sách phụ thuộc riêng và không dựng lại khi mascot đổi, nên closure sẽ giữ mãi con cũ và nút chọn trông như chết. Thêm `mascot` vào deps cũng chạy, nhưng giá là dựng lại cả vòng lặp giữa chừng: `frameAcc` về 0 và con thú giật đúng lúc người dùng vừa bấm.
+
+**Migration 029 viết tay, không autogenerate.** Cơ sở dữ liệu dev mang bốn bảng mồ côi `pet`, `learner_pet`, `pet_feed`, `pet_feed_log` (§4r), nên autogenerate sẽ sinh thêm bốn lệnh `DROP TABLE` không ai yêu cầu và chúng đi thẳng vào bản phát hành.
+
+### Kiểm
+- [x] `check-petland-fit.mjs` **mã thoát 0 cho cả hai mascot**, 241 mẫu dọc đường đi, cả hai hướng, cả đỉnh nhảy
+- [x] `e2e/petland.spec.ts` **5/5**, và bài mới **đã thấy đỏ trước**: bỏ lần `PATCH` thì nửa "nạp lại trang" đỏ ngay — đó là nửa chứng minh lựa chọn thật sự tới máy chủ chứ không nằm trong một biến bộ nhớ
+- [x] ruff · mypy · **637 test API** · tsc · eslint · prettier · contract sinh lại không lệch
+
+**Bộ sprite dino MUA SẴN không vào kho.** Không kèm giấy phép nào, và mỹ thuật bên thứ ba dễ giữ ngoài lịch sử git hơn nhiều so với gỡ ra khỏi nó. Nó vẫn nằm trong thư mục làm việc cùng `scripts/pack-dino.mjs`.
+
+
+---
+
+## 4u. Từ vựng — lưới chủ đề, route động và hai minigame · ✅ XONG
+
+Gộp từ `improve-vocabulary.md` ở gốc kho, tệp đó đã xoá: ROADMAP là tracker duy nhất, và một tệp ghi tiến độ thứ hai ở gốc kho là chỗ để lạc thông tin.
+
+- [x] `/learn/vocabulary` — lưới chủ đề dạng card lớn thay cho danh sách phẳng
+- [x] `/learn/vocabulary/[slug]` — danh sách từ chuyển sang route động theo slug
+- [x] `/learn/vocabulary/quiz/[slug]` và `/learn/vocabulary/match/[slug]` — hai minigame
+- [x] Admin sửa và xoá chủ đề
+
+**Segment tĩnh phải đứng trước `[slug]`.** `quiz/` và `match/` khai trước, nếu không `/learn/vocabulary/quiz/business` rơi vào trang danh sách với slug là "quiz" — hỏng theo kiểu vẫn dựng được trang, chỉ là trang rỗng.
+
+**Minigame ghi lượt ôn SM-2, nên tiến độ tự đúng mà không cần bảng nào.** Trạng thái một từ (mới / đang học / đã thuộc) luôn suy ra từ `vocabulary_review_state` qua `mastery()`, không có cột lưu sẵn — cùng luật với `StoryProgress` và `VocabularyProgress`. Hệ quả là chơi game làm tiến độ học nhích lên thật, chứ không phải một điểm số song song.
+
+**Ô đã ghép dùng `invisible`, không dùng `hidden`.** Ô biến mất nhưng lưới 4×4 không co lại; lưới co lại giữa ván làm người chơi mất phương hướng vì các ô còn lại nhảy chỗ.
+
+**Màu trạng thái thắng màu loại chữ, nhưng độ đậm thì giữ.** Khi ô báo sai hoặc đang chọn, `alert`/`action` thay `action-ink` của headword — chữ vẫn đậm để không mất tín hiệu phân biệt loại từ.
 
 ---
 

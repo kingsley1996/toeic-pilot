@@ -1,5 +1,9 @@
 # Review — qwen3.8-max-free · 2026-08-16
 
+> **Ảnh chụp theo ngày, không cập nhật tiếp.** Review này gắn với commit `564e064`;
+> các con số trong nó (dòng code, số file qua gate) là của thời điểm đó. Không còn
+> mục nào để mở. Trạng thái hôm nay ở [`ROADMAP.md`](ROADMAP.md).
+
 Review toàn bộ source tại `564e064` (main). Đọc hết backend (routes, services, models, core,
 content pipeline), frontend (`apps/web`), e2e, CI, Docker; đối chiếu từng convention trong
 CLAUDE.md. Số lượng: ~29k dòng Python, ~14k dòng TS/TSX.

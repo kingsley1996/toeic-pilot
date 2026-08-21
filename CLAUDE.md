@@ -14,13 +14,15 @@ The rest carry decisions and their reasoning:
 
 - **`planning/ADR-001-DATA-MODEL.md`** — the domain schema and why it has the shape it has.
 - **`planning/PHASE2-AUDIO.md`** — audio architecture (this is ADR-002); Part A is the durable record, Part B the implementation log.
-- **`planning/ADR-003-AI-LAYER.md`** — the AI layer's three one-way decisions: two providers routed by cost, an **offline open-source embedding model at `vector(1024)`**, and a **thin non-RAG slice first**. The last one is driven by a measured fact rather than a preference — the project has **17 questions with an explanation**, so retrieval has nothing to retrieve and §7e's "eval alongside the feature" cannot conclude anything. RAG is blocked by *content*, not by engineering, and §3.3 writes the unblocking threshold as a number. Read §3.4 before adding any LLM call: the token budget **fails closed**, opposite to the auth rate limiter, because there Redis is the only thing between an account and your bill.
+- **`planning/ADR-003-AI-LAYER.md`** — the AI layer's three one-way decisions: two providers routed by cost, an **offline open-source embedding model at `vector(1024)`**, and a **thin non-RAG slice first**. The last one is driven by a measured fact rather than a preference — the project has **34 questions with an explanation** out of 55, so retrieval still has almost nothing to retrieve and §7e's "eval alongside the feature" cannot conclude anything. RAG is blocked by *content*, not by engineering, and §3.3 writes the unblocking threshold as a number. Read §3.4 before adding any LLM call: the token budget **fails closed**, opposite to the auth rate limiter, because there Redis is the only thing between an account and your bill.
 - **`planning/toeic_question_label_taxonomy.md`** — the question label taxonomy, **hand-maintained and the source of truth**. `app/services/labels.py` is *generated* from it, and `tests/test_labels.py` re-parses the document to compare code, Vietnamese label and part list one by one. Without that test a label added to the document but not regenerated is simultaneously "decided" and "rejected by the system".
 - **`planning/AI-ENGINEERING-PLAN.md`** — how the AI layer earns `PLAN.md`'s claim of "production AI engineering rather than an LLM chatbot". Its load-bearing section is §3: **an explanation of a question is the same for every learner**, so the common path is *precomputed offline* through the existing `app/content/` shape and costs nothing per request — 600 explanations generated once, not 600 per learner. §2 is the other half and matters more than it looks: scoring, SM-2, score conversion and dictation diffing must **never** touch an LLM, because they are exact today and would become approximate. Read §0 before planning any AI feature — `target_score` is filled on **3 of 53** profiles, so the planner still has no input. Its §9b KPI thresholds were written for a provisional 8-tag set and **no longer match the code**: the real taxonomy has 72 codes, so "smallest tag ≥5%" would flag everything. Accuracy is now measured per facet.
 - **`planning/ADR-004-IMAGES.md`** — photographs for Part 1, licensing, and the fetch pipeline.
+- **`planning/ADR-006-MEDIA-UPLOAD.md`** — how bytes get to a provider: the ticket → direct POST → confirm flow, why one `s3` driver covers six vendors, and why nothing reachable from a request handler may upload.
+- **`planning/SPEC-AI-COACH.md`** — the coach's provisional defaults, in the same "built to be changed" spirit as `SPEC-LEARNING-HUB.md`.
 - **`planning/ADR-007-TEST-AUTHORING.md`** — how a TOEIC test gets into the system: the audio script lives on the question, not in a spec file beside it (which is what kills the `LIKE 'prefix%'` lookup `seed_demo_test.py` still uses), paste-then-form authoring, canonical question numbers stored rather than derived, and audio generation reached by a Redis doorbell over a query-shaped work queue.
 - **`planning/ADR-005-CONTENT-TOOLING.md`** — the admin UI for importing past papers: why a custom admin rather than a headless CMS, why paste-and-parse, and why parse never writes to the database.
-- **`planning/REVIEW-OPUS.md`** — an engineering review dated 2026-08-08. A snapshot, not a tracker; its §8 roadmap is superseded by `ROADMAP.md`.
+- **`planning/REVIEW-OPUS.md`** and **`planning/qwen3p8-review.md`** — two engineering reviews, dated 2026-08-08 and 2026-08-16. Snapshots, not trackers: they are pinned to the commit they were written against and are not updated. `REVIEW-OPUS` still has open items; `qwen3p8-review` has none. Both are superseded as a plan by `ROADMAP.md`.
 
 Two descriptions of *current behaviour* rather than of decisions:
 
@@ -37,13 +39,13 @@ And one provisional spec:
 
 - **`planning/SPEC-LEARNING-HUB.md`** — the defaults the Learning Hub was built to (SM-2 grades, session limits, dictation grading). Explicitly built to be changed after real use; its §5 lists what will probably need to move.
 
-### Current state (2026-08-17)
+### Current state (2026-08-21)
 
-Phase 1 (scaffolding + auth) is done and hardened: all six P0 issues and seven of ten P1 issues from `planning/REVIEW-OPUS.md` are closed.
+Auth and the scaffolding under it are done and hardened. Every P0 and every P1 from `planning/REVIEW-OPUS.md` is now closed except **branch protection**, which needs repo-admin rights — see the status note at the top of that file. The one deliberate exception is P1-7b (httpOnly cookies), deferred with a written reason rather than pending.
 
 **The media pipelines are built** — `PHASE2-AUDIO.md` (audio, offline TTS in four accents) and `ADR-004-IMAGES.md` (Part 1 photographs, fetched and normalised, licence and attribution required). Both sit behind the optional `content` extra and neither may be imported by the API. `planning/MEDIA-PIPELINE.md` describes how they actually behave, including two real defects still open in §10.
 
-**The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, starting at migration `003`. **37 tables** as of `026` (measured off `Base.metadata`, 2026-08-17) cover vocabulary (with SM-2 spaced repetition and per-topic learning sessions), dictation and its four-level tree, questions/options/sets and their label taxonomy, practice tests, attempts, media assets, roles, score conversion, and the AI coach. `study_plan`, `learning_memory` and `knowledge_chunk` still exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
+**The domain schema is designed and migrated** — `ADR-001-DATA-MODEL.md`, starting at migration `003`. **38 tables** as of `029` (measured off `Base.metadata`, 2026-08-21) cover vocabulary (with SM-2 spaced repetition and per-topic learning sessions), dictation and its four-level tree, questions/options/sets and their label taxonomy, practice tests, attempts, media assets, roles, score conversion, and the AI coach. `study_plan`, `learning_memory` and `knowledge_chunk` still exist on paper only, because their vector dimensions depend on an embedding model ADR-003 has not chosen.
 
 **Vocabulary and dictation work end to end.** An editor pastes rows, they land as `draft`, `app/content/backfill_audio.py` synthesises the audio out of band, publishing is refused until every clip matches its text, and a learner reviews with SM-2 flashcards and works through dictation. Verified through the running Docker stack, not just in tests.
 
@@ -57,7 +59,7 @@ Three things to know before extending it:
 - **`require_role` is a dependency, never an in-body check** — a check in the handler is the one someone forgets to copy into the next route, and the failure mode is an admin endpoint open to every learner. Every admin endpoint has a test asserting a learner gets 403.
 - **The API cannot generate audio.** It cannot even import the TTS pipeline (A4.1), and synchronous synthesis would drag in a job queue that A2.5 deliberately avoided. `backfill_audio` runs out of band and its work queue is a *query* — "content whose audio is missing or no longer matches its text" — so there is no queue table, no retry state, and re-running simply finds less to do.
 
-**What is missing is content, not features.** `content/sources/` holds three words and four dictation sentences; the committed manifest carries 67 audio clips and 3 images. Enough to prove the path, nowhere near enough to teach anyone. Authoring several hundred entries is the real remaining work, and it is why the admin tooling came first.
+**Content has caught up in two areas and not in the third.** Vocabulary and dictation now run on real material — **303 words across 7 topics** and 15 dictation sentences, with **2 506 audio clips** in `audio_asset` and a committed manifest of 2 470 lines. Practice tests have not: **55 questions across 2 papers, 34 of them with an explanation**, which is why `ADR-003` still refuses to build RAG. Authoring papers is the real remaining work, and it is why the admin tooling came first.
 
 **TOEIC Practice is partly built** — attempts run end to end (start, save an answer, flag, submit, score); the exam runner UI is not written. The old blocker is gone: the pipeline **can** now produce a multi-voice clip (`MEDIA-PIPELINE.md` §10.2, `app/content/audio_join.py`), so Part 2 (question in one voice, three responses in another) and Part 3 (a two-to-three-speaker conversation, the largest part at 39 questions) have a way to get audio. Two things about it fail quietly and are written up in §10.2: **`gap_ms` is silence *added* to the ~1.1s edge-tts pads each turn boundary with**, and **turns that mix accents must declare `"accent"`** rather than have one picked for them. Real TOEIC papers are ETS copyright, and ETS licenses electronic use per year through its general counsel — `question.source` is NOT NULL precisely so provenance is answered per row: `original` means written to the format (formats are not copyrightable, specific text is), `licensed` means permission actually obtained. **Do not default that field anywhere in code or UI.**
 
@@ -112,7 +114,19 @@ XSS, this app has no third-party script and one `dangerouslySetInnerHTML` render
 constant, and cookies would introduce CSRF in exchange. **Add any third-party script and
 that reasoning expires.**
 
-Still open from P1: token in `localStorage` (P1-7b, deferred above).
+Still open: branch protection on `main` (needs repo-admin rights), and the token in `localStorage` (P1-7b, deferred above with its reasoning).
+
+**Petland is a self-contained corner, and its layers are enforced by a script rather than by convention.** `apps/web/scripts/check-petland-layers.mjs` fails the build if the wrong file learns the wrong thing, because a single stray import is enough to make "change the mascot" or "change the scene" turn into a search:
+
+- **`petland-sprite.ts` is the only file that knows a `/mascots/` path**, and `petland.tsx` the only one that knows the landscape path.
+- **`petland-ui.tsx` may not import the sprite, the scene, or the fx layer.** The interactive controls must survive both a new mascot and a new scene; anything they need comes in as props, which is what the `leading` slot is for.
+- **`petland-pet.ts` may not import React.** Needs and actions are arithmetic.
+
+Three numbers on a mascot — `cell`, `footY`, `anchorX` — are **measured by `scripts/pack-pet.mjs` and printed for you to copy**, never chosen by eye. `check-petland-fit.mjs` compares them exactly (`y1 === FOOT_Y - 1`) and walks every frame of every mascot along 241 samples of the path, both facings, at the top of the jump. A few pixels out and the pet floats or sinks, uniformly enough to look like a layout choice rather than a bug.
+
+**The mascot list lives in the API** (`app/schemas/profile.py::PetId`), even though the art lives in the front end. Declared there it travels through OpenAPI into a TypeScript union, so `Record<MascotId, Mascot>` missing a mascot is a `tsc` error rather than a runtime `undefined`. Add a mascot API-side first, regenerate the contract, then add the registry row — the other order does not compile.
+
+**Inside the panel the mascot is read through a ref, not a closure.** The `requestAnimationFrame` loop has its own dependency list and does not rebuild when the mascot changes, so a closure holds the old one forever and the picker looks inert. Putting `mascot` in the deps also works, at the cost of tearing the loop down mid-run — `frameAcc` resets and the pet jumps at the moment the user clicks.
 
 ## Commands
 
@@ -125,7 +139,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload --port 8000
 uv sync --extra dev --extra content         # add the offline content pipeline
 
-uv run pytest                              # 632 collected: 630 run + 2 `external` deselected
+uv run pytest                              # 639 collected: 637 run + 2 `external` deselected
 uv run pytest -m "not integration"         # skip the ones needing PostgreSQL
 
 # The three `integration` tests default to the DEV database, and they run

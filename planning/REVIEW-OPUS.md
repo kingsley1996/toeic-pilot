@@ -6,6 +6,34 @@
 **Phạm vi:** toàn bộ repo (`apps/api`, `apps/web`, `packages/shared`, `docker/`, `.github/`) + `planning/ARCHITECTURE.md` + `planning/PLAN.md`
 **Người review:** Claude (Opus 5)
 
+---
+
+> ### Đọc trước: đây là ẢNH CHỤP ngày 2026-08-08, không cập nhật tiếp
+>
+> Thân bài dưới đây **giữ nguyên** để còn đọc được lập luận lúc đó. Đừng sửa nó —
+> một bản review bị sửa cho khớp hiện tại thì không còn là bản ghi của bất kỳ thời
+> điểm nào. Trạng thái hôm nay nằm ở [`ROADMAP.md`](ROADMAP.md).
+>
+> **Tính tới 2026-08-21, gần như mọi mục "còn lại" trong tệp này đã đóng:**
+>
+> | Mục | Hôm nay |
+> |---|---|
+> | P1-3 test frontend + Playwright e2e | ✅ 5 tệp spec, 16 bài |
+> | P1-7 thu hồi token | ✅ denylist theo `jti` trên Redis. Phần cookie httpOnly **hoãn có lý do ghi lại** — xem `ROADMAP.md` P1-7b |
+> | P1-8 rate limiting `/login` | ✅ `rate_limit_anonymous`, khoá theo IP |
+> | P2-6 Dockerfile production | ✅ multi-stage, chạy uid 10001, đã bỏ `gcc`/`libpq-dev` (510MB → 321MB) |
+> | P2-7 bỏ fallback `pnpm install` | ✅ entrypoint hỏng to tiếng thay vì đoán cây phụ thuộc |
+> | ADR-003 | ✅ đã viết |
+> | Learning Hub | ✅ chạy đầu-cuối |
+> | Lát cắt AI mỏng | ✅ đã dựng, nhưng **cố ý không có RAG** — `ADR-003` §3.3 ghi ngưỡng gỡ chặn bằng một con số |
+> | **Bật branch protection** | ❌ **vẫn mở** — cần quyền admin repo. Đây là mục duy nhất còn lại |
+>
+> Một phát hiện trong thân bài nay đã sai hẳn: mục nói repo "không có Playwright"
+> và trỏ vào `PREPARE.md`. Repo đã có Playwright, và `PREPARE.md` đã xoá — nó là
+> ghi chú cài plugin cho công cụ, không phải tài liệu dự án.
+
+---
+
 > **Trạng thái:** 6/6 P0 đã đóng (commit `6677022`). Sprint 1 hoàn tất: 7/10 mục P1 đã xử lý.
 > Còn lại: P1-3 (test frontend/e2e), P1-7 (token trong localStorage), P1-8 (rate limiting) — xem [mục 8](#8-lộ-trình-đề-xuất).
 > Test: 1 → **62**. Gate CI: 4 → **13**.

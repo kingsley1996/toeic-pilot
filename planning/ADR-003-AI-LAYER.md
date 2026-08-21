@@ -82,7 +82,7 @@ một giả định.
 |---|---|
 | **Chốt** | Một use case đầu-cuối **không dùng RAG**: Coach giải thích một câu học viên vừa làm sai |
 | **Thay vì** | Dựng corpus + chunking + retrieval + đánh giá trước, theo thứ tự roadmap |
-| **Vì sao** | 17 explanation và 43 từ vựng thì **retrieval không có gì để truy hồi**, và §7e đòi eval đi cùng tính năng — không có ngữ liệu thì eval không kết luận được điều gì. Trong khi đó ngữ cảnh mà Coach thật sự cần đã có sẵn dưới dạng **có cấu trúc**: câu hỏi, các phương án, phương án học viên đã chọn, explanation nếu có, và 31 lượt làm bài thật |
+| **Vì sao** | 34 explanation và 303 từ vựng vẫn còn **quá mỏng để retrieval có gì đáng truy hồi**, và §7e đòi eval đi cùng tính năng — không có ngữ liệu thì eval không kết luận được điều gì. Trong khi đó ngữ cảnh mà Coach thật sự cần đã có sẵn dưới dạng **có cấu trúc**: câu hỏi, các phương án, phương án học viên đã chọn, explanation nếu có, và 117 lượt làm bài thật |
 | **Đánh đổi** | RAG — một mục trong `PLAN.md` §4 — lùi lại. Không bị bỏ: nó bị chặn bởi ngữ liệu, và đó là một sự thật chứ không phải một lựa chọn |
 
 **Mục tiêu của lát cắt này không phải ship.** Nó là §7f: xác nhận kiến trúc và

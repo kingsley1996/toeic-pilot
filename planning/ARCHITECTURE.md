@@ -1,6 +1,6 @@
 # TOEIC Pilot — Architecture
 
-Last updated: 2026-08-09
+Last updated: 2026-08-21
 
 > Mô tả **hiện trạng**, không phải kế hoạch. Trạng thái sprint và task nằm ở [`ROADMAP.md`](ROADMAP.md); lý do đằng sau từng quyết định nằm ở các ADR.
 
@@ -14,9 +14,9 @@ TOEIC Pilot is a polyglot monorepo containing:
 - `docker` — Dockerfiles and Docker Compose for local/integration environment
 - `planning` — product spec, roadmap, and architecture decision records
 
-**Đã chạy đầu-cuối:** auth + RBAC, đường ống media offline (audio 4 accent, ảnh CC), schema domain 23 bảng, công cụ nhập nội dung cho từ vựng/dictation kèm cây phân cấp 4 tầng, và Learning Hub (từ vựng có phát âm, ôn tập SM-2, dictation chấm ở client theo từng từ).
+**Đã chạy đầu-cuối:** auth + RBAC, đường ống media offline (audio 4 giọng, ảnh CC) kèm đường tải lên qua provider, schema domain **38 bảng**, công cụ nhập nội dung cho từ vựng / dictation / đề luyện, Learning Hub (từ vựng có phát âm, ôn tập SM-2, hai minigame, dictation chấm ở client theo từng từ), luyện đề đầy đủ (làm bài → nộp → chấm → xem lại), và lớp AI đã gắn nhãn câu hỏi theo bảng 72 mã cùng sinh giải thích.
 
-**Chưa dựng:** TOEIC Practice (schema đã có, chưa có endpoint và chưa có trình nhập câu hỏi) và toàn bộ AI layer (`app/ai` vẫn là package rỗng). Chi tiết ở [`ROADMAP.md`](ROADMAP.md) §5–§7.
+**Chưa dựng:** RAG. Chặn bởi **nội dung** chứ không bởi kỹ thuật — xem [`ADR-003`](ADR-003-AI-LAYER.md) §3.3, nơi ghi ngưỡng gỡ chặn bằng một con số. Gói `app/ai` vẫn rỗng vì lớp AI thật sống ở `app/services/llm/` (gateway, router theo giá, hai provider và một fake để test).
 
 ## High-level components
 
@@ -30,14 +30,22 @@ TOEIC Pilot is a polyglot monorepo containing:
 
 **Backend (apps/api)**
 
-46 endpoint, bốn router:
+**131 thao tác HTTP trên 106 đường dẫn**, 12 router có endpoint:
 
-| Router | Đường dẫn | Nội dung |
+| Router | Số | Nội dung |
 |---|---|---|
-| `health.py` (2) | `/health`, `/ready` | liveness (không kiểm gì) và readiness (Postgres + Redis) |
-| `auth.py` (3) | `/api/v1/auth/*` | register, login, me |
-| `learning.py` (12) | `/api/v1/{topics,vocabulary,vocabulary-review,dictation}` + `/dictation-{topics,sections,stories}` | Learning Hub cho học viên — **mỗi tầng tự lọc `published`** |
-| `admin.py` (29) | `/api/v1/admin/*` | parse / commit / CRUD / publish / xoá cho `vocabulary`, `dictation`, `topic`, và cây `dictation_{topic,section,story}` |
+| `health.py` | 2 | `/health` là liveness và **cố ý không kiểm gì**; `/ready` kiểm Postgres và ping Redis |
+| `auth.py` | 5 | register, login, me, đổi mật khẩu, logout (thu hồi token theo `jti`) |
+| `profile.py` | 6 | hồ sơ, thống kê học tập, avatar |
+| `learning.py` | 21 | Learning Hub cho học viên — **mỗi tầng tự lọc `published`** |
+| `practice.py` | 3 | danh sách đề và bộ đề |
+| `attempt.py` | 6 | bắt đầu / lưu đáp án / gắn cờ / nộp / xem lại một lượt làm bài |
+| `coach.py` | 4 | AI coach: giải thích và hội thoại |
+| `media.py` | 5 | vé tải lên → xác nhận (ADR-006) |
+| `appearance.py` | 2 | thiết lập nền động, đọc công khai |
+| `admin.py` | 41 | parse / commit / CRUD / publish cho từ vựng, dictation và cây của nó |
+| `admin_tests.py` | 26 | nhập đề luyện: dán → xem trước → commit, gắn media, cổng publish |
+| `admin_ai.py` | 9 | cấu hình provider, ngân sách token, nhãn kỹ năng |
 
 **Cây dictation dùng đường dẫn gạch nối** (`/dictation-topics`), không lồng vào `/dictation/...`. Không phải để cho đẹp: `/dictation/{item_id}` khai `item_id: uuid.UUID`, nên `/dictation/topics` sẽ bị route đó bắt trước và trả 422 khi cố parse `"topics"` thành UUID. Đặt route tĩnh trước route động cũng chữa được, nhưng khi đó thứ tự khai báo trở thành một ràng buộc ngầm mà người sắp xếp lại file sẽ phá. Cùng tiền lệ với `/vocabulary-review/session`.
 
@@ -107,7 +115,7 @@ Audit trail đi kèm qua `PublishableMixin` (`created_by`, `published_by`, `publ
 
 ## Data model
 
-Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). **23 bảng**, tạo bởi migration `003`–`008`.
+Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). **38 bảng**, bắt đầu từ migration `003`, mới nhất `029_profile_pet`.
 
 Phần từ vựng và dictation **đã có endpoint chạy trên nó**. Phần question / attempt / practice test thì chưa — schema có, endpoint không (Sprint 5). Bốn bảng của Phase 4–5 (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) mới chỉ tồn tại trên giấy, vì chiều `vector(n)` phụ thuộc vào embedding model mà ADR-003 chưa chọn — và đổi model nghĩa là tính lại toàn bộ corpus.
 
@@ -201,7 +209,7 @@ Backend (`apps/api/`):
 | `app/api/deps.py` | `get_db`, `get_current_user`, `require_role` |
 | `app/schemas/` | Pydantic I/O: `auth.py`, `learning.py`, `admin.py` — nguồn của contract sinh ra |
 | `app/services/` | `srs.py`, `dictation.py` (bộ chấm — **có bản song sinh ở `apps/web/src/lib/dictation.ts`**), `media_state.py`, `content_import.py`, `scoring.py` |
-| `app/models/` | 23 bảng; `mixins.py` giữ từ vựng cột dùng chung, `validators.py` giữ luật nội dung. **Model mới phải re-export từ `__init__.py`** |
+| `app/models/` | 38 bảng; `mixins.py` giữ từ vựng cột dùng chung, `validators.py` giữ luật nội dung. **Model mới phải re-export từ `__init__.py`** |
 | `app/core/` | `config.py`, `database.py`, `security.py`, `logging.py`, `redis_client.py`, `media.py` |
 | `app/content/` | Pipeline offline sau extra `content`: `generate`, `images`, `seed`, `seed_scores`, `backfill_audio`, `tts`, `storage`, `manifest`, `settings` |
 | `app/ai/` | Rỗng — chờ ADR-003 |
@@ -213,7 +221,7 @@ Frontend (`apps/web/src/`):
 
 | Đường dẫn | Vai trò |
 |---|---|
-| `app/` | 16 route: `login`, `register`, `dashboard`, `learn/**` (gồm cây dictation 4 tầng), `admin/**`, `not-found`, `error` |
+| `app/` | 36 route: `login`, `register`, `dashboard`, `learn/**` (gồm cây dictation 4 tầng), `admin/**`, `not-found`, `error` |
 | `app/admin/layout.tsx` | Khu quản trị dùng khung riêng; `AppShell` tự nhường chỗ ở đường dẫn `/admin` |
 | `app/learn/dictation/{topics,sections,stories}/[id]` | Ba tầng duyệt cây; `standalone/` giữ câu chưa thuộc bài nào |
 | `app/globals.css` | Token màu — sáng/tối là **một** định nghĩa |
