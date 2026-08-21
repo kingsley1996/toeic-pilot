@@ -93,6 +93,17 @@ class UserProfile(Base, TimestampMixin):
     daily_new_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
     preferred_accent: Mapped[str | None] = mapped_column(String(8), nullable=True)
 
+    # Con mascot của Petland. NULL nghĩa là "con mặc định của hệ thống", KHÔNG
+    # phải một bản sao của con mặc định hôm nay — cùng lý do với daily_new_limit:
+    # đổi mặc định thì mọi người chưa từng chọn phải đi theo, chứ không bị ghim
+    # vào con cũ một cách lặng lẽ.
+    #
+    # Không có CHECK ở đây, và đó là chủ ý. Danh sách mascot sống ở
+    # `app/schemas/profile.py::PetId`, nên nó đi qua OpenAPI ra tới TypeScript và
+    # `tsc` bắt được frontend thiếu con nào. Một CHECK trong cơ sở dữ liệu chỉ
+    # thêm một chỗ thứ hai phải nhớ sửa, và chỗ bị quên sẽ là chỗ báo lỗi muộn nhất.
+    pet: Mapped[str | None] = mapped_column(String(32), nullable=True)
+
     # Ảnh đại diện đã tải lên. NULL là trạng thái bình thường, không phải dữ
     # liệu thiếu: ảnh chữ cái đầu vẫn là mặc định, và cột này rơi về NULL khi
     # một ảnh bị gỡ (ADR-006 §2.7).

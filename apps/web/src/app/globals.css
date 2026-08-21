@@ -485,3 +485,30 @@
     opacity: 0.55;
   }
 }
+
+/*
+ * Mẩu phản hồi ở góc thú cưng: trái tim khi được chọc, tia sáng khi ăn xong.
+ *
+ * Bay lên rồi mờ đi. `--bit-drift` cho mỗi mẩu một hướng lệch riêng — cả nắm bay
+ * thẳng đứng song song nhau đọc ra là MỘT hiệu ứng chứ không phải nhiều mẩu.
+ * Khối `prefers-reduced-motion` chung ở trên rút thời lượng về 0.01ms, nên người
+ * tắt hiệu ứng chuyển động chỉ thấy chúng chớp qua thay vì bay.
+ */
+@keyframes pet-bit-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0) scale(0.6);
+  }
+  22% {
+    opacity: 1;
+    transform: translate3d(calc(var(--bit-drift) * 0.25), -8px, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--bit-drift), -34px, 0) scale(1);
+  }
+}
+
+.pet-bit > svg {
+  animation: pet-bit-rise 1100ms cubic-bezier(0.25, 0.9, 0.3, 1) forwards;
+}

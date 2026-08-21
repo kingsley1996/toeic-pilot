@@ -45,3 +45,8 @@ planning
 # một lỗi quyền ghi chỉ nổ ở máy checkout sạch, tức là ở CI chứ không ở đây.
 # Worker vẫn ghi vào thư mục này bình thường: nó tới qua bind mount lúc chạy.
 apps/api/media/
+
+# Ảnh gốc: 48 khung hình rời của mascot và bản PNG 2MB của bối cảnh. Các script
+# trong `apps/web/scripts/` gộp và nén chúng thành thứ nằm trong `public/`. Chỉ
+# dùng lúc tạo tài sản, không lúc chạy.
+apps/web/assets

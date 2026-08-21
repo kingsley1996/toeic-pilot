@@ -438,3 +438,38 @@ def test_the_calendar_only_carries_days_with_activity(client: TestClient, db_ses
     assert body["calendar"][0]["reviews"] == 1
     # Ngày địa phương đi TRƯỚC một ngày so với ngày UTC của cùng mốc thời gian.
     assert body["calendar"][0]["date"] == (late + timedelta(hours=7)).date().isoformat()
+
+
+def test_pet_must_be_a_mascot_that_exists(client: TestClient):
+    """Một mascot không tồn tại bị chặn ở cổng, không lưu rồi hỏng sau.
+
+    Cái giá của việc nới chỗ này là im lặng: giá trị sai vẫn lưu được, frontend
+    tra bảng không thấy và rơi về con mặc định — nên người dùng chọn xong, thấy
+    con cũ, và không có lỗi nào ở đâu cả.
+    """
+    headers = signed_in(client)
+    assert (
+        client.patch("/api/v1/profile", json={"pet": "dragon"}, headers=headers).status_code == 422
+    )
+    r = client.patch("/api/v1/profile", json={"pet": "rex"}, headers=headers)
+    assert r.status_code == 200
+    assert r.json()["pet"] == "rex"
+
+
+def test_pet_distinguishes_absent_from_null(client: TestClient):
+    """Ba trạng thái, không phải hai — cùng luật `exclude_unset` như các cột khác.
+
+    NULL ở đây là "chưa chọn", và frontend rơi về con mặc định của nó. Nếu khoá
+    vắng mặt cũng xoá thì mọi lần lưu một trường khác sẽ âm thầm trả pet về mặc
+    định, và nhận ra điều đó đòi phải nạp lại trang.
+    """
+    headers = signed_in(client)
+    client.patch("/api/v1/profile", json={"pet": "rex"}, headers=headers)
+
+    # khoá vắng mặt: giữ nguyên
+    r = client.patch("/api/v1/profile", json={"locale": "en"}, headers=headers)
+    assert r.json()["pet"] == "rex"
+
+    # null tường minh: xoá
+    r = client.patch("/api/v1/profile", json={"pet": None}, headers=headers)
+    assert r.json()["pet"] is None

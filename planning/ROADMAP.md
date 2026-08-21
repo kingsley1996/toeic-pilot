@@ -578,6 +578,217 @@ Thêm cột `speed_percent` xong thì `/backdrop` trả **500**: `column backdro
 
 ---
 
+## 4m. Petland — góc thú cưng · ✅ XONG (2026-08-18)
+
+- [x] `assets/mascots/dino/` — 48 khung hình rời (5 hoạt ảnh), là bản GỐC, không nằm trong `public/`
+- [x] `scripts/png.mjs` — giải mã/mã hoá PNG 8-bit RGBA bằng `zlib` của Node, không thêm phụ thuộc
+- [x] `scripts/pack-dino.mjs` — gộp thành 5 dải ngang, ô **165×117**, 6.0MB → **440KB**
+- [x] `scripts/check-dino-fit.mjs` — kiểm bằng số rằng mọi khung hình nằm trọn trong sân
+- [x] `components/petland.tsx` — mở từ nút góc dưới trái, đi/chạy/nhảy/ngủ, tự đi dạo rồi tự ngủ
+- [x] `e2e/petland.spec.ts` — đo chuyển động thật trong trình duyệt thật
+
+**Bộ ảnh này khác hẳn ba tấm sprite sheet trước, và khác ở đúng chỗ quan trọng: nó đã được căn chỉnh sẵn.** Cả 48 khung hình nằm trên cùng canvas 680×472, và đáy của tư thế đứng cố định ở y=422 trong **cả mười** khung hình. Nên cách xử lý đúng là cắt **một** hình chữ nhật chung cho mọi khung hình — giữ nguyên căn chỉnh của hoạ sĩ. Cắt sát hộp bao của *từng* khung hình (thứ bộ sheet trước bắt buộc phải làm, vì nó không có căn chỉnh nào để giữ) là đúng nguyên nhân lỗi "nhảy lên thì pet nhỏ đi".
+
+**Ba con số trong `petland.tsx` do máy đo, không chọn bằng mắt, và cả ba hỏng im lặng:**
+
+- `FOOT_Y = 105` — bàn chân của tư thế đứng nằm ở hàng 105 của ô chứ không ở đáy ô, vì khung cắt chung phải chừa chỗ cho tư thế nằm vốn thấp hơn. Vẽ ô sát mặt đất làm con thú lơ lửng 12px; vì **mọi** hoạt ảnh lệch giống nhau nên nó trông như một lựa chọn bố cục.
+- `ANCHOR_X = 47` — ô rộng 165 nhưng tư thế đứng chỉ chiếm x 1..93. Lật quanh tâm *ô* đẩy con thú ngang 70px mỗi lần đổi hướng, nên `transform-origin` phải đặt ở tâm *con thú*.
+- `MIN_X = 64` — tư thế chạy và nhảy vươn tới x=111, nên khi quay trái cái đuôi thò ra 64px về bên trái điểm neo. `check-petland-fit.mjs` bắt được: ở `MIN_X = 50` nó báo `run` và `jump` tràn mép trái đúng 14px.
+
+**Một vòng lặp, không phải hai.** Bản trước tách `requestAnimationFrame` cho vị trí và `setInterval` cho khung hình, và đó là nguồn của cảm giác giật: hai đồng hồ trôi khỏi nhau nên chân bước và thân dịch không khớp pha. Giờ cùng một vòng, và mọi chuyển động tính theo **giây** chứ không theo khung hình. Cung nhảy là parabol theo thời gian, không phải tích phân trọng lực — nhờ vậy thời gian bay cố định và khung hình nhảy bám đúng cung thay vì trôi theo tải máy.
+
+**`Dead` được đổi tên thành `sleep`.** Bộ khung hình là con thú ngả xuống rồi nhắm mắt, không có gì chết chóc — và một con thú học tập thì không chết. Nó luôn nằm quay mặt sang phải, vì tư thế này đổ người *về phía trước* và quay trái thì đổ ra ngoài mép sân.
+
+**Petland KHÔNG gọi API.** Chưa có hạt giống, độ đói hay cấp độ nên chưa có bảng nào phía máy chủ; phần nuôi thú gắn với hoạt động học vẫn còn để ngỏ. Nó cũng vắng mặt ở màn làm bài — nhánh `bareLayout` — vì một con thú nhảy nhót cạnh người đang tính giờ làm bài là thứ cạnh tranh trực tiếp với sự tập trung.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch
+- [x] `check-petland-fit.mjs`: 48/48 khung hình nằm trong sân ở **cả hai hướng** và ở đỉnh cú nhảy; bàn chân tư thế đứng khớp `FOOT_Y`
+- [x] **Thấy nó đỏ trước khi tin nó xanh** — `e2e/petland.spec.ts` đỏ đúng ba lần khi cho hỏng lại ba khuyết điểm: `idle` không đổi khung hình, giữ phím mà không chuyển sang bước đi, và cú nhảy không rời mặt đất. Xanh lại sau khi phục hồi.
+
+**Một phép đo phải bỏ đi vì nó vô hiệu.** Đo qua DevTools trong một tab ở nền cho ra "đứng yên" ở mọi mẫu — nhưng đó là vì `visibilityState === "hidden"` làm trình duyệt **dừng** `requestAnimationFrame`, chứ không phải vì code sai. Cùng loại với hai kỹ thuật đo đã phải loại ở §4k. Kết luận chỉ rút ra được từ Playwright, nơi trang thực sự được vẽ.
+
+---
+
+## 4n. Petland — bối cảnh khu trại · ✅ XONG (2026-08-18)
+
+- [x] `assets/landscape/petland-1.png` — bản GỐC 2.0MB, ngoài `public/`
+- [x] `public/landscape/petland-1.jpg` — bản chạy, **348KB**
+- [x] `components/petland-scene.ts` — đường đi 11 điểm neo, `pointAt()` nội suy
+- [x] `components/petland.tsx` — camera bám con thú, phối cảnh, ánh sáng theo vị trí
+- [x] `scripts/check-petland-fit.mjs --debug` — kiểm bằng số **và** vẽ ra để nhìn
+- [x] `png.mjs` đọc thêm PNG kiểu RGB (ảnh chụp của Playwright)
+
+**Bức tranh KHÔNG phải pixel art, dù nó vẽ ra pixel art.** Đo được: 178.821 màu, và không cỡ khối nào từ 2 tới 8 px cho tỉ lệ cạnh-nằm-đúng-lưới cao hơn mức ngẫu nhiên — tức không có lưới pixel nào cả. Tỉ lệ bước màu mượt/gắt là 8.4:1. Hai hệ quả ngược chiều nhau: `image-rendering: pixelated` sẽ **phá** nó, và không có hệ số phóng nguyên nào phải tôn trọng; nhưng con khủng long cũng là art tô mượt, nên hai bên **không lệch phong cách** như tưởng ban đầu. Ảnh cũng **đục 100%**, nên JPEG là đúng định dạng: 2.0MB → 348KB mà không mất gì.
+
+**Ống nhòm, không phải cả bức tranh.** Tỉ lệ trong tranh là thật — đống lửa cao ~110px, cửa gỗ ~90px — nên một con thú "thuộc về" cảnh này phải cao 60–80px, đúng cỡ tự nhiên của bộ sprite. Thu nhỏ bức tranh cho vừa khung góc màn hình thì con thú cũng phải nhỏ theo và thành một vệt 40px. Nên khung là **cửa sổ 420×250 trượt theo con thú**, cộng một nút xem toàn cảnh ở đúng 50% (cả bức vừa khít, không phải kẹp camera).
+
+**Mặt đất không phẳng, nên vị trí con thú là MỘT số chứ không phải hai.** Khu trại thấp bên trái, mặt cầu cao hơn 130px và ở xa hơn, bờ phải lại thấp xuống. Cho con thú đi ngang theo một `y` cố định là cho nó lội qua sông ở nửa quãng đường. Đường đi là một chuỗi điểm neo mang `x`, `y` (chỗ **bàn chân** chạm đất) và `scale`; vị trí là quãng đường đã đi dọc đường đó. Nội suy **tuyến tính** chứ không trơn: Catmull-Rom đẹp hơn nhưng vọt ra ngoài điểm neo ở chỗ gấp khúc, tức con thú lượn ra khỏi mặt đất đã đo — đúng thứ đường đi này sinh ra để ngăn.
+
+**Ảnh gỡ lỗi bắt được thứ con số không bắt được.** Bộ kiểm báo xanh — con thú nằm trọn trong khung ở mọi mẫu — trong khi ba điểm neo đặt mặt cầu **thấp hơn thực tế 20px và dốc ngược chiều**, và điểm neo cuối đặt bàn chân **vào trong lòng máng nước**. Một đường đi lọt trong khung vẫn có thể đi thẳng qua giữa lòng sông. Phải phóng 3x kèm lưới đo mới đọc đúng: cây cầu là hình **thang** (dốc lên 481 → phẳng 463 → dốc xuống 483), và ở cỡ thật thì mặt cầu với gầm cầu chỉ cách nhau vài pixel.
+
+**Ánh sáng phải theo vị trí, không thể là một bộ lọc cố định.** Con thú được vẽ dưới ánh sáng ban ngày còn cảnh là đêm, nên không chỉnh gì thì nó nổi lên như hình dán. Nhưng mức đủ tối cho khúc cầu dưới trăng làm con thú cạnh đống lửa trông như trong bóng râm. `lightingAt()` nội suy theo khoảng cách tới đống lửa; `hue-rotate` đổi dấu làm việc nặng nhất — dương đẩy xanh lá về vàng, âm đẩy về xanh lục lam.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch
+- [x] `check-petland-fit.mjs`: 48 khung hình × 241 mẫu dọc đường đi, cả hai hướng, cả đỉnh cú nhảy — không khung nào ra khỏi bức tranh
+- [x] **Thấy đỏ trước khi tin xanh**: bỏ phối cảnh (ép `scale` cố định) làm bài kiểm mới đỏ đúng chỗ, phục hồi thì xanh lại
+- [x] Chụp thật qua Playwright ở ba chỗ: cạnh lửa, bờ bên kia, và toàn cảnh
+
+**Một lỗi tự giấu mình.** Chốt tránh ghi lại `filter` mỗi khung viết là `Math.abs(spot.x - lastLitX) > 6` với `lastLitX` khởi tạo bằng `NaN` — mọi so sánh với `NaN` đều sai, nên lần ghi **đầu tiên** không bao giờ xảy ra, `filter` mãi rỗng, và toàn bộ phần ánh sáng lặng lẽ không chạy mà không ném lỗi nào. Chỉ lộ ra vì phép kiểm đọc giá trị `filter` thật thay vì tin vào code. Nay so **khoá đã làm tròn**, không có đường nào dẫn tới `NaN`.
+
+---
+
+## 4o. Petland — lớp hạt làm khung cảnh sống · ✅ XONG (2026-08-18)
+
+- [x] `components/petland-fx.ts` — sao nhấp nháy, mặt nước lấp lánh, đốm lửa, đom đóm
+- [x] `petland-scene.ts` thêm các vùng `SKY`, `WATER`, `GLOW_ZONES`, `FIRE`
+- [x] `check-petland-fit.mjs` kiểm **chất liệu** của từng vùng, và vẽ chúng ra với `--debug`
+- [x] `png.mjs` đọc thêm PNG kiểu RGB — ảnh chụp của Playwright là kiểu đó
+- [x] `e2e/petland.spec.ts` thêm bài kiểm lớp hạt
+
+**Bức tranh là ảnh phẳng, nên thứ chuyển động phải là một lớp PHỦ.** Muốn chính dòng nước tự chảy thì phải cắt nó thành lớp riêng có kênh trong suốt, tức tô mặt nạ bằng tay cho một vùng mép răng cưa — nhiều việc hơn hẳn, và kết quả cuối vẫn là một vòng lặp vẽ. Một canvas hạt cho gần hết hiệu quả mà không đụng vào tài sản gốc.
+
+**Mỗi hiệu ứng bị nhốt trong vùng đo từ bức tranh.** Một vệt sáng lấp lánh trên bãi cỏ lộ ra ngay là đồ dán thêm, nên `SKY`/`WATER`/`GLOW_ZONES` là toạ độ đo thật, y như `PATH`. Canvas chạy trong **cùng** vòng lặp `requestAnimationFrame` với con thú: hai vòng lặp là hai `dt`, và đốm lửa sẽ trôi lệch pha với con thú mỗi khi máy tải nặng — đúng lỗi đã sửa khi gộp vị trí với khung hình.
+
+**"Nước thì xanh" là luật sai ở đúng chỗ nó cần đúng nhất.** Vũng nước trong tranh gần nửa là vệt phản chiếu màu cam của đống lửa, nên một ô nằm trọn trong lòng nước cũng chỉ đạt ~65% theo luật đó, không phân biệt được với ô đè lên cỏ. Định nghĩa ngược lại thì tách sạch: thứ duy nhất tiếp giáp nước là **cỏ**, và cỏ xanh-lá-trội — đo "không phải xanh lá trội" cho cỏ 61–65%, nước 98–99%. Phép kiểm này bắt được ba ô sai ngay lượt đầu. Giới hạn đã biết: nó không phân biệt nước với **gỗ**, nên một ô đè lên cột cầu vẫn lọt — chỗ đó do ảnh gỡ lỗi phát hiện.
+
+**Bản đồ chênh lệch giữa hai khung hình là thứ trả lời được "cái gì đang động".** Nhìn ảnh tĩnh chỉ kết luận được "hình như không có đốm lửa"; trừ hai khung cho nhau thì thấy ngay chúng có tồn tại nhưng chụm thành một cụm bé nằm gọn **bên trong vầng sáng của chính đống lửa** — vì chúng sinh ra ở vành đá dưới chân (y=548) với lực nâng quá nhỏ. Cho sinh ở ngọn lửa (y≈494–518) và nâng mạnh hơn là xong.
+
+`prefers-reduced-motion` tắt hẳn lớp này. Khối `prefers-reduced-motion` sẵn có ở `globals.css` chỉ với tới CSS animation, không với tới canvas — nên đây là phép kiểm thứ hai, không phải phép kiểm thừa.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch · Playwright **10 xanh, 4 bỏ qua**
+- [x] `check-petland-fit.mjs`: 5/5 ô nước và 2/2 ô trời đạt ≥90% đúng chất liệu
+- [x] **Thấy đỏ trước khi tin xanh**, hai kiểu hỏng riêng: canvas không vẽ gì (`> 0` nhận 0) và canvas vẽ một lần rồi đứng im (`not 170441`). Hai khẳng định trong bài kiểm đều gánh việc, không cái nào thừa.
+- [x] Nhịp khung hình đo bằng Playwright: **16.7ms trung vị** cả khi bảng đóng, mở cửa sổ nhỏ và mở toàn cảnh — không đo được chênh lệch nào
+
+**Những lần đỏ chập chờn gặp trong lúc dựng phần này KHÔNG phải lỗi test.** Chúng là bộ giới hạn tốc độ của `/auth/register` — mỗi bài e2e tự đăng ký một tài khoản, và một buổi làm việc dài thì chạm trần. Triệu chứng đã ghi sẵn trong CLAUDE.md và cách gỡ là xoá khoá `ratelimit:*` trong Redis. `waitForPet` thêm vào để phòng một cuộc đua **có thật** — đọc `transform` trước lần ghi đầu của vòng lặp cho `y = 0` và `scale = 1` — chứ không phải bản vá cho những lần đỏ đó.
+
+---
+
+## 4p. Petland — mặt nước đọc ra là dòng chảy · ✅ XONG (2026-08-18)
+
+- [x] Vệt sáng 34 → **108**, dài 10–56px, dày 1–3px, trôi nhanh gấp đôi, một phần năm mang sắc ấm
+- [x] Chọn ô nước theo **diện tích** thay vì đều tay
+- [x] Thêm **gợn sóng tròn**, dẹt 0.36 theo chiều dọc vì cảnh nhìn xiên
+- [x] `check-petland-fit.mjs` chạy thẳng lớp hạt với một `ctx` giả và đọc từng nét vẽ
+
+**Chỉ tăng số hạt thì vũng lớn vẫn không đậm lên, và lý do nằm ở cách CHỌN ô.** `pick()` đều tay chia đúng số vệt cho mỗi ô nước, nên ô suối trên 58×96 nhận bằng ô vũng chính 340×114 — gấp bảy lần diện tích. Chỗ nhỏ thì sáng rực còn mặt vũng lớn nhất, thứ chiếm gần hết khung hình, lại loãng nhất. Chọn theo diện tích mới cho mật độ đều.
+
+Một vệt sáng đơn lẻ là một tia loé; một dòng chảy là **nhiều** vệt cùng đi một hướng, đủ dày để thành kết cấu. Đó là lý do con số phải nhảy từ 34 lên 108 chứ không phải 50. Tốc độ cũ 3–15 px/giây chậm tới mức mắt đọc thành đứng yên. Gợn sóng tròn là thứ duy nhất trong lớp này nói "đây là **mặt nước**" chứ không phải một bề mặt sáng nào đó.
+
+### Nhốt hạt vào vùng chỉ có nghĩa nếu chúng Ở LẠI trong vùng
+
+Tăng tốc độ lên gấp đôi làm vỡ chính cái luật mà các ô sinh ra để giữ: ở tốc độ mới một vệt đi gần 60px trong đời nó, thừa sức ra khỏi ô và nằm lấp lánh **trên bãi cỏ**. Ảnh chụp chỉ để lộ nó sau khi phóng đúng góc — một vạch trắng ở world x≈1025 trong khi ô nước dừng ở 1000.
+
+Chặn ở vòng vẽ vẫn chưa đủ, và nguyên nhân thật nằm chỗ khác: **`newShimmer` chọn vị trí mà không tính chiều dài của chính vệt đó**. `inRect()` cho một điểm bất kỳ trong ô, kể cả sát mép phải, nên một vệt dài 40px đặt ở đó thò ra 36px ngay từ khung hình đầu. Phép kiểm biên chạy TRƯỚC lần vẽ, nên vệt vừa sinh vẫn kịp được vẽ đúng một khung rồi mới bị thay — một khung ở 60fps là quá nhanh để thấy, nhưng có hơn trăm vệt nên lúc nào cũng có vài cái đang ở đúng khoảnh khắc đó. Cái nhìn thấy được là những vạch sáng nhấp nháy trên cỏ. Nay chọn chiều dài trước, rồi mới chọn chỗ đặt.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch · Playwright **10 xanh, 4 bỏ qua**
+- [x] `check-petland-fit.mjs` mô phỏng **30 giây** lớp hạt trong Node với một `ctx` giả: **194.400 vệt + 12.600 gợn sóng**, không nét nào ra khỏi mặt nước
+- [x] **Đỏ đúng hai lần, cả hai vì lỗi THẬT**: phép kiểm bắt được vệt lọt ra ở `x=1036 w=40` (ô dừng ở 1040) khi mới viết, và đỏ lại khi gỡ phần chặn vệt trôi — nên cả hai nửa đều gánh việc
+- [x] Nhịp khung hình vẫn **16.7ms trung vị** ở cả ba trạng thái, với ~207 hạt
+
+**`ctx` giả ở đây nhỏ đúng bằng phần `petland-fx` dùng tới** — nó chỉ ghi lại các nét, không mô phỏng canvas, và nếu module dùng thêm API mới thì nó ném lỗi chứ không âm thầm bỏ qua. Phân biệt vệt nước với vầng sáng đống lửa bằng việc `fillStyle` là chuỗi hay là gradient. Script phải chép `petland-fx.ts` ra một bản tạm đã đổi alias `@/` thành đường dẫn tương đối **kèm đuôi `.ts`**: alias là của bundler, còn Node ESM thì đòi đuôi file.
+
+---
+
+## 4q. Petland — giao diện tương tác, tách khỏi phần sẽ đổi · ✅ XONG (2026-08-18)
+
+- [x] `components/petland-sprite.ts` — **tệp DUY NHẤT phải sửa khi đổi mascot**
+- [x] `components/petland-pet.ts` — nhu cầu và hành động, số học thuần, không ảnh không React
+- [x] `components/pixel-icon.tsx` — biểu tượng pixel vẽ bằng lưới ký tự, không thêm tệp ảnh
+- [x] `components/petland-ui.tsx` — thanh chỉ số + hàng nút, không biết mascot lẫn bối cảnh
+- [x] `scripts/check-petland-layers.mjs` — **giữ ranh giới đó bằng máy**
+- [x] Cho ăn · Chọc · Đi dạo · Ngủ; e2e cho cả chuỗi cho-ăn
+
+**Cầu nối giữa hai nửa là `PetIntent`, không phải tên tệp ảnh.** Phần điều khiển nói `stand` / `walk` / `run` / `hop` / `sleep`, và một bảng trong `petland-sprite.ts` dịch sang tên clip. Con dino hiện tại không có hoạt ảnh "ăn" hay "vui", nên `hop` gánh luôn vai reo mừng — đó chính là thứ bảng này tồn tại để cho phép: một mascot khác có clip `eat` riêng chỉ cần thêm một dòng, không ai ở nơi khác phải biết.
+
+Ý định cũng được ghi ra DOM (`data-intent`), và e2e đọc **nó** chứ không bóc tên clip ra khỏi `url(/mascots/dino/walk.png)` như bản trước. Một bài kiểm ghim vào tên tệp ảnh sẽ đỏ vào đúng ngày đổi mascot, vì lý do chẳng liên quan gì tới hành vi nó kiểm.
+
+**Cách chia tệp không tự giữ được, nên nó được kiểm.** Thêm một dòng `import` từ `petland-sprite` vào `petland-ui` thì mọi thứ vẫn chạy, mọi bài kiểm vẫn xanh, và cái giá chỉ đến vào ngày đổi mascot — lúc đó người sửa không có cách nào biết tệp nào đã lặng lẽ dính vào. `check-petland-layers.mjs` kiểm hai chiều: các tệp "không đổi" không được nhập các tệp "sẽ đổi", và mỗi đường dẫn tài sản (`/mascots/`, `/landscape/`) chỉ được **đúng một** tệp biết tới. Cùng loại với `tests/test_content_isolation.py` bên API.
+
+**Biểu tượng vẽ bằng lưới ký tự ngay trong mã nguồn, dựng thành SVG.** Một biểu tượng 12×12 là khoảng 40 byte dưới dạng lưới, và sửa nó là sửa một dòng chữ chứ không phải mở trình vẽ rồi nhớ commit tệp mới. SVG chứ không canvas vì canvas không tồn tại lúc dựng ở máy chủ. Ranh giới về phong cách: **đồ hoạ của con thú thì pixel, khung cửa sổ thì không** — nút đóng và nút phóng to là điều khiển cửa sổ và giữ bộ icon chung của ứng dụng.
+
+**Chỉ số cố ý cạn rất chậm** (độ no hết sau ~10 phút MỞ BẢNG liên tục). Đây là góc thú cưng của một ứng dụng học, không phải game nuôi thú: một chỉ số cạn trong hai phút biến nó thành việc phải làm, và việc phải làm thứ hai bên cạnh việc học là thứ khiến người ta đóng hẳn bảng lại. Chúng sống ở `PetLand` chứ không ở trong bảng, nên đóng rồi mở lại không đặt con thú về mặc định — "đóng cửa sổ" không phải một sự kiện trong đời con thú.
+
+**Cho ăn đặt miếng ăn CÁCH một quãng rồi con thú tự đi tới.** Đặt ngay dưới chân thì "cho ăn" chỉ là một con số nhảy lên — cả hành động gói trong một khung hình, không có gì để nhìn. Thanh chỉ số là tám ô rời, làm tròn LÊN cho mọi giá trị khác 0: 1/8 là 12.5%, nên một chỉ số còn 4% làm tròn xuống thành rỗng và nói sai rằng con thú đã kiệt.
+
+### Kiểm
+- [x] `tsc`, `eslint`, `prettier` sạch · Playwright **11 xanh, 4 bỏ qua**
+- [x] `check-petland-layers.mjs` đỏ đúng cả hai chiều: khi cho `petland-ui` nhập `petland-sprite`, và khi rải đường dẫn bức tranh sang `petland-fx`
+- [x] Bài e2e cho-ăn đỏ đúng hai lần: khi đặt miếng ăn ngay dưới chân (`Expected "walk", Received "stand"`) và khi bỏ khoá nút lúc đang ăn
+- [x] Chạy thật ở cả chủ đề tối và sáng
+
+**Một lỗi mà đường ống che mất.** Sau khi dời số đo mascot sang `petland-sprite.ts`, `check-petland-fit.mjs` vẫn cào chúng từ `petland.tsx` và **ném lỗi** — nhưng nó được chạy qua `| tail -1`, và mã thoát của đường ống là của `tail`, nên chuỗi `&&` vẫn đi tiếp và mọi thứ nhìn như đã kiểm. Nay script nhập thẳng mô-đun thay vì dùng biểu thức chính quy. Bài học rộng hơn: **đừng nối một bộ kiểm vào `tail` khi còn quan tâm tới mã thoát của nó.**
+
+
+---
+
+## 4r. Petland — mascot và bối cảnh tự sinh · ✅ XONG (2026-08-19)
+
+Thay bộ dino và bức tranh đi mượn bằng bộ **tự sinh tại máy**, dùng skill `generate2dsprite` / `generate2dmap` với FLUX.2-klein-4B qua mflux.
+
+- [x] `assets/mascots/cat/**` — 26 khung gốc, 5 clip (idle 4, walk 6, run 6, jump 6, sleep 4)
+- [x] `public/mascots/cat/**` — 5 dải ngang + `atlas.json`, ô **151×117**
+- [x] `scripts/pack-pet.mjs` — kế thừa hai luật của `pack-dino.mjs`, thêm phép đo độ lệch đường chân **giữa các clip**
+- [x] `assets/landscape/petland-2.png` (gốc) + `public/landscape/petland-2.jpg` (**220KB**)
+- [x] `petland-sprite.ts` — `CELL` 151×117, `FOOT_Y` 115, `ANCHOR_X` 64, số khung và `fps` mới
+- [x] `petland-scene.ts` — `WORLD_W` 1376 → **1360**, đo lại 11 điểm neo, 2 ô trời, 4 ô nước, `FIRE`, 5 vùng đom đóm
+- [x] `check-petland-fit.mjs` — bỏ đường dẫn cứng `dino`
+
+**Mô hình khuếch tán KHÔNG tuân số ô, và đó là ràng buộc thiết kế chứ không phải lỗi tạm thời.** Sinh tự do một lưới N×M cho sai số ô một cách tin cậy: yêu cầu 2×3 ra 3×3, yêu cầu 2×4 ra 3×2. Kèm theo là tỉ lệ lệch giữa các ô và không có đường chân chung — cả ba đều đánh thẳng vào hợp đồng của `pack-*.mjs`. Cách vòng qua là **anchor sheet**: lặp một khung master đã duyệt vào từng ô ở đúng cỡ và đúng đường chân, rồi bảo mô hình *chỉ đổi tư thế*. Với anchor sheet, số ô đúng, `body_scale_cv` xuống 0.0020–0.0388 và `anchor_x_std` bằng 0.
+
+**Hình dạng ô phải hợp hình dạng con vật, nếu không bố cục có hai cách đọc.** Anchor sheet 2 hàng × 3 cột trên khung vuông cho ô **dọc** 341×512; con mèo nhìn ngang là hình nằm, nên sáu con nhỏ rải trên nền magenta đọc thành "3×3" cũng hợp lý ngang "2×3" — và mô hình chọn cách kia. Đổi sang 3 hàng × 2 cột (ô 512×341, tỉ lệ 1.50, gần tỉ lệ ô đích 1.41) thì cả ba clip sáu khung đều đúng ngay lượt đầu.
+
+**Anchor sheet còn sửa một thứ không nhắm tới: màu nền.** Nền do mô hình tự vẽ trôi xa `#FF00FF` — khung master đo được `#EF359B`, cách 114.3, **vượt ngưỡng 100** của `remove_bg_magenta`, nghĩa là bước tách nền xoá được đúng 0% và sẽ lặng lẽ trả về một ảnh y hệt ảnh vào. Anchor sheet có nền `#FF00FF` thật vì do script tổng hợp, và bản edit kế thừa màu đó: bốn sheet sinh từ anchor đo được 44.7–72.9, lọt ngưỡng mặc định.
+
+**`FOOT_Y` phải đo trên dải ĐÃ đóng gói, không suy từ ảnh nguồn.** Phép thu nhỏ làm tròn, nên con số suy trước khi thu nhỏ lệch một pixel so với thứ thật sự nằm trong tệp — và `check-petland-fit.mjs` so khớp tuyệt đối `y1 === FOOT_Y - 1`. Thông báo lỗi khi đó in `FOOT_Y=114 nhưng bàn chân ở hàng 114`, hai số bằng nhau, nhìn như chính phép kiểm bị hỏng.
+
+**Đo cảnh bằng màu không thay được mắt, nhưng phép kiểm chất liệu thì thay được.** Bộ dò gỗ tự viết để tìm mặt cầu bắt nhầm tay vịn ở cột này, mặt cầu ở cột kia, cột đèn ở cột khác — bỏ. Ngược lại `check-petland-fit.mjs` bắt ô nước [3] sai **hai lần liên tiếp** (73% rồi 87%) trước khi phóng 6× cho thấy mảng nước sạch thật sự chỉ rộng 52×26, kẹp giữa đá bờ trái và cỏ ăn vào từ phải. Không phóng thì cả hai lần đều trông đúng.
+
+### Kiểm
+- [x] `check-petland-fit.mjs` **mã thoát 0**: 26 khung × 241 mẫu dọc đường đi, cả hai hướng, cả đỉnh nhảy — không khung nào ra khỏi tranh; 2/2 ô trời và 4/4 ô nước ≥99% đúng chất liệu
+- [x] `pack-pet.mjs`: độ lệch đường chân giữa 5 clip **7px** (ngưỡng 12)
+- [x] `check-petland-layers.mjs`: ranh giới còn nguyên
+- [x] `tsc --noEmit` sạch · `e2e/petland.spec.ts` **4/4 xanh** trên cả sprite mới lẫn bối cảnh mới
+- [x] Ảnh chụp thật trong ứng dụng, cả cửa sổ nhỏ lẫn toàn cảnh
+
+**`petland-1.jpg` vẫn còn trong kho**, chưa xoá — bỏ đi là mất đường lùi trong khi chưa có ai dùng thật bức mới. Bộ sprite dino MUA SẴN thì **không** vào kho: nó đi kèm không giấy phép nào, và một khi mỹ thuật bên thứ ba đã nằm trong lịch sử git thì gỡ ra phải viết lại lịch sử. Nó vẫn nằm trong thư mục làm việc cùng `scripts/pack-dino.mjs`; có giấy phép thì thêm vào sau bằng một lệnh.
+
+**Một chướng ngại không liên quan tới việc này, ghi lại vì nó chặn cả stack.** Cơ sở dữ liệu dev bị đóng dấu `029_learner_pet`, một migration chưa từng có trong git, cùng bốn bảng mồ côi `pet`, `learner_pet`, `pet_feed`, `pet_feed_log` — dấu vết của một tính năng dựng tại máy rồi hoàn tác phần code mà không hoàn tác cơ sở dữ liệu. `api` không khởi động được. Đã đóng dấu lại về `028_backdrop_speed` thay vì `down -v`, vì trong đó có 2506 clip audio, 303 từ vựng và 116 lượt làm bài. **Bốn bảng mồ côi vẫn còn**, nên lần `alembic revision --autogenerate` tới sẽ đòi DROP chúng — đọc kỹ trước khi commit migration đó.
+
+
+---
+
+## 4s. Mascot thứ hai (dino tự sinh) + sửa hai lỗi trong bộ đóng gói · ✅ XONG (2026-08-20)
+
+- [x] `assets/mascots/rex/**` + `public/mascots/rex/**` — 22 khung, 4 clip, ô **125×117**
+- [x] `pack-pet.mjs` nhận `--pet <tên>`, và suy danh sách clip từ thư mục có thật
+- [x] `pack-pet.mjs` căn đường chân **giữa các clip** lúc đóng gói
+- [x] `pack-pet.mjs` đổi đơn vị ngưỡng lệch sang pixel **ô đích**
+- [x] `petland-sprite.ts` cập nhật `FOOT_Y` 115 → **117** theo cơ chế mới
+
+**Anchor sheet mạnh ở chuỗi đơn điệu và yếu ở chuỗi tuần hoàn, và giờ có hai con vật làm bằng chứng.** `sleep` (hạ thấp dần) và `run` (sải bước) đạt ngay lượt đầu ở cả bộ mèo lẫn bộ dino. `jump` yếu ở cả hai — mèo `body_scale_cv` 0.0309, dino 0.0822 với 3/6 khung chạm mép. Lý do nằm ở cơ chế: anchor sheet hoạt động bằng cách GIỮ NGUYÊN ảnh tham chiếu, nên nó không có khái niệm "giữ cỡ và danh tính nhưng thả tư thế", và một cú nhảy đúng là thân rời điểm neo rồi quay về. Ba lần thử `walk`/`jump` cho ba trạng thái: khoá bao hình → sáu khung giống hệt nhau; thả tự do → một hai khung hoang dã cộng phần còn lại tĩnh; khoá hướng thân → lại giống hệt nhau. Không có nấc giữa.
+
+**`body_scale_cv` và `anchor_y_std` đo độ NHẤT QUÁN, không đo CHUYỂN ĐỘNG — một sheet bất động ăn điểm cao nhất ở cả hai.** Bản `walk` tĩnh nhất trong ba lần lại cho `body_scale_cv` 0.0022 và `anchor_y_std` 0.0000, tức đẹp nhất. Phải tự đo phần silhouette đổi giữa hai khung liên tiếp (sau khi căn tâm và đáy) mới thấy: 9.7% so với 42.9% của bản có chuyển động thật, và 7.4% của `idle` vốn đúng là phải tĩnh. Con số này chỉ dùng để so các bản của CÙNG một clip — `run` đọc ra là chạy ở 14.5% còn `jump` đứng yên cũng ra 13.2%.
+
+**Ngưỡng lệch đường chân đo sai đơn vị ngay từ đầu.** Bản ở §4r đo bằng pixel NGUỒN, mà nguồn thì mỗi bộ một cỡ: 7px của bộ mèo là 2.7px thật, 18px của bộ dino là 6.3px. Cùng một sai lệch nhìn thấy được lại đạt ở bộ này và trượt ở bộ kia chỉ vì hộp bao khác cỡ. Nay quy về pixel ô đích trước khi so.
+
+**Căn đường chân giữa các clip là việc của bộ đóng gói, không phải của người sinh ảnh.** Điểm thấp nhất của cả bốn clip đều LÀ mặt đất, kể cả tư thế nằm ngủ, nên dịch cửa sổ cắt của từng clip cho trùng nhau là đúng — và đó chỉ là phần mở rộng của thao tác `--align feet` vốn đã làm trong một clip. Nó chỉ sửa vị trí DỌC; sai lệch tỉ lệ không được sửa và vẫn do `body_scale_cv` bắt, nên một clip sinh hỏng không lọt qua im lặng. Hệ quả: bộ mèo đóng gói lại có đáy đồng nhất 715 ở cả năm clip thay vì 715/716/717, và `FOOT_Y` chuyển thành đúng chiều cao ô.
+
+**Bóng đổ sống sót qua chroma-key ở ngưỡng mặc định, và cách chữa đúng không phải nâng `--threshold`.** Dải `run` còn 366 pixel hồng dưới chân; chúng ở khoảng cách 125–170 tới magenta trong khi màu gần magenta nhất TRÊN con dino đúng bằng 170 — biên quá hẹp để nâng ngưỡng chung. Nhưng bóng nối liền với nền, nên nâng `--edge-threshold` lên 200 (chỉ ăn từ mép ảnh lan vào, không đụng pixel giữa thân) xoá sạch mà viền vẫn nguyên.
+
+### Kiểm
+- [x] Bộ mèo đóng gói lại bằng packer mới: `check-petland-fit.mjs` **mã thoát 0**, `petland.spec.ts` **4/4 xanh**, `tsc` sạch
+- [x] Sót magenta sau khi sửa: run **0 px**, ba clip kia 5–13 px (răng cưa ở viền)
+- [x] Chạm mép ảnh ra, kẹp, khung rỗng: **0** trên cả 22 khung
+
+**Bộ rex CHƯA nối vào Petland** — con mèo vẫn đang chạy. `walk` không có clip riêng: theo lối thoát mà `petland-sprite.ts` thiết kế sẵn, ý định `walk` trỏ vào clip `run` ở fps thấp hơn.
+
+---
+
 ## 5. Sprint 5 — TOEIC Practice
 
 **Mục tiêu:** luyện theo part và làm đề đầy đủ, có điểm quy đổi.
