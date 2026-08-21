@@ -4325,6 +4325,8 @@ export interface components {
             locale: string;
             /** Minutes Per Day */
             minutes_per_day: number | null;
+            /** Pet */
+            pet: ("cat" | "rex") | null;
             /** Preferred Accent */
             preferred_accent: string | null;
             /** Target Score */
@@ -4355,6 +4357,8 @@ export interface components {
             locale?: string | null;
             /** Minutes Per Day */
             minutes_per_day?: number | null;
+            /** Pet */
+            pet?: ("cat" | "rex") | null;
             /** Preferred Accent */
             preferred_accent?: string | null;
             /** Target Score */

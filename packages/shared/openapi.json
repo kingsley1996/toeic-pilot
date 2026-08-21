@@ -5735,6 +5735,21 @@
             ],
             "title": "Minutes Per Day"
           },
+          "pet": {
+            "anyOf": [
+              {
+                "enum": [
+                  "cat",
+                  "rex"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pet"
+          },
           "preferred_accent": {
             "anyOf": [
               {
@@ -5771,6 +5786,7 @@
           "minutes_per_day",
           "daily_new_limit",
           "preferred_accent",
+          "pet",
           "avatar_url"
         ],
         "title": "UserProfilePublic",
@@ -5841,6 +5857,21 @@
               }
             ],
             "title": "Minutes Per Day"
+          },
+          "pet": {
+            "anyOf": [
+              {
+                "enum": [
+                  "cat",
+                  "rex"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pet"
           },
           "preferred_accent": {
             "anyOf": [

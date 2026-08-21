@@ -4,6 +4,7 @@ import { BookOpen, FileText, Headphones, House } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { type NavItem } from "@/components/nav";
+import { PetLand } from "@/components/petland";
 import { SidebarShell, TopBarShell } from "@/components/shell";
 
 /*
@@ -96,6 +97,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarShell links={LEARN_LINKS} sectionLabel="Học">
       {children}
+      {/*
+       * Chỉ ở khung có sidebar. Ba trang thanh trên đứng NGOÀI ứng dụng, còn khu
+       * quản trị và màn làm bài đi qua nhánh `bareLayout` phía trên — và màn làm
+       * bài là chỗ quan trọng nhất phải vắng mặt: một con thú nhảy nhót cạnh
+       * người đang tính giờ làm bài là thứ cạnh tranh trực tiếp với sự tập trung.
+       */}
+      <PetLand />
     </SidebarShell>
   );
 }

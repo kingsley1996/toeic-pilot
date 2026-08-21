@@ -1,0 +1,90 @@
+/**
+ * Giữ đúng ranh giới giữa phần SẼ ĐỔI và phần KHÔNG ĐỔI của Petland.
+ *
+ *   node scripts/check-petland-layers.mjs
+ *
+ * Cách chia tệp chỉ có giá trị nếu nó được giữ, và nó không tự giữ được: thêm
+ * một dòng `import` từ `petland-sprite` vào `petland-ui` thì mọi thứ vẫn chạy,
+ * mọi bài kiểm vẫn xanh, và cái giá chỉ đến vào ngày ai đó đổi mascot — lúc đó
+ * người sửa không có cách nào biết những tệp nào đã lặng lẽ dính vào nó.
+ *
+ * Cùng loại với `tests/test_content_isolation.py` bên API: một quy ước không
+ * được kiểm là một quy ước sẽ hỏng.
+ */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/** Tệp → những thứ nó KHÔNG được nhập, kèm lý do in ra khi vi phạm. */
+const RULES = [
+  {
+    file: "src/components/petland-ui.tsx",
+    banned: ["petland-sprite", "petland-scene", "petland-fx", "petland.tsx"],
+    why: "giao diện tương tác phải sống sót qua việc đổi mascot và đổi bối cảnh",
+  },
+  {
+    file: "src/components/petland-pet.ts",
+    banned: ["petland-sprite", "petland-scene", "petland-fx", "petland-ui", "react"],
+    why: "nhu cầu và hành động là số học thuần, không dính ảnh và không dính React",
+  },
+  {
+    file: "src/components/pixel-icon.tsx",
+    banned: ["petland"],
+    why: "bộ biểu tượng dùng được ở bất cứ đâu, không riêng góc thú cưng",
+  },
+  {
+    file: "src/components/petland-sprite.ts",
+    banned: ["petland-scene", "petland-fx", "petland-ui", "petland-pet", "react"],
+    why: "mô tả mascot là số đo thuần; biết tới bối cảnh thì đổi mascot lại phải đọc cả bối cảnh",
+  },
+];
+
+const IMPORT = /^\s*import[\s\S]*?from\s+["']([^"']+)["']/gm;
+
+let bad = 0;
+for (const rule of RULES) {
+  const src = fs.readFileSync(path.join(root, rule.file), "utf8");
+  const specifiers = [...src.matchAll(IMPORT)].map((m) => m[1]);
+  const hits = specifiers.filter((spec) => rule.banned.some((b) => spec.includes(b)));
+  if (hits.length > 0) {
+    console.error(`✗ ${rule.file} nhập ${hits.join(", ")} — ${rule.why}`);
+    bad += 1;
+  } else {
+    console.log(`  ${rule.file.replace("src/components/", "")} sạch (${specifiers.length} import)`);
+  }
+}
+
+/* Chiều ngược lại: chỉ MỘT tệp được biết đường dẫn tới ảnh mascot, và chỉ một
+   tệp được biết đường dẫn tới bức tranh. Rải chúng ra là thứ khiến việc thay đổi
+   trở thành một cuộc đi tìm. */
+const ASSETS = [
+  { needle: "/mascots/", owner: "src/components/petland-sprite.ts", what: "ảnh mascot" },
+  { needle: "/landscape/", owner: "src/components/petland.tsx", what: "bức tranh bối cảnh" },
+];
+const files = fs
+  .readdirSync(path.join(root, "src/components"))
+  .filter((f) => /\.tsx?$/.test(f))
+  .map((f) => `src/components/${f}`);
+
+for (const { needle, owner, what } of ASSETS) {
+  const users = files.filter((f) => {
+    const src = fs.readFileSync(path.join(root, f), "utf8");
+    // Bỏ qua chú thích: nhắc tới đường dẫn trong lời giải thích là chuyện bình thường.
+    return src
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*$/gm, "")
+      .includes(needle);
+  });
+  const stray = users.filter((f) => f !== owner);
+  if (stray.length > 0) {
+    console.error(`✗ ${what} (${needle}) bị tham chiếu ngoài ${owner}: ${stray.join(", ")}`);
+    bad += 1;
+  } else {
+    console.log(`  ${what} chỉ được ${owner.replace("src/components/", "")} biết`);
+  }
+}
+
+if (bad > 0) process.exit(1);
+console.log("\n✓ ranh giới còn nguyên: đổi mascot hay đổi bối cảnh không lan sang giao diện");

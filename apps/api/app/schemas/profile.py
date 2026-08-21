@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, Literal, get_args
 from zoneinfo import available_timezones
 
 from pydantic import AfterValidator, BaseModel, Field
@@ -13,6 +13,13 @@ from app.models.profile import (
 )
 
 SUPPORTED_LOCALES = ("vi", "en")
+
+# Mascot của Petland. Danh sách sống ở ĐÂY chứ không ở frontend, dù ảnh thì nằm
+# bên đó: khai báo kiểu này đi qua OpenAPI thành một union TypeScript, nên bảng
+# `Record<PetId, Mascot>` bên frontend thiếu một con là lỗi `tsc` chứ không phải
+# một `undefined` lộ ra lúc chạy. Thêm mascot mới thì sửa ở đây trước.
+PetId = Literal["cat", "rex"]
+PETS: tuple[str, ...] = get_args(PetId)
 
 
 def _known_timezone(value: str) -> str:
@@ -53,6 +60,9 @@ class UserProfilePublic(BaseModel):
     minutes_per_day: int | None
     daily_new_limit: int | None
     preferred_accent: str | None
+    # NULL nghĩa là "chưa chọn", và frontend rơi về con mặc định của nó. Không
+    # điền sẵn một con ở đây: xem chú thích trên cột `pet` của model.
+    pet: PetId | None
     # URL, không phải `storage_key`. Frontend không bao giờ được tự ghép URL từ
     # khoá: chỉ driver biết tiền tố thư mục mà Cloudinary đòi, và ghép ở phía
     # client nghĩa là quy tắc đó bị nhân bản ra một nơi không có test nào phủ.
@@ -85,6 +95,7 @@ class UserProfileUpdate(BaseModel):
     preferred_accent: str | None = Field(
         default=None, pattern="^(" + "|".join(AUDIO_ACCENTS) + ")$"
     )
+    pet: PetId | None = None
 
 
 class StudyDay(BaseModel):
@@ -131,6 +142,8 @@ class LearningStats(BaseModel):
 __all__ = [
     "LearningStats",
     "StudyDay",
+    "PETS",
+    "PetId",
     "SUPPORTED_LOCALES",
     "UserProfilePublic",
     "UserProfileUpdate",
