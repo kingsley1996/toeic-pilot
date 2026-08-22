@@ -57,7 +57,10 @@ def test_level_curve_is_monotonic_and_joins_without_a_step():
 
 @pytest.mark.parametrize(
     ("xp", "level"),
-    [(0, 1), (150, 1), (151, 2), (655, 4), (656, 5), (10**9, 99)],
+    # Ngưỡng lấy từ chính bộ mặc định: 40 XP là level 2, 154 XP là level 5.
+    # Đổi đường cong thì bảng này phải đổi theo, và đó là chủ ý — một bài test
+    # tự suy ngưỡng từ công thức sẽ xanh với mọi công thức, kể cả công thức sai.
+    [(0, 1), (39, 1), (40, 2), (153, 4), (154, 5), (10**9, 99)],
 )
 def test_level_from_xp(xp, level):
     assert level_from_xp(xp, DEFAULT_THRESHOLDS).level == level

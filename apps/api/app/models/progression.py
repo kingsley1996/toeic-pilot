@@ -355,12 +355,29 @@ PROGRESSION_DEFAULTS: dict[str, object] = {
     "xp_dictation_complete": 5,
     "xp_attempt_submit": 30,
     "daily_xp_cap": 120,
-    "curve_coefficient": 50.0,
-    "curve_exponent": 1.6,
+    # Hạ từ (50 · n^1.6, tuyến tính 500) xuống sau khi đối chiếu với NHỊP THẬT.
+    #
+    # Đường cong cũ đọc trên giấy thì hợp lý, nhưng nó được đặt cạnh giả định
+    # "~50 XP mỗi ngày" — mà nhịp đo được của người học ở đây là trung vị 2 lượt
+    # ôn/ngày, tức khoảng 14 XP kể cả khi làm xong một daily task. Ở nhịp đó,
+    # level 2 mất 11 ngày và level 10 mất gần năm tháng: phần thưởng đầu tiên
+    # rơi vào lúc người ta đã quyết định xong là có quay lại hay không.
+    #
+    # Bộ mới, đo ở cùng hai nhịp:
+    #                     nhịp nhẹ (14 XP/ngày)   nhịp chăm (43 XP/ngày)
+    #   level 2                  3 ngày                  1 ngày
+    #   level 5                 11 ngày                  4 ngày
+    #   level 10                30 ngày                 10 ngày
+    #   level 20                82 ngày                 27 ngày
+    "curve_coefficient": 15.0,
+    "curve_exponent": 1.45,
     "curve_break": 20,
-    # Bằng đúng khoảng cách level 19→20 (476, làm tròn lên 500) nên chỗ nối hai
-    # đoạn không có bước nhảy. Bản đầu của kế hoạch ghi 1800 — sai gần bốn lần.
-    "curve_linear_step": 500,
+    # Xấp xỉ khoảng cách level 19→20 (83, làm tròn lên 90) nên chỗ nối hai đoạn
+    # không có bước nhảy. Con số này phải tính lại MỖI LẦN đổi hệ số hoặc số mũ:
+    # bản đầu của kế hoạch ghi 1800 cho đường cong cũ trong khi bậc thật là 476,
+    # và một bậc đột ngột đắt gấp bốn ngay tại điểm gãy rơi đúng vào người học
+    # đã đi xa nhất.
+    "curve_linear_step": 90,
     "max_level": 99,
 }
 

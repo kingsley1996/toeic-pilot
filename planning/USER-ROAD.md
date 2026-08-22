@@ -107,20 +107,27 @@ Không có XP âm và không có đường trừ XP. Một hệ có thể tụt 
 Ngưỡng tích luỹ, tăng dần nhưng **không tăng mãi** — sau level 20 mỗi level cách nhau một khoảng cố định, để người học lâu năm vẫn thấy nhích:
 
 ```
-XP cần để lên level n  =  50 · n^1.6       (n ≤ 20)
-                          tuyến tính +500  (n > 20)
+XP cần để lên level n  =  15 · n^1.45      (n ≤ 20)
+                          tuyến tính +90   (n > 20)
 ```
 
-| Level | XP tích luỹ | Với ~50 XP/ngày |
-|---|---|---|
-| 2 | 151 | ~3 ngày |
-| 5 | 656 | ~2 tuần |
-| 10 | 1 990 | ~6 tuần |
-| 20 | 6 034 | ~4 tháng |
-| 30 | 11 034 | ~7 tháng |
-| 50 | 21 034 | ~14 tháng |
+> **Bộ này đã hạ xuống ngày 2026-08-22** (ROADMAP §4w). Bản đầu là `50 · n^1.6`
+> với bậc tuyến tính 500, và nó được đặt cạnh giả định "~50 XP mỗi ngày" — trong
+> khi nhịp ĐO ĐƯỢC là trung vị 2 lượt ôn/ngày, tức khoảng 14 XP kể cả khi làm
+> xong một daily task. Ở nhịp đó, level 2 mất 11 ngày và level 10 mất gần năm
+> tháng: phần thưởng đầu tiên rơi vào lúc người ta đã quyết định xong là có quay
+> lại hay không.
 
-**Bậc tuyến tính là 500, không phải 1800.** Bản đầu của kế hoạch này ghi 1800 kèm khẳng định nó bằng khoảng cách giữa hai level cuối của đoạn cong. Sai gần bốn lần: bậc 19→20 là **476**. Test `test_level_curve_is_monotonic_and_joins_without_a_step` bắt được ngay khi code chạy. Một bậc đột ngột đắt gấp bốn ngay tại điểm gãy đọc ra là lỗi tính toán, và nó rơi đúng vào người học đã đi được xa nhất.
+| Level | XP tích luỹ | Nhịp nhẹ (~14 XP/ngày) | Nhịp chăm (~43 XP/ngày) |
+|---|---|---|---|
+| 2 | 40 | 3 ngày | 1 ngày |
+| 5 | 154 | 11 ngày | 4 ngày |
+| 10 | 422 | 30 ngày | 10 ngày |
+| 20 | 1 155 | 82 ngày | 27 ngày |
+| 30 | 2 055 | 5 tháng | 7 tuần |
+| 50 | 3 855 | 9 tháng | 3 tháng |
+
+**Bậc tuyến tính phải tính lại MỖI LẦN đổi hệ số hoặc số mũ** — với bộ hiện tại, bậc 19→20 là **83**, nên tuyến tính đặt 90. Bản đầu của kế hoạch ghi 1800 cho đường cong cũ trong khi bậc thật ở đó là **476**: sai gần bốn lần. Test `test_level_curve_is_monotonic_and_joins_without_a_step` bắt được ngay khi code chạy, và nó vẫn canh chỗ nối sau mỗi lần chỉnh. Một bậc đột ngột đắt gấp bốn ngay tại điểm gãy đọc ra là lỗi tính toán, và nó rơi đúng vào người học đã đi được xa nhất.
 
 Đường cong là **một hàm thuần trong `app/services/leveling.py`**, cùng loại với `srs.py`: không chạm cơ sở dữ liệu, test được không cần session, và là chỗ duy nhất biết công thức.
 

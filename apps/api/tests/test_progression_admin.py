@@ -257,7 +257,10 @@ def test_regenerating_levels_overwrites_hand_edits(client, db_session):
     )
     body = client.post("/api/v1/admin/progression/levels/generate", headers=headers).json()
     assert len(body["levels"]) == body["setting"]["max_level"]
-    assert body["levels"][1]["xp_required"] == 151
+    # 40 = 15 · 2^1.45, tức bậc 2 của bộ mặc định hiện tại. Ghim số THẬT chứ
+    # không tính lại bằng công thức trong bài test: một bài tự suy ngưỡng sẽ
+    # xanh với mọi công thức, kể cả công thức vừa bị gõ sai.
+    assert body["levels"][1]["xp_required"] == 40
 
 
 def test_art_key_must_belong_to_the_progression_area(client, db_session):
