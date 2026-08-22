@@ -1,0 +1,9 @@
+[QUESTION]
+Representatives from both firms ------- the final clauses of the contract when the fire alarm rang.
+(A) are discussing
+(B) were discussing
+(C) have discussed
+(D) will discuss
+Answer: B
+Explanation: Mệnh đề "when the fire alarm rang" chia ở thì quá khứ đơn chỉ một hành động xen vào, do đó hành động đang diễn ra trước đó phải chia ở thì quá khứ tiếp diễn (were discussing). Các lựa chọn khác sai thì: (A) là thì hiện tại tiếp diễn, (B) là thì hiện tại hoàn thành, và (D) là thì tương lai đơn, đều không phù hợp với ngữ cảnh quá khứ của câu.
+Source: original

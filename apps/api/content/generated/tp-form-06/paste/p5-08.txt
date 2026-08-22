@@ -1,0 +1,9 @@
+[QUESTION]
+To complete the online compliance training, employees must log in using ------- assigned registration codes.
+(A) them
+(B) their
+(C) they
+(D) theirs
+Answer: B
+Explanation: Khoảng trống đứng trước cụm danh từ "assigned registration codes" nên cần một tính từ sở hữu để bổ nghĩa. (C) "their" là tính từ sở hữu hợp lý. (A) "them" là đại từ tân ngữ; (B) "they" là đại từ chủ ngữ; (D) "theirs" là đại từ sở hữu (dùng để thay thế cho cả cụm danh từ, không đứng trước danh từ).
+Source: original

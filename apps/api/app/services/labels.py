@@ -44,6 +44,9 @@ FACETS: tuple[Facet, ...] = (
         labels=(
             Label("PART_1_PERSON_DESCRIPTION", "Tranh tả người", (1,)),
             Label("PART_1_PERSON_AND_OBJECT_DESCRIPTION", "Tranh tả cả người và vật", (1,)),
+            Label(
+                "PART_1_OBJECT_OR_SCENE_DESCRIPTION", "Tranh tả vật hoặc cảnh, không có người", (1,)
+            ),
             Label("PART_2_WHO_QUESTION", "Câu hỏi WHO", (2,)),
             Label("PART_2_WHERE_QUESTION", "Câu hỏi WHERE", (2,)),
             Label("PART_2_WHEN_QUESTION", "Câu hỏi WHEN", (2,)),

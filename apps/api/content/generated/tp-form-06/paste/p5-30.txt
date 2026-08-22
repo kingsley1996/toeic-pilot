@@ -1,0 +1,9 @@
+[QUESTION]
+------- by all parties, the contract will take effect on July 1.
+(A) execution
+(B) executing
+(C) executes
+(D) executed
+Answer: D
+Explanation: Câu cần một phân từ để mở đầu cụm phân từ. Chủ ngữ "the contract" nhận hành động nên cần quá khứ phân từ mang nghĩa bị động: "executed". (B) "executing" là hiện tại phân từ mang nghĩa chủ động, không hợp vì hợp đồng không thể tự thực thi. (C) "executes" là động từ chia thì hiện tại đơn, không thể dùng làm phân từ mở đầu cụm. (D) "execution" là danh từ, không tạo được cấu trúc phân từ.
+Source: original

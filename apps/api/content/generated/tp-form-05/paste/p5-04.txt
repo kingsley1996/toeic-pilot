@@ -1,0 +1,9 @@
+[QUESTION]
+The quarterly financial report must be ------- by the accounting team before the deadline.
+(A) finalize
+(B) finalized
+(C) finalizing
+(D) finalization
+Answer: B
+Explanation: Sau "must be" cần phân từ II (V3/ed) để tạo thể bị động. (B) là dạng nguyên mẫu, không đứng sau "be" để làm bị động; (C) là V-ing, tạo nghĩa chủ động (báo cáo tự hoàn tất) hoặc cấu trúc modal continuous, không phù hợp ngữ cảnh bắt buộc bị động; (D) là danh từ, sai từ loại sau trợ động từ "be".
+Source: original

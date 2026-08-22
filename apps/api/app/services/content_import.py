@@ -545,6 +545,22 @@ _SCRIPT_FOLDED = tuple(_fold(marker) for marker in (SCRIPT_MARKER, *SCRIPT_ALIAS
 
 # Part 1 và 2 in ra con số 0 chữ. Part 3 và 4 in đề bài và đáp án như phần Đọc.
 UNPRINTED_PARTS = (1, 2)
+
+
+def spoken_option(label: str, content: str) -> str:
+    """Câu mà người đọc phát ra cho một đáp án của Part 1/2.
+
+    Giữ dấu ngoặc đơn chứ không viết "A." — một chữ "A" đứng riêng trước một câu
+    tiếng Anh có thể bị đọc thành mạo từ *a*, còn "(A)" thì không: dấu ngoặc
+    tách nó khỏi câu, và bộ đọc phát ra tên chữ cái.
+
+    Tách thành hàm riêng vì đây là chỗ DUY NHẤT quyết định hình dạng đó, và nó
+    là thứ chỉ nghe mới biết đúng hay sai — nên khi cần đổi, phải có đúng một
+    chỗ để đổi.
+    """
+    return f"({label}) {content}"
+
+
 LISTENING_OPTION_COUNT = {1: 4, 2: 3, 3: 4, 4: 4}
 
 
@@ -667,7 +683,13 @@ def _parse_listening_question(text: str, line: int, part: int) -> ParsedQuestion
                 # Đáp án của Part 1/2 được ĐỌC chứ không in: nội dung đi vào lời
                 # thoại, còn `content` để None — đó là giá trị đúng theo ADR-001
                 # §A2, không phải dữ liệu thiếu.
-                spoken.append(ParsedTurn(text=content, voice=voice or ""))
+                #
+                # Lời thoại mang CẢ NHÃN, vì người thi không đọc gì cả: nếu bản
+                # thu chỉ đọc bốn câu liền nhau thì không có cách nào biết câu
+                # vừa nghe là (A) hay (C), và cả câu hỏi trở nên không trả lời
+                # được. Đề thật đọc nhãn, và đây là chỗ duy nhất trong hệ thống
+                # nhãn đó có thể đi vào bản thu.
+                spoken.append(ParsedTurn(text=spoken_option(label, content), voice=voice or ""))
                 # `content` vẫn None (đề thi không in gì), nhưng lời đọc được
                 # giữ THÊM trên chính đáp án. Suy ngược từ `script` bằng chỉ số
                 # không dùng được: Part 1 không có câu dẫn nên option i ↔ turn i,

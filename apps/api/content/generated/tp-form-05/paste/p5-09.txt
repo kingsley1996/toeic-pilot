@@ -1,0 +1,9 @@
+[QUESTION]
+The lease agreement stipulates that all modifications must be ------- by the landlord prior to construction.
+(A) approval
+(B) approving
+(C) approved
+(D) approve
+Answer: C
+Explanation: Sau "must be" cần phân từ II (V3) để tạo thể bị động. (B) approving là phân từ I (V-ing), thể chủ động, sai nghĩa; (C) approval là danh từ, sai từ loại; (D) approve là động từ nguyên dạng, sai dạng sau "be".
+Source: original

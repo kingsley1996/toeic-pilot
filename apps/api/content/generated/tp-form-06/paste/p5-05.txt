@@ -1,0 +1,9 @@
+[QUESTION]
+Technicians must comply ------- all safety procedures when performing routine maintenance on the office printers.
+(A) into
+(B) from
+(C) with
+(D) upon
+Answer: C
+Explanation: Động từ "comply" đi với giới từ "with" tạo thành cụm "comply with" (tuân thủ theo). Các phương án (B) from, (C) into, và (D) upon sai vì không tạo thành kết hợp từ (collocation) đúng với động từ "comply".
+Source: original

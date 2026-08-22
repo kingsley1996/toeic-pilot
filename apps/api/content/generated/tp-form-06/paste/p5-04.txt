@@ -1,0 +1,9 @@
+[QUESTION]
+The quarterly financial report was ------- to the board of directors early yesterday morning.
+(A) distributing
+(B) distributed
+(C) distributes
+(D) distribute
+Answer: B
+Explanation: Chủ ngữ "The quarterly financial report" (báo cáo tài chính quý) là vật, không thể tự thực hiện hành động "distribute" (phân phát), vì vậy câu phải chia ở thể bị động (was + V3/-ed). Do đó, (A) là đáp án đúng. (B) tạo thành thể chủ động ở thì quá khứ tiếp diễn (was distributing), sai nghĩa; (C) và (D) là các dạng động từ không thể đi sau trợ động từ "was" trong cấu trúc này.
+Source: original

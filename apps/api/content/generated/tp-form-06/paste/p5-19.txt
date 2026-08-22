@@ -1,0 +1,9 @@
+[QUESTION]
+The plumbing fixtures in the leased facility must be ------- inspected to prevent leaks.
+(A) frequently
+(B) frequent
+(C) frequency
+(D) frequented
+Answer: A
+Explanation: Vị trí giữa động từ "be" và phân từ hai "inspected" cần một trạng từ để bổ nghĩa cho động từ này. (A) là tính từ/động từ; (C) là danh từ; (D) là phân từ hai, không thể bổ nghĩa cho một phân từ hai khác trong cấu trúc này.
+Source: original

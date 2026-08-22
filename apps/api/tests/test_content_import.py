@@ -180,6 +180,17 @@ def test_part_1_and_2_put_their_text_in_the_script_not_on_screen():
     assert len(question.script) == 5
     assert {turn.voice for turn in question.script} == {"us_female_1"}
 
+    # Lời thoại phải mang CẢ NHÃN. Người thi Part 1 không đọc gì cả, nên bản thu
+    # chỉ đọc bốn câu liền nhau là không có cách nào biết câu vừa nghe là (A) hay
+    # (C) — cả câu hỏi trở thành không trả lời được, và không phép kiểm nào trong
+    # hệ thống thấy: hàng dữ liệu vẫn đúng, `validate_question` vẫn OK, chỉ có
+    # người bấm play mới biết. Đây là chỗ duy nhất nhãn đi vào được bản thu.
+    spoken = [turn.text for turn in question.script[1:]]
+    assert [text[:3] for text in spoken] == ["(A)", "(B)", "(C)", "(D)"]
+    # …nhưng `spoken_text` trên đáp án vẫn là câu TRẦN, không nhãn: nó trả lời
+    # "đáp án A nói gì", và giao diện đã in nhãn ở chỗ khác rồi.
+    assert not any((option.spoken_text or "").startswith("(") for option in question.options)
+
 
 def test_part_2_has_three_options_and_switches_voice_midway():
     raw = """[QUESTION]
@@ -342,4 +353,7 @@ def test_part_2_giu_content_NULL_nhung_van_luu_loi_doc_va_ban_dich() -> None:
     ]
     assert options[0].content_vi == "Ở phố Năm."
     # Lời đọc vẫn phải vào lời thoại để TTS sinh audio — hai chỗ, hai mục đích.
-    assert "On Fifth Street." in [turn.text for turn in groups[0].questions[0].script]
+    # Trong lời thoại nó mang thêm NHÃN, vì đề thi thật đọc nhãn lên: người thi
+    # không đọc gì cả, nên không có nhãn thì không biết câu vừa nghe là câu nào.
+    # `spoken_text` ở trên vẫn là câu trần — nó trả lời một câu hỏi khác.
+    assert "(A) On Fifth Street." in [turn.text for turn in groups[0].questions[0].script]

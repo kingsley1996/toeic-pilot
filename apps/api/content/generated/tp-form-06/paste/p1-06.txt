@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) A presenter is pointing at a whiteboard.
+(B) Some documents are scattered on the floor.
+(C) A laptop is sitting open on the table.
+(D) Several chairs are arranged around a table.
+Answer: D
+Source: original

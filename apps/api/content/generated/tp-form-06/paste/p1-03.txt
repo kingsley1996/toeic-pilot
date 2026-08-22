@@ -1,0 +1,8 @@
+[QUESTION]
+voice: us_female_1
+(A) The warehouse worker is pushing a cart.
+(B) The warehouse worker is holding a clipboard.
+(C) Two warehouse workers are moving boxes.
+(D) A ladder is leaning against the wall.
+Answer: A
+Source: original

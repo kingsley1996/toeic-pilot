@@ -1,0 +1,9 @@
+[QUESTION]
+Callers ------- inquiries remain unresolved after one business day will be contacted by a support manager.
+(A) whose
+(B) whom
+(C) which
+(D) where
+Answer: A
+Explanation: Sau danh từ chỉ người "callers" cần đại từ quan hệ sở hữu "whose" để nối với "inquiries". (B) "whom" là dạng tân ngữ, không thể đứng trước danh từ "inquiries". (C) "which" dùng cho vật/sự việc, không thay cho người và không thể hiện sở hữu. (D) "where" là trạng từ quan hệ chỉ nơi chốn, không thể bổ nghĩa cho "inquiries".
+Source: original

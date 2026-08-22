@@ -1,0 +1,9 @@
+[QUESTION]
+The quarterly financial reports ------- by the internal auditing team before they were submitted to the board.
+(A) are preparing
+(B) were preparing
+(C) have prepared
+(D) were prepared
+Answer: D
+Explanation: Chủ ngữ "The quarterly financial reports" (các báo cáo tài chính quý) là vật, không thể tự thực hiện hành động "prepare" (chuẩn bị) nên câu phải chia ở thể bị động (passive voice) dạng "be + V3/V-ed". Do đó, chỉ có (B) là đáp án đúng. Các lựa chọn (A), (C), và (D) đều ở thể chủ động (active voice) nên không phù hợp về ngữ nghĩa và ngữ pháp.
+Source: original

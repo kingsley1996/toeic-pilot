@@ -1,0 +1,222 @@
+{
+  "slug": "tp-form-05",
+  "title": "TOEIC Pilot — Đề luyện 05 (prompt v2)",
+  "seed": 20260822,
+  "parts": [
+    {
+      "part": 5,
+      "slots": [
+        {
+          "id": "p5-01",
+          "number": 101,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "tuyển dụng và nhân sự"
+        },
+        {
+          "id": "p5-02",
+          "number": 102,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "lịch họp và lịch công tác"
+        },
+        {
+          "id": "p5-03",
+          "number": 103,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "đơn hàng và giao vận"
+        },
+        {
+          "id": "p5-04",
+          "number": 104,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_VOICE",
+          "context": "báo cáo tài chính quý"
+        },
+        {
+          "id": "p5-05",
+          "number": 105,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "bảo trì thiết bị văn phòng"
+        },
+        {
+          "id": "p5-06",
+          "number": 106,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_COMPARISON",
+          "context": "chiến dịch marketing"
+        },
+        {
+          "id": "p5-07",
+          "number": 107,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "dịch vụ khách hàng"
+        },
+        {
+          "id": "p5-08",
+          "number": 108,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PRONOUN",
+          "context": "đào tạo nội bộ"
+        },
+        {
+          "id": "p5-09",
+          "number": 109,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PARTICIPLE",
+          "context": "thuê và sửa chữa mặt bằng"
+        },
+        {
+          "id": "p5-10",
+          "number": 110,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "hợp đồng và đàm phán"
+        },
+        {
+          "id": "p5-11",
+          "number": 111,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "tuyển dụng và nhân sự"
+        },
+        {
+          "id": "p5-12",
+          "number": 112,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_RELATIVE_CLAUSE",
+          "context": "lịch họp và lịch công tác"
+        },
+        {
+          "id": "p5-13",
+          "number": 113,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "đơn hàng và giao vận"
+        },
+        {
+          "id": "p5-14",
+          "number": 114,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_VOICE",
+          "context": "báo cáo tài chính quý"
+        },
+        {
+          "id": "p5-15",
+          "number": 115,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "bảo trì thiết bị văn phòng"
+        },
+        {
+          "id": "p5-16",
+          "number": 116,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_CONJUNCTION",
+          "context": "chiến dịch marketing"
+        },
+        {
+          "id": "p5-17",
+          "number": 117,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PRONOUN",
+          "context": "dịch vụ khách hàng"
+        },
+        {
+          "id": "p5-18",
+          "number": 118,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "đào tạo nội bộ"
+        },
+        {
+          "id": "p5-19",
+          "number": 119,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "thuê và sửa chữa mặt bằng"
+        },
+        {
+          "id": "p5-20",
+          "number": 120,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "hợp đồng và đàm phán"
+        },
+        {
+          "id": "p5-21",
+          "number": 121,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "tuyển dụng và nhân sự"
+        },
+        {
+          "id": "p5-22",
+          "number": 122,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "lịch họp và lịch công tác"
+        },
+        {
+          "id": "p5-23",
+          "number": 123,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "đơn hàng và giao vận"
+        },
+        {
+          "id": "p5-24",
+          "number": 124,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "báo cáo tài chính quý"
+        },
+        {
+          "id": "p5-25",
+          "number": 125,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_CONJUNCTION",
+          "context": "bảo trì thiết bị văn phòng"
+        },
+        {
+          "id": "p5-26",
+          "number": 126,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "chiến dịch marketing"
+        },
+        {
+          "id": "p5-27",
+          "number": 127,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_RELATIVE_CLAUSE",
+          "context": "dịch vụ khách hàng"
+        },
+        {
+          "id": "p5-28",
+          "number": 128,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "đào tạo nội bộ"
+        },
+        {
+          "id": "p5-29",
+          "number": 129,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "thuê và sửa chữa mặt bằng"
+        },
+        {
+          "id": "p5-30",
+          "number": 130,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PARTICIPLE",
+          "context": "hợp đồng và đàm phán"
+        }
+      ]
+    }
+  ]
+}

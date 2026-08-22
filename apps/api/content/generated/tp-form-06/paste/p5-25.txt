@@ -1,0 +1,9 @@
+[QUESTION]
+The maintenance log indicated that neither the copier ------- the printer had been serviced.
+(A) and
+(B) for
+(C) nor
+(D) yet
+Answer: C
+Explanation: “Neither” phải đi với “nor” để tạo cặp liên từ “neither...nor”. (B) “for” là giới từ/liên từ chỉ nguyên nhân, không ghép với “neither”. (C) “and” dùng trong cặp “both...and”, không dùng sau “neither”. (D) “yet” là liên từ tương phản, không tạo cặp với “neither”.
+Source: original

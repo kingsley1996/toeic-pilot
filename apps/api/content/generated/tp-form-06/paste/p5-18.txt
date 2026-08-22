@@ -1,0 +1,9 @@
+[QUESTION]
+The human resources department requires your ------- in the upcoming leadership workshop.
+(A) participate
+(B) participated
+(C) participative
+(D) participation
+Answer: D
+Explanation: Sau tính từ sở hữu "your" cần một danh từ làm tân ngữ cho động từ "requires". (A) là động từ nguyên mẫu; (B) là động từ dạng quá khứ/phân từ; (C) là tính từ, không thể đứng cuối cụm danh từ mà không có danh từ theo sau; (D) là danh từ sự tham gia, là đáp án đúng duy nhất.
+Source: original

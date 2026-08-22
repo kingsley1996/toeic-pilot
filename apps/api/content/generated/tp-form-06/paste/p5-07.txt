@@ -1,0 +1,9 @@
+[QUESTION]
+Next week, the customer service department ------- new guidelines for handling refunds.
+(A) will implement
+(B) implemented
+(C) implementing
+(D) implements
+Answer: A
+Explanation: Trạng từ chỉ thời gian "Next week" (tuần tới) dấu hiệu cho thấy hành động xảy ra trong tương lai. Do đó, cần dùng thì tương lai đơn. (A) sai thì vì là hiện tại đơn; (B) sai thì vì là quá khứ đơn; (C) sai dạng vì động từ đuôi -ing không thể làm động từ chính của câu nếu không có động từ "be" đi kèm.
+Source: original

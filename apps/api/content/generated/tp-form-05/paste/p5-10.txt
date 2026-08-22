@@ -1,0 +1,9 @@
+[QUESTION]
+The revised contract ------- to the client before the deadline last Friday.
+(A) will email
+(B) is emailed
+(C) has emailed
+(D) was emailed
+Answer: D
+Explanation: Câu có mốc thời gian "last Friday" yêu cầu quá khứ. (A) "was emailed" là quá khứ đơn bị động, đúng ngữ pháp và nghĩa. (B) "is emailed" là hiện tại đơn bị động, sai thì. (C) "has emailed" là hiện tại hoàn thành chủ động, sai thể (contract không thể tự email) và sai thì. (D) "will email" là tương lai đơn chủ động, sai thể và sai thì.
+Source: original

@@ -21,9 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 import uuid
-from collections.abc import Callable
 from dataclasses import dataclass
 
 from sqlalchemy import select
@@ -39,11 +37,11 @@ from app.services.llm.base import (
     LLMError,
     LLMQuotaExhausted,
     LLMRequest,
-    LLMResult,
     Provider,
 )
 from app.services.llm.gateway import Gateway
 from app.services.llm.prompts import load
+from app.services.llm.retry import with_backoff as _with_backoff
 from app.services.llm.router import Tier
 
 FEATURE = "enrich_label"
@@ -325,36 +323,14 @@ def _describe_set(group: QuestionSet) -> str:
     return "\n".join(lines)
 
 
-def _with_backoff(call: Callable[[], LLMResult], *, tries: int = 4) -> LLMResult:
-    """Lùi rồi thử lại khi nhà cung cấp báo quá tải TẠM THỜI.
-
-    `LLMQuotaExhausted` không đi qua đây — hạn mức ngày không hết đi trong ba
-    mươi giây, và thử lại chỉ làm lượt chạy hỏng lâu hơn để hỏng. Lỗi 400 do
-    prompt sai cũng vậy.
-    """
-    delay = 4.0
-    last: LLMError | None = None
-    for attempt in range(tries):
-        try:
-            return call()
-        except LLMQuotaExhausted:
-            raise
-        except LLMError as exc:
-            if not any(code in str(exc) for code in ("429", "500", "502", "503", "504")):
-                raise
-            last = exc
-            if attempt < tries - 1:
-                time.sleep(delay)
-                delay *= 2
-    raise last if last is not None else LLMError("hết lượt thử")
-
-
 def _providers_for(names: set[str]) -> dict[str, Provider]:
     """Chỉ dựng adapter cho nhà cung cấp thật sự được cấu hình.
 
     Dựng hết rồi mới chọn sẽ bắt phải có khoá của MỌI nhà cung cấp mới chạy
     được — kể cả nhà cung cấp lượt chạy này không dùng tới.
     """
+    from app.services.llm.openai_compatible import ENDPOINTS, OpenAICompatibleProvider
+
     built: dict[str, Provider] = {}
     for name in names:
         if name == "ollama":
@@ -367,6 +343,15 @@ def _providers_for(names: set[str]) -> dict[str, Provider]:
             if not settings.openrouter_api_key:
                 raise RuntimeError("Thiếu OPENROUTER_API_KEY. Đặt vào .env ở gốc repo.")
             built[name] = OpenRouterProvider(settings.openrouter_api_key)
+        elif name in ENDPOINTS:
+            # Một adapter, một bảng endpoint — xem `openai_compatible.py`. Khoá
+            # đọc theo quy ước `<tên>_api_key`, nên thêm một nhà cung cấp nói
+            # giao thức OpenAI là thêm MỘT dòng vào `ENDPOINTS` cộng một trường
+            # trong settings, không phải một tệp adapter mới.
+            key = getattr(settings, f"{name}_api_key", None)
+            if not key:
+                raise RuntimeError(f"Thiếu {name.upper()}_API_KEY. Đặt vào .env ở gốc repo.")
+            built[name] = OpenAICompatibleProvider(name, ENDPOINTS[name], key)
         else:
             raise RuntimeError(f"Chưa có adapter cho nhà cung cấp {name!r}")
     return built

@@ -1,0 +1,8 @@
+[QUESTION]
+voice: au_female_1
+(A) Two people are in the office.
+(B) The man is holding a telephone.
+(C) The man is typing on a keyboard.
+(D) The desk is covered with papers.
+Answer: C
+Source: original

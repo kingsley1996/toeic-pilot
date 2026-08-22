@@ -1,0 +1,9 @@
+[QUESTION]
+After the repair, the office printer is ------- and ready for use.
+(A) functional
+(B) functioned
+(C) functionally
+(D) functions
+Answer: A
+Explanation: Sau "is" cần tính từ để bổ nghĩa cho "the office printer". (A) "functional" là tính từ. (B) "functioned" là động từ thì quá khứ/quá khứ phân từ, không dùng làm tính từ sau "is" trong ngữ cảnh này; (C) "functionally" là trạng từ; (D) "functions" là danh từ số nhiều hoặc động từ chia, không phải tính từ.
+Source: original

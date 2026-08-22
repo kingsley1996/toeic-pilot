@@ -1,0 +1,9 @@
+[QUESTION]
+The recruitment team ------- processed all applications before the deadline.
+(A) efficiency
+(B) efficient
+(C) efficiently
+(D) efficiencies
+Answer: C
+Explanation: Chỗ trống đứng trước động từ "processed" nên cần một trạng từ chỉ cách thức. (A) efficiently là trạng từ. (B) efficient là tính từ, không bổ nghĩa cho động từ. (C) efficiency là danh từ trừu tượng, không thể làm trạng ngữ. (D) efficiencies là danh từ số nhiều, cũng không phải trạng từ.
+Source: original

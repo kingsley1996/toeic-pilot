@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import SecretStr, model_validator
+from pydantic import AliasChoices, Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.media import DEFAULT_MEDIA_ROOT
@@ -52,8 +52,21 @@ class Settings(BaseSettings):
     ai_daily_budget_micro_usd: int = 50_000
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
-    google_api_key: str | None = None
+    # Nhận CẢ HAI tên. `GEMINI_API_KEY` là tên chính SDK của Google dùng, còn
+    # `GOOGLE_API_KEY` khớp quy ước `<tên nhà cung cấp>_api_key` của tầng LLM ở
+    # đây. Chỉ nhận một tên thì kiểu hỏng là tệ nhất có thể: khoá nằm ngay trong
+    # `.env` mà chương trình báo "thiếu khoá", và người đọc thông báo không có
+    # cách nào biết nó đang tìm tên khác.
+    google_api_key: str | None = Field(
+        default=None, validation_alias=AliasChoices("GOOGLE_API_KEY", "GEMINI_API_KEY")
+    )
     openrouter_api_key: str | None = None
+    # Nhà cung cấp nói giao thức OpenAI, dùng chung MỘT adapter
+    # (`app/services/llm/openai_compatible.py`). Tên biến khớp tên nhà cung cấp
+    # trong `LLM_TIER_*`, ví dụ `groq/llama-3.3-70b-versatile`.
+    groq_api_key: str | None = None
+    cerebras_api_key: str | None = None
+    tokenrouter_api_key: str | None = None
     # `localhost` khi chạy pipeline từ dòng lệnh trên máy; container phải dùng
     # `host.docker.internal`. Là cấu hình chính vì lý do đó.
     ollama_base_url: str = "http://localhost:11434"

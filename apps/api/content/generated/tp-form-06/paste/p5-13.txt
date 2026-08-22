@@ -1,0 +1,9 @@
+[QUESTION]
+The logistics coordinator ------- updated the shipping tracking system to reflect the port delays.
+(A) prompt
+(B) prompted
+(C) promptly
+(D) promptness
+Answer: C
+Explanation: Vị trí trống nằm giữa chủ ngữ "The logistics coordinator" và động từ chính "updated", cần một trạng từ để bổ nghĩa cho động từ đó. Do đó, trạng từ (B) là đáp án đúng. (A) là tính từ; (C) là động từ ở dạng quá khứ/phân từ; (D) là danh từ, đều không phù hợp về mặt ngữ pháp.
+Source: original

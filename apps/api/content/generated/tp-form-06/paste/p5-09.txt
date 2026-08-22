@@ -1,0 +1,9 @@
+[QUESTION]
+The landlord has agreed to have the damaged flooring ------- before the retail store opens next month.
+(A) replaces
+(B) replacing
+(C) replaced
+(D) replace
+Answer: C
+Explanation: Cấu trúc truyền khiến bị động là "have + something + V3/V-ed" (có cái gì được làm bởi ai). Do đó, phân từ hai "replaced" ở phương án (A) là đáp án đúng. Phương án (B) dùng hiện tại phân từ mang nghĩa chủ động, không phù hợp vì sàn nhà không thể tự thực hiện hành động; phương án (C) là động từ chia thì hiện tại đơn, sai cấu trúc; phương án (D) là động từ nguyên mẫu không "to", chỉ dùng trong cấu trúc chủ động "have + someone + V-bare" khi tân ngữ là người thực hiện hành động.
+Source: original

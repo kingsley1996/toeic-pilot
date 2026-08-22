@@ -1,0 +1,9 @@
+[QUESTION]
+The HR manager will ------- the candidate's references before making an offer.
+(A) reject
+(B) approve
+(C) verify
+(D) schedule
+Answer: C
+Explanation: Sau "will" cần động từ nguyên mẫu. (B) approve không đi kèm "references" (không nói approve references); (C) reject không đi kèm "references" (thường reject a candidate); (D) schedule không đi kèm "references" (thường schedule an interview).
+Source: original

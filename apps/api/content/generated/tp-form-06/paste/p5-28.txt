@@ -1,0 +1,9 @@
+[QUESTION]
+The training coordinator was ------- in scheduling the internal workshops.
+(A) efficiency
+(B) efficient
+(C) efficiently
+(D) efficiencies
+Answer: B
+Explanation: Sau "was" cần một tính từ làm bổ ngữ cho chủ ngữ "the training coordinator". (A) "efficient" là tính từ, phù hợp với cấu trúc "be efficient in doing something". (B) "efficiency" là danh từ, không dùng làm bổ ngữ tính từ ở đây. (C) "efficiently" là trạng từ, không thay thế tính từ sau "was". (D) "efficiencies" là danh từ số nhiều, sai từ loại và không hợp nghĩa.
+Source: original

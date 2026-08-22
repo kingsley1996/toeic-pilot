@@ -1,0 +1,9 @@
+[QUESTION]
+Customers can monitor the estimated ------- of their shipments using the online tracking tool.
+(A) arrival
+(B) arrived
+(C) arriving
+(D) arrive
+Answer: A
+Explanation: Vị trí trống đứng sau mạo từ "the" và tính từ "estimated", trước giới từ "of", nên cần một danh từ để làm danh từ chính cho cụm danh từ. (A) là động từ nguyên mẫu; (B) là động từ chia ở quá khứ/phân từ; (C) là hiện tại phân từ; tất cả đều không thể làm danh từ chính trong cấu trúc này. (D) là danh từ chỉ "sự đến nơi/tới nơi", hoàn toàn phù hợp.
+Source: original

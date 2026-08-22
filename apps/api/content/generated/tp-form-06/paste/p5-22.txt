@@ -1,0 +1,9 @@
+[QUESTION]
+The coordinator made a ------- about the meeting schedule after reviewing the travel itinerary.
+(A) decide
+(B) decided
+(C) decisive
+(D) decision
+Answer: D
+Explanation: Sau "made a" cần một danh từ; "decision" là danh từ nghĩa "quyết định". (A) "decide" là động từ nguyên mẫu, không thể đứng sau "a". (B) "decided" là quá khứ phân từ hoặc tính từ, không phải danh từ cần điền. (C) "decisive" là tính từ, không thể làm thành phần danh từ sau "a".
+Source: original

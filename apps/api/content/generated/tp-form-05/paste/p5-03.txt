@@ -1,0 +1,9 @@
+[QUESTION]
+The logistics team must provide a clear ------- for each shipment.
+(A) allocation
+(B) allocate
+(C) allocable
+(D) allocably
+Answer: A
+Explanation: Sau "a clear" cần danh từ. (B) là động từ; (C) là tính từ; (D) là trạng từ.
+Source: original

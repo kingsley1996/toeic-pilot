@@ -38,7 +38,22 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # Tier miễn phí và model chạy tại máy: giá thật bằng 0. Vẫn phải có mặt ở
     # đây, vì thiếu thì `cost_usd` sẽ ném lỗi và chặn cả đường phát triển.
     ("google", "gemini-2.5-flash"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    # Giá CÔNG BỐ của gói trả tiền, tra ở ai.google.dev/gemini-api/docs/pricing
+    # ngày 2026-08-22. Ghi giá thật chứ không ghi 0 dù ta đang chạy trên gói
+    # miễn phí: gói miễn phí là thuộc tính của TÀI KHOẢN, không phải của model,
+    # nên một hàng 0 ở đây sẽ báo cáo sai ngay ngày đầu tiên có người nạp tiền.
+    #
+    # Giá đầu vào tăng gấp đôi từ 2027-01-01 ($1.50 / $7.50) theo đúng trang đó.
+    # Không mã hoá ngày vào bảng: một bảng giá tự đổi theo lịch là thứ không ai
+    # đọc ra được từ một con số, và nó sẽ đúng đúng một lần rồi sai mãi.
+    ("google", "gemini-3.7-flash"): (Decimal("0.75"), Decimal("3.75"), None),
+    ("google", "gemini-3.5-flash"): (Decimal("1.50"), Decimal("9.00"), None),
     ("openrouter", "openai/gpt-oss-20b:free"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    # Hàng RIÊNG cho đúng một id, không phải một luật "hậu tố -free thì giá 0".
+    # Luật hậu tố của OpenRouter đứng được vì `:free` là ký hiệu chính thức của
+    # họ; ở đây `-free` mới chỉ là một cái tên, và một model tính tiền đặt tên
+    # có chữ đó sẽ lọt qua luật mà không ai thấy.
+    ("tokenrouter", "qwen/qwen3.8-max-free"): (Decimal("0"), Decimal("0"), Decimal("0")),
     # Model chạy trên máy: chi phí biên bằng 0 thật, không phải bằng 0 vì
     # chưa ai điền giá. Token vẫn được ghi để ngoại suy nếu đổi sang model tính tiền.
     ("ollama", "llama3.2:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),

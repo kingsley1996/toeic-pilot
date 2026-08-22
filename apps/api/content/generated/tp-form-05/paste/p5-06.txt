@@ -1,0 +1,9 @@
+[QUESTION]
+The new marketing campaign performed ------- than the previous one.
+(A) effectively
+(B) more effective
+(C) most effective
+(D) more effectively
+Answer: D
+Explanation: Câu cần trạng từ so sánh hơn để sửa động từ "performed" và đi với "than". (A) "more effectively" đúng dạng so sánh hơn của trạng từ. (B) "more effective" là tính từ, không thể sửa động từ. (C) "most effective" là cấp cao nhất, không dùng với "than". (D) "effectively" là cấp nguyên mẫu, thiếu ý so sánh.
+Source: original

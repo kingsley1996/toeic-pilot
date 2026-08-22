@@ -5,6 +5,7 @@
 ### Question Type
 - `PART_1_PERSON_DESCRIPTION` — Tranh tả người
 - `PART_1_PERSON_AND_OBJECT_DESCRIPTION` — Tranh tả cả người và vật
+- `PART_1_OBJECT_OR_SCENE_DESCRIPTION` — Tranh tả vật hoặc cảnh, không có người
 
 ## Part 2
 

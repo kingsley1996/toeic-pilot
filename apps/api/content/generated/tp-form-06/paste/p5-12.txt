@@ -1,0 +1,9 @@
+[QUESTION]
+Employees ------- travel schedules conflict with the quarterly meeting must notify the coordinator immediately.
+(A) which
+(B) whose
+(C) those
+(D) whom
+Answer: B
+Explanation: Chỗ trống cần một đại từ quan hệ chỉ sở hữu đứng trước danh từ "travel schedules" (lịch trình công tác của nhân viên). Do đó, "whose" là đáp án đúng. (B) "which" dùng thay thế cho danh từ chỉ vật; (C) "those" là đại từ chỉ định, không thể dùng làm từ nối trong mệnh đề quan hệ; (D) "whom" là đại từ quan hệ làm tân ngữ chỉ người, không đi trực tiếp trước danh từ để chỉ sự sở hữu.
+Source: original

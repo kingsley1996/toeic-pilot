@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The woman is holding a coffee mug.
+(B) One worker is sitting in a chair.
+(C) The man is loading paper into the printer.
+(D) Two people are standing beside a printer.
+Answer: D
+Source: original

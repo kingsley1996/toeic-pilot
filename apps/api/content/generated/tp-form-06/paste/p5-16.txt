@@ -1,0 +1,9 @@
+[QUESTION]
+------- the latest marketing campaign reached a wide audience, it did not significantly boost product sales.
+(A) Despite
+(B) Although
+(C) However
+(D) Instead
+Answer: B
+Explanation: Sau chỗ trống là một mệnh đề hoàn chỉnh đầy đủ chủ ngữ và vị ngữ (the latest marketing campaign reached...). Do đó, vị trí này cần một liên từ phụ thuộc chỉ sự tương phản. (A) "Although" là liên từ phù hợp nhất. (B) "Despite" là giới từ, theo sau phải là danh từ/cụm danh từ hoặc V-ing chứ không đi với mệnh đề; (C) "However" là trạng từ liên kết, không dùng để nối trực tiếp hai mệnh đề trong cùng một câu theo cấu trúc này; (D) "Instead" là trạng từ, không có chức năng liên kết hai mệnh đề.
+Source: original
