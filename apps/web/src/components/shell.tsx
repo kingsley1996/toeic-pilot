@@ -11,6 +11,7 @@ import { NavLink, SessionControls, activeHref, type NavItem } from "@/components
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, ButtonLink, IconButton, Skeleton, Tag } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { useProgression } from "@/lib/progression";
 import { useSession } from "@/lib/session";
 
 /**
@@ -199,8 +200,11 @@ function flatten(links: ShellNavItem[]): NavItem[] {
  * header mời "Đăng nhập" với người đã đăng nhập rồi.
  */
 function AccountBlock({ showRole }: { showRole: boolean }) {
-  const { status, user, canEdit, logout } = useSession();
+  const { status, user, token, canEdit, logout } = useSession();
   const pathname = usePathname();
+  // Level và khung — xem `lib/progression.ts` để biết vì sao nó không nằm trong
+  // phiên đăng nhập.
+  const progression = useProgression(token);
   // Đang ở trong khu quản trị rồi thì lối vào nó là một dòng trỏ về chính chỗ
   // đang đứng. Đường ra là "Back to learning" trên đầu sidebar, không phải đây.
   const inAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
@@ -238,12 +242,17 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
         href="/profile"
         className="flex items-center gap-2.5 rounded px-2 py-2 transition-colors hover:bg-recess"
       >
+        {/* `md` chứ không `sm`: huy hiệu level cần chỗ để đọc được, và ở 28px
+            nó chiếm gần một phần ba ô. Đây là avatar THƯỜNG TRỰC của người dùng,
+            nên nếu chỉ một cỡ được mang huy hiệu thì phải là cỡ này. */}
         <Avatar
           id={user.id}
           name={displayName}
           email={user.email}
           src={user.profile.avatar_url}
-          size="sm"
+          size="md"
+          frame={progression?.frame}
+          level={progression?.level}
         />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-small font-semibold">

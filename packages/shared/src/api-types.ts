@@ -602,6 +602,254 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/progression": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Config
+         * @description Toàn bộ cấu hình. Seed bộ mặc định nếu đây là lần đọc đầu tiên.
+         */
+        get: operations["read_config_api_v1_admin_progression_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/assets/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Art Ticket
+         * @description Vé tải tranh khung/huy hiệu lên.
+         *
+         *     Khoá do PHÍA TA sinh từ một id ngẫu nhiên, y như mọi vé khác: để client chọn
+         *     khoá thì một người có vé hợp lệ ghi đè được lên đường dẫn của người khác, và
+         *     chữ ký khi đó chỉ chứng minh "được phép upload", không chứng minh "được phép
+         *     upload vào đúng chỗ này".
+         *
+         *     Không có bước `confirm` riêng. Bước đó là chính lệnh `PATCH` gắn khoá vào
+         *     hàng — nó kiểm tiền tố và hỏi lại nhà cung cấp trước khi ghi, nên một khoá
+         *     không có file thật không bao giờ vào tới bảng.
+         */
+        post: operations["art_ticket_api_v1_admin_progression_assets_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Badge */
+        post: operations["create_badge_api_v1_admin_progression_badges_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/badges/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Badge
+         * @description Xoá một luật. Các hàng `user_badge` KHÔNG bị xoá theo.
+         *
+         *     Đó là chủ ý: lịch sử "người này từng mở huy hiệu kia" là chuyện đã xảy ra.
+         *     Bật lại một luật cùng mã sau này sẽ tìm lại đúng những hàng đó, nên không ai
+         *     bị báo "huy hiệu mới" cho thứ họ đã có. Tắt vẫn tốt hơn xoá.
+         */
+        delete: operations["delete_badge_api_v1_admin_progression_badges__code__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Badge
+         * @description Sửa một luật. `code` cố ý không nằm trong body — xem `BadgeRuleUpdate`.
+         */
+        patch: operations["update_badge_api_v1_admin_progression_badges__code__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/progression/frames": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Frame */
+        post: operations["create_frame_api_v1_admin_progression_frames_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/frames/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Frame */
+        delete: operations["delete_frame_api_v1_admin_progression_frames__code__delete"];
+        options?: never;
+        head?: never;
+        /** Update Frame */
+        patch: operations["update_frame_api_v1_admin_progression_frames__code__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/progression/levels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Replace Levels
+         * @description Ghi đè nguyên bảng level.
+         *
+         *     Kiểm cả bảng như một khối trước khi ghi: level 1 phải là 0 XP, và ngưỡng phải
+         *     TĂNG ĐỀU. Một bảng không tăng đều làm phép tra cứu dừng sai chỗ — người học
+         *     đứng ở một level thấp hơn XP của họ, và vì `level_reached` chỉ đi lên, một
+         *     mốc sai ghi xuống trong lúc đó thì ở lại vĩnh viễn.
+         */
+        put: operations["replace_levels_api_v1_admin_progression_levels_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/levels/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Regenerate Levels
+         * @description Ghi lại toàn bộ bảng level từ tham số đường cong.
+         *
+         *     Tồn tại vì gõ tay 99 bậc là công việc không ai làm đúng tới hàng thứ mười.
+         *     Nó GHI ĐÈ mọi chỉnh sửa thủ công, nên giao diện phải nói rõ trước khi bấm.
+         */
+        post: operations["regenerate_levels_api_v1_admin_progression_levels_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/setting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Setting
+         * @description Sửa mức XP, trần ngày và tham số đường cong.
+         *
+         *     **Đổi tham số đường cong KHÔNG tự sinh lại bảng level.** Bảng mới là sự thật
+         *     của phép tra cứu, và admin có thể đã sửa tay vài bậc; ghi đè ngầm là xoá
+         *     những chỉnh sửa đó mà không hỏi. Sinh lại là một hành động riêng, có nút
+         *     riêng.
+         */
+        patch: operations["update_setting_api_v1_admin_progression_setting_patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/progression/slots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Slot */
+        post: operations["create_slot_api_v1_admin_progression_slots_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/progression/slots/{slot_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Slot
+         * @description Xoá hẳn một khe.
+         *
+         *     Tắt (`enabled = false`) gần như luôn là thứ bạn muốn thay vì xoá: `id` của
+         *     khe là thứ chống trao lại XP, nên xoá rồi tạo lại một khe "y hệt" sẽ trao
+         *     thưởng lần nữa cho những ngày đã trao. Endpoint vẫn tồn tại vì một khe tạo
+         *     nhầm cần có đường dọn, nhưng giao diện mời tắt trước.
+         */
+        delete: operations["delete_slot_api_v1_admin_progression_slots__slot_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Slot
+         * @description Sửa một khe. `id` không đổi, nên phần thưởng đã trao vẫn là đã trao.
+         */
+        patch: operations["update_slot_api_v1_admin_progression_slots__slot_id__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/question-sets/{set_id}": {
         parameters: {
             query?: never;
@@ -1625,6 +1873,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/daily-tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Daily Tasks
+         * @description Ba việc hôm nay, và trao XP cho việc vừa xong.
+         *
+         *     Đường dẫn gạch nối ở gốc `/api/v1/daily-tasks`, không lồng dưới `/profile`:
+         *     đây là thứ học viên mở mỗi ngày, không phải một mục trong trang hồ sơ.
+         *
+         *     **Lần đọc này có ghi**, và đó là ngoại lệ có chủ ý — lý do đầy đủ ở
+         *     `daily_tasks.grant_rewards`. Nó an toàn vì tất định: `source_id` sinh từ
+         *     (người, ngày, khe) nên gọi lại bao nhiêu lần cũng chỉ trao một lần.
+         */
+        get: operations["read_daily_tasks_api_v1_daily_tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dictation": {
         parameters: {
             query?: never;
@@ -1864,6 +2139,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profile/progression": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Progression
+         * @description Level, XP và bậc khung avatar.
+         *
+         *     Nằm dưới `/profile` chứ không phải một router riêng: đây là thứ thuộc về hồ
+         *     sơ của chính người đang đăng nhập, và nó dùng đúng `timezone` mà `/profile/stats`
+         *     dùng để tính chuỗi ngày. Hai định nghĩa "hôm nay" khác nhau trong cùng một
+         *     trang là chỗ hai con số nói hai điều về cùng một ngày.
+         */
+        get: operations["read_progression_api_v1_profile_progression_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profile/stats": {
         parameters: {
             query?: never;
@@ -1883,6 +2183,62 @@ export interface paths {
         get: operations["read_stats_api_v1_profile_stats_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/progression/badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Badges
+         * @description Cả 15 badge, đã mở lẫn chưa, kèm tiến độ tới ngưỡng.
+         *
+         *     Trả về cả badge chưa mở là chủ ý: một trang chỉ hiện thứ đã đạt thì không nói
+         *     được còn gì phía trước, mà đó mới là thứ khiến người ta quay lại.
+         *
+         *     **Lần đọc này có ghi**, cùng ngoại lệ có chủ ý như `GET /daily-tasks`: badge
+         *     vừa đủ điều kiện được ghi một hàng để lần sau biết nó không còn mới. An toàn
+         *     vì khoá chính `(user_id, code)` khiến lần ghi thứ hai không thể xảy ra.
+         */
+        get: operations["read_badges_api_v1_progression_badges_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/progression/badges/seen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark Badges Seen
+         * @description Tắt chấm đỏ.
+         *
+         *     Không nhận danh sách mã: nút này bấm từ trang badge, nơi tất cả đang hiển thị
+         *     cùng lúc, nên "đã xem" đúng nghĩa đen. Nhận danh sách sẽ mời phía gọi gửi
+         *     thiếu, và một badge sót lại giữ chấm đỏ vĩnh viễn trên một trang không còn gì
+         *     mới.
+         *
+         *     204 kể cả khi không có gì để đánh dấu: phía gọi đang nói "tôi đã xem trang
+         *     này", và câu đó luôn đúng. 404 hay 409 ở đây chỉ buộc frontend viết một nhánh
+         *     xử lý cho một tình huống không phải lỗi.
+         */
+        post: operations["mark_badges_seen_api_v1_progression_badges_seen_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2598,6 +2954,139 @@ export interface components {
             /** Twinkle Count */
             twinkle_count: number;
         };
+        /**
+         * BadgePublic
+         * @description Một badge, kèm tiến độ tới ngưỡng của nó.
+         *
+         *     `target` và `progress` gửi từ máy chủ chứ không để frontend tự biết ngưỡng:
+         *     ngưỡng là một phần của điều kiện, và một bản sao ở phía trình duyệt sẽ trôi
+         *     khỏi bản gốc mà không có gì báo — trang badge in "120/300" trong khi máy chủ
+         *     đã mở badge từ 150.
+         *
+         *     `label` và `hint` đi kèm vì chúng là DỮ LIỆU do admin đặt, không phải chữ cố
+         *     định trong frontend. `icon` thì vẫn là một union đóng — frontend phải biết vẽ
+         *     nó, và một chuỗi tự do ở đây là một huy hiệu không có hình.
+         */
+        BadgePublic: {
+            /** Awarded At */
+            awarded_at: string | null;
+            /** Code */
+            code: string;
+            /** Earned */
+            earned: boolean;
+            /** Hint */
+            hint: string;
+            /**
+             * Icon
+             * @enum {string}
+             */
+            icon: "footprints" | "book" | "library" | "graduation" | "headphones" | "target" | "medal" | "trophy" | "flame" | "star" | "sparkles" | "award";
+            /** Image Url */
+            image_url: string | null;
+            /** Label */
+            label: string;
+            /** Progress */
+            progress: number;
+            /** Seen */
+            seen: boolean;
+            /** Target */
+            target: number;
+        };
+        /** BadgeRuleAdmin */
+        BadgeRuleAdmin: {
+            /** Code */
+            code: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Hint */
+            hint: string;
+            /**
+             * Icon
+             * @enum {string}
+             */
+            icon: "footprints" | "book" | "library" | "graduation" | "headphones" | "target" | "medal" | "trophy" | "flame" | "star" | "sparkles" | "award";
+            /** Image Storage Key */
+            image_storage_key: string | null;
+            /** Image Url */
+            image_url: string | null;
+            /** Label */
+            label: string;
+            /**
+             * Metric
+             * @enum {string}
+             */
+            metric: "reviews" | "words_mastered" | "dictation_items" | "tests_submitted" | "best_score" | "longest_streak" | "level";
+            /** Position */
+            position: number;
+            /** Target */
+            target: number;
+        };
+        /** BadgeRuleCreate */
+        BadgeRuleCreate: {
+            /** Code */
+            code: string;
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Hint */
+            hint: string;
+            /**
+             * Icon
+             * @enum {string}
+             */
+            icon: "footprints" | "book" | "library" | "graduation" | "headphones" | "target" | "medal" | "trophy" | "flame" | "star" | "sparkles" | "award";
+            /** Label */
+            label: string;
+            /**
+             * Metric
+             * @enum {string}
+             */
+            metric: "reviews" | "words_mastered" | "dictation_items" | "tests_submitted" | "best_score" | "longest_streak" | "level";
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Target */
+            target: number;
+        };
+        /**
+         * BadgeRuleUpdate
+         * @description `code` KHÔNG sửa được sau khi tạo.
+         *
+         *     Nó là thứ nằm trong `user_badge.code`, nên đổi mã là bỏ lại toàn bộ lịch sử
+         *     dưới một cái tên không còn ai đọc — và huy hiệu quay về trạng thái "mới" với
+         *     tất cả những người đã có nó. Muốn đổi tên hiển thị thì sửa `label`.
+         */
+        BadgeRuleUpdate: {
+            /** Enabled */
+            enabled?: boolean | null;
+            /** Hint */
+            hint?: string | null;
+            /** Icon */
+            icon?: ("footprints" | "book" | "library" | "graduation" | "headphones" | "target" | "medal" | "trophy" | "flame" | "star" | "sparkles" | "award") | null;
+            /** Image Storage Key */
+            image_storage_key?: string | null;
+            /** Label */
+            label?: string | null;
+            /** Metric */
+            metric?: ("reviews" | "words_mastered" | "dictation_items" | "tests_submitted" | "best_score" | "longest_streak" | "level") | null;
+            /** Position */
+            position?: number | null;
+            /** Target */
+            target?: number | null;
+        };
+        /** BadgesPublic */
+        BadgesPublic: {
+            /** Badges */
+            badges: components["schemas"]["BadgePublic"][];
+            /** Earned Count */
+            earned_count: number;
+            /** Unseen Count */
+            unseen_count: number;
+        };
         /** Body_local_upload_media_upload__storage_key__post */
         Body_local_upload_media_upload__storage_key__post: {
             /** Expires At */
@@ -2742,6 +3231,104 @@ export interface components {
             problems: string[];
             /** Skipped */
             skipped: number;
+        };
+        /**
+         * DailyTaskPublic
+         * @description Một việc hôm nay.
+         *
+         *     `target` là số CỐ ĐỊNH đã kẹp theo thứ thật sự có, không phải tình trạng hiện
+         *     thời — xem `app/services/daily_tasks.py`. `progress` đếm hoạt động trong ngày
+         *     nên nó chỉ tăng.
+         */
+        DailyTaskPublic: {
+            /** Done */
+            done: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            /** Label */
+            label: string;
+            /** Progress */
+            progress: number;
+            /** Slot Id */
+            slot_id: string;
+            /** Target */
+            target: number;
+            /** Xp */
+            xp: number;
+        };
+        /** DailyTaskSlotAdmin */
+        DailyTaskSlotAdmin: {
+            /** Enabled */
+            enabled: boolean;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            /** Label */
+            label: string;
+            /** Position */
+            position: number;
+            /** Target */
+            target: number;
+            /** Xp */
+            xp: number;
+        };
+        /** DailyTaskSlotCreate */
+        DailyTaskSlotCreate: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            /** Label */
+            label: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Target */
+            target: number;
+            /** Xp */
+            xp: number;
+        };
+        /** DailyTaskSlotUpdate */
+        DailyTaskSlotUpdate: {
+            /** Enabled */
+            enabled?: boolean | null;
+            /** Kind */
+            kind?: ("vocabulary_review" | "dictation_complete" | "attempt_answer") | null;
+            /** Label */
+            label?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Target */
+            target?: number | null;
+            /** Xp */
+            xp?: number | null;
+        };
+        /** DailyTasksPublic */
+        DailyTasksPublic: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Tasks */
+            tasks: components["schemas"]["DailyTaskPublic"][];
+            /** Xp Awarded */
+            xp_awarded: number;
         };
         /** DictationAdmin */
         DictationAdmin: {
@@ -3139,6 +3726,83 @@ export interface components {
             share: number;
         };
         /**
+         * FramePublic
+         * @description Khung avatar đang mở, hoặc vắng mặt khi chưa tới bậc nào.
+         *
+         *     Trả về cả CÁCH VẼ chứ không chỉ mã: bậc khung là dữ liệu admin thêm được, nên
+         *     một bảng tra mã→màu nằm trong frontend sẽ thiếu ngay khi có bậc mới, và thiếu
+         *     một cách im lặng (khung không hiện, không ai báo).
+         */
+        FramePublic: {
+            /** Code */
+            code: string;
+            /** Image Url */
+            image_url: string | null;
+            /** Label */
+            label: string;
+            /** Min Level */
+            min_level: number;
+            /** Ring */
+            ring: boolean;
+            /**
+             * Tone
+             * @enum {string}
+             */
+            tone: "ok" | "action" | "warn" | "alert";
+        };
+        /** FrameTierAdmin */
+        FrameTierAdmin: {
+            /** Code */
+            code: string;
+            /** Image Storage Key */
+            image_storage_key: string | null;
+            /** Image Url */
+            image_url: string | null;
+            /** Label */
+            label: string;
+            /** Min Level */
+            min_level: number;
+            /** Ring */
+            ring: boolean;
+            /**
+             * Tone
+             * @enum {string}
+             */
+            tone: "ok" | "action" | "warn" | "alert";
+        };
+        /** FrameTierCreate */
+        FrameTierCreate: {
+            /** Code */
+            code: string;
+            /** Label */
+            label: string;
+            /** Min Level */
+            min_level: number;
+            /**
+             * Ring
+             * @default false
+             */
+            ring: boolean;
+            /**
+             * Tone
+             * @enum {string}
+             */
+            tone: "ok" | "action" | "warn" | "alert";
+        };
+        /** FrameTierUpdate */
+        FrameTierUpdate: {
+            /** Image Storage Key */
+            image_storage_key?: string | null;
+            /** Label */
+            label?: string | null;
+            /** Min Level */
+            min_level?: number | null;
+            /** Ring */
+            ring?: boolean | null;
+            /** Tone */
+            tone?: ("ok" | "action" | "warn" | "alert") | null;
+        };
+        /**
          * GroupDraft
          * @description Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.
          *
@@ -3298,6 +3962,26 @@ export interface components {
             vocabulary_total: number;
             /** Window Days */
             window_days: number;
+        };
+        /** LevelTierAdmin */
+        LevelTierAdmin: {
+            /** Level */
+            level: number;
+            /** Xp Required */
+            xp_required: number;
+        };
+        /**
+         * LevelTierUpdate
+         * @description Ghi đè NGUYÊN bảng, không sửa từng hàng.
+         *
+         *     Bảng ngưỡng chỉ đúng khi đọc như một khối: nó phải tăng đều và bắt đầu từ 0.
+         *     Một endpoint sửa-một-bậc sẽ để bảng ở trạng thái không tăng đều giữa hai lần
+         *     gọi, và trong khoảng đó mọi người học đọc ra một level sai — không lâu, nhưng
+         *     đủ để `level_reached` ghi lại một mốc không có thật, và mốc đó thì vĩnh viễn.
+         */
+        LevelTierUpdate: {
+            /** Tiers */
+            tiers: components["schemas"]["LevelTierAdmin"][];
         };
         /** LlmStatsPublic */
         LlmStatsPublic: {
@@ -3529,6 +4213,102 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /**
+         * ProgressionConfigAdmin
+         * @description Toàn bộ cấu hình trong MỘT lần đọc.
+         *
+         *     Màn hình quản trị hiển thị cả bốn phần cùng lúc và chúng chỉ có nghĩa khi
+         *     đứng cạnh nhau — một bậc khung ở level 30 là vô nghĩa nếu bảng level dừng ở
+         *     25. Bốn request riêng cho một màn hình cũng là bốn trạng thái tải rời rạc.
+         */
+        ProgressionConfigAdmin: {
+            /** Badges */
+            badges: components["schemas"]["BadgeRuleAdmin"][];
+            /** Frames */
+            frames: components["schemas"]["FrameTierAdmin"][];
+            /** Levels */
+            levels: components["schemas"]["LevelTierAdmin"][];
+            setting: components["schemas"]["ProgressionSettingAdmin"];
+            /** Slots */
+            slots: components["schemas"]["DailyTaskSlotAdmin"][];
+        };
+        /**
+         * ProgressionPublic
+         * @description Level của một học viên, suy ra từ sổ cái `xp_event`.
+         *
+         *     Không có cột nào lưu `level` hay `xp_total`. Xem `app/models/progression.py`
+         *     để biết vì sao một bộ đếm cộng dồn không được phép tồn tại ở đây.
+         */
+        ProgressionPublic: {
+            /** Daily Cap */
+            daily_cap: number;
+            frame: components["schemas"]["FramePublic"] | null;
+            /** Level */
+            level: number;
+            /** Xp For Next */
+            xp_for_next: number;
+            /** Xp Into Level */
+            xp_into_level: number;
+            /** Xp Today */
+            xp_today: number;
+            /** Xp Total */
+            xp_total: number;
+        };
+        /** ProgressionSettingAdmin */
+        ProgressionSettingAdmin: {
+            /** Curve Break */
+            curve_break: number;
+            /** Curve Coefficient */
+            curve_coefficient: number;
+            /** Curve Exponent */
+            curve_exponent: number;
+            /** Curve Linear Step */
+            curve_linear_step: number;
+            /** Daily Xp Cap */
+            daily_xp_cap: number;
+            /** Max Level */
+            max_level: number;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Xp Attempt Submit */
+            xp_attempt_submit: number;
+            /** Xp Dictation Complete */
+            xp_dictation_complete: number;
+            /** Xp Vocabulary Review */
+            xp_vocabulary_review: number;
+        };
+        /**
+         * ProgressionSettingUpdate
+         * @description Sửa một phần. Khoá vắng mặt = để nguyên, cùng luật với `PATCH /profile`.
+         *
+         *     Giới hạn trên không phải để phòng kẻ xấu — đường này đã sau `require_role` —
+         *     mà để chặn lỗi gõ phím. `xp_attempt_submit = 3000` không phải một quyết định
+         *     vận hành, nó là một con số thừa số 0, và hậu quả của nó nằm vĩnh viễn trong
+         *     sổ cái vì các hàng đã trao thì không sửa lại.
+         */
+        ProgressionSettingUpdate: {
+            /** Curve Break */
+            curve_break?: number | null;
+            /** Curve Coefficient */
+            curve_coefficient?: number | null;
+            /** Curve Exponent */
+            curve_exponent?: number | null;
+            /** Curve Linear Step */
+            curve_linear_step?: number | null;
+            /** Daily Xp Cap */
+            daily_xp_cap?: number | null;
+            /** Max Level */
+            max_level?: number | null;
+            /** Xp Attempt Submit */
+            xp_attempt_submit?: number | null;
+            /** Xp Dictation Complete */
+            xp_dictation_complete?: number | null;
+            /** Xp Vocabulary Review */
+            xp_vocabulary_review?: number | null;
         };
         /** QuestionAdmin */
         QuestionAdmin: {
@@ -5861,6 +6641,442 @@ export interface operations {
             };
         };
     };
+    read_config_api_v1_admin_progression_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+        };
+    };
+    art_ticket_api_v1_admin_progression_assets_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_badge_api_v1_admin_progression_badges_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BadgeRuleCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_badge_api_v1_admin_progression_badges__code__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_badge_api_v1_admin_progression_badges__code__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BadgeRuleUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_frame_api_v1_admin_progression_frames_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FrameTierCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_frame_api_v1_admin_progression_frames__code__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_frame_api_v1_admin_progression_frames__code__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FrameTierUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    replace_levels_api_v1_admin_progression_levels_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LevelTierUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_levels_api_v1_admin_progression_levels_generate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+        };
+    };
+    update_setting_api_v1_admin_progression_setting_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgressionSettingUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_slot_api_v1_admin_progression_slots_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyTaskSlotCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_slot_api_v1_admin_progression_slots__slot_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slot_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_slot_api_v1_admin_progression_slots__slot_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slot_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyTaskSlotUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionConfigAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     edit_set_api_v1_admin_question_sets__set_id__patch: {
         parameters: {
             query?: never;
@@ -7763,6 +8979,26 @@ export interface operations {
             };
         };
     };
+    read_daily_tasks_api_v1_daily_tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyTasksPublic"];
+                };
+            };
+        };
+    };
     list_dictation_api_v1_dictation_get: {
         parameters: {
             query?: {
@@ -8148,6 +9384,26 @@ export interface operations {
             };
         };
     };
+    read_progression_api_v1_profile_progression_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressionPublic"];
+                };
+            };
+        };
+    };
     read_stats_api_v1_profile_stats_get: {
         parameters: {
             query?: never;
@@ -8165,6 +9421,44 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["LearningStats"];
                 };
+            };
+        };
+    };
+    read_badges_api_v1_progression_badges_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadgesPublic"];
+                };
+            };
+        };
+    };
+    mark_badges_seen_api_v1_progression_badges_seen_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

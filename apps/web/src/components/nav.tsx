@@ -8,6 +8,7 @@ import type { LucideIcon } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, Skeleton, Tag, cx } from "@/components/ui";
+import { useProgression } from "@/lib/progression";
 import { useSession } from "@/lib/session";
 
 export type NavItem = {
@@ -87,7 +88,11 @@ export function activeHref(items: NavItem[], pathname: string): string | undefin
  * `react-hooks/set-state-in-effect` chặn đúng chỗ này.
  */
 function UserMenu({ showRole }: { showRole: boolean }) {
-  const { user, logout, canEdit } = useSession();
+  const { user, token, logout, canEdit } = useSession();
+  // Cùng khung, cùng huy hiệu như trong sidebar. Ba trang dùng thanh trên đứng
+  // NGOÀI ứng dụng, nhưng người đã đăng nhập vẫn đi qua chúng — và một avatar
+  // đổi hình tuỳ trang thì đọc như hai tài khoản khác nhau.
+  const progression = useProgression(token);
   const pathname = usePathname();
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const open = openedAt === pathname;
@@ -131,7 +136,9 @@ function UserMenu({ showRole }: { showRole: boolean }) {
           name={user.profile.display_name}
           email={user.email}
           src={user.profile.avatar_url}
-          size="sm"
+          size="md"
+          frame={progression?.frame}
+          level={progression?.level}
         />
         <span className="hidden max-w-[10rem] truncate text-small font-semibold sm:block">
           {name}

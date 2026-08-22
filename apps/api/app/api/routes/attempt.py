@@ -53,6 +53,8 @@ from app.schemas.practice import (
     QuestionPublic,
     section_of,
 )
+from app.services import progression
+from app.services.profile import ensure_profile
 from app.services.scoring import score_attempt
 
 router = APIRouter(prefix="/attempts", tags=["attempt"])
@@ -613,6 +615,23 @@ def submit_attempt(
     attempt = _load(db, attempt_id, current_user)
     if attempt.status == "in_progress":
         _finalise(db, attempt, "submitted")
+
+        # Chỉ trao khi lượt này VỪA chuyển sang nộp. Gọi lại `/submit` trên một
+        # lượt đã nộp không vào nhánh này, và kể cả có vào thì
+        # `uq_xp_event_source` cũng chặn — hai lớp, vì đây là nguồn XP lớn nhất
+        # (30 điểm) nên trao trùng ở đây tốn hơn hẳn chỗ khác.
+        try:
+            progression.award(
+                db,
+                user_id=current_user.id,
+                source_type="attempt_submit",
+                source_id=attempt.id,
+                amount=progression.xp_for(db, "attempt_submit"),
+                timezone=ensure_profile(db, current_user).timezone,
+            )
+        except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
+            pass
+
         db.commit()
         db.refresh(attempt)
     return _result(attempt)

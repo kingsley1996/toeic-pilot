@@ -91,6 +91,22 @@ class UserProfile(Base, TimestampMixin):
     # registration would pin every existing learner to the old number the day it
     # changes, and nothing would report that.
     daily_new_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+    # Level cao nhất từng đạt — mốc nước cao, không phải bản sao của level.
+    #
+    # Level vẫn suy ra từ tổng XP như cũ; cột này chỉ giữ cho nó KHÔNG TỤT khi
+    # admin sửa bảng ngưỡng. Nâng chuẩn thì người mới lên chậm hơn còn người cũ
+    # giữ nguyên; hạ chuẩn thì mọi người lên. Không có đường nào làm ai mất một
+    # level họ đã có, và đó là cùng lý do khiến XP là sổ cái chứ không phải một
+    # phép tính lại: người dùng không được mất thứ gì vì một quyết định vận hành
+    # mà họ không tham gia.
+    #
+    # Đây KHÔNG vi phạm luật "không có bộ đếm song song với lịch sử": nó không
+    # đếm gì cả, nó ghi một mốc đã xảy ra — cùng loại với `xp_event`, chỉ là một
+    # hàng thay vì nhiều.
+    level_reached: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=1, server_default="1"
+    )
     preferred_accent: Mapped[str | None] = mapped_column(String(8), nullable=True)
 
     # Con mascot của Petland. NULL nghĩa là "con mặc định của hệ thống", KHÔNG

@@ -5,6 +5,7 @@ import {
   ClipboardList,
   Cpu,
   FolderTree,
+  Gauge,
   Headphones,
   Library,
   Palette,
@@ -37,6 +38,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
   { href: "/admin/dictation/tree", label: "Content tree", Icon: FolderTree },
   { href: "/admin/tests", label: "Tests", Icon: ClipboardList },
   { href: "/admin/appearance", label: "Appearance", Icon: Palette },
+  { href: "/admin/progression", label: "Progression", Icon: Gauge },
   {
     href: "/admin/ai",
     label: "AI layer",

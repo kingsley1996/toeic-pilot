@@ -4,7 +4,7 @@
 > Cập nhật **ngay khi** hoàn thành một task, không để dồn.
 >
 > Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
-> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` … `ADR-007` (`PHASE2-AUDIO` = ADR-002) = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện, **đã triển khai toàn bộ `apps/web`** · `SPEC-LEARNING-HUB.md` và `SPEC-AI-COACH.md` = bộ mặc định tạm thời, dựng để sửa · `toeic_question_label_taxonomy.md` = bảng nhãn câu hỏi, **sửa tay và là nguồn sự thật** · `import_media.md` = runbook gắn media vào đề đã dán · `REVIEW-OPUS.md` và `qwen3p8-review.md` = hai bản review kỹ thuật, **ảnh chụp theo ngày, không cập nhật tiếp**
+> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` … `ADR-007` (`PHASE2-AUDIO` = ADR-002) = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện, **đã triển khai toàn bộ `apps/web`** · `SPEC-LEARNING-HUB.md` và `SPEC-AI-COACH.md` = bộ mặc định tạm thời, dựng để sửa · `toeic_question_label_taxonomy.md` = bảng nhãn câu hỏi, **sửa tay và là nguồn sự thật** · `import_media.md` = runbook gắn media vào đề đã dán · `USER-ROAD.md` = level/badge/XP/daily task — **lát 1 và 2 đã dựng** (mục 4v), badge và khung avatar chưa · `REVIEW-OPUS.md` và `qwen3p8-review.md` = hai bản review kỹ thuật, **ảnh chụp theo ngày, không cập nhật tiếp**
 
 **Cập nhật lần cuối:** 2026-08-21
 
@@ -17,15 +17,16 @@ Số liệu dưới đây **đo trên `main` ngày 2026-08-21**, không phải �
 | | |
 |---|---|
 | **Trạng thái** | Từ vựng, dictation và luyện đề chạy đầu-cuối trên nội dung thật. Lớp AI đã gắn nhãn câu hỏi và sinh giải thích. Còn thiếu: **RAG** (chặn bởi nội dung, xem `ADR-003` §3.3) |
-| **Test API** | **637 chạy** + 2 `external` deselect mặc định |
-| **E2E** | 5 tệp, **16 bài** — 12 chạy, 4 bài `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
+| **Test API** | **674 chạy** + 2 `external` deselect mặc định |
+| **E2E** | 7 tệp, **18 bài** — 14 chạy, 4 bài `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
 | **Gate CI** | 4 job (`api`, `web`, `contract`, `docker`), tất cả xanh. Branch protection **chưa bật** |
-| **Migration** | **29 bản**, mới nhất `029_profile_pet` |
-| **Bảng** | **38** (đo từ `Base.metadata`) |
-| **Endpoint** | **131 thao tác HTTP trên 106 đường dẫn** — 82 admin, 49 còn lại (đếm từ `packages/shared/openapi.json`) |
-| **Trang web** | **36 route** — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
+| **Migration** | **33 bản**, mới nhất `033_progression_art` |
+| **Bảng** | **45** (đo từ `Base.metadata`) |
+| **Endpoint** | **148 thao tác HTTP trên 120 đường dẫn** — 95 admin, 53 còn lại (đếm từ `packages/shared/openapi.json`) |
+| **Trang web** | **38 route** — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
 | **Media** | **2 506** clip audio (`audio_asset`), 10 ảnh |
 | **Nội dung** | **303 từ vựng / 7 chủ đề**, 15 câu dictation, 55 câu hỏi (34 có giải thích), 2 đề luyện |
+| **Người dùng** | **33 tài khoản thật**, 7 trong đó có hoạt động. `users` có 574 hàng nhưng **541 là tài khoản e2e** (email mang dấu thời gian 13 chữ số) — lọc chúng ra trước khi đếm bất cứ thống kê người dùng nào |
 | **Giao diện** | Design system triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)) |
 
 **Kiểm chứng lại ngày 2026-08-17** (phần từ vựng, xem mục 4e): `pytest` **630 passed / 2 deselected** · `ruff check` + `ruff format --check` (135 file) + `mypy` strict (96 file) sạch · `tsc --noEmit`, `eslint`, `prettier --check` sạch · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade head` chạy hết `026` trên database trắng và `alembic check` báo **không lệch model** · Playwright **7 bài chạy, xanh** (4 bài `vocabulary.spec.ts` skip) · gọi thật `vocabulary-topic-sessions`, `recall-check` và `review` grade 6 trên stack đang chạy.
@@ -835,6 +836,161 @@ Gộp từ `improve-vocabulary.md` ở gốc kho, tệp đó đã xoá: ROADMAP 
 **Ô đã ghép dùng `invisible`, không dùng `hidden`.** Ô biến mất nhưng lưới 4×4 không co lại; lưới co lại giữa ván làm người chơi mất phương hướng vì các ô còn lại nhảy chỗ.
 
 **Màu trạng thái thắng màu loại chữ, nhưng độ đậm thì giữ.** Khi ô báo sai hoặc đang chọn, `alert`/`action` thay `action-ink` của headword — chữ vẫn đậm để không mất tín hiệu phân biệt loại từ.
+
+## 4v. Sổ cái XP, level, việc hôm nay và huy hiệu · ✅ XONG cả bốn lát (2026-08-22)
+
+Cả bốn lát của [`USER-ROAD.md`](USER-ROAD.md) §8. Chỉ còn `streak_bonus` ở §2.3 là chưa dựng.
+
+- [x] Migration `030_xp_event` — sổ cái nối thêm, `UNIQUE (user_id, source_type, source_id)`
+- [x] `app/services/leveling.py` — đường cong thuần, không chạm database
+- [x] `app/services/progression.py` — ghi XP dùng chung, cưỡng chế trần lúc GHI
+- [x] Gắn ghi XP vào ba đường ghi đã có: ôn từ, nộp câu dictation, nộp đề
+- [x] `GET /api/v1/profile/progression`
+- [x] `app/services/daily_tasks.py` + `GET /api/v1/daily-tasks`
+- [x] Khối "Việc hôm nay" đầu `/dashboard` (`components/daily-tasks.tsx`)
+- [x] `e2e/daily-tasks.spec.ts`
+- [x] Migration `031_user_badge` — chỉ giữ "thấy lần đầu lúc nào" và "đã xem chưa"
+- [x] `app/services/badges.py` — 15 badge suy ra từ lịch sử, không cần backfill
+- [x] `GET /api/v1/progression/badges` và `POST /api/v1/progression/badges/seen`
+- [x] Trang `/profile/badges`, dòng báo trên `/dashboard`, lối vào ở `/profile`
+- [x] `e2e/badges.spec.ts`
+- [ ] `streak_bonus` — nguồn XP duy nhất của §2.3 chưa dựng
+- [x] `Avatar` nhận `frame` và `level` — viền theo token, vòng ngoài, huy hiệu level ở góc dưới phải (lát 4)
+- [x] Level, khung và tiến độ XP hiện trên `/profile`; avatar sidebar mang huy hiệu
+- [x] **Tranh riêng cho khung và huy hiệu** — tải lên qua vé, khoá dưới `progression/`, ảnh thắng token/icon
+
+**Bậc tuyến tính của đường cong là 500, không phải 1800.** Bản đầu của kế hoạch ghi 1800 kèm khẳng định nó bằng khoảng cách hai level cuối đoạn cong; bậc 19→20 thật ra là **476**, tức sai gần bốn lần, và cái giá rơi đúng vào người học đã đi xa nhất. `test_level_curve_is_monotonic_and_joins_without_a_step` bắt được ngay lần chạy đầu — đây là loại lỗi chỉ lộ ra khi công thức được cho chạy, đọc lại kế hoạch thêm lần nữa không tìm ra.
+
+**`GET /daily-tasks` là một lần đọc CÓ GHI, và đó là ngoại lệ có chủ ý.** Nó trao XP cho việc vừa xong. Hai phương án còn lại đều tệ hơn: nhét logic ba khe vào cả ba đường ghi nóng (mỗi lượt ôn phải đếm lại tiến độ ba khe), hoặc thêm một nút "nhận thưởng" — thêm đúng một bước rối vào tính năng tồn tại để bớt rối. An toàn vì `source_id` là uuid **tất định** sinh từ (người, ngày, khe), nên `uq_xp_event_source` chặn lần trao thứ hai; gọi lại bao nhiêu lần cũng ra một kết quả, kể cả khi React gọi hai lần lúc dựng.
+
+**Mục tiêu là số CỐ ĐỊNH đã kẹp, không phải chính tình trạng.** "Ôn hết số từ đến hạn" nghe đúng nhưng số đến hạn *giảm dần khi bạn ôn*, nên thanh tiến độ chạy tới rồi lùi lại và với một số lịch SM-2 thì việc không bao giờ đóng được. Con số động là **cái kẹp**, không phải cái đích.
+
+**Xong cả ba việc thì khối thu lại một dòng, không biến mất.** Biến mất đọc như hỏng, và nó lấy mất phần thưởng của việc vừa làm xong.
+
+**Badge KHÔNG đọc sổ cái XP, và vì thế tài khoản cũ không cần backfill.** Điều kiện đọc thẳng lịch sử học, nên chúng đúng ngay lần đọc đầu tiên. `user_badge` không quyết định ai có badge gì — nó chỉ nhớ hai thứ lịch sử không tự nói được: lần đầu hệ thống nhìn thấy, và người dùng đã xem chưa. Thiếu nó thì không có "bạn vừa mở huy hiệu mới", vì mỗi lần đọc cái nào cũng mới.
+
+**Ba badge `level_*` là ngoại lệ có chủ ý và giao diện phải nói ra.** Chúng đọc XP, nên một người đã học 300 từ thấy huy hiệu "300 từ" ngay lập tức **nhưng vẫn ở level 1** — XP đo hoạt động kể từ khi ra mắt, badge ghi nhận thành tựu trọn đời. Không giải thích thì nó đọc thành lỗi; câu giải thích nằm ngay dưới tiêu đề trang huy hiệu.
+
+**Dùng `longest_streak`, không phải `current_streak`.** Một huy hiệu đã trao rồi biến mất vì hôm nay nghỉ là hình phạt cho việc nghỉ một ngày, và nó dạy người dùng rằng hệ thống lấy lại thứ đã cho.
+
+**Chấm đỏ tắt khi MỞ TRANG huy hiệu, không khi lướt qua trang chủ**, và `POST .../seen` gọi SAU khi trang đã giữ lại danh sách "mới" — gọi trước thì người dùng theo thông báo bấm vào và thấy một trang không có gì mới cả.
+
+**`mark_seen` phải `flush` tường minh.** Session của dự án chạy `autoflush=False`, nên lần đọc tiếp theo trong cùng giao dịch vẫn thấy `seen_at IS NULL` và đánh dấu lại lần nữa. Hàng vẫn đúng sau khi commit, nên lỗi chỉ lộ ra ở chỗ đếm — bài test bắt được ngay, đọc code thì không.
+
+### Kiểm
+
+`pytest` **661 passed / 2 deselected** · `ruff check` + `ruff format --check` (146 file) + `mypy` strict (104 file) sạch · `tsc --noEmit`, `eslint`, `prettier --check` sạch · `pnpm gen:api-types` sinh lại **không drift** · gọi thật trên stack đang chạy: tài khoản mới → 3 câu dictation đúng trọn → `xp_total` 25 (3×5 + 10 thưởng khe) và `xp_awarded` của lần đọc thứ hai là **0** · `alembic upgrade head` chạy `031` thật trên database dev · huy hiệu đối chiếu trên hai tài khoản có lịch sử thật (73 và 24 lượt ôn) cho ra `first_steps`, `first_test` và tiến độ 7/50 · Playwright **14 bài chạy, xanh**.
+
+**E2E của huy hiệu cũng đã kiểm bằng cách làm hỏng thật — và lần đầu nó xanh với lỗi vẫn nằm nguyên đó.** Bỏ hẳn lệnh `POST .../seen` mà bài vẫn xanh, vì `toHaveCount(0)` đúng ngay lập tức trên một trang **chưa tải xong**: khẳng định phủ định chạy trước khi dữ liệu về thì nó tự thoả mãn. Đảo thứ tự — chờ một thứ CÓ mặt trước, rồi mới khẳng định thứ kia vắng mặt — thì cả hai lần làm hỏng (bỏ đánh dấu đã xem; ẩn huy hiệu chưa mở) đều đỏ. Đây là cái bẫy đáng nhớ hơn cả tính năng: một khẳng định phủ định trong Playwright mà không có mốc neo là một khẳng định luôn đúng.
+
+**E2E của daily task đã kiểm bằng cách làm hỏng thật, và một trong ba lần không đỏ.** Ẩn dòng việc đã xong → đỏ; bỏ phần trao thưởng ở `GET /daily-tasks` → đỏ. Nhưng **đọc hai endpoint song song thay vì nối tiếp thì vẫn xanh ba lần chạy liền** — thứ tự nối tiếp vẫn là thứ đúng (đọc điểm trước khi thưởng kịp ghi thì việc đóng mà điểm không nhích) nhưng đó là một cuộc đua vài mili giây và bài e2e không canh được nó. Ghi lại đúng như đã đo, thay vì để lại một khẳng định không đúng trong docstring.
+
+---
+
+## 4w. Hệ level thành cấu hình: admin sửa được, thêm được, không cần triển khai lại · 🟢 XONG (2026-08-21)
+
+Mọi con số của mục 4v từng là hằng số trong code. Giờ chúng là hàng trong database, có màn hình quản trị ở `/admin/progression`, và **`admin` mới vào được — `editor` thì không**: soạn nội dung và chỉnh thang điểm của mọi tài khoản là hai loại quyền khác nhau.
+
+- [x] Migration `032_progression_config` — 5 bảng cấu hình + `user_profile.level_reached`
+- [x] `progression_setting` (singleton): mức XP mỗi hoạt động, trần ngày, tham số đường cong
+- [x] `daily_task_slot` — thêm/sửa/tắt/xoá khe; số khe không còn cố định là ba
+- [x] `level_tier` — bảng ngưỡng là hàng, kèm nút sinh lại từ công thức
+- [x] `frame_tier` — bậc khung avatar, màu là token của design system
+- [x] `badge_rule` — thêm huy hiệu mới, đổi nhãn, đổi ngưỡng, tắt
+- [x] `GET/PATCH/PUT/POST/DELETE /api/v1/admin/progression/**` (13 thao tác)
+- [x] Trang `/admin/progression` (tiếng Anh, như cả khu quản trị)
+- [x] `tests/test_progression_admin.py` — 8 bài
+
+### Ba tính chất khiến việc mở cấu hình này an toàn
+
+**Sổ cái làm cho mức XP an toàn để sửa.** Mỗi hàng `xp_event` giữ số điểm ĐÃ TRAO lúc đó, nên hạ mức hôm nay không rút lại của ai. Đây chính là thứ §2.1 của USER-ROAD mua về, và trước lát này nó chỉ là một lập luận — giờ nó là điều kiện để tính năng tồn tại.
+
+**Level không bao giờ tụt.** `user_profile.level_reached` là mốc nước cao; level hiển thị là `max(tính theo bảng hiện tại, mốc đã đạt)`. Nâng chuẩn thì người mới lên chậm hơn, người cũ giữ nguyên; hạ chuẩn thì mọi người lên. Không có đường nào làm ai mất một level họ đã có vì một quyết định vận hành mà họ không tham gia. Cột này KHÔNG vi phạm luật "không có bộ đếm song song với lịch sử": nó không đếm gì, nó ghi một mốc đã xảy ra.
+
+**Khe daily task là một HÀNG có uuid bền, không phải một mã chuỗi.** uuid đó đi vào `xp_event.source_id`, nên đổi nhãn, đổi mục tiêu, đổi mức thưởng đều không biến ngày đã thưởng thành ngày chưa thưởng. Xoá rồi tạo lại "một khe y hệt" thì có — hàng mới là uuid mới — nên giao diện mời **tắt** thay vì xoá, và bài test ghim đúng tính chất đó.
+
+### Ranh giới giữa dữ liệu và code
+
+Bốn tập hợp vẫn đóng, và chúng là ranh giới thật của tính năng này: `kind` của khe (mỗi loại là một phép đếm), `metric` của badge (cùng lý do), `icon` của badge (frontend phải biết vẽ), `tone` của khung (chỉ token đã có trong design system — một ô nhập mã màu tự do là đường ngắn nhất tới một khung không đọc được ở chế độ tối, nơi không ai kiểm trước khi lưu).
+
+Đánh đổi có chủ ý: `BadgeCode` từng là union đóng nên `tsc` bắt được huy hiệu thiếu nhãn. Giờ `code` là dữ liệu, nên mất kiểm tra đó — đổi lấy việc thêm huy hiệu chỉ là thêm một hàng. `icon` giữ nguyên dạng union chính vì thế.
+
+### Ba chi tiết fail im lặng
+
+**Bộ mặc định seed LƯỜI ở lần đọc đầu, không seed trong migration.** Chèn ở cả hai nơi là hai bộ mặc định phải giữ đồng bộ bằng tay, và chúng lệch nhau ở đúng lần đầu ai đó sửa một con số mà quên nơi kia. Hệ quả: **bảng trống nghĩa là "chưa từng cấu hình", không phải "cố ý không có gì"** — xoá hết khe rồi thì lần đọc sau seed lại ba khe mặc định.
+
+**Bảng level kiểm như một KHỐI.** Level 1 phải là 0 XP, không được thủng, và ngưỡng phải tăng đều. Một bảng dừng sai chỗ làm người học đọc ra một level thấp hơn XP của họ — và vì `level_reached` chỉ đi lên, một mốc sai ghi xuống trong khoảnh khắc đó thì ở lại vĩnh viễn. Vì thế `PUT /levels` ghi đè nguyên bảng chứ không có endpoint sửa-một-bậc.
+
+**Đổi tham số đường cong KHÔNG tự sinh lại bảng.** Bảng là sự thật của phép tra cứu và admin có thể đã sửa tay vài bậc; ghi đè ngầm là xoá chỉnh sửa đó mà không hỏi. Sinh lại là một nút riêng, và trang nói trước rằng nó ghi đè.
+
+**Một lần duy nhất khi triển khai:** mã định danh khe đổi từ chuỗi (`"review"`) sang uuid của hàng, nên `source_id` của daily task đổi theo. Người học đã nhận thưởng một khe trong ngày triển khai có thể nhận lại đúng một lần nữa cho ngày đó. Đo được, một lần, và không lặp lại.
+
+### Quyết định của người vận hành, ghi lại vì nó đi ngược một cảnh báo
+
+**Đổi mục tiêu daily task có hiệu lực NGAY, kể cả giữa ngày** — chọn có cân nhắc thay vì thêm cột `effective_from`. Hệ quả đã biết: nâng mục tiêu lúc 2 giờ chiều làm một việc đã xong mở lại (10/10 → 10/15), đúng cái bẫy §6.2 mô tả. XP đã trao thì không mất. Câu cảnh báo này nằm ngay cạnh ô nhập trong màn quản trị, không nằm trong tài liệu.
+
+### Kiểm
+
+`pytest` **672 passed / 2 deselected** · ruff + `mypy` strict (107 file) sạch · `tsc --noEmit`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade head` chạy `032` thật trên database dev · Playwright **14 bài chạy, xanh** · gọi thật trên stack: thêm một khe mới → học viên thấy ngay 4 việc với mục tiêu và XP riêng; thêm một huy hiệu mới đo bằng `dictation_items` → mở ra đúng theo lịch sử đã có, không cần backfill.
+
+**`react-hooks/set-state-in-effect` bắt được thiết kế sai của bản đầu.** Mỗi hàng trong màn quản trị giữ một bản sao state và đồng bộ lại bằng `useEffect(() => setForm(props))`. Lint từ chối, và nó đúng: sự thật khi đó nằm ở sáu chỗ. Bản sửa cho cả trang MỘT bản nháp, các hàng thành component có kiểm soát — ít code hơn, và không còn chỗ nào để trôi.
+
+---
+
+## 4x. Khung và huy hiệu dùng tranh thật · ✅ XONG (2026-08-22)
+
+Lát 4 vẽ khung bằng viền và token màu; giờ mỗi bậc khung và mỗi huy hiệu **gắn được một tranh riêng**, tải lên ngay tại hàng của nó trong `/admin/progression`.
+
+- [x] Migration `033_progression_art` — `frame_tier.image_storage_key`, `badge_rule.image_storage_key`
+- [x] `POST /admin/progression/assets/ticket` — vé upload, khoá dưới `progression/`
+- [x] Gắn/gỡ tranh qua chính `PATCH` của hàng; `FramePublic.image_url` và `BadgePublic.image_url`
+- [x] `Avatar` vẽ tranh khung đè lên ảnh; `BadgeTile` vẽ tranh huy hiệu
+- [x] 2 bài test cho đường tranh
+
+**Khoá thô dưới `progression/`, KHÔNG phải hàng trong `image_asset`.** Ba cột `license`, `attribution`, `source_url` của bảng đó là NOT NULL vì ảnh nội dung phần lớn là CC-BY và phải ghi công; tranh khung/huy hiệu là tài sản của chính sản phẩm. Avatar đã lưu khoá thô vì đúng lý do này, và tiền tố riêng là thứ giữ cho một lệnh dọn ảnh nội dung không chạm nhầm sang đây (ADR-006 §2.1).
+
+**Không có bước `confirm` riêng, nhưng vẫn kiểm hai lớp.** Bước xác nhận chính là lệnh `PATCH` gắn khoá: nó kiểm tiền tố (thiếu lớp này thì đây là đường ghi chuỗi tuỳ ý — trỏ khung vào một ảnh nội dung rồi lệnh dọn ảnh mồ côi xoá mất thứ đang dùng) và hỏi lại nhà cung cấp (thiếu lớp này thì giao diện hiện ảnh vỡ cho tới khi có người để ý, mà không ai để ý một cái khung).
+
+**Ảnh thắng token, nhưng token không biến mất khỏi dữ liệu.** `tone` vẫn gửi kèm vì nó vẽ được ngay trong lúc ảnh còn đang tải. **Huy hiệu chưa mở dùng chính tranh đó, làm xám** chứ không rơi về icon: đổi hẳn hình khi mở được sẽ khiến người ta không nhận ra thứ vừa nhận chính là thứ đã nhìn thấy suốt.
+
+**Tranh khung tràn ra ngoài avatar 25% mỗi phía.** Một khung vẽ tay bao giờ cũng có phần trang trí thò ra khỏi ô vuông, và ép nó vừa khít ô sẽ cắt cụt đúng phần đó. Lớp ảnh mang `pointer-events-none` để không nuốt cú bấm của khối danh tính bên dưới.
+
+**Sửa một hàng mặc định trước lần đọc đầu tiên từng trả 404.** Bộ mặc định seed lười, nên `PATCH /frames/bronze` trước khi ai đó `GET` cấu hình sẽ tra vào một bảng trống — 404 trên một hàng mà màn hình đang hiện. Cả bốn đường sửa/xoá giờ seed trước khi tra. Bài test tranh là thứ phát hiện ra.
+
+**Tài khoản `admin` đeo sẵn bậc khung cao nhất** (hôm nay là `challenger`). Chọn theo `min_level` lớn nhất chứ không cứng mã: bảng bậc là dữ liệu sửa được, nên một mã cứng sẽ thành `None` im lặng vào ngày ai đó đổi tên hoặc xoá bậc đó. Ưu đãi này chạm đúng MỘT thứ — khung, vốn thuần trang trí — và dừng ở đó: level, XP và huy hiệu vẫn là số thật của chính họ. Cho cả level thì con số trên hồ sơ họ thành một lời nói dối, và nó lây sang các huy hiệu `level_*` vốn đo bằng đúng con số ấy. `editor` không có ưu đãi này.
+
+### `/admin/progression/preview` — màn hình thử khung, và hai lỗi nó bắt được
+
+Khung là phần DUY NHẤT của tính năng này **không kiểm được bằng terminal**: API nói hàng có `image_url`, CDN trả 200, mà khung vẫn có thể sai. Trang thử dựng mọi bậc qua chính component `Avatar`, ở ba cỡ và trên ba bề mặt (panel, recess, khối tối), kèm nút đổi số chữ số của huy hiệu level và đổi giữa ảnh thật với ô chữ cái. Nó cố ý bày ra những tổ hợp khó chịu chứ không phải một phòng trưng bày.
+
+Mở lần đầu là nó bắt ngay hai lỗi nối tiếp nhau ở đúng một chỗ, **cả hai đều biên dịch sạch và lint sạch**:
+
+1. **`-inset-[25%]` không sinh ra CSS nào** — dấu trừ đứng trước giá trị tuỳ ý không phải cú pháp hợp lệ. Hậu quả không phải lệch vài pixel: `position:absolute` không có toạ độ thì ảnh giữ nguyên 512px và tràn ra khắp trang. Cùng họ với cái bẫy thang bán kính ở `DESIGN-SYSTEM` §6.2.
+2. **Đặt đủ bốn cạnh rồi để `width:auto` cũng không cứu.** Với phần tử THAY THẾ như `<img>`, `auto` giải ra kích thước gốc của ảnh chứ không giãn theo bốn cạnh (CSS 2.1 §10.3.7) — kết quả y hệt lần một, và đó là lý do lần sửa đầu tiên trông như không có tác dụng gì.
+
+Bản đúng viết thẳng `top/left: -25%` và `width/height: 150%`. Bài học đáng nhớ hơn cả hai lỗi: **một tính năng thị giác cần một bề mặt để nhìn nó**, và bề mặt đó phải dựng bằng component thật chứ không phải bằng ảnh chụp màn hình dán vào tài liệu.
+
+### Tranh lấy từ đâu
+
+Bộ skill `agent-sprite-forge` (`~/.claude/skills/`) **dùng được, nhưng chỉ hai mắt xích đầu**: sinh ảnh trên nền `#FF00FF` đặc, rồi tách nền thành PNG trong suốt. Phần còn lại của skill — sheet, frame, animation, anchor, hợp đồng Godot — là chuyện của sprite game và không liên quan gì tới một tấm tĩnh cho giao diện web. Runbook đầy đủ kèm prompt đã dùng nằm ở `apps/api/content/sources/progression-art/README.md`.
+
+**Bản đã xử lý được commit vào kho.** Cùng lý do `MEDIA-PIPELINE` §10.3 nêu: ảnh không tái tạo được. Model sinh ảnh không tất định, `media/` thì gitignore, nên một tấm bị xoá nhầm trên Cloudinary là mất hẳn. Tệp chỉ vài chục KB.
+
+**Provider tự chọn là flux2 chạy tại máy**, ~2,5 phút một tấm, đỉnh 12,37 GB RAM trên máy M2 16 GB. Chạy được, và đó là con số đo chứ không phải suy từ code.
+
+**Prompt phải cấm luôn nét viền hồng/magenta trong chính hình vẽ.** Bước tách nền xoá theo màu, nó không phân biệt được nền với một nét vẽ cùng màu — `frame-gold` còn ~2,7% pixel ám hồng ở rìa vì model tự vẽ một đường viền hồng nhạt. Ở cỡ hiển thị thật thì gần như không thấy; ở lần sinh sau thì viết thêm câu đó.
+
+### Kiểm
+
+`pytest` **674 passed / 2 deselected** · ruff + `mypy` strict (107 file) sạch · `tsc --noEmit`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade head` chạy `033` thật trên database dev · Playwright **14 bài chạy, xanh** · vé upload gọi thật và trả về chữ ký Cloudinary đúng tiền tố `toeic-pilot/progression/`.
+
+**Thang khung là TÁM bậc, mỗi bậc một tranh riêng** (2026-08-22): `bronze` 5 · `silver` 10 · `gold` 15 · `platinum` 20 · `diamond` 25 · `master` 30 · `grandmaster` 40 · `challenger` 50. Bốn bậc giữa là mới; `gold` nhường mốc 20 cho `platinum` và lùi về 15. Thứ tự thao tác quan trọng: `min_level` là UNIQUE, nên tạo `platinum` ở mốc 20 trong lúc `gold` còn đứng đó sẽ bị chặn — dời `gold` trước, rồi mới tạo.
+
+**`tone` của mỗi bậc vẫn đặt dù đã có tranh.** Nó là màu vẽ ngay trong lúc ảnh còn tải, nên bỏ trống nghĩa là khung không tồn tại cho tới khi ảnh về — với kết nối chậm đó là một avatar nhấp nháy đổi hình.
+
+**Đã chạy trọn vòng bằng tranh thật** (2026-08-22): sinh → tách nền → vé → POST lên Cloudinary → `PATCH` gắn khoá → học viên đọc được `image_url` → CDN trả 200. Tám khung (512px) và một huy hiệu `streak_7` (256px) đang nằm trong database dev và phục vụ được từ CDN.
+
+---
 
 ---
 

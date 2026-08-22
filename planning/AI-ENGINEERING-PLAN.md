@@ -17,7 +17,7 @@ thành sự thật kiểm chứng được, chứ không phải một danh sách
 |---|---|---|
 | `question.explanation` | **17 / 40** | RAG không có gì để truy hồi (ADR-003 §3.3) |
 | `question.skill_tag` | **0 / 40** | Phân tích điểm yếu **không có chiều nào để phân tích** |
-| `user_profile.target_score` | **4 / 574** | Study Planner **không có đầu vào** |
+| `user_profile.target_score` | **4 / 33** | Study Planner **không có đầu vào** |
 
 Hai dòng dưới chưa từng được nêu ở đâu, và chúng quan trọng hơn dòng đầu.
 `ROADMAP.md` chèn hồ sơ người dùng vào trước Sprint 5 với lý do *"tới Sprint 7
@@ -170,7 +170,9 @@ khẳng định tất định, không phải một điểm chấm của giám kh
 
 ### UC4 — Study Planner (T2, structured output, có ràng buộc FK)
 
-Chặn bởi đầu vào: **4/574 hồ sơ có điểm mục tiêu** — tỉ lệ còn tệ hơn lúc viết mục này. Hai đường đi, làm cả hai:
+Chặn bởi đầu vào: **4 trên 33 tài khoản THẬT có điểm mục tiêu.**
+
+Đừng dùng mẫu số 574 lấy từ `count(*) from users`: **541 tài khoản trong đó mang dấu thời gian 13 chữ số trong email**, tức là tài khoản do e2e tự đăng ký — mỗi lần chạy bộ e2e lại sinh thêm vài cái. Mọi thống kê chia cho tổng số user đều bị pha loãng 17 lần theo cách đó, và tỉ lệ trông ra vẻ tệ hơn thực tế. Lọc `email !~ '[0-9]{13}'` trước khi đếm bất cứ thứ gì về người dùng. Hai đường đi, làm cả hai:
 
 1. Hỏi lúc onboarding — đây là vấn đề sản phẩm, không phải vấn đề AI
 2. **Suy từ lịch sử làm bài** khi hồ sơ trống. 31 lượt đã nộp đủ để ước lượng

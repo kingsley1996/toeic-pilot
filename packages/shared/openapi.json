@@ -769,6 +769,424 @@
         "title": "BackdropUpdate",
         "type": "object"
       },
+      "BadgePublic": {
+        "description": "Một badge, kèm tiến độ tới ngưỡng của nó.\n\n`target` và `progress` gửi từ máy chủ chứ không để frontend tự biết ngưỡng:\nngưỡng là một phần của điều kiện, và một bản sao ở phía trình duyệt sẽ trôi\nkhỏi bản gốc mà không có gì báo — trang badge in \"120/300\" trong khi máy chủ\nđã mở badge từ 150.\n\n`label` và `hint` đi kèm vì chúng là DỮ LIỆU do admin đặt, không phải chữ cố\nđịnh trong frontend. `icon` thì vẫn là một union đóng — frontend phải biết vẽ\nnó, và một chuỗi tự do ở đây là một huy hiệu không có hình.",
+        "properties": {
+          "awarded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Awarded At"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "earned": {
+            "title": "Earned",
+            "type": "boolean"
+          },
+          "hint": {
+            "title": "Hint",
+            "type": "string"
+          },
+          "icon": {
+            "enum": [
+              "footprints",
+              "book",
+              "library",
+              "graduation",
+              "headphones",
+              "target",
+              "medal",
+              "trophy",
+              "flame",
+              "star",
+              "sparkles",
+              "award"
+            ],
+            "title": "Icon",
+            "type": "string"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "seen": {
+            "title": "Seen",
+            "type": "boolean"
+          },
+          "target": {
+            "title": "Target",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "hint",
+          "icon",
+          "image_url",
+          "target",
+          "progress",
+          "earned",
+          "awarded_at",
+          "seen"
+        ],
+        "title": "BadgePublic",
+        "type": "object"
+      },
+      "BadgeRuleAdmin": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "hint": {
+            "title": "Hint",
+            "type": "string"
+          },
+          "icon": {
+            "enum": [
+              "footprints",
+              "book",
+              "library",
+              "graduation",
+              "headphones",
+              "target",
+              "medal",
+              "trophy",
+              "flame",
+              "star",
+              "sparkles",
+              "award"
+            ],
+            "title": "Icon",
+            "type": "string"
+          },
+          "image_storage_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Storage Key"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "metric": {
+            "enum": [
+              "reviews",
+              "words_mastered",
+              "dictation_items",
+              "tests_submitted",
+              "best_score",
+              "longest_streak",
+              "level"
+            ],
+            "title": "Metric",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "target": {
+            "title": "Target",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "hint",
+          "icon",
+          "image_storage_key",
+          "image_url",
+          "metric",
+          "target",
+          "position",
+          "enabled"
+        ],
+        "title": "BadgeRuleAdmin",
+        "type": "object"
+      },
+      "BadgeRuleCreate": {
+        "properties": {
+          "code": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^[a-z0-9_]+$",
+            "title": "Code",
+            "type": "string"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "hint": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Hint",
+            "type": "string"
+          },
+          "icon": {
+            "enum": [
+              "footprints",
+              "book",
+              "library",
+              "graduation",
+              "headphones",
+              "target",
+              "medal",
+              "trophy",
+              "flame",
+              "star",
+              "sparkles",
+              "award"
+            ],
+            "title": "Icon",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "metric": {
+            "enum": [
+              "reviews",
+              "words_mastered",
+              "dictation_items",
+              "tests_submitted",
+              "best_score",
+              "longest_streak",
+              "level"
+            ],
+            "title": "Metric",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "maximum": 200.0,
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "target": {
+            "maximum": 1000000.0,
+            "minimum": 1.0,
+            "title": "Target",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "hint",
+          "icon",
+          "metric",
+          "target"
+        ],
+        "title": "BadgeRuleCreate",
+        "type": "object"
+      },
+      "BadgeRuleUpdate": {
+        "description": "`code` KHÔNG sửa được sau khi tạo.\n\nNó là thứ nằm trong `user_badge.code`, nên đổi mã là bỏ lại toàn bộ lịch sử\ndưới một cái tên không còn ai đọc — và huy hiệu quay về trạng thái \"mới\" với\ntất cả những người đã có nó. Muốn đổi tên hiển thị thì sửa `label`.",
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "hint": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "enum": [
+                  "footprints",
+                  "book",
+                  "library",
+                  "graduation",
+                  "headphones",
+                  "target",
+                  "medal",
+                  "trophy",
+                  "flame",
+                  "star",
+                  "sparkles",
+                  "award"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "image_storage_key": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Storage Key"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "metric": {
+            "anyOf": [
+              {
+                "enum": [
+                  "reviews",
+                  "words_mastered",
+                  "dictation_items",
+                  "tests_submitted",
+                  "best_score",
+                  "longest_streak",
+                  "level"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metric"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "maximum": 1000000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          }
+        },
+        "title": "BadgeRuleUpdate",
+        "type": "object"
+      },
+      "BadgesPublic": {
+        "properties": {
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/BadgePublic"
+            },
+            "title": "Badges",
+            "type": "array"
+          },
+          "earned_count": {
+            "title": "Earned Count",
+            "type": "integer"
+          },
+          "unseen_count": {
+            "title": "Unseen Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "badges",
+          "earned_count",
+          "unseen_count"
+        ],
+        "title": "BadgesPublic",
+        "type": "object"
+      },
       "Body_local_upload_media_upload__storage_key__post": {
         "properties": {
           "expires_at": {
@@ -1211,6 +1629,266 @@
           "problems"
         ],
         "title": "CommitResult",
+        "type": "object"
+      },
+      "DailyTaskPublic": {
+        "description": "Một việc hôm nay.\n\n`target` là số CỐ ĐỊNH đã kẹp theo thứ thật sự có, không phải tình trạng hiện\nthời — xem `app/services/daily_tasks.py`. `progress` đếm hoạt động trong ngày\nnên nó chỉ tăng.",
+        "properties": {
+          "done": {
+            "title": "Done",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "vocabulary_review",
+              "dictation_complete",
+              "attempt_answer"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "integer"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slot_id",
+          "kind",
+          "label",
+          "target",
+          "progress",
+          "done",
+          "xp"
+        ],
+        "title": "DailyTaskPublic",
+        "type": "object"
+      },
+      "DailyTaskSlotAdmin": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "vocabulary_review",
+              "dictation_complete",
+              "attempt_answer"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "target": {
+            "title": "Target",
+            "type": "integer"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "target",
+          "xp",
+          "position",
+          "enabled"
+        ],
+        "title": "DailyTaskSlotAdmin",
+        "type": "object"
+      },
+      "DailyTaskSlotCreate": {
+        "properties": {
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "vocabulary_review",
+              "dictation_complete",
+              "attempt_answer"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "target": {
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Target",
+            "type": "integer"
+          },
+          "xp": {
+            "maximum": 200.0,
+            "minimum": 0.0,
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "target",
+          "xp"
+        ],
+        "title": "DailyTaskSlotCreate",
+        "type": "object"
+      },
+      "DailyTaskSlotUpdate": {
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "vocabulary_review",
+                  "dictation_complete",
+                  "attempt_answer"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "xp": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp"
+          }
+        },
+        "title": "DailyTaskSlotUpdate",
+        "type": "object"
+      },
+      "DailyTasksPublic": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/DailyTaskPublic"
+            },
+            "title": "Tasks",
+            "type": "array"
+          },
+          "xp_awarded": {
+            "title": "Xp Awarded",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date",
+          "tasks",
+          "xp_awarded"
+        ],
+        "title": "DailyTasksPublic",
         "type": "object"
       },
       "DictationAdmin": {
@@ -2457,6 +3135,239 @@
         "title": "FacetShare",
         "type": "object"
       },
+      "FramePublic": {
+        "description": "Khung avatar đang mở, hoặc vắng mặt khi chưa tới bậc nào.\n\nTrả về cả CÁCH VẼ chứ không chỉ mã: bậc khung là dữ liệu admin thêm được, nên\nmột bảng tra mã→màu nằm trong frontend sẽ thiếu ngay khi có bậc mới, và thiếu\nmột cách im lặng (khung không hiện, không ai báo).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "min_level": {
+            "title": "Min Level",
+            "type": "integer"
+          },
+          "ring": {
+            "title": "Ring",
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "ok",
+              "action",
+              "warn",
+              "alert"
+            ],
+            "title": "Tone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "min_level",
+          "tone",
+          "ring",
+          "image_url"
+        ],
+        "title": "FramePublic",
+        "type": "object"
+      },
+      "FrameTierAdmin": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "image_storage_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Storage Key"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "min_level": {
+            "title": "Min Level",
+            "type": "integer"
+          },
+          "ring": {
+            "title": "Ring",
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "ok",
+              "action",
+              "warn",
+              "alert"
+            ],
+            "title": "Tone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "min_level",
+          "tone",
+          "ring",
+          "image_storage_key",
+          "image_url"
+        ],
+        "title": "FrameTierAdmin",
+        "type": "object"
+      },
+      "FrameTierCreate": {
+        "properties": {
+          "code": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^[a-z0-9_]+$",
+            "title": "Code",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "min_level": {
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Min Level",
+            "type": "integer"
+          },
+          "ring": {
+            "default": false,
+            "title": "Ring",
+            "type": "boolean"
+          },
+          "tone": {
+            "enum": [
+              "ok",
+              "action",
+              "warn",
+              "alert"
+            ],
+            "title": "Tone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "min_level",
+          "tone"
+        ],
+        "title": "FrameTierCreate",
+        "type": "object"
+      },
+      "FrameTierUpdate": {
+        "properties": {
+          "image_storage_key": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Storage Key"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "min_level": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Level"
+          },
+          "ring": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ok",
+                  "action",
+                  "warn",
+                  "alert"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tone"
+          }
+        },
+        "title": "FrameTierUpdate",
+        "type": "object"
+      },
       "GroupDraft": {
         "description": "Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.\n\nPart 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên\nđường ghi vào database chỉ có một nhánh.",
         "properties": {
@@ -2837,6 +3748,43 @@
           "calendar"
         ],
         "title": "LearningStats",
+        "type": "object"
+      },
+      "LevelTierAdmin": {
+        "properties": {
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "xp_required": {
+            "title": "Xp Required",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "level",
+          "xp_required"
+        ],
+        "title": "LevelTierAdmin",
+        "type": "object"
+      },
+      "LevelTierUpdate": {
+        "description": "Ghi đè NGUYÊN bảng, không sửa từng hàng.\n\nBảng ngưỡng chỉ đúng khi đọc như một khối: nó phải tăng đều và bắt đầu từ 0.\nMột endpoint sửa-một-bậc sẽ để bảng ở trạng thái không tăng đều giữa hai lần\ngọi, và trong khoảng đó mọi người học đọc ra một level sai — không lâu, nhưng\nđủ để `level_reached` ghi lại một mốc không có thật, và mốc đó thì vĩnh viễn.",
+        "properties": {
+          "tiers": {
+            "items": {
+              "$ref": "#/components/schemas/LevelTierAdmin"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Tiers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "tiers"
+        ],
+        "title": "LevelTierUpdate",
         "type": "object"
       },
       "LlmStatsPublic": {
@@ -3513,6 +4461,284 @@
           "new_password"
         ],
         "title": "PasswordChange",
+        "type": "object"
+      },
+      "ProgressionConfigAdmin": {
+        "description": "Toàn bộ cấu hình trong MỘT lần đọc.\n\nMàn hình quản trị hiển thị cả bốn phần cùng lúc và chúng chỉ có nghĩa khi\nđứng cạnh nhau — một bậc khung ở level 30 là vô nghĩa nếu bảng level dừng ở\n25. Bốn request riêng cho một màn hình cũng là bốn trạng thái tải rời rạc.",
+        "properties": {
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/BadgeRuleAdmin"
+            },
+            "title": "Badges",
+            "type": "array"
+          },
+          "frames": {
+            "items": {
+              "$ref": "#/components/schemas/FrameTierAdmin"
+            },
+            "title": "Frames",
+            "type": "array"
+          },
+          "levels": {
+            "items": {
+              "$ref": "#/components/schemas/LevelTierAdmin"
+            },
+            "title": "Levels",
+            "type": "array"
+          },
+          "setting": {
+            "$ref": "#/components/schemas/ProgressionSettingAdmin"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/DailyTaskSlotAdmin"
+            },
+            "title": "Slots",
+            "type": "array"
+          }
+        },
+        "required": [
+          "setting",
+          "slots",
+          "levels",
+          "frames",
+          "badges"
+        ],
+        "title": "ProgressionConfigAdmin",
+        "type": "object"
+      },
+      "ProgressionPublic": {
+        "description": "Level của một học viên, suy ra từ sổ cái `xp_event`.\n\nKhông có cột nào lưu `level` hay `xp_total`. Xem `app/models/progression.py`\nđể biết vì sao một bộ đếm cộng dồn không được phép tồn tại ở đây.",
+        "properties": {
+          "daily_cap": {
+            "title": "Daily Cap",
+            "type": "integer"
+          },
+          "frame": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FramePublic"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "xp_for_next": {
+            "title": "Xp For Next",
+            "type": "integer"
+          },
+          "xp_into_level": {
+            "title": "Xp Into Level",
+            "type": "integer"
+          },
+          "xp_today": {
+            "title": "Xp Today",
+            "type": "integer"
+          },
+          "xp_total": {
+            "title": "Xp Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "xp_total",
+          "level",
+          "xp_into_level",
+          "xp_for_next",
+          "frame",
+          "xp_today",
+          "daily_cap"
+        ],
+        "title": "ProgressionPublic",
+        "type": "object"
+      },
+      "ProgressionSettingAdmin": {
+        "properties": {
+          "curve_break": {
+            "title": "Curve Break",
+            "type": "integer"
+          },
+          "curve_coefficient": {
+            "title": "Curve Coefficient",
+            "type": "number"
+          },
+          "curve_exponent": {
+            "title": "Curve Exponent",
+            "type": "number"
+          },
+          "curve_linear_step": {
+            "title": "Curve Linear Step",
+            "type": "integer"
+          },
+          "daily_xp_cap": {
+            "title": "Daily Xp Cap",
+            "type": "integer"
+          },
+          "max_level": {
+            "title": "Max Level",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "xp_attempt_submit": {
+            "title": "Xp Attempt Submit",
+            "type": "integer"
+          },
+          "xp_dictation_complete": {
+            "title": "Xp Dictation Complete",
+            "type": "integer"
+          },
+          "xp_vocabulary_review": {
+            "title": "Xp Vocabulary Review",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "xp_vocabulary_review",
+          "xp_dictation_complete",
+          "xp_attempt_submit",
+          "daily_xp_cap",
+          "curve_coefficient",
+          "curve_exponent",
+          "curve_break",
+          "curve_linear_step",
+          "max_level",
+          "updated_at"
+        ],
+        "title": "ProgressionSettingAdmin",
+        "type": "object"
+      },
+      "ProgressionSettingUpdate": {
+        "description": "Sửa một phần. Khoá vắng mặt = để nguyên, cùng luật với `PATCH /profile`.\n\nGiới hạn trên không phải để phòng kẻ xấu — đường này đã sau `require_role` —\nmà để chặn lỗi gõ phím. `xp_attempt_submit = 3000` không phải một quyết định\nvận hành, nó là một con số thừa số 0, và hậu quả của nó nằm vĩnh viễn trong\nsổ cái vì các hàng đã trao thì không sửa lại.",
+        "properties": {
+          "curve_break": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 2.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Curve Break"
+          },
+          "curve_coefficient": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 10000.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Curve Coefficient"
+          },
+          "curve_exponent": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 1.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Curve Exponent"
+          },
+          "curve_linear_step": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Curve Linear Step"
+          },
+          "daily_xp_cap": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Xp Cap"
+          },
+          "max_level": {
+            "anyOf": [
+              {
+                "maximum": 200.0,
+                "minimum": 2.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Level"
+          },
+          "xp_attempt_submit": {
+            "anyOf": [
+              {
+                "maximum": 500.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Attempt Submit"
+          },
+          "xp_dictation_complete": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Dictation Complete"
+          },
+          "xp_vocabulary_review": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Vocabulary Review"
+          }
+        },
+        "title": "ProgressionSettingUpdate",
         "type": "object"
       },
       "QuestionAdmin": {
@@ -8747,6 +9973,651 @@
         ]
       }
     },
+    "/api/v1/admin/progression": {
+      "get": {
+        "description": "Toàn bộ cấu hình. Seed bộ mặc định nếu đây là lần đọc đầu tiên.",
+        "operationId": "read_config_api_v1_admin_progression_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Config",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/assets/ticket": {
+      "post": {
+        "description": "Vé tải tranh khung/huy hiệu lên.\n\nKhoá do PHÍA TA sinh từ một id ngẫu nhiên, y như mọi vé khác: để client chọn\nkhoá thì một người có vé hợp lệ ghi đè được lên đường dẫn của người khác, và\nchữ ký khi đó chỉ chứng minh \"được phép upload\", không chứng minh \"được phép\nupload vào đúng chỗ này\".\n\nKhông có bước `confirm` riêng. Bước đó là chính lệnh `PATCH` gắn khoá vào\nhàng — nó kiểm tiền tố và hỏi lại nhà cung cấp trước khi ghi, nên một khoá\nkhông có file thật không bao giờ vào tới bảng.",
+        "operationId": "art_ticket_api_v1_admin_progression_assets_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Art Ticket",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/badges": {
+      "post": {
+        "operationId": "create_badge_api_v1_admin_progression_badges_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BadgeRuleCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Badge",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/badges/{code}": {
+      "delete": {
+        "description": "Xoá một luật. Các hàng `user_badge` KHÔNG bị xoá theo.\n\nĐó là chủ ý: lịch sử \"người này từng mở huy hiệu kia\" là chuyện đã xảy ra.\nBật lại một luật cùng mã sau này sẽ tìm lại đúng những hàng đó, nên không ai\nbị báo \"huy hiệu mới\" cho thứ họ đã có. Tắt vẫn tốt hơn xoá.",
+        "operationId": "delete_badge_api_v1_admin_progression_badges__code__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Badge",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Sửa một luật. `code` cố ý không nằm trong body — xem `BadgeRuleUpdate`.",
+        "operationId": "update_badge_api_v1_admin_progression_badges__code__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BadgeRuleUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Badge",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/frames": {
+      "post": {
+        "operationId": "create_frame_api_v1_admin_progression_frames_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrameTierCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Frame",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/frames/{code}": {
+      "delete": {
+        "operationId": "delete_frame_api_v1_admin_progression_frames__code__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Frame",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_frame_api_v1_admin_progression_frames__code__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrameTierUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Frame",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/levels": {
+      "put": {
+        "description": "Ghi đè nguyên bảng level.\n\nKiểm cả bảng như một khối trước khi ghi: level 1 phải là 0 XP, và ngưỡng phải\nTĂNG ĐỀU. Một bảng không tăng đều làm phép tra cứu dừng sai chỗ — người học\nđứng ở một level thấp hơn XP của họ, và vì `level_reached` chỉ đi lên, một\nmốc sai ghi xuống trong lúc đó thì ở lại vĩnh viễn.",
+        "operationId": "replace_levels_api_v1_admin_progression_levels_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LevelTierUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Replace Levels",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/levels/generate": {
+      "post": {
+        "description": "Ghi lại toàn bộ bảng level từ tham số đường cong.\n\nTồn tại vì gõ tay 99 bậc là công việc không ai làm đúng tới hàng thứ mười.\nNó GHI ĐÈ mọi chỉnh sửa thủ công, nên giao diện phải nói rõ trước khi bấm.",
+        "operationId": "regenerate_levels_api_v1_admin_progression_levels_generate_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Regenerate Levels",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/setting": {
+      "patch": {
+        "description": "Sửa mức XP, trần ngày và tham số đường cong.\n\n**Đổi tham số đường cong KHÔNG tự sinh lại bảng level.** Bảng mới là sự thật\ncủa phép tra cứu, và admin có thể đã sửa tay vài bậc; ghi đè ngầm là xoá\nnhững chỉnh sửa đó mà không hỏi. Sinh lại là một hành động riêng, có nút\nriêng.",
+        "operationId": "update_setting_api_v1_admin_progression_setting_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressionSettingUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Setting",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/slots": {
+      "post": {
+        "operationId": "create_slot_api_v1_admin_progression_slots_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyTaskSlotCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Slot",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/progression/slots/{slot_id}": {
+      "delete": {
+        "description": "Xoá hẳn một khe.\n\nTắt (`enabled = false`) gần như luôn là thứ bạn muốn thay vì xoá: `id` của\nkhe là thứ chống trao lại XP, nên xoá rồi tạo lại một khe \"y hệt\" sẽ trao\nthưởng lần nữa cho những ngày đã trao. Endpoint vẫn tồn tại vì một khe tạo\nnhầm cần có đường dọn, nhưng giao diện mời tắt trước.",
+        "operationId": "delete_slot_api_v1_admin_progression_slots__slot_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Slot Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Slot",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Sửa một khe. `id` không đổi, nên phần thưởng đã trao vẫn là đã trao.",
+        "operationId": "update_slot_api_v1_admin_progression_slots__slot_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Slot Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyTaskSlotUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionConfigAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Slot",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/question-sets/{set_id}": {
       "patch": {
         "description": "Sửa một cụm đã dán: tên cụm và lời thoại.\n\nLời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói\nPart 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và\nbản thu đã gắn.\n\nNó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản\nthu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại\ncòn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`\nvà cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.",
@@ -11747,6 +13618,33 @@
         ]
       }
     },
+    "/api/v1/daily-tasks": {
+      "get": {
+        "description": "Ba việc hôm nay, và trao XP cho việc vừa xong.\n\nĐường dẫn gạch nối ở gốc `/api/v1/daily-tasks`, không lồng dưới `/profile`:\nđây là thứ học viên mở mỗi ngày, không phải một mục trong trang hồ sơ.\n\n**Lần đọc này có ghi**, và đó là ngoại lệ có chủ ý — lý do đầy đủ ở\n`daily_tasks.grant_rewards`. Nó an toàn vì tất định: `source_id` sinh từ\n(người, ngày, khe) nên gọi lại bao nhiêu lần cũng chỉ trao một lần.",
+        "operationId": "read_daily_tasks_api_v1_daily_tasks_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyTasksPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Daily Tasks",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
     "/api/v1/dictation": {
       "get": {
         "description": "Danh sách phẳng các câu đã xuất bản.\n\n`standalone=true` lọc lấy những câu chưa thuộc story nào. Có tham số này vì\ncây topic→section→story ra đời sau: nếu luồng duyệt chỉ đi theo cây, mọi câu\ncó từ trước sẽ biến mất khỏi tầm mắt học viên mà không có gì báo. Mặc định\ngiữ nguyên hành vi cũ để không phá những chỗ đang gọi.",
@@ -12332,6 +14230,33 @@
         ]
       }
     },
+    "/api/v1/profile/progression": {
+      "get": {
+        "description": "Level, XP và bậc khung avatar.\n\nNằm dưới `/profile` chứ không phải một router riêng: đây là thứ thuộc về hồ\nsơ của chính người đang đăng nhập, và nó dùng đúng `timezone` mà `/profile/stats`\ndùng để tính chuỗi ngày. Hai định nghĩa \"hôm nay\" khác nhau trong cùng một\ntrang là chỗ hai con số nói hai điều về cùng một ngày.",
+        "operationId": "read_progression_api_v1_profile_progression_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Progression",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
     "/api/v1/profile/stats": {
       "get": {
         "description": "Thống kê học tập, tính lại mỗi lần đọc.\n\nTách khỏi `GET /profile` chứ không gộp vào: hồ sơ là vài cột đọc thẳng, còn\nphần này quét bảng lượt ôn và lượt dictation. Gộp lại thì mỗi lần sửa tên\nhiển thị cũng phải trả giá cho toàn bộ phép đếm, và `SessionProvider` — vốn\ngọi `/auth/me` ở mọi lần tải trang — sẽ kéo theo chúng ở khắp mọi nơi.",
@@ -12354,6 +14279,53 @@
           }
         ],
         "summary": "Read Stats",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/progression/badges": {
+      "get": {
+        "description": "Cả 15 badge, đã mở lẫn chưa, kèm tiến độ tới ngưỡng.\n\nTrả về cả badge chưa mở là chủ ý: một trang chỉ hiện thứ đã đạt thì không nói\nđược còn gì phía trước, mà đó mới là thứ khiến người ta quay lại.\n\n**Lần đọc này có ghi**, cùng ngoại lệ có chủ ý như `GET /daily-tasks`: badge\nvừa đủ điều kiện được ghi một hàng để lần sau biết nó không còn mới. An toàn\nvì khoá chính `(user_id, code)` khiến lần ghi thứ hai không thể xảy ra.",
+        "operationId": "read_badges_api_v1_progression_badges_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadgesPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Badges",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/progression/badges/seen": {
+      "post": {
+        "description": "Tắt chấm đỏ.\n\nKhông nhận danh sách mã: nút này bấm từ trang badge, nơi tất cả đang hiển thị\ncùng lúc, nên \"đã xem\" đúng nghĩa đen. Nhận danh sách sẽ mời phía gọi gửi\nthiếu, và một badge sót lại giữ chấm đỏ vĩnh viễn trên một trang không còn gì\nmới.\n\n204 kể cả khi không có gì để đánh dấu: phía gọi đang nói \"tôi đã xem trang\nnày\", và câu đó luôn đúng. 404 hay 409 ở đây chỉ buộc frontend viết một nhánh\nxử lý cho một tình huống không phải lỗi.",
+        "operationId": "mark_badges_seen_api_v1_progression_badges_seen_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mark Badges Seen",
         "tags": [
           "profile"
         ]

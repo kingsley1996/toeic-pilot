@@ -103,3 +103,20 @@ export function messageFor(error: unknown, fallback: string): string {
   if (error instanceof ApiError) return error.message;
   return fallback;
 }
+
+/**
+ * Tranh khung/huy hiệu: xin vé, tải lên, trả về khoá.
+ *
+ * KHÔNG có bước xác nhận riêng — bước đó là chính lệnh `PATCH` gắn khoá vào
+ * hàng, và nó kiểm tiền tố rồi hỏi lại nhà cung cấp trước khi ghi. Nên phía gọi
+ * phải gửi khoá này đi; bỏ dở ở đây chỉ để lại một file mồ côi trên kho.
+ */
+export async function uploadProgressionArt(file: File, token: string): Promise<string> {
+  const { storageKey } = await uploadViaTicket(
+    API_ROUTES.adminProgressionAssetTicket,
+    file,
+    token,
+    "png",
+  );
+  return storageKey;
+}

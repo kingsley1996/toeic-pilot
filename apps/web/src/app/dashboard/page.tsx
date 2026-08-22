@@ -26,6 +26,8 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { BadgeNotice } from "@/components/badges";
+import { DailyTasksPanel } from "@/components/daily-tasks";
 import { ButtonLink, Page, PageHeader, Panel, PanelLink, Skeleton, Tag, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { clock } from "@/lib/attempt";
@@ -299,6 +301,17 @@ export default function TodayPage() {
           )}
         </Panel>
       )}
+
+      {/* Huy hiệu vừa mở mà chưa xem — MỘT dòng cho tất cả, không phải một
+          dòng mỗi cái: tài khoản có sẵn lịch sử mở một loạt cùng lúc ở lần đọc
+          đầu tiên, và mười thông báo liên tiếp đọc như hệ thống hỏng. Nó tự ẩn
+          khi không có gì mới. */}
+      <BadgeNotice token={token} />
+
+      {/* Ba việc hôm nay đứng TRÊN khối từ vựng (USER-ROAD §6.4) nhưng DƯỚI
+          bài đang làm dở: bài dở có đồng hồ chạy ở máy chủ, nên nó là thứ duy
+          nhất trên trang này mất mát nếu bị đẩy xuống. */}
+      <DailyTasksPanel token={token} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel className="flex flex-col p-5 sm:p-6">

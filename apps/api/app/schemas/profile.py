@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated, Literal, get_args
 from zoneinfo import available_timezones
 
@@ -140,11 +140,187 @@ class LearningStats(BaseModel):
 
 
 __all__ = [
+    "BadgeIcon",
+    "BadgeMetric",
+    "BadgePublic",
+    "BadgesPublic",
     "LearningStats",
     "StudyDay",
+    "DailyTaskPublic",
+    "DailyTaskKind",
+    "DailyTasksPublic",
+    "FramePublic",
+    "FrameTone",
     "PETS",
+    "ProgressionPublic",
     "PetId",
     "SUPPORTED_LOCALES",
     "UserProfilePublic",
     "UserProfileUpdate",
 ]
+
+
+# Token màu của khung avatar. CHỈ token đã có trong design system: một ô nhập mã
+# màu tự do là đường ngắn nhất tới một khung không đọc được ở chế độ tối, nơi
+# không ai kiểm trước khi lưu. Thang bốn accent vắng mặt có chủ ý — nó phân loại
+# giọng đọc, mượn sang bậc level là bắt một màu mang hai nghĩa.
+FrameTone = Literal["ok", "action", "warn", "alert"]
+
+
+class FramePublic(BaseModel):
+    """Khung avatar đang mở, hoặc vắng mặt khi chưa tới bậc nào.
+
+    Trả về cả CÁCH VẼ chứ không chỉ mã: bậc khung là dữ liệu admin thêm được, nên
+    một bảng tra mã→màu nằm trong frontend sẽ thiếu ngay khi có bậc mới, và thiếu
+    một cách im lặng (khung không hiện, không ai báo).
+    """
+
+    code: str
+    label: str
+    min_level: int
+    tone: FrameTone
+    ring: bool
+    image_url: str | None
+    """Tranh khung, nếu đã tải lên. Có ảnh thì ảnh THẮNG `tone`.
+
+    `tone` vẫn gửi kèm chứ không biến mất: nó là thứ vẽ được ngay, còn ảnh thì
+    phải tải về. Bỏ nó đi nghĩa là khung không tồn tại cho tới khi ảnh xong, và
+    với kết nối chậm đó là một avatar nhấp nháy đổi hình.
+    """
+
+
+class ProgressionPublic(BaseModel):
+    """Level của một học viên, suy ra từ sổ cái `xp_event`.
+
+    Không có cột nào lưu `level` hay `xp_total`. Xem `app/models/progression.py`
+    để biết vì sao một bộ đếm cộng dồn không được phép tồn tại ở đây.
+    """
+
+    xp_total: int
+    level: int
+    xp_into_level: int
+    """0 khi đã kịch trần level."""
+    xp_for_next: int
+    frame: FramePublic | None
+    xp_today: int
+    daily_cap: int
+
+
+# Loại việc mà hệ thống biết ĐO. Literal chứ không str: nó đi qua OpenAPI thành
+# union TypeScript, nên frontend thiếu một loại là lỗi `tsc`.
+#
+# Danh sách KHE thì không còn cố định — khe là hàng trong `daily_task_slot` và
+# admin thêm/sửa/tắt được. Cái đóng lại là loại việc, vì mỗi loại là một phép
+# đếm có thật trong `app/services/daily_tasks.py`.
+DailyTaskKind = Literal["vocabulary_review", "dictation_complete", "attempt_answer"]
+
+
+class DailyTaskPublic(BaseModel):
+    """Một việc hôm nay.
+
+    `target` là số CỐ ĐỊNH đã kẹp theo thứ thật sự có, không phải tình trạng hiện
+    thời — xem `app/services/daily_tasks.py`. `progress` đếm hoạt động trong ngày
+    nên nó chỉ tăng.
+    """
+
+    slot_id: str
+    """uuid của HÀNG cấu hình. Đi vào `xp_event.source_id`, nên nó bền qua mọi
+    lần đổi nhãn hay đổi mục tiêu — đó là điều khiến sửa cấu hình không trao
+    thưởng lại cho những ngày đã trao."""
+    kind: DailyTaskKind
+    label: str
+    """Chữ hiển thị, do admin đặt. Frontend chỉ quyết định biểu tượng và lối đi
+    (theo `kind`), không quyết định tên."""
+    target: int
+    progress: int
+    done: bool
+    xp: int
+
+
+class DailyTasksPublic(BaseModel):
+    date: date
+    """Hôm nay THEO MÚI GIỜ NGƯỜI HỌC, do máy chủ quyết định.
+
+    Trình duyệt không được tự gọi `new Date()` ở đây: nếu múi giờ máy khác múi
+    giờ hồ sơ thì danh sách việc sẽ lệch một ngày so với chuỗi ngày, và không có
+    gì báo. Cùng lý do `LearningStats.today` tồn tại.
+    """
+    tasks: list[DailyTaskPublic]
+    xp_awarded: int
+    """XP vừa được trao trong chính lần đọc này, nếu có việc mới hoàn thành."""
+
+
+# Biểu tượng mà frontend biết vẽ. Đây là thứ DUY NHẤT còn đóng ở phía huy hiệu:
+# `code` giờ là dữ liệu (admin thêm huy hiệu mới), nên `Record<BadgeCode, …>` với
+# kiểm tra đủ-mã ở `tsc` không còn khả thi — đánh đổi có chủ ý để đổi lấy việc
+# thêm huy hiệu không cần triển khai lại. Bù vào đó, `icon` là union: một huy
+# hiệu không có hình là lỗi biên dịch chứ không phải một ô trống trên trang.
+BadgeIcon = Literal[
+    "footprints",
+    "book",
+    "library",
+    "graduation",
+    "headphones",
+    "target",
+    "medal",
+    "trophy",
+    "flame",
+    "star",
+    "sparkles",
+    "award",
+]
+
+# Số đo mà một luật badge so ngưỡng. Đóng vì mỗi số đo là một phép đếm có thật.
+BadgeMetric = Literal[
+    "reviews",
+    "words_mastered",
+    "dictation_items",
+    "tests_submitted",
+    "best_score",
+    "longest_streak",
+    "level",
+]
+
+
+class BadgePublic(BaseModel):
+    """Một badge, kèm tiến độ tới ngưỡng của nó.
+
+    `target` và `progress` gửi từ máy chủ chứ không để frontend tự biết ngưỡng:
+    ngưỡng là một phần của điều kiện, và một bản sao ở phía trình duyệt sẽ trôi
+    khỏi bản gốc mà không có gì báo — trang badge in "120/300" trong khi máy chủ
+    đã mở badge từ 150.
+
+    `label` và `hint` đi kèm vì chúng là DỮ LIỆU do admin đặt, không phải chữ cố
+    định trong frontend. `icon` thì vẫn là một union đóng — frontend phải biết vẽ
+    nó, và một chuỗi tự do ở đây là một huy hiệu không có hình.
+    """
+
+    code: str
+    label: str
+    hint: str
+    icon: BadgeIcon
+    image_url: str | None
+    """Tranh huy hiệu, nếu đã tải lên. Thắng `icon` khi hiển thị."""
+    target: int
+    progress: int
+    """Đã kẹp ở `target` — con số đáng nói là ngưỡng, không phải tổng tài sản."""
+    earned: bool
+    awarded_at: datetime | None
+    """Lần đầu HỆ THỐNG nhìn thấy badge này, không phải lúc đạt điều kiện.
+
+    Với tài khoản có sẵn lịch sử, hai mốc đó cách nhau rất xa: điều kiện có thể
+    đã đạt từ nhiều tháng trước, còn hàng thì chỉ được ghi ở lần đọc đầu tiên sau
+    khi tính năng ra mắt. Đừng in nó ra như "ngày đạt được".
+    """
+    seen: bool
+
+
+class BadgesPublic(BaseModel):
+    badges: list[BadgePublic]
+    earned_count: int
+    unseen_count: int
+    """Số badge đã mở mà người dùng chưa xem — nguồn của chấm đỏ.
+
+    Giao diện phải gộp chúng thành MỘT thông báo. Tài khoản cũ mở một loạt cùng
+    lúc ở lần đọc đầu tiên, và mười thông báo liên tiếp đọc như hệ thống hỏng.
+    """

@@ -3,6 +3,7 @@
 import {
   API_ROUTES,
   type LearningStats,
+  type ProgressionPublic,
   type TokenResponse,
   type UserProfilePublic,
   type UserProfileUpdate,
@@ -37,6 +38,7 @@ import {
   FieldError,
   IconButton,
   Input,
+  Meter,
   Page,
   PageHeader,
   Panel,
@@ -159,11 +161,60 @@ function EditButton({ label, onClick }: { label: string; onClick: () => void }) 
 
 type EditTarget = "identity" | "goals" | "study";
 
+/**
+ * Level, khung đang mở, và còn bao nhiêu XP tới bậc kế.
+ *
+ * Hai chỗ dễ nói sai và cả hai đều nói sai một cách hợp lý:
+ *
+ *   · **Kịch trần thì không có thanh tiến độ.** `xp_for_next` bằng 0 nghĩa là
+ *     hết bậc để lên, và một thanh đầy 100% ở đó đọc như "sắp lên level" chứ
+ *     không như "đã hết đường".
+ *   · **Level cao hơn mức XP hiện tại là chuyện BÌNH THƯỜNG.** Nó là mốc nước
+ *     cao: admin nâng bảng ngưỡng thì level đã đạt vẫn giữ, và máy chủ trả về
+ *     `xp_into_level = 0` cho trường hợp đó vì tiến độ trong một bậc mà mình
+ *     không còn đứng ở đầu thì không so được với gì.
+ */
+function LevelCard({ progression }: { progression: ProgressionPublic }) {
+  const capped = progression.xp_for_next === 0;
+  return (
+    <div className="min-w-[13rem] rounded border border-rule-strong bg-panel px-4 py-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="font-data text-title font-semibold leading-none tabular-nums">
+          Level {progression.level}
+        </p>
+        {progression.frame && (
+          <span className="text-label font-semibold uppercase text-ink-faint">
+            {progression.frame.label}
+          </span>
+        )}
+      </div>
+
+      {capped ? (
+        <p className="mt-2 text-small text-ink-muted">
+          {progression.xp_total} XP · đã tới bậc cuối
+        </p>
+      ) : (
+        <div className="mt-2.5">
+          <Meter
+            value={progression.xp_into_level}
+            max={progression.xp_into_level + progression.xp_for_next}
+            label="Tới level kế"
+          />
+          <p className="mt-1.5 font-data text-small tabular-nums text-ink-faint">
+            {progression.xp_total} XP · hôm nay {progression.xp_today}/{progression.daily_cap}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const session = useRequireSession();
   const { status, user, token, refresh } = session;
 
   const [stats, setStats] = useState<LearningStats | null>(null);
+  const [progression, setProgression] = useState<ProgressionPublic | null>(null);
   const [editing, setEditing] = useState<EditTarget | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -186,6 +237,13 @@ export default function ProfilePage() {
       })
       .catch(() => {
         /* Thống kê hỏng không được làm hỏng cả trang hồ sơ. */
+      });
+    apiFetch<ProgressionPublic>(API_ROUTES.progression, { token })
+      .then((data) => {
+        if (!cancelled) setProgression(data);
+      })
+      .catch(() => {
+        /* Cũng vậy: không có level thì trang vẫn là trang hồ sơ. */
       });
     return () => {
       cancelled = true;
@@ -347,12 +405,17 @@ export default function ProfilePage() {
       <section className="rounded border border-rule bg-recess p-5 sm:p-6">
         <div className="flex flex-wrap items-start gap-5">
           <div className="flex flex-col items-center gap-2">
+            {/* Khung và huy hiệu level chỉ xuất hiện khi máy chủ đã trả lời.
+                Dựng sẵn một khung "chưa có" là hứa một thứ chưa biết có hay
+                không, và nó nhấp nháy đổi hình ngay trước mắt người dùng. */}
             <Avatar
               id={user.id}
               name={profile.display_name}
               email={user.email}
               src={profile.avatar_url}
               size="lg"
+              frame={progression?.frame}
+              level={progression?.level}
             />
             <div className="flex items-center gap-1">
               {/* Input file ẩn: điều khiển gốc của trình duyệt không tạo kiểu
@@ -413,6 +476,8 @@ export default function ProfilePage() {
               <span>Tham gia {formatDate(user.created_at)}</span>
             </div>
           </div>
+
+          {progression && <LevelCard progression={progression} />}
 
           {stats && stats.current_streak > 0 && (
             <div className="flex items-center gap-2.5 rounded border border-rule-strong bg-panel px-4 py-3">
@@ -513,12 +578,23 @@ export default function ProfilePage() {
              trộn hai loại đó lại thì trang này dài ra mà nút cần tìm vẫn khó
              thấy. */
           aside={
-            <Link
-              href="/learn/attempts"
-              className="text-small font-semibold text-ink-muted hover:text-ink"
-            >
-              Lịch sử làm bài
-            </Link>
+            <span className="flex items-center gap-4">
+              {/* Huy hiệu là phần "đã học được gì" mà số liệu không kể được:
+                  một cột mốc đã qua, không phải một con số hiện tại. Đặt cạnh
+                  lịch sử làm bài vì cả hai đều là đường dẫn ra khỏi trang. */}
+              <Link
+                href="/profile/badges"
+                className="text-small font-semibold text-ink-muted hover:text-ink"
+              >
+                Huy hiệu
+              </Link>
+              <Link
+                href="/learn/attempts"
+                className="text-small font-semibold text-ink-muted hover:text-ink"
+              >
+                Lịch sử làm bài
+              </Link>
+            </span>
           }
         />
         {stats ? (

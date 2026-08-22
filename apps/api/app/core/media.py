@@ -25,6 +25,13 @@ IMAGE_KEY_PREFIX = "image"
 # tình chạm vào nhánh kia.
 AVATAR_KEY_PREFIX = "avatar"
 
+# Tranh của khung avatar và huy hiệu. Tiền tố RIÊNG, cùng lý do như `avatar/`
+# (ADR-006 §2.1): một lệnh dọn nhắm vào ảnh nội dung không được chạm nhầm vào
+# đây, và ngược lại. Chúng cũng không có hàng trong `image_asset` — giấy phép,
+# ghi công và URL nguồn là chuyện của ảnh mượn về, còn đây là tranh của chính
+# sản phẩm, giống hệt avatar.
+PROGRESSION_KEY_PREFIX = "progression"
+
 # Kept as plain tuples rather than a native PostgreSQL enum: adding a value to a
 # native enum needs its own migration, and Alembic downgrades across enum types
 # are painful enough that a CHECK constraint is the cheaper trade.
@@ -207,6 +214,11 @@ def image_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
 
 def avatar_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
     return storage_key_for(source_hash_value, ext=ext, prefix=AVATAR_KEY_PREFIX)
+
+
+def progression_storage_key_for(source_hash_value: str, ext: str = "png") -> str:
+    """Khoá cho tranh khung/huy hiệu. `png` mặc định vì chúng cần nền trong."""
+    return storage_key_for(source_hash_value, ext=ext, prefix=PROGRESSION_KEY_PREFIX)
 
 
 def public_audio_url(storage_key: str, base_url: str | None = None) -> str:

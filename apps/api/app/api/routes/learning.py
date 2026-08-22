@@ -70,6 +70,8 @@ from app.schemas.learning import (
     WordDiff,
 )
 from app.services import dictation as dictation_grader
+from app.services import progression
+from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
 from app.services.srs import (
     GRADES,
@@ -562,7 +564,7 @@ def _published_entry(db: Session, entry_id: uuid.UUID) -> VocabularyEntry:
 
 
 def _apply_review(
-    db: Session, user_id: uuid.UUID, entry_id: uuid.UUID, grade: int
+    db: Session, user_id: uuid.UUID, entry_id: uuid.UUID, grade: int, timezone: str
 ) -> ReviewOutcome:
     state = db.get(VocabularyReviewState, (user_id, entry_id))
     current = (
@@ -586,15 +588,34 @@ def _apply_review(
     # The log is written every time, even though the state already holds the same
     # numbers: the state is overwritten on the next review, and without the
     # history there is no way to retune the algorithm and re-evaluate it.
-    db.add(
-        VocabularyReviewLog(
-            user_id=user_id,
-            entry_id=entry_id,
-            grade=grade,
-            interval_days=outcome.interval_days,
-            ease_factor=outcome.ease_factor,
-        )
+    log = VocabularyReviewLog(
+        user_id=user_id,
+        entry_id=entry_id,
+        grade=grade,
+        interval_days=outcome.interval_days,
+        ease_factor=outcome.ease_factor,
     )
+    db.add(log)
+
+    # XP đi cùng giao dịch của lượt ôn, không phải sau nó. Trao XP cho một lượt
+    # ôn bị rollback là sổ cái nói về việc chưa từng xảy ra; và ngược lại, một
+    # lỗi ở nhánh XP không được phép làm mất lượt ôn — nên nó nằm trong `try`.
+    #
+    # `flush` để `log.id` tồn tại: nó là `source_id`, và chính nó làm
+    # `uq_xp_event_source` chặn được việc trao hai lần cho cùng một lượt ôn.
+    db.flush()
+    try:
+        progression.award(
+            db,
+            user_id=user_id,
+            source_type="vocabulary_review",
+            source_id=log.id,
+            amount=progression.xp_for(db, "vocabulary_review"),
+            timezone=timezone,
+        )
+    except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
+        pass
+
     db.commit()
     return outcome
 
@@ -709,7 +730,9 @@ def submit_review(
         )
 
     entry = _published_entry(db, entry_id)
-    outcome = _apply_review(db, current_user.id, entry.id, body.grade)
+    outcome = _apply_review(
+        db, current_user.id, entry.id, body.grade, ensure_profile(db, current_user).timezone
+    )
     return _review_result(entry.id, body.grade, outcome)
 
 
@@ -731,7 +754,9 @@ def submit_recall(
     judgement = judge(body.typed, entry.headword)
     verdict = VERDICT_UNKNOWN if body.give_up else judgement.verdict
     grade = grade_for(verdict, easy=body.easy)
-    outcome = _apply_review(db, current_user.id, entry.id, grade)
+    outcome = _apply_review(
+        db, current_user.id, entry.id, grade, ensure_profile(db, current_user).timezone
+    )
     return RecallResult(
         **_review_result(entry.id, grade, outcome).model_dump(),
         verdict=verdict,
@@ -868,6 +893,24 @@ def submit_dictation(
         word_diff=result.as_json(),
     )
     db.add(attempt)
+
+    # Chỉ trao XP cho câu ĐÚNG TRỌN. `accuracy` không dùng được làm cổng ở đây:
+    # gõ cả câu rồi gõ thêm vẫn cho 100%, và gõ hai lần cũng vậy — cùng lý do
+    # tiến độ dictation đếm `is_complete` chứ không đếm điểm.
+    db.flush()
+    if result.is_complete:
+        try:
+            progression.award(
+                db,
+                user_id=current_user.id,
+                source_type="dictation_complete",
+                source_id=attempt.id,
+                amount=progression.xp_for(db, "dictation_complete"),
+                timezone=ensure_profile(db, current_user).timezone,
+            )
+        except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
+            pass
+
     db.commit()
     db.refresh(attempt)
 

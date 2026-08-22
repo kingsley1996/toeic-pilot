@@ -25,6 +25,20 @@ from app.models.practice import (
     TestCollection,
 )
 from app.models.profile import UserProfile
+from app.models.progression import (
+    BADGE_ICONS,
+    BADGE_METRICS,
+    DAILY_TASK_KINDS,
+    FRAME_TONES,
+    XP_SOURCES,
+    BadgeRule,
+    DailyTaskSlot,
+    FrameTier,
+    LevelTier,
+    ProgressionSetting,
+    UserBadge,
+    XpEvent,
+)
 from app.models.scoring import ScoreConversion, ScoreScale
 from app.models.topic import Topic
 from app.models.user import User
@@ -44,6 +58,18 @@ from app.models.vocabulary import (
 # fixture alike. A model missing from this list produces "no such table" in tests
 # and an empty autogenerate diff in Alembic.
 __all__ = [
+    "BADGE_ICONS",
+    "BADGE_METRICS",
+    "DAILY_TASK_KINDS",
+    "FRAME_TONES",
+    "XP_SOURCES",
+    "BadgeRule",
+    "DailyTaskSlot",
+    "FrameTier",
+    "LevelTier",
+    "ProgressionSetting",
+    "UserBadge",
+    "XpEvent",
     "AI_INTERACTION_STATUSES",
     "AiFeatureConfig",
     "AiInteraction",

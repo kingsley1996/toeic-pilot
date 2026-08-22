@@ -11,6 +11,7 @@
  *   §11   Ranh giới component dùng `rule-strong`, không phải `rule`.
  */
 
+import type { FramePublic } from "@toeic-pilot/shared";
 import {
   Archive,
   CircleAlert,
@@ -600,12 +601,32 @@ function toneFor(seed: string): string {
   return AVATAR_TONES[sum % AVATAR_TONES.length]!;
 }
 
+/**
+ * Khung avatar theo bậc level — viền, và với bậc cao nhất là một vòng ngoài.
+ *
+ * Lớp Tailwind viết đủ chữ cho từng token chứ không ghép chuỗi: `border-${tone}`
+ * không tồn tại trong CSS đã build, vì Tailwind quét mã nguồn theo văn bản. Một
+ * lớp ghép động biên dịch sạch và không sinh ra màu nào — khung chỉ đơn giản
+ * không hiện, và không có gì báo.
+ *
+ * KHÔNG đổ bóng (§6.3). Cám dỗ lớn nhất của một "khung phát sáng" là
+ * `box-shadow`, và luật của hệ này là viền cộng nền.
+ */
+const FRAME_TONES: Record<FramePublic["tone"], { border: string; ring: string }> = {
+  ok: { border: "border-ok", ring: "bg-ok-tint" },
+  action: { border: "border-action", ring: "bg-action-tint" },
+  warn: { border: "border-warn", ring: "bg-warn-tint" },
+  alert: { border: "border-alert", ring: "bg-alert-tint" },
+};
+
 export function Avatar({
   id,
   name,
   email,
   src,
   size = "md",
+  frame,
+  level,
   className,
 }: {
   id: string;
@@ -614,13 +635,23 @@ export function Avatar({
   /** Ảnh đã tải lên. Thiếu thì rơi về chữ cái đầu — đó là mặc định, không phải lỗi. */
   src?: string | null;
   size?: "sm" | "md" | "lg";
+  /**
+   * Bậc khung đang mở, lấy từ `GET /profile/progression`.
+   *
+   * Cả cách vẽ đi cùng dữ liệu (`tone`, `ring`) chứ không tra theo mã ở đây:
+   * bậc khung là thứ admin thêm được, nên một bảng mã→màu nằm trong frontend sẽ
+   * thiếu ngay khi có bậc mới — và thiếu một cách im lặng.
+   */
+  frame?: FramePublic | null;
+  /** Huy hiệu level ở góc dưới phải. Bỏ trống thì không vẽ gì. */
+  level?: number | null;
   className?: string;
 }) {
   const box = { sm: "h-7 w-7 text-label", md: "h-9 w-9 text-small", lg: "h-16 w-16 text-title" }[
     size
   ];
 
-  if (src) {
+  const face = src ? (
     /*
      * `<img>` thường, không phải `next/image`.
      *
@@ -629,18 +660,14 @@ export function Avatar({
      * cấp lại phải sửa cấu hình build. Cloudinary đã tối ưu và phục vụ qua CDN
      * rồi — cho Next tối ưu lại một lần nữa là trả tiền hai lần cho cùng việc.
      */
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={src}
-        alt=""
-        aria-hidden
-        className={cx("shrink-0 rounded object-cover", box, className)}
-      />
-    );
-  }
-
-  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      className={cx("shrink-0 rounded object-cover", box, className)}
+    />
+  ) : (
     <span
       aria-hidden
       className={cx(
@@ -651,6 +678,84 @@ export function Avatar({
       )}
     >
       {initialsOf(name, email)}
+    </span>
+  );
+
+  // Huy hiệu level cần chỗ để đọc được. Ở `sm` (28px) nó sẽ chiếm gần một phần
+  // ba ô và chữ rơi xuống dưới ngưỡng đọc — nên bỏ hẳn thay vì thu nhỏ tới mức
+  // vô nghĩa. Khung thì vẫn vẽ được ở mọi cỡ, vì nó là một đường viền.
+  const showLevel = level != null && size !== "sm";
+  if (!frame && !showLevel) return face;
+
+  // Có tranh thì tranh THẮNG token màu. `tone` không biến mất khỏi dữ liệu: nó
+  // là thứ vẽ được ngay trong lúc ảnh còn đang tải, nên khung xuất hiện một lần
+  // rồi đổi hình, thay vì xuất hiện muộn.
+  const art = frame?.image_url ?? null;
+  const tone = frame ? FRAME_TONES[frame.tone] : null;
+
+  return (
+    <span className="relative inline-flex shrink-0">
+      {/* Vòng ngoài của bậc cao nhất: một lớp nền lớn hơn nằm dưới, không phải
+          một cái bóng. `-inset-1` cho 4px đều bốn phía. */}
+      {frame?.ring && tone && !art && (
+        <span aria-hidden className={cx("absolute -inset-1 rounded", tone.ring)} />
+      )}
+      <span
+        className={cx(
+          "relative inline-flex rounded",
+          tone && !art && cx("border-2", tone.border),
+          // Viền 2px ăn vào trong, nên không cần cộng thêm kích thước — ảnh bên
+          // trong tự co lại theo `box` và vẫn vuông.
+        )}
+      >
+        {face}
+        {/* Tranh khung nằm ĐÈ LÊN avatar và tràn ra ngoài 25% mỗi phía: một cái
+            khung vẽ tay bao giờ cũng có phần trang trí thò ra khỏi ô vuông, và
+            ép nó vừa khít ô sẽ cắt cụt đúng phần đó. `pointer-events-none` để
+            nó không nuốt cú bấm của khối danh tính bên dưới.
+ 
+            **Kích thước đặt THẲNG 150%, không dùng bốn cạnh âm.** Hai lần sai
+            liên tiếp ở đúng chỗ này, và cả hai đều biên dịch sạch, lint sạch,
+            chỉ lộ ra khi có người nhìn:
+
+              1. `-inset-[25%]` KHÔNG sinh ra CSS nào (dấu trừ đứng trước giá
+                 trị tuỳ ý không phải cú pháp hợp lệ), nên ảnh giữ nguyên 512px
+                 và tràn khắp trang.
+              2. Đặt đủ `top/right/bottom/left` rồi để `width:auto` cũng không
+                 cứu: với PHẦN TỬ THAY THẾ như `<img>`, `auto` giải ra kích
+                 thước GỐC của ảnh chứ không giãn theo bốn cạnh (CSS 2.1
+                 §10.3.7). Kết quả y hệt lần một.
+
+            Nên toạ độ và kích thước đều viết thẳng. Trang `/admin/progression/preview`
+            tồn tại để bắt đúng loại lỗi này. */}
+        {art && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={art}
+            alt=""
+            aria-hidden
+            style={{ top: "-25%", left: "-25%", width: "150%", height: "150%" }}
+            className="pointer-events-none absolute max-w-none select-none object-contain"
+          />
+        )}
+      </span>
+      {showLevel && (
+        <span
+          className={cx(
+            "absolute -bottom-1 -right-1 grid min-w-5 place-items-center rounded border border-panel bg-ink px-1 font-data font-semibold tabular-nums text-panel",
+            size === "lg" ? "text-small" : "text-label",
+          )}
+        >
+          {/* Viền cùng màu nền trang, không phải khoảng cách: huy hiệu chồng lên
+              avatar nên nó cần một đường tách khỏi ảnh phía dưới, và ở đây đường
+              đó là một viền `panel` chứ không phải một cái bóng. */}
+          {level}
+        </span>
+      )}
+      {/* Nhãn cho trình đọc màn hình. Avatar là `aria-hidden` vì nó chỉ nhắc lại
+          cái tên ngay bên cạnh — nhưng level thì KHÔNG có ở đâu khác trong khối
+          này, nên nó phải đọc được. */}
+      {showLevel && <span className="sr-only">Level {level}</span>}
     </span>
   );
 }

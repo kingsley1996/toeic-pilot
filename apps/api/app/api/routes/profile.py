@@ -16,12 +16,22 @@ from app.models.user import User
 from app.schemas.media import UploadTicket, UploadTicketRequest
 from app.schemas.profile import (
     AvatarConfirm,
+    BadgePublic,
+    BadgesPublic,
+    DailyTaskPublic,
+    DailyTasksPublic,
+    FramePublic,
     LearningStats,
+    ProgressionPublic,
     UserProfilePublic,
     UserProfileUpdate,
 )
+from app.services import progression_config
+from app.services.badges import evaluate, mark_seen, record_new
+from app.services.daily_tasks import grant_rewards, tasks_for
 from app.services.profile import ensure_profile, profile_public
 from app.services.profile_stats import gather_stats
+from app.services.progression import daily_cap, progression_of
 
 router = APIRouter(tags=["profile"])
 
@@ -166,3 +176,151 @@ def avatar_remove(
     db.commit()
     db.refresh(profile)
     return profile_public(profile)
+
+
+def _frame_public(code: str | None, db: Session) -> FramePublic | None:
+    """Bậc khung kèm cách vẽ. `None` khi level chưa tới bậc nào."""
+    if code is None:
+        return None
+    row = next((t for t in progression_config.frame_tiers(db) if t.code == code), None)
+    if row is None:
+        return None
+    return FramePublic(
+        code=row.code,
+        label=row.label,
+        min_level=row.min_level,
+        tone=row.tone,  # type: ignore[arg-type]
+        ring=row.ring,
+        image_url=(
+            get_driver("image").public_url(row.image_storage_key) if row.image_storage_key else None
+        ),
+    )
+
+
+@router.get("/profile/progression", response_model=ProgressionPublic)
+def read_progression(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ProgressionPublic:
+    """Level, XP và bậc khung avatar.
+
+    Nằm dưới `/profile` chứ không phải một router riêng: đây là thứ thuộc về hồ
+    sơ của chính người đang đăng nhập, và nó dùng đúng `timezone` mà `/profile/stats`
+    dùng để tính chuỗi ngày. Hai định nghĩa "hôm nay" khác nhau trong cùng một
+    trang là chỗ hai con số nói hai điều về cùng một ngày.
+    """
+    profile = ensure_profile(db, current_user)
+    # Quản trị viên đeo sẵn bậc khung cao nhất. Thuần trang trí và cố ý chỉ dừng
+    # ở đó: level, XP và huy hiệu vẫn là số thật của chính họ.
+    progress, frame, today = progression_of(
+        db, current_user.id, profile.timezone, top_frame=current_user.role == "admin"
+    )
+    # `progression_of` có thể vừa nâng mốc nước cao trên hồ sơ. Commit ở đây chứ
+    # không ở đó: dịch vụ không được tự quyết định ranh giới giao dịch của một
+    # request, cùng luật với `award`.
+    db.commit()
+    return ProgressionPublic(
+        xp_total=progress.xp_total,
+        level=progress.level,
+        xp_into_level=progress.xp_into_level,
+        xp_for_next=progress.xp_for_next,
+        frame=_frame_public(frame, db),
+        xp_today=today,
+        daily_cap=daily_cap(db),
+    )
+
+
+@router.get("/daily-tasks", response_model=DailyTasksPublic)
+def read_daily_tasks(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> DailyTasksPublic:
+    """Ba việc hôm nay, và trao XP cho việc vừa xong.
+
+    Đường dẫn gạch nối ở gốc `/api/v1/daily-tasks`, không lồng dưới `/profile`:
+    đây là thứ học viên mở mỗi ngày, không phải một mục trong trang hồ sơ.
+
+    **Lần đọc này có ghi**, và đó là ngoại lệ có chủ ý — lý do đầy đủ ở
+    `daily_tasks.grant_rewards`. Nó an toàn vì tất định: `source_id` sinh từ
+    (người, ngày, khe) nên gọi lại bao nhiêu lần cũng chỉ trao một lần.
+    """
+    profile = ensure_profile(db, current_user)
+    day, tasks = tasks_for(db, current_user.id, profile.timezone)
+    awarded = grant_rewards(db, current_user.id, profile.timezone, day, tasks)
+    if awarded:
+        db.commit()
+    return DailyTasksPublic(
+        date=day,
+        tasks=[
+            DailyTaskPublic(
+                slot_id=str(t.slot_id),
+                kind=t.kind,  # type: ignore[arg-type]
+                label=t.label,
+                target=t.target,
+                progress=t.progress,
+                done=t.done,
+                xp=t.xp,
+            )
+            for t in tasks
+        ],
+        xp_awarded=awarded,
+    )
+
+
+@router.get("/progression/badges", response_model=BadgesPublic)
+def read_badges(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> BadgesPublic:
+    """Cả 15 badge, đã mở lẫn chưa, kèm tiến độ tới ngưỡng.
+
+    Trả về cả badge chưa mở là chủ ý: một trang chỉ hiện thứ đã đạt thì không nói
+    được còn gì phía trước, mà đó mới là thứ khiến người ta quay lại.
+
+    **Lần đọc này có ghi**, cùng ngoại lệ có chủ ý như `GET /daily-tasks`: badge
+    vừa đủ điều kiện được ghi một hàng để lần sau biết nó không còn mới. An toàn
+    vì khoá chính `(user_id, code)` khiến lần ghi thứ hai không thể xảy ra.
+    """
+    profile = ensure_profile(db, current_user)
+    statuses = evaluate(db, current_user.id, profile.timezone)
+    if record_new(db, current_user.id, statuses):
+        db.commit()
+    return BadgesPublic(
+        badges=[
+            BadgePublic(
+                code=s.code,
+                label=s.label,
+                hint=s.hint,
+                icon=s.icon,  # type: ignore[arg-type]
+                image_url=s.image_url,
+                target=s.target,
+                progress=s.progress,
+                earned=s.earned,
+                awarded_at=s.awarded_at,
+                seen=s.seen,
+            )
+            for s in statuses
+        ],
+        earned_count=sum(1 for s in statuses if s.earned),
+        unseen_count=sum(1 for s in statuses if s.earned and not s.seen),
+    )
+
+
+@router.post("/progression/badges/seen", status_code=status.HTTP_204_NO_CONTENT)
+def mark_badges_seen(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> None:
+    """Tắt chấm đỏ.
+
+    Không nhận danh sách mã: nút này bấm từ trang badge, nơi tất cả đang hiển thị
+    cùng lúc, nên "đã xem" đúng nghĩa đen. Nhận danh sách sẽ mời phía gọi gửi
+    thiếu, và một badge sót lại giữ chấm đỏ vĩnh viễn trên một trang không còn gì
+    mới.
+
+    204 kể cả khi không có gì để đánh dấu: phía gọi đang nói "tôi đã xem trang
+    này", và câu đó luôn đúng. 404 hay 409 ở đây chỉ buộc frontend viết một nhánh
+    xử lý cho một tình huống không phải lỗi.
+    """
+    if mark_seen(db, current_user.id):
+        db.commit()

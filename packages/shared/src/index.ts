@@ -42,6 +42,21 @@ export type RecallCheck = components["schemas"]["RecallCheck"];
 export type BackdropPublic = components["schemas"]["BackdropPublic"];
 export type BackdropUpdate = components["schemas"]["BackdropUpdate"];
 export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
+export type ProgressionPublic = components["schemas"]["ProgressionPublic"];
+export type DailyTasksPublic = components["schemas"]["DailyTasksPublic"];
+export type BadgesPublic = components["schemas"]["BadgesPublic"];
+export type BadgePublic = components["schemas"]["BadgePublic"];
+export type FramePublic = components["schemas"]["FramePublic"];
+export type ProgressionConfigAdmin = components["schemas"]["ProgressionConfigAdmin"];
+export type ProgressionSettingUpdate = components["schemas"]["ProgressionSettingUpdate"];
+export type DailyTaskSlotAdmin = components["schemas"]["DailyTaskSlotAdmin"];
+export type DailyTaskSlotCreate = components["schemas"]["DailyTaskSlotCreate"];
+export type LevelTierAdmin = components["schemas"]["LevelTierAdmin"];
+export type FrameTierAdmin = components["schemas"]["FrameTierAdmin"];
+export type FrameTierCreate = components["schemas"]["FrameTierCreate"];
+export type BadgeRuleAdmin = components["schemas"]["BadgeRuleAdmin"];
+export type BadgeRuleCreate = components["schemas"]["BadgeRuleCreate"];
+export type DailyTaskPublic = components["schemas"]["DailyTaskPublic"];
 export type UserProfileUpdate = components["schemas"]["UserProfileUpdate"];
 export type PasswordChange = components["schemas"]["PasswordChange"];
 export type LearningStats = components["schemas"]["LearningStats"];
@@ -127,6 +142,28 @@ export const API_ROUTES = {
   // chính người đang đăng nhập, không phải trang cá nhân công khai.
   profile: "/api/v1/profile",
   profileStats: "/api/v1/profile/stats",
+  progression: "/api/v1/profile/progression",
+  dailyTasks: "/api/v1/daily-tasks",
+  badges: "/api/v1/progression/badges",
+  badgesSeen: "/api/v1/progression/badges/seen",
+
+  // Cấu hình hệ level. Mọi đường ghi ở đây trả về TOÀN BỘ cấu hình, nên màn hình
+  // quản trị không bao giờ phải tự đoán trạng thái sau khi sửa — nó thay cả khối
+  // bằng thứ máy chủ vừa trả về. Bốn phần chỉ có nghĩa khi đứng cạnh nhau (một
+  // bậc khung ở level 30 là vô nghĩa nếu bảng level dừng ở 25).
+  adminProgression: "/api/v1/admin/progression",
+  adminProgressionSetting: "/api/v1/admin/progression/setting",
+  adminProgressionLevels: "/api/v1/admin/progression/levels",
+  adminProgressionLevelsGenerate: "/api/v1/admin/progression/levels/generate",
+  adminProgressionSlots: "/api/v1/admin/progression/slots",
+  adminProgressionSlot: (id: string) => `/api/v1/admin/progression/slots/${id}`,
+  // Vé tải tranh khung/huy hiệu. Không có bước `confirm` riêng: bước đó chính là
+  // lệnh PATCH gắn khoá vào hàng, và nó kiểm tiền tố + hỏi lại nhà cung cấp.
+  adminProgressionAssetTicket: "/api/v1/admin/progression/assets/ticket",
+  adminProgressionFrames: "/api/v1/admin/progression/frames",
+  adminProgressionFrame: (code: string) => `/api/v1/admin/progression/frames/${code}`,
+  adminProgressionBadges: "/api/v1/admin/progression/badges",
+  adminProgressionBadge: (code: string) => `/api/v1/admin/progression/badges/${code}`,
   avatarTicket: "/api/v1/profile/avatar/ticket",
   avatar: "/api/v1/profile/avatar",
 
