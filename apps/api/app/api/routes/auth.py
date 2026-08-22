@@ -115,7 +115,17 @@ def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
 )
 def login(body: UserLogin, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(User).filter(User.email == body.email.lower()).first()
-    if user is None or not verify_password(body.password, user.hashed_password):
+    # `hashed_password is None` = tài khoản chỉ đăng nhập bằng Google/Apple.
+    #
+    # Trả về đúng thông báo chung như khi sai mật khẩu, KHÔNG phải "tài khoản này
+    # dùng Google": câu đó xác nhận email nào có tài khoản ở đây và bằng đường
+    # nào, tức là một máy dò tài khoản miễn phí. Lời nhắc đúng chỗ nằm ở trang
+    # đăng nhập, nơi cả hai nút cùng hiện ra cho mọi người.
+    if (
+        user is None
+        or user.hashed_password is None
+        or not verify_password(body.password, user.hashed_password)
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -151,6 +161,16 @@ def change_password(
     này — nên nếu không đưa lại token thì người dùng đổi mật khẩu xong sẽ bị
     đăng xuất ngay tại chỗ, và trông y hệt như một lỗi.
     """
+    if current_user.hashed_password is None:
+        # Tài khoản chưa từng có mật khẩu (đăng nhập bằng Google/Apple). Đây
+        # KHÔNG phải chỗ đặt mật khẩu lần đầu: endpoint này chứng minh quyền
+        # bằng chính mật khẩu cũ, nên với tài khoản không có mật khẩu thì nó
+        # không chứng minh được gì cả. Một đường "đặt mật khẩu lần đầu" cần bằng
+        # chứng khác (email xác minh), và đó là tính năng riêng.
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Tài khoản này đăng nhập bằng Google hoặc Apple nên chưa có mật khẩu.",
+        )
     if not verify_password(body.current_password, current_user.hashed_password):
         # Cố ý không nói rõ sai ở đâu, và cố ý KHÔNG dùng 401: token vẫn hợp lệ,
         # thứ bị từ chối là hành động. Trả 401 ở đây sẽ khiến tầng frontend hiểu

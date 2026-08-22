@@ -127,6 +127,7 @@ planning/         product spec, ADRs, architecture and the single tracker
 | [`ARCHITECTURE.md`](planning/ARCHITECTURE.md) | What the system is made of right now |
 | [`DESIGN-SYSTEM.md`](planning/DESIGN-SYSTEM.md) | UI tokens, type, components — implemented across `apps/web` |
 | [`MEDIA-PIPELINE.md`](planning/MEDIA-PIPELINE.md) | How audio and images work end to end, and where they are weak |
+| [`ADR-008-AUTH-PROVIDERS.md`](planning/ADR-008-AUTH-PROVIDERS.md) | Sign-in with Google and Apple: the flow, the linking rule, and how to get credentials |
 | [`USER-ROAD.md`](planning/USER-ROAD.md) | Levels, XP, daily tasks, badges and avatar frames — built, configurable at `/admin/progression` |
 
 Decisions and their reasoning live in the ADRs: the domain schema

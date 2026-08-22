@@ -192,8 +192,52 @@
   .shadow-overlay {
     box-shadow: var(--overlay-shadow);
   }
+
+  /* Nhịp thở của linh vật ở trang đăng nhập.
+   *
+   * Biên độ rất nhỏ và chu kỳ chậm — đủ để nhân vật không đứng chết, chưa đủ để
+   * thành thứ phải nhìn. Một chuyển động lớn cạnh hai ô nhập là thứ cạnh tranh
+   * với đúng việc người ta tới đây để làm.
+   *
+   * `translateY` chứ không `top`: chỉ transform chạy trên compositor.
+   */
+  .animate-breathe {
+    animation: breathe 3.6s ease-in-out infinite;
+  }
+
+  /* Con trỏ của slogan gõ chữ. `steps(2)` cho nó tắt/bật dứt khoát như con trỏ
+     thật, thay vì mờ dần — mờ dần đọc ra là một hiệu ứng, không phải một con
+     trỏ. */
+  .animate-caret {
+    animation: caret 1s steps(2, jump-none) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-breathe,
+    .animate-caret {
+      animation: none;
+    }
+  }
 }
 
+@keyframes caret {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
 /* Nền lưới kỹ thuật của TOÀN BỘ khung ứng dụng.
  *
  * Vẽ bằng hai `repeating-linear-gradient` trên chính token `--rule`, nên nó tự

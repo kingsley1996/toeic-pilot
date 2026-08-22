@@ -4,6 +4,7 @@
 import type { components } from "./api-types";
 
 export type TokenResponse = components["schemas"]["TokenResponse"];
+export type AuthProviderPublic = components["schemas"]["AuthProviderPublic"];
 export type UserPublic = components["schemas"]["UserPublic"];
 export type UserRegister = components["schemas"]["UserRegister"];
 export type UserLogin = components["schemas"]["UserLogin"];
@@ -140,6 +141,14 @@ export const API_ROUTES = {
 
   // Hồ sơ người dùng. Không có biến thể nhận id: đây là dữ liệu riêng của
   // chính người đang đăng nhập, không phải trang cá nhân công khai.
+  // Đăng nhập bằng nhà cung cấp bên ngoài. `authStart` KHÔNG gọi bằng `fetch`:
+  // nó là một lần chuyển hướng cả trang, vì luồng phải đi qua màn hình của
+  // Google/Apple rồi quay lại. Gọi bằng fetch sẽ nhận về HTML của Google và
+  // không có gì hiển thị được.
+  authProviders: "/api/v1/auth/providers",
+  authStart: (provider: string, next: string) =>
+    `/api/v1/auth/${provider}/start?next=${encodeURIComponent(next)}`,
+
   profile: "/api/v1/profile",
   profileStats: "/api/v1/profile/stats",
   progression: "/api/v1/profile/progression",

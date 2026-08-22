@@ -4,7 +4,7 @@
 > Cập nhật **ngay khi** hoàn thành một task, không để dồn.
 >
 > Các tài liệu khác có vai trò khác và **không** chứa trạng thái sprint:
-> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` … `ADR-007` (`PHASE2-AUDIO` = ADR-002) = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện, **đã triển khai toàn bộ `apps/web`** · `SPEC-LEARNING-HUB.md` và `SPEC-AI-COACH.md` = bộ mặc định tạm thời, dựng để sửa · `toeic_question_label_taxonomy.md` = bảng nhãn câu hỏi, **sửa tay và là nguồn sự thật** · `import_media.md` = runbook gắn media vào đề đã dán · `USER-ROAD.md` = level/badge/XP/daily task — **lát 1 và 2 đã dựng** (mục 4v), badge và khung avatar chưa · `REVIEW-OPUS.md` và `qwen3p8-review.md` = hai bản review kỹ thuật, **ảnh chụp theo ngày, không cập nhật tiếp**
+> `PLAN.md` = spec sản phẩm · `ARCHITECTURE.md` = kiến trúc hiện trạng · `ADR-001` … `ADR-008` (`PHASE2-AUDIO` = ADR-002) = quyết định + lý do · `MEDIA-PIPELINE.md` = media hoạt động thế nào + điểm yếu · `DESIGN-SYSTEM.md` = hệ thống thiết kế giao diện, **đã triển khai toàn bộ `apps/web`** · `SPEC-LEARNING-HUB.md` và `SPEC-AI-COACH.md` = bộ mặc định tạm thời, dựng để sửa · `toeic_question_label_taxonomy.md` = bảng nhãn câu hỏi, **sửa tay và là nguồn sự thật** · `import_media.md` = runbook gắn media vào đề đã dán · `USER-ROAD.md` = level/badge/XP/daily task — **lát 1 và 2 đã dựng** (mục 4v), badge và khung avatar chưa · `REVIEW-OPUS.md` và `qwen3p8-review.md` = hai bản review kỹ thuật, **ảnh chụp theo ngày, không cập nhật tiếp**
 
 **Cập nhật lần cuối:** 2026-08-21
 
@@ -17,11 +17,11 @@ Số liệu dưới đây **đo trên `main` ngày 2026-08-21**, không phải �
 | | |
 |---|---|
 | **Trạng thái** | Từ vựng, dictation và luyện đề chạy đầu-cuối trên nội dung thật. Lớp AI đã gắn nhãn câu hỏi và sinh giải thích. Còn thiếu: **RAG** (chặn bởi nội dung, xem `ADR-003` §3.3) |
-| **Test API** | **674 chạy** + 2 `external` deselect mặc định |
+| **Test API** | **683 chạy** + 2 `external` deselect mặc định |
 | **E2E** | 7 tệp, **18 bài** — 14 chạy, 4 bài `vocabulary.spec.ts` tắt cứng chờ CI seed nội dung |
 | **Gate CI** | 4 job (`api`, `web`, `contract`, `docker`), tất cả xanh. Branch protection **chưa bật** |
-| **Migration** | **33 bản**, mới nhất `033_progression_art` |
-| **Bảng** | **45** (đo từ `Base.metadata`) |
+| **Migration** | **34 bản**, mới nhất `034_user_identity` |
+| **Bảng** | **46** (đo từ `Base.metadata`) |
 | **Endpoint** | **148 thao tác HTTP trên 120 đường dẫn** — 95 admin, 53 còn lại (đếm từ `packages/shared/openapi.json`) |
 | **Trang web** | **38 route** — trang chủ khu học ở `/dashboard`, `/learn` là redirect |
 | **Media** | **2 506** clip audio (`audio_asset`), 10 ảnh |
@@ -989,6 +989,69 @@ Bộ skill `agent-sprite-forge` (`~/.claude/skills/`) **dùng được, nhưng c
 **`tone` của mỗi bậc vẫn đặt dù đã có tranh.** Nó là màu vẽ ngay trong lúc ảnh còn tải, nên bỏ trống nghĩa là khung không tồn tại cho tới khi ảnh về — với kết nối chậm đó là một avatar nhấp nháy đổi hình.
 
 **Đã chạy trọn vòng bằng tranh thật** (2026-08-22): sinh → tách nền → vé → POST lên Cloudinary → `PATCH` gắn khoá → học viên đọc được `image_url` → CDN trả 200. Tám khung (512px) và một huy hiệu `streak_7` (256px) đang nằm trong database dev và phục vụ được từ CDN.
+
+---
+
+## 4y. Đăng nhập bằng Google và Apple · 🟢 Google xong, Apple dựng sẵn (2026-08-22)
+
+Quyết định và lý do ở [`ADR-008-AUTH-PROVIDERS.md`](ADR-008-AUTH-PROVIDERS.md), kèm runbook lấy khoá cho cả hai bên.
+
+- [x] Migration `034_user_identity` — bảng `user_identity`, `users.hashed_password` bỏ NOT NULL
+- [x] `app/services/oauth.py` — mô tả hai nhà cung cấp, kho `state`, xác minh `id_token`, luật liên kết
+- [x] `GET /auth/providers`, `GET /auth/{provider}/start`, callback cho cả GET (Google) lẫn POST form (Apple)
+- [x] Nút "Tiếp tục với…" ở `/login` và `/register`, trang `/auth/callback`
+- [x] `tests/test_oauth.py` — 8 bài, không bài nào gọi ra mạng thật
+- [ ] **Chạy thật với Google** — cần Client ID/secret của một project Google Cloud
+- [ ] **Apple** — cần tài khoản Apple Developer và một domain HTTPS; Apple không nhận `localhost`
+- [ ] Gỡ liên kết trong trang hồ sơ, và đặt mật khẩu lần đầu cho tài khoản chỉ có nhà cung cấp
+
+**Không nhúng SDK của Google hay Apple, và đó là ràng buộc từ chính dự án này.** P1-7b (token trong `localStorage` thay vì cookie httpOnly) được hoãn *với lý do viết ra*: app không có script bên thứ ba nào. Nhúng `accounts.google.com/gsi` là làm lý do đó hết hiệu lực, và khi đó P1-7b phải trả trước tính năng này. Nên luồng đi phía máy chủ.
+
+**Tra theo `sub`, không theo email.** Email đổi được, và với Apple còn có thể là địa chỉ chuyển tiếp ẩn. Tra theo email nghĩa là ai đổi email bên Google sẽ thành một người mới ở đây, mất sạch lịch sử học.
+
+**Liên kết theo email chỉ khi đã xác minh và không phải địa chỉ ẩn.** Gắn bừa là một đường chiếm tài khoản có thật. Chi tiết dễ làm hỏng cả luật: **Apple gửi `email_verified` dạng chuỗi `"true"`, Google gửi boolean** — một phép so `is True` sẽ coi mọi tài khoản Apple là chưa xác minh và luật im lặng ngừng chạy.
+
+**`state` fail CLOSED khi Redis hỏng**, ngược với `rate_limit_anonymous`. Ở đó Redis hỏng mà chặn hết là một phụ thuộc mềm làm sập sản phẩm; ở đây Redis là thứ duy nhất chứng minh callback thuộc về một lần bấm có thật.
+
+**mypy bắt đúng hai chỗ mà tài khoản không mật khẩu đi qua.** Đổi `hashed_password` sang nullable làm `verify_password(..., None)` thành lỗi kiểu ở `/auth/login` và `/auth/password` — cả hai đều là đường mà một `None` lọt qua sẽ hỏng lặng lẽ. Hai chỗ đó giờ xử lý khác nhau có chủ ý: `/login` trả thông báo chung (nói "tài khoản này dùng Google" là một máy dò tài khoản), `/password` nói thẳng vì danh tính đã được chứng minh.
+
+### Giao diện đăng nhập / đăng ký: linh vật đổi bên, có trạng thái
+
+`/login` và `/register` chuyển vào **nhóm route `app/(auth)/`** dùng chung một layout. Đó là điều kiện để hiệu ứng tồn tại chứ không phải cách xếp thư mục cho gọn: layout của nhóm route **không bị dựng lại** khi đi giữa hai trang trong nhóm, nên linh vật giữ nguyên phần tử DOM, trượt sang bên kia, và nhịp chớp mắt không bị đặt lại. Gọi component từ trong mỗi trang thì mỗi lần chuyển là một lần tháo ra dựng lại — ảnh biến mất rồi hiện ra ở chỗ mới, không có gì để chuyển động. Ngoặc đơn không thêm đoạn nào vào URL.
+
+**Đổi chỗ bằng `translate-x`, không bằng `order`.** `order` không chuyển động được — trình duyệt chỉ nội suy được thuộc tính có giá trị trung gian, và thứ tự sắp xếp thì không có. Hai nửa rộng bằng nhau nên dịch 100% chiều rộng của chính mình là hoán vị khít.
+
+**Bốn khung hình sinh trong MỘT sheet 2×2**, không phải bốn lần sinh riêng: model không vẽ lại đúng một nhân vật hai lần, và mỗi khung lệch một chút ở mũ hay khăn thì lúc chớp mắt cả con vật giật một cái. Ba trạng thái đang dùng — idle, chớp mắt, che mắt khi con trỏ ở ô mật khẩu; khung vẫy tay để dành cho lúc có một khoảnh khắc chờ đủ dài để nhìn thấy.
+
+**Trạng thái "che mắt" nghe ở cấp `document`, không truyền prop.** Linh vật sống trong layout còn ô mật khẩu nằm trong từng trang — hai nhánh khác nhau của cây component. Nối bằng prop sẽ phải dựng một context xuyên qua layout chỉ để nói "đang gõ mật khẩu", và mỗi trang thêm sau lại phải nhớ nối vào. `focusin`/`focusout` nổi bọt lên `document`, nên một chỗ nghe phủ mọi ô mật khẩu kể cả của trang chưa viết.
+
+**Chớp mắt dùng hẹn giờ LỒNG NHAU, không `setInterval`:** mỗi lần cách nhau một khoảng khác nhau. Mắt bắt được nhịp đều rất nhanh, và lúc đó nó đọc ra là một vòng lặp chứ không phải một sinh vật. Hai khung kia được tải sẵn trong DOM ở kích thước 0 — không có bước đó thì lần chớp ĐẦU TIÊN là một khoảng trống, vì trình duyệt mới bắt đầu tải ảnh đúng lúc cần hiện.
+
+**`normalise_bg.py` phải viết lại vì nó ăn thủng linh vật.** Bản đầu quy mọi pixel nằm trong bán kính màu quanh nền thành magenta; thân nâu (170, 92, 72) chỉ cách nền hồng (205, 37, 135) **90,7** — vừa đúng ngưỡng 90 — nên 12% pixel thân bị coi là nền và khoét thành lỗ lỗ chỗ. Bản mới **lan từ mép ảnh vào**: nền thật luôn nối liền với mép, còn màu áo nhân vật thì không, nên một vùng bên trong có màu gần giống nền vẫn an toàn dù bán kính có rộng đến đâu. Đo lại: 0 pixel thân bị quy nhầm, chạy 0,87 giây.
+
+**Sinh sheet lần đầu hỏng theo kiểu chỉ phát hiện được khi xem từng khung:** model vẽ cây bút chì ở hai trong bốn ô, và hai ô đó là idle với chớp mắt — mỗi lần chớp là cây bút hiện ra rồi biến mất. Prompt hiện tại cấm hẳn đồ cầm tay, và ghi lý do ngay trong tệp prompt.
+
+### Giao diện đăng nhập / đăng ký dựng lại
+
+Bản trước là một cái thẻ trắng căn giữa với hai ô nhập — đúng hình dạng mà mọi ứng dụng đều có, và nó không nói gì về việc sản phẩm này làm gì.
+
+**Bản trung gian (đã gỡ): thang điểm TOEIC 10–990 dựng như một thước đo thật**, và nó mang thông tin đúng chứ không phải hình trang trí: khoảng điểm thật của kỳ thi, cùng hai ngưỡng năng lực ETS công bố (605 = giao tiếp công việc, 785 = thành thạo). Nó đóng luôn vai đường phân cách của trang, nên không có đường kẻ trang trí nào phải thêm.
+
+Ba chi tiết là hệ quả trực tiếp của DESIGN-SYSTEM chứ không phải sở thích:
+
+- **Ba dải năng lực `rounded-none`**, cùng lý do `Meter` đã ghi: vạch chia của thiết bị đo không bo tròn. Bo 4px ở chiều cao 6px biến chúng thành ba viên thuốc rời, đọc ra là ba cái nhãn chứ không phải một phép đo liên tục.
+- **Bốn chấm màu giọng đọc dùng đúng thang `--accent-{us,uk,au,ca}`** — thang đó tồn tại để phân loại giọng đọc, nên đây là chỗ duy nhất trong trang được phép có bốn màu, và nó đang làm đúng việc của mình.
+- **`leading` không dưới 1.28 ở tiêu đề 2.6rem**: tiếng Việt chồng hai tầng dấu lên một nguyên âm, và thang display của tiếng Anh (1.0–1.1) sẽ cắt cụt dấu.
+
+Chuyển động: đúng MỘT — ba dải vẽ ra từ trái sang, so le nhau, một lần lúc tải. Thuần CSS keyframes chứ không phải state React (`setState` trong effect bị lint chặn), `scaleX` chứ không phải `width` (chỉ scaleX chạy trên compositor), và `prefers-reduced-motion` tắt hẳn.
+
+**Hai lỗi tự soi ra khi nhìn màn hình thật:** nửa dưới trang trống trơn vì mọi thứ dính lên đỉnh (sửa bằng căn giữa dọc), và khối biểu mẫu bị lưới kéo giãn nên có một khoảng trống dưới đáy, trông như đang thiếu một trường nhập (sửa bằng `self-start`).
+
+### Kiểm
+
+`pytest` **683 passed / 2 deselected** · ruff + `mypy` strict (110 file) sạch · `tsc`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade head` chạy `034` thật trên database dev · Playwright **14 bài chạy, xanh** · gọi thật: chưa cấu hình thì `/auth/providers` trả `[]` và `/auth/google/start` trả **404**, giao diện không hiện nút nào.
+
+**Chưa chạy được đầu-cuối với nhà cung cấp thật** — cần khoá. Đó là lý do phần "chạy thật với Google" ở trên còn để trống thay vì đánh dấu xong.
 
 ---
 

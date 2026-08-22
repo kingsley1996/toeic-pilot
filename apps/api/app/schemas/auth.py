@@ -60,3 +60,14 @@ class UserPublic(BaseModel):
     # second loading state inside the one place the app has already decided to
     # have only one.
     profile: UserProfilePublic
+
+
+class AuthProviderPublic(BaseModel):
+    """Một nhà cung cấp đang bật.
+
+    Giao diện chỉ hiện nút của thứ có trong danh sách này. Không có nó thì nút
+    phải hiện theo phỏng đoán, và một nút bấm vào ra 404 tệ hơn hẳn không có nút.
+    """
+
+    id: str
+    label: str

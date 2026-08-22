@@ -108,6 +108,31 @@ class Settings(BaseSettings):
     s3_access_key_id: str = ""
     s3_secret_access_key: SecretStr = SecretStr("")
 
+    # --- đăng nhập bằng nhà cung cấp bên ngoài (ADR-008) --------------------
+    #
+    # Mỗi nhà cung cấp BẬT khi và chỉ khi có đủ thông tin của nó. Không có cờ
+    # `enabled` riêng: một cờ bật kèm thông tin thiếu cho ra một nút bấm vào là
+    # lỗi, và người dùng không phân biệt được "chưa dựng" với "đang hỏng".
+    #
+    # `google_oauth_client_id` chứ không phải `google_client_id`, vì phía trên
+    # đã có `google_api_key` của tầng AI — hai thứ khác hẳn nhau, và hai cái tên
+    # gần giống nhau trong cùng một tệp là chỗ để dán nhầm khoá.
+    google_oauth_client_id: str = ""
+    google_oauth_client_secret: SecretStr = SecretStr("")
+
+    # Apple: `client_id` là Service ID, và "client secret" phải TỰ SINH — nó là
+    # một JWT ký ES256 bằng khoá .p8, hạn tối đa 6 tháng. Xem `app/services/oauth.py`.
+    apple_client_id: str = ""
+    apple_team_id: str = ""
+    apple_key_id: str = ""
+    apple_private_key: SecretStr = SecretStr("")
+
+    # Gốc CÔNG KHAI của API, dùng để dựng redirect URI đăng ký với nhà cung cấp.
+    # Phải khớp từng ký tự với thứ đã khai bên Google/Apple, kể cả dấu `/` cuối.
+    oauth_callback_base_url: str = "http://localhost:8000"
+    # Nơi trả trình duyệt về sau khi đăng nhập xong.
+    web_base_url: str = "http://localhost:3000"
+
     @property
     def is_production(self) -> bool:
         return self.environment.lower() in {"production", "prod"}

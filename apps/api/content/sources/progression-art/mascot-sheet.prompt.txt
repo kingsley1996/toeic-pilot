@@ -1,0 +1,12 @@
+Sinh bằng `--ref` trỏ vào khung idle đã duyệt, để giữ đúng nhân vật.
+
+Using the attached character as the exact reference for identity, palette and style, draw a 2x2 grid sheet of the SAME character in four states. Identical body, identical size, identical camera distance and identical pose in every cell — ONLY the eyes and arms change:
+top-left: eyes open as two black dots, calm small smile, both arms hanging relaxed at its sides;
+top-right: eyes CLOSED as two short downward curved black lines, same calm small smile, both arms hanging relaxed at its sides;
+bottom-left: both hands raised and pressed flat over its own eyes, completely covering them, small smile, arms bent up to the face;
+bottom-right: eyes open as two black dots, wide happy smile, one arm raised in a wave.
+CRITICAL: the character holds NOTHING in any cell — no pencil, no pen, no stick, no object of any kind. Eyes are plain BLACK dots in every cell, never blue. Keep the leather aviator cap, goggles on the forehead, white scarf, and the same brown and cream palette in every cell. Flat vector illustration, clean thick outlines, two tones per shape, no gradients, no drop shadow, no ground shadow, no glow, no text, no letters, no numbers, no grid lines, no borders, no separators between cells. Absolutely no pink or magenta lines, strokes, outlines or details anywhere in the artwork itself. Solid #FF00FF magenta background everywhere, generous magenta padding inside every cell, nothing touching the cell edges.
+
+LƯU Ý ĐÃ TRẢ GIÁ MỘT LẦN: lượt đầu không cấm đồ cầm tay, và model vẽ cây bút chì
+ở hai trong bốn ô. Hai ô đó là idle và chớp mắt — nên mỗi lần chớp là cây bút
+hiện ra rồi biến mất. Câu "holds NOTHING in any cell" ở trên là vì thế.

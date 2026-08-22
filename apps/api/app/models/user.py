@@ -21,7 +21,13 @@ class User(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    # NULL cho tài khoản chỉ đăng nhập bằng Google/Apple.
+    #
+    # Cột này từng NOT NULL, và cách rẻ nhất để giữ nguyên là nhét một chuỗi băm
+    # rác vào — đó chính là cái bẫy: một hàng như thế trông y hệt tài khoản có
+    # mật khẩu, nên mọi đường kiểm "người này đặt mật khẩu chưa" đều trả lời sai.
+    # NULL nói đúng sự thật, và `verify_password` không bao giờ được gọi với nó.
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
     # Defaults to the least privilege, and registration never accepts it as input:
     # a self-service signup that can choose its own role is not a role system.
     role: Mapped[str] = mapped_column(String(16), nullable=False, server_default="learner")

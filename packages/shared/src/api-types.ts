@@ -1831,6 +1831,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Providers
+         * @description Nhà cung cấp đang BẬT — trả mảng trần, không phân trang.
+         *
+         *     Đây là bucket (A) của `app/schemas/common.py`: bị chặn bởi miền, tối đa vài
+         *     phần tử. Giao diện dùng nó để chỉ hiện nút của thứ thật sự bấm được.
+         */
+        get: operations["list_providers_api_v1_auth_providers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/register": {
         parameters: {
             query?: never;
@@ -1842,6 +1865,59 @@ export interface paths {
         put?: never;
         /** Register */
         post: operations["register_api_v1_auth_register_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/{provider_id}/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Callback Get
+         * @description Google quay về bằng GET.
+         */
+        get: operations["callback_get_api_v1_auth__provider_id__callback_get"];
+        put?: never;
+        /**
+         * Callback Post
+         * @description Apple quay về bằng POST form (`response_mode=form_post`).
+         *
+         *     Hai đường riêng chứ không một đường nhận cả hai: FastAPI đọc tham số từ query
+         *     hay từ form là do KIỂU khai báo quyết định, nên gộp lại sẽ thành một hàm mà
+         *     mỗi tham số phải thử hai chỗ — và chỗ nó đọc nhầm thì im lặng ra chuỗi rỗng.
+         */
+        post: operations["callback_post_api_v1_auth__provider_id__callback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/{provider_id}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Start
+         * @description Chuyển hướng sang nhà cung cấp.
+         *
+         *     `next` chỉ nhận đường dẫn nội bộ. Nhận URL tuyệt đối ở đây là dựng sẵn một
+         *     open redirect: kẻ tấn công gửi link `/auth/google/start?next=https://…` và
+         *     trang lừa đảo hiện ra sau một lần đăng nhập THẬT, tức là sau khi người dùng
+         *     vừa được xác nhận rằng mọi thứ bình thường.
+         */
+        get: operations["start_api_v1_auth__provider_id__start_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2900,6 +2976,19 @@ export interface components {
              */
             ext: "mp3" | "m4a" | "wav";
         };
+        /**
+         * AuthProviderPublic
+         * @description Một nhà cung cấp đang bật.
+         *
+         *     Giao diện chỉ hiện nút của thứ có trong danh sách này. Không có nó thì nút
+         *     phải hiện theo phỏng đoán, và một nút bấm vào ra 404 tệ hơn hẳn không có nút.
+         */
+        AuthProviderPublic: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
         /** AvatarConfirm */
         AvatarConfirm: {
             /** Storage Key */
@@ -3086,6 +3175,24 @@ export interface components {
             earned_count: number;
             /** Unseen Count */
             unseen_count: number;
+        };
+        /** Body_callback_post_api_v1_auth__provider_id__callback_post */
+        Body_callback_post_api_v1_auth__provider_id__callback_post: {
+            /**
+             * Code
+             * @default
+             */
+            code: string;
+            /**
+             * Error
+             * @default
+             */
+            error: string;
+            /**
+             * State
+             * @default
+             */
+            state: string;
         };
         /** Body_local_upload_media_upload__storage_key__post */
         Body_local_upload_media_upload__storage_key__post: {
@@ -8926,6 +9033,26 @@ export interface operations {
             };
         };
     };
+    list_providers_api_v1_auth_providers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthProviderPublic"][];
+                };
+            };
+        };
+    };
     register_api_v1_auth_register_post: {
         parameters: {
             query?: never;
@@ -8946,6 +9073,109 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    callback_get_api_v1_auth__provider_id__callback_get: {
+        parameters: {
+            query?: {
+                code?: string;
+                state?: string;
+                error?: string;
+            };
+            header?: never;
+            path: {
+                provider_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    callback_post_api_v1_auth__provider_id__callback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_callback_post_api_v1_auth__provider_id__callback_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_api_v1_auth__provider_id__start_get: {
+        parameters: {
+            query?: {
+                next?: string;
+            };
+            header?: never;
+            path: {
+                provider_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

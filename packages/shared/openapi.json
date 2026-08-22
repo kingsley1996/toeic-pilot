@@ -674,6 +674,25 @@
         "title": "AudioTicketRequest",
         "type": "object"
       },
+      "AuthProviderPublic": {
+        "description": "Một nhà cung cấp đang bật.\n\nGiao diện chỉ hiện nút của thứ có trong danh sách này. Không có nó thì nút\nphải hiện theo phỏng đoán, và một nút bấm vào ra 404 tệ hơn hẳn không có nút.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "AuthProviderPublic",
+        "type": "object"
+      },
       "AvatarConfirm": {
         "properties": {
           "storage_key": {
@@ -1185,6 +1204,27 @@
           "unseen_count"
         ],
         "title": "BadgesPublic",
+        "type": "object"
+      },
+      "Body_callback_post_api_v1_auth__provider_id__callback_post": {
+        "properties": {
+          "code": {
+            "default": "",
+            "title": "Code",
+            "type": "string"
+          },
+          "error": {
+            "default": "",
+            "title": "Error",
+            "type": "string"
+          },
+          "state": {
+            "default": "",
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "title": "Body_callback_post_api_v1_auth__provider_id__callback_post",
         "type": "object"
       },
       "Body_local_upload_media_upload__storage_key__post": {
@@ -13555,6 +13595,32 @@
         ]
       }
     },
+    "/api/v1/auth/providers": {
+      "get": {
+        "description": "Nhà cung cấp đang BẬT — trả mảng trần, không phân trang.\n\nĐây là bucket (A) của `app/schemas/common.py`: bị chặn bởi miền, tối đa vài\nphần tử. Giao diện dùng nó để chỉ hiện nút của thứ thật sự bấm được.",
+        "operationId": "list_providers_api_v1_auth_providers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AuthProviderPublic"
+                  },
+                  "title": "Response List Providers Api V1 Auth Providers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Providers",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/register": {
       "post": {
         "operationId": "register_api_v1_auth_register_post",
@@ -13591,6 +13657,176 @@
           }
         },
         "summary": "Register",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/{provider_id}/callback": {
+      "get": {
+        "description": "Google quay về bằng GET.",
+        "operationId": "callback_get_api_v1_auth__provider_id__callback_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider_id",
+            "required": true,
+            "schema": {
+              "title": "Provider Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Code",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "State",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "error",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Error",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Callback Get",
+        "tags": [
+          "auth"
+        ]
+      },
+      "post": {
+        "description": "Apple quay về bằng POST form (`response_mode=form_post`).\n\nHai đường riêng chứ không một đường nhận cả hai: FastAPI đọc tham số từ query\nhay từ form là do KIỂU khai báo quyết định, nên gộp lại sẽ thành một hàm mà\nmỗi tham số phải thử hai chỗ — và chỗ nó đọc nhầm thì im lặng ra chuỗi rỗng.",
+        "operationId": "callback_post_api_v1_auth__provider_id__callback_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider_id",
+            "required": true,
+            "schema": {
+              "title": "Provider Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_callback_post_api_v1_auth__provider_id__callback_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Callback Post",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/{provider_id}/start": {
+      "get": {
+        "description": "Chuyển hướng sang nhà cung cấp.\n\n`next` chỉ nhận đường dẫn nội bộ. Nhận URL tuyệt đối ở đây là dựng sẵn một\nopen redirect: kẻ tấn công gửi link `/auth/google/start?next=https://…` và\ntrang lừa đảo hiện ra sau một lần đăng nhập THẬT, tức là sau khi người dùng\nvừa được xác nhận rằng mọi thứ bình thường.",
+        "operationId": "start_api_v1_auth__provider_id__start_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "provider_id",
+            "required": true,
+            "schema": {
+              "title": "Provider Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "next",
+            "required": false,
+            "schema": {
+              "default": "/dashboard",
+              "title": "Next",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start",
         "tags": [
           "auth"
         ]

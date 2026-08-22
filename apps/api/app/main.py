@@ -20,6 +20,7 @@ from app.api.routes import (
     health,
     learning,
     media,
+    oauth,
     practice,
     profile,
 )
@@ -67,6 +68,7 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(oauth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")

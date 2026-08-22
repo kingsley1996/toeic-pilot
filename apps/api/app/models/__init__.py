@@ -11,6 +11,7 @@ from app.models.dictation import (
     DictationStory,
     DictationTopic,
 )
+from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.practice import (
@@ -58,6 +59,8 @@ from app.models.vocabulary import (
 # fixture alike. A model missing from this list produces "no such table" in tests
 # and an empty autogenerate diff in Alembic.
 __all__ = [
+    "IDENTITY_PROVIDERS",
+    "UserIdentity",
     "BADGE_ICONS",
     "BADGE_METRICS",
     "DAILY_TASK_KINDS",
