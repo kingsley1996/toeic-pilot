@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and welcome to our factory. My name is Helen, and I'll be your guide today. Our tour will last about forty-five minutes. We'll begin in the assembly area, where the main components are put together. Next, we'll move to the packaging room, and we'll finish in the quality-control lab. Before we enter the production floor, please put on the safety vests provided near the entrance. Photography is not allowed anywhere inside the factory, so please keep your phones in your bags. At the end of the tour, we'll gather in the visitor center for a short question session and some refreshments. If you have any special needs, please tell me now. Thank you, and let's begin.
+
+[QUESTION]
+Where is the talk being made?
+(A) At a train station
+(B) At a museum
+(C) At a hotel
+(D) At a factory
+Answer: D
+Source: original
+[QUESTION]
+What will the visitors see first?
+(A) The assembly area
+(B) The packaging room
+(C) The quality-control lab
+(D) The visitor center
+Answer: A
+Source: original
+[QUESTION]
+What are the listeners asked to do before entering the production floor?
+(A) Sign a visitor form
+(B) Put on safety vests
+(C) Take photographs
+(D) Leave their bags outside
+Answer: B
+Source: original

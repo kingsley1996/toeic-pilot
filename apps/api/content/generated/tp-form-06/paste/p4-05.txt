@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone, and welcome to the new employee training program. I’m Daniel from Human Resources, and I’m glad to see so many of you here. Over the next three days, we will introduce our workplace policies, safety procedures, and the tools you will use in your daily tasks. This morning, we will begin with a short tour of the building, so please leave your bags in this room. If you have any questions during the tour, please save them until we return, because we will answer them after lunch. After lunch, you will meet your team leaders, who will explain your first assignments. I know starting a new job can feel overwhelming, but we have designed this program to help you feel confident by Friday. Please remember to bring your identification card tomorrow, because you will need it to enter the training center. Thank you for joining us.
+
+[QUESTION]
+What is the main purpose of the talk?
+(A) To describe a product launch event
+(B) To announce a change in office hours
+(C) To welcome new employees to a training program
+(D) To assign office workspaces
+Answer: C
+Source: original
+[QUESTION]
+What will the listeners do after lunch?
+(A) Bring their identification cards
+(B) Take a building tour
+(C) Leave their bags in the room
+(D) Meet their team leaders
+Answer: D
+Source: original
+[QUESTION]
+What does the speaker imply when he says, "please save them until we return"?
+(A) The questions should wait until after the tour
+(B) The questions should be asked immediately
+(C) The questions will not be answered at all
+(D) The questions must be sent by email
+Answer: A
+Source: original

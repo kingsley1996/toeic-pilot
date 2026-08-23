@@ -1,0 +1,6 @@
+kind: chart
+Projected Quarterly Sales in thousands
+First quarter | 36
+Second quarter | 54
+Third quarter | 47
+Fourth quarter | 62

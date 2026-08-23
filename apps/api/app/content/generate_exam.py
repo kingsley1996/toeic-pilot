@@ -71,7 +71,9 @@ def _gateway() -> Gateway:
 
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
-    builder = {1: bp.build_part1, 3: bp.build_part3, 5: bp.build_part5}[args.part]
+    builder = {1: bp.build_part1, 3: bp.build_part3, 4: bp.build_part4, 5: bp.build_part5}[
+        args.part
+    ]
     path = blueprint_path(args.slug)
     plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
     problems = bp.validate(plan)
@@ -323,12 +325,11 @@ def cmd_graphic(args: argparse.Namespace) -> int:
 
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
-    # Thư mục RIÊNG, không chung với ảnh Part 1. `import_media` khớp theo số
-    # trong tên tệp và không có cách nào biết `p1-03.png` với `p3-11.png` thuộc
-    # hai part khác nhau — trộn chung thì mọi lượt nhập đều báo "file thừa".
-    out_dir = workdir / "graphic-images"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
+    # Một thư mục CHO MỖI PART. `import_media` khớp theo số trong tên tệp và
+    # `_PART_LABEL` bóc tiền tố `p3`/`p4` đi trước khi đọc số — nên `p4-09.png`
+    # nằm chung với ảnh Part 3 sẽ khớp thành cụm thứ 9 của Part 3. Khớp SAI mà
+    # vẫn "thành công", đúng loại lỗi mà luật đặt tên của `import_media` tồn tại
+    # để chặn.
     made = 0
     problems = 0
     for part in plan.parts:
@@ -346,6 +347,8 @@ def cmd_graphic(args: argparse.Namespace) -> int:
                 print(f"  ✗ {slot.id}: {'; '.join(found)}", file=sys.stderr)
                 problems += 1
                 continue
+            out_dir = workdir / "graphic-images" / f"part{part.part}"
+            out_dir.mkdir(parents=True, exist_ok=True)
             target = out_dir / f"{slot.id}.png"
             render(graphic, target)
             (out_dir / f"{slot.id}.alt.txt").write_text(graphic.alt_text() + "\n")
@@ -508,7 +511,7 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
-    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 3, 5))
+    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 3, 4, 5))
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")

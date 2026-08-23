@@ -23,6 +23,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from app.content.exam.blueprint import (
+    GRAPHIC_POSITION,
     LISTENING_QUESTIONS_PER_SET,
     Blueprint,
     QuestionSlot,
@@ -230,12 +231,13 @@ names given in the instruction below. Every question block needs its own
 `Answer:` and `Source: original` lines."""
 
 
-GRAPHIC_RULES = f"""
+_GRAPHIC_RULES_TEMPLATE = f"""
 
-THIS CONVERSATION COMES WITH A GRAPHIC
-The test book prints a small graphic beside the three questions, and the LAST
-question begins with "Look at the graphic." Emit the graphic first, as data.
-The first line names its kind. Four kinds exist; use the one you are told to.
+THIS ITEM COMES WITH A GRAPHIC
+The test book prints a small graphic beside the three questions. EXACTLY ONE
+question begins with "Look at the graphic", and it is question number {{ordinal}}
+of the three — not any other. Emit the graphic first, as data. The first line
+names its kind. Four kinds exist; use the one you are told to.
 
 {GRAPHIC_MARKER}
 kind: table
@@ -285,15 +287,106 @@ Use ordinary personal names for the people — never a voice name like
 
 Separate cells with a vertical bar. Keep every value short.
 
+Invent your own titles, labels and numbers. The examples above are a shape to
+copy, never content to copy — reusing their values makes two different papers
+carry the same graphic.
+
 Two rules make it a real graphic question rather than a detail question:
 
 1. The four options of the LAST question are exactly the four items on that
    kind's answer axis, and nothing else.
-2. The conversation must NEVER say the winning item's name. It gives the other
+2. The speaker must NEVER say the winning item's name. It gives the other
    information instead ("the one that's about twenty-seven dollars", "the hour
    when we're both free", "right across from the bookstore"), so the listener
-   has to read the graphic. If a speaker says "the weekly planner" out loud, the
-   graphic is decoration and the question is answerable without it."""
+   has to read the graphic. If the weekly planner is named out loud, the graphic
+   is decoration and the question is answerable without it."""
+
+
+def graphic_rules(position: int) -> str:
+    """Luật hình, gắn đúng VỊ TRÍ câu hỏi về hình của part đang viết.
+
+    Vị trí khác nhau giữa hai part (Part 3 câu thứ ba, Part 4 câu thứ hai), nên
+    một hằng số nói "câu cuối" là đúng cho Part 3 và sai cho Part 4 — và cái sai
+    đó chỉ lộ ra ở cổng kiểm, sau khi đã trả tiền cho lượt gọi.
+    """
+    ordinal = {1: "one", 2: "two", 3: "three"}[position + 1]
+    return _GRAPHIC_RULES_TEMPLATE.format(ordinal=ordinal)
+
+
+SYSTEM_PART4 = """You write TOEIC Part 4 (Talks) items for an original practice
+test.
+
+A Part 4 item is ONE short talk by a SINGLE speaker plus THREE questions about
+it. The talk is heard, never printed; the questions and their four options ARE
+printed in the test book.
+
+THE TALK
+- One voice throughout. No dialogue, no second speaker, no interruptions.
+- 100-150 words of natural spoken business English, in the register its form
+  calls for: a voice-mail message, a public announcement, a radio commercial, an
+  excerpt from a meeting, or a short talk to an audience.
+- It opens the way that form opens — "Hi, this is Marcus from...", "Attention,
+  shoppers", "Good morning, everyone, and welcome to..." — because the first
+  question is usually about who is speaking or where.
+- Every fact the three questions depend on must be SAID out loud.
+- No real company names, no brand names, no currency symbols (say "forty
+  dollars", not "$40" — it is read aloud).
+
+THE THREE QUESTIONS
+- Each asks about something different. Do not ask twice about the same sentence.
+- Four printed options each, exactly one correct.
+- The three wrong options must be wrong **against what was said**: a detail that
+  was corrected, an action ruled out, a time that changed, or something never
+  mentioned. An option that is merely unlikely is a second correct answer.
+- Options are short noun phrases or short clauses, similar length to each other.
+
+Reply with exactly this shape and nothing else — no preamble, no fences:
+
+[SCRIPT]
+voice: VOICE_A
+Attention, passengers on flight two-oh-six to Denver. The departure gate has
+been changed from gate twelve to gate nineteen. Boarding will begin in about
+twenty minutes. Please allow extra time to reach the new gate.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At an airport
+(B) At a train station
+(C) At a bus terminal
+(D) At a ferry landing
+Answer: A
+Source: original
+
+[QUESTION]
+...
+
+[QUESTION]
+...
+
+Use only the voice name given in the instruction below, on a single `voice:`
+line. Every question block needs its own `Answer:` and `Source: original`."""
+
+
+def prompt_for_part4(slot: QuestionSlot) -> str:
+    kinds = "\n".join(
+        f"  {index}. {LABELS[code].label_vi} ({code})"
+        for index, code in enumerate(slot.question_types, start=1)
+    )
+    return (
+        f"Viết một bài nói Part 4 và ba câu hỏi về nó.\n"
+        f"- Dạng bài: {LABELS[slot.topic].label_vi}\n"
+        f"- Tình huống: {slot.context}\n"
+        f"- MỘT người nói, giọng: {slot.voices[0]}\n"
+        f"- Ba câu hỏi, theo đúng thứ tự này:\n{kinds}\n"
+        f"- Mọi dữ kiện mà ba câu hỏi cần phải được NÓI RA trong bài."
+        + (
+            f"\n- Hình đi kèm — dùng ĐÚNG `kind: {slot.graphic.split(':')[0].strip()}`: "
+            f"{slot.graphic.partition(':')[2].strip()}. Bài nói KHÔNG được đọc tên "
+            f"mục là đáp án — nó chỉ nói thông tin còn lại."
+            if slot.graphic
+            else ""
+        )
+    )
 
 
 def prompt_for_part3(slot: QuestionSlot) -> str:
@@ -483,10 +576,11 @@ class MissingBlock(RuntimeError):
     """Đầu ra không chứa `[QUESTION]` — không có gì để lưu."""
 
 
-_SYSTEM_FOR = {1: SYSTEM_PART1, 3: SYSTEM_PART3}
+_SYSTEM_FOR = {1: SYSTEM_PART1, 3: SYSTEM_PART3, 4: SYSTEM_PART4}
 _PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
     1: prompt_for_part1,
     3: prompt_for_part3,
+    4: prompt_for_part4,
 }
 
 
@@ -499,8 +593,8 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
         lambda: gateway.run(
             LLMRequest(
                 system=(
-                    SYSTEM_PART3 + GRAPHIC_RULES
-                    if part == 3 and slot.graphic
+                    _SYSTEM_FOR[part] + graphic_rules(GRAPHIC_POSITION[part])
+                    if part in (3, 4) and slot.graphic
                     else _SYSTEM_FOR.get(part, SYSTEM)
                 ),
                 user=_PROMPT_FOR.get(part, prompt_for)(slot),

@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Attention, passengers. This is an airport announcement from the departure desk. Your flight, four-seven-two to Seattle, has a gate change. The flight will now leave from gate twenty-three instead of gate nine. Boarding is scheduled to begin at ten forty-five, about thirty minutes from now. Please check the overhead screens and follow the signs to the new gate. Do not go to gate nine, because it is being used by another flight. Passengers with small children or needing extra time should speak to an airline agent near the departure desk. We apologize for the inconvenience and thank you for your patience. Have a pleasant flight.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a hotel
+(B) At an airport
+(C) At a train station
+(D) At a bus terminal
+Answer: B
+Source: original
+[QUESTION]
+What has been changed?
+(A) The destination city
+(B) The flight number
+(C) The departure gate
+(D) The boarding time
+Answer: C
+Source: original
+[QUESTION]
+What are all passengers asked to do?
+(A) Board the plane immediately
+(B) Wait at gate nine
+(C) Speak to an airline agent
+(D) Check the overhead screens
+Answer: D
+Source: original

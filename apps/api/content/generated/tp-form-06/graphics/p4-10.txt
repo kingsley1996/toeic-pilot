@@ -1,0 +1,4 @@
+kind: map
+Ground Floor Directory
+Counter 1: Information | Counter 2: Pharmacy
+Counter 3: Shoe Repair | Counter 4: Lost and Found

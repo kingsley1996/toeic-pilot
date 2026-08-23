@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Hello, this is Paul Renner from the dental office. I’m calling about the new sterilization unit we received yesterday. The delivery team left it in our storage room, but no one has contacted us to schedule the installation. We were told it would be set up within three business days, and we need it ready by Friday because we have patient appointments that afternoon. We have kept the box unopened, so the installer can inspect it immediately. Could you please check your calendar and call me back today with an installation time? If Thursday is not possible, please suggest the earliest morning slot on Friday. My number is five-five-five, zero-one-four-eight. Again, this is Paul Renner. Thank you.
+
+[QUESTION]
+What is the main purpose of the telephone message?
+(A) To ask about an installation schedule
+(B) To change a delivery address
+(C) To complain about a bill
+(D) To order extra supplies
+Answer: A
+Source: original
+[QUESTION]
+When did the caller receive the equipment?
+(A) Last week
+(B) Yesterday
+(C) This morning
+(D) Three days ago
+Answer: B
+Source: original
+[QUESTION]
+What does the caller ask the listener to do?
+(A) Arrange delivery for tomorrow
+(B) Send a written estimate
+(C) Call back today
+(D) Visit the office immediately
+Answer: C
+Source: original

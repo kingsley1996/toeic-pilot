@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone, and thank you for coming to today's meeting. The purpose is to announce our sales projections for the four quarters of next year. We will not discuss budgets or price changes today. Overall, we expect steady progress, and I am pleased to report that our strongest quarter is projected to bring in sixty-two thousand dollars. Our next highest result is fifty-four thousand dollars. While we are proud of these figures, we still need to improve the slower periods. Later this week, I will send a written summary to all department heads. Before we finish, I want to mention next steps. We will start planning the customer loyalty campaign in the quarter that shows fifty-four thousand dollars. Please be ready to share your ideas with your teams. Thank you.
+
+[QUESTION]
+What is the purpose of the meeting?
+(A) To announce a price increase
+(B) To approve a budget
+(C) To announce sales projections
+(D) To introduce a new manager
+Answer: C
+Source: original
+[QUESTION]
+Look at the graphic. Which quarter is projected to have the highest sales?
+(A) First quarter
+(B) Second quarter
+(C) Third quarter
+(D) Fourth quarter
+Answer: D
+Source: original
+[QUESTION]
+When will the company start planning the customer loyalty campaign?
+(A) Second quarter
+(B) First quarter
+(C) Third quarter
+(D) Fourth quarter
+Answer: A
+Source: original

@@ -103,7 +103,10 @@
             "PART_3_FUTURE_ACTION"
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
-          "voices": ["au_female_1", "au_male_1"],
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
           "graphic": ""
         },
         {
@@ -120,7 +123,10 @@
             "PART_3_REQUEST_OR_SUGGESTION"
           ],
           "topic": "PART_3_SHOPPING_OR_SERVICE",
-          "voices": ["ca_male_1", "ca_female_1"],
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
           "graphic": ""
         },
         {
@@ -137,7 +143,11 @@
             "PART_3_FUTURE_ACTION"
           ],
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
-          "voices": ["us_female_1", "us_male_1", "ca_male_1"],
+          "voices": [
+            "us_female_1",
+            "us_male_1",
+            "ca_male_1"
+          ],
           "graphic": ""
         },
         {
@@ -154,7 +164,10 @@
             "PART_3_REQUEST_OR_SUGGESTION"
           ],
           "topic": "PART_3_HOUSING",
-          "voices": ["uk_male_1", "uk_female_1"],
+          "voices": [
+            "uk_male_1",
+            "uk_female_1"
+          ],
           "graphic": ""
         },
         {
@@ -171,7 +184,10 @@
             "PART_3_FUTURE_ACTION"
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
-          "voices": ["au_female_1", "au_male_1"],
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
           "graphic": ""
         },
         {
@@ -188,7 +204,10 @@
             "PART_3_REQUEST_OR_SUGGESTION"
           ],
           "topic": "PART_3_SHOPPING_OR_SERVICE",
-          "voices": ["ca_male_1", "ca_female_1"],
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
           "graphic": ""
         },
         {
@@ -205,7 +224,11 @@
             "PART_3_FUTURE_ACTION"
           ],
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
-          "voices": ["us_female_1", "us_male_1", "ca_male_1"],
+          "voices": [
+            "us_female_1",
+            "us_male_1",
+            "ca_male_1"
+          ],
           "graphic": ""
         },
         {
@@ -222,7 +245,10 @@
             "PART_3_REQUEST_OR_SUGGESTION"
           ],
           "topic": "PART_3_HOUSING",
-          "voices": ["uk_male_1", "uk_female_1"],
+          "voices": [
+            "uk_male_1",
+            "uk_female_1"
+          ],
           "graphic": ""
         },
         {
@@ -239,7 +265,10 @@
             "PART_3_FUTURE_ACTION"
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
-          "voices": ["au_female_1", "au_male_1"],
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
           "graphic": ""
         },
         {
@@ -256,7 +285,10 @@
             "PART_3_REQUEST_OR_SUGGESTION"
           ],
           "topic": "PART_3_SHOPPING_OR_SERVICE",
-          "voices": ["ca_male_1", "ca_female_1"],
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
           "graphic": ""
         },
         {
@@ -273,7 +305,10 @@
             "PART_3_GRAPH_OR_TABLE_QUESTION"
           ],
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
-          "voices": ["us_female_1", "us_male_1"],
+          "voices": [
+            "us_female_1",
+            "us_male_1"
+          ],
           "graphic": "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price"
         },
         {
@@ -290,7 +325,11 @@
             "PART_3_GRAPH_OR_TABLE_QUESTION"
           ],
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
-          "voices": ["uk_male_1", "uk_female_1", "au_female_1"],
+          "voices": [
+            "uk_male_1",
+            "uk_female_1",
+            "au_female_1"
+          ],
           "graphic": "schedule: lịch rảnh/bận của hai người qua bốn khung giờ trong ngày"
         },
         {
@@ -307,8 +346,206 @@
             "PART_3_GRAPH_OR_TABLE_QUESTION"
           ],
           "topic": "PART_3_HOUSING",
-          "voices": ["au_female_1", "au_male_1"],
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
           "graphic": "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng"
+        }
+      ]
+    },
+    {
+      "part": 4,
+      "slots": [
+        {
+          "id": "p4-01",
+          "number": 71,
+          "question_type": "",
+          "grammar": "",
+          "context": "lời nhắn thoại báo đơn hàng bị chậm và đề nghị gọi lại",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_TELEPHONE_MESSAGE",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-02",
+          "number": 74,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông báo trong toà nhà về việc bảo trì thang máy cuối tuần",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-03",
+          "number": 77,
+          "question_type": "",
+          "grammar": "",
+          "context": "quảng cáo một chuỗi cửa hàng nội thất đang giảm giá",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_ADVERTISEMENT",
+          "voices": [
+            "us_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-04",
+          "number": 80,
+          "question_type": "",
+          "grammar": "",
+          "context": "trích buổi họp phòng kinh doanh về kết quả quý vừa rồi",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_MEETING_EXCERPT",
+          "voices": [
+            "uk_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-05",
+          "number": 83,
+          "question_type": "",
+          "grammar": "",
+          "context": "bài phát biểu mở đầu một khoá đào tạo nhân viên mới",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_IMPLICATION"
+          ],
+          "topic": "PART_4_TALK",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-06",
+          "number": 86,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông báo ở sân bay về việc đổi cửa lên máy bay",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-07",
+          "number": 89,
+          "question_type": "",
+          "grammar": "",
+          "context": "lời nhắn của khách hàng hỏi về lịch lắp đặt thiết bị",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_TELEPHONE_MESSAGE",
+          "voices": [
+            "us_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-08",
+          "number": 92,
+          "question_type": "",
+          "grammar": "",
+          "context": "hướng dẫn viên giới thiệu lịch tham quan nhà máy",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_TALK",
+          "voices": [
+            "uk_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p4-09",
+          "number": 95,
+          "question_type": "",
+          "grammar": "",
+          "context": "trích buổi họp công bố doanh số bốn quý của công ty",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_GRAPH_OR_TABLE_QUESTION",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_MEETING_EXCERPT",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý"
+        },
+        {
+          "id": "p4-10",
+          "number": 98,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông báo trong trung tâm thương mại chỉ đường tới một quầy",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_GRAPH_OR_TABLE_QUESTION",
+            "PART_4_DETAIL"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": "map: sơ đồ tầng trệt gồm bốn quầy xếp thành hai hàng"
         }
       ]
     },

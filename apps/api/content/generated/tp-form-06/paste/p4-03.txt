@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Attention, furniture shoppers. Our five city stores are having a winter clearance sale, starting today. For one week only, all sofas, dining tables, and bedroom sets are marked down by thirty percent. If you purchase any item over two hundred dollars, you will receive free delivery within the city. Our showrooms are open from nine in the morning until eight in the evening, and our staff can help you choose colors and fabrics. Need more time to decide? Visit our website to save the sale prices for an extra three days. But hurry, because the special discounts end this Sunday. Come to any of our stores and refresh your home for less.
+
+[QUESTION]
+What is the main purpose of the advertisement?
+(A) To promote a furniture sale
+(B) To announce a store closing
+(C) To explain delivery fees
+(D) To hire showroom staff
+Answer: A
+Source: original
+[QUESTION]
+What will customers receive for purchases over two hundred dollars?
+(A) A bedroom set
+(B) Free delivery
+(C) A fabric sample
+(D) Store credit
+Answer: B
+Source: original
+[QUESTION]
+What are customers suggested to do?
+(A) Call a staff member
+(B) Choose a store location
+(C) Visit the website
+(D) Change the delivery date
+Answer: C
+Source: original

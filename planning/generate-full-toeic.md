@@ -907,3 +907,60 @@ Trần đầu ra của chặng kiểm nay là `CHECK_MAX_TOKENS = 4000`, của c
 
 **Kết quả cuối:** `tp-form-06` 75 câu, tất cả `published`, Part 3 qua vòng đối
 chiếu **0 cờ trên 39 câu** với ba hình ba dạng khác nhau.
+
+
+---
+
+## 26. Lát Part 4 — mười bài nói, ba mươi câu (2026-08-23)
+
+Part 4 dùng lại gần trọn máy móc của Part 3, và khác đúng ba chỗ. Hai chỗ nằm
+trong dữ liệu: **một người nói** (đây là bài nói, không phải hội thoại), và nhãn
+cụm là *dạng bài nói* chứ không phải *chủ đề* — hai mặt phân loại khác nhau của
+bảng nhãn. Chỗ thứ ba nằm trong mã và là chỗ dễ sai nhất:
+
+**Câu hỏi về hình đứng ở vị trí KHÁC nhau.** Part 3 đặt nó ở câu thứ ba (câu 64,
+67, 70 của đề mẫu), Part 4 ở câu thứ hai (câu 96, 99). Suy ra "luôn là câu cuối"
+từ Part 3 rồi áp cho Part 4 thì cổng kiểm đi kiểm nhầm câu — và câu bị kiểm nhầm
+vẫn có bốn lựa chọn hợp lệ, nên nó vẫn cho ra một kết luận, chỉ là về sai câu.
+`GRAPHIC_POSITION` giữ con số đó một chỗ, và cả blueprint, cổng kiểm lẫn **prompt**
+đều đọc từ đó: bản đầu viết cứng "the LAST question" trong luật hình, đúng cho
+Part 3 và sai cho Part 4, và mô hình làm đúng như được bảo.
+
+### 26.1 Ba cổng mới, cả ba từ lỗi quan sát được
+
+- **Đúng MỘT câu "Look at the graphic" mỗi cụm.** Mô hình viết hai, và cả hai
+  đều dùng đúng trục đáp án nên phép so trục vẫn xanh. Cái mất là câu thứ ba:
+  nó lẽ ra hỏi một dạng khác, và cụm mất một dạng câu blueprint đã giao.
+- **Không lựa chọn IN RA nào được là tên giọng.** `uk_female_1` là chỉ dẫn thu
+  âm và nó nằm ngay trong prompt, nên mô hình chép thẳng vào đề.
+- **Hình không được chép nguyên ví dụ trong prompt.** Bắt theo **quá nửa** số
+  hàng, không phải trùng khít: mô hình đổi đúng một con số rồi giữ nguyên phần
+  còn lại, và đòi trùng khít thì lần chép đó lọt qua. Không sai về hình thức nên
+  không cổng nào khác thấy — nhưng hai đề sinh bằng cùng prompt sẽ dùng chung
+  một tấm hình.
+
+Cổng thứ hai và thứ ba đều bắt được lỗi trong **fixture của chính bài test viết
+kèm chúng**. Một cổng bắt được lỗi trong hiện vật của người viết ra nó là bằng
+chứng tốt hơn bất kỳ lượt chạy xanh nào.
+
+### 26.2 Hình phải nằm theo THƯ MỤC RIÊNG mỗi part
+
+`import_media` khớp theo số trong tên tệp, và `_PART_LABEL` bóc tiền tố `p3`/`p4`
+đi trước khi đọc số — nên `p4-09.png` nằm chung thư mục với hình Part 3 sẽ khớp
+thành cụm thứ 9 của Part 3. Khớp SAI mà vẫn "thành công", đúng loại lỗi mà luật
+đặt tên của `import_media` tồn tại để chặn. Nay `graphic-images/part3/` và
+`graphic-images/part4/`.
+
+### 26.3 Trạng thái
+
+`tp-form-06`: **105 câu**, tất cả `published`.
+
+| part | câu | cụm | ghi chú |
+|---|---|---|---|
+| 1 | 1–6 | — | 6 ảnh đen trắng |
+| 3 | 32–70 | 13 | 3 hình: bảng, lịch, sơ đồ |
+| 4 | 71–100 | 10 | 2 hình: biểu đồ, sơ đồ |
+| 5 | 101–130 | — | |
+
+Còn thiếu để thành đề đủ 200 câu: **Part 2** (31–? — thật ra 7–31, 25 câu),
+**Part 6** (131–146) và **Part 7** (147–200), cộng bảng quy đổi điểm.

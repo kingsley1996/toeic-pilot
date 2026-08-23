@@ -373,8 +373,22 @@ def _graphic_as_text(source: Path) -> str:
     return f"[Hình in kèm trong sách thi]\n{parse_graphic(source.read_text()).alt_text()}"
 
 
+def _is_prompt_example(graphic: object) -> bool:
+    """Hình có trùng với một trong các ví dụ viết trong `GRAPHIC_RULES` không."""
+    from app.content.exam import writer
+
+    rows = getattr(graphic, "rows", [])
+    if not rows:
+        return False
+    body = _normalise(writer._GRAPHIC_RULES_TEMPLATE)
+    copied = sum(1 for row in rows if _normalise(" ".join(row)) in body)
+    # QUÁ NỬA số hàng, không phải tất cả: mô hình hay đổi đúng một con số rồi
+    # giữ nguyên phần còn lại, và đòi trùng khít thì lần chép đó lọt qua.
+    return copied * 2 > len(rows)
+
+
 def check_graphic(
-    questions: list[ParsedQuestion], script: str, source: Path
+    questions: list[ParsedQuestion], script: str, source: Path, part: int = 3
 ) -> tuple[list[str], list[str]]:
     """Kiểm hình ngữ liệu của một cụm. Trả (vấn đề, cờ).
 
@@ -396,10 +410,39 @@ def check_graphic(
         return [f"thiếu dữ liệu bảng ({source.name})"], []
     graphic = parse_graphic(source.read_text())
     problems = list(graphic.problems())
+    # Mô hình chép nguyên VÍ DỤ trong prompt khá thường. Nó không sai về hình
+    # thức, nên không cổng nào khác thấy — nhưng hai đề sinh bằng cùng prompt sẽ
+    # dùng chung một tấm hình, và người luyện nhiều đề nhận ra ngay.
+    if _is_prompt_example(graphic):
+        problems.append("hình chép nguyên ví dụ trong prompt — cần dữ liệu của riêng nó")
     if problems or not questions:
         return problems, []
 
-    last = questions[-1]
+    from app.content.exam.blueprint import GRAPHIC_POSITION
+
+    # ĐÚNG MỘT câu hỏi về hình mỗi cụm. Đề thật không bao giờ có hai — và khi mô
+    # hình viết hai, cả hai đều dùng đúng trục đáp án nên phép so trục vẫn xanh.
+    # Cái mất là câu thứ ba: nó lẽ ra hỏi một dạng khác, và cụm mất một dạng câu
+    # mà blueprint đã giao.
+    marked = [
+        index
+        for index, question in enumerate(questions)
+        if "look at the graphic" in (question.prompt_text or "").lower()
+    ]
+    want_at = GRAPHIC_POSITION.get(part, len(questions) - 1)
+    if marked != [want_at]:
+        at = ", ".join(str(index + 1) for index in marked) or "không câu nào"
+        problems.append(
+            f'"Look at the graphic" phải nằm ở đúng câu thứ {want_at + 1} và chỉ một câu '
+            f"— đang ở câu {at}"
+        )
+        return problems, []
+
+    # Part 3 hỏi về hình ở câu thứ ba, Part 4 ở câu thứ hai (đề mẫu ETS: câu 64,
+    # 67, 70 so với 96, 99). Lấy cứng `questions[-1]` thì ở Part 4 ta đang kiểm
+    # nhầm câu — và câu bị kiểm nhầm vẫn có bốn lựa chọn hợp lệ, nên cổng vẫn
+    # cho ra một kết luận, chỉ là về sai câu.
+    last = questions[GRAPHIC_POSITION.get(part, len(questions) - 1)]
     options = [_normalise(option_text(option)) for option in last.options]
     # TRỤC ĐÁP ÁN khác nhau theo dạng hình, và đây là chỗ dễ sai nhất: bảng thì
     # lấy tên hàng, lưới lịch lấy tiêu đề CỘT (khung giờ), biểu đồ lấy nhãn cột,
@@ -459,7 +502,7 @@ def _check_set(
     questions, script, shared = parse_group(block, part)
     if slot.graphic:
         source = workdir / "graphics" / f"{slot.id}.txt"
-        graphic_problems, graphic_flags = check_graphic(questions, script, source)
+        graphic_problems, graphic_flags = check_graphic(questions, script, source, part)
         shared = [*shared, *graphic_problems]
         # Người chấm phải được ĐỌC BẢNG, không chỉ nghe hội thoại.
         #
@@ -491,7 +534,9 @@ def _check_set(
         report.problems.extend(check_shape(question, part))
         report.problems.extend(check_voice_names(question))
         report.flags.extend(check_options(question))
-        if index == len(questions) - 1:
+        from app.content.exam.blueprint import GRAPHIC_POSITION
+
+        if index == GRAPHIC_POSITION.get(part, len(questions) - 1):
             report.flags.extend(graphic_flags)
 
         # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.

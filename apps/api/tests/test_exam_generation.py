@@ -701,18 +701,21 @@ def test_a_graphic_and_a_graphic_question_must_come_together():
     assert any("không câu nào hỏi tới" in problem for problem in bp.validate(plan))
 
 
+# Cố ý KHÔNG dùng số liệu của ví dụ trong prompt: cổng chống chép ví dụ sẽ bắt
+# nó, và nó bắt đúng — một fixture trùng ví dụ là chính cái lỗi cổng đó tồn tại
+# để chặn.
 SCHEDULE_DATA = """kind: schedule
-Wednesday Availability
-Person | 8-9 | 9-10 | 10-11 | 11-12
-Zahra | Busy |  | Team meeting |
-Sammy |  | Client call |  | Budget meeting
+Friday Coverage
+Person | 1-2 | 2-3 | 3-4 | 4-5
+Noor | Inventory |  |  | Handover
+Petra |  | Supplier call |  | Handover
 """
 
 PART3_SCHEDULE = """[SCRIPT]
 voice: au_female_1
-Zahra here. Let's find an hour on Wednesday when neither of us is booked.
+Noor here. Let's find an hour on Friday when neither of us is booked.
 voice: au_male_1
-Sammy speaking — looking at it now, there's exactly one hour free for both.
+Petra speaking — looking at it now, there's exactly one hour free for both.
 
 [QUESTION]
 What are the speakers trying to arrange?
@@ -734,11 +737,11 @@ Source: original
 
 [QUESTION]
 Look at the graphic. When will the speakers most likely meet?
-(A) 8-9
-(B) 9-10
-(C) 10-11
-(D) 11-12
-Answer: D
+(A) 1-2
+(B) 2-3
+(C) 3-4
+(D) 4-5
+Answer: C
 Source: original
 """
 
@@ -755,9 +758,9 @@ def test_a_schedule_answers_on_its_columns_and_keeps_empty_cells(tmp_path):
 
     graphic = parse_graphic(SCHEDULE_DATA)
     assert graphic.problems() == []
-    assert graphic.answer_axis() == ["8-9", "9-10", "10-11", "11-12"]
-    # Hàng của Zahra kết thúc bằng một ô TRỐNG — khung giờ cô ấy rảnh.
-    assert graphic.rows[0] == ["Zahra", "Busy", "", "Team meeting", ""]
+    assert graphic.answer_axis() == ["1-2", "2-3", "3-4", "4-5"]
+    # Hàng của Noor có hai ô TRỐNG ở giữa — những khung giờ cô ấy rảnh.
+    assert graphic.rows[0] == ["Noor", "Inventory", "", "", "Handover"]
 
     plan = _graphic_plan(tmp_path, data=SCHEDULE_DATA, block=PART3_SCHEDULE)
     assert all(r.problems == [] for r in checker.check_blueprint(plan, tmp_path, only=3))
@@ -793,8 +796,80 @@ def test_the_people_in_a_schedule_must_be_in_the_conversation(tmp_path):
     """
     plan = _graphic_plan(
         tmp_path,
-        data=SCHEDULE_DATA.replace("Zahra", "Liam").replace("Sammy", "Emma"),
+        data=SCHEDULE_DATA.replace("Noor", "Liam").replace("Petra", "Emma"),
         block=PART3_SCHEDULE,
     )
     problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
     assert any("không xuất hiện trong hội thoại" in problem for problem in problems)
+
+
+def test_the_graphic_question_sits_where_its_part_puts_it():
+    """Part 3 hỏi về hình ở câu thứ BA, Part 4 ở câu thứ HAI.
+
+    Đo ở đề mẫu ETS: câu 64, 67, 70 so với câu 96, 99. Suy ra "luôn là câu cuối"
+    từ Part 3 rồi áp cho Part 4 là sai đúng một chi tiết mà người luyện đề nhận
+    ra ngay — và cổng kiểm sẽ đi kiểm nhầm câu, một câu vẫn có bốn lựa chọn hợp
+    lệ nên nó vẫn cho ra kết luận.
+    """
+    for part, builder, position in ((3, bp.build_part3, 2), (4, bp.build_part4, 1)):
+        plan = builder("tp-test", "Test", seed=7)
+        slot = next(s for s in plan.parts[0].slots if s.graphic)
+        assert slot.question_types.index(bp.graph_code(part)) == position
+        assert bp.GRAPHIC_POSITION[part] == position
+
+        # Dời nó đi một chỗ thì blueprint phải từ chối, trước khi tốn lượt gọi.
+        moved = builder("tp-test", "Test", seed=7)
+        target = next(s for s in moved.parts[0].slots if s.graphic)
+        types = target.question_types
+        types[0], types[position] = types[position], types[0]
+        assert any("câu hỏi về hình" in problem for problem in bp.validate(moved))
+
+
+def test_only_one_question_in_a_set_looks_at_the_graphic(tmp_path):
+    """Đề thật không bao giờ có hai câu "Look at the graphic" trong một cụm.
+
+    Khi mô hình viết hai, CẢ HAI đều dùng đúng trục đáp án nên phép so trục vẫn
+    xanh. Cái mất là câu còn lại: nó lẽ ra hỏi một dạng khác, và cụm mất một
+    dạng câu mà blueprint đã giao.
+    """
+    plan = _graphic_plan(
+        tmp_path,
+        block=PART3_GRAPHIC.replace(
+            "What will the man do this afternoon?",
+            "Look at the graphic. Which package is cheapest?",
+        ),
+    )
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("chỉ một câu" in problem for problem in problems)
+
+
+def test_a_graphic_copied_from_the_prompt_example_is_rejected(tmp_path):
+    """Mô hình chép nguyên ví dụ trong prompt khá thường.
+
+    Nó không sai về hình thức nên không cổng nào khác thấy — nhưng hai đề sinh
+    bằng cùng prompt sẽ dùng chung một tấm hình, và người luyện nhiều đề nhận ra
+    ngay. Bắt theo QUÁ NỬA số hàng: mô hình hay đổi đúng một con số rồi giữ
+    nguyên phần còn lại.
+    """
+    from app.content.exam import writer as w
+
+    example = "\n".join(
+        ["kind: chart", "Quarterly Sales in thousands"]
+        + [
+            line.strip()
+            for line in w._GRAPHIC_RULES_TEMPLATE.splitlines()
+            if line.strip().startswith(
+                ("First quarter", "Second quarter", "Third quarter", "Fourth quarter")
+            )
+        ]
+    )
+    plan = _graphic_plan(
+        tmp_path,
+        data=example,
+        block=PART3_GRAPHIC.replace("(A) Standard", "(A) First quarter")
+        .replace("(B) Premium", "(B) Second quarter")
+        .replace("(C) Executive", "(C) Third quarter")
+        .replace("(D) Ultimate", "(D) Fourth quarter"),
+    )
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("chép nguyên ví dụ" in problem for problem in problems)

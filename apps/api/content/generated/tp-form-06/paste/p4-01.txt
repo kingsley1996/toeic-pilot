@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is Daniel from Harbor Office Supplies. I'm calling about your order of printer paper and ink cartridges, placed on Monday. I'm sorry to say that the shipment has been delayed because of a power failure at our warehouse. We now expect to send the order tomorrow morning, and it should arrive on Thursday instead of Wednesday. There is no extra charge for the delivery change, and your order number remains the same. If the new delivery day does not work for you, please call me back at five-five-five, oh-one-four-two, and I will adjust the schedule. If no one answers, please leave a message with the best time to reach you. Again, I apologize for the inconvenience. Thank you for your patience.
+
+[QUESTION]
+What is the purpose of the call?
+(A) To cancel an order
+(B) To confirm a payment
+(C) To report a delayed order
+(D) To request a refund
+Answer: C
+Source: original
+[QUESTION]
+When is the order now expected to arrive?
+(A) On Monday
+(B) On Wednesday
+(C) On Friday
+(D) On Thursday
+Answer: D
+Source: original
+[QUESTION]
+What does the caller ask the listener to do?
+(A) Call him back
+(B) Send an e-mail
+(C) Visit the warehouse
+(D) Complete a survey
+Answer: A
+Source: original

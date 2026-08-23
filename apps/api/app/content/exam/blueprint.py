@@ -255,6 +255,82 @@ PART3_TRIOS: tuple[tuple[str, ...], ...] = (
 )
 
 
+# Part 4: mười bài nói, mỗi bài ba câu — câu 71 tới 100 của đề thật.
+#
+# Khác Part 3 ở đúng hai chỗ, và cả hai đều nằm trong dữ liệu chứ không trong mã:
+# **một người nói** (đây là bài nói, không phải hội thoại), và nhãn cụm là *dạng
+# bài nói* chứ không phải *chủ đề* — hai mặt phân loại khác nhau của bảng nhãn.
+#
+# Hai bài CUỐI có hình, và **câu hỏi về hình là câu THỨ HAI của cụm**, không phải
+# câu thứ ba như Part 3. Đo ở đề mẫu ETS: câu 96 nằm trong cụm 95–97, câu 99
+# trong cụm 98–100. Một chi tiết nhỏ, nhưng người luyện đề nhận ra ngay.
+PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
+    (
+        "PART_4_TELEPHONE_MESSAGE",
+        "lời nhắn thoại báo đơn hàng bị chậm và đề nghị gọi lại",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_4_ANNOUNCEMENT",
+        "thông báo trong toà nhà về việc bảo trì thang máy cuối tuần",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_ADVERTISEMENT",
+        "quảng cáo một chuỗi cửa hàng nội thất đang giảm giá",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_4_MEETING_EXCERPT",
+        "trích buổi họp phòng kinh doanh về kết quả quý vừa rồi",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "bài phát biểu mở đầu một khoá đào tạo nhân viên mới",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_IMPLICATION"),
+        "",
+    ),
+    (
+        "PART_4_ANNOUNCEMENT",
+        "thông báo ở sân bay về việc đổi cửa lên máy bay",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_TELEPHONE_MESSAGE",
+        "lời nhắn của khách hàng hỏi về lịch lắp đặt thiết bị",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "hướng dẫn viên giới thiệu lịch tham quan nhà máy",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_MEETING_EXCERPT",
+        "trích buổi họp công bố doanh số bốn quý của công ty",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_GRAPH_OR_TABLE_QUESTION", "PART_4_FUTURE_ACTION"),
+        "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
+    ),
+    (
+        "PART_4_ANNOUNCEMENT",
+        "thông báo trong trung tâm thương mại chỉ đường tới một quầy",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_GRAPH_OR_TABLE_QUESTION", "PART_4_DETAIL"),
+        "map: sơ đồ tầng trệt gồm bốn quầy xếp thành hai hàng",
+    ),
+)
+
+# Một bài nói, một giọng. Xoay đều bốn accent qua mười bài.
+PART4_VOICES = ("us_male_1", "uk_female_1", "au_male_1", "ca_female_1")
+
+
 @dataclass
 class QuestionSlot:
     """Một ô trong đề: chỗ này sẽ là câu hỏi gì.
@@ -396,6 +472,14 @@ def build_part3(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=3, slots=slots)])
 
 
+# Câu hỏi về hình đứng ở vị trí nào trong cụm (đánh số từ 0). Đo ở đề mẫu ETS.
+GRAPHIC_POSITION = {3: 2, 4: 1}
+
+
+def graph_code(part: int) -> str:
+    return f"PART_{part}_GRAPH_OR_TABLE_QUESTION"
+
+
 def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> list[str]:
     """Kiểm một ô CỤM (Part 3, 4). Ba câu, một chủ đề, một dàn giọng.
 
@@ -426,7 +510,7 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     # Một cụm có nhãn `GRAPH_OR_TABLE` mà không có hình là một câu hỏi bảo người
     # học "nhìn vào hình" trong khi không có hình nào; ngược lại, một hình không
     # có câu nào hỏi tới nó chỉ là một tấm ảnh thừa cạnh ba câu không dùng nó.
-    asks_about_graphic = "PART_3_GRAPH_OR_TABLE_QUESTION" in slot.question_types
+    asks_about_graphic = graph_code(part) in slot.question_types
     if asks_about_graphic and not slot.graphic:
         problems.append(f"{slot.id}: có câu hỏi về hình nhưng cụm không có hình")
     if slot.graphic and not asks_about_graphic:
@@ -437,12 +521,23 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
         kind = slot.graphic.split(":")[0].strip()
         if kind not in KINDS:
             problems.append(f"{slot.id}: dạng hình `{kind}` không có — phải là một trong {KINDS}")
-    if slot.graphic and slot.question_types[-1:] != ["PART_3_GRAPH_OR_TABLE_QUESTION"]:
-        # Đề thật đặt câu hỏi về hình ở CUỐI cụm (câu 64, 67, 70 của đề mẫu).
-        problems.append(f"{slot.id}: câu hỏi về hình phải là câu cuối của cụm")
+    # Vị trí của câu hỏi về hình KHÁC nhau giữa hai part, đo ở đề mẫu ETS:
+    # Part 3 đặt nó ở câu thứ BA (câu 64, 67, 70), Part 4 ở câu thứ HAI (câu 96,
+    # 99). Suy ra "luôn là câu cuối" từ Part 3 rồi áp cho Part 4 là sai đúng một
+    # chi tiết mà người luyện đề nhận ra ngay.
+    if slot.graphic:
+        want_at = GRAPHIC_POSITION[part]
+        at = [i for i, code in enumerate(slot.question_types) if code == graph_code(part)]
+        if at != [want_at]:
+            problems.append(
+                f"{slot.id}: câu hỏi về hình của Part {part} phải là câu thứ {want_at + 1}"
+            )
 
-    if not 2 <= len(slot.voices) <= 3:
-        problems.append(f"{slot.id}: cụm Part {part} cần 2 hoặc 3 giọng")
+    # Part 4 là bài NÓI: đúng một người. Part 3 là hội thoại: hai hoặc ba.
+    low, high = (1, 1) if part == 4 else (2, 3)
+    if not low <= len(slot.voices) <= high:
+        wanted = "đúng 1 giọng" if part == 4 else "2 hoặc 3 giọng"
+        problems.append(f"{slot.id}: cụm Part {part} cần {wanted}")
     if len(set(slot.voices)) != len(slot.voices):
         # Hai lượt cùng giọng thì người nghe không tách được ai đang nói, và câu
         # hỏi "người đàn ông nói gì" mất nghĩa.
@@ -451,6 +546,25 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     if unknown:
         problems.append(f"{slot.id}: giọng không có trong danh sách: {', '.join(unknown)}")
     return problems
+
+
+def build_part4(slug: str, title: str, seed: int) -> Blueprint:
+    """Mười bài nói Part 4, câu 71–100 của đề thật."""
+    slots = [
+        QuestionSlot(
+            id=f"p4-{index + 1:02d}",
+            number=71 + index * 3,
+            question_type="",
+            grammar="",
+            context=scene,
+            question_types=list(types),
+            topic=speech_type,
+            voices=[PART4_VOICES[(index + seed) % len(PART4_VOICES)]],
+            graphic=graphic,
+        )
+        for index, (speech_type, scene, types, graphic) in enumerate(PART4_MIX)
+    ]
+    return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=4, slots=slots)])
 
 
 def validate(blueprint: Blueprint) -> list[str]:

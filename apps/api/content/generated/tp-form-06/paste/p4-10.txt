@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Attention, shoppers. This is an announcement from mall management. If you believe you have left a personal item somewhere in the shopping center today, please go to the counter directly below the pharmacy and beside the shoe repair counter. The counter is on the ground floor, near the north entrance. It will remain open until nine o'clock tonight. Before you claim anything, please have a photo identification ready to show the staff. You may also be asked to describe the item. If the counter is busy, please wait in the seating area beside the pharmacy. Thank you for your attention, and enjoy your visit.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a train station
+(B) At a shopping mall
+(C) At a medical clinic
+(D) At a police station
+Answer: B
+Source: original
+[QUESTION]
+Look at the graphic. Which counter is being described?
+(A) Counter 1
+(B) Counter 2
+(C) Counter 4
+(D) Counter 3
+Answer: C
+Source: original
+[QUESTION]
+What are listeners asked to have ready?
+(A) A parking ticket
+(B) A store receipt
+(C) A membership card
+(D) A photo ID
+Answer: D
+Source: original

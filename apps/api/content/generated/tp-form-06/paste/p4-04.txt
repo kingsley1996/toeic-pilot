@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone. As your sales director, thank you for coming to the sales department meeting. Today I will review our results from last quarter. First, our team sold twenty percent more software subscriptions than in the previous quarter. However, hardware sales were lower than expected because several deliveries were delayed. The southern region performed best, led by the airport office. Please note that we have moved the client feedback survey to next Monday, so all account managers should complete it before their afternoon calls. After this meeting, I will send the updated targets to each team leader by email. Now, let's discuss the training schedule.
+
+[QUESTION]
+Who is speaking?
+(A) An airport clerk
+(B) A software engineer
+(C) A delivery driver
+(D) A sales director
+Answer: D
+Source: original
+[QUESTION]
+What was lower than expected last quarter?
+(A) Hardware sales
+(B) Software subscriptions
+(C) Client feedback
+(D) Training sessions
+Answer: A
+Source: original
+[QUESTION]
+What will the speaker do after the meeting?
+(A) Complete the client feedback survey
+(B) Send updated targets by email
+(C) Discuss the training schedule
+(D) Delay several hardware deliveries
+Answer: B
+Source: original
