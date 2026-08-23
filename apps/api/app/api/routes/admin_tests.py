@@ -39,6 +39,7 @@ from app.models import (
     TestCollection,
     User,
 )
+from app.models.practice import PASSAGE_IMAGE_COLUMNS
 from app.models.validators import validate_question
 from app.schemas.admin import (
     ArchiveRequest,
@@ -980,7 +981,7 @@ def assign_passage_image(
             ),
         )
 
-    column = _PASSAGE_IMAGE_COLUMNS[body.slot]
+    column = PASSAGE_IMAGE_COLUMNS[body.slot]
     if body.image_id is None:
         setattr(stimulus, column, None)
     else:
@@ -1359,11 +1360,6 @@ def _as_admin(db: Session, test: PracticeTest) -> TestAdmin:
     )
 
 
-_PASSAGE_IMAGE_COLUMNS = {
-    1: "passage_image_id",
-    2: "passage_2_image_id",
-    3: "passage_3_image_id",
-}
 _PASSAGE_TEXT_COLUMNS = {1: "passage", 2: "passage_2", 3: "passage_3"}
 
 
@@ -1420,7 +1416,7 @@ def _set_admin(
     passages: list[PassageAdmin] = []
     for slot in (1, 2, 3):
         text = getattr(stimulus, _PASSAGE_TEXT_COLUMNS[slot])
-        image_id = getattr(stimulus, _PASSAGE_IMAGE_COLUMNS[slot])
+        image_id = getattr(stimulus, PASSAGE_IMAGE_COLUMNS[slot])
         found = images.get(image_id) if image_id else None
         # Thu hẹp kiểu tường minh: bản đồ asset chứa cả ảnh lẫn audio, và một
         # `image_id` trỏ vào bản thu là dữ liệu hỏng chứ không phải chuyện bình

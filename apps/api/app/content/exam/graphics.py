@@ -60,7 +60,16 @@ CELL_BG = (246, 246, 246)
 BAR = (72, 72, 72)
 PAPER = (255, 255, 255)
 
-KINDS = ("table", "schedule", "chart", "map")
+# `survey` và `form` là hai dạng của Part 7, và cả hai TÁI DÙNG cách vẽ đã có:
+# phiếu khảo sát là một lưới thưa (giống `schedule`), phiếu điền là các cặp
+# nhãn–giá trị (giống `table` hai cột). Chúng tồn tại như hai tên riêng vì chữ
+# thay ảnh phải đọc khác nhau — "Sơ đồ", "Biểu đồ cột", "Phiếu khảo sát" nói cho
+# người dùng máy đọc màn hình biết họ đang nghe cái gì, và đó là toàn bộ nội
+# dung mà họ có.
+KINDS = ("table", "schedule", "chart", "map", "survey", "form")
+
+# Dạng nào vẽ bằng bộ vẽ nào. `answer_axis` cũng theo bảng này.
+_LIKE = {"survey": "schedule", "form": "table"}
 
 
 @dataclass
@@ -69,6 +78,12 @@ class Graphic:
 
     kind: str
     title: str
+
+    @property
+    def shape(self) -> str:
+        """Dạng VẼ tương đương — `survey` vẽ như `schedule`, `form` như `table`."""
+        return _LIKE.get(self.kind, self.kind)
+
     columns: list[str] = field(default_factory=list)
     rows: list[list[str]] = field(default_factory=list)
 
@@ -83,15 +98,21 @@ class Graphic:
             out.append("hình không có hàng nào")
             return out
 
-        if self.kind == "chart":
+        if self.shape == "chart":
             # Biểu đồ là (nhãn, số). Không đọc được số thì không vẽ được cột, và
             # một cột cao bằng 0 trông như dữ liệu thật.
             for index, row in enumerate(self.rows):
                 if len(row) != 2 or _number(row[1]) is None:
                     out.append(f"hàng {index + 1} của biểu đồ phải là `nhãn | số`")
-        elif self.kind == "map":
+        elif self.shape == "map":
             if not all(row for row in self.rows):
                 out.append("sơ đồ có hàng rỗng")
+        elif self.kind == "form":
+            # Phiếu điền không có hàng tiêu đề, nên không có `columns` để so —
+            # luật của nó là mỗi hàng phải có nhãn VÀ giá trị.
+            empty = [i + 1 for i, row in enumerate(self.rows) if len(row) < 2 or not row[1]]
+            if empty:
+                out.append(f"phiếu thiếu giá trị ở hàng {', '.join(map(str, empty))}")
         else:
             if len(self.columns) < 2:
                 out.append("hình cần ít nhất hai cột")
@@ -104,12 +125,25 @@ class Graphic:
         # Lưới lịch đếm theo NGƯỜI, không theo lựa chọn: đề mẫu có đúng hai
         # người (Zahra và Sammy) và bốn khung giờ. Áp luật 3–6 hàng của bảng
         # vào đó là từ chối đúng hình dạng của đề thật.
-        limits = {"schedule": (2, 4), "table": (3, 6), "chart": (3, 6)}
-        if self.kind in limits:
-            low, high = limits[self.kind]
+        # `form` có thể dài hơn một bảng giá — một phiếu đặt hàng thật có tên,
+        # địa chỉ, ngày, số lượng, tổng tiền — nên nó không chịu trần của `table`.
+        limits = (
+            # Một phiếu đặt hàng thật dài hơn một bảng giá: tên, mã hội viên,
+            # suất diễn, ngày đặt, từng dòng vé, mã giảm giá, tổng tiền, hình
+            # thức thanh toán. Mười hàng là chật.
+            {"table": (2, 16), "schedule": (2, 6)}
+            if self.kind in ("survey", "form")
+            else {"schedule": (2, 4), "table": (3, 6), "chart": (3, 6)}
+        )
+        if self.shape in limits:
+            low, high = limits[self.shape]
             if not low <= len(self.rows) <= high:
                 out.append(f"hình dạng {self.kind} cần {low}–{high} hàng, đang có {len(self.rows)}")
-        if len(self.answer_axis()) != 4:
+        # Trục đáp án chỉ có nghĩa với hình của Part 3/4, nơi bốn lựa chọn CHÍNH
+        # LÀ bốn mục trên hình. Hình của Part 7 là NGỮ LIỆU: câu hỏi hỏi về nội
+        # dung, không bắt chọn giữa bốn hàng. Áp luật "đúng 4 mục" sang đó sẽ
+        # chặn gần hết ngữ liệu hợp lệ (§28).
+        if self.kind not in ("survey", "form") and len(self.answer_axis()) != 4:
             out.append(
                 f"trục đáp án của dạng {self.kind} phải có đúng 4 mục, "
                 f"đang có {len(self.answer_axis())}"
@@ -123,10 +157,10 @@ class Graphic:
         lệ về mọi mặt và vẫn có đúng một đáp án — nó chỉ không còn hỏi về tấm
         hình nữa.
         """
-        if self.kind == "schedule":
+        if self.shape == "schedule":
             # Cột đầu là tên người/hàng, không phải một lựa chọn.
             return self.columns[1:]
-        if self.kind == "map":
+        if self.shape == "map":
             return [cell.split(":")[0].strip() for row in self.rows for cell in row]
         return [row[0] for row in self.rows if row]
 
@@ -137,11 +171,17 @@ class Graphic:
         tự, và một chuỗi dấu phẩy không nói được ô nào thuộc cột nào. Với sơ đồ
         thì phải nói cả VỊ TRÍ, vì quan hệ trái/phải chính là thứ câu hỏi dùng.
         """
-        lines = [f"{self.title}."]
-        if self.kind == "chart":
+        lead = {
+            "survey": "Phiếu khảo sát.",
+            "form": "Phiếu đã điền.",
+        }.get(self.kind)
+        lines = [f"{self.title}."] + ([lead] if lead else [])
+        if self.shape == "chart":
             lines.append("Biểu đồ cột.")
             lines += [f"{row[0]}: {row[1]}." for row in self.rows]
-        elif self.kind == "map":
+        elif self.kind == "form":
+            lines += [f"{row[0]}: {' '.join(row[1:])}." for row in self.rows if row]
+        elif self.shape == "map":
             lines.append(f"Sơ đồ {len(self.rows)} hàng.")
             for index, row in enumerate(self.rows, start=1):
                 places = ", ".join(
@@ -200,11 +240,26 @@ def parse_graphic(text: str) -> Graphic:
     # `Zahra | Busy | | Team meeting |` đọc ra bốn ô thay vì năm, và mọi lưới
     # lịch đều báo "lệch số cột". Ô trống cuối hàng chính là khung giờ người đó
     # rảnh, tức là thứ câu hỏi đang tìm.
-    cells = [[cell.strip() for cell in _SPLIT.split(line.removeprefix("|"))] for line in lines[1:]]
+    cells = []
+    for line in lines[1:]:
+        body = line.removeprefix("|")
+        if kind == "form" and "|" not in body and ":" in body:
+            # Phiếu điền viết `Nhãn: Giá trị`, và đó là hình dạng tự nhiên của
+            # nó — đòi dấu `|` ở đây là bắt mô hình viết một thứ không ai viết.
+            # Tách ở dấu hai chấm ĐẦU TIÊN: giá trị hay chứa dấu hai chấm bên
+            # trong ("Performance: Sat Apr 19 7:30 PM").
+            label, _, value = body.partition(":")
+            cells.append([label.strip(), value.strip()])
+        else:
+            cells.append([cell.strip() for cell in _SPLIT.split(body)])
     cells = [row for row in cells if not all(set(cell) <= set("-:") and cell for cell in row)]
     if not cells:
         return Graphic(kind=kind, title=title)
-    if kind in ("chart", "map"):
+    # `form` KHÔNG có hàng tiêu đề — mọi hàng của nó là một cặp nhãn–giá trị.
+    # Đọc hàng đầu thành tiêu đề cột làm chữ thay ảnh ghép chéo nhãn với giá trị
+    # của hàng khác ("Name: Membership level, Anil Bhatia: Patron"), và người
+    # dùng máy đọc màn hình nhận về dữ liệu sai chứ không phải dữ liệu thiếu.
+    if kind == "form" or _LIKE.get(kind, kind) in ("chart", "map"):
         return Graphic(kind=kind, title=title, rows=cells)
     return Graphic(kind=kind, title=title, columns=cells[0], rows=cells[1:])
 
@@ -247,10 +302,12 @@ def render(graphic: Graphic, path: Path) -> None:
     # phần lớn nhãn thật; nới khổ rẻ hơn nhiều so với thu chữ xuống mức khó đọc.
     width = WIDTH if len(graphic.columns) <= 4 else WIDTH + 180
 
-    if graphic.kind == "chart":
+    if graphic.shape == "chart":
         height = TITLE_HEIGHT + ROW_HEIGHT * len(graphic.rows) + PADDING * 2 + 10
-    elif graphic.kind == "map":
+    elif graphic.shape == "map":
         height = TITLE_HEIGHT + 96 * len(graphic.rows) + PADDING * 2
+    elif graphic.kind == "form":
+        height = TITLE_HEIGHT + ROW_HEIGHT * len(graphic.rows) + PADDING * 2
     else:
         height = TITLE_HEIGHT + HEADER_HEIGHT + ROW_HEIGHT * len(graphic.rows) + PADDING * 2
 
@@ -259,7 +316,7 @@ def render(graphic: Graphic, path: Path) -> None:
     draw.text((PADDING, PADDING), graphic.title, font=title_font, fill=INK)
     top = PADDING + TITLE_HEIGHT
 
-    if graphic.kind == "chart":
+    if graphic.shape == "chart":
         values = [(_number(row[1]) or 0.0) for row in graphic.rows]
         widest = max(values) or 1.0
         label_width = 190
@@ -274,7 +331,7 @@ def render(graphic: Graphic, path: Path) -> None:
             draw.text((PADDING + label_width + length + 10, y + 12), row[1], font=body, fill=INK)
             y += ROW_HEIGHT
         draw.line([PADDING + label_width, top, PADDING + label_width, y], fill=RULE, width=2)
-    elif graphic.kind == "map":
+    elif graphic.shape == "map":
         y = top
         for row in graphic.rows:
             columns = max(1, len(row))
@@ -285,6 +342,20 @@ def render(graphic: Graphic, path: Path) -> None:
                 text, font = _fit(draw, cell, box - 28, 20, True)
                 draw.text((x + 14, y + 28), text, font=font, fill=INK)
             y += 96
+    elif graphic.kind == "form":
+        # Vẽ hai cột nhãn–giá trị, không tô hàng tiêu đề: một phiếu đã điền
+        # không có tiêu đề cột, và tô một hàng lên sẽ đọc ra như có.
+        y = top
+        split = PADDING + 260
+        for row in graphic.rows:
+            label, _ = _fit(draw, row[0], split - PADDING - 24, 20, True)
+            draw.text((PADDING + 12, y + 13), label, font=body, fill=INK)
+            value, font = _fit(draw, " ".join(row[1:]), width - split - 24, 20, False)
+            draw.text((split + 12, y + 13), value, font=font, fill=INK)
+            y += ROW_HEIGHT
+            draw.line([PADDING, y, width - PADDING, y], fill=RULE, width=1)
+        draw.rectangle([PADDING, top, width - PADDING, y], outline=RULE, width=2)
+        draw.line([split, top, split, y], fill=RULE, width=1)
     else:
         columns = max(1, len(graphic.columns))
         usable = width - PADDING * 2

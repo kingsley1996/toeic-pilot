@@ -1,0 +1,27 @@
+[PASSAGE]
+Metro Bites, a new casual eatery located just steps from the downtown financial center, opened its doors last Tuesday. Designed specifically for busy professionals, the restaurant offers an impressive variety of fresh salads, wraps, and warm grain bowls. During my visit at the peak lunch hour on Thursday, the line moved incredibly fast, thanks to their efficient touch-screen self-ordering kiosks. My Mediterranean wrap was flavorful and reasonably priced at under ten dollars. However, those planning to dine in should be forewarned: indoor seating is extremely limited, with only three small high-top tables available. Fortunately, Metro Bites packages all orders in sturdy, eco-friendly containers, making it easy to take your meal back to the office or to the nearby public plaza. With its speedy service and healthy menu, Metro Bites is bound to become a lunchtime favorite for local office workers.
+
+[QUESTION]
+What is the main purpose of the review?
+(A) To announce a menu change
+(B) To advertise a restaurant job
+(C) To compare local dining prices
+(D) To evaluate a new lunch spot
+Answer: D
+Source: original
+[QUESTION]
+What can be inferred about Metro Bites?
+(A) It is closed on weekends.
+(B) It is designed mostly for takeout.
+(C) It recently raised its prices.
+(D) It belongs to a large chain.
+Answer: B
+Source: original
+[QUESTION]
+According to the review, what helps speed up the ordering process?
+(A) A mobile phone application
+(B) Pre-packaged lunch boxes
+(C) Self-ordering electronic kiosks
+(D) Additional checkout cashiers
+Answer: C
+Source: original

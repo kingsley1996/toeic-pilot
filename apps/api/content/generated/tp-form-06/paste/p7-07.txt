@@ -1,0 +1,31 @@
+[PASSAGE]
+Oakville Times
+Apex Manufacturing Announces Factory Expansion
+By David Chen
+
+Apex Manufacturing, a leading producer of biodegradable packaging materials, announced yesterday that it will invest $12 million to expand its primary production facility in Oakville. The expansion project, scheduled to begin next month, will add approximately 45,000 square feet to the existing plant. According to company spokesperson Elena Rostova, this initiative is driven by a significant surge in demand from international beverage distributors. The expansion will not only house advanced automated machinery but is also expected to create over 80 permanent full-time jobs, ranging from assembly line operators to logistics managers. Local officials have welcomed the news, noting that Apex's growth will boost the regional economy. Construction is expected to be completed by November, with the new production lines projected to become fully operational early next year.
+
+[QUESTION]
+What is the main reason for the factory expansion?
+(A) A rise in international demand
+(B) A change in local safety laws
+(C) The acquisition of a rival firm
+(D) A reduction in raw material costs
+Answer: A
+Source: original
+[QUESTION]
+What is suggested about the expansion project?
+(A) It will be completed ahead of schedule.
+(B) It will not begin operating immediately after construction ends.
+(C) It is the company's first plant in Oakville.
+(D) It is being funded by local government grants.
+Answer: B
+Source: original
+[QUESTION]
+In the article, the word "house" in paragraph 1 is closest in meaning to
+(A) accommodate
+(B) construct
+(C) purchase
+(D) secure
+Answer: A
+Source: original

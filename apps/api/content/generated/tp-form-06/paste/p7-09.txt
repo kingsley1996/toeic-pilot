@@ -1,0 +1,38 @@
+[PASSAGE]
+Westside Career Expo to Return Next Month
+
+The annual Westside Career Expo will take place on November 14 at the Grandview Convention Center. [1] This year, organizers expect over 80 local businesses to participate, representing sectors such as healthcare, technology, and hospitality. [2] Attendees will have the opportunity to meet directly with hiring managers, submit resumes, and even participate in on-the-spot interviews. Additionally, several free workshops on resume writing and interview techniques will be offered throughout the day. [3] Registration is free for all job seekers, but pre-registration online is highly recommended to avoid long lines at the entrance. [4] Parking at the convention center will also be discounted for all registered attendees.
+
+[QUESTION]
+Where will the Westside Career Expo take place?
+(A) At a local university
+(B) Online
+(C) At the Grandview Convention Center
+(D) At a hospitality training center
+Answer: C
+Source: original
+[QUESTION]
+What is suggested about the workshops at the expo?
+(A) They require an additional fee.
+(B) They are held only in the morning.
+(C) They are designed to improve job-hunting skills.
+(D) They will take place at a different venue.
+Answer: C
+Source: original
+[QUESTION]
+What is NOT mentioned as an activity available at the expo?
+(A) Submitting resumes to employers
+(B) Interviewing with hiring managers
+(C) Participating in professional workshops
+(D) Purchasing career guidebooks
+Answer: D
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"Those who sign up in advance will also receive a digital guide to the event."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: D
+Source: original

@@ -1098,3 +1098,78 @@ trị đã điền) và `survey` (lưới đánh dấu) — nhưng trục đáp 
 dùng tới: khác Part 3/4, câu hỏi Part 7 hỏi về **nội dung** ngữ liệu chứ không
 bắt chọn giữa bốn hàng, nên luật "bốn lựa chọn phải là trục đáp án" **không áp
 dụng** ở đây. Áp nhầm nó sang Part 7 sẽ chặn gần hết câu hợp lệ.
+
+
+---
+
+## 29. Part 7 — soi kỹ trước khi dựng (2026-08-23)
+
+§28 đã đếm cụm. Đây là tầng dưới: **dạng câu hỏi**, và ba dạng trong số đó áp
+ràng buộc lên chính ngữ liệu.
+
+Phân loại 48/54 câu đọc được của đề mẫu (6 câu nằm trên trang chỉ có hình):
+
+| dạng | số câu |
+|---|---|
+| tìm thông tin | 21 |
+| suy luận | 14 |
+| mục đích | 5 |
+| phủ định (NOT) | 3 |
+| điền câu | 2 |
+| từ vựng trong ngữ cảnh | 2 |
+| hàm ý (trích lời) | 1 |
+
+Phần lớn là hai dạng đầu. Nhưng ba dạng cuối, dù hiếm, **quyết định hình dạng
+của ngữ liệu**, nên phải xử lý trước chứ không bổ sung sau.
+
+### 29.1 Điền câu cần dấu `[1] [2] [3] [4]` NẰM TRONG ngữ liệu
+
+> *In which of the positions marked [1], [2], [3], and [4] does the following
+> sentence best belong?* — và bốn lựa chọn đúng là `[1]` `[2]` `[3]` `[4]`.
+
+Cổng kiểm được: đủ bốn dấu trong đoạn văn, và bốn lựa chọn đúng là bốn dấu đó.
+
+### 29.2 Số dòng phải BỎ, số đoạn thì giữ
+
+> *In the letter, the word "prominent" in **paragraph 2, line 3**, is closest in
+> meaning to*
+
+Số đoạn ổn định trong văn bản đã lưu; **số dòng thì không**. Đoạn văn của ta là
+một khối chữ, và trình duyệt ngắt dòng theo bề ngang màn hình — "dòng 3" trỏ vào
+một từ khác nhau trên mỗi máy, và trên điện thoại thì gần như luôn sai. Chép
+nguyên cách đánh số của đề giấy sang đây là mang một toạ độ không tồn tại.
+
+Nên: **giữ số đoạn, bỏ số dòng**, và đổi lại bằng một ràng buộc chặt hơn —
+**từ được hỏi phải xuất hiện đúng MỘT lần trong cả ngữ liệu**. Lúc đó không cần
+toạ độ nào cả, và cổng kiểm được bằng một phép đếm.
+
+### 29.3 Hàm ý trích nguyên văn
+
+> *At 4:37 a.m., what does Mr. Seville mean when he writes, "I can try"?*
+
+Cổng: chuỗi trong ngoặc kép phải có mặt **nguyên văn** trong ngữ liệu, và mốc
+giờ cũng vậy. Mô hình bịa lại lời trích là lỗi im lặng — câu vẫn đọc trôi chảy
+và người học đi tìm một câu không có ở đó.
+
+### 29.4 Số câu mỗi cụm KHÁC NHAU — 2 tới 5
+
+Part 3, 4, 6 đều là một con số cố định cho cả part, nên `QUESTIONS_PER_SET` là
+một hằng số tra theo part. Part 7 phá cái đó: 2, 2, 2, 3, 2, 3, 3, 4, 4, 4 rồi
+5, 5 và 5, 5, 5. Số câu phải chuyển về **chính cái ô** (`len(question_types)`),
+và hằng số theo part trở thành trường hợp riêng.
+
+### 29.5 Câu vắt qua nhiều ngữ liệu — chỗ KHÔNG có cổng máy
+
+Đây là đặc trưng của nhóm hai và ba ngữ liệu, và là câu khó nhất:
+
+> *On what day will Mr. Bhatia attend the performance?*
+
+Trả lời được chỉ khi đọc **phiếu đặt hàng** (ông ấy đặt suất nào) rồi tra
+**bảng giá** (suất đó là thứ mấy). Một câu chỉ dùng một ngữ liệu thì cụm ba
+ngữ liệu chỉ là ba cụm một ngữ liệu xếp cạnh nhau.
+
+**Không có cổng máy nào cho việc này**, và tôi ghi ra thay vì giả vờ có: nó là
+yêu cầu trong prompt, và phép đối chiếu bằng model (vốn đọc cả ba ngữ liệu) chỉ
+xác nhận đáp án đúng chứ không xác nhận câu đó *cần* nhiều hơn một ngữ liệu. Nếu
+sau này cần một cổng thật, hình dạng của nó là: hỏi người chấm cùng câu đó nhưng
+**chỉ đưa một ngữ liệu** — trả lời được nghĩa là câu chưa vắt qua.

@@ -215,7 +215,9 @@ def option_text(option: ParsedOption) -> str:
     return ((option.content or option.spoken_text) or "").strip()
 
 
-def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[str]]:
+def parse_group(
+    block: str, part: int, wanted: int | None = None, wanted_passages: int | None = None
+) -> tuple[list[ParsedQuestion], str, list[str]]:
     """Đọc một khối CỤM (Part 3, 4): trả (các câu, lời thoại dạng chữ, vấn đề).
 
     Lời thoại đi ra dưới dạng chữ vì mọi phép kiểm ngữ nghĩa của Part 3/4 đều cần
@@ -232,7 +234,8 @@ def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[
         return [], "", [f"khối phải chứa đúng một cụm, đọc được {len(groups)}"]
     group = groups[0]
     problems = list(group.problems)
-    wanted = QUESTIONS_PER_SET.get(part, LISTENING_QUESTIONS_PER_SET)
+    if wanted is None:
+        wanted = QUESTIONS_PER_SET.get(part, LISTENING_QUESTIONS_PER_SET)
     if len(group.questions) != wanted:
         problems.append(f"cụm Part {part} cần {wanted} câu, đọc được {len(group.questions)}")
 
@@ -244,6 +247,15 @@ def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[
             problems.extend(question.problems)
         if not group.passages:
             problems.append("cụm không có ngữ liệu")
+        elif wanted_passages is not None and len(group.passages) != wanted_passages:  # noqa: E501
+            # Đếm ngữ liệu, không chỉ hỏi "có ngữ liệu không".
+            #
+            # Đo được: cả ba cụm BA ngữ liệu của lượt chạy đầu chỉ sinh ra MỘT
+            # khối `[PASSAGE]` — mô hình gộp cả ba tài liệu vào một đoạn. Parser
+            # nhận (1–3 đều hợp lệ), cổng cũ chỉ hỏi "có ngữ liệu không", nên
+            # nhóm bài đọc ba ngữ liệu lặng lẽ biến thành nhóm một ngữ liệu và
+            # mất đúng cái làm nên nhóm đó.
+            problems.append(f"cụm cần {wanted_passages} ngữ liệu, đọc được {len(group.passages)}")
         return group.questions, "\n\n".join(group.passages), problems
 
     if not group.script:
@@ -260,6 +272,10 @@ def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[
 def check_shape(question: ParsedQuestion, part: int = 5) -> list[str]:
     """Những luật của một part mà parser không tự nói ra."""
     problems: list[str] = []
+    if part == 7:
+        if question.source != "original":
+            problems.append(f"`Source` phải là `original`, đang là {question.source!r}")
+        return problems
     if part == 6:
         # Đề bài của một câu Part 6 chỉ là nhãn chỗ trống; chỗ trống thật nằm
         # trong ngữ liệu. Kiểm nó ở `check_part6` cùng với ngữ liệu, chứ không
@@ -550,6 +566,58 @@ def check_graphic(
     return problems, flags
 
 
+_INSERT_RE = re.compile(r"positions marked \[1\], \[2\], \[3\],? and \[4\]", re.IGNORECASE)
+_VOCAB_RE = re.compile(r'the word ["“]([^"”]+)["”]', re.IGNORECASE)
+_QUOTE_RE = re.compile(r'writes,\s*["“]([^"”]+)["”]', re.IGNORECASE)
+_LINE_REF = re.compile(r"\bline\s+\d+", re.IGNORECASE)
+
+
+def check_part7_forms(questions: list[ParsedQuestion], passages: str) -> list[str]:
+    """Ba dạng câu của Part 7 áp ràng buộc lên chính NGỮ LIỆU.
+
+    Cả ba đều hỏng theo cùng một kiểu: câu vẫn đọc trôi chảy, vẫn có đúng một
+    đáp án, và thứ nó trỏ tới thì không có trong ngữ liệu. Người học đi tìm một
+    chỗ không tồn tại và kết luận là mình đọc sót.
+    """
+    problems: list[str] = []
+    body = passages
+    for index, question in enumerate(questions, start=1):
+        stem = question.prompt_text or ""
+
+        if _INSERT_RE.search(stem):
+            missing = [mark for mark in ("[1]", "[2]", "[3]", "[4]") if mark not in body]
+            if missing:
+                problems.append(
+                    f"câu {index} là câu điền câu nhưng ngữ liệu thiếu dấu {', '.join(missing)}"
+                )
+            labels = {(option.content or "").strip() for option in question.options}
+            if labels != {"[1]", "[2]", "[3]", "[4]"}:
+                problems.append(f"câu {index}: bốn lựa chọn phải đúng là [1] [2] [3] [4]")
+
+        found = _VOCAB_RE.search(stem)
+        if found and "closest in meaning" in stem.lower():
+            word = found.group(1).strip()
+            # Đúng MỘT lần trong cả cụm. Đó là thứ thay cho số dòng của đề giấy:
+            # số dòng vô nghĩa khi chữ tự xuống dòng theo bề ngang màn hình, còn
+            # "chỉ có một chỗ" thì đúng trên mọi thiết bị (§29.2).
+            hits = len(re.findall(rf"\b{re.escape(word)}\b", body, re.IGNORECASE))
+            if hits != 1:
+                problems.append(
+                    f"câu {index}: từ {word!r} xuất hiện {hits} lần trong ngữ liệu — phải đúng một"
+                )
+            if _LINE_REF.search(stem):
+                problems.append(
+                    f"câu {index}: bỏ số dòng khỏi đề bài — chữ tự xuống dòng nên nó trỏ sai"
+                )
+
+        quoted = _QUOTE_RE.search(stem)
+        if quoted and quoted.group(1).strip() not in body:
+            problems.append(
+                f"câu {index}: lời trích {quoted.group(1)[:40]!r} không có trong ngữ liệu"
+            )
+    return problems
+
+
 def _check_set(
     slot: QuestionSlot,
     block: str,
@@ -569,7 +637,12 @@ def _check_set(
     trong ba câu có vấn đề. Nên vấn đề của cụm được nhân ra cả ba báo cáo, và
     `prune` xoá tệp đúng một lần dù ba báo cáo cùng đỏ.
     """
-    questions, script, shared = parse_group(block, part)
+    # Ngữ liệu là HÌNH thì KHÔNG có khối `[PASSAGE]` — nó không có chữ nào, và
+    # ô ngữ liệu của nó chỉ mang ảnh (`_passages` giữ ô có ảnh mà không có chữ).
+    # Đếm cả hai loại như nhau là đòi mô hình viết một khối rỗng, và cụm trộn
+    # chữ với hình — đúng hình dạng của bài đọc ba ngữ liệu — không bao giờ qua.
+    text_passages = sum(1 for spec in slot.passages if not spec) if part == 7 else None
+    questions, script, shared = parse_group(block, part, len(slot.question_types), text_passages)
     if slot.graphic:
         source = workdir / "graphics" / f"{slot.id}.txt"
         graphic_problems, graphic_flags = check_graphic(questions, script, source, part)
@@ -585,6 +658,20 @@ def _check_set(
             script = f"{script}\n\n{_graphic_as_text(source)}"
     else:
         graphic_flags = []
+    if part == 7:
+        shared = [*shared, *check_part7_forms(questions, script)]
+        # …và đếm riêng số HÌNH, thứ nằm ở hiện vật khác.
+        wanted_graphics = sum(1 for spec in slot.passages if spec)
+        if wanted_graphics:
+            # Tên `have`, KHÔNG phải `found`: `found` đã mang nghĩa khác trong
+            # chính hàm này (các chữ cái người chấm nói là điền được). Dùng lại
+            # tên là đúng cái bẫy `total` mà CLAUDE.md ghi — mypy bắt được lần
+            # này, nhưng nó chỉ bắt vì hai kiểu khác nhau.
+            have = len(list((workdir / "graphics").glob(f"{slot.id}.txt"))) + len(
+                list((workdir / "graphics").glob(f"{slot.id}-*.txt"))
+            )
+            if have != wanted_graphics:
+                shared = [*shared, f"cụm cần {wanted_graphics} hình, có {have}"]
     # Hội thoại trùng là lỗi ở tầng ĐỀ và đáng nói RIÊNG, không nấp trong một
     # thông báo về đề bài: ba câu vẫn khác nhau, chỉ có đoạn thoại là lặp lại,
     # và người học nghe lại đúng một đoạn hai lần trong cùng một đề.
@@ -687,7 +774,7 @@ def check_blueprint(
             reports.append(report)
             continue
 
-        if part_number in (3, 4, 6):
+        if part_number in (3, 4, 6, 7):
             reports.extend(
                 _check_set(
                     slot,

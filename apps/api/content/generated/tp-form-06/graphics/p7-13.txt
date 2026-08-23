@@ -1,0 +1,7 @@
+kind: table
+Guest Satisfaction Survey — Stay of June 15–17
+Category | Rating (1=Poor, 5=Excellent)
+Check-in | 2
+Room Comfort | 1
+Staff Responsiveness | 2
+Dining Quality | 3

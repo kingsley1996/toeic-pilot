@@ -1,0 +1,7 @@
+kind: table
+Spring Season 2025 Ticket Prices
+Performance | Standard | Premium | Student | Senior
+Fri Apr 18 7:30 PM | $45 | $65 | $30 | $35
+Sat Apr 19 2:00 PM | $40 | $60 | $28 | $32
+Sat Apr 19 7:30 PM | $50 | $70 | $32 | $38
+Sun Apr 20 2:00 PM | $40 | $60 | $28 | $32

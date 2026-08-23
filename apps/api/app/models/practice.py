@@ -315,6 +315,16 @@ class TestCollection(Base, PublishableMixin):
         return f"<TestCollection {self.slug}>"
 
 
+# Ô ngữ liệu -> cột ảnh của nó. Một chỗ duy nhất, vì cả endpoint quản trị lẫn
+# công cụ nhập ngoài luồng đều cần đúng bảng này — chép lại là hai bảng trôi
+# khỏi nhau, và cái trôi chỉ lộ ra khi một ô gắn vào cột của ô khác.
+PASSAGE_IMAGE_COLUMNS = {
+    1: "passage_image_id",
+    2: "passage_2_image_id",
+    3: "passage_3_image_id",
+}
+
+
 class PracticeTest(Base, PublishableMixin):
     __tablename__ = "practice_test"
     __table_args__ = (

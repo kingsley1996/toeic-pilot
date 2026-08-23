@@ -422,6 +422,154 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
 )
 
 
+# Part 7: mười chín cụm, câu 147 tới 200. Ba nhóm, và số câu mỗi cụm KHÁC nhau —
+# 2 tới 5 — nên số câu nằm ở chính cái ô chứ không tra theo part.
+#
+# Mỗi mục: (dạng ngữ liệu, bối cảnh, các dạng câu hỏi, các ngữ liệu).
+# "Các ngữ liệu" là danh sách song song với số đoạn: chuỗi rỗng nghĩa là đoạn
+# CHỮ, còn `kind: mô tả` nghĩa là đoạn đó được VẼ từ dữ liệu (§28).
+PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
+    # --- mười cụm một ngữ liệu, câu 147–175
+    (
+        "PART_7_TEXT_MESSAGE_CHAIN",
+        "hai đồng nghiệp nhắn tin về việc đổi vé máy bay",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_IMPLICATION"),
+        ("",),
+    ),
+    (
+        "PART_7_ADVERTISEMENT",
+        "quảng cáo dịch vụ dọn văn phòng theo tháng",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("",),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "thông báo đóng bãi xe để sửa chữa",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_ADVERTISEMENT",
+        "quảng cáo tuyển dụng vị trí điều phối kho",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_FALSE_INFORMATION", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "thư cảm ơn khách hàng lâu năm kèm ưu đãi",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("",),
+    ),
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài đánh giá một quán ăn mới mở gần khu văn phòng",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFERENCE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("",),
+    ),
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài báo ngắn về việc một công ty mở rộng nhà máy",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_INFERENCE", "PART_7_VOCABULARY_IN_CONTEXT"),
+        ("",),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "email trả lời khách về đơn hàng bị thiếu hoá đơn",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_SENTENCE_INSERTION",
+        ),
+        ("",),
+    ),
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài báo về một hội chợ việc làm sắp tổ chức",
+        (
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_SENTENCE_INSERTION",
+        ),
+        ("",),
+    ),
+    (
+        "PART_7_TEXT_MESSAGE_CHAIN",
+        "ba người trao đổi nhóm về việc đặt phòng họp",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION",
+            "PART_7_INFERENCE",
+        ),
+        ("",),
+    ),
+    # --- hai cụm hai ngữ liệu, câu 176–185
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "email đặt chỗ hội thảo và lịch các phiên",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+        ),
+        ("", "schedule: lịch bốn phiên hội thảo trong ngày"),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "thông cáo ra mắt sản phẩm và thư phản hồi của đại lý",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+        ),
+        ("", ""),
+    ),
+    # --- ba cụm ba ngữ liệu, câu 186–200
+    (
+        "PART_7_FORM",
+        "email xác nhận đặt phòng, thư phàn nàn, và phiếu khảo sát đã điền",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+            "PART_7_INFERENCE",
+        ),
+        ("", "", "survey: phiếu khảo sát bốn mục đã đánh dấu"),
+    ),
+    (
+        "PART_7_SCHEDULE",
+        "thông báo nội bộ, email hỏi lại, và lịch buổi đào tạo",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+        ),
+        ("", "", "schedule: lịch bốn buổi đào tạo trong tháng"),
+    ),
+    (
+        "PART_7_FORM",
+        "thư mời hội viên, bảng giá vé, và phiếu đặt vé đã điền",
+        (
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFORMATION_RETRIEVAL",
+        ),
+        ("", "table: bảng giá vé bốn suất diễn", "form: phiếu đặt vé đã điền"),
+    ),
+)
+
+
 @dataclass
 class QuestionSlot:
     """Một ô trong đề: chỗ này sẽ là câu hỏi gì.
@@ -463,6 +611,15 @@ class QuestionSlot:
     # Part 6 dùng: ô của nó là một văn bản mang bốn câu, và ba trong bốn câu có
     # điểm ngữ pháp riêng.
     grammars: list[str] = field(default_factory=list)
+    # Part 7: song song với số đoạn ngữ liệu. Chuỗi rỗng = đoạn CHỮ; `kind: mô
+    # tả` = đoạn được VẼ từ dữ liệu. Trộn chữ và hình trong một cụm là chuyện
+    # bình thường của đề thật (§28), không phải trường hợp biên.
+    passages: list[str] = field(default_factory=list)
+    # Part 7: `passage_structure` — một hay nhiều ngữ liệu. Trường RIÊNG chứ
+    # không mượn `graphic`: ở Part 3/4 `graphic` nghĩa là "có một hình đi kèm,
+    # dạng này", và nhồi một nghĩa thứ hai vào đó làm phép kiểm vị trí câu hỏi
+    # về hình chạy nhầm cho cả Part 7.
+    structure: str = ""
 
 
 @dataclass
@@ -597,6 +754,34 @@ def graph_code(part: int) -> str:
     return f"PART_{part}_GRAPH_OR_TABLE_QUESTION"
 
 
+def _part7_problems(slot: QuestionSlot) -> list[str]:
+    """Luật riêng của một cụm Part 7."""
+    problems: list[str] = []
+    if not 1 <= len(slot.passages) <= 3:
+        problems.append(f"{slot.id}: cụm Part 7 có 1–3 ngữ liệu, đang có {len(slot.passages)}")
+
+    from app.content.exam.graphics import KINDS
+
+    for index, spec in enumerate(slot.passages, start=1):
+        if spec and spec.split(":")[0].strip() not in KINDS:
+            problems.append(f"{slot.id}: ngữ liệu {index} có dạng hình không hợp lệ: {spec[:30]!r}")
+
+    single = len(slot.passages) == 1
+    wanted = "PART_7_SINGLE_PASSAGE" if single else "PART_7_MULTIPLE_PASSAGE"
+    if slot.structure != wanted:
+        # `passage_structure` phải khớp với số ngữ liệu THẬT. Lệch nhau thì thống
+        # kê theo nhãn nói một đằng còn đề nói một nẻo, và không gì báo.
+        problems.append(f"{slot.id}: cấu trúc ngữ liệu phải là {wanted}")
+
+    # Đề mẫu chỉ đặt câu điền câu ở cụm MỘT ngữ liệu — ở cụm nhiều ngữ liệu thì
+    # dấu [1]–[4] nằm ở đoạn nào cũng thành mơ hồ.
+    if not single and "PART_7_SENTENCE_INSERTION" in slot.question_types:
+        problems.append(f"{slot.id}: câu điền câu chỉ dùng cho cụm một ngữ liệu")
+    if slot.question_types.count("PART_7_SENTENCE_INSERTION") > 1:
+        problems.append(f"{slot.id}: mỗi cụm nhiều nhất một câu điền câu")
+    return problems
+
+
 def _part6_problems(slot: QuestionSlot) -> list[str]:
     """Luật riêng của một văn bản Part 6."""
     problems: list[str] = []
@@ -629,9 +814,14 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     phải một dòng JSON. Cùng lý do như phần kiểm nhãn của ô-một-câu.
     """
     problems: list[str] = []
-    expected = QUESTIONS_PER_SET[part]
-    if len(slot.question_types) != expected:
+    # Part 7 KHÔNG có số câu cố định cho cả part — 2 tới 5 tuỳ cụm — nên số câu
+    # là thuộc tính của ô. Ba part kia có hằng số, và hằng số đó chỉ là một phép
+    # kiểm thêm chứ không phải nguồn sự thật.
+    expected = QUESTIONS_PER_SET.get(part)
+    if expected is not None and len(slot.question_types) != expected:
         problems.append(f"{slot.id}: cụm Part {part} cần {expected} nhãn dạng câu")
+    if part == 7 and not 2 <= len(slot.question_types) <= 5:
+        problems.append(f"{slot.id}: cụm Part 7 có 2–5 câu, đang có {len(slot.question_types)}")
     for code in slot.question_types:
         if code not in valid_types:
             problems.append(f"{slot.id}: `{code}` không phải nhãn của part {part}")
@@ -639,7 +829,10 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     # và chúng khác nhau ở điểm ngữ pháp chứ không ở dạng câu. Part 3/4 thì
     # không: ba câu cùng dạng về cùng một đoạn thoại gần như chắc chắn hỏi trùng
     # nhau, và cái trùng đó nằm ở nội dung, chỗ không cổng nào bắt được.
-    if part != 6 and len(set(slot.question_types)) != len(slot.question_types):
+    # Part 6 và 7 CHO PHÉP trùng dạng: một cụm Part 7 hỏi hai câu "tìm thông tin"
+    # về hai chi tiết khác nhau là chuyện bình thường của đề thật. Part 3/4 thì
+    # không — ba câu cùng dạng về một đoạn thoại gần như chắc chắn hỏi trùng.
+    if part not in (6, 7) and len(set(slot.question_types)) != len(slot.question_types):
         problems.append(f"{slot.id}: ba câu trùng dạng")
 
     # Nhãn CỤM nằm ở ba mặt khác nhau tuỳ part: Part 3 dùng `topic`, Part 4 dùng
@@ -680,6 +873,10 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
             problems.append(
                 f"{slot.id}: câu hỏi về hình của Part {part} phải là câu thứ {want_at + 1}"
             )
+
+    if part == 7:
+        problems.extend(_part7_problems(slot))
+        return problems
 
     if part == 6:
         # Đặt SAU phép kiểm nhãn cụm và TRƯỚC phép kiểm giọng — Part 6 không có
@@ -746,6 +943,33 @@ def build_part6(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=6, slots=slots)])
 
 
+def build_part7(slug: str, title: str, seed: int) -> Blueprint:
+    """Mười chín cụm Part 7, câu 147–200.
+
+    Số câu mỗi cụm KHÁC nhau (2 tới 5), nên nó nằm ở chính cái ô — `number` phải
+    cộng dồn theo số câu của ô trước, không nhân với một hằng số.
+    """
+    slots: list[QuestionSlot] = []
+    number = 147
+    for index, (passage_type, scene, types, passages) in enumerate(PART7_SETS, start=1):
+        structure = "PART_7_SINGLE_PASSAGE" if len(passages) == 1 else "PART_7_MULTIPLE_PASSAGE"
+        slots.append(
+            QuestionSlot(
+                id=f"p7-{index:02d}",
+                number=number,
+                question_type="",
+                grammar="",
+                context=scene,
+                question_types=list(types),
+                topic=passage_type,
+                structure=structure,
+                passages=list(passages),
+            )
+        )
+        number += len(types)
+    return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=7, slots=slots)])
+
+
 def validate(blueprint: Blueprint) -> list[str]:
     """Những gì sai TRONG blueprint, trước khi nó tốn một lượt gọi nào.
 
@@ -761,7 +985,7 @@ def validate(blueprint: Blueprint) -> list[str]:
         for slot in part.slots:
             # Ô CỤM để `question_type` rỗng — ba nhãn của nó nằm ở
             # `question_types` và được kiểm riêng bên dưới.
-            if part.part not in (3, 4, 6) and slot.question_type not in valid_types:
+            if part.part not in (3, 4, 6, 7) and slot.question_type not in valid_types:
                 problems.append(
                     f"{slot.id}: `{slot.question_type}` không phải nhãn của part {part.part}"
                 )
@@ -782,7 +1006,7 @@ def validate(blueprint: Blueprint) -> list[str]:
                 unknown = [v for v in slot.voices if v not in LOGICAL_VOICE_ACCENTS]
                 if unknown:
                     problems.append(f"{slot.id}: giọng không có: {', '.join(unknown)}")
-            if part.part in (3, 4, 6):
+            if part.part in (3, 4, 6, 7):
                 problems.extend(_set_slot_problems(slot, part.part, valid_types))
             if part.part == 1 and slot.people not in PEOPLE_SHAPES:
                 problems.append(

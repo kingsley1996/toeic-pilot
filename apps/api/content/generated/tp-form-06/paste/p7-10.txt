@@ -1,0 +1,57 @@
+[PASSAGE]
+Sarah Chen [9:02 A.M.]
+Hi team, I'm trying to book Room 302 for our project review on Thursday at 2:00 P.M., but the system says it's reserved.
+
+David Vance [9:04 A.M.]
+Oh, I think the marketing team has it then. Did you check Room 305? It has a larger projector screen anyway.
+
+Kenji Sato [9:05 A.M.]
+I just checked the portal. Room 305 is free, but only until 3:00 P.M. Will one hour be enough for us?
+
+Sarah Chen [9:07 A.M.]
+We have a lot of data to go over. I'd prefer at least ninety minutes.
+
+David Vance [9:08 A.M.]
+I can talk to Clara from marketing. They might be able to swap with us if their meeting is small.
+
+Kenji Sato [9:09 A.M.]
+That would be great.
+
+David Vance [9:15 A.M.]
+She's fine with it!
+
+Sarah Chen [9:16 A.M.]
+Awesome, thanks David! I'll reserve Room 305 for them and secure Room 302 for us right now.
+
+[QUESTION]
+Why are the writers texting each other?
+(A) To schedule a training session
+(B) To report a system technical error
+(C) To plan a marketing presentation
+(D) To arrange a meeting space
+Answer: D
+Source: original
+[QUESTION]
+How long does Ms. Chen want the meeting to last?
+(A) Thirty minutes
+(B) One hour
+(C) One hour and thirty minutes
+(D) Two hours
+Answer: C
+Source: original
+[QUESTION]
+At 9:15 A.M., what does Mr. Vance mean when he writes, "She's fine with it!"?
+(A) A colleague has agreed to switch rooms.
+(B) A project proposal has been approved.
+(C) A client has accepted a meeting invitation.
+(D) A team member will attend a training session.
+Answer: A
+Source: original
+[QUESTION]
+What can be inferred about Room 302?
+(A) It is currently being renovated.
+(B) It has a smaller screen than Room 305.
+(C) It is reserved for the entire afternoon.
+(D) It cannot accommodate more than ten people.
+Answer: B
+Source: original

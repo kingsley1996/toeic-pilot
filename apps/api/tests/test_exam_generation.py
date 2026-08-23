@@ -1121,3 +1121,149 @@ def test_the_judge_always_receives_the_question_itself(part, tmp_path):
     }[part]
     for request in recorder.seen:
         assert needle in request.user, f"part {part}: thiếu ngữ cảnh trong yêu cầu"
+
+
+PART7_TWO = """[PASSAGE]
+FOR IMMEDIATE RELEASE
+
+Apex Electronics announces the SoundBar Pro, shipping December 1. Distributors
+receive an initial allocation of 600 units.
+
+[PASSAGE]
+Dear Ms. Rossi,
+
+Thank you for the launch notice. We request an additional 200 units to cover
+confirmed dealer commitments.
+
+Sincerely,
+James Whitaker
+
+[QUESTION]
+What is the purpose of the first document?
+(A) To announce a new product
+(B) To confirm a refund
+(C) To cancel an order
+(D) To request a review
+Answer: A
+Source: original
+
+[QUESTION]
+How many extra units does Mr. Whitaker request?
+(A) One hundred
+(B) Two hundred
+(C) Four hundred
+(D) Six hundred
+Answer: B
+Source: original
+"""
+
+PART7_TRIPLE = """[PASSAGE]
+Dear Member,
+
+Please join us for the premiere on June 18. Fill out the order form below.
+
+Sincerely,
+Mariam Abdulla
+
+[PASSAGE]
+Show Date | Ticket Price
+June 17 | twelve pounds
+June 18 | eighteen pounds
+June 19 | twenty pounds
+
+[PASSAGE]
+Name: Anil Bhatia
+Performance date: June 18
+Tickets: 2
+
+[QUESTION]
+What is the purpose of the letter?
+(A) To invite a member to a premiere
+(B) To confirm a refund
+(C) To announce a closure
+(D) To request a donation
+Answer: A
+Source: original
+
+[QUESTION]
+How much will Mr. Bhatia pay per ticket?
+(A) Twelve pounds
+(B) Eighteen pounds
+(C) Twenty pounds
+(D) Twenty-four pounds
+Answer: B
+Source: original
+"""
+
+
+def test_a_multi_passage_set_must_actually_have_its_passages(tmp_path):
+    """Đếm ngữ liệu, không chỉ hỏi "có ngữ liệu không".
+
+    Đo được: cả BA cụm ba-ngữ-liệu của lượt chạy đầu chỉ sinh ra MỘT khối
+    `[PASSAGE]` — mô hình gộp cả ba tài liệu vào một đoạn. Parser nhận (1–3 đều
+    hợp lệ), cổng cũ chỉ hỏi "có ngữ liệu không", nên nhóm bài đọc ba ngữ liệu
+    lặng lẽ thành nhóm một ngữ liệu và mất đúng cái làm nên nhóm đó: câu hỏi
+    phải vắt qua nhiều tài liệu.
+    """
+    # Cụm TOÀN CHỮ, không hình: bài này ghim phép đếm ngữ liệu, và một cụm có
+    # hình sẽ đỏ vì thiếu hình chứ không vì thiếu đoạn văn — hai chuyện khác
+    # nhau, và trộn lại thì không biết cổng nào vừa kêu.
+    plan = bp.build_part7("tp-test", "Test", seed=3)
+    slot = next(s for s in plan.parts[0].slots if len(s.passages) > 1 and not any(s.passages))
+    slot.question_types = slot.question_types[:2]
+    plan.parts[0].slots = [slot]
+
+    writer.save_slot(tmp_path, slot, PART7_TWO)
+    assert all(r.problems == [] for r in checker.check_blueprint(plan, tmp_path, only=7))
+
+    # Gộp ba tài liệu vào một khối: vẫn là văn bản hợp lệ, và phải bị chặn.
+    merged = PART7_TWO.replace("\n[PASSAGE]\nDear Ms. Rossi", "\nDear Ms. Rossi")
+    writer.save_slot(tmp_path, slot, merged)
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=7) for p in r.problems]
+    assert any("cần 2 ngữ liệu" in problem for problem in problems)
+
+
+def test_part_7_special_forms_must_point_at_something_real(tmp_path):
+    """Ba dạng câu của Part 7 hỏng theo cùng một kiểu: câu đọc trôi chảy, có
+    đúng một đáp án, và thứ nó trỏ tới KHÔNG có trong ngữ liệu. Người học đi tìm
+    một chỗ không tồn tại rồi kết luận là mình đọc sót.
+    """
+    plan = bp.build_part7("tp-test", "Test", seed=3)
+    slot = next(s for s in plan.parts[0].slots if len(s.passages) == 3)
+    slot.question_types = slot.question_types[:2]
+
+    # từ vựng: hỏi một từ không có trong bài
+    vocab = PART7_TRIPLE.replace(
+        "How much will Mr. Bhatia pay per ticket?",
+        'In the letter, the word "subsequent" in paragraph 1 is closest in meaning to',
+    )
+    assert any(
+        "xuất hiện 0 lần" in p
+        for p in checker.check_part7_forms(*_parsed(vocab, len(slot.question_types)))
+    )
+
+    # điền câu: ngữ liệu không có dấu [1]–[4]
+    insert = PART7_TRIPLE.replace(
+        "How much will Mr. Bhatia pay per ticket?",
+        "In which of the positions marked [1], [2], [3], and [4] does the "
+        "following sentence best belong?",
+    )
+    assert any(
+        "thiếu dấu" in p
+        for p in checker.check_part7_forms(*_parsed(insert, len(slot.question_types)))
+    )
+
+    # hàm ý: lời trích không có trong bài
+    quote = PART7_TRIPLE.replace(
+        "How much will Mr. Bhatia pay per ticket?",
+        'At 9:26 A.M., what does Ms. Lee mean when she writes, "I am on it"?',
+    )
+    assert any(
+        "không có trong ngữ liệu" in p
+        for p in checker.check_part7_forms(*_parsed(quote, len(slot.question_types)))
+    )
+
+
+def _parsed(block: str, wanted: int):  # type: ignore[no-untyped-def]
+    questions, passages, _ = checker.parse_group(block, 7, wanted)
+    return questions, passages

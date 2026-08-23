@@ -1,0 +1,73 @@
+[PASSAGE]
+From: hr-dept@meridian-group.com
+To: all-staff@meridian-group.com
+Subject: Quarterly Compliance Training — April Sessions
+Date: March 28
+
+Dear Colleagues,
+
+Meridian Group will hold its mandatory quarterly compliance training during the week of April 14. [1] Four sessions have been scheduled to accommodate different shifts and time zones. [2] Each session covers identical material, so you need attend only one. [3] Registration closes on April 7. [4]
+
+Please review the attached schedule and select the session that best fits your calendar. A confirmation e-mail with the virtual meeting link will be sent after registration. If you have a conflict with every listed time, contact the HR Help Desk no later than April 5 to discuss an alternative arrangement.
+
+Completion of this training is required for all full-time and part-time employees. Certificates will be issued within five business days of attendance.
+
+Regards,
+Human Resources Department
+
+[PASSAGE]
+From: t.nguyen@meridian-group.com
+To: hr-helpdesk@meridian-group.com
+Subject: Session conflict — April 16
+Date: April 1
+
+Hello,
+
+I have a client presentation scheduled for 10:00 A.M. on April 16 that cannot be moved. The schedule shows a session at 9:00 A.M. that same day. Would attending the 9:00 A.M. session satisfy the requirement, or do I need to request an alternative date because of the overlap?
+
+Also, will the session be recorded for later viewing? My team lead mentioned that recordings might be available this quarter.
+
+Thank you,
+Thao Nguyen
+Senior Analyst, Client Services
+
+[QUESTION]
+What is the purpose of the March 28 memo?
+(A) To remind staff about certificate expiration dates
+(B) To request feedback on the training content
+(C) To introduce the new compliance trainers
+(D) To announce the training schedule and registration deadline
+Answer: D
+Source: original
+[QUESTION]
+According to the memo, by what date must employees register for a session?
+(A) April 5
+(B) April 7
+(C) April 14
+(D) April 16
+Answer: B
+Source: original
+[QUESTION]
+What can be inferred about the April 16 session?
+(A) It is the only session with space available
+(B) It is led by the same trainer as the April 14 session
+(C) It conflicts with Thao Nguyen's client presentation
+(D) It will not be recorded for later viewing
+Answer: C
+Source: original
+[QUESTION]
+Which trainer is leading the session on April 17?
+(A) M. Rivera
+(B) J. Chen
+(C) K. Okafor
+(D) S. Patel
+Answer: D
+Source: original
+[QUESTION]
+In the memo, the word "accommodate" in paragraph 1 is closest in meaning to
+(A) adjust
+(B) require
+(C) limit
+(D) cancel
+Answer: A
+Source: original

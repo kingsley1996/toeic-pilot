@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 from pathlib import Path
 
 from app.content.exam import balance as balancer
@@ -78,6 +79,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
         4: bp.build_part4,
         5: bp.build_part5,
         6: bp.build_part6,
+        7: bp.build_part7,
     }[args.part]
     path = blueprint_path(args.slug)
     plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
@@ -98,13 +100,25 @@ def cmd_write(args: argparse.Namespace) -> int:
     todo = writer.pending(plan, workdir)
     if args.limit:
         todo = todo[: args.limit]
-    print(f"{len(todo)} ô còn thiếu tệp dán.\n")
+    print(f"{len(todo)} ô còn thiếu tệp dán.\n", flush=True)
 
     gateway = _gateway()
     tier = Tier(args.tier)
     written = 0
-    for slot in todo:
+    started = time.monotonic()
+    for index, slot in enumerate(todo, start=1):
         part = next(p.part for p in plan.parts if slot in p.slots)
+        # In TRƯỚC lượt gọi, không chỉ sau.
+        #
+        # Một lượt gọi mất một tới ba phút, và chỉ in sau khi xong nghĩa là suốt
+        # thời gian đó màn hình đứng im — không phân biệt được "đang viết" với
+        # "đã treo". Dòng này nói đang ở ô nào và còn bao nhiêu ô.
+        #
+        # `flush` là bắt buộc chứ không phải cho đẹp: khi đầu ra đi vào tệp hay
+        # ống dẫn, Python đệm theo khối, nên `tail -f` không thấy gì cho tới khi
+        # đầy đệm — đúng lúc người ta cần nhìn nhất thì nó im.
+        print(f"  … [{index}/{len(todo)}] {slot.id} (part {part})", flush=True)
+        each = time.monotonic()
         try:
             block = writer.write_slot(gateway, slot, tier, part, args.max_tokens)
         except LLMQuotaExhausted as quota:
@@ -115,7 +129,12 @@ def cmd_write(args: argparse.Namespace) -> int:
             print(f"Đã ghi {written} ô. Chạy lại lệnh này sau để làm tiếp.", file=sys.stderr)
             return 3
         except Exception as failure:  # noqa: BLE001 - một ô hỏng không dừng cả lượt
-            print(f"  ✗ {slot.id}: {failure}", file=sys.stderr)
+            print(
+                f"  ✗ [{index}/{len(todo)}] {slot.id} sau {time.monotonic() - each:.0f}s: "
+                f"{failure}",
+                file=sys.stderr,
+                flush=True,
+            )
             continue
         # Part 1 trả về hai khối. Mô tả ảnh đi ra hiện vật RIÊNG: parser từ chối
         # dòng lạ sau các đáp án, nên nhét nó vào tệp dán là làm cả khối không
@@ -127,15 +146,23 @@ def cmd_write(args: argparse.Namespace) -> int:
             photo_path.write_text(photo + "\n")
         # Bảng của Part 3/4 cũng là hiện vật riêng, cùng lý do như mô tả ảnh: nó
         # là DỮ LIỆU để vẽ và để sinh chữ thay ảnh, không phải dòng để dán.
-        table, block = writer.split_marked(block, writer.GRAPHIC_MARKER)
-        if table:
-            table_path = workdir / "graphics" / f"{slot.id}.txt"
+        tables, block = writer.split_all(block, writer.GRAPHIC_MARKER)
+        for order, table in enumerate(tables, start=1):
+            # Một cụm Part 7 có thể mang hai hình, nên tên tệp mang số thứ tự.
+            # Ô chỉ có một hình vẫn giữ tên cũ `<slot>.txt`, để Part 3/4 không
+            # phải sinh lại.
+            suffix = "" if len(tables) == 1 else f"-{order}"
+            table_path = workdir / "graphics" / f"{slot.id}{suffix}.txt"
             table_path.parent.mkdir(parents=True, exist_ok=True)
             table_path.write_text(table + "\n")
         path = writer.save_slot(workdir, slot, block)
         written += 1
-        print(f"  ✓ {slot.id}  {path}")
-    print(f"\nĐã ghi {written}/{len(todo)} ô.")
+        print(
+            f"  ✓ [{index}/{len(todo)}] {slot.id} sau {time.monotonic() - each:.0f}s  {path}",
+            flush=True,
+        )
+    minutes = (time.monotonic() - started) / 60
+    print(f"\nĐã ghi {written}/{len(todo)} ô trong {minutes:.1f} phút.", flush=True)
     return 0
 
 
@@ -315,50 +342,58 @@ def cmd_media(args: argparse.Namespace) -> int:
 
 
 def cmd_graphic(args: argparse.Namespace) -> int:
-    """Vẽ hình ngữ liệu Part 3/4 từ dữ liệu bảng, kèm chữ thay ảnh.
+    """Vẽ hình ngữ liệu Part 3/4/7 từ dữ liệu bảng, kèm chữ thay ảnh.
 
     KHÔNG gọi mô hình ảnh. Hình này là một tài liệu và giá trị của nó nằm ở chữ
     đọc được, thứ mô hình khuếch tán không vẽ đáng tin. Vẽ từ dữ liệu cũng là
     thứ duy nhất khiến chữ thay ảnh sinh ra tự động — và `assign_passage_image`
     TỪ CHỐI (409) một hình ngữ liệu không có chữ thay ảnh.
 
-    Ghi kèm `<slot>.alt.txt` bên cạnh PNG: `import_media` đọc nó, vì mỗi hình có
-    chữ thay ảnh của riêng nó trong khi `--alt-text` chỉ có một giá trị cho cả
-    lượt nhập.
+    Tên ảnh mang **số ô ngữ liệu** (`p7-15-s2.png`) chứ không chỉ số thứ tự: một
+    cụm Part 7 có thể có hai hình và chúng gắn vào hai ô khác nhau, nên chặng
+    gắn phải đọc được chỗ từ chính tên tệp.
     """
     from app.content.exam.graphics import parse_graphic, render
 
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
-    # Một thư mục CHO MỖI PART. `import_media` khớp theo số trong tên tệp và
-    # `_PART_LABEL` bóc tiền tố `p3`/`p4` đi trước khi đọc số — nên `p4-09.png`
-    # nằm chung với ảnh Part 3 sẽ khớp thành cụm thứ 9 của Part 3. Khớp SAI mà
-    # vẫn "thành công", đúng loại lỗi mà luật đặt tên của `import_media` tồn tại
-    # để chặn.
     made = 0
     problems = 0
+
     for part in plan.parts:
         for slot in part.slots:
-            source = workdir / "graphics" / f"{slot.id}.txt"
-            if not slot.graphic:
-                continue
-            if not source.exists():
-                print(f"  ✗ {slot.id}: thiếu dữ liệu bảng ({source})", file=sys.stderr)
-                problems += 1
-                continue
-            graphic = parse_graphic(source.read_text())
-            found = graphic.problems()
-            if found:
-                print(f"  ✗ {slot.id}: {'; '.join(found)}", file=sys.stderr)
-                problems += 1
-                continue
-            out_dir = workdir / "graphic-images" / f"part{part.part}"
-            out_dir.mkdir(parents=True, exist_ok=True)
-            target = out_dir / f"{slot.id}.png"
-            render(graphic, target)
-            (out_dir / f"{slot.id}.alt.txt").write_text(graphic.alt_text() + "\n")
-            made += 1
-            print(f"  ✓ {slot.id}  {target}")
+            # Part 3/4: tối đa một hình, gắn vào ô ngữ liệu 1, tệp `<ô>.txt`.
+            # Part 7: tối đa ba, tệp `<ô>.txt` hoặc `<ô>-N.txt`, và mỗi cái gắn
+            # vào đúng ô ngữ liệu mà blueprint đã chỉ.
+            jobs: list[tuple[str, int]] = []
+            if slot.graphic:
+                jobs.append((f"{slot.id}.txt", 1))
+            specs = [index for index, spec in enumerate(slot.passages, start=1) if spec]
+            for order, passage_slot in enumerate(specs, start=1):
+                suffix = "" if len(specs) == 1 else f"-{order}"
+                jobs.append((f"{slot.id}{suffix}.txt", passage_slot))
+
+            for name, passage_slot in jobs:
+                source = workdir / "graphics" / name
+                if not source.exists():
+                    print(f"  ✗ {name}: thiếu dữ liệu bảng", file=sys.stderr)
+                    problems += 1
+                    continue
+                graphic = parse_graphic(source.read_text())
+                found = graphic.problems()
+                if found:
+                    print(f"  ✗ {name}: {'; '.join(found)}", file=sys.stderr)
+                    problems += 1
+                    continue
+                out_dir = workdir / "graphic-images" / f"part{part.part}"
+                out_dir.mkdir(parents=True, exist_ok=True)
+                stem = f"{slot.id}-s{passage_slot}" if part.part == 7 else slot.id
+                target = out_dir / f"{stem}.png"
+                render(graphic, target)
+                (out_dir / f"{stem}.alt.txt").write_text(graphic.alt_text() + "\n")
+                made += 1
+                print(f"  ✓ {stem}  {target}", flush=True)
+
     print(f"\nĐã vẽ {made} hình · {problems} lỗi.")
     return 1 if problems else 0
 
@@ -520,7 +555,7 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
-    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5, 6))
+    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5, 6, 7))
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")

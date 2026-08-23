@@ -1,0 +1,56 @@
+[PASSAGE]
+From: events@brightpath-training.com
+To: m.chen@example-mail.net
+Subject: Leadership Workshop Registration — June 15
+Date: June 1
+
+Dear Ms. Chen,
+
+Thank you for registering for the Leadership Essentials Workshop on June 15. Your registration has been confirmed.
+
+Please review the attached session schedule and select one morning session and one afternoon session by June 10. Seats are limited and assigned on a first-come basis. A confirmation e-mail with room details will follow.
+
+Best regards,
+Event Team
+BrightPath Training
+
+[QUESTION]
+What is the purpose of the e-mail?
+(A) To confirm a workshop registration and request session choices
+(B) To announce a change in the workshop date
+(C) To provide a list of workshop speakers
+(D) To request payment for the workshop
+Answer: A
+Source: original
+[QUESTION]
+By what date must Ms. Chen select her sessions?
+(A) June 1
+(B) June 10
+(C) June 15
+(D) June 20
+Answer: B
+Source: original
+[QUESTION]
+Which session can Ms. Chen attend in both the morning and the afternoon?
+(A) Effective Communication
+(B) Decision Making
+(C) Team Dynamics
+(D) Strategic Planning
+Answer: D
+Source: original
+[QUESTION]
+In which room does the Strategic Planning session meet at 15:15?
+(A) Room 101
+(B) Room 102
+(C) Room 107
+(D) Room 108
+Answer: B
+Source: original
+[QUESTION]
+In the e-mail, the word "review" in paragraph 2 is closest in meaning to
+(A) examine
+(B) revise
+(C) edit
+(D) approve
+Answer: A
+Source: original

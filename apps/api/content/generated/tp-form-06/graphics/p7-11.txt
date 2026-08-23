@@ -1,0 +1,7 @@
+kind: schedule
+June 15 Workshop Sessions
+Session | 9:00-10:30 | 10:45-12:15 | 13:30-15:00 | 15:15-16:45
+Effective Communication | Room 101 |  |  | 
+Decision Making |  | Room 103 |  | 
+Team Dynamics |  |  | Room 106 | 
+Strategic Planning |  | Room 107 |  | Room 102

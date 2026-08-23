@@ -64,6 +64,7 @@ from app.models import (
     Question,
     QuestionSet,
 )
+from app.models.practice import PASSAGE_IMAGE_COLUMNS
 
 AUDIO_SUFFIXES = {".mp3", ".m4a", ".wav"}
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
@@ -83,6 +84,13 @@ class Slot:
     label: str
     owner: Question | QuestionSet
     filled: bool
+    # Part 7: ô ngữ liệu (1–3) mà ảnh này gắn vào. Các part khác luôn là 1 —
+    # chúng chỉ có một chỗ để gắn.
+    passage_slot: int = 1
+    # Thứ tự CỤM trong part, đếm từ 1. Khác `number` (số câu chính thức): tên
+    # tệp mang thứ tự cụm, cùng quy ước với `--match index`, vì người đặt tên
+    # đếm cụm chứ không tra bảng số câu.
+    ordinal: int = 0
 
 
 def audio_slots(session: Session, test: PracticeTest) -> list[Slot]:
@@ -142,7 +150,9 @@ def image_slots(session: Session, test: PracticeTest, part: int) -> list[Slot]:
 
     Part 2 không có ảnh nào — đề in con số 0 chữ ở đó.
     """
-    if part == 2:
+    if part in (2, 6):
+        # Part 2 không in gì; Part 6 là một đoạn văn toàn chữ. Cả hai không có
+        # ô ảnh nào (`assign_passage_image` cũng từ chối chúng).
         return []
 
     rows = session.execute(
@@ -163,6 +173,34 @@ def image_slots(session: Session, test: PracticeTest, part: int) -> list[Slot]:
             )
             for link, question in rows
         ]
+
+    if part == 7:
+        # Part 7 khác Part 3/4 ở một chỗ quyết định: một cụm có thể cần ảnh ở
+        # NHIỀU ô ngữ liệu (bảng giá ở ô 2, phiếu đặt hàng ở ô 3). Nên một cụm
+        # sinh ra nhiều `Slot`, mỗi cái mang số ô của nó, và tên tệp phải nói
+        # được số đó — `<ô>-s2.png` — chứ không chỉ số thứ tự trong part.
+        out: list[Slot] = []
+        done: set[uuid.UUID] = set()
+        ordinal = 0
+        for link, question in rows:
+            stimulus = question.question_set
+            if stimulus is None or stimulus.id in done:
+                continue
+            done.add(stimulus.id)
+            ordinal += 1
+            for index, column in PASSAGE_IMAGE_COLUMNS.items():
+                out.append(
+                    Slot(
+                        number=link.number,
+                        part=7,
+                        label=f"cụm từ câu {link.number} · ô ngữ liệu {index}",
+                        owner=stimulus,
+                        filled=getattr(stimulus, column) is not None,
+                        passage_slot=index,
+                        ordinal=ordinal,
+                    )
+                )
+        return out
 
     slots: list[Slot] = []
     seen: set[uuid.UUID] = set()
@@ -208,10 +246,39 @@ def leading_number(path: Path) -> int | None:
     return int(match.group()) if match else None
 
 
+# `p7-15-s3` -> (cụm thứ 15 của part, ô ngữ liệu 3). Số đầu là THỨ TỰ CỤM trong
+# part, không phải số câu — cùng quy ước với `--match index`.
+_PASSAGE_NAME = re.compile(r"(\d+)\s*-\s*s(\d+)$")
+
+
 def match_files(
     files: list[Path], slots: list[Slot], mode: str
 ) -> tuple[list[tuple[Path, Slot]], list[Path], list[Slot]]:
     """Ghép file với ô. Trả về (cặp đã khớp, file thừa, ô còn trống)."""
+    if mode == "passage":
+        # Part 7: tên tệp mang CẢ số câu mở đầu lẫn số ô ngữ liệu — `p7-15-s3`.
+        #
+        # Ba chế độ kia đều tra theo một con số, và một con số không đủ ở đây:
+        # một cụm có thể cần ảnh ở ô 2 và ô 3, nên "cụm nào" và "ô nào" là hai
+        # câu hỏi. Ghép nhầm chúng thì bảng giá rơi vào chỗ của phiếu đặt hàng,
+        # khớp thành công, và người học nhận một tài liệu ở sai vị trí.
+        by_key = {(slot.ordinal, slot.passage_slot): slot for slot in slots}
+        pairs, extra = [], []
+        used: set[tuple[int, int]] = set()
+        for path in files:
+            found = _PASSAGE_NAME.search(path.stem)
+            if found is None:
+                extra.append(path)
+                continue
+            key = (int(found.group(1)), int(found.group(2)))
+            slot = by_key.get(key)
+            if slot is None or key in used:
+                extra.append(path)
+                continue
+            used.add(key)
+            pairs.append((path, slot))
+        return pairs, extra, [s for s in slots if (s.ordinal, s.passage_slot) not in used]
+
     if mode == "index":
         # Tra theo VỊ TRÍ: file mang số 11 lấy ô thứ 11 của part. Bản đầu ghép
         # theo cặp (`zip`), và cặp chỉ đúng khi mọi ô đều có file — sai ngay ở
@@ -517,7 +584,13 @@ def import_images(
         if isinstance(slot.owner, Question):
             slot.owner.image_asset_id = asset.id
         else:
-            slot.owner.passage_image_id = asset.id
+            # Ô ngữ liệu lấy từ CHÍNH cái slot, không ghi cứng ô 1.
+            #
+            # Part 3/4 chỉ có một ô nên ghi cứng vẫn đúng ở đó, và cái sai chỉ
+            # lộ ra ở Part 7: hai hình của một cụm cùng ghi đè lên ô 1, nên tấm
+            # thứ hai xoá tấm thứ nhất và hai ô còn lại rỗng — mà lệnh vẫn in
+            # "đã gắn 5 image".
+            setattr(slot.owner, PASSAGE_IMAGE_COLUMNS[slot.passage_slot], asset.id)
         print(f"  {path.name:<28} -> Part {slot.part} {slot.label}")
         done += 1
     return done
@@ -545,15 +618,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dir", required=True, type=Path)
     parser.add_argument(
         "--match",
-        choices=("number", "index", "order"),
+        choices=("number", "index", "order", "passage"),
         default="number",
         help=(
             "number: số trong tên file là số câu chính thức · "
             "index: là thứ tự trong part (cần --part) · "
-            "order: không có số, xếp theo tên"
+            "order: không có số, xếp theo tên · "
+            "passage: `<thứ tự cụm>-s<ô ngữ liệu>` cho ảnh ngữ liệu Part 7"
         ),
     )
-    parser.add_argument("--part", type=int, choices=(1, 2, 3, 4), default=None)
+    parser.add_argument("--part", type=int, choices=(1, 2, 3, 4, 6, 7), default=None)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--accent", choices=sorted(AUDIO_ACCENTS), help="bắt buộc với audio")
     parser.add_argument("--source-url")
@@ -658,10 +732,14 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"  {path.name:<28} {actual_ext:<5} {duration_ms:>7} ms {mime_type}")
             print("\n(dry-run — chưa ghi gì)")
             return 0
-        # Ô trống là BÌNH THƯỜNG với hình Part 3/4: chỉ vài cụm cuối mỗi part có
-        # hình. Coi nó là lỗi ở đây sẽ khiến lệnh không bao giờ chạy được, và
-        # người ta sẽ tắt phép kiểm cho cả những chỗ nó đang bảo vệ thật.
-        partial = args.kind == "image" and args.part in (3, 4)
+        # Ô trống là BÌNH THƯỜNG với hình Part 3/4/7. Part 3/4 chỉ vài cụm cuối
+        # có hình; Part 7 thì mọi cụm đều có ba ô ngữ liệu nhưng phần lớn là
+        # CHỮ — 40 trên 45 ô trống là hình dạng đúng của một đề thật, không phải
+        # một lượt nhập dở.
+        #
+        # Coi nó là lỗi ở đây khiến lệnh không bao giờ chạy được, và người ta sẽ
+        # tắt phép kiểm cho cả những chỗ nó đang bảo vệ thật.
+        partial = args.kind == "image" and args.part in (3, 4, 7)
         if extra or (empty and not partial):
             # Dừng chứ không làm phần khớp được. Nhập một nửa để lại một đề
             # thiếu đúng vài bản thu, và chỗ thiếu chỉ lộ ra khi có người ngồi

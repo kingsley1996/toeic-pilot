@@ -18,7 +18,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p1-02",
@@ -32,7 +34,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p1-03",
@@ -46,7 +50,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p1-04",
@@ -60,7 +66,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p1-05",
@@ -74,7 +82,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p1-06",
@@ -88,7 +98,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         }
       ]
     },
@@ -110,7 +122,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-02",
@@ -127,7 +141,9 @@
             "us_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-03",
@@ -144,7 +160,9 @@
             "uk_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-04",
@@ -161,7 +179,9 @@
             "au_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-05",
@@ -178,7 +198,9 @@
             "ca_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-06",
@@ -195,7 +217,9 @@
             "us_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-07",
@@ -212,7 +236,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-08",
@@ -229,7 +255,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-09",
@@ -246,7 +274,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-10",
@@ -263,7 +293,9 @@
             "us_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-11",
@@ -280,7 +312,9 @@
             "uk_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-12",
@@ -297,7 +331,9 @@
             "au_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-13",
@@ -314,7 +350,9 @@
             "ca_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-14",
@@ -331,7 +369,9 @@
             "us_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-15",
@@ -348,7 +388,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-16",
@@ -365,7 +407,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-17",
@@ -382,7 +426,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-18",
@@ -399,7 +445,9 @@
             "us_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-19",
@@ -416,7 +464,9 @@
             "uk_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-20",
@@ -433,7 +483,9 @@
             "au_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-21",
@@ -450,7 +502,9 @@
             "ca_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-22",
@@ -467,7 +521,9 @@
             "us_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-23",
@@ -484,7 +540,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-24",
@@ -501,7 +559,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p2-25",
@@ -518,7 +578,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         }
       ]
     },
@@ -544,7 +606,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-02",
@@ -565,7 +629,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-03",
@@ -587,7 +653,9 @@
             "ca_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-04",
@@ -608,7 +676,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-05",
@@ -629,7 +699,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-06",
@@ -650,7 +722,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-07",
@@ -672,7 +746,9 @@
             "ca_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-08",
@@ -693,7 +769,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-09",
@@ -714,7 +792,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-10",
@@ -735,7 +815,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-11",
@@ -756,7 +838,9 @@
             "us_male_1"
           ],
           "graphic": "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-12",
@@ -778,7 +862,9 @@
             "au_female_1"
           ],
           "graphic": "schedule: lịch rảnh/bận của hai người qua bốn khung giờ trong ngày",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p3-13",
@@ -799,7 +885,9 @@
             "au_male_1"
           ],
           "graphic": "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         }
       ]
     },
@@ -824,7 +912,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-02",
@@ -844,7 +934,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-03",
@@ -864,7 +956,9 @@
             "us_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-04",
@@ -884,7 +978,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-05",
@@ -904,7 +1000,9 @@
             "au_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-06",
@@ -924,7 +1022,9 @@
             "ca_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-07",
@@ -944,7 +1044,9 @@
             "us_male_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-08",
@@ -964,7 +1066,9 @@
             "uk_female_1"
           ],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-09",
@@ -984,7 +1088,9 @@
             "au_male_1"
           ],
           "graphic": "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p4-10",
@@ -1004,7 +1110,9 @@
             "ca_female_1"
           ],
           "graphic": "map: sơ đồ tầng trệt gồm bốn quầy xếp thành hai hàng",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         }
       ]
     },
@@ -1023,7 +1131,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-02",
@@ -1037,7 +1147,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-03",
@@ -1051,7 +1163,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-04",
@@ -1065,7 +1179,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-05",
@@ -1079,7 +1195,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-06",
@@ -1093,7 +1211,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-07",
@@ -1107,7 +1227,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-08",
@@ -1121,7 +1243,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-09",
@@ -1135,7 +1259,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-10",
@@ -1149,7 +1275,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-11",
@@ -1163,7 +1291,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-12",
@@ -1177,7 +1307,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-13",
@@ -1191,7 +1323,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-14",
@@ -1205,7 +1339,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-15",
@@ -1219,7 +1355,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-16",
@@ -1233,7 +1371,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-17",
@@ -1247,7 +1387,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-18",
@@ -1261,7 +1403,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-19",
@@ -1275,7 +1419,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-20",
@@ -1289,7 +1435,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-21",
@@ -1303,7 +1451,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-22",
@@ -1317,7 +1467,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-23",
@@ -1331,7 +1483,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-24",
@@ -1345,7 +1499,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-25",
@@ -1359,7 +1515,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-26",
@@ -1373,7 +1531,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-27",
@@ -1387,7 +1547,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-28",
@@ -1401,7 +1563,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-29",
@@ -1415,7 +1579,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p5-30",
@@ -1429,7 +1595,9 @@
           "topic": "",
           "voices": [],
           "graphic": "",
-          "grammars": []
+          "grammars": [],
+          "passages": [],
+          "structure": ""
         }
       ]
     },
@@ -1458,7 +1626,9 @@
             "",
             "GRAMMAR_PRONOUN",
             ""
-          ]
+          ],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p6-02",
@@ -1482,7 +1652,9 @@
             "GRAMMAR_PREPOSITION",
             "GRAMMAR_VOICE",
             ""
-          ]
+          ],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p6-03",
@@ -1506,7 +1678,9 @@
             "",
             "GRAMMAR_TENSE",
             ""
-          ]
+          ],
+          "passages": [],
+          "structure": ""
         },
         {
           "id": "p6-04",
@@ -1530,7 +1704,361 @@
             "GRAMMAR_PRONOUN",
             "GRAMMAR_VOICE",
             ""
-          ]
+          ],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 7,
+      "slots": [
+        {
+          "id": "p7-01",
+          "number": 147,
+          "question_type": "",
+          "grammar": "",
+          "context": "hai đồng nghiệp nhắn tin về việc đổi vé máy bay",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-02",
+          "number": 149,
+          "question_type": "",
+          "grammar": "",
+          "context": "quảng cáo dịch vụ dọn văn phòng theo tháng",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-03",
+          "number": 151,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông báo đóng bãi xe để sửa chữa",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-04",
+          "number": 153,
+          "question_type": "",
+          "grammar": "",
+          "context": "quảng cáo tuyển dụng vị trí điều phối kho",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-05",
+          "number": 156,
+          "question_type": "",
+          "grammar": "",
+          "context": "thư cảm ơn khách hàng lâu năm kèm ưu đãi",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-06",
+          "number": 158,
+          "question_type": "",
+          "grammar": "",
+          "context": "bài đánh giá một quán ăn mới mở gần khu văn phòng",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-07",
+          "number": 161,
+          "question_type": "",
+          "grammar": "",
+          "context": "bài báo ngắn về việc một công ty mở rộng nhà máy",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-08",
+          "number": 164,
+          "question_type": "",
+          "grammar": "",
+          "context": "email trả lời khách về đơn hàng bị thiếu hoá đơn",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-09",
+          "number": 168,
+          "question_type": "",
+          "grammar": "",
+          "context": "bài báo về một hội chợ việc làm sắp tổ chức",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-10",
+          "number": 172,
+          "question_type": "",
+          "grammar": "",
+          "context": "ba người trao đổi nhóm về việc đặt phòng họp",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-11",
+          "number": 176,
+          "question_type": "",
+          "grammar": "",
+          "context": "email đặt chỗ hội thảo và lịch các phiên",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "schedule: lịch bốn phiên hội thảo trong ngày"
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-12",
+          "number": 181,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông cáo ra mắt sản phẩm và thư phản hồi của đại lý",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            ""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-13",
+          "number": 186,
+          "question_type": "",
+          "grammar": "",
+          "context": "email xác nhận đặt phòng, thư phàn nàn, và phiếu khảo sát đã điền",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_FORM",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "survey: phiếu khảo sát bốn mục đã đánh dấu"
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-14",
+          "number": 191,
+          "question_type": "",
+          "grammar": "",
+          "context": "thông báo nội bộ, email hỏi lại, và lịch buổi đào tạo",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_SCHEDULE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "schedule: lịch bốn buổi đào tạo trong tháng"
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-15",
+          "number": 196,
+          "question_type": "",
+          "grammar": "",
+          "context": "thư mời hội viên, bảng giá vé, và phiếu đặt vé đã điền",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_FORM",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "table: bảng giá vé bốn suất diễn",
+            "form: phiếu đặt vé đã điền"
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
         }
       ]
     }

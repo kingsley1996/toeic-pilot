@@ -1,0 +1,41 @@
+[PASSAGE]
+Liam [9:15 A.M.]
+Hi Sarah, did you hear about the rescheduled client meeting in Chicago? It's been moved from Thursday to Friday.
+
+Sarah [9:17 A.M.]
+Oh, really? That means our Thursday morning flight won't work anymore. We should change it to Thursday afternoon or Friday morning.
+
+Liam [9:19 A.M.]
+Exactly. I checked the airline's website. We can change our tickets to the 4:00 P.M. flight on Thursday for a $50 fee per person.
+
+Sarah [9:21 A.M.]
+That's not too bad. Is there a Friday morning option?
+
+Liam [9:22 A.M.]
+Yes, at 7:00 A.M., but it costs $120 extra per ticket because it's a peak time.
+
+Sarah [9:24 A.M.]
+Let's go with the Thursday afternoon one then. Our department budget is tight this month.
+
+Liam [9:25 A.M.]
+Agreed. I'm currently in a meeting with the director, so I can't access the booking portal. Can you do it?
+
+Sarah [9:26 A.M.]
+I'm on it.
+
+[QUESTION]
+Why do the colleagues choose the Thursday afternoon flight?
+(A) It has no layovers.
+(B) It fits their meeting schedule better.
+(C) It is less expensive.
+(D) It is with a preferred airline.
+Answer: C
+Source: original
+[QUESTION]
+At 9:26 A.M., what does Sarah mean when she writes, "I'm on it"?
+(A) She is boarding the airplane.
+(B) She is attending a meeting.
+(C) She will update the client.
+(D) She will modify the flight bookings.
+Answer: D
+Source: original

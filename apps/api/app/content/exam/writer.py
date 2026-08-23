@@ -235,24 +235,7 @@ names given in the instruction below. Every question block needs its own
 `Answer:` and `Source: original` lines."""
 
 
-_GRAPHIC_RULES_TEMPLATE = f"""
-
-THIS ITEM COMES WITH A GRAPHIC
-The test book prints a small graphic beside the three questions. EXACTLY ONE
-question begins with "Look at the graphic", and it is question number {{ordinal}}
-of the three — not any other. Emit the graphic first, as data. The first line
-names its kind. Four kinds exist; use the one you are told to.
-
-{GRAPHIC_MARKER}
-kind: table
-Office Supply Prices
-Type | Cost
-Daily planner | $14.89
-Weekly planner | $27.49
-Monthly desk pad | $5.49
-Undated desk pad | $4.99
-
-EVERY graphic has a `kind:` line, then a TITLE LINE of its own, then its data.
+GRAPHIC_FORMAT = f"""EVERY graphic has a `kind:` line, then a TITLE LINE of its own, then its data.
 The title is never a row — leaving it out shifts the whole graphic up a line and
 the block is rejected. Here is each kind in full:
 
@@ -289,7 +272,26 @@ what the question turns on, and a grid with every cell filled has no answer.
 Use ordinary personal names for the people — never a voice name like
 `us_female_1`, which is a recording instruction and not a person.
 
-Separate cells with a vertical bar. Keep every value short.
+Separate cells with a vertical bar. Keep every value short."""
+
+
+_GRAPHIC_RULES_TEMPLATE = f"""
+
+THIS ITEM COMES WITH A GRAPHIC
+The test book prints a small graphic beside the three questions. EXACTLY ONE
+question begins with "Look at the graphic", and it is question number {{ordinal}}
+of the three — not any other. Emit the graphic first, as data. The first line
+names its kind. Four kinds exist; use the one you are told to.
+
+{GRAPHIC_MARKER}
+kind: table
+Office Supply Prices
+Type | Cost
+Daily planner | $14.89
+Weekly planner | $27.49
+Monthly desk pad | $5.49
+Undated desk pad | $4.99
+{GRAPHIC_FORMAT}
 
 Invent your own titles, labels and numbers. The examples above are a shape to
 copy, never content to copy — reusing their values makes two different papers
@@ -304,6 +306,25 @@ Two rules make it a real graphic question rather than a detail question:
    when we're both free", "right across from the bookstore"), so the listener
    has to read the graphic. If the weekly planner is named out loud, the graphic
    is decoration and the question is answerable without it."""
+
+
+def _system_for(part: int, slot: QuestionSlot) -> str:
+    """System prompt của một lượt viết, ghép thêm luật hình khi cụm có hình.
+
+    Part 3/4 nhận **cả** định dạng lẫn luật câu hỏi về hình — ở đó bốn lựa chọn
+    chính là bốn mục trên hình. Part 7 chỉ nhận **định dạng**: hình của nó là
+    NGỮ LIỆU, câu hỏi hỏi về nội dung chứ không bắt chọn giữa bốn hàng (§28).
+
+    Bản đầu chỉ ghép cho Part 3/4, nên Part 7 được bảo "xuất một khối [GRAPHIC]"
+    mà không bao giờ được cho biết khối đó trông thế nào — và mô hình vẽ bảng
+    bằng ký tự `+---+`, thứ không đọc ra dữ liệu nào.
+    """
+    base = _SYSTEM_FOR.get(part, SYSTEM)
+    if part in (3, 4) and slot.graphic:
+        return base + graphic_rules(GRAPHIC_POSITION[part])
+    if part == 7 and any(slot.passages):
+        return f"{base}\n\nTHE GRAPHIC BLOCKS\n{GRAPHIC_FORMAT}"
+    return base
 
 
 def graphic_rules(position: int) -> str:
@@ -500,6 +521,128 @@ single `[QUESTION]` and then lists `Blank (2)`, `Blank (3)`, `Blank (4)` beneath
 it is read as ONE question with sixteen options, and is rejected."""
 
 
+SYSTEM_PART7 = """You write TOEIC Part 7 (Reading Comprehension) items for an
+original practice test.
+
+A Part 7 item is one to three short business documents followed by two to five
+questions. Everything is printed.
+
+THE DOCUMENTS
+- Each is the form you are told to write: an e-mail, a letter, a notice, an
+  advertisement, an article, a review, or a chain of text messages.
+- 90-200 words each. Include the furniture its form has — To/From/Subject/Date
+  for an e-mail, a greeting and signature for a letter, and for a message chain
+  a `Name [10:19 A.M.]` line above every message.
+- No real company names, no brand names.
+- When a set has more than one document, they must be ABOUT THE SAME AFFAIR and
+  at least one question must need BOTH of them: one document supplies a name,
+  date or figure, the other says what that means. A set whose every question can
+  be answered from one document is not a multi-document set.
+
+THE QUESTIONS
+- Four printed options each, exactly one correct.
+- A wrong option must be contradicted by the documents or absent from them —
+  never merely unlikely.
+- Options are short, and similar in length to each other.
+
+FOUR QUESTION FORMS NEED EXACT SHAPES:
+
+  Information / inference / purpose — ordinary questions.
+
+  NOT question — "What is NOT stated about ...?" Three options are stated in the
+  document; the correct answer is the one that is not.
+
+  Vocabulary in context — write it as:
+      In the <document>, the word "<word>" in paragraph <N> is closest in
+      meaning to
+  The word must appear EXACTLY ONCE in the whole set, and the four options are
+  four single words. Do NOT write a line number: the text reflows on screen, so
+  a line number points somewhere different on every device.
+
+  Sentence insertion — put four markers `[1]`, `[2]`, `[3]`, `[4]` at four
+  sentence boundaries inside the document, and write:
+      In which of the positions marked [1], [2], [3], and [4] does the
+      following sentence best belong?
+      "<the sentence>"
+  The four options are exactly `[1]`, `[2]`, `[3]`, `[4]`.
+
+  Implication — only for a message chain. Quote the words VERBATIM and give the
+  time stamp:
+      At 10:23 A.M., what does Ms. Myers mean when she writes, "I can try"?
+
+Reply with exactly this shape and nothing else — no preamble, no fences.
+
+COUNT THE MARKERS. There must be one `[PASSAGE]` line per document and one
+`[QUESTION]` line per question — a three-document set has THREE separate
+`[PASSAGE]` lines, each opening its own document. Running the documents together
+under a single `[PASSAGE]` turns a three-document set into a one-document set
+and is rejected. Same for questions: five questions means five `[QUESTION]`
+lines, never one followed by a list.
+
+[PASSAGE]
+From: orders@example-garden.com
+To: r.kager@example-mail.net
+Subject: Your order 3053
+Date: April 3
+
+Dear Mr. Kager,
+
+We are having difficulty processing your payment. [1] Please sign in to your
+account on our website. [2] Your order will ship the following business day.
+[3] We apologise for the delay. [4]
+
+Sincerely,
+Customer Service
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To report a payment problem
+(B) To confirm a delivery date
+(C) To advertise a new product
+(D) To request a review
+Answer: A
+Source: original
+"""
+
+
+def prompt_for_part7(slot: QuestionSlot) -> str:
+    docs = []
+    for index, spec in enumerate(slot.passages, start=1):
+        if spec:
+            kind, _, detail = spec.partition(":")
+            docs.append(f"  Ngữ liệu {index}: HÌNH dạng `{kind.strip()}` — {detail.strip()}")
+        else:
+            docs.append(f"  Ngữ liệu {index}: văn bản")
+    kinds = "\n".join(
+        f"  {index}. {LABELS[code].label_vi} ({code})"
+        for index, code in enumerate(slot.question_types, start=1)
+    )
+    graphics = [spec for spec in slot.passages if spec]
+    note = (
+        f"\n- Ngữ liệu nào ghi là HÌNH thì xuất một khối [GRAPHIC] cho nó và "
+        f"KHÔNG xuất [PASSAGE] cho nó — hình không có chữ chạy. Cụm này có "
+        f"{sum(1 for p in slot.passages if not p)} khối [PASSAGE] và "
+        f"{len(graphics)} khối [GRAPHIC]."
+        if graphics
+        else ""
+    )
+    multi = (
+        "\n- ÍT NHẤT MỘT câu phải cần CẢ HAI (hoặc cả ba) ngữ liệu mới trả lời "
+        "được: một ngữ liệu cho cái tên/ngày/số, ngữ liệu kia nói cái đó nghĩa là gì."
+        if len(slot.passages) > 1
+        else ""
+    )
+    listed = "\n".join(docs)
+    return (
+        f"Viết một cụm Part 7.\n"
+        f"- Dạng ngữ liệu chính: {LABELS[slot.topic].label_vi}\n"
+        f"- Tình huống: {slot.context}\n"
+        f"- ĐÚNG {len(slot.passages)} khối [PASSAGE], mỗi ngữ liệu một khối:\n{listed}\n"
+        f"- {len(slot.question_types)} câu hỏi, theo đúng thứ tự này:\n{kinds}"
+        f"{multi}{note}"
+    )
+
+
 def prompt_for_part6(slot: QuestionSlot) -> str:
     kind = LABELS[slot.topic].label_vi
     lines = []
@@ -598,6 +741,22 @@ def prompt_for_part1(slot: QuestionSlot) -> str:
     )
 
 
+def split_all(block: str, marker: str) -> tuple[list[str], str]:
+    """Tách MỌI khối mang `marker`, theo thứ tự. Trả (các khối, phần còn lại).
+
+    Một cụm Part 7 có thể mang HAI hình (bảng giá và phiếu đặt hàng của đề mẫu),
+    nên bản chỉ lấy khối cuối làm mất tấm thứ nhất — và mất im lặng, vì tệp dán
+    vẫn hợp lệ và chỉ thiếu một ngữ liệu mà không ai đếm.
+    """
+    taken: list[str] = []
+    rest = block
+    while True:
+        one, rest = split_marked(rest, marker)
+        if not one:
+            return list(reversed(taken)), rest
+        taken.append(one)
+
+
 def split_marked(block: str, marker: str) -> tuple[str, str]:
     """Tách khối mang `marker` ra khỏi phần dán. Trả (phần tách, phần còn lại).
 
@@ -678,7 +837,7 @@ def paste_path(workdir: Path, slot: QuestionSlot) -> Path:
 _BLANK_VARIANTS = re.compile(r"_{3,}|-{3,}")
 
 
-def clean(text: str) -> str:
+def clean(text: str, expect_markers: int = 1) -> str:
     """Gỡ rào ``` và mọi thứ trước `[QUESTION]`.
 
     Mô hình nhỏ hay thêm một câu dẫn ("Chắc chắn rồi, đây là…") dù prompt đã cấm.
@@ -715,7 +874,16 @@ def clean(text: str) -> str:
             for index, line in enumerate(lines_all[: script_starts[-1]])
             if line.strip() == GRAPHIC_MARKER
         ]
-        begin = graphic_starts[-1] if graphic_starts else script_starts[-1]
+        # Lấy mốc thứ `expect_markers` TỪ CUỐI LÊN, không phải mốc cuối.
+        #
+        # Luật "lấy mốc cuối" dựng cho `[SCRIPT]`, nơi mỗi cụm chỉ có đúng một —
+        # nên cuối cũng là đầu, và nó chặn được model suy luận trích lại chính
+        # cái mốc trong lúc tự nhủ. Part 7 có tới BA `[PASSAGE]`, và luật đó cắt
+        # mất hai ngữ liệu đầu: đầu ra còn lại vẫn là một cụm hợp lệ, chỉ thiếu
+        # tài liệu — rồi câu hỏi "mục đích của tài liệu THỨ NHẤT là gì" hỏi về
+        # một thứ không còn ở đó.
+        take = min(expect_markers, len(script_starts))
+        begin = graphic_starts[-1] if graphic_starts else script_starts[-take]
         return "\n".join(lines_all[begin:]).strip()
 
     starts = [index for index, line in enumerate(lines_all) if line.strip() == "[QUESTION]"]
@@ -754,6 +922,7 @@ _SYSTEM_FOR = {
     3: SYSTEM_PART3,
     4: SYSTEM_PART4,
     6: SYSTEM_PART6,
+    7: SYSTEM_PART7,
 }
 _PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
     1: prompt_for_part1,
@@ -761,6 +930,7 @@ _PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
     3: prompt_for_part3,
     4: prompt_for_part4,
     6: prompt_for_part6,
+    7: prompt_for_part7,
 }
 
 
@@ -791,11 +961,7 @@ def write_slot(
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
-                system=(
-                    _SYSTEM_FOR[part] + graphic_rules(GRAPHIC_POSITION[part])
-                    if part in (3, 4) and slot.graphic
-                    else _SYSTEM_FOR.get(part, SYSTEM)
-                ),
+                system=_system_for(part, slot),
                 user=_PROMPT_FOR.get(part, prompt_for)(slot),
                 # Rộng tay, vì model SUY LUẬN xuất cả chuỗi suy nghĩ trước khi tới
                 # khối cần lấy. Đo được: `nemotron-3-ultra` cụt giữa phần suy nghĩ ở
@@ -814,7 +980,7 @@ def write_slot(
         tries=RETRY_TRIES,
         delay=RETRY_DELAY,
     )
-    block = clean(result.text)
+    block = clean(result.text, max(1, len(slot.passages)))
     lines = [line.strip() for line in block.splitlines()]
     # Part 1 mở đầu bằng [PHOTO], Part 3/4 bằng [SCRIPT], còn lại là [QUESTION].
     header_ok = bool(lines) and lines[0] in (
@@ -830,7 +996,8 @@ def write_slot(
     # Part 3/4 phải có ĐỦ BA câu, và đây là chỗ duy nhất đếm được rẻ. Thiếu một
     # câu thì parser vẫn đọc ra một cụm hợp lệ hai câu, `commit_part` vẫn ghi, và
     # đề lặng lẽ ngắn đi một câu ở đúng chỗ không ai đếm.
-    wanted = QUESTIONS_PER_SET.get(part, 1)
+    # Part 7 không có số cố định cho cả part — lấy từ chính cái ô.
+    wanted = len(slot.question_types) if part == 7 else QUESTIONS_PER_SET.get(part, 1)
     # Part 2 có BA lựa chọn, nên `(D)` là dấu hiệu sai ở đó — đòi nó thì mọi ô
     # Part 2 đều bị ném đi dù viết đúng.
     final = "(C)" if part == 2 else "(D)"

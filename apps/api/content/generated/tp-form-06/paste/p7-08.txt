@@ -1,0 +1,47 @@
+[PASSAGE]
+From: billing@apexsupplies.com
+To: j.morrison@clientmail.com
+Subject: RE: Missing Invoice for Order #88219
+Date: October 14
+
+Dear Mr. Morrison,
+
+Thank you for contacting Apex Office Supplies. I am writing in response to your inquiry yesterday regarding the missing invoice for your recent purchase of ergonomic office chairs, order #88219. [1] I apologize for this oversight, as our automated billing system experienced a temporary technical glitch on the day your order was processed. [2] I have attached a PDF copy of your official invoice to this email for your records. [3] Please note that your payment has already been successfully processed, so your current balance is zero. [4] Additionally, as a gesture of goodwill for the inconvenience, we have credited your account with a 10% discount voucher for your next purchase. If you require any further assistance, please do not hesitate to contact me.
+
+Sincerely,
+Sarah Jenkins
+Billing Coordinator
+
+[QUESTION]
+What is the main purpose of the email?
+(A) To request payment for an outstanding balance
+(B) To provide a copy of a purchase document
+(C) To announce a sale on office furniture
+(D) To explain a delay in shipping an order
+Answer: B
+Source: original
+[QUESTION]
+Why did Mr. Morrison not receive the invoice initially?
+(A) His email address was entered incorrectly.
+(B) The billing department was closed.
+(C) A software system had a technical issue.
+(D) The order had not been shipped yet.
+Answer: C
+Source: original
+[QUESTION]
+What is implied about Mr. Morrison's order?
+(A) It has already been paid for.
+(B) It was delivered later than expected.
+(C) It included a 10% discount.
+(D) It consisted of computer equipment.
+Answer: A
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"This file should serve as your official proof of purchase."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: C
+Source: original

@@ -1,0 +1,82 @@
+[PASSAGE]
+From: reservations@grandview-hotel.com
+To: tanaka.kenji@businessmail.net
+Subject: Booking Confirmation #GV-7742
+Date: June 1
+
+Dear Mr. Tanaka,
+
+Thank you for choosing Grandview Hotel. Your reservation is confirmed as follows:
+
+Confirmation Number: GV-7742
+Guest: Kenji Tanaka
+Check-in: June 15, 3:00 P.M.
+Check-out: June 17, 11:00 A.M.
+Room Type: Ocean View King, Room 402
+Rate: $220 per night (breakfast included)
+Special Request: Quiet floor, extra pillows
+
+We look forward to welcoming you. Please present this e-mail at check-in.
+
+Sincerely,
+Reservation Team
+Grandview Hotel
+
+[PASSAGE]
+June 18
+
+Guest Relations Manager
+Grandview Hotel
+120 Harbor Drive
+
+Dear Manager,
+
+I am writing to express my disappointment with my recent stay (Confirmation #GV-7742, June 15–17). Despite requesting a quiet floor, I was placed in Room 402 directly above the nightclub. The bass vibration made sleep impossible until after 2:00 A.M. both nights.
+
+Additionally, the air-conditioning unit rattled loudly and could not maintain a comfortable temperature. Room service took over 90 minutes to deliver a simple sandwich order on the morning of June 16. When I reported these issues at the front desk, the clerk said no other rooms were available.
+
+I have been a loyal guest for five years, but this experience falls far below your usual standard. I expect a partial refund for the nights affected.
+
+Sincerely,
+Kenji Tanaka
+
+[QUESTION]
+What is the main topic of the three documents?
+(A) A request for a room upgrade
+(B) A new hotel promotion
+(C) A guest's unhappy experience
+(D) A staff training notice
+Answer: C
+Source: original
+[QUESTION]
+What was the nightly rate for Mr. Tanaka's room?
+(A) $200
+(B) $220
+(C) $240
+(D) $260
+Answer: B
+Source: original
+[QUESTION]
+What is NOT mentioned in Mr. Tanaka's complaint letter?
+(A) Excessive noise from a nightclub
+(B) A malfunctioning air-conditioner
+(C) Rude behavior by front-desk staff
+(D) Slow room service
+Answer: C
+Source: original
+[QUESTION]
+Why did Mr. Tanaka give "Room Comfort" a rating of 1 on the survey?
+(A) The check-in process was slow.
+(B) The room was noisy and the air-conditioner was broken.
+(C) The breakfast was not included as promised.
+(D) The hotel refused to refund his money.
+Answer: B
+Source: original
+[QUESTION]
+What can be inferred about the hotel's response to Mr. Tanaka's complaints?
+(A) The hotel offered him a different room immediately.
+(B) The hotel did not resolve the problems during his stay.
+(C) The hotel upgraded him to a suite on the second night.
+(D) The hotel apologized and waived the entire bill.
+Answer: B
+Source: original

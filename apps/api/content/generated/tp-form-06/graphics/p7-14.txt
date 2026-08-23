@@ -1,0 +1,7 @@
+kind: schedule
+April Compliance Training Sessions
+Trainer | April 14 9:00 | April 15 14:00 | April 16 9:00 | April 17 11:00
+M. Rivera | Lead |  |  | 
+J. Chen |  | Lead |  | 
+K. Okafor |  |  | Lead | 
+S. Patel |  |  |  | Lead

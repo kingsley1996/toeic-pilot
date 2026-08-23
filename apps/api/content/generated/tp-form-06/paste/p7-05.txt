@@ -1,0 +1,35 @@
+[PASSAGE]
+From: customer.relations@vanguard-apparel.com
+To: d.choi@fastmail.com
+Subject: Celebrating 10 years with Vanguard Apparel
+Date: October 12
+
+Dear Mr. Choi,
+
+On behalf of everyone at Vanguard Apparel, I would like to personally thank you for being a loyal customer. Our records show that you joined our membership program exactly ten years ago this month.
+
+To show our appreciation for your decade of support, we have credited a special reward to your account. On your next purchase, you can receive a 25% discount by using the promo code TENYEARS at checkout. This code is valid for both our online store and any of our physical retail locations through the end of November. Additionally, you will enjoy complimentary express shipping on all online orders for the next three months.
+
+Thank you once again for choosing Vanguard Apparel. We look forward to serving you for many more years to come.
+
+Sincerely,
+
+Sarah Jenkins
+Director of Customer Relations
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To resolve a billing issue
+(B) To announce a new retail location
+(C) To thank a long-time customer
+(D) To advertise a seasonal clearance sale
+Answer: C
+Source: original
+[QUESTION]
+What is stated about the promotional code?
+(A) It must be used by the end of November.
+(B) It is only valid for online purchases.
+(C) It can be redeemed multiple times.
+(D) It requires a minimum purchase amount.
+Answer: A
+Source: original
