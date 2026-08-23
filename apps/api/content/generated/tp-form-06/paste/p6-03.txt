@@ -1,0 +1,49 @@
+[PASSAGE]
+MEMORANDUM
+
+TO: All Employees
+FROM: Human Resources Department
+DATE: October 12
+SUBJECT: Transition to New Time-Tracking System
+
+We are pleased to announce that our company is transitioning to a new digital time-tracking platform, TimeFlow, starting next month. The primary purpose of this change is ------- (1) the payroll process for everyone. Under this system, you will no longer need to submit paper timesheets at the end of each week.
+
+Instead, all employees must log their hours using either the desktop portal or the mobile application. We believe this system will provide a more ------- (2) record of your daily working hours.
+
+Next week, the IT department ------- (3) training sessions to help everyone get used to the new software. ------- (4)
+
+Sincerely,
+Human Resources
+
+[QUESTION]
+Blank (1)
+(A) simplify
+(B) simplifying
+(C) to simplify
+(D) simplified
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) generous
+(B) temporary
+(C) competitive
+(D) accurate
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) will conduct
+(B) conducted
+(C) has conducted
+(D) was conducting
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) We apologize for any delay in your monthly payment.
+(B) Please look out for an email invitation with the specific schedule.
+(C) Thank you for submitting your feedback on the new office chairs.
+(D) The IT department has successfully resolved the network outage.
+Answer: B
+Source: original

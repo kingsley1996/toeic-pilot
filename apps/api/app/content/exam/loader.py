@@ -27,7 +27,7 @@ class LoadError(RuntimeError):
     pass
 
 
-def raw_text(blueprint: Blueprint, workdir: Path, part: int) -> str:
+def raw_text(blueprint: Blueprint, workdir: Path, part: int, only: str | None = None) -> str:
     """Ghép các tệp dán của một part theo ĐÚNG thứ tự số câu.
 
     Thứ tự quan trọng: `commit_part` cấp số câu theo thứ tự cụm trong danh sách,
@@ -35,6 +35,14 @@ def raw_text(blueprint: Blueprint, workdir: Path, part: int) -> str:
     của ô p5-17, và không có gì báo — cả hai đều là câu Part 5 hợp lệ.
     """
     slots = [slot for plan in blueprint.parts if plan.part == part for slot in plan.slots]
+    if only is not None:
+        # Nạp ĐÚNG MỘT ô. `commit_part` lấp vào những số câu còn trống theo thứ
+        # tự, nên gửi một cụm khi còn đúng một chỗ trống sẽ điền đúng chỗ đó.
+        #
+        # Có mặt vì lựa chọn thay thế là xoá cả part rồi nạp lại — và một part
+        # đã có người làm bài thì việc đó phá lịch sử trả lời của họ để sửa một
+        # câu. Không tương xứng.
+        slots = [slot for slot in slots if slot.id == only]
     blocks: list[str] = []
     for slot in sorted(slots, key=lambda item: item.number):
         path = paste_path(workdir, slot)
@@ -63,9 +71,16 @@ def ensure_test(base_url: str, token: str, blueprint: Blueprint) -> None:
     raise LoadError(f"không tạo được đề: {response.status_code} {response.text[:200]}")
 
 
-def load_part(base_url: str, token: str, blueprint: Blueprint, workdir: Path, part: int) -> int:
+def load_part(
+    base_url: str,
+    token: str,
+    blueprint: Blueprint,
+    workdir: Path,
+    part: int,
+    only: str | None = None,
+) -> int:
     """Phân tích rồi ghi một part. Trả về số cụm đã ghi."""
-    body = raw_text(blueprint, workdir, part)
+    body = raw_text(blueprint, workdir, part, only)
 
     parsed = httpx.post(
         f"{base_url}/api/v1/admin/tests/{blueprint.slug}/parts/{part}/parse",

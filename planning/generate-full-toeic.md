@@ -1012,3 +1012,89 @@ từ câu 1 tới 100.
 Còn lại: **Part 6** (131–146, 16 câu) và **Part 7** (147–200, 54 câu) — cả hai
 là phần Đọc, không audio, nhưng Part 7 cần ngữ liệu nhiều đoạn và là part lớn
 nhất của đề. Cộng bảng quy đổi điểm.
+
+
+---
+
+## 28. Format thật của Part 6 và 7, và quyết định text-hay-ảnh (2026-08-23)
+
+Đếm trực tiếp trên đề mẫu chính thức của ETS, không đoán.
+
+### 28.1 Part 6 — bốn văn bản, mỗi văn bản bốn câu
+
+| câu | dạng văn bản |
+|---|---|
+| 131–134 | letter |
+| 135–138 | e-mail |
+| 139–142 | memo |
+| 143–146 | letter |
+
+Chỗ trống nằm **trong** văn bản, đánh số theo thứ tự xuất hiện; bốn lựa chọn in
+bên dưới. Và câu **cuối của mỗi văn bản là câu ĐIỀN CÂU** — bốn lựa chọn là bốn
+câu hoàn chỉnh, không phải bốn từ (câu 134 của đề mẫu). Ba câu còn lại là từ
+loại / ngữ pháp / từ vựng. Đó là hình dạng cố định, giống hệt cách câu hỏi về
+hình luôn ở vị trí cố định trong Part 3/4 — và cùng lý do phải ghi thành ràng
+buộc chứ không để mô hình tự chọn.
+
+`MAX_PASSAGES[6] = 1`: Part 6 là **một** đoạn văn có nhiều chỗ trống, parser đã
+cưỡng chế.
+
+### 28.2 Part 7 — mười chín cụm, ba nhóm
+
+| nhóm | câu | số cụm | số câu mỗi cụm |
+|---|---|---|---|
+| một ngữ liệu | 147–175 | 10 | 2, 2, 2, 3, 2, 3, 3, 4, 4, 4 |
+| hai ngữ liệu | 176–185 | 2 | 5 |
+| ba ngữ liệu | 186–200 | 3 | 5 |
+
+Dạng ngữ liệu gặp được: text-message chain, advertisement (×2), message, letter,
+book review, news article, e-mail, article, online chat discussion; rồi
+e-mail+article, press release+e-mail; và e-mails+survey, e-mails+schedule,
+letter+price list+order form.
+
+`MAX_PASSAGES[7] = 3` khớp đúng với nhóm ba ngữ liệu.
+
+### 28.3 Quyết định: text hay ảnh
+
+Phép thử không phải "nó trông có phức tạp không" mà là **thứ tự đọc có mang
+nghĩa hay không**. Đo được ngay trên PDF của ETS: những ngữ liệu tuyến tính
+trích ra thành text sạch sẽ; những ngữ liệu dạng lưới thì trích ra vẫn có chữ
+nhưng **mất nghĩa**, và biểu mẫu đặt hàng thì **không trích ra được chữ nào**.
+
+Bảng khảo sát là ví dụ rõ nhất. Trích ra được:
+
+```
+Excellent Good Average Below average Poor
+Menu variety x
+Quality of service x
+```
+
+Có đủ chữ, và không cách nào biết dấu `x` nằm ở cột nào — mà đó chính là câu trả
+lời. Cùng hình dạng với ô TRỐNG của lưới lịch Part 3: **vị trí trong lưới là dữ
+liệu**.
+
+| ngữ liệu | chọn | vì sao |
+|---|---|---|
+| letter, e-mail, memo, article, review, press release, notice, message | **text** | đọc tuyến tính, bố cục chỉ là trang trí |
+| text-message chain, online chat | **text** | vẫn tuyến tính; chỉ cần dòng `Tên [giờ]` trên mỗi lượt — đề mẫu không có bong bóng chat, không có cột |
+| advertisement, tờ rơi | **text** | nội dung tuyến tính; cỡ chữ to nhỏ không đổi câu trả lời |
+| price list, schedule, survey grid, order form, invoice | **ảnh vẽ từ dữ liệu** | ô nào thuộc cột nào LÀ nội dung |
+
+**Không dùng mô hình ảnh cho bất kỳ ngữ liệu nào của Part 6/7.** Nhóm thứ hai đi
+qua `graphics.py` — cùng đường đã dựng cho hình Part 3/4 — vì lý do y hệt: giá
+trị nằm ở chữ đọc được, và vẽ từ dữ liệu là thứ duy nhất khiến **chữ thay ảnh
+sinh ra tự động** từ chính dữ liệu đó. `assign_passage_image` trả 409 nếu thiếu
+`alt_text`, và ở Part 7 điều đó còn nặng hơn Part 3: tấm hình không phải phần
+phụ bên cạnh audio, nó **là** ngữ liệu.
+
+Schema đã đỡ được đúng hình dạng này mà không cần đổi gì: `question_set` có
+`passage`/`passage_2`/`passage_3` (text) **và** `passage_image_id` 1–3 song song,
+nên cụm 196–200 nạp được thành ô 1 = letter (text), ô 2 = price list (ảnh), ô 3
+= order form (ảnh). Trộn text và ảnh trong một cụm là chuyện bình thường của đề
+thật, không phải trường hợp biên.
+
+`graphics.py` cần thêm **hai dạng** cho Part 7 — `form` (biểu mẫu có nhãn và giá
+trị đã điền) và `survey` (lưới đánh dấu) — nhưng trục đáp án của chúng không
+dùng tới: khác Part 3/4, câu hỏi Part 7 hỏi về **nội dung** ngữ liệu chứ không
+bắt chọn giữa bốn hàng, nên luật "bốn lựa chọn phải là trục đáp án" **không áp
+dụng** ở đây. Áp nhầm nó sang Part 7 sẽ chặn gần hết câu hợp lệ.

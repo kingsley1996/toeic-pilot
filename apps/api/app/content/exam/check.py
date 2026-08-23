@@ -23,7 +23,12 @@ import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.content.exam.blueprint import LISTENING_QUESTIONS_PER_SET, Blueprint, QuestionSlot
+from app.content.exam.blueprint import (
+    LISTENING_QUESTIONS_PER_SET,
+    QUESTIONS_PER_SET,
+    Blueprint,
+    QuestionSlot,
+)
 from app.content.exam.writer import BLANK, RETRY_DELAY, RETRY_TRIES, paste_path
 from app.services.content_import import (
     ParsedOption,
@@ -53,6 +58,34 @@ LENGTH_TELL_MIN_CHARS = 12
 # đọc ra như "không trả về chữ cái hợp lệ", tức là đổ lỗi cho câu hỏi thay vì
 # cho giới hạn của chính ta.
 CHECK_MAX_TOKENS = 4000
+
+VERIFY_SYSTEM_PART6 = """Bạn làm một câu hỏi TOEIC Part 6. Bạn được đọc cả đoạn
+văn; các chỗ trống trong đó được đánh số. Chọn phương án điền vào ĐÚNG chỗ trống
+được hỏi. Chỉ trả về đúng MỘT chữ cái in hoa: A, B, C hoặc D. Không giải thích."""
+
+AMBIGUITY_SYSTEM_PART6 = """Bạn kiểm một câu hỏi TOEIC Part 6.
+
+Bạn được đọc cả đoạn văn và bốn lựa chọn cho một chỗ trống đã đánh số. Trả về
+chữ cái của MỌI lựa chọn mà khi điền vào ĐÚNG chỗ trống đó thì đoạn văn vừa đúng
+ngữ pháp vừa hợp với câu chữ xung quanh.
+
+Part 6 kiểm việc đọc cả đoạn, không phải đọc một dòng: một lựa chọn đúng ngữ
+pháp nhưng không hợp mạch văn thì KHÔNG tính là điền được.
+
+Chỉ trả về các chữ cái, viết liền, không giải thích."""
+
+VERIFY_SYSTEM_PART2 = """Bạn nghe một câu hỏi TOEIC Part 2 và ba câu đáp. Chỉ
+trả về đúng MỘT chữ cái in hoa — câu đáp phù hợp nhất: A, B hoặc C. Không giải
+thích, không thêm gì khác."""
+
+AMBIGUITY_SYSTEM_PART2 = """Bạn kiểm một câu hỏi TOEIC Part 2.
+
+Bạn được đọc câu hỏi và ba câu đáp. Trả về chữ cái của MỌI câu đáp thật sự đáp
+được câu hỏi đó — đáp được nghĩa là một người bản ngữ sẽ nói như thế, không phải
+"nghe cũng tạm".
+
+Chỉ có ba lựa chọn: A, B, C. Không có D. Chỉ trả về các chữ cái, viết liền,
+không giải thích."""
 
 VERIFY_SYSTEM_PART3 = """Bạn nghe một đoạn hội thoại TOEIC Part 3 và trả lời một
 câu hỏi về nó. Bạn được đọc lời thoại. Chỉ trả về đúng MỘT chữ cái in hoa: A, B,
@@ -129,11 +162,19 @@ def parse_one(block: str, part: int = 5) -> tuple[ParsedQuestion | None, list[st
     return question, list(question.problems)
 
 
-_VERIFY_SYSTEM_FOR = {1: VERIFY_SYSTEM_PART1, 3: VERIFY_SYSTEM_PART3, 4: VERIFY_SYSTEM_PART3}
+_VERIFY_SYSTEM_FOR = {
+    1: VERIFY_SYSTEM_PART1,
+    2: VERIFY_SYSTEM_PART2,
+    3: VERIFY_SYSTEM_PART3,
+    4: VERIFY_SYSTEM_PART3,
+    6: VERIFY_SYSTEM_PART6,
+}
 _AMBIGUITY_SYSTEM_FOR = {
     1: AMBIGUITY_SYSTEM_PART1,
+    2: AMBIGUITY_SYSTEM_PART2,
     3: AMBIGUITY_SYSTEM_PART3,
     4: AMBIGUITY_SYSTEM_PART3,
+    6: AMBIGUITY_SYSTEM_PART6,
 }
 
 
@@ -144,10 +185,22 @@ def _stem(question: ParsedQuestion, part: int, context: str) -> str:
     Part 3/4 in đề bài NHƯNG câu hỏi vô nghĩa nếu thiếu lời thoại — hỏi "người
     phụ nữ sẽ làm gì tiếp theo" mà không cho nghe hội thoại thì mô hình vẫn trả
     về một chữ cái, và phép kiểm trông như đang chạy.
+
+    **Part 2 cũng không in gì, và câu hỏi của nó nằm ở LƯỢT NÓI ĐẦU** — không
+    phải ở `prompt_text`, vốn là NULL. Đọc `prompt_text` ở đó là gửi cho người
+    chấm ba câu đáp mà không có câu hỏi nào, và nó vẫn trả về một chữ cái. Đo
+    được: 15 trên 25 câu bị báo "đối chiếu chọn khác" ở lượt chạy đầu, toàn bộ
+    là nhiễu đo chứ không phải lỗi nội dung.
     """
     if part == 1:
         return context.strip()
-    if part in (3, 4) and context.strip():
+    if part == 2:
+        spoken = [turn.text for turn in question.script]
+        return spoken[0] if spoken else ""
+    if part in (3, 4, 6) and context.strip():
+        # Part 6 cũng cần cả NGỮ LIỆU: đề bài của nó chỉ là nhãn `Blank (N)`,
+        # nên gửi mỗi thế là hỏi "điền gì vào chỗ trống thứ nhất" mà không cho
+        # xem đoạn văn nào. Đây là lần thứ TƯ cùng một lỗi trong pipeline này.
         return f"{context.strip()}\n\n{question.prompt_text or ''}"
     return question.prompt_text or ""
 
@@ -170,19 +223,29 @@ def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[
     chấm không được nghe hội thoại — và nó vẫn trả về một chữ cái, nên phép kiểm
     sẽ TRÔNG như đang chạy.
     """
+    reading = part in (6, 7)
     try:
-        groups = parse_listening_part(block, part)
+        groups = parse_reading_part(block, part) if reading else parse_listening_part(block, part)
     except ValueError as error:
         return [], "", [str(error)]
     if len(groups) != 1:
         return [], "", [f"khối phải chứa đúng một cụm, đọc được {len(groups)}"]
     group = groups[0]
     problems = list(group.problems)
-    if len(group.questions) != LISTENING_QUESTIONS_PER_SET:
-        problems.append(
-            f"cụm Part {part} cần {LISTENING_QUESTIONS_PER_SET} câu, "
-            f"đọc được {len(group.questions)}"
-        )
+    wanted = QUESTIONS_PER_SET.get(part, LISTENING_QUESTIONS_PER_SET)
+    if len(group.questions) != wanted:
+        problems.append(f"cụm Part {part} cần {wanted} câu, đọc được {len(group.questions)}")
+
+    if reading:
+        # Ngữ liệu của phần ĐỌC là chữ in, không phải lời thoại — nhưng nó đóng
+        # đúng vai đó ở mọi chặng sau: đây là thứ người chấm phải đọc mới trả lời
+        # được, và là khoá chống trùng của cụm.
+        for question in group.questions:
+            problems.extend(question.problems)
+        if not group.passages:
+            problems.append("cụm không có ngữ liệu")
+        return group.questions, "\n\n".join(group.passages), problems
+
     if not group.script:
         # Parser cho phép dán cụm KHÔNG kèm lời thoại (bản thu gắn sau bằng
         # `import_media`), nhưng ở pipeline này lời thoại là thứ mô hình vừa
@@ -197,6 +260,13 @@ def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[
 def check_shape(question: ParsedQuestion, part: int = 5) -> list[str]:
     """Những luật của một part mà parser không tự nói ra."""
     problems: list[str] = []
+    if part == 6:
+        # Đề bài của một câu Part 6 chỉ là nhãn chỗ trống; chỗ trống thật nằm
+        # trong ngữ liệu. Kiểm nó ở `check_part6` cùng với ngữ liệu, chứ không
+        # ở đây — một câu Part 6 nhìn riêng không đủ để nói đúng hay sai.
+        if question.source != "original":
+            problems.append(f"`Source` phải là `original`, đang là {question.source!r}")
+        return problems
     if part in (3, 4):
         # Part 3/4 IN đáp án ra sách thi — ngược hẳn Part 1/2. Parser đã bắt
         # `content` rỗng, nên ở đây chỉ còn luật riêng của pipeline.
@@ -617,7 +687,7 @@ def check_blueprint(
             reports.append(report)
             continue
 
-        if part_number in (3, 4):
+        if part_number in (3, 4, 6):
             reports.extend(
                 _check_set(
                     slot,

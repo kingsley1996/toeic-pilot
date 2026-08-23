@@ -24,11 +24,12 @@ from pathlib import Path
 
 from app.content.exam.blueprint import (
     GRAPHIC_POSITION,
-    LISTENING_QUESTIONS_PER_SET,
+    QUESTIONS_PER_SET,
     Blueprint,
     QuestionSlot,
 )
 from app.services.content_import import SCRIPT_MARKER as CONTENT_SCRIPT_MARKER
+from app.services.content_import import SET_MARKER as CONTENT_SET_MARKER
 from app.services.labels import LABELS
 from app.services.llm.base import LLMRequest
 from app.services.llm.gateway import Gateway
@@ -96,6 +97,9 @@ PHOTO_MARKER = "[PHOTO]"
 # khỏi nhau, và cái trôi chỉ lộ ra ở chặng nạp.
 SCRIPT_MARKER = CONTENT_SCRIPT_MARKER
 GRAPHIC_MARKER = "[GRAPHIC]"
+PASSAGE_MARKER = CONTENT_SET_MARKER
+
+BLANK = "-------"
 
 # Cả pipeline sinh đề kiên nhẫn hơn mặc định của `with_backoff`. Đo được trên
 # model miễn phí của tokenrouter: **ba lượt 503 liên tiếp rồi lượt thứ tư trả
@@ -408,6 +412,114 @@ must be copied exactly from the instruction below: the first switches to the
 person asking, the second to the person replying."""
 
 
+SYSTEM_PART6 = f"""You write TOEIC Part 6 (Text Completion) items for an
+original practice test.
+
+A Part 6 item is ONE short business text with FOUR blanks in it, and four
+printed options for each blank. Everything is printed — nothing is heard.
+
+THE TEXT
+- 90-130 words, the form you are told to write: a letter, an e-mail, a memo, or
+  a short article. Include its normal furniture — a greeting and a signature for
+  a letter, To/From/Subject/Date lines for a memo or e-mail.
+- Exactly FOUR blanks, written as `{BLANK} (1)` through `{BLANK} (4)`, numbered
+  in reading order.
+- The numbers matter: on paper the options sit under the blank, but a learner
+  reading on a screen sees the questions in a separate list and needs the number
+  to find which blank is which.
+- No real company names, no brand names.
+
+THE FOUR QUESTIONS, IN ORDER
+- Questions 1-3 fill blanks 1-3 with a WORD or PHRASE. Their four options are
+  four forms of one word, or four different words of the same class — the same
+  shape as Part 5.
+- Question 4 is the SENTENCE INSERTION. Its four options are four complete
+  sentences, and blank (4) must sit where a whole sentence belongs — usually at
+  the end of a paragraph. Exactly one sentence follows on from what comes before
+  it and leads into what comes after; the other three are grammatical, plausible
+  business English that does not fit THIS place in THIS text.
+- A wrong option must be wrong because of the surrounding text, never because it
+  is ungrammatical on its own. Part 6 tests reading the paragraph, not the line.
+
+Reply with exactly this shape and nothing else — no preamble, no fences:
+
+[PASSAGE]
+Dear Mr. Panzer,
+
+Thank you for your recent purchase of season tickets. Tickets for the first
+event {BLANK} (1) in the middle of June. You can also expect a members card,
+which entitles you to {BLANK} (2) such as parking at reduced rates.
+
+So that we can send you regular updates, please make sure we have {BLANK} (3)
+e-mail address. {BLANK} (4)
+
+Sincerely,
+Jorge Rodriguez
+
+[QUESTION]
+Blank (1)
+(A) mails
+(B) mailing
+(C) were mailed
+(D) will be mailed
+Answer: D
+Source: original
+
+[QUESTION]
+Blank (2)
+(A) accounts
+(B) benefits
+(C) incomes
+(D) gains
+Answer: B
+Source: original
+
+[QUESTION]
+Blank (3)
+(A) you
+(B) your
+(C) yours
+(D) yourself
+Answer: B
+Source: original
+
+[QUESTION]
+Blank (4)
+(A) Thank you for your e-mail of July 31.
+(B) You can send it to us at the address above.
+(C) This includes a cafe next to the theater.
+(D) We have found this performance to be very popular.
+Answer: B
+Source: original
+
+Each question's first line is exactly `Blank (N)` and nothing else.
+
+There must be FOUR `[QUESTION]` lines — one immediately above each of the four
+questions, including the second, third and fourth. A block that opens with a
+single `[QUESTION]` and then lists `Blank (2)`, `Blank (3)`, `Blank (4)` beneath
+it is read as ONE question with sixteen options, and is rejected."""
+
+
+def prompt_for_part6(slot: QuestionSlot) -> str:
+    kind = LABELS[slot.topic].label_vi
+    lines = []
+    for index, (code, grammar) in enumerate(
+        zip(slot.question_types, slot.grammars, strict=True), start=1
+    ):
+        detail = f" — {LABELS[grammar].label_vi}" if grammar else ""
+        lines.append(f"  Chỗ trống ({index}): {LABELS[code].label_vi}{detail}")
+    listed = "\n".join(lines)
+    return (
+        f"Viết một văn bản Part 6 và bốn câu hỏi cho bốn chỗ trống.\n"
+        f"- Dạng văn bản: {kind}\n"
+        f"- Nội dung: {slot.context}\n"
+        f"- Bốn chỗ trống, theo đúng thứ tự này:\n{listed}\n"
+        f"- Chỗ trống (4) là câu ĐIỀN CÂU: bốn lựa chọn là bốn câu hoàn chỉnh, "
+        f"và ba câu sai phải sai vì KHÔNG HỢP với đoạn văn quanh nó, không phải "
+        f"vì sai ngữ pháp."
+    )
+
+
 def prompt_for_part2(slot: QuestionSlot) -> str:
     kind = LABELS[slot.question_type].label_vi
     ask, reply = slot.voices
@@ -564,7 +676,6 @@ def paste_path(workdir: Path, slot: QuestionSlot) -> Path:
 # Chỗ trống viết bằng gạch DƯỚI, hoặc bằng số gạch ngang khác bảy. Cả hai đều là
 # sai lệch định dạng, không phải sai nội dung — chỗ trống ở đâu thì vẫn ở đó.
 _BLANK_VARIANTS = re.compile(r"_{3,}|-{3,}")
-BLANK = "-------"
 
 
 def clean(text: str) -> str:
@@ -588,7 +699,13 @@ def clean(text: str) -> str:
     # Part 3 và 4 mở đầu bằng `[SCRIPT]` và mang BA khối câu hỏi, nên "lấy khối
     # cuối" là sai ở đó: nó vứt mất lời thoại và hai câu đầu. Có `[SCRIPT]` đầu
     # dòng thì cắt từ đó và giữ trọn phần còn lại.
-    script_starts = [index for index, line in enumerate(lines_all) if line.strip() == SCRIPT_MARKER]
+    # Part 6/7 mở đầu bằng `[PASSAGE]`, Part 3/4 bằng `[SCRIPT]` — cùng vai trò
+    # "ngữ liệu dùng chung", hai mốc khác nhau vì một bên đọc lên, một bên in ra.
+    script_starts = [
+        index
+        for index, line in enumerate(lines_all)
+        if line.strip() in (SCRIPT_MARKER, PASSAGE_MARKER)
+    ]
     if script_starts:
         # Giữ khối [GRAPHIC] nếu nó đứng TRƯỚC lời thoại — mô hình đặt bảng lên
         # đầu vì prompt bảo thế, và cắt sạch phần trước [SCRIPT] sẽ vứt mất nó.
@@ -631,16 +748,42 @@ class MissingBlock(RuntimeError):
     """Đầu ra không chứa `[QUESTION]` — không có gì để lưu."""
 
 
-_SYSTEM_FOR = {1: SYSTEM_PART1, 2: SYSTEM_PART2, 3: SYSTEM_PART3, 4: SYSTEM_PART4}
+_SYSTEM_FOR = {
+    1: SYSTEM_PART1,
+    2: SYSTEM_PART2,
+    3: SYSTEM_PART3,
+    4: SYSTEM_PART4,
+    6: SYSTEM_PART6,
+}
 _PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
     1: prompt_for_part1,
     2: prompt_for_part2,
     3: prompt_for_part3,
     4: prompt_for_part4,
+    6: prompt_for_part6,
 }
 
 
-def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) -> str:
+# Trần đầu ra mặc định của chặng viết. Không phải hằng số cứng, vì nó bị kéo
+# theo hai hướng ngược nhau và cả hai đều đo được:
+#
+#   · model SUY LUẬN cần rộng — `qwen3.8-max` nghĩ 22 000 ký tự về một ô lịch
+#     Part 3 rồi mới trả lời, và ở 6 000 nó không bao giờ tới được câu trả lời;
+#   · hạn mức TPM của nhà cung cấp lại tính `max_tokens` vào ngân sách phút —
+#     gói miễn phí của Groq là 8 000 TPM, nên đặt 12 000 làm MỌI yêu cầu bị từ
+#     chối 413 trước khi kịp gửi đi.
+#
+# Nên nó là tham số của lượt chạy, giống như việc chọn nhà cung cấp.
+DEFAULT_MAX_TOKENS = 6000
+
+
+def write_slot(
+    gateway: Gateway,
+    slot: QuestionSlot,
+    tier: Tier,
+    part: int = 5,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+) -> str:
     # Qua `with_backoff`: nhà cung cấp lớn trả 503 "high demand" khá thường, và
     # không lùi thì vòng lặp đốt sạch 30 ô trong vài giây, mỗi ô hỏng một lần vì
     # cùng một cơn quá tải kéo dài vài chục giây. Đo được với Gemini: một lượt
@@ -658,7 +801,7 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
                 # khối cần lấy. Đo được: `nemotron-3-ultra` cụt giữa phần suy nghĩ ở
                 # 600 token, và cái cụt đó không hiện ra như một lỗi — nó hiện ra
                 # như một ô đã ghi xong với nội dung là đoạn model đang tự nhủ.
-                max_tokens=12000,
+                max_tokens=max_tokens,
                 # Nhiệt độ KHÁC 0, và đây là chỗ duy nhất trong dự án cố ý như thế.
                 # Mọi lượt gọi khác (gắn nhãn, chấm) muốn cùng đầu vào ra cùng đầu
                 # ra. Ở đây thì ngược lại: 30 câu ở nhiệt độ 0 sẽ trôi về cùng một
@@ -678,6 +821,7 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
         "[QUESTION]",
         PHOTO_MARKER,
         SCRIPT_MARKER,
+        PASSAGE_MARKER,
         GRAPHIC_MARKER,
     )
     # Ba dấu hiệu của một khối HOÀN CHỈNH, không phải một khối bị cắt giữa chừng.
@@ -686,7 +830,7 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
     # Part 3/4 phải có ĐỦ BA câu, và đây là chỗ duy nhất đếm được rẻ. Thiếu một
     # câu thì parser vẫn đọc ra một cụm hợp lệ hai câu, `commit_part` vẫn ghi, và
     # đề lặng lẽ ngắn đi một câu ở đúng chỗ không ai đếm.
-    wanted = LISTENING_QUESTIONS_PER_SET if part in (3, 4) else 1
+    wanted = QUESTIONS_PER_SET.get(part, 1)
     # Part 2 có BA lựa chọn, nên `(D)` là dấu hiệu sai ở đó — đòi nó thì mọi ô
     # Part 2 đều bị ném đi dù viết đúng.
     final = "(C)" if part == 2 else "(D)"

@@ -1,0 +1,45 @@
+[PASSAGE]
+Subject: Inquiry regarding maintenance services
+
+Dear Ms. Henderson,
+
+Thank you for contacting Apex Office Solutions regarding our equipment maintenance services. We offer several plan ------- (1) designed to keep your office running smoothly. Our most popular plan includes quarterly inspections and priority repair service. These services are available ------- (2) all major brands of copiers and printers.
+
+Currently, our technicians ------- (3) to handle the latest digital models. ------- (4) We look forward to partnering with you to maintain your office productivity.
+
+Sincerely,
+Marcus Vance
+Apex Office Solutions
+
+[QUESTION]
+Blank (1)
+(A) records
+(B) estimates
+(C) options
+(D) locations
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) through
+(B) at
+(C) by
+(D) for
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) are being trained
+(B) have trained
+(C) were training
+(D) to train
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) We are sorry for the delay in delivering your new printers.
+(B) This ensures that we can quickly resolve any technical issues you might face.
+(C) Please sign the enclosed contract and return it by Friday.
+(D) Our office will be closed next week for the national holiday.
+Answer: B
+Source: original

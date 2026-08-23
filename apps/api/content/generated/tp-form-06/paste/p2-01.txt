@@ -1,9 +1,9 @@
 [QUESTION]
 voice: au_male_1
-The board meeting is before your business trip, isn't it?
+Mr. Tanaka is attending the board meeting on Thursday, isn't he?
 voice: ca_female_1
-(A) No, my flight leaves at six.
-(B) Yes, I leave after it ends.
-(C) In the main conference room.
+(A) No, the board is made of solid oak.
+(B) Actually, he has to travel to Tokyo that day.
+(C) No, I'm not thirsty right now.
 Answer: B
 Source: original

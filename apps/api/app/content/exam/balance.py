@@ -21,7 +21,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from app.content.exam.blueprint import LISTENING_QUESTIONS_PER_SET, Blueprint
+from app.content.exam.blueprint import QUESTIONS_PER_SET, Blueprint
 from app.content.exam.writer import paste_path
 
 LETTERS = "ABCD"
@@ -62,8 +62,15 @@ def rewrite_all(block: str, targets: list[str]) -> str:
     if not bounds:
         return block
     out = lines[: bounds[0][0]]
-    for (start, end), target in zip(bounds, targets, strict=False):
-        out.extend(rewrite("\n".join(lines[start:end]), target).splitlines())
+    for index, (start, end) in enumerate(bounds):
+        body = "\n".join(lines[start:end])
+        # Thiếu đích thì GIỮ NGUYÊN khối, không bỏ nó đi.
+        #
+        # Bản đầu dùng `zip(..., strict=False)` và chỉ ghi lại những khối ghép
+        # được — nên một tệp bốn câu mà chỉ có một đích bị viết lại thành tệp
+        # MỘT câu, mất ba câu kia vĩnh viễn. Không phải "bỏ qua phép cân": là
+        # xoá nội dung, và lệnh vẫn báo chạy xong.
+        out.extend((rewrite(body, targets[index]) if index < len(targets) else body).splitlines())
     return "\n".join(out)
 
 
@@ -137,7 +144,7 @@ def balance(blueprint: Blueprint, workdir: Path, only: int | None = None) -> dic
         # Part 3/4 có BA câu trong một ô, nên số đích phải đếm theo CÂU chứ không
         # theo ô — đếm theo ô thì mỗi cụm chỉ nhận một chữ cái và ba câu của nó
         # cùng đáp án, thứ đọc ra ngay là máy làm.
-        per_slot = LISTENING_QUESTIONS_PER_SET if part.part in (3, 4) else 1
+        per_slot = QUESTIONS_PER_SET.get(part.part, 1)
         targets = plan_targets(len(ordered) * per_slot, blueprint.seed, letters_for(part.part))
         for index, slot in enumerate(ordered):
             path = paste_path(workdir, slot)

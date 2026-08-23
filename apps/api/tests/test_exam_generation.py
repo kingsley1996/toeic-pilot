@@ -15,6 +15,8 @@ Ba thứ được ghim, và cả ba đều hỏng im lặng:
 
 from pathlib import Path
 
+import pytest
+
 from app.content.exam import blueprint as bp
 from app.content.exam import check as checker
 from app.content.exam import loader, writer
@@ -953,3 +955,169 @@ def test_part_2_needs_two_different_voices():
 
     plan.parts[0].slots[0].voices = ["us_female_1", "us_female_1"]
     assert any("khác giọng" in problem for problem in bp.validate(plan))
+
+
+PART6_GOOD = """[PASSAGE]
+Dear Ms. Vance,
+
+Thank you for your subscription. Your ticket package ------- (1) by Friday. You
+will also receive a card granting you ------- (2) such as priority seating.
+Please contact ------- (3) with any questions. ------- (4)
+
+Sincerely,
+David Cho
+
+[QUESTION]
+Blank (1)
+(A) ships
+(B) will be shipped
+(C) was shipping
+(D) has been shipping
+Answer: B
+Source: original
+
+[QUESTION]
+Blank (2)
+(A) benefits
+(B) expenses
+(C) positions
+(D) materials
+Answer: A
+Source: original
+
+[QUESTION]
+Blank (3)
+(A) we
+(B) us
+(C) our
+(D) ourselves
+Answer: B
+Source: original
+
+[QUESTION]
+Blank (4)
+(A) Our representatives are available daily to assist you.
+(B) The musicians have been rehearsing for months.
+(C) Please return the damaged tickets to our box office.
+(D) Refunds are processed within ten business days.
+Answer: A
+Source: original
+"""
+
+
+def test_balancing_never_drops_a_question_block(tmp_path):
+    """Thiếu đích thì GIỮ NGUYÊN khối, không bỏ nó đi.
+
+    Bản đầu dùng `zip(..., strict=False)` và chỉ ghi lại những khối ghép được —
+    một tệp Part 6 bốn câu chỉ có một đích bị viết lại thành tệp MỘT câu, mất ba
+    câu kia vĩnh viễn. Không phải "bỏ qua phép cân": là **xoá nội dung**, và
+    lệnh vẫn báo chạy xong. Cả bốn văn bản Part 6 của lượt chạy thật bị ăn mất
+    ba phần tư trước khi ai kịp nhìn.
+    """
+    from app.content.exam import balance as balancer
+
+    # Gọi thẳng `rewrite_all` với MỘT đích cho BỐN khối. Đi qua `balance` thì
+    # không tái hiện được: ở đó số đích luôn khớp số khối, nên hai bản sửa
+    # (`QUESTIONS_PER_SET` và chỗ này) che cho nhau và bài test xanh dù gỡ một
+    # trong hai. Bất biến thuộc về `rewrite_all`, độc lập với người gọi nó.
+    text = balancer.rewrite_all(PART6_GOOD, ["C"])
+    assert text.count("[QUESTION]") == 4
+    assert "[PASSAGE]" in text and "David Cho" in text
+    keys = [line.split(":")[1].strip() for line in text.splitlines() if line.startswith("Answer:")]
+    # Khối đầu được cân sang C; ba khối sau giữ nguyên đáp án cũ, KHÔNG biến mất.
+    assert keys == ["C", "A", "B", "A"]
+
+    # Và khi đủ đích thì cả bốn đều được cân.
+    plan = bp.build_part6("tp-test", "Test", seed=3)
+    plan.parts[0].slots = plan.parts[0].slots[:1]
+    writer.save_slot(tmp_path, plan.parts[0].slots[0], PART6_GOOD)
+    balancer.balance(plan, tmp_path, only=6)
+    full = writer.paste_path(tmp_path, plan.parts[0].slots[0]).read_text()
+    spread = [
+        line.split(":")[1].strip() for line in full.splitlines() if line.startswith("Answer:")
+    ]
+    assert sorted(spread) == ["A", "B", "C", "D"]
+
+
+def test_a_part_6_text_is_read_as_four_questions_over_one_passage(tmp_path):
+    plan = bp.build_part6("tp-test", "Test", seed=3)
+    plan.parts[0].slots = plan.parts[0].slots[:1]
+    writer.save_slot(tmp_path, plan.parts[0].slots[0], PART6_GOOD)
+    reports = checker.check_blueprint(plan, tmp_path, only=6)
+    assert [r.number for r in reports] == [131, 132, 133, 134]
+    assert all(r.problems == [] for r in reports)
+
+
+def test_part_6_pins_the_sentence_insertion_to_the_last_blank():
+    """Đề mẫu đặt câu điền câu ở câu 134, 138, 142, 146 — luôn là chỗ trống cuối.
+
+    Để mô hình tự chọn thì nó rải lung tung hoặc bỏ hẳn, và mỗi câu riêng lẻ vẫn
+    hợp lệ nên không cổng nào ở tầng câu thấy được.
+    """
+    plan = bp.build_part6("tp-test", "Test", seed=3)
+    assert bp.validate(plan) == []
+    assert all(
+        slot.question_types[-1] == "PART_6_SENTENCE_INSERTION" for slot in plan.parts[0].slots
+    )
+    plan.parts[0].slots[0].question_types[1] = "PART_6_SENTENCE_INSERTION"
+    assert any("câu điền câu phải là câu cuối" in problem for problem in bp.validate(plan))
+
+
+def _slot_and_block(part: int):  # type: ignore[no-untyped-def]
+    """Một ô và một khối dán hợp lệ cho part đó."""
+    builders = {
+        1: (bp.build_part1, PART1_GOOD),
+        2: (bp.build_part2, PART2_GOOD),
+        3: (bp.build_part3, PART3_GOOD),
+        5: (bp.build_part5, GOOD),
+        6: (bp.build_part6, PART6_GOOD),
+    }
+    builder, block = builders[part]
+    plan = builder("tp-test", "Test", seed=7) if part != 5 else builder("tp-test", "Test", 7, 1)
+    plan.parts[0].slots = plan.parts[0].slots[:1]
+    slot = plan.parts[0].slots[0]
+    if part == 1:
+        block = block.replace("us_female_1", slot.voice)
+    if part == 2:
+        block = block.replace("us_female_1", slot.voices[0])
+    return plan, slot, block
+
+
+@pytest.mark.parametrize("part", [1, 2, 3, 5, 6])
+def test_the_judge_always_receives_the_question_itself(part, tmp_path):
+    """Yêu cầu gửi cho người chấm phải chứa được NỘI DUNG câu hỏi, ở mọi part.
+
+    Đây là bài test đắt giá nhất của cả chặng kiểm, vì cùng một lỗi đã xảy ra BA
+    lần và mỗi lần đều đọc ra như "nội dung kém":
+
+      · Part 3 không được gửi lời thoại — 26 cờ giả trên 39 câu;
+      · câu hỏi về hình không được gửi bảng — 3 cờ giả;
+      · Part 2 không được gửi câu hỏi (nó nằm ở lượt nói đầu, `prompt_text` là
+        NULL) — 15 cờ giả trên 25 câu, kèm hai cờ "có 4 phương án" cho câu chỉ
+        có ba.
+
+    Điểm chung: người chấm thiếu ngữ cảnh KHÔNG im lặng, nó trả về một chữ cái
+    như thường. Dấu hiệu duy nhất là tỉ lệ cờ cao — thứ dễ đọc thành lỗi nội
+    dung hơn là lỗi cổng kiểm.
+    """
+    plan, slot, block = _slot_and_block(part)
+    writer.save_slot(tmp_path, slot, block)
+    if part == 1:
+        (tmp_path / "photos").mkdir(exist_ok=True)
+        (tmp_path / "photos" / f"{slot.id}.txt").write_text("A photograph of one man at a desk.")
+
+    recorder = _Recorder()
+    checker.check_blueprint(plan, tmp_path, recorder, Tier.CHEAP, False, part)  # type: ignore[arg-type]
+    assert recorder.seen, f"part {part}: chặng đối chiếu không gọi lượt nào"
+
+    # Mỗi part giấu "câu hỏi" ở một chỗ khác nhau — đó chính là lý do lỗi này
+    # lặp lại. Chỗ nào cũng phải tới được tay người chấm.
+    needle = {
+        1: "one man at a desk",  # mô tả ảnh
+        2: "quarterly sales report",  # lượt nói đầu
+        3: "interview schedule for tomorrow",  # lời thoại
+        5: "expense reports",  # đề bài in ra
+        6: "your subscription",  # ngữ liệu
+    }[part]
+    for request in recorder.seen:
+        assert needle in request.user, f"part {part}: thiếu ngữ cảnh trong yêu cầu"

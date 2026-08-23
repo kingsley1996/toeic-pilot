@@ -82,6 +82,10 @@ PEOPLE_SHAPES = ("one", "several", "none")
 # Part 3 và 4 đều ba câu một cụm — đó là hình dạng của đề thật.
 LISTENING_QUESTIONS_PER_SET = 3
 
+# Số câu mỗi cụm, theo part. Part 6 là BỐN, không phải ba: đề mẫu có bốn văn bản
+# và mỗi văn bản đúng bốn chỗ trống (131–134, 135–138, 139–142, 143–146).
+QUESTIONS_PER_SET = {3: 3, 4: 3, 6: 4}
+
 # Phân bố của một đề thật: phần lớn có người, và đúng một tấm tả vật hoặc cảnh.
 PART1_MIX: tuple[tuple[str, str, str], ...] = (
     ("PART_1_PERSON_DESCRIPTION", "one", "một người đang làm việc tại bàn làm việc"),
@@ -364,6 +368,60 @@ PART2_PAIRS: tuple[tuple[str, str], ...] = (
 )
 
 
+# Part 6: bốn văn bản, mỗi văn bản bốn chỗ trống — câu 131 tới 146.
+#
+# **Câu CUỐI của mỗi văn bản là câu ĐIỀN CÂU**, bốn lựa chọn là bốn câu hoàn
+# chỉnh chứ không phải bốn từ (câu 134 của đề mẫu). Vị trí cố định, đúng như câu
+# hỏi về hình của Part 3/4 — và cùng lý do phải ghi thành ràng buộc: mô hình để
+# tự do sẽ rải nó lung tung hoặc bỏ hẳn, và mỗi câu riêng lẻ vẫn hợp lệ.
+#
+# Part 6 chỉ kiểm **năm** điểm ngữ pháp, không phải mười một như Part 5 — hai
+# danh sách khác nhau trong `labels.py`, và dùng nhầm là một mã hợp lệ nhưng sai
+# part.
+PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
+    (
+        "PART_6_EMAIL_OR_LETTER",
+        "thư báo khách hàng về vé xem biểu diễn cả mùa vừa mua",
+        (
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    (
+        "PART_6_EMAIL_OR_LETTER",
+        "email trả lời khách hỏi về dịch vụ bảo trì thiết bị văn phòng",
+        (
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_PREPOSITION"),
+            ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    (
+        "PART_6_MEMO",
+        "thông báo nội bộ về việc chuyển sang hệ thống chấm công mới",
+        (
+            ("PART_6_GRAMMAR", "GRAMMAR_TO_INFINITIVE"),
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    (
+        "PART_6_ARTICLE_OR_REVIEW",
+        "bài báo ngắn về một chuỗi cửa hàng vừa mở chi nhánh mới",
+        (
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
+            ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+)
+
+
 @dataclass
 class QuestionSlot:
     """Một ô trong đề: chỗ này sẽ là câu hỏi gì.
@@ -401,6 +459,10 @@ class QuestionSlot:
     # một bảng giá không hoán đổi cho nhau được, và tách đôi chỉ tạo ra khả năng
     # hai nửa nói hai điều khác nhau.
     graphic: str = ""
+    # Điểm ngữ pháp của TỪNG câu trong cụm, song song với `question_types`. Chỉ
+    # Part 6 dùng: ô của nó là một văn bản mang bốn câu, và ba trong bốn câu có
+    # điểm ngữ pháp riêng.
+    grammars: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -535,6 +597,30 @@ def graph_code(part: int) -> str:
     return f"PART_{part}_GRAPH_OR_TABLE_QUESTION"
 
 
+def _part6_problems(slot: QuestionSlot) -> list[str]:
+    """Luật riêng của một văn bản Part 6."""
+    problems: list[str] = []
+    if len(slot.grammars) != len(slot.question_types):
+        problems.append(f"{slot.id}: `grammars` phải song song với `question_types`")
+        return problems
+
+    valid = {label.code for label in codes_for("grammar", 6)}
+    for code, grammar in zip(slot.question_types, slot.grammars, strict=True):
+        if grammar and grammar not in valid:
+            # Part 6 kiểm NĂM điểm ngữ pháp, Part 5 kiểm mười một. Một mã của
+            # Part 5 dùng ở đây là mã có thật, đúng mặt phân loại, và sai part —
+            # cả ba phép kiểm phải chạy vì cả ba đều hỏng im lặng.
+            problems.append(f"{slot.id}: `{grammar}` không phải điểm ngữ pháp của part 6")
+        if code == "PART_6_GRAMMAR" and not grammar:
+            problems.append(f"{slot.id}: câu ngữ pháp phải nói rõ điểm ngữ pháp")
+
+    # Câu ĐIỀN CÂU luôn ở cuối, đúng như đề mẫu (câu 134, 138, 142, 146).
+    at = [i for i, code in enumerate(slot.question_types) if code == "PART_6_SENTENCE_INSERTION"]
+    if at != [len(slot.question_types) - 1]:
+        problems.append(f"{slot.id}: câu điền câu phải là câu cuối của văn bản, và chỉ một câu")
+    return problems
+
+
 def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> list[str]:
     """Kiểm một ô CỤM (Part 3, 4). Ba câu, một chủ đề, một dàn giọng.
 
@@ -543,21 +629,28 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     phải một dòng JSON. Cùng lý do như phần kiểm nhãn của ô-một-câu.
     """
     problems: list[str] = []
-    expected = LISTENING_QUESTIONS_PER_SET
+    expected = QUESTIONS_PER_SET[part]
     if len(slot.question_types) != expected:
         problems.append(f"{slot.id}: cụm Part {part} cần {expected} nhãn dạng câu")
     for code in slot.question_types:
         if code not in valid_types:
             problems.append(f"{slot.id}: `{code}` không phải nhãn của part {part}")
-    if len(set(slot.question_types)) != len(slot.question_types):
-        # Ba câu hỏi cùng một dạng về cùng một đoạn thoại thì gần như chắc chắn
-        # hỏi trùng nhau — và cái trùng đó nằm ở nội dung, chỗ không cổng nào
-        # bắt được.
+    # Part 6 CHO PHÉP trùng dạng: một văn bản có thể có hai chỗ trống ngữ pháp,
+    # và chúng khác nhau ở điểm ngữ pháp chứ không ở dạng câu. Part 3/4 thì
+    # không: ba câu cùng dạng về cùng một đoạn thoại gần như chắc chắn hỏi trùng
+    # nhau, và cái trùng đó nằm ở nội dung, chỗ không cổng nào bắt được.
+    if part != 6 and len(set(slot.question_types)) != len(slot.question_types):
         problems.append(f"{slot.id}: ba câu trùng dạng")
 
-    topics = {label.code for label in codes_for("topic", part)}
-    speech = {label.code for label in codes_for("speech_type", part)}
-    allowed = topics | speech
+    # Nhãn CỤM nằm ở ba mặt khác nhau tuỳ part: Part 3 dùng `topic`, Part 4 dùng
+    # `speech_type`, Part 6 dùng `passage_type`. Gộp cả ba rồi kiểm một lần —
+    # nhưng phải gộp ĐỦ: thiếu một mặt thì `allowed` rỗng và phép kiểm tự tắt,
+    # đúng như nó đã tắt cho Part 6 ở bản đầu.
+    allowed = {
+        label.code
+        for facet in ("topic", "speech_type", "passage_type")
+        for label in codes_for(facet, part)
+    }
     if allowed and slot.topic not in allowed:
         problems.append(f"{slot.id}: `{slot.topic}` không phải nhãn cụm của part {part}")
 
@@ -587,6 +680,14 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
             problems.append(
                 f"{slot.id}: câu hỏi về hình của Part {part} phải là câu thứ {want_at + 1}"
             )
+
+    if part == 6:
+        # Đặt SAU phép kiểm nhãn cụm và TRƯỚC phép kiểm giọng — Part 6 không có
+        # giọng nào. Đặt trước cả hai thì nhãn cụm của Part 6 không bao giờ được
+        # kiểm, và nó đã im lặng đúng như thế ở bản đầu: một nhãn của part khác
+        # lọt qua sạch sẽ.
+        problems.extend(_part6_problems(slot))
+        return problems
 
     # Part 4 là bài NÓI: đúng một người. Part 3 là hội thoại: hai hoặc ba.
     low, high = (1, 1) if part == 4 else (2, 3)
@@ -622,6 +723,29 @@ def build_part4(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=4, slots=slots)])
 
 
+def build_part6(slug: str, title: str, seed: int) -> Blueprint:
+    """Bốn văn bản Part 6, câu 131–146 của đề thật.
+
+    Ô là một VĂN BẢN, như cụm của Part 3/4 — bốn chỗ trống của nó phải viết cùng
+    nhau, vì chúng nằm trong một đoạn văn liền mạch và mỗi chỗ trống phải khớp
+    với câu chữ xung quanh nó.
+    """
+    slots = [
+        QuestionSlot(
+            id=f"p6-{index + 1:02d}",
+            number=131 + index * 4,
+            question_type="",
+            grammar="",
+            context=scene,
+            question_types=[code for code, _ in types],
+            grammars=[grammar for _, grammar in types],
+            topic=passage_type,
+        )
+        for index, (passage_type, scene, types) in enumerate(PART6_MIX)
+    ]
+    return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=6, slots=slots)])
+
+
 def validate(blueprint: Blueprint) -> list[str]:
     """Những gì sai TRONG blueprint, trước khi nó tốn một lượt gọi nào.
 
@@ -637,7 +761,7 @@ def validate(blueprint: Blueprint) -> list[str]:
         for slot in part.slots:
             # Ô CỤM để `question_type` rỗng — ba nhãn của nó nằm ở
             # `question_types` và được kiểm riêng bên dưới.
-            if part.part not in (3, 4) and slot.question_type not in valid_types:
+            if part.part not in (3, 4, 6) and slot.question_type not in valid_types:
                 problems.append(
                     f"{slot.id}: `{slot.question_type}` không phải nhãn của part {part.part}"
                 )
@@ -658,7 +782,7 @@ def validate(blueprint: Blueprint) -> list[str]:
                 unknown = [v for v in slot.voices if v not in LOGICAL_VOICE_ACCENTS]
                 if unknown:
                     problems.append(f"{slot.id}: giọng không có: {', '.join(unknown)}")
-            if part.part in (3, 4):
+            if part.part in (3, 4, 6):
                 problems.extend(_set_slot_problems(slot, part.part, valid_types))
             if part.part == 1 and slot.people not in PEOPLE_SHAPES:
                 problems.append(

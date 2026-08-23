@@ -77,6 +77,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
         3: bp.build_part3,
         4: bp.build_part4,
         5: bp.build_part5,
+        6: bp.build_part6,
     }[args.part]
     path = blueprint_path(args.slug)
     plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
@@ -105,7 +106,7 @@ def cmd_write(args: argparse.Namespace) -> int:
     for slot in todo:
         part = next(p.part for p in plan.parts if slot in p.slots)
         try:
-            block = writer.write_slot(gateway, slot, tier, part)
+            block = writer.write_slot(gateway, slot, tier, part, args.max_tokens)
         except LLMQuotaExhausted as quota:
             # Hạn mức NGÀY không tự hết sau ba mươi giây. Backoff ở đây sẽ cày
             # hết mọi ô còn lại, hỏng y hệt nhau, và chôn mất dòng nói đúng
@@ -426,7 +427,9 @@ def cmd_prune(args: argparse.Namespace) -> int:
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
     gateway = _gateway() if args.ambiguity else None
-    reports = checker.check_blueprint(plan, workdir, gateway, Tier(args.tier), args.ambiguity)
+    reports = checker.check_blueprint(
+        plan, workdir, gateway, Tier(args.tier), args.ambiguity, args.part
+    )
 
     # Đo NGƯỜI CHẤM trước khi tin nó.
     #
@@ -497,7 +500,9 @@ def cmd_load(args: argparse.Namespace) -> int:
             # để thêm Part 1 sẽ dán Part 5 vào đề lần thứ hai.
             if args.part is not None and part.part != args.part:
                 continue
-            count = loader.load_part(args.api, args.token, plan, workdir_for(args.slug), part.part)
+            count = loader.load_part(
+                args.api, args.token, plan, workdir_for(args.slug), part.part, args.slot
+            )
             print(f"  ✓ part {part.part}: {count} cụm")
     except loader.LoadError as failure:
         print(f"  ✗ {failure}", file=sys.stderr)
@@ -515,12 +520,18 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
-    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5))
+    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5, 6))
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")
     write_cmd.add_argument("--slug", required=True)
     write_cmd.add_argument("--limit", type=int, default=0)
+    write_cmd.add_argument(
+        "--max-tokens",
+        type=int,
+        default=writer.DEFAULT_MAX_TOKENS,
+        help="trần đầu ra mỗi lượt gọi; model suy luận cần rộng, hạn mức TPM lại cần hẹp",
+    )
     write_cmd.set_defaults(func=cmd_write)
 
     balance_cmd = sub.add_parser("balance", help="cân lại vị trí đáp án trên cả đề")
@@ -560,6 +571,7 @@ def main(argv: list[str] | None = None) -> int:
 
     prune_cmd = sub.add_parser("prune", help="xoá tệp dán của những ô không đạt")
     prune_cmd.add_argument("--slug", required=True)
+    prune_cmd.add_argument("--part", type=int, default=None, help="chỉ loại trong một part")
     prune_cmd.add_argument("--dry-run", action="store_true")
     prune_cmd.add_argument(
         "--ambiguity", action="store_true", help="loại cả câu có hơn một phương án điền được"
@@ -571,6 +583,9 @@ def main(argv: list[str] | None = None) -> int:
     load_cmd.add_argument("--token", required=True, help="token của một tài khoản editor")
     load_cmd.add_argument("--api", default="http://localhost:8000")
     load_cmd.add_argument("--part", type=int, default=None, help="chỉ nạp một part")
+    load_cmd.add_argument(
+        "--slot", default=None, help="chỉ nạp một ô (vd `p2-01`), lấp vào số câu còn trống"
+    )
     load_cmd.set_defaults(func=cmd_load)
 
     args = parser.parse_args(argv)

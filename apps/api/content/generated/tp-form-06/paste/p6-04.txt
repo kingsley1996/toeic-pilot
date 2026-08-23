@@ -1,0 +1,39 @@
+[PASSAGE]
+Green Life Expands to Westside
+
+The popular eco-friendly home goods retailer, Green Life, has officially announced the grand opening of its newest branch in the Westside shopping district. This exciting launch marks the company's fifth ------- (1) in the state. Known for its sustainable products, Green Life aims to help customers reduce ------- (2) environmental footprint without sacrificing style.
+
+To celebrate the opening, special discounts ------- (3) to the first one hundred shoppers this Saturday morning. ------- (4) Local business leaders expect the new store to attract many visitors and significantly boost foot traffic in the area.
+
+[QUESTION]
+Blank (1)
+(A) relation
+(B) transaction
+(C) location
+(D) occupation
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) them
+(C) theirs
+(D) their
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) will be offered
+(B) are offering
+(C) offer
+(D) have offered
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) The company decided to close its previous store due to high rent.
+(B) These early visitors will also receive a complimentary reusable shopping bag.
+(C) We hope you enjoy your new kitchen appliances.
+(D) Employees must attend a mandatory safety training session tomorrow.
+Answer: B
+Source: original

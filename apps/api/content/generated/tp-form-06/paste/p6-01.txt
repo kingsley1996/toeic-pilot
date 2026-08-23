@@ -1,0 +1,47 @@
+[PASSAGE]
+To: Marcus Vance <mvance@email.com>
+From: Customer Relations <tickets@cityplayhouse.org>
+Date: October 12
+Subject: Your Season Tickets
+
+Dear Mr. Vance,
+
+Thank you for purchasing a season subscription to the City Playhouse. Your tickets for the upcoming season ------- (1) to your registered address by the end of this week. Along with the tickets, you will receive a membership card that offers exclusive ------- (2), including priority booking for additional shows.
+
+Please review the enclosed schedule carefully. If you need to exchange any of your tickets for a different date, please notify ------- (3) at least 48 hours before the performance. ------- (4)
+
+Sincerely,
+The City Playhouse Team
+
+[QUESTION]
+Blank (1)
+(A) ship
+(B) were shipping
+(C) will be shipped
+(D) have shipped
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) substances
+(B) procedures
+(C) divisions
+(D) privileges
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) us
+(B) we
+(C) our
+(D) ourselves
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) We hope you enjoyed the performance last night.
+(B) Otherwise, we cannot guarantee that alternative seating will be available.
+(C) The construction of our new parking garage is now complete.
+(D) Please print this receipt for your tax records.
+Answer: B
+Source: original
