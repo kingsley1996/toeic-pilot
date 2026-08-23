@@ -15,3 +15,9 @@ packages/shared/openapi.json
 # into code diffs. Markdown style is left to the editor/markdownlint.
 *.md
 planning/**
+
+# Nội dung do pipeline sinh đề ghi ra: bản đồ đề, bài dán, ảnh, âm thanh. Máy
+# viết ra thì máy quyết định định dạng — bắt Prettier chỉnh lại chỉ tạo ra một
+# lần chạy `--write` sau MỖI lần sinh đề, và một CI đỏ vì một dấu cách trong
+# tệp không ai đọc bằng mắt.
+apps/api/content/generated/**
