@@ -379,3 +379,56 @@ def test_luyen_tap_chi_lo_dap_an_cua_cau_da_tra_loi(
     for question in submitted["questions"]:
         assert question["correct_option_id"] is not None
         assert any(o["content_vi"] for o in question["options"])
+
+
+PART1_NO_PHOTO = """[QUESTION]
+voice: us_female_1
+(A) The man is typing on a keyboard.
+(B) The man is holding a telephone.
+(C) Two people are in the office.
+(D) The desk is covered with papers.
+answer: A
+source: original
+"""
+
+
+def test_publishing_all_questions_skips_the_ones_that_fail_the_gate_and_names_them(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Nút "xuất bản tất cả" đi qua ĐÚNG cổng của `publish_question`.
+
+    Một endpoint hàng loạt nới lỏng luật là cách chắc chắn nhất để một câu thiếu
+    bản thu đi ra ngoài — và nội dung đó trông hoàn toàn bình thường cho tới khi
+    có người học bấm play.
+
+    Nó làm được tới đâu làm tới đó rồi NÊU TÊN phần còn lại. Từ chối cả lô vì
+    một câu hỏng thì người biên tập phải tự đi tìm câu đó; và chỉ trả về con số
+    thành công thì phần thiếu chỉ lộ ra ở lần bấm "Xuất bản đề" kế tiếp, dưới
+    dạng một con số không kèm lý do.
+    """
+    headers = auth("admin")
+    slug = "bulk"
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": slug, "title": "Đề thử", "kind": "mini"},
+        headers=headers,
+    )
+    add_part(client, headers, slug, 5, PART5)
+    # Câu Part 1 dán được nhưng KHÔNG xuất bản được: nó còn thiếu ảnh và bản thu.
+    add_part(client, headers, slug, 1, PART1_NO_PHOTO)
+
+    response = client.post(f"/api/v1/admin/tests/{slug}/questions/publish", headers=headers)
+    assert response.status_code == 200, response.text
+    body = response.json()
+
+    assert body["published_count"] == 1
+    assert [item["number"] for item in body["skipped"]] == [1]
+    assert body["skipped"][0]["reason"]
+
+    rows = client.get(f"/api/v1/admin/tests/{slug}/questions", headers=headers).json()
+    by_number = {row["number"]: row["status"] for row in rows}
+    assert by_number[1] == "draft"
+    assert by_number[101] == "published"
+
+    # Và cổng ở tầng đề vẫn chặn, nên câu nháp kia không lọt ra đâu cả.
+    assert client.post(f"/api/v1/admin/tests/{slug}/publish", headers=headers).status_code == 409

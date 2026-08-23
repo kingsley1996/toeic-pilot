@@ -90,6 +90,7 @@ export type QuestionPublic = components["schemas"]["QuestionPublic"];
 export type PassagePublic = components["schemas"]["PassagePublic"];
 export type AttemptPartProgress = components["schemas"]["AttemptPartProgress"];
 export type TestAdmin = components["schemas"]["TestAdmin"];
+export type BulkPublishResult = components["schemas"]["BulkPublishResult"];
 export type CollectionAdmin = components["schemas"]["CollectionAdmin"];
 export type SetAdmin = components["schemas"]["SetAdmin"];
 export type AudioAssetPublic = components["schemas"]["AudioAssetPublic"];
@@ -270,6 +271,7 @@ export const API_ROUTES = {
     `/api/v1/admin/tests/${slug}/parts/${part}/parse`,
   adminTestParts: (slug: string) => `/api/v1/admin/tests/${slug}/parts`,
   adminTestPublish: (slug: string) => `/api/v1/admin/tests/${slug}/publish`,
+  adminTestPublishAllQuestions: (slug: string) => `/api/v1/admin/tests/${slug}/questions/publish`,
   adminQuestionPublish: (id: string) => `/api/v1/admin/questions/${id}/publish`,
   adminQuestion: (id: string) => `/api/v1/admin/questions/${id}`,
   adminQuestionArchive: (id: string) => `/api/v1/admin/questions/${id}/archive`,

@@ -71,7 +71,7 @@ def _gateway() -> Gateway:
 
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
-    builder = {1: bp.build_part1, 5: bp.build_part5}[args.part]
+    builder = {1: bp.build_part1, 3: bp.build_part3, 5: bp.build_part5}[args.part]
     path = blueprint_path(args.slug)
     plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
     problems = bp.validate(plan)
@@ -118,6 +118,13 @@ def cmd_write(args: argparse.Namespace) -> int:
             photo_path = workdir / "photos" / f"{slot.id}.txt"
             photo_path.parent.mkdir(parents=True, exist_ok=True)
             photo_path.write_text(photo + "\n")
+        # Bảng của Part 3/4 cũng là hiện vật riêng, cùng lý do như mô tả ảnh: nó
+        # là DỮ LIỆU để vẽ và để sinh chữ thay ảnh, không phải dòng để dán.
+        table, block = writer.split_marked(block, writer.GRAPHIC_MARKER)
+        if table:
+            table_path = workdir / "graphics" / f"{slot.id}.txt"
+            table_path.parent.mkdir(parents=True, exist_ok=True)
+            table_path.write_text(table + "\n")
         path = writer.save_slot(workdir, slot, block)
         written += 1
         print(f"  ✓ {slot.id}  {path}")
@@ -209,12 +216,18 @@ def cmd_media(args: argparse.Namespace) -> int:
     kiểm cả hai: một lệnh trả lời được "đề này phát được chưa" thì đáng tin hơn
     một lệnh chỉ trả lời được nửa câu hỏi.
     """
-    from sqlalchemy import select
+    from sqlalchemy import func, select
 
     from app.content.push_media import push, uploader_for
     from app.core.database import SessionLocal
     from app.core.storage import MediaKind, get_driver
-    from app.models import ImageAsset, PracticeTest, PracticeTestQuestion, Question
+    from app.models import (
+        ImageAsset,
+        PracticeTest,
+        PracticeTestQuestion,
+        Question,
+        QuestionSet,
+    )
     from app.models.audio import AudioAsset
 
     db = SessionLocal()
@@ -223,6 +236,10 @@ def cmd_media(args: argparse.Namespace) -> int:
         print(f"không có đề `{args.slug}`", file=sys.stderr)
         return 2
 
+    # Media của một đề treo ở HAI tầng (ADR-001 §A4.3): Part 1/2 trên câu, Part
+    # 3/4 trên cụm. Chỉ hỏi tầng câu thì lệnh này trả lời "mọi thứ đã lên" cho
+    # một đề mà toàn bộ mười ba hội thoại chưa lên — nửa câu trả lời, và là nửa
+    # dễ tin nhất vì nó màu xanh.
     rows = db.execute(
         select(
             PracticeTestQuestion.number,
@@ -236,6 +253,23 @@ def cmd_media(args: argparse.Namespace) -> int:
         .where(PracticeTestQuestion.test_id == test.id)
         .order_by(PracticeTestQuestion.number)
     ).all()
+
+    set_rows = db.execute(
+        select(
+            func.min(PracticeTestQuestion.number),
+            Question.part,
+            AudioAsset.storage_key,
+            ImageAsset.storage_key,
+        )
+        .join(Question, Question.id == PracticeTestQuestion.question_id)
+        .join(QuestionSet, QuestionSet.id == Question.set_id)
+        .outerjoin(AudioAsset, AudioAsset.id == QuestionSet.audio_asset_id)
+        .outerjoin(ImageAsset, ImageAsset.id == QuestionSet.passage_image_id)
+        .where(PracticeTestQuestion.test_id == test.id)
+        .group_by(QuestionSet.id, Question.part, AudioAsset.storage_key, ImageAsset.storage_key)
+        .order_by(func.min(PracticeTestQuestion.number))
+    ).all()
+    rows = [*rows, *set_rows]
 
     media_root = Path("media")
     kinds: tuple[MediaKind, ...] = ("audio", "image")
@@ -271,6 +305,54 @@ def cmd_media(args: argparse.Namespace) -> int:
         if gone:
             return 1
     return 0
+
+
+def cmd_graphic(args: argparse.Namespace) -> int:
+    """Vẽ hình ngữ liệu Part 3/4 từ dữ liệu bảng, kèm chữ thay ảnh.
+
+    KHÔNG gọi mô hình ảnh. Hình này là một tài liệu và giá trị của nó nằm ở chữ
+    đọc được, thứ mô hình khuếch tán không vẽ đáng tin. Vẽ từ dữ liệu cũng là
+    thứ duy nhất khiến chữ thay ảnh sinh ra tự động — và `assign_passage_image`
+    TỪ CHỐI (409) một hình ngữ liệu không có chữ thay ảnh.
+
+    Ghi kèm `<slot>.alt.txt` bên cạnh PNG: `import_media` đọc nó, vì mỗi hình có
+    chữ thay ảnh của riêng nó trong khi `--alt-text` chỉ có một giá trị cho cả
+    lượt nhập.
+    """
+    from app.content.exam.graphics import parse_graphic, render
+
+    plan = bp.load(blueprint_path(args.slug))
+    workdir = workdir_for(args.slug)
+    # Thư mục RIÊNG, không chung với ảnh Part 1. `import_media` khớp theo số
+    # trong tên tệp và không có cách nào biết `p1-03.png` với `p3-11.png` thuộc
+    # hai part khác nhau — trộn chung thì mọi lượt nhập đều báo "file thừa".
+    out_dir = workdir / "graphic-images"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    made = 0
+    problems = 0
+    for part in plan.parts:
+        for slot in part.slots:
+            source = workdir / "graphics" / f"{slot.id}.txt"
+            if not slot.graphic:
+                continue
+            if not source.exists():
+                print(f"  ✗ {slot.id}: thiếu dữ liệu bảng ({source})", file=sys.stderr)
+                problems += 1
+                continue
+            graphic = parse_graphic(source.read_text())
+            found = graphic.problems()
+            if found:
+                print(f"  ✗ {slot.id}: {'; '.join(found)}", file=sys.stderr)
+                problems += 1
+                continue
+            target = out_dir / f"{slot.id}.png"
+            render(graphic, target)
+            (out_dir / f"{slot.id}.alt.txt").write_text(graphic.alt_text() + "\n")
+            made += 1
+            print(f"  ✓ {slot.id}  {target}")
+    print(f"\nĐã vẽ {made} hình · {problems} lỗi.")
+    return 1 if problems else 0
 
 
 def cmd_balance(args: argparse.Namespace) -> int:
@@ -367,7 +449,10 @@ def cmd_prune(args: argparse.Namespace) -> int:
         reasons = [problem for problem in report.problems if problem != "chưa có tệp dán"]
         if args.ambiguity:
             reasons += [flag for flag in report.flags if "phương án điền được" in flag]
-        if reasons:
+        if reasons and report.slot_id not in {slot_id for slot_id, _ in doomed}:
+            # Một ô CỤM sinh ba báo cáo, nên cùng một `slot_id` có thể hỏng ba
+            # lần. Đơn vị sinh lại là cả cụm (ba câu hỏi về cùng một đoạn thoại),
+            # nên nó chỉ được xoá — và chỉ được đếm — đúng một lần.
             doomed.append((report.slot_id, reasons[0]))
 
     for slot_id, reason in doomed:
@@ -382,9 +467,10 @@ def cmd_prune(args: argparse.Namespace) -> int:
             # loại vẫn còn mô tả của lần viết hỏng, và nếu ô đó không được sinh
             # lại thì `check` vẫn đọc mô tả cũ — một hiện vật mồ côi mô tả một
             # câu hỏi không còn tồn tại.
-            photo = workdir / "photos" / f"{slot_id}.txt"
-            if photo.exists():
-                photo.unlink()
+            for extra in (workdir / "photos", workdir / "graphics"):
+                sidecar = extra / f"{slot_id}.txt"
+                if sidecar.exists():
+                    sidecar.unlink()
             print(f"  ✗ đã xoá {slot_id}: {reason}")
 
     kept = sum(1 for report in reports if not report.problems)
@@ -422,7 +508,7 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
-    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 5))
+    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 3, 5))
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")
@@ -454,6 +540,10 @@ def main(argv: list[str] | None = None) -> int:
     media_cmd.add_argument("--part", type=int, default=None)
     media_cmd.add_argument("--push", action="store_true", help="đẩy nốt phần còn thiếu")
     media_cmd.set_defaults(func=cmd_media)
+
+    graphic_cmd = sub.add_parser("graphic", help="vẽ hình ngữ liệu Part 3/4 từ dữ liệu bảng")
+    graphic_cmd.add_argument("--slug", required=True)
+    graphic_cmd.set_defaults(func=cmd_graphic)
 
     check_cmd = sub.add_parser("check", help="kiểm tệp dán")
     check_cmd.add_argument("--slug", required=True)

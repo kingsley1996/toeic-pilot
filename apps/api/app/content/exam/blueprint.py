@@ -20,6 +20,7 @@ import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from app.core.media import LOGICAL_VOICE_ACCENTS
 from app.services.labels import codes_for
 
 # Part 5 kiểm 11 điểm ngữ pháp (Part 6 chỉ 5 — hai danh sách KHÁC nhau, xem
@@ -78,6 +79,9 @@ BUSINESS_CONTEXTS: tuple[str, ...] = (
 # thứ đã phải sửa bằng một cổng riêng ở tầng đề.
 PEOPLE_SHAPES = ("one", "several", "none")
 
+# Part 3 và 4 đều ba câu một cụm — đó là hình dạng của đề thật.
+LISTENING_QUESTIONS_PER_SET = 3
+
 # Phân bố của một đề thật: phần lớn có người, và đúng một tấm tả vật hoặc cảnh.
 PART1_MIX: tuple[tuple[str, str, str], ...] = (
     ("PART_1_PERSON_DESCRIPTION", "one", "một người đang làm việc tại bàn làm việc"),
@@ -105,6 +109,152 @@ PART1_MIX: tuple[tuple[str, str, str], ...] = (
 )
 
 
+# Part 3: mười ba cuộc hội thoại, mỗi cuộc ba câu — câu 32 tới 70 của đề thật.
+#
+# **Ô của Part 3 là một CUỘC HỘI THOẠI, không phải một câu.** Ba câu của cùng một
+# hội thoại phải được viết cùng nhau, vì chúng hỏi về cùng một đoạn thoại và
+# không được hỏi trùng nhau; viết rời từng câu thì mô hình không biết hai câu kia
+# đã hỏi gì. Nó cũng khớp với schema: bản thu và nhãn chủ đề nằm ở `question_set`
+# (ADR-001 §A4.3), nên một tệp dán ↔ một cụm là ánh xạ đúng.
+#
+# `speakers` là số người nói. Đề thật có cả hội thoại hai người lẫn ba người, và
+# ba người là dạng người học hay trượt nhất vì phải theo dõi ai nói gì.
+# Phần tử thứ năm là BRIEF của hình đi kèm; rỗng nghĩa là cụm không có hình.
+#
+# Đo ở đề mẫu chính thức của ETS: Part 3 có đúng BA hình, nằm ở ba cụm CUỐI,
+# và câu hỏi về hình luôn là câu THỨ BA của cụm (câu 64, 67, 70). Rải chúng
+# vào giữa đề là sai một chi tiết mà người luyện đề nhận ra ngay.
+PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
+    (
+        "PART_3_COMPANY_PERSONNEL",
+        2,
+        "hai đồng nghiệp bàn về lịch phỏng vấn ứng viên",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "khách gọi cho cửa hàng vì đơn hàng giao thiếu",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_SPEAKER_IDENTITY", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_EVENT_OR_PROJECT",
+        3,
+        "ba người chuẩn bị gian hàng cho hội chợ thương mại",
+        ("PART_3_LOCATION", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_HOUSING",
+        2,
+        "người thuê hỏi ban quản lý toà nhà về việc sửa hệ thống sưởi",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_PERSONNEL",
+        2,
+        "trưởng phòng và nhân viên bàn về khoá đào tạo bắt buộc",
+        ("PART_3_SPEAKER_IDENTITY", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "khách đổi trả một chiếc máy in mua tuần trước",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_EVENT_OR_PROJECT",
+        3,
+        "ba người rà lại tiến độ dự án phần mềm trước hạn",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_SPEAKER_IDENTITY", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_HOUSING",
+        2,
+        "hai người xem một mặt bằng văn phòng cho thuê",
+        ("PART_3_LOCATION", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_PERSONNEL",
+        2,
+        "nhân viên xin đổi ca và đồng nghiệp trả lời",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "khách hỏi về gói bảo hành mở rộng ở quầy dịch vụ",
+        ("PART_3_SPEAKER_IDENTITY", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_EVENT_OR_PROJECT",
+        2,
+        "hai người chốt gói dịch vụ cho lễ kỷ niệm công ty",
+        (
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION",
+        ),
+        "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price",
+    ),
+    (
+        "PART_3_COMPANY_EVENT_OR_PROJECT",
+        3,
+        "ba người phân công lại ca trực sau khi một đồng nghiệp nghỉ phép",
+        (
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION",
+        ),
+        "schedule: lịch rảnh/bận của hai người qua bốn khung giờ trong ngày",
+    ),
+    (
+        "PART_3_HOUSING",
+        2,
+        "hai người chọn kho hàng mới trong bốn địa điểm",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_LOCATION", "PART_3_GRAPH_OR_TABLE_QUESTION"),
+        "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng",
+    ),
+)
+
+# Người nói của một cuộc hội thoại dùng CÙNG MỘT accent, đổi accent giữa các cuộc.
+#
+# Không phải tuỳ tiện: `audio_asset.accent` giữ đúng một giá trị, nên một clip
+# trộn accent phải tự khai báo (MEDIA-PIPELINE §10.2) — và quên khai báo thì một
+# giọng bị chọn hộ, im lặng. Đề thật cũng đổi accent giữa các bài chứ hiếm khi
+# trong một bài. Giữ cùng accent trong một cuộc thì cái bẫy đó không tồn tại.
+PART3_CASTS: tuple[tuple[str, ...], ...] = (
+    ("us_female_1", "us_male_1"),
+    ("uk_male_1", "uk_female_1"),
+    ("au_female_1", "au_male_1"),
+    ("ca_male_1", "ca_female_1"),
+)
+
+# Ba người nói thì buộc phải mượn một giọng của accent khác: mỗi accent chỉ có
+# hai giọng. Ghép US với CA (hoặc UK với AU) vì hai accent đó gần nhau, nên một
+# nhóm ba người vẫn nghe tự nhiên.
+#
+# Trộn accent ở ĐÂY thì an toàn, khác với đường spec file: `_accent_of` lấy
+# accent của lượt đầu và `backfill_audio` ghi rõ vì sao được phép — audio của
+# câu hỏi không ai lọc theo accent, nó chỉ đi kèm đúng câu đó. Ở từ vựng thì
+# ngược lại, accent là khoá tra cứu và chọn hộ là hỏng.
+PART3_TRIOS: tuple[tuple[str, ...], ...] = (
+    ("us_female_1", "us_male_1", "ca_male_1"),
+    ("uk_male_1", "uk_female_1", "au_female_1"),
+    ("ca_female_1", "ca_male_1", "us_male_1"),
+    ("au_male_1", "au_female_1", "uk_female_1"),
+)
+
+
 @dataclass
 class QuestionSlot:
     """Một ô trong đề: chỗ này sẽ là câu hỏi gì.
@@ -127,6 +277,21 @@ class QuestionSlot:
     # viết câu suy ra từ bối cảnh, vì đây là thứ phải phủ đủ trên CẢ đề — một
     # thuộc tính của đề thì phải nằm ở nơi mô tả đề.
     people: str = ""
+    # Part 3 và 4: ô là một CỤM, nên nó mang ba nhãn dạng câu (một cho mỗi câu),
+    # một nhãn chủ đề của cụm, và dàn giọng của cuộc hội thoại. `question_type`
+    # và `voice` để rỗng ở đó — chúng là trường của một ô-một-câu.
+    question_types: list[str] = field(default_factory=list)
+    topic: str = ""
+    voices: list[str] = field(default_factory=list)
+    # Brief của hình đi kèm (Part 3/4), dạng `kind: mô tả`. Rỗng nghĩa là cụm
+    # không có hình — và phần lớn cụm không có: đề thật chỉ có ba hình ở Part 3,
+    # hai ở Part 4.
+    #
+    # `kind` nằm ngay trong brief chứ không là trường riêng, vì nó là thứ DUY
+    # NHẤT người viết blueprint phải chọn cùng lúc với nội dung: một sơ đồ và
+    # một bảng giá không hoán đổi cho nhau được, và tách đôi chỉ tạo ra khả năng
+    # hai nửa nói hai điều khác nhau.
+    graphic: str = ""
 
 
 @dataclass
@@ -205,6 +370,89 @@ def build_part1(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=1, slots=slots)])
 
 
+def build_part3(slug: str, title: str, seed: int) -> Blueprint:
+    """Mười ba cuộc hội thoại Part 3, câu 32–70 của đề thật.
+
+    Một ô = một cuộc hội thoại = một tệp dán = một lượt gọi. Ba câu phải được
+    viết CÙNG NHAU: chúng hỏi về cùng một đoạn thoại và không được hỏi trùng
+    nhau, mà viết rời thì mô hình không biết hai câu kia đã hỏi gì.
+    """
+    slots = []
+    for index, (topic, speakers, scene, types, graphic) in enumerate(PART3_MIX):
+        pool = PART3_TRIOS if speakers == 3 else PART3_CASTS
+        slots.append(
+            QuestionSlot(
+                id=f"p3-{index + 1:02d}",
+                number=32 + index * 3,
+                question_type="",
+                grammar="",
+                context=scene,
+                question_types=list(types),
+                topic=topic,
+                voices=list(pool[(index + seed) % len(pool)]),
+                graphic=graphic,
+            )
+        )
+    return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=3, slots=slots)])
+
+
+def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> list[str]:
+    """Kiểm một ô CỤM (Part 3, 4). Ba câu, một chủ đề, một dàn giọng.
+
+    Kiểm ở đây chứ không đợi lúc dán: một mã nhãn sai chỉ lộ ra sau khi đã sinh
+    xong mười ba cuộc hội thoại, và lúc đó thứ phải sửa là mười ba tệp chứ không
+    phải một dòng JSON. Cùng lý do như phần kiểm nhãn của ô-một-câu.
+    """
+    problems: list[str] = []
+    expected = LISTENING_QUESTIONS_PER_SET
+    if len(slot.question_types) != expected:
+        problems.append(f"{slot.id}: cụm Part {part} cần {expected} nhãn dạng câu")
+    for code in slot.question_types:
+        if code not in valid_types:
+            problems.append(f"{slot.id}: `{code}` không phải nhãn của part {part}")
+    if len(set(slot.question_types)) != len(slot.question_types):
+        # Ba câu hỏi cùng một dạng về cùng một đoạn thoại thì gần như chắc chắn
+        # hỏi trùng nhau — và cái trùng đó nằm ở nội dung, chỗ không cổng nào
+        # bắt được.
+        problems.append(f"{slot.id}: ba câu trùng dạng")
+
+    topics = {label.code for label in codes_for("topic", part)}
+    speech = {label.code for label in codes_for("speech_type", part)}
+    allowed = topics | speech
+    if allowed and slot.topic not in allowed:
+        problems.append(f"{slot.id}: `{slot.topic}` không phải nhãn cụm của part {part}")
+
+    # Câu hỏi về hình và sự tồn tại của hình phải đi cùng nhau, cả hai chiều.
+    # Một cụm có nhãn `GRAPH_OR_TABLE` mà không có hình là một câu hỏi bảo người
+    # học "nhìn vào hình" trong khi không có hình nào; ngược lại, một hình không
+    # có câu nào hỏi tới nó chỉ là một tấm ảnh thừa cạnh ba câu không dùng nó.
+    asks_about_graphic = "PART_3_GRAPH_OR_TABLE_QUESTION" in slot.question_types
+    if asks_about_graphic and not slot.graphic:
+        problems.append(f"{slot.id}: có câu hỏi về hình nhưng cụm không có hình")
+    if slot.graphic and not asks_about_graphic:
+        problems.append(f"{slot.id}: có hình nhưng không câu nào hỏi tới nó")
+    if slot.graphic:
+        from app.content.exam.graphics import KINDS
+
+        kind = slot.graphic.split(":")[0].strip()
+        if kind not in KINDS:
+            problems.append(f"{slot.id}: dạng hình `{kind}` không có — phải là một trong {KINDS}")
+    if slot.graphic and slot.question_types[-1:] != ["PART_3_GRAPH_OR_TABLE_QUESTION"]:
+        # Đề thật đặt câu hỏi về hình ở CUỐI cụm (câu 64, 67, 70 của đề mẫu).
+        problems.append(f"{slot.id}: câu hỏi về hình phải là câu cuối của cụm")
+
+    if not 2 <= len(slot.voices) <= 3:
+        problems.append(f"{slot.id}: cụm Part {part} cần 2 hoặc 3 giọng")
+    if len(set(slot.voices)) != len(slot.voices):
+        # Hai lượt cùng giọng thì người nghe không tách được ai đang nói, và câu
+        # hỏi "người đàn ông nói gì" mất nghĩa.
+        problems.append(f"{slot.id}: hai người nói dùng chung một giọng")
+    unknown = [voice for voice in slot.voices if voice not in LOGICAL_VOICE_ACCENTS]
+    if unknown:
+        problems.append(f"{slot.id}: giọng không có trong danh sách: {', '.join(unknown)}")
+    return problems
+
+
 def validate(blueprint: Blueprint) -> list[str]:
     """Những gì sai TRONG blueprint, trước khi nó tốn một lượt gọi nào.
 
@@ -218,7 +466,9 @@ def validate(blueprint: Blueprint) -> list[str]:
         valid_grammar = {label.code for label in codes_for("grammar", part.part)}
         numbers: set[int] = set()
         for slot in part.slots:
-            if slot.question_type not in valid_types:
+            # Ô CỤM để `question_type` rỗng — ba nhãn của nó nằm ở
+            # `question_types` và được kiểm riêng bên dưới.
+            if part.part not in (3, 4) and slot.question_type not in valid_types:
                 problems.append(
                     f"{slot.id}: `{slot.question_type}` không phải nhãn của part {part.part}"
                 )
@@ -226,8 +476,10 @@ def validate(blueprint: Blueprint) -> list[str]:
                 problems.append(
                     f"{slot.id}: `{slot.grammar}` không phải điểm ngữ pháp của part {part.part}"
                 )
-            if part.part in (1, 2, 3, 4) and not slot.voice:
+            if part.part in (1, 2) and not slot.voice:
                 problems.append(f"{slot.id}: phần nghe cần một giọng đọc")
+            if part.part in (3, 4):
+                problems.extend(_set_slot_problems(slot, part.part, valid_types))
             if part.part == 1 and slot.people not in PEOPLE_SHAPES:
                 problems.append(
                     f"{slot.id}: `people` phải là một trong {PEOPLE_SHAPES}, đang là "

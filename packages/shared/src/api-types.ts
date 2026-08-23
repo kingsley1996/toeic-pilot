@@ -1284,6 +1284,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/tests/{slug}/questions/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish All Questions
+         * @description Xuất bản MỌI câu nháp của đề đạt cổng kiểm. Trả về cả phần bị bỏ qua.
+         *
+         *     Cùng cổng với `publish_question`, gọi trên từng câu — không phải một đường
+         *     tắt bỏ qua `validate_question`. Một endpoint hàng loạt nới lỏng luật là cách
+         *     chắc chắn nhất để một câu thiếu bản thu đi ra ngoài, và nội dung đó trông
+         *     hoàn toàn bình thường cho tới khi có người học bấm play.
+         *
+         *     **Làm được tới đâu làm tới đó, rồi NÓI RÕ phần còn lại** — khác với
+         *     `import_media`, thứ từ chối làm nửa việc. Ở đó nửa việc để lại một khoảng
+         *     trống im lặng chỉ lộ ra khi người học tới đúng câu đó. Ở đây thì ngược lại:
+         *     câu chưa xuất bản vẫn hiện là nháp trên màn quản trị, và `publish_test` vẫn
+         *     chặn cả đề — nên không có gì lọt ra. Từ chối cả 75 câu vì 2 câu hỏng thì
+         *     người biên tập phải tự đi tìm hai câu đó.
+         *
+         *     Cụm đi theo câu, đúng như `publish_question`: một câu Part 3 xuất bản được
+         *     thì cụm mang lời thoại của nó cũng phải ra, nếu không người học nhận một câu
+         *     hỏi không có audio.
+         */
+        post: operations["publish_all_questions_api_v1_admin_tests__slug__questions_publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/tests/{slug}/sets": {
         parameters: {
             query?: never;
@@ -3203,6 +3239,22 @@ export interface components {
             /** Signature */
             signature: string;
         };
+        /**
+         * BulkPublishResult
+         * @description Kết quả của lượt xuất bản hàng loạt.
+         *
+         *     Trả về CẢ hai nửa: bao nhiêu câu đã ra, và câu nào không ra được vì sao. Chỉ
+         *     trả về con số thành công thì một đề 75 câu xuất bản được 73 sẽ đọc như đã
+         *     xong, và hai câu còn lại chỉ lộ ra khi ai đó bấm "Xuất bản đề" và ăn 409 —
+         *     lúc đó lời từ chối nói "còn 2 câu chưa xuất bản" mà không nói vì sao.
+         */
+        BulkPublishResult: {
+            /** Published Count */
+            published_count: number;
+            /** Skipped */
+            skipped: components["schemas"]["SkippedQuestion"][];
+            test: components["schemas"]["TestAdmin"];
+        };
         /** ChatAsk */
         ChatAsk: {
             /** Message */
@@ -4795,6 +4847,16 @@ export interface components {
         SkillTagRequestAck: {
             /** Queued */
             queued: boolean;
+        };
+        /**
+         * SkippedQuestion
+         * @description Một câu KHÔNG xuất bản được, kèm lý do — theo số câu người ta nhìn thấy.
+         */
+        SkippedQuestion: {
+            /** Number */
+            number: number;
+            /** Reason */
+            reason: string;
         };
         /**
          * StoryItem
@@ -7958,6 +8020,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["QuestionAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_all_questions_api_v1_admin_tests__slug__questions_publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkPublishResult"];
                 };
             };
             /** @description Validation Error */

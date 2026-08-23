@@ -152,6 +152,7 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/tests/x/parts/7/parse", {"raw_text": "a"}),
     ("POST", "/api/v1/admin/tests/x/parts", {"part": 7, "groups": []}),
     ("POST", "/api/v1/admin/tests/x/publish", None),
+    ("POST", "/api/v1/admin/tests/x/questions/publish", None),
     (
         "POST",
         "/api/v1/admin/questions/00000000-0000-0000-0000-000000000000/publish",

@@ -1,0 +1,5 @@
+kind: schedule
+Launch Day Coverage
+Person | 9-10 | 10-11 | 11-12 | 12-1
+Priya | Busy | Team meeting |  | Client call
+Daniel |  | Busy |  | Client call

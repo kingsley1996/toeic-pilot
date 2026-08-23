@@ -1,0 +1,1 @@
+Warehouse District Layout. Sơ đồ 2 hàng. Hàng 1: thứ nhất từ trái là North Unit, thứ hai từ trái là South Unit. Hàng 2: thứ nhất từ trái là East Unit, thứ hai từ trái là West Unit.

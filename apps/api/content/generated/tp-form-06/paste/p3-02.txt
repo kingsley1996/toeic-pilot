@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: ca_male_1
+Hello, I’m calling about my online order placed last Tuesday. The package arrived yesterday, but the blue desk lamp I bought is missing.
+voice: ca_female_1
+I’m sorry to hear that. Let me pull up your account. Yes, the lamp should have been included. I can arrange for a replacement to be shipped out today.
+voice: ca_male_1
+That would be great. Will it arrive before the end of the week? I really need it for my new office setup.
+voice: ca_female_1
+Yes, our standard ground shipping takes two business days, so it will reach you by Friday. I’ll also email you a full refund for the shipping cost.
+voice: ca_male_1
+Thank you. That solves the problem. I appreciate your help.
+voice: ca_female_1
+You’re welcome. Please keep the original packing slip just in case we need to verify the contents. Have a good day.
+
+[QUESTION]
+Why is the man calling?
+(A) To request a change to his shipping address
+(B) To report a missing item in his order
+(C) To ask about the status of a refund
+(D) To return a defective desk lamp
+Answer: B
+Source: original
+[QUESTION]
+Who is the woman?
+(A) An independent online merchant
+(B) A warehouse shipping clerk
+(C) A customer service representative
+(D) A product quality inspector
+Answer: C
+Source: original
+[QUESTION]
+What does the woman suggest doing?
+(A) Filing a claim with the postal carrier
+(B) Picking up the item at the local store
+(C) Keeping the original box until Monday
+(D) Shipping a replacement to arrive by Friday
+Answer: D
+Source: original

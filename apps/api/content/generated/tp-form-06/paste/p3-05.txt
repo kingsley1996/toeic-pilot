@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, Sarah. As the personnel manager, I need to confirm your schedule for the mandatory safety training.
+voice: au_female_1
+Morning, David. I received the notice, but the program requires eight hours of study. When is the final deadline?
+voice: au_male_1
+You must complete all modules by the end of this month. You can access the course on the internal learning portal.
+voice: au_female_1
+I have heavy client calls on Mondays and Wednesdays. Can I postpone the training until next month?
+voice: au_male_1
+No, the policy is strict. Just finish the lessons during your lunch breaks. I will email you the login link today.
+voice: au_female_1
+Alright. I will begin the first module tomorrow and submit the certificate once finished.
+voice: au_male_1
+Excellent. I will check your progress next Tuesday.
+
+[QUESTION]
+What is the man's position?
+(A) Training coordinator
+(B) Client liaison
+(C) Personnel manager
+(D) Safety inspector
+Answer: C
+Source: original
+[QUESTION]
+When must the training be completed?
+(A) By next Friday
+(B) During the summer break
+(C) After the client calls
+(D) By the end of this month
+Answer: D
+Source: original
+[QUESTION]
+What will the man do today?
+(A) Email the login link
+(B) Schedule a client meeting
+(C) Approve a time off request
+(D) Conduct a safety inspection
+Answer: A
+Source: original

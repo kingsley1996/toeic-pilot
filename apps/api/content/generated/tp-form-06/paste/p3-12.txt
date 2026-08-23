@@ -1,0 +1,42 @@
+[SCRIPT]
+voice: uk_male_1
+As project coordinator, I need to reassign the launch shifts because Tara is on leave this week.
+voice: uk_female_1
+I can help, but I have the supplier briefing and the team meeting this morning.
+voice: uk_male_1
+Thanks, Priya. Daniel, can you take one of the registration slots?
+voice: au_female_1
+I'm the office manager. I can cover the welcome desk if you need a third person.
+voice: uk_female_1
+That would help. We still need one slot when Priya and Daniel are both free for the registration desk.
+voice: au_female_1
+Check the coverage schedule and choose the hour when both of you are free.
+voice: uk_male_1
+Good idea. I'll send the updated shift list to the event team after we decide.
+voice: au_female_1
+Please do, and mark Tara's tasks as pending until she returns.
+
+[QUESTION]
+What is the man's role?
+(A) Registration clerk
+(B) Office manager
+(C) Supplier
+(D) Project coordinator
+Answer: D
+Source: original
+[QUESTION]
+What does the office manager offer to cover?
+(A) The welcome desk
+(B) The registration desk
+(C) The supplier briefing
+(D) The team meeting
+Answer: A
+Source: original
+[QUESTION]
+Look at the graphic. When are both people free to cover the registration desk?
+(A) 9-10
+(B) 11-12
+(C) 10-11
+(D) 12-1
+Answer: B
+Source: original

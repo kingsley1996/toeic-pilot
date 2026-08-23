@@ -10,12 +10,14 @@ import {
   type VoiceOption,
   type TestAdmin,
   type AudioRequestAck,
+  type BulkPublishResult,
   type TestPartParseResponse,
 } from "@toeic-pilot/shared";
 import {
   ArrowLeft,
   AudioLines,
   Check,
+  CheckCheck,
   CircleAlert,
   Copy,
   Pencil,
@@ -344,6 +346,33 @@ export default function AdminTestPage() {
       },
     );
 
+  const publishAllQuestions = () =>
+    run(
+      () =>
+        apiFetch<BulkPublishResult>(API_ROUTES.adminTestPublishAllQuestions(slug), {
+          method: "POST",
+          token: token ?? undefined,
+        }),
+      (result) => {
+        setTest(result.test);
+        if (token) refresh(token);
+        // Nói CẢ hai nửa. Chỉ in số câu đã xuất bản thì một đề 75 câu ra được
+        // 73 sẽ đọc như đã xong, và hai câu còn lại chỉ lộ ra khi bấm "Xuất bản
+        // đề" và ăn 409 — lúc đó lời từ chối nói "còn 2 câu" mà không nói vì sao.
+        const done = `Đã xuất bản ${result.published_count} câu.`;
+        if (result.skipped.length === 0) {
+          setNotice(done);
+          return;
+        }
+        const listed = result.skipped
+          .slice(0, 3)
+          .map((item) => `câu ${item.number} (${item.reason})`)
+          .join("; ");
+        const more = result.skipped.length > 3 ? ` và ${result.skipped.length - 3} câu nữa` : "";
+        setNotice(`${done} Còn ${result.skipped.length} câu chưa đạt: ${listed}${more}.`);
+      },
+    );
+
   const publishQuestion = (id: string) =>
     run(
       () =>
@@ -668,6 +697,29 @@ export default function AdminTestPage() {
             <AudioLines size={14} strokeWidth={2} aria-hidden />
             Sinh audio còn thiếu
           </Button>
+          {/* Xuất bản tất cả đứng TRƯỚC "Xuất bản đề", đúng thứ tự phải làm:
+              nút kia bị khoá cho tới khi mọi câu đã ra, và tự tay bấm 75 lần là
+              việc nút này tồn tại để bỏ đi.
+
+              Điều kiện là `questions !== null`, không phải `(questions ?? [])`:
+              danh sách chưa tải xong cũng cho `allPublished === false`, nên nút
+              sẽ hiện ra trước khi ta biết có câu nào chưa xuất bản hay không —
+              cùng cái bẫy ba trạng thái của phiên đăng nhập, thu nhỏ lại.
+
+              Nó KHÔNG khoá theo `test.status`: một đề đã xuất bản vẫn nhận thêm
+              part mới ở trạng thái nháp, và lúc đó nút "Xuất bản đề" đã ẩn đi
+              rồi. Đúng chuyện đã xảy ra với `tp-form-06`. */}
+          {canPublish && questions !== null && !allPublished && (
+            <Button
+              variant="secondary"
+              onClick={() => void publishAllQuestions()}
+              disabled={busy}
+              title="Xuất bản mọi câu đạt cổng kiểm; câu chưa đạt sẽ được nêu tên"
+            >
+              <CheckCheck size={14} strokeWidth={2} aria-hidden />
+              Xuất bản tất cả câu
+            </Button>
+          )}
           {canPublish && test.status !== "published" && (
             <Button
               onClick={() => void publishTest()}

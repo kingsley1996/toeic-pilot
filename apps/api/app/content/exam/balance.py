@@ -21,7 +21,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from app.content.exam.blueprint import Blueprint
+from app.content.exam.blueprint import LISTENING_QUESTIONS_PER_SET, Blueprint
 from app.content.exam.writer import paste_path
 
 LETTERS = "ABCD"
@@ -30,6 +30,36 @@ _OPTION = re.compile(r"^\(([A-D])\)\s*(.*)$")
 # có cờ này thì `^` chỉ khớp đầu chuỗi — phép đếm trả về 0 cho mọi thứ trong khi
 # việc hoán vị vẫn chạy đúng. Một con số 0 im lặng cạnh một thao tác thành công.
 _ANSWER = re.compile(r"^Answer:\s*([A-D])\s*$", re.IGNORECASE | re.MULTILINE)
+
+
+def split_questions(block: str) -> list[tuple[int, int]]:
+    """Khoảng dòng của từng khối `[QUESTION]`. Part 3/4 có ba khối trong một tệp.
+
+    Cân theo cả tệp là sai ở đó: `rewrite` quét toàn khối, gặp bốn lựa chọn của
+    câu đầu và dòng `Answer:` của câu cuối, rồi đổi chỗ hai thứ thuộc hai câu
+    khác nhau — một phép hoán vị vẫn "thành công" và làm hỏng hai câu cùng lúc.
+    """
+    lines = block.splitlines()
+    starts = [index for index, line in enumerate(lines) if line.strip() == "[QUESTION]"]
+    if not starts:
+        return []
+    bounds = []
+    for position, start in enumerate(starts):
+        end = starts[position + 1] if position + 1 < len(starts) else len(lines)
+        bounds.append((start, end))
+    return bounds
+
+
+def rewrite_all(block: str, targets: list[str]) -> str:
+    """Cân từng khối câu hỏi trong một tệp, mỗi khối một chữ cái đích."""
+    lines = block.splitlines()
+    bounds = split_questions(block)
+    if not bounds:
+        return block
+    out = lines[: bounds[0][0]]
+    for (start, end), target in zip(bounds, targets, strict=False):
+        out.extend(rewrite("\n".join(lines[start:end]), target).splitlines())
+    return "\n".join(out)
 
 
 def rewrite(block: str, target: str) -> str:
@@ -95,14 +125,18 @@ def balance(blueprint: Blueprint, workdir: Path, only: int | None = None) -> dic
         if only is not None and part.part != only:
             continue
         ordered = sorted(part.slots, key=lambda item: item.number)
-        targets = plan_targets(len(ordered), blueprint.seed)
-        for slot, target in zip(ordered, targets, strict=True):
+        # Part 3/4 có BA câu trong một ô, nên số đích phải đếm theo CÂU chứ không
+        # theo ô — đếm theo ô thì mỗi cụm chỉ nhận một chữ cái và ba câu của nó
+        # cùng đáp án, thứ đọc ra ngay là máy làm.
+        per_slot = LISTENING_QUESTIONS_PER_SET if part.part in (3, 4) else 1
+        targets = plan_targets(len(ordered) * per_slot, blueprint.seed)
+        for index, slot in enumerate(ordered):
             path = paste_path(workdir, slot)
             if not path.exists():
                 continue
-            updated = rewrite(path.read_text(), target)
+            share = targets[index * per_slot : (index + 1) * per_slot]
+            updated = rewrite_all(path.read_text(), share)
             path.write_text(updated.rstrip() + "\n")
-            found = _ANSWER.search(updated)
-            if found:
+            for found in _ANSWER.finditer(updated):
                 tally[found.group(1).upper()] += 1
     return tally

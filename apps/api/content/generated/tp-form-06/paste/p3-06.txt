@@ -1,0 +1,42 @@
+[SCRIPT]
+voice: ca_male_1
+Good afternoon. I need to exchange this printer I purchased last Tuesday. It constantly jams when I try to print.
+voice: ca_female_1
+I’m sorry about that. Do you have the original receipt and the packaging with all the cables?
+voice: ca_male_1
+Yes, everything is here. I want a model that can handle cardstock without issues.
+voice: ca_female_1
+We don't have that model in stock, but I can order it. I suggest keeping the original box until it arrives.
+voice: ca_male_1
+How soon will it arrive? I have to print the company newsletter by next Friday.
+voice: ca_female_1
+Shipping takes three to four business days. If we complete the exchange today, it will be delivered on Thursday.
+voice: ca_male_1
+Thursday is fine. Please go ahead with the order.
+voice: ca_female_1
+I’ll update the invoice now. A delivery driver will also pick up the old unit tomorrow morning.
+
+[QUESTION]
+Why is the man visiting the store?
+(A) To return a broken scanner
+(B) To exchange a faulty printer
+(C) To purchase a new computer monitor
+(D) To complain about late delivery
+Answer: B
+Source: original
+[QUESTION]
+When does the man need the new printer?
+(A) By the end of the month
+(B) By this Wednesday
+(C) By next Friday
+(D) By tomorrow morning
+Answer: C
+Source: original
+[QUESTION]
+What does the woman suggest?
+(A) Visiting the warehouse
+(B) Testing the machine daily
+(C) Returning the receipt
+(D) Keeping the original box
+Answer: D
+Source: original

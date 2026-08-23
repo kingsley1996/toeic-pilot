@@ -54,6 +54,12 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # họ; ở đây `-free` mới chỉ là một cái tên, và một model tính tiền đặt tên
     # có chữ đó sẽ lọt qua luật mà không ai thấy.
     ("tokenrouter", "qwen/qwen3.8-max-free"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    # Groq — giá công bố ở console.groq.com/docs/models, tra ngày 2026-08-22.
+    # Groq có gói dùng thử miễn phí, nhưng giá ghi ở đây là giá THẬT của model,
+    # cùng lý do đã ghi cho Gemini: gói miễn phí là thuộc tính của tài khoản chứ
+    # không phải của model.
+    ("groq", "qwen/qwen3.6-27b"): (Decimal("0.60"), Decimal("3.00"), None),
+    ("groq", "openai/gpt-oss-120b"): (Decimal("0.15"), Decimal("0.60"), None),
     # Model chạy trên máy: chi phí biên bằng 0 thật, không phải bằng 0 vì
     # chưa ai điền giá. Token vẫn được ghi để ngoại suy nếu đổi sang model tính tiền.
     ("ollama", "llama3.2:latest"): (Decimal("0"), Decimal("0"), Decimal("0")),

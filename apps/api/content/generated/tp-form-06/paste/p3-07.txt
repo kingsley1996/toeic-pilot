@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: us_female_1
+Good morning. Let's quickly review the progress on the inventory tracking software before our Friday deadline.
+voice: us_male_1
+I've completed the database connections. The reporting module is fully tested and ready for deployment.
+voice: us_female_1
+Excellent. What about the user interface revisions? We need those approved by tomorrow morning.
+voice: ca_male_1
+I just joined the call. I'm the lead designer. The new dashboard layout is finished, but I still need to export the final image files.
+voice: us_female_1
+Please finish that by three o'clock today. We have to upload everything to the main server then.
+voice: us_male_1
+I'll run the final compatibility test on my end once the files are uploaded.
+voice: ca_male_1
+Understood. I'll copy the design assets directly to the shared project folder right after lunch.
+
+[QUESTION]
+Why are they having this meeting?
+(A) To review software project progress
+(B) To cancel the Friday launch
+(C) To order new computer hardware
+(D) To resolve a billing dispute
+Answer: A
+Source: original
+[QUESTION]
+What is the third speaker's job title?
+(A) Database developer
+(B) Lead designer
+(C) Marketing coordinator
+(D) Customer service agent
+Answer: B
+Source: original
+[QUESTION]
+What will the third speaker do after lunch?
+(A) Run a compatibility test
+(B) Upload files to the main server
+(C) Copy design assets to the project folder
+(D) Approve the interface layout
+Answer: C
+Source: original

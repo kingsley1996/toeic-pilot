@@ -42,6 +42,7 @@ from app.models import (
 from app.models.validators import validate_question
 from app.schemas.admin import (
     ArchiveRequest,
+    BulkPublishResult,
     CollectionAdmin,
     CollectionCreate,
     GroupDraft,
@@ -55,6 +56,7 @@ from app.schemas.admin import (
     QuestionOptionDraft,
     SetAdmin,
     SetEdit,
+    SkippedQuestion,
     TestAdmin,
     TestCreate,
     TestPartCommit,
@@ -1181,6 +1183,60 @@ def publish_question(
             status_code=status.HTTP_409_CONFLICT, detail="Câu này chưa thuộc đề nào"
         )
     return _question_admin(link, question, get_driver("image"), _assets_for(db, [question]))
+
+
+@router.post("/tests/{slug}/questions/publish", response_model=BulkPublishResult)
+def publish_all_questions(
+    slug: str, db: Session = Depends(get_db), user: User = Depends(can_publish)
+) -> BulkPublishResult:
+    """Xuất bản MỌI câu nháp của đề đạt cổng kiểm. Trả về cả phần bị bỏ qua.
+
+    Cùng cổng với `publish_question`, gọi trên từng câu — không phải một đường
+    tắt bỏ qua `validate_question`. Một endpoint hàng loạt nới lỏng luật là cách
+    chắc chắn nhất để một câu thiếu bản thu đi ra ngoài, và nội dung đó trông
+    hoàn toàn bình thường cho tới khi có người học bấm play.
+
+    **Làm được tới đâu làm tới đó, rồi NÓI RÕ phần còn lại** — khác với
+    `import_media`, thứ từ chối làm nửa việc. Ở đó nửa việc để lại một khoảng
+    trống im lặng chỉ lộ ra khi người học tới đúng câu đó. Ở đây thì ngược lại:
+    câu chưa xuất bản vẫn hiện là nháp trên màn quản trị, và `publish_test` vẫn
+    chặn cả đề — nên không có gì lọt ra. Từ chối cả 75 câu vì 2 câu hỏng thì
+    người biên tập phải tự đi tìm hai câu đó.
+
+    Cụm đi theo câu, đúng như `publish_question`: một câu Part 3 xuất bản được
+    thì cụm mang lời thoại của nó cũng phải ra, nếu không người học nhận một câu
+    hỏi không có audio.
+    """
+    test = _test_or_404(db, slug)
+    rows = _rows(db, test.id)
+    if not rows:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Đề này chưa có câu nào")
+
+    published = 0
+    skipped: list[SkippedQuestion] = []
+    now = datetime.now(UTC)
+    for link, question in rows:
+        if question.status == "published":
+            continue
+        problems = validate_question(question)
+        if problems:
+            skipped.append(SkippedQuestion(number=link.number, reason="; ".join(problems)))
+            continue
+        question.status = "published"
+        question.published_by = user.id
+        question.published_at = now
+        if question.question_set is not None:
+            question.question_set.status = "published"
+            question.question_set.published_by = user.id
+            question.question_set.published_at = now
+        published += 1
+
+    db.commit()
+    return BulkPublishResult(
+        published_count=published,
+        skipped=skipped,
+        test=_as_admin(db, test),
+    )
 
 
 @router.post("/tests/{slug}/publish", response_model=TestAdmin)

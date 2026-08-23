@@ -1,0 +1,7 @@
+kind: table
+Event Service Packages
+Package | Price
+Basic Celebration | $249.00
+Standard Anniversary | $399.00
+Premium Gala | $549.00
+Executive Showcase | $799.00

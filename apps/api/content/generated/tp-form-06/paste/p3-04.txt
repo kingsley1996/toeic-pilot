@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: uk_male_1
+Good morning. I’m calling from apartment four B. The central heating has been completely off for the past two days, and it’s freezing inside.
+voice: uk_female_1
+I’m sorry to hear that. Let me pull up your maintenance file. Have you already tried resetting the thermostat?
+voice: uk_male_1
+Yes, I did that yesterday. The pilot light keeps going out, so I believe there is a problem with the main furnace.
+voice: uk_female_1
+Understood. We have a certified technician scheduled to inspect the boiler this Thursday at ten a.m. Will you be home then?
+voice: uk_male_1
+Thursday works perfectly. Could you also ask him to examine the kitchen ventilation system while he is on site?
+voice: uk_female_1
+Of course. I will add that to the work order. We will send you a confirmation message this afternoon.
+voice: uk_male_1
+Thank you for handling this so promptly. I’ll expect the technician Thursday morning.
+
+[QUESTION]
+Why is the man calling?
+(A) To schedule a property viewing
+(B) To complain about noisy neighbors
+(C) To request a rent reduction
+(D) To report a heating failure
+Answer: D
+Source: original
+[QUESTION]
+What specific issue does the man describe with the furnace?
+(A) The pilot light will not stay on
+(B) The thermostat battery is dead
+(C) The ventilation fan is broken
+(D) The water pipes are leaking
+Answer: A
+Source: original
+[QUESTION]
+What does the man ask the woman to arrange for the technician?
+(A) A check of the bathroom water pressure
+(B) An inspection of the kitchen ventilation
+(C) A repair of the front door lock
+(D) A replacement of the attic insulation
+Answer: B
+Source: original

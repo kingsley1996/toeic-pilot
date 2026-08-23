@@ -18,6 +18,7 @@ from pathlib import Path
 from app.content.exam import blueprint as bp
 from app.content.exam import check as checker
 from app.content.exam import loader, writer
+from app.services.llm.router import Tier
 
 GOOD = """[QUESTION]
 Regional managers must submit their expense reports ------- the fifteenth of each month.
@@ -446,3 +447,354 @@ def test_greyscale_conversion_keeps_three_channels(tmp_path):
         assert opened.mode == "RGB"
         red, green, blue = opened.convert("RGB").getpixel((0, 0))
         assert red == green == blue
+
+
+PART3_GOOD = """[SCRIPT]
+voice: au_female_1
+Have you looked at the interview schedule for tomorrow?
+voice: au_male_1
+Yes, but one candidate asked to move to Thursday morning.
+voice: au_female_1
+That works. I'll book Room B for ten o'clock.
+
+[QUESTION]
+What are the speakers discussing?
+(A) An interview schedule
+(B) A budget report
+(C) An office move
+(D) A training course
+Answer: A
+Source: original
+
+[QUESTION]
+What problem does the man mention?
+(A) A scheduling conflict
+(B) A broken laptop
+(C) A missing resume
+(D) A cancelled flight
+Answer: A
+Source: original
+
+[QUESTION]
+What will the woman do next?
+(A) Reserve a room
+(B) Email a candidate
+(C) Print some forms
+(D) Call the manager
+Answer: A
+Source: original
+"""
+
+
+class _Recorder:
+    """Gateway giả chỉ ghi lại yêu cầu và luôn trả về "A"."""
+
+    def __init__(self):
+        self.seen = []
+
+    def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+        from app.services.llm.base import LLMResult
+
+        self.seen.append(request)
+        return LLMResult(text="A", input_tokens=0, output_tokens=0, cached_tokens=0)
+
+
+def _part3_plan(tmp_path):
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    plan.parts[0].slots = plan.parts[0].slots[:1]
+    writer.save_slot(tmp_path, plan.parts[0].slots[0], PART3_GOOD)
+    return plan
+
+
+def test_a_part_3_paste_file_becomes_three_reports(tmp_path):
+    """Đơn vị SINH là cả cụm, đơn vị ĐỌC là từng câu.
+
+    Ba câu hỏi về cùng một đoạn thoại phải viết cùng nhau, nên `prune` chỉ xoá
+    được cả cụm. Nhưng người duyệt cần biết câu nào trong ba câu có vấn đề, nên
+    mỗi câu có báo cáo riêng, đánh đúng số câu của nó.
+    """
+    plan = _part3_plan(tmp_path)
+    reports = checker.check_blueprint(plan, tmp_path, only=3)
+    assert [report.number for report in reports] == [32, 33, 34]
+    assert all(report.problems == [] for report in reports)
+
+
+def test_the_judge_is_given_the_conversation_not_just_the_question(tmp_path):
+    """Thiếu lời thoại thì phép kiểm VẪN CHẠY và vẫn trả về một chữ cái.
+
+    Đo được: một biến bị bỏ quên làm lời thoại không được gửi đi, và chặng đối
+    chiếu báo 26 cờ trên 39 câu — người chấm đang đoán "người nói đang ở đâu" mà
+    không được nghe gì. Nối lại thì còn 0 cờ. Không có bài test này thì cách duy
+    nhất để phát hiện là thấy tỉ lệ cờ cao rồi tự hỏi vì sao.
+    """
+    plan = _part3_plan(tmp_path)
+    recorder = _Recorder()
+    checker.check_blueprint(plan, tmp_path, recorder, Tier.CHEAP, False, 3)  # type: ignore[arg-type]
+
+    assert recorder.seen, "chặng đối chiếu không gọi lượt nào"
+    for request in recorder.seen:
+        assert "interview schedule for tomorrow" in request.user
+
+
+def test_a_generic_part_3_stem_may_repeat_across_conversations(tmp_path):
+    """ "What will the woman do next?" là khuôn câu chuẩn và lặp lại trong đề THẬT.
+
+    Chống trùng trên riêng đề bài bắt đúng ba câu như thế ở lượt chạy đầu — tin
+    nó thì cổng kiểm đang ép mô hình bịa ra câu hỏi không tự nhiên để né chính
+    nó. Cái đáng bắt là hai câu giống nhau về CÙNG một đoạn thoại.
+    """
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    plan.parts[0].slots = plan.parts[0].slots[:2]
+    first, second = plan.parts[0].slots
+    writer.save_slot(tmp_path, first, PART3_GOOD)
+    # Cùng ba đề bài, hội thoại khác — đây là chuyện bình thường.
+    writer.save_slot(
+        tmp_path, second, PART3_GOOD.replace("interview schedule", "delivery schedule")
+    )
+    assert all(report.problems == [] for report in checker.check_blueprint(plan, tmp_path, only=3))
+
+    # Hội thoại y hệt thì mới là lỗi, và nó phải được gọi đúng tên.
+    writer.save_slot(tmp_path, second, PART3_GOOD)
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("hội thoại trùng" in problem for problem in problems)
+
+
+def test_each_question_in_a_set_gets_its_own_answer_target(tmp_path):
+    """Cân theo TỆP thì `rewrite` gặp lựa chọn của câu đầu và `Answer:` của câu
+    cuối, rồi đổi chỗ hai thứ thuộc hai câu khác nhau — một phép hoán vị vẫn
+    "thành công" và làm hỏng hai câu cùng lúc.
+    """
+    from app.content.exam import balance as balancer
+
+    plan = _part3_plan(tmp_path)
+    balancer.balance(plan, tmp_path, only=3)
+    text = writer.paste_path(tmp_path, plan.parts[0].slots[0]).read_text()
+
+    # Lời thoại còn nguyên, và ba câu KHÔNG cùng một đáp án.
+    assert "[SCRIPT]" in text and "interview schedule" in text
+    keys = [line.split(":")[1].strip() for line in text.splitlines() if line.startswith("Answer:")]
+    assert len(keys) == 3
+    assert len(set(keys)) == 3
+
+    # Và mỗi câu vẫn tự nhất quán: đáp án của nó vẫn là phương án đúng cũ.
+    questions, _, problems = checker.parse_group(text, 3)
+    assert problems == []
+    correct = [next(o for o in q.options if o.is_correct).content for q in questions]
+    assert correct == ["An interview schedule", "A scheduling conflict", "Reserve a room"]
+
+
+GRAPHIC_DATA = """kind: table
+Anniversary Package Options
+Package | Price
+Standard | Eight hundred dollars
+Premium | Twelve hundred dollars
+Executive | Eighteen hundred dollars
+Ultimate | Twenty-four hundred dollars
+"""
+
+PART3_GRAPHIC = """[SCRIPT]
+voice: au_female_1
+We have a budget of about eighteen hundred dollars for the anniversary event.
+voice: au_male_1
+Then there's one package that fits exactly. I'll book it this afternoon.
+
+[QUESTION]
+What event are the speakers planning?
+(A) A company anniversary
+(B) A product launch
+(C) A training day
+(D) A retirement party
+Answer: A
+Source: original
+
+[QUESTION]
+What will the man do this afternoon?
+(A) Book a package
+(B) Call a caterer
+(C) Email the budget
+(D) Visit a venue
+Answer: A
+Source: original
+
+[QUESTION]
+Look at the graphic. Which package will the speakers choose?
+(A) Standard
+(B) Premium
+(C) Executive
+(D) Ultimate
+Answer: C
+Source: original
+"""
+
+
+def _graphic_plan(tmp_path, data=GRAPHIC_DATA, block=PART3_GRAPHIC):
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    slot = next(s for s in plan.parts[0].slots if s.graphic)
+    plan.parts[0].slots = [slot]
+    writer.save_slot(tmp_path, slot, block)
+    (tmp_path / "graphics").mkdir(exist_ok=True)
+    (tmp_path / "graphics" / f"{slot.id}.txt").write_text(data)
+    return plan
+
+
+def test_the_graphic_options_must_be_the_answer_axis_of_its_kind(tmp_path):
+    """Bốn lựa chọn của câu cuối phải đúng là TRỤC ĐÁP ÁN của hình.
+
+    Trục đó khác nhau theo dạng — đo ở đề mẫu ETS, câu 64 hỏi giữa bốn loại sổ
+    (tên hàng của bảng), câu 67 giữa bốn khung giờ (tiêu đề CỘT của lưới lịch),
+    câu 70 giữa bốn cửa hàng (ô của sơ đồ). Lấy nhầm trục thì câu hỏi vẫn hợp lệ
+    về mọi mặt và vẫn có đúng một đáp án — nó chỉ không còn hỏi về tấm hình.
+    """
+    plan = _graphic_plan(tmp_path)
+    assert all(r.problems == [] for r in checker.check_blueprint(plan, tmp_path, only=3))
+
+    plan = _graphic_plan(
+        tmp_path,
+        block=PART3_GRAPHIC.replace("(A) Standard", "(A) The cheapest one"),
+    )
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("trục đáp án của hình" in problem for problem in problems)
+
+
+def test_a_conversation_that_names_the_answer_row_is_flagged(tmp_path):
+    """Nếu có người nói thẳng "Executive" thì câu trả lời được ngay từ audio.
+
+    Mọi thứ khác vẫn hợp lệ — câu vẫn có đúng một đáp án, bốn lựa chọn vẫn là
+    bốn hàng — chỉ là nó không còn là câu hỏi về hình. Không phép kiểm nào khác
+    thấy được.
+    """
+    plan = _graphic_plan(
+        tmp_path,
+        block=PART3_GRAPHIC.replace(
+            "Then there's one package that fits exactly.",
+            "Then the Executive package fits exactly.",
+        ),
+    )
+    flags = [f for r in checker.check_blueprint(plan, tmp_path, only=3) for f in r.flags]
+    assert any("đọc thẳng tên hàng" in flag for flag in flags)
+
+
+def test_the_judge_is_shown_the_table_as_well_as_the_conversation(tmp_path):
+    """Câu "Look at the graphic" được viết sao cho hội thoại KHÔNG đọc tên hàng
+    là đáp án — nên đưa mỗi lời thoại vào là hỏi một câu không thể trả lời, và
+    người chấm vẫn trả về một chữ cái. Cùng kiểu mù đã gắn cờ oan 26 câu.
+    """
+    plan = _graphic_plan(tmp_path)
+    recorder = _Recorder()
+    checker.check_blueprint(plan, tmp_path, recorder, Tier.CHEAP, False, 3)  # type: ignore[arg-type]
+    assert recorder.seen
+    assert all("Anniversary Package Options" in request.user for request in recorder.seen)
+
+
+def test_a_graphic_and_a_graphic_question_must_come_together():
+    """Cả hai chiều, vì cả hai đều hỏng lặng lẽ: một câu bảo "nhìn vào hình" khi
+    không có hình nào, hay một tấm hình mà không câu nào hỏi tới.
+    """
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    slot = next(s for s in plan.parts[0].slots if s.graphic)
+    slot.graphic = ""
+    assert any("không có hình" in problem for problem in bp.validate(plan))
+
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    slot = next(s for s in plan.parts[0].slots if s.graphic)
+    slot.question_types[-1] = "PART_3_FUTURE_ACTION"
+    assert any("không câu nào hỏi tới" in problem for problem in bp.validate(plan))
+
+
+SCHEDULE_DATA = """kind: schedule
+Wednesday Availability
+Person | 8-9 | 9-10 | 10-11 | 11-12
+Zahra | Busy |  | Team meeting |
+Sammy |  | Client call |  | Budget meeting
+"""
+
+PART3_SCHEDULE = """[SCRIPT]
+voice: au_female_1
+Zahra here. Let's find an hour on Wednesday when neither of us is booked.
+voice: au_male_1
+Sammy speaking — looking at it now, there's exactly one hour free for both.
+
+[QUESTION]
+What are the speakers trying to arrange?
+(A) A meeting time
+(B) A client visit
+(C) A budget review
+(D) A team lunch
+Answer: A
+Source: original
+
+[QUESTION]
+What does the man do?
+(A) Check a schedule
+(B) Call a client
+(C) Book a room
+(D) Send an invitation
+Answer: A
+Source: original
+
+[QUESTION]
+Look at the graphic. When will the speakers most likely meet?
+(A) 8-9
+(B) 9-10
+(C) 10-11
+(D) 11-12
+Answer: D
+Source: original
+"""
+
+
+def test_a_schedule_answers_on_its_columns_and_keeps_empty_cells(tmp_path):
+    """Lưới lịch là dạng dễ hỏng nhất, vì hai chi tiết ngược với bảng.
+
+    Trục đáp án là tiêu đề CỘT (khung giờ), không phải tên hàng (tên người). Và
+    ô được phép TRỐNG — câu "họ sẽ họp lúc mấy giờ" trả lời được chính nhờ tìm
+    cột mà cả hai hàng đều trống, nên một bản đọc bỏ ô rỗng sẽ xoá đúng dữ kiện
+    mà câu hỏi dựa vào.
+    """
+    from app.content.exam.graphics import parse_graphic
+
+    graphic = parse_graphic(SCHEDULE_DATA)
+    assert graphic.problems() == []
+    assert graphic.answer_axis() == ["8-9", "9-10", "10-11", "11-12"]
+    # Hàng của Zahra kết thúc bằng một ô TRỐNG — khung giờ cô ấy rảnh.
+    assert graphic.rows[0] == ["Zahra", "Busy", "", "Team meeting", ""]
+
+    plan = _graphic_plan(tmp_path, data=SCHEDULE_DATA, block=PART3_SCHEDULE)
+    assert all(r.problems == [] for r in checker.check_blueprint(plan, tmp_path, only=3))
+
+
+def test_a_voice_name_can_never_be_a_printed_option(tmp_path):
+    """`uk_female_1` là chỉ dẫn thu âm, không phải một con người.
+
+    Nhưng nó nằm ngay trong prompt, nên mô hình nhỏ chép thẳng vào phần IN RA.
+    Đo được: một cụm Part 3 có ba trong bốn lựa chọn là tên giọng — và triệu
+    chứng đầu tiên không phải một cờ nào cả, mà là người chấm nghĩ 22 000 ký tự
+    rồi hết hạn mức mà không trả lời được, vì câu hỏi vô nghĩa.
+
+    Đây là VẤN ĐỀ chứ không phải cờ: không có cách đọc nào khiến nó đúng.
+    """
+    plan = _part3_plan(tmp_path)
+    writer.save_slot(
+        tmp_path,
+        plan.parts[0].slots[0],
+        PART3_GOOD.replace("(B) A budget report", "(B) uk_female_1"),
+    )
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("TÊN GIỌNG" in problem for problem in problems)
+
+
+def test_the_people_in_a_schedule_must_be_in_the_conversation(tmp_path):
+    """Bảng và hội thoại phải nói về CÙNG một nhóm người.
+
+    Đo được: bảng ghi Liam và Emma trong khi hai người nói tên là Sarah và
+    James — câu hỏi "khi nào cả hai đều rảnh" không có đáp án. Mọi cổng khác vẫn
+    xanh: bảng hợp lệ, bốn lựa chọn khớp trục đáp án, câu vẫn có đúng một
+    `Answer:`. Chỉ phép so tên mới thấy.
+    """
+    plan = _graphic_plan(
+        tmp_path,
+        data=SCHEDULE_DATA.replace("Zahra", "Liam").replace("Sammy", "Emma"),
+        block=PART3_SCHEDULE,
+    )
+    problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
+    assert any("không xuất hiện trong hội thoại" in problem for problem in problems)

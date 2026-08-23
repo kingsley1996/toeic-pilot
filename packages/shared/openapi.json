@@ -1251,6 +1251,32 @@
         "title": "Body_local_upload_media_upload__storage_key__post",
         "type": "object"
       },
+      "BulkPublishResult": {
+        "description": "Kết quả của lượt xuất bản hàng loạt.\n\nTrả về CẢ hai nửa: bao nhiêu câu đã ra, và câu nào không ra được vì sao. Chỉ\ntrả về con số thành công thì một đề 75 câu xuất bản được 73 sẽ đọc như đã\nxong, và hai câu còn lại chỉ lộ ra khi ai đó bấm \"Xuất bản đề\" và ăn 409 —\nlúc đó lời từ chối nói \"còn 2 câu chưa xuất bản\" mà không nói vì sao.",
+        "properties": {
+          "published_count": {
+            "title": "Published Count",
+            "type": "integer"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/SkippedQuestion"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
+          "test": {
+            "$ref": "#/components/schemas/TestAdmin"
+          }
+        },
+        "required": [
+          "published_count",
+          "skipped",
+          "test"
+        ],
+        "title": "BulkPublishResult",
+        "type": "object"
+      },
       "ChatAsk": {
         "properties": {
           "message": {
@@ -5888,6 +5914,25 @@
           "queued"
         ],
         "title": "SkillTagRequestAck",
+        "type": "object"
+      },
+      "SkippedQuestion": {
+        "description": "Một câu KHÔNG xuất bản được, kèm lý do — theo số câu người ta nhìn thấy.",
+        "properties": {
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "number",
+          "reason"
+        ],
+        "title": "SkippedQuestion",
         "type": "object"
       },
       "StoryItem": {
@@ -11931,6 +11976,54 @@
           }
         ],
         "summary": "List Test Questions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{slug}/questions/publish": {
+      "post": {
+        "description": "Xuất bản MỌI câu nháp của đề đạt cổng kiểm. Trả về cả phần bị bỏ qua.\n\nCùng cổng với `publish_question`, gọi trên từng câu — không phải một đường\ntắt bỏ qua `validate_question`. Một endpoint hàng loạt nới lỏng luật là cách\nchắc chắn nhất để một câu thiếu bản thu đi ra ngoài, và nội dung đó trông\nhoàn toàn bình thường cho tới khi có người học bấm play.\n\n**Làm được tới đâu làm tới đó, rồi NÓI RÕ phần còn lại** — khác với\n`import_media`, thứ từ chối làm nửa việc. Ở đó nửa việc để lại một khoảng\ntrống im lặng chỉ lộ ra khi người học tới đúng câu đó. Ở đây thì ngược lại:\ncâu chưa xuất bản vẫn hiện là nháp trên màn quản trị, và `publish_test` vẫn\nchặn cả đề — nên không có gì lọt ra. Từ chối cả 75 câu vì 2 câu hỏng thì\nngười biên tập phải tự đi tìm hai câu đó.\n\nCụm đi theo câu, đúng như `publish_question`: một câu Part 3 xuất bản được\nthì cụm mang lời thoại của nó cũng phải ra, nếu không người học nhận một câu\nhỏi không có audio.",
+        "operationId": "publish_all_questions_api_v1_admin_tests__slug__questions_publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPublishResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish All Questions",
         "tags": [
           "admin"
         ]

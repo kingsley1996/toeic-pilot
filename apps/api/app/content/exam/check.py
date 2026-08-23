@@ -23,8 +23,8 @@ import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.content.exam.blueprint import Blueprint, QuestionSlot
-from app.content.exam.writer import RETRY_DELAY, RETRY_TRIES, paste_path
+from app.content.exam.blueprint import LISTENING_QUESTIONS_PER_SET, Blueprint, QuestionSlot
+from app.content.exam.writer import BLANK, RETRY_DELAY, RETRY_TRIES, paste_path
 from app.services.content_import import (
     ParsedOption,
     ParsedQuestion,
@@ -46,6 +46,25 @@ LENGTH_TELL_RATIO = 1.8
 # cờ đầu tiên của lượt chạy thật đều thuộc loại này, tức là ngưỡng tỉ lệ đơn
 # thuần sinh ra báo động giả nhanh hơn sinh ra tín hiệu.
 LENGTH_TELL_MIN_CHARS = 12
+
+# Trần đầu ra cho hai phép kiểm bằng model. Câu trả lời chỉ có một chữ cái,
+# nhưng model SUY LUẬN viết cả nghìn ký tự tự nhủ trước — đo được: qwen3.8 nghĩ
+# 6 275 ký tự về một câu Part 3 rồi hết hạn mức trước khi kịp trả lời. Cắt ở đó
+# đọc ra như "không trả về chữ cái hợp lệ", tức là đổ lỗi cho câu hỏi thay vì
+# cho giới hạn của chính ta.
+CHECK_MAX_TOKENS = 4000
+
+VERIFY_SYSTEM_PART3 = """Bạn nghe một đoạn hội thoại TOEIC Part 3 và trả lời một
+câu hỏi về nó. Bạn được đọc lời thoại. Chỉ trả về đúng MỘT chữ cái in hoa: A, B,
+C hoặc D. Không giải thích, không thêm gì khác."""
+
+AMBIGUITY_SYSTEM_PART3 = """Bạn kiểm một câu hỏi TOEIC Part 3.
+
+Bạn được đọc lời thoại và bốn lựa chọn. Trả về chữ cái của MỌI lựa chọn mà lời
+thoại THẬT SỰ chống đỡ được — đúng theo những gì được nói ra, không phải "có thể
+đúng nếu suy diễn thêm".
+
+Chỉ trả về các chữ cái, viết liền, không giải thích. Ví dụ: `B` hoặc `AB`."""
 
 VERIFY_SYSTEM_PART1 = """Bạn nghe bốn câu mô tả một tấm ảnh TOEIC Part 1. Bạn
 được đọc phần mô tả tấm ảnh đó. Chỉ trả về đúng MỘT chữ cái in hoa — câu mô tả
@@ -110,6 +129,29 @@ def parse_one(block: str, part: int = 5) -> tuple[ParsedQuestion | None, list[st
     return question, list(question.problems)
 
 
+_VERIFY_SYSTEM_FOR = {1: VERIFY_SYSTEM_PART1, 3: VERIFY_SYSTEM_PART3, 4: VERIFY_SYSTEM_PART3}
+_AMBIGUITY_SYSTEM_FOR = {
+    1: AMBIGUITY_SYSTEM_PART1,
+    3: AMBIGUITY_SYSTEM_PART3,
+    4: AMBIGUITY_SYSTEM_PART3,
+}
+
+
+def _stem(question: ParsedQuestion, part: int, context: str) -> str:
+    """Phần người chấm được đọc trước khi chọn.
+
+    Part 1 KHÔNG in đề bài, nên `context` (mô tả ảnh) là tất cả những gì có.
+    Part 3/4 in đề bài NHƯNG câu hỏi vô nghĩa nếu thiếu lời thoại — hỏi "người
+    phụ nữ sẽ làm gì tiếp theo" mà không cho nghe hội thoại thì mô hình vẫn trả
+    về một chữ cái, và phép kiểm trông như đang chạy.
+    """
+    if part == 1:
+        return context.strip()
+    if part in (3, 4) and context.strip():
+        return f"{context.strip()}\n\n{question.prompt_text or ''}"
+    return question.prompt_text or ""
+
+
 def option_text(option: ParsedOption) -> str:
     """Chữ của một lựa chọn, dù nó được IN hay được NÓI.
 
@@ -120,9 +162,49 @@ def option_text(option: ParsedOption) -> str:
     return ((option.content or option.spoken_text) or "").strip()
 
 
+def parse_group(block: str, part: int) -> tuple[list[ParsedQuestion], str, list[str]]:
+    """Đọc một khối CỤM (Part 3, 4): trả (các câu, lời thoại dạng chữ, vấn đề).
+
+    Lời thoại đi ra dưới dạng chữ vì mọi phép kiểm ngữ nghĩa của Part 3/4 đều cần
+    nó: một câu hỏi "người phụ nữ sẽ làm gì tiếp theo" không kiểm được nếu người
+    chấm không được nghe hội thoại — và nó vẫn trả về một chữ cái, nên phép kiểm
+    sẽ TRÔNG như đang chạy.
+    """
+    try:
+        groups = parse_listening_part(block, part)
+    except ValueError as error:
+        return [], "", [str(error)]
+    if len(groups) != 1:
+        return [], "", [f"khối phải chứa đúng một cụm, đọc được {len(groups)}"]
+    group = groups[0]
+    problems = list(group.problems)
+    if len(group.questions) != LISTENING_QUESTIONS_PER_SET:
+        problems.append(
+            f"cụm Part {part} cần {LISTENING_QUESTIONS_PER_SET} câu, "
+            f"đọc được {len(group.questions)}"
+        )
+    if not group.script:
+        # Parser cho phép dán cụm KHÔNG kèm lời thoại (bản thu gắn sau bằng
+        # `import_media`), nhưng ở pipeline này lời thoại là thứ mô hình vừa
+        # viết ra — thiếu nó nghĩa là đầu ra hỏng, không phải quy trình khác.
+        problems.append("cụm không có lời thoại")
+    script = "\n".join(f"{turn.voice}: {turn.text}" for turn in group.script)
+    for question in group.questions:
+        problems.extend(question.problems)
+    return group.questions, script, problems
+
+
 def check_shape(question: ParsedQuestion, part: int = 5) -> list[str]:
     """Những luật của một part mà parser không tự nói ra."""
     problems: list[str] = []
+    if part in (3, 4):
+        # Part 3/4 IN đáp án ra sách thi — ngược hẳn Part 1/2. Parser đã bắt
+        # `content` rỗng, nên ở đây chỉ còn luật riêng của pipeline.
+        if question.prompt_text and BLANK in question.prompt_text:
+            problems.append("câu Part 3/4 không có chỗ trống — đây không phải câu điền")
+        if question.source != "original":
+            problems.append(f"`Source` phải là `original`, đang là {question.source!r}")
+        return problems
     if part == 1:
         # Part 1 KHÔNG in gì cả — bốn câu là lời nói, `prompt_text` phải là NULL.
         # Parser đã cưỡng chế điều đó, nên ở đây chỉ còn luật riêng của pipeline:
@@ -142,6 +224,29 @@ def check_shape(question: ParsedQuestion, part: int = 5) -> list[str]:
     if question.source != "original":
         problems.append(f"`Source` phải là `original`, đang là {question.source!r}")
     return problems
+
+
+def check_voice_names(question: ParsedQuestion) -> list[str]:
+    """Không lựa chọn nào được là một TÊN GIỌNG.
+
+    `uk_female_1` là chỉ dẫn thu âm, không phải một con người — nhưng nó nằm
+    ngay trong prompt, nên mô hình nhỏ chép thẳng vào phần in ra. Đo được: một
+    cụm Part 3 có ba trong bốn lựa chọn là tên giọng, và câu hỏi trở nên vô
+    nghĩa. Đây là VẤN ĐỀ chứ không phải cờ: không có cách đọc nào khiến nó đúng.
+    """
+    from app.core.media import LOGICAL_VOICE_ACCENTS
+
+    bad = [
+        option.label
+        for option in question.options
+        if option_text(option).strip().lower() in LOGICAL_VOICE_ACCENTS
+    ]
+    if not bad:
+        return []
+    return [
+        f"lựa chọn {', '.join(bad)} là TÊN GIỌNG chứ không phải nội dung — "
+        f"tên giọng là chỉ dẫn thu âm, không bao giờ được in ra đề"
+    ]
 
 
 def check_options(question: ParsedQuestion) -> list[str]:
@@ -192,7 +297,7 @@ def verify_answer(
     shuffled = "\n".join(f"({letters[i]}) {text}" for i, (_, text) in enumerate(order))
     expected = letters[[label for label, _ in order].index(truth)]
 
-    stem = context.strip() if part == 1 else (question.prompt_text or "")
+    stem = _stem(question, part, context)
     # `max_tokens` rộng dù câu trả lời chỉ có một chữ cái: model SUY LUẬN xuất
     # chuỗi suy nghĩ trước, và cắt ở 4 token thì nó trả về rỗng — một lỗi đọc ra
     # như "không trả về chữ cái hợp lệ", tức là đổ lỗi cho câu hỏi thay vì cho
@@ -200,9 +305,9 @@ def verify_answer(
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
-                system=VERIFY_SYSTEM_PART1 if part == 1 else VERIFY_SYSTEM,
+                system=_VERIFY_SYSTEM_FOR.get(part, VERIFY_SYSTEM),
                 user=f"{stem}\n{shuffled}",
-                max_tokens=1500,
+                max_tokens=CHECK_MAX_TOKENS,
                 temperature=0.0,
             ),
             feature="exam_verify",
@@ -242,13 +347,13 @@ def count_workable_options(
     được phép trở thành "đạt".
     """
     letters = "".join(f"({option.label}) {option_text(option)}\n" for option in question.options)
-    stem = context.strip() if part == 1 else (question.prompt_text or "")
+    stem = _stem(question, part, context)
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
-                system=AMBIGUITY_SYSTEM_PART1 if part == 1 else AMBIGUITY_SYSTEM,
+                system=_AMBIGUITY_SYSTEM_FOR.get(part, AMBIGUITY_SYSTEM),
                 user=f"{stem}\n{letters}",
-                max_tokens=1500,
+                max_tokens=CHECK_MAX_TOKENS,
                 temperature=0.0,
             ),
             feature="exam_ambiguity",
@@ -259,6 +364,180 @@ def count_workable_options(
     )
     found = "".join(sorted({ch for ch in result.text.upper() if ch in "ABCD"}))
     return len(found), found
+
+
+def _graphic_as_text(source: Path) -> str:
+    """Bảng ở dạng chữ, để người chấm đọc được thứ người học sẽ nhìn."""
+    from app.content.exam.graphics import parse_graphic
+
+    return f"[Hình in kèm trong sách thi]\n{parse_graphic(source.read_text()).alt_text()}"
+
+
+def check_graphic(
+    questions: list[ParsedQuestion], script: str, source: Path
+) -> tuple[list[str], list[str]]:
+    """Kiểm hình ngữ liệu của một cụm. Trả (vấn đề, cờ).
+
+    Hai luật, và cả hai đều quyết định hình là NGỮ LIỆU hay chỉ là trang trí:
+
+    1. **Bốn lựa chọn của câu cuối phải là trục đáp án của hình.** Trục đó khác
+       nhau theo dạng — đo ở đề mẫu ETS, câu 64 hỏi giữa bốn loại sổ (tên hàng
+       của một bảng), câu 67 giữa bốn khung giờ (tiêu đề cột của một lưới lịch),
+       câu 70 giữa bốn cửa hàng (ô của một sơ đồ). Lựa chọn lấy từ chỗ khác
+       nghĩa là người học không cần nhìn hình.
+    2. **Lời thoại KHÔNG được đọc tên hàng là đáp án.** Nếu có người nói "the
+       weekly planner" thì câu trả lời được ngay từ audio, và tấm hình thành ra
+       thừa. Đây là lỗi khó thấy nhất của dạng câu này: mọi thứ khác vẫn hợp lệ,
+       câu vẫn có đúng một đáp án, chỉ là nó không còn là câu hỏi Part 3 về hình.
+    """
+    from app.content.exam.graphics import parse_graphic
+
+    if not source.exists():
+        return [f"thiếu dữ liệu bảng ({source.name})"], []
+    graphic = parse_graphic(source.read_text())
+    problems = list(graphic.problems())
+    if problems or not questions:
+        return problems, []
+
+    last = questions[-1]
+    options = [_normalise(option_text(option)) for option in last.options]
+    # TRỤC ĐÁP ÁN khác nhau theo dạng hình, và đây là chỗ dễ sai nhất: bảng thì
+    # lấy tên hàng, lưới lịch lấy tiêu đề CỘT (khung giờ), biểu đồ lấy nhãn cột,
+    # sơ đồ lấy tên ô. Lấy nhầm trục thì câu hỏi vẫn hợp lệ về mọi mặt và vẫn có
+    # đúng một đáp án — nó chỉ không còn hỏi về tấm hình nữa.
+    axis = [_normalise(item) for item in graphic.answer_axis()]
+    if sorted(options) != sorted(axis):
+        problems.append(
+            f"bốn lựa chọn của câu cuối phải đúng là trục đáp án của hình "
+            f"dạng {graphic.kind} — hình có {axis}, câu hỏi có {options}"
+        )
+        return problems, []
+
+    flags: list[str] = []
+    if graphic.kind == "schedule":
+        # Cột đầu của lưới lịch là những CON NGƯỜI, và hội thoại phải là của
+        # chính họ. Đo được: một cụm có bảng ghi "Liam" và "Emma" trong khi hai
+        # người nói tên là Sarah và James — bảng và hội thoại nói về hai nhóm
+        # người khác nhau, nên câu hỏi không có đáp án. Mọi cổng khác vẫn xanh:
+        # bảng hợp lệ, bốn lựa chọn khớp trục, câu vẫn có đúng một `Answer:`.
+        lowered = _normalise(script)
+        missing = [row[0] for row in graphic.rows if row and _normalise(row[0]) not in lowered]
+        if missing:
+            problems.append(
+                f"người trong lịch không xuất hiện trong hội thoại: {', '.join(missing)}"
+            )
+            return problems, []
+
+    correct = next((option for option in last.options if option.is_correct), None)
+    if correct is not None and _normalise(option_text(correct)) in _normalise(script):
+        flags.append(
+            "lời thoại đọc thẳng tên hàng là đáp án — người nghe không cần nhìn "
+            "hình nữa, nên đây không còn là câu hỏi về hình"
+        )
+    return problems, flags
+
+
+def _check_set(
+    slot: QuestionSlot,
+    block: str,
+    part: int,
+    blueprint: Blueprint,
+    gateway: Gateway | None,
+    tier: Tier,
+    ambiguity: bool,
+    seen: dict[str, str],
+    workdir: Path,
+) -> list[SlotReport]:
+    """Kiểm một cụm Part 3/4: một báo cáo cho MỖI câu, không một cho cả cụm.
+
+    Ba câu một báo cáo thì `prune` chỉ có thể xoá cả cụm hoặc giữ cả cụm — mà
+    đơn vị sinh lại đúng là cả cụm (ba câu hỏi về cùng một đoạn thoại, viết rời
+    thì trùng nhau). Nhưng đơn vị ĐỌC là từng câu: người duyệt cần biết câu nào
+    trong ba câu có vấn đề. Nên vấn đề của cụm được nhân ra cả ba báo cáo, và
+    `prune` xoá tệp đúng một lần dù ba báo cáo cùng đỏ.
+    """
+    questions, script, shared = parse_group(block, part)
+    if slot.graphic:
+        source = workdir / "graphics" / f"{slot.id}.txt"
+        graphic_problems, graphic_flags = check_graphic(questions, script, source)
+        shared = [*shared, *graphic_problems]
+        # Người chấm phải được ĐỌC BẢNG, không chỉ nghe hội thoại.
+        #
+        # Câu "Look at the graphic" được viết sao cho hội thoại KHÔNG đọc tên
+        # hàng là đáp án — đó là toàn bộ điểm của dạng câu này. Nên đưa mỗi lời
+        # thoại vào là hỏi một câu không thể trả lời, và người chấm vẫn trả về
+        # một chữ cái: cùng kiểu mù đã làm 26 câu bị gắn cờ oan ở §22.2. Đo
+        # được: ba câu về hình bị gắn cờ khi thiếu bảng, sạch khi có.
+        if source.exists():
+            script = f"{script}\n\n{_graphic_as_text(source)}"
+    else:
+        graphic_flags = []
+    # Hội thoại trùng là lỗi ở tầng ĐỀ và đáng nói RIÊNG, không nấp trong một
+    # thông báo về đề bài: ba câu vẫn khác nhau, chỉ có đoạn thoại là lặp lại,
+    # và người học nghe lại đúng một đoạn hai lần trong cùng một đề.
+    voice_key = _normalise(script)
+    if voice_key:
+        if voice_key in seen:
+            shared = [*shared, f"hội thoại trùng với {seen[voice_key]}"]
+        else:
+            seen[voice_key] = slot.id
+    if not questions:
+        return [SlotReport(slot_id=slot.id, number=slot.number, problems=shared or ["khối rỗng"])]
+
+    reports: list[SlotReport] = []
+    for index, question in enumerate(questions):
+        report = SlotReport(slot_id=slot.id, number=slot.number + index)
+        report.problems.extend(shared)
+        report.problems.extend(check_shape(question, part))
+        report.problems.extend(check_voice_names(question))
+        report.flags.extend(check_options(question))
+        if index == len(questions) - 1:
+            report.flags.extend(graphic_flags)
+
+        # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.
+        #
+        # "What will the man do next?" là khuôn câu chuẩn của Part 3 và lặp lại
+        # nhiều lần trong một đề THẬT — câu trả lời nằm ở hội thoại chứ không ở
+        # đề bài. Chống trùng trên riêng đề bài bắt đúng ba câu như thế ở lượt
+        # chạy đầu, và nếu tin nó thì cổng kiểm đang ép mô hình bịa ra những câu
+        # hỏi không tự nhiên để né chính nó.
+        #
+        # Cái đáng bắt là hai câu hỏi giống nhau về CÙNG một đoạn thoại — và
+        # gộp lời thoại vào khoá thì bắt luôn cả trường hợp hai cụm có hội thoại
+        # trùng nhau, vì lúc đó cả hai nửa của khoá đều trùng.
+        key = _normalise(f"{question.prompt_text or ''} | {script}")
+        if key and key in seen:
+            report.problems.append(f"câu này trùng với {seen[key]}")
+        elif key:
+            seen[key] = f"{slot.id} câu {index + 1}"
+
+        if gateway is not None:
+            try:
+                flag = verify_answer(
+                    gateway, question, tier, blueprint.seed + report.number, part, script
+                )
+            except LLMQuotaExhausted:
+                raise
+            except Exception as failure:  # noqa: BLE001
+                flag = f"không đối chiếu được đáp án: {failure}"
+            if flag:
+                report.flags.append(flag)
+            if ambiguity:
+                try:
+                    count, found = count_workable_options(gateway, question, tier, part, script)
+                except LLMQuotaExhausted:
+                    raise
+                except Exception as failure:  # noqa: BLE001
+                    count, found = 1, None
+                    report.flags.append(f"không đếm được phương án điền được: {failure}")
+                report.workable = found
+                if count != 1:
+                    report.flags.append(
+                        f"có {count} phương án điền được ({found or 'không đọc được'}) — "
+                        f"một câu chỉ được có đúng một"
+                    )
+        reports.append(report)
+    return reports
 
 
 def check_blueprint(
@@ -293,6 +572,22 @@ def check_blueprint(
             reports.append(report)
             continue
 
+        if part_number in (3, 4):
+            reports.extend(
+                _check_set(
+                    slot,
+                    path.read_text(),
+                    part_number,
+                    blueprint,
+                    gateway,
+                    tier,
+                    ambiguity,
+                    seen,
+                    workdir,
+                )
+            )
+            continue
+
         question, problems = parse_one(path.read_text(), part_number)
         # Mô tả ảnh là hiện vật RIÊNG (writer.split_photo), nên chặng kiểm phải
         # đi lấy nó. Không có nó thì mọi phép kiểm ngữ nghĩa của Part 1 đang so
@@ -314,6 +609,7 @@ def check_blueprint(
             continue
 
         report.problems.extend(check_shape(question, part_number))
+        report.problems.extend(check_voice_names(question))
         report.flags.extend(check_options(question))
 
         # Part 1 không in đề bài, nên khoá chống trùng phải lấy từ chính bốn câu
@@ -394,13 +690,17 @@ def check_answer_spread(reports_dir: Path, blueprint: Blueprint) -> list[str]:
             path = paste_path(reports_dir, slot)
             if not path.exists():
                 continue
-            question, _ = parse_one(path.read_text(), part.part)
-            if question is None:
-                continue
-            correct = next((o.label for o in question.options if o.is_correct), None)
-            if correct:
-                tally[correct] = tally.get(correct, 0) + 1
-                total += 1
+            text = path.read_text()
+            if part.part in (3, 4):
+                questions, _, _ = parse_group(text, part.part)
+            else:
+                one, _ = parse_one(text, part.part)
+                questions = [one] if one is not None else []
+            for question in questions:
+                correct = next((o.label for o in question.options if o.is_correct), None)
+                if correct:
+                    tally[correct] = tally.get(correct, 0) + 1
+                    total += 1
 
     if total < 8:
         # Mẫu quá nhỏ để nói gì về phân bố. Im lặng ở đây đúng hơn là báo động

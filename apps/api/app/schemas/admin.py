@@ -505,6 +505,27 @@ class QuestionEdit(BaseModel):
     audio_script: list[TurnDraft] | None = None
 
 
+class SkippedQuestion(BaseModel):
+    """Một câu KHÔNG xuất bản được, kèm lý do — theo số câu người ta nhìn thấy."""
+
+    number: int
+    reason: str
+
+
+class BulkPublishResult(BaseModel):
+    """Kết quả của lượt xuất bản hàng loạt.
+
+    Trả về CẢ hai nửa: bao nhiêu câu đã ra, và câu nào không ra được vì sao. Chỉ
+    trả về con số thành công thì một đề 75 câu xuất bản được 73 sẽ đọc như đã
+    xong, và hai câu còn lại chỉ lộ ra khi ai đó bấm "Xuất bản đề" và ăn 409 —
+    lúc đó lời từ chối nói "còn 2 câu chưa xuất bản" mà không nói vì sao.
+    """
+
+    published_count: int
+    skipped: list[SkippedQuestion]
+    test: TestAdmin
+
+
 class VoiceOption(BaseModel):
     """Một giọng logic — tên ta đặt, không phải id của nhà cung cấp (A4.3)."""
 

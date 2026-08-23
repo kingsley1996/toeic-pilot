@@ -445,6 +445,27 @@ def import_audio(
     return done
 
 
+def _alt_for(path: Path, fallback: str | None) -> str | None:
+    """Chữ thay ảnh của ĐÚNG bức này, ưu tiên tệp `<tên>.alt.txt` bên cạnh.
+
+    `--alt-text` chỉ có một giá trị cho cả lượt nhập, mà chữ thay ảnh mô tả một
+    bức — cùng lý do `alt_text` nằm trên từng ảnh trong khi nguồn/giấy phép khai
+    một lần cho cả lô (ADR-006). Ba tấm bảng khác nhau nhập cùng lúc thì một
+    giá trị chung sẽ mô tả sai hai trong ba, và nó *đọc như* dữ liệu thật.
+
+    Tệp kèm sinh ra từ chính dữ liệu đã vẽ nên bảng (`generate_exam graphic`),
+    nên nó không thể trôi khỏi hình theo cách một dòng gõ tay sẽ trôi.
+    """
+    sidecar = path.with_suffix(path.suffix + ".alt.txt")
+    if not sidecar.exists():
+        sidecar = path.with_suffix(".alt.txt")
+    if sidecar.exists():
+        text = sidecar.read_text().strip()
+        if text:
+            return text
+    return fallback
+
+
 def import_images(
     session: Session,
     pairs: list[tuple[Path, Slot]],
@@ -486,7 +507,7 @@ def import_images(
             # Part 3/4 thì ngược lại — hình là dữ liệu phải đọc mới trả lời
             # được, và mô tả nó KHÔNG lộ đáp án vì người học vẫn phải nghe. Bỏ
             # trống ở đó là một câu người dùng máy đọc màn hình không làm được.
-            alt_text=alt_text,
+            alt_text=_alt_for(path, alt_text),
         )
         session.add(asset)
         session.flush()
@@ -560,7 +581,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.kind == "image" and not (args.source_url and args.license and args.attribution):
         print("--source-url, --license và --attribution đều bắt buộc với ảnh", file=sys.stderr)
         return 2
-    if args.kind == "image" and args.part in (3, 4) and not args.alt_text:
+    if (
+        args.kind == "image"
+        and args.part in (3, 4)
+        and not args.alt_text
+        and not any(path.with_suffix(".alt.txt").exists() for path in args.dir.glob("*"))
+    ):
         # Hình Part 3/4 LÀ dữ liệu phải đọc mới trả lời được. Thiếu chữ thay ảnh
         # ở đó không phải bất tiện — đó là một câu người dùng máy đọc màn hình
         # không làm được. Khác Part 1, nơi để trống mới là đúng.

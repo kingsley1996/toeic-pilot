@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: au_female_1
+Hi David, do you have a quick moment? I need to ask about swapping my work schedule next week.
+voice: au_male_1
+Of course, Elena. Which days are you trying to switch?
+voice: au_female_1
+I originally signed up for the morning shift on Tuesday, but I really need to move it to Wednesday instead.
+voice: au_male_1
+Wednesday morning is fully staffed right now, so I can’t approve a direct swap.
+voice: au_female_1
+I see. Could I ask Sarah to cover my Tuesday slot? She said she might take extra hours.
+voice: au_male_1
+That works, as long as you both submit a written request to the office manager by tomorrow noon.
+voice: au_female_1
+Understood. I’ll coordinate with her and email the manager this afternoon.
+
+[QUESTION]
+Why is the woman speaking?
+(A) To ask for extra pay
+(B) To report a sick colleague
+(C) To request a schedule change
+(D) To confirm a meeting time
+Answer: C
+Source: original
+[QUESTION]
+What does the man say about the Wednesday shift?
+(A) It is canceled
+(B) It needs more staff
+(C) It starts later
+(D) It is fully staffed
+Answer: D
+Source: original
+[QUESTION]
+What will the woman do next?
+(A) Email the office manager
+(B) Update the team calendar
+(C) Call the office manager
+(D) Work her original shift
+Answer: A
+Source: original

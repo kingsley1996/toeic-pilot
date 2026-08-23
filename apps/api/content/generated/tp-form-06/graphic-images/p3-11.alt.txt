@@ -1,0 +1,1 @@
+Event Service Packages. Package: Basic Celebration, Price: $249.00. Package: Standard Anniversary, Price: $399.00. Package: Premium Gala, Price: $549.00. Package: Executive Showcase, Price: $799.00.

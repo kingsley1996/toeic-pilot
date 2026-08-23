@@ -19,9 +19,15 @@ một lần Ctrl-C không được phép vứt sạch.
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from pathlib import Path
 
-from app.content.exam.blueprint import Blueprint, QuestionSlot
+from app.content.exam.blueprint import (
+    LISTENING_QUESTIONS_PER_SET,
+    Blueprint,
+    QuestionSlot,
+)
+from app.services.content_import import SCRIPT_MARKER as CONTENT_SCRIPT_MARKER
 from app.services.labels import LABELS
 from app.services.llm.base import LLMRequest
 from app.services.llm.gateway import Gateway
@@ -84,6 +90,11 @@ Note the shape of the answer line: a single letter, nothing else."""
 
 
 PHOTO_MARKER = "[PHOTO]"
+# Mốc lời thoại dùng chung của Part 3/4. Cùng chuỗi mà `content_import` nhận,
+# nhập từ đó chứ không viết lại: hai hằng số cho một giao thức là hai thứ trôi
+# khỏi nhau, và cái trôi chỉ lộ ra ở chặng nạp.
+SCRIPT_MARKER = CONTENT_SCRIPT_MARKER
+GRAPHIC_MARKER = "[GRAPHIC]"
 
 # Cả pipeline sinh đề kiên nhẫn hơn mặc định của `with_backoff`. Đo được trên
 # model miễn phí của tokenrouter: **ba lượt 503 liên tiếp rồi lượt thứ tư trả
@@ -164,6 +175,151 @@ _PEOPLE_BRIEF = {
 }
 
 
+SYSTEM_PART3 = """You write TOEIC Part 3 (Conversations) items for an original
+practice test.
+
+A Part 3 item is ONE short conversation plus THREE questions about it. The
+conversation is heard, never printed; the questions and their four options ARE
+printed in the test book.
+
+THE CONVERSATION
+- 6 to 9 turns, natural spoken business English, roughly 100-140 words total.
+- Speakers alternate; in a three-speaker conversation the third speaker joins
+  partway through and speaks at least twice.
+- Every fact the three questions depend on must be SAID out loud. A question
+  whose answer is only implied by tone is not answerable from a recording.
+- No names of real companies, no brand names, no prices in currency symbols
+  (say "forty dollars", not "$40" — it is read aloud).
+
+THE THREE QUESTIONS
+- Each asks about something different. Do not ask twice about the same turn.
+- Four printed options each, exactly one correct.
+- The three wrong options must be wrong **against what was said**: a detail from
+  the wrong speaker, an action that was rejected, a time that was changed, or
+  something never mentioned. An option that is merely unlikely is a second
+  correct answer.
+- Options are short noun phrases or short clauses, similar length to each other.
+
+Reply with exactly this shape and nothing else — no preamble, no fences:
+
+[SCRIPT]
+voice: VOICE_A
+Good morning. I'm calling about the delivery scheduled for Thursday.
+voice: VOICE_B
+Let me check the order. It looks like it left the warehouse yesterday.
+voice: VOICE_A
+That's earlier than we expected. Can it be held until Friday?
+
+[QUESTION]
+Why is the woman calling?
+(A) To reschedule a delivery
+(B) To place a new order
+(C) To report a damaged item
+(D) To request an invoice
+Answer: A
+Source: original
+
+[QUESTION]
+...
+
+[QUESTION]
+...
+
+Each `voice:` line switches who is speaking, and you may only use the voice
+names given in the instruction below. Every question block needs its own
+`Answer:` and `Source: original` lines."""
+
+
+GRAPHIC_RULES = f"""
+
+THIS CONVERSATION COMES WITH A GRAPHIC
+The test book prints a small graphic beside the three questions, and the LAST
+question begins with "Look at the graphic." Emit the graphic first, as data.
+The first line names its kind. Four kinds exist; use the one you are told to.
+
+{GRAPHIC_MARKER}
+kind: table
+Office Supply Prices
+Type | Cost
+Daily planner | $14.89
+Weekly planner | $27.49
+Monthly desk pad | $5.49
+Undated desk pad | $4.99
+
+EVERY graphic has a `kind:` line, then a TITLE LINE of its own, then its data.
+The title is never a row — leaving it out shifts the whole graphic up a line and
+the block is rejected. Here is each kind in full:
+
+{GRAPHIC_MARKER}
+kind: schedule
+Wednesday Availability
+Person | 8-9 | 9-10 | 10-11 | 11-12
+Zahra | Busy |  | Team meeting |
+Sammy |  | Client call |  | Budget meeting
+
+{GRAPHIC_MARKER}
+kind: chart
+Quarterly Sales in thousands
+First quarter | 42
+Second quarter | 58
+Third quarter | 35
+Fourth quarter | 71
+
+{GRAPHIC_MARKER}
+kind: map
+Mall Directory, Ground Floor
+Store 1: Electronics | Store 2: Bookstore
+Store 3: Sporting Goods | Store 4: Pharmacy
+
+Where the answer options come from, per kind:
+
+  table     the four ROW NAMES
+  schedule  the four TIME SLOTS — the column headings, NOT the people
+  chart     the four LABELS
+  map       the four CELL NAMES, the part before any colon
+
+For `schedule`, LEAVE A CELL EMPTY when that person is free; that emptiness is
+what the question turns on, and a grid with every cell filled has no answer.
+Use ordinary personal names for the people — never a voice name like
+`us_female_1`, which is a recording instruction and not a person.
+
+Separate cells with a vertical bar. Keep every value short.
+
+Two rules make it a real graphic question rather than a detail question:
+
+1. The four options of the LAST question are exactly the four items on that
+   kind's answer axis, and nothing else.
+2. The conversation must NEVER say the winning item's name. It gives the other
+   information instead ("the one that's about twenty-seven dollars", "the hour
+   when we're both free", "right across from the bookstore"), so the listener
+   has to read the graphic. If a speaker says "the weekly planner" out loud, the
+   graphic is decoration and the question is answerable without it."""
+
+
+def prompt_for_part3(slot: QuestionSlot) -> str:
+    kinds = "\n".join(
+        f"  {index}. {LABELS[code].label_vi} ({code})"
+        for index, code in enumerate(slot.question_types, start=1)
+    )
+    cast = ", ".join(slot.voices)
+    return (
+        f"Viết một cuộc hội thoại Part 3 và ba câu hỏi về nó.\n"
+        f"- Chủ đề: {LABELS[slot.topic].label_vi}\n"
+        f"- Tình huống: {slot.context}\n"
+        f"- Số người nói: {len(slot.voices)}. Chỉ dùng đúng các tên giọng này, "
+        f"mỗi người một giọng: {cast}\n"
+        f"- Ba câu hỏi, theo đúng thứ tự này:\n{kinds}\n"
+        f"- Mọi dữ kiện mà ba câu hỏi cần phải được NÓI RA trong hội thoại."
+        + (
+            f"\n- Hình đi kèm — dùng ĐÚNG `kind: {slot.graphic.split(':')[0].strip()}`: "
+            f"{slot.graphic.partition(':')[2].strip()}. Hội thoại KHÔNG được đọc tên "
+            f"mục là đáp án — nó chỉ nói thông tin còn lại."
+            if slot.graphic
+            else ""
+        )
+    )
+
+
 def prompt_for_part1(slot: QuestionSlot) -> str:
     kind = LABELS[slot.question_type].label_vi
     return (
@@ -180,6 +336,32 @@ def prompt_for_part1(slot: QuestionSlot) -> str:
         f"- Ba câu sai phải SAI KIỂM CHỨNG ĐƯỢC so với tấm ảnh sẽ vẽ, "
         f"không phải chỉ 'ít khả năng'."
     )
+
+
+def split_marked(block: str, marker: str) -> tuple[str, str]:
+    """Tách khối mang `marker` ra khỏi phần dán. Trả (phần tách, phần còn lại).
+
+    Cùng lý do như `split_photo`: parser TỪ CHỐI dòng lạ, nên mô tả ảnh và dữ
+    liệu bảng phải rời khỏi tệp dán. Nó cũng đúng về vòng đời — hai hiện vật đó
+    phục vụ chặng vẽ, tệp dán phục vụ chặng nạp, và hai chặng chạy lại độc lập.
+    """
+    lines = block.splitlines()
+    starts = [index for index, line in enumerate(lines) if line.strip() == marker]
+    if not starts:
+        return "", block
+    begin = starts[-1]
+    # Khối kết thúc ở mốc tiếp theo bất kỳ ([SCRIPT], [QUESTION], [PHOTO]).
+    end = next(
+        (
+            index
+            for index in range(begin + 1, len(lines))
+            if lines[index].strip().startswith("[") and lines[index].strip().endswith("]")
+        ),
+        len(lines),
+    )
+    taken = "\n".join(lines[begin + 1 : end]).strip()
+    rest = "\n".join(lines[:begin] + lines[end:]).strip()
+    return taken, rest
 
 
 def split_photo(block: str) -> tuple[str, str]:
@@ -255,6 +437,22 @@ def clean(text: str) -> str:
     # nên `find` bắt được nó ở giữa đoạn suy nghĩ và giữ lại toàn bộ phần suy
     # nghĩ như thể đó là câu hỏi. Khối thật luôn là khối cuối.
     lines_all = body.splitlines()
+    # Part 3 và 4 mở đầu bằng `[SCRIPT]` và mang BA khối câu hỏi, nên "lấy khối
+    # cuối" là sai ở đó: nó vứt mất lời thoại và hai câu đầu. Có `[SCRIPT]` đầu
+    # dòng thì cắt từ đó và giữ trọn phần còn lại.
+    script_starts = [index for index, line in enumerate(lines_all) if line.strip() == SCRIPT_MARKER]
+    if script_starts:
+        # Giữ khối [GRAPHIC] nếu nó đứng TRƯỚC lời thoại — mô hình đặt bảng lên
+        # đầu vì prompt bảo thế, và cắt sạch phần trước [SCRIPT] sẽ vứt mất nó.
+        # Mất bảng thì chỉ lộ ra ở chặng vẽ, tức là sau khi đã trả tiền gọi.
+        graphic_starts = [
+            index
+            for index, line in enumerate(lines_all[: script_starts[-1]])
+            if line.strip() == GRAPHIC_MARKER
+        ]
+        begin = graphic_starts[-1] if graphic_starts else script_starts[-1]
+        return "\n".join(lines_all[begin:]).strip()
+
     starts = [index for index, line in enumerate(lines_all) if line.strip() == "[QUESTION]"]
     if starts:
         # Giữ khối [PHOTO] nếu nó đứng NGAY TRƯỚC khối câu hỏi cuối cùng: Part 1
@@ -285,6 +483,13 @@ class MissingBlock(RuntimeError):
     """Đầu ra không chứa `[QUESTION]` — không có gì để lưu."""
 
 
+_SYSTEM_FOR = {1: SYSTEM_PART1, 3: SYSTEM_PART3}
+_PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
+    1: prompt_for_part1,
+    3: prompt_for_part3,
+}
+
+
 def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) -> str:
     # Qua `with_backoff`: nhà cung cấp lớn trả 503 "high demand" khá thường, và
     # không lùi thì vòng lặp đốt sạch 30 ô trong vài giây, mỗi ô hỏng một lần vì
@@ -293,13 +498,17 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
-                system=SYSTEM_PART1 if part == 1 else SYSTEM,
-                user=prompt_for_part1(slot) if part == 1 else prompt_for(slot),
+                system=(
+                    SYSTEM_PART3 + GRAPHIC_RULES
+                    if part == 3 and slot.graphic
+                    else _SYSTEM_FOR.get(part, SYSTEM)
+                ),
+                user=_PROMPT_FOR.get(part, prompt_for)(slot),
                 # Rộng tay, vì model SUY LUẬN xuất cả chuỗi suy nghĩ trước khi tới
                 # khối cần lấy. Đo được: `nemotron-3-ultra` cụt giữa phần suy nghĩ ở
                 # 600 token, và cái cụt đó không hiện ra như một lỗi — nó hiện ra
                 # như một ô đã ghi xong với nội dung là đoạn model đang tự nhủ.
-                max_tokens=6000,
+                max_tokens=12000,
                 # Nhiệt độ KHÁC 0, và đây là chỗ duy nhất trong dự án cố ý như thế.
                 # Mọi lượt gọi khác (gắn nhãn, chấm) muốn cùng đầu vào ra cùng đầu
                 # ra. Ở đây thì ngược lại: 30 câu ở nhiệt độ 0 sẽ trôi về cùng một
@@ -314,15 +523,25 @@ def write_slot(gateway: Gateway, slot: QuestionSlot, tier: Tier, part: int = 5) 
     )
     block = clean(result.text)
     lines = [line.strip() for line in block.splitlines()]
-    # Với Part 1, khối bắt đầu bằng [PHOTO]; với các part khác là [QUESTION].
-    header_ok = lines and lines[0] in ("[QUESTION]", PHOTO_MARKER)
+    # Part 1 mở đầu bằng [PHOTO], Part 3/4 bằng [SCRIPT], còn lại là [QUESTION].
+    header_ok = bool(lines) and lines[0] in (
+        "[QUESTION]",
+        PHOTO_MARKER,
+        SCRIPT_MARKER,
+        GRAPHIC_MARKER,
+    )
     # Ba dấu hiệu của một khối HOÀN CHỈNH, không phải một khối bị cắt giữa chừng.
     # Chỉ hỏi "có mốc không" là không đủ: đầu ra bị cắt vẫn có mốc, và nó được
     # lưu như một ô đã xong.
+    # Part 3/4 phải có ĐỦ BA câu, và đây là chỗ duy nhất đếm được rẻ. Thiếu một
+    # câu thì parser vẫn đọc ra một cụm hợp lệ hai câu, `commit_part` vẫn ghi, và
+    # đề lặng lẽ ngắn đi một câu ở đúng chỗ không ai đếm.
+    wanted = LISTENING_QUESTIONS_PER_SET if part in (3, 4) else 1
     complete = (
         header_ok
-        and any(line.startswith("(D)") for line in lines)
-        and any(line.lower().startswith("answer:") for line in lines)
+        and sum(1 for line in lines if line == "[QUESTION]") >= wanted
+        and sum(1 for line in lines if line.startswith("(D)")) >= wanted
+        and sum(1 for line in lines if line.lower().startswith("answer:")) >= wanted
     )
     if not complete:
         # NÉM chứ không lưu. Lưu một đầu ra không có mốc nghĩa là ô đó coi như

@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: au_female_1
+I’ve reviewed the site plans, and we really need to pick a new warehouse before Friday. Our current space is completely full.
+voice: au_male_1
+Agreed. The inventory is piling up. Which unit are you leaning toward on this blueprint? We can finalize it right here in the planning office.
+voice: au_female_1
+I’m highlighting the option in the bottom right corner. It’s the only one with direct access to the main highway ramp.
+voice: au_male_1
+Smart choice. Does that specific building have the upgraded climate control we asked for?
+voice: au_female_1
+It does, plus it’s the only location with reinforced flooring. The other three are on the opposite side and cannot support heavy machinery.
+voice: au_male_1
+Excellent. I’ll draft the rental contract for that exact spot and email it to management this afternoon.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To discuss employee housing
+(B) To schedule a truck delivery
+(C) To select a new storage facility
+(D) To report a maintenance issue
+Answer: C
+Source: original
+[QUESTION]
+Where are the speakers most likely located?
+(A) Over a speakerphone
+(B) At a shipping dock
+(C) In a delivery van
+(D) In a planning office
+Answer: D
+Source: original
+[QUESTION]
+Look at the graphic. Which warehouse are they deciding to use?
+(A) West Unit
+(B) South Unit
+(C) East Unit
+(D) North Unit
+Answer: A
+Source: original

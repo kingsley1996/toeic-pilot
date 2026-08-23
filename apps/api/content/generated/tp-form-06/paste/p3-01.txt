@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: au_female_1
+Mark, have you looked at the interview schedule for the marketing specialist candidates tomorrow?
+voice: au_male_1
+Yes, but one candidate, Sandra Kim, just emailed. She has a conflict and wants to reschedule for Thursday morning.
+voice: au_female_1
+Thursday morning works. We have an open slot at ten o'clock, but is the conference room free then?
+voice: au_male_1
+I'm not sure. The sales team usually uses it on Thursdays. Can you check the booking calendar on your computer?
+voice: au_female_1
+Sure. Let me see... actually, Room B is available at ten. I'll reserve it now.
+voice: au_male_1
+Perfect. I'll email Sandra right away to confirm the new time.
+
+[QUESTION]
+What are the speakers discussing?
+(A) Booking a flight for a client
+(B) Planning a marketing campaign
+(C) Interviewing a job applicant
+(D) Organizing a sales presentation
+Answer: C
+Source: original
+[QUESTION]
+What problem does the man mention?
+(A) A resume was sent to the wrong department
+(B) A laptop computer is broken
+(C) An office room is too small
+(D) A candidate has a scheduling conflict
+Answer: D
+Source: original
+[QUESTION]
+What will the man do next?
+(A) Contact a candidate
+(B) Reserve a conference room
+(C) Print out some resumes
+(D) Speak with the sales team
+Answer: A
+Source: original

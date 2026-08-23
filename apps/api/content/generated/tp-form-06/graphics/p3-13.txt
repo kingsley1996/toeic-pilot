@@ -1,0 +1,4 @@
+kind: map
+Warehouse District Layout
+North Unit | South Unit
+East Unit | West Unit

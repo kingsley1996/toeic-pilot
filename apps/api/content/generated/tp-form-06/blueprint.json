@@ -13,7 +13,11 @@
           "grammar": "",
           "context": "một người đang làm việc tại bàn làm việc",
           "voice": "au_female_1",
-          "people": "one"
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p1-02",
@@ -22,7 +26,11 @@
           "grammar": "",
           "context": "hai đồng nghiệp đứng cạnh máy in trong văn phòng",
           "voice": "ca_male_1",
-          "people": "several"
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p1-03",
@@ -31,7 +39,11 @@
           "grammar": "",
           "context": "một nhân viên kho đẩy xe hàng",
           "voice": "us_female_1",
-          "people": "one"
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p1-04",
@@ -40,7 +52,11 @@
           "grammar": "",
           "context": "một người bán hàng trao túi cho khách ở quầy",
           "voice": "uk_male_1",
-          "people": "several"
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p1-05",
@@ -49,7 +65,11 @@
           "grammar": "",
           "context": "vài người ngồi họp quanh bàn có màn chiếu",
           "voice": "au_female_1",
-          "people": "several"
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p1-06",
@@ -58,7 +78,237 @@
           "grammar": "",
           "context": "một phòng làm việc trống với bàn ghế và thiết bị đã xếp sẵn",
           "voice": "ca_male_1",
-          "people": "none"
+          "people": "none",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
+        }
+      ]
+    },
+    {
+      "part": 3,
+      "slots": [
+        {
+          "id": "p3-01",
+          "number": 32,
+          "question_type": "",
+          "grammar": "",
+          "context": "hai đồng nghiệp bàn về lịch phỏng vấn ứng viên",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": ["au_female_1", "au_male_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-02",
+          "number": 35,
+          "question_type": "",
+          "grammar": "",
+          "context": "khách gọi cho cửa hàng vì đơn hàng giao thiếu",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": ["ca_male_1", "ca_female_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-03",
+          "number": 38,
+          "question_type": "",
+          "grammar": "",
+          "context": "ba người chuẩn bị gian hàng cho hội chợ thương mại",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_LOCATION",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": ["us_female_1", "us_male_1", "ca_male_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-04",
+          "number": 41,
+          "question_type": "",
+          "grammar": "",
+          "context": "người thuê hỏi ban quản lý toà nhà về việc sửa hệ thống sưởi",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": ["uk_male_1", "uk_female_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-05",
+          "number": 44,
+          "question_type": "",
+          "grammar": "",
+          "context": "trưởng phòng và nhân viên bàn về khoá đào tạo bắt buộc",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": ["au_female_1", "au_male_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-06",
+          "number": 47,
+          "question_type": "",
+          "grammar": "",
+          "context": "khách đổi trả một chiếc máy in mua tuần trước",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": ["ca_male_1", "ca_female_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-07",
+          "number": 50,
+          "question_type": "",
+          "grammar": "",
+          "context": "ba người rà lại tiến độ dự án phần mềm trước hạn",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": ["us_female_1", "us_male_1", "ca_male_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-08",
+          "number": 53,
+          "question_type": "",
+          "grammar": "",
+          "context": "hai người xem một mặt bằng văn phòng cho thuê",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_LOCATION",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": ["uk_male_1", "uk_female_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-09",
+          "number": 56,
+          "question_type": "",
+          "grammar": "",
+          "context": "nhân viên xin đổi ca và đồng nghiệp trả lời",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": ["au_female_1", "au_male_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-10",
+          "number": 59,
+          "question_type": "",
+          "grammar": "",
+          "context": "khách hỏi về gói bảo hành mở rộng ở quầy dịch vụ",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": ["ca_male_1", "ca_female_1"],
+          "graphic": ""
+        },
+        {
+          "id": "p3-11",
+          "number": 62,
+          "question_type": "",
+          "grammar": "",
+          "context": "hai người chốt gói dịch vụ cho lễ kỷ niệm công ty",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": ["us_female_1", "us_male_1"],
+          "graphic": "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price"
+        },
+        {
+          "id": "p3-12",
+          "number": 65,
+          "question_type": "",
+          "grammar": "",
+          "context": "ba người phân công lại ca trực sau khi một đồng nghiệp nghỉ phép",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": ["uk_male_1", "uk_female_1", "au_female_1"],
+          "graphic": "schedule: lịch rảnh/bận của hai người qua bốn khung giờ trong ngày"
+        },
+        {
+          "id": "p3-13",
+          "number": 68,
+          "question_type": "",
+          "grammar": "",
+          "context": "hai người chọn kho hàng mới trong bốn địa điểm",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_LOCATION",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": ["au_female_1", "au_male_1"],
+          "graphic": "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng"
         }
       ]
     },
@@ -72,7 +322,11 @@
           "grammar": "",
           "context": "tuyển dụng và nhân sự",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-02",
@@ -81,7 +335,11 @@
           "grammar": "",
           "context": "lịch họp và lịch công tác",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-03",
@@ -90,7 +348,11 @@
           "grammar": "GRAMMAR_NOUN",
           "context": "đơn hàng và giao vận",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-04",
@@ -99,7 +361,11 @@
           "grammar": "GRAMMAR_VOICE",
           "context": "báo cáo tài chính quý",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-05",
@@ -108,7 +374,11 @@
           "grammar": "GRAMMAR_PREPOSITION",
           "context": "bảo trì thiết bị văn phòng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-06",
@@ -117,7 +387,11 @@
           "grammar": "GRAMMAR_COMPARISON",
           "context": "chiến dịch marketing",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-07",
@@ -126,7 +400,11 @@
           "grammar": "GRAMMAR_TENSE",
           "context": "dịch vụ khách hàng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-08",
@@ -135,7 +413,11 @@
           "grammar": "GRAMMAR_PRONOUN",
           "context": "đào tạo nội bộ",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-09",
@@ -144,7 +426,11 @@
           "grammar": "GRAMMAR_PARTICIPLE",
           "context": "thuê và sửa chữa mặt bằng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-10",
@@ -153,7 +439,11 @@
           "grammar": "GRAMMAR_TENSE",
           "context": "hợp đồng và đàm phán",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-11",
@@ -162,7 +452,11 @@
           "grammar": "",
           "context": "tuyển dụng và nhân sự",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-12",
@@ -171,7 +465,11 @@
           "grammar": "GRAMMAR_RELATIVE_CLAUSE",
           "context": "lịch họp và lịch công tác",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-13",
@@ -180,7 +478,11 @@
           "grammar": "GRAMMAR_ADVERB",
           "context": "đơn hàng và giao vận",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-14",
@@ -189,7 +491,11 @@
           "grammar": "GRAMMAR_VOICE",
           "context": "báo cáo tài chính quý",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-15",
@@ -198,7 +504,11 @@
           "grammar": "GRAMMAR_ADJECTIVE",
           "context": "bảo trì thiết bị văn phòng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-16",
@@ -207,7 +517,11 @@
           "grammar": "GRAMMAR_CONJUNCTION",
           "context": "chiến dịch marketing",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-17",
@@ -216,7 +530,11 @@
           "grammar": "GRAMMAR_PRONOUN",
           "context": "dịch vụ khách hàng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-18",
@@ -225,7 +543,11 @@
           "grammar": "GRAMMAR_NOUN",
           "context": "đào tạo nội bộ",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-19",
@@ -234,7 +556,11 @@
           "grammar": "GRAMMAR_ADVERB",
           "context": "thuê và sửa chữa mặt bằng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-20",
@@ -243,7 +569,11 @@
           "grammar": "GRAMMAR_TENSE",
           "context": "hợp đồng và đàm phán",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-21",
@@ -252,7 +582,11 @@
           "grammar": "GRAMMAR_ADVERB",
           "context": "tuyển dụng và nhân sự",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-22",
@@ -261,7 +595,11 @@
           "grammar": "GRAMMAR_NOUN",
           "context": "lịch họp và lịch công tác",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-23",
@@ -270,7 +608,11 @@
           "grammar": "GRAMMAR_PREPOSITION",
           "context": "đơn hàng và giao vận",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-24",
@@ -279,7 +621,11 @@
           "grammar": "",
           "context": "báo cáo tài chính quý",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-25",
@@ -288,7 +634,11 @@
           "grammar": "GRAMMAR_CONJUNCTION",
           "context": "bảo trì thiết bị văn phòng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-26",
@@ -297,7 +647,11 @@
           "grammar": "GRAMMAR_PREPOSITION",
           "context": "chiến dịch marketing",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-27",
@@ -306,7 +660,11 @@
           "grammar": "GRAMMAR_RELATIVE_CLAUSE",
           "context": "dịch vụ khách hàng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-28",
@@ -315,7 +673,11 @@
           "grammar": "GRAMMAR_ADJECTIVE",
           "context": "đào tạo nội bộ",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-29",
@@ -324,7 +686,11 @@
           "grammar": "GRAMMAR_ADJECTIVE",
           "context": "thuê và sửa chữa mặt bằng",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         },
         {
           "id": "p5-30",
@@ -333,7 +699,11 @@
           "grammar": "GRAMMAR_PARTICIPLE",
           "context": "hợp đồng và đàm phán",
           "voice": "",
-          "people": ""
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": ""
         }
       ]
     }

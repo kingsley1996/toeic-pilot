@@ -645,3 +645,265 @@ thiết kế: đổi kịch bản làm `script_fingerprint` lệch khỏi `audio
 13,6–14,9s lên 15,2–17,0s — **+1,6 đến 2,1 giây, tức là 4 × 0,4 giây**, đúng
 bằng bốn chữ cái. Rồi `generate_exam media --push` bắt đúng sáu clip chưa lên
 nhà cung cấp và đẩy nốt: lệnh viết ở §20 đỏ vì một lý do thật ngay lần đầu dùng.
+
+---
+
+## 22. Lát 3 — Part 3: mười ba hội thoại, ba mươi chín câu (2026-08-22)
+
+**Ô của Part 3 là một CUỘC HỘI THOẠI, không phải một câu.** Ba câu phải viết cùng
+nhau — chúng hỏi về cùng một đoạn thoại và không được hỏi trùng nhau, mà viết rời
+thì mô hình không biết hai câu kia đã hỏi gì. Nó cũng khớp schema: bản thu và
+nhãn chủ đề nằm ở `question_set`. Nhưng đơn vị **đọc** vẫn là từng câu, nên một
+tệp dán sinh **ba** báo cáo và `prune` xoá tệp đúng một lần dù cả ba cùng đỏ.
+
+**Người nói trong một cuộc dùng cùng accent, đổi accent giữa các cuộc.** Ba người
+thì buộc mượn một giọng accent khác (mỗi accent chỉ có hai giọng), và ghép US với
+CA hoặc UK với AU vì hai accent đó gần nhau. Trộn accent ở đây an toàn:
+`_accent_of` lấy accent của lượt đầu và `backfill_audio` ghi rõ vì sao được phép
+— audio của câu hỏi không ai lọc theo accent. Ở đường spec file thì ngược lại.
+
+### 22.1 Ba cổng phải sửa vì hình dạng "cụm"
+
+- **Cân đáp án phải đi vào TỪNG khối câu hỏi.** `rewrite` quét cả tệp, gặp bốn
+  lựa chọn của câu đầu và dòng `Answer:` của câu cuối, rồi đổi chỗ hai thứ thuộc
+  hai câu khác nhau — một phép hoán vị vẫn "thành công" và làm hỏng hai câu cùng
+  lúc. Số đích cũng đếm theo **câu**, không theo ô: đếm theo ô thì ba câu của một
+  cụm cùng đáp án, thứ đọc ra ngay là máy làm.
+- **Chống trùng phải gộp lời thoại vào khoá.** "What will the woman do next?" là
+  khuôn câu chuẩn của Part 3 và lặp lại trong đề THẬT. Chống trùng trên riêng đề
+  bài bắt đúng ba câu như thế ở lượt chạy đầu; tin nó thì cổng kiểm đang ép mô
+  hình bịa ra câu hỏi không tự nhiên để né chính nó. Cái đáng bắt là hai câu
+  giống nhau về **cùng** một đoạn thoại — và gộp lời thoại vào khoá bắt luôn cả
+  hội thoại trùng, thứ được báo riêng vì nó là lỗi ở tầng đề.
+- **Khối hoàn chỉnh phải có ĐỦ BA câu.** Thiếu một câu thì parser vẫn đọc ra một
+  cụm hợp lệ hai câu, `commit_part` vẫn ghi, và đề lặng lẽ ngắn đi một câu ở đúng
+  chỗ không ai đếm.
+
+### 22.2 Một biến bị bỏ quên, và 26 cờ giả
+
+Chặng đối chiếu báo **26 cờ trên 39 câu** — tỉ lệ vô lý. Nguyên nhân: một lần
+`str.replace` không khớp và **im lặng không áp dụng**, nên `verify_answer` vẫn
+dùng dòng cũ và **lời thoại không bao giờ được gửi đi**. Người chấm đang đoán
+"người nói đang ở đâu" mà không được nghe gì — và nó vẫn trả về một chữ cái, nên
+phép kiểm trông như đang chạy. Nối lại: **0 cờ trên 39 câu.**
+
+Hai bài học, và bài thứ hai đắt hơn:
+
+- Một phép thay chuỗi phải **khẳng định là nó đã khớp**. `assert old in s` là
+  toàn bộ chi phí, và không có nó thì bản sửa "đã xong" mà mã không đổi.
+- Một phép kiểm thiếu ngữ cảnh **không im lặng, nó nói sai**. Dấu hiệu duy nhất
+  là tỉ lệ cờ cao bất thường — thứ dễ đọc thành "nội dung kém" hơn là "cổng kiểm
+  hỏng". Bài test mới gửi một gateway giả và đòi lời thoại phải có trong yêu cầu.
+
+### 22.3 `media` trả lời nửa câu hỏi
+
+Lệnh viết ở §20 báo "mọi media đã có ở nhà cung cấp" cho một đề mà **toàn bộ mười
+ba hội thoại chưa lên** — nó chỉ hỏi tầng CÂU, còn Part 3/4 treo audio ở tầng
+CỤM. Nửa câu trả lời, và là nửa dễ tin nhất vì nó màu xanh. Nay hỏi cả hai tầng,
+gồm cả `question_set.passage_image_id`.
+
+### 22.4 Nhà cung cấp
+
+Groq (`qwen/qwen3.6-27b`) viết cả mười ba cuộc, một cuộc phải viết lại vì bị cắt
+giữa phần suy luận. `openai/gpt-oss-120b` làm người chấm. Giá của cả hai đã vào
+`_RATES` theo bảng công bố ở `console.groq.com/docs/models` — ghi giá thật chứ
+không ghi 0, cùng lý do đã ghi cho Gemini.
+
+Ba nhà cung cấp khác cạn hạn mức cùng ngày: Gemini, OpenRouter (50 lượt/ngày cho
+model free, reset 07:00 giờ VN) và tokenrouter free (503 cho mọi yêu cầu có
+system prompt).
+
+### 22.5 Trạng thái
+
+`tp-form-06` có **75 câu**: Part 1 (1–6), Part 3 (32–70, 13 cụm), Part 5
+(101–130). Tất cả qua `validate_question`. Mười ba bản thu 45–59 giây, 6–8 lượt
+nói, bốn accent xoay vòng, đã lên nhà cung cấp và phát được.
+
+**Một khoảng trống còn mở:** blueprint quyết định nhãn (chủ đề cụm, dạng từng
+câu) nhưng **không ghi chúng vào database** — nhãn vẫn do `skilltag-worker` đoán
+lại sau. §"nhãn được quyết định trước, không gắn sau" của `blueprint.py` mới đúng
+một nửa: nhãn đang lái người viết, chưa được dùng làm mốc đối chiếu độ chính xác.
+
+---
+
+## 23. Các part có ảnh, và cách xử lý từng loại (2026-08-23)
+
+Đếm trực tiếp trên **đề mẫu chính thức của ETS** (`toeic_sample-test_a4_64pg_v30.pdf`,
+64 trang), không đoán:
+
+| Part | Có ảnh? | Treo ở đâu | Bao nhiêu | Loại ảnh |
+|---|---|---|---|---|
+| 1 | có | `question.image_asset_id` | **mọi câu** (6/6) | ảnh chụp, KHÔNG có chữ |
+| 2 | không | — | 0 | đề in 0 chữ |
+| 3 | có | `question_set.passage_image_id` ô 1 | **3** (câu 64, 67, 70) | bảng / lịch / sơ đồ |
+| 4 | có | `question_set.passage_image_id` ô 1 | **2** (câu 96, 99) | bảng / hình đánh dấu |
+| 5 | không | — | 0 | |
+| 6 | không | — | 0 | một đoạn văn, toàn chữ |
+| 7 | có | `passage_image_id` ô 1–3 | tuỳ đề | ngữ liệu, chủ yếu là chữ |
+
+Hai chi tiết đo được và đáng nhớ:
+
+- **Hình luôn ở các cụm CUỐI của part** — Part 3 là ba cụm cuối, Part 4 là hai
+  bài cuối. Rải vào giữa đề là sai một chi tiết người luyện đề nhận ra ngay.
+- **Câu hỏi về hình là câu THỨ BA của cụm ở Part 3** (64, 67, 70) và **câu thứ
+  hai ở Part 4** (96, 99).
+
+Và chi tiết quan trọng nhất về nội dung: **bốn lựa chọn của câu "Look at the
+graphic" chính là bốn hàng của bảng.** Câu 64 hỏi giữa bốn loại sổ, câu 67 giữa
+bốn khung giờ, câu 70 giữa bốn cửa hàng. Lời thoại **không bao giờ đọc tên hàng
+là đáp án** — nó nói cột còn lại ("cỡ hai mươi bảy đô") và người nghe phải ghép
+lời nói với bảng. Đó là toàn bộ điểm của dạng câu này.
+
+### 23.1 Hình Part 3/4 phải VẼ TỪ DỮ LIỆU, không sinh bằng mô hình ảnh
+
+Luật đầu tiên của ảnh Part 1 là *không có chữ nào trong ảnh*. Hình Part 3/4
+ngược hoàn toàn: nó là một tài liệu và **toàn bộ giá trị nằm ở chữ đọc được** —
+thứ mô hình khuếch tán vẽ không đáng tin. Nên đường của Part 1 không dùng lại
+được, và `app/content/exam/graphics.py` vẽ bằng PIL từ dữ liệu bảng.
+
+Vẽ từ dữ liệu mua về ba thứ, và thứ ba là thứ **bắt buộc**:
+
+1. Chữ luôn đọc được, vì nó được đặt chứ không được đoán.
+2. Vẽ lại cho ra đúng tấm cũ, nên sửa một ô rồi vẽ lại là thao tác rẻ.
+3. **Chữ thay ảnh sinh ra từ CÙNG dữ liệu.** `assign_passage_image` trả 409 cho
+   một hình ngữ liệu không có `alt_text`, và nó đúng: hình đó *là* nội dung
+   người học phải đọc. Nếu hình do mô hình vẽ thì phải có người nhìn rồi mô tả
+   lại bằng tay — và mô tả tay đó trôi khỏi hình ngay lần sửa đầu tiên.
+
+Mô hình xuất thêm một khối `[GRAPHIC]` (tiêu đề, tiêu đề cột, bốn hàng, ngăn
+bằng `|`), tách ra thành hiện vật riêng đúng như `[PHOTO]` của Part 1 — parser
+từ chối dòng lạ, nên nhét vào tệp dán là làm cả khối không đọc được.
+
+### 23.2 Hai cổng làm cho tấm hình thật sự mang nghĩa
+
+- **Bốn lựa chọn phải đúng là bốn hàng của bảng.** Lấy từ chỗ khác nghĩa là
+  không cần nhìn bảng.
+- **Lời thoại không được đọc tên hàng là đáp án.** Đây là lỗi khó thấy nhất của
+  dạng này: câu vẫn có đúng một đáp án, bốn lựa chọn vẫn khớp bảng, chỉ là nó
+  không còn là câu hỏi về hình. Không phép kiểm nào khác thấy được.
+
+Blueprint cũng ràng buộc **hai chiều**: có nhãn `GRAPH_OR_TABLE` mà không có hình
+là bảo người học "nhìn vào hình" khi không có hình; có hình mà không câu nào hỏi
+tới thì tấm hình là trang trí.
+
+### 23.3 Người chấm phải được ĐỌC BẢNG
+
+Ba câu về hình bị gắn cờ ở lượt kiểm đầu — và đó là **đúng**: người chấm chỉ được
+nghe lời thoại, mà lời thoại cố tình không nói tên hàng. Nó vẫn trả về một chữ
+cái, y hệt kiểu mù đã gắn cờ oan 26 câu ở §22.2. Đưa bảng vào ngữ cảnh: **0 cờ**.
+
+Nói cách khác, cờ đó là bằng chứng thiết kế đúng — câu hỏi thật sự cần tấm hình.
+
+### 23.4 `alt_text` phải theo TỪNG ảnh, không theo lô
+
+`import_media --alt-text` chỉ có một giá trị cho cả lượt nhập, mà chữ thay ảnh
+mô tả **một** bức. Ba tấm bảng nhập cùng lúc thì một giá trị chung mô tả sai hai
+trong ba — và nó *đọc như* dữ liệu thật. Nay `import_media` đọc tệp kèm
+`<tên>.alt.txt`, thứ `generate_exam graphic` ghi ra từ chính dữ liệu đã vẽ nên
+bảng, nên nó không thể trôi khỏi hình theo cách một dòng gõ tay sẽ trôi. Nguồn
+và giấy phép vẫn khai một lần cho cả lô — chúng là thuộc tính của lô.
+
+Hình Part 3/4 ghi ra thư mục **riêng** (`graphic-images/`): `import_media` khớp
+theo số trong tên tệp và không có cách nào biết `p1-03.png` với `p3-11.png`
+thuộc hai part khác nhau.
+
+### 23.5 Trạng thái
+
+`tp-form-06`: **75 câu**, tất cả qua `validate_question`. Part 3 có **ba hình**
+đúng ở câu 64, 67, 70, mỗi hình kèm chữ thay ảnh sinh tự động, đã lên Cloudinary.
+Cả 39 câu Part 3 qua vòng đối chiếu **0 cờ**.
+
+
+---
+
+## 24. Hình Part 3/4 có bốn dạng, không chỉ là bảng (2026-08-23)
+
+§23 làm mỗi dạng bảng, và đó là thiếu. Đếm lại trên đề mẫu ETS: câu 64 **bảng**
+giá, câu 67 **lưới lịch** có ô trống, câu 70 **sơ đồ** bốn cửa hàng, câu 96 bảng
+danh sách, câu 99 hình có **đánh dấu bộ phận**. Bảng chỉ chiếm hai trên năm.
+
+Điều thật sự phân biệt các dạng không phải cách vẽ mà là **trục đáp án** — bốn
+lựa chọn của câu "Look at the graphic" lấy từ đâu:
+
+| dạng | trục đáp án | trên đề mẫu |
+|---|---|---|
+| `table` | tên HÀNG | câu 64: bốn loại sổ |
+| `schedule` | tiêu đề CỘT | câu 67: bốn khung giờ |
+| `chart` | nhãn cột biểu đồ | biểu đồ doanh số |
+| `map` | tên Ô trên sơ đồ | câu 70: bốn cửa hàng |
+
+Lấy nhầm trục thì câu hỏi vẫn hợp lệ về mọi mặt và vẫn có đúng một đáp án — nó
+chỉ không còn hỏi về tấm hình nữa. Cổng kiểm nay so với `answer_axis()` của dạng
+đó chứ không so cứng với tên hàng.
+
+**`schedule` ngược với `table` ở hai chỗ, và cả hai đều hỏng lặng lẽ:**
+
+- **Ô được phép TRỐNG** — câu "họ họp lúc mấy giờ" trả lời được chính nhờ tìm
+  cột mà mọi hàng đều trống. Bản đọc đầu tiên lọc `if cell.strip()` và thế là
+  xoá sạch đúng dữ kiện câu hỏi dựa vào; bản thứ hai `strip("|")` và mất ô trống
+  ở CUỐI hàng, thứ cũng là một khung giờ rảnh. Nay chỉ bỏ dấu `|` mở đầu.
+- **Số hàng đếm theo NGƯỜI, không theo lựa chọn.** Đề mẫu có hai người và bốn
+  khung giờ; áp luật "3–6 hàng" của bảng vào đó là từ chối đúng hình dạng thật.
+
+**Dạng thứ năm — hình có đánh dấu bộ phận (câu 99) — chưa làm.** Nó cần một tấm
+ảnh thật rồi phủ dấu A–D lên, tức là ghép đường Part 1 với đường này. Ghi ra
+đây thay vì lặng lẽ bỏ qua.
+
+### 24.1 Hai lỗi trình bày chỉ thấy khi nhìn ảnh
+
+Lưới lịch năm cột trên khổ 760px cho mỗi ô ~120px, hẹp hơn phần lớn nhãn thật:
+"Budget meeting" **tràn ra ngoài mép giấy** — tấm hình vẫn "vẽ xong", chỉ là mất
+chữ, và không phép kiểm nào thấy. Nay khổ giấy giãn theo số cột, và mỗi ô có một
+bước **thu chữ cho vừa** với sàn 13px trước khi cắt. PIL không có vùng cắt nên
+phải tự đo.
+
+### 24.2 Lời từ chối phải chỉ vào nguyên nhân
+
+Mô hình quên **dòng tiêu đề** khá thường, và khi đó hàng tiêu đề cột bị đọc
+thành tiêu đề — cả bảng trôi lên một dòng, rồi lỗi hiện ra ở tận chỗ khác ("cần
+2–4 hàng, đang có 1"). Người đọc đi sửa số hàng trong khi thứ thiếu là một dòng
+chữ. Nay bắt riêng: tiêu đề chứa `|` nghĩa là dòng tiêu đề bị bỏ quên.
+
+Và sửa ở PROMPT chứ không chỉ ở cổng kiểm: bản đầu mô tả bằng **số thứ tự dòng**
+("Line 3 is..."), thứ đếm sai ngay khi có dòng `kind:`. Nay đưa **ví dụ đầy đủ
+cho từng dạng**. Mô hình cũng từng lấy `uk_female_1` làm tên người trong lịch —
+prompt nay nói thẳng đó là chỉ dẫn thu âm, không phải một con người.
+
+### 24.3 Trạng thái
+
+`tp-form-06`: 75 câu, tất cả `published`. Ba hình Part 3 giờ là **ba dạng khác
+nhau** — bảng giá (câu 62–64), lưới lịch (65–67), sơ đồ kho (68–70) — đúng như
+đề thật, mỗi hình kèm chữ thay ảnh sinh tự động và đã lên Cloudinary.
+
+
+---
+
+## 25. Người chấm nghĩ 22 000 ký tự rồi không trả lời — và đó là một tín hiệu
+
+Chạy vòng đối chiếu bằng `qwen3.8-max-free` của tokenrouter: **37/39 câu sạch**,
+hai lượt gọi hết hạn mức đầu ra **khi đang suy luận**. Nới trần từ 1 500 lên
+4 000 token không cứu được — nó nghĩ nhiều hơn chứ không xong: 5 825 → 16 051 →
+22 672 ký tự tự nhủ. Một mô hình nghĩ mãi không dứt về đúng một câu là **triệu
+chứng của câu hỏi, không phải của trần token**.
+
+Mở câu đó ra thì thấy nó hỏng nặng, theo hai kiểu không cổng nào bắt được:
+
+- **Ba trong bốn lựa chọn IN RA là tên giọng** (`uk_female_1`). Tên giọng là chỉ
+  dẫn thu âm và nó nằm ngay trong prompt, nên mô hình nhỏ chép thẳng vào phần
+  in. Không có cách đọc nào khiến nó đúng, nên đây là **vấn đề** chứ không phải
+  cờ.
+- **Bảng lịch ghi Liam và Emma trong khi hai người nói tên là Sarah và James.**
+  Bảng và hội thoại nói về hai nhóm người khác nhau, nên câu "khi nào cả hai đều
+  rảnh" không có đáp án. Mọi cổng khác vẫn xanh: bảng hợp lệ, bốn lựa chọn khớp
+  trục đáp án, câu vẫn có đúng một `Answer:`.
+
+Hai cổng mới bắt đúng cả hai, và cổng thứ hai bắt luôn **bài test của chính
+mình**: fixture lịch trong `test_exam_generation.py` cũng có bảng ghi tên mà lời
+thoại không nhắc tới. Một cổng bắt được lỗi trong hiện vật của người viết ra nó
+là bằng chứng tốt hơn bất kỳ lượt chạy xanh nào.
+
+Trần đầu ra của chặng kiểm nay là `CHECK_MAX_TOKENS = 4000`, của chặng viết là
+12 000 — `qwen3.8-max` cần chừng đó cho ô lịch, ô bị ràng buộc nhiều nhất.
+
+**Kết quả cuối:** `tp-form-06` 75 câu, tất cả `published`, Part 3 qua vòng đối
+chiếu **0 cờ trên 39 câu** với ba hình ba dạng khác nhau.
