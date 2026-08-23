@@ -318,6 +318,13 @@ class TestCollection(Base, PublishableMixin):
 # Ô ngữ liệu -> cột ảnh của nó. Một chỗ duy nhất, vì cả endpoint quản trị lẫn
 # công cụ nhập ngoài luồng đều cần đúng bảng này — chép lại là hai bảng trôi
 # khỏi nhau, và cái trôi chỉ lộ ra khi một ô gắn vào cột của ô khác.
+# Thời lượng một đề TOEIC Listening & Reading đầy đủ: 45 phút Nghe + 75 phút
+# Đọc. Đây là ĐỊNH NGHĨA của kỳ thi, không phải một tuỳ chọn — nên một đề khai
+# `kind="full"` mà không có thời lượng là dữ liệu thiếu, và giao diện nói thật
+# khi nó hiện "Không giới hạn giờ".
+FULL_FORM_SECONDS = 120 * 60
+
+
 PASSAGE_IMAGE_COLUMNS = {
     1: "passage_image_id",
     2: "passage_2_image_id",

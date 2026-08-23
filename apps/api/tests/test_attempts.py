@@ -509,3 +509,44 @@ def test_scoring_reads_the_verdicts_finalise_just_wrote(db_session: Session) -> 
     # Một câu Nghe và một câu Đọc, cả hai trả lời đúng.
     assert attempt.listening_raw == 1
     assert attempt.reading_raw == 1
+
+
+def test_a_full_form_gets_the_exam_s_own_time_limit(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Đề ĐẦY ĐỦ mặc định 120 phút; đề rút gọn thì không.
+
+    TOEIC Listening & Reading là 45 phút Nghe + 75 phút Đọc — định nghĩa của kỳ
+    thi, không phải tuỳ chọn. Bỏ trống thì người học vào phòng thi thử mà không
+    có đồng hồ, và cái thiếu đó KHÔNG báo lỗi ở đâu: giao diện lặng lẽ hiện
+    "Không giới hạn giờ", đọc ra như một lựa chọn của người soạn chứ không như
+    một ô bị bỏ trống. Đề 200 câu đầu tiên nạp bằng pipeline đã đúng như thế.
+    """
+    headers = auth("admin")
+    full = client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "de-day-du", "title": "Đề đầy đủ", "kind": "full"},
+        headers=headers,
+    )
+    assert full.status_code == 201, full.text
+    assert full.json()["time_limit_seconds"] == 120 * 60
+
+    mini = client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "de-rut-gon", "title": "Đề rút gọn", "kind": "mini"},
+        headers=headers,
+    )
+    assert mini.json()["time_limit_seconds"] is None
+
+    # Người soạn nhập gì thì theo cái đó, kể cả trên một đề đầy đủ.
+    chosen = client.post(
+        "/api/v1/admin/tests",
+        json={
+            "slug": "de-tu-chon",
+            "title": "Đề tự chọn giờ",
+            "kind": "full",
+            "time_limit_seconds": 3600,
+        },
+        headers=headers,
+    )
+    assert chosen.json()["time_limit_seconds"] == 3600

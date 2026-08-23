@@ -39,7 +39,7 @@ from app.models import (
     TestCollection,
     User,
 )
-from app.models.practice import PASSAGE_IMAGE_COLUMNS
+from app.models.practice import FULL_FORM_SECONDS, PASSAGE_IMAGE_COLUMNS
 from app.models.validators import validate_question
 from app.schemas.admin import (
     ArchiveRequest,
@@ -406,7 +406,18 @@ def create_test(
         description=body.description,
         collection_id=collection_id,
         kind=body.kind,
-        time_limit_seconds=body.time_limit_seconds,
+        # Đề ĐẦY ĐỦ mặc định 120 phút. Không đặt thì người học vào phòng thi
+        # thử mà không có đồng hồ, và cái thiếu đó không báo lỗi ở đâu cả —
+        # giao diện chỉ lặng lẽ hiện "Không giới hạn giờ", đọc ra như một lựa
+        # chọn của người soạn chứ không như một ô bị bỏ trống.
+        #
+        # Vẫn nhường giá trị người soạn nhập, kể cả 0: một đề đầy đủ dùng để ôn
+        # không tính giờ là chuyện có thật, chỉ là không phải mặc định.
+        time_limit_seconds=(
+            FULL_FORM_SECONDS
+            if body.time_limit_seconds is None and body.kind == "full"
+            else body.time_limit_seconds
+        ),
         # Không bao giờ publish thẳng từ lúc tạo, dù nội dung có sạch tới đâu.
         status="draft",
         created_by=user.id,
