@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+When is the quarterly financial report due?
+voice: uk_female_1
+(A) Yes, the numbers were checked twice.
+(B) In the finance folder on the shared drive.
+(C) By Friday afternoon, I believe.
+Answer: C
+Source: original

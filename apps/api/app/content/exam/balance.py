@@ -25,6 +25,11 @@ from app.content.exam.blueprint import LISTENING_QUESTIONS_PER_SET, Blueprint
 from app.content.exam.writer import paste_path
 
 LETTERS = "ABCD"
+# Part 2 chỉ có ba đáp án. Gán đích `D` cho nó thì `rewrite` không tìm thấy lựa
+# chọn đó và **trả về khối y nguyên** — một lần bỏ qua im lặng, nên một phần tư
+# số câu Part 2 giữ nguyên vị trí đáp án mà mô hình đã chọn, và phép cân đọc như
+# đã chạy. Đúng cái bẫy `balance.py` đã ghi trước là sẽ gặp.
+LETTERS_BY_PART = {2: "ABC"}
 _OPTION = re.compile(r"^\(([A-D])\)\s*(.*)$")
 # `MULTILINE` là bắt buộc: `balance` quét cả khối chứ không từng dòng, và không
 # có cờ này thì `^` chỉ khớp đầu chuỗi — phép đếm trả về 0 cho mọi thứ trong khi
@@ -98,14 +103,18 @@ def rewrite(block: str, target: str) -> str:
     return "\n".join(lines)
 
 
-def plan_targets(count: int, seed: int) -> list[str]:
+def letters_for(part: int) -> str:
+    return LETTERS_BY_PART.get(part, LETTERS)
+
+
+def plan_targets(count: int, seed: int, letters: str = LETTERS) -> list[str]:
     """Chữ cái đích cho từng câu, chia đều và xoay theo `seed`.
 
     Xoay để hai đề khác nhau không cùng bắt đầu bằng A — một người làm nhiều đề
     sẽ nhận ra khuôn "câu 101 luôn là A" nhanh hơn ta tưởng.
     """
-    offset = seed % len(LETTERS)
-    return [LETTERS[(index + offset) % len(LETTERS)] for index in range(count)]
+    offset = seed % len(letters)
+    return [letters[(index + offset) % len(letters)] for index in range(count)]
 
 
 def balance(blueprint: Blueprint, workdir: Path, only: int | None = None) -> dict[str, int]:
@@ -129,7 +138,7 @@ def balance(blueprint: Blueprint, workdir: Path, only: int | None = None) -> dic
         # theo ô — đếm theo ô thì mỗi cụm chỉ nhận một chữ cái và ba câu của nó
         # cùng đáp án, thứ đọc ra ngay là máy làm.
         per_slot = LISTENING_QUESTIONS_PER_SET if part.part in (3, 4) else 1
-        targets = plan_targets(len(ordered) * per_slot, blueprint.seed)
+        targets = plan_targets(len(ordered) * per_slot, blueprint.seed, letters_for(part.part))
         for index, slot in enumerate(ordered):
             path = paste_path(workdir, slot)
             if not path.exists():

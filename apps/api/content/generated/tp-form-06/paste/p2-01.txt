@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+The board meeting is before your business trip, isn't it?
+voice: ca_female_1
+(A) No, my flight leaves at six.
+(B) Yes, I leave after it ends.
+(C) In the main conference room.
+Answer: B
+Source: original

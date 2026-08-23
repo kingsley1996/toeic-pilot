@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When will the landlord finish repairing the rented premises?
+voice: au_male_1
+(A) Yes, he already fixed the broken window.
+(B) On the second floor, next to the loading dock.
+(C) Probably by Friday, before the new lease starts.
+Answer: C
+Source: original

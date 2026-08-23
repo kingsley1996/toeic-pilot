@@ -486,6 +486,13 @@ Source: original
 """
 
 
+def _result(text: str):  # type: ignore[no-untyped-def]
+    """`LLMResult` tối thiểu cho các gateway giả."""
+    from app.services.llm.base import LLMResult, Usage
+
+    return LLMResult(text=text, usage=Usage(), model="fake", provider="fake")
+
+
 class _Recorder:
     """Gateway giả chỉ ghi lại yêu cầu và luôn trả về "A"."""
 
@@ -493,10 +500,8 @@ class _Recorder:
         self.seen = []
 
     def run(self, request, feature, tier):  # noqa: ANN001, ARG002
-        from app.services.llm.base import LLMResult
-
         self.seen.append(request)
-        return LLMResult(text="A", input_tokens=0, output_tokens=0, cached_tokens=0)
+        return _result("A")
 
 
 def _part3_plan(tmp_path):
@@ -873,3 +878,78 @@ def test_a_graphic_copied_from_the_prompt_example_is_rejected(tmp_path):
     )
     problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
     assert any("chép nguyên ví dụ" in problem for problem in problems)
+
+
+PART2_GOOD = """[QUESTION]
+voice: us_female_1
+Where did you put the quarterly sales report?
+voice: uk_male_1
+(A) On your desk, next to the printer.
+(B) Yes, I finished it last night.
+(C) About thirty copies, I think.
+Answer: A
+Source: original
+"""
+
+
+def test_part_2_balances_across_three_letters_not_four(tmp_path):
+    """Part 2 chỉ có ba đáp án, và gán đích `D` là một lần BỎ QUA IM LẶNG.
+
+    `rewrite` không tìm thấy lựa chọn `D` nên trả về khối y nguyên — một phần tư
+    số câu giữ nguyên vị trí đáp án mô hình đã chọn, trong khi phép cân báo đã
+    chạy xong. `balance.py` đã ghi trước là sẽ gặp chuyện này khi tới lượt Part 2.
+    """
+    from app.content.exam import balance as balancer
+
+    plan = bp.build_part2("tp-test", "Test", seed=3)
+    plan.parts[0].slots = plan.parts[0].slots[:6]
+    for slot in plan.parts[0].slots:
+        writer.save_slot(tmp_path, slot, PART2_GOOD.replace("us_female_1", slot.voices[0]))
+
+    tally = balancer.balance(plan, tmp_path, only=2)
+    assert tally["D"] == 0
+    # Sáu câu, ba chữ cái: đúng hai câu mỗi chữ.
+    assert sorted(tally[letter] for letter in "ABC") == [2, 2, 2]
+
+
+class _Replies:
+    """Gateway giả trả về đúng một khối cho trước."""
+
+    def __init__(self, text: str):
+        self.text = text
+
+    def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+        return _result(self.text)
+
+
+def test_a_part_2_block_is_complete_without_a_d_option():
+    """Phép kiểm "khối hoàn chỉnh" của `write_slot` đòi có dòng `(D)`.
+
+    Ở Part 2 đó là dấu hiệu SAI, nên mọi ô viết đúng đều bị NÉM ĐI trước khi kịp
+    lưu — và ô bị ném thì quay lại hàng đợi, nên lượt chạy sau lặp đúng như thế,
+    mãi mãi.
+
+    Bài này phải gọi `write_slot`, không phải `check_blueprint`: luật `(D)` nằm ở
+    chặng viết. Bản đầu của nó kiểm nhầm chặng và **vẫn xanh khi gỡ bản sửa** —
+    một bài test không kiểm thứ nó nói thì tệ hơn là không có, vì nó khiến ta
+    tin là đã được che.
+    """
+    plan = bp.build_part2("tp-test", "Test", seed=3)
+    slot = plan.parts[0].slots[0]
+    block = PART2_GOOD.replace("us_female_1", slot.voices[0])
+    assert writer.write_slot(_Replies(block), slot, Tier.CHEAP, 2).startswith("[QUESTION]")
+
+
+def test_part_2_needs_two_different_voices():
+    """Người hỏi và người đáp là hai người.
+
+    Một giọng cho cả bốn lượt nói thì người nghe không tách được câu hỏi khỏi ba
+    câu đáp, và cả dạng câu này mất nghĩa — nhưng bản thu vẫn phát ra bình
+    thường, nên chỉ nghe mới biết.
+    """
+    plan = bp.build_part2("tp-test", "Test", seed=3)
+    assert bp.validate(plan) == []
+    assert all(len(set(slot.voices)) == 2 for slot in plan.parts[0].slots)
+
+    plan.parts[0].slots[0].voices = ["us_female_1", "us_female_1"]
+    assert any("khác giọng" in problem for problem in bp.validate(plan))

@@ -87,6 +87,411 @@
       ]
     },
     {
+      "part": 2,
+      "slots": [
+        {
+          "id": "p2-01",
+          "number": 7,
+          "question_type": "PART_2_TAG_QUESTION",
+          "grammar": "",
+          "context": "lịch họp và lịch công tác",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-02",
+          "number": 8,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "đơn hàng và giao vận",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-03",
+          "number": 9,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "báo cáo tài chính quý",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-04",
+          "number": 10,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "bảo trì thiết bị văn phòng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-05",
+          "number": 11,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "chiến dịch marketing",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-06",
+          "number": 12,
+          "question_type": "PART_2_STATEMENT",
+          "grammar": "",
+          "context": "dịch vụ khách hàng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-07",
+          "number": 13,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "đào tạo nội bộ",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-08",
+          "number": 14,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "thuê và sửa chữa mặt bằng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-09",
+          "number": 15,
+          "question_type": "PART_2_CHOICE_QUESTION",
+          "grammar": "",
+          "context": "hợp đồng và đàm phán",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-10",
+          "number": 16,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "tuyển dụng và nhân sự",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-11",
+          "number": 17,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "lịch họp và lịch công tác",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-12",
+          "number": 18,
+          "question_type": "PART_2_STATEMENT",
+          "grammar": "",
+          "context": "đơn hàng và giao vận",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-13",
+          "number": 19,
+          "question_type": "PART_2_WHY_QUESTION",
+          "grammar": "",
+          "context": "báo cáo tài chính quý",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-14",
+          "number": 20,
+          "question_type": "PART_2_WHO_QUESTION",
+          "grammar": "",
+          "context": "bảo trì thiết bị văn phòng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-15",
+          "number": 21,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "chiến dịch marketing",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-16",
+          "number": 22,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "dịch vụ khách hàng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-17",
+          "number": 23,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "đào tạo nội bộ",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-18",
+          "number": 24,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "thuê và sửa chữa mặt bằng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-19",
+          "number": 25,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "hợp đồng và đàm phán",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-20",
+          "number": 26,
+          "question_type": "PART_2_TAG_QUESTION",
+          "grammar": "",
+          "context": "tuyển dụng và nhân sự",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-21",
+          "number": 27,
+          "question_type": "PART_2_CHOICE_QUESTION",
+          "grammar": "",
+          "context": "lịch họp và lịch công tác",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-22",
+          "number": 28,
+          "question_type": "PART_2_WHY_QUESTION",
+          "grammar": "",
+          "context": "đơn hàng và giao vận",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-23",
+          "number": 29,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "báo cáo tài chính quý",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-24",
+          "number": 30,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "bảo trì thiết bị văn phòng",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": ""
+        },
+        {
+          "id": "p2-25",
+          "number": 31,
+          "question_type": "PART_2_WHO_QUESTION",
+          "grammar": "",
+          "context": "chiến dịch marketing",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": ""
+        }
+      ]
+    },
+    {
       "part": 3,
       "slots": [
         {

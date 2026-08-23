@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_female_1
+Could you find out when the shipment will arrive?
+voice: us_male_1
+(A) Yes, the order was shipped today.
+(B) It's on the loading dock.
+(C) It should reach the depot tomorrow.
+Answer: C
+Source: original

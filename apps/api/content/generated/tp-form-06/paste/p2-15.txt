@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+Where are we launching the new marketing campaign?
+voice: uk_female_1
+(A) On social media and our company website.
+(B) Next Monday, after the budget meeting.
+(C) Yes, the team finished it yesterday.
+Answer: A
+Source: original

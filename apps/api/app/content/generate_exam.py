@@ -71,9 +71,13 @@ def _gateway() -> Gateway:
 
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
-    builder = {1: bp.build_part1, 3: bp.build_part3, 4: bp.build_part4, 5: bp.build_part5}[
-        args.part
-    ]
+    builder = {
+        1: bp.build_part1,
+        2: bp.build_part2,
+        3: bp.build_part3,
+        4: bp.build_part4,
+        5: bp.build_part5,
+    }[args.part]
     path = blueprint_path(args.slug)
     plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
     problems = bp.validate(plan)
@@ -511,7 +515,7 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
-    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 3, 4, 5))
+    plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5))
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")

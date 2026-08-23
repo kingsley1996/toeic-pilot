@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+Has the meeting time changed because of the business trip?
+voice: uk_male_1
+(A) I'll book the flight this afternoon.
+(B) Yes, the hotel is near the airport.
+(C) No, it's still scheduled for Thursday morning.
+Answer: C
+Source: original

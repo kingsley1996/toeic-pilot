@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_female_1
+Are you going to the job fair this afternoon?
+voice: us_male_1
+(A) No, the fare was too high.
+(B) Yes, I'll be there all afternoon.
+(C) It's in the main conference room.
+Answer: B
+Source: original

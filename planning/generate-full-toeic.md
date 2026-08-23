@@ -964,3 +964,51 @@ thành cụm thứ 9 của Part 3. Khớp SAI mà vẫn "thành công", đúng l
 
 Còn thiếu để thành đề đủ 200 câu: **Part 2** (31–? — thật ra 7–31, 25 câu),
 **Part 6** (131–146) và **Part 7** (147–200), cộng bảng quy đổi điểm.
+
+
+---
+
+## 27. Lát Part 2 — hai mươi lăm câu hỏi–đáp (2026-08-23)
+
+Part 2 là part đơn giản nhất về cấu trúc và lại lộ ra hai lỗi **bỏ qua im lặng**,
+cả hai đều vì nó chỉ có **ba** lựa chọn. Một trong hai đã được ghi trước trong
+`balance.py` từ lát Part 3, và ghi trước đúng chỗ:
+
+- **Cân đáp án gán đích `D` cho một câu không có `D`.** `rewrite` không tìm thấy
+  lựa chọn đó và trả về khối **y nguyên** — một phần tư số câu giữ nguyên vị trí
+  đáp án mô hình đã chọn, trong khi phép cân báo đã chạy xong. Nay
+  `LETTERS_BY_PART = {2: "ABC"}`, và phân bố thật đo được là A=8 B=9 C=8 D=0.
+- **Phép kiểm "khối hoàn chỉnh" đòi dòng `(D)`.** Ở Part 2 đó là dấu hiệu SAI,
+  nên mọi ô viết đúng đều bị NÉM ĐI trước khi kịp lưu — và ô bị ném quay lại
+  hàng đợi, nên lượt chạy sau lặp đúng như thế, mãi mãi.
+
+**Hai giọng mỗi câu**, người hỏi và người đáp, và blueprint từ chối nếu chúng
+trùng nhau: một giọng cho cả bốn lượt nói thì người nghe không tách được câu hỏi
+khỏi ba câu đáp — nhưng bản thu vẫn phát ra bình thường, nên chỉ nghe mới biết.
+
+### 27.1 Một bài test không kiểm thứ nó nói
+
+Bài test cho luật `(D)` **vẫn xanh khi gỡ bản sửa**: nó gọi `check_blueprint`
+trong khi luật đó nằm ở `write_slot`. Đã viết lại để gọi đúng chặng, với một
+gateway giả trả về khối cho trước, và xác nhận nó đỏ khi gỡ.
+
+Đây là đúng thứ `CLAUDE.md` cảnh báo ở mục e2e — "hãy chờ vài phép kiểm đỏ hoá ra
+vẫn xanh, và hãy sửa bài test chứ đừng sửa câu chuyện". Một bài test không kiểm
+thứ nó nói thì tệ hơn là không có, vì nó khiến ta tin là đã được che.
+
+### 27.2 Trạng thái
+
+`tp-form-06`: **130 câu, tất cả `published`**, và toàn bộ phần NGHE đã liền mạch
+từ câu 1 tới 100.
+
+| part | câu | ghi chú |
+|---|---|---|
+| 1 | 1–6 | 6 ảnh đen trắng |
+| 2 | 7–31 | 25 câu, ba đáp án, hai giọng |
+| 3 | 32–70 | 13 hội thoại, 3 hình |
+| 4 | 71–100 | 10 bài nói, 2 hình |
+| 5 | 101–130 | |
+
+Còn lại: **Part 6** (131–146, 16 câu) và **Part 7** (147–200, 54 câu) — cả hai
+là phần Đọc, không audio, nhưng Part 7 cần ngữ liệu nhiều đoạn và là part lớn
+nhất của đề. Cộng bảng quy đổi điểm.

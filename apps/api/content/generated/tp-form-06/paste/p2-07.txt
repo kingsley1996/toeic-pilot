@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+How should new staff prepare for the internal training?
+voice: uk_female_1
+(A) Yes, they attended last quarter.
+(B) By reviewing the safety materials beforehand.
+(C) In the training room on the second floor.
+Answer: B
+Source: original

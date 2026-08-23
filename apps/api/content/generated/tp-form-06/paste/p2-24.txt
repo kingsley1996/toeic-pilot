@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When is the copier scheduled for maintenance?
+voice: au_male_1
+(A) At two o'clock this afternoon.
+(B) Yes, it needs new toner.
+(C) In the supply room downstairs.
+Answer: A
+Source: original

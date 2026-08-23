@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+Why was the shipment delayed this morning?
+voice: us_female_1
+(A) It should arrive late tomorrow afternoon.
+(B) The carrier missed the pickup window.
+(C) Yes, the order was delayed.
+Answer: B
+Source: original

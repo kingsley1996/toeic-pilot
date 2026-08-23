@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+Who should I call about the broken printer?
+voice: us_female_1
+(A) Yes, it was fixed yesterday.
+(B) It's in the copy room.
+(C) The maintenance vendor, I think.
+Answer: C
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Could you make copies of the campaign flyer?
+voice: ca_male_1
+(A) I'll make coffee for the meeting.
+(B) The campaign ends on Friday.
+(C) Sure, how many do you need?
+Answer: C
+Source: original

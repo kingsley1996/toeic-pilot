@@ -331,6 +331,39 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
 PART4_VOICES = ("us_male_1", "uk_female_1", "au_male_1", "ca_female_1")
 
 
+# Part 2: hai mươi lăm câu hỏi–đáp, câu 7 tới 31 của đề thật.
+#
+# Không in gì cả, và chỉ có **ba** lựa chọn — hai điều đó chi phối mọi chặng sau.
+# Trọng số theo tỉ lệ thường thấy: câu hỏi WH chiếm phần lớn, câu đuôi và câu
+# lựa chọn ít hơn, và luôn có vài câu trần thuật (thứ người học hay trượt nhất
+# vì không có từ để hỏi mà bám vào).
+PART2_MIX: tuple[tuple[str, int], ...] = (
+    ("PART_2_WHERE_QUESTION", 3),
+    ("PART_2_WHEN_QUESTION", 3),
+    ("PART_2_HOW_QUESTION", 3),
+    ("PART_2_YES_NO_QUESTION", 3),
+    ("PART_2_REQUEST_OR_SUGGESTION", 3),
+    ("PART_2_WHO_QUESTION", 2),
+    ("PART_2_WHY_QUESTION", 2),
+    ("PART_2_TAG_QUESTION", 2),
+    ("PART_2_CHOICE_QUESTION", 2),
+    ("PART_2_STATEMENT", 2),
+)
+
+# Người hỏi và người đáp là HAI người, nên hai giọng — và ở Part 2 thì hai accent
+# khác nhau là chuyện bình thường của đề thật, khác với một cuộc hội thoại Part 3.
+PART2_PAIRS: tuple[tuple[str, str], ...] = (
+    ("us_female_1", "uk_male_1"),
+    ("uk_male_1", "au_female_1"),
+    ("au_female_1", "ca_male_1"),
+    ("ca_male_1", "us_female_1"),
+    ("us_male_1", "uk_female_1"),
+    ("uk_female_1", "au_male_1"),
+    ("au_male_1", "ca_female_1"),
+    ("ca_female_1", "us_male_1"),
+)
+
+
 @dataclass
 class QuestionSlot:
     """Một ô trong đề: chỗ này sẽ là câu hỏi gì.
@@ -444,6 +477,28 @@ def build_part1(slug: str, title: str, seed: int) -> Blueprint:
         for index, (question_type, people, scene) in enumerate(PART1_MIX, start=1)
     ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=1, slots=slots)])
+
+
+def build_part2(slug: str, title: str, seed: int) -> Blueprint:
+    """Hai mươi lăm câu Part 2, câu 7–31 của đề thật.
+
+    Ô là MỘT câu, như Part 1 và Part 5 — không phải cụm. Nhưng nó mang **hai**
+    giọng: một người hỏi, một người đáp.
+    """
+    kinds = [code for code, weight in PART2_MIX for _ in range(weight)]
+    random.Random(seed).shuffle(kinds)
+    slots = [
+        QuestionSlot(
+            id=f"p2-{index:02d}",
+            number=6 + index,
+            question_type=code,
+            grammar="",
+            context=BUSINESS_CONTEXTS[(index - 1 + seed) % len(BUSINESS_CONTEXTS)],
+            voices=list(PART2_PAIRS[(index - 1 + seed) % len(PART2_PAIRS)]),
+        )
+        for index, code in enumerate(kinds, start=1)
+    ]
+    return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=2, slots=slots)])
 
 
 def build_part3(slug: str, title: str, seed: int) -> Blueprint:
@@ -590,8 +645,19 @@ def validate(blueprint: Blueprint) -> list[str]:
                 problems.append(
                     f"{slot.id}: `{slot.grammar}` không phải điểm ngữ pháp của part {part.part}"
                 )
-            if part.part in (1, 2) and not slot.voice:
+            if part.part == 1 and not slot.voice:
                 problems.append(f"{slot.id}: phần nghe cần một giọng đọc")
+            if part.part == 2:
+                # Hai giọng: người hỏi và người đáp. Một giọng cho cả bốn lượt
+                # nói thì người nghe không tách được câu hỏi khỏi ba câu đáp, và
+                # cả dạng câu này mất nghĩa.
+                if len(slot.voices) != 2:
+                    problems.append(f"{slot.id}: Part 2 cần đúng 2 giọng (hỏi và đáp)")
+                elif slot.voices[0] == slot.voices[1]:
+                    problems.append(f"{slot.id}: người hỏi và người đáp phải khác giọng")
+                unknown = [v for v in slot.voices if v not in LOGICAL_VOICE_ACCENTS]
+                if unknown:
+                    problems.append(f"{slot.id}: giọng không có: {', '.join(unknown)}")
             if part.part in (3, 4):
                 problems.extend(_set_slot_problems(slot, part.part, valid_types))
             if part.part == 1 and slot.people not in PEOPLE_SHAPES:

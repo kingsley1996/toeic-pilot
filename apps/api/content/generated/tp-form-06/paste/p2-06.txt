@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+My magazine subscription expired last week.
+voice: us_female_1
+(A) I'm sorry, I'll renew it for you.
+(B) Yes, I read it every morning.
+(C) The magazine is on the table.
+Answer: A
+Source: original

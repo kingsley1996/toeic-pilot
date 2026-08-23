@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_male_1
+Please have the copier serviced before the meeting.
+voice: au_female_1
+(A) Yes, I copied it this morning.
+(B) I'll call the maintenance company right away.
+(C) The meeting room is on the second floor.
+Answer: B
+Source: original
