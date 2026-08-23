@@ -9,7 +9,7 @@ import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
 import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, ButtonLink, IconButton, Skeleton, Tag } from "@/components/ui";
+import { Avatar, ButtonLink, IconButton, Skeleton, Tag, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useProgression } from "@/lib/progression";
 import { useSession } from "@/lib/session";
@@ -29,7 +29,18 @@ import { useSession } from "@/lib/session";
  * hai" phải bảo trì riêng, và menu thứ hai luôn là menu bị quên khi thêm mục.
  */
 
-export type ShellNavItem = NavItem & { children?: NavItem[] };
+export type ShellNavItem = NavItem & {
+  children?: NavItem[];
+  /**
+   * Tiêu đề nhóm in RA TRÊN mục này, khi nó khác nhóm của mục ngay trước.
+   *
+   * Khu quản trị có bảy mục gốc làm ba việc không liên quan nhau — soạn nội
+   * dung, chỉnh giao diện, xem tầng AI — và xếp cả bảy vào một cột phẳng thì
+   * người đọc phải tự đoán ranh giới. Bên khu học không mục nào có `group`, nên
+   * ở đó không có tiêu đề nào được in ra.
+   */
+  group?: string;
+};
 
 /*
  * Nền động, đo bằng SỐ Ô lưới chứ không bằng pixel hay phần trăm: lưới là bội
@@ -324,8 +335,18 @@ function SidebarContent({
           </p>
         )}
         <nav className="flex flex-col gap-1">
-          {links.map((item) => (
+          {links.map((item, index) => (
             <div key={item.href} className="contents">
+              {item.group && item.group !== links[index - 1]?.group && (
+                <p
+                  className={cx(
+                    "px-2.5 text-label font-semibold uppercase text-ink-faint",
+                    index === 0 ? "mb-1" : "mb-1 mt-4",
+                  )}
+                >
+                  {item.group}
+                </p>
+              )}
               <NavLink
                 href={item.href}
                 label={item.label}

@@ -5,9 +5,11 @@ import {
   ClipboardList,
   Cpu,
   FolderTree,
+  Frame,
   Gauge,
   Headphones,
   Library,
+  ListTree,
   Palette,
   Sparkles,
   SquarePen,
@@ -32,17 +34,48 @@ type AdminNavItem = ShellNavItem;
 
 const ADMIN_LINKS: AdminNavItem[] = [
   { href: "/admin", label: "Overview", Icon: SquarePen },
-  { href: "/admin/vocabulary", label: "Vocabulary", Icon: Library },
-  { href: "/admin/vocabulary/tree", label: "Vocabulary tree", Icon: FolderTree },
-  { href: "/admin/dictation", label: "Dictation", Icon: Headphones },
-  { href: "/admin/dictation/tree", label: "Content tree", Icon: FolderTree },
-  { href: "/admin/tests", label: "Tests", Icon: ClipboardList },
-  { href: "/admin/appearance", label: "Appearance", Icon: Palette },
-  { href: "/admin/progression", label: "Progression", Icon: Gauge },
+
+  /*
+   * Cây của một khu là MỤC CON của khu đó, không phải một mục gốc thứ hai.
+   *
+   * Trước kia "Vocabulary tree" và "Content tree" đứng ngang hàng với
+   * "Vocabulary" và "Dictation", cùng một biểu tượng thư mục, và cái tên thứ hai
+   * còn không nói nó là cây của khu nào — trong khi màn đề thi lại gọi phần cây
+   * của nó cũng là "Cây nội dung". Ba cây, hai cái trùng tên, và hai tầng khác
+   * nhau nằm chung một cột.
+   */
+  {
+    href: "/admin/vocabulary",
+    label: "Vocabulary",
+    Icon: Library,
+    group: "Content",
+    children: [{ href: "/admin/vocabulary/tree", label: "Collections & topics", Icon: ListTree }],
+  },
+  {
+    href: "/admin/dictation",
+    label: "Dictation",
+    Icon: Headphones,
+    group: "Content",
+    children: [{ href: "/admin/dictation/tree", label: "Topics & lessons", Icon: FolderTree }],
+  },
+  { href: "/admin/tests", label: "Tests", Icon: ClipboardList, group: "Content" },
+
+  { href: "/admin/appearance", label: "Appearance", Icon: Palette, group: "System" },
+  {
+    href: "/admin/progression",
+    label: "Progression",
+    Icon: Gauge,
+    group: "System",
+    // Màn xem trước khung avatar là một TRANG THẬT không có lối vào nào trong
+    // menu: nó tồn tại chính vì không phép kiểm nào trong terminal thấy được một
+    // cái khung đặt lệch, mà thứ duy nhất mở nó ra lại là gõ tay đường dẫn.
+    children: [{ href: "/admin/progression/preview", label: "Frame preview", Icon: Frame }],
+  },
   {
     href: "/admin/ai",
     label: "AI layer",
     Icon: Sparkles,
+    group: "System",
     // Gắn nhãn chỉ là MỘT việc của tầng AI, không phải cả tầng. Để nó ngang
     // hàng với "Tầng AI" ở menu chính sẽ ngụ ý hai khu riêng biệt, rồi mục thứ
     // hai (giải thích câu sai) và thứ ba (kế hoạch học) sẽ không biết đặt đâu.
@@ -75,7 +108,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarShell
       links={ADMIN_LINKS}
-      sectionLabel="Content"
       showRole
       headerExtra={
         <>

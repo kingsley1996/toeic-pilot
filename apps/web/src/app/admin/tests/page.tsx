@@ -28,6 +28,7 @@ import {
   cx,
 } from "@/components/ui";
 import { Modal } from "@/components/modal";
+import { TreeEmpty, TreeNode } from "@/components/tree";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -284,7 +285,7 @@ export default function AdminTestsPage() {
       </Panel>
 
       <section className="mt-10">
-        <SectionHeader title="Cây nội dung" />
+        <SectionHeader title="Bộ đề và đề" />
         {tests === null || collections === null ? (
           <SkeletonList rows={3} />
         ) : collections.length === 0 && tests.length === 0 ? (
@@ -353,65 +354,75 @@ function CollectionBlock({
   const [refusal, setRefusal] = useState<string | null>(null);
 
   return (
-    <Panel className="p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <FolderTree size={16} strokeWidth={1.75} aria-hidden className="text-ink-faint" />
-            <p className="font-semibold">{collection.title}</p>
+    <>
+      <TreeNode
+        icon={FolderTree}
+        name={<span className="truncate font-semibold">{collection.title}</span>}
+        meta={
+          <>
             <PublishTag status={collection.status} />
             {collection.year !== null && <Tag>{collection.year}</Tag>}
             <span className="font-data text-small text-ink-faint">{collection.slug}</span>
-          </div>
-          <p className="mt-1 text-small text-ink-muted">
-            <span className="font-data tabular-nums">{collection.published_test_count}</span>/
-            <span className="font-data tabular-nums">{collection.test_count}</span> đề đã xuất bản
-          </p>
-        </div>
-        {canPublish && collection.status !== "published" && (
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={onPublish}
-            disabled={busy || collection.published_test_count === 0}
-            title={
-              collection.published_test_count === 0
-                ? "Chưa có đề nào đã xuất bản — bộ đề mở ra sẽ rỗng"
-                : undefined
-            }
-          >
-            <Send size={13} strokeWidth={2} aria-hidden />
-            Xuất bản bộ
-          </Button>
+            <span className="text-small text-ink-muted">
+              <span className="font-data tabular-nums">{collection.published_test_count}</span>/
+              <span className="font-data tabular-nums">{collection.test_count}</span> đề đã xuất bản
+            </span>
+          </>
+        }
+        actions={
+          <>
+            {canPublish && collection.status !== "published" && (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={onPublish}
+                disabled={busy || collection.published_test_count === 0}
+                title={
+                  collection.published_test_count === 0
+                    ? "Chưa có đề nào đã xuất bản — bộ đề mở ra sẽ rỗng"
+                    : undefined
+                }
+              >
+                <Send size={13} strokeWidth={2} aria-hidden />
+                Xuất bản bộ
+              </Button>
+            )}
+            {canPublish && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="quiet"
+                  onClick={() => onArchive(collection.status !== "archived")}
+                  disabled={busy}
+                >
+                  {collection.status === "archived" ? "Bỏ lưu trữ" : "Lưu trữ"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="quiet"
+                  onClick={() => setConfirming(true)}
+                  disabled={busy}
+                  // Xoá bộ đề KHÔNG xoá đề trong nó, và endpoint từ chối khi bộ còn
+                  // đề — nói trước ở đây để người ta không bấm rồi mới biết.
+                  title={
+                    collection.test_count > 0
+                      ? "Còn đề trong bộ — chuyển chúng sang bộ khác trước"
+                      : undefined
+                  }
+                >
+                  <Trash2 size={13} strokeWidth={1.75} aria-hidden />
+                </Button>
+              </div>
+            )}
+          </>
+        }
+      >
+        {tests.length === 0 ? (
+          <TreeEmpty>Bộ này chưa có đề nào.</TreeEmpty>
+        ) : (
+          tests.map((test) => <TestRow key={test.id} test={test} />)
         )}
-        {canPublish && (
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              size="sm"
-              variant="quiet"
-              onClick={() => onArchive(collection.status !== "archived")}
-              disabled={busy}
-            >
-              {collection.status === "archived" ? "Bỏ lưu trữ" : "Lưu trữ"}
-            </Button>
-            <Button
-              size="sm"
-              variant="quiet"
-              onClick={() => setConfirming(true)}
-              disabled={busy}
-              // Xoá bộ đề KHÔNG xoá đề trong nó, và endpoint từ chối khi bộ còn
-              // đề — nói trước ở đây để người ta không bấm rồi mới biết.
-              title={
-                collection.test_count > 0
-                  ? "Còn đề trong bộ — chuyển chúng sang bộ khác trước"
-                  : undefined
-              }
-            >
-              <Trash2 size={13} strokeWidth={1.75} aria-hidden />
-            </Button>
-          </div>
-        )}
-      </div>
+      </TreeNode>
 
       <Modal
         open={confirming}
@@ -468,15 +479,7 @@ function CollectionBlock({
           </div>
         )}
       </Modal>
-
-      <div className="mt-3 space-y-2 border-l-2 border-rule pl-3">
-        {tests.length === 0 ? (
-          <p className="text-small text-ink-muted">Bộ này chưa có đề nào.</p>
-        ) : (
-          tests.map((test) => <TestRow key={test.id} test={test} />)
-        )}
-      </div>
-    </Panel>
+    </>
   );
 }
 
@@ -484,7 +487,7 @@ function TestRow({ test }: { test: TestAdmin }) {
   return (
     <Link
       href={`/admin/tests/${test.slug}`}
-      className="block rounded border border-rule bg-panel p-3 hover:border-rule-strong"
+      className="block rounded border border-rule bg-recess px-3 py-2.5 hover:border-rule-strong"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <FileText size={14} strokeWidth={1.75} aria-hidden className="text-ink-faint" />

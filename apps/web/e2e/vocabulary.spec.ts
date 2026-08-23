@@ -188,17 +188,21 @@ test("admin sửa và xoá được chủ đề qua UI", async ({ page, request 
   });
   expect(res.status()).toBe(201);
 
-  await page.goto("/admin");
-  const row = page.locator("li").filter({ hasText: displayName });
+  // Vòng đời của chủ đề nằm trong CÂY từ vựng, không còn ở trang tổng quan:
+  // chủ đề là tầng thứ ba của cây đó. Chủ đề vừa tạo chưa thuộc cuốn sách nào
+  // nên nó nằm trong khối "chưa xếp" — chỗ dành riêng cho thứ học viên chưa có
+  // đường tới.
+  await page.goto("/admin/vocabulary/tree");
+  const row = page.locator("div.bg-recess").filter({ hasText: displayName });
   await expect(row).toBeVisible();
 
-  // Sửa tên qua hộp thoại.
+  // Đổi tên ngay trên hàng, không qua hộp thoại.
   const renamed = `e2e Đã đổi tên ${stamp}`;
-  await row.getByRole("button", { name: "Sửa" }).click();
-  await page.locator(`dialog input[value="${displayName}"]`).fill(renamed);
-  await page.getByRole("button", { name: "Lưu" }).click();
+  await page.getByRole("button", { name: `Sửa tên: ${displayName}` }).click();
+  await page.locator(`input[value="${displayName}"]`).fill(renamed);
+  await page.getByRole("button", { name: "Lưu tên" }).click();
   // Sau đổi tên, locator cũ (lọc theo tên cũ) không còn khớp — lấy lại hàng theo tên mới.
-  const renamedRow = page.locator("li").filter({ hasText: renamed });
+  const renamedRow = page.locator("div.bg-recess").filter({ hasText: renamed });
   await expect(renamedRow).toBeVisible();
 
   // Xoá hai bước (DestructiveButton phải bấm 2 lần).

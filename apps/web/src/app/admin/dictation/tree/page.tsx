@@ -8,33 +8,34 @@ import {
   type DictationStoryAdminPage,
   type DictationTopicAdmin,
 } from "@toeic-pilot/shared";
-import { Check, Pencil, Send, X } from "lucide-react";
+import { BookOpen, FileAudio, FolderTree, Headphones, Send } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
+import { DestructiveButton } from "@/components/destructive-button";
+import { AddChild, InlineRename, TreeEmpty, TreeNode } from "@/components/tree";
 import {
   Alert,
   Button,
-  Field,
-  Input,
+  EmptyState,
   Page,
   PageHeader,
-  Panel,
   PublishTag,
   SectionHeader,
-  Select,
   SkeletonList,
   Tag,
 } from "@/components/ui";
-import { DestructiveButton } from "@/components/destructive-button";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
 /**
- * Cây nội dung dictation: chủ đề → phần → bài.
+ * Cây dictation: chủ đề → phần → bài.
  *
- * Ba tầng trên một màn hình chứ không ba màn hình riêng: lúc dựng cây, người ta
- * tạo một chủ đề rồi tạo ngay phần bên trong nó, rồi bài bên trong phần. Bắt họ
- * điều hướng qua lại giữa ba trang là biến một thao tác liền mạch thành ba.
+ * Cùng hình dạng với `/admin/vocabulary/tree` và `/admin/tests`, và đó là chủ
+ * đích: ba cây khác nhau về nội dung nhưng giống hệt nhau về thao tác — đổi
+ * tên, xuất bản, xoá, thêm con — nên chúng phải trông giống nhau. Bản trước in
+ * ba danh sách phẳng chồng lên nhau, mỗi hàng con mang tên cha ở đầu dòng; quan
+ * hệ cha–con khi đó là thứ người đọc phải tự ghép lại, và một phần rỗng thì
+ * không hiện ra ở đâu cả.
  */
 export default function AdminDictationTreePage() {
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
@@ -44,10 +45,6 @@ export default function AdminDictationTreePage() {
   const [error, setError] = useState<string | null>(null);
   // 0 = không bị cắt; khác 0 là tổng số bài thật.
   const [truncated, setTruncated] = useState(0);
-
-  const [topicForm, setTopicForm] = useState({ slug: "", name: "" });
-  const [sectionForm, setSectionForm] = useState({ topic_id: "", name: "" });
-  const [storyForm, setStoryForm] = useState({ section_id: "", title: "" });
 
   const refresh = useCallback((t: string) => {
     void apiFetch<DictationTopicAdmin[]>(API_ROUTES.adminDictationTopics, { token: t })
@@ -74,20 +71,7 @@ export default function AdminDictationTreePage() {
     if (token) refresh(token);
   }, [token, refresh]);
 
-  async function create(path: string, body: unknown) {
-    if (!token) return;
-    setError(null);
-    try {
-      await apiFetch(path, { method: "POST", token, body: JSON.stringify(body) });
-      refresh(token);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Không tạo được.");
-    }
-  }
-
-  const [editing, setEditing] = useState<{ id: string; value: string } | null>(null);
-
-  async function send(path: string, method: "PATCH" | "DELETE", body?: unknown) {
+  async function send(path: string, method: "POST" | "PATCH" | "DELETE", body?: unknown) {
     if (!token) return;
     setError(null);
     try {
@@ -102,74 +86,6 @@ export default function AdminDictationTreePage() {
     }
   }
 
-  /** Ô sửa tên tại chỗ: đổi tên là thao tác hay dùng nhất, không đáng phải mở một trang khác. */
-  function NameCell({
-    id,
-    name,
-    save,
-  }: {
-    id: string;
-    name: string;
-    save: (value: string) => void;
-  }) {
-    if (editing?.id !== id) {
-      return (
-        <>
-          <span className="font-semibold">{name}</span>
-          <Button
-            size="sm"
-            variant="quiet"
-            aria-label={`Sửa tên ${name}`}
-            title="Sửa tên"
-            onClick={() => setEditing({ id, value: name })}
-          >
-            <Pencil size={14} strokeWidth={2} aria-hidden />
-          </Button>
-        </>
-      );
-    }
-    return (
-      <span className="flex min-w-0 flex-1 items-center gap-1">
-        <Input
-          value={editing.value}
-          autoFocus
-          onChange={(e) => setEditing({ id, value: e.target.value })}
-          onKeyDown={(e) => {
-            // Bỏ qua Enter khi bộ gõ đang ghép chữ: gõ Telex hay VNI thì Enter
-            // giữa chừng một từ là phím XÁC NHẬN của bộ gõ, không phải phím lưu
-            // — không chặn thì tên chủ đề bị lưu ở dạng dở dang.
-            if (e.nativeEvent.isComposing) return;
-            if (e.key === "Enter" && editing.value.trim()) save(editing.value.trim());
-            if (e.key === "Escape") setEditing(null);
-          }}
-          className="max-w-xs"
-        />
-        <Button
-          size="sm"
-          aria-label="Lưu tên"
-          disabled={!editing.value.trim()}
-          onClick={() => save(editing.value.trim())}
-        >
-          <Check size={14} strokeWidth={2} aria-hidden />
-        </Button>
-        <Button size="sm" variant="quiet" aria-label="Huỷ sửa" onClick={() => setEditing(null)}>
-          <X size={14} strokeWidth={2} aria-hidden />
-        </Button>
-      </span>
-    );
-  }
-
-  async function publish(path: string) {
-    if (!token) return;
-    setError(null);
-    try {
-      await apiFetch(path, { method: "POST", token });
-      refresh(token);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Không xuất bản được.");
-    }
-  }
-
   if (status !== "authenticated") {
     return (
       <Page>
@@ -181,7 +97,7 @@ export default function AdminDictationTreePage() {
   return (
     <Page>
       <PageHeader
-        title="Cây nội dung"
+        title="Cây bài nghe"
         description="Chủ đề → phần → bài. Xuất bản từ dưới lên: bài trước, rồi phần, rồi chủ đề."
       />
 
@@ -206,250 +122,245 @@ export default function AdminDictationTreePage() {
       </Alert>
 
       <section className="mt-8">
-        <SectionHeader title="Chủ đề" />
-        <Panel className="p-4">
-          <div className="grid gap-3 sm:grid-cols-[10rem_1fr_auto] sm:items-end">
-            <Field label="Slug" hint="dùng trong URL">
-              <Input
-                value={topicForm.slug}
-                onChange={(e) => setTopicForm({ ...topicForm, slug: e.target.value })}
-                placeholder="short-stories"
-              />
-            </Field>
-            <Field label="Tên hiển thị">
-              <Input
-                value={topicForm.name}
-                onChange={(e) => setTopicForm({ ...topicForm, name: e.target.value })}
-                placeholder="Short stories"
-              />
-            </Field>
-            <Button
-              disabled={!topicForm.slug.trim() || !topicForm.name.trim()}
-              onClick={() => {
-                void create(API_ROUTES.adminDictationTopics, topicForm);
-                setTopicForm({ slug: "", name: "" });
-              }}
-            >
-              Thêm chủ đề
-            </Button>
-          </div>
-        </Panel>
+        <SectionHeader
+          title="Chủ đề"
+          aside={
+            <AddChild
+              label="Thêm chủ đề"
+              fields={[
+                { name: "slug", placeholder: "short-stories", className: "max-w-[10rem]" },
+                { name: "name", placeholder: "Short stories" },
+              ]}
+              onSubmit={(values) => void send(API_ROUTES.adminDictationTopics, "POST", values)}
+            />
+          }
+        />
 
         {!topics && <SkeletonList rows={2} />}
-        <div className="mt-3 space-y-2">
-          {topics?.map((topic) => (
-            <Panel key={topic.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-              <NameCell
-                id={topic.id}
-                name={topic.name}
-                save={(value) => {
-                  setEditing(null);
-                  void send(API_ROUTES.adminDictationTopic(topic.id), "PATCH", { name: value });
-                }}
-              />
-              <span className="font-data text-small text-ink-faint">/{topic.slug}</span>
-              <span className="font-data text-small text-ink-muted">
-                {topic.section_count} phần
-              </span>
-              <span className="ml-auto flex items-center gap-2">
-                <PublishTag status={topic.status} />
-                {topic.status !== "published" && (
-                  <Button
-                    size="sm"
-                    disabled={!canPublish}
-                    title={canPublish ? "Xuất bản chủ đề" : "Chỉ admin mới xuất bản được"}
-                    onClick={() => void publish(API_ROUTES.adminDictationTopicPublish(topic.id))}
-                  >
-                    <Send size={14} strokeWidth={2} aria-hidden />
-                    Xuất bản
-                  </Button>
-                )}
-                <DestructiveButton
-                  label="Xoá"
-                  confirmLabel={`Xoá cả ${topic.section_count} phần?`}
-                  disabled={!canPublish}
-                  title={
-                    canPublish
-                      ? "Xoá chủ đề và mọi phần, bài bên trong. Các câu nghe vẫn được giữ lại."
-                      : "Chỉ admin mới xoá được"
-                  }
-                  onConfirm={() => void send(API_ROUTES.adminDictationTopic(topic.id), "DELETE")}
-                />
-              </span>
-            </Panel>
-          ))}
-        </div>
-      </section>
 
-      <section className="mt-10">
-        <SectionHeader title="Phần" />
-        <Panel className="p-4">
-          <div className="grid gap-3 sm:grid-cols-[14rem_1fr_auto] sm:items-end">
-            <Field label="Thuộc chủ đề">
-              <Select
-                value={sectionForm.topic_id}
-                onChange={(e) => setSectionForm({ ...sectionForm, topic_id: e.target.value })}
-              >
-                <option value="">(chọn chủ đề)</option>
-                {topics?.map((topic) => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label="Tên phần" hint="Unit 1, Level A, Tuần 3 — tuỳ bạn">
-              <Input
-                value={sectionForm.name}
-                onChange={(e) => setSectionForm({ ...sectionForm, name: e.target.value })}
-                placeholder="Unit 1"
-              />
-            </Field>
-            <Button
-              disabled={!sectionForm.topic_id || !sectionForm.name.trim()}
-              onClick={() => {
-                void create(API_ROUTES.adminDictationSections, sectionForm);
-                setSectionForm({ topic_id: "", name: "" });
-              }}
-            >
-              Thêm phần
-            </Button>
-          </div>
-        </Panel>
+        {topics?.length === 0 && (
+          <EmptyState
+            icon={FolderTree}
+            title="Chưa có chủ đề nào"
+            description="Tạo một chủ đề, rồi thêm phần bên trong nó, rồi bài bên trong phần."
+          />
+        )}
 
-        <div className="mt-3 space-y-2">
-          {sections.map((section) => (
-            <Panel key={section.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-              <span className="font-data text-small text-ink-faint">{section.topic_name} /</span>
-              <NameCell
-                id={section.id}
-                name={section.name}
-                save={(value) => {
-                  setEditing(null);
-                  void send(API_ROUTES.adminDictationSection(section.id), "PATCH", { name: value });
-                }}
-              />
-              <span className="font-data text-small text-ink-muted">{section.story_count} bài</span>
-              <span className="ml-auto flex items-center gap-2">
-                <PublishTag status={section.status} />
-                {section.status !== "published" && (
-                  <Button
-                    size="sm"
-                    disabled={!canPublish}
-                    onClick={() =>
-                      void publish(API_ROUTES.adminDictationSectionPublish(section.id))
+        <div className="space-y-3">
+          {topics?.map((topic) => {
+            const inTopic = sections.filter((section) => section.topic_id === topic.id);
+            return (
+              <TreeNode
+                key={topic.id}
+                icon={Headphones}
+                name={
+                  <InlineRename
+                    value={topic.name}
+                    onSave={(name) =>
+                      void send(API_ROUTES.adminDictationTopic(topic.id), "PATCH", { name })
                     }
-                  >
-                    <Send size={14} strokeWidth={2} aria-hidden />
-                    Xuất bản
-                  </Button>
-                )}
-                <DestructiveButton
-                  label="Xoá"
-                  confirmLabel={`Xoá cả ${section.story_count} bài?`}
-                  disabled={!canPublish}
-                  title={
-                    canPublish
-                      ? "Xoá phần và mọi bài bên trong. Các câu nghe vẫn được giữ lại."
-                      : "Chỉ admin mới xoá được"
-                  }
-                  onConfirm={() =>
-                    void send(API_ROUTES.adminDictationSection(section.id), "DELETE")
-                  }
-                />
-              </span>
-            </Panel>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-10">
-        <SectionHeader title="Bài" />
-        <Panel className="p-4">
-          <div className="grid gap-3 sm:grid-cols-[14rem_1fr_auto] sm:items-end">
-            <Field label="Thuộc phần">
-              <Select
-                value={storyForm.section_id}
-                onChange={(e) => setStoryForm({ ...storyForm, section_id: e.target.value })}
+                  />
+                }
+                meta={
+                  <>
+                    <span className="font-data text-small text-ink-faint">/{topic.slug}</span>
+                    <span className="font-data text-small text-ink-muted">
+                      {topic.section_count} phần
+                    </span>
+                    <PublishTag status={topic.status} />
+                  </>
+                }
+                actions={
+                  <>
+                    {topic.status !== "published" && (
+                      <Button
+                        size="sm"
+                        disabled={!canPublish}
+                        title={canPublish ? "Xuất bản chủ đề" : "Chỉ admin mới xuất bản được"}
+                        onClick={() =>
+                          void send(API_ROUTES.adminDictationTopicPublish(topic.id), "POST")
+                        }
+                      >
+                        <Send size={13} strokeWidth={2} aria-hidden />
+                        Xuất bản
+                      </Button>
+                    )}
+                    <DestructiveButton
+                      label="Xoá"
+                      confirmLabel={`Xoá cả ${topic.section_count} phần?`}
+                      disabled={!canPublish}
+                      title={
+                        canPublish
+                          ? "Xoá chủ đề và mọi phần, bài bên trong. Các câu nghe vẫn được giữ lại."
+                          : "Chỉ admin mới xoá được"
+                      }
+                      onConfirm={() =>
+                        void send(API_ROUTES.adminDictationTopic(topic.id), "DELETE")
+                      }
+                    />
+                  </>
+                }
               >
-                <option value="">(chọn phần)</option>
-                {sections.map((section) => (
-                  <option key={section.id} value={section.id}>
-                    {section.topic_name} / {section.name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label="Tên bài">
-              <Input
-                value={storyForm.title}
-                onChange={(e) => setStoryForm({ ...storyForm, title: e.target.value })}
-                placeholder="A Day at the Office"
-              />
-            </Field>
-            <Button
-              disabled={!storyForm.section_id || !storyForm.title.trim()}
-              onClick={() => {
-                void create(API_ROUTES.adminDictationStories, storyForm);
-                setStoryForm({ section_id: "", title: "" });
-              }}
-            >
-              Thêm bài
-            </Button>
-          </div>
-        </Panel>
+                {inTopic.length === 0 && <TreeEmpty>Chủ đề này chưa có phần nào.</TreeEmpty>}
 
-        <div className="mt-3 space-y-2">
-          {stories.map((story) => (
-            <Panel key={story.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-              <span className="font-data text-small text-ink-faint">
-                {story.topic_name} / {story.section_name} /
-              </span>
-              <NameCell
-                id={story.id}
-                name={story.title}
-                save={(value) => {
-                  setEditing(null);
-                  void send(API_ROUTES.adminDictationStory(story.id), "PATCH", { title: value });
-                }}
-              />
-              <Tag tone={story.published_item_count > 0 ? "ok" : "neutral"}>
-                {story.published_item_count}/{story.item_count} câu đã xuất bản
-              </Tag>
-              <span className="ml-auto flex items-center gap-2">
-                <PublishTag status={story.status} />
-                {story.status !== "published" && (
-                  <Button
-                    size="sm"
-                    disabled={!canPublish || !story.publishable}
-                    // Nút mờ CHÍNH LÀ thông báo — nên nó phải nói được vì sao.
-                    title={
-                      !canPublish
-                        ? "Chỉ admin mới xuất bản được"
-                        : story.publishable
-                          ? "Xuất bản bài này"
-                          : "Bài chưa có câu nào được xuất bản"
+                {inTopic.map((section) => {
+                  const inSection = stories.filter((story) => story.section_id === section.id);
+                  return (
+                    <TreeNode
+                      key={section.id}
+                      level={1}
+                      icon={BookOpen}
+                      name={
+                        <InlineRename
+                          value={section.name}
+                          onSave={(name) =>
+                            void send(API_ROUTES.adminDictationSection(section.id), "PATCH", {
+                              name,
+                            })
+                          }
+                        />
+                      }
+                      meta={
+                        <>
+                          <span className="font-data text-small text-ink-muted">
+                            {section.story_count} bài
+                          </span>
+                          <PublishTag status={section.status} />
+                        </>
+                      }
+                      actions={
+                        <>
+                          {section.status !== "published" && (
+                            <Button
+                              size="sm"
+                              disabled={!canPublish}
+                              title={canPublish ? "Xuất bản phần" : "Chỉ admin mới xuất bản được"}
+                              onClick={() =>
+                                void send(
+                                  API_ROUTES.adminDictationSectionPublish(section.id),
+                                  "POST",
+                                )
+                              }
+                            >
+                              <Send size={13} strokeWidth={2} aria-hidden />
+                              Xuất bản
+                            </Button>
+                          )}
+                          <DestructiveButton
+                            label="Xoá"
+                            confirmLabel={`Xoá cả ${section.story_count} bài?`}
+                            disabled={!canPublish}
+                            title={
+                              canPublish
+                                ? "Xoá phần và mọi bài bên trong. Các câu nghe vẫn được giữ lại."
+                                : "Chỉ admin mới xoá được"
+                            }
+                            onConfirm={() =>
+                              void send(API_ROUTES.adminDictationSection(section.id), "DELETE")
+                            }
+                          />
+                        </>
+                      }
+                    >
+                      {inSection.length === 0 && <TreeEmpty>Phần này chưa có bài nào.</TreeEmpty>}
+
+                      {inSection.map((story) => (
+                        <TreeNode
+                          key={story.id}
+                          level={2}
+                          icon={FileAudio}
+                          name={
+                            <InlineRename
+                              value={story.title}
+                              onSave={(title) =>
+                                void send(API_ROUTES.adminDictationStory(story.id), "PATCH", {
+                                  title,
+                                })
+                              }
+                            />
+                          }
+                          meta={
+                            <>
+                              <Tag tone={story.published_item_count > 0 ? "ok" : "neutral"}>
+                                {story.published_item_count}/{story.item_count} câu đã xuất bản
+                              </Tag>
+                              <PublishTag status={story.status} />
+                            </>
+                          }
+                          actions={
+                            <>
+                              {story.status !== "published" && (
+                                <Button
+                                  size="sm"
+                                  disabled={!canPublish || !story.publishable}
+                                  // Nút mờ CHÍNH LÀ thông báo — nên nó phải nói được vì sao.
+                                  title={
+                                    !canPublish
+                                      ? "Chỉ admin mới xuất bản được"
+                                      : story.publishable
+                                        ? "Xuất bản bài này"
+                                        : "Bài chưa có câu nào được xuất bản"
+                                  }
+                                  onClick={() =>
+                                    void send(
+                                      API_ROUTES.adminDictationStoryPublish(story.id),
+                                      "POST",
+                                    )
+                                  }
+                                >
+                                  <Send size={13} strokeWidth={2} aria-hidden />
+                                  Xuất bản
+                                </Button>
+                              )}
+                              <DestructiveButton
+                                label="Xoá"
+                                confirmLabel="Xoá bài này?"
+                                disabled={!canPublish}
+                                title={
+                                  canPublish
+                                    ? `Xoá bài. ${story.item_count} câu bên trong sẽ trở lại thành câu lẻ, không bị xoá.`
+                                    : "Chỉ admin mới xoá được"
+                                }
+                                onConfirm={() =>
+                                  void send(API_ROUTES.adminDictationStory(story.id), "DELETE")
+                                }
+                              />
+                            </>
+                          }
+                        />
+                      ))}
+
+                      <div className="pt-0.5">
+                        <AddChild
+                          label="Thêm bài"
+                          fields={[{ name: "title", placeholder: "A Day at the Office" }]}
+                          onSubmit={(values) =>
+                            void send(API_ROUTES.adminDictationStories, "POST", {
+                              ...values,
+                              section_id: section.id,
+                            })
+                          }
+                        />
+                      </div>
+                    </TreeNode>
+                  );
+                })}
+
+                <div className="pt-0.5">
+                  <AddChild
+                    label="Thêm phần"
+                    fields={[{ name: "name", placeholder: "Unit 1" }]}
+                    onSubmit={(values) =>
+                      void send(API_ROUTES.adminDictationSections, "POST", {
+                        ...values,
+                        topic_id: topic.id,
+                      })
                     }
-                    onClick={() => void publish(API_ROUTES.adminDictationStoryPublish(story.id))}
-                  >
-                    <Send size={14} strokeWidth={2} aria-hidden />
-                    Xuất bản
-                  </Button>
-                )}
-                <DestructiveButton
-                  label="Xoá"
-                  confirmLabel="Xoá bài này?"
-                  disabled={!canPublish}
-                  title={
-                    canPublish
-                      ? `Xoá bài. ${story.item_count} câu bên trong sẽ trở lại thành câu lẻ, không bị xoá.`
-                      : "Chỉ admin mới xoá được"
-                  }
-                  onConfirm={() => void send(API_ROUTES.adminDictationStory(story.id), "DELETE")}
-                />
-              </span>
-            </Panel>
-          ))}
+                  />
+                </div>
+              </TreeNode>
+            );
+          })}
         </div>
       </section>
     </Page>
