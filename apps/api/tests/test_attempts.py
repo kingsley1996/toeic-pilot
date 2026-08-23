@@ -432,3 +432,80 @@ def test_publishing_all_questions_skips_the_ones_that_fail_the_gate_and_names_th
 
     # Và cổng ở tầng đề vẫn chặn, nên câu nháp kia không lọt ra đâu cả.
     assert client.post(f"/api/v1/admin/tests/{slug}/publish", headers=headers).status_code == 409
+
+
+PART2_ONE = """[QUESTION]
+voice: us_female_1
+Where did you put the quarterly sales report?
+voice: uk_male_1
+(A) On your desk, next to the printer.
+(B) Yes, I finished it last night.
+(C) About thirty copies, I think.
+answer: A
+source: original
+"""
+
+
+def test_scoring_reads_the_verdicts_finalise_just_wrote(db_session: Session) -> None:
+    """Chấm điểm phải đọc được những câu vừa chấm đúng trong CÙNG giao dịch.
+
+    `_finalise` gán `is_correct` lên các đối tượng trong BỘ NHỚ, rồi `count_raw`
+    đếm bằng một câu SELECT. Session chạy `autoflush=False`, nên câu SELECT đó
+    đọc lại hàng CŨ và đếm ra 0 — mọi lượt làm cả đề trả về "Nghe 5 · Đọc 5 ·
+    Tổng 10" bất kể trả lời đúng bao nhiêu. Đo được trên đề 200 câu thật: 120
+    câu đúng nằm trong `attempt_item`, còn `listening_raw` bằng 0.
+
+    Lỗi ngủ yên tới ngày có một đề ĐỦ: trước đó `score_attempt` luôn từ chối vì
+    `test.kind != "full"`, và ngoại lệ bị nuốt theo đúng thiết kế — nên đường
+    quy đổi chưa từng chạy tới chỗ hỏng.
+
+    Bài này dựng thẳng bằng ORM thay vì đi qua HTTP: một câu phần Nghe **không
+    xuất bản được nếu chưa có bản thu**, nên đường HTTP đòi phải bịa ra một
+    `audio_asset` — giàn giáo lớn hơn thứ nó bảo vệ, và nó kiểm cổng xuất bản
+    chứ không kiểm phép đẩy xuống DB.
+    """
+    from app.api.routes.attempt import _finalise
+    from app.models import AttemptItem, PracticeTestQuestion, Question
+    from app.models.practice import QuestionOption
+
+    test = PracticeTest(slug="cham-diem", title="Đề chấm điểm", kind="full", status="published")
+    db_session.add(test)
+    db_session.flush()
+
+    user = User(email="cham-diem@example.com", hashed_password="x", role="learner")
+    db_session.add(user)
+    db_session.flush()
+
+    attempt = Attempt(user_id=user.id, test_id=test.id, scope="full", status="in_progress")
+    db_session.add(attempt)
+    db_session.flush()
+
+    for position, (number, part) in enumerate(((7, 2), (101, 5)), start=1):
+        question = Question(part=part, difficulty=3, source="original", status="published")
+        db_session.add(question)
+        db_session.flush()
+        right = QuestionOption(question_id=question.id, label="A", content="x", is_correct=True)
+        wrong = QuestionOption(question_id=question.id, label="B", content="y", is_correct=False)
+        db_session.add_all([right, wrong])
+        db_session.add(
+            PracticeTestQuestion(
+                test_id=test.id, question_id=question.id, position=number, number=number
+            )
+        )
+        db_session.flush()
+        db_session.add(
+            AttemptItem(
+                attempt_id=attempt.id,
+                question_id=question.id,
+                position=position,
+                selected_option_id=right.id,
+            )
+        )
+    db_session.flush()
+    db_session.refresh(attempt)
+
+    _finalise(db_session, attempt, "submitted")
+
+    # Một câu Nghe và một câu Đọc, cả hai trả lời đúng.
+    assert attempt.listening_raw == 1
+    assert attempt.reading_raw == 1

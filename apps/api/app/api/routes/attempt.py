@@ -101,6 +101,18 @@ def _finalise(db: Session, attempt: Attempt, new_status: str) -> None:
             and item.selected_option_id == correct_ids.get(item.question_id)
         )
 
+    # ĐẨY XUỐNG DB trước khi chấm.
+    #
+    # `is_correct` vừa được gán trên các đối tượng trong BỘ NHỚ, còn `count_raw`
+    # đếm bằng một câu SELECT. Session chạy `autoflush=False` (cùng lý do đã ghi
+    # cho `mark_seen`), nên câu SELECT đó đọc lại hàng CŨ và đếm ra 0 — mọi lượt
+    # làm cả đề đều ra "Nghe 5 · Đọc 5 · Tổng 10" dù trả lời đúng bao nhiêu.
+    #
+    # Lỗi này chỉ hiện ra khi có một đề ĐỦ 200 CÂU: trước đó `score_attempt`
+    # luôn từ chối vì đề không phải `kind='full'`, và ngoại lệ bị nuốt ngay bên
+    # dưới — nên đường quy đổi chưa từng chạy tới đây.
+    db.flush()
+
     # Chỉ quy đổi khi làm CẢ ĐỀ. `scoring.py` từ chối quy đổi một lượt làm một
     # phần, vì một con số trông như điểm TOEIC mà không phải điểm TOEIC sẽ nằm
     # vĩnh viễn trong biểu đồ tiến bộ của người học.
