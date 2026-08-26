@@ -1959,6 +1959,11 @@
       },
       "DictationAdmin": {
         "properties": {
+          "attempt_count": {
+            "default": 0,
+            "title": "Attempt Count",
+            "type": "integer"
+          },
           "audio_state": {
             "title": "Audio State",
             "type": "string"
@@ -9702,6 +9707,7 @@
     },
     "/api/v1/admin/dictation/{item_id}": {
       "delete": {
+        "description": "Xoá một câu. Mặc định từ chối nếu đã có người làm; `force=true` thì xoá thật.\n\n**Mặc định vẫn là từ chối, và đó không phải phép lịch sự.** `archived` là\ntrạng thái được thiết kế đúng cho việc này (`mixins.CONTENT_STATUSES`): gỡ\ncâu khỏi tầm mắt học viên mà không đụng vào lịch sử của họ. Gần như mọi lần\n\"xoá\" mà người soạn muốn đều là việc đó, nên nó phải là đường mặc định còn\nxoá thật phải là thứ nói ra bằng miệng.\n\n**`force=true` phá huỷ dữ liệu học viên, và nó không cân xứng.** Người bấm\nnút là admin; người mất dữ liệu là học viên, không có mặt ở đây và không\nđược hỏi. Cụ thể mất những gì:\n\n* Toàn bộ hàng `dictation_attempt` của câu đó, của MỌI học viên.\n* Tiến độ bài suy ra từ chính các hàng đó (`DISTINCT item_id WHERE\n  is_complete`), nên một bài đang 6/6 có thể tụt xuống 5/6 và người học thấy\n  bài mình đã xong tự mở lại.\n* `dictation_completed` trong thống kê hồ sơ, mà huy hiệu đọc từ đó — huy\n  hiệu là **suy ra** từ lịch sử, nên tụt dưới ngưỡng là huy hiệu biến mất.\n\n**XP thì KHÔNG mất, và đó là sổ cái làm đúng việc của nó.** `xp_event` chỉ\nghi thêm, không có khoá ngoại nào trỏ tới `dictation_attempt`, và mỗi hàng\nlưu số điểm đã trao tại thời điểm đó. Nên level không tụt vì một thao tác\nquản trị — đúng thuộc tính mà USER-ROAD §2.1 dựng sổ cái để có.\n\nXoá tường minh chứ không nhờ `ON DELETE`: khoá ngoại là RESTRICT, và đổi nó\nthành CASCADE sẽ biến MỌI đường xoá thành đường phá lịch sử, kể cả những\nđường chưa được viết ra.",
         "operationId": "delete_dictation_item_api_v1_admin_dictation__item_id__delete",
         "parameters": [
           {
@@ -9712,6 +9718,18 @@
               "format": "uuid",
               "title": "Item Id",
               "type": "string"
+            }
+          },
+          {
+            "description": "xoá luôn lịch sử làm bài của học viên để xoá được câu này",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "xoá luôn lịch sử làm bài của học viên để xoá được câu này",
+              "title": "Force",
+              "type": "boolean"
             }
           }
         ],

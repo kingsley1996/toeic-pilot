@@ -466,7 +466,36 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Delete Dictation Item */
+        /**
+         * Delete Dictation Item
+         * @description Xoá một câu. Mặc định từ chối nếu đã có người làm; `force=true` thì xoá thật.
+         *
+         *     **Mặc định vẫn là từ chối, và đó không phải phép lịch sự.** `archived` là
+         *     trạng thái được thiết kế đúng cho việc này (`mixins.CONTENT_STATUSES`): gỡ
+         *     câu khỏi tầm mắt học viên mà không đụng vào lịch sử của họ. Gần như mọi lần
+         *     "xoá" mà người soạn muốn đều là việc đó, nên nó phải là đường mặc định còn
+         *     xoá thật phải là thứ nói ra bằng miệng.
+         *
+         *     **`force=true` phá huỷ dữ liệu học viên, và nó không cân xứng.** Người bấm
+         *     nút là admin; người mất dữ liệu là học viên, không có mặt ở đây và không
+         *     được hỏi. Cụ thể mất những gì:
+         *
+         *     * Toàn bộ hàng `dictation_attempt` của câu đó, của MỌI học viên.
+         *     * Tiến độ bài suy ra từ chính các hàng đó (`DISTINCT item_id WHERE
+         *       is_complete`), nên một bài đang 6/6 có thể tụt xuống 5/6 và người học thấy
+         *       bài mình đã xong tự mở lại.
+         *     * `dictation_completed` trong thống kê hồ sơ, mà huy hiệu đọc từ đó — huy
+         *       hiệu là **suy ra** từ lịch sử, nên tụt dưới ngưỡng là huy hiệu biến mất.
+         *
+         *     **XP thì KHÔNG mất, và đó là sổ cái làm đúng việc của nó.** `xp_event` chỉ
+         *     ghi thêm, không có khoá ngoại nào trỏ tới `dictation_attempt`, và mỗi hàng
+         *     lưu số điểm đã trao tại thời điểm đó. Nên level không tụt vì một thao tác
+         *     quản trị — đúng thuộc tính mà USER-ROAD §2.1 dựng sổ cái để có.
+         *
+         *     Xoá tường minh chứ không nhờ `ON DELETE`: khoá ngoại là RESTRICT, và đổi nó
+         *     thành CASCADE sẽ biến MỌI đường xoá thành đường phá lịch sử, kể cả những
+         *     đường chưa được viết ra.
+         */
         delete: operations["delete_dictation_item_api_v1_admin_dictation__item_id__delete"];
         options?: never;
         head?: never;
@@ -3527,6 +3556,11 @@ export interface components {
         };
         /** DictationAdmin */
         DictationAdmin: {
+            /**
+             * Attempt Count
+             * @default 0
+             */
+            attempt_count: number;
             /** Audio State */
             audio_state: string;
             /** Difficulty */
@@ -6601,7 +6635,10 @@ export interface operations {
     };
     delete_dictation_item_api_v1_admin_dictation__item_id__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description xoá luôn lịch sử làm bài của học viên để xoá được câu này */
+                force?: boolean;
+            };
             header?: never;
             path: {
                 item_id: string;

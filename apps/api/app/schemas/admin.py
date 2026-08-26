@@ -189,6 +189,14 @@ class DictationAdmin(BaseModel):
     `ck_dictation_item_story_position` ép điều đó ở tầng database.
     """
 
+    attempt_count: int = 0
+    """Số lượt học viên đã làm câu này.
+
+    Có mặt ở đây để màn quản trị nói ra CÁI GIÁ trước khi bấm, thay vì để người
+    dùng phát hiện qua một lỗi 409. Một nút "Xoá vĩnh viễn" không kèm con số là
+    một nút không ai biết mình đang phá bao nhiêu.
+    """
+
 
 class VocabularyUpdate(BaseModel):
     headword: str | None = None

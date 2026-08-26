@@ -141,8 +141,10 @@ export default function AdminDictationPage() {
       // đúng cái nút đang nằm ngay cạnh, thì người dùng không phải đi tìm.
       if (err instanceof ApiError && err.status === 409 && method === "DELETE") {
         setError(
-          "Không xoá được: đã có học viên làm câu này, và xoá đi sẽ làm mất lịch sử của họ. " +
-            "Dùng nút Lưu trữ ngay cạnh — câu sẽ biến mất khỏi phần học nhưng lịch sử vẫn còn.",
+          "Cannot delete: learners have attempted this sentence, and deleting it would " +
+            "take their history with it. Use Archive beside it — the sentence leaves the " +
+            "learner app while the history stays. Delete permanently is there if you " +
+            "really mean it.",
         );
         return;
       }
@@ -391,17 +393,38 @@ export default function AdminDictationPage() {
                       Lưu trữ
                     </Button>
                   )}
-                  <DestructiveButton
-                    label="Xoá"
-                    confirmLabel="Xoá câu này?"
-                    disabled={!canPublish}
-                    title={
-                      canPublish
-                        ? "Xoá hẳn. Câu đã có người làm thì không xoá được — hãy lưu trữ."
-                        : "Chỉ admin mới xoá được"
-                    }
-                    onConfirm={() => void send(API_ROUTES.adminDictationItem(item.id), "DELETE")}
-                  />
+                  {/*
+                   * Hai nút khác nhau chứ không phải một nút đổi hành vi theo dữ
+                   * liệu. Một nút "Xoá" mà lúc thì gỡ một hàng nháp, lúc thì xoá
+                   * lịch sử của hai chục người là cùng một cú bấm mang hai hậu
+                   * quả khác hẳn nhau — và người bấm không nhìn thấy sự khác
+                   * biệt đó ở đâu cả. Con số lượt làm đứng ngay trên nhãn.
+                   */}
+                  {item.attempt_count > 0 ? (
+                    <DestructiveButton
+                      label={`Delete permanently (${item.attempt_count} attempts)`}
+                      confirmLabel={`Delete ${item.attempt_count} attempts too?`}
+                      disabled={!canPublish}
+                      title={
+                        canPublish
+                          ? "Deletes this sentence AND every learner attempt on it. Story progress and history-derived badges drop with it; XP already granted is untouched."
+                          : "Admins only"
+                      }
+                      onConfirm={() =>
+                        void send(`${API_ROUTES.adminDictationItem(item.id)}?force=true`, "DELETE")
+                      }
+                    />
+                  ) : (
+                    <DestructiveButton
+                      label="Delete"
+                      confirmLabel="Delete this sentence?"
+                      disabled={!canPublish}
+                      title={
+                        canPublish ? "Permanent. Nobody has attempted this one." : "Admins only"
+                      }
+                      onConfirm={() => void send(API_ROUTES.adminDictationItem(item.id), "DELETE")}
+                    />
+                  )}
                 </span>
               </div>
             </Panel>

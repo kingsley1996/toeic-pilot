@@ -11,6 +11,7 @@ Two rules run through everything here, both from ADR-005:
 """
 
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -126,7 +127,31 @@ def _vocabulary_admin(entry: VocabularyEntry) -> VocabularyAdmin:
     )
 
 
-def _dictation_admin(item: DictationItem) -> DictationAdmin:
+def _attempt_counts(db: Session, item_ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, int]:
+    """Số lượt học viên đã làm, cho từng câu, trong MỘT truy vấn.
+
+    Đếm từng câu một là N+1 truy vấn trên một trang 50 câu, và màn này còn phải
+    dựng cả cây bên cạnh.
+    """
+    if not item_ids:
+        return {}
+    rows = db.execute(
+        select(DictationAttempt.item_id, func.count(DictationAttempt.id))
+        .where(DictationAttempt.item_id.in_(item_ids))
+        .group_by(DictationAttempt.item_id)
+    ).all()
+    return {item_id: count for item_id, count in rows}
+
+
+def _dictation_admin(item: DictationItem, attempts: int) -> DictationAdmin:
+    """`attempts` là tham số BẮT BUỘC, và đó là chỗ chịu lực.
+
+    Cùng bài học với `_question_admin` và bản đồ asset của nó: một tham số tuỳ
+    chọn mà khi vắng mặt vẫn cho ra câu trả lời hợp lý là hình dạng phải tránh.
+    Ở đây "hợp lý" nghĩa là 0, và 0 lượt làm chính là thứ khiến nút Xoá vĩnh
+    viễn biến mất khỏi giao diện — nên quên truyền sẽ làm nút biến mất ở đúng
+    những câu cần tới nó nhất, mà response vẫn hoàn toàn hợp lệ.
+    """
     return DictationAdmin(
         id=str(item.id),
         transcript=item.transcript,
@@ -136,6 +161,7 @@ def _dictation_admin(item: DictationItem) -> DictationAdmin:
         publishable=dictation_is_publishable(item),
         story_id=str(item.story_id) if item.story_id else None,
         position=item.position,
+        attempt_count=attempts,
     )
 
 
@@ -783,7 +809,13 @@ def list_dictation_admin(
         .limit(limit)
         .offset(offset)
     ).all()
-    return page_of([_dictation_admin(item) for item in items], count_rows(db, query), limit, offset)
+    counts = _attempt_counts(db, [item.id for item in items])
+    return page_of(
+        [_dictation_admin(item, counts.get(item.id, 0)) for item in items],
+        count_rows(db, query),
+        limit,
+        offset,
+    )
 
 
 @router.patch("/dictation/{item_id}", response_model=DictationAdmin)
@@ -827,7 +859,7 @@ def update_dictation(
 
     db.commit()
     db.refresh(item)
-    return _dictation_admin(item)
+    return _dictation_admin(item, _attempt_counts(db, [item.id]).get(item.id, 0))
 
 
 @router.post("/dictation/{item_id}/publish", response_model=DictationAdmin)
@@ -854,7 +886,7 @@ def publish_dictation(
     item.published_at = datetime.now(UTC)
     db.commit()
     db.refresh(item)
-    return _dictation_admin(item)
+    return _dictation_admin(item, _attempt_counts(db, [item.id]).get(item.id, 0))
 
 
 # --- cây dictation: topic -> section -> story ------------------------------
@@ -1382,32 +1414,66 @@ def reorder_story_items(
         by_id[item_id].position = index
     db.commit()
 
-    return [_dictation_admin(by_id[item_id]) for item_id in wanted]
+    counts = _attempt_counts(db, wanted)
+    return [_dictation_admin(by_id[item_id], counts.get(item_id, 0)) for item_id in wanted]
 
 
 @router.delete("/dictation/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_dictation_item(
-    item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(can_publish)
+    item_id: uuid.UUID,
+    force: bool = Query(
+        default=False,
+        description="xoá luôn lịch sử làm bài của học viên để xoá được câu này",
+    ),
+    db: Session = Depends(get_db),
+    _: User = Depends(can_publish),
 ) -> None:
+    """Xoá một câu. Mặc định từ chối nếu đã có người làm; `force=true` thì xoá thật.
+
+    **Mặc định vẫn là từ chối, và đó không phải phép lịch sự.** `archived` là
+    trạng thái được thiết kế đúng cho việc này (`mixins.CONTENT_STATUSES`): gỡ
+    câu khỏi tầm mắt học viên mà không đụng vào lịch sử của họ. Gần như mọi lần
+    "xoá" mà người soạn muốn đều là việc đó, nên nó phải là đường mặc định còn
+    xoá thật phải là thứ nói ra bằng miệng.
+
+    **`force=true` phá huỷ dữ liệu học viên, và nó không cân xứng.** Người bấm
+    nút là admin; người mất dữ liệu là học viên, không có mặt ở đây và không
+    được hỏi. Cụ thể mất những gì:
+
+    * Toàn bộ hàng `dictation_attempt` của câu đó, của MỌI học viên.
+    * Tiến độ bài suy ra từ chính các hàng đó (`DISTINCT item_id WHERE
+      is_complete`), nên một bài đang 6/6 có thể tụt xuống 5/6 và người học thấy
+      bài mình đã xong tự mở lại.
+    * `dictation_completed` trong thống kê hồ sơ, mà huy hiệu đọc từ đó — huy
+      hiệu là **suy ra** từ lịch sử, nên tụt dưới ngưỡng là huy hiệu biến mất.
+
+    **XP thì KHÔNG mất, và đó là sổ cái làm đúng việc của nó.** `xp_event` chỉ
+    ghi thêm, không có khoá ngoại nào trỏ tới `dictation_attempt`, và mỗi hàng
+    lưu số điểm đã trao tại thời điểm đó. Nên level không tụt vì một thao tác
+    quản trị — đúng thuộc tính mà USER-ROAD §2.1 dựng sổ cái để có.
+
+    Xoá tường minh chứ không nhờ `ON DELETE`: khoá ngoại là RESTRICT, và đổi nó
+    thành CASCADE sẽ biến MỌI đường xoá thành đường phá lịch sử, kể cả những
+    đường chưa được viết ra.
+    """
     item = db.get(DictationItem, item_id)
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
-    # `dictation_attempt.item_id` là RESTRICT, nên xoá một câu đã có người làm sẽ
-    # nổ IntegrityError. Chặn trước và chỉ đường sang `archived` — trạng thái đã
-    # được thiết kế đúng cho việc này (mixins.CONTENT_STATUSES): gỡ khỏi tầm mắt
-    # học viên mà không làm mồ côi lịch sử làm bài của họ.
     attempts = db.scalar(
         select(func.count(DictationAttempt.id)).where(DictationAttempt.item_id == item.id)
     )
-    if attempts:
+    if attempts and not force:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=(
                 f"Cannot delete: {attempts} learner attempt(s) reference this sentence. "
                 "Set its status to 'archived' instead — that hides it from learners "
-                "without orphaning their history."
+                "without orphaning their history. Pass force=true to delete the "
+                "attempts along with the sentence."
             ),
         )
+    if attempts:
+        db.execute(delete(DictationAttempt).where(DictationAttempt.item_id == item.id))
     db.delete(item)
     db.commit()

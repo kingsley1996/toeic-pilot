@@ -8,7 +8,7 @@ không ai báo cáo được vì nội dung trông hoàn toàn bình thường.
 import uuid
 
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -627,6 +627,96 @@ def test_only_admins_can_delete(client: TestClient, db_session: Session) -> None
         client.delete(f"/api/v1/admin/dictation/stories/{story.id}", headers=headers).status_code
         == 403
     )
+
+
+def test_force_delete_takes_the_sentence_and_its_history(
+    client: TestClient, db_session: Session
+) -> None:
+    """Có `force` thì xoá được, và lượt làm đi theo.
+
+    Xoá tường minh chứ không nhờ `ON DELETE`: khoá ngoại vẫn là RESTRICT, nên
+    nếu có ngày ai đó bỏ lệnh xoá `dictation_attempt` đi thì câu này nổ
+    `IntegrityError` chứ không lặng lẽ để lại rác.
+    """
+    story = build_tree(db_session, marker="fd")
+    item = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).first()
+    assert item is not None
+    headers = auth(client, db_session, "force-del@example.com")
+    client.post(
+        f"/api/v1/dictation/{item.id}/attempts",
+        json={"submitted_text": item.transcript},
+        headers=headers,
+    )
+
+    admin = auth(client, db_session, "force-admin@example.com")
+    db_session.execute(
+        update(User).where(User.email == "force-admin@example.com").values(role="admin")
+    )
+    db_session.commit()
+
+    # Không có force: vẫn từ chối, và lời từ chối phải nói ra đường force.
+    refused = client.delete(f"/api/v1/admin/dictation/{item.id}", headers=admin)
+    assert refused.status_code == 409
+    assert "force=true" in refused.json()["detail"]
+
+    assert (
+        client.delete(f"/api/v1/admin/dictation/{item.id}?force=true", headers=admin).status_code
+        == 204
+    )
+    assert db_session.get(DictationItem, item.id) is None
+    assert (
+        db_session.scalar(
+            select(func.count(DictationAttempt.id)).where(DictationAttempt.item_id == item.id)
+        )
+        == 0
+    )
+
+
+def test_force_delete_is_admin_only(client: TestClient, db_session: Session) -> None:
+    # Cùng cổng với xoá thường. Một cờ trên query string không được là đường
+    # vòng qua `require_role`.
+    story = build_tree(db_session, marker="fp")
+    item = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).first()
+    assert item is not None
+    learner = auth(client, db_session, "force-learner@example.com")
+    assert (
+        client.delete(f"/api/v1/admin/dictation/{item.id}?force=true", headers=learner).status_code
+        == 403
+    )
+    assert db_session.get(DictationItem, item.id) is not None
+
+
+def test_the_admin_list_says_how_many_attempts_a_sentence_carries(
+    client: TestClient, db_session: Session
+) -> None:
+    """Cái giá phải hiện TRƯỚC khi bấm, không phải hiện ra bằng một lỗi 409."""
+    story = build_tree(db_session, marker="ac")
+    item = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).first()
+    assert item is not None
+    headers = auth(client, db_session, "counted@example.com")
+    for _ in range(2):
+        client.post(
+            f"/api/v1/dictation/{item.id}/attempts",
+            json={"submitted_text": "something wrong"},
+            headers=headers,
+        )
+
+    editor = auth(client, db_session, "counter-editor@example.com")
+    db_session.execute(
+        update(User).where(User.email == "counter-editor@example.com").values(role="editor")
+    )
+    db_session.commit()
+    rows = client.get("/api/v1/admin/dictation?limit=200", headers=editor).json()["items"]
+    by_id = {row["id"]: row for row in rows}
+    assert by_id[str(item.id)]["attempt_count"] == 2
+    other = next(row for row in rows if row["id"] != str(item.id))
+    assert other["attempt_count"] == 0
 
 
 def test_archiving_is_a_real_way_out_not_just_advice(
