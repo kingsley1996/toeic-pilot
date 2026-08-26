@@ -73,6 +73,15 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
   // đầu thì không đọc được.
   await expect(panel.getByText(/0\/120 XP hôm nay/)).toBeVisible();
 
+  /*
+   * Chưa làm gì thì KHÔNG có thông báo tạm. Khẳng định phủ định này chỉ có
+   * nghĩa vì nó đứng SAU mấy dòng trên: `toHaveCount(0)` được thoả ngay lập tức
+   * trên một trang chưa nạp xong, nên phải neo vào một thứ CÓ THẬT dựng ra từ
+   * cùng lần đọc ấy — ở đây là con số XP — rồi mới hỏi tới cái vắng mặt.
+   */
+  const toasts = page.getByRole("status").getByText("Đã xong việc hôm nay");
+  await expect(toasts).toHaveCount(0);
+
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();
 
@@ -90,4 +99,23 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
 
   // Và XP đã nhích TRONG CÙNG lần dựng đó: 3 câu × 5 + 10 thưởng việc = 25.
   await expect(panel.getByText(/25\/120 XP hôm nay/)).toBeVisible();
+
+  /*
+   * Thông báo tạm bắn ra ở ĐÚNG lần đọc trao thưởng, không phải mỗi lần thấy
+   * `done`. Nó nằm trong vùng `aria-live` lịch sự, và vùng ấy phải có sẵn trong
+   * DOM từ trước — chèn cả vùng lẫn nội dung cùng lúc thì trình đọc màn hình
+   * không đọc gì, một lỗi chỉ nghe thấy chứ không nhìn thấy.
+   *
+   * "Còn 2 việc nữa" là phần đáng giá của khẳng định này: nó chứng minh con số
+   * đến từ chính lần đọc vừa rồi chứ không phải một câu chữ cố định.
+   */
+  const toast = page.getByRole("status").getByText("Đã xong việc hôm nay");
+  await expect(toast).toBeVisible();
+  await expect(page.getByRole("status").getByText(/\+10 XP\. Còn 2 việc nữa\./)).toBeVisible();
+
+  // Nạp lại lần nữa: máy chủ trả `xp_awarded = 0` vì `source_id` tất định, nên
+  // không chúc mừng lại chuyện đã chúc mừng rồi.
+  await page.reload();
+  await expect(panel.getByText(/25\/120 XP hôm nay/)).toBeVisible();
+  await expect(page.getByRole("status").getByText("Đã xong việc hôm nay")).toHaveCount(0);
 });

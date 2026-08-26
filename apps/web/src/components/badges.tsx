@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 
 import { Panel, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { announceOnce, useToast } from "@/lib/toast";
 
 /**
  * Huy hiệu: bảng chữ và biểu tượng, cộng dòng thông báo trên trang chủ.
@@ -123,6 +124,54 @@ export function BadgeTile({ badge, isNew }: { badge: BadgePublic; isNew: boolean
 }
 
 /**
+ * Thông báo tạm cho huy hiệu vừa mở, sống cạnh dòng cố định bên dưới chứ không
+ * thay nó.
+ *
+ * Ba luật của huy hiệu đi thẳng vào đây:
+ *
+ * **MỘT thẻ cho tất cả.** Cùng lý do như `BadgeNotice`: một tài khoản có sẵn
+ * lịch sử học mở cả loạt ngay lần đọc đầu tiên sau khi tính năng ra mắt, và mười
+ * thẻ liên tiếp đọc như hệ thống hỏng chứ không như phần thưởng. Đúng một cái
+ * thì gọi thẳng tên nó ra, vì lúc đó câu "Bạn vừa mở 1 huy hiệu" là câu tệ hơn.
+ *
+ * **Không gọi `POST .../seen`.** Chấm đỏ tắt khi người ta MỞ TRANG huy hiệu.
+ * Một thông báo tự tắt sau sáu giây mà lại đánh dấu đã xem thì ai lỡ nhìn đi chỗ
+ * khác sẽ không bao giờ biết mình vừa mở được gì.
+ *
+ * **Chữ ký là danh sách mã.** `announceOnce` khoá theo nội dung chứ không theo
+ * số lượng, nên mở thêm một cái nữa trong cùng phiên vẫn được báo — còn chuyển
+ * trang qua lại thì không.
+ */
+function announceBadges(data: BadgesPublic, show: ReturnType<typeof useToast>["show"]) {
+  if (data.unseen_count === 0) return;
+  const fresh = data.badges.filter((badge) => badge.earned && !badge.seen);
+  if (fresh.length === 0) return;
+  const signature = fresh
+    .map((badge) => badge.code)
+    .sort()
+    .join(",");
+  if (!announceOnce("badges", signature)) return;
+
+  const single = fresh.length === 1 ? fresh[0] : null;
+  show({
+    tone: "ok",
+    title: single ? `Huy hiệu mới: ${single.label}` : `Bạn vừa mở ${fresh.length} huy hiệu`,
+    description: single ? single.hint : undefined,
+    imageUrl: single?.image_url ?? null,
+    href: "/profile/badges",
+    /*
+     * KHÔNG dùng lại đúng chữ "Xem huy hiệu" của dòng cố định bên dưới. Hai
+     * đường dẫn cùng trỏ một chỗ mà mang y hệt một tên là hai mục giống nhau
+     * trong danh sách link của trình đọc màn hình, và người dùng không có cách
+     * nào biết chúng khác gì nhau. Nó cũng làm mọi locator theo tên trong e2e
+     * khớp hai phần tử cùng lúc, đúng như đã xảy ra.
+     */
+    linkLabel: "Mở trang huy hiệu",
+    dedupeKey: "badges",
+  });
+}
+
+/**
  * Một dòng trên trang chủ khi có huy hiệu vừa mở mà chưa xem.
  *
  * MỘT thông báo cho tất cả, không phải một dòng mỗi cái: tài khoản có sẵn lịch
@@ -135,6 +184,7 @@ export function BadgeTile({ badge, isNew }: { badge: BadgePublic; isNew: boolean
  */
 export function BadgeNotice({ token }: { token: string | null }) {
   const [data, setData] = useState<BadgesPublic | null>(null);
+  const { show } = useToast();
 
   useEffect(() => {
     if (!token) return;
@@ -142,12 +192,14 @@ export function BadgeNotice({ token }: { token: string | null }) {
     apiFetch<BadgesPublic>(API_ROUTES.badges, { token })
       .then((value) => {
         if (alive) setData(value);
+        // Ngoài `alive` có chủ ý — cùng lý do đã ghi ở `daily-tasks.tsx`.
+        announceBadges(value, show);
       })
       .catch(() => {});
     return () => {
       alive = false;
     };
-  }, [token]);
+  }, [token, show]);
 
   if (!data || data.unseen_count === 0) return null;
 

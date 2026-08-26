@@ -3,6 +3,7 @@ import { Archivo, Be_Vietnam_Pro, IBM_Plex_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/app-shell";
 import { SessionProvider } from "@/lib/session";
+import { ToastProvider } from "@/lib/toast";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
@@ -51,7 +52,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             trang đọc, và đó là thứ ngăn nó mời "Đăng nhập" với người đã đăng
             nhập rồi. */}
         <SessionProvider>
-          <AppShell>{children}</AppShell>
+          {/* Trong SessionProvider vì mọi thông báo ở đây đều nói về việc học
+              của một người cụ thể, và ngoài AppShell vì hộp chứa là lớp phủ
+              `fixed` — nó phải sống sót qua cả ba khung, kể cả nhánh trần của
+              khu quản trị và màn làm bài. */}
+          <ToastProvider>
+            <AppShell>{children}</AppShell>
+          </ToastProvider>
         </SessionProvider>
       </body>
     </html>

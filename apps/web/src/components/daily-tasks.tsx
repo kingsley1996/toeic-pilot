@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 
 import { Panel, Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { useToast } from "@/lib/toast";
 
 /**
  * Ba việc hôm nay — khối đầu tiên của `/dashboard`.
@@ -114,9 +115,40 @@ function TaskRow({ task }: { task: DailyTaskPublic }) {
   );
 }
 
+/**
+ * Báo cho người học biết họ vừa đóng được một việc, và `xp_awarded` là thứ nói
+ * điều đó — không phải `done`.
+ *
+ * `done` là *trạng thái*: nó vẫn đúng suốt phần còn lại của ngày, nên báo theo
+ * nó sẽ chúc mừng lại mỗi lần mở trang chủ. `xp_awarded` là *sự kiện*: nó đếm
+ * XP vừa trao TRONG CHÍNH LẦN ĐỌC NÀY, và vì `source_id` sinh tất định từ
+ * (người, ngày, khe) nên lần đọc thứ hai luôn trả 0. Máy chủ đã có sẵn câu trả
+ * lời "vừa mới xong"; phía trình duyệt không cần tự nhớ gì cả.
+ *
+ * Không nói "vừa xong MỘT việc": hai khe có thể đóng cùng lúc giữa hai lần đọc,
+ * và `xp_awarded` là tổng, không tách ra được. Câu chữ ở đây đúng cho cả hai
+ * trường hợp thay vì đúng cho trường hợp hay gặp.
+ */
+function announceAward(data: DailyTasksPublic, show: ReturnType<typeof useToast>["show"]) {
+  if (data.xp_awarded <= 0) return;
+  const left = data.tasks.filter((task) => !task.done).length;
+  show({
+    tone: "ok",
+    title: "Đã xong việc hôm nay",
+    description:
+      left === 0
+        ? `+${data.xp_awarded} XP. Học thêm vẫn tính vào XP và chuỗi ngày.`
+        : `+${data.xp_awarded} XP. Còn ${left} việc nữa.`,
+    // Ngày nằm trong khoá: qua nửa đêm là một ngày khác, và tin của hôm nay
+    // không được thay chỗ tin của hôm qua đang còn trên màn hình.
+    dedupeKey: `daily-${data.date}`,
+  });
+}
+
 export function DailyTasksPanel({ token }: { token: string | null }) {
   const [daily, setDaily] = useState<DailyTasksPublic | null>(null);
   const [progression, setProgression] = useState<ProgressionPublic | null>(null);
+  const { show } = useToast();
 
   useEffect(() => {
     if (!token) return;
@@ -129,6 +161,22 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
     apiFetch<DailyTasksPublic>(API_ROUTES.dailyTasks, { token })
       .then((data) => {
         if (alive) setDaily(data);
+        /*
+         * NGOÀI cờ `alive`, và đây là chỗ đã sai một lần.
+         *
+         * StrictMode ở bản dev chạy effect, dọn dẹp, rồi chạy lại — nên cờ
+         * `alive` của lần chạy ĐẦU đã tắt trước khi phản hồi của chính nó về.
+         * Mà lần đọc đầu mới là lần TRAO thưởng: lần thứ hai máy chủ trả
+         * `xp_awarded = 0` vì `source_id` tất định. Đặt lời chúc mừng sau `if
+         * (alive)` nghĩa là nó rơi vào đúng cái phản hồi bị bỏ đi, và không bao
+         * giờ hiện ra.
+         *
+         * Cờ `alive` bảo vệ state CỦA COMPONENT NÀY, và nó đúng cho `setDaily`.
+         * Toast thì thuộc về một provider sống lâu hơn component; chuyện được
+         * báo cũng đã xảy ra rồi ở máy chủ, nên hàng thông báo vẫn phải nghe
+         * thấy dù cái khối gọi nó đã bị tháo.
+         */
+        announceAward(data, show);
         return apiFetch<ProgressionPublic>(API_ROUTES.progression, { token });
       })
       .then((data) => {
@@ -138,7 +186,7 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
     return () => {
       alive = false;
     };
-  }, [token]);
+  }, [token, show]);
 
   if (!daily) {
     return (

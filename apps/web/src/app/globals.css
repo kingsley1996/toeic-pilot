@@ -556,3 +556,38 @@
 .pet-bit > svg {
   animation: pet-bit-rise 1100ms cubic-bezier(0.25, 0.9, 0.3, 1) forwards;
 }
+
+/*
+ * Thông báo tạm ở góc trên bên phải.
+ *
+ * Chỉ mờ dần, 120ms, theo đúng §7: ngoài bảng chấm dictation thì mọi chuyển
+ * động trong app này là một cú fade. Trượt vào từ mép phải là thứ hầu hết thư
+ * viện toast làm sẵn, và nó đúng là thứ §7 gọi tên — chuyển động để trang trí.
+ *
+ * Lúc rời đi phải `animation: none` chứ không chỉ đặt `opacity: 0`: hiệu ứng vào
+ * dùng `both`, nên nó GIỮ opacity ở giá trị cuối và sẽ thắng transition. Bỏ
+ * animation đi thì opacity rơi về giá trị khai báo và transition mới có việc để
+ * làm.
+ *
+ * Khối `prefers-reduced-motion` chung phía trên rút cả hai về 0.01ms, nên người
+ * tắt hiệu ứng thấy thẻ hiện ra và mất đi tức thì — đúng ý, vì ở đây trạng thái
+ * đang chuyển không mang thông tin gì.
+ */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.toast-enter {
+  animation: toast-in 120ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.toast-leave {
+  animation: none;
+  opacity: 0;
+  transition: opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+}

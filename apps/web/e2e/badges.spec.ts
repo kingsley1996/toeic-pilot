@@ -57,13 +57,27 @@ test("huy hiệu đầu tiên: báo ở trang chủ, mở trang thì tắt chấ
   const notice = page.getByText(/Bạn vừa mở 1 huy hiệu/);
   await expect(notice).toBeVisible();
 
-  await page.getByRole("link", { name: /Xem huy hiệu/ }).click();
+  /*
+   * Cùng lúc đó, thông báo tạm gọi thẳng TÊN huy hiệu — thứ mà dòng cố định
+   * không nói, vì nó phải gộp mọi huy hiệu vào một câu. Nó nằm trong vùng
+   * `aria-live` lịch sự, nên trình đọc màn hình cũng nghe được mà không cần đi
+   * tìm.
+   */
+  await expect(page.getByRole("status").getByText("Huy hiệu mới: Bước đầu tiên")).toBeVisible();
+
+  // Bấm ĐÚNG dòng cố định, không phải con toast: cả hai cùng dẫn tới
+  // `/profile/badges`, nên một locator chỉ theo tên sẽ khớp hai phần tử.
+  await page.getByRole("link", { name: /Bạn vừa mở 1 huy hiệu/ }).click();
   await expect(page).toHaveURL(/\/profile\/badges$/);
 
   // Nhãn MỚI phải còn thấy được trong ĐÚNG lượt xem này — nếu đánh dấu đã xem
   // trước khi dựng thì người dùng mở ra và không thấy gì mới cả.
-  await expect(page.getByText("Bước đầu tiên")).toBeVisible();
-  await expect(page.getByText("Mới", { exact: true })).toBeVisible();
+  // Bám vào Ô huy hiệu chứ không vào cả trang: con toast đi theo qua lần chuyển
+  // trang phía client — đúng như nó phải thế — và nó cũng in tên huy hiệu, nên
+  // một locator theo chữ trần khớp cả hai.
+  const tile = page.getByRole("listitem").filter({ hasText: "Bước đầu tiên" });
+  await expect(tile).toBeVisible();
+  await expect(tile.getByText("Mới", { exact: true })).toBeVisible();
   // Huy hiệu chưa mở vẫn hiện, kèm tiến độ: đó là thứ nói "còn bao xa". Bám
   // theo mô tả chứ không theo con số — "0/50" xuất hiện ở cả huy hiệu 50 từ lẫn
   // 50 câu chép, và một locator khớp hai ô là một locator không nói được ô nào.
@@ -77,6 +91,6 @@ test("huy hiệu đầu tiên: báo ở trang chủ, mở trang thì tắt chấ
   // cùng một lần đọc, nên khi ô huy hiệu đã hiện thì nhãn MỚI cũng đã có cơ hội
   // hiện ra rồi.
   await page.goto("/profile/badges");
-  await expect(page.getByText("Bước đầu tiên")).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "Bước đầu tiên" })).toBeVisible();
   await expect(page.getByText("Mới", { exact: true })).toHaveCount(0);
 });
