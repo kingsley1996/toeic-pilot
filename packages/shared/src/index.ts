@@ -159,6 +159,7 @@ export const API_ROUTES = {
   badges: "/api/v1/progression/badges",
   pet: "/api/v1/pet",
   petPosition: "/api/v1/pet/position",
+  petActions: "/api/v1/pet/actions",
   badgesSeen: "/api/v1/progression/badges/seen",
 
   // Cấu hình hệ level. Mọi đường ghi ở đây trả về TOÀN BỘ cấu hình, nên màn hình

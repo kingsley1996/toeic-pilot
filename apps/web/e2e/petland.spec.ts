@@ -86,3 +86,46 @@ test("mở toàn bản đồ thì khung nhìn rộng ra", async ({ page }) => {
   // mỗi lần dựng lại là một WebGL context nữa, và trình duyệt chỉ cho vài cái.
   await expect(canvas).toHaveCount(1);
 });
+
+test("cho ăn làm chỉ số no tăng, và ăn tiếp khi đã no thì bị từ chối có lý do", async ({
+  page,
+  request,
+}) => {
+  /*
+   * Bài này bắc qua chỗ nối mà cả hai phía đứng riêng đều xanh: máy chủ trừ dần
+   * theo `needs_at` và trả về nhu cầu MỚI, còn trình duyệt phải vẽ đúng con số
+   * đó chứ không phải con số nó tự cộng.
+   *
+   * Đọc chỉ số qua API chứ không qua thanh chỉ số: thanh cố ý KHÔNG in phần
+   * trăm (`petland-ui.tsx` giải thích vì sao), nên nó không đọc được thành số.
+   * Cái phải kiểm ở giao diện là nút có gọi đúng thứ không và lời từ chối có
+   * hiện ra không.
+   */
+  await signUp(page);
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const auth = { Authorization: `Bearer ${token}` };
+  const read = async () =>
+    (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json()).needs
+      .fullness as number;
+
+  await launcher(page).click();
+  const feed = page.getByRole("button", { name: /Cho ăn/i });
+  await expect(feed).toBeVisible();
+
+  const before = await read();
+  await feed.click();
+  await expect.poll(read).toBeGreaterThan(before);
+
+  /*
+   * Đã no thì nút TỰ MỜ, kèm lý do trong `title` — người dùng không bao giờ chạm
+   * tới lỗi 409, và đó là chủ ý.
+   *
+   * Bản đầu của bài này chờ dòng chữ từ chối hiện ra, và nó sai: một con thú
+   * bắt đầu ở 0,62 cộng 0,35 là 0,97, tức vượt ngưỡng ngay sau MỘT lần cho ăn,
+   * nên cái nút đã tự khoá trước khi có gì để từ chối. Lỗi 409 vẫn phải đúng —
+   * nó chặn đường gọi thẳng API — nhưng nó được `tests/test_pet_state.py` canh,
+   * chứ không phải ở đây.
+   */
+  await expect(feed).toBeDisabled();
+  await expect(feed).toHaveAttribute("title", /đang no/i);
+});

@@ -1,7 +1,7 @@
 "use client";
 
 import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
-import { type PetAction, type PetNeeds, refuse } from "@/components/petland-pet";
+import { whyUnavailable, type PetAction, type PetNeeds } from "@/components/petland-pet";
 import { cx } from "@/components/ui";
 
 /*
@@ -68,14 +68,12 @@ function toneFor(value: number): string {
 
 export function PetHud({
   needs,
-  asleep,
   busy,
   onAction,
   leading,
 }: {
   needs: PetNeeds;
-  asleep: boolean;
-  /** Có hành động đang diễn ra (đi tới chỗ ăn, đang nhai) — khoá nút trong lúc đó. */
+  /** Có hành động đang gửi đi — khoá nút trong lúc đó. */
   busy: boolean;
   onAction: (action: PetAction) => void;
   /*
@@ -105,7 +103,7 @@ export function PetHud({
       <div className="flex flex-wrap items-center gap-1.5">
         {leading}
         {ACTIONS.map(({ action, icon, label, key }) => {
-          const why = refuse(needs, action, asleep);
+          const why = whyUnavailable(needs, action);
           const blocked = busy || why !== null;
           return (
             <button
@@ -127,19 +125,6 @@ export function PetHud({
             </button>
           );
         })}
-
-        <button
-          type="button"
-          onClick={() => onAction("rest")}
-          title={asleep ? "Đánh thức (S)" : "Cho ngủ (S)"}
-          aria-label={asleep ? "Đánh thức" : "Cho ngủ"}
-          /* Chỉ biểu tượng, không chữ. Hai lý do cùng chiều: hàng nút vừa đúng
-             bề ngang khi bỏ chữ ở đây, và nút này là một CÔNG TẮC trạng thái chứ
-             không cùng loại với ba hành động bên trái — trông khác nhau là đúng. */
-          className="ml-auto inline-flex h-8 min-w-8 items-center justify-center rounded border border-rule-strong px-2 text-ink transition-colors hover:bg-recess"
-        >
-          <PixelIcon name={asleep ? "sun" : "moon"} scale={2} />
-        </button>
       </div>
     </div>
   );

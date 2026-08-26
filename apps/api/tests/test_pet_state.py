@@ -5,6 +5,7 @@ khai báo cột.
 """
 
 import uuid
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -107,7 +108,10 @@ def test_reading_twice_does_not_make_a_second_pet(client: TestClient, db_session
     headers = {"Authorization": f"Bearer {token}"}
     first = client.get("/api/v1/pet", headers=headers).json()
     second = client.get("/api/v1/pet", headers=headers).json()
-    assert first == second
+    # So phần ỔN ĐỊNH, không so cả response: `needs.at` là "tại thời điểm đọc"
+    # nên hai lần đọc khác nhau ở đúng trường đó là ĐÚNG, không phải lỗi.
+    stable = ("species", "tile_x", "tile_y", "facing", "xp", "level", "hatched_at")
+    assert {k: first[k] for k in stable} == {k: second[k] for k in stable}
     assert db_session.scalar(select(func.count(PetState.user_id))) == 1
 
 
@@ -190,3 +194,103 @@ def test_a_facing_outside_the_two_values_is_refused(client: TestClient) -> None:
         "/api/v1/pet/position", json={"tile_x": 1, "tile_y": 1, "facing": "up"}, headers=headers
     )
     assert bad.status_code == 422
+
+
+def test_needs_fall_between_reads_without_anyone_doing_anything(
+    client: TestClient, db_session: Session
+) -> None:
+    """Đọc lần hai phải thấy con thú đói hơn, dù không ai bấm gì.
+
+    Đây là điểm khác lớn nhất so với bản cũ: đồng hồ chạy theo thời gian THẬT,
+    không theo thời gian bảng đang mở. Lùi `needs_at` về quá khứ chính là cách
+    duy nhất kiểm được điều đó mà không phải chờ.
+    """
+    headers = auth_headers(client, "hungry@example.com")
+    before = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
+
+    user = db_session.scalars(select(User).where(User.email == "hungry@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.needs_at = datetime.now(UTC) - timedelta(hours=12)
+    db_session.commit()
+
+    after = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
+    assert after < before
+
+
+def test_reading_does_not_write(client: TestClient, db_session: Session) -> None:
+    """`GET` không được ghi.
+
+    Trừ dần rồi lưu lại ở mỗi lần đọc biến một GET thành lệnh ghi trên đường
+    nóng, mà chẳng được gì: mốc cộng ảnh chụp đã đủ suy ra giá trị bây giờ. Kiểm
+    bằng `needs_at` — nếu lần đọc có ghi thì mốc đã nhảy lên hiện tại.
+    """
+    headers = auth_headers(client, "readonly@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "readonly@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.needs_at = datetime.now(UTC) - timedelta(hours=6)
+    db_session.commit()
+    stamp = pet.needs_at
+
+    client.get("/api/v1/pet", headers=headers)
+    db_session.expire_all()
+    assert db_session.get(PetState, user.id).needs_at == stamp  # type: ignore[union-attr]
+
+
+def test_feeding_after_a_long_absence_still_counts(client: TestClient, db_session: Session) -> None:
+    """Trừ dần TRƯỚC, cộng tác động SAU — và thứ tự đó nhìn không ra nếu sai.
+
+    Ngược lại thì phần thưởng bị trừ theo quãng vắng mặt: cho ăn sau một tuần gần
+    như không có tác dụng, mà con số vẫn hợp lệ nên không có gì báo.
+    """
+    headers = auth_headers(client, "returning@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "returning@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.needs_at = datetime.now(UTC) - timedelta(days=7)
+    db_session.commit()
+
+    starved = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
+    assert starved == 0
+
+    fed = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers)
+    assert fed.status_code == 200
+    # Nguyên vẹn mức thưởng, không bị bào mòn bởi bảy ngày vắng mặt.
+    assert fed.json()["needs"]["fullness"] == pytest.approx(0.35, abs=0.001)
+
+
+def test_an_action_moves_the_timestamp_forward(client: TestClient, db_session: Session) -> None:
+    # Không dời mốc thì lần đọc kế tiếp trừ lại đúng quãng vừa rồi một lần nữa,
+    # và phần thưởng bốc hơi ngay sau khi hiện ra.
+    headers = auth_headers(client, "stamp@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "stamp@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.needs_at = datetime.now(UTC) - timedelta(days=2)
+    db_session.commit()
+
+    fed = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers).json()
+    later = client.get("/api/v1/pet", headers=headers).json()
+    assert later["needs"]["fullness"] == pytest.approx(fed["needs"]["fullness"], abs=0.001)
+
+
+def test_feeding_a_full_pet_is_a_409_that_says_why(client: TestClient) -> None:
+    headers = auth_headers(client, "stuffed@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    for _ in range(3):
+        client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers)
+    refused = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers)
+    assert refused.status_code == 409
+    assert "no" in refused.json()["detail"].lower()
+
+
+def test_an_unknown_action_is_refused_by_the_schema(client: TestClient) -> None:
+    headers = auth_headers(client, "weird@example.com")
+    assert (
+        client.post("/api/v1/pet/actions", json={"action": "fly"}, headers=headers).status_code
+        == 422
+    )

@@ -2242,6 +2242,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pet/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Act
+         * @description Cho ăn, chọc, hoặc dắt đi dạo.
+         *
+         *     **Trừ dần TRƯỚC rồi mới cộng tác động**, không ngược lại. Ngược thứ tự thì
+         *     phần thưởng bị trừ theo quãng thời gian trước khi hành động xảy ra — cho ăn
+         *     sau một tuần vắng mặt gần như không có tác dụng, mà con số vẫn hợp lệ nên
+         *     không có gì báo.
+         *
+         *     Ghi lại cả `needs_at`: từ giây này ảnh chụp mới là mốc, nếu không lần đọc kế
+         *     tiếp sẽ trừ lại đúng quãng thời gian vừa rồi một lần nữa.
+         *
+         *     Từ chối trả **409**, không phải 400: yêu cầu hợp lệ, chỉ là trạng thái hiện
+         *     tại không cho phép — cùng hình dạng với việc từ chối xoá một câu dictation đã
+         *     có người làm. Và lời từ chối nói ra ĐIỀU KIỆN, để giao diện lặp lại được
+         *     nguyên văn thay vì tự đoán.
+         */
+        post: operations["act_api_v1_pet_actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pet/position": {
         parameters: {
             query?: never;
@@ -4533,6 +4566,14 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /** PetActionRequest */
+        PetActionRequest: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "feed" | "poke" | "walk";
         };
         /**
          * PetMove
@@ -9849,6 +9890,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PetPublic"];
+                };
+            };
+        };
+    };
+    act_api_v1_pet_actions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

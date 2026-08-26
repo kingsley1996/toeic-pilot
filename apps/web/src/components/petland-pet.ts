@@ -1,108 +1,59 @@
 /**
- * Nhu cầu và hành động của con thú.
+ * Từ vựng chung về nhu cầu và hành động của con thú.
  *
- * Tệp này KHÔNG biết gì về mascot lẫn bối cảnh: không tên clip, không toạ độ,
- * không ảnh. Nó chỉ là số học thuần, nên đổi con thú hay đổi khung cảnh không
- * đụng tới nó, và nó kiểm được mà không cần trình duyệt.
+ * **Chỉ còn KIỂU và tên, không còn phép tính.** Bản trước tự trừ dần chỉ số và
+ * tự áp dụng hành động ngay trong trình duyệt, vì lúc đó không có bảng nào phía
+ * máy chủ. Giờ có: `pet_state` giữ ảnh chụp cộng mốc `needs_at`, và
+ * `app/services/pet.py` là nơi duy nhất biết trừ bao nhiêu mỗi giây.
  *
- * Chưa có bảng nào phía máy chủ, nên các chỉ số này sống trong bộ nhớ trang: đủ
- * để nút "cho ăn" có ý nghĩa, chưa đủ để gọi là nuôi thú. Chỗ móc backend về sau
- * là `freshNeeds()` (nạp từ máy chủ) và `applyAction()` (gửi lên).
+ * **Không dựng lại phép tính đó ở đây, dù nghe hợp lý.** Bộ chấm dictation có
+ * hai bản — một ở máy chủ, một ở trình duyệt — và `lib/dictation.ts` phải là bản
+ * dịch từng bước của `services/dictation.py`, kèm cảnh báo rằng hai bên trôi
+ * khỏi nhau là hỏng theo kiểu không ai báo cáo được. Ở đó cái giá là xứng đáng
+ * vì phản hồi phải tức thì. Ở đây thì không: nhu cầu đổi theo NGÀY, nên một
+ * thanh chỉ số đứng yên tới lần đọc sau là hoàn toàn đúng, và một bản sao thứ
+ * hai của công thức chỉ tạo thêm chỗ để lệch.
  */
 
-export type PetAction = "feed" | "poke" | "walk" | "rest";
+export type PetAction = "feed" | "poke" | "walk";
 
-/** Ba chỉ số, tất cả trong khoảng 0..1. */
+/** Ba chỉ số, tất cả trong khoảng 0..1, đúng như máy chủ trả về. */
 export type PetNeeds = {
-  /** No. Cạn dần theo thời gian. */
+  /** No. */
   fullness: number;
-  /** Sức. Cạn khi đi lại, hồi khi ngủ. */
+  /** Sức. */
   energy: number;
-  /** Vui. Lên khi được chơi cùng, xuống rất chậm. */
+  /** Vui. */
   mood: number;
 };
 
-/** Con thú đang làm gì, theo nghĩa ảnh hưởng tới chỉ số — không phải theo nghĩa hoạt ảnh. */
-export type PetActivity = "resting" | "still" | "moving";
-
 export const NEED_KEYS = ["fullness", "energy", "mood"] as const;
 
-export function freshNeeds(): PetNeeds {
-  // Không đầy 100%: một con thú mở ra đã đủ đầy mọi thứ thì mọi cái nút đều vô
-  // nghĩa ở lần bấm đầu tiên, và người dùng học được rằng chúng không làm gì.
-  return { fullness: 0.62, energy: 0.78, mood: 0.7 };
-}
-
-const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
-
-/*
- * Tốc độ đổi, tính theo ĐƠN VỊ MỖI GIÂY.
+/**
+ * Ngưỡng để LÀM MỜ nút, không phải để từ chối.
  *
- * Chọn chậm là có chủ đích: đây là góc thú cưng của một ứng dụng học, không phải
- * một game nuôi thú. Một chỉ số cạn trong hai phút biến nó thành việc phải làm,
- * và việc phải làm thứ hai bên cạnh việc học là thứ khiến người ta đóng hẳn bảng
- * này lại. Đói hết mất khoảng 10 phút MỞ BẢNG liên tục.
+ * Máy chủ mới là bên quyết định — nó trả 409 kèm lý do bằng lời. Bảng này chỉ
+ * để nút bấm trông đúng trước khi bấm; giữ nó gần với ngưỡng thật ở
+ * `services/pet.py`, và nếu hai bên lệch thì hậu quả nhẹ nhất có thể: một cái
+ * nút mờ mà lẽ ra bấm được, hoặc một lời từ chối lịch sự.
  */
-const RATES = {
-  fullnessDecay: 1 / 600,
-  moodDecay: 1 / 900,
-  energyDrain: 1 / 420,
-  energyRestRecover: 1 / 100,
-  energyIdleRecover: 1 / 1200,
-  /** Đói thì vui cũng tụt: một con thú đói không thể "rất vui". */
-  hungryMoodPenalty: 1 / 300,
-};
-
-export function decayNeeds(needs: PetNeeds, dt: number, activity: PetActivity): PetNeeds {
-  const next: PetNeeds = {
-    fullness: clamp01(needs.fullness - RATES.fullnessDecay * dt),
-    energy: clamp01(
-      needs.energy +
-        (activity === "moving"
-          ? -RATES.energyDrain
-          : activity === "resting"
-            ? RATES.energyRestRecover
-            : RATES.energyIdleRecover) *
-          dt,
-    ),
-    mood: clamp01(needs.mood - RATES.moodDecay * dt),
-  };
-  if (next.fullness < 0.25) {
-    next.mood = clamp01(next.mood - RATES.hungryMoodPenalty * dt * (1 - next.fullness / 0.25));
-  }
-  return next;
-}
-
-/** Một hành động ảnh hưởng thế nào. Trả về chỉ số MỚI, không sửa tại chỗ. */
-export function applyAction(needs: PetNeeds, action: PetAction): PetNeeds {
-  switch (action) {
-    case "feed":
-      return {
-        ...needs,
-        fullness: clamp01(needs.fullness + 0.34),
-        mood: clamp01(needs.mood + 0.1),
-      };
-    case "poke":
-      // Chọc thì vui, nhưng chọc mãi thì hết vui — phần thưởng nhỏ dần theo mức
-      // vui hiện tại, nên bấm liên tục không đẩy được thanh lên đầy.
-      return { ...needs, mood: clamp01(needs.mood + 0.14 * (1 - needs.mood)) };
-    case "walk":
-      return { ...needs, mood: clamp01(needs.mood + 0.08) };
-    case "rest":
-      return needs;
-  }
-}
+export const FEED_FULL_ABOVE = 0.95;
+export const WALK_TIRED_BELOW = 0.15;
 
 /**
- * Hành động có làm được lúc này không, và nếu không thì vì sao.
+ * Lý do chưa làm được, bằng lời — hoặc `null` nếu làm được.
  *
- * Trả về LÝ DO chứ không trả về `false`: một cái nút mờ đi mà không nói vì sao
- * chỉ để lại người dùng đoán, và ở đây lý do luôn ngắn gọn và có thật.
+ * Trả về CÂU CHỮ chứ không phải `boolean`: một cái nút mờ đi mà không nói vì sao
+ * chỉ để lại người dùng đoán. Câu ở đây chép đúng câu máy chủ trả trong lỗi 409,
+ * nên dù bấm được vào (hai bên lệch ngưỡng) thì người dùng vẫn đọc được cùng một
+ * lời giải thích chứ không phải hai lời khác nhau.
  */
-export function refuse(needs: PetNeeds, action: PetAction, asleep: boolean): string | null {
-  if (action === "rest") return null;
-  if (asleep) return null; // các hành động khác sẽ đánh thức nó, không bị từ chối
-  if (action === "feed" && needs.fullness > 0.94) return "Đang no, chưa ăn thêm được";
-  if (action === "walk" && needs.energy < 0.12) return "Hết sức rồi, cho ngủ một lát đã";
+export function whyUnavailable(needs: PetNeeds, action: PetAction): string | null {
+  if (action === "feed" && needs.fullness >= FEED_FULL_ABOVE) {
+    return "Nó đang no, chưa ăn thêm được.";
+  }
+  if (action === "walk" && needs.energy < WALK_TIRED_BELOW) {
+    return "Nó đang mệt, để nó nghỉ đã.";
+  }
   return null;
 }

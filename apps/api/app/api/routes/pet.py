@@ -6,14 +6,16 @@ người này là ai và họ đặt gì.
 """
 
 import uuid
+from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.models import PetState, User
-from app.schemas.pet import PetMove, PetNeeds, PetPublic
+from app.schemas.pet import PetActionRequest, PetMove, PetNeeds, PetPublic
+from app.services import pet as needs_service
 
 router = APIRouter(prefix="/pet", tags=["pet"])
 
@@ -40,6 +42,55 @@ def ensure_pet(db: Session, user_id: uuid.UUID) -> PetState:
     return pet
 
 
+def _now() -> datetime:
+    return datetime.now(UTC)
+
+
+def _aware(stamp: datetime) -> datetime:
+    """Gắn UTC cho mốc thời gian nếu nó chưa có múi giờ.
+
+    `DateTime(timezone=True)` không hứa điều gì giống nhau ở hai database:
+    Postgres trả về mốc CÓ múi giờ, SQLite trả về mốc TRẦN. Trừ hai kiểu đó cho
+    nhau ném `TypeError`, nên cùng một dòng code chạy ở production và nổ trong
+    test — hoặc ngược lại, tuỳ chỗ nào được viết trước.
+
+    Coi mốc trần là UTC là đúng chứ không phải nhân nhượng: mọi thứ ghi vào cột
+    này đều đi qua `datetime.now(UTC)` hoặc `func.now()`.
+    """
+    return stamp if stamp.tzinfo is not None else stamp.replace(tzinfo=UTC)
+
+
+def _current_needs(pet: PetState, at: datetime) -> needs_service.Needs:
+    """Nhu cầu **suy ra ở thời điểm `at`**, không phải con số đang nằm trong cột.
+
+    Cột lưu ảnh chụp tại `needs_at`; giá trị bây giờ là ảnh chụp đó trừ dần theo
+    quãng thời gian đã trôi. Đây là cùng một luật với chuỗi ngày ở
+    `profile_stats.py` và tiến độ ở `StoryProgress`: suy ra ở mỗi lần đọc, không
+    nuôi một bộ đếm chạy song song với lịch sử.
+    """
+    stored = needs_service.Needs(fullness=pet.fullness, energy=pet.energy, mood=pet.mood)
+    return needs_service.decay(stored, (at - _aware(pet.needs_at)).total_seconds())
+
+
+def _as_public(pet: PetState, now: needs_service.Needs, at: datetime) -> PetPublic:
+    return PetPublic(
+        species=pet.species,
+        nickname=pet.nickname,
+        level=pet.level_reached,
+        xp=pet.xp,
+        tile_x=pet.tile_x,
+        tile_y=pet.tile_y,
+        facing=pet.facing,
+        needs=PetNeeds(
+            fullness=float(now.fullness),
+            energy=float(now.energy),
+            mood=float(now.mood),
+            at=at,
+        ),
+        hatched_at=pet.hatched_at,
+    )
+
+
 @router.get("", response_model=PetPublic)
 def read_pet(
     db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
@@ -51,23 +102,11 @@ def read_pet(
     kịp tin rằng ba con số kia là "bây giờ".
     """
     pet = ensure_pet(db, current_user.id)
-    return PetPublic(
-        species=pet.species,
-        nickname=pet.nickname,
-        # Chưa có bảng ngưỡng (lát 6), nên level tạm là mốc cao nhất đã đạt.
-        level=pet.level_reached,
-        xp=pet.xp,
-        tile_x=pet.tile_x,
-        tile_y=pet.tile_y,
-        facing=pet.facing,
-        needs=PetNeeds(
-            fullness=float(pet.fullness),
-            energy=float(pet.energy),
-            mood=float(pet.mood),
-            at=pet.needs_at,
-        ),
-        hatched_at=pet.hatched_at,
-    )
+    at = _now()
+    # Đọc KHÔNG ghi. Trừ dần rồi lưu lại ở mỗi lần đọc sẽ biến một GET thành một
+    # lệnh ghi trên đường nóng, và không được gì: mốc cộng ảnh chụp đã đủ để suy
+    # ra giá trị bây giờ ở bất cứ lúc nào. Chỉ hành động mới ghi.
+    return _as_public(pet, _current_needs(pet, at), at)
 
 
 @router.put("/position", response_model=PetPublic)
@@ -93,5 +132,43 @@ def move_pet(
     pet.tile_y = body.tile_y
     pet.facing = body.facing
     db.commit()
-    db.refresh(pet)
-    return read_pet(db, current_user)
+    at = _now()
+    return _as_public(pet, _current_needs(pet, at), at)
+
+
+@router.post("/actions", response_model=PetPublic)
+def act(
+    body: PetActionRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> PetPublic:
+    """Cho ăn, chọc, hoặc dắt đi dạo.
+
+    **Trừ dần TRƯỚC rồi mới cộng tác động**, không ngược lại. Ngược thứ tự thì
+    phần thưởng bị trừ theo quãng thời gian trước khi hành động xảy ra — cho ăn
+    sau một tuần vắng mặt gần như không có tác dụng, mà con số vẫn hợp lệ nên
+    không có gì báo.
+
+    Ghi lại cả `needs_at`: từ giây này ảnh chụp mới là mốc, nếu không lần đọc kế
+    tiếp sẽ trừ lại đúng quãng thời gian vừa rồi một lần nữa.
+
+    Từ chối trả **409**, không phải 400: yêu cầu hợp lệ, chỉ là trạng thái hiện
+    tại không cho phép — cùng hình dạng với việc từ chối xoá một câu dictation đã
+    có người làm. Và lời từ chối nói ra ĐIỀU KIỆN, để giao diện lặp lại được
+    nguyên văn thay vì tự đoán.
+    """
+    at = _now()
+    pet = ensure_pet(db, current_user.id)
+    now = _current_needs(pet, at)
+
+    reason = needs_service.refusal(body.action, now)
+    if reason is not None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=reason)
+
+    after = needs_service.apply(body.action, now)
+    pet.fullness = after.fullness
+    pet.energy = after.energy
+    pet.mood = after.mood
+    pet.needs_at = at
+    db.commit()
+    return _as_public(pet, after, at)

@@ -4585,6 +4585,24 @@
         "title": "PasswordChange",
         "type": "object"
       },
+      "PetActionRequest": {
+        "properties": {
+          "action": {
+            "enum": [
+              "feed",
+              "poke",
+              "walk"
+            ],
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "PetActionRequest",
+        "type": "object"
+      },
       "PetMove": {
         "description": "Chỗ con thú dừng lại sau một lần đi.\n\nChỉ có toạ độ Ô và hướng nhìn — không có nhu cầu, không có XP. Client không\nđược phép nói với máy chủ rằng con thú của nó no bao nhiêu: đó là thứ máy chủ\nsuy ra từ `needs_at`, và nhận nó từ trình duyệt là mở một đường sửa chỉ số\nbằng devtools.",
         "properties": {
@@ -14654,6 +14672,53 @@
           }
         ],
         "summary": "Read Pet",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/actions": {
+      "post": {
+        "description": "Cho ăn, chọc, hoặc dắt đi dạo.\n\n**Trừ dần TRƯỚC rồi mới cộng tác động**, không ngược lại. Ngược thứ tự thì\nphần thưởng bị trừ theo quãng thời gian trước khi hành động xảy ra — cho ăn\nsau một tuần vắng mặt gần như không có tác dụng, mà con số vẫn hợp lệ nên\nkhông có gì báo.\n\nGhi lại cả `needs_at`: từ giây này ảnh chụp mới là mốc, nếu không lần đọc kế\ntiếp sẽ trừ lại đúng quãng thời gian vừa rồi một lần nữa.\n\nTừ chối trả **409**, không phải 400: yêu cầu hợp lệ, chỉ là trạng thái hiện\ntại không cho phép — cùng hình dạng với việc từ chối xoá một câu dictation đã\ncó người làm. Và lời từ chối nói ra ĐIỀU KIỆN, để giao diện lặp lại được\nnguyên văn thay vì tự đoán.",
+        "operationId": "act_api_v1_pet_actions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Act",
         "tags": [
           "pet"
         ]

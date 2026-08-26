@@ -33,6 +33,10 @@ class PetPublic(BaseModel):
     hatched_at: datetime
 
 
+class PetActionRequest(BaseModel):
+    action: Literal["feed", "poke", "walk"]
+
+
 class PetMove(BaseModel):
     """Chỗ con thú dừng lại sau một lần đi.
 
