@@ -44,6 +44,8 @@ export type BackdropPublic = components["schemas"]["BackdropPublic"];
 export type BackdropUpdate = components["schemas"]["BackdropUpdate"];
 export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
 export type ProgressionPublic = components["schemas"]["ProgressionPublic"];
+export type PetPublic = components["schemas"]["PetPublic"];
+export type PetMove = components["schemas"]["PetMove"];
 export type DailyTasksPublic = components["schemas"]["DailyTasksPublic"];
 export type BadgesPublic = components["schemas"]["BadgesPublic"];
 export type BadgePublic = components["schemas"]["BadgePublic"];
@@ -155,6 +157,8 @@ export const API_ROUTES = {
   progression: "/api/v1/profile/progression",
   dailyTasks: "/api/v1/daily-tasks",
   badges: "/api/v1/progression/badges",
+  pet: "/api/v1/pet",
+  petPosition: "/api/v1/pet/position",
   badgesSeen: "/api/v1/progression/badges/seen",
 
   // Cấu hình hệ level. Mọi đường ghi ở đây trả về TOÀN BỘ cấu hình, nên màn hình

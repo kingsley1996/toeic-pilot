@@ -4585,6 +4585,134 @@
         "title": "PasswordChange",
         "type": "object"
       },
+      "PetMove": {
+        "description": "Chỗ con thú dừng lại sau một lần đi.\n\nChỉ có toạ độ Ô và hướng nhìn — không có nhu cầu, không có XP. Client không\nđược phép nói với máy chủ rằng con thú của nó no bao nhiêu: đó là thứ máy chủ\nsuy ra từ `needs_at`, và nhận nó từ trình duyệt là mở một đường sửa chỉ số\nbằng devtools.",
+        "properties": {
+          "facing": {
+            "enum": [
+              "left",
+              "right"
+            ],
+            "title": "Facing",
+            "type": "string"
+          },
+          "tile_x": {
+            "maximum": 255.0,
+            "minimum": 0.0,
+            "title": "Tile X",
+            "type": "integer"
+          },
+          "tile_y": {
+            "maximum": 255.0,
+            "minimum": 0.0,
+            "title": "Tile Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tile_x",
+          "tile_y",
+          "facing"
+        ],
+        "title": "PetMove",
+        "type": "object"
+      },
+      "PetNeeds": {
+        "description": "Ba nhu cầu, 0..1.\n\nGửi kèm `at` — mốc thời gian của ba số này — chứ không gửi số trần. Trình\nduyệt nội suy tiếp từ mốc đó để thanh chỉ số nhích mượt, nhưng con số của\nmáy chủ vẫn là con số thật. Thiếu mốc thì client không có cách nào biết ba\nsố kia cũ bao lâu, và nó sẽ vẽ một con thú no nê ngay sau một tuần vắng mặt.",
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "energy": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Energy",
+            "type": "number"
+          },
+          "fullness": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Fullness",
+            "type": "number"
+          },
+          "mood": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Mood",
+            "type": "number"
+          }
+        },
+        "required": [
+          "fullness",
+          "energy",
+          "mood",
+          "at"
+        ],
+        "title": "PetNeeds",
+        "type": "object"
+      },
+      "PetPublic": {
+        "properties": {
+          "facing": {
+            "title": "Facing",
+            "type": "string"
+          },
+          "hatched_at": {
+            "format": "date-time",
+            "title": "Hatched At",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "needs": {
+            "$ref": "#/components/schemas/PetNeeds"
+          },
+          "nickname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nickname"
+          },
+          "species": {
+            "title": "Species",
+            "type": "string"
+          },
+          "tile_x": {
+            "title": "Tile X",
+            "type": "integer"
+          },
+          "tile_y": {
+            "title": "Tile Y",
+            "type": "integer"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "species",
+          "nickname",
+          "level",
+          "xp",
+          "tile_x",
+          "tile_y",
+          "facing",
+          "needs",
+          "hatched_at"
+        ],
+        "title": "PetPublic",
+        "type": "object"
+      },
       "ProgressionConfigAdmin": {
         "description": "Toàn bộ cấu hình trong MỘT lần đọc.\n\nMàn hình quản trị hiển thị cả bốn phần cùng lúc và chúng chỉ có nghĩa khi\nđứng cạnh nhau — một bậc khung ở level 30 là vô nghĩa nếu bảng level dừng ở\n25. Bốn request riêng cho một màn hình cũng là bốn trạng thái tải rời rạc.",
         "properties": {
@@ -14501,6 +14629,80 @@
         "summary": "Submit Dictation",
         "tags": [
           "learning"
+        ]
+      }
+    },
+    "/api/v1/pet": {
+      "get": {
+        "description": "Trạng thái con thú, kèm MỐC THỜI GIAN của nhu cầu.\n\nChưa trừ dần ở đây: phép trừ theo thời gian là lát 5. Nhưng `needs.at` đã có\nmặt từ bây giờ, vì thêm nó sau là một thay đổi hợp đồng ở đúng chỗ client đã\nkịp tin rằng ba con số kia là \"bây giờ\".",
+        "operationId": "read_pet_api_v1_pet_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Pet",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/position": {
+      "put": {
+        "description": "Ghi lại chỗ con thú vừa dừng.\n\n**Không kiểm ô đó có đi được không**, và đó là chủ ý. Bản đồ sống ở\n`public/pet/map.json` — một tệp tĩnh mà máy chủ không đọc và không nên đọc:\nbắt nó biết bố cục nghĩa là mỗi lần đổi bản đồ trong trình vẽ lại phải deploy\nlại API. Cái giá của việc không kiểm là một người dùng nghịch devtools có thể\nđặt con thú của CHÍNH HỌ vào giữa cái ao. Không ai khác thấy, không gì khác\nhỏng, và `nearestWalkable` ở client kéo nó ra ở lần mở sau.\n\nĐây là lý do khoảng hợp lệ chỉ chặn ở 0..255: đủ để không ai nhét được số âm\nhay số khổng lồ vào cột `SmallInteger`, không hơn.",
+        "operationId": "move_pet_api_v1_pet_position_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetMove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Move Pet",
+        "tags": [
+          "pet"
         ]
       }
     },

@@ -21,6 +21,7 @@ from app.api.routes import (
     learning,
     media,
     oauth,
+    pet,
     practice,
     profile,
 )
@@ -74,6 +75,7 @@ app.include_router(learning.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")
+app.include_router(pet.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")

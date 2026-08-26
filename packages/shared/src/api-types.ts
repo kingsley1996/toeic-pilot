@@ -2218,6 +2218,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Pet
+         * @description Trạng thái con thú, kèm MỐC THỜI GIAN của nhu cầu.
+         *
+         *     Chưa trừ dần ở đây: phép trừ theo thời gian là lát 5. Nhưng `needs.at` đã có
+         *     mặt từ bây giờ, vì thêm nó sau là một thay đổi hợp đồng ở đúng chỗ client đã
+         *     kịp tin rằng ba con số kia là "bây giờ".
+         */
+        get: operations["read_pet_api_v1_pet_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/position": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Move Pet
+         * @description Ghi lại chỗ con thú vừa dừng.
+         *
+         *     **Không kiểm ô đó có đi được không**, và đó là chủ ý. Bản đồ sống ở
+         *     `public/pet/map.json` — một tệp tĩnh mà máy chủ không đọc và không nên đọc:
+         *     bắt nó biết bố cục nghĩa là mỗi lần đổi bản đồ trong trình vẽ lại phải deploy
+         *     lại API. Cái giá của việc không kiểm là một người dùng nghịch devtools có thể
+         *     đặt con thú của CHÍNH HỌ vào giữa cái ao. Không ai khác thấy, không gì khác
+         *     hỏng, và `nearestWalkable` ở client kéo nó ra ở lần mở sau.
+         *
+         *     Đây là lý do khoảng hợp lệ chỉ chặn ở 0..255: đủ để không ai nhét được số âm
+         *     hay số khổng lồ vào cột `SmallInteger`, không hơn.
+         */
+        put: operations["move_pet_api_v1_pet_position_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/practice-tests/{slug}": {
         parameters: {
             query?: never;
@@ -4479,6 +4533,71 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /**
+         * PetMove
+         * @description Chỗ con thú dừng lại sau một lần đi.
+         *
+         *     Chỉ có toạ độ Ô và hướng nhìn — không có nhu cầu, không có XP. Client không
+         *     được phép nói với máy chủ rằng con thú của nó no bao nhiêu: đó là thứ máy chủ
+         *     suy ra từ `needs_at`, và nhận nó từ trình duyệt là mở một đường sửa chỉ số
+         *     bằng devtools.
+         */
+        PetMove: {
+            /**
+             * Facing
+             * @enum {string}
+             */
+            facing: "left" | "right";
+            /** Tile X */
+            tile_x: number;
+            /** Tile Y */
+            tile_y: number;
+        };
+        /**
+         * PetNeeds
+         * @description Ba nhu cầu, 0..1.
+         *
+         *     Gửi kèm `at` — mốc thời gian của ba số này — chứ không gửi số trần. Trình
+         *     duyệt nội suy tiếp từ mốc đó để thanh chỉ số nhích mượt, nhưng con số của
+         *     máy chủ vẫn là con số thật. Thiếu mốc thì client không có cách nào biết ba
+         *     số kia cũ bao lâu, và nó sẽ vẽ một con thú no nê ngay sau một tuần vắng mặt.
+         */
+        PetNeeds: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Energy */
+            energy: number;
+            /** Fullness */
+            fullness: number;
+            /** Mood */
+            mood: number;
+        };
+        /** PetPublic */
+        PetPublic: {
+            /** Facing */
+            facing: string;
+            /**
+             * Hatched At
+             * Format: date-time
+             */
+            hatched_at: string;
+            /** Level */
+            level: number;
+            needs: components["schemas"]["PetNeeds"];
+            /** Nickname */
+            nickname: string | null;
+            /** Species */
+            species: string;
+            /** Tile X */
+            tile_x: number;
+            /** Tile Y */
+            tile_y: number;
+            /** Xp */
+            xp: number;
         };
         /**
          * ProgressionConfigAdmin
@@ -9701,6 +9820,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_pet_api_v1_pet_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetPublic"];
+                };
+            };
+        };
+    };
+    move_pet_api_v1_pet_position_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetMove"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetPublic"];
                 };
             };
             /** @description Validation Error */
