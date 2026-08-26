@@ -21,3 +21,9 @@ planning/**
 # lần chạy `--write` sau MỖI lần sinh đề, và một CI đỏ vì một dấu cách trong
 # tệp không ai đọc bằng mắt.
 apps/api/content/generated/**
+
+# Bản đồ góc thú cưng: do trình vẽ ở `/admin/petland` XUẤT RA, không ai gõ tay.
+# Cùng lý do như khối ngay trên: máy viết thì máy quyết định định dạng. Không có
+# dòng này thì mỗi lần xuất bản đồ là một lần CI đỏ vì khoảng trắng, và người
+# thiết kế phải chạy `prettier --write` sau mỗi lần kéo thả.
+apps/web/public/pet/map.json
