@@ -1,119 +1,40 @@
 /**
- * Sổ đăng ký mascot. **Đây là tệp duy nhất phải sửa khi thêm hoặc đổi mascot.**
+ * Loài nào vẽ bằng ô nào trong `public/pet/creatures.png`.
  *
- * Không có gì trong tệp này là logic — chỉ là số đo của từng bộ sprite, và bảng
- * ánh xạ từ Ý ĐỊNH sang tên clip. Phần còn lại của Petland nói bằng ý định
- * ("đứng", "đi", "nhảy lên"), không nói bằng tên tệp ảnh, nên một mascot có bộ
- * hoạt ảnh khác — tên khác, số khung khác, thiếu hẳn một hoạt ảnh — chỉ cần một
- * hàng mới ở dưới.
+ * **Đây là tệp duy nhất biết một `species` trông ra sao**, và nó không biết gì
+ * khác: không bản đồ, không React, không Pixi. Đổi bộ sprite hay đổi loài chỉ
+ * đụng tới đây.
  *
- * **`MascotId` đến từ contract dùng chung, không khai ở đây.** Danh sách sống ở
- * `apps/api/app/schemas/profile.py::PetId` và đi qua OpenAPI ra tới TypeScript,
- * nên `Record<MascotId, Mascot>` thiếu một con là lỗi `tsc` chứ không phải một
- * `undefined` lộ ra lúc chạy. Thêm mascot thì sửa phía API trước, chạy
- * `pnpm gen:api-types`, rồi mới thêm hàng ở đây — thứ tự ngược lại không biên dịch.
+ * Bản trước của tệp này là sổ đăng ký mascot: mỗi con một thư mục ảnh, năm dải
+ * hoạt ảnh, ba con số đo tay (`cell`, `footY`, `anchorX`) mà `pack-pet.mjs` in
+ * ra cho người chép vào. Giờ mỗi loài là **một số** — chỉ số ô trong tấm ghép —
+ * vì gói Tiny Creatures không có khung hoạt ảnh và chuyển động được sinh lúc vẽ
+ * (ADR-010 §14.5). Thêm một loài mới tốn một dòng.
  *
- * Cả hai bộ đều được SINH RA (skill `generate2dsprite`, FLUX.2-klein tại máy) và
- * đóng gói bằng `scripts/pack-pet.mjs`, thứ ĐO ra `cell`, `footY` và `anchorX`
- * rồi in chúng cho người chép vào đây. Không đoán ba số đó bằng mắt:
- * `check-petland-fit.mjs` so khớp tuyệt đối và sai vài pixel làm con thú lơ
- * lửng hoặc lún xuống đất.
+ * Bảng này là **tạm**: `pet_species` (ADR-010 §6.3) sẽ nhận việc, để admin thêm
+ * loài mà không cần deploy. Giữ ở đây tới lúc đó, và giữ NHỎ để lúc chuyển không
+ * mất gì.
  */
-import type { UserProfilePublic } from "@toeic-pilot/shared";
 
-/**
- * Ý định của con thú. Đây là từ vựng CHUNG giữa phần điều khiển, phần giao diện
- * và bộ sprite — nó phải nói về hành vi, không về nghệ thuật, vì hành vi thì
- * không đổi khi đổi mascot.
- */
-export type PetIntent = "stand" | "walk" | "run" | "hop" | "sleep";
-
-export type SpriteClip = {
-  /** Tên tệp dải ảnh, không kèm đuôi. */
-  name: string;
-  frames: number;
-  /** 0 = khung hình do thứ khác quyết định (cung nhảy), không do đồng hồ. */
-  fps: number;
-  loop: boolean;
+/** Mã loài → chỉ số ô. Xem `public/pet/CREDITS.md` để biết cách đổi chỉ số sang toạ độ. */
+export const SPECIES_TILE: Record<string, number> = {
+  cat: 169,
+  squirrel: 175,
+  frog: 147,
+  duck: 150,
+  monkey: 168,
+  turtle: 149,
+  owl: 117,
+  deer: 161,
+  raccoon: 178,
+  tiger: 157,
+  bear: 165,
+  giraffe: 159,
 };
 
-/** Mã mascot, lấy thẳng từ contract để hai bên không trôi khỏi nhau. */
-export type MascotId = NonNullable<UserProfilePublic["pet"]>;
+/** Ô mặc định khi mã loài không có trong bảng — một con thú lạ vẫn hơn một ô trống. */
+export const FALLBACK_TILE = SPECIES_TILE.cat;
 
-export type Mascot = {
-  /** Tên hiện cho người dùng. Tiếng Việt: đây là phần học viên nhìn thấy. */
-  label: string;
-  /** Ô của dải sprite. */
-  cell: { w: number; h: number };
-  /** Hàng mặt đất bên trong ô. */
-  footY: number;
-  /** Tâm ngang của tư thế đứng, cũng là điểm `scaleX(-1)` lật quanh. */
-  anchorX: number;
-  base: string;
-  clips: Record<PetIntent, SpriteClip>;
-};
-
-export const MASCOTS: Record<MascotId, Mascot> = {
-  cat: {
-    label: "Mèo",
-    cell: { w: 151, h: 117 },
-    footY: 117,
-    anchorX: 64,
-    base: "/mascots/cat",
-    clips: {
-      stand: { name: "idle", frames: 4, fps: 5, loop: true },
-      walk: { name: "walk", frames: 6, fps: 9, loop: true },
-      run: { name: "run", frames: 6, fps: 13, loop: true },
-      hop: { name: "jump", frames: 6, fps: 0, loop: false },
-      sleep: { name: "sleep", frames: 4, fps: 5, loop: false },
-    },
-  },
-  rex: {
-    label: "Khủng long",
-    cell: { w: 125, h: 117 },
-    footY: 117,
-    anchorX: 69,
-    base: "/mascots/rex",
-    clips: {
-      stand: { name: "idle", frames: 4, fps: 5, loop: true },
-      /*
-       * Không có dải `walk` riêng: bộ này chỉ có bốn clip. Ý định "đi" phát
-       * chính chu kỳ chạy ở fps thấp hơn — đúng lối thoát mà bảng ánh xạ này
-       * tồn tại để cho phép, và là cách nhiều game 2D vẫn làm.
-       *
-       * Lý do không có: ba lần sinh `walk` cho bộ này đều hỏng theo cùng một
-       * kiểu — anchor sheet giữ nguyên ảnh tham chiếu nên nó mạnh ở chuỗi đơn
-       * điệu (nằm xuống, sải bước) và yếu ở chu kỳ tuần hoàn (ROADMAP §4s).
-       */
-      walk: { name: "run", frames: 6, fps: 7, loop: true },
-      run: { name: "run", frames: 6, fps: 13, loop: true },
-      hop: { name: "jump", frames: 6, fps: 0, loop: false },
-      sleep: { name: "sleep", frames: 4, fps: 5, loop: false },
-    },
-  },
-};
-
-/*
- * Con mặc định khi hồ sơ chưa chọn. Cột `user_profile.pet` để NULL chứ không
- * điền sẵn giá trị này, nên đổi hằng số ở đây là mọi người chưa từng chọn đi
- * theo — thay vì bị ghim vào con mặc định của ngày họ đăng ký.
- */
-export const DEFAULT_MASCOT: MascotId = "cat";
-
-/** Đọc mã mascot từ hồ sơ, chịu được cả giá trị lạ của một bản cũ. */
-export function mascotOf(pet: string | null | undefined): Mascot {
-  return (pet && pet in MASCOTS ? MASCOTS[pet as MascotId] : MASCOTS[DEFAULT_MASCOT])!;
-}
-
-export function clipOf(mascot: Mascot, intent: PetIntent): SpriteClip {
-  return mascot.clips[intent];
-}
-
-export function sheetUrl(mascot: Mascot, intent: PetIntent): string {
-  return `${mascot.base}/${mascot.clips[intent].name}.png`;
-}
-
-/** Khung hình đứng đầu tiên, cho nút mở bảng và cho ô chọn mascot. */
-export function posterOf(mascot: Mascot): { url: string; frames: number } {
-  return { url: sheetUrl(mascot, "stand"), frames: mascot.clips.stand.frames };
+export function tileForSpecies(species: string): number {
+  return SPECIES_TILE[species] ?? FALLBACK_TILE;
 }

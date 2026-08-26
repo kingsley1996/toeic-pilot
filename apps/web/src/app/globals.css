@@ -591,3 +591,31 @@
   opacity: 0;
   transition: opacity 120ms cubic-bezier(0.2, 0, 0, 1);
 }
+
+/*
+ * Nền ca-rô cho ô asset trong trình vẽ bản đồ.
+ *
+ * Ảnh ô là PNG trong suốt. Đặt thẳng lên `bg-panel` thì ở chế độ TỐI nền panel
+ * gần như đen, và một cái cây xanh đậm trên nền đen thì không nhìn ra hình —
+ * bảng chọn asset trở thành một lưới ô đen. Ca-rô là quy ước của mọi trình sửa
+ * ảnh cho "chỗ này trong suốt", và nó có cùng độ sáng ở cả hai theme nên ô nào
+ * cũng đọc được.
+ *
+ * Cố định màu, KHÔNG lấy từ token: đây là nền kiểm tra độ trong suốt, không phải
+ * một bề mặt của giao diện. Cho nó đổi theo theme là làm hỏng đúng việc nó sinh
+ * ra để làm.
+ */
+.tile-checker {
+  background-image:
+    linear-gradient(45deg, #c9ced4 25%, transparent 25%),
+    linear-gradient(-45deg, #c9ced4 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c9ced4 75%),
+    linear-gradient(-45deg, transparent 75%, #c9ced4 75%);
+  background-size: 8px 8px;
+  background-position:
+    0 0,
+    0 4px,
+    4px -4px,
+    -4px 0;
+  background-color: #eef1f4;
+}

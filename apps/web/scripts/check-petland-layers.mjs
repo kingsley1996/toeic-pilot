@@ -21,25 +21,46 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const RULES = [
   {
     file: "src/components/petland-ui.tsx",
-    banned: ["petland-sprite", "petland-scene", "petland-fx", "petland.tsx"],
+    banned: ["petland-sprite", "petland-render", "petland-map", "petland.tsx", "pixi.js"],
     why: "giao diện tương tác phải sống sót qua việc đổi mascot và đổi bối cảnh",
   },
   {
     file: "src/components/petland-pet.ts",
-    banned: ["petland-sprite", "petland-scene", "petland-fx", "petland-ui", "react"],
+    banned: ["petland-sprite", "petland-render", "petland-map", "petland-ui", "react", "pixi.js"],
     why: "nhu cầu và hành động là số học thuần, không dính ảnh và không dính React",
+  },
+  {
+    file: "src/components/petland-map.ts",
+    banned: ["petland-sprite", "petland-render", "petland-ui", "react", "pixi.js"],
+    why: "lưới, va chạm và tìm đường phải kiểm được mà không cần trình duyệt",
+  },
+  {
+    file: "src/components/petland-history.ts",
+    banned: ["petland-render", "petland-ui", "react", "pixi.js"],
+    why: "lịch sử sửa là số học thuần; nó chạy được ngoài React và đó là cách nó được kiểm",
+  },
+  {
+    file: "src/components/petland-sprite.ts",
+    banned: ["petland-render", "petland-map", "petland-ui", "petland-pet", "react", "pixi.js"],
+    why: "mô tả loài là số đo thuần; biết tới bối cảnh thì đổi loài lại phải đọc cả bối cảnh",
   },
   {
     file: "src/components/pixel-icon.tsx",
     banned: ["petland"],
     why: "bộ biểu tượng dùng được ở bất cứ đâu, không riêng góc thú cưng",
   },
-  {
-    file: "src/components/petland-sprite.ts",
-    banned: ["petland-scene", "petland-fx", "petland-ui", "petland-pet", "react"],
-    why: "mô tả mascot là số đo thuần; biết tới bối cảnh thì đổi mascot lại phải đọc cả bối cảnh",
-  },
 ];
+
+/*
+ * Luật quan trọng nhất, và nó không nằm trong bảng trên vì nó nói theo chiều
+ * ngược lại: **CHỈ `petland-render.ts` được nhập `pixi.js`**.
+ *
+ * Không có nó, sáu tháng nữa "đổi renderer" là một cuộc tìm kiếm toàn dự án — và
+ * mỗi tệp lặng lẽ dính vào Pixi là một tệp phải đọc lại. Nó cũng giữ luôn con số
+ * bundle: Pixi phải nằm trong đúng một chunk nạp lười, và một `import` thứ hai ở
+ * chỗ khác kéo nó vào gói dùng chung mà không có gì báo (ADR-010 §15).
+ */
+const PIXI_OWNER = "src/components/petland-render.ts";
 
 const IMPORT = /^\s*import[\s\S]*?from\s+["']([^"']+)["']/gm;
 
@@ -86,5 +107,31 @@ for (const { needle, owner, what } of ASSETS) {
   }
 }
 
-if (bad > 0) process.exit(1);
 console.log("\n✓ ranh giới còn nguyên: đổi mascot hay đổi bối cảnh không lan sang giao diện");
+
+// Quét toàn thư mục nguồn: luật ở trên chỉ soi những tệp được liệt kê, còn tệp
+// MỚI thì không ai nhớ thêm vào bảng — mà đúng tệp mới mới là chỗ dễ nhập nhầm.
+const roots = ["src/components", "src/app"];
+for (const dir of roots) {
+  const stack = [path.join(root, dir)];
+  while (stack.length > 0) {
+    const at = stack.pop();
+    for (const entry of fs.readdirSync(at, { withFileTypes: true })) {
+      const full = path.join(at, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(full);
+        continue;
+      }
+      if (!/\.(ts|tsx)$/.test(entry.name)) continue;
+      const rel = path.relative(root, full);
+      if (rel === PIXI_OWNER) continue;
+      if (/from "pixi\.js"|import\("pixi\.js"\)/.test(fs.readFileSync(full, "utf8"))) {
+        console.error(`✗ ${rel} nhập "pixi.js" — chỉ ${PIXI_OWNER} được phép.`);
+        bad += 1;
+      }
+    }
+  }
+}
+
+if (bad > 0) process.exit(1);
+console.log("✓ chỉ petland-render.ts nhập pixi.js");
