@@ -1671,6 +1671,57 @@
         "title": "CollectionSummary",
         "type": "object"
       },
+      "CollectionUpdate": {
+        "description": "Sửa phần vỏ của một bộ đề. `model_dump(exclude_unset=True)` ở nơi gọi.\n\nCùng luật vắng-mặt-khác-null như `TestUpdate`: khoá vắng nghĩa là đừng đụng\ntới, khoá bằng null nghĩa là xoá đi. Nhờ đó xoá được năm hay nhãn nguồn của\nmột bộ đề, chứ không chỉ ghi đè được chúng.\n\n**`slug` cố ý không có ở đây.** Nó nằm trong mọi URL của khu quản trị, và\n`seed_demo_test` cùng các script nội dung tra bộ đề bằng chính nó. Đổi slug\nlà đổi danh tính chứ không phải đổi nhãn: mọi liên kết đã lưu hỏng cùng lúc\nvà không có gì chuyển hướng chúng. Muốn đổi tên hiển thị thì đó là `title`.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "source_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Tag"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "title": "CollectionUpdate",
+        "type": "object"
+      },
       "CommitResult": {
         "properties": {
           "created": {
@@ -11351,6 +11402,62 @@
           }
         ],
         "summary": "Delete Collection",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Đổi tên và phần mô tả của một bộ đề.\n\n`can_edit` chứ không phải `can_publish`: đây là việc biên tập — sửa một cái\nnhãn gõ sai — chứ không phải việc phát hành. Cùng ranh giới đã vẽ ở `PATCH\n/tests/{slug}`, và cũng vì thế `slug` không sửa được từ đây (xem\n`CollectionUpdate`).\n\nSửa được cả khi bộ đề ĐÃ xuất bản, và đó là chủ ý: một lỗi chính tả trong\ntên chỉ lộ ra sau khi có người nhìn thấy nó, mà lúc đó chính là lúc bộ đề đã\nra ngoài. Bắt gỡ xuất bản để sửa một chữ sẽ khiến bộ đề biến mất khỏi mắt\nhọc viên vì một dấu phẩy.",
+        "operationId": "update_collection_api_v1_admin_test_collections__slug__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Collection",
         "tags": [
           "admin"
         ]

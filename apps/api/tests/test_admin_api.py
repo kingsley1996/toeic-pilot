@@ -707,6 +707,96 @@ def test_moving_a_test_between_collections_and_out_of_one(
     assert removed.json()["collection_slug"] is None
 
 
+def test_renaming_a_collection_leaves_its_slug_alone(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Đổi tên là đổi NHÃN, không phải đổi danh tính.
+
+    `slug` nằm trong mọi URL của khu quản trị và là thứ các script nội dung tra
+    cứu. Cho sửa nó từ màn đổi tên nghĩa là một cú sửa lỗi chính tả làm hỏng mọi
+    liên kết đã lưu cùng lúc, mà không có gì chuyển hướng chúng. `CollectionUpdate`
+    không khai `slug`, nên gửi lên cũng bị bỏ qua — và đây là chỗ pin điều đó.
+    """
+    headers = auth("editor")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "bo-goc", "title": "Tên gõ sai", "year": 2024},
+        headers=headers,
+    )
+
+    renamed = client.patch(
+        "/api/v1/admin/test-collections/bo-goc",
+        json={"title": "Tên đã sửa", "slug": "bo-moi"},
+        headers=headers,
+    )
+    assert renamed.status_code == 200
+    assert renamed.json()["title"] == "Tên đã sửa"
+    assert renamed.json()["slug"] == "bo-goc"
+    # Trường không gửi thì không bị đụng tới; gửi null thì mới xoá.
+    assert renamed.json()["year"] == 2024
+    assert (
+        client.patch(
+            "/api/v1/admin/test-collections/bo-goc", json={"year": None}, headers=headers
+        ).json()["year"]
+        is None
+    )
+    # Và kiểm ở nguồn chứ không chỉ ở response vừa trả: slug cũ vẫn là slug duy nhất.
+    slugs = {
+        row["slug"] for row in client.get("/api/v1/admin/test-collections", headers=headers).json()
+    }
+    assert "bo-goc" in slugs
+    assert "bo-moi" not in slugs
+
+
+def test_a_published_collection_can_still_be_renamed(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Lỗi chính tả trong một cái tên chỉ lộ ra sau khi có người nhìn thấy nó.
+
+    Mà lúc đó chính là lúc bộ đề đã ra ngoài. Bắt gỡ xuất bản để sửa một chữ sẽ
+    làm bộ đề biến mất khỏi mắt học viên vì một dấu phẩy.
+    """
+    headers = auth("admin")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "da-phat-hanh", "title": "Bộ đề"},
+        headers=headers,
+    )
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "de-1", "title": "Đề 1", "collection_slug": "da-phat-hanh"},
+        headers=headers,
+    )
+    client.post("/api/v1/admin/tests/de-1/archive", headers=headers)
+
+    renamed = client.patch(
+        "/api/v1/admin/test-collections/da-phat-hanh",
+        json={"title": "Bộ đề 2024"},
+        headers=headers,
+    )
+    assert renamed.status_code == 200
+    assert renamed.json()["title"] == "Bộ đề 2024"
+
+
+def test_a_learner_cannot_rename_a_collection(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    admin = auth("admin")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "khoa", "title": "Bộ đề"},
+        headers=admin,
+    )
+    assert (
+        client.patch(
+            "/api/v1/admin/test-collections/khoa",
+            json={"title": "Bị đổi"},
+            headers=auth("learner"),
+        ).status_code
+        == 403
+    )
+
+
 def test_a_collection_refuses_to_publish_with_no_published_test(
     client: TestClient, auth: Callable[[str], dict[str, str]]
 ) -> None:

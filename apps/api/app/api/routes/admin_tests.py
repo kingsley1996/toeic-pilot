@@ -46,6 +46,7 @@ from app.schemas.admin import (
     BulkPublishResult,
     CollectionAdmin,
     CollectionCreate,
+    CollectionUpdate,
     GroupDraft,
     MediaAssign,
     ParseRequest,
@@ -181,6 +182,32 @@ def create_collection(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail=f"Đã có bộ đề với slug {body.slug!r}"
         ) from None
+    return _collection_admin(db, collection)
+
+
+@router.patch("/test-collections/{slug}", response_model=CollectionAdmin)
+def update_collection(
+    slug: str,
+    body: CollectionUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> CollectionAdmin:
+    """Đổi tên và phần mô tả của một bộ đề.
+
+    `can_edit` chứ không phải `can_publish`: đây là việc biên tập — sửa một cái
+    nhãn gõ sai — chứ không phải việc phát hành. Cùng ranh giới đã vẽ ở `PATCH
+    /tests/{slug}`, và cũng vì thế `slug` không sửa được từ đây (xem
+    `CollectionUpdate`).
+
+    Sửa được cả khi bộ đề ĐÃ xuất bản, và đó là chủ ý: một lỗi chính tả trong
+    tên chỉ lộ ra sau khi có người nhìn thấy nó, mà lúc đó chính là lúc bộ đề đã
+    ra ngoài. Bắt gỡ xuất bản để sửa một chữ sẽ khiến bộ đề biến mất khỏi mắt
+    học viên vì một dấu phẩy.
+    """
+    collection = _collection_or_404(db, slug)
+    for field_name, value in body.model_dump(exclude_unset=True).items():
+        setattr(collection, field_name, value)
+    db.commit()
     return _collection_admin(db, collection)
 
 

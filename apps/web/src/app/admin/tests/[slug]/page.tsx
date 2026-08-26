@@ -47,6 +47,7 @@ import {
   Textarea,
   cx,
 } from "@/components/ui";
+import { InlineRename } from "@/components/admin-bits";
 import { Modal } from "@/components/modal";
 import { ApiError, apiFetch } from "@/lib/api";
 import { uploadAudio } from "@/lib/audio-upload";
@@ -383,6 +384,23 @@ export default function AdminTestPage() {
       () => token && refresh(token),
     );
 
+  /*
+   * Đổi tên gửi ĐÚNG một khoá. `PATCH /tests/{slug}` phân biệt khoá vắng mặt
+   * với khoá bằng null, nên gửi kèm `collection_slug` hay `description` lấy từ
+   * state trên màn hình sẽ biến một lệnh đổi tên thành một lệnh ghi đè — và
+   * nếu state đang cũ hơn database thì nó lặng lẽ khôi phục giá trị cũ.
+   */
+  const rename = (title: string) =>
+    run(
+      () =>
+        apiFetch<TestAdmin>(API_ROUTES.adminTest(slug), {
+          method: "PATCH",
+          token: token ?? undefined,
+          body: JSON.stringify({ title }),
+        }),
+      setTest,
+    );
+
   const moveToCollection = (target: string) =>
     run(
       () =>
@@ -660,6 +678,12 @@ export default function AdminTestPage() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1>{test.title}</h1>
+            <InlineRename
+              value={test.title}
+              label="this test"
+              disabled={busy}
+              onSave={(title) => void rename(title)}
+            />
             <PublishTag status={test.status} />
           </div>
           <p className="mt-1 text-small text-ink-muted">

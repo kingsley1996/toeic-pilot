@@ -27,6 +27,7 @@ import {
   Tag,
   cx,
 } from "@/components/ui";
+import { InlineRename } from "@/components/admin-bits";
 import { Modal } from "@/components/modal";
 import { TreeEmpty, TreeNode } from "@/components/tree";
 import { ApiError, apiFetch } from "@/lib/api";
@@ -149,6 +150,21 @@ export default function AdminTestsPage() {
       apiFetch(API_ROUTES.adminCollection(target) + (force ? "?force=true" : ""), {
         method: "DELETE",
         token: token ?? undefined,
+      }),
+    );
+
+  /*
+   * Đổi tên gửi ĐÚNG một khoá, không kèm gì khác. `PATCH` phân biệt khoá vắng
+   * mặt với khoá bằng null, nên gửi thêm `year` hay `description` lấy từ state
+   * sẽ biến lệnh đổi tên thành lệnh ghi đè — và nếu state cũ hơn database thì
+   * nó lặng lẽ khôi phục giá trị cũ.
+   */
+  const renameCollection = (target: string, title: string) =>
+    run(() =>
+      apiFetch(API_ROUTES.adminCollection(target), {
+        method: "PATCH",
+        token: token ?? undefined,
+        body: JSON.stringify({ title }),
       }),
     );
 
@@ -303,6 +319,7 @@ export default function AdminTestsPage() {
                 tests={tests.filter((test) => test.collection_slug === collection.slug)}
                 canPublish={canPublish}
                 busy={busy}
+                onRename={(title) => void renameCollection(collection.slug, title)}
                 onPublish={() => void publishCollection(collection.slug)}
                 onArchive={(archived) => void archiveCollection(collection.slug, archived)}
                 onDelete={(force) => deleteCollection(collection.slug, force)}
@@ -335,6 +352,7 @@ function CollectionBlock({
   collection,
   tests,
   canPublish,
+  onRename,
   busy,
   onPublish,
   onArchive,
@@ -343,6 +361,7 @@ function CollectionBlock({
   collection: CollectionAdmin;
   tests: TestAdmin[];
   canPublish: boolean;
+  onRename: (title: string) => void;
   busy: boolean;
   onPublish: () => void;
   onArchive: (archived: boolean) => void;
@@ -357,7 +376,16 @@ function CollectionBlock({
     <>
       <TreeNode
         icon={FolderTree}
-        name={<span className="truncate font-semibold">{collection.title}</span>}
+        name={
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="truncate font-semibold">{collection.title}</span>
+            {/* Đổi tên là việc BIÊN TẬP, nên nó không đòi `canPublish` như xuất
+                bản hay xoá — sửa một chữ gõ sai không phải một quyết định phát
+                hành. Máy chủ vẽ đúng ranh giới đó: `can_edit`, không phải
+                `can_publish`. */}
+            <InlineRename value={collection.title} label="this collection" onSave={onRename} />
+          </span>
+        }
         meta={
           <>
             <PublishTag status={collection.status} />

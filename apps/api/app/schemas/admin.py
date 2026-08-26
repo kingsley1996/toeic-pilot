@@ -464,6 +464,25 @@ class CollectionCreate(BaseModel):
     year: int | None = None
 
 
+class CollectionUpdate(BaseModel):
+    """Sửa phần vỏ của một bộ đề. `model_dump(exclude_unset=True)` ở nơi gọi.
+
+    Cùng luật vắng-mặt-khác-null như `TestUpdate`: khoá vắng nghĩa là đừng đụng
+    tới, khoá bằng null nghĩa là xoá đi. Nhờ đó xoá được năm hay nhãn nguồn của
+    một bộ đề, chứ không chỉ ghi đè được chúng.
+
+    **`slug` cố ý không có ở đây.** Nó nằm trong mọi URL của khu quản trị, và
+    `seed_demo_test` cùng các script nội dung tra bộ đề bằng chính nó. Đổi slug
+    là đổi danh tính chứ không phải đổi nhãn: mọi liên kết đã lưu hỏng cùng lúc
+    và không có gì chuyển hướng chúng. Muốn đổi tên hiển thị thì đó là `title`.
+    """
+
+    title: str | None = None
+    description: str | None = None
+    source_tag: str | None = None
+    year: int | None = None
+
+
 class CollectionAdmin(BaseModel):
     id: str
     slug: str

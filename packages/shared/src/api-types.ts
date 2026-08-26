@@ -1107,7 +1107,21 @@ export interface paths {
         delete: operations["delete_collection_api_v1_admin_test_collections__slug__delete"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update Collection
+         * @description Đổi tên và phần mô tả của một bộ đề.
+         *
+         *     `can_edit` chứ không phải `can_publish`: đây là việc biên tập — sửa một cái
+         *     nhãn gõ sai — chứ không phải việc phát hành. Cùng ranh giới đã vẽ ở `PATCH
+         *     /tests/{slug}`, và cũng vì thế `slug` không sửa được từ đây (xem
+         *     `CollectionUpdate`).
+         *
+         *     Sửa được cả khi bộ đề ĐÃ xuất bản, và đó là chủ ý: một lỗi chính tả trong
+         *     tên chỉ lộ ra sau khi có người nhìn thấy nó, mà lúc đó chính là lúc bộ đề đã
+         *     ra ngoài. Bắt gỡ xuất bản để sửa một chữ sẽ khiến bộ đề biến mất khỏi mắt
+         *     học viên vì một dấu phẩy.
+         */
+        patch: operations["update_collection_api_v1_admin_test_collections__slug__patch"];
         trace?: never;
     };
     "/api/v1/admin/test-collections/{slug}/archive": {
@@ -3446,6 +3460,29 @@ export interface components {
             title: string;
             /** Year */
             year: number | null;
+        };
+        /**
+         * CollectionUpdate
+         * @description Sửa phần vỏ của một bộ đề. `model_dump(exclude_unset=True)` ở nơi gọi.
+         *
+         *     Cùng luật vắng-mặt-khác-null như `TestUpdate`: khoá vắng nghĩa là đừng đụng
+         *     tới, khoá bằng null nghĩa là xoá đi. Nhờ đó xoá được năm hay nhãn nguồn của
+         *     một bộ đề, chứ không chỉ ghi đè được chúng.
+         *
+         *     **`slug` cố ý không có ở đây.** Nó nằm trong mọi URL của khu quản trị, và
+         *     `seed_demo_test` cùng các script nội dung tra bộ đề bằng chính nó. Đổi slug
+         *     là đổi danh tính chứ không phải đổi nhãn: mọi liên kết đã lưu hỏng cùng lúc
+         *     và không có gì chuyển hướng chúng. Muốn đổi tên hiển thị thì đó là `title`.
+         */
+        CollectionUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Source Tag */
+            source_tag?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Year */
+            year?: number | null;
         };
         /** CommitResult */
         CommitResult: {
@@ -7698,6 +7735,41 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_collection_api_v1_admin_test_collections__slug__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionAdmin"];
+                };
             };
             /** @description Validation Error */
             422: {
