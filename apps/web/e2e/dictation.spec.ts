@@ -30,7 +30,7 @@ function freshEmail(): string {
 async function firstStory(
   request: APIRequestContext,
   token: string,
-): Promise<{ storyId: string; transcripts: string[] } | null> {
+): Promise<{ storyId: string; items: Array<{ id: string; transcript: string }> } | null> {
   const headers = { Authorization: `Bearer ${token}` };
 
   const topics = await request.get(`${API_BASE}/api/v1/dictation-topics`, { headers });
@@ -51,13 +51,16 @@ async function firstStory(
           headers,
         });
         if (!full.ok()) continue;
-        const items = (await full.json()).items ?? [];
+        const raw = (await full.json()).items ?? [];
         // Cần HAI câu: câu đầu để kiểm tiếng có kêu, câu sau để kiểm nút tắt
         // tiếng thật sự tắt được.
-        const transcripts = items
-          .map((item: { transcript?: string }) => item.transcript)
-          .filter((t: string | undefined): t is string => Boolean(t));
-        if (transcripts.length >= 2) return { storyId: story.id, transcripts };
+        const items = raw
+          .filter((item: { transcript?: string }) => Boolean(item.transcript))
+          .map((item: { id: string; transcript: string }) => ({
+            id: item.id,
+            transcript: item.transcript,
+          }));
+        if (items.length >= 2) return { storyId: story.id, items };
       }
     }
   }
@@ -86,7 +89,7 @@ test("gõ đúng một câu thì có thông báo tạm kèm tiếng báo", async
     timeout: 10_000,
   });
 
-  await box.fill(story!.transcripts[0]);
+  await box.fill(story!.items[0].transcript);
   await box.press("Enter");
 
   // Khối kết quả ngay dưới ô nhập vẫn nói câu của nó…
@@ -119,9 +122,70 @@ test("gõ đúng một câu thì có thông báo tạm kèm tiếng báo", async
 
   const nextBox = page.getByPlaceholder("Gõ lại những gì bạn nghe được…");
   await expect(nextBox).toBeVisible();
-  await nextBox.fill(story!.transcripts[1]);
+  await nextBox.fill(story!.items[1].transcript);
   await nextBox.press("Enter");
 
   await expect(page.getByRole("status").getByText("Đúng rồi", { exact: true })).toBeVisible();
   expect(soundHits).toBe(0);
+});
+
+test("nghe ngẫu nhiên: bấm câu khác thì ra câu khác thật", async ({ page }) => {
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+
+  await page.goto("/learn/dictation/random");
+
+  /*
+   * Bám theo `src` của thẻ audio, không theo chữ trên màn hình.
+   *
+   * Câu chưa gõ thì không in ra ở đâu cả — cả trang chỉ có số từ, mà hai câu
+   * khác nhau hoàn toàn có thể cùng số từ. `src` là khoá nội dung của chính bản
+   * thu, nên nó phân biệt được hai câu bất kỳ.
+   *
+   * ĐÃ ĐO và KHÔNG bắt được: bỏ hẳn `exclude` ở phía client thì bài này vẫn
+   * xanh, bốn lần chạy liền. Kho đang có gần bốn chục câu nên xác suất bốc trúng
+   * lại câu cũ chỉ cỡ 1/38 — quá thấp để một bài kiểm dựa vào. Thứ bài này thật
+   * sự canh là cái nút CÓ bốc lại hay không; còn `exclude` thì
+   * `test_random_skips_the_sentence_just_heard` phía API canh, với kho hai câu
+   * và năm vòng lặp, nên ở đó nó là điều chắc chắn chứ không phải may rủi.
+   */
+  const audio = page.locator("audio");
+  await expect(audio).toHaveAttribute("src", /.+/);
+  const first = await audio.getAttribute("src");
+
+  await page.getByRole("button", { name: "Câu khác" }).click();
+  await expect(audio).not.toHaveAttribute("src", first as string);
+});
+
+test("xong hết một bài thì có lối đi tiếp", async ({ page, request }) => {
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const story = await firstStory(request, token as string);
+  test.skip(story === null, "cần một story dictation đã xuất bản có từ hai câu trở lên");
+
+  // Làm xong CẢ bài qua API: thứ đang kiểm là khối đi tiếp, không phải luồng gõ
+  // — luồng đó đã có đường kiểm riêng ngay bài trên.
+  for (const item of story!.items) {
+    await request.post(`${API_BASE}/api/v1/dictation/${item.id}/attempts`, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { submitted_text: item.transcript },
+    });
+  }
+
+  await page.goto(`/learn/dictation/stories/${story!.storyId}`);
+  await expect(page.getByText("Xong bài này")).toBeVisible();
+
+  // Đi tiếp phải dẫn tới một chỗ CÓ THẬT trong cây, không phải một liên kết chết.
+  const go = page.getByRole("link", { name: /Đi tiếp/ });
+  await expect(go).toBeVisible();
+  await go.click();
+  await expect(page).toHaveURL(/\/learn\/dictation\/(stories|sections|topics)\/[0-9a-f-]+$/);
 });

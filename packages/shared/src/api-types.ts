@@ -2037,6 +2037,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dictation-random": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Random Dictation
+         * @description Một câu bất kỳ trong toàn bộ nội dung đã xuất bản.
+         *
+         *     **Đường dẫn gạch nối, không lồng dưới `/dictation/`.** `/dictation/{item_id}`
+         *     khai `item_id: uuid.UUID`, nên `/dictation/random` bị chính nó bắt và trả 422
+         *     vì không parse nổi chữ "random" thành UUID. Khai route tĩnh trước route động
+         *     cũng chạy, nhưng khi đó THỨ TỰ KHAI BÁO trở thành thứ gánh trách nhiệm mà
+         *     không nhìn thấy được — cùng lý do `/dictation-topics` đã nằm ngoài.
+         *
+         *     Bốc ngẫu nhiên ở máy chủ chứ không ở trình duyệt. Cách làm phía client là
+         *     hỏi `total` rồi bốc một `offset` — chạy được, nhưng nó lôi cơ chế phân trang
+         *     vào một tính năng chẳng liên quan gì tới phân trang, tốn ba lượt gọi cho một
+         *     lần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm "câu
+         *     khác" mà ra đúng câu cũ đọc như nút hỏng.
+         *
+         *     `exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối
+         *     nghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống
+         *     hoàn toàn hợp lệ.
+         */
+        get: operations["get_random_dictation_api_v1_dictation_random_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dictation-sections/{section_id}": {
         parameters: {
             query?: never;
@@ -9345,6 +9381,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Page_DictationSummary_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_random_dictation_api_v1_dictation_random_get: {
+        parameters: {
+            query?: {
+                /** @description id vừa nghe, để bấm lần nữa không ra đúng câu cũ */
+                exclude?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DictationDetail"];
                 };
             };
             /** @description Validation Error */

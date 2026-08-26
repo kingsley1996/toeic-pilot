@@ -227,6 +227,10 @@ export const API_ROUTES = {
   vocabularyCollectionItem: (id: string) => `/api/v1/vocabulary-collection-items/${id}`,
   dictation: "/api/v1/dictation",
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,
+  // Gạch nối, không phải `/dictation/random`: route động `/dictation/{item_id}`
+  // khai kiểu UUID nên nó bắt mất "random" và trả 422. Cùng luật với
+  // `dictation-topics` bên dưới.
+  dictationRandom: "/api/v1/dictation-random",
   submitDictation: (id: string) => `/api/v1/dictation/${id}/attempts`,
 
   // Cây dictation. Gạch nối chứ không lồng vào `/dictation/...`: đường dẫn động

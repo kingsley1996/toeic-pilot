@@ -88,6 +88,60 @@ def auth(client: TestClient, db: Session, email: str = "learner@example.com") ->
     return {"Authorization": f"Bearer {token}"}
 
 
+# --- nghe ngẫu nhiên ------------------------------------------------------
+
+
+def test_random_never_hands_out_a_draft_sentence(client: TestClient, db_session: Session) -> None:
+    """Cùng luật lọc `published` như mọi đường khác, chỉ khác cách chọn hàng.
+
+    Bốc ngẫu nhiên là chỗ dễ quên nhất: câu lệnh không đi qua cây nên không ai
+    nhớ tới bốn tầng lọc, và lỗi chỉ lộ ra khi đúng cái hàng nháp ấy được bốc
+    trúng — tức là thỉnh thoảng, chứ không phải luôn luôn.
+    """
+    build_tree(db_session, item_status="draft", marker="rd")
+    assert client.get("/api/v1/dictation-random").status_code == 404
+
+
+def test_random_returns_a_published_sentence_with_its_answer_key(
+    client: TestClient, db_session: Session
+) -> None:
+    build_tree(db_session, marker="rp")
+    body = client.get("/api/v1/dictation-random").json()
+    assert body["transcript"] in {"First sentence here.", "Second sentence here."}
+    assert body["audio_url"]
+    assert body["word_count"] == 3
+
+
+def test_random_skips_the_sentence_just_heard(client: TestClient, db_session: Session) -> None:
+    build_tree(db_session, marker="rx")
+    first = client.get("/api/v1/dictation-random").json()["id"]
+    # Hai câu trong kho, nên loại một cái là chỉ còn đúng một khả năng: lặp lại
+    # nhiều lần vẫn phải ra cùng một đáp số, và đó là điều làm khẳng định này
+    # không phụ thuộc vào may rủi.
+    for _ in range(5):
+        assert client.get(f"/api/v1/dictation-random?exclude={first}").json()["id"] != first
+
+
+def test_the_only_sentence_left_comes_back_rather_than_a_404(
+    client: TestClient, db_session: Session
+) -> None:
+    """Kho có đúng một câu thì nút "câu khác" phải trả lại chính nó.
+
+    Tôn trọng `exclude` tuyệt đối nghĩa là 404 — một lỗi cho một tình huống hoàn
+    toàn hợp lệ, và người học thấy nút hỏng chứ không thấy câu.
+    """
+    story = build_tree(db_session, marker="r1")
+    extra = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).all()
+    for item in extra[1:]:
+        item.status = "draft"
+    db_session.commit()
+
+    only = client.get("/api/v1/dictation-random").json()["id"]
+    assert client.get(f"/api/v1/dictation-random?exclude={only}").json()["id"] == only
+
+
 # --- draft không lọt ra, ở TỪNG tầng --------------------------------------
 
 

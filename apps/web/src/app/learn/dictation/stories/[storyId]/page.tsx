@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DictationExercise } from "@/components/dictation-exercise";
+import { DictationNextUp } from "@/components/dictation-next";
 import { StoryProgressBar } from "@/components/story-progress";
 import { Alert, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
@@ -110,6 +111,21 @@ export default function DictationStoryPage() {
               })}
             </div>
           )}
+
+          {/* Khối đi tiếp nằm TRÊN bài tập chứ không dưới, và chỉ hiện khi cả
+              bài đã xong: lúc đó phần dưới không còn việc gì để làm, còn lối đi
+              tiếp thì phải nằm trong tầm mắt chứ không nằm sau một lần cuộn.
+              `story.progress` được `load()` làm mới sau mỗi lượt chấm, nên nó
+              xuất hiện ngay khi câu cuối vừa đúng. */}
+          {story.progress.total_items > 0 &&
+            story.progress.completed_items >= story.progress.total_items && (
+              <DictationNextUp
+                token={token}
+                topicId={story.topic_id}
+                sectionId={story.section_id}
+                storyId={story.id}
+              />
+            )}
 
           {active && (
             <>

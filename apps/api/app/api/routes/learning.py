@@ -836,24 +836,20 @@ def list_dictation(
     )
 
 
-@router.get("/dictation/{item_id}", response_model=DictationDetail)
-def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> DictationDetail:
-    item = db.scalars(
-        select(DictationItem)
-        .where(DictationItem.id == item_id, DictationItem.status == PUBLISHED)
-        .options(selectinload(DictationItem.asset))
-    ).first()
-    if item is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+def _dictation_detail(item: DictationItem) -> DictationDetail:
+    """Hình dạng chung của một câu gửi cho trình duyệt.
+
+    Hai đường vào — tra theo id và bốc ngẫu nhiên — phải trả về đúng một hình
+    dạng. Hai bản dựng tay sẽ trôi khỏi nhau, và chỗ trôi đầu tiên là thứ tệ
+    nhất để có hai phiên bản: `transcript`, tức đáp án mà bộ chấm phía trình
+    duyệt so vào.
+    """
     if item.asset is None:
-        # Unreachable while ck_dictation_item_published_has_audio holds — a
-        # published item cannot lack audio. Treated as absent rather than crashing
-        # so a constraint that somehow got dropped degrades to a 404, not a 500.
+        # Không tới được chừng nào ck_dictation_item_published_has_audio còn
+        # sống — một câu đã xuất bản không thể thiếu audio. Coi như không tìm
+        # thấy thay vì nổ, để một ràng buộc lỡ bị gỡ thành 404 chứ không thành
+        # 500.
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item has no audio")
-    # The transcript ships with the item so the client can grade without a round
-    # trip. See DictationDetail.transcript for what that costs and why it is
-    # acceptable here; the server still re-grades every submitted attempt, so the
-    # stored score never depends on anything the browser claims.
     return DictationDetail(
         id=str(item.id),
         difficulty=item.difficulty,
@@ -863,6 +859,63 @@ def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> Dictatio
         duration_ms=item.asset.duration_ms,
         transcript=item.transcript,
     )
+
+
+@router.get("/dictation-random", response_model=DictationDetail)
+def get_random_dictation(
+    exclude: uuid.UUID | None = Query(
+        default=None, description="id vừa nghe, để bấm lần nữa không ra đúng câu cũ"
+    ),
+    db: Session = Depends(get_db),
+) -> DictationDetail:
+    """Một câu bất kỳ trong toàn bộ nội dung đã xuất bản.
+
+    **Đường dẫn gạch nối, không lồng dưới `/dictation/`.** `/dictation/{item_id}`
+    khai `item_id: uuid.UUID`, nên `/dictation/random` bị chính nó bắt và trả 422
+    vì không parse nổi chữ "random" thành UUID. Khai route tĩnh trước route động
+    cũng chạy, nhưng khi đó THỨ TỰ KHAI BÁO trở thành thứ gánh trách nhiệm mà
+    không nhìn thấy được — cùng lý do `/dictation-topics` đã nằm ngoài.
+
+    Bốc ngẫu nhiên ở máy chủ chứ không ở trình duyệt. Cách làm phía client là
+    hỏi `total` rồi bốc một `offset` — chạy được, nhưng nó lôi cơ chế phân trang
+    vào một tính năng chẳng liên quan gì tới phân trang, tốn ba lượt gọi cho một
+    lần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm "câu
+    khác" mà ra đúng câu cũ đọc như nút hỏng.
+
+    `exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối
+    nghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống
+    hoàn toàn hợp lệ.
+    """
+    query = select(DictationItem).where(DictationItem.status == PUBLISHED)
+    item = db.scalars(
+        query.where(DictationItem.id != exclude).order_by(func.random()).limit(1)
+        if exclude is not None
+        else query.order_by(func.random()).limit(1)
+    ).first()
+    if item is None and exclude is not None:
+        # Chỉ còn đúng câu vừa nghe: trả lại chính nó chứ không báo hết nội dung.
+        item = db.scalars(query.order_by(func.random()).limit(1)).first()
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No published sentence")
+    # `selectinload` không dùng được sau khi đã lấy hàng ra; nạp asset qua quan hệ
+    # là một truy vấn nữa, và ở đây đúng một hàng nên nó rẻ.
+    return _dictation_detail(item)
+
+
+@router.get("/dictation/{item_id}", response_model=DictationDetail)
+def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> DictationDetail:
+    item = db.scalars(
+        select(DictationItem)
+        .where(DictationItem.id == item_id, DictationItem.status == PUBLISHED)
+        .options(selectinload(DictationItem.asset))
+    ).first()
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+    # The transcript ships with the item so the client can grade without a round
+    # trip. See DictationDetail.transcript for what that costs and why it is
+    # acceptable here; the server still re-grades every submitted attempt, so the
+    # stored score never depends on anything the browser claims.
+    return _dictation_detail(item)
 
 
 @router.post("/dictation/{item_id}/attempts", response_model=DictationResult)

@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ROUTES, type DictationPage, type DictationTopicPublic } from "@toeic-pilot/shared";
-import { BookOpen, Headphones } from "lucide-react";
+import { BookOpen, Headphones, Shuffle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -60,6 +60,19 @@ export default function DictationTopicsPage() {
         </div>
       )}
       {!topics && !error && <SkeletonList rows={3} />}
+
+      {/* Lối đi ngang, đặt TRÊN cây chứ không lẫn vào trong nó: nó không phải
+          một chủ đề nữa mà là một cách học khác — ôn lại, không theo trình tự.
+          Hiện cả khi chưa có chủ đề nào, vì câu lẻ cũng nghe ngẫu nhiên được. */}
+      <PanelLink href="/learn/dictation/random" className="mb-3 flex items-center gap-4">
+        <Shuffle size={16} strokeWidth={1.75} className="shrink-0 text-ink-muted" aria-hidden />
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold">Nghe ngẫu nhiên</span>
+          <span className="mt-0.5 block text-small text-ink-muted">
+            Một câu bất kỳ trong toàn bộ nội dung, để quen tai.
+          </span>
+        </span>
+      </PanelLink>
 
       {topics?.length === 0 && (
         <EmptyState
