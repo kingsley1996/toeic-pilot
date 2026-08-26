@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
 import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
+import { SoundToggle } from "@/components/sound-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, ButtonLink, IconButton, Skeleton, Tag, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
@@ -446,7 +447,8 @@ export function SidebarShell({
 
           {headerExtra}
 
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <SoundToggle />
             <ThemeToggle />
           </div>
         </div>

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 
+import { SoundToggle } from "@/components/sound-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, Skeleton, Tag, cx } from "@/components/ui";
 import { useProgression } from "@/lib/progression";
@@ -234,6 +235,7 @@ export function SessionControls({ showRole = false }: { showRole?: boolean }) {
 
   return (
     <div className="flex items-center gap-2">
+      <SoundToggle />
       <ThemeToggle />
       {status === "loading" && <Skeleton className="h-8 w-24" />}
       {status === "authenticated" && <UserMenu showRole={showRole} />}

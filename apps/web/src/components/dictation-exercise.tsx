@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { Alert, Button, Kbd, Panel, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
+import { useToast } from "@/lib/toast";
 import {
   annotateTyped,
   grade,
@@ -85,6 +86,7 @@ export function DictationExercise({
   const [checkedText, setCheckedText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { token } = useSession();
+  const { show } = useToast();
   const box = useRef<HTMLTextAreaElement | null>(null);
   const mirror = useRef<HTMLDivElement | null>(null);
   /*
@@ -118,6 +120,33 @@ export function DictationExercise({
     const graded = grade(item.transcript, typed);
     setResult(graded);
     setCheckedText(typed);
+
+    /*
+     * Xong một câu thì báo, và đây là thông báo DUY NHẤT trong app có tiếng.
+     *
+     * Lý do không phải thẩm mỹ mà là kỹ thuật: trình duyệt chỉ cho phát tiếng
+     * sau khi người dùng đã tương tác với trang, và chỗ này chạy ngay trong lần
+     * bấm Enter hoặc lần bấm nút Kiểm tra. Ba thông báo còn lại (huy hiệu, việc
+     * hôm nay, lên level) bắn ra từ một lần `fetch` lúc mở trang, nên xin tiếng
+     * ở đó là xin một thứ chắc chắn không được cấp.
+     *
+     * Chấm bằng `graded` chứ không bằng `result`: `setResult` chưa có hiệu lực
+     * trong chính lần chạy này, nên đọc `result` ở đây là đọc kết quả của LẦN
+     * CHẤM TRƯỚC — câu vừa gõ đúng sẽ im, còn câu ngay sau đó sẽ kêu oan.
+     *
+     * Khoá theo id câu: gõ lại một câu đã xong là chuyện bình thường (mọi lượt
+     * đều được ghi), và lúc đó thẻ cũ được thay tại chỗ thay vì xếp thêm một
+     * thẻ nữa.
+     */
+    if (graded.is_complete) {
+      show({
+        tone: "ok",
+        title: "Đúng rồi",
+        description: "Xong một câu. Nghe lại vẫn được nếu bạn muốn.",
+        sound: "complete",
+        dedupeKey: `dictation-${item.id}`,
+      });
+    }
     // Bấm nút thì con trỏ nhảy sang nút, và Enter kế tiếp sẽ bấm lại chính nút
     // đó. Trả con trỏ về ô nhập để Enter luôn có nghĩa "việc tiếp theo".
     box.current?.focus();
