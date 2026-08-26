@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 
+from app.content.backfill_audio import Policy
 from app.content.generate import generate, read_spec
 from app.content.manifest import read_manifest
 from app.content.storage import LocalDirStore
@@ -20,6 +21,7 @@ from app.core.media import (
     source_hash,
     storage_key_for,
 )
+from app.services.media_state import AudioState
 
 
 class FakeEngine:
@@ -70,6 +72,38 @@ def test_logical_names_never_leak_a_provider_id() -> None:
 def test_accent_for_rejects_an_unknown_voice() -> None:
     with pytest.raises(ValueError, match="unknown logical voice"):
         accent_for("martian_female_1")
+
+
+# --- ép thu lại ------------------------------------------------------------
+
+
+def test_force_never_overwrites_a_human_recording() -> None:
+    """`--force` phải dừng lại đúng ở `EXTERNAL`, và đây là chỗ tốn kém nếu quên.
+
+    Clip do người tải lên băm một id ngẫu nhiên nên không đời nào khớp text —
+    dưới phép thử cũ `is not CURRENT` nó rơi thẳng vào nhánh sinh lại và giọng
+    người bị TTS ghi đè, chuyện chỉ phát hiện được bằng cách bấm play. Một cái cờ
+    tên là "ép" là đúng thứ dễ mở lại cánh cửa đó nhất.
+    """
+    policy = Policy(force=True)
+    assert policy.wants(AudioState.EXTERNAL, "a full sentence here") is False
+    assert policy.wants(AudioState.CURRENT, "a full sentence here") is True
+
+
+def test_force_is_what_separates_a_pace_change_from_a_text_change() -> None:
+    # Không ép thì `CURRENT` là dừng: `media_state` cố ý không nhìn thấy việc đổi
+    # tốc độ đọc, vì clip đọc nhanh vẫn đọc đúng chữ.
+    assert Policy().wants(AudioState.CURRENT, "a full sentence here") is False
+    assert Policy().wants(AudioState.MISSING, "a full sentence here") is True
+
+
+def test_min_words_leaves_single_words_alone() -> None:
+    # Đổi tốc độ chỉ có nghĩa với thứ CÓ nhịp; thu lại hơn một nghìn clip từ đơn
+    # là trả tiền cho một thay đổi không nghe thấy. Từ khoá hai chữ thì có nhịp
+    # thật, nên nó vẫn lọt qua.
+    policy = Policy(force=True, min_words=2)
+    assert policy.wants(AudioState.CURRENT, "invoice") is False
+    assert policy.wants(AudioState.CURRENT, "take off") is True
 
 
 # --- spec parsing ---------------------------------------------------------

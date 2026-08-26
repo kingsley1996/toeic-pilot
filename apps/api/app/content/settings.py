@@ -32,7 +32,41 @@ class ContentSettings(BaseSettings):
     # source hash, so deriving it from the package would mean every routine
     # dependency bump invalidated the entire audio library and forced a full
     # regeneration. Bump this only when you actually want everything re-synthesised.
-    tts_engine_version: str = "1"
+    tts_engine_version: str = "2"
+    """Phiên bản 2 = giọng đọc chậm lại còn `tts_rate`.
+
+    Nó nằm trong `source_hash`, nên hai clip cùng một câu nhưng khác phiên bản có
+    khoá khác nhau và **không lẫn vào nhau được**. Đó là lý do phải nâng số này
+    khi đổi tốc độ: không nâng thì clip mới băm ra đúng khoá của clip cũ,
+    `get_or_create` thấy đã có nên bỏ qua, và việc thu lại lặng lẽ không xảy ra.
+
+    Lưu ý một chỗ mà dòng chú thích cũ hứa hơi rộng: nâng số này KHÔNG tự làm
+    kho audio cũ thành `STALE`. `media_state` cố ý đọc engine và phiên bản từ
+    **chính hàng asset** chứ không từ cấu hình, vì câu hỏi ở đó là "clip này có
+    đọc đúng câu này không" — và một clip đọc nhanh vẫn đọc đúng chữ. Muốn thu
+    lại thật thì phải nói ra: `backfill_audio --force`.
+    """
+
+    # Tốc độ đọc, truyền thẳng cho edge-tts.
+    #
+    # Mặc định của edge-tts (`+0%`) là giọng đọc bản tin, và ĐO ĐƯỢC là quá
+    # nhanh cho việc luyện nghe: trên 5 câu thật, bỏ khoảng lặng đầu/cuối,
+    # trung vị là **188 từ/phút** và câu nhanh nhất chạm 230. Đề TOEIC thật chạy
+    # khoảng 150–170.
+    #
+    # Đo lại ở các mức (cùng 5 câu, cùng cách đo):
+    #
+    #     +0%   188 wpm   (dải 177–230)   4,27 s mỗi câu
+    #     -20%  151 wpm   (dải 141–185)   5,32 s
+    #     -25%  142 wpm   (dải 133–173)   5,67 s
+    #     -30%  132 wpm   (dải 124–162)   6,07 s
+    #
+    # Chọn -20% để **bằng đề thật**, không chậm hơn: luyện dưới tốc độ thi là
+    # luyện một thứ sẽ không gặp, và ngày vào phòng thi mới biết.
+    #
+    # Đổi số này thì phải nâng `tts_engine_version` cùng lúc, nếu không clip mới
+    # và clip cũ dùng chung một khoá.
+    tts_rate: str = "-20%"
 
     # Wikimedia — the most likely source of openly-licensed photographs — returns
     # 403 to clients that do not identify themselves, and their policy asks for a

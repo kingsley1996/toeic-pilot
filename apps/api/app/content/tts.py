@@ -107,7 +107,7 @@ class EdgeTTSEngine:
         last_error: Exception | None = None
         for attempt in range(1, self._settings.tts_max_attempts + 1):
             try:
-                return asyncio.run(self._stream(text, provider_voice))
+                return asyncio.run(self._stream(text, provider_voice, self._settings.tts_rate))
             except Exception as exc:  # edge-tts surfaces a wide range of failures
                 last_error = exc
                 if attempt == self._settings.tts_max_attempts:
@@ -127,11 +127,14 @@ class EdgeTTSEngine:
         ) from last_error
 
     @staticmethod
-    async def _stream(text: str, provider_voice: str) -> bytes:
+    async def _stream(text: str, provider_voice: str, rate: str) -> bytes:
         import edge_tts
 
         chunks: list[bytes] = []
-        async for chunk in edge_tts.Communicate(text, provider_voice).stream():
+        # `rate` đi kèm mọi lần tổng hợp. Không truyền thì edge-tts đọc ở giọng
+        # bản tin — đo được là 188 từ/phút, nhanh hơn đề TOEIC thật; lý do đầy đủ
+        # ở `ContentSettings.tts_rate`.
+        async for chunk in edge_tts.Communicate(text, provider_voice, rate=rate).stream():
             if chunk["type"] == "audio":
                 chunks.append(chunk["data"])
         if not chunks:

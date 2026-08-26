@@ -88,6 +88,37 @@ DICTATION_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
 _REGENERATE = (AudioState.MISSING, AudioState.STALE)
 
 
+@dataclass(frozen=True)
+class Policy:
+    """Cái gì được thu lại, ngoài "thiếu" và "lệch text".
+
+    `force` tồn tại vì có một loại thay đổi mà `media_state` **cố ý** không nhìn
+    thấy: đổi giọng hay đổi tốc độ đọc. Câu hỏi nó trả lời là "clip này có đọc
+    đúng câu này không", và một clip đọc quá nhanh vẫn đọc đúng chữ — nên nó trả
+    về `CURRENT`, đúng theo thiết kế. Muốn thu lại thì phải nói ra bằng miệng,
+    và đó là cờ này.
+
+    `min_words` là cách diễn đạt phạm vi theo TÍNH CHẤT của nội dung thay vì
+    theo danh sách bảng: đổi tốc độ chỉ có nghĩa với thứ CÓ nhịp. Một từ đơn
+    ("invoice") đọc nhanh hay chậm gần như không khác gì, nên thu lại 1 212 clip
+    từ đơn là trả tiền cho một thay đổi không nghe thấy. `--min-words 2` gói gọn
+    ý đó, và nó tự đúng cả với những từ khoá gồm hai chữ như "take off", vốn thì
+    có nhịp thật.
+    """
+
+    force: bool = False
+    min_words: int = 1
+
+    def wants(self, state: AudioState, text: str) -> bool:
+        # Bản thu giọng người KHÔNG bao giờ bị ghi đè, kể cả khi ép. Đây là cả lý
+        # do `EXTERNAL` tách khỏi `STALE` ngay từ đầu.
+        if state is AudioState.EXTERNAL:
+            return False
+        if len(text.split()) < self.min_words:
+            return False
+        return state in _REGENERATE or self.force
+
+
 @dataclass
 class Counts:
     synthesised: int = 0
@@ -286,14 +317,22 @@ def _accent_of(turns: list[tuple[str, str]]) -> str:
     return accents[0]
 
 
-def backfill_vocabulary(factory: AudioFactory, limit: int | None) -> None:
+def backfill_vocabulary(
+    factory: AudioFactory, limit: int | None, policy: Policy = Policy()
+) -> None:
     entries = factory.session.scalars(
         select(VocabularyEntry).options(selectinload(VocabularyEntry.audio))
     ).all()
 
     done = 0
     for entry in entries:
-        slots = [slot for slot in vocabulary_audio_slots(entry) if slot.state in _REGENERATE]
+        slots = [
+            slot
+            for slot in vocabulary_audio_slots(entry)
+            if policy.wants(
+                slot.state, entry.headword if slot.kind == "headword" else (entry.example or "")
+            )
+        ]
         if not slots:
             continue
         print(f"{entry.headword} ({entry.part_of_speech}): {len(slots)} clip(s) needed")
@@ -327,14 +366,14 @@ def backfill_vocabulary(factory: AudioFactory, limit: int | None) -> None:
             break
 
 
-def backfill_dictation(factory: AudioFactory, limit: int | None) -> None:
+def backfill_dictation(factory: AudioFactory, limit: int | None, policy: Policy = Policy()) -> None:
     items = factory.session.scalars(
         select(DictationItem).options(selectinload(DictationItem.asset))
     ).all()
 
     done = 0
     for item in items:
-        if dictation_audio_state(item) not in _REGENERATE:
+        if not policy.wants(dictation_audio_state(item), item.transcript):
             continue
         print(f"dictation: {item.transcript[:60]!r}")
         asset = factory.get_or_create(item.transcript, voice_for_dictation(item))
@@ -440,6 +479,7 @@ def run_backfill(
     only: str | None = None,
     limit: int | None = None,
     dry_run: bool = False,
+    policy: Policy | None = None,
     settings: ContentSettings | None = None,
 ) -> Counts:
     """Một lượt quét đầy đủ. Dùng chung cho CLI và cho worker chạy dài.
@@ -449,6 +489,7 @@ def run_backfill(
     không ai phát hiện.
     """
     settings = settings or content_settings
+    policy = policy or Policy()
     manifest = read_manifest(DEFAULT_MANIFEST_PATH)
 
     with SessionLocal() as session:
@@ -460,9 +501,9 @@ def run_backfill(
             dry_run=dry_run,
         )
         if only in (None, "vocabulary"):
-            backfill_vocabulary(factory, limit)
+            backfill_vocabulary(factory, limit, policy)
         if only in (None, "dictation"):
-            backfill_dictation(factory, limit)
+            backfill_dictation(factory, limit, policy)
         if only in (None, "questions"):
             backfill_questions(factory, limit)
 
@@ -489,9 +530,25 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="restrict to one kind of content",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="thu lại cả clip đang khớp text (dùng khi đổi giọng hoặc tốc độ đọc)",
+    )
+    parser.add_argument(
+        "--min-words",
+        type=int,
+        default=1,
+        help="bỏ qua văn bản ngắn hơn N từ; 2 = chỉ thứ có nhịp, không gồm từ đơn",
+    )
     args = parser.parse_args(argv)
 
-    counts = run_backfill(only=args.only, limit=args.limit, dry_run=args.dry_run)
+    counts = run_backfill(
+        only=args.only,
+        limit=args.limit,
+        dry_run=args.dry_run,
+        policy=Policy(force=args.force, min_words=args.min_words),
+    )
 
     print(f"\n{counts.as_line()}")
     if unknown := set(AUDIO_ACCENTS) - set(VOICE_FOR_ACCENT):

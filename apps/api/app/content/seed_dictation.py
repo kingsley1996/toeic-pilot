@@ -48,8 +48,6 @@ from app.models.dictation import (
     DictationTopic,
 )
 
-TOPIC_SLUG = "short-stories"
-
 
 @dataclass(frozen=True)
 class Unit:
@@ -62,7 +60,18 @@ class Unit:
     sentences: tuple[str, ...] = field(default_factory=tuple)
 
 
-UNITS: tuple[Unit, ...] = (
+@dataclass(frozen=True)
+class Topic:
+    """Một `dictation_topic` và toàn bộ unit nằm dưới nó."""
+
+    slug: str
+    name: str
+    description: str
+    position: int
+    units: tuple[Unit, ...]
+
+
+SHORT_STORY_UNITS: tuple[Unit, ...] = (
     Unit(
         name="Unit 2 — Travel and the airport",
         story_title="A Delayed Flight",
@@ -132,6 +141,76 @@ UNITS: tuple[Unit, ...] = (
 )
 
 
+CONVERSATION_UNITS: tuple[Unit, ...] = (
+    Unit(
+        name="Unit 1 — Making an appointment",
+        story_title="Booking a Meeting Room",
+        story_description="Đặt phòng họp qua quầy lễ tân, có một chỗ phải đổi lịch.",
+        difficulty=2,
+        sentences=(
+            "Good morning, I would like to book a meeting room for Thursday.",
+            "Certainly, how many people will be joining you?",
+            "There will be six of us, including two visitors from Osaka.",
+            "The large room on the third floor is free until noon.",
+            "Could we keep it until one o'clock instead?",
+            "That should be fine, but I will have to move another booking.",
+            "Please let me know if that causes any trouble.",
+            "I will send you a confirmation before the end of the day.",
+        ),
+    ),
+    Unit(
+        name="Unit 2 — On the phone",
+        story_title="A Call from a Supplier",
+        story_description="Nhà cung cấp gọi báo hàng về trễ, và hai bên thu xếp lại.",
+        difficulty=3,
+        sentences=(
+            "Good afternoon, this is Elena calling from the packaging supplier.",
+            "I am afraid the delivery scheduled for Monday has been delayed.",
+            "May I ask how long the delay is likely to be?",
+            "We expect the shipment to arrive by Wednesday at the latest.",
+            "That is later than we planned, but we can work around it.",
+            "I will email you the new tracking number this afternoon.",
+            "Please copy my colleague in the warehouse on that message.",
+            "Of course, and again I apologize for the inconvenience.",
+        ),
+    ),
+    Unit(
+        name="Unit 3 — Small talk at work",
+        story_title="Monday Morning",
+        story_description="Vài câu chào hỏi đầu tuần trước giờ họp.",
+        difficulty=2,
+        sentences=(
+            "Good morning, did you have a nice weekend?",
+            "It was quiet, I spent most of it working in the garden.",
+            "That sounds relaxing compared to the traffic this morning.",
+            "The road near the station has been closed for repairs.",
+            "I noticed that, it took me almost an hour to get here.",
+            "There is fresh coffee in the kitchen if you need it.",
+            "Thank you, I will get a cup before the team meeting.",
+            "See you there, it starts in about ten minutes.",
+        ),
+    ),
+)
+
+
+TOPICS: tuple[Topic, ...] = (
+    Topic(
+        slug="short-stories",
+        name="Short stories",
+        description="Truyện ngắn, mỗi bài một câu chuyện liền mạch.",
+        position=0,
+        units=SHORT_STORY_UNITS,
+    ),
+    Topic(
+        slug="conversations",
+        name="Conversations",
+        description="Hội thoại ngắn nơi làm việc, mỗi bài một cuộc trao đổi.",
+        position=1,
+        units=CONVERSATION_UNITS,
+    ),
+)
+
+
 @dataclass
 class Counts:
     sections: int = 0
@@ -146,15 +225,20 @@ class Counts:
         )
 
 
-def _topic(session: Session) -> DictationTopic:
-    """Topic đã có sẵn thì dùng lại; chưa có thì dựng, để máy trắng cũng chạy được."""
-    topic = session.scalars(select(DictationTopic).where(DictationTopic.slug == TOPIC_SLUG)).first()
+def _topic(session: Session, spec: Topic) -> DictationTopic:
+    """Topic đã có sẵn thì dùng lại; chưa có thì dựng, để máy trắng cũng chạy được.
+
+    Khớp theo `slug` chứ không theo tên: tên hiển thị là thứ người soạn sửa được
+    trong màn quản trị, và đổi tên một chủ đề đang có nội dung không được biến nó
+    thành một chủ đề thứ hai rỗng không.
+    """
+    topic = session.scalars(select(DictationTopic).where(DictationTopic.slug == spec.slug)).first()
     if topic is None:
         topic = DictationTopic(
-            slug=TOPIC_SLUG,
-            name="Short stories",
-            description="Truyện ngắn, mỗi bài một câu chuyện liền mạch.",
-            position=0,
+            slug=spec.slug,
+            name=spec.name,
+            description=spec.description,
+            position=spec.position,
             status="draft",
         )
         session.add(topic)
@@ -170,8 +254,14 @@ def _next_position(taken: set[int]) -> int:
 
 
 def build(session: Session, counts: Counts) -> None:
-    """Tạo những gì còn thiếu. Khớp theo tên, vì tên là thứ người soạn nhìn thấy."""
-    topic = _topic(session)
+    """Tạo những gì còn thiếu, cho từng chủ đề một."""
+    for spec in TOPICS:
+        _build_topic(session, spec, counts)
+
+
+def _build_topic(session: Session, spec: Topic, counts: Counts) -> None:
+    """Khớp unit theo TÊN, vì tên là thứ người soạn nhìn thấy và gõ lại."""
+    topic = _topic(session, spec)
     sections = {
         section.name: section
         for section in session.scalars(
@@ -180,7 +270,7 @@ def build(session: Session, counts: Counts) -> None:
     }
     taken = {section.position for section in sections.values()}
 
-    for unit in UNITS:
+    for unit in spec.units:
         section = sections.get(unit.name)
         if section is None:
             section = DictationSection(
@@ -261,7 +351,12 @@ def promote(session: Session, counts: Counts) -> None:
     story đã publish mà câu bên trong còn nháp hiện ra là bài rỗng, và không có
     gì báo — nó trông y hệt một bài chưa soạn xong.
     """
-    topic = _topic(session)
+    for spec in TOPICS:
+        _promote_topic(session, spec, counts)
+
+
+def _promote_topic(session: Session, spec: Topic, counts: Counts) -> None:
+    topic = _topic(session, spec)
     for section in session.scalars(
         select(DictationSection).where(DictationSection.topic_id == topic.id)
     ):

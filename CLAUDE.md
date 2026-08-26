@@ -209,6 +209,10 @@ uv run python -m app.content.images --input content/sources/images/<spec>.jsonl
 uv run python -m app.content.seed          # manifests -> audio_asset / image_asset rows
 uv run python -m app.content.seed_scores   # default raw -> scaled score curve
 uv run python -m app.content.backfill_audio [--dry-run] [--only questions]  # audio the DB is missing
+# Đổi giọng hay tốc độ đọc thì `media_state` KHÔNG thấy — nó hỏi "clip này có
+# đọc đúng câu này không", và clip đọc nhanh vẫn đọc đúng chữ. Thu lại phải nói
+# ra; `--min-words 2` bỏ qua từ đơn, vốn không có nhịp để mà nhanh hay chậm.
+uv run python -m app.content.backfill_audio --force --min-words 2 --only dictation
 uv run python -m app.content.tts_worker --once            # one sweep, then exit
 uv run python -m app.content.tts_worker                   # long-running: Redis doorbell + 300s sweep
 uv run python -m app.content.enrich_skills --dry-run       # gán nhãn: in ra, không ghi
