@@ -14,7 +14,7 @@ from app.models.dictation import (
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
-from app.models.pet import PetState
+from app.models.pet import PetSpecies, PetState
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -96,6 +96,7 @@ __all__ = [
     "ImageAsset",
     "PracticeTest",
     "PracticeTestQuestion",
+    "PetSpecies",
     "PetState",
     "Question",
     "QuestionLabel",

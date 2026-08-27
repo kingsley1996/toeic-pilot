@@ -4708,6 +4708,10 @@
             "title": "Species",
             "type": "string"
           },
+          "tile": {
+            "title": "Tile",
+            "type": "integer"
+          },
           "tile_x": {
             "title": "Tile X",
             "type": "integer"
@@ -4735,6 +4739,7 @@
         },
         "required": [
           "species",
+          "tile",
           "nickname",
           "level",
           "xp",
@@ -4749,6 +4754,171 @@
           "hatched_at"
         ],
         "title": "PetPublic",
+        "type": "object"
+      },
+      "PetSpeciesCreate": {
+        "properties": {
+          "code": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^[a-z0-9_-]+$",
+            "title": "Code",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "tier": {
+            "default": "common",
+            "enum": [
+              "common",
+              "uncommon",
+              "rare",
+              "epic"
+            ],
+            "title": "Tier",
+            "type": "string"
+          },
+          "tile": {
+            "exclusiveMaximum": 180.0,
+            "minimum": 0.0,
+            "title": "Tile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "tile"
+        ],
+        "title": "PetSpeciesCreate",
+        "type": "object"
+      },
+      "PetSpeciesEdit": {
+        "description": "Sửa một loài. Khoá vắng mặt = đừng đụng tới (`exclude_unset` ở nơi gọi).\n\n`code` KHÔNG có ở đây: nó là khoá chính và là thứ `pet_state.species` trỏ\ntới. Đổi mã nghĩa là mọi con thú đang mang mã cũ trở thành mồ côi cùng lúc —\ncùng lý do `slug` của bộ đề không sửa được từ ô đổi tên.",
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "enum": [
+                  "common",
+                  "uncommon",
+                  "rare",
+                  "epic"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "tile": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 180.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tile"
+          }
+        },
+        "title": "PetSpeciesEdit",
+        "type": "object"
+      },
+      "PetSpeciesPublic": {
+        "description": "Một loài, như học viên và màn quản trị nhìn thấy.\n\n`tile` đi thẳng ra trình duyệt thay vì một mã mà frontend phải tra: tấm ghép\nô LÀ nguồn ảnh, nên mọi chỉ số hợp lệ đều vẽ ra được và không có gì để một\nbảng tra phía frontend bảo vệ. Đây là chỗ khác `BadgePublic.icon`, vốn phải\nlà tập đóng vì frontend gọi một component có tên.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "tier": {
+            "enum": [
+              "common",
+              "uncommon",
+              "rare",
+              "epic"
+            ],
+            "title": "Tier",
+            "type": "string"
+          },
+          "tile": {
+            "exclusiveMaximum": 180.0,
+            "minimum": 0.0,
+            "title": "Tile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "tile",
+          "tier",
+          "position",
+          "enabled"
+        ],
+        "title": "PetSpeciesPublic",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -10290,6 +10460,138 @@
         "summary": "Image Ticket",
         "tags": [
           "media"
+        ]
+      }
+    },
+    "/api/v1/admin/pet/species": {
+      "get": {
+        "description": "Cả loài đã tắt.\n\nMàn quản trị là nơi DUY NHẤT nhìn thấy hàng đã tắt; giấu chúng ở đây thì cách\nduy nhất bật lại là sửa database.",
+        "operationId": "list_species_api_v1_admin_pet_species_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PetSpeciesPublic"
+                  },
+                  "title": "Response List Species Api V1 Admin Pet Species Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Species",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_species_api_v1_admin_pet_species_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetSpeciesCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetSpeciesPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Species",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/pet/species/{code}": {
+      "patch": {
+        "operationId": "update_species_api_v1_admin_pet_species__code__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "title": "Code",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetSpeciesEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetSpeciesPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Species",
+        "tags": [
+          "admin"
         ]
       }
     },

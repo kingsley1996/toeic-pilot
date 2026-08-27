@@ -14,6 +14,7 @@ from datetime import date, datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     Date,
     DateTime,
@@ -23,6 +24,7 @@ from sqlalchemy import (
     SmallInteger,
     String,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -135,3 +137,79 @@ class PetState(Base):
 
     def __repr__(self) -> str:
         return f"<PetState {self.species} lv{self.level_reached} @({self.tile_x},{self.tile_y})>"
+
+
+class PetSpecies(Base):
+    """Một loài thú nuôi được.
+
+    **Dữ liệu, không phải hằng số trong mã** — cùng khuôn `frame_tier` và
+    `badge_rule` (ROADMAP §4w): thêm một loài không cần deploy.
+
+    `tile` là chỉ số ô trong `public/pet/creatures.png`, và đó là chỗ bản kế
+    hoạch đoán sai. ADR-010 §6.3 viết rằng khoá sprite phải là **tập đóng** phía
+    frontend, y như `BadgePublic.icon`, để backend thêm loài mà frontend chưa có
+    ảnh thì thành lỗi `tsc`. Lập luận đó đúng cho huy hiệu, vì frontend phải BIẾT
+    vẽ hình gì — nó gọi một component Lucide có tên. Ở đây frontend chỉ cắt một ô
+    ra khỏi tấm ghép, nên mọi chỉ số hợp lệ đều có ảnh và không có gì để `tsc`
+    bắt. Ràng buộc thật nằm ở khoảng số, và CHECK là chỗ đúng cho nó.
+    """
+
+    __tablename__ = "pet_species"
+    __table_args__ = (
+        # `creatures.png` là lưới 10x18. Ô ngoài khoảng đó vẽ ra một mảnh trong
+        # suốt — con thú tàng hình, không có lỗi nào, và chỉ người mở trứng ra
+        # mới biết.
+        CheckConstraint("tile >= 0 AND tile < 180", name="ck_pet_species_tile"),
+        CheckConstraint(
+            "tier IN ('common', 'uncommon', 'rare', 'epic')", name="ck_pet_species_tier"
+        ),
+    )
+
+    code: Mapped[str] = mapped_column(String(32), primary_key=True)
+    label: Mapped[str] = mapped_column(String(64), nullable=False)
+    """Tên hiện cho người học. Tiếng Việt: đây là phần học viên nhìn thấy."""
+
+    tile: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    tier: Mapped[str] = mapped_column(String(16), nullable=False, server_default="common")
+    """Hạng hiếm. Chưa dùng tới ở lát này — gacha đọc nó (ADR-010 §6.3).
+
+    Có mặt từ bây giờ vì nó là thuộc tính của LOÀI, không phải của trứng: thêm nó
+    sau nghĩa là mở màn quản trị ra lần nữa và điền lại cho từng hàng.
+    """
+
+    position: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="0")
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
+    """Tắt thay vì xoá.
+
+    Xoá một loài mà ai đó đang nuôi để lại `pet_state.species` trỏ vào hư không —
+    và vì không có khoá ngoại (xem migration), database sẽ không ngăn. Tắt thì
+    loài biến khỏi gacha nhưng con thú đang nuôi vẫn vẽ ra được.
+    """
+
+    def __repr__(self) -> str:
+        return f"<PetSpecies {self.code} tile={self.tile} {self.tier}>"
+
+
+"""Mười hai loài đầu tiên, gieo LƯỜI ở lần đọc đầu — không gieo trong migration.
+
+Một nguồn sự thật duy nhất, cùng hình dạng `DEFAULT_FRAME_TIERS`. Hệ quả: **bảng
+rỗng nghĩa là "chưa từng cấu hình", không phải "cố ý để trống"** — xoá hết mọi
+loài thì lần đọc sau gieo lại đủ mười hai. Muốn bỏ một loài thì TẮT nó.
+
+Chỉ số ô đã soi từng con để xác nhận, không đoán theo mô tả — xem
+`public/pet/CREDITS.md` để biết cách đổi chỉ số sang toạ độ.
+"""
+DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
+    {"code": "duck", "label": "Vịt", "tile": 150, "tier": "common", "position": 1},
+    {"code": "squirrel", "label": "Sóc", "tile": 175, "tier": "common", "position": 2},
+    {"code": "frog", "label": "Ếch", "tile": 147, "tier": "common", "position": 3},
+    {"code": "cat", "label": "Mèo", "tile": 169, "tier": "uncommon", "position": 4},
+    {"code": "monkey", "label": "Khỉ", "tile": 168, "tier": "uncommon", "position": 5},
+    {"code": "turtle", "label": "Rùa", "tile": 149, "tier": "uncommon", "position": 6},
+    {"code": "owl", "label": "Cú", "tile": 117, "tier": "rare", "position": 7},
+    {"code": "deer", "label": "Hươu", "tile": 161, "tier": "rare", "position": 8},
+    {"code": "raccoon", "label": "Gấu mèo", "tile": 178, "tier": "rare", "position": 9},
+    {"code": "tiger", "label": "Hổ", "tile": 157, "tier": "epic", "position": 10},
+    {"code": "bear", "label": "Gấu", "tile": 165, "tier": "epic", "position": 11},
+    {"code": "giraffe", "label": "Hươu cao cổ", "tile": 159, "tier": "epic", "position": 12},
+)

@@ -16,6 +16,7 @@ from app.core.database import get_db
 from app.models import PetState, User
 from app.schemas.pet import PetActionRequest, PetMove, PetNeeds, PetPublic
 from app.services import pet as needs_service
+from app.services.pet_species import tile_for
 from app.services.profile import ensure_profile
 from app.services.progression import local_today
 
@@ -74,10 +75,11 @@ def _current_needs(pet: PetState, at: datetime) -> needs_service.Needs:
     return needs_service.decay(stored, (at - _aware(pet.needs_at)).total_seconds())
 
 
-def _as_public(pet: PetState, now: needs_service.Needs, at: datetime) -> PetPublic:
+def _as_public(db: Session, pet: PetState, now: needs_service.Needs, at: datetime) -> PetPublic:
     progress = needs_service.level_progress(pet.xp)
     return PetPublic(
         species=pet.species,
+        tile=tile_for(db, pet.species),
         nickname=pet.nickname,
         # Mốc cao nhất, không phải level vừa tính: chỉnh đường cong XP về sau
         # không được lấy mất level của con thú đã đạt tới nó.
@@ -115,7 +117,7 @@ def read_pet(
     # Đọc KHÔNG ghi. Trừ dần rồi lưu lại ở mỗi lần đọc sẽ biến một GET thành một
     # lệnh ghi trên đường nóng, và không được gì: mốc cộng ảnh chụp đã đủ để suy
     # ra giá trị bây giờ ở bất cứ lúc nào. Chỉ hành động mới ghi.
-    return _as_public(pet, _current_needs(pet, at), at)
+    return _as_public(db, pet, _current_needs(pet, at), at)
 
 
 @router.put("/position", response_model=PetPublic)
@@ -142,7 +144,7 @@ def move_pet(
     pet.facing = body.facing
     db.commit()
     at = _now()
-    return _as_public(pet, _current_needs(pet, at), at)
+    return _as_public(db, pet, _current_needs(pet, at), at)
 
 
 @router.post("/actions", response_model=PetPublic)
@@ -184,7 +186,7 @@ def act(
     _award(db, pet, current_user, body.action, at)
 
     db.commit()
-    return _as_public(pet, after, at)
+    return _as_public(db, pet, after, at)
 
 
 def _award(

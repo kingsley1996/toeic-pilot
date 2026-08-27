@@ -311,7 +311,16 @@ function PetPanel({
         facing = pet.facing === "left" ? "left" : "right";
         setNeeds(pet.needs);
         setPet(pet);
-        const species = tileForSpecies(pet.species);
+        /*
+         * Ô lấy TỪ MÁY CHỦ, không tra ở đây.
+         *
+         * Bảng loài là dữ liệu admin sửa được (`pet_species`), nên một bảng tra
+         * thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó đổi ô của
+         * một loài — và hậu quả là con thú vẽ nhầm hình, không phải một lỗi.
+         * `tileForSpecies` chỉ còn là phương án rơi về cho nút thu gọn, vốn vẽ
+         * trước khi có lượt gọi nào.
+         */
+        const species = pet.tile;
 
         const made = await render.createStage(el, parsed, {
           zoom: ZOOM,

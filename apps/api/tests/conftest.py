@@ -4,7 +4,7 @@ import os
 # from settings.database_url at import time.
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 
-from collections.abc import Generator  # noqa: E402
+from collections.abc import Callable, Generator  # noqa: E402
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -15,7 +15,9 @@ from sqlalchemy.pool import StaticPool  # noqa: E402
 from app import models  # noqa: E402,F401 — registers every table on Base.metadata
 from app.core.database import Base, get_db  # noqa: E402
 from app.core.redis_client import get_redis  # noqa: E402
+from app.core.security import create_access_token  # noqa: E402
 from app.main import app  # noqa: E402
+from app.models import User  # noqa: E402
 
 
 @pytest.fixture()
@@ -93,3 +95,23 @@ def client(db_session: Session, fake_redis: FakeRedis) -> Generator[TestClient, 
         yield TestClient(app)
     finally:
         app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def auth(db_session: Session) -> Callable[[str], dict[str, str]]:
+    """Header factory: `auth("admin")` gives headers for an admin.
+
+    Cached per role, so calling it twice in one test reuses the same account
+    rather than colliding on the unique email.
+    """
+    cache: dict[str, dict[str, str]] = {}
+
+    def make(role: str) -> dict[str, str]:
+        if role not in cache:
+            user = User(email=f"{role}@example.com", hashed_password="x", role=role)
+            db_session.add(user)
+            db_session.commit()
+            cache[role] = {"Authorization": f"Bearer {create_access_token(str(user.id))}"}
+        return cache[role]
+
+    return make

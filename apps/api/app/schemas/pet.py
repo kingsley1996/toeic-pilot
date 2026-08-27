@@ -23,6 +23,13 @@ class PetNeeds(BaseModel):
 
 class PetPublic(BaseModel):
     species: str
+    tile: int
+    """Ô của loài, tra từ `pet_species` ngay ở đây.
+
+    Gửi kèm thay vì để trình duyệt tra: bảng loài là dữ liệu admin sửa, nên một
+    bảng tra thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó thêm loài
+    — và hậu quả là một con thú vẽ nhầm hình, không phải một lỗi.
+    """
     nickname: str | None
     level: int
     """Level ĐANG hiển thị: đã áp mốc cao nhất từng đạt, nên nó không bao giờ tụt."""
@@ -55,3 +62,43 @@ class PetMove(BaseModel):
     tile_x: int = Field(ge=0, le=255)
     tile_y: int = Field(ge=0, le=255)
     facing: Literal["left", "right"]
+
+
+class PetSpeciesPublic(BaseModel):
+    """Một loài, như học viên và màn quản trị nhìn thấy.
+
+    `tile` đi thẳng ra trình duyệt thay vì một mã mà frontend phải tra: tấm ghép
+    ô LÀ nguồn ảnh, nên mọi chỉ số hợp lệ đều vẽ ra được và không có gì để một
+    bảng tra phía frontend bảo vệ. Đây là chỗ khác `BadgePublic.icon`, vốn phải
+    là tập đóng vì frontend gọi một component có tên.
+    """
+
+    code: str
+    label: str
+    tile: int = Field(ge=0, lt=180)
+    tier: Literal["common", "uncommon", "rare", "epic"]
+    position: int
+    enabled: bool
+
+
+class PetSpeciesEdit(BaseModel):
+    """Sửa một loài. Khoá vắng mặt = đừng đụng tới (`exclude_unset` ở nơi gọi).
+
+    `code` KHÔNG có ở đây: nó là khoá chính và là thứ `pet_state.species` trỏ
+    tới. Đổi mã nghĩa là mọi con thú đang mang mã cũ trở thành mồ côi cùng lúc —
+    cùng lý do `slug` của bộ đề không sửa được từ ô đổi tên.
+    """
+
+    label: str | None = Field(default=None, min_length=1, max_length=64)
+    tile: int | None = Field(default=None, ge=0, lt=180)
+    tier: Literal["common", "uncommon", "rare", "epic"] | None = None
+    position: int | None = None
+    enabled: bool | None = None
+
+
+class PetSpeciesCreate(BaseModel):
+    code: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
+    label: str = Field(min_length=1, max_length=64)
+    tile: int = Field(ge=0, lt=180)
+    tier: Literal["common", "uncommon", "rare", "epic"] = "common"
+    position: int = 0

@@ -631,6 +631,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/pet/species": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Species
+         * @description Cả loài đã tắt.
+         *
+         *     Màn quản trị là nơi DUY NHẤT nhìn thấy hàng đã tắt; giấu chúng ở đây thì cách
+         *     duy nhất bật lại là sửa database.
+         */
+        get: operations["list_species_api_v1_admin_pet_species_get"];
+        put?: never;
+        /** Create Species */
+        post: operations["create_species_api_v1_admin_pet_species_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/pet/species/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Species */
+        patch: operations["update_species_api_v1_admin_pet_species__code__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/progression": {
         parameters: {
             query?: never;
@@ -4635,6 +4676,8 @@ export interface components {
             nickname: string | null;
             /** Species */
             species: string;
+            /** Tile */
+            tile: number;
             /** Tile X */
             tile_x: number;
             /** Tile Y */
@@ -4647,6 +4690,72 @@ export interface components {
             xp_into_level: number;
             /** Xp Today */
             xp_today: number;
+        };
+        /** PetSpeciesCreate */
+        PetSpeciesCreate: {
+            /** Code */
+            code: string;
+            /** Label */
+            label: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /**
+             * Tier
+             * @default common
+             * @enum {string}
+             */
+            tier: "common" | "uncommon" | "rare" | "epic";
+            /** Tile */
+            tile: number;
+        };
+        /**
+         * PetSpeciesEdit
+         * @description Sửa một loài. Khoá vắng mặt = đừng đụng tới (`exclude_unset` ở nơi gọi).
+         *
+         *     `code` KHÔNG có ở đây: nó là khoá chính và là thứ `pet_state.species` trỏ
+         *     tới. Đổi mã nghĩa là mọi con thú đang mang mã cũ trở thành mồ côi cùng lúc —
+         *     cùng lý do `slug` của bộ đề không sửa được từ ô đổi tên.
+         */
+        PetSpeciesEdit: {
+            /** Enabled */
+            enabled?: boolean | null;
+            /** Label */
+            label?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Tier */
+            tier?: ("common" | "uncommon" | "rare" | "epic") | null;
+            /** Tile */
+            tile?: number | null;
+        };
+        /**
+         * PetSpeciesPublic
+         * @description Một loài, như học viên và màn quản trị nhìn thấy.
+         *
+         *     `tile` đi thẳng ra trình duyệt thay vì một mã mà frontend phải tra: tấm ghép
+         *     ô LÀ nguồn ảnh, nên mọi chỉ số hợp lệ đều vẽ ra được và không có gì để một
+         *     bảng tra phía frontend bảo vệ. Đây là chỗ khác `BadgePublic.icon`, vốn phải
+         *     là tập đóng vì frontend gọi một component có tên.
+         */
+        PetSpeciesPublic: {
+            /** Code */
+            code: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Label */
+            label: string;
+            /** Position */
+            position: number;
+            /**
+             * Tier
+             * @enum {string}
+             */
+            tier: "common" | "uncommon" | "rare" | "epic";
+            /** Tile */
+            tile: number;
         };
         /**
          * ProgressionConfigAdmin
@@ -7075,6 +7184,94 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_species_api_v1_admin_pet_species_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetSpeciesPublic"][];
+                };
+            };
+        };
+    };
+    create_species_api_v1_admin_pet_species_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetSpeciesCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetSpeciesPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_species_api_v1_admin_pet_species__code__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetSpeciesEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetSpeciesPublic"];
                 };
             };
             /** @description Validation Error */

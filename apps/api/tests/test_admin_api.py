@@ -13,7 +13,6 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.media import source_hash
-from app.core.security import create_access_token
 from app.models import (
     Attempt,
     AudioAsset,
@@ -34,26 +33,6 @@ PASTE = (
     "invoice | noun | /ˈɪnvɔɪs/ | a bill | hóa đơn | Pay the invoice. | Thanh toán hóa đơn.\n"
     "deadline | noun | /ˈdedlaɪn/ | the latest time | hạn chót\n"
 )
-
-
-@pytest.fixture()
-def auth(db_session: Session) -> Callable[[str], dict[str, str]]:
-    """Header factory: `auth("admin")` gives headers for an admin.
-
-    Cached per role, so calling it twice in one test reuses the same account
-    rather than colliding on the unique email.
-    """
-    cache: dict[str, dict[str, str]] = {}
-
-    def make(role: str) -> dict[str, str]:
-        if role not in cache:
-            user = User(email=f"{role}@example.com", hashed_password="x", role=role)
-            db_session.add(user)
-            db_session.commit()
-            cache[role] = {"Authorization": f"Bearer {create_access_token(str(user.id))}"}
-        return cache[role]
-
-    return make
 
 
 def give_audio(session: Session, entry: VocabularyEntry, marker: str = "a") -> None:
