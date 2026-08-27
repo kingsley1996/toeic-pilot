@@ -16,6 +16,8 @@ from app.core.database import get_db
 from app.models import PetState, User
 from app.schemas.pet import PetActionRequest, PetMove, PetNeeds, PetPublic
 from app.services import pet as needs_service
+from app.services.profile import ensure_profile
+from app.services.progression import local_today
 
 router = APIRouter(prefix="/pet", tags=["pet"])
 
@@ -73,11 +75,18 @@ def _current_needs(pet: PetState, at: datetime) -> needs_service.Needs:
 
 
 def _as_public(pet: PetState, now: needs_service.Needs, at: datetime) -> PetPublic:
+    progress = needs_service.level_progress(pet.xp)
     return PetPublic(
         species=pet.species,
         nickname=pet.nickname,
-        level=pet.level_reached,
+        # Mốc cao nhất, không phải level vừa tính: chỉnh đường cong XP về sau
+        # không được lấy mất level của con thú đã đạt tới nó.
+        level=max(progress.level, pet.level_reached),
         xp=pet.xp,
+        xp_into_level=progress.into_level,
+        xp_for_next=progress.for_next,
+        xp_today=pet.xp_today,
+        daily_cap=needs_service.DAILY_XP_CAP,
         tile_x=pet.tile_x,
         tile_y=pet.tile_y,
         facing=pet.facing,
@@ -170,5 +179,40 @@ def act(
     pet.energy = after.energy
     pet.mood = after.mood
     pet.needs_at = at
+
+    # Trao XP sau khi nhu cầu đã ghi — xem .
+    _award(db, pet, current_user, body.action, at)
+
     db.commit()
     return _as_public(pet, after, at)
+
+
+def _award(
+    db: Session, pet: PetState, user: User, action: needs_service.PetAction, at: datetime
+) -> None:
+    """Trao XP cho hành động, sau khi áp trần ngày.
+
+    **Ngày theo múi giờ NGƯỜI HỌC**, cùng định nghĩa mà chuỗi ngày và nhiệm vụ
+    ngày dùng. Một định nghĩa thứ hai là chỗ trần XP và nhiệm vụ ngày nói hai
+    điều khác nhau về cùng một hôm, và không có gì báo.
+
+    **Chạm trần không đụng tới nhu cầu.** Hàm này chạy SAU khi nhu cầu đã được
+    ghi, và nó không đọc lại chúng: con thú vẫn no lên dù XP đã kịch trần. Luật
+    gamification không được phép đổi thứ đã thật sự xảy ra.
+    """
+    profile = ensure_profile(db, user)
+    today = local_today(at, profile.timezone)
+    if pet.xp_day != today:
+        # Đặt lại lúc GHI, không phải lúc đọc: kẹp ở đường đọc sẽ biến trần thành
+        # một công thức, và đổi trần sau này sẽ viết lại quá khứ.
+        pet.xp_day = today
+        pet.xp_today = 0
+
+    awarded = needs_service.grant(pet.xp_today, needs_service.XP_PER_ACTION[action])
+    if awarded == 0:
+        return
+    pet.xp_today += awarded
+    pet.xp += awarded
+    level = needs_service.level_from_xp(pet.xp)
+    if level > pet.level_reached:
+        pet.level_reached = level

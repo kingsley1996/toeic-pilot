@@ -4619,6 +4619,8 @@ export interface components {
         };
         /** PetPublic */
         PetPublic: {
+            /** Daily Cap */
+            daily_cap: number;
             /** Facing */
             facing: string;
             /**
@@ -4639,6 +4641,12 @@ export interface components {
             tile_y: number;
             /** Xp */
             xp: number;
+            /** Xp For Next */
+            xp_for_next: number;
+            /** Xp Into Level */
+            xp_into_level: number;
+            /** Xp Today */
+            xp_today: number;
         };
         /**
          * ProgressionConfigAdmin

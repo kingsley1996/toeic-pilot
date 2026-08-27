@@ -129,3 +129,26 @@ test("cho ăn làm chỉ số no tăng, và ăn tiếp khi đã no thì bị t�
   await expect(feed).toBeDisabled();
   await expect(feed).toHaveAttribute("title", /đang no/i);
 });
+
+test("chăm thú cưng làm nó lên level, và chạm trần ngày thì nói ra", async ({ page }) => {
+  await signUp(page);
+  await launcher(page).click();
+
+  await expect(page.getByText(/^Lv \d+$/)).toBeVisible();
+  const poke = page.getByRole("button", { name: /Chọc/i });
+
+  /*
+   * Bấm cho tới khi kịch trần. Ba mươi lần chọc là đúng ba mươi XP, tức vừa đủ
+   * trần — nên vòng lặp này chạm tới nó chứ không phải chỉ tiến gần.
+   *
+   * Nút KHÔNG tự mờ khi hết XP, và đó là chủ ý: chăm con thú vẫn có tác dụng
+   * lên nhu cầu sau khi điểm đã dừng. Khoá nút ở đó sẽ nói dối rằng hành động
+   * không còn nghĩa gì.
+   */
+  for (let i = 0; i < 31; i += 1) {
+    await poke.click();
+    await page.waitForTimeout(40);
+  }
+
+  await expect(page.getByText(/đã nhận đủ 30 XP/i)).toBeVisible();
+});

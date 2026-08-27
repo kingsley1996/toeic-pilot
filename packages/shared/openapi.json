@@ -4673,6 +4673,10 @@
       },
       "PetPublic": {
         "properties": {
+          "daily_cap": {
+            "title": "Daily Cap",
+            "type": "integer"
+          },
           "facing": {
             "title": "Facing",
             "type": "string"
@@ -4715,6 +4719,18 @@
           "xp": {
             "title": "Xp",
             "type": "integer"
+          },
+          "xp_for_next": {
+            "title": "Xp For Next",
+            "type": "integer"
+          },
+          "xp_into_level": {
+            "title": "Xp Into Level",
+            "type": "integer"
+          },
+          "xp_today": {
+            "title": "Xp Today",
+            "type": "integer"
           }
         },
         "required": [
@@ -4722,6 +4738,10 @@
           "nickname",
           "level",
           "xp",
+          "xp_into_level",
+          "xp_for_next",
+          "xp_today",
+          "daily_cap",
           "tile_x",
           "tile_y",
           "facing",

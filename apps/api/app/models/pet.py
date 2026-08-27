@@ -10,11 +10,12 @@ nghĩa của nó.
 """
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from sqlalchemy import (
     CheckConstraint,
+    Date,
     DateTime,
     ForeignKey,
     Integer,
@@ -72,6 +73,19 @@ class PetState(Base):
     """
 
     level_reached: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="1")
+
+    xp_today: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="0")
+    xp_day: Mapped[date | None] = mapped_column(Date, nullable=True)
+    """XP đã nhận trong NGÀY nào, theo múi giờ người học.
+
+    Cặp này thay cho một sổ cái: trần ngày cần biết "hôm nay đã nhận bao nhiêu",
+    và với một bộ đếm thì câu đó chỉ trả lời được nếu biết bộ đếm thuộc về ngày
+    nào. Ngày đổi thì bộ đếm về 0 — kiểm lúc GHI, không phải lúc đọc, cùng luật
+    với trần XP người học: kẹp lúc đọc sẽ biến nó thành một công thức, và đổi
+    trần sau này sẽ viết lại quá khứ.
+
+    NULL = chưa nhận XP ngày nào.
+    """
     """Mốc cao nhất từng đạt, CHỈ TĂNG.
 
     Giống `user_profile.level_reached` và vì cùng một lý do: chỉnh lại đường cong

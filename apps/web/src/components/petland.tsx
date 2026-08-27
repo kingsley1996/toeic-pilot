@@ -234,6 +234,7 @@ function PetPanel({
    * vào state thì cả bảng dựng lại mỗi khung hình.
    */
   const [needs, setNeeds] = useState<PetNeeds | null>(null);
+  const [pet, setPet] = useState<PetPublic | null>(null);
   const [busy, setBusy] = useState(false);
   const [refused, setRefused] = useState<string | null>(null);
   /*
@@ -309,6 +310,7 @@ function PetPanel({
         saved = tile;
         facing = pet.facing === "left" ? "left" : "right";
         setNeeds(pet.needs);
+        setPet(pet);
         const species = tileForSpecies(pet.species);
 
         const made = await render.createStage(el, parsed, {
@@ -382,7 +384,10 @@ function PetPanel({
       token,
       body: JSON.stringify({ action }),
     })
-      .then((pet) => setNeeds(pet.needs))
+      .then((updated) => {
+        setNeeds(updated.needs);
+        setPet(updated);
+      })
       .catch((err) => {
         // 409 mang LỜI GIẢI THÍCH, không phải một lỗi kỹ thuật: nói lại nguyên
         // văn thay vì dịch nó thành "thao tác không thành công".
@@ -403,6 +408,33 @@ function PetPanel({
         <span className="flex items-center gap-1.5 text-small font-semibold text-ink">
           <GripHorizontal size={12} strokeWidth={2} className="text-ink-faint" aria-hidden />
           Thú cưng
+          {pet && (
+            <>
+              <span className="font-data text-label tabular-nums text-ink-muted">
+                Lv {pet.level}
+              </span>
+              {/* Thanh XP nhỏ, và nó BIẾN MẤT khi kịch bảng thay vì hiện đầy
+                  100%: một thanh đầy ở đó đọc ra là "sắp lên level" trong khi
+                  không còn level nào để lên. */}
+              {pet.xp_for_next > 0 && (
+                <span
+                  role="progressbar"
+                  aria-valuenow={pet.xp_into_level}
+                  aria-valuemin={0}
+                  aria-valuemax={pet.xp_for_next}
+                  aria-label="Tiến độ level của thú cưng"
+                  className="block h-1 w-10 overflow-hidden rounded bg-recess"
+                >
+                  <span
+                    className="block h-full bg-action"
+                    style={{
+                      width: `${Math.round((pet.xp_into_level / pet.xp_for_next) * 100)}%`,
+                    }}
+                  />
+                </span>
+              )}
+            </>
+          )}
         </span>
         <span className="flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
           <button
@@ -447,6 +479,15 @@ function PetPanel({
         <div className="border-t border-rule">
           <PetHud needs={needs} busy={busy} onAction={act} />
           {refused && <p className="px-3 pb-2 text-small text-warn">{refused}</p>}
+          {/* Chạm trần phải NÓI RA. Không nói thì người dùng cho ăn tiếp và
+              tưởng hệ thống hỏng khi con số đứng yên — cùng lý do khối việc
+              hôm nay in câu tương tự. */}
+          {pet && pet.xp_today >= pet.daily_cap && (
+            <p className="px-3 pb-2 text-small text-ink-muted">
+              Hôm nay thú cưng đã nhận đủ {pet.daily_cap} XP. Chăm tiếp vẫn có tác dụng, chỉ có điểm
+              là dừng tới ngày mai.
+            </p>
+          )}
         </div>
       )}
       {error && <p className="px-3 py-2 text-small text-ink-muted">Chưa mở được góc thú cưng.</p>}

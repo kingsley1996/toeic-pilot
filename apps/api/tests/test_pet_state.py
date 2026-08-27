@@ -6,6 +6,7 @@ khai báo cột.
 
 import uuid
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 
 import pytest
 from fastapi.testclient import TestClient
@@ -294,3 +295,87 @@ def test_an_unknown_action_is_refused_by_the_schema(client: TestClient) -> None:
         client.post("/api/v1/pet/actions", json={"action": "fly"}, headers=headers).status_code
         == 422
     )
+
+
+def test_actions_earn_xp_and_the_level_follows(client: TestClient) -> None:
+    headers = auth_headers(client, "leveller@example.com")
+    start = client.get("/api/v1/pet", headers=headers).json()
+    assert (start["xp"], start["level"], start["xp_today"]) == (0, 1, 0)
+
+    after = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers).json()
+    assert after["xp"] == 3 and after["xp_today"] == 3
+    assert after["xp_for_next"] > 0
+
+
+def test_poking_five_hundred_times_does_not_max_the_level(client: TestClient) -> None:
+    """Trần ngày là thứ giữ cho level pet còn nghĩa.
+
+    Không có nó thì con số ấy chỉ đo được sự kiên nhẫn của ngón tay, không đo
+    được việc nuôi con thú.
+    """
+    headers = auth_headers(client, "spammer@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    last = None
+    for _ in range(60):
+        last = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
+    assert last is not None
+    assert last["xp_today"] == last["daily_cap"]
+    assert last["xp"] == last["daily_cap"]
+
+
+def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Session) -> None:
+    """XP dừng, nhưng con thú vẫn no lên.
+
+    Luật gamification không được phép đổi thứ đã thật sự xảy ra — cùng tính chất
+    mà sổ cái XP người học dựng ra để giữ.
+    """
+    headers = auth_headers(client, "capped@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    for _ in range(40):
+        client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
+
+    user = db_session.scalars(select(User).where(User.email == "capped@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.fullness = Decimal("0.10")
+    pet.needs_at = datetime.now(UTC)
+    db_session.commit()
+
+    fed = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers).json()
+    assert fed["xp_today"] == fed["daily_cap"]  # XP đã kịch trần
+    assert fed["needs"]["fullness"] > 0.10  # nhưng vẫn no lên
+
+
+def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Session) -> None:
+    headers = auth_headers(client, "tomorrow@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    client.post("/api/v1/pet/actions", json={"action": "walk"}, headers=headers)
+
+    user = db_session.scalars(select(User).where(User.email == "tomorrow@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    assert pet.xp_today == 5
+    pet.xp_day = pet.xp_day - timedelta(days=1) if pet.xp_day else None
+    db_session.commit()
+
+    again = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
+    # Bộ đếm về 0 rồi mới cộng, nên hôm nay chỉ có 1 — còn TỔNG thì giữ nguyên cả 5 hôm qua.
+    assert again["xp_today"] == 1
+    assert again["xp"] == 6
+
+
+def test_the_pet_level_never_drops(client: TestClient, db_session: Session) -> None:
+    """`level_reached` là mốc chỉ tăng, y như của người học.
+
+    Đổi đường cong XP về sau không được lấy mất level của con thú đã đạt tới nó.
+    """
+    headers = auth_headers(client, "highwater@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "highwater@example.com")).one()
+    pet = db_session.get(PetState, user.id)
+    assert pet is not None
+    pet.level_reached = 7
+    pet.xp = 0
+    db_session.commit()
+
+    assert client.get("/api/v1/pet", headers=headers).json()["level"] == 7

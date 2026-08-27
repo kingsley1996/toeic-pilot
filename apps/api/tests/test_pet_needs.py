@@ -11,9 +11,15 @@ import pytest
 from app.services.pet import (
     EFFECTS,
     FEED_REFUSED_ABOVE,
+    MAX_PET_LEVEL,
+    PET_LEVEL_XP,
+    XP_PER_ACTION,
     Needs,
     apply,
     decay,
+    grant,
+    level_from_xp,
+    level_progress,
     refusal,
 )
 
@@ -88,3 +94,51 @@ def test_walking_is_the_only_action_that_costs_something() -> None:
     assert EFFECTS["walk"].energy < 0 and EFFECTS["walk"].fullness < 0
     assert EFFECTS["feed"].fullness > 0
     assert EFFECTS["poke"].mood > 0
+
+
+# --- XP và level của con thú ------------------------------------------------
+
+
+def test_the_cap_trims_the_last_award_instead_of_dropping_it() -> None:
+    """Còn hai điểm mà hành động đáng năm điểm thì được hai, không phải không.
+
+    Bỏ hẳn sẽ khiến một hành động hợp lệ trông như không xảy ra — cùng luật với
+    trần XP của người học.
+    """
+    assert grant(xp_today=28, award=5) == 2
+    assert grant(xp_today=30, award=5) == 0
+    assert grant(xp_today=0, award=5) == 5
+
+
+def test_the_cap_never_hands_back_negative_xp() -> None:
+    # Trần bị hạ xuống dưới mức đã trao hôm nay là chuyện xảy ra được; trả về số
+    # âm ở đó sẽ TRỪ XP, tức lấy lại thứ đã cho.
+    assert grant(xp_today=50, award=5, cap=30) == 0
+
+
+def test_level_is_derived_from_xp_not_stored() -> None:
+    assert level_from_xp(0) == 1
+    assert level_from_xp(24) == 1
+    assert level_from_xp(25) == 2
+    assert level_from_xp(PET_LEVEL_XP[4]) == 5
+
+
+def test_level_stops_at_the_top_of_the_table() -> None:
+    """Kịch bảng thì `0 / 0`, không phải một thanh đầy 100%.
+
+    Thanh đầy đọc ra là "sắp lên level" trong khi không còn level nào để lên.
+    """
+    top = level_progress(PET_LEVEL_XP[-1] + 10_000)
+    assert top.level == MAX_PET_LEVEL
+    assert (top.into_level, top.for_next) == (0, 0)
+
+
+def test_the_curve_only_ever_climbs() -> None:
+    # Một bảng ngưỡng đi lùi làm phép tra dừng ở sai level, và vì `level_reached`
+    # chỉ tăng nên một mốc sai ghi trong khoảng đó là vĩnh viễn.
+    assert list(PET_LEVEL_XP) == sorted(PET_LEVEL_XP)
+    assert len(set(PET_LEVEL_XP)) == len(PET_LEVEL_XP)
+
+
+def test_walking_is_worth_the_most_because_it_costs_the_most() -> None:
+    assert XP_PER_ACTION["walk"] > XP_PER_ACTION["feed"] > XP_PER_ACTION["poke"]

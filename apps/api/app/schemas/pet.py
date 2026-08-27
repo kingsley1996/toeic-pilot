@@ -25,7 +25,13 @@ class PetPublic(BaseModel):
     species: str
     nickname: str | None
     level: int
+    """Level ĐANG hiển thị: đã áp mốc cao nhất từng đạt, nên nó không bao giờ tụt."""
     xp: int
+    xp_into_level: int
+    xp_for_next: int
+    """`0 / 0` khi đã kịch bảng — một thanh đầy 100% ở đó đọc ra là "sắp lên level"."""
+    xp_today: int
+    daily_cap: int
     tile_x: int
     tile_y: int
     facing: str

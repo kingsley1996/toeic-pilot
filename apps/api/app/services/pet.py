@@ -131,3 +131,84 @@ def apply(action: PetAction, needs: Needs) -> Needs:
         energy=_clamp(needs.energy + effect.energy),
         mood=_clamp(needs.mood + effect.mood),
     )
+
+
+# --- XP và level của CON THÚ, tách hẳn khỏi level người học ------------------
+
+"""XP mỗi hành động.
+
+`walk` được nhiều nhất vì nó là hành động duy nhất có giá — nó tốn sức và tốn
+no. Ba cái nút mà cái nào cũng cùng một phần thưởng thì không có gì để chọn.
+"""
+XP_PER_ACTION: dict[PetAction, int] = {"feed": 3, "poke": 1, "walk": 5}
+
+"""Trần XP mỗi ngày, và nó là thứ giữ cho level pet còn nghĩa.
+
+Không có trần thì bấm "chọc" năm trăm lần là max level, và lúc đó con số ấy
+không nói lên điều gì về việc nuôi con thú. Cùng lý do XP người học có trần.
+
+Trần **cắt bớt** phần thưởng cuối chứ không bỏ hẳn nó: còn hai điểm mà hành động
+đáng năm điểm thì được hai. Bỏ hẳn sẽ khiến một hành động hợp lệ trông như không
+xảy ra.
+
+Và **chạm trần không bao giờ đụng tới nhu cầu** — cho ăn vẫn làm con thú no, chỉ
+là không sinh thêm XP. Luật gamification không được phép đổi thứ đã thật sự xảy
+ra; đây đúng là luật mà sổ cái XP người học dựng ra để giữ.
+"""
+DAILY_XP_CAP = 30
+
+
+def grant(xp_today: int, award: int, cap: int = DAILY_XP_CAP) -> int:
+    """Phần XP thật sự được trao sau khi áp trần. Không bao giờ âm."""
+    return max(0, min(award, cap - xp_today))
+
+
+"""Ngưỡng XP CỘNG DỒN của từng level, chỉ số 0 là level 1.
+
+Dãy tam giác: level n cần `25 * (n-1) * n / 2`. Nó dốc dần lên, nên vài level
+đầu tới nhanh — đúng lúc người dùng còn đang thử xem cái góc này có gì — rồi
+chậm lại.
+
+Bảng cứng trong mã, KHÔNG phải bảng trong database. Level người học có
+`level_tier` cho admin sửa vì nó gắn với khung avatar, huy hiệu và nhiệm vụ
+ngày; level pet hiện chỉ nuôi đúng một con số hiển thị. Ngày nó mua được thứ gì
+thật thì đánh đổi này hết hạn và bảng phải chuyển xuống database — ghi ở đây để
+lúc đó không ai phải đoán lại lý do.
+"""
+PET_LEVEL_XP: tuple[int, ...] = tuple(25 * (n - 1) * n // 2 for n in range(1, 21))
+
+MAX_PET_LEVEL = len(PET_LEVEL_XP)
+
+
+def level_from_xp(xp: int) -> int:
+    """Level ứng với tổng XP. Kịch bảng thì dừng ở level cuối.
+
+    Suy ra chứ không lưu: một cột `level` bên cạnh `xp` là hai nguồn sự thật cho
+    một con số, và cái sai sẽ là cái không ai đọc.
+    """
+    level = 1
+    for index, needed in enumerate(PET_LEVEL_XP, start=1):
+        if xp >= needed:
+            level = index
+    return level
+
+
+@dataclass(frozen=True)
+class LevelProgress:
+    level: int
+    """XP đã có TRONG level hiện tại, và XP cần để sang level sau.
+
+    `0 / 0` khi đã kịch bảng: một thanh đầy 100% ở đó đọc ra là "sắp lên level"
+    trong khi không còn level nào để lên. Cùng cách `ProgressionPublic` xử lý.
+    """
+    into_level: int
+    for_next: int
+
+
+def level_progress(xp: int) -> LevelProgress:
+    level = level_from_xp(xp)
+    if level >= MAX_PET_LEVEL:
+        return LevelProgress(level=level, into_level=0, for_next=0)
+    base = PET_LEVEL_XP[level - 1]
+    nxt = PET_LEVEL_XP[level]
+    return LevelProgress(level=level, into_level=xp - base, for_next=nxt - base)
