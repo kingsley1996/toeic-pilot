@@ -48,7 +48,13 @@ import type { PetView, Stage } from "@/components/petland-render";
  * thật sự đi, và con số này chỉ để khoá cái nút cho tới khi chuyến đi trông như
  * đã bắt đầu. Đi hết đường mất bao lâu thì tuỳ đường.
  */
-const ACTION_MS: Record<PetAction, number> = { feed: 1100, poke: 620, walk: 900 };
+const ACTION_MS: Record<PetAction, number> = {
+  feed: 1100,
+  poke: 620,
+  walk: 900,
+  sleep: 700,
+  wake: 700,
+};
 
 /** Đi dạo phải đi ĐỦ XA để nhìn ra là một chuyến đi, không phải một bước sang bên. */
 const STROLL_MIN_TILES = 5;
@@ -59,7 +65,13 @@ const STROLL_MIN_TILES = 5;
  * `walk` KHÔNG có mẩu: chuyến đi tự nó đã là phản hồi, và một nắm dấu chân bay
  * lên trời trong lúc con thú đang đi bộ là hai lời kể về cùng một việc.
  */
-const BIT_ICON: Record<PetAction, Bit["icon"]> = { feed: "crumb", poke: "spark", walk: "paw" };
+const BIT_ICON: Record<PetAction, Bit["icon"]> = {
+  feed: "crumb",
+  poke: "spark",
+  walk: "paw",
+  sleep: "zzz",
+  wake: "sun",
+};
 
 /** Khớp với `pet-bit-rise` trong `globals.css` (1100ms), cộng một nhịp thở. */
 const BIT_LIFE_MS = 1300;
@@ -282,7 +294,7 @@ function PetPanel({
    * mỗi giây để đổi một chữ số mỗi hai giây rưỡi. Một ngày Petland dài một giờ
    * thật, nên một phút trong đó là 2,5 giây: hẹn giờ ở đúng nhịp ấy.
    */
-  const [clock, setClock] = useState(() => worldTime(Date.now()));
+  const [clock, setClock] = useState(() => ({ ...worldTime(Date.now()), at: Date.now() }));
   /*
    * Giữ `Stage` ở ref để nút toàn-bản-đồ gọi được `setView`, còn hiệu ứng dựng
    * sân khấu thì KHÔNG phụ thuộc vào `full`. Cho `full` vào danh sách phụ thuộc
@@ -315,6 +327,11 @@ function PetPanel({
    * một màu gần như không bao giờ đổi là trả tiền cho đúng thứ không xảy ra.
    */
   const glowRef = useRef<{ color: number; strength: number }>({ color: 0x9aaab5, strength: 0 });
+  /**
+   * Con thú đang ngủ. REF vì vòng vẽ đọc nó mỗi khung hình, và nó quyết định hai
+   * việc: con thú không đi, và nó nằm thở chậm thay vì đứng.
+   */
+  const asleepRef = useRef(false);
   /**
    * Chỗ đứng cần NHẢY TỚI ngay, không phải đi bộ tới.
    *
@@ -370,7 +387,7 @@ function PetPanel({
     };
 
     const onClick = (event: MouseEvent) => {
-      if (!stage || !map) return;
+      if (!stage || !map || asleepRef.current) return;
       const target = stage.tileAt(event.clientX, event.clientY);
       if (target) queue = findPath(map, tile, target);
     };
@@ -438,6 +455,14 @@ function PetPanel({
           // "Đi dạo" đặt cờ; chỗ BIẾT bản đồ mới dựng được đường đi. Bấm lúc
           // đang đi thì bỏ qua — một tuyến mới đè lên tuyến cũ làm con thú quay
           // ngoắt giữa đường, đọc ra là giật chứ không phải đổi ý.
+          // Đang ngủ thì không nhận đường đi mới, và bỏ luôn đường đang đi dở:
+          // một con thú vừa ngủ vừa băng qua bản đồ đọc ra là hỏng.
+          if (asleepRef.current) {
+            strollRef.current = false;
+            queue = [];
+            progress = 0;
+          }
+
           if (strollRef.current) {
             strollRef.current = false;
             if (map && queue.length === 0) {
@@ -484,6 +509,7 @@ function PetPanel({
             sky: worldTime(Date.now()).sky,
             clock: now / 1000,
             action,
+            sleeping: asleepRef.current,
           });
           raf = requestAnimationFrame(loop);
         };
@@ -515,9 +541,28 @@ function PetPanel({
    * là đúng cho một nửa số người dùng.
    */
   useEffect(() => {
-    const tick = window.setInterval(() => setClock(worldTime(Date.now())), 2500);
+    const tick = window.setInterval(
+      () => setClock({ ...worldTime(Date.now()), at: Date.now() }),
+      2500,
+    );
     return () => window.clearInterval(tick);
   }, []);
+
+  /*
+   * Đang ngủ hay không suy ra từ MỐC, không từ một cờ.
+   *
+   * Máy chủ gửi `sleep_until`; giấc ngủ tự hết khi tới mốc, nên trình duyệt phải
+   * tự nhận ra điều đó thay vì chờ một lần đọc mới. `clock` nhích mỗi 2,5 giây
+   * nên phép so này được tính lại đủ dày, và con thú dậy trên màn hình gần như
+   * đúng lúc nó dậy ở máy chủ.
+   */
+  const asleep = pet?.sleep_until != null && new Date(pet.sleep_until).getTime() > clock.at;
+  // Ghi ref trong EFFECT, không trong lúc dựng: `react-hooks` chặn thẳng việc
+  // chạm ref lúc render, và luật đó đúng — một lượt dựng bị bỏ đi vẫn kịp để
+  // lại dấu vết trong ref. Trễ một khung hình ở đây không ai thấy.
+  useEffect(() => {
+    asleepRef.current = asleep;
+  }, [asleep]);
 
   const tier = pet?.tier;
   useEffect(() => {
@@ -557,28 +602,52 @@ function PetPanel({
    * Tự dọn sau khi hoạt ảnh CSS chạy xong. Không dọn thì mỗi lần bấm là thêm
    * vài node nằm lại vĩnh viễn, trong suốt nhưng vẫn được trình duyệt vẽ.
    */
-  const spawnBits = (action: PetAction) => {
+  const spawnBits = useCallback((action: PetAction, count = 4) => {
     const stage = stageRef.current;
     if (!stage) return;
     const at = stage.petScreen();
     const icon = BIT_ICON[action];
     const born = Date.now();
-    const made: Bit[] = Array.from({ length: 4 }, (_, i) => ({
+    const made: Bit[] = Array.from({ length: count }, (_, i) => ({
       id: born + i,
-      x: at.x + (i - 1.5) * 7,
+      // Một mẩu lẻ thì bay thẳng trên đầu; cả nắm thì dàn ngang ra.
+      x: at.x + (count === 1 ? 4 : (i - (count - 1) / 2) * 7),
       y: at.y - 6,
       icon,
       // Mỗi mẩu lệch một hướng: cả nắm bay thẳng đứng song song nhau đọc ra là
       // một hiệu ứng, không phải nhiều mẩu.
-      drift: (i - 1.5) * 9,
+      drift: count === 1 ? 5 + Math.random() * 7 : (i - (count - 1) / 2) * 9,
       scale: 0.8 + (i % 2) * 0.2,
     }));
     setBits((current) => [...current, ...made]);
     window.setTimeout(
-      () => setBits((current) => current.filter((b) => b.id < born || b.id >= born + 4)),
+      () => setBits((current) => current.filter((b) => b.id < born || b.id >= born + count)),
       BIT_LIFE_MS,
     );
-  };
+  }, []);
+
+  /*
+   * Zzz bay lên đều đều SUỐT giấc ngủ, không chỉ một lần lúc bấm.
+   *
+   * Tư thế nằm và nhịp thở chậm nói "đang ngủ" cho người đang nhìn; nhưng ai vừa
+   * mở bảng lên giữa giấc thì chỉ thấy một con thú đứng im hơi bẹp. Một mẩu Zzz
+   * mỗi hai giây rưỡi là thứ nói ra trạng thái ấy mà không cần chữ.
+   *
+   * MỘT mẩu mỗi nhịp, không phải một nắm: nắm vụn là phản hồi cho một cú bấm,
+   * còn đây là một trạng thái đang kéo dài — bắn cả nắm mỗi hai giây biến góc
+   * này thành cái máy nháy.
+   *
+   * `prefers-reduced-motion` thì KHÔNG bắn gì cả. Luật chung ở `globals.css` rút
+   * mọi animation về 0,01ms, nên mẩu Zzz sẽ hiện ra rồi biến mất tức khắc —
+   * thành một chấm nhấp nháy hai giây một lần, tệ hơn hẳn là không có.
+   */
+  useEffect(() => {
+    if (!asleep) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    spawnBits("sleep", 1);
+    const tick = window.setInterval(() => spawnBits("sleep", 1), 2500);
+    return () => window.clearInterval(tick);
+  }, [asleep, spawnBits]);
 
   const act = (action: PetAction) => {
     setBusy(true);
@@ -819,7 +888,7 @@ function PetPanel({
       </div>
       {needs && (
         <div className="border-t border-rule">
-          <PetHud needs={needs} busy={busy} onAction={act} />
+          <PetHud needs={needs} busy={busy} asleep={asleep} onAction={act} />
           {refused && <p className="px-3 pb-2 text-small text-warn">{refused}</p>}
           {/* Chạm trần phải NÓI RA. Không nói thì người dùng cho ăn tiếp và
               tưởng hệ thống hỏng khi con số đứng yên — cùng lý do khối việc

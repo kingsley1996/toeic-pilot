@@ -126,6 +126,11 @@ const ICONS = {
     palette: { o: "#6b5a3a", E: "#f6ecd2", s: "#e0d0aa" },
     rows: ["..oo..", ".oEEo.", "oEEEEo", "oEEEEo", "oEsEEo", "oEssEo", ".oEEo.", "..oo.."],
   },
+  /** Con thú đang ngủ. Ba chữ Z chồng lên nhau, to dần. */
+  zzz: {
+    palette: { o: "#3d4a72", Z: "#dfe6ff" },
+    rows: ["....ooo.", "....oZo.", "...oZoo.", "..ooZo..", "ooZZo...", "oZZo....", "oooo...."],
+  },
 } satisfies Record<string, IconDef>;
 
 export type PixelIconName = keyof typeof ICONS;

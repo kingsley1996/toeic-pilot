@@ -137,6 +137,7 @@ export type RubyClaimResult = components["schemas"]["RubyClaimResult"];
 export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
 export type EggPublic = components["schemas"]["EggPublic"];
 export type EggResult = components["schemas"]["EggResult"];
+export type EggBatchResult = components["schemas"]["EggBatchResult"];
 export type EggChance = components["schemas"]["EggChance"];
 export type EggSettingPublic = components["schemas"]["EggSettingPublic"];
 export type PetOwnedPublic = components["schemas"]["PetOwnedPublic"];
@@ -175,6 +176,10 @@ export const API_ROUTES = {
   // `tier` từ client là một endpoint nhận giá từ client (ADR-010 §6.1).
   petEggs: "/api/v1/pet/eggs",
   petEggOpen: "/api/v1/pet/eggs/open",
+  // Đường riêng chứ không phải `?count=10` trên đường trên: hai lượt mở trả về
+  // hai hình dạng khác nhau (một quả và một danh sách), và một endpoint đổi hình
+  // dạng theo tham số là thứ frontend phải đoán.
+  petEggOpenTen: "/api/v1/pet/eggs/open-ten",
   petCollection: "/api/v1/pet/collection",
   // Đổi con đang nuôi. `PATCH /pet` chứ không phải một đường riêng: nó sửa một
   // trường của chính con thú, và nó trả về nguyên trạng thái mới như mọi đường

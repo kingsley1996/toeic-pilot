@@ -4,7 +4,7 @@ import { API_ROUTES, type PetOwnedPublic, type PetPublic } from "@toeic-pilot/sh
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Creature, TIER_LABEL, TIER_TONE } from "@/components/petland-creature";
+import { byRarity, Creature, TIER_LABEL, TIER_TONE } from "@/components/petland-creature";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 
@@ -93,7 +93,10 @@ export function CollectionScreen({
       )}
 
       <ul className="mt-3 grid gap-1">
-        {owned?.map((row) => {
+        {/* Xếp HIẾM TRƯỚC: cái tủ là chỗ người ta khoe, và thứ đáng khoe phải
+            nằm ở dòng đầu. Máy chủ trả về theo ngày nhận được — đúng cho một
+            danh sách lịch sử, sai cho một cái tủ trưng bày. */}
+        {[...(owned ?? [])].sort(byRarity).map((row) => {
           const current = row.code === active;
           return (
             <li key={row.code}>
@@ -111,7 +114,7 @@ export function CollectionScreen({
                     : "border-rule-strong hover:bg-recess disabled:opacity-45",
                 )}
               >
-                <Creature tile={row.tile} size={24} />
+                <Creature tile={row.tile} size={24} tier={row.tier} />
                 {/* KHÔNG in "×2".
                     Mở trúng con đã có thì được hoàn ruby, nên bản thứ hai không
                     phải một thứ người chơi đang giữ: in ×2 bên cạnh tên là nói

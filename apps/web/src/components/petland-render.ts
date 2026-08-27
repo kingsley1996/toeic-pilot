@@ -71,6 +71,13 @@ export type PetView = {
   /** Đồng hồ giây, để sinh nhịp thở. */
   clock: number;
   /**
+   * Con thú đang ngủ: nằm bẹp xuống và thở chậm, sâu hơn.
+   *
+   * Là một TRẠNG THÁI chứ không phải một hành động có tiến độ như `action`: giấc
+   * ngủ kéo dài hàng giờ, nên nó không có `t` nào để chạy tới 1.
+   */
+  sleeping: boolean;
+  /**
    * Lớp phủ bầu trời theo giờ trong thế giới Petland.
    *
    * Màu và độ đậm tính ở `petland-clock.ts` — một hàm thuần trên đồng hồ — chứ
@@ -93,7 +100,7 @@ export type PetView = {
    * không có khung hoạt ảnh nào (xem `public/pet/CREDITS.md`), nên "nhai" và
    * "giật mình" phải là phép biến hình chứ không phải ảnh.
    */
-  action: { kind: "feed" | "poke" | "walk"; t: number } | null;
+  action: { kind: "feed" | "poke" | "walk" | "sleep" | "wake"; t: number } | null;
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -172,8 +179,15 @@ function poseFor(action: PetView["action"]): {
   squashX: number;
   squashY: number;
 } {
-  if (action === null || action.kind === "walk") {
+  if (action === null || action.kind === "walk" || action.kind === "wake") {
     return { dx: 0, lift: 0, squashX: 1, squashY: 1 };
+  }
+  if (action.kind === "sleep") {
+    // Nằm xuống: bẹp dần theo chiều dọc rồi GIỮ NGUYÊN ở cuối, chứ không bật
+    // lại — vì ngay sau đó `sleeping` tiếp quản và giữ đúng tư thế ấy. Bật lại
+    // rồi mới nằm là một cú giật ngay giữa động tác nằm.
+    const lie = Math.sin(Math.min(1, Math.max(0, action.t)) * Math.PI * 0.5);
+    return { dx: 0, lift: 0, squashX: 1 + 0.12 * lie, squashY: 1 - 0.18 * lie };
   }
   const t = Math.min(1, Math.max(0, action.t));
   if (action.kind === "feed") {
@@ -427,12 +441,20 @@ export async function createStage(
        * khớp với ô — nhún theo đồng hồ thay vì theo tiến độ sẽ trôi khỏi lưới và
        * đọc ra là trượt.
        */
-      const breathe = 1 + Math.sin(view.clock * 3.9) * 0.04;
+      // Ngủ thì nhịp thở chậm còn một phần ba và sâu gấp đôi — đó là thứ đọc ra
+      // "đang ngủ" ngay cả khi mẩu Zzz đã bay hết.
+      const breathe = view.sleeping
+        ? 1 + Math.sin(view.clock * 1.3) * 0.08
+        : 1 + Math.sin(view.clock * 3.9) * 0.04;
+      const lying = view.sleeping ? { x: 1.12, y: 0.82 } : { x: 1, y: 1 };
       const hop = t > 0 ? Math.abs(Math.sin(t * Math.PI)) : 0;
       const pose = poseFor(view.action);
       pet.x += pose.dx;
       pet.y = (y + 1) * TILE - hop * 2 - pose.lift;
-      pet.scale.set((view.facing === "left" ? -1 : 1) * pose.squashX, breathe * pose.squashY);
+      pet.scale.set(
+        (view.facing === "left" ? -1 : 1) * pose.squashX * lying.x,
+        breathe * pose.squashY * lying.y,
+      );
 
       /*
        * Vòng sáng bám ĐẤT, không bám con thú.

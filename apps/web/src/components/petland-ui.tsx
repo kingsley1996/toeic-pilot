@@ -26,6 +26,7 @@ const ACTIONS: Array<{ action: PetAction; icon: PixelIconName; label: string; ke
   { action: "feed", icon: "bone", label: "Cho ăn", key: "F" },
   { action: "poke", icon: "hand", label: "Chọc", key: "Space" },
   { action: "walk", icon: "paw", label: "Đi dạo" },
+  { action: "sleep", icon: "zzz", label: "Ngủ" },
 ];
 
 const NEEDS: Array<{ key: keyof PetNeeds; label: string; short: string }> = [
@@ -69,10 +70,20 @@ function toneFor(value: number): string {
 export function PetHud({
   needs,
   busy,
+  asleep,
   onAction,
   leading,
 }: {
   needs: PetNeeds;
+  /**
+   * Con thú đang ngủ.
+   *
+   * Lúc ngủ, ba nút kia MỜ ĐI kèm lý do chứ không tự đánh thức: một cú bấm nhầm
+   * mà xoá mất hai tiếng hồi sức là thứ người dùng không lường trước và cũng
+   * không hoàn lại được. Nút "Ngủ" thì đổi thành "Đánh thức" — cùng một chỗ trên
+   * màn hình, nên không phải đi tìm.
+   */
+  asleep: boolean;
   /** Có hành động đang gửi đi — khoá nút trong lúc đó. */
   busy: boolean;
   onAction: (action: PetAction) => void;
@@ -103,25 +114,34 @@ export function PetHud({
       <div className="flex flex-wrap items-center gap-1.5">
         {leading}
         {ACTIONS.map(({ action, icon, label, key }) => {
-          const why = whyUnavailable(needs, action);
+          const sleepButton = action === "sleep";
+          const shown = sleepButton && asleep ? "Đánh thức" : label;
+          const sent = sleepButton && asleep ? "wake" : action;
+          // Đang ngủ thì mọi nút trừ nút đánh thức đều mờ, và lý do nói đúng
+          // chuyện đang xảy ra chứ không phải chuyện chỉ số.
+          const why = asleep
+            ? sleepButton
+              ? null
+              : "Nó đang ngủ, để nó ngủ đã."
+            : whyUnavailable(needs, action);
           const blocked = busy || why !== null;
           return (
             <button
               key={action}
               type="button"
               disabled={blocked}
-              onClick={() => onAction(action)}
+              onClick={() => onAction(sent)}
               // Lý do bị chặn nằm ở `title` chứ không chỉ ở việc nút mờ đi: một
               // cái nút mờ mà không nói vì sao chỉ để lại người dùng đoán.
-              title={why ?? (key ? `${label} (${key})` : label)}
-              aria-label={why ? `${label} — ${why}` : label}
+              title={why ?? (key ? `${shown} (${key})` : shown)}
+              aria-label={why ? `${shown} — ${why}` : shown}
               className={cx(
                 "inline-flex h-8 items-center gap-1.5 rounded border border-rule-strong px-2 text-small text-ink transition-colors",
                 blocked ? "opacity-45" : "hover:bg-recess",
               )}
             >
               <PixelIcon name={icon} scale={2} />
-              <span className="hidden sm:inline">{label}</span>
+              <span className="hidden sm:inline">{shown}</span>
             </button>
           );
         })}

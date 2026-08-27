@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Literal
 
-PetAction = Literal["feed", "poke", "walk"]
+PetAction = Literal["feed", "poke", "walk", "sleep", "wake"]
 
 ONE = Decimal(1)
 ZERO = Decimal(0)
@@ -58,6 +58,34 @@ FULLNESS_DECAY = ONE / _PER_DAY  # đầy → cạn: 1 ngày
 MOOD_DECAY = ONE / (_PER_DAY * Decimal("1.5"))  # 1,5 ngày
 ENERGY_RECOVER = ONE / (_PER_DAY / Decimal(2))  # cạn → đầy: 12 giờ
 
+"""Ngủ: hồi sức NHANH GẤP BỐN, và đây là cả cơ chế.
+
+Sức vốn đã tự hồi (1 điểm mỗi 12 giờ) mà không cần ai làm gì. Nếu ngủ chỉ là một
+dòng chảy thứ hai chạy song song thì nó không phải cơ chế, chỉ là một cái nút
+làm cùng việc mà đồng hồ đang làm. Thứ nó thêm vào là một QUYẾT ĐỊNH: đánh đổi
+vài giờ không chơi được với con thú để lấy lại sức đi dạo.
+
+**Ngủ tự hết, không cần ai đánh thức.** Đây là ràng buộc quan trọng nhất, và nó
+đến thẳng từ luật của cả góc thú cưng: một chỉ số cạn sau vài giờ biến nó thành
+việc phải làm, và một con thú nằm chờ được đánh thức thì cũng đúng như thế. Giấc
+ngủ dài tối đa `SLEEP_MAX_SECONDS` rồi tự dứt, và ba giờ là vừa đủ đầy sức từ số
+không — nên không có trạng thái nào đòi người dùng quay lại.
+
+Trong lúc ngủ **vui không tụt**: nghỉ ngơi là chuyện dễ chịu. Nhưng **đói vẫn
+xuống bình thường** — một con vật đang ngủ vẫn đói đi, và cho nó ngủ để né cơn
+đói sẽ là một mẹo mà người chơi tìm ra rồi dùng mãi.
+"""
+SLEEP_ENERGY_RECOVER = ENERGY_RECOVER * Decimal(4)
+SLEEP_MAX_SECONDS = 3 * 60 * 60
+
+"""Đã gần đầy sức thì không ngủ được, cùng lý do đã no thì không ăn thêm.
+
+Nút bấm có phản hồi mà chỉ số đứng yên đọc ra là hỏng. Ngưỡng cao hơn ngưỡng no
+(0,95) một chút: ngủ tốn HÀNG GIỜ, nên đánh thức người dùng dậy chỉ để nhích 3%
+là một đánh đổi tệ mà lời từ chối nên nói hộ họ.
+"""
+SLEEP_REFUSED_ABOVE = Decimal("0.9")
+
 """Đói thì vui cũng tụt: một con thú đói không thể "rất vui".
 
 Ngưỡng là một BẬC chứ không phải một dải liên tục — dưới ngưỡng thì có phạt, trên
@@ -71,23 +99,37 @@ HUNGRY_MOOD_PENALTY = ONE / _PER_DAY
 HUNGRY_POKE_FACTOR = Decimal("0.35")
 
 
-def decay(needs: Needs, seconds: float) -> Needs:
-    """Nhu cầu sau `seconds` giây không ai đụng tới.
+def decay(needs: Needs, seconds: float, asleep_seconds: float = 0) -> Needs:
+    """Nhu cầu sau `seconds` giây không ai đụng tới, trong đó `asleep_seconds` là ngủ.
 
     Thời gian âm trả về nguyên trạng: đồng hồ máy chủ lùi (NTP chỉnh, đổi múi
     giờ) là chuyện có thật, và cho phép nó chạy ngược sẽ HỒI nhu cầu — tức một
     cách cho ăn miễn phí mà không ai nhìn thấy.
+
+    **Khoảng thời gian chia làm hai đoạn, không phải một hệ số nhân.** Giấc ngủ
+    gần như luôn kết thúc GIỮA hai lần đọc: người dùng cho ngủ rồi đóng tab, và
+    lần mở sau đã qua cả giấc lẫn một quãng thức. Nhân cả quãng với tốc độ ngủ
+    thì con thú hồi sức trong lúc nó đã dậy từ lâu — con số vẫn hợp lệ, chỉ là
+    sai, và không có gì báo.
+
+    Đoạn ngủ: sức hồi gấp bốn, **vui không tụt**, đói vẫn xuống như thường.
     """
     if seconds <= 0:
         return needs
-    elapsed = Decimal(str(seconds))
+    asleep = Decimal(str(max(0.0, min(asleep_seconds, seconds))))
+    awake = Decimal(str(seconds)) - asleep
+    elapsed = asleep + awake
+
     fullness = _clamp(needs.fullness - FULLNESS_DECAY * elapsed)
-    mood = needs.mood - MOOD_DECAY * elapsed
+    # Vui chỉ tụt trong lúc THỨC. Đói thì phạt cả hai đoạn: bụng rỗng làm con thú
+    # ngủ không ngon, và nó tỉnh dậy đúng như thế.
+    mood = needs.mood - MOOD_DECAY * awake
     if fullness < HUNGRY_BELOW:
         mood -= HUNGRY_MOOD_PENALTY * elapsed
+    energy = needs.energy + ENERGY_RECOVER * awake + SLEEP_ENERGY_RECOVER * asleep
     return Needs(
         fullness=fullness,
-        energy=_clamp(needs.energy + ENERGY_RECOVER * elapsed),
+        energy=_clamp(energy),
         mood=_clamp(mood),
     )
 
@@ -101,6 +143,12 @@ EFFECTS: dict[PetAction, Needs] = {
     "feed": Needs(fullness=Decimal("0.35"), energy=ZERO, mood=Decimal("0.05")),
     "poke": Needs(fullness=ZERO, energy=Decimal("-0.03"), mood=Decimal("0.12")),
     "walk": Needs(fullness=Decimal("-0.05"), energy=Decimal("-0.20"), mood=Decimal("0.15")),
+    # Ngủ và dậy KHÔNG đổi chỉ số ngay lúc bấm: cái chúng đổi là TỐC ĐỘ của
+    # quãng thời gian sau đó. Một cú cộng tức thì ở đây sẽ là phần thưởng cho
+    # việc bấm nút, và lúc đó bấm ngủ-dậy-ngủ-dậy liên tục là đường hồi sức
+    # nhanh nhất — đúng thứ mà cả cơ chế này dựng ra để không có.
+    "sleep": Needs(fullness=ZERO, energy=ZERO, mood=ZERO),
+    "wake": Needs(fullness=ZERO, energy=ZERO, mood=ZERO),
 }
 
 """Ngưỡng từ chối, cho những hành động không có nghĩa lúc đó.
@@ -134,6 +182,8 @@ def refusal(action: PetAction, needs: Needs) -> str | None:
         return "Nó đang mệt, để nó nghỉ đã."
     if action == "walk" and needs.fullness < WALK_HUNGRY_BELOW:
         return "Nó đang đói, cho ăn trước đã."
+    if action == "sleep" and needs.energy >= SLEEP_REFUSED_ABOVE:
+        return "Nó chưa buồn ngủ."
     return None
 
 
@@ -172,7 +222,13 @@ def apply(action: PetAction, needs: Needs) -> Needs:
 `walk` được nhiều nhất vì nó là hành động duy nhất có giá — nó tốn sức và tốn
 no. Ba cái nút mà cái nào cũng cùng một phần thưởng thì không có gì để chọn.
 """
-XP_PER_ACTION: dict[PetAction, int] = {"feed": 3, "poke": 1, "walk": 5}
+XP_PER_ACTION: dict[PetAction, int] = {"feed": 3, "poke": 1, "walk": 5, "sleep": 0, "wake": 0}
+"""Ngủ và dậy KHÔNG cho XP, có chủ ý.
+
+Chúng không tốn gì và không đòi hỏi gì, nên trả điểm cho chúng là mở lại đúng
+cái cửa mà trần ngày đóng lại: bấm một nút không mất gì cho tới khi kịch trần.
+Thứ giấc ngủ trả về là ĐI DẠO ĐƯỢC — mà đi dạo mới là hành động đáng 5 điểm.
+"""
 
 """Trần XP mỗi ngày, và nó là thứ giữ cho level pet còn nghĩa.
 

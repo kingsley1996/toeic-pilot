@@ -6,7 +6,7 @@ người này là ai và họ đặt gì.
 """
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -15,6 +15,7 @@ from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.models import PetOwned, PetState, User
 from app.schemas.pet import (
+    EggBatchResult,
     EggChance,
     EggPublic,
     EggResult,
@@ -99,6 +100,25 @@ def _aware(stamp: datetime) -> datetime:
     return stamp if stamp.tzinfo is not None else stamp.replace(tzinfo=UTC)
 
 
+def _asleep_seconds(pet: PetOwned, since: datetime, at: datetime) -> float:
+    """Bao nhiêu giây trong khoảng `[since, at]` con này nằm ngủ.
+
+    Giấc ngủ gần như luôn kết thúc GIỮA hai lần đọc — người dùng cho ngủ rồi đóng
+    tab, và lần mở sau đã qua cả giấc lẫn một quãng thức. Nên phép tính phải cắt
+    đúng chỗ mốc `sleep_until` rơi vào, chứ không hỏi "bây giờ có đang ngủ không"
+    rồi áp cho cả quãng: hỏi thế thì con thú hồi sức trong lúc nó đã dậy từ lâu,
+    hoặc không hồi gì trong cả giấc vừa ngủ xong.
+    """
+    if pet.sleep_until is None:
+        return 0.0
+    end = min(at, _aware(pet.sleep_until))
+    return max(0.0, (end - since).total_seconds())
+
+
+def is_asleep(pet: PetOwned, at: datetime) -> bool:
+    return pet.sleep_until is not None and at < _aware(pet.sleep_until)
+
+
 def _current_needs(pet: PetOwned, at: datetime) -> needs_service.Needs:
     """Nhu cầu **suy ra ở thời điểm `at`**, không phải con số đang nằm trong cột.
 
@@ -107,8 +127,13 @@ def _current_needs(pet: PetOwned, at: datetime) -> needs_service.Needs:
     `profile_stats.py` và tiến độ ở `StoryProgress`: suy ra ở mỗi lần đọc, không
     nuôi một bộ đếm chạy song song với lịch sử.
     """
+    since = _aware(pet.needs_at)
     stored = needs_service.Needs(fullness=pet.fullness, energy=pet.energy, mood=pet.mood)
-    return needs_service.decay(stored, (at - _aware(pet.needs_at)).total_seconds())
+    return needs_service.decay(
+        stored,
+        (at - since).total_seconds(),
+        _asleep_seconds(pet, since, at),
+    )
 
 
 def _as_public(
@@ -141,6 +166,7 @@ def _as_public(
         tile_x=pet.tile_x,
         tile_y=pet.tile_y,
         facing=pet.facing,
+        sleep_until=pet.sleep_until,
         needs=PetNeeds(
             fullness=float(now.fullness),
             energy=float(now.energy),
@@ -223,9 +249,27 @@ def act(
     _state, pet = ensure_pet(db, current_user.id)
     now = _current_needs(pet, at)
 
+    # Đang ngủ thì ba hành động kia bị từ chối, KHÔNG phải tự đánh thức. Một cú
+    # bấm nhầm mà xoá mất hai tiếng hồi sức là thứ người dùng không thể lường
+    # trước và cũng không hoàn lại được; nút "Đánh thức" thì họ chủ động bấm.
+    if body.action != "wake" and is_asleep(pet, at):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Nó đang ngủ, để nó ngủ đã."
+        )
+    if body.action == "wake" and not is_asleep(pet, at):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Nó đang thức mà.")
+
     reason = needs_service.refusal(body.action, now)
     if reason is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=reason)
+
+    if body.action == "sleep":
+        pet.sleep_until = at + timedelta(seconds=needs_service.SLEEP_MAX_SECONDS)
+    elif body.action == "wake":
+        # Chốt sổ TRƯỚC khi xoá mốc: `_current_needs` ở trên đã cộng phần sức
+        # ngủ được tới `at`, và `after` bên dưới ghi nó xuống. Xoá mốc trước thì
+        # cả giấc vừa rồi biến mất khỏi phép tính.
+        pet.sleep_until = None
 
     after = needs_service.apply(body.action, now)
     pet.fullness = after.fullness
@@ -419,6 +463,73 @@ def switch_pet(
     # đói của nó, nên một con bị bỏ quên ba ngày sẽ đói đúng ba ngày.
     pet = _own(db, current_user.id, body.species)
     return _as_public(db, pet, _current_needs(pet, at), at)
+
+
+"""Số quả mở trong một lượt "mở nhiều".
+
+Mười là con số của cả thể loại, và nó không phải hằng số cấu hình: đổi nó là đổi
+cả cái nút trên màn hình lẫn câu chữ quanh nó, nên nó thuộc về sản phẩm chứ
+không thuộc về bảng cấu hình. Giá thì vẫn là hàng — `egg_setting.ruby_cost` nhân
+lên.
+"""
+EGGS_PER_BATCH = 10
+
+
+@router.post("/eggs/open-ten", response_model=EggBatchResult)
+def open_ten_eggs(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> EggBatchResult:
+    """Mở mười quả trong MỘT giao dịch.
+
+    Đường dẫn riêng chứ không phải một tham số `count` trên `/eggs/open`: hai
+    lượt mở trả về hai hình dạng khác nhau (một quả và một danh sách), và một
+    endpoint trả về hình dạng thay đổi theo tham số là thứ frontend phải đoán.
+
+    Thiếu ruby trả **409** kèm CON SỐ của cả lượt, không phải giá một quả: người
+    bấm "Mở 10" cần biết mình thiếu bao nhiêu cho lượt đó.
+    """
+    state, _pet = ensure_pet(db, current_user.id)
+    ruby.top_up_admin(db, user_id=current_user.id, role=current_user.role)
+    try:
+        batch = gacha.open_eggs(db, user_id=current_user.id, state=state, count=EGGS_PER_BATCH)
+    except gacha.NoSpeciesAvailable:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Chưa có loài nào để nở. Thử lại sau nhé.",
+        ) from None
+    except ruby.NotEnoughRuby as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Cần {exc.needed} ruby cho mười quả, hiện có {exc.available}.",
+        ) from None
+
+    db.commit()
+    chances = {row.code: round(row.percent, 1) for row in gacha.chances(db)}
+    return EggBatchResult(
+        opened=[
+            EggResult(
+                species=EggChance(
+                    code=one.species.code,
+                    label=one.species.label,
+                    tile=one.species.tile,
+                    tier=one.species.tier,
+                    percent=chances.get(one.species.code, 0.0),
+                ),
+                duplicate=one.duplicate,
+                refund=one.refund,
+                balance=one.balance,
+                rolls_since_rare=one.rolls_since_rare,
+                forced_rare=one.forced_rare,
+            )
+            for one in batch.hatched
+        ],
+        spent=batch.spent,
+        refund=batch.refund,
+        balance=batch.balance,
+        rolls_since_rare=batch.rolls_since_rare,
+        new_species=sum(1 for one in batch.hatched if not one.duplicate),
+    )
 
 
 @router.get("/collection", response_model=list[PetOwnedPublic])

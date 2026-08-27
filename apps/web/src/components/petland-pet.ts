@@ -15,7 +15,7 @@
  * hai của công thức chỉ tạo thêm chỗ để lệch.
  */
 
-export type PetAction = "feed" | "poke" | "walk";
+export type PetAction = "feed" | "poke" | "walk" | "sleep" | "wake";
 
 /**
  * Giây cho mỗi Ô con thú đi qua.
@@ -62,6 +62,14 @@ export const WALK_TIRED_BELOW = 0.15;
  * hết. Ngưỡng phải khớp `WALK_HUNGRY_BELOW` ở `app/services/pet.py`.
  */
 export const WALK_HUNGRY_BELOW = 0.2;
+/**
+ * Gần đầy sức thì không ngủ được, cùng lý do đã no thì không ăn thêm.
+ *
+ * Ngưỡng cao hơn ngưỡng no một chút vì ngủ tốn HÀNG GIỜ: đánh đổi ấy chỉ để
+ * nhích vài phần trăm là tệ, và lời từ chối nên nói hộ người dùng. Khớp
+ * `SLEEP_REFUSED_ABOVE` ở `app/services/pet.py`.
+ */
+export const SLEEP_NOT_TIRED_ABOVE = 0.9;
 
 /**
  * Lý do chưa làm được, bằng lời — hoặc `null` nếu làm được.
@@ -80,6 +88,9 @@ export function whyUnavailable(needs: PetNeeds, action: PetAction): string | nul
   }
   if (action === "walk" && needs.fullness < WALK_HUNGRY_BELOW) {
     return "Nó đang đói, cho ăn trước đã.";
+  }
+  if (action === "sleep" && needs.energy >= SLEEP_NOT_TIRED_ABOVE) {
+    return "Nó chưa buồn ngủ.";
   }
   return null;
 }

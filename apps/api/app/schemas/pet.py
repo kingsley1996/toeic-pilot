@@ -51,12 +51,20 @@ class PetPublic(BaseModel):
     tile_x: int
     tile_y: int
     facing: str
+    sleep_until: datetime | None
+    """Đang ngủ tới lúc nào, hoặc `null` nếu đang thức.
+
+    Gửi MỐC chứ không gửi cờ `asleep`: trình duyệt cần biết còn bao lâu để đếm
+    ngược, và một cờ thì tới lúc hết giấc vẫn nói "đang ngủ" cho tới lần đọc kế
+    tiếp — con thú nằm im trên màn hình trong khi máy chủ đã coi nó dậy từ lâu.
+    """
+
     needs: PetNeeds
     hatched_at: datetime
 
 
 class PetActionRequest(BaseModel):
-    action: Literal["feed", "poke", "walk"]
+    action: Literal["feed", "poke", "walk", "sleep", "wake"]
 
 
 class PetMove(BaseModel):
@@ -181,6 +189,25 @@ class EggResult(BaseModel):
     rolls_since_rare: int
     forced_rare: bool
     """Ra hạng hiếm vì bộ đếm an ủi đã đầy, không phải vì may."""
+
+
+class EggBatchResult(BaseModel):
+    """Kết quả mở nhiều quả một lượt.
+
+    Trả về CẢ DANH SÁCH chứ không phải một bản tóm tắt: người chơi muốn xem từng
+    quả ra con gì, và một dòng "được 3 con mới" thì không ai nhớ nổi mình vừa mở
+    ra cái gì. `spent` và `refund` là con số của CẢ LƯỢT — sổ ruby cũng ghi đúng
+    một dòng trừ và một dòng hoàn, nên hai bên kể cùng một câu chuyện.
+    """
+
+    opened: list[EggResult]
+    spent: int
+    refund: int
+    balance: int
+    rolls_since_rare: int
+    new_species: int
+    """Số con CHƯA TỪNG có trong lượt này. Đây là con số người chơi thật sự đo
+    một lượt mở bằng, nên máy chủ đếm hộ thay vì bắt giao diện lọc lại."""
 
 
 class PetOwnedPublic(BaseModel):

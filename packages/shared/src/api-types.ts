@@ -2478,6 +2478,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pet/eggs/open-ten": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Open Ten Eggs
+         * @description Mở mười quả trong MỘT giao dịch.
+         *
+         *     Đường dẫn riêng chứ không phải một tham số `count` trên `/eggs/open`: hai
+         *     lượt mở trả về hai hình dạng khác nhau (một quả và một danh sách), và một
+         *     endpoint trả về hình dạng thay đổi theo tham số là thứ frontend phải đoán.
+         *
+         *     Thiếu ruby trả **409** kèm CON SỐ của cả lượt, không phải giá một quả: người
+         *     bấm "Mở 10" cần biết mình thiếu bao nhiêu cho lượt đó.
+         */
+        post: operations["open_ten_eggs_api_v1_pet_eggs_open_ten_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pet/position": {
         parameters: {
             query?: never;
@@ -4296,6 +4323,29 @@ export interface components {
             transcript?: string | null;
         };
         /**
+         * EggBatchResult
+         * @description Kết quả mở nhiều quả một lượt.
+         *
+         *     Trả về CẢ DANH SÁCH chứ không phải một bản tóm tắt: người chơi muốn xem từng
+         *     quả ra con gì, và một dòng "được 3 con mới" thì không ai nhớ nổi mình vừa mở
+         *     ra cái gì. `spent` và `refund` là con số của CẢ LƯỢT — sổ ruby cũng ghi đúng
+         *     một dòng trừ và một dòng hoàn, nên hai bên kể cùng một câu chuyện.
+         */
+        EggBatchResult: {
+            /** Balance */
+            balance: number;
+            /** New Species */
+            new_species: number;
+            /** Opened */
+            opened: components["schemas"]["EggResult"][];
+            /** Refund */
+            refund: number;
+            /** Rolls Since Rare */
+            rolls_since_rare: number;
+            /** Spent */
+            spent: number;
+        };
+        /**
          * EggChance
          * @description Một dòng của bảng tỉ lệ, đúng như nó hiện trên màn hình mở trứng.
          *
@@ -4912,7 +4962,7 @@ export interface components {
              * Action
              * @enum {string}
              */
-            action: "feed" | "poke" | "walk";
+            action: "feed" | "poke" | "walk" | "sleep" | "wake";
         };
         /**
          * PetMove
@@ -4990,6 +5040,8 @@ export interface components {
             needs: components["schemas"]["PetNeeds"];
             /** Nickname */
             nickname: string | null;
+            /** Sleep Until */
+            sleep_until: string | null;
             /** Species */
             species: string;
             /**
@@ -10760,6 +10812,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EggResult"];
+                };
+            };
+        };
+    };
+    open_ten_eggs_api_v1_pet_eggs_open_ten_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EggBatchResult"];
                 };
             };
         };

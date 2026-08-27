@@ -138,6 +138,88 @@ def test_opening_without_enough_ruby_is_refused_and_costs_nothing(db_session: Se
     assert db_session.get(PetOwned, (user.id, "duck")) is None
 
 
+def test_ten_eggs_are_one_transaction_in_the_ledger(db_session: Session) -> None:
+    """Mở mười quả để lại MỘT dòng trừ và một dòng hoàn, không phải hai mươi dòng.
+
+    Trừ tiền từng quả thì một lỗi ở quả thứ bảy để lại người dùng mất tiền của
+    sáu quả đã mở mà không có gì nói vì sao — và đường tiêu này là đường có khoá,
+    nên nửa chừng còn nghĩa là giữ khoá lâu gấp mười lần cần thiết.
+    """
+    user = _learner(db_session, ruby_amount=400)
+    _only(db_session, "duck")  # chắc chắn trùng từ quả thứ hai
+    state, _pet = ensure_pet(db_session, user.id)
+
+    batch = gacha.open_eggs(
+        db_session, user_id=user.id, state=state, count=10, rng=random.Random(3)
+    )
+    db_session.commit()
+
+    assert len(batch.hatched) == 10
+    assert batch.spent == 250
+    # Chín quả trùng (quả đầu là con mới), hoàn 10 mỗi quả.
+    assert sum(1 for one in batch.hatched if not one.duplicate) == 1
+    assert batch.refund == 90
+    assert ruby.balance(db_session, user.id) == 400 - 250 + 90
+
+    rows = [(e.source_type, e.amount) for e in ruby.history(db_session, user.id)]
+    assert rows.count(("egg", -250)) == 1
+    assert rows.count(("egg_refund", 90)) == 1
+    assert not any(amount == -25 for _, amount in rows), "không có dòng lẻ nào cho từng quả"
+
+    owned = db_session.get(PetOwned, (user.id, "duck"))
+    assert owned is not None and owned.copies == 10
+
+
+def test_the_pity_counter_runs_through_a_batch(db_session: Session) -> None:
+    """Bộ đếm an ủi chạy qua từng quả TRONG lượt, đúng như khi mở lẻ.
+
+    Không có luật "mở 10 chắc chắn có hàng hiếm" riêng: đó sẽ là luật thứ hai làm
+    đúng việc mà bộ đếm đang làm, với một con số khác — mà bộ đếm thì admin sửa
+    được, nên hai con số sẽ lệch nhau vào ngày ai đó chỉnh một trong hai.
+    """
+    user = _learner(db_session, ruby_amount=25 * 12)
+    _only(db_session, "duck", "tiger")
+    duck = db_session.get(PetSpecies, "duck")
+    assert duck is not None
+    duck.drop_weight = 1000
+    db_session.commit()
+
+    state, _pet = ensure_pet(db_session, user.id)
+    config = gacha.settings_row(db_session)
+    state.rolls_since_rare = config.pity_rolls - 1  # quả thứ hai trong lượt sẽ bị ép
+    db_session.commit()
+
+    batch = gacha.open_eggs(
+        db_session, user_id=user.id, state=state, count=10, rng=random.Random(5)
+    )
+    db_session.commit()
+
+    forced = [i for i, one in enumerate(batch.hatched) if one.forced_rare]
+    assert forced == [1], f"đúng quả thứ hai bị ép, nhận: {forced}"
+    assert batch.hatched[1].species.tier in RARE_TIERS
+
+
+def test_ten_eggs_are_refused_all_or_nothing(db_session: Session) -> None:
+    """Thiếu tiền cho cả lượt thì KHÔNG mở quả nào, chứ không mở được mấy quả."""
+    user = _learner(db_session, ruby_amount=100)  # đủ 4 quả, không đủ 10
+    _only(db_session, "duck")
+    state, _pet = ensure_pet(db_session, user.id)
+
+    with pytest.raises(ruby.NotEnoughRuby):
+        gacha.open_eggs(db_session, user_id=user.id, state=state, count=10)
+    assert ruby.balance(db_session, user.id) == 100
+    assert db_session.get(PetOwned, (user.id, "duck")) is None
+
+
+def test_the_ten_endpoint_names_the_price_of_the_batch(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Lời từ chối nói con số của CẢ LƯỢT: người bấm "Mở 10" cần biết thiếu bao nhiêu."""
+    refused = client.post("/api/v1/pet/eggs/open-ten", headers=auth("learner"))
+    assert refused.status_code == 409
+    assert "250" in refused.json()["detail"]
+
+
 def test_the_endpoint_refuses_with_409_and_names_the_number(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:

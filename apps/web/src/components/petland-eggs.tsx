@@ -1,10 +1,21 @@
 "use client";
 
-import { API_ROUTES, type EggPublic, type EggResult } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type EggBatchResult,
+  type EggPublic,
+  type EggResult,
+} from "@toeic-pilot/shared";
 import { Gem, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Creature, TIER_LABEL, TIER_TONE } from "@/components/petland-creature";
+import {
+  byRarity,
+  Creature,
+  TIER_LABEL,
+  TIER_RANK,
+  TIER_TONE,
+} from "@/components/petland-creature";
 import { PixelIcon } from "@/components/pixel-icon";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
@@ -62,6 +73,7 @@ const TIER_CHEER: Record<string, string> = {
 export function EggScreen({ token, onClose }: { token: string; onClose: () => void }) {
   const [egg, setEgg] = useState<EggPublic | null>(null);
   const [result, setResult] = useState<EggResult | null>(null);
+  const [batch, setBatch] = useState<EggBatchResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [hatching, setHatching] = useState(false);
   const [refused, setRefused] = useState<string | null>(null);
@@ -80,11 +92,69 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
     };
   }, [token]);
 
+  /**
+   * Mở mười quả, một cú bấm và một giao dịch.
+   *
+   * Cùng nhịp rung như mở lẻ, vì cùng một lý do: máy chủ trả lời trong vài chục
+   * mili giây và cả lượt sẽ chớp qua nếu không chờ. Chỉ khác ở chỗ kết quả là
+   * một LƯỚI — mười cái thẻ nối nhau thì không ai đọc, còn một lưới thì mắt bắt
+   * được ngay có mấy con hiếm.
+   */
+  async function openTen() {
+    if (busy) return;
+    setBusy(true);
+    setRefused(null);
+    setResult(null);
+    setBatch(null);
+    setHatching(true);
+    const started = performance.now();
+    try {
+      const opened = await apiFetch<EggBatchResult>(API_ROUTES.petEggOpenTen, {
+        method: "POST",
+        token,
+      });
+      const owed = HATCH_MS - (performance.now() - started);
+      if (owed > 0) await new Promise((done) => window.setTimeout(done, owed));
+      setBatch(opened);
+      setEgg(await apiFetch<EggPublic>(API_ROUTES.petEggs, { token }));
+
+      /*
+       * MỘT thông báo cho cả lượt, không phải mười.
+       *
+       * Bắn từng con mới sẽ đẩy ra tới mười cái thẻ chồng nhau cho một cú bấm —
+       * và lúc đó cái thẻ báo con huyền thoại nằm lẫn giữa chín cái báo con vịt.
+       * Câu chúc lấy theo hạng CAO NHẤT trong lượt, vì đó là thứ người ta kể lại.
+       */
+      const best = opened.opened.reduce(
+        (top, one) => (TIER_RANK[one.species.tier] > TIER_RANK[top.species.tier] ? one : top),
+        opened.opened[0],
+      );
+      const fresh = opened.new_species;
+      show({
+        tone: "ok",
+        title: fresh > 0 ? (TIER_CHEER[best.species.tier] ?? "Con mới!") : "Mở xong mười quả",
+        description:
+          fresh > 0
+            ? `${fresh} con mới, cao nhất là ${best.species.label}` +
+              (opened.refund > 0 ? ` · hoàn ${opened.refund} ruby` : "")
+            : `Trùng cả mười · hoàn ${opened.refund} ruby`,
+        sound: "complete",
+        dedupeKey: `egg-batch-${opened.balance}`,
+      });
+    } catch (err) {
+      setRefused(err instanceof ApiError ? err.message : "Chưa mở được trứng.");
+    } finally {
+      setHatching(false);
+      setBusy(false);
+    }
+  }
+
   async function open() {
     if (busy) return;
     setBusy(true);
     setRefused(null);
     setResult(null);
+    setBatch(null);
     setHatching(true);
     const started = performance.now();
     try {
@@ -190,6 +260,35 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
             Trứng đang nứt…
           </p>
         </div>
+      ) : batch ? (
+        /* Lưới mười ô: mắt bắt ngay có mấy con hiếm, và con mới có viền sáng.
+           Mười cái thẻ nối nhau thì không ai đọc hết. */
+        <div className="mt-3 rounded border border-rule-strong p-2">
+          <ul className="grid grid-cols-5 gap-1">
+            {batch.opened.map((one, index) => (
+              <li
+                key={`${one.species.code}-${index}`}
+                title={`${one.species.label} — ${TIER_LABEL[one.species.tier] ?? one.species.tier}${
+                  one.duplicate ? " (đã có)" : " (mới!)"
+                }`}
+                // Khung hạng nằm trên chính con vật; ô chỉ còn nói một điều
+                // duy nhất — mới hay trùng. Hai lớp viền lồng nhau thì lớp
+                // ngoài chỉ làm loãng lớp trong.
+                className={cx("grid place-items-center", one.duplicate && "opacity-55")}
+              >
+                <Creature tile={one.species.tile} size={28} tier={one.species.tier} />
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-small text-ink-muted">
+            {batch.new_species > 0 ? (
+              <span className="text-ink">{batch.new_species} con mới</span>
+            ) : (
+              "Trùng cả mười"
+            )}
+            {batch.refund > 0 && ` · hoàn ${batch.refund} ruby`}
+          </p>
+        </div>
       ) : result ? (
         <div className="mt-3 flex items-center gap-3 rounded border border-rule-strong p-3">
           {/* `key` theo mã loài + số dư: cùng một con nở hai lần liên tiếp vẫn
@@ -199,6 +298,7 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
             key={`${result.species.code}-${result.balance}`}
             tile={result.species.tile}
             size={48}
+            tier={result.species.tier}
             className="pet-hatch-pop"
           />
           <div className="min-w-0">
@@ -226,7 +326,17 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Button size="sm" onClick={open} disabled={busy || !egg.can_open}>
-          {result ? "Mở quả nữa" : "Mở trứng"}
+          {result || batch ? "Mở quả nữa" : "Mở trứng"}
+        </Button>
+        {/* Nút "Mở 10" mờ theo số dư của CẢ LƯỢT, không theo giá một quả: bấm
+            được rồi mới bị từ chối là một cú bấm phí. */}
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={openTen}
+          disabled={busy || egg.balance < egg.ruby_cost * 10}
+        >
+          Mở 10
         </Button>
         <span className="font-data text-small tabular-nums text-ink-muted">
           còn {egg.balance} ruby
@@ -254,11 +364,11 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
 
       {showOdds && (
         <ul className="mt-2 grid gap-1">
-          {egg.chances.map((row) => {
+          {[...egg.chances].sort(byRarity).map((row) => {
             const owned = egg.owned.includes(row.code);
             return (
               <li key={row.code} className="flex items-center gap-2 text-small">
-                <Creature tile={row.tile} size={24} />
+                <Creature tile={row.tile} size={24} tier={row.tier} />
                 <span className={cx("flex-1 truncate", owned ? "text-ink" : "text-ink-muted")}>
                   {row.label}
                   {owned && <span className="ml-1 text-ink-faint">· đã có</span>}

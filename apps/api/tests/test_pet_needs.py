@@ -89,6 +89,72 @@ def test_walking_needs_energy() -> None:
     assert refusal("walk", fresh(energy="0.90")) is None
 
 
+def test_sleeping_recovers_energy_four_times_faster() -> None:
+    """Ngủ là một ĐÁNH ĐỔI, không phải một dòng chảy thứ hai.
+
+    Sức vốn tự hồi mà không cần ai làm gì; nếu ngủ chỉ nhanh hơn một chút thì nó
+    không phải cơ chế, chỉ là một cái nút làm cùng việc đồng hồ đang làm.
+    """
+    tired = fresh(energy="0.10")
+    awake = decay(tired, DAY / 8)  # ba tiếng thức
+    slept = decay(tired, DAY / 8, asleep_seconds=DAY / 8)  # ba tiếng ngủ
+    assert float(awake.energy) == pytest.approx(0.35, abs=0.01)
+    assert float(slept.energy) == pytest.approx(1.0, abs=0.01)
+
+
+def test_a_nap_that_ended_mid_window_only_counts_while_it_lasted() -> None:
+    """Chỗ dễ sai nhất: giấc ngủ gần như luôn kết thúc GIỮA hai lần đọc.
+
+    Người dùng cho ngủ rồi đóng tab, và lần mở sau đã qua cả giấc lẫn một quãng
+    thức. Nhân cả quãng với tốc độ ngủ thì con thú hồi sức trong lúc nó đã dậy từ
+    lâu — con số vẫn hợp lệ, chỉ là sai, và không có gì báo.
+
+    Ba giờ tính từ số không: thức cả ba được 0,25; ngủ nửa đầu rồi thức nửa sau
+    được 0,5 + 0,125. Bắt đầu từ một con số cao hơn thì cả hai đều kịch trần 1,0
+    và phép so sánh không nói lên điều gì — chính bài kiểm này đã đỏ vì thế.
+    """
+    flat = fresh(energy="0.0")
+    all_awake = decay(flat, DAY / 8)
+    half_slept = decay(flat, DAY / 8, asleep_seconds=DAY / 16)
+    assert float(all_awake.energy) == pytest.approx(0.25, abs=0.01)
+    assert float(half_slept.energy) == pytest.approx(0.625, abs=0.01)
+
+    # Quãng ngủ dài hơn cả quãng thời gian thì bị kẹp lại, không cộng khống.
+    over = decay(flat, DAY / 16, asleep_seconds=DAY)
+    assert float(over.energy) == pytest.approx(0.5, abs=0.01)
+
+
+def test_sleeping_pauses_mood_but_never_hunger() -> None:
+    """Vui không tụt trong lúc ngủ; đói thì vẫn xuống như thường.
+
+    Nếu đói cũng dừng thì cho ngủ là cách né cơn đói, và người chơi sẽ tìm ra mẹo
+    ấy rồi dùng mãi — lúc đó "cho ăn" thành cái nút không ai cần bấm.
+    """
+    start = fresh(fullness="0.90", mood="0.90", energy="0.10")
+    asleep = decay(start, DAY / 4, asleep_seconds=DAY / 4)
+    awake = decay(start, DAY / 4)
+    assert float(asleep.mood) == pytest.approx(float(start.mood), abs=0.001)
+    assert awake.mood < asleep.mood
+    assert float(asleep.fullness) == pytest.approx(float(awake.fullness), abs=0.001)
+
+
+def test_sleep_is_refused_when_the_pet_is_not_tired() -> None:
+    # Nút bấm có phản hồi mà chỉ số đứng yên đọc ra là hỏng — và ngủ tốn HÀNG
+    # GIỜ, nên đánh đổi ấy phải được từ chối sớm hơn hẳn so với cho ăn.
+    assert refusal("sleep", fresh(energy="0.95")) is not None
+    assert refusal("sleep", fresh(energy="0.20")) is None
+
+
+def test_sleeping_pays_no_xp() -> None:
+    """Không tốn gì, không đòi hỏi gì, nên không trả điểm.
+
+    Trả điểm cho nó là mở lại đúng cái cửa mà trần ngày đóng: bấm một nút không
+    mất gì cho tới khi kịch trần. Thứ giấc ngủ trả về là ĐI DẠO ĐƯỢC.
+    """
+    assert XP_PER_ACTION["sleep"] == 0 and XP_PER_ACTION["wake"] == 0
+    assert XP_PER_ACTION["walk"] > 0
+
+
 def test_walking_is_the_only_action_that_costs_something() -> None:
     # Ba cái nút mà cái nào cũng chỉ toàn cho thì không có gì để cân nhắc.
     assert EFFECTS["walk"].energy < 0 and EFFECTS["walk"].fullness < 0

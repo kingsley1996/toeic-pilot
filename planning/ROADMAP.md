@@ -1131,6 +1131,29 @@ Màu trời là một bảng mốc được **nội suy**, không phải bốn t
 
 Đồng hồ hiện ở thanh tiêu đề kèm mặt trời/mặt trăng, và `title` **nói ra đây là giờ của Petland**: một con số "02:15" cạnh con thú mà không giải thích thì người đọc sẽ so với đồng hồ máy mình rồi kết luận là sai. Phần chữ chạy theo hẹn giờ 2,5 giây (đúng một phút Petland) chứ không theo khung hình — cho nó vào state ở 60 khung/giây là dựng lại cả bảng sáu mươi lần mỗi giây để đổi một chữ số mỗi hai giây rưỡi; còn bầu trời thì vẫn đọc đồng hồ mỗi khung hình vì nó phải đổi mượt.
 
+**Ngủ để hồi sức** (migration `043`). Sức vốn đã tự hồi 1 điểm mỗi 12 giờ mà không cần ai làm gì, nên nếu ngủ chỉ là một dòng chảy thứ hai chạy song song thì nó không phải cơ chế — chỉ là một cái nút làm đúng việc đồng hồ đang làm. Thứ nó thêm vào là một **quyết định**: đánh đổi vài giờ không chơi được với con thú để lấy lại sức đi dạo. Ngủ hồi **gấp bốn** (đầy từ số không trong ba tiếng), **vui không tụt** trong lúc ngủ, và **đói vẫn xuống như thường** — nếu đói cũng dừng thì cho ngủ là cách né cơn đói, và người chơi sẽ tìm ra mẹo ấy rồi dùng mãi.
+
+Bốn tính chất, mỗi cái là một quyết định:
+
+- **`sleep_until` là một MỐC HẾT HẠN, không phải cờ `đang_ngủ`.** Giấc ngủ tự dứt khi tới mốc: không cần ai bấm gì, không cần job nền đi đánh thức, và người đóng tab giữa chừng vẫn thấy con thú đã dậy khi quay lại. Một cái cờ thì phải có ai đó tắt nó, và "ai đó" cuối cùng luôn là người dùng — tức là đúng cái việc-phải-làm mà cả góc thú cưng dựng ra để không có.
+- **`decay` chia quãng thời gian làm HAI ĐOẠN, không nhân một hệ số.** Giấc ngủ gần như luôn kết thúc GIỮA hai lần đọc — cho ngủ rồi đóng tab, lần mở sau đã qua cả giấc lẫn một quãng thức. Nhân cả quãng với tốc độ ngủ thì con thú hồi sức trong lúc nó đã dậy từ lâu: con số vẫn hợp lệ, chỉ là sai, và không có gì báo.
+- **Ba hành động kia bị TỪ CHỐI trong lúc ngủ, không tự đánh thức.** Một cú bấm nhầm mà xoá mất hai tiếng hồi sức là thứ người dùng không lường trước và cũng không hoàn lại được; nút "Đánh thức" thì họ chủ động bấm, và nó nằm đúng chỗ nút "Ngủ" nên không phải đi tìm.
+- **Ngủ và dậy không cho XP.** Chúng không tốn gì và không đòi hỏi gì, nên trả điểm là mở lại đúng cái cửa mà trần ngày đóng. Thứ giấc ngủ trả về là **đi dạo được** — mà đi dạo mới là hành động đáng 5 điểm. Cùng mạch với ràng buộc đói-thì-chưa-đi-dạo-được: ba nút giờ có một thứ tự thật, cho ăn → ngủ → đi dạo.
+
+Đo trên stack: sức 0,95 thì bị từ chối ("Nó chưa buồn ngủ"); ngủ trọn ba tiếng từ 0,12 lên **1,00** với vui giữ nguyên 0,70 và no vẫn tụt 0,62 → 0,49; cùng ba tiếng mà THỨC thì sức chỉ lên 0,37 và vui tụt còn 0,62; hết giấc thì tự dậy, không ai đánh thức.
+
+**Mở 10 quả một lượt** (`POST /pet/eggs/open-ten`). Ba tính chất:
+
+- **Cả lượt là MỘT giao dịch, không phải mười.** Trừ tiền từng quả thì một lỗi ở quả thứ bảy để lại người dùng mất tiền của sáu quả đã mở mà không có gì nói vì sao — và đường tiêu này là đường có khoá tư vấn, nên nửa chừng còn nghĩa là giữ khoá lâu gấp mười lần cần thiết. Sổ ruby ghi **một dòng trừ và một dòng hoàn** cho cả lượt, chứ không hai mươi dòng cho một cú bấm.
+- **Không có luật "mở 10 chắc chắn có hàng hiếm".** Bộ đếm an ủi chạy qua từng quả trong lượt, đúng như khi mở lẻ; một luật riêng sẽ là luật thứ hai làm đúng việc mà bộ đếm đang làm, với một con số khác — mà bộ đếm thì admin sửa được, nên hai con số sẽ lệch nhau vào ngày ai đó chỉnh một trong hai. Mở mười quả mà không ra gì thì bộ đếm đã đầy, và quả kế tiếp chắc chắn ra hạng hiếm.
+- **Đường dẫn riêng, không phải `?count=10`.** Hai lượt mở trả về hai hình dạng khác nhau (một quả và một danh sách), và một endpoint đổi hình dạng theo tham số là thứ frontend phải đoán.
+
+Bài kiểm bắt được một lỗi **chỉ xuất hiện khi mở nhiều**: `db.get(PetOwned, …)` không thấy hàng vừa `add` trong cùng lượt (session chạy `autoflush=False`, cùng cái bẫy đã ghi cho `mark_seen` và cho `_finalise`), nên mở mười quả ra cùng một loài chèn mười hàng cùng khoá chính và vỡ ở lệnh flush cuối. Mở lẻ không bao giờ lộ ra — mỗi lượt một quả, và giao dịch đóng lại trước quả kế tiếp. Đã thêm `flush` ngay sau khi thêm hàng.
+
+Giao diện: lưới 5×2, con trùng mờ đi và con mới có viền theo màu hạng — mười cái thẻ nối nhau thì không ai đọc hết. **Một thông báo cho cả lượt**, câu chúc lấy theo hạng cao nhất trong lượt: bắn từng con mới sẽ đẩy ra tới mười thẻ chồng nhau, và cái thẻ báo con huyền thoại nằm lẫn giữa chín cái báo con vịt.
+
+Đo trên stack: chưa đủ tiền → *"Cần 250 ruby cho mười quả, hiện có 0"*; bốn lượt liên tiếp cho 7 · 6 · 3 · 4 con mới với tiền hoàn 30 · 40 · 70 · 60, và sổ ruby đúng một cặp dòng cho mỗi lượt.
+
 ### Kiểm
 
 `pytest` **824 passed / 2 skipped / 5 deselected** (thêm 27 bài mới) · ruff + `mypy` strict (135 file) sạch · `tsc`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade head` **và** `downgrade` chạy thật trên một database trắng, `alembic check` không thấy lệch · bài kiểm đua chạy thật trên Postgres, đã xem nó ĐỎ khi gỡ khoá rồi XANH khi trả lại.

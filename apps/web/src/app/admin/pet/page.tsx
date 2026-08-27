@@ -3,8 +3,8 @@
 import { API_ROUTES, type EggSettingPublic, type PetSpeciesPublic } from "@toeic-pilot/shared";
 import { useEffect, useState } from "react";
 
+import { Creature } from "@/components/petland-creature";
 import { Alert, Button, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
-import { TILE } from "@/components/petland-map";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -23,20 +23,6 @@ import { useRequireSession } from "@/lib/session";
    không đặt được hạng đó, dù hàng dữ liệu hoàn toàn hợp lệ — và cách duy nhất
    nhận ra là mở bảng loài lên thấy một ô chọn không có lựa chọn đang dùng. */
 const TIERS = ["common", "uncommon", "rare", "epic", "legendary"] as const;
-const SHEET_ROWS_CREATURES = 18;
-const CREATURE_COLS = 10;
-const ZOOM = 2;
-
-/** Ô sinh vật vẽ bằng CSS. Trang này không cần vòng lặp hình, chỉ cần ảnh đứng yên. */
-function tileStyle(tile: number) {
-  return {
-    backgroundImage: "url(/pet/creatures.png)",
-    backgroundPosition: `-${(tile % CREATURE_COLS) * TILE * ZOOM}px -${Math.floor(tile / CREATURE_COLS) * TILE * ZOOM}px`,
-    backgroundSize: `${CREATURE_COLS * TILE * ZOOM}px ${SHEET_ROWS_CREATURES * TILE * ZOOM}px`,
-    imageRendering: "pixelated" as const,
-  };
-}
-
 export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);
@@ -179,12 +165,11 @@ export default function PetSpeciesAdminPage() {
           >
             {/* Nền ca-rô: ô sinh vật là PNG trong suốt, và trên nền panel ở chế
                 độ tối chúng chỉ còn là những mảng đen. */}
-            <span
-              aria-hidden
-              className="tile-checker relative h-9 w-9 shrink-0 rounded border border-rule"
-            >
-              <span className="absolute inset-0" style={tileStyle(row.tile)} />
-            </span>
+            {/* Dùng chung `Creature` với khu học: hai bản sao của một phép cắt
+                ô là hai chỗ để lệch số cột, mà lệch số cột thì ô vẫn vẽ ra —
+                chỉ là vẽ nhầm con, nên không có gì báo. Bản ở đây từng phóng
+                cứng 2 lần trong một khung 36px và lòi ô bên cạnh vào. */}
+            <Creature tile={row.tile} size={32} className="border border-rule" />
 
             <span className="w-28 shrink-0 font-data text-small text-ink-faint">{row.code}</span>
 

@@ -622,6 +622,19 @@ class PetOwned(Base):
     mood: Mapped[Decimal] = mapped_column(Numeric(4, 3), nullable=False, server_default="0.70")
     """Ba nhu cầu, 0..1. `Numeric` chứ không `Float`, theo đúng `ease_factor` của SM-2."""
 
+    sleep_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    """Con này đang ngủ tới lúc nào, hoặc NULL nếu đang thức.
+
+    Một MỐC HẾT HẠN chứ không phải một cờ `đang_ngủ`, và khác biệt ấy là toàn bộ
+    lý do giấc ngủ không thành việc phải làm: giấc ngủ tự dứt khi tới mốc, không
+    cần ai bấm gì, không cần một job chạy nền đi đánh thức, và một người đóng tab
+    giữa chừng vẫn thấy con thú đã dậy khi quay lại. Một cái cờ thì phải có ai đó
+    tắt nó, và "ai đó" cuối cùng luôn là người dùng.
+
+    Cùng khuôn `needs_at`: trạng thái suy ra lúc đọc từ một mốc thời gian, không
+    phải một bộ đếm chạy song song với đồng hồ.
+    """
+
     needs_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

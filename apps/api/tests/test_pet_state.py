@@ -371,6 +371,59 @@ def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Sess
     assert again["xp"] == 6
 
 
+def test_sleeping_refuses_the_other_actions_and_wakes_on_its_own(
+    client: TestClient, db_session: Session
+) -> None:
+    """Ngủ khoá ba nút kia, và giấc ngủ TỰ HẾT.
+
+    Tự hết là ràng buộc quan trọng nhất của cả cơ chế: một con thú nằm chờ được
+    đánh thức là một việc phải làm, và việc phải làm thứ hai bên cạnh việc học là
+    thứ khiến người ta đóng hẳn bảng này lại. Ở đây kiểm bằng cách lùi `sleep_until`
+    về quá khứ — cùng cách `needs_at` được lùi để kiểm phép trừ dần.
+    """
+    headers = auth_headers(client, "sleepy@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "sleepy@example.com")).one()
+    pet = db_session.get(PetOwned, (user.id, "cat"))
+    assert pet is not None
+    pet.energy = Decimal("0.20")
+    pet.needs_at = datetime.now(UTC)
+    db_session.commit()
+
+    napping = client.post("/api/v1/pet/actions", json={"action": "sleep"}, headers=headers)
+    assert napping.status_code == 200 and napping.json()["sleep_until"] is not None
+
+    refused = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
+    assert refused.status_code == 409 and "ngủ" in refused.json()["detail"]
+
+    # Giấc ngủ hết hạn: không ai đánh thức, không job nào chạy.
+    db_session.expire_all()
+    pet = db_session.get(PetOwned, (user.id, "cat"))
+    assert pet is not None
+    pet.sleep_until = datetime.now(UTC) - timedelta(seconds=1)
+    db_session.commit()
+
+    awake = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
+    assert awake.status_code == 200
+
+
+def test_a_nap_actually_returns_energy(client: TestClient, db_session: Session) -> None:
+    """Ngủ ba tiếng phải hồi nhiều hơn hẳn thức ba tiếng, nếu không nó chỉ là cái
+    nút làm đúng việc mà đồng hồ đang làm."""
+    headers = auth_headers(client, "napper@example.com")
+    client.get("/api/v1/pet", headers=headers)
+    user = db_session.scalars(select(User).where(User.email == "napper@example.com")).one()
+    pet = db_session.get(PetOwned, (user.id, "cat"))
+    assert pet is not None
+    pet.energy = Decimal("0.10")
+    pet.needs_at = datetime.now(UTC) - timedelta(hours=3)
+    pet.sleep_until = datetime.now(UTC)  # vừa ngủ trọn ba tiếng ấy
+    db_session.commit()
+
+    slept = client.get("/api/v1/pet", headers=headers).json()["needs"]["energy"]
+    assert slept == pytest.approx(1.0, abs=0.02)
+
+
 def test_a_freshly_hatched_pet_can_still_earn_today(
     client: TestClient, db_session: Session
 ) -> None:

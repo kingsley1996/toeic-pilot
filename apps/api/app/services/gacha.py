@@ -122,45 +122,32 @@ def _pick(pool: list[PetSpecies], rng: random.Random) -> PetSpecies:
     return rng.choices(pool, weights=[row.drop_weight for row in pool], k=1)[0]
 
 
-def open_egg(
+@dataclass(frozen=True)
+class Batch:
+    """Kết quả một lượt mở NHIỀU quả."""
+
+    hatched: list[Hatched]
+    spent: int
+    refund: int
+    balance: int
+    rolls_since_rare: int
+
+
+def _roll(
     db: Session,
     *,
     user_id: uuid.UUID,
     state: PetState,
-    rng: random.Random | None = None,
-) -> Hatched:
-    """Trừ ruby, quay, ghi vào bộ sưu tập. Ném `ruby.NotEnoughRuby` nếu thiếu tiền.
+    pool: list[PetSpecies],
+    config: EggSetting,
+    picker: random.Random,
+) -> tuple[PetSpecies, bool, bool]:
+    """Một quả: bốc loài, cập nhật bộ đếm an ủi, ghi vào tủ.
 
-    Nhận `state` (góc thú cưng) chứ không nhận con đang nuôi: quả trứng không
-    liên quan gì tới con nào đang được nuôi, và bộ đếm an ủi là của NGƯỜI CHƠI.
-
-    `rng` là tham số chứ không đọc thẳng module `random`, cùng lý do `srs.review`
-    nhận `now`: một phép quay không lặp lại được thì không có bài kiểm nào nói
-    được điều gì về tỉ lệ hay về bộ đếm an ủi.
-
-    Không `commit`: đường gọi (route) mới là chỗ quyết định ranh giới giao dịch,
-    và khoá tư vấn trong `ruby.spend` chỉ nhả lúc đó. Trứng và khoản ruby phải
-    sống chết cùng nhau — trừ tiền rồi rollback phần quay là mất tiền không nhận
-    được gì.
+    Trả về (loài, đã có từ trước, bị bộ đếm ép ra). **Không đụng tới ruby** — cả
+    tiền lẫn tiền hoàn được gộp một lần ở ngoài, nên mở mười quả là một dòng trừ
+    và một dòng hoàn trong sổ, chứ không phải hai mươi dòng cho một cú bấm.
     """
-    picker = rng or random.SystemRandom()
-    pool = [row for row in all_species(db) if row.drop_weight > 0]
-    if not pool:
-        raise NoSpeciesAvailable
-
-    config = settings_row(db)
-    balance = ruby.spend(
-        db,
-        user_id=user_id,
-        source_type="egg",
-        source_id=uuid.uuid4(),
-        amount=config.ruby_cost,
-    )
-    # `source_id` là một uuid MỚI mỗi lần, không phải một khoá tất định: mở trứng
-    # lần thứ hai là một sự kiện khác, không phải cùng một sự kiện được ghi lại.
-    # Đây là chỗ khác hẳn các nguồn KIẾM, nơi khoá duy nhất chính là thứ chống
-    # cày.
-
     forced = state.rolls_since_rare >= config.pity_rolls
     if forced:
         rare_pool = [row for row in pool if row.tier in RARE_TIERS]
@@ -180,11 +167,89 @@ def open_egg(
     duplicate = owned is not None
     if owned is None:
         db.add(PetOwned(user_id=user_id, species=species.code))
+        # `flush` để quả SAU trong cùng lượt nhìn thấy hàng vừa thêm.
+        #
+        # Session chạy `autoflush=False` (cùng lý do đã ghi cho `mark_seen` và
+        # cho `_finalise` của lượt làm đề), nên `db.get` không thấy một hàng còn
+        # đang chờ ghi: mở mười quả ra cùng một loài sẽ chèn mười hàng cùng khoá
+        # chính và vỡ ở lệnh flush cuối. Mở lẻ thì không bao giờ lộ ra — mỗi lượt
+        # chỉ có một quả, và giao dịch đóng lại trước quả kế tiếp.
+        db.flush()
     else:
         owned.copies += 1
+    return species, duplicate, forced
+
+
+def open_eggs(
+    db: Session,
+    *,
+    user_id: uuid.UUID,
+    state: PetState,
+    count: int = 1,
+    rng: random.Random | None = None,
+) -> Batch:
+    """Trừ ruby MỘT LẦN cho cả lượt, rồi quay `count` quả. Ném `NotEnoughRuby` nếu thiếu.
+
+    **Cả lượt là một giao dịch, không phải mười giao dịch.** Trừ tiền từng quả
+    thì một lỗi ở quả thứ bảy để lại người dùng mất tiền của sáu quả đã mở và
+    không có gì nói cho họ biết vì sao — mà đường tiêu này lại là đường có khoá,
+    nên nửa chừng còn nghĩa là giữ khoá lâu gấp mười lần cần thiết.
+
+    **Bộ đếm an ủi chạy qua từng quả trong lượt**, đúng như khi mở lẻ. Không có
+    luật "mở 10 chắc chắn có hàng hiếm" riêng: đó sẽ là luật thứ hai làm đúng
+    việc mà bộ đếm đang làm, với một con số khác — và bộ đếm thì admin sửa được,
+    nên hai con số sẽ lệch nhau vào ngày ai đó chỉnh một trong hai. Mở mười quả
+    mà không ra gì thì bộ đếm đã đầy, và quả kế tiếp chắc chắn ra hạng hiếm.
+
+    Tiền hoàn cho những con trùng cũng gộp một dòng, cùng lý do.
+
+    Không `commit`: đường gọi (route) mới là chỗ quyết định ranh giới giao dịch,
+    và khoá tư vấn trong `ruby.spend` chỉ nhả lúc đó. Trứng và khoản ruby phải
+    sống chết cùng nhau — trừ tiền rồi rollback phần quay là mất tiền không nhận
+    được gì.
+
+    `rng` là tham số chứ không đọc thẳng module `random`, cùng lý do `srs.review`
+    nhận `now`: một phép quay không lặp lại được thì không có bài kiểm nào nói
+    được điều gì về tỉ lệ hay về bộ đếm an ủi.
+    """
+    if count < 1:
+        raise ValueError("phải mở ít nhất một quả")
+    picker = rng or random.SystemRandom()
+    pool = [row for row in all_species(db) if row.drop_weight > 0]
+    if not pool:
+        raise NoSpeciesAvailable
+
+    config = settings_row(db)
+    spent = config.ruby_cost * count
+    # `source_id` là một uuid MỚI mỗi lần, không phải một khoá tất định: mở trứng
+    # lần thứ hai là một sự kiện khác, không phải cùng một sự kiện được ghi lại.
+    # Đây là chỗ khác hẳn các nguồn KIẾM, nơi khoá duy nhất chính là thứ chống
+    # cày.
+    balance = ruby.spend(
+        db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent
+    )
+
+    hatched: list[Hatched] = []
+    duplicates = 0
+    for _ in range(count):
+        species, duplicate, forced = _roll(
+            db, user_id=user_id, state=state, pool=pool, config=config, picker=picker
+        )
+        if duplicate:
+            duplicates += 1
+        hatched.append(
+            Hatched(
+                species=species,
+                duplicate=duplicate,
+                refund=config.duplicate_refund if duplicate else 0,
+                balance=balance,  # số dư THẬT được chốt lại bên dưới
+                rolls_since_rare=state.rolls_since_rare,
+                forced_rare=forced,
+            )
+        )
 
     refund = 0
-    if duplicate and config.duplicate_refund > 0:
+    if duplicates and config.duplicate_refund > 0:
         # Trùng thì hoàn một phần bằng chính ruby, không phải bằng một loại
         # "mảnh" riêng. Mảnh chỉ có nghĩa khi có chỗ tiêu, và một tài nguyên
         # không tiêu được là một con số người chơi không làm gì được với nó.
@@ -195,18 +260,28 @@ def open_egg(
             user_id=user_id,
             source_type="egg_refund",
             source_id=uuid.uuid4(),
-            amount=config.duplicate_refund,
+            amount=config.duplicate_refund * duplicates,
         )
         balance += refund
 
-    return Hatched(
-        species=species,
-        duplicate=duplicate,
+    return Batch(
+        hatched=[Hatched(**{**vars(row), "balance": balance}) for row in hatched],
+        spent=spent,
         refund=refund,
         balance=balance,
         rolls_since_rare=state.rolls_since_rare,
-        forced_rare=forced,
     )
+
+
+def open_egg(
+    db: Session,
+    *,
+    user_id: uuid.UUID,
+    state: PetState,
+    rng: random.Random | None = None,
+) -> Hatched:
+    """Mở đúng một quả. Vỏ mỏng quanh `open_eggs` để đường gọi lẻ đọc thẳng."""
+    return open_eggs(db, user_id=user_id, state=state, count=1, rng=rng).hatched[0]
 
 
 def collection(db: Session, user_id: uuid.UUID) -> list[PetOwned]:

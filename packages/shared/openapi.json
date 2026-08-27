@@ -3165,6 +3165,48 @@
         "title": "DictationUpdate",
         "type": "object"
       },
+      "EggBatchResult": {
+        "description": "Kết quả mở nhiều quả một lượt.\n\nTrả về CẢ DANH SÁCH chứ không phải một bản tóm tắt: người chơi muốn xem từng\nquả ra con gì, và một dòng \"được 3 con mới\" thì không ai nhớ nổi mình vừa mở\nra cái gì. `spent` và `refund` là con số của CẢ LƯỢT — sổ ruby cũng ghi đúng\nmột dòng trừ và một dòng hoàn, nên hai bên kể cùng một câu chuyện.",
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "new_species": {
+            "title": "New Species",
+            "type": "integer"
+          },
+          "opened": {
+            "items": {
+              "$ref": "#/components/schemas/EggResult"
+            },
+            "title": "Opened",
+            "type": "array"
+          },
+          "refund": {
+            "title": "Refund",
+            "type": "integer"
+          },
+          "rolls_since_rare": {
+            "title": "Rolls Since Rare",
+            "type": "integer"
+          },
+          "spent": {
+            "title": "Spent",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "opened",
+          "spent",
+          "refund",
+          "balance",
+          "rolls_since_rare",
+          "new_species"
+        ],
+        "title": "EggBatchResult",
+        "type": "object"
+      },
       "EggChance": {
         "description": "Một dòng của bảng tỉ lệ, đúng như nó hiện trên màn hình mở trứng.\n\nTỉ lệ **phải** được in ra (ADR-010 §6.4). Nhiều nơi đã luật hoá việc này, và\nkể cả không có luật thì đây là sản phẩm học cho học sinh — che tỉ lệ là thứ\nkhông nên làm với đối tượng đó. `percent` tính ở máy chủ từ chính bảng trọng\nsố mà phép quay dùng, nên màn hình không thể nói khác máy.",
         "properties": {
@@ -4792,7 +4834,9 @@
             "enum": [
               "feed",
               "poke",
-              "walk"
+              "walk",
+              "sleep",
+              "wake"
             ],
             "title": "Action",
             "type": "string"
@@ -4944,6 +4988,18 @@
             ],
             "title": "Nickname"
           },
+          "sleep_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sleep Until"
+          },
           "species": {
             "title": "Species",
             "type": "string"
@@ -5002,6 +5058,7 @@
           "tile_x",
           "tile_y",
           "facing",
+          "sleep_until",
           "needs",
           "hatched_at"
         ],
@@ -15825,6 +15882,33 @@
           }
         ],
         "summary": "Open Egg",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/eggs/open-ten": {
+      "post": {
+        "description": "Mở mười quả trong MỘT giao dịch.\n\nĐường dẫn riêng chứ không phải một tham số `count` trên `/eggs/open`: hai\nlượt mở trả về hai hình dạng khác nhau (một quả và một danh sách), và một\nendpoint trả về hình dạng thay đổi theo tham số là thứ frontend phải đoán.\n\nThiếu ruby trả **409** kèm CON SỐ của cả lượt, không phải giá một quả: người\nbấm \"Mở 10\" cần biết mình thiếu bao nhiêu cho lượt đó.",
+        "operationId": "open_ten_eggs_api_v1_pet_eggs_open_ten_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EggBatchResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Open Ten Eggs",
         "tags": [
           "pet"
         ]
