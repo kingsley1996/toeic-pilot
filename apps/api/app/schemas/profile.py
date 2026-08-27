@@ -248,6 +248,13 @@ class DailyTasksPublic(BaseModel):
     tasks: list[DailyTaskPublic]
     xp_awarded: int
     """XP vừa được trao trong chính lần đọc này, nếu có việc mới hoàn thành."""
+    ruby_awarded: int
+    """Ruby vừa được trao trong chính lần đọc này — xong CẢ BA việc, hoặc chuỗi
+    ngày vừa chạm một mốc bảy ngày.
+
+    Tách khỏi `xp_awarded` chứ không cộng chung: hai đơn vị đo hai thứ khác nhau
+    (khối lượng và việc làm xong), và một tổng gộp là chỗ người dùng thôi phân
+    biệt được chúng — đúng thứ ADR-011 §1 dựng cả hệ này để tránh."""
 
 
 # Biểu tượng mà frontend biết vẽ. Đây là thứ DUY NHẤT còn đóng ở phía huy hiệu:

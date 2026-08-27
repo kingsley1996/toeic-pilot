@@ -26,7 +26,7 @@ from app.schemas.profile import (
     UserProfilePublic,
     UserProfileUpdate,
 )
-from app.services import progression_config
+from app.services import progression_config, ruby_daily
 from app.services.badges import evaluate, mark_seen, record_new
 from app.services.daily_tasks import grant_rewards, tasks_for
 from app.services.profile import ensure_profile, profile_public
@@ -247,7 +247,19 @@ def read_daily_tasks(
     profile = ensure_profile(db, current_user)
     day, tasks = tasks_for(db, current_user.id, profile.timezone)
     awarded = grant_rewards(db, current_user.id, profile.timezone, day, tasks)
-    if awarded:
+
+    # Ruby đi cùng chỗ này chứ không có đường đọc riêng, vì cùng một lý do khiến
+    # `grant_rewards` được phép ghi trong một lần đọc: đây là điểm chạm mỗi ngày
+    # của người học, và cả hai khoản đều tất định nên gọi lại không trao thêm.
+    #
+    # Chuỗi ngày lấy từ `gather_stats`, tức là CÙNG con số hiển thị trên hồ sơ —
+    # một phép đếm thứ hai ở đây sẽ trả thưởng vào một ngày khác với ngày thanh
+    # chuỗi ngày sáng lên, và không có gì báo.
+    ruby_awarded = ruby_daily.grant_all_tasks_done(db, current_user.id, day, tasks)
+    ruby_awarded += ruby_daily.grant_streak_milestone(
+        db, current_user.id, gather_stats(db, current_user.id, profile.timezone).current_streak
+    )
+    if awarded or ruby_awarded:
         db.commit()
     return DailyTasksPublic(
         date=day,
@@ -264,6 +276,7 @@ def read_daily_tasks(
             for t in tasks
         ],
         xp_awarded=awarded,
+        ruby_awarded=ruby_awarded,
     )
 
 

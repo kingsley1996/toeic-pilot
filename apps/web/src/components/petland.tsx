@@ -1,13 +1,18 @@
 "use client";
 
 import { API_ROUTES, type PetPublic } from "@toeic-pilot/shared";
-import { GripHorizontal, Maximize2, Minimize2, X } from "lucide-react";
+import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { clamp, defaultPlace, readPlace, writePlace, type Place } from "@/components/petland-place";
-import { PetHud } from "@/components/petland-ui";
-import type { PetAction, PetNeeds } from "@/components/petland-pet";
-import { tileForSpecies } from "@/components/petland-sprite";
+import { CollectionScreen } from "@/components/petland-collection";
+import { tierGlow } from "@/components/petland-creature";
+import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
+import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
+import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
+import { PixelIcon } from "@/components/pixel-icon";
+import { STEP_SECONDS, type PetAction, type PetNeeds } from "@/components/petland-pet";
+import { CREATURE_COLS, CREATURE_ROWS, tileForSpecies } from "@/components/petland-sprite";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -15,12 +20,12 @@ import {
   findPath,
   nearestWalkable,
   parseMap,
-  SHEET_COLS,
+  strollTarget,
   TILE,
   type MapData,
   type Tile,
 } from "@/components/petland-map";
-import type { Stage } from "@/components/petland-render";
+import type { PetView, Stage } from "@/components/petland-render";
 
 /**
  * Góc thú cưng: một khung nhìn nhỏ nhìn vào bản đồ ô, ở góc dưới bên trái.
@@ -36,6 +41,29 @@ import type { Stage } from "@/components/petland-render";
  * trang luyện đề. `await import()` nằm trong nhánh `open`.
  */
 
+/**
+ * Hoạt ảnh của mỗi hành động kéo dài bao lâu, tính bằng mili giây.
+ *
+ * "Đi dạo" dài hơn hẳn vì nó KHÔNG phải một tư thế: nó là quãng đường con thú
+ * thật sự đi, và con số này chỉ để khoá cái nút cho tới khi chuyến đi trông như
+ * đã bắt đầu. Đi hết đường mất bao lâu thì tuỳ đường.
+ */
+const ACTION_MS: Record<PetAction, number> = { feed: 1100, poke: 620, walk: 900 };
+
+/** Đi dạo phải đi ĐỦ XA để nhìn ra là một chuyến đi, không phải một bước sang bên. */
+const STROLL_MIN_TILES = 5;
+
+/**
+ * Mẩu nào bay lên cho hành động nào.
+ *
+ * `walk` KHÔNG có mẩu: chuyến đi tự nó đã là phản hồi, và một nắm dấu chân bay
+ * lên trời trong lúc con thú đang đi bộ là hai lời kể về cùng một việc.
+ */
+const BIT_ICON: Record<PetAction, Bit["icon"]> = { feed: "crumb", poke: "spark", walk: "paw" };
+
+/** Khớp với `pet-bit-rise` trong `globals.css` (1100ms), cộng một nhịp thở. */
+const BIT_LIFE_MS = 1300;
+
 const VIEW_W = 14;
 const VIEW_H = 8;
 /*
@@ -46,7 +74,6 @@ const VIEW_H = 8;
 const FULL_W = 18;
 const FULL_H = 13;
 const ZOOM = 2;
-const STEP_SECONDS = 0.18;
 
 export function PetLand() {
   const { token, status } = useSession();
@@ -204,8 +231,12 @@ function PetLauncher({
           className="block h-8 w-8 shrink-0"
           style={{
             backgroundImage: "url(/pet/creatures.png)",
-            backgroundPosition: `-${(tileForSpecies("cat") % SHEET_COLS.town) * TILE * 2}px -${Math.floor(tileForSpecies("cat") / 10) * TILE * 2}px`,
-            backgroundSize: `${10 * TILE * 2}px ${18 * TILE * 2}px`,
+            // Số cột lấy từ `petland-sprite`, không từ `SHEET_COLS.town`: đó là
+            // số cột của tấm NỀN (12), còn tấm sinh vật có 10 — nên nút này vốn
+            // đang cắt ra một mảnh của con khác, đủ giống một con thú để không
+            // ai nhận ra là sai.
+            backgroundPosition: `-${(tileForSpecies("cat") % CREATURE_COLS) * TILE * 2}px -${Math.floor(tileForSpecies("cat") / CREATURE_COLS) * TILE * 2}px`,
+            backgroundSize: `${CREATURE_COLS * TILE * 2}px ${CREATURE_ROWS * TILE * 2}px`,
             imageRendering: "pixelated",
           }}
         />
@@ -238,12 +269,62 @@ function PetPanel({
   const [busy, setBusy] = useState(false);
   const [refused, setRefused] = useState<string | null>(null);
   /*
+   * Cột bên phải có HAI màn và mỗi lúc chỉ mở một: mở trứng, rồi xem tủ. Một cờ
+   * bật/tắt cho mỗi màn sẽ cho phép cả hai cùng mở, và lúc đó bảng rộng gấp ba
+   * bản đồ.
+   */
+  const [side, setSide] = useState<null | "eggs" | "collection">(null);
+  /*
+   * Giờ Petland cho phần CHỮ, tách khỏi giờ cho phần VẼ.
+   *
+   * Bầu trời đọc đồng hồ mỗi khung hình vì nó phải đổi mượt; con số thì không —
+   * cho nó vào state theo nhịp 60 khung/giây là dựng lại cả bảng sáu mươi lần
+   * mỗi giây để đổi một chữ số mỗi hai giây rưỡi. Một ngày Petland dài một giờ
+   * thật, nên một phút trong đó là 2,5 giây: hẹn giờ ở đúng nhịp ấy.
+   */
+  const [clock, setClock] = useState(() => worldTime(Date.now()));
+  /*
    * Giữ `Stage` ở ref để nút toàn-bản-đồ gọi được `setView`, còn hiệu ứng dựng
    * sân khấu thì KHÔNG phụ thuộc vào `full`. Cho `full` vào danh sách phụ thuộc
    * cũng chạy, nhưng nó tháo cả sân khấu ra dựng lại mỗi lần bấm — mất một WebGL
    * context mỗi lần, và con thú nhảy về chỗ cũ giữa lúc đang đi.
    */
   const stageRef = useRef<Stage | null>(null);
+  /*
+   * Hoạt ảnh hành động sống trong REF, không trong state.
+   *
+   * Vòng `requestAnimationFrame` đọc nó 60 lần mỗi giây; để trong state thì mỗi
+   * khung hình là một lần dựng lại cả bảng — và tệ hơn, vòng lặp có danh sách
+   * phụ thuộc riêng nên nó sẽ giữ mãi giá trị của lần dựng đầu tiên (chính cái
+   * bẫy closure đã ghi cho `mascot`).
+   */
+  const actionFx = useRef<{ kind: PetAction; start: number } | null>(null);
+  /** Cầu nối một chiều: nút "Đi dạo" đặt vào đây, vòng lặp lấy ra và đi. */
+  const strollRef = useRef(false);
+  /**
+   * Ô sinh vật đang vẽ. REF chứ không state, cùng lý do `actionFx` là ref: vòng
+   * vẽ không dựng lại khi state đổi, nên một closure giữ mãi con cũ và bộ sưu
+   * tập trông như bấm không ăn.
+   */
+  const speciesRef = useRef(0);
+  /**
+   * Vòng sáng dưới chân, theo hạng hiếm. REF vì vòng vẽ đọc nó mỗi khung hình.
+   *
+   * Tính lại khi ĐỔI CON và khi đổi sáng/tối, không tính mỗi khung hình:
+   * `getComputedStyle` là một lần đọc lại bố cục, và gọi nó 60 lần mỗi giây cho
+   * một màu gần như không bao giờ đổi là trả tiền cho đúng thứ không xảy ra.
+   */
+  const glowRef = useRef<{ color: number; strength: number }>({ color: 0x9aaab5, strength: 0 });
+  /**
+   * Chỗ đứng cần NHẢY TỚI ngay, không phải đi bộ tới.
+   *
+   * Đổi con là đưa một con khác ra sân, nên nó xuất hiện ở chỗ CỦA NÓ chứ không
+   * bước từ chỗ con cũ sang. Vị trí sống trong closure của vòng vẽ (`tile`,
+   * `from`, `saved`), nên đây là đường duy nhất chạm tới được — cùng hình dạng
+   * với `strollRef`.
+   */
+  const placeRef = useRef<{ x: number; y: number; facing: "left" | "right" } | null>(null);
+  const [bits, setBits] = useState<Bit[]>([]);
   const [size, setSize] = useState({ w: VIEW_W, h: VIEW_H });
 
   useEffect(() => {
@@ -320,7 +401,7 @@ function PetPanel({
          * `tileForSpecies` chỉ còn là phương án rơi về cho nút thu gọn, vốn vẽ
          * trước khi có lượt gọi nào.
          */
-        const species = pet.tile;
+        speciesRef.current = pet.tile;
 
         const made = await render.createStage(el, parsed, {
           zoom: ZOOM,
@@ -338,6 +419,33 @@ function PetPanel({
         const loop = (now: number) => {
           const dt = Math.min(0.1, (now - last) / 1000);
           last = now;
+
+          // Đổi con: đặt lại chỗ đứng TRƯỚC khi xử lý bước đi, nếu không con
+          // mới sẽ đi nốt quãng đường mà con cũ đang đi dở.
+          const jump = placeRef.current;
+          if (jump && map) {
+            placeRef.current = null;
+            queue = [];
+            progress = 0;
+            // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong
+            // trình sửa — cùng lý do lần nạp đầu cũng gọi `nearestWalkable`.
+            tile = nearestWalkable(map, { x: jump.x, y: jump.y });
+            from = tile;
+            saved = tile;
+            facing = jump.facing;
+          }
+
+          // "Đi dạo" đặt cờ; chỗ BIẾT bản đồ mới dựng được đường đi. Bấm lúc
+          // đang đi thì bỏ qua — một tuyến mới đè lên tuyến cũ làm con thú quay
+          // ngoắt giữa đường, đọc ra là giật chứ không phải đổi ý.
+          if (strollRef.current) {
+            strollRef.current = false;
+            if (map && queue.length === 0) {
+              const target = strollTarget(map, tile, STROLL_MIN_TILES, Math.random);
+              if (target) queue = findPath(map, tile, target);
+            }
+          }
+
           if (queue.length > 0) {
             progress += dt / STEP_SECONDS;
             while (progress >= 1 && queue.length > 0) {
@@ -352,13 +460,30 @@ function PetPanel({
               save(tile, facing);
             }
           }
+          const fx = actionFx.current;
+          let action: PetView["action"] = null;
+          if (fx) {
+            const t = (now - fx.start) / ACTION_MS[fx.kind];
+            // Hết thì DỌN, không để `t` chạy quá 1: tư thế tính từ `sin`, nên
+            // một `t` không có điểm dừng sẽ làm con thú nhai mãi mãi.
+            if (t >= 1) actionFx.current = null;
+            else action = { kind: fx.kind, t };
+          }
+
           made.draw({
             tile,
             from,
             progress: queue.length ? progress : 0,
             facing,
-            species,
+            species: speciesRef.current,
+            glow: glowRef.current,
+            // Giờ Petland tính lại MỖI KHUNG HÌNH, và nó rẻ hơn nhớ lại: một
+            // phép chia lấy dư trên `Date.now()`. Nhớ lại rồi làm mới theo hẹn
+            // giờ thì bầu trời nhảy bậc mỗi lần hẹn giờ chạy, đúng thứ bảng mốc
+            // màu được nội suy để tránh.
+            sky: worldTime(Date.now()).sky,
             clock: now / 1000,
+            action,
           });
           raf = requestAnimationFrame(loop);
         };
@@ -378,6 +503,43 @@ function PetPanel({
   }, [token]);
 
   /*
+   * Màu vòng sáng đọc lại khi ĐỔI CON hoặc khi đổi sáng/tối.
+   *
+   * Một hiệu ứng chứ không phải gán tay ở từng chỗ đổi con: token màu có hai giá
+   * trị (sáng và tối), nên người bấm nút chuyển chủ đề giữa chừng sẽ giữ màu của
+   * chế độ cũ cho tới lần tải lại — và đó đúng là kiểu sai không ai báo, vì vòng
+   * sáng vẫn có màu, chỉ là màu của bảng màu bên kia.
+   *
+   * Nghe cả hai đường vì chủ đề có BA trạng thái: `data-theme` khi người dùng
+   * chọn tay, và `prefers-color-scheme` khi họ để theo hệ thống. Nghe một đường
+   * là đúng cho một nửa số người dùng.
+   */
+  useEffect(() => {
+    const tick = window.setInterval(() => setClock(worldTime(Date.now())), 2500);
+    return () => window.clearInterval(tick);
+  }, []);
+
+  const tier = pet?.tier;
+  useEffect(() => {
+    if (!tier) return;
+    const refresh = () => {
+      glowRef.current = tierGlow(tier);
+    };
+    refresh();
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", refresh);
+    const watcher = new MutationObserver(refresh);
+    watcher.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => {
+      media.removeEventListener("change", refresh);
+      watcher.disconnect();
+    };
+  }, [tier]);
+
+  /*
    * Hành động đi thẳng lên máy chủ và lấy nhu cầu MỚI về, không tự tính ở đây.
    *
    * Tự cộng trước rồi gửi sau ("ghi lạc quan") là đúng cho việc đổi con mascot —
@@ -385,9 +547,57 @@ function PetPanel({
    * đói bao lâu, và một con số client tự nghĩ ra sẽ bị đè ngay ở lần đọc kế tiếp,
    * nên người dùng thấy thanh chỉ số nhảy lên rồi tụt xuống.
    */
+  /**
+   * Những mẩu bay lên khỏi đầu con thú.
+   *
+   * Neo theo chỗ con thú đang đứng TRONG canvas (`stage.petScreen()`), không
+   * neo vào giữa bảng: con thú đi khắp bản đồ, nên một chỗ cố định sẽ thả nắm
+   * vụn xuống một bụi cỏ nào đó cách nó nửa màn hình.
+   *
+   * Tự dọn sau khi hoạt ảnh CSS chạy xong. Không dọn thì mỗi lần bấm là thêm
+   * vài node nằm lại vĩnh viễn, trong suốt nhưng vẫn được trình duyệt vẽ.
+   */
+  const spawnBits = (action: PetAction) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const at = stage.petScreen();
+    const icon = BIT_ICON[action];
+    const born = Date.now();
+    const made: Bit[] = Array.from({ length: 4 }, (_, i) => ({
+      id: born + i,
+      x: at.x + (i - 1.5) * 7,
+      y: at.y - 6,
+      icon,
+      // Mỗi mẩu lệch một hướng: cả nắm bay thẳng đứng song song nhau đọc ra là
+      // một hiệu ứng, không phải nhiều mẩu.
+      drift: (i - 1.5) * 9,
+      scale: 0.8 + (i % 2) * 0.2,
+    }));
+    setBits((current) => [...current, ...made]);
+    window.setTimeout(
+      () => setBits((current) => current.filter((b) => b.id < born || b.id >= born + 4)),
+      BIT_LIFE_MS,
+    );
+  };
+
   const act = (action: PetAction) => {
     setBusy(true);
     setRefused(null);
+    /*
+     * Hoạt ảnh chạy NGAY, không chờ máy chủ trả lời.
+     *
+     * Đây là ngoại lệ đúng chỗ so với luật "không tự tính, chờ máy chủ" ngay bên
+     * dưới: con số thì phải chờ, vì chỉ máy chủ biết con thú đã đói bao lâu; còn
+     * cái nhún và nắm vụn thì không phải một con số, và bắt chúng đợi một vòng
+     * mạng biến mọi cú bấm thành trễ nhịp.
+     *
+     * Bị từ chối (409) thì tư thế đã trót chạy vài trăm mili giây — chấp nhận
+     * được: nút đã tự mờ ở phần lớn trường hợp, nên đây là ngã rẽ hiếm.
+     */
+    actionFx.current = { kind: action, start: performance.now() };
+    if (action === "walk") strollRef.current = true;
+    else spawnBits(action);
+
     void apiFetch<PetPublic>(API_ROUTES.petActions, {
       method: "POST",
       token,
@@ -406,7 +616,38 @@ function PetPanel({
   };
 
   return (
-    <div className="shadow-overlay w-fit rounded border border-rule-strong bg-panel">
+    /*
+     * Chặn trên chiều rộng chốt theo BẢN ĐỒ (cộng cột trứng khi nó mở).
+     *
+     * `w-fit` lấy chiều rộng theo khối con rộng nhất, mà canvas thì có kích
+     * thước cố định — nên bất kỳ khối nào rộng hơn khung nhìn cũng nới bảng ra
+     * và để lại một dải trống bên phải bản đồ. Màn trứng đã làm đúng thế.
+     *
+     * Để khối con tự co lại là chưa đủ: đó là một quy ước mà khối MỚI nào cũng
+     * phải nhớ, và quên thì hỏng im lặng. Chặn ở đây thì cái bẫy đóng lại một
+     * lần cho tất cả.
+     *
+     * Chặn bằng LỚP đọc biến CSS chứ không bằng `style` nội tuyến, vì nó phải
+     * khác nhau theo bề ngang màn hình: dưới `sm` cột trứng nằm dưới bản đồ nên
+     * không được cộng vào. `style` nội tuyến thắng mọi lớp nên không làm được
+     * việc đó.
+     *
+     * `+2px` là hai đường viền: `box-sizing` là `border-box`, nên chặn bằng
+     * đúng bề rộng canvas sẽ ăn mất 2px của chính canvas và nó lòi ra ngoài.
+     */
+    <div
+      className="shadow-overlay w-fit max-w-[calc(var(--pet-map-w)+2px)] rounded border border-rule-strong bg-panel sm:max-w-[calc(var(--pet-map-w)+var(--pet-side-w)+2px)]"
+      style={
+        {
+          "--pet-map-w": `${size.w * TILE * ZOOM}px`,
+          "--pet-map-h": `${size.h * TILE * ZOOM}px`,
+          "--pet-egg-w": `${EGG_PANEL_W}px`,
+          // Chỉ cộng vào chặn trên khi cột thật sự đang mở; đóng lại thì bảng
+          // phải co về đúng bề ngang bản đồ chứ không giữ chỗ trống.
+          "--pet-side-w": side === null ? "0px" : `${EGG_PANEL_W}px`,
+        } as React.CSSProperties
+      }
+    >
       {/* Cả thanh tiêu đề là tay cầm kéo — trừ hai cái nút. Kéo bằng khung ảnh
           thì không được: bấm vào khung là ra lệnh cho con thú đi, và hai ý nghĩa
           trên cùng một cú bấm thì cái nào cũng sai một nửa. */}
@@ -445,7 +686,49 @@ function PetPanel({
             </>
           )}
         </span>
+        {/* Đồng hồ của thế giới, kèm mặt trời hay mặt trăng.
+            Không phải giờ của người dùng, nên nó phải nói ra buổi bằng CHỮ trong
+            `title`: một con số "02:15" cạnh con thú mà không giải thích gì thì
+            người đọc sẽ so nó với đồng hồ trên máy mình rồi kết luận là sai. */}
+        <span
+          className="flex shrink-0 items-center gap-1 font-data text-label tabular-nums text-ink-faint"
+          title={`Giờ ở Petland — ${PHASE_LABEL[clock.phase]} (một ngày ở đây dài một giờ thật)`}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <PixelIcon name={clock.phase === "night" ? "moon" : "sun"} scale={1} />
+          {worldClockLabel(clock)}
+        </span>
         <span className="flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
+          {/* Trứng là thứ ruby MUA, nên nút của nó đứng cạnh khung nhìn chứ
+              không nằm trong hàng hành động: cho ăn, chọc và đi dạo vĩnh viễn
+              miễn phí, và trộn một nút mất tiền vào giữa chúng là bước đầu tiên
+              của việc con thú phụ thuộc vào ruby (ADR-011 §3). */}
+          <button
+            type="button"
+            aria-label={side === "eggs" ? "Đóng màn trứng" : "Mở trứng"}
+            title="Trứng"
+            aria-expanded={side === "eggs"}
+            onClick={() => setSide(side === "eggs" ? null : "eggs")}
+            className={cx(
+              "grid h-6 w-6 place-items-center rounded transition-colors hover:bg-recess hover:text-ink",
+              side === "eggs" ? "text-alert" : "text-ink-faint",
+            )}
+          >
+            <Gem size={13} strokeWidth={2} aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label={side === "collection" ? "Đóng bộ sưu tập" : "Bộ sưu tập"}
+            title="Bộ sưu tập"
+            aria-expanded={side === "collection"}
+            onClick={() => setSide(side === "collection" ? null : "collection")}
+            className={cx(
+              "grid h-6 w-6 place-items-center rounded transition-colors hover:bg-recess hover:text-ink",
+              side === "collection" ? "text-action" : "text-ink-faint",
+            )}
+          >
+            <LayoutGrid size={13} strokeWidth={2} aria-hidden />
+          </button>
           <button
             type="button"
             aria-label={full ? "Thu nhỏ khung nhìn" : "Xem toàn bản đồ"}
@@ -474,16 +757,66 @@ function PetPanel({
           </button>
         </span>
       </div>
-      <div
-        ref={host}
-        className={cx(
-          "bg-recess",
-          // Chừa đúng chỗ cho canvas trước khi Pixi dựng xong, nếu không cả góc
-          // màn hình nhảy một cái khi ảnh về.
-          "block",
+      {/* Bản đồ và cột trứng nằm CẠNH nhau. Xếp dọc thì cột trứng đẩy chiều cao
+          cả bảng, mà bảng nổi cố định nên phần lòi ra khỏi màn hình không cuộn
+          theo trang được — hàng nút chăm thú cưng biến mất khỏi tầm với. Dưới
+          `sm` thì xếp dọc trở lại, vì 448 + 288 rộng hơn màn hình điện thoại. */}
+      <div className="flex max-sm:flex-col">
+        {/* Khung bọc để những mẩu bay lên neo được theo pixel trong canvas.
+            `overflow-hidden` để mẩu bay cao quá không tràn ra ngoài viền bảng —
+            nó phải bay lên trong khung cảnh, không bay lên trên thanh tiêu đề.
+
+            Mẩu là phần tử DOM ANH EM với canvas, không phải con của nó: Pixi tự
+            gắn canvas vào `host` ngoài tầm biết của React, nên trộn con của
+            React vào cùng một node là chỗ React và Pixi tranh nhau danh sách
+            con. */}
+        <div
+          className="relative shrink-0 overflow-hidden"
+          style={{ width: size.w * TILE * ZOOM, height: size.h * TILE * ZOOM }}
+        >
+          <div
+            ref={host}
+            className={cx(
+              "bg-recess",
+              // Chừa đúng chỗ cho canvas trước khi Pixi dựng xong, nếu không cả
+              // góc màn hình nhảy một cái khi ảnh về.
+              "block h-full w-full",
+            )}
+          />
+          <PixelBits bits={bits} />
+        </div>
+        {side === "eggs" && <EggScreen token={token} onClose={() => setSide(null)} />}
+        {side === "collection" && (
+          <CollectionScreen
+            token={token}
+            active={pet?.species ?? null}
+            /*
+             * Đổi con thì con trên bản đồ phải đổi hình NGAY, không đợi lần đọc
+             * sau. `speciesRef` là đường duy nhất chạm tới được vòng vẽ: vòng đó
+             * có danh sách phụ thuộc riêng và không dựng lại khi state đổi, nên
+             * một closure giữ mãi ô của con cũ — đúng cái bẫy đã ghi cho
+             * `mascot` ở bản trước.
+             */
+            onSwitched={(updated) => {
+              setPet(updated);
+              // Nhu cầu phải đổi theo, và đây chính là chỗ đã sót: thanh chỉ số
+              // đọc từ `needs`, nên không đặt lại thì HUD in nhu cầu của con
+              // VỪA CẤT trong khi trên bản đồ là con mới — hai con số cùng nói
+              // về một con thú mà không khớp nhau, và không có gì báo.
+              setNeeds(updated.needs);
+              speciesRef.current = updated.tile;
+              placeRef.current = {
+                x: updated.tile_x,
+                y: updated.tile_y,
+                facing: updated.facing === "left" ? "left" : "right",
+              };
+              // Bỏ dở tư thế đang diễn: con vừa cất đi mới là con đang nhai.
+              actionFx.current = null;
+            }}
+            onClose={() => setSide(null)}
+          />
         )}
-        style={{ width: size.w * TILE * ZOOM, height: size.h * TILE * ZOOM }}
-      />
+      </div>
       {needs && (
         <div className="border-t border-rule">
           <PetHud needs={needs} busy={busy} onAction={act} />

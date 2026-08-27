@@ -53,7 +53,7 @@ from app.schemas.practice import (
     QuestionPublic,
     section_of,
 )
-from app.services import progression
+from app.services import progression, ruby
 from app.services.profile import ensure_profile
 from app.services.scoring import score_attempt
 
@@ -644,9 +644,57 @@ def submit_attempt(
         except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
             pass
 
+        _pay_ruby_for_a_finished_test(db, current_user.id, attempt)
+
         db.commit()
         db.refresh(attempt)
     return _result(attempt)
+
+
+# Ngưỡng trả ruby cho một lượt làm đề: đã trả lời bao nhiêu phần số câu.
+#
+# Đo bằng ĐỘ ĐẦY ĐỦ chứ không bằng điểm số (ADR-011 §2). Trả theo điểm là phạt
+# người học yếu vì họ yếu — sai hoàn toàn với một sản phẩm dạy học. Nhưng trả
+# cho mọi lượt nộp bất kể gì thì bấm bừa qua 200 câu trong hai phút cũng lấy đủ
+# 25 ruby. Ngưỡng này chặn đường thứ hai mà không đụng tới người thứ nhất.
+#
+# Thời gian làm bài cũng đo được và đã bị loại: nó thưởng cho việc NGỒI LÂU, và
+# một người làm nhanh vì giỏi sẽ bị phạt.
+RUBY_ANSWERED_RATIO = 0.8
+
+
+def _pay_ruby_for_a_finished_test(db: Session, user_id: uuid.UUID, attempt: Attempt) -> None:
+    """Ruby cho việc LÀM XONG một đề. XP đã trả cho việc nộp rồi (ADR-011 §1).
+
+    Ba quyết định nằm trong mấy dòng dưới:
+
+    **`source_id` là ĐỀ, không phải lượt làm.** "Mỗi đề một lần, vĩnh viễn" —
+    nên làm lại đề cũ lần thứ năm không sinh thêm ruby, và việc chống cày ấy do
+    khoá duy nhất làm chứ không do một đoạn `if`. Cái giá là làm lại một đề sau
+    sáu tháng cũng không được trả; đó đúng là ý định, vì phần thưởng đánh dấu
+    lần ĐẦU đi hết một đề.
+
+    **Chỉ lượt `scope='full'` được trả.** Luyện riêng part 5 không phải là làm
+    xong một đề, và nếu nó được trả thì đường rẻ nhất tới ruby là bảy lượt luyện
+    từng part — đúng kiểu cày mà §1 muốn tránh.
+
+    **Mức thưởng theo `test.kind`**, tức là đề đầy đủ và đề rút gọn là hai nguồn
+    khác nhau với hai mức khác nhau; một đề 30 câu không đáng bằng một đề 200
+    câu, và để chung một mức thì nguồn rẻ hơn nuốt hết ý nghĩa của nguồn kia.
+    """
+    if attempt.scope != "full":
+        return
+    try:
+        items = attempt.items
+        if not items:
+            return
+        answered = sum(1 for item in items if item.selected_option_id is not None)
+        if answered < RUBY_ANSWERED_RATIO * len(items):
+            return
+        source_type = "attempt_full" if attempt.test.kind == "full" else "attempt_mini"
+        ruby.earn(db, user_id=user_id, source_type=source_type, source_id=attempt.test_id)
+    except Exception:  # pragma: no cover - ruby không được làm hỏng bài nộp
+        pass
 
 
 @router.get("/{attempt_id}/result", response_model=AttemptResult)

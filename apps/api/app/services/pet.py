@@ -67,6 +67,9 @@ thanh chỉ số, còn một bậc thì giải thích được bằng một câu
 HUNGRY_BELOW = Decimal("0.25")
 HUNGRY_MOOD_PENALTY = ONE / _PER_DAY
 
+"""Chọc lúc đói thì vui lên ít hơn — xem `apply`."""
+HUNGRY_POKE_FACTOR = Decimal("0.35")
+
 
 def decay(needs: Needs, seconds: float) -> Needs:
     """Nhu cầu sau `seconds` giây không ai đụng tới.
@@ -104,9 +107,23 @@ EFFECTS: dict[PetAction, Needs] = {
 
 Cho ăn một con đã no căng thì không nên vừa "thành công" vừa không đổi gì: nút
 bấm có phản hồi mà chỉ số đứng yên đọc ra là hỏng. Đi dạo lúc kiệt sức cũng vậy.
+
+`WALK_HUNGRY_BELOW` là thứ biến ba cái nút thành một CƠ CHẾ.
+
+Trước đó ba hành động độc lập hoàn toàn với nhau: mỗi cái cộng vào một chỉ số
+riêng, không cái nào cần cái nào, nên thứ tự bấm không bao giờ quan trọng — và
+một hệ mà thứ tự không quan trọng thì không có gì để cân nhắc, chỉ có ba cái nút
+để bấm cho hết. Ràng buộc này dựng một thứ tự có thật và giải thích được bằng
+một câu: **cho ăn trước, rồi mới dắt đi**. Nó cũng đúng với đời sống, nên không
+ai phải học luật.
+
+Ngưỡng đói (0,2) đặt CAO HƠN ngưỡng kiệt sức (0,15) có chủ ý: đói tới trước mệt
+trong đa số trường hợp, nên lời nhắc mà người dùng gặp thường xuyên hơn là lời
+nhắc dẫn tới hành động rẻ nhất và vui nhất — cho ăn.
 """
 FEED_REFUSED_ABOVE = Decimal("0.95")
 WALK_REFUSED_BELOW = Decimal("0.15")
+WALK_HUNGRY_BELOW = Decimal("0.2")
 
 
 def refusal(action: PetAction, needs: Needs) -> str | None:
@@ -115,6 +132,8 @@ def refusal(action: PetAction, needs: Needs) -> str | None:
         return "Nó đang no, chưa ăn thêm được."
     if action == "walk" and needs.energy < WALK_REFUSED_BELOW:
         return "Nó đang mệt, để nó nghỉ đã."
+    if action == "walk" and needs.fullness < WALK_HUNGRY_BELOW:
+        return "Nó đang đói, cho ăn trước đã."
     return None
 
 
@@ -126,6 +145,19 @@ def apply(action: PetAction, needs: Needs) -> Needs:
     con số vẫn hợp lệ nên không có gì báo.
     """
     effect = EFFECTS[action]
+    if action == "poke" and needs.fullness < HUNGRY_BELOW:
+        # Chọc một con đang đói thì nó không vui lên mấy — cùng một bậc mà
+        # `decay` đã dùng để trừ vui khi đói, nên hai chỗ nói cùng một điều về
+        # cùng một ngưỡng thay vì mỗi chỗ một con số.
+        #
+        # Giảm phần thưởng chứ KHÔNG từ chối và KHÔNG trừ vui: góc thú cưng
+        # không phạt người dùng (ADR-010 §11). Ở đây nó chỉ nói rằng có một việc
+        # đáng làm hơn đang chờ.
+        effect = Needs(
+            fullness=effect.fullness,
+            energy=effect.energy,
+            mood=effect.mood * HUNGRY_POKE_FACTOR,
+        )
     return Needs(
         fullness=_clamp(needs.fullness + effect.fullness),
         energy=_clamp(needs.energy + effect.energy),

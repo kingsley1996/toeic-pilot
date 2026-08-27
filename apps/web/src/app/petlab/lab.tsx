@@ -9,6 +9,7 @@ import {
   type MapData,
   type Tile,
 } from "@/components/petland-map";
+import { STEP_SECONDS } from "@/components/petland-pet";
 import { createStage, type Stage } from "@/components/petland-render";
 
 export default function Lab() {
@@ -58,7 +59,7 @@ export default function Lab() {
           const dt = Math.min(0.1, (now - last) / 1000);
           last = now;
           if (queue.length > 0) {
-            progress += dt / 0.18;
+            progress += dt / STEP_SECONDS;
             while (progress >= 1 && queue.length > 0) {
               progress -= 1;
               from = tile;
@@ -75,6 +76,15 @@ export default function Lab() {
             facing,
             species: 169,
             clock: now / 1000,
+            // Bàn thử không có nút hành động nào, nên không có tư thế nào để
+            // diễn. `null` là "đứng bình thường", không phải "chưa biết".
+            action: null,
+            // Không có hạng nào ở đây: bàn thử vẽ một con cố định để soi bước
+            // chân, không để soi độ hiếm.
+            glow: { color: 0x9aaab5, strength: 0 },
+            // Bàn thử luôn giữa trưa: nó tồn tại để soi bước chân, và một bầu
+            // trời đang tối dần làm mọi lần so sánh khác nhau một chút.
+            sky: { color: 0xffffff, alpha: 0 },
           });
           raf = requestAnimationFrame(loop);
         };

@@ -130,6 +130,16 @@ export type AiFeatureRow = components["schemas"]["AiFeatureRow"];
 export type CoachExplanation = components["schemas"]["CoachExplanationPublic"];
 export type KnownModel = components["schemas"]["KnownModel"];
 export type LabelValue = components["schemas"]["LabelValue"];
+export type RubyWallet = components["schemas"]["RubyWallet"];
+export type RubyEntry = components["schemas"]["RubyEntryPublic"];
+export type RubyGift = components["schemas"]["RubyGiftPublic"];
+export type RubyClaimResult = components["schemas"]["RubyClaimResult"];
+export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
+export type EggPublic = components["schemas"]["EggPublic"];
+export type EggResult = components["schemas"]["EggResult"];
+export type EggChance = components["schemas"]["EggChance"];
+export type EggSettingPublic = components["schemas"]["EggSettingPublic"];
+export type PetOwnedPublic = components["schemas"]["PetOwnedPublic"];
 
 // Escape hatch for callers that need a shape not aliased above.
 export type { components, paths } from "./api-types";
@@ -161,6 +171,24 @@ export const API_ROUTES = {
   pet: "/api/v1/pet",
   petPosition: "/api/v1/pet/position",
   petActions: "/api/v1/pet/actions",
+  // Gacha. Quay ở MÁY CHỦ: `open` không nhận tham số nào, vì một endpoint nhận
+  // `tier` từ client là một endpoint nhận giá từ client (ADR-010 §6.1).
+  petEggs: "/api/v1/pet/eggs",
+  petEggOpen: "/api/v1/pet/eggs/open",
+  petCollection: "/api/v1/pet/collection",
+  // Đổi con đang nuôi. `PATCH /pet` chứ không phải một đường riêng: nó sửa một
+  // trường của chính con thú, và nó trả về nguyên trạng thái mới như mọi đường
+  // ghi khác ở góc này.
+  petSwitch: "/api/v1/pet",
+  adminPetEggs: "/api/v1/admin/pet/eggs",
+
+  // Ví ruby. Không nằm dưới `/pet`: ruby kiếm ở chỗ HỌC và tiêu ở chỗ CHƠI, nên
+  // đặt nó dưới góc thú cưng sẽ dựng đúng cái liên tưởng ADR-011 §3 cấm — rằng
+  // con thú cần ruby để sống.
+  ruby: "/api/v1/ruby",
+  rubyGift: "/api/v1/ruby/gift",
+  adminRubyRules: "/api/v1/admin/ruby/rules",
+  adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",
   adminPetSpeciesItem: (code: string) => `/api/v1/admin/pet/species/${code}`,
   badgesSeen: "/api/v1/progression/badges/seen",

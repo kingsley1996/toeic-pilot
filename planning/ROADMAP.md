@@ -1055,6 +1055,140 @@ Chuyển động: đúng MỘT — ba dải vẽ ra từ trái sang, so le nhau,
 
 ---
 
+## 4z. Ruby — đơn vị thứ hai, thưởng cho việc LÀM XONG · 🟢 lát 1–6 xong (2026-08-27)
+
+Quyết định và lý do ở [`ADR-011-RUBY.md`](ADR-011-RUBY.md). Dựng ra để mở khoá lát 8 (gacha) của ADR-010: trứng phải mua bằng *một thứ gì đó*, và §6.2 của tài liệu kia đã loại thứ hiển nhiên nhất.
+
+- [x] Lát 1 — migration `038_ruby`, `ruby_event` + `ruby_rule`, `app/services/ruby.py::earn`
+- [x] Lát 2 — nối vào ba đường đã có: xong một bài dictation (5), thuộc trọn một chủ đề (15), làm hết một đề (25 / 8)
+- [x] Lát 3 — `daily_all` (10), `daily_gift` (3), `streak_week` (20) ở `app/services/ruby_daily.py`, `GET /ruby`, `POST /ruby/gift`
+- [x] Lát 4 — `spend()` có khoá tư vấn Postgres + `tests/test_ruby_race.py` có `Barrier`
+- [x] Lát 5 — `GET/PATCH /admin/ruby/rules` sau `require_role("admin")`, trang `/admin/ruby`
+- [x] Lát 6 — số dư + nút quà ở `/dashboard`, toast riêng cho ruby
+- [ ] Đường TIÊU thật (gacha) — ADR-010 lát 8. `spend()` và mã nguồn `egg` đã sẵn, chưa có gì gọi tới
+
+**Ruby thưởng việc LÀM XONG, XP thưởng KHỐI LƯỢNG — và đó là lý do có hai đơn vị.** Không nguồn nào trả theo lượt nhỏ; có một cái là ruby thành XP thứ hai và cả tài liệu mất nghĩa. Hệ quả cụ thể: `daily_all` trả cho việc xong **cả ba** việc chứ không từng việc, và toast của ruby là một tin RIÊNG chứ không cộng chung dòng với XP.
+
+**Ngưỡng của lượt làm đề đo bằng ĐỘ ĐẦY ĐỦ, không bằng điểm.** Trả theo điểm là phạt người học yếu vì họ yếu; trả cho mọi lượt nộp thì bấm bừa qua 200 câu trong hai phút cũng lấy đủ 25. `RUBY_ANSWERED_RATIO = 0.8` chặn đường thứ hai mà không đụng tới người thứ nhất. `source_id` là **đề**, không phải lượt làm, nên làm lại đề cũ không in thêm ruby.
+
+**Chỗ khó thật nằm ở việc TIÊU, và bài kiểm của nó đã suýt vô dụng.** Số dư là một phép `SUM`, nên hai lần mở trứng đồng thời đều đọc thấy 30, đều thấy đủ cho một quả 25, và đều ghi một hàng −25 — không ràng buộc nào bị vi phạm, không lỗi nào được ném. `pg_advisory_xact_lock` theo `user_id` khép khe đó lại.
+
+Bản đầu của bài kiểm đặt `Barrier` ngay **trước** lúc lấy khoá, và **gỡ khoá đi nó vẫn xanh**: luồng đầu kịp đọc-ghi-commit trọn vẹn trước khi luồng sau xin được kết nối. Hàng rào phải nằm **giữa** lần đọc số dư và lần ghi — chỗ `tests/test_concurrency.py` đã đặt nó cho cuộc đua đăng ký. Nhưng ở giữa thì lại khoá chết khi khoá CÓ mặt (luồng cầm khoá chờ những luồng đang chờ chính nó), nên nó chờ có hạn giờ và coi việc vỡ hàng rào là câu trả lời hợp lệ. Đo lại cả hai chiều: không khoá thì tám luồng cùng mua được, số dư còn −170; có khoá thì đúng một quả.
+
+**Gieo lười cũng là một cuộc đua, và bài kiểm đó tìm ra nó.** Tám luồng cùng hỏi mức thưởng khi `ruby_rule` còn rỗng thì cùng gieo, và người thua vỡ khoá chính — một lượt học hỏng vì một cuộc đua trên bảng cấu hình. `rules()` gieo trong SAVEPOINT và nuốt va chạm, người thua chỉ đọc lại. Cùng hình dạng này đang có ở `pet_species` và `progression_config` và **chưa được xử lý ở đó**.
+
+**Quà hàng ngày mở SAU khi hôm nay đã học gì đó**, không mở sẵn lúc vào app: thưởng cho việc mở app mà không học là dạy đúng cái hành vi không muốn. Nhìn từ phía người dùng nó vẫn là "vào nhận quà mỗi ngày", chỉ khác ở chỗ nút sáng lên sau bài đầu tiên — và nó cho cái nút một câu để nói.
+
+**`streak_week` khoá theo SỐ MỐC, không theo ngày.** Mốc 7 trả đúng một lần trong đời tài khoản; đứt chuỗi rồi gây lại tới 7 không trả lần nữa. Trả lại theo ngày sẽ biến nó thành nguồn thu đều đặn cho người cứ bảy ngày nghỉ một lần. Nó cũng đọc `current_streak` — khác huy hiệu chuỗi ngày, vốn phải đọc `longest_streak`.
+
+Một khoản nợ nhỏ đã trả nhân tiện: **`/admin/pet` (lát 7 của ADR-010) chưa từng có lối vào nào trong menu quản trị**. Giờ nó là một mục ở nhóm System, với `/admin/ruby` làm mục con.
+
+**Tài khoản `admin` luôn được bù lên 500 ruby**, để thử được đường tiêu mà không phải học hết một chủ đề từ vựng trước mỗi lần. Ba tính chất của cách làm này là cố ý:
+
+- **Là một HÀNG trong sổ cái (`admin_grant`), không phải một ngoại lệ lúc đọc.** Cho `balance()` trả về con số khác cho admin là để màn hình nói một đằng và sổ cái nói một nẻo — rồi `spend` trừ trên con số thật và số dư tụt xuống âm. Một hàng thật giữ nguyên "số dư là `SUM` của đúng một bảng", và nó trả lời được câu "chỗ ruby này ở đâu ra".
+- **Bù cả ở đường TIÊU, không chỉ lúc đọc.** Mở liên tiếp sẽ cạn giữa chừng, và một lời từ chối "cần 25 ruby" giữa phiên thử là đúng chỗ người ta kết luận nhầm rằng tính năng hỏng.
+- **Chỉ `admin`, không `editor`** — cùng ranh giới `/admin/ruby/rules` đã vẽ.
+
+Cái giá phải nói ra, và giao diện nói ra: số dư ruby của một admin thật không còn là con số họ kiếm được. Cùng đánh đổi với khung avatar bậc cao nhất — perk chạm đúng một thứ. Khác trường hợp XP ở chỗ ruby không nuôi level hay huy hiệu, nên không có gì bị thổi phồng lây.
+
+**Vòng sáng dưới chân theo hạng hiếm, và nó phải BA lớp.** Bản đầu là một hình bầu dục 22% độ đậm — đọc ra là bóng đổ, vì bóng đổ đúng là như thế. Giờ có quầng rộng (vùng sáng), lõi đặc (điểm chói) và một vòng lan ra rồi tắt; không lớp nào tự nó làm được việc "đang phát ra cái gì đó". Vòng lan **chỉ có ở hạng hiếm và cực hiếm**: nó tốn chú ý nhất, nên cho hạng nào cũng có thì không phân biệt được gì — thứ hiếm phải hiếm cả trong cách nó chiếm mắt người nhìn. Vòng sáng bám ĐẤT chứ không bám con thú (không nhận cái nhún, không nhận tư thế), vì đó là chỗ mắt đọc ra "bóng phát sáng trên mặt đất" thay vì "vòng dính vào bụng".
+
+Màu lấy từ đúng bốn token mà `TIER_TONE` dùng cho chữ trong tủ (`--ink-muted` / `--ok` / `--action` / `--alert`), đọc lúc chạy nên **theo cả chế độ sáng lẫn tối**, và đọc lại khi đổi con hoặc đổi chủ đề — nghe cả `data-theme` lẫn `prefers-color-scheme`, vì chủ đề có ba trạng thái và nghe một đường là đúng cho một nửa số người dùng.
+
+**`petland-bestiary.ts` — 180 ô sinh vật đã được xếp vai**, chuẩn bị cho những tính năng còn ở phía trước (gặp NPC ngẫu nhiên, đánh kẻ xâm nhập bằng cách trả lời câu hỏi tiếng Anh). Phân bố lúc viết: **99 kẻ xâm nhập · 60 hoang dã · 12 thú nuôi · 9 NPC** (đổi thành 96 · 37 · 40 · 7 sau khi mở rộng bộ thú nuôi bên dưới).
+
+Ba điều về bảng này:
+
+- **Phân loại bằng MẮT, một lần.** Tấm ghép không nói ô nào là gì — nó là 180 hình 16×16 xếp cạnh nhau. Kết quả có được bằng cách giải mã PNG bằng zlib thuần rồi phóng to từng khối sáu hàng mà xem, nên nó là dữ liệu người đọc chứ không phải thứ suy ra được. Đã đối chiếu ngược: cả 180 ô đều có hình (không ô nào trống bị xếp vai), và tổng bốn vai đúng 180.
+- **Ngoại lệ thắng khoảng, và ngoại lệ được viết thành từng dòng có tên.** `creatures.png` xếp theo chủ đề — sáu hàng đầu gần như toàn sinh vật huyền thoại, sáu hàng cuối gần như toàn thú thật — nhưng có con nằm lẫn: tiên, thiên thần, tiên cá, thần đèn nằm giữa đám quái; mắt bay và cây ăn thịt nằm giữa đám thú. Một ô xếp nhầm vai nghĩa là con thú đi tới bắt chuyện với một con quái, hoặc người chơi bị hỏi câu tiếng Anh vì một con thỏ.
+- **Vai mặc định là `wildlife`, không phải `intruder`.** Ô lạ hay ô đánh số nhầm thì không kéo theo hành vi nào; mặc định thù địch sẽ biến một con số sai thành một trận đánh không ai hẹn.
+
+Bảng này **tạm ở frontend**, đúng nghĩa mà `SPECIES_TILE` từng tạm: ngày kẻ xâm nhập có máu, có phần thưởng và có bộ câu hỏi gắn kèm thì nó phải xuống database như `pet_species` đã xuống — vì lúc đó nó là thứ người vận hành cân chỉnh, không phải thứ lập trình viên sửa.
+
+**Bốn mươi loài và hạng thứ năm: `legendary`** (migration `041`). Chọn tay từ `creatures.png` bằng cách giải mã tấm ghép rồi phóng to từng ô mà xem — **không đoán theo tên hàng**, vì ô 170 trông như cá heo ở cỡ 16px và thật ra là con tê giác, ô 103 là con vẹt chứ không phải gà trống, và ô 123 là bình sữa chứ không phải vịt. Đặt nhầm thì hàng dữ liệu vẫn hợp lệ, chỉ người mở trứng ra mới biết.
+
+| Hạng | Loài | Tỉ lệ cả hạng | Màu vòng sáng |
+|---|---|---|---|
+| thường | 9 | 49,3% | `--ink-muted` |
+| ít gặp | 10 | 34,2% | `--ok` |
+| hiếm | 8 | 11,0% | `--action` |
+| cực hiếm | 7 | 3,8% | `--alert` |
+| **huyền thoại** | 6 | **1,6%** | `--warn` (vàng) |
+
+Sáu con huyền thoại — kỳ lân, thiên mã, rồng lửa, rồng băng, tiên, thần đèn — lấy từ khoảng "sinh vật huyền thoại" của tấm ghép, tức là chúng **thôi làm kẻ xâm nhập kể từ ngày thành thú nuôi**: `roleOf` xét bảng thú nuôi trước mọi thứ khác, vì một con rồng vừa nở ra từ trứng thì không được phép quay lại tấn công chủ nó. Bảng vai giờ là **96 kẻ xâm nhập · 40 thú nuôi · 37 hoang dã · 7 NPC**.
+
+0,27% cho mỗi con huyền thoại là cố ý, và **bộ đếm an ủi mới là thứ giữ cho nó không thành vô vọng**: sau mười quả không ra hạng hiếm thì quả sau chắc chắn ra hạng hiếm trở lên, và trong nhóm ấy huyền thoại chiếm 10% — nên `RARE_TIERS` phải kể cả `legendary`, nếu không hạng cao nhất lại là hạng duy nhất bộ đếm không bao giờ ép ra.
+
+**Migration `041` chèn thẳng danh sách loài, và đó là chỗ DUY NHẤT trong dự án một bộ mặc định xuất hiện hai lần.** Lý do: bộ mặc định được gieo LƯỜI, mà gieo lười chỉ chạy khi bảng RỖNG — đúng tính chất khiến "xoá một loài" không bị hoàn tác ở lần đọc sau. Hệ quả là mọi cài đặt đã chạy đang giữ 12 hàng cũ và **sẽ không bao giờ** thấy 28 loài mới, dù mã nguồn đã có. Bản trong migration vì thế không phải bản sao của bảng: nó là **ảnh chụp tại đúng lần sửa này**, đông cứng vĩnh viễn, và không bao giờ cập nhật theo bộ mặc định nữa. `ON CONFLICT DO NOTHING` giữ nguyên mọi hàng admin đã chỉnh. Chiều xuống chỉ xoá hạng huyền thoại (CHECK cũ không nhận chúng) và **không** xoá 28 loài kia — người chơi có thể đã nở ra chúng, và `pet_owned` giữ mã loài chứ không giữ khoá ngoại.
+
+**Petland có đồng hồ riêng, và trời tối sáng theo nó** (`petland-clock.ts`). Ba quyết định:
+
+- **Một ngày ở Petland dài một giờ thật.** Đánh đổi giữa hai cái hỏng ngược nhau: chạy theo giờ thật thì người chỉ học buổi chiều **không bao giờ** thấy đêm — một tính năng phần lớn người dùng không nhìn thấy thì coi như không có; chạy quá nhanh thì bầu trời nhấp nháy trong lúc người ta đang học, và góc thú cưng chuyển từ "có gì đó đang sống ở đây" sang "có gì đó đang nháy ở đây".
+- **Suy ra từ `Date.now()` theo UTC, không lưu và không theo múi giờ máy.** Cùng luật với nhu cầu con thú và chuỗi ngày học; và vì Petland là MỘT nơi chốn, người ở Hà Nội với người ở Berlin cùng nhìn vào một buổi hoàng hôn. Lấy theo múi giờ máy thì "đêm ở Petland" thành câu không nói được với ai khác.
+- **Trời tối bằng một lớp phủ trên KHUNG NHÌN, không phải trên bản đồ.** Lớp phủ vào `app.stage` chứ không vào `world`: `world` bị camera lia và bị phóng `zoom`, nên một hình chữ nhật nằm trong đó sẽ trôi theo bản đồ và để lộ một góc chưa phủ mỗi khi con thú đi.
+
+Màu trời là một bảng mốc được **nội suy**, không phải bốn trạng thái — nhảy bậc thì đọc ra là lỗi vẽ chứ không phải hoàng hôn. Ba con số trong bảng là thiết kế: giữa trưa `alpha` bằng **0** (phủ một lớp mỏng cho "ấm" làm mọi ô pixel lệch màu suốt cả ngày, mà bảng màu Kenney vốn được chọn để đứng cạnh nhau); đêm dừng ở **0,55** chứ không 0,8 (dưới ngưỡng đó không nhìn ra con thú đang đứng đâu, mà con thú mới là thứ người ta mở bảng này để xem — trời tối là bối cảnh, không phải màn che); bình minh và hoàng hôn ngả **cam**, đêm ngả **xanh tím** (cùng một màu tối cho cả ba thì chỉ còn "sáng dần rồi tối dần", mất hai khoảnh khắc người ta thật sự nhận ra).
+
+Đồng hồ hiện ở thanh tiêu đề kèm mặt trời/mặt trăng, và `title` **nói ra đây là giờ của Petland**: một con số "02:15" cạnh con thú mà không giải thích thì người đọc sẽ so với đồng hồ máy mình rồi kết luận là sai. Phần chữ chạy theo hẹn giờ 2,5 giây (đúng một phút Petland) chứ không theo khung hình — cho nó vào state ở 60 khung/giây là dựng lại cả bảng sáu mươi lần mỗi giây để đổi một chữ số mỗi hai giây rưỡi; còn bầu trời thì vẫn đọc đồng hồ mỗi khung hình vì nó phải đổi mượt.
+
+### Kiểm
+
+`pytest` **824 passed / 2 skipped / 5 deselected** (thêm 27 bài mới) · ruff + `mypy` strict (135 file) sạch · `tsc`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade head` **và** `downgrade` chạy thật trên một database trắng, `alembic check` không thấy lệch · bài kiểm đua chạy thật trên Postgres, đã xem nó ĐỎ khi gỡ khoá rồi XANH khi trả lại.
+
+---
+
+## 4aa. Petland lát 8 — gacha trứng, mua bằng ruby · 🟢 XONG (2026-08-27)
+
+Lát 8 của [`ADR-010-PETLAND-V2.md`](ADR-010-PETLAND-V2.md) §9, mở khoá được nhờ §4z ở trên.
+
+- [x] Migration `039_pet_gacha` — `pet_owned`, `egg_setting`, `pet_species.drop_weight`, `pet_state.rolls_since_rare`
+- [x] `app/services/gacha.py` — quay theo trọng số, bộ đếm an ủi, trùng thì hoàn ruby
+- [x] `GET /pet/eggs` (giá, số dư, bộ đếm, **bảng tỉ lệ**), `POST /pet/eggs/open`, `GET /pet/collection`
+- [x] `GET/PATCH /admin/pet/eggs` + ô trọng số cho từng loài ở `/admin/pet`
+- [x] Màn trứng trong bảng thú cưng (`components/petland-eggs.tsx`), có bảng tỉ lệ mở ra được
+- [x] `tests/test_gacha.py` (10 bài) + một bài e2e, đã xem nó đỏ khi gỡ điều kiện `can_open`
+- [x] Lát 9 — bộ sưu tập, đổi con đang nuôi (`PATCH /pet`), và khoảnh khắc nở trứng
+
+**Mỗi con có chỉ số RIÊNG** (migration `040`): đói, sức, vui, XP, level và cả chỗ đứng dời từ `pet_state` sang `pet_owned`. Bản đầu của lát này làm ngược lại — một bộ chỉ số dùng chung cho cả góc, "đổi con giữ nguyên vị trí và nhu cầu", đúng chữ §9 của ADR-010. Đọc lại thì chữ ấy sai: nó nói rằng mọi con là **cùng một con mang hình khác nhau**, nên đổi con là con mới thừa hưởng độ no của con cũ trong khi con cũ mất sạch quá trình được chăm — và cả bộ sưu tập mất nghĩa. Giờ đổi qua đổi lại không mất gì và cũng không mượn được gì: con vừa chọn ra đúng như lúc nó được cất đi, con vừa cất tiếp tục đói theo đồng hồ thật. **Chỗ này thay cho câu ở ADR-010 §9.**
+
+**Hai thứ Ở LẠI `pet_state` vì chúng thuộc về NGƯỜI CHƠI**: đang nuôi con nào, và bộ đếm an ủi của gacha (nó đo mấy quả trứng vừa mở, không đo con vật nào).
+
+**Cặp `xp_today`/`xp_day` từng ở lại đó, và đó là một lỗi — migration `042` sửa.** Lý do viết ra lúc `040` nghe hợp lý: "trần XP ngày phải là trần của NGƯỜI, cho mỗi con một bộ đếm riêng thì ai có năm con là có năm lần trần". Cái sai lộ ra ngay khi dùng thật: **một con vừa nở ra không nhận nổi một điểm XP nào cho tới hôm sau**. Người ta mở trứng SAU khi đã chơi với con cũ, nên trần gần như luôn cạn đúng lúc con mới xuất hiện — chọc ba mươi cái mà `xp` vẫn 0, `level` vẫn 1, không có gì nói vì sao. Đo được trước khi sửa: chọc mèo 30 lần cho kịch trần, đổi sang con cua vừa nở, chọc mười lần nữa — `xp=0 lv=1` nguyên vẹn.
+
+Chỗ lập luận trượt: **level là của TỪNG CON**, nên thứ trần ngày phải bảo vệ là "một con không lên max level trong một buổi", chứ không phải "một người không được chơi quá lâu". Trần theo từng con giữ nguyên tính chất ấy — mỗi con vẫn tối đa 30 XP một ngày — và điều nó cho phép thêm chỉ là một người có nhiều thú thì dành nhiều thời gian hơn cho cả bộ sưu tập. Đó là một trò sưu tầm đang hoạt động đúng: level của một con nói "con này được chăm bao nhiêu ngày", không nói "chủ nó rảnh bao nhiêu". `tests/test_pet_state.py::test_a_freshly_hatched_pet_can_still_earn_today` ghim lại.
+
+Loài chưa sở hữu trả **404 chứ không 403**: nói "không có quyền" với một con vật là sai nghĩa, và 404 cũng không tiết lộ bảng loài cho người chưa mở được nó.
+
+**Bộ sưu tập KHÔNG in "×2".** Mở trúng con đã có thì được hoàn ruby, nên bản thứ hai không phải một thứ người chơi đang giữ: in ×2 bên cạnh tên là nói rằng có hai con — trong khi chỉ có một — và ngụ ý con số ấy dùng được vào việc gì đó. Cột `copies` giữ lại làm LỊCH SỬ ("đã nở mấy lần"), thứ mà sổ ruby không kể được sau khi mức hoàn thay đổi, và nó nằm trong `title` cho ai tò mò.
+
+**Con đầu tiên không đến từ quả trứng nào**, nên không có gì ghi nó vào `pet_owned` — tủ rỗng trong khi trên bản đồ đang có một con mèo, và đổi đi rồi là mất luôn con mèo vì "không sở hữu". `ensure_pet` ghi ở đường ĐỌC chứ không chỉ lúc tạo, nên nó tự đúng cho cả tài khoản cũ (đã có `pet_state` từ trước lát 8) lẫn tài khoản mới — rẻ hơn hẳn một migration đi vá dữ liệu cũ, và không ai phải nhớ chạy nó.
+
+**Trứng RUNG trước khi nở**, và có một khoảng chờ tối thiểu 900ms. Trên máy nội bộ máy chủ trả lời trong vài chục mili giây, nên không có khoảng chờ ấy thì quả trứng chớp một cái rồi biến mất — mà thứ duy nhất một hệ gacha bán là đúng khoảnh khắc chưa biết mình được gì. Chờ THÊM chứ không bao giờ chờ lâu hơn: mạng chậm hơn nhịp rung thì không đợi thêm giây nào.
+
+Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; mở 5 quả ra 4 loài; đổi sang loài chưa có trả 404. Và sau `040`: chăm con mèo tới no 0,970 / vui 1,000 / xp 6 rồi dời nó sang ô (11,5), đổi sang con hươu — hươu ra với 0,620 / 0,700 / xp 0 / ô (3,8) — chọc hươu một cái rồi quay lại mèo, mèo vẫn nguyên 0,970 / 1,000 / xp 6 / (11,5), trong khi `xp_today` chạy chung 6 → 7 → 7. Migration chạy thật trên database dev đang có dữ liệu: con đang nuôi giữ nguyên chỉ số, chín con còn lại trong tủ nhận mặc định.
+
+**Hai chỗ lệch khỏi bản kế hoạch, cả hai đều là quyết định đã chốt với Samuel:**
+
+**Không có `egg_token`.** ADR-010 §6.2 đề xuất một bộ đếm riêng kiếm từ nhiệm vụ ngày. ADR-011 thay nó bằng ruby, và lý do chính là lý do §6.2 đã dùng để loại XP: một bộ đếm không trả lời được câu "điểm này từ đâu ra, tiêu vào đâu". Đường tiêu đi qua `ruby.spend`, tức là qua khoá tư vấn — đó là điều kiện §5 của ADR-011 đặt ra trước khi mở bất kỳ đường tiêu nào.
+
+**Trùng thì HOÀN RUBY, không đổi thành mảnh.** §6.3 viết "trùng thì đổi thành mảnh", và lập luận của nó đúng: mở quả thứ mười, nhận đúng con đã có, không được gì cả là trải nghiệm dạy người ta ngừng mở. Nhưng mảnh chỉ có nghĩa khi có chỗ tiêu, mà chỗ tiêu thuộc lát 9 — ship một con số người chơi không làm gì được với nó là đúng kiểu nửa vời dự án này vẫn tránh. Hoàn 10 trên 25 giữ nguyên ý định và tiêu được ngay. Ràng buộc **hoàn < giá** nằm ở cả database lẫn màn quản trị: hoàn bằng hoặc hơn giá là một cỗ máy in ruby.
+
+**Một hạng trứng, không phải bảng `egg_tier`.** Với 12 loài, ba hạng trứng là chia một cái bể nhỏ thành ba ngăn rỗng. `egg_setting` là một hàng theo khuôn `progression_setting`; ngày cần nhiều hạng thì nó lên thành nhiều hàng.
+
+**Trọng số, không phải phần trăm** (`pet_species.drop_weight`). Phần trăm phải cộng lại đúng 100, nên tắt hay thêm một loài biến cả bảng thành sai và ai đó phải chỉnh tay từng hàng. Trọng số tự chuẩn hoá, và **tỉ lệ in ra màn hình được tính từ chính bảng mà phép quay dùng** — hai phép tính là hai cơ hội để màn hình nói một đằng và máy làm một nẻo (§6.4). Migration đặt trọng số cho hàng cũ **theo hạng của chính nó**, không để nguyên mặc định: để nguyên thì mười hai loài rơi đều nhau và hạng hiếm hết hiếm — một thay đổi về tỉ lệ mà không ai ra lệnh.
+
+**Một lỗi tự lộ ra khi viết màn này: nút thu gọn của góc thú cưng cắt sai ô.** Nó lấy số cột từ `SHEET_COLS.town` (12 — số cột của tấm NỀN) trong khi `creatures.png` có 10 cột, nên nó vẽ ra một mảnh của con khác — đủ giống một con thú để không ai nhận ra là sai. Hình học của tấm ghép giờ là `CREATURE_COLS`/`CREATURE_ROWS` trong `petland-sprite.ts`, tệp vốn đã là chỗ duy nhất biết "một loài trông ra sao".
+
+**Và một cái bẫy của Tailwind bị chặn trước khi kịp xảy ra:** cỡ ô sinh vật đặt bằng `style` chứ không bằng `h-${size}`. Tailwind quét mã nguồn bằng văn bản, nên một tên lớp chỉ tồn tại lúc chạy **không sinh ra CSS nào** — cùng lớp lỗi với `-inset-[25%]` của khung avatar, và cũng im lặng y như thế.
+
+### Kiểm
+
+`pytest` **834 passed / 2 skipped / 5 deselected** · ruff + `mypy` strict (136 file) sạch · `tsc`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade` **và** `downgrade` chạy thật trên database trắng, `alembic check` không thấy lệch · Playwright petland **6 bài xanh**, bài mới đã xem ĐỎ khi gỡ điều kiện `can_open` · chạy thật trên stack: mở 12 quả liên tiếp, bộ đếm an ủi về 0 đúng lúc ra hạng hiếm, trùng hoàn đúng 10 ruby, và `GET /pet/collection` khớp với những gì đã nở.
+
+**Chú ý khi kéo nhánh này về:** database dev đã có `ruby_event`, `ruby_rule`, `pet_owned`, `egg_setting` do `create_all` của container `api` tạo, nên `alembic upgrade head` sẽ chết với `relation already exists` — trong khi hai cột MỚI trên bảng cũ (`drop_weight`, `rolls_since_rare`) thì vẫn thiếu, vì `create_all` không sửa bảng đã có. Đúng cái bẫy CLAUDE.md đã ghi. Cách ra: `docker compose stop api`, `DROP TABLE ruby_event, ruby_rule, pet_owned, egg_setting CASCADE`, rồi `alembic upgrade head`.
+
+---
+
 ---
 
 ## 5. Sprint 5 — TOEIC Practice

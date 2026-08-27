@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ROUTES, type PetSpeciesPublic } from "@toeic-pilot/shared";
+import { API_ROUTES, type EggSettingPublic, type PetSpeciesPublic } from "@toeic-pilot/shared";
 import { useEffect, useState } from "react";
 
 import { Alert, Button, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
@@ -19,7 +19,10 @@ import { useRequireSession } from "@/lib/session";
  * thú đang nuôi vẫn vẽ ra được.
  */
 
-const TIERS = ["common", "uncommon", "rare", "epic"] as const;
+/* Khớp `ck_pet_species_tier` ở database. Thiếu một hạng ở đây thì màn quản trị
+   không đặt được hạng đó, dù hàng dữ liệu hoàn toàn hợp lệ — và cách duy nhất
+   nhận ra là mở bảng loài lên thấy một ô chọn không có lựa chọn đang dùng. */
+const TIERS = ["common", "uncommon", "rare", "epic", "legendary"] as const;
 const SHEET_ROWS_CREATURES = 18;
 const CREATURE_COLS = 10;
 const ZOOM = 2;
@@ -37,6 +40,7 @@ function tileStyle(tile: number) {
 export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);
+  const [egg, setEgg] = useState<EggSettingPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,7 +50,22 @@ export default function PetSpeciesAdminPage() {
       .catch((err) =>
         setError(err instanceof ApiError ? err.message : "Could not load the species table."),
       );
+    apiFetch<EggSettingPublic>(API_ROUTES.adminPetEggs, { token })
+      .then(setEgg)
+      .catch(() => {});
   }, [token]);
+
+  const patchEgg = (changes: Partial<EggSettingPublic>) => {
+    if (!token) return;
+    setError(null);
+    void apiFetch<EggSettingPublic>(API_ROUTES.adminPetEggs, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify(changes),
+    })
+      .then(setEgg)
+      .catch((err) => setError(err instanceof ApiError ? err.message : "Save failed."));
+  };
 
   const patch = (code: string, changes: Partial<PetSpeciesPublic>) => {
     if (!token) return;
@@ -85,6 +104,71 @@ export default function PetSpeciesAdminPage() {
         <div className="mb-4">
           <Alert>{error}</Alert>
         </div>
+      )}
+
+      {egg && (
+        <Panel className="mb-4 flex flex-wrap items-end gap-4 p-4">
+          <div>
+            <h2 className="text-subtitle">Eggs</h2>
+            <p className="mt-1 max-w-md text-small text-ink-muted">
+              Paid for in ruby, rolled on the server. The refund must stay below the price —
+              otherwise opening duplicates prints ruby out of nothing.
+            </p>
+          </div>
+          <label className="flex items-center gap-1.5 text-small text-ink-muted">
+            Price
+            <Input
+              type="number"
+              min={1}
+              max={1000}
+              defaultValue={egg.ruby_cost}
+              aria-label="Egg price in ruby"
+              className="w-24"
+              onBlur={(event) => {
+                const next = Number(event.target.value);
+                if (Number.isInteger(next) && next > 0 && next !== egg.ruby_cost) {
+                  patchEgg({ ruby_cost: next });
+                }
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-1.5 text-small text-ink-muted">
+            {/* Sau N quả không ra hạng hiếm thì quả sau chắc chắn ra. Ngẫu nhiên
+                thuần cho ra những chuỗi xui mà người chơi đọc là "hỏng". */}
+            Pity
+            <Input
+              type="number"
+              min={1}
+              max={100}
+              defaultValue={egg.pity_rolls}
+              aria-label="Rolls before a guaranteed rare"
+              className="w-24"
+              onBlur={(event) => {
+                const next = Number(event.target.value);
+                if (Number.isInteger(next) && next > 0 && next !== egg.pity_rolls) {
+                  patchEgg({ pity_rolls: next });
+                }
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-1.5 text-small text-ink-muted">
+            Duplicate refund
+            <Input
+              type="number"
+              min={0}
+              max={999}
+              defaultValue={egg.duplicate_refund}
+              aria-label="Ruby refunded for a duplicate"
+              className="w-24"
+              onBlur={(event) => {
+                const next = Number(event.target.value);
+                if (Number.isInteger(next) && next >= 0 && next !== egg.duplicate_refund) {
+                  patchEgg({ duplicate_refund: next });
+                }
+              }}
+            />
+          </label>
+        </Panel>
       )}
 
       <div className="grid gap-2">
@@ -144,6 +228,28 @@ export default function PetSpeciesAdminPage() {
                 </option>
               ))}
             </Select>
+
+            <label className="flex items-center gap-1.5 text-small text-ink-muted">
+              {/* Trọng số, không phải phần trăm. Phần trăm phải cộng lại đúng
+                  100, nên tắt hay thêm một loài biến cả bảng thành sai và ai đó
+                  phải chỉnh tay từng hàng. Tỉ lệ hiện cho người chơi được chuẩn
+                  hoá từ tổng của các loài đang bật. */}
+              Weight
+              <Input
+                type="number"
+                min={0}
+                max={1000}
+                defaultValue={row.drop_weight}
+                aria-label={`Drop weight for ${row.code}`}
+                className="w-20"
+                onBlur={(event) => {
+                  const next = Number(event.target.value);
+                  if (Number.isInteger(next) && next >= 0 && next !== row.drop_weight) {
+                    patch(row.code, { drop_weight: next });
+                  }
+                }}
+              />
+            </label>
 
             <Button
               size="sm"

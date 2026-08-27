@@ -1,6 +1,6 @@
 # ADR-011 — Ruby: đơn vị của góc thú cưng, kiếm bằng việc học
 
-Trạng thái: **đề xuất**, chưa dựng dòng nào. Viết 2026-08-27.
+Trạng thái: **lát 1–6 đã dựng** (ROADMAP §4z, 2026-08-27). Viết 2026-08-27.
 
 Chặn lát 8 (gacha) của ADR-010: trứng phải mua bằng *một thứ gì đó*, và §6.2 đã
 loại thứ hiển nhiên nhất.
@@ -232,6 +232,16 @@ Ba chỗ, và cả ba đều dùng thứ đã có sẵn:
 | 4 | Hàm `spend` có khoá tư vấn + bài kiểm đua có `Barrier` | Hai lần tiêu đồng thời không tạo ra số dư âm |
 | 5 | `ruby_rule` + `/admin` | Đổi mức thưởng không cần deploy |
 | 6 | Số dư ở dashboard + toast + câu "còn bao nhiêu nữa" | Nhìn thấy được ở chỗ người ta học |
+
+Cả sáu đã dựng. Hai chỗ khác với tài liệu này khi chạm vào mã thật:
+
+- **`egg_refund` là nguồn thứ tám**, không có trong bảng §2 và cố ý **không** nằm
+  trong `ruby_rule`: mức hoàn là thuộc tính của quả trứng (`egg_setting`), không
+  phải phần thưởng cho việc học. Để nó vào bảng mức thưởng là cho phép chỉnh nó
+  lên cao hơn giá trứng — tức là một cỗ máy in ruby.
+- **Câu "còn bao nhiêu nữa là mở được trứng" nằm ở màn trứng**, không ở dashboard.
+  Dashboard nói số dư và nguồn kiếm; con số còn thiếu chỉ có nghĩa khi đứng cạnh
+  cái nút mua, và ở dashboard nó sẽ là một lời mời đi chơi đặt giữa chỗ học.
 
 Lát 4 đứng trước gacha của ADR-010, không phải sau: mở trứng là đường tiêu đầu
 tiên, và mở nó trước khi có khoá là mở đúng cái khe ở §5.

@@ -17,6 +17,21 @@
 
 export type PetAction = "feed" | "poke" | "walk";
 
+/**
+ * Giây cho mỗi Ô con thú đi qua.
+ *
+ * 0,18 (bản trước) là 5,5 ô mỗi giây — con thú lướt qua bản đồ nhanh hơn mắt
+ * kịp bám, và nhanh hơn hẳn mấy con vật hậu cảnh, nên nó đọc ra là trượt chứ
+ * không phải bước. 0,3 là hơn ba ô mỗi giây: vẫn tới nơi ngay khi bấm, nhưng
+ * nhìn ra được từng bước chân — mà cái nhún khi đi được sinh theo TỪNG Ô, nên
+ * chính tốc độ này quyết định nhịp chân trông có thật hay không.
+ *
+ * Ở đây chứ không ở `petland.tsx`: bàn thử `/petlab` cũng đi bộ, và trước đó nó
+ * chép cứng 0,18 vào chỗ riêng — hai con số cho một nhịp là chỗ chỉnh một bên
+ * rồi tưởng đã chỉnh cả hai.
+ */
+export const STEP_SECONDS = 0.3;
+
 /** Ba chỉ số, tất cả trong khoảng 0..1, đúng như máy chủ trả về. */
 export type PetNeeds = {
   /** No. */
@@ -39,6 +54,14 @@ export const NEED_KEYS = ["fullness", "energy", "mood"] as const;
  */
 export const FEED_FULL_ABOVE = 0.95;
 export const WALK_TIRED_BELOW = 0.15;
+/**
+ * Đói thì chưa dắt đi dạo được — đây là thứ dựng nên THỨ TỰ giữa ba cái nút.
+ *
+ * Không có nó thì ba hành động độc lập hoàn toàn, thứ tự bấm không bao giờ quan
+ * trọng, và một hệ mà thứ tự không quan trọng thì chỉ còn là ba cái nút bấm cho
+ * hết. Ngưỡng phải khớp `WALK_HUNGRY_BELOW` ở `app/services/pet.py`.
+ */
+export const WALK_HUNGRY_BELOW = 0.2;
 
 /**
  * Lý do chưa làm được, bằng lời — hoặc `null` nếu làm được.
@@ -54,6 +77,9 @@ export function whyUnavailable(needs: PetNeeds, action: PetAction): string | nul
   }
   if (action === "walk" && needs.energy < WALK_TIRED_BELOW) {
     return "Nó đang mệt, để nó nghỉ đã.";
+  }
+  if (action === "walk" && needs.fullness < WALK_HUNGRY_BELOW) {
+    return "Nó đang đói, cho ăn trước đã.";
   }
   return null;
 }

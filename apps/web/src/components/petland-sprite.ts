@@ -16,6 +16,17 @@
  * mất gì.
  */
 
+/**
+ * Hình học của `creatures.png`: 160×288 pixel, ô 16px, tức 10 cột × 18 hàng.
+ *
+ * Ở đây vì đây là tệp biết "một loài trông ra sao", và vì con số này đã bị đoán
+ * sai một lần: nút thu gọn của góc thú cưng lấy số cột từ `SHEET_COLS.town`
+ * (12, số cột của tấm NỀN) trong khi chia hàng cho 10 — nên nó cắt ra một mảnh
+ * của con khác, đủ giống một con thú để không ai nhận ra là sai.
+ */
+export const CREATURE_COLS = 10;
+export const CREATURE_ROWS = 18;
+
 /** Mã loài → chỉ số ô. Xem `public/pet/CREDITS.md` để biết cách đổi chỉ số sang toạ độ. */
 export const SPECIES_TILE: Record<string, number> = {
   cat: 169,

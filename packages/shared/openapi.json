@@ -1988,6 +1988,10 @@
             "title": "Date",
             "type": "string"
           },
+          "ruby_awarded": {
+            "title": "Ruby Awarded",
+            "type": "integer"
+          },
           "tasks": {
             "items": {
               "$ref": "#/components/schemas/DailyTaskPublic"
@@ -2003,7 +2007,8 @@
         "required": [
           "date",
           "tasks",
-          "xp_awarded"
+          "xp_awarded",
+          "ruby_awarded"
         ],
         "title": "DailyTasksPublic",
         "type": "object"
@@ -3158,6 +3163,202 @@
           }
         },
         "title": "DictationUpdate",
+        "type": "object"
+      },
+      "EggChance": {
+        "description": "Một dòng của bảng tỉ lệ, đúng như nó hiện trên màn hình mở trứng.\n\nTỉ lệ **phải** được in ra (ADR-010 §6.4). Nhiều nơi đã luật hoá việc này, và\nkể cả không có luật thì đây là sản phẩm học cho học sinh — che tỉ lệ là thứ\nkhông nên làm với đối tượng đó. `percent` tính ở máy chủ từ chính bảng trọng\nsố mà phép quay dùng, nên màn hình không thể nói khác máy.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "percent": {
+            "title": "Percent",
+            "type": "number"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "tile": {
+            "title": "Tile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "tile",
+          "tier",
+          "percent"
+        ],
+        "title": "EggChance",
+        "type": "object"
+      },
+      "EggPublic": {
+        "description": "Mọi thứ màn mở trứng cần, trong một lần đọc.",
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "can_open": {
+            "title": "Can Open",
+            "type": "boolean"
+          },
+          "chances": {
+            "items": {
+              "$ref": "#/components/schemas/EggChance"
+            },
+            "title": "Chances",
+            "type": "array"
+          },
+          "duplicate_refund": {
+            "title": "Duplicate Refund",
+            "type": "integer"
+          },
+          "owned": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Owned",
+            "type": "array"
+          },
+          "pity_rolls": {
+            "title": "Pity Rolls",
+            "type": "integer"
+          },
+          "rolls_since_rare": {
+            "title": "Rolls Since Rare",
+            "type": "integer"
+          },
+          "ruby_cost": {
+            "title": "Ruby Cost",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ruby_cost",
+          "balance",
+          "can_open",
+          "pity_rolls",
+          "rolls_since_rare",
+          "duplicate_refund",
+          "owned",
+          "chances"
+        ],
+        "title": "EggPublic",
+        "type": "object"
+      },
+      "EggResult": {
+        "description": "Kết quả một lần mở trứng. Con thú đã nằm trong bộ sưu tập rồi.",
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "duplicate": {
+            "title": "Duplicate",
+            "type": "boolean"
+          },
+          "forced_rare": {
+            "title": "Forced Rare",
+            "type": "boolean"
+          },
+          "refund": {
+            "title": "Refund",
+            "type": "integer"
+          },
+          "rolls_since_rare": {
+            "title": "Rolls Since Rare",
+            "type": "integer"
+          },
+          "species": {
+            "$ref": "#/components/schemas/EggChance"
+          }
+        },
+        "required": [
+          "species",
+          "duplicate",
+          "refund",
+          "balance",
+          "rolls_since_rare",
+          "forced_rare"
+        ],
+        "title": "EggResult",
+        "type": "object"
+      },
+      "EggSettingEdit": {
+        "description": "Sửa ba con số của gacha.\n\n`duplicate_refund` phải NHỎ HƠN `ruby_cost`, và điều đó được kiểm ở cả tầng\nnày lẫn database: hoàn bằng hoặc hơn giá trứng là một cỗ máy in ruby, và một\nràng buộc chỉ nằm ở một tầng là ràng buộc mà tầng kia không biết.",
+        "properties": {
+          "duplicate_refund": {
+            "anyOf": [
+              {
+                "maximum": 999.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Refund"
+          },
+          "pity_rolls": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pity Rolls"
+          },
+          "ruby_cost": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ruby Cost"
+          }
+        },
+        "title": "EggSettingEdit",
+        "type": "object"
+      },
+      "EggSettingPublic": {
+        "properties": {
+          "duplicate_refund": {
+            "title": "Duplicate Refund",
+            "type": "integer"
+          },
+          "pity_rolls": {
+            "title": "Pity Rolls",
+            "type": "integer"
+          },
+          "ruby_cost": {
+            "title": "Ruby Cost",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ruby_cost",
+          "pity_rolls",
+          "duplicate_refund"
+        ],
+        "title": "EggSettingPublic",
         "type": "object"
       },
       "FacetAccuracy": {
@@ -4671,6 +4872,45 @@
         "title": "PetNeeds",
         "type": "object"
       },
+      "PetOwnedPublic": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "copies": {
+            "title": "Copies",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "obtained_at": {
+            "format": "date-time",
+            "title": "Obtained At",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "tile": {
+            "title": "Tile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "tile",
+          "tier",
+          "copies",
+          "obtained_at"
+        ],
+        "title": "PetOwnedPublic",
+        "type": "object"
+      },
       "PetPublic": {
         "properties": {
           "daily_cap": {
@@ -4708,6 +4948,17 @@
             "title": "Species",
             "type": "string"
           },
+          "tier": {
+            "enum": [
+              "common",
+              "uncommon",
+              "rare",
+              "epic",
+              "legendary"
+            ],
+            "title": "Tier",
+            "type": "string"
+          },
           "tile": {
             "title": "Tile",
             "type": "integer"
@@ -4740,6 +4991,7 @@
         "required": [
           "species",
           "tile",
+          "tier",
           "nickname",
           "level",
           "xp",
@@ -4765,6 +5017,13 @@
             "title": "Code",
             "type": "string"
           },
+          "drop_weight": {
+            "default": 10,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Drop Weight",
+            "type": "integer"
+          },
           "label": {
             "maxLength": 64,
             "minLength": 1,
@@ -4782,7 +5041,8 @@
               "common",
               "uncommon",
               "rare",
-              "epic"
+              "epic",
+              "legendary"
             ],
             "title": "Tier",
             "type": "string"
@@ -4805,6 +5065,19 @@
       "PetSpeciesEdit": {
         "description": "Sửa một loài. Khoá vắng mặt = đừng đụng tới (`exclude_unset` ở nơi gọi).\n\n`code` KHÔNG có ở đây: nó là khoá chính và là thứ `pet_state.species` trỏ\ntới. Đổi mã nghĩa là mọi con thú đang mang mã cũ trở thành mồ côi cùng lúc —\ncùng lý do `slug` của bộ đề không sửa được từ ô đổi tên.",
         "properties": {
+          "drop_weight": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drop Weight"
+          },
           "enabled": {
             "anyOf": [
               {
@@ -4847,7 +5120,8 @@
                   "common",
                   "uncommon",
                   "rare",
-                  "epic"
+                  "epic",
+                  "legendary"
                 ],
                 "type": "string"
               },
@@ -4881,6 +5155,12 @@
             "title": "Code",
             "type": "string"
           },
+          "drop_weight": {
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Drop Weight",
+            "type": "integer"
+          },
           "enabled": {
             "title": "Enabled",
             "type": "boolean"
@@ -4898,7 +5178,8 @@
               "common",
               "uncommon",
               "rare",
-              "epic"
+              "epic",
+              "legendary"
             ],
             "title": "Tier",
             "type": "string"
@@ -4915,10 +5196,27 @@
           "label",
           "tile",
           "tier",
+          "drop_weight",
           "position",
           "enabled"
         ],
         "title": "PetSpeciesPublic",
+        "type": "object"
+      },
+      "PetSwitch": {
+        "description": "Đổi con đang nuôi. Chỉ MÃ LOÀI, không gì khác.\n\nKhông nhận vị trí, nhu cầu hay XP, cùng lý do `PetMove` không nhận: đổi con\nlà một câu ngắn, và mọi trường thừa ở đây là một đường để client tự đặt chỉ\nsố cho mình.",
+        "properties": {
+          "species": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Species",
+            "type": "string"
+          }
+        },
+        "required": [
+          "species"
+        ],
+        "title": "PetSwitch",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -6170,6 +6468,203 @@
           "grade"
         ],
         "title": "ReviewSubmit",
+        "type": "object"
+      },
+      "RubyClaimResult": {
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "gift": {
+            "$ref": "#/components/schemas/RubyGiftPublic"
+          },
+          "granted": {
+            "title": "Granted",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "granted",
+          "balance",
+          "gift"
+        ],
+        "title": "RubyClaimResult",
+        "type": "object"
+      },
+      "RubyEntryPublic": {
+        "description": "Một dòng trong lịch sử. `amount` âm là một khoản tiêu.",
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "amount",
+          "source_type",
+          "label",
+          "created_at"
+        ],
+        "title": "RubyEntryPublic",
+        "type": "object"
+      },
+      "RubyGiftPublic": {
+        "description": "Quà hôm nay.\n\nBa trạng thái chứ không phải hai, và giao diện cần cả ba để nói đúng câu:\nchưa học gì (`unlocked=false` — *học một chút là mở được*), mở được mà chưa\nnhận, và đã nhận rồi.",
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "claimed": {
+            "title": "Claimed",
+            "type": "boolean"
+          },
+          "unlocked": {
+            "title": "Unlocked",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "amount",
+          "unlocked",
+          "claimed"
+        ],
+        "title": "RubyGiftPublic",
+        "type": "object"
+      },
+      "RubyRuleEdit": {
+        "description": "Sửa một mức thưởng.\n\n`source_type` KHÔNG sửa được và không có đường tạo hàng mới: mỗi nguồn là\nmột truy vấn có thật trong mã (xong bài, thuộc chủ đề, nộp đề…), nên thêm\nmột mã lạ chỉ tạo ra một hàng không bao giờ được trao — đúng ranh giới mà\n`kind` của daily task và `metric` của huy hiệu đã vẽ giữa dữ liệu và mã.\n\nMuốn bỏ một nguồn thì TẮT nó. Xoá hàng cuối cùng khiến bảng rỗng, và bảng\nrỗng nghĩa là \"chưa từng cấu hình\" — lần đọc sau gieo lại bộ mặc định.",
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          }
+        },
+        "title": "RubyRuleEdit",
+        "type": "object"
+      },
+      "RubyRulePublic": {
+        "description": "Một dòng trong bảng mức thưởng, như màn quản trị nhìn thấy.",
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_type",
+          "label",
+          "amount",
+          "position",
+          "enabled"
+        ],
+        "title": "RubyRulePublic",
+        "type": "object"
+      },
+      "RubyWallet": {
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "gift": {
+            "$ref": "#/components/schemas/RubyGiftPublic"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/RubyEntryPublic"
+            },
+            "title": "Recent",
+            "type": "array"
+          }
+        },
+        "required": [
+          "balance",
+          "gift",
+          "recent"
+        ],
+        "title": "RubyWallet",
         "type": "object"
       },
       "SetAdmin": {
@@ -10463,6 +10958,77 @@
         ]
       }
     },
+    "/api/v1/admin/pet/eggs": {
+      "get": {
+        "operationId": "read_egg_setting_api_v1_admin_pet_eggs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EggSettingPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Egg Setting",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Giá trứng, bộ đếm an ủi, mức hoàn khi trùng.\n\nKiểm \"hoàn < giá\" ở ĐÂY nữa, không chỉ ở database: hai trường có thể đổi\ntrong cùng một lần gửi, nên phải so giá trị SAU khi áp cả hai. Ràng buộc\ndatabase là lưới cuối và nó ném ra một lỗi không dịch được cho người dùng;\nchỗ này mới là chỗ nói được vì sao.",
+        "operationId": "update_egg_setting_api_v1_admin_pet_eggs_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EggSettingEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EggSettingPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Egg Setting",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/pet/species": {
       "get": {
         "description": "Cả loài đã tắt.\n\nMàn quản trị là nơi DUY NHẤT nhìn thấy hàng đã tắt; giấu chúng ở đây thì cách\nduy nhất bật lại là sửa database.",
@@ -11745,6 +12311,94 @@
           }
         ],
         "summary": "Publish Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/ruby/rules": {
+      "get": {
+        "description": "Cả hàng đã tắt — màn quản trị là nơi DUY NHẤT nhìn thấy chúng.\n\nMảng trần chứ không `Page[T]`: bảng này bị chặn trên bởi số nguồn ruby có\ntrong mã, tức là bucket (A) của `app/schemas/common.py`. Bọc phong bì cho nó\nlà bắt frontend xử lý một trường hợp không thể xảy ra.",
+        "operationId": "list_rules_api_v1_admin_ruby_rules_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RubyRulePublic"
+                  },
+                  "title": "Response List Rules Api V1 Admin Ruby Rules Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Rules",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/ruby/rules/{source_type}": {
+      "patch": {
+        "operationId": "update_rule_api_v1_admin_ruby_rules__source_type__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source_type",
+            "required": true,
+            "schema": {
+              "title": "Source Type",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RubyRuleEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RubyRulePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Rule",
         "tags": [
           "admin"
         ]
@@ -14997,6 +15651,51 @@
         "tags": [
           "pet"
         ]
+      },
+      "patch": {
+        "description": "Đổi con đang nuôi sang một con ĐÃ CÓ trong bộ sưu tập.\n\n**Mỗi con giữ chỉ số của riêng nó** — đói, sức, vui, XP, level và cả chỗ\nđứng. Đổi qua đổi lại không mất gì và cũng không mượn được gì: con vừa chọn\nra đúng như lúc nó được cất đi, còn con vừa cất giữ nguyên trạng thái của nó\nvà tiếp tục đói theo đồng hồ thật.\n\nBản đầu làm ngược lại — một bộ chỉ số dùng chung cho cả góc, đổi con thì con\nmới thừa hưởng độ no của con cũ. Nghe như \"không mất tiến độ\", nhưng nó nói\nrằng mọi con là cùng một con mang hình khác nhau, và cả bộ sưu tập mất nghĩa.\n\nLoài chưa sở hữu trả **404, không phải 403**: nói \"bạn không có quyền\" với\nmột con vật là sai nghĩa, và 404 cũng không tiết lộ loài nào tồn tại trong\nbảng cho một người chưa mở được nó.\n\nLoài đã bị TẮT vẫn đổi được nếu đã sở hữu — tắt một loài là gỡ nó khỏi\ngacha, không phải tịch thu của người đã có (cùng luật `tile_for` đang giữ).",
+        "operationId": "switch_pet_api_v1_pet_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetSwitch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Switch Pet",
+        "tags": [
+          "pet"
+        ]
       }
     },
     "/api/v1/pet/actions": {
@@ -15041,6 +15740,91 @@
           }
         ],
         "summary": "Act",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/collection": {
+      "get": {
+        "description": "Bộ sưu tập. Mảng trần: nó bị chặn trên bởi số loài có trong `pet_species`.\n\nĐọc cả loài đã TẮT, cùng lý do `tile_for` đọc chúng: tắt một loài phải làm nó\nbiến khỏi gacha, không được làm con thú người ta đã có biến mất khỏi tủ.",
+        "operationId": "read_collection_api_v1_pet_collection_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PetOwnedPublic"
+                  },
+                  "title": "Response Read Collection Api V1 Pet Collection Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Collection",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/eggs": {
+      "get": {
+        "description": "Giá trứng, số dư, bộ đếm an ủi và BẢNG TỈ LỆ.\n\nTỉ lệ đi kèm chứ không nằm ở một endpoint riêng: nó phải hiện trên chính màn\nhình có cái nút, và một lần đọc thứ hai là một cơ hội để hai con số lệch nhau\n(ADR-010 §6.4).",
+        "operationId": "read_egg_api_v1_pet_eggs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EggPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Egg",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/eggs/open": {
+      "post": {
+        "description": "Mở một quả trứng. Quay ở MÁY CHỦ (ADR-010 §6.1).\n\nThiếu ruby trả **409**, không phải 400: yêu cầu hoàn toàn hợp lệ, chỉ là\ntrạng thái hiện tại không cho phép — cùng hình dạng với việc từ chối cho con\nthú ăn khi nó đang no. Và lời từ chối nói ra CON SỐ, để giao diện lặp lại\nđược thay vì tự đoán.\n\nKhông có tham số nào cả. Một hạng trứng duy nhất nên không có gì để chọn, và\nmột endpoint nhận `tier` từ client là một endpoint nhận giá từ client.",
+        "operationId": "open_egg_api_v1_pet_eggs_open_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EggResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Open Egg",
         "tags": [
           "pet"
         ]
@@ -15424,6 +16208,60 @@
         "summary": "Mark Badges Seen",
         "tags": [
           "profile"
+        ]
+      }
+    },
+    "/api/v1/ruby": {
+      "get": {
+        "description": "Số dư, quà hôm nay, và các khoản gần nhất.\n\nLịch sử đi kèm số dư chứ không nằm ở một endpoint riêng: nó là thứ DUY NHẤT\ntrả lời được \"tôi có 40 ruby, giờ còn 10\", và một câu hỏi như thế được hỏi\nngay tại chỗ nhìn thấy số dư.",
+        "operationId": "read_wallet_api_v1_ruby_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RubyWallet"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Wallet",
+        "tags": [
+          "ruby"
+        ]
+      }
+    },
+    "/api/v1/ruby/gift": {
+      "post": {
+        "description": "Nhận quà hôm nay.\n\nBấm khi chưa học gì, hay bấm lần thứ hai, đều trả `granted = 0` với HTTP 200\nchứ không phải một mã lỗi: cả hai đều là trạng thái bình thường của cái nút,\nvà giao diện đã có đủ dữ kiện trong `gift` để nói ra chuyện gì đang xảy ra.\nMột mã 409 ở đây chỉ tạo ra một hộp thoại lỗi cho một cú bấm đúp.",
+        "operationId": "claim_gift_api_v1_ruby_gift_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RubyClaimResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Claim Gift",
+        "tags": [
+          "ruby"
         ]
       }
     },

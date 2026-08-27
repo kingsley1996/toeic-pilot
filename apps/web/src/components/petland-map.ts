@@ -177,3 +177,70 @@ export function findPath(map: MapData, from: Tile, to: Tile): Tile[] {
   }
   return path.reverse();
 }
+
+/**
+ * Ô kế tiếp cho một sinh vật đang đi lang thang quanh chỗ của nó.
+ *
+ * Trả về `null` khi không đi đâu được — bị kẹt bốn phía, hoặc bán kính bằng 0.
+ * Người gọi hiểu đó là "đứng yên lượt này", không phải một lỗi.
+ *
+ * Hai luật, cả hai đều là để con vật trông có chủ đích thay vì trôi dạt:
+ *
+ *   · **Không đi quá `radius` ô khỏi NHÀ.** Bò trong chuồng phải ở lại trong
+ *     chuồng; không có ràng buộc này thì sau mười phút cả đàn dồn về một góc bản
+ *     đồ và cảnh nuôi trồng biến mất.
+ *   · **Đo bằng khoảng cách Chebyshev** (ô xa nhất theo một trục), không phải
+ *     đường chim bay: lưới này đi bốn hướng, nên hình vuông mới là hình mà một
+ *     con vật thật sự đi hết được.
+ *
+ * `rand` là tham số chứ không gọi thẳng `Math.random`, cùng lý do `srs.review`
+ * nhận `now`: một chuyển động không lặp lại được thì không kiểm được bằng gì cả.
+ */
+export function wanderStep(
+  map: MapData,
+  from: Tile,
+  home: Tile,
+  radius: number,
+  rand: () => number,
+): Tile | null {
+  if (radius <= 0) return null;
+  const options: Tile[] = [];
+  for (const [dx, dy] of [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ] as const) {
+    const next = { x: from.x + dx, y: from.y + dy };
+    if (!isWalkable(map, next.x, next.y)) continue;
+    if (Math.max(Math.abs(next.x - home.x), Math.abs(next.y - home.y)) > radius) continue;
+    options.push(next);
+  }
+  if (options.length === 0) return null;
+  return options[Math.min(options.length - 1, Math.floor(rand() * options.length))];
+}
+
+/**
+ * Một ô đi được, cách `from` ít nhất `min` ô — chỗ để dắt con thú đi dạo.
+ *
+ * Quét cả bản đồ rồi bốc ngẫu nhiên trong số hợp lệ, chứ không bốc bừa rồi thử
+ * lại: bản đồ 18×13 là 234 ô nên quét hết rẻ hơn một vòng lặp thử-và-sai không
+ * có điểm dừng, và bản đồ chật (hầu hết là tường) sẽ làm vòng lặp kia quay mãi.
+ */
+export function strollTarget(
+  map: MapData,
+  from: Tile,
+  min: number,
+  rand: () => number,
+): Tile | null {
+  const options: Tile[] = [];
+  for (let y = 0; y < map.h; y += 1) {
+    for (let x = 0; x < map.w; x += 1) {
+      if (!isWalkable(map, x, y)) continue;
+      if (Math.abs(x - from.x) + Math.abs(y - from.y) < min) continue;
+      options.push({ x, y });
+    }
+  }
+  if (options.length === 0) return null;
+  return options[Math.min(options.length - 1, Math.floor(rand() * options.length))];
+}

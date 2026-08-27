@@ -152,3 +152,39 @@ test("chăm thú cưng làm nó lên level, và chạm trần ngày thì nói ra
 
   await expect(page.getByText(/đã nhận đủ 30 XP/i)).toBeVisible();
 });
+
+test("màn trứng in tỉ lệ, và không có ruby thì nút mở bị khoá", async ({ page, request }) => {
+  /*
+   * Chỗ nối được đo ở đây là **màn hình đọc đúng thứ máy chủ nói**, không phải
+   * phép quay — phép quay có bài riêng bên API, nơi `rng` cắm vào được.
+   *
+   * Tỉ lệ phải hiện ra (ADR-010 §6.4): đây là sản phẩm học cho học sinh, và che
+   * tỉ lệ là thứ không nên làm với đối tượng đó. Bài này khoá cái đó lại ở tầng
+   * giao diện, vì một endpoint trả về `chances` mà không ai vẽ ra thì vẫn xanh
+   * ở mọi bài kiểm phía API.
+   *
+   * Và nút phải KHOÁ khi chưa đủ ruby, không phải bấm rồi ăn một lỗi 409: điều
+   * kiện `can_open` do máy chủ tính, nên nút chỉ việc nghe theo.
+   */
+  await signUp(page);
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const wallet = await (
+    await request.get("http://localhost:8000/api/v1/ruby", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).json();
+  expect(wallet.balance).toBe(0);
+
+  await launcher(page).click();
+  await page.getByRole("button", { name: "Mở trứng" }).first().click();
+
+  const open = page.getByRole("button", { name: "Mở trứng", exact: true });
+  await expect(open).toBeDisabled();
+  await expect(page.getByText(/còn 0 ruby/)).toBeVisible();
+
+  // Bảng tỉ lệ mở ra được và có đủ mười hai loài, mỗi dòng kèm phần trăm.
+  await page.getByRole("button", { name: /Xem tỉ lệ/ }).click();
+  const rows = page.locator("li", { hasText: "%" });
+  await expect(rows.first()).toBeVisible();
+  expect(await rows.count()).toBeGreaterThanOrEqual(12);
+});

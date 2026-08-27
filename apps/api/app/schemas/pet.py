@@ -30,6 +30,15 @@ class PetPublic(BaseModel):
     bảng tra thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó thêm loài
     — và hậu quả là một con thú vẽ nhầm hình, không phải một lỗi.
     """
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary"]
+    """Hạng hiếm của loài đang nuôi.
+
+    Gửi kèm vì giao diện vẽ một vòng sáng dưới chân con thú theo hạng, và bảng
+    loài là dữ liệu admin sửa được: một bảng tra mã→hạng phía frontend sẽ trôi
+    khỏi nó vào đúng ngày ai đó đổi hạng của một loài, và hậu quả là một con cực
+    hiếm mang vòng sáng của loài thường — không lỗi nào, chỉ sai. Cùng lý do
+    `tile` được gửi kèm chứ không để client tra.
+    """
     nickname: str | None
     level: int
     """Level ĐANG hiển thị: đã áp mốc cao nhất từng đạt, nên nó không bao giờ tụt."""
@@ -64,6 +73,17 @@ class PetMove(BaseModel):
     facing: Literal["left", "right"]
 
 
+class PetSwitch(BaseModel):
+    """Đổi con đang nuôi. Chỉ MÃ LOÀI, không gì khác.
+
+    Không nhận vị trí, nhu cầu hay XP, cùng lý do `PetMove` không nhận: đổi con
+    là một câu ngắn, và mọi trường thừa ở đây là một đường để client tự đặt chỉ
+    số cho mình.
+    """
+
+    species: str = Field(min_length=1, max_length=32)
+
+
 class PetSpeciesPublic(BaseModel):
     """Một loài, như học viên và màn quản trị nhìn thấy.
 
@@ -76,7 +96,16 @@ class PetSpeciesPublic(BaseModel):
     code: str
     label: str
     tile: int = Field(ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic"]
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary"]
+    drop_weight: int = Field(ge=0, le=1000)
+    """Trọng số rơi khi mở trứng, KHÔNG phải phần trăm.
+
+    Phần trăm phải cộng lại đúng 100, nên tắt hay thêm một loài biến cả bảng
+    thành sai. Trọng số tự chuẩn hoá; tỉ lệ hiển thị tính từ tổng của các loài
+    đang bật (`EggChance.percent`). 0 nghĩa là không bao giờ rơi ra — khác với
+    `enabled = false`, vốn còn giấu nó khỏi mọi chỗ khác nữa.
+    """
+
     position: int
     enabled: bool
 
@@ -91,7 +120,8 @@ class PetSpeciesEdit(BaseModel):
 
     label: str | None = Field(default=None, min_length=1, max_length=64)
     tile: int | None = Field(default=None, ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic"] | None = None
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary"] | None = None
+    drop_weight: int | None = Field(default=None, ge=0, le=1000)
     position: int | None = None
     enabled: bool | None = None
 
@@ -100,5 +130,82 @@ class PetSpeciesCreate(BaseModel):
     code: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
     label: str = Field(min_length=1, max_length=64)
     tile: int = Field(ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic"] = "common"
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary"] = "common"
+    drop_weight: int = Field(default=10, ge=0, le=1000)
     position: int = 0
+
+
+# --- gacha (ADR-010 lát 8) --------------------------------------------------
+
+
+class EggChance(BaseModel):
+    """Một dòng của bảng tỉ lệ, đúng như nó hiện trên màn hình mở trứng.
+
+    Tỉ lệ **phải** được in ra (ADR-010 §6.4). Nhiều nơi đã luật hoá việc này, và
+    kể cả không có luật thì đây là sản phẩm học cho học sinh — che tỉ lệ là thứ
+    không nên làm với đối tượng đó. `percent` tính ở máy chủ từ chính bảng trọng
+    số mà phép quay dùng, nên màn hình không thể nói khác máy.
+    """
+
+    code: str
+    label: str
+    tile: int
+    tier: str
+    percent: float
+
+
+class EggPublic(BaseModel):
+    """Mọi thứ màn mở trứng cần, trong một lần đọc."""
+
+    ruby_cost: int
+    balance: int
+    can_open: bool
+    """`balance >= ruby_cost` **và** còn loài đang bật. Tính ở máy chủ vì cả hai
+    vế đều là dữ liệu máy chủ; tính lại ở client là hai định nghĩa cho một nút."""
+    pity_rolls: int
+    rolls_since_rare: int
+    duplicate_refund: int
+    owned: list[str]
+    """Mã những loài đã có. Màn hình cần nó để đánh dấu ô đã sưu tầm."""
+    chances: list[EggChance]
+
+
+class EggResult(BaseModel):
+    """Kết quả một lần mở trứng. Con thú đã nằm trong bộ sưu tập rồi."""
+
+    species: EggChance
+    duplicate: bool
+    refund: int
+    """Ruby hoàn lại vì trùng. 0 khi là con mới, hoặc khi admin đặt mức hoàn về 0."""
+    balance: int
+    rolls_since_rare: int
+    forced_rare: bool
+    """Ra hạng hiếm vì bộ đếm an ủi đã đầy, không phải vì may."""
+
+
+class PetOwnedPublic(BaseModel):
+    code: str
+    label: str
+    tile: int
+    tier: str
+    copies: int
+    obtained_at: datetime
+
+
+class EggSettingPublic(BaseModel):
+    ruby_cost: int
+    pity_rolls: int
+    duplicate_refund: int
+
+
+class EggSettingEdit(BaseModel):
+    """Sửa ba con số của gacha.
+
+    `duplicate_refund` phải NHỎ HƠN `ruby_cost`, và điều đó được kiểm ở cả tầng
+    này lẫn database: hoàn bằng hoặc hơn giá trứng là một cỗ máy in ruby, và một
+    ràng buộc chỉ nằm ở một tầng là ràng buộc mà tầng kia không biết.
+    """
+
+    ruby_cost: int | None = Field(default=None, ge=1, le=1000)
+    pity_rolls: int | None = Field(default=None, ge=1, le=100)
+    duplicate_refund: int | None = Field(default=None, ge=0, le=999)

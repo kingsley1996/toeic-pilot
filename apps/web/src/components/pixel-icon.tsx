@@ -115,6 +115,17 @@ const ICONS = {
     palette: { o: "#7a6440", C: "#e8d5a8" },
     rows: [".oo.", "oCCo", "oCCo", ".oo."],
   },
+  /**
+   * Quả trứng, cho khoảnh khắc trước khi biết nở ra con gì.
+   *
+   * Vẽ ở đây chứ không lấy từ tấm ghép: ba gói ô không có quả trứng nào, và cái
+   * cần ở đây là một hình đứng một mình trên nền bảng — cùng loại việc mà bộ
+   * biểu tượng này ra đời để làm.
+   */
+  egg: {
+    palette: { o: "#6b5a3a", E: "#f6ecd2", s: "#e0d0aa" },
+    rows: ["..oo..", ".oEEo.", "oEEEEo", "oEEEEo", "oEsEEo", "oEssEo", ".oEEo.", "..oo.."],
+  },
 } satisfies Record<string, IconDef>;
 
 export type PixelIconName = keyof typeof ICONS;

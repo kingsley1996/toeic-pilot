@@ -7,10 +7,12 @@ import {
   FolderTree,
   Frame,
   Gauge,
+  Gem,
   Headphones,
   Library,
   ListTree,
   Palette,
+  PawPrint,
   Sparkles,
   SquarePen,
   Tags,
@@ -70,6 +72,16 @@ const ADMIN_LINKS: AdminNavItem[] = [
     // menu: nó tồn tại chính vì không phép kiểm nào trong terminal thấy được một
     // cái khung đặt lệch, mà thứ duy nhất mở nó ra lại là gõ tay đường dẫn.
     children: [{ href: "/admin/progression/preview", label: "Frame preview", Icon: Frame }],
+  },
+  {
+    // Bảng loài thú và bảng giá ruby đứng cạnh nhau vì chúng là HAI NỬA của
+    // cùng một quyết định vận hành: cái này định giá, cái kia định thứ mua
+    // được. Cả hai là `require_role("admin")`, không phải `editor`.
+    href: "/admin/pet",
+    label: "Petland",
+    Icon: PawPrint,
+    group: "System",
+    children: [{ href: "/admin/ruby", label: "Ruby rates", Icon: Gem }],
   },
   {
     href: "/admin/ai",

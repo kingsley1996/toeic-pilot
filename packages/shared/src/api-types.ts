@@ -631,6 +631,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/pet/eggs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Egg Setting */
+        get: operations["read_egg_setting_api_v1_admin_pet_eggs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Egg Setting
+         * @description Giá trứng, bộ đếm an ủi, mức hoàn khi trùng.
+         *
+         *     Kiểm "hoàn < giá" ở ĐÂY nữa, không chỉ ở database: hai trường có thể đổi
+         *     trong cùng một lần gửi, nên phải so giá trị SAU khi áp cả hai. Ràng buộc
+         *     database là lưới cuối và nó ném ra một lỗi không dịch được cho người dùng;
+         *     chỗ này mới là chỗ nói được vì sao.
+         */
+        patch: operations["update_egg_setting_api_v1_admin_pet_eggs_patch"];
+        trace?: never;
+    };
     "/api/v1/admin/pet/species": {
         parameters: {
             query?: never;
@@ -1101,6 +1127,47 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ruby/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Rules
+         * @description Cả hàng đã tắt — màn quản trị là nơi DUY NHẤT nhìn thấy chúng.
+         *
+         *     Mảng trần chứ không `Page[T]`: bảng này bị chặn trên bởi số nguồn ruby có
+         *     trong mã, tức là bucket (A) của `app/schemas/common.py`. Bọc phong bì cho nó
+         *     là bắt frontend xử lý một trường hợp không thể xảy ra.
+         */
+        get: operations["list_rules_api_v1_admin_ruby_rules_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ruby/rules/{source_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Rule */
+        patch: operations["update_rule_api_v1_admin_ruby_rules__source_type__patch"];
         trace?: never;
     };
     "/api/v1/admin/test-collections": {
@@ -2280,7 +2347,27 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Switch Pet
+         * @description Đổi con đang nuôi sang một con ĐÃ CÓ trong bộ sưu tập.
+         *
+         *     **Mỗi con giữ chỉ số của riêng nó** — đói, sức, vui, XP, level và cả chỗ
+         *     đứng. Đổi qua đổi lại không mất gì và cũng không mượn được gì: con vừa chọn
+         *     ra đúng như lúc nó được cất đi, còn con vừa cất giữ nguyên trạng thái của nó
+         *     và tiếp tục đói theo đồng hồ thật.
+         *
+         *     Bản đầu làm ngược lại — một bộ chỉ số dùng chung cho cả góc, đổi con thì con
+         *     mới thừa hưởng độ no của con cũ. Nghe như "không mất tiến độ", nhưng nó nói
+         *     rằng mọi con là cùng một con mang hình khác nhau, và cả bộ sưu tập mất nghĩa.
+         *
+         *     Loài chưa sở hữu trả **404, không phải 403**: nói "bạn không có quyền" với
+         *     một con vật là sai nghĩa, và 404 cũng không tiết lộ loài nào tồn tại trong
+         *     bảng cho một người chưa mở được nó.
+         *
+         *     Loài đã bị TẮT vẫn đổi được nếu đã sở hữu — tắt một loài là gỡ nó khỏi
+         *     gacha, không phải tịch thu của người đã có (cùng luật `tile_for` đang giữ).
+         */
+        patch: operations["switch_pet_api_v1_pet_patch"];
         trace?: never;
     };
     "/api/v1/pet/actions": {
@@ -2310,6 +2397,81 @@ export interface paths {
          *     nguyên văn thay vì tự đoán.
          */
         post: operations["act_api_v1_pet_actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/collection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Collection
+         * @description Bộ sưu tập. Mảng trần: nó bị chặn trên bởi số loài có trong `pet_species`.
+         *
+         *     Đọc cả loài đã TẮT, cùng lý do `tile_for` đọc chúng: tắt một loài phải làm nó
+         *     biến khỏi gacha, không được làm con thú người ta đã có biến mất khỏi tủ.
+         */
+        get: operations["read_collection_api_v1_pet_collection_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/eggs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Egg
+         * @description Giá trứng, số dư, bộ đếm an ủi và BẢNG TỈ LỆ.
+         *
+         *     Tỉ lệ đi kèm chứ không nằm ở một endpoint riêng: nó phải hiện trên chính màn
+         *     hình có cái nút, và một lần đọc thứ hai là một cơ hội để hai con số lệch nhau
+         *     (ADR-010 §6.4).
+         */
+        get: operations["read_egg_api_v1_pet_eggs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/eggs/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Open Egg
+         * @description Mở một quả trứng. Quay ở MÁY CHỦ (ADR-010 §6.1).
+         *
+         *     Thiếu ruby trả **409**, không phải 400: yêu cầu hoàn toàn hợp lệ, chỉ là
+         *     trạng thái hiện tại không cho phép — cùng hình dạng với việc từ chối cho con
+         *     thú ăn khi nó đang no. Và lời từ chối nói ra CON SỐ, để giao diện lặp lại
+         *     được thay vì tự đoán.
+         *
+         *     Không có tham số nào cả. Một hạng trứng duy nhất nên không có gì để chọn, và
+         *     một endpoint nhận `tier` từ client là một endpoint nhận giá từ client.
+         */
+        post: operations["open_egg_api_v1_pet_eggs_open_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2558,6 +2720,55 @@ export interface paths {
          *     xử lý cho một tình huống không phải lỗi.
          */
         post: operations["mark_badges_seen_api_v1_progression_badges_seen_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ruby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Wallet
+         * @description Số dư, quà hôm nay, và các khoản gần nhất.
+         *
+         *     Lịch sử đi kèm số dư chứ không nằm ở một endpoint riêng: nó là thứ DUY NHẤT
+         *     trả lời được "tôi có 40 ruby, giờ còn 10", và một câu hỏi như thế được hỏi
+         *     ngay tại chỗ nhìn thấy số dư.
+         */
+        get: operations["read_wallet_api_v1_ruby_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ruby/gift": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim Gift
+         * @description Nhận quà hôm nay.
+         *
+         *     Bấm khi chưa học gì, hay bấm lần thứ hai, đều trả `granted = 0` với HTTP 200
+         *     chứ không phải một mã lỗi: cả hai đều là trạng thái bình thường của cái nút,
+         *     và giao diện đã có đủ dữ kiện trong `gift` để nói ra chuyện gì đang xảy ra.
+         *     Một mã 409 ở đây chỉ tạo ra một hộp thoại lỗi cho một cú bấm đúp.
+         */
+        post: operations["claim_gift_api_v1_ruby_gift_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3714,6 +3925,8 @@ export interface components {
              * Format: date
              */
             date: string;
+            /** Ruby Awarded */
+            ruby_awarded: number;
             /** Tasks */
             tasks: components["schemas"]["DailyTaskPublic"][];
             /** Xp Awarded */
@@ -4081,6 +4294,91 @@ export interface components {
             topic_id?: string | null;
             /** Transcript */
             transcript?: string | null;
+        };
+        /**
+         * EggChance
+         * @description Một dòng của bảng tỉ lệ, đúng như nó hiện trên màn hình mở trứng.
+         *
+         *     Tỉ lệ **phải** được in ra (ADR-010 §6.4). Nhiều nơi đã luật hoá việc này, và
+         *     kể cả không có luật thì đây là sản phẩm học cho học sinh — che tỉ lệ là thứ
+         *     không nên làm với đối tượng đó. `percent` tính ở máy chủ từ chính bảng trọng
+         *     số mà phép quay dùng, nên màn hình không thể nói khác máy.
+         */
+        EggChance: {
+            /** Code */
+            code: string;
+            /** Label */
+            label: string;
+            /** Percent */
+            percent: number;
+            /** Tier */
+            tier: string;
+            /** Tile */
+            tile: number;
+        };
+        /**
+         * EggPublic
+         * @description Mọi thứ màn mở trứng cần, trong một lần đọc.
+         */
+        EggPublic: {
+            /** Balance */
+            balance: number;
+            /** Can Open */
+            can_open: boolean;
+            /** Chances */
+            chances: components["schemas"]["EggChance"][];
+            /** Duplicate Refund */
+            duplicate_refund: number;
+            /** Owned */
+            owned: string[];
+            /** Pity Rolls */
+            pity_rolls: number;
+            /** Rolls Since Rare */
+            rolls_since_rare: number;
+            /** Ruby Cost */
+            ruby_cost: number;
+        };
+        /**
+         * EggResult
+         * @description Kết quả một lần mở trứng. Con thú đã nằm trong bộ sưu tập rồi.
+         */
+        EggResult: {
+            /** Balance */
+            balance: number;
+            /** Duplicate */
+            duplicate: boolean;
+            /** Forced Rare */
+            forced_rare: boolean;
+            /** Refund */
+            refund: number;
+            /** Rolls Since Rare */
+            rolls_since_rare: number;
+            species: components["schemas"]["EggChance"];
+        };
+        /**
+         * EggSettingEdit
+         * @description Sửa ba con số của gacha.
+         *
+         *     `duplicate_refund` phải NHỎ HƠN `ruby_cost`, và điều đó được kiểm ở cả tầng
+         *     này lẫn database: hoàn bằng hoặc hơn giá trứng là một cỗ máy in ruby, và một
+         *     ràng buộc chỉ nằm ở một tầng là ràng buộc mà tầng kia không biết.
+         */
+        EggSettingEdit: {
+            /** Duplicate Refund */
+            duplicate_refund?: number | null;
+            /** Pity Rolls */
+            pity_rolls?: number | null;
+            /** Ruby Cost */
+            ruby_cost?: number | null;
+        };
+        /** EggSettingPublic */
+        EggSettingPublic: {
+            /** Duplicate Refund */
+            duplicate_refund: number;
+            /** Pity Rolls */
+            pity_rolls: number;
+            /** Ruby Cost */
+            ruby_cost: number;
         };
         /** FacetAccuracy */
         FacetAccuracy: {
@@ -4658,6 +4956,24 @@ export interface components {
             /** Mood */
             mood: number;
         };
+        /** PetOwnedPublic */
+        PetOwnedPublic: {
+            /** Code */
+            code: string;
+            /** Copies */
+            copies: number;
+            /** Label */
+            label: string;
+            /**
+             * Obtained At
+             * Format: date-time
+             */
+            obtained_at: string;
+            /** Tier */
+            tier: string;
+            /** Tile */
+            tile: number;
+        };
         /** PetPublic */
         PetPublic: {
             /** Daily Cap */
@@ -4676,6 +4992,11 @@ export interface components {
             nickname: string | null;
             /** Species */
             species: string;
+            /**
+             * Tier
+             * @enum {string}
+             */
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
             /** Tile */
             tile: number;
             /** Tile X */
@@ -4695,6 +5016,11 @@ export interface components {
         PetSpeciesCreate: {
             /** Code */
             code: string;
+            /**
+             * Drop Weight
+             * @default 10
+             */
+            drop_weight: number;
             /** Label */
             label: string;
             /**
@@ -4707,7 +5033,7 @@ export interface components {
              * @default common
              * @enum {string}
              */
-            tier: "common" | "uncommon" | "rare" | "epic";
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
             /** Tile */
             tile: number;
         };
@@ -4720,6 +5046,8 @@ export interface components {
          *     cùng lý do `slug` của bộ đề không sửa được từ ô đổi tên.
          */
         PetSpeciesEdit: {
+            /** Drop Weight */
+            drop_weight?: number | null;
             /** Enabled */
             enabled?: boolean | null;
             /** Label */
@@ -4727,7 +5055,7 @@ export interface components {
             /** Position */
             position?: number | null;
             /** Tier */
-            tier?: ("common" | "uncommon" | "rare" | "epic") | null;
+            tier?: ("common" | "uncommon" | "rare" | "epic" | "legendary") | null;
             /** Tile */
             tile?: number | null;
         };
@@ -4743,6 +5071,8 @@ export interface components {
         PetSpeciesPublic: {
             /** Code */
             code: string;
+            /** Drop Weight */
+            drop_weight: number;
             /** Enabled */
             enabled: boolean;
             /** Label */
@@ -4753,9 +5083,21 @@ export interface components {
              * Tier
              * @enum {string}
              */
-            tier: "common" | "uncommon" | "rare" | "epic";
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
             /** Tile */
             tile: number;
+        };
+        /**
+         * PetSwitch
+         * @description Đổi con đang nuôi. Chỉ MÃ LOÀI, không gì khác.
+         *
+         *     Không nhận vị trí, nhu cầu hay XP, cùng lý do `PetMove` không nhận: đổi con
+         *     là một câu ngắn, và mọi trường thừa ở đây là một đường để client tự đặt chỉ
+         *     số cho mình.
+         */
+        PetSwitch: {
+            /** Species */
+            species: string;
         };
         /**
          * ProgressionConfigAdmin
@@ -5183,6 +5525,95 @@ export interface components {
              * @description One of [0, 3, 4, 5, 6]
              */
             grade: number;
+        };
+        /** RubyClaimResult */
+        RubyClaimResult: {
+            /** Balance */
+            balance: number;
+            gift: components["schemas"]["RubyGiftPublic"];
+            /** Granted */
+            granted: number;
+        };
+        /**
+         * RubyEntryPublic
+         * @description Một dòng trong lịch sử. `amount` âm là một khoản tiêu.
+         */
+        RubyEntryPublic: {
+            /** Amount */
+            amount: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Source Type */
+            source_type: string;
+        };
+        /**
+         * RubyGiftPublic
+         * @description Quà hôm nay.
+         *
+         *     Ba trạng thái chứ không phải hai, và giao diện cần cả ba để nói đúng câu:
+         *     chưa học gì (`unlocked=false` — *học một chút là mở được*), mở được mà chưa
+         *     nhận, và đã nhận rồi.
+         */
+        RubyGiftPublic: {
+            /** Amount */
+            amount: number;
+            /** Claimed */
+            claimed: boolean;
+            /** Unlocked */
+            unlocked: boolean;
+        };
+        /**
+         * RubyRuleEdit
+         * @description Sửa một mức thưởng.
+         *
+         *     `source_type` KHÔNG sửa được và không có đường tạo hàng mới: mỗi nguồn là
+         *     một truy vấn có thật trong mã (xong bài, thuộc chủ đề, nộp đề…), nên thêm
+         *     một mã lạ chỉ tạo ra một hàng không bao giờ được trao — đúng ranh giới mà
+         *     `kind` của daily task và `metric` của huy hiệu đã vẽ giữa dữ liệu và mã.
+         *
+         *     Muốn bỏ một nguồn thì TẮT nó. Xoá hàng cuối cùng khiến bảng rỗng, và bảng
+         *     rỗng nghĩa là "chưa từng cấu hình" — lần đọc sau gieo lại bộ mặc định.
+         */
+        RubyRuleEdit: {
+            /** Amount */
+            amount?: number | null;
+            /** Enabled */
+            enabled?: boolean | null;
+            /** Label */
+            label?: string | null;
+            /** Position */
+            position?: number | null;
+        };
+        /**
+         * RubyRulePublic
+         * @description Một dòng trong bảng mức thưởng, như màn quản trị nhìn thấy.
+         */
+        RubyRulePublic: {
+            /** Amount */
+            amount: number;
+            /** Enabled */
+            enabled: boolean;
+            /** Label */
+            label: string;
+            /** Position */
+            position: number;
+            /** Source Type */
+            source_type: string;
+        };
+        /** RubyWallet */
+        RubyWallet: {
+            /** Balance */
+            balance: number;
+            gift: components["schemas"]["RubyGiftPublic"];
+            /** Recent */
+            recent: components["schemas"]["RubyEntryPublic"][];
         };
         /** SetAdmin */
         SetAdmin: {
@@ -7197,6 +7628,59 @@ export interface operations {
             };
         };
     };
+    read_egg_setting_api_v1_admin_pet_eggs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EggSettingPublic"];
+                };
+            };
+        };
+    };
+    update_egg_setting_api_v1_admin_pet_eggs_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EggSettingEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EggSettingPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_species_api_v1_admin_pet_species_get: {
         parameters: {
             query?: never;
@@ -8015,6 +8499,61 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["QuestionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_rules_api_v1_admin_ruby_rules_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RubyRulePublic"][];
+                };
+            };
+        };
+    };
+    update_rule_api_v1_admin_ruby_rules__source_type__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source_type: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RubyRuleEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RubyRulePublic"];
                 };
             };
             /** @description Validation Error */
@@ -10099,6 +10638,39 @@ export interface operations {
             };
         };
     };
+    switch_pet_api_v1_pet_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetSwitch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     act_api_v1_pet_actions_post: {
         parameters: {
             query?: never;
@@ -10128,6 +10700,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_collection_api_v1_pet_collection_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetOwnedPublic"][];
+                };
+            };
+        };
+    };
+    read_egg_api_v1_pet_eggs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EggPublic"];
+                };
+            };
+        };
+    };
+    open_egg_api_v1_pet_eggs_open_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EggResult"];
                 };
             };
         };
@@ -10410,6 +11042,46 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    read_wallet_api_v1_ruby_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RubyWallet"];
+                };
+            };
+        };
+    };
+    claim_gift_api_v1_ruby_gift_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RubyClaimResult"];
+                };
             };
         };
     };

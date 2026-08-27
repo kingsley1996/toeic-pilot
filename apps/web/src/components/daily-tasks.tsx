@@ -130,6 +130,19 @@ function TaskRow({ task }: { task: DailyTaskPublic }) {
  * trường hợp thay vì đúng cho trường hợp hay gặp.
  */
 function announceAward(data: DailyTasksPublic, show: ReturnType<typeof useToast>["show"]) {
+  // Ruby báo RIÊNG, không gộp vào câu XP. Hai đơn vị đo hai thứ khác nhau — XP
+  // thưởng khối lượng, ruby thưởng việc làm xong — và một dòng "+12 XP, +10
+  // ruby" là chỗ người dùng thôi phân biệt được chúng, đúng thứ ADR-011 §1 dựng
+  // cả hệ này để tránh. Nó cũng đến từ một việc khác: đóng TRỌN một ngày, hoặc
+  // chuỗi ngày vừa chạm mốc bảy ngày.
+  if (data.ruby_awarded > 0) {
+    show({
+      tone: "ok",
+      title: "Kiếm được ruby",
+      description: `+${data.ruby_awarded} ruby cho việc làm xong.`,
+      dedupeKey: `ruby-daily-${data.date}`,
+    });
+  }
   if (data.xp_awarded <= 0) return;
   const left = data.tasks.filter((task) => !task.done).length;
   show({

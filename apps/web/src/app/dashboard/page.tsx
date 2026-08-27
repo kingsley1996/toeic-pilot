@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 
 import { BadgeNotice } from "@/components/badges";
 import { DailyTasksPanel } from "@/components/daily-tasks";
+import { RubyWalletPanel } from "@/components/ruby-wallet";
 import { ButtonLink, Page, PageHeader, Panel, PanelLink, Skeleton, Tag, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { clock } from "@/lib/attempt";
@@ -312,6 +313,11 @@ export default function TodayPage() {
           bài đang làm dở: bài dở có đồng hồ chạy ở máy chủ, nên nó là thứ duy
           nhất trên trang này mất mát nếu bị đẩy xuống. */}
       <DailyTasksPanel token={token} />
+
+      {/* Ví ruby đứng NGAY DƯỚI việc hôm nay: xong cả ba việc là một nguồn
+          ruby, nên hai khối này nói tiếp nhau. Nó ở đây chứ không ở góc thú
+          cưng vì người ta phải thấy nó ở chỗ họ HỌC (ADR-011 §7). */}
+      <RubyWalletPanel token={token} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel className="flex flex-col p-5 sm:p-6">

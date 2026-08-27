@@ -70,11 +70,12 @@ from app.schemas.learning import (
     WordDiff,
 )
 from app.services import dictation as dictation_grader
-from app.services import progression
+from app.services import progression, ruby
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
 from app.services.srs import (
     GRADES,
+    MASTERED_INTERVAL_DAYS,
     MASTERY_LEARNING,
     MASTERY_LEVELS,
     MASTERY_MASTERED,
@@ -616,8 +617,68 @@ def _apply_review(
     except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
         pass
 
+    _pay_ruby_for_a_mastered_topic(db, user_id, entry_id, outcome)
+
     db.commit()
     return outcome
+
+
+def _pay_ruby_for_a_mastered_topic(
+    db: Session, user_id: uuid.UUID, entry_id: uuid.UUID, outcome: ReviewOutcome
+) -> None:
+    """Ruby cho việc THUỘC TRỌN một chủ đề, không cho từng lượt ôn (ADR-011 §1).
+
+    Cổng đầu tiên là chính lượt vừa rồi: nếu từ này vẫn chưa "thuộc" thì chủ đề
+    chứa nó chắc chắn chưa xong, và cả nhánh này khỏi chạy. Đó là thứ giữ cho ba
+    trăm lượt ôn mỗi ngày không kéo theo ba trăm truy vấn đếm.
+
+    "Thuộc" ở đây là ĐÚNG định nghĩa `srs.mastery` dùng — `interval_days` đã tới
+    ngưỡng — chứ không phải "vừa bấm nút grade 6". Hai định nghĩa sẽ lệch nhau
+    ngay lần đầu ai đó chỉnh `MASTERED_INTERVAL_DAYS`, và cái lệch sẽ im lặng.
+
+    Một từ thuộc nhiều chủ đề (`vocabulary_topic` là many-to-many), nên một lượt
+    ôn có thể đóng nhiều chủ đề cùng lúc; `source_id` là chủ đề nên mỗi cái trả
+    đúng một lần, vĩnh viễn.
+    """
+    if outcome.interval_days < MASTERED_INTERVAL_DAYS:
+        return
+    try:
+        # `flush` để state vừa ghi nằm trong truy vấn đếm bên dưới: session chạy
+        # `autoflush=False`, nên không có nó thì từ CUỐI CÙNG của một chủ đề
+        # không bao giờ được tính, và chủ đề đó không bao giờ trả ruby.
+        db.flush()
+        topic_ids = list(
+            db.scalars(select(VocabularyTopic.topic_id).where(VocabularyTopic.entry_id == entry_id))
+        )
+        for topic_id in topic_ids:
+            member_ids = list(
+                db.scalars(
+                    select(VocabularyTopic.entry_id)
+                    .join(VocabularyEntry, VocabularyEntry.id == VocabularyTopic.entry_id)
+                    .where(
+                        VocabularyTopic.topic_id == topic_id,
+                        VocabularyEntry.status == PUBLISHED,
+                    )
+                )
+            )
+            if not member_ids:
+                continue
+            mastered = db.scalar(
+                select(func.count(VocabularyReviewState.entry_id)).where(
+                    VocabularyReviewState.user_id == user_id,
+                    VocabularyReviewState.entry_id.in_(member_ids),
+                    VocabularyReviewState.interval_days >= MASTERED_INTERVAL_DAYS,
+                )
+            )
+            if int(mastered or 0) >= len(member_ids):
+                ruby.earn(
+                    db,
+                    user_id=user_id,
+                    source_type="topic_mastered",
+                    source_id=topic_id,
+                )
+    except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
+        pass
 
 
 def _review_result(entry_id: uuid.UUID, grade: int, outcome: ReviewOutcome) -> ReviewResult:
@@ -963,6 +1024,7 @@ def submit_dictation(
             )
         except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
             pass
+        _pay_ruby_for_a_finished_story(db, current_user.id, item)
 
     db.commit()
     db.refresh(attempt)
@@ -1012,6 +1074,46 @@ def _completed_items(db: Session, user_id: uuid.UUID, item_ids: list[uuid.UUID])
         .distinct()
     ).all()
     return set(rows)
+
+
+def _pay_ruby_for_a_finished_story(db: Session, user_id: uuid.UUID, item: DictationItem) -> None:
+    """Ruby cho việc NGHE XONG CẢ BÀI, không cho từng câu (ADR-011 §1).
+
+    XP đã trả cho từng câu rồi. Ruby trả cho việc kết thúc, và đó là toàn bộ lý
+    do nó tồn tại như một đơn vị thứ hai: một nguồn ruby trả theo từng lượt nhỏ
+    biến nó thành XP thứ hai.
+
+    `source_id` là **story**, nên khoá duy nhất tự lo chuyện chống cày — gõ lại
+    câu cuối lần thứ mười không trả thêm lần nào. Câu lẻ (`story_id` NULL) không
+    có gì để "xong", nên không có ruby: nó là một câu, không phải một bài.
+
+    Nằm trong `try` vì luật gamification không được với tới bài nộp, đúng luật
+    `progression.award` đã đặt: bài nộp và tiến độ dictation phải giữ nguyên dù
+    nhánh này hỏng bất cứ đâu.
+    """
+    if item.story_id is None:
+        return
+    try:
+        siblings = list(
+            db.scalars(
+                select(DictationItem.id).where(
+                    DictationItem.story_id == item.story_id,
+                    DictationItem.status == PUBLISHED,
+                )
+            )
+        )
+        # Lượt vừa nộp đã `flush` nên nó nằm trong truy vấn này — cùng giao dịch,
+        # chưa commit. Đọc sau commit thì câu cuối cùng của một bài không bao giờ
+        # tính, và bài đó không bao giờ trả ruby.
+        if siblings and _completed_items(db, user_id, siblings) >= set(siblings):
+            ruby.earn(
+                db,
+                user_id=user_id,
+                source_type="story_complete",
+                source_id=item.story_id,
+            )
+    except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
+        pass
 
 
 @router.get("/dictation-topics", response_model=list[DictationTopicPublic])

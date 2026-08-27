@@ -1,0 +1,196 @@
+"""Mở trứng: quay ở máy chủ, tỉ lệ khớp bảng, pity, trùng thì hoàn ruby (ADR-010 lát 8).
+
+Phép quay nhận `rng` làm tham số, cùng lý do `srs.review` nhận `now`: một phép
+quay không lặp lại được thì không bài kiểm nào nói được điều gì về tỉ lệ.
+"""
+
+import random
+import uuid
+from collections.abc import Callable
+
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
+from app.api.routes.pet import DEFAULT_SPECIES, ensure_pet
+from app.models import EggSetting, PetOwned, PetSpecies, User
+from app.models.pet import DEFAULT_PET_SPECIES, RARE_TIERS
+from app.services import gacha, ruby
+
+
+def _learner(db: Session, email: str = "gacha@example.com", ruby_amount: int = 0) -> User:
+    user = User(email=email, hashed_password="x", role="learner")
+    db.add(user)
+    db.commit()
+    if ruby_amount:
+        ruby.earn(
+            db,
+            user_id=user.id,
+            source_type="topic_mastered",
+            source_id=uuid.uuid4(),
+            amount=ruby_amount,
+        )
+        db.commit()
+    return user
+
+
+def _only(db: Session, *codes: str) -> None:
+    """Thu bảng loài xuống đúng mấy mã này, để phép quay đoán trước được."""
+    gacha.chances(db)  # gieo bộ mặc định
+    for row in db.query(PetSpecies).all():
+        row.enabled = row.code in codes
+    db.commit()
+
+
+def test_the_printed_odds_come_from_the_same_table_the_roll_uses(db_session: Session) -> None:
+    """Tỉ lệ in ra màn hình phải khớp bảng cấu hình (ADR-010 §6.4).
+
+    Hai phép tính là hai cơ hội để màn hình nói một đằng và máy làm một nẻo. Ghim
+    ở đây: tổng luôn là 100, và tắt một loài chia lại phần của nó chứ không để
+    bảng cộng ra 87.
+    """
+    _only(db_session, "duck", "tiger")  # 40 và 4
+    rows = {row.code: row.percent for row in gacha.chances(db_session)}
+    assert rows == pytest.approx({"duck": 40 / 44 * 100, "tiger": 4 / 44 * 100})
+    assert sum(rows.values()) == pytest.approx(100)
+
+
+def test_a_zero_weight_species_never_drops(db_session: Session) -> None:
+    """Trọng số 0 khác `enabled = false`: loài vẫn hiện ở tủ, chỉ không rơi ra."""
+    _only(db_session, "duck", "tiger")
+    tiger = db_session.get(PetSpecies, "tiger")
+    assert tiger is not None
+    tiger.drop_weight = 0
+    db_session.commit()
+    assert [row.code for row in gacha.chances(db_session)] == ["duck"]
+
+
+def test_opening_an_egg_spends_ruby_and_writes_the_collection(db_session: Session) -> None:
+    user = _learner(db_session, ruby_amount=30)
+    _only(db_session, "duck")
+    state, _pet = ensure_pet(db_session, user.id)
+
+    result = gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
+    db_session.commit()
+
+    assert result.species.code == "duck" and result.duplicate is False
+    assert result.balance == 5 and ruby.balance(db_session, user.id) == 5
+    owned = db_session.get(PetOwned, (user.id, "duck"))
+    assert owned is not None and owned.copies == 1
+
+
+def test_a_duplicate_refunds_ruby_instead_of_handing_out_nothing(db_session: Session) -> None:
+    """Trùng thì hoàn một phần bằng chính ruby.
+
+    Mở quả thứ mười và nhận đúng con đã có, không được gì cả, là trải nghiệm dạy
+    người ta ngừng mở. Hoàn NHỎ HƠN giá trứng, nếu không thì mở trùng liên tục là
+    một cỗ máy in ruby — ràng buộc đó nằm ở cả database lẫn màn quản trị.
+    """
+    user = _learner(db_session, ruby_amount=60)
+    _only(db_session, "duck")
+    state, _pet = ensure_pet(db_session, user.id)
+
+    gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
+    second = gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(2))
+    db_session.commit()
+
+    assert second.duplicate is True and second.refund == 10
+    # 60 − 25 − 25 + 10
+    assert ruby.balance(db_session, user.id) == 20
+    owned = db_session.get(PetOwned, (user.id, "duck"))
+    assert owned is not None and owned.copies == 2
+
+
+def test_the_pity_counter_forces_a_rare_and_then_resets(db_session: Session) -> None:
+    """Ngẫu nhiên thuần cho ra những chuỗi xui mà người chơi đọc là "hỏng".
+
+    Bộ đếm chỉ về 0 khi THẬT SỰ ra hạng hiếm, kể cả khi chính nó ép ra.
+    """
+    user = _learner(db_session, ruby_amount=25 * 12)
+    _only(db_session, "duck", "tiger")
+    duck = db_session.get(PetSpecies, "duck")
+    assert duck is not None
+    duck.drop_weight = 1000  # gần như chắc chắn ra vịt nếu không có pity
+    db_session.commit()
+
+    state, _pet = ensure_pet(db_session, user.id)
+    config = gacha.settings_row(db_session)
+    seen = []
+    for _ in range(config.pity_rolls + 1):
+        result = gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(7))
+        seen.append(result)
+    db_session.commit()
+
+    assert all(r.species.tier not in RARE_TIERS for r in seen[:-1])
+    last = seen[-1]
+    assert last.species.tier in RARE_TIERS and last.forced_rare is True
+    assert last.rolls_since_rare == 0
+
+
+def test_opening_without_enough_ruby_is_refused_and_costs_nothing(db_session: Session) -> None:
+    user = _learner(db_session, ruby_amount=5)
+    _only(db_session, "duck")
+    state, _pet = ensure_pet(db_session, user.id)
+
+    with pytest.raises(ruby.NotEnoughRuby):
+        gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
+    assert ruby.balance(db_session, user.id) == 5
+    assert db_session.get(PetOwned, (user.id, "duck")) is None
+
+
+def test_the_endpoint_refuses_with_409_and_names_the_number(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Yêu cầu hợp lệ, trạng thái không cho phép — 409 chứ không 400.
+
+    Lời từ chối nói ra CON SỐ để giao diện lặp lại được thay vì tự đoán, đúng
+    khuôn lời từ chối của `POST /pet/actions`.
+    """
+    headers = auth("learner")
+    refused = client.post("/api/v1/pet/eggs/open", headers=headers)
+    assert refused.status_code == 409
+    assert "25" in refused.json()["detail"]
+
+
+def test_the_egg_screen_reads_everything_in_one_call(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    headers = auth("learner")
+    body = client.get("/api/v1/pet/eggs", headers=headers).json()
+    assert body["ruby_cost"] == 25 and body["can_open"] is False
+    # Đếm theo bảng loài chứ không theo một con số chép tay: bộ mặc định là thứ
+    # còn dài ra nữa, và một bài kiểm ghim "12" sẽ đỏ vì nội dung chứ không vì
+    # lỗi — đúng loại đỏ khiến người ta thôi tin bộ kiểm.
+    assert len(body["chances"]) == len(DEFAULT_PET_SPECIES)
+    assert sum(row["percent"] for row in body["chances"]) == pytest.approx(100, abs=0.5)
+    # Con đầu tiên đã nằm trong tủ: `ensure_pet` ghi nó ở đường đọc, vì nó không
+    # đến từ quả trứng nào và sẽ không có gì khác ghi nó vào.
+    assert body["owned"] == [DEFAULT_SPECIES]
+
+
+def test_only_an_admin_can_price_an_egg(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    assert client.get("/api/v1/admin/pet/eggs", headers=auth("editor")).status_code == 403
+    assert client.get("/api/v1/admin/pet/eggs", headers=auth("admin")).status_code == 200
+
+
+def test_a_refund_at_or_above_the_price_is_refused(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Hoàn ≥ giá trứng là một cỗ máy in ruby, và hai trường đổi được cùng lúc —
+    nên phép so phải chạy trên giá trị SAU khi áp cả hai."""
+    headers = auth("admin")
+    bad = client.patch("/api/v1/admin/pet/eggs", json={"duplicate_refund": 25}, headers=headers)
+    assert bad.status_code == 422 and "print" in bad.json()["detail"]
+
+    good = client.patch(
+        "/api/v1/admin/pet/eggs", json={"ruby_cost": 40, "duplicate_refund": 30}, headers=headers
+    )
+    assert good.status_code == 200 and good.json() == {
+        "ruby_cost": 40,
+        "pity_rolls": 10,
+        "duplicate_refund": 30,
+    }
+    row = db_session.get(EggSetting, 1)
+    assert row is not None and row.ruby_cost == 40

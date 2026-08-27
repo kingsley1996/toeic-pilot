@@ -58,7 +58,7 @@ class DailyTask:
     xp: int
 
 
-def _day_bounds(day: date, timezone: str) -> tuple[datetime, datetime]:
+def day_bounds(day: date, timezone: str) -> tuple[datetime, datetime]:
     """Nửa khoảng [đầu ngày, đầu ngày kế) theo múi giờ người học, quy về UTC.
 
     So sánh trong SQL phải là hai mốc UTC chứ không phải một phép quy đổi múi giờ
@@ -178,7 +178,7 @@ def tasks_for(
     """
     when = now or datetime.now(tz=UTC)
     day = progression.local_today(when, timezone)
-    lo, hi = _day_bounds(day, timezone)
+    lo, hi = day_bounds(day, timezone)
 
     # Đo MỘT LẦN cho mỗi loại, dù có bao nhiêu khe cùng loại: hai khe "ôn từ" với
     # hai mục tiêu khác nhau là chuyện hợp lệ, và đếm lại cho từng khe là chạy

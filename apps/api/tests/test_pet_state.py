@@ -14,7 +14,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models import PetState, User
+from app.models import PetOwned, PetState, User
 
 
 def make_user(db: Session, email: str) -> User:
@@ -34,9 +34,13 @@ def test_a_pet_row_is_reachable_through_the_models_package(db_session: Session) 
     """
     user = make_user(db_session, "pet-owner@example.com")
     db_session.add(PetState(user_id=user.id, species="cat"))
+    db_session.add(PetOwned(user_id=user.id, species="cat"))
     db_session.commit()
 
-    row = db_session.get(PetState, user.id)
+    state = db_session.get(PetState, user.id)
+    assert state is not None and state.species == "cat"
+    # Chỉ số nằm trên CON, không trên góc: mỗi con một bộ.
+    row = db_session.get(PetOwned, (user.id, "cat"))
     assert row is not None
     assert row.tile_x == 3 and row.tile_y == 8
     assert row.level_reached == 1
@@ -52,15 +56,16 @@ def test_a_need_outside_zero_to_one_is_refused(db_session: Session, field: str) 
     chỉ lộ ra dưới dạng một thanh chỉ số tràn khỏi khung.
     """
     user = make_user(db_session, f"pet-{field}@example.com")
-    db_session.add(PetState(user_id=user.id, species="cat", **{field: 1.4}))
+    db_session.add(PetOwned(user_id=user.id, species="cat", **{field: 1.4}))
     with pytest.raises(IntegrityError):
         db_session.commit()
     db_session.rollback()
 
 
-def test_one_pet_per_learner(db_session: Session) -> None:
-    # Khoá chính CHÍNH LÀ khoá ngoại, nên "mỗi người một con" được ép ở tầng
-    # database chứ không phải bằng một quy ước ai đó phải nhớ.
+def test_one_pet_corner_per_learner(db_session: Session) -> None:
+    # Khoá chính CHÍNH LÀ khoá ngoại, nên "mỗi người một góc thú cưng" được ép ở
+    # tầng database chứ không phải bằng một quy ước ai đó phải nhớ. Số CON thì
+    # không giới hạn — chúng nằm ở `pet_owned`, khoá `(user_id, species)`.
     user = make_user(db_session, "pet-twice@example.com")
     db_session.add(PetState(user_id=user.id, species="cat"))
     db_session.commit()
@@ -210,7 +215,7 @@ def test_needs_fall_between_reads_without_anyone_doing_anything(
     before = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
 
     user = db_session.scalars(select(User).where(User.email == "hungry@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.needs_at = datetime.now(UTC) - timedelta(hours=12)
     db_session.commit()
@@ -229,7 +234,7 @@ def test_reading_does_not_write(client: TestClient, db_session: Session) -> None
     headers = auth_headers(client, "readonly@example.com")
     client.get("/api/v1/pet", headers=headers)
     user = db_session.scalars(select(User).where(User.email == "readonly@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.needs_at = datetime.now(UTC) - timedelta(hours=6)
     db_session.commit()
@@ -237,7 +242,7 @@ def test_reading_does_not_write(client: TestClient, db_session: Session) -> None
 
     client.get("/api/v1/pet", headers=headers)
     db_session.expire_all()
-    assert db_session.get(PetState, user.id).needs_at == stamp  # type: ignore[union-attr]
+    assert db_session.get(PetOwned, (user.id, "cat")).needs_at == stamp  # type: ignore[union-attr]
 
 
 def test_feeding_after_a_long_absence_still_counts(client: TestClient, db_session: Session) -> None:
@@ -249,7 +254,7 @@ def test_feeding_after_a_long_absence_still_counts(client: TestClient, db_sessio
     headers = auth_headers(client, "returning@example.com")
     client.get("/api/v1/pet", headers=headers)
     user = db_session.scalars(select(User).where(User.email == "returning@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.needs_at = datetime.now(UTC) - timedelta(days=7)
     db_session.commit()
@@ -269,7 +274,7 @@ def test_an_action_moves_the_timestamp_forward(client: TestClient, db_session: S
     headers = auth_headers(client, "stamp@example.com")
     client.get("/api/v1/pet", headers=headers)
     user = db_session.scalars(select(User).where(User.email == "stamp@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.needs_at = datetime.now(UTC) - timedelta(days=2)
     db_session.commit()
@@ -335,7 +340,7 @@ def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Ses
         client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
 
     user = db_session.scalars(select(User).where(User.email == "capped@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.fullness = Decimal("0.10")
     pet.needs_at = datetime.now(UTC)
@@ -352,7 +357,9 @@ def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Sess
     client.post("/api/v1/pet/actions", json={"action": "walk"}, headers=headers)
 
     user = db_session.scalars(select(User).where(User.email == "tomorrow@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    # Bộ đếm ngày nằm trên CON, không trên góc (migration `042`): để ở góc thì
+    # một con vừa nở ra không nhận nổi điểm nào cho tới hôm sau.
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     assert pet.xp_today == 5
     pet.xp_day = pet.xp_day - timedelta(days=1) if pet.xp_day else None
@@ -364,6 +371,40 @@ def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Sess
     assert again["xp"] == 6
 
 
+def test_a_freshly_hatched_pet_can_still_earn_today(
+    client: TestClient, db_session: Session
+) -> None:
+    """Trần XP ngày là của TỪNG CON, không của người — và đây là lỗi đã có thật.
+
+    Trước migration `042` bộ đếm nằm trên `pet_state`, nên một con vừa nở ra
+    không nhận nổi một điểm XP nào cho tới hôm sau: người ta mở trứng SAU khi đã
+    chơi với con cũ, nên trần gần như luôn cạn đúng lúc con mới xuất hiện. Chọc
+    nó ba mươi cái mà `xp` vẫn 0, `level` vẫn 1, và không có gì nói vì sao.
+
+    Thứ trần này bảo vệ là "một con không lên max level trong một buổi", mà level
+    là của từng con — nên trần theo từng con giữ nguyên đúng điều đó.
+    """
+    headers = auth_headers(client, "second-pet@example.com")
+    client.get("/api/v1/pet", headers=headers)
+
+    # Dùng hết trần của con đang nuôi.
+    for _ in range(40):
+        client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
+    first = client.get("/api/v1/pet", headers=headers).json()
+    assert first["xp_today"] == first["daily_cap"]
+
+    # Một con khác vào tủ, rồi đổi sang nó.
+    user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
+    db_session.add(PetOwned(user_id=user.id, species="duck"))
+    db_session.commit()
+    switched = client.patch("/api/v1/pet", json={"species": "duck"}, headers=headers)
+    assert switched.status_code == 200
+    assert switched.json()["xp_today"] == 0
+
+    poked = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
+    assert poked["xp"] == 1, "con mới phải kiếm được XP ngay trong ngày"
+
+
 def test_the_pet_level_never_drops(client: TestClient, db_session: Session) -> None:
     """`level_reached` là mốc chỉ tăng, y như của người học.
 
@@ -372,7 +413,7 @@ def test_the_pet_level_never_drops(client: TestClient, db_session: Session) -> N
     headers = auth_headers(client, "highwater@example.com")
     client.get("/api/v1/pet", headers=headers)
     user = db_session.scalars(select(User).where(User.email == "highwater@example.com")).one()
-    pet = db_session.get(PetState, user.id)
+    pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
     pet.level_reached = 7
     pet.xp = 0

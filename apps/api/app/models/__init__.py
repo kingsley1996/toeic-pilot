@@ -14,7 +14,7 @@ from app.models.dictation import (
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
-from app.models.pet import PetSpecies, PetState
+from app.models.pet import EggSetting, PetOwned, PetSpecies, PetState
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -41,6 +41,7 @@ from app.models.progression import (
     UserBadge,
     XpEvent,
 )
+from app.models.ruby import RubyEvent, RubyRule
 from app.models.scoring import ScoreConversion, ScoreScale
 from app.models.topic import Topic
 from app.models.user import User
@@ -96,8 +97,12 @@ __all__ = [
     "ImageAsset",
     "PracticeTest",
     "PracticeTestQuestion",
+    "EggSetting",
+    "PetOwned",
     "PetSpecies",
     "PetState",
+    "RubyEvent",
+    "RubyRule",
     "Question",
     "QuestionLabel",
     "QuestionOption",
