@@ -657,6 +657,69 @@ export interface paths {
         patch: operations["update_egg_setting_api_v1_admin_pet_eggs_patch"];
         trace?: never;
     };
+    "/api/v1/admin/pet/encounters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Encounter Setting */
+        get: operations["read_encounter_setting_api_v1_admin_pet_encounters_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Encounter Setting
+         * @description Nhịp sinh, tuổi thọ, mức thưởng, số bước.
+         *
+         *     Từ chối `life >= gap`, và lý do là một cách hỏng IM LẶNG: chỉ một cuộc chạm
+         *     mặt được tồn tại cùng lúc, nên một cuộc sống lâu hơn khoảng cách giữa hai
+         *     lần sinh sẽ chiếm chỗ suốt — giờ hẹn tới rồi trôi qua mà không ai xuất hiện,
+         *     và không có lỗi nào để mà đọc. So SAU khi áp cả hai thay đổi, cùng lý do
+         *     "hoàn < giá" ở trên: hai trường có thể đổi trong cùng một lần gửi.
+         */
+        patch: operations["update_encounter_setting_api_v1_admin_pet_encounters_patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/pet/encounters/spawn": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Spawn Encounters
+         * @description Gọi ngay đủ trần NPC và kẻ xâm nhập, **cho chính tài khoản đang gọi**.
+         *
+         *     Đây là công cụ thử, và nó chỉ tồn tại vì đường thật cố ý CHẬM: nhịp mặc định
+         *     là hai mươi phút cho NPC và một giờ cho kẻ xâm nhập, mà một tài khoản mới thì
+         *     lần đọc đầu chỉ đặt mốc chứ không sinh ai. Không có nút này thì mỗi lần sửa
+         *     một dòng trong hoạt cảnh chiến đấu là hai mươi phút chờ.
+         *
+         *     Ba tính chất giữ cho nó không thành một cửa hậu:
+         *
+         *     * **Chỉ cho chính mình.** Không nhận `user_id`, nên không ai gọi kẻ xâm nhập
+         *       vào bản đồ của người khác.
+         *     * **Vẫn tôn trọng trần.** Gọi mười lần cũng chỉ ra bốn người.
+         *     * **Đi qua đúng `_spawn` của đường thật**, nên thứ hiện ra là thứ thật —
+         *       cùng bộ chọn nội dung, cùng số bước, cùng mức thưởng.
+         *
+         *     `require_role("admin")` chứ không `editor`: đây là quyền vận hành, cùng ranh
+         *     giới mà cả tệp này đã vẽ.
+         */
+        post: operations["spawn_encounters_api_v1_admin_pet_encounters_spawn_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/pet/species": {
         parameters: {
             query?: never;
@@ -2505,6 +2568,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pet/encounters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Encounters
+         * @description Cuộc chạm mặt đang chờ, hoặc `null`.
+         *
+         *     **Lần đọc này CÓ GHI**, và đó là ngoại lệ có chủ ý — cùng hình dạng với
+         *     `GET /daily-tasks`, và cùng lý do: sinh ra lúc đọc là thứ bảo đảm không ai
+         *     bỏ lỡ được một cuộc chạm mặt sinh ra trong lúc họ đang ngủ (ADR-012 §1).
+         *     Không có đường nào khác để giữ tính chất ấy mà không dựng một job nền, mà
+         *     một job nền thì lại sinh ra đúng cái nó phải tránh.
+         *
+         *     An toàn vì nhịp sinh được **hẹn trước**: gọi lại mười lần trong một giây
+         *     không tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.
+         */
+        get: operations["read_encounters_api_v1_pet_encounters_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/encounters/{encounter_id}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer Encounter
+         * @description Trả lời một bước, và **câu trả lời đi thẳng vào bộ chấm thật**.
+         *
+         *     Với từ vựng, nó gọi đúng `_apply_review` mà `POST /vocabulary/{id}/review`
+         *     gọi — nên lượt ôn này ghi vào SM-2, vào `vocabulary_review_log`, và chảy tiếp
+         *     vào chuỗi ngày y như mọi lượt ôn khác. Nếu không, người học vừa làm bài xong
+         *     mà lịch ôn không đổi: họ đã học, và hệ thống giả vờ như chưa.
+         *
+         *     Đây cũng là lý do endpoint này nhận `grade` chứ không nhận "đúng/sai" —
+         *     thang điểm là của SM-2, và một thang thứ hai ở đây là bộ chấm thứ hai.
+         */
+        post: operations["answer_encounter_api_v1_pet_encounters__encounter_id__answer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pet/encounters/{encounter_id}/hint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Take Hint
+         * @description Mở một phần từ cần gõ. Tối đa `MAX_HINTS` lần cho mỗi bước.
+         *
+         *     **Trần đếm ở máy chủ**, và đó là điều kiện để cái nút này không phá chính bài
+         *     kiểm nó đang giúp: xin đủ nhiều lần thì gợi ý in ra cả từ, và lúc đó phần
+         *     thưởng ruby chỉ còn là một cái nút bấm nhiều lần. Một bộ đếm trong `useState`
+         *     thì devtools đặt lại được trong hai giây.
+         *
+         *     Chỉ dạng **gõ lại từ**. Dạng chọn nghĩa đã có sẵn bốn ô để loại trừ, và dạng
+         *     chép chính tả thì "mở vài ký tự" của cả một câu là mở luôn đáp án.
+         */
+        post: operations["take_hint_api_v1_pet_encounters__encounter_id__hint_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pet/position": {
         parameters: {
             query?: never;
@@ -4323,6 +4471,23 @@ export interface components {
             transcript?: string | null;
         };
         /**
+         * DiffWord
+         * @description Một từ trong bảng so sánh của bài chép chính tả.
+         *
+         *     Khai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một
+         *     bản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất
+         *     đúng hai cái tên mà giao diện đọc.
+         */
+        DiffWord: {
+            /**
+             * Op
+             * @enum {string}
+             */
+            op: "match" | "missing" | "extra";
+            /** Word */
+            word: string;
+        };
+        /**
          * EggBatchResult
          * @description Kết quả mở nhiều quả một lượt.
          *
@@ -4429,6 +4594,198 @@ export interface components {
             pity_rolls: number;
             /** Ruby Cost */
             ruby_cost: number;
+        };
+        /**
+         * EncounterAnswer
+         * @description Trả lời một bước.
+         *
+         *     **Máy chủ nhận CÂU TRẢ LỜI, không nhận điểm.** Bản đầu nhận thẳng điểm SM-2
+         *     do người học tự chấm ở màn thẻ lật; điểm ấy là thứ quyết định có trả ruby
+         *     hay không, nên nó là một trường "hãy trả tôi hai mươi ruby" gửi từ trình
+         *     duyệt. Giờ máy chủ tự chấm rồi mới quy ra điểm, qua đúng `recall.judge` và
+         *     `recall.grade_for` mà màn gõ lại từ đang dùng — vẫn không có bộ chấm thứ hai
+         *     nào (ADR-012 §2).
+         *
+         *     Hai trường, không phải hai endpoint: cách hỏi là thuộc tính của cuộc chạm
+         *     mặt chứ không phải của lời gọi, nên tách đường sẽ để client tự khai nó đang
+         *     trả lời dạng gì — và khai sai thì bước vẫn tính.
+         */
+        EncounterAnswer: {
+            /**
+             * Choice
+             * @default
+             */
+            choice: string;
+            /**
+             * Text
+             * @default
+             */
+            text: string;
+        };
+        /**
+         * EncounterChoice
+         * @description Một lựa chọn của câu hỏi chọn nghĩa.
+         *
+         *     `key` là mã băm theo (cuộc chạm mặt, mục từ) chứ không phải id mục từ, nên
+         *     nó vô nghĩa ở mọi nơi khác và không nói được đáp án nào đúng. Máy chủ tính
+         *     lại đúng mã ấy cho mục tiêu của cuộc chạm mặt để đối chiếu — không lưu gì
+         *     thêm, không có bảng phiên nào phải dọn.
+         */
+        EncounterChoice: {
+            /** Key */
+            key: string;
+            /** Text */
+            text: string;
+        };
+        /**
+         * EncounterHint
+         * @description Một lần gợi ý cho nhiệm vụ gõ lại từ.
+         *
+         *     Trả về từ ĐÃ CHE, không trả về số chữ đã mở: giao diện chỉ việc in ra, nên
+         *     không có phép ghép chuỗi nào ở phía trình duyệt để mà làm sai — và cũng không
+         *     có đường nào để một client tự "mở thêm" bằng cách gọi lại với số lớn hơn.
+         */
+        EncounterHint: {
+            /** Hint */
+            hint: string;
+            /** Hints Left */
+            hints_left: number;
+        };
+        /**
+         * EncounterPublic
+         * @description Một cuộc chạm mặt đang chờ.
+         *
+         *     **Không có ô sprite và không có toạ độ**: trình duyệt tự chọn con vật và chỗ
+         *     đứng từ `id`. Máy chủ không đọc `map.json` (cùng lý do `PUT /pet/position`
+         *     không kiểm ô đi được), và bảng phân vai sinh vật sống ở frontend.
+         */
+        EncounterPublic: {
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "npc" | "intruder";
+            /** Reward Ruby */
+            reward_ruby: number;
+            /** Steps Done */
+            steps_done: number;
+            /** Steps Total */
+            steps_total: number;
+            task: components["schemas"]["EncounterTask"];
+        };
+        /** EncounterResult */
+        EncounterResult: {
+            /** Balance */
+            balance: number;
+            /** Correct */
+            correct: boolean;
+            /** Done */
+            done: boolean;
+            encounter: components["schemas"]["EncounterPublic"] | null;
+            /** Reward Ruby */
+            reward_ruby: number;
+            /** Steps Done */
+            steps_done: number;
+            /** Steps Total */
+            steps_total: number;
+            /** Word Diff */
+            word_diff?: components["schemas"]["DiffWord"][] | null;
+        };
+        /**
+         * EncounterSettingEdit
+         * @description Sửa cấu hình chạm mặt. Khoá vắng mặt = đừng đụng tới.
+         *
+         *     Cận trên không phải để làm khó: `life` dài hơn `gap` nghĩa là cuộc trước
+         *     chưa hết hạn thì cuộc sau đã tới giờ, và vì mỗi lúc chỉ một cuộc được tồn
+         *     tại, giờ hẹn cứ trôi qua mà không sinh được gì — tính năng im lặng chứ không
+         *     báo lỗi. Chỗ kiểm chuyện đó là endpoint, vì nó so hai trường với nhau.
+         */
+        EncounterSettingEdit: {
+            /** Intruder Gap Seconds */
+            intruder_gap_seconds?: number | null;
+            /** Intruder Life Seconds */
+            intruder_life_seconds?: number | null;
+            /** Intruder Reward */
+            intruder_reward?: number | null;
+            /** Intruder Steps */
+            intruder_steps?: number | null;
+            /** Npc Gap Seconds */
+            npc_gap_seconds?: number | null;
+            /** Npc Life Seconds */
+            npc_life_seconds?: number | null;
+            /** Npc Reward */
+            npc_reward?: number | null;
+        };
+        /**
+         * EncounterSettingPublic
+         * @description Bảy con số của cơ chế chạm mặt.
+         *
+         *     Nhịp sinh **phải** sửa được từ đây, và đó là điều kiện để lập luận "phần
+         *     thưởng không cày được" của ADR-012 §6 đứng vững: thứ giới hạn ruby từ nhiệm
+         *     vụ là nhịp xuất hiện, và một trần nằm rải rác trong mã thì không ai chỉnh
+         *     được vào ngày phát hiện nó sai.
+         */
+        EncounterSettingPublic: {
+            /** Intruder Gap Seconds */
+            intruder_gap_seconds: number;
+            /** Intruder Life Seconds */
+            intruder_life_seconds: number;
+            /** Intruder Reward */
+            intruder_reward: number;
+            /** Intruder Steps */
+            intruder_steps: number;
+            /** Npc Gap Seconds */
+            npc_gap_seconds: number;
+            /** Npc Life Seconds */
+            npc_life_seconds: number;
+            /** Npc Reward */
+            npc_reward: number;
+        };
+        /**
+         * EncounterTask
+         * @description Nội dung của nhiệm vụ, đủ để hiện lên và không hơn.
+         *
+         *     Dạng từ vựng gửi kèm nghĩa và ví dụ vì người học TỰ CHẤM — đây là thẻ lật,
+         *     và thẻ lật thì phải lật ra được. Dạng trắc nghiệm (chưa mở) sẽ dùng đúng
+         *     `QuestionPublic`, thứ cố ý không mang `is_correct`: một schema "gọn hơn" kèm
+         *     đáp án cho tiện chấm ở client là chỗ đáp án rời máy chủ trước khi trả lời.
+         */
+        EncounterTask: {
+            /** Audio Url */
+            audio_url?: string | null;
+            /** Choices */
+            choices?: components["schemas"]["EncounterChoice"][] | null;
+            /** Entry Id */
+            entry_id?: string | null;
+            /**
+             * Hints Left
+             * @default 0
+             */
+            hints_left: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "vocabulary" | "dictation" | "quiz";
+            /**
+             * Mode
+             * @default typing
+             * @enum {string}
+             */
+            mode: "typing" | "choice" | "dictation";
+            /** Part Of Speech */
+            part_of_speech?: string | null;
+            /** Prompt */
+            prompt?: string | null;
+            /** Word Count */
+            word_count?: number | null;
         };
         /** FacetAccuracy */
         FacetAccuracy: {
@@ -7733,6 +8090,81 @@ export interface operations {
             };
         };
     };
+    read_encounter_setting_api_v1_admin_pet_encounters_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterSettingPublic"];
+                };
+            };
+        };
+    };
+    update_encounter_setting_api_v1_admin_pet_encounters_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EncounterSettingEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterSettingPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    spawn_encounters_api_v1_admin_pet_encounters_spawn_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
+                };
+            };
+        };
+    };
     list_species_api_v1_admin_pet_species_get: {
         parameters: {
             query?: never;
@@ -10832,6 +11264,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EggBatchResult"];
+                };
+            };
+        };
+    };
+    read_encounters_api_v1_pet_encounters_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterPublic"][];
+                };
+            };
+        };
+    };
+    answer_encounter_api_v1_pet_encounters__encounter_id__answer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EncounterAnswer"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    take_hint_api_v1_pet_encounters__encounter_id__hint_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EncounterHint"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

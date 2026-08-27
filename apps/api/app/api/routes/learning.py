@@ -979,29 +979,29 @@ def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> Dictatio
     return _dictation_detail(item)
 
 
-@router.post("/dictation/{item_id}/attempts", response_model=DictationResult)
-def submit_dictation(
-    item_id: uuid.UUID,
-    body: DictationSubmit,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> DictationResult:
-    item = db.scalars(
-        select(DictationItem).where(DictationItem.id == item_id, DictationItem.status == PUBLISHED)
-    ).first()
-    if item is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+def record_dictation_attempt(
+    db: Session, user: User, item: DictationItem, submitted_text: str
+) -> tuple[DictationAttempt, dictation_grader.GradeResult]:
+    """Chấm một câu chép chính tả và ghi lại đủ mọi hệ quả của nó.
 
+    **Đây là đường DUY NHẤT ghi một lượt chép chính tả**, và nó là hàm chứ không
+    phải thân một route vì cuộc chạm mặt ở Petland (ADR-012 §2) cũng phải đi qua
+    đúng chỗ này. Chép lại vài dòng "chấm rồi ghi" sang tính năng kia sẽ là bộ
+    chấm thứ ba của cùng một miền — mà `lib/dictation.ts` đã mang sẵn một cảnh
+    báo dài về chuyện hai bản trôi khỏi nhau.
+
+    Không `commit`: người gọi quyết định ranh giới giao dịch.
+    """
     # Graded against `transcript`, never against `audio_asset.source_text`.
-    result = dictation_grader.grade(item.transcript, body.submitted_text)
+    result = dictation_grader.grade(item.transcript, submitted_text)
 
     attempt = DictationAttempt(
-        user_id=current_user.id,
+        user_id=user.id,
         item_id=item.id,
         # Stored exactly as typed: normalisation belongs to the grader, and the
         # grader will change. Keeping only the normalised form would make it
         # impossible to re-grade an old attempt under new rules.
-        submitted_text=body.submitted_text,
+        submitted_text=submitted_text,
         accuracy=result.accuracy,
         is_complete=result.is_complete,
         word_diff=result.as_json(),
@@ -1016,16 +1016,32 @@ def submit_dictation(
         try:
             progression.award(
                 db,
-                user_id=current_user.id,
+                user_id=user.id,
                 source_type="dictation_complete",
                 source_id=attempt.id,
                 amount=progression.xp_for(db, "dictation_complete"),
-                timezone=ensure_profile(db, current_user).timezone,
+                timezone=ensure_profile(db, user).timezone,
             )
         except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
             pass
-        _pay_ruby_for_a_finished_story(db, current_user.id, item)
+        _pay_ruby_for_a_finished_story(db, user.id, item)
+    return attempt, result
 
+
+@router.post("/dictation/{item_id}/attempts", response_model=DictationResult)
+def submit_dictation(
+    item_id: uuid.UUID,
+    body: DictationSubmit,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> DictationResult:
+    item = db.scalars(
+        select(DictationItem).where(DictationItem.id == item_id, DictationItem.status == PUBLISHED)
+    ).first()
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+
+    attempt, result = record_dictation_attempt(db, current_user, item, body.submitted_text)
     db.commit()
     db.refresh(attempt)
 

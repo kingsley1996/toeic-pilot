@@ -43,6 +43,11 @@ RUBY_SOURCES = (
     # `ruby_rule`: nó không phải một mức thưởng cho việc học, và một hàng trong
     # bảng đó là một hàng ai đó có thể vô tình bật cho người học.
     "admin_grant",
+    # Thưởng cho một cuộc chạm mặt (ADR-012). Không nằm trong `ruby_rule`: mức
+    # thưởng chốt trên từng cuộc lúc nó sinh ra, cùng lý do `egg_refund` không
+    # nằm ở đó. Nó KHÔNG phá luật "không trả theo lượt nhỏ" của §1 vì thứ giới
+    # hạn nó là nhịp xuất hiện, không phải số lần người ta làm bài.
+    "encounter",
     # Đường TIÊU. Nằm chung một danh sách với đường kiếm vì chúng chung một sổ:
     # tách ra sẽ cần hai bảng, và lúc đó số dư không còn là một phép `SUM`.
     "egg",

@@ -5,20 +5,36 @@ Router riêng chứ không nhét vào `profile`: phần này sẽ mọc thêm h�
 người này là ai và họ đặt gì.
 """
 
+import hashlib
+import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
+from app.api.routes.learning import _apply_review as apply_review
+from app.api.routes.learning import record_dictation_attempt
 from app.core.database import get_db
-from app.models import PetOwned, PetState, User
+from app.core.media import public_audio_url
+from app.models import Encounter, PetOwned, PetState, User
+from app.models.dictation import DictationItem
+from app.models.encounter import MAX_HINTS
+from app.models.vocabulary import VocabularyEntry
 from app.schemas.pet import (
+    DiffWord,
     EggBatchResult,
     EggChance,
     EggPublic,
     EggResult,
+    EncounterAnswer,
+    EncounterChoice,
+    EncounterHint,
+    EncounterPublic,
+    EncounterResult,
+    EncounterTask,
     PetActionRequest,
     PetMove,
     PetNeeds,
@@ -26,11 +42,14 @@ from app.schemas.pet import (
     PetPublic,
     PetSwitch,
 )
-from app.services import gacha, ruby
+from app.services import encounters, gacha, ruby
 from app.services import pet as needs_service
+from app.services.dictation import normalise as dictation_words
 from app.services.pet_species import all_species, row_for
 from app.services.profile import ensure_profile
 from app.services.progression import local_today
+from app.services.recall import VERDICT_CORRECT, grade_for, judge
+from app.services.srs import GRADE_FORGOT, GRADE_GOOD
 
 router = APIRouter(prefix="/pet", tags=["pet"])
 
@@ -277,8 +296,8 @@ def act(
     pet.mood = after.mood
     pet.needs_at = at
 
-    # Trao XP sau khi nhu cầu đã ghi — xem .
-    _award(db, pet, current_user, body.action, at)
+    # Trao XP sau khi nhu cầu đã ghi — xem docstring của `_award`.
+    _award(db, pet, current_user, needs_service.XP_PER_ACTION[body.action], at)
 
     db.commit()
     return _as_public(db, pet, after, at)
@@ -288,10 +307,14 @@ def _award(
     db: Session,
     pet: PetOwned,
     user: User,
-    action: needs_service.PetAction,
+    amount: int,
     at: datetime,
 ) -> None:
-    """Trao XP cho hành động, sau khi áp trần ngày.
+    """Trao XP cho con thú, sau khi áp trần ngày.
+
+    Nhận SỐ ĐIỂM chứ không nhận tên hành động, vì XP giờ đến từ hai chỗ: mấy cái
+    nút chăm sóc, và những cuộc chạm mặt làm xong. Tra bảng ở trong hàm thì cái
+    thứ hai phải bịa ra một "hành động" không có nút nào bấm được.
 
     **Ngày theo múi giờ NGƯỜI HỌC**, cùng định nghĩa mà chuỗi ngày và nhiệm vụ
     ngày dùng. Một định nghĩa thứ hai là chỗ trần XP và nhiệm vụ ngày nói hai
@@ -311,7 +334,7 @@ def _award(
         pet.xp_day = today
         pet.xp_today = 0
 
-    awarded = needs_service.grant(pet.xp_today, needs_service.XP_PER_ACTION[action])
+    awarded = needs_service.grant(pet.xp_today, amount)
     if awarded == 0:
         return
     pet.xp_today += awarded
@@ -561,3 +584,284 @@ def read_collection(
             )
         )
     return out
+
+
+# --- chạm mặt (ADR-012) -----------------------------------------------------
+
+
+def _choice_key(encounter_id: uuid.UUID, entry_id: uuid.UUID) -> str:
+    """Mã của một lựa chọn: băm theo (cuộc chạm mặt, mục từ).
+
+    Băm theo cả hai chứ không chỉ mục từ, nên cùng một từ ở hai cuộc khác nhau
+    mang hai mã khác nhau — không ai học thuộc được mã của đáp án đúng. Và không
+    lưu gì: máy chủ tính lại đúng mã ấy cho `target_id` để đối chiếu, nên không
+    có bảng phiên nào phải dọn và không có gì hết hạn sai lúc.
+    """
+    return hashlib.sha256(f"{encounter_id}:{entry_id}".encode()).hexdigest()[:16]
+
+
+def _answer_mode(row: Encounter) -> str:
+    """Gõ lại từ hay chọn nghĩa, chốt theo id nên KHÔNG đổi giữa hai lần đọc.
+
+    Bốc lại mỗi lần đọc thì câu hỏi tự đổi dạng dưới tay người đang gõ dở — và
+    nó đổi đúng vào lúc trang tự hỏi lại sau mỗi phút.
+    """
+    return "choice" if row.id.int % 2 else "typing"
+
+
+def _vocabulary_task(db: Session, row: Encounter, entry: VocabularyEntry) -> EncounterTask:
+    mode = _answer_mode(row)
+    if mode == "typing":
+        # Đề là NGHĨA, đáp án là từ — nên `headword` không được gửi đi. Bản đầu
+        # gửi cả hai vì màn thẻ lật cần cả hai; ở đây gửi cả hai là in đáp án ra
+        # ngay trên đề bài.
+        return EncounterTask(
+            kind="vocabulary",
+            mode="typing",
+            entry_id=str(entry.id),
+            prompt=entry.meaning_vi,
+            part_of_speech=entry.part_of_speech,
+            hints_left=max(0, MAX_HINTS - row.hints_used),
+        )
+
+    # Mồi nhử lọc theo NGHĨA chứ không chỉ theo id: hai mục từ khác nhau dịch ra
+    # cùng một tiếng Việt là chuyện có thật trong kho hiện tại, và khi đó màn
+    # hình in hai lựa chọn giống hệt nhau mà chỉ một cái được tính đúng.
+    seen = {entry.meaning_vi.strip().lower()}
+    options = [EncounterChoice(key=_choice_key(row.id, entry.id), text=entry.meaning_vi)]
+    pool = db.scalars(
+        select(VocabularyEntry)
+        .where(VocabularyEntry.status == "published", VocabularyEntry.id != entry.id)
+        .order_by(func.random())
+        .limit(40)
+    )
+    for other in pool:
+        text = other.meaning_vi.strip().lower()
+        if text in seen:
+            continue
+        seen.add(text)
+        options.append(EncounterChoice(key=_choice_key(row.id, other.id), text=other.meaning_vi))
+        if len(options) == 4:
+            break
+    # Xáo theo id cuộc chạm mặt, nên đáp án đúng không phải lúc nào cũng nằm ở
+    # ô đầu — mà thứ tự vẫn y hệt sau khi tải lại trang.
+    random.Random(row.id.int).shuffle(options)
+    return EncounterTask(
+        kind="vocabulary",
+        mode="choice",
+        prompt=entry.headword,
+        part_of_speech=entry.part_of_speech,
+        choices=options,
+    )
+
+
+def _task_public(db: Session, row: Encounter) -> EncounterTask:
+    if row.task_kind == "vocabulary" and row.target_id is not None:
+        entry = db.get(VocabularyEntry, row.target_id)
+        if entry is not None:
+            return _vocabulary_task(db, row, entry)
+    if row.task_kind == "dictation" and row.target_id is not None:
+        item = db.get(DictationItem, row.target_id)
+        if item is not None and item.asset is not None:
+            return EncounterTask(
+                kind="dictation",
+                mode="dictation",
+                entry_id=str(item.id),
+                audio_url=public_audio_url(item.asset.storage_key),
+                word_count=len(dictation_words(item.transcript)),
+            )
+    # Nội dung đã bị xoá sau khi cuộc chạm mặt sinh ra. `target_id` cố ý không
+    # phải khoá ngoại, nên chuyện này xảy ra được — và câu trả lời đúng là để
+    # cuộc ấy hết hạn, không phải để nó nổ.
+    return EncounterTask(kind=row.task_kind)  # type: ignore[arg-type]
+
+
+def _encounter_public(db: Session, row: Encounter) -> EncounterPublic:
+    return EncounterPublic(
+        id=str(row.id),
+        kind=row.kind,  # type: ignore[arg-type]
+        steps_total=row.steps_total,
+        steps_done=row.steps_done,
+        reward_ruby=row.reward_ruby,
+        expires_at=row.expires_at,
+        task=_task_public(db, row),
+    )
+
+
+@router.get("/encounters", response_model=list[EncounterPublic])
+def read_encounters(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[EncounterPublic]:
+    """Cuộc chạm mặt đang chờ, hoặc `null`.
+
+    **Lần đọc này CÓ GHI**, và đó là ngoại lệ có chủ ý — cùng hình dạng với
+    `GET /daily-tasks`, và cùng lý do: sinh ra lúc đọc là thứ bảo đảm không ai
+    bỏ lỡ được một cuộc chạm mặt sinh ra trong lúc họ đang ngủ (ADR-012 §1).
+    Không có đường nào khác để giữ tính chất ấy mà không dựng một job nền, mà
+    một job nền thì lại sinh ra đúng cái nó phải tránh.
+
+    An toàn vì nhịp sinh được **hẹn trước**: gọi lại mười lần trong một giây
+    không tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.
+    """
+    _state, pet = ensure_pet(db, current_user.id)
+    state = db.get(PetState, current_user.id)
+    assert state is not None
+    rows = encounters.sync(db, user_id=current_user.id, pet=state)
+    db.commit()
+    # Mảng trần, không bọc `Page[T]`: số cuộc bị chặn cứng bởi miền
+    # (`MAX_PER_KIND` mỗi loại, hai loại), nên đây là nhóm (A) của
+    # `app/schemas/common.py` — bọc lại là bắt frontend xử lý một trường hợp
+    # không thể xảy ra.
+    out: list[EncounterPublic] = []
+    for row in rows:
+        db.refresh(row)
+        out.append(_encounter_public(db, row))
+    return out
+
+
+@router.post("/encounters/{encounter_id}/answer", response_model=EncounterResult)
+def answer_encounter(
+    encounter_id: uuid.UUID,
+    body: EncounterAnswer,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> EncounterResult:
+    """Trả lời một bước, và **câu trả lời đi thẳng vào bộ chấm thật**.
+
+    Với từ vựng, nó gọi đúng `_apply_review` mà `POST /vocabulary/{id}/review`
+    gọi — nên lượt ôn này ghi vào SM-2, vào `vocabulary_review_log`, và chảy tiếp
+    vào chuỗi ngày y như mọi lượt ôn khác. Nếu không, người học vừa làm bài xong
+    mà lịch ôn không đổi: họ đã học, và hệ thống giả vờ như chưa.
+
+    Đây cũng là lý do endpoint này nhận `grade` chứ không nhận "đúng/sai" —
+    thang điểm là của SM-2, và một thang thứ hai ở đây là bộ chấm thứ hai.
+    """
+    row = db.get(Encounter, encounter_id)
+    if row is None or row.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cuộc này")
+
+    at = _now()
+    expires = row.expires_at if row.expires_at.tzinfo else row.expires_at.replace(tzinfo=UTC)
+    if row.state != "waiting" or expires <= at:
+        # Hết hạn ngay lúc trả lời là chuyện có thật với một đồng hồ mười phút.
+        # 409 chứ không 404: cuộc ấy CÓ tồn tại, chỉ là đã qua.
+        if row.state == "waiting":
+            row.state = "expired"
+            db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Cuộc chạm mặt này đã kết thúc."
+        )
+
+    _state, pet_row = ensure_pet(db, current_user.id)
+    profile = ensure_profile(db, current_user)
+    correct = False
+    diff: list[DiffWord] | None = None
+    if row.task_kind == "vocabulary" and row.target_id is not None:
+        entry = db.get(VocabularyEntry, row.target_id)
+        if entry is not None:
+            if _answer_mode(row) == "choice":
+                # Chọn đúng ô nào thì so bằng mã băm, không so bằng id: id đúng
+                # là thứ trình duyệt đọc được từ chính đề bài.
+                correct = body.choice == _choice_key(row.id, entry.id)
+                grade = GRADE_GOOD if correct else GRADE_FORGOT
+            else:
+                # Đi qua đúng bộ chấm của màn gõ lại từ, kể cả cái ngưỡng lỗi
+                # gõ: sai một chữ cái trên một từ dài là "gõ nhầm", vào SM-2 ở
+                # mức KHÓ chứ không phải mức QUÊN. Một bộ so chuỗi thứ hai ở đây
+                # sẽ là chỗ hai màn hình chấm cùng một từ ra hai kết quả.
+                verdict = judge(body.text, entry.headword).verdict
+                correct = verdict == VERDICT_CORRECT
+                grade = grade_for(verdict, easy=False)
+            # Lượt ôn được GHI dù đúng hay sai, vì nó là một lượt học thật đã
+            # xảy ra — chỉ có BƯỚC nhiệm vụ mới đòi trả lời đúng.
+            apply_review(db, current_user.id, row.target_id, grade, profile.timezone)
+    elif row.task_kind == "dictation" and row.target_id is not None:
+        item = db.get(DictationItem, row.target_id)
+        if item is not None:
+            attempt, graded = record_dictation_attempt(db, current_user, item, body.text)
+            # `is_complete`, không phải `accuracy`: gõ đủ câu rồi gõ thêm vẫn ra
+            # 100%, nên lấy điểm làm cổng là trả thưởng cho một bài sai rõ ràng.
+            correct = graded.is_complete
+            diff = [DiffWord(op=word.op, word=word.word) for word in graded.diff]  # type: ignore[arg-type]
+            del attempt
+
+    granted = 0
+    if correct:
+        row.steps_done += 1
+        if row.steps_done >= row.steps_total:
+            row.state = "done"
+            granted = encounters.reward(db, row)
+            # Con thú cũng lên XP: nó vừa được người nuôi dắt đi làm một việc,
+            # và với kẻ xâm nhập thì nó đứng ra đánh nhau. Đi qua đúng `_award`
+            # nên trần ngày, mốc level và múi giờ người học đều là một bộ với
+            # mấy cái nút chăm sóc — một đường trao XP thứ hai là chỗ trần ngày
+            # đếm thiếu mà không ai thấy.
+            _award(db, pet_row, current_user, needs_service.XP_PER_ENCOUNTER[row.kind], at)
+        else:
+            # Bước sau phải là một câu KHÁC. Ba bước cùng một từ thì bước hai và
+            # ba chỉ là gõ lại đáp án vừa nhìn thấy, và cả đợt xâm nhập rút gọn
+            # thành một cái nút bấm ba lần.
+            nxt = encounters.pick_target(db, current_user.id, row.task_kind, random.SystemRandom())
+            if nxt is not None:
+                row.target_id = nxt
+                # Bước sau là một từ khác, nên nó xứng đáng có phần gợi ý riêng.
+                # Không đặt lại thì bước hai và ba của một đợt xâm nhập thừa
+                # hưởng cái trần đã dùng hết ở bước một.
+                row.hints_used = 0
+    db.commit()
+    db.refresh(row)
+
+    return EncounterResult(
+        correct=correct,
+        steps_done=row.steps_done,
+        steps_total=row.steps_total,
+        done=row.state == "done",
+        reward_ruby=granted,
+        balance=ruby.balance(db, current_user.id),
+        encounter=None if row.state != "waiting" else _encounter_public(db, row),
+        word_diff=diff,
+    )
+
+
+@router.post("/encounters/{encounter_id}/hint", response_model=EncounterHint)
+def take_hint(
+    encounter_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> EncounterHint:
+    """Mở một phần từ cần gõ. Tối đa `MAX_HINTS` lần cho mỗi bước.
+
+    **Trần đếm ở máy chủ**, và đó là điều kiện để cái nút này không phá chính bài
+    kiểm nó đang giúp: xin đủ nhiều lần thì gợi ý in ra cả từ, và lúc đó phần
+    thưởng ruby chỉ còn là một cái nút bấm nhiều lần. Một bộ đếm trong `useState`
+    thì devtools đặt lại được trong hai giây.
+
+    Chỉ dạng **gõ lại từ**. Dạng chọn nghĩa đã có sẵn bốn ô để loại trừ, và dạng
+    chép chính tả thì "mở vài ký tự" của cả một câu là mở luôn đáp án.
+    """
+    row = db.get(Encounter, encounter_id)
+    if row is None or row.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có cuộc này")
+
+    at = _now()
+    expires = row.expires_at if row.expires_at.tzinfo else row.expires_at.replace(tzinfo=UTC)
+    if row.state != "waiting" or expires <= at:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Cuộc chạm mặt này đã kết thúc."
+        )
+    if row.task_kind != "vocabulary" or _answer_mode(row) != "typing" or row.target_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Nhiệm vụ này không có gợi ý."
+        )
+    if row.hints_used >= MAX_HINTS:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Hết lượt gợi ý rồi.")
+
+    entry = db.get(VocabularyEntry, row.target_id)
+    if entry is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Nội dung không còn nữa.")
+
+    hint = encounters.hint_for(entry.headword, row.hints_used)
+    row.hints_used += 1
+    db.commit()
+    return EncounterHint(hint=hint, hints_left=max(0, MAX_HINTS - row.hints_used))

@@ -32,6 +32,7 @@ def _labels(db: Session) -> dict[str, str]:
     labels.setdefault("egg", "Mở trứng")
     labels.setdefault("egg_refund", "Trứng trùng, hoàn lại")
     labels.setdefault("admin_grant", "Ruby cấp cho quản trị")
+    labels.setdefault("encounter", "Giúp người qua đường")
     return labels
 
 

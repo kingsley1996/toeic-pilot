@@ -121,6 +121,86 @@ export function nearestWalkable(map: MapData, from: Tile): Tile {
   return { x: 0, y: 0 };
 }
 
+/**
+ * Chỗ đứng cho một vị khách: **đứng được, và nằm trong tầm nhìn**.
+ *
+ * Hai ràng buộc, và bỏ ràng buộc nào cũng hỏng im lặng. Bốc bằng một công thức
+ * thuần trên toạ độ bản đồ (`4 + seed % 9`) thì khách rơi vào tường — và tệ hơn,
+ * rơi ra **ngoài khung nhìn**: khung mặc định là 14×8 ô của một bản đồ 18×13,
+ * còn máy quay thì chỉ bám con thú. Khách không có mặt trên màn hình thì không
+ * thấy sprite, không thấy dấu hiệu, không bấm vào đâu được — cả cơ chế trông như
+ * chưa được dựng, mà máy chủ thì vẫn báo có một cuộc đang chờ.
+ *
+ * Nên khoảng cách đo quanh CON THÚ chứ không quanh tâm bản đồ: máy quay bám con
+ * thú, nên "gần con thú" là định nghĩa duy nhất của "nhìn thấy được" mà chỗ này
+ * biết được. Bộ số mặc định bám đúng vùng chết của máy quay: nó giữ con thú
+ * trong khoảng ±2 ô ngang và ±1,5 ô dọc quanh tâm, nên ±4 ngang luôn nằm trong
+ * khung, còn chiều dọc thì **lệch xuống dưới** (1 lên, 2 xuống) vì dấu hiệu nhô
+ * hơn một ô lên trên đầu khách và sẽ bị cắt mất ở hàng trên cùng.
+ *
+ * `seed` chọn trong danh sách đã lọc chứ không bốc rồi thử lại: cùng một khách
+ * luôn ra cùng một ô sau khi tải lại trang, và không có vòng lặp nào có thể
+ * không kết thúc.
+ *
+ * `taken` là những ô đã có người đứng — tối đa bốn vị khách cùng lúc, và hai
+ * người chồng khít lên nhau là một cú bấm không biết mở thẻ của ai.
+ */
+export function spotNear(
+  map: MapData,
+  near: Tile,
+  seed: number,
+  taken: ReadonlySet<string> = new Set(),
+  span: { x: number; up: number; down: number } = { x: 4, up: 1, down: 2 },
+): Tile {
+  const free: Tile[] = [];
+  const any: Tile[] = [];
+  for (let dy = -span.up; dy <= span.down; dy += 1) {
+    for (let dx = -span.x; dx <= span.x; dx += 1) {
+      // Không đứng chồng lên con thú, và không đứng sát tới mức che mất nó.
+      if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) continue;
+      const x = near.x + dx;
+      const y = near.y + dy;
+      if (!isWalkable(map, x, y)) continue;
+      any.push({ x, y });
+      if (!taken.has(`${x},${y}`)) free.push({ x, y });
+    }
+  }
+  // Ô đã có người là điều KIÊNG, không phải điều cấm: hết chỗ trống thì vẫn
+  // phải trả về một ô đứng được, còn hơn đẩy vị khách vào tường. Chồng nhau chỉ
+  // xấu; đứng trong tường thì không bấm được.
+  const options = free.length > 0 ? free : any;
+  // Bản đồ chật tới mức không còn ô nào quanh con thú: lùi về ô đứng được gần
+  // nhất chứ không trả một ô tường.
+  if (options.length === 0) return nearestWalkable(map, near);
+  return options[seed % options.length];
+}
+
+/**
+ * Ô kề `at` mà đứng được, gần `from` nhất.
+ *
+ * Để con thú dừng CẠNH vị khách chứ không giẫm lên người ta: hai sprite chồng
+ * khít lên nhau thì con nào hiện ra trước là chuyện của thứ tự thêm vào danh
+ * sách vẽ, không phải của khung cảnh.
+ *
+ * Chọn ô gần `from` nhất nên con thú đi đường ngắn nhất, thay vì vòng qua lưng
+ * khách để tới cái ô đầu tiên trong danh sách.
+ */
+export function neighbourOf(map: MapData, at: Tile, from: Tile): Tile | null {
+  const around = [
+    { x: at.x + 1, y: at.y },
+    { x: at.x - 1, y: at.y },
+    { x: at.x, y: at.y + 1 },
+    { x: at.x, y: at.y - 1 },
+  ].filter((spot) => isWalkable(map, spot.x, spot.y));
+  if (around.length === 0) return null;
+  return around.reduce((best, spot) =>
+    Math.abs(spot.x - from.x) + Math.abs(spot.y - from.y) <
+    Math.abs(best.x - from.x) + Math.abs(best.y - from.y)
+      ? spot
+      : best,
+  );
+}
+
 const STEPS: readonly Tile[] = [
   { x: 1, y: 0 },
   { x: -1, y: 0 },

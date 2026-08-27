@@ -1,6 +1,11 @@
 "use client";
 
-import { API_ROUTES, type EggSettingPublic, type PetSpeciesPublic } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type EggSettingPublic,
+  type EncounterSettingPublic,
+  type PetSpeciesPublic,
+} from "@toeic-pilot/shared";
 import { useEffect, useState } from "react";
 
 import { Creature } from "@/components/petland-creature";
@@ -27,6 +32,7 @@ export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);
   const [egg, setEgg] = useState<EggSettingPublic | null>(null);
+  const [meet, setMeet] = useState<EncounterSettingPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,7 +45,22 @@ export default function PetSpeciesAdminPage() {
     apiFetch<EggSettingPublic>(API_ROUTES.adminPetEggs, { token })
       .then(setEgg)
       .catch(() => {});
+    apiFetch<EncounterSettingPublic>(API_ROUTES.adminPetEncounters, { token })
+      .then(setMeet)
+      .catch(() => {});
   }, [token]);
+
+  const patchMeet = (changes: Partial<EncounterSettingPublic>) => {
+    if (!token) return;
+    setError(null);
+    void apiFetch<EncounterSettingPublic>(API_ROUTES.adminPetEncounters, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify(changes),
+    })
+      .then(setMeet)
+      .catch((err) => setError(err instanceof ApiError ? err.message : "Save failed."));
+  };
 
   const patchEgg = (changes: Partial<EggSettingPublic>) => {
     if (!token) return;
@@ -157,6 +178,57 @@ export default function PetSpeciesAdminPage() {
         </Panel>
       )}
 
+      {meet && (
+        <Panel className="mb-4 p-4">
+          <h2 className="text-subtitle">Encounters</h2>
+          <p className="mt-1 max-w-2xl text-small text-ink-muted">
+            Spawned on read, never by a background job — nobody can miss something that was never
+            created while they were away. Lifetime must stay below the gap: only one encounter
+            exists at a time, so a longer-lived one occupies the slot and later spawns silently
+            never happen.
+          </p>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            {(["npc", "intruder"] as const).map((kind) => (
+              <div key={kind} className="rounded border border-rule-strong p-3">
+                <h3 className="font-data text-label uppercase text-ink-faint">{kind}</h3>
+                <div className="mt-2 flex flex-wrap gap-3">
+                  <NumberField
+                    label="Gap (s)"
+                    value={meet[`${kind}_gap_seconds`]}
+                    min={60}
+                    max={86400}
+                    onCommit={(next) => patchMeet({ [`${kind}_gap_seconds`]: next })}
+                  />
+                  <NumberField
+                    label="Lifetime (s)"
+                    value={meet[`${kind}_life_seconds`]}
+                    min={30}
+                    max={86400}
+                    onCommit={(next) => patchMeet({ [`${kind}_life_seconds`]: next })}
+                  />
+                  <NumberField
+                    label="Reward"
+                    value={meet[`${kind}_reward`]}
+                    min={0}
+                    max={500}
+                    onCommit={(next) => patchMeet({ [`${kind}_reward`]: next })}
+                  />
+                  {kind === "intruder" && (
+                    <NumberField
+                      label="Steps"
+                      value={meet.intruder_steps}
+                      min={1}
+                      max={10}
+                      onCommit={(next) => patchMeet({ intruder_steps: next })}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      )}
+
       <div className="grid gap-2">
         {rows?.map((row) => (
           <Panel
@@ -255,5 +327,47 @@ export default function PetSpeciesAdminPage() {
         every row is not a way to empty the table — the defaults seed themselves on the next read.
       </p>
     </Page>
+  );
+}
+
+/**
+ * Một ô số ghi lại khi rời ô, không ghi theo từng phím.
+ *
+ * `key={value}` là phần load-bearing: `defaultValue` chỉ đọc ở lần dựng đầu, nên
+ * khi máy chủ trả về một giá trị khác cái vừa gõ — nó từ chối vì "life >= gap" —
+ * ô số sẽ đứng yên ở con số sai và màn hình nói dối về trạng thái đã lưu.
+ */
+function NumberField({
+  label,
+  value,
+  min,
+  max,
+  onCommit,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  onCommit: (next: number) => void;
+}) {
+  return (
+    <label className="flex items-center gap-1.5 text-small text-ink-muted">
+      {label}
+      <Input
+        key={value}
+        type="number"
+        min={min}
+        max={max}
+        defaultValue={value}
+        aria-label={label}
+        className="w-24"
+        onBlur={(event) => {
+          const next = Number(event.target.value);
+          if (Number.isInteger(next) && next >= min && next <= max && next !== value) {
+            onCommit(next);
+          }
+        }}
+      />
+    </label>
   );
 }

@@ -1,11 +1,15 @@
 "use client";
 
-import { API_ROUTES, type PetPublic } from "@toeic-pilot/shared";
+import { API_ROUTES, type EncounterPublic, type PetPublic } from "@toeic-pilot/shared";
 import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { clamp, defaultPlace, readPlace, writePlace, type Place } from "@/components/petland-place";
+import { tileForGuest } from "@/components/petland-bestiary";
+import { speechFor } from "@/components/petland-speech";
 import { CollectionScreen } from "@/components/petland-collection";
+import { QuestCard } from "@/components/petland-quest";
+import { GuestList } from "@/components/petland-quest-list";
 import { tierGlow } from "@/components/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
@@ -19,7 +23,9 @@ import { useSession } from "@/lib/session";
 import {
   findPath,
   nearestWalkable,
+  neighbourOf,
   parseMap,
+  spotNear,
   strollTarget,
   TILE,
   type MapData,
@@ -76,6 +82,21 @@ const BIT_ICON: Record<PetAction, Bit["icon"]> = {
 /** Khớp với `pet-bit-rise` trong `globals.css` (1100ms), cộng một nhịp thở. */
 const BIT_LIFE_MS = 1300;
 
+/** Bong bóng thoại đứng bao lâu. Đủ đọc một câu, rồi nhường lại khung cảnh. */
+const SPEECH_MS = 4500;
+
+/**
+ * Trận đánh dài bao lâu.
+ *
+ * Ba nhịp lao tới trong quãng này, và với đòn kết liễu thì 30% cuối dành cho cú
+ * ngã. Ngắn hơn thì ba nhịp dính vào nhau thành một cú rung; dài hơn thì người
+ * học đã trả lời xong mà vẫn phải ngồi xem.
+ */
+const FIGHT_MS = 1200;
+
+/** Dưới ngưỡng này thì trên đầu khách không đủ chỗ, bong bóng lật xuống dưới. */
+const SPEECH_FLIP_PX = 56;
+
 const VIEW_W = 14;
 const VIEW_H = 8;
 /*
@@ -87,6 +108,14 @@ const FULL_W = 18;
 const FULL_H = 13;
 const ZOOM = 2;
 
+/**
+ * Chỗ khách đứng, gieo từ id.
+ *
+ * Bản đồ 18×13 và con thú mặc định ở (3,8), nên khách đứng trong khoảng giữa
+ * bản đồ để luôn nằm trong khung nhìn 14×8 dù camera đang ở đâu. Ô rơi vào
+ * tường thì `nearestWalkable` ở vòng vẽ kéo ra — cùng cách vị trí con thú được
+ * xử lý sau khi bản đồ bị vẽ lại.
+ */
 export function PetLand() {
   const { token, status } = useSession();
   const [open, setOpen] = useState(false);
@@ -267,6 +296,10 @@ function PetPanel({
   onDrag: (event: React.PointerEvent) => void;
   onClose: () => void;
 }) {
+  // `canPublish` LÀ "role === admin" (xem `lib/session.tsx`). Nút gọi khách chỉ
+  // là công cụ thử, nhưng nó vẫn ghi vào database, nên nó theo đúng ranh giới mà
+  // `/admin/pet` đã vẽ: vận hành, không phải biên tập.
+  const { canPublish: isAdmin } = useSession();
   const host = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState(false);
   const [full, setFull] = useState(false);
@@ -285,7 +318,54 @@ function PetPanel({
    * bật/tắt cho mỗi màn sẽ cho phép cả hai cùng mở, và lúc đó bảng rộng gấp ba
    * bản đồ.
    */
-  const [side, setSide] = useState<null | "eggs" | "collection">(null);
+  /**
+   * MỘT ô bên phải, MỘT trạng thái nói ô ấy đang là gì.
+   *
+   * Trước đây là ba cờ độc lập (`side`, `questOpen`, `listKind`) và chúng mâu
+   * thuẫn được với nhau: mở danh sách khách rồi bấm nút trứng thì `side` đổi
+   * thành `"eggs"` trong khi `listKind` vẫn còn, nên màn trứng bị điều kiện
+   * `!listKind` chặn lại và cái nút trông như hỏng. Không có lỗi nào để đọc —
+   * chỉ là bấm mà không có gì xảy ra.
+   *
+   * Một biến thì trạng thái ấy không tồn tại được: mở cái này là đóng cái kia,
+   * theo đúng nghĩa đen.
+   */
+  const [panel, setPanel] = useState<
+    | null
+    | { kind: "eggs" }
+    | { kind: "collection" }
+    | { kind: "list"; of: "npc" | "intruder" }
+    | { kind: "quest" }
+  >(null);
+  const [meetings, setMeetings] = useState<EncounterPublic[]>([]);
+  /**
+   * Vị khách đang mở thẻ. `null` nghĩa là chưa chọn ai.
+   *
+   * Giữ ID chứ không giữ cả object: object được thay mới sau mỗi lần đọc lại
+   * (mỗi phút một lần), và một bản sao cũ nằm trong state là một thẻ nhiệm vụ
+   * hiện số bước cũ trong khi máy chủ đã đếm khác.
+   */
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  /**
+   * Khách và chỗ nó đứng, cho vòng vẽ đọc mỗi khung hình.
+   *
+   * Chỗ đứng do TRÌNH DUYỆT chọn, không do máy chủ: máy chủ không đọc
+   * `map.json` — cùng lý do `PUT /pet/position` không kiểm ô đi được — nên nó
+   * không biết ô nào đứng được. Chọn một lần khi khách đổi, rồi giữ nguyên:
+   * chọn lại mỗi khung hình thì con vật nhảy loạn quanh bản đồ.
+   */
+  type Guest = { id: string; tile: number; x: number; y: number; danger: boolean };
+  /**
+   * Những vị khách đang đứng trên bản đồ, theo đúng thứ tự vẽ.
+   *
+   * Ở ref chứ không state vì vòng lặp vẽ đọc nó mỗi khung. Chỗ đứng của mỗi
+   * người chốt MỘT LẦN (xem effect đặt chỗ), nên mảng này chỉ đổi khi có người
+   * tới hoặc đi — không phải mỗi lần máy chủ trả lời.
+   */
+  const guestsRef = useRef<Guest[]>([]);
+  /** Cầu nối một chiều từ cú bấm trong canvas ra React — cùng khuôn `strollRef`. */
+  const openQuestRef = useRef<(id: string) => void>(() => {});
   /*
    * Giờ Petland cho phần CHỮ, tách khỏi giờ cho phần VẼ.
    *
@@ -342,7 +422,32 @@ function PetPanel({
    */
   const placeRef = useRef<{ x: number; y: number; facing: "left" | "right" } | null>(null);
   const [bits, setBits] = useState<Bit[]>([]);
+  const [speech, setSpeech] = useState<string | null>(null);
+  const bubble = useRef<HTMLDivElement | null>(null);
+  const speechUntil = useRef(0);
+  /** Ai đang nói — bong bóng phải mọc trên đầu đúng người đó, không phải người đầu mảng. */
+  const speakingRef = useRef<string | null>(null);
+  const refreshMeetings = useRef<() => void>(() => {});
+  /*
+   * Trận đánh đang chạy: mốc bắt đầu và có hạ gục được không.
+   *
+   * Ở ref chứ không ở state, cùng lý do mọi thứ khác trong vòng lặp vẽ: nó được
+   * đọc mỗi khung hình, và một `setState` mỗi khung là dựng lại cả bảng kèm
+   * canvas Pixi bên trong.
+   */
+  const fightRef = useRef<{ id: string; started: number | null; win: boolean } | null>(null);
   const [size, setSize] = useState({ w: VIEW_W, h: VIEW_H });
+
+  /*
+   * Bản đồ và ô con thú đang đứng, để chỗ chọn chỗ đứng cho khách đọc được.
+   *
+   * `mapReady` là STATE chứ không chỉ là ref: khách có thể tới trước lúc
+   * `map.json` tải xong, và một ref thay đổi không chạy lại effect nào — khách
+   * sẽ nằm mãi ở chỗ mặc định vì lượt tính duy nhất đã chạy lúc chưa có bản đồ.
+   */
+  const mapRef = useRef<MapData | null>(null);
+  const petTileRef = useRef<Tile>({ x: 2, y: 2 });
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
     const el = host.current;
@@ -387,9 +492,51 @@ function PetPanel({
     };
 
     const onClick = (event: MouseEvent) => {
-      if (!stage || !map || asleepRef.current) return;
+      if (!stage || !map) return;
       const target = stage.tileAt(event.clientX, event.clientY);
-      if (target) queue = findPath(map, tile, target);
+      if (!target) return;
+      /*
+       * Bấm trúng khách thì MỞ THẺ, không dắt con thú tới đó: hai nghĩa trên
+       * cùng một cú bấm thì cái nào cũng sai một nửa.
+       *
+       * Xét TRƯỚC cái chốt "đang ngủ", và đó là chỗ đã hỏng: giấc ngủ chỉ nên
+       * khoá việc dắt con thú đi, còn trả lời một câu hỏi thì không liên quan
+       * gì tới nó — người dùng bấm vào NPC trong lúc con thú ngủ và không có gì
+       * xảy ra, không thông báo, không lý do.
+       *
+       * Vùng bấm cao HAI ô: sprite sinh vật neo ở đáy ô nên phần đầu và dấu
+       * hiệu nhô lên ô phía trên, và người ta bấm vào chỗ nhìn thấy chứ không
+       * vào ô mà nó "thuộc về".
+       */
+      // Người ĐỨNG THẤP nhất được ưu tiên: bốn vị khách có thể đứng gần nhau,
+      // và người ở hàng dưới được vẽ đè lên người ở hàng trên — nên bấm phải
+      // trúng người mắt đang nhìn thấy, không phải người tình cờ đứng trước
+      // trong mảng.
+      const guest = guestsRef.current
+        .filter((one) => one.x === target.x && (one.y === target.y || one.y - 1 === target.y))
+        .sort((a, b) => b.y - a.y)[0];
+      if (guest) {
+        openQuestRef.current(guest.id);
+        /*
+         * Con thú CHẠY TỚI chỗ khách, và nó dừng ở ô BÊN CẠNH.
+         *
+         * Đi vào đúng ô của khách thì hai sprite chồng khít lên nhau và con nào
+         * đứng trước là chuyện của thứ tự thêm vào, không phải của khung cảnh.
+         * `neighbourOf` chọn ô kề gần con thú nhất, nên nó đi đường ngắn nhất
+         * chứ không vòng qua lưng người ta.
+         *
+         * Đang ngủ thì bỏ đoạn đi: vòng lặp chính đã xoá sạch đường đi khi ngủ,
+         * nên xếp đường ở đây chỉ là xếp cho có. Thẻ nhiệm vụ vẫn mở như thường
+         * — trả lời một câu hỏi không dính gì tới việc con thú đang ngủ.
+         */
+        if (!asleepRef.current) {
+          const spot = neighbourOf(map, { x: guest.x, y: guest.y }, tile);
+          if (spot) queue = findPath(map, tile, spot);
+        }
+        return;
+      }
+      if (asleepRef.current) return;
+      queue = findPath(map, tile, target);
     };
 
     void Promise.all([
@@ -401,9 +548,14 @@ function PetPanel({
         const parsed = parseMap(rawMap);
         if (!parsed || !alive) return;
         map = parsed;
+        mapRef.current = parsed;
+        setMapReady(true);
         // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong trình
         // sửa. Kéo con thú ra chỗ đứng được thay vì để nó kẹt trong hàng rào.
         tile = nearestWalkable(parsed, { x: pet.tile_x, y: pet.tile_y });
+        // Chỗ chọn chỗ đứng cho khách đo khoảng cách tới con thú, nên nó cần ô
+        // này — và nó sống ngoài effect này.
+        petTileRef.current = tile;
         from = tile;
         saved = tile;
         facing = pet.facing === "left" ? "left" : "right";
@@ -447,6 +599,7 @@ function PetPanel({
             // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong
             // trình sửa — cùng lý do lần nạp đầu cũng gọi `nearestWalkable`.
             tile = nearestWalkable(map, { x: jump.x, y: jump.y });
+            petTileRef.current = tile;
             from = tile;
             saved = tile;
             facing = jump.facing;
@@ -479,6 +632,7 @@ function PetPanel({
               const next = queue.shift() as Tile;
               facing = next.x < tile.x ? "left" : next.x > tile.x ? "right" : facing;
               tile = next;
+              petTileRef.current = next;
             }
             if (queue.length === 0) {
               progress = 0;
@@ -493,6 +647,46 @@ function PetPanel({
             // một `t` không có điểm dừng sẽ làm con thú nhai mãi mãi.
             if (t >= 1) actionFx.current = null;
             else action = { kind: fx.kind, t };
+          }
+
+          /*
+           * Trận đánh: con thú phải TỚI NƠI rồi mới đánh.
+           *
+           * Trả lời từ cái nút trên thanh tiêu đề thì con thú có thể đang ở nửa
+           * bản đồ bên kia, và một cú lao tới dài nửa ô ở đó chỉ là một cái nhích
+           * — hoạt cảnh vẫn chạy, chỉ là không ai hiểu nó đang diễn tả cái gì.
+           *
+           * Ba lối thoát để nó không treo mãi, và treo thì hỏng nặng hơn là xấu:
+           * `fightRef` còn giá trị nghĩa là vị khách bị giữ lại trên bản đồ sau
+           * khi máy chủ đã báo xong. Nên vắng khách, đang ngủ, hay không có
+           * đường đi đều đánh ngay tại chỗ.
+           */
+          const brawl = fightRef.current;
+          let bout: PetView["fight"] = null;
+          if (brawl && brawl.started === null) {
+            const foe = guestsRef.current.find((one) => one.id === brawl.id) ?? null;
+            const near = foe !== null && Math.abs(foe.x - tile.x) + Math.abs(foe.y - tile.y) <= 1;
+            if (foe === null || asleepRef.current || (near && queue.length === 0)) {
+              brawl.started = now;
+            } else if (queue.length === 0 && map) {
+              const spot = neighbourOf(map, { x: foe.x, y: foe.y }, tile);
+              queue = spot ? findPath(map, tile, spot) : [];
+              if (queue.length === 0) brawl.started = now;
+            }
+          }
+          if (brawl && brawl.started !== null) {
+            const t = (now - brawl.started) / FIGHT_MS;
+            if (t >= 1) {
+              fightRef.current = null;
+              // Hạ gục xong thì mới xoá vị khách. Máy chủ đã trả "xong" từ lúc
+              // câu trả lời đúng, nhưng xoá ngay lúc ấy thì cú ngã không bao giờ
+              // được vẽ — kẻ xâm nhập chỉ biến mất giữa không trung.
+              if (brawl.win) {
+                guestsRef.current = guestsRef.current.filter((one) => one.id !== brawl.id);
+              }
+            } else {
+              bout = { id: brawl.id, t, win: brawl.win };
+            }
           }
 
           made.draw({
@@ -510,7 +704,37 @@ function PetPanel({
             clock: now / 1000,
             action,
             sleeping: asleepRef.current,
+            encounters: guestsRef.current,
+            fight: bout,
           });
+
+          /*
+           * Bong bóng thoại bám theo đầu vị khách, ghi THẲNG vào `style`.
+           *
+           * Không đi qua state, cùng lý do vị trí bảng cũng không: đây là một
+           * lần ghi mỗi khung hình, và một `setState` mỗi khung là dựng lại cả
+           * bảng — kèm canvas Pixi bên trong — sáu chục lần một giây.
+           *
+           * Phải bám thật chứ không chốt lúc bấm: bấm xong thì con thú chạy tới,
+           * máy quay xê dịch theo nó, và một chỗ đứng yên sẽ trôi khỏi cái đầu
+           * mà nó đang chỉ vào.
+           */
+          const balloon = bubble.current;
+          if (balloon) {
+            const talker = speakingRef.current;
+            const at = talker ? (stage?.guestScreen(talker) ?? null) : null;
+            const showing = at !== null && now < speechUntil.current;
+            balloon.style.opacity = showing ? "1" : "0";
+            if (at) {
+              // Khung bản đồ cắt phần tràn ra ngoài, nên một vị khách đứng sát
+              // mép trên sẽ có bong bóng bị xén mất một nửa. Hết chỗ ở trên thì
+              // LẬT XUỐNG DƯỚI — vẫn chỉ đúng người nói, chỉ đổi phía.
+              const flip = at.y < SPEECH_FLIP_PX;
+              balloon.style.left = `${at.x}px`;
+              balloon.style.top = `${flip ? at.y + TILE * ZOOM + 6 : at.y - 10}px`;
+              balloon.style.transform = flip ? "translate(-50%, 0)" : "translate(-50%, -100%)";
+            }
+          }
           raf = requestAnimationFrame(loop);
         };
         raf = requestAnimationFrame(loop);
@@ -556,6 +780,28 @@ function PetPanel({
    * nên phép so này được tính lại đủ dày, và con thú dậy trên màn hình gần như
    * đúng lúc nó dậy ở máy chủ.
    */
+  /*
+   * Vị khách đang mở thẻ, TRA LẠI từ danh sách mỗi lần dựng.
+   *
+   * Suy ra chứ không giữ trong state: danh sách được đọc lại mỗi phút, và một
+   * bản sao cũ nằm trong state là một thẻ hiện số bước cũ trong khi máy chủ đã
+   * đếm khác. Người ấy hết hạn hay làm xong thì `active` thành `undefined` và
+   * thẻ tự đóng — không cần ai đi dọn.
+   */
+  const active = meetings.find((one) => one.id === activeId) ?? null;
+
+  /*
+   * Ô bên phải RỖNG thì coi như đóng.
+   *
+   * Một cuộc chạm mặt sống mười phút và có thể hết hạn ngay trong lúc thẻ của nó
+   * đang mở: máy chủ bỏ nó khỏi danh sách ở lần đọc kế tiếp, `active` thành
+   * `null`, và nếu chỉ nhìn `panel` thì bảng vẫn chừa nguyên chỗ cho một cái thẻ
+   * không còn được vẽ — đúng cái khoảng trống bên cạnh bản đồ đã phải sửa một
+   * lần rồi. Suy ra chứ không dọn bằng một effect: dọn bằng effect là thêm một
+   * đường đổi state nữa phải giữ cho đồng bộ.
+   */
+  const shown = panel?.kind === "quest" && active === null ? null : panel;
+
   const asleep = pet?.sleep_until != null && new Date(pet.sleep_until).getTime() > clock.at;
   // Ghi ref trong EFFECT, không trong lúc dựng: `react-hooks` chặn thẳng việc
   // chạm ref lúc render, và luật đó đúng — một lượt dựng bị bỏ đi vẫn kịp để
@@ -563,6 +809,109 @@ function PetPanel({
   useEffect(() => {
     asleepRef.current = asleep;
   }, [asleep]);
+
+  /*
+   * Hỏi máy chủ có ai đang đứng chờ không — lúc mở bảng, rồi mỗi phút.
+   *
+   * Mỗi phút chứ không mỗi vài giây: nhịp sinh là hai mươi phút, nên hỏi dày
+   * hơn chỉ tốn request mà không đổi được gì. Và mỗi lần hỏi là một lần MÁY CHỦ
+   * có cơ hội sinh ra khách — đó là chủ ý (ADR-012 §1), không phải tác dụng phụ.
+   */
+  useEffect(() => {
+    if (!token) return;
+    let alive = true;
+    const ask = () => {
+      apiFetch<EncounterPublic[]>(API_ROUTES.petEncounters, { token })
+        .then((rows) => {
+          if (alive) setMeetings(rows);
+        })
+        .catch(() => {});
+    };
+    // Bấm nút gọi khách xong phải thấy ngay, không đợi hết một phút. Cầu nối là
+    // một ref vì `ask` sống trong effect này — chỗ duy nhất giữ được cờ `alive`.
+    refreshMeetings.current = ask;
+    ask();
+    const tick = window.setInterval(ask, 60_000);
+    return () => {
+      alive = false;
+      window.clearInterval(tick);
+    };
+  }, [token]);
+
+  /*
+   * Chọn hình dạng và chỗ đứng cho khách, MỘT LẦN mỗi khách.
+   *
+   * Cả hai suy ra từ `encounter.id` chứ không do máy chủ gửi: bảng phân vai sinh
+   * vật (`petland-bestiary.ts`) sống ở frontend, và bản đồ là một tệp tĩnh mà
+   * máy chủ không đọc. Gieo từ id nên cùng một khách luôn ra cùng một con ở cùng
+   * một chỗ, kể cả sau khi tải lại trang — bốc ngẫu nhiên mỗi lần dựng thì con
+   * vật đổi hình giữa hai lần chớp mắt.
+   */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const kept = new Map(guestsRef.current.map((guest) => [guest.id, guest]));
+    /*
+     * Đặt chỗ MỘT LẦN cho mỗi vị khách, khoá theo `id`.
+     *
+     * Danh sách được đọc lại mỗi phút và mỗi câu trả lời, nên effect này chạy
+     * lại liên tục — mà chỗ đứng lại đo theo ô con thú đang đứng. Không giữ lại
+     * thì cả bản đồ xáo chỗ mỗi phút, và kẻ xâm nhập nhảy sang chỗ khác giữa
+     * hai bước của chính nó.
+     *
+     * Người đã có thì giữ nguyên; người mới thì tránh cả những ô đã có người —
+     * hai vị khách chồng khít lên nhau là một cú bấm không biết mở thẻ của ai.
+     */
+    const taken = new Set<string>();
+    for (const guest of guestsRef.current) taken.add(`${guest.x},${guest.y}`);
+
+    const next: Guest[] = [];
+    for (const meeting of meetings) {
+      const already = kept.get(meeting.id);
+      if (already) {
+        next.push(already);
+        continue;
+      }
+      const danger = meeting.kind === "intruder";
+      const seed = [...meeting.id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+      // Đứng được VÀ nhìn thấy được — xem `spotNear`. Bản cũ bốc bằng một công
+      // thức thuần trên toạ độ bản đồ, nên khách vừa rơi vào tường vừa rơi ra
+      // ngoài khung nhìn 14×8, và cả ba triệu chứng (không dấu hiệu, không bấm
+      // được, đứng trong vật cản) đều là cùng một lỗi ấy.
+      const spot = spotNear(map, petTileRef.current, seed, taken);
+      taken.add(`${spot.x},${spot.y}`);
+      next.push({
+        id: meeting.id,
+        tile: tileForGuest(meeting.id, danger ? "intruder" : "npc"),
+        ...spot,
+        danger,
+      });
+    }
+
+    // Người vừa bị hạ gục ở lại thêm cho tới khi cú ngã diễn xong. Máy chủ đã
+    // bỏ họ khỏi danh sách từ lúc câu trả lời đúng, nhưng xoá ngay lúc ấy thì
+    // cú ngã không bao giờ được vẽ — kẻ xâm nhập biến mất giữa không trung.
+    const falling = fightRef.current;
+    if (falling?.win) {
+      const victim = kept.get(falling.id);
+      if (victim && !next.some((guest) => guest.id === victim.id)) next.push(victim);
+    }
+    guestsRef.current = next;
+  }, [meetings, mapReady]);
+
+  useEffect(() => {
+    openQuestRef.current = (id: string) => {
+      const guest = meetings.find((one) => one.id === id);
+      if (!guest) return;
+      setActiveId(id);
+      setPanel({ kind: "quest" });
+      setSpeech(speechFor(guest.id, guest.kind === "intruder", guest.steps_done));
+      speakingRef.current = id;
+      // Bong bóng tự tắt; thẻ nhiệm vụ ở bên cạnh mới là chỗ làm việc. Để nó
+      // đứng mãi thì nó che mất chính con vật vừa nói.
+      speechUntil.current = performance.now() + SPEECH_MS;
+    };
+  }, [meetings]);
 
   const tier = pet?.tier;
   useEffect(() => {
@@ -713,7 +1062,7 @@ function PetPanel({
           "--pet-egg-w": `${EGG_PANEL_W}px`,
           // Chỉ cộng vào chặn trên khi cột thật sự đang mở; đóng lại thì bảng
           // phải co về đúng bề ngang bản đồ chứ không giữ chỗ trống.
-          "--pet-side-w": side === null ? "0px" : `${EGG_PANEL_W}px`,
+          "--pet-side-w": shown === null ? "0px" : `${EGG_PANEL_W}px`,
         } as React.CSSProperties
       }
     >
@@ -772,28 +1121,89 @@ function PetPanel({
               không nằm trong hàng hành động: cho ăn, chọc và đi dạo vĩnh viễn
               miễn phí, và trộn một nút mất tiền vào giữa chúng là bước đầu tiên
               của việc con thú phụ thuộc vào ruby (ADR-011 §3). */}
+          {/* Lối vào thứ hai cho nhiệm vụ, và nó không phải thừa: đường chính là
+              bấm vào con vật trên bản đồ, mà con vật thì nhỏ, có thể bị con thú
+              che, và biến mất hoàn toàn nếu canvas không dựng được. Một cái nút
+              ở thanh tiêu đề là thứ luôn tới được. */}
+          {/* MỘT nút cho mỗi LOẠI, và nó mở một DANH SÁCH chứ không mở thẳng
+              một thẻ. Bấm thẳng thì cái nút phải tự đoán người dùng muốn ai
+              trong hai người — đoán sai là mở nhầm việc, và người ta không biết
+              còn người kia. Danh sách thì hỏi, và tiện thể trả lời luôn câu hỏi
+              quan trọng hơn: mỗi người còn bao lâu nữa thì đi mất.
+
+              Luôn in dấu chấm than, không in số: hàng nút này toàn biểu tượng,
+              nên một con số ở giữa đọc ra là một chỉ số chứ không phải một lời
+              mời — và số lượng đã có sẵn ngay đầu danh sách. */}
+          {(["npc", "intruder"] as const).map((kind) => {
+            if (!meetings.some((one) => one.kind === kind)) return null;
+            const showing = panel?.kind === "list" && panel.of === kind;
+            return (
+              <button
+                key={kind}
+                type="button"
+                aria-label={kind === "intruder" ? "Xem kẻ xâm nhập" : "Xem nhiệm vụ"}
+                title={kind === "intruder" ? "Kẻ xâm nhập" : "Có người cần giúp"}
+                aria-expanded={showing}
+                onClick={() => setPanel(showing ? null : { kind: "list", of: kind })}
+                className={cx(
+                  "grid h-6 w-6 place-items-center rounded font-data text-small font-bold transition-colors hover:bg-recess",
+                  kind === "intruder" ? "text-alert" : "text-warn",
+                  showing && "bg-recess",
+                )}
+              >
+                !
+              </button>
+            );
+          })}
+          {/* Công cụ THỬ, chỉ admin thấy.
+              Đường thật cố ý chậm — hai mươi phút cho một NPC, một giờ cho một
+              kẻ xâm nhập, và lần đọc đầu của một tài khoản mới chỉ đặt mốc chứ
+              không sinh ai. Không có nút này thì mỗi lần sửa một dòng trong hoạt
+              cảnh chiến đấu là hai mươi phút ngồi đợi.
+
+              Nó nằm ở ĐÂY chứ không ở `/admin/pet`, vì thứ nó tạo ra chỉ nhìn
+              thấy được trên bản đồ này. Một nút ở trang khác nghĩa là mở tab thứ
+              hai, bấm, rồi quay lại — mỗi vòng thử. */}
+          {isAdmin && (
+            <button
+              type="button"
+              aria-label="Gọi đủ NPC và kẻ xâm nhập (thử)"
+              title="Gọi đủ khách — công cụ thử"
+              disabled={busy}
+              onClick={() => {
+                setBusy(true);
+                void apiFetch(API_ROUTES.adminPetEncounterSpawn, { method: "POST", token })
+                  .then(() => refreshMeetings.current())
+                  .catch(() => {})
+                  .finally(() => setBusy(false));
+              }}
+              className="grid h-6 w-6 place-items-center rounded text-ink-faint transition-colors hover:bg-recess hover:text-ink disabled:opacity-45"
+            >
+              <PixelIcon name="spark" scale={1} />
+            </button>
+          )}
           <button
             type="button"
-            aria-label={side === "eggs" ? "Đóng màn trứng" : "Mở trứng"}
+            aria-label={panel?.kind === "eggs" ? "Đóng màn trứng" : "Mở trứng"}
             title="Trứng"
-            aria-expanded={side === "eggs"}
-            onClick={() => setSide(side === "eggs" ? null : "eggs")}
+            aria-expanded={panel?.kind === "eggs"}
+            onClick={() => setPanel(panel?.kind === "eggs" ? null : { kind: "eggs" })}
             className={cx(
               "grid h-6 w-6 place-items-center rounded transition-colors hover:bg-recess hover:text-ink",
-              side === "eggs" ? "text-alert" : "text-ink-faint",
+              panel?.kind === "eggs" ? "text-alert" : "text-ink-faint",
             )}
           >
             <Gem size={13} strokeWidth={2} aria-hidden />
           </button>
           <button
             type="button"
-            aria-label={side === "collection" ? "Đóng bộ sưu tập" : "Bộ sưu tập"}
+            aria-label={panel?.kind === "collection" ? "Đóng bộ sưu tập" : "Bộ sưu tập"}
             title="Bộ sưu tập"
-            aria-expanded={side === "collection"}
-            onClick={() => setSide(side === "collection" ? null : "collection")}
+            aria-expanded={panel?.kind === "collection"}
+            onClick={() => setPanel(panel?.kind === "collection" ? null : { kind: "collection" })}
             className={cx(
               "grid h-6 w-6 place-items-center rounded transition-colors hover:bg-recess hover:text-ink",
-              side === "collection" ? "text-action" : "text-ink-faint",
+              panel?.kind === "collection" ? "text-action" : "text-ink-faint",
             )}
           >
             <LayoutGrid size={13} strokeWidth={2} aria-hidden />
@@ -853,9 +1263,56 @@ function PetPanel({
             )}
           />
           <PixelBits bits={bits} />
+          {/* Bong bóng thoại: phần tử DOM, không vẽ trên canvas.
+
+              Canvas cố ý không nạp phông chữ nào — cùng lý do dấu chấm than là
+              hai hình chữ nhật — và chữ vẽ trên canvas thì trình đọc màn hình
+              không đọc được. `-translate-x-1/2` để nó cân giữa trên đầu khách,
+              còn vị trí thì vòng lặp ghi thẳng vào `style` mỗi khung. */}
+          <div
+            ref={bubble}
+            aria-live="polite"
+            className="pointer-events-none absolute z-10 max-w-[13rem] rounded border border-rule-strong bg-panel px-2 py-1 text-label leading-snug text-ink opacity-0 transition-opacity duration-200"
+            style={{ left: -9999, top: -9999 }}
+          >
+            {speech}
+          </div>
         </div>
-        {side === "eggs" && <EggScreen token={token} onClose={() => setSide(null)} />}
-        {side === "collection" && (
+        {shown?.kind === "list" && (
+          <GuestList
+            meetings={meetings}
+            kind={shown.of}
+            activeId={activeId}
+            onPick={(id) => openQuestRef.current(id)}
+            onClose={() => setPanel(null)}
+          />
+        )}
+        {shown?.kind === "quest" && active && (
+          <QuestCard
+            /* Cuộc khác là thẻ khác: `key` làm nó dựng lại từ đầu, nên câu đã
+               gõ dở của cuộc trước không nằm lại trong ô nhập của cuộc sau —
+               và giờ chuyển qua lại giữa bốn vị khách là chuyện thường. */
+            key={active.id}
+            token={token}
+            encounter={active}
+            onChange={(next) =>
+              setMeetings((current) =>
+                next === null
+                  ? current.filter((one) => one.id !== active.id)
+                  : current.map((one) => (one.id === active.id ? next : one)),
+              )
+            }
+            onFight={(win) => {
+              // `started: null` nghĩa là "chưa đánh, còn đang tới". Vòng lặp mới
+              // là chỗ biết con thú đứng đâu, nên nó chốt mốc bắt đầu — đánh từ
+              // nửa bản đồ bên kia thì cú lao tới chỉ là một cái nhích.
+              fightRef.current = { id: active.id, started: null, win };
+            }}
+            onClose={() => setPanel(null)}
+          />
+        )}
+        {shown?.kind === "eggs" && <EggScreen token={token} onClose={() => setPanel(null)} />}
+        {shown?.kind === "collection" && (
           <CollectionScreen
             token={token}
             active={pet?.species ?? null}
@@ -882,7 +1339,7 @@ function PetPanel({
               // Bỏ dở tư thế đang diễn: con vừa cất đi mới là con đang nhai.
               actionFx.current = null;
             }}
-            onClose={() => setSide(null)}
+            onClose={() => setPanel(null)}
           />
         )}
       </div>

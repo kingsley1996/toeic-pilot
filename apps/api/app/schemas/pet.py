@@ -236,3 +236,208 @@ class EggSettingEdit(BaseModel):
     ruby_cost: int | None = Field(default=None, ge=1, le=1000)
     pity_rolls: int | None = Field(default=None, ge=1, le=100)
     duplicate_refund: int | None = Field(default=None, ge=0, le=999)
+
+
+# --- chạm mặt (ADR-012) -----------------------------------------------------
+
+
+class EncounterChoice(BaseModel):
+    """Một lựa chọn của câu hỏi chọn nghĩa.
+
+    `key` là mã băm theo (cuộc chạm mặt, mục từ) chứ không phải id mục từ, nên
+    nó vô nghĩa ở mọi nơi khác và không nói được đáp án nào đúng. Máy chủ tính
+    lại đúng mã ấy cho mục tiêu của cuộc chạm mặt để đối chiếu — không lưu gì
+    thêm, không có bảng phiên nào phải dọn.
+    """
+
+    key: str
+    text: str
+
+
+class EncounterTask(BaseModel):
+    """Nội dung của nhiệm vụ, đủ để hiện lên và không hơn.
+
+    Dạng từ vựng gửi kèm nghĩa và ví dụ vì người học TỰ CHẤM — đây là thẻ lật,
+    và thẻ lật thì phải lật ra được. Dạng trắc nghiệm (chưa mở) sẽ dùng đúng
+    `QuestionPublic`, thứ cố ý không mang `is_correct`: một schema "gọn hơn" kèm
+    đáp án cho tiện chấm ở client là chỗ đáp án rời máy chủ trước khi trả lời.
+    """
+
+    kind: Literal["vocabulary", "dictation", "quiz"]
+    mode: Literal["typing", "choice", "dictation"] = "typing"
+    """Cách người học trả lời, và nó KHÔNG phải `kind`.
+
+    `kind` nói nhiệm vụ mượn bộ chấm nào; `mode` nói màn hình vẽ ra cái gì. Một
+    nhiệm vụ từ vựng có hai cách hỏi — gõ lại từ, hoặc chọn nghĩa — và cả hai
+    đều đi vào SM-2 qua đúng một đường.
+
+    Không có "lật thẻ": lật thẻ là **tự chấm**, và tự chấm không dùng được ở đây.
+    Phần thưởng là ruby, nên một cái nút "tôi nhớ rồi" là một cái nút in tiền —
+    và nó cũng không đo được gì, vì người bấm là người được thưởng.
+    """
+
+    entry_id: str | None = None
+    prompt: str | None = None
+    """Đề bài: nghĩa tiếng Việt cho dạng gõ lại, từ tiếng Anh cho dạng chọn nghĩa."""
+    part_of_speech: str | None = None
+    choices: list[EncounterChoice] | None = None
+    """Bốn lựa chọn cho dạng chọn nghĩa, `null` cho dạng khác.
+
+    **Không gửi `entry_id` ở dạng này** và mỗi lựa chọn mang một `key` băm theo
+    cuộc chạm mặt, chứ không mang id thật: gửi id thật thì đáp án đúng là cái id
+    trùng với `entry_id`, và cả câu hỏi trả lời được bằng devtools mà không cần
+    đọc chữ nào.
+    """
+
+    hints_left: int = 0
+    """Còn xin gợi ý được mấy lần. Chỉ dạng gõ lại từ mới khác 0.
+
+    Gửi kèm để cái nút biết tự khoá sau khi tải lại trang: bộ đếm sống ở máy chủ
+    (`encounter.hints_used`), nên nếu không gửi thì giao diện dựng lại sẽ mời
+    người dùng bấm một cái nút chắc chắn trả về lỗi.
+    """
+
+    audio_url: str | None = None
+    """Bản thu của câu chép chính tả. Dạng khác để trống."""
+    word_count: int | None = None
+    """Số từ của câu, để giao diện nói trước câu này dài bao nhiêu.
+
+    Gửi ĐỘ DÀI chứ không gửi `transcript`, và đây là chỗ khác hẳn
+    `GET /dictation/{id}`: màn chép chính tả chấm ở trình duyệt nên phải nhận
+    đáp án, còn thẻ nhiệm vụ thì không — nó gửi câu gõ lên máy chủ và nhận lại
+    kết quả. Gửi kèm đáp án ở đây là cho không một phần thưởng.
+    """
+
+
+class EncounterPublic(BaseModel):
+    """Một cuộc chạm mặt đang chờ.
+
+    **Không có ô sprite và không có toạ độ**: trình duyệt tự chọn con vật và chỗ
+    đứng từ `id`. Máy chủ không đọc `map.json` (cùng lý do `PUT /pet/position`
+    không kiểm ô đi được), và bảng phân vai sinh vật sống ở frontend.
+    """
+
+    id: str
+    kind: Literal["npc", "intruder"]
+    steps_total: int
+    steps_done: int
+    reward_ruby: int
+    expires_at: datetime
+    """Gửi MỐC chứ không gửi số giây còn lại: số giây đứng yên giữa hai lần đọc,
+    còn mốc thì trình duyệt đếm ngược được — cùng lý do `sleep_until` là mốc."""
+    task: EncounterTask
+
+
+class EncounterAnswer(BaseModel):
+    """Trả lời một bước.
+
+    **Máy chủ nhận CÂU TRẢ LỜI, không nhận điểm.** Bản đầu nhận thẳng điểm SM-2
+    do người học tự chấm ở màn thẻ lật; điểm ấy là thứ quyết định có trả ruby
+    hay không, nên nó là một trường "hãy trả tôi hai mươi ruby" gửi từ trình
+    duyệt. Giờ máy chủ tự chấm rồi mới quy ra điểm, qua đúng `recall.judge` và
+    `recall.grade_for` mà màn gõ lại từ đang dùng — vẫn không có bộ chấm thứ hai
+    nào (ADR-012 §2).
+
+    Hai trường, không phải hai endpoint: cách hỏi là thuộc tính của cuộc chạm
+    mặt chứ không phải của lời gọi, nên tách đường sẽ để client tự khai nó đang
+    trả lời dạng gì — và khai sai thì bước vẫn tính.
+    """
+
+    text: str = Field(default="", max_length=2000)
+    """Câu đã gõ: cả câu cho chép chính tả, một từ cho dạng gõ lại."""
+    choice: str = Field(default="", max_length=64)
+    """`key` của lựa chọn đã chọn, cho dạng chọn nghĩa."""
+
+
+class DiffWord(BaseModel):
+    """Một từ trong bảng so sánh của bài chép chính tả.
+
+    Khai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một
+    bản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất
+    đúng hai cái tên mà giao diện đọc.
+    """
+
+    op: Literal["match", "missing", "extra"]
+    word: str
+
+
+class EncounterResult(BaseModel):
+    correct: bool
+    """Bước vừa rồi có được tính là làm được không.
+
+    Với từ vựng, "được" nghĩa là gõ đúng từ hoặc chọn đúng nghĩa — máy chấm, và
+    một lỗi gõ nhẹ vẫn tính là chưa được (nó vào SM-2 ở mức KHÓ). Với chép chính tả,
+    "được" là `is_complete` — đúng trọn câu, cùng thước đo mà tiến độ chép chính
+    tả đang đếm, chứ không phải `accuracy` (gõ thừa vẫn cho 100%).
+    """
+    steps_done: int
+    steps_total: int
+    done: bool
+    reward_ruby: int
+    """Ruby thực sự vào ví ở lần gọi này. 0 khi chưa xong hoặc đã trả rồi."""
+    balance: int
+    encounter: EncounterPublic | None
+    """Cuộc chạm mặt sau khi trả lời, hoặc `null` khi nó đã xong.
+
+    Với kẻ xâm nhập, `task` trong này là **nhiệm vụ MỚI của bước sau**: mục tiêu
+    được bốc lại sau mỗi bước đúng, nếu không thì ba bước cùng một từ và cả cuộc
+    chạm mặt chỉ là một cái nút bấm ba lần.
+    """
+
+    word_diff: list[DiffWord] | None = None
+    """Kết quả so từng từ của một lượt chép chính tả, để thẻ tô đúng/sai.
+
+    `null` cho dạng khác. Chỉ có ở đây, KHÔNG có ở `EncounterTask`: nó là thứ
+    máy chủ trả lại SAU khi chấm, nên nó không tiết lộ gì trước lúc trả lời.
+    """
+
+
+# --- cấu hình chạm mặt (ADR-012 lát 7) --------------------------------------
+
+
+class EncounterSettingPublic(BaseModel):
+    """Bảy con số của cơ chế chạm mặt.
+
+    Nhịp sinh **phải** sửa được từ đây, và đó là điều kiện để lập luận "phần
+    thưởng không cày được" của ADR-012 §6 đứng vững: thứ giới hạn ruby từ nhiệm
+    vụ là nhịp xuất hiện, và một trần nằm rải rác trong mã thì không ai chỉnh
+    được vào ngày phát hiện nó sai.
+    """
+
+    npc_gap_seconds: int
+    npc_life_seconds: int
+    npc_reward: int
+    intruder_gap_seconds: int
+    intruder_life_seconds: int
+    intruder_reward: int
+    intruder_steps: int
+
+
+class EncounterSettingEdit(BaseModel):
+    """Sửa cấu hình chạm mặt. Khoá vắng mặt = đừng đụng tới.
+
+    Cận trên không phải để làm khó: `life` dài hơn `gap` nghĩa là cuộc trước
+    chưa hết hạn thì cuộc sau đã tới giờ, và vì mỗi lúc chỉ một cuộc được tồn
+    tại, giờ hẹn cứ trôi qua mà không sinh được gì — tính năng im lặng chứ không
+    báo lỗi. Chỗ kiểm chuyện đó là endpoint, vì nó so hai trường với nhau.
+    """
+
+    npc_gap_seconds: int | None = Field(default=None, ge=60, le=86_400)
+    npc_life_seconds: int | None = Field(default=None, ge=30, le=86_400)
+    npc_reward: int | None = Field(default=None, ge=0, le=500)
+    intruder_gap_seconds: int | None = Field(default=None, ge=60, le=86_400)
+    intruder_life_seconds: int | None = Field(default=None, ge=30, le=86_400)
+    intruder_reward: int | None = Field(default=None, ge=0, le=500)
+    intruder_steps: int | None = Field(default=None, ge=1, le=10)
+
+
+class EncounterHint(BaseModel):
+    """Một lần gợi ý cho nhiệm vụ gõ lại từ.
+
+    Trả về từ ĐÃ CHE, không trả về số chữ đã mở: giao diện chỉ việc in ra, nên
+    không có phép ghép chuỗi nào ở phía trình duyệt để mà làm sai — và cũng không
+    có đường nào để một client tự "mở thêm" bằng cách gọi lại với số lớn hơn.
+    """
+
+    hint: str
+    hints_left: int

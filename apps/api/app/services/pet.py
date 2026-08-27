@@ -230,6 +230,17 @@ cái cửa mà trần ngày đóng lại: bấm một nút không mất gì cho 
 Thứ giấc ngủ trả về là ĐI DẠO ĐƯỢC — mà đi dạo mới là hành động đáng 5 điểm.
 """
 
+"""XP con thú nhận được khi một cuộc chạm mặt kết thúc thắng lợi.
+
+Cùng tỉ lệ với ruby (5 và 20), vì hai phần thưởng đo cùng một việc: đẩy lui một
+kẻ xâm nhập là ba câu đúng liên tiếp, còn giúp một NPC là một câu.
+
+Cao hơn hẳn `walk` (5 điểm) có chủ ý — đây là XP duy nhất phải HỌC mới có. Mấy
+cái nút chăm sóc trả điểm cho sự chăm chỉ; cái này trả cho việc trả lời đúng.
+Để nó ngang một cú bấm là nói rằng hai thứ ấy đáng như nhau.
+"""
+XP_PER_ENCOUNTER: dict[str, int] = {"npc": 6, "intruder": 15}
+
 """Trần XP mỗi ngày, và nó là thứ giữ cho level pet còn nghĩa.
 
 Không có trần thì bấm "chọc" năm trăm lần là max level, và lúc đó con số ấy

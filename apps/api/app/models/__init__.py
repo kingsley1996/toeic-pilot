@@ -11,6 +11,7 @@ from app.models.dictation import (
     DictationStory,
     DictationTopic,
 )
+from app.models.encounter import Encounter, EncounterSetting
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
@@ -98,6 +99,8 @@ __all__ = [
     "PracticeTest",
     "PracticeTestQuestion",
     "EggSetting",
+    "Encounter",
+    "EncounterSetting",
     "PetOwned",
     "PetSpecies",
     "PetState",

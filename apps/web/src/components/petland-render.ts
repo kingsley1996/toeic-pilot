@@ -78,6 +78,18 @@ export type PetView = {
    */
   sleeping: boolean;
   /**
+   * Những cuộc chạm mặt đang đứng trên bản đồ. Rỗng nghĩa là không có ai.
+   *
+   * Vẽ trong canvas chứ không phải một lớp DOM đè lên: chúng phải bị camera lia
+   * theo, phải bị bầu trời đêm phủ lên, và phải đứng sau con thú khi con thú đi
+   * qua trước mặt. Một thẻ DOM nổi trên canvas thì không có ba tính chất nào.
+   *
+   * Một MẢNG chứ không phải một cái: tối đa hai NPC và hai kẻ xâm nhập cùng
+   * lúc, và một cuộc mới không bao giờ đẩy cuộc đang diễn ra đi. `id` đi kèm vì
+   * trận đánh phải chỉ đích danh một trong số họ.
+   */
+  encounters: readonly { id: string; tile: number; x: number; y: number; danger: boolean }[];
+  /**
    * Lớp phủ bầu trời theo giờ trong thế giới Petland.
    *
    * Màu và độ đậm tính ở `petland-clock.ts` — một hàm thuần trên đồng hồ — chứ
@@ -101,6 +113,18 @@ export type PetView = {
    * "giật mình" phải là phép biến hình chứ không phải ảnh.
    */
   action: { kind: "feed" | "poke" | "walk" | "sleep" | "wake"; t: number } | null;
+  /**
+   * Trận đánh với kẻ xâm nhập: tiến độ 0..1, và có hạ gục được không.
+   *
+   * Sinh lúc vẽ như mọi chuyển động khác ở đây — không có khung hoạt ảnh nào để
+   * mà chiếu. Tách khỏi `action` chứ không thêm một `kind` nữa vào đó, vì trận
+   * đánh cần biết KẺ KIA đứng đâu: nó là chuyển động của hai thân, còn `action`
+   * chỉ tả một thân.
+   *
+   * `win` quyết định đoạn kết: đúng một bước thì kẻ kia loạng choạng rồi đứng
+   * lại, còn bước cuối thì nó văng ra và mờ đi.
+   */
+  fight: { id: string; t: number; win: boolean } | null;
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -146,6 +170,21 @@ export type Stage = {
    * biết camera đang lia tới đâu.
    */
   petScreen: () => { x: number; y: number };
+  /**
+   * Chỗ ĐẦU vị khách trong canvas, hoặc `null` khi không có ai.
+   *
+   * Bong bóng thoại là một phần tử DOM chứ không vẽ trên canvas: canvas này cố
+   * ý không nạp phông chữ nào (cùng lý do dấu chấm than là hai hình chữ nhật),
+   * và nạp một bộ phông cho vài câu tiếng Việt là kéo cả một tầng phụ thuộc —
+   * chưa kể chữ vẽ trên canvas thì trình đọc màn hình không đọc được.
+   *
+   * Trả về toạ độ MÀN HÌNH, tính lại mỗi khung: máy quay xê dịch khi con thú đi
+   * tới chỗ vị khách, nên một chỗ chốt lúc bấm sẽ trôi khỏi cái đầu nó đang chỉ.
+   *
+   * Tra theo `id` chứ không trả "vị khách": bốn người có thể cùng đứng đó, và
+   * bong bóng thoại phải mọc trên đầu đúng người vừa nói.
+   */
+  guestScreen: (id: string) => { x: number; y: number } | null;
   destroy: () => void;
 };
 
@@ -329,11 +368,119 @@ export async function createStage(
   wave.ellipse(0, 0, 7, 3).stroke({ color: 0xffffff, width: 1.25 });
   world.addChild(halo, wave, core);
 
+  /*
+   * Nhân vật của cuộc chạm mặt, cộng dấu hiệu trên đầu.
+   *
+   * Thêm TRƯỚC con thú nên con thú đi qua sẽ che nó — đúng thứ tự của một khung
+   * cảnh nhìn nghiêng, và cũng là thứ giữ cho con thú luôn là nhân vật chính.
+   *
+   * Dấu hiệu vẽ bằng hai hình chữ nhật chứ không phải một ký tự: canvas này
+   * không nạp phông chữ nào, và nạp một bộ phông cho đúng một dấu chấm than là
+   * kéo cả một tầng phụ thuộc vào chỗ chỉ cần bốn chục pixel.
+   */
+  /**
+   * Một chỗ đứng cho khách: sprite của họ và dấu hiệu trên đầu.
+   *
+   * Cấp phát DẦN và không bao giờ trả lại. Số khách bị chặn cứng ở bốn (hai mỗi
+   * loại), nên "rò rỉ" ở đây có trần là bốn đối tượng cho cả phiên; đổi lại,
+   * không có lúc nào một sprite bị huỷ trong khi vòng vẽ còn cầm nó — đúng loại
+   * lỗi mà một khung hình lệch nhịp sẽ dựng ra.
+   */
+  type GuestSlot = { sprite: Sprite; mark: Graphics; tile: number; danger: boolean | null };
+  const slots: GuestSlot[] = [];
+
+  function slotAt(index: number): GuestSlot {
+    while (slots.length <= index) {
+      const sprite = new Sprite();
+      sprite.anchor.set(0.5, 1);
+      sprite.visible = false;
+      const mark = new Graphics();
+      mark.visible = false;
+      /*
+       * Chèn NGAY TRƯỚC con thú, không phải ở đầu danh sách.
+       *
+       * `addChildAt(…, 0)` đẩy vị khách xuống dưới CẢ tấm nền: mỗi ô cỏ là một
+       * sprite được thêm vào từ lúc dựng sân khấu, nên đứng ở chỉ số 0 là đứng
+       * sau chúng. Triệu chứng lại không giống nguyên nhân chút nào — dấu hiệu
+       * vẫn hiện (nó nổi lên hai ô phía trên, thường rơi vào ô trống, mà ô trống
+       * thì không có sprite nào để che) còn nhân vật thì biến mất hẳn.
+       *
+       * Trước con thú vì con thú đi qua thì phải che họ, đúng thứ tự của một
+       * khung cảnh nhìn nghiêng.
+       */
+      const front = world.getChildIndex(pet);
+      world.addChildAt(sprite, front);
+      world.addChildAt(mark, front + 1);
+      slots.push({ sprite, mark, tile: -1, danger: null });
+    }
+    return slots[index];
+  }
+
+  /*
+   * Hai dấu hiệu, KHÁC HÌNH chứ không chỉ khác màu.
+   *
+   * Chỉ đổi màu là chỗ dựa vào thứ khoảng 8% đàn ông không phân biệt được — và
+   * ở đây hai màu ấy đúng là cặp vàng/đỏ khó nhất. Việc và nguy hiểm phải đọc
+   * ra được từ hình: một chấm than đứng một mình, và một chấm than nằm trong
+   * khung tam giác.
+   *
+   * Vẽ trên nền một khối tối, vì cả hai đứng trước một bản đồ nhiều màu: một nét
+   * 3px màu vàng trên mái nhà vàng là một nét không tồn tại. Bản trước đúng là
+   * như thế — 3px, không viền — và người dùng báo là "không có dấu chấm than".
+   */
+  function drawMark(target: Graphics, danger: boolean): void {
+    // Màu vẽ THẲNG vào hình, không qua `tint`: `tint` nhân lên MỌI lớp, nên nền
+    // tối — thứ giữ cho dấu hiệu đọc được trên một bản đồ nhiều màu — cũng ngả
+    // vàng theo và biến mất đúng chỗ nó phải làm việc.
+    // Vàng cho việc, đỏ cho kẻ xâm nhập: cùng cặp `warn`/`alert` mà cả app đang
+    // dùng, nên không ai phải học một bảng màu mới.
+    const ink = danger ? 0xf87a82 : 0xe8a93c;
+    target.clear();
+    if (danger) {
+      target
+        .poly([0, -1.5, 5, 7, -5, 7])
+        .fill({ color: 0x1a1416, alpha: 0.9 })
+        .poly([0, -1.5, 5, 7, -5, 7])
+        .stroke({ color: ink, width: 0.75 });
+    } else {
+      target
+        .roundRect(-2.5, -1, 5, 9.5, 1.5)
+        .fill({ color: 0x1a1416, alpha: 0.9 })
+        .roundRect(-2.5, -1, 5, 9.5, 1.5)
+        .stroke({ color: ink, width: 0.5 });
+    }
+    const top = danger ? 1.5 : 0.5;
+    target.rect(-0.75, top, 1.5, 4).fill({ color: ink });
+    target.rect(-0.75, top + 5, 1.5, 1.5).fill({ color: ink });
+  }
+
+  /*
+   * Tia va chạm: bốn vạch toả ra, vẽ MỘT LẦN rồi chỉ bật/tắt và phóng to.
+   *
+   * Vẽ lại mỗi khung sẽ dựng lại hình học sáu chục lần một giây cho một thứ
+   * chớp trong hai phần mười giây. Bốn vạch chứ không phải một vòng tròn: vòng
+   * tròn ở cỡ này đọc ra là một chấm.
+   */
+  const spark = new Graphics();
+  for (const [dx, dy] of [
+    [1, 0],
+    [-1, 0],
+    [0.7, -0.7],
+    [-0.7, -0.7],
+  ]) {
+    spark.moveTo(dx * 2, dy * 2).lineTo(dx * 7, dy * 7);
+  }
+  spark.stroke({ color: 0xfff2c4, width: 1.5 });
+  spark.visible = false;
+
   const pet = new Sprite();
   // Neo ở ĐÁY và giữa: con thú "đứng trên" ô của nó, nên khi nhún hay thở thì
   // chân ở yên còn người nhấp nhô. Neo ở tâm làm nó lún xuống đất mỗi nhịp thở.
   pet.anchor.set(0.5, 1);
   world.addChild(pet);
+  // Sau con thú: tia va chạm phải nằm TRÊN cả hai thân, nếu không nó chớp ở
+  // đâu đó sau lưng và đọc ra là một lỗi vẽ.
+  world.addChild(spark);
 
   /**
    * Một nhịp của một sinh vật hậu cảnh: chờ, chọn ô, đi, rồi chờ tiếp.
@@ -406,6 +553,8 @@ export async function createStage(
   let lastClock = 0;
   let petScreenX = 0;
   let petScreenY = 0;
+  /** Chỗ ĐẦU từng vị khách trong canvas, làm mới mỗi khung, tra theo id. */
+  const guestScreens = new Map<string, { x: number; y: number }>();
 
   return {
     setView(nextCols, nextRows) {
@@ -527,6 +676,104 @@ export async function createStage(
       petScreenX = (pet.x - camX * TILE) * zoom;
       petScreenY = (pet.y - TILE - camY * TILE) * zoom;
 
+      /*
+       * Khách và dấu hiệu.
+       *
+       * Dấu hiệu nhấp nhô nhẹ và KHÔNG nhấp nháy: nhấp nháy là thứ mắt không bỏ
+       * qua được, và một góc học có một chấm nhấp nháy thường trực sẽ bị đóng
+       * lại. Nó chỉ cần đủ để nói "ở đây có việc".
+       */
+      const guests = view.encounters;
+      guestScreens.clear();
+
+      for (let i = 0; i < slots.length; i += 1) {
+        const slot = slots[i];
+        slot.sprite.visible = false;
+        slot.mark.visible = false;
+      }
+
+      for (let i = 0; i < guests.length; i += 1) {
+        const guest = guests[i];
+        const slot = slotAt(i);
+        const { sprite, mark } = slot;
+        sprite.visible = true;
+        mark.visible = true;
+
+        if (guest.tile !== slot.tile) {
+          sprite.texture = slice(creatures, guest.tile, CREATURE_COLS);
+          slot.tile = guest.tile;
+        }
+        if (slot.danger !== guest.danger) {
+          drawMark(mark, guest.danger);
+          slot.danger = guest.danger;
+        }
+
+        // Lệch pha theo chỉ số: cả bốn nhấp nhô cùng nhịp thì đọc ra là một cơ
+        // cấu máy móc, đúng lý do mỗi sinh vật hậu cảnh có `phase` riêng.
+        const bob = Math.sin(view.clock * 2.4 + i * 1.7) * 1.2;
+        sprite.x = guest.x * TILE + TILE / 2;
+        sprite.y = (guest.y + 1) * TILE;
+        sprite.scale.set(1, 1 + Math.sin(view.clock * 3.1 + i * 1.1) * 0.03);
+        sprite.alpha = 1;
+        sprite.rotation = 0;
+        sprite.tint = 0xffffff;
+        mark.x = sprite.x;
+        mark.y = sprite.y - TILE - 12 + bob;
+
+        /*
+         * Trận đánh, dựng ở ĐÂY vì đây là chỗ duy nhất biết cả hai thân đứng đâu.
+         *
+         * Chỉ đánh vào ĐÚNG kẻ được chỉ đích danh (`fight.id`): bốn vị khách có
+         * thể cùng đứng trên bản đồ, và đánh vào "cái đầu tiên" là đánh nhầm
+         * người — một hoạt cảnh hoàn toàn trơn tru diễn tả sai chuyện vừa xảy ra.
+         *
+         * Ba nhịp lao tới: `|sin(3πt)|` cho đúng ba lần chạm, và số nhịp LẺ có
+         * chủ ý — số chẵn kết thúc lúc con thú đang ở giữa đà lao và nó búng về
+         * chỗ cũ, đúng cái lỗi mà nhịp nhai của "cho ăn" đã phải sửa.
+         */
+        const bout = view.fight;
+        if (bout !== null && bout.id === guest.id) {
+          const dir = Math.sign(sprite.x - pet.x) || 1;
+          const swing = Math.abs(Math.sin(Math.min(1, bout.t) * Math.PI * 3));
+          const hit = swing > 0.82;
+
+          // Con thú quay MẶT về phía kẻ kia suốt trận, đè lên hướng đi thường:
+          // đánh nhau mà mặt quay đi chỗ khác đọc ra là hỏng hoạt ảnh.
+          pet.x += dir * TILE * 0.5 * swing;
+          pet.y -= TILE * 0.12 * swing;
+          pet.scale.x = Math.abs(pet.scale.x) * dir;
+          pet.rotation = dir * 0.22 * swing;
+
+          // Kẻ kia giật lùi và ửng đỏ đúng lúc chạm, không ửng suốt: một thân
+          // đỏ liên tục đọc ra là "con này màu đỏ", không phải "con này ăn đòn".
+          sprite.x += dir * 2.5 * swing;
+          if (hit) sprite.tint = 0xf87a82;
+
+          spark.visible = hit;
+          spark.x = (pet.x + sprite.x) / 2;
+          spark.y = pet.y - TILE * 0.45;
+          spark.scale.set(0.8 + swing * 0.5);
+
+          if (bout.win) {
+            // Đoạn kết chỉ chiếm 30% cuối: hạ gục phải tới SAU mấy nhịp đánh,
+            // nếu không thì nó là "chạm nhẹ rồi ngã" chứ không phải một trận.
+            const fall = Math.max(0, (bout.t - 0.7) / 0.3);
+            sprite.x += dir * TILE * 1.8 * fall;
+            sprite.y -= TILE * 0.5 * Math.sin(fall * Math.PI);
+            sprite.rotation = dir * fall * 1.9;
+            sprite.alpha = 1 - fall;
+            // Dấu hiệu tắt ngay khi bắt đầu ngã: một chấm than lơ lửng trên đầu
+            // cái xác đang bay là thứ không ai định vẽ.
+            if (fall > 0) mark.visible = false;
+          }
+        }
+
+        guestScreens.set(guest.id, {
+          x: (sprite.x - camX * TILE) * zoom,
+          y: (sprite.y - TILE - camY * TILE) * zoom,
+        });
+      }
+
       sky.tint = view.sky.color;
       sky.alpha = view.sky.alpha;
       sky.width = cols * TILE * zoom;
@@ -535,6 +782,10 @@ export async function createStage(
       const dt = lastClock === 0 ? 0 : Math.min(0.1, view.clock - lastClock);
       lastClock = view.clock;
       for (const critter of critters) stepCritter(critter, dt, view.clock);
+    },
+
+    guestScreen(id) {
+      return guestScreens.get(id) ?? null;
     },
 
     petScreen() {

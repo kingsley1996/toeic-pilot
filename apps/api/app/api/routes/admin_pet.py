@@ -10,15 +10,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
+from app.api.routes.pet import ensure_pet
 from app.core.database import get_db
-from app.models import PetSpecies, User
+from app.models import EncounterSetting, PetSpecies, User
 from app.schemas.pet import (
     EggSettingEdit,
     EggSettingPublic,
+    EncounterSettingEdit,
+    EncounterSettingPublic,
     PetSpeciesCreate,
     PetSpeciesEdit,
     PetSpeciesPublic,
 )
+from app.services import encounters
 from app.services.gacha import settings_row
 from app.services.pet_species import all_species
 
@@ -132,3 +136,90 @@ def update_egg_setting(
         pity_rolls=row.pity_rolls,
         duplicate_refund=row.duplicate_refund,
     )
+
+
+def _encounter_public(row: EncounterSetting) -> EncounterSettingPublic:
+    return EncounterSettingPublic(
+        npc_gap_seconds=row.npc_gap_seconds,
+        npc_life_seconds=row.npc_life_seconds,
+        npc_reward=row.npc_reward,
+        intruder_gap_seconds=row.intruder_gap_seconds,
+        intruder_life_seconds=row.intruder_life_seconds,
+        intruder_reward=row.intruder_reward,
+        intruder_steps=row.intruder_steps,
+    )
+
+
+@router.get("/encounters", response_model=EncounterSettingPublic)
+def read_encounter_setting(
+    db: Session = Depends(get_db), _: User = Depends(can_configure)
+) -> EncounterSettingPublic:
+    return _encounter_public(encounters.settings_row(db))
+
+
+@router.patch("/encounters", response_model=EncounterSettingPublic)
+def update_encounter_setting(
+    body: EncounterSettingEdit,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_configure),
+) -> EncounterSettingPublic:
+    """Nhịp sinh, tuổi thọ, mức thưởng, số bước.
+
+    Từ chối `life >= gap`, và lý do là một cách hỏng IM LẶNG: chỉ một cuộc chạm
+    mặt được tồn tại cùng lúc, nên một cuộc sống lâu hơn khoảng cách giữa hai
+    lần sinh sẽ chiếm chỗ suốt — giờ hẹn tới rồi trôi qua mà không ai xuất hiện,
+    và không có lỗi nào để mà đọc. So SAU khi áp cả hai thay đổi, cùng lý do
+    "hoàn < giá" ở trên: hai trường có thể đổi trong cùng một lần gửi.
+    """
+    row = encounters.settings_row(db)
+    changes = body.model_dump(exclude_unset=True)
+    for kind in ("npc", "intruder"):
+        gap = int(changes.get(f"{kind}_gap_seconds", getattr(row, f"{kind}_gap_seconds")))
+        life = int(changes.get(f"{kind}_life_seconds", getattr(row, f"{kind}_life_seconds")))
+        if life >= gap:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=(
+                    f"{kind}: lifetime ({life}s) must stay below the gap ({gap}s) — "
+                    "one encounter exists at a time, so a longer-lived one would "
+                    "occupy the slot and later spawns would silently never happen."
+                ),
+            )
+    for field, value in changes.items():
+        setattr(row, field, value)
+    db.commit()
+    return _encounter_public(row)
+
+
+@router.post("/encounters/spawn", status_code=status.HTTP_201_CREATED)
+def spawn_encounters(
+    db: Session = Depends(get_db),
+    admin: User = Depends(can_configure),
+) -> dict[str, int]:
+    """Gọi ngay đủ trần NPC và kẻ xâm nhập, **cho chính tài khoản đang gọi**.
+
+    Đây là công cụ thử, và nó chỉ tồn tại vì đường thật cố ý CHẬM: nhịp mặc định
+    là hai mươi phút cho NPC và một giờ cho kẻ xâm nhập, mà một tài khoản mới thì
+    lần đọc đầu chỉ đặt mốc chứ không sinh ai. Không có nút này thì mỗi lần sửa
+    một dòng trong hoạt cảnh chiến đấu là hai mươi phút chờ.
+
+    Ba tính chất giữ cho nó không thành một cửa hậu:
+
+    * **Chỉ cho chính mình.** Không nhận `user_id`, nên không ai gọi kẻ xâm nhập
+      vào bản đồ của người khác.
+    * **Vẫn tôn trọng trần.** Gọi mười lần cũng chỉ ra bốn người.
+    * **Đi qua đúng `_spawn` của đường thật**, nên thứ hiện ra là thứ thật —
+      cùng bộ chọn nội dung, cùng số bước, cùng mức thưởng.
+
+    `require_role("admin")` chứ không `editor`: đây là quyền vận hành, cùng ranh
+    giới mà cả tệp này đã vẽ.
+    """
+    # `ensure_pet` chứ không tự dựng hàng: `pet_state.species` là NOT NULL và
+    # loài mặc định là dữ liệu, không phải hằng số ở đây.
+    pet, _owned = ensure_pet(db, admin.id)
+    rows = encounters.fill_now(db, user_id=admin.id, pet=pet)
+    db.commit()
+    return {
+        "npc": sum(1 for row in rows if row.kind == "npc"),
+        "intruder": sum(1 for row in rows if row.kind == "intruder"),
+    }

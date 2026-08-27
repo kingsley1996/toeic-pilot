@@ -141,6 +141,11 @@ export type EggBatchResult = components["schemas"]["EggBatchResult"];
 export type EggChance = components["schemas"]["EggChance"];
 export type EggSettingPublic = components["schemas"]["EggSettingPublic"];
 export type PetOwnedPublic = components["schemas"]["PetOwnedPublic"];
+export type EncounterPublic = components["schemas"]["EncounterPublic"];
+export type EncounterHint = components["schemas"]["EncounterHint"];
+export type EncounterResult = components["schemas"]["EncounterResult"];
+export type EncounterTask = components["schemas"]["EncounterTask"];
+export type EncounterSettingPublic = components["schemas"]["EncounterSettingPublic"];
 
 // Escape hatch for callers that need a shape not aliased above.
 export type { components, paths } from "./api-types";
@@ -181,11 +186,19 @@ export const API_ROUTES = {
   // dạng theo tham số là thứ frontend phải đoán.
   petEggOpenTen: "/api/v1/pet/eggs/open-ten",
   petCollection: "/api/v1/pet/collection",
+  // Lần đọc này CÓ GHI: nó là chỗ một cuộc chạm mặt được sinh ra, và sinh lúc
+  // đọc là thứ bảo đảm không ai bỏ lỡ được cuộc nào sinh ra trong lúc họ ngủ
+  // (ADR-012 §1). Cùng hình dạng với `GET /daily-tasks`.
+  petEncounters: "/api/v1/pet/encounters",
+  petEncounterAnswer: (id: string) => `/api/v1/pet/encounters/${id}/answer`,
+  petEncounterHint: (id: string) => `/api/v1/pet/encounters/${id}/hint`,
   // Đổi con đang nuôi. `PATCH /pet` chứ không phải một đường riêng: nó sửa một
   // trường của chính con thú, và nó trả về nguyên trạng thái mới như mọi đường
   // ghi khác ở góc này.
   petSwitch: "/api/v1/pet",
   adminPetEggs: "/api/v1/admin/pet/eggs",
+  adminPetEncounters: "/api/v1/admin/pet/encounters",
+  adminPetEncounterSpawn: "/api/v1/admin/pet/encounters/spawn",
 
   // Ví ruby. Không nằm dưới `/pet`: ruby kiếm ở chỗ HỌC và tiêu ở chỗ CHƠI, nên
   // đặt nó dưới góc thú cưng sẽ dựng đúng cái liên tưởng ADR-011 §3 cấm — rằng

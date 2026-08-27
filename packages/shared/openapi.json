@@ -3165,6 +3165,30 @@
         "title": "DictationUpdate",
         "type": "object"
       },
+      "DiffWord": {
+        "description": "Một từ trong bảng so sánh của bài chép chính tả.\n\nKhai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một\nbản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất\nđúng hai cái tên mà giao diện đọc.",
+        "properties": {
+          "op": {
+            "enum": [
+              "match",
+              "missing",
+              "extra"
+            ],
+            "title": "Op",
+            "type": "string"
+          },
+          "word": {
+            "title": "Word",
+            "type": "string"
+          }
+        },
+        "required": [
+          "op",
+          "word"
+        ],
+        "title": "DiffWord",
+        "type": "object"
+      },
       "EggBatchResult": {
         "description": "Kết quả mở nhiều quả một lượt.\n\nTrả về CẢ DANH SÁCH chứ không phải một bản tóm tắt: người chơi muốn xem từng\nquả ra con gì, và một dòng \"được 3 con mới\" thì không ai nhớ nổi mình vừa mở\nra cái gì. `spent` và `refund` là con số của CẢ LƯỢT — sổ ruby cũng ghi đúng\nmột dòng trừ và một dòng hoàn, nên hai bên kể cùng một câu chuyện.",
         "properties": {
@@ -3401,6 +3425,419 @@
           "duplicate_refund"
         ],
         "title": "EggSettingPublic",
+        "type": "object"
+      },
+      "EncounterAnswer": {
+        "description": "Trả lời một bước.\n\n**Máy chủ nhận CÂU TRẢ LỜI, không nhận điểm.** Bản đầu nhận thẳng điểm SM-2\ndo người học tự chấm ở màn thẻ lật; điểm ấy là thứ quyết định có trả ruby\nhay không, nên nó là một trường \"hãy trả tôi hai mươi ruby\" gửi từ trình\nduyệt. Giờ máy chủ tự chấm rồi mới quy ra điểm, qua đúng `recall.judge` và\n`recall.grade_for` mà màn gõ lại từ đang dùng — vẫn không có bộ chấm thứ hai\nnào (ADR-012 §2).\n\nHai trường, không phải hai endpoint: cách hỏi là thuộc tính của cuộc chạm\nmặt chứ không phải của lời gọi, nên tách đường sẽ để client tự khai nó đang\ntrả lời dạng gì — và khai sai thì bước vẫn tính.",
+        "properties": {
+          "choice": {
+            "default": "",
+            "maxLength": 64,
+            "title": "Choice",
+            "type": "string"
+          },
+          "text": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "title": "EncounterAnswer",
+        "type": "object"
+      },
+      "EncounterChoice": {
+        "description": "Một lựa chọn của câu hỏi chọn nghĩa.\n\n`key` là mã băm theo (cuộc chạm mặt, mục từ) chứ không phải id mục từ, nên\nnó vô nghĩa ở mọi nơi khác và không nói được đáp án nào đúng. Máy chủ tính\nlại đúng mã ấy cho mục tiêu của cuộc chạm mặt để đối chiếu — không lưu gì\nthêm, không có bảng phiên nào phải dọn.",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "text"
+        ],
+        "title": "EncounterChoice",
+        "type": "object"
+      },
+      "EncounterHint": {
+        "description": "Một lần gợi ý cho nhiệm vụ gõ lại từ.\n\nTrả về từ ĐÃ CHE, không trả về số chữ đã mở: giao diện chỉ việc in ra, nên\nkhông có phép ghép chuỗi nào ở phía trình duyệt để mà làm sai — và cũng không\ncó đường nào để một client tự \"mở thêm\" bằng cách gọi lại với số lớn hơn.",
+        "properties": {
+          "hint": {
+            "title": "Hint",
+            "type": "string"
+          },
+          "hints_left": {
+            "title": "Hints Left",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hint",
+          "hints_left"
+        ],
+        "title": "EncounterHint",
+        "type": "object"
+      },
+      "EncounterPublic": {
+        "description": "Một cuộc chạm mặt đang chờ.\n\n**Không có ô sprite và không có toạ độ**: trình duyệt tự chọn con vật và chỗ\nđứng từ `id`. Máy chủ không đọc `map.json` (cùng lý do `PUT /pet/position`\nkhông kiểm ô đi được), và bảng phân vai sinh vật sống ở frontend.",
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "npc",
+              "intruder"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reward_ruby": {
+            "title": "Reward Ruby",
+            "type": "integer"
+          },
+          "steps_done": {
+            "title": "Steps Done",
+            "type": "integer"
+          },
+          "steps_total": {
+            "title": "Steps Total",
+            "type": "integer"
+          },
+          "task": {
+            "$ref": "#/components/schemas/EncounterTask"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "steps_total",
+          "steps_done",
+          "reward_ruby",
+          "expires_at",
+          "task"
+        ],
+        "title": "EncounterPublic",
+        "type": "object"
+      },
+      "EncounterResult": {
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "boolean"
+          },
+          "done": {
+            "title": "Done",
+            "type": "boolean"
+          },
+          "encounter": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EncounterPublic"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reward_ruby": {
+            "title": "Reward Ruby",
+            "type": "integer"
+          },
+          "steps_done": {
+            "title": "Steps Done",
+            "type": "integer"
+          },
+          "steps_total": {
+            "title": "Steps Total",
+            "type": "integer"
+          },
+          "word_diff": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DiffWord"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Word Diff"
+          }
+        },
+        "required": [
+          "correct",
+          "steps_done",
+          "steps_total",
+          "done",
+          "reward_ruby",
+          "balance",
+          "encounter"
+        ],
+        "title": "EncounterResult",
+        "type": "object"
+      },
+      "EncounterSettingEdit": {
+        "description": "Sửa cấu hình chạm mặt. Khoá vắng mặt = đừng đụng tới.\n\nCận trên không phải để làm khó: `life` dài hơn `gap` nghĩa là cuộc trước\nchưa hết hạn thì cuộc sau đã tới giờ, và vì mỗi lúc chỉ một cuộc được tồn\ntại, giờ hẹn cứ trôi qua mà không sinh được gì — tính năng im lặng chứ không\nbáo lỗi. Chỗ kiểm chuyện đó là endpoint, vì nó so hai trường với nhau.",
+        "properties": {
+          "intruder_gap_seconds": {
+            "anyOf": [
+              {
+                "maximum": 86400.0,
+                "minimum": 60.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intruder Gap Seconds"
+          },
+          "intruder_life_seconds": {
+            "anyOf": [
+              {
+                "maximum": 86400.0,
+                "minimum": 30.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intruder Life Seconds"
+          },
+          "intruder_reward": {
+            "anyOf": [
+              {
+                "maximum": 500.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intruder Reward"
+          },
+          "intruder_steps": {
+            "anyOf": [
+              {
+                "maximum": 10.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intruder Steps"
+          },
+          "npc_gap_seconds": {
+            "anyOf": [
+              {
+                "maximum": 86400.0,
+                "minimum": 60.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Gap Seconds"
+          },
+          "npc_life_seconds": {
+            "anyOf": [
+              {
+                "maximum": 86400.0,
+                "minimum": 30.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Life Seconds"
+          },
+          "npc_reward": {
+            "anyOf": [
+              {
+                "maximum": 500.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Reward"
+          }
+        },
+        "title": "EncounterSettingEdit",
+        "type": "object"
+      },
+      "EncounterSettingPublic": {
+        "description": "Bảy con số của cơ chế chạm mặt.\n\nNhịp sinh **phải** sửa được từ đây, và đó là điều kiện để lập luận \"phần\nthưởng không cày được\" của ADR-012 §6 đứng vững: thứ giới hạn ruby từ nhiệm\nvụ là nhịp xuất hiện, và một trần nằm rải rác trong mã thì không ai chỉnh\nđược vào ngày phát hiện nó sai.",
+        "properties": {
+          "intruder_gap_seconds": {
+            "title": "Intruder Gap Seconds",
+            "type": "integer"
+          },
+          "intruder_life_seconds": {
+            "title": "Intruder Life Seconds",
+            "type": "integer"
+          },
+          "intruder_reward": {
+            "title": "Intruder Reward",
+            "type": "integer"
+          },
+          "intruder_steps": {
+            "title": "Intruder Steps",
+            "type": "integer"
+          },
+          "npc_gap_seconds": {
+            "title": "Npc Gap Seconds",
+            "type": "integer"
+          },
+          "npc_life_seconds": {
+            "title": "Npc Life Seconds",
+            "type": "integer"
+          },
+          "npc_reward": {
+            "title": "Npc Reward",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "npc_gap_seconds",
+          "npc_life_seconds",
+          "npc_reward",
+          "intruder_gap_seconds",
+          "intruder_life_seconds",
+          "intruder_reward",
+          "intruder_steps"
+        ],
+        "title": "EncounterSettingPublic",
+        "type": "object"
+      },
+      "EncounterTask": {
+        "description": "Nội dung của nhiệm vụ, đủ để hiện lên và không hơn.\n\nDạng từ vựng gửi kèm nghĩa và ví dụ vì người học TỰ CHẤM — đây là thẻ lật,\nvà thẻ lật thì phải lật ra được. Dạng trắc nghiệm (chưa mở) sẽ dùng đúng\n`QuestionPublic`, thứ cố ý không mang `is_correct`: một schema \"gọn hơn\" kèm\nđáp án cho tiện chấm ở client là chỗ đáp án rời máy chủ trước khi trả lời.",
+        "properties": {
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Url"
+          },
+          "choices": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/EncounterChoice"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choices"
+          },
+          "entry_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Id"
+          },
+          "hints_left": {
+            "default": 0,
+            "title": "Hints Left",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "vocabulary",
+              "dictation",
+              "quiz"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "mode": {
+            "default": "typing",
+            "enum": [
+              "typing",
+              "choice",
+              "dictation"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Part Of Speech"
+          },
+          "prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt"
+          },
+          "word_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Word Count"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "EncounterTask",
         "type": "object"
       },
       "FacetAccuracy": {
@@ -11086,6 +11523,108 @@
         ]
       }
     },
+    "/api/v1/admin/pet/encounters": {
+      "get": {
+        "operationId": "read_encounter_setting_api_v1_admin_pet_encounters_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterSettingPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Encounter Setting",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "Nhịp sinh, tuổi thọ, mức thưởng, số bước.\n\nTừ chối `life >= gap`, và lý do là một cách hỏng IM LẶNG: chỉ một cuộc chạm\nmặt được tồn tại cùng lúc, nên một cuộc sống lâu hơn khoảng cách giữa hai\nlần sinh sẽ chiếm chỗ suốt — giờ hẹn tới rồi trôi qua mà không ai xuất hiện,\nvà không có lỗi nào để mà đọc. So SAU khi áp cả hai thay đổi, cùng lý do\n\"hoàn < giá\" ở trên: hai trường có thể đổi trong cùng một lần gửi.",
+        "operationId": "update_encounter_setting_api_v1_admin_pet_encounters_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncounterSettingEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterSettingPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Encounter Setting",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/pet/encounters/spawn": {
+      "post": {
+        "description": "Gọi ngay đủ trần NPC và kẻ xâm nhập, **cho chính tài khoản đang gọi**.\n\nĐây là công cụ thử, và nó chỉ tồn tại vì đường thật cố ý CHẬM: nhịp mặc định\nlà hai mươi phút cho NPC và một giờ cho kẻ xâm nhập, mà một tài khoản mới thì\nlần đọc đầu chỉ đặt mốc chứ không sinh ai. Không có nút này thì mỗi lần sửa\nmột dòng trong hoạt cảnh chiến đấu là hai mươi phút chờ.\n\nBa tính chất giữ cho nó không thành một cửa hậu:\n\n* **Chỉ cho chính mình.** Không nhận `user_id`, nên không ai gọi kẻ xâm nhập\n  vào bản đồ của người khác.\n* **Vẫn tôn trọng trần.** Gọi mười lần cũng chỉ ra bốn người.\n* **Đi qua đúng `_spawn` của đường thật**, nên thứ hiện ra là thứ thật —\n  cùng bộ chọn nội dung, cùng số bước, cùng mức thưởng.\n\n`require_role(\"admin\")` chứ không `editor`: đây là quyền vận hành, cùng ranh\ngiới mà cả tệp này đã vẽ.",
+        "operationId": "spawn_encounters_api_v1_admin_pet_encounters_spawn_post",
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Spawn Encounters Api V1 Admin Pet Encounters Spawn Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Spawn Encounters",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/pet/species": {
       "get": {
         "description": "Cả loài đã tắt.\n\nMàn quản trị là nơi DUY NHẤT nhìn thấy hàng đã tắt; giấu chúng ở đây thì cách\nduy nhất bật lại là sửa database.",
@@ -15909,6 +16448,145 @@
           }
         ],
         "summary": "Open Ten Eggs",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/encounters": {
+      "get": {
+        "description": "Cuộc chạm mặt đang chờ, hoặc `null`.\n\n**Lần đọc này CÓ GHI**, và đó là ngoại lệ có chủ ý — cùng hình dạng với\n`GET /daily-tasks`, và cùng lý do: sinh ra lúc đọc là thứ bảo đảm không ai\nbỏ lỡ được một cuộc chạm mặt sinh ra trong lúc họ đang ngủ (ADR-012 §1).\nKhông có đường nào khác để giữ tính chất ấy mà không dựng một job nền, mà\nmột job nền thì lại sinh ra đúng cái nó phải tránh.\n\nAn toàn vì nhịp sinh được **hẹn trước**: gọi lại mười lần trong một giây\nkhông tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.",
+        "operationId": "read_encounters_api_v1_pet_encounters_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EncounterPublic"
+                  },
+                  "title": "Response Read Encounters Api V1 Pet Encounters Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Encounters",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/encounters/{encounter_id}/answer": {
+      "post": {
+        "description": "Trả lời một bước, và **câu trả lời đi thẳng vào bộ chấm thật**.\n\nVới từ vựng, nó gọi đúng `_apply_review` mà `POST /vocabulary/{id}/review`\ngọi — nên lượt ôn này ghi vào SM-2, vào `vocabulary_review_log`, và chảy tiếp\nvào chuỗi ngày y như mọi lượt ôn khác. Nếu không, người học vừa làm bài xong\nmà lịch ôn không đổi: họ đã học, và hệ thống giả vờ như chưa.\n\nĐây cũng là lý do endpoint này nhận `grade` chứ không nhận \"đúng/sai\" —\nthang điểm là của SM-2, và một thang thứ hai ở đây là bộ chấm thứ hai.",
+        "operationId": "answer_encounter_api_v1_pet_encounters__encounter_id__answer_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "encounter_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Encounter Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncounterAnswer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Answer Encounter",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/encounters/{encounter_id}/hint": {
+      "post": {
+        "description": "Mở một phần từ cần gõ. Tối đa `MAX_HINTS` lần cho mỗi bước.\n\n**Trần đếm ở máy chủ**, và đó là điều kiện để cái nút này không phá chính bài\nkiểm nó đang giúp: xin đủ nhiều lần thì gợi ý in ra cả từ, và lúc đó phần\nthưởng ruby chỉ còn là một cái nút bấm nhiều lần. Một bộ đếm trong `useState`\nthì devtools đặt lại được trong hai giây.\n\nChỉ dạng **gõ lại từ**. Dạng chọn nghĩa đã có sẵn bốn ô để loại trừ, và dạng\nchép chính tả thì \"mở vài ký tự\" của cả một câu là mở luôn đáp án.",
+        "operationId": "take_hint_api_v1_pet_encounters__encounter_id__hint_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "encounter_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Encounter Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncounterHint"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Take Hint",
         "tags": [
           "pet"
         ]

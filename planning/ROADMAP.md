@@ -1065,7 +1065,7 @@ Quyết định và lý do ở [`ADR-011-RUBY.md`](ADR-011-RUBY.md). Dựng ra �
 - [x] Lát 4 — `spend()` có khoá tư vấn Postgres + `tests/test_ruby_race.py` có `Barrier`
 - [x] Lát 5 — `GET/PATCH /admin/ruby/rules` sau `require_role("admin")`, trang `/admin/ruby`
 - [x] Lát 6 — số dư + nút quà ở `/dashboard`, toast riêng cho ruby
-- [ ] Đường TIÊU thật (gacha) — ADR-010 lát 8. `spend()` và mã nguồn `egg` đã sẵn, chưa có gì gọi tới
+- [x] Đường TIÊU thật — gacha (ADR-010 lát 8), mở lẻ và mở 10, cùng khoản hoàn cho con trùng
 
 **Ruby thưởng việc LÀM XONG, XP thưởng KHỐI LƯỢNG — và đó là lý do có hai đơn vị.** Không nguồn nào trả theo lượt nhỏ; có một cái là ruby thành XP thứ hai và cả tài liệu mất nghĩa. Hệ quả cụ thể: `daily_all` trả cho việc xong **cả ba** việc chứ không từng việc, và toast của ruby là một tin RIÊNG chứ không cộng chung dòng với XP.
 
@@ -1209,6 +1209,111 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 `pytest` **834 passed / 2 skipped / 5 deselected** · ruff + `mypy` strict (136 file) sạch · `tsc`, eslint, prettier sạch · `gen:api-types` không drift · `alembic upgrade` **và** `downgrade` chạy thật trên database trắng, `alembic check` không thấy lệch · Playwright petland **6 bài xanh**, bài mới đã xem ĐỎ khi gỡ điều kiện `can_open` · chạy thật trên stack: mở 12 quả liên tiếp, bộ đếm an ủi về 0 đúng lúc ra hạng hiếm, trùng hoàn đúng 10 ruby, và `GET /pet/collection` khớp với những gì đã nở.
 
 **Chú ý khi kéo nhánh này về:** database dev đã có `ruby_event`, `ruby_rule`, `pet_owned`, `egg_setting` do `create_all` của container `api` tạo, nên `alembic upgrade head` sẽ chết với `relation already exists` — trong khi hai cột MỚI trên bảng cũ (`drop_weight`, `rolls_since_rare`) thì vẫn thiếu, vì `create_all` không sửa bảng đã có. Đúng cái bẫy CLAUDE.md đã ghi. Cách ra: `docker compose stop api`, `DROP TABLE ruby_event, ruby_rule, pet_owned, egg_setting CASCADE`, rồi `alembic upgrade head`.
+
+---
+
+## 4ab. Chạm mặt ở Petland — NPC giao việc và những đợt xâm nhập · ✅ lát 1–4, 6, 7 (2026-08-27)
+
+Quyết định và lý do ở [`ADR-012-ENCOUNTERS.md`](ADR-012-ENCOUNTERS.md). Đây là thứ đầu tiên ở góc thú cưng **kéo người ta về phía bài tập** thay vì về phía con thú.
+
+- [x] Lát 1 — bảng `encounter` + `encounter_setting`, luật sinh/hết hạn (`app/services/encounters.py`), `GET /pet/encounters`
+- [x] Lát 2 — khách đứng trên bản đồ với dấu hiệu trên đầu, bấm vào mở thẻ
+- [x] Lát 3 — nhiệm vụ TỪ VỰNG, câu trả lời đi thẳng vào SM-2
+- [x] Lát 4 — nhiệm vụ chép chính tả, đi qua đúng bộ chấm của màn chép chính tả
+- [ ] Lát 5 — nhiệm vụ trắc nghiệm · **chờ nội dung**, xem ADR-012 §8.3
+- [x] Lát 6 — kẻ xâm nhập nhiều bước, mỗi bước một câu hỏi khác
+- [x] Lát 7 — `/admin/pet` cho nhịp sinh, thời gian sống và mức thưởng
+- [x] Bài kiểm tự động cho luật sinh và cho hai chỗ rò đáp án (`tests/test_encounters.py`, 10 bài)
+
+**Ràng buộc nặng nhất: NPC chỉ xuất hiện khi người học ĐANG Ở ĐÓ.** Sinh ra lúc đọc, không đồng hồ nào chạy khi vắng mặt, không thông báo đẩy. Hệ quả là **không thể bỏ lỡ một thứ chưa từng có** — không NPC nào sinh ra lúc ba giờ sáng rồi hết hạn trước khi người ta thức dậy. Bỏ ràng buộc ấy là biến một lời mời thành một cuộc hẹn, và một cuộc hẹn bị lỡ là mất mát — đúng thứ ADR-010 §11 và ADR-011 §9 đều từ chối.
+
+**Giờ hẹn chốt trước, không bốc xúc xắc mỗi lần đọc** (`pet_state.next_npc_at`). Nếu mỗi lần đọc là một lần bốc thì bấm F5 mười lần gọi NPC ra nhanh gấp mười, và cái góc này lập tức dạy người ta bấm lại trang thay vì học. Đo được: đọc lại ba lần liên tiếp trả về đúng một cuộc, bảng chỉ có một hàng.
+
+**Nhiệm vụ không có bộ chấm riêng.** Câu trả lời từ vựng đi thẳng vào `_apply_review` — cùng hàm mà `POST /vocabulary/{id}/review` gọi — nên nó ghi vào SM-2 thật, vào `vocabulary_review_log`, và chảy tiếp vào chuỗi ngày. Bộ chấm dictation đã có hai bản và phải mang một cảnh báo dài về chuyện trôi khỏi nhau; bản thứ ba nằm trong một tính năng phụ sẽ là bản không ai nhớ cập nhật.
+
+Đo tay trên stack: lần đọc đầu **chỉ đặt mốc** (tài khoản mới không bị NPC nhảy vào mặt ở giây thứ nhất) · tới giờ thì sinh một NPC giao một từ đang chờ ôn · chấm **"Quên"** thì bước không tính **nhưng lượt ôn vẫn được ghi** (nó là một lượt học thật đã xảy ra) · chấm **"Dễ"** thì xong, +5 ruby, SM-2 nhích lên `repetitions=1` · trả lời lại lần nữa trả **409**.
+
+**Nhiệm vụ chép chính tả dùng lại đúng thân của `POST /dictation/{id}/attempts`**, tách thành `record_dictation_attempt` chứ không chép mấy dòng "chấm rồi ghi" sang bên này. Bộ chấm dictation đã có hai bản — Python và `lib/dictation.ts` — và phải mang một cảnh báo dài về chuyện trôi khỏi nhau; bản thứ ba nằm trong một tính năng phụ sẽ là bản không ai nhớ cập nhật. Cổng là `is_complete`, **không phải `accuracy`**: gõ đủ câu rồi gõ thêm vẫn ra 100%, nên lấy điểm làm cổng là trả ruby cho một bài sai rõ ràng.
+
+Thẻ nhiệm vụ **che những chữ còn thiếu thành chấm**, cùng lý do `maskUnreached` ở màn chép chính tả — nhưng ở đây gắt hơn: sai rồi thử lại mà được xem đáp án thì lần sau chỉ là chép lại, và cuối lần sau có ruby. Chữ *thừa* thì hiện nguyên, vì đó là chữ của chính người gõ.
+
+**Kẻ xâm nhập bốc mục tiêu MỚI sau mỗi bước đúng.** Ba bước cùng một từ thì bước hai và ba chỉ là gõ lại đáp án vừa nhìn thấy, và cả đợt xâm nhập rút gọn thành một cái nút bấm ba lần — nó vẫn trả thưởng, vẫn chạy trơn, chỉ là không còn là bài học nào.
+
+**`/admin/pet` từ chối `life >= gap`**, và lý do là một cách hỏng im lặng: mỗi lúc chỉ một cuộc được tồn tại, nên một cuộc sống lâu hơn khoảng cách giữa hai lần sinh sẽ chiếm chỗ suốt — giờ hẹn tới rồi trôi qua mà không ai xuất hiện, và không có lỗi nào để mà đọc.
+
+**Nhiệm vụ từ vựng hỏi bằng cách MÁY chấm được, không bằng thẻ lật** (2026-08-27, theo yêu cầu người dùng). Hai dạng, chốt theo id cuộc chạm mặt nên không đổi giữa hai lần đọc: **gõ lại từ** (in nghĩa tiếng Việt, gõ từ tiếng Anh) và **chọn nghĩa** (in từ, chọn một trong bốn nghĩa).
+
+Thẻ lật phải bỏ vì nó là **tự chấm**, và tự chấm không dùng được ở chỗ có phần thưởng: bản đầu nhận thẳng `grade` từ trình duyệt và dùng chính con số ấy để quyết định có trả ruby không — tức là một trường "hãy trả tôi hai mươi ruby" gửi từ client. Giờ máy chủ nhận *câu trả lời*, chấm bằng `recall.judge`, rồi quy ra điểm bằng `recall.grade_for` — vẫn đúng bộ chấm mà màn gõ lại từ đang dùng, nên một lỗi gõ nhẹ vào SM-2 ở mức KHÓ chứ không phải QUÊN.
+
+Hai chỗ rò đáp án đã bịt, và chúng hỏng theo hai kiểu khác nhau: dạng gõ lại **không gửi `headword`** (bê nguyên payload của thẻ lật sang là in đáp án lên đề bài), còn dạng chọn nghĩa **không gửi `entry_id`** và mỗi ô mang một mã băm theo `(cuộc chạm mặt, mục từ)` — gửi id thật thì đáp án đúng là ô trùng `entry_id`, và cả câu hỏi trả lời được từ devtools mà không đọc chữ nào. Mã băm không lưu ở đâu: máy chủ tính lại đúng mã ấy cho `target_id` để đối chiếu.
+
+**Enter gửi bài ở cả ba dạng** — với `<textarea>` của chép chính tả thì Enter gửi, Shift+Enter xuống dòng.
+
+**Khách đứng ở ô ĐỨNG ĐƯỢC và NẰM TRONG KHUNG NHÌN** (`spotNear`, 2026-08-27). Bản đầu bốc chỗ đứng bằng một công thức thuần trên toạ độ bản đồ (`4 + seed % 9`), không hỏi bản đồ và không biết khung nhìn ở đâu — trong khi chú thích ngay bên trên lại nói `nearestWalkable` kéo về ô đi được, một hàm chưa từng được gọi. Đo hết 24 600 tổ hợp (mọi ô con thú đứng được × 200 seed) trên bản đồ 18×13: công thức cũ cho **7 011 lượt rơi vào vật cản** và **13 528 lượt rơi ra ngoài khung nhìn 14×8**; `spotNear` cho 0 và 0. Đó là một lỗi duy nhất sinh ra ba triệu chứng — không thấy dấu hiệu, không bấm được vào NPC, khách đứng trong tường — và cái nút ở thanh tiêu đề vẫn mở được thẻ nên nhìn từ ngoài nó không giống một lỗi vẽ.
+
+Hai chỗ nhỏ đi kèm: phép thử "bấm trúng khách" chạy **trước** chốt "con thú đang ngủ" (giấc ngủ chỉ nên khoá việc dắt con thú đi, không liên quan gì tới việc trả lời một câu hỏi), và vùng bấm cao **hai ô** vì sprite neo ở đáy ô nên đầu và dấu hiệu nhô lên ô trên — người ta bấm vào chỗ nhìn thấy chứ không vào ô mà nó "thuộc về".
+
+**Bấm vào khách thì con thú CHẠY TỚI, và khách nói một câu.** Con thú dừng ở ô **kề bên** (`neighbourOf`, chọn ô kề gần nó nhất nên đi đường ngắn nhất): đi vào đúng ô của khách thì hai sprite chồng khít lên nhau và con nào hiện ra trước là chuyện của thứ tự thêm vào danh sách vẽ, không phải của khung cảnh. Đang ngủ thì bỏ đoạn đi nhưng **vẫn mở thẻ** — trả lời một câu hỏi không dính gì tới việc con thú đang ngủ.
+
+Lời thoại sống ở `petland-speech.ts` cùng chỗ với bảng phân vai sinh vật, và vì cùng lý do: đây là *lời thoại*, không phải dữ liệu miền — đưa nó thành hàng dữ liệu là mời một màn quản trị, một migration và một endpoint vào chỗ chỉ cần hai chục câu văn. Chọn theo id cuộc chạm mặt nên **cùng một vị khách luôn nói cùng một câu**, kể cả sau khi F5; bốc lại mỗi lần dựng thì cái làng đọc ra là một cỗ máy phát chữ. Kẻ xâm nhập nói năng hung hăng nhưng **không doạ mất mát** — ADR-012 §4 nói bỏ qua thì không mất gì, nên một câu doạ mà hệ thống không thực hiện là nói dối người học.
+
+Bong bóng là **phần tử DOM**, không vẽ trên canvas: canvas cố ý không nạp phông chữ nào (cùng lý do dấu chấm than là hai hình chữ nhật), và chữ vẽ trên canvas thì trình đọc màn hình không đọc được. Vị trí ghi thẳng vào `style` mỗi khung qua `stage.guestScreen()` chứ không qua state — một `setState` mỗi khung là dựng lại cả bảng, kèm canvas Pixi bên trong, sáu chục lần một giây — và nó phải bám thật chứ không chốt lúc bấm, vì con thú chạy tới thì máy quay xê dịch theo. Sát mép trên thì bong bóng lật xuống dưới, vì khung bản đồ cắt phần tràn ra.
+
+Đo bằng script: `neighbourOf` trên 492 tổ hợp không lần nào trả ô tường, không kề, hay không phải ô gần nhất; `speechFor` trên 3 000 lượt không lần nào đổi câu giữa hai lần gọi.
+
+**Nhiều cuộc cùng lúc (2026-08-28, theo yêu cầu người dùng).** Bản trước cho đúng **một** cuộc mỗi lúc, và điều đó sai nặng nhất ở chỗ một cuộc bị bỏ dở chặn đứng cả làn: người học mở thẻ, thấy câu khó, để đó, và mười phút sau vẫn đúng câu ấy. Giờ **tối đa hai mỗi loại**, đếm riêng từng loại — một trần chung 4 sẽ để NPC lấp kín bản đồ và kẻ xâm nhập, thứ hiếm hơn hẳn và là chỗ hoạt cảnh chiến đấu sống, không bao giờ có chỗ mà xuất hiện.
+
+**Một cuộc mới không bao giờ đẩy cuộc đang diễn ra đi.** `sync` không xoá gì để lấy chỗ; cái đang chờ chỉ biến mất khi hết hạn hoặc làm xong. Nếu không thì một người đang gõ dở câu trả lời sẽ thấy đề bài đổi dưới tay mình, và công sức của họ biến mất vì một cái đồng hồ ở đâu đó vừa điểm.
+
+Kéo theo ba chỗ:
+
+- **Hết hạn KHÔNG hẹn lại giờ nữa.** Ở bản một-cuộc-một-lúc thì phải hẹn lại để "bỏ lỡ" không thành có lợi; giờ mỗi lần *sinh* đã tự hẹn lần sau, nên nhịp được giữ bởi chính phép sinh — và hẹn lại thêm ở đó chỉ còn là phạt người ta vì đã lờ một lời mời, đúng thứ ADR-012 §4 từ chối. Đầy chỗ thì lùi một nhịp **ngắn**, không lùi cả nhịp đầy: chỗ sẽ trống ngay khi một cuộc hết hạn, mà bắt đợi thêm một nhịp nữa sau đó là phạt cho việc bản đồ vừa đông.
+- **`GET /pet/encounters` trả mảng trần.** Số cuộc bị chặn cứng bởi miền (2 × 2), nên đây là nhóm (A) của `app/schemas/common.py` — bọc `Page[T]` là bắt frontend xử lý một trường hợp không thể xảy ra.
+- **Thứ tự CHỐT bằng `ORDER BY created_at, id`.** Giao diện chỉ vẽ một dấu hiệu cho mỗi loại và người mang nó là người tới trước; không có `ORDER BY` thì thứ tự đổi giữa hai lần đọc và cái dấu ấy nhảy qua nhảy lại giữa hai vị khách.
+
+**Xong nhiệm vụ thì CON THÚ cũng lên XP** — NPC 6 điểm, đẩy lui kẻ xâm nhập 15, cùng tỉ lệ với ruby vì hai phần thưởng đo cùng một việc. Cao hơn hẳn `walk` (5) có chủ ý: đây là XP duy nhất phải *học* mới có, còn mấy cái nút chăm sóc chỉ trả cho sự chăm chỉ. Đi qua đúng `_award` của mấy cái nút ấy, nên trần ngày, mốc level và múi giờ người học là một bộ — một đường trao XP thứ hai là chỗ trần ngày đếm thiếu mà không ai thấy. `_award` vì thế nhận **số điểm** thay vì tên hành động; tra bảng trong hàm thì cuộc chạm mặt phải bịa ra một "hành động" không có nút nào bấm được.
+
+**Nút gọi khách cho admin** (`POST /admin/pet/encounters/spawn`, biểu tượng tia sáng ở thanh tiêu đề bảng Petland, chỉ admin thấy). Nó tồn tại vì đường thật **cố ý chậm** — hai mươi phút cho một NPC, một giờ cho một kẻ xâm nhập, và lần đọc đầu của một tài khoản mới chỉ đặt mốc chứ không sinh ai; không có nó thì mỗi lần sửa một dòng trong hoạt cảnh chiến đấu là hai mươi phút ngồi đợi.
+
+Ba tính chất giữ cho nó không thành một cửa hậu: **chỉ cho chính người gọi** (không nhận `user_id`, nên không ai gọi kẻ xâm nhập vào bản đồ người khác), **vẫn tôn trọng trần** (đo thật: bấm năm lần vẫn đúng bốn người), và **đi qua đúng `_spawn` của đường thật** — một đường sinh riêng cho việc thử sẽ dựng ra những cuộc mà đường thật không bao giờ tạo được, và lúc đó thử xong cũng không biết mình vừa thử cái gì. Nó cũng dời giờ hẹn của làn như một lần sinh bình thường, nếu không thì ngay sau khi thử xong làn ấy nhả thêm một cuộc nữa vào giây kế tiếp.
+
+Nút nằm trong bảng Petland chứ không ở `/admin/pet`, vì thứ nó tạo ra chỉ nhìn thấy được trên bản đồ ấy — một nút ở trang khác nghĩa là mở tab thứ hai, bấm, rồi quay lại, mỗi vòng thử.
+
+**Nút gợi ý cho nhiệm vụ gõ lại từ** (migration `045`, 2026-08-28). Tối đa **hai lần mỗi bước**: lần một mở một phần tư số chữ, lần hai mở một nửa. Không mở một chữ mỗi lần — với một từ mười một chữ thì hai lượt chỉ ra hai chữ, không gỡ được gì và cái nút thành trang trí; không quá một nửa, vì phần còn phải nhớ chính là thứ phân biệt một bài kiểm với một ô điền sẵn. Đo thật trên `recital`: `re·····` rồi `reci···`, lần ba trả 409.
+
+**Trần đếm ở máy chủ (`encounter.hints_used`), và đó là điều kiện để cái nút không phá chính bài kiểm nó đang giúp**: xin đủ nhiều lần thì gợi ý in ra cả từ, và lúc ấy phần thưởng ruby chỉ còn là một cái nút bấm nhiều lần — một bộ đếm trong `useState` thì devtools đặt lại được trong hai giây. `task.hints_left` được gửi kèm để giao diện tự khoá sau khi tải lại trang, thay vì mời bấm một nút chắc chắn trả về lỗi.
+
+Ba chi tiết nhỏ hơn, mỗi cái vá một cách hỏng lặng lẽ: **đổi mục tiêu giữa các bước thì đặt lại `hints_used`** (bước hai và ba của một đợt xâm nhập là từ khác, không nên thừa hưởng cái trần đã dùng hết ở bước một); **gợi ý in riêng một dòng, không đổ vào ô nhập** (đổ vào thì người học mất cái đang gõ dở, và phần máy mở ra trông y hệt phần họ tự nhớ); và **chỗ chưa mở in bằng dấu chấm giữa dòng**, nên độ dài của từ cũng lộ ra — đó là chủ ý, biết từ dài mấy chữ là nửa phần giá trị của một gợi ý.
+
+Chỉ dạng gõ lại từ mới có. Dạng chọn nghĩa đã có sẵn bốn ô để loại trừ, còn "mở vài ký tự" của cả một câu chép chính tả là mở luôn đáp án.
+
+**Ô bên phải là MỘT trạng thái, không phải ba cờ** (`panel`, 2026-08-28). Trước đó là `side` + `questOpen` + `listKind`, và chúng mâu thuẫn được với nhau: mở danh sách khách rồi bấm nút trứng thì `side` đổi thành `"eggs"` trong khi `listKind` vẫn còn, nên màn trứng bị chính điều kiện `!listKind` chặn lại — cái nút trông như hỏng, không có lỗi nào để đọc, chỉ là bấm mà không có gì xảy ra. Một biến thì trạng thái ấy không tồn tại được: mở cái này là đóng cái kia, theo đúng nghĩa đen.
+
+Kèm một cái bẫy liền kề đã bịt luôn: **ô rỗng thì coi như đóng**. Một cuộc chạm mặt có thể hết hạn ngay trong lúc thẻ của nó đang mở — máy chủ bỏ nó khỏi danh sách ở lần đọc kế tiếp — và nếu chỉ nhìn `panel` thì bảng vẫn chừa nguyên chỗ cho một cái thẻ không còn được vẽ, đúng cái khoảng trống bên cạnh bản đồ đã phải sửa một lần rồi. Suy ra (`shown`) chứ không dọn bằng effect: dọn bằng effect là thêm một đường đổi state nữa phải giữ cho đồng bộ.
+
+**Danh sách in ảnh đại diện của đúng con vật đang đứng trên bản đồ.** `tileForGuest(id, role)` sống ở `petland-bestiary.ts` và cả hai nơi cùng gọi nó. Tính riêng hai lần là hai công thức, và chúng lệch nhau vào đúng ngày ai đó thêm một ô vào bảng phân vai — lúc đó danh sách in một con, bản đồ vẽ một con khác, và không có gì báo vì cả hai đều là ô hợp lệ. Đo 6 000 lượt: không lượt nào ra ô sai vai, không lượt nào đổi ô giữa hai lần gọi.
+
+**Mỗi vị khách mang dấu hiệu của riêng mình** (2026-08-28). Có thử gộp còn một dấu mỗi loại cho đỡ ồn, nhưng nó lấy đi đúng thứ dấu hiệu sinh ra để làm: người không mang dấu vẫn bấm được mà **không ai biết là bấm được**. Hình thì vẫn theo loại — chấm than cho việc, tam giác cho nguy hiểm.
+
+**Thanh tiêu đề: một nút mỗi loại, luôn in dấu chấm than, và nó mở một DANH SÁCH** (`petland-quest-list.tsx`) chứ không mở thẳng một thẻ. Bấm thẳng thì cái nút phải tự đoán người dùng muốn ai trong hai người — đoán sai là mở nhầm việc. In số thay vì dấu chấm than cũng đã thử và sai: hàng nút ấy toàn biểu tượng, nên một con số ở giữa đọc ra là một chỉ số chứ không phải một lời mời, mà số lượng thì đã có sẵn ở đầu danh sách.
+
+**Danh sách in thời gian còn lại, và đó là thứ đáng giá nhất trong nó.** Một cuộc chạm mặt sống mười phút rồi biến mất không báo trước; không thấy con số ấy thì người học không có cách nào biết nên làm cái nào trước, và cái họ chọn sai sẽ tan đi giữa chừng. Đồng hồ cũng nằm trên chính thẻ nhiệm vụ, nơi nó còn quan trọng hơn: người ta đang gõ dở một câu trả lời, và không có con số thì cái hạn ấy ập đến như một lỗi — bấm "Kiểm tra" rồi nhận 409 mà không hiểu vì sao. Dưới một phút thì đổi màu, vì đó là lúc con số thôi là thông tin và bắt đầu là một lời khuyên.
+
+Nhịp một giây sống trong chính hai component ấy, không ở bảng ngoài: mỗi giây một `setState` ở bảng là dựng lại cả bảng kèm canvas Pixi bên trong — cùng lý do vị trí bảng và bong bóng thoại đều ghi thẳng vào `style`. `secondsLeft`/`clock` tách sang `petland-countdown.ts` (một tệp `.ts`, không phải `.tsx`) để chạy thẳng được bằng `node --experimental-strip-types`; đo 5 trường hợp gồm cả mốc đã quá hạn (kẹp về `0:00`, không đếm âm).
+
+**Lỗi vừa gây ra và đã sửa: vị khách vẽ dưới cả tấm nền.** Chỗ đứng của họ được chèn bằng `addChildAt(sprite, 0)`, mà mỗi ô cỏ là một sprite thêm vào từ lúc dựng sân khấu — nên chỉ số 0 là *sau* tất cả. Triệu chứng không giống nguyên nhân chút nào: **dấu hiệu vẫn hiện còn nhân vật biến mất hẳn**, vì dấu nổi lên hai ô phía trên và thường rơi vào ô trống, mà ô trống thì không có sprite nào để che. Giờ chèn ngay trước con thú (`world.getChildIndex(pet)`), giữ đúng thứ tự cũ. Không phép kiểm nào ở đây thấy được chuyện đó — `tsc` và eslint đều xanh suốt.
+
+**Kẻ xâm nhập bị con thú đánh cho một trận**, và trận đánh dựng trong tầng vẽ vì đó là chỗ duy nhất biết cả hai thân đứng đâu — `action` chỉ tả một thân, nên nó là một trường riêng (`PetView.fight`) chứ không phải một `kind` nữa. Ba nhịp lao tới (`|sin(3πt)|`, số nhịp **lẻ** có chủ ý: số chẵn kết thúc lúc con thú đang ở giữa đà lao và nó búng về chỗ cũ, đúng lỗi mà nhịp nhai của "cho ăn" đã phải sửa), kẻ kia giật lùi và ửng đỏ **đúng lúc chạm** chứ không đỏ suốt, tia va chạm chớp ở điểm giữa. Đòn kết liễu chiếm 30% cuối: nó phải tới SAU mấy nhịp đánh, nếu không thì đó là "chạm nhẹ rồi ngã".
+
+Ba chỗ trong đó hỏng im lặng nếu làm khác:
+
+- **Con thú phải TỚI NƠI rồi mới đánh.** Trả lời từ nút trên thanh tiêu đề thì nó có thể đang ở nửa bản đồ bên kia, và một cú lao dài nửa ô ở đó chỉ là một cái nhích. Nhưng chờ suông thì treo, và treo hỏng nặng hơn xấu — `fightRef` còn giá trị nghĩa là vị khách bị **giữ lại trên bản đồ** sau khi máy chủ đã báo xong. Nên vắng khách, đang ngủ, hay không có đường đi đều đánh ngay tại chỗ.
+- **Vị khách sống thêm qua cú ngã.** Máy chủ trả "xong" ngay khi câu trả lời đúng và `onChange(null)` gỡ khách khỏi bản đồ, nên nếu xoá đúng lúc ấy thì cú ngã không bao giờ được vẽ — kẻ xâm nhập biến mất giữa không trung. Vòng lặp vẽ mới là chỗ xoá, sau khi diễn xong.
+- **Chỗ đứng của khách chốt MỘT LẦN theo `id`, không theo object.** `encounter` là object mới sau mỗi câu trả lời, mà chỗ đứng lại đo theo ô con thú đang đứng — và con thú thì vừa chạy tới sát bên. Không khoá lại thì kẻ xâm nhập dịch chuyển tức thời sang chỗ khác giữa hai bước, mà vẫn giữ nguyên hình dạng vì hạt giống lấy từ `id`.
+
+**Dấu hiệu khác HÌNH chứ không chỉ khác màu**: chấm than cho việc, chấm than trong khung tam giác cho nguy hiểm. Cặp vàng/đỏ là đúng cặp khó nhất với người mù màu. Màu vẽ thẳng vào hình chứ không qua `tint` — `tint` nhân lên mọi lớp nên cái nền tối, thứ giữ cho dấu hiệu đọc được trên một bản đồ nhiều màu, cũng ngả vàng theo và biến mất đúng chỗ nó phải làm việc.
+
+**Bài kiểm: `tests/test_encounters.py`, 10 bài**, và ba trong số đó đã được xem đỏ bằng cách gỡ đúng đoạn mã chúng canh: bỏ nhánh "còn cuộc đang chờ thì thôi" (sinh ra mười cuộc cho mười lần đọc), bỏ hẹn lại giờ khi hết hạn (bỏ lỡ thành có lợi), và bỏ việc bốc mục tiêu mới giữa các bước. Luật sinh nhận `now` và `rng` làm tham số chính vì chuyện này — một luật phụ thuộc đồng hồ và may rủi mà không tiêm được thì không bài kiểm nào nói được gì về nó.
 
 ---
 

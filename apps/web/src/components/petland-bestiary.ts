@@ -173,3 +173,24 @@ export const MAP_LIVING: Readonly<Record<string, ReadonlySet<number>>> = {
 export const MAP_PEOPLE: Readonly<Record<string, ReadonlySet<number>>> = {
   farm: new Set([108, 109]),
 };
+
+/**
+ * Số nhỏ, ổn định, sinh từ một chuỗi. Cùng phép gieo mà lời thoại đang dùng.
+ */
+function seedOf(text: string): number {
+  return [...text].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+}
+
+/**
+ * Ô sprite của một vị khách, suy TỪ id.
+ *
+ * Ở đây chứ không ở chỗ đặt khách lên bản đồ, vì hai nơi cần cùng một câu trả
+ * lời: bản đồ vẽ con vật, còn danh sách bên phải in ảnh đại diện của chính con
+ * ấy. Tính riêng hai lần là hai công thức, và chúng lệch nhau vào đúng ngày ai
+ * đó thêm một ô vào bảng phân vai — lúc đó danh sách in một con, bản đồ vẽ một
+ * con khác, và không có gì báo vì cả hai đều là ô hợp lệ.
+ */
+export function tileForGuest(id: string, role: CreatureRole): number {
+  const pool = tilesOf(role);
+  return pool.length > 0 ? pool[seedOf(id) % pool.length] : 0;
+}

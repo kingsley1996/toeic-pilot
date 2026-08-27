@@ -78,6 +78,22 @@ class PetState(Base):
     nó không có quá khứ để mà kể.
     """
 
+    next_npc_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    next_intruder_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    """Lần chạm mặt kế tiếp SỚM NHẤT có thể xảy ra (ADR-012 §1).
+
+    Hẹn giờ được **chốt ngay khi cuộc trước kết thúc**, kèm một khoảng ngẫu
+    nhiên — chứ không phải bốc xúc xắc ở mỗi lần đọc. Khác biệt ấy là thứ chặn
+    một hành vi rất cụ thể: nếu mỗi lần đọc là một lần bốc, thì bấm F5 mười lần
+    sẽ gọi NPC ra nhanh gấp mười, và cái góc này lập tức dạy người ta bấm lại
+    trang thay vì học.
+
+    NULL = chưa hẹn lần nào; lần đọc đầu tiên đặt mốc chứ không sinh ngay, nên
+    một tài khoản mới không bị NPC nhảy vào mặt ở giây thứ nhất.
+    """
+
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now()
     )
