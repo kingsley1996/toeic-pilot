@@ -129,12 +129,30 @@ test("gõ đúng một câu thì có thông báo tạm kèm tiếng báo", async
   expect(soundHits).toBe(0);
 });
 
-test("nghe ngẫu nhiên: bấm câu khác thì ra câu khác thật", async ({ page }) => {
+test("nghe ngẫu nhiên: bấm câu khác thì ra câu khác thật", async ({ page, request }) => {
   await page.goto("/register");
   await page.getByLabel("Email").fill(freshEmail());
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+
+  /*
+   * Bỏ qua khi kho rỗng, HỎI Ở THỜI ĐIỂM CHẠY — và đây là chỗ đã đỏ suốt bảy
+   * lần chạy CI liên tiếp.
+   *
+   * Hai bài trên đã có cổng này qua `firstStory(...) === null`; bài này thì
+   * không, nên trên CI — nơi database chỉ được seed thang điểm và một đề demo,
+   * không có câu chép chính tả nào — trang không dựng nổi thẻ audio và khẳng
+   * định đầu tiên hết giờ. Ở máy dev thì kho có gần bốn chục câu nên nó luôn
+   * xanh: đúng loại lỗi chỉ CI mới thấy, và nó đã che mất mọi lần đỏ THẬT của
+   * job này kể từ đó.
+   *
+   * Hỏi máy chủ chứ không `test.skip(true, …)`: một bài bị tắt cứng thì không
+   * bao giờ chạy lại, kể cả khi CI đã seed được nội dung — cùng bài học mà
+   * `vocabulary.spec.ts` và `vocabulary-learn.spec.ts` đã ghi.
+   */
+  const sample = await request.get(`${API_BASE}/api/v1/dictation-random`);
+  test.skip(!sample.ok(), "cần ít nhất một câu chép chính tả đã xuất bản");
 
   await page.goto("/learn/dictation/random");
 
