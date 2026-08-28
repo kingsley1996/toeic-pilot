@@ -395,9 +395,21 @@ test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
   await page.waitForTimeout(1000);
   const quiet = (await read()) - quiet0;
 
-  // Phần lớn công việc mỗi khung hình phải biến mất. Không đòi về 0: ticker nội
-  // bộ của Pixi vẫn chạy và không tắt được từ đây.
-  expect(quiet).toBeLessThan(busy / 2);
+  /*
+   * Đo phần công việc BIẾN MẤT, không đo tỉ lệ còn lại.
+   *
+   * Bản đầu là `quiet < busy / 2` và nó đỏ trên CI: phần dư — ticker nội bộ của
+   * Pixi, thứ không tắt được từ đây — là một con số gần như CỐ ĐỊNH (~60 lượt
+   * mỗi giây), trong khi `busy` thì tuỳ máy. CI chạy bản production trên máy ảo
+   * và chỉ đạt ~110 thay vì ~135 như máy dev, nên `busy / 2` tụt xuống dưới cái
+   * phần dư cố định ấy và bài đỏ vì một lý do chẳng liên quan gì tới cái chốt nó
+   * đang canh.
+   *
+   * Hiệu số thì nói đúng điều cần nói: "ít nhất chừng này lượt vẽ mỗi giây đã
+   * ngừng". Đo được: máy dev 135 → 60 (mất 75), CI 110 → 61 (mất 49). Gỡ chốt
+   * ra thì hiệu số về 0 và bài đỏ.
+   */
+  expect(busy - quiet).toBeGreaterThan(25);
 });
 
 test("xin giảm chuyển động thì vẫn chơi được bình thường", async ({ page, request }) => {
