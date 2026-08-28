@@ -1,7 +1,13 @@
 "use client";
 
 import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
-import { whyUnavailable, type PetAction, type PetNeeds } from "@/components/petland-pet";
+import {
+  CONDITION_LABEL,
+  whyUnavailable,
+  type PetAction,
+  type PetCondition,
+  type PetNeeds,
+} from "@/components/petland-pet";
 import { cx } from "@/components/ui";
 
 /*
@@ -69,12 +75,14 @@ function toneFor(value: number): string {
 
 export function PetHud({
   needs,
+  condition,
   busy,
   asleep,
   onAction,
   leading,
 }: {
   needs: PetNeeds;
+  condition: PetCondition;
   /**
    * Con thú đang ngủ.
    *
@@ -109,6 +117,18 @@ export function PetHud({
             <span className="sr-only">{Math.round(needs[key] * 100)}%</span>
           </span>
         ))}
+        {/* MỘT TỪ về tình trạng, cạnh ba cái thanh không nhãn (ADR-013 §2).
+            Ba cái thanh buộc người dùng tự dịch xem con số nào đang thấp và
+            điều đó nghĩa là gì; một từ thì không. Nó cũng là chỗ duy nhất nói
+            ra tình trạng khi con thú đang khuất sau bảng bên phải. */}
+        <span
+          className={cx(
+            "ml-auto shrink-0 text-label font-semibold",
+            condition === "exhausted" || condition === "hungry" ? "text-warn" : "text-ink-faint",
+          )}
+        >
+          {CONDITION_LABEL[condition]}
+        </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">

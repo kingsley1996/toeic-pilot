@@ -321,12 +321,17 @@ export function strollTarget(
   from: Tile,
   min: number,
   rand: () => number,
+  max = Number.POSITIVE_INFINITY,
 ): Tile | null {
   const options: Tile[] = [];
   for (let y = 0; y < map.h; y += 1) {
     for (let x = 0; x < map.w; x += 1) {
       if (!isWalkable(map, x, y)) continue;
-      if (Math.abs(x - from.x) + Math.abs(y - from.y) < min) continue;
+      const away = Math.abs(x - from.x) + Math.abs(y - from.y);
+      // `max` để dùng cho việc TỰ đi lang thang: nút "Đi dạo" muốn một chuyến
+      // thật xa, còn con thú tự đi thì chỉ quanh quẩn, và bán kính ấy chính là
+      // thứ diễn tả tình trạng của nó.
+      if (away < min || away > max) continue;
       options.push({ x, y });
     }
   }

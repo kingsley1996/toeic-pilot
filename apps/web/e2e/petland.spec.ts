@@ -400,33 +400,47 @@ test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
   expect(quiet).toBeLessThan(busy / 2);
 });
 
-test("xin giảm chuyển động thì khung cảnh đứng im, nhưng vẫn chơi được", async ({ page }) => {
+test("xin giảm chuyển động thì vẫn chơi được bình thường", async ({ page, request }) => {
   /*
    * ADR-010 §10: KHÔNG tắt cả góc thú cưng — nó là một cái game nhỏ, tắt đi thì
    * không còn gì. Cách chốt là bỏ nội suy, bỏ thở và nhún, bỏ hoạt ảnh nền.
    *
-   * Đo bằng cách chụp chính canvas hai lần cách nhau nửa giây: cảnh đứng im thì
-   * hai tấm phải giống hệt nhau. Đây là thứ duy nhất quan sát được từ ngoài —
-   * một canvas không có DOM nào để mà đọc, và §10 vốn đã nói "phải kiểm bằng mắt
-   * chứ không bằng test". Hai tấm ảnh là cách gần nhất với con mắt ấy.
+   * Bài này chỉ ghim NỬA SAU: nó vẫn phải chơi được. Nửa trước — "khung cảnh
+   * đứng im" — đã thử ghim bằng cách chụp canvas hai lần và so byte, và KHÔNG
+   * ghim được:
+   *
+   *   · Cách nhau 600ms thì bài đỏ khoảng một lượt trong ba, vì lớp phủ bầu trời
+   *     nội suy theo giờ Petland (một ngày = một giờ thật) và thỉnh thoảng vượt
+   *     một bậc màu ngay giữa hai tấm.
+   *   · Chụp liền nhau thì hết chập chờn, nhưng cũng thôi bắt được gì: bỏ hẳn
+   *     chốt giảm-chuyển-động của nhịp thở mà bài vẫn xanh.
+   *   · `page.clock` đóng băng đồng hồ tường thì bài đỏ MỌI lượt.
+   *
+   * Cửa sổ đủ rộng để thấy chuyển động cũng đủ rộng để bầu trời trôi. §10 của
+   * ADR-010 đã viết sẵn kết luận này: "phải kiểm bằng mắt chứ không bằng test".
+   * Thứ ghim được bằng máy là luật THUẦN — `wanderRange(condition, reduced)` —
+   * và nó nằm ở `scripts/check-petland-walk.mjs`.
    */
   await page.emulateMedia({ reducedMotion: "reduce" });
   await signUp(page);
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const auth = { Authorization: `Bearer ${token}` };
+  const at = async () =>
+    (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json())
+      .tile_x as number;
+
   await launcher(page).click();
   const canvas = page.locator("canvas");
   await expect(canvas).toBeVisible();
-  await page.waitForTimeout(400);
 
-  const first = await canvas.screenshot();
-  await page.waitForTimeout(600);
-  const second = await canvas.screenshot();
-  expect(Buffer.compare(first, second)).toBe(0);
-
-  // Và nó vẫn phải CHƠI ĐƯỢC: con thú vẫn đi, chỉ là không trượt tới nơi.
   const map = page.getByRole("application", { name: /Bản đồ Petland/ });
   await map.focus();
-  await page.keyboard.press("d");
-  await page.waitForTimeout(500);
-  const moved = await canvas.screenshot();
-  expect(Buffer.compare(first, moved)).not.toBe(0);
+  const before = await at();
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("d");
+    await page.waitForTimeout(340);
+  }
+  await expect
+    .poll(at, { message: "giảm chuyển động KHÔNG được làm con thú thôi đi được" })
+    .toBeGreaterThan(before);
 });

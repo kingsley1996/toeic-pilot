@@ -136,6 +136,26 @@ export type PetView = {
    * tầng vẽ nhận một giá trị đã quyết, cùng luật với `glow` và `sky`.
    */
   reduced: boolean;
+  /**
+   * Tình trạng con thú, gộp từ ba chỉ số ở `petland-pet.ts` (ADR-013 §2).
+   *
+   * Nhận MỘT từ đã quyết chứ không nhận ba con số, cùng luật với `glow` và
+   * `sky`: tầng này vẽ thứ nó được bảo vẽ. Đọc ngưỡng ở đây là dựng bộ ngưỡng
+   * thứ hai, và nó lệch khỏi bộ kia vào đúng ngày ai đó chỉnh một con số — lúc
+   * ấy con thú ngồi bệt trong khi dòng chữ nói nó vui vẻ.
+   */
+  condition: "exhausted" | "hungry" | "cheerful" | "content";
+  /**
+   * Tiết mục theo bậc hiếm, đã quy ra cờ (ADR-013 §5).
+   *
+   * Chỉ hai cái mà tầng vẽ cần: `bounce` nhảy tại chỗ kể cả lúc bình thường, và
+   * `trail` để lại vệt dưới chân. Hai tiết mục còn lại — nhìn theo con trỏ và tự
+   * tới chỗ khách — là quyết định ĐI ĐÂU, nên chúng ở lại `petland.tsx` cùng bản
+   * đồ và con trỏ.
+   *
+   * **Không tiết mục nào làm con thú mạnh hơn.** Xem `tricksOf`.
+   */
+  tricks: { bounce: boolean; trail: boolean };
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -493,6 +513,35 @@ export async function createStage(
   spark.stroke({ color: 0xfff2c4, width: 1.5 });
   spark.visible = false;
 
+  /*
+   * Vệt dưới chân (tiết mục `trail`, rare trở lên).
+   *
+   * Một hồ nhỏ cố định, dùng vòng: mỗi lần con thú sang ô mới thì lấy cái cũ
+   * nhất ra đặt lại chỗ và cho mờ dần. Dựng mới mỗi bước thì đi vài phút là
+   * hàng nghìn đối tượng, và không có gì dọn.
+   */
+  /*
+   * Tám cái, không sáu: một cái sống 1,1 giây mà mỗi ô mất 0,3 giây, nên bốn cái
+   * cùng hiện là chuyện thường và cần chỗ dôi ra.
+   */
+  const TRAIL = 8;
+  const TRAIL_ALPHA = 0.85;
+  /** Sống ~1,1 giây. Nửa giây (bản đầu) thì vệt tắt trước khi mắt kịp thấy. */
+  const TRAIL_FADE = TRAIL_ALPHA / (1.1 * 60);
+  const trail: Graphics[] = [];
+  for (let i = 0; i < TRAIL; i += 1) {
+    const dot = new Graphics();
+    // Hai lớp: lõi sáng và quầng mờ quanh nó. Một hình bẹt đơn sắc ở cỡ 5px
+    // trên nền cỏ nhiều màu thì gần như không tồn tại — bản đầu đúng như thế.
+    dot.ellipse(0, 0, 5.4, 2.4).fill({ color: 0xffffff, alpha: 0.45 });
+    dot.ellipse(0, 0, 2.6, 1.2).fill({ color: 0xffffff });
+    dot.alpha = 0;
+    world.addChild(dot);
+    trail.push(dot);
+  }
+  let trailAt = 0;
+  let trailTile = -1;
+
   const pet = new Sprite();
   // Neo ở ĐÁY và giữa: con thú "đứng trên" ô của nó, nên khi nhún hay thở thì
   // chân ở yên còn người nhấp nhô. Neo ở tâm làm nó lún xuống đất mỗi nhịp thở.
@@ -616,9 +665,42 @@ export async function createStage(
         ? 1
         : view.sleeping
           ? 1 + Math.sin(view.clock * 1.3) * 0.08
-          : 1 + Math.sin(view.clock * 3.9) * 0.04;
-      const lying = view.sleeping ? { x: 1.12, y: 0.82 } : { x: 1, y: 1 };
-      const hop = t > 0 ? Math.abs(Math.sin(t * Math.PI)) : 0;
+          : 1 +
+            Math.sin(
+              view.clock *
+                (view.condition === "hungry" ? 2.4 : view.condition === "cheerful" ? 5.2 : 3.9),
+            ) *
+              0.04;
+      /*
+       * Tư thế theo tình trạng — thứ khiến ba cái thanh chỉ số có nghĩa.
+       *
+       * Kiệt sức thì NGỒI BỆT; đó là chỉ số dễ nhìn nhất nếu diễn tả đúng, mà
+       * trước đây nó hoàn toàn vô hình. Đói thì nghiêng người. Vui thì thỉnh
+       * thoảng nhảy một cái tại chỗ.
+       *
+       * Giấc ngủ THẮNG tình trạng: con thú đang ngủ thì nằm, dù nó đói.
+       */
+      const sitting = !view.sleeping && view.condition === "exhausted";
+      const lying = view.sleeping
+        ? { x: 1.12, y: 0.82 }
+        : sitting
+          ? { x: 1.08, y: 0.86 }
+          : { x: 1, y: 1 };
+      const tilt = !view.sleeping && view.condition === "hungry" ? 0.07 : 0;
+      // Nhảy tại chỗ: một nhịp ngắn mỗi ~4 giây, và chỉ khi đang ĐỨNG YÊN —
+      // nhảy giữa lúc đi sẽ chồng lên cái nhún của bước chân.
+      const bounceAt = (view.clock % 4) / 0.45;
+      // Con thường chỉ nhảy lúc VUI; từ uncommon trở lên thì nhảy cả lúc bình
+      // thường — nhìn hai con cạnh nhau là thấy con nào sống động hơn.
+      const mayBounce = view.condition === "cheerful" || view.tricks.bounce;
+      const bounce =
+        mayBounce && !view.reduced && !view.sleeping && t === 0 && bounceAt < 1
+          ? Math.sin(bounceAt * Math.PI)
+          : 0;
+      // `!view.reduced` ở đây là chốt đã sót một lần: phép thay chuỗi trước đó
+      // trượt sang cái nhún của sinh vật hậu cảnh, và bài kiểm giảm-chuyển-động
+      // không thấy vì trong bài ấy con thú đứng yên (`t === 0`).
+      const hop = t > 0 && !view.reduced ? Math.abs(Math.sin(t * Math.PI)) : 0;
       /*
        * Chốt vị trí con thú vào LƯỚI PIXEL của thế giới, đúng như máy quay.
        *
@@ -637,7 +719,33 @@ export async function createStage(
        */
       const pose = poseFor(view.action);
       pet.x = Math.round(pet.x + pose.dx);
-      pet.y = Math.round((y + 1) * TILE - hop * 2 - pose.lift);
+      pet.y = Math.round((y + 1) * TILE - hop * 2 - bounce * 3 - pose.lift);
+      /*
+       * Vệt: thả một chấm ở ô VỪA RỜI mỗi khi con thú sang ô mới.
+       *
+       * Mốc `trailTile` là ô, không phải thời gian: thả theo đồng hồ sẽ dày lên
+       * khi máy chậm và thưa đi khi máy nhanh, còn theo ô thì bước chân nào cũng
+       * đúng một chấm.
+       */
+      const cell = view.tile.y * 1000 + view.tile.x;
+      if (view.tricks.trail && !view.reduced && cell !== trailTile) {
+        if (trailTile >= 0) {
+          const dot = trail[trailAt % TRAIL];
+          trailAt += 1;
+          dot.x = Math.round(view.from.x * TILE + TILE / 2);
+          dot.y = Math.round((view.from.y + 1) * TILE - 1);
+          dot.tint = view.glow.color;
+          dot.alpha = TRAIL_ALPHA;
+        }
+        trailTile = cell;
+      }
+      for (const dot of trail) {
+        if (dot.alpha > 0) dot.alpha = Math.max(0, dot.alpha - TRAIL_FADE);
+      }
+
+      // Đặt MỖI KHUNG, trước khối vị khách: trận đánh đè lên nó rồi khung sau
+      // trả lại. Không có dòng này thì góc nghiêng của cú đánh cuối còn lại mãi.
+      pet.rotation = tilt;
       pet.scale.set(
         (view.facing === "left" ? -1 : 1) * pose.squashX * lying.x,
         breathe * pose.squashY * lying.y,

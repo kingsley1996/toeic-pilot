@@ -18,10 +18,15 @@ import { PixelIcon } from "@/components/pixel-icon";
 import {
   advance,
   atRest,
+  conditionOf,
+  tricksOf,
   restAt,
   takeOver,
+  wanderRange,
   type PetAction,
+  type PetCondition,
   type PetNeeds,
+  type PetTrick,
   type Steer,
 } from "@/components/petland-pet";
 import { CREATURE_COLS, CREATURE_ROWS, LAUNCHER_TILE } from "@/components/petland-sprite";
@@ -110,6 +115,28 @@ const STEER: Record<string, { x: number; y: number }> = {
 };
 
 /** Bong bóng thoại đứng bao lâu. Đủ đọc một câu, rồi nhường lại khung cảnh. */
+/** Nghỉ bao lâu giữa hai chuyến tự đi, nhân với 0,6–1,5 để nhịp không đều. */
+const WANDER_PAUSE_MS = 6000;
+/** Chờ trước chuyến ĐẦU TIÊN: mở bảng ra mà con thú đi ngay thì đọc ra là giật. */
+const WANDER_FIRST_MS = 2500;
+
+/**
+ * Biểu tượng cảm xúc theo tình trạng. `null` nghĩa là im lặng.
+ *
+ * Bình thường thì không nói gì: một con thú đủ no đủ vui không có gì để báo, và
+ * một biểu tượng hiện đều đặn dù chẳng có tin gì mới là thứ mắt học cách bỏ qua
+ * trong hai ngày.
+ */
+const EMOTE_ICON: Record<PetCondition, Bit["icon"] | null> = {
+  hungry: "crumb",
+  exhausted: "moon",
+  cheerful: "heart",
+  content: null,
+};
+
+/** Nhịp giữa hai lần hiện cảm xúc. Thưa, vì nó là lời thì thầm chứ không phải báo động. */
+const EMOTE_EVERY_MS = 14_000;
+
 const SPEECH_MS = 4500;
 
 /**
@@ -478,6 +505,12 @@ function PetPanel({
    * với `glowRef`, vốn cũng nghe sáng/tối.
    */
   const reducedRef = useRef(false);
+  /** Tình trạng con thú, cho vòng vẽ đọc mỗi khung. Xem `conditionOf`. */
+  const conditionRef = useRef<PetCondition>("content");
+  /** Vốn tiết mục của con đang nuôi, theo bậc hiếm. Xem `tricksOf`. */
+  const tricksRef = useRef<ReadonlySet<PetTrick>>(new Set());
+  /** Ô con trỏ đang chỉ vào, cho tiết mục "nhìn theo con trỏ". */
+  const pointerRef = useRef<Tile | null>(null);
   /**
    * Chỗ đứng cần NHẢY TỚI ngay, không phải đi bộ tới.
    *
@@ -535,6 +568,20 @@ function PetPanel({
      * rung như khung hình thật, và cả ba lỗi ấy đều bị bắt.
      */
     let walk = restAt({ x: 0, y: 0 });
+    /*
+     * Con thú TỰ ĐI, và phạm vi đi phụ thuộc tình trạng (ADR-013 §4).
+     *
+     * Hôm nay nó chỉ đi khi được bảo đi, và một con vật đứng bất động cho tới
+     * khi bị bấm là thứ không ai mở ra xem lần thứ hai. Đây cũng chính là chỗ ba
+     * chỉ số trở nên nhìn thấy được: no và vui thì đi xa, đói thì quanh quẩn,
+     * kiệt sức thì ngồi im.
+     *
+     * `ambient` đánh dấu chuyến đi là do NÓ tự quyết, và chuyến ấy KHÔNG ghi vị
+     * trí lên máy chủ: một `PUT` mỗi mươi giây suốt lúc bảng mở là cái giá không
+     * ai xin, và chỗ đứng do nó tự chọn thì cũng chẳng ai nhớ để mà tiếc.
+     */
+    let ambient = false;
+    let idleUntil = 0;
     /*
      * Vòng vẽ DỪNG HẲN khi tab bị ẩn (ADR-010 §10).
      *
@@ -659,6 +706,8 @@ function PetPanel({
        * bấm mà không có gì xảy ra.
        */
       takeOver(walk, steerRef.current);
+      ambient = false;
+      idleUntil = 0;
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
@@ -695,6 +744,13 @@ function PetPanel({
       // vẫn nhảy một cái ngay lúc người dùng quay lại.
       last = performance.now();
       raf = requestAnimationFrame(loopRef);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      pointerRef.current = stage?.tileAt(event.clientX, event.clientY) ?? null;
+    };
+    const onPointerLeave = () => {
+      pointerRef.current = null;
     };
 
     const onClick = (event: MouseEvent) => {
@@ -743,6 +799,8 @@ function PetPanel({
       }
       if (asleepRef.current) return;
       walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
+      ambient = false;
+      idleUntil = 0;
     };
 
     /*
@@ -809,6 +867,8 @@ function PetPanel({
         stage = made;
         stageRef.current = made;
         el.addEventListener("click", onClick);
+        el.addEventListener("pointermove", onPointerMove);
+        el.addEventListener("pointerleave", onPointerLeave);
         window.addEventListener("keydown", onKeyDown);
         window.addEventListener("keyup", onKeyUp);
         window.addEventListener("blur", onBlur);
@@ -846,7 +906,10 @@ function PetPanel({
             strollRef.current = false;
             if (map && walk.queue.length === 0) {
               const target = strollTarget(map, walk.tile, STROLL_MIN_TILES, Math.random);
-              if (target) walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
+              if (target) {
+                walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
+                ambient = false;
+              }
             }
           }
 
@@ -899,13 +962,58 @@ function PetPanel({
           };
           steerRef.current = steer;
 
+          /*
+           * Tự đi lang thang. Chỉ khi ĐANG ĐỨNG YÊN và người dùng không lái —
+           * nó không bao giờ được giành tay lái, chỉ lấp chỗ trống.
+           *
+           * Tắt hẳn khi người dùng xin giảm chuyển động: một khung cảnh tự động
+           * đậy lên là đúng thứ họ vừa nói là không muốn.
+           */
+          if (map && atRest(walk) && !asleepRef.current && heldRef.current.length === 0) {
+            /*
+             * Tiết mục "nhìn theo con trỏ" (epic trở lên): đứng yên thì quay mặt
+             * về phía con trỏ. Đặt `facing` chứ không dựng gì mới — con thú
+             * trông như đang để ý tới người dùng, và đó là toàn bộ hiệu ứng.
+             */
+            const eye = pointerRef.current;
+            if (eye && tricksRef.current.has("watch") && eye.x !== walk.tile.x) {
+              walk.facing = eye.x < walk.tile.x ? "left" : "right";
+            }
+
+            if (idleUntil === 0) idleUntil = now + WANDER_FIRST_MS;
+            else if (now >= idleUntil) {
+              const range = wanderRange(conditionRef.current, reducedRef.current);
+              /*
+               * Tiết mục "tự tới chỗ khách" (legendary): thay vì đi lang thang
+               * ngẫu nhiên, nó nhắm tới ô cạnh vị khách gần nhất.
+               *
+               * KHÔNG mở thẻ nhiệm vụ khi tới nơi — húc vào chỉ tính khi NGƯỜI
+               * DÙNG đang lái (ADR-012), và một cái thẻ tự bật ra vì con thú đi
+               * ngang qua là một cửa sổ chen ngang.
+               */
+              const guest = tricksRef.current.has("greet") ? guestsRef.current[0] : undefined;
+              const toward =
+                guest && range ? neighbourOf(map, { x: guest.x, y: guest.y }, walk.tile) : null;
+              const spot =
+                toward ?? (range ? strollTarget(map, walk.tile, 2, Math.random, range) : null);
+              if (spot) {
+                walk.queue = findPath(map, walk.tile, spot, occupiedRef.current);
+                ambient = walk.queue.length > 0;
+              }
+              idleUntil = now + WANDER_PAUSE_MS * (0.6 + Math.random() * 0.9);
+            }
+          }
+
           const before = walk.tile;
           advance(walk, dt, steer);
           if (walk.tile !== before) petTileRef.current = walk.tile;
           // Ghi chỗ đứng khi ĐỨNG YÊN và không còn phím nào giữ. `save` tự bỏ
           // qua khi chưa đổi ô, nên gọi mỗi khung hình chỉ là một phép so sánh —
           // còn ghi từng ô thì đi mười hai ô là mười hai request.
-          if (atRest(walk) && heldRef.current.length === 0) save(walk.tile, walk.facing);
+          // Chuyến do NÓ tự đi thì không ghi — xem `ambient`.
+          if (atRest(walk) && heldRef.current.length === 0 && !ambient) {
+            save(walk.tile, walk.facing);
+          }
           const fx = actionFx.current;
           let action: PetView["action"] = null;
           if (fx) {
@@ -983,6 +1091,11 @@ function PetPanel({
             encounters: guestsRef.current,
             fight: bout,
             reduced: reducedRef.current,
+            condition: conditionRef.current,
+            tricks: {
+              bounce: tricksRef.current.has("bounce"),
+              trail: tricksRef.current.has("trail"),
+            },
           });
 
           /*
@@ -1026,6 +1139,8 @@ function PetPanel({
       document.removeEventListener("visibilitychange", onVisibility);
       cancelAnimationFrame(raf);
       el.removeEventListener("click", onClick);
+      el.removeEventListener("pointermove", onPointerMove);
+      el.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onBlur);
@@ -1119,6 +1234,12 @@ function PetPanel({
   useEffect(() => {
     asleepRef.current = asleep;
   }, [asleep]);
+
+  useEffect(() => {
+    // `null` là lúc chưa đọc xong lượt gọi đầu — coi như bình thường, chứ không
+    // vẽ một con thú kiệt sức rồi sửa lại sau nửa giây.
+    conditionRef.current = needs ? conditionOf(needs) : "content";
+  }, [needs]);
 
   /*
    * Hỏi máy chủ có ai đang đứng chờ không — lúc mở bảng, rồi mỗi phút.
@@ -1247,6 +1368,10 @@ function PetPanel({
     return () => media.removeEventListener("change", sync);
   }, []);
 
+  useEffect(() => {
+    tricksRef.current = tricksOf(pet?.tier);
+  }, [pet?.tier]);
+
   const tier = pet?.tier;
   useEffect(() => {
     if (!tier) return;
@@ -1285,11 +1410,10 @@ function PetPanel({
    * Tự dọn sau khi hoạt ảnh CSS chạy xong. Không dọn thì mỗi lần bấm là thêm
    * vài node nằm lại vĩnh viễn, trong suốt nhưng vẫn được trình duyệt vẽ.
    */
-  const spawnBits = useCallback((action: PetAction, count = 4) => {
+  const spawnBits = useCallback((icon: Bit["icon"], count = 4) => {
     const stage = stageRef.current;
     if (!stage) return;
     const at = stage.petScreen();
-    const icon = BIT_ICON[action];
     const born = Date.now();
     const made: Bit[] = Array.from({ length: count }, (_, i) => ({
       id: born + i,
@@ -1310,6 +1434,26 @@ function PetPanel({
   }, []);
 
   /*
+   * Bong bóng cảm xúc: THỈNH THOẢNG, không thường trực (ADR-013 §3).
+   *
+   * Một biểu tượng dính mãi trên đầu là một lời nhắc nợ, và cái góc này không
+   * được phép có nợ. Nó chỉ nói "tôi đang thế này" rồi biến đi.
+   *
+   * Lúc bình thường thì im lặng — không có gì để nói thì đừng nói. Đang ngủ cũng
+   * im: mẩu Zzz đã lo phần ấy rồi.
+   */
+  useEffect(() => {
+    if (asleep) return;
+    const icon = EMOTE_ICON[needs ? conditionOf(needs) : "content"];
+    if (!icon) return;
+    const tick = window.setInterval(() => {
+      if (document.hidden || reducedRef.current) return;
+      spawnBits(icon, 1);
+    }, EMOTE_EVERY_MS);
+    return () => window.clearInterval(tick);
+  }, [needs, asleep, spawnBits]);
+
+  /*
    * Zzz bay lên đều đều SUỐT giấc ngủ, không chỉ một lần lúc bấm.
    *
    * Tư thế nằm và nhịp thở chậm nói "đang ngủ" cho người đang nhìn; nhưng ai vừa
@@ -1327,8 +1471,8 @@ function PetPanel({
   useEffect(() => {
     if (!asleep) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    spawnBits("sleep", 1);
-    const tick = window.setInterval(() => spawnBits("sleep", 1), 2500);
+    spawnBits(BIT_ICON.sleep, 1);
+    const tick = window.setInterval(() => spawnBits(BIT_ICON.sleep, 1), 2500);
     return () => window.clearInterval(tick);
   }, [asleep, spawnBits]);
 
@@ -1348,7 +1492,7 @@ function PetPanel({
      */
     actionFx.current = { kind: action, start: performance.now() };
     if (action === "walk") strollRef.current = true;
-    else spawnBits(action);
+    else spawnBits(BIT_ICON[action]);
 
     void apiFetch<PetPublic>(API_ROUTES.petActions, {
       method: "POST",
@@ -1692,7 +1836,13 @@ function PetPanel({
       </div>
       {needs && (
         <div className="border-t border-rule">
-          <PetHud needs={needs} busy={busy} asleep={asleep} onAction={act} />
+          <PetHud
+            needs={needs}
+            condition={conditionOf(needs)}
+            busy={busy}
+            asleep={asleep}
+            onAction={act}
+          />
           {refused && <p className="px-3 pb-2 text-small text-warn">{refused}</p>}
           {/* Chạm trần phải NÓI RA. Không nói thì người dùng cho ăn tiếp và
               tưởng hệ thống hỏng khi con số đứng yên — cùng lý do khối việc

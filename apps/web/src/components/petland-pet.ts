@@ -70,6 +70,58 @@ export const WALK_HUNGRY_BELOW = 0.2;
  * `SLEEP_REFUSED_ABOVE` ở `app/services/pet.py`.
  */
 export const SLEEP_NOT_TIRED_ABOVE = 0.9;
+/** Dưới mức này thì đói. Khớp `HUNGRY_BELOW` ở `app/services/pet.py`. */
+export const HUNGRY_BELOW = 0.25;
+/** Từ mức này trở lên thì vui hẳn — ngưỡng của riêng giao diện, không có ở máy chủ. */
+export const CHEERFUL_ABOVE = 0.75;
+
+/**
+ * Tình trạng con thú, gộp ba chỉ số thành MỘT từ (ADR-013 §2).
+ *
+ * Một từ chứ không ba con số, vì cả tầng vẽ lẫn dòng chữ trong HUD đều cần cùng
+ * một câu trả lời: *nó đang thế nào*. Hai chỗ tự đọc ba chỉ số rồi tự kết luận là
+ * hai bộ ngưỡng sẽ lệch nhau, và lúc đó con thú ngồi bệt trong khi dòng chữ nói
+ * nó vui vẻ.
+ *
+ * Thứ tự ưu tiên là thứ tự cấp bách: kiệt sức trước đói, đói trước vui.
+ */
+export type PetCondition = "exhausted" | "hungry" | "cheerful" | "content";
+
+export function conditionOf(needs: PetNeeds): PetCondition {
+  if (needs.energy < WALK_TIRED_BELOW) return "exhausted";
+  if (needs.fullness < HUNGRY_BELOW) return "hungry";
+  if (needs.mood >= CHEERFUL_ABOVE) return "cheerful";
+  return "content";
+}
+
+export const CONDITION_LABEL: Record<PetCondition, string> = {
+  exhausted: "Đang kiệt sức",
+  hungry: "Đang đói",
+  cheerful: "Đang vui",
+  content: "Bình thường",
+};
+
+/**
+ * Bán kính đi lang thang, tính bằng ô. `null` nghĩa là đứng yên.
+ *
+ * Đây là chỗ ba chỉ số trở nên NHÌN THẤY ĐƯỢC mà không cần thêm cơ chế nào: no và
+ * vui thì đi xa, đói thì quanh quẩn, kiệt sức thì ngồi. Người dùng đọc ra tình
+ * trạng từ chính con thú trước, rồi mới liếc sang thanh chỉ số để xác nhận.
+ *
+ * Lang thang KHÔNG tốn nhu cầu (ADR-013 §4): tốn thì con thú tự làm cạn chính nó
+ * trong lúc người dùng vắng mặt, và mở bảng ra đã thấy mọi thanh chạm đáy là một
+ * lời trách móc.
+ */
+export function wanderRange(condition: PetCondition, reduced = false): number | null {
+  // Người dùng xin giảm chuyển động thì con thú KHÔNG tự đi: một khung cảnh tự
+  // động đậy lên là đúng thứ họ vừa nói là không muốn. Chốt ở đây chứ không ở
+  // vòng vẽ, vì ở đây nó đo được — bài kiểm ảnh chụp không với tới nổi (nó chỉ
+  // thấy hai khung hình liền nhau, còn chuyến đi thì vài giây mới tới một lần).
+  if (reduced) return null;
+  if (condition === "exhausted") return null;
+  if (condition === "hungry") return 2;
+  return condition === "cheerful" ? 6 : 4;
+}
 
 /**
  * Lý do chưa làm được, bằng lời — hoặc `null` nếu làm được.
@@ -194,4 +246,39 @@ export function takeOver(walk: Walk, steer: Steer): Walk {
   const next = steer(walk.tile);
   if (next) walk.queue = [next];
   return walk;
+}
+
+/* --- vốn tiết mục theo bậc hiếm (ADR-013 §5) ---------------------------- */
+
+/**
+ * Việc con thú biết làm thêm, mở dần theo bậc hiếm.
+ *
+ * **Không có tiết mục nào làm nó MẠNH hơn** — không nhanh hơn, không kiếm nhiều
+ * ruby hơn, không giúp học tốt hơn. Cộng lực theo bậc sẽ biến gacha thành đường
+ * tăng sức mạnh trong một ứng dụng học, và lúc đó "mở trứng có đáng không" trở
+ * thành câu hỏi về điểm số chứ không phải về việc thích con nào.
+ *
+ * Cộng dồn: bậc trên có tất cả những gì bậc dưới có. Nhìn hai con cạnh nhau là
+ * biết con nào hiếm hơn, mà không con nào hơn con nào.
+ */
+export type PetTrick =
+  /** Nhảy tại chỗ kể cả khi chỉ đang bình thường — con thường chỉ nhảy lúc vui. */
+  | "bounce"
+  /** Để lại vệt mờ dưới chân khi đi. */
+  | "trail"
+  /** Đứng yên thì quay mặt theo con trỏ. */
+  | "watch"
+  /** Tự đi về phía khách trên bản đồ thay vì đi lang thang ngẫu nhiên. */
+  | "greet";
+
+const TRICKS: Record<string, readonly PetTrick[]> = {
+  common: [],
+  uncommon: ["bounce"],
+  rare: ["bounce", "trail"],
+  epic: ["bounce", "trail", "watch"],
+  legendary: ["bounce", "trail", "watch", "greet"],
+};
+
+export function tricksOf(tier: string | undefined): ReadonlySet<PetTrick> {
+  return new Set(TRICKS[tier ?? "common"] ?? []);
 }

@@ -1212,6 +1212,56 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ae. Ba chỉ số nói lên điều gì, và độ hiếm khác nhau ở đâu · ✅ XONG cả năm lát (2026-08-28)
+
+Quyết định và lý do ở [`ADR-013-PET-CONDITION.md`](ADR-013-PET-CONDITION.md). Tài liệu đầu tiên của góc thú cưng không thêm tính năng nào: nó sửa một thứ đã dựng xong nhưng không có nghĩa.
+
+**Chẩn đoán, bằng sự kiện chứ không bằng cảm giác:** `PetView` — thứ duy nhất tầng vẽ nhận được — **không có trường nhu cầu nào**, nên con thú đói và con thú no được vẽ giống hệt nhau. Ba chỉ số chỉ ảnh hưởng tới đúng ba cái nút đổi chính chúng, và cột **Vui không ảnh hưởng tới bất cứ thứ gì**. Độ hiếm thì chỉ quyết định khó kiếm tới đâu và vòng sáng màu gì.
+
+Hai quyết định chốt trước vì chúng định hình mọi thứ còn lại, và cả hai là lựa chọn của người dùng:
+
+- **Chỉ số KHÔNG chạm ra ngoài bảng** — không ruby, không XP, không nhịp sinh chạm mặt. Một chỉ số chăm sóc mà quyết định giá trị của việc học là đúng thứ mà luật "gamification không đổi thứ đã học được" cấm, chỉ khoác một cái áo dễ chịu hơn.
+- **Độ hiếm khác ở HÀNH VI, không ở sức mạnh.** Cộng lực theo bậc sẽ biến gacha thành đường tăng sức mạnh trong một ứng dụng học.
+
+**Hệ quả phải nhìn thẳng: phần thưởng duy nhất còn lại là chính con thú.** Không có con số nào bù vào. Nên tầng biểu cảm là toàn bộ tài liệu ấy chứ không phải phần trang trí của nó — làm lấy lệ thì ba chỉ số vẫn vô nghĩa, chỉ là vô nghĩa một cách đẹp hơn.
+
+- [x] Lát 1 — `PetView.condition` + tư thế theo tình trạng: ngồi bệt khi kiệt sức, nghiêng người và thở chậm khi đói, thở nhanh và nhảy tại chỗ khi vui
+- [x] Lát 2 — một dòng CHỮ tình trạng trong HUD, cạnh ba cái thanh không nhãn
+- [x] Lát 3 — bong bóng cảm xúc, **thỉnh thoảng** chứ không thường trực (14 giây một lần, im lặng khi bình thường và khi đang ngủ)
+- [x] Lát 4 — tự đi lang thang, phạm vi theo tình trạng (2 / 4 / 6 ô)
+- [x] Lát 5 — vốn tiết mục theo bậc hiếm: `bounce` (uncommon) → `trail` (rare) → `watch` (epic) → `greet` (legendary)
+
+**Tầng vẽ nhận MỘT TỪ, không nhận ba con số.** `PetView.condition` là kết quả đã quyết của `conditionOf`, cùng luật với `glow` và `sky`: tầng vẽ vẽ thứ nó được bảo vẽ. Đọc ngưỡng ở cả hai nơi là dựng bộ ngưỡng thứ hai, và nó lệch vào đúng ngày ai đó chỉnh một con số — lúc ấy con thú ngồi bệt trong khi dòng chữ nói nó vui vẻ.
+
+**Chuyến tự đi KHÔNG ghi vị trí lên máy chủ** (`ambient`). Một `PUT` mỗi mươi giây suốt lúc bảng mở là cái giá không ai xin, và chỗ đứng do chính nó chọn thì cũng chẳng ai nhớ để mà tiếc. Người dùng ra lệnh — bấm chuột, bấm phím, bấm "Đi dạo" — thì cờ ấy tắt và vị trí lại được ghi như cũ.
+
+**Bốn luật mới nằm ở tầng thuần và được `check-petland-walk.mjs` đo**, cả bốn đã xem đỏ: kiệt sức thì không tự đi; càng khoẻ càng đi xa; xin giảm chuyển động thì không tự đi; và **vừa đói vừa kiệt sức thì là kiệt sức** — ca cuối là ca quyết định, thiếu nó thì đảo thứ tự ưu tiên không làm bài kiểm đỏ.
+
+**Vốn tiết mục cộng dồn, và không tiết mục nào làm con thú mạnh hơn.** `bounce` là nhảy tại chỗ kể cả lúc chỉ bình thường — con thường chỉ nhảy khi vui; `trail` để lại vệt mờ dưới chân khi đi; `watch` quay mặt theo con trỏ lúc đứng yên; `greet` đi về phía khách thay vì lang thang ngẫu nhiên. Bậc trên có tất cả những gì bậc dưới có, nên nhìn hai con cạnh nhau là biết con nào hiếm — mà không con nào hơn con nào. `check-petland-walk.mjs` ghim tính cộng dồn ấy và ghim cả chuyện bậc lạ rơi về mốc không.
+
+**`greet` KHÔNG mở thẻ nhiệm vụ khi tới nơi.** Húc vào khách chỉ tính khi NGƯỜI DÙNG đang lái (ADR-012), và một cái thẻ tự bật ra vì con thú đi ngang qua là một cửa sổ chen ngang.
+
+**Bài kiểm ảnh chụp KHÔNG ghim được "khung cảnh đứng im", và đó là kết luận sau bốn lần thử.**
+
+| Cách | Kết quả |
+|---|---|
+| Chụp cách nhau 600ms | Đỏ khoảng **một lượt trong ba** — lớp phủ bầu trời nội suy theo giờ Petland (một ngày = một giờ thật) và thỉnh thoảng vượt một bậc màu ngay giữa hai tấm |
+| Nới lên 4,5 giây để ôm trọn một chuyến tự đi | Đỏ **mọi lượt**, cùng lý do |
+| `page.clock` đóng băng đồng hồ tường | Đỏ **mọi lượt** — bảng còn nhiều thứ chạy theo bộ hẹn giờ |
+| Chụp liền nhau, không chờ | Hết chập chờn, nhưng **thôi bắt được gì**: gỡ hẳn chốt giảm-chuyển-động của nhịp thở mà bài vẫn xanh |
+
+Cửa sổ đủ rộng để thấy chuyển động cũng đủ rộng để bầu trời trôi. **ADR-010 §10 đã viết sẵn kết luận này từ đầu — "phải kiểm bằng mắt chứ không bằng test"** — và tôi mất bốn lượt thử mới tin. Bài e2e giờ chỉ ghim nửa còn lại: giảm chuyển động thì góc thú cưng **vẫn chơi được**. Nửa "đứng im" thuộc về mắt người, còn thứ ghim được bằng máy là luật thuần `wanderRange(condition, reduced)`.
+
+**Một lỗi cũ lộ ra khi làm lát 1: chốt `reduced` cho cái nhún khi đi chưa từng được áp.** Phép thay chuỗi ở lượt trước trượt sang cái nhún của sinh vật hậu cảnh, và bài kiểm ảnh chụp không thấy vì trong bài ấy con thú đứng yên (`t === 0`, nên `hop` vốn đã bằng 0). Đã vá.
+
+Mỗi chỉ số nói **một câu nhìn thấy được**: no là *nó có đi không*, sức là *nó có đứng không*, vui là *nó có chơi không*. Ràng buộc là đọc ra được mà không cần đọc chú thích nào.
+
+**Lát 4 có thể là thứ đổi cảm giác nhiều nhất.** Hôm nay con thú chỉ đi khi được bảo đi, và một con vật đứng bất động cho tới khi bị bấm là thứ không ai mở ra xem lần thứ hai — nguyên nhân thật của "chưa hấp dẫn" có khi nằm ở đó hơn là ở chuyện chỉ số vô nghĩa. Đi lang thang **không được tốn nhu cầu**: tốn thì con thú tự làm cạn chính nó trong lúc người dùng vắng mặt, và mở bảng ra thấy mọi thanh chạm đáy là một lời trách móc.
+
+**Cái giá của "độ hiếm khác ở hành vi": tiết mục là NỘI DUNG, không phải mã.** Bộ sprite chỉ có một khung cho mỗi loài, nên mọi việc con thú biết làm phải diễn tả bằng vị trí, tỉ lệ và một chút xoay — và phải chỉnh bằng mắt. Đó là lý do bảng dừng ở năm bậc, mỗi bậc đúng một tiết mục.
+
+---
+
 ## 4ad. Sidebar — trạng thái nhánh con sai, và một trang không có lối vào · ✅ (2026-08-28)
 
 Hai lỗi im lặng: trang vẫn đúng, chỉ thanh bên nói sai chỗ mình đang đứng — mà không ai gọi đó là lỗi, họ chỉ mất dấu.

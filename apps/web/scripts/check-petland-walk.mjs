@@ -15,9 +15,19 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const base = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components");
-const { restAt, atRest, advance, takeOver, STEP_SECONDS } = await import(
-  join(base, "petland-pet.ts")
-);
+const {
+  restAt,
+  atRest,
+  advance,
+  takeOver,
+  conditionOf,
+  tricksOf,
+  wanderRange,
+  STEP_SECONDS,
+  WALK_TIRED_BELOW,
+  HUNGRY_BELOW,
+  CHEERFUL_ABOVE,
+} = await import(join(base, "petland-pet.ts"));
 
 /*
  * `dt` phải RUNG, không được là 1/60 tròn trịa.
@@ -168,6 +178,70 @@ const stand = () => null;
     }
   }
   console.log(`đường đi vòng qua khách: ${checked} tuyến, không tuyến nào xuyên qua`);
+}
+
+// --- 8. Tình trạng và phạm vi lang thang (ADR-013) ------------------------
+{
+  const at = (fullness, energy, mood) => conditionOf({ fullness, energy, mood });
+
+  // Thứ tự ưu tiên là thứ tự CẤP BÁCH: kiệt sức trước đói, đói trước vui. Đảo
+  // lại thì một con vừa kiệt vừa vui sẽ nhảy tại chỗ thay vì ngồi bệt xuống.
+  // Ca quyết định: vừa đói VỪA kiệt sức. Thiếu nó thì đảo thứ tự hai nhánh đầu
+  // không làm bài kiểm đỏ — mà đó chính là điều "thứ tự ưu tiên" nói.
+  if (at(HUNGRY_BELOW - 0.01, WALK_TIRED_BELOW - 0.01, 0.9) !== "exhausted") {
+    fail("vừa đói vừa kiệt sức thì phải là kiệt sức");
+  }
+  if (at(0.9, WALK_TIRED_BELOW - 0.01, 0.9) !== "exhausted") fail("kiệt sức phải thắng vui");
+  if (at(HUNGRY_BELOW - 0.01, 0.9, 0.9) !== "hungry") fail("đói phải thắng vui");
+  if (at(0.9, WALK_TIRED_BELOW - 0.01, 0.0) !== "exhausted") fail("dưới ngưỡng sức phải là kiệt");
+  if (at(0.9, 0.9, CHEERFUL_ABOVE) !== "cheerful") fail("đúng ngưỡng vui phải là vui");
+  if (at(0.9, 0.9, CHEERFUL_ABOVE - 0.01) !== "content")
+    fail("dưới ngưỡng vui phải là bình thường");
+
+  // Ngay TRÊN ngưỡng thì không còn là kiệt/đói — ranh giới phải đúng cả hai phía.
+  if (at(0.9, WALK_TIRED_BELOW, 0.5) === "exhausted") fail("đúng ngưỡng sức không còn là kiệt");
+  if (at(HUNGRY_BELOW, 0.9, 0.5) === "hungry") fail("đúng ngưỡng no không còn là đói");
+
+  // Kiệt sức thì NGỒI IM, và càng khoẻ càng đi xa.
+  if (wanderRange("exhausted") !== null) fail("kiệt sức mà vẫn tự đi");
+  const near = wanderRange("hungry");
+  const mid = wanderRange("content");
+  const far = wanderRange("cheerful");
+  if (!(near < mid && mid < far)) fail(`phạm vi phải tăng dần: ${near} / ${mid} / ${far}`);
+
+  // Xin giảm chuyển động thì KHÔNG tự đi, dù tình trạng thế nào. Bài kiểm ảnh
+  // chụp không với tới luật này: nó chỉ thấy hai khung hình liền nhau, còn
+  // chuyến đi thì vài giây mới tới một lần.
+  for (const c of ["exhausted", "hungry", "content", "cheerful"]) {
+    if (wanderRange(c, true) !== null) fail(`giảm chuyển động mà ${c} vẫn tự đi`);
+  }
+  console.log(
+    "tình trạng và phạm vi lang thang: ngưỡng, thứ tự ưu tiên và chốt giảm-chuyển-động đều đúng",
+  );
+}
+
+// --- 9. Vốn tiết mục theo bậc hiếm (ADR-013 §5) ---------------------------
+{
+  const TIERS = ["common", "uncommon", "rare", "epic", "legendary"];
+  const sets = TIERS.map((t) => tricksOf(t));
+
+  // CỘNG DỒN: bậc trên phải có tất cả những gì bậc dưới có. Không có luật này
+  // thì "hiếm hơn" thôi là "khác đi", và hai con cạnh nhau không so được.
+  for (let i = 1; i < sets.length; i += 1) {
+    for (const trick of sets[i - 1]) {
+      if (!sets[i].has(trick)) fail(`${TIERS[i]} thiếu "${trick}" mà ${TIERS[i - 1]} có`);
+    }
+    if (sets[i].size <= sets[i - 1].size) {
+      fail(`${TIERS[i]} không thêm tiết mục nào so với ${TIERS[i - 1]}`);
+    }
+  }
+  if (sets[0].size !== 0) fail("bậc thường phải là mốc không, không có tiết mục nào");
+
+  // Bậc lạ hay thiếu bậc thì rơi về mốc không, không nổ và không tự cho tiết mục.
+  for (const odd of [undefined, "", "mythic"]) {
+    if (tricksOf(odd).size !== 0) fail(`bậc lạ ${JSON.stringify(odd)} phải rơi về mốc không`);
+  }
+  console.log(`tiết mục theo bậc: cộng dồn qua ${TIERS.length} bậc, bậc lạ rơi về mốc không`);
 }
 
 console.log(bad === 0 ? "\nTẤT CẢ ĐỀU ĐÚNG" : `\n${bad} chỗ SAI`);
