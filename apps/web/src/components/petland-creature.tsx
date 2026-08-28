@@ -47,6 +47,7 @@ export const TIER_LABEL: Record<string, string> = {
   rare: "hiếm",
   epic: "cực hiếm",
   legendary: "huyền thoại",
+  god: "thần",
 };
 
 /* Hạng dùng thang bốn accent? KHÔNG — thang đó phân loại giọng đọc. Ở đây dùng
@@ -66,6 +67,7 @@ export const TIER_RANK: Record<string, number> = {
   rare: 2,
   epic: 3,
   legendary: 4,
+  god: 5,
 };
 
 /** Hiếm nhất lên trước, cùng hạng thì theo tên — để thứ tự ổn định giữa hai lần đọc. */
@@ -83,6 +85,9 @@ export const TIER_TONE: Record<string, string> = {
   // bốn accent vẫn không mượn được: nó phân loại giọng đọc, và mượn sang đây là
   // bắt một màu mang hai nghĩa.
   legendary: "text-warn",
+  // Tím đen, và nó là token trạng thái THỨ NĂM của hệ thiết kế — thêm vào chính
+  // vì bốn cái kia đã kín. Mượn lại một cái sẽ bắt một màu mang hai nghĩa.
+  god: "text-myth",
 };
 
 /**
@@ -103,6 +108,7 @@ const TIER_VAR: Record<string, string> = {
   rare: "--action",
   epic: "--alert",
   legendary: "--warn",
+  god: "--myth",
 };
 
 /**
@@ -114,14 +120,16 @@ const TIER_VAR: Record<string, string> = {
  *
  * Loài thường vẫn CÓ vòng, chỉ là mờ và đứng yên: bỏ hẳn thì "không có vòng"
  * đọc ra là hỏng chứ không phải là hạng thường. Khoảng cách giữa các bậc đều
- * nhau, nên năm hạng đọc được từ xa mà không cần chú thích.
+ * nhau, nên sáu hạng đọc được từ xa mà không cần chú thích — thêm bậc thứ sáu
+ * thì phải chia lại cả thang, không phải nhét thêm một con số lớn hơn 1.
  */
 const TIER_GLOW: Record<string, number> = {
   common: 0.2,
-  uncommon: 0.4,
-  rare: 0.6,
-  epic: 0.8,
-  legendary: 1,
+  uncommon: 0.36,
+  rare: 0.52,
+  epic: 0.68,
+  legendary: 0.84,
+  god: 1,
 };
 
 /** `"23 105 74"` → `0x17694a`. Token lưu ba số RGB cách nhau bằng dấu cách. */
@@ -174,6 +182,7 @@ const TIER_FRAME: Record<string, string> = {
   rare: "border-action bg-action-tint",
   epic: "border-alert bg-alert-tint",
   legendary: "border-2 border-warn bg-warn-tint",
+  god: "border-2 border-myth bg-myth-tint",
 };
 
 export function Creature({

@@ -68,6 +68,7 @@ const TIER_CHEER: Record<string, string> = {
   rare: "Hiếm đấy!",
   epic: "Cực hiếm!",
   legendary: "HUYỀN THOẠI!",
+  god: "THẦN!",
 };
 
 export function EggScreen({ token, onClose }: { token: string; onClose: () => void }) {

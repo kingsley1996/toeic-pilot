@@ -27,7 +27,7 @@ import { useRequireSession } from "@/lib/session";
 /* Khớp `ck_pet_species_tier` ở database. Thiếu một hạng ở đây thì màn quản trị
    không đặt được hạng đó, dù hàng dữ liệu hoàn toàn hợp lệ — và cách duy nhất
    nhận ra là mở bảng loài lên thấy một ô chọn không có lựa chọn đang dùng. */
-const TIERS = ["common", "uncommon", "rare", "epic", "legendary"] as const;
+const TIERS = ["common", "uncommon", "rare", "epic", "legendary", "god"] as const;
 export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);

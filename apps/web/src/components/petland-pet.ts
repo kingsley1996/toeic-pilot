@@ -269,7 +269,9 @@ export type PetTrick =
   /** Đứng yên thì quay mặt theo con trỏ. */
   | "watch"
   /** Tự đi về phía khách trên bản đồ thay vì đi lang thang ngẫu nhiên. */
-  | "greet";
+  | "greet"
+  /** Lơ lửng trên mặt đất, không chạm chân xuống. */
+  | "float";
 
 const TRICKS: Record<string, readonly PetTrick[]> = {
   common: [],
@@ -277,6 +279,7 @@ const TRICKS: Record<string, readonly PetTrick[]> = {
   rare: ["bounce", "trail"],
   epic: ["bounce", "trail", "watch"],
   legendary: ["bounce", "trail", "watch", "greet"],
+  god: ["bounce", "trail", "watch", "greet", "float"],
 };
 
 export function tricksOf(tier: string | undefined): ReadonlySet<PetTrick> {

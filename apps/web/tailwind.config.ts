@@ -50,6 +50,8 @@ export default {
         "warn-tint": c("--warn-tint"),
         alert: c("--alert"),
         "alert-tint": c("--alert-tint"),
+        myth: c("--myth"),
+        "myth-tint": c("--myth-tint"),
 
         "accent-us": c("--accent-us"),
         "accent-uk": c("--accent-uk"),

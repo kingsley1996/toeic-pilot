@@ -91,6 +91,8 @@ Tất cả giá trị dưới đây **đã được kiểm bằng công thức t
 | `warn-tint` | `#FBF0DC` | | 5.25 (với `warn`) |
 | `alert` | `#A31220` | Lỗi, sai, từ chối | 7.88 / panel |
 | `alert-tint` | `#FBE9EA` | | 6.73 (với `alert`) |
+| `myth` | `#421676` | Bậc "thần" của thú cưng | 13.06 / panel |
+| `myth-tint` | `#F0EAFA` | | 11.10 (với `myth`) |
 
 ### 3.2 Tối
 
@@ -116,6 +118,12 @@ Không phải bản đảo của bảng sáng. Nền tối là **xanh đá đậ
 | `warn-tint` | `#2E2007` | — |
 | `alert` | `#F87A82` | 6.58 / panel |
 | `alert-tint` | `#2E0D10` | — |
+| `myth` | `#BA8CFF` | 6.73 / panel |
+| `myth-tint` | `#1E1230` | — |
+
+> **`myth` là token thứ năm, và nó được thêm vào một tập cố ý đóng.** Bốn token trạng thái (`ok`, `warn`, `alert`, cộng `action`) đã được dùng kín cho năm bậc hiếm của thú cưng; bậc thứ sáu không còn gì để mượn, và mượn lại một cái sẽ bắt một màu mang hai nghĩa — đúng lý do §4 cấm mượn thang bốn giọng sang việc khác. Người dùng chọn "tím đen" cho bậc ấy.
+>
+> Nó cũng là ví dụ rõ nhất cho việc **vì sao một token có hai giá trị**: "tím đen" đọc được rất tốt trên nền sáng (13.06) nhưng ở chế độ tối thì tím đen trên nền tím đen là một nhãn vô hình, nên giá trị tối là một sắc tím SÁNG. Bản sắc là *tím*; độ đậm là chuyện của nền.
 
 > **Nút hành động ở chế độ tối dùng chữ tối, không phải chữ trắng.** Chữ trắng trên `#FF6B3D` chỉ đạt 2.83 — trượt cả ngưỡng 4.5 lẫn ngưỡng 3.0. Đây là lỗi rất hay gặp và nó không tự lộ ra ở chế độ sáng.
 

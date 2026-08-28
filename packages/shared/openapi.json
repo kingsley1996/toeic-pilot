@@ -5447,7 +5447,8 @@
               "uncommon",
               "rare",
               "epic",
-              "legendary"
+              "legendary",
+              "god"
             ],
             "title": "Tier",
             "type": "string"
@@ -5536,7 +5537,8 @@
               "uncommon",
               "rare",
               "epic",
-              "legendary"
+              "legendary",
+              "god"
             ],
             "title": "Tier",
             "type": "string"
@@ -5615,7 +5617,8 @@
                   "uncommon",
                   "rare",
                   "epic",
-                  "legendary"
+                  "legendary",
+                  "god"
                 ],
                 "type": "string"
               },
@@ -5673,7 +5676,8 @@
               "uncommon",
               "rare",
               "epic",
-              "legendary"
+              "legendary",
+              "god"
             ],
             "title": "Tier",
             "type": "string"

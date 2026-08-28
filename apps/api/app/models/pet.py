@@ -124,7 +124,7 @@ class PetSpecies(Base):
         # mới biết.
         CheckConstraint("tile >= 0 AND tile < 180", name="ck_pet_species_tile"),
         CheckConstraint(
-            "tier IN ('common', 'uncommon', 'rare', 'epic', 'legendary')",
+            "tier IN ('common', 'uncommon', 'rare', 'epic', 'legendary', 'god')",
             name="ck_pet_species_tier",
         ),
     )
@@ -513,6 +513,55 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "position": 40,
         "drop_weight": 2,
     },
+    # --- bậc THẦN --------------------------------------------------------
+    #
+    # Năm ô này đều nằm sẵn trong `creatures.png` và chưa loài nào dùng: bốn
+    # nguyên tố ở hàng 4 (45–48) và một ô thiên thần có vầng hào quang ở hàng 3
+    # (37). Không phải tải thêm tài nguyên nào — ADR-010 §14.4 chọn gói này chính
+    # vì nó có sẵn hơn một trăm sinh vật huyền thoại.
+    #
+    # Ô 37 vốn nằm trong hồ NPC. Lấy nó ra làm thú nuôi thì hồ ấy còn 5 ô, và đó
+    # là cái giá chấp nhận được: hai thiên thần còn lại (35, 36) ở lại làm khách.
+    {
+        "code": "spirit_fire",
+        "label": "Thần Lửa",
+        "tile": 45,
+        "tier": "god",
+        "position": 41,
+        "drop_weight": 1,
+    },
+    {
+        "code": "spirit_water",
+        "label": "Thần Nước",
+        "tile": 46,
+        "tier": "god",
+        "position": 42,
+        "drop_weight": 1,
+    },
+    {
+        "code": "spirit_stone",
+        "label": "Thần Đá",
+        "tile": 47,
+        "tier": "god",
+        "position": 43,
+        "drop_weight": 1,
+    },
+    {
+        "code": "spirit_storm",
+        "label": "Thần Bão",
+        "tile": 48,
+        "tier": "god",
+        "position": 44,
+        "drop_weight": 1,
+    },
+    {
+        "code": "seraph",
+        "label": "Thiên Thần",
+        "tile": 37,
+        "tier": "god",
+        "position": 45,
+        "drop_weight": 1,
+    },
 )
 
 
@@ -521,12 +570,22 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
 # Hạng được coi là HIẾM khi tính bộ đếm an ủi. Ngẫu nhiên thuần cho ra những
 # chuỗi xui mà người chơi đọc là "hỏng", nên sau N quả không ra hạng hiếm thì quả
 # sau chắc chắn ra một con trong hai hạng này.
-RARE_TIERS = ("rare", "epic", "legendary")
+RARE_TIERS = ("rare", "epic", "legendary", "god")
 
 # Trọng số rơi mặc định theo hạng, dùng khi gieo `pet_species` và khi một hàng cũ
 # chưa có trọng số. Là con số KHỞI ĐIỂM: cột `drop_weight` mới là thứ quyết định,
 # và admin sửa nó không cần deploy.
-DEFAULT_DROP_WEIGHT = {"common": 40, "uncommon": 25, "rare": 10, "epic": 4, "legendary": 2}
+DEFAULT_DROP_WEIGHT = {
+    "common": 40,
+    "uncommon": 25,
+    "rare": 10,
+    "epic": 4,
+    "legendary": 2,
+    # Một nửa huyền thoại. Bậc thần là năm loài trên bốn mươi lăm, và tổng trọng
+    # số của nó chỉ chiếm khoảng 0,7% — đủ hiếm để mở ra được một con là một sự
+    # kiện, và cũng đủ để không ai phải cày mới thấy bậc này tồn tại.
+    "god": 1,
+}
 
 
 class PetOwned(Base):

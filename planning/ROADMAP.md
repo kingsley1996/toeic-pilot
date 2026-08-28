@@ -1212,6 +1212,34 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4af. Bậc hiếm thứ sáu: "thần" · ✅ (2026-08-28)
+
+**Không phải tải thêm tài nguyên nào.** `creatures.png` (Tiny Creatures — Clint Bellanger, CC0) có 180 ô, trong đó **hơn một trăm sinh vật huyền thoại**, và bốn mươi loài hiện tại mới dùng 40 ô. Năm ô của bậc thần đều nằm sẵn ở đó và chưa loài nào lấy: bốn nguyên tố ở hàng 4 (45–48) và một ô thiên thần có vầng hào quang ở hàng 3 (37).
+
+Chọn bằng MẮT chứ không bằng phỏng đoán: `scripts/png.mjs` không đọc được PNG bảng màu (color type 3), nên phải viết thêm một bộ giải mã bảng màu trong thư mục nháp để dựng bảng ô phóng to rồi nhìn. Đó là cách duy nhất trả lời được "ô nào trông ra dáng thần nhất".
+
+| Loài | Ô | |
+|---|---|---|
+| Thần Lửa | 45 | nguyên tố lửa |
+| Thần Nước | 46 | nguyên tố nước |
+| Thần Đá | 47 | nguyên tố đá |
+| Thần Bão | 48 | nguyên tố gió |
+| Thiên Thần | 37 | vốn nằm trong hồ NPC; lấy ra thì hồ ấy còn 5 ô, và hai thiên thần còn lại (35, 36) ở lại làm khách |
+
+**Màu chủ đạo là tím đen, và nó phải thành một TOKEN MỚI của hệ thiết kế** (`--myth` / `--myth-tint`). Bốn token trạng thái đã dùng kín cho năm bậc; bậc thứ sáu không còn gì để mượn, mà mượn lại một cái là bắt một màu mang hai nghĩa. Đây cũng là ví dụ rõ nhất cho việc vì sao một token có hai giá trị: tím đen đọc rất tốt trên nền sáng (13.06:1) nhưng ở chế độ tối thì tím đen trên nền tím đen là một nhãn vô hình, nên giá trị tối là một sắc tím **sáng** (6.73:1). Cả sáu tổ hợp đều đạt AA — đã đo.
+
+**Thang vòng sáng phải chia lại, không phải nhét thêm một số lớn hơn 1.** Sáu bậc giờ là 0,2 / 0,36 / 0,52 / 0,68 / 0,84 / 1 — khoảng cách vẫn đều, nên vẫn đọc được từ xa mà không cần chú thích.
+
+**Tiết mục thứ năm: `float`** — con thú bậc thần lơ lửng, chân không chạm đất, nhấp nhô chậm hơn nhịp thở nên hai chuyển động không trùng pha. Vòng sáng vẫn bám ĐẤT (nó dùng `footY`, không dùng `pet.y`), và chính khoảng hở giữa chân với vòng sáng mới là thứ đọc ra "đang bay".
+
+**Migration `047` CHÈN năm hàng, khác thói quen của bảng loài** — và đó là một cân nhắc chứ không phải một lần quên. Bảng loài là dữ liệu admin sửa được, gieo lười chỉ chạy khi bảng còn rỗng, mà mọi cài đặt đã chạy đều có bảng khác rỗng. Không chèn nghĩa là năm loài mới không xuất hiện ở đâu cả — một tính năng tồn tại mà không tồn tại, đúng cái lỗi vừa phải sửa cho `/admin/petland`. Lằn ranh là `ON CONFLICT (code) DO NOTHING`: chỉ THÊM mã chưa từng có, không đụng vào nhãn, ô, trọng số hay công tắc mà người vận hành đã chỉnh.
+
+Trọng số 1 (một nửa huyền thoại): **0,10% mỗi loài, 0,5% cho cả bậc** — khoảng một trong hai trăm quả trứng. Con số này là HÀNG dữ liệu, sửa được ở `/admin/pet` mà không cần triển khai lại.
+
+**Một bẫy cũ lại bắt được:** database nháp `toeic_test` còn giữ ràng buộc CHECK năm bậc, nên bài kiểm đua gieo bảng loài đỏ với `0 == 45` — mọi luồng chèn đều vi phạm CHECK, `all_species` nuốt lỗi đúng như thiết kế, và kết quả là một bảng rỗng không kèm lỗi nào. Dựng lại database nháp là xong, đúng như CLAUDE.md đã ghi.
+
+---
+
 ## 4ae. Ba chỉ số nói lên điều gì, và độ hiếm khác nhau ở đâu · ✅ XONG cả năm lát (2026-08-28)
 
 Quyết định và lý do ở [`ADR-013-PET-CONDITION.md`](ADR-013-PET-CONDITION.md). Tài liệu đầu tiên của góc thú cưng không thêm tính năng nào: nó sửa một thứ đã dựng xong nhưng không có nghĩa.

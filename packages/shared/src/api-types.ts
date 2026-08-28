@@ -5405,7 +5405,7 @@ export interface components {
              * Tier
              * @enum {string}
              */
-            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
             /** Tile */
             tile: number;
             /** Tile X */
@@ -5442,7 +5442,7 @@ export interface components {
              * @default common
              * @enum {string}
              */
-            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
             /** Tile */
             tile: number;
         };
@@ -5464,7 +5464,7 @@ export interface components {
             /** Position */
             position?: number | null;
             /** Tier */
-            tier?: ("common" | "uncommon" | "rare" | "epic" | "legendary") | null;
+            tier?: ("common" | "uncommon" | "rare" | "epic" | "legendary" | "god") | null;
             /** Tile */
             tile?: number | null;
         };
@@ -5492,7 +5492,7 @@ export interface components {
              * Tier
              * @enum {string}
              */
-            tier: "common" | "uncommon" | "rare" | "epic" | "legendary";
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
             /** Tile */
             tile: number;
         };

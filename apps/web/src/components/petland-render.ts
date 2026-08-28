@@ -155,7 +155,7 @@ export type PetView = {
    *
    * **Không tiết mục nào làm con thú mạnh hơn.** Xem `tricksOf`.
    */
-  tricks: { bounce: boolean; trail: boolean };
+  tricks: { bounce: boolean; trail: boolean; float: boolean };
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -702,6 +702,18 @@ export async function createStage(
       // không thấy vì trong bài ấy con thú đứng yên (`t === 0`).
       const hop = t > 0 && !view.reduced ? Math.abs(Math.sin(t * Math.PI)) : 0;
       /*
+       * Lơ lửng (tiết mục `float`, bậc thần): chân không chạm đất, và nó nhấp
+       * nhô chậm hơn nhịp thở nên hai chuyển động không trùng pha.
+       *
+       * Vòng sáng vẫn BÁM ĐẤT — nó dùng `footY` chứ không dùng `pet.y`, đúng
+       * như lúc con thú nhảy. Chính khoảng hở giữa chân và vòng sáng mới là thứ
+       * đọc ra "đang bay".
+       */
+      const lift =
+        view.tricks.float && !view.sleeping
+          ? 3.5 + (view.reduced ? 0 : Math.sin(view.clock * 1.7) * 1.2)
+          : 0;
+      /*
        * Chốt vị trí con thú vào LƯỚI PIXEL của thế giới, đúng như máy quay.
        *
        * `world.scale = zoom`, và máy quay đã tự làm tròn về pixel-thế-giới
@@ -719,7 +731,7 @@ export async function createStage(
        */
       const pose = poseFor(view.action);
       pet.x = Math.round(pet.x + pose.dx);
-      pet.y = Math.round((y + 1) * TILE - hop * 2 - bounce * 3 - pose.lift);
+      pet.y = Math.round((y + 1) * TILE - hop * 2 - bounce * 3 - lift - pose.lift);
       /*
        * Vệt: thả một chấm ở ô VỪA RỜI mỗi khi con thú sang ô mới.
        *

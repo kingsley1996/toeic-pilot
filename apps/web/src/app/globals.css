@@ -39,6 +39,11 @@
   --warn-tint: 251 240 220;
   --alert: 163 18 32;
   --alert-tint: 251 233 234;
+  /* Tím đen: token trạng thái THỨ NĂM, thêm cho bậc "thần" của thú cưng.
+     Bốn token kia đã kín cho năm bậc, và mượn lại một cái sẽ bắt một màu mang
+     hai nghĩa — đúng thứ thang bốn accent bị cấm mượn để tránh. */
+  --myth: 66 22 118;
+  --myth-tint: 240 234 250;
 
   --accent-us: 19 57 101;
   --accent-uk: 95 57 139;
@@ -74,6 +79,10 @@
     --warn-tint: 46 32 7;
     --alert: 248 122 130;
     --alert-tint: 46 13 16;
+    /* Ở chế độ tối thì tím phải SÁNG lên: một màu tím đen trên nền tím đen là
+       một nhãn không đọc được, và đó là cả lý do token có hai giá trị. */
+    --myth: 186 140 255;
+    --myth-tint: 30 18 48;
 
     --accent-us: 65 135 214;
     --accent-uk: 165 123 213;
@@ -111,6 +120,8 @@
   --warn-tint: 46 32 7;
   --alert: 248 122 130;
   --alert-tint: 46 13 16;
+  --myth: 186 140 255;
+  --myth-tint: 30 18 48;
 
   --accent-us: 65 135 214;
   --accent-uk: 165 123 213;

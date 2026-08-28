@@ -222,7 +222,7 @@ const stand = () => null;
 
 // --- 9. Vốn tiết mục theo bậc hiếm (ADR-013 §5) ---------------------------
 {
-  const TIERS = ["common", "uncommon", "rare", "epic", "legendary"];
+  const TIERS = ["common", "uncommon", "rare", "epic", "legendary", "god"];
   const sets = TIERS.map((t) => tricksOf(t));
 
   // CỘNG DỒN: bậc trên phải có tất cả những gì bậc dưới có. Không có luật này

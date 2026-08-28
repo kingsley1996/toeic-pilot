@@ -1095,6 +1095,7 @@ function PetPanel({
             tricks: {
               bounce: tricksRef.current.has("bounce"),
               trail: tricksRef.current.has("trail"),
+              float: tricksRef.current.has("float"),
             },
           });
 

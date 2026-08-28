@@ -30,7 +30,7 @@ class PetPublic(BaseModel):
     bảng tra thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó thêm loài
     — và hậu quả là một con thú vẽ nhầm hình, không phải một lỗi.
     """
-    tier: Literal["common", "uncommon", "rare", "epic", "legendary"]
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"]
     """Hạng hiếm của loài đang nuôi.
 
     Gửi kèm vì giao diện vẽ một vòng sáng dưới chân con thú theo hạng, và bảng
@@ -104,7 +104,7 @@ class PetSpeciesPublic(BaseModel):
     code: str
     label: str
     tile: int = Field(ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic", "legendary"]
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"]
     drop_weight: int = Field(ge=0, le=1000)
     """Trọng số rơi khi mở trứng, KHÔNG phải phần trăm.
 
@@ -128,7 +128,7 @@ class PetSpeciesEdit(BaseModel):
 
     label: str | None = Field(default=None, min_length=1, max_length=64)
     tile: int | None = Field(default=None, ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic", "legendary"] | None = None
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] | None = None
     drop_weight: int | None = Field(default=None, ge=0, le=1000)
     position: int | None = None
     enabled: bool | None = None
@@ -138,7 +138,7 @@ class PetSpeciesCreate(BaseModel):
     code: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
     label: str = Field(min_length=1, max_length=64)
     tile: int = Field(ge=0, lt=180)
-    tier: Literal["common", "uncommon", "rare", "epic", "legendary"] = "common"
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
     drop_weight: int = Field(default=10, ge=0, le=1000)
     position: int = 0
 
