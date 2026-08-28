@@ -704,9 +704,31 @@ function PetPanel({
       walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
     };
 
+    /*
+     * Thanh chỉ số KHÔNG chờ gói WebGL.
+     *
+     * Cả ba việc chạy song song, nhưng bản trước chỉ `setPet`/`setNeeds` sau khi
+     * `Promise.all` xong — tức là sau khi gói Pixi tải và biên dịch xong. Ở bản
+     * dev có sẵn cache thì không ai thấy; ở bản production trên một máy nguội,
+     * gói ấy là một tệp riêng phải tải về, và trong lúc đó bảng đã mở ra mà chưa
+     * có "Lv" nào — đúng chỗ CI đỏ.
+     *
+     * Số liệu con thú đến từ một lượt gọi API và không dính gì tới việc vẽ, nên
+     * nó phải hiện ngay khi API trả lời. Một promise, hai người tiêu thụ: không
+     * gọi API hai lần.
+     */
+    const petLoad = apiFetch<PetPublic>(API_ROUTES.pet, { token });
+    void petLoad
+      .then((pet) => {
+        if (!alive) return;
+        setNeeds(pet.needs);
+        setPet(pet);
+      })
+      .catch(() => {});
+
     void Promise.all([
       fetch("/pet/map.json").then((res) => res.json()),
-      apiFetch<PetPublic>(API_ROUTES.pet, { token }),
+      petLoad,
       import("@/components/petland-render"),
     ])
       .then(async ([rawMap, pet, render]) => {
@@ -723,8 +745,6 @@ function PetPanel({
         walk = restAt(start, pet.facing === "left" ? "left" : "right");
         petTileRef.current = start;
         saved = start;
-        setNeeds(pet.needs);
-        setPet(pet);
         /*
          * Ô lấy TỪ MÁY CHỦ, không tra ở đây.
          *

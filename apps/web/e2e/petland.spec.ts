@@ -313,8 +313,13 @@ test("bấm nút trong bảng xong, bàn phím vẫn lái được", async ({ pa
     .toBeGreaterThan(afterFeed);
 
   // 2. Mở một cột bên phải rồi ĐÓNG lại — đường mà cái X của thẻ nhiệm vụ đi.
-  await page.getByRole("button", { name: /Mở trứng/i }).click();
-  await page.getByRole("button", { name: /Đóng màn trứng/i }).click();
+  // Nhắm CÁI NÚT Ở THANH TIÊU ĐỀ, không nhắm theo nhãn khi đóng: màn trứng có
+  // cái X của riêng nó và cũng mang nhãn "Đóng màn trứng", nên tìm theo tên thì
+  // Playwright báo strict mode violation — CI đỏ ở đó còn máy này thì không, vì
+  // hai lần chạy khác nhau ở chỗ màn trứng có kịp dựng xong hay chưa.
+  const eggToggle = page.getByRole("button", { name: /trứng/i }).first();
+  await eggToggle.click();
+  await eggToggle.click();
   const afterPanel = await at();
   for (let i = 0; i < 3; i += 1) {
     await page.keyboard.press("a");
