@@ -1212,6 +1212,25 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ag. Ao nước đi vào được, và con thú bơi · ✅ (2026-08-28)
+
+Mười hai ô ao trong `map.json` vốn bị đánh dấu **cản đường** — cái hồ là một bức tường có màu xanh. Giờ mở ra, và khi con thú xuống nước thì nó chìm một phần: khung ảnh bị cắt đúng ở mặt nước, kèm một vòng gợn quanh chân.
+
+**Cắt KHUNG ẢNH, không dùng mặt nạ.** Con thú chỉ có một khung 16×16 (ADR-010 §14.5), nên "một phần chìm" nghĩa là vẽ ít pixel hơn — rẻ hơn hẳn một lượt vẽ mặt nạ, và với `anchor` ở đáy thì mép cắt chính là mặt nước. Texture cắt sẵn được nhớ lại và chỉ đổi khi đổi loài hoặc khi xuống/lên khỏi nước; dựng `Texture` mỗi khung là dựng một đối tượng GPU sáu chục lần mỗi giây cho một tấm ảnh không đổi.
+
+Dưới nước thì **bỏ cái nhún của bước chân** và thay bằng nhịp bập bềnh chậm hơn, lệch pha với nhịp thở: cái nhún là nhịp chân chạm đất, giữ nó dưới nước thì con thú trông như đang chạy trên mặt hồ. Vệt sáng của bậc hiếm cũng tắt dưới nước — vệt là dấu chân, mà gợn nước đã nói việc ấy rồi.
+
+**Hai chỗ chỉ nhìn mới thấy, và cả hai đều đã sửa nhờ chụp ảnh canvas rồi phóng to:**
+
+- **Ô số 1 của tấm ghép `water` là CỎ**, được dùng 99 lần trong bản đồ. Phép thử `sheet === "water"` — thứ ai cũng viết đầu tiên — sẽ biến gần hết bãi cỏ thành ao.
+- **Ranh giới nằm ở ĐÁY ô, không phải giữa ô.** Con thú neo ở đáy ô, nên thứ quyết định nó đứng hay bơi là cái nằm dưới chân. Bản đầu tính cả chín ô của bộ ghép 3×3, và ảnh chụp cho thấy con thú bị cắt ngang kèm gợn nước **trong khi đang đứng hẳn trên cỏ** ở hàng dưới. Nước giờ là sáu ô: hàng trên (cỏ ở nửa trên, nước ở dưới) và hàng giữa.
+
+Khách không đứng giữa ao (`spotNear` loại ô nước): con thú thì bơi được, còn một NPC lội tới ngực giữa hồ để giao bài tập thì đọc ra là đặt sai chỗ. Con thú **tự đi lang thang xuống nước được** — đó là chủ ý.
+
+`check-petland-walk.mjs` ghim ba điều: 12 ô ao đi vào được, đúng 6 ô tính là nước, và 99 ô cỏ cùng tấm ghép không bị nhầm. Đã xem đỏ với cả hai lỗi trên.
+
+---
+
 ## 4af. Bậc hiếm thứ sáu: "thần" · ✅ (2026-08-28)
 
 **Không phải tải thêm tài nguyên nào.** `creatures.png` (Tiny Creatures — Clint Bellanger, CC0) có 180 ô, trong đó **hơn một trăm sinh vật huyền thoại**, và bốn mươi loài hiện tại mới dùng 40 ô. Năm ô của bậc thần đều nằm sẵn ở đó và chưa loài nào lấy: bốn nguyên tố ở hàng 4 (45–48) và một ô thiên thần có vầng hào quang ở hàng 3 (37).

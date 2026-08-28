@@ -85,6 +85,7 @@ export default function Lab() {
             reduced: false,
             condition: "content",
             tricks: { bounce: false, trail: false, float: false },
+            swimming: false,
             // Không có hạng nào ở đây: bàn thử vẽ một con cố định để soi bước
             // chân, không để soi độ hiếm.
             glow: { color: 0x9aaab5, strength: 0 },

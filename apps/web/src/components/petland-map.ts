@@ -97,6 +97,32 @@ export function parseMap(raw: unknown): MapData | null {
   return { w, h, ground, objects, solid };
 }
 
+/**
+ * Những ô của tấm ghép `water` thật sự LÀ nước.
+ *
+ * Không phải cả tấm: ô 1 của nó là cỏ và được dùng 99 lần trong bản đồ hiện tại,
+ * nên "sheet === water" là một phép thử sai — nó sẽ biến gần hết bãi cỏ thành ao.
+ *
+ * Bộ ghép bờ là 3×3, nhưng chỉ SÁU ô đầu tính là nước — và ranh giới nằm ở ĐÁY
+ * Ô, không phải ở giữa ô.
+ *
+ * Con thú neo ở đáy ô của nó, nên thứ quyết định nó đứng hay bơi là cái nằm dưới
+ * chân nó. Hàng trên (18–20) có cỏ ở nửa trên và nước ở dưới — chân ngập, tính là
+ * bơi. Hàng giữa (36–38) là nước đầy. Hàng dưới (54–56) thì ngược lại: nước ở
+ * trên, cỏ ở dưới, tức là con thú đứng trên bờ.
+ *
+ * Đây không phải suy luận trên giấy: bản đầu tính cả chín ô, và ảnh chụp cho
+ * thấy con thú bị cắt ngang kèm gợn nước trong khi đang đứng hẳn trên cỏ.
+ */
+const WATER_TILES: ReadonlySet<number> = new Set([18, 19, 20, 36, 37, 38]);
+
+/** Ô này có nước không — dùng để vẽ con thú đang bơi và để khách tránh đứng dưới ao. */
+export function isWater(map: MapData, x: number, y: number): boolean {
+  if (!inBounds(map, x, y)) return false;
+  const cell = map.ground[y * map.w + x];
+  return cell !== null && cell.sheet === "water" && WATER_TILES.has(cell.index);
+}
+
 export function inBounds(map: MapData, x: number, y: number): boolean {
   return x >= 0 && y >= 0 && x < map.w && y < map.h;
 }
@@ -160,7 +186,9 @@ export function spotNear(
       if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) continue;
       const x = near.x + dx;
       const y = near.y + dy;
-      if (!isWalkable(map, x, y)) continue;
+      // Khách không đứng giữa ao: con thú thì bơi được, còn một NPC lội tới ngực
+      // giữa hồ để giao bài tập thì đọc ra là đặt sai chỗ.
+      if (!isWalkable(map, x, y) || isWater(map, x, y)) continue;
       any.push({ x, y });
       if (!taken.has(`${x},${y}`)) free.push({ x, y });
     }

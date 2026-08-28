@@ -36,6 +36,7 @@ import { useSession } from "@/lib/session";
 import {
   findPath,
   isWalkable,
+  isWater,
   nearestWalkable,
   neighbourOf,
   parseMap,
@@ -1092,6 +1093,7 @@ function PetPanel({
             fight: bout,
             reduced: reducedRef.current,
             condition: conditionRef.current,
+            swimming: map !== null && isWater(map, walk.tile.x, walk.tile.y),
             tricks: {
               bounce: tricksRef.current.has("bounce"),
               trail: tricksRef.current.has("trail"),

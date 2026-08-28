@@ -156,6 +156,14 @@ export type PetView = {
    * **Không tiết mục nào làm con thú mạnh hơn.** Xem `tricksOf`.
    */
   tricks: { bounce: boolean; trail: boolean; float: boolean };
+  /**
+   * Con thú đang ở trong nước.
+   *
+   * Tầng này nhận một cờ đã quyết, không tự tra bản đồ: nó không giữ `map`, và
+   * "ô nào là nước" là kiến thức của `petland-map.ts` — nơi đã phải phân biệt ô
+   * nước thật với ô cỏ nằm chung tấm ghép.
+   */
+  swimming: boolean;
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -228,11 +236,20 @@ export type Stage = {
   destroy: () => void;
 };
 
-function slice(sheet: Texture, index: number, cols: number): Texture {
+function slice(sheet: Texture, index: number, cols: number, height = TILE): Texture {
   const x = (index % cols) * TILE;
   const y = Math.floor(index / cols) * TILE;
-  return new Texture({ source: sheet.source, frame: new Rectangle(x, y, TILE, TILE) });
+  return new Texture({ source: sheet.source, frame: new Rectangle(x, y, TILE, height) });
 }
+
+/**
+ * Bao nhiêu pixel của con thú chìm dưới mặt nước.
+ *
+ * Cắt KHUNG ẢNH chứ không dùng mặt nạ: con thú chỉ có một khung 16×16, nên "một
+ * phần chìm" nghĩa là vẽ ít pixel hơn — rẻ hơn hẳn một lượt vẽ mặt nạ, và với
+ * `anchor` ở đáy thì mép cắt chính là mặt nước.
+ */
+const SUNK = 6;
 
 /**
  * Tư thế của con thú trong lúc một hành động đang diễn ra.
@@ -542,6 +559,16 @@ export async function createStage(
   let trailAt = 0;
   let trailTile = -1;
 
+  /*
+   * Gợn nước quanh chân con thú khi nó đang bơi. Vẽ MỘT lần rồi chỉ bật/tắt và
+   * đổi tỉ lệ — cùng lý do với tia va chạm và vệt dưới chân.
+   */
+  const ripple = new Graphics();
+  ripple.ellipse(0, 0, 7, 2.6).stroke({ color: 0xffffff, width: 1, alpha: 0.75 });
+  ripple.ellipse(0, 0, 4, 1.5).stroke({ color: 0xffffff, width: 1, alpha: 0.5 });
+  ripple.visible = false;
+  world.addChild(ripple);
+
   const pet = new Sprite();
   // Neo ở ĐÁY và giữa: con thú "đứng trên" ô của nó, nên khi nhún hay thở thì
   // chân ở yên còn người nhấp nhô. Neo ở tâm làm nó lún xuống đất mỗi nhịp thở.
@@ -614,6 +641,7 @@ export async function createStage(
   app.stage.addChild(sky);
 
   let currentSpecies = -1;
+  let currentWet = false;
   let camX = 0;
   let camY = 0;
   // `dt` suy ra từ chính `clock` của khung hình thay vì thêm một tham số: người
@@ -639,9 +667,18 @@ export async function createStage(
     },
 
     draw(view) {
-      if (view.species !== currentSpecies) {
-        pet.texture = slice(creatures, view.species, CREATURE_COLS);
+      // Đổi khung khi đổi loài HOẶC khi xuống/lên khỏi nước. Dựng `Texture` mỗi
+      // khung hình là dựng một đối tượng GPU sáu chục lần mỗi giây cho một tấm
+      // ảnh không đổi.
+      if (view.species !== currentSpecies || view.swimming !== currentWet) {
+        pet.texture = slice(
+          creatures,
+          view.species,
+          CREATURE_COLS,
+          view.swimming ? TILE - SUNK : TILE,
+        );
         currentSpecies = view.species;
+        currentWet = view.swimming;
       }
 
       // Nội suy giữa hai ô: đây là chỗ "mượt" đến từ, chứ không phải từ việc bỏ
@@ -731,7 +768,16 @@ export async function createStage(
        */
       const pose = poseFor(view.action);
       pet.x = Math.round(pet.x + pose.dx);
-      pet.y = Math.round((y + 1) * TILE - hop * 2 - bounce * 3 - lift - pose.lift);
+      /*
+       * Bơi: con thú CHÌM một phần và bập bềnh, không nhún theo bước chân.
+       *
+       * Cái nhún là nhịp CHÂN chạm đất — giữ nó dưới nước thì con thú trông như
+       * đang chạy trên mặt hồ. Thay bằng một nhịp bập bềnh chậm hơn, lệch pha
+       * với nhịp thở.
+       */
+      const bobbing = view.swimming && !view.reduced ? Math.sin(view.clock * 2.1) * 0.9 : 0;
+      const swimHop = view.swimming ? 0 : hop * 2;
+      pet.y = Math.round((y + 1) * TILE - swimHop - bounce * 3 - lift - pose.lift + bobbing);
       /*
        * Vệt: thả một chấm ở ô VỪA RỜI mỗi khi con thú sang ô mới.
        *
@@ -739,8 +785,20 @@ export async function createStage(
        * khi máy chậm và thưa đi khi máy nhanh, còn theo ô thì bước chân nào cũng
        * đúng một chấm.
        */
+      // Gợn nước ngay tại mặt nước, tức là ở mép cắt của khung ảnh.
+      ripple.visible = view.swimming;
+      if (view.swimming) {
+        ripple.x = pet.x;
+        ripple.y = pet.y;
+        const swell = view.reduced ? 0 : Math.sin(view.clock * 2.6);
+        ripple.scale.set(1 + swell * 0.12, 1 + swell * 0.08);
+        ripple.alpha = 0.55 + (view.reduced ? 0 : swell * 0.2);
+      }
+
       const cell = view.tile.y * 1000 + view.tile.x;
-      if (view.tricks.trail && !view.reduced && cell !== trailTile) {
+      // Không để lại vệt dưới nước: vệt là dấu chân, mà dưới nước thì không có
+      // chân nào chạm đất — gợn nước đã nói việc ấy rồi.
+      if (view.tricks.trail && !view.reduced && !view.swimming && cell !== trailTile) {
         if (trailTile >= 0) {
           const dot = trail[trailAt % TRAIL];
           trailAt += 1;

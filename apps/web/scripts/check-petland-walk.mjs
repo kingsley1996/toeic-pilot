@@ -244,5 +244,53 @@ const stand = () => null;
   console.log(`tiết mục theo bậc: cộng dồn qua ${TIERS.length} bậc, bậc lạ rơi về mốc không`);
 }
 
+// --- 10. Ao: bơi được, và ranh giới nằm ở ĐÁY ô ------------------------------
+{
+  const { readFileSync } = await import("node:fs");
+  const { parseMap, isWalkable, isWater } = await import(join(base, "petland-map.ts"));
+  const map = parseMap(
+    JSON.parse(readFileSync(join(base, "..", "..", "public", "pet", "map.json"), "utf8")),
+  );
+
+  // Cái ao trong bản đồ hiện tại: khối 3×3 ô ghép, trải trên 12 ô bản đồ.
+  const pond = [];
+  for (let y = 0; y < map.h; y += 1) {
+    for (let x = 0; x < map.w; x += 1) {
+      const cell = map.ground[y * map.w + x];
+      if (cell && cell.sheet === "water" && cell.index !== 1)
+        pond.push({ x, y, index: cell.index });
+    }
+  }
+  if (pond.length !== 12) fail(`mong 12 ô ao, đếm được ${pond.length}`);
+
+  // Đi vào được — nếu không thì cả tính năng bơi không bao giờ chạm tới.
+  for (const t of pond) {
+    if (!isWalkable(map, t.x, t.y)) fail(`ô ao (${t.x},${t.y}) vẫn cản đường`);
+  }
+
+  // Ranh giới ở ĐÁY ô: hàng trên và hàng giữa là nước, hàng dưới là bờ. Bản đầu
+  // tính cả chín ô và con thú bị cắt ngang kèm gợn nước trong khi đứng trên cỏ.
+  for (const t of pond) {
+    const want = t.index !== 54 && t.index !== 55 && t.index !== 56;
+    if (isWater(map, t.x, t.y) !== want) {
+      fail(`ô ghép ${t.index} tại (${t.x},${t.y}): ${want ? "phải" : "không được"} tính là nước`);
+    }
+  }
+
+  // Ô 1 của chính tấm ghép `water` là CỎ, dùng 99 lần. Nhận nhầm nó là nước sẽ
+  // biến gần hết bãi cỏ thành ao.
+  let grass = 0;
+  for (let y = 0; y < map.h; y += 1) {
+    for (let x = 0; x < map.w; x += 1) {
+      const cell = map.ground[y * map.w + x];
+      if (cell && cell.sheet === "water" && cell.index === 1) {
+        grass += 1;
+        if (isWater(map, x, y)) fail(`ô cỏ (${x},${y}) bị nhận nhầm là nước`);
+      }
+    }
+  }
+  console.log(`ao: 12 ô đi vào được, 6 ô tính là nước, ${grass} ô cỏ cùng tấm ghép không bị nhầm`);
+}
+
 console.log(bad === 0 ? "\nTẤT CẢ ĐỀU ĐÚNG" : `\n${bad} chỗ SAI`);
 process.exit(bad === 0 ? 0 : 1);
