@@ -12,6 +12,7 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -59,6 +60,14 @@ router = APIRouter(prefix="/pet", tags=["pet"])
 DEFAULT_SPECIES = "cat"
 
 
+def db_get_state(db: Session, user_id: uuid.UUID) -> PetState | None:
+    """Đọc hàng góc thú cưng. Tách ra CHỈ để bài kiểm đua chèn được hàng rào vào
+    đúng khe giữa "chưa có" và "dựng" — cùng kỹ thuật mà bài mua trứng dùng với
+    `ruby.balance`. Không có seam này thì cuộc đua không tái tạo được, và một bài
+    kiểm không tái tạo được là một bức tường xanh không khẳng định gì."""
+    return db.get(PetState, user_id)
+
+
 def ensure_pet(db: Session, user_id: uuid.UUID) -> tuple[PetState, PetOwned]:
     """Góc thú cưng của người này, cùng CON ĐANG NUÔI. Dựng nếu chưa có.
 
@@ -71,12 +80,27 @@ def ensure_pet(db: Session, user_id: uuid.UUID) -> tuple[PetState, PetOwned]:
     chỉ có nghĩa với người đã mở góc này, và tạo sẵn cho 821 tài khoản để chờ vài
     người bấm vào là trả tiền cho một thứ chưa ai xin.
     """
-    state = db.get(PetState, user_id)
+    state = db_get_state(db, user_id)
     if state is None:
         state = PetState(user_id=user_id, species=DEFAULT_SPECIES)
         db.add(state)
-        db.commit()
-        db.refresh(state)
+        try:
+            db.commit()
+        except IntegrityError:
+            # LẦN MỞ BẢNG ĐẦU TIÊN bắn hai request gần như cùng lúc — `GET /pet`
+            # và `GET /pet/encounters` — và cả hai đều đi qua đây. Trên một tài
+            # khoản chưa có hàng nào thì cả hai cùng thấy `None` và cùng dựng;
+            # người thua vỡ khoá chính và nhận 500 ngay ở lần mở góc thú cưng
+            # đầu tiên của đời tài khoản đó.
+            #
+            # Bắt được nhờ một lượt chạy e2e đỏ ở chỗ chẳng liên quan, không
+            # phải nhờ đọc mã: cuộc đua này chỉ trúng khi hai request rơi vào
+            # đúng vài mili giây của nhau.
+            db.rollback()
+            state = db.get(PetState, user_id)
+            assert state is not None
+        else:
+            db.refresh(state)
     return state, _own(db, user_id, state.species)
 
 
@@ -96,8 +120,16 @@ def _own(db: Session, user_id: uuid.UUID, species: str) -> PetOwned:
     if owned is None:
         owned = PetOwned(user_id=user_id, species=species)
         db.add(owned)
-        db.commit()
-        db.refresh(owned)
+        try:
+            db.commit()
+        except IntegrityError:
+            # Cùng cuộc đua với `ensure_pet`, và cùng cách chữa: hai request đầu
+            # tiên cùng dựng con thú đầu tiên.
+            db.rollback()
+            owned = db.get(PetOwned, (user_id, species))
+            assert owned is not None
+        else:
+            db.refresh(owned)
     return owned
 
 

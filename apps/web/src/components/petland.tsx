@@ -24,7 +24,7 @@ import {
   type PetNeeds,
   type Steer,
 } from "@/components/petland-pet";
-import { CREATURE_COLS, CREATURE_ROWS, tileForSpecies } from "@/components/petland-sprite";
+import { CREATURE_COLS, CREATURE_ROWS, LAUNCHER_TILE } from "@/components/petland-sprite";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -303,7 +303,7 @@ function PetLauncher({
             // số cột của tấm NỀN (12), còn tấm sinh vật có 10 — nên nút này vốn
             // đang cắt ra một mảnh của con khác, đủ giống một con thú để không
             // ai nhận ra là sai.
-            backgroundPosition: `-${(tileForSpecies("cat") % CREATURE_COLS) * TILE * 2}px -${Math.floor(tileForSpecies("cat") / CREATURE_COLS) * TILE * 2}px`,
+            backgroundPosition: `-${(LAUNCHER_TILE % CREATURE_COLS) * TILE * 2}px -${Math.floor(LAUNCHER_TILE / CREATURE_COLS) * TILE * 2}px`,
             backgroundSize: `${CREATURE_COLS * TILE * 2}px ${CREATURE_ROWS * TILE * 2}px`,
             imageRendering: "pixelated",
           }}
@@ -471,6 +471,14 @@ function PetPanel({
    */
   const asleepRef = useRef(false);
   /**
+   * Người dùng đã xin giảm chuyển động.
+   *
+   * REF vì vòng vẽ đọc nó mỗi khung hình, nhưng nghe `change` để đổi ngay khi
+   * người dùng đổi cài đặt hệ điều hành — không bắt họ tải lại trang. Cùng khuôn
+   * với `glowRef`, vốn cũng nghe sáng/tối.
+   */
+  const reducedRef = useRef(false);
+  /**
    * Chỗ đứng cần NHẢY TỚI ngay, không phải đi bộ tới.
    *
    * Đổi con là đưa một con khác ra sân, nên nó xuất hiện ở chỗ CỦA NÓ chứ không
@@ -527,6 +535,19 @@ function PetPanel({
      * rung như khung hình thật, và cả ba lỗi ấy đều bị bắt.
      */
     let walk = restAt({ x: 0, y: 0 });
+    /*
+     * Vòng vẽ DỪNG HẲN khi tab bị ẩn (ADR-010 §10).
+     *
+     * Trình duyệt tự giảm nhịp `requestAnimationFrame` ở tab nền, nhưng "tự
+     * giảm" không phải "dừng", và mức giảm là chính sách của từng trình duyệt
+     * chứ không phải thứ mình quyết. Cái vòng này vẽ WebGL sáu chục lần một
+     * giây; để nó chạy sau lưng người dùng là đốt pin cho một khung hình không
+     * ai nhìn.
+     *
+     * Giữ `loopRef` vì `loop` chỉ tồn tại sau khi sân khấu dựng xong, còn người
+     * nghe sự kiện thì phải đăng ký từ đầu.
+     */
+    let loopRef: ((now: number) => void) | null = null;
     /*
      * Cầu nối để `onKeyDown` gọi được phép chọn ô kế tiếp.
      *
@@ -656,6 +677,26 @@ function PetPanel({
       heldRef.current = [];
     };
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+        // Và cả ticker của Pixi: nó là một vòng rAF THỨ HAI, độc lập với vòng
+        // này. Dừng mỗi vòng của mình thì máy vẫn vẽ WebGL sau lưng người dùng.
+        stage?.setRunning(false);
+        // Thả hết phím: không có `keyup` nào tới trong lúc tab bị ẩn.
+        heldRef.current = [];
+        return;
+      }
+      stage?.setRunning(true);
+      if (raf !== 0 || loopRef === null) return;
+      // Đặt lại mốc thời gian trước khi chạy tiếp: `now - last` sau một tiếng
+      // bị ẩn là một `dt` khổng lồ, và dù nó đã bị kẹp ở 0,1 giây thì con thú
+      // vẫn nhảy một cái ngay lúc người dùng quay lại.
+      last = performance.now();
+      raf = requestAnimationFrame(loopRef);
+    };
+
     const onClick = (event: MouseEvent) => {
       if (!stage || !map) return;
       const target = stage.tileAt(event.clientX, event.clientY);
@@ -751,8 +792,8 @@ function PetPanel({
          * Bảng loài là dữ liệu admin sửa được (`pet_species`), nên một bảng tra
          * thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó đổi ô của
          * một loài — và hậu quả là con thú vẽ nhầm hình, không phải một lỗi.
-         * `tileForSpecies` chỉ còn là phương án rơi về cho nút thu gọn, vốn vẽ
-         * trước khi có lượt gọi nào.
+         * `LAUNCHER_TILE` chỉ dùng cho nút thu gọn, vốn vẽ trước khi có lượt
+         * gọi nào — nó là một hằng số, không phải một bảng tra song song.
          */
         speciesRef.current = pet.tile;
 
@@ -919,7 +960,15 @@ function PetPanel({
           made.draw({
             tile: walk.tile,
             from: walk.from,
-            progress: walk.progress,
+            /*
+             * Giảm chuyển động thì BỎ NỘI SUY: `1` nghĩa là vẽ thẳng ở ô đích.
+             *
+             * Con thú vẫn đi đúng từng ô và vẫn mất đúng ngần ấy thời gian —
+             * chỉ là nó xuất hiện ở ô mới thay vì trượt tới đó. Đúng cách ADR-010
+             * §10 chốt, và nó giữ được thứ quan trọng nhất: cái góc này vẫn chơi
+             * được, chứ không bị tắt đi.
+             */
+            progress: reducedRef.current ? 1 : walk.progress,
             facing: walk.facing,
             species: speciesRef.current,
             glow: glowRef.current,
@@ -933,6 +982,7 @@ function PetPanel({
             sleeping: asleepRef.current,
             encounters: guestsRef.current,
             fight: bout,
+            reduced: reducedRef.current,
           });
 
           /*
@@ -964,12 +1014,16 @@ function PetPanel({
           }
           raf = requestAnimationFrame(loop);
         };
-        raf = requestAnimationFrame(loop);
+        loopRef = loop;
+        if (!document.hidden) raf = requestAnimationFrame(loop);
       })
       .catch(() => alive && setError(true));
 
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       alive = false;
+      document.removeEventListener("visibilitychange", onVisibility);
       cancelAnimationFrame(raf);
       el.removeEventListener("click", onClick);
       window.removeEventListener("keydown", onKeyDown);
@@ -1077,6 +1131,15 @@ function PetPanel({
     if (!token) return;
     let alive = true;
     const ask = () => {
+      /*
+       * Tab bị ẩn thì KHÔNG hỏi.
+       *
+       * Không phải để tiết kiệm một request: `GET /pet/encounters` là đường
+       * SINH RA khách (ADR-012 §1), nên hỏi sau lưng người dùng nghĩa là một
+       * NPC ra đời rồi hết hạn trong lúc họ không có mặt — đúng cái "bỏ lỡ một
+       * thứ chưa từng có" mà cả cơ chế được dựng để không thể xảy ra.
+       */
+      if (document.hidden) return;
       apiFetch<EncounterPublic[]>(API_ROUTES.petEncounters, { token })
         .then((rows) => {
           if (alive) setMeetings(rows);
@@ -1088,9 +1151,13 @@ function PetPanel({
     refreshMeetings.current = ask;
     ask();
     const tick = window.setInterval(ask, 60_000);
+    // Quay lại thì hỏi NGAY, không đợi hết một phút: người dùng vừa có mặt trở
+    // lại, và đó chính là lúc được phép sinh khách.
+    document.addEventListener("visibilitychange", ask);
     return () => {
       alive = false;
       window.clearInterval(tick);
+      document.removeEventListener("visibilitychange", ask);
     };
   }, [token]);
 
@@ -1169,6 +1236,16 @@ function PetPanel({
       speechUntil.current = performance.now() + SPEECH_MS;
     };
   }, [meetings]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      reducedRef.current = media.matches;
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
 
   const tier = pet?.tier;
   useEffect(() => {

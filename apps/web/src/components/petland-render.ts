@@ -125,6 +125,17 @@ export type PetView = {
    * lại, còn bước cuối thì nó văng ra và mờ đi.
    */
   fight: { id: string; t: number; win: boolean } | null;
+  /**
+   * Người dùng đã xin GIẢM CHUYỂN ĐỘNG (`prefers-reduced-motion`).
+   *
+   * Không tắt cả góc thú cưng — nó là một cái game nhỏ, tắt đi thì không còn gì.
+   * ADR-010 §10 chốt cách xử lý: **bỏ nội suy** (nhảy thẳng sang ô đích), bỏ thở
+   * và nhún, bỏ hoạt ảnh nền. Cảnh vẫn còn nguyên, chỉ thôi động đậy.
+   *
+   * Đọc ở `petland.tsx` chứ không ở đây, và đọc LẠI khi người dùng đổi cài đặt:
+   * tầng vẽ nhận một giá trị đã quyết, cùng luật với `glow` và `sky`.
+   */
+  reduced: boolean;
 };
 
 /** Một sinh vật hậu cảnh: ô của nó, chỗ nó thuộc về, và nhịp đi của riêng nó. */
@@ -185,6 +196,15 @@ export type Stage = {
    * bong bóng thoại phải mọc trên đầu đúng người vừa nói.
    */
   guestScreen: (id: string) => { x: number; y: number } | null;
+  /**
+   * Bật/tắt ticker riêng của Pixi.
+   *
+   * Pixi tự chạy một vòng `requestAnimationFrame` của nó, độc lập với vòng vẽ ở
+   * `petland.tsx` — đo được: một trang có bảng thú cưng gọi rAF khoảng 130 lần
+   * mỗi giây, tức là HAI vòng. Dừng mỗi vòng của mình khi tab bị ẩn thì vẫn còn
+   * nguyên vòng kia đang vẽ WebGL sau lưng người dùng.
+   */
+  setRunning: (on: boolean) => void;
   destroy: () => void;
 };
 
@@ -592,9 +612,11 @@ export async function createStage(
        */
       // Ngủ thì nhịp thở chậm còn một phần ba và sâu gấp đôi — đó là thứ đọc ra
       // "đang ngủ" ngay cả khi mẩu Zzz đã bay hết.
-      const breathe = view.sleeping
-        ? 1 + Math.sin(view.clock * 1.3) * 0.08
-        : 1 + Math.sin(view.clock * 3.9) * 0.04;
+      const breathe = view.reduced
+        ? 1
+        : view.sleeping
+          ? 1 + Math.sin(view.clock * 1.3) * 0.08
+          : 1 + Math.sin(view.clock * 3.9) * 0.04;
       const lying = view.sleeping ? { x: 1.12, y: 0.82 } : { x: 1, y: 1 };
       const hop = t > 0 ? Math.abs(Math.sin(t * Math.PI)) : 0;
       /*
@@ -633,7 +655,9 @@ export async function createStage(
        * nhịp thì hai thứ phồng lên cùng lúc và trông như một khối.
        */
       const strength = view.glow.strength;
-      const breath = 0.5 + 0.5 * Math.sin(view.clock * 2.2 + 1.1);
+      // Vòng sáng vẫn CÓ, chỉ thôi thở: hạng hiếm là thông tin, còn nhịp phập
+      // phồng thì không mang thông tin nào.
+      const breath = view.reduced ? 0.5 : 0.5 + 0.5 * Math.sin(view.clock * 2.2 + 1.1);
       // Cùng lưới pixel với con thú, nếu không thì vòng sáng trượt dưới chân nó
       // đúng một pixel mỗi lúc con thú vừa được làm tròn về phía kia.
       const footY = Math.round((y + 1) * TILE - 1);
@@ -658,7 +682,7 @@ export async function createStage(
        * biệt được gì — thứ hiếm phải hiếm cả trong cách nó chiếm mắt người nhìn.
        * Chu kỳ ~1,8 giây, lan từ lõi ra quá quầng rồi tắt hẳn.
        */
-      if (strength >= 0.55) {
+      if (strength >= 0.55 && !view.reduced) {
         const t = (view.clock / 1.8) % 1;
         wave.visible = true;
         wave.alpha = (1 - t) * 0.55 * strength;
@@ -728,10 +752,10 @@ export async function createStage(
 
         // Lệch pha theo chỉ số: cả bốn nhấp nhô cùng nhịp thì đọc ra là một cơ
         // cấu máy móc, đúng lý do mỗi sinh vật hậu cảnh có `phase` riêng.
-        const bob = Math.sin(view.clock * 2.4 + i * 1.7) * 1.2;
+        const bob = view.reduced ? 0 : Math.sin(view.clock * 2.4 + i * 1.7) * 1.2;
         sprite.x = guest.x * TILE + TILE / 2;
         sprite.y = (guest.y + 1) * TILE;
-        sprite.scale.set(1, 1 + Math.sin(view.clock * 3.1 + i * 1.1) * 0.03);
+        sprite.scale.set(1, view.reduced ? 1 : 1 + Math.sin(view.clock * 3.1 + i * 1.1) * 0.03);
         sprite.alpha = 1;
         sprite.rotation = 0;
         sprite.tint = 0xffffff;
@@ -799,7 +823,16 @@ export async function createStage(
 
       const dt = lastClock === 0 ? 0 : Math.min(0.1, view.clock - lastClock);
       lastClock = view.clock;
-      for (const critter of critters) stepCritter(critter, dt, view.clock);
+      // Sinh vật hậu cảnh đứng im hẳn khi người dùng xin giảm chuyển động: đó là
+      // chuyển động THUẦN TRANG TRÍ, không mang thông tin nào.
+      if (!view.reduced) {
+        for (const critter of critters) stepCritter(critter, dt, view.clock);
+      }
+    },
+
+    setRunning(on) {
+      if (on) app.start();
+      else app.stop();
     },
 
     guestScreen(id) {

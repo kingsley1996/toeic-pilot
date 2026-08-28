@@ -6,6 +6,7 @@ tệp mà cả giá trị của nó là chạy được ngoài database.
 """
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.pet import DEFAULT_PET_SPECIES, PetSpecies
@@ -16,14 +17,27 @@ def all_species(db: Session, *, include_disabled: bool = False) -> list[PetSpeci
 
     **Bảng rỗng nghĩa là "chưa từng cấu hình", không phải "cố ý để trống"** —
     cùng tính chất với `frame_tier`, và cùng hệ quả: xoá hết mọi loài thì lần
-    đọc sau gieo lại đủ mười hai. Muốn bỏ một loài thì TẮT nó.
+    đọc sau gieo lại cả bảng. Muốn bỏ một loài thì TẮT nó.
     """
-    rows = list(db.scalars(select(PetSpecies).order_by(PetSpecies.position, PetSpecies.code)))
+    order = (PetSpecies.position, PetSpecies.code)
+    rows = list(db.scalars(select(PetSpecies).order_by(*order)))
     if not rows:
         for spec in DEFAULT_PET_SPECIES:
             db.add(PetSpecies(**spec))
-        db.commit()
-        rows = list(db.scalars(select(PetSpecies).order_by(PetSpecies.position, PetSpecies.code)))
+        try:
+            db.commit()
+        except IntegrityError:
+            # Hai request đầu tiên sau một lần triển khai cùng đọc bảng rỗng và
+            # cùng gieo; người thua vỡ khoá chính và mất nguyên một lượt học vì
+            # một cuộc đua trên bảng cấu hình. Chỉ cần đọc lại — cùng cuộc đua đã
+            # bắt được ở `ruby.rules`, và cùng cách chữa mà `gacha.settings_row`,
+            # `progression` và `encounters` đều đang dùng.
+            #
+            # `pet_species` là bảng CUỐI CÙNG trong nhóm gieo lười còn thiếu chốt
+            # này, và nó lại nằm trên đường đọc nóng nhất của cả góc thú cưng:
+            # `ensure_pet` gọi nó ở mỗi lần mở bảng.
+            db.rollback()
+        rows = list(db.scalars(select(PetSpecies).order_by(*order)))
     return rows if include_disabled else [row for row in rows if row.enabled]
 
 

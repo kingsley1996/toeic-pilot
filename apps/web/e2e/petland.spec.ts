@@ -345,3 +345,88 @@ test("bấm nút trong bảng xong, bàn phím vẫn lái được", async ({ pa
   }
   expect(await at()).toBe(parked);
 });
+
+test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
+  /*
+   * ADR-010 §10 đòi vòng lặp phải dừng khi tab bị ẩn, và đó là món nợ về PIN:
+   * cái bảng này vẽ WebGL sáu chục lần một giây, để nó chạy sau lưng người dùng
+   * là đốt pin cho một khung hình không ai nhìn.
+   *
+   * Đếm mọi lượt `requestAnimationFrame` của trang, cài TRƯỚC khi app chạy.
+   * Playwright không ẩn tab thật được (`bringToFront` sang trang khác vẫn để
+   * `document.hidden === false` — đã đo), nên ép thuộc tính rồi bắn đúng sự kiện
+   * mà trình duyệt sẽ bắn.
+   *
+   * Đo được: trang chưa mở bảng gọi rAF **0 lần** một giây; mở bảng ra là ~135;
+   * ẩn đi còn ~60. Phần còn lại là ticker nội bộ của Pixi — nó làm việc dọn dẹp
+   * chứ không vẽ, và `app.stop()` không tắt được nó. Cả vòng vẽ của bảng lẫn
+   * ticker của renderer đều đã dừng.
+   */
+  await page.addInitScript(() => {
+    const real = window.requestAnimationFrame.bind(window);
+    (window as unknown as { rafCount: number }).rafCount = 0;
+    window.requestAnimationFrame = (cb: FrameRequestCallback) => {
+      (window as unknown as { rafCount: number }).rafCount += 1;
+      return real(cb);
+    };
+  });
+  await signUp(page);
+
+  const read = () => page.evaluate(() => (window as unknown as { rafCount: number }).rafCount);
+  // Nền: chưa mở bảng thì trang không dùng rAF chút nào.
+  const idle0 = await read();
+  await page.waitForTimeout(1000);
+  expect((await read()) - idle0).toBeLessThan(5);
+
+  await launcher(page).click();
+  await expect(page.locator("canvas")).toBeVisible();
+  const busy0 = await read();
+  await page.waitForTimeout(1000);
+  const busy = (await read()) - busy0;
+  expect(busy).toBeGreaterThan(50);
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { value: true, configurable: true });
+    Object.defineProperty(document, "visibilityState", { value: "hidden", configurable: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await page.waitForTimeout(250);
+  const quiet0 = await read();
+  await page.waitForTimeout(1000);
+  const quiet = (await read()) - quiet0;
+
+  // Phần lớn công việc mỗi khung hình phải biến mất. Không đòi về 0: ticker nội
+  // bộ của Pixi vẫn chạy và không tắt được từ đây.
+  expect(quiet).toBeLessThan(busy / 2);
+});
+
+test("xin giảm chuyển động thì khung cảnh đứng im, nhưng vẫn chơi được", async ({ page }) => {
+  /*
+   * ADR-010 §10: KHÔNG tắt cả góc thú cưng — nó là một cái game nhỏ, tắt đi thì
+   * không còn gì. Cách chốt là bỏ nội suy, bỏ thở và nhún, bỏ hoạt ảnh nền.
+   *
+   * Đo bằng cách chụp chính canvas hai lần cách nhau nửa giây: cảnh đứng im thì
+   * hai tấm phải giống hệt nhau. Đây là thứ duy nhất quan sát được từ ngoài —
+   * một canvas không có DOM nào để mà đọc, và §10 vốn đã nói "phải kiểm bằng mắt
+   * chứ không bằng test". Hai tấm ảnh là cách gần nhất với con mắt ấy.
+   */
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await signUp(page);
+  await launcher(page).click();
+  const canvas = page.locator("canvas");
+  await expect(canvas).toBeVisible();
+  await page.waitForTimeout(400);
+
+  const first = await canvas.screenshot();
+  await page.waitForTimeout(600);
+  const second = await canvas.screenshot();
+  expect(Buffer.compare(first, second)).toBe(0);
+
+  // Và nó vẫn phải CHƠI ĐƯỢC: con thú vẫn đi, chỉ là không trượt tới nơi.
+  const map = page.getByRole("application", { name: /Bản đồ Petland/ });
+  await map.focus();
+  await page.keyboard.press("d");
+  await page.waitForTimeout(500);
+  const moved = await canvas.screenshot();
+  expect(Buffer.compare(first, moved)).not.toBe(0);
+});

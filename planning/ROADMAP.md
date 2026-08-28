@@ -1212,6 +1212,29 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ac. Petland — trả ba món nợ của ADR-010 §10, và hai cuộc đua tìm được trên đường · ✅ (2026-08-28)
+
+Ba món trong "cái phải đo, và cái chưa biết" của [`ADR-010`](ADR-010-PETLAND-V2.md) §10, làm theo thứ tự rẻ-và-thật trước.
+
+- [x] **Gieo lười `pet_species` có chốt chống đua.** Bảng gieo lười CUỐI CÙNG còn thiếu nó, và nó nằm trên đường đọc nóng nhất của cả góc thú cưng — `ensure_pet` gọi ở mỗi lần mở bảng. Hai request đầu tiên sau một lần triển khai cùng đọc bảng rỗng và cùng gieo; người thua vỡ khoá chính và mất nguyên một lượt học vì một cuộc đua trên bảng *cấu hình*.
+- [x] **Vòng vẽ dừng hẳn khi tab bị ẩn.** Đo được: trang chưa mở bảng gọi `requestAnimationFrame` **0 lần** một giây; mở bảng ra là **~135**; ẩn đi còn **~60**. Con số 135 tố cáo **hai** vòng — vòng vẽ của bảng và ticker riêng của Pixi — nên phải tắt cả hai (`app.stop()`); tắt mỗi vòng của mình thì máy vẫn vẽ WebGL sau lưng người dùng. Phần 60 còn lại là ticker nội bộ của Pixi, làm việc dọn dẹp chứ không vẽ, và không tắt được từ đây.
+- [x] **`prefers-reduced-motion`**: bỏ nội suy (`progress = 1`, con thú xuất hiện ở ô đích thay vì trượt tới), bỏ thở và nhún, bỏ nhịp phập phồng của vòng sáng, sinh vật hậu cảnh đứng im. **Không tắt cả góc** — nó là một cái game nhỏ, tắt đi thì không còn gì.
+- [x] Xoá `SPECIES_TILE` — bảng tra 12 loài đã trôi khỏi bảng 40 loài ở backend. Cách sửa không phải cập nhật cho đủ 40 (thế là hẹn một lần trôi nữa), mà là xoá hẳn: chỗ duy nhất còn gọi luôn truyền `"cat"`, nên nó cần đúng một hằng số `LAUNCHER_TILE`.
+
+**Cuộc đua thứ hai, tìm được TÌNH CỜ và nguy hiểm hơn hẳn: `GET /pet` trả 500 ở lần mở bảng đầu tiên của một tài khoản.** Lần mở đầu bắn hai request gần như cùng lúc — `GET /pet` và `GET /pet/encounters` — và cả hai đi qua `ensure_pet`. Trên một tài khoản chưa có hàng nào thì cả hai cùng thấy `None` và cùng dựng; người thua vỡ `pet_state_pkey`. Không đọc mã mà ra: một lượt chạy e2e đỏ với `SyntaxError: Unexpected token 'I', "Internal S"...`, tức là trình duyệt nhận "Internal Server Error" ở chỗ nó đợi JSON.
+
+Cả hai cuộc đua đều có bài kiểm với `threading.Barrier` đặt **giữa lần đọc và lần ghi**, và cả hai đã được xem đỏ. Bài học của `test_ruby_race` áp nguyên: chặn TRƯỚC khi gọi thì luồng đầu đọc-ghi-commit trọn vẹn xong trước khi luồng sau kịp đọc, nên bài kiểm xanh y hệt cả khi chốt bị gỡ — tôi đã đo đúng như thế trước khi dời hàng rào vào đúng khe.
+
+**Nới hạn mức đăng ký: 20 → 60 lượt mỗi 10 phút** (`REGISTER_QUOTA`, 2026-08-28).
+
+Lý do không phải là bộ e2e. Chú thích ngay trên con số ấy đã hứa "đủ chỗ cho một lớp học đăng ký cùng lúc từ một đường mạng" — và 20 **không giữ được lời hứa của chính nó**: một lớp 40 học sinh cùng bấm "Tạo tài khoản" trong giờ học thì non nửa lớp bị chặn, mà như đoạn ngay trên đó viết, *người dùng thật bị chặn thì không ai báo lại, họ chỉ bỏ đi*. Nó còn chặt hơn cả `LOGIN_QUOTA` (60), trong khi **đăng nhập mới là cửa dò mật khẩu thật**, còn đăng ký chỉ mở đường bơm rác.
+
+60 mỗi 10 phút = 6 lần/phút cho một địa chỉ: đủ cho một lớp cộng vài lần gõ lại, và vẫn là cái phanh cần cho script bơm tài khoản. Nó chưa bao giờ là hàng rào chống botnet xoay IP — đoạn ghi chú trên `LOGIN_QUOTA` đã nói thẳng chuyện đó.
+
+Bộ e2e chỉ là *triệu chứng* đã phơi con số ra: 22 bài, mỗi bài đăng ký một tài khoản, nên bài thứ 21 luôn đỏ ở `toHaveURL(/dashboard$/)` — một chỗ chẳng liên quan gì tới nó. Đo lại sau khi nới: **một lượt sạch chạy trọn 22/22**, đếm được 21 lượt đăng ký. Chạy dồn vẫn có trần: hai lượt liên tiếp là 42, lượt thứ ba vượt 60 và đỏ hàng loạt ngay từ `auth.spec.ts` — đúng như thiết kế. Xoá bộ đếm giữa những lượt chạy nặng: `docker compose exec redis redis-cli DEL ratelimit:register:<ip>` (ip của gateway Docker, ở máy này là `192.168.65.1`).
+
+---
+
 ## 4ab. Chạm mặt ở Petland — NPC giao việc và những đợt xâm nhập · ✅ lát 1–4, 6, 7 (2026-08-27)
 
 Quyết định và lý do ở [`ADR-012-ENCOUNTERS.md`](ADR-012-ENCOUNTERS.md). Đây là thứ đầu tiên ở góc thú cưng **kéo người ta về phía bài tập** thay vì về phía con thú.

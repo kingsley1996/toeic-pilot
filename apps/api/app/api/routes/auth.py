@@ -65,7 +65,22 @@ def _user_public(db: Session, user: User) -> UserPublic:
 LOGIN_QUOTA = Quota(limit=60, window_seconds=60 * 10)
 # Tạo tài khoản hàng loạt là cách rẻ nhất bơm rác vào database, nhưng vẫn phải
 # đủ chỗ cho một lớp học đăng ký cùng lúc từ một đường mạng.
-REGISTER_QUOTA = Quota(limit=20, window_seconds=60 * 10)
+#
+# 20 KHÔNG đủ chỗ cho chính cái lớp học mà dòng trên vừa nói tới, và nó chặt hơn
+# cả `LOGIN_QUOTA` — trong khi ĐĂNG NHẬP mới là cửa dò mật khẩu thật, còn đăng ký
+# chỉ mở đường bơm rác. Một lớp 40 học sinh cùng bấm "Tạo tài khoản" trong giờ
+# học sẽ có non nửa lớp bị chặn, và như dòng trên đã viết: người dùng thật bị
+# chặn thì không ai báo lại, họ chỉ bỏ đi.
+#
+# 60 mỗi 10 phút = 6 lần/phút cho một địa chỉ. Đủ cho một lớp cộng vài lần gõ
+# lại, và vẫn là cái phanh cần thiết cho script bơm tài khoản — thứ này chưa bao
+# giờ là hàng rào chống botnet xoay IP, xem đoạn trên.
+#
+# Con số 20 còn có một cái giá không ai định trả: bộ e2e chạy 22 bài và mỗi bài
+# đăng ký một tài khoản, nên bài cuối cùng LUÔN đỏ ở `toHaveURL(/dashboard$/)` —
+# một chỗ chẳng liên quan gì tới nó. Đó là triệu chứng, không phải lý do đổi:
+# lý do là dòng ngay trên đã hứa một điều mà con số không giữ.
+REGISTER_QUOTA = Quota(limit=60, window_seconds=60 * 10)
 # Đổi mật khẩu ĐÃ đăng nhập, nhưng vẫn cần giới hạn: nó xác minh mật khẩu hiện
 # tại, nên nó cũng là một cửa dò — chỉ khác là kẻ dò phải có token hợp lệ trước.
 PASSWORD_QUOTA = Quota(limit=10, window_seconds=60 * 10)

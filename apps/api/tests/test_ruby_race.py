@@ -33,6 +33,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base
 from app.models import RubyEvent, User  # noqa: F401 — đăng ký bảng lên metadata
+from app.models.pet import DEFAULT_PET_SPECIES
 from app.services import ruby
 
 POSTGRES_URL = os.environ.get(
@@ -40,6 +41,7 @@ POSTGRES_URL = os.environ.get(
 )
 BUYERS = 8
 EGG_PRICE = 25
+SEEDERS = 8
 
 pytestmark = pytest.mark.integration
 
@@ -167,3 +169,143 @@ def test_earning_concurrently_still_pays_once(pg_engine, rich_learner):
     )
     session.close()
     assert rows == 1
+
+
+# --- gieo lười bảng loài (ADR-010 §6.3) ------------------------------------
+
+
+def test_seeding_the_species_table_survives_a_tie(pg_engine):
+    """Hai request đầu tiên sau một lần triển khai cùng gieo bảng loài.
+
+    `all_species` là bảng gieo lười CUỐI CÙNG còn thiếu chốt chống đua, và nó
+    nằm trên đường đọc nóng nhất của cả góc thú cưng: `ensure_pet` gọi nó ở mỗi
+    lần mở bảng. Người thua cuộc đua vỡ khoá chính và mất nguyên một lượt học vì
+    một cuộc đua trên bảng CẤU HÌNH.
+
+    Hàng rào nằm GIỮA lần đọc và lần ghi, đúng bài học của hai bài trên: chặn
+    trước khi gọi thì luồng đầu đọc-gieo-commit trọn vẹn xong trước khi luồng
+    sau kịp đọc, nên chúng thấy bảng đã đầy và không bao giờ vào nhánh gieo —
+    bài kiểm xanh y hệt cả khi chốt bị gỡ. Tôi đã đo đúng như thế trước khi dời
+    hàng rào vào đây.
+
+    Khe để chèn là vòng lặp trên `DEFAULT_PET_SPECIES`: nó chạy ngay sau lần đọc
+    thấy bảng rỗng và ngay trước `commit`. Cùng kỹ thuật mà bài mua trứng dùng
+    với `ruby.balance`.
+    """
+    from app.models import PetSpecies  # noqa: PLC0415 — chỉ tệp này cần
+    from app.services import pet_species
+
+    with pg_engine.begin() as conn:
+        conn.execute(text("DELETE FROM pet_owned"))
+        conn.execute(text("DELETE FROM pet_state"))
+        conn.execute(text("DELETE FROM pet_species"))
+
+    barrier = threading.Barrier(SEEDERS)
+
+    class _WaitBeforeSeeding(list):
+        """Danh sách mặc định, nhưng dừng lại một nhịp ở lần duyệt đầu.
+
+        Hết giờ nghĩa là các luồng khác không vào nổi tới đây — tức là có thứ gì
+        đó đang nối tiếp hoá chúng, và đó cũng là một câu trả lời hợp lệ.
+        """
+
+        def __iter__(self):
+            try:
+                barrier.wait(timeout=1.5)
+            except threading.BrokenBarrierError:
+                pass
+            return super().__iter__()
+
+    factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
+
+    def seed() -> str:
+        session = factory()
+        try:
+            return f"{len(pet_species.all_species(session))} loài"
+        except Exception as exc:  # pragma: no cover - chính là thứ đang được kiểm
+            return f"vỡ: {type(exc).__name__}"
+        finally:
+            session.close()
+
+    with patch.object(pet_species, "DEFAULT_PET_SPECIES", _WaitBeforeSeeding(DEFAULT_PET_SPECIES)):
+        with ThreadPoolExecutor(max_workers=SEEDERS) as pool:
+            results = list(pool.map(lambda _: seed(), range(SEEDERS)))
+
+    assert all(not r.startswith("vỡ") for r in results), results
+
+    # Và bảng chỉ được gieo MỘT lần, không nhân đôi.
+    session = factory()
+    total = session.scalar(select(func.count()).select_from(PetSpecies))
+    session.close()
+    assert total == len(DEFAULT_PET_SPECIES)
+
+
+def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
+    """Lần mở bảng ĐẦU TIÊN của một tài khoản bắn hai request cùng lúc.
+
+    `GET /pet` và `GET /pet/encounters` cùng đi qua `ensure_pet`, và trên một tài
+    khoản chưa có hàng nào thì cả hai cùng thấy `None` và cùng dựng — người thua
+    vỡ `pet_state_pkey` và nhận 500 ngay ở lần mở góc thú cưng đầu tiên của đời
+    tài khoản đó.
+
+    Bắt được nhờ một lượt chạy e2e đỏ ở chỗ chẳng liên quan (`SyntaxError:
+    Unexpected token 'I', "Internal S"...`), không phải nhờ đọc mã: cuộc đua chỉ
+    trúng khi hai request rơi vào đúng vài mili giây của nhau.
+
+    Hàng rào nằm giữa lần đọc thấy `None` và lần ghi, đúng chỗ khe mở ra. Đã
+    kiểm cả hai chiều: gỡ `try/except IntegrityError` trong `ensure_pet` thì bài
+    này đỏ với đúng `IntegrityError` ấy.
+    """
+    from app.api.routes import pet as pet_routes  # noqa: PLC0415 — chỉ tệp này cần
+    from app.models import PetOwned, PetState  # noqa: PLC0415
+
+    factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
+    session = factory()
+    user = User(email=f"pet-race-{uuid.uuid4().hex}@example.com", hashed_password="x")
+    session.add(user)
+    session.commit()
+    user_id = user.id
+    session.close()
+
+    barrier = threading.Barrier(SEEDERS)
+    real_get = pet_routes.db_get_state
+
+    def read_then_wait(db, user_id_):
+        # Ngay giữa "chưa có" và "dựng" — đúng khe mà hai request đầu tiên rơi vào.
+        found = real_get(db, user_id_)
+        try:
+            barrier.wait(timeout=1.5)
+        except threading.BrokenBarrierError:
+            pass
+        return found
+
+    def open_panel() -> str:
+        db = factory()
+        try:
+            pet_routes.ensure_pet(db, user_id)
+            return "ok"
+        except Exception as exc:  # pragma: no cover - chính là thứ đang được kiểm
+            return f"vỡ: {type(exc).__name__}"
+        finally:
+            db.close()
+
+    with patch.object(pet_routes, "db_get_state", side_effect=read_then_wait):
+        with ThreadPoolExecutor(max_workers=SEEDERS) as pool:
+            results = list(pool.map(lambda _: open_panel(), range(SEEDERS)))
+
+    assert all(r == "ok" for r in results), results
+
+    session = factory()
+    states = session.scalar(
+        select(func.count()).select_from(PetState).where(PetState.user_id == user_id)
+    )
+    owned = session.scalar(
+        select(func.count()).select_from(PetOwned).where(PetOwned.user_id == user_id)
+    )
+    session.close()
+    assert (states, owned) == (1, 1)
+
+    with pg_engine.begin() as conn:
+        conn.execute(text("DELETE FROM pet_owned WHERE user_id = :u"), {"u": user_id})
+        conn.execute(text("DELETE FROM pet_state WHERE user_id = :u"), {"u": user_id})
+        conn.execute(text("DELETE FROM users WHERE id = :u"), {"u": user_id})
