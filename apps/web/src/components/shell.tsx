@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 
 import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
-import { NavLink, SessionControls, activeHref, type NavItem } from "@/components/nav";
+import { NavLink, SessionControls, type NavItem } from "@/components/nav";
+import { activeHref, isBranchOpen } from "@/components/nav-active";
 import { SoundToggle } from "@/components/sound-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, ButtonLink, IconButton, Skeleton, Tag, cx } from "@/components/ui";
@@ -358,7 +359,7 @@ function SidebarContent({
               {/* Mục con chỉ hiện khi đang ở trong khu đó. Hiện thường trực sẽ
                   làm sidebar dài ra vì những việc người dùng chưa quan tâm, và
                   mỗi tính năng mới lại thêm một dòng nữa. */}
-              {item.children && (active === item.href || active?.startsWith(`${item.href}/`)) && (
+              {item.children && isBranchOpen(item, active) && (
                 <div className="ml-3 flex flex-col gap-1 border-l border-rule pl-2">
                   {item.children.map((child) => (
                     <NavLink

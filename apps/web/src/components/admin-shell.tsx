@@ -8,6 +8,7 @@ import {
   Frame,
   Gauge,
   Gem,
+  Grid2x2,
   Headphones,
   Library,
   ListTree,
@@ -81,7 +82,20 @@ const ADMIN_LINKS: AdminNavItem[] = [
     label: "Petland",
     Icon: PawPrint,
     group: "System",
-    children: [{ href: "/admin/ruby", label: "Ruby rates", Icon: Gem }],
+    /*
+     * Trình vẽ bản đồ là một TRANG THẬT mà thanh bên không hề trỏ tới — đúng
+     * cùng một chỗ hỏng với màn xem trước khung avatar ở trên, và cùng một hệ
+     * quả: cách duy nhất mở nó ra là gõ tay đường dẫn, nên nó tồn tại mà không
+     * tồn tại.
+     *
+     * `/admin/ruby` cố ý KHÔNG nằm dưới `/admin/pet` — hai trang này là con của
+     * nhau vì cùng một quyết định vận hành, không vì đường dẫn. Đó chính là ca
+     * làm lộ lỗi mở nhánh theo tiền tố; xem `isBranchOpen`.
+     */
+    children: [
+      { href: "/admin/petland", label: "Map editor", Icon: Grid2x2 },
+      { href: "/admin/ruby", label: "Ruby rates", Icon: Gem },
+    ],
   },
   {
     href: "/admin/ai",

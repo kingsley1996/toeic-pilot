@@ -6,11 +6,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 
+import { activeHref, isBranchOpen } from "@/components/nav-active";
 import { SoundToggle } from "@/components/sound-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, Skeleton, Tag, cx } from "@/components/ui";
 import { useProgression } from "@/lib/progression";
 import { useSession } from "@/lib/session";
+
+export { activeHref, isBranchOpen };
 
 export type NavItem = {
   href: string;
@@ -58,22 +61,6 @@ export function NavLink({
       {label}
     </Link>
   );
-}
-
-/**
- * Mục nav nào đang mở, theo tiền tố — khớp SÂU NHẤT thắng, để `/learn/vocabulary`
- * không đồng thời làm sáng một mục cha.
- *
- * So khớp trên `href` cùng với `covers`, nhưng trả về `href`: `covers` chỉ nói
- * "đường dẫn này thuộc về mục kia", không phải một đích đến thứ hai.
- */
-export function activeHref(items: NavItem[], pathname: string): string | undefined {
-  const matches = items.flatMap((item) =>
-    [item.href, ...(item.covers ?? [])]
-      .filter((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
-      .map((prefix) => ({ href: item.href, depth: prefix.length })),
-  );
-  return matches.sort((a, b) => b.depth - a.depth)[0]?.href;
 }
 
 /**

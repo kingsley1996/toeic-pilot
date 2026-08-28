@@ -1212,6 +1212,20 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ad. Sidebar — trạng thái nhánh con sai, và một trang không có lối vào · ✅ (2026-08-28)
+
+Hai lỗi im lặng: trang vẫn đúng, chỉ thanh bên nói sai chỗ mình đang đứng — mà không ai gọi đó là lỗi, họ chỉ mất dấu.
+
+**Nhánh con hỏi theo QUAN HỆ CHA-CON, không theo tiền tố đường dẫn.** Luật cũ là `active === item.href || active.startsWith(item.href + "/")`, và nó đúng chừng nào mọi mục con còn nằm dưới đường dẫn của cha. `Ruby rates` thì không: `/admin/ruby` là con của `/admin/pet` vì hai trang ấy là **hai nửa của một quyết định vận hành**, không vì đường dẫn. Hệ quả là đứng ở `/admin/ruby` thì cả nhánh Petland biến mất và không mục nào sáng — người dùng đang ở một trang mà thanh bên nói rằng họ không ở đâu cả. Cùng loại lỗi mà `NavItem.covers` sinh ra để vá ở tầng mục gốc, và cùng cách chữa: **đừng suy quan hệ từ chuỗi đường dẫn khi đã có quan hệ thật trong dữ liệu.**
+
+**`/admin/petland` — trình vẽ bản đồ — không có lối vào nào trong menu.** Đúng cùng chỗ hỏng với màn xem trước khung avatar đã phải vá một lần: một trang thật mà cách duy nhất mở ra là gõ tay đường dẫn, nên nó tồn tại mà không tồn tại. Giờ là mục con của Petland, cạnh Ruby rates.
+
+`activeHref` và `isBranchOpen` tách sang `nav-active.ts` (một tệp `.ts`, không phải `.tsx`) để `scripts/check-nav-active.mjs` chạy thẳng được bằng `node --experimental-strip-types`. Nó đo trên **đúng 16 đường dẫn thật của khu quản trị** cộng bảy của khu học, và kiểm hai điều: mục nào sáng, và nhánh nào mở. Quay lại luật tiền tố thì nó đỏ đúng chỗ: `/admin/ruby: nhánh /admin/pet đóng, đáng lẽ mở`.
+
+Vì sao phải là script chứ không phải e2e: khu quản trị đòi vai trò `admin`, mà `register` cố ý không cấp vai trò nào — cùng lý do bài kiểm đề thi phải dùng đề đã gieo sẵn.
+
+---
+
 ## 4ac. Petland — trả ba món nợ của ADR-010 §10, và hai cuộc đua tìm được trên đường · ✅ (2026-08-28)
 
 Ba món trong "cái phải đo, và cái chưa biết" của [`ADR-010`](ADR-010-PETLAND-V2.md) §10, làm theo thứ tự rẻ-và-thật trước.
