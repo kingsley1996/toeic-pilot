@@ -42,7 +42,11 @@ def test_a_pet_row_is_reachable_through_the_models_package(db_session: Session) 
     # Chỉ số nằm trên CON, không trên góc: mỗi con một bộ.
     row = db_session.get(PetOwned, (user.id, "cat"))
     assert row is not None
-    assert row.tile_x == 3 and row.tile_y == 8
+    # Ô mặc định phải ĐỨNG ĐƯỢC trên `apps/web/public/pet/map.json` (migration
+    # `046`): `(3, 8)` của bản đầu nằm trong tường, và lượt nạp đầu phải kéo con
+    # thú ra bằng `nearestWalkable` rồi ghi lại — một lần dịch chuyển và một
+    # `PUT` mà mọi tài khoản mới đều phải trả để sửa một con số lẽ ra đã đúng.
+    assert row.tile_x == 3 and row.tile_y == 5
     assert row.level_reached == 1
     assert row.needs_at is not None
 
@@ -97,7 +101,7 @@ def test_the_pet_is_created_on_first_read_not_at_registration(
 
     body = client.get("/api/v1/pet", headers=headers).json()
     assert body["species"] == "cat"
-    assert (body["tile_x"], body["tile_y"]) == (3, 8)
+    assert (body["tile_x"], body["tile_y"]) == (3, 5)
     db_session.expire_all()
     assert db_session.get(PetState, user.id) is not None
 

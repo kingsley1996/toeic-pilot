@@ -188,3 +188,155 @@ test("màn trứng in tỉ lệ, và không có ruby thì nút mở bị khoá",
   await expect(rows.first()).toBeVisible();
   expect(await rows.count()).toBeGreaterThanOrEqual(12);
 });
+
+test("lái bằng bàn phím đi ĐÚNG hướng, và thả phím thì đứng đúng ô", async ({ page, request }) => {
+  /*
+   * Bài này canh một lỗi CÓ THẬT và rất khó nhìn ra từ mã: con thú được vẽ ở ô
+   * TRƯỚC ô nó thật sự đang đứng.
+   *
+   * Một bước là cặp (`from` → `tile`) cộng `progress`; đứng yên nghĩa là `from`
+   * trùng `tile`. Bản hỏng đặt `progress = 0` khi hàng đợi cạn mà không kéo
+   * `from` về `tile`, nên hình vẽ tụt lại một ô so với vị trí logic — và bước
+   * sau bắt đầu bằng một cú dịch tới ô logic ấy. Bấm sang trái ngay sau khi đi
+   * sang phải thì cú dịch đó là dịch SANG PHẢI, đúng như người dùng báo.
+   *
+   * Đo bằng API chứ không bằng canvas: vị trí là dữ liệu máy chủ, còn canvas thì
+   * không có DOM nào để mà đọc. Và khẳng định được viết theo kiểu KHÔNG BAO GIỜ
+   * ĐI NGƯỢC thay vì "phải đi đúng N ô", vì bản đồ có tường — bị chặn thì đứng
+   * yên là hợp lệ, còn đi ngược hướng thì không bao giờ hợp lệ.
+   */
+  await signUp(page);
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const auth = { Authorization: `Bearer ${token}` };
+  const where = async () => {
+    const pet = await (
+      await request.get("http://localhost:8000/api/v1/pet", { headers: auth })
+    ).json();
+    return { x: pet.tile_x as number, y: pet.tile_y as number };
+  };
+
+  await launcher(page).click();
+  const map = page.getByRole("application", { name: /Bản đồ Petland/ });
+  await expect(map).toBeVisible();
+  await map.focus();
+
+  /*
+   * Chờ vị trí ĐỨNG YÊN trước khi lấy mốc.
+   *
+   * Lượt nạp đầu có thể tự dời con thú: ô đã lưu được `nearestWalkable` kéo về
+   * chỗ đứng được nếu bản đồ đã đổi. Lấy mốc trước lúc ấy thì bài kiểm đo cả cú
+   * dời đó và đỏ vì một lý do chẳng liên quan gì tới bàn phím.
+   */
+  let start = await where();
+  await expect
+    .poll(
+      async () => {
+        const now = await where();
+        const same = now.x === start.x && now.y === start.y;
+        start = now;
+        return same;
+      },
+      { timeout: 5000 },
+    )
+    .toBe(true);
+
+  // Bốn nhịp sang phải. `expect.poll` vì vị trí chỉ được ghi khi con thú DỪNG
+  // HẲN — ghi từng ô sẽ là bốn request cho một lần giữ phím.
+  for (let i = 0; i < 4; i += 1) {
+    await page.keyboard.press("d");
+    await page.waitForTimeout(340);
+  }
+  await expect.poll(async () => (await where()).x).toBeGreaterThanOrEqual(start.x);
+  const right = await where();
+  expect(right.y).toBe(start.y);
+
+  // Và sang trái: KHÔNG được nhích sang phải dù chỉ một ô.
+  for (let i = 0; i < 4; i += 1) {
+    await page.keyboard.press("a");
+    await page.waitForTimeout(340);
+  }
+  const left = await where();
+  expect(left.x).toBeLessThanOrEqual(right.x);
+  expect(left.y).toBe(start.y);
+
+  // Đi lên rồi đi xuống, cùng một luật cho trục dọc.
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("w");
+    await page.waitForTimeout(340);
+  }
+  const up = await where();
+  expect(up.y).toBeLessThanOrEqual(left.y);
+
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("s");
+    await page.waitForTimeout(340);
+  }
+  expect((await where()).y).toBeGreaterThanOrEqual(up.y);
+});
+
+test("bấm nút trong bảng xong, bàn phím vẫn lái được", async ({ page, request }) => {
+  /*
+   * Lỗi CÓ THẬT người dùng báo: "nhiều lúc các phím di chuyển không nhận, ví dụ
+   * sau khi chạm npc và tắt".
+   *
+   * Bàn phím chỉ lái khi bảng đang giữ focus. Bấm bất cứ nút nào — cho ăn, mở
+   * trứng, hay cái X đóng thẻ nhiệm vụ — là focus rời khỏi khung bản đồ, và cái
+   * X thì còn tệ hơn: nó tự bị gỡ khỏi cây nên trình duyệt đẩy focus ra
+   * `document.body`, tức là ra ngoài bảng. Từ đó phím chết lặng, không có gì
+   * trên màn hình nói vì sao.
+   *
+   * Bài này không cần một NPC nào — đường hỏng là focus, và mọi cái nút trong
+   * bảng đều đi qua đúng đường ấy. Đó cũng là lý do nó kiểm được, còn cú húc vào
+   * NPC thì không: sinh khách đòi quyền admin.
+   */
+  await signUp(page);
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const auth = { Authorization: `Bearer ${token}` };
+  const at = async () =>
+    (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json())
+      .tile_x as number;
+
+  await launcher(page).click();
+  const map = page.getByRole("application", { name: /Bản đồ Petland/ });
+  await expect(map).toBeVisible();
+  await map.focus();
+
+  // 1. Bấm một nút trong hàng hành động: focus rời bản đồ.
+  await page.getByRole("button", { name: /Cho ăn/i }).click();
+  const afterFeed = await at();
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("d");
+    await page.waitForTimeout(340);
+  }
+  await expect
+    .poll(at, { message: "bấm nút xong thì bàn phím phải vẫn lái được" })
+    .toBeGreaterThan(afterFeed);
+
+  // 2. Mở một cột bên phải rồi ĐÓNG lại — đường mà cái X của thẻ nhiệm vụ đi.
+  await page.getByRole("button", { name: /Mở trứng/i }).click();
+  await page.getByRole("button", { name: /Đóng màn trứng/i }).click();
+  const afterPanel = await at();
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("a");
+    await page.waitForTimeout(340);
+  }
+  await expect
+    .poll(at, { message: "đóng cột bên phải xong thì bàn phím phải vẫn lái được" })
+    .toBeLessThan(afterPanel);
+
+  /*
+   * 3. Và nửa còn lại: bấm RA NGOÀI bảng thì bàn phím thôi lái.
+   *
+   * Đây là chốt chặn của chính cách sửa ở trên. Bảng nghe phím ở `window`, nên
+   * không có cổng "đang chơi ở bảng này" thì gõ chữ "w" trong một ô nhập ở màn
+   * gõ lại từ sẽ lái con thú — và người dùng không đời nào nối được hai chuyện
+   * đó với nhau.
+   */
+  await page.locator("main").click({ position: { x: 5, y: 5 } });
+  const parked = await at();
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press("d");
+    await page.waitForTimeout(340);
+  }
+  expect(await at()).toBe(parked);
+});

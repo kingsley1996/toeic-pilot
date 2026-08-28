@@ -35,12 +35,21 @@ import { useToast } from "@/lib/toast";
 export function QuestCard({
   token,
   encounter,
+  autoFocusInput,
   onChange,
   onFight,
   onClose,
 }: {
   token: string;
   encounter: EncounterPublic;
+  /**
+   * Có tự đặt con trỏ vào ô nhập không.
+   *
+   * `false` khi thẻ mở ra do con thú HÚC vào vị khách: lúc ấy người dùng đang
+   * lái bằng bàn phím, và cướp focus nghĩa là phím W tiếp theo gõ chữ "w" vào ô
+   * nhập thay vì đi lên — bàn phím trông như chết mà không có lý do nào hiện ra.
+   */
+  autoFocusInput: boolean;
   /** Cuộc chạm mặt sau khi trả lời, hoặc `null` khi nó đã xong hoặc đã hết. */
   onChange: (next: EncounterPublic | null) => void;
   /**
@@ -215,7 +224,7 @@ export function QuestCard({
           )}
           <input
             value={typed}
-            autoFocus
+            autoFocus={autoFocusInput}
             onChange={(event) => setTyped(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Enter" && ready) void answer({ text: typed });
@@ -306,7 +315,7 @@ export function QuestCard({
 
           <textarea
             value={typed}
-            autoFocus
+            autoFocus={autoFocusInput}
             onChange={(event) => setTyped(event.target.value)}
             onKeyDown={(event) => {
               // Enter gửi bài, Shift+Enter xuống dòng. Một câu chép chính tả là

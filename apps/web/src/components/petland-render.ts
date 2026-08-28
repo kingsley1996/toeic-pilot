@@ -597,9 +597,25 @@ export async function createStage(
         : 1 + Math.sin(view.clock * 3.9) * 0.04;
       const lying = view.sleeping ? { x: 1.12, y: 0.82 } : { x: 1, y: 1 };
       const hop = t > 0 ? Math.abs(Math.sin(t * Math.PI)) : 0;
+      /*
+       * Chốt vị trí con thú vào LƯỚI PIXEL của thế giới, đúng như máy quay.
+       *
+       * `world.scale = zoom`, và máy quay đã tự làm tròn về pixel-thế-giới
+       * (`Math.round(camX * TILE) * zoom`). Con thú thì không, nên toạ độ màn
+       * hình của nó rơi vào giữa hai pixel: `roundPixels` của renderer kéo nó về
+       * pixel màn hình gần nhất, mà pixel ấy KHÔNG phải bội của `zoom` — tức là
+       * lưới pixel của con thú lệch khỏi lưới của tấm nền, và cứ vài khung hình
+       * nó lại nhảy một cái. Mắt đọc ra là "đi không mượt", trong khi tốc độ thì
+       * hoàn toàn đều.
+       *
+       * Làm tròn ở đây khiến bước đi rời rạc theo từng pixel-thế-giới (1/16 ô,
+       * khoảng 53 lần mỗi giây ở nhịp 0,3 giây một ô) — đó chính là cách một
+       * khung cảnh pixel art phải chuyển động, và nó khớp nhịp với tấm nền thay
+       * vì trượt so với nó.
+       */
       const pose = poseFor(view.action);
-      pet.x += pose.dx;
-      pet.y = (y + 1) * TILE - hop * 2 - pose.lift;
+      pet.x = Math.round(pet.x + pose.dx);
+      pet.y = Math.round((y + 1) * TILE - hop * 2 - pose.lift);
       pet.scale.set(
         (view.facing === "left" ? -1 : 1) * pose.squashX * lying.x,
         breathe * pose.squashY * lying.y,
@@ -618,7 +634,9 @@ export async function createStage(
        */
       const strength = view.glow.strength;
       const breath = 0.5 + 0.5 * Math.sin(view.clock * 2.2 + 1.1);
-      const footY = (y + 1) * TILE - 1;
+      // Cùng lưới pixel với con thú, nếu không thì vòng sáng trượt dưới chân nó
+      // đúng một pixel mỗi lúc con thú vừa được làm tròn về phía kia.
+      const footY = Math.round((y + 1) * TILE - 1);
 
       halo.x = core.x = wave.x = pet.x;
       halo.y = core.y = wave.y = footY;

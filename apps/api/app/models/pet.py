@@ -620,7 +620,17 @@ class PetOwned(Base):
     """
 
     tile_x: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="3")
-    tile_y: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="8")
+    tile_y: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="5")
+    """Ô mặc định phải ĐỨNG ĐƯỢC trên `public/pet/map.json`.
+
+    `(3, 8)` của bản đầu nằm trong tường — hàng 8 là `#####....#.#...#.#`. Không
+    ai nhìn thấy chuyện đó, vì lượt nạp đầu gọi `nearestWalkable` kéo con thú ra
+    rồi ghi lại vị trí; cái giá là một lần dịch chuyển và một `PUT` mà mọi tài
+    khoản mới đều phải trả để sửa một con số lẽ ra đã đúng.
+
+    `nearestWalkable` vẫn phải ở đó: bản đồ là tệp tĩnh mà máy chủ không đọc, nên
+    không có cách nào bảo đảm một ô đứng được mãi mãi.
+    """
     """Chỗ CON NÀY đang đứng, theo Ô chứ không theo pixel.
 
     Bản đồ đổi kích thước hay đổi hệ số phóng thì hai số này vẫn đúng. Lưu pixel

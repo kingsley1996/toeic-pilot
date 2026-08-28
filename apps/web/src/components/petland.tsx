@@ -15,13 +15,22 @@ import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-cl
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
 import { PixelIcon } from "@/components/pixel-icon";
-import { STEP_SECONDS, type PetAction, type PetNeeds } from "@/components/petland-pet";
+import {
+  advance,
+  atRest,
+  restAt,
+  takeOver,
+  type PetAction,
+  type PetNeeds,
+  type Steer,
+} from "@/components/petland-pet";
 import { CREATURE_COLS, CREATURE_ROWS, tileForSpecies } from "@/components/petland-sprite";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import {
   findPath,
+  isWalkable,
   nearestWalkable,
   neighbourOf,
   parseMap,
@@ -81,6 +90,24 @@ const BIT_ICON: Record<PetAction, Bit["icon"]> = {
 
 /** Khớp với `pet-bit-rise` trong `globals.css` (1100ms), cộng một nhịp thở. */
 const BIT_LIFE_MS = 1300;
+
+/**
+ * Phím lái con thú: WASD, và cả bốn phím mũi tên.
+ *
+ * Thêm phím mũi tên vì nó không tốn gì và là thứ nửa số người thử đầu tiên —
+ * còn WASD thì tay trái không phải rời bàn phím. Hai bộ trỏ vào cùng một đường,
+ * nên không có hành vi thứ hai để mà lệch.
+ */
+const STEER: Record<string, { x: number; y: number }> = {
+  w: { x: 0, y: -1 },
+  a: { x: -1, y: 0 },
+  s: { x: 0, y: 1 },
+  d: { x: 1, y: 0 },
+  arrowup: { x: 0, y: -1 },
+  arrowleft: { x: -1, y: 0 },
+  arrowdown: { x: 0, y: 1 },
+  arrowright: { x: 1, y: 0 },
+};
 
 /** Bong bóng thoại đứng bao lâu. Đủ đọc một câu, rồi nhường lại khung cảnh. */
 const SPEECH_MS = 4500;
@@ -301,6 +328,7 @@ function PetPanel({
   // `/admin/pet` đã vẽ: vận hành, không phải biên tập.
   const { canPublish: isAdmin } = useSession();
   const host = useRef<HTMLDivElement | null>(null);
+  const shell = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState(false);
   const [full, setFull] = useState(false);
   /*
@@ -365,7 +393,16 @@ function PetPanel({
    */
   const guestsRef = useRef<Guest[]>([]);
   /** Cầu nối một chiều từ cú bấm trong canvas ra React — cùng khuôn `strollRef`. */
-  const openQuestRef = useRef<(id: string) => void>(() => {});
+  /**
+   * Mở thẻ nhiệm vụ. `quiet` nghĩa là mở do HÚC vào, không do bấm.
+   *
+   * Húc vào thì người dùng đang lái bằng bàn phím, nên ô nhập của thẻ **không**
+   * được tự lấy focus: lấy rồi thì phím W tiếp theo gõ chữ "w" vào ô đó thay vì
+   * đi lên, và bàn phím trông như chết. Bấm chuột mở thẻ thì ngược lại — tay đã
+   * rời bàn phím, tự đặt con trỏ vào ô nhập là đúng việc.
+   */
+  const openQuestRef = useRef<(id: string, quiet?: boolean) => void>(() => {});
+  const [quietOpen, setQuietOpen] = useState(false);
   /*
    * Giờ Petland cho phần CHỮ, tách khỏi giờ cho phần VẼ.
    *
@@ -393,6 +430,27 @@ function PetPanel({
   const actionFx = useRef<{ kind: PetAction; start: number } | null>(null);
   /** Cầu nối một chiều: nút "Đi dạo" đặt vào đây, vòng lặp lấy ra và đi. */
   const strollRef = useRef(false);
+  /**
+   * Những phím hướng đang được GIỮ, theo thứ tự bấm.
+   *
+   * Một mảng chứ không một hướng: giữ D rồi bấm thêm W thì người ta muốn đi lên,
+   * và thả W ra thì phải quay lại đi sang phải — chứ không đứng im vì "phím vừa
+   * thả không còn". Phần tử cuối là hướng đang có hiệu lực.
+   *
+   * Ở ref vì vòng vẽ đọc nó mỗi khung hình; đưa vào state là dựng lại cả bảng
+   * kèm canvas Pixi mỗi lần bấm một phím.
+   */
+  const heldRef = useRef<string[]>([]);
+  /**
+   * Vị khách con thú đang húc vào, hoặc `null`.
+   *
+   * Chỉ để phát hiện lúc CHUYỂN từ "chưa chạm" sang "đang chạm". Giữ phím áp
+   * vào một NPC là sáu chục khung hình mỗi giây đều thấy "đang chạm", và mở thẻ
+   * ở mỗi khung là sáu chục lần dựng lại cả bảng — kèm canvas Pixi bên trong.
+   */
+  const bumpRef = useRef<string | null>(null);
+  /** Ô đang có khách đứng, để đường đi vòng qua họ thay vì xuyên thẳng. */
+  const occupiedRef = useRef<ReadonlySet<string>>(new Set());
   /**
    * Ô sinh vật đang vẽ. REF chứ không state, cùng lý do `actionFx` là ref: vòng
    * vẽ không dựng lại khi state đổi, nên một closure giữ mãi con cũ và bộ sưu
@@ -457,13 +515,29 @@ function PetPanel({
     let raf = 0;
 
     let map: MapData | null = null;
-    let tile: Tile = { x: 0, y: 0 };
-    let from: Tile = tile;
-    let progress = 0;
-    let facing: "left" | "right" = "right";
-    let queue: Tile[] = [];
+    /*
+     * Toàn bộ chuyện đi lại nằm trong MỘT object, và luật của nó sống ở
+     * `petland-pet.ts`.
+     *
+     * Trước đây là năm biến rời (`tile`, `from`, `progress`, `queue`, `facing`)
+     * cộng một máy trạng thái viết thẳng trong closure của `requestAnimationFrame`
+     * — chỗ mà cách duy nhất để kiểm là bấm thử bằng tay, và một lỗi lệch một ô
+     * thì mắt rất dễ bỏ qua. Ba lỗi liên tiếp đã ra từ đó. Tách sang một module
+     * số học thuần thì `scripts/check-petland-walk.mjs` chạy được nó với `dt`
+     * rung như khung hình thật, và cả ba lỗi ấy đều bị bắt.
+     */
+    let walk = restAt({ x: 0, y: 0 });
+    /*
+     * Cầu nối để `onKeyDown` gọi được phép chọn ô kế tiếp.
+     *
+     * Phép ấy đọc `tile`, `map` và trạng thái ngủ — những thứ chỉ vòng vẽ mới
+     * giữ đúng bản mới nhất — nên nó được dựng lại mỗi khung và cất ở đây. Viết
+     * lại một bản thứ hai trong `onKeyDown` là hai định nghĩa cho "ô kế tiếp",
+     * và chúng lệch nhau vào đúng ngày ai đó đổi luật đi lại.
+     */
+    const steerRef: { current: Steer } = { current: () => null };
     let last = performance.now();
-    let saved: Tile = tile;
+    let saved: Tile = walk.tile;
 
     /*
      * Ghi vị trí khi con thú DỪNG HẲN, không phải mỗi ô.
@@ -489,6 +563,97 @@ function PetPanel({
         // Mất một mốc vị trí thì lần sau con thú đứng hơi khác chỗ. Không đáng
         // để chặn thao tác, và càng không đáng để hiện lỗi.
         .catch(() => {});
+    };
+
+    /*
+     * Lái bằng bàn phím: nghe ở `window`, nhưng có CỔNG "đang chơi ở bảng này".
+     *
+     * Ba bản trước đó, và vì sao hai bản đầu sai:
+     *
+     *   1. Nghe ở `window` trần — sai. Bảng nổi trên MỌI trang của khu học, kể
+     *      cả màn gõ lại từ, nên gõ chữ "w" trong một bài tập sẽ lái con thú.
+     *   2. Nghe ở riêng khung bản đồ, chỉ khi nó giữ focus — quá hẹp. Bấm bất
+     *      cứ nút nào là bàn phím chết lặng, và không có gì nói vì sao.
+     *   3. Nghe ở cả bảng — vẫn hụt, và chỗ hụt chỉ lộ ra khi đo: nút "Cho ăn"
+     *      **tự mờ đi ngay sau khi bấm**, mà một phần tử disabled thì mất focus
+     *      về `document.body` — tức là ra ngoài bảng. Sự kiện phím không bao giờ
+     *      nổi tới đây nữa.
+     *
+     * Cổng `engaged` trả lời đúng câu hỏi thật: *bàn phím đang nói với ai?*
+     * Người dùng chạm vào bảng thì nó nói với bảng, cho tới khi họ bấm hoặc
+     * focus sang chỗ khác. Không phụ thuộc vào việc focus đang nằm ở đâu, nên
+     * một cái nút tự mờ đi không cắt được đường.
+     *
+     * Ô nhập chữ vẫn phải bỏ qua — tập ĐÓNG và nhỏ: ô gõ từ và ô chép chính tả
+     * của thẻ nhiệm vụ. Khung bản đồ vẫn nhận focus và có viền focus thấy được,
+     * cho món nợ "không điều khiển được bằng bàn phím" của ADR-010 §10.
+     */
+    // Bảng vừa được người dùng mở ra, nên mặc định là đang nói với nó.
+    let engaged = true;
+    const onPointerAnywhere = (event: Event) => {
+      const box = shell.current;
+      engaged = box !== null && event.target instanceof Node && box.contains(event.target);
+    };
+    const isTyping = (target: EventTarget | null): boolean => {
+      if (!(target instanceof HTMLElement)) return false;
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable;
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!engaged || isTyping(event.target)) return;
+      const step = STEER[event.key.toLowerCase()];
+      if (!step) return;
+      // Phím mũi tên cuộn trang, và một cái bảng nổi làm trang nhảy dưới chân
+      // người dùng thì tệ hơn là không lái được.
+      event.preventDefault();
+      if (event.repeat) return;
+      const held = heldRef.current;
+      const name = event.key.toLowerCase();
+      if (!held.includes(name)) held.push(name);
+      /*
+       * Giành quyền lái, nhưng **để bước đang đi dở đi cho hết**.
+       *
+       * `slice(0, 1)` bỏ phần còn lại của tuyến do cú bấm chuột nạp — thứ có
+       * thể dài cả chục ô và chặn bàn phím mất vài giây — mà vẫn giữ đúng ô
+       * đang đi. Xoá sạch rồi đặt `progress = 0` như bản trước thì con thú
+       * DỊCH TỚI ô đích ngay lập tức, vì `tile` đã là đích còn `from` mới là
+       * chỗ xuất phát: đổi hướng giữa bước là một cú nhảy nửa ô.
+       *
+       * Và nạp ngay MỘT ô nếu đang đứng yên: vòng vẽ chỉ đọc trạng thái giữ mỗi
+       * khung hình, nên một cú gõ nhanh hơn 16ms sẽ nhả phím trước khi vòng vẽ
+       * kịp nhìn — bấm mà không có gì xảy ra, và đó chính là chỗ "không chính
+       * xác" mà người dùng thấy.
+       */
+      /*
+       * Bỏ phần còn lại của tuyến do cú bấm chuột nạp — thứ có thể dài cả chục ô
+       * và chặn bàn phím mất vài giây — nhưng KHÔNG đụng vào bước đang đi.
+       *
+       * Bước đang đi là cặp (`from` → `tile`), không nằm trong hàng đợi, nên xoá
+       * hàng đợi không làm con thú nhảy. Bản trước giữ lại `queue[0]`, tức là ô
+       * kế tiếp theo hướng CŨ: bấm sang trái thì con thú vẫn đi thêm một ô sang
+       * phải trước đã.
+       *
+       * Rồi nạp ngay một ô theo hướng mới: vòng vẽ chỉ đọc trạng thái GIỮ mỗi
+       * khung hình, nên một cú gõ ngắn hơn 16ms nhả phím trước khi nó kịp nhìn —
+       * bấm mà không có gì xảy ra.
+       */
+      takeOver(walk, steerRef.current);
+    };
+
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (isTyping(event.target)) return;
+      const name = event.key.toLowerCase();
+      if (!STEER[name]) return;
+      heldRef.current = heldRef.current.filter((key) => key !== name);
+    };
+
+    // Rời khỏi khung thì THẢ HẾT. Không có nó thì giữ W rồi chuyển sang cửa sổ
+    // khác sẽ không bao giờ nhận được `keyup`, và con thú đi mãi về phía bắc cho
+    // tới khi đụng tường — người dùng quay lại thấy nó ở một góc bản đồ mà họ
+    // không nhớ đã dắt nó tới. Nghe ở CẢ cửa sổ, vì đổi tab không phải lúc nào
+    // cũng làm phần tử đang focus nhận `blur`.
+    const onBlur = () => {
+      heldRef.current = [];
     };
 
     const onClick = (event: MouseEvent) => {
@@ -530,13 +695,13 @@ function PetPanel({
          * — trả lời một câu hỏi không dính gì tới việc con thú đang ngủ.
          */
         if (!asleepRef.current) {
-          const spot = neighbourOf(map, { x: guest.x, y: guest.y }, tile);
-          if (spot) queue = findPath(map, tile, spot);
+          const spot = neighbourOf(map, { x: guest.x, y: guest.y }, walk.tile);
+          if (spot) walk.queue = findPath(map, walk.tile, spot, occupiedRef.current);
         }
         return;
       }
       if (asleepRef.current) return;
-      queue = findPath(map, tile, target);
+      walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
     };
 
     void Promise.all([
@@ -552,13 +717,12 @@ function PetPanel({
         setMapReady(true);
         // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong trình
         // sửa. Kéo con thú ra chỗ đứng được thay vì để nó kẹt trong hàng rào.
-        tile = nearestWalkable(parsed, { x: pet.tile_x, y: pet.tile_y });
+        const start = nearestWalkable(parsed, { x: pet.tile_x, y: pet.tile_y });
         // Chỗ chọn chỗ đứng cho khách đo khoảng cách tới con thú, nên nó cần ô
         // này — và nó sống ngoài effect này.
-        petTileRef.current = tile;
-        from = tile;
-        saved = tile;
-        facing = pet.facing === "left" ? "left" : "right";
+        walk = restAt(start, pet.facing === "left" ? "left" : "right");
+        petTileRef.current = start;
+        saved = start;
         setNeeds(pet.needs);
         setPet(pet);
         /*
@@ -584,6 +748,11 @@ function PetPanel({
         stage = made;
         stageRef.current = made;
         el.addEventListener("click", onClick);
+        window.addEventListener("keydown", onKeyDown);
+        window.addEventListener("keyup", onKeyUp);
+        window.addEventListener("blur", onBlur);
+        document.addEventListener("pointerdown", onPointerAnywhere, true);
+        document.addEventListener("focusin", onPointerAnywhere, true);
 
         const loop = (now: number) => {
           const dt = Math.min(0.1, (now - last) / 1000);
@@ -594,15 +763,12 @@ function PetPanel({
           const jump = placeRef.current;
           if (jump && map) {
             placeRef.current = null;
-            queue = [];
-            progress = 0;
             // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong
             // trình sửa — cùng lý do lần nạp đầu cũng gọi `nearestWalkable`.
-            tile = nearestWalkable(map, { x: jump.x, y: jump.y });
-            petTileRef.current = tile;
-            from = tile;
-            saved = tile;
-            facing = jump.facing;
+            const at = nearestWalkable(map, { x: jump.x, y: jump.y });
+            walk = restAt(at, jump.facing);
+            petTileRef.current = at;
+            saved = at;
           }
 
           // "Đi dạo" đặt cờ; chỗ BIẾT bản đồ mới dựng được đường đi. Bấm lúc
@@ -612,33 +778,73 @@ function PetPanel({
           // một con thú vừa ngủ vừa băng qua bản đồ đọc ra là hỏng.
           if (asleepRef.current) {
             strollRef.current = false;
-            queue = [];
-            progress = 0;
+            walk.queue = [];
           }
 
           if (strollRef.current) {
             strollRef.current = false;
-            if (map && queue.length === 0) {
-              const target = strollTarget(map, tile, STROLL_MIN_TILES, Math.random);
-              if (target) queue = findPath(map, tile, target);
+            if (map && walk.queue.length === 0) {
+              const target = strollTarget(map, walk.tile, STROLL_MIN_TILES, Math.random);
+              if (target) walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
             }
           }
 
-          if (queue.length > 0) {
-            progress += dt / STEP_SECONDS;
-            while (progress >= 1 && queue.length > 0) {
-              progress -= 1;
-              from = tile;
-              const next = queue.shift() as Tile;
-              facing = next.x < tile.x ? "left" : next.x > tile.x ? "right" : facing;
-              tile = next;
-              petTileRef.current = next;
-            }
-            if (queue.length === 0) {
-              progress = 0;
-              save(tile, facing);
-            }
-          }
+          /*
+           * Luật đi lại nằm ở `petland-pet.ts`; ở đây chỉ cấp cho nó ô kế tiếp.
+           *
+           * `steer` là thứ duy nhất còn ở lại, vì nó phải đọc bản đồ, trạng thái
+           * ngủ và bảng phím — ba thứ thuộc về màn hình này chứ không thuộc về
+           * số học của một bước đi.
+           */
+          /*
+           * Ô nào đang có người đứng. Dựng lại mỗi khung hình vì danh sách khách
+           * đổi được — nhiều nhất bốn phần tử, nên nó rẻ hơn mọi cách nhớ lại.
+           */
+          const occupied = new Map(
+            guestsRef.current.map((guest) => [`${guest.x},${guest.y}`, guest.id] as const),
+          );
+          occupiedRef.current = new Set(occupied.keys());
+
+          /*
+           * HÚC VÀO một vị khách cũng là mở thẻ của họ, y như bấm chuột.
+           *
+           * Chỉ bắt lúc CHUYỂN từ "chưa chạm" sang "đang chạm" (`bumpRef`): giữ
+           * phím áp vào một NPC là sáu chục khung hình mỗi giây đều thấy đang
+           * chạm, và mở thẻ ở mỗi khung là sáu chục lần dựng lại cả bảng.
+           *
+           * Chỉ tính khi NGƯỜI DÙNG đang lái. Đi dạo là con thú tự đi, và một
+           * cái thẻ nhiệm vụ tự bật ra giữa lúc người ta đang đọc thứ khác là
+           * một cửa sổ chen ngang — `findPath` vòng qua khách thay vì húc vào.
+           */
+          const aim = heldRef.current;
+          const aimKey = aim.length > 0 ? STEER[aim[aim.length - 1]] : null;
+          const ahead = aimKey ? { x: walk.tile.x + aimKey.x, y: walk.tile.y + aimKey.y } : null;
+          const bumped = ahead ? (occupied.get(`${ahead.x},${ahead.y}`) ?? null) : null;
+          if (bumped !== null && bumped !== bumpRef.current) openQuestRef.current(bumped, true);
+          bumpRef.current = bumped;
+
+          const steer: Steer = (at) => {
+            if (!map || asleepRef.current) return null;
+            const held = heldRef.current;
+            const key = held.length > 0 ? STEER[held[held.length - 1]] : null;
+            if (!key) return null;
+            // Đâm vào tường — hay vào một vị khách — thì đứng yên, nhưng VẪN
+            // quay mặt về hướng ấy: một con thú không nhúc nhích mà cũng không
+            // quay đầu đọc ra là phím không ăn, chứ không đọc ra là có vật cản.
+            walk.facing = key.x < 0 ? "left" : key.x > 0 ? "right" : walk.facing;
+            const next = { x: at.x + key.x, y: at.y + key.y };
+            if (occupied.has(`${next.x},${next.y}`)) return null;
+            return isWalkable(map, next.x, next.y) ? next : null;
+          };
+          steerRef.current = steer;
+
+          const before = walk.tile;
+          advance(walk, dt, steer);
+          if (walk.tile !== before) petTileRef.current = walk.tile;
+          // Ghi chỗ đứng khi ĐỨNG YÊN và không còn phím nào giữ. `save` tự bỏ
+          // qua khi chưa đổi ô, nên gọi mỗi khung hình chỉ là một phép so sánh —
+          // còn ghi từng ô thì đi mười hai ô là mười hai request.
+          if (atRest(walk) && heldRef.current.length === 0) save(walk.tile, walk.facing);
           const fx = actionFx.current;
           let action: PetView["action"] = null;
           if (fx) {
@@ -665,13 +871,14 @@ function PetPanel({
           let bout: PetView["fight"] = null;
           if (brawl && brawl.started === null) {
             const foe = guestsRef.current.find((one) => one.id === brawl.id) ?? null;
-            const near = foe !== null && Math.abs(foe.x - tile.x) + Math.abs(foe.y - tile.y) <= 1;
-            if (foe === null || asleepRef.current || (near && queue.length === 0)) {
+            const near =
+              foe !== null && Math.abs(foe.x - walk.tile.x) + Math.abs(foe.y - walk.tile.y) <= 1;
+            if (foe === null || asleepRef.current || (near && atRest(walk))) {
               brawl.started = now;
-            } else if (queue.length === 0 && map) {
-              const spot = neighbourOf(map, { x: foe.x, y: foe.y }, tile);
-              queue = spot ? findPath(map, tile, spot) : [];
-              if (queue.length === 0) brawl.started = now;
+            } else if (walk.queue.length === 0 && map) {
+              const spot = neighbourOf(map, { x: foe.x, y: foe.y }, walk.tile);
+              walk.queue = spot ? findPath(map, walk.tile, spot, occupiedRef.current) : [];
+              if (walk.queue.length === 0) brawl.started = now;
             }
           }
           if (brawl && brawl.started !== null) {
@@ -690,10 +897,10 @@ function PetPanel({
           }
 
           made.draw({
-            tile,
-            from,
-            progress: queue.length ? progress : 0,
-            facing,
+            tile: walk.tile,
+            from: walk.from,
+            progress: walk.progress,
+            facing: walk.facing,
             species: speciesRef.current,
             glow: glowRef.current,
             // Giờ Petland tính lại MỖI KHUNG HÌNH, và nó rẻ hơn nhớ lại: một
@@ -745,6 +952,11 @@ function PetPanel({
       alive = false;
       cancelAnimationFrame(raf);
       el.removeEventListener("click", onClick);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", onBlur);
+      document.removeEventListener("pointerdown", onPointerAnywhere, true);
+      document.removeEventListener("focusin", onPointerAnywhere, true);
       // `destroy` gỡ cả canvas lẫn texture khỏi GPU. Không gọi thì mỗi lần mở
       // lại bảng là một context WebGL nữa, và trình duyệt chỉ cho vài cái.
       stageRef.current = null;
@@ -801,6 +1013,30 @@ function PetPanel({
    * đường đổi state nữa phải giữ cho đồng bộ.
    */
   const shown = panel?.kind === "quest" && active === null ? null : panel;
+
+  /*
+   * Đóng ô bên phải thì TRẢ FOCUS về khung bản đồ.
+   *
+   * Bấm nút X là focus nằm trên chính cái nút vừa bị gỡ khỏi cây, và trình duyệt
+   * đẩy nó ra `document.body` — ngoài bảng, nên bàn phím thôi lái được. Đó đúng
+   * là triệu chứng "húc vào NPC rồi tắt đi thì phím không nhận".
+   *
+   * Chỉ trả khi focus đang ở TRONG bảng hoặc đã rơi ra `body`: nếu người dùng
+   * đã chuyển sang gõ ở chỗ khác trên trang thì kéo focus về đây là cướp bàn
+   * phím của họ.
+   */
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    const open = shown !== null;
+    if (wasOpen.current && !open) {
+      const box = shell.current;
+      const at = document.activeElement;
+      if (box && (at === null || at === document.body || box.contains(at))) {
+        host.current?.focus();
+      }
+    }
+    wasOpen.current = open;
+  }, [shown]);
 
   const asleep = pet?.sleep_until != null && new Date(pet.sleep_until).getTime() > clock.at;
   // Ghi ref trong EFFECT, không trong lúc dựng: `react-hooks` chặn thẳng việc
@@ -900,9 +1136,10 @@ function PetPanel({
   }, [meetings, mapReady]);
 
   useEffect(() => {
-    openQuestRef.current = (id: string) => {
+    openQuestRef.current = (id: string, quiet = false) => {
       const guest = meetings.find((one) => one.id === id);
       if (!guest) return;
+      setQuietOpen(quiet);
       setActiveId(id);
       setPanel({ kind: "quest" });
       setSpeech(speechFor(guest.id, guest.kind === "intruder", guest.steps_done));
@@ -1054,6 +1291,7 @@ function PetPanel({
      * đúng bề rộng canvas sẽ ăn mất 2px của chính canvas và nó lòi ra ngoài.
      */
     <div
+      ref={shell}
       className="shadow-overlay w-fit max-w-[calc(var(--pet-map-w)+2px)] rounded border border-rule-strong bg-panel sm:max-w-[calc(var(--pet-map-w)+var(--pet-side-w)+2px)]"
       style={
         {
@@ -1255,8 +1493,19 @@ function PetPanel({
         >
           <div
             ref={host}
+            tabIndex={0}
+            role="application"
+            aria-label="Bản đồ Petland. Bấm W A S D hoặc phím mũi tên để dắt thú cưng đi."
+            // Bàn phím chỉ lái khi khung này đang được focus, mà "hãy bấm vào
+            // bản đồ trước" thì không có chỗ nào trên màn hình nói ra được —
+            // panel không còn một dòng trống nào. Tooltip là chỗ rẻ nhất còn lại.
+            title="Bấm vào bản đồ rồi dùng W A S D (hoặc phím mũi tên) để dắt thú cưng đi"
             className={cx(
               "bg-recess",
+              // Viền focus THẤY ĐƯỢC, vì bàn phím chỉ lái khi khung này đang
+              // được focus: không có viền thì người dùng bấm phím, không có gì
+              // xảy ra, và không có gì trên màn hình nói vì sao.
+              "outline-none focus-visible:ring-2 focus-visible:ring-accent",
               // Chừa đúng chỗ cho canvas trước khi Pixi dựng xong, nếu không cả
               // góc màn hình nhảy một cái khi ảnh về.
               "block h-full w-full",
@@ -1295,6 +1544,7 @@ function PetPanel({
             key={active.id}
             token={token}
             encounter={active}
+            autoFocusInput={!quietOpen}
             onChange={(next) =>
               setMeetings((current) =>
                 next === null

@@ -222,8 +222,17 @@ const STEPS: readonly Tile[] = [
  * không phải đi tới ô cạnh nó. "Gần đúng chỗ bấm" đọc ra là điều khiển không
  * chính xác.
  */
-export function findPath(map: MapData, from: Tile, to: Tile): Tile[] {
+export function findPath(
+  map: MapData,
+  from: Tile,
+  to: Tile,
+  blocked: ReadonlySet<string> = new Set(),
+): Tile[] {
   if (!isWalkable(map, to.x, to.y) || !isWalkable(map, from.x, from.y)) return [];
+  // Ô có người đứng cũng là ô không đi qua được. Không có nó thì con thú xuyên
+  // thẳng qua một NPC trên đường tới chỗ được bấm, và hai sprite chồng khít lên
+  // nhau — cùng lý do `neighbourOf` tồn tại.
+  if (blocked.has(`${to.x},${to.y}`)) return [];
   if (from.x === to.x && from.y === to.y) return [];
 
   const start = from.y * map.w + from.x;
@@ -241,7 +250,7 @@ export function findPath(map: MapData, from: Tile, to: Tile): Tile[] {
     for (const step of STEPS) {
       const nx = ax + step.x;
       const ny = ay + step.y;
-      if (!isWalkable(map, nx, ny)) continue;
+      if (!isWalkable(map, nx, ny) || blocked.has(`${nx},${ny}`)) continue;
       const next = ny * map.w + nx;
       if (seen[next]) continue;
       seen[next] = 1;

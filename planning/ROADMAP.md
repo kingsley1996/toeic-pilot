@@ -1279,6 +1279,47 @@ Ba tính chất giữ cho nó không thành một cửa hậu: **chỉ cho chín
 
 Nút nằm trong bảng Petland chứ không ở `/admin/pet`, vì thứ nó tạo ra chỉ nhìn thấy được trên bản đồ ấy — một nút ở trang khác nghĩa là mở tab thứ hai, bấm, rồi quay lại, mỗi vòng thử.
 
+**Lái thú cưng bằng WASD** (và cả bốn phím mũi tên, 2026-08-28). Bốn quyết định trong đó, mỗi cái vá một cách hỏng khác nhau:
+
+- **Nghe phím ở KHUNG BẢN ĐỒ, không ở `window`.** Bảng thú cưng nổi trên mọi trang của khu học, kể cả màn gõ lại từ và ô chép chính tả — nghe ở `window` thì gõ chữ "w" trong một bài tập sẽ lái con thú, và không ai nối được hai chuyện đó với nhau. Lọc theo `event.target` cũng chặn được, nhưng nó là một danh sách thẻ phải nhớ bổ sung mãi mãi. Đổi lại, khung bản đồ giờ nhận focus, có `role="application"`, `aria-label` và viền focus thấy được — trả một phần món nợ "không điều khiển được bằng bàn phím" của ADR-010 §10.
+- **Vòng vẽ đọc trạng thái GIỮ, không nạp ô lúc bấm.** Bàn phím tự lặp ~30 lần một giây khi giữ, mà mỗi ô mất 0,3 giây để đi: nạp theo sự kiện sẽ dựng một hàng đợi dài hàng chục ô và con thú đi tiếp cả sau khi đã thả phím.
+- **Ghi vị trí khi dừng hẳn, mà "dừng hẳn" giờ gồm cả "không còn phím nào đang giữ".** Thiếu vế sau thì đi mười hai ô bằng bàn phím là mười hai request — đúng thứ mà việc ghi-khi-dừng sinh ra để tránh.
+- **Giành quyền lái thì để bước đang đi dở đi cho hết** (`queue.slice(0, 1)`). Bản đầu xoá sạch hàng đợi rồi đặt `progress = 0`, và thế là con thú **dịch tới ô đích ngay lập tức** — `tile` đã là đích còn `from` mới là chỗ xuất phát, nên đổi hướng giữa bước là một cú nhảy nửa ô.
+
+**Bàn phím nghe ở `window` nhưng có CỔNG "đang chơi ở bảng này"** — bản thứ tư, và ba bản trước đều sai theo một kiểu riêng:
+
+1. **Nghe ở `window` trần** — sai: bảng nổi trên mọi trang của khu học, nên gõ chữ "w" trong một ô nhập bài tập sẽ lái con thú.
+2. **Nghe ở riêng khung bản đồ, chỉ khi nó giữ focus** — quá hẹp. Bấm bất cứ nút nào là bàn phím chết lặng, không có gì nói vì sao. Đây là lỗi người dùng báo: *"nhiều lúc phím không nhận, ví dụ sau khi chạm npc và tắt"* — bấm cái X đóng thẻ là focus nằm trên chính cái nút vừa bị gỡ khỏi cây, và trình duyệt đẩy nó ra `document.body`.
+3. **Nghe ở cả bảng** — vẫn hụt, và chỗ hụt chỉ lộ ra khi ĐO: nút "Cho ăn" tự mờ đi ngay sau khi bấm, mà một phần tử disabled thì mất focus về `body`, tức ra ngoài bảng. Sự kiện phím không còn nổi tới nơi nghe. Tôi đã tưởng bản này đúng và phải viết một bài chẩn đoán in `document.activeElement` mới thấy.
+
+Cổng `engaged` trả lời đúng câu hỏi thật — *bàn phím đang nói với ai?* Chạm vào bảng thì nó nói với bảng, cho tới khi bấm hoặc focus sang chỗ khác; không phụ thuộc focus đang nằm đâu, nên một cái nút tự mờ đi không cắt được đường. Ô nhập chữ vẫn bị bỏ qua (`isTyping`), và đóng cột bên phải thì focus được trả về khung bản đồ cho người dùng bàn phím.
+
+**Thẻ mở do HÚC thì ô nhập không tự lấy focus.** Lấy rồi thì phím W tiếp theo gõ chữ "w" vào ô đó thay vì đi lên — bàn phím trông như chết. Bấm chuột mở thẻ thì ngược lại: tay đã rời bàn phím, tự đặt con trỏ vào ô nhập là đúng việc.
+
+Bài `bấm nút trong bảng xong, bàn phím vẫn lái được` chặn **cả hai phía**, và đã xem đỏ cả hai: quay lại nghe theo focus → đỏ ở "bấm nút xong phím phải vẫn lái được"; bỏ cổng `engaged` → đỏ ở "bấm ra ngoài bảng thì phím phải thôi lái" (con thú vẫn đi từ 3 sang 6).
+
+**Húc vào một vị khách cũng là mở thẻ của họ**, y như bấm chuột (2026-08-28). Ba quyết định trong đó:
+
+- **Chỉ bắt lúc CHUYỂN từ "chưa chạm" sang "đang chạm"** (`bumpRef`). Giữ phím áp vào một NPC là sáu chục khung hình mỗi giây đều thấy đang chạm, và mở thẻ ở mỗi khung là sáu chục lần dựng lại cả bảng — kèm canvas Pixi bên trong.
+- **Chỉ tính khi NGƯỜI DÙNG đang lái.** Đi dạo là con thú tự đi, và một cái thẻ nhiệm vụ tự bật ra giữa lúc người ta đang đọc thứ khác là một cửa sổ chen ngang.
+- **Ô có người đứng là ô không đi qua được**, cho cả bàn phím lẫn đường bấm chuột (`findPath` nhận thêm một tập `blocked`). Không có nó thì con thú xuyên thẳng qua một NPC và hai sprite chồng khít lên nhau — cùng lý do `neighbourOf` tồn tại. Húc vào tường hay húc vào người đều **vẫn quay mặt** về hướng ấy.
+
+Đo được: `scripts/check-petland-walk.mjs` dựng 112 tuyến đi qua bản đồ thật, chặn đúng ô giữa mỗi tuyến, và không tuyến nào xuyên qua; gỡ phép tránh ra thì cả 112 tuyến đỏ. Bản thân cú húc thì **chưa có phép kiểm tự động** — nó cần một vị khách trên bản đồ, mà sinh khách đòi quyền admin còn `register` thì cố ý không cấp vai trò nào (cùng lý do bài kiểm đề thi phải dùng đề đã gieo sẵn).
+
+**Máy trạng thái đi lại tách sang `petland-pet.ts`, và đó là bài học thật của lát này.** Nó từng nằm trong closure của `requestAnimationFrame`, nơi cách duy nhất để kiểm là bấm thử bằng tay — và nó sinh ra **ba lỗi liên tiếp mà `tsc`, eslint và cả một bài Playwright đều xanh**:
+
+- **Con thú được vẽ ở ô TRƯỚC ô nó thật sự đang đứng.** Một bước là cặp (`from` → `tile`) cộng `progress`; đứng yên nghĩa là `from` trùng `tile`. Bản hỏng đặt `progress = 0` khi hết đường mà không kéo `from` về `tile`, nên hình vẽ tụt lại một ô so với vị trí logic. Bước sau bắt đầu bằng một cú dịch tới ô logic ấy — và nếu cú dịch đó ngược hướng vừa bấm thì người dùng thấy **"bấm sang trái mà nhảy sang phải"**. Một nguyên nhân, ba triệu chứng.
+- **Phần dư của `progress` bị vứt ở mỗi ô**, nên cứ mỗi ô con thú khựng mất hơn nửa khung hình — đọc ra là *giật*, không phải *chậm*.
+- **`progress` bị chặn bằng `queue.length ? progress : 0` trước khi gửi cho tầng vẽ.** Lái bằng bàn phím thì hàng đợi rỗng gần như suốt (ô kế tiếp do `steer` cấp thẳng), nên tầng vẽ nhận 0 ở mọi khung hình và con thú dịch từng ô thay vì đi.
+
+Thêm một chỗ nữa: **giành quyền lái phải bỏ CẢ tuyến chuột**, không giữ lại `queue[0]` — ô ấy là ô kế tiếp theo hướng cũ.
+
+`scripts/check-petland-walk.mjs` chạy máy trạng thái ấy bằng `node --experimental-strip-types`, với **`dt` rung như khung hình thật**: `1/60` chia đúng 18 khung cho một ô 0,3 giây nên phần dư luôn bằng 0, và bài kiểm chạy ở nhịp tròn ấy sẽ không thấy gì khi ai đó vứt phần dư đi. Cả ba lỗi đều đã được **xem đỏ** ở đó bằng cách gỡ đúng đoạn mã chúng canh.
+
+Bài Playwright `lái bằng bàn phím đi ĐÚNG hướng` vẫn giữ, nhưng nó canh chỗ khác: phím có tới được con thú không, và có đi đúng trục không. Nó **không** bắt được lỗi đổi hướng — vị trí chỉ tới máy chủ khi con thú dừng hẳn, nên khoảnh khắc đổi hướng giữa lúc đang đi là thứ e2e không quan sát được. Đã thử tái tạo lỗi và nó vẫn xanh; đó là lý do phải có bài đo thuần.
+
+**Ô mặc định của thú cưng phải đứng được** (migration `046`). `(3, 8)` nằm trong tường — hàng 8 của `map.json` là `#####....#.#...#.#`. Không ai nhìn thấy, vì lượt nạp đầu gọi `nearestWalkable` kéo con thú ra rồi ghi lại; cái giá là một lần dịch chuyển và một `PUT` mà mọi tài khoản mới đều phải trả để sửa một con số lẽ ra đã đúng. Phát hiện ra vì bài Playwright đỏ ở một chỗ chẳng liên quan: bấm `d` mà `y` đổi từ 8 xuống 6.
+
 **Nút gợi ý cho nhiệm vụ gõ lại từ** (migration `045`, 2026-08-28). Tối đa **hai lần mỗi bước**: lần một mở một phần tư số chữ, lần hai mở một nửa. Không mở một chữ mỗi lần — với một từ mười một chữ thì hai lượt chỉ ra hai chữ, không gỡ được gì và cái nút thành trang trí; không quá một nửa, vì phần còn phải nhớ chính là thứ phân biệt một bài kiểm với một ô điền sẵn. Đo thật trên `recital`: `re·····` rồi `reci···`, lần ba trả 409.
 
 **Trần đếm ở máy chủ (`encounter.hints_used`), và đó là điều kiện để cái nút không phá chính bài kiểm nó đang giúp**: xin đủ nhiều lần thì gợi ý in ra cả từ, và lúc ấy phần thưởng ruby chỉ còn là một cái nút bấm nhiều lần — một bộ đếm trong `useState` thì devtools đặt lại được trong hai giây. `task.hints_left` được gửi kèm để giao diện tự khoá sau khi tải lại trang, thay vì mời bấm một nút chắc chắn trả về lỗi.
