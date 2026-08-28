@@ -17,6 +17,13 @@ _REPO_ROOT = _API_DIR.parents[1]
 # which is how the Docker Compose `env_file:` values reach the app.
 DEFAULT_SECRET_KEY = "dev-secret-change-in-production"
 
+# `.env.example` phát một chuỗi mẫu KHÁC với hằng số trên, nên chốt production chỉ
+# so với `DEFAULT_SECRET_KEY` sẽ cho lọt đúng cái khoá mà `cp .env.example .env` —
+# đường cài đặt được ghi trong tài liệu — tạo ra.
+PLACEHOLDER_SECRET_KEYS = frozenset(
+    {DEFAULT_SECRET_KEY, "change-me-in-production-use-openssl-rand-hex-32"}
+)
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -152,7 +159,7 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _reject_default_secret_in_production(self) -> "Settings":
-        if self.is_production and self.secret_key == DEFAULT_SECRET_KEY:
+        if self.is_production and self.secret_key in PLACEHOLDER_SECRET_KEYS:
             raise ValueError(
                 "SECRET_KEY must be set to a unique value when ENVIRONMENT=production. "
                 "Generate one with: openssl rand -hex 32"

@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-toeic}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-toeic}
@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_pg17:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-toeic} -d ${POSTGRES_DB:-toeic}"]
       interval: 5s
@@ -34,7 +34,6 @@ services:
     env_file:
       - ../.env
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
       # Coach chạy LÚC CÓ REQUEST, nên chính API cũng gọi Ollama — và trong
       # container `localhost` là chính container đó. Đây là lần thứ hai cùng một
@@ -48,8 +47,15 @@ services:
       # .env của THƯ MỤC DỰ ÁN (`docker/`), không phải từ `env_file`.
       # Mặc định đã nằm ở app/core/config.py; .env là nơi ghi đè nó.
       #
-      # DATABASE_URL và REDIS_URL thì phải ở đây, vì chúng trỏ tới tên service
-      # của Compose và khác hẳn giá trị dùng trên host.
+      # REDIS_URL thì phải ở đây, vì nó trỏ tới tên service của Compose và khác
+      # hẳn giá trị dùng trên host.
+      #
+      # DATABASE_URL thì KHÔNG còn ở đây nữa, và đó là một sửa lỗi: chừng nào nó
+      # còn, trỏ `.env` sang một database khác là một thao tác không có tác dụng
+      # gì. Ba service dùng database vẫn nói chuyện với Postgres trong máy, còn
+      # `web` — thứ duy nhất không đụng tới database — lại là thứ duy nhất nhận
+      # URL mới. Nay `.env` quyết định; trỏ ngược về Postgres local thì viết
+      # `@postgres:5432`, tên service, chứ không phải `@localhost`.
     ports:
       - "8000:8000"
     depends_on:
@@ -92,7 +98,6 @@ services:
     env_file:
       - ../.env
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
     depends_on:
       postgres:
@@ -123,7 +128,6 @@ services:
       api:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
       REDIS_URL: redis://redis:6379/0
       # `localhost` trong container là chính container đó. Đặt ở đây chứ không ở
       # `.env` vì `.env` còn phục vụ CLI chạy trên host, nơi tên này không phân
@@ -168,7 +172,10 @@ services:
       start_period: 60s
 
 volumes:
-  postgres_data:
+  # Thư mục dữ liệu của Postgres gắn với PHIÊN BẢN: đổi tag ảnh mà giữ nguyên
+  # volume thì container từ chối khởi động. Tên mang số 17 để dữ liệu pg16 nằm
+  # nguyên bên cạnh, thay vì phải `down -v` rồi mất đường lùi.
+  postgres_data_pg17:
   redis_data:
   web_node_modules:
   web_app_node_modules:

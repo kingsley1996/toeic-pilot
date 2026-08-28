@@ -1742,7 +1742,12 @@ ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ng
 - [ ] `user_progress` (nên là view suy ra từ `attempt`, không phải bảng ghi song song)
 - [ ] ~~Cloudflare R2~~ → đã thay bằng driver `s3` ở mục 4d; nhà cung cấp giờ là một biến môi trường (ADR-006 §2.8)
 - [ ] Chính sách PII: bài làm của học viên sẽ được gửi sang LLM provider (§7h)
-- [ ] Monitoring, deployment
+- [ ] Monitoring, deployment — **phương án đã chốt, chưa dựng**: `ADR-014-DEPLOY-FREE.md`.
+      Vercel (web) + Render (API) + Supabase (Postgres + audio) + Upstash (Redis) + Cloudinary,
+      toàn bộ gói free và không cần thẻ tín dụng. Không phải sửa mã: nhà cung cấp lưu trữ vốn đã
+      là biến môi trường (ADR-006 §2.8). Ba chỗ hỏng im lặng nằm ở ADR-014 §3; hạn mức chạm
+      trước nhất là **Redis** chứ không phải băng thông (§4). Đường dựng ở §7: API chạy ảnh
+      dựng sẵn từ GHCR (CI phải gọi deploy hook), web không Docker hoá được.
 
 ---
 

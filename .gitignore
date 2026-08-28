@@ -52,3 +52,9 @@ apps/web/playwright-report/
 
 # Ralph Loop state
 .opencode/ralph-loop.local.md
+
+# Bản xuất nội dung để đẩy lên production (sinh bởi scripts/export-content.sh)
+content.sql
+
+# Khối biến dán vào Render — chứa bí mật, không bao giờ commit
+render.env.local

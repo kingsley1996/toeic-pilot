@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "vercel-build": "cd ../.. && pnpm turbo build --filter=@toeic-pilot/web",
     "start": "next start",
     "lint": "eslint .",
     "test:e2e": "playwright test",

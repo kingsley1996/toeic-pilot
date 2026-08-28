@@ -58,7 +58,7 @@ TOEIC Pilot is a polyglot monorepo containing:
 
 **Persistence & Cache**
 
-- PostgreSQL với extension `pgvector` (`pgvector/pgvector:pg16`). pgvector đã bật từ migration đầu nhưng **chưa dùng** — để dành cho RAG ở Phase 4.
+- PostgreSQL với extension `pgvector` (`pgvector/pgvector:pg17`). pgvector đã bật từ migration đầu nhưng **chưa dùng** — để dành cho RAG ở Phase 4.
 - Redis là **phụ thuộc mềm** ở mọi nơi: khởi động chỉ log cảnh báo, `/ready` báo `degraded` chứ không fail. Hiện chưa dùng vào việc gì; P1-7 (refresh token + denylist) là việc đầu tiên sẽ dùng tới.
 
 **Shared**
