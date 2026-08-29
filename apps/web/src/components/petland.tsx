@@ -39,13 +39,13 @@ import {
   isWater,
   nearestWalkable,
   neighbourOf,
-  parseMap,
   spotNear,
   strollTarget,
   TILE,
   type MapData,
   type Tile,
 } from "@/components/petland-map";
+import { loadPetlandMap } from "@/lib/petland-map-source";
 import type { PetView, Stage } from "@/components/petland-render";
 
 /**
@@ -826,13 +826,9 @@ function PetPanel({
       })
       .catch(() => {});
 
-    void Promise.all([
-      fetch("/pet/map.json").then((res) => res.json()),
-      petLoad,
-      import("@/components/petland-render"),
-    ])
-      .then(async ([rawMap, pet, render]) => {
-        const parsed = parseMap(rawMap);
+    void Promise.all([loadPetlandMap(), petLoad, import("@/components/petland-render")])
+      .then(async ([loaded, pet, render]) => {
+        const parsed = loaded?.map ?? null;
         if (!parsed || !alive) return;
         map = parsed;
         mapRef.current = parsed;

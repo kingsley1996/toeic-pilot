@@ -135,6 +135,11 @@ export type RubyEntry = components["schemas"]["RubyEntryPublic"];
 export type RubyGift = components["schemas"]["RubyGiftPublic"];
 export type RubyClaimResult = components["schemas"]["RubyClaimResult"];
 export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
+export type SystemStatus = components["schemas"]["SystemStatus"];
+export type PetlandMapPublic = components["schemas"]["PetlandMapPublic"];
+export type PetlandMapBody = components["schemas"]["PetlandMapBody"];
+export type DependencyStatus = components["schemas"]["DependencyStatus"];
+export type MediaChannel = components["schemas"]["MediaChannel"];
 export type EggPublic = components["schemas"]["EggPublic"];
 export type EggResult = components["schemas"]["EggResult"];
 export type EggBatchResult = components["schemas"]["EggBatchResult"];
@@ -205,6 +210,9 @@ export const API_ROUTES = {
   // con thú cần ruby để sống.
   ruby: "/api/v1/ruby",
   rubyGift: "/api/v1/ruby/gift",
+  petlandMap: "/api/v1/petland/map",
+  adminPetlandMap: "/api/v1/admin/petland/map",
+  adminSystemStatus: "/api/v1/admin/system/status",
   adminRubyRules: "/api/v1/admin/ruby/rules",
   adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",

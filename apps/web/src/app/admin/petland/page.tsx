@@ -1,11 +1,21 @@
 "use client";
 
-import { Download, Eraser, Grid2x2, Layers, Redo2, Squircle, Undo2, Upload } from "lucide-react";
+import {
+  CloudUpload,
+  Download,
+  Eraser,
+  Grid2x2,
+  Layers,
+  Redo2,
+  Squircle,
+  Undo2,
+  Upload,
+} from "lucide-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 
 import { reduce } from "@/components/petland-history";
 
-import { Button, Field, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
+import { Alert, Button, Field, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
 import {
   SHEET_COLS,
   SHEET_IDS,
@@ -17,6 +27,10 @@ import {
   type MapData,
   type SheetId,
 } from "@/components/petland-map";
+import { API_ROUTES } from "@toeic-pilot/shared";
+
+import { ApiError, apiFetch } from "@/lib/api";
+import { loadPetlandMap, type MapSource } from "@/lib/petland-map-source";
 import { useRequireSession } from "@/lib/session";
 
 /**
@@ -31,10 +45,13 @@ import { useRequireSession } from "@/lib/session";
  * một việc mà CSS làm được — và trình vẽ không cần vòng lặp hình, nó chỉ cần
  * ảnh đứng yên.
  *
- * **Xuất ra tệp, không ghi vào máy chủ.** Bản đồ là NỘI DUNG và nó thuộc về git,
- * cùng lối với manifest audio và tấm ghép ô: sửa ở đây, tải `map.json` về, chép
- * đè vào `public/pet/`, commit. Không có bảng, không có endpoint, không có
- * chuyện hai máy có hai bản đồ khác nhau mà không ai biết.
+ * **Lưu thẳng lên máy chủ, và vẫn tải tệp về được.** Bản trước chỉ có đường thứ
+ * hai, vì bản đồ là nội dung và nội dung thuộc về git. Lý do đó vẫn đúng, nhưng
+ * nó có trước production — nơi sửa một ô cỏ phải đi qua một lần deploy.
+ *
+ * Điều mà thiết kế cũ sợ — hai nơi hai bản đồ mà không ai biết — được giữ bằng
+ * cách NÓI RA: bảng chỉ là lớp ghi đè, không có hàng nghĩa là tệp đã commit
+ * đang chạy, và thanh trên cùng luôn cho biết đang là bản nào.
  */
 
 const ZOOM = 2;
@@ -82,7 +99,7 @@ function TileButton({
 }
 
 export default function PetlandEditorPage() {
-  const { status } = useRequireSession({ canEdit: true });
+  const { status, token } = useRequireSession({ canEdit: true });
   const [history, dispatch] = useReducer(reduce, null);
   const map = history?.present ?? null;
   const [sheet, setSheet] = useState<SheetId>("town");
@@ -90,11 +107,17 @@ export default function PetlandEditorPage() {
   const [tool, setTool] = useState<Tool>("ground");
   const [showSolid, setShowSolid] = useState(true);
   const painting = useRef(false);
+  const [source, setSource] = useState<MapSource | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
 
   useEffect(() => {
-    void fetch("/pet/map.json")
-      .then((res) => res.json())
-      .then((raw) => dispatch({ type: "load", map: parseMap(raw) ?? emptyMap(18, 13) }))
+    void loadPetlandMap()
+      .then((loaded) => {
+        dispatch({ type: "load", map: loaded?.map ?? emptyMap(18, 13) });
+        setSource(loaded?.source ?? null);
+      })
       .catch(() => dispatch({ type: "load", map: emptyMap(18, 13) }));
   }, []);
 
@@ -172,6 +195,27 @@ export default function PetlandEditorPage() {
     });
   };
 
+  const save = () => {
+    if (!map || !token) return;
+    setSaving(true);
+    setSaveError(null);
+    void apiFetch(API_ROUTES.adminPetlandMap, {
+      method: "PUT",
+      token,
+      body: JSON.stringify(map),
+    })
+      .then(() => {
+        setSource("server");
+        setSavedAt(new Date().toLocaleTimeString());
+      })
+      // Máy chủ từ chối một bản đồ hỏng (ô sinh bị chặn, tầng thiếu ô), và câu
+      // từ chối nói rõ vì sao — hiện nguyên văn thay vì nuốt đi.
+      .catch((err) =>
+        setSaveError(err instanceof ApiError ? err.message : "Could not save the map."),
+      )
+      .finally(() => setSaving(false));
+  };
+
   const download = () => {
     const blob = new Blob([JSON.stringify(map)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -206,8 +250,16 @@ export default function PetlandEditorPage() {
       <PageHeader
         eyebrow="Petland"
         title="Map editor"
-        description="Paint the pet corner. Export map.json and commit it to apps/web/public/pet/."
+        description={
+          source === "server"
+            ? `Editing the map saved on the server${savedAt ? ` · saved ${savedAt}` : ""}. Learners see it immediately.`
+            : source === "bundled"
+              ? "Nothing saved on the server yet, so this is the committed public/pet/map.json. Saving overrides it for everyone."
+              : "Paint the pet corner."
+        }
       />
+
+      {saveError && <Alert tone="alert">{saveError}</Alert>}
 
       {/*
        * `flex` KHÔNG có `flex-wrap`, và bảng chọn `shrink-0`.
@@ -312,6 +364,10 @@ export default function PetlandEditorPage() {
                 />
               </Field>
             </div>
+            <Button size="sm" onClick={save} disabled={saving || !map}>
+              <CloudUpload size={14} strokeWidth={2} aria-hidden />
+              {saving ? "Saving" : "Save to server"}
+            </Button>
             <Button size="sm" variant="secondary" onClick={download}>
               <Download size={14} strokeWidth={2} aria-hidden />
               Export

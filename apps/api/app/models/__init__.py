@@ -15,7 +15,7 @@ from app.models.encounter import Encounter, EncounterSetting
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
-from app.models.pet import EggSetting, PetOwned, PetSpecies, PetState
+from app.models.pet import EggSetting, PetlandMap, PetOwned, PetSpecies, PetState
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -103,6 +103,7 @@ __all__ = [
     "EncounterSetting",
     "PetOwned",
     "PetSpecies",
+    "PetlandMap",
     "PetState",
     "RubyEvent",
     "RubyRule",

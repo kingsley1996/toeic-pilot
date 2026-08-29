@@ -14,6 +14,7 @@ from app.api.routes import (
     admin_pet,
     admin_progression,
     admin_ruby,
+    admin_system,
     admin_tests,
     appearance,
     attempt,
@@ -24,6 +25,7 @@ from app.api.routes import (
     media,
     oauth,
     pet,
+    petland_map,
     practice,
     profile,
     ruby,
@@ -79,6 +81,7 @@ app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
+app.include_router(petland_map.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
@@ -86,6 +89,7 @@ app.include_router(admin_ai.router, prefix="/api/v1")
 app.include_router(admin_progression.router, prefix="/api/v1")
 app.include_router(admin_pet.router, prefix="/api/v1")
 app.include_router(admin_ruby.router, prefix="/api/v1")
+app.include_router(admin_system.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
 app.include_router(appearance.router, prefix="/api/v1")
 

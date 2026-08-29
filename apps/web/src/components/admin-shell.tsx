@@ -12,6 +12,7 @@ import {
   Headphones,
   Library,
   ListTree,
+  Activity,
   Palette,
   PawPrint,
   Sparkles,
@@ -96,6 +97,14 @@ const ADMIN_LINKS: AdminNavItem[] = [
       { href: "/admin/petland", label: "Map editor", Icon: Grid2x2 },
       { href: "/admin/ruby", label: "Ruby rates", Icon: Gem },
     ],
+  },
+  {
+    // Sơ đồ hạ tầng, không phải nội dung: `require_role("admin")` chứ không
+    // `editor`, cùng ranh giới với bảng giá ruby và bảng cấp độ.
+    href: "/admin/system",
+    label: "Production",
+    Icon: Activity,
+    group: "System",
   },
   {
     href: "/admin/ai",

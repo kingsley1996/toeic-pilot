@@ -2013,6 +2013,62 @@
         "title": "DailyTasksPublic",
         "type": "object"
       },
+      "DependencyStatus": {
+        "description": "Một phụ thuộc mà API tự kiểm được vì nó tự gọi tới.",
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Ms"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "provider",
+          "state"
+        ],
+        "title": "DependencyStatus",
+        "type": "object"
+      },
       "DictationAdmin": {
         "properties": {
           "attempt_count": {
@@ -4695,6 +4751,28 @@
         "title": "LlmStatsPublic",
         "type": "object"
       },
+      "MapCell": {
+        "properties": {
+          "index": {
+            "maximum": 4095.0,
+            "minimum": 0.0,
+            "title": "Index",
+            "type": "integer"
+          },
+          "sheet": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Sheet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sheet",
+          "index"
+        ],
+        "title": "MapCell",
+        "type": "object"
+      },
       "MediaAssign": {
         "description": "Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.",
         "properties": {
@@ -4711,6 +4789,46 @@
           }
         },
         "title": "MediaAssign",
+        "type": "object"
+      },
+      "MediaChannel": {
+        "description": "Một kho media mà API KHÔNG tự kiểm.\n\nTrình duyệt mới là thứ tải media, không phải API (ADR-006 §2.9), nên phép\nkiểm đúng phải chạy ở trình duyệt. Ở đây chỉ mô tả cấu hình cộng một khoá\nthật để phía kia có cái mà thử.",
+        "properties": {
+          "driver": {
+            "title": "Driver",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "public_base_url": {
+            "title": "Public Base Url",
+            "type": "string"
+          },
+          "sample_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Url"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "driver",
+          "public_base_url"
+        ],
+        "title": "MediaChannel",
         "type": "object"
       },
       "OptionPublic": {
@@ -5715,6 +5833,138 @@
           "species"
         ],
         "title": "PetSwitch",
+        "type": "object"
+      },
+      "PetlandMapBody": {
+        "properties": {
+          "ground": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MapCell"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Ground",
+            "type": "array"
+          },
+          "h": {
+            "maximum": 64.0,
+            "minimum": 4.0,
+            "title": "H",
+            "type": "integer"
+          },
+          "objects": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MapCell"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Objects",
+            "type": "array"
+          },
+          "solid": {
+            "items": {
+              "type": "boolean"
+            },
+            "title": "Solid",
+            "type": "array"
+          },
+          "w": {
+            "maximum": 64.0,
+            "minimum": 4.0,
+            "title": "W",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "w",
+          "h",
+          "ground",
+          "objects",
+          "solid"
+        ],
+        "title": "PetlandMapBody",
+        "type": "object"
+      },
+      "PetlandMapPublic": {
+        "properties": {
+          "ground": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MapCell"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Ground",
+            "type": "array"
+          },
+          "h": {
+            "maximum": 64.0,
+            "minimum": 4.0,
+            "title": "H",
+            "type": "integer"
+          },
+          "objects": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MapCell"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Objects",
+            "type": "array"
+          },
+          "solid": {
+            "items": {
+              "type": "boolean"
+            },
+            "title": "Solid",
+            "type": "array"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "w": {
+            "maximum": 64.0,
+            "minimum": 4.0,
+            "title": "W",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "w",
+          "h",
+          "ground",
+          "objects",
+          "solid"
+        ],
+        "title": "PetlandMapPublic",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -7422,6 +7672,53 @@
           "dictation_items"
         ],
         "title": "StudyDay",
+        "type": "object"
+      },
+      "SystemStatus": {
+        "properties": {
+          "checked_at": {
+            "format": "date-time",
+            "title": "Checked At",
+            "type": "string"
+          },
+          "dependencies": {
+            "items": {
+              "$ref": "#/components/schemas/DependencyStatus"
+            },
+            "title": "Dependencies",
+            "type": "array"
+          },
+          "environment": {
+            "title": "Environment",
+            "type": "string"
+          },
+          "media": {
+            "items": {
+              "$ref": "#/components/schemas/MediaChannel"
+            },
+            "title": "Media",
+            "type": "array"
+          },
+          "schema_revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Bản migration mà database đang đứng ở đó.",
+            "title": "Schema Revision"
+          }
+        },
+        "required": [
+          "environment",
+          "checked_at",
+          "dependencies",
+          "media"
+        ],
+        "title": "SystemStatus",
         "type": "object"
       },
       "TestAdmin": {
@@ -11761,6 +12058,52 @@
         ]
       }
     },
+    "/api/v1/admin/petland/map": {
+      "put": {
+        "operationId": "save_map_api_v1_admin_petland_map_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetlandMapBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetlandMapPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Map",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
     "/api/v1/admin/progression": {
       "get": {
         "description": "Toàn bộ cấu hình. Seed bộ mặc định nếu đây là lần đọc đầu tiên.",
@@ -12999,6 +13342,32 @@
           }
         ],
         "summary": "Update Rule",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/system/status": {
+      "get": {
+        "operationId": "system_status_api_v1_admin_system_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "System Status",
         "tags": [
           "admin"
         ]
@@ -16640,6 +17009,30 @@
         "summary": "Move Pet",
         "tags": [
           "pet"
+        ]
+      }
+    },
+    "/api/v1/petland/map": {
+      "get": {
+        "operationId": "read_map_api_v1_petland_map_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetlandMapPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "204": {
+            "description": "Chưa ai sửa trên web; dùng bản đã commit."
+          }
+        },
+        "summary": "Read Map",
+        "tags": [
+          "petland"
         ]
       }
     },

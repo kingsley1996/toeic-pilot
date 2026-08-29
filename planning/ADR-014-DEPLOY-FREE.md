@@ -240,6 +240,18 @@ và nó gộp lại đúng hai thứ kiến trúc đang giữ tách.
 Nói cách khác, **cái làm cả phương án này khả thi chính là việc web không chạy
 bằng Docker**. Vercel là chỗ duy nhất trong bảng §1 không tiêu giờ của ai.
 
+**Hai nửa cũng khác nhau ở chuyện tự triển khai, và ngược chiều nhau.** Vercel
+nối thẳng với Git nên **tự deploy mỗi lần push**; Render chạy ảnh dựng sẵn nên
+**không** tự deploy, phải gọi hook (§7.1). Dễ nhớ nhầm theo cả hai hướng: tưởng
+Render tự cập nhật thì production đứng yên mà CI vẫn xanh, còn tưởng Vercel cần
+hook thì đi dựng một thứ đã có sẵn.
+
+Vercel còn **bỏ qua build khi không có gì trong `apps/web` hay các gói nó phụ
+thuộc thay đổi** — mặc định của project monorepo mới. Ở đây điều đó đúng chứ
+không nguy: `apps/web` khai `@toeic-pilot/shared: workspace:*`, nên sửa hợp đồng
+API vẫn kéo theo build lại, còn sửa riêng `apps/api` thì không — và web thật sự
+không cần dựng lại.
+
 ### 7.3 Phần "gọn" của web nằm ở chỗ khác
 
 Thứ đáng dọn không phải công nghệ dựng mà là **lệnh dựng nằm trong ô cấu hình

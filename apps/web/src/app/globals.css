@@ -681,3 +681,92 @@
   animation: pet-hatch-pop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
   transform-origin: center bottom;
 }
+
+/* ── Màn hình theo dõi hệ thống (/admin/system) ─────────────────────────────
+   React Flow mang theme riêng; ở đây kéo nó về token của dự án. Không dùng
+   box-shadow và giữ đúng một bán kính 4px, cùng luật với mọi thành phần khác. */
+
+.sysflow .react-flow__controls-button {
+  background: rgb(var(--panel));
+  border-bottom: 1px solid rgb(var(--rule));
+  color: rgb(var(--ink-muted));
+  fill: currentColor;
+}
+.sysflow .react-flow__controls-button:hover {
+  background: rgb(var(--recess));
+  color: rgb(var(--action-ink));
+}
+.sysflow .react-flow__controls {
+  box-shadow: none;
+  border: 1px solid rgb(var(--rule-strong));
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sysflow .react-flow__background-pattern {
+  color: rgb(var(--rule));
+}
+.sysflow .react-flow__edge-text {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  fill: rgb(var(--ink-faint));
+}
+.sysflow .react-flow__edge-textbg {
+  fill: rgb(var(--ground));
+}
+.sysflow .react-flow__node {
+  cursor: default;
+}
+/* Cổng nối vô hình nhưng phải TỒN TẠI: React Flow chỉ vẽ một cạnh khi tìm được
+   cả handle nguồn lẫn handle đích của nó. */
+.sysflow .react-flow__handle,
+.sysport {
+  opacity: 0;
+  width: 6px;
+  height: 6px;
+  border: 0;
+  background: transparent;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Node hiện lên lần lượt, để mắt đọc sơ đồ theo thứ tự thay vì thấy tất cả cùng lúc. */
+@keyframes sysnode-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sysnode {
+  animation: sysnode-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+/* Chỉ nhịp khi thật sự khoẻ. Một chấm nhấp nháy ở trạng thái hỏng là tín hiệu sai. */
+@keyframes sysdot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+.sysdot.is-live {
+  animation: sysdot-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sysnode,
+  .sysdot.is-live {
+    animation: none;
+  }
+  .sysflow .react-flow__edge-path {
+    animation: none !important;
+    stroke-dasharray: none !important;
+  }
+}

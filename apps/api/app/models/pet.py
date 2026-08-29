@@ -14,6 +14,7 @@ from datetime import date, datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     Date,
@@ -26,10 +27,14 @@ from sqlalchemy import (
     func,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
+
+# JSONB trên PostgreSQL, JSON thường trên SQLite của bộ test — cùng lối dictation.py.
+_JSON_TYPE = JSONB().with_variant(JSON(), "sqlite")
 
 
 class PetState(Base):
@@ -781,3 +786,27 @@ EGG_DEFAULTS: dict[str, int] = {
     # mất ý nghĩa.
     "duplicate_refund": 10,
 }
+
+
+class PetlandMap(Base):
+    """Bản đồ góc thú cưng, sửa được ở `/admin/petland` (migration 048).
+
+    Đúng một hàng, `id = 1`. Không có hàng nghĩa là chưa ai sửa trên web và
+    `public/pet/map.json` đã commit đang là bản chạy — xem docstring migration.
+    """
+
+    __tablename__ = "petland_map"
+    __table_args__ = (CheckConstraint("id = 1", name="ck_petland_map_single_row"),)
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, default=1)
+    w: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    h: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    ground: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
+    objects: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
+    solid: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )

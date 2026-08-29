@@ -1748,6 +1748,9 @@ ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ng
       là biến môi trường (ADR-006 §2.8). Ba chỗ hỏng im lặng nằm ở ADR-014 §3; hạn mức chạm
       trước nhất là **Redis** chứ không phải băng thông (§4). Đường dựng ở §7: API chạy ảnh
       dựng sẵn từ GHCR (CI phải gọi deploy hook), web không Docker hoá được.
+      🟢 **Đã lên production 2026-08-29**: Vercel + Render + Supabase (Singapore) + Upstash +
+      Cloudinary, toàn bộ gói free, không thẻ. `/admin/system` vẽ sơ đồ này và đo trạng thái
+      thật; xem ADR-014 §10 cho việc tách nội dung khỏi lịch sử học khi đem dữ liệu lên.
 
 ---
 

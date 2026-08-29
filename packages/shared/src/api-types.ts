@@ -761,6 +761,23 @@ export interface paths {
         patch: operations["update_species_api_v1_admin_pet_species__code__patch"];
         trace?: never;
     };
+    "/api/v1/admin/petland/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Map */
+        put: operations["save_map_api_v1_admin_petland_map_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/progression": {
         parameters: {
             query?: never;
@@ -1231,6 +1248,23 @@ export interface paths {
         head?: never;
         /** Update Rule */
         patch: operations["update_rule_api_v1_admin_ruby_rules__source_type__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/system/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** System Status */
+        get: operations["system_status_api_v1_admin_system_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/admin/test-collections": {
@@ -2683,6 +2717,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/petland/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Map */
+        get: operations["read_map_api_v1_petland_map_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/practice-tests/{slug}": {
         parameters: {
             query?: never;
@@ -4107,6 +4158,27 @@ export interface components {
             /** Xp Awarded */
             xp_awarded: number;
         };
+        /**
+         * DependencyStatus
+         * @description Một phụ thuộc mà API tự kiểm được vì nó tự gọi tới.
+         */
+        DependencyStatus: {
+            /** Detail */
+            detail?: string | null;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Latency Ms */
+            latency_ms?: number | null;
+            /** Provider */
+            provider: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "ok" | "degraded" | "down";
+        };
         /** DictationAdmin */
         DictationAdmin: {
             /**
@@ -5119,6 +5191,13 @@ export interface components {
             /** Total Calls */
             total_calls: number;
         };
+        /** MapCell */
+        MapCell: {
+            /** Index */
+            index: number;
+            /** Sheet */
+            sheet: string;
+        };
         /**
          * MediaAssign
          * @description Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.
@@ -5126,6 +5205,26 @@ export interface components {
         MediaAssign: {
             /** Asset Id */
             asset_id?: string | null;
+        };
+        /**
+         * MediaChannel
+         * @description Một kho media mà API KHÔNG tự kiểm.
+         *
+         *     Trình duyệt mới là thứ tải media, không phải API (ADR-006 §2.9), nên phép
+         *     kiểm đúng phải chạy ở trình duyệt. Ở đây chỉ mô tả cấu hình cộng một khoá
+         *     thật để phía kia có cái mà thử.
+         */
+        MediaChannel: {
+            /** Driver */
+            driver: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Public Base Url */
+            public_base_url: string;
+            /** Sample Url */
+            sample_url?: string | null;
         };
         /** OptionPublic */
         OptionPublic: {
@@ -5507,6 +5606,34 @@ export interface components {
         PetSwitch: {
             /** Species */
             species: string;
+        };
+        /** PetlandMapBody */
+        PetlandMapBody: {
+            /** Ground */
+            ground: (components["schemas"]["MapCell"] | null)[];
+            /** H */
+            h: number;
+            /** Objects */
+            objects: (components["schemas"]["MapCell"] | null)[];
+            /** Solid */
+            solid: boolean[];
+            /** W */
+            w: number;
+        };
+        /** PetlandMapPublic */
+        PetlandMapPublic: {
+            /** Ground */
+            ground: (components["schemas"]["MapCell"] | null)[];
+            /** H */
+            h: number;
+            /** Objects */
+            objects: (components["schemas"]["MapCell"] | null)[];
+            /** Solid */
+            solid: boolean[];
+            /** Updated At */
+            updated_at?: string | null;
+            /** W */
+            w: number;
         };
         /**
          * ProgressionConfigAdmin
@@ -6138,6 +6265,25 @@ export interface components {
             dictation_items: number;
             /** Reviews */
             reviews: number;
+        };
+        /** SystemStatus */
+        SystemStatus: {
+            /**
+             * Checked At
+             * Format: date-time
+             */
+            checked_at: string;
+            /** Dependencies */
+            dependencies: components["schemas"]["DependencyStatus"][];
+            /** Environment */
+            environment: string;
+            /** Media */
+            media: components["schemas"]["MediaChannel"][];
+            /**
+             * Schema Revision
+             * @description Bản migration mà database đang đứng ở đó.
+             */
+            schema_revision?: string | null;
         };
         /** TestAdmin */
         TestAdmin: {
@@ -8253,6 +8399,39 @@ export interface operations {
             };
         };
     };
+    save_map_api_v1_admin_petland_map_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetlandMapBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetlandMapPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     read_config_api_v1_admin_progression_get: {
         parameters: {
             query?: never;
@@ -9047,6 +9226,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    system_status_api_v1_admin_system_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemStatus"];
                 };
             };
         };
@@ -11384,6 +11583,33 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    read_map_api_v1_petland_map_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetlandMapPublic"];
+                };
+            };
+            /** @description Chưa ai sửa trên web; dùng bản đã commit. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
