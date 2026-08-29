@@ -13,6 +13,7 @@ import { GuestList } from "@/components/petland-quest-list";
 import { tierGlow } from "@/components/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
+import { PetlandMusicToggle } from "@/components/petland-music-toggle";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
 import { PixelIcon } from "@/components/pixel-icon";
 import {
@@ -1841,6 +1842,7 @@ function PetPanel({
             busy={busy}
             asleep={asleep}
             onAction={act}
+            leading={<PetlandMusicToggle />}
           />
           {refused && <p className="px-3 pb-2 text-small text-warn">{refused}</p>}
           {/* Chạm trần phải NÓI RA. Không nói thì người dùng cho ăn tiếp và
