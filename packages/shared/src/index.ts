@@ -81,6 +81,9 @@ export type AttemptSummary = components["schemas"]["AttemptSummary"];
  * sách có trần trong miền nghiệp vụ (giọng đọc, câu của một đề) vẫn trả mảng
  * trần. Xem `app/schemas/common.py` để biết quy tắc phân nhóm.
  */
+export type ChatMessagePublic = components["schemas"]["ChatMessagePublic"];
+export type ChatTurn = components["schemas"]["ChatTurn"];
+export type ChatHistoryPage = components["schemas"]["Page_ChatMessagePublic_"];
 export type AttemptPage = components["schemas"]["Page_AttemptSummary_"];
 export type VocabularyPage = components["schemas"]["Page_VocabularySummary_"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
@@ -368,6 +371,9 @@ export const API_ROUTES = {
   coachChat: (attemptId: string) => `/api/v1/attempts/${attemptId}/chat`,
   coachFeedback: (attemptId: string, questionId: string) =>
     `/api/v1/attempts/${attemptId}/items/${questionId}/coach/feedback`,
+  // Trợ lý trang web — một cuộc hội thoại cuốn theo mỗi người, không neo vào
+  // lượt làm bài; ngữ cảnh là hướng dẫn trang cộng số liệu thật của người hỏi.
+  assistantChat: "/api/v1/assistant/chat",
   adminAiFeatures: "/api/v1/admin/ai/features",
   adminAiFeature: (key: string) => `/api/v1/admin/ai/features/${key}`,
   adminAiModels: "/api/v1/admin/ai/models",

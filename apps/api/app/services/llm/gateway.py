@@ -107,9 +107,17 @@ class Gateway:
                 )
                 raise
 
-        provider = self.providers[route.provider]
         started = perf_counter()
         try:
+            provider = self.providers.get(route.provider)
+            if provider is None:
+                # LLMError chứ không KeyError: một provider chưa dựng adapter
+                # (thường là thiếu khoá trong .env) là lỗi cấu hình ở lượt gọi,
+                # phải trả 503 có ghi sổ — KeyError thì là 500 không dấu vết.
+                raise LLMError(
+                    f"Chưa dựng adapter cho nhà cung cấp {route.provider!r} — "
+                    f"kiểm khoá API của nó trong .env."
+                )
             result = provider.complete(request, route.model)
         except LLMError as exc:
             # `error` là một KẾT QUẢ, không phải một sự vắng mặt. Chỉ ghi lượt

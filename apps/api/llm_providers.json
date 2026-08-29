@@ -1,0 +1,43 @@
+{
+  "_doc": "Danh mục nhà cung cấp LLM nói giao thức OpenAI, thêm được KHÔNG CẦN sửa mã. Mỗi mục: base_url (gốc API có /v1), api_key_env (tên biến môi trường CHỨA khoá — khoá KHÔNG BAO GIỜ nằm trong file này, vì file được commit), models (bảng giá USD/triệu token: rate_in, rate_out, rate_cached null = không tính riêng). 'comment' là chỗ ghi nguồn giá và ngày tra. Provider có mục ở đây nhưng thiếu khoá trong .env sẽ bị bỏ qua một cách lặng lẽ ở đường phục vụ, và chết ngay với thông báo rõ khi chạy pipeline (uv run).",
+  "providers": {
+    "bai": {
+      "base_url": "https://api.b.ai/v1",
+      "api_key_env": "BAI_API_KEY",
+      "comment": "B.AI — cổng gộp đa model (GPT, Claude, Gemini, GLM, Qwen, Kimi, Groq...), nói cả ba giao thức: ta dùng cổng OpenAI Chat Completions (/v1/chat/completions). Endpoint + giá tra ở docs.b.ai ngày 2026-08-29.",
+      "models": {
+        "glm-5.3-flash": {
+          "rate_in": 0.075,
+          "rate_out": 0.25,
+          "rate_cached": 0.015,
+          "comment": "Giá chuẩn tham chiếu của B.AI (1 Credit/Token = $1/1M token). Model hiện đang 0 Credit theo hạn miễn phí, còn z.ai đang giảm 50% cùng hạn 2026-09-09 — miễn phí/khuyến mãi là thuộc tính tài khoản, bảng ghi giá chuẩn. ID model và khoá đã kiểm tay bằng GET /v1/models ngày 2026-08-29 (44 model, có glm-5.3-flash; khoá lấy từ config opencode của máy này — cùng kiểu hai chỗ đọc với tokenrouter)."
+        }
+      }
+    },
+    "zai": {
+      "base_url": "https://api.z.ai/api/paas/v4",
+      "api_key_env": "ZAI_API_KEY",
+      "comment": "Z.AI — nền tảng GLM (người dùng hay gọi là b.ai). Endpoint và bảng giá tra ở docs.z.ai ngày 2026-08-29; endpoint tương thích OpenAI theo đúng tài liệu của họ.",
+      "models": {
+        "glm-5.3-flash": {
+          "rate_in": 0.15,
+          "rate_out": 0.5,
+          "rate_cached": 0.03,
+          "comment": "Giá LIST. Model đang giảm 50% ($0.075/$0.25) tới hết 2026-09-09 (UTC+8) — khuyến mãi là thuộc tính tài khoản/thời gian, không phải của model, nên bảng ghi giá list, cùng lập luận với hàng google/gemini."
+        }
+      }
+    },
+    "mistral": {
+      "base_url": "https://api.mistral.ai/v1",
+      "api_key_env": "MISTRAL_API_KEY",
+      "comment": "Ví dụ mẫu. Đặt MISTRAL_API_KEY vào .env để bật; xoá mục này nếu không dùng.",
+      "models": {
+        "mistral-large-latest": {
+          "rate_in": 2.0,
+          "rate_out": 6.0,
+          "comment": "Giá công bố, tra ngày 2026-08-29 — kiểm lại trước mỗi đợt chạy lớn."
+        }
+      }
+    }
+  }
+}

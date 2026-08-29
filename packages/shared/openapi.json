@@ -148,6 +148,19 @@
         "title": "ArchiveRequest",
         "type": "object"
       },
+      "AssistantAsk": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "AssistantAsk",
+        "type": "object"
+      },
       "AttemptPartProgress": {
         "properties": {
           "answered": {
@@ -4912,6 +4925,37 @@
           "offset"
         ],
         "title": "Page[AttemptSummary]",
+        "type": "object"
+      },
+      "Page_ChatMessagePublic_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ChatMessagePublic"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[ChatMessagePublic]",
         "type": "object"
       },
       "Page_DictationAdmin_": {
@@ -15389,6 +15433,109 @@
         "summary": "List Voices",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/api/v1/assistant/chat": {
+      "get": {
+        "description": "Có phân trang, và đây là chỗ lý lẽ của coach KHÔNG chuyển sang được.\n\n`coach.py::chat_history` trả mảng trần vì một cuộc coach bị chặn bởi chính\nlượt làm bài nó neo vào — vài câu hỏi rồi hết. Trợ lý bỏ đúng cái neo ấy để\ncó một cuộc cuốn theo mãi mãi, nên nó rơi vào ca (C) \"tăng theo mức dùng\"\ncủa `schemas/common.py`, nơi luật là `Page[T]`.\n\nSắp GIẢM DẦN theo `position`: trang đầu là những gì vừa nói, thứ người ta mở\nlại để đọc. Sắp tăng dần thì trang đầu là cuộc trò chuyện của tháng trước và\nngười dùng phải lật tới cuối mới thấy câu mình vừa hỏi.",
+        "operationId": "chat_history_api_v1_assistant_chat_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ChatMessagePublic_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat History",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "post": {
+        "operationId": "chat_api_v1_assistant_chat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatTurn"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Chat",
+        "tags": [
+          "assistant"
         ]
       }
     },

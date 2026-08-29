@@ -12,6 +12,7 @@ from sqlalchemy import (
     UniqueConstraint,
     Uuid,
     func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -31,16 +32,34 @@ class CoachConversation(Base):
 
     `question_id` nullable vì hai câu hỏi khác nhau: "giải thích câu này" và
     "tôi yếu phần nào trong bài vừa rồi".
+
+    `attempt_id` nullable cho TRỢ LÝ TRANG WEB (`services/assistant.py`): nó hỏi
+    về chính trang web và tiến độ của người hỏi, nên nguồn ngữ cảnh là bản hướng
+    dẫn viết tay cộng số liệu thật — không phải lượt làm bài. `NULL` là dấu hiệu
+    phân loại, không thêm cột `kind`; `ask()` ở `services/chat.py` chỉ nhận cuộc
+    neo vào lượt, và điều đó được kiểm thay vì tin.
     """
 
     __tablename__ = "coach_conversation"
+    __table_args__ = (
+        # "Mỗi người một cuộc trợ lý" ép ở tầng database, không phải bằng một
+        # phép đọc-rồi-ghi trong Python. TỪNG PHẦN vì cuộc của coach neo vào
+        # lượt làm bài và một người có nhiều lượt.
+        Index(
+            "uq_coach_conversation_assistant",
+            "user_id",
+            unique=True,
+            postgresql_where=text("attempt_id IS NULL"),
+            sqlite_where=text("attempt_id IS NULL"),
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    attempt_id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(as_uuid=True), ForeignKey("attempt.id", ondelete="CASCADE"), nullable=False
+    attempt_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("attempt.id", ondelete="CASCADE"), nullable=True
     )
     question_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("question.id", ondelete="CASCADE"), nullable=True

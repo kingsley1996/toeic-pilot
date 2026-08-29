@@ -74,6 +74,10 @@ class Settings(BaseSettings):
     groq_api_key: str | None = None
     cerebras_api_key: str | None = None
     tokenrouter_api_key: str | None = None
+    # File cấu hình provider custom (nói giao thức OpenAI): thêm provider mới là
+    # sửa FILE, không sửa mã. Khoá KHÔNG nằm trong file — file chỉ nhắc tên biến
+    # môi trường chứa nó. Đường tuyệt đối, cùng lý do với `env_file` ở trên.
+    llm_providers_file: Path = _API_DIR / "llm_providers.json"
     # `localhost` khi chạy pipeline từ dòng lệnh trên máy; container phải dùng
     # `host.docker.internal`. Là cấu hình chính vì lý do đó.
     ollama_base_url: str = "http://localhost:11434"

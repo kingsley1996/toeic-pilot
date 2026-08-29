@@ -17,11 +17,10 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_gateway
 from app.core.ai_budget import BudgetExceeded, BudgetUnavailable
-from app.core.database import SessionLocal, get_db
+from app.core.database import get_db
 from app.core.rate_limit import Quota, rate_limit
-from app.core.redis_client import get_redis
 from app.models.chat import CoachConversation, CoachMessage
 from app.models.coach import CoachExplanation, CoachFeedback
 from app.models.practice import Attempt, AttemptItem, Question
@@ -33,7 +32,6 @@ from app.schemas.coach import (
     CoachExplanationPublic,
     CoachFeedbackWrite,
 )
-from app.services.ai_features import resolver_for
 from app.services.chat import MAX_QUESTION_CHARS, ask
 from app.services.coach import CoachUnavailable, NothingToExplain, explain
 from app.services.llm.base import FeatureDisabled, LLMError
@@ -203,39 +201,8 @@ def _public(db: Session, row: CoachExplanation, user: User) -> CoachExplanationP
 
 
 def _gateway_for(db: Session) -> Gateway:
-    """Dựng gateway cho một request.
-
-    Chỉ dựng adapter của nhà cung cấp thật sự có cấu hình — bắt phải có khoá của
-    mọi nhà cung cấp mới chạy được là một rào cản không cần thiết cho môi trường
-    chỉ dùng model chạy tại máy.
-    """
-    from app.core.ai_budget import Budget
-    from app.core.config import settings
-    from app.services.llm.gateway import Gateway
-    from app.services.llm.ollama import OllamaProvider
-    from app.services.llm.openrouter import OpenRouterProvider
-    from app.services.llm.router import Tier
-
-    providers: dict[str, object] = {"ollama": OllamaProvider(settings.ollama_base_url)}
-    if settings.openrouter_api_key:
-        providers["openrouter"] = OpenRouterProvider(settings.openrouter_api_key)
-
-    return Gateway(
-        providers=providers,  # type: ignore[arg-type]
-        routes={
-            Tier.CHEAP: _split(settings.llm_tier_cheap),
-            Tier.STRONG: _split(settings.llm_tier_strong),
-        },
-        budget=Budget(limit_micro=settings.ai_daily_budget_micro_usd),
-        redis_client=get_redis(),
-        session_factory=SessionLocal,
-        resolve_feature=resolver_for(db),
-    )
-
-
-def _split(value: str) -> tuple[str, str]:
-    provider, _, model = value.partition("/")
-    return provider, model
+    # Một bản dựng gateway cho mọi router AI — `app.api.deps.get_gateway`.
+    return get_gateway(db)
 
 
 # Hạn mức riêng cho hỏi đáp, CHẶT HƠN giải thích: giải thích cache được nên chi

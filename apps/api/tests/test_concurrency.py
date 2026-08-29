@@ -153,3 +153,63 @@ def test_natural_concurrency_is_also_clean(pg_client, unique_email):
     assert 500 not in codes
     assert codes.count(201) == 1
     assert set(codes) <= {201, 409}
+
+
+def test_forced_interleaving_assistant_conversation(pg_engine):
+    """Hai lượt hỏi đầu tiên cùng lúc chỉ được mở MỘT cuộc trợ lý.
+
+    Cùng lý do đã ghi ở đầu tệp: bắn N luồng không tái hiện được cuộc đua, vì
+    người đầu tiên commit xong trước khi người sau kịp đọc. `Barrier` đặt sau
+    lượt đọc và trước lượt ghi mới ép cả hai bên cùng tin rằng "chưa có cuộc
+    nào" — đúng trạng thái mà chỉ mục duy nhất từng phần tồn tại để chặn.
+
+    Không có chỉ mục ấy, test này để lại hai cuộc và lịch sử của người học tách
+    làm hai mà không có lỗi nào được ném ra.
+    """
+    from sqlalchemy import select
+
+    from app.models.chat import CoachConversation
+    from app.models.user import User as UserModel
+    from app.services import assistant
+
+    factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
+    setup = factory()
+    user = UserModel(
+        email=f"race-assistant-{uuid.uuid4()}@example.com",
+        hashed_password=real_get_password_hash(PASSWORD),
+    )
+    setup.add(user)
+    setup.commit()
+    user_id = user.id
+    setup.close()
+
+    racers = 8
+    barrier = threading.Barrier(racers)
+    errors: list[BaseException] = []
+
+    def open_one() -> None:
+        session = factory()
+        try:
+            person = session.get(UserModel, user_id)
+            assert person is not None
+            assert assistant._find(session, person) is None
+            barrier.wait(timeout=10)  # tất cả cùng tin "chưa có cuộc nào"
+            assistant._open(session, person)
+        except BaseException as exc:  # noqa: BLE001 — gom lại để khẳng định ngoài luồng
+            errors.append(exc)
+        finally:
+            session.close()
+
+    with ThreadPoolExecutor(max_workers=racers) as pool:
+        list(pool.map(lambda _: open_one(), range(racers)))
+
+    assert not errors, f"lượt thua cuộc đua phải đọc lại, không được ném: {errors!r}"
+
+    check = factory()
+    rows = check.scalars(
+        select(CoachConversation).where(
+            CoachConversation.user_id == user_id, CoachConversation.attempt_id.is_(None)
+        )
+    ).all()
+    check.close()
+    assert len(rows) == 1, f"phải đúng một cuộc trợ lý, có {len(rows)}"

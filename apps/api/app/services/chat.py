@@ -77,6 +77,10 @@ def ask(
     question: str,
     request_id: str | None = None,
 ) -> Answered:
+    if conversation.attempt_id is None:
+        # Cuộc trợ lý trang web (attempt_id NULL) không có gì để neo — chạy nó
+        # qua đường này sẽ gửi cho model một ngữ cảnh rỗng nhưng vẫn thu tiền.
+        raise ValueError("cuộc hội thoại trợ lý không đi qua đường coach")
     text = question.strip()
     if not text:
         raise ValueError("câu hỏi rỗng")
@@ -91,8 +95,8 @@ def ask(
 
     # Lịch sử đi vào lượt NGƯỜI DÙNG, không vào lời nhắc hệ thống. Nối nó vào
     # `system` sẽ khiến chữ người học từng gõ trở thành một phần chỉ dẫn cho
-    # model — đúng con đường mà một câu "bỏ qua mọi quy tắc phía trên" cần để có
-    # hiệu lực. Đây là ranh giới an toàn, không phải cách sắp xếp cho gọn.
+    # model — đúng con đường mà một câu "bỏ qua mọi quy tắc phía trên" cần để
+    # có hiệu lực. Đây là ranh giới an toàn, không phải cách sắp xếp cho gọn.
     turns = "\n".join(
         f"{'Người học' if m.role == 'user' else 'Trợ giảng'}: {m.content}" for m in past
     )
@@ -107,23 +111,28 @@ def ask(
         request_id=request_id,
     )
 
+    asked, answered = save_turn(session, conversation.id, text, result.text.strip())
+    return Answered(conversation, asked, answered)
+
+
+def save_turn(
+    session: Session, conversation_id: uuid.UUID, question: str, answer: str
+) -> tuple[CoachMessage, CoachMessage]:
+    """Ghi cặp hỏi–đáp với `position` kế tiếp, commit, và trả về hai hàng."""
     nxt = int(
         session.scalar(
             select(func.coalesce(func.max(CoachMessage.position), 0)).where(
-                CoachMessage.conversation_id == conversation.id
+                CoachMessage.conversation_id == conversation_id
             )
         )
         or 0
     )
     asked = CoachMessage(
-        conversation_id=conversation.id, position=nxt + 1, role="user", content=text
+        conversation_id=conversation_id, position=nxt + 1, role="user", content=question
     )
     answered = CoachMessage(
-        conversation_id=conversation.id,
-        position=nxt + 2,
-        role="assistant",
-        content=result.text.strip(),
+        conversation_id=conversation_id, position=nxt + 2, role="assistant", content=answer
     )
     session.add_all([asked, answered])
     session.commit()
-    return Answered(conversation, asked, answered)
+    return asked, answered

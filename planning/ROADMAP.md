@@ -1212,6 +1212,30 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ah. Trợ lý AI trang web · ✅ XONG (2026-08-29)
+
+Tính năng AI thứ hai của lớp học viên, và lần này **không neo vào lượt làm bài**: người học hỏi về chính trang web — tính năng nào ở đâu, một quy tắc hoạt động ra sao — và về tiến độ của chính họ. Bốn mảnh: `services/assistant.py` (ngữ cảnh + gọi model), `routes/assistant.py` (`POST/GET /api/v1/assistant/chat`), migration `050` (`coach_conversation.attempt_id` thành nullable), và màn `/learn/assistant` kèm mục "Trợ lý AI" ở sidebar. Feature key riêng `assistant_chat` — tắt trợ lý không tắt coach, cấu hình ở `/admin/ai` như mọi tính năng AI khác.
+
+**`attempt_id NULL` là dấu hiệu phân loại, không thêm cột `kind`.** Hai nguồn sự thật cho cùng một phân loại sẽ lệch nhau ở lần đầu ai đó đặt `kind` không khớp `attempt_id`, và không gì báo sự lệch đó. `chat.ask` (đường coach) được kiểm chặn cuộc hội thoại `attempt_id NULL` thay vì tin — chạy nó với ngữ cảnh rỗng vẫn thu tiền.
+
+**Không dùng `Retriever`/`Anchor`.** Ngữ cảnh của trợ lý là (1) bản hướng dẫn trang **viết tay trong mã** (`SITE_GUIDE` — nhỏ, tĩnh, đi qua review như code, sửa cùng commit với tính năng nó mô tả) và (2) số liệu thật suy ra từ đúng các service giao diện đang dùng (`profile_stats`, `progression`, đếm lượt nộp). Tự kỳ công một phép tìm kiếm trên văn bản vài nghìn ký tự chỉ tạo ảo giác rằng hệ thống đang RAG. Ngày RAG tới (ADR-003 §3.3), nguồn thứ ba nối vào đúng một chỗ.
+
+**Không cổng "nộp bài mới hỏi".** Cổng đó của coach tồn tại vì ngữ cảnh là chính lượt làm bài — cho hỏi khi chưa nộp là cho xin đáp án. Trợ lý không nhìn thấy lượt nào, không có gì để gian lận. Một người **một** cuộc hội thoại cuốn theo, vì trợ lý nói về cùng một trang web.
+
+**An toàn prompt injection giữ nguyên khuôn coach:** lịch sử đi vào lượt NGƯỜI DÙNG, không nối vào `system` — test khẳng định chữ lượt trước không bao giờ xuất hiện trong `system` của lượt sau. Hạn mức riêng 40 request/giờ, `BudgetExceeded` → 429, tính năng tắt → 503, và cả hai cổng đều fail **closed** vì mỗi tin nhắn là tiền thật.
+
+**`_gateway_for` tách thành `deps.get_gateway`.** Hai router AI cần cùng một bản dựng gateway; bản sao thứ hai sẽ trôi khỏi bản đầu khi thêm nhà cung cấp.
+
+**Và đường phục vụ lần đầu biết nói với Google/Groq/Cerebras.** Pipeline offline đã lâu nay dựng adapter từ bảng `ENDPOINTS` + quy ước `<tên>_api_key`, nhưng `get_gateway` — đường phục vụ — chỉ dựng ollama + openrouter cứng: admin chọn được `google/gemini-…` ở `/admin/ai` (model CÓ GIÁ, hợp lệ), rồi lượt gọi thật chết bằng KeyError 500. Giờ cả hai phía đi qua **một** builder (`llm/providers.py`): đường phục vụ gom tên provider từ routes lẫn mọi hàng `ai_feature_config`, thiếu khoá thì bỏ qua provider đó (`strict=False` — tính năng A trỏ sai không kéo sập tính năng B), và Gateway thiếu adapter giờ ném `LLMError` 503 có ghi sổ thay vì KeyError. 6 test mới ở `test_llm_providers.py`.
+
+**Provider custom là FILE CẤU HÌNH, không phải mã** (`apps/api/llm_providers.json`, đổi đường bằng `LLM_PROVIDERS_FILE`). Ba thứ từng nằm ở ba tệp mã — endpoint (`ENDPOINTS`), khoá (`<tên>_api_key`), giá (`pricing._RATES`) — giờ khai một chỗ: base_url, tên biến môi trường chứa khoá, bảng giá. Thêm Mistral/DeepSeek/Together là sửa file cộng đặt khoá, không deploy mã; `pricing` và `known_models()` (danh sách model của `/admin/ai`) đọc chung nguồn đó. Hai luật không bị phá: **khoá không bao giờ nằm trong file** (file được commit — file chỉ *nhắc tên* biến môi trường, cùng lý do `AiFeatureConfig` không có cột khoá), và **model không có ở đâu cả vẫn bị từ chối** — file là nguồn giá, không phải lối né phép kiểm (N4). File được đọc MỖI lượt cần, không cache, cùng lập luận với `resolver_for`; file sai thì CLI chết ngay còn đường phục vụ log warning và coi như rỗng. Mục ghi đè builtin bị từ chối ở cả hai chế độ — để nó "hiệu lực giả" là kiểu hỏng im lặng tệ nhất. 10 test mới ở `test_llm_registry.py`, trong đó một test chỉ ra vì sao nội dung hỏng phải ghi vào file tmp chứ không vào file mẫu.
+
+### Kiểm
+
+`pytest` **901 passed / 2 deselected**, trong đó 28 test mới (12 trợ lý, 6 builder provider, 10 registry): ngữ cảnh mang số thật, cặp hỏi–đáp ghi đúng thứ tự, lịch sử lượt trước vào lượt user (không vào `system`), một người một cuộc, đường coach từ chối cuộc không neo, 401/422/503/429 ở endpoint, và happy path qua `FakeProvider` cắm ở đúng seam (`get_gateway` bị monkeypatch — router không đổi). ruff + mypy strict sạch; `tsc`, eslint sạch; `gen:api-types` sinh lại không lệch.
+
+---
+
 ## 4ag. Ao nước đi vào được, và con thú bơi · ✅ (2026-08-28)
 
 Mười hai ô ao trong `map.json` vốn bị đánh dấu **cản đường** — cái hồ là một bức tường có màu xanh. Giờ mở ra, và khi con thú xuống nước thì nó chìm một phần: khung ảnh bị cắt đúng ở mặt nước, kèm một vòng gợn quanh chân.

@@ -88,14 +88,24 @@ def cost_usd(provider: str, model: str, usage: Usage) -> Decimal:
     if provider == "openrouter" and model.endswith(":free"):
         return Decimal("0.000000")
 
-    try:
-        rate_in, rate_out, rate_cached = _RATES[(provider, model)]
-    except KeyError:
-        raise UnknownModel(
-            f"Chưa có giá cho {provider}/{model}. Thêm vào _RATES rồi hãy gọi — "
-            f"ghi chi phí 0 cho một model có tính tiền là làm hỏng toàn bộ sổ cái."
-        ) from None
+    rates = _RATES.get((provider, model))
+    if rates is None:
+        # Nguồn giá thứ hai: provider custom khai trong `llm_providers.json`.
+        # File là chỗ DUY NHẤT để thêm provider không sửa mã, nên bảng giá tĩnh
+        # mà không đọc nó là mỗi model custom đều UnknownModel vô cớ.
+        from app.services.llm.registry import load_registry
 
+        custom_model = load_registry(strict=False).get(provider)
+        entry = custom_model.models.get(model) if custom_model else None
+        if entry is None:
+            raise UnknownModel(
+                f"Chưa có giá cho {provider}/{model}. Thêm vào _RATES hoặc vào "
+                f"llm_providers.json rồi hãy gọi — ghi chi phí 0 cho một lượt gọi "
+                f"có tính tiền là làm hỏng toàn bộ sổ cái."
+            ) from None
+        rates = (entry.rate_in, entry.rate_out, entry.rate_cached)
+
+    rate_in, rate_out, rate_cached = rates
     billed_prompt = usage.prompt
     total = Decimal(billed_prompt) * rate_in + Decimal(usage.completion) * rate_out
     total += Decimal(usage.cached) * (rate_cached if rate_cached is not None else rate_in)
@@ -109,5 +119,13 @@ def known_models() -> list[tuple[str, str]]:
     nghĩa là một lần gõ nhầm sẽ làm mọi lượt gọi của tính năng đó hỏng ngay —
     `cost_usd` ném lỗi với model lạ chứ không ghi 0, và đó là hành vi đúng
     (nguyên tắc N4), nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
+
+    Bao gồm cả model custom khai trong `llm_providers.json` — nơi duy nhất để
+    thêm model của một provider mới mà không sửa mã.
     """
-    return sorted(_RATES)
+    from app.services.llm.registry import load_registry
+
+    pairs = set(_RATES)
+    for name, provider in load_registry(strict=False).items():
+        pairs.update((name, model) for model in provider.models)
+    return sorted(pairs)

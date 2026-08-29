@@ -324,37 +324,15 @@ def _describe_set(group: QuestionSet) -> str:
 
 
 def _providers_for(names: set[str]) -> dict[str, Provider]:
-    """Chỉ dựng adapter cho nhà cung cấp thật sự được cấu hình.
+    """Alias cho `build_providers` — bản dựng DUY NHẤT ở `llm/providers.py`.
 
-    Dựng hết rồi mới chọn sẽ bắt phải có khoá của MỌI nhà cung cấp mới chạy
-    được — kể cả nhà cung cấp lượt chạy này không dùng tới.
+    Đường phục vụ từng chỉ biết ollama + openrouter trong khi pipeline biết nói
+    với cả Google/Groq/Cerebras, và lệch đó chỉ lộ ở lượt gọi thật. Một bản dựng
+    chung chặn đúng kiểu trôi đó; giữ tên cũ cho hai nơi gọi hiện có.
     """
-    from app.services.llm.openai_compatible import ENDPOINTS, OpenAICompatibleProvider
+    from app.services.llm.providers import build_providers
 
-    built: dict[str, Provider] = {}
-    for name in names:
-        if name == "ollama":
-            from app.services.llm.ollama import OllamaProvider
-
-            built[name] = OllamaProvider(settings.ollama_base_url)
-        elif name == "openrouter":
-            from app.services.llm.openrouter import OpenRouterProvider
-
-            if not settings.openrouter_api_key:
-                raise RuntimeError("Thiếu OPENROUTER_API_KEY. Đặt vào .env ở gốc repo.")
-            built[name] = OpenRouterProvider(settings.openrouter_api_key)
-        elif name in ENDPOINTS:
-            # Một adapter, một bảng endpoint — xem `openai_compatible.py`. Khoá
-            # đọc theo quy ước `<tên>_api_key`, nên thêm một nhà cung cấp nói
-            # giao thức OpenAI là thêm MỘT dòng vào `ENDPOINTS` cộng một trường
-            # trong settings, không phải một tệp adapter mới.
-            key = getattr(settings, f"{name}_api_key", None)
-            if not key:
-                raise RuntimeError(f"Thiếu {name.upper()}_API_KEY. Đặt vào .env ở gốc repo.")
-            built[name] = OpenAICompatibleProvider(name, ENDPOINTS[name], key)
-        else:
-            raise RuntimeError(f"Chưa có adapter cho nhà cung cấp {name!r}")
-    return built
+    return build_providers(names)
 
 
 def _split(value: str) -> tuple[str, str]:

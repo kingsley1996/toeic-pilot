@@ -1,13 +1,15 @@
 import logging
 import uuid
 from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import redis
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.database import get_db
+from app.core.database import SessionLocal, get_db
 from app.core.redis_client import get_redis
 from app.core.security import (
     PASSWORD_CLAIM,
@@ -17,6 +19,9 @@ from app.core.security import (
 )
 from app.core.token_denylist import is_revoked
 from app.models.user import User
+
+if TYPE_CHECKING:
+    from app.services.llm.gateway import Gateway
 
 logger = logging.getLogger(__name__)
 
@@ -116,3 +121,44 @@ def require_role(*allowed: str) -> Callable[[User], User]:
         return current_user
 
     return dependency
+
+
+def get_gateway(db: Session) -> "Gateway":
+    """Dựng gateway cho một request — chỗ duy nhất, mọi router AI cùng dùng.
+
+    Tập tên nhà cung cấp cần từ HAI nguồn: hai route mặc định trong settings,
+    và mọi nhà cung cấp mà một hàng cấu hình tính năng đang trỏ tới — `admin_ai`
+    chỉ buộc chọn model CÓ GIÁ, nên một hàng có thể trỏ tới Google hay Groq
+    trong khi route mặc định nói ollama. Thiếu khoá của nhà cung cấp nào thì
+    nhà cung cấp đó bị bỏ qua (`strict=False`): tính năng A trỏ sai không được
+    phép kéo sập tính năng B. Lượt gọi thật tới provider thiếu sẽ nhận 503 có
+    ghi sổ, thay vì KeyError 500 không dấu vết.
+    """
+    from app.core.ai_budget import Budget
+    from app.core.config import settings
+    from app.models.ai_config import AiFeatureConfig
+    from app.services.ai_features import resolver_for
+    from app.services.llm.gateway import Gateway
+    from app.services.llm.providers import build_providers
+    from app.services.llm.router import Tier
+
+    routes = {
+        Tier.CHEAP: _split(settings.llm_tier_cheap),
+        Tier.STRONG: _split(settings.llm_tier_strong),
+    }
+    names = {provider for provider, _ in routes.values()}
+    names.update(db.scalars(select(AiFeatureConfig.provider)).all())
+
+    return Gateway(
+        providers=build_providers(names, strict=False),
+        routes=routes,
+        budget=Budget(limit_micro=settings.ai_daily_budget_micro_usd),
+        redis_client=get_redis(),
+        session_factory=SessionLocal,
+        resolve_feature=resolver_for(db),
+    )
+
+
+def _split(value: str) -> tuple[str, str]:
+    provider, _, model = value.partition("/")
+    return provider, model

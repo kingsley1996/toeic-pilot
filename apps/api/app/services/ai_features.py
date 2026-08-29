@@ -45,6 +45,13 @@ FEATURES: tuple[AiFeature, ...] = (
         "nhiên, nên hạn mức mỗi học viên là thứ gánh chính.",
     ),
     AiFeature(
+        "assistant_chat",
+        "Trợ lý trang web",
+        "Hỏi đáp về cách dùng TOEIC Pilot và tiến độ của chính người hỏi. Không cache "
+        "được, như coach_chat; ngữ cảnh là bản hướng dẫn trang viết tay trong mã cộng "
+        "số liệu thật suy ra từ các service thống kê.",
+    ),
+    AiFeature(
         "eval_judge",
         "Giám khảo chấm chất lượng",
         "PHẢI khác model sinh: model chấm bài của chính nó thì thiên vị bản thân, và điểm "

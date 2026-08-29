@@ -17,6 +17,7 @@ from app.api.routes import (
     admin_system,
     admin_tests,
     appearance,
+    assistant,
     attempt,
     auth,
     coach,
@@ -80,6 +81,7 @@ app.include_router(learning.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")
+app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
 app.include_router(petland_map.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")

@@ -8,13 +8,13 @@
 
 | Thứ | Số |
 |---|---|
-| Bảng Postgres | **56** (49 migrations, `001` → `049`) |
-| Router có endpoint | **20**, **182** thao tác HTTP (+1 nhận upload local, chỉ dev) |
-| Trang Next.js (`page.tsx`) | **47**; components 53, lib 15 (121 tệp TS/TSX) |
-| Contract sinh ra | `api-types.ts` ~12 500 dòng |
-| Test backend | **875** collected (873 chạy, 2 `external` bị deselect) trong 53 tệp |
+| Bảng Postgres | **56** (50 migrations, `001` → `050`) |
+| Router có endpoint | **21**, **184** thao tác HTTP (+1 nhận upload local, chỉ dev) |
+| Trang Next.js (`page.tsx`) | **48**; components 54, lib 15 (122 tệp TS/TSX) |
+| Contract sinh ra | `api-types.ts` ~12 600 dòng |
+| Test backend | **903** collected (901 chạy, 2 `external` bị deselect) trong 55 tệp |
 | E2E Playwright | 8 spec, chạy chống docker stack đang sống |
-| `app/services/` | 34 module + 9 trong `llm/` |
+| `app/services/` | 35 module + 9 trong `llm/` |
 | `app/content/` | 24 module + 9 trong `exam/` |
 
 ## 1. Monorepo
@@ -46,6 +46,7 @@
 | | `practice` (3) | đọc bộ đề/đề/cấu trúc — công khai, không đòi đăng nhập |
 | | `attempt` (6) | làm bài: bắt đầu, lưu câu, gắn cờ, nộp, xem lại — **đáp án không rời máy chủ khi đang thi** |
 | | `coach` (4) | giải thích câu làm sai (chỉ sau khi nộp) + hội hỏi đáp; đọc từ cache bảng |
+| | `assistant` (2) | trợ lý trang web: hỏi đáp về chính TOEIC Pilot và tiến độ của người hỏi — ngữ cảnh là bản hướng dẫn viết tay cộng số thật, **không neo vào lượt làm bài** |
 | | `appearance` (2) | nền lưới động: một đọc công khai, một ghi admin |
 | Góc thú | `pet` (11) | trạng thái thú, hành động, loài, gacha, chạm mặt (ADR-010/012/013) |
 | | `petland_map` (2) | đọc/ghi bản đồ — 204 khi chưa ai ghi đè (`petland_map` là override của `public/pet/map.json`) |
@@ -93,7 +94,7 @@ Luật chung: `app/models/__init__.py` re-export **mọi** model — đó là c�
 
 ## 3. Lớp AI
 
-Đường đi của một lượt gọi LLM: **`llm/gateway.py`** là chỗ duy nhất mọi call đi qua — kiểm hạn mức → chọn tầng (`router.py`) → gọi → ghi sổ. Ba nhà cung cấp cắm vào cùng seam `base.py`: `openrouter.py` (httpx thẳng, không SDK), `openai_compatible.py` (một adapter cho Groq/Cerebras/Gemini/Mistral/DeepSeek/…), `ollama.py` (chạy máy, không hạn mức — lý do tồn tại: free tier OpenRouter là 50 call/ngày). `fake.py` là bản duy nhất test được phép chạm. `pricing.py` tự quy token ra tiền, `retry.py` lùi rồi thử lại với quá tải tạm thời (`LLMQuotaExhausted` là subclass — `except` nó **trước** `LLMError`).
+Đường đi của một lượt gọi LLM: **`llm/gateway.py`** là chỗ duy nhất mọi call đi qua — kiểm hạn mức → chọn tầng (`router.py`) → gọi → ghi sổ. Adapter được dựng tại **một chỗ duy nhất** (`llm/providers.py`) cho cả đường phục vụ lẫn pipeline, tra theo thứ tự: ollama → openrouter → builtin `ENDPOINTS` → **`apps/api/llm_providers.json`** — file cấu hình provider custom (base_url + tên biến khoá + bảng giá), nơi thêm provider mới **không cần sửa mã**; khoá không bao giờ nằm trong file vì file được commit. Provider thiếu khoá bị bỏ qua lúc dựng (`strict=False` ở đường phục vụ; CLI chết ngay với thông báo rõ), và lượt gọi tới provider thiếu là `LLMError` 503 có ghi sổ chứ không phải KeyError 500. `fake.py` là bản duy nhất test được phép chạm. `pricing.py` tự quy token ra tiền, `retry.py` lùi rồi thử lại với quá tải tạm thời (`LLMQuotaExhausted` là subclass — `except` nó **trước** `LLMError`).
 
 Người tiêu: `coach.py` (giải thích câu sai — cache bảng, `prompt_version` trong khoá), `chat.py` (hỏi đáp, neo ngữ cảnh qua `retrieval.py` — hôm nay là `AnchoredRetriever` lấy từ chính câu hỏi; RAG bị chặn bởi **nội dung**, ngưỡng gỡ chặn ghi bằng số ở [ADR-003](ADR-003-AI-LAYER.md) §3.3), `content/enrich_skills.py` (gắn nhãn, **một facet mỗi call**, commit từng nhãn), `content/generate_exam.py` (sinh đề, §4.3).
 
@@ -131,7 +132,7 @@ Tách khỏi API cả về import lẫn image: **không gì từ `app/main.py` v
 ### 5.2 Bản đồ trang (47)
 
 - **Ngoài app:** `/` (landing), `/login`, `/register`, `/auth/callback` (OAuth).
-- **Học viên:** `/dashboard` (đọc số từ `/vocabulary-progress` + `/profile/stats`, đọc daily-tasks **trước** progression); `/learn/**` — từ vựng (hub, topic, typing, match, quiz, collection), dictation (hub, topic, section, story, standalone, random), luyện đề (danh sách → đề → làm bài), review, typing, attempts (danh sách + chi tiết); `/profile` + `/profile/badges`; `/petlab` (phòng thí nghiệm góc thú).
+- **Học viên:** `/dashboard` (đọc số từ `/vocabulary-progress` + `/profile/stats`, đọc daily-tasks **trước** progression); `/learn/**` — từ vựng (hub, topic, typing, match, quiz, collection), dictation (hub, topic, section, story, standalone, random), luyện đề (danh sách → đề → làm bài), review, typing, attempts (danh sách + chi tiết), assistant (trợ lý AI); `/profile` + `/profile/badges`; `/petlab` (phòng thí nghiệm góc thú).
 - **Quản trị (18):** `/admin` + từ vựng (hub + cây), dictation (hub + cây), tests (danh sách + `[slug]`), ai (hub, providers, skill-tags), appearance, pet, petland (trình vẽ bản đồ), progression (+ preview khung avatar), ruby, health, system.
 - `preview/attempt-result` — trang xem trước kết quả, không qua đăng nhập thật.
 
@@ -152,7 +153,7 @@ Tách khỏi API cả về import lẫn image: **không gì từ `app/main.py` v
 
 ## 7. Kiểm thử
 
-- Backend: 875 collected; `integration` cần PostgreSQL thật (tự skip, CI chạy thật); `external` tự deselect và tự khoá bằng `TOEIC_ALLOW_EXTERNAL_TTS=1`. Test mặc định SQLite in-memory qua `StaticPool`.
+- Backend: 903 collected; `integration` cần PostgreSQL thật (tự skip, CI chạy thật); `external` tự deselect và tự khoá bằng `TOEIC_ALLOW_EXTERNAL_TTS=1`. Test mặc định SQLite in-memory qua `StaticPool`.
 - Frontend: `pnpm lint` là eslint **thuần** — `tsc --noEmit` phải chạy riêng; đổi shape response trên endpoint danh sách thì grep `API_ROUTES` và sửa từng caller.
 - E2E: 8 spec chạy **chống docker stack đang sống**, mỗi spec tự đăng ký tài khoản mới (email UNIQUE), và mỗi spec đã được chứng minh đỏ bằng cách tái tạo đúng con bọ nó canh.
 

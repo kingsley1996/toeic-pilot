@@ -1,14 +1,14 @@
 "use client";
 
-import { API_ROUTES } from "@toeic-pilot/shared";
+import { API_ROUTES, type ChatMessagePublic, type ChatTurn } from "@toeic-pilot/shared";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 
-type Message = { id: string; role: string; content: string };
-type Turn = { conversation_id: string; question: Message; answer: Message };
+// Cùng lý do đã ghi ở `assistant-chat.tsx`: shape đến từ hợp đồng.
+type Message = ChatMessagePublic;
 
 /**
  * Hộp hỏi đáp dính góc dưới, NEO vào lượt làm bài đang xem.
@@ -93,7 +93,7 @@ export function CoachChat({ attemptId, token }: { attemptId: string; token: stri
     setError(null);
 
     try {
-      const turn = await apiFetch<Turn>(API_ROUTES.coachChat(attemptId), {
+      const turn = await apiFetch<ChatTurn>(API_ROUTES.coachChat(attemptId), {
         method: "POST",
         token,
         body: JSON.stringify({ message: text }),

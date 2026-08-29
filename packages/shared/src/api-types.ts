@@ -1869,6 +1869,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/assistant/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chat History
+         * @description Có phân trang, và đây là chỗ lý lẽ của coach KHÔNG chuyển sang được.
+         *
+         *     `coach.py::chat_history` trả mảng trần vì một cuộc coach bị chặn bởi chính
+         *     lượt làm bài nó neo vào — vài câu hỏi rồi hết. Trợ lý bỏ đúng cái neo ấy để
+         *     có một cuộc cuốn theo mãi mãi, nên nó rơi vào ca (C) "tăng theo mức dùng"
+         *     của `schemas/common.py`, nơi luật là `Page[T]`.
+         *
+         *     Sắp GIẢM DẦN theo `position`: trang đầu là những gì vừa nói, thứ người ta mở
+         *     lại để đọc. Sắp tăng dần thì trang đầu là cuộc trò chuyện của tháng trước và
+         *     người dùng phải lật tới cuối mới thấy câu mình vừa hỏi.
+         */
+        get: operations["chat_history_api_v1_assistant_chat_get"];
+        put?: never;
+        /** Chat */
+        post: operations["chat_api_v1_assistant_chat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/attempts": {
         parameters: {
             query?: never;
@@ -3475,6 +3505,11 @@ export interface components {
         ArchiveRequest: {
             /** Archived */
             archived: boolean;
+        };
+        /** AssistantAsk */
+        AssistantAsk: {
+            /** Message */
+            message: string;
         };
         /** AttemptPartProgress */
         AttemptPartProgress: {
@@ -5267,6 +5302,17 @@ export interface components {
         Page_AttemptSummary_: {
             /** Items */
             items: components["schemas"]["AttemptSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[ChatMessagePublic] */
+        Page_ChatMessagePublic_: {
+            /** Items */
+            items: components["schemas"]["ChatMessagePublic"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -10519,6 +10565,71 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VoiceOption"][];
+                };
+            };
+        };
+    };
+    chat_history_api_v1_assistant_chat_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_ChatMessagePublic_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_api_v1_assistant_chat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssistantAsk"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatTurn"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
