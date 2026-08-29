@@ -2,6 +2,8 @@
 
 Last updated: 2026-08-21
 
+> Bản đầy đủ và mới hơn, đọc từ source 2026-08-29: [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md). File này giữ nguyên như một ảnh chụp giai đoạn trước Petland/Ruby/Encounters.
+
 > Mô tả **hiện trạng**, không phải kế hoạch. Trạng thái sprint và task nằm ở [`ROADMAP.md`](ROADMAP.md); lý do đằng sau từng quyết định nằm ở các ADR.
 
 ## Overview
