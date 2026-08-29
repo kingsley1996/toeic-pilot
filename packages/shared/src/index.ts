@@ -136,6 +136,9 @@ export type RubyGift = components["schemas"]["RubyGiftPublic"];
 export type RubyClaimResult = components["schemas"]["RubyClaimResult"];
 export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
 export type SystemStatus = components["schemas"]["SystemStatus"];
+export type UptimeReport = components["schemas"]["UptimeReport"];
+export type ServiceUptime = components["schemas"]["ServiceUptime"];
+export type UptimeBucket = components["schemas"]["UptimeBucket"];
 export type PetlandMapPublic = components["schemas"]["PetlandMapPublic"];
 export type PetlandMapBody = components["schemas"]["PetlandMapBody"];
 export type DependencyStatus = components["schemas"]["DependencyStatus"];
@@ -213,6 +216,7 @@ export const API_ROUTES = {
   petlandMap: "/api/v1/petland/map",
   adminPetlandMap: "/api/v1/admin/petland/map",
   adminSystemStatus: "/api/v1/admin/system/status",
+  adminSystemUptime: "/api/v1/admin/system/uptime",
   adminRubyRules: "/api/v1/admin/ruby/rules",
   adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",

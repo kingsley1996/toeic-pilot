@@ -770,3 +770,29 @@
     stroke-dasharray: none !important;
   }
 }
+
+/* Dải uptime ở /admin/health. Ô TRỐNG có hoa văn riêng chứ không phải một màu
+   nhạt: "không đo được" và "khoẻ nhưng nhạt" phải phân biệt được bằng hình,
+   không chỉ bằng độ đậm — cùng luật với nhãn trạng thái luôn có icon. */
+.upbar {
+  border-radius: 4px;
+  animation: upbar-in 260ms ease-out both;
+}
+.upbar.is-gap {
+  background: repeating-linear-gradient(45deg, rgb(var(--rule)) 0 3px, rgb(var(--recess)) 3px 6px);
+}
+@keyframes upbar-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.35);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upbar {
+    animation: none;
+  }
+}

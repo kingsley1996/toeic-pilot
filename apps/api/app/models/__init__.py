@@ -12,6 +12,7 @@ from app.models.dictation import (
     DictationTopic,
 )
 from app.models.encounter import Encounter, EncounterSetting
+from app.models.health import HealthSample
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.labels import QuestionLabel, QuestionSetLabel
@@ -103,6 +104,7 @@ __all__ = [
     "EncounterSetting",
     "PetOwned",
     "PetSpecies",
+    "HealthSample",
     "PetlandMap",
     "PetState",
     "RubyEvent",

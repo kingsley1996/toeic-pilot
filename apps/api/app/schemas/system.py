@@ -42,3 +42,28 @@ class SystemStatus(BaseModel):
     )
     dependencies: list[DependencyStatus]
     media: list[MediaChannel]
+
+
+class UptimeBucket(BaseModel):
+    start: datetime
+    # `None` = không có mẫu nào trong khoảng này. KHÔNG phải "ổn": một sự cố
+    # Postgres không ghi vào Postgres được, nên nó chỉ hiện ra dưới dạng trống.
+    state: DependencyState | None = None
+    latency_ms: int | None = None
+
+
+class ServiceUptime(BaseModel):
+    service: str
+    label: str
+    samples: int
+    ok_ratio: float | None = None
+    worst: DependencyState | None = None
+    buckets: list[UptimeBucket]
+
+
+class UptimeReport(BaseModel):
+    hours: int
+    slots: int
+    retention_days: int
+    since: datetime
+    services: list[ServiceUptime]

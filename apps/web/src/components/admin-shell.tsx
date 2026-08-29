@@ -13,6 +13,7 @@ import {
   Library,
   ListTree,
   Activity,
+  HeartPulse,
   Palette,
   PawPrint,
   Sparkles,
@@ -105,6 +106,9 @@ const ADMIN_LINKS: AdminNavItem[] = [
     label: "Production",
     Icon: Activity,
     group: "System",
+    // Uptime là MỘT CÂU HỎI KHÁC với sơ đồ: sơ đồ hỏi "bây giờ thế nào", trang
+    // này hỏi "mấy hôm nay thế nào". Nên nó là mục con, không phải mục gốc.
+    children: [{ href: "/admin/health", label: "Uptime", Icon: HeartPulse }],
   },
   {
     href: "/admin/ai",

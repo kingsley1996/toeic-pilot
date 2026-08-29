@@ -1267,6 +1267,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/system/uptime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Uptime Report
+         * @description Tình trạng theo thời gian, dựng từ những lần `/ready` đã chạy.
+         *
+         *     Chỉ hai dịch vụ, và đó là ranh giới thật: API chỉ ghi lại được thứ chính nó
+         *     gọi tới. Kho audio và kho ảnh do trình duyệt tải thẳng nên không có mẫu nào
+         *     ở đây — `/admin/system` đo chúng ở phía người xem.
+         */
+        get: operations["uptime_report_api_v1_admin_system_uptime_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/test-collections": {
         parameters: {
             query?: never;
@@ -6151,6 +6175,21 @@ export interface components {
             /** Recent */
             recent: components["schemas"]["RubyEntryPublic"][];
         };
+        /** ServiceUptime */
+        ServiceUptime: {
+            /** Buckets */
+            buckets: components["schemas"]["UptimeBucket"][];
+            /** Label */
+            label: string;
+            /** Ok Ratio */
+            ok_ratio?: number | null;
+            /** Samples */
+            samples: number;
+            /** Service */
+            service: string;
+            /** Worst */
+            worst?: ("ok" | "degraded" | "down") | null;
+        };
         /** SetAdmin */
         SetAdmin: {
             /** Audio Attached At */
@@ -6602,6 +6641,34 @@ export interface components {
              * @enum {string}
              */
             ext: "jpg" | "jpeg" | "png" | "webp";
+        };
+        /** UptimeBucket */
+        UptimeBucket: {
+            /** Latency Ms */
+            latency_ms?: number | null;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /** State */
+            state?: ("ok" | "degraded" | "down") | null;
+        };
+        /** UptimeReport */
+        UptimeReport: {
+            /** Hours */
+            hours: number;
+            /** Retention Days */
+            retention_days: number;
+            /** Services */
+            services: components["schemas"]["ServiceUptime"][];
+            /**
+             * Since
+             * Format: date-time
+             */
+            since: string;
+            /** Slots */
+            slots: number;
         };
         /** UsageRow */
         UsageRow: {
@@ -9246,6 +9313,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SystemStatus"];
+                };
+            };
+        };
+    };
+    uptime_report_api_v1_admin_system_uptime_get: {
+        parameters: {
+            query?: {
+                hours?: number;
+                slots?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UptimeReport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

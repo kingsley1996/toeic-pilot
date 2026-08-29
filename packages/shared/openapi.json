@@ -7415,6 +7415,64 @@
         "title": "RubyWallet",
         "type": "object"
       },
+      "ServiceUptime": {
+        "properties": {
+          "buckets": {
+            "items": {
+              "$ref": "#/components/schemas/UptimeBucket"
+            },
+            "title": "Buckets",
+            "type": "array"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "ok_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ok Ratio"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "worst": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ok",
+                  "degraded",
+                  "down"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Worst"
+          }
+        },
+        "required": [
+          "service",
+          "label",
+          "samples",
+          "buckets"
+        ],
+        "title": "ServiceUptime",
+        "type": "object"
+      },
       "SetAdmin": {
         "properties": {
           "audio_attached_at": {
@@ -8610,6 +8668,84 @@
           }
         },
         "title": "UploadTicketRequest",
+        "type": "object"
+      },
+      "UptimeBucket": {
+        "properties": {
+          "latency_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Ms"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ok",
+                  "degraded",
+                  "down"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          }
+        },
+        "required": [
+          "start"
+        ],
+        "title": "UptimeBucket",
+        "type": "object"
+      },
+      "UptimeReport": {
+        "properties": {
+          "hours": {
+            "title": "Hours",
+            "type": "integer"
+          },
+          "retention_days": {
+            "title": "Retention Days",
+            "type": "integer"
+          },
+          "services": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceUptime"
+            },
+            "title": "Services",
+            "type": "array"
+          },
+          "since": {
+            "format": "date-time",
+            "title": "Since",
+            "type": "string"
+          },
+          "slots": {
+            "title": "Slots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hours",
+          "slots",
+          "retention_days",
+          "since",
+          "services"
+        ],
+        "title": "UptimeReport",
         "type": "object"
       },
       "UsageRow": {
@@ -13368,6 +13504,65 @@
           }
         ],
         "summary": "System Status",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/system/uptime": {
+      "get": {
+        "description": "Tình trạng theo thời gian, dựng từ những lần `/ready` đã chạy.\n\nChỉ hai dịch vụ, và đó là ranh giới thật: API chỉ ghi lại được thứ chính nó\ngọi tới. Kho audio và kho ảnh do trình duyệt tải thẳng nên không có mẫu nào\nở đây — `/admin/system` đo chúng ở phía người xem.",
+        "operationId": "uptime_report_api_v1_admin_system_uptime_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "hours",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "title": "Hours",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "slots",
+            "required": false,
+            "schema": {
+              "default": 48,
+              "title": "Slots",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UptimeReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Uptime Report",
         "tags": [
           "admin"
         ]

@@ -9,7 +9,7 @@ qua API (ADR-006 §2.9), nên phép kiểm chạy ở API sẽ kiểm một đư
 """
 
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import redis
 from fastapi import APIRouter, Depends
@@ -24,7 +24,15 @@ from app.core.media import public_audio_url
 from app.core.redis_client import get_redis
 from app.core.storage import StorageError, get_driver
 from app.models import AudioAsset, ImageAsset, User
-from app.schemas.system import DependencyStatus, MediaChannel, SystemStatus
+from app.schemas.system import (
+    DependencyStatus,
+    MediaChannel,
+    ServiceUptime,
+    SystemStatus,
+    UptimeBucket,
+    UptimeReport,
+)
+from app.services import health_history
 
 router = APIRouter(prefix="/admin/system", tags=["admin"])
 
@@ -135,4 +143,48 @@ def system_status(db: Session = Depends(get_db), _: User = Depends(can_view)) ->
         schema_revision=revision,
         dependencies=[database, _check_redis()],
         media=[_media_channel(db, "audio"), _media_channel(db, "image")],
+    )
+
+
+LABELS = {"database": "PostgreSQL", "redis": "Redis"}
+
+
+@router.get("/uptime", response_model=UptimeReport)
+def uptime_report(
+    hours: int = 24,
+    slots: int = 48,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_view),
+) -> UptimeReport:
+    """Tình trạng theo thời gian, dựng từ những lần `/ready` đã chạy.
+
+    Chỉ hai dịch vụ, và đó là ranh giới thật: API chỉ ghi lại được thứ chính nó
+    gọi tới. Kho audio và kho ảnh do trình duyệt tải thẳng nên không có mẫu nào
+    ở đây — `/admin/system` đo chúng ở phía người xem.
+    """
+    hours = max(1, min(hours, health_history.RETENTION_DAYS * 24))
+    slots = max(12, min(slots, 240))
+    since = datetime.now(UTC) - timedelta(hours=hours)
+    services = []
+    for name, label in LABELS.items():
+        result = health_history.uptime(db, name, hours, slots)
+        services.append(
+            ServiceUptime(
+                service=name,
+                label=label,
+                samples=result.samples,
+                ok_ratio=result.ok_ratio,
+                worst=result.worst,
+                buckets=[
+                    UptimeBucket(start=b.start, state=b.state, latency_ms=b.latency_ms)
+                    for b in result.buckets
+                ],
+            )
+        )
+    return UptimeReport(
+        hours=hours,
+        slots=slots,
+        retention_days=health_history.RETENTION_DAYS,
+        since=since,
+        services=services,
     )
