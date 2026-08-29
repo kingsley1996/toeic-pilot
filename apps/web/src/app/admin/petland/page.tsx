@@ -14,6 +14,7 @@ import {
 import { useEffect, useReducer, useRef, useState } from "react";
 
 import { reduce } from "@/components/petland-history";
+import { PALETTE, allCells, type PaletteCell } from "@/components/petland-palette";
 
 import { Alert, Button, Field, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
 import {
@@ -72,20 +73,20 @@ function sheetStyle(sheet: SheetId, index: number, zoom: number) {
 }
 
 function TileButton({
-  sheet,
-  index,
+  cell,
   active,
   onPick,
 }: {
-  sheet: SheetId;
-  index: number;
+  cell: PaletteCell;
   active: boolean;
   onPick: () => void;
 }) {
+  const { sheet, index } = cell;
   return (
     <button
       type="button"
       onClick={onPick}
+      title={`${sheet} · ${index}`}
       aria-label={`${sheet} tile ${index}`}
       aria-pressed={active}
       className={cx(
@@ -103,7 +104,7 @@ export default function PetlandEditorPage() {
   const [history, dispatch] = useReducer(reduce, null);
   const map = history?.present ?? null;
   const [sheet, setSheet] = useState<SheetId>("town");
-  const [picked, setPicked] = useState<number>(0);
+  const [picked, setPicked] = useState<PaletteCell>({ sheet: "town", index: 0 });
   const [tool, setTool] = useState<Tool>("ground");
   const [showSolid, setShowSolid] = useState(true);
   const painting = useRef(false);
@@ -162,7 +163,7 @@ export default function PetlandEditorPage() {
           objects: [...current.objects],
           solid: [...current.solid],
         };
-        const cell: Cell = { sheet, index: picked };
+        const cell: Cell = picked;
         if (tool === "ground") next.ground[at] = cell;
         if (tool === "objects") next.objects[at] = cell;
         if (tool === "erase") {
@@ -274,27 +275,56 @@ export default function PetlandEditorPage() {
        */}
       <div className="flex gap-4">
         {/* --- bảng chọn ô --- */}
-        <Panel className="sticky top-4 h-fit w-64 shrink-0 p-4">
-          <Select value={sheet} onChange={(e) => setSheet(e.target.value as SheetId)}>
-            {SHEET_IDS.map((id) => (
-              <option key={id} value={id}>
-                {id}.png
-              </option>
+        <Panel className="sticky top-4 h-fit w-72 shrink-0 p-4">
+          <div className="max-h-[34rem] space-y-4 overflow-y-auto pr-1">
+            {PALETTE.map((group) => (
+              <section key={group.id}>
+                <h3 className="text-label font-semibold uppercase text-ink-muted">{group.label}</h3>
+                {group.hint && <p className="mt-0.5 text-small text-ink-faint">{group.hint}</p>}
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {group.cells.map((cell) => (
+                    <TileButton
+                      key={`${group.id}-${cell.sheet}-${cell.index}`}
+                      cell={cell}
+                      active={picked.sheet === cell.sheet && picked.index === cell.index}
+                      onPick={() => setPicked(cell!)}
+                    />
+                  ))}
+                </div>
+              </section>
             ))}
-          </Select>
-          <div className="mt-3 flex max-h-[30rem] flex-wrap gap-1 overflow-y-auto pr-1">
-            {Array.from({ length: SHEET_COLS[sheet] * SHEET_ROWS[sheet] }, (_, i) => (
-              <TileButton
-                key={i}
-                sheet={sheet}
-                index={i}
-                active={picked === i}
-                onPick={() => setPicked(i)}
-              />
-            ))}
+
+            {/* Lối thoát: nhóm ở trên do người xếp nên sẽ có chỗ sai, và một ô
+                xếp sai phải khó tìm chứ không được biến mất. */}
+            <section className="border-t border-rule pt-3">
+              <h3 className="text-label font-semibold uppercase text-ink-muted">
+                Toàn bộ tấm ghép
+              </h3>
+              <Select
+                className="mt-1.5"
+                value={sheet}
+                onChange={(e) => setSheet(e.target.value as SheetId)}
+              >
+                {SHEET_IDS.map((id) => (
+                  <option key={id} value={id}>
+                    {id}.png
+                  </option>
+                ))}
+              </Select>
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                {allCells(sheet, SHEET_ROWS[sheet]).map((cell) => (
+                  <TileButton
+                    key={`all-${cell.sheet}-${cell.index}`}
+                    cell={cell}
+                    active={picked.sheet === cell.sheet && picked.index === cell.index}
+                    onPick={() => setPicked(cell!)}
+                  />
+                ))}
+              </div>
+            </section>
           </div>
-          <p className="mt-3 font-data text-small text-ink-faint">
-            {sheet} · tile {picked}
+          <p className="mt-3 border-t border-rule pt-3 font-data text-small text-ink-faint">
+            {picked.sheet} · tile {picked.index}
           </p>
         </Panel>
 
