@@ -546,6 +546,14 @@ def cmd_load(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_interact(args: argparse.Namespace) -> int:
+    """Wizard tương tác. Import trễ để `generate_exam` không kéo questionary
+    theo khi chỉ dùng các lệnh thường."""
+    from app.content.exam_wizard import run_interactive
+
+    return run_interactive(args.slug)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Sinh một đề TOEIC.")
     parser.add_argument("--tier", default=Tier.CHEAP.value, choices=[tier.value for tier in Tier])
@@ -622,6 +630,15 @@ def main(argv: list[str] | None = None) -> int:
         "--slot", default=None, help="chỉ nạp một ô (vd `p2-01`), lấp vào số câu còn trống"
     )
     load_cmd.set_defaults(func=cmd_load)
+
+    interact_cmd = sub.add_parser(
+        "interact",
+        help="wizard tương tác: điều khiển cả pipeline bằng menu",
+    )
+    interact_cmd.add_argument(
+        "--slug", default=None, help="đề muốn làm; bỏ trống thì chọn lúc chạy"
+    )
+    interact_cmd.set_defaults(func=cmd_interact)
 
     args = parser.parse_args(argv)
     _ = content_settings  # giữ cùng khuôn khởi động với các lệnh content khác

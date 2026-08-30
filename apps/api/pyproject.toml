@@ -42,6 +42,9 @@ content = [
     "edge-tts>=7.0.0",
     "mutagen>=1.47.0",
     "pillow>=11.0.0",
+    # Giao diện tương tác của pipeline sinh đề (`generate_exam interact`). Chỉ
+    # máy soạn nội dung cần; ảnh API và worker TTS không đụng tới.
+    "questionary>=2.0",
 ]
 # Vòng agent viết-và-phê của pipeline sinh đề (planning/AGENTIC-STACK-PLAN.md).
 # Extra RIÊNG chứ không gộp vào `content`: hai lý do cài khác nhau, và chỉ ảnh
@@ -90,7 +93,7 @@ disallow_untyped_decorators = false
 warn_return_any = false
 
 [[tool.mypy.overrides]]
-module = ["jose.*", "edge_tts.*", "boto3.*", "botocore.*"]
+module = ["jose.*", "edge_tts.*", "boto3.*", "botocore.*", "questionary"]
 ignore_missing_imports = true
 
 # mutagen ships partial annotations: `MP3.__init__` is untyped and `.info` is
