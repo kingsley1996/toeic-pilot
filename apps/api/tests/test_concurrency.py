@@ -29,9 +29,12 @@ from app.main import app
 from app.models import User  # noqa: F401 — registers the table
 from tests.conftest import FakeRedis
 
-POSTGRES_URL = os.environ.get(
-    "TEST_DATABASE_URL", "postgresql+psycopg://toeic:toeic@localhost:5432/toeic"
-)
+# Bắt buộc TEST_DATABASE_URL, không mặc định vào dev: các test ở đây ghi thẳng
+# vào cơ sở dữ liệu (test_ruby_race còn DELETE full-table các bảng pet), chạy
+# nhầm vào DB dev là mất dữ liệu thật (đã xảy ra 2026-08-30). CI set sẵn biến này.
+POSTGRES_URL: str = os.environ.get("TEST_DATABASE_URL") or ""
+if not POSTGRES_URL:
+    pytest.skip("cần TEST_DATABASE_URL — không chạy test ghi vào DB dev", allow_module_level=True)
 CONCURRENCY = 12
 PASSWORD = "correct-horse-battery"
 

@@ -36,9 +36,15 @@ from app.models import RubyEvent, User  # noqa: F401 — đăng ký bảng lên 
 from app.models.pet import DEFAULT_PET_SPECIES
 from app.services import ruby
 
-POSTGRES_URL = os.environ.get(
-    "TEST_DATABASE_URL", "postgresql+psycopg://toeic:toeic@localhost:5432/toeic"
-)
+# Bắt buộc TEST_DATABASE_URL, không mặc định vào dev: các test ở đây DELETE
+# full-table (pet_owned/pet_state/pet_species), chạy nhầm vào DB dev là mất
+# toàn bộ bộ sưu tập thú (đã xảy ra 2026-08-30). CI set sẵn biến này.
+POSTGRES_URL: str = os.environ.get("TEST_DATABASE_URL") or ""
+if not POSTGRES_URL:
+    pytest.skip(
+        "cần TEST_DATABASE_URL — không chạy test phá dữ liệu trên DB dev",
+        allow_module_level=True,
+    )
 BUYERS = 8
 EGG_PRICE = 25
 SEEDERS = 8
