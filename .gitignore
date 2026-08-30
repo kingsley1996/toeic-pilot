@@ -43,6 +43,12 @@ Thumbs.db
 # but the store is missing.
 apps/api/media/
 
+# Ảnh Part 1 do model sinh (bản vẽ từ prompt, tái sinh được từ images/*.prompt.txt).
+# Giống mp3: không giữ trong git vì tái tạo được. Các phần khác của đề (paste,
+# graphics, graphic-images) thì commit — chúng là nguồn để tái tạo lại đề.
+apps/api/content/generated/*/images/
+apps/api/content/generated/*/photos/
+
 # Logs
 *.log
 
