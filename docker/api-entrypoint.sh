@@ -14,14 +14,16 @@ if [ "${RUN_MIGRATIONS:-1}" = "1" ]; then
         echo "  For a database with real data:  uv run alembic stamp head   (verify the schema first)" >&2
         exit 1
     fi
-else
-    echo "entrypoint: RUN_MIGRATIONS=0, skipping migrations"
-fi
 
-echo "entrypoint: syncing knowledge base"
-if ! uv run python -m app.content.sync_kb; then
-    echo "entrypoint: sync_kb failed." >&2
-    exit 1
+    # Knowledge base needs its table, so it runs under the same flag as migrations.
+    # Smoke tests use RUN_MIGRATIONS=0 with a scratch DB that has no knowledge_chunk.
+    echo "entrypoint: syncing knowledge base"
+    if ! uv run python -m app.content.sync_kb; then
+        echo "entrypoint: sync_kb failed." >&2
+        exit 1
+    fi
+else
+    echo "entrypoint: RUN_MIGRATIONS=0, skipping migrations and knowledge sync"
 fi
 
 exec "$@"
