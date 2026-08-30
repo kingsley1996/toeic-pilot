@@ -44,11 +44,23 @@ class FakeProvider:
         self.seen.append((request, model))
         if self._fail is not None:
             raise LLMError(str(self._fail)) from self._fail
-        text = self._reply(request) if callable(self._reply) else self._reply
-        if request.schema is not None and not _is_json(text):
+        # `reply` là hàm thì được phép trả LLMResult CẢ NGUYÊN — đó là cách test
+        # dựng kịch bản nhiều lượt cho vòng tool (lượt 1 xin gọi công cụ, lượt
+        # 2 trả lời), thứ mà một chuỗi thuần không diễn đạt nổi.
+        scripted = self._reply(request) if callable(self._reply) else self._reply
+        if isinstance(scripted, LLMResult):
+            return LLMResult(
+                text=scripted.text,
+                usage=scripted.usage,
+                model=model,
+                provider=self.name,
+                latency_ms=self._latency_ms,
+                tool_calls=scripted.tool_calls,
+            )
+        if request.schema is not None and not _is_json(scripted):
             raise LLMError("bản giả được yêu cầu trả JSON nhưng reply không phải JSON")
         return LLMResult(
-            text=text,
+            text=scripted,
             usage=self._usage,
             model=model,
             provider=self.name,

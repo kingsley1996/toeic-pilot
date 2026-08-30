@@ -15,6 +15,7 @@ from app.models.encounter import Encounter, EncounterSetting
 from app.models.health import HealthSample
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
+from app.models.knowledge import KnowledgeChunk
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.pet import EggSetting, PetlandMap, PetOwned, PetSpecies, PetState
 from app.models.practice import (
@@ -97,6 +98,7 @@ __all__ = [
     "DictationStory",
     "DictationTopic",
     "ImageAsset",
+    "KnowledgeChunk",
     "PracticeTest",
     "PracticeTestQuestion",
     "EggSetting",

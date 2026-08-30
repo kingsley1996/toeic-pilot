@@ -32,6 +32,7 @@ from app.services.llm.base import (
     LLMRequest,
     LLMResult,
     Usage,
+    tool_calls_from_openai,
 )
 
 __all__ = ["OpenRouterProvider"]
@@ -50,17 +51,23 @@ class OpenRouterProvider:
         self._timeout = timeout_s
 
     def complete(self, request: LLMRequest, model: str) -> LLMResult:
-        payload: dict[str, Any] = {
-            "model": model,
-            "messages": [
+        if request.messages is not None:
+            messages: list[dict[str, Any]] = list(request.messages)
+        else:
+            messages = [
                 {"role": "system", "content": request.system},
                 # Nội dung do người dùng cung cấp CHỈ đi vào vai trò này. Đây là
                 # chỗ duy nhất luật đó được thi hành trong adapter.
                 {"role": "user", "content": request.user},
-            ],
+            ]
+        payload: dict[str, Any] = {
+            "model": model,
+            "messages": messages,
             "temperature": request.temperature,
             "max_tokens": request.max_tokens,
         }
+        if request.tools:
+            payload["tools"] = request.tools
         started = perf_counter()
         try:
             response = httpx.post(
@@ -110,4 +117,5 @@ class OpenRouterProvider:
             model=model,
             provider=self.name,
             latency_ms=int((perf_counter() - started) * 1000),
+            tool_calls=tool_calls_from_openai(body["choices"][0]["message"]),
         )

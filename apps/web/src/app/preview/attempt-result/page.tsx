@@ -16,157 +16,173 @@ import { Alert, ButtonLink, Meter, Panel, SectionHeader, Tag, cx } from "@/compo
 
 export const metadata: Metadata = { title: "Kết quả bài thi — TOEIC Pilot" };
 
-/* Trang xem trước THUẦN UI: mọi con số bên dưới là dữ liệu mẫu, không gọi API. */
+/*
+ * Trang xem trước giao diện kết quả — nhưng các con số KHÔNG còn là số bịa.
+ *
+ * Toàn bộ khối bên dưới lấy từ một lượt làm bài đã nộp thật trên stack dev
+ * (`f21ba732`, đề `tp-form-06`, 200 câu, chấm bằng chính `score_attempt` và
+ * bảng `score_conversion`). Trang vẫn tĩnh và vẫn không gọi API — nó chỉ đổi
+ * nguồn của những con số từ trí tưởng tượng sang một lượt làm bài có thật.
+ *
+ * Đổi như vậy vì số bịa luôn tử tế với thiết kế: bản trước đặt mục tiêu 800 cho
+ * một bài 742 điểm, nên khối "Mục tiêu" chỉ cần một trạng thái duy nhất — còn
+ * thiếu bao nhiêu. Số thật là 730 với mục tiêu 700, tức là ĐÃ VƯỢT, và trạng
+ * thái đó trước giờ không tồn tại trong thiết kế. Cũng vậy: bản trước dựng một
+ * câu chuyện "đoạn kép là điểm nghẽn", còn số thật cho thấy đoạn kép (73%) lại
+ * nhỉnh hơn đoạn đơn (64%).
+ *
+ * Một cảnh báo phải nói thẳng: các con số là THẬT theo nghĩa đi hết đường ống
+ * của hệ thống, nhưng người làm bài là một bộ sinh số ngẫu nhiên có tỉ lệ đúng
+ * đặt trước. Nên hình dạng tổng thể thì đáng tin, còn chênh lệch vài phần trăm
+ * giữa hai trục cạnh nhau là nhiễu, không phải chân dung một người học.
+ */
 
 type CellState = "ok" | "bad" | "blank";
 
 const ATTEMPT = {
-  test: "TOEIC 2026 — Test 1",
-  collection: "Bộ đề TOEIC 2026",
-  submittedAt: "09:47, 15/08/2026",
+  test: "TOEIC Pilot — Đề luyện 06 (Gemini 3.7 Flash)",
+  collection: "Bộ đề TOEIC PILOT 2026 Vol.1",
+  submittedAt: "20:19, 21/08/2026",
   mode: "Luyện thi",
-  durationUsed: 120,
+  durationUsed: 107,
   durationLimit: 120,
-  blankCount: 3,
-  listeningRaw: 69,
-  listeningScaled: 370,
+  blankCount: 0,
+  listeningRaw: 80,
+  listeningScaled: 405,
   readingRaw: 70,
-  readingScaled: 372,
-  totalScaled: 742,
-  target: 800,
+  readingScaled: 325,
+  totalScaled: 730,
+  // Lấy từ `user_profile.target_score` của chính tài khoản đó — và nó đã bị vượt.
+  target: 700,
 };
 
-const RADAR_AXES: { label: string; sub: string; value: number; previous: number }[] = [
-  { label: "P1", sub: "Tranh mô tả", value: 83, previous: 80 },
-  { label: "P2", sub: "Hỏi đáp", value: 72, previous: 68 },
-  { label: "P3–P4", sub: "Nghe dài", value: 66, previous: 64 },
-  { label: "P5–P6", sub: "Ngữ pháp", value: 79, previous: 70 },
-  { label: "P7", sub: "Đoạn đơn", value: 74, previous: 60 },
-  { label: "P7", sub: "Đoạn kép", value: 48, previous: 45 },
+/*
+ * Năm trong sáu trục suy ra thẳng từ `question.part`; chỉ trục "đoạn đơn / đoạn
+ * kép" cần biết một cụm Part 7 có mấy văn bản, và cái đó đọc được từ
+ * `question_set.passage_2/passage_3` chứ không cần tới nhãn kỹ năng — vốn mới
+ * phủ được 2 trong 6 facet của taxonomy.
+ *
+ * `previous` là trung bình HAI lượt trước của cùng tài khoản (450 và 630 điểm),
+ * không phải ba như bản mẫu cũ vẽ ra: tài khoản chỉ có đúng hai lượt trước đó.
+ */
+const RADAR_AXES: {
+  label: string;
+  sub: string;
+  value: number;
+  previous: number;
+  /* Nhận xét nằm CẠNH con số nó nói về.
+   *
+   * Bản trước viết cứng trong phần hiển thị, chọn bằng `axis.sub === "Đoạn
+   * kép"` — nên khi số thật cho ra một cặp điểm yếu khác, câu nhận xét vẫn nói
+   * về đoạn kép và nói về một mốc thời gian mà hệ thống không hề đo. */
+  note: string;
+}[] = [
+  {
+    label: "P1",
+    sub: "Tranh mô tả",
+    value: 100,
+    previous: 75,
+    note: "Trọn 6 câu. Part 1 chỉ có 6 câu nên một lượt trọn điểm chưa nói được nhiều.",
+  },
+  {
+    label: "P2",
+    sub: "Hỏi đáp",
+    value: 80,
+    previous: 76,
+    note: "20/25, gần như đứng yên so với hai lượt trước.",
+  },
+  {
+    label: "P3–P4",
+    sub: "Nghe dài",
+    value: 78,
+    previous: 59,
+    note: "54/69 — phần tiến nhanh nhất của cả bài nghe.",
+  },
+  {
+    label: "P5–P6",
+    sub: "Ngữ pháp",
+    value: 74,
+    previous: 51,
+    note: "34/46. Riêng Part 5 chỉ 20/30, và câu 105–109 sai liền năm câu — chuỗi sai dài nhất của cả bài.",
+  },
+  {
+    label: "P7",
+    sub: "Đoạn đơn",
+    value: 64,
+    previous: 47,
+    note: "25/39 — thấp nhất bài, và là phần cần nhiều câu đúng nhất để kéo điểm Đọc.",
+  },
+  {
+    label: "P7",
+    sub: "Đoạn kép",
+    value: 73,
+    previous: 43,
+    note: "11/15. Chỉ 15 câu nên khoảng tin cậy rất rộng: chênh với đoạn đơn ở đây chưa đủ để kết luận.",
+  },
 ];
 
+/*
+ * Kết quả THẬT của 200 câu, theo đúng số thứ tự trong đề: `o` đúng, `x` sai,
+ * `.` bỏ trống.
+ *
+ * Bản trước sinh bản đồ này bằng cách xáo trộn ngẫu nhiên đúng/sai trong từng
+ * part, nên nó vẽ ra một thứ trông như dữ liệu mà không mang thông tin nào —
+ * và nó giấu mất điều mà bản đồ tồn tại để cho thấy: những câu sai có ĐI THÀNH
+ * CỤM hay không. Ở đây thấy ngay, ví dụ câu 101–110 (đầu Part 5) sai liền năm
+ * câu trong tám.
+ */
+const ANSWER_MAP = [
+  // câu 1–25
+  "oooooooooooxoxooooooooxxo",
+  // câu 26–50
+  "xoooooooxoxoooooooooooooo",
+  // câu 51–75
+  "oooooxxooxxoooxooxoxoooxo",
+  // câu 76–100
+  "ooooooxooxoooxxoooooooxoo",
+  // câu 101–125
+  "ooxoxxxxxooooooxoooxoooox",
+  // câu 126–150
+  "xoooooooxoooooooxoooooooo",
+  // câu 151–175
+  "oxoooooooxoxoxooxxoxxxoox",
+  // câu 176–200
+  "xooxooooooxxoxoooooxxooxo",
+].join("");
+
+const HEATMAP: CellState[] = [...ANSWER_MAP].map((c) =>
+  c === "o" ? "ok" : c === "x" ? "bad" : "blank",
+);
+
+/*
+ * Khoảng số câu của từng part là thứ DUY NHẤT khai ở đây; số câu đúng suy ra từ
+ * `ANSWER_MAP`.
+ *
+ * Bản trước khai số câu đúng thành một danh sách riêng, tách khỏi bản đồ 200 ô —
+ * hai nguồn cho cùng một sự thật, và không có gì bắt chúng khớp nhau. Lúc dựng
+ * trang này chúng đã lệch thật: bảng ghi Part 4 là 24 câu đúng trong khi bản đồ
+ * đếm được 23. Cả hai đều trông hợp lý, và không ai nhìn 200 ô vuông để đếm tay.
+ */
 const PARTS: {
   part: number;
   name: string;
   section: "listening" | "reading";
-  total: number;
-  correct: number;
-  blank: number;
-  time: string;
-  timeNote: string;
+  first: number;
+  last: number;
 }[] = [
-  {
-    part: 1,
-    name: "Photos",
-    section: "listening",
-    total: 6,
-    correct: 5,
-    blank: 0,
-    time: "—",
-    timeNote: "45 phút theo băng",
-  },
-  {
-    part: 2,
-    name: "Question-Response",
-    section: "listening",
-    total: 25,
-    correct: 18,
-    blank: 0,
-    time: "—",
-    timeNote: "nghe theo băng",
-  },
-  {
-    part: 3,
-    name: "Conversations",
-    section: "listening",
-    total: 39,
-    correct: 24,
-    blank: 0,
-    time: "—",
-    timeNote: "nghe theo băng",
-  },
-  {
-    part: 4,
-    name: "Talks",
-    section: "listening",
-    total: 30,
-    correct: 22,
-    blank: 0,
-    time: "—",
-    timeNote: "nghe theo băng",
-  },
-  {
-    part: 5,
-    name: "Incomplete Sentences",
-    section: "reading",
-    total: 30,
-    correct: 25,
-    blank: 0,
-    time: "14:00",
-    timeNote: "mục tiêu 15:00",
-  },
-  {
-    part: 6,
-    name: "Text Completion",
-    section: "reading",
-    total: 16,
-    correct: 12,
-    blank: 0,
-    time: "09:20",
-    timeNote: "mục tiêu 08:00",
-  },
-  {
-    part: 7,
-    name: "Reading Comprehension",
-    section: "reading",
-    total: 54,
-    correct: 33,
-    blank: 3,
-    time: "51:40",
-    timeNote: "mục tiêu 52:00",
-  },
+  { part: 1, name: "Photos", section: "listening", first: 1, last: 6 },
+  { part: 2, name: "Question-Response", section: "listening", first: 7, last: 31 },
+  { part: 3, name: "Conversations", section: "listening", first: 32, last: 70 },
+  { part: 4, name: "Talks", section: "listening", first: 71, last: 100 },
+  { part: 5, name: "Incomplete Sentences", section: "reading", first: 101, last: 130 },
+  { part: 6, name: "Text Completion", section: "reading", first: 131, last: 146 },
+  { part: 7, name: "Reading Comprehension", section: "reading", first: 147, last: 200 },
 ];
 
-const PACING: { label: string; actual: number; target: number; unit: string }[] = [
-  { label: "P5 — mỗi câu", actual: 28, target: 30, unit: "giây" },
-  { label: "P6 — mỗi câu", actual: 35, target: 30, unit: "giây" },
-  { label: "P7 đoạn đơn — mỗi câu", actual: 78, target: 70, unit: "giây" },
-  { label: "P7 đoạn kép — mỗi câu", actual: 105, target: 85, unit: "giây" },
-];
-
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+/** Ô kết quả của một part, cắt thẳng từ bản đồ theo số câu. */
+function cellsOf(part: { first: number; last: number }): CellState[] {
+  return HEATMAP.slice(part.first - 1, part.last);
 }
-
-function shuffle<T>(items: T[], random: () => number): T[] {
-  const out = [...items];
-  for (let i = out.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(random() * (i + 1));
-    [out[i], out[j]] = [out[j]!, out[i]!];
-  }
-  return out;
-}
-
-const HEATMAP: CellState[] = (() => {
-  const random = mulberry32(20260815);
-  const cells: CellState[] = [];
-  for (const row of PARTS) {
-    const answered = row.total - row.blank;
-    const answeredCells = shuffle<CellState>(
-      [...Array(row.correct).fill("ok"), ...Array(answered - row.correct).fill("bad")],
-      random,
-    );
-    cells.push(...answeredCells, ...Array(row.blank).fill("blank"));
-  }
-  return cells;
-})();
 
 function radarPoint(index: number, value: number, cx: number, cy: number, radius: number) {
   const angle = -Math.PI / 2 + (index * Math.PI * 2) / 6;
@@ -181,9 +197,18 @@ function ringPoints(cx: number, cy: number, radius: number, value: number): stri
 }
 
 function Radar() {
-  const cx = 190;
-  const cy = 158;
-  const radius = 112;
+  /*
+   * Khung rộng hơn hình, vì NHÃN mới là thứ chạm mép chứ không phải lục giác.
+   *
+   * Bản mẫu đặt khung 380×330 quanh bán kính 112 và trông vẫn ổn — với dữ liệu
+   * bịa. Số thật có một trục đạt 100%, đỉnh chạm vòng ngoài cùng, và nhãn
+   * "P3–P4 · 78%" ở bên phải bị cắt mất đuôi. Nhãn nằm ngoài bán kính 1,24 lần
+   * và còn kéo dài thêm bề rộng chữ của chính nó, nên khung phải chừa chỗ cho
+   * cả hai.
+   */
+  const cx = 220;
+  const cy = 160;
+  const radius = 108;
   const current = RADAR_AXES.map((axis, i) =>
     radarPoint(i, axis.value, cx, cy, radius).join(","),
   ).join(" ");
@@ -193,7 +218,7 @@ function Radar() {
 
   return (
     <svg
-      viewBox="0 0 380 330"
+      viewBox="0 0 440 344"
       role="img"
       aria-label="Biểu đồ lục giác điểm thành thạo sáu nhóm kỹ năng"
       className="w-full"
@@ -239,7 +264,7 @@ function Radar() {
       ))}
 
       {RADAR_AXES.map((axis, i) => {
-        const [x, y] = radarPoint(i, 126, cx, cy, radius);
+        const [x, y] = radarPoint(i, 124, cx, cy, radius);
         const anchor = x > cx + 8 ? "start" : x < cx - 8 ? "end" : "middle";
         return (
           <text key={axis.sub} x={x} y={y} textAnchor={anchor} className="fill-ink">
@@ -260,8 +285,14 @@ function ScoreGauge() {
   const value = ATTEMPT.totalScaled;
   const max = 990;
   const target = ATTEMPT.target;
-  const cx = 150;
-  const cy = 128;
+  /*
+   * Mục tiêu 700 nằm ở khoảng 53° — tức là ngay TRÊN cung, không phải ngoài rìa
+   * như mốc 800 của dữ liệu mẫu. Nhãn cũ neo thẳng xuống dưới vạch nên nó đè lên
+   * chính đường cung. Giờ nhãn đi theo hướng của vạch và neo trái/phải theo phía,
+   * và khung rộng ra để chứa nó.
+   */
+  const cx = 170;
+  const cy = 132;
   const radius = 104;
 
   // Nửa vòng tròn: 180° (trái) → 0° (phải), phần trăm điểm chạy theo đó.
@@ -284,10 +315,14 @@ function ScoreGauge() {
     cx + (radius + 13) * Math.cos(targetAngle),
     cy - (radius + 13) * Math.sin(targetAngle),
   ] as const;
+  const labelAt = [
+    cx + (radius + 24) * Math.cos(targetAngle),
+    cy - (radius + 24) * Math.sin(targetAngle),
+  ] as const;
 
   return (
     <svg
-      viewBox="0 0 300 148"
+      viewBox="0 0 340 165"
       role="img"
       aria-label={`Tổng điểm ${value} trên 990, mục tiêu ${target}`}
       className="w-full"
@@ -306,9 +341,10 @@ function ScoreGauge() {
         className="stroke-ok"
       />
       <text
-        x={tickOuter[0]}
-        y={tickOuter[1] + 22}
-        textAnchor="middle"
+        x={labelAt[0]}
+        y={labelAt[1]}
+        textAnchor={labelAt[0] > cx + 6 ? "start" : labelAt[0] < cx - 6 ? "end" : "middle"}
+        dominantBaseline="middle"
         className="fill-ok text-[11px] font-semibold"
       >
         mục tiêu {target}
@@ -325,8 +361,9 @@ function ScoreGauge() {
 }
 
 export default function PreviewAttemptResultPage() {
-  const totalCorrect = PARTS.reduce((sum, row) => sum + row.correct, 0);
-  const totalQuestions = PARTS.reduce((sum, row) => sum + row.total, 0);
+  const totalCorrect = HEATMAP.filter((cell) => cell === "ok").length;
+  const totalQuestions = HEATMAP.length;
+  const short = ATTEMPT.target - ATTEMPT.totalScaled;
   const strengths = RADAR_AXES.filter((axis) => axis.value >= 75);
   const weaknesses = [...RADAR_AXES].sort((a, b) => a.value - b.value).slice(0, 2);
 
@@ -335,7 +372,7 @@ export default function PreviewAttemptResultPage() {
       <div className="flex flex-wrap items-center gap-2">
         <FlaskConical size={15} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
         <span className="text-label font-semibold uppercase tracking-wide text-ink-muted">
-          Trang xem trước — dữ liệu mẫu, không kết nối máy chủ
+          Trang xem trước — số đo từ một lượt làm bài thật, trang vẫn không gọi API
         </span>
       </div>
 
@@ -404,25 +441,37 @@ export default function PreviewAttemptResultPage() {
             <span className="text-label font-semibold uppercase tracking-wide">Mục tiêu</span>
           </div>
           <p className="mt-3 font-data text-readout leading-none tabular-nums">{ATTEMPT.target}</p>
-          <p className="mt-2 text-small text-alert">
-            còn thiếu{" "}
-            <span className="font-data font-semibold">{ATTEMPT.target - ATTEMPT.totalScaled}</span>{" "}
-            điểm
-          </p>
+          {/* HAI trạng thái, không phải một. Bản mẫu cũ chỉ có "còn thiếu N
+              điểm" vì con số bịa ra luôn thấp hơn mục tiêu bịa ra; lượt thật
+              đầu tiên chạy qua đây đã vượt mục tiêu, và câu "còn thiếu −30
+              điểm" là thứ sẽ hiện ra nếu không ai nghĩ tới nhánh này. */}
+          {short > 0 ? (
+            <p className="mt-2 text-small text-alert">
+              còn thiếu <span className="font-data font-semibold">{short}</span> điểm
+            </p>
+          ) : (
+            <p className="mt-2 text-small text-ok">
+              đã vượt <span className="font-data font-semibold">{-short}</span> điểm
+            </p>
+          )}
           <div className="mt-3 flex items-center gap-2 text-small text-ink-muted">
             <Clock size={14} strokeWidth={1.75} aria-hidden />
             <span className="font-data tabular-nums">
               {ATTEMPT.durationUsed}/{ATTEMPT.durationLimit} phút
             </span>
-            <span>— hết giờ</span>
+            <span>— còn {ATTEMPT.durationLimit - ATTEMPT.durationUsed} phút</span>
           </div>
         </Panel>
       </div>
 
       <div className="mt-6">
-        <Alert tone="warn">
-          Bài thi kết thúc đúng giờ và còn {ATTEMPT.blankCount} câu chưa kịp trả lời ở cuối Part 7 —
-          tốc độ đọc đoạn kép đang là điểm nghẽn lớn nhất.
+        <Alert tone="ok">
+          Trả lời hết 200 câu và còn dư {ATTEMPT.durationLimit - ATTEMPT.durationUsed} phút. Khoảng
+          cách với mục tiêu {ATTEMPT.target} không còn nằm ở tốc độ — nó nằm ở Part 5 và Part 7, hai
+          phần đóng góp {200 - totalCorrect} câu sai thì mất{" "}
+          {cellsOf(PARTS[4]!).filter((c) => c !== "ok").length +
+            cellsOf(PARTS[6]!).filter((c) => c !== "ok").length}{" "}
+          câu.
         </Alert>
       </div>
 
@@ -444,7 +493,7 @@ export default function PreviewAttemptResultPage() {
                   className="inline-block h-0.5 w-5 border-t border-dashed border-accent-uk"
                   aria-hidden
                 />
-                trung bình 3 lượt trước
+                trung bình 2 lượt trước
               </span>
             </div>
           </div>
@@ -471,8 +520,9 @@ export default function PreviewAttemptResultPage() {
                 </li>
               ))}
               <li className="text-small text-ink-muted">
-                Ngữ pháp tăng {RADAR_AXES[3]!.value - RADAR_AXES[3]!.previous} điểm phần trăm so với
-                trước — chiến lược luyện Part 5 đang hiệu quả.
+                Nghe dài tăng {RADAR_AXES[2]!.value - RADAR_AXES[2]!.previous} điểm phần trăm và ngữ
+                pháp tăng {RADAR_AXES[3]!.value - RADAR_AXES[3]!.previous} — hai mức tăng lớn nhất
+                giữa lượt này và trung bình hai lượt trước.
               </li>
             </ul>
           </Panel>
@@ -495,11 +545,7 @@ export default function PreviewAttemptResultPage() {
                       {axis.value}%
                     </span>
                   </span>
-                  <span className="mt-0.5 block text-ink-muted">
-                    {axis.sub === "Đoạn kép"
-                      ? "Sai nhiều ở câu suy luận và tìm chi tiết rải giữa hai văn bản; thời gian mỗi câu vượt mục tiêu 20 giây."
-                      : "Mất dấu sau lượt nói thứ hai của người nói; cần luyện nghe nối giữa các câu."}
-                  </span>
+                  <span className="mt-0.5 block text-ink-muted">{axis.note}</span>
                 </li>
               ))}
             </ul>
@@ -513,26 +559,30 @@ export default function PreviewAttemptResultPage() {
       </div>
       <Panel className="divide-y divide-rule">
         {PARTS.map((row) => {
-          const answered = row.total - row.blank;
-          const share = answered ? Math.round((row.correct / answered) * 100) : 0;
+          const cells = cellsOf(row);
+          const total = cells.length;
+          const correct = cells.filter((cell) => cell === "ok").length;
+          const blank = cells.filter((cell) => cell === "blank").length;
+          const answered = total - blank;
+          const share = answered ? Math.round((correct / answered) * 100) : 0;
           return (
             <div
               key={row.part}
-              className="grid gap-2 p-4 sm:grid-cols-[8rem_1fr_7rem_7rem] sm:items-center"
+              className="grid gap-2 p-4 sm:grid-cols-[9rem_1fr_5rem] sm:items-center"
             >
               <div>
                 <p className="text-small font-semibold">
                   Part {row.part} · {row.name}
                 </p>
                 <p className="text-label uppercase tracking-wide text-ink-faint">
-                  {row.section === "listening" ? "Nghe" : "Đọc"}
+                  {row.section === "listening" ? "Nghe" : "Đọc"} · câu {row.first}–{row.last}
                 </p>
               </div>
               <div className="max-w-md">
                 <Meter
-                  value={row.correct}
-                  max={row.total}
-                  label={`${row.correct}/${row.total} đúng${row.blank ? ` · ${row.blank} bỏ trống` : ""}`}
+                  value={correct}
+                  max={total}
+                  label={`${correct}/${total} đúng${blank ? ` · ${blank} bỏ trống` : ""}`}
                 />
               </div>
               <p
@@ -542,10 +592,6 @@ export default function PreviewAttemptResultPage() {
                 )}
               >
                 {share}%
-              </p>
-              <p className="text-small text-ink-muted">
-                <span className="font-data tabular-nums">{row.time}</span>
-                <span className="block text-label text-ink-faint">{row.timeNote}</span>
               </p>
             </div>
           );
@@ -600,43 +646,38 @@ export default function PreviewAttemptResultPage() {
       <div className="mt-4">
         <SectionHeader title="Tốc độ làm phần Đọc" />
       </div>
-      <Panel className="divide-y divide-rule">
-        {PACING.map((row) => {
-          const over = row.actual > row.target;
-          const pct = Math.min(
-            100,
-            Math.round((row.actual / Math.max(row.actual, row.target)) * 100),
-          );
-          const targetPct = Math.min(
-            100,
-            Math.round((row.target / Math.max(row.actual, row.target)) * 100),
-          );
-          return (
-            <div key={row.label} className="p-4">
-              <div className="flex items-baseline justify-between text-small">
-                <span className="font-semibold">{row.label}</span>
-                <span className={cx("font-data tabular-nums", over ? "text-alert" : "text-ok")}>
-                  {row.actual}s / mục tiêu {row.target}s
-                  {over ? ` · vượt ${row.actual - row.target}s` : ""}
-                </span>
-              </div>
-              <div className="relative mt-2 h-2 w-full bg-recess">
-                <div
-                  className={cx("h-full", over ? "bg-alert/80" : "bg-ok/75")}
-                  style={{ width: `${over ? 100 : pct}%` }}
-                />
-                <span
-                  className="absolute top-[-3px] h-3.5 w-0.5 bg-ink"
-                  style={{ left: `${over ? targetPct : 100}%` }}
-                  aria-hidden
-                />
-              </div>
-              <p className="mt-1.5 text-label uppercase tracking-wide text-ink-faint">
-                vạch đen = mục tiêu · {row.unit}/câu
-              </p>
-            </div>
-          );
-        })}
+      <Panel className="p-5">
+        {/*
+         * Khối này từng vẽ bốn thanh "giây mỗi câu" so với mục tiêu. Không con
+         * số nào trong đó dựng lại được từ dữ liệu thật, và đó là phát hiện
+         * đáng giá nhất của việc thay số bịa bằng số đo: hệ thống hiện KHÔNG
+         * ghi lại thời gian làm từng câu.
+         */}
+        <p className="text-small text-ink-muted">
+          Chưa dựng được từ dữ liệu thật. Cần hai thứ mà lược đồ hiện tại không có:
+        </p>
+        <ul className="mt-3 space-y-2 text-small text-ink-muted">
+          <li>
+            <span className="font-semibold text-ink">Mốc thời gian trả lời còn giữ lại.</span>{" "}
+            <span className="font-data text-[0.8125rem]">attempt_item.answered_at</span> bị ghi đè
+            mỗi lần đổi đáp án, nên nó nói lần cuối chạm vào câu đó chứ không nói câu đó tốn bao lâu
+            — và đổi ý một lần là mất luôn dấu vết lần đầu.
+          </li>
+          <li>
+            <span className="font-semibold text-ink">Đồng hồ theo part.</span>{" "}
+            <span className="font-data text-[0.8125rem]">attempt_part</span> chỉ có hai cột{" "}
+            <span className="font-data text-[0.8125rem]">(attempt_id, part)</span> — nó trả lời
+            &ldquo;lượt này gồm những part nào&rdquo;, không phải &ldquo;ở part này bao lâu&rdquo;.
+          </li>
+        </ul>
+        <p className="mt-3 text-small text-ink-muted">
+          Cho tới lúc đó, con số duy nhất về thời gian mà hệ thống thật sự biết là tổng thời gian
+          của cả lượt:{" "}
+          <span className="font-data tabular-nums text-ink">
+            {ATTEMPT.durationUsed}/{ATTEMPT.durationLimit} phút
+          </span>
+          .
+        </p>
       </Panel>
 
       {/* --- nhận xét gợi ý ---------------------------------------------------- */}
@@ -651,22 +692,26 @@ export default function PreviewAttemptResultPage() {
             <Tag tone="action">AI</Tag>
           </div>
           <p className="text-small text-ink-muted">
-            Em nghe tốt dạng ngắn (Part 1–2) và nắm chắc ngữ pháp Part 5, nhưng hụt hơi ở nghe hội
-            thoại dài và đọc đoạn kép. Khoảng cách tới mục tiêu {ATTEMPT.target} chủ yếu nằm ở hai
-            vùng đó — nếu kéo mỗi vùng lên 70% là đủ bù {ATTEMPT.target - ATTEMPT.totalScaled} điểm.
+            Em đã vượt mục tiêu {ATTEMPT.target} và làm hết bài sớm {""}
+            {ATTEMPT.durationLimit - ATTEMPT.durationUsed} phút, nên việc tiếp theo không phải là
+            luyện nhanh hơn. Điểm Nghe {ATTEMPT.listeningScaled} đang kéo tổng điểm, còn Đọc{" "}
+            {ATTEMPT.readingScaled} thì đứng lại ở hai chỗ: Part 5 (20/30) và Part 7 đoạn đơn
+            (25/39). Riêng câu 105–109 sai liền năm câu — chuỗi dài nhất của cả bài — đáng xem lại
+            theo cụm chứ không theo từng câu — sai liền nhau thường là một điểm ngữ pháp chứ không
+            phải bảy lần đãng trí.
           </p>
           <div className="flex flex-wrap gap-2">
             <ButtonLink href="/learn/tests" size="sm">
-              Luyện Part 3–4 nghe dài
+              Luyện Part 5 ngữ pháp
             </ButtonLink>
             <ButtonLink href="/learn/tests" size="sm" variant="secondary">
-              Luyện Part 7 đoạn kép
+              Luyện Part 7 đoạn đơn
             </ButtonLink>
             <Link
-              href="/dashboard"
+              href="/profile"
               className="text-small font-semibold text-action-ink underline-offset-2 hover:underline"
             >
-              Đặt kế hoạch 14 ngày tới mục tiêu 800
+              Nâng mục tiêu lên 800
             </Link>
           </div>
         </div>
@@ -674,9 +719,15 @@ export default function PreviewAttemptResultPage() {
 
       <div className="mt-8">
         <Alert tone="warn">
-          <strong>Dữ liệu mẫu.</strong> Trang này chỉ dùng để duyệt giao diện — mọi con số là giả
-          lập, kể cả lục giác, bản đồ câu và nhận xét trợ giảng. Khi nối backend thật, các khối sẽ
-          đọc từ kết quả lượt làm và nhãn kỹ năng (72 mã theo taxonomy) thay vì dữ liệu cứng.
+          <strong>Số thật, nhưng viết cứng — và người làm bài là máy.</strong> Điểm, số câu đúng
+          từng part, bản đồ 200 câu và cả hai lớp của lục giác đều đo từ ba lượt đã nộp của một tài
+          khoản trên stack dev, chấm bằng chính <span className="font-data">score_attempt</span> và
+          bảng <span className="font-data">score_conversion</span>. Hai điều trang này KHÔNG có:
+          người làm bài là một bộ sinh số ngẫu nhiên đặt trước tỉ lệ đúng, nên chênh lệch nhỏ giữa
+          hai trục là nhiễu chứ không phải chân dung ai; và phần &ldquo;Trợ giảng nhận xét&rdquo; do
+          người viết tay theo đúng các con số ở trên, chưa có mô hình nào sinh ra nó. Khi nối
+          backend, các khối sẽ đọc thẳng từ lượt làm — trừ khối tốc độ đọc, vốn còn thiếu dữ liệu ở
+          tầng lược đồ.
         </Alert>
       </div>
     </div>

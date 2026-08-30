@@ -8,13 +8,13 @@
 
 | Thứ | Số |
 |---|---|
-| Bảng Postgres | **56** (50 migrations, `001` → `050`) |
+| Bảng Postgres | **57** (51 migrations, `001` → `051`) |
 | Router có endpoint | **21**, **184** thao tác HTTP (+1 nhận upload local, chỉ dev) |
 | Trang Next.js (`page.tsx`) | **48**; components 54, lib 15 (122 tệp TS/TSX) |
 | Contract sinh ra | `api-types.ts` ~12 600 dòng |
-| Test backend | **903** collected (901 chạy, 2 `external` bị deselect) trong 55 tệp |
+| Test backend | **917** collected (915 chạy, 2 `external` bị deselect) trong 56 tệp |
 | E2E Playwright | 8 spec, chạy chống docker stack đang sống |
-| `app/services/` | 35 module + 9 trong `llm/` |
+| `app/services/` | 37 module + 9 trong `llm/` |
 | `app/content/` | 24 module + 9 trong `exam/` |
 
 ## 1. Monorepo
@@ -46,7 +46,7 @@
 | | `practice` (3) | đọc bộ đề/đề/cấu trúc — công khai, không đòi đăng nhập |
 | | `attempt` (6) | làm bài: bắt đầu, lưu câu, gắn cờ, nộp, xem lại — **đáp án không rời máy chủ khi đang thi** |
 | | `coach` (4) | giải thích câu làm sai (chỉ sau khi nộp) + hội hỏi đáp; đọc từ cache bảng |
-| | `assistant` (2) | trợ lý trang web: hỏi đáp về chính TOEIC Pilot và tiến độ của người hỏi — ngữ cảnh là bản hướng dẫn viết tay cộng số thật, **không neo vào lượt làm bài** |
+| | `assistant` (2) | trợ lý trang web: hỏi đáp dựa trên knowledge base (`knowledge_chunk`, truy hồi vector Pinecone / lexical dự phòng) và **tự gọi công cụ** tra số cá nhân — không neo vào lượt làm bài |
 | | `appearance` (2) | nền lưới động: một đọc công khai, một ghi admin |
 | Góc thú | `pet` (11) | trạng thái thú, hành động, loài, gacha, chạm mặt (ADR-010/012/013) |
 | | `petland_map` (2) | đọc/ghi bản đồ — 204 khi chưa ai ghi đè (`petland_map` là override của `public/pet/map.json`) |

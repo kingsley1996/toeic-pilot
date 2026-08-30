@@ -1212,6 +1212,42 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4ai. Trợ lý biết dùng tài liệu và biết tự tra số · ✅ XONG (2026-08-29)
+
+Hai lát nối tiếp 4ah: Trợ lý trả lời dựa trên **knowledge base về chính trang** thay vì một khối SITE_GUIDE cứng, và tự **GỌI CÔNG CỤ** lấy số cá nhân thay vì nhận cả đống số sẵn trong ngữ cảnh.
+
+**Knowledge base là FILE trong git, bảng chỉ là bản tính sẵn.** `content/kb/*.md` — frontmatter `ref`/`title`/`keywords` cộng thân bài — đồng bộ vào bảng `knowledge_chunk` (migration `051`) bằng `app/content/sync_kb.py`; file mất khỏi thư mục là hàng bị xoá, và `embed_kb` dọn luôn vector mất gốc trên Pinecone (`list_ids` + `delete`) — không dọn thì "xoá tài liệu" chỉ xoá được một nửa. Nội dung đi qua review như mã. Lỗi thật ngày đầu: `DEFAULT_DIR` trỏ nhầm `app/content/kb` (rỗng) và sync XOÁ SẠCH 16 hàng — đã sửa đường dẫn và ghi vết trong comment, kèm một test chặn parse file hỏng.
+
+**Truy hồi lai: vector là chính, lexical là đường lui.** Embeddings qua cổng tương thích OpenAI của Google (`gemini-embedding-001`, 3072 chiều, khoá `GEMINI_API_KEY` tái dùng) — b.AI TỪ CHỐI embeddings ("HTTP node only allows..."), quyết định đó là do thử thật. Vector nằm ở **Pinecone** (lựa chọn của người vận hành; pgvector đã bật nhưng giữ nguyên) — adapter httpx thẳng không SDK, đúng khuôn `openrouter.py`; index serverless tự tạo bằng `embed_kb --create-index`, chiều lấy từ vector thật chứ không từ hằng số. `search_knowledge` thử vector trước, MỌI hỏng (mất khoá, sập, index chưa có) thì log warning và rơi về tra lexical trong Python — Pinecone là phụ thuộc mềm, cùng hạng Redis ở `rate_limit_anonymous`. Suite chặn đường vector ra mạng bằng cách để trống hai khoá trong `conftest.py` — một lượt gọi mạng trong test là một test phải biết mình đang test gì.
+
+**Bốn công cụ tra dữ liệu CỦA CHÍNH NGƯỜI HỌC:** `trang_thai_hoc_tap`, `luot_thi_gan_day`, `vi_ruby`, `huy_hieu` — schema đúng giao thức OpenAI, thực thi bằng `profile_stats`/`progression`/`ruby`/`user_badge`. Tool KHÔNG nhận `user_id`: nó đọc user của request, nên không tồn tại đường đọc dữ liệu người khác. `LLMRequest` thêm `messages` (vòng tool) và `tools`; cả bốn adapter đều passthrough + parse `tool_calls` (ollama trả arguments là DICT, phải serialize lại). Vòng tool chặn 3 lượt gọi model — hết 3 vẫn xin tool thì hỏng TOÀN LƯỢT, vì câu trả lời thiếu số là câu bịa. JSON hỏng từ model là DỮ LIỆU trả về cho model (nó tự sửa), không phải exception. Số cá nhân rời khỏi ngữ cảnh tĩnh: câu không liên quan tiết kiệm cả đống token, câu có liên quan nhận số THẬT lúc hỏi.
+
+**Đếm chi phí vòng tool đi qua `Gateway` như mọi lượt gọi** — mỗi vòng một hàng `ai_interaction`, `ai_budget` chặn trên tổng.
+
+**Gộp lại bản review d9c1e92 bị ghi đè:** lượt viết tool loop đã đè mất `_find`/`_open` (get-or-create chống đua) — đã gộp lại: tìm cuộc trước, gọi model, mở cuộc SAU khi gọi (model hỏng không để lại cuộc rỗng), `IntegrityError` đọc lại. Test chống đua với `Barrier` trong `test_concurrency.py` xanh lại.
+
+### Kiểm
+
+`pytest` **913 passed / 2 deselected**, trong đó 23 test mới (6 registry provider, 10 knowledge, 7 vòng tool); ruff + mypy strict sạch. Chạy THẬT đầu-cuối trên dev stack với `bai/glm-5.3-flash`: câu quy tắc → chunk đúng + trích dẫn `[dictation]`; câu cá nhân → tool trả số thật (19 XP, 4 từ đến hạn). Lỗi được bắt nhờ chạy thật: Google trả `data` KHÔNG có `index` (giữ thứ tự phản hồi khi thiếu), và `max_tokens` 900 bị model ăn hết vào thinking rồi CẮT GIỮA CÂU (`finish_reason=length`, đo thật) — trần lên 3000; cap cao không tốn thêm vì tiền tính theo token thật sinh ra.
+
+### Ba bug review bắt được sau khi lát xong (2026-08-30)
+
+- **Dry-run của `sync_kb` GHI THẬT.** `sync_knowledge` tự `db.commit()` bên trong, mà `Session.commit()` commit giao dịch ngoài cùng và thả savepoint — `rollback()` sau đó là vô dụng; `begin_nested` không cứu được. Chạy thật chứng minh: sau dry-run, hàng vẫn nằm trong bảng. Sửa: sync không commit, caller commit (`sync_kb` đường thật, `embed_kb`); dry-run chỉ còn sync + rollback. Kèm phát hiện `vars(result)` trên dataclass `slots=True` raise TypeError — dry-run chưa từng chạy được trọn.
+- **Vector trả ref bảng không còn thì không rơi về lexical.** `search_knowledge` lọc ref mất gốc rồi trả `[]` mà không thử lexical — "xoá file chưa embed lại" biến thành "không có tài liệu". Sửa: mapped rỗng thì rơi xuống lexical.
+- **`embed_kb` quảng cáo `[--dry-run]` mà argparse không có cờ** — đã bỏ khỏi docstring.
+
+Hai test mới chặn (mỗi bug một test, đã kiểm ĐỎ khi bỏ fix): `test_SYNC_khong_tu_COMMIT` và `test_TRA_VECTOR_ref_mat_GOC_thi_RO_ve_LEXICAL`. Suite sau sửa: **917 passed / 2 deselected**, ruff + mypy sạch.
+
+### Ba bug nữa từ review 2026-08-30
+
+- **`_tool_recent_attempts` — `int(args.get("limit", 3))` không bọc try → model gửi arg kiểu sai thành 500.** `_execute` chỉ bọc `json.loads` trong try, `impl` nằm ngoài. Sửa: bọc `impl(db, user, args)` trong try/except và trả error về model, nhất quán với thiết kế "JSON hỏng là dữ liệu, không phải exception". Kèm test `test_CONG_CU_LOI_thi_tra_LOI_ve_model_khong_phai_500`.
+- **`PineconeVectorStore.list_ids` — `pagination_token` sai tên.** Pinecone Data Plane API dùng `paginationToken` (camelCase), không phải `pagination_token`. Sửa: `pagination_token` → `paginationToken`. Với namespace nhỏ dưới 100 vector thì không sao; với lớn hơn thì không phân trang được.
+- **`knowledge_chunk.updated_at` không bao giờ được ghi trên sync.** Model có `server_default=func.now()` nhưng không có `onupdate`. Các model khác trong project dùng `onupdate=func.now()`. Sửa: thêm `onupdate=func.now()` vào cột. Kèm test `test_SYNC_sua_noi_dung_thi_MOI_updated_at` (đã kiểm đỏ khi bỏ fix).
+
+Còn mở: đường vector chưa có ngưỡng cosine (câu lạc đề vẫn nhận đủ 4 chunk khi có khoá — cần đo thật trên `gemini-embedding-001`), và timeout request-path 60s+30s+30s ≈ 120s worst case trước khi rơi lexical.
+
+---
+
 ## 4ah. Trợ lý AI trang web · ✅ XONG (2026-08-29)
 
 Tính năng AI thứ hai của lớp học viên, và lần này **không neo vào lượt làm bài**: người học hỏi về chính trang web — tính năng nào ở đâu, một quy tắc hoạt động ra sao — và về tiến độ của chính họ. Bốn mảnh: `services/assistant.py` (ngữ cảnh + gọi model), `routes/assistant.py` (`POST/GET /api/v1/assistant/chat`), migration `050` (`coach_conversation.attempt_id` thành nullable), và màn `/learn/assistant` kèm mục "Trợ lý AI" ở sidebar. Feature key riêng `assistant_chat` — tắt trợ lý không tắt coach, cấu hình ở `/admin/ai` như mọi tính năng AI khác.

@@ -4,6 +4,13 @@ import os
 # from settings.database_url at import time.
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 
+# Đường RAG vector của knowledge base đọc khoá từ .env thật; để trống ở đây là
+# khoá rỗng → `search_knowledge` rơi về lexical ngay từ phép kiểm đầu, và KHÔNG
+# có một lượt gọi mạng nào ra Google/Pinecone trong toàn bộ suite. Test muốn
+# thử đường vector thì monkeypatch settings với bản giả của nó.
+os.environ["GEMINI_API_KEY"] = ""
+os.environ["PINECONE_API_KEY"] = ""
+
 from collections.abc import Callable, Generator  # noqa: E402
 
 import pytest  # noqa: E402

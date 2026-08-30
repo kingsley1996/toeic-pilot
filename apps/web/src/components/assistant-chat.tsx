@@ -10,6 +10,7 @@ import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cx } from "@/components/ui";
+import { MarkdownLite } from "@/components/markdown-lite";
 import { apiFetch } from "@/lib/api";
 
 // Hình dạng phản hồi đến TỪ HỢP ĐỒNG, không gõ tay lại. `apiFetch<T>` nhận
@@ -150,7 +151,7 @@ export function AssistantChat({ token }: { token: string | null }) {
               message.role === "user" ? "ml-auto bg-recess" : "border border-rule bg-panel",
             )}
           >
-            {message.content}
+            <MarkdownLite text={message.content} />
           </div>
         ))}
         {busy && (

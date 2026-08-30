@@ -1,6 +1,22 @@
 services:
   postgres:
     image: pgvector/pgvector:pg17
+    # Mọi INSERT/UPDATE/DELETE/TRUNCATE/DDL đều ghi vào `docker logs`. DB dev
+    # bị phẫu thuật trực tiếp nhiều (migration, dọn test, script) và đã có một
+    # lần dữ liệu biến mất không tra được ra ai — từ giờ mọi lệnh ghi đều để lại
+    # vết: lúc nào, user nào, database nào. SELECT không log — nó không phá dữ
+    # liệu, và log hết SELECT là đốt đĩa vô ích.
+    command:
+      - postgres
+      - -c
+      - log_statement=mod
+      - -c
+      - log_line_prefix=%m [%p] %u@%d
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-toeic}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-toeic}

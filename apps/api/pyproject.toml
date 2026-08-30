@@ -43,6 +43,13 @@ content = [
     "mutagen>=1.47.0",
     "pillow>=11.0.0",
 ]
+# Vòng agent viết-và-phê của pipeline sinh đề (planning/AGENTIC-STACK-PLAN.md).
+# Extra RIÊNG chứ không gộp vào `content`: hai lý do cài khác nhau, và chỉ ảnh
+# worker cần nó. Ảnh API build không kèm extra nào, nên `app.content.exam_agents`
+# cũng nằm sau cùng một ranh giới mà `tests/test_content_isolation.py` canh.
+agents = [
+    "langgraph>=1.2,<2",
+]
 
 [build-system]
 requires = ["hatchling"]

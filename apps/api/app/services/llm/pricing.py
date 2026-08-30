@@ -47,6 +47,12 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # Không mã hoá ngày vào bảng: một bảng giá tự đổi theo lịch là thứ không ai
     # đọc ra được từ một con số, và nó sẽ đúng đúng một lần rồi sai mãi.
     ("google", "gemini-3.7-flash"): (Decimal("0.75"), Decimal("3.75"), None),
+    # Tra cùng trang, ngày 2026-08-24. Cùng đơn giá vào/ra với 3.7-flash, nhưng
+    # trang có ghi RIÊNG giá đọc lại từ cache ($0.075) nên hàng này điền cả ba.
+    # Thêm vào vì 3.7-flash trả 503 "high demand" liên tục ở thời điểm đó, còn
+    # 3.6 thì phục vụ bình thường — và `cost_usd` TỪ CHỐI một model chưa có giá
+    # thay vì ghi 0, nên không thêm là không chạy được.
+    ("google", "gemini-3.6-flash"): (Decimal("0.75"), Decimal("3.75"), Decimal("0.075")),
     ("google", "gemini-3.5-flash"): (Decimal("1.50"), Decimal("9.00"), None),
     ("openrouter", "openai/gpt-oss-20b:free"): (Decimal("0"), Decimal("0"), Decimal("0")),
     # Hàng RIÊNG cho đúng một id, không phải một luật "hậu tố -free thì giá 0".

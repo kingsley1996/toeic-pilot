@@ -81,6 +81,17 @@ class Settings(BaseSettings):
     # `localhost` khi chạy pipeline từ dòng lệnh trên máy; container phải dùng
     # `host.docker.internal`. Là cấu hình chính vì lý do đó.
     ollama_base_url: str = "http://localhost:11434"
+    # --- Knowledge base & vector store (RAG của Trợ lý) ----------------------
+    # Embeddings qua cổng tương thích OpenAI của Google — `GEMINI_API_KEY` là
+    # cùng khoá của `google_api_key` ở trên, dùng lại chứ không phải khoá thứ hai.
+    embeddings_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai"
+    embeddings_model: str = "gemini-embedding-001"
+    # Vector store là Pinecone (lựa chọn của người vận hành, 2026-08-29) —
+    # pgvector đã bật sẵn nhưng chưa dùng; Pinecone được chọn thì Postgres giữ
+    # NỘI DUNG còn vector nằm ở ngoài. Index tạo 3072 chiều theo đúng model
+    # embeddings ở trên; đổi model là phải tạo lại index và embed lại toàn bộ.
+    pinecone_api_key: str | None = None
+    pinecone_index_name: str = "toeic-pilot-kb"
     secret_key: str = DEFAULT_SECRET_KEY
     access_token_expire_minutes: int = 60 * 24 * 7
     algorithm: str = "HS256"

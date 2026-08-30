@@ -4,6 +4,7 @@ import { API_ROUTES, type ChatMessagePublic, type ChatTurn } from "@toeic-pilot/
 import { MessageCircle, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { MarkdownLite } from "@/components/markdown-lite";
 import { cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 
@@ -177,7 +178,7 @@ export function CoachChat({ attemptId, token }: { attemptId: string; token: stri
                 message.role === "user" ? "ml-auto bg-recess" : "border border-rule bg-panel",
               )}
             >
-              {message.content}
+              <MarkdownLite text={message.content} />
             </div>
           ))}
           {busy && (

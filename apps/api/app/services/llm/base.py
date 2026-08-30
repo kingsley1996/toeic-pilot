@@ -13,7 +13,7 @@ vào đường phục vụ request.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Any, Protocol
 
 __all__ = [
     "FeatureDisabled",
@@ -22,7 +22,9 @@ __all__ = [
     "LLMRequest",
     "LLMResult",
     "Provider",
+    "ToolCall",
     "Usage",
+    "tool_calls_from_openai",
 ]
 
 
@@ -82,6 +84,13 @@ class LLMRequest:
 
     `system` cũng là phần cố định giữa các lượt gọi, nên nó là thứ prompt
     caching thật sự tiết kiệm được.
+
+    `messages` cho VÒNG LẶP TOOL: khi có, nó thay thế cặp system/user trong
+    payload — và luật an toàn chuyển sang được thi hành ở NƠI DỰNG messages
+    (`services/assistant.py`): chữ người học chỉ bao giờ ở vai `user`, phần
+    `system` do ta viết toàn phần. Adapter không dựng được luật này khi nhận
+    sẵn danh sách, nên ai thêm nơi gọi thứ hai với `messages` phải đọc lại
+    docstring đó.
     """
 
     system: str
@@ -90,6 +99,39 @@ class LLMRequest:
     temperature: float = 0.0
     # Schema JSON cho structured output. `None` nghĩa là trả văn bản thường.
     schema: dict[str, object] | None = None
+    # Danh sách công cụ, đúng schema `tools` của OpenAI Chat Completions —
+    # giao thức mà các adapter tương thích đều nói.
+    tools: list[dict[str, object]] | None = None
+    # Toàn bộ hội thoại khi chạy vòng tool; `None` nghĩa là chỉ cặp system/user.
+    messages: list[dict[str, object]] | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ToolCall:
+    """Một lượt model muốn gọi công cụ. `arguments` là JSON THÔ — parse là việc
+    của người thực thi, vì một JSON hỏng là kết quả trả về cho model (nó tự sửa
+    được), chứ không phải một exception đâm chết cả lượt."""
+
+    id: str
+    name: str
+    arguments: str
+
+
+def tool_calls_from_openai(message: dict[str, Any]) -> tuple[ToolCall, ...]:
+    """Đọc `message.tool_calls` của giao thức OpenAI — dùng chung cho mọi
+    adapter nói giao thức đó (openai_compatible, openrouter); không có thì
+    tuple rỗng."""
+    out: list[ToolCall] = []
+    for call in message.get("tool_calls") or []:
+        fn = call.get("function") or {}
+        out.append(
+            ToolCall(
+                id=str(call.get("id") or ""),
+                name=str(fn.get("name") or ""),
+                arguments=str(fn.get("arguments") or "{}"),
+            )
+        )
+    return tuple(out)
 
 
 @dataclass(frozen=True, slots=True)
@@ -103,6 +145,9 @@ class LLMResult:
     # tỉ lệ phải thử lại chính là tín hiệu nói model ở tầng này có đủ dùng không.
     retries: int = 0
     raw: dict[str, object] = field(default_factory=dict)
+    # Model muốn gọi công cụ thay vì trả lời — vòng lặp ở nơi gọi thực thi rồi
+    # gọi lại với kết quả, cho tới khi model trả văn bản.
+    tool_calls: tuple[ToolCall, ...] = ()
 
 
 class Provider(Protocol):

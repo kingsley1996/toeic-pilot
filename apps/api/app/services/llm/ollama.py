@@ -21,7 +21,7 @@ from typing import Any
 
 import httpx
 
-from app.services.llm.base import LLMError, LLMRequest, LLMResult, Usage
+from app.services.llm.base import LLMError, LLMRequest, LLMResult, ToolCall, Usage
 
 __all__ = ["OllamaProvider"]
 
@@ -37,20 +37,29 @@ class OllamaProvider:
         self._timeout = timeout_s
 
     def complete(self, request: LLMRequest, model: str) -> LLMResult:
-        payload: dict[str, Any] = {
-            "model": model,
-            "messages": [
+        if request.messages is not None:
+            messages: list[dict[str, Any]] = list(request.messages)
+        else:
+            messages = [
                 {"role": "system", "content": request.system},
                 # Nội dung người dùng CHỈ đi vào vai trò này — cùng ranh giới an
                 # toàn mà mọi adapter khác giữ.
                 {"role": "user", "content": request.user},
-            ],
+            ]
+        payload: dict[str, Any] = {
+            "model": model,
+            "messages": messages,
             "stream": False,
             "options": {
                 "temperature": request.temperature,
                 "num_predict": request.max_tokens,
             },
         }
+        if request.tools:
+            # `/api/chat` bản địa của Ollama nhận `tools` cùng schema OpenAI và
+            # trả `message.tool_calls` với `arguments` là DICT (đã parse sẵn) —
+            # khác giao thức OpenAI trả chuỗi JSON, nên phải serialize lại.
+            payload["tools"] = request.tools
         # `format: json` của Ollama ép đầu ra là JSON hợp lệ. Bật nó vì nó rẻ và
         # bỏ được cái rào ```json mà model hay thêm — nhưng KHÔNG thay cho việc
         # tự kiểm: JSON hợp lệ vẫn có thể mang một nhãn không nằm trong danh
@@ -71,6 +80,18 @@ class OllamaProvider:
         if "message" not in body:
             raise LLMError(f"Ollama trả 200 nhưng không có message: {str(body)[:300]}")
 
+        import json as _json
+
+        tool_calls = tuple(
+            ToolCall(
+                id=str(call.get("id") or ""),
+                name=str((call.get("function") or {}).get("name") or ""),
+                arguments=_json.dumps(
+                    (call.get("function") or {}).get("arguments") or {}, ensure_ascii=False
+                ),
+            )
+            for call in (body["message"].get("tool_calls") or [])
+        )
         return LLMResult(
             text=body["message"].get("content") or "",
             usage=Usage(
@@ -84,4 +105,5 @@ class OllamaProvider:
             model=model,
             provider=self.name,
             latency_ms=int((perf_counter() - started) * 1000),
+            tool_calls=tool_calls,
         )
