@@ -147,6 +147,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/ai/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Providers
+         * @description Mọi provider + model trong bảng giá, kèm base_url và trạng thái khoá.
+         *
+         *     Nguồn duy nhất là `known_models()` (bảng giá) + `load_registry()`
+         *     (llm_providers.json cho base_url/comment). Khoá có hay không được kiểm mà
+         *     KHÔNG lộ giá trị: giao diện cần biết "khoá đã đặt chưa" để báo chỗ cần sửa,
+         *     chứ không bao giờ được hiển thị khoá.
+         */
+        get: operations["list_providers_api_v1_admin_ai_providers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/ai/set-labels/{set_id}": {
         parameters: {
             query?: never;
@@ -206,6 +231,58 @@ export interface paths {
         get: operations["llm_stats_api_v1_admin_ai_stats_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/stats/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Model Task Stats
+         * @description Hiệu quả từng model trong từng task (feature), từ sổ cái ai_interaction.
+         *
+         *     Khác `/stats` (một con số gộp): trang so sánh cần tách theo (provider, model,
+         *     feature) để trả lời "nên chọn model nào cho `exam_write`". Latency p50/p95
+         *     tính riêng cho mỗi nhóm bằng cách nạp latency_ms của nhóm đó và lấy phân vị
+         *     trong Python — `percentile_cont` chỉ có ở Postgres, còn bộ test chạy SQLite.
+         */
+        get: operations["model_task_stats_api_v1_admin_ai_stats_models_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/test-connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test Connections
+         * @description Gọi thật MỘT lượt model cho MỖI provider trong bảng giá.
+         *
+         *     Trả về một kết quả mỗi model đã test — ok/latency hoặc lỗi. Đây là phép kiểm
+         *     CONNECTION (khoá, endpoint, hạn mức, model tồn tại), không phải phép kiểm
+         *     chất lượng: nội dung trả lời bị bỏ qua, chỉ latency và lỗi mới có nghĩa.
+         *
+         *     Mỗi model một lượt gọi riêng để lỗi của model này không phủ lỗi của model
+         *     khác (cùng provider nhưng một model 404 là chuyện có thật).
+         */
+        post: operations["test_connections_api_v1_admin_ai_test_connection_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5293,6 +5370,38 @@ export interface components {
             /** Sample Url */
             sample_url?: string | null;
         };
+        /**
+         * ModelTaskRow
+         * @description Hiệu quả của MỘT model trong MỘT task (feature), từ sổ cái ai_interaction.
+         */
+        ModelTaskRow: {
+            /** Calls */
+            calls: number;
+            /** Completion Tokens */
+            completion_tokens: number;
+            /** Cost Usd */
+            cost_usd: string;
+            /** Error Calls */
+            error_calls: number;
+            /** Feature */
+            feature: string;
+            /** Latency P50 Ms */
+            latency_p50_ms?: number | null;
+            /** Latency P95 Ms */
+            latency_p95_ms?: number | null;
+            /** Model */
+            model: string;
+            /** Ok Calls */
+            ok_calls: number;
+            /** Prompt Tokens */
+            prompt_tokens: number;
+            /** Provider */
+            provider: string;
+            /** Refused Calls */
+            refused_calls: number;
+            /** Success Rate */
+            success_rate: number;
+        };
         /** OptionPublic */
         OptionPublic: {
             /** Content */
@@ -5808,6 +5917,40 @@ export interface components {
             xp_dictation_complete?: number | null;
             /** Xp Vocabulary Review */
             xp_vocabulary_review?: number | null;
+        };
+        /**
+         * ProviderDetail
+         * @description Một provider: base_url, khoá có sẵn không, và các model của nó.
+         *
+         *     `key_configured` khác "có thể dùng được": khoá có mặt là điều kiện cần,
+         *     không phải đủ — test kết nối (`POST /admin/ai/test-connection`) mới trả lời
+         *     câu hỏi còn lại.
+         */
+        ProviderDetail: {
+            /** Base Url */
+            base_url?: string | null;
+            /** Key Configured */
+            key_configured: boolean;
+            /** Models */
+            models?: components["schemas"]["ProviderModelDetail"][];
+            /** Provider */
+            provider: string;
+        };
+        /**
+         * ProviderModelDetail
+         * @description Một model trong danh mục của một provider, kèm giá USD/1M token.
+         */
+        ProviderModelDetail: {
+            /** Comment */
+            comment?: string | null;
+            /** Model */
+            model: string;
+            /** Rate Cached */
+            rate_cached?: string | null;
+            /** Rate In */
+            rate_in: string;
+            /** Rate Out */
+            rate_out: string;
         };
         /** QuestionAdmin */
         QuestionAdmin: {
@@ -6400,6 +6543,25 @@ export interface components {
             time_limit_seconds: number | null;
             /** Title */
             title: string;
+        };
+        /**
+         * TestConnectionResult
+         * @description Kết quả test kết nối một model: ok + latency, hoặc lỗi.
+         *
+         *     `error` có mặt khi `ok` là False — thông báo từ adapter (mất khoá, 402,
+         *     429, model lạ...) để admin biết nơi cần sửa mà không phải đọc log.
+         */
+        TestConnectionResult: {
+            /** Error */
+            error?: string | null;
+            /** Latency Ms */
+            latency_ms?: number | null;
+            /** Model */
+            model: string;
+            /** Ok */
+            ok: boolean;
+            /** Provider */
+            provider: string;
         };
         /** TestCreate */
         TestCreate: {
@@ -7345,6 +7507,26 @@ export interface operations {
             };
         };
     };
+    list_providers_api_v1_admin_ai_providers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderDetail"][];
+                };
+            };
+        };
+    };
     review_set_label_api_v1_admin_ai_set_labels__set_id__patch: {
         parameters: {
             query?: never;
@@ -7416,6 +7598,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LlmStatsPublic"];
+                };
+            };
+        };
+    };
+    model_task_stats_api_v1_admin_ai_stats_models_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelTaskRow"][];
+                };
+            };
+        };
+    };
+    test_connections_api_v1_admin_ai_test_connection_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestConnectionResult"][];
                 };
             };
         };

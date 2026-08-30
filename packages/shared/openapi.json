@@ -4844,6 +4844,93 @@
         "title": "MediaChannel",
         "type": "object"
       },
+      "ModelTaskRow": {
+        "description": "Hiệu quả của MỘT model trong MỘT task (feature), từ sổ cái ai_interaction.",
+        "properties": {
+          "calls": {
+            "title": "Calls",
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "title": "Completion Tokens",
+            "type": "integer"
+          },
+          "cost_usd": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "error_calls": {
+            "title": "Error Calls",
+            "type": "integer"
+          },
+          "feature": {
+            "title": "Feature",
+            "type": "string"
+          },
+          "latency_p50_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency P50 Ms"
+          },
+          "latency_p95_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency P95 Ms"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "ok_calls": {
+            "title": "Ok Calls",
+            "type": "integer"
+          },
+          "prompt_tokens": {
+            "title": "Prompt Tokens",
+            "type": "integer"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "refused_calls": {
+            "title": "Refused Calls",
+            "type": "integer"
+          },
+          "success_rate": {
+            "title": "Success Rate",
+            "type": "number"
+          }
+        },
+        "required": [
+          "provider",
+          "model",
+          "feature",
+          "calls",
+          "ok_calls",
+          "error_calls",
+          "refused_calls",
+          "success_rate",
+          "cost_usd",
+          "prompt_tokens",
+          "completion_tokens"
+        ],
+        "title": "ModelTaskRow",
+        "type": "object"
+      },
       "OptionPublic": {
         "properties": {
           "content": {
@@ -6287,6 +6374,92 @@
           }
         },
         "title": "ProgressionSettingUpdate",
+        "type": "object"
+      },
+      "ProviderDetail": {
+        "description": "Một provider: base_url, khoá có sẵn không, và các model của nó.\n\n`key_configured` khác \"có thể dùng được\": khoá có mặt là điều kiện cần,\nkhông phải đủ — test kết nối (`POST /admin/ai/test-connection`) mới trả lời\ncâu hỏi còn lại.",
+        "properties": {
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "key_configured": {
+            "title": "Key Configured",
+            "type": "boolean"
+          },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/ProviderModelDetail"
+            },
+            "title": "Models",
+            "type": "array"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "key_configured"
+        ],
+        "title": "ProviderDetail",
+        "type": "object"
+      },
+      "ProviderModelDetail": {
+        "description": "Một model trong danh mục của một provider, kèm giá USD/1M token.",
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "rate_cached": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate Cached"
+          },
+          "rate_in": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rate In",
+            "type": "string"
+          },
+          "rate_out": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rate Out",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model",
+          "rate_in",
+          "rate_out"
+        ],
+        "title": "ProviderModelDetail",
         "type": "object"
       },
       "QuestionAdmin": {
@@ -7903,6 +8076,52 @@
           "parts"
         ],
         "title": "TestAdmin",
+        "type": "object"
+      },
+      "TestConnectionResult": {
+        "description": "Kết quả test kết nối một model: ok + latency, hoặc lỗi.\n\n`error` có mặt khi `ok` là False — thông báo từ adapter (mất khoá, 402,\n429, model lạ...) để admin biết nơi cần sửa mà không phải đọc log.",
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "latency_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Ms"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model",
+          "ok"
+        ],
+        "title": "TestConnectionResult",
         "type": "object"
       },
       "TestCreate": {
@@ -10470,6 +10689,37 @@
         ]
       }
     },
+    "/api/v1/admin/ai/providers": {
+      "get": {
+        "description": "Mọi provider + model trong bảng giá, kèm base_url và trạng thái khoá.\n\nNguồn duy nhất là `known_models()` (bảng giá) + `load_registry()`\n(llm_providers.json cho base_url/comment). Khoá có hay không được kiểm mà\nKHÔNG lộ giá trị: giao diện cần biết \"khoá đã đặt chưa\" để báo chỗ cần sửa,\nchứ không bao giờ được hiển thị khoá.",
+        "operationId": "list_providers_api_v1_admin_ai_providers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderDetail"
+                  },
+                  "title": "Response List Providers Api V1 Admin Ai Providers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Providers",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
     "/api/v1/admin/ai/set-labels/{set_id}": {
       "patch": {
         "description": "Nhãn của ngữ liệu dùng chung — sửa MỘT lần cho cả nhóm câu.\n\nĐây chính là lý do bốn mặt này không treo trên câu: sửa chủ đề một hội thoại\nPart 3 là một thao tác, không phải ba thao tác phải nhớ làm cho đủ.",
@@ -10577,6 +10827,68 @@
           }
         ],
         "summary": "Llm Stats",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/stats/models": {
+      "get": {
+        "description": "Hiệu quả từng model trong từng task (feature), từ sổ cái ai_interaction.\n\nKhác `/stats` (một con số gộp): trang so sánh cần tách theo (provider, model,\nfeature) để trả lời \"nên chọn model nào cho `exam_write`\". Latency p50/p95\ntính riêng cho mỗi nhóm bằng cách nạp latency_ms của nhóm đó và lấy phân vị\ntrong Python — `percentile_cont` chỉ có ở Postgres, còn bộ test chạy SQLite.",
+        "operationId": "model_task_stats_api_v1_admin_ai_stats_models_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModelTaskRow"
+                  },
+                  "title": "Response Model Task Stats Api V1 Admin Ai Stats Models Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Model Task Stats",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/test-connection": {
+      "post": {
+        "description": "Gọi thật MỘT lượt model cho MỖI provider trong bảng giá.\n\nTrả về một kết quả mỗi model đã test — ok/latency hoặc lỗi. Đây là phép kiểm\nCONNECTION (khoá, endpoint, hạn mức, model tồn tại), không phải phép kiểm\nchất lượng: nội dung trả lời bị bỏ qua, chỉ latency và lỗi mới có nghĩa.\n\nMỗi model một lượt gọi riêng để lỗi của model này không phủ lỗi của model\nkhác (cùng provider nhưng một model 404 là chuyện có thật).",
+        "operationId": "test_connections_api_v1_admin_ai_test_connection_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TestConnectionResult"
+                  },
+                  "title": "Response Test Connections Api V1 Admin Ai Test Connection Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Test Connections",
         "tags": [
           "admin-ai"
         ]

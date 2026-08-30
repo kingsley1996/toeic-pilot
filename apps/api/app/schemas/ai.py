@@ -16,8 +16,12 @@ __all__ = [
     "FacetCatalog",
     "LabelValue",
     "LlmStatsPublic",
+    "ModelTaskRow",
+    "ProviderDetail",
+    "ProviderModelDetail",
     "QuestionLabelRow",
     "SkillTagRequestAck",
+    "TestConnectionResult",
     "LabelWrite",
     "UsageRow",
 ]
@@ -148,3 +152,59 @@ class AiFeatureWrite(BaseModel):
     provider: str = Field(min_length=1, max_length=32)
     model: str = Field(min_length=1, max_length=64)
     enabled: bool = True
+
+
+class ProviderModelDetail(BaseModel):
+    """Một model trong danh mục của một provider, kèm giá USD/1M token."""
+
+    model: str
+    rate_in: Decimal
+    rate_out: Decimal
+    rate_cached: Decimal | None = None
+    comment: str | None = None
+
+
+class ProviderDetail(BaseModel):
+    """Một provider: base_url, khoá có sẵn không, và các model của nó.
+
+    `key_configured` khác "có thể dùng được": khoá có mặt là điều kiện cần,
+    không phải đủ — test kết nối (`POST /admin/ai/test-connection`) mới trả lời
+    câu hỏi còn lại.
+    """
+
+    provider: str
+    base_url: str | None = None
+    key_configured: bool
+    models: list[ProviderModelDetail] = Field(default_factory=list)
+
+
+class ModelTaskRow(BaseModel):
+    """Hiệu quả của MỘT model trong MỘT task (feature), từ sổ cái ai_interaction."""
+
+    provider: str
+    model: str
+    feature: str
+    calls: int
+    ok_calls: int
+    error_calls: int
+    refused_calls: int
+    success_rate: float
+    cost_usd: Decimal
+    prompt_tokens: int
+    completion_tokens: int
+    latency_p50_ms: int | None = None
+    latency_p95_ms: int | None = None
+
+
+class TestConnectionResult(BaseModel):
+    """Kết quả test kết nối một model: ok + latency, hoặc lỗi.
+
+    `error` có mặt khi `ok` là False — thông báo từ adapter (mất khoá, 402,
+    429, model lạ...) để admin biết nơi cần sửa mà không phải đọc log.
+    """
+
+    provider: str
+    model: str
+    ok: bool
+    latency_ms: int | None = None
+    error: str | None = None

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
+from pathlib import Path
 
 import redis
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -19,6 +20,7 @@ from app.api.deps import require_role
 from app.core.ai_jobs import ring
 from app.core.database import get_db
 from app.core.redis_client import get_redis
+from app.models.ai import AiInteraction
 from app.models.ai_config import AiFeatureConfig
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.practice import PracticeTest, PracticeTestQuestion, Question
@@ -32,14 +34,19 @@ from app.schemas.ai import (
     LabelValue,
     LabelWrite,
     LlmStatsPublic,
+    ModelTaskRow,
+    ProviderDetail,
+    ProviderModelDetail,
     QuestionLabelRow,
     SkillTagRequestAck,
+    TestConnectionResult,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.services.ai_features import FEATURES
 from app.services.ai_stats import collect
 from app.services.labels import FACETS, LABELS, facets_for
-from app.services.llm.pricing import known_models
+from app.services.llm.pricing import known_models, rates_for
+from app.services.llm.registry import load_registry
 
 router = APIRouter(prefix="/admin/ai", tags=["admin-ai"])
 
@@ -110,6 +117,204 @@ def list_models(_: User = Depends(can_edit)) -> list[KnownModel]:
     đúng, nhưng nó phải hỏng ở chỗ CHỌN chứ không ở chỗ CHẠY.
     """
     return [KnownModel(provider=p, model=m) for p, m in known_models()]
+
+
+@router.get("/providers", response_model=list[ProviderDetail])
+def list_providers(_: User = Depends(can_edit)) -> list[ProviderDetail]:
+    """Mọi provider + model trong bảng giá, kèm base_url và trạng thái khoá.
+
+    Nguồn duy nhất là `known_models()` (bảng giá) + `load_registry()`
+    (llm_providers.json cho base_url/comment). Khoá có hay không được kiểm mà
+    KHÔNG lộ giá trị: giao diện cần biết "khoá đã đặt chưa" để báo chỗ cần sửa,
+    chứ không bao giờ được hiển thị khoá.
+    """
+    from app.core.config import settings
+    from app.services.llm.openai_compatible import ENDPOINTS
+
+    registry = load_registry(strict=False)
+    by_provider: dict[str, ProviderDetail] = {}
+
+    def configured(name: str, env_name: str) -> bool:
+        if name == "ollama":
+            return True  # model chạy máy, không cần khoá
+        value = getattr(settings, f"{name}_api_key", None)
+        if value:
+            return True
+        import os
+
+        if os.environ.get(env_name):
+            return True
+        # CLI đọc `.env` trực tiếp (pydantic-settings không đưa vào os.environ).
+        for candidate in (
+            Path(__file__).parents[3] / ".env",
+            Path(__file__).parents[4] / ".env",
+        ):
+            try:
+                for line in candidate.read_text().splitlines():
+                    raw = line.strip()
+                    if raw.startswith(f"{env_name}=") and raw.split("=", 1)[1].strip():
+                        return True
+            except OSError:
+                continue
+        return False
+
+    def detail(name: str, base_url: str | None, env_name: str | None) -> ProviderDetail:
+        env = env_name or f"{name.upper()}_API_KEY"
+        models = []
+        for provider, model in known_models():
+            if provider != name:
+                continue
+            rate_in, rate_out, rate_cached = rates_for(name, model)
+            custom = registry.get(name)
+            comment = None
+            if custom:
+                entry = custom.models.get(model)
+                comment = entry.comment if entry else None
+            models.append(
+                ProviderModelDetail(
+                    model=model,
+                    rate_in=rate_in,
+                    rate_out=rate_out,
+                    rate_cached=rate_cached,
+                    comment=comment,
+                )
+            )
+        return ProviderDetail(
+            provider=name,
+            base_url=base_url,
+            key_configured=configured(name, env),
+            models=models,
+        )
+
+    for name, base_url in ENDPOINTS.items():
+        by_provider[name] = detail(name, base_url, f"{name.upper()}_API_KEY")
+    for name, custom in registry.items():
+        by_provider[name] = detail(name, custom.base_url, custom.api_key_env)
+    # ollama và openrouter là builtin không nằm trong ENDPOINTS.
+    by_provider.setdefault("ollama", detail("ollama", settings.ollama_base_url, "OLLAMA_API_KEY"))
+    by_provider.setdefault(
+        "openrouter", detail("openrouter", "https://openrouter.ai/api/v1", "OPENROUTER_API_KEY")
+    )
+    return [by_provider[name] for name in sorted(by_provider) if by_provider[name].models]
+
+
+@router.get("/stats/models", response_model=list[ModelTaskRow])
+def model_task_stats(
+    _: User = Depends(can_edit), db: Session = Depends(get_db)
+) -> list[ModelTaskRow]:
+    """Hiệu quả từng model trong từng task (feature), từ sổ cái ai_interaction.
+
+    Khác `/stats` (một con số gộp): trang so sánh cần tách theo (provider, model,
+    feature) để trả lời "nên chọn model nào cho `exam_write`". Latency p50/p95
+    tính riêng cho mỗi nhóm bằng cách nạp latency_ms của nhóm đó và lấy phân vị
+    trong Python — `percentile_cont` chỉ có ở Postgres, còn bộ test chạy SQLite.
+    """
+    from dataclasses import dataclass, field
+    from statistics import median, quantiles
+
+    @dataclass
+    class Group:
+        calls: int = 0
+        ok: int = 0
+        error: int = 0
+        refused: int = 0
+        latency: list[int] = field(default_factory=list)
+
+    rows = db.execute(
+        select(
+            AiInteraction.provider,
+            AiInteraction.model,
+            AiInteraction.feature,
+            AiInteraction.status,
+            AiInteraction.latency_ms,
+        )
+    ).all()
+
+    groups: dict[tuple[str, str, str], Group] = {}
+    for provider, model, feature, call_status, latency in rows:
+        group = groups.setdefault((provider, model, feature), Group())
+        group.calls += 1
+        if call_status == "ok":
+            group.ok += 1
+            group.latency.append(int(latency))
+        elif call_status == "error":
+            group.error += 1
+        else:
+            group.refused += 1
+
+    from decimal import Decimal
+
+    out: list[ModelTaskRow] = []
+    for (provider, model, feature), g in groups.items():
+        lat = sorted(g.latency)
+        p50 = int(median(lat)) if lat else None
+        p95 = int(quantiles(lat, n=100)[94]) if len(lat) >= 95 else (p50 if p50 else None)
+        out.append(
+            ModelTaskRow(
+                provider=provider,
+                model=model,
+                feature=feature,
+                calls=g.calls,
+                ok_calls=g.ok,
+                error_calls=g.error,
+                refused_calls=g.refused,
+                success_rate=round(g.ok / g.calls, 4) if g.calls else 0.0,
+                cost_usd=Decimal("0"),
+                prompt_tokens=0,
+                completion_tokens=0,
+                latency_p50_ms=p50,
+                latency_p95_ms=p95,
+            )
+        )
+    out.sort(key=lambda r: (r.provider, r.model, r.feature))
+    return out
+
+
+@router.post("/test-connection", response_model=list[TestConnectionResult])
+def test_connections(
+    _: User = Depends(can_edit),
+) -> list[TestConnectionResult]:
+    """Gọi thật MỘT lượt model cho MỖI provider trong bảng giá.
+
+    Trả về một kết quả mỗi model đã test — ok/latency hoặc lỗi. Đây là phép kiểm
+    CONNECTION (khoá, endpoint, hạn mức, model tồn tại), không phải phép kiểm
+    chất lượng: nội dung trả lời bị bỏ qua, chỉ latency và lỗi mới có nghĩa.
+
+    Mỗi model một lượt gọi riêng để lỗi của model này không phủ lỗi của model
+    khác (cùng provider nhưng một model 404 là chuyện có thật).
+    """
+    from app.services.llm.base import LLMRequest
+    from app.services.llm.providers import build_providers
+
+    pairs = known_models()
+    provider_names = {p for p, _ in pairs}
+    providers = build_providers(provider_names, strict=False)
+    results: list[TestConnectionResult] = []
+    for provider_name, model in pairs:
+        provider = providers.get(provider_name)
+        if provider is None:
+            results.append(
+                TestConnectionResult(
+                    provider=provider_name, model=model, ok=False, error="thiếu khoá hoặc adapter"
+                )
+            )
+            continue
+        try:
+            result = provider.complete(
+                LLMRequest(system="", user="Reply with the word OK", max_tokens=5), model
+            )
+            results.append(
+                TestConnectionResult(
+                    provider=provider_name, model=model, ok=True, latency_ms=result.latency_ms
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 — lỗi kết nối là KẾT QUẢ, không phải lỗi endpoint
+            results.append(
+                TestConnectionResult(
+                    provider=provider_name, model=model, ok=False, error=str(exc)[:300]
+                )
+            )
+    return results
 
 
 @router.put("/features/{feature}", response_model=AiFeatureRow)

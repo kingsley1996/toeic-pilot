@@ -132,6 +132,10 @@ export type FacetCatalog = components["schemas"]["FacetCatalog"];
 export type AiFeatureRow = components["schemas"]["AiFeatureRow"];
 export type CoachExplanation = components["schemas"]["CoachExplanationPublic"];
 export type KnownModel = components["schemas"]["KnownModel"];
+export type ProviderDetail = components["schemas"]["ProviderDetail"];
+export type ProviderModelDetail = components["schemas"]["ProviderModelDetail"];
+export type ModelTaskRow = components["schemas"]["ModelTaskRow"];
+export type TestConnectionResult = components["schemas"]["TestConnectionResult"];
 export type LabelValue = components["schemas"]["LabelValue"];
 export type RubyWallet = components["schemas"]["RubyWallet"];
 export type RubyEntry = components["schemas"]["RubyEntryPublic"];
@@ -377,6 +381,9 @@ export const API_ROUTES = {
   adminAiFeatures: "/api/v1/admin/ai/features",
   adminAiFeature: (key: string) => `/api/v1/admin/ai/features/${key}`,
   adminAiModels: "/api/v1/admin/ai/models",
+  adminAiProviders: "/api/v1/admin/ai/providers",
+  adminAiStatsModels: "/api/v1/admin/ai/stats/models",
+  adminAiTestConnection: "/api/v1/admin/ai/test-connection",
   adminAiLabels: "/api/v1/admin/ai/labels",
   adminAiLabelCatalog: "/api/v1/admin/ai/labels/catalog",
   adminAiSkillTagRequests: "/api/v1/admin/ai/skill-tags/requests",

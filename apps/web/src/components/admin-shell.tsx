@@ -19,6 +19,7 @@ import {
   Sparkles,
   SquarePen,
   Tags,
+  ListChecks,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -121,6 +122,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
     children: [
       { href: "/admin/ai/skill-tags", label: "Skill labels", Icon: Tags },
       { href: "/admin/ai/providers", label: "Providers", Icon: Cpu },
+      { href: "/admin/ai/features", label: "Model picker", Icon: ListChecks },
     ],
   },
 ];

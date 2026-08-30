@@ -135,3 +135,21 @@ def known_models() -> list[tuple[str, str]]:
     for name, provider in load_registry(strict=False).items():
         pairs.update((name, model) for model in provider.models)
     return sorted(pairs)
+
+
+def rates_for(provider: str, model: str) -> tuple[Decimal, Decimal, Decimal | None]:
+    """(giá vào, giá ra, giá đọc cache) của một model, hoặc None nếu lạ.
+
+    Cùng nguồn với `cost_usd` — một hàm cho giao diện quản trị hiển thị giá,
+    hàm kia cho sổ cái tính tiền, và cả hai đọc cùng một bảng nên không thể lệch.
+    """
+    rates = _RATES.get((provider, model))
+    if rates is not None:
+        return rates
+    from app.services.llm.registry import load_registry
+
+    custom = load_registry(strict=False).get(provider)
+    entry = custom.models.get(model) if custom else None
+    if entry is None:
+        return Decimal(0), Decimal(0), Decimal(0)
+    return entry.rate_in, entry.rate_out, entry.rate_cached
