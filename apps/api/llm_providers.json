@@ -4,7 +4,13 @@
     "bai": {
       "base_url": "https://api.b.ai/v1",
       "api_key_env": "BAI_API_KEY",
-      "comment": "B.AI — cổng gộp đa model (GPT, Claude, Gemini, GLM, Qwen, Kimi, Groq...), nói cả ba giao thức: ta dùng cổng OpenAI Chat Completions (/v1/chat/completions). Endpoint + giá tra ở docs.b.ai ngày 2026-08-29.",
+      "extra_payload": {
+        "thinking": {
+          "type": "enabled",
+          "output_length": "low"
+        }
+      },
+      "comment": "B.AI — cổng gộp đa model (GPT, Claude, Gemini, GLM, Qwen, Kimi, Groq...), nói cả ba giao thức: ta dùng cổng OpenAI Chat Completions (/v1/chat/completions). Endpoint + giá tra ở docs.b.ai ngày 2026-08-29. `thinking.disabled` TẮT suy luận cho model GLM (glm-5.3-flash suy luận theo mặc định và ăn hết max_tokens vào reasoning_content — đúng lỗi 'hết hạn mức đầu ra khi suy luận'). Model không hiểu cờ này bỏ qua nó, nên để ở provider cho mọi model. GLM 5.3 KHÔNG tắt được suy luận (400 'model luôn suy nghĩ') — chỉ hạ được mức: thinking.type = low/high/max. Đo 2026-08-31. GLM 5.3 BẮT BUỘC suy luận (400 '不支持关闭思考' nếu disabled); hạ suy luận bằng thinking.type=enabled + output_length=low — đo thật 2026-08-31: reasoning 22 975 ký tự (ăn hết max_tokens 6000) xuống 162 ký tự. Model khác của B.AI bỏ qua cờ này.",
       "models": {
         "glm-5.3-flash": {
           "rate_in": 0.075,
