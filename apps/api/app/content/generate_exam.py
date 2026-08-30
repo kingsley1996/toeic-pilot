@@ -24,6 +24,7 @@ from app.content.exam import balance as balancer
 from app.content.exam import blueprint as bp
 from app.content.exam import check as checker
 from app.content.exam import loader, writer
+from app.content.exam.blueprint import Blueprint
 from app.content.settings import content_settings
 from app.services.llm.base import LLMQuotaExhausted
 from app.services.llm.gateway import Gateway
@@ -130,6 +131,72 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
     return scenes
 
 
+def generate_part_scenes(gateway: Gateway, tier: Tier, part: int) -> list[str]:
+    """Hỏi model sinh bối cảnh MỚI cho các ô của một part (2–7).
+
+    Chỉ sinh `context` — bối cảnh — KHÔNG động vào cấu trúc (loại câu, số người
+    nói, graphic, passages, điểm ngữ pháp). Cấu trúc là quyết định của người ra
+    đề nằm trong bảng `PART*_MIX` và được `validate` giữ; bối cảnh là chỗ model
+    có thể làm phong phú mà không phá một ràng buộc nào. Cùng chia việc với
+    `generate_part1_scenes` (part 1 model sinh luôn cả loại tranh, vì cấu trúc
+    của nó chỉ có ba dạng cố định).
+
+    Đầu ra mỗi dòng là một bối cảnh tiếng Việt; model làm sai số dòng thì NÉM để
+    `cmd_plan` rơi về bối cảnh mặc định trong bảng.
+    """
+    from app.services.llm.base import LLMRequest
+
+    count = {
+        2: 25,
+        3: 13,
+        4: 10,
+        5: 30,
+        6: 4,
+        7: 15,
+    }[part]
+    part_hint = {
+        2: "câu hỏi–đáp ngắn (người hỏi và người đáp)",
+        3: "cuộc hội thoại công sở/dịch vụ (ba câu hỏi về cùng một đoạn thoại)",
+        4: "bài nói một người (thông báo, lời nhắn, quảng cáo, trích buổi họp)",
+        5: "một câu hoàn chỉnh thiếu một chỗ trống",
+        6: "một văn bản dài bốn đoạn, mỗi đoạn một chỗ trống",
+        7: "một hoặc nhiều văn bản đọc kèm câu hỏi",
+    }[part]
+    prompt = (
+        f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là một bối cảnh {part_hint} cho "
+        f"Part {part} của đề TOEIC. Bối cảnh bằng tiếng Việt, ngắn gọn, mỗi bối "
+        "cảnh KHÁC NHAU rõ rệt (người, nơi chốn, tình huống khác nhau), thuộc môi "
+        "trường công sở/dịch vụ. Không thêm tiêu đề, không thêm dòng nào khác."
+    )
+    result = with_backoff(
+        lambda: gateway.run(
+            LLMRequest(system=prompt, user=f"Sinh {count} bối cảnh Part {part}.", max_tokens=2000),
+            feature="exam_plan",
+            tier=tier,
+        ),
+        tries=writer.RETRY_TRIES,
+        delay=writer.RETRY_DELAY,
+    )
+    scenes = [line.strip() for line in result.text.splitlines() if line.strip()]
+    if len(scenes) != count:
+        raise ValueError(f"cần đúng {count} bối cảnh Part {part}, model trả {len(scenes)}")
+    # Model hay thêm tiền tố đánh số ("1. …", "1) …") — bỏ đi để context sạch.
+    import re as _re
+
+    return [_re.sub(r"^\d+[.)]\s*", "", scene) for scene in scenes]
+
+
+def _override_contexts(plan: Blueprint, scenes: list[str]) -> None:
+    """Thay bối cảnh cho từng ô mà KHÔNG đụng cấu trúc.
+
+    Scene của model đi theo THỨ TỰ ô trong part; `merge` sắp lại theo `id` nên
+    phải khớp đúng slot bằng cách duyệt plan đã dựng chứ không duyệt danh sách
+    đầu vào."""
+    slots = [slot for part_plan in plan.parts for slot in part_plan.slots]
+    for slot, scene in zip(slots, scenes, strict=True):
+        slot.context = scene
+
+
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
     builder = {
@@ -144,26 +211,28 @@ def cmd_plan(args: argparse.Namespace) -> int:
     path = blueprint_path(args.slug)
     existing = bp.load(path) if path.exists() else None
 
-    # Part 1: nếu có `--model` thì hỏi model sinh sáu bối cảnh; hỏng thì rơi về
-    # `PART1_MIX` (shuffle theo seed) — một lượt plan không được chết vì model.
-    scenes: list[tuple[str, str, str]] | None = None
-    if args.part == 1 and args.model:
+    # Có `--model` thì hỏi model sinh bối cảnh; hỏng thì rơi về bảng cấu hình —
+    # một lượt plan không được chết vì model. Part 1 khác các part còn lại: nó
+    # để model sinh cả LOẠI TRANH, còn 2–7 chỉ sinh BỐI CẢNH (cấu trúc vẫn từ
+    # bảng, vì validate kiểm cấu trúc theo đúng mã trong bảng).
+    built = builder(args.slug, title, args.seed)
+    if args.model:
         try:
             gateway = _gateway(args.model)
-            scenes = generate_part1_scenes(gateway, Tier(args.tier))
-            print(f"model {args.model} sinh 6 bối cảnh Part 1.")
-        except Exception as failure:  # noqa: BLE001 — rơi về pool là đường đúng
+            if args.part == 1:
+                scenes = generate_part1_scenes(gateway, Tier(args.tier))
+                built = bp.build_part1(args.slug, title, args.seed, scenes)
+            else:
+                contexts = generate_part_scenes(gateway, Tier(args.tier), args.part)
+                _override_contexts(built, contexts)
+            print(f"model {args.model} sinh bối cảnh Part {args.part}.")
+        except Exception as failure:  # noqa: BLE001 — rơi về bảng là đường đúng
             print(
-                f"không sinh được bối cảnh bằng model ({failure}) — dùng PART1_MIX.",
+                f"không sinh được bối cảnh bằng model ({failure}) — dùng bảng cấu hình.",
                 file=sys.stderr,
             )
-            scenes = None
+            built = builder(args.slug, title, args.seed)
 
-    built = (
-        bp.build_part1(args.slug, title, args.seed, scenes)
-        if args.part == 1
-        else builder(args.slug, title, args.seed)
-    )
     plan = bp.merge(existing, built)
     problems = bp.validate(plan)
     if problems:
