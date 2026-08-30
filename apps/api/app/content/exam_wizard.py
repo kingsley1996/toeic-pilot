@@ -124,7 +124,9 @@ def _run_plan(state: State) -> None:
 
     from app.content.generate_exam import cmd_plan
 
-    code = cmd_plan(Namespace(slug=state.slug, title=None, seed=int(seed or 0), part=part))
+    code = cmd_plan(
+        Namespace(slug=state.slug, title=None, seed=int(seed or 0), part=part, model=state.model)
+    )
     state.plan_done = code == 0
 
 
