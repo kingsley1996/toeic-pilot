@@ -77,9 +77,15 @@ class _Parts:
 def _write_node(gateway: Any, tier: Any, workdir: Any, parts: _Parts) -> Any:
     """Viết lại ô. `write_slot` ném `MissingBlock` khi đầu ra bị cắt — biến thành
     trạng thái bị chặn thay vì để ngoại lệ làm đồ thị chết. `fix_hint` của critic
-    đi kèm: đây là toàn bộ điểm của vòng lặp — sửa theo lý do, không sinh lại mù."""
+    đi kèm: đây là toàn bộ điểm của vòng lặp — sửa theo lý do, không sinh lại mù.
+
+    Sau khi viết, tách `[PHOTO]`/`[GRAPHIC]` ra hiện vật riêng (photos/, graphics/)
+    Y HỆT `cmd_write` làm: parser từ chối dòng lạ sau đáp án, và bảng là dữ liệu
+    để vẽ — hai thứ đó không phải dòng để dán."""
 
     def write(state: dict[str, Any]) -> dict[str, Any]:
+        from app.content.exam.writer import GRAPHIC_MARKER, split_all, split_photo
+
         slot = parts.slot(state["slot_id"])
         part = parts.part(state["slot_id"])
         update: dict[str, Any] = {"revision": state["revision"] + 1}
@@ -96,9 +102,22 @@ def _write_node(gateway: Any, tier: Any, workdir: Any, parts: _Parts) -> Any:
             return update
         # Ghi xuống đĩa NGAY: hàng đợi là một truy vấn trên thư mục, ô đã ghi là
         # ô không phải trả tiền lại. `check` sau đó đọc từ đĩa — cùng hiện vật.
+        # Trước khi lưu, tách hai hiện vật đi kèm — đúng đường của `cmd_write`,
+        # không có nó thì Part 1 mất mô tả ảnh và Part 3/4 mất bảng dữ liệu.
+        photo, block = split_photo(block)
+        if photo:
+            photo_path = workdir / "photos" / f"{slot.id}.txt"
+            photo_path.parent.mkdir(parents=True, exist_ok=True)
+            photo_path.write_text(photo + "\n")
+        tables, block = split_all(block, GRAPHIC_MARKER)
+        for order, table in enumerate(tables, start=1):
+            suffix = "" if len(tables) == 1 else f"-{order}"
+            table_path = workdir / "graphics" / f"{slot.id}{suffix}.txt"
+            table_path.parent.mkdir(parents=True, exist_ok=True)
+            table_path.write_text(table + "\n")
         save_slot(workdir, slot, block)
         update |= {"draft": block, "blocked": False, "problems": [], "flags": []}
-        # Hint đã dùng xong: không xoá thì lượt sau đọc lại hint cũ của lỗi cũ.
+        # Hint đã dùng xong: không xoà thì lượt sau đọc lại hint cũ của lỗi cũ.
         update["fix_hint"] = None
         return update
 
@@ -195,6 +214,7 @@ def build(gateway: Any, tier: Any, blueprint: Any, workdir: Any) -> Any:
     parts = _Parts(blueprint)
 
     builder = StateGraph(SlotState)
+
     # add_node của LangGraph 1.x khó chịu với node trả update-một-phần (dict)
     # thay vì state đầy đủ — pattern chuẩn của nó, nhưng generic chưa nới lỏng.
     # Cast một lần tại đây thay vì rải type: ignore khắp các node.

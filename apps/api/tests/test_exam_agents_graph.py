@@ -152,3 +152,54 @@ def test_hint_reaches_next_write(workdir: Path, monkeypatch: pytest.MonkeyPatch)
     writes = [p for p in seen_prompts if "Part 5" in p or "Part" in p]
     assert len(writes) == 2
     assert "LƯU Ý SỬA" in writes[1]
+
+
+def test_part1_photo_lands_in_own_file(workdir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Part 1 trả về [PHOTO] + [QUESTION]: mô tả ảnh phải tách thành
+    `photos/<slot>.txt`, tệp dán chỉ còn khối [QUESTION].
+
+    `cmd_write` làm việc đó; graph phải làm Y HỆT — không tách thì mô tả ảnh
+    nằm nguyên trong tệp dán, parser từ chối dòng lạ sau đáp án, và `photo`
+    command không có mô tả để vẽ."""
+
+    from app.content.exam import blueprint as bp
+
+    monkeypatch.setattr(bp, "load", lambda path: _Blueprint())
+
+    # Thay slot thành Part 1
+    class _SlotP1(_Slot):
+        id = "p1-01"
+        question_type = "PART_1_PERSON_DESCRIPTION"
+        voice = "au_female_1"
+        people = "one"
+
+    class _PartP1:
+        part = 1
+        slots = [_SlotP1()]
+
+    class _BlueprintP1(_Blueprint):
+        parts = [_PartP1()]
+
+    class PhotoGateway(FakeGateway):
+        def run(self, request: object, feature: str = "", tier: object = None) -> FakeResult:
+            return FakeResult(
+                "[PHOTO]\nA photograph of a single woman at a desk.\n\n"
+                "[QUESTION]\nvoice: au_female_1\n"
+                "(A) The woman is talking on the phone.\n"
+                "(B) The woman is asleep.\n"
+                "(C) Two women are dancing.\n"
+                "(D) The desk is on fire.\n"
+                "Answer: A\nSource: original\n"
+            )
+
+    graph = build(PhotoGateway(), tier=None, blueprint=_BlueprintP1(), workdir=workdir)
+    final = graph.invoke(
+        {"slot_id": "p1-01", "revision": 0, "outcome": "pending"},
+        config={"configurable": {"thread_id": "t4"}},
+    )
+    assert final["outcome"] == "accepted"
+    paste = (workdir / "paste" / "p1-01.txt").read_text()
+    assert "[PHOTO]" not in paste
+    assert paste.startswith("[QUESTION]")
+    photo = (workdir / "photos" / "p1-01.txt").read_text()
+    assert "single woman" in photo
