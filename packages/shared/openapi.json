@@ -15437,6 +15437,24 @@
       }
     },
     "/api/v1/assistant/chat": {
+      "delete": {
+        "description": "Xoá cuộc trợ lý (các tin nhắn theo cascade).\n\nXoá TOÀN BỘ cuộc thay vì chỉ đánh dấu \"đã xoá\": cuộc trợ lý là một mạch\ncuốn theo, không phải một tập tin cần giữ lại. Lần hỏi kế tiếp `_find` trả\nNone và `_open` dựng cuộc mới — không cần bước xác nhận trước khi ghi.",
+        "operationId": "clear_history_api_v1_assistant_chat_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Clear History",
+        "tags": [
+          "assistant"
+        ]
+      },
       "get": {
         "description": "Có phân trang, và đây là chỗ lý lẽ của coach KHÔNG chuyển sang được.\n\n`coach.py::chat_history` trả mảng trần vì một cuộc coach bị chặn bởi chính\nlượt làm bài nó neo vào — vài câu hỏi rồi hết. Trợ lý bỏ đúng cái neo ấy để\ncó một cuộc cuốn theo mãi mãi, nên nó rơi vào ca (C) \"tăng theo mức dùng\"\ncủa `schemas/common.py`, nơi luật là `Page[T]`.\n\nSắp GIẢM DẦN theo `position`: trang đầu là những gì vừa nói, thứ người ta mở\nlại để đọc. Sắp tăng dần thì trang đầu là cuộc trò chuyện của tháng trước và\nngười dùng phải lật tới cuối mới thấy câu mình vừa hỏi.",
         "operationId": "chat_history_api_v1_assistant_chat_get",

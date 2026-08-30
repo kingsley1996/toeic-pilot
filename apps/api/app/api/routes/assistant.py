@@ -14,7 +14,7 @@ làm bài:
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_gateway
@@ -86,6 +86,32 @@ def chat(
         question=ChatMessagePublic(id=turn.question.id, role="user", content=turn.question.content),
         answer=ChatMessagePublic(id=turn.answer.id, role="assistant", content=turn.answer.content),
     )
+
+
+@router.delete("/chat", status_code=status.HTTP_204_NO_CONTENT)
+def clear_history(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> None:
+    """Xoá cuộc trợ lý (các tin nhắn theo cascade).
+
+    Xoá TOÀN BỘ cuộc thay vì chỉ đánh dấu "đã xoá": cuộc trợ lý là một mạch
+    cuốn theo, không phải một tập tin cần giữ lại. Lần hỏi kế tiếp `_find` trả
+    None và `_open` dựng cuộc mới — không cần bước xác nhận trước khi ghi.
+    """
+    conversation = db.scalars(
+        select(CoachConversation).where(
+            CoachConversation.user_id == user.id,
+            CoachConversation.attempt_id.is_(None),
+        )
+    ).first()
+    if conversation is None:
+        return
+    # Xoá messages trước: FK cascade là chuyện của Postgres, còn SQLite của bộ
+    # test không bật foreign_keys, nên dựa vào nó là để lại hàng mồ côi im lặng.
+    db.execute(delete(CoachMessage).where(CoachMessage.conversation_id == conversation.id))
+    db.execute(delete(CoachConversation).where(CoachConversation.id == conversation.id))
+    db.commit()
 
 
 @router.get("/chat", response_model=Page[ChatMessagePublic])

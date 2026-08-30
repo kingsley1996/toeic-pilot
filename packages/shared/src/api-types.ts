@@ -1893,7 +1893,15 @@ export interface paths {
         put?: never;
         /** Chat */
         post: operations["chat_api_v1_assistant_chat_post"];
-        delete?: never;
+        /**
+         * Clear History
+         * @description Xoá cuộc trợ lý (các tin nhắn theo cascade).
+         *
+         *     Xoá TOÀN BỘ cuộc thay vì chỉ đánh dấu "đã xoá": cuộc trợ lý là một mạch
+         *     cuốn theo, không phải một tập tin cần giữ lại. Lần hỏi kế tiếp `_find` trả
+         *     None và `_open` dựng cuộc mới — không cần bước xác nhận trước khi ghi.
+         */
+        delete: operations["clear_history_api_v1_assistant_chat_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -10631,6 +10639,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    clear_history_api_v1_assistant_chat_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

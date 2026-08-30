@@ -142,6 +142,35 @@ def test_chua_co_lich_su_thi_tra_TRANG_RONG(client: TestClient, auth) -> None:
     assert body["total"] == 0
 
 
+def test_XOA_lich_su_thi_lich_su_TRONG(
+    client: TestClient, auth, db_session: Session
+) -> None:
+    """Xoá lịch sử trợ lý: delete trả 204, get sau đó trả rỗng."""
+    from app.models.chat import CoachConversation, CoachMessage
+
+    # `auth` tạo tài khoản ở lần gọi đầu — gọi trước rồi mới tra id.
+    headers = auth("learner")
+    user = db_session.query(User).filter_by(email="learner@example.com").first()
+    assert user is not None
+    conv = CoachConversation(user_id=user.id, attempt_id=None)
+    db_session.add(conv)
+    db_session.commit()
+    db_session.add(
+        CoachMessage(conversation_id=conv.id, position=1, role="user", content="hello")
+    )
+    db_session.add(
+        CoachMessage(conversation_id=conv.id, position=2, role="assistant", content="hi")
+    )
+    db_session.commit()
+
+    delete_r = client.delete("/api/v1/assistant/chat", headers=headers)
+    assert delete_r.status_code == 204
+
+    get_r = client.get("/api/v1/assistant/chat", headers=headers)
+    assert get_r.status_code == 200
+    assert get_r.json()["items"] == []
+
+
 def test_TINH_NANG_TAT_thi_503(
     client: TestClient, auth, db_session: Session, fake_redis, monkeypatch
 ) -> None:
