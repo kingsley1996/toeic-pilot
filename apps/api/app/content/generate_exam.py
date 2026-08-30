@@ -27,6 +27,7 @@ from app.content.exam import loader, writer
 from app.content.settings import content_settings
 from app.services.llm.base import LLMQuotaExhausted
 from app.services.llm.gateway import Gateway
+from app.services.llm.retry import with_backoff
 from app.services.llm.router import Tier
 
 DEFAULT_ROOT = Path("content/generated")
@@ -76,6 +77,59 @@ def _gateway(model: str | None = None) -> Gateway:
     )
 
 
+def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, str]]:
+    """Hỏi model sinh sáu bối cảnh Part 1 khác nhau cho một đề.
+
+    Vì sao để model quyết định chỗ này mà không phải chỗ khác: Part 1 chỉ có sáu
+    ảnh, mỗi ảnh một bối cảnh, và sự ĐA DẠNG của bối cảnh là thứ quyết định đề
+    có giống đề cũ hay không — đúng thứ `PART1_MIX` tĩnh không tự làm được khi
+    chỉ có sáu mẫu. `build_part1` vẫn giữ vai trò gán `number`/`voice`; model chỉ
+    cung cấp `(question_type, people, scene)`.
+
+    Đầu ra phải khớp đúng định dạng từng dòng `question_type|people|mô tả` — nếu
+    model làm sai thì NÉM để `cmd_plan` rơi về `PART1_MIX` thay vì lưu một đề
+    thiếu câu.
+    """
+    import re
+
+    from app.services.llm.base import LLMRequest
+
+    prompt = (
+        "Viết CHÍNH XÁC sáu dòng, mỗi dòng mô tả một bức ảnh cho Part 1 của đề "
+        "TOEIC (phần mô tả ảnh đơn lẻ). Mỗi dòng đúng định dạng:\n"
+        "question_type|people|mô tả bối cảnh bằng tiếng Việt\n\n"
+        "question_type là MỘT TRONG: PART_1_PERSON_DESCRIPTION, "
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION, PART_1_OBJECT_OR_SCENE_DESCRIPTION.\n"
+        "people là MỘT TRONG: one, several, none.\n"
+        "Sáu bối cảnh phải KHÁC NHAU rõ rệt (người, nơi chốn, vật thể khác nhau), "
+        "thuộc môi trường công sở/dịch vụ, và tỉ lệ gần đề thật: phần lớn là one "
+        "hoặc several, nhiều nhất một dòng none. Không thêm tiêu đề, không thêm "
+        "dòng nào khác."
+    )
+    result = with_backoff(
+        lambda: gateway.run(
+            LLMRequest(system=prompt, user="Sinh sáu bối cảnh ảnh Part 1.", max_tokens=800),
+            feature="exam_plan",
+            tier=tier,
+        ),
+        tries=writer.RETRY_TRIES,
+        delay=writer.RETRY_DELAY,
+    )
+    scenes: list[tuple[str, str, str]] = []
+    line_pattern = re.compile(r"^(PART_1_[A-Z_]+)\|(one|several|none)\|(.+)$")
+    for line in result.text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        match = line_pattern.match(line)
+        if match is None:
+            raise ValueError(f"dòng scene không đúng định dạng: {line[:60]!r}")
+        scenes.append((match.group(1), match.group(2), match.group(3).strip()))
+    if len(scenes) != 6:
+        raise ValueError(f"cần đúng 6 bối cảnh Part 1, model trả {len(scenes)}")
+    return scenes
+
+
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
     builder = {
@@ -88,7 +142,29 @@ def cmd_plan(args: argparse.Namespace) -> int:
         7: bp.build_part7,
     }[args.part]
     path = blueprint_path(args.slug)
-    plan = bp.merge(bp.load(path) if path.exists() else None, builder(args.slug, title, args.seed))
+    existing = bp.load(path) if path.exists() else None
+
+    # Part 1: nếu có `--model` thì hỏi model sinh sáu bối cảnh; hỏng thì rơi về
+    # `PART1_MIX` (shuffle theo seed) — một lượt plan không được chết vì model.
+    scenes: list[tuple[str, str, str]] | None = None
+    if args.part == 1 and args.model:
+        try:
+            gateway = _gateway(args.model)
+            scenes = generate_part1_scenes(gateway, Tier(args.tier))
+            print(f"model {args.model} sinh 6 bối cảnh Part 1.")
+        except Exception as failure:  # noqa: BLE001 — rơi về pool là đường đúng
+            print(
+                f"không sinh được bối cảnh bằng model ({failure}) — dùng PART1_MIX.",
+                file=sys.stderr,
+            )
+            scenes = None
+
+    built = (
+        bp.build_part1(args.slug, title, args.seed, scenes)
+        if args.part == 1
+        else builder(args.slug, title, args.seed)
+    )
+    plan = bp.merge(existing, built)
     problems = bp.validate(plan)
     if problems:
         for problem in problems:
@@ -570,6 +646,12 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd.add_argument("--title")
     plan_cmd.add_argument("--seed", type=int, default=20260822)
     plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5, 6, 7))
+    plan_cmd.add_argument(
+        "--model",
+        default=None,
+        help="provider/model cho Part 1 (vd `bai/glm-5.3-flash`) — sinh 6 bối cảnh; "
+        "bỏ trống thì dùng PART1_MIX",
+    )
     plan_cmd.set_defaults(func=cmd_plan)
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")

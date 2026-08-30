@@ -87,6 +87,8 @@ LISTENING_QUESTIONS_PER_SET = 3
 QUESTIONS_PER_SET = {3: 3, 4: 3, 6: 4}
 
 # Phân bố của một đề thật: phần lớn có người, và đúng một tấm tả vật hoặc cảnh.
+# 18 mẫu — nhiều hơn 6 câu của một đề, để `build_part1` shuffle và lấy 6 theo
+# seed: hai đề khác seed thì Part 1 khác nhau, không lặp lại đúng bộ ảnh cũ.
 PART1_MIX: tuple[tuple[str, str, str], ...] = (
     ("PART_1_PERSON_DESCRIPTION", "one", "một người đang làm việc tại bàn làm việc"),
     (
@@ -109,6 +111,50 @@ PART1_MIX: tuple[tuple[str, str, str], ...] = (
         "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
         "none",
         "một phòng làm việc trống với bàn ghế và thiết bị đã xếp sẵn",
+    ),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một đầu bếp đang trang trí một món ăn"),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "hai công nhân lắp ráp một món đồ nội thất trong cửa hàng",
+    ),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một người phụ nữ đang xách vali bước qua sảnh"),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "một nhóm hành khách xếp hàng trước quầy làm thủ tục ở sân bay",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "một thư viện yên tĩnh với các kệ sách và bàn đọc",
+    ),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một người đàn ông đang lau cửa kính toà nhà"),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "hai nhân viên lễ tân đang trò chuyện cạnh bàn lễ tân",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "một quán cà phê vắng khách với những chiếc bàn và ghế gỗ",
+    ),
+    (
+        "PART_1_PERSON_DESCRIPTION",
+        "one",
+        "một người thợ sửa chữa đang kiểm tra ống nước dưới bồn rửa",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "một nhóm sinh viên đang đứng quanh một bảng thông báo",
+    ),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một người giao hàng đang ôm một thùng các-tông"),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "một bãi đỗ xe trống với vài chiếc xe đậu rải rác",
     ),
 )
 
@@ -681,8 +727,33 @@ def build_part5(slug: str, title: str, seed: int, count: int = 30) -> Blueprint:
 PART1_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
 
 
-def build_part1(slug: str, title: str, seed: int) -> Blueprint:
-    """Sáu ô Part 1. Số câu chuẩn của đề thật là 1–6."""
+def build_part1(
+    slug: str, title: str, seed: int, scenes: list[tuple[str, str, str]] | None = None
+) -> Blueprint:
+    """Sáu ô Part 1. Số câu chuẩn của đề thật là 1–6.
+
+    `scenes` cho phép người gọi cung cấp sáu bối cảnh TỪ MÔ HÌNH (xem
+    `generate_part1_scenes` ở `generate_exam.py`); thiếu thì shuffle `PART1_MIX`
+    theo `seed` và lấy 6 — nhiều hơn 6 mẫu nên hai đề khác seed sẽ có bộ ảnh
+    khác nhau, không lặp lại đúng đề cũ.
+    """
+    if scenes is None:
+        # Shuffle có RÀNG BUỘC: một đề phải đủ cả ba dạng tranh (người, người+vật,
+        # vật/cảnh) — người học phải gặp cả ba ở đề nào cũng được, và `validate` từ
+        # chối blueprint thiếu dạng. Chia pool theo dạng rồi lấy mỗi dạng ít nhất
+        # một, phần còn lại ngẫu nhiên — hai đề khác seed vẫn khác nhau.
+        by_shape: dict[str, list[tuple[str, str, str]]] = {}
+        for item in PART1_MIX:
+            by_shape.setdefault(item[1], []).append(item)
+        rng = random.Random(seed)
+        selected: list[tuple[str, str, str]] = []
+        for shape in ("one", "several", "none"):
+            if shape in by_shape:
+                selected.append(rng.choice(by_shape[shape]))
+        rest = [item for item in PART1_MIX if item not in selected]
+        rng.shuffle(rest)
+        selected += rest[: 6 - len(selected)]
+        scenes = selected[:6]
     slots = [
         QuestionSlot(
             id=f"p1-{index:02d}",
@@ -693,7 +764,7 @@ def build_part1(slug: str, title: str, seed: int) -> Blueprint:
             voice=PART1_VOICES[(index - 1 + seed) % len(PART1_VOICES)],
             people=people,
         )
-        for index, (question_type, people, scene) in enumerate(PART1_MIX, start=1)
+        for index, (question_type, people, scene) in enumerate(scenes, start=1)
     ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=1, slots=slots)])
 
