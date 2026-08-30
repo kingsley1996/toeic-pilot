@@ -32,7 +32,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
-from app.content.exam.writer import MissingBlock, save_slot, write_slot
+from app.content.exam.writer import DEFAULT_MAX_TOKENS, MissingBlock, save_slot, write_slot
 from app.services.llm.base import LLMRequest
 from app.services.llm.retry import with_backoff
 
@@ -74,7 +74,9 @@ class _Parts:
         return self.by_id[slot_id][1]
 
 
-def _write_node(gateway: Any, tier: Any, workdir: Any, parts: _Parts) -> Any:
+def _write_node(
+    gateway: Any, tier: Any, workdir: Any, parts: _Parts, max_tokens: int | None = None
+) -> Any:
     """Viết lại ô. `write_slot` ném `MissingBlock` khi đầu ra bị cắt — biến thành
     trạng thái bị chặn thay vì để ngoại lệ làm đồ thị chết. `fix_hint` của critic
     đi kèm: đây là toàn bộ điểm của vòng lặp — sửa theo lý do, không sinh lại mù.
@@ -91,7 +93,14 @@ def _write_node(gateway: Any, tier: Any, workdir: Any, parts: _Parts) -> Any:
         update: dict[str, Any] = {"revision": state["revision"] + 1}
         hint = state.get("fix_hint")
         try:
-            block = write_slot(gateway, slot, tier, part, fix_hint=hint)
+            block = write_slot(
+                gateway,
+                slot,
+                tier,
+                part,
+                fix_hint=hint,
+                max_tokens=max_tokens or DEFAULT_MAX_TOKENS,
+            )
         except MissingBlock as cut:
             update |= {
                 "draft": "",
@@ -210,7 +219,9 @@ def _escalate(state: dict[str, Any]) -> dict[str, Any]:
     return {"outcome": "escalated"}
 
 
-def build(gateway: Any, tier: Any, blueprint: Any, workdir: Any) -> Any:
+def build(
+    gateway: Any, tier: Any, blueprint: Any, workdir: Any, max_tokens: int | None = None
+) -> Any:
     parts = _Parts(blueprint)
 
     builder = StateGraph(SlotState)
@@ -221,7 +232,7 @@ def build(gateway: Any, tier: Any, blueprint: Any, workdir: Any) -> Any:
     def _node(fn: Any) -> Any:
         return fn
 
-    builder.add_node("write", _node(_write_node(gateway, tier, workdir, parts)))
+    builder.add_node("write", _node(_write_node(gateway, tier, workdir, parts, max_tokens)))
     builder.add_node("check", _node(_check_node(blueprint, workdir, parts)))
     builder.add_node("critic", _node(_critic_node(gateway, tier)))
     builder.add_node("accept", _node(_accept))
@@ -243,11 +254,16 @@ def run_pending(
     workdir: Any,
     limit: int | None = None,
     only: int | None = None,
+    max_tokens: int | None = None,
 ) -> list[tuple[str, str]]:
-    """Chạy đồ thị cho MỌI ô còn thiếu tệp dán. Trả về [(slot, outcome)]."""
+    """Chạy đồ thị cho MỌI ô còn thiếu tệp dán. Trả về [(slot, outcome)].
+
+    `max_tokens` đi thẳng vào `write_slot`: model suy luận tiêu một phần lớn trần
+    cho phần suy nghĩ trước khi viết — trần mặc định 6000 từng bị một lượt eat
+    22 975 ký tự suy nghĩ và không kịp trả lời."""
     from app.content.exam.writer import pending
 
-    graph = build(gateway, tier, blueprint, workdir)
+    graph = build(gateway, tier, blueprint, workdir, max_tokens)
     out: list[tuple[str, str]] = []
     slots = pending(blueprint, workdir)
     if only is not None:
@@ -284,6 +300,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model", default=None, help="provider/model (vd `bai/gpt-5.6-sol`)")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--part", type=int, default=None)
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=None,
+        help="trần đầu ra mỗi lượt viết; model suy luận cần rộng (mặc định 6000)",
+    )
     parser.add_argument("--tier", default="cheap", choices=["cheap", "strong"])
     args = parser.parse_args(argv)
 
@@ -291,7 +313,9 @@ def main(argv: list[str] | None = None) -> int:
     gateway = _gateway(args.model)
     tier = Tier.STRONG if args.tier == "strong" else Tier.CHEAP
 
-    results = run_pending(gateway, tier, blueprint, workdir_for(args.slug), args.limit, args.part)
+    results = run_pending(
+        gateway, tier, blueprint, workdir_for(args.slug), args.limit, args.part, args.max_tokens
+    )
     accepted = sum(1 for _, outcome in results if outcome == "accepted")
     escalated = sum(1 for _, outcome in results if outcome == "escalated")
     print(

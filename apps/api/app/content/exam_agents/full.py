@@ -45,6 +45,7 @@ class FullState(TypedDict, total=False):
     only: int | None
     accepted: int
     escalated: int
+    max_tokens: int | None
     current: str | None  # ô đang chạy
     current_outcome: str | None
     log: Annotated[list[str], operator.add]
@@ -147,6 +148,7 @@ def _slotloop_node(gateway: Any, tier: Any, workdir: Any) -> Any:
             Path(str(workdir)),
             limit=state.get("limit"),
             only=state.get("only"),
+            max_tokens=state.get("max_tokens"),
         )
         accepted = sum(1 for _, outcome in result if outcome == "accepted")
         escalated = sum(1 for _, outcome in result if outcome == "escalated")
@@ -184,6 +186,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--part", type=int, default=None, help="chỉ sinh một part")
     parser.add_argument("--tier", default="cheap", choices=["cheap", "strong"])
     parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=None,
+        help="trần đầu ra mỗi lượt viết; model suy luận cần rộng (mặc định 6000)",
+    )
+    parser.add_argument(
         "--seed", type=int, default=20260822, help="seed cho blueprint (cùng seed = cùng chủ đề)"
     )
     args = parser.parse_args(argv)
@@ -199,6 +207,7 @@ def main(argv: list[str] | None = None) -> int:
             "planned": False,
             "limit": args.limit,
             "only": args.part,
+            "max_tokens": args.max_tokens,
             "accepted": 0,
             "escalated": 0,
         },
