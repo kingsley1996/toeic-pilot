@@ -231,7 +231,7 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int) -> list[str]
             LLMRequest(
                 system=prompt,
                 user=f"Sinh {count} brief hình Part {part}.",
-                max_tokens=2000,
+                max_tokens=4000,
             ),
             feature="exam_plan",
             tier=tier,
