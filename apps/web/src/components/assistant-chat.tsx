@@ -249,8 +249,15 @@ export function AssistantChat({ token }: { token: string | null }) {
           )}
 
           {busy && (
-            <div className="flex items-start gap-2.5" role="status" aria-label="Trợ lý đang soạn câu trả lời">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-recess text-ink-muted" aria-hidden>
+            <div
+              className="flex items-start gap-2.5"
+              role="status"
+              aria-label="Trợ lý đang soạn câu trả lời"
+            >
+              <span
+                className="grid h-7 w-7 shrink-0 place-items-center rounded bg-recess text-ink-muted"
+                aria-hidden
+              >
                 <Sparkles size={15} strokeWidth={2} />
               </span>
               <span className="mt-2 flex items-center gap-1" aria-hidden>
@@ -264,9 +271,7 @@ export function AssistantChat({ token }: { token: string | null }) {
         </div>
       </div>
 
-      {error && (
-        <p className="mx-auto w-full max-w-2xl px-4 pb-2 text-small text-alert">{error}</p>
-      )}
+      {error && <p className="mx-auto w-full max-w-2xl px-4 pb-2 text-small text-alert">{error}</p>}
 
       <form
         className="border-t border-rule p-3"

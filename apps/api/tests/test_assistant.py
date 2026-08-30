@@ -142,9 +142,7 @@ def test_chua_co_lich_su_thi_tra_TRANG_RONG(client: TestClient, auth) -> None:
     assert body["total"] == 0
 
 
-def test_XOA_lich_su_thi_lich_su_TRONG(
-    client: TestClient, auth, db_session: Session
-) -> None:
+def test_XOA_lich_su_thi_lich_su_TRONG(client: TestClient, auth, db_session: Session) -> None:
     """Xoá lịch sử trợ lý: delete trả 204, get sau đó trả rỗng."""
     from app.models.chat import CoachConversation, CoachMessage
 
@@ -155,9 +153,7 @@ def test_XOA_lich_su_thi_lich_su_TRONG(
     conv = CoachConversation(user_id=user.id, attempt_id=None)
     db_session.add(conv)
     db_session.commit()
-    db_session.add(
-        CoachMessage(conversation_id=conv.id, position=1, role="user", content="hello")
-    )
+    db_session.add(CoachMessage(conversation_id=conv.id, position=1, role="user", content="hello"))
     db_session.add(
         CoachMessage(conversation_id=conv.id, position=2, role="assistant", content="hi")
     )
