@@ -555,6 +555,97 @@ def cmd_media(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_attach_images(args: argparse.Namespace) -> int:
+    """Gắn ảnh tự sinh (Part 1 chụp + graphic Part 3/4/7) vào đề đã nạp.
+
+    Chạy sau `load` và sau `photo`/`graphic` (render ra đĩa). Mỗi part lấy đúng
+    chế độ khớp của nó: Part 1 theo số câu, Part 3/4 theo thứ tự cụm, Part 7 theo
+    `cụm-sô`. Giấy phép và ghi công điền sẵn cho ảnh do pipeline tự sinh.
+
+    Mặc định CHỈ XEM bảng khớp: ảnh phải được người nhìn trước khi gắn (§8) —
+    thêm `--commit` để ghi vào DB.
+    """
+    from sqlalchemy import select
+
+    from app.content.import_media import (
+        IMAGE_SUFFIXES,
+        collect,
+        image_slots,
+        import_images,
+        match_files,
+        report,
+    )
+    from app.core.database import SessionLocal
+    from app.models.practice import PracticeTest
+
+    workdir = workdir_for(args.slug)
+
+    jobs: list[tuple[int, Path, str]] = []
+    for part in (1, 3, 4, 7):
+        if args.part is not None and part != args.part:
+            continue
+        directory = workdir / "images" if part == 1 else workdir / "graphic-images" / f"part{part}"
+        if not directory.is_dir() or not any(directory.glob("*")):
+            continue
+        match = "passage" if part == 7 else ("index" if part in (3, 4) else "number")
+        jobs.append((part, directory, match))
+
+    if not jobs:
+        print("không có part nào có ảnh để gắn.", file=sys.stderr)
+        return 2
+
+    with SessionLocal() as session:
+        test = session.scalar(select(PracticeTest).where(PracticeTest.slug == args.slug))
+        if test is None:
+            print(f"không có đề `{args.slug}`", file=sys.stderr)
+            return 2
+
+        any_failed = False
+        for part, directory, match in jobs:
+            slots = image_slots(session, test, part)
+            if not slots:
+                print(
+                    f"  part {part} không có ô ảnh nào trong DB — chạy load trước",
+                    file=sys.stderr,
+                )
+                any_failed = True
+                continue
+            files = collect(directory, IMAGE_SUFFIXES)
+            pairs, extra, empty = match_files(files, slots, match)
+            skipped = [] if args.overwrite else [p for p in pairs if p[1].filled]
+            if not args.overwrite:
+                pairs = [p for p in pairs if not p[1].filled]
+            empty = [s for s in empty if not s.filled]
+            report(pairs, extra, empty, kind="image", skipped=skipped)
+
+            if not args.commit:
+                continue
+
+            is_partial = part in (3, 4, 7)
+            if extra or (empty and not is_partial):
+                print("\nDừng: còn file thừa hoặc ô trống không thể bỏ qua.", file=sys.stderr)
+                any_failed = True
+                continue
+
+            try:
+                done = import_images(
+                    session,
+                    pairs,
+                    source_url=args.source_url or f"file://{directory}",
+                    license_name=args.license or "generated",
+                    attribution=args.attribution or "TOEIC Pilot — ảnh tự sinh",
+                    alt_text=args.alt_text,
+                )
+                session.commit()
+                print(f"  đã gắn {done} image cho Part {part}")
+            except Exception as exc:
+                session.rollback()
+                print(f"  ✗ Part {part}: {exc}", file=sys.stderr)
+                any_failed = True
+
+    return 1 if any_failed else 0
+
+
 def cmd_graphic(args: argparse.Namespace) -> int:
     """Vẽ hình ngữ liệu Part 3/4/7 từ dữ liệu bảng, kèm chữ thay ảnh.
 
@@ -830,6 +921,19 @@ def main(argv: list[str] | None = None) -> int:
     graphic_cmd = sub.add_parser("graphic", help="vẽ hình ngữ liệu Part 3/4 từ dữ liệu bảng")
     graphic_cmd.add_argument("--slug", required=True)
     graphic_cmd.set_defaults(func=cmd_graphic)
+
+    attach_cmd = sub.add_parser("attach-images", help="gắn ảnh tự sinh vào đề đã nạp")
+    attach_cmd.add_argument("--slug", required=True)
+    attach_cmd.add_argument("--part", type=int, choices=(1, 3, 4, 7), default=None)
+    attach_cmd.add_argument(
+        "--commit", action="store_true", help="ghi vào DB (mặc định: chỉ in bảng khớp)"
+    )
+    attach_cmd.add_argument("--source-url", default=None)
+    attach_cmd.add_argument("--license", default=None)
+    attach_cmd.add_argument("--attribution", default=None)
+    attach_cmd.add_argument("--alt-text", default=None)
+    attach_cmd.add_argument("--overwrite", action="store_true")
+    attach_cmd.set_defaults(func=cmd_attach_images)
 
     check_cmd = sub.add_parser("check", help="kiểm tệp dán")
     check_cmd.add_argument("--slug", required=True)
