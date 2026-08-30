@@ -52,10 +52,19 @@ ENDPOINTS: dict[str, str] = {
 class OpenAICompatibleProvider:
     """Một nhà cung cấp cụ thể. `name` đi vào sổ cái và vào bảng giá."""
 
-    def __init__(self, name: str, base_url: str, api_key: str, *, timeout_s: float = 300.0) -> None:
+    def __init__(
+        self,
+        name: str,
+        base_url: str,
+        api_key: str,
+        *,
+        timeout_s: float = 300.0,
+        extra_payload: dict[str, object] | None = None,
+    ) -> None:
         self.name = name
         self._url = base_url.rstrip("/") + "/chat/completions"
         self._key = api_key
+        self._extra = extra_payload or {}
         # Mặc định của httpx là 5 giây, và 90 giây cũng vẫn ngắn: đo với
         # `qwen3.8-max-free` thì một lượt sinh một câu hỏi mất ~2,5 phút, vì
         # model suy luận viết hàng nghìn token suy nghĩ trước khi trả lời. Cả
@@ -83,6 +92,7 @@ class OpenAICompatibleProvider:
         }
         if request.tools:
             payload["tools"] = request.tools
+        payload.update(self._extra)
         started = perf_counter()
         try:
             response = httpx.post(

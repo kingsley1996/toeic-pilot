@@ -54,6 +54,10 @@ class CustomProvider(BaseModel):
     # Tên BIẾN MÔI TRƯỜNG chứa khoá, không phải khoá. Bỏ trống thì suy ra
     # `<TÊN>_API_KEY` theo đúng quy ước các provider builtin đang dùng.
     api_key_env: str | None = None
+    # Payload phụ gửi kèm mọi lượt chat/completions. NVIDIA yêu cầu
+    # `chat_template_kwargs: {"thinking": false}` để tắt suy luận — để nguyên
+    # mặc định thì model suy nghĩ ăn hết max_tokens và content về rỗng.
+    extra_payload: dict[str, object] = Field(default_factory=dict)
     comment: str | None = None
     models: dict[str, CustomModel] = Field(default_factory=dict)
 

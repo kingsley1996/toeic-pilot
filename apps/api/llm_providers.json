@@ -86,6 +86,48 @@
           "comment": "Giá công bố, tra ngày 2026-08-29 — kiểm lại trước mỗi đợt chạy lớn."
         }
       }
+    },
+    "nvidia": {
+      "base_url": "https://integrate.api.nvidia.com/v1",
+      "api_key_env": "NVIDIA_API_KEY",
+      "extra_payload": {
+        "chat_template_kwargs": {
+          "thinking": false
+        }
+      },
+      "comment": "NVIDIA NIM preview — các model chạy miễn phí (build.nvidia.com, cấp khóa free, giới hạn request). Kiểm bằng key thật ngày 2026-08-30. `chat_template_kwargs.thinking=false` TẮT suy luận — bỏ thì model nghĩ ăn hết max_tokens rồi content về rỗng (đúng lỗi 'hết hạn mức đầu ra khi suy luận'). deepseek-v4-flash-0731 timeout và nemotron-nano-3-30b-a3b 404 nên không khai. gpt-oss-120b bỏ qua cờ này (vẫn suy luận).",
+      "models": {
+        "deepseek-ai/deepseek-v4-pro-0813": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí trên build.nvidia.com (không có bảng giá USD công khai; tài khoản free dùng có giới hạn request, không tính tiền token). Kiểm chạy thật 2026-08-30."
+        },
+        "nvidia/nemotron-3.5-lightning-30b-a3b": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30."
+        },
+        "nvidia/nemotron-3-super-120b-a12b": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30."
+        },
+        "nvidia/nemotron-3-ultra-550b-a55b": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30."
+        },
+        "meta/llama-3.2-90b-vision-instruct": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30."
+        },
+        "openai/gpt-oss-120b": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30. Bỏ qua `thinking:false` nên vẫn suy luận."
+        }
+      }
     }
   }
 }
