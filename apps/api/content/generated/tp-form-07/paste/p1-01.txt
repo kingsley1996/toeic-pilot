@@ -1,0 +1,8 @@
+[QUESTION]
+voice: au_female_1
+(A) Two women are sitting at the desk.
+(B) The woman is drinking from a glass.
+(C) The woman is typing on a keyboard.
+(D) The woman is reading a document.
+Answer: C
+Source: original

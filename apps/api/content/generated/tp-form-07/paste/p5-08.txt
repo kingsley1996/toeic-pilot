@@ -1,0 +1,10 @@
+[QUESTION]
+The security guard must issue ------- access cards to office visitors before they enter the building.
+(A) they're
+(B) their
+(C) there  
+(D) them  
+
+Answer: B
+Explanation: Cần một tính từ sở hữu bổ nghĩa cho danh từ "access cards", nên "their" là đúng. (B) "they're" là viết tắt của "they are", không phải đại từ sở hữu; (C) "there" là trạng từ chỉ nơi chốn, sai từ loại; (D) "them" là đại từ tân ngữ, không dạng sở hữu.  
+Source: original

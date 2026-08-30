@@ -1,0 +1,9 @@
+[QUESTION]
+Before the monthly tax report is submitted, the accountant must verify that all figures are -------.
+(A) accurately
+(B) accurate
+(C) accuracy
+(D) accrual
+Answer: B
+Explanation: Sau động từ "are" (be) cần tính từ làm bổ ngữ cho chủ ngữ "all figures". (A) "accurate" là tính từ, hoàn thành đúng vị trí này. (B) "accurately" là trạng từ, không đứng sau "be" để làm bổ ngữ. (C) "accuracy" là danh từ, không thể bổ nghĩa cho "figures" trong cấu trúc "be + -------". (D) "accrual" là danh từ trong kế toán (việc ghi nhận doanh thu hoặc chi phí), sai từ loại và không hợp nghĩa ở vị trí này.
+Source: original

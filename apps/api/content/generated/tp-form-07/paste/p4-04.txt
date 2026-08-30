@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone. As your chief financial officer, I want to announce a change to our invoice payment process. Starting on the first of next month, all invoices must be submitted through the new online finance portal rather than by email. Invoices sent by email will no longer be accepted. Once an invoice is approved, payment will be issued within ten business days, which is a week faster than the current schedule. Managers, please review your pending invoices this week and submit anything outstanding before the first. My assistant will circulate login instructions for the portal this afternoon. If you have questions, please see me after the meeting.
+
+[QUESTION]
+Who is the speaker?
+(A) An office assistant
+(B) A software developer
+(C) A human resources manager
+(D) A chief financial officer
+Answer: D
+Source: original
+[QUESTION]
+When will the new payment process take effect?
+(A) On the first of next month
+(B) This afternoon
+(C) At the end of this week
+(D) Immediately after the meeting
+Answer: A
+Source: original
+[QUESTION]
+What does the speaker ask the managers to do before the first of next month?
+(A) Complete training on the finance portal
+(B) Submit any outstanding invoices
+(C) Send login instructions to their staff
+(D) Approve all pending payments
+Answer: B
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_male_1
+I'd like to know how many display tables you'll need.
+voice: au_female_1
+(A) Twelve tables, each with two chairs.
+(B) In the main hall, near the entrance.
+(C) Yes, we have plenty of chairs.
+Answer: A
+Source: original

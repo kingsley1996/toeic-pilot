@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+Why is my internet contract faulty?
+voice: us_female_1
+(A) It's on the third floor.
+(B) We'll come to check it this afternoon.
+(C) Yes, it's a new contract.
+Answer: B
+Source: original

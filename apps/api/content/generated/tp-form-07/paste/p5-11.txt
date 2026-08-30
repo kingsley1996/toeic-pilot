@@ -1,0 +1,9 @@
+[QUESTION]
+The concierge will ------- a meeting room for the visiting clients.
+(A) reserve  
+(B) remind  
+(C) restore  
+(D) replace  
+Answer: A  
+Explanation: (A) reserve đi với “a meeting room” – “đặt trước phòng họp”. (B) remind có nghĩa “nhắc nhở”, không thể đi với tân ngữ chỉ phòng. (C) restore nghĩa “khôi phục”, không hợp nghĩa. (D) replace nghĩa “thay thế”, không tạo câu có nghĩa trong ngữ cảnh đặt phòng cho khách.
+Source: original

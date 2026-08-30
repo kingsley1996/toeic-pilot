@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Hi, Mr. Ellison, this is Rosa, your assistant. I'm leaving a message about your meeting with the partners at the Brookline Group next Monday morning. The meeting was originally set for eight-thirty, but their office called this afternoon to move it to ten o'clock. It'll now be held in the large conference room on the fifth floor instead of your office. Also, they've asked that you bring the updated sales figures to the meeting. I've already emailed you the revised agenda. Please call me back this evening to confirm that the new time works for you. Thanks so much, and have a good weekend.
+
+[QUESTION]
+Who is the speaker?
+(A) An office manager
+(B) The listener's assistant
+(C) A partner at the Brookline Group
+(D) A conference coordinator
+Answer: B
+Source: original
+[QUESTION]
+What time is the meeting now scheduled to begin?
+(A) At eight-thirty
+(B) At nine o'clock
+(C) At ten o'clock
+(D) At noon
+Answer: C
+Source: original
+[QUESTION]
+What does the speaker ask Mr. Ellison to do?
+(A) Reschedule the meeting for Tuesday
+(B) Book the conference room on the fifth floor
+(C) Send the agenda to the partners
+(D) Call her back this evening
+Answer: D
+Source: original

@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: ca_male_1
+I just finished going over the quarterly sales report, and the numbers aren't good. Revenue dropped almost fifteen percent.
+voice: ca_female_1
+That's surprising. Which product line caused the biggest decline?
+voice: ca_male_1
+The home office furniture section. Store traffic was steady, but hardly anyone bought the desks.
+voice: ca_female_1
+Maybe our prices are too high compared to that new competitor downtown.
+voice: ca_male_1
+That could be it. Could you put together a price comparison by Friday?
+voice: ca_female_1
+Sure. I'll also check what promotions the competitor is running.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) A new advertising campaign
+(B) A drop in quarterly sales
+(C) The opening of a second store
+(D) A plan to hire more staff
+Answer: B
+Source: original
+[QUESTION]
+Which product line had the biggest decline?
+(A) Outdoor equipment
+(B) Kitchen appliances
+(C) Home office furniture
+(D) Bedroom sets
+Answer: C
+Source: original
+[QUESTION]
+What does the man ask the woman to do by Friday?
+(A) Meet with a furniture supplier
+(B) Review the competitor's promotions
+(C) Update the sales report
+(D) Prepare a price comparison
+Answer: D
+Source: original

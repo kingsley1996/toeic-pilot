@@ -1,0 +1,4 @@
+kind: map
+Building Directory
+Floor 1: Entrance | Floor 2: Payment Area
+Floor 3: Restrooms | Floor 4: Elevators

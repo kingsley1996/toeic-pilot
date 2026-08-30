@@ -1,0 +1,9 @@
+[QUESTION]
+The secretary will be ------- than the previous one in arranging the meeting schedule for the board next week.
+(A) more efficiently
+(B) most efficient
+(C) very efficient
+(D) more efficient
+Answer: D
+Explanation: (A) đúng vì sau "be" cần tính từ, "than" yêu cầu so sánh hơn nên dùng "more efficient". (B) sai vì "most efficient" là so sánh nhất, không dùng với "than" khi so sánh hai đối tượng. (C) sai vì "very efficient" là nguyên cấp, không phải so sánh hơn nên không kết hợp được với "than". (D) sai vì "more efficiently" là trạng từ, không thể làm bổ ngữ sau động từ "be".
+Source: original

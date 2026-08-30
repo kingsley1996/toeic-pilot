@@ -1,0 +1,76 @@
+[PASSAGE]
+From: d.lam@example-law.com
+To: p.moreau@example-retail.com
+Subject: Draft Services Agreement
+Date: March 12
+
+Dear Ms. Moreau,
+
+Please find attached the initial draft of the Services Agreement for your review. The document reflects our discussions from last week and includes the standard terms we use for annual legal counsel.
+
+I would like to draw your attention to Article IV, which outlines the payment schedule. As discussed, the current terms provide for a single annual retainer paid in advance. If your company prefers an installment structure, we are open to discussing a revision before finalizing the document.
+
+Please review the agreement and let me know if you have any questions or proposed changes by March 20. We can arrange a call to go over any points that need clarification.
+
+Regards,
+Daniel Lam
+Corporate Counsel
+
+[PASSAGE]
+From: p.moreau@example-retail.com
+To: d.lam@example-law.com
+Subject: Re: Draft Services Agreement
+Date: March 15
+
+Dear Mr. Lam,
+
+Thank you for sending the draft. Our finance team has reviewed the document, and we are generally satisfied with the scope of services outlined in Article II.
+
+However, we would like to request a change to Article V before signing. The current clause requires payment within fifteen days of invoicing. Given our quarterly budget cycle, we ask that the payment window be extended to thirty days. This adjustment would align the agreement with our other vendor contracts and greatly simplify our internal processing.
+
+If this revision is acceptable, we can proceed to signature this week. Please let us know.
+
+Best regards,
+Pauline Moreau
+Operations Director
+
+[QUESTION]
+What is the purpose of the e-mail exchange?
+(A) To schedule a quarterly meeting
+(B) To announce a new legal service
+(C) To dispute an unpaid invoice
+(D) To negotiate a change to a contract
+Answer: D
+Source: original
+[QUESTION]
+What is the deadline Mr. Lam gives for Ms. Moreau's response?
+(A) March 12
+(B) March 15
+(C) March 20
+(D) March 30
+Answer: C
+Source: original
+[QUESTION]
+What can be inferred about Ms. Moreau's company?
+(A) It prefers to pay vendors on a quarterly cycle.
+(B) It has rejected the entire draft agreement.
+(C) It employs no internal finance staff.
+(D) It requires legal counsel only in the fourth quarter.
+Answer: A
+Source: original
+[QUESTION]
+What is indicated about the company's revenue in Q4?
+(A) It was the highest of the year.
+(B) It declined from Q3.
+(C) It was lower than Q1.
+(D) It remained unchanged from Q2.
+Answer: A
+Source: original
+[QUESTION]
+In the second e-mail, the word "extended" in paragraph 2 is closest in meaning to
+(A) lengthened
+(B) offered
+(C) granted
+(D) announced
+Answer: A
+Source: original

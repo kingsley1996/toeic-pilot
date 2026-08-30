@@ -1,0 +1,9 @@
+[QUESTION]
+The engineers ------- prepared the design drawings for the client.
+(A) herself
+(B) himself
+(C) themselves
+(D) itself
+Answer: C
+Explanation: Chủ ngữ "The engineers" ở số nhiều nên cần đại từ phản thân số nhiều "themselves" để nhấn mạnh chính họ đã chuẩn bị. (B) "himself" sai vì là ngôi ba số ít giống đực; (C) "herself" sai vì là ngôi ba số ít giống cái; (D) "itself" sai vì dùng cho vật hoặc động vật, không chỉ người. Cả ba sai về số hoặc ngôi so với chủ ngữ.
+Source: original

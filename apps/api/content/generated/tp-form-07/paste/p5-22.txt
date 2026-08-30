@@ -1,0 +1,9 @@
+[QUESTION]
+Sales representatives are responsible for the ------- of contracts with new clients.
+(A) negotiator
+(B) negotiable
+(C) negotiate
+(D) negotiation
+Answer: D
+Explanation: Sau "the" và "of" cần một danh từ chỉ sự việc. (A) "negotiation" là danh từ đúng. (B) là tính từ "có thể thương lượng"; (C) là động từ "thương lượng"; (D) là danh từ chỉ người "người đàm phán", không phù hợp nghĩa.
+Source: original

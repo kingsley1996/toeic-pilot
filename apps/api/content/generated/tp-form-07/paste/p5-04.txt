@@ -1,0 +1,9 @@
+[QUESTION]
+Customer service representatives ------- customer complaints over the phone.
+(A) are handled
+(B) handle
+(C) handling
+(D) to handle
+Answer: B
+Explanation: Chỗ trống cần động từ chính ở thì hiện tại đơn, chủ động, hợp với chủ ngữ số nhiều "representatives". (B) "are handled" sai thể bị động: chủ ngữ là người thực hiện hành động, không phải chịu tác động; câu bị động đúng phải là "complaints are handled by representatives". (C) "handling" sai dạng: phân từ hiện tại không thể làm động từ chính nếu không có trợ động từ "are". (D) "to handle" sai dạng: động từ nguyên mẫu có "to" không được dùng làm động từ chính của câu.
+Source: original

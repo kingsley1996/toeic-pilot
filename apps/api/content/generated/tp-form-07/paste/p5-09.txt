@@ -1,0 +1,9 @@
+[QUESTION]
+------- the inventory at the end of the month, the staff noticed several discrepancies.
+(A) Account
+(B) Counted
+(C) Counting
+(D) Counts
+Answer: C
+Explanation: Động từ chính của câu là "noticed", nên chỗ trống cần một phân từ tạo mệnh đề phân từ rút gọn. Chủ ngữ "the staff" là người thực hiện hành động đếm, do đó phải dùng phân từ hiện tại chủ động "Counting" (A). (B) "Counted" là phân từ quá khứ, mang nghĩa bị động — nếu dùng thì câu hiểu là "the staff" bị đếm, sai thể. (C) "Account" là động từ nghĩa "xem xét / cho rằng", không kết hợp với "inventory" trong ngữ cảnh đếm hàng, sai nghĩa. (D) "Counts" là động từ ngôi ba số ít, không thể đứng đầu câu làm mệnh đề phân từ, sai dạng thức.
+Source: original

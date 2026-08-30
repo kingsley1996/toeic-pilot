@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_male_1
+The copier is fixed now, isn't it?
+voice: au_female_1
+(A) Yes, the price is fixed.
+(B) It's in the supply room.
+(C) Yes, I replaced the roller and tested it.
+Answer: C
+Source: original

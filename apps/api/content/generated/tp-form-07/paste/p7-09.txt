@@ -1,0 +1,40 @@
+[PASSAGE]
+Project Alpha: Mid-Stage Performance Review
+
+By Sandra Vance
+
+Last week, the development team for Project Alpha convened to review recent progress and outline key responsibilities for the next phase. [1] Overall, the team has met major milestones ahead of schedule, particularly in software testing. During the meeting, specific tasks were assigned to ensure a smooth transition into production. David Chen was tasked with finalizing the user interface design, while Brenda Hollis took charge of revising the financial projections. [2] To address recent supply chain bottlenecks, Marcus Vance was assigned responsibility for contacting potential new suppliers to secure raw materials. [3] His extensive background in vendor relations makes him well-suited for this management role. The team also evaluated individual performance metrics from the past quarter, noting exceptional productivity across all departments. [4] A follow-up meeting is scheduled for next Friday to review initial proposals.
+
+[QUESTION]
+According to the article, who is responsible for contacting new suppliers?
+(A) Sandra Vance
+(B) David Chen
+(C) Marcus Vance
+(D) Brenda Hollis
+Answer: C
+Source: original
+[QUESTION]
+What is implied about Project Alpha?
+(A) Its software testing progressed faster than planned.
+(B) It has already exceeded its allocated budget.
+(C) Its launch date was postponed by several weeks.
+(D) It requires hiring additional software engineers.
+Answer: A
+Source: original
+[QUESTION]
+What is NOT mentioned as a topic discussed during the meeting?
+(A) Financial projections
+(B) Employee hiring plans
+(C) User interface design
+(D) Individual performance metrics
+Answer: B
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"These prospective partnerships are expected to reduce raw material acquisition costs."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: C
+Source: original

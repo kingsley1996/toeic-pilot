@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The worker is holding a clipboard.
+(B) The worker is sweeping the warehouse floor.
+(C) Two workers are unloading a truck.
+(D) The worker is placing a box on a shelf.
+Answer: D
+Source: original

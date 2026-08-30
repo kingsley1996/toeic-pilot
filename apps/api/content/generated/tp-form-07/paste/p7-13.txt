@@ -1,0 +1,72 @@
+[PASSAGE]
+From: hr@example-mail.net
+To: all-staff@example-mail.net
+Subject: Internal opening: HR Assistant
+Date: May 8
+
+We are accepting applications for the position of HR Assistant. This role supports the recruitment team with scheduling interviews, entering applicant data, and maintaining records in our applicant tracking system, HireFlow. [1] Applicants should have at least one year of office experience. [2] Familiarity with HireFlow is preferred but not required. [3] The position is full-time, Monday through Friday. [4]
+
+Interested employees should submit a current résumé to the HR office by May 18.
+
+Sincerely,
+Human Resources
+
+[PASSAGE]
+Applicant Profile Summary
+
+Name: Priya Raman
+Experience: 2 years as an office clerk; 6 months using HireFlow
+Education: Certificate in Business Administration
+
+Name: Tomás Silva
+Experience: 3 years as a scheduling coordinator; no HireFlow experience
+Education: Associate’s degree in Human Resources
+
+Name: Lena Ortiz
+Experience: 1 year as a receptionist; 1 year using a different recruiting system
+Education: High school diploma
+
+Name: Marcus Lee
+Experience: 4 years in customer service; 1 year using HireFlow
+Education: Bachelor’s degree in Communications
+
+[QUESTION]
+What is the purpose of the e-mail?
+(A) To report a change in office hours
+(B) To introduce a new software system
+(C) To announce an internal job opening
+(D) To request feedback on a training session
+Answer: C
+Source: original
+[QUESTION]
+Which applicant has an associate’s degree?
+(A) Priya Raman
+(B) Tomás Silva
+(C) Lena Ortiz
+(D) Marcus Lee
+Answer: B
+Source: original
+[QUESTION]
+What is NOT stated about the HR Assistant position?
+(A) It is full-time.
+(B) It includes scheduling interviews.
+(C) It requires a bachelor’s degree.
+(D) It uses the HireFlow system.
+Answer: C
+Source: original
+[QUESTION]
+Which applicant would the announcement consider the strongest match for the preferred software qualification?
+(A) Priya Raman
+(B) Tomás Silva
+(C) Lena Ortiz
+(D) Marcus Lee
+Answer: D
+Source: original
+[QUESTION]
+According to the availability schedule, which candidate can attend an interview on Tuesday at 10-11?
+(A) Priya Raman
+(B) Tomás Silva
+(C) Lena Ortiz
+(D) Marcus Lee
+Answer: C
+Source: original

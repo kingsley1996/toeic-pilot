@@ -1,0 +1,11 @@
+[QUESTION]
+The chief executive officer, ------- the annual shareholders' meeting, will present the year-end results.
+(A) moderated
+(B) moderate
+(C) moderates
+(D) moderating
+
+Answer: D
+
+Explanation: Chủ ngữ CEO là tác nhân chủ động của hành động “moderate”, và động từ chính của câu là “will present”, nên chỗ trống cần phân từ hiện tại “moderating” để làm trạng ngữ bổ nghĩa. (A) là phân từ hai mang nghĩa bị động, sai vì CEO chủ động điều hành; (C) là động từ chia ngôi ba số ít, tạo câu có hai động từ chính; (D) là động từ nguyên thể, không dùng được ở vị trí này.
+Source: original

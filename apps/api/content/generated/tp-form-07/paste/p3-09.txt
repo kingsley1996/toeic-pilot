@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: au_female_1
+Mark, have you finished the inventory count for the storage room?
+voice: au_male_1
+Almost. I noticed we're short twelve boxes of printer paper from the shipment that arrived Monday.
+voice: au_female_1
+That's the third shortage this month. Did you check the delivery log?
+voice: au_male_1
+Yes. The driver signed for twenty boxes, but only eight were unloaded.
+voice: au_female_1
+We need to report this before the month-end report goes out.
+voice: au_male_1
+I'll e-mail the supplier this afternoon and attach the count sheet.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) The hiring of new warehouse staff
+(B) A schedule for next week's deliveries
+(C) A shortage in a recent shipment
+(D) The purchase of counting equipment
+Answer: C
+Source: original
+[QUESTION]
+What does the man say about the shipment that arrived Monday?
+(A) It arrived two days late
+(B) It was the first shortage this month
+(C) It contained damaged equipment
+(D) It was short twelve boxes
+Answer: D
+Source: original
+[QUESTION]
+What will the man do this afternoon?
+(A) E-mail the supplier
+(B) Call the delivery driver
+(C) Revise the month-end report
+(D) Recount the storage room
+Answer: A
+Source: original

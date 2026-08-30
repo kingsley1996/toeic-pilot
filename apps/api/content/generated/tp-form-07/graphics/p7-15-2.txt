@@ -1,0 +1,7 @@
+kind: survey
+Tenant Satisfaction Survey — Emergency Services
+Response | Count
+Very Satisfied | 12
+Satisfied | 28
+Neutral | 15
+Dissatisfied | 5

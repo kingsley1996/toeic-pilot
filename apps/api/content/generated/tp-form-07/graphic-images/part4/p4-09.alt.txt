@@ -1,0 +1,1 @@
+Morning Train Departure Schedule. Departure: 8:15 AM, Destination: Springfield, Travel Time: 45 min, Gate: Gate 3. Departure: 9:30 AM, Destination: Oakridge, Travel Time: 1 hr 10 min, Gate: Gate 5. Departure: 10:45 AM, Destination: Riverside, Travel Time: 50 min, Gate: Gate 2. Departure: 1:15 PM, Destination: Fairview, Travel Time: 1 hr 20 min, Gate: Gate 8.

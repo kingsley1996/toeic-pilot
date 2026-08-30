@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+Is Mr. Tuan or Ms. Linh handling the presentation?
+voice: ca_female_1
+(A) Mr. Tuan is in charge of the opening part.
+(B) Yes, I think that's correct.
+(C) The presentation is scheduled for tomorrow.
+Answer: A
+Source: original

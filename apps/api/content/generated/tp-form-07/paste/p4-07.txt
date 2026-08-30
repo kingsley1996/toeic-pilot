@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Hi, this is Daniel from the front desk at the Bayfront Hotel. I'm calling about your reservation for this Friday. I wanted to let you know that our late check-in time has been extended. In the past, guests had to arrive by eight p.m., but the front desk is now open until ten p.m., so you can check in as late as ten that evening. If you think you'll get in after that, please give us a call during the day, and we'll leave a key for you at the door. Also, your room has been upgraded to one on the fourth floor, overlooking the garden. We look forward to seeing you on Friday. Have a great day.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To announce a change in check-in hours
+(B) To cancel a room reservation
+(C) To request payment information
+(D) To explain a new parking policy
+Answer: A
+Source: original
+[QUESTION]
+Until what time can the guest check in this Friday?
+(A) At eight p.m.
+(B) At ten p.m.
+(C) At nine p.m.
+(D) At eleven p.m.
+Answer: B
+Source: original
+[QUESTION]
+What does the speaker ask the guest to do if arriving later than ten p.m.?
+(A) Cancel and rebook the room
+(B) Arrive before eight p.m. instead
+(C) Call the front desk during the day
+(D) Pay an extra late-arrival fee
+Answer: C
+Source: original

@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning. I'd like to open a business account for my new shop.
+voice: ca_female_1
+Certainly. We'll need your business registration and two forms of identification.
+voice: ca_male_1
+I have those right here. Is there a minimum deposit?
+voice: ca_female_1
+Yes, you must keep a balance of at least one hundred dollars, or there's a monthly fee.
+voice: ca_male_1
+That's fine. Could you also order a company checkbook for me?
+voice: ca_female_1
+Of course. It should arrive within five business days.
+
+[QUESTION]
+Who is the woman?
+(A) A shop owner
+(B) A bank employee
+(C) An accountant
+(D) A shop customer
+Answer: B
+Source: original
+[QUESTION]
+What must the man do to avoid the monthly fee?
+(A) Order a company checkbook
+(B) Open a second account
+(C) Keep a balance of at least one hundred dollars
+(D) Submit two forms of identification
+Answer: C
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Schedule an appointment
+(B) Waive the monthly fee
+(C) Verify his documents
+(D) Order a company checkbook
+Answer: D
+Source: original

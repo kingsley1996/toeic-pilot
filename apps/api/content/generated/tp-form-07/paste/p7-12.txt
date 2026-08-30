@@ -1,0 +1,71 @@
+[PASSAGE]
+Notice: Operating Guidelines for Model X-90 Photocopier
+To: All Staff & Technical Personnel
+From: IT & Facilities Management
+Date: October 12
+
+The new Model X-90 multipurpose photocopier is now fully operational in the main copy room. Please review the following operating guidelines and troubleshooting steps:
+
+- Color Printing: By default, the unit operates in black-and-white mode to conserve color toner. To print or copy in color, users must enter their 4-digit department access code on the machine's touch screen interface before starting the job.
+- Frequent Paper Jams: If you experience recurring paper jams, the first step is to adjust the paper width guides inside the tray to ensure they fit snugly against the paper stack without bending it. After adjusting the guides, verify that paper is not loaded above the maximum fill line.
+- Technical Support: For issues requiring internal component maintenance, please contact techsupport@example.com.
+
+[PASSAGE]
+From: Elena Rostova <e.rostova@example.com>
+To: IT Helpdesk <techsupport@example.com>
+Date: October 14
+Subject: Urgent assistance with color document
+
+Dear IT Support Team,
+
+I am writing to request assistance with the new Model X-90 photocopier in the main copy room. I am trying to print 50 copies of our quarterly marketing report in color for an executive meeting scheduled for this afternoon. However, every time I send the job from my computer, the machine prints the pages in black and white.
+
+I checked the screen on the machine, and it is displaying a prompt asking for a four-digit code, which I do not have. Could someone please provide me with the code for the Marketing Department so I can complete this print job before 2:00 P.M.?
+
+Thank you for your prompt assistance.
+
+Best regards,
+
+Elena Rostova
+Marketing Coordinator
+
+[QUESTION]
+What is the main purpose of the notice?
+(A) To announce the schedule for routine equipment maintenance
+(B) To provide operating instructions and basic troubleshooting for a copier
+(C) To notify employees about a change in printing policy
+(D) To request feedback on a newly purchased office device
+Answer: B
+Source: original
+[QUESTION]
+According to the notice, what is the first step to take to resolve frequent paper jams?
+(A) Replace the main paper tray
+(B) Clean the internal rollers
+(C) Adjust the paper width guides
+(D) Contact an external technician
+Answer: C
+Source: original
+[QUESTION]
+What is suggested about the Model X-90 photocopier?
+(A) It is set to print in monochrome unless instructed otherwise.
+(B) It requires daily paper replenishment.
+(C) It cannot process print jobs over 50 pages.
+(D) It was installed in the building earlier this year.
+Answer: A
+Source: original
+[QUESTION]
+What is NOT stated about the Model X-90 photocopier in the documents?
+(A) It is located in the main copy room.
+(B) It features a touch screen display.
+(C) It has a maximum fill line in the paper tray.
+(D) It automatically orders toner when supplies are low.
+Answer: D
+Source: original
+[QUESTION]
+Why were Ms. Rostova's documents printed in black and white?
+(A) She selected incorrect settings on her computer.
+(B) The copier was out of color toner.
+(C) She had not entered her department access code.
+(D) The machine was undergoing a system update.
+Answer: C
+Source: original

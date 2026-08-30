@@ -1,0 +1,9 @@
+[QUESTION]
+The sales manager ------- the sales report for last month.
+(A) contributed
+(B) attended
+(C) participated
+(D) requested
+Answer: D
+Explanation: Đáp án A "requested" (yêu cầu) là động từ ngoại động từ, đi trực tiếp với "the sales report". (B) "attended" thường đi với meeting/conference, không đi với report; (C) "participated" là nội động từ, cần giới từ "in"; (D) "contributed" cần giới từ "to" khi mang nghĩa đóng góp, không thể nối trực tiếp với "report".
+Source: original

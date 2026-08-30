@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, Mr. Chen. I'm Dana Reyes, the personnel specialist. We're here to discuss the administrative assistant position.
+voice: us_male_1
+Thank you, Ms. Reyes. I brought samples of the schedules I managed at my last job.
+voice: us_female_1
+Great. Our project lead, Mr. Cole, is joining us. He needs an assistant for the office relocation.
+voice: ca_male_1
+Sorry I'm late. I'm Tom Cole. The office move is set for March, and I need help with the packing schedule.
+voice: us_male_1
+I organized a warehouse move at my previous job, so I'd enjoy that.
+voice: ca_male_1
+Excellent. Then I'll email you the current floor plan after this.
+voice: us_female_1
+And I'll call you early next week about a second-round interview.
+
+[QUESTION]
+Why is the woman meeting the man?
+(A) To interview him for an administrative assistant position
+(B) To plan the March office move
+(C) To assign him to a warehouse project
+(D) To conduct his exit interview
+Answer: A
+Source: original
+[QUESTION]
+Who is Mr. Cole?
+(A) A personnel specialist
+(B) A project lead
+(C) An office manager
+(D) A job applicant
+Answer: B
+Source: original
+[QUESTION]
+What will the woman do early next week?
+(A) Begin the office relocation
+(B) Send him a floor plan by email
+(C) Call the man about a second interview
+(D) Introduce him to the project team
+Answer: C
+Source: original

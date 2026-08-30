@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, team. Before we begin today's project review, I want to quickly address our travel arrangements for tomorrow's client presentation. We'll be taking the train together from the main terminal. Please make sure to catch the train that takes one hour and ten minutes so that we arrive with enough time to set up our equipment before the client meeting begins. Additionally, as a quick reminder regarding today's duties, all team members must log into the project database and update their task progress status before five o'clock this afternoon. I'll be reviewing all submitted data tonight to prepare our weekly executive summary.
+
+[QUESTION]
+What is the main purpose of the talk?
+(A) To cancel an upcoming business presentation
+(B) To introduce a new database software
+(C) To review travel plans and project updates
+(D) To organize a training session for new staff
+Answer: C
+Source: original
+[QUESTION]
+Look at the graphic. Which train departure time will the team choose?
+(A) 8:15 AM
+(B) 1:15 PM
+(C) 10:45 AM
+(D) 9:30 AM
+Answer: D
+Source: original
+[QUESTION]
+What are team members asked to do before 5:00 PM?
+(A) Update their progress on the database
+(B) Submit their travel expense receipts
+(C) Reserve their train tickets online
+(D) Email executive summaries to clients
+Answer: A
+Source: original

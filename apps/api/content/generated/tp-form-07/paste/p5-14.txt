@@ -1,0 +1,9 @@
+[QUESTION]
+Customer service employees are ------- to process customers' online orders.
+(A) requires
+(B) requiring
+(C) require
+(D) required
+Answer: D
+Explanation: "be + required + to V" là cấu trúc bị động mang nghĩa "được yêu cầu". (B) "requiring" không đúng thể bị động và thiếu tân ngữ cho động từ "require"; (C) "require" là động từ nguyên thể, không dùng được sau "are"; (D) "requires" chia sai ngôi với chủ ngữ số nhiều "employees" và không thể đứng sau "are".
+Source: original

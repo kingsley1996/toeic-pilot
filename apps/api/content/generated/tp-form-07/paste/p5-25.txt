@@ -1,0 +1,9 @@
+[QUESTION]
+------- the technician had repaired the network system for the office, several computers still could not connect to the server.
+(A) Because of
+(B) Despite
+(C) Although
+(D) In spite of
+Answer: C
+Explanation: Sau chỗ trống là một mệnh đề đầy đủ (chủ ngữ "the technician" + động từ "had repaired"), nên cần một liên từ nối hai mệnh đề. (A) "Although" là liên từ tương phản, đúng cả ngữ pháp lẫn quan hệ nghĩa giữa hai vế (đã sửa hệ thống nhưng vẫn còn máy không kết nối được). (B) "Despite" là giới từ, chỉ đứng trước danh từ hoặc cụm danh từ (ví dụ: "Despite the repair..."), không thể đứng trước mệnh đề — sai từ loại. (C) "Because of" cũng là giới từ, không theo sau bởi mệnh đề; ngoài ra quan hệ giữa hai vế là tương phản chứ không phải nguyên nhân–kết quả, nên sai cả về từ loại lẫn logic. (D) "In spite of" là giới từ, giống (B), không có khả năng nối hai mệnh đề có chủ ngữ và động từ — sai từ loại.
+Source: original

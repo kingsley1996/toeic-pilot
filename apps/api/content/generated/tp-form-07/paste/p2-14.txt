@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+When will the incoming shipment arrive at the warehouse?
+voice: us_female_1
+(A) Yes, I need to check the schedule.
+(B) The shipment is already on the truck.
+(C) The truck arrives at 2 PM.
+Answer: C
+Source: original

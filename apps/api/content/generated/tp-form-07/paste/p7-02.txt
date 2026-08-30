@@ -1,0 +1,34 @@
+[PASSAGE]
+From: support@apexappliances.com
+To: mark.higgins@example-mail.net
+Date: October 14
+Subject: Complaint Regarding Blender Order #8492
+
+Dear Mr. Higgins,
+
+Thank you for contacting Customer Support regarding the Apex Pro Blender you purchased two weeks ago. We sincerely apologize for the inconvenience caused by the device malfunction.
+
+We have reviewed your complaint letter and verified the purchase details against the receipt copy you provided. Because the product failed within our 30-day coverage window, you are eligible for a complete reimbursement. As requested, we have processed your refund in the form of a store credit voucher.
+
+The voucher will be sent to your registered e-mail address within three business days. You may use this credit toward any future purchase on our website or at any of our store locations. If you have any further questions, please do not hesitate to contact us.
+
+Sincerely,
+Customer Support Team
+Apex Appliances
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To confirm the dispatch of a replacement product
+(B) To advertise a new line of kitchen appliances
+(C) To request additional proof of purchase
+(D) To respond to a customer's product complaint
+Answer: D
+Source: original
+[QUESTION]
+How will the customer receive the refund, and how long will it take?
+(A) As a cash payment within two weeks
+(B) As a store credit voucher within three business days
+(C) As a bank transfer within five business days
+(D) As a replacement coupon sent immediately
+Answer: B
+Source: original

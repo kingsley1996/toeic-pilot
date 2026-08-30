@@ -1,0 +1,7 @@
+kind: table
+Morning Train Departure Schedule
+Departure | Destination | Travel Time | Gate
+8:15 AM | Springfield | 45 min | Gate 3
+9:30 AM | Oakridge | 1 hr 10 min | Gate 5
+10:45 AM | Riverside | 50 min | Gate 2
+1:15 PM | Fairview | 1 hr 20 min | Gate 8

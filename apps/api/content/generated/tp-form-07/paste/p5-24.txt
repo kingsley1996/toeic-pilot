@@ -1,0 +1,9 @@
+[QUESTION]
+The cashier must ------- the cash drawer before leaving at the end of her shift.
+(A) deposit
+(B) reconcile
+(C) withdraw
+(D) calculate
+Answer: B
+Explanation: "reconcile the cash drawer" là cụm từ thương mại chỉ việc đối chiếu tiền mặt với sổ sách. (B) deposit cần tân ngữ là tiền hoặc ngân hàng, không dùng với "drawer"; (C) withdraw cũng vậy, không thể "rút" ngăn kéo tiền; (D) calculate thường dùng với số liệu hoặc tổng số tiền, không dùng với "drawer" theo nghĩa vật lý.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Administrative staff will not order office supplies ------- the budget is approved.
+(A) despite
+(B) unless
+(C) even though
+(D) because
+Answer: B
+Explanation: Câu này cần một liên từ phụ thuộc chỉ điều kiện. "Unless" (trừ khi) là đúng nghĩa. (B) "despite" là giới từ, không thể nối mệnh đề; (C) "even though" là liên từ chỉ nhượng bộ, sai nghĩa; (D) "because" là liên từ chỉ nguyên nhân, làm câu vô lý (không đặt hàng vì ngân sách được duyệt).
+Source: original

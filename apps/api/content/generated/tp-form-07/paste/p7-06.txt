@@ -1,0 +1,30 @@
+[PASSAGE]
+Business Logistics Monthly
+October 4
+
+In a recent market review, Apex Express was highlighted for its newly introduced corporate shipping program designed to support growing enterprises. The express delivery provider now offers tailored service tiers that allow local businesses to streamline their dispatch operations. Under the standard program, commercial clients receive a baseline 10 percent discount on all domestic packages. However, as part of an autumn promotional campaign, companies that sign a formal agreement before October 15 will be granted a 20 percent discount on all shipping rates for their first six months. Additionally, corporate accounts gain access to complimentary packaging supplies and a dedicated customer service representative. Early partner feedback indicates high satisfaction with the service's speed and reliability, making it a competitive choice for small businesses seeking cost-effective logistics solutions.
+
+[QUESTION]
+What is the main purpose of the article?
+(A) To instruct customers on how to track a package
+(B) To announce the opening of a logistics hub
+(C) To compare the rates of several courier services
+(D) To review a shipping company's business program
+Answer: D
+Source: original
+[QUESTION]
+What is suggested about companies that sign up after October 15?
+(A) They will be charged an extra registration fee.
+(B) They will receive a smaller discount on shipping.
+(C) They will not get dedicated customer support.
+(D) They will be limited to domestic deliveries.
+Answer: B
+Source: original
+[QUESTION]
+How much of a discount do businesses receive if they sign a contract before October 15?
+(A) 10 percent
+(B) 15 percent
+(C) 20 percent
+(D) 25 percent
+Answer: C
+Source: original

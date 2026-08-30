@@ -1,0 +1,9 @@
+[QUESTION]
+The IT department ------- the new security software on all company laptops by the end of last week.
+(A) to install
+(B) installs  
+(C) installing  
+(D) installed
+Answer: D
+Explanation: Trạng ngữ "by the end of last week" chỉ thời điểm quá khứ, nên động từ chính phải chia thì quá khứ đơn. (B) chia thì hiện tại, sai thì; (C) là hiện tại phân từ, không thể làm động từ chính khi không có trợ động từ; (D) là động từ nguyên mẫu có "to", không thể làm vị ngữ chính của câu.  
+Source: original

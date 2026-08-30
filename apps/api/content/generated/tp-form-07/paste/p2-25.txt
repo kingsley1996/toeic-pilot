@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+Who wants to sign the contract today?
+voice: ca_female_1
+(A) Yes, I'd like to sign it today.
+(B) I do, but only if my lawyer reviews it first.
+(C) In the conference room, at noon.
+Answer: B
+Source: original

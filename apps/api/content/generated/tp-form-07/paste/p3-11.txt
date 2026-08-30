@@ -1,0 +1,36 @@
+[SCRIPT]
+voice: us_female_1
+Hi Mark, I'm checking on the renovation progress at the student center. Will the main hall be ready for tomorrow's career fair?
+voice: us_male_1
+We ran into a slight delay because the flooring materials arrived late this morning. My team is working as quickly as possible, though.
+voice: us_female_1
+That's concerning. The event organizers need access to set up the tables and equipment.
+voice: us_male_1
+Don't worry. We will complete all the flooring work by ten o'clock, so the hall will be ready before the mock interviews begin.
+voice: us_female_1
+Great. Please send me a photo update once the floor is finished.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) A delay in a construction project
+(B) A change in event registration fees
+(C) A budget proposal for a new building
+(D) A malfunction in audio equipment
+Answer: A
+Source: original
+[QUESTION]
+Why was the work delayed?
+(A) Bad weather stopped outdoor work
+(B) Materials arrived later than expected
+(C) Extra workers were required
+(D) A permit was not approved
+Answer: B
+Source: original
+[QUESTION]
+Look at the graphic. What time are the mock interviews scheduled to start?
+(A) 8:00 A.M.
+(B) 9:00 A.M.
+(C) 10:30 A.M.
+(D) 12:00 P.M.
+Answer: C
+Source: original

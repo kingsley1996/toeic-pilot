@@ -1,0 +1,9 @@
+[QUESTION]
+The technician performed a thorough ------- of the jammed printer for the employees.
+(A) inspection
+(B) inspect
+(C) inspects
+(D) inspected
+Answer: A
+Explanation: Sau "a thorough" cần một danh từ để tạo cụm "a thorough inspection" (sự kiểm tra kỹ lưỡng). (B) "inspect" là động từ nguyên thể; (C) "inspects" là động từ chia ngôi thứ ba số ít; (D) "inspected" là động từ thì quá khứ/phân từ hai — cả ba đều không phải danh từ nên không đi được sau "a thorough".
+Source: original

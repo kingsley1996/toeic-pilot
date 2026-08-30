@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+I need to confirm that the meeting invitation was sent to the partner.
+voice: us_female_1
+(A) Yes, I sent it this morning.
+(B) It's on your desk, next to the printer.
+(C) The scent of the flowers is lovely.
+Answer: A
+Source: original

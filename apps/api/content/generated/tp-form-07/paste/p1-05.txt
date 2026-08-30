@@ -1,0 +1,8 @@
+[QUESTION]
+voice: au_female_1
+(A) The chairs have been placed on top of the desks.
+(B) A woman is typing on a computer.
+(C) There are three rows of desks in the office.
+(D) Several coffee mugs are sitting on the desks.
+Answer: C
+Source: original

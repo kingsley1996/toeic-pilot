@@ -1,0 +1,9 @@
+[QUESTION]  
+voice: uk_female_1  
+How long is the warranty on this washing machine?  
+voice: au_male_1  
+(A) Yes, it has a two-year warranty.
+(B) Only one year for this model.
+(C) The warranty card is in the box.  
+Answer: B
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Could you please recommend the specialty of the house?
+voice: ca_male_1
+(A) The specialty is served after eight o'clock.
+(B) Yes, I'll bring you the menu right away.
+(C) I'd suggest the grilled salmon with lemon butter.
+Answer: C
+Source: original

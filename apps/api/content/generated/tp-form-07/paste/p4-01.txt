@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is Daniel calling from the front desk at Harborview Training Center. I'm leaving a message for Ms. Carter regarding this afternoon's budget meeting. The meeting is still scheduled for three o'clock, but it has been moved out of the main conference room. It will now take place in room seven, which is on the second floor. If you take the elevator up, it's the second door on your left. Refreshments will be set up in the new room, so there's nothing you need to bring. When you get this message, please call me back at extension forty-five to confirm that you've received it. Thank you.
+
+[QUESTION]
+What is the main purpose of the man's call?
+(A) To cancel the afternoon meeting
+(B) To reschedule the meeting for a later time
+(C) To announce a room change for a meeting
+(D) To confirm a room reservation the listener made
+Answer: C
+Source: original
+[QUESTION]
+What time is the meeting scheduled to begin?
+(A) At two o'clock
+(B) At five o'clock
+(C) At four o'clock
+(D) At three o'clock
+Answer: D
+Source: original
+[QUESTION]
+What does the man ask the listener to do?
+(A) Call him back at extension forty-five
+(B) Set up refreshments in room seven
+(C) Bring materials to the meeting
+(D) E-mail the meeting agenda to other attendees
+Answer: A
+Source: original

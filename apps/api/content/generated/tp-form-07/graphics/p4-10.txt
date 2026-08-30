@@ -1,0 +1,6 @@
+kind: form
+Course Registration
+Cooking Class | Beginner | 1.5 hours | $35
+Dance Class | Intermediate | 2 hours | $40
+Language Class | Advanced | 2.5 hours | $50
+Art Class | Beginner | 1 hour | $25

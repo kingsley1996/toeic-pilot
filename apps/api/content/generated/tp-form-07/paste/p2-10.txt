@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_female_1
+Do I need to come back for a follow-up visit?
+voice: us_male_1
+(A) No, the pharmacy is on the first floor.
+(B) Yes, let's schedule a checkup next week.
+(C) Yes, I followed up with the lab results.
+Answer: B
+Source: original

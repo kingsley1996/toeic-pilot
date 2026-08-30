@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+How will the delay affect my connecting flight?
+voice: uk_female_1
+(A) The delay is about two hours, I’m afraid.
+(B) Your flight will depart on time, so you’ll make the connection.
+(C) You can connect to the Wi-Fi at the gate.
+Answer: B
+Source: original

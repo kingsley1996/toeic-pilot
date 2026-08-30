@@ -1,0 +1,9 @@
+[QUESTION]
+Support staff provide ------- for system errors reported by customers.
+(A) solved
+(B) solve
+(C) solving
+(D) solutions
+Answer: D
+Explanation: Sau "provide" cần một danh từ làm tân ngữ; "solutions" là danh từ số nhiều hợp nghĩa. (B) "solve" là động từ nguyên thể, không thể làm tân ngữ sau "provide". (C) "solving" là dạng V-ing, không kết hợp với "provide" trong cấu trúc này. (D) "solved" là quá khứ/phân từ, không phải danh từ.
+Source: original

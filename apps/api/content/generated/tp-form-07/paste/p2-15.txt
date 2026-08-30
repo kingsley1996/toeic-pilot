@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+Where is the parent-teacher meeting this semester?
+voice: uk_female_1
+(A) In the auditorium next Friday at 5 PM.
+(B) Yes, I have the schedule here.
+(C) About twenty parents, I think.
+Answer: A
+Source: original

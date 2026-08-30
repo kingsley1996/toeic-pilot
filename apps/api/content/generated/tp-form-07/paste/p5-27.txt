@@ -1,0 +1,9 @@
+[QUESTION]
+The sales manager, ------- new strategy was implemented last quarter, received a promotion.
+(A) whose
+(B) who's
+(C) which
+(D) that
+Answer: A
+Explanation: (A) "whose" là đại từ quan hệ sở hữu, dùng cho người, đúng trong câu này. (B) "who's" là viết tắt của "who is" hoặc "who has", không phải đại từ quan hệ sở hữu, sai. (C) "which" là đại từ quan hệ chỉ vật, không dùng cho người, sai. (D) "that" là đại từ quan hệ nhưng không có dạng sở hữu, không thể thay thế "whose" trong trường hợp này, sai.
+Source: original

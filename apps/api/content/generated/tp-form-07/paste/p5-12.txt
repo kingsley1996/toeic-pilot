@@ -1,0 +1,9 @@
+[QUESTION]
+The project manager ------- the work progress to the boss is responsible for the final report.
+(A) reported
+(B) reporting
+(C) reports
+(D) report
+Answer: B
+Explanation: Chỗ trống cần một hiện tại phân từ (present participle) để tạo mệnh đề quan hệ rút gọn chủ động. (A) "reporting" đúng vì nó diễn tả hành động do chủ ngữ "project manager" thực hiện. (B) "reported" là quá khứ phân từ, dùng trong mệnh đề quan hệ rút gọn bị động, nhưng ở đây hành động là chủ động (project manager báo cáo tiến độ), nên sai. (C) "reports" là động từ chia ngôi, không thể dùng trực tiếp trong mệnh đề quan hệ rút gọn mà thiếu đại từ quan hệ. (D) "report" là động từ nguyên thể, không phù hợp với cấu trúc mệnh đề quan hệ rút gọn.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The secretary ------- announced the emergency meeting by email.
+(A) promptness
+(B) prompt
+(C) promptly
+(D) prompted
+Answer: C
+Explanation: Cần một trạng từ bổ nghĩa cho động từ "announced". (A) promptly là trạng từ đúng. (B) prompt là tính từ, không thể bổ nghĩa động từ. (C) promptness là danh từ, không thể bổ nghĩa động từ. (D) prompted là động từ thì quá khứ, không thể đứng trước "announced" để bổ nghĩa.
+Source: original

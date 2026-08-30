@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Can I pay with my e-wallet, or do you accept only cash?
+voice: ca_male_1
+(A) Yes, just scan the QR code here.
+(B) The wallet is on the counter.
+(C) I paid with a credit card.
+Answer: A
+Source: original

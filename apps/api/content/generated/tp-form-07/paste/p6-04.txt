@@ -1,0 +1,37 @@
+[PASSAGE]
+New Supplier Payment Process Implemented
+
+The finance department has officially introduced a streamlined payment process for all corporate suppliers. This updated system aims to simplify invoice processing and avoid unnecessary ------- (1) in vendor compensation. Under the new guidelines, suppliers must submit ------- (2) invoices electronically through the online portal rather than via physical mail. ------- (3) Furthermore, payment status can now be tracked in real time by both vendors and internal managers. Overall, the initiative ------- (4) by the Board of Directors as a major step forward in operational efficiency.
+
+[QUESTION]
+Blank (1)
+(A) permissions
+(B) origins
+(C) delays
+(D) qualities
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) them
+(C) themselves
+(D) their
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) This shift is expected to reduce processing times significantly.
+(B) The board will review the company budget next week.
+(C) Several vendors have requested a higher credit limit.
+(D) Paper receipts should still be stored in the accounting cabinet.
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) praised
+(B) was praised
+(C) is praising
+(D) to praise
+Answer: B
+Source: original

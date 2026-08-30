@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Good evening, everyone. This is your tour guide, Maria. I’d like to remind you about the bus schedule for our return to the hotel tonight. The bus will depart from the main square at five thirty. Please be at the pickup point ten minutes early. Also, for those interested in our optional activities, we have a registration form for the short courses available this week. There are four courses to choose from. I especially recommend the one that is suitable for intermediate learners, takes two hours per session, and costs only forty dollars. It’s a great way to learn something new. Now, please make sure you have your room keys with you. Thank you.
+
+[QUESTION]
+Who is speaking?
+(A) A bus driver
+(B) A tour guide
+(C) A hotel manager
+(D) A travel agent
+Answer: B
+Source: original
+[QUESTION]
+Look at the graphic. Which course does the speaker recommend?
+(A) Cooking Class
+(B) Language Class
+(C) Dance Class
+(D) Art Class
+Answer: C
+Source: original
+[QUESTION]
+What time will the bus leave?
+(A) 5:00 PM
+(B) 6:30 PM
+(C) 6:00 PM
+(D) 5:30 PM
+Answer: D
+Source: original

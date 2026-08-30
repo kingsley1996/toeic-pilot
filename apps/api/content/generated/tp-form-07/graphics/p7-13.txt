@@ -1,0 +1,7 @@
+kind: schedule
+Interview Availability
+Candidate | Monday 9-10 | Monday 10-11 | Tuesday 9-10 | Tuesday 10-11
+Priya Raman | Busy |  | Busy |
+Tomás Silva |  | Busy |  | Busy
+Lena Ortiz | Busy | Busy |  | 
+Marcus Lee |  |  | Busy | Busy

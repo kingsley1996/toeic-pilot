@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Attention, new employees! Still unsure how to use the photocopier outside the main office? Then mark your calendars. I'm Frank Delgado, head of the technical department, and this Thursday at ten in the morning, I'll be leading a free hands-on session in Training Room B. In just forty-five minutes, you'll learn everything you need: switching the machine on, placing your documents face down, choosing double-sided copying, and even clearing paper jams without calling for help. Space is limited to fifteen people, so sign up today. Just stop by the reception desk and put your name on the list before Wednesday afternoon. Trust me — after one session, you'll never dread making copies again!
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To promote a photocopier training session
+(B) To advertise a sale on office equipment
+(C) To introduce a new department manager
+(D) To report a copier malfunction
+Answer: A
+Source: original
+[QUESTION]
+Where will the training session take place?
+(A) In the main office
+(B) In Training Room B
+(C) In the reception area
+(D) In the technical department office
+Answer: B
+Source: original
+[QUESTION]
+What does the speaker ask listeners to do?
+(A) Bring sample documents to the session
+(B) Send an e-mail to the technical department
+(C) Sign up at the reception desk
+(D) Arrive fifteen minutes early
+Answer: C
+Source: original

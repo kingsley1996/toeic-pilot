@@ -1,0 +1,47 @@
+[PASSAGE]
+Subject: Procedure for Modifying Your Insurance Contract
+Date: October 15, 2023
+To: Mr. Thompson
+From: Sarah Lee, Insurance Advisor
+
+Dear Mr. Thompson,
+
+Thank you for contacting us about modifying your insurance policy. Before we proceed, please note that the current contract ------- (1) for a minimum of six months, so any changes will take effect after that period. You will need to submit a signed request form along with the ------- (2) documents. We ask that you review the terms carefully and confirm that ------- (3) agree with the modifications. ------- (4)
+
+If you have any questions, please feel free to reply to this email.
+
+Best regards,
+Sarah Lee
+
+[QUESTION]
+Blank (1)
+(A) has run
+(B) is running
+(C) runs
+(D) will run
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) extra
+(B) urgent
+(C) optional
+(D) required
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) you
+(B) your
+(C) yours
+(D) yourself
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) Thank you for your recent payment.
+(B) Once we receive your signed form, we will update your policy accordingly.
+(C) Our office hours are from 9 AM to 5 PM.
+(D) You can also check your policy details online.
+Answer: B
+Source: original

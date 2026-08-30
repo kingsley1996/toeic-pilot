@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Why do you charge extra for urgent printing?
+voice: ca_male_1
+(A) Yes, we can finish it in thirty minutes.
+(B) To cover overtime costs for our staff.
+(C) The extra charge is twenty percent.
+Answer: B
+Source: original

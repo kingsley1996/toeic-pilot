@@ -1,0 +1,36 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is Mark from City Express Delivery. I'm calling to confirm the delivery of your new refrigerator to apartment 4B today.
+voice: au_female_1
+Hi! Thanks for calling. Will the driver be arriving this afternoon?
+voice: au_male_1
+Yes, we scheduled it between two and four o'clock. Will you be home to sign for the package?
+voice: au_female_1
+Yes, I'll be in my apartment all day. Please use the building's side entrance on Elm Street.
+voice: au_male_1
+Noted. I also see on your service form that the urgency level is marked as high, so we'll make sure it's delivered early in that window.
+
+[QUESTION]
+Why is the man calling?
+(A) To request a price quote
+(B) To change a billing address
+(C) To confirm a delivery schedule
+(D) To report a missing item
+Answer: C
+Source: original
+[QUESTION]
+Where will the item be delivered?
+(A) A distribution center
+(B) A hardware store
+(C) A corporate office
+(D) An apartment building
+Answer: D
+Source: original
+[QUESTION]
+Look at the graphic. Which section of the form does the man mention?
+(A) Priority Level
+(B) Department
+(C) Issue Type
+(D) Reporter Name
+Answer: A
+Source: original

@@ -1,0 +1,36 @@
+[SCRIPT]
+voice: uk_male_1
+Before your shift starts, I want to go over this weekend. The apartment tower next door is opening, so we expect larger crowds.
+voice: uk_female_1
+Will my hours change?
+voice: uk_male_1
+Yes, we're moving you to the early shift on Saturday. You'd start at eight instead of ten.
+voice: uk_female_1
+Got it. What about the new weekend menu?
+voice: uk_male_1
+It launches Saturday too. Please review the seafood dishes tonight, and suggest the grilled fish to your tables.
+
+[QUESTION]
+Why is the man talking with the woman?
+(A) To assign her to a different restaurant
+(B) To discuss a job promotion
+(C) To respond to a customer complaint
+(D) To tell her about changes for the weekend
+Answer: D
+Source: original
+[QUESTION]
+What time will the woman start work on Saturday?
+(A) At eight o'clock
+(B) At ten o'clock
+(C) At noon
+(D) At five o'clock
+Answer: A
+Source: original
+[QUESTION]
+What does the man ask the woman to do tonight?
+(A) Prepare the staff schedule
+(B) Review the seafood dishes
+(C) Clean the kitchen
+(D) Attend a training session
+Answer: B
+Source: original

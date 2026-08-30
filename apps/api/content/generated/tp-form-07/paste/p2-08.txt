@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When do I need to provide my ID and income proof?
+voice: au_male_1
+(A) Yes, I have them right here.
+(B) On the counter, next to the forms.
+(C) As soon as you come to the counter.
+Answer: C
+Source: original

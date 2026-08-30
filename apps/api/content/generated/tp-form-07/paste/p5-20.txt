@@ -1,0 +1,9 @@
+[QUESTION]
+The receiving clerk will ------- goods to the warehouse tomorrow.
+(A) delivers
+(B) deliver
+(C) delivered
+(D) delivering
+Answer: B
+Explanation: Sau "will" cần động từ nguyên thể (base form). (B) là động từ chia ngôi thứ ba số ít hiện tại, sai thì; (C) là quá khứ, sai thì; (D) là hiện tại phân từ (V-ing), không đúng dạng sau "will".
+Source: original

@@ -1,0 +1,6 @@
+kind: chart
+Quarterly Revenue in thousands
+Q1 | 120
+Q2 | 145
+Q3 | 138
+Q4 | 170

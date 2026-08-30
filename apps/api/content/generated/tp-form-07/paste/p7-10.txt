@@ -1,0 +1,54 @@
+[PASSAGE]
+Sarah Jenkins [9:15 A.M.]
+Hi Mark, have you seen the details for the upcoming Regional Trade Conference at the Apex Convention Center?
+
+Mark Vance [9:17 A.M.]
+Not yet. Are we planning to send a team this year?
+
+Sarah Jenkins [9:19 A.M.]
+Yes, I'd like you to represent our sales department. I already filled out the registration form with your employee details and emailed it to you to review.
+
+Mark Vance [9:21 A.M.]
+Great! What is the deadline to submit the form?
+
+Sarah Jenkins [9:23 A.M.]
+Early registration closes on November 12. Since our company is an association member, your entry fee will be $150 instead of the standard $250 rate.
+
+Mark Vance [9:25 A.M.]
+That shouldn't be a problem. I'll check my inbox and finalize the submission before lunch.
+
+Sarah Jenkins [9:26 A.M.]
+Sounds good. Make sure to keep the digital receipt so accounting can reimburse you.
+
+[QUESTION]
+What is the main purpose of the text message chain?
+(A) To announce a change in company policy
+(B) To request a price quote for convention space
+(C) To approve an expense report from a recent trip
+(D) To discuss attendance at an industry conference
+Answer: D
+Source: original
+[QUESTION]
+How much is the registration fee for Mr. Vance?
+(A) $100
+(B) $150
+(C) $200
+(D) $250
+Answer: B
+Source: original
+[QUESTION]
+At 9:25 A.M., what does Mr. Vance mean when he writes, "That shouldn't be a problem"?
+(A) He is confident he can complete the task on time.
+(B) He thinks the registration fee is too expensive.
+(C) He agrees to pay for the conference himself.
+(D) He believes the event venue is easy to find.
+Answer: A
+Source: original
+[QUESTION]
+What is indicated about Mr. Vance's company?
+(A) It holds a membership with the trade association.
+(B) It recently hired several sales representatives.
+(C) It is hosting the Regional Trade Conference.
+(D) It requires employees to cover all travel costs.
+Answer: A
+Source: original

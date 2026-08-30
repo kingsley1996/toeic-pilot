@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+Is breakfast served until nine in the morning?
+voice: ca_female_1
+(A) I'll have the continental breakfast, please.
+(B) In the dining room, just past the lobby.
+(C) Yes, it is — breakfast is available until nine.
+Answer: C
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When do we need to add more coffee beans to the machine?
+voice: au_male_1
+(A) I checked the container and it's still full.
+(B) Yes, I already did.
+(C) The beans are in the cabinet.
+Answer: A
+Source: original

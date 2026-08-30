@@ -1,0 +1,9 @@
+[QUESTION]
+The accountant ------- the payment invoice from the partner last month.
+(A) processed
+(B) processes
+(C) will process
+(D) processing
+Answer: A
+Explanation: "last month" chỉ thời điểm quá khứ, nên động từ phải chia thì quá khứ đơn. (B) sai vì thì hiện tại đơn không hợp với "last month"; (C) sai vì thì tương lai đơn; (D) sai vì dạng hiện tại phân từ không thể làm động từ chính của câu.
+Source: original

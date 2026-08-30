@@ -1,0 +1,6 @@
+kind: chart
+Museum Visitor Numbers
+May | 120
+June | 95
+July | 150
+August | 80

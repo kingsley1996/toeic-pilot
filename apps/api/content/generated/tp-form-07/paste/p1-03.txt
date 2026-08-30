@@ -1,0 +1,8 @@
+[QUESTION]
+voice: us_female_1
+(A) He is holding a cup of tea.
+(B) He is pouring tea into a cup.
+(C) Two men are looking out the window.
+(D) He is sitting at the conference table.
+Answer: A
+Source: original

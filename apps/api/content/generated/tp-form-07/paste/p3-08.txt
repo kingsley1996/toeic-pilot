@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: uk_male_1
+Good morning. I'm calling about the house-hunting tour to Lisbon that I saw on your website.
+voice: uk_female_1
+Of course. The tour runs for five days and includes visits to eight properties, all with translation support.
+voice: uk_male_1
+That sounds perfect. How much does the package cost?
+voice: uk_female_1
+It's one thousand six hundred dollars. That covers your hotel and airport transfers, but not meals.
+voice: uk_male_1
+I see. Could you email me the full day-by-day itinerary before Friday?
+voice: uk_female_1
+No problem. I'll send it to you this afternoon.
+
+[QUESTION]
+Where is the conversation taking place?
+(A) At a property viewing appointment
+(B) In a hotel lobby
+(C) At an airport check-in counter
+(D) Over the telephone
+Answer: D
+Source: original
+[QUESTION]
+How much does the tour package cost?
+(A) One thousand six hundred dollars
+(B) One thousand two hundred dollars
+(C) Six hundred dollars
+(D) One thousand nine hundred dollars
+Answer: A
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Book the tour for next month
+(B) Email him the full itinerary
+(C) Lower the price of the package
+(D) Arrange airport transportation
+Answer: B
+Source: original

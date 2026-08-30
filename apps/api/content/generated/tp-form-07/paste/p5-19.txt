@@ -1,0 +1,9 @@
+[QUESTION]
+The HR manager ------- discussed the new leave policy at the staff meeting.
+(A) briefly  
+(B) brief  
+(C) brevity  
+(D) briefed  
+Answer: A  
+Explanation: Chỗ trống cần trạng từ bổ nghĩa cho động từ "discussed". (A) briefly là trạng từ đúng. (B) brief là tính từ, không bổ nghĩa động từ; (C) brevity là danh từ; (D) briefed là động từ chia quá khứ, không thể đứng cạnh "discussed" mà không có liên từ.  
+Source: original

@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and thank you for joining this morning's small business forum. My name is Eleanor Hayes, and I'm the small business lending manager at Harborlight Bank. I'm delighted to introduce our new Business Growth Loan, designed especially for companies like yours. For a limited time, qualified borrowers will receive a one percent reduction on our standard interest rate, with no application fee. Repayment terms of up to five years are available, and your first payment can be deferred for three months. To qualify, your business must have been operating for at least two years. Applications open next Monday, and my colleagues at the table by the door will be scheduling individual consultations all afternoon. Thank you.
+
+[QUESTION]
+Where is the talk being given?
+(A) At a staff training session
+(B) At a trade exhibition
+(C) At a bank branch lobby
+(D) At a small business forum
+Answer: D
+Source: original
+[QUESTION]
+What special feature does the Business Growth Loan include?
+(A) A reduced interest rate
+(B) Free accounting software
+(C) A cash bonus for new borrowers
+(D) A discount on office supplies
+Answer: A
+Source: original
+[QUESTION]
+What will the speaker's colleagues do this afternoon?
+(A) Review loan applications
+(B) Schedule individual consultations
+(C) Conduct a training workshop
+(D) Visit borrowers at their offices
+Answer: B
+Source: original

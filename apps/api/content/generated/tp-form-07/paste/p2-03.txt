@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+Where is the interview for the afternoon session?
+voice: uk_male_1
+(A) In the conference room on the second floor.
+(B) At three o'clock this afternoon.
+(C) I'll interview the candidate later.
+Answer: A
+Source: original

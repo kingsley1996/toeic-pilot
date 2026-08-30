@@ -1,0 +1,48 @@
+[PASSAGE]
+From: health@crestview-hospital.org
+To: staff@crestview-hospital.org
+Date: October 12
+Subject: Annual Staff Flu Vaccination Schedule
+
+Dear Staff Members,
+
+Crestview Hospital will conduct its annual employee flu vaccination drive next week, from October 17 to October 21. [1] All full-time and part-time personnel are strongly encouraged to receive their shot to ensure patient safety and workplace wellness. [2] To avoid overcrowding, vaccinations will be administered by department in specific areas of the building. Medical personnel should visit Room 102 from Monday through Wednesday. Facilities and IT team members are scheduled for Thursday in the Employee Lounge. [3] Administrative Department staff must report to the Main Auditorium on the second floor on Friday, October 21. [4] 
+
+Please complete the digital consent form on the intranet prior to your appointment and bring your staff identification badge. If you cannot attend during your designated schedule, please contact the Occupational Health Department immediately to arrange an alternative time.
+
+Sincerely,
+Occupational Health Department
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To introduce a new hospital policy on sick leave
+(B) To announce the schedule for annual employee flu shots
+(C) To invite staff members to an upcoming health seminar
+(D) To request feedback on workplace safety equipment
+Answer: B
+Source: original
+[QUESTION]
+Where should Administrative Department employees go for their vaccination next Friday?
+(A) Room 102
+(B) The Employee Lounge
+(C) The Main Auditorium
+(D) The Occupational Health Office
+Answer: C
+Source: original
+[QUESTION]
+What is indicated about hospital staff members?
+(A) They are required to pay for their flu shots.
+(B) They must complete an online form before arriving.
+(C) They need to bring proof of past vaccinations.
+(D) They can get vaccinated at any time during the week.
+Answer: B
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"This venue was chosen because it can accommodate a larger group of employees."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: D
+Source: original

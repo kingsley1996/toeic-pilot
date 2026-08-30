@@ -1,0 +1,54 @@
+[PASSAGE]
+From: Building Management Office
+To: All Tenants
+Subject: Temporary Water Shutdown — Maintenance Notice
+Date: June 10
+
+Dear Tenants,
+
+Please be advised that the main water supply to Tower B will be temporarily suspended to repair a leaking valve on the primary riser. [1] The shutdown is scheduled to begin at 9:00 A.M. on June 12 and is expected to last for six hours. [2] During this period, all restrooms and pantries on Floors 1 through 10 will have no running water. [3] Portable sanitation units will be placed in the rear parking lot, and bottled water will be available at the lobby reception desk. [4] We apologize for the inconvenience and appreciate your cooperation.
+
+Sincerely,
+Facilities Management Team
+Greenfield Office Tower
+
+[QUESTION]
+What can be inferred about the repair work mentioned in the notice?
+(A) It requires the main water valve to be turned off.
+(B) It will affect only the upper floors of the building.
+(C) It is a routine inspection scheduled months in advance.
+(D) It will be completed before business hours begin.
+Answer: A
+Source: original
+[QUESTION]
+What is NOT stated in the notice about the water shutdown?
+(A) The reason for the shutdown is a leaking valve.
+(B) The shutdown will last for six hours.
+(C) Portable toilets will be placed in the rear parking lot.
+(D) Water tankers will be parked at the main entrance.
+Answer: D
+Source: original
+[QUESTION]
+In the notice, the word "suspended" in paragraph 1 is closest in meaning to
+(A) stopped
+(B) reduced
+(C) diverted
+(D) tested
+Answer: A
+Source: original
+[QUESTION]
+According to the building directory, which facility is located on Floor 3?
+(A) Entrance
+(B) Payment Area
+(C) Restrooms
+(D) Elevators
+Answer: C
+Source: original
+[QUESTION]
+How many tenants responded "Very Satisfied" in the emergency services survey?
+(A) 5
+(B) 12
+(C) 15
+(D) 28
+Answer: B
+Source: original

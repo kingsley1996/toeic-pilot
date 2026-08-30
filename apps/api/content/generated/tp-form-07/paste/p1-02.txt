@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The workers are drinking from paper cups.
+(B) The woman is operating the photocopier.
+(C) The man is sitting at a nearby desk.
+(D) The workers are standing near the photocopier.
+Answer: D
+Source: original

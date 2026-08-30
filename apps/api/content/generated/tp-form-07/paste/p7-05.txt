@@ -1,0 +1,35 @@
+[PASSAGE]
+From: Arthur Pendelton <a.pendelton@vertexenterprises.com>
+To: Department Heads <dept.heads@vertexenterprises.com>
+Date: June 5
+Subject: May Utility Invoice and Cost Explanation
+
+Dear Department Heads,
+
+Attached is the utility invoice for our main office building for the month of May. As you review the figures, you will notice that our total expenditure for electricity and water is noticeably higher than the amount billed in April.
+
+This increase is primarily due to two factors associated with the arrival of summer. First, the municipal power authority implemented a higher seasonal rate starting May 1, which applies to all commercial properties in the city. Second, our central air conditioning system ran continuously during the unseasonably warm weather late last month to maintain a comfortable environment for employees.
+
+To help manage company expenses over the coming months, please remind your team members to turn off lights and equipment at the end of each day. Feel free to contact the accounting department if you have any questions.
+
+Sincerely,
+
+Arthur Pendelton
+Chief Accountant
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To request approval for a department budget
+(B) To announce a change in office operating hours
+(C) To explain a rise in monthly facility expenses
+(D) To report a malfunction in the cooling system
+Answer: C
+Source: original
+[QUESTION]
+According to the e-mail, why did the utility bill increase in May compared to April?
+(A) The city began charging a higher seasonal rate.
+(B) New electronic equipment was installed in the office.
+(C) Additional staff members were hired during the month.
+(D) Maintenance work was performed on the water lines.
+Answer: A
+Source: original

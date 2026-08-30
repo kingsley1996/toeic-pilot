@@ -1,0 +1,43 @@
+[PASSAGE]
+MEMORANDUM
+To: All Assembly Line Workers
+From: David Miller, Workshop Manager
+Date: October 12
+Subject: Pre-Shift Safety Inspections
+
+Starting next Monday, all operators must follow updated safety protocols before beginning work. You are required ------- (1) a complete inspection of your equipment prior to starting your shift. Pay special attention to safety guards and emergency stops to ensure they are fully ------- (2).
+
+Last week, our maintenance team ------- (3) a safety checklist and posted it near each workstation. Please review these steps carefully before turning on any machines. ------- (4)
+
+[QUESTION]
+Blank (1)
+(A) perform
+(B) performed
+(C) to perform
+(D) performing
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) persuasive
+(B) reasonable
+(C) affordable
+(D) functional
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) created
+(B) will create
+(C) creates
+(D) is creating
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) The annual financial report will be released tomorrow.
+(B) Report any damaged parts to your supervisor immediately.
+(C) Please submit your vacation requests by Friday.
+(D) We appreciate your recent purchase of our equipment.
+Answer: B
+Source: original

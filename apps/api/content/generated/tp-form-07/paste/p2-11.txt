@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+Is the HR department on the fifth floor?
+voice: uk_male_1
+(A) Yes, it's a five-floor building.
+(B) It's on the second floor, next to the stairs.
+(C) Yes, it's room 502, just down the hall.
+Answer: C
+Source: original

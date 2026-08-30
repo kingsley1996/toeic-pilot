@@ -1,0 +1,38 @@
+[PASSAGE]
+Sarah Jenkins [9:40 A.M.]
+Did everyone get the email from building management about the elevator maintenance this weekend?
+
+Mark Liu [9:42 A.M.]
+I haven't checked my inbox yet. When will they be out of service?
+
+Sarah Jenkins [9:43 A.M.]
+All elevators will be shut down from 9:00 A.M. to 3:00 P.M. this Saturday, August 12.
+
+Mark Liu [9:45 A.M.]
+Oh, I was planning to drop off some heavy boxes in the office around noon.
+
+David Vance [9:46 A.M.]
+You'd better reschedule that. Also, the email mentioned that if there are any urgent issues during the downtime, we should call the facilities coordinator, Brenda Vance, at extension 402.
+
+Mark Liu [9:48 A.M.]
+Thanks for the heads-up. Could someone forward me the full email?
+
+Sarah Jenkins [9:50 A.M.]
+I can do that.
+
+[QUESTION]
+Who should employees contact if an urgent issue arises during the maintenance?
+(A) Sarah Jenkins
+(B) Mark Liu
+(C) Brenda Vance
+(D) David Vance
+Answer: C
+Source: original
+[QUESTION]
+At 9:50 A.M., what does Ms. Jenkins mean when she writes, "I can do that"?
+(A) She will send an email to Mr. Liu.
+(B) She will carry heavy boxes to the office.
+(C) She will call the facilities coordinator.
+(D) She will reschedule the maintenance work.
+Answer: A
+Source: original

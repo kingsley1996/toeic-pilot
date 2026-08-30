@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good afternoon, everyone. If I could have your attention for a moment, please. My name is Daniel Reyes, and I'm part of the building maintenance team. I want to let you know that the main elevator will be out of service this afternoon for a scheduled safety inspection. The work will run from two o'clock until four o'clock, and normal service should resume right after that. While the elevator is down, it will not stop at any floor, so please use the stairwell on the east side of the building. If you have deliveries or heavy equipment to move, maintenance staff will be available in the lobby to help. Thank you for your understanding.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To report an accident in the stairwell
+(B) To explain how to operate a new elevator
+(C) To announce a temporary elevator closure
+(D) To recruit new members for the maintenance team
+Answer: C
+Source: original
+[QUESTION]
+When will the elevator be out of service?
+(A) From ten o'clock until noon
+(B) All day tomorrow
+(C) From four o'clock until six o'clock
+(D) From two o'clock until four o'clock
+Answer: D
+Source: original
+[QUESTION]
+What does the speaker imply about people who have heavy equipment to move?
+(A) They can get assistance in the lobby
+(B) They should postpone their deliveries until tomorrow
+(C) They must not use the east stairwell
+(D) They need to call the elevator company
+Answer: A
+Source: original

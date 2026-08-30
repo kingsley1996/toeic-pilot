@@ -1,0 +1,7 @@
+kind: table
+Advertising Membership Packages
+Package | Fee | Duration | Perks
+Basic | $500 | 3 months | Print listing
+Standard | $1,200 | 6 months | Print and digital listing
+Executive | $2,000 | 1 year | Full page ad and newsletter feature
+Premium | $3,500 | 1 year | Front cover ad and event sponsorship

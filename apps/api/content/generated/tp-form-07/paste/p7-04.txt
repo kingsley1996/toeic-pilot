@@ -1,0 +1,45 @@
+[PASSAGE]
+From: d.miller@apextech-solutions.com
+To: all.staff@apextech-solutions.com
+Date: Monday, October 16
+Subject: Upcoming Training: TaskFlow Pro Software
+
+Dear Team,
+
+As announced last month, our company is transitioning to TaskFlow Pro, a comprehensive management software designed to streamline project tracking, resource allocation, and team collaboration across all departments.
+
+To prepare everyone for this transition, the Engineering Department will host a hands-on training workshop this Wednesday, October 18, from 1:30 P.M. to 3:30 P.M. in Conference Room 4. The session will cover basic system navigation, task assignment features, and automated reporting.
+
+Please note that all employees are required to complete an online introductory assessment on the company intranet before attending the training session on Wednesday. This short assessment takes about fifteen minutes and will ensure everyone understands the basic interface beforehand.
+
+If you experience any issues accessing the intranet module, please contact the IT help desk.
+
+Best regards,
+
+David Miller
+Engineering Manager
+
+[QUESTION]
+According to the e-mail, what are employees required to do before attending the training session?
+(A) Submit a project schedule
+(B) Complete an online assessment
+(C) Install software on their mobile devices
+(D) Contact the IT help desk
+Answer: B
+Source: original
+[QUESTION]
+What is NOT mentioned as a function of TaskFlow Pro?
+(A) Project tracking
+(B) Resource allocation
+(C) Team collaboration
+(D) Budget auditing
+Answer: D
+Source: original
+[QUESTION]
+What is suggested about the training session?
+(A) It will last for two hours.
+(B) It will be conducted online.
+(C) It is intended only for new employees.
+(D) It takes place every Wednesday.
+Answer: A
+Source: original
