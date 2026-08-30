@@ -72,6 +72,27 @@ jobs:
         # run for real rather than skipping.
         run: uv run pytest -v
 
+      - name: Embed the knowledge base into Pinecone
+        # Chạy `embed_kb` mỗi lần main thay đổi: knowledge_chunk trên Pinecone phải
+        # theo kịp các file `content/kb/*.md` đã commit. `sync_kb` (entrypoint) lo
+        # bảng Postgres của production, còn bước này lo VECTOR — `embed_kb` tự sync
+        # từ file (không cần DB production) rồi upsert lên Pinecone theo ref.
+        #
+        # Thiếu khoá thì bỏ qua chứ không fail: PR/forks không có secret vẫn phải
+        # xanh, và một bản chưa embed chỉ mất đường semantic, không mất khả năng
+        # trả lời (lexical fallback).
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: toeic-pilot-kb
+        run: |
+          if [ -z "$GEMINI_API_KEY" ] || [ -z "$PINECONE_API_KEY" ]; then
+            echo "::warning::embed_kb skipped - GEMINI_API_KEY or PINECONE_API_KEY not set"
+            exit 0
+          fi
+          uv run python -m app.content.embed_kb --create-index
+
   web:
     runs-on: ubuntu-latest
     steps:
