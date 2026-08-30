@@ -38,6 +38,23 @@ class State:
     loaded: bool = False
 
 
+# Tên part + số câu chuẩn — dùng chung cho menu chọn part (checkbox).
+PART_OPTIONS: tuple[tuple[int, str], ...] = (
+    (1, "Part 1 — Photographs (6 câu)"),
+    (2, "Part 2 — Question-Response (25 câu)"),
+    (3, "Part 3 — Conversations (13 cụm)"),
+    (4, "Part 4 — Talks (10 cụm)"),
+    (5, "Part 5 — Incomplete Sentences (30 câu)"),
+    (6, "Part 6 — Text Completion (4 cụm)"),
+    (7, "Part 7 — Reading (15 cụm)"),
+)
+
+
+def _mode_label(state: State) -> str:
+    """Nói rõ lượt chạy sắp tới dùng LLM hay bảng tĩnh."""
+    return f"model: {state.model}" if state.model else "bảng tĩnh (không LLM)"
+
+
 def _known_slugs() -> list[str]:
     return sorted(p.name for p in DEFAULT_ROOT.iterdir() if blueprint_path(p.name).exists())
 
@@ -76,7 +93,7 @@ def _menu(state: State) -> str:
     ]
     return (
         questionary.select(
-            f"Đề: {title} · {summary}",
+            f"Đề: {title} · {summary} · {_mode_label(state)}",
             choices=choices,
             instruction="↑↓ chọn · Enter xác nhận · Ctrl-C thoát",
         ).ask()
@@ -105,29 +122,49 @@ def _pick_slug(state: State) -> None:
 
 
 def _run_plan(state: State) -> None:
-    part = questionary.select(
-        "Dựng blueprint cho part nào?",
+    """Dựng blueprint cho MỘT HAY NHIỀU part — chọn bằng checkbox.
+
+    Trước khi chạy, hỏi rõ dùng bối cảnh LLM hay bảng tĩnh: `state.model` đã chọn
+    thì LLM sinh bối cảnh mới, chưa chọn thì dùng PART*_MIX. Người dùng có thể
+    đổi ngay ở bước này mà không phải quay lại menu.
+    """
+    parts = questionary.checkbox(
+        "Dựng blueprint cho những part nào? (Space chọn, Enter xong)",
         choices=[
-            questionary.Choice(title="Part 1 — Photographs (6 câu)", value=1),
-            questionary.Choice(title="Part 2 — Question-Response (25 câu)", value=2),
-            questionary.Choice(title="Part 3 — Conversations (13 cụm)", value=3),
-            questionary.Choice(title="Part 4 — Talks (10 cụm)", value=4),
-            questionary.Choice(title="Part 5 — Incomplete Sentences (30 câu)", value=5),
-            questionary.Choice(title="Part 6 — Text Completion (4 cụm)", value=6),
-            questionary.Choice(title="Part 7 — Reading (15 cụm)", value=7),
+            questionary.Choice(title=f"{num} — {label}", value=num) for num, label in PART_OPTIONS
         ],
+        instruction="Space = chọn/bỏ · Enter = xác nhận · Ctrl-C = bỏ qua",
     ).ask()
-    if part is None:
+    if not parts:
         return
+
+    use_model = bool(state.model)
+    if not use_model:
+        use_model = questionary.confirm(
+            "Chưa chọn model — dùng bảng cấu hình tĩnh (không gọi LLM)?",
+            default=True,
+        ).ask()
+    if not use_model and not state.model:
+        _pick_model(state)
+
     seed = questionary.text("Seed (chạy lại ra cùng bố cục):", default="20260822").ask()
     from argparse import Namespace
 
     from app.content.generate_exam import cmd_plan
 
-    code = cmd_plan(
-        Namespace(slug=state.slug, title=None, seed=int(seed or 0), part=part, model=state.model)
-    )
-    state.plan_done = code == 0
+    mode = f"model {state.model}" if state.model else "bảng tĩnh"
+    print(f"\n→ Dựng blueprint part {parts} bằng {mode}…\n", flush=True)
+    ok = True
+    for part in parts:
+        code = cmd_plan(
+            Namespace(
+                slug=state.slug, title=None, seed=int(seed or 0), part=part, model=state.model
+            )
+        )
+        ok = ok and code == 0
+    state.plan_done = ok
+    if ok:
+        print(f"\nĐã dựng blueprint part {parts}.\n")
 
 
 def _run_write(state: State) -> None:
