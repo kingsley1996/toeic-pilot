@@ -461,8 +461,8 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
         (
             ("PART_6_VOCABULARY", ""),
             ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
-            ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
             ("PART_6_SENTENCE_INSERTION", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
         ),
     ),
 )
@@ -870,10 +870,12 @@ def _part6_problems(slot: QuestionSlot) -> list[str]:
         if code == "PART_6_GRAMMAR" and not grammar:
             problems.append(f"{slot.id}: câu ngữ pháp phải nói rõ điểm ngữ pháp")
 
-    # Câu ĐIỀN CÂU luôn ở cuối, đúng như đề mẫu (câu 134, 138, 142, 146).
+    # Câu ĐIỀN CÂU ở blank 3 HOẶC 4 — đúng đề thật: phần lớn ở cuối (câu 134,
+    # 138, 142, 146), nhưng có văn bản đặt ở blank 3. Cấm 1 và 2: đặt quá sớm
+    # thì chưa có đủ câu chữ xung quanh để "điền vào chỗ trống" có nghĩa.
     at = [i for i, code in enumerate(slot.question_types) if code == "PART_6_SENTENCE_INSERTION"]
-    if at != [len(slot.question_types) - 1]:
-        problems.append(f"{slot.id}: câu điền câu phải là câu cuối của văn bản, và chỉ một câu")
+    if len(at) != 1 or at[0] not in (2, 3):
+        problems.append(f"{slot.id}: câu điền câu phải ở blank 3 hoặc 4, và chỉ một câu")
     return problems
 
 

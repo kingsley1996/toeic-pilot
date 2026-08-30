@@ -646,10 +646,13 @@ def prompt_for_part7(slot: QuestionSlot) -> str:
 def prompt_for_part6(slot: QuestionSlot) -> str:
     kind = LABELS[slot.topic].label_vi
     lines = []
+    insert_at = 4
     for index, (code, grammar) in enumerate(
         zip(slot.question_types, slot.grammars, strict=True), start=1
     ):
         detail = f" — {LABELS[grammar].label_vi}" if grammar else ""
+        if code == "PART_6_SENTENCE_INSERTION":
+            insert_at = index
         lines.append(f"  Chỗ trống ({index}): {LABELS[code].label_vi}{detail}")
     listed = "\n".join(lines)
     return (
@@ -657,7 +660,7 @@ def prompt_for_part6(slot: QuestionSlot) -> str:
         f"- Dạng văn bản: {kind}\n"
         f"- Nội dung: {slot.context}\n"
         f"- Bốn chỗ trống, theo đúng thứ tự này:\n{listed}\n"
-        f"- Chỗ trống (4) là câu ĐIỀN CÂU: bốn lựa chọn là bốn câu hoàn chỉnh, "
+        f"- Chỗ trống ({insert_at}) là câu ĐIỀN CÂU: bốn lựa chọn là bốn câu hoàn chỉnh, "
         f"và ba câu sai phải sai vì KHÔNG HỢP với đoạn văn quanh nó, không phải "
         f"vì sai ngữ pháp."
     )

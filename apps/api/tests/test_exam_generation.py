@@ -1048,19 +1048,23 @@ def test_a_part_6_text_is_read_as_four_questions_over_one_passage(tmp_path):
     assert all(r.problems == [] for r in reports)
 
 
-def test_part_6_pins_the_sentence_insertion_to_the_last_blank():
-    """Đề mẫu đặt câu điền câu ở câu 134, 138, 142, 146 — luôn là chỗ trống cuối.
+def test_part_6_pins_the_sentence_insertion_to_blank_3_or_4():
+    """Đề thật đặt câu điền câu ở blank 3 hoặc 4 — không bao giờ ở 1 hay 2.
 
-    Để mô hình tự chọn thì nó rải lung tung hoặc bỏ hẳn, và mỗi câu riêng lẻ vẫn
+    Phần lớn ở cuối (câu 134, 138, 142, 146), nhưng có văn bản đặt ở blank 3. Để
+    mô hình tự chọn thì nó rải lung tung hoặc bỏ hẳn, và mỗi câu riêng lẻ vẫn
     hợp lệ nên không cổng nào ở tầng câu thấy được.
     """
     plan = bp.build_part6("tp-test", "Test", seed=3)
     assert bp.validate(plan) == []
-    assert all(
-        slot.question_types[-1] == "PART_6_SENTENCE_INSERTION" for slot in plan.parts[0].slots
-    )
-    plan.parts[0].slots[0].question_types[1] = "PART_6_SENTENCE_INSERTION"
-    assert any("câu điền câu phải là câu cuối" in problem for problem in bp.validate(plan))
+    for slot in plan.parts[0].slots:
+        at = [
+            i for i, code in enumerate(slot.question_types) if code == "PART_6_SENTENCE_INSERTION"
+        ]
+        assert len(at) == 1 and at[0] in (2, 3)
+    # Đặt ở blank 1 (chưa đủ câu chữ xung quanh) là sai — cổng phải bắt được.
+    plan.parts[0].slots[0].question_types[0] = "PART_6_SENTENCE_INSERTION"
+    assert any("câu điền câu phải ở blank 3 hoặc 4" in problem for problem in bp.validate(plan))
 
 
 def _slot_and_block(part: int):  # type: ignore[no-untyped-def]
