@@ -18,4 +18,10 @@ else
     echo "entrypoint: RUN_MIGRATIONS=0, skipping migrations"
 fi
 
+echo "entrypoint: syncing knowledge base"
+if ! uv run python -m app.content.sync_kb; then
+    echo "entrypoint: sync_kb failed." >&2
+    exit 1
+fi
+
 exec "$@"
