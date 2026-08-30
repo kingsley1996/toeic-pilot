@@ -74,6 +74,27 @@ def build_providers(names: set[str], *, strict: bool = True) -> dict[str, Provid
             env_var = custom.api_key_env or f"{name.upper()}_API_KEY"
             key = os.environ.get(env_var)
             if not key:
+                # CLI chạy ngoài container: pydantic-settings nạp `.env` vào
+                # `settings` chứ KHÔNG vào `os.environ` — nên os.environ thiếu
+                # key mà `.env` vẫn có. Đọc trực tiếp file, cùng nguồn với
+                # `settings` (ưu tiên env thật, rồi `.env` gốc repo, rồi `.env`
+                # của apps/api — đúng thứ tự `SettingsConfigDict` dùng).
+                from app.core.config import _API_DIR, _REPO_ROOT
+
+                for candidate in (_REPO_ROOT / ".env", _API_DIR / ".env"):
+                    try:
+                        for line in candidate.read_text().splitlines():
+                            raw = line.strip()
+                            if raw and not raw.startswith("#") and "=" in raw:
+                                k, _, v = raw.partition("=")
+                                if k.strip() == env_var and v.strip():
+                                    key = v.strip()
+                                    break
+                    except OSError:
+                        continue
+                    if key:
+                        break
+            if not key:
                 _skip(name, f"Thiếu {env_var}. Đặt vào .env ở gốc repo.")
                 continue
             built[name] = OpenAICompatibleProvider(name, custom.base_url, key)

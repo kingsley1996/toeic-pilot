@@ -40,12 +40,16 @@ def blueprint_path(slug: str) -> Path:
     return workdir_for(slug) / "blueprint.json"
 
 
-def _gateway() -> Gateway:
+def _gateway(model: str | None = None) -> Gateway:
     """Dựng gateway y hệt `enrich_skills`, kể cả `resolve_feature`.
 
     Không nối `resolve_feature` thì màn cấu hình ở `/admin/ai/providers` lưu
     được, hiện ra được, và không ảnh hưởng gì tới thứ thật sự chạy — kiểu hỏng
     tệ nhất, vì mọi thứ trông như đang hoạt động.
+
+    `model` (dạng `provider/model`) ghi đè cả hai tầng bằng đúng một model —
+    đường đi mà wizard `interact` và `--model` dùng. `resolve_feature` vẫn chạy
+    trước: một hàng `ai_feature_config` khớp feature sẽ thắng override này.
     """
     from app.content.enrich_skills import _providers_for, _split
     from app.core.ai_budget import Budget
@@ -58,6 +62,8 @@ def _gateway() -> Gateway:
         Tier.CHEAP: _split(settings.llm_tier_cheap),
         Tier.STRONG: _split(settings.llm_tier_strong),
     }
+    if model:
+        routes = {tier: _split(model) for tier in routes}
     providers = _providers_for({provider for provider, _ in routes.values()})
     session = SessionLocal()
     return Gateway(
@@ -102,7 +108,7 @@ def cmd_write(args: argparse.Namespace) -> int:
         todo = todo[: args.limit]
     print(f"{len(todo)} ô còn thiếu tệp dán.\n", flush=True)
 
-    gateway = _gateway()
+    gateway = _gateway(args.model)
     tier = Tier(args.tier)
     written = 0
     started = time.monotonic()
@@ -413,7 +419,7 @@ def cmd_balance(args: argparse.Namespace) -> int:
 
 def cmd_check(args: argparse.Namespace) -> int:
     plan = bp.load(blueprint_path(args.slug))
-    gateway = _gateway() if args.verify else None
+    gateway = _gateway(args.model) if args.verify else None
     try:
         reports = checker.check_blueprint(
             plan, workdir_for(args.slug), gateway, Tier(args.tier), args.verify, args.part
@@ -461,7 +467,7 @@ def cmd_prune(args: argparse.Namespace) -> int:
     """
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
-    gateway = _gateway() if args.ambiguity else None
+    gateway = _gateway(args.model) if args.ambiguity else None
     reports = checker.check_blueprint(
         plan, workdir, gateway, Tier(args.tier), args.ambiguity, args.part
     )
@@ -575,6 +581,11 @@ def main(argv: list[str] | None = None) -> int:
         default=writer.DEFAULT_MAX_TOKENS,
         help="trần đầu ra mỗi lượt gọi; model suy luận cần rộng, hạn mức TPM lại cần hẹp",
     )
+    write_cmd.add_argument(
+        "--model",
+        default=None,
+        help="provider/model (vd `bai/gpt-5.6-sol`). Xem known_models() hoặc wizard interact",
+    )
     write_cmd.set_defaults(func=cmd_write)
 
     balance_cmd = sub.add_parser("balance", help="cân lại vị trí đáp án trên cả đề")
@@ -610,6 +621,11 @@ def main(argv: list[str] | None = None) -> int:
     check_cmd.add_argument("--slug", required=True)
     check_cmd.add_argument("--verify", action="store_true", help="đối chiếu đáp án bằng LLM")
     check_cmd.add_argument("--part", type=int, default=None, help="chỉ kiểm một part")
+    check_cmd.add_argument(
+        "--model",
+        default=None,
+        help="provider/model (vd `bai/gpt-5.6-sol`). Xem known_models() hoặc wizard interact",
+    )
     check_cmd.set_defaults(func=cmd_check)
 
     prune_cmd = sub.add_parser("prune", help="xoá tệp dán của những ô không đạt")
@@ -618,6 +634,11 @@ def main(argv: list[str] | None = None) -> int:
     prune_cmd.add_argument("--dry-run", action="store_true")
     prune_cmd.add_argument(
         "--ambiguity", action="store_true", help="loại cả câu có hơn một phương án điền được"
+    )
+    prune_cmd.add_argument(
+        "--model",
+        default=None,
+        help="provider/model (vd `bai/gpt-5.6-sol`). Xem known_models() hoặc wizard interact",
     )
     prune_cmd.set_defaults(func=cmd_prune)
 

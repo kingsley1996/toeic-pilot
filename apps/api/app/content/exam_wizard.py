@@ -30,6 +30,7 @@ class State:
     """Trạng thái của wizard — nhỏ, đủ để menu hiện người ta đang ở đâu."""
 
     slug: str = ""
+    model: str = ""
     plan_done: bool = False
     wrote: int = 0
     blocked: int = 0
@@ -57,8 +58,10 @@ def _menu(state: State) -> str:
     """Một màn menu. Trả về tên hành động người dùng chọn."""
     title = state.slug or "(chưa chọn đề)"
     summary = _blueprint_summary(state)
+    model = state.model or "(mặc định theo LLM_TIER_CHEAP)"
     choices = [
         questionary.Choice(title="Chọn / tạo đề khác", value="pick"),
+        questionary.Choice(title=f"Chọn model — hiện: {model}", value="model"),
         questionary.Choice(title="Dựng blueprint (plan)", value="plan"),
         questionary.Choice(title="Sinh văn bản (write)", value="write"),
         questionary.Choice(title="Kiểm tra (check)", value="check"),
@@ -137,7 +140,9 @@ def _run_write(state: State) -> None:
         "Giới hạn số ô (0 = tất cả):", default="0", instruction="thử 2–3 ô trước"
     ).ask()
     limit = int((limit_text or "0").strip() or 0)
-    code = cmd_write(Namespace(slug=state.slug, limit=limit, tier="t1", max_tokens=6000))
+    code = cmd_write(
+        Namespace(slug=state.slug, limit=limit, tier="t1", max_tokens=6000, model=state.model)
+    )
     if code == 3:  # LLMQuotaExhausted — hạn mức ngày, chờ chứ không cày tiếp
         print("\nHết hạn mức LLM trong ngày. Chạy lại sau khi có lại hạn mức.\n")
         return
@@ -154,7 +159,9 @@ def _run_check(state: State) -> None:
     from app.content.generate_exam import cmd_check
 
     verify = questionary.confirm("Đối chiếu đáp án bằng LLM (tốn lượt gọi)?", default=False).ask()
-    code = cmd_check(Namespace(slug=state.slug, verify=bool(verify), part=None, tier="t1"))
+    code = cmd_check(
+        Namespace(slug=state.slug, verify=bool(verify), part=None, tier="t1", model=state.model)
+    )
     if code in (1, 3):
         print("\nCòn ô chặn (hoặc hết hạn mức). Dùng `prune` để loại rồi `write` lại.\n")
         state.blocked = 1
@@ -176,7 +183,12 @@ def _run_prune(state: State) -> None:
     dry = questionary.confirm("Chạy thử (không xoá)?", default=True).ask()
     code = cmd_prune(
         Namespace(
-            slug=state.slug, part=None, dry_run=bool(dry), ambiguity=bool(ambiguity), tier="t1"
+            slug=state.slug,
+            part=None,
+            dry_run=bool(dry),
+            ambiguity=bool(ambiguity),
+            tier="t1",
+            model=state.model,
         )
     )
     _ = code
@@ -246,16 +258,22 @@ def _run_all(state: State) -> None:
         _run_plan(state)
     if not state.plan_done:
         return
+    if not state.model:
+        _pick_model(state)
 
     from argparse import Namespace
 
     from app.content.generate_exam import cmd_check, cmd_write
 
-    code = cmd_write(Namespace(slug=state.slug, limit=0, tier="t1", max_tokens=6000))
+    code = cmd_write(
+        Namespace(slug=state.slug, limit=0, tier="t1", max_tokens=6000, model=state.model)
+    )
     if code == 3:
         print("Hết hạn mức LLM. Dừng — chạy lại sau.")
         return
-    code = cmd_check(Namespace(slug=state.slug, verify=False, part=None, tier="t1"))
+    code = cmd_check(
+        Namespace(slug=state.slug, verify=False, part=None, tier="t1", model=state.model)
+    )
     if code in (1, 3):
         print("Còn ô chặn — dùng `prune` + `write` trong menu để sửa trước khi nạp.\n")
         return
@@ -270,6 +288,25 @@ def _run_all(state: State) -> None:
         ge.cmd_media(Namespace(slug=state.slug, part=None, push=True))
     if questionary.confirm("Nạp vào database (cần token editor)?", default=True).ask():
         _run_load(state)
+
+
+def _pick_model(state: State) -> None:
+    """Chọn model để viết/kiểm. Liệt kê `known_models()` — những model có giá."""
+    from app.services.llm.pricing import known_models
+
+    choices = [
+        questionary.Choice(title="(mặc định theo LLM_TIER_CHEAP)", value=""),
+        *[
+            questionary.Choice(title=f"{provider}/{model}", value=f"{provider}/{model}")
+            for provider, model in known_models()
+        ],
+        questionary.Choice(title="← Quay lại", value="__back__"),
+    ]
+    choice = questionary.select("Chọn model cho các bước sinh/kiểm", choices=choices).ask()
+    if choice is None or choice == "__back__":
+        return
+    state.model = choice
+    print(f"Đã chọn model: {choice or '(mặc định)'}\n")
 
 
 def run_interactive(slug: str | None = None) -> int:
@@ -288,6 +325,8 @@ def run_interactive(slug: str | None = None) -> int:
             return 0
         if action == "pick":
             _pick_slug(state)
+        elif action == "model":
+            _pick_model(state)
         elif action == "plan":
             _run_plan(state)
         elif action == "write":
