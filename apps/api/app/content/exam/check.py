@@ -766,7 +766,8 @@ def check_blueprint(
         for slot in part.slots
         if only is None or part.part == only
     ]
-    for part_number, slot in slots:
+    for slot_index, (part_number, slot) in enumerate(slots, start=1):
+        print(f"  … [{slot_index}/{len(slots)}] {slot.id} (part {part_number})", flush=True)
         report = SlotReport(slot_id=slot.id, number=slot.number)
         path = paste_path(workdir, slot)
         if not path.exists():
