@@ -188,9 +188,9 @@ conversation is heard, never printed; the questions and their four options ARE
 printed in the test book.
 
 THE CONVERSATION
-- 6 to 9 turns, natural spoken business English, roughly 100-140 words total.
+- 5 to 8 turns, natural spoken business English, roughly 60-100 words total.
 - Speakers alternate; in a three-speaker conversation the third speaker joins
-  partway through and speaks at least twice.
+  partway through.
 - Every fact the three questions depend on must be SAID out loud. A question
   whose answer is only implied by tone is not answerable from a recording.
 - No names of real companies, no brand names, no prices in currency symbols
@@ -347,7 +347,7 @@ printed in the test book.
 
 THE TALK
 - One voice throughout. No dialogue, no second speaker, no interruptions.
-- 100-150 words of natural spoken business English, in the register its form
+- 90-120 words of natural spoken business English, in the register its form
   calls for: a voice-mail message, a public announcement, a radio commercial, an
   excerpt from a meeting, or a short talk to an audience.
 - It opens the way that form opens — "Hi, this is Marcus from...", "Attention,
