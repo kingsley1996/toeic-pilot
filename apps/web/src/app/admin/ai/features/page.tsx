@@ -24,7 +24,14 @@ import {
 import { apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
-const TASKS = ["exam_plan", "exam_write", "exam_verify", "exam_ambiguity", "coach_chat", "assistant_chat"];
+const TASKS = [
+  "exam_plan",
+  "exam_write",
+  "exam_verify",
+  "exam_ambiguity",
+  "coach_chat",
+  "assistant_chat",
+];
 
 /**
  * Chọn model cho từng tính năng AI, và so sánh model theo task.
@@ -192,8 +199,8 @@ export default function AiFeaturesPage() {
         ) : (
           <Panel className="p-6 text-small text-ink-muted">
             Chưa có lượt gọi nào trong sổ cái <code className="font-data">ai_interaction</code>.
-            Chạy pipeline (plan / write / check) rồi quay lại — mỗi lượt gọi sẽ ghi một hàng so
-            sánh được.
+            Chạy pipeline (plan / write / check) rồi quay lại — mỗi lượt gọi sẽ ghi một hàng so sánh
+            được.
           </Panel>
         )}
       </section>

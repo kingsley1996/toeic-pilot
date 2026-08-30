@@ -106,9 +106,7 @@ export default function AiProvidersPage() {
       <section className="mt-10">
         <div className="mb-3 flex items-baseline justify-between gap-3">
           <h2 className="text-h4">Providers</h2>
-          <span className="font-data text-label text-ink-faint">
-            {providers.length} configured
-          </span>
+          <span className="font-data text-label text-ink-faint">{providers.length} configured</span>
         </div>
         <div className="grid gap-3 lg:grid-cols-2">
           {providers.map((provider) => (
@@ -160,7 +158,9 @@ function ProviderCard({
             <div key={model.model} className="flex items-center justify-between gap-2">
               <div className="min-w-0">
                 <p className="font-data text-small">{model.model}</p>
-                {model.comment && <p className="truncate text-label text-ink-faint">{model.comment}</p>}
+                {model.comment && (
+                  <p className="truncate text-label text-ink-faint">{model.comment}</p>
+                )}
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span className="font-data text-label tabular-nums text-ink-faint">
@@ -173,7 +173,10 @@ function ProviderCard({
                       {test.latency_ms}ms
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-small text-alert" title={test.error ?? ""}>
+                    <span
+                      className="flex items-center gap-1 text-small text-alert"
+                      title={test.error ?? ""}
+                    >
                       <CircleSlash size={14} strokeWidth={2} aria-hidden />
                       fail
                     </span>
