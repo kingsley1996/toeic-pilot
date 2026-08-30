@@ -956,16 +956,22 @@ def write_slot(
     tier: Tier,
     part: int = 5,
     max_tokens: int = DEFAULT_MAX_TOKENS,
+    fix_hint: str | None = None,
 ) -> str:
     # Qua `with_backoff`: nhà cung cấp lớn trả 503 "high demand" khá thường, và
     # không lùi thì vòng lặp đốt sạch 30 ô trong vài giây, mỗi ô hỏng một lần vì
     # cùng một cơn quá tải kéo dài vài chục giây. Đo được với Gemini: một lượt
     # chạy 30 ô ra 0 tệp.
+    user_prompt = _PROMPT_FOR.get(part, prompt_for)(slot)
+    if fix_hint:
+        # Lượt viết lại trong vòng agent: lời phê của critic gắn vào prompt.
+        # Không có nó thì "viết lại" chỉ là sinh lại mù — ô hỏng cùng kiểu.
+        user_prompt = f"{user_prompt}\n\nLƯU Ý SỬA từ lượt trước: {fix_hint}"
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
                 system=_system_for(part, slot),
-                user=_PROMPT_FOR.get(part, prompt_for)(slot),
+                user=user_prompt,
                 # Rộng tay, vì model SUY LUẬN xuất cả chuỗi suy nghĩ trước khi tới
                 # khối cần lấy. Đo được: `nemotron-3-ultra` cụt giữa phần suy nghĩ ở
                 # 600 token, và cái cụt đó không hiện ra như một lỗi — nó hiện ra
