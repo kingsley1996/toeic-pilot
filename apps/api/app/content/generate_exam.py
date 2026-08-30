@@ -200,6 +200,59 @@ def _override_contexts(plan: Blueprint, scenes: list[str]) -> None:
         slot.context = scene
 
 
+def generate_part_graphics(gateway: Gateway, tier: Tier, part: int) -> list[str]:
+    """Hỏi model sinh brief hình MỚI cho các vị trí graphic của part (3, 4, 7).
+
+    Chỉ sinh `graphic`/`passages` — brief `kind: mô tả` — KHÔNG đụng vị trí hay
+    cấu trúc (cụm nào có hình, câu hỏi về hình ở câu thứ mấy, kind nào hợp lệ).
+    Vị trí là quyết định của người ra đề (đề thật: Part 3 ba hình ở ba cụm cuối,
+    Part 4 hai hình, Part 7 năm passage hình rải trong bốn cụm); model chỉ làm
+    nội dung hình khác nhau để hai đề không dùng đúng một bộ hình.
+
+    Đầu ra mỗi dòng một brief `kind: mô tả`; sai số lượng hay sai kind thì NÉM để
+    `cmd_plan` rơi về `PART*_GRAPHIC_POOL` theo seed.
+    """
+    from app.content.exam.graphics import KINDS
+    from app.services.llm.base import LLMRequest
+
+    count = {3: 3, 4: 2, 7: 5}[part]
+    kinds = ", ".join(KINDS)
+    prompt = (
+        f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là BRIEF cho một hình ngữ liệu "
+        f"của Part {part} đề TOEIC (đề tự sinh, không phải đề thi thật).\n"
+        f"Mỗi dòng đúng định dạng `kind: mô tả bằng tiếng Việt`.\n"
+        f"kind phải là MỘT TRONG: {kinds}.\n"
+        f"Brief phải nói rõ hình gì, bốn mục/nhãn là gì (vd `table: bảng giá bốn "
+        f"gói hội viên, cột Gói và Phí`), đủ để vẽ. {count} hình KHÁC NHAU rõ "
+        f"rệt về kind lẫn nội dung. Không thêm tiêu đề, không thêm dòng nào khác."
+    )
+    result = with_backoff(
+        lambda: gateway.run(
+            LLMRequest(
+                system=prompt,
+                user=f"Sinh {count} brief hình Part {part}.",
+                max_tokens=2000,
+            ),
+            feature="exam_plan",
+            tier=tier,
+        ),
+        tries=writer.RETRY_TRIES,
+        delay=writer.RETRY_DELAY,
+    )
+    briefs: list[str] = []
+    for line in result.text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        kind = line.split(":", 1)[0].strip()
+        if kind not in KINDS:
+            raise ValueError(f"kind hình không hợp lệ: {line[:60]!r}")
+        briefs.append(line)
+    if len(briefs) != count:
+        raise ValueError(f"cần đúng {count} brief hình Part {part}, model trả {len(briefs)}")
+    return briefs
+
+
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
     builder = {
@@ -214,10 +267,10 @@ def cmd_plan(args: argparse.Namespace) -> int:
     path = blueprint_path(args.slug)
     existing = bp.load(path) if path.exists() else None
 
-    # Có `--model` thì hỏi model sinh bối cảnh; hỏng thì rơi về bảng cấu hình —
-    # một lượt plan không được chết vì model. Part 1 khác các part còn lại: nó
-    # để model sinh cả LOẠI TRANH, còn 2–7 chỉ sinh BỐI CẢNH (cấu trúc vẫn từ
-    # bảng, vì validate kiểm cấu trúc theo đúng mã trong bảng).
+    # Có `--model` thì hỏi model sinh bối cảnh (+ brief hình cho part có hình);
+    # hỏng thì rơi về bảng cấu hình / pool theo seed — một lượt plan không được
+    # chết vì model. Cấu trúc (loại câu, vị trí hình, giọng) luôn từ bảng; model
+    # chỉ sinh NỘI DUNG bối cảnh và hình.
     built = builder(args.slug, title, args.seed)
     if args.model:
         try:
@@ -227,11 +280,18 @@ def cmd_plan(args: argparse.Namespace) -> int:
                 built = bp.build_part1(args.slug, title, args.seed, scenes)
             else:
                 contexts = generate_part_scenes(gateway, Tier(args.tier), args.part)
+                if args.part in (3, 4, 7):
+                    graphics = generate_part_graphics(gateway, Tier(args.tier), args.part)
+                    built = {
+                        3: bp.build_part3,
+                        4: bp.build_part4,
+                        7: bp.build_part7,
+                    }[args.part](args.slug, title, args.seed, graphics)
                 _override_contexts(built, contexts)
-            print(f"model {args.model} sinh bối cảnh Part {args.part}.")
+            print(f"model {args.model} sinh nội dung Part {args.part}.")
         except Exception as failure:  # noqa: BLE001 — rơi về bảng là đường đúng
             print(
-                f"không sinh được bối cảnh bằng model ({failure}) — dùng bảng cấu hình.",
+                f"không sinh được nội dung bằng model ({failure}) — dùng bảng cấu hình.",
                 file=sys.stderr,
             )
             built = builder(args.slug, title, args.seed)

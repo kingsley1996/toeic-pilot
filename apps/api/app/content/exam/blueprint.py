@@ -305,6 +305,19 @@ PART3_TRIOS: tuple[tuple[str, ...], ...] = (
 )
 
 
+# Brief hình cho BA cụm cuối Part 3. Mỗi mục một brief `kind: mô tả` — model hay
+# chọn, và `build_part3` chọn theo seed khi không dùng model. Đủ nhiều để hai đề
+# khác seed có bộ hình khác nhau; `graphics.py` là nơi quyết định kind nào vẽ được.
+PART3_GRAPHIC_POOL: tuple[str, ...] = (
+    "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price",
+    "schedule: lịch rảnh/bận của hai người qua bốn khung giờ trong ngày",
+    "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng",
+    "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
+    "survey: phiếu khảo sát bốn mục mức độ hài lòng đã đánh dấu",
+    "form: phiếu đặt phòng họp bốn suất đã điền",
+)
+
+
 # Part 4: mười bài nói, mỗi bài ba câu — câu 71 tới 100 của đề thật.
 #
 # Khác Part 3 ở đúng hai chỗ, và cả hai đều nằm trong dữ liệu chứ không trong mã:
@@ -379,6 +392,16 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
 
 # Một bài nói, một giọng. Xoay đều bốn accent qua mười bài.
 PART4_VOICES = ("us_male_1", "uk_female_1", "au_male_1", "ca_female_1")
+
+# Brief hình cho HAI cụm cuối Part 4 (câu 96 và 99). Cùng luật với pool Part 3.
+PART4_GRAPHIC_POOL: tuple[str, ...] = (
+    "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
+    "map: sơ đồ tầng trệt gồm bốn quầy xếp thành hai hàng",
+    "table: bảng giá bốn gói hội viên, cột Gói và Phí",
+    "schedule: lịch bốn buổi bảo trì trong tuần, cột Ngày và Giờ",
+    "survey: phiếu khảo sát bốn câu hỏi về dịch vụ đã đánh dấu",
+    "form: phiếu đăng ký bốn buổi đào tạo đã điền",
+)
 
 
 # Part 2: hai mươi lăm câu hỏi–đáp, câu 7 tới 31 của đề thật.
@@ -674,6 +697,23 @@ class PartPlan:
     slots: list[QuestionSlot] = field(default_factory=list)
 
 
+# Brief hình cho các PASSAGE HÌNH Part 7. Năm passage hình rải trong bốn cụm:
+# p7-11 (1), p7-13 (1), p7-14 (1), p7-15 (2). Pool đủ nhiều để `sample` chọn 5
+# mục không trùng.
+PART7_GRAPHIC_POOL: tuple[str, ...] = (
+    "schedule: lịch bốn phiên hội thảo trong ngày",
+    "survey: phiếu khảo sát bốn mục đã đánh dấu",
+    "schedule: lịch bốn buổi đào tạo trong tháng",
+    "table: bảng giá vé bốn suất diễn",
+    "form: phiếu đặt vé đã điền",
+    "chart: biểu đồ cột kết quả khảo sát bốn quý",
+    "schedule: lịch hẹn bốn khách hàng trong tuần",
+    "table: bảng giá bốn gói phần mềm, cột Gói và Phí",
+    "map: sơ đồ bốn khu vực trong hội chợ thương mại",
+    "form: phiếu đăng ký hội thảo bốn mục đã điền",
+)
+
+
 @dataclass
 class Blueprint:
     slug: str
@@ -791,16 +831,26 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=2, slots=slots)])
 
 
-def build_part3(slug: str, title: str, seed: int) -> Blueprint:
+def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = None) -> Blueprint:
     """Mười ba cuộc hội thoại Part 3, câu 32–70 của đề thật.
 
     Một ô = một cuộc hội thoại = một tệp dán = một lượt gọi. Ba câu phải được
     viết CÙNG NHAU: chúng hỏi về cùng một đoạn thoại và không được hỏi trùng
     nhau, mà viết rời thì mô hình không biết hai câu kia đã hỏi gì.
+
+    `graphics` (từ model, xem `generate_part_graphics` ở `generate_exam.py`) thay
+    brief cho ba cụm CUỐI — đúng vị trí graphic của đề thật (câu 64, 67, 70);
+    thiếu thì lấy từ `PART3_GRAPHIC_POOL` theo `seed` để hai đề khác seed có bộ
+    hình khác nhau.
     """
-    slots = []
+    rng = random.Random(seed)
+    picks = graphics or rng.sample(PART3_GRAPHIC_POOL, 3)
+    slots: list[QuestionSlot] = []
     for index, (topic, speakers, scene, types, graphic) in enumerate(PART3_MIX):
         pool = PART3_TRIOS if speakers == 3 else PART3_CASTS
+        # Ba cụm cuối là cụm có hình (đề thật). Brief lấy từ `picks`, còn lại
+        # giữ nguyên (không hình).
+        brief = picks[len(slots) - 10] if 10 <= len(slots) <= 12 else graphic
         slots.append(
             QuestionSlot(
                 id=f"p3-{index + 1:02d}",
@@ -811,7 +861,7 @@ def build_part3(slug: str, title: str, seed: int) -> Blueprint:
                 question_types=list(types),
                 topic=topic,
                 voices=list(pool[(index + seed) % len(pool)]),
-                graphic=graphic,
+                graphic=brief,
             )
         )
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=3, slots=slots)])
@@ -974,8 +1024,14 @@ def _set_slot_problems(slot: QuestionSlot, part: int, valid_types: set[str]) -> 
     return problems
 
 
-def build_part4(slug: str, title: str, seed: int) -> Blueprint:
-    """Mười bài nói Part 4, câu 71–100 của đề thật."""
+def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = None) -> Blueprint:
+    """Mười bài nói Part 4, câu 71–100 của đề thật.
+
+    `graphics` thay brief cho hai cụm CUỐI (đúng vị trí graphic của đề thật, câu
+    96 và 99); thiếu thì lấy từ `PART4_GRAPHIC_POOL` theo `seed`.
+    """
+    rng = random.Random(seed)
+    picks = graphics or rng.sample(PART4_GRAPHIC_POOL, 2)
     slots = [
         QuestionSlot(
             id=f"p4-{index + 1:02d}",
@@ -986,7 +1042,7 @@ def build_part4(slug: str, title: str, seed: int) -> Blueprint:
             question_types=list(types),
             topic=speech_type,
             voices=[PART4_VOICES[(index + seed) % len(PART4_VOICES)]],
-            graphic=graphic,
+            graphic=picks[index - 8] if index >= 8 else graphic,
         )
         for index, (speech_type, scene, types, graphic) in enumerate(PART4_MIX)
     ]
@@ -1016,16 +1072,33 @@ def build_part6(slug: str, title: str, seed: int) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=6, slots=slots)])
 
 
-def build_part7(slug: str, title: str, seed: int) -> Blueprint:
+def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = None) -> Blueprint:
     """Mười chín cụm Part 7, câu 147–200.
 
     Số câu mỗi cụm KHÁC nhau (2 tới 5), nên nó nằm ở chính cái ô — `number` phải
     cộng dồn theo số câu của ô trước, không nhân với một hằng số.
+
+    `graphics` thay các PASSAGE HÌNH (mục không rỗng trong `passages`) theo thứ
+    tự xuất hiện trên cả part — bảng giá, phiếu đặt hàng, lịch, biểu đồ... của
+    cụm nào do vị trí của nó trong `PART7_SETS` quyết định; thiếu thì lấy từ
+    `PART7_GRAPHIC_POOL` theo `seed`.
     """
+    rng = random.Random(seed)
+    graphic_count = sum(1 for row in PART7_SETS for p in row[3] if p)
+    picks = graphics or rng.sample(PART7_GRAPHIC_POOL, graphic_count)
+    pick_at = 0
+
     slots: list[QuestionSlot] = []
     number = 147
     for index, (passage_type, scene, types, passages) in enumerate(PART7_SETS, start=1):
         structure = "PART_7_SINGLE_PASSAGE" if len(passages) == 1 else "PART_7_MULTIPLE_PASSAGE"
+        filled = []
+        for passage in passages:
+            if passage:
+                filled.append(picks[pick_at])
+                pick_at += 1
+            else:
+                filled.append("")
         slots.append(
             QuestionSlot(
                 id=f"p7-{index:02d}",
@@ -1036,7 +1109,7 @@ def build_part7(slug: str, title: str, seed: int) -> Blueprint:
                 question_types=list(types),
                 topic=passage_type,
                 structure=structure,
-                passages=list(passages),
+                passages=filled,
             )
         )
         number += len(types)

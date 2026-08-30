@@ -21,5 +21,6 @@ def test_blueprint_summary_tao_duoc_khi_chua_co(tmp_path, monkeypatch) -> None:
     import app.content.exam_wizard as w
 
     monkeypatch.setattr(w, "DEFAULT_ROOT", tmp_path)
-    state = State(slug="tp-form-07")
+    monkeypatch.setattr(w, "blueprint_path", lambda slug: tmp_path / slug / "blueprint.json")
+    state = State(slug="khong-ton-tai")
     assert _blueprint_summary(state) == "chưa có blueprint"
