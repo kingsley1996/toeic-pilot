@@ -158,7 +158,12 @@ def _run_plan(state: State) -> None:
     for part in parts:
         code = cmd_plan(
             Namespace(
-                slug=state.slug, title=None, seed=int(seed or 0), part=part, model=state.model
+                slug=state.slug,
+                title=None,
+                seed=int(seed or 0),
+                part=part,
+                model=state.model,
+                tier="t1",
             )
         )
         ok = ok and code == 0

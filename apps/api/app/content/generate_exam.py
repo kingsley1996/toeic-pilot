@@ -109,7 +109,7 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
     )
     result = with_backoff(
         lambda: gateway.run(
-            LLMRequest(system=prompt, user="Sinh sáu bối cảnh ảnh Part 1.", max_tokens=800),
+            LLMRequest(system=prompt, user="Sinh sáu bối cảnh ảnh Part 1.", max_tokens=4000),
             feature="exam_plan",
             tier=tier,
         ),
@@ -170,7 +170,10 @@ def generate_part_scenes(gateway: Gateway, tier: Tier, part: int) -> list[str]:
     )
     result = with_backoff(
         lambda: gateway.run(
-            LLMRequest(system=prompt, user=f"Sinh {count} bối cảnh Part {part}.", max_tokens=2000),
+            # Rộng tay vì model SUY LUẬN xuất cả chuỗi suy nghĩ trước khi tới các
+            # dòng bối cảnh — cùng bài học với `writer.write_slot`: trần quá hẹp
+            # thì bị cắt giữa phần thinking, và cái cắt đó không hiện ra như lỗi.
+            LLMRequest(system=prompt, user=f"Sinh {count} bối cảnh Part {part}.", max_tokens=4000),
             feature="exam_plan",
             tier=tier,
         ),
