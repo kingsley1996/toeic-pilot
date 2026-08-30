@@ -97,6 +97,11 @@
       },
       "comment": "NVIDIA NIM preview — các model chạy miễn phí (build.nvidia.com, cấp khóa free, giới hạn request). Kiểm bằng key thật ngày 2026-08-30. `chat_template_kwargs.thinking=false` TẮT suy luận — bỏ thì model nghĩ ăn hết max_tokens rồi content về rỗng (đúng lỗi 'hết hạn mức đầu ra khi suy luận'). deepseek-v4-flash-0731 timeout và nemotron-nano-3-30b-a3b 404 nên không khai. gpt-oss-120b bỏ qua cờ này (vẫn suy luận).",
       "models": {
+        "moonshotai/kimi-k3": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30. 1M context. Tôn trọng `thinking:false` (tắt suy luận)."
+        },
         "deepseek-ai/deepseek-v4-pro-0813": {
           "rate_in": 0.0,
           "rate_out": 0.0,
