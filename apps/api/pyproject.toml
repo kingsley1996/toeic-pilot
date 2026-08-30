@@ -96,6 +96,13 @@ warn_return_any = false
 module = ["jose.*", "edge_tts.*", "boto3.*", "botocore.*", "questionary"]
 ignore_missing_imports = true
 
+# langgraph lives behind the `agents` extra. The API image and every
+# environment synced without it would otherwise fail mypy on the two graph
+# modules — the import is real, the library is just not installed there.
+[[tool.mypy.overrides]]
+module = ["langgraph.*"]
+ignore_missing_imports = true
+
 # mutagen ships partial annotations: `MP3.__init__` is untyped and `.info` is
 # declared Optional, so strict mode rejects the one call we make. Skipping the
 # follow-through treats the package as Any rather than sprinkling per-line ignores.
