@@ -102,6 +102,21 @@
           "rate_out": 0.0,
           "comment": "Preview miễn phí — kiểm chạy thật 2026-08-30. 1M context. Tôn trọng `thinking:false` (tắt suy luận)."
         },
+        "google/gemma-4-31b-it": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Google Gemma 4 31B IT — preview miễn phí trên build.nvidia.com. 256K context. Kiểm thật 2026-08-30."
+        },
+        "meta/llama-3.2-11b-vision-instruct": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "Llama 3.2 11B Vision — preview miễn phí. 128K context. Kiểm thật 2026-08-30."
+        },
+        "openai/gpt-oss-20b": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "comment": "GPT-OSS 20B — preview miễn phí. Bỏ qua `thinking:false` (vẫn suy luận). Kiểm thật 2026-08-30."
+        },
         "deepseek-ai/deepseek-v4-pro-0813": {
           "rate_in": 0.0,
           "rate_out": 0.0,
