@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from app.content.exam_agents.graph import MAX_REVISIONS, build
+from app.services.llm.gateway import Tally
 
 
 @dataclass
@@ -26,9 +27,13 @@ class FakeGateway:
 
     Đo được hai thứ: (1) `fix_hint` của critic có đi TỚI lượt viết sau không,
     (2) trần vòng lặp dừng đúng chỗ thay vì quay mãi.
+
+    Mang cả `tally` vì `run_pending` in chi phí sau mỗi part — một fake thiếu bề
+    mặt của thứ nó thay thế làm test đỏ ở chỗ không liên quan gì tới nó.
     """
 
     calls: list[str] = field(default_factory=list)
+    tally: Tally = field(default_factory=Tally)
     good_block: str = (
         "[QUESTION]\nThe manager ------- the report before noon.\n"
         "(A) reviews\n(B) prevents\n(C) accompanies\n(D) suggests\n"

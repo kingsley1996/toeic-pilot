@@ -290,3 +290,45 @@ def test_the_read_window_follows_max_tokens():
     assert SLOWEST_TOKENS_PER_SECOND <= 11.3, "phải có biên dưới tốc độ chậm nhất đo được"
     window = max(300.0, 40000 / SLOWEST_TOKENS_PER_SECOND)
     assert window >= 3540, "40 000 token ở tốc độ chậm nhất cần ~3 540 giây"
+
+
+def test_the_run_counts_its_own_calls_tokens_and_price(db_session, fake_redis):
+    """Chi phí một lượt chạy được cộng NGAY tại chỗ ghi, không đọc lại từ sổ.
+
+    Sổ `ai_interaction` có đủ số liệu, nhưng tổng kết một lượt chạy từ đó phải
+    lọc theo cửa sổ thời gian — cửa sổ ấy sai ngay khi có hai lượt chạy song
+    song, và không dùng được khi Postgres vắng mặt.
+
+    Lượt HỎNG cũng phải được đếm: một lượt chạy tốn 20 lượt gọi trong đó 5 hỏng
+    đã tiêu tiền của cả 20, và báo cáo giấu đi 5 lượt kia là báo cáo sai.
+    """
+    gw = build(db_session, fake_redis)
+    assert gw.tally.calls == 0
+
+    gw.run(REQ, feature="explain", tier=Tier.CHEAP)
+    gw.run(REQ, feature="explain", tier=Tier.CHEAP)
+    assert gw.tally.calls == 2
+    assert gw.tally.errors == 0
+    assert gw.tally.prompt > 0
+
+    class Broken:
+        def complete(self, request, model):  # noqa: ANN001, ARG002
+            raise LLMError("nhà cung cấp sập")
+
+    broken = build(db_session, fake_redis, provider=Broken())
+    with pytest.raises(LLMError):
+        broken.run(REQ, feature="explain", tier=Tier.CHEAP)
+    assert broken.tally.calls == 1 and broken.tally.errors == 1
+
+    # Mỗi Gateway có bộ đếm RIÊNG — `field(default_factory=...)`, không phải một
+    # dataclass mutable dùng chung.
+    assert gw.tally.calls == 2
+
+    # Giá dưới một xu vẫn phải hiện, không làm tròn về 0.
+    from decimal import Decimal
+
+    from app.services.llm.gateway import Tally
+
+    tiny = Tally(calls=3, prompt=100, completion=50, cost=Decimal("0.0035"))
+    assert "$0.0035" in tiny.line()
+    assert "3 lượt gọi" in tiny.line()

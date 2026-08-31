@@ -21,6 +21,7 @@ nhưng chỉ load, không gọi model.
 from __future__ import annotations
 
 import operator
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated, Any
@@ -51,7 +52,12 @@ class FullState(TypedDict, total=False):
     accepted: int
     escalated: int
     max_tokens: int | None
-    verify: bool  # bật hai tầng kiểm dùng model trong vòng per-slot
+    verify: bool  # ép tầng kiểm trả tiền chạy cho MỌI ô, không chỉ ô có hình
+    passes: int  # số lượt slotloop đã chạy
+    remaining: int  # còn bao nhiêu ô thiếu tệp dán sau lượt vừa rồi
+    retry: list[str]  # ô `escalated` cần đưa lại vào lượt sau
+    stalled: bool  # lượt vừa rồi không tiến thêm được gì
+    artwork: str | None  # kết quả chặng vẽ hình + ảnh
     balanced: str | None  # phân bố đáp án sau khi cân
     spread: list[str]  # lệch phân bố trên CẢ đề, rỗng là đạt
     current: str | None  # ô đang chạy
@@ -162,19 +168,41 @@ def _slotloop_node(gateway: Gateway, tier: Tier, workdir: Path) -> FullNode:
 
         slug = state["slug"]
         blueprint = bp.load(blueprint_path(slug))
+        from app.content.exam.writer import pending
+
+        work = Path(str(workdir))
+        passes = state.get("passes", 0) + 1
+        if passes > 1:
+            print(f"\n══ lượt {passes}: thử lại phần chưa xong ══", flush=True)
+        before = len(pending(blueprint, work))
         result = run_pending(
             gateway,
             tier,
             blueprint,
-            Path(str(workdir)),
+            work,
             limit=state.get("limit"),
             only=state.get("only"),
             max_tokens=state.get("max_tokens"),
-            verifier=gateway if state.get("verify") else None,
+            # Gateway LUÔN được truyền: node kiểm tự quyết ô nào đáng trả tiền.
+            # `--verify` chỉ ép nó chạy cho mọi ô.
+            verifier=gateway,
+            verify_all=bool(state.get("verify")),
+            retry=state.get("retry") or None,
         )
         accepted = sum(1 for _, outcome in result if outcome == "accepted")
-        escalated = sum(1 for _, outcome in result if outcome == "escalated")
-        return {"accepted": accepted, "escalated": escalated}
+        failed = [slot_id for slot_id, outcome in result if outcome == "escalated"]
+        after = len(pending(blueprint, work))
+        # "Tiến triển" phải đo bằng ô ĐẠT hoặc ô mới có tệp, không bằng riêng số
+        # tệp: một ô thử lại thành công ghi đè tệp đã có, nên số tệp không đổi.
+        progress = accepted > 0 or after < before
+        return {
+            "passes": passes,
+            "accepted": state.get("accepted", 0) + accepted,
+            "escalated": len(failed),
+            "retry": failed,
+            "remaining": after,
+            "stalled": not progress,
+        }
 
     return slotloop
 
@@ -250,6 +278,74 @@ def _spread_node(workdir: Path) -> FullNode:
     return spread
 
 
+# Trần số lượt slotloop. Ba lượt là chỗ dừng đúng: một ô hỏng ba lượt liên tiếp
+# vì cùng một lý do thì lượt thứ tư cũng hỏng, và vòng lặp không trần biến một ô
+# hỏng vĩnh viễn thành một lượt chạy vô tận không ai trông.
+MAX_PASSES = 3
+
+
+def _after_slotloop(state: dict[str, Any]) -> str:
+    """Chạy tiếp hay dừng. Ba điều kiện dừng, và cả ba đều cần thiết."""
+    if not state.get("remaining") and not state.get("retry"):
+        return "balance"  # xong thật
+    if state.get("stalled"):
+        print("\n  dừng: lượt vừa rồi không tiến thêm được ô nào", flush=True)
+        return "balance"
+    if state.get("passes", 0) >= MAX_PASSES:
+        print(f"\n  dừng: đã chạy {MAX_PASSES} lượt", flush=True)
+        return "balance"
+    return "slotloop"
+
+
+def _artwork_node(workdir: Path) -> FullNode:
+    """Vẽ hình ngữ liệu và ảnh Part 1 — chặng cuối của lượt tự động.
+
+    Dừng ở đây, KHÔNG chạy tiếp `media --push` và `load`: hai lệnh đó đẩy ra
+    ngoài và ghi vào database, và chúng không nên chạy khi chưa có người đọc
+    báo cáo — nhất là khi phép kiểm có thể vẫn còn dòng chặn nạp.
+
+    Chỉ chạy khi đề ĐỦ ô. Vẽ trên một đề còn thiếu là vẽ hai lần.
+    """
+
+    def artwork(state: FullState) -> FullUpdate:
+
+        if state.get("remaining"):
+            return {"artwork": f"bỏ qua — còn {state['remaining']} ô chưa viết"}
+        slug = state["slug"]
+        done: list[str] = []
+        steps: tuple[tuple[str, Callable[[str], None]], ...] = (
+            ("hình ngữ liệu", _draw_graphics),
+            ("ảnh Part 1", _draw_photos),
+        )
+        for label, run in steps:
+            print(f"\n── vẽ {label} ──", flush=True)
+            try:
+                run(slug)
+                done.append(label)
+            except Exception as failure:  # noqa: BLE001
+                # Hỏng ở đây KHÔNG được nuốt mất báo cáo của 103 ô vừa viết.
+                print(f"  vẽ {label} hỏng: {failure}", file=sys.stderr, flush=True)
+        return {"artwork": ", ".join(done) or "không vẽ được gì"}
+
+    return artwork
+
+
+def _draw_graphics(slug: str) -> None:
+    from argparse import Namespace
+
+    from app.content.exam_cli.media import cmd_graphic
+
+    cmd_graphic(Namespace(slug=slug))
+
+
+def _draw_photos(slug: str) -> None:
+    from argparse import Namespace
+
+    from app.content.exam_cli.media import cmd_photo
+
+    cmd_photo(Namespace(slug=slug, limit=0, aspect="4:3", seed=0, greyscale=True))
+
+
 def build_full(
     gateway: Gateway, tier: Tier, model: str | None, workdir: Path
 ) -> Any:  # đồ thị đã biên dịch — kiểu của LangGraph
@@ -262,12 +358,18 @@ def build_full(
     builder.add_node("slotloop", _node(_slotloop_node(gateway, tier, workdir)))
     builder.add_node("balance", _node(_balance_node(workdir)))
     builder.add_node("spread", _node(_spread_node(workdir)))
+    builder.add_node("artwork", _node(_artwork_node(workdir)))
 
     builder.add_edge(START, "plan")
     builder.add_edge("plan", "slotloop")
-    builder.add_edge("slotloop", "balance")
+    # Khai rõ hai đích: không có bảng này thì đồ thị vẫn chạy đúng nhưng
+    # `get_graph()` vẽ ra một hình sai, và hình sai còn tệ hơn không có hình.
+    builder.add_conditional_edges(
+        "slotloop", _after_slotloop, {"slotloop": "slotloop", "balance": "balance"}
+    )
     builder.add_edge("balance", "spread")
-    builder.add_edge("spread", END)
+    builder.add_edge("spread", "artwork")
+    builder.add_edge("artwork", END)
     return builder.compile(checkpointer=InMemorySaver())
 
 
@@ -318,14 +420,32 @@ def main(argv: list[str] | None = None) -> int:
             "escalated": 0,
             "balanced": None,
             "spread": [],
+            "passes": 0,
+            "remaining": 0,
+            "retry": [],
+            "stalled": False,
+            "artwork": None,
         },
         config={"configurable": {"thread_id": args.slug}},
     )
-    print(f"\nXong: {final['accepted']} ô nhận · {final['escalated']} giao người · đề ở {workdir}")
+    print(f"\n{'═' * 58}")
+    print(f"Đề {args.slug} · {final.get('passes', 0)} lượt · {workdir}")
+    print(f"  {final['accepted']} ô nhận · {final['escalated']} giao người")
+    print(f"  {gateway.tally.line()}")
+    if final.get("remaining"):
+        print(f"  CÒN {final['remaining']} ô chưa viết — chạy lại đúng lệnh này")
+    if final.get("retry"):
+        print(f"  giao người: {', '.join(final['retry'])}")
     if final.get("balanced"):
-        print(f"Phân bố đáp án: {final['balanced']}")
+        print(f"  phân bố đáp án: {final['balanced']}")
     if final.get("spread"):
-        print(f"Phân bố CẢ ĐỀ còn lệch: {len(final['spread'])} vấn đề — xem dòng ✗ ở trên")
+        print(f"  phân bố CẢ ĐỀ còn lệch: {len(final['spread'])} vấn đề — xem dòng ✗ ở trên")
+    if final.get("artwork"):
+        print(f"  vẽ: {final['artwork']}")
+    if not final.get("remaining"):
+        print("\nBước tiếp theo, chạy tay sau khi đọc báo cáo trên:")
+        print(f"  generate_exam media --slug {args.slug} --push")
+        print(f"  generate_exam load  --slug {args.slug} --token <admin-token>")
     return 0
 
 

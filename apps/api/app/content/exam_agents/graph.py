@@ -183,6 +183,7 @@ def _check_node(
     parts: _Parts,
     verifier: Gateway | None = None,
     tier: Tier = Tier.CHEAP,
+    verify_all: bool = False,
 ) -> Node:
     """Nguồn DUY NHẤT được điền `blocked`.
 
@@ -208,7 +209,12 @@ def _check_node(
         part = parts.part(state["slot_id"])
         reports = check_blueprint(blueprint, workdir, gateway=None, only=part, quiet=True)
         report = next((r for r in reports if r.slot_id == state["slot_id"]), None)
-        if report is not None and not report.problems and verifier is not None:
+        # Tầng trả tiền chỉ ĐỔI được kết cục ở ô có hình: phán quyết luật hình
+        # là findings duy nhất thành `problem`, còn `verify_answer` và
+        # `count_workable_options` chỉ sinh cờ. Chạy nó ở ô khác là trả tiền cho
+        # một thứ không chặn được gì — `verify_all` là chỗ bắt buộc nếu muốn.
+        wants_paid = verify_all or bool(parts.slot(state["slot_id"]).graphic)
+        if report is not None and not report.problems and verifier is not None and wants_paid:
             # `slot_id`, KHÔNG phải `only=part`: lượt này gọi model, và
             # `only=part` khiến ô thứ k kéo theo cả k ô đã viết — chi phí cộng
             # dồn thành bình phương (đo được 8,2× trên một đề). Lượt miễn phí ở
@@ -313,6 +319,7 @@ def build(
     workdir: Path,
     max_tokens: int | None = None,
     verifier: Gateway | None = None,
+    verify_all: bool = False,
 ) -> Any:  # đồ thị đã biên dịch là kiểu của LangGraph — `Any` với mypy vì thư viện không có stub
     parts = _Parts(blueprint)
 
@@ -325,7 +332,9 @@ def build(
         return fn
 
     builder.add_node("write", _node(_write_node(gateway, tier, workdir, parts, max_tokens)))
-    builder.add_node("check", _node(_check_node(blueprint, workdir, parts, verifier, tier)))
+    builder.add_node(
+        "check", _node(_check_node(blueprint, workdir, parts, verifier, tier, verify_all))
+    )
     builder.add_node("critic", _node(_critic_node(gateway, tier)))
     builder.add_node("accept", _node(_accept))
     builder.add_node("escalate", _node(_escalate))
@@ -348,6 +357,8 @@ def run_pending(
     only: int | None = None,
     max_tokens: int | None = None,
     verifier: Gateway | None = None,
+    verify_all: bool = False,
+    retry: list[str] | None = None,
 ) -> list[tuple[str, str]]:
     """Chạy đồ thị cho MỌI ô còn thiếu tệp dán. Trả về [(slot, outcome)].
 
@@ -371,9 +382,16 @@ def run_pending(
 
     from app.content.exam.writer import pending
 
-    graph = build(gateway, tier, blueprint, workdir, max_tokens, verifier)
+    graph = build(gateway, tier, blueprint, workdir, max_tokens, verifier, verify_all)
     out: list[tuple[str, str]] = []
-    slots = pending(blueprint, workdir)
+    # Ô `escalated` viết được rồi mới trượt kiểm, nên nó GIỮ tệp dán và
+    # `pending` vĩnh viễn không trả nó về. Vòng ngoài nêu tên chúng ở `retry`,
+    # để `pending` giữ nguyên nghĩa "cái gì còn thiếu" — trộn hai nghĩa vào một
+    # hàm là cách làm hỏng cơ chế phục hồi duy nhất của cả pipeline.
+    wanted = {slot.id for slot in pending(blueprint, workdir)} | set(retry or ())
+    # Duyệt theo thứ tự blueprint chứ không nối đuôi: `groupby` bên dưới dựa vào
+    # việc các ô cùng part nằm liền nhau.
+    slots = [slot for part in blueprint.parts for slot in part.slots if slot.id in wanted]
     if only is not None:
         slots = [s for s in slots if parts_of(blueprint, s.id) == only]
     if limit is not None:
@@ -446,6 +464,7 @@ def run_pending(
             f" · {(perf_counter() - part_started) / 60:.1f} phút{tail}",
             flush=True,
         )
+        print(f"           {gateway.tally.line()}", flush=True)
     return out
 
 

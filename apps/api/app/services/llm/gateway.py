@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import uuid
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -45,6 +45,43 @@ __all__ = ["Gateway"]
 
 
 @dataclass(slots=True)
+class Tally:
+    """Cộng dồn chi phí của MỘT lượt chạy, trong bộ nhớ.
+
+    Sổ `ai_interaction` đã có đủ số liệu, nhưng đọc lại nó để tổng kết một lượt
+    chạy phải lọc theo cửa sổ thời gian — và cửa sổ ấy sai ngay khi có hai lượt
+    chạy song song, hoặc khi Postgres không có mặt. Cộng ngay tại chỗ ghi thì
+    con số thuộc về đúng lượt chạy đã sinh ra nó.
+
+    `cost` là giá NIÊM YẾT của model, không phải số tiền tài khoản bị trừ: hạn
+    mức miễn phí là thuộc tính của tài khoản, còn bảng giá là của model.
+    """
+
+    calls: int = 0
+    errors: int = 0
+    prompt: int = 0
+    completion: int = 0
+    cost: Decimal = Decimal(0)
+
+    def add(self, usage: Usage, cost: Decimal, *, ok: bool) -> None:
+        self.calls += 1
+        if not ok:
+            self.errors += 1
+        self.prompt += usage.prompt
+        self.completion += usage.completion
+        self.cost += cost
+
+    def line(self) -> str:
+        """Một dòng tổng kết. Giá dưới một xu vẫn phải hiện, không làm tròn về 0."""
+        money = f"${self.cost:.4f}" if self.cost < Decimal("0.01") else f"${self.cost:.2f}"
+        hỏng = f" · {self.errors} hỏng" if self.errors else ""
+        return (
+            f"{self.calls} lượt gọi{hỏng} · "
+            f"{self.prompt:,} token vào + {self.completion:,} ra · ~{money}"
+        )
+
+
+@dataclass(slots=True)
 class Gateway:
     providers: Mapping[str, Provider]
     routes: Mapping[Tier, tuple[str, str]]
@@ -56,6 +93,9 @@ class Gateway:
     # phải truy vấn thẳng, cùng lý do `session_factory` là seam: nếu không, mọi
     # test chạm gateway đều phải dựng một hàng cấu hình.
     resolve_feature: Callable[[str], tuple[str, str, bool] | None] | None = None
+    # Bộ đếm của lượt chạy hiện tại. `field` chứ không giá trị trực tiếp: một
+    # dataclass mutable dùng chung giữa mọi Gateway là bug kinh điển.
+    tally: Tally = field(default_factory=Tally)
 
     def run(
         self,
@@ -275,6 +315,7 @@ class Gateway:
     ) -> None:
         provider = getattr(route, "provider", "?")
         model = getattr(route, "model", "?")
+        self.tally.add(usage, cost, ok=status == "ok")
         self._transcript(
             feature=feature,
             provider=provider,
