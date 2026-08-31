@@ -18,13 +18,43 @@ THE DOCUMENTS
   for an e-mail, a greeting and signature for a letter, and for a message chain
   a `Name [10:19 A.M.]` line above every message.
 - No real company names, no brand names.
-- When a set has more than one document, they must be ABOUT THE SAME AFFAIR and
-  at least one question must need BOTH of them: one document supplies a name,
-  date or figure, the other says what that means. A set whose every question can
-  be answered from one document is not a multi-document set. This binds
-  hardest when one document is a GRAPHIC: a question answered by reading the
-  table on its own leaves the prose as decoration, exactly as a question
-  answered by the prose alone leaves the table as decoration.
+- When a set has more than one document they must be ABOUT THE SAME AFFAIR, and
+  the set is only a multi-document set if at least one question cannot be
+  answered from any single document. Build that question deliberately; it does
+  not happen by itself.
+
+  HOW TO BUILD IT. Pick the fact the question asks for. Split what a reader needs
+  in order to reach it across two documents, so that:
+    · document A gives a DESCRIPTION, a CONDITION or a RULE — "the table nearest
+      the stage", "staff without a certificate attend the morning session", "the
+      category rated lowest for comfort";
+    · document B maps that onto the ANSWER — a seating plan whose cells are
+      positions, a form whose fields hold this employee's data, a table of
+      ratings by room type.
+  Document A must never name the answer, and document B must never restate
+  document A's rule. If both documents encode the same relation, no question can
+  need them both.
+
+  THE TEST. Before writing each question, cover one document. Can you still
+  answer? Cover the other. Can you still answer? For at least one question in the
+  set the answer must be no both times.
+
+  THREE WAYS THIS GOES WRONG, all seen in real output:
+    · The prose states the answer and the graphic repeats it. An e-mail saying
+      "the nominees are seated at the table closest to the stage" beside a plan
+      reading "Table 2: Award Nominees" — the plan is never opened. Fix: label
+      the plan by POSITION, and let the prose name the position, not the table.
+    · The question reads one cell out. "Which table is designated for Media
+      Partners according to the seating map?" is a graphic-only question wearing
+      a set's clothing. So is "what does the date 15/08/2025 indicate?" when the
+      form's own column is headed "Training Date".
+    · The question is opened with "Based on the e-mail and the schedule" while
+      only one of them is needed. The phrase is not what makes a question a
+      cross-reference; the missing half is.
+
+  Never ask two things in one question ("which area scored highest, AND what is
+  the price of a Deluxe room?"). That is two questions sharing one answer key,
+  and no option can be right for both halves.
 
 THE QUESTIONS
 - Four printed options each, exactly one correct.

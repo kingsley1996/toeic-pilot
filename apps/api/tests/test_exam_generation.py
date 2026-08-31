@@ -1471,8 +1471,199 @@ def test_each_slot_shape_gets_its_own_output_budget():
     assert max_tokens_for(3, plain) > 7739
     assert max_tokens_for(3, plain) < max_tokens_for(3, graphic)
 
-    # Part 7 dùng `passages`, không dùng `graphic` — bỏ sót nhánh đó thì mọi ô
-    # hình của Part 7 chạy với trần của ô thường.
+    # Part 7 là ngoại lệ, và ngoại lệ ấy THẮNG: trần của nhà cung cấp (340 giây,
+    # đo được) nhỏ hơn thứ một ô ba ngữ liệu muốn dùng, nên nó bị kẹp xuống dưới
+    # ngưỡng đó chứ không được hưởng `GRAPHIC_MAX_TOKENS` như ô hình Part 3/4.
+    from app.content.exam.writer import PART7_MAX_TOKENS
+
     part7 = bp.build_part7("s", "t", 20260822).parts[0].slots
     with_graphic = next(s for s in part7 if any(s.passages))
-    assert max_tokens_for(7, with_graphic) == GRAPHIC_MAX_TOKENS
+    assert max_tokens_for(7, with_graphic) == PART7_MAX_TOKENS
+    assert PART7_MAX_TOKENS < GRAPHIC_MAX_TOKENS
+
+
+def test_part_7_stays_under_the_provider_response_ceiling():
+    """Trần của NHÀ CUNG CẤP thắng trần của ta, và Part 7 là chỗ chạm nó.
+
+    Đo được ba lượt ngắt kết nối ở 340 154 / 340 144 / 340 465 ms — lệch 0,3
+    giây trên 340, tức là một trần cố định chứ không phải mạng chập chờn. Nó cắt
+    bất kể cửa sổ đọc của ta rộng bao nhiêu, nên trần SINH phải nằm dưới nó.
+
+    Ranh giới trùng khít hình dạng ô: mười ô một ngữ liệu đạt hết, `p7-11` (hai
+    ngữ liệu, năm câu) hỏng cả hai lần thử. Nội dung thật chỉ ~700 token, phần
+    vượt trần là suy luận — nên hạ trần cắt đúng thứ đang thừa.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam.writer import PROVIDER_CEILING_TOKENS, max_tokens_for
+
+    for slot in bp.build_part7("s", "t", 20260822).parts[0].slots:
+        budget = max_tokens_for(7, slot)
+        assert budget < PROVIDER_CEILING_TOKENS, f"{slot.id} vượt trần nhà cung cấp"
+        # Đủ biên: sinh xong ở nhịp CHẬM vẫn phải kịp, không chỉ ở nhịp trung bình.
+        assert budget <= 10000
+
+
+def test_the_part_7_rule_says_how_to_build_a_cross_reference_not_just_to_have_one():
+    """Luật "cần cả hai tài liệu" phải là CÁCH DỰNG, không phải lời khuyên.
+
+    Bản cũ chỉ nói "ít nhất một câu phải cần cả hai", và model tuân thủ đúng chữ
+    mà vi phạm trọn vẹn tinh thần: nó mở câu hỏi bằng "Based on the e-mail and
+    the seating map…" trong khi email đã nói thẳng đáp án. Bốn ô Part 7 sinh
+    thật đều hỏng như vậy.
+
+    Ba thứ dưới đây là thứ bản cũ thiếu: một thủ tục dựng, một phép thử tự làm
+    được, và các ca hỏng viết ra thành ví dụ — model bám ví dụ chặt hơn bám mô
+    tả, và đây là ví dụ hỏng THẬT chứ không phải ví dụ bịa.
+    """
+    from app.content.exam.prompts import SYSTEM_PART7 as rule
+
+    # Thủ tục: chia đôi thứ người đọc cần, mỗi tài liệu giữ một nửa.
+    assert "HOW TO BUILD IT" in rule
+    assert "DESCRIPTION" in rule and "maps that onto the ANSWER" in rule
+    # Cấm chiều ngược lại, thứ bản cũ không nói: tài liệu B không được nhắc lại
+    # luật của tài liệu A. Thiếu vế này thì hai tài liệu mã hoá cùng một quan hệ
+    # và không câu hỏi nào có thể cần cả hai.
+    assert "never restate" in rule
+
+    # Phép thử che tay: kiểm được mà không cần gọi model.
+    assert "cover one document" in rule.lower()
+
+    # Và cái bẫy tinh vi nhất: câu hỏi mặc áo "Based on both" mà chỉ cần một.
+    assert "Based on the e-mail and the schedule" in rule
+    assert "is not what makes a question a" in rule
+
+
+def test_every_set_part_hands_the_grader_its_source_material():
+    """Người chấm phải ĐỌC ĐƯỢC thứ nó đang chấm — cả BỐN part dạng cụm.
+
+    Cùng một lỗi đã xảy ra năm lần trong pipeline này, và lần nào cũng hỏng theo
+    kiểu tệ nhất: người chấm mù vẫn trả về một chữ cái, nên phép kiểm TRÔNG như
+    đang chạy. Part 7 là lần thứ năm — nó rơi xuống nhánh cuối của `_stem` và
+    chỉ nhận đề bài trần, nên đo ngày 2026-08-31 cho ra 50 cờ trên 54 câu, phần
+    lớn là "có 4 phương án điền được (ABCD)". Không cái nào là lỗi nội dung.
+
+    Kiểm cả bốn part một lượt chứ không riêng Part 7: bài học của năm lần trước
+    là part tiếp theo thêm vào cũng sẽ bị quên.
+    """
+    from app.content.exam.check import _stem
+
+    class _Q:
+        prompt_text = "What is the main purpose of the e-mail?"
+        options: list = []
+        script: list = []
+
+    marker = "NGUYÊN VĂN NGỮ LIỆU"
+    for part in (3, 4, 6, 7):
+        assert marker in _stem(_Q(), part, marker), f"part {part}: người chấm không thấy ngữ liệu"
+
+
+PART7_BLOCK = """[PASSAGE]
+From: coordinator@example.test
+To: guest@example.test
+Subject: Seating
+
+Dear Ms. Lee, your group has been assigned the table by the stage. Please
+arrive by six o'clock so that the photographer can take a group portrait.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To give seating and arrival details
+(B) To request a payment
+(C) To cancel an event
+(D) To offer a refund
+Answer: A
+Source: original
+[QUESTION]
+By what time should the guest arrive?
+(A) Five o'clock
+(B) Six o'clock
+(C) Seven o'clock
+(D) Eight o'clock
+Answer: B
+Source: original
+[QUESTION]
+What will happen before the event begins?
+(A) A portrait will be taken.
+(B) A meal will be served.
+(C) A speech will be given.
+(D) A prize will be awarded.
+Answer: A
+Source: original
+[QUESTION]
+Which zone is the group seated in?
+(A) Zone A
+(B) Zone B
+(C) Zone C
+(D) Zone D
+Answer: B
+Source: original
+[QUESTION]
+In the message, the word "assigned" is closest in meaning to
+(A) given
+(B) sold
+(C) refused
+(D) copied
+Answer: A
+Source: original
+"""
+
+
+def test_the_grader_of_a_part_7_set_can_read_its_graphics(tmp_path):
+    """Hình Part 7 phải tới tay người chấm, không chỉ được ĐẾM.
+
+    Lần thứ sáu của cùng một lỗi. Dòng nối hình vào `script` nằm trong nhánh
+    `slot.graphic`, tức chỉ Part 3/4; hình Part 7 sống ở `slot.passages` nên
+    khối của nó chỉ đếm tệp. Đo thật: sau khi cho người chấm đọc ngữ liệu văn
+    xuôi, số cờ Part 7 sụt từ 50 xuống 6 — và cả 6 cờ còn lại đều rơi vào câu
+    cần đọc HÌNH. Tương quan hoàn hảo đó là thứ chỉ ra chỗ hỏng còn lại.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam.check import _check_set
+
+    plan = bp.build_part7("s", "t", 20260822)
+    slot = next(s for s in plan.parts[0].slots if any(s.passages))
+    (tmp_path / "graphics").mkdir()
+    (tmp_path / "graphics" / f"{slot.id}.txt").write_text(
+        "kind: map\nSƠ ĐỒ MỐC\nZone A: lối vào | Zone B: sân khấu\n"
+    )
+
+    seen_prompts: list[str] = []
+
+    class _Recording:
+        tally = type("T", (), {"line": lambda self: ""})()
+
+        def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+            seen_prompts.append(request.user)
+            return _result("A")
+
+    _check_set(slot, PART7_BLOCK, 7, plan, _Recording(), None, False, {}, tmp_path)
+    assert seen_prompts, "người chấm chưa được gọi lần nào"
+    assert "SƠ ĐỒ MỐC" in seen_prompts[0], "người chấm không thấy hình"
+
+
+def test_balance_counts_questions_per_slot_instead_of_multiplying(tmp_path):
+    """Part 7 có số câu KHÁC NHAU từng ô, nên đích phải cộng dồn chứ không nhân.
+
+    `QUESTIONS_PER_SET` không có hàng cho Part 7, nên `get(part, 1)` trả về 1 và
+    mỗi ô chỉ nhận MỘT đích trong khi nó có tới năm câu. Bốn câu còn lại giữ
+    nguyên chữ cái model tự chọn.
+
+    Đo thật trên tp-form-08: sáu part khớp đích chính xác, riêng Part 7 ra
+    A=24/54 (44%) so với đích A=13. Lệch đó không phép kiểm nào chặn — ngưỡng
+    `check_answer_spread` tính trên CẢ đề nên 44% ở một part bị pha loãng thành
+    30% và lọt qua.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam.balance import letters_for, plan_targets
+    from app.content.exam.blueprint import QUESTIONS_PER_SET
+
+    slots = bp.build_part7("s", "t", 20260822).parts[0].slots
+    counts = [len(s.question_types) or QUESTIONS_PER_SET.get(7, 1) for s in slots]
+
+    # Nhân với hằng số cho 15 đích; cộng dồn cho 54 — đúng bằng số câu Part 7.
+    assert len(slots) * QUESTIONS_PER_SET.get(7, 1) == 15
+    assert sum(counts) == 54
+    assert len(plan_targets(sum(counts), 20260822, letters_for(7))) == 54
+
+    # Và các ô KHÔNG cùng số câu, thứ làm phép nhân sai ngay từ đầu.
+    assert len(set(counts)) > 1

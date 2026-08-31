@@ -60,6 +60,10 @@ _RATES: dict[tuple[str, str], tuple[Decimal, Decimal, Decimal | None]] = {
     # họ; ở đây `-free` mới chỉ là một cái tên, và một model tính tiền đặt tên
     # có chữ đó sẽ lọt qua luật mà không ai thấy.
     ("tokenrouter", "qwen/qwen3.8-max-free"): (Decimal("0"), Decimal("0"), Decimal("0")),
+    # Tên model KHÁC hẳn tên ở bai: `z-ai/glm-5.3-free`, không phải `glm-5.3-flash`.
+    # Hỏi `GET /v1/models` chứ không suy từ tên ở nhà cung cấp khác — id model là
+    # của HỌ, và đoán sai thì lượt gọi hỏng với 404 chẳng nói gì về nguyên nhân.
+    ("tokenrouter", "z-ai/glm-5.3-free"): (Decimal("0"), Decimal("0"), Decimal("0")),
     # Groq — giá công bố ở console.groq.com/docs/models, tra ngày 2026-08-22.
     # Groq có gói dùng thử miễn phí, nhưng giá ghi ở đây là giá THẬT của model,
     # cùng lý do đã ghi cho Gemini: gói miễn phí là thuộc tính của tài khoản chứ

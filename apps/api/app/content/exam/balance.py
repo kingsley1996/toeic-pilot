@@ -144,13 +144,26 @@ def balance(blueprint: Blueprint, workdir: Path, only: int | None = None) -> dic
         # Part 3/4 có BA câu trong một ô, nên số đích phải đếm theo CÂU chứ không
         # theo ô — đếm theo ô thì mỗi cụm chỉ nhận một chữ cái và ba câu của nó
         # cùng đáp án, thứ đọc ra ngay là máy làm.
-        per_slot = QUESTIONS_PER_SET.get(part.part, 1)
-        targets = plan_targets(len(ordered) * per_slot, blueprint.seed, letters_for(part.part))
-        for index, slot in enumerate(ordered):
+        # Đếm câu theo TỪNG Ô, không nhân với một hằng số. Part 7 có số câu khác
+        # nhau từng ô (2 tới 5) nên nó không có hàng trong `QUESTIONS_PER_SET`,
+        # `get(...)` trả về 1, và mỗi ô chỉ nhận MỘT đích trong khi nó có tới năm
+        # câu — bốn câu còn lại giữ nguyên chữ cái model tự chọn. Đo được trên
+        # tp-form-08: 24 trên 54 câu Part 7 là (A), tức 44%, trong khi sáu part
+        # kia khớp đích chính xác. Cùng cái bẫy mà việc đánh số câu Part 7 đã
+        # mắc một lần: cộng dồn, đừng nhân.
+        counts = [
+            len(slot.question_types) or QUESTIONS_PER_SET.get(part.part, 1) for slot in ordered
+        ]
+        targets = plan_targets(sum(counts), blueprint.seed, letters_for(part.part))
+        at = 0
+        for slot, per_slot in zip(ordered, counts, strict=True):
             path = paste_path(workdir, slot)
+            share = targets[at : at + per_slot]
+            # Tiến con trỏ KỂ CẢ khi thiếu tệp: đích gắn với VỊ TRÍ của ô, nên bỏ
+            # qua mà không tiến sẽ dịch đích của mọi ô sau nó.
+            at += per_slot
             if not path.exists():
                 continue
-            share = targets[index * per_slot : (index + 1) * per_slot]
             updated = rewrite_all(path.read_text(), share)
             path.write_text(updated.rstrip() + "\n")
             for found in _ANSWER.finditer(updated):

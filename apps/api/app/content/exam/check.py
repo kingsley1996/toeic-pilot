@@ -212,10 +212,17 @@ def _stem(question: ParsedQuestion, part: int, context: str) -> str:
     if part == 2:
         spoken = [turn.text for turn in question.script]
         return spoken[0] if spoken else ""
-    if part in (3, 4, 6) and context.strip():
+    if part in (3, 4, 6, 7) and context.strip():
         # Part 6 cũng cần cả NGỮ LIỆU: đề bài của nó chỉ là nhãn `Blank (N)`,
         # nên gửi mỗi thế là hỏi "điền gì vào chỗ trống thứ nhất" mà không cho
         # xem đoạn văn nào. Đây là lần thứ TƯ cùng một lỗi trong pipeline này.
+        #
+        # …và Part 7 là lần thứ NĂM. Nó rơi xuống nhánh cuối và người chấm chỉ
+        # nhận được đề bài trần: "What is the main purpose of the e-mail?" mà
+        # không có email nào. Đo thật ngày 2026-08-31: 50 cờ trên 54 câu, phần
+        # lớn là "có 4 phương án điền được (ABCD)" — toàn bộ là NHIỄU ĐO, không
+        # một cái nào là lỗi nội dung. Một người chấm mù vẫn trả về một chữ cái,
+        # nên phép kiểm TRÔNG như đang chạy.
         return f"{context.strip()}\n\n{question.prompt_text or ''}"
     return question.prompt_text or ""
 
@@ -814,6 +821,19 @@ def _check_set(
             )
             if have != wanted_graphics:
                 shared = [*shared, f"cụm cần {wanted_graphics} hình, có {have}"]
+            # …và ĐƯA NỘI DUNG của chúng cho người chấm. Dòng nối hình vào
+            # `script` ở trên nằm trong nhánh `slot.graphic`, tức chỉ Part 3/4;
+            # hình Part 7 sống ở `slot.passages` nên khối này trước đây chỉ ĐẾM
+            # tệp. Hệ quả: mọi câu Part 7 hỏi về bảng đều bị chấm mà không có
+            # bảng — lần thứ SÁU của cùng một lỗi, và lần nào cũng lộ ra thành
+            # "cả bốn phương án đều dùng được" chứ không thành một lỗi đọc được.
+            for found_path in sorted(
+                [
+                    *(workdir / "graphics").glob(f"{slot.id}.txt"),
+                    *(workdir / "graphics").glob(f"{slot.id}-*.txt"),
+                ]
+            ):
+                script = f"{script}\n\n{_graphic_as_text(found_path)}"
     # Hội thoại trùng là lỗi ở tầng ĐỀ và đáng nói RIÊNG, không nấp trong một
     # thông báo về đề bài: ba câu vẫn khác nhau, chỉ có đoạn thoại là lặp lại,
     # và người học nghe lại đúng một đoạn hai lần trong cùng một đề.

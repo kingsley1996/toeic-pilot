@@ -263,9 +263,23 @@ DEFAULT_MAX_TOKENS = 6000
 _MAX_TOKENS_BY_PART = {1: 10000, 2: 10000, 3: 14000, 4: 14000, 5: 12000, 6: 16000, 7: 20000}
 GRAPHIC_MAX_TOKENS = 24000
 
+# Trần phản hồi của NHÀ CUNG CẤP, đo chứ không tra tài liệu: ba lượt ngắt kết nối
+# ở 340 154, 340 144 và 340 465 ms — lệch 0,3 giây trên 340. Nó cắt bất kể cửa sổ
+# đọc của ta rộng bao nhiêu, nên mọi lượt gọi phải sinh XONG trước nó. Ở nhịp
+# ~38 token/giây đo được, 340 giây là khoảng 13 000 token.
+PROVIDER_CEILING_TOKENS = 13000
+
+# Part 7 là part duy nhất chạm trần đó, và ranh giới trùng khít với hình dạng ô:
+# mười ô MỘT ngữ liệu (`p7-01`…`p7-10`) đạt hết, còn `p7-11` — hai ngữ liệu, năm
+# câu — ngắt kết nối cả hai lần thử. Nội dung thật của nó chỉ ~700 token; phần
+# vượt trần là suy luận, nên hạ trần cắt đúng thứ đang thừa.
+PART7_MAX_TOKENS = 10000
+
 
 def max_tokens_for(part: int, slot: QuestionSlot) -> int:
     """Trần đầu ra hợp lý cho ô này. `--max-tokens` truyền tay vẫn thắng."""
+    if part == 7:
+        return PART7_MAX_TOKENS
     if slot.graphic or any(slot.passages):
         return GRAPHIC_MAX_TOKENS
     return _MAX_TOKENS_BY_PART.get(part, DEFAULT_MAX_TOKENS)
