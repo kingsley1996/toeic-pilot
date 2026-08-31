@@ -840,6 +840,25 @@ function StimulusBlock({
           </audio>
         )}
 
+        {block.transcript.length > 0 && (
+          /* Đóng sẵn, không mở sẵn. Lời thoại về được nghĩa là người học đã trả
+             lời xong, nhưng họ có thể muốn nghe lại lần nữa trước khi đọc — mở
+             sẵn thì mắt đọc trước tai, và lần nghe lại đó mất giá trị. */
+          <details className="rounded border border-rule bg-panel">
+            <summary className="cursor-pointer select-none px-4 py-2 text-small font-medium">
+              Full transcript
+            </summary>
+            <div className="space-y-2 border-t border-rule px-4 py-3">
+              {block.transcript.map((turn, index) => (
+                <p key={index} className="text-small leading-relaxed">
+                  <span className="text-ink-faint">{turn.speaker}: </span>
+                  {turn.text}
+                </p>
+              ))}
+            </div>
+          </details>
+        )}
+
         {block.passages.map((passage, index) => (
           <article key={index} className="rounded border border-rule bg-panel p-4">
             {passage.text && (

@@ -7094,6 +7094,14 @@
               }
             ],
             "title": "Set Title"
+          },
+          "transcript": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TranscriptTurn"
+            },
+            "title": "Transcript",
+            "type": "array"
           }
         },
         "required": [
@@ -8842,6 +8850,25 @@
           }
         },
         "title": "TopicUpdate",
+        "type": "object"
+      },
+      "TranscriptTurn": {
+        "description": "Một lượt nói trong lời thoại phần Nghe.\n\nGiữ theo LƯỢT chứ không nối thành một chuỗi: một hội thoại Part 3 có hai tới\nba người, và \"ai nói câu nào\" chính là thứ phần lớn câu hỏi Part 3 hỏi tới.\nNối phẳng là vứt đi đúng thông tin người học cần khi đọc lại.\n\n`speaker` là nhãn để HIỆN (\"Man\", \"Woman 2\"), suy từ tên giọng logic ở máy\nchủ. Gửi thẳng `uk_female_1` xuống là bắt giao diện học một quy ước đặt tên\ncủa phía offline, và quy ước đó đổi thì giao diện hỏng lặng lẽ.",
+        "properties": {
+          "speaker": {
+            "title": "Speaker",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "speaker",
+          "text"
+        ],
+        "title": "TranscriptTurn",
         "type": "object"
       },
       "TurnDraft": {

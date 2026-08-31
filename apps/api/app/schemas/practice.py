@@ -149,6 +149,22 @@ class PassagePublic(BaseModel):
     image_license: str | None
 
 
+class TranscriptTurn(BaseModel):
+    """Một lượt nói trong lời thoại phần Nghe.
+
+    Giữ theo LƯỢT chứ không nối thành một chuỗi: một hội thoại Part 3 có hai tới
+    ba người, và "ai nói câu nào" chính là thứ phần lớn câu hỏi Part 3 hỏi tới.
+    Nối phẳng là vứt đi đúng thông tin người học cần khi đọc lại.
+
+    `speaker` là nhãn để HIỆN ("Man", "Woman 2"), suy từ tên giọng logic ở máy
+    chủ. Gửi thẳng `uk_female_1` xuống là bắt giao diện học một quy ước đặt tên
+    của phía offline, và quy ước đó đổi thì giao diện hỏng lặng lẽ.
+    """
+
+    speaker: str
+    text: str
+
+
 class QuestionPublic(BaseModel):
     """Một câu như người làm bài nhìn thấy.
 
@@ -187,6 +203,12 @@ class QuestionPublic(BaseModel):
     # Chỉ có ở chế độ Luyện tập, hoặc sau khi đã nộp.
     correct_option_id: str | None = None
     explanation: str | None = None
+    # Lời thoại phần Nghe, cùng cổng với `correct_option_id` — xem `attempt.py`.
+    #
+    # Với Part 3 và 4 nó thuộc về CẢ CỤM chứ không một câu, nên nó chỉ về khi
+    # MỌI câu của cụm đã được trả lời: lộ hội thoại sau câu đầu là lộ luôn đáp
+    # án hai câu sau, và cụm mất hai phần ba giá trị của nó.
+    transcript: list[TranscriptTurn] = []
 
 
 class AttemptPartProgress(BaseModel):

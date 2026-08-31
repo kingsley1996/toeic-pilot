@@ -51,6 +51,7 @@ from app.schemas.practice import (
     OptionPublic,
     PassagePublic,
     QuestionPublic,
+    TranscriptTurn,
     section_of,
 )
 from app.services import progression, ruby
@@ -123,6 +124,45 @@ def _finalise(db: Session, attempt: Attempt, new_status: str) -> None:
             # Thiếu bảng quy đổi thì để trống, KHÔNG nội suy. Giao diện nói ra
             # lý do; một điểm sai âm thầm thì không ai phát hiện được.
             pass
+
+
+def _speaker_labels(script: list[dict[str, str]]) -> dict[str, str]:
+    """Tên giọng logic -> nhãn để hiện, theo thứ tự XUẤT HIỆN trong lời thoại.
+
+    `uk_female_1` là quy ước của phía offline và vô nghĩa với người học. Giới
+    tính suy từ đoạn giữa; đánh số chỉ khi có TỪ HAI giọng cùng giới trong một
+    lời thoại, vì "Man 1" khi chỉ có một người đàn ông đọc ra như thiếu mất
+    người thứ hai.
+    """
+    order: list[str] = []
+    for turn in script:
+        voice = str(turn.get("voice", ""))
+        if voice and voice not in order:
+            order.append(voice)
+    by_gender: dict[str, list[str]] = {}
+    for voice in order:
+        parts = voice.split("_")
+        gender = "Woman" if len(parts) > 1 and parts[1] == "female" else "Man"
+        by_gender.setdefault(gender, []).append(voice)
+    labels: dict[str, str] = {}
+    for gender, voices in by_gender.items():
+        for index, voice in enumerate(voices, start=1):
+            labels[voice] = gender if len(voices) == 1 else f"{gender} {index}"
+    return labels
+
+
+def _transcript(script: list[dict[str, str]] | None) -> list[TranscriptTurn]:
+    if not script:
+        return []
+    labels = _speaker_labels(script)
+    return [
+        TranscriptTurn(
+            speaker=labels.get(str(turn.get("voice", "")), "Speaker"),
+            text=str(turn.get("text", "")),
+        )
+        for turn in script
+        if turn.get("text")
+    ]
 
 
 def _correct_option_ids(db: Session, question_ids: list[uuid.UUID]) -> dict[uuid.UUID, uuid.UUID]:
@@ -267,6 +307,19 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     questions: list[QuestionPublic] = []
     seen_sets: set[uuid.UUID] = set()
 
+    # Lời thoại Part 3/4 thuộc về CẢ CỤM, còn cổng lộ thì theo từng câu. Lộ hội
+    # thoại ngay sau câu đầu là lộ luôn đáp án hai câu sau — cụm mất hai phần ba
+    # giá trị của nó. Nên với cụm, điều kiện là MỌI câu đã được trả lời.
+    answered_per_set: dict[uuid.UUID, int] = {}
+    total_per_set: dict[uuid.UUID, int] = {}
+    for _, candidate in rows:
+        if candidate.set_id is None:
+            continue
+        total_per_set[candidate.set_id] = total_per_set.get(candidate.set_id, 0) + 1
+        chosen = answered_by_question.get(candidate.id)
+        if chosen is not None and chosen.selected_option_id is not None:
+            answered_per_set[candidate.set_id] = answered_per_set.get(candidate.set_id, 0) + 1
+
     # Số câu đọc từ đề, KHÔNG đánh lại từ 1. Luyện riêng Part 5 của một đề đầy
     # đủ phải hiện 101-130, vì đó là con số người học đọc thấy trong mọi tài
     # liệu — đánh lại từ 1 làm họ không đối chiếu được với sách.
@@ -286,6 +339,20 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         elif first_of_set and stimulus is not None and stimulus.audio_asset_id is not None:
             audio_asset = audio_by_id.get(stimulus.audio_asset_id)
         image_asset = image_by_id.get(question.image_asset_id) if question.image_asset_id else None
+
+        # Part 1/2 giữ lời thoại trên CÂU; Part 3/4 trên CỤM, và chỉ câu đầu của
+        # cụm mang nó — cùng lý do với `passages`, tránh gửi ba lần một đoạn.
+        transcript: list[TranscriptTurn] = []
+        if question.set_id is None:
+            if reveal:
+                transcript = _transcript(question.audio_script)
+        elif first_of_set and stimulus is not None:
+            whole_set_done = submitted or (
+                practice
+                and answered_per_set.get(question.set_id, 0) == total_per_set.get(question.set_id)
+            )
+            if whole_set_done:
+                transcript = _transcript(stimulus.audio_script)
 
         questions.append(
             QuestionPublic(
@@ -333,6 +400,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
                     str(correct_ids[question.id]) if reveal and question.id in correct_ids else None
                 ),
                 explanation=question.explanation if reveal else None,
+                transcript=transcript,
             )
         )
 

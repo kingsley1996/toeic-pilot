@@ -16,6 +16,9 @@ export type Block = {
   imageAlt: string | null;
   imageCredit: string | null;
   passages: PassagePublic[];
+  /** Lời thoại phần Nghe. Rỗng khi máy chủ chưa lộ — xem quy tắc 3 ở trang làm
+   *  bài: giao diện không tự quyết được lộ hay không, nó chỉ hiện thứ đã nhận. */
+  transcript: QuestionPublic["transcript"];
   questions: QuestionPublic[];
   /** Có gì để hiện ở cột trái không. Part 2 và 5 thì không. */
   hasStimulus: boolean;
@@ -31,6 +34,12 @@ export function groupQuestions(questions: QuestionPublic[]): Block[] {
     // dùng để định vị mình đang ở đâu.
     if (question.set_id && previous && previous.key === question.set_id) {
       previous.questions.push(question);
+      // Lời thoại đi kèm câu ĐẦU của cụm, nên nhánh gộp này thường không thấy
+      // nó. Vẫn nhận ở đây phòng khi máy chủ đổi chỗ gắn: bỏ qua thì lời thoại
+      // biến mất mà không có gì báo.
+      if (question.transcript?.length && !previous.transcript.length) {
+        previous.transcript = question.transcript;
+      }
       continue;
     }
 
@@ -45,6 +54,7 @@ export function groupQuestions(questions: QuestionPublic[]): Block[] {
       imageAlt: question.image_alt,
       imageCredit: credit(question.image_attribution, question.image_license),
       passages,
+      transcript: question.transcript ?? [],
       questions: [question],
       hasStimulus: Boolean(audioUrl || imageUrl || passages.length),
     });

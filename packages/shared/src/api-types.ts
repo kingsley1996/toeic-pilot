@@ -6126,6 +6126,11 @@ export interface components {
             set_id: string | null;
             /** Set Title */
             set_title: string | null;
+            /**
+             * Transcript
+             * @default []
+             */
+            transcript: components["schemas"]["TranscriptTurn"][];
         };
         /**
          * RecallCheck
@@ -6815,6 +6820,24 @@ export interface components {
             slug?: string | null;
             /** Status */
             status?: string | null;
+        };
+        /**
+         * TranscriptTurn
+         * @description Một lượt nói trong lời thoại phần Nghe.
+         *
+         *     Giữ theo LƯỢT chứ không nối thành một chuỗi: một hội thoại Part 3 có hai tới
+         *     ba người, và "ai nói câu nào" chính là thứ phần lớn câu hỏi Part 3 hỏi tới.
+         *     Nối phẳng là vứt đi đúng thông tin người học cần khi đọc lại.
+         *
+         *     `speaker` là nhãn để HIỆN ("Man", "Woman 2"), suy từ tên giọng logic ở máy
+         *     chủ. Gửi thẳng `uk_female_1` xuống là bắt giao diện học một quy ước đặt tên
+         *     của phía offline, và quy ước đó đổi thì giao diện hỏng lặng lẽ.
+         */
+        TranscriptTurn: {
+            /** Speaker */
+            speaker: string;
+            /** Text */
+            text: string;
         };
         /** TurnDraft */
         TurnDraft: {

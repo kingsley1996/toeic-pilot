@@ -550,3 +550,163 @@ def test_a_full_form_gets_the_exam_s_own_time_limit(
         headers=headers,
     )
     assert chosen.json()["time_limit_seconds"] == 3600
+
+
+PASTE_PART_3_TWO = """[SCRIPT] Hỏi lịch giao hàng
+voice: us_female_1
+Hi, I'm calling about the chairs we ordered last Monday.
+voice: us_male_1
+Let me check. They shipped yesterday and arrive on Friday.
+
+[QUESTION]
+What is the woman calling about?
+(A) An order she placed
+(B) A billing error
+(C) A product return
+(D) A price change
+answer: A
+source: original
+
+[QUESTION]
+When will the order arrive?
+(A) On Monday
+(B) On Tuesday
+(C) On Friday
+(D) On Sunday
+answer: C
+source: original
+
+[QUESTION]
+What will the man most likely do next?
+(A) Check the shipping record
+(B) Cancel the whole order
+(C) Issue a refund notice
+(D) Visit the warehouse
+answer: A
+source: original
+"""
+
+
+def _attach_set_audio(client: TestClient, admin: dict[str, str], db_session, slug: str) -> None:
+    """Gắn một bản thu cho cụm, vì cổng publish của Part 3 đòi có audio.
+
+    Đúng ra nó phải đòi: xuất bản một câu nghe chưa có bản thu là đưa ra một câu
+    không ai trả lời được. Test này cần đi qua cổng đó chứ không vòng qua nó.
+    """
+    from app.models.audio import AudioAsset
+
+    clip = AudioAsset(
+        storage_key=f"audio/xx/{slug}.mp3",
+        source_hash=slug.ljust(64, "0")[:64],
+        voice="us_female_1",
+        accent="en-US",
+        engine="uploaded",
+        engine_version="-",
+        duration_ms=9000,
+        size_bytes=100,
+    )
+    db_session.add(clip)
+    db_session.commit()
+    for group in client.get(f"/api/v1/admin/tests/{slug}/sets", headers=admin).json():
+        client.post(
+            f"/api/v1/admin/question-sets/{group['id']}/audio",
+            json={"asset_id": str(clip.id)},
+            headers=admin,
+        )
+
+
+def test_a_conversation_transcript_waits_for_the_whole_set(
+    client: TestClient, auth, db_session
+) -> None:
+    """Lời thoại Part 3 thuộc về CẢ CỤM, nên nó chỉ về khi cụm đã trả lời hết.
+
+    Cổng lộ đáp án là theo TỪNG CÂU, và dùng thẳng cổng đó cho lời thoại là một
+    lỗ có thật: trả lời câu đầu rồi nhận nguyên hội thoại là nhận luôn đáp án
+    hai câu sau, và cụm mất hai phần ba giá trị của nó.
+
+    Gác ở máy chủ chứ không ở giao diện — giấu bằng CSS vẫn để nguyên văn nằm
+    trong payload, mở tab Network là đọc được.
+    """
+    admin = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "nghe-luyen", "title": "Nghe", "kind": "mini"},
+        headers=admin,
+    )
+    add_part(client, admin, "nghe-luyen", 3, PASTE_PART_3_TWO)
+    _attach_set_audio(client, admin, db_session, "nghe-luyen")
+    for question in client.get("/api/v1/admin/tests/nghe-luyen/questions", headers=admin).json():
+        published = client.post(f"/api/v1/admin/questions/{question['id']}/publish", headers=admin)
+        assert published.status_code == 200, published.text
+    opened = client.post("/api/v1/admin/tests/nghe-luyen/publish", headers=admin)
+    assert opened.status_code == 200, opened.text
+
+    learner = auth("learner")
+    started = client.post(
+        "/api/v1/attempts",
+        json={"test_slug": "nghe-luyen", "parts": [], "review_mode": "practice"},
+        headers=learner,
+    )
+    assert started.status_code == 201, started.text
+    state = started.json()
+    first, second, third = state["questions"]
+    assert all(q["transcript"] == [] for q in state["questions"])
+
+    # Trả lời câu ĐẦU: đáp án của nó lộ ra, nhưng lời thoại thì CHƯA.
+    after = client.patch(
+        f"/api/v1/attempts/{state['id']}/questions/{first['id']}",
+        json={"selected_option_id": first["options"][0]["id"]},
+        headers=learner,
+    ).json()
+    opened = next(q for q in after["questions"] if q["id"] == first["id"])
+    assert opened["correct_option_id"] is not None
+    assert opened["transcript"] == [], "lộ hội thoại sớm là lộ luôn đáp án câu sau"
+
+    # Trả lời nốt câu còn lại: giờ mới về, và chỉ trên câu ĐẦU của cụm.
+    for remaining in (second, third):
+        done = client.patch(
+            f"/api/v1/attempts/{state['id']}/questions/{remaining['id']}",
+            json={"selected_option_id": remaining["options"][0]["id"]},
+            headers=learner,
+        ).json()
+    lead = next(q for q in done["questions"] if q["id"] == first["id"])
+    assert [t["speaker"] for t in lead["transcript"]] == ["Woman", "Man"]
+    assert "chairs we ordered" in lead["transcript"][0]["text"]
+    tail = next(q for q in done["questions"] if q["id"] == second["id"])
+    assert tail["transcript"] == [], "lời thoại chỉ đi kèm câu đầu của cụm"
+
+
+def test_exam_mode_never_sends_a_transcript(client: TestClient, auth, db_session) -> None:
+    """Chế độ Luyện thi không lộ gì cả, kể cả sau khi đã trả lời."""
+    admin = auth("admin")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "nghe-thi", "title": "Nghe", "kind": "mini"},
+        headers=admin,
+    )
+    add_part(client, admin, "nghe-thi", 3, PASTE_PART_3_TWO)
+    _attach_set_audio(client, admin, db_session, "nghe-thi")
+    for question in client.get("/api/v1/admin/tests/nghe-thi/questions", headers=admin).json():
+        client.post(f"/api/v1/admin/questions/{question['id']}/publish", headers=admin)
+    client.post("/api/v1/admin/tests/nghe-thi/publish", headers=admin)
+
+    learner = auth("learner")
+    state = client.post(
+        "/api/v1/attempts",
+        json={"test_slug": "nghe-thi", "parts": [], "review_mode": "exam"},
+        headers=learner,
+    ).json()
+    for question in state["questions"]:
+        client.patch(
+            f"/api/v1/attempts/{state['id']}/questions/{question['id']}",
+            json={"selected_option_id": question["options"][0]["id"]},
+            headers=learner,
+        )
+    answered = client.get(f"/api/v1/attempts/{state['id']}", headers=learner).json()
+    assert all(q["transcript"] == [] for q in answered["questions"])
+
+    # Nộp rồi thì lộ — không còn gì để đo.
+    client.post(f"/api/v1/attempts/{state['id']}/submit", headers=learner)
+    submitted = client.get(f"/api/v1/attempts/{state['id']}", headers=learner).json()
+    lead = submitted["questions"][0]
+    assert lead["transcript"], "nộp xong phải có lời thoại để xem lại"
