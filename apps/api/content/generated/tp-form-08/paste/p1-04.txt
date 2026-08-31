@@ -1,5 +1,5 @@
 [QUESTION]
-voice: uk_male_1
+voice: au_male_1
 (A) A woman is adjusting the projector at the front.
 (B) Some chairs have been arranged in rows.
 (C) The screen is being taken down from the wall.

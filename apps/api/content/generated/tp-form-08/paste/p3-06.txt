@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: ca_female_1
+voice: uk_female_1
 Hi, I'd like to send this package to Australia. How much will the postage be?
 voice: ca_male_1
 Let me weigh it for you. By standard airmail, that comes to eighteen dollars.
-voice: ca_female_1
+voice: uk_female_1
 Okay. And how long does airmail usually take to arrive?
 voice: ca_male_1
 Normally seven to ten business days. If you need it there faster, we also offer express service, which takes three days.
-voice: ca_female_1
+voice: uk_female_1
 Seven to ten days is fine for us. Could you add insurance for the contents, please?
 voice: ca_male_1
 No problem. That's an extra three dollars. Here's your receipt.

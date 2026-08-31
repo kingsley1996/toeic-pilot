@@ -1,15 +1,15 @@
 [SCRIPT]
 voice: ca_male_1
 Excuse me, I just purchased a laptop, and I’d like to know more about the extended warranty you mentioned at the register.
-voice: ca_female_1
+voice: uk_female_1
 Certainly. The manufacturer covers defects for one year, but our extended plan adds two additional years for hardware repairs.
 voice: ca_male_1
 That sounds very practical. What is the price for that package, and does it include coverage for accidental spills?
-voice: ca_female_1
+voice: uk_female_1
 The total cost is forty-five dollars. Unfortunately, it excludes accidental spills, but it does provide free software updates and priority phone support.
 voice: ca_male_1
 I appreciate the information. I would like to purchase the extended warranty, but I will decline the software updates.
-voice: ca_female_1
+voice: uk_female_1
 No problem. I will process the warranty fee on your card now. Please follow me to the service desk to complete the registration.
 
 [QUESTION]

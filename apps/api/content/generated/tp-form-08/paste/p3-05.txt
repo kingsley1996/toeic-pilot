@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: au_female_1
+voice: us_female_1
 Hi, come in. I've just approved your leave request for next month.
 voice: au_male_1
 Oh, wonderful. I'm visiting my parents from the tenth to the twelfth.
-voice: au_female_1
+voice: us_female_1
 Good. Just remember you'll need someone to cover your shift at the reception desk.
 voice: au_male_1
 I asked Daniel first, but he's attending a training course that week.
-voice: au_female_1
+voice: us_female_1
 Then try Priya in accounting. She's been asking for extra hours.
 voice: au_male_1
 Perfect. I'll email her this afternoon and confirm the arrangement with you tomorrow.

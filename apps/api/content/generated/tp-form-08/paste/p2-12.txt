@@ -1,7 +1,7 @@
 [QUESTION]
-voice: uk_male_1
+voice: ca_male_1
 My flight got delayed, so I missed the training session.
-voice: au_female_1
+voice: us_female_1
 (A) Don't worry, there's a make-up class next week.
 (B) The flight to Singapore leaves at six sharp.
 (C) It's supposed to keep raining all week.

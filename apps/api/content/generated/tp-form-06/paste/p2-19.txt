@@ -1,7 +1,7 @@
 [QUESTION]
 voice: us_female_1
 Where should I send the final contract?
-voice: uk_male_1
+voice: ca_male_1
 (A) Yes, I already sent it.
 (B) To their headquarters in London.
 (C) By Friday afternoon, I think.

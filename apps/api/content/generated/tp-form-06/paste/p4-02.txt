@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Good afternoon, tenants and visitors. This is an announcement from the management of this office building about this weekend's elevator maintenance. To keep the building safe, the two passenger elevators on the east side will be stopped for service from nine a.m. to four p.m. on Saturday. During that time, please use the west-side elevators or the stairs. The freight elevator will remain available for moving large items, but it may be slower than usual. Maintenance workers will place signs near each elevator lobby before the work begins. If the service finishes early, the east-side elevators will be returned to normal use, and another announcement will be made. We are sorry for any inconvenience and thank you for your patience. Please plan extra time for moving between floors this Saturday.
 
 [QUESTION]

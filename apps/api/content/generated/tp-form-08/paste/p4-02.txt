@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Attention, all passengers on flight one-eight-seven to Tokyo. We regret to inform you that this flight has been delayed due to severe weather conditions over the Pacific. The flight was originally scheduled to depart at three fifteen this afternoon, but the new departure time is now six forty-five. Please continue to check the flight information boards throughout the terminal, as departure times may change again. Passengers who have already checked in their luggage may remain in the gate area. Refreshments will be provided at gate forty-two. We apologize for any inconvenience this delay may cause, and we thank you for your patience.
 
 [QUESTION]

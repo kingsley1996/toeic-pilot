@@ -1,7 +1,7 @@
 [QUESTION]
-voice: ca_female_1
+voice: uk_female_1
 Do you have this novel in paperback?
-voice: us_male_1
+voice: au_male_1
 (A) The novel was written about ten years ago.
 (B) I'm afraid we only carry the hardcover.
 (C) Sure, I'll wrap it in a paper bag for you.

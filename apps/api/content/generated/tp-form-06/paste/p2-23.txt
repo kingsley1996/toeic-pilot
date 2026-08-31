@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: ca_male_1
 When is the quarterly financial report due?
 voice: uk_female_1
 (A) Yes, the numbers were checked twice.

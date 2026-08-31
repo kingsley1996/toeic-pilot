@@ -1250,11 +1250,19 @@ Trạng thái trước: 54 ô có lời thoại, **10/13 hội thoại Part 3 c�
 
 **Bài học vận hành: phải `docker compose stop worker` trước khi chạy backfill bằng tay.** Lần chạy đầu chết vì `DeadlockDetected` — `tts_worker` trong container đang quét cùng lúc và hai bên khoá chéo nhau trên `question`. Tệ hơn nữa là nó im lặng: lệnh chạy qua `| tail` nên exit code báo về là của `tail`, và stdout bị đệm khối khi qua pipe nên traceback (stderr) in ra TRƯỚC các dòng "synthesised", làm bản log đọc như một lượt chạy trót lọt. Và container worker chạy mã đã import lúc khởi động, nên kể cả khi nó thắng cuộc đua thì nó thu bằng `_EDGE_IDS` cũ.
 
+### tp-form-06 và tp-form-08 (2026-09-01)
+
+Cùng ba bước, cùng kết quả: mỗi đề **40/54 ô đổi, 0 ô phải sửa tay**, 54 clip ở `engine_version` 3, và **0 ô nhiều người nói nào còn trùng accent** (38 ô nhiều người mỗi đề). Tỉ lệ accent 24–26%. Đối chiếu 304 lượt nói với bản trong git: **không lượt nào lệch giới**, không giọng nào ngoài dàn. `git diff` xác nhận không dòng nào ngoài `voice:` thay đổi trong 80 tệp dán.
+
+Đã `push_media`: 108 file mới, 0 lỗi. Kiểm bằng cách gọi URL công khai của **cả 162 clip** thuộc ba đề — 162/162 trả 200, range request trả 206.
+
+Một chỗ gây hiểu nhầm phát hiện khi chạy: `recast_voices --dry-run` báo "0 tệp dán" ở bước đồng bộ tệp, đọc ra như "tệp đã đúng rồi", trong khi thật ra là dry-run chưa ghi database mà bước tệp lại lấy database làm nguồn sự thật. Giờ nó nói thẳng là không xem trước được và chỉ sang `--files-only --dry-run`.
+
 ### Còn phải làm
 
 `uv run python -m app.content.backfill_audio --force` để cả thư viện về một tốc độ (~4 100 clip), rồi `push_media` và `reconcile_media --delete-rows` dọn hàng cũ không còn ai trỏ tới.
 
-**Đề đã dán từ trước chỉ đổi tốc độ, không đổi dàn giọng.** Tên giọng nằm trong `question.audio_script` / `question_set.audio_script` — dữ liệu, không phải mã — và backfill đọc thẳng `turn["voice"]` từ đó. Giọng Mỹ thì có đổi (script ghi `us_female_1`, và tên ấy giờ trỏ sang Ava). Từ vựng và dictation ngược lại: giọng được TRA lúc sinh, nên `--force` đổi luôn cả dàn. Muốn đề cũ theo dàn mới thì cần một script viết lại `audio_script`, chưa có.
+**Cả ba đề (tp-form-06, 07, 08) đã chuyển xong.** Đề dán về sau vẫn chỉ đổi tốc độ chứ không đổi dàn giọng nếu không chạy `recast_voices`: Tên giọng nằm trong `question.audio_script` / `question_set.audio_script` — dữ liệu, không phải mã — và backfill đọc thẳng `turn["voice"]` từ đó. Giọng Mỹ thì có đổi (script ghi `us_female_1`, và tên ấy giờ trỏ sang Ava). Từ vựng và dictation ngược lại: giọng được TRA lúc sinh, nên `--force` đổi luôn cả dàn. Đề cũ thì `recast_voices` viết lại `audio_script`.
 
 ---
 

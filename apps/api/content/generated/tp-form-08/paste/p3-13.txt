@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: au_female_1
+voice: uk_female_1
 Good morning. I've just moved into unit twelve oh four, and I had a few questions about the building rules.
 voice: au_male_1
 Congratulations. This is the management office — I can help with that.
-voice: au_female_1
+voice: uk_female_1
 Thanks. First, when are the garbage bins collected?
 voice: au_male_1
 Tuesday and Friday mornings, before eight. The bins are by the rear entrance.
-voice: au_female_1
+voice: uk_female_1
 Got it. And parking — I drive one of the larger cars. What's the monthly fee for that?
 voice: au_male_1
 Standard sedans pay thirty-five dollars and can stay overnight. Larger vehicles are fifty dollars a month, but overnight parking isn't permitted for them.
-voice: au_female_1
+voice: uk_female_1
 Oh, good to know. Thanks a lot.
 
 [QUESTION]

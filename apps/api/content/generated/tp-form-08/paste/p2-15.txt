@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: au_male_1
 Where is the nearest subway station?
 voice: uk_female_1
 (A) It's just around the corner, two blocks east.

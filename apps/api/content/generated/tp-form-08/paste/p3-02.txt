@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Hello, I'm calling your customer service line about a printer I bought last week. It keeps jamming whenever I print.
 voice: ca_male_1
 I'm sorry to hear that. May I ask if you still have the receipt?
-voice: ca_female_1
+voice: us_female_1
 Yes, right here. I'd like to exchange it for a new one.
 voice: ca_male_1
 No problem. Our policy allows returns within thirty days of purchase. Just bring the printer and the receipt to the service desk.
-voice: ca_female_1
+voice: us_female_1
 Okay. Will I be able to take a replacement home the same day?
 voice: ca_male_1
 Certainly. If you come in tomorrow afternoon, we'll have one ready for you.

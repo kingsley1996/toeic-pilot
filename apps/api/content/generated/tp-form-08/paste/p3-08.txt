@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 This is a nice size. My wife will love the big windows in the living room.
 voice: uk_female_1
 Yes, and the balcony gets sun all afternoon. The unit became available just last week.
-voice: uk_male_1
+voice: ca_male_1
 And it's really close to my office, you said?
 voice: uk_female_1
 About a ten-minute walk. You could leave the car at home and save on parking.
-voice: uk_male_1
+voice: ca_male_1
 Good point. Could you send us the rental application today? We'd like to decide quickly.
 voice: uk_female_1
 Of course. I'll email it to you this afternoon.

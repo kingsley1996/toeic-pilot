@@ -1,15 +1,15 @@
 [SCRIPT]
 voice: uk_female_1
 Hi, this is Anna in apartment twelve. There's a leak under my kitchen sink, and it's getting worse.
-voice: uk_male_1
+voice: au_male_1
 Sorry to hear that. Is it a slow drip, or is water spreading?
 voice: uk_female_1
 It's dripping steadily, and there's a small puddle. Could you send someone soon?
-voice: uk_male_1
+voice: au_male_1
 I can have a plumber come tomorrow morning around nine. Would that work?
 voice: uk_female_1
 Actually, I won't be home until noon. Could we make it one o'clock?
-voice: uk_male_1
+voice: au_male_1
 One o'clock is fine. I'll arrange it with the plumber and call you this evening to confirm.
 voice: uk_female_1
 Great, thanks. I'll be here to let him in.

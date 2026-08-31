@@ -1,5 +1,5 @@
 [QUESTION]
-voice: au_female_1
+voice: us_female_1
 (A) The screen is showing a graph.
 (B) A woman is writing on a whiteboard.
 (C) Some people are seated around a table.

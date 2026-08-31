@@ -1,7 +1,7 @@
 [QUESTION]
-voice: ca_female_1
+voice: uk_female_1
 How much will it cost to repair the leased space?
-voice: us_male_1
+voice: au_male_1
 (A) About three thousand dollars, plus labor.
 (B) It's on the corner near the bank.
 (C) Yes, the lease includes maintenance.

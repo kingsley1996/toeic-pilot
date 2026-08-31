@@ -1,7 +1,7 @@
 [QUESTION]
-voice: uk_male_1
+voice: au_male_1
 The new shipping software is being installed this afternoon.
-voice: au_female_1
+voice: uk_female_1
 (A) I hope it doesn't delay our deliveries.
 (B) Yes, I installed it last week.
 (C) The ship leaves at six o'clock.

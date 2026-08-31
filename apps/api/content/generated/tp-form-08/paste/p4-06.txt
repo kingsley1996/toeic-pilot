@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: uk_female_1
 Attention, shoppers. The store will be closing in fifteen minutes, at nine o'clock this evening. If you are still browsing the aisles, please make your final selections now and bring your carts to the nearest checkout counter. All registers at the front of the store will remain open until closing, and the self-checkout stations will stay open as well. One more note: the pharmacy will close ten minutes early, at eight fifty, so please pick up any prescriptions before then. Thank you for shopping with us this evening, and we look forward to seeing you again tomorrow.
 
 [QUESTION]

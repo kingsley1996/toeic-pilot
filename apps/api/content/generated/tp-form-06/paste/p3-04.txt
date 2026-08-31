@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 Good morning. I’m calling from apartment four B. The central heating has been completely off for the past two days, and it’s freezing inside.
 voice: uk_female_1
 I’m sorry to hear that. Let me pull up your maintenance file. Have you already tried resetting the thermostat?
-voice: uk_male_1
+voice: ca_male_1
 Yes, I did that yesterday. The pilot light keeps going out, so I believe there is a problem with the main furnace.
 voice: uk_female_1
 Understood. We have a certified technician scheduled to inspect the boiler this Thursday at ten a.m. Will you be home then?
-voice: uk_male_1
+voice: ca_male_1
 Thursday works perfectly. Could you also ask him to examine the kitchen ventilation system while he is on site?
 voice: uk_female_1
 Of course. I will add that to the work order. We will send you a confirmation message this afternoon.
-voice: uk_male_1
+voice: ca_male_1
 Thank you for handling this so promptly. I’ll expect the technician Thursday morning.
 
 [QUESTION]

@@ -1,19 +1,19 @@
 [SCRIPT]
 voice: ca_male_1
 Good afternoon. I need to exchange this printer I purchased last Tuesday. It constantly jams when I try to print.
-voice: ca_female_1
+voice: us_female_1
 I’m sorry about that. Do you have the original receipt and the packaging with all the cables?
 voice: ca_male_1
 Yes, everything is here. I want a model that can handle cardstock without issues.
-voice: ca_female_1
+voice: us_female_1
 We don't have that model in stock, but I can order it. I suggest keeping the original box until it arrives.
 voice: ca_male_1
 How soon will it arrive? I have to print the company newsletter by next Friday.
-voice: ca_female_1
+voice: us_female_1
 Shipping takes three to four business days. If we complete the exchange today, it will be delivered on Thursday.
 voice: ca_male_1
 Thursday is fine. Please go ahead with the order.
-voice: ca_female_1
+voice: us_female_1
 I’ll update the invoice now. A delivery driver will also pick up the old unit tomorrow morning.
 
 [QUESTION]

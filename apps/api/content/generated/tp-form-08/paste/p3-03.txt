@@ -1,13 +1,13 @@
 [SCRIPT]
 voice: us_female_1
 Thanks for meeting me in the conference room. I'd like to finalize the ad concept for the new product launch before Friday.
-voice: us_male_1
+voice: au_male_1
 No problem. I think we should go with the video idea — showing real customers using the product at work.
 voice: us_female_1
 Agreed. We just need a strong tagline to go with it.
 voice: ca_male_1
 Sorry I'm late. I brought three tagline drafts. The one about working smarter got the best response from the focus group.
-voice: us_male_1
+voice: au_male_1
 That's my favorite too. Let's use that one.
 voice: us_female_1
 Perfect. I'll email the full concept to the design team tonight so they can start the layout tomorrow.

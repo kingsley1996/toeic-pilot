@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 Thank you for showing us around. The natural light in this open-plan area is excellent.
 voice: uk_female_1
 I'm glad you like it. As you can see, the vacant unit on the fourth floor of the downtown office tower covers two thousand square feet and includes three private offices.
-voice: uk_male_1
+voice: ca_male_1
 That matches our requirements. What about the monthly rate and utilities?
 voice: uk_female_1
 The rent is four hundred fifty dollars per month, and utilities are included up to a standard allowance.
-voice: uk_male_1
+voice: ca_male_1
 Understood. We are reviewing our budget. Could we schedule a follow-up meeting next Wednesday afternoon to go over the contract?
 voice: uk_female_1
 Wednesday afternoon works well. I will email you the draft agreement by tomorrow morning.
-voice: uk_male_1
+voice: ca_male_1
 Perfect. I look forward to receiving it.
 
 [QUESTION]

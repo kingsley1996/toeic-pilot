@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: uk_male_1
+voice: au_male_1
 As project manager, I need a status update before Friday's client briefing. Where do we stand on the rollout?
 voice: uk_female_1
 Development is about seventy-five percent done. The next phase can't start until we freeze the code.
-voice: uk_male_1
+voice: au_male_1
 Good. For the briefing, I'll open with the stage we've completely finished.
-voice: au_female_1
+voice: us_female_1
 Sorry to interrupt. I'm calling from the supplier about your server order.
-voice: uk_male_1
+voice: au_male_1
 Go ahead. We can't go live without those machines.
-voice: au_female_1
+voice: us_female_1
 It left our warehouse this morning, but it won't reach you until next Thursday. That's three days behind schedule.
-voice: uk_male_1
+voice: au_male_1
 All right, we'll shift the timeline. Thanks for the update.
 
 [QUESTION]

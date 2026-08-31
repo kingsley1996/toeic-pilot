@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Attention, shoppers. This is an announcement from mall management. If you believe you have left a personal item somewhere in the shopping center today, please go to the counter directly below the pharmacy and beside the shoe repair counter. The counter is on the ground floor, near the north entrance. It will remain open until nine o'clock tonight. Before you claim anything, please have a photo identification ready to show the staff. You may also be asked to describe the item. If the counter is busy, please wait in the seating area beside the pharmacy. Thank you for your attention, and enjoy your visit.
 
 [QUESTION]

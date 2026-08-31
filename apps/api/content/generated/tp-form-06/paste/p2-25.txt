@@ -1,7 +1,7 @@
 [QUESTION]
 voice: au_male_1
 Who is managing the spring marketing campaign?
-voice: ca_female_1
+voice: us_female_1
 (A) It launches on Monday morning.
 (B) Ms. Tran, our new brand manager.
 (C) About twenty thousand dollars.

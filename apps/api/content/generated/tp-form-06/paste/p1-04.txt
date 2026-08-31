@@ -1,5 +1,5 @@
 [QUESTION]
-voice: uk_male_1
+voice: au_male_1
 (A) The customer is holding a cardboard box.
 (B) The clerk is handing a bag to a customer.
 (C) Two salespeople are standing behind the counter.

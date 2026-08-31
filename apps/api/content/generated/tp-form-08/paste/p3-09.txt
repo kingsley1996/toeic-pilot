@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: au_female_1
+voice: us_female_1
 Thanks for meeting me. I'd like your input on the training plan for the new hires starting next month.
 voice: au_male_1
 Of course. We have six new staff joining the sales team, and they'll need product training first.
-voice: au_female_1
+voice: us_female_1
 I was thinking of a two-week course. The vendor quoted nine thousand dollars, which is above our budget.
 voice: au_male_1
 Maybe we can shorten it to one week and handle the rest with internal workshops.
-voice: au_female_1
+voice: us_female_1
 That could work. I'll ask the vendor for a revised quote.
 voice: au_male_1
 Great. Once it's confirmed, I'll send you the team's schedule so we can block their calendars.

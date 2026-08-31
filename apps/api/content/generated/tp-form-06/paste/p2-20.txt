@@ -1,7 +1,7 @@
 [QUESTION]
-voice: uk_male_1
+voice: ca_male_1
 The interviews are on Tuesday, aren't they?
-voice: au_female_1
+voice: uk_female_1
 (A) No, the candidates were hired yesterday.
 (B) In the conference room downstairs.
 (C) Yes, they start at nine.

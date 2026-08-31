@@ -1,13 +1,13 @@
 [SCRIPT]
 voice: us_female_1
 Hi, Mark. Are you joining the year-end party committee? The sign-up sheet closes at five.
-voice: us_male_1
+voice: au_male_1
 I signed up this morning, Anna. We're just deciding who will decorate the hall.
 voice: us_female_1
 Oh, I'd love to handle that. I did the decorations two years ago.
 voice: ca_male_1
 Hi, I'm David from the finance team. Could I help with the decorations? I have a van for the supplies.
-voice: us_male_1
+voice: au_male_1
 Perfect timing, David. Anna, could you two pick up the supplies Monday morning?
 voice: ca_male_1
 Sure. I'll drive over right after our staff meeting.

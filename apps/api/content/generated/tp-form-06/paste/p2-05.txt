@@ -1,5 +1,5 @@
 [QUESTION]
-voice: au_female_1
+voice: us_female_1
 Could you make copies of the campaign flyer?
 voice: ca_male_1
 (A) I'll make coffee for the meeting.

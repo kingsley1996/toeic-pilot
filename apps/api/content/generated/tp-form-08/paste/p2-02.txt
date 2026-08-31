@@ -1,7 +1,7 @@
 [QUESTION]
-voice: ca_female_1
+voice: us_female_1
 Could you call a taxi for me?
-voice: us_male_1
+voice: au_male_1
 (A) The taxi stand is just outside the main entrance.
 (B) You can call the front desk anytime, day or night.
 (C) Certainly, sir. It'll be here in about five minutes.

@@ -1,7 +1,7 @@
 [QUESTION]
 voice: us_female_1
 Where can I get a parking sticker?
-voice: uk_male_1
+voice: au_male_1
 (A) At the security office in the lobby.
 (B) You can park in the garage on Level 3.
 (C) The tickets go on sale tomorrow morning.

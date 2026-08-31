@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: au_female_1
+voice: uk_female_1
 Hello, this is Sarah from human resources. I'm calling to confirm your interview for the accounting position.
 voice: au_male_1
 Thank you for calling. Is it still scheduled for Tuesday morning?
-voice: au_female_1
+voice: uk_female_1
 Actually, we had to move it to Wednesday at ten. The interview panel has a training session that day. Does that work for you?
 voice: au_male_1
 Yes, Wednesday at ten is fine. Should I come to the main office downtown?
-voice: au_female_1
+voice: uk_female_1
 That's right. Ask for me at the reception desk on the fifth floor, and bring two copies of your resume.
 voice: au_male_1
 I will. Thanks for the update. I look forward to meeting you on Wednesday.

@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: au_female_1
+voice: us_female_1
 Hi David, do you have a quick moment? I need to ask about swapping my work schedule next week.
 voice: au_male_1
 Of course, Elena. Which days are you trying to switch?
-voice: au_female_1
+voice: us_female_1
 I originally signed up for the morning shift on Tuesday, but I really need to move it to Wednesday instead.
 voice: au_male_1
 Wednesday morning is fully staffed right now, so I can’t approve a direct swap.
-voice: au_female_1
+voice: us_female_1
 I see. Could I ask Sarah to cover my Tuesday slot? She said she might take extra hours.
 voice: au_male_1
 That works, as long as you both submit a written request to the office manager by tomorrow noon.
-voice: au_female_1
+voice: us_female_1
 Understood. I’ll coordinate with her and email the manager this afternoon.
 
 [QUESTION]

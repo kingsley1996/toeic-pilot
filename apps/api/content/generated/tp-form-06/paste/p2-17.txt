@@ -1,7 +1,7 @@
 [QUESTION]
 voice: au_male_1
 Have you booked the training room?
-voice: ca_female_1
+voice: us_female_1
 (A) No, I returned the book yesterday.
 (B) At nine, in the main room.
 (C) Yes, it's reserved for Thursday afternoon.

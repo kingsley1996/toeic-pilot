@@ -1,13 +1,13 @@
 [SCRIPT]
 voice: us_female_1
 Thanks for joining me in the design studio. I wanted to check our progress on the trade show booth.
-voice: us_male_1
+voice: au_male_1
 We’ve already assembled the main display tables, but I’m concerned about the lighting setup. The fixtures are too heavy for those shelves.
 voice: ca_male_1
 Actually, I just reviewed the venue rules, and ceiling mounts aren’t allowed this year. We’ll have to use freestanding poles.
 voice: us_female_1
 That’s a reasonable workaround. Do we have enough floor space if we add those poles?
-voice: us_male_1
+voice: au_male_1
 We will, as long as we move the brochure stand to the far left corner. I can handle that repositioning myself.
 voice: ca_male_1
 Great. I’ll bring the measuring tape over so we can mark the exact positions.

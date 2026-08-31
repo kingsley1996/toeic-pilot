@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: ca_male_1
 Excuse me, when does boarding begin?
 voice: uk_female_1
 (A) Yes, boarding usually starts right on time.

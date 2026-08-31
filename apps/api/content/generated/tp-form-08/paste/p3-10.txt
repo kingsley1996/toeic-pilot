@@ -1,15 +1,15 @@
 [SCRIPT]
 voice: ca_male_1
 Hello, I'd like to schedule a repair for my washing machine. It's still under warranty.
-voice: ca_female_1
+voice: uk_female_1
 Of course. Can I have the model number, please?
 voice: ca_male_1
 It's on the back... let me see. WX two hundred.
-voice: ca_female_1
+voice: uk_female_1
 Thank you. A technician can visit your home on Tuesday morning, and there's no charge since the machine is covered.
 voice: ca_male_1
 Great. Could the technician also check my dryer while he's here?
-voice: ca_female_1
+voice: uk_female_1
 Certainly, but the dryer is out of warranty, so that inspection would cost thirty dollars.
 voice: ca_male_1
 That's fine. Tuesday morning works for me.

@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: us_male_1
+voice: ca_male_1
 Hello, this is Paul Renner from the dental office. I’m calling about the new sterilization unit we received yesterday. The delivery team left it in our storage room, but no one has contacted us to schedule the installation. We were told it would be set up within three business days, and we need it ready by Friday because we have patient appointments that afternoon. We have kept the box unopened, so the installer can inspect it immediately. Could you please check your calendar and call me back today with an installation time? If Thursday is not possible, please suggest the earliest morning slot on Friday. My number is five-five-five, zero-one-four-eight. Again, this is Paul Renner. Thank you.
 
 [QUESTION]

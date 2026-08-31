@@ -1,7 +1,7 @@
 [QUESTION]
-voice: uk_male_1
+voice: ca_male_1
 Would you mind mailing this package today?
-voice: au_female_1
+voice: us_female_1
 (A) The mail hasn't been delivered yet today.
 (B) No problem, I'll take it to the post office at lunch.
 (C) The package room is down the hall, next to reception.

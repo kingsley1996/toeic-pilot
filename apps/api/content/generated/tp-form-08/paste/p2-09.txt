@@ -1,7 +1,7 @@
 [QUESTION]
 voice: au_male_1
 Should the meeting be in the boardroom or the conference room?
-voice: ca_female_1
+voice: us_female_1
 (A) The boardroom, please. It's more spacious.
 (B) Yes, it should be.
 (C) At ten o'clock, I think.

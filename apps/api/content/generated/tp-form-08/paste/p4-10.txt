@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Attention, all passengers. This is an announcement for travelers on the afternoon train to Da Nang. Please note that the departure platform has been changed. The train will now board at platform five, not at the platform printed on your ticket. All passengers should make their way to the new platform immediately, as boarding will begin in fifteen minutes. The train is scheduled to depart at three fifteen, and the doors will close five minutes before departure. Passengers are reminded to be on board on time, as the train will not wait for late arrivals. Thank you, and we wish you a pleasant journey.
 
 [QUESTION]

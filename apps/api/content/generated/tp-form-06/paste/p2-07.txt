@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: au_male_1
 How should new staff prepare for the internal training?
 voice: uk_female_1
 (A) Yes, they attended last quarter.

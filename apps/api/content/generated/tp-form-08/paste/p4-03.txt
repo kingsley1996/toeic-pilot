@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: us_male_1
+voice: ca_male_1
 Looking to refresh your home without emptying your wallet? Then head to Maplewood Furniture this weekend for our biggest sale of the season. From Saturday morning through Sunday evening, everything in the store is thirty percent off — sofas, dining tables, bedroom sets, and lamps. That's right, thirty percent off every item in stock. And if you spend over five hundred dollars, we'll deliver your furniture free anywhere in the city. Our showroom is open Saturday from nine to nine and Sunday from ten to six, and free parking is available behind the building. Don't wait — new stock arrives Monday, so visit Maplewood Furniture this weekend and give your home the update it deserves.
 
 [QUESTION]

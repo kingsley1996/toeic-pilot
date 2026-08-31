@@ -186,6 +186,13 @@ def main(argv: list[str] | None = None) -> int:
             return sync_files(session, args.test, args.dry_run)
         code = recast(session, args.test, args.dry_run)
         print("\n--- tệp dán và blueprint ---")
+        if args.dry_run:
+            # `sync_files` đọc database làm nguồn sự thật, mà dry-run vừa KHÔNG
+            # ghi vào đó — nên nó sẽ so tệp cũ với database cũ và báo "0 tệp",
+            # đọc ra như "tệp đã đúng rồi". Nói thẳng thay vì in một con số sai.
+            print("không xem trước được: bước này đọc database, mà dry-run chưa ghi gì vào đó.")
+            print("chạy thật rồi `--files-only --dry-run` nếu muốn xem trước riêng phần tệp.")
+            return code
         return max(code, sync_files(session, args.test, args.dry_run))
 
 

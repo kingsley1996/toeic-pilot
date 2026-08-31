@@ -1,7 +1,7 @@
 [QUESTION]
 voice: au_male_1
 Mr. Tanaka is attending the board meeting on Thursday, isn't he?
-voice: ca_female_1
+voice: uk_female_1
 (A) No, the board is made of solid oak.
 (B) Actually, he has to travel to Tokyo that day.
 (C) No, I'm not thirsty right now.

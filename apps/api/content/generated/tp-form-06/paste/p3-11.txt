@@ -1,19 +1,19 @@
 [SCRIPT]
 voice: us_female_1
 Hello, I’m finalizing the arrangements for our ten-year company anniversary next month.
-voice: us_male_1
+voice: ca_male_1
 Great. I’ve sent over the proposal with our four service packages. Have you had a chance to review them?
 voice: us_female_1
 Yes, I did. We’ll go with the five-hundred-forty-nine-dollar option. It covers the stage and lighting, which is perfect for our live performance.
-voice: us_male_1
+voice: ca_male_1
 Excellent choice. That includes the full sound system as well. When would you need the venue ready?
 voice: us_female_1
 We’re expecting one hundred eighty guests, so please have everything arranged by two-thirty in the afternoon.
-voice: us_male_1
+voice: ca_male_1
 Noted. I’ll also add the extra seating to the contract. Should I process the deposit by wire transfer?
 voice: us_female_1
 Yes, please. Send the invoice to our accounting department today.
-voice: us_male_1
+voice: ca_male_1
 Will do. I’ll confirm the booking with you by end of day.
 
 [QUESTION]

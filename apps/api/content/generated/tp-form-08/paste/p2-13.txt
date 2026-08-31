@@ -1,5 +1,5 @@
 [QUESTION]
-voice: au_female_1
+voice: us_female_1
 Why was the product launch postponed?
 voice: ca_male_1
 (A) We're planning to launch it early next spring.
