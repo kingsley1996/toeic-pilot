@@ -26,15 +26,20 @@ Chạy:
 from __future__ import annotations
 
 import operator
+from collections.abc import Callable
+from pathlib import Path
 from typing import Annotated, Any
 
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
+from app.content.exam.blueprint import Blueprint, QuestionSlot
 from app.content.exam.writer import DEFAULT_MAX_TOKENS, MissingBlock, save_slot, write_slot
 from app.services.llm.base import LLMRequest
+from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
+from app.services.llm.router import Tier
 
 # Trần vòng lặp. Ba vòng là chỗ dừng đúng: một ô hỏng cùng kiểu ba lần thì lỗi
 # nằm ở prompt/brief, không nằm ở lượt viết — quay tiếp chỉ đốt quota.
@@ -58,16 +63,22 @@ class SlotState(TypedDict, total=False):
     log: Annotated[list[str], operator.add]
 
 
+# Cập nhật MỘT PHẦN của state: LangGraph gộp theo từng khoá, nên giá trị khác
+# kiểu theo khoá và `Any` ở đây là mô tả đúng, không phải chỗ tắt kiểm tra.
+NodeUpdate = dict[str, Any]
+Node = Callable[[SlotState], NodeUpdate]
+
+
 class _Parts:
     """Tra slot + part theo id, một lần cho cả lượt chạy."""
 
-    def __init__(self, blueprint: Any) -> None:
-        self.by_id: dict[str, tuple[Any, int]] = {}
+    def __init__(self, blueprint: Blueprint) -> None:
+        self.by_id: dict[str, tuple[QuestionSlot, int]] = {}
         for part in blueprint.parts:
             for slot in part.slots:
                 self.by_id[slot.id] = (slot, part.part)
 
-    def slot(self, slot_id: str) -> Any:
+    def slot(self, slot_id: str) -> QuestionSlot:
         return self.by_id[slot_id][0]
 
     def part(self, slot_id: str) -> int:
@@ -75,8 +86,8 @@ class _Parts:
 
 
 def _write_node(
-    gateway: Any, tier: Any, workdir: Any, parts: _Parts, max_tokens: int | None = None
-) -> Any:
+    gateway: Gateway, tier: Tier, workdir: Path, parts: _Parts, max_tokens: int | None = None
+) -> Node:
     """Viết lại ô. `write_slot` ném `MissingBlock` khi đầu ra bị cắt — biến thành
     trạng thái bị chặn thay vì để ngoại lệ làm đồ thị chết. `fix_hint` của critic
     đi kèm: đây là toàn bộ điểm của vòng lặp — sửa theo lý do, không sinh lại mù.
@@ -85,12 +96,12 @@ def _write_node(
     Y HỆT `cmd_write` làm: parser từ chối dòng lạ sau đáp án, và bảng là dữ liệu
     để vẽ — hai thứ đó không phải dòng để dán."""
 
-    def write(state: dict[str, Any]) -> dict[str, Any]:
+    def write(state: SlotState) -> NodeUpdate:
         from app.content.exam.writer import GRAPHIC_MARKER, split_all, split_photo
 
         slot = parts.slot(state["slot_id"])
         part = parts.part(state["slot_id"])
-        update: dict[str, Any] = {"revision": state["revision"] + 1}
+        update: NodeUpdate = {"revision": state["revision"] + 1}
         hint = state.get("fix_hint")
         try:
             block = write_slot(
@@ -133,7 +144,7 @@ def _write_node(
     return write
 
 
-def _check_node(blueprint: Any, workdir: Any, parts: _Parts) -> Any:
+def _check_node(blueprint: Blueprint, workdir: Path, parts: _Parts) -> Node:
     """Kiểm máy — KHÔNG gọi model. Nguồn DUY NHẤT được điền `blocked`.
 
     `check_blueprint` chạy trên toàn bộ part của ô (nó đọc tệp dán từ đĩa), với
@@ -142,7 +153,7 @@ def _check_node(blueprint: Any, workdir: Any, parts: _Parts) -> Any:
     parser thật. Chỉ lấy report của ô đang chạy.
     """
 
-    def check(state: dict[str, Any]) -> dict[str, Any]:
+    def check(state: SlotState) -> NodeUpdate:
         if state["blocked"]:  # lượt viết đã hỏng trước khi có khối — không có gì để kiểm
             return {}
         from app.content.exam.check import check_blueprint
@@ -162,14 +173,14 @@ def _check_node(blueprint: Any, workdir: Any, parts: _Parts) -> Any:
     return check
 
 
-def _critic_node(gateway: Any, tier: Any) -> Any:
+def _critic_node(gateway: Gateway, tier: Tier) -> Node:
     """Phê — MỘT lượt gọi. Model CHẤM chứ không viết lại: trả gợi ý sửa.
 
     feature=`exam_verify` vì nó là cùng loại việc với đối chiếu đáp án: đọc một
     ô đã có, trả nhận định. Muốn tách tier riêng thì thêm feature mới vào bảng
     giá, không phải sửa đồ thị."""
 
-    def critic(state: dict[str, Any]) -> dict[str, Any]:
+    def critic(state: SlotState) -> NodeUpdate:
         result = with_backoff(
             lambda: gateway.run(
                 LLMRequest(
@@ -211,17 +222,21 @@ def _after_critic(state: dict[str, Any]) -> str:
     return "write"
 
 
-def _accept(state: dict[str, Any]) -> dict[str, Any]:
+def _accept(state: SlotState) -> NodeUpdate:
     return {"outcome": "accepted"}
 
 
-def _escalate(state: dict[str, Any]) -> dict[str, Any]:
+def _escalate(state: SlotState) -> NodeUpdate:
     return {"outcome": "escalated"}
 
 
 def build(
-    gateway: Any, tier: Any, blueprint: Any, workdir: Any, max_tokens: int | None = None
-) -> Any:
+    gateway: Gateway,
+    tier: Tier,
+    blueprint: Blueprint,
+    workdir: Path,
+    max_tokens: int | None = None,
+) -> Any:  # đồ thị đã biên dịch là kiểu của LangGraph — `Any` với mypy vì thư viện không có stub
     parts = _Parts(blueprint)
 
     builder = StateGraph(SlotState)
@@ -229,7 +244,7 @@ def build(
     # add_node của LangGraph 1.x khó chịu với node trả update-một-phần (dict)
     # thay vì state đầy đủ — pattern chuẩn của nó, nhưng generic chưa nới lỏng.
     # Cast một lần tại đây thay vì rải type: ignore khắp các node.
-    def _node(fn: Any) -> Any:
+    def _node(fn: Node) -> Any:
         return fn
 
     builder.add_node("write", _node(_write_node(gateway, tier, workdir, parts, max_tokens)))
@@ -248,10 +263,10 @@ def build(
 
 
 def run_pending(
-    gateway: Any,
-    tier: Any,
-    blueprint: Any,
-    workdir: Any,
+    gateway: Gateway,
+    tier: Tier,
+    blueprint: Blueprint,
+    workdir: Path,
     limit: int | None = None,
     only: int | None = None,
     max_tokens: int | None = None,
@@ -280,7 +295,7 @@ def run_pending(
     return out
 
 
-def parts_of(blueprint: Any, slot_id: str) -> int:
+def parts_of(blueprint: Blueprint, slot_id: str) -> int:
     for part in blueprint.parts:
         if any(slot.id == slot_id for slot in part.slots):
             return part.part

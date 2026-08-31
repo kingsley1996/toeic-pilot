@@ -21,15 +21,20 @@ nhưng chỉ load, không gọi model.
 from __future__ import annotations
 
 import operator
+from collections.abc import Callable
+from pathlib import Path
 from typing import Annotated, Any
 
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
+from app.content.exam.blueprint import Blueprint
 from app.content.exam_agents.graph import (
     run_pending,
 )
+from app.services.llm.gateway import Gateway
+from app.services.llm.router import Tier
 
 RETRY_TRIES = 7
 RETRY_DELAY = 6.0
@@ -51,12 +56,17 @@ class FullState(TypedDict, total=False):
     log: Annotated[list[str], operator.add]
 
 
+# Cùng lý do như `graph.py`: cập nhật một phần, giá trị khác kiểu theo khoá.
+FullUpdate = dict[str, Any]
+FullNode = Callable[[FullState], FullUpdate]
+
+
 def plan_blueprint(
     slug: str,
     title: str,
     seed: int,
     model: str | None,
-    tier: Any,
+    tier: Tier,
     parts: list[int] | None = None,
 ) -> str:
     """Dựng/merge blueprint cho `slug`, đúng logic của `cmd_plan`.
@@ -86,7 +96,9 @@ def plan_blueprint(
         7: bp.build_part7,
     }
     for part_number in parts or range(1, 8):
-        builder: Any = builders[part_number]
+        # Bảy hàm dựng có chữ ký khác nhau (Part 1 và 3/4 nhận thêm tham số),
+        # nên chỉ chốt được KIỂU TRẢ VỀ — vẫn hơn `Any` trần.
+        builder: Callable[..., Blueprint] = builders[part_number]
         built = builder(slug, title, seed)
         if model:
             try:
@@ -114,8 +126,8 @@ def plan_blueprint(
     return str(path)
 
 
-def _plan_node(gateway: Any, tier: Any, model: str | None) -> Any:
-    def plan(state: dict[str, Any]) -> dict[str, Any]:
+def _plan_node(gateway: Gateway, tier: Tier, model: str | None) -> FullNode:
+    def plan(state: FullState) -> FullUpdate:
 
         from app.content.generate_exam import blueprint_path
 
@@ -132,8 +144,8 @@ def _plan_node(gateway: Any, tier: Any, model: str | None) -> Any:
     return plan
 
 
-def _slotloop_node(gateway: Any, tier: Any, workdir: Any) -> Any:
-    def slotloop(state: dict[str, Any]) -> dict[str, Any]:
+def _slotloop_node(gateway: Gateway, tier: Tier, workdir: Path) -> FullNode:
+    def slotloop(state: FullState) -> FullUpdate:
         from pathlib import Path
 
         from app.content.exam import blueprint as bp
@@ -157,10 +169,12 @@ def _slotloop_node(gateway: Any, tier: Any, workdir: Any) -> Any:
     return slotloop
 
 
-def build_full(gateway: Any, tier: Any, model: str | None, workdir: Any) -> Any:
+def build_full(
+    gateway: Gateway, tier: Tier, model: str | None, workdir: Path
+) -> Any:  # đồ thị đã biên dịch — kiểu của LangGraph
     builder = StateGraph(FullState)
 
-    def _node(fn: Any) -> Any:
+    def _node(fn: FullNode) -> Any:
         return fn
 
     builder.add_node("plan", _node(_plan_node(gateway, tier, model)))
