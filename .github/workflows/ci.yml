@@ -298,29 +298,51 @@ jobs:
           }
           docker rm -f api-smoke
 
-      - name: Publish the API image and deploy it
+      - name: Publish the API image
         # Chỉ trên `main`, và chỉ SAU khi ảnh đã chạy được ở bước trên.
         #
-        # Bước gọi hook là bắt buộc, không phải tiện tay: service kiểu ảnh của
-        # Render KHÔNG tự triển khai lại khi tag trỏ sang ảnh mới. Bỏ nó thì ảnh
-        # mới nằm im trong registry, production chạy bản cũ, và không có gì báo —
-        # mọi thứ trông hoàn toàn bình thường.
+        # Thử lại ba lần: đẩy hỏng vì GHCR chập là chuyện của mạng, không phải
+        # của code, mà hậu quả thì giống hệt một lần build hỏng — nhánh đỏ và
+        # không ảnh nào lên registry. Đã xảy ra một lần với 5e8ecd4.
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           IMAGE="ghcr.io/${{ github.repository }}-api"
           echo "$GHCR_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           # Tag `main` là thứ Render trỏ vào; tag sha để truy được bản nào đang chạy.
           docker tag toeic-api:ci "$IMAGE:main"
           docker tag toeic-api:ci "$IMAGE:${{ github.sha }}"
-          docker push "$IMAGE:main"
-          docker push "$IMAGE:${{ github.sha }}"
+          for tag in main "${{ github.sha }}"; do
+            for attempt in 1 2 3; do
+              docker push "$IMAGE:$tag" && break
+              [ "$attempt" = 3 ] && { echo "::error::đẩy $IMAGE:$tag hỏng sau 3 lần"; exit 1; }
+              echo "đẩy $tag hỏng, thử lại lần $((attempt + 1))"; sleep 5
+            done
+          done
 
+      - name: Trigger the Render deploy
+        # BƯỚC RIÊNG, không gộp với việc đẩy ảnh. Hai việc hỏng vì hai lý do khác
+        # hẳn nhau — ảnh không lên được registry là chuyện của build, còn Render
+        # từ chối hook là chuyện của cấu hình triển khai — và gộp lại thì log chỉ
+        # nói "Publish … failed" mà không nói cái nào. Chính chỗ đó đã tốn một
+        # lượt chẩn đoán ở d17476b, nơi ảnh đã lên registry đủ cả hai tag.
+        #
+        # Vẫn đánh đỏ khi hook bị từ chối: service kiểu ảnh của Render KHÔNG tự
+        # triển khai lại, nên hook im lặng hỏng nghĩa là production đứng ở bản cũ
+        # trong khi mọi thứ trông bình thường.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
           if [ -z "$RENDER_DEPLOY_HOOK" ]; then
             echo "::warning::RENDER_DEPLOY_HOOK chua dat - anh da day, khong trien khai gi."
             exit 0
           fi
-          curl -fsS "$RENDER_DEPLOY_HOOK" > /dev/null
-          echo "deploy hook da duoc goi"
+          code=$(curl -sS -o /dev/null -w '%{http_code}' "$RENDER_DEPLOY_HOOK" || echo 000)
+          echo "Render tra ve HTTP $code"
+          case "$code" in
+            2*) echo "deploy hook da duoc goi" ;;
+            000) echo "::error::khong goi duoc deploy hook (mang hoac URL sai)"; exit 1 ;;
+            *)  echo "::error::Render tu choi deploy hook voi HTTP $code - lay lai URL o Settings > Deploy Hook"; exit 1 ;;
+          esac
