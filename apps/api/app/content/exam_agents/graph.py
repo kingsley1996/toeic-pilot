@@ -113,11 +113,15 @@ def _write_node(
                 max_tokens=max_tokens or DEFAULT_MAX_TOKENS,
             )
         except MissingBlock as cut:
+            # Cũng ghi vào `log`: lượt viết hỏng thì node `check` không chạy, nên
+            # không có nó thì một ô bị cắt ba lần sẽ bị giao người mà không in ra
+            # dòng nào — đúng cái lỗ mà bản in lý do sinh ra để bịt.
             update |= {
                 "draft": "",
                 "blocked": True,
                 "problems": [str(cut)],
                 "fix_hint": "Bị cắt giữa phần suy luận — viết ngắn hơn, đi thẳng vào khối.",
+                "log": [f"vòng {update['revision']}: {cut}"],
             }
             return update
         # Ghi xuống đĩa NGAY: hàng đợi là một truy vấn trên thư mục, ô đã ghi là
@@ -159,15 +163,25 @@ def _check_node(blueprint: Blueprint, workdir: Path, parts: _Parts) -> Node:
         from app.content.exam.check import check_blueprint
 
         reports = check_blueprint(
-            blueprint, workdir, gateway=None, only=parts.part(state["slot_id"])
+            blueprint, workdir, gateway=None, only=parts.part(state["slot_id"]), quiet=True
         )
         report = next((r for r in reports if r.slot_id == state["slot_id"]), None)
         if report is None:
-            return {"blocked": True, "problems": ["check không đọc được ô này"]}
+            return {
+                "blocked": True,
+                "problems": ["check không đọc được ô này"],
+                "log": [f"vòng {state['revision']}: check không đọc được ô này"],
+            }
+        # Ghi MỘT dòng mỗi vòng vào `log`. Đó là thứ trả lời câu hỏi thật sự
+        # đáng hỏi khi một ô bị giao người: ba vòng hỏng CÙNG một kiểu (lỗi ở
+        # brief) hay ba kiểu khác nhau (model chao đảo)? Chỉ nhìn vòng cuối thì
+        # hai ca ấy giống hệt nhau.
+        summary = "; ".join(report.problems) if report.problems else "sạch"
         return {
             "blocked": report.blocked,
             "problems": list(report.problems),
             "flags": list(report.flags),
+            "log": [f"vòng {state['revision']}: {summary}"],
         }
 
     return check
@@ -292,6 +306,11 @@ def run_pending(
         )
         out.append((slot.id, final["outcome"]))
         print(f"  ✓ [{index}/{len(slots)}] {slot.id} → {final['outcome']}", flush=True)
+        # Giao người mà không nói vì sao là bắt người đọc chạy `check` lần nữa để
+        # biết điều đồ thị vừa biết — nghịch với chính lý do đồ thị tồn tại.
+        if final["outcome"] == "escalated":
+            for line in final.get("log", []):
+                print(f"      {line}", flush=True)
     return out
 
 

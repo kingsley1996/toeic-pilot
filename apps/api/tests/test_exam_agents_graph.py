@@ -114,6 +114,32 @@ def test_escalates_after_max_revisions(workdir: Path, monkeypatch: pytest.Monkey
     )
     assert final["outcome"] == "escalated"
     assert gw.calls.count("exam_write") == MAX_REVISIONS
+    # Một dòng cho MỖI vòng, kèm lý do. Không có nó thì người đọc phải chạy
+    # `check` lần nữa để biết điều đồ thị vừa biết — và không phân biệt được
+    # "ba vòng hỏng cùng kiểu" (lỗi ở brief) với "ba kiểu khác nhau".
+    assert len(final["log"]) == MAX_REVISIONS
+    assert all("vòng " in line for line in final["log"])
+
+
+def test_escalation_prints_why(
+    workdir: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Giao người thì lý do phải HIỆN RA, không chỉ nằm trong state.
+
+    Bản đầu tích luỹ `log` qua một reducer rồi không ai đọc: `run_pending` chỉ
+    lấy `outcome`. Trạng thái đúng mà không in ra thì người vận hành vẫn phải
+    chạy `check` lần nữa, nên test này kiểm ĐẦU RA chứ không kiểm state.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam_agents.graph import run_pending
+
+    monkeypatch.setattr(bp, "load", lambda path: _Blueprint())
+    gw = FakeGateway()
+    gw.good_block = "không phải khối"
+    run_pending(gw, tier=None, blueprint=_Blueprint(), workdir=workdir)
+    printed = capsys.readouterr().out
+    assert "escalated" in printed
+    assert "vòng 1:" in printed and f"vòng {MAX_REVISIONS}:" in printed
 
 
 def test_hint_reaches_next_write(workdir: Path, monkeypatch: pytest.MonkeyPatch) -> None:

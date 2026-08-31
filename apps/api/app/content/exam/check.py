@@ -749,6 +749,7 @@ def check_blueprint(
     tier: Tier = Tier.CHEAP,
     ambiguity: bool = False,
     only: int | None = None,
+    quiet: bool = False,
 ) -> list[SlotReport]:
     """Kiểm mọi ô đã có tệp dán. `gateway=None` thì bỏ mọi tầng cần gọi model.
 
@@ -767,7 +768,11 @@ def check_blueprint(
         if only is None or part.part == only
     ]
     for slot_index, (part_number, slot) in enumerate(slots, start=1):
-        print(f"  … [{slot_index}/{len(slots)}] {slot.id} (part {part_number})", flush=True)
+        if not quiet:
+            # Dòng tiến độ là để người chạy `check` biết nó chưa treo. Đồ thị gọi
+            # lại hàm này cho MỖI vòng của MỖI ô, nên ở đó nó chỉ là nhiễu che
+            # mất dòng kết cục — xem `exam_agents/graph.py`.
+            print(f"  … [{slot_index}/{len(slots)}] {slot.id} (part {part_number})", flush=True)
         report = SlotReport(slot_id=slot.id, number=slot.number)
         path = paste_path(workdir, slot)
         if not path.exists():
