@@ -35,7 +35,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
 from app.content.exam.blueprint import Blueprint, QuestionSlot
-from app.content.exam.writer import DEFAULT_MAX_TOKENS, MissingBlock, save_slot, write_slot
+from app.content.exam.writer import MissingBlock, max_tokens_for, save_slot, write_slot
 from app.services.llm.base import LLMRequest
 from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
@@ -46,6 +46,10 @@ from app.services.llm.router import Tier
 MAX_REVISIONS = 3
 RETRY_TRIES = 7
 RETRY_DELAY = 6.0
+# Rộng hơn nhiều so với đoạn 40 từ node phê xin: model bắt buộc suy luận
+# (GLM 5.3 không tắt được) tiêu trần vào phần nghĩ rồi mới trả lời, nên trần
+# bằng cỡ câu trả lời làm nó chết đói — sau khi khâu viết đã tốn một lượt gọi.
+CRITIC_MAX_TOKENS = 4000
 
 
 class SlotState(TypedDict, total=False):
@@ -59,6 +63,8 @@ class SlotState(TypedDict, total=False):
     flags: list[str]
     fix_hint: str | None
     revision: int
+    # Hỏng ở chính lượt gọi, không ở nội dung — viết lại không cứu được.
+    fatal: bool
     outcome: str
     log: Annotated[list[str], operator.add]
 
@@ -98,6 +104,7 @@ def _write_node(
 
     def write(state: SlotState) -> NodeUpdate:
         from app.content.exam.writer import GRAPHIC_MARKER, split_all, split_photo
+        from app.services.llm.base import LLMError, LLMQuotaExhausted
 
         slot = parts.slot(state["slot_id"])
         part = parts.part(state["slot_id"])
@@ -110,8 +117,30 @@ def _write_node(
                 tier,
                 part,
                 fix_hint=hint,
-                max_tokens=max_tokens or DEFAULT_MAX_TOKENS,
+                max_tokens=max_tokens or max_tokens_for(part, slot),
             )
+        except LLMQuotaExhausted:
+            # Hạn mức NGÀY không tự hết, nên đi tiếp chỉ sinh ra đúng lỗi này cho
+            # mọi ô còn lại và chôn mất dòng nói nguyên nhân. Dừng hẳn, giữ lại
+            # những ô đã viết. Cùng cách xử lý mà `check` đã dùng.
+            raise
+        except LLMError as failure:
+            # Một ô hỏng KHÔNG được giết cả lượt chạy: chặng này chạy hàng giờ
+            # trên 103 ô, và để một lỗi 503 — hay một trần đầu ra quá hẹp cho
+            # riêng ô có hình — vứt hết phần còn lại là cách chắc chắn nhất
+            # khiến không ai chạy nó qua đêm.
+            #
+            # `fatal` chứ không quay lại critic: `with_backoff` đã thử bảy lần,
+            # nên hỏng ở đây là hỏng của lượt gọi chứ không của nội dung, và
+            # không có bản nháp nào để chấm. Ba vòng viết lại sẽ hỏng y hệt.
+            update |= {
+                "draft": "",
+                "blocked": True,
+                "fatal": True,
+                "problems": [str(failure)],
+                "log": [f"vòng {update['revision']}: {failure}"],
+            }
+            return update
         except MissingBlock as cut:
             # Cũng ghi vào `log`: lượt viết hỏng thì node `check` không chạy, nên
             # không có nó thì một ô bị cắt ba lần sẽ bị giao người mà không in ra
@@ -148,13 +177,27 @@ def _write_node(
     return write
 
 
-def _check_node(blueprint: Blueprint, workdir: Path, parts: _Parts) -> Node:
-    """Kiểm máy — KHÔNG gọi model. Nguồn DUY NHẤT được điền `blocked`.
+def _check_node(
+    blueprint: Blueprint,
+    workdir: Path,
+    parts: _Parts,
+    verifier: Gateway | None = None,
+    tier: Tier = Tier.CHEAP,
+) -> Node:
+    """Nguồn DUY NHẤT được điền `blocked`.
 
-    `check_blueprint` chạy trên toàn bộ part của ô (nó đọc tệp dán từ đĩa), với
-    `gateway=None`: bỏ những tầng cần lượt gọi, giữ parser thật + luật hình +
-    trùng lặp. Cùng hàm mà lệnh `check` chạy — bản kiểm riêng sẽ trôi khỏi
-    parser thật. Chỉ lấy report của ô đang chạy.
+    `check_blueprint` chạy trên toàn bộ part của ô (nó đọc tệp dán từ đĩa), rồi
+    chỉ lấy report của ô đang chạy. Cùng hàm mà lệnh `check` chạy — bản kiểm
+    riêng sẽ trôi khỏi parser thật.
+
+    **Hai lượt, và thứ tự là chỗ tiết kiệm.** Lượt đầu `gateway=None`: parser
+    thật, luật hình, trùng lặp — không tốn gì. Chỉ ô nào SẠCH mới đi tiếp lượt
+    hai (`verifier`), nơi có `verify_answer` và `count_workable_options`. Ô đã
+    hỏng ở lượt đầu không cần hỏi model "đáp án có đúng không" — nó còn chưa
+    đọc được. Gộp một lượt thì mỗi ô hỏng vẫn tốn hai lượt gọi, nhân với ba
+    vòng viết lại.
+
+    `verifier=None` giữ nguyên hành vi cũ: hoàn toàn miễn phí.
     """
 
     def check(state: SlotState) -> NodeUpdate:
@@ -162,10 +205,25 @@ def _check_node(blueprint: Blueprint, workdir: Path, parts: _Parts) -> Node:
             return {}
         from app.content.exam.check import check_blueprint
 
-        reports = check_blueprint(
-            blueprint, workdir, gateway=None, only=parts.part(state["slot_id"]), quiet=True
-        )
+        part = parts.part(state["slot_id"])
+        reports = check_blueprint(blueprint, workdir, gateway=None, only=part, quiet=True)
         report = next((r for r in reports if r.slot_id == state["slot_id"]), None)
+        if report is not None and not report.problems and verifier is not None:
+            # `slot_id`, KHÔNG phải `only=part`: lượt này gọi model, và
+            # `only=part` khiến ô thứ k kéo theo cả k ô đã viết — chi phí cộng
+            # dồn thành bình phương (đo được 8,2× trên một đề). Lượt miễn phí ở
+            # trên vẫn quét cả part, vì phép dò trùng cần thế và nó không tốn gì.
+            paid = check_blueprint(
+                blueprint,
+                workdir,
+                gateway=verifier,
+                tier=tier,
+                ambiguity=True,
+                only=part,
+                quiet=True,
+                slot_id=state["slot_id"],
+            )
+            report = next((r for r in paid if r.slot_id == state["slot_id"]), report)
         if report is None:
             return {
                 "blocked": True,
@@ -177,6 +235,10 @@ def _check_node(blueprint: Blueprint, workdir: Path, parts: _Parts) -> Node:
         # brief) hay ba kiểu khác nhau (model chao đảo)? Chỉ nhìn vòng cuối thì
         # hai ca ấy giống hệt nhau.
         summary = "; ".join(report.problems) if report.problems else "sạch"
+        # Chỉ in khi SẮP viết lại. Vòng cuối đi thẳng tới escalate, và ở đó
+        # `run_pending` đã in cả `log` — in ở đây nữa là lặp.
+        if report.blocked and state["revision"] < MAX_REVISIONS:
+            print(f"      ↻ vòng {state['revision']}: {summary[:110]}", flush=True)
         return {
             "blocked": report.blocked,
             "problems": list(report.problems),
@@ -208,7 +270,7 @@ def _critic_node(gateway: Gateway, tier: Tier) -> Node:
                         + "\n".join(f"- {p}" for p in state["problems"])
                         + f"\n\n---\n{state['draft'][:4000]}"
                     ),
-                    max_tokens=200,
+                    max_tokens=CRITIC_MAX_TOKENS,
                     temperature=0.0,
                 ),
                 feature="exam_verify",
@@ -225,7 +287,7 @@ def _critic_node(gateway: Gateway, tier: Tier) -> Node:
 def _after_check(state: dict[str, Any]) -> str:
     if not state["blocked"]:
         return "accept"
-    if state["revision"] >= MAX_REVISIONS:
+    if state.get("fatal") or state["revision"] >= MAX_REVISIONS:
         return "escalate"
     return "critic"
 
@@ -250,6 +312,7 @@ def build(
     blueprint: Blueprint,
     workdir: Path,
     max_tokens: int | None = None,
+    verifier: Gateway | None = None,
 ) -> Any:  # đồ thị đã biên dịch là kiểu của LangGraph — `Any` với mypy vì thư viện không có stub
     parts = _Parts(blueprint)
 
@@ -262,7 +325,7 @@ def build(
         return fn
 
     builder.add_node("write", _node(_write_node(gateway, tier, workdir, parts, max_tokens)))
-    builder.add_node("check", _node(_check_node(blueprint, workdir, parts)))
+    builder.add_node("check", _node(_check_node(blueprint, workdir, parts, verifier, tier)))
     builder.add_node("critic", _node(_critic_node(gateway, tier)))
     builder.add_node("accept", _node(_accept))
     builder.add_node("escalate", _node(_escalate))
@@ -284,33 +347,105 @@ def run_pending(
     limit: int | None = None,
     only: int | None = None,
     max_tokens: int | None = None,
+    verifier: Gateway | None = None,
 ) -> list[tuple[str, str]]:
     """Chạy đồ thị cho MỌI ô còn thiếu tệp dán. Trả về [(slot, outcome)].
 
     `max_tokens` đi thẳng vào `write_slot`: model suy luận tiêu một phần lớn trần
     cho phần suy nghĩ trước khi viết — trần mặc định 6000 từng bị một lượt eat
     22 975 ký tự suy nghĩ và không kịp trả lời."""
+    import threading
+    from itertools import groupby
+    from time import perf_counter
+
+    def heartbeat(label: str, stop: threading.Event, since: float) -> None:
+        """In một dòng mỗi phút trong lúc một ô đang chạy.
+
+        Một lượt viết ô có hình mất 5–6 phút đo được, và trong quãng đó KHÔNG có
+        gì để in: dòng `✓` chờ ô xong, dòng `↻` chờ khâu kiểm, còn sổ cái chỉ
+        được ghi khi lượt gọi kết thúc. Im lặng năm phút không phân biệt được
+        với treo — và đã bị đọc nhầm thành treo hai lần.
+        """
+        while not stop.wait(60):
+            print(f"      … {label} vẫn đang chạy ({perf_counter() - since:.0f}s)", flush=True)
+
     from app.content.exam.writer import pending
 
-    graph = build(gateway, tier, blueprint, workdir, max_tokens)
+    graph = build(gateway, tier, blueprint, workdir, max_tokens, verifier)
     out: list[tuple[str, str]] = []
     slots = pending(blueprint, workdir)
     if only is not None:
         slots = [s for s in slots if parts_of(blueprint, s.id) == only]
-    for index, slot in enumerate(slots, start=1):
-        if limit is not None and index > limit:
-            break
-        final = graph.invoke(
-            {"slot_id": slot.id, "revision": 0, "outcome": "pending"},
-            config={"configurable": {"thread_id": slot.id}},
+    if limit is not None:
+        slots = slots[:limit]
+
+    # Gom theo part để in mốc: `pending` trả ô theo thứ tự blueprint nên các ô
+    # cùng part đã nằm liền nhau, groupby là đủ — không cần sắp lại.
+    groups = [
+        (part, list(items))
+        for part, items in groupby(slots, key=lambda slot: parts_of(blueprint, slot.id))
+    ]
+    if not slots:
+        # Im lặng ở đây đọc ra như hỏng. "0 ô nhận" không phân biệt được "đã đủ
+        # rồi" với "tìm không ra ô nào", và hai ca đó cần hai hành động ngược
+        # nhau: một cái là đi tiếp, một cái là đi tìm lỗi.
+        scope = f"part {only}" if only is not None else "cả đề"
+        print(f"  {scope}: đã đủ ô, không còn gì để viết", flush=True)
+        return out
+
+    total = len(slots)
+    done = 0
+    run_started = perf_counter()
+    for part, items in groups:
+        print(f"\n── part {part} · {len(items)} ô ──", flush=True)
+        part_started = perf_counter()
+        accepted = escalated = 0
+        for slot in items:
+            done += 1
+            started = perf_counter()
+            # `invoke` chạy tới khi ô accept/escalate, có thể là ba vòng viết
+            # lại. Không báo trước thì màn hình câm hàng chục phút trong khi tệp
+            # dán đã nằm trên đĩa từ lâu — đọc ra như treo.
+            print(f"  → [{done}/{total}] {slot.id} …", flush=True)
+            stop = threading.Event()
+            # daemon: nhịp tim không bao giờ được giữ tiến trình sống lại.
+            threading.Thread(target=heartbeat, args=(slot.id, stop, started), daemon=True).start()
+            try:
+                final = graph.invoke(
+                    {"slot_id": slot.id, "revision": 0, "fatal": False, "outcome": "pending"},
+                    config={"configurable": {"thread_id": slot.id}},
+                )
+            finally:
+                stop.set()
+            outcome = final["outcome"]
+            out.append((slot.id, outcome))
+            accepted += outcome == "accepted"
+            escalated += outcome == "escalated"
+            print(
+                f"  ✓ [{done}/{total}] {slot.id} → {outcome} ({perf_counter() - started:.0f}s)",
+                flush=True,
+            )
+            # Giao người mà không nói vì sao là bắt người đọc chạy `check` lần nữa để
+            # biết điều đồ thị vừa biết — nghịch với chính lý do đồ thị tồn tại.
+            if outcome == "escalated":
+                for line in final.get("log", []):
+                    print(f"      {line}", flush=True)
+            # Cờ KHÔNG chặn nạp (xem `check_blueprint`: phép đếm phương án là
+            # phép nhiễu nhất, chỉ `prune` mới nên quyết theo nó) — nhưng không
+            # in ra thì `--verify` tính xong rồi vứt, tức là trả tiền cho một
+            # kết quả không ai thấy.
+            for flag in final.get("flags", []):
+                print(f"      ⚠ {flag}", flush=True)
+        # Ước lượng tính từ nhịp THẬT của lượt chạy này, không từ một hằng số:
+        # nhịp phụ thuộc model, part và số vòng viết lại, nên đoán trước là sai.
+        elapsed = perf_counter() - run_started
+        left = (elapsed / done) * (total - done) if done else 0.0
+        tail = f" · còn {total - done} ô, ước {left / 60:.0f} phút" if done < total else ""
+        print(
+            f"  part {part}: {accepted} nhận · {escalated} giao người"
+            f" · {(perf_counter() - part_started) / 60:.1f} phút{tail}",
+            flush=True,
         )
-        out.append((slot.id, final["outcome"]))
-        print(f"  ✓ [{index}/{len(slots)}] {slot.id} → {final['outcome']}", flush=True)
-        # Giao người mà không nói vì sao là bắt người đọc chạy `check` lần nữa để
-        # biết điều đồ thị vừa biết — nghịch với chính lý do đồ thị tồn tại.
-        if final["outcome"] == "escalated":
-            for line in final.get("log", []):
-                print(f"      {line}", flush=True)
     return out
 
 
@@ -341,6 +476,12 @@ def main(argv: list[str] | None = None) -> int:
         help="trần đầu ra mỗi lượt viết; model suy luận cần rộng (mặc định 6000)",
     )
     parser.add_argument("--tier", default="cheap", choices=["cheap", "strong"])
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="bật hai tầng kiểm dùng model (đối chiếu đáp án + đếm phương án dùng "
+        "được) cho những ô đã sạch ở tầng miễn phí — tốn thêm ~2 lượt gọi mỗi ô",
+    )
     args = parser.parse_args(argv)
 
     blueprint = bp.load(blueprint_path(args.slug))
@@ -348,7 +489,14 @@ def main(argv: list[str] | None = None) -> int:
     tier = Tier.STRONG if args.tier == "strong" else Tier.CHEAP
 
     results = run_pending(
-        gateway, tier, blueprint, workdir_for(args.slug), args.limit, args.part, args.max_tokens
+        gateway,
+        tier,
+        blueprint,
+        workdir_for(args.slug),
+        args.limit,
+        args.part,
+        args.max_tokens,
+        verifier=gateway if args.verify else None,
     )
     accepted = sum(1 for _, outcome in results if outcome == "accepted")
     escalated = sum(1 for _, outcome in results if outcome == "escalated")

@@ -19,87 +19,68 @@ một lần Ctrl-C không được phép vứt sạch.
 from __future__ import annotations
 
 import re
-from collections.abc import Callable
 from pathlib import Path
 
 from app.content.exam.blueprint import (
-    GRAPHIC_POSITION,
     QUESTIONS_PER_SET,
     Blueprint,
     QuestionSlot,
 )
-from app.services.content_import import SCRIPT_MARKER as CONTENT_SCRIPT_MARKER
-from app.services.content_import import SET_MARKER as CONTENT_SET_MARKER
-from app.services.labels import LABELS
+from app.content.exam.prompts import (
+    _PROMPT_FOR,
+    BLANK,
+    GRAPHIC_MARKER,
+    GRAPHIC_RULES_TEMPLATE,
+    PASSAGE_MARKER,
+    PHOTO_MARKER,
+    SCRIPT_MARKER,
+    _system_for,
+    graphic_rules,
+    prompt_for,
+    prompt_for_part1,
+    prompt_for_part2,
+    prompt_for_part3,
+    prompt_for_part4,
+    prompt_for_part6,
+    prompt_for_part7,
+)
+
+# Tái xuất hợp đồng định dạng: `check`, `authoring` và `graph` vốn lấy các mốc
+# qua `writer`, và bắt chúng đổi sang `prompts` chỉ vì tệp được tách là một diff
+# không mua được gì. `__all__` cũng là thứ nói cho ruff biết đây là tái xuất cố
+# ý chứ không phải import bỏ quên.
+__all__ = [
+    "BLANK",
+    "DEFAULT_MAX_TOKENS",
+    "GRAPHIC_MARKER",
+    "GRAPHIC_RULES_TEMPLATE",
+    "PASSAGE_MARKER",
+    "PHOTO_MARKER",
+    "RETRY_DELAY",
+    "RETRY_TRIES",
+    "SCRIPT_MARKER",
+    "MissingBlock",
+    "clean",
+    "graphic_rules",
+    "paste_path",
+    "pending",
+    "prompt_for",
+    "prompt_for_part1",
+    "prompt_for_part2",
+    "prompt_for_part3",
+    "prompt_for_part4",
+    "prompt_for_part6",
+    "prompt_for_part7",
+    "save_slot",
+    "split_all",
+    "split_marked",
+    "split_photo",
+    "write_slot",
+]
 from app.services.llm.base import LLMRequest
 from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
 from app.services.llm.router import Tier
-
-# Hợp đồng định dạng, gửi kèm mọi lượt gọi. Viết ra tường minh chứ không tả bằng
-# lời: mô hình bám theo ví dụ chặt hơn nhiều so với bám theo mô tả.
-# Dòng giải thích của ví dụ, ghép từ nhiều mảnh để NGUỒN ngắn dưới 100 cột mà
-# chuỗi gửi đi vẫn nằm trên MỘT dòng. Ngắt dòng thật ở đây sẽ dạy mô hình ngắt
-# dòng theo, và parser coi dòng lạ sau các đáp án là lỗi — một lựa chọn định
-# dạng của tệp nguồn sẽ đi thẳng vào đầu ra của mô hình.
-EXAMPLE_EXPLANATION = (
-    'Explanation: Sau "must be" cần phân từ hai của thể bị động. '
-    '(B) là V-ing, không đi sau "be" theo nghĩa bị động; '
-    '(C) là danh từ; (D) là tính từ nghĩa "phục tùng", không liên quan.'
-)
-
-SYSTEM = f"""You write TOEIC Part 5 (Incomplete Sentences) questions for an original practice test.
-
-THE ONE RULE THAT DECIDES WHETHER AN ITEM IS USABLE
-Exactly one option can complete the sentence. Apply this test before you answer:
-read the sentence four times, once with each option in the blank. If a competent
-speaker of business English would accept two of them, the item is broken — throw
-it away and write a different one. Near-synonyms are the usual way this goes
-wrong: "verify / confirm / validate" all fit "------- the references", so that is
-not an item, it is four right answers.
-
-Each wrong option must fail for a reason you can state in one short clause:
-- wrong part of speech for that slot,
-- wrong collocation with the noun or verb next to the blank,
-- wrong tense, voice, or number given the rest of the sentence,
-- a real word that means something unrelated in this context.
-"Slightly less natural" is NOT a reason. If that is the best you can say about a
-distractor, replace it.
-
-Other rules:
-- One English sentence with exactly one blank, written as seven hyphens: -------
-- Exactly FOUR options labelled (A) (B) (C) (D).
-- Setting is always work, business or office life — never private life.
-- Neutral register. No humour, no real brand names.
-- Never copy a sentence from any real exam. Write new material.
-- Sentence and options in ENGLISH. Explanation in Vietnamese.
-- The explanation names the reason EACH wrong option is wrong, not just why the
-  right one is right.
-
-Reply with exactly this block and nothing else — no preamble, no code fences:
-
-[QUESTION]
-All maintenance requests must be ------- through the facilities portal by Friday.
-(A) submitted
-(B) submitting
-(C) submission
-(D) submissive
-Answer: A
-{EXAMPLE_EXPLANATION}
-Source: original
-
-Note the shape of the answer line: a single letter, nothing else."""
-
-
-PHOTO_MARKER = "[PHOTO]"
-# Mốc lời thoại dùng chung của Part 3/4. Cùng chuỗi mà `content_import` nhận,
-# nhập từ đó chứ không viết lại: hai hằng số cho một giao thức là hai thứ trôi
-# khỏi nhau, và cái trôi chỉ lộ ra ở chặng nạp.
-SCRIPT_MARKER = CONTENT_SCRIPT_MARKER
-GRAPHIC_MARKER = "[GRAPHIC]"
-PASSAGE_MARKER = CONTENT_SET_MARKER
-
-BLANK = "-------"
 
 # Cả pipeline sinh đề kiên nhẫn hơn mặc định của `with_backoff`. Đo được trên
 # model miễn phí của tokenrouter: **ba lượt 503 liên tiếp rồi lượt thứ tư trả
@@ -108,640 +89,6 @@ BLANK = "-------"
 # thì ô đó về hàng đợi và người chạy phải tự chạy lại.
 RETRY_TRIES = 7
 RETRY_DELAY = 6.0
-
-SYSTEM_PART1 = f"""You write TOEIC Part 1 (Photographs) items for an original practice test.
-
-A Part 1 item is a photograph plus four spoken statements. Nothing is printed in
-the test book — the four statements are heard, not read. Exactly one statement is
-a true description of the photograph.
-
-THE RULE THAT DECIDES WHETHER AN ITEM IS USABLE
-The three wrong statements must be **verifiably false about the photograph**, not
-merely unlikely. Each one fails in one of these ways:
-- right object, wrong action ("The man is repairing the copier" when he is using it),
-- right action, wrong object ("She is holding a folder" when it is a mug),
-- an object or person that is simply not in the photograph,
-- a plural/singular mismatch ("The workers are..." when there is one person).
-A statement that *might* be true depending on how you look at the photo is not a
-distractor — it is a second right answer. Rewrite it.
-
-Write the four statements FIRST, then describe the photograph that makes exactly
-one of them true. The description will be used to create the photograph, so it
-must fix every detail the four statements depend on: how many people, what each
-is doing, what objects are visible and where.
-
-Other rules:
-- Present continuous is the normal tense for Part 1; a few statements may use
-  "There is / There are" or the passive.
-- Each statement is one short sentence, 6–12 words, similar length to the others.
-- Setting is always work, business or public life. No brand names, no text in the
-  photograph.
-- Never copy from any real exam.
-
-Reply with exactly these two blocks and nothing else — no preamble, no fences:
-
-{PHOTO_MARKER}
-A photograph of an office worker seated at a desk, typing on a laptop with both
-hands. A closed notebook and a white mug sit to the right of the laptop. No other
-people are visible.
-
-[QUESTION]
-voice: VOICE_ID
-(A) The man is typing on a laptop.
-(B) The man is pouring coffee into a mug.
-(C) Two colleagues are sharing a desk.
-(D) The notebook is lying open on the desk.
-Answer: A
-Source: original
-
-`voice:` must be copied exactly from the instruction below."""
-
-
-# Số người trong ảnh đổi cả bộ mẫu câu, không chỉ đổi nội dung. Không nói ra thì
-# mô hình viết "The man is ..." cho một tấm ảnh không có ai — và câu đó sai theo
-# một kiểu người học không học được gì từ nó.
-_PEOPLE_BRIEF = {
-    "one": (
-        "Trong ảnh có ĐÚNG MỘT người. Mẫu câu chính là thì hiện tại tiếp diễn "
-        "với người đó làm chủ ngữ."
-    ),
-    "several": (
-        "Trong ảnh có TỪ HAI NGƯỜI TRỞ LÊN. Dùng cả chủ ngữ số nhiều "
-        '("The workers are...") lẫn chủ ngữ chỉ một người trong nhóm.'
-    ),
-    "none": (
-        "Trong ảnh KHÔNG CÓ NGƯỜI NÀO — chỉ đồ vật hoặc quang cảnh. Vì thế "
-        'KHÔNG câu nào được có người làm chủ ngữ. Dùng "There is / There are", '
-        'thể bị động trạng thái ("Some chairs have been arranged in rows"), '
-        "hoặc hiện tại tiếp diễn với chủ ngữ là đồ vật "
-        '("Some boxes are sitting on the floor"). Một câu nhiễu tốt ở dạng này '
-        "là câu nhắc tới một người không hề có trong ảnh."
-    ),
-}
-
-
-SYSTEM_PART3 = """You write TOEIC Part 3 (Conversations) items for an original
-practice test.
-
-A Part 3 item is ONE short conversation plus THREE questions about it. The
-conversation is heard, never printed; the questions and their four options ARE
-printed in the test book.
-
-THE CONVERSATION
-- 5 to 8 turns, natural spoken business English, roughly 60-100 words total.
-- Speakers alternate; in a three-speaker conversation the third speaker joins
-  partway through.
-- Every fact the three questions depend on must be SAID out loud. A question
-  whose answer is only implied by tone is not answerable from a recording.
-- No names of real companies, no brand names, no prices in currency symbols
-  (say "forty dollars", not "$40" — it is read aloud).
-
-THE THREE QUESTIONS
-- Each asks about something different. Do not ask twice about the same turn.
-- Four printed options each, exactly one correct.
-- The three wrong options must be wrong **against what was said**: a detail from
-  the wrong speaker, an action that was rejected, a time that was changed, or
-  something never mentioned. An option that is merely unlikely is a second
-  correct answer.
-- Options are short noun phrases or short clauses, similar length to each other.
-
-Reply with exactly this shape and nothing else — no preamble, no fences:
-
-[SCRIPT]
-voice: VOICE_A
-Good morning. I'm calling about the delivery scheduled for Thursday.
-voice: VOICE_B
-Let me check the order. It looks like it left the warehouse yesterday.
-voice: VOICE_A
-That's earlier than we expected. Can it be held until Friday?
-
-[QUESTION]
-Why is the woman calling?
-(A) To reschedule a delivery
-(B) To place a new order
-(C) To report a damaged item
-(D) To request an invoice
-Answer: A
-Source: original
-
-[QUESTION]
-...
-
-[QUESTION]
-...
-
-Each `voice:` line switches who is speaking, and you may only use the voice
-names given in the instruction below. Every question block needs its own
-`Answer:` and `Source: original` lines."""
-
-
-GRAPHIC_FORMAT = f"""EVERY graphic has a `kind:` line, then a TITLE LINE of its own, then its data.
-The title is never a row — leaving it out shifts the whole graphic up a line and
-the block is rejected. Here is each kind in full:
-
-{GRAPHIC_MARKER}
-kind: schedule
-Wednesday Availability
-Person | 8-9 | 9-10 | 10-11 | 11-12
-Zahra | Busy |  | Team meeting |
-Sammy |  | Client call |  | Budget meeting
-
-{GRAPHIC_MARKER}
-kind: chart
-Quarterly Sales in thousands
-First quarter | 42
-Second quarter | 58
-Third quarter | 35
-Fourth quarter | 71
-
-{GRAPHIC_MARKER}
-kind: map
-Mall Directory, Ground Floor
-Store 1: Electronics | Store 2: Bookstore
-Store 3: Sporting Goods | Store 4: Pharmacy
-
-Where the answer options come from, per kind:
-
-  table     the four ROW NAMES
-  schedule  the four TIME SLOTS — the column headings, NOT the people
-  chart     the four LABELS
-  map       the four CELL NAMES, the part before any colon
-
-For `schedule`, LEAVE A CELL EMPTY when that person is free; that emptiness is
-what the question turns on, and a grid with every cell filled has no answer.
-Use ordinary personal names for the people — never a voice name like
-`us_female_1`, which is a recording instruction and not a person.
-
-Separate cells with a vertical bar. Keep every value short."""
-
-
-_GRAPHIC_RULES_TEMPLATE = f"""
-
-THIS ITEM COMES WITH A GRAPHIC
-The test book prints a small graphic beside the three questions. EXACTLY ONE
-question begins with "Look at the graphic", and it is question number {{ordinal}}
-of the three — not any other. Emit the graphic first, as data. The first line
-names its kind. Four kinds exist; use the one you are told to.
-
-{GRAPHIC_MARKER}
-kind: table
-Office Supply Prices
-Type | Cost
-Daily planner | $14.89
-Weekly planner | $27.49
-Monthly desk pad | $5.49
-Undated desk pad | $4.99
-{GRAPHIC_FORMAT}
-
-Invent your own titles, labels and numbers. The examples above are a shape to
-copy, never content to copy — reusing their values makes two different papers
-carry the same graphic.
-
-Two rules make it a real graphic question rather than a detail question:
-
-1. The four options of the LAST question are exactly the four items on that
-   kind's answer axis, and nothing else.
-2. The speaker must NEVER say the winning item's name. It gives the other
-   information instead ("the one that's about twenty-seven dollars", "the hour
-   when we're both free", "right across from the bookstore"), so the listener
-   has to read the graphic. If the weekly planner is named out loud, the graphic
-   is decoration and the question is answerable without it."""
-
-
-def _system_for(part: int, slot: QuestionSlot) -> str:
-    """System prompt của một lượt viết, ghép thêm luật hình khi cụm có hình.
-
-    Part 3/4 nhận **cả** định dạng lẫn luật câu hỏi về hình — ở đó bốn lựa chọn
-    chính là bốn mục trên hình. Part 7 chỉ nhận **định dạng**: hình của nó là
-    NGỮ LIỆU, câu hỏi hỏi về nội dung chứ không bắt chọn giữa bốn hàng (§28).
-
-    Bản đầu chỉ ghép cho Part 3/4, nên Part 7 được bảo "xuất một khối [GRAPHIC]"
-    mà không bao giờ được cho biết khối đó trông thế nào — và mô hình vẽ bảng
-    bằng ký tự `+---+`, thứ không đọc ra dữ liệu nào.
-    """
-    base = _SYSTEM_FOR.get(part, SYSTEM)
-    if part in (3, 4) and slot.graphic:
-        return base + graphic_rules(GRAPHIC_POSITION[part])
-    if part == 7 and any(slot.passages):
-        return f"{base}\n\nTHE GRAPHIC BLOCKS\n{GRAPHIC_FORMAT}"
-    return base
-
-
-def graphic_rules(position: int) -> str:
-    """Luật hình, gắn đúng VỊ TRÍ câu hỏi về hình của part đang viết.
-
-    Vị trí khác nhau giữa hai part (Part 3 câu thứ ba, Part 4 câu thứ hai), nên
-    một hằng số nói "câu cuối" là đúng cho Part 3 và sai cho Part 4 — và cái sai
-    đó chỉ lộ ra ở cổng kiểm, sau khi đã trả tiền cho lượt gọi.
-    """
-    ordinal = {1: "one", 2: "two", 3: "three"}[position + 1]
-    return _GRAPHIC_RULES_TEMPLATE.format(ordinal=ordinal)
-
-
-SYSTEM_PART4 = """You write TOEIC Part 4 (Talks) items for an original practice
-test.
-
-A Part 4 item is ONE short talk by a SINGLE speaker plus THREE questions about
-it. The talk is heard, never printed; the questions and their four options ARE
-printed in the test book.
-
-THE TALK
-- One voice throughout. No dialogue, no second speaker, no interruptions.
-- 90-120 words of natural spoken business English, in the register its form
-  calls for: a voice-mail message, a public announcement, a radio commercial, an
-  excerpt from a meeting, or a short talk to an audience.
-- It opens the way that form opens — "Hi, this is Marcus from...", "Attention,
-  shoppers", "Good morning, everyone, and welcome to..." — because the first
-  question is usually about who is speaking or where.
-- Every fact the three questions depend on must be SAID out loud.
-- No real company names, no brand names, no currency symbols (say "forty
-  dollars", not "$40" — it is read aloud).
-
-THE THREE QUESTIONS
-- Each asks about something different. Do not ask twice about the same sentence.
-- Four printed options each, exactly one correct.
-- The three wrong options must be wrong **against what was said**: a detail that
-  was corrected, an action ruled out, a time that changed, or something never
-  mentioned. An option that is merely unlikely is a second correct answer.
-- Options are short noun phrases or short clauses, similar length to each other.
-
-Reply with exactly this shape and nothing else — no preamble, no fences:
-
-[SCRIPT]
-voice: VOICE_A
-Attention, passengers on flight two-oh-six to Denver. The departure gate has
-been changed from gate twelve to gate nineteen. Boarding will begin in about
-twenty minutes. Please allow extra time to reach the new gate.
-
-[QUESTION]
-Where is the announcement being made?
-(A) At an airport
-(B) At a train station
-(C) At a bus terminal
-(D) At a ferry landing
-Answer: A
-Source: original
-
-[QUESTION]
-...
-
-[QUESTION]
-...
-
-Use only the voice name given in the instruction below, on a single `voice:`
-line. Every question block needs its own `Answer:` and `Source: original`."""
-
-
-SYSTEM_PART2 = """You write TOEIC Part 2 (Question-Response) items for an
-original practice test.
-
-A Part 2 item is ONE spoken question or statement, followed by THREE spoken
-responses. NOTHING is printed in the test book — the test taker only listens.
-Exactly one response is an appropriate reply.
-
-THE PROMPT LINE
-- One sentence, 6-14 words, natural spoken business English.
-- It is the form you are told to write: a WHERE question, a tag question, a
-  request, a plain statement, and so on.
-
-THE THREE RESPONSES
-- Short — usually 4-12 words, the length a person actually answers in.
-- Exactly one works as a reply. The other two must fail for a reason a listener
-  can name, and these are the failures the real test uses:
-    · answers a DIFFERENT question word (a place when the question asked when),
-    · repeats or echoes a word from the prompt in an unrelated sense
-      ("Where's the *report*?" / "He'll *report* to the manager."),
-    · a similar-sounding word ("fare" for "fair", "copy" for "coffee"),
-    · a yes/no answer to a question that cannot take one.
-- Do NOT make a wrong response absurd. It should be tempting to someone who
-  caught only part of the prompt.
-
-Reply with exactly this shape and nothing else — no preamble, no fences:
-
-[QUESTION]
-voice: VOICE_ASK
-Where did you put the quarterly sales report?
-voice: VOICE_REPLY
-(A) On your desk, next to the printer.
-(B) Yes, I finished it last night.
-(C) About thirty copies, I think.
-Answer: A
-Source: original
-
-There are THREE responses, not four — Part 2 has no (D). The two `voice:` lines
-must be copied exactly from the instruction below: the first switches to the
-person asking, the second to the person replying."""
-
-
-SYSTEM_PART6 = f"""You write TOEIC Part 6 (Text Completion) items for an
-original practice test.
-
-A Part 6 item is ONE short business text with FOUR blanks in it, and four
-printed options for each blank. Everything is printed — nothing is heard.
-
-THE TEXT
-- 90-130 words, the form you are told to write: a letter, an e-mail, a memo, or
-  a short article. Include its normal furniture — a greeting and a signature for
-  a letter, To/From/Subject/Date lines for a memo or e-mail.
-- Exactly FOUR blanks, written as `{BLANK} (1)` through `{BLANK} (4)`, numbered
-  in reading order.
-- The numbers matter: on paper the options sit under the blank, but a learner
-  reading on a screen sees the questions in a separate list and needs the number
-  to find which blank is which.
-- No real company names, no brand names.
-
-THE FOUR QUESTIONS, IN ORDER
-- Questions 1-3 fill blanks 1-3 with a WORD or PHRASE. Their four options are
-  four forms of one word, or four different words of the same class — the same
-  shape as Part 5.
-- Question 4 is the SENTENCE INSERTION. Its four options are four complete
-  sentences, and blank (4) must sit where a whole sentence belongs — usually at
-  the end of a paragraph. Exactly one sentence follows on from what comes before
-  it and leads into what comes after; the other three are grammatical, plausible
-  business English that does not fit THIS place in THIS text.
-- A wrong option must be wrong because of the surrounding text, never because it
-  is ungrammatical on its own. Part 6 tests reading the paragraph, not the line.
-
-Reply with exactly this shape and nothing else — no preamble, no fences:
-
-[PASSAGE]
-Dear Mr. Panzer,
-
-Thank you for your recent purchase of season tickets. Tickets for the first
-event {BLANK} (1) in the middle of June. You can also expect a members card,
-which entitles you to {BLANK} (2) such as parking at reduced rates.
-
-So that we can send you regular updates, please make sure we have {BLANK} (3)
-e-mail address. {BLANK} (4)
-
-Sincerely,
-Jorge Rodriguez
-
-[QUESTION]
-Blank (1)
-(A) mails
-(B) mailing
-(C) were mailed
-(D) will be mailed
-Answer: D
-Source: original
-
-[QUESTION]
-Blank (2)
-(A) accounts
-(B) benefits
-(C) incomes
-(D) gains
-Answer: B
-Source: original
-
-[QUESTION]
-Blank (3)
-(A) you
-(B) your
-(C) yours
-(D) yourself
-Answer: B
-Source: original
-
-[QUESTION]
-Blank (4)
-(A) Thank you for your e-mail of July 31.
-(B) You can send it to us at the address above.
-(C) This includes a cafe next to the theater.
-(D) We have found this performance to be very popular.
-Answer: B
-Source: original
-
-Each question's first line is exactly `Blank (N)` and nothing else.
-
-There must be FOUR `[QUESTION]` lines — one immediately above each of the four
-questions, including the second, third and fourth. A block that opens with a
-single `[QUESTION]` and then lists `Blank (2)`, `Blank (3)`, `Blank (4)` beneath
-it is read as ONE question with sixteen options, and is rejected."""
-
-
-SYSTEM_PART7 = """You write TOEIC Part 7 (Reading Comprehension) items for an
-original practice test.
-
-A Part 7 item is one to three short business documents followed by two to five
-questions. Everything is printed.
-
-THE DOCUMENTS
-- Each is the form you are told to write: an e-mail, a letter, a notice, an
-  advertisement, an article, a review, or a chain of text messages.
-- 90-200 words each. Include the furniture its form has — To/From/Subject/Date
-  for an e-mail, a greeting and signature for a letter, and for a message chain
-  a `Name [10:19 A.M.]` line above every message.
-- No real company names, no brand names.
-- When a set has more than one document, they must be ABOUT THE SAME AFFAIR and
-  at least one question must need BOTH of them: one document supplies a name,
-  date or figure, the other says what that means. A set whose every question can
-  be answered from one document is not a multi-document set.
-
-THE QUESTIONS
-- Four printed options each, exactly one correct.
-- A wrong option must be contradicted by the documents or absent from them —
-  never merely unlikely.
-- Options are short, and similar in length to each other.
-
-FOUR QUESTION FORMS NEED EXACT SHAPES:
-
-  Information / inference / purpose — ordinary questions.
-
-  NOT question — "What is NOT stated about ...?" Three options are stated in the
-  document; the correct answer is the one that is not.
-
-  Vocabulary in context — write it as:
-      In the <document>, the word "<word>" in paragraph <N> is closest in
-      meaning to
-  The word must appear EXACTLY ONCE in the whole set, and the four options are
-  four single words. Do NOT write a line number: the text reflows on screen, so
-  a line number points somewhere different on every device.
-
-  Sentence insertion — put four markers `[1]`, `[2]`, `[3]`, `[4]` at four
-  sentence boundaries inside the document, and write:
-      In which of the positions marked [1], [2], [3], and [4] does the
-      following sentence best belong?
-      "<the sentence>"
-  The four options are exactly `[1]`, `[2]`, `[3]`, `[4]`.
-
-  Implication — only for a message chain. Quote the words VERBATIM and give the
-  time stamp:
-      At 10:23 A.M., what does Ms. Myers mean when she writes, "I can try"?
-
-Reply with exactly this shape and nothing else — no preamble, no fences.
-
-COUNT THE MARKERS. There must be one `[PASSAGE]` line per document and one
-`[QUESTION]` line per question — a three-document set has THREE separate
-`[PASSAGE]` lines, each opening its own document. Running the documents together
-under a single `[PASSAGE]` turns a three-document set into a one-document set
-and is rejected. Same for questions: five questions means five `[QUESTION]`
-lines, never one followed by a list.
-
-[PASSAGE]
-From: orders@example-garden.com
-To: r.kager@example-mail.net
-Subject: Your order 3053
-Date: April 3
-
-Dear Mr. Kager,
-
-We are having difficulty processing your payment. [1] Please sign in to your
-account on our website. [2] Your order will ship the following business day.
-[3] We apologise for the delay. [4]
-
-Sincerely,
-Customer Service
-
-[QUESTION]
-Why was the e-mail sent?
-(A) To report a payment problem
-(B) To confirm a delivery date
-(C) To advertise a new product
-(D) To request a review
-Answer: A
-Source: original
-"""
-
-
-def prompt_for_part7(slot: QuestionSlot) -> str:
-    docs = []
-    for index, spec in enumerate(slot.passages, start=1):
-        if spec:
-            kind, _, detail = spec.partition(":")
-            docs.append(f"  Ngữ liệu {index}: HÌNH dạng `{kind.strip()}` — {detail.strip()}")
-        else:
-            docs.append(f"  Ngữ liệu {index}: văn bản")
-    kinds = "\n".join(
-        f"  {index}. {LABELS[code].label_vi} ({code})"
-        for index, code in enumerate(slot.question_types, start=1)
-    )
-    graphics = [spec for spec in slot.passages if spec]
-    note = (
-        f"\n- Ngữ liệu nào ghi là HÌNH thì xuất một khối [GRAPHIC] cho nó và "
-        f"KHÔNG xuất [PASSAGE] cho nó — hình không có chữ chạy. Cụm này có "
-        f"{sum(1 for p in slot.passages if not p)} khối [PASSAGE] và "
-        f"{len(graphics)} khối [GRAPHIC]."
-        if graphics
-        else ""
-    )
-    multi = (
-        "\n- ÍT NHẤT MỘT câu phải cần CẢ HAI (hoặc cả ba) ngữ liệu mới trả lời "
-        "được: một ngữ liệu cho cái tên/ngày/số, ngữ liệu kia nói cái đó nghĩa là gì."
-        if len(slot.passages) > 1
-        else ""
-    )
-    listed = "\n".join(docs)
-    return (
-        f"Viết một cụm Part 7.\n"
-        f"- Dạng ngữ liệu chính: {LABELS[slot.topic].label_vi}\n"
-        f"- Tình huống: {slot.context}\n"
-        f"- ĐÚNG {len(slot.passages)} khối [PASSAGE], mỗi ngữ liệu một khối:\n{listed}\n"
-        f"- {len(slot.question_types)} câu hỏi, theo đúng thứ tự này:\n{kinds}"
-        f"{multi}{note}"
-    )
-
-
-def prompt_for_part6(slot: QuestionSlot) -> str:
-    kind = LABELS[slot.topic].label_vi
-    lines = []
-    insert_at = 4
-    for index, (code, grammar) in enumerate(
-        zip(slot.question_types, slot.grammars, strict=True), start=1
-    ):
-        detail = f" — {LABELS[grammar].label_vi}" if grammar else ""
-        if code == "PART_6_SENTENCE_INSERTION":
-            insert_at = index
-        lines.append(f"  Chỗ trống ({index}): {LABELS[code].label_vi}{detail}")
-    listed = "\n".join(lines)
-    return (
-        f"Viết một văn bản Part 6 và bốn câu hỏi cho bốn chỗ trống.\n"
-        f"- Dạng văn bản: {kind}\n"
-        f"- Nội dung: {slot.context}\n"
-        f"- Bốn chỗ trống, theo đúng thứ tự này:\n{listed}\n"
-        f"- Chỗ trống ({insert_at}) là câu ĐIỀN CÂU: bốn lựa chọn là bốn câu hoàn chỉnh, "
-        f"và ba câu sai phải sai vì KHÔNG HỢP với đoạn văn quanh nó, không phải "
-        f"vì sai ngữ pháp."
-    )
-
-
-def prompt_for_part2(slot: QuestionSlot) -> str:
-    kind = LABELS[slot.question_type].label_vi
-    ask, reply = slot.voices
-    return (
-        f"Viết một câu hỏi Part 2.\n"
-        f"- Dạng: {kind}\n"
-        f"- Bối cảnh: {slot.context}\n"
-        f"- Dòng đầu tiên sau [QUESTION] phải là chính xác:\nvoice: {ask}\n"
-        f"- Ngay trước (A) phải là chính xác:\nvoice: {reply}\n"
-        f"- BA câu đáp, không phải bốn. Hai câu sai phải sai theo một kiểu gọi "
-        f"tên được, và phải hấp dẫn với người chỉ nghe được một phần câu hỏi."
-    )
-
-
-def prompt_for_part4(slot: QuestionSlot) -> str:
-    kinds = "\n".join(
-        f"  {index}. {LABELS[code].label_vi} ({code})"
-        for index, code in enumerate(slot.question_types, start=1)
-    )
-    return (
-        f"Viết một bài nói Part 4 và ba câu hỏi về nó.\n"
-        f"- Dạng bài: {LABELS[slot.topic].label_vi}\n"
-        f"- Tình huống: {slot.context}\n"
-        f"- MỘT người nói, giọng: {slot.voices[0]}\n"
-        f"- Ba câu hỏi, theo đúng thứ tự này:\n{kinds}\n"
-        f"- Mọi dữ kiện mà ba câu hỏi cần phải được NÓI RA trong bài."
-        + (
-            f"\n- Hình đi kèm — dùng ĐÚNG `kind: {slot.graphic.split(':')[0].strip()}`: "
-            f"{slot.graphic.partition(':')[2].strip()}. Bài nói KHÔNG được đọc tên "
-            f"mục là đáp án — nó chỉ nói thông tin còn lại."
-            if slot.graphic
-            else ""
-        )
-    )
-
-
-def prompt_for_part3(slot: QuestionSlot) -> str:
-    kinds = "\n".join(
-        f"  {index}. {LABELS[code].label_vi} ({code})"
-        for index, code in enumerate(slot.question_types, start=1)
-    )
-    cast = ", ".join(slot.voices)
-    return (
-        f"Viết một cuộc hội thoại Part 3 và ba câu hỏi về nó.\n"
-        f"- Chủ đề: {LABELS[slot.topic].label_vi}\n"
-        f"- Tình huống: {slot.context}\n"
-        f"- Số người nói: {len(slot.voices)}. Chỉ dùng đúng các tên giọng này, "
-        f"mỗi người một giọng: {cast}\n"
-        f"- Ba câu hỏi, theo đúng thứ tự này:\n{kinds}\n"
-        f"- Mọi dữ kiện mà ba câu hỏi cần phải được NÓI RA trong hội thoại."
-        + (
-            f"\n- Hình đi kèm — dùng ĐÚNG `kind: {slot.graphic.split(':')[0].strip()}`: "
-            f"{slot.graphic.partition(':')[2].strip()}. Hội thoại KHÔNG được đọc tên "
-            f"mục là đáp án — nó chỉ nói thông tin còn lại."
-            if slot.graphic
-            else ""
-        )
-    )
-
-
-def prompt_for_part1(slot: QuestionSlot) -> str:
-    kind = LABELS[slot.question_type].label_vi
-    return (
-        f"Viết một câu hỏi Part 1.\n"
-        f"- Dạng ảnh: {kind}\n"
-        f"- {_PEOPLE_BRIEF[slot.people]}\n"
-        f"- Bối cảnh: {slot.context}\n"
-        # Đưa NGUYÊN dòng cần in ra, không mô tả nó. Bản cũ viết
-        # "- Dòng `voice:` phải ghi đúng: ca_male_1" và mô hình nhỏ chép luôn cả
-        # dấu ngoặc ngược vào đầu ra — `\`voice:\` ca_male_1` — thứ parser từ chối.
-        # Hỏng ba lần liên tiếp y hệt nhau với gemma3, tức là lỗi của prompt chứ
-        # không phải của mô hình.
-        f"- Dòng đầu tiên sau [QUESTION] phải là chính xác:\nvoice: {slot.voice}\n"
-        f"- Ba câu sai phải SAI KIỂM CHỨNG ĐƯỢC so với tấm ảnh sẽ vẽ, "
-        f"không phải chỉ 'ít khả năng'."
-    )
 
 
 def split_all(block: str, marker: str) -> tuple[list[str], str]:
@@ -799,36 +146,6 @@ def split_photo(block: str) -> tuple[str, str]:
     _, _, rest = block.partition(PHOTO_MARKER)
     photo, marker, paste = rest.partition("[QUESTION]")
     return photo.strip(), (marker + paste).strip()
-
-
-def prompt_for(slot: QuestionSlot) -> str:
-    grammar = LABELS[slot.grammar].label_vi if slot.grammar else "từ vựng thương mại"
-    kind = LABELS[slot.question_type].label_vi
-    lines = [
-        "Viết một câu hỏi Part 5.",
-        f"- Dạng câu: {kind}",
-        f"- Điểm kiểm tra: {grammar}",
-        f"- Bối cảnh: {slot.context}",
-    ]
-    if not slot.grammar:
-        # Câu TỪ VỰNG là chỗ lỗi "hai đáp án cùng đúng" xảy ra nhiều nhất, vì
-        # cách viết dễ nhất là lấy bốn từ gần nghĩa. Nói thẳng đường đi đúng thay
-        # vì chỉ cấm đường sai: bốn từ cùng đăng ký ngôn ngữ nhưng KHÁC trường
-        # nghĩa, và chỉ một từ hợp với danh từ/động từ đứng cạnh chỗ trống.
-        lines.append(
-            "- Bốn lựa chọn phải là bốn từ KHÁC TRƯỜNG NGHĨA, không phải bốn từ gần nghĩa. "
-            "Ba từ sai phải sai vì không đi được với từ đứng cạnh chỗ trống, "
-            "không phải vì 'kém tự nhiên hơn'."
-        )
-    else:
-        lines.append(
-            "- Ba lựa chọn sai phải sai vì đúng điểm kiểm tra đó (sai từ loại, sai thì, "
-            "sai thể, sai dạng), không phải sai vu vơ."
-        )
-    lines.append(
-        "- Bốn lựa chọn dài xấp xỉ nhau: lựa chọn dài hơn hẳn là một manh mối rò rỉ đáp án."
-    )
-    return "\n".join(lines)
 
 
 def paste_path(workdir: Path, slot: QuestionSlot) -> Path:
@@ -919,24 +236,6 @@ class MissingBlock(RuntimeError):
     """Đầu ra không chứa `[QUESTION]` — không có gì để lưu."""
 
 
-_SYSTEM_FOR = {
-    1: SYSTEM_PART1,
-    2: SYSTEM_PART2,
-    3: SYSTEM_PART3,
-    4: SYSTEM_PART4,
-    6: SYSTEM_PART6,
-    7: SYSTEM_PART7,
-}
-_PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
-    1: prompt_for_part1,
-    2: prompt_for_part2,
-    3: prompt_for_part3,
-    4: prompt_for_part4,
-    6: prompt_for_part6,
-    7: prompt_for_part7,
-}
-
-
 # Trần đầu ra mặc định của chặng viết. Không phải hằng số cứng, vì nó bị kéo
 # theo hai hướng ngược nhau và cả hai đều đo được:
 #
@@ -948,6 +247,28 @@ _PROMPT_FOR: dict[int, Callable[[QuestionSlot], str]] = {
 #
 # Nên nó là tham số của lượt chạy, giống như việc chọn nhà cung cấp.
 DEFAULT_MAX_TOKENS = 6000
+
+# Trần theo HÌNH DẠNG của ô, không theo lượt chạy — `--max-tokens` là một con số
+# cho cả trăm ô có độ khó rất khác nhau.
+#
+# Nội dung sinh ra rất ngắn (đo trên tp-form-08: 64 tới 401 token), nên gần như
+# TOÀN BỘ trần là phần suy luận, và nó tỉ lệ với độ khó chứ không với độ dài đầu
+# ra. Đo được với glm-5.3-flash: ô không hình dùng trung bình 2 096 token và
+# nhiều nhất 7 739; ô có hình dùng 8 506 ở trần 25 000, còn `p3-11` bị cắt ở
+# trần 12 000.
+#
+# Trần rộng KHÔNG miễn phí: model nở phần suy luận cho vừa ngân sách được cấp.
+# Cùng một ô có hình, trần 40 000 mất 322 giây còn trần 25 000 chỉ mất 225 — và
+# cửa sổ đọc đi theo trần, nên trần rộng cũng làm một ô HỎNG hỏng chậm hơn.
+_MAX_TOKENS_BY_PART = {1: 10000, 2: 10000, 3: 14000, 4: 14000, 5: 12000, 6: 16000, 7: 20000}
+GRAPHIC_MAX_TOKENS = 24000
+
+
+def max_tokens_for(part: int, slot: QuestionSlot) -> int:
+    """Trần đầu ra hợp lý cho ô này. `--max-tokens` truyền tay vẫn thắng."""
+    if slot.graphic or any(slot.passages):
+        return GRAPHIC_MAX_TOKENS
+    return _MAX_TOKENS_BY_PART.get(part, DEFAULT_MAX_TOKENS)
 
 
 def write_slot(

@@ -218,3 +218,35 @@ def cmd_prune(args: argparse.Namespace) -> int:
     if doomed and not args.dry_run:
         print("Chạy lại `write` để sinh lại đúng những ô vừa loại.")
     return 0
+
+
+def cmd_prompt(args: argparse.Namespace) -> int:
+    """In ĐÚNG hai chuỗi sẽ gửi đi cho một ô — không gọi model.
+
+    Có lệnh này vì trong một phiên gỡ lỗi tôi đã phải dựng lại prompt bằng tay
+    hai lần để trả lời cùng một câu: "nó thật sự gửi đi cái gì". Chuỗi dựng tay
+    thì không chứng minh được điều gì — nó có thể khác chuỗi thật ở đúng chỗ
+    đang hỏng.
+    """
+    from app.content.exam.prompts import _PROMPT_FOR, SYSTEM, _system_for, prompt_for
+
+    plan = bp.load(blueprint_path(args.slug))
+    found = [
+        (part.part, slot) for part in plan.parts for slot in part.slots if slot.id == args.slot
+    ]
+    if not found:
+        print(f"không có ô {args.slot!r} trong blueprint", file=sys.stderr)
+        return 1
+    part, slot = found[0]
+    system = SYSTEM if part == 5 else _system_for(part, slot)
+    user = prompt_for(slot) if part == 5 else _PROMPT_FOR[part](slot)
+
+    print(f"── Ô {slot.id} · part {part} · câu {slot.number}")
+    for key, value in vars(slot).items():
+        if value not in ("", [], None):
+            print(f"   {key}: {value}")
+    print(f"\n── SYSTEM ({len(system):,} ký tự)\n{system}")
+    print(f"\n── USER ({len(user):,} ký tự)\n{user}")
+    total = len(system) + len(user)
+    print(f"\n── tổng {total:,} ký tự (~{total // 4:,} token)")
+    return 0

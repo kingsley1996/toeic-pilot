@@ -864,7 +864,7 @@ def test_a_graphic_copied_from_the_prompt_example_is_rejected(tmp_path):
         ["kind: chart", "Quarterly Sales in thousands"]
         + [
             line.strip()
-            for line in w._GRAPHIC_RULES_TEMPLATE.splitlines()
+            for line in w.GRAPHIC_RULES_TEMPLATE.splitlines()
             if line.strip().startswith(
                 ("First quarter", "Second quarter", "Third quarter", "Fourth quarter")
             )
@@ -1271,3 +1271,208 @@ def test_part_7_special_forms_must_point_at_something_real(tmp_path):
 def _parsed(block: str, wanted: int):  # type: ignore[no-untyped-def]
     questions, passages, _ = checker.parse_group(block, 7, wanted)
     return questions, passages
+
+
+def test_the_brief_prompt_states_each_kind_s_answer_axis():
+    """Lời nhắc sinh brief phải nói trục đáp án của TỪNG dạng, không chỉ của `table`.
+
+    Đây là lỗi thật, tìm ra khi chạy đồ thị bằng Kimi: lời nhắc cũ chỉ nêu một ví
+    dụ và là `table` ("cột Gói và Phí"), nên model suy rộng mẫu hai cột sang
+    `schedule` và sinh brief "cột Thời gian và Hoạt động". Người viết đề làm ĐÚNG
+    brief đó rồi bị `answer_axis()` chặn — với schedule, trục là tiêu đề CỘT, nên
+    bảng hai cột chỉ còn một mục thay vì bốn. Ba vòng đều hỏng cùng chỗ.
+
+    Đổi model không cứu được: hai lời nhắc phải nói cùng một điều, và đó là lý do
+    `AXIS_BRIEF` sống cạnh chính `answer_axis()`.
+    """
+    from app.content.exam.graphics import AXIS_BRIEF
+    from app.content.exam_cli.plan import generate_part_graphics
+
+    recorder = _Recorder()
+    try:
+        generate_part_graphics(recorder, None, 3, ["A", "B", "C"])
+    except Exception:
+        # Gateway giả trả "A", không phải brief hợp lệ — nó NÉM, đúng như tài
+        # liệu của hàm. Thứ đang kiểm là lời nhắc đã gửi đi, không phải đầu ra.
+        pass
+
+    assert recorder.seen, "không có lượt gọi nào để kiểm"
+    prompt = recorder.seen[0].system
+    assert AXIS_BRIEF in prompt
+    assert "TIÊU ĐỀ CỘT" in prompt
+    assert 'bảng hai cột "Thời gian | Hoạt động"' in prompt
+
+
+def test_the_brief_prompt_says_which_slot_each_graphic_lands_on():
+    """Lượt sinh brief phải biết ô hình sắp rơi vào, không thì hình lạc chủ đề.
+
+    Lỗi thật trên `tp-form-08`: `p3-13` mang `topic` nhà ở mà brief là phiếu khảo
+    sát phòng gym, `p3-12` mang chủ đề sự kiện công ty mà brief là số khách bảo
+    tàng. `topic` đến từ bảng `PART3_MIX`, brief đến từ một lượt gọi riêng, và
+    hai bên chỉ được ghép bằng vị trí trong danh sách — nên `bp.validate` vẫn
+    xanh và lỗi chỉ nổ ở người viết đề, người phải chèn một câu gượng để nhắc
+    tới tấm hình.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam_cli.plan import _graphic_hosts, generate_part_graphics
+
+    plan = bp.build_part3("s", "t", 20260822)
+    hosts = _graphic_hosts(plan)
+    with_graphic = [slot for slot in plan.parts[0].slots if slot.graphic]
+    assert len(hosts) == len(with_graphic) == 3
+    for host, slot in zip(hosts, with_graphic, strict=True):
+        assert slot.topic in host, "bối cảnh phải là của đúng ô nhận hình"
+
+    recorder = _Recorder()
+    try:
+        generate_part_graphics(recorder, None, 3, hosts)
+    except Exception:
+        pass
+    prompt = recorder.seen[0].system
+    for host in hosts:
+        assert host in prompt
+
+
+def test_the_graphic_rule_is_judged_not_guessed(tmp_path):
+    """Luật hình được xét bằng PHÂN LOẠI, không bằng một lần đoán đáp án.
+
+    Bản đầu bảo model tự trả lời câu hỏi khi giấu lời thoại: trúng thì kết luận
+    "hình tự trả lời". Cách đó phụ thuộc một lần đoán — bốn lựa chọn thì đoán bừa
+    trúng 1/4, và cả trúng lẫn trượt đều bị đọc thành kết luận. Bản này cho model
+    đọc CẢ hình lẫn thoại kèm luật, rồi chỉ hỏi item rơi vào ô nào.
+
+    Ba ca lỗi lấy từ `tp-form-08`: "Which phase is forty percent complete?" đọc
+    thẳng khỏi biểu đồ (GRAPHIC_ONLY), và ô đạt là `p3-13` — thoại nói giá, bảng
+    tra ra tên hàng.
+    """
+    from dataclasses import dataclass
+
+    from app.content.exam.check import graphic_rule_verdict
+
+    @dataclass
+    class _Opt:
+        label: str
+        content: str
+        is_correct: bool
+        spoken_text: str = ""
+
+    @dataclass
+    class _Q:
+        prompt_text: str
+        options: list
+
+    source = tmp_path / "p3-12.txt"
+    source.write_text(
+        "kind: chart\nImplementation Progress in percent\n"
+        "Planning | 100\nDevelopment | 75\nTesting | 40\nDeployment | 15\n"
+    )
+    question = _Q(
+        "Look at the graphic. Which phase is forty percent complete?",
+        [
+            _Opt("A", "Planning", False),
+            _Opt("B", "Testing", True),
+            _Opt("C", "Development", False),
+            _Opt("D", "Deployment", False),
+        ],
+    )
+
+    class _Says:
+        def __init__(self, reply):
+            self.reply = reply
+
+        def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+            self.seen = request
+            return _result(self.reply)
+
+    def verdict_of(reply):
+        return graphic_rule_verdict(_Says(reply), question, "kịch bản", source, tier=None)
+
+    # Ba ô lỗi đều thành lời than CHẶN NẠP; `OK` thì không.
+    for name in ("GRAPHIC_ONLY", "TALK_ONLY", "NEITHER"):
+        verdict, complaint = verdict_of(name)
+        assert verdict == name and complaint, name
+    assert verdict_of("OK") == ("OK", None)
+    # Phán quyết lạ KHÔNG được thành "đạt" — trả nguyên văn để caller ghi cờ.
+    verdict, complaint = verdict_of("có lẽ ổn")
+    assert verdict and verdict != "OK" and complaint is None
+
+    # Lời thoại PHẢI được gửi đi: giấu nó thì model không xét được TALK_ONLY.
+    gw = _Says("OK")
+    graphic_rule_verdict(gw, question, "người phụ nữ nói bà lái xe cỡ lớn", source, tier=None)
+    assert "xe cỡ lớn" in gw.seen.user
+
+
+def test_the_paid_check_costs_one_slot_not_one_part(tmp_path, monkeypatch):
+    """Lượt kiểm CÓ GỌI MODEL phải thu về đúng ô đang viết.
+
+    Đồ thị gọi `check_blueprint` sau mỗi ô. Với `only=part`, ô thứ k kéo theo cả
+    k ô đã viết trước nó, nên chi phí cộng dồn thành bình phương — đo được 8,2
+    lần mức cần thiết trên một đề, riêng Part 5 là 15,5 lần. Tệ hơn tiền: một ô
+    đã đạt bị chấm lại hàng chục lần và có thể "hỏng" vì nhiễu ở lượt kiểm của
+    một ô khác.
+
+    Số lượt gọi không hiện ra ở đâu cả — đề vẫn đúng, chỉ đắt và chậm — nên nó
+    cần một phép đếm chứ không thể trông vào việc ai đó nhận ra.
+    """
+    from collections import Counter
+
+    from app.content.exam import blueprint as bp
+    from app.content.exam.check import check_blueprint
+
+    plan = bp.build_part5("tp-test", "Test", seed=7)
+    slots = plan.parts[0].slots[:4]
+    plan.parts[0].slots = slots
+    for slot in slots:
+        writer.save_slot(tmp_path, slot, GOOD)
+
+    class _Counting:
+        def __init__(self):
+            self.n = Counter()
+
+        def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+            self.n[feature] += 1
+            return _result("A")
+
+    whole = _Counting()
+    check_blueprint(plan, tmp_path, gateway=whole, ambiguity=True, only=5, quiet=True)
+    one = _Counting()
+    reports = check_blueprint(
+        plan, tmp_path, gateway=one, ambiguity=True, only=5, quiet=True, slot_id=slots[2].id
+    )
+
+    assert [r.slot_id for r in reports] == [slots[2].id]
+    # Bốn ô một câu: cả part tốn 8 lượt, một ô tốn 2. Đây là phép đếm, không
+    # phải phép so "ít hơn" — "ít hơn" vẫn xanh khi lỗi bình phương quay lại.
+    assert sum(whole.n.values()) == 8
+    assert sum(one.n.values()) == 2
+
+
+def test_each_slot_shape_gets_its_own_output_budget():
+    """Trần đầu ra theo HÌNH DẠNG ô, không một con số cho cả trăm ô.
+
+    Nội dung sinh ra chỉ 64–401 token, nên gần như toàn bộ trần là phần suy
+    luận và nó tỉ lệ với ĐỘ KHÓ. Đo được: `p3-11` bị cắt ở trần 12 000, còn ô
+    không hình dùng nhiều nhất 7 739.
+
+    Và trần rộng không miễn phí — model nở suy luận cho vừa ngân sách: cùng một
+    ô có hình, trần 40 000 mất 322 giây còn 25 000 chỉ mất 225.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam.writer import GRAPHIC_MAX_TOKENS, max_tokens_for
+
+    part3 = bp.build_part3("s", "t", 20260822).parts[0].slots
+    plain = next(s for s in part3 if not s.graphic)
+    graphic = next(s for s in part3 if s.graphic)
+
+    # Ô có hình phải rộng hơn hẳn: 12 000 đã từng CẮT một ô như thế.
+    assert max_tokens_for(3, graphic) == GRAPHIC_MAX_TOKENS
+    assert max_tokens_for(3, graphic) > 12000
+    # Ô thường vẫn phải trên mức dùng nhiều nhất đã đo (7 739).
+    assert max_tokens_for(3, plain) > 7739
+    assert max_tokens_for(3, plain) < max_tokens_for(3, graphic)
+
+    # Part 7 dùng `passages`, không dùng `graphic` — bỏ sót nhánh đó thì mọi ô
+    # hình của Part 7 chạy với trần của ô thường.
+    part7 = bp.build_part7("s", "t", 20260822).parts[0].slots
+    with_graphic = next(s for s in part7 if any(s.passages))
+    assert max_tokens_for(7, with_graphic) == GRAPHIC_MAX_TOKENS

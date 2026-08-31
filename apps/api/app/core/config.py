@@ -51,6 +51,12 @@ class Settings(BaseSettings):
     # --- Tầng AI (ADR-003) -------------------------------------------------
     # Model cho từng tầng là CẤU HÌNH chứ không phải mã: đổi model là việc vận
     # hành, không nên là một lần sửa mã cộng một lần triển khai.
+    # Đường tệp JSONL ghi TOÀN VĂN mỗi lượt gọi model — prompt gửi đi và câu
+    # trả lời nhận về. Tắt mặc định: sổ `ai_interaction` giữ số liệu, còn
+    # toàn văn là dữ liệu người dùng và không thuộc về một bảng dùng chung.
+    # Bật cho các lượt chạy pipeline ngoài luồng, nơi câu hỏi luôn là "nó
+    # thật sự gửi đi cái gì".
+    llm_transcript_log: str | None = None
     llm_tier_cheap: str = "fake/fake-1"
     llm_tier_strong: str = "fake/fake-1"
     # Trần chi tiêu mỗi học viên mỗi ngày, tính bằng micro-USD (1_000_000 = 1 USD).

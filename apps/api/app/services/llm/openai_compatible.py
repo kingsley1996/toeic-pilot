@@ -49,6 +49,17 @@ ENDPOINTS: dict[str, str] = {
 }
 
 
+# Token mỗi giây CHẬM NHẤT còn coi là bình thường. Đo trên 189 lượt gọi thành
+# công của glm-5.3-flash (2026-08-31): trung bình 38,7 token/giây, chậm nhất
+# 11,3. Lấy 10 để có biên.
+#
+# Hằng số này tồn tại vì `max_tokens` và `timeout_s` là HAI ngân sách của cùng
+# một lượt gọi — một cái đo chữ, một cái đo đồng hồ — và đặt chúng độc lập nhau
+# là cách tạo ra một yêu cầu bất khả: xin 40 000 token trong cửa sổ 300 giây thì
+# không lượt nào về kịp, và triệu chứng là timeout lặp lại y hệt.
+SLOWEST_TOKENS_PER_SECOND = 10.0
+
+
 class OpenAICompatibleProvider:
     """Một nhà cung cấp cụ thể. `name` đi vào sổ cái và vào bảng giá."""
 
@@ -98,7 +109,7 @@ class OpenAICompatibleProvider:
             response = httpx.post(
                 self._url,
                 json=payload,
-                timeout=self._timeout,
+                timeout=max(self._timeout, request.max_tokens / SLOWEST_TOKENS_PER_SECOND),
                 headers={"Authorization": f"Bearer {self._key}"},
             )
         except httpx.HTTPError as exc:

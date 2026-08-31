@@ -22,7 +22,13 @@ from __future__ import annotations
 import argparse
 
 from app.content.exam import writer
-from app.content.exam_cli.authoring import cmd_balance, cmd_check, cmd_prune, cmd_write
+from app.content.exam_cli.authoring import (
+    cmd_balance,
+    cmd_check,
+    cmd_prompt,
+    cmd_prune,
+    cmd_write,
+)
 from app.content.exam_cli.load import cmd_interact, cmd_load
 from app.content.exam_cli.media import cmd_attach_images, cmd_graphic, cmd_media, cmd_photo
 from app.content.exam_cli.paths import DEFAULT_ROOT, blueprint_path, workdir_for
@@ -40,6 +46,7 @@ __all__ = [
     "cmd_attach_images",
     "cmd_balance",
     "cmd_check",
+    "cmd_prompt",
     "cmd_graphic",
     "cmd_interact",
     "cmd_load",
@@ -128,6 +135,11 @@ def main(argv: list[str] | None = None) -> int:
     attach_cmd.add_argument("--alt-text", default=None)
     attach_cmd.add_argument("--overwrite", action="store_true")
     attach_cmd.set_defaults(func=cmd_attach_images)
+
+    prompt_cmd = sub.add_parser("prompt", help="in prompt sẽ gửi đi cho một ô")
+    prompt_cmd.add_argument("--slug", required=True)
+    prompt_cmd.add_argument("--slot", required=True, help="id của ô, vd `p4-09`")
+    prompt_cmd.set_defaults(func=cmd_prompt)
 
     check_cmd = sub.add_parser("check", help="kiểm tệp dán")
     check_cmd.add_argument("--slug", required=True)

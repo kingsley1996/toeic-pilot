@@ -398,7 +398,10 @@ PART4_GRAPHIC_POOL: tuple[str, ...] = (
     "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
     "map: sơ đồ tầng trệt gồm bốn quầy xếp thành hai hàng",
     "table: bảng giá bốn gói hội viên, cột Gói và Phí",
-    "schedule: lịch bốn buổi bảo trì trong tuần, cột Ngày và Giờ",
+    # Trục của `schedule` là columns[1:], nên bảng hai cột cho trục MỘT mục
+    # trong khi câu hỏi cần bốn — bản cũ ("cột Ngày và Giờ") không ô nào viết nổi.
+    "schedule: lịch bảo trì ba thiết bị qua bốn ngày, cột đầu là tên thiết bị, "
+    'bốn cột "Monday", "Tuesday", "Wednesday", "Thursday"',
     "survey: phiếu khảo sát bốn câu hỏi về dịch vụ đã đánh dấu",
     "form: phiếu đăng ký bốn buổi đào tạo đã điền",
 )
@@ -700,17 +703,21 @@ class PartPlan:
 # Brief hình cho các PASSAGE HÌNH Part 7. Năm passage hình rải trong bốn cụm:
 # p7-11 (1), p7-13 (1), p7-14 (1), p7-15 (2). Pool đủ nhiều để `sample` chọn 5
 # mục không trùng.
+# Nhãn ghi bằng TIẾNG ANH vì chúng được in thẳng lên hình người thi đọc; phần
+# mô tả quanh chúng là ghi chú nội bộ nên vẫn tiếng Việt. Khác pool Part 3/4 ở
+# chỗ KHÔNG cần nêu trục đáp án: hình Part 7 là NGỮ LIỆU, câu hỏi hỏi về nội
+# dung chứ không bắt chọn giữa bốn hàng (§28).
 PART7_GRAPHIC_POOL: tuple[str, ...] = (
-    "schedule: lịch bốn phiên hội thảo trong ngày",
-    "survey: phiếu khảo sát bốn mục đã đánh dấu",
-    "schedule: lịch bốn buổi đào tạo trong tháng",
-    "table: bảng giá vé bốn suất diễn",
-    "form: phiếu đặt vé đã điền",
-    "chart: biểu đồ cột kết quả khảo sát bốn quý",
-    "schedule: lịch hẹn bốn khách hàng trong tuần",
-    "table: bảng giá bốn gói phần mềm, cột Gói và Phí",
-    "map: sơ đồ bốn khu vực trong hội chợ thương mại",
-    "form: phiếu đăng ký hội thảo bốn mục đã điền",
+    'schedule: lịch bốn phiên hội thảo trong ngày, cột "Session", "Time", "Room"',
+    'survey: phiếu khảo sát dịch vụ, cột "Aspect", "Rating", "Comment"',
+    'schedule: lịch bốn buổi đào tạo trong tháng, cột "Course", "Date", "Trainer"',
+    'table: bảng giá vé bốn suất diễn, cột "Performance", "Time", "Price"',
+    'form: phiếu đặt vé đã điền, các mục "Passenger", "Route", "Date", "Seat"',
+    'chart: biểu đồ cột kết quả khảo sát bốn quý, nhãn "Q1", "Q2", "Q3", "Q4"',
+    'schedule: lịch hẹn bốn khách hàng trong tuần, cột "Client", "Day", "Time"',
+    'table: bảng giá bốn gói phần mềm, cột "Plan" và "Fee"',
+    'map: sơ đồ bốn khu vực hội chợ, mỗi ô "Zone A".."Zone D" kèm tên gian hàng',
+    'form: phiếu đăng ký hội thảo đã điền, các mục "Name", "Company", "Session", "Meal"',
 )
 
 

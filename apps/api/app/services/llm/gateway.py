@@ -15,16 +15,20 @@ ngoài một máy đã dựng đầy đủ.
 
 from __future__ import annotations
 
+import json
 import uuid
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from decimal import Decimal
+from pathlib import Path
 from time import perf_counter
 
 import redis
 from sqlalchemy.orm import Session
 
 from app.core.ai_budget import Budget, BudgetExceeded, BudgetUnavailable, micro_usd
+from app.core.config import settings
 from app.models.ai import AiInteraction
 from app.services.llm.base import (
     FeatureDisabled,
@@ -133,6 +137,7 @@ class Gateway:
                 user_id=user_id,
                 prompt_version=prompt_version,
                 request_id=request_id,
+                request=request,
             )
             raise
 
@@ -149,6 +154,8 @@ class Gateway:
             user_id=user_id,
             prompt_version=prompt_version,
             request_id=request_id,
+            request=request,
+            response=result.text,
         )
         if user_id is not None:
             self.budget.charge(self.redis_client, str(user_id), micro_usd(cost))
@@ -192,6 +199,63 @@ class Gateway:
         finally:
             session.close()
 
+    def _transcript(
+        self,
+        *,
+        feature: str,
+        provider: str,
+        model: str,
+        usage: Usage,
+        cost: Decimal,
+        latency_ms: int,
+        status: str,
+        error: str | None,
+        request: LLMRequest | None,
+        response: str | None,
+    ) -> None:
+        """Ghi TOÀN VĂN một lượt gọi vào tệp JSONL, nếu `llm_transcript_log` bật.
+
+        Sổ `ai_interaction` trả lời "tốn bao nhiêu, hỏng bao nhiêu"; tệp này trả
+        lời "nó gửi đi đúng cái gì" — câu hỏi khác hẳn, và là câu tốn nhiều thời
+        gian nhất khi một lượt sinh đề ra kết quả lạ. Đi ra TỆP chứ không vào
+        bảng: toàn văn là dữ liệu người dùng, nó không thuộc về một bảng dùng
+        chung, và nó lớn gấp hàng trăm lần phần số liệu.
+
+        Hỏng khi ghi KHÔNG được làm hỏng lượt gọi: một lượt chạy pipeline dài
+        hàng giờ không được chết vì đầy đĩa hay sai đường dẫn.
+        """
+        path = settings.llm_transcript_log
+        if not path:
+            return
+        try:
+            line = {
+                "at": datetime.now(UTC).isoformat(),
+                "feature": feature,
+                "provider": provider,
+                "model": model,
+                "status": status,
+                "latency_ms": latency_ms,
+                "prompt_tokens": usage.prompt,
+                "completion_tokens": usage.completion,
+                "cost_usd": float(cost),
+                "error": error,
+                "request": None
+                if request is None
+                else {
+                    "system": request.system,
+                    "user": request.user,
+                    "max_tokens": request.max_tokens,
+                    "temperature": request.temperature,
+                },
+                "response": response,
+            }
+            target = Path(path)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(line, ensure_ascii=False) + "\n")
+        except Exception:  # noqa: BLE001 — xem docstring
+            pass
+
     def _record(
         self,
         *,
@@ -206,9 +270,23 @@ class Gateway:
         prompt_version: str | None,
         request_id: str | None,
         retries: int = 0,
+        request: LLMRequest | None = None,
+        response: str | None = None,
     ) -> None:
         provider = getattr(route, "provider", "?")
         model = getattr(route, "model", "?")
+        self._transcript(
+            feature=feature,
+            provider=provider,
+            model=model,
+            usage=usage,
+            cost=cost,
+            latency_ms=latency_ms,
+            status=status,
+            error=error,
+            request=request,
+            response=response,
+        )
         session = self.session_factory()
         try:
             session.add(

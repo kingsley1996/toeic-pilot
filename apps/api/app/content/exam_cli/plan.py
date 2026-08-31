@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from time import perf_counter
 
 from app.content.exam import blueprint as bp
 from app.content.exam import writer
@@ -13,6 +14,23 @@ from app.content.exam_cli.paths import _gateway, blueprint_path
 from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
 from app.services.llm.router import Tier
+
+
+# Trần đầu ra của chặng plan. Rộng vì model bắt buộc suy luận tiêu phần lớn trần
+# vào phần nghĩ TRƯỚC khi in dòng đầu tiên: đo thật với glm-5.3-flash, Part 5 nghĩ
+# 14 912 ký tự và Part 7 nghĩ 15 572 — ở trần 4 000 cả hai không bao giờ tới được
+# dòng bối cảnh nào, và lượt plan lặng lẽ rơi về bảng cấu hình.
+def _progress(message: str) -> None:
+    """Một dòng trạng thái của chặng plan.
+
+    Mỗi part là một tới hai lượt gọi dài hàng phút và trước đây không in gì cả,
+    nên nó đọc ra như treo. In ở đây chứ không ở `cmd_plan` vì `full.py` có
+    đường gọi riêng — đặt tại hàm sinh thì cả hai người gọi đều có.
+    """
+    print(message, flush=True)
+
+
+PLAN_MAX_TOKENS = 16000
 
 
 def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, str]]:
@@ -43,15 +61,22 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
         "hoặc several, nhiều nhất một dòng none. Không thêm tiêu đề, không thêm "
         "dòng nào khác."
     )
+    _progress("  part 1: đang sinh 6 bối cảnh ảnh…")
+    started = perf_counter()
     result = with_backoff(
         lambda: gateway.run(
-            LLMRequest(system=prompt, user="Sinh sáu bối cảnh ảnh Part 1.", max_tokens=4000),
+            LLMRequest(
+                system=prompt,
+                user="Sinh sáu bối cảnh ảnh Part 1.",
+                max_tokens=PLAN_MAX_TOKENS,
+            ),
             feature="exam_plan",
             tier=tier,
         ),
         tries=writer.RETRY_TRIES,
         delay=writer.RETRY_DELAY,
     )
+    _progress(f"  part 1: xong 6 bối cảnh ({perf_counter() - started:.0f}s)")
     scenes: list[tuple[str, str, str]] = []
     line_pattern = re.compile(r"^(PART_1_[A-Z_]+)\|(one|several|none)\|(.+)$")
     for line in result.text.splitlines():
@@ -67,7 +92,7 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
     return scenes
 
 
-def generate_part_scenes(gateway: Gateway, tier: Tier, part: int) -> list[str]:
+def generate_part_scenes(gateway: Gateway, tier: Tier, part: int, hosts: list[str]) -> list[str]:
     """Hỏi model sinh bối cảnh MỚI cho các ô của một part (2–7).
 
     Chỉ sinh `context` — bối cảnh — KHÔNG động vào cấu trúc (loại câu, số người
@@ -90,6 +115,8 @@ def generate_part_scenes(gateway: Gateway, tier: Tier, part: int) -> list[str]:
         6: 4,
         7: 15,
     }[part]
+    if len(hosts) != count:
+        raise ValueError(f"Part {part} cần {count} ràng buộc ô, nhận {len(hosts)}")
     part_hint = {
         2: "câu hỏi–đáp ngắn (người hỏi và người đáp)",
         3: "cuộc hội thoại công sở/dịch vụ (ba câu hỏi về cùng một đoạn thoại)",
@@ -102,27 +129,47 @@ def generate_part_scenes(gateway: Gateway, tier: Tier, part: int) -> list[str]:
         f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là một bối cảnh {part_hint} cho "
         f"Part {part} của đề TOEIC. Bối cảnh bằng tiếng Việt, ngắn gọn, mỗi bối "
         "cảnh KHÁC NHAU rõ rệt (người, nơi chốn, tình huống khác nhau), thuộc môi "
-        "trường công sở/dịch vụ. Không thêm tiêu đề, không thêm dòng nào khác."
+        "trường công sở/dịch vụ. Không thêm tiêu đề, không thêm dòng nào khác.\n"
+        # Nhãn cấu trúc đã chốt trong bảng `PART*_MIX`; bối cảnh sinh mù thì chọi
+        # với nhãn — ô `PART_3_HOUSING` nhận bối cảnh phỏng vấn tuyển dụng. Và
+        # `topic` đi vào `question_set_label`, nên thống kê theo chủ đề đếm sai
+        # chứ không chỉ đọc lạ.
+        f"Dòng thứ i phải HỢP với ràng buộc thứ i dưới đây:\n"
+        + "".join(f"{order}. {host}\n" for order, host in enumerate(hosts, start=1))
     )
+    _progress(f"  part {part}: đang sinh {count} bối cảnh…")
+    started = perf_counter()
     result = with_backoff(
         lambda: gateway.run(
             # Rộng tay vì model SUY LUẬN xuất cả chuỗi suy nghĩ trước khi tới các
             # dòng bối cảnh — cùng bài học với `writer.write_slot`: trần quá hẹp
             # thì bị cắt giữa phần thinking, và cái cắt đó không hiện ra như lỗi.
-            LLMRequest(system=prompt, user=f"Sinh {count} bối cảnh Part {part}.", max_tokens=4000),
+            LLMRequest(
+                system=prompt,
+                user=f"Sinh {count} bối cảnh Part {part}.",
+                max_tokens=PLAN_MAX_TOKENS,
+            ),
             feature="exam_plan",
             tier=tier,
         ),
         tries=writer.RETRY_TRIES,
         delay=writer.RETRY_DELAY,
     )
+    _progress(f"  part {part}: xong {count} bối cảnh ({perf_counter() - started:.0f}s)")
     scenes = [line.strip() for line in result.text.splitlines() if line.strip()]
     if len(scenes) != count:
         raise ValueError(f"cần đúng {count} bối cảnh Part {part}, model trả {len(scenes)}")
     # Model hay thêm tiền tố đánh số ("1. …", "1) …") — bỏ đi để context sạch.
+    # Nó cũng hay chép NGUYÊN mã nhãn của ràng buộc vào đầu dòng
+    # ("PART_7_FORM – …"), tức là hiểu danh sách ràng buộc thành một phần định
+    # dạng câu trả lời. Bối cảnh đi thẳng vào lời nhắc viết đề, nên để nguyên là
+    # đẩy một mã máy vào chỗ đáng lẽ chỉ có văn xuôi.
     import re as _re
 
-    return [_re.sub(r"^\d+[.)]\s*", "", scene) for scene in scenes]
+    return [
+        _re.sub(r"^[A-Z][A-Z0-9_]{4,}\s*[–—-]\s*", "", _re.sub(r"^\d+[.)]\s*", "", scene))
+        for scene in scenes
+    ]
 
 
 def _override_contexts(plan: Blueprint, scenes: list[str]) -> None:
@@ -136,7 +183,47 @@ def _override_contexts(plan: Blueprint, scenes: list[str]) -> None:
         slot.context = scene
 
 
-def generate_part_graphics(gateway: Gateway, tier: Tier, part: int) -> list[str]:
+def _scene_hosts(plan: Blueprint) -> list[str]:
+    """Ràng buộc cấu trúc của từng ô, đúng thứ tự `_override_contexts` dán vào.
+
+    Cấu trúc đến từ bảng `PART*_MIX` và không đổi; chỉ bối cảnh là do model
+    sinh. Không đưa ràng buộc xuống thì hai bên chỉ gặp nhau ở chỉ số, và một ô
+    gắn nhãn `PART_3_HOUSING` nhận bối cảnh phỏng vấn tuyển dụng.
+    """
+    hosts: list[str] = []
+    for part_plan in plan.parts:
+        for slot in part_plan.slots:
+            facets = [slot.topic, slot.question_type, slot.grammar]
+            if part_plan.part == 7:
+                facets.append(
+                    ", ".join(
+                        f"đoạn {order} {'là HÌNH vẽ từ dữ liệu' if spec else 'là chữ'}"
+                        for order, spec in enumerate(slot.passages, start=1)
+                    )
+                )
+            hosts.append(" / ".join(facet for facet in facets if facet) or "không ràng buộc")
+    return hosts
+
+
+def _graphic_hosts(plan: Blueprint) -> list[str]:
+    """Bối cảnh của ô sẽ NHẬN mỗi hình, đúng thứ tự `build_part*` dán brief vào.
+
+    Part 3/4 dán theo thứ tự ô có `graphic`, Part 7 theo thứ tự passage không
+    rỗng — duyệt đúng thứ tự đó nên hai bên không lệch. Gọi SAU
+    `_override_contexts`: trước đó `context` còn là bối cảnh của bảng, và nó sắp
+    bị bối cảnh model dập đè.
+    """
+    hosts: list[str] = []
+    for part_plan in plan.parts:
+        for slot in part_plan.slots:
+            if part_plan.part == 7:
+                hosts.extend(slot.context for spec in slot.passages if spec)
+            elif slot.graphic:
+                hosts.append(" — ".join(filter(None, (slot.topic, slot.context))))
+    return hosts
+
+
+def generate_part_graphics(gateway: Gateway, tier: Tier, part: int, hosts: list[str]) -> list[str]:
     """Hỏi model sinh brief hình MỚI cho các vị trí graphic của part (3, 4, 7).
 
     Chỉ sinh `graphic`/`passages` — brief `kind: mô tả` — KHÔNG đụng vị trí hay
@@ -148,26 +235,43 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int) -> list[str]
     Đầu ra mỗi dòng một brief `kind: mô tả`; sai số lượng hay sai kind thì NÉM để
     `cmd_plan` rơi về `PART*_GRAPHIC_POOL` theo seed.
     """
-    from app.content.exam.graphics import KINDS
+    from app.content.exam.graphics import AXIS_BRIEF, KINDS
     from app.services.llm.base import LLMRequest
 
     count = {3: 3, 4: 2, 7: 5}[part]
+    if len(hosts) != count:
+        raise ValueError(f"Part {part} cần {count} bối cảnh ô, nhận {len(hosts)}")
     kinds = ", ".join(KINDS)
     prompt = (
         f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là BRIEF cho một hình ngữ liệu "
         f"của Part {part} đề TOEIC (đề tự sinh, không phải đề thi thật).\n"
         f"Mỗi dòng đúng định dạng `kind: mô tả bằng tiếng Việt`.\n"
+        # Mô tả là ghi chú nội bộ nên viết tiếng Việt; NHÃN thì đi thẳng lên
+        # hình người thi đọc. Không tách hai thứ đó thì brief ghi "nhãn bốn
+        # mục là Phòng tập, Hồ bơi..." và người viết đề chép đúng y lời.
+        f"NHƯNG mọi NHÃN sẽ xuất hiện trên hình — tiêu đề, tên hàng, tiêu đề "
+        f"cột, tên ô — phải viết bằng TIẾNG ANH. Đề TOEIC là bài thi tiếng Anh.\n"
         f"kind phải là MỘT TRONG: {kinds}.\n"
-        f"Brief phải nói rõ hình gì, bốn mục/nhãn là gì (vd `table: bảng giá bốn "
-        f"gói hội viên, cột Gói và Phí`), đủ để vẽ. {count} hình KHÁC NHAU rõ "
-        f"rệt về kind lẫn nội dung. Không thêm tiêu đề, không thêm dòng nào khác."
+        f"Brief phải nói rõ hình gì và BỐN MỤC TRÊN TRỤC ĐÁP ÁN là gì, đủ để vẽ.\n"
+        f"Trục đáp án khác nhau theo từng kind — mô tả sai trục thì hình bị cổng "
+        f"kiểm chặn dù nội dung hợp lý:\n{AXIS_BRIEF}\n"
+        # Không có danh sách này thì lượt sinh hình mù về ô nó sắp rơi vào, và
+        # người viết đề nhận hai yêu cầu không liên quan — đó là cách một hội
+        # thoại kho hàng mọc ra câu về số khách bảo tàng.
+        f"MỖI hình phải THUỘC VỀ đúng ô nó đi kèm. Bối cảnh {count} ô, theo đúng "
+        f"thứ tự phải trả lời:\n"
+        + "".join(f"{order}. {host}\n" for order, host in enumerate(hosts, start=1))
+        + f"{count} hình KHÁC NHAU về kind. Không thêm tiêu đề, "
+        f"không thêm dòng nào khác."
     )
+    _progress(f"  part {part}: đang sinh {count} brief hình…")
+    started = perf_counter()
     result = with_backoff(
         lambda: gateway.run(
             LLMRequest(
                 system=prompt,
                 user=f"Sinh {count} brief hình Part {part}.",
-                max_tokens=4000,
+                max_tokens=PLAN_MAX_TOKENS,
             ),
             feature="exam_plan",
             tier=tier,
@@ -175,6 +279,7 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int) -> list[str]
         tries=writer.RETRY_TRIES,
         delay=writer.RETRY_DELAY,
     )
+    _progress(f"  part {part}: xong {count} brief hình ({perf_counter() - started:.0f}s)")
     briefs: list[str] = []
     for line in result.text.splitlines():
         line = line.strip()
@@ -215,9 +320,16 @@ def cmd_plan(args: argparse.Namespace) -> int:
                 scenes = generate_part1_scenes(gateway, Tier(args.tier))
                 built = bp.build_part1(args.slug, title, args.seed, scenes)
             else:
-                contexts = generate_part_scenes(gateway, Tier(args.tier), args.part)
+                contexts = generate_part_scenes(
+                    gateway, Tier(args.tier), args.part, _scene_hosts(built)
+                )
                 if args.part in (3, 4, 7):
-                    graphics = generate_part_graphics(gateway, Tier(args.tier), args.part)
+                    # Bối cảnh model phải áp TRƯỚC: `_graphic_hosts` đọc `context`,
+                    # và bản của bảng sắp bị dập đè ở dòng dưới.
+                    _override_contexts(built, contexts)
+                    graphics = generate_part_graphics(
+                        gateway, Tier(args.tier), args.part, _graphic_hosts(built)
+                    )
                     built = {
                         3: bp.build_part3,
                         4: bp.build_part4,

@@ -57,70 +57,85 @@ LENGTH_TELL_MIN_CHARS = 12
 # 6 275 ký tự về một câu Part 3 rồi hết hạn mức trước khi kịp trả lời. Cắt ở đó
 # đọc ra như "không trả về chữ cái hợp lệ", tức là đổ lỗi cho câu hỏi thay vì
 # cho giới hạn của chính ta.
-CHECK_MAX_TOKENS = 4000
+# Câu trả lời chỉ là một chữ cái, nhưng model bắt buộc suy luận tiêu trần vào
+# phần NGHĨ trước đã. Đo thật ngày 2026-08-31: p3-07 nghĩ 18 716 ký tự rồi chết ở
+# trần 4 000, và triệu chứng đọc ra là "không đếm được phương án điền được" — tức
+# đổ lỗi cho câu hỏi thay vì cho giới hạn của chính ta.
+CHECK_MAX_TOKENS = 16000
 
-VERIFY_SYSTEM_PART6 = """Bạn làm một câu hỏi TOEIC Part 6. Bạn được đọc cả đoạn
-văn; các chỗ trống trong đó được đánh số. Chọn phương án điền vào ĐÚNG chỗ trống
-được hỏi. Chỉ trả về đúng MỘT chữ cái in hoa: A, B, C hoặc D. Không giải thích."""
+# Lời nhắc chặng kiểm viết bằng TIẾNG ANH, khác phần còn lại của tệp. Người chấm
+# ở đây đóng vai người ĐI THI: đọc câu tiếng Anh rồi tự chọn đáp án, và đây là
+# bề mặt duy nhất trong pipeline bắt model phán đoán tiếng Anh mà không có một
+# mỏ neo tiếng Anh nào (chặng viết còn nguyên system prompt tiếng Anh của nó).
+# `AMBIGUITY_SYSTEM_PART2` là chỗ rõ nhất: nó hỏi "người bản ngữ có nói thế
+# không".
+#
+# CHƯA ĐO. Đây là lập luận, không phải số liệu — phép đo là chạy `check --model`
+# trên cùng một tập ô của `tp-form-06` bằng cả hai bản rồi so số lỗi bắt được.
+VERIFY_SYSTEM_PART6 = """You are answering one TOEIC Part 6 question. You are
+given the whole passage; the blanks in it are numbered. Choose the option that
+fills the blank you are asked about. Reply with exactly ONE capital letter: A, B,
+C or D. No explanation."""
 
-AMBIGUITY_SYSTEM_PART6 = """Bạn kiểm một câu hỏi TOEIC Part 6.
+AMBIGUITY_SYSTEM_PART6 = """You are reviewing one TOEIC Part 6 question.
 
-Bạn được đọc cả đoạn văn và bốn lựa chọn cho một chỗ trống đã đánh số. Trả về
-chữ cái của MỌI lựa chọn mà khi điền vào ĐÚNG chỗ trống đó thì đoạn văn vừa đúng
-ngữ pháp vừa hợp với câu chữ xung quanh.
+You are given the whole passage and four options for one numbered blank. Reply
+with the letter of EVERY option that leaves the passage both grammatical and
+consistent with the sentences around it.
 
-Part 6 kiểm việc đọc cả đoạn, không phải đọc một dòng: một lựa chọn đúng ngữ
-pháp nhưng không hợp mạch văn thì KHÔNG tính là điền được.
+Part 6 tests reading a whole passage, not one line: an option that is
+grammatical but does not fit the surrounding text does NOT count as workable.
 
-Chỉ trả về các chữ cái, viết liền, không giải thích."""
+Reply with the letters only, run together, no explanation."""
 
-VERIFY_SYSTEM_PART2 = """Bạn nghe một câu hỏi TOEIC Part 2 và ba câu đáp. Chỉ
-trả về đúng MỘT chữ cái in hoa — câu đáp phù hợp nhất: A, B hoặc C. Không giải
-thích, không thêm gì khác."""
+VERIFY_SYSTEM_PART2 = """You hear one TOEIC Part 2 question and three responses.
+Reply with exactly ONE capital letter — the response that fits best: A, B or C.
+No explanation, nothing else."""
 
-AMBIGUITY_SYSTEM_PART2 = """Bạn kiểm một câu hỏi TOEIC Part 2.
+AMBIGUITY_SYSTEM_PART2 = """You are reviewing one TOEIC Part 2 question.
 
-Bạn được đọc câu hỏi và ba câu đáp. Trả về chữ cái của MỌI câu đáp thật sự đáp
-được câu hỏi đó — đáp được nghĩa là một người bản ngữ sẽ nói như thế, không phải
-"nghe cũng tạm".
+You are given the question and its three responses. Reply with the letter of
+EVERY response that genuinely answers it — answering means a native speaker
+would actually say that, not that it "sounds acceptable".
 
-Chỉ có ba lựa chọn: A, B, C. Không có D. Chỉ trả về các chữ cái, viết liền,
-không giải thích."""
+There are only three options: A, B, C. There is no D. Reply with the letters
+only, run together, no explanation."""
 
-VERIFY_SYSTEM_PART3 = """Bạn nghe một đoạn hội thoại TOEIC Part 3 và trả lời một
-câu hỏi về nó. Bạn được đọc lời thoại. Chỉ trả về đúng MỘT chữ cái in hoa: A, B,
-C hoặc D. Không giải thích, không thêm gì khác."""
+VERIFY_SYSTEM_PART3 = """You hear one TOEIC Part 3 conversation and answer one
+question about it. You are given the transcript. Reply with exactly ONE capital
+letter: A, B, C or D. No explanation, nothing else."""
 
-AMBIGUITY_SYSTEM_PART3 = """Bạn kiểm một câu hỏi TOEIC Part 3.
+AMBIGUITY_SYSTEM_PART3 = """You are reviewing one TOEIC Part 3 question.
 
-Bạn được đọc lời thoại và bốn lựa chọn. Trả về chữ cái của MỌI lựa chọn mà lời
-thoại THẬT SỰ chống đỡ được — đúng theo những gì được nói ra, không phải "có thể
-đúng nếu suy diễn thêm".
+You are given the transcript and four options. Reply with the letter of EVERY
+option the transcript ACTUALLY supports — supported by what is said, not "could
+be true if you infer further".
 
-Chỉ trả về các chữ cái, viết liền, không giải thích. Ví dụ: `B` hoặc `AB`."""
+Reply with the letters only, run together, no explanation. Example: `B` or `AB`."""
 
-VERIFY_SYSTEM_PART1 = """Bạn nghe bốn câu mô tả một tấm ảnh TOEIC Part 1. Bạn
-được đọc phần mô tả tấm ảnh đó. Chỉ trả về đúng MỘT chữ cái in hoa — câu mô tả
-ĐÚNG tấm ảnh: A, B, C hoặc D. Không giải thích, không thêm gì khác."""
+VERIFY_SYSTEM_PART1 = """You hear four statements describing one TOEIC Part 1
+photograph. You are given a description of that photograph. Reply with exactly
+ONE capital letter — the statement that correctly describes the photograph: A,
+B, C or D. No explanation, nothing else."""
 
-AMBIGUITY_SYSTEM_PART1 = """Bạn kiểm một câu hỏi TOEIC Part 1.
+AMBIGUITY_SYSTEM_PART1 = """You are reviewing one TOEIC Part 1 question.
 
-Bạn được đọc phần mô tả tấm ảnh và bốn câu mô tả. Trả về chữ cái của MỌI câu
-mô tả ĐÚNG tấm ảnh — đúng theo nghĩa kiểm chứng được từ phần mô tả, không phải
-"có thể đúng nếu nhìn góc khác".
+You are given a description of the photograph and four statements. Reply with
+the letter of EVERY statement that correctly describes the photograph — correct
+as verifiable from the description, not "could be true from another angle".
 
-Chỉ trả về các chữ cái, viết liền, không giải thích. Ví dụ: `B` hoặc `AB`."""
+Reply with the letters only, run together, no explanation. Example: `B` or `AB`."""
 
-VERIFY_SYSTEM = """Bạn làm một câu hỏi TOEIC Part 5. Chỉ trả về đúng MỘT chữ cái
-in hoa: A, B, C hoặc D. Không giải thích, không thêm gì khác."""
+VERIFY_SYSTEM = """You are answering one TOEIC Part 5 question. Reply with
+exactly ONE capital letter: A, B, C or D. No explanation, nothing else."""
 
-AMBIGUITY_SYSTEM = """Bạn kiểm một câu hỏi TOEIC Part 5.
+AMBIGUITY_SYSTEM = """You are reviewing one TOEIC Part 5 question.
 
-Đọc câu bốn lần, mỗi lần thay một lựa chọn vào chỗ trống -------. Trả về chữ cái
-của MỌI lựa chọn mà câu kết quả vừa đúng ngữ pháp vừa tự nhiên với người dùng
-tiếng Anh thương mại.
+Read the sentence four times, each time putting a different option into the
+------- blank. Reply with the letter of EVERY option that leaves the sentence
+both grammatical and natural to a user of business English.
 
-Chỉ trả về các chữ cái, viết liền, không giải thích. Ví dụ: `B` hoặc `AB`."""
+Reply with the letters only, run together, no explanation. Example: `B` or `AB`."""
 
 
 @dataclass
@@ -461,12 +476,12 @@ def _graphic_as_text(source: Path) -> str:
 
 def _is_prompt_example(graphic: object) -> bool:
     """Hình có trùng với một trong các ví dụ viết trong `GRAPHIC_RULES` không."""
-    from app.content.exam import writer
+    from app.content.exam import prompts
 
     rows = getattr(graphic, "rows", [])
     if not rows:
         return False
-    body = _normalise(writer._GRAPHIC_RULES_TEMPLATE)
+    body = _normalise(prompts.GRAPHIC_RULES_TEMPLATE)
     copied = sum(1 for row in rows if _normalise(" ".join(row)) in body)
     # QUÁ NỬA số hàng, không phải tất cả: mô hình hay đổi đúng một con số rồi
     # giữ nguyên phần còn lại, và đòi trùng khít thì lần chép đó lọt qua.
@@ -566,6 +581,114 @@ def check_graphic(
     return problems, flags
 
 
+GRAPHIC_VERDICT_SYSTEM = """You review ONE TOEIC listening item that comes with a
+graphic. You are given the graphic, the full transcript, and the question with
+its four options. Judge it against one rule and report which case it falls into.
+
+THE RULE
+The answer must sit where the two sources MEET. The talk supplies a coordinate
+that is NOT on the answer axis — a name, a price, a position, a room. The
+graphic looks that coordinate up and yields the answer. Both are required:
+neither source alone may settle it.
+
+THE FOUR CASES
+GRAPHIC_ONLY — the graphic alone settles it. Reading the table, chart or map is
+  enough; the talk adds nothing needed. This includes a question that merely
+  reads a cell out ("Which phase is forty percent complete?" against a chart
+  showing Testing 40), and a question whose answer is given away by a label
+  ("Where does the sound engineer work?" when a room is named Audio Control
+  Room).
+TALK_ONLY — the talk alone settles it, and there are TWO ways. Either a speaker
+  names the winning option out loud. Or the talk accounts for the OTHER options
+  and leaves the winner as the only one unexplained — elimination settles it
+  just as completely, and the listener never opens the graphic. So count how
+  many of the four options the talk accounts for: if it is more than one, ask
+  whether what remains is already forced. A talk saying "Planning is finished,
+  Development's at seventy-five percent, and Testing's at forty", asked which
+  phase is only fifteen percent along, is TALK_ONLY — three of four are spoken
+  for and the fourth needs no chart.
+NEITHER — the two together still do not settle it: the coordinate the talk gives
+  does not appear in the graphic, or it matches more than one option.
+OK — both are needed and together they settle it, on exactly one option.
+
+WORKED EXAMPLE OF `OK`
+Graphic: a table of resident parking fees; rows Motorcycle $8, Sedan $35, SUV
+$50, Visitor free. Talk: the woman says she drives "one of the larger cars"; the
+manager says larger vehicles are fifty dollars a month. Question: what type of
+vehicle does the woman drive? Answer: SUV.
+The talk never says "SUV"; the graphic cannot know what she drives. The talk
+gives a price, the graphic maps the price to a row name. That is `OK`.
+
+Reply with exactly one word: GRAPHIC_ONLY, TALK_ONLY, NEITHER or OK. No
+explanation."""
+
+_GRAPHIC_VERDICTS = {
+    "GRAPHIC_ONLY": (
+        "hình TỰ trả lời được — người học không cần nghe. Câu phải hỏi thứ chỉ lời "
+        "thoại nói ra, rồi dùng hình để tra ra đáp án"
+    ),
+    "TALK_ONLY": (
+        "lời thoại TỰ trả lời được — tấm hình thành trang trí. Thoại phải nói thông "
+        "tin khác thay vì đọc tên đáp án"
+    ),
+    "NEITHER": (
+        "ghép cả hình lẫn lời thoại vẫn không ra đúng một đáp án — toạ độ thoại đưa "
+        "không có trên hình, hoặc khớp nhiều hơn một lựa chọn"
+    ),
+}
+
+
+def graphic_rule_verdict(
+    gateway: Gateway,
+    question: ParsedQuestion,
+    script: str,
+    source: Path,
+    tier: Tier,
+) -> tuple[str, str | None]:
+    """Câu hỏi về hình có đúng luật giao điểm không. Trả (phán quyết, lời mô tả lỗi).
+
+    Đây là nửa còn thiếu của luật hình: `check_graphic` cấm lời thoại đọc tên đáp
+    án, còn "hình không được tự trả lời" thì không luật tất định nào nói được.
+
+    Hỏi bằng PHÂN LOẠI có tiêu chí, không bằng cách bảo model tự trả lời câu hỏi
+    rồi xem có trúng không. Cách sau phụ thuộc một lần đoán: bốn lựa chọn thì
+    đoán bừa trúng 1/4, và trúng hay trượt đều bị đọc thành kết luận. Ở đây model
+    được đọc CẢ hình lẫn lời thoại, được cho luật và một ví dụ đạt, rồi chỉ phải
+    nói item rơi vào ô nào trong bốn ô — thứ nó có đủ dữ kiện để xét.
+
+    Phán quyết không đọc được KHÔNG được biến thành "đạt": caller ghi nó thành cờ.
+
+    Đo tay với glm-5.3-flash ngày 2026-08-31 trên hai bản `p3-12` thật: bản kể
+    tên ba trong bốn lựa chọn ra `TALK_ONLY`, bản đạt ra `OK`. Trước khi vế loại
+    trừ được thêm vào `TALK_ONLY`, bản hỏng ra `OK` — rubric thiếu vế nào thì mù
+    đúng vế đó, và test với gateway giả không thấy được điều này.
+    """
+    letters = "".join(f"({o.label}) {option_text(o)}\n" for o in question.options)
+    result = with_backoff(
+        lambda: gateway.run(
+            LLMRequest(
+                system=GRAPHIC_VERDICT_SYSTEM,
+                user=(
+                    f"{_graphic_as_text(source)}\n\n"
+                    f"[TRANSCRIPT]\n{script.strip()}\n\n"
+                    f"[QUESTION]\n{question.prompt_text or ''}\n{letters}"
+                ),
+                max_tokens=CHECK_MAX_TOKENS,
+                temperature=0.0,
+            ),
+            feature="exam_ambiguity",
+            tier=tier,
+        ),
+        tries=RETRY_TRIES,
+        delay=RETRY_DELAY,
+    )
+    verdict = result.text.strip().upper()
+    for name in ("GRAPHIC_ONLY", "TALK_ONLY", "NEITHER", "OK"):
+        if name in verdict:
+            return name, _GRAPHIC_VERDICTS.get(name)
+    return verdict[:40], None
+
+
 _INSERT_RE = re.compile(r"positions marked \[1\], \[2\], \[3\],? and \[4\]", re.IGNORECASE)
 _VOCAB_RE = re.compile(r'the word ["“]([^"”]+)["”]', re.IGNORECASE)
 _QUOTE_RE = re.compile(r'writes,\s*["“]([^"”]+)["”]', re.IGNORECASE)
@@ -654,6 +777,25 @@ def _check_set(
         # thoại vào là hỏi một câu không thể trả lời, và người chấm vẫn trả về
         # một chữ cái: cùng kiểu mù đã làm 26 câu bị gắn cờ oan ở §22.2. Đo
         # được: ba câu về hình bị gắn cờ khi thiếu bảng, sạch khi có.
+        # Nửa còn thiếu của luật hình, và nó chỉ chạy khi hình đã hợp lệ: hỏi
+        # model về một tấm bảng đã hỏng thì câu trả lời không nói lên gì.
+        if gateway is not None and ambiguity and not graphic_problems and source.exists():
+            from app.content.exam.blueprint import GRAPHIC_POSITION
+
+            asked = questions[GRAPHIC_POSITION.get(part, len(questions) - 1)]
+            try:
+                verdict, complaint = graphic_rule_verdict(gateway, asked, script, source, tier)
+            except LLMQuotaExhausted:
+                raise
+            except Exception as failure:  # noqa: BLE001
+                verdict, complaint = "", None
+                graphic_flags = [*graphic_flags, f"không xét được luật hình: {failure}"]
+            if complaint:
+                shared = [*shared, complaint]
+            elif verdict and verdict != "OK":
+                # Phán quyết không đọc được KHÔNG được thành "đạt" — nhưng cũng
+                # không chặn nạp, vì lỗi nằm ở lượt gọi chứ không ở nội dung.
+                graphic_flags = [*graphic_flags, f"phán quyết luật hình lạ: {verdict!r}"]
         if source.exists():
             script = f"{script}\n\n{_graphic_as_text(source)}"
     else:
@@ -750,6 +892,7 @@ def check_blueprint(
     ambiguity: bool = False,
     only: int | None = None,
     quiet: bool = False,
+    slot_id: str | None = None,
 ) -> list[SlotReport]:
     """Kiểm mọi ô đã có tệp dán. `gateway=None` thì bỏ mọi tầng cần gọi model.
 
@@ -757,6 +900,16 @@ def check_blueprint(
     ĐÚNG lỗi trội nhất, nhưng cũng là phép nhiễu nhất: người chấm yếu sẽ gật đầu
     với những phương án mà người bản ngữ loại ngay. Nên nó ghi thành CỜ chứ không
     chặn nạp, và chỉ lệnh `prune` mới quyết định dựa vào nó.
+
+    `slot_id` thu về ĐÚNG một ô, và nó chỉ đáng dùng cho lượt CÓ gọi model. Đồ
+    thị gọi hàm này sau mỗi ô: với `only=part` thì ô thứ k kéo theo cả k ô đã
+    viết, nên chi phí cộng dồn thành bình phương — đo được 8,2 lần mức cần thiết
+    trên một đề, riêng Part 5 là 15,5 lần. Tệ hơn tiền: một ô đã đạt bị chấm lại
+    hàng chục lần, và mỗi lần model có thể trả lời khác, nên nó "hỏng" vì nhiễu
+    ở lượt kiểm của một ô khác.
+
+    Lượt MIỄN PHÍ thì vẫn nên để `only=part`: phép dò hội thoại trùng là chuyện
+    giữa các ô, thu về một ô là mất nó, và ở đó không có gì để tiết kiệm.
     """
     reports: list[SlotReport] = []
     seen: dict[str, str] = {}
@@ -765,7 +918,7 @@ def check_blueprint(
         (part.part, slot)
         for part in blueprint.parts
         for slot in part.slots
-        if only is None or part.part == only
+        if (only is None or part.part == only) and (slot_id is None or slot.id == slot_id)
     ]
     for slot_index, (part_number, slot) in enumerate(slots, start=1):
         if not quiet:

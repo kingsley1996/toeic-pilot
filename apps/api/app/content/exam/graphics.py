@@ -68,6 +68,36 @@ PAPER = (255, 255, 255)
 # dung mà họ có.
 KINDS = ("table", "schedule", "chart", "map", "survey", "form")
 
+# Trục đáp án của từng dạng, viết ra để MÁY dùng được — `answer_axis()` ở dưới
+# là bản thi hành, còn đây là bản cho lời nhắc đọc.
+#
+# Tồn tại vì thiếu nó đã hỏng thật: lời nhắc sinh brief chỉ nêu MỘT ví dụ và là
+# `table` ("cột Gói và Phí"), nên model suy rộng mẫu hai cột sang cả `schedule`
+# và viết ra brief "cột Thời gian và Hoạt động". Người viết đề sau đó làm đúng
+# brief ấy, rồi bị `answer_axis()` chặn — vì với schedule trục là TIÊU ĐỀ CỘT,
+# nên bảng hai cột chỉ còn một mục thay vì bốn. Đổi model không cứu được: cả
+# hai lời nhắc phải nói cùng một điều.
+AXIS_BRIEF = """\
+- table: bốn lựa chọn là TÊN HÀNG ở cột đầu.
+  Vd `table: bảng giá bốn gói hội viên, cột "Plan" và "Fee"`.
+- schedule: LƯỚI người × khung giờ. Bốn lựa chọn là TIÊU ĐỀ CỘT (bốn khung giờ), KHÔNG phải cột đầu.
+  Cột đầu là tên người, và một số ô để TRỐNG — chỗ trống chính là thứ câu hỏi hỏi tới.
+  Vd `schedule: lịch rảnh ba đồng nghiệp, cột đầu là tên, bốn cột khung giờ
+  9-10, 10-11, 11-12, 13-14`.
+  KHÔNG viết brief kiểu bảng hai cột "Thời gian | Hoạt động" — dạng đó là
+  `table`, không phải `schedule`.
+- chart: bốn lựa chọn là NHÃN của từng cột biểu đồ. Vd `chart: doanh số bốn quý, nhãn "Q1".."Q4"`.
+- map: bốn lựa chọn là TÊN Ô trên sơ đồ.
+  Vd `map: sơ đồ bốn gian hàng, mỗi ô `Booth N: tên tiếng Anh``.
+- survey: vẽ như `schedule`, nên trục là TIÊU ĐỀ CỘT — KHÔNG phải tên bốn mục
+  được chấm. Cột đầu là người/nơi trả lời, bốn cột còn lại là bốn khía cạnh
+  được chấm điểm.
+  Vd `survey: phiếu chấm bốn khía cạnh dịch vụ của ba chi nhánh, cột đầu là tên
+  chi nhánh, bốn cột "Cleanliness", "Staff", "Price", "Location"`.
+- form: vẽ như `table`, nên trục là TÊN HÀNG ở cột đầu — bốn mục đã điền.
+  Vd `form: phiếu đặt phòng họp đã điền, cột đầu bốn mục "Room", "Date",
+  "Start Time", "Attendees"`."""
+
 # Dạng nào vẽ bằng bộ vẽ nào. `answer_axis` cũng theo bảng này.
 _LIKE = {"survey": "schedule", "form": "table"}
 

@@ -229,3 +229,54 @@ def test_part1_photo_lands_in_own_file(workdir: Path, monkeypatch: pytest.Monkey
     assert paste.startswith("[QUESTION]")
     photo = (workdir / "photos" / "p1-01.txt").read_text()
     assert "single woman" in photo
+
+
+def test_a_failed_call_does_not_kill_the_whole_run(
+    workdir: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Một ô hỏng ở LƯỢT GỌI không được dừng những ô còn lại.
+
+    Gặp thật trên `tp-form-08`: `p3-11` là ô có hình đầu tiên, phần suy luận
+    vượt trần đầu ra, và `LLMError` xuyên qua LangGraph giết luôn 62 ô còn lại.
+    Mười ô vừa xong chỉ sống sót nhờ đồ thị ghi đĩa sau TỪNG ô. `check.py` đã có
+    đúng luật này kèm lý do, nhưng `write` chưa được áp.
+
+    Ô hỏng đi thẳng tới `escalate`, không quay lại critic: `with_backoff` đã thử
+    bảy lần, nên không có bản nháp nào để chấm và ba vòng viết lại sẽ hỏng y hệt.
+    """
+    from app.content.exam import blueprint as bp
+    from app.content.exam_agents.graph import run_pending
+    from app.services.llm.base import LLMError
+
+    def _slot(slot_id: str) -> _Slot:
+        slot = _Slot()
+        slot.id = slot_id  # type: ignore[misc]  # che thuộc tính lớp
+        return slot
+
+    class _TwoSlotPart:
+        part = 5
+        slots = [_slot("p5-01"), _slot("p5-02")]
+
+    class _TwoSlotBlueprint:
+        slug = "graph-test"
+        seed = 1
+        parts = [_TwoSlotPart()]
+
+    class FailsFirstWrite(FakeGateway):
+        def run(self, request: object, feature: str = "", tier: object = None) -> FakeResult:
+            if feature == "exam_write" and "exam_write" not in self.calls:
+                self.calls.append(feature)
+                raise LLMError("bai: hết hạn mức đầu ra khi đang suy luận (24940 ký tự)")
+            return super().run(request, feature, tier)
+
+    monkeypatch.setattr(bp, "load", lambda path: _TwoSlotBlueprint())
+    gw = FailsFirstWrite()
+    results = run_pending(gw, tier=None, blueprint=_TwoSlotBlueprint(), workdir=workdir)
+
+    assert results == [("p5-01", "escalated"), ("p5-02", "accepted")]
+    # Đúng hai lượt viết: ô hỏng KHÔNG được viết lại ba lần, và critic không chạy.
+    assert gw.calls.count("exam_write") == 2
+    assert "exam_verify" not in gw.calls
+    # Lý do phải HIỆN RA, không chỉ nằm trong state — cùng lập luận với
+    # `test_escalation_prints_why`.
+    assert "hết hạn mức đầu ra" in capsys.readouterr().out
