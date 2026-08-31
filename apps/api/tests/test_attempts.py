@@ -615,17 +615,18 @@ def _attach_set_audio(client: TestClient, admin: dict[str, str], db_session, slu
         )
 
 
-def test_a_conversation_transcript_waits_for_the_whole_set(
+def test_practice_hands_over_the_transcript_before_any_answer(
     client: TestClient, auth, db_session
 ) -> None:
-    """Lời thoại Part 3 thuộc về CẢ CỤM, nên nó chỉ về khi cụm đã trả lời hết.
+    """Luyện tập cho xem lời thoại ngay, không đợi chọn đáp án.
 
-    Cổng lộ đáp án là theo TỪNG CÂU, và dùng thẳng cổng đó cho lời thoại là một
-    lỗ có thật: trả lời câu đầu rồi nhận nguyên hội thoại là nhận luôn đáp án
-    hai câu sau, và cụm mất hai phần ba giá trị của nó.
+    Đây là một đánh đổi của sản phẩm chứ không phải của mã, và nó ngược với luật
+    cũ: lời thoại từng đi chung cổng lộ đáp án, và với cụm Part 3/4 thì phải trả
+    lời hết cụm mới về. Người luyện tự quyết khi nào nhìn.
 
-    Gác ở máy chủ chứ không ở giao diện — giấu bằng CSS vẫn để nguyên văn nằm
-    trong payload, mở tab Network là đọc được.
+    Phép kiểm đi cùng nó là `test_exam_mode_never_sends_a_transcript`: chỗ ranh
+    giới thật sự nằm ở đó, và nếu luật này bị nới sang cả Luyện thi thì bài thi
+    mất nghĩa.
     """
     admin = auth("admin")
     client.post(
@@ -649,31 +650,18 @@ def test_a_conversation_transcript_waits_for_the_whole_set(
     )
     assert started.status_code == 201, started.text
     state = started.json()
-    first, second, third = state["questions"]
-    assert all(q["transcript"] == [] for q in state["questions"])
+    first, second, _third = state["questions"]
 
-    # Trả lời câu ĐẦU: đáp án của nó lộ ra, nhưng lời thoại thì CHƯA.
-    after = client.patch(
-        f"/api/v1/attempts/{state['id']}/questions/{first['id']}",
-        json={"selected_option_id": first["options"][0]["id"]},
-        headers=learner,
-    ).json()
-    opened = next(q for q in after["questions"] if q["id"] == first["id"])
-    assert opened["correct_option_id"] is not None
-    assert opened["transcript"] == [], "lộ hội thoại sớm là lộ luôn đáp án câu sau"
-
-    # Trả lời nốt câu còn lại: giờ mới về, và chỉ trên câu ĐẦU của cụm.
-    for remaining in (second, third):
-        done = client.patch(
-            f"/api/v1/attempts/{state['id']}/questions/{remaining['id']}",
-            json={"selected_option_id": remaining["options"][0]["id"]},
-            headers=learner,
-        ).json()
-    lead = next(q for q in done["questions"] if q["id"] == first["id"])
+    # Chưa bấm gì cả mà lời thoại đã có — và đáp án thì CHƯA.
+    lead = next(q for q in state["questions"] if q["id"] == first["id"])
     assert [t["speaker"] for t in lead["transcript"]] == ["Woman", "Man"]
     assert "chairs we ordered" in lead["transcript"][0]["text"]
-    tail = next(q for q in done["questions"] if q["id"] == second["id"])
-    assert tail["transcript"] == [], "lời thoại chỉ đi kèm câu đầu của cụm"
+    assert lead["correct_option_id"] is None, "lời thoại mở ra không kéo theo đáp án"
+
+    # Vẫn chỉ đi kèm câu ĐẦU của cụm: ba câu mang ba bản sao là ba lần cùng một
+    # đoạn văn trên đường truyền, và client sẽ phải tự khử trùng lặp.
+    tail = next(q for q in state["questions"] if q["id"] == second["id"])
+    assert tail["transcript"] == []
 
 
 def test_exam_mode_never_sends_a_transcript(client: TestClient, auth, db_session) -> None:

@@ -250,14 +250,20 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     # Lộ đáp án là quyết định TỪNG CÂU, không phải một cờ cho cả lượt làm.
     #
     # Nộp rồi thì lộ hết — không còn gì để đo. Đang làm ở chế độ Luyện tập thì
-    # chỉ lộ câu người học đã chọn: Part 1 và 2 không in gì ra đề, nên "lộ" ở đó
-    # có nghĩa là gửi kèm nguyên văn lời đọc, và gửi trước lúc họ bấm nghe thì
-    # bài tập nghe không còn đo cái nó định đo. Luyện thi thì không lộ gì cả.
+    # chỉ lộ câu người học đã chọn. Luyện thi thì không lộ gì cả.
+    #
+    # **Lời thoại KHÔNG đi cùng cổng này nữa** (`show_script` bên dưới). Nó từng
+    # đi chung, và lý do thì vẫn đúng: Part 1 và 2 không in gì ra đề, nên đưa
+    # nguyên văn lời đọc trước lúc người học bấm nghe là bỏ mất phần nghe. Nhưng
+    # đó là đánh đổi của SẢN PHẨM, không phải của mã, và quyết định hiện tại là
+    # chế độ Luyện tập cho xem lời thoại bất cứ lúc nào — người luyện tự chọn
+    # khi nào nhìn. Luyện thi thì vẫn khoá cho tới lúc nộp.
     #
     # Gác ở máy chủ chứ không phải ở giao diện: giấu bằng CSS vẫn để nguyên văn
     # nằm trong payload, mở tab Network là đọc được.
     submitted = attempt.status != "in_progress"
     practice = attempt.review_mode == "practice"
+    show_script = submitted or practice
     correct_ids = (
         _correct_option_ids(db, [q.id for _, q in in_scope]) if submitted or practice else {}
     )
@@ -307,19 +313,6 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
     questions: list[QuestionPublic] = []
     seen_sets: set[uuid.UUID] = set()
 
-    # Lời thoại Part 3/4 thuộc về CẢ CỤM, còn cổng lộ thì theo từng câu. Lộ hội
-    # thoại ngay sau câu đầu là lộ luôn đáp án hai câu sau — cụm mất hai phần ba
-    # giá trị của nó. Nên với cụm, điều kiện là MỌI câu đã được trả lời.
-    answered_per_set: dict[uuid.UUID, int] = {}
-    total_per_set: dict[uuid.UUID, int] = {}
-    for _, candidate in rows:
-        if candidate.set_id is None:
-            continue
-        total_per_set[candidate.set_id] = total_per_set.get(candidate.set_id, 0) + 1
-        chosen = answered_by_question.get(candidate.id)
-        if chosen is not None and chosen.selected_option_id is not None:
-            answered_per_set[candidate.set_id] = answered_per_set.get(candidate.set_id, 0) + 1
-
     # Số câu đọc từ đề, KHÔNG đánh lại từ 1. Luyện riêng Part 5 của một đề đầy
     # đủ phải hiện 101-130, vì đó là con số người học đọc thấy trong mọi tài
     # liệu — đánh lại từ 1 làm họ không đối chiếu được với sách.
@@ -343,15 +336,10 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         # Part 1/2 giữ lời thoại trên CÂU; Part 3/4 trên CỤM, và chỉ câu đầu của
         # cụm mang nó — cùng lý do với `passages`, tránh gửi ba lần một đoạn.
         transcript: list[TranscriptTurn] = []
-        if question.set_id is None:
-            if reveal:
+        if show_script:
+            if question.set_id is None:
                 transcript = _transcript(question.audio_script)
-        elif first_of_set and stimulus is not None:
-            whole_set_done = submitted or (
-                practice
-                and answered_per_set.get(question.set_id, 0) == total_per_set.get(question.set_id)
-            )
-            if whole_set_done:
+            elif first_of_set and stimulus is not None:
                 transcript = _transcript(stimulus.audio_script)
 
         questions.append(
