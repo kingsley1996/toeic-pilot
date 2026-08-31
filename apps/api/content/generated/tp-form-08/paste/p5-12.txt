@@ -1,0 +1,9 @@
+[QUESTION]
+The consultant ------- we met last month has submitted the final proposal.
+(A) which
+(B) whom
+(C) whose
+(D) what
+Answer: B
+Explanation: Danh từ đứng trước ("the consultant") chỉ người, và chỗ trống đóng vai trò tân ngữ của động từ "met" (chủ ngữ của mệnh đề quan hệ là "we"), nên cần đại từ quan hệ tân ngữ cho người: "whom". (B) "which" chỉ dùng để thay thế cho vật, không dùng cho người; (C) "whose" chỉ sự sở hữu và bắt buộc phải theo sau bởi một danh từ (như "whose proposal"), trong khi đây là "we met"; (D) "what" không phải đại từ quan hệ, không thể đứng ngay sau một danh từ đã được xác định.
+Source: original

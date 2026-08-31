@@ -1,0 +1,4 @@
+kind: map
+Station Map
+Zone A: Ticket Office | Zone B: Waiting Hall
+Zone C: Platform 4 | Zone D: Platform 5

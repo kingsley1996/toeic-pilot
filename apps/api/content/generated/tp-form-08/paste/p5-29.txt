@@ -1,0 +1,9 @@
+[QUESTION]
+The instructor said the new software tutorial was extremely ------- for beginners.
+(A) benefit
+(B) beneficiary
+(C) beneficial
+(D) beneficially
+Answer: C
+Explanation: Sau động từ nối "was" và trạng từ "extremely" cần tính từ bổ nghĩa cho chủ ngữ "the tutorial". (B) "beneficial" là tính từ, phù hợp. (A) "benefit" là danh từ/động từ, không thể đứng sau "extremely" làm bổ ngữ. (C) "beneficiary" là danh từ nghĩa "người thụ hưởng", sai từ loại. (D) "beneficially" là trạng từ, không dùng làm bổ ngữ sau động từ nối.
+Source: original

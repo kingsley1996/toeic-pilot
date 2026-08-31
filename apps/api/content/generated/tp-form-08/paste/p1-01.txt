@@ -1,0 +1,8 @@
+[QUESTION]
+voice: au_female_1
+(A) The woman is sitting at the conference table.
+(B) The woman is writing on a whiteboard.
+(C) The woman is pointing at the projection screen.
+(D) Two coworkers are watching the presentation.
+Answer: C
+Source: original

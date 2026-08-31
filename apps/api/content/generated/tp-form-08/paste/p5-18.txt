@@ -1,0 +1,9 @@
+[QUESTION]
+Passengers whose flights are canceled may request a full ------- at the service counter.
+(A) refundable
+(B) refunded
+(C) refunding
+(D) refund
+Answer: D
+Explanation: Sau mạo từ "a" và tính từ "full", chỗ trống cần một danh từ làm tân ngữ của "request"; "request a full refund" là collocation chuẩn trong chính sách hoàn tiền của hãng hàng không. (A) "refundable" là tính từ nghĩa "có thể hoàn lại", không thể đứng làm tân ngữ; (B) "refunded" là dạng quá khứ/phân từ hai của động từ, không phải danh từ; (D) "refunding" là danh động từ, nhưng danh từ đúng của động từ này là "refund" — "a full refunding" không phải cách dùng được chấp nhận.
+Source: original

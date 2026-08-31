@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The trays are stacked on the counter.
+(B) The workers are washing dishes at the sink.
+(C) A chef is cooking vegetables in a pan.
+(D) A waitress is carrying a tray of food.
+Answer: D
+Source: original

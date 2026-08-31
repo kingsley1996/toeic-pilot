@@ -1,0 +1,9 @@
+[QUESTION]
+The customer service manager apologized ------- the delay in processing the refund.
+(A) at
+(B) to
+(C) with
+(D) for
+Answer: D
+Explanation: "Apologize" khi nêu lý do xin lỗi luôn kết hợp với giới từ "for": apologize for something. (B) "to" phải đi kèm người bị xin lỗi (apologize to someone), không thể đứng trước "the delay"; (C) "with" không phải là giới từ kết hợp với "apologize" trong ngữ cảnh này; (D) "at" cũng không tạo thành cụm động từ với "apologize".
+Source: original

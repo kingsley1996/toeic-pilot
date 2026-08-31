@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+How long does an international transfer take?
+voice: au_male_1
+(A) It costs about twenty dollars, I believe.
+(B) Usually three to five business days.
+(C) The line isn't very long this morning.
+Answer: B
+Source: original

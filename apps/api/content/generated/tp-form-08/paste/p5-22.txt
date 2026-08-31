@@ -1,0 +1,9 @@
+[QUESTION]
+Applicants should email a cover letter along with their updated -------.
+(A) resumed
+(B) resumable
+(C) resuming
+(D) resume
+Answer: D
+Explanation: Sau đại từ sở hữu "their" và tính từ "updated" phải là một DANH TỪ chỉ tài liệu; "updated resume" = bản CV được cập nhật, phù hợp ngữ cảnh chuyên viên tuyển dụng yêu cầu nộp hồ sơ. (A) "resumed" là dạng quá khứ/phân từ hai của động từ "resume" (tiếp tục) — sai từ loại, không thể làm danh từ sau "updated". (C) "resuming" là dạng V-ing, không phải danh từ chỉ văn bản và không được tính từ "updated" bổ nghĩa. (D) "resumable" là tính từ (hậu tố -able) nghĩa "có thể tiếp tục lại" — sai từ loại, không thể đứng sau "updated" như một danh từ.
+Source: original

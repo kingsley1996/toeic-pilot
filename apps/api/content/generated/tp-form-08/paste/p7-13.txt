@@ -1,0 +1,75 @@
+[PASSAGE]
+NOTICE TO ALL PLANT STAFF
+
+Occupational safety training will run for two weeks beginning August 12. Two
+sessions are offered each day: a morning session from 08:00 to 12:00 and an
+afternoon session from 13:00 to 17:00.
+
+Staff who already hold a valid safety certificate need only attend the
+afternoon session, which reviews recent changes to plant procedure. Everyone
+else must attend a morning session, which covers the full syllabus and ends
+with a written assessment.
+
+Register through the staff portal. Registration closes one week before the
+session you select.
+
+[PASSAGE]
+From: t.okafor@plantops.example
+To: m.ferreira@plantops.example
+Subject: Your registration
+Date: August 8
+
+Marco,
+
+Your registration has come through and I have attached the confirmation below.
+One thing to note: the assessment at the end of your session is written, and it
+is not offered again until November. Please make sure you are not scheduled on
+the floor that morning.
+
+The room is B2, on the second level. Bring the confirmation with you; the
+instructor will not admit anyone whose name is not on the list.
+
+Thanks,
+Tunde Okafor
+Safety Officer
+
+[QUESTION]
+Why did Mr. Okafor write to Mr. Ferreira?
+(A) To offer him a place on a later course
+(B) To point out what his session will involve
+(C) To ask him to change his working hours
+(D) To remind him that registration is closing
+Answer: B
+Source: original
+[QUESTION]
+When does registration close for Mr. Ferreira's session?
+(A) August 12
+(B) August 10
+(C) August 8
+(D) August 14
+Answer: C
+Source: original
+[QUESTION]
+What is NOT stated about the training?
+(A) It runs for two weeks.
+(B) It is held in room B2.
+(C) It includes a written assessment.
+(D) It is repeated every November.
+Answer: D
+Source: original
+[QUESTION]
+What can be concluded about Mr. Ferreira?
+(A) He does not hold a safety certificate.
+(B) He has attended the training before.
+(C) He works in the afternoon only.
+(D) He will teach part of the session.
+Answer: A
+Source: original
+[QUESTION]
+What will Mr. Ferreira most likely have to do?
+(A) Register again through the portal
+(B) Sit an assessment on August 15
+(C) Transfer to the afternoon session
+(D) Provide a copy of an old certificate
+Answer: B
+Source: original

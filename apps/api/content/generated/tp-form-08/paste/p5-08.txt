@@ -1,0 +1,9 @@
+[QUESTION]
+The technicians repaired the printing equipment ------- without calling an outside service.
+(A) theirselves
+(B) themselves
+(C) themself
+(D) theirs
+Answer: B
+Explanation: Chỗ trống cần đại từ phản thân nhấn mạnh chủ ngữ "The technicians" (số nhiều): chính họ tự sửa máy, không nhờ dịch vụ ngoài. (B) "themselves" là đại từ phản thân số nhiều, hòa hợp với chủ ngữ. (A) "theirselves" là dạng không tồn tại trong tiếng Anh chuẩn — dạng phản thân đúng của "they" chỉ có thể là "themselves". (C) "themself" là dạng số ít, không hòa hợp về số với chủ ngữ số nhiều "the technicians". (D) "theirs" là đại từ sở hữu đứng độc lập (nghĩa "của họ"), sai loại đại từ cho vị trí nhấn mạnh sau tân ngữ.
+Source: original

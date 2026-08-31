@@ -1,0 +1,6 @@
+kind: chart
+Software Rollout Progress in percent
+Planning | 100
+Development | 75
+Testing | 40
+Deployment | 15

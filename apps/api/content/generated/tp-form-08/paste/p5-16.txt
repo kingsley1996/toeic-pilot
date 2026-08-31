@@ -1,0 +1,9 @@
+[QUESTION]
+The shipment arrived late, ------- the store could not display the new collection on schedule.
+(A) but
+(B) so
+(C) or
+(D) for
+Answer: B
+Explanation: Hai mệnh đề có quan hệ nguyên nhân – kết quả (lô hàng đến trễ → không trưng bày đúng lịch), nên cần liên từ chỉ kết quả. (A) "so" đúng: nối hai mệnh đề độc lập sau dấu phẩy để diễn tả hậu quả. (B) "but" diễn tả tương phản; mệnh đề sau không hề trái với dự đoán từ mệnh đề trước, mà là hệ quả tất yếu, nên sai nghĩa. (C) "or" diễn tả sự lựa chọn hoặc phương án khác; hai mệnh đề không phải hai khả năng thay thế nhau, nên sai nghĩa. (D) "for" là liên từ chỉ nguyên nhân (= because); đặt vào sẽ đảo ngược logic, khiến việc không trưng bày được trở thành nguyên nhân của việc lô hàng đến trễ, nên sai.
+Source: original

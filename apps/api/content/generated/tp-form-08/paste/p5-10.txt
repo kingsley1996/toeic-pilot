@@ -1,0 +1,9 @@
+[QUESTION]
+By the time the auditors arrive next Monday, the finance staff ------- all the receipts for the upcoming audit.
+(A) have been collecting
+(B) will be collecting
+(C) had been collecting
+(D) will have collected
+Answer: D
+Explanation: Cụm "By the time the auditors arrive next Monday" chỉ một mốc thời gian trong tương lai, và hành động thu chứng từ phải hoàn thành trước mốc đó, nên cần thì tương lai hoàn thành "will have + V3". (B) tương lai tiếp diễn, diễn tả hành động đang diễn ra tại thời điểm khách kiểm toán đến, không phải đã hoàn thành trước đó; (C) quá khứ hoàn thành tiếp diễn, dùng cho quá khứ nên mâu thuẫn với "next Monday"; (D) hiện tại hoàn thành tiếp diễn, không thể kết hợp với mốc thời gian tương lai trong câu.
+Source: original

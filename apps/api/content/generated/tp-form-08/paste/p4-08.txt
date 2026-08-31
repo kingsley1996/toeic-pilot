@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and welcome to today's career skills workshop. My name is Sarah Whitfield, and I've worked as a project coordinator for the past ten years. This morning I'll be talking about time management — how to plan your day, set priorities, and avoid the distractions that steal your focus. New employees often tell me they feel overwhelmed by long to-do lists, so I'll share some techniques that helped me work more effectively. First, we'll look at the two-minute rule for handling small tasks. After that, please fill out the short survey on your tables — it will help me tailor tomorrow's follow-up session to your needs.
+
+[QUESTION]
+Who is the speaker?
+(A) A career counselor
+(B) A human resources manager
+(C) A college lecturer
+(D) A project coordinator
+Answer: D
+Source: original
+[QUESTION]
+What is the first technique the speaker will discuss?
+(A) The two-minute rule for small tasks
+(B) Taking short breaks every hour
+(C) Delegating tasks to team members
+(D) Using a calendar app for scheduling
+Answer: A
+Source: original
+[QUESTION]
+What does the speaker ask the audience to do?
+(A) Exchange contact details with other attendees
+(B) Fill out a short survey
+(C) Schedule a meeting with the speaker
+(D) Submit time-tracking sheets to a manager
+Answer: B
+Source: original

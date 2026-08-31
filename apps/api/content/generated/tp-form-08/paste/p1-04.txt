@@ -1,0 +1,8 @@
+[QUESTION]
+voice: uk_male_1
+(A) A woman is adjusting the projector at the front.
+(B) Some chairs have been arranged in rows.
+(C) The screen is being taken down from the wall.
+(D) There is a long table in front of the screen.
+Answer: B
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+Where should I pick up my name badge?
+voice: uk_male_1
+(A) Yes, they printed it this morning.
+(B) At the registration desk near the main entrance.
+(C) You can collect it after nine tomorrow.
+Answer: B
+Source: original

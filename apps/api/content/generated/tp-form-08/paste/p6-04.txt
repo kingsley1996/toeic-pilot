@@ -1,0 +1,43 @@
+[PASSAGE]
+New Coffee Chain Impresses Downtown Customers
+
+The coffee chain Morning Grounds opened its newest branch in the city center last Monday, and early reviews have been glowing. Visitors have been especially impressed by the ------- (1) of the espresso drinks, which they describe as rich and full-flavored.
+
+The second floor has been designed with remote workers in mind. A quiet work area contains a dozen individual desks, each one beside a power outlet, so guests can charge ------- (2) devices throughout the day. ------- (3)
+
+Equally impressive is the speed of service. Even during the morning rush, orders ------- (4) at the counter and filled within four minutes.
+
+With excellent coffee, a comfortable workspace, and quick, friendly staff, the new branch is well worth a visit.
+
+[QUESTION]
+Blank (1)
+(A) size
+(B) quantity
+(C) quality
+(D) number
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) them
+(C) theirs
+(D) their
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) Many customers settle in with their laptops and stay for hours.
+(B) The chain was founded in 2012 and now operates more than fifty locations.
+(C) The menu changes seasonally and includes several limited-time lattes.
+(D) Admission is free, but advance registration is strongly recommended.
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) take
+(B) are taken
+(C) is taken
+(D) takes
+Answer: B
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+------- the merger documents, the lawyer immediately scheduled a meeting with the client.
+(A) Reviewed
+(B) Being reviewed
+(C) Have reviewed
+(D) Having reviewed
+Answer: D
+Explanation: Câu dùng cấu trúc phân từ đứng đầu câu: chủ ngữ của phân từ phải trùng với chủ ngữ mệnh đề chính là "the lawyer", và hành động "review" hoàn tất TRƯỚC hành động "scheduled", nên cần phân từ hoàn thành thể chủ động "Having reviewed". (A) "Reviewed" là phân từ hai mang nghĩa bị động, sẽ hiểu sai thành "luật sư bị xem xét" — sai thể vì chủ ngữ là người thực hiện hành động. (C) "Have reviewed" là động từ chia thì (động từ hữu hạn), không thể đứng một mình đầu câu làm trạng ngữ khi không có chủ ngữ hay liên từ — sai dạng. (D) "Being reviewed" là phân từ bị động tiếp diễn, vừa sai thể (bị động) vừa không thể kèm tân ngữ "the merger documents".
+Source: original

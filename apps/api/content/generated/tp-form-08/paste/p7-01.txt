@@ -1,0 +1,44 @@
+[PASSAGE]
+Dana Whitfield [9:05 A.M.]
+Hi Nolan. The Grand Plaza branch opens on Monday, and I want the floor ready by Friday. How many display units do we have?
+
+Nolan Reyes [9:08 A.M.]
+Only ten. The supplier delayed the rest of the shipment. Forty were ordered.
+
+Dana Whitfield [9:10 A.M.]
+That won't do. We need at least twenty-five units on the floor before the opening ceremony.
+
+Nolan Reyes [9:12 A.M.]
+The warehouse in Kingston has fifteen spare units. They can deliver by Friday if we order today.
+
+Dana Whitfield [9:14 A.M.]
+Then place the order this morning. What about the demo phones for the displays?
+
+Nolan Reyes [9:16 A.M.]
+They arrived yesterday, but they're locked in the storage room at the Hill Street branch. I don't have a key.
+
+Dana Whitfield [9:19 A.M.]
+I'll ask Mr. Patel to open it this afternoon. Focus on the display units for now.
+
+Nolan Reyes [9:21 A.M.]
+Understood. One more thing—the Friday delivery costs sixty dollars. Should I pay from the branch budget?
+
+Dana Whitfield [9:24 A.M.]
+Yes, and keep the receipt. I'll reimburse you from the opening expenses account.
+
+[QUESTION]
+How many display units does Ms. Whitfield say the new branch needs?
+(A) Ten
+(B) Fifteen
+(C) Twenty-five
+(D) Forty
+Answer: C
+Source: original
+[QUESTION]
+At 9:19 A.M., what does Ms. Whitfield mean when she writes, "Focus on the display units for now"?
+(A) The opening ceremony may be postponed
+(B) Mr. Reyes should find the storage room key
+(C) The demo phones have not arrived yet
+(D) The unit shortage is the more urgent problem
+Answer: D
+Source: original

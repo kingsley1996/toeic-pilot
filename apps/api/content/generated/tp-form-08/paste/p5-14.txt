@@ -1,0 +1,9 @@
+[QUESTION]
+A new security camera system ------- at the main entrance last weekend.
+(A) installed
+(B) has installed
+(C) was installing
+(D) was installed
+Answer: D
+Explanation: Chủ ngữ "a new security camera system" là vật nhận hành động (hệ thống được lắp đặt, không tự lắp đặt), nên câu cần thể bị động quá khứ "was installed" để hợp với mốc thời gian "last weekend". (A) "installed" là dạng chủ động quá khứ; nếu dùng, câu sẽ thiếu động từ chính và sai thể. (C) "was installing" là thể chủ động tiếp diễn, nghĩa là hệ thống tự tiến hành lắp đặt — sai thể. (D) "has installed" là chủ động hiện tại hoàn thành, vừa sai thể vừa mâu thuẫn với thời gian quá khứ xác định "last weekend".
+Source: original

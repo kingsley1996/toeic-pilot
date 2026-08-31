@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: au_female_1
+Hi, come in. I've just approved your leave request for next month.
+voice: au_male_1
+Oh, wonderful. I'm visiting my parents from the tenth to the twelfth.
+voice: au_female_1
+Good. Just remember you'll need someone to cover your shift at the reception desk.
+voice: au_male_1
+I asked Daniel first, but he's attending a training course that week.
+voice: au_female_1
+Then try Priya in accounting. She's been asking for extra hours.
+voice: au_male_1
+Perfect. I'll email her this afternoon and confirm the arrangement with you tomorrow.
+
+[QUESTION]
+Who is the woman?
+(A) An accounting clerk
+(B) A training coordinator
+(C) The man's supervisor
+(D) A hotel receptionist
+Answer: C
+Source: original
+[QUESTION]
+Why can't Daniel cover the man's shift?
+(A) He already works extra hours
+(B) He will be visiting his parents
+(C) He has not been approved for leave
+(D) He is attending a training course
+Answer: D
+Source: original
+[QUESTION]
+What will the man do this afternoon?
+(A) Email a coworker about covering his shift
+(B) Submit a new leave request
+(C) Attend a training course
+(D) Visit his parents
+Answer: A
+Source: original

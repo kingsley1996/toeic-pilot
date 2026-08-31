@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Hi, this is Daniel Reeves from Brightwell Trading. I'm calling about the audit appointment we have scheduled with your accounting office. Something urgent has come up on our end, so I'm afraid we'll need to move it. Instead of this Thursday, could we push it to sometime next week? Any day after Tuesday would work, though Wednesday morning is probably best. I know you'll need to check your calendar first, so please give me a call back once you've confirmed. You can reach me anytime at five five five, oh one nine two. Thanks a lot, and sorry for the short notice.
+
+[QUESTION]
+What is the purpose of the man's call?
+(A) To report a billing error
+(B) To request copies of tax forms
+(C) To reschedule an audit appointment
+(D) To apply for a job opening
+Answer: C
+Source: original
+[QUESTION]
+When was the audit appointment originally scheduled?
+(A) This Tuesday
+(B) Next Friday
+(C) Next Wednesday
+(D) This Thursday
+Answer: D
+Source: original
+[QUESTION]
+What does the man ask the listener to do?
+(A) Call him back after checking the calendar
+(B) Send him an updated contract
+(C) Visit his office on Thursday
+(D) Email him the audit report
+Answer: A
+Source: original

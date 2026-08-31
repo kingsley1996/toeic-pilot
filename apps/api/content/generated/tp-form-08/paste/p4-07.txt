@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Hi, Daniel, this is Marcus Webb calling from the Riverside warehouse. I'm calling about order number seven-seven-four-oh-two, the office chairs going to the Hartwell branch. The truck that was supposed to pick it up this morning broke down on the highway, so the delivery will arrive one day late — Thursday instead of Wednesday. Also, could you check the shipping label before we reload? The recipient's address on the form looks different from what we had last month, so please confirm it with the customer and call me back by five o'clock today. Thanks a lot.
+
+[QUESTION]
+What is the main purpose of Marcus's call?
+(A) To report a one-day delivery delay
+(B) To place an order for office chairs
+(C) To request a repair for a truck
+(D) To complain about a billing error
+Answer: A
+Source: original
+[QUESTION]
+When will the shipment arrive?
+(A) On Wednesday
+(B) On Thursday
+(C) On Friday
+(D) On Saturday
+Answer: B
+Source: original
+[QUESTION]
+What does Marcus ask Daniel to do?
+(A) Ship the order to a different branch
+(B) Repair the broken-down truck
+(C) Confirm the recipient's address with the customer
+(D) Send him a corrected invoice
+Answer: C
+Source: original

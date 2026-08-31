@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+Is it okay to park here overnight?
+voice: uk_male_1
+(A) The overnight fee is fifteen dollars.
+(B) In the lot across from the lobby.
+(C) No, the garage closes at ten.
+Answer: C
+Source: original

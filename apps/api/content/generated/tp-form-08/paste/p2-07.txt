@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+How do I reset my email password?
+voice: uk_female_1
+(A) I'll contact IT Support about the issue.
+(B) Just click 'Forgot password' on the login page.
+(C) Your new passport should arrive by Friday.
+Answer: B
+Source: original

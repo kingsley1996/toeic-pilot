@@ -1,0 +1,1 @@
+Guest Survey - Average Rating by Room Type. Room Type: Standard, Cleanliness: 4.4, Comfort: 3.1, Value: 4.6. Room Type: Superior, Cleanliness: 4.5, Comfort: 4.2, Value: 4.1. Room Type: Deluxe, Cleanliness: 4.7, Comfort: 4.6, Value: 3.8. Room Type: Suite, Cleanliness: 4.8, Comfort: 4.7, Value: 3.2.

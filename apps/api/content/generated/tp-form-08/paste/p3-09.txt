@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: au_female_1
+Thanks for meeting me. I'd like your input on the training plan for the new hires starting next month.
+voice: au_male_1
+Of course. We have six new staff joining the sales team, and they'll need product training first.
+voice: au_female_1
+I was thinking of a two-week course. The vendor quoted nine thousand dollars, which is above our budget.
+voice: au_male_1
+Maybe we can shorten it to one week and handle the rest with internal workshops.
+voice: au_female_1
+That could work. I'll ask the vendor for a revised quote.
+voice: au_male_1
+Great. Once it's confirmed, I'll send you the team's schedule so we can block their calendars.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) A hiring plan for the sales team
+(B) A marketing campaign for a new product
+(C) A training course for new employees
+(D) A renovation of the training center
+Answer: C
+Source: original
+[QUESTION]
+What problem does the woman mention?
+(A) The training room is too small
+(B) The vendor canceled the original sessions
+(C) The new staff will start later than planned
+(D) The training quote is higher than the budget
+Answer: D
+Source: original
+[QUESTION]
+What will the man do after the training schedule is confirmed?
+(A) Send the woman the team's schedule
+(B) Contact the training vendor
+(C) Post the job openings online
+(D) Reduce the department's budget
+Answer: A
+Source: original

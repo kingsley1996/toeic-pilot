@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+Who is in charge of budget approvals?
+voice: us_female_1
+(A) Usually at the end of each month.
+(B) There's been a change to the approval process.
+(C) That would be Ms. Lee in the finance department.
+Answer: C
+Source: original

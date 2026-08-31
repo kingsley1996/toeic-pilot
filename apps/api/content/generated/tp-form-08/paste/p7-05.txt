@@ -1,0 +1,36 @@
+[PASSAGE]
+From: d.whitfield@brightpath-logistics.example
+To: all-staff@brightpath-logistics.example
+Subject: New Hybrid Work Schedule Beginning May 6
+Date: April 21
+
+Dear Colleagues,
+
+I am writing to announce a change to our work arrangements. Starting Monday, May 6, all office-based employees may work remotely up to two days each week. This policy applies only to staff at the headquarters office; warehouse and driving teams must remain on site because their duties require physical presence.
+
+To participate, employees must submit a remote work request through the staff portal by the 15th of each month, listing the days they plan to work from home. Department managers will review the requests and confirm approved schedules by the 20th.
+
+Please note that remote employees must be reachable by phone and e-mail during regular business hours and must attend scheduled online meetings. Company laptops used off site must connect through the secure network at all times.
+
+An information session about the new policy will be held this Friday at 10:00 A.M. in the main conference room. If you have questions before then, please contact my office directly.
+
+Best regards,
+Dana Whitfield
+Human Resources Manager
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To explain a change in delivery schedules
+(B) To invite staff to a company celebration
+(C) To request monthly attendance reports
+(D) To announce a new remote work policy
+Answer: D
+Source: original
+[QUESTION]
+What must employees do each month in order to work remotely?
+(A) Submit a request through the staff portal
+(B) Attend a session in the conference room
+(C) Update their contact information online
+(D) Register their home Internet connection
+Answer: A
+Source: original

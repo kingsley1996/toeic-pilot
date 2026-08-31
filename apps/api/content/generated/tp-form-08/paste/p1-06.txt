@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The man is driving a forklift down the aisle.
+(B) The man is carrying a large cardboard box.
+(C) Two workers are inspecting goods in the warehouse.
+(D) The man is checking items on a warehouse shelf.
+Answer: D
+Source: original

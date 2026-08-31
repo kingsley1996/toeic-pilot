@@ -1,0 +1,7 @@
+kind: table
+Remote Work Policy
+Team | Remote Days | Sign-up Deadline
+Marketing | Two days | October 10
+Finance | One day | October 17
+IT Support | Three days | October 24
+Customer Service | Two days | October 31

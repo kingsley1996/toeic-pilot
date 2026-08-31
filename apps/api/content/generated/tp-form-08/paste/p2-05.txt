@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Why don't we order lunch from the deli downstairs?
+voice: ca_male_1
+(A) Yes, it's on the first floor.
+(B) Because the elevator is out of order.
+(C) Good idea, I'm starving.
+Answer: C
+Source: original

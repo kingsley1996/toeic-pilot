@@ -1,0 +1,9 @@
+[QUESTION]
+Each department head is responsible ------- submitting a budget proposal by Friday.
+(A) with
+(B) to
+(C) for
+(D) on
+Answer: C
+Explanation: Tính từ "responsible" có giới từ cố định "for" trước danh động từ chỉ nhiệm vụ: "responsible for submitting..." (chịu trách nhiệm về việc nộp...). (B) "to" chỉ dùng khi nói chịu trách nhiệm trước một người/cấp trên (responsible to the director), không đứng trước V-ing chỉ công việc; (C) "with" không tạo thành cụm với "responsible" trong ngữ cảnh phân công nhiệm vụ; (D) "on" cũng không phải giới từ đi với "responsible" theo nghĩa này.
+Source: original

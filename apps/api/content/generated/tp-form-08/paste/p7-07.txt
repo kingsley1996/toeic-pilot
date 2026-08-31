@@ -1,0 +1,35 @@
+[PASSAGE]
+Technology Review — Association of Independent Retailers
+WareSight 4.0: Powerful, but Not Cheap
+By Daniel Okafor, technology columnist
+
+Last month, the developers of WareSight released version 4.0 of their warehouse management software. I spent three weeks testing the program at a mid-sized distribution center run by a member of this association. The upgrade's most impressive feature is its demand-forecasting tool, which predicted weekly stock needs with remarkable accuracy after just ten days of use.
+
+Installation took only five days, well under the industry norm of two weeks. Smaller warehouses, however, may find the pricing steep: a license costs $1,200 per terminal, while rival packages such as TrackLine and ShelfMate charge under $900. Where WareSight clearly wins is customer support; during my trial, every call to its help desk was answered in under three minutes.
+
+On the whole, I recommend WareSight 4.0 for larger operations that can absorb the cost. Smaller businesses should wait for the mid-tier edition scheduled for next spring, which the company says will offer most of the forecasting features at a lower price.
+
+[QUESTION]
+According to the article, how long did the installation of WareSight 4.0 take?
+(A) Five days
+(B) Ten days
+(C) Two weeks
+(D) Three weeks
+Answer: A
+Source: original
+[QUESTION]
+What can be inferred about TrackLine and ShelfMate?
+(A) They lack forecasting tools.
+(B) They cost less than WareSight 4.0.
+(C) They come from the same maker.
+(D) They were covered in an earlier article.
+Answer: B
+Source: original
+[QUESTION]
+In the article, the word "absorb" in paragraph 3 is closest in meaning to
+(A) avoid
+(B) delay
+(C) bear
+(D) predict
+Answer: C
+Source: original

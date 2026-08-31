@@ -1,0 +1,9 @@
+[QUESTION]
+The IT team ------- the server maintenance at 11 p.m. last night.
+(A) completes
+(B) completed
+(C) has completed
+(D) was completed
+Answer: B
+Explanation: Cụm "at 11 p.m. last night" là mốc thời gian xác định và đã kết thúc trong quá khứ, nên động từ phải chia thì quá khứ đơn. (A) "completed" là đáp án đúng. (B) "completes" chia thì hiện tại đơn, mâu thuẫn với thời điểm "last night". (C) "has completed" là thì hiện tại hoàn thành, không dùng được cùng mốc thời gian quá khứ cụ thể. (D) "was completed" là thể bị động, sai vì "the IT team" là chủ thể thực hiện việc bảo trì chứ không phải đối tượng được bảo trì, và động từ bị động không thể theo sau bởi tân ngữ "the server maintenance".
+Source: original

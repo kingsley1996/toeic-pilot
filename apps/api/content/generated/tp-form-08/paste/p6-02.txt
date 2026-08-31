@@ -1,0 +1,50 @@
+[PASSAGE]
+Dear Ms. Alvarez,
+
+Thank you for your recent stay at the Blue Harbor Hotel, and please accept my
+sincere ------- (1) for the inconvenience you experienced in Room 412. Our
+maintenance team discovered a moisture problem behind the bathroom wall, and
+the room was closed ------- (2) repairs.
+
+As promised by our guest services manager, a full refund for that night
+------- (3) to your credit card within five business days. In addition, we
+would like to offer you a 30 percent discount on your next reservation.
+
+We value your feedback and hope to welcome you back soon. ------- (4)
+
+Sincerely,
+Daniel Ortiz
+Manager, Blue Harbor Hotel
+
+[QUESTION]
+Blank (1)
+(A) congratulations
+(B) invitations
+(C) apologies
+(D) reservations
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) to
+(B) at
+(C) with
+(D) for
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) will be issued
+(B) will issue
+(C) is issuing
+(D) has issued
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) Our rooftop restaurant is open daily from 6:30 a.m. until 10:00 p.m.
+(B) To redeem your discount, simply quote confirmation number BH-4471 when you book.
+(C) We are sorry that the swimming pool was closed during your stay.
+(D) Please contact our front desk if you need additional towels.
+Answer: B
+Source: original

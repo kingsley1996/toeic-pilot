@@ -1,0 +1,9 @@
+[QUESTION]
+The meeting room on the tenth floor can hold ------- people than the one on the third floor.
+(A) many
+(B) much
+(C) most
+(D) more
+Answer: D
+Explanation: Chữ "than" ở cuối câu báo hiệu cấu trúc so sánh hơn, nên phải dùng dạng so sánh hơn của "many" là "more". (A) "many" là dạng gốc (không phải so sánh hơn), không thể đứng trước "than"; (B) "much" chỉ dùng với danh từ không đếm được, không đứng trước danh từ đếm được "people" và cũng không tạo được so sánh hơn; (D) "most" là dạng so sánh nhất, mâu thuẫn với "than" của so sánh hơn.
+Source: original

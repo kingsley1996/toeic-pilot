@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: au_female_1
+Good morning. I've just moved into unit twelve oh four, and I had a few questions about the building rules.
+voice: au_male_1
+Congratulations. This is the management office — I can help with that.
+voice: au_female_1
+Thanks. First, when are the garbage bins collected?
+voice: au_male_1
+Tuesday and Friday mornings, before eight. The bins are by the rear entrance.
+voice: au_female_1
+Got it. And parking — I drive one of the larger cars. What's the monthly fee for that?
+voice: au_male_1
+Standard sedans pay thirty-five dollars and can stay overnight. Larger vehicles are fifty dollars a month, but overnight parking isn't permitted for them.
+voice: au_female_1
+Oh, good to know. Thanks a lot.
+
+[QUESTION]
+Why is the woman calling?
+(A) To complain about a neighbor's car
+(B) To report a missed garbage pickup
+(C) To ask about building rules
+(D) To request a move-in inspection
+Answer: C
+Source: original
+[QUESTION]
+Where does the man most likely work?
+(A) At a driving school
+(B) At a car rental company
+(C) At a waste collection service
+(D) At an apartment management office
+Answer: D
+Source: original
+[QUESTION]
+Look at the graphic. What type of vehicle does the woman drive?
+(A) SUV
+(B) Sedan
+(C) Motorcycle
+(D) Visitor
+Answer: A
+Source: original

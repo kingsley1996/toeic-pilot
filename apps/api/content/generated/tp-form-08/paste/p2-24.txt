@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When will the invoice for our order be paid?
+voice: au_male_1
+(A) Payments are processed at the end of each month.
+(B) In the accounts payable folder, I believe.
+(C) The invoice was drafted by our accounting team.
+Answer: A
+Source: original

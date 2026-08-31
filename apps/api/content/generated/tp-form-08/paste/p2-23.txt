@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_male_1
+Excuse me, when does boarding begin?
+voice: uk_female_1
+(A) Yes, boarding usually starts right on time.
+(B) At Gate twelve, just past the security checkpoint.
+(C) At three thirty, about forty minutes before departure.
+Answer: C
+Source: original

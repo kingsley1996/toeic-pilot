@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+Who should I forward the client's complaint to?
+voice: ca_female_1
+(A) Yes, forward it as soon as possible.
+(B) Send it to the customer service team.
+(C) The client's complaint was about delivery delays.
+Answer: B
+Source: original

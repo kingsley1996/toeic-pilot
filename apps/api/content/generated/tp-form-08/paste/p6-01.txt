@@ -1,0 +1,54 @@
+[PASSAGE]
+To: All Employees
+From: Sandra Vu, Human Resources Manager
+Subject: New Flexible Working Hours Program
+Date: March 3
+
+Dear Colleagues,
+
+We are pleased to announce that the company ------- (1) a flexible working
+hours program beginning April 1. Under this program, you may choose any start
+time between 7:00 a.m. and 9:30 a.m., as long as you complete eight hours of
+work each day.
+
+To enroll, log in to the staff portal and select your preferred start time by
+March 15. Employees who ------- (2) their current schedule do not need to take
+any action. If the portal does not accept your selection, please contact
+------- (3) at extension 550 so the issue can be resolved quickly. ------- (4)
+
+Sincerely,
+Sandra Vu
+Human Resources Manager
+
+[QUESTION]
+Blank (1)
+(A) introduce
+(B) introduces
+(C) will introduce
+(D) introduced
+Answer: C
+Source: original
+[QUESTION]
+Blank (2)
+(A) postpone
+(B) reject
+(C) cancel
+(D) prefer
+Answer: D
+Source: original
+[QUESTION]
+Blank (3)
+(A) me
+(B) I
+(C) my
+(D) mine
+Answer: A
+Source: original
+[QUESTION]
+Blank (4)
+(A) Thank you for your inquiry about our working hours.
+(B) We appreciate your cooperation during this transition.
+(C) Registration for the program closed last Friday.
+(D) The cafeteria on the second floor will open earlier next month.
+Answer: B
+Source: original

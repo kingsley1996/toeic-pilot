@@ -1,0 +1,1 @@
+Room Rates - City Plaza Hotel. Room Type: Standard, Price per night: 95 dollars. Room Type: Superior, Price per night: 140 dollars. Room Type: Deluxe, Price per night: 210 dollars. Room Type: Suite, Price per night: 320 dollars.

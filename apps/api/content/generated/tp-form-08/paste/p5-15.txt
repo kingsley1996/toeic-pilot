@@ -1,0 +1,9 @@
+[QUESTION]
+The training coordinator described the workshop as both practical and -------.
+(A) interactive
+(B) interaction
+(C) interact
+(D) interactively
+Answer: A
+Explanation: Cấu trúc "both ... and ..." yêu cầu hai thành phần song song cùng từ loại; trước chỗ trống đã có tính từ "practical", nên từ ở chỗ trống cũng phải là tính từ bổ nghĩa cho "the workshop" qua cấu trúc "described ... as". (B) interactive là tính từ, nghĩa "có tính tương tác", vừa đúng ngữ pháp vừa hợp nghĩa khi mô tả một buổi workshop. (A) interaction là danh từ, sai từ loại; (C) interact là động từ, sai từ loại; (D) interactively là trạng từ, sai từ loại và không thể đứng song song với tính từ "practical".
+Source: original

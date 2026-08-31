@@ -1,0 +1,9 @@
+[QUESTION]
+The goods ------- in the warehouse must be inspected before shipment.
+(A) store
+(B) storing
+(C) stored
+(D) storage
+Answer: C
+Explanation: Cần phân từ hai "stored" thay cho mệnh đề quan hệ bị động "the goods that are stored in the warehouse" (hàng hóa được cất giữ trong kho). (A) "store" là dạng nguyên mẫu của động từ, không thể đứng bổ nghĩa cho danh từ ở vị trí này; (C) "storing" là phân từ hiện tại mang nghĩa chủ động, sai thể vì hàng hóa không thể tự cất giữ; (D) "storage" là danh từ, sai từ loại.
+Source: original

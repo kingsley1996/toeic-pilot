@@ -1,0 +1,9 @@
+[QUESTION]
+The monthly sales figures ------- by the accounting team at the end of each month.
+(A) will compile
+(B) are compiled
+(C) are compiling
+(D) have compiled
+Answer: B
+Explanation: Chủ ngữ "The monthly sales figures" là đối tượng nhận hành động, và sau chỗ trống có tác nhân "by the accounting team"; cụm "at the end of each month" chỉ thói quen lặp lại, nên cần thể bị động thì hiện tại đơn: are + phân từ hai → "are compiled". (B) "will compile" là thể chủ động — số liệu không thể tự lập ra chính mình; (C) "are compiling" là thể chủ động ở thì hiện tại tiếp diễn; (D) "have compiled" là thể chủ động ở thì hiện tại hoàn thành. Cả ba lựa chọn sai đều sai vì dùng thể chủ động thay vì bị động.
+Source: original

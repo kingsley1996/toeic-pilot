@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: ca_male_1
+Hello, I'd like to schedule a repair for my washing machine. It's still under warranty.
+voice: ca_female_1
+Of course. Can I have the model number, please?
+voice: ca_male_1
+It's on the back... let me see. WX two hundred.
+voice: ca_female_1
+Thank you. A technician can visit your home on Tuesday morning, and there's no charge since the machine is covered.
+voice: ca_male_1
+Great. Could the technician also check my dryer while he's here?
+voice: ca_female_1
+Certainly, but the dryer is out of warranty, so that inspection would cost thirty dollars.
+voice: ca_male_1
+That's fine. Tuesday morning works for me.
+
+[QUESTION]
+Who is the man?
+(A) A technician at the warranty center
+(B) A customer whose washing machine is under warranty
+(C) A receptionist at a service center
+(D) A salesperson for household appliances
+Answer: B
+Source: original
+[QUESTION]
+What does the woman say about the washing machine repair?
+(A) It must be done at the service center
+(B) It will cost thirty dollars
+(C) It will be provided at no charge
+(D) It requires the dryer to be inspected first
+Answer: C
+Source: original
+[QUESTION]
+What extra service does the man ask for?
+(A) Ordering a replacement part in advance
+(B) Extending the warranty on the dryer
+(C) Moving the appointment to the afternoon
+(D) Checking the dryer during the same visit
+Answer: D
+Source: original

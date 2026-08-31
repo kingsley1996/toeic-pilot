@@ -1,0 +1,1 @@
+Station Map. Sơ đồ 2 hàng. Hàng 1: thứ nhất từ trái là Zone A: Ticket Office, thứ hai từ trái là Zone B: Waiting Hall. Hàng 2: thứ nhất từ trái là Zone C: Platform 4, thứ hai từ trái là Zone D: Platform 5.

@@ -1,0 +1,4 @@
+kind: map
+Grand Ballroom Floor Plan
+Main Stage: top of hall | Audio Control Room: right corner
+Registration Desk: left side | Banquet Seating Area: center

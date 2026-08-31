@@ -1,0 +1,9 @@
+[QUESTION]
+The courier double-checked the delivery addresses ------- before leaving the distribution center.
+(A) careful
+(B) carefulness
+(C) carefully
+(D) caring
+Answer: C
+Explanation: Chỗ trống cần trạng từ bổ nghĩa cho động từ "double-checked". (C) "carefully" là trạng từ nên đúng. (A) "careful" là tính từ, chỉ bổ nghĩa cho danh từ chứ không thể bổ nghĩa cho động từ; (B) "carefulness" là danh từ, không thể bổ nghĩa cho động từ khi câu không có giới từ; (D) "caring" là tính từ (dạng V-ing), sai từ loại ở vị trí cần trạng từ.
+Source: original

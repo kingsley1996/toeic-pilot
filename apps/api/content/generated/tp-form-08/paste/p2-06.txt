@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+The printer is out of paper again.
+voice: us_female_1
+(A) No problem, I'll refill it right away.
+(B) Yes, it broke down again yesterday.
+(C) Ms. Lee is out of the office today.
+Answer: A
+Source: original

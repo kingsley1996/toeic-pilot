@@ -1,0 +1,8 @@
+[QUESTION]
+voice: us_female_1
+(A) The man is pulling a suitcase through the lobby.
+(B) The man is checking in at the front desk.
+(C) A porter is carrying the luggage for the guest.
+(D) Two guests are sitting in the lobby armchairs.
+Answer: A
+Source: original

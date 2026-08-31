@@ -1,0 +1,4 @@
+kind: map
+Grand Hall Seating Plan
+Table 1: beside the main entrance | Table 2: directly in front of the stage
+Table 3: next to the buffet counter | Table 4: by the far window

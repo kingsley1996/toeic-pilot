@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Attention, all passengers on flight one-eight-seven to Tokyo. We regret to inform you that this flight has been delayed due to severe weather conditions over the Pacific. The flight was originally scheduled to depart at three fifteen this afternoon, but the new departure time is now six forty-five. Please continue to check the flight information boards throughout the terminal, as departure times may change again. Passengers who have already checked in their luggage may remain in the gate area. Refreshments will be provided at gate forty-two. We apologize for any inconvenience this delay may cause, and we thank you for your patience.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a train station
+(B) At an airport
+(C) At a bus terminal
+(D) At a ferry landing
+Answer: B
+Source: original
+[QUESTION]
+What time will flight one-eight-seven to Tokyo now depart?
+(A) At three fifteen
+(B) At four forty-five
+(C) At six forty-five
+(D) At six fifteen
+Answer: C
+Source: original
+[QUESTION]
+What are passengers asked to do while they wait?
+(A) Collect their checked luggage
+(B) Rebook at the ticket counter
+(C) Move to a different terminal
+(D) Watch the flight information boards
+Answer: D
+Source: original

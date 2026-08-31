@@ -1,0 +1,9 @@
+[QUESTION]
+The head chef tastes each sauce ------- before serving it to the guests.
+(A) patiently
+(B) patience
+(C) patient
+(D) impatient
+Answer: A
+Explanation: Chỗ trống cần trạng từ bổ nghĩa cho động từ "tastes". (A) "patiently" là trạng từ — đúng. (B) "patience" là danh từ ("sự kiên nhẫn"), không thể bổ nghĩa động từ. (C) "patient" là tính từ, không đứng sau động từ để bổ nghĩa cho hành động nếm. (D) "impatient" là tính từ ("mất kiên nhẫn"), sai từ loại và trái nghĩa với ngữ cảnh.
+Source: original

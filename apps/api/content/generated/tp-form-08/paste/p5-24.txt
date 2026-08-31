@@ -1,0 +1,9 @@
+[QUESTION]
+The travel agent confirmed the hotel ------- for the visiting delegation.
+(A) shipment
+(B) reservation
+(C) payroll
+(D) warranty
+Answer: B
+Explanation: Chỗ trống cần một danh từ tạo thành cụm với "hotel" và vừa với ngữ cảnh đại lý du lịch xác nhận chi tiết lưu trú. (B) reservation tạo thành cụm cố định "hotel reservation" (việc đặt phòng), và "confirm a reservation" đúng là hành động của nhân viên đại lý du lịch. (A) shipment chỉ dùng với hàng hóa, kiện hàng (ship goods/cargo) — không tồn tại "hotel shipment" cho một đoàn khách. (C) payroll là bảng lương trả cho nhân viên, thuộc lĩnh vực nhân sự — đại lý du lịch không thể "xác nhận bảng lương" cho đoàn công tác. (D) warranty là giấy bảo hành sản phẩm hoặc dịch vụ sửa chữa, không phải thứ khách sạn cấp cho khách lưu trú.
+Source: original

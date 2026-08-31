@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: us_female_1
+Good morning. I'm calling to finalize arrangements for the annual client conference at your hotel next week.
+voice: us_male_1
+Of course. The banquet area will be set with round tables for two hundred guests, as you requested.
+voice: us_female_1
+Great. One change — could we move the sound check to four o'clock on Friday instead of the morning?
+voice: us_male_1
+Certainly. I'll inform the technicians right away.
+voice: us_female_1
+Also, the photographer wants to shoot the keynote from the corner on the far right of the hall, with a clear view of the stage.
+voice: us_male_1
+That corner is free all day. I'll make sure she can get in.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Arrangements for an annual client conference
+(B) A training session for new employees
+(C) A party to launch a new product
+(D) A dinner for retiring staff members
+Answer: A
+Source: original
+[QUESTION]
+When will the sound check take place?
+(A) Thursday evening
+(B) Friday afternoon
+(C) Friday morning
+(D) Saturday morning
+Answer: B
+Source: original
+[QUESTION]
+Look at the graphic. Where will the photographer be positioned during the conference?
+(A) Main Stage
+(B) Registration Desk
+(C) Audio Control Room
+(D) Banquet Seating Area
+Answer: C
+Source: original

@@ -1,0 +1,66 @@
+[PASSAGE]
+Trang Nguyen [9:47 A.M.]
+Hi Dario, the copier on floor 4 is jammed again. I cleared the tray, but the error light is still on.
+
+Dario Vela [9:49 A.M.]
+On my way. Is it the big one by the conference room?
+
+Trang Nguyen [9:50 A.M.]
+Yes. The quarterly review starts at 10:30, and I still have to print thirty agendas.
+
+Dario Vela [9:52 A.M.]
+Understood. I'll bring a spare toner unit too, in case the roller is torn.
+
+Trang Nguyen [9:58 A.M.]
+Any luck? People are starting to ask.
+
+Dario Vela [10:01 A.M.]
+Found it — a sheet wedged under the roller. Give me ten more minutes.
+
+Trang Nguyen [10:06 A.M.]
+Great. If it's not fixed by 10:15, I'll send the agendas to the print shop downstairs.
+
+Dario Vela [10:09 A.M.]
+No need. It's running now. Test pages came out clean.
+
+Trang Nguyen [10:12 A.M.]
+Perfect. I'll start printing right away.
+
+Dario Vela [10:15 A.M.]
+One thing — the feed tray is worn. Order a replacement part this week, or it will jam again.
+
+Trang Nguyen [10:18 A.M.]
+Will do. Thanks for the fast fix!
+
+[QUESTION]
+What is the main purpose of the text messages?
+(A) To report a lost company document
+(B) To reschedule the quarterly review meeting
+(C) To order supplies for the office
+(D) To arrange the repair of a broken copier
+Answer: D
+Source: original
+[QUESTION]
+What does Ms. Nguyen say she will do if the copier is not fixed by 10:15?
+(A) Have the agendas printed at the shop downstairs
+(B) Use the copier on another floor
+(C) Move the meeting to a different room
+(D) Ask attendees to share printed copies
+Answer: A
+Source: original
+[QUESTION]
+At 10:01 A.M., what does Mr. Vela mean when he writes, "Give me ten more minutes"?
+(A) He wants to delay the start of the meeting
+(B) He needs more time to finish the repair
+(C) He must leave the floor for ten minutes
+(D) He plans to print the agendas himself
+Answer: B
+Source: original
+[QUESTION]
+What can be inferred about the copier on floor 4?
+(A) It is used mainly by the technicians
+(B) It is newer than the other copiers
+(C) It has jammed on earlier occasions
+(D) It requires a new toner unit
+Answer: C
+Source: original

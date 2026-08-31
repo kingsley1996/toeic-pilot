@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: ca_female_1
+Hello, I'm calling your customer service line about a printer I bought last week. It keeps jamming whenever I print.
+voice: ca_male_1
+I'm sorry to hear that. May I ask if you still have the receipt?
+voice: ca_female_1
+Yes, right here. I'd like to exchange it for a new one.
+voice: ca_male_1
+No problem. Our policy allows returns within thirty days of purchase. Just bring the printer and the receipt to the service desk.
+voice: ca_female_1
+Okay. Will I be able to take a replacement home the same day?
+voice: ca_male_1
+Certainly. If you come in tomorrow afternoon, we'll have one ready for you.
+
+[QUESTION]
+Why is the woman calling?
+(A) To check the status of an order
+(B) To ask about returning a faulty printer
+(C) To complain about a late delivery
+(D) To request a price discount
+Answer: B
+Source: original
+[QUESTION]
+Who is the man?
+(A) A printer repair technician
+(B) A store manager
+(C) A customer service representative
+(D) A delivery driver
+Answer: C
+Source: original
+[QUESTION]
+What does the man suggest the woman do?
+(A) Mail the printer back to the manufacturer
+(B) Wait thirty days before returning the printer
+(C) Buy a different printer model
+(D) Bring the printer and receipt to the service desk
+Answer: D
+Source: original

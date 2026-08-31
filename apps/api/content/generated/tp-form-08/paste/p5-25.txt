@@ -1,0 +1,9 @@
+[QUESTION]
+Employees may use the fitness center after 6 p.m. ------- they register at the front desk first.
+(A) in spite of
+(B) even though
+(C) provided that
+(D) in order that
+Answer: C
+Explanation: Câu diễn tả điều kiện: nhân viên được dùng phòng tập sau 6 giờ chiều với điều kiện đã đăng ký ở quầy lễ tân trước, nên cần liên từ điều kiện. (B) "provided that" = "với điều kiện rằng", nối hai mệnh đề đúng cả nghĩa lẫn cấu trúc. (A) "in spite of" là cụm giới từ, phải theo sau bằng danh từ hoặc cụm danh từ, không thể đứng trước mệnh đề "they register..." — sai từ loại. (C) "even though" là liên từ nhượng bộ ("dù rằng"), tạo quan hệ trái ngược vô lý: việc đăng ký trước không phải trở ngại của việc dùng phòng tập. (D) "in order that" là liên từ chỉ mục đích, khiến câu trở thành "dùng phòng tập để mà đăng ký" — quan hệ logic ngược; ở đây cần điều kiện chứ không phải mục đích.
+Source: original

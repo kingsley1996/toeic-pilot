@@ -1,0 +1,9 @@
+[QUESTION]
+Before signing the loan agreement, the client should review all the terms and ------- carefully.
+(A) vacancies
+(B) installations
+(C) remittances
+(D) conditions
+Answer: D
+Explanation: Câu hỏi collocation: "terms and conditions" là cụm cố định chỉ toàn bộ điều khoản của hợp đồng, và đây chính là thứ khách hàng phải xem lại trước khi ký hồ sơ vay. (B) "installations" là hệ thống thiết bị được lắp đặt — thuộc lĩnh vực kỹ thuật/cơ sở vật chất, không phải một bộ phận của hồ sơ vay nên không đứng cạnh "terms and". (C) "remittances" là các khoản tiền chuyển/gửi — là giao dịch phát sinh, không phải nội dung văn bản cần "review" trước khi ký, nên không kết hợp được với "review all the terms and ...". (D) "vacancies" là các vị trí còn trống (tuyển dụng) hoặc phòng còn trống — thuộc lĩnh vực khác hẳn, không liên quan gì đến hợp đồng vay vốn.
+Source: original

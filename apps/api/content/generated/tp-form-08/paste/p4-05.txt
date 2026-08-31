@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone, and welcome to the Willowbrook History Museum. My name is Daniel, and I'll be your guide for today's visit. We'll begin on the first floor, where the exhibits cover the region's early settlers. After that, we'll go upstairs to the second-floor gallery, which displays a collection of antique maps and photographs. Before we enter, please remember two rules: photography is not permitted inside the galleries, and all large bags must be left at the front desk. The walking tour lasts about ninety minutes, so feel free to ask questions along the way. If anyone gets separated from the group, meet me at the information counter in the main lobby. Now, if you'll follow me, we'll begin.
+
+[QUESTION]
+What is the purpose of the speaker's talk?
+(A) To advertise a special exhibition
+(B) To train new employees of the museum
+(C) To welcome visitors and explain their tour
+(D) To announce a change in opening hours
+Answer: C
+Source: original
+[QUESTION]
+What are visitors told to do with large bags?
+(A) Put them in a storage locker
+(B) Carry them throughout the galleries
+(C) Take them to the information counter
+(D) Leave them at the front desk
+Answer: D
+Source: original
+[QUESTION]
+What does the speaker imply when he says, "If anyone gets separated from the group, meet me at the information counter in the main lobby"?
+(A) Visitors who lose the group should go there to rejoin it
+(B) The tour will finish at the information counter
+(C) The group will gather there before the tour begins
+(D) The counter is located on the second floor
+Answer: A
+Source: original

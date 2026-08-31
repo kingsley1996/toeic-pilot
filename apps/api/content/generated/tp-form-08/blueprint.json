@@ -1,0 +1,2066 @@
+{
+  "slug": "tp-form-08",
+  "title": "TOEIC Pilot — tp-form-08",
+  "seed": 20260822,
+  "parts": [
+    {
+      "part": 1,
+      "slots": [
+        {
+          "id": "p1-01",
+          "number": 1,
+          "question_type": "PART_1_PERSON_DESCRIPTION",
+          "grammar": "",
+          "context": "Một người phụ nữ đang đứng thuyết trình bên cạnh màn chiếu trong phòng họp của công ty",
+          "voice": "au_female_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-02",
+          "number": 2,
+          "question_type": "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+          "grammar": "",
+          "context": "Một số nhân viên phục vụ đang bưng khay món ăn trong khu vực bếp của nhà hàng sang trọng",
+          "voice": "ca_male_1",
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-03",
+          "number": 3,
+          "question_type": "PART_1_PERSON_DESCRIPTION",
+          "grammar": "",
+          "context": "Một người đàn ông kéo vali hành lý khi đi qua sảnh chờ của khách sạn",
+          "voice": "us_female_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-04",
+          "number": 4,
+          "question_type": "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+          "grammar": "",
+          "context": "Một phòng hội nghị trống với hàng ghế xếp thẳng hàng và màn chiếu ở phía trước",
+          "voice": "uk_male_1",
+          "people": "none",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-05",
+          "number": 5,
+          "question_type": "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+          "grammar": "",
+          "context": "Một nhóm nhân viên đang làm việc tại các máy tính trong khu vực văn phòng mở",
+          "voice": "au_female_1",
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-06",
+          "number": 6,
+          "question_type": "PART_1_PERSON_DESCRIPTION",
+          "grammar": "",
+          "context": "Một công nhân đang kiểm tra hàng hóa trên kệ trong kho của trung tâm phân phối",
+          "voice": "ca_male_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 2,
+      "slots": [
+        {
+          "id": "p2-01",
+          "number": 7,
+          "question_type": "PART_2_TAG_QUESTION",
+          "grammar": "",
+          "context": "Tại văn phòng, đồng nghiệp hỏi: \"The report is due tomorrow, isn't it?\" – \"That's right, before noon.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-02",
+          "number": 8,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "Ở quầy lễ tân khách sạn, khách hỏi: \"Could you call a taxi for me?\" – \"Certainly, sir. It'll be here in five minutes.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-03",
+          "number": 9,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "Nhân viên mới hỏi giám sát: \"Where can I get a parking sticker?\" – \"At the security office in the lobby.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-04",
+          "number": 10,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "Quản lý dặn trợ lý: \"Would you mind mailing this package today?\" – \"No problem, I'll take it to the post office at lunch.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-05",
+          "number": 11,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "Đồng nghiệp gợi ý: \"Why don't we order lunch from the deli downstairs?\" – \"Good idea, I'm starving.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-06",
+          "number": 12,
+          "question_type": "PART_2_STATEMENT",
+          "grammar": "",
+          "context": "Nhân viên nói: \"The printer is out of paper again.\" – \"I'll refill it right away.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-07",
+          "number": 13,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "Khách hàng hỏi nhân viên IT: \"How do I reset my email password?\" – \"Just click 'Forgot password' on the login page.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-08",
+          "number": 14,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "Ứng viên hỏi nhân sự: \"When will I hear about the interview results?\" – \"We'll notify all candidates by Friday.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-09",
+          "number": 15,
+          "question_type": "PART_2_CHOICE_QUESTION",
+          "grammar": "",
+          "context": "Thư ký hỏi giám đốc: \"Should the meeting be in the boardroom or the conference room?\" – \"The boardroom, please.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-10",
+          "number": 16,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "Khách hỏi nhân viên hiệu sách: \"Do you have this novel in paperback?\" – \"I'm afraid we only carry the hardcover.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-11",
+          "number": 17,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "Khách tham quan hỏi bảo vệ: \"Is it okay to park here overnight?\" – \"No, the garage closes at ten.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-12",
+          "number": 18,
+          "question_type": "PART_2_STATEMENT",
+          "grammar": "",
+          "context": "Đồng nghiệp kể: \"My flight got delayed, so I missed the training session.\" – \"Don't worry, there's a make-up class next week.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-13",
+          "number": 19,
+          "question_type": "PART_2_WHY_QUESTION",
+          "grammar": "",
+          "context": "Nhân viên hỏi quản lý: \"Why was the product launch postponed?\" – \"The marketing materials weren't ready in time.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-14",
+          "number": 20,
+          "question_type": "PART_2_WHO_QUESTION",
+          "grammar": "",
+          "context": "Nhân viên mới hỏi đồng nghiệp: \"Who is in charge of budget approvals?\" – \"That would be Ms. Lee in the finance department.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-15",
+          "number": 21,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "Khách khách sạn hỏi concierge: \"Where is the nearest subway station?\" – \"It's just around the corner, two blocks east.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-16",
+          "number": 22,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "Khách hàng hỏi giao dịch viên ngân hàng: \"How long does an international transfer take?\" – \"Usually three to five business days.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-17",
+          "number": 23,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "Khách thuê văn phòng hỏi quản lý tòa nhà: \"Can I renovate the office on weekends?\" – \"Yes, as long as it's before six in the evening.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-18",
+          "number": 24,
+          "question_type": "PART_2_HOW_QUESTION",
+          "grammar": "",
+          "context": "Thực tập sinh hỏi người hướng dẫn: \"How do I submit my expense report?\" – \"Upload the receipts to the portal and your manager approves them.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_female_1",
+            "us_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-19",
+          "number": 25,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "Đại hội hỏi nhân viên hội nghị: \"Where should I pick up my name badge?\" – \"At the registration desk near the main entrance.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "uk_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-20",
+          "number": 26,
+          "question_type": "PART_2_TAG_QUESTION",
+          "grammar": "",
+          "context": "Nhân viên bán hàng hỏi khách: \"You received our catalog last week, didn't you?\" – \"Yes, it arrived on Tuesday.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_male_1",
+            "au_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-21",
+          "number": 27,
+          "question_type": "PART_2_CHOICE_QUESTION",
+          "grammar": "",
+          "context": "Thực khách hỏi phục vụ: \"Does the set lunch come with soup or salad?\" – \"You can choose either one.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_female_1",
+            "ca_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-22",
+          "number": 28,
+          "question_type": "PART_2_WHY_QUESTION",
+          "grammar": "",
+          "context": "Nhân viên hỏi kỹ thuật viên: \"Why does my computer keep freezing?\" – \"It may need a memory upgrade.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-23",
+          "number": 29,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "Hành khách hỏi nhân viên hàng không: \"When does boarding begin?\" – \"At three thirty, about forty minutes before departure.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_male_1",
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-24",
+          "number": 30,
+          "question_type": "PART_2_WHEN_QUESTION",
+          "grammar": "",
+          "context": "Nhà cung cấp hỏi nhân viên mua hàng: \"When will the invoice be paid?\" – \"Payments are processed at the end of each month.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-25",
+          "number": 31,
+          "question_type": "PART_2_WHO_QUESTION",
+          "grammar": "",
+          "context": "Lễ tân hỏi quản lý: \"Who should I forward the client's complaint to?\" – \"Send it to the customer service team.\"",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 3,
+      "slots": [
+        {
+          "id": "p3-01",
+          "number": 32,
+          "question_type": "",
+          "grammar": "",
+          "context": "Nhân viên phòng nhân sự và một ứng viên trao đổi qua điện thoại về lịch phỏng vấn vị trí kế toán tại trụ sở công ty.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-02",
+          "number": 35,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một khách hàng gọi đến tổng đài cửa hàng điện máy để hỏi về chính sách đổi trả chiếc máy in vừa mua bị lỗi.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-03",
+          "number": 38,
+          "question_type": "",
+          "grammar": "",
+          "context": "Trưởng phòng marketing và một thành viên nhóm họp nhanh tại phòng họp để chốt ý tưởng quảng cáo cho sản phẩm mới sắp ra mắt.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_LOCATION",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": [
+            "us_female_1",
+            "us_male_1",
+            "ca_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-04",
+          "number": 41,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một người thuê nhà gọi cho chủ căn hộ để báo sự cố rò rỉ nước ở nhà bếp và hẹn thời gian sửa chữa.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": [
+            "uk_male_1",
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-05",
+          "number": 44,
+          "question_type": "",
+          "grammar": "",
+          "context": "Quản lý trực tiếp và một nhân viên nói chuyện trong văn phòng về đơn xin nghỉ phép và việc phân công người thay ca.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-06",
+          "number": 47,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một phụ nữ tại quầy dịch vụ bưu điện hỏi nhân viên về cước phí gửi bưu kiện ra nước ngoài và thời gian giao hàng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-07",
+          "number": 50,
+          "question_type": "",
+          "grammar": "",
+          "context": "Hai đồng nghiệp trò chuyện ở khu pantry về việc chuẩn bị tiệc tất niên của công ty và phân công trang trí địa điểm.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": [
+            "us_female_1",
+            "us_male_1",
+            "ca_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-08",
+          "number": 53,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một cặp vợ chồng trao đổi với môi giới nhà đất khi tham quan một căn hộ chung cư để thuê gần nơi làm việc.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_LOCATION",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": [
+            "uk_male_1",
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-09",
+          "number": 56,
+          "question_type": "",
+          "grammar": "",
+          "context": "Giám đốc nhân sự và trưởng bộ phận bàn về kế hoạch đào tạo nhân viên mới và ngân sách cho khóa huấn luyện.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION"
+          ],
+          "topic": "PART_3_COMPANY_PERSONNEL",
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-10",
+          "number": 59,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một người đàn ông gọi đến trung tâm bảo hành để đặt lịch sửa máy giặt và hỏi về phí dịch vụ tại nhà.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_3_SHOPPING_OR_SERVICE",
+          "voices": [
+            "ca_male_1",
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-11",
+          "number": 62,
+          "question_type": "",
+          "grammar": "",
+          "context": "Điều phối viên sự kiện và quản lý khách sạn trao đổi về sắp xếp chỗ ngồi và thiết bị âm thanh cho hội nghị khách hàng thường niên.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": [
+            "us_female_1",
+            "us_male_1"
+          ],
+          "graphic": "map: sơ đồ bố trí sảnh hội trường khách sạn cho hội nghị khách hàng thường niên, bốn khu vực nhãn tiếng Anh \"Main Stage\" (phía trên), \"Registration Desk\" (bên trái), \"Audio Control Room\" (góc phải), \"Banquet Seating Area\" (trung tâm) — bốn lựa chọn là tên bốn khu vực này",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-12",
+          "number": 65,
+          "question_type": "",
+          "grammar": "",
+          "context": "Trưởng nhóm dự án công nghệ thông tin và một lập trình viên cập nhật tiến độ triển khai phần mềm và vấn đề giao hàng trễ của nhà cung cấp.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_SPEAKER_IDENTITY",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
+          "voices": [
+            "uk_male_1",
+            "uk_female_1",
+            "au_female_1"
+          ],
+          "graphic": "chart: biểu đồ cột tiến độ hoàn thành bốn giai đoạn triển khai phần mềm, nhãn cột \"Planning\", \"Development\", \"Testing\", \"Deployment\" với giá trị khoảng 100%, 75%, 40%, 15% — bốn lựa chọn là nhãn bốn cột",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p3-13",
+          "number": 68,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một người mới chuyển đến gọi cho ban quản lý chung cư để hỏi về quy định gửi xe và giờ thu gom rác.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_LOCATION",
+            "PART_3_GRAPH_OR_TABLE_QUESTION"
+          ],
+          "topic": "PART_3_HOUSING",
+          "voices": [
+            "au_female_1",
+            "au_male_1"
+          ],
+          "graphic": "table: bảng quy định gửi xe của chung cư, cột đầu \"Vehicle Type\" gồm bốn hàng \"Motorcycle\", \"Sedan\", \"SUV\", \"Visitor\" — bốn lựa chọn là tên bốn hàng, các cột còn lại \"Monthly Fee\" và \"Overnight Parking\"",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 4,
+      "slots": [
+        {
+          "id": "p4-01",
+          "number": 71,
+          "question_type": "",
+          "grammar": "",
+          "context": "Một khách hàng để lại tin nhắn thoại cho kế toán viên của công ty, đề nghị dời lịch hẹn kiểm toán sang tuần sau và yêu cầu gọi lại xác nhận.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_TELEPHONE_MESSAGE",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-02",
+          "number": 74,
+          "question_type": "",
+          "grammar": "",
+          "context": "Loa sân bay thông báo chuyến bay đi Tokyo bị hoãn do thời tiết và yêu cầu hành khách theo dõi bảng thông tin chuyến bay.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-03",
+          "number": 77,
+          "question_type": "",
+          "grammar": "",
+          "context": "Quảng cáo trên đài phát thanh giới thiệu chương trình giảm giá 30% cho đồ nội thất tại một cửa hàng nội thất dịp cuối tuần.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_ADVERTISEMENT",
+          "voices": [
+            "us_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-04",
+          "number": 80,
+          "question_type": "",
+          "grammar": "",
+          "context": "Đoạn trích buổi họp trong đó giám đốc kinh doanh thảo luận với nhóm nhân viên bán hàng về mục tiêu doanh số quý tới và kế hoạch tiếp cận khách hàng mới.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_MEETING_EXCERPT",
+          "voices": [
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-05",
+          "number": 83,
+          "question_type": "",
+          "grammar": "",
+          "context": "Hướng dẫn viên du lịch chào đón đoàn khách và giới thiệu lịch trình tham quan cùng các quy định cần lưu ý tại bảo tàng lịch sử.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_IMPLICATION"
+          ],
+          "topic": "PART_4_TALK",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-06",
+          "number": 86,
+          "question_type": "",
+          "grammar": "",
+          "context": "Loa trong siêu thị thông báo cửa hàng sẽ đóng cửa sau 15 phút nữa và mời khách hàng đến các quầy thanh toán gần nhất.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-07",
+          "number": 89,
+          "question_type": "",
+          "grammar": "",
+          "context": "Nhân viên kho để lại tin nhắn thoại cho quản lý bộ phận vận chuyển, báo lô hàng sẽ giao trễ một ngày và đề nghị xác nhận lại địa chỉ người nhận.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_DETAIL",
+            "PART_4_REQUEST_OR_SUGGESTION"
+          ],
+          "topic": "PART_4_TELEPHONE_MESSAGE",
+          "voices": [
+            "us_male_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-08",
+          "number": 92,
+          "question_type": "",
+          "grammar": "",
+          "context": "Diễn giả tại hội thảo kỹ năng nghề nghiệp mở đầu buổi nói chuyện về quản lý thời gian và chia sẻ kinh nghiệm làm việc hiệu quả cho nhân viên mới.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_DETAIL",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_TALK",
+          "voices": [
+            "uk_female_1"
+          ],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-09",
+          "number": 95,
+          "question_type": "",
+          "grammar": "",
+          "context": "Đoạn trích cuộc họp phòng nhân sự, trưởng phòng giới thiệu chính sách làm việc từ xa mới và hướng dẫn nhân viên cách đăng ký áp dụng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_TOPIC_OR_PURPOSE",
+            "PART_4_GRAPH_OR_TABLE_QUESTION",
+            "PART_4_FUTURE_ACTION"
+          ],
+          "topic": "PART_4_MEETING_EXCERPT",
+          "voices": [
+            "au_male_1"
+          ],
+          "graphic": "table: bảng chính sách làm việc từ xa theo nhóm, tiêu đề \"Remote Work Policy\", cột đầu \"Team\" gồm bốn hàng \"Marketing\", \"Finance\", \"IT Support\", \"Customer Service\", cột kế \"Remote Days\" và \"Sign-up Deadline\"",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p4-10",
+          "number": 98,
+          "question_type": "",
+          "grammar": "",
+          "context": "Loa tại nhà ga thông báo chuyến tàu hướng đi Đà Nẵng đổi sang sân ga số 5 và nhắc hành khách lên tàu đúng giờ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_4_SPEAKER_OR_LOCATION",
+            "PART_4_GRAPH_OR_TABLE_QUESTION",
+            "PART_4_DETAIL"
+          ],
+          "topic": "PART_4_ANNOUNCEMENT",
+          "voices": [
+            "ca_female_1"
+          ],
+          "graphic": "map: sơ đồ các khu vực nhà ga, tiêu đề \"Station Map\", bốn ô \"Zone A: Ticket Office\", \"Zone B: Waiting Hall\", \"Zone C: Platform 4\", \"Zone D: Platform 5\"",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 5,
+      "slots": [
+        {
+          "id": "p5-01",
+          "number": 101,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "Thư ký phòng nhân sự gửi email thông báo lịch họp cho toàn thể nhân viên: Due to a scheduling conflict, the staff meeting has been _____ until Thursday.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-02",
+          "number": 102,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "Nhân viên ngân hàng hướng dẫn khách hàng doanh nghiệp trước khi ký hồ sơ vay vốn: Before signing the loan agreement, the client should review all the terms and _____ carefully.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-03",
+          "number": 103,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "Giám đốc nhân sự nhận xét về thực tập sinh trong buổi họp đánh giá: The hiring manager praised the new intern for her _____ and quick learning.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-04",
+          "number": 104,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_VOICE",
+          "context": "Kế toán trưởng giải thích quy trình lập báo cáo cho nhân viên mới: The monthly sales figures _____ by the accounting team at the end of each month.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-05",
+          "number": 105,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "Trưởng phòng kinh doanh phân công nhiệm vụ cho các trưởng nhóm: Each department head is responsible _____ submitting a budget proposal by Friday.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-06",
+          "number": 106,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_COMPARISON",
+          "context": "Trợ lý hành chính so sánh hai phòng họp khi sắp xếp lịch: The meeting room on the tenth floor can hold _____ people than the one on the third floor.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-07",
+          "number": 107,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "Bản tin nội bộ giới thiệu lãnh đạo khu vực mới: Ms. Ortega _____ as the regional director since March.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-08",
+          "number": 108,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PRONOUN",
+          "context": "Kỹ thuật viên xưởng in tự khắc phục sự cố máy móc: The technicians repaired the printing equipment _____ without calling an outside service.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-09",
+          "number": 109,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PARTICIPLE",
+          "context": "Quản lý kho hàng nhắc nhở nhân viên về quy trình kiểm tra: The goods _____ in the warehouse must be inspected before shipment.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-10",
+          "number": 110,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "Bộ phận tài chính chuẩn bị hồ sơ cho đợt kiểm toán sắp tới: By the time the auditors arrive next Monday, the finance staff _____ all the receipts.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-11",
+          "number": 111,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "Bảo vệ tòa nhà văn phòng hướng dẫn khách đến thăm: All visitors must obtain a temporary badge at the front desk before entering the _____.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-12",
+          "number": 112,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_RELATIVE_CLAUSE",
+          "context": "Giám đốc dự án trao đổi với phòng mua sắm về kết quả tư vấn: The consultant _____ we met last month has submitted the final proposal.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-13",
+          "number": 113,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "Lễ tân khách sạn được khen ngợi trong bản đánh giá dịch vụ: The receptionist handled the complaints _____ even during the busiest hours.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-14",
+          "number": 114,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_VOICE",
+          "context": "Bộ phận bảo trì thông báo về việc nâng cấp an ninh tòa nhà: A new security camera system _____ at the main entrance last weekend.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-15",
+          "number": 115,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "Điều phối viên đào tạo viết báo cáo sau buổi workshop nội bộ: The training coordinator described the workshop as both practical and _____.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-16",
+          "number": 116,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_CONJUNCTION",
+          "context": "Quản lý cửa hàng thời trang báo cáo với công ty về lô hàng chậm trễ: The shipment arrived late, _____ the store could not display the new collection on schedule.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-17",
+          "number": 117,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PRONOUN",
+          "context": "Điều phối viên họp nội bộ xác nhận người thuyết trình ngày thứ Sáu: Either the sales team or the design team will present _____ concept at Friday's meeting.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-18",
+          "number": 118,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "Đại diện hãng hàng không giải thích chính sách tại quầy dịch vụ sân bay: Passengers whose flights are canceled may request a full _____ at the service counter.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-19",
+          "number": 119,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "Đầu bếp nhà hàng cao cấp hướng dẫn thực tập sinh trong bếp: The head chef tastes each sauce _____ before serving it to the guests.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-20",
+          "number": 120,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_TENSE",
+          "context": "Quản lý bộ phận công nghệ thông tin báo cáo kết quả bảo trì hệ thống: The IT team _____ the server maintenance at 11 p.m. last night.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-21",
+          "number": 121,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADVERB",
+          "context": "Nhân viên giao hàng kiểm tra lại địa chỉ trước khi xuất phát: The courier double-checked the delivery addresses _____ before leaving the distribution center.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-22",
+          "number": 122,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_NOUN",
+          "context": "Chuyên viên tuyển dụng gửi email hướng dẫn ứng viên nộp hồ sơ: Applicants should email a cover letter along with their updated _____.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-23",
+          "number": 123,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "Phòng nhân sự ban hành thông báo về quy định chấm công mới: The revised attendance policy will take effect _____ June 1.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-24",
+          "number": 124,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "",
+          "context": "Nhân viên đại lý du lịch xác nhận chi tiết đoàn công tác: The travel agent confirmed the hotel _____ for the visiting delegation.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-25",
+          "number": 125,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_CONJUNCTION",
+          "context": "Quản lý phòng gym công ty gửi quy định sử dụng sau giờ hành chính: Employees may use the fitness center after 6 p.m. _____ they register at the front desk first.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-26",
+          "number": 126,
+          "question_type": "PART_5_VOCABULARY",
+          "grammar": "GRAMMAR_PREPOSITION",
+          "context": "Bộ phận chăm sóc khách hàng trả lời thư khiếu nại về hoàn tiền: The customer service manager apologized _____ the delay in processing the refund.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-27",
+          "number": 127,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_RELATIVE_CLAUSE",
+          "context": "Nhân viên mua sắm thông báo thay đổi giá từ nhà cung cấp văn phòng phẩm: The supplier _____ delivers our office supplies has increased its prices this quarter.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-28",
+          "number": 128,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "Trung tâm hội nghị chuẩn bị đón tiếp đoàn đại biểu tham dự sự kiện: The conference center staff extended a _____ welcome to all the visiting delegates.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-29",
+          "number": 129,
+          "question_type": "PART_5_PART_OF_SPEECH",
+          "grammar": "GRAMMAR_ADJECTIVE",
+          "context": "Giảng viên trung tâm đào tạo đánh giá khóa học phần mềm mới: The instructor said the new software tutorial was extremely _____ for beginners.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p5-30",
+          "number": 130,
+          "question_type": "PART_5_GRAMMAR",
+          "grammar": "GRAMMAR_PARTICIPLE",
+          "context": "Luật sư phòng pháp lý sắp xếp cuộc họp sau khi đọc hồ sơ sáp nhập: _____ the merger documents, the lawyer immediately scheduled a meeting with the client.",
+          "voice": "",
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 6,
+      "slots": [
+        {
+          "id": "p6-01",
+          "number": 131,
+          "question_type": "",
+          "grammar": "",
+          "context": "Email từ quản lý nhân sự công ty phần mềm gửi toàn thể nhân viên thông báo về việc áp dụng giờ làm việc linh hoạt và hướng dẫn đăng ký khung giờ mới.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_6_GRAMMAR",
+            "PART_6_VOCABULARY",
+            "PART_6_GRAMMAR",
+            "PART_6_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_6_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [
+            "GRAMMAR_TENSE",
+            "",
+            "GRAMMAR_PRONOUN",
+            ""
+          ],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p6-02",
+          "number": 135,
+          "question_type": "",
+          "grammar": "",
+          "context": "Thư từ giám đốc khách sạn ven biển gửi cho vị khách đã khiếu nại, xin lỗi về sự cố phòng ẩm mốc và thông báo chính sách hoàn tiền cùng ưu đãi lần lưu trú sau.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_6_VOCABULARY",
+            "PART_6_GRAMMAR",
+            "PART_6_GRAMMAR",
+            "PART_6_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_6_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [
+            "",
+            "GRAMMAR_PREPOSITION",
+            "GRAMMAR_VOICE",
+            ""
+          ],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p6-03",
+          "number": 139,
+          "question_type": "",
+          "grammar": "",
+          "context": "Bản ghi nhớ nội bộ từ phòng hành chính trụ sở chính gửi các phòng ban về việc bãi đỗ xe sẽ đóng cửa ba ngày để sửa chữa và đề nghị nhân viên dùng bãi tạm gần đó.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_6_GRAMMAR",
+            "PART_6_VOCABULARY",
+            "PART_6_GRAMMAR",
+            "PART_6_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_6_MEMO",
+          "voices": [],
+          "graphic": "",
+          "grammars": [
+            "GRAMMAR_TO_INFINITIVE",
+            "",
+            "GRAMMAR_TENSE",
+            ""
+          ],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p6-04",
+          "number": 143,
+          "question_type": "",
+          "grammar": "",
+          "context": "Bài báo trên tạp chí kinh doanh đánh giá chuỗi cà phê mới khai trương chi nhánh tại trung tâm thành phố, khen ngợi chất lượng đồ uống, không gian làm việc và tốc độ phục vụ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_6_VOCABULARY",
+            "PART_6_GRAMMAR",
+            "PART_6_SENTENCE_INSERTION",
+            "PART_6_GRAMMAR"
+          ],
+          "topic": "PART_6_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [
+            "",
+            "GRAMMAR_PRONOUN",
+            "",
+            "GRAMMAR_VOICE"
+          ],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 7,
+      "slots": [
+        {
+          "id": "p7-01",
+          "number": 147,
+          "question_type": "",
+          "grammar": "",
+          "context": "Chuỗi tin nhắn giữa nhân viên bán hàng và quản lý cửa hàng điện thoại về việc thiếu máy trưng bày trước ngày khai trương chi nhánh mới.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-02",
+          "number": 149,
+          "question_type": "",
+          "grammar": "",
+          "context": "Quảng cáo của khách sạn ven biển giới thiệu gói ưu đãi tổ chức hội nghị và tiệc cuối năm dành cho doanh nghiệp, đăng trên tạp chí kinh doanh.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-03",
+          "number": 151,
+          "question_type": "",
+          "grammar": "",
+          "context": "Thông báo của ban quản lý tòa nhà văn phòng về việc cắt điện bảo trì thang máy vào cuối tuần, dán tại sảnh và gửi cho các công ty thuê mặt bằng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-04",
+          "number": 153,
+          "question_type": "",
+          "grammar": "",
+          "context": "Quảng cáo trên website của công ty cho thuê xe hơi về chương trình giảm giá thuê dài hạn dành cho khách hàng doanh nghiệp.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-05",
+          "number": 156,
+          "question_type": "",
+          "grammar": "",
+          "context": "Email của trưởng phòng nhân sự gửi toàn thể nhân viên công ty logistics về chính sách làm việc từ xa hai ngày mỗi tuần bắt đầu từ tháng sau.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-06",
+          "number": 158,
+          "question_type": "",
+          "grammar": "",
+          "context": "Bài đánh giá trên tạp chí du lịch về chuỗi quán cà phê không gian làm việc mới khai trương tại trung tâm thành phố, kèm nhận xét của khách hàng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-07",
+          "number": 161,
+          "question_type": "",
+          "grammar": "",
+          "context": "Bài viết của chuyên gia công nghệ đánh giá phần mềm quản lý kho mới trên trang tin của hiệp hội bán lẻ, so sánh với các sản phẩm cùng loại.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-08",
+          "number": 164,
+          "question_type": "",
+          "grammar": "",
+          "context": "Thư của giám đốc nhà hàng gửi công ty cung cấp thực phẩm khiếu nại về lô hàng giao trễ và yêu cầu đền bù theo hợp đồng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-09",
+          "number": 168,
+          "question_type": "",
+          "grammar": "",
+          "context": "Bài báo trên bản tin nội bộ công ty bảo hiểm phân tích xu hướng khách hàng trẻ mua bảo hiểm trực tuyến, trích dẫn kết quả khảo sát thị trường.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-10",
+          "number": 172,
+          "question_type": "",
+          "grammar": "",
+          "context": "Chuỗi tin nhắn giữa kỹ thuật viên và trợ lý văn phòng về sự cố máy photocopy tầng 4 bị kẹt giấy ngay trước cuộc họp quan trọng.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-11",
+          "number": 176,
+          "question_type": "",
+          "grammar": "",
+          "context": "Email của điều phối viên sự kiện gửi khách hàng về lễ trao giải sắp tới, kèm sơ đồ bố trí chỗ ngồi trong hội trường dưới dạng hình vẽ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "map: sơ đồ bố trí chỗ ngồi lễ trao giải trong hội trường, bốn bàn tròn \"Table 1: Executive Board\", \"Table 2: Award Nominees\", \"Table 3: Media Partners\", \"Table 4: Event Sponsors\" quay về phía \"Stage\", gần \"Entrance\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-12",
+          "number": 181,
+          "question_type": "",
+          "grammar": "",
+          "context": "Thông báo của trung tâm hội nghị về quy định phòng cháy chữa cháy, kèm phụ lục hướng dẫn lối thoát hiểm theo từng tầng dành cho đơn vị thuê chỗ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            ""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-13",
+          "number": 186,
+          "question_type": "",
+          "grammar": "",
+          "context": "Mẫu đơn đăng ký khóa đào tạo an toàn lao động của công ty đào tạo nghề, gồm hướng dẫn điền, phần thông tin cá nhân và sơ đồ vị trí phòng học dạng hình vẽ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_FORM",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "form: đơn đăng ký khóa đào tạo an toàn lao động đã điền sẵn thông tin, cột đầu bốn mục \"Full Name\", \"Employee ID\", \"Training Date\", \"Session Time\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-14",
+          "number": 191,
+          "question_type": "",
+          "grammar": "",
+          "context": "Lịch trình hội nghị khách hàng thường niên của công ty phần mềm, gồm lời chào mở đầu, bảng chương trình theo khung giờ và bản đồ khuôn viên trung tâm hội nghị dạng hình vẽ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_SCHEDULE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "schedule: lưới chương trình hội nghị khách hàng thường niên theo diễn giả, cột đầu là tên diễn giả, bốn cột khung giờ 9:00-10:00, 10:15-11:15, 11:30-12:30, 13:30-14:30, ô ghi tên phiên, một số ô để trống"
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-15",
+          "number": 196,
+          "question_type": "",
+          "grammar": "",
+          "context": "Phiếu khảo sát hài lòng khách hàng của khách sạn thành phố, gồm lời giới thiệu, hình ảnh các hạng phòng và biểu tượng thang điểm đánh giá dưới dạng hình vẽ.",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_FORM",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "survey: phiếu chấm điểm hài lòng theo khu vực của khách sạn, cột đầu là tên khu vực (Lobby, Guest Rooms, Restaurant, Fitness Center), bốn cột \"Cleanliness\", \"Comfort\", \"Staff Service\", \"Value\"",
+            "table: bảng bốn hạng phòng khách sạn kèm giá mỗi đêm, cột đầu \"Room Type\" gồm \"Standard\", \"Deluxe\", \"Club Floor\", \"Suite\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        }
+      ]
+    }
+  ]
+}

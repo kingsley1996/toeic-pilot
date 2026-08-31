@@ -1,0 +1,64 @@
+[PASSAGE]
+From: coordinator@lakesideevents.example
+To: h.tanaka@brightpath.example
+Subject: Annual Awards Ceremony - seating and arrival
+Date: April 10
+
+Dear Ms. Tanaka,
+
+Thank you for confirming that you will attend the Annual Awards Ceremony on
+April 24. Because your firm is one of this year's nominees, your group has been
+assigned the table directly in front of the stage, so that nominees can reach
+the podium quickly when their category is announced.
+
+Please arrive by 6:00 p.m. The photographer will take group portraits before
+the doors open to general guests at 6:45 p.m. Seating charts will not be
+displayed in the hall, so we ask that you note your table in advance.
+
+If any member of your party requires step-free access, reply to this message by
+April 18 and we will accommodate the request.
+
+Warm regards,
+Jordan Miller
+Event Coordinator
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To announce a change of venue
+(B) To invite a new client to a ceremony
+(C) To collect payment for several tickets
+(D) To prepare a confirmed guest for the event
+Answer: D
+Source: original
+[QUESTION]
+By what time does Ms. Tanaka need to arrive?
+(A) By 6:00 p.m.
+(B) By 6:15 p.m.
+(C) By 6:45 p.m.
+(D) By 7:00 p.m.
+Answer: A
+Source: original
+[QUESTION]
+What is suggested about guests who are not nominees?
+(A) They are seated closest to the podium.
+(B) They enter the hall later than nominees do.
+(C) They must confirm attendance by April 18.
+(D) They receive printed seating charts.
+Answer: B
+Source: original
+[QUESTION]
+At which table will Ms. Tanaka's group be seated?
+(A) Table 1
+(B) Table 3
+(C) Table 2
+(D) Table 4
+Answer: C
+Source: original
+[QUESTION]
+In the e-mail, the word "accommodate" is closest in meaning to
+(A) look into
+(B) argue with
+(C) pay for
+(D) arrange for
+Answer: D
+Source: original

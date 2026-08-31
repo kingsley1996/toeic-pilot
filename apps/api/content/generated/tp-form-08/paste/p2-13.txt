@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Why was the product launch postponed?
+voice: ca_male_1
+(A) We're planning to launch it early next spring.
+(B) The marketing materials weren't ready in time.
+(C) Lunch is served in the cafeteria at noon.
+Answer: B
+Source: original

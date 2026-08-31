@@ -1,0 +1,9 @@
+[QUESTION]
+During the evaluation meeting, the hiring manager praised the new intern for her quick learning and -------.
+(A) dedication
+(B) diligently
+(C) dedicated
+(D) dedicate
+Answer: A
+Explanation: Trống đứng sau tính từ sở hữu "her" và nối với "quick learning" bằng "and", cùng làm tân ngữ cho giới từ "for", nên cần một danh từ. (D) "dedication" (sự tận tâm) là danh từ, hợp ngữ pháp và nghĩa. (A) "dedicate" là động từ, không thể làm tân ngữ cho "for"; (B) "diligently" là trạng từ, không thể đứng sau "her" làm tân ngữ; (C) "dedicated" là tính từ, đứng sau "her" thì thiếu danh từ bổ nghĩa nên không thể đứng độc lập trong câu.
+Source: original

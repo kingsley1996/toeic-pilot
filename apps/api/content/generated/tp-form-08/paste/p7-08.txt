@@ -1,0 +1,54 @@
+[PASSAGE]
+March 18
+
+Ms. Lena Ortiz
+Customer Relations Manager
+Meadowbrook Foods Distributors
+412 Canal Street, Portside
+
+Dear Ms. Ortiz,
+
+I am writing on behalf of the Rosewood Garden Bistro regarding delivery order No. 4471, placed with your company on March 2. The order was scheduled to arrive on Friday, March 12, in time for the spring festival weekend. However, the shipment did not reach our loading dock until the afternoon of Tuesday, March 16. By then, much of the fresh produce had spoiled.
+
+As a result, we lost an estimated $3,000 in cancelled reservations and wasted ingredients. [1] Clause 7 of our supply contract provides for compensation in such cases. [2] Specifically, late deliveries carry a penalty of 5 percent of the invoice value for each day of delay. [3] By our calculation, the penalty on this order, valued at $12,000, comes to $2,400. [4]
+
+I would like to note that this is the first delivery problem we have experienced in our three years of working together, and we hope it can be resolved quickly. Please send your written reply by March 25.
+
+Sincerely,
+
+Marcus Bell
+Director, Rosewood Garden Bistro
+
+[QUESTION]
+What is the purpose of the letter?
+(A) To cancel a supply contract
+(B) To request a price discount
+(C) To place a new product order
+(D) To demand compensation for a late delivery
+Answer: D
+Source: original
+[QUESTION]
+How much compensation does Mr. Bell request?
+(A) $2,400
+(B) $600
+(C) $3,000
+(D) $12,000
+Answer: A
+Source: original
+[QUESTION]
+What can be inferred about the spring festival weekend?
+(A) It was postponed by one week.
+(B) It is a busy time for the restaurant.
+(C) It is organized by the food supplier.
+(D) It takes place twice each year.
+Answer: B
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"We therefore request a credit of $2,400 against our next invoice."
+(A) [1]
+(B) [2]
+(C) [4]
+(D) [3]
+Answer: C
+Source: original

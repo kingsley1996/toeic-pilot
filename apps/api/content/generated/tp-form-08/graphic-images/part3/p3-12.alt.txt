@@ -1,0 +1,1 @@
+Software Rollout Progress in percent. Biểu đồ cột. Planning: 100. Development: 75. Testing: 40. Deployment: 15.

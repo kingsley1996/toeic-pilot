@@ -1,0 +1,9 @@
+[QUESTION]
+The revised attendance policy will take effect ------- June 1.
+(A) on
+(B) at
+(C) in
+(D) since
+Answer: A
+Explanation: Với ngày cụ thể (June 1), giới từ đúng là "on". (B) "at" chỉ dùng với giờ giấc (at 9 a.m.), không đứng trước ngày; (C) "in" dùng với tháng hoặc năm (in June, in 2025), không dùng khi đã nêu ngày cụ thể; (D) "since" chỉ điểm bắt đầu kéo dài đến hiện tại và đòi hỏi thì hoàn thành, không hợp với cấu trúc tương lai "will take effect".
+Source: original

@@ -1,0 +1,7 @@
+kind: table
+Resident Parking Fees
+Vehicle Type | Monthly Fee | Overnight Parking
+Motorcycle | $8 | Allowed
+Sedan | $35 | Allowed
+SUV | $50 | Not allowed
+Visitor | Free | Not allowed

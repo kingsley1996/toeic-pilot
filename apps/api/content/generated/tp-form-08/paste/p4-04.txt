@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone. Thanks for coming. As sales director, I want to walk you through our targets for next quarter. We're aiming to increase revenue by fifteen percent compared with this quarter. To achieve that, we can't rely only on our existing clients — we need to win new accounts. So, starting Monday, each of you will be assigned a list of twenty potential customers in the healthcare sector. Please make first contact within two weeks. I'll email you the new sales script tomorrow so your approach stays consistent. If anything about the targets is unclear, come and see me before Friday. Let's make this our strongest quarter yet.
+
+[QUESTION]
+Who is speaking?
+(A) A human resources manager
+(B) A hospital administrator
+(C) A potential new client
+(D) A sales director
+Answer: D
+Source: original
+[QUESTION]
+What goal did the speaker set for next quarter?
+(A) A fifteen percent increase in revenue
+(B) A fifteen percent increase in staff
+(C) A twenty percent increase in new accounts
+(D) A five percent increase in prices
+Answer: A
+Source: original
+[QUESTION]
+What will the speaker do tomorrow?
+(A) Assign each person a list of customers
+(B) Email the team a new sales script
+(C) Meet with potential clients
+(D) Announce next quarter's targets
+Answer: B
+Source: original

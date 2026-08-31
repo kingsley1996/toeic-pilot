@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+When will I hear about the interview results?
+voice: au_male_1
+(A) The interviews are scheduled for next Tuesday.
+(B) In the HR office on the fourth floor.
+(C) We'll notify all candidates by Friday.
+Answer: C
+Source: original

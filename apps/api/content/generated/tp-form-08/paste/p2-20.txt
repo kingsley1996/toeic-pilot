@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_male_1
+You received our catalog last week, didn't you?
+voice: au_female_1
+(A) The spring catalog ships next month.
+(B) Last Friday, I believe.
+(C) Yes, it arrived on Tuesday.
+Answer: C
+Source: original

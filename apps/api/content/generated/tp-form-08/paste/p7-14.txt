@@ -1,0 +1,71 @@
+[PASSAGE]
+CONFERENCE PROGRAMME - NOTES FOR DELEGATES
+
+All four sessions take place in the Riverside Room. Delegates may attend any
+session; no advance sign-up is required. A light lunch is served in the foyer
+between 12:30 and 13:30.
+
+Slides are circulated by e-mail after the conference. Recordings are made only
+of the FIRST and LAST sessions of the day, whatever they turn out to be, so
+delegates who cannot stay the whole day are advised to prioritise the sessions
+in the middle of the programme.
+
+[PASSAGE]
+From: events@harbourgroup.example
+To: delegates@harbourgroup.example
+Subject: One change to Wednesday's programme
+Date: October 2
+
+Dear all,
+
+One adjustment before tomorrow. Mr. Nakamura's connecting flight has been
+delayed and he will not reach the venue before lunch. He and Ms. Whitfield have
+agreed to exchange slots, so each will speak at the time originally given to
+the other. Every other session runs as printed.
+
+We apologise for the short notice and hope the revised order will not
+inconvenience anyone.
+
+Kind regards,
+The Events Team
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To move the conference to a new room
+(B) To cancel one of the four sessions
+(C) To announce a swap between two speakers
+(D) To ask delegates to sign up in advance
+Answer: C
+Source: original
+[QUESTION]
+Where is lunch served?
+(A) On the upper level
+(B) In the Riverside Room
+(C) At a nearby hotel
+(D) In the foyer
+Answer: D
+Source: original
+[QUESTION]
+Which session will now be held at 10:15?
+(A) Closing panel
+(B) Supply chain risk
+(C) Pricing in new markets
+(D) Opening remarks
+Answer: A
+Source: original
+[QUESTION]
+Besides the opening remarks, which session will be recorded?
+(A) Pricing in new markets
+(B) Supply chain risk
+(C) Closing panel
+(D) No other session
+Answer: B
+Source: original
+[QUESTION]
+In the notice, the word "prioritise" is closest in meaning to
+(A) record
+(B) sit through
+(C) put first
+(D) shorten
+Answer: C
+Source: original

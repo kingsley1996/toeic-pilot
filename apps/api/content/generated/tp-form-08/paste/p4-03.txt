@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: us_male_1
+Looking to refresh your home without emptying your wallet? Then head to Maplewood Furniture this weekend for our biggest sale of the season. From Saturday morning through Sunday evening, everything in the store is thirty percent off — sofas, dining tables, bedroom sets, and lamps. That's right, thirty percent off every item in stock. And if you spend over five hundred dollars, we'll deliver your furniture free anywhere in the city. Our showroom is open Saturday from nine to nine and Sunday from ten to six, and free parking is available behind the building. Don't wait — new stock arrives Monday, so visit Maplewood Furniture this weekend and give your home the update it deserves.
+
+[QUESTION]
+What is the main purpose of the advertisement?
+(A) To promote a weekend furniture sale
+(B) To announce the grand opening of a new store
+(C) To recruit sales staff for the holiday season
+(D) To advertise home renovation services
+Answer: A
+Source: original
+[QUESTION]
+What will customers receive if they spend more than five hundred dollars?
+(A) An additional discount on bedroom sets
+(B) Free delivery anywhere in the city
+(C) A complimentary table lamp
+(D) Free parking for one year
+Answer: B
+Source: original
+[QUESTION]
+What does the speaker encourage listeners to do?
+(A) Bring this advertisement to the store
+(B) Reserve items by telephone in advance
+(C) Shop before new merchandise arrives on Monday
+(D) Join the store's rewards program
+Answer: C
+Source: original

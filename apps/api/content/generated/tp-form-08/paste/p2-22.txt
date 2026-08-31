@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+Why does my computer keep freezing?
+voice: us_female_1
+(A) The air conditioning makes this room quite cold.
+(B) It may need a memory upgrade.
+(C) No, it usually works just fine.
+Answer: B
+Source: original

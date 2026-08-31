@@ -1,0 +1,38 @@
+[SCRIPT]
+voice: uk_male_1
+This is a nice size. My wife will love the big windows in the living room.
+voice: uk_female_1
+Yes, and the balcony gets sun all afternoon. The unit became available just last week.
+voice: uk_male_1
+And it's really close to my office, you said?
+voice: uk_female_1
+About a ten-minute walk. You could leave the car at home and save on parking.
+voice: uk_male_1
+Good point. Could you send us the rental application today? We'd like to decide quickly.
+voice: uk_female_1
+Of course. I'll email it to you this afternoon.
+
+[QUESTION]
+Where does the conversation take place?
+(A) At a furniture store
+(B) At a real estate office
+(C) At the man's workplace
+(D) At an apartment for rent
+Answer: D
+Source: original
+[QUESTION]
+How far is the apartment from the man's office?
+(A) A ten-minute walk
+(B) A ten-minute drive
+(C) A fifteen-minute subway ride
+(D) A five-minute bus ride
+Answer: A
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Schedule a second viewing
+(B) Email a rental application
+(C) Negotiate a lower rent
+(D) Reserve a parking space
+Answer: B
+Source: original

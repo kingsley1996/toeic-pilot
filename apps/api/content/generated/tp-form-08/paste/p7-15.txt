@@ -1,0 +1,64 @@
+[PASSAGE]
+From: general.manager@cityplaza.example
+To: guests-list@cityplaza.example
+Subject: Refurbishment in September
+Date: July 30
+
+Dear Guest,
+
+Each spring we ask departing guests to rate their room, and this year one
+category stood clearly below the others for comfort. Beginning September 1 we
+will refurbish every room in that category: new beds, new lighting, and better
+sound insulation from the corridor.
+
+The work will take six weeks. Guests who already hold a reservation in that
+category during the period will be moved to the next category up, at no
+additional charge. There is no need to contact us; the change will appear on
+your booking automatically.
+
+Rates for all categories remain as published until January.
+
+Sincerely,
+Amara Boateng
+General Manager
+
+[QUESTION]
+Which room type will be refurbished?
+(A) Suite
+(B) Superior
+(C) Deluxe
+(D) Standard
+Answer: D
+Source: original
+[QUESTION]
+What is NOT stated in the letter?
+(A) Guests must telephone to confirm.
+(B) The work will last six weeks.
+(C) The survey is carried out each spring.
+(D) Rates will not change until January.
+Answer: A
+Source: original
+[QUESTION]
+In the letter, the word "additional" is closest in meaning to
+(A) refunded
+(B) extra
+(C) monthly
+(D) partial
+Answer: B
+Source: original
+[QUESTION]
+Which room type received the highest rating for value?
+(A) Deluxe
+(B) Superior
+(C) Standard
+(D) Suite
+Answer: C
+Source: original
+[QUESTION]
+What is the published nightly rate of the rooms affected guests will receive?
+(A) 95 dollars
+(B) 320 dollars
+(C) 210 dollars
+(D) 140 dollars
+Answer: D
+Source: original

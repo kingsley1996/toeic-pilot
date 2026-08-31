@@ -1,0 +1,9 @@
+[QUESTION]
+Either the sales team or the design team will present ------- concept at Friday's meeting.
+(A) their
+(B) it
+(C) its
+(D) theirs
+Answer: C
+Explanation: Với cấu trúc "either...or...", khi hai chủ thể khác nhau về số ít/số nhiều, đại từ sở hữu thường được xác định theo chủ thể đứng gần nó nhất. Ở đây, "the design team" là danh từ số ít, nên cần dùng tính từ sở hữu số ít "its" trước danh từ "concept". (A) "their" không phù hợp với cách hòa hợp số được kiểm tra trong câu này. (B) "it" là đại từ nhân xưng, không thể đứng trước danh từ "concept" để chỉ sự sở hữu. (D) "theirs" là đại từ sở hữu, được dùng độc lập và không thể đứng trực tiếp trước danh từ "concept".
+Source: original

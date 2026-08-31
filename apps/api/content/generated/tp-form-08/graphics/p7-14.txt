@@ -1,0 +1,7 @@
+kind: schedule
+Annual Client Conference - Session Schedule
+Speaker | 9:00-10:00 | 10:15-11:15 | 11:30-12:30 | 13:30-14:30
+R. Alvarez | Opening remarks |  |  | 
+P. Nakamura |  | Supply chain risk |  | 
+D. Osei |  |  | Pricing in new markets | 
+L. Whitfield |  |  |  | Closing panel

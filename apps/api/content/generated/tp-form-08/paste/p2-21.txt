@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_female_1
+Does the set lunch come with soup or salad?
+voice: ca_male_1
+(A) You can choose either one.
+(B) Yes, it's included in the price.
+(C) The soup today is mushroom.
+Answer: A
+Source: original

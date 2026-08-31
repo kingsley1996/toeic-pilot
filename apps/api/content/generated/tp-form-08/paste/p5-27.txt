@@ -1,0 +1,9 @@
+[QUESTION]
+The supplier ------- delivers our office supplies has increased its prices this quarter.
+(A) that
+(B) whose
+(C) whom
+(D) who
+Answer: A
+Explanation: Chỗ trống cần đại từ quan hệ làm chủ ngữ cho động từ "delivers", và tiền ngữ "the supplier" là một công ty (vật), nên "that" là đúng. (A) sai vì "who" chỉ dùng cho người, không dùng cho công ty. (B) sai vì "whose" là dạng sở hữu và bắt buộc phải theo sau bằng một danh từ ("whose deliveries..."), đứng trước động từ "delivers" là sai cấu trúc. (C) sai vì "whom" là đại từ quan hệ tân ngữ, không thể làm chủ ngữ của "delivers".
+Source: original

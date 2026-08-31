@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone — let's get started. I've called this meeting to introduce the company's new remote work policy, which takes effect on the first of November. Each team has been assigned a set number of remote days per week, along with a sign-up deadline, and you'll find both listed in the table on page two of your packets. To enroll, complete the request form on the staff portal and have your supervisor approve it before your deadline. And I'll email the form to all of you later today. One last thing — as some of you know, I recently took over the team approved for three remote days a week, so feel free to stop by my office with questions.
+
+[QUESTION]
+What is the main purpose of the meeting?
+(A) To announce November holiday schedules
+(B) To demonstrate the staff portal software
+(C) To introduce a new remote work policy
+(D) To review last quarter's budget results
+Answer: C
+Source: original
+[QUESTION]
+Look at the graphic. Which team does the speaker manage?
+(A) Marketing
+(B) Finance
+(C) Customer Service
+(D) IT Support
+Answer: D
+Source: original
+[QUESTION]
+What will the speaker do later today?
+(A) Email the request form to everyone
+(B) Meet with each supervisor individually
+(C) Post the policy in the break room
+(D) Collect the signed enrollment forms
+Answer: A
+Source: original

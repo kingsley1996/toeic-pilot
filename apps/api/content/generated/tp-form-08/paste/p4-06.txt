@@ -1,0 +1,28 @@
+[SCRIPT]
+voice: ca_female_1
+Attention, shoppers. The store will be closing in fifteen minutes, at nine o'clock this evening. If you are still browsing the aisles, please make your final selections now and bring your carts to the nearest checkout counter. All registers at the front of the store will remain open until closing, and the self-checkout stations will stay open as well. One more note: the pharmacy will close ten minutes early, at eight fifty, so please pick up any prescriptions before then. Thank you for shopping with us this evening, and we look forward to seeing you again tomorrow.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a shopping mall
+(B) In a supermarket
+(C) In a pharmacy
+(D) At a restaurant
+Answer: B
+Source: original
+[QUESTION]
+What time will the pharmacy close?
+(A) At eight forty
+(B) At nine fifteen
+(C) At eight fifty
+(D) At nine o'clock
+Answer: C
+Source: original
+[QUESTION]
+What does the announcement ask shoppers to do?
+(A) Return unwanted items to the shelves
+(B) Move their cars from the parking lot
+(C) Pay for their purchases at the service desk
+(D) Bring their carts to the nearest checkout counter
+Answer: D
+Source: original
