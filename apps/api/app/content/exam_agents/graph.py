@@ -307,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
     import argparse
 
     from app.content.exam import blueprint as bp
-    from app.content.generate_exam import _gateway, blueprint_path, workdir_for
+    from app.content.exam_cli.paths import _gateway, blueprint_path, workdir_for
     from app.services.llm.router import Tier
 
     parser = argparse.ArgumentParser(description="Vòng viết→kiểm→phê cho các ô còn thiếu.")

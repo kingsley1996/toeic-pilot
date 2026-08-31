@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 import questionary
 
-from app.content.generate_exam import DEFAULT_ROOT, blueprint_path
+from app.content.exam_cli.paths import DEFAULT_ROOT, blueprint_path
 
 __all__ = ["run_interactive"]
 

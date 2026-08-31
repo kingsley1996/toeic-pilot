@@ -75,10 +75,9 @@ def plan_blueprint(
     bản sao của "cách dựng blueprint" sẽ trôi khỏi nhau. Trả về path đã lưu.
     """
     from app.content.exam import blueprint as bp
-    from app.content.generate_exam import (
-        _gateway,
+    from app.content.exam_cli.paths import _gateway, blueprint_path
+    from app.content.exam_cli.plan import (
         _override_contexts,
-        blueprint_path,
         generate_part1_scenes,
         generate_part_graphics,
         generate_part_scenes,
@@ -129,7 +128,7 @@ def plan_blueprint(
 def _plan_node(gateway: Gateway, tier: Tier, model: str | None) -> FullNode:
     def plan(state: FullState) -> FullUpdate:
 
-        from app.content.generate_exam import blueprint_path
+        from app.content.exam_cli.paths import blueprint_path
 
         slug = state["slug"]
         path = blueprint_path(slug)
@@ -149,7 +148,7 @@ def _slotloop_node(gateway: Gateway, tier: Tier, workdir: Path) -> FullNode:
         from pathlib import Path
 
         from app.content.exam import blueprint as bp
-        from app.content.generate_exam import blueprint_path
+        from app.content.exam_cli.paths import blueprint_path
 
         slug = state["slug"]
         blueprint = bp.load(blueprint_path(slug))
@@ -190,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     """Một dòng lệnh: plan (nếu chưa có) rồi chạy vòng per-slot cho tới khi đủ."""
     import argparse
 
-    from app.content.generate_exam import _gateway, workdir_for
+    from app.content.exam_cli.paths import _gateway, workdir_for
     from app.services.llm.router import Tier
 
     parser = argparse.ArgumentParser(description="Sinh trọn đề: plan + vòng viết→kiểm→phê.")
