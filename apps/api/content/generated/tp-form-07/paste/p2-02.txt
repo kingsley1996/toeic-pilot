@@ -1,7 +1,7 @@
 [QUESTION]
-voice: ca_female_1
+voice: us_female_1
 Please update the sales report and send it to the team.
-voice: us_male_1
+voice: au_male_1
 (A) Yes, I'll report to you after lunch.
 (B) I put it in the folder on your desk.
 (C) I already sent it by email this morning.

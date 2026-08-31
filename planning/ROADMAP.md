@@ -1212,6 +1212,52 @@ Kiểm thật trên stack: tủ của tài khoản mới có sẵn con mèo; m�
 
 ---
 
+## 4aj. Chọn giọng theo dàn narrator của đề thật · 🟡 mã xong, CHƯA sinh lại audio (2026-09-01)
+
+Đề tự sinh đang dùng cả **tám** giọng logic và rải chúng bằng `pool[(index + seed) % len(pool)]`. Hai chỗ sai, và không phép kiểm nào thấy được:
+
+- **Bốn trong tám giọng không tồn tại trong đề thật.** Đề thật có bốn narrator với cặp quốc tịch–giới tính cố định: Mỹ nữ, Canada nam, Anh nữ, Úc nam. Mỹ nam, Canada nữ, Anh nam, Úc nữ thì không có. `PART1_VOICES` cũ lệch hai trên bốn, và `VOICE_FOR_ACCENT` của từ vựng cũng vậy.
+- **`PART3_CASTS` ép CÙNG accent trong một cuộc hội thoại — ngược hẳn đề thật.** Vì giới tính gắn cứng vào quốc tịch, một hội thoại hai người (một nam một nữ) luôn là hai quốc tịch khác nhau. Comment cũ biện minh bằng ràng buộc `audio_asset.accent` một giá trị, vốn đã được `backfill_audio._accent_of` gỡ từ trước.
+- **Xoay vòng không phải ngẫu nhiên, nó là đếm.** 25 câu Part 2 trên tám cặp lặp lại đúng thứ tự ấy ba lần; `seed` chỉ dịch điểm bắt đầu.
+
+`TOEIC_NARRATORS` vào `app/core/media.py` (sự thật về miền, cả ba khu vực dùng chung — xem PHASE2-AUDIO §A4.6); `_deal` chia đều theo seed và `_spread` đẩy hai ô liền nhau ra xa; `_casting_problems` đặt luật ở tầng part: mỗi accent 15–35% số lượt nói, không ba ô liền nhau chung dàn giọng. Từ vựng và dictation chuyển sang cùng dàn — người học gặp bốn giọng ấy trong phòng thi.
+
+**Chất lượng: hai nguyên nhân tách biệt.** Thư viện đang có **hai tốc độ đọc** — 2 571 clip ở `engine_version` 1 (+0%, ~188 wpm) và 1 529 ở version 2 (−20%, ~151 wpm), nên một đề trộn cả hai. `media_state` cố ý không coi version cũ là STALE, nên chuyện này không tự khỏi. Và giọng Mỹ chuyển sang thế hệ HD của edge-tts (Ava/Andrew thay Jenny/Guy); `en-GB`, `en-AU`, `en-CA` **không có** lựa chọn tương đương, nên chênh lệch chất lượng theo accent là giới hạn đã biết chứ không phải thứ bỏ sót. `tts_engine_version` lên **3** — bắt buộc, vì đổi `_EDGE_IDS` mà giữ version là hai người đọc chung một tên giọng và `media_state` báo CURRENT cho cả hai.
+
+Ô chọn giọng ở `/admin/tests/[slug]` xếp bốn narrator lên đầu và đánh dấu ★ (`VoiceOption.narrator`, contract đã sinh lại) — trước đó mặc định của một lượt mới rơi vào `au_female_1`, một cặp đề thi không có.
+
+### Kiểm
+
+ruff + mypy strict sạch, `tsc --noEmit` sạch, contract đã regenerate. Quét 60 seed qua cả bốn part nghe: tỉ lệ accent nằm trong dải **24–27%**, **0/60 seed** bị `validate` từ chối. **Chưa chạy pytest** và **chưa sinh lại audio.**
+
+### Bug tìm được khi trả lời "đề cũ có được cập nhật không"
+
+**`--force` chưa bao giờ với tới audio của đề.** `backfill_questions` không nhận `policy` cả — nó so thẳng `script_state(...) not in _REGENERATE`, nên cờ `--force` bị bỏ qua im lặng ở đúng chỗ nó cần nhất. Và nó cần nhất ở đây: `script_state` hỏi "clip này có đọc đúng lời thoại này không", nên đổi tốc độ đọc hay đổi ánh xạ `_EDGE_IDS` đều để nó trả `CURRENT` — audio của đề sẽ **không bao giờ** được thu lại. Sửa: `backfill_questions(factory, limit, policy)`. Hai test mới trong `tests/test_backfill_questions.py`, đã kiểm ĐỎ khi bỏ fix (`--force` sinh lại được clip còn khớp lời thoại; `--force` vẫn KHÔNG ghi đè bản thu người tải lên, vì `EXTERNAL` chặn trước cả `force`).
+
+### Đổi dàn giọng cho đề đã dán: `recast_voices.py`
+
+Giọng nằm trong `audio_script` — dữ liệu — nên `TOEIC_NARRATORS` không với tới đề cũ. `app/content/recast_voices.py --test <slug>` ánh xạ từng giọng ngoài dàn sang narrator **cùng giới**, tránh trùng giọng trong một ô, và chọn accent đang ít lượt nhất nên cả đề tự tiến về 25% mỗi accent. Giữ giới tính là ràng buộc load-bearing: Part 3/4 hỏi thẳng "What does the **man** say?", nên lật giới tính một lượt là làm câu hỏi sai đáp án và không phép kiểm nào thấy. Ô có nhiều người cùng giới hơn số narrator (dàn chỉ có hai nữ, hai nam) thì **báo ra, không đoán** — đoán nghĩa là hai người nói chung một giọng.
+
+Sau khi đổi, lời thoại khác đi nên `script_state` trả `STALE` cho đúng những ô ấy: một sweep thường thu lại chúng, không cần `--force`.
+
+`backfill_audio` thêm `--test <slug>`: ép thu lại tốn hàng giờ và không hoàn tác được, nên phải thử được trên một đề trước khi áp cho cả kho (162 ô).
+
+### Chạy thật trên tp-form-07 (2026-09-01)
+
+Trạng thái trước: 54 ô có lời thoại, **10/13 hội thoại Part 3 cùng một accent** (4 cuộc toàn Úc, 3 toàn Canada, 2 toàn Anh, 1 toàn Mỹ), và 105/211 lượt nói dùng bốn giọng đề thật không có — `au_female_1` nhiều nhất với 33 lượt. Sau recast: 40/54 ô đổi, 0 ô phải sửa tay, còn đúng bốn giọng với tỉ lệ 24–26% mỗi accent. Bốn bất biến được kiểm bằng mô phỏng trước khi ghi (giới tính từng lượt giữ nguyên, mọi giọng trong dàn, số người nói không đổi, Part 2/3 nhiều người thì khác accent) — không vi phạm nào.
+
+**Tệp dán và `blueprint.json` cũng phải theo, nếu không chúng thành lời khai sai.** `commit_part` CỘNG THÊM câu chứ không ghi đè, nên tệp cũ không âm thầm hoàn tác được database — nhưng chúng vẫn ghi dàn giọng cũ, và một ô sinh bổ sung về sau sẽ lấy dàn cũ từ blueprint, cho ra một đề trộn hai dàn. `--files-only` lấy **database làm nguồn sự thật** rồi viết ngược ra tệp, chứ không chạy lại bộ lập ánh xạ — chạy lại là hai lượt lập độc lập và chúng có thể ra hai kết quả khác nhau, đúng thứ việc này sinh ra để dọn. Nối tệp với hàng bằng NỘI DUNG lời thoại chứ không bằng tên tệp, vì tên tệp là id ô của blueprint và không có gì bảo đảm ô `p3-01` là hàng nào. Kết quả trên tp-form-07: 40 tệp dán + 40 ô blueprint, 0 tệp không nối được, và `git diff` xác nhận **không dòng nào ngoài `voice:` thay đổi**.
+
+**Bài học vận hành: phải `docker compose stop worker` trước khi chạy backfill bằng tay.** Lần chạy đầu chết vì `DeadlockDetected` — `tts_worker` trong container đang quét cùng lúc và hai bên khoá chéo nhau trên `question`. Tệ hơn nữa là nó im lặng: lệnh chạy qua `| tail` nên exit code báo về là của `tail`, và stdout bị đệm khối khi qua pipe nên traceback (stderr) in ra TRƯỚC các dòng "synthesised", làm bản log đọc như một lượt chạy trót lọt. Và container worker chạy mã đã import lúc khởi động, nên kể cả khi nó thắng cuộc đua thì nó thu bằng `_EDGE_IDS` cũ.
+
+### Còn phải làm
+
+`uv run python -m app.content.backfill_audio --force` để cả thư viện về một tốc độ (~4 100 clip), rồi `push_media` và `reconcile_media --delete-rows` dọn hàng cũ không còn ai trỏ tới.
+
+**Đề đã dán từ trước chỉ đổi tốc độ, không đổi dàn giọng.** Tên giọng nằm trong `question.audio_script` / `question_set.audio_script` — dữ liệu, không phải mã — và backfill đọc thẳng `turn["voice"]` từ đó. Giọng Mỹ thì có đổi (script ghi `us_female_1`, và tên ấy giờ trỏ sang Ava). Từ vựng và dictation ngược lại: giọng được TRA lúc sinh, nên `--force` đổi luôn cả dàn. Muốn đề cũ theo dàn mới thì cần một script viết lại `audio_script`, chưa có.
+
+---
+
 ## 4ai. Trợ lý biết dùng tài liệu và biết tự tra số · ✅ XONG (2026-08-29)
 
 Hai lát nối tiếp 4ah: Trợ lý trả lời dựa trên **knowledge base về chính trang** thay vì một khối SITE_GUIDE cứng, và tự **GỌI CÔNG CỤ** lấy số cá nhân thay vì nhận cả đống số sẵn trong ngữ cảnh.

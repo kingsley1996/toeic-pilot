@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: au_male_1
 When are you going to run the social media ad campaign?
 voice: uk_female_1
 (A) On the company's Facebook page.

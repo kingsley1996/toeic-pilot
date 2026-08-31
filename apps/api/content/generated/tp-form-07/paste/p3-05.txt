@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: au_female_1
+voice: uk_female_1
 Hello, IT support? This is Lisa in the accounting department. My printer suddenly stopped working.
 voice: au_male_1
 Hi Lisa, this is Tom from IT. Let me walk you through a quick fix. First, try restarting the printer with the power button on the side.
-voice: au_female_1
+voice: uk_female_1
 Okay, I've done that, but the light is still flashing orange.
 voice: au_male_1
 That usually means a paper jam. Open the front cover and check for paper stuck near the roller.
-voice: au_female_1
+voice: uk_female_1
 Found it! I've removed the torn piece, and it's printing again.
 voice: au_male_1
 Great. If it happens again, submit a ticket, and I'll come by this afternoon to replace the roller.

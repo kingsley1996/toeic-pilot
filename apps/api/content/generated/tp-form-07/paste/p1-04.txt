@@ -1,5 +1,5 @@
 [QUESTION]
-voice: uk_male_1
+voice: au_male_1
 (A) The guests are waiting in line at the desk.
 (B) The receptionist is handing a key to the guest.
 (C) The receptionist is writing on a piece of paper.

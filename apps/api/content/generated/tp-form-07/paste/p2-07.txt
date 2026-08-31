@@ -1,5 +1,5 @@
 [QUESTION]
-voice: us_male_1
+voice: au_male_1
 How will the delay affect my connecting flight?
 voice: uk_female_1
 (A) The delay is about two hours, I’m afraid.

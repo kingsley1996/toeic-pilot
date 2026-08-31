@@ -222,6 +222,19 @@ uv run python -m app.content.backfill_audio [--dry-run] [--only questions]  # au
 # đọc đúng câu này không", và clip đọc nhanh vẫn đọc đúng chữ. Thu lại phải nói
 # ra; `--min-words 2` bỏ qua từ đơn, vốn không có nhịp để mà nhanh hay chậm.
 uv run python -m app.content.backfill_audio --force --min-words 2 --only dictation
+# Đề đã dán mang giọng ghi trong `audio_script`, nên đổi `TOEIC_NARRATORS` không
+# với tới nó. `recast_voices` ánh xạ sang narrator CÙNG GIỚI (Part 3/4 hỏi "what
+# does the man say" — lật giới là làm câu hỏi sai đáp án, và không phép kiểm nào
+# thấy). Đổi xong thì lời thoại khác đi, `script_state` thành STALE, và một sweep
+# thường thu lại đúng những ô ấy.
+uv run python -m app.content.recast_voices --test tp-form-07 --dry-run
+# Tệp dán và blueprint.json giữ dàn giọng CŨ và phải theo, nếu không một ô sinh
+# bổ sung về sau sẽ lấy dàn cũ và cho ra đề trộn hai dàn. Nguồn sự thật là database.
+uv run python -m app.content.recast_voices --test tp-form-07 --files-only
+# `--test` giới hạn phạm vi ép thu lại. DỪNG worker trước: `tts_worker` trong
+# container quét cùng lúc và hai bên khoá chéo nhau trên `question` (DeadlockDetected).
+docker compose -f docker/docker-compose.yml stop worker
+uv run python -m app.content.backfill_audio --only questions --test <slug> --force
 uv run python -m app.content.tts_worker --once            # one sweep, then exit
 uv run python -m app.content.tts_worker                   # long-running: Redis doorbell + 300s sweep
 uv run python -m app.content.enrich_skills --dry-run       # gán nhãn: in ra, không ghi

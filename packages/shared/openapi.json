@@ -10392,11 +10392,16 @@
           "name": {
             "title": "Name",
             "type": "string"
+          },
+          "narrator": {
+            "title": "Narrator",
+            "type": "boolean"
           }
         },
         "required": [
           "name",
-          "accent"
+          "accent",
+          "narrator"
         ],
         "title": "VoiceOption",
         "type": "object"

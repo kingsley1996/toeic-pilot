@@ -1,7 +1,7 @@
 [QUESTION]
 voice: us_female_1
 Where would you like to discuss the comprehensive insurance plan?
-voice: uk_male_1
+voice: ca_male_1
 (A) Yes, I'd like to see the options.
 (B) In the consultation room, please.
 (C) The commission on this plan is quite high.

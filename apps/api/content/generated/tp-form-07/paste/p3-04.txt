@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 Before your shift starts, I want to go over this weekend. The apartment tower next door is opening, so we expect larger crowds.
 voice: uk_female_1
 Will my hours change?
-voice: uk_male_1
+voice: ca_male_1
 Yes, we're moving you to the early shift on Saturday. You'd start at eight instead of ten.
 voice: uk_female_1
 Got it. What about the new weekend menu?
-voice: uk_male_1
+voice: ca_male_1
 It launches Saturday too. Please review the seafood dishes tonight, and suggest the grilled fish to your tables.
 
 [QUESTION]

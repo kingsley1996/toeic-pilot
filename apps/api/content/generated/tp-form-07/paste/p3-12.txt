@@ -1,17 +1,17 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 Good morning. Your flight to Sydney is delayed by bad weather. How can I help you today?
 voice: uk_female_1
 I have a conference tomorrow morning. Are there seats on the next flight?
-voice: uk_male_1
+voice: ca_male_1
 That flight is fully booked, but I can rebook you on tomorrow's early departure instead.
-voice: au_female_1
+voice: us_female_1
 Excuse me, I found you. Let's take tomorrow's flight so we can visit the city museum this afternoon.
 voice: uk_female_1
 Good idea. Do you know which month has the fewest visitors? The brochure chart shows four months.
-voice: uk_male_1
+voice: ca_male_1
 The quietest month is the one with the smallest number in the chart.
-voice: au_female_1
+voice: us_female_1
 Perfect. We'll plan our museum visit then.
 
 [QUESTION]

@@ -98,7 +98,7 @@ source: original`,
   2: `[QUESTION]
 voice: us_female_1
 Where did you put the sales report?
-voice: uk_male_1
+voice: ca_male_1
 (A) On your desk, next to the printer.
 -> Trên bàn anh, cạnh máy in.
 (B) Yes, I finished it last night.
@@ -110,7 +110,7 @@ source: original`,
   3: `[SCRIPT] Hội thoại về đơn hàng ghế
 voice: us_female_1
 Hi, I'm calling about the office chairs we ordered last week.
-voice: us_male_1
+voice: ca_male_1
 I'm sorry about that. Let me pull up the tracking number.
 
 [QUESTION]
@@ -127,7 +127,7 @@ answer: A
 source: original
 explanation: Cô ấy gọi vì đơn ghế chưa tới.`,
   4: `[SCRIPT] Thông báo bảo trì sảnh
-voice: uk_male_1
+voice: uk_female_1
 Attention, all tenants. Maintenance work on the lobby entrance
 will begin this Wednesday and continue through Friday.
 
@@ -1835,8 +1835,13 @@ function AudioPanel({
                   {!voices.some((voice) => voice.name === turn.voice) && (
                     <option value={turn.voice}>{turn.voice}</option>
                   )}
+                  {/* Dấu ★ đánh dấu bốn giọng của dàn narrator đề thật. Bốn
+                    giọng còn lại vẫn dùng được — chúng chỉ là những cặp quốc
+                    tịch–giới tính bài thi không có, và cái tên không nói ra
+                    điều đó. */}
                   {voices.map((voice) => (
                     <option key={voice.name} value={voice.name}>
+                      {voice.narrator ? "★ " : ""}
                       {voice.name} · {voice.accent}
                     </option>
                   ))}

@@ -1,15 +1,15 @@
 [SCRIPT]
 voice: ca_male_1
 Good morning. I'd like to open a business account for my new shop.
-voice: ca_female_1
+voice: us_female_1
 Certainly. We'll need your business registration and two forms of identification.
 voice: ca_male_1
 I have those right here. Is there a minimum deposit?
-voice: ca_female_1
+voice: us_female_1
 Yes, you must keep a balance of at least one hundred dollars, or there's a monthly fee.
 voice: ca_male_1
 That's fine. Could you also order a company checkbook for me?
-voice: ca_female_1
+voice: us_female_1
 Of course. It should arrive within five business days.
 
 [QUESTION]

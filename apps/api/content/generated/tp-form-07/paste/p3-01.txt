@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: au_female_1
+voice: us_female_1
 Mr. Carter, do you have a moment? I'd like to discuss the budget for our spring advertising campaign.
 voice: au_male_1
 Of course. I heard the proposal was ready. What figure are we looking at?
-voice: au_female_1
+voice: us_female_1
 We're requesting twenty thousand dollars. That covers online advertising and printed flyers, and it's ten percent more than last year's budget.
 voice: au_male_1
 Hmm, that's a little higher than I expected. Could you trim the printing costs?
-voice: au_female_1
+voice: us_female_1
 Probably. If we reduce the flyer order, the total comes down to eighteen thousand dollars.
 voice: au_male_1
 Good. Email me the revised figures by Wednesday, and I'll present them to the director.

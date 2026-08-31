@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: ca_female_1
+voice: uk_female_1
 Hello, this is Maria. I'm the secretary at a consulting firm, and I'd like to reserve a conference room for this Saturday.
 voice: ca_male_1
 Good morning, Maria. David here, the events coordinator. We have two rooms free. How many people will attend?
-voice: ca_female_1
+voice: uk_female_1
 Twenty. We'll need the room from nine in the morning until three in the afternoon.
 voice: ca_male_1
 The larger room seats forty, but it's booked Saturday morning. The smaller one holds twenty-five and is open all day.
-voice: ca_female_1
+voice: uk_female_1
 The smaller one sounds fine. Could you also arrange coffee and snacks for a mid-morning break?
 voice: ca_male_1
 No problem. I'll email you a confirmation this afternoon.

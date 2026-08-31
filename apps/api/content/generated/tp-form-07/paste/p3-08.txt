@@ -1,13 +1,13 @@
 [SCRIPT]
-voice: uk_male_1
+voice: ca_male_1
 Good morning. I'm calling about the house-hunting tour to Lisbon that I saw on your website.
 voice: uk_female_1
 Of course. The tour runs for five days and includes visits to eight properties, all with translation support.
-voice: uk_male_1
+voice: ca_male_1
 That sounds perfect. How much does the package cost?
 voice: uk_female_1
 It's one thousand six hundred dollars. That covers your hotel and airport transfers, but not meals.
-voice: uk_male_1
+voice: ca_male_1
 I see. Could you email me the full day-by-day itinerary before Friday?
 voice: uk_female_1
 No problem. I'll send it to you this afternoon.

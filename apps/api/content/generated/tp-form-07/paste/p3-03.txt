@@ -1,13 +1,13 @@
 [SCRIPT]
 voice: us_female_1
 This break room is busy today. Oh, Mark, did you hear the project kickoff meeting was moved?
-voice: us_male_1
+voice: au_male_1
 Yes, to Thursday at ten, the same time as the marketing review.
 voice: us_female_1
 That's a problem. I wanted to present our launch plan at the kickoff.
 voice: ca_male_1
 Sorry to interrupt, but I overheard you mention the marketing review. I could go to that one and take notes.
-voice: us_male_1
+voice: au_male_1
 Would you? Then we can both attend the kickoff.
 voice: ca_male_1
 No problem. I'll email you my notes right after the review ends.

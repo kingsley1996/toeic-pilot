@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: ca_female_1
+voice: us_female_1
 Hi, everyone, this is Sandra, your evening manager. I'm calling about tonight's dinner special. Starting at five o'clock, we'll be offering grilled salmon with lemon butter sauce, served with roasted vegetables. The special will be priced at eighteen dollars per plate. Please make sure each table hears about it when they sit down. Also, if a guest asks, let them know the special is limited to forty portions, so recommend it early. I'll stop by the kitchen at four thirty to answer any questions. Thanks, everyone, and let's make tonight a great service.
 
 [QUESTION]

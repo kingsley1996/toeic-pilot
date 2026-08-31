@@ -12,7 +12,7 @@
           "question_type": "PART_1_PERSON_DESCRIPTION",
           "grammar": "",
           "context": "Một người phụ nữ đang ngồi một mình tại bàn làm việc, chăm chú gõ bàn phím máy tính.",
-          "voice": "au_female_1",
+          "voice": "uk_female_1",
           "people": "one",
           "question_types": [],
           "topic": "",
@@ -60,7 +60,7 @@
           "question_type": "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
           "grammar": "",
           "context": "Nhân viên lễ tân đang trao chìa khóa phòng cho khách hàng tại quầy lễ tân khách sạn.",
-          "voice": "uk_male_1",
+          "voice": "au_male_1",
           "people": "several",
           "question_types": [],
           "topic": "",
@@ -76,7 +76,7 @@
           "question_type": "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
           "grammar": "",
           "context": "Một văn phòng mở với các dãy bàn làm việc trống trải, ghế xếp gọn gàng và đèn chiếu sáng.",
-          "voice": "au_female_1",
+          "voice": "uk_female_1",
           "people": "none",
           "question_types": [],
           "topic": "",
@@ -119,7 +119,7 @@
           "topic": "",
           "voices": [
             "au_male_1",
-            "ca_female_1"
+            "uk_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -137,8 +137,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "ca_female_1",
-            "us_male_1"
+            "us_female_1",
+            "au_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -157,7 +157,7 @@
           "topic": "",
           "voices": [
             "us_female_1",
-            "uk_male_1"
+            "au_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -175,8 +175,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_male_1",
-            "au_female_1"
+            "au_male_1",
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -194,7 +194,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_female_1",
+            "us_female_1",
             "ca_male_1"
           ],
           "graphic": "",
@@ -232,7 +232,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_male_1",
+            "au_male_1",
             "uk_female_1"
           ],
           "graphic": "",
@@ -271,7 +271,7 @@
           "topic": "",
           "voices": [
             "au_male_1",
-            "ca_female_1"
+            "uk_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -289,8 +289,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "ca_female_1",
-            "us_male_1"
+            "uk_female_1",
+            "au_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -309,7 +309,7 @@
           "topic": "",
           "voices": [
             "us_female_1",
-            "uk_male_1"
+            "ca_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -327,8 +327,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_male_1",
-            "au_female_1"
+            "au_male_1",
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -346,7 +346,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_female_1",
+            "uk_female_1",
             "ca_male_1"
           ],
           "graphic": "",
@@ -384,7 +384,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_male_1",
+            "ca_male_1",
             "uk_female_1"
           ],
           "graphic": "",
@@ -423,7 +423,7 @@
           "topic": "",
           "voices": [
             "au_male_1",
-            "ca_female_1"
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -441,8 +441,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "ca_female_1",
-            "us_male_1"
+            "us_female_1",
+            "au_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -461,7 +461,7 @@
           "topic": "",
           "voices": [
             "us_female_1",
-            "uk_male_1"
+            "ca_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -479,8 +479,8 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_male_1",
-            "au_female_1"
+            "au_male_1",
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -498,7 +498,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_female_1",
+            "uk_female_1",
             "ca_male_1"
           ],
           "graphic": "",
@@ -536,7 +536,7 @@
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_male_1",
+            "au_male_1",
             "uk_female_1"
           ],
           "graphic": "",
@@ -575,7 +575,7 @@
           "topic": "",
           "voices": [
             "au_male_1",
-            "ca_female_1"
+            "uk_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -602,7 +602,7 @@
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
           "voices": [
-            "au_female_1",
+            "us_female_1",
             "au_male_1"
           ],
           "graphic": "",
@@ -625,8 +625,8 @@
           ],
           "topic": "PART_3_SHOPPING_OR_SERVICE",
           "voices": [
-            "ca_male_1",
-            "ca_female_1"
+            "uk_female_1",
+            "ca_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -649,7 +649,7 @@
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
           "voices": [
             "us_female_1",
-            "us_male_1",
+            "au_male_1",
             "ca_male_1"
           ],
           "graphic": "",
@@ -672,7 +672,7 @@
           ],
           "topic": "PART_3_HOUSING",
           "voices": [
-            "uk_male_1",
+            "ca_male_1",
             "uk_female_1"
           ],
           "graphic": "",
@@ -695,7 +695,7 @@
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
           "voices": [
-            "au_female_1",
+            "uk_female_1",
             "au_male_1"
           ],
           "graphic": "",
@@ -719,7 +719,7 @@
           "topic": "PART_3_SHOPPING_OR_SERVICE",
           "voices": [
             "ca_male_1",
-            "ca_female_1"
+            "uk_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -742,7 +742,7 @@
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
           "voices": [
             "us_female_1",
-            "us_male_1",
+            "au_male_1",
             "ca_male_1"
           ],
           "graphic": "",
@@ -765,7 +765,7 @@
           ],
           "topic": "PART_3_HOUSING",
           "voices": [
-            "uk_male_1",
+            "ca_male_1",
             "uk_female_1"
           ],
           "graphic": "",
@@ -788,7 +788,7 @@
           ],
           "topic": "PART_3_COMPANY_PERSONNEL",
           "voices": [
-            "au_female_1",
+            "uk_female_1",
             "au_male_1"
           ],
           "graphic": "",
@@ -812,7 +812,7 @@
           "topic": "PART_3_SHOPPING_OR_SERVICE",
           "voices": [
             "ca_male_1",
-            "ca_female_1"
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -835,7 +835,7 @@
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
           "voices": [
             "us_female_1",
-            "us_male_1"
+            "ca_male_1"
           ],
           "graphic": "schedule: lịch trình ngày hội việc làm tại trường đại học, bốn mục: 8:00 Đón khách, 9:00 Giao lưu với nhà tuyển dụng, 10:30 Phỏng vấn thử, 12:00 Bế mạc",
           "grammars": [],
@@ -857,9 +857,9 @@
           ],
           "topic": "PART_3_COMPANY_EVENT_OR_PROJECT",
           "voices": [
-            "uk_male_1",
+            "ca_male_1",
             "uk_female_1",
-            "au_female_1"
+            "us_female_1"
           ],
           "graphic": "chart: biểu đồ cột số lượng khách tham quan bảo tàng theo bốn tháng, nhãn Tháng 5, Tháng 6, Tháng 7, Tháng 8",
           "grammars": [],
@@ -881,8 +881,8 @@
           ],
           "topic": "PART_3_HOUSING",
           "voices": [
-            "au_female_1",
-            "au_male_1"
+            "au_male_1",
+            "us_female_1"
           ],
           "graphic": "form: phiếu báo sự cố văn phòng, bốn trường: Họ tên người báo, Phòng ban, Loại sự cố, Mức độ ưu tiên",
           "grammars": [],
@@ -931,7 +931,7 @@
           ],
           "topic": "PART_4_ANNOUNCEMENT",
           "voices": [
-            "ca_female_1"
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -953,7 +953,7 @@
           ],
           "topic": "PART_4_ADVERTISEMENT",
           "voices": [
-            "us_male_1"
+            "au_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -1019,7 +1019,7 @@
           ],
           "topic": "PART_4_ANNOUNCEMENT",
           "voices": [
-            "ca_female_1"
+            "us_female_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -1041,7 +1041,7 @@
           ],
           "topic": "PART_4_TELEPHONE_MESSAGE",
           "voices": [
-            "us_male_1"
+            "ca_male_1"
           ],
           "graphic": "",
           "grammars": [],
@@ -1107,7 +1107,7 @@
           ],
           "topic": "PART_4_ANNOUNCEMENT",
           "voices": [
-            "ca_female_1"
+            "uk_female_1"
           ],
           "graphic": "form: mẫu đơn đăng ký bốn khóa học, mục Tên khóa, Trình độ, Thời lượng, Học phí",
           "grammars": [],

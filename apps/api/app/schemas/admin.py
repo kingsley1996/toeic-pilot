@@ -558,6 +558,15 @@ class VoiceOption(BaseModel):
 
     name: str
     accent: str
+    narrator: bool
+    """Có nằm trong dàn bốn narrator của đề thật không (`TOEIC_NARRATORS`).
+
+    Cả tám giọng đều dùng được, nên đây là chỉ dẫn chứ không phải cổng chặn. Nó
+    có mặt vì bốn giọng ngoài dàn là bốn cặp quốc tịch–giới tính KHÔNG tồn tại
+    trong đề thật (Anh nam, Úc nữ, Mỹ nam, Canada nữ), và không gì trong cái tên
+    `uk_male_1` nói ra điều đó — người soạn chọn nó rồi bản thu ra một thứ đề
+    thi không có.
+    """
 
 
 class ArchiveRequest(BaseModel):

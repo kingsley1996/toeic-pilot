@@ -32,8 +32,9 @@ class ContentSettings(BaseSettings):
     # source hash, so deriving it from the package would mean every routine
     # dependency bump invalidated the entire audio library and forced a full
     # regeneration. Bump this only when you actually want everything re-synthesised.
-    tts_engine_version: str = "2"
-    """Phiên bản 2 = giọng đọc chậm lại còn `tts_rate`.
+    tts_engine_version: str = "3"
+    """Phiên bản 2 = giọng đọc chậm lại còn `tts_rate`; phiên bản 3 = dàn giọng
+    Mỹ chuyển sang thế hệ HD của edge-tts (Ava/Andrew thay Jenny/Guy).
 
     Nó nằm trong `source_hash`, nên hai clip cùng một câu nhưng khác phiên bản có
     khoá khác nhau và **không lẫn vào nhau được**. Đó là lý do phải nâng số này
@@ -45,6 +46,11 @@ class ContentSettings(BaseSettings):
     **chính hàng asset** chứ không từ cấu hình, vì câu hỏi ở đó là "clip này có
     đọc đúng câu này không" — và một clip đọc nhanh vẫn đọc đúng chữ. Muốn thu
     lại thật thì phải nói ra: `backfill_audio --force`.
+
+    Đó cũng là lý do phải nâng số này khi đổi ánh xạ `_EDGE_IDS`: hai clip mang
+    cùng tên giọng logic nhưng do hai người đọc thì không được phép băm ra cùng
+    một khoá, nếu không cái tới sau lặng lẽ bị bỏ qua và thư viện giữ lẫn hai
+    giọng dưới một cái tên.
     """
 
     # Tốc độ đọc, truyền thẳng cho edge-tts.

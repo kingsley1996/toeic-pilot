@@ -1,7 +1,7 @@
 [QUESTION]
-voice: uk_male_1
+voice: au_male_1
 Can you check if you have this in a medium size?
-voice: au_female_1
+voice: us_female_1
 (A) On the third floor, near the fitting rooms.
 (B) Sorry, we're out of medium, only large.
 (C) I'll pay by check.

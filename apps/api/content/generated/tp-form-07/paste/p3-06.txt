@@ -1,15 +1,15 @@
 [SCRIPT]
 voice: ca_male_1
 I just finished going over the quarterly sales report, and the numbers aren't good. Revenue dropped almost fifteen percent.
-voice: ca_female_1
+voice: uk_female_1
 That's surprising. Which product line caused the biggest decline?
 voice: ca_male_1
 The home office furniture section. Store traffic was steady, but hardly anyone bought the desks.
-voice: ca_female_1
+voice: uk_female_1
 Maybe our prices are too high compared to that new competitor downtown.
 voice: ca_male_1
 That could be it. Could you put together a price comparison by Friday?
-voice: ca_female_1
+voice: uk_female_1
 Sure. I'll also check what promotions the competitor is running.
 
 [QUESTION]

@@ -17,10 +17,11 @@ from __future__ import annotations
 
 import json
 import random
+from collections.abc import Callable, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-from app.core.media import LOGICAL_VOICE_ACCENTS
+from app.core.media import AUDIO_ACCENTS, LOGICAL_VOICE_ACCENTS, TOEIC_NARRATORS, voice_gender
 from app.services.labels import codes_for
 
 # Part 5 kiểm 11 điểm ngữ pháp (Part 6 chỉ 5 — hai danh sách KHÁC nhau, xem
@@ -85,6 +86,96 @@ LISTENING_QUESTIONS_PER_SET = 3
 # Số câu mỗi cụm, theo part. Part 6 là BỐN, không phải ba: đề mẫu có bốn văn bản
 # và mỗi văn bản đúng bốn chỗ trống (131–134, 135–138, 139–142, 143–146).
 QUESTIONS_PER_SET = {3: 3, 4: 3, 6: 4}
+
+
+# --- Chọn giọng -----------------------------------------------------------
+#
+# Đề thật có bốn narrator, giới tính gắn cứng vào quốc tịch (`TOEIC_NARRATORS`),
+# nên một hội thoại hai người — một nam một nữ — LUÔN là hai quốc tịch khác
+# nhau. Lý do đầy đủ ở PHASE2-AUDIO §A4.6.
+NARRATOR_WOMEN = (TOEIC_NARRATORS["en-US"], TOEIC_NARRATORS["en-GB"])
+NARRATOR_MEN = (TOEIC_NARRATORS["en-CA"], TOEIC_NARRATORS["en-AU"])
+NARRATORS = (*NARRATOR_WOMEN, *NARRATOR_MEN)
+
+# Part 2: người hỏi và người đáp, khác giới nên khác quốc tịch. Cả hai chiều —
+# người hỏi là nữ ở tám cặp đầu, là nam ở tám cặp sau.
+PART2_PAIRS: tuple[tuple[str, str], ...] = tuple(
+    [(woman, man) for woman in NARRATOR_WOMEN for man in NARRATOR_MEN]
+    + [(man, woman) for woman in NARRATOR_WOMEN for man in NARRATOR_MEN]
+)
+
+# Part 3, hội thoại hai người: một nữ một nam.
+PART3_CASTS: tuple[tuple[str, ...], ...] = tuple(
+    (woman, man) for woman in NARRATOR_WOMEN for man in NARRATOR_MEN
+)
+
+# Part 3, hội thoại ba người: hai nữ một nam, hoặc một nữ hai nam.
+PART3_TRIOS: tuple[tuple[str, ...], ...] = tuple(
+    [(*NARRATOR_WOMEN, man) for man in NARRATOR_MEN]
+    + [(woman, *NARRATOR_MEN) for woman in NARRATOR_WOMEN]
+)
+
+
+def _rng(seed: int, salt: str) -> random.Random:
+    """Một luồng ngẫu nhiên riêng cho mỗi việc chia.
+
+    Dùng chung một luồng cho cả bốn part thì đổi số câu Part 2 sẽ đổi luôn giọng
+    của Part 4, và hai đề chỉ khác nhau ở một chỗ trông như khác nhau hoàn toàn.
+    Seed bằng CHUỖI chứ không bằng `hash()`: hash của chuỗi được ngẫu nhiên hoá
+    theo tiến trình, nên cùng một `seed` sẽ ra hai đề khác nhau ở hai lần chạy.
+    """
+    return random.Random(f"{salt}:{seed}")
+
+
+def _deal[T](items: Sequence[T], count: int, rng: random.Random) -> list[T]:
+    """`count` phần tử, mỗi phần tử của `items` chênh nhau nhiều nhất một lần.
+
+    Thay cho `items[(index + seed) % len(items)]`, vốn không phải ngẫu nhiên mà
+    là đếm: 25 câu Part 2 trên tám cặp lặp lại đúng thứ tự ấy ba lần, và `seed`
+    chỉ dịch điểm bắt đầu chứ không đổi thứ tự.
+    """
+    whole, rest = divmod(count, len(items))
+    tail = list(items)
+    rng.shuffle(tail)
+    plan = list(items) * whole + tail[:rest]
+    rng.shuffle(plan)
+    return plan
+
+
+def _around[T](plan: list[T], index: int, at: Callable[[T], object]) -> list[object]:
+    return [at(plan[i]) for i in (index - 1, index + 1) if 0 <= i < len(plan)]
+
+
+def _spread[T](
+    plan: list[T], rng: random.Random, key: Callable[[T], object] | None = None
+) -> list[T]:
+    """Đẩy hai ô cạnh nhau ra khỏi nhau khi chúng trùng `key`.
+
+    Chia đều xong vẫn có thể ra ba ô liền nhau cùng một giọng, và ba lần liền
+    một người đọc thì nghe như hỏng dữ liệu chứ không như tình cờ. Đây là lượt
+    sửa CỐ GẮNG: `validate` mới đặt luật cứng, và nó chỉ cấm ba ô liền nhau, để
+    một seed không may không làm cả đề bị từ chối.
+    """
+    at = key or (lambda item: item)
+    for index in range(1, len(plan)):
+        if at(plan[index]) != at(plan[index - 1]):
+            continue
+        order = list(range(len(plan)))
+        rng.shuffle(order)
+        for other in order:
+            if abs(other - index) <= 1:
+                continue
+            # Đổi chỗ xong thì cả HAI vị trí phải hết trùng, không riêng vị trí
+            # đang sửa: chữa một chỗ mà đẻ ra một chỗ khác thì vòng lặp đã đi
+            # qua đó rồi và không quay lại.
+            if at(plan[other]) in _around(plan, index, at) or at(plan[index]) in _around(
+                plan, other, at
+            ):
+                continue
+            plan[index], plan[other] = plan[other], plan[index]
+            break
+    return plan
+
 
 # Phân bố của một đề thật: phần lớn có người, và đúng một tấm tả vật hoặc cảnh.
 # 18 mẫu — nhiều hơn 6 câu của một đề, để `build_part1` shuffle và lấy 6 theo
@@ -276,34 +367,6 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
     ),
 )
 
-# Người nói của một cuộc hội thoại dùng CÙNG MỘT accent, đổi accent giữa các cuộc.
-#
-# Không phải tuỳ tiện: `audio_asset.accent` giữ đúng một giá trị, nên một clip
-# trộn accent phải tự khai báo (MEDIA-PIPELINE §10.2) — và quên khai báo thì một
-# giọng bị chọn hộ, im lặng. Đề thật cũng đổi accent giữa các bài chứ hiếm khi
-# trong một bài. Giữ cùng accent trong một cuộc thì cái bẫy đó không tồn tại.
-PART3_CASTS: tuple[tuple[str, ...], ...] = (
-    ("us_female_1", "us_male_1"),
-    ("uk_male_1", "uk_female_1"),
-    ("au_female_1", "au_male_1"),
-    ("ca_male_1", "ca_female_1"),
-)
-
-# Ba người nói thì buộc phải mượn một giọng của accent khác: mỗi accent chỉ có
-# hai giọng. Ghép US với CA (hoặc UK với AU) vì hai accent đó gần nhau, nên một
-# nhóm ba người vẫn nghe tự nhiên.
-#
-# Trộn accent ở ĐÂY thì an toàn, khác với đường spec file: `_accent_of` lấy
-# accent của lượt đầu và `backfill_audio` ghi rõ vì sao được phép — audio của
-# câu hỏi không ai lọc theo accent, nó chỉ đi kèm đúng câu đó. Ở từ vựng thì
-# ngược lại, accent là khoá tra cứu và chọn hộ là hỏng.
-PART3_TRIOS: tuple[tuple[str, ...], ...] = (
-    ("us_female_1", "us_male_1", "ca_male_1"),
-    ("uk_male_1", "uk_female_1", "au_female_1"),
-    ("ca_female_1", "ca_male_1", "us_male_1"),
-    ("au_male_1", "au_female_1", "uk_female_1"),
-)
-
 
 # Brief hình cho BA cụm cuối Part 3. Mỗi mục một brief `kind: mô tả` — model hay
 # chọn, và `build_part3` chọn theo seed khi không dùng model. Đủ nhiều để hai đề
@@ -390,8 +453,6 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     ),
 )
 
-# Một bài nói, một giọng. Xoay đều bốn accent qua mười bài.
-PART4_VOICES = ("us_male_1", "uk_female_1", "au_male_1", "ca_female_1")
 
 # Brief hình cho HAI cụm cuối Part 4 (câu 96 và 99). Cùng luật với pool Part 3.
 PART4_GRAPHIC_POOL: tuple[str, ...] = (
@@ -424,19 +485,6 @@ PART2_MIX: tuple[tuple[str, int], ...] = (
     ("PART_2_TAG_QUESTION", 2),
     ("PART_2_CHOICE_QUESTION", 2),
     ("PART_2_STATEMENT", 2),
-)
-
-# Người hỏi và người đáp là HAI người, nên hai giọng — và ở Part 2 thì hai accent
-# khác nhau là chuyện bình thường của đề thật, khác với một cuộc hội thoại Part 3.
-PART2_PAIRS: tuple[tuple[str, str], ...] = (
-    ("us_female_1", "uk_male_1"),
-    ("uk_male_1", "au_female_1"),
-    ("au_female_1", "ca_male_1"),
-    ("ca_male_1", "us_female_1"),
-    ("us_male_1", "uk_female_1"),
-    ("uk_female_1", "au_male_1"),
-    ("au_male_1", "ca_female_1"),
-    ("ca_female_1", "us_male_1"),
 )
 
 
@@ -768,12 +816,6 @@ def build_part5(slug: str, title: str, seed: int, count: int = 30) -> Blueprint:
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=5, slots=slots)])
 
 
-# Bốn giọng logic, rải vòng tròn qua các câu. Tên LOGIC (`us_female_1`), không
-# phải id nhà cung cấp — chính lớp gián tiếp đó đã cứu thư viện audio khi
-# Microsoft đổi tên `en-AU-WilliamNeural` (PHASE2-AUDIO §A4).
-PART1_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
-
-
 def build_part1(
     slug: str, title: str, seed: int, scenes: list[tuple[str, str, str]] | None = None
 ) -> Blueprint:
@@ -801,6 +843,7 @@ def build_part1(
         rng.shuffle(rest)
         selected += rest[: 6 - len(selected)]
         scenes = selected[:6]
+    voices = _spread(_deal(NARRATORS, len(scenes), _rng(seed, "p1")), _rng(seed, "p1-spread"))
     slots = [
         QuestionSlot(
             id=f"p1-{index:02d}",
@@ -808,7 +851,7 @@ def build_part1(
             question_type=question_type,
             grammar="",
             context=scene,
-            voice=PART1_VOICES[(index - 1 + seed) % len(PART1_VOICES)],
+            voice=voices[index - 1],
             people=people,
         )
         for index, (question_type, people, scene) in enumerate(scenes, start=1)
@@ -824,6 +867,13 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
     """
     kinds = [code for code, weight in PART2_MIX for _ in range(weight)]
     random.Random(seed).shuffle(kinds)
+    # Rải trên NGƯỜI HỎI, không trên cả cặp: hai câu liền nhau đổi người đáp mà
+    # giữ nguyên người hỏi vẫn nghe như một câu bị lặp.
+    pairs = _spread(
+        _deal(PART2_PAIRS, len(kinds), _rng(seed, "p2")),
+        _rng(seed, "p2-spread"),
+        key=lambda pair: pair[0],
+    )
     slots = [
         QuestionSlot(
             id=f"p2-{index:02d}",
@@ -831,7 +881,7 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
             question_type=code,
             grammar="",
             context=BUSINESS_CONTEXTS[(index - 1 + seed) % len(BUSINESS_CONTEXTS)],
-            voices=list(PART2_PAIRS[(index - 1 + seed) % len(PART2_PAIRS)]),
+            voices=list(pairs[index - 1]),
         )
         for index, code in enumerate(kinds, start=1)
     ]
@@ -852,9 +902,19 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
     """
     rng = random.Random(seed)
     picks = graphics or rng.sample(PART3_GRAPHIC_POOL, 3)
+    # Chia riêng hai nhóm rồi lấy lần lượt: gộp lại thì dàn ba người và dàn hai
+    # người tranh nhau cùng một hạn ngạch, và số cuộc ba người ít hơn hẳn nên
+    # nhóm đó lãnh trọn phần lệch.
+    casts = {
+        2: _spread(
+            _deal(PART3_CASTS, sum(1 for row in PART3_MIX if row[1] == 2), _rng(seed, "p3-duo")),
+            _rng(seed, "p3-duo-spread"),
+        ),
+        3: _deal(PART3_TRIOS, sum(1 for row in PART3_MIX if row[1] == 3), _rng(seed, "p3-trio")),
+    }
     slots: list[QuestionSlot] = []
     for index, (topic, speakers, scene, types, graphic) in enumerate(PART3_MIX):
-        pool = PART3_TRIOS if speakers == 3 else PART3_CASTS
+        cast = casts[speakers].pop()
         # Ba cụm cuối là cụm có hình (đề thật). Brief lấy từ `picks`, còn lại
         # giữ nguyên (không hình).
         brief = picks[len(slots) - 10] if 10 <= len(slots) <= 12 else graphic
@@ -867,7 +927,7 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
                 context=scene,
                 question_types=list(types),
                 topic=topic,
-                voices=list(pool[(index + seed) % len(pool)]),
+                voices=list(cast),
                 graphic=brief,
             )
         )
@@ -1039,6 +1099,7 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
     """
     rng = random.Random(seed)
     picks = graphics or rng.sample(PART4_GRAPHIC_POOL, 2)
+    voices = _spread(_deal(NARRATORS, len(PART4_MIX), _rng(seed, "p4")), _rng(seed, "p4-spread"))
     slots = [
         QuestionSlot(
             id=f"p4-{index + 1:02d}",
@@ -1048,7 +1109,7 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
             context=scene,
             question_types=list(types),
             topic=speech_type,
-            voices=[PART4_VOICES[(index + seed) % len(PART4_VOICES)]],
+            voices=[voices[index]],
             graphic=picks[index - 8] if index >= 8 else graphic,
         )
         for index, (speech_type, scene, types, graphic) in enumerate(PART4_MIX)
@@ -1156,6 +1217,11 @@ def validate(blueprint: Blueprint) -> list[str]:
                     problems.append(f"{slot.id}: Part 2 cần đúng 2 giọng (hỏi và đáp)")
                 elif slot.voices[0] == slot.voices[1]:
                     problems.append(f"{slot.id}: người hỏi và người đáp phải khác giọng")
+                elif voice_gender(slot.voices[0]) == voice_gender(slot.voices[1]):
+                    # Đề thật cho người hỏi và người đáp khác giới, và vì giới
+                    # tính gắn cứng vào quốc tịch, khác giới cũng là khác accent.
+                    # Hai giọng cùng giới nghe như một người tự hỏi tự đáp.
+                    problems.append(f"{slot.id}: người hỏi và người đáp phải khác giới")
                 unknown = [v for v in slot.voices if v not in LOGICAL_VOICE_ACCENTS]
                 if unknown:
                     problems.append(f"{slot.id}: giọng không có: {', '.join(unknown)}")
@@ -1181,6 +1247,49 @@ def validate(blueprint: Blueprint) -> list[str]:
                 problems.append(
                     f"part 1 thiếu dạng tranh: {', '.join(missing)} — "
                     f"một đề phải có đủ tranh một người, nhiều người và không người"
+                )
+
+        problems.extend(_casting_problems(part))
+    return problems
+
+
+def _casting_problems(part: PartPlan) -> list[str]:
+    """Ràng buộc ở tầng PART, thứ không phép kiểm từng ô nào thấy được.
+
+    Hai chuyện, và cả hai đều qua sạch mọi phép kiểm từng câu: một accent chiếm
+    nửa phần nghe (đề thật chia đều bốn accent, xấp xỉ 25% mỗi loại), và ba ô
+    liền nhau cùng một người đọc — nghe ra là hỏng dữ liệu chứ không ra tình cờ.
+
+    Cấm BA chứ không cấm hai: `_spread` đã đẩy hai ô liền nhau ra xa nhau nhưng
+    chỉ cố gắng, và một seed không may không đáng làm cả đề bị từ chối.
+    """
+    if part.part not in (1, 2, 3, 4):
+        return []
+    problems: list[str] = []
+
+    voiced = [slot.voices or ([slot.voice] if slot.voice else []) for slot in part.slots]
+    # So trên CẢ dàn giọng của ô, không trên người nói đầu tiên. Hai cuộc hội
+    # thoại Part 3 mở đầu bằng cùng một giọng là chuyện bình thường — người thứ
+    # hai khác nhau và người nghe không lẫn được; chỉ hai ô có dàn giọng y hệt
+    # nhau mới đọc ra như một ô bị chép lại.
+    for index in range(2, len(voiced)):
+        if voiced[index] and voiced[index] == voiced[index - 1] == voiced[index - 2]:
+            problems.append(
+                f"part {part.part}: ba ô liền nhau dùng chung dàn giọng {', '.join(voiced[index])}"
+            )
+            break
+
+    heard = [voice for voices in voiced for voice in voices]
+    accents = [LOGICAL_VOICE_ACCENTS[v] for v in heard if v in LOGICAL_VOICE_ACCENTS]
+    # Dưới tám lượt thì không có tỉ lệ nào để nói: sáu ô Part 1 trên bốn accent
+    # lệch sẵn theo cấu tạo.
+    if len(accents) >= 8:
+        for accent in AUDIO_ACCENTS:
+            share = accents.count(accent) / len(accents)
+            if not 0.15 <= share <= 0.35:
+                problems.append(
+                    f"part {part.part}: accent {accent} chiếm {share:.0%} số lượt nói — "
+                    f"đề thật chia đều bốn accent, mỗi loại khoảng 25%"
                 )
     return problems
 

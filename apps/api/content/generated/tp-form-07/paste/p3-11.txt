@@ -1,11 +1,11 @@
 [SCRIPT]
 voice: us_female_1
 Hi Mark, I'm checking on the renovation progress at the student center. Will the main hall be ready for tomorrow's career fair?
-voice: us_male_1
+voice: ca_male_1
 We ran into a slight delay because the flooring materials arrived late this morning. My team is working as quickly as possible, though.
 voice: us_female_1
 That's concerning. The event organizers need access to set up the tables and equipment.
-voice: us_male_1
+voice: ca_male_1
 Don't worry. We will complete all the flooring work by ten o'clock, so the hall will be ready before the mock interviews begin.
 voice: us_female_1
 Great. Please send me a photo update once the floor is finished.

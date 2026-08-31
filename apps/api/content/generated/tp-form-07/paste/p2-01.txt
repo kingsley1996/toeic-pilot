@@ -1,7 +1,7 @@
 [QUESTION]
 voice: au_male_1
 You need a wake-up call, don't you?
-voice: ca_female_1
+voice: uk_female_1
 (A) At the front desk, please.
 (B) Yes, at 6 AM, please.
 (C) I'll call my office now.

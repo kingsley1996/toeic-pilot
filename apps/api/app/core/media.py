@@ -66,6 +66,32 @@ LOGICAL_VOICE_ACCENTS: dict[str, str] = {
     "ca_male_1": "en-CA",
 }
 
+# Dàn narrator của đề THẬT: một giọng cho mỗi accent, và giới tính gắn cứng vào
+# quốc tịch — Mỹ nữ, Canada nam, Anh nữ, Úc nam. ETS không công bố luật này,
+# nhưng nó giữ nguyên qua các bộ đề chính thức.
+#
+# Nó kéo theo một hệ quả mà một dàn tám giọng tự do không có, và cũng là lý do
+# nó nằm ở đây chứ không ở blueprint: một hội thoại hai người là một nam một nữ,
+# nên hai người nói LUÔN khác quốc tịch. Bốn giọng còn lại của
+# `LOGICAL_VOICE_ACCENTS` vẫn hợp lệ cho nội dung dán tay và cho dữ liệu đã có —
+# chúng chỉ không còn được đề TỰ SINH dùng nữa.
+TOEIC_NARRATORS: dict[str, str] = {
+    "en-US": "us_female_1",
+    "en-CA": "ca_male_1",
+    "en-GB": "uk_female_1",
+    "en-AU": "au_male_1",
+}
+
+
+def voice_gender(voice: str) -> str:
+    """`"female"` hay `"male"`, đọc từ tên giọng logic.
+
+    Giới tính nằm trong tên chứ không ở bảng riêng, nên một giọng mới không thể
+    được thêm vào mà quên khai giới tính.
+    """
+    return "female" if "_female_" in voice else "male"
+
+
 # media.py -> core -> app -> apps/api
 _API_DIR = Path(__file__).resolve().parents[2]
 

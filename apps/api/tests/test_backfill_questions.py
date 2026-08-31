@@ -10,7 +10,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from app.content.backfill_audio import AudioFactory, backfill_questions
+from app.content.backfill_audio import AudioFactory, Policy, backfill_questions
 from app.content.storage import LocalDirStore
 from app.core.media import script_fingerprint, upload_source_hash
 from app.models import AudioAsset, QuestionSet
@@ -23,8 +23,9 @@ SCRIPT = [
 
 
 class FakeEngine:
-    def __init__(self) -> None:
+    def __init__(self, version: str = "1") -> None:
         self.calls: list[tuple[str, str]] = []
+        self._version = version
 
     @property
     def name(self) -> str:
@@ -32,17 +33,17 @@ class FakeEngine:
 
     @property
     def version(self) -> str:
-        return "1"
+        return self._version
 
     def synthesize(self, text: str, voice: str) -> bytes:
         self.calls.append((text, voice))
         return f"audio::{voice}::{text}".encode()
 
 
-def make_factory(session: Session, tmp_path: Path) -> AudioFactory:
+def make_factory(session: Session, tmp_path: Path, version: str = "1") -> AudioFactory:
     return AudioFactory(
         session,
-        FakeEngine(),
+        FakeEngine(version),
         LocalDirStore(root=tmp_path),
         {},
         duration_probe=lambda data: len(data) * 10,
@@ -142,6 +143,66 @@ def test_an_uploaded_recording_is_never_replaced_by_tts(
 
     factory = make_factory(db_session, tmp_path)
     backfill_questions(factory, None)
+    db_session.commit()
+
+    assert factory.counts.synthesised == 0
+    assert stimulus.audio_asset_id == human.id
+
+
+def test_force_regenerates_a_clip_that_still_matches_its_script(
+    db_session: Session, tmp_path: Path
+) -> None:
+    """`--force` phải với tới được audio của đề, không riêng từ vựng và dictation.
+
+    Đổi tốc độ đọc hay đổi ánh xạ giọng logic sang id nhà cung cấp đều để
+    `script_state` trả `CURRENT` — nó hỏi "clip này có đọc đúng lời thoại này
+    không", và clip cũ vẫn đọc đúng chữ. `--force` là cách duy nhất nói ra rằng
+    thứ đã đổi là CÁCH đọc. `backfill_questions` từng không nhận `policy` cả,
+    nên cờ ấy bị bỏ qua ở đúng chỗ nó cần nhất, và im lặng.
+    """
+    stimulus = make_set(db_session)
+    backfill_questions(make_factory(db_session, tmp_path), None)
+    db_session.commit()
+    first = stimulus.audio_asset_id
+
+    # Engine đã lên phiên bản mới, nhưng `script_state` đọc phiên bản từ chính
+    # hàng asset nên clip cũ vẫn là CURRENT — đúng thiết kế.
+    plain = make_factory(db_session, tmp_path, version="2")
+    backfill_questions(plain, None)
+    db_session.commit()
+    assert plain.counts.synthesised == 0
+    assert stimulus.audio_asset_id == first
+
+    forced = make_factory(db_session, tmp_path, version="2")
+    backfill_questions(forced, None, Policy(force=True))
+    db_session.commit()
+    assert forced.counts.synthesised == 1
+    assert stimulus.audio_asset_id != first
+
+
+def test_force_still_never_replaces_an_uploaded_recording(
+    db_session: Session, tmp_path: Path
+) -> None:
+    """Ép cũng không được ghi đè giọng người — `EXTERNAL` chặn trước cả `force`."""
+    stimulus = make_set(db_session)
+    human = AudioAsset(
+        storage_key="audio/aa/human2.mp3",
+        source_hash=upload_source_hash(str(uuid.uuid4())),
+        voice="uploaded",
+        accent="en-US",
+        engine="uploaded",
+        engine_version="-",
+        duration_ms=9000,
+        size_bytes=100,
+        source="uploaded",
+    )
+    db_session.add(human)
+    db_session.commit()
+    stimulus.audio_asset_id = human.id
+    db_session.commit()
+
+    factory = make_factory(db_session, tmp_path)
+    backfill_questions(factory, None, Policy(force=True))
     db_session.commit()
 
     assert factory.counts.synthesised == 0

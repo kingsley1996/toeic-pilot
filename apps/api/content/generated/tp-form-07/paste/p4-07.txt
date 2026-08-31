@@ -1,5 +1,5 @@
 [SCRIPT]
-voice: us_male_1
+voice: ca_male_1
 Hi, this is Daniel from the front desk at the Bayfront Hotel. I'm calling about your reservation for this Friday. I wanted to let you know that our late check-in time has been extended. In the past, guests had to arrive by eight p.m., but the front desk is now open until ten p.m., so you can check in as late as ten that evening. If you think you'll get in after that, please give us a call during the day, and we'll leave a key for you at the door. Also, your room has been upgraded to one on the fourth floor, overlooking the garden. We look forward to seeing you on Friday. Have a great day.
 
 [QUESTION]

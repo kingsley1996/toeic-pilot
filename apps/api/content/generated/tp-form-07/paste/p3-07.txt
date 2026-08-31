@@ -1,13 +1,13 @@
 [SCRIPT]
 voice: us_female_1
 Good morning, Mr. Chen. I'm Dana Reyes, the personnel specialist. We're here to discuss the administrative assistant position.
-voice: us_male_1
+voice: au_male_1
 Thank you, Ms. Reyes. I brought samples of the schedules I managed at my last job.
 voice: us_female_1
 Great. Our project lead, Mr. Cole, is joining us. He needs an assistant for the office relocation.
 voice: ca_male_1
 Sorry I'm late. I'm Tom Cole. The office move is set for March, and I need help with the packing schedule.
-voice: us_male_1
+voice: au_male_1
 I organized a warehouse move at my previous job, so I'd enjoy that.
 voice: ca_male_1
 Excellent. Then I'll email you the current floor plan after this.

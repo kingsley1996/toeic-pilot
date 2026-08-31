@@ -38,9 +38,20 @@ class LogicalVoice:
 # Id của nhà cung cấp, khoá theo tên giọng logic. Danh sách tên và accent nằm ở
 # `app/core/media.py` vì phía runtime cũng cần; chỉ phần ánh xạ sang edge-tts ở
 # lại đây, đúng như A4.3 yêu cầu.
+#
+# Hai giọng Mỹ dùng thế hệ HD (Ava/Andrew) chứ không phải Jenny/Guy: cùng nhà
+# cung cấp, cùng locale, nghe tự nhiên hơn rõ rệt. Ba locale còn lại KHÔNG có
+# lựa chọn nào tương đương — edge-tts chỉ còn giọng thế hệ cũ cho en-GB, en-AU
+# và en-CA — nên chênh lệch chất lượng giữa accent Mỹ và ba accent kia là có
+# thật và không sửa được ở tầng này.
+#
+# Đổi một dòng ở bảng này mà không nâng `tts_engine_version` là hỏng IM LẶNG:
+# `source_hash` băm tên giọng LOGIC, nên clip cũ và clip mới cùng mang tên
+# `us_female_1` mà là hai người, `media_state` báo CURRENT cho cả hai, và chỉ ai
+# bấm play mới biết. Lần đổi này đi kèm version 3.
 _EDGE_IDS: dict[str, str] = {
-    "us_female_1": "en-US-JennyNeural",
-    "us_male_1": "en-US-GuyNeural",
+    "us_female_1": "en-US-AvaNeural",
+    "us_male_1": "en-US-AndrewNeural",
     "uk_female_1": "en-GB-SoniaNeural",
     "uk_male_1": "en-GB-RyanNeural",
     "au_female_1": "en-AU-NatashaNeural",

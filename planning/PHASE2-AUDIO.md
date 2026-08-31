@@ -142,6 +142,29 @@ Ràng buộc này đã trả cổ tức ngay trong lúc triển khai: `en-AU-Wil
 
 Nếu ID nhà cung cấp lọt vào hash, ngày đổi sang Piper/Azure sẽ làm **mọi `source_hash` cũ vô hiệu**, buộc sinh lại toàn bộ thư viện audio. Đây chính là khác biệt giữa một abstraction dùng được và một abstraction trang trí.
 
+### A4.6 — Dàn narrator: bốn giọng, giới tính gắn cứng vào quốc tịch
+
+Thêm 2026-09-01, sau khi đo lại đề thật.
+
+`LOGICAL_VOICE_ACCENTS` có **tám** giọng (4 accent × 2 giới) và cả tám vẫn hợp lệ cho nội dung dán tay. Nhưng đề thật chỉ có **bốn** narrator, và cặp quốc tịch–giới tính của họ cố định qua mọi bộ đề chính thức:
+
+| Accent | Giới tính | Giọng logic |
+|---|---|---|
+| en-US | nữ | `us_female_1` |
+| en-CA | nam | `ca_male_1` |
+| en-GB | nữ | `uk_female_1` |
+| en-AU | nam | `au_male_1` |
+
+Bốn cặp còn lại — Mỹ nam, Canada nữ, Anh nam, Úc nữ — **không tồn tại trong bài thi**. ETS không công bố luật này; nó là kết luận đối chiếu các bộ 公式問題集, nhưng nó nhất quán và kéo theo một hệ quả mà một dàn tám giọng tự do không có:
+
+> **Một hội thoại hai người là một nam một nữ, nên hai người nói LUÔN khác quốc tịch.**
+
+Đó là lý do `TOEIC_NARRATORS` nằm ở `app/core/media.py` chứ không ở `blueprint.py`: nó là một sự thật về miền, và cả phần sinh đề, phần từ vựng lẫn phần dictation đều phải theo cùng một dàn — người học gặp bốn giọng ấy trong phòng thi, nên gặp một dàn khác lúc luyện là luyện một thứ sẽ không gặp.
+
+**Việc rải giọng là chia đều rồi xáo, không phải xoay vòng.** `pool[(index + seed) % len(pool)]` không phải ngẫu nhiên mà là đếm: 25 câu Part 2 trên tám cặp lặp lại đúng thứ tự ấy ba lần, và `seed` chỉ dịch điểm bắt đầu. `_deal` chia đều theo seed, `_spread` đẩy hai ô liền nhau ra khỏi nhau, và `_casting_problems` đặt luật cứng ở tầng part: mỗi accent chiếm 15–35% số lượt nói, và không ba ô liền nhau dùng chung một dàn giọng. Đo trên 60 seed: tỉ lệ nằm trong dải 24–27%, không seed nào bị từ chối.
+
+**Chất lượng thì không đối xứng, và không sửa được ở tầng này.** edge-tts còn giọng thế hệ HD cho `en-US` (Ava, Andrew) nhưng chỉ còn thế hệ cũ cho `en-GB`, `en-AU` và `en-CA` — `en-CA` là kém nhất. Đồng đều bốn accent đòi đổi engine cho ba locale kia, và không nhà cung cấp lớn nào có giọng `en-CA` riêng (tiếng Canada quá gần tiếng Mỹ). Đây là giới hạn đã biết, không phải thứ bỏ sót.
+
 ### A4.4 — `audio_asset.source_text` KHÔNG phải nguồn sự thật để chấm bài
 
 Nó là text đã đưa vào TTS, tồn tại để tính hash và sinh lại. Khi §7a tạo `dictation_item.transcript`, **transcript ở đó mới là đáp án chấm bài**.

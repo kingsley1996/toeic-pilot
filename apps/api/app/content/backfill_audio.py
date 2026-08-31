@@ -38,6 +38,7 @@ from app.core.media import (
     AUDIO_ACCENTS,
     DEFAULT_GAP_MS,
     MULTI_VOICE,
+    TOEIC_NARRATORS,
     conversation_source_hash,
     script_fingerprint,
     source_hash,
@@ -46,6 +47,8 @@ from app.core.media import (
 from app.models import (
     AudioAsset,
     DictationItem,
+    PracticeTest,
+    PracticeTestQuestion,
     Question,
     QuestionSet,
     VocabularyAudio,
@@ -62,12 +65,13 @@ MIME_TYPE = "audio/mpeg"
 
 # One voice per accent, fixed. Vocabulary is about hearing the same word in four
 # accents, so varying the speaker as well would confuse the comparison.
-VOICE_FOR_ACCENT = {
-    "en-US": "us_female_1",
-    "en-GB": "uk_male_1",
-    "en-AU": "au_female_1",
-    "en-CA": "ca_male_1",
-}
+#
+# Đó là dàn narrator của đề thật (`TOEIC_NARRATORS`), không phải một lựa chọn
+# riêng của phần từ vựng: người học gặp đúng bốn giọng ấy trong bài thi, nên
+# gặp một dàn khác khi luyện từ là luyện một thứ sẽ không gặp. Bảng cũ lệch hai
+# trên bốn — Anh nam và Úc nữ, hai cặp quốc tịch–giới tính không tồn tại trong
+# đề.
+VOICE_FOR_ACCENT = dict(TOEIC_NARRATORS)
 
 # Dictation gets variety instead — but the unit of variety is the **story**, not
 # the sentence. A story is one continuous passage, and rotating the speaker
@@ -76,7 +80,7 @@ VOICE_FOR_ACCENT = {
 #
 # Standalone sentences keep per-sentence variety: there the point is to meet all
 # four accents, and each sentence stands alone anyway.
-DICTATION_VOICES = ("us_female_1", "uk_male_1", "au_female_1", "ca_male_1")
+DICTATION_VOICES = tuple(TOEIC_NARRATORS[accent] for accent in AUDIO_ACCENTS)
 
 
 # Hai trạng thái này, và CHỈ hai. `CURRENT` thì không có việc gì để làm; còn
@@ -387,7 +391,12 @@ def backfill_dictation(factory: AudioFactory, limit: int | None, policy: Policy 
             break
 
 
-def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
+def backfill_questions(
+    factory: AudioFactory,
+    limit: int | None,
+    policy: Policy = Policy(),
+    test_slug: str | None = None,
+) -> None:
     """Audio cho lời thoại đã soạn: Part 1, 2 trên CÂU và Part 3, 4 trên CỤM.
 
     Hai nguồn chứ không một, vì bản thu treo ở hai tầng khác nhau (ADR-001 §A4.3):
@@ -396,7 +405,7 @@ def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
     Chỉ đụng vào thứ có `audio_script`. Câu chưa ai gõ lời thoại không phải là
     thiếu dữ liệu — nó chỉ chưa được soạn tới.
     """
-    owners = _script_owners(factory.session)
+    owners = _script_owners(factory.session, test_slug)
     assets = _assets_by_id(factory.session, owners)
 
     # Kiểm ffmpeg MỘT LẦN ở đầu, không để nó nổ ở cụm thứ bốn mươi: lúc đó
@@ -415,7 +424,12 @@ def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
         if not script:
             continue
         asset = assets.get(owner.audio_asset_id) if owner.audio_asset_id else None
-        if script_state(script, asset) not in _REGENERATE:
+        # Qua `policy`, không so thẳng với `_REGENERATE`: so thẳng thì `--force`
+        # bị bỏ qua ở đúng chỗ nó cần nhất. Đổi tốc độ đọc hay đổi ánh xạ giọng
+        # để `script_state` trả `CURRENT` — nó hỏi "clip này có đọc đúng lời
+        # thoại này không", và clip cũ vẫn đọc đúng chữ — nên không có `--force`
+        # thì audio của đề KHÔNG BAO GIỜ được thu lại.
+        if not policy.wants(script_state(script, asset), " ".join(t["text"] for t in script)):
             continue
 
         print(f"{label}: {len(script)} lượt nói")
@@ -440,17 +454,44 @@ def backfill_questions(factory: AudioFactory, limit: int | None) -> None:
 _ScriptOwner = Question | QuestionSet
 
 
-def _script_owners(session: Session) -> list[tuple[_ScriptOwner, str]]:
-    """Mọi thứ mang lời thoại, kèm nhãn đọc được để in ra tiến độ."""
+def _script_owners(
+    session: Session, test_slug: str | None = None
+) -> list[tuple[_ScriptOwner, str]]:
+    """Mọi thứ mang lời thoại, kèm nhãn đọc được để in ra tiến độ.
+
+    `test_slug` thu phạm vi về một đề, và nó tồn tại vì `--force`: ép thu lại
+    tốn hàng giờ và không hoàn tác được, nên phải thử được trên một đề trước khi
+    áp cho cả kho.
+    """
+    scope: set[uuid.UUID] | None = None
+    if test_slug is not None:
+        test = session.scalar(select(PracticeTest).where(PracticeTest.slug == test_slug))
+        if test is None:
+            raise SystemExit(f"không có đề nào tên {test_slug!r}")
+        scope = set(
+            session.scalars(
+                select(PracticeTestQuestion.question_id).where(
+                    PracticeTestQuestion.test_id == test.id
+                )
+            ).all()
+        )
+
+    question_where = [Question.audio_script.is_not(None), Question.part.in_((1, 2))]
+    set_where = [QuestionSet.audio_script.is_not(None), QuestionSet.part.in_((3, 4))]
+    if scope is not None:
+        question_where.append(Question.id.in_(scope))
+        # Cụm không trỏ tới đề; đường đi là qua câu thuộc cụm đó.
+        set_where.append(
+            QuestionSet.id.in_(
+                select(Question.set_id).where(Question.id.in_(scope), Question.set_id.is_not(None))
+            )
+        )
+
     questions = session.scalars(
-        select(Question)
-        .where(Question.audio_script.is_not(None), Question.part.in_((1, 2)))
-        .order_by(Question.created_at)
+        select(Question).where(*question_where).order_by(Question.created_at)
     ).all()
     sets = session.scalars(
-        select(QuestionSet)
-        .where(QuestionSet.audio_script.is_not(None), QuestionSet.part.in_((3, 4)))
-        .order_by(QuestionSet.created_at)
+        select(QuestionSet).where(*set_where).order_by(QuestionSet.created_at)
     ).all()
 
     owners: list[tuple[_ScriptOwner, str]] = [(q, f"câu Part {q.part}") for q in questions]
@@ -481,6 +522,7 @@ def run_backfill(
     dry_run: bool = False,
     policy: Policy | None = None,
     settings: ContentSettings | None = None,
+    test_slug: str | None = None,
 ) -> Counts:
     """Một lượt quét đầy đủ. Dùng chung cho CLI và cho worker chạy dài.
 
@@ -505,7 +547,7 @@ def run_backfill(
         if only in (None, "dictation"):
             backfill_dictation(factory, limit, policy)
         if only in (None, "questions"):
-            backfill_questions(factory, limit)
+            backfill_questions(factory, limit, policy, test_slug)
 
         if dry_run:
             session.rollback()
@@ -531,6 +573,10 @@ def main(argv: list[str] | None = None) -> int:
         help="restrict to one kind of content",
     )
     parser.add_argument(
+        "--test",
+        help="chỉ một đề, theo slug (ví dụ tp-form-07); chỉ có nghĩa với --only questions",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="thu lại cả clip đang khớp text (dùng khi đổi giọng hoặc tốc độ đọc)",
@@ -548,6 +594,7 @@ def main(argv: list[str] | None = None) -> int:
         limit=args.limit,
         dry_run=args.dry_run,
         policy=Policy(force=args.force, min_words=args.min_words),
+        test_slug=args.test,
     )
 
     print(f"\n{counts.as_line()}")

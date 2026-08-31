@@ -1,7 +1,7 @@
 [QUESTION]
-voice: ca_female_1
+voice: us_female_1
 How do I register my entry at the security desk?
-voice: us_male_1
+voice: au_male_1
 (A) Just swipe your card and sign the log at the desk.
 (B) Yes, the security desk is on the ground floor.
 (C) About ten minutes, depending on the line.

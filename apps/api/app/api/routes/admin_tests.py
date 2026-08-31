@@ -23,7 +23,12 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import require_role
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.media import LOGICAL_VOICE_ACCENTS, public_audio_url, script_fingerprint
+from app.core.media import (
+    LOGICAL_VOICE_ACCENTS,
+    TOEIC_NARRATORS,
+    public_audio_url,
+    script_fingerprint,
+)
 from app.core.storage import StorageDriver, get_driver
 from app.models import (
     Attempt,
@@ -143,9 +148,16 @@ def list_voices(_: User = Depends(can_edit)) -> list[VoiceOption]:
     `app/content/tts.py` chính vì lúc này: không gì với tới được từ `app.main`
     mà import `app.content` (A4.1).
     """
+    # Dàn narrator lên đầu, theo thứ tự accent. Ô chọn lấy phần tử ĐẦU làm giọng
+    # mặc định cho một lượt mới, nên xếp theo bảng chữ cái là mặc định rơi vào
+    # `au_female_1` — một cặp quốc tịch–giới tính đề thật không có.
+    narrators = set(TOEIC_NARRATORS.values())
     return [
-        VoiceOption(name=name, accent=accent)
-        for name, accent in sorted(LOGICAL_VOICE_ACCENTS.items())
+        VoiceOption(name=name, accent=accent, narrator=name in narrators)
+        for name, accent in sorted(
+            LOGICAL_VOICE_ACCENTS.items(),
+            key=lambda item: (item[0] not in narrators, item[1], item[0]),
+        )
     ]
 
 

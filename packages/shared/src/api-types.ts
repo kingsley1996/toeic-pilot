@@ -7350,6 +7350,8 @@ export interface components {
             accent: string;
             /** Name */
             name: string;
+            /** Narrator */
+            narrator: boolean;
         };
         /** WordDiff */
         WordDiff: {

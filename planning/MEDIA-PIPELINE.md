@@ -95,7 +95,7 @@ Chỉ là ghép chuỗi. **Runtime không gọi object store lần nào** — kh
 ### 3.1 Đầu vào
 
 ```jsonl
-{"text": "invoice", "voices": ["us_female_1", "uk_male_1", "au_female_1", "ca_male_1"]}
+{"text": "invoice", "voices": ["us_female_1", "ca_male_1", "uk_female_1", "au_male_1"]}
 {"text": "The quarterly report is due Friday.", "voice": "us_female_1"}
 ```
 
@@ -105,11 +105,13 @@ Chỉ là ghép chuỗi. **Runtime không gọi object store lần nào** — kh
 
 ```python
 LOGICAL_VOICES = {
-    "us_female_1": LogicalVoice(accent="en-US", edge="en-US-JennyNeural"),
+    "us_female_1": LogicalVoice(accent="en-US", edge="en-US-AvaNeural"),
     "au_male_1":   LogicalVoice(accent="en-AU", edge="en-AU-WilliamMultilingualNeural"),
     ...  # 8 giọng, phủ đủ 4 accent × 2 giới
 }
 ```
+
+Tám giọng là những gì **dùng được**; bốn trong số đó là dàn narrator của đề thật (`TOEIC_NARRATORS`, PHASE2-AUDIO §A4.6) và mọi thứ tự sinh chỉ dùng bốn giọng ấy.
 
 Trong DB và trong hash chỉ có `us_female_1`. ID nhà cung cấp nằm gọn ở đây.
 
