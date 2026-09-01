@@ -23,7 +23,8 @@ from app.api.routes import (
     auth,
     coach,
     health,
-    learning,
+    learning_dictation,
+    learning_vocabulary,
     media,
     oauth,
     pet,
@@ -78,7 +79,8 @@ app.include_router(health.router)
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(oauth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
-app.include_router(learning.router, prefix="/api/v1")
+app.include_router(learning_vocabulary.router, prefix="/api/v1")
+app.include_router(learning_dictation.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")

@@ -16,8 +16,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
-from app.api.routes.learning import _apply_review as apply_review
-from app.api.routes.learning import record_dictation_attempt
+from app.api.routes.learning_dictation import record_dictation_attempt
+from app.api.routes.learning_vocabulary import _apply_review as apply_review
 from app.core.database import get_db
 from app.core.media import public_audio_url
 from app.models import Encounter, PetOwned, PetState, User
