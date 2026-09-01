@@ -35,6 +35,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
 from app.content.exam.blueprint import Blueprint, QuestionSlot
+from app.content.exam.prompts._registry import exam_prompt
 from app.content.exam.writer import MissingBlock, max_tokens_for, save_slot, write_slot
 from app.services.llm.base import LLMRequest
 from app.services.llm.gateway import Gateway
@@ -266,11 +267,7 @@ def _critic_node(gateway: Gateway, tier: Tier) -> Node:
         result = with_backoff(
             lambda: gateway.run(
                 LLMRequest(
-                    system=(
-                        "Bạn là người chấm đề TOEIC. Ô sau đây bị từ chối vì những "
-                        "lý do liệt kê. Viết MỘT đoạn ngắn (tối đa 40 từ) chỉ cho "
-                        "người viết phải sửa gì ở LƯỢT SAU. Không viết lại đề."
-                    ),
+                    system=exam_prompt("critic").render(),
                     user=(
                         "Lý do bị chặn:\n"
                         + "\n".join(f"- {p}" for p in state["problems"])

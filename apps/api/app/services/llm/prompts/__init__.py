@@ -43,8 +43,19 @@ class Prompt:
 
 
 @cache
-def load(name: str) -> Prompt:
-    path = _DIR / f"{name}.md"
+def load(name: str, directory: Path = _DIR) -> Prompt:
+    """Nạp một prompt. `directory` mặc định là sổ đăng ký RUNTIME ở cạnh tệp này.
+
+    Có tham số thư mục vì có hai sổ đăng ký, và chúng cố ý tách nhau
+    (`PROMPT-SYSTEM.md` §0): ở đây là prompt trả lời người học trong một request,
+    còn `app/content/exam/prompts/` là prompt của đường sinh đề ngoài luồng. Gộp
+    một chỗ thì ranh giới ấy — cái quyết định prompt nào ghi `prompt_version` vào
+    `ai_interaction` — thành vô hình.
+
+    Dùng chung lớp `Prompt` thì cả hai được cùng một thứ: phiên bản là hash của
+    nội dung, nên không ai sửa prompt mà quên tăng số.
+    """
+    path = directory / f"{name}.md"
     if not path.is_file():
         raise FileNotFoundError(f"Không có prompt {name!r} tại {path}")
     return Prompt(name, path.read_text(encoding="utf-8").strip())

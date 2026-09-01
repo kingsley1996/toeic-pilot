@@ -10,6 +10,7 @@ from time import perf_counter
 from app.content.exam import blueprint as bp
 from app.content.exam import writer
 from app.content.exam.blueprint import Blueprint
+from app.content.exam.prompts._registry import exam_prompt
 from app.content.exam_cli.paths import _gateway, blueprint_path
 from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
@@ -20,6 +21,11 @@ from app.services.llm.router import Tier
 # vào phần nghĩ TRƯỚC khi in dòng đầu tiên: đo thật với glm-5.3-flash, Part 5 nghĩ
 # 14 912 ký tự và Part 7 nghĩ 15 572 — ở trần 4 000 cả hai không bao giờ tới được
 # dòng bối cảnh nào, và lượt plan lặng lẽ rơi về bảng cấu hình.
+def _numbered(hosts: list[str]) -> str:
+    """Danh sách ràng buộc đánh số, mỗi dòng một ô — thứ tự LÀ ý nghĩa."""
+    return "".join(f"{order}. {host}\n" for order, host in enumerate(hosts, start=1))
+
+
 def _progress(message: str) -> None:
     """Một dòng trạng thái của chặng plan.
 
@@ -49,18 +55,7 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
 
     from app.services.llm.base import LLMRequest
 
-    prompt = (
-        "Viết CHÍNH XÁC sáu dòng, mỗi dòng mô tả một bức ảnh cho Part 1 của đề "
-        "TOEIC (phần mô tả ảnh đơn lẻ). Mỗi dòng đúng định dạng:\n"
-        "question_type|people|mô tả bối cảnh bằng tiếng Việt\n\n"
-        "question_type là MỘT TRONG: PART_1_PERSON_DESCRIPTION, "
-        "PART_1_PERSON_AND_OBJECT_DESCRIPTION, PART_1_OBJECT_OR_SCENE_DESCRIPTION.\n"
-        "people là MỘT TRONG: one, several, none.\n"
-        "Sáu bối cảnh phải KHÁC NHAU rõ rệt (người, nơi chốn, vật thể khác nhau), "
-        "thuộc môi trường công sở/dịch vụ, và tỉ lệ gần đề thật: phần lớn là one "
-        "hoặc several, nhiều nhất một dòng none. Không thêm tiêu đề, không thêm "
-        "dòng nào khác."
-    )
+    prompt = exam_prompt("plan_part1_scenes").render()
     _progress("  part 1: đang sinh 6 bối cảnh ảnh…")
     started = perf_counter()
     result = with_backoff(
@@ -125,17 +120,15 @@ def generate_part_scenes(gateway: Gateway, tier: Tier, part: int, hosts: list[st
         6: "một văn bản dài bốn đoạn, mỗi đoạn một chỗ trống",
         7: "một hoặc nhiều văn bản đọc kèm câu hỏi",
     }[part]
-    prompt = (
-        f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là một bối cảnh {part_hint} cho "
-        f"Part {part} của đề TOEIC. Bối cảnh bằng tiếng Việt, ngắn gọn, mỗi bối "
-        "cảnh KHÁC NHAU rõ rệt (người, nơi chốn, tình huống khác nhau), thuộc môi "
-        "trường công sở/dịch vụ. Không thêm tiêu đề, không thêm dòng nào khác.\n"
-        # Nhãn cấu trúc đã chốt trong bảng `PART*_MIX`; bối cảnh sinh mù thì chọi
-        # với nhãn — ô `PART_3_HOUSING` nhận bối cảnh phỏng vấn tuyển dụng. Và
-        # `topic` đi vào `question_set_label`, nên thống kê theo chủ đề đếm sai
-        # chứ không chỉ đọc lạ.
-        f"Dòng thứ i phải HỢP với ràng buộc thứ i dưới đây:\n"
-        + "".join(f"{order}. {host}\n" for order, host in enumerate(hosts, start=1))
+    prompt = exam_prompt("plan_scenes").render(
+        count=count,
+        part=part,
+        part_hint=part_hint,
+        # Nhãn cấu trúc đã chốt trong bảng `PART*_MIX`; bối cảnh sinh mù thì
+        # chọi với nhãn — ô `PART_3_HOUSING` nhận bối cảnh phỏng vấn tuyển
+        # dụng. Và `topic` đi vào `question_set_label`, nên thống kê theo chủ
+        # đề đếm sai chứ không chỉ đọc lạ.
+        hosts=_numbered(hosts),
     )
     _progress(f"  part {part}: đang sinh {count} bối cảnh…")
     started = perf_counter()
@@ -242,27 +235,15 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int, hosts: list[
     if len(hosts) != count:
         raise ValueError(f"Part {part} cần {count} bối cảnh ô, nhận {len(hosts)}")
     kinds = ", ".join(KINDS)
-    prompt = (
-        f"Viết CHÍNH XÁC {count} dòng, mỗi dòng là BRIEF cho một hình ngữ liệu "
-        f"của Part {part} đề TOEIC (đề tự sinh, không phải đề thi thật).\n"
-        f"Mỗi dòng đúng định dạng `kind: mô tả bằng tiếng Việt`.\n"
-        # Mô tả là ghi chú nội bộ nên viết tiếng Việt; NHÃN thì đi thẳng lên
-        # hình người thi đọc. Không tách hai thứ đó thì brief ghi "nhãn bốn
-        # mục là Phòng tập, Hồ bơi..." và người viết đề chép đúng y lời.
-        f"NHƯNG mọi NHÃN sẽ xuất hiện trên hình — tiêu đề, tên hàng, tiêu đề "
-        f"cột, tên ô — phải viết bằng TIẾNG ANH. Đề TOEIC là bài thi tiếng Anh.\n"
-        f"kind phải là MỘT TRONG: {kinds}.\n"
-        f"Brief phải nói rõ hình gì và BỐN MỤC TRÊN TRỤC ĐÁP ÁN là gì, đủ để vẽ.\n"
-        f"Trục đáp án khác nhau theo từng kind — mô tả sai trục thì hình bị cổng "
-        f"kiểm chặn dù nội dung hợp lý:\n{AXIS_BRIEF}\n"
+    prompt = exam_prompt("plan_graphics").render(
+        count=count,
+        part=part,
+        kinds=kinds,
+        axis_brief=AXIS_BRIEF,
         # Không có danh sách này thì lượt sinh hình mù về ô nó sắp rơi vào, và
         # người viết đề nhận hai yêu cầu không liên quan — đó là cách một hội
         # thoại kho hàng mọc ra câu về số khách bảo tàng.
-        f"MỖI hình phải THUỘC VỀ đúng ô nó đi kèm. Bối cảnh {count} ô, theo đúng "
-        f"thứ tự phải trả lời:\n"
-        + "".join(f"{order}. {host}\n" for order, host in enumerate(hosts, start=1))
-        + f"{count} hình KHÁC NHAU về kind. Không thêm tiêu đề, "
-        f"không thêm dòng nào khác."
+        hosts=_numbered(hosts),
     )
     _progress(f"  part {part}: đang sinh {count} brief hình…")
     started = perf_counter()
