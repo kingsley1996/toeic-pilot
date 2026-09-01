@@ -1,6 +1,6 @@
 # Tách những tệp đã quá dài
 
-**Trạng thái: đợt 1 xong (2026-09-01), đợt 2 và 3 chưa bắt đầu.** Đây là kế
+**Trạng thái: đợt 1 và 2 xong (2026-09-01), đợt 3 chưa bắt đầu.** Đây là kế
 hoạch, không phải bản ghi việc đã làm —
 `ROADMAP.md` vẫn là nơi duy nhất mang trạng thái. Số đo trong tài liệu này lấy
 ngày **2026-09-01** và sẽ mục đi; đo lại trước khi làm.
@@ -112,6 +112,32 @@ công sở phải mở cùng tệp với thuật toán rải giọng, và ngư�
 **`check.py` 1097 → tách theo part** dưới `exam/checks/`, giữ `check.py` làm
 điểm vào. Ba hàm dài nhất — `_check_set` (156 dòng), `check_blueprint` (151),
 `check_graphic` (150) — độc lập nhau.
+
+### 3b. Đã làm — và một chỗ kế hoạch này đoán sai (2026-09-01)
+
+**`blueprint.py` 1332 → `blueprint.py` 756 + `mixes.py` 622.** Đúng như dự tính.
+Ranh giới cuối cùng đặt ở **AI CHỈNH**, không ở "có phải hằng số không":
+`PEOPLE_SHAPES`, `QUESTIONS_PER_SET` và `GRAPHIC_POSITION` ở lại cùng mã, vì
+không ai chỉnh chúng cho một đề khác đi — chúng là bất biến của định dạng mà
+`validate` cưỡng chế, và đổi một cái nghĩa là mã sai chứ không phải đề khác.
+Không tệp nào bên ngoài phải sửa: mọi thứ nơi khác import từ mô-đun này đều nằm
+trong phần ở lại.
+
+**`check.py` 1097 → `check.py` 980 + `check_prompts.py` 168. Và §3 đã đoán sai
+về tệp này.** Kế hoạch nói tách theo part; đo ra thì các phép kiểm **gần như
+không phụ thuộc part** — chỉ 12 nhánh rẽ theo part trên toàn tệp — nên chẻ theo
+part sẽ nhân đôi phần dùng chung thay vì tách được gì. Cái tách được là prompt
+gửi cho mô hình, theo đúng ranh giới "chữ người ta chỉnh" đã dùng cho `mixes.py`.
+
+Nên `check.py` ở lại **980 dòng** và đó là kết quả đúng, không phải việc làm dở:
+§0 nói không tách khi dài mà một mạch, và cả tệp ấy là một mạch — "nội dung sinh
+ra có đạt không". Ép nó thành bốn tệp là làm đúng cái nghi thức thừa mà §0 tồn
+tại để chặn.
+
+**Kiểm.** AST: blueprint 44/44 định nghĩa không đổi, check 41/41 không đổi.
+`pytest` 949 passed. Và phép kiểm §6 cho đợt này: sinh lại **28 blueprint**
+(4 seed × 7 part) trước và sau — băm SHA-256 **giống hệt**, `validate` sạch trên
+cả 28.
 
 ## 4. Đợt 3 — Frontend: kéo component ra khỏi page
 
