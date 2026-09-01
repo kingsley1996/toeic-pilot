@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TOEIC Pilot — Learn TOEIC. See Progress.</title>
+<style>
+  :root{
+    --ink:#18212b;
+    --muted:#697481;
+    --paper:#fbfaf7;
+    --cream:#f4efe5;
+    --orange:#ef6b45;
+    --orange-dark:#d95634;
+    --navy:#243447;
+    --line:#e8e2d8;
+    --white:#fff;
+    --green:#6d9d72;
+    --shadow:0 18px 50px rgba(30,38,48,.10);
+    --radius:24px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+  }
+  a{text-decoration:none;color:inherit}
+  .container{width:min(1160px,calc(100% - 40px));margin:auto}
+  .nav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(251,250,247,.88);backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(232,226,216,.75)
+  }
+  .nav-inner{height:72px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.03em}
+  .brand-mark{
+    width:36px;height:36px;border-radius:11px;background:var(--orange);color:white;
+    display:grid;place-items:center;font-size:19px;box-shadow:0 7px 18px rgba(239,107,69,.25)
+  }
+  .nav-links{display:flex;gap:30px;color:#56616d;font-size:14px;font-weight:650}
+  .nav-cta{padding:11px 17px;background:var(--ink);color:white;border-radius:12px;font-size:14px;font-weight:750}
+  .hero{padding:88px 0 80px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid #e9dfd2;
+    background:#fffaf2;border-radius:999px;color:#8b5c3d;font-size:12px;font-weight:800;
+    text-transform:uppercase;letter-spacing:.08em
+  }
+  h1{font-size:clamp(48px,6vw,76px);line-height:.98;letter-spacing:-.065em;margin:22px 0 24px;max-width:700px}
+  .hero h1 span{color:var(--orange)}
+  .lead{font-size:19px;color:var(--muted);max-width:610px}
+  .actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{padding:14px 20px;border-radius:14px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;gap:9px}
+  .btn-primary{background:var(--orange);color:white;box-shadow:0 10px 24px rgba(239,107,69,.23)}
+  .btn-secondary{border:1px solid var(--line);background:white}
+  .trust{display:flex;gap:22px;margin-top:27px;color:#7a838d;font-size:12px;font-weight:650;flex-wrap:wrap}
+  .trust span::before{content:"✓";color:var(--green);margin-right:7px;font-weight:900}
+
+  .app-window{
+    background:#eef1ef;border:1px solid #dfe4df;border-radius:30px;padding:13px;
+    box-shadow:var(--shadow);transform:rotate(1.1deg)
+  }
+  .app-top{height:36px;display:flex;align-items:center;gap:7px;padding:0 10px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#cbd0cc}
+  .app-body{background:white;border-radius:21px;min-height:450px;padding:22px}
+  .app-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+  .app-title{font-weight:850}
+  .score-pill{background:#fff4ee;color:#c55437;padding:7px 10px;border-radius:10px;font-size:12px;font-weight:800}
+  .dashboard-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+  .card{border:1px solid #ece9e3;border-radius:18px;padding:17px;background:#fff}
+  .progress-card{grid-row:span 2;background:#faf8f4}
+  .small-label{font-size:11px;color:#89929c;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+  .big-score{font-size:42px;font-weight:900;letter-spacing:-.06em;margin:4px 0}
+  .bar{height:9px;border-radius:20px;background:#e9e7e2;overflow:hidden;margin:14px 0 8px}
+  .bar i{display:block;height:100%;width:72%;background:var(--orange);border-radius:20px}
+  .mini-stat{display:flex;justify-content:space-between;font-size:12px;margin:8px 0}
+  .activity{display:flex;gap:11px;align-items:center}
+  .icon-box{width:35px;height:35px;border-radius:10px;background:#f3efe7;display:grid;place-items:center}
+  .activity b{font-size:12px}.activity small{display:block;color:#929aa2;font-size:10px}
+  .section{padding:105px 0}
+  .section.alt{background:var(--cream)}
+  .section-head{max-width:700px;margin-bottom:48px}
+  .kicker{color:var(--orange-dark);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+  h2{font-size:clamp(35px,4vw,52px);line-height:1.04;letter-spacing:-.05em;margin:10px 0 15px}
+  .section-head p{color:var(--muted);font-size:17px}
+  .problem-grid,.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .problem,.feature{
+    background:white;border:1px solid var(--line);border-radius:var(--radius);padding:27px
+  }
+  .problem .num{font-size:13px;color:#9aa19f;font-weight:900}
+  .problem h3,.feature h3{margin:35px 0 8px;font-size:20px;letter-spacing:-.025em}
+  .problem p,.feature p{color:var(--muted);font-size:14px}
+  .feature-icon{width:46px;height:46px;border-radius:14px;background:#fff1eb;display:grid;place-items:center;font-size:21px}
+
+  .loop{display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:center}
+  .loop-visual{
+    border:1px solid var(--line);background:white;border-radius:28px;padding:30px;
+    box-shadow:0 12px 40px rgba(35,45,54,.06)
+  }
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;align-items:center}
+  .flow-item{text-align:center}
+  .flow-box{
+    aspect-ratio:1;border-radius:18px;background:#f8f4ec;border:1px solid #e9e2d6;
+    display:grid;place-items:center;font-size:25px
+  }
+  .flow-item b{display:block;font-size:11px;margin-top:8px}
+  .arrow{font-size:16px;color:#a7acae}
+
+  .showcase{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+  .showcase.reverse .copy{order:2}.showcase.reverse .mock{order:1}
+  .copy h3{font-size:34px;line-height:1.08;letter-spacing:-.04em;margin:9px 0 15px}
+  .copy p{color:var(--muted);font-size:16px}
+  .bullets{display:grid;gap:10px;margin-top:22px}
+  .bullets div{font-size:13px;font-weight:750}.bullets span{color:var(--green);margin-right:8px}
+  .mock{
+    background:#fff;border:1px solid var(--line);border-radius:25px;padding:18px;
+    box-shadow:var(--shadow)
+  }
+  .mock-inner{border:1px solid #ece9e4;border-radius:17px;padding:20px;background:#fcfbf9}
+  .mock-label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:#999}
+  .word{font-size:35px;font-weight:900;letter-spacing:-.05em;margin-top:12px}
+  .phonetic{font-size:12px;color:#8e969e}
+  .definition{margin:18px 0;padding:13px;background:white;border-radius:12px;border:1px solid #eee}
+  .audio{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800}
+  .play{width:35px;height:35px;border-radius:50%;background:var(--orange);color:white;display:grid;place-items:center}
+
+  .dictation-box{background:#243447;color:white;border-radius:20px;padding:25px}
+  .dictation-box .line{height:1px;background:rgba(255,255,255,.13);margin:20px 0}
+  .answer{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);padding:13px;border-radius:11px;color:#b9c1c8;font-size:13px}
+  .answer b{color:white}
+
+  .ai-section{background:#18212b;color:white}
+  .ai-section .section-head p{color:#aeb8c1}
+  .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:center}
+  .pipe{
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);
+    border-radius:18px;padding:20px;min-height:150px
+  }
+  .pipe-num{font-size:11px;color:#9ca8b2;font-weight:900}
+  .pipe h4{margin:32px 0 5px;font-size:15px}.pipe p{font-size:12px;color:#aeb8c1;margin:0}
+  .pipe-arrow{text-align:center;color:#87939d}
+  .expert-note{margin-top:25px;padding:18px 20px;border:1px solid rgba(255,255,255,.12);border-radius:16px;color:#c1c9cf;font-size:13px}
+
+  .pet-section{padding:90px 0}
+  .pet-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:45px;align-items:center}
+  .pet-card{
+    background:#dce8d9;border:1px solid #c7d5c4;border-radius:28px;padding:22px;min-height:350px;
+    position:relative;overflow:hidden
+  }
+  .sun{position:absolute;width:85px;height:85px;border-radius:50%;background:#f5d98a;right:45px;top:35px}
+  .hill{position:absolute;left:-10%;right:-10%;height:180px;bottom:-80px;border-radius:50%;background:#aec5a8}
+  .pet{
+    position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
+    width:105px;height:105px;border-radius:40% 45% 44% 44%;background:#8367b7;
+    box-shadow:inset 0 -9px 0 rgba(0,0,0,.08)
+  }
+  .pet:before,.pet:after{content:"";position:absolute;top:25px;width:11px;height:15px;background:#20252a;border-radius:50%}
+  .pet:before{left:29px}.pet:after{right:29px}
+  .pet .horn1,.pet .horn2{position:absolute;top:-22px;width:22px;height:30px;background:#e8c86e;border-radius:50% 50% 30% 30%}
+  .horn1{left:18px;transform:rotate(-25deg)}.horn2{right:18px;transform:rotate(25deg)}
+  .toggle-demo{position:absolute;right:18px;bottom:18px;background:white;border:1px solid #dce3da;border-radius:12px;padding:10px 12px;font-size:11px;font-weight:800}
+  .pet-layout h3{font-size:38px;line-height:1.05;letter-spacing:-.045em;margin:10px 0}
+
+  .final{text-align:center;padding:105px 0}
+  .final p{max-width:580px;margin:0 auto;color:var(--muted);font-size:17px}
+  .footer{border-top:1px solid var(--line);padding:30px 0;color:#89919a;font-size:12px}
+  .footer-inner{display:flex;justify-content:space-between}
+
+  .pet-toggle{
+    position:fixed;right:22px;bottom:22px;z-index:30;background:var(--ink);color:white;
+    border:0;border-radius:16px;padding:12px 15px;font-weight:800;box-shadow:0 12px 30px rgba(0,0,0,.2);cursor:pointer
+  }
+  .pet-widget{
+    position:fixed;right:22px;bottom:76px;width:285px;background:white;border:1px solid var(--line);
+    border-radius:20px;box-shadow:0 20px 55px rgba(20,30,40,.18);padding:16px;z-index:29;
+    transform:translateY(10px);opacity:0;pointer-events:none;transition:.2s
+  }
+  .pet-widget.open{transform:none;opacity:1;pointer-events:auto}
+  .pet-widget-head{display:flex;justify-content:space-between;align-items:center}
+  .pet-widget h4{margin:0}.ruby{font-size:12px;font-weight:900;color:#b55c42}
+  .pet-mini-world{height:145px;margin-top:13px;border-radius:14px;background:#e2ecdf;position:relative;overflow:hidden}
+  .pet-mini{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:52px}
+  .pet-widget small{color:#858e97;font-size:11px}
+
+  @media(max-width:850px){
+    .nav-links{display:none}
+    .hero-grid,.loop,.showcase,.pet-layout{grid-template-columns:1fr}
+    .showcase.reverse .copy,.showcase.reverse .mock{order:initial}
+    .problem-grid,.feature-grid{grid-template-columns:1fr}
+    .pipeline{grid-template-columns:1fr}
+    .pipe-arrow{transform:rotate(90deg)}
+    .flow{grid-template-columns:1fr}
+    .arrow{transform:rotate(90deg)}
+    .hero{padding-top:55px}
+    .footer-inner{display:block}
+    .footer-inner span{display:block;margin-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="#"><span class="brand-mark">✦</span> TOEIC Pilot</a>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#ai">Content quality</a>
+      <a href="#pets">Pet corner</a>
+    </nav>
+    <a class="nav-cta" href="#start">Start learning</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">TOEIC learning, made engaging</div>
+      <h1>Learn TOEIC.<br><span>See yourself improve.</span></h1>
+      <p class="lead">
+        Build vocabulary, sharpen your listening with dictation, and practice TOEIC Listening & Reading —
+        with a learning system designed to keep you coming back.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#start">Start learning free →</a>
+        <a class="btn btn-secondary" href="#features">Explore the platform</a>
+      </div>
+      <div class="trust">
+        <span>Vocabulary practice</span>
+        <span>Dictation</span>
+        <span>TOEIC LR practice</span>
+      </div>
+    </div>
+
+    <div class="app-window">
+      <div class="app-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+      <div class="app-body">
+        <div class="app-header">
+          <div><div class="small-label">Good evening</div><div class="app-title">Your learning dashboard</div></div>
+          <div class="score-pill">Target 700</div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="card progress-card">
+            <div class="small-label">TOEIC progress</div>
+            <div class="big-score">560 <span style="font-size:14px;color:#8c949c">/ 700</span></div>
+            <div class="bar"><i></i></div>
+            <div class="mini-stat"><span>Listening</span><b>62%</b></div>
+            <div class="mini-stat"><span>Reading</span><b>71%</b></div>
+            <div class="mini-stat"><span>Vocabulary</span><b>438 words</b></div>
+          </div>
+          <div class="card">
+            <div class="small-label">Today</div>
+            <div class="activity" style="margin-top:14px"><div class="icon-box">📚</div><div><b>Vocabulary</b><small>10 min</small></div></div>
+          </div>
+          <div class="card">
+            <div class="small-label">Next up</div>
+            <div class="activity" style="margin-top:14px"><div class="icon-box">🎧</div><div><b>Dictation</b><small>Part 3</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Why TOEIC study fails</div>
+      <h2>Knowing what to study isn't enough.</h2>
+      <p>Most learners don't need another pile of questions. They need a way to practice consistently and know that their effort is moving them forward.</p>
+    </div>
+    <div class="problem-grid">
+      <article class="problem"><div class="num">01</div><h3>Repetition gets boring</h3><p>Vocabulary lists and endless questions can make daily practice feel like a chore.</p></article>
+      <article class="problem"><div class="num">02</div><h3>Motivation fades</h3><p>A target score can feel far away when there is no visible reward for today's effort.</p></article>
+      <article class="problem"><div class="num">03</div><h3>Progress feels unclear</h3><p>You practice a lot, but it is difficult to see which skills are improving and what to do next.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">One learning loop</div>
+      <h2>Learn → practice → progress.</h2>
+      <p>TOEIC Pilot brings your daily study activities into one simple learning loop instead of scattering them across different tools.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-visual">
+        <div class="flow">
+          <div class="flow-item"><div class="flow-box">📚</div><b>Learn</b></div><div class="arrow">→</div>
+          <div class="flow-item"><div class="flow-box">🎧</div><b>Practice</b></div><div class="arrow">→</div>
+          <div class="flow-item"><div class="flow-box">📈</div><b>Progress</b></div>
+        </div>
+        <div style="height:1px;background:#eee8de;margin:25px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#7f8992">
+          <span>Daily practice</span><b style="color:#d65d3b">+ consistency</b>
+        </div>
+      </div>
+      <div>
+        <div class="feature-grid" style="grid-template-columns:1fr 1fr">
+          <article class="feature"><div class="feature-icon">📖</div><h3>Vocabulary</h3><p>Build practical TOEIC vocabulary by topic and review what you struggle with.</p></article>
+          <article class="feature"><div class="feature-icon">🎧</div><h3>Dictation</h3><p>Listen, type what you hear, and train word recognition and listening accuracy.</p></article>
+          <article class="feature"><div class="feature-icon">✏️</div><h3>TOEIC LR</h3><p>Practice Parts 1–7 or sit complete Listening & Reading tests.</p></article>
+          <article class="feature"><div class="feature-icon">🎯</div><h3>Progress</h3><p>Track performance and understand where your next improvement should come from.</p></article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="showcase">
+      <div class="copy">
+        <div class="kicker">Vocabulary</div>
+        <h3>Learn words you can actually use.</h3>
+        <p>Study focused vocabulary with pronunciation, definitions, and practice instead of trying to memorize an endless dictionary.</p>
+        <div class="bullets"><div><span>✓</span>Topic-based vocabulary</div><div><span>✓</span>Audio pronunciation</div><div><span>✓</span>Interactive review</div></div>
+      </div>
+      <div class="mock">
+        <div class="mock-inner">
+          <div class="mock-label">Business · Vocabulary</div>
+          <div class="word">invoice</div><div class="phonetic">/ˈɪnvɔɪs/</div>
+          <div class="definition"><b>noun</b><br><span style="font-size:13px;color:#697481">a document showing goods or services and the amount to be paid</span></div>
+          <div class="audio"><div class="play">▶</div> Listen to pronunciation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="showcase reverse">
+      <div class="copy">
+        <div class="kicker">Dictation</div>
+        <h3>Train your ears, not just your memory.</h3>
+        <p>Hear English, reconstruct the sentence, and find the words your ears still miss.</p>
+        <div class="bullets"><div><span>✓</span>Listening comprehension</div><div><span>✓</span>Word recognition</div><div><span>✓</span>Spelling practice</div></div>
+      </div>
+      <div class="mock">
+        <div class="dictation-box">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9eabb5;font-weight:900">Listen & type</div>
+          <div style="font-size:18px;font-weight:800;margin-top:12px">🎧  Listen carefully</div>
+          <div class="line"></div>
+          <div class="answer">The meeting has been <b>__________</b> for Friday.</div>
+          <div style="margin-top:15px;font-size:11px;color:#9eabb5">Press play again if you need another listen.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="showcase">
+      <div class="copy">
+        <div class="kicker">TOEIC Listening & Reading</div>
+        <h3>Practice with the format you are preparing for.</h3>
+        <p>Move from individual parts to full tests. Practice under time pressure and review your answers with clear explanations.</p>
+        <div class="bullets"><div><span>✓</span>Parts 1–7</div><div><span>✓</span>Timed practice</div><div><span>✓</span>Full Listening & Reading tests</div><div><span>✓</span>Answer explanations</div></div>
+      </div>
+      <div class="mock">
+        <div class="mock-inner">
+          <div style="display:flex;justify-content:space-between"><span class="mock-label">Part 5 · Incomplete sentence</span><b style="font-size:11px">00:37</b></div>
+          <p style="font-weight:750;font-size:16px;margin:20px 0">Customers can monitor the estimated ______ of their shipments.</p>
+          <div style="display:grid;gap:8px">
+            <div class="answer">A. arrival</div><div class="answer">B. arrived</div><div class="answer">C. arriving</div><div class="answer">D. arrive</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section ai-section" id="ai">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker" style="color:#f28a68">Content quality</div>
+      <h2>AI creates. Experts verify.</h2>
+      <p>Our content pipeline is built to generate TOEIC-format practice efficiently while keeping human review in the loop.</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipe"><div class="pipe-num">01</div><h4>TOEIC specification</h4><p>Format, part, difficulty and content requirements are defined first.</p></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe"><div class="pipe-num">02</div><h4>AI generation</h4><p>AI generates complete practice content from the ground up.</p></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe"><div class="pipe-num">03</div><h4>Validation</h4><p>Automated checks validate structure, answers and required fields.</p></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe"><div class="pipe-num">04</div><h4>Expert review</h4><p>English professionals review the generated material before publishing.</p></div>
+    </div>
+    <div class="expert-note">✦ <b>Built for practice, not shortcuts.</b> TOEIC Pilot is an independent preparation platform. Its practice material is designed around the TOEIC test format and is not official ETS content.</div>
+  </div>
+</section>
+
+<section class="pet-section" id="pets">
+  <div class="container pet-layout">
+    <div class="pet-card">
+      <div class="sun"></div>
+      <div class="hill"></div>
+      <div class="pet"><i class="horn1"></i><i class="horn2"></i></div>
+      <div class="toggle-demo">Pet Corner · optional</div>
+    </div>
+    <div>
+      <div class="kicker">A little extra motivation</div>
+      <h3>Your pet lives in the corner — your learning stays center stage.</h3>
+      <p style="color:var(--muted);font-size:16px">
+        The pet system is a small, optional part of the experience. Turn it on when you want a little game-like motivation:
+        complete vocabulary and dictation challenges, earn Ruby, hatch eggs and collect new companions.
+      </p>
+      <div class="bullets"><div><span>✓</span>Optional pet corner</div><div><span>✓</span>Earn Ruby from learning activities</div><div><span>✓</span>Hatch eggs & collect pets</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Built for consistency</div>
+      <h2>Small sessions add up.</h2>
+      <p>Instead of waiting for a perfect two-hour study session, make meaningful progress in the time you actually have.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature"><div class="feature-icon">⏱</div><h3>10–20 minute sessions</h3><p>Fit vocabulary, dictation, or a focused TOEIC practice set into your day.</p></article>
+      <article class="feature"><div class="feature-icon">📊</div><h3>Visible progress</h3><p>Turn practice results into a clearer picture of your strengths and weaknesses.</p></article>
+      <article class="feature"><div class="feature-icon">🔥</div><h3>Keep the habit alive</h3><p>Daily rewards and optional pet progression give you another reason to come back.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="start">
+  <div class="container">
+    <div class="kicker">Ready when you are</div>
+    <h2>Your target score starts<br>with today's practice.</h2>
+    <p>Build your vocabulary. Train your listening. Practice TOEIC. See yourself get better.</p>
+    <div class="actions" style="justify-content:center"><a class="btn btn-primary" href="#">Start learning free →</a></div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>✦ TOEIC Pilot</span>
+    <span>Independent TOEIC preparation platform · Not affiliated with ETS</span>
+  </div>
+</footer>
+
+<button class="pet-toggle" id="petToggle">🐾 Pet Corner</button>
+<div class="pet-widget" id="petWidget">
+  <div class="pet-widget-head"><h4>Your Pet Corner</h4><div class="ruby">◆ 320 Ruby</div></div>
+  <div class="pet-mini-world"><div class="pet-mini">🐉</div></div>
+  <div style="margin-top:12px"><b style="font-size:13px">Keep learning to earn Ruby.</b><br><small>Complete vocabulary & dictation challenges to unlock your next egg.</small></div>
+</div>
+
+<script>
+  const toggle = document.getElementById('petToggle');
+  const widget = document.getElementById('petWidget');
+  toggle.addEventListener('click', () => widget.classList.toggle('open'));
+</script>
+</body>
+</html>

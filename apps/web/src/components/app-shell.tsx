@@ -89,7 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (TOP_BAR_ROUTES.has(pathname)) {
     return (
-      <TopBarShell links={LEARN_LINKS} footer={Footer}>
+      <TopBarShell links={LEARN_LINKS} sectionLabel="Học" footer={Footer}>
         {children}
       </TopBarShell>
     );

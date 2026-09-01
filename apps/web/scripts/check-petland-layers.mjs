@@ -81,15 +81,35 @@ for (const rule of RULES) {
    tệp được biết đường dẫn tới bức tranh. Rải chúng ra là thứ khiến việc thay đổi
    trở thành một cuộc đi tìm. */
 const ASSETS = [
-  { needle: "/mascots/", owner: "src/components/petland-sprite.ts", what: "ảnh mascot" },
-  { needle: "/landscape/", owner: "src/components/petland.tsx", what: "bức tranh bối cảnh" },
+  { needle: "/mascots/", owners: ["src/components/petland-sprite.ts"], what: "ảnh mascot" },
+  {
+    needle: "/landscape/",
+    owners: ["src/components/petland.tsx"],
+    what: "bức tranh bối cảnh",
+  },
 ];
-const files = fs
-  .readdirSync(path.join(root, "src/components"))
-  .filter((f) => /\.tsx?$/.test(f))
-  .map((f) => `src/components/${f}`);
 
-for (const { needle, owner, what } of ASSETS) {
+/*
+ * Quét cả `src/app`, không chỉ `src/components`.
+ *
+ * Bản trước chỉ đọc `src/components`, nên một đường dẫn ảnh viết thẳng trong một
+ * `page.tsx` lọt qua mà không ai biết — đúng chỗ dễ viết nhất, vì trang mới thì
+ * không ai nhớ tới luật này.
+ */
+const files = [];
+for (const dir of ["src/components", "src/app"]) {
+  const stack = [path.join(root, dir)];
+  while (stack.length > 0) {
+    const at = stack.pop();
+    for (const entry of fs.readdirSync(at, { withFileTypes: true })) {
+      const full = path.join(at, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else if (/\.tsx?$/.test(entry.name)) files.push(path.relative(root, full));
+    }
+  }
+}
+
+for (const { needle, owners, what } of ASSETS) {
   const users = files.filter((f) => {
     const src = fs.readFileSync(path.join(root, f), "utf8");
     // Bỏ qua chú thích: nhắc tới đường dẫn trong lời giải thích là chuyện bình thường.
@@ -98,12 +118,14 @@ for (const { needle, owner, what } of ASSETS) {
       .replace(/\/\/.*$/gm, "")
       .includes(needle);
   });
-  const stray = users.filter((f) => f !== owner);
+  const stray = users.filter((f) => !owners.includes(f));
   if (stray.length > 0) {
-    console.error(`✗ ${what} (${needle}) bị tham chiếu ngoài ${owner}: ${stray.join(", ")}`);
+    console.error(
+      `✗ ${what} (${needle}) bị tham chiếu ngoài ${owners.join(", ")}: ${stray.join(", ")}`,
+    );
     bad += 1;
   } else {
-    console.log(`  ${what} chỉ được ${owner.replace("src/components/", "")} biết`);
+    console.log(`  ${what} chỉ được ${owners.map((o) => path.basename(o)).join(" + ")} biết`);
   }
 }
 

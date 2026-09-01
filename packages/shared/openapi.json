@@ -10602,7 +10602,7 @@
     },
     "/api/v1/admin/ai/labels/catalog": {
       "get": {
-        "description": "Mảng trần, không bọc `Page`.\n\nBộ nhãn bị chặn trên bởi chính miền — 72 mã khai báo trong mã nguồn, sinh từ\n`planning/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân\ntrang ở `schemas/common.py`: bọc lại \"cho nhất quán\" bắt giao diện xử lý một\ntrường hợp không thể xảy ra.",
+        "description": "Mảng trần, không bọc `Page`.\n\nBộ nhãn bị chặn trên bởi chính miền — 72 mã khai báo trong mã nguồn, sinh từ\n`planning/docs/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân\ntrang ở `schemas/common.py`: bọc lại \"cho nhất quán\" bắt giao diện xử lý một\ntrường hợp không thể xảy ra.",
         "operationId": "label_catalog_api_v1_admin_ai_labels_catalog_get",
         "responses": {
           "200": {

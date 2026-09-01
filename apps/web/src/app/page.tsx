@@ -1,376 +1,565 @@
 "use client";
 
-import { API_ROUTES, type TopicPublic, type VocabularyPage } from "@toeic-pilot/shared";
+import { API_ROUTES, type VocabularyPage } from "@toeic-pilot/shared";
 import {
-  AudioLines,
+  ArrowRight,
+  BarChart3,
   BookOpen,
-  FileText,
+  Check,
+  Clock,
+  Flame,
   Headphones,
-  Layers,
-  RotateCcw,
-  Keyboard,
+  PawPrint,
+  PencilLine,
+  Target,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { ButtonLink, Panel, Skeleton, cx } from "@/components/ui";
+import { MockPlayer } from "@/components/mock-player";
+import { PetlandCreature, PetlandMap, PetlandSpecies } from "@/components/petland-preview";
+import {
+  DICTATION_DURATION,
+  DictationBox,
+  EXAM_DURATION,
+  ExamQuestion,
+  VOCAB_DURATION,
+  VocabCard,
+} from "@/remotion/mocks";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 
-/**
- * Một lần chấm có thật, dựng sẵn.
- *
- * Hero cho thấy CƠ CHẾ chứ không mô tả nó. Chấm theo từng từ là điều khác biệt
- * nhất của sản phẩm — mọi app khác chỉ nói đúng hay sai cả câu — và không có
- * cách nào giải thích nó nhanh bằng việc nhìn thấy nó một lần.
- *
- * Câu này lấy từ `content/sources/dictation_office_life.jsonl`, và phần chấm là
- * kết quả thật của `app/services/dictation.py` với bài nộp bên dưới. Không bịa.
- */
-const DEMO = {
-  transcript: "The quarterly report is due before the end of the month.",
-  typed: "The quarterly report is do before the end of month.",
-  diff: [
-    { word: "The", op: "match" },
-    { word: "quarterly", op: "match" },
-    { word: "report", op: "match" },
-    { word: "is", op: "match" },
-    { word: "due", op: "missing" },
-    { word: "do", op: "extra" },
-    { word: "before", op: "match" },
-    { word: "the", op: "match" },
-    { word: "end", op: "match" },
-    { word: "of", op: "match" },
-    { word: "the", op: "missing" },
-    { word: "month", op: "match" },
-  ],
-  matched: 9,
-  expected: 11,
-};
-
-const DIFF_STYLE: Record<string, string> = {
-  match: "text-ink",
-  missing: "text-alert line-through decoration-2",
-  extra: "text-warn italic",
-};
-
-const ACCENTS = [
-  { label: "US", dot: "bg-accent-us", name: "Mỹ" },
-  { label: "UK", dot: "bg-accent-uk", name: "Anh" },
-  { label: "AU", dot: "bg-accent-au", name: "Úc" },
-  { label: "CA", dot: "bg-accent-ca", name: "Canada" },
-];
-
 /*
- * Năm bậc tự chấm, đúng thang mà `app/services/srs.py` hiểu. Bày ra ở đây vì
- * bậc thứ năm là thứ phân biệt sản phẩm này với một bộ thẻ lật thường: học viên
- * KHẲNG ĐỊNH đã thuộc, và engine tôn trọng bằng cách nhảy thẳng lên mốc
- * đã-thuộc thay vì bắt chờ ba tuần.
+ * Trang giới thiệu — bố cục VÀ nội dung theo `planning/toeic-pilot-landing.html`,
+ * dịch sang tiếng Việt cho khớp phần còn lại của app dành cho người học.
+ *
+ * **Trang này đứng ngoài design system về hình khối** — bo góc 24px, bóng đổ,
+ * khung cửa sổ nghiêng — nhưng **màu thì theo hệ**: biến `--l-*` ở cuối
+ * `globals.css` chỉ là bí danh trỏ vào token, nên chế độ tối tự đúng.
+ *
+ * Con số duy nhất đọc từ máy chủ là số từ vựng, cắm vào đúng ô mà bản mẫu để
+ * "438 words". Còn lại là số minh hoạ của bản mẫu.
  */
-const GRADES = [
-  { label: "Học lại", bar: "bg-alert" },
-  { label: "Khó", bar: "bg-warn" },
-  { label: "Tốt", bar: "bg-ink-muted" },
-  { label: "Dễ", bar: "bg-action" },
-  { label: "Thành thạo", bar: "bg-ok" },
-];
 
 export default function HomePage() {
   const { status } = useSession();
-  const accuracy = ((DEMO.matched / DEMO.expected) * 100).toFixed(0);
+  const [petOpen, setPetOpen] = useState(false);
+  const [words, setWords] = useState<number | null>(null);
 
-  /*
-   * Số từ và số chủ đề ĐỌC TỪ MÁY CHỦ, không viết cứng vào trang.
-   *
-   * Một trang giới thiệu ghi cứng "300 từ" sẽ đúng đúng một lần rồi sai mãi, và
-   * không có gì báo — cùng kiểu hỏng đã làm bảng số liệu trong ROADMAP lệch hẳn
-   * một chục migration. Hỏng thì ẩn con số đi chứ không rơi về một số đoán.
-   *
-   * Số từ lấy từ `total` của trang đầu tiên, KHÔNG phải tổng `entry_count` của
-   * các chủ đề: `vocabulary_topic` là quan hệ nhiều-nhiều, nên một từ xếp vào
-   * hai chủ đề sẽ được cộng hai lần và trang giới thiệu khoe nhiều từ hơn số
-   * thật. `limit=1` vì chỉ cần con số — cùng luật đã ghi cho `/learn/dictation`.
-   */
-  const [topics, setTopics] = useState<TopicPublic[] | null>(null);
-  const [wordCount, setWordCount] = useState<number | null>(null);
   useEffect(() => {
-    apiFetch<TopicPublic[]>(API_ROUTES.topics)
-      .then(setTopics)
-      .catch(() => {});
+    /*
+     * Số từ lấy từ `total` của trang đầu, KHÔNG phải tổng `entry_count` các chủ
+     * đề: `vocabulary_topic` là quan hệ nhiều-nhiều, nên một từ nằm ở hai chủ đề
+     * sẽ được cộng hai lần và trang này khoe nhiều hơn số thật.
+     */
     apiFetch<VocabularyPage>(`${API_ROUTES.vocabulary}?limit=1`)
-      .then((page) => setWordCount(page.total))
+      .then((p) => setWords(p.total))
       .catch(() => {});
   }, []);
 
+  // Ba trạng thái, không phải hai: `loading` khác `anonymous`, vì localStorage
+  // chưa tồn tại lúc máy chủ dựng trang.
+  const cta =
+    status === "authenticated"
+      ? { href: "/dashboard", label: "Vào học" }
+      : { href: "/register", label: "Bắt đầu miễn phí" };
+
   return (
-    /* Không còn lưới riêng ở đây: nền lưới đã là của TOÀN KHUNG
-       (`components/shell.tsx` → `.grid-backdrop`). Giữ thêm một lớp nữa ở đây
-       sẽ chồng hai lưới lệch pha lên nhau — hai bộ đường kẻ cách nhau vài pixel
-       trông như lỗi render chứ không như một lưới đậm hơn. */
-    <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-16">
-      {/* --- hero ----------------------------------------------------- */}
-      <section className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-        <div>
-          <p className="text-label font-semibold uppercase text-action-ink">
-            Luyện nghe &amp; từ vựng TOEIC
-          </p>
-          <h1 className="mt-3 text-[2rem] leading-[2.5rem] sm:text-[2.5rem] sm:leading-[3rem]">
-            Biết chính xác mình nghe sót từ nào.
-          </h1>
-          <p className="mt-4 max-w-lg text-ink-muted">
-            Không phải đúng hay sai cả câu. Mỗi bài nghe được đối chiếu từng từ với đáp án, nên chỗ
-            hổng hiện ra ở mức từ — chỗ duy nhất sửa được. Từ vựng cũng vậy: lịch ôn bám theo trí
-            nhớ của bạn chứ không theo lịch cố định.
-          </p>
+    <div className="landing">
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="l-hero">
+        <div className="l-container l-hero-grid">
+          <div>
+            <div className="l-eyebrow">Học TOEIC, theo cách dễ theo đuổi</div>
+            <h1>
+              Học TOEIC.
+              <br />
+              <span>Thấy mình tiến bộ.</span>
+            </h1>
+            <p className="l-lead">
+              Xây vốn từ, luyện tai bằng nghe chép chính tả, và làm đề TOEIC Listening &amp; Reading
+              — trong một hệ thống học được dựng để bạn quay lại mỗi ngày.
+            </p>
 
-          {/* Ba trạng thái, không phải hai. Coi "loading" là chưa đăng nhập sẽ
-                hiện "Bắt đầu miễn phí" một nhịp cho người đã đăng nhập rồi mới
-                đổi lại — đúng kiểu lỗi nhấp nháy mà header từng mắc. */}
-          <div className="mt-7 flex flex-wrap gap-2.5">
-            {status === "loading" && (
-              <>
-                <Skeleton className="h-11 w-40" />
-                <Skeleton className="h-11 w-40" />
-              </>
-            )}
-            {status === "authenticated" && (
-              <ButtonLink href="/dashboard" size="lg">
-                Vào học
-              </ButtonLink>
-            )}
-            {status === "anonymous" && (
-              <>
-                <ButtonLink href="/register" size="lg">
-                  Bắt đầu miễn phí
-                </ButtonLink>
-                <ButtonLink href="/login" variant="secondary" size="lg">
-                  Tôi đã có tài khoản
-                </ButtonLink>
-              </>
-            )}
-          </div>
-        </div>
+            <div className="l-actions">
+              {status !== "loading" && (
+                <Link className="l-btn l-btn-primary" href={cta.href}>
+                  {cta.label} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+                </Link>
+              )}
+              <a className="l-btn l-btn-secondary" href="#features">
+                Xem nền tảng
+              </a>
+            </div>
 
-        {/* Mặt đọc của thiết bị: một lần chấm thật. */}
-        <Panel className="overflow-hidden">
-          <div className="flex items-center justify-between border-b border-rule bg-recess px-4 py-2">
-            <span className="flex items-center gap-1.5 text-label font-semibold uppercase text-ink-muted">
-              <Headphones size={12} strokeWidth={2} aria-hidden />
-              Kết quả chấm
-            </span>
-            <span className="font-data text-label uppercase text-ink-faint">theo từng từ</span>
-          </div>
-
-          <div className="px-5 py-5">
-            <p className="text-label font-semibold uppercase text-ink-faint">Bạn đã gõ</p>
-            <p className="mt-1.5 font-data text-small text-ink-muted">{DEMO.typed}</p>
-
-            <p className="mt-5 text-label font-semibold uppercase text-ink-faint">Đối chiếu</p>
-            {/* Hiện ra từng từ, trái sang phải — vì đó chính là cách người ta
-                  nghe lại câu. Khoảnh khắc dàn dựng duy nhất của cả app (§7). */}
-            <p className="mt-1.5 text-subtitle leading-9">
-              {DEMO.diff.map((word, position) => (
-                <span
-                  key={`${word.op}-${position}`}
-                  className={cx("animate-settle", DIFF_STYLE[word.op])}
-                  style={{ animationDelay: `${Math.min(position * 24, 600)}ms` }}
-                >
-                  {word.word}{" "}
+            <div className="l-trust">
+              {["Luyện từ vựng", "Nghe chép chính tả", "Luyện đề TOEIC LR"].map((t) => (
+                <span key={t}>
+                  <Check size={13} strokeWidth={3.5} aria-hidden />
+                  {t}
                 </span>
               ))}
-            </p>
+            </div>
+          </div>
 
-            <div className="mt-5 flex items-end justify-between border-t border-rule pt-4">
-              <div>
-                <p className="text-label font-semibold uppercase text-ink-faint">Độ chính xác</p>
-                <p className="font-data text-readout leading-none text-ink">
-                  {accuracy}
-                  <span className="text-title text-ink-faint">%</span>
-                </p>
+          <div className="l-window">
+            <div className="l-window-top" aria-hidden>
+              <i className="l-dot" />
+              <i className="l-dot" />
+              <i className="l-dot" />
+            </div>
+            <div className="l-window-body">
+              <div className="l-window-head">
+                <div>
+                  <div className="l-label">Chào buổi tối</div>
+                  <div style={{ fontWeight: 800 }}>Bảng học của bạn</div>
+                </div>
+                <span className="l-pill">Mục tiêu 700</span>
               </div>
-              <p className="font-data text-small text-ink-muted">
-                {DEMO.matched}/{DEMO.expected} từ
-              </p>
+
+              <div className="l-dash">
+                <div className="l-card l-card-tall">
+                  <div className="l-label">Tiến độ TOEIC</div>
+                  <div className="l-big">
+                    560 <span>/ 700</span>
+                  </div>
+                  <div className="l-bar">
+                    <i style={{ width: "72%" }} />
+                  </div>
+                  <div className="l-ministat">
+                    <span>Listening</span>
+                    <b>62%</b>
+                  </div>
+                  <div className="l-ministat">
+                    <span>Reading</span>
+                    <b>71%</b>
+                  </div>
+                  {/* Ô duy nhất mang số THẬT: bản mẫu để "438 words" ở đúng đây. */}
+                  {words !== null && (
+                    <div className="l-ministat">
+                      <span>Từ vựng</span>
+                      <b>{words.toLocaleString("vi-VN")} từ</b>
+                    </div>
+                  )}
+                </div>
+
+                <div className="l-card">
+                  <div className="l-label">Hôm nay</div>
+                  <div className="l-activity">
+                    <div className="l-icon-box">
+                      <BookOpen size={17} strokeWidth={1.9} aria-hidden />
+                    </div>
+                    <div>
+                      <b>Từ vựng</b>
+                      <small>10 phút</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="l-card">
+                  <div className="l-label">Tiếp theo</div>
+                  <div className="l-activity">
+                    <div className="l-icon-box">
+                      <Headphones size={17} strokeWidth={1.9} aria-hidden />
+                    </div>
+                    <div>
+                      <b>Nghe chép chính tả</b>
+                      <small>Part 3</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-small text-ink-muted">
-              <span className="flex items-center gap-1.5">
-                <span aria-hidden className="h-2 w-2 bg-ink" /> đúng
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span aria-hidden className="h-2 w-2 bg-alert" /> nghe sót
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span aria-hidden className="h-2 w-2 bg-warn" /> gõ thừa
-              </span>
-            </div>
-          </div>
-        </Panel>
-      </section>
-
-      {/* --- ba khu học ------------------------------------------------ */}
-      {/* Đúng ba mục của thanh điều hướng sau khi đăng nhập. Trang giới thiệu
-            mô tả một cấu trúc khác với cấu trúc thật là dạy sai người dùng ngay
-            trước khi họ bước vào. */}
-      <section className="mt-16 border-t border-rule pt-10">
-        <h2>Ba khu học</h2>
-        {/* KHÔNG nói "chung một hàng đợi": chỉ TỪ VỰNG chạy trên SM-2. Dictation
-              tính theo câu đã làm xong, không có ngày đến hạn — gộp hai thứ vào
-              một câu cho gọn là hứa một cơ chế không tồn tại. */}
-        <p className="mt-2 max-w-2xl text-ink-muted">
-          Từ vựng chạy trên lịch ôn giãn dần và nhớ chỗ bạn đang học dở. Dictation chấm từng từ và
-          đếm câu đã nghe xong. Luyện đề thì đứng riêng: nó đo, không dạy.
-        </p>
-
-        <div className="mt-6 grid gap-px overflow-hidden rounded border border-rule bg-rule sm:grid-cols-3">
-          <div className="bg-panel p-5">
-            <BookOpen size={16} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
-            <h3 className="mt-3">Từ vựng</h3>
-            <p className="mt-1.5 text-small text-ink-muted">
-              Ba cách gặp cùng một từ — gõ lại, thẻ lật, trắc nghiệm — rồi bạn tự chấm mình nhớ tới
-              đâu. Chỗ học dở lưu trên máy chủ, nên đổi máy vẫn đúng chỗ.
-            </p>
-            {/* Con số chỉ hiện khi máy chủ trả lời; hỏng thì mất số, không đoán. */}
-            {wordCount !== null && topics !== null && (
-              <p className="mt-3 font-data text-small tabular-nums text-ink-faint">
-                {wordCount} từ · {topics.length} chủ đề
-              </p>
-            )}
-          </div>
-
-          <div className="bg-panel p-5">
-            <Headphones size={16} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
-            <h3 className="mt-3">Dictation</h3>
-            <p className="mt-1.5 text-small text-ink-muted">
-              Nghe một câu, gõ lại, và nhận đúng bảng đối chiếu ở trên. Bỏ qua hoa thường và dấu câu
-              — cái được chấm là bạn có nghe ra từ đó không.
-            </p>
-          </div>
-
-          <div className="bg-panel p-5">
-            <FileText size={16} strokeWidth={1.75} aria-hidden className="text-ink-muted" />
-            <h3 className="mt-3">Luyện đề</h3>
-            <p className="mt-1.5 text-small text-ink-muted">
-              Làm đề có tính giờ, nộp, rồi xem lại từng câu kèm đáp án đúng. Đồng hồ chạy ở máy chủ,
-              nên đóng tab không phải là cách dừng bài.
-            </p>
           </div>
         </div>
       </section>
 
-      {/* --- bốn giọng -------------------------------------------------- */}
-      <section className="mt-16 border-t border-rule pt-10">
-        <div className="grid gap-8 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div>
-            <h2>Bốn giọng, cho mọi từ</h2>
-            <p className="mt-2 max-w-xl text-ink-muted">
-              Bài nghe TOEIC dùng bốn giọng bản ngữ, và giọng Úc là chỗ nhiều người mất điểm nhất
-              chỉ vì chưa quen. Mỗi từ ở đây đều được đọc bằng cả bốn — kể cả câu ví dụ.
+      {/* ── Vì sao học TOEIC hay thất bại ────────────────────────────────── */}
+      <section className="l-section l-alt">
+        <div className="l-container">
+          <div className="l-head">
+            <div className="l-kicker">Vì sao học TOEIC hay thất bại</div>
+            <h2>Biết phải học gì thôi thì chưa đủ.</h2>
+            <p>
+              Phần lớn người học không cần thêm một đống câu hỏi nữa. Họ cần một cách luyện đều đặn,
+              và một dấu hiệu cho thấy công sức đang đưa mình đi lên.
             </p>
           </div>
-          <div className="flex gap-1.5">
-            {ACCENTS.map((accent) => (
-              <span
-                key={accent.label}
-                title={`Giọng ${accent.name}`}
-                className="inline-flex h-8 items-center gap-1.5 rounded-pill border border-rule-strong px-2.5 text-label font-semibold uppercase text-ink-muted"
-              >
-                <span aria-hidden className={cx("h-1.5 w-1.5 rounded-pill", accent.dot)} />
-                {accent.label}
-              </span>
+          <div className="l-grid-3">
+            {PROBLEMS.map((p, i) => (
+              <article key={p.title} className="l-tile">
+                <div className="l-num">{String(i + 1).padStart(2, "0")}</div>
+                <h3>{p.title}</h3>
+                <p>{p.body}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- lịch ôn ---------------------------------------------------- */}
-      <section className="mt-16 border-t border-rule pt-10">
-        <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
-          <div>
-            <h2>Lịch ôn giãn ra theo trí nhớ của bạn</h2>
-            <p className="mt-2 text-ink-muted">
-              Sau mỗi từ, bạn chọn một trong năm mức. SM-2 dùng chính mức độ chật vật đó để quyết
-              định ngày ôn kế tiếp: 1 ngày, 6 ngày, rồi nhân dần. Nhớ tốt thì từ đó giãn ra và
-              nhường chỗ cho từ khác.
-            </p>
-            <p className="mt-3 text-ink-muted">
-              Bậc thứ năm là lối tắt trung thực: bạn khẳng định đã thuộc, và lịch nhảy thẳng lên mốc
-              đã-thuộc thay vì bắt bạn chờ ba tuần để chứng minh điều mình đã biết.
+      {/* ── Một vòng học ─────────────────────────────────────────────────── */}
+      <section className="l-section" id="features">
+        <div className="l-container">
+          <div className="l-head">
+            <div className="l-kicker">Một vòng học duy nhất</div>
+            <h2>Học → luyện → tiến bộ.</h2>
+            <p>
+              TOEIC Pilot gom các hoạt động học hằng ngày vào một vòng học đơn giản, thay vì rải
+              chúng ra nhiều công cụ khác nhau.
             </p>
           </div>
+          <div className="l-loop">
+            <div className="l-loop-visual">
+              <div className="l-flow">
+                {LOOP.map((s, i) => (
+                  <div key={s.label} className="contents">
+                    {i > 0 && (
+                      <div className="l-arrow" aria-hidden>
+                        <ArrowRight size={16} strokeWidth={2} />
+                      </div>
+                    )}
+                    <div className="l-flow-item">
+                      <div className="l-flow-box">
+                        <s.Icon size={25} strokeWidth={1.6} aria-hidden />
+                      </div>
+                      <b>{s.label}</b>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="l-hr" />
+              <div className="l-loop-foot">
+                <span>Luyện mỗi ngày</span>
+                <b>+ đều đặn</b>
+              </div>
+            </div>
 
-          {/* Cùng dãy nút mà học viên thật sự bấm, không phải một hình minh
-                hoạ vẽ lại. Thứ tự và màu vạch lấy đúng từ `_games.tsx`. */}
-          <Panel className="p-5">
-            <p className="flex items-center gap-1.5 text-label font-semibold uppercase text-ink-faint">
-              <Layers size={12} strokeWidth={2} aria-hidden />
-              Bạn nhớ từ này thế nào?
-            </p>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {GRADES.map((grade, index) => (
-                <span
-                  key={grade.label}
-                  className="flex items-center gap-2.5 rounded border border-rule-strong bg-panel px-2.5 py-2"
-                >
-                  <span aria-hidden className={cx("h-7 w-1 shrink-0", grade.bar)} />
-                  <span className="min-w-0">
-                    <span className="block text-small font-semibold">{grade.label}</span>
-                    <span className="block font-data text-label text-ink-faint">{index + 1}</span>
-                  </span>
-                </span>
+            <div className="l-grid-2">
+              {FEATURES.map((f) => (
+                <article key={f.title} className="l-tile">
+                  <div className="l-feature-icon">
+                    <f.Icon size={21} strokeWidth={1.8} aria-hidden />
+                  </div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </article>
               ))}
             </div>
-            <p className="mt-3 flex items-center gap-2 text-small text-ink-faint">
-              <Keyboard size={14} strokeWidth={1.75} aria-hidden />
-              Bấm phím 1–5, không cần rời tay khỏi bàn phím.
-            </p>
-          </Panel>
+          </div>
         </div>
       </section>
 
-      {/* --- cách một buổi học diễn ra ---------------------------------- */}
-      <section className="mt-16 border-t border-rule pt-10">
-        <h2>Một buổi học, ba bước</h2>
-        <ol className="mt-6 grid gap-px overflow-hidden rounded border border-rule bg-rule sm:grid-cols-3">
-          {[
-            {
-              Icon: RotateCcw,
-              title: "Mở phần đến hạn trước",
-              body: "Trang chủ nói thẳng hôm nay còn bao nhiêu từ tới hạn, và mở đúng vào chúng.",
-            },
-            {
-              Icon: AudioLines,
-              title: "Gặp lại từng từ",
-              body: "Gõ lại, lật thẻ, hoặc chọn nghĩa — cùng một danh sách, ba cách hỏi khác nhau.",
-            },
-            {
-              Icon: Layers,
-              title: "Chấm rồi đi tiếp",
-              body: "Mỗi lần chấm ghi ngay một mốc ôn mới. Bỏ dở giữa chừng cũng không mất chỗ.",
-            },
-          ].map(({ Icon, title, body }, index) => (
-            <li key={title} className="bg-panel p-5">
-              <div className="flex items-center gap-2.5">
-                <span className="font-data text-small text-ink-faint">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <Icon size={16} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
-              </div>
-              <h3 className="mt-3">{title}</h3>
-              <p className="mt-1.5 text-small text-ink-muted">{body}</p>
-            </li>
-          ))}
-        </ol>
+      {/* ── Từ vựng ──────────────────────────────────────────────────────── */}
+      <section className="l-section l-alt">
+        <div className="l-container">
+          <div className="l-showcase">
+            <div className="l-copy">
+              <div className="l-kicker">Từ vựng</div>
+              <h3>Học những từ bạn thật sự dùng được.</h3>
+              <p>
+                Học vốn từ có trọng tâm, kèm phát âm, định nghĩa và phần luyện tập — thay vì cố
+                thuộc lòng một cuốn từ điển không có điểm dừng.
+              </p>
+              <Bullets items={["Từ vựng theo chủ đề", "Phát âm có audio", "Ôn tập tương tác"]} />
+            </div>
+            <div className="l-mock">
+              <MockPlayer
+                component={VocabCard}
+                durationInFrames={VOCAB_DURATION}
+                width={460}
+                height={310}
+              />
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Nói thật về hiện trạng. Một trang giới thiệu hứa nhiều hơn thứ đang
-            có là cách nhanh nhất để mất niềm tin ngay lần dùng đầu tiên. Câu cũ
-            nói "phần luyện đề chưa mở" — nay luồng làm đề đã chạy đầu-cuối, nên
-            thứ còn thiếu là NỘI DUNG chứ không phải tính năng, và câu này phải
-            nói đúng điều đó. */}
-      <p className="mt-12 text-small text-ink-faint">
-        Từ vựng đã đủ để học hằng ngày. Dictation và bộ đề vẫn đang được soạn thêm — luồng làm bài
-        chạy đầy đủ, nhưng số đề còn ít.
-      </p>
+      {/* ── Nghe chép chính tả ───────────────────────────────────────────── */}
+      <section className="l-section">
+        <div className="l-container">
+          <div className="l-showcase l-reverse">
+            <div className="l-copy">
+              <div className="l-kicker">Nghe chép chính tả</div>
+              <h3>Rèn tai, không chỉ rèn trí nhớ.</h3>
+              <p>Nghe tiếng Anh, dựng lại câu, và tìm ra những từ tai bạn vẫn còn bỏ sót.</p>
+              <Bullets items={["Hiểu ý khi nghe", "Nhận mặt từ", "Luyện chính tả"]} />
+            </div>
+            <div className="l-mock">
+              <MockPlayer
+                component={DictationBox}
+                durationInFrames={DICTATION_DURATION}
+                width={460}
+                height={250}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Luyện đề ─────────────────────────────────────────────────────── */}
+      <section className="l-section l-alt">
+        <div className="l-container">
+          <div className="l-showcase">
+            <div className="l-copy">
+              <div className="l-kicker">TOEIC Listening &amp; Reading</div>
+              <h3>Luyện đúng định dạng bạn sắp thi.</h3>
+              <p>
+                Đi từ từng part tới trọn một đề. Luyện dưới áp lực thời gian và xem lại bài làm kèm
+                giải thích rõ ràng.
+              </p>
+              <Bullets
+                items={[
+                  "Part 1 đến Part 7",
+                  "Luyện có tính giờ",
+                  "Trọn đề Listening & Reading",
+                  "Có giải thích đáp án",
+                ]}
+              />
+            </div>
+            <div className="l-mock">
+              <MockPlayer
+                component={ExamQuestion}
+                durationInFrames={EXAM_DURATION}
+                width={460}
+                height={320}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Chất lượng nội dung ──────────────────────────────────────────── */}
+      <section className="l-section l-ai">
+        <div className="l-container">
+          <div className="l-head">
+            <div className="l-kicker">Chất lượng nội dung</div>
+            <h2>Máy sinh. Chuyên gia duyệt.</h2>
+            <p>
+              Quy trình nội dung được dựng để sinh bài luyện đúng định dạng TOEIC một cách hiệu quả,
+              đồng thời luôn giữ người duyệt trong vòng lặp.
+            </p>
+          </div>
+          <div className="l-pipeline">
+            {PIPELINE.map((p, i) => (
+              <div key={p.title} className="contents">
+                {i > 0 && (
+                  <div className="l-pipe-arrow" aria-hidden>
+                    <ArrowRight size={16} strokeWidth={2} />
+                  </div>
+                )}
+                <div className="l-pipe">
+                  <div className="l-num">{String(i + 1).padStart(2, "0")}</div>
+                  <h4>{p.title}</h4>
+                  <p>{p.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="l-note">
+            <b>Dựng để luyện, không phải để đi tắt.</b> TOEIC Pilot là nền tảng luyện thi độc lập.
+            Nội dung luyện tập được xây dựng quanh định dạng đề TOEIC và không phải nội dung chính
+            thức của ETS.
+          </div>
+        </div>
+      </section>
+
+      {/* ── Thú cưng ─────────────────────────────────────────────────────── */}
+      <section className="l-section">
+        <div className="l-container l-pet-layout">
+          <PetlandMap className="l-pet-card" />
+          <div>
+            <div className="l-kicker">Một chút động lực thêm</div>
+            <h3>Con thú sống ở góc màn hình — việc học vẫn ở chính giữa.</h3>
+            <p className="l-pet-lead">
+              Hệ thú cưng là một phần nhỏ và không bắt buộc. Bật lên khi bạn muốn thêm chút động lực
+              kiểu trò chơi: hoàn thành thử thách từ vựng và nghe chép, kiếm Ruby, ấp trứng và sưu
+              tầm bạn đồng hành mới.
+            </p>
+            <Bullets
+              items={[
+                "Góc thú cưng bật tắt tuỳ ý",
+                "Kiếm Ruby từ chính việc học",
+                "Ấp trứng và sưu tầm thú",
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Nói "sưu tầm bạn đồng hành mới" mà không cho xem con nào thì người
+            đọc không biết mình đang được mời sưu tầm cái gì. */}
+        <div className="l-container l-species">
+          <div className="l-tile">
+            <div className="l-label">45 loài, sáu bậc hiếm</div>
+            <div style={{ marginTop: 22 }}>
+              <PetlandSpecies />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Dựng cho sự đều đặn ──────────────────────────────────────────── */}
+      <section className="l-section l-alt">
+        <div className="l-container">
+          <div className="l-head">
+            <div className="l-kicker">Dựng cho sự đều đặn</div>
+            <h2>Những buổi ngắn cộng lại.</h2>
+            <p>
+              Thay vì chờ một buổi học hai tiếng hoàn hảo, hãy tiến bộ thật sự trong khoảng thời
+              gian bạn thật sự có.
+            </p>
+          </div>
+          <div className="l-grid-3">
+            {HABITS.map((h) => (
+              <article key={h.title} className="l-tile">
+                <div className="l-feature-icon">
+                  <h.Icon size={21} strokeWidth={1.8} aria-hidden />
+                </div>
+                <h3>{h.title}</h3>
+                <p>{h.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Kết ──────────────────────────────────────────────────────────── */}
+      <section className="l-final">
+        <div className="l-container">
+          <div className="l-kicker">Sẵn sàng lúc nào cũng được</div>
+          <h2>
+            Điểm mục tiêu của bạn
+            <br />
+            bắt đầu từ buổi luyện hôm nay.
+          </h2>
+          <p>Xây vốn từ. Rèn tai nghe. Luyện đề TOEIC. Và thấy mình khá lên.</p>
+          <div className="l-actions l-center">
+            {status !== "loading" && (
+              <Link className="l-btn l-btn-primary" href={cta.href}>
+                {cta.label} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+              </Link>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Góc thú cưng nổi ─────────────────────────────────────────────── */}
+      {/* Bản mẫu có nút nổi này để xem thử góc thú cưng mà không phải đăng nhập.
+          Giữ nguyên, chỉ thay con rồng emoji bằng sprite thật của trò chơi. */}
+      <button
+        type="button"
+        className="l-pet-toggle"
+        aria-expanded={petOpen}
+        onClick={() => setPetOpen((v) => !v)}
+      >
+        <PawPrint size={15} strokeWidth={2.2} aria-hidden /> Góc thú cưng
+      </button>
+      <div className={petOpen ? "l-pet-widget l-open" : "l-pet-widget"} aria-hidden={!petOpen}>
+        <div className="l-pet-widget-head">
+          <b>Góc thú cưng của bạn</b>
+          <span className="l-ruby">◆ 320 Ruby</span>
+        </div>
+        <div className="l-pet-mini">
+          <PetlandCreature name="Rồng lửa" size={72} />
+        </div>
+        <p className="l-pet-widget-foot">
+          Học tiếp để kiếm Ruby.
+          <small>Hoàn thành thử thách từ vựng và nghe chép để mở quả trứng tiếp theo.</small>
+        </p>
+      </div>
     </div>
   );
 }
+
+function Bullets({ items }: { items: string[] }) {
+  return (
+    <div className="l-bullets">
+      {items.map((b) => (
+        <div key={b}>
+          <Check size={15} strokeWidth={3} aria-hidden />
+          <span>{b}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const PROBLEMS = [
+  {
+    title: "Lặp đi lặp lại thì chán",
+    body: "Danh sách từ vựng và câu hỏi nối nhau khiến việc luyện hằng ngày thành một việc phải làm.",
+  },
+  {
+    title: "Động lực nguội dần",
+    body: "Điểm mục tiêu trông xa vời khi công sức của hôm nay không đổi lấy một phần thưởng nào thấy được.",
+  },
+  {
+    title: "Không rõ mình tiến tới đâu",
+    body: "Bạn luyện rất nhiều, nhưng khó thấy kỹ năng nào đang lên và bước tiếp theo nên là gì.",
+  },
+];
+
+const LOOP = [
+  { label: "Học", Icon: BookOpen },
+  { label: "Luyện", Icon: Headphones },
+  { label: "Tiến bộ", Icon: BarChart3 },
+];
+
+const FEATURES = [
+  {
+    title: "Từ vựng",
+    body: "Xây vốn từ TOEIC thực dụng theo chủ đề và ôn lại đúng những từ bạn hay vấp.",
+    Icon: BookOpen,
+  },
+  {
+    title: "Nghe chép chính tả",
+    body: "Nghe, gõ lại điều bạn nghe được, và rèn khả năng nhận mặt từ cùng độ chính xác khi nghe.",
+    Icon: Headphones,
+  },
+  {
+    title: "TOEIC LR",
+    body: "Luyện từng Part 1–7, hoặc làm trọn một đề Listening & Reading.",
+    Icon: PencilLine,
+  },
+  {
+    title: "Tiến độ",
+    body: "Theo dõi kết quả và hiểu bước tiến tiếp theo nên đến từ đâu.",
+    Icon: Target,
+  },
+];
+
+const PIPELINE = [
+  {
+    title: "Đặc tả TOEIC",
+    body: "Định dạng, part, độ khó và yêu cầu nội dung được xác định trước tiên.",
+  },
+  {
+    title: "Máy sinh nội dung",
+    body: "Máy viết trọn phần nội dung luyện tập từ đầu.",
+  },
+  {
+    title: "Kiểm tự động",
+    body: "Các bước kiểm tự động soi cấu trúc, đáp án và những trường bắt buộc.",
+  },
+  {
+    title: "Chuyên gia duyệt",
+    body: "Người có chuyên môn tiếng Anh đọc lại toàn bộ trước khi xuất bản.",
+  },
+];
+
+const HABITS = [
+  {
+    title: "Buổi 10–20 phút",
+    body: "Nhét vừa từ vựng, nghe chép, hoặc một chặp luyện đề có trọng tâm vào ngày của bạn.",
+    Icon: Clock,
+  },
+  {
+    title: "Tiến độ nhìn thấy được",
+    body: "Biến kết quả luyện tập thành bức tranh rõ hơn về điểm mạnh và điểm yếu.",
+    Icon: BarChart3,
+  },
+  {
+    title: "Giữ thói quen sống",
+    body: "Phần thưởng hằng ngày và hệ thú cưng tuỳ chọn cho bạn thêm một lý do để quay lại.",
+    Icon: Flame,
+  },
+];

@@ -12,13 +12,15 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@remotion/player": "^4.0.519",
     "@toeic-pilot/shared": "workspace:*",
     "@xyflow/react": "^12.11.5",
     "lucide-react": "^1.30.0",
     "next": "16.3.0",
     "pixi.js": "8.14.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.519"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

@@ -17,6 +17,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@remotion/player':
+        specifier: ^4.0.519
+        version: 4.0.519(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@toeic-pilot/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -38,6 +41,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.8(react@19.2.8)
+      remotion:
+        specifier: ^4.0.519
+        version: 4.0.519(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       '@playwright/test':
         specifier: ^1.62.1
@@ -481,6 +487,12 @@ packages:
   '@redocly/openapi-core@1.34.18':
     resolution: {integrity: sha512-UyKIm0wTPw5BcY7Z2PkbK1Ma260um96LSBWXHrdSMe+ZV0EPMyDfAcUcjjm3qEiGST9OK/1TriekdPCZkn4Q3A==}
     engines: {node: '>=18.17.0', npm: '>=9.5.0'}
+
+  '@remotion/player@4.0.519':
+    resolution: {integrity: sha512-wEaQ7SeBHLDUK9CsBzdI/f1EM5nO5EbvkKJX02975ngDXNBDX2gISiVmUs5Va7xMj3P6CuA1p50DaHfYr5WqYw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -1927,6 +1939,12 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
+  remotion@4.0.519:
+    resolution: {integrity: sha512-3jHd4jelS0+ZmWP6fxhM3bbTFiFMEcdVht638ewRa29qxHHfTFg0fIUZyug4pv/4v/16QLBtqiiJTasZyn1K7A==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -2668,6 +2686,12 @@ snapshots:
       yaml-ast-parser: 0.0.43
     transitivePeerDependencies:
       - supports-color
+
+  '@remotion/player@4.0.519(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      remotion: 4.0.519(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
 
   '@rtsao/scc@1.1.0': {}
 
@@ -4267,6 +4291,11 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  remotion@4.0.519(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   require-from-string@2.0.2: {}
 

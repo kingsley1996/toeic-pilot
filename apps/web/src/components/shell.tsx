@@ -508,10 +508,12 @@ export function SidebarShell({
  */
 export function TopBarShell({
   links,
+  sectionLabel,
   children,
   footer,
 }: {
   links: NavItem[];
+  sectionLabel?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
@@ -519,11 +521,36 @@ export function TopBarShell({
   const { status } = useSession();
   const active = activeHref(links, pathname);
 
+  /*
+   * Cùng cách đóng dấu bằng đường dẫn như `SidebarShell` — xem chú thích dài ở
+   * đó về lý do không dùng effect.
+   *
+   * Bộ mục chỉ tồn tại với người ĐÃ đăng nhập, nên nút mở cũng vậy: dựng nó cho
+   * khách vãng lai là một cái nút mở ra khoảng trống. `loading` không phải
+   * `anonymous`, và ở đây nó rơi vào nhánh không-nav — thà thiếu một nhịp còn
+   * hơn dựng nút rồi rút đi ngay trước mắt người dùng.
+   */
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const menuOpen = openedAt === pathname;
+  const hasNav = status === "authenticated";
+
   return (
     <div className="flex min-h-screen flex-col">
       <GridBackdrop />
-      <header className="sticky top-0 z-20 border-b border-rule bg-ground/85 backdrop-blur">
+      {/* `z-30` chứ không `z-20`: ngăn kéo ở `z-20` và đứng sau trong DOM, nên
+          header ngang cơ sẽ bị chính nó phủ mất — cùng nút vừa dùng để mở. */}
+      <header className="sticky top-0 z-30 border-b border-rule bg-ground/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
+          {hasNav && (
+            <IconButton
+              icon={menuOpen ? X : Menu}
+              aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setOpenedAt(menuOpen ? null : pathname)}
+              className="md:hidden"
+            />
+          )}
+
           <Link
             href="/"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
@@ -537,7 +564,7 @@ export function TopBarShell({
             <span className="hidden sm:inline">TOEIC Pilot</span>
           </Link>
 
-          {status === "authenticated" && (
+          {hasNav && (
             <nav className="ml-1 hidden items-center gap-0.5 md:flex">
               {links.map((link) => (
                 <NavLink key={link.href} {...link} active={link.href === active} />
@@ -565,6 +592,25 @@ export function TopBarShell({
           </div>
         </div>
       </header>
+
+      {/*
+       * Dưới `md`, nav ngang biến mất — và trước đây KHÔNG có gì thay nó, nên
+       * người đã đăng nhập đứng ở ba trang này trên điện thoại không còn lối
+       * vào bất cứ phần nào của ứng dụng.
+       *
+       * Dùng lại `SidebarContent`, không viết một menu thứ hai: thêm một mục vào
+       * `LEARN_LINKS` phải hiện ra ở cả hai khung mà không ai phải nhớ.
+       */}
+      {hasNav && menuOpen && (
+        <div className="fixed inset-0 top-16 z-20 bg-ground md:hidden">
+          <SidebarContent
+            links={links}
+            active={active}
+            sectionLabel={sectionLabel}
+            showRole={false}
+          />
+        </div>
+      )}
 
       <main className="flex-1">{children}</main>
       {footer}
