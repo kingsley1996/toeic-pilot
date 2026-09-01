@@ -34,6 +34,10 @@ Three descriptions of *current behaviour* rather than of decisions:
 
 - **`planning/DESIGN-SYSTEM.md`** — the UI design system, **implemented across all of `apps/web`**: contrast-verified colour tokens for light and dark, the three-state theme switch, type (Archivo / Be Vietnam Pro / IBM Plex Mono, all with the `vietnamese` subset), the four-accent categorical scale, Lucide icon rules, component specs. Three rules there are load-bearing and fail quietly: **no `box-shadow`**, **one 4px radius** (the Tailwind scale is replaced, so `rounded-lg` emits nothing), and **`rule-strong` for component boundaries** — `rule` is decorative and does not meet the 3:1 that WCAG 1.4.11 requires of an input border.
 
+One plan not yet started:
+
+- **`planning/REFACTOR-LONG-FILES.md`** — tách tám tệp đã quá dài. Đọc §0 trước: **dài không tự nó là lỗi**, và tiêu chí là lý do ngoài con số — tách khi một tệp trộn những thứ đổi vì lý do khác nhau (dictation và từ vựng chung một router) hoặc trộn dữ liệu người ta chỉnh với mã, không tách khi dài mà một mạch. §5 liệt kê những tệp dài **cố ý không đụng** và vì sao; phần đó dễ bị người đến sau "sửa nốt cho đều". §7 có ba luật khiến việc này an toàn, và luật load-bearing nhất là **chỉ được là phép DỜI** — trộn một bản sửa vào đây làm hỏng đúng tính chất mà các phép kiểm ở §6 dựa vào.
+
 One plan that is half built:
 
 - **`planning/USER-ROAD.md`** — level, badges, avatar frames, XP and daily tasks. **Slices 1 to 3 are built** (ledger, level, daily tasks, and badges), and every number in them is now **admin-editable configuration** rather than a constant (ROADMAP §4w). The avatar-frame *rendering* is not built; neither is `streak_bonus`. ROADMAP §4v carries the status. Read §2.1 before touching it: XP is an append-only `xp_event` ledger rather than a counter on `user_profile`, specifically so that it stays *history* under the rule `profile_stats.py` states, and so that retuning the XP formula later cannot cost anyone a level they already have.

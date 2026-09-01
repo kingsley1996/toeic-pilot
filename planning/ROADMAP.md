@@ -1919,6 +1919,7 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 | Không có đường upload media | `MEDIA-PIPELINE` §10.5 | `AUDIO_SOURCES`/`IMAGE_SOURCES` đã có giá trị `uploaded` — schema hỗ trợ, đường đi chưa xây |
 | Bảng quy đổi là **xấp xỉ** | `score_scale.source_note` | Không phải bảng chính thức của ETS. Cần scale riêng cho từng đề trước khi trình bày như điểm ước lượng chính thức |
 | Chưa có acceptance criteria cho từng Epic | `REVIEW-OPUS.md` §7c | Mục 3–5 ở trên là bước đầu |
+| Tám tệp đã quá dài | `REFACTOR-LONG-FILES.md` | **Đợt 1 xong** (3 router → 6 tệp + 2 mô-đun dùng chung; 145 hàm giống hệt ở mức AST, bề mặt API và hợp đồng không đổi). Đợt 2 và 3 chưa bắt đầu.
 
 ### Đã đóng kể từ lần cập nhật trước
 
