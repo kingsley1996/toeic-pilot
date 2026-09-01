@@ -1,6 +1,6 @@
 # Tách những tệp đã quá dài
 
-**Trạng thái: đợt 1 và 2 xong (2026-09-01), đợt 3 chưa bắt đầu.** Đây là kế
+**Trạng thái: cả ba đợt đã làm (2026-09-01).** Đây là kế
 hoạch, không phải bản ghi việc đã làm —
 `ROADMAP.md` vẫn là nơi duy nhất mang trạng thái. Số đo trong tài liệu này lấy
 ngày **2026-09-01** và sẽ mục đi; đo lại trước khi làm.
@@ -156,6 +156,41 @@ Thứ tự trong đợt này quan trọng, vì độ khó chênh nhau rất xa:
    làm hai commit**: (a) chuyển 7 component con ra ngoài, (b) mới tách state của
    `AdminTestPage` (1 043 dòng). Gộp hai bước là tự bỏ khả năng bisect đúng lúc
    cần nó nhất.
+
+### 4b. Đã làm (2026-09-01)
+
+| Tệp | Trước | Sau |
+|---|---|---|
+| `admin/progression/page.tsx` | 1088 | page 161 + 6 tệp (lớn nhất 283) |
+| `learn/attempts/[attemptId]/page.tsx` | 1190 | page 466 + 7 tệp (lớn nhất 301) |
+| `admin/tests/[slug]/page.tsx` | 1939 | page 829 + 7 tệp (lớn nhất 546) |
+
+Hai tệp đầu là **phép dời thuần** và kiểm được như vậy: 18/18 và 16/16 khai báo
+băm giống hệt sau khi bỏ tiền tố `export` và tiêu đề mới. Chỗ duy nhất lệch là
+`Tally`, nơi prettier xuống dòng tham số vì `export` đẩy quá giới hạn cột và
+thêm một dấu `;` trong type literal.
+
+**Tệp thứ ba không phải phép dời, và đó là lý do nó chia hai commit.** Bước (a)
+đưa bảy component ra ngoài — dời thuần, 16/16 khai báo giống hệt. Bước (b) kéo
+state và handler vào `useTestEditor`, và đó là một **thay đổi cấu trúc**: có
+thêm vỏ hook, một object trả về 49 tên, và một khối destructure.
+
+Chọn hook chứ không chọn thêm component nhận props, vì mọi handler ở đó đều gói
+quanh cùng `run`/`refresh`/`setBusy` — chẻ thành component nghĩa là luồn cả ba
+xuống từng nhánh, tức là tạo thêm đúng loại đường nối mà §6 nói `tsc` không bảo
+vệ được. Hook dời mã mà không tạo đường nối nào: cùng component, cùng thứ tự
+hook, một khối liền mạch. Cái được là **16 định danh không còn với tới JSX**
+(`run`, `refresh`, `setQuestions`, `setError`…), trước nằm chung một phạm vi hơn
+nghìn dòng.
+
+**Phần JSX của tệp đó CỐ Ý để nguyên.** Chẻ nó thành panel cần luồn props, và
+**không spec e2e nào chạm `/admin/tests/[slug]`** — làm mù thì tệ hơn không làm.
+Cùng lý do, `/admin/progression` cũng chỉ có `tsc` + route biên dịch và trả 200
+đứng sau; chỉ màn làm bài là có `e2e/exam.spec.ts` đi qua đúng những component
+vừa tách, và nó xanh.
+
+Nợ để lại, ghi ra thay vì để im: hai trang admin đó không có e2e. Việc tách vừa
+rồi làm chúng dễ viết test hơn, chưa phải là test.
 
 ## 5. Những tệp dài cố ý KHÔNG đụng
 
