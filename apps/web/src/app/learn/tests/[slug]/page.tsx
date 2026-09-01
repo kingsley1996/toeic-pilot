@@ -100,7 +100,14 @@ export default function CollectionPage() {
             {collection.tests.map((test) => (
               <Panel key={test.id} className="flex flex-wrap items-center gap-4 p-4">
                 <div className="min-w-[12rem] flex-1">
-                  <p className="font-semibold">{test.title}</p>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <p className="font-semibold">{test.title}</p>
+                    {/* Mọi đề hiện đều miễn phí — không có trường nào trong
+                        `practice_test` phân biệt trả phí, nên đây là nhãn tĩnh.
+                        Ngày có đề trả phí thì phải thêm cột rồi đọc từ đó, chứ
+                        không được để nhãn này nói dối. */}
+                    <Tag tone="ok">Miễn phí</Tag>
+                  </div>
                   <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-small text-ink-muted">
                     <span className="inline-flex items-center gap-1.5">
                       <FileText size={13} strokeWidth={1.75} aria-hidden />
