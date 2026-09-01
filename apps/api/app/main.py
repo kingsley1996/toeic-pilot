@@ -9,13 +9,14 @@ from fastapi.staticfiles import StaticFiles
 
 from app import models  # noqa: F401 — registers every table on Base.metadata
 from app.api.routes import (
-    admin,
     admin_ai,
+    admin_dictation,
     admin_pet,
     admin_progression,
     admin_ruby,
     admin_system,
     admin_tests,
+    admin_vocabulary,
     appearance,
     assistant,
     attempt,
@@ -85,7 +86,8 @@ app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
 app.include_router(petland_map.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")
-app.include_router(admin.router, prefix="/api/v1")
+app.include_router(admin_vocabulary.router, prefix="/api/v1")
+app.include_router(admin_dictation.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")
 app.include_router(admin_progression.router, prefix="/api/v1")
