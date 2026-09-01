@@ -374,7 +374,7 @@ def label_catalog(_: User = Depends(can_edit)) -> list[FacetCatalog]:
     """Mảng trần, không bọc `Page`.
 
     Bộ nhãn bị chặn trên bởi chính miền — 72 mã khai báo trong mã nguồn, sinh từ
-    `planning/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân
+    `planning/docs/toeic_question_label_taxonomy.md`. Đây là nhóm (A) của luật phân
     trang ở `schemas/common.py`: bọc lại "cho nhất quán" bắt giao diện xử lý một
     trường hợp không thể xảy ra.
     """

@@ -5,7 +5,7 @@
  * cùng một cái hộp có viền cả chục lần, mỗi lần khác nhau một chút — và một
  * thiết kế được quyết định lại ở từng trang thì không phải là thiết kế.
  *
- * Quy tắc hình thức nằm ở planning/DESIGN-SYSTEM.md. Ba điều dễ phá nhất:
+ * Quy tắc hình thức nằm ở planning/docs/DESIGN-SYSTEM.md. Ba điều dễ phá nhất:
  *   §6.3  KHÔNG đổ bóng. Độ nổi là viền + bậc nền.
  *   §6.2  MỘT bán kính (4px). `rounded-lg`/`rounded-xl` không còn sinh ra CSS.
  *   §11   Ranh giới component dùng `rule-strong`, không phải `rule`.

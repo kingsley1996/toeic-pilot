@@ -1,5 +1,11 @@
 # Pipeline sinh đề TOEIC 200 câu
 
+> **LƯU TRỮ.** Tệp này được ghim theo commit nó được viết và **không cập nhật**.
+> Giữ lại vì lý do đằng sau vẫn đọc được, không phải vì nội dung còn đúng.
+> Trạng thái thật: `planning/docs/ROADMAP.md`. Hành vi hiện tại: xem chỉ mục ở `CLAUDE.md`.
+
+> Thay bằng `EXAM-GENERATION-RUNBOOK.md` — cùng các chặng, mới hơn, có cả bước lên production.
+
 **Trạng thái:** ✅ ĐÃ CHẠY HẾT ĐƯỜNG · cập nhật 2026-08-24
 **Nguồn:** `app/content/generate_exam.py` + `app/content/exam/*.py`
 **Đối chiếu:** đề `tp-form-06` — 200 câu, 54 clip audio (`source=tts`), 6 ảnh Part 1 (`license=generated`), 16 hình ngữ liệu vẽ từ dữ liệu.

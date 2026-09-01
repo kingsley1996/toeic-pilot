@@ -1,4 +1,4 @@
-"""Sinh trọn một đề TOEIC — kế hoạch ở `planning/generate-full-toeic.md`.
+"""Sinh trọn một đề TOEIC — kế hoạch ở `planning/archive/generate-full-toeic.md`.
 
 Bốn chặng, mỗi chặng một hiện vật trên đĩa:
 

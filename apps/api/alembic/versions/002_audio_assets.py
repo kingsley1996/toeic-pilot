@@ -1,6 +1,6 @@
 """Audio assets.
 
-Content-addressed store of synthesised audio. See planning/PHASE2-AUDIO.md.
+Content-addressed store of synthesised audio. See planning/docs/PHASE2-AUDIO.md.
 """
 
 from typing import Sequence, Union

@@ -5,7 +5,7 @@ Pure stdlib on purpose. Both the runtime API and the offline content pipeline
 helpers, so they sit in `core` where either side can import them without
 dragging in a dependency the other does not have.
 
-See `planning/PHASE2-AUDIO.md` A4.2 and A4.3 for why the hash is built the way
+See `planning/docs/PHASE2-AUDIO.md` A4.2 and A4.3 for why the hash is built the way
 it is; both invariants are easy to break and neither breaks loudly.
 """
 

@@ -221,7 +221,7 @@ jobs:
           retention-days: 7
 
   contract:
-    # Guards against the drift in planning/REVIEW-OPUS.md P1-4: shared TypeScript
+    # Guards against the drift in planning/docs/REVIEW-OPUS.md P1-4: shared TypeScript
     # types must stay generated from the API's OpenAPI schema, never hand-edited.
     runs-on: ubuntu-latest
     steps:

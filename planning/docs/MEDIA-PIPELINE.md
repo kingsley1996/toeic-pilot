@@ -6,8 +6,8 @@
 Tài liệu này trả lời **"nó hoạt động thế nào"** và **"chỗ nào yếu"**. Câu hỏi **"vì sao lại thiết kế thế"** đã có chỗ khác trả lời, và tài liệu này cố ý không lặp lại:
 
 - [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A — quyết định kiến trúc audio (đây là ADR-002)
-- [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md) — quyết định về ảnh
-- [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) — nơi media gắn vào schema domain
+- [`ADR-004-IMAGES.md`](../adr/ADR-004-IMAGES.md) — quyết định về ảnh
+- [`ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md) — nơi media gắn vào schema domain
 
 Khi hai bên mâu thuẫn, **các ADR đúng** — đó là bản ghi quyết định; tài liệu này chỉ mô tả hiện trạng và sẽ lỗi thời trước.
 

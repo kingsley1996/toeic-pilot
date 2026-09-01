@@ -6,7 +6,7 @@ thích: `app/content/**` nằm sau extra `content`, còn ảnh production đư�
 làm container không khởi động được, và `tests/test_content_isolation.py` bắt
 đúng lỗi này trong một giây.
 
-Quyết định đầy đủ: `planning/ADR-006-MEDIA-UPLOAD.md`. Ba điều dễ phá nhất:
+Quyết định đầy đủ: `planning/adr/ADR-006-MEDIA-UPLOAD.md`. Ba điều dễ phá nhất:
 
   §2.3  File KHÔNG đi qua FastAPI, cả chiều lên lẫn chiều xuống.
   §2.3  Bước xác nhận phải hỏi lại nhà cung cấp, không tin lời trình duyệt.

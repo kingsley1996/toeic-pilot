@@ -210,8 +210,8 @@ Current progress, the sprint plan and the open task list live in one place:
 **→ [`ROADMAP.md`](ROADMAP.md)**
 
 Architecture decisions and their reasoning live in the ADRs:
-[`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) ·
+[`ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md) ·
 [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) (audio, ADR-002) ·
-[`ADR-004-IMAGES.md`](ADR-004-IMAGES.md) ·
-[`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md)
+[`ADR-004-IMAGES.md`](../adr/ADR-004-IMAGES.md) ·
+[`ADR-005-CONTENT-TOOLING.md`](../adr/ADR-005-CONTENT-TOOLING.md)
 

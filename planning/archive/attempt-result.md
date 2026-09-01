@@ -1,10 +1,16 @@
 # Trang phân tích kết quả bài thi — cần gì để dựng thật
 
+> **LƯU TRỮ.** Tệp này được ghim theo commit nó được viết và **không cập nhật**.
+> Giữ lại vì lý do đằng sau vẫn đọc được, không phải vì nội dung còn đúng.
+> Trạng thái thật: `planning/docs/ROADMAP.md`. Hành vi hiện tại: xem chỉ mục ở `CLAUDE.md`.
+
+> Bản KẾ HOẠCH cho màn kết quả, nay đã dựng.
+
 **Trạng thái:** 📋 KẾ HOẠCH, chưa code · lập 2026-08-23
 **Phạm vi:** biến `/preview/attempt-result` từ một trang xem trước thành màn kết quả thật của một lượt làm bài.
 **Đối chiếu:** bản preview đã được nạp **số đo thật** của lượt `f21ba732` (đề `tp-form-06`, 200 câu, 730 điểm), nên mọi khoảng trống nêu dưới đây là thứ đã thử dựng và không dựng được, chứ không phải phỏng đoán.
 
-> Tài liệu này là **kế hoạch**. Khi code xong, trạng thái đi về [`ROADMAP.md`](ROADMAP.md); phần lý do ở lại đây.
+> Tài liệu này là **kế hoạch**. Khi code xong, trạng thái đi về [`ROADMAP.md`](../docs/ROADMAP.md); phần lý do ở lại đây.
 
 ---
 

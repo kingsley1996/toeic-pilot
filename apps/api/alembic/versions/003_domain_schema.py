@@ -1,6 +1,6 @@
 """Domain schema for Learning Hub and TOEIC Practice.
 
-Implements planning/ADR-001-DATA-MODEL.md Part B. Thirteen tables in one
+Implements planning/adr/ADR-001-DATA-MODEL.md Part B. Thirteen tables in one
 revision because they only make sense together: a question without its options
 and its set is not a question.
 

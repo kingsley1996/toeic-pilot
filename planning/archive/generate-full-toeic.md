@@ -1,20 +1,26 @@
 # Sinh trọn một đề TOEIC 200 câu — kể cả audio và ảnh
 
+> **LƯU TRỮ.** Tệp này được ghim theo commit nó được viết và **không cập nhật**.
+> Giữ lại vì lý do đằng sau vẫn đọc được, không phải vì nội dung còn đúng.
+> Trạng thái thật: `planning/docs/ROADMAP.md`. Hành vi hiện tại: xem chỉ mục ở `CLAUDE.md`.
+
+> Bản KẾ HOẠCH của thứ nay đã code xong. Hành vi thật: `EXAM-GRAPH.md`; thao tác: `EXAM-GENERATION-RUNBOOK.md`.
+
 **Trạng thái:** 📋 KẾ HOẠCH, chưa code · lập 2026-08-22
 **Phạm vi:** từ một dòng lệnh tới một đề đầy đủ nằm trong database ở trạng thái `draft`, đủ để một người duyệt rồi bấm publish.
 
-> Tài liệu này là **kế hoạch**, không phải bản ghi hiện trạng. Khi code xong, trạng thái đi về [`ROADMAP.md`](ROADMAP.md); phần lý do ở lại đây.
+> Tài liệu này là **kế hoạch**, không phải bản ghi hiện trạng. Khi code xong, trạng thái đi về [`ROADMAP.md`](../docs/ROADMAP.md); phần lý do ở lại đây.
 
 ---
 
 ## 0. Vì sao cần, và vì sao bây giờ
 
-Nội dung là nút thắt lớn nhất của dự án và đã là như thế suốt nhiều sprint: **55 câu hỏi trên 2 đề**, 34 câu có giải thích. Công cụ soạn đã xong từ lâu ([ADR-005](ADR-005-CONTENT-TOOLING.md), [ADR-007](ADR-007-TEST-AUTHORING.md)) — dán, kiểm, commit, gắn media, publish. Cái thiếu không phải công cụ mà là **người ngồi viết 200 câu**.
+Nội dung là nút thắt lớn nhất của dự án và đã là như thế suốt nhiều sprint: **55 câu hỏi trên 2 đề**, 34 câu có giải thích. Công cụ soạn đã xong từ lâu ([ADR-005](../adr/ADR-005-CONTENT-TOOLING.md), [ADR-007](../adr/ADR-007-TEST-AUTHORING.md)) — dán, kiểm, commit, gắn media, publish. Cái thiếu không phải công cụ mà là **người ngồi viết 200 câu**.
 
 Ba mảnh vừa xuất hiện làm việc này khả thi mà trước đây thì không:
 
 - **Đường dán đã chặt chẽ.** `parse_listening_part` / `parse_reading_part` cộng `validate_question` bắt được câu thiếu đáp án, sai số lựa chọn, sai part, in nhầm đề bài của Part 1–2. Nghĩa là có một **cổng kiểm không cần người** đứng giữa "một mớ chữ" và database.
-- **Audio nhiều giọng đã chạy.** `audio_join.py` ghép hội thoại nhiều lượt thành một clip ([MEDIA-PIPELINE](MEDIA-PIPELINE.md) §10.2), nên Part 3 và Part 4 — 69 câu, phần lớn nhất của bài nghe — không còn là vật cản.
+- **Audio nhiều giọng đã chạy.** `audio_join.py` ghép hội thoại nhiều lượt thành một clip ([MEDIA-PIPELINE](../docs/MEDIA-PIPELINE.md) §10.2), nên Part 3 và Part 4 — 69 câu, phần lớn nhất của bài nghe — không còn là vật cản.
 - **Sinh ảnh tại máy đã đo được.** Bộ `agent-sprite-forge` chạy `flux2-klein-4b-4bit` qua mflux: **~2,5 phút một tấm, đỉnh 12,37 GB RAM** trên máy M2 16 GB. Đủ cho ảnh Part 1 và biểu đồ Part 3/4 mà không cần đi xin phép ai.
 
 ---
@@ -100,7 +106,7 @@ Một tệp JSON tả *cái đề sẽ là gì*, do người viết hoặc do m�
 Vì sao blueprint đứng riêng thay vì để mô hình tự quyết:
 
 - **Mô hình viết câu hỏi giỏi hơn nhiều so với thiết kế đề.** Bảo nó "sinh Part 3" thì 13 hội thoại sẽ trôi về cùng một chủ đề văn phòng và cùng một dạng câu hỏi, vì đó là vùng xác suất cao nhất. Phân bố chủ đề và dạng câu là quyết định của người ra đề.
-- **Nhãn được quyết định trước, không gắn sau.** Taxonomy có **72 mã trên 6 facet** ([`toeic_question_label_taxonomy.md`](toeic_question_label_taxonomy.md)), và `enrich_skills.py` hiện gắn nhãn *sau khi* câu đã tồn tại. Với đề tự sinh thì ngược lại rẻ hơn và đúng hơn: yêu cầu mô hình viết một câu *thuộc* nhãn đã chọn, rồi dùng `enrich_skills` như **bước đối chiếu** — nó đọc câu và đoán nhãn; đoán khác blueprint là dấu hiệu câu viết chưa đúng dạng, không phải nhãn sai.
+- **Nhãn được quyết định trước, không gắn sau.** Taxonomy có **72 mã trên 6 facet** ([`toeic_question_label_taxonomy.md`](../docs/toeic_question_label_taxonomy.md)), và `enrich_skills.py` hiện gắn nhãn *sau khi* câu đã tồn tại. Với đề tự sinh thì ngược lại rẻ hơn và đúng hơn: yêu cầu mô hình viết một câu *thuộc* nhãn đã chọn, rồi dùng `enrich_skills` như **bước đối chiếu** — nó đọc câu và đoán nhãn; đoán khác blueprint là dấu hiệu câu viết chưa đúng dạng, không phải nhãn sai.
 - **Giọng đọc và số người nói cố định trước.** `audio_join` cần biết ai nói lượt nào; và một clip mà các lượt trộn accent **phải khai `accent`**, vì cột chỉ giữ đúng một giá trị.
 - **`seed` để chạy lại ra cùng bố cục.** Cùng câu chữ thì không — mô hình không tất định, và giả vờ nó tất định là tự lừa mình.
 
@@ -160,7 +166,7 @@ Sinh tệp spec cho `app.content.generate` đúng hai hình dạng nó đã bi�
 - **Part 1, Part 2** — một câu một clip. Part 2 là `turns`: lời hỏi một giọng, ba câu đáp một giọng khác, ghép liền.
 - **Part 3, Part 4** — `turns` cho cả hội thoại/bài nói, `gap_ms` giữa các lượt.
 
-Ba thứ đã đo được và sẽ cắn nếu quên ([MEDIA-PIPELINE](MEDIA-PIPELINE.md) §10.2):
+Ba thứ đã đo được và sẽ cắn nếu quên ([MEDIA-PIPELINE](../docs/MEDIA-PIPELINE.md) §10.2):
 
 - `gap_ms` là khoảng lặng **cộng thêm** vào ~1,1 giây mà edge-tts đã tự chèn ở mỗi ranh giới lượt. Đặt 800 không cho ra 0,8 giây.
 - Clip trộn accent **phải khai `accent`**, vì cột chỉ giữ một giá trị.
@@ -174,7 +180,7 @@ Trước một lượt lớn: chạy `TOEIC_ALLOW_EXTERNAL_TTS=1 uv run pytest -
 
 ## 8. Chặng 5 — Ảnh: sinh, không đi xin
 
-[ADR-004](ADR-004-IMAGES.md) chọn *lấy ảnh có giấy phép mở từ kho công cộng*, và lý do vẫn đúng nguyên văn cho ảnh đi mượn: giấy phép và ghi công là bắt buộc. **Đề tự sinh đảo ngược bài toán**, và đây là điểm mới của kế hoạch này:
+[ADR-004](../adr/ADR-004-IMAGES.md) chọn *lấy ảnh có giấy phép mở từ kho công cộng*, và lý do vẫn đúng nguyên văn cho ảnh đi mượn: giấy phép và ghi công là bắt buộc. **Đề tự sinh đảo ngược bài toán**, và đây là điểm mới của kế hoạch này:
 
 - Với ảnh mượn, ta phải **tìm được** một tấm mà bốn câu mô tả viết được về nó — nên §4 của ADR-004 nói đúng rằng cần người quyết định.
 - Với ảnh sinh, ta **viết bốn câu trước, rồi vẽ tấm ảnh khớp với chúng**. Chiều phụ thuộc đảo lại, và cái khó biến mất.
@@ -264,7 +270,7 @@ Chạy lại lệnh là tìm thấy ít việc hơn. Đó là toàn bộ cơ ch�
 - **Không sinh thẳng vào database.** Xem §2.4.
 - **Không tự publish.** Đề tự sinh vào thẳng tay người học mà không ai đọc là cách nhanh nhất để mất niềm tin, và niềm tin không lấy lại được bằng một bản vá.
 - **Không có bảng job.** Xem §11.
-- **Không sinh giải thích ở chặng 2.** Giải thích cho câu sai đã có đường riêng trong tầng AI và **tính toán một lần cho mọi người học** ([AI-ENGINEERING-PLAN](AI-ENGINEERING-PLAN.md) §3). Nhồi vào đây là dựng bản thứ hai của cùng một thứ. *(Ngoại lệ: dòng `Explanation:` trong định dạng dán vẫn nhận, vì mô hình viết câu hỏi là chỗ biết rõ nhất vì sao đáp án đúng.)*
+- **Không sinh giải thích ở chặng 2.** Giải thích cho câu sai đã có đường riêng trong tầng AI và **tính toán một lần cho mọi người học** ([AI-ENGINEERING-PLAN](../docs/AI-ENGINEERING-PLAN.md) §3). Nhồi vào đây là dựng bản thứ hai của cùng một thứ. *(Ngoại lệ: dòng `Explanation:` trong định dạng dán vẫn nhận, vì mô hình viết câu hỏi là chỗ biết rõ nhất vì sao đáp án đúng.)*
 - **Không đụng vào `scoring.py`.** Bảng quy đổi là dữ liệu; sửa mã để "đoán" điểm cho đề mới là đúng thứ §9 cấm.
 
 ---

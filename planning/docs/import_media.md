@@ -1,7 +1,7 @@
 # Nhập audio và ảnh có sẵn vào một đề
 
 Sổ tay thao tác cho `app/content/import_media.py`. Quyết định và lý do nằm ở
-[`ADR-007-TEST-AUTHORING.md`](ADR-007-TEST-AUTHORING.md) §2.4 và §2.7; file này
+[`ADR-007-TEST-AUTHORING.md`](../adr/ADR-007-TEST-AUTHORING.md) §2.4 và §2.7; file này
 chỉ trả lời "đặt tên thế nào và gõ lệnh gì".
 
 ---

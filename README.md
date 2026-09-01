@@ -25,7 +25,7 @@ Measured on `main` (2026-08-21): 38 tables across 29 migrations · 106 API paths
 / 131 operations · 637 backend tests · 36 front-end routes.
 
 What it is **not** yet: there is no RAG layer. That decision is written up in
-[`planning/ADR-003-AI-LAYER.md`](planning/ADR-003-AI-LAYER.md) and it is blocked
+[`planning/adr/ADR-003-AI-LAYER.md`](planning/adr/ADR-003-AI-LAYER.md) and it is blocked
 by content rather than engineering.
 
 ## Stack
@@ -122,22 +122,22 @@ planning/         product spec, ADRs, architecture and the single tracker
 
 | File | What it is |
 |---|---|
-| [`PLAN.md`](planning/PLAN.md) | Product spec — the source of truth for scope |
-| [`ROADMAP.md`](planning/ROADMAP.md) | The single tracker: sprints, real status, what each cost |
-| [`ARCHITECTURE.md`](planning/ARCHITECTURE.md) | What the system is made of right now |
-| [`DESIGN-SYSTEM.md`](planning/DESIGN-SYSTEM.md) | UI tokens, type, components — implemented across `apps/web` |
-| [`MEDIA-PIPELINE.md`](planning/MEDIA-PIPELINE.md) | How audio and images work end to end, and where they are weak |
-| [`ADR-008-AUTH-PROVIDERS.md`](planning/ADR-008-AUTH-PROVIDERS.md) | Sign-in with Google and Apple: the flow, the linking rule, and how to get credentials |
-| [`USER-ROAD.md`](planning/USER-ROAD.md) | Levels, XP, daily tasks, badges and avatar frames — built, configurable at `/admin/progression` |
+| [`PLAN.md`](planning/docs/PLAN.md) | Product spec — the source of truth for scope |
+| [`ROADMAP.md`](planning/docs/ROADMAP.md) | The single tracker: sprints, real status, what each cost |
+| [`ARCHITECTURE.md`](planning/docs/SYSTEM-OVERVIEW.md) | What the system is made of right now |
+| [`DESIGN-SYSTEM.md`](planning/docs/DESIGN-SYSTEM.md) | UI tokens, type, components — implemented across `apps/web` |
+| [`MEDIA-PIPELINE.md`](planning/docs/MEDIA-PIPELINE.md) | How audio and images work end to end, and where they are weak |
+| [`ADR-008-AUTH-PROVIDERS.md`](planning/adr/ADR-008-AUTH-PROVIDERS.md) | Sign-in with Google and Apple: the flow, the linking rule, and how to get credentials |
+| [`USER-ROAD.md`](planning/docs/USER-ROAD.md) | Levels, XP, daily tasks, badges and avatar frames — built, configurable at `/admin/progression` |
 
 Decisions and their reasoning live in the ADRs: the domain schema
-([ADR-001](planning/ADR-001-DATA-MODEL.md)), audio
-([PHASE2-AUDIO](planning/PHASE2-AUDIO.md), which is ADR-002), the AI layer
-([ADR-003](planning/ADR-003-AI-LAYER.md)), images
-([ADR-004](planning/ADR-004-IMAGES.md)), content tooling
-([ADR-005](planning/ADR-005-CONTENT-TOOLING.md)), media upload
-([ADR-006](planning/ADR-006-MEDIA-UPLOAD.md)) and test authoring
-([ADR-007](planning/ADR-007-TEST-AUTHORING.md)).
+([ADR-001](planning/adr/ADR-001-DATA-MODEL.md)), audio
+([PHASE2-AUDIO](planning/docs/PHASE2-AUDIO.md), which is ADR-002), the AI layer
+([ADR-003](planning/adr/ADR-003-AI-LAYER.md)), images
+([ADR-004](planning/adr/ADR-004-IMAGES.md)), content tooling
+([ADR-005](planning/adr/ADR-005-CONTENT-TOOLING.md)), media upload
+([ADR-006](planning/adr/ADR-006-MEDIA-UPLOAD.md)) and test authoring
+([ADR-007](planning/adr/ADR-007-TEST-AUTHORING.md)).
 
 `CLAUDE.md` at the repo root is written for coding agents. It repeats a lot of
 the above in a denser form, with an emphasis on the failure modes that are
@@ -161,4 +161,4 @@ gate.
 
 Not yet chosen. Practice-test content carries its own provenance per row —
 `question.source` is NOT NULL and distinguishes material written to the format
-from material actually licensed. See [ADR-001](planning/ADR-001-DATA-MODEL.md).
+from material actually licensed. See [ADR-001](planning/adr/ADR-001-DATA-MODEL.md).

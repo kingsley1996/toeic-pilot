@@ -1,6 +1,6 @@
 # ADR-007 — Đường đưa một đề thi vào hệ thống
 
-> **Trạng thái:** đã quyết 2026-08-10, sửa thứ tự §2.7 cùng ngày, sửa cách phát hiện lệch 2026-08-11 (xem §2.7) · **Thay thế:** không · **Liên quan:** [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) §A2/§B4, [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md), [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md), [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) §A4, [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.2
+> **Trạng thái:** đã quyết 2026-08-10, sửa thứ tự §2.7 cùng ngày, sửa cách phát hiện lệch 2026-08-11 (xem §2.7) · **Thay thế:** không · **Liên quan:** [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md) §A2/§B4, [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md), [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md), [`PHASE2-AUDIO.md`](../docs/PHASE2-AUDIO.md) §A4, [`MEDIA-PIPELINE.md`](../docs/MEDIA-PIPELINE.md) §10.2
 
 ---
 
@@ -111,7 +111,7 @@ FK là **RESTRICT**: xoá một ảnh đang làm ngữ liệu sẽ lấy đi th�
 
 ### 2.4 Ảnh Part 1 gắn từ thư viện, không tải lên trong luồng soạn đề
 
-> **Sửa 2026-08-11.** Câu dưới mô tả luồng cũ và luồng đó đã bị xoá. Thư viện `/admin/media` hỏng theo số lượng: hai chục ảnh còn chọn được, hai trăm thì nhãn duy nhất phân biệt chúng trong dropdown là mười hai ký tự cuối của `storage_key` — và **chọn nhầm ảnh khớp thành công**, không có gì báo. Nay ảnh được tải lên **ngay tại ô nó thuộc về**, sau khi dán chữ; ba trường bản quyền khai một lần ở đầu trang cho cả lô, `alt_text` khai theo từng bức vì nó mô tả riêng bức đó. Nhập hàng loạt thì dùng `import_media` (xem [`import_media.md`](import_media.md)).
+> **Sửa 2026-08-11.** Câu dưới mô tả luồng cũ và luồng đó đã bị xoá. Thư viện `/admin/media` hỏng theo số lượng: hai chục ảnh còn chọn được, hai trăm thì nhãn duy nhất phân biệt chúng trong dropdown là mười hai ký tự cuối của `storage_key` — và **chọn nhầm ảnh khớp thành công**, không có gì báo. Nay ảnh được tải lên **ngay tại ô nó thuộc về**, sau khi dán chữ; ba trường bản quyền khai một lần ở đầu trang cho cả lô, `alt_text` khai theo từng bức vì nó mô tả riêng bức đó. Nhập hàng loạt thì dùng `import_media` (xem [`import_media.md`](../docs/import_media.md)).
 
 ~~`/admin/media` đã có: tải lên, ba trường bản quyền bắt buộc, ghi công hiện ra. Luồng soạn đề chỉ **chọn** từ đó.~~
 

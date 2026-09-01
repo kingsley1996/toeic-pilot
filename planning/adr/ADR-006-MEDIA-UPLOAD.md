@@ -1,6 +1,6 @@
 # ADR-006 — Đường upload media
 
-> **Trạng thái:** đã quyết 2026-08-10, sửa §2.2 ngày 2026-08-10 (xem §2.8) · **Thay thế:** không · **Liên quan:** [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) (= ADR-002), [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) §10.5
+> **Trạng thái:** đã quyết 2026-08-10, sửa §2.2 ngày 2026-08-10 (xem §2.8) · **Thay thế:** không · **Liên quan:** [`PHASE2-AUDIO.md`](../docs/PHASE2-AUDIO.md) (= ADR-002), [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), [`MEDIA-PIPELINE.md`](../docs/MEDIA-PIPELINE.md) §10.5
 >
 > Đóng nợ §10.5: *"`AUDIO_SOURCES` và `IMAGE_SOURCES` đều đã có giá trị `uploaded` — schema hỗ trợ, đường đi thì chưa xây."*
 

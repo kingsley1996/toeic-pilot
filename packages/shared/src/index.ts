@@ -1,6 +1,6 @@
 // Request/response shapes are DERIVED, not hand-written: they come from FastAPI's
 // own OpenAPI schema via scripts/generate-api-types.sh. Editing them here would
-// reintroduce the silent contract drift documented in planning/REVIEW-OPUS.md P1-4.
+// reintroduce the silent contract drift documented in planning/docs/REVIEW-OPUS.md P1-4.
 import type { components } from "./api-types";
 
 export type TokenResponse = components["schemas"]["TokenResponse"];

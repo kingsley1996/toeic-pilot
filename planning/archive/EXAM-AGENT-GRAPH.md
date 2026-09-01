@@ -1,8 +1,11 @@
 # Agent graph: tự điều phối việc sinh đề bằng LangGraph
 
+> **LƯU TRỮ.** Gộp vào [`../EXAM-GRAPH.md`](../docs/EXAM-GRAPH.md) §0–2c.
+> Không cập nhật.
+
 > Runbook cho hai đồ thị agent (`app/content/exam_agents/`). Tài liệu kế hoạch
 > và lý do thiết kế: [`generate-full-toeic.md`](generate-full-toeic.md). Quy trình
-> thủ công từng chặng: [`EXAM-GENERATION-RUNBOOK.md`](EXAM-GENERATION-RUNBOOK.md).
+> thủ công từng chặng: [`EXAM-GENERATION-RUNBOOK.md`](../docs/EXAM-GENERATION-RUNBOOK.md).
 
 ---
 
@@ -152,4 +155,4 @@ uv run python -m app.content.generate_exam media --slug tp-form-08 --push
 uv run python -m app.content.generate_exam check --slug tp-form-08 --verify
 ```
 
-Chi tiết từng chặng: [`EXAM-GENERATION-RUNBOOK.md`](EXAM-GENERATION-RUNBOOK.md).
+Chi tiết từng chặng: [`EXAM-GENERATION-RUNBOOK.md`](../docs/EXAM-GENERATION-RUNBOOK.md).

@@ -95,6 +95,37 @@ sau. Muốn viết lại thì xoá tệp, hoặc chạy `prune`.
 
 ---
 
+## 2b. Seam mà vòng lặp sống nhờ
+
+`writer.write_slot` nhận thêm **`fix_hint: str | None`**. Khi có, nó ghép vào
+user prompt:
+
+```
+{prompt gốc}
+
+LƯU Ý SỬA từ lượt trước: {fix_hint}
+```
+
+Dùng xong thì node `write` xoá (`fix_hint=None`) — không thì lượt sau đọc lại
+hint cũ của lỗi cũ. Đó là toàn bộ khác biệt giữa "sửa theo lý do" và "sinh lại
+mù". Test `test_hint_reaches_next_write` pin đúng điều này.
+
+Trần vòng (`MAX_REVISIONS = 3`): một ô hỏng cùng kiểu ba lần thì lỗi nằm ở
+prompt/brief, không nằm ở lượt viết — quay tiếp chỉ đốt quota. Quá trần →
+`escalate`, giao người.
+
+## 2c. Ranh giới không được phá
+
+- **Extra `agents` tách riêng** (`langgraph`), không gộp vào `content` — hai lý
+  do cài khác nhau, chỉ ảnh worker cần nó. `test_content_isolation.py` canh cả
+  hai: API không được import `app.content`, càng không được import `langgraph`.
+- **Kiểm là code, không phải model.** `check` node phải là hàm điều kiện; chỉ
+  `write` và `critic` tốn token. Thêm tầng kiểm = thêm code trong
+  `check_blueprint`, không thêm lượt gọi.
+- **Mỗi ô một thread** (`thread_id = slot.id`) với `InMemorySaver` — checkpoint
+  per-slot, một ô hỏng không ảnh hưởng ô khác. Muốn checkpoint bền (đồ thị tiếp
+  sau khi máy ngủ) thì đổi sang saver trên đĩa/Redis — seam đã sẵn.
+
 ## 3. Khác nhau theo part
 
 Đây là bảng nói vì sao "chạy graph" không phải một việc đồng nhất.
@@ -278,221 +309,11 @@ full (plan → write → balance → spread)  →  photo / graphic  →  media  
 
 ---
 
-## 10. Runbook: chạy trọn đề từ Part 1 tới Part 7
+## 10. Chạy nó
 
-Đây là các bước đầy đủ, theo thứ tự, từ một `--slug` tới một đề nạp được. Mọi
-lệnh chạy từ `apps/api`.
-
-```bash
-cd apps/api
-SLUG=tp-form-08
-MODEL=bai/glm-5.3-flash
-```
-
-**Không truyền `--max-tokens`.** Trần được chọn theo hình dạng từng ô (§12), và
-một con số cho cả trăm ô là cách vừa cắt cụt ô khó vừa làm chậm ô dễ.
-
----
-
-### Bước 0 — Blueprint
-
-Một lần cho cả đề, bảy part:
-
-```bash
-for p in 1 2 3 4 5 6 7; do
-  uv run python -m app.content.generate_exam plan \
-    --slug "$SLUG" --part $p --model "$MODEL" --seed 20260822
-done
-```
-
-Giữ nguyên một `--seed` cho cả bảy lượt: seed quyết định dàn chủ đề, dàn giọng
-và bộ hình lấy từ pool.
-
-**Kiểm ngay, trước khi trả tiền cho 103 ô.** Ba lượt hỏng đầu tiên của đề này
-đều vì *đầu vào* sai, không vì chặng viết:
-
-```bash
-# nhãn có khớp bối cảnh không, và bối cảnh có lẫn mã nhãn không
-python3 -c "
-import json
-d = json.load(open('content/generated/$SLUG/blueprint.json'))
-for part in d['parts']:
-    bad = sum(1 for s in part['slots'] if s.get('context','').startswith('PART_'))
-    print(f\"part {part['part']}: {len(part['slots'])} ô\" + (f'  ← {bad} ô lẫn mã nhãn' if bad else ''))
-    for s in part['slots'][:3]:
-        print('   ', s['id'], (s.get('topic') or s.get('question_type') or '')[:34], '|', s.get('context','')[:52])
-"
-
-# brief hình: nhãn phải là TIẾNG ANH và đúng chủ đề của ô
-python3 -c "
-import json
-d = json.load(open('content/generated/$SLUG/blueprint.json'))
-for part in d['parts']:
-    for s in part['slots']:
-        if s.get('graphic'): print(f\"[{s['id']}] {s.get('topic','')}\n    {s['graphic']}\n\")
-"
-```
-
-Lượt `plan` hỏng thì nó **rơi về bảng cấu hình** và nói ra — bối cảnh khi đó
-đúng nhưng giống nhau giữa các đề cùng seed. Muốn bối cảnh riêng thì chạy lại
-part đó.
-
----
-
-### Bước 1 tới 7 — Viết từng part
-
-Khác nhau đúng một chỗ: **`--verify` chỉ bật ở Part 3 và 4**, vì đó là hai part
-duy nhất có findings *chặn* được và tự khiến ô hỏng được viết lại (§12).
-
-```bash
-# Part 1 — 6 ô, sinh kèm mô tả ảnh vào photos/
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 1
-
-# Part 2 — 25 ô, ba lựa chọn chứ không bốn
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 2
-
-# Part 3 — 13 ô; p3-11..13 có hình → BẬT verify
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 3 --verify
-
-# Part 4 — 10 ô; p4-09..10 có hình → BẬT verify
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 4 --verify
-
-# Part 5 — 30 ô, part nhiều ô nhất
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 5
-
-# Part 6 — 4 ô, mỗi ô một văn bản bốn chỗ trống
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 6
-
-# Part 7 — 15 ô, 5 hình nằm trên passage của p7-11, 13, 14, 15
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 7
-```
-
-Mỗi lệnh tự chạy `balance` cho part đó khi xong. `plan` bỏ qua từ lượt thứ hai
-trở đi vì blueprint đã có.
-
-**Đọc gì trên màn hình:**
-
-```
-── part 3 · 3 ô ──
-  → [1/3] p3-11 …                       ô bắt đầu
-      … p3-11 vẫn đang chạy (60s)        nhịp tim mỗi phút
-      ↻ vòng 1: <lý do> …                sắp viết lại
-      ⚠ <cờ>                             cần người nhìn, KHÔNG chặn nạp
-  ✓ [1/3] p3-11 → accepted (242s)
-  part 3: 3 nhận · 0 giao người · 12.1 phút · còn 50 ô, ước 67 phút
-```
-
-**Thử vài ô trước khi cam kết cả part** — nên làm với part chưa từng chạy:
-
-```bash
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 5 --limit 3
-```
-
----
-
-### Sau mỗi part — kiểm
-
-Part 3 và 4 đã kiểm trong vòng lặp. **Part 1, 2, 5, 6, 7 kiểm ở đây:**
-
-```bash
-uv run python -m app.content.generate_exam check --slug "$SLUG" --part 5 \
-  --verify --model "$MODEL"
-```
-
-Đọc kết quả: `✗` là **chặn nạp**, `⚠` là cần người nhìn. Riêng dòng
-`✗ CẢ ĐỀ: đáp án lệch` chỉ có nghĩa khi đề đã đủ ô.
-
-Ô bị **giao người** (`escalated`) giữ lại tệp dán và `pending()` sẽ KHÔNG nhặt
-lại. Muốn viết lại thì xoá tệp:
-
-```bash
-rm content/generated/$SLUG/paste/p5-17.txt
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL" --part 5
-```
-
-Ngoại lệ: ô hỏng vì **lượt gọi** (mạng, timeout) chưa kịp ghi tệp nào, nên nó
-vẫn nằm trong hàng đợi — chạy lại là đủ, không phải xoá gì.
-
----
-
-### Xem còn thiếu gì, bất cứ lúc nào
-
-```bash
-uv run python -c "
-from app.content.exam import blueprint as bp
-from app.content.exam.writer import pending
-from app.content.exam_agents.graph import parts_of
-from app.content.exam_cli.paths import blueprint_path, workdir_for
-from collections import Counter
-b = bp.load(blueprint_path('$SLUG')); w = workdir_for('$SLUG')
-left = pending(b, w); c = Counter(parts_of(b, s.id) for s in left)
-for p in range(1, 8):
-    total = len([s for part in b.parts if part.part == p for s in part.slots])
-    print(f'  part {p}: còn {c.get(p, 0)}/{total}')
-print(f'  tổng còn {len(left)} ô')
-"
-```
-
-Chạy lại đúng lệnh cũ là an toàn: hàng đợi là truy vấn trên thư mục, ô đã xong
-không bị viết lại.
-
----
-
-### Sau khi đủ 103 ô
-
-```bash
-# 1. cân đáp án trên CẢ đề, và kiểm phân bố (giờ mới có nghĩa)
-uv run python -m app.content.exam_agents.full --slug "$SLUG" --model "$MODEL"
-
-# 2. vẽ hình ngữ liệu Part 3/4/7 từ dữ liệu bảng
-uv run python -m app.content.generate_exam graphic --slug "$SLUG"
-
-# 3. vẽ ảnh Part 1 từ phần mô tả
-uv run python -m app.content.generate_exam photo --slug "$SLUG"
-
-# 4. kiểm đầy đủ cả đề
-uv run python -m app.content.generate_exam check --slug "$SLUG" --verify --model "$MODEL"
-
-# 5. media đã lên nhà cung cấp chưa
-uv run python -m app.content.generate_exam media --slug "$SLUG" --push
-
-# 6. nạp vào database — SAU `balance`
-uv run python -m app.content.generate_exam load --slug "$SLUG" --token <admin-token>
-```
-
-Bước 1 không viết ô nào (đã đủ), nó chạy để `balance` cân **cả đề** và `spread`
-kiểm phân bố — `spread` bỏ qua chừng nào còn thiếu ô.
-
-**`balance` ghi đè tệp dán, nên phải chạy trước `load`.** Cân lại sau khi đã nạp
-làm tệp và database lệch nhau.
-
----
-
-### Khi có gì đó lạ
-
-```bash
-# prompt THẬT sẽ gửi đi cho một ô — không gọi model
-uv run python -m app.content.generate_exam prompt --slug "$SLUG" --slot p4-09
-
-# toàn văn mọi lượt gọi của một lượt chạy (§11)
-LLM_TRANSCRIPT_LOG=/tmp/llm.jsonl uv run python -m app.content.exam_agents.full \
-  --slug "$SLUG" --model "$MODEL" --part 4 --verify
-```
-
----
-
-### Nhịp đo được
-
-| | |
-|---|---|
-| ô thường | ~52 giây (52 lượt viết) |
-| ô có hình | 225–365 giây |
-| một part 30 ô, không verify | ~30 phút |
-| `--verify` | +2 lượt gọi mỗi câu, nhưng chỉ +13% thời gian |
-
-Dòng `còn N ô, ước N phút` mà graph in ra tính từ nhịp thật của chính lượt đang
-chạy, nên nó đúng hơn bảng này.
-
+Runbook đầy đủ — mười bốn chặng từ dòng lệnh tới production — nằm ở
+[`EXAM-GENERATION-RUNBOOK.md`](EXAM-GENERATION-RUNBOOK.md). Trước đây mục này chép lại
+runbook ấy, và hai bản đã bắt đầu trôi khỏi nhau: đó là lý do nó chỉ còn một con trỏ.
 
 ## 11. Xem model thật sự gửi đi cái gì
 

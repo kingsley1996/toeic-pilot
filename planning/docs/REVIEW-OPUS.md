@@ -3,7 +3,7 @@
 **Ngày review:** 2026-08-08
 **Cập nhật:** 2026-08-09 — Sprint 2: ADR-001 (data model) + hạ tầng audio; test 62 → 150
 **Cập nhật:** 2026-08-08 — đã sửa toàn bộ P0 và hoàn tất Sprint 1 (P1-1, P1-2, P1-4, P1-5, P1-6, P1-9, P1-10)
-**Phạm vi:** toàn bộ repo (`apps/api`, `apps/web`, `packages/shared`, `docker/`, `.github/`) + `planning/ARCHITECTURE.md` + `planning/PLAN.md`
+**Phạm vi:** toàn bộ repo (`apps/api`, `apps/web`, `packages/shared`, `docker/`, `.github/`) + `planning/archive/ARCHITECTURE.md` + `planning/docs/PLAN.md`
 **Người review:** Claude (Opus 5)
 
 ---
@@ -38,9 +38,9 @@
 > Còn lại: P1-3 (test frontend/e2e), P1-7 (token trong localStorage), P1-8 (rate limiting) — xem [mục 8](#8-lộ-trình-đề-xuất).
 > Test: 1 → **62**. Gate CI: 4 → **13**.
 >
-> **§7b (audio) ĐÃ QUYẾT** 2026-08-08 và **ĐÃ TRIỂN KHAI** 2026-08-09 → [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
-> **§7a (data model) ĐÃ QUYẾT** 2026-08-09 → [`planning/ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md), migration `003`.
-> Hai lỗ hổng mà §7a tự phát hiện cũng đã đóng cùng ngày: ảnh Part 1 → [`ADR-004-IMAGES.md`](ADR-004-IMAGES.md), bảng quy đổi điểm → `ADR-001` §A6.2.
+> **§7b (audio) ĐÃ QUYẾT** 2026-08-08 và **ĐÃ TRIỂN KHAI** 2026-08-09 → [`planning/docs/PHASE2-AUDIO.md`](PHASE2-AUDIO.md).
+> **§7a (data model) ĐÃ QUYẾT** 2026-08-09 → [`planning/adr/ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md), migration `003`.
+> Hai lỗ hổng mà §7a tự phát hiện cũng đã đóng cùng ngày: ảnh Part 1 → [`ADR-004-IMAGES.md`](../adr/ADR-004-IMAGES.md), bảng quy đổi điểm → `ADR-001` §A6.2.
 > **Phase 2 không còn bị chặn bởi thứ gì.** Còn lại §7g (chiến lược AI) — theo lộ trình mới thì nó thuộc sprint cuối.
 >
 > 📍 **Tài liệu này là một bản review, không phải bảng theo dõi.** Trạng thái hiện tại và các sprint: **[`ROADMAP.md`](ROADMAP.md)**.
@@ -77,7 +77,7 @@ Nhưng có một khoảng cách rất lớn giữa **hạ tầng đã có** và 
 
 > Toàn bộ `PLAN.md` (Learning Hub, TOEIC Practice, AI Study Planner, AI Coach) **chưa có một dòng thiết kế dữ liệu nào**. Không có ERD, không có schema câu hỏi/đề thi/lượt làm bài/từ vựng/tiến độ. Không có kế hoạch cho **audio** — mà Dictation và Listening Part 1–4 thì không thể tồn tại nếu không có audio storage/CDN. Đây là rủi ro kiến trúc lớn nhất của dự án, lớn hơn tất cả các bug code cộng lại.
 
-*(Cập nhật 2026-08-09: cả hai đã được xử lý ở Sprint 2 — [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) và [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). Đoạn trên giữ nguyên làm ngữ cảnh của bản review gốc.)*
+*(Cập nhật 2026-08-09: cả hai đã được xử lý ở Sprint 2 — [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) và [`ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md). Đoạn trên giữ nguyên làm ngữ cảnh của bản review gốc.)*
 
 Bảng điểm:
 
@@ -535,7 +535,7 @@ Ruff chỉ bật `["E", "F", "I", "UP"]` — không có bugbear (`B`), không c�
 
 ---
 
-## 6. Đánh giá `planning/ARCHITECTURE.md`
+## 6. Đánh giá `planning/archive/ARCHITECTURE.md`
 
 ### Điểm mạnh
 - Mô tả đúng hiện trạng, có "File map" các entry point — rất hữu ích cho người mới.
@@ -571,7 +571,7 @@ Cuối file ghi *"Prepared by: automated repository audit (assistant)"* và có 
 
 ---
 
-## 7. Đánh giá `planning/PLAN.md`
+## 7. Đánh giá `planning/docs/PLAN.md`
 
 ### Điểm mạnh
 - Vision rõ ràng, phân biệt tốt với đối thủ ("không chỉ là chatbot LLM").
@@ -583,7 +583,7 @@ Cuối file ghi *"Prepared by: automated repository audit (assistant)"* và có 
 
 #### 7a. Không có data model — ✅ ĐÃ QUYẾT (2026-08-09)
 
-> **Thiết kế đầy đủ nằm ở [`planning/ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md)**, đã hiện thực hoá bằng migration `003_domain_schema` (13 bảng).
+> **Thiết kế đầy đủ nằm ở [`planning/adr/ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md)**, đã hiện thực hoá bằng migration `003_domain_schema` (13 bảng).
 >
 > Điều quan trọng nhất mà bản review gốc chưa nêu: **part 3, 4, 6, 7 nhóm nhiều câu dưới một kích thích dùng chung** (đoạn hội thoại, bài nói, đoạn văn), còn part 1, 2, 5 thì không. Coi mỗi câu hỏi là một thực thể độc lập thì không có chỗ đặt audio của Part 3 — và đó chính là cuộc refactor giữa Phase 3 mà mục này cảnh báo. Thêm nữa: **part 2 có 3 đáp án chứ không phải 4, và không in cả đề lẫn đáp án**.
 >
@@ -607,7 +607,7 @@ Nếu code trước, thiết kế sau, sẽ phải refactor toàn bộ ở giữ
 
 #### 7b. Không có kế hoạch audio & nội dung — ✅ ĐÃ QUYẾT (2026-08-08)
 
-> **Quyết định đầy đủ nằm ở [`planning/PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A** (thay cho ADR-002).
+> **Quyết định đầy đủ nằm ở [`planning/docs/PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A** (thay cho ADR-002).
 >
 > Tóm tắt: storage dùng **thư mục local + serve tĩnh ở dev**, nâng lên **Cloudflare R2** khi có domain trên DNS Cloudflare — vì `pub-*.r2.dev` bị rate-limit và không được CDN cache, nên vào R2 sớm không mang lại lợi ích gì. Nguồn audio: **chỉ TTS** (`edge-tts`), bỏ cào ở MVP — vì dictation cần transcript làm đáp án chấm bài nên phải có text trước dù thế nào. Sinh **offline** lúc seed, phục vụ bằng **URL công khai cố định** ⇒ runtime API không gọi object store lần nào. **Không thêm service nào** vào Compose.
 >
@@ -721,7 +721,7 @@ Ngoài phạm vi P0 nhưng làm cùng vì cần để chứng minh fix: fixture 
 
 **Phase 2 không còn bị chặn.** Chỉ còn ADR-003 (chiến lược AI), mà nó chặn Phase 4 chứ không chặn Phase 2.
 
-- [x] ADR-001: Data model cho Learning Hub + TOEIC Practice (ERD đầy đủ) → [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md)
+- [x] ADR-001: Data model cho Learning Hub + TOEIC Practice (ERD đầy đủ) → [`ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md)
 - [x] ~~ADR-002: Storage cho audio và nguồn nội dung~~ → [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A (2026-08-08)
 - [x] **Ngoài phạm vi ban đầu:** triển khai luôn toàn bộ hạ tầng audio (`PHASE2-AUDIO.md` Phần B) — `audio_asset`, pipeline offline, manifest, mount `/media`
 - [x] Migration Alembic cho toàn bộ schema domain → `002_audio_assets` + `003_domain_schema` (14 bảng mới)

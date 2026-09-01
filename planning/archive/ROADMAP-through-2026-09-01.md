@@ -1,5 +1,17 @@
 # TOEIC Pilot — Tiến độ & Lộ trình
 
+> **LƯU TRỮ — hồ sơ lịch sử, không phải tracker.**
+>
+> Đây là ROADMAP như nó tồn tại tới 2026-09-01: bốn mươi mục sprint đã hoàn thành, mỗi mục
+> kèm lý do và chi phí thật. Giữ lại vì phần *vì sao* vẫn đọc được và vì nó ghi lại những
+> lần đo mà không ai đo lại nữa.
+>
+> **Đừng đọc nó để biết trạng thái.** Bảng "Đang ở đâu" ở §1 sai ở **mọi dòng** tính tới
+> 2026-09-01: 683 test (thật: 949), 46 bảng (57), 34 migration (51), 148 endpoint (189),
+> 55 câu hỏi (655), 2 đề (5). Đó chính là lý do nó được thay.
+>
+> Tracker hiện tại: [`../ROADMAP.md`](../docs/ROADMAP.md).
+
 > **Đây là file theo dõi duy nhất của dự án.** Sprint, task, trạng thái thật của code — tất cả ở đây.
 > Cập nhật **ngay khi** hoàn thành một task, không để dồn.
 >
@@ -27,7 +39,7 @@ Số liệu dưới đây **đo trên `main` ngày 2026-08-21**, không phải �
 | **Media** | **2 506** clip audio (`audio_asset`), 10 ảnh |
 | **Nội dung** | **303 từ vựng / 7 chủ đề**, 15 câu dictation, 55 câu hỏi (34 có giải thích), 2 đề luyện |
 | **Người dùng** | **33 tài khoản thật**, 7 trong đó có hoạt động. `users` có 574 hàng nhưng **541 là tài khoản e2e** (email mang dấu thời gian 13 chữ số) — lọc chúng ra trước khi đếm bất cứ thống kê người dùng nào |
-| **Giao diện** | Design system triển khai toàn bộ ([`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md)) |
+| **Giao diện** | Design system triển khai toàn bộ ([`DESIGN-SYSTEM.md`](../docs/DESIGN-SYSTEM.md)) |
 
 **Kiểm chứng lại ngày 2026-08-17** (phần từ vựng, xem mục 4e): `pytest` **630 passed / 2 deselected** · `ruff check` + `ruff format --check` (135 file) + `mypy` strict (96 file) sạch · `tsc --noEmit`, `eslint`, `prettier --check` sạch · `pnpm gen:api-types` sinh lại **không drift** · `alembic upgrade head` chạy hết `026` trên database trắng và `alembic check` báo **không lệch model** · Playwright **7 bài chạy, xanh** (4 bài `vocabulary.spec.ts` skip) · gọi thật `vocabulary-topic-sessions`, `recall-check` và `review` grade 6 trên stack đang chạy.
 
@@ -92,7 +104,7 @@ Nếu muốn giảm rủi ro sớm hơn: chèn một lát cắt AI mỏng **mộ
 
 **Mục tiêu:** admin nhập được một đề hoàn chỉnh trong vài giờ, và nội dung phải qua duyệt trước khi học viên thấy.
 
-Quyết định đầy đủ: [`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md).
+Quyết định đầy đủ: [`ADR-005-CONTENT-TOOLING.md`](../adr/ADR-005-CONTENT-TOOLING.md).
 
 Không có sprint này thì Sprint 4–5 không có dữ liệu để test bằng gì ngoài fixture, và việc soạn nội dung — nút thắt thật của dự án — không thể bắt đầu song song với việc code.
 
@@ -161,7 +173,7 @@ Schema đã sẵn sàng (`ADR-001` §B2). Việc còn lại là endpoint, UI và
 - [x] `/learn/review` — flashcard 4 nút
 - [x] `/learn/dictation` — phát, nhập, diff tô màu
 - [x] **Revamp UI vòng 1 (2026-08-09)** — hệ token màu sáng/tối, bộ component dùng chung, app shell có nav theo vai trò, skeleton thay cho chữ "Loading…", empty state nói rõ bước tiếp theo, `not-found` và `error` boundary
-- [x] **Design system + revamp vòng 2 (2026-08-09)** — [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md), triển khai trên toàn bộ 12 route. Bỏ mặc định của công cụ (Geist, indigo, `rounded-xl`, `shadow-sm`); token màu kiểm bằng công thức WCAG; 17 emoji → Lucide; thang bốn giọng US/UK/AU/CA; **nút chuyển sáng/tối ba trạng thái**; landing page dựng lại quanh cơ chế chấm từng từ
+- [x] **Design system + revamp vòng 2 (2026-08-09)** — [`DESIGN-SYSTEM.md`](../docs/DESIGN-SYSTEM.md), triển khai trên toàn bộ 12 route. Bỏ mặc định của công cụ (Geist, indigo, `rounded-xl`, `shadow-sm`); token màu kiểm bằng công thức WCAG; 17 emoji → Lucide; thang bốn giọng US/UK/AU/CA; **nút chuyển sáng/tối ba trạng thái**; landing page dựng lại quanh cơ chế chấm từng từ
 - [x] **Đã kiểm thật toàn bộ trang cần đăng nhập (2026-08-09)** — dựng nội dung thật qua chính API admin, đi hết 8 trang, thử cổng publish và cả bốn trạng thái badge audio. Ba lỗi chỉ lộ ra khi chạy: nav xuống dòng ở vai trò `admin`, một icon dùng cho hai khái niệm, và một import lệch khỏi JSX mà `next dev` không bắt (`DESIGN-SYSTEM` §13.4)
 - [x] **Tách khu quản trị thành dashboard riêng (2026-08-09)** — `/admin/**` có `AdminShell` với thanh trên và sidebar riêng; header khu học trở về 3 mục cộng **một** nút `Quản trị` chỉ hiện với `editor`/`admin`. Đã kiểm bằng tài khoản `learner` thật: không thấy nút, `/admin/**` redirect về `/dashboard`, và endpoint trả 403 — cả ba lớp đều giữ
 - [x] **Dictation: chấm ở client + đối chiếu từng từ (2026-08-09)** — `lib/dictation.ts` là bản port từng bước của bộ chấm Python; **20/20 ca kiểm khớp tuyệt đối** (diff, matched, expected, accuracy), gồm đảo thứ tự từ, từ lặp, nháy cong, chữ có dấu. Kết quả hiện ngay dưới ô nhập, xanh = đúng / cam = chưa đúng. Chỉ lần kiểm tra **đầu tiên** được ghi nhận — đã xác nhận trong Postgres: bấm hai lần, DB có đúng một hàng, và điểm server ghi (90.00) khớp con số client hiện
@@ -294,7 +306,7 @@ Chèn trước Sprint 5 chứ không phải sau, vì `PLAN.md` §3.3 nói AI Stu
 
 **Mục tiêu:** đưa được vào hệ thống một file do con người tạo ra — ảnh tự chụp, ảnh đã mua bản quyền, bản thu giọng người thật.
 
-Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](ADR-006-MEDIA-UPLOAD.md). Đóng nợ `MEDIA-PIPELINE` §10.5.
+Quyết định đầy đủ: [`ADR-006-MEDIA-UPLOAD.md`](../adr/ADR-006-MEDIA-UPLOAD.md). Đóng nợ `MEDIA-PIPELINE` §10.5.
 
 ### ⚠️ Đọc trước khi tưởng sprint này gỡ xong Sprint 5
 
@@ -473,7 +485,7 @@ Cả hai đều không có test nào bắt được — tìm ra bằng cách ch�
 
 ## 4i. Trang giới thiệu dựng lại · ✅ XONG (2026-08-17)
 
-- [x] Nền lưới kỹ thuật — ban đầu chỉ sau hero, sau đó **mở ra toàn khung** kèm tia sáng chạy dọc cạnh lưới (`.grid-backdrop` + `.grid-spark`), xem [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) §9.7b
+- [x] Nền lưới kỹ thuật — ban đầu chỉ sau hero, sau đó **mở ra toàn khung** kèm tia sáng chạy dọc cạnh lưới (`.grid-backdrop` + `.grid-spark`), xem [`DESIGN-SYSTEM.md`](../docs/DESIGN-SYSTEM.md) §9.7b
 - [x] Nội dung sắp lại theo **ba khu học có thật**: Từ vựng · Dictation · Luyện đề, đúng ba mục của thanh điều hướng
 - [x] Thêm mục **lịch ôn năm bậc**, bày đúng dãy nút học viên thật sự bấm
 - [x] Số từ và số chủ đề **đọc từ máy chủ**, không viết cứng
@@ -839,7 +851,7 @@ Gộp từ `improve-vocabulary.md` ở gốc kho, tệp đó đã xoá: ROADMAP 
 
 ## 4v. Sổ cái XP, level, việc hôm nay và huy hiệu · ✅ XONG cả bốn lát (2026-08-22)
 
-Cả bốn lát của [`USER-ROAD.md`](USER-ROAD.md) §8. Chỉ còn `streak_bonus` ở §2.3 là chưa dựng.
+Cả bốn lát của [`USER-ROAD.md`](../docs/USER-ROAD.md) §8. Chỉ còn `streak_bonus` ở §2.3 là chưa dựng.
 
 - [x] Migration `030_xp_event` — sổ cái nối thêm, `UNIQUE (user_id, source_type, source_id)`
 - [x] `app/services/leveling.py` — đường cong thuần, không chạm database
@@ -994,7 +1006,7 @@ Bộ skill `agent-sprite-forge` (`~/.claude/skills/`) **dùng được, nhưng c
 
 ## 4y. Đăng nhập bằng Google và Apple · 🟢 Google xong, Apple dựng sẵn (2026-08-22)
 
-Quyết định và lý do ở [`ADR-008-AUTH-PROVIDERS.md`](ADR-008-AUTH-PROVIDERS.md), kèm runbook lấy khoá cho cả hai bên.
+Quyết định và lý do ở [`ADR-008-AUTH-PROVIDERS.md`](../adr/ADR-008-AUTH-PROVIDERS.md), kèm runbook lấy khoá cho cả hai bên.
 
 - [x] Migration `034_user_identity` — bảng `user_identity`, `users.hashed_password` bỏ NOT NULL
 - [x] `app/services/oauth.py` — mô tả hai nhà cung cấp, kho `state`, xác minh `id_token`, luật liên kết
@@ -1057,7 +1069,7 @@ Chuyển động: đúng MỘT — ba dải vẽ ra từ trái sang, so le nhau,
 
 ## 4z. Ruby — đơn vị thứ hai, thưởng cho việc LÀM XONG · 🟢 lát 1–6 xong (2026-08-27)
 
-Quyết định và lý do ở [`ADR-011-RUBY.md`](ADR-011-RUBY.md). Dựng ra để mở khoá lát 8 (gacha) của ADR-010: trứng phải mua bằng *một thứ gì đó*, và §6.2 của tài liệu kia đã loại thứ hiển nhiên nhất.
+Quyết định và lý do ở [`ADR-011-RUBY.md`](../adr/ADR-011-RUBY.md). Dựng ra để mở khoá lát 8 (gacha) của ADR-010: trứng phải mua bằng *một thứ gì đó*, và §6.2 của tài liệu kia đã loại thứ hiển nhiên nhất.
 
 - [x] Lát 1 — migration `038_ruby`, `ruby_event` + `ruby_rule`, `app/services/ruby.py::earn`
 - [x] Lát 2 — nối vào ba đường đã có: xong một bài dictation (5), thuộc trọn một chủ đề (15), làm hết một đề (25 / 8)
@@ -1162,7 +1174,7 @@ Giao diện: lưới 5×2, con trùng mờ đi và con mới có viền theo mà
 
 ## 4aa. Petland lát 8 — gacha trứng, mua bằng ruby · 🟢 XONG (2026-08-27)
 
-Lát 8 của [`ADR-010-PETLAND-V2.md`](ADR-010-PETLAND-V2.md) §9, mở khoá được nhờ §4z ở trên.
+Lát 8 của [`ADR-010-PETLAND-V2.md`](../adr/ADR-010-PETLAND-V2.md) §9, mở khoá được nhờ §4z ở trên.
 
 - [x] Migration `039_pet_gacha` — `pet_owned`, `egg_setting`, `pet_species.drop_weight`, `pet_state.rolls_since_rare`
 - [x] `app/services/gacha.py` — quay theo trọng số, bộ đếm an ủi, trùng thì hoàn ruby
@@ -1375,7 +1387,7 @@ Trọng số 1 (một nửa huyền thoại): **0,10% mỗi loài, 0,5% cho cả
 
 ## 4ae. Ba chỉ số nói lên điều gì, và độ hiếm khác nhau ở đâu · ✅ XONG cả năm lát (2026-08-28)
 
-Quyết định và lý do ở [`ADR-013-PET-CONDITION.md`](ADR-013-PET-CONDITION.md). Tài liệu đầu tiên của góc thú cưng không thêm tính năng nào: nó sửa một thứ đã dựng xong nhưng không có nghĩa.
+Quyết định và lý do ở [`ADR-013-PET-CONDITION.md`](../adr/ADR-013-PET-CONDITION.md). Tài liệu đầu tiên của góc thú cưng không thêm tính năng nào: nó sửa một thứ đã dựng xong nhưng không có nghĩa.
 
 **Chẩn đoán, bằng sự kiện chứ không bằng cảm giác:** `PetView` — thứ duy nhất tầng vẽ nhận được — **không có trường nhu cầu nào**, nên con thú đói và con thú no được vẽ giống hệt nhau. Ba chỉ số chỉ ảnh hưởng tới đúng ba cái nút đổi chính chúng, và cột **Vui không ảnh hưởng tới bất cứ thứ gì**. Độ hiếm thì chỉ quyết định khó kiếm tới đâu và vòng sáng màu gì.
 
@@ -1439,7 +1451,7 @@ Vì sao phải là script chứ không phải e2e: khu quản trị đòi vai tr
 
 ## 4ac. Petland — trả ba món nợ của ADR-010 §10, và hai cuộc đua tìm được trên đường · ✅ (2026-08-28)
 
-Ba món trong "cái phải đo, và cái chưa biết" của [`ADR-010`](ADR-010-PETLAND-V2.md) §10, làm theo thứ tự rẻ-và-thật trước.
+Ba món trong "cái phải đo, và cái chưa biết" của [`ADR-010`](../adr/ADR-010-PETLAND-V2.md) §10, làm theo thứ tự rẻ-và-thật trước.
 
 - [x] **Gieo lười `pet_species` có chốt chống đua.** Bảng gieo lười CUỐI CÙNG còn thiếu nó, và nó nằm trên đường đọc nóng nhất của cả góc thú cưng — `ensure_pet` gọi ở mỗi lần mở bảng. Hai request đầu tiên sau một lần triển khai cùng đọc bảng rỗng và cùng gieo; người thua vỡ khoá chính và mất nguyên một lượt học vì một cuộc đua trên bảng *cấu hình*.
 - [x] **Vòng vẽ dừng hẳn khi tab bị ẩn.** Đo được: trang chưa mở bảng gọi `requestAnimationFrame` **0 lần** một giây; mở bảng ra là **~135**; ẩn đi còn **~60**. Con số 135 tố cáo **hai** vòng — vòng vẽ của bảng và ticker riêng của Pixi — nên phải tắt cả hai (`app.stop()`); tắt mỗi vòng của mình thì máy vẫn vẽ WebGL sau lưng người dùng. Phần 60 còn lại là ticker nội bộ của Pixi, làm việc dọn dẹp chứ không vẽ, và không tắt được từ đây.
@@ -1462,7 +1474,7 @@ Bộ e2e chỉ là *triệu chứng* đã phơi con số ra: 22 bài, mỗi bài
 
 ## 4ab. Chạm mặt ở Petland — NPC giao việc và những đợt xâm nhập · ✅ lát 1–4, 6, 7 (2026-08-27)
 
-Quyết định và lý do ở [`ADR-012-ENCOUNTERS.md`](ADR-012-ENCOUNTERS.md). Đây là thứ đầu tiên ở góc thú cưng **kéo người ta về phía bài tập** thay vì về phía con thú.
+Quyết định và lý do ở [`ADR-012-ENCOUNTERS.md`](../adr/ADR-012-ENCOUNTERS.md). Đây là thứ đầu tiên ở góc thú cưng **kéo người ta về phía bài tập** thay vì về phía con thú.
 
 - [x] Lát 1 — bảng `encounter` + `encounter_setting`, luật sinh/hết hạn (`app/services/encounters.py`), `GET /pet/encounters`
 - [x] Lát 2 — khách đứng trên bản đồ với dấu hiệu trên đầu, bấm vào mở thẻ
@@ -1744,7 +1756,7 @@ Part 3 là part đông câu nhất (39 câu). Gỡ được thì cần một bư
 - [x] `POST /api/v1/attempts/{id}/submit` — chốt, gọi `score_attempt()`. Hết giờ thì tự chốt ở **request kế tiếp**, không cần tiến trình nền (A2.5 cố ý tránh job queue)
 - [x] `GET /api/v1/attempts/{id}` — trạng thái lượt làm. **Không kèm `correct_option_id` khi đang thi** — ngược với dictation, và có lý do: bài thi có điểm, mà điểm nằm lại trong lịch sử người học. Lượt làm của người khác trả **404 chứ không 403**
 - [x] `GET /api/v1/test-collections` + `/practice-tests/{slug}` — bộ đề và cấu trúc đề
-- [ ] *(Trình nhập nội dung đã chuyển sang Sprint 3 — [`ADR-005`](ADR-005-CONTENT-TOOLING.md). Ba ràng buộc ở `ADR-001` §B4 có hiệu lực từ đó.)*
+- [ ] *(Trình nhập nội dung đã chuyển sang Sprint 3 — [`ADR-005`](../adr/ADR-005-CONTENT-TOOLING.md). Ba ràng buộc ở `ADR-001` §B4 có hiệu lực từ đó.)*
 
 ### Frontend
 - [x] **Màn làm bài** (`/learn/attempts/[attemptId]`) — thanh part có badge tiến độ, lưới câu ở thanh bên chia theo part kèm khoảng số, đồng hồ đếm ngược, nút Đánh dấu, nộp bài có xác nhận, và bảng kết quả tại chỗ với đáp án đúng hiện ra sau khi nộp
@@ -1811,7 +1823,7 @@ Học viên làm hết một đề trong thời gian quy định, nộp bài, nh
 
 ## 7. Sprint 7 — AI Layer
 
-**ADR-003 đã viết** (`planning/ADR-003-AI-LAYER.md`, 2026-08-12). Ba quyết định định hình sprint này:
+**ADR-003 đã viết** (`planning/adr/ADR-003-AI-LAYER.md`, 2026-08-12). Ba quyết định định hình sprint này:
 hai nhà cung cấp định tuyến theo chi phí · embedding mã nguồn mở chạy offline, **`vector(1024)`** ·
 **lát cắt mỏng không RAG trước**.
 
@@ -1829,7 +1841,7 @@ ghi thành số ở ADR-003 §3.3: ≥150 câu có explanation, hoặc corpus ng
   - model lạ thì `cost_usd` **ném lỗi** chứ không ghi 0 (N4, giống `scoring.py`)
   - prompt là tệp có phiên bản, phiên bản là **hash nội dung** chứ không phải số tự tăng — số tự tăng thì có ngày ai đó sửa mà quên tăng
 - [x] **Lát B — bộ nhãn câu hỏi** (`app/services/labels.py`, `app/models/labels.py`, migration `019`, `/admin/ai/skill-tags`)
-  - phân loại thật ở `planning/toeic_question_label_taxonomy.md`: **72 mã, 6 mặt**. Một câu Part 6 mang ba nhãn cùng lúc, nên cột vô hướng `question.skill_tag` không chứa nổi — đã bỏ hẳn. Thêm nữa `PART_1_PERSON_AND_OBJECT_DESCRIPTION` dài 36 ký tự, tràn `String(32)`
+  - phân loại thật ở `planning/docs/toeic_question_label_taxonomy.md`: **72 mã, 6 mặt**. Một câu Part 6 mang ba nhãn cùng lúc, nên cột vô hướng `question.skill_tag` không chứa nổi — đã bỏ hẳn. Thêm nữa `PART_1_PERSON_AND_OBJECT_DESCRIPTION` dài 36 ký tự, tràn `String(32)`
   - module nhãn **sinh từ tài liệu**, và `tests/test_labels.py` đọc lại tài liệu để so từng mã. Thiếu nó thì một nhãn thêm vào tài liệu mà quên sinh lại vừa "đã được quyết" vừa "bị hệ thống từ chối"
   - khoá chính `(chủ_thể, facet)` **thi hành** luật đúng-một-nhãn-mỗi-mặt; bốn mặt ngữ liệu chung nằm ở `question_set_label` vì ba câu của một hội thoại Part 3 luôn cùng chủ đề
   - ba phép kiểm ở mọi đường ghi, vì ba kiểu sai đều im lặng: mã bịa, mã sai mặt (ghi đè nhãn khác qua khoá chính), mã sai part (`GRAMMAR_NOUN` có ở Part 5, không có ở Part 6)
@@ -1919,6 +1931,7 @@ Sprint dài nhất và là sprint gỡ toàn bộ chặn của Phase 2.
 | Không có đường upload media | `MEDIA-PIPELINE` §10.5 | `AUDIO_SOURCES`/`IMAGE_SOURCES` đã có giá trị `uploaded` — schema hỗ trợ, đường đi chưa xây |
 | Bảng quy đổi là **xấp xỉ** | `score_scale.source_note` | Không phải bảng chính thức của ETS. Cần scale riêng cho từng đề trước khi trình bày như điểm ước lượng chính thức |
 | Chưa có acceptance criteria cho từng Epic | `REVIEW-OPUS.md` §7c | Mục 3–5 ở trên là bước đầu |
+| 36 tài liệu `planning/`, có chồng lấn và tồn đọng | `planning/` | **Năm** tệp nói về sinh đề (2 431 dòng), **hai** tệp nói về kiến trúc. `generate-full-toeic.md` (1 175 dòng) vẫn tự khai "📋 KẾ HOẠCH, chưa code" trong khi đã code xong; `attempt-result.md` cũng vậy. Chẩn đoán và đề xuất gộp: xem báo cáo 2026-09-01 |
 | Tám tệp đã quá dài | `REFACTOR-LONG-FILES.md` | **Đợt 1 và 2 xong**. Đợt 1: 3 router → 6 tệp + 2 mô-đun dùng chung, 145 hàm giống hệt ở mức AST, bề mặt API và hợp đồng không đổi. Đợt 2: `blueprint.py` 1332→756 (dữ liệu sang `mixes.py`), `check.py` 1097→980 (prompt sang `check_prompts.py`) — §3 đoán sai chuyện tách `check.py` theo part, xem §3b. Đợt 3: 3 trang frontend → 3 page + 20 tệp con; hai trang đầu là dời thuần (18/18 và 16/16 khai báo giống hệt), `admin/tests/[slug]` chia hai commit vì bước hai là thay đổi cấu trúc (hook) chứ không phải dời. **Nợ còn lại: `/admin/progression` và `/admin/tests/[slug]` không có e2e** — xem §4b.
 
 ### Đã đóng kể từ lần cập nhật trước

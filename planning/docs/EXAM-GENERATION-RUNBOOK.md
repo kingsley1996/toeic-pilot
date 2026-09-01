@@ -1,7 +1,7 @@
 # Runbook: sinh trọn một đề TOEIC — từ dòng lệnh tới production
 
 > Hướng dẫn thao tác đầy đủ, cập nhật 2026-08-31. Bản kế hoạch + lý do thiết kế
-> nằm ở [`generate-full-toeic.md`](generate-full-toeic.md); bản ghi hiện trạng ở
+> nằm ở [`generate-full-toeic.md`](../archive/generate-full-toeic.md); bản ghi hiện trạng ở
 > [`ROADMAP.md`](ROADMAP.md). Tài liệu này chỉ trả lời một câu: **làm gì, theo
 > thứ tự nào, lệnh nào**.
 

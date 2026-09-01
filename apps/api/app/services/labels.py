@@ -1,4 +1,4 @@
-"""Bộ nhãn câu hỏi TOEIC — sinh từ `planning/toeic_question_label_taxonomy.md`.
+"""Bộ nhãn câu hỏi TOEIC — sinh từ `planning/docs/toeic_question_label_taxonomy.md`.
 
 **Không sửa tay tệp này.** Nguồn sự thật là tài liệu markdown; `tests/test_labels.py`
 đọc lại tài liệu đó và so với đây, nên hai bên lệch nhau là một bài test đỏ chứ

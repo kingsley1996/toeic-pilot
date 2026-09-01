@@ -1,10 +1,16 @@
 # TOEIC Pilot — Architecture
 
+> **LƯU TRỮ.** Tệp này được ghim theo commit nó được viết và **không cập nhật**.
+> Giữ lại vì lý do đằng sau vẫn đọc được, không phải vì nội dung còn đúng.
+> Trạng thái thật: `planning/docs/ROADMAP.md`. Hành vi hiện tại: xem chỉ mục ở `CLAUDE.md`.
+
+> Thay bằng `SYSTEM-OVERVIEW.md`, viết lại từ source.
+
 Last updated: 2026-08-21
 
-> Bản đầy đủ và mới hơn, đọc từ source 2026-08-29: [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md). File này giữ nguyên như một ảnh chụp giai đoạn trước Petland/Ruby/Encounters.
+> Bản đầy đủ và mới hơn, đọc từ source 2026-08-29: [`SYSTEM-OVERVIEW.md`](../docs/SYSTEM-OVERVIEW.md). File này giữ nguyên như một ảnh chụp giai đoạn trước Petland/Ruby/Encounters.
 
-> Mô tả **hiện trạng**, không phải kế hoạch. Trạng thái sprint và task nằm ở [`ROADMAP.md`](ROADMAP.md); lý do đằng sau từng quyết định nằm ở các ADR.
+> Mô tả **hiện trạng**, không phải kế hoạch. Trạng thái sprint và task nằm ở [`ROADMAP.md`](../docs/ROADMAP.md); lý do đằng sau từng quyết định nằm ở các ADR.
 
 ## Overview
 
@@ -18,7 +24,7 @@ TOEIC Pilot is a polyglot monorepo containing:
 
 **Đã chạy đầu-cuối:** auth + RBAC, đường ống media offline (audio 4 giọng, ảnh CC) kèm đường tải lên qua provider, schema domain **38 bảng**, công cụ nhập nội dung cho từ vựng / dictation / đề luyện, Learning Hub (từ vựng có phát âm, ôn tập SM-2, hai minigame, dictation chấm ở client theo từng từ), luyện đề đầy đủ (làm bài → nộp → chấm → xem lại), và lớp AI đã gắn nhãn câu hỏi theo bảng 72 mã cùng sinh giải thích.
 
-**Chưa dựng:** RAG. Chặn bởi **nội dung** chứ không bởi kỹ thuật — xem [`ADR-003`](ADR-003-AI-LAYER.md) §3.3, nơi ghi ngưỡng gỡ chặn bằng một con số. Gói `app/ai` vẫn rỗng vì lớp AI thật sống ở `app/services/llm/` (gateway, router theo giá, hai provider và một fake để test).
+**Chưa dựng:** RAG. Chặn bởi **nội dung** chứ không bởi kỹ thuật — xem [`ADR-003`](../adr/ADR-003-AI-LAYER.md) §3.3, nơi ghi ngưỡng gỡ chặn bằng một con số. Gói `app/ai` vẫn rỗng vì lớp AI thật sống ở `app/services/llm/` (gateway, router theo giá, hai provider và một fake để test).
 
 ## High-level components
 
@@ -92,7 +98,7 @@ TOEIC Pilot is a polyglot monorepo containing:
 
 ## Content workflow & RBAC
 
-Vòng đời nội dung đã khép kín cho từ vựng và dictation ([`ADR-005-CONTENT-TOOLING.md`](ADR-005-CONTENT-TOOLING.md)):
+Vòng đời nội dung đã khép kín cho từ vựng và dictation ([`ADR-005-CONTENT-TOOLING.md`](../adr/ADR-005-CONTENT-TOOLING.md)):
 
 ```
 admin dán text ──► POST /admin/{loại}/parse   (KHÔNG BAO GIỜ ghi database)
@@ -117,7 +123,7 @@ Audit trail đi kèm qua `PublishableMixin` (`created_by`, `published_by`, `publ
 
 ## Data model
 
-Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](ADR-001-DATA-MODEL.md). **38 bảng**, bắt đầu từ migration `003`, mới nhất `029_profile_pet`.
+Thiết kế đầy đủ + lý do từng quyết định: [`ADR-001-DATA-MODEL.md`](../adr/ADR-001-DATA-MODEL.md). **38 bảng**, bắt đầu từ migration `003`, mới nhất `029_profile_pet`.
 
 Phần từ vựng và dictation **đã có endpoint chạy trên nó**. Phần question / attempt / practice test thì chưa — schema có, endpoint không (Sprint 5). Bốn bảng của Phase 4–5 (`study_plan`, `learning_memory`, `knowledge_chunk`, `ai_interaction`) mới chỉ tồn tại trên giấy, vì chiều `vector(n)` phụ thuộc vào embedding model mà ADR-003 chưa chọn — và đổi model nghĩa là tính lại toàn bộ corpus.
 
@@ -158,7 +164,7 @@ erDiagram
 
 ## Audio & content pipeline
 
-Quyết định kiến trúc: [`PHASE2-AUDIO.md`](PHASE2-AUDIO.md) Phần A.
+Quyết định kiến trúc: [`PHASE2-AUDIO.md`](../docs/PHASE2-AUDIO.md) Phần A.
 
 Audio được sinh **offline** bằng `edge-tts`, đặt tên content-addressed theo hash của *input* tổng hợp, ghi vào `content/manifest/audio_assets.jsonl` (commit vào repo) rồi nạp vào DB bằng `uv run python -m app.content.seed`. Runtime **không bao giờ** gọi object store: URL phát chỉ là phép ghép chuỗi `{AUDIO_PUBLIC_BASE_URL}/{storage_key}`.
 
@@ -166,9 +172,9 @@ Không có service mới nào trong Compose. `/media` chỉ được mount khi `
 
 Toàn bộ pipeline nằm sau extra `content` và **không được** lọt vào chuỗi import của `app/main.py`: image production build `--no-dev` nên không có `edge-tts`.
 
-Đường ống **ảnh** ([`ADR-004-IMAGES.md`](ADR-004-IMAGES.md)) có cấu trúc giống hệt nhưng đầu vào khác: `app/content/images.py` tải từ một file spec **do người chọn tay** chứ không phải từ search API, vì một tấm ảnh vẫn cần người quyết định xem có viết được bốn câu mô tả về nó hay không. `image_asset` là bảng **riêng** chứ không gộp vào `audio_asset`: gộp lại thì quá nửa số cột luôn NULL. `license`, `attribution`, `source_url` đều NOT NULL vì phần lớn ảnh mở là CC-BY — dùng được **kèm** ghi công — và lưu ghi công thôi chưa đủ: endpoint nào phục vụ ảnh Part 1 cũng phải trả nó ra và UI phải render.
+Đường ống **ảnh** ([`ADR-004-IMAGES.md`](../adr/ADR-004-IMAGES.md)) có cấu trúc giống hệt nhưng đầu vào khác: `app/content/images.py` tải từ một file spec **do người chọn tay** chứ không phải từ search API, vì một tấm ảnh vẫn cần người quyết định xem có viết được bốn câu mô tả về nó hay không. `image_asset` là bảng **riêng** chứ không gộp vào `audio_asset`: gộp lại thì quá nửa số cột luôn NULL. `license`, `attribution`, `source_url` đều NOT NULL vì phần lớn ảnh mở là CC-BY — dùng được **kèm** ghi công — và lưu ghi công thôi chưa đủ: endpoint nào phục vụ ảnh Part 1 cũng phải trả nó ra và UI phải render.
 
-Hiện trạng vận hành đầy đủ của cả hai đường ống, kèm danh sách điểm yếu thành thật, ở [`MEDIA-PIPELINE.md`](MEDIA-PIPELINE.md) — đọc §10 trước khi mở rộng bên nào.
+Hiện trạng vận hành đầy đủ của cả hai đường ống, kèm danh sách điểm yếu thành thật, ở [`MEDIA-PIPELINE.md`](../docs/MEDIA-PIPELINE.md) — đọc §10 trước khi mở rộng bên nào.
 
 ## AI layer (chưa dựng)
 
@@ -252,7 +258,7 @@ Shared & infra:
 
 ## Khoảng trống đã biết
 
-Danh sách task đầy đủ ở [`ROADMAP.md`](ROADMAP.md) §6–§8 và §10. Những khoảng trống mang tính **kiến trúc**:
+Danh sách task đầy đủ ở [`ROADMAP.md`](../docs/ROADMAP.md) §6–§8 và §10. Những khoảng trống mang tính **kiến trúc**:
 
 1. **Không có rate limiting** (P1-8). Điều kiện tiên quyết cứng của endpoint LLM đầu tiên.
 2. **Token nằm ở `localStorage`** (P1-7). Cần chuyển sang httpOnly cookie + refresh token + denylist trên Redis — cũng là việc đầu tiên Redis thật sự được dùng tới.

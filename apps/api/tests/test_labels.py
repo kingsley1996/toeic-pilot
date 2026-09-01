@@ -1,4 +1,4 @@
-"""Bộ nhãn trong mã phải khớp `planning/toeic_question_label_taxonomy.md`.
+"""Bộ nhãn trong mã phải khớp `planning/docs/toeic_question_label_taxonomy.md`.
 
 Tài liệu là nguồn sự thật vì con người sửa nó; `app/services/labels.py` là bản
 sinh ra để chạy. Không có bài test này thì hai bên lệch nhau âm thầm — ai đó
@@ -11,7 +11,9 @@ from pathlib import Path
 
 from app.services.labels import FACETS, LABELS
 
-TAXONOMY = Path(__file__).resolve().parents[3] / "planning" / "toeic_question_label_taxonomy.md"
+TAXONOMY = (
+    Path(__file__).resolve().parents[3] / "planning" / "docs" / "toeic_question_label_taxonomy.md"
+)
 
 
 def parse_doc() -> dict[str, tuple[str, set[int]]]:
