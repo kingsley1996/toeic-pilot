@@ -166,10 +166,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       sidebarTop={
         <Link
           href="/dashboard"
-          className="inline-flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink"
+          title="Back to learning"
+          /* Sống sót qua lúc thu gọn, chỉ rụng mất chữ. Giấu nó đi ở dải icon là
+             dựng lại đúng cái ngõ cụt mà nó tồn tại để phá. */
+          className="inline-flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink rail:justify-center rail:px-0"
         >
           <ArrowLeft size={16} strokeWidth={1.75} aria-hidden />
-          Back to learning
+          <span className="rail:sr-only">Back to learning</span>
         </Link>
       }
       footer={

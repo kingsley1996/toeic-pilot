@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 /**
  * Màu đến từ CSS variable trong globals.css chứ không liệt kê ở đây, nên sáng và
@@ -85,5 +86,24 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    /*
+     * `rail:` — chỉ đúng khi sidebar đã thu gọn, và chỉ BÊN TRONG cột trái.
+     *
+     * Trạng thái nằm trên `<html>` để một script trong `<head>` đặt được nó
+     * trước khi trang vẽ (`lib/sidebar.ts`), nhưng như thế nó cũng với tới thanh
+     * nav ngang của trang giới thiệu và ngăn kéo mobile — hai chỗ KHÔNG bao giờ
+     * được thu gọn, và cả hai đều dùng chung `NavLink`/`SidebarContent`. Cái mốc
+     * `data-rail` trên `<aside>` là thứ giữ biến thể này nằm trong cột trái.
+     *
+     * Hai bộ chọn: cái đầu cho chính `<aside>` (bề rộng), cái sau cho mọi thứ
+     * bên trong nó.
+     */
+    plugin(({ addVariant }) => {
+      addVariant("rail", [
+        'html[data-sidebar="collapsed"] &[data-rail]',
+        'html[data-sidebar="collapsed"] [data-rail] &',
+      ]);
+    }),
+  ],
 } satisfies Config;

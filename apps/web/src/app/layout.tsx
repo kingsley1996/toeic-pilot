@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { SessionProvider } from "@/lib/session";
 import { ToastProvider } from "@/lib/toast";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 
 import "./globals.css";
 
@@ -43,9 +44,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
-        {/* Đặt data-theme trước khi trang vẽ, nếu không người chọn theme tối sẽ
-            thấy một nháy trắng mỗi lần tải. */}
+        {/* Đặt data-theme và data-sidebar trước khi trang vẽ. Thiếu cái đầu là
+            một nháy trắng với người chọn theme tối; thiếu cái sau là sidebar vẽ
+            ra rộng rồi co lại — một cú nhảy bố cục ở mỗi lần tải. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
       </head>
       <body className={`${display.variable} ${body.variable} ${data.variable}`}>
         {/* Provider bọc cả shell lẫn các trang: header đọc đúng phiên mà các

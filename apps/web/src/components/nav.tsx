@@ -54,32 +54,55 @@ export function NavLink({
   badge,
   active,
   onClick,
+  title,
   className,
-}: NavItem & { active: boolean; onClick?: () => void; className?: string }) {
+}: NavItem & {
+  active: boolean;
+  onClick?: () => void;
+  /** Tooltip — lối duy nhất còn lại để đọc nhãn khi sidebar đã thu gọn. */
+  title?: string;
+  className?: string;
+}) {
   return (
     <Link
       href={href}
       onClick={onClick}
+      title={title}
       aria-current={active ? "page" : undefined}
       className={cx(
-        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
+        "relative inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
         active ? "bg-action-tint text-action-ink" : "text-ink-muted hover:bg-recess hover:text-ink",
+        "rail:justify-center rail:px-0",
         className,
       )}
     >
       <Icon size={16} strokeWidth={1.75} aria-hidden />
-      {label}
+      {/* `sr-only` chứ không `hidden` khi thu gọn: icon mang `aria-hidden`, nên
+          giấu hẳn nhãn đi là để lại một liên kết KHÔNG có tên nào đọc được. Thu
+          gọn là một lựa chọn thị giác, và với trình đọc màn hình thì bộ mục phải
+          y hệt nhau ở cả hai trạng thái. */}
+      <span className="rail:sr-only">{label}</span>
       {badge !== undefined && badge > 0 && (
-        // `ml-auto` để huy hiệu bám mép phải ở sidebar; ở thanh trên nằm ngang
-        // thì mục co theo nội dung nên nó chỉ nằm sát sau nhãn.
-        <span
-          className="ml-auto rounded-pill bg-action px-1.5 py-0.5 font-data text-label tabular-nums text-on-action"
-          // Con số một mình không nói nó đếm cái gì; trình đọc màn hình chỉ
-          // nghe "Từ vựng 12" và không biết 12 là gì.
-          aria-label={`${badge} từ cần ôn`}
-        >
-          {badge > 99 ? "99+" : badge}
-        </span>
+        <>
+          {/* `ml-auto` để huy hiệu bám mép phải ở sidebar; ở thanh trên nằm ngang
+              thì mục co theo nội dung nên nó chỉ nằm sát sau nhãn. */}
+          <span
+            className="ml-auto rounded-pill bg-action px-1.5 py-0.5 font-data text-label tabular-nums text-on-action rail:sr-only"
+            // Con số một mình không nói nó đếm cái gì; trình đọc màn hình chỉ
+            // nghe "Từ vựng 12" và không biết 12 là gì.
+            aria-label={`${badge} từ cần ôn`}
+          >
+            {badge > 99 ? "99+" : badge}
+          </span>
+          {/* Thu gọn thì không còn chỗ cho con số, nhưng "có việc đang chờ" vẫn
+              phải nhìn thấy — nếu không, thu gọn sidebar là tắt luôn lời nhắc.
+              Con số thật vẫn đi tới trình đọc màn hình qua huy hiệu `sr-only`
+              phía trên, nên chấm này chỉ là hình. */}
+          <span
+            aria-hidden
+            className="absolute right-1.5 top-1.5 hidden h-2 w-2 rounded-pill bg-action rail:block"
+          />
+        </>
       )}
     </Link>
   );

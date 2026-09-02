@@ -1,9 +1,18 @@
 "use client";
 
-import { LogOut, Menu, SquarePen, X } from "lucide-react";
+import {
+  LogIn,
+  LogOut,
+  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
+  SquarePen,
+  UserPlus,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
@@ -14,6 +23,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, ButtonLink, IconButton, Skeleton, Tag, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useProgression } from "@/lib/progression";
+import {
+  getSidebarState,
+  serverSidebarState,
+  setSidebarState,
+  subscribeToSidebar,
+} from "@/lib/sidebar";
 import { useSession } from "@/lib/session";
 
 /**
@@ -196,6 +211,33 @@ function GridBackdrop() {
   );
 }
 
+/**
+ * Nút thu gọn sidebar, chỉ có từ `lg` trở lên.
+ *
+ * Dưới `lg` sidebar đã là ngăn kéo phủ toàn màn — thu gọn nó thành dải icon là
+ * một trạng thái thứ ba không giải quyết vấn đề nào.
+ *
+ * Bề rộng KHÔNG do state này quyết định: nó do `data-sidebar` trên `<html>`, đặt
+ * xong trước khi trang vẽ. Ở đây chỉ cần biết mình đang là mũi tên nào, và một
+ * frame sai của một icon 16px thì không ai thấy — một cột 240px co lại thì có.
+ * `undefined` ở lần dựng đầu là "chưa đọc được localStorage", cùng ba-trạng-thái
+ * như `ThemeToggle`.
+ */
+function SidebarToggle() {
+  const state = useSyncExternalStore(subscribeToSidebar, getSidebarState, serverSidebarState);
+  const collapsed = state === "collapsed";
+
+  return (
+    <IconButton
+      icon={collapsed ? PanelLeftOpen : PanelLeftClose}
+      aria-label={collapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"}
+      aria-expanded={state === undefined ? undefined : !collapsed}
+      onClick={() => setSidebarState(collapsed ? "expanded" : "collapsed")}
+      className="hidden lg:grid"
+    />
+  );
+}
+
 /** Phẳng hoá để `activeHref` thấy cả mục con; nó tự ưu tiên khớp sâu nhất. */
 function flatten(links: ShellNavItem[]): NavItem[] {
   return links.flatMap((item) => [item, ...(item.children ?? [])]);
@@ -233,11 +275,15 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
   if (status === "anonymous" || !user) {
     return (
       <div className="flex shrink-0 flex-col gap-2 border-t border-rule px-2 py-3">
-        <ButtonLink href="/login" variant="secondary" size="sm">
-          Đăng nhập
+        {/* Cả hai lối vào đều sống sót qua lúc thu gọn, chỉ rụng mất chữ: bỏ một
+            cái đi là quyết định hộ người dùng rằng họ định làm gì. */}
+        <ButtonLink href="/login" variant="secondary" size="sm" className="rail:px-0">
+          <LogIn size={14} strokeWidth={2} aria-hidden className="hidden rail:block" />
+          <span className="rail:sr-only">Đăng nhập</span>
         </ButtonLink>
-        <ButtonLink href="/register" size="sm">
-          Tạo tài khoản
+        <ButtonLink href="/register" size="sm" className="rail:px-0">
+          <UserPlus size={14} strokeWidth={2} aria-hidden className="hidden rail:block" />
+          <span className="rail:sr-only">Tạo tài khoản</span>
         </ButtonLink>
       </div>
     );
@@ -253,7 +299,8 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
     <div className="shrink-0 border-t border-rule px-2 py-2">
       <Link
         href="/profile"
-        className="flex items-center gap-2.5 rounded px-2 py-2 transition-colors hover:bg-recess"
+        className="flex items-center gap-2.5 rounded px-2 py-2 transition-colors hover:bg-recess rail:justify-center rail:px-0"
+        title={displayName ?? user.email}
       >
         {/* `md` chứ không `sm`: huy hiệu level cần chỗ để đọc được, và ở 28px
             nó chiếm gần một phần ba ô. Đây là avatar THƯỜNG TRỰC của người dùng,
@@ -267,7 +314,7 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
           frame={progression?.frame}
           level={progression?.level}
         />
-        <span className="min-w-0 flex-1">
+        <span className="min-w-0 flex-1 rail:sr-only">
           <span className="block truncate text-small font-semibold">
             {displayName ?? user.email}
           </span>
@@ -278,7 +325,7 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
       </Link>
 
       {showRole && user.role !== "learner" && (
-        <div className="px-2 pb-1">
+        <div className="px-2 pb-1 rail:hidden">
           <Tag tone="action">{user.role}</Tag>
         </div>
       )}
@@ -294,20 +341,22 @@ function AccountBlock({ showRole }: { showRole: boolean }) {
       {canEdit && !inAdmin && (
         <Link
           href="/admin"
-          className="flex items-center gap-2.5 rounded px-2.5 py-2 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink"
+          title="Quản trị nội dung"
+          className="flex items-center gap-2.5 rounded px-2.5 py-2 text-small font-semibold text-ink-muted transition-colors hover:bg-recess hover:text-ink rail:justify-center rail:px-0"
         >
           <SquarePen size={16} strokeWidth={1.75} aria-hidden />
-          Quản trị nội dung
+          <span className="rail:sr-only">Quản trị nội dung</span>
         </Link>
       )}
 
       <button
         type="button"
         onClick={logout}
-        className="flex w-full items-center gap-2.5 rounded px-2.5 py-2 text-left text-small font-semibold text-alert transition-colors hover:bg-recess"
+        title="Đăng xuất"
+        className="flex w-full items-center gap-2.5 rounded px-2.5 py-2 text-left text-small font-semibold text-alert transition-colors hover:bg-recess rail:justify-center rail:px-0"
       >
         <LogOut size={16} strokeWidth={1.75} aria-hidden />
-        Đăng xuất
+        <span className="rail:sr-only">Đăng xuất</span>
       </button>
     </div>
   );
@@ -332,7 +381,7 @@ function SidebarContent({
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-3">
         {sectionLabel && (
-          <p className="mb-2 px-2.5 text-label font-semibold uppercase text-ink-faint">
+          <p className="mb-2 px-2.5 text-label font-semibold uppercase text-ink-faint rail:sr-only">
             {sectionLabel}
           </p>
         )}
@@ -340,29 +389,45 @@ function SidebarContent({
           {links.map((item, index) => (
             <div key={item.href} className="contents">
               {item.group && item.group !== links[index - 1]?.group && (
+                /* Thu gọn thì chữ không còn chỗ, nhưng RANH GIỚI nhóm thì vẫn
+                   phải thấy: bảy icon xếp liền một cột là bảy việc không liên
+                   quan trông như một danh sách. Cái `<p>` co lại thành một
+                   đường kẻ, và tên nhóm đi tiếp tới trình đọc màn hình. */
                 <p
                   className={cx(
                     "px-2.5 text-label font-semibold uppercase text-ink-faint",
                     index === 0 ? "mb-1" : "mb-1 mt-4",
+                    "rail:mx-2 rail:h-px rail:bg-rule rail:px-0",
+                    index === 0 && "rail:hidden",
                   )}
                 >
-                  {item.group}
+                  <span className="rail:sr-only">{item.group}</span>
                 </p>
               )}
               {/* Spread, không liệt kê từng prop: bản liệt kê chép ba trường và
                   im lặng đánh rơi mọi trường thêm sau này. `badge` được thêm vào
                   `NavItem` và không bao giờ tới nơi vì đúng chỗ này — kiểu vẫn
                   đúng, trang vẫn chạy, huy hiệu chỉ đơn giản là không hiện. */}
-              <NavLink {...item} active={item.href === active} className="justify-start" />
+              <NavLink
+                {...item}
+                title={item.label}
+                active={item.href === active}
+                className="justify-start"
+              />
               {/* Mục con chỉ hiện khi đang ở trong khu đó. Hiện thường trực sẽ
                   làm sidebar dài ra vì những việc người dùng chưa quan tâm, và
                   mỗi tính năng mới lại thêm một dòng nữa. */}
               {item.children && isBranchOpen(item, active) && (
-                <div className="ml-3 flex flex-col gap-1 border-l border-rule pl-2">
+                /* Thụt lề bằng viền trái không sống nổi trong một dải 64px —
+                   icon con lệch khỏi cột icon cha, và cái lệch đó đọc ra là hỏng
+                   chứ không phải là phân cấp. Thu gọn thì bỏ thụt lề; mục con
+                   vốn chỉ hiện khi đang ở trong khu đó nên ngữ cảnh không mất. */
+                <div className="ml-3 flex flex-col gap-1 border-l border-rule pl-2 rail:ml-0 rail:border-l-0 rail:pl-0">
                   {item.children.map((child) => (
                     <NavLink
                       key={child.href}
                       {...child}
+                      title={child.label}
                       active={child.href === active}
                       className="justify-start"
                     />
@@ -426,6 +491,9 @@ export function SidebarShell({
             onClick={() => setOpenedAt(menuOpen ? null : pathname)}
             className="lg:hidden"
           />
+          {/* Cùng vị trí với hamburger, và hai cái loại trừ nhau theo breakpoint:
+              một khung chỉ có đúng một nút điều khiển sidebar, luôn ở một chỗ. */}
+          <SidebarToggle />
 
           {/* Logo LUÔN về trang giới thiệu, kể cả khi đã đăng nhập: quy ước
               chung của web là logo = gốc của site. Đường về nhà không mất — nó
@@ -460,7 +528,13 @@ export function SidebarShell({
          * `vh` vì trên trình duyệt di động `vh` tính cả phần thanh địa chỉ tự
          * ẩn, nên khối tài khoản ở đáy bị đẩy khuất khỏi màn hình.
          */}
-        <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 border-r border-rule lg:block">
+        <aside
+          /* Mốc của biến thể `rail:` — xem `tailwind.config.ts`. Không có nó,
+             `data-sidebar` trên `<html>` sẽ thu gọn cả nav ngang của trang giới
+             thiệu lẫn ngăn kéo mobile, hai chỗ dùng chung component này. */
+          data-rail
+          className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 border-r border-rule transition-[width] duration-enter motion-reduce:transition-none lg:block rail:w-16"
+        >
           <SidebarContent
             links={links}
             active={active}
