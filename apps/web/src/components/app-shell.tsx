@@ -33,20 +33,42 @@ import { useSession } from "@/lib/session";
  * hoạt động, trong khi mở cái nào trước thì cái đó tiêu hết hàng đợi của ngày và
  * cái còn lại hiện "không còn từ nào đến hạn".
  */
-const LEARN_LINKS: NavItem[] = [
-  // `covers`: ba chế độ mở ra từ trang chủ nhưng không nằm dưới `/dashboard`.
-  // Không khai báo thì mở "Ôn tập" xong cả sidebar tắt đèn.
-  {
-    href: "/dashboard",
-    label: "Hôm nay",
-    Icon: House,
-    covers: ["/learn/review", "/learn/typing", "/learn/attempts"],
-  },
+/*
+ * Ba KHO NỘI DUNG, hiện với mọi người kể cả khách vãng lai.
+ *
+ * Cả ba trang này đã công khai từ trước — `/learn/tests` có hẳn chú thích nói đó
+ * là chủ ý, `/learn/vocabulary` dùng `useSession` chứ không phải
+ * `useRequireSession`, và `/learn/dictation` vừa được mở. Nên bày chúng ra
+ * không phải là mời người ta bấm vào chỗ sẽ đá họ ngược lại: mỗi mục ở đây dẫn
+ * tới một trang khách xem được thật.
+ */
+const CONTENT_LINKS: NavItem[] = [
   { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
   { href: "/learn/tests", label: "Luyện thi", Icon: FileText },
-  { href: "/learn/assistant", label: "Trợ lý AI", Icon: Sparkles },
 ];
+
+/*
+ * Hai mục CHỈ có nghĩa khi đã đăng nhập, nên chúng chỉ hiện ở sidebar sau khi
+ * đăng nhập — không bao giờ ở thanh trên của trang giới thiệu.
+ *
+ * "Hôm nay" là việc của một người cụ thể và "Trợ lý AI" cần một tài khoản để
+ * nói chuyện. Bày chúng cho khách là hứa hai nơi chốn rồi đá họ về `/login` —
+ * đúng cái mà bộ mục cũ đã tránh, và lý do đó vẫn còn nguyên với hai mục này.
+ */
+const TODAY_LINK: NavItem = {
+  // `covers`: ba chế độ mở ra từ trang chủ nhưng không nằm dưới `/dashboard`.
+  // Không khai báo thì mở "Ôn tập" xong cả sidebar tắt đèn.
+  href: "/dashboard",
+  label: "Hôm nay",
+  Icon: House,
+  covers: ["/learn/review", "/learn/typing", "/learn/attempts"],
+};
+const ASSISTANT_LINK: NavItem = {
+  href: "/learn/assistant",
+  label: "Trợ lý AI",
+  Icon: Sparkles,
+};
 
 /*
  * Ba trang dùng thanh trên thay vì sidebar, và cả ba vì cùng một lý do: chúng
@@ -112,10 +134,19 @@ function useDueCount(): number {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const due = useDueCount();
+  const { status } = useSession();
+  const signedIn = status === "authenticated";
   // Gắn huy hiệu vào đúng mục từ vựng. Ghép theo `href`, không theo chỉ số:
   // thêm hay đổi thứ tự mục thì huy hiệu vẫn bám đúng chỗ.
-  const links: NavItem[] = LEARN_LINKS.map((link) =>
-    link.href === "/learn/vocabulary" ? { ...link, badge: due } : link,
+  const withBadge = (list: NavItem[]): NavItem[] =>
+    list.map((link) => (link.href === "/learn/vocabulary" ? { ...link, badge: due } : link));
+
+  // Thanh trên của trang giới thiệu: LUÔN đúng ba kho nội dung, không phụ thuộc
+  // phiên. Sidebar thì thêm hai mục của tài khoản khi đã đăng nhập, giữ nguyên
+  // thứ tự cũ — "Hôm nay" mở đầu, "Trợ lý AI" khép lại.
+  const topBarLinks = withBadge(CONTENT_LINKS);
+  const sidebarLinks = withBadge(
+    signedIn ? [TODAY_LINK, ...CONTENT_LINKS, ASSISTANT_LINK] : CONTENT_LINKS,
   );
 
   /*
@@ -138,14 +169,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (TOP_BAR_ROUTES.has(pathname)) {
     return (
-      <TopBarShell links={links} sectionLabel="Học" footer={Footer}>
+      <TopBarShell links={topBarLinks} sectionLabel="Học" footer={Footer}>
         {children}
       </TopBarShell>
     );
   }
 
   return (
-    <SidebarShell links={links} sectionLabel="Học">
+    <SidebarShell links={sidebarLinks} sectionLabel="Học">
       {children}
       {/*
        * Chỉ ở khung có sidebar. Ba trang thanh trên đứng NGOÀI ứng dụng, còn khu

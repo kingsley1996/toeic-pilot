@@ -523,14 +523,15 @@ export function TopBarShell({
    * Cùng cách đóng dấu bằng đường dẫn như `SidebarShell` — xem chú thích dài ở
    * đó về lý do không dùng effect.
    *
-   * Bộ mục chỉ tồn tại với người ĐÃ đăng nhập, nên nút mở cũng vậy: dựng nó cho
-   * khách vãng lai là một cái nút mở ra khoảng trống. `loading` không phải
-   * `anonymous`, và ở đây nó rơi vào nhánh không-nav — thà thiếu một nhịp còn
-   * hơn dựng nút rồi rút đi ngay trước mắt người dùng.
+   * Bộ mục ở đây KHÔNG phụ thuộc phiên: `app-shell` chỉ đưa xuống ba kho nội
+   * dung, và cả ba đều xem được khi chưa đăng nhập. Trước đây nav bị chặn sau
+   * `status === "authenticated"`, nên khách vãng lai đứng ở trang giới thiệu
+   * không có lối nào vào phần học. Không còn ba trạng thái để lo ở chỗ này, và
+   * cũng không còn cú nháy khi phiên phân giải xong.
    */
   const [openedAt, setOpenedAt] = useState<string | null>(null);
   const menuOpen = openedAt === pathname;
-  const hasNav = status === "authenticated";
+  const hasNav = links.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col">
