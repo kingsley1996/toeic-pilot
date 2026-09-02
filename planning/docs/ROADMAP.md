@@ -35,8 +35,8 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 
 | Việc | Còn gì | Ở đâu |
 |---|---|---|
-| **Dàn giọng narrator** | ~~Từ vựng + dictation~~ **xong**: 2 470 clip thu lại, cả 3 994 clip giờ ở `engine_version` 3, bốn narrator chia đều 965/giọng. Còn: đề trên production vẫn dàn cũ | `PHASE2-AUDIO.md` §A4.6 |
-| **Đưa đề lên production** | `tp-form-08` chưa nạp; 06/07 trên production vẫn dàn giọng cũ | `SYNC-TEST-TO-PRODUCTION.md` |
+| ~~**Dàn giọng narrator**~~ | **Xong cả dev lẫn production.** Từ vựng + dictation: 2 470 clip thu lại, cả 3 994 clip ở `engine_version` 3, bốn narrator chia đều 965/giọng. Ba đề `tp-form-06/07/08` cũng đã ở v3 trên production. Dư lại 11 clip v1 + 24 clip `-` thuộc hai đề mẫu cũ (`demo-2026-test-1`, `toeic-2024-test-1`), giống hệt nhau ở hai bên | `PHASE2-AUDIO.md` §A4.6 |
+| ~~**Đưa đề lên production**~~ | **Xong.** Cả năm đề đã `published` trên production, gồm `tp-form-08`. Đối chiếu 2026-09-02: audio đề ở production khớp từng con số với dev | `SYNC-TEST-TO-PRODUCTION.md` |
 | **Tách tệp quá dài** | Đợt 1–3 xong. Nợ: hai trang admin không có e2e | `REFACTOR-LONG-FILES.md` §4b |
 | **Gộp tài liệu** | Xong đợt này. Còn: quyết định giữ hay bỏ `PLAN.md` | mục 5 dưới đây |
 
