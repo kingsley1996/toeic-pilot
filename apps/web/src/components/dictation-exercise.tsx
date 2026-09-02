@@ -212,6 +212,17 @@ export function DictationExercise({
             CORS trên nguồn media. */}
         <audio controls src={item.audio_url} className="w-full" />
 
+        {/* Mở được NGAY, không chờ chấm: người luyện tự quyết khi nào nhìn —
+            cùng lựa chọn đã áp cho chế độ Luyện tập ở màn làm bài. Đổi lại, câu
+            chép nguyên vẫn tính là xong; tiến độ chỉ đếm "đã gõ đúng chưa" nên
+            không có điểm nào để nâng. */}
+        <details className="mt-3 rounded border border-rule bg-recess">
+          <summary className="cursor-pointer select-none px-4 py-2 text-small font-medium">
+            Full transcript
+          </summary>
+          <p className="border-t border-rule px-4 py-3 leading-relaxed">{item.transcript}</p>
+        </details>
+
         {/*
          * Ô nhập có một lớp phủ nằm dưới để gạch chân những từ gõ sai, ngay tại
          * chỗ người học đang gõ.
@@ -360,13 +371,6 @@ export function DictationExercise({
                     Bạn đã sửa lại bài. Bấm Kiểm tra để đối chiếu đoạn hiện tại.
                   </p>
                 )}
-
-                <details className="mt-4 rounded border border-rule bg-recess p-3">
-                  <summary className="cursor-pointer text-label font-semibold uppercase text-ink-faint">
-                    Xem đáp án
-                  </summary>
-                  <p className="mt-2">{item.transcript}</p>
-                </details>
               </>
             )}
 
