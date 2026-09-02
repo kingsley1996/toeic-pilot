@@ -26,13 +26,18 @@ _ABSENCE = re.compile(
     re.IGNORECASE,
 )
 
-# Hướng ảnh, không phải nội dung ảnh. Tách riêng để khi đổi phong cách toàn bộ
-# Part 1 thì sửa một chỗ, chứ không sửa sáu tệp mô tả.
+# Hướng ảnh, không phải NỘI DUNG ảnh — và đó là lý do ở đây không có lấy một chữ
+# về bối cảnh. Chuỗi này dán vào MỌI ảnh, nên "ordinary workplace setting" đứng
+# đây từng kéo cả sáu cảnh về văn phòng bất kể planner viết gì: 25 ảnh đầu tiên
+# không có lấy một ảnh tả vật hay tả cảnh. Bối cảnh thuộc về mô tả từng ảnh, chỗ
+# đọc được và sửa được (`SPEC-EXAM-VISUALS.md` §2).
+#
+# "natural lighting" chứ không "natural indoor lighting", cùng một lý do: ảnh
+# Part 1 thật có cả cảnh ngoài trời.
 STYLE = (
     "A realistic black and white photograph, monochrome, documentary style, "
-    "eye-level camera, natural indoor lighting, strong tonal separation between "
-    "subject and background, sharp focus, full scene visible, "
-    "ordinary workplace setting."
+    "eye-level camera, natural lighting, strong tonal separation between "
+    "subject and background, sharp focus, full scene visible."
 )
 
 # Những thứ luôn phải tránh ở ảnh Part 1, bất kể cảnh là gì. Chữ và logo đứng
