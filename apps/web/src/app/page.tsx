@@ -295,6 +295,15 @@ export default function HomePage() {
               <h3>{landing.dictation.title}</h3>
               <p>{landing.dictation.lead}</p>
               <Bullets items={landing.dictation.bullets} />
+              {/* Chỉ dựng cho khách. Người đã đăng nhập có mục "Dictation" ngay
+                  trên thanh điều hướng, nên nút này với họ là một lối vào thứ
+                  hai tới cùng một chỗ. `loading` cũng không dựng: nháy một nút
+                  rồi rút đi là thứ luật ba trạng thái tồn tại để tránh. */}
+              {status === "anonymous" && (
+                <Link className="l-btn l-btn-primary l-inline-cta" href="/learn/dictation">
+                  {landing.dictation.cta} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+                </Link>
+              )}
             </div>
             <div className="l-mock">
               <MockPlayer

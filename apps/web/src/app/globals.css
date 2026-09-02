@@ -1734,3 +1734,9 @@
   font-weight: 800;
   margin-top: 12px;
 }
+
+/* Nút dẫn vào phần học đặt giữa một khối showcase. `inline-flex` để nó ôm chữ
+   thay vì kéo dài hết cột như nút trong `.l-actions`. */
+.landing .l-inline-cta {
+  margin-top: 22px;
+}

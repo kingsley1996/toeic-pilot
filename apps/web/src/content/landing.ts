@@ -121,6 +121,11 @@ export const landing = {
     title: "Nghe kỹ hơn. Hiểu nhanh hơn.",
     lead: "Nghe một câu tiếng Anh, tự viết lại những gì bạn nghe được và phát hiện chính xác những từ hoặc âm thanh mà mình thường bỏ sót.",
     bullets: ["Luyện nghe hiểu", "Nhận diện từ khi nghe", "Cải thiện chính tả"],
+    /* Lối vào DUY NHẤT từ trang chủ tới phần học, và nó phải nằm ở đây.
+       Thanh trên chỉ dựng nav cho người đã đăng nhập, nên khách vãng lai không
+       có đường nào khác — nói "dùng được không cần tài khoản" mà không cho họ
+       chỗ bấm thì lời đó không có thật. */
+    cta: "Nghe thử ngay — không cần tài khoản",
   },
 
   exam: {
