@@ -90,6 +90,7 @@ def _dictation_admin(item: DictationItem, attempts: int) -> DictationAdmin:
     return DictationAdmin(
         id=str(item.id),
         transcript=item.transcript,
+        transcript_vi=item.transcript_vi,
         difficulty=item.difficulty,
         status=item.status,
         audio_state=dictation_audio_state(item).value,
@@ -206,6 +207,11 @@ def update_dictation(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
     payload = body.model_dump(exclude_unset=True)
+    # Xoá trắng ô bản dịch phải cho ra NULL, không phải chuỗi rỗng: hai giá trị
+    # cùng nghĩa "chưa dịch" thì mọi lượt đếm câu còn thiếu bản dịch đều sai, và
+    # sai theo hướng nói rằng đã xong.
+    if payload.get("transcript_vi") == "":
+        payload["transcript_vi"] = None
     if "topic_id" in payload:
         payload["topic_id"] = uuid.UUID(payload["topic_id"]) if payload["topic_id"] else None
 

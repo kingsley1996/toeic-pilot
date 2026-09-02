@@ -4374,6 +4374,8 @@ export interface components {
             story_id?: string | null;
             /** Transcript */
             transcript: string;
+            /** Transcript Vi */
+            transcript_vi?: string | null;
         };
         /** DictationCommit */
         DictationCommit: {
@@ -4403,6 +4405,8 @@ export interface components {
             topic_id: string | null;
             /** Transcript */
             transcript: string;
+            /** Transcript Vi */
+            transcript_vi?: string | null;
             /** Word Count */
             word_count: number;
         };
@@ -4713,6 +4717,8 @@ export interface components {
             topic_id?: string | null;
             /** Transcript */
             transcript?: string | null;
+            /** Transcript Vi */
+            transcript_vi?: string | null;
         };
         /**
          * DiffWord
@@ -6512,6 +6518,8 @@ export interface components {
             position: number;
             /** Transcript */
             transcript: string;
+            /** Transcript Vi */
+            transcript_vi?: string | null;
             /** Word Count */
             word_count: number;
         };

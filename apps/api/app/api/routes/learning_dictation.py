@@ -121,6 +121,7 @@ def _dictation_detail(item: DictationItem) -> DictationDetail:
         audio_url=public_audio_url(item.asset.storage_key),
         duration_ms=item.asset.duration_ms,
         transcript=item.transcript,
+        transcript_vi=item.transcript_vi,
     )
 
 
@@ -513,6 +514,7 @@ def get_dictation_story(
                 audio_url=public_audio_url(item.asset.storage_key) if item.asset else "",
                 duration_ms=item.asset.duration_ms if item.asset else 0,
                 transcript=item.transcript,
+                transcript_vi=item.transcript_vi,
                 completed=item.id in done,
             )
             for item in items

@@ -47,6 +47,8 @@ const STAGGER_CAP_MS = 600;
 export type ExerciseItem = {
   id: string;
   transcript: string;
+  /** Câu chưa dịch vẫn học được — khối lời thoại chỉ hiện tiếng Anh. */
+  transcript_vi?: string | null;
   audio_url: string;
   word_count: number;
 };
@@ -220,7 +222,18 @@ export function DictationExercise({
           <summary className="cursor-pointer select-none px-4 py-2 text-small font-medium">
             Full transcript
           </summary>
-          <p className="border-t border-rule px-4 py-3 leading-relaxed">{item.transcript}</p>
+          <div className="space-y-1.5 border-t border-rule px-4 py-3">
+            <p className="leading-relaxed">{item.transcript}</p>
+            {/* Dictation đo được người học có NGHE ra chữ không, chứ không đo họ
+                có hiểu không — gõ đúng trọn một câu vẫn có thể chẳng biết nó
+                nói gì. Bản dịch đi cùng lời thoại chứ không đứng riêng, và câu
+                chưa dịch thì khối này chỉ có tiếng Anh. */}
+            {item.transcript_vi && (
+              <p className="text-small italic leading-relaxed text-ink-muted">
+                {item.transcript_vi}
+              </p>
+            )}
+          </div>
         </details>
 
         {/*

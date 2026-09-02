@@ -177,6 +177,7 @@ class VocabularyAdmin(BaseModel):
 class DictationAdmin(BaseModel):
     id: str
     transcript: str
+    transcript_vi: str | None = None
     difficulty: int
     status: str
     audio_state: str
@@ -210,6 +211,7 @@ class VocabularyUpdate(BaseModel):
 
 class DictationUpdate(BaseModel):
     transcript: str | None = None
+    transcript_vi: str | None = None
     difficulty: int | None = Field(default=None, ge=1, le=5)
     topic_id: str | None = None
     status: str | None = None

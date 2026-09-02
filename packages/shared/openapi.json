@@ -2134,6 +2134,17 @@
           "transcript": {
             "title": "Transcript",
             "type": "string"
+          },
+          "transcript_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript Vi"
           }
         },
         "required": [
@@ -2224,6 +2235,17 @@
           "transcript": {
             "title": "Transcript",
             "type": "string"
+          },
+          "transcript_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript Vi"
           },
           "word_count": {
             "title": "Word Count",
@@ -3229,6 +3251,17 @@
               }
             ],
             "title": "Transcript"
+          },
+          "transcript_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript Vi"
           }
         },
         "title": "DictationUpdate",
@@ -7893,6 +7926,17 @@
           "transcript": {
             "title": "Transcript",
             "type": "string"
+          },
+          "transcript_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript Vi"
           },
           "word_count": {
             "title": "Word Count",

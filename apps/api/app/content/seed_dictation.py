@@ -57,7 +57,9 @@ class Unit:
     story_title: str
     story_description: str
     difficulty: int
-    sentences: tuple[str, ...] = field(default_factory=tuple)
+    # (tiếng Anh, bản dịch). Bản dịch KHÔNG tham gia chấm bài và không vào
+    # `source_hash` — nó chỉ để người học biết câu mình vừa gõ nói gì.
+    sentences: tuple[tuple[str, str], ...] = field(default_factory=tuple)
 
 
 @dataclass(frozen=True)
@@ -72,6 +74,42 @@ class Topic:
 
 
 SHORT_STORY_UNITS: tuple[Unit, ...] = (
+    # Unit 1 được seed bằng một đường khác từ trước khi tệp này ra đời, nên nó
+    # KHÔNG có ở đây và sáu câu của nó không có bản dịch. Khai lại đúng tên và
+    # tiêu đề cũ: vòng dựng khớp theo tên nên nó nhận ra story đã có, không tạo
+    # thêm, và chỉ điền phần còn thiếu.
+    Unit(
+        name="Unit 1 — Office life",
+        story_title="A Day at the Office",
+        story_description="Một ngày làm việc bình thường.",
+        difficulty=3,
+        sentences=(
+            (
+                "Please submit your expense claims to the finance department.",
+                "Vui lòng nộp đề nghị thanh toán chi phí cho phòng tài chính.",
+            ),
+            (
+                "The meeting will start at nine o'clock tomorrow morning.",
+                "Cuộc họp sẽ bắt đầu lúc chín giờ sáng mai.",
+            ),
+            (
+                "The shipment has been delayed until Thursday afternoon.",
+                "Lô hàng đã bị hoãn tới chiều thứ Năm.",
+            ),
+            (
+                "The quarterly report is due before the end of the month.",
+                "Báo cáo quý phải nộp trước cuối tháng.",
+            ),
+            (
+                "All employees are required to attend the training session.",
+                "Toàn thể nhân viên bắt buộc tham dự buổi tập huấn.",
+            ),
+            (
+                "Customers can contact our support team by phone or email.",
+                "Khách hàng có thể liên hệ bộ phận hỗ trợ qua điện thoại hoặc email.",
+            ),
+        ),
+    ),
     Unit(
         name="Unit 2 — Travel and the airport",
         story_title="A Delayed Flight",
@@ -79,14 +117,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         # Dễ nhất trong bốn bài: câu ngắn, từ vựng sân bay lặp lại nhiều.
         difficulty=2,
         sentences=(
-            "Ms. Carter arrived at the airport two hours before her flight.",
-            "The screen at the gate said her departure had been delayed.",
-            "She asked an agent how long the delay was expected to last.",
-            "The agent explained that bad weather had grounded several planes.",
-            "Ms. Carter called her office to move the afternoon meeting.",
-            "She found a quiet seat near the window and opened her laptop.",
-            "An announcement finally invited passengers to board through gate twelve.",
-            "The flight landed just in time for her dinner appointment.",
+            (
+                "Ms. Carter arrived at the airport two hours before her flight.",
+                "Bà Carter tới sân bay trước giờ bay hai tiếng.",
+            ),
+            (
+                "The screen at the gate said her departure had been delayed.",
+                "Màn hình ở cửa ra máy bay báo chuyến của bà bị hoãn.",
+            ),
+            (
+                "She asked an agent how long the delay was expected to last.",
+                "Bà hỏi nhân viên xem dự kiến hoãn bao lâu.",
+            ),
+            (
+                "The agent explained that bad weather had grounded several planes.",
+                "Nhân viên giải thích rằng thời tiết xấu khiến vài máy bay không cất cánh được.",
+            ),
+            (
+                "Ms. Carter called her office to move the afternoon meeting.",
+                "Bà Carter gọi về văn phòng để dời cuộc họp buổi chiều.",
+            ),
+            (
+                "She found a quiet seat near the window and opened her laptop.",
+                "Bà tìm một chỗ ngồi yên tĩnh cạnh cửa sổ rồi mở máy tính.",
+            ),
+            (
+                "An announcement finally invited passengers to board through gate twelve.",
+                "Cuối cùng cũng có thông báo mời hành khách lên máy bay ở cửa số mười hai.",
+            ),
+            (
+                "The flight landed just in time for her dinner appointment.",
+                "Chuyến bay hạ cánh vừa kịp cho cuộc hẹn ăn tối của bà.",
+            ),
         ),
     ),
     Unit(
@@ -95,14 +157,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         story_description="Một bữa tối tiếp khách, từ lúc đặt bàn đến lúc ký hoá đơn.",
         difficulty=3,
         sentences=(
-            "Mr. Tanaka booked a table for four at a restaurant downtown.",
-            "He asked the waiter to seat them away from the kitchen.",
-            "The client arrived a few minutes late because of heavy traffic.",
-            "They ordered the soup of the day and the grilled fish.",
-            "The waiter apologized that the dessert menu had already changed.",
-            "Mr. Tanaka signed the receipt and kept a copy for his expenses.",
-            "The client thanked him and promised to send the contract on Monday.",
-            "They agreed to meet again once the new branch had opened.",
+            (
+                "Mr. Tanaka booked a table for four at a restaurant downtown.",
+                "Ông Tanaka đặt bàn bốn người ở một nhà hàng trong trung tâm.",
+            ),
+            (
+                "He asked the waiter to seat them away from the kitchen.",
+                "Ông nhờ người phục vụ xếp chỗ xa khu bếp.",
+            ),
+            (
+                "The client arrived a few minutes late because of heavy traffic.",
+                "Khách tới trễ vài phút vì đường đông.",
+            ),
+            (
+                "They ordered the soup of the day and the grilled fish.",
+                "Họ gọi món súp trong ngày và món cá nướng.",
+            ),
+            (
+                "The waiter apologized that the dessert menu had already changed.",
+                "Người phục vụ xin lỗi vì thực đơn tráng miệng đã đổi.",
+            ),
+            (
+                "Mr. Tanaka signed the receipt and kept a copy for his expenses.",
+                "Ông Tanaka ký hoá đơn và giữ một bản để thanh toán chi phí.",
+            ),
+            (
+                "The client thanked him and promised to send the contract on Monday.",
+                "Khách cảm ơn ông và hứa gửi hợp đồng vào thứ Hai.",
+            ),
+            (
+                "They agreed to meet again once the new branch had opened.",
+                "Hai bên hẹn gặp lại khi chi nhánh mới khai trương.",
+            ),
         ),
     ),
     Unit(
@@ -111,14 +197,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         story_description="Giao thiếu hàng, gọi tổng đài, và cách chuyện được giải quyết.",
         difficulty=3,
         sentences=(
-            "A customer ordered two desk lamps from the company website.",
-            "The package arrived on Friday with only one lamp inside.",
-            "She called the support line and explained what had happened.",
-            "The agent apologized and checked the order number in the system.",
-            "He confirmed that the second lamp was still in the warehouse.",
-            "The company agreed to ship the missing item at no extra cost.",
-            "She received a confirmation email within the next ten minutes.",
-            "The replacement lamp was delivered early the following week.",
+            (
+                "A customer ordered two desk lamps from the company website.",
+                "Một khách hàng đặt hai chiếc đèn bàn trên website công ty.",
+            ),
+            (
+                "The package arrived on Friday with only one lamp inside.",
+                "Kiện hàng tới vào thứ Sáu nhưng bên trong chỉ có một chiếc đèn.",
+            ),
+            (
+                "She called the support line and explained what had happened.",
+                "Cô gọi tổng đài hỗ trợ và trình bày sự việc.",
+            ),
+            (
+                "The agent apologized and checked the order number in the system.",
+                "Nhân viên xin lỗi rồi tra số đơn hàng trong hệ thống.",
+            ),
+            (
+                "He confirmed that the second lamp was still in the warehouse.",
+                "Anh xác nhận chiếc đèn thứ hai vẫn còn trong kho.",
+            ),
+            (
+                "The company agreed to ship the missing item at no extra cost.",
+                "Công ty đồng ý gửi món hàng còn thiếu mà không tính thêm phí.",
+            ),
+            (
+                "She received a confirmation email within the next ten minutes.",
+                "Cô nhận được email xác nhận trong vòng mười phút sau đó.",
+            ),
+            (
+                "The replacement lamp was delivered early the following week.",
+                "Chiếc đèn thay thế được giao vào đầu tuần sau.",
+            ),
         ),
     ),
     Unit(
@@ -128,14 +238,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         # Khó nhất: câu dài hơn, thì quá khứ hoàn thành, số liệu trong câu.
         difficulty=4,
         sentences=(
-            "Daniel was invited back for a second interview on Tuesday morning.",
-            "He studied the latest annual report the night before.",
-            "The manager asked him to describe a project he had managed alone.",
-            "Daniel explained how his team had cut delivery times by a third.",
-            "He mentioned that he was studying for a certificate in logistics.",
-            "The manager wanted to know when he would be available to start.",
-            "Daniel said his current employer required four weeks of notice.",
-            "The offer letter reached his inbox before the end of the week.",
+            (
+                "Daniel was invited back for a second interview on Tuesday morning.",
+                "Daniel được mời quay lại phỏng vấn vòng hai vào sáng thứ Ba.",
+            ),
+            (
+                "He studied the latest annual report the night before.",
+                "Tối hôm trước anh đọc kỹ báo cáo thường niên mới nhất.",
+            ),
+            (
+                "The manager asked him to describe a project he had managed alone.",
+                "Người quản lý đề nghị anh kể về một dự án anh từng tự quản lý.",
+            ),
+            (
+                "Daniel explained how his team had cut delivery times by a third.",
+                "Daniel kể nhóm của anh đã rút ngắn thời gian giao hàng một phần ba như thế nào.",
+            ),
+            (
+                "He mentioned that he was studying for a certificate in logistics.",
+                "Anh cho biết mình đang học lấy chứng chỉ về logistics.",
+            ),
+            (
+                "The manager wanted to know when he would be available to start.",
+                "Người quản lý muốn biết khi nào anh có thể bắt đầu.",
+            ),
+            (
+                "Daniel said his current employer required four weeks of notice.",
+                "Daniel nói công ty hiện tại yêu cầu báo trước bốn tuần.",
+            ),
+            (
+                "The offer letter reached his inbox before the end of the week.",
+                "Thư mời nhận việc tới hộp thư của anh trước khi hết tuần.",
+            ),
         ),
     ),
     Unit(
@@ -144,14 +278,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         story_description="Một đội chuyển sang tầng mới, và sự cố mạng sáng thứ Hai.",
         difficulty=3,
         sentences=(
-            "The design team was told they would move to a new floor.",
-            "Boxes and labels arrived on Monday for everyone to pack their files.",
-            "The manager asked staff to leave the monitors on the desks.",
-            "Movers came on Friday evening after most people had gone home.",
-            "On Monday the team found their chairs already waiting by the window.",
-            "The network in one corner did not work for the first hour.",
-            "A technician traced the fault to a cable behind the wall panel.",
-            "By lunchtime the whole floor was online and the boxes were gone.",
+            (
+                "The design team was told they would move to a new floor.",
+                "Nhóm thiết kế được báo sẽ chuyển sang tầng mới.",
+            ),
+            (
+                "Boxes and labels arrived on Monday for everyone to pack their files.",
+                "Thùng và nhãn dán được đưa tới vào thứ Hai để mọi người đóng gói hồ sơ.",
+            ),
+            (
+                "The manager asked staff to leave the monitors on the desks.",
+                "Quản lý dặn nhân viên để nguyên màn hình trên bàn.",
+            ),
+            (
+                "Movers came on Friday evening after most people had gone home.",
+                "Đội chuyển đồ tới vào tối thứ Sáu, khi phần lớn mọi người đã về.",
+            ),
+            (
+                "On Monday the team found their chairs already waiting by the window.",
+                "Sáng thứ Hai cả nhóm thấy ghế của mình đã được đặt sẵn cạnh cửa sổ.",
+            ),
+            (
+                "The network in one corner did not work for the first hour.",
+                "Mạng ở một góc phòng không chạy trong tiếng đầu tiên.",
+            ),
+            (
+                "A technician traced the fault to a cable behind the wall panel.",
+                "Một kỹ thuật viên lần ra lỗi nằm ở sợi cáp sau tấm ốp tường.",
+            ),
+            (
+                "By lunchtime the whole floor was online and the boxes were gone.",
+                "Đến trưa thì cả tầng đã có mạng và thùng đồ cũng dọn xong.",
+            ),
         ),
     ),
     Unit(
@@ -161,14 +319,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         # Khó nhất của topic: câu dài, quá khứ hoàn thành, nhiều mệnh đề phụ.
         difficulty=4,
         sentences=(
-            "The marketing department had been preparing the launch since early spring.",
-            "They booked a hall downtown and invited reporters from several magazines.",
-            "The samples arrived two days late because of a customs inspection.",
-            "Staff worked through the evening to arrange the display tables.",
-            "On the morning of the event the microphone would not switch on.",
-            "A technician replaced it minutes before the first guests walked in.",
-            "The director opened with a short talk about how the idea began.",
-            "By the end of the week orders had passed every earlier record.",
+            (
+                "The marketing department had been preparing the launch since early spring.",
+                "Phòng marketing đã chuẩn bị cho buổi ra mắt từ đầu mùa xuân.",
+            ),
+            (
+                "They booked a hall downtown and invited reporters from several magazines.",
+                "Họ thuê một hội trường ở trung tâm và mời phóng viên của nhiều tạp chí.",
+            ),
+            (
+                "The samples arrived two days late because of a customs inspection.",
+                "Hàng mẫu tới trễ hai ngày vì bị kiểm tra hải quan.",
+            ),
+            (
+                "Staff worked through the evening to arrange the display tables.",
+                "Nhân viên làm suốt buổi tối để sắp xếp các bàn trưng bày.",
+            ),
+            (
+                "On the morning of the event the microphone would not switch on.",
+                "Sáng hôm diễn ra sự kiện thì micro không chịu bật.",
+            ),
+            (
+                "A technician replaced it minutes before the first guests walked in.",
+                "Một kỹ thuật viên thay nó vài phút trước khi những khách đầu tiên bước vào.",
+            ),
+            (
+                "The director opened with a short talk about how the idea began.",
+                "Giám đốc mở đầu bằng một bài nói ngắn về việc ý tưởng đã ra đời thế nào.",
+            ),
+            (
+                "By the end of the week orders had passed every earlier record.",
+                "Đến cuối tuần, số đơn hàng đã vượt mọi kỷ lục trước đó.",
+            ),
         ),
     ),
     Unit(
@@ -177,14 +359,38 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
         story_description="Khám bệnh sau giờ làm, và phần bảo hiểm công ty chi trả.",
         difficulty=3,
         sentences=(
-            "Mr. Okafor booked an appointment at the clinic near his office.",
-            "The receptionist asked him to arrive fifteen minutes before his slot.",
-            "He filled in a short form about his medical history.",
-            "The doctor listened carefully and asked how long the pain had lasted.",
-            "She recommended a blood test and some rest for the coming week.",
-            "The nurse explained which counter to visit for the sample.",
-            "He was told the results would be sent by email on Thursday.",
-            "His employer covered most of the cost through the company insurance plan.",
+            (
+                "Mr. Okafor booked an appointment at the clinic near his office.",
+                "Ông Okafor đặt lịch khám ở phòng khám gần văn phòng.",
+            ),
+            (
+                "The receptionist asked him to arrive fifteen minutes before his slot.",
+                "Lễ tân dặn ông tới sớm mười lăm phút so với giờ hẹn.",
+            ),
+            (
+                "He filled in a short form about his medical history.",
+                "Ông điền một tờ khai ngắn về tiền sử bệnh.",
+            ),
+            (
+                "The doctor listened carefully and asked how long the pain had lasted.",
+                "Bác sĩ nghe kỹ rồi hỏi cơn đau đã kéo dài bao lâu.",
+            ),
+            (
+                "She recommended a blood test and some rest for the coming week.",
+                "Bác sĩ đề nghị làm xét nghiệm máu và nghỉ ngơi trong tuần tới.",
+            ),
+            (
+                "The nurse explained which counter to visit for the sample.",
+                "Y tá chỉ ông tới quầy nào để lấy mẫu.",
+            ),
+            (
+                "He was told the results would be sent by email on Thursday.",
+                "Ông được báo kết quả sẽ gửi qua email vào thứ Năm.",
+            ),
+            (
+                "His employer covered most of the cost through the company insurance plan.",
+                "Công ty chi trả phần lớn chi phí qua gói bảo hiểm của công ty.",
+            ),
         ),
     ),
 )
@@ -197,14 +403,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Đặt phòng họp qua quầy lễ tân, có một chỗ phải đổi lịch.",
         difficulty=2,
         sentences=(
-            "Good morning, I would like to book a meeting room for Thursday.",
-            "Certainly, how many people will be joining you?",
-            "There will be six of us, including two visitors from Osaka.",
-            "The large room on the third floor is free until noon.",
-            "Could we keep it until one o'clock instead?",
-            "That should be fine, but I will have to move another booking.",
-            "Please let me know if that causes any trouble.",
-            "I will send you a confirmation before the end of the day.",
+            (
+                "Good morning, I would like to book a meeting room for Thursday.",
+                "Chào buổi sáng, tôi muốn đặt một phòng họp cho thứ Năm.",
+            ),
+            (
+                "Certainly, how many people will be joining you?",
+                "Vâng, sẽ có bao nhiêu người tham dự ạ?",
+            ),
+            (
+                "There will be six of us, including two visitors from Osaka.",
+                "Chúng tôi có sáu người, gồm hai khách từ Osaka.",
+            ),
+            (
+                "The large room on the third floor is free until noon.",
+                "Phòng lớn ở tầng ba còn trống đến trưa.",
+            ),
+            (
+                "Could we keep it until one o'clock instead?",
+                "Chúng tôi giữ phòng đến một giờ được không?",
+            ),
+            (
+                "That should be fine, but I will have to move another booking.",
+                "Chắc là được, nhưng tôi sẽ phải dời một lượt đặt khác.",
+            ),
+            (
+                "Please let me know if that causes any trouble.",
+                "Nếu có gì bất tiện thì báo tôi nhé.",
+            ),
+            (
+                "I will send you a confirmation before the end of the day.",
+                "Tôi sẽ gửi xác nhận cho anh trước khi hết ngày.",
+            ),
         ),
     ),
     Unit(
@@ -213,14 +443,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Nhà cung cấp gọi báo hàng về trễ, và hai bên thu xếp lại.",
         difficulty=3,
         sentences=(
-            "Good afternoon, this is Elena calling from the packaging supplier.",
-            "I am afraid the delivery scheduled for Monday has been delayed.",
-            "May I ask how long the delay is likely to be?",
-            "We expect the shipment to arrive by Wednesday at the latest.",
-            "That is later than we planned, but we can work around it.",
-            "I will email you the new tracking number this afternoon.",
-            "Please copy my colleague in the warehouse on that message.",
-            "Of course, and again I apologize for the inconvenience.",
+            (
+                "Good afternoon, this is Elena calling from the packaging supplier.",
+                "Chào buổi chiều, tôi là Elena gọi từ nhà cung cấp bao bì.",
+            ),
+            (
+                "I am afraid the delivery scheduled for Monday has been delayed.",
+                "Rất tiếc là lô hàng dự kiến giao thứ Hai đã bị chậm.",
+            ),
+            (
+                "May I ask how long the delay is likely to be?",
+                "Cho tôi hỏi dự kiến chậm bao lâu ạ?",
+            ),
+            (
+                "We expect the shipment to arrive by Wednesday at the latest.",
+                "Chúng tôi dự kiến hàng tới chậm nhất là thứ Tư.",
+            ),
+            (
+                "That is later than we planned, but we can work around it.",
+                "Trễ hơn kế hoạch, nhưng chúng tôi vẫn xoay được.",
+            ),
+            (
+                "I will email you the new tracking number this afternoon.",
+                "Chiều nay tôi sẽ gửi email mã vận đơn mới cho anh.",
+            ),
+            (
+                "Please copy my colleague in the warehouse on that message.",
+                "Nhớ gửi kèm cho đồng nghiệp của tôi ở kho nhé.",
+            ),
+            (
+                "Of course, and again I apologize for the inconvenience.",
+                "Vâng, và một lần nữa tôi xin lỗi vì sự bất tiện này.",
+            ),
         ),
     ),
     Unit(
@@ -229,14 +483,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Vài câu chào hỏi đầu tuần trước giờ họp.",
         difficulty=2,
         sentences=(
-            "Good morning, did you have a nice weekend?",
-            "It was quiet, I spent most of it working in the garden.",
-            "That sounds relaxing compared to the traffic this morning.",
-            "The road near the station has been closed for repairs.",
-            "I noticed that, it took me almost an hour to get here.",
-            "There is fresh coffee in the kitchen if you need it.",
-            "Thank you, I will get a cup before the team meeting.",
-            "See you there, it starts in about ten minutes.",
+            (
+                "Good morning, did you have a nice weekend?",
+                "Chào buổi sáng, cuối tuần của anh vui chứ?",
+            ),
+            (
+                "It was quiet, I spent most of it working in the garden.",
+                "Cũng yên ả, tôi dành phần lớn thời gian làm vườn.",
+            ),
+            (
+                "That sounds relaxing compared to the traffic this morning.",
+                "Nghe thư giãn hơn hẳn cảnh kẹt xe sáng nay.",
+            ),
+            (
+                "The road near the station has been closed for repairs.",
+                "Con đường gần nhà ga đang bị chặn để sửa chữa.",
+            ),
+            (
+                "I noticed that, it took me almost an hour to get here.",
+                "Tôi cũng thấy vậy, mất gần một tiếng mới tới được đây.",
+            ),
+            (
+                "There is fresh coffee in the kitchen if you need it.",
+                "Trong bếp có cà phê mới pha nếu anh cần.",
+            ),
+            (
+                "Thank you, I will get a cup before the team meeting.",
+                "Cảm ơn, tôi sẽ lấy một ly trước buổi họp nhóm.",
+            ),
+            (
+                "See you there, it starts in about ten minutes.",
+                "Gặp anh ở đó nhé, khoảng mười phút nữa là bắt đầu.",
+            ),
         ),
     ),
     Unit(
@@ -245,14 +523,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Khách tới đúng hẹn, và thủ tục ở quầy lễ tân.",
         difficulty=2,
         sentences=(
-            "Good morning, I have an appointment with Miss Alvarez at ten.",
-            "Welcome, could I have your name and the company you represent?",
-            "My name is Peter Lang, and I am from the auditing firm.",
-            "Thank you, please sign the visitor book and take this badge.",
-            "Should I wait here, or go up to the fourth floor?",
-            "Please take a seat, someone will come down for you shortly.",
-            "Would you like a coffee or a glass of water while you wait?",
-            "A glass of water would be lovely, thank you very much.",
+            (
+                "Good morning, I have an appointment with Miss Alvarez at ten.",
+                "Chào buổi sáng, tôi có hẹn với cô Alvarez lúc mười giờ.",
+            ),
+            (
+                "Welcome, could I have your name and the company you represent?",
+                "Xin chào, cho tôi xin tên anh và tên công ty anh đại diện?",
+            ),
+            (
+                "My name is Peter Lang, and I am from the auditing firm.",
+                "Tôi là Peter Lang, đến từ công ty kiểm toán.",
+            ),
+            (
+                "Thank you, please sign the visitor book and take this badge.",
+                "Cảm ơn anh, mời anh ký sổ khách và nhận thẻ này.",
+            ),
+            (
+                "Should I wait here, or go up to the fourth floor?",
+                "Tôi chờ ở đây hay lên tầng bốn ạ?",
+            ),
+            (
+                "Please take a seat, someone will come down for you shortly.",
+                "Mời anh ngồi, lát nữa sẽ có người xuống đón anh.",
+            ),
+            (
+                "Would you like a coffee or a glass of water while you wait?",
+                "Trong lúc chờ anh dùng cà phê hay một ly nước nhé?",
+            ),
+            (
+                "A glass of water would be lovely, thank you very much.",
+                "Cho tôi một ly nước thì tuyệt quá, cảm ơn chị nhiều.",
+            ),
         ),
     ),
     Unit(
@@ -261,14 +563,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Nửa đội bận hội chợ, và buổi tập huấn phải tách làm hai.",
         difficulty=3,
         sentences=(
-            "I am calling about the safety training booked for next Tuesday.",
-            "Yes, I have the session down for the whole morning.",
-            "Unfortunately half the team will be at the trade fair that day.",
-            "Would you rather move the session or split it into two groups?",
-            "Splitting it would work better, if the trainer is available twice.",
-            "I will check her calendar and confirm before the end of today.",
-            "Please also let the facilities team know about the room.",
-            "I will copy them on the message so that nothing is missed.",
+            (
+                "I am calling about the safety training booked for next Tuesday.",
+                "Tôi gọi về buổi tập huấn an toàn đã đặt vào thứ Ba tuần sau.",
+            ),
+            (
+                "Yes, I have the session down for the whole morning.",
+                "Vâng, tôi có ghi buổi đó chiếm trọn buổi sáng.",
+            ),
+            (
+                "Unfortunately half the team will be at the trade fair that day.",
+                "Tiếc là hôm đó một nửa nhóm sẽ đi hội chợ thương mại.",
+            ),
+            (
+                "Would you rather move the session or split it into two groups?",
+                "Anh muốn dời buổi học hay tách thành hai nhóm?",
+            ),
+            (
+                "Splitting it would work better, if the trainer is available twice.",
+                "Tách ra thì hợp hơn, nếu giảng viên rảnh được hai lần.",
+            ),
+            (
+                "I will check her calendar and confirm before the end of today.",
+                "Tôi sẽ xem lịch của cô ấy rồi xác nhận trong hôm nay.",
+            ),
+            (
+                "Please also let the facilities team know about the room.",
+                "Nhớ báo cả bộ phận cơ sở vật chất về phòng học nữa.",
+            ),
+            (
+                "I will copy them on the message so that nothing is missed.",
+                "Tôi sẽ gửi kèm họ trong email để không sót gì.",
+            ),
         ),
     ),
     Unit(
@@ -277,14 +603,38 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
         story_description="Hết văn phòng phẩm, và một phiếu mua hàng cần chữ ký.",
         difficulty=3,
         sentences=(
-            "The stationery cupboard is nearly empty again on the second floor.",
-            "I noticed that too, shall I raise a purchase request?",
-            "Please do, and add the printer paper we ran out of.",
-            "Does the order still need approval from the department manager?",
-            "Anything above five hundred thousand dong does, so this one will.",
-            "I will draft it now and send it for signature this afternoon.",
-            "Ask the supplier whether delivery before Friday is still possible.",
-            "I will mention it, and I will forward whatever they reply.",
+            (
+                "The stationery cupboard is nearly empty again on the second floor.",
+                "Tủ văn phòng phẩm ở tầng hai lại gần hết rồi.",
+            ),
+            (
+                "I noticed that too, shall I raise a purchase request?",
+                "Tôi cũng thấy vậy, tôi lập phiếu đề nghị mua hàng nhé?",
+            ),
+            (
+                "Please do, and add the printer paper we ran out of.",
+                "Anh làm giúp, thêm cả giấy in mà mình đã dùng hết.",
+            ),
+            (
+                "Does the order still need approval from the department manager?",
+                "Đơn này vẫn cần trưởng phòng duyệt phải không?",
+            ),
+            (
+                "Anything above five hundred thousand dong does, so this one will.",
+                "Trên năm trăm nghìn đồng là cần, nên đơn này có.",
+            ),
+            (
+                "I will draft it now and send it for signature this afternoon.",
+                "Tôi soạn ngay bây giờ và chiều nay trình ký.",
+            ),
+            (
+                "Ask the supplier whether delivery before Friday is still possible.",
+                "Hỏi nhà cung cấp xem có giao trước thứ Sáu được không.",
+            ),
+            (
+                "I will mention it, and I will forward whatever they reply.",
+                "Tôi sẽ hỏi, và họ trả lời sao tôi chuyển tiếp vậy.",
+            ),
         ),
     ),
 )
@@ -300,14 +650,38 @@ ANNOUNCEMENT_UNITS: tuple[Unit, ...] = (
         story_description="Thông báo trong siêu thị trước giờ đóng cửa.",
         difficulty=2,
         sentences=(
-            "Attention shoppers, the store will be closing in thirty minutes.",
-            "Please bring your final purchases to the checkout counters now.",
-            "The customer service desk on the ground floor closes even earlier.",
-            "Members of our loyalty program can collect double points this weekend.",
-            "The winter sale continues in the clothing section on the second floor.",
-            "Parking remains free for one hour with any purchase over fifty thousand dong.",
-            "We open again tomorrow morning at half past eight.",
-            "Thank you for shopping with us, and have a pleasant evening.",
+            (
+                "Attention shoppers, the store will be closing in thirty minutes.",
+                "Kính mời quý khách chú ý, cửa hàng sẽ đóng cửa sau ba mươi phút.",
+            ),
+            (
+                "Please bring your final purchases to the checkout counters now.",
+                "Xin quý khách mang những món cuối cùng ra quầy thanh toán ngay bây giờ.",
+            ),
+            (
+                "The customer service desk on the ground floor closes even earlier.",
+                "Quầy chăm sóc khách hàng ở tầng trệt còn đóng sớm hơn.",
+            ),
+            (
+                "Members of our loyalty program can collect double points this weekend.",
+                "Cuối tuần này, thành viên chương trình khách hàng thân thiết được nhân đôi điểm.",
+            ),
+            (
+                "The winter sale continues in the clothing section on the second floor.",
+                "Đợt giảm giá mùa đông vẫn tiếp tục ở khu quần áo tầng hai.",
+            ),
+            (
+                "Parking remains free for one hour with any purchase over fifty thousand dong.",
+                "Hoá đơn trên năm mươi nghìn đồng được miễn phí gửi xe một tiếng.",
+            ),
+            (
+                "We open again tomorrow morning at half past eight.",
+                "Chúng tôi mở cửa lại vào tám giờ rưỡi sáng mai.",
+            ),
+            (
+                "Thank you for shopping with us, and have a pleasant evening.",
+                "Cảm ơn quý khách đã mua sắm, chúc quý khách một buổi tối vui vẻ.",
+            ),
         ),
     ),
     Unit(
@@ -316,14 +690,38 @@ ANNOUNCEMENT_UNITS: tuple[Unit, ...] = (
         story_description="Tin nhắn thoại từ phòng kế toán về một hoá đơn thiếu thông tin.",
         difficulty=3,
         sentences=(
-            "Hello, this is Ruth calling from the accounts department on Tuesday.",
-            "I am sorry to have missed you, I hope this reaches you today.",
-            "The invoice you sent last week is missing a purchase order number.",
-            "Without that number our system cannot release the payment.",
-            "Could you resend the document with the number in the subject line?",
-            "If it is easier, my extension is four one six.",
-            "I will be at my desk until about five this afternoon.",
-            "Thank you very much, and I look forward to hearing from you.",
+            (
+                "Hello, this is Ruth calling from the accounts department on Tuesday.",
+                "Xin chào, tôi là Ruth ở phòng kế toán, gọi vào thứ Ba.",
+            ),
+            (
+                "I am sorry to have missed you, I hope this reaches you today.",
+                "Rất tiếc là không gặp được anh, mong lời nhắn này tới anh trong hôm nay.",
+            ),
+            (
+                "The invoice you sent last week is missing a purchase order number.",
+                "Hoá đơn anh gửi tuần trước thiếu số đơn đặt hàng.",
+            ),
+            (
+                "Without that number our system cannot release the payment.",
+                "Thiếu số đó thì hệ thống của chúng tôi không giải ngân được.",
+            ),
+            (
+                "Could you resend the document with the number in the subject line?",
+                "Anh gửi lại chứng từ và ghi số đó ở tiêu đề email được không?",
+            ),
+            (
+                "If it is easier, my extension is four one six.",
+                "Nếu tiện hơn thì số máy lẻ của tôi là bốn một sáu.",
+            ),
+            (
+                "I will be at my desk until about five this afternoon.",
+                "Tôi ngồi ở bàn làm việc đến khoảng năm giờ chiều nay.",
+            ),
+            (
+                "Thank you very much, and I look forward to hearing from you.",
+                "Cảm ơn anh nhiều, tôi mong sớm nhận được hồi âm.",
+            ),
         ),
     ),
     Unit(
@@ -332,14 +730,38 @@ ANNOUNCEMENT_UNITS: tuple[Unit, ...] = (
         story_description="Dặn dò đầu ca: khu bốc hàng, thẻ an toàn, và lịch đánh giá.",
         difficulty=4,
         sentences=(
-            "Good morning everyone, thank you for coming in a little earlier.",
-            "There are three things to cover before the shift begins.",
-            "First, the loading bay will be closed for repairs until Thursday.",
-            "Deliveries during that time should be directed to the side entrance.",
-            "Second, the new safety cards must be signed by the end of the month.",
-            "Anyone who has not received one should speak to their supervisor today.",
-            "Finally, the annual review meetings will start the week after next.",
-            "Your team leader will send round a sheet for choosing a time.",
+            (
+                "Good morning everyone, thank you for coming in a little earlier.",
+                "Chào cả nhà, cảm ơn mọi người đã tới sớm hơn một chút.",
+            ),
+            (
+                "There are three things to cover before the shift begins.",
+                "Có ba việc cần nói trước khi vào ca.",
+            ),
+            (
+                "First, the loading bay will be closed for repairs until Thursday.",
+                "Thứ nhất, bến bốc hàng sẽ đóng để sửa chữa cho tới thứ Năm.",
+            ),
+            (
+                "Deliveries during that time should be directed to the side entrance.",
+                "Trong thời gian đó, hàng giao xin chuyển sang lối vào bên hông.",
+            ),
+            (
+                "Second, the new safety cards must be signed by the end of the month.",
+                "Thứ hai, thẻ an toàn mới phải được ký xong trước cuối tháng.",
+            ),
+            (
+                "Anyone who has not received one should speak to their supervisor today.",
+                "Ai chưa nhận được thẻ thì hôm nay gặp quản lý trực tiếp của mình.",
+            ),
+            (
+                "Finally, the annual review meetings will start the week after next.",
+                "Cuối cùng, các buổi đánh giá thường niên sẽ bắt đầu từ tuần sau nữa.",
+            ),
+            (
+                "Your team leader will send round a sheet for choosing a time.",
+                "Trưởng nhóm sẽ chuyển tới mọi người một bảng để chọn giờ.",
+            ),
         ),
     ),
 )
@@ -374,12 +796,13 @@ class Counts:
     sections: int = 0
     stories: int = 0
     items: int = 0
+    translated: int = 0
     published: int = 0
 
     def as_line(self) -> str:
         return (
             f"{self.sections} unit · {self.stories} bài · {self.items} câu mới · "
-            f"{self.published} hàng vừa publish"
+            f"{self.translated} câu vừa được dịch · {self.published} hàng vừa publish"
         )
 
 
@@ -463,8 +886,11 @@ def _build_topic(session: Session, spec: Topic, counts: Counts) -> None:
         # Đối chiếu theo chính lời thoại chứ không theo số lượng: sửa một câu
         # trong UNITS rồi chạy lại thì câu đó được thêm vào, còn đếm số câu sẽ
         # bảo "đủ tám rồi" và bỏ qua.
+        # Giữ cả HÀNG chứ không chỉ chuỗi: câu đã có vẫn có thể còn thiếu bản
+        # dịch, và một seed chỉ biết "đã có thì bỏ qua" sẽ không bao giờ điền
+        # được — 134 câu cũ sẽ ở lại không lời dịch mãi mãi.
         existing = {
-            item.transcript
+            item.transcript: item
             for item in session.scalars(
                 select(DictationItem).where(DictationItem.story_id == story.id)
             )
@@ -478,8 +904,14 @@ def _build_topic(session: Session, spec: Topic, counts: Counts) -> None:
             ),
             default=0,
         )
-        for sentence in unit.sentences:
-            if sentence in existing:
+        for sentence, translation in unit.sentences:
+            found = existing.get(sentence)
+            if found is not None:
+                # Chỉ điền khi đang trống. Ghi đè sẽ xoá mất bản dịch ai đó vừa
+                # sửa tay ở màn quản trị, và xoá một cách im lặng.
+                if found.transcript_vi is None:
+                    found.transcript_vi = translation
+                    counts.translated += 1
                 continue
             highest += 1
             session.add(
@@ -488,6 +920,7 @@ def _build_topic(session: Session, spec: Topic, counts: Counts) -> None:
                     # là thứ chặn hàng này lọt ra cho học viên trước lúc đó.
                     audio_asset_id=None,
                     transcript=sentence,
+                    transcript_vi=translation,
                     story_id=story.id,
                     position=highest,
                     difficulty=unit.difficulty,

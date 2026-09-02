@@ -21,6 +21,7 @@ import {
   Button,
   EmptyState,
   Field,
+  Input,
   Page,
   PageHeader,
   Pager,
@@ -287,6 +288,28 @@ export default function AdminDictationPage() {
                   <AudioTag state={item.audio_state} />
                 </span>
               </div>
+
+              {/* Bản dịch sửa được TẠI CHỖ, còn lời thoại thì không.
+                  Không phải quên: lời thoại là đáp án chấm bài, và sửa nó làm
+                  clip đã thu thành sai — nó phải đi qua đường dán có xem trước.
+                  Bản dịch không đụng tới chấm bài lẫn `source_hash`, nên một ô
+                  gõ thẳng ở đây là đủ an toàn.
+
+                  Lưu khi rời ô, và chỉ khi có đổi: mỗi phím gõ một PATCH là
+                  một lượt ghi cho mỗi ký tự. */}
+              <Input
+                aria-label={`Bản dịch của: ${item.transcript}`}
+                placeholder="Bản dịch tiếng Việt — để trống thì học viên chỉ thấy tiếng Anh"
+                defaultValue={item.transcript_vi ?? ""}
+                onBlur={(event) => {
+                  const next = event.target.value.trim();
+                  if (next === (item.transcript_vi ?? "")) return;
+                  void send(API_ROUTES.adminDictationItem(item.id), "PATCH", {
+                    transcript_vi: next,
+                  });
+                }}
+                className="mt-2 text-small"
+              />
 
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 {/* Đổi thứ tự chỉ có nghĩa bên trong một bài. */}

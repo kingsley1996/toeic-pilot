@@ -292,6 +292,10 @@ class DictationSummary(BaseModel):
 class DictationDetail(DictationSummary):
     audio_url: str
     duration_ms: int
+    # Bản dịch đi CÙNG lời thoại, không đi riêng: nó nằm trong cùng một khối
+    # trên giao diện, nên tách ra thành một lượt gọi nữa chỉ để lộ ra sau.
+    # `None` = câu chưa dịch, và khối đó chỉ hiện tiếng Anh.
+    transcript_vi: str | None = None
     transcript: str
     """The answer key, sent to the browser on purpose.
 
@@ -389,6 +393,7 @@ class StoryItem(BaseModel):
     audio_url: str
     duration_ms: int
     transcript: str
+    transcript_vi: str | None = None
     completed: bool
 
 

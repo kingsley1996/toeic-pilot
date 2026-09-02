@@ -64,6 +64,14 @@ class DictationItem(Base, PublishableMixin):
     # and grading against the wrong one marks a learner down over a comma in a
     # copy nobody meant to grade against.
     transcript: Mapped[str] = mapped_column(Text, nullable=False)
+    # Bản dịch tiếng Việt, CHỈ để đọc hiểu. Nó không tham gia chấm bài và
+    # KHÔNG được vào `source_hash` — hash là `sha256(text|voice|engine|version)`
+    # và cổng publish so nó để phát hiện clip cũ, nên kéo bản dịch vào đó sẽ
+    # biến mỗi lần sửa một chữ tiếng Việt thành một lệnh thu lại toàn bộ.
+    #
+    # Nullable: câu chưa dịch vẫn học được bình thường, chỉ là khối lời thoại
+    # hiện mỗi tiếng Anh.
+    transcript_vi: Mapped[str | None] = mapped_column(Text, nullable=True)
     topic_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("topic.id", ondelete="SET NULL"), nullable=True
     )
