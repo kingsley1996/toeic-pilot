@@ -6,11 +6,12 @@ import {
   type PartBreakdown,
   type TestDetail,
 } from "@toeic-pilot/shared";
-import { ArrowLeft, BookOpen, Clock, FileText, Headphones, Users } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, FileText, Headphones, Lock, Users } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { LoginModal } from "@/components/login-modal";
 import {
   Alert,
   Button,
@@ -51,8 +52,15 @@ export default function TestDetailPage() {
   const [missing, setMissing] = useState(false);
   const [mode, setMode] = useState<ReviewMode>("exam");
   const [chosen, setChosen] = useState<Set<number>>(new Set());
+  // Suy ra "hộp thoại đang mở" từ phiên + một lần đóng tay, chứ không mở nó
+  // bằng `setState` trong effect — luật `react-hooks/set-state-in-effect`.
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    // Khách vãng lai không được xem trang này, nên cũng không đi lấy dữ liệu
+    // cho nó. Endpoint vốn công khai; đây là chuyện đỡ một vòng mạng và không
+    // để trạng thái "không có đề này" hiện ra sau lưng hộp thoại.
+    if (status !== "authenticated") return;
     if (!params.testSlug) return;
     let cancelled = false;
     apiFetch<TestDetail>(API_ROUTES.practiceTest(params.testSlug))
@@ -65,7 +73,7 @@ export default function TestDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [params.testSlug]);
+  }, [params.testSlug, status]);
 
   const available = useMemo(() => (test?.parts ?? []).filter((part) => part.has_content), [test]);
 
@@ -114,6 +122,57 @@ export default function TestDetailPage() {
       else next.add(part);
       return next;
     });
+  }
+
+  if (status === "loading") {
+    return (
+      <Page>
+        <Skeleton className="h-8 w-56" />
+        <Skeleton className="mt-6 h-96 w-full" />
+      </Page>
+    );
+  }
+
+  /*
+   * Ranh giới của khu luyện thi nằm ở ĐÂY, không ở danh sách.
+   *
+   * Bộ đề và danh sách đề mở cho mọi người — phải xem được có những đề gì rồi
+   * mới quyết định lập tài khoản. Từ trang này trở đi thì mọi thứ đều gắn với
+   * một bài làm được lưu, nên chặn ở đây là chặn đúng chỗ đầu tiên mà tài khoản
+   * thật sự có nghĩa.
+   *
+   * Chặn ở cả hai đầu: danh sách bắt lần bấm, còn trang này bắt người gõ thẳng
+   * URL hay mở lại dấu trang. Chỉ chặn ở nút bấm thì cái chốt chỉ là trang trí.
+   */
+  if (status === "anonymous") {
+    const here = `/learn/tests/${params.slug}/${params.testSlug}`;
+    return (
+      <Page>
+        <Link
+          href={`/learn/tests/${params.slug}`}
+          className="inline-flex items-center gap-1.5 text-small font-semibold text-ink-muted hover:text-ink"
+        >
+          <ArrowLeft size={14} strokeWidth={2} aria-hidden />
+          Bộ đề thi
+        </Link>
+
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để xem đề"
+            description="Đề thi thử miễn phí, nhưng cần tài khoản để lưu bài làm và điểm số."
+            action={<Button onClick={() => setDismissed(false)}>Đăng nhập</Button>}
+          />
+        </div>
+
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={here}
+        />
+      </Page>
+    );
   }
 
   if (missing) {
@@ -322,22 +381,16 @@ export default function TestDetailPage() {
           )}
 
           <div className="mt-4">
-            {status === "authenticated" ? (
-              <Button
-                size="lg"
-                className="w-full"
-                disabled={available.length === 0 || starting}
-                onClick={() => void start()}
-              >
-                {starting ? "Đang mở đề…" : "Bắt đầu làm bài"}
-              </Button>
-            ) : (
-              /* Chưa đăng nhập thì mời đăng nhập chứ không giấu nút đi: người
-                 dùng cần thấy bước tiếp theo, không phải một khoảng trống. */
-              <ButtonLink href="/login" size="lg" className="w-full">
-                Đăng nhập để làm bài
-              </ButtonLink>
-            )}
+            {/* Không còn nhánh "chưa đăng nhập" ở đây: cả trang đã chặn phía
+                trên, nên tới được chỗ này là chắc chắn có tài khoản. */}
+            <Button
+              size="lg"
+              className="w-full"
+              disabled={available.length === 0 || starting}
+              onClick={() => void start()}
+            >
+              {starting ? "Đang mở đề…" : "Bắt đầu làm bài"}
+            </Button>
           </div>
         </section>
       </div>

@@ -1,19 +1,33 @@
 "use client";
 
-import { API_ROUTES, type CollectionDetail } from "@toeic-pilot/shared";
-import { ArrowLeft, Clock, FileText, Users } from "lucide-react";
+import { API_ROUTES, type CollectionDetail, type TestSummary } from "@toeic-pilot/shared";
+import { ArrowLeft, Clock, FileText, Lock, Users } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { LoginModal } from "@/components/login-modal";
 import { ButtonLink, EmptyState, Page, Panel, SectionHeader, Skeleton, Tag } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { useSession } from "@/lib/session";
 
 export default function CollectionPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const slug = params.slug;
+  const { status } = useSession();
   const [collection, setCollection] = useState<CollectionDetail | null>(null);
   const [missing, setMissing] = useState(false);
+  /*
+   * Đề mà khách vãng lai vừa bấm vào, và cũng là thứ quyết định hộp thoại đăng
+   * nhập có mở hay không — một state chứ không phải hai, nên không có trạng thái
+   * "đang mở nhưng không biết mở cho đề nào".
+   *
+   * Bộ đề và danh sách đề vẫn mở cho mọi người: phải xem được có những đề gì
+   * rồi mới quyết định lập tài khoản. Ranh giới nằm ở trang chi tiết, chỗ bắt
+   * đầu có bài làm để mà lưu.
+   */
+  const [gated, setGated] = useState<TestSummary | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -132,7 +146,16 @@ export default function CollectionPage() {
                   href={`/learn/tests/${slug}/${test.slug}`}
                   variant="secondary"
                   size="sm"
+                  /* Vẫn là thẻ `a` thật, chỉ chặn ở lần bấm: giữ được chuột
+                     giữa, menu chuột phải, và cả trường hợp phiên còn `loading`
+                     — lúc đó chưa biết là ai nên cứ để đi, trang đích tự chặn. */
+                  onClick={(event) => {
+                    if (status !== "anonymous") return;
+                    event.preventDefault();
+                    setGated(test);
+                  }}
                 >
+                  {status === "anonymous" && <Lock size={13} strokeWidth={2} aria-hidden />}
                   Xem chi tiết
                 </ButtonLink>
               </Panel>
@@ -140,6 +163,17 @@ export default function CollectionPage() {
           </div>
         )}
       </section>
+
+      {gated && (
+        <LoginModal
+          open
+          onClose={() => setGated(null)}
+          onSuccess={() => router.push(`/learn/tests/${slug}/${gated.slug}`)}
+          next={`/learn/tests/${slug}/${gated.slug}`}
+          title="Đăng nhập để xem đề"
+          description={`“${gated.title}” miễn phí, nhưng cần tài khoản để lưu bài làm và điểm số.`}
+        />
+      )}
     </Page>
   );
 }

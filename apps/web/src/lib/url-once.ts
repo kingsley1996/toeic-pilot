@@ -16,26 +16,38 @@ import { useSyncExternalStore } from "react";
  *     giá trị khác ở lần render kế — `useSyncExternalStore` phát hiện ra và
  *     dựng lại, có thể thành vòng lặp.
  *
- * Nên chụp lại đúng một lần vào biến ở phạm vi module: nó sống qua mọi lần
- * render, và bản chụp là thứ ta muốn — nội dung URL *lúc hạ cánh*, không phải
- * lúc này.
+ * Nên chụp lại một lần **cho mỗi đường dẫn**: bản chụp sống qua mọi lần render
+ * của trang đó, và đó chính là thứ ta muốn — URL *lúc hạ cánh*, không phải lúc
+ * này. Khoá theo pathname chứ không chụp đúng một lần cho cả phiên, vì đi từ
+ * `/login` sang `/register?next=…` bằng `next/link` không tải lại trang: một
+ * bản chụp duy nhất sẽ trả về query của trang trước và `next` lặng lẽ rơi về
+ * mặc định.
  */
 
-let capturedSearch: string | null = null;
-let capturedHash: string | null = null;
+type Captured = { path: string; search: string; hash: string };
+
+const EMPTY: Captured = { path: "", search: "", hash: "" };
+
+let captured: Captured | null = null;
+
+function capture(): Captured {
+  if (typeof window === "undefined") return EMPTY;
+  if (!captured || captured.path !== window.location.pathname) {
+    captured = {
+      path: window.location.pathname,
+      search: window.location.search,
+      hash: window.location.hash,
+    };
+  }
+  return captured;
+}
 
 function readSearch(): string {
-  if (capturedSearch === null) {
-    capturedSearch = typeof window === "undefined" ? "" : window.location.search;
-  }
-  return capturedSearch;
+  return capture().search;
 }
 
 function readHash(): string {
-  if (capturedHash === null) {
-    capturedHash = typeof window === "undefined" ? "" : window.location.hash;
-  }
-  return capturedHash;
+  return capture().hash;
 }
 
 /** Không đăng ký gì: URL lúc hạ cánh không đổi nữa theo nghĩa ta quan tâm. */
@@ -59,4 +71,17 @@ export function useLandingHash(): URLSearchParams {
 export function stripUrlParams(): void {
   if (typeof window === "undefined") return;
   window.history.replaceState(null, "", window.location.pathname);
+}
+
+/**
+ * Chỉ nhận đường dẫn nội bộ làm chỗ quay về sau khi đăng nhập.
+ *
+ * `next` đến từ URL, nên một URL tuyệt đối ở đây là một open redirect dựng sẵn:
+ * gửi link `/login?next=https://…` là mượn được trang đăng nhập của mình để đẩy
+ * người dùng đi đâu cũng được. Cùng luật với `safe_next` ở `oauth.py` — kể cả
+ * `//host`, thứ trình duyệt hiểu là giao thức tương đối.
+ */
+export function safeNextPath(value: string | null, fallback = "/dashboard"): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return fallback;
+  return value;
 }

@@ -8,18 +8,25 @@ import {
 } from "@toeic-pilot/shared";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 import { AuthLayout } from "@/components/auth-layout";
 import { OAuthButtons } from "@/components/oauth-buttons";
 import { Button, Field, FieldError, Input, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { setAccessToken } from "@/lib/auth-storage";
+import { safeNextPath, stripUrlParams, useLandingSearch } from "@/lib/url-once";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // `?next=` là chỗ quay về khi người dùng tới đây từ một hộp thoại chặn giữa
+  // chừng. Đọc một lần lúc hạ cánh rồi xoá khỏi thanh địa chỉ, cùng luật với
+  // trang đăng nhập.
+  const next = safeNextPath(useLandingSearch().get("next"));
+  useEffect(stripUrlParams, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,9 +62,9 @@ export default function RegisterPage() {
           body: JSON.stringify(body),
         });
         setAccessToken(token.access_token);
-        router.push("/dashboard");
+        router.push(next);
       } catch {
-        router.push("/login");
+        router.push(`/login?next=${encodeURIComponent(next)}`);
       }
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Không tạo được tài khoản.");
@@ -109,12 +116,12 @@ export default function RegisterPage() {
           ký" và "đăng nhập" là CÙNG một thao tác — lần đầu tạo tài khoản, lần
           sau vào lại. Dựng hai đường riêng chỉ tạo ra hai cách gọi tên cho một
           việc, và người dùng phải đoán mình đang ở đường nào. */}
-      <OAuthButtons />
+      <OAuthButtons next={next} />
 
       <p className="mt-6 border-t border-rule pt-4 text-small text-ink-muted">
         Đã có tài khoản?{" "}
         <Link
-          href="/login"
+          href={next === "/dashboard" ? "/login" : `/login?next=${encodeURIComponent(next)}`}
           className="font-semibold text-action-ink underline-offset-2 hover:underline"
         >
           Đăng nhập
