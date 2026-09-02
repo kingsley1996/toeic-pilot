@@ -113,6 +113,57 @@ SELECT count(*) FROM audio_asset WHERE id IN (
 Bước publish vẫn là quyết định của người soạn (qua admin UI), không tự động —
 đúng tinh thần "không tự publish" (§8 của kế hoạch đề).
 
+## 5b. Đồng bộ TỪ VỰNG và DICTATION (khác hẳn đồng bộ một đề)
+
+`scripts/export-test.sh` chép một đề và **cố ý nổ** nếu đích đã có nó — một đề chỉ
+nạp một lần, trùng nghĩa là sai. Từ vựng và dictation ngược lại: đích đã có phần
+cũ, việc cần làm là *thêm phần mới rồi sửa phần cũ tại chỗ*. Nên chúng có đường
+riêng:
+
+```bash
+cd apps/api
+uv run python scripts/dump_learning_content.py > /tmp/learning.sql
+docker run --rm -i postgres:17 psql "$SUPABASE_URL" -v ON_ERROR_STOP=1 -q < /tmp/learning.sql
+```
+
+Mọi hàng đi bằng `ON CONFLICT ... DO UPDATE`, nên chạy lại không tốn gì.
+
+**Vì sao phải UPDATE chứ không chỉ INSERT phần mới.** `source_hash` gồm cả
+`engine_version`, nên một lượt `backfill_audio --force` tạo hàng `audio_asset`
+MỚI và trỏ `vocabulary_audio` sang id mới. Chỉ chèn phần mới thì đích giữ nguyên
+liên kết cũ và **ở lại dàn giọng cũ vĩnh viễn** — im lặng, vì mọi clip vẫn phát
+được. Đây chính là cách production tụt lại phía sau dev suốt nhiều sprint.
+
+**Phải `push_media` TRƯỚC.** Đích dùng chung object store với dev, nên hàng trỏ
+tới khoá chưa đẩy sẽ trả 400 ở mọi clip trong khi database trông hoàn hảo. Xem
+`.claude/rules/content-pipeline.md`.
+
+**Không đụng lịch sử học.** Danh sách bảng cố ý bỏ `vocabulary_review_state`,
+`review_log`, `dictation_attempt`, `topic_session` — chúng trỏ vào
+`vocabulary_entry.id` và `dictation_item.id`, mà những id đó không đổi. Cũng vì
+vậy tuyệt đối không xoá-rồi-nạp-lại.
+
+**Diễn tập trước khi chạy thật**, vì đây là ghi vào production:
+
+```bash
+# 1. dựng scratch có đúng schema
+docker compose -f docker/docker-compose.yml exec -T postgres pg_dump -U toeic -d toeic --schema-only > /tmp/schema.sql
+# 2. chép TRẠNG THÁI HIỆN TẠI của production vào scratch (chỉ đọc production)
+docker run --rm -i postgres:17 pg_dump "$SUPABASE_URL" --data-only --no-owner --no-privileges \
+  -t users -t audio_asset -t vocabulary_collection -t vocabulary_collection_item \
+  -t topic -t vocabulary_entry -t vocabulary_topic -t vocabulary_audio \
+  -t dictation_topic -t dictation_section -t dictation_story -t dictation_item > /tmp/prod_state.sql
+# 3. áp learning.sql lên bản sao đó và đếm lại
+```
+
+Lần chạy 2026-09-02 diễn tập theo đúng ba bước trên: 303 → 483 từ, 7 → 11 chủ đề,
+62 → 134 câu dictation, và cả 3 860 clip từ vựng chuyển sang `engine_version` 3.
+Áp hai lần cho ra cùng con số.
+
+Sau khi áp, các hàng `audio_asset` cũ trở thành mồ côi (production giữ chúng, vô
+hại — object vẫn còn trên provider). Dọn bằng `reconcile_media --delete-rows`,
+là một quyết định riêng.
+
 ## 6. Bảo mật
 
 Connection string chứa mật khẩu — nếu từng dán vào chat/lỗi, hãy **rotate
