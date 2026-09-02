@@ -44,7 +44,10 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 
 ### Nội dung — chặn mọi thứ khác
 
-- [ ] **Giải thích cho ≥ 300/655 câu.** Ngưỡng mở khoá RAG ở `ADR-003` §3.3
+- [ ] **Giải thích cho ≥ 300/655 câu.** Ngưỡng mở khoá RAG ở `ADR-003` §3.3. Hiện **124**,
+      và độ phủ lệch hẳn: Part 5 đạt 96% còn Part 6 và 7 bằng 0 — vì trong bảy prompt sinh
+      đề chỉ `part5_system.md` có đòi dòng `Explanation:`. Hình dạng lời giải thích cho từng
+      part và hai cổng chặn bịa dẫn chứng: `SPEC-EXPLANATIONS.md`
 - [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
       thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
       không có bài nào thuộc dạng đó
