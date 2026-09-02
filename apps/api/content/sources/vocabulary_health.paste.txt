@@ -1,0 +1,39 @@
+allergy | noun | /ˈælərdʒi/ | a bad reaction of the body to a substance | dị ứng | Please tell the kitchen about any allergies. | Vui lòng báo nhà bếp nếu bạn có dị ứng.
+ambulance | noun | /ˈæmbjələns/ | a vehicle that takes people to hospital | xe cứu thương | An ambulance arrived within five minutes. | Xe cứu thương tới trong vòng năm phút.
+bandage | noun | /ˈbændɪdʒ/ | a strip of cloth used to cover a wound | băng gạc | The nurse put a bandage on his hand. | Y tá băng gạc lên tay anh ấy.
+checkup | noun | /ˈtʃekʌp/ | a routine medical examination | khám sức khoẻ định kỳ | Staff get a free checkup every year. | Nhân viên được khám sức khoẻ định kỳ miễn phí mỗi năm.
+clinic | noun | /ˈklɪnɪk/ | a place where patients are examined and treated | phòng khám | The clinic opens at eight in the morning. | Phòng khám mở cửa lúc tám giờ sáng.
+consultation | noun | /ˌkɑːnslˈteɪʃn/ | a meeting with a doctor for advice | buổi tư vấn khám | The first consultation lasts thirty minutes. | Buổi tư vấn khám đầu tiên kéo dài ba mươi phút.
+dentist | noun | /ˈdentɪst/ | a doctor who treats teeth | nha sĩ | I have an appointment with the dentist at four. | Tôi có hẹn với nha sĩ lúc bốn giờ.
+diagnose | verb | /ˌdaɪəɡˈnoʊs/ | to identify an illness from its signs | chẩn đoán | The doctor diagnosed a mild infection. | Bác sĩ chẩn đoán một nhiễm trùng nhẹ.
+diagnosis | noun | /ˌdaɪəɡˈnoʊsɪs/ | the identification of an illness | kết quả chẩn đoán | The diagnosis was confirmed by a specialist. | Kết quả chẩn đoán được bác sĩ chuyên khoa xác nhận.
+dosage | noun | /ˈdoʊsɪdʒ/ | the amount of medicine to be taken | liều lượng | Do not exceed the dosage on the label. | Không dùng quá liều lượng ghi trên nhãn.
+emergency | noun | /ɪˈmɜːrdʒənsi/ | a sudden situation needing immediate action | tình huống khẩn cấp | Call this number in an emergency. | Gọi số này khi có tình huống khẩn cấp.
+examine | verb | /ɪɡˈzæmɪn/ | to look at a patient to find a problem | khám | The doctor examined her shoulder carefully. | Bác sĩ khám vai cho cô ấy rất kỹ.
+first aid | phrase | /fɜːrst eɪd/ | basic care given before a doctor arrives | sơ cứu | Every floor has a first aid kit. | Mỗi tầng đều có hộp sơ cứu.
+hygiene | noun | /ˈhaɪdʒiːn/ | keeping things clean in order to stay healthy | vệ sinh | Kitchen hygiene is checked every month. | Vệ sinh nhà bếp được kiểm tra hằng tháng.
+immune | adjective | /ɪˈmjuːn/ | protected against a particular disease | miễn dịch | The vaccine makes you immune for a year. | Vắc xin giúp bạn miễn dịch trong một năm.
+infection | noun | /ɪnˈfekʃn/ | an illness caused by bacteria or a virus | nhiễm trùng | An infection delayed his return to work. | Một đợt nhiễm trùng làm anh ấy đi làm lại muộn.
+injury | noun | /ˈɪndʒəri/ | harm done to the body | chấn thương | All injuries at work must be reported. | Mọi chấn thương tại nơi làm việc đều phải được báo.
+insurance | noun | /ɪnˈʃʊrəns/ | an agreement that pays your costs if you are ill | bảo hiểm | Health insurance covers most of the bill. | Bảo hiểm y tế chi trả phần lớn hoá đơn.
+medication | noun | /ˌmedɪˈkeɪʃn/ | medicine used to treat an illness | thuốc điều trị | Take the medication with food. | Uống thuốc điều trị cùng thức ăn.
+nurse | noun | /nɜːrs/ | a person trained to care for patients | y tá | A nurse will call your name shortly. | Y tá sẽ gọi tên bạn trong ít phút nữa.
+nutrition | noun | /nuˈtrɪʃn/ | the food a body needs in order to stay healthy | dinh dưỡng | The canteen offers a nutrition guide. | Căng tin có bảng hướng dẫn dinh dưỡng.
+patient | noun | /ˈpeɪʃnt/ | a person receiving medical treatment | bệnh nhân | The patient was asked to wait outside. | Bệnh nhân được mời chờ bên ngoài.
+pharmacy | noun | /ˈfɑːrməsi/ | a shop where medicines are sold | nhà thuốc | The pharmacy is next to the main entrance. | Nhà thuốc nằm cạnh cổng chính.
+physician | noun | /fɪˈzɪʃn/ | a doctor, especially one who is not a surgeon | bác sĩ nội khoa | The company physician sees staff on Tuesdays. | Bác sĩ nội khoa của công ty khám cho nhân viên vào thứ Ba.
+physiotherapy | noun | /ˌfɪzioʊˈθerəpi/ | treatment of injury by exercise and massage | vật lý trị liệu | He had physiotherapy twice a week. | Anh ấy tập vật lý trị liệu hai lần một tuần.
+prescribe | verb | /prɪˈskraɪb/ | to tell a patient which medicine to take | kê đơn | The doctor prescribed a week of rest. | Bác sĩ kê đơn nghỉ ngơi một tuần.
+prescription | noun | /prɪˈskrɪpʃn/ | a written order for medicine | đơn thuốc | Bring your prescription to the pharmacy. | Mang đơn thuốc đến nhà thuốc.
+recover | verb | /rɪˈkʌvər/ | to become well again after an illness | hồi phục | She recovered quickly after the operation. | Cô ấy hồi phục nhanh sau ca mổ.
+referral | noun | /rɪˈfɜːrəl/ | being sent to another doctor for treatment | giấy chuyển khám | You need a referral to see a specialist. | Bạn cần giấy chuyển khám để gặp bác sĩ chuyên khoa.
+sick leave | phrase | /sɪk liːv/ | time away from work because of illness | nghỉ ốm | He is on sick leave until Friday. | Anh ấy nghỉ ốm đến thứ Sáu.
+specialist | noun | /ˈspeʃəlɪst/ | a doctor expert in one area of medicine | bác sĩ chuyên khoa | The specialist reviewed the test results. | Bác sĩ chuyên khoa xem lại kết quả xét nghiệm.
+surgery | noun | /ˈsɜːrdʒəri/ | a medical operation | phẫu thuật | The surgery is scheduled for Monday morning. | Ca phẫu thuật được xếp vào sáng thứ Hai.
+symptom | noun | /ˈsɪmptəm/ | a sign that shows someone has an illness | triệu chứng | Report any symptoms to the clinic. | Báo mọi triệu chứng cho phòng khám.
+therapy | noun | /ˈθerəpi/ | treatment given to help someone get better | liệu pháp | Speech therapy is offered at the centre. | Trung tâm có liệu pháp trị liệu ngôn ngữ.
+treatment | noun | /ˈtriːtmənt/ | medical care given to a patient | điều trị | The treatment lasted three weeks. | Đợt điều trị kéo dài ba tuần.
+vaccination | noun | /ˌvæksɪˈneɪʃn/ | an injection that protects against a disease | tiêm chủng | Free vaccination is offered every autumn. | Mỗi mùa thu đều có tiêm chủng miễn phí.
+ward | noun | /wɔːrd/ | a room in a hospital for several patients | khu bệnh nhân | Visitors may enter the ward after two. | Người thăm được vào khu bệnh nhân sau hai giờ.
+wellness | noun | /ˈwelnəs/ | the state of being healthy in body and mind | sức khoẻ toàn diện | The wellness program includes free yoga. | Chương trình sức khoẻ toàn diện có lớp yoga miễn phí.
+X-ray | noun | /ˈeks reɪ/ | a photograph of the inside of the body | phim chụp X-quang | The X-ray showed no broken bones. | Phim chụp X-quang cho thấy không gãy xương.

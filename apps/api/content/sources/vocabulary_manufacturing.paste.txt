@@ -1,0 +1,39 @@
+assembly line | phrase | /əˈsembli laɪn/ | a line of workers and machines that build a product | dây chuyền lắp ráp | The assembly line stops for maintenance on Sundays. | Dây chuyền lắp ráp dừng để bảo trì vào Chủ nhật.
+batch | noun | /bætʃ/ | a quantity of goods produced at one time | lô hàng | The whole batch failed the final check. | Cả lô hàng không đạt lần kiểm cuối.
+blueprint | noun | /ˈbluːprɪnt/ | a detailed technical drawing of a design | bản vẽ kỹ thuật | The blueprint was updated after the review. | Bản vẽ kỹ thuật được cập nhật sau buổi rà soát.
+calibrate | verb | /ˈkælɪbreɪt/ | to adjust a machine so that it measures correctly | hiệu chuẩn | The scales are calibrated every morning. | Cân được hiệu chuẩn mỗi sáng.
+capacity | noun | /kəˈpæsəti/ | the amount a factory is able to produce | công suất | The plant is running at full capacity. | Nhà máy đang chạy hết công suất.
+certification | noun | /ˌsɜːrtɪfɪˈkeɪʃn/ | official proof that a standard has been met | chứng nhận | Certification is renewed every two years. | Chứng nhận được gia hạn hai năm một lần.
+component | noun | /kəmˈpoʊnənt/ | one part of a larger machine or product | linh kiện | A missing component delayed the order. | Thiếu một linh kiện làm đơn hàng bị chậm.
+conveyor | noun | /kənˈveɪər/ | a moving belt that carries goods along | băng chuyền | Boxes move along the conveyor to packing. | Thùng hàng chạy trên băng chuyền tới khâu đóng gói.
+defect | noun | /ˈdiːfekt/ | a fault that makes a product unusable | lỗi sản phẩm | Two defects were found in the sample. | Hai lỗi sản phẩm được phát hiện trong mẫu.
+durable | adjective | /ˈdʊrəbl/ | able to last a long time without damage | bền | The casing is made of durable plastic. | Vỏ máy được làm bằng nhựa bền.
+efficiency | noun | /ɪˈfɪʃnsi/ | how well time and materials are used | hiệu suất | The new layout improved efficiency by a fifth. | Cách bố trí mới tăng hiệu suất lên một phần năm.
+equipment | noun | /ɪˈkwɪpmənt/ | the machines and tools needed for a job | thiết bị | Safety equipment must be worn on the floor. | Phải mang thiết bị an toàn khi ở trong xưởng.
+fabricate | verb | /ˈfæbrɪkeɪt/ | to make something from raw materials | chế tạo | The frames are fabricated on site. | Khung được chế tạo ngay tại chỗ.
+flaw | noun | /flɔː/ | a small fault in a design or a material | khiếm khuyết | A flaw in the mould ruined the run. | Một khiếm khuyết ở khuôn làm hỏng cả mẻ.
+gauge | noun | /ɡeɪdʒ/ | an instrument that measures a quantity | đồng hồ đo | The pressure gauge is checked every hour. | Đồng hồ đo áp suất được kiểm mỗi giờ.
+inspection | noun | /ɪnˈspekʃn/ | a careful check for faults | đợt kiểm tra | The inspection is due next Thursday. | Đợt kiểm tra diễn ra vào thứ Năm tới.
+inspector | noun | /ɪnˈspektər/ | a person whose job is to check quality | thanh tra viên | The inspector signed off on the batch. | Thanh tra viên đã duyệt lô hàng.
+lubricate | verb | /ˈluːbrɪkeɪt/ | to put oil on the moving parts of a machine | tra dầu | The bearings are lubricated once a week. | Vòng bi được tra dầu mỗi tuần một lần.
+machinery | noun | /məˈʃiːnəri/ | the machines in a factory taken together | máy móc | Heavy machinery is serviced twice a year. | Máy móc hạng nặng được bảo dưỡng hai lần một năm.
+maintenance | noun | /ˈmeɪntənəns/ | work done to keep equipment running | bảo trì | Maintenance is carried out overnight. | Việc bảo trì được làm qua đêm.
+manufacture | verb | /ˌmænjuˈfæktʃər/ | to make goods in large numbers | sản xuất | The parts are manufactured overseas. | Các bộ phận được sản xuất ở nước ngoài.
+manufacturer | noun | /ˌmænjuˈfæktʃərər/ | a company that makes goods | nhà sản xuất | The manufacturer offers a two-year warranty. | Nhà sản xuất bảo hành hai năm.
+mass production | phrase | /mæs prəˈdʌkʃn/ | making goods in very large quantities | sản xuất hàng loạt | Mass production begins next quarter. | Sản xuất hàng loạt bắt đầu vào quý sau.
+output | noun | /ˈaʊtpʊt/ | the amount produced in a period of time | sản lượng | Monthly output rose after the upgrade. | Sản lượng hằng tháng tăng sau lần nâng cấp.
+overhaul | verb | /ˌoʊvərˈhɔːl/ | to repair and improve a machine completely | đại tu | The line was overhauled during the shutdown. | Dây chuyền được đại tu trong đợt ngừng máy.
+precision | noun | /prɪˈsɪʒn/ | exactness in measurement or in work | độ chính xác | These parts are cut with great precision. | Các chi tiết này được cắt với độ chính xác cao.
+procedure | noun | /prəˈsiːdʒər/ | the official way of doing a task | quy trình | Follow the shutdown procedure exactly. | Hãy làm đúng quy trình ngừng máy.
+production | noun | /prəˈdʌkʃn/ | the process of making goods | sản xuất | Production was halted for two hours. | Sản xuất bị dừng trong hai giờ.
+prototype | noun | /ˈproʊtətaɪp/ | the first model made in order to test a design | mẫu thử | The prototype will be shown at the fair. | Mẫu thử sẽ được trưng bày tại hội chợ.
+quality control | phrase | /ˈkwɑːləti kənˈtroʊl/ | the checks that keep products up to standard | kiểm soát chất lượng | Quality control rejected six units. | Kiểm soát chất lượng loại sáu sản phẩm.
+raw material | phrase | /rɔː məˈtɪriəl/ | the basic substance a product is made from | nguyên liệu thô | Raw material prices rose sharply. | Giá nguyên liệu thô tăng mạnh.
+recall | verb | /rɪˈkɔːl/ | to ask customers to return a faulty product | thu hồi | The company recalled the affected units. | Công ty thu hồi các sản phẩm bị ảnh hưởng.
+reject | verb | /rɪˈdʒekt/ | to refuse goods that fail a check | loại bỏ | Any unit with a scratch is rejected. | Sản phẩm nào có vết xước đều bị loại bỏ.
+safety | noun | /ˈseɪfti/ | protection from danger or injury | an toàn | Safety comes before output on this floor. | Ở xưởng này an toàn đặt trên sản lượng.
+specification | noun | /ˌspesɪfɪˈkeɪʃn/ | a detailed description of what is required | quy cách kỹ thuật | The order did not match the specification. | Đơn hàng không đúng quy cách kỹ thuật.
+standard | noun | /ˈstændərd/ | a level of quality that must be met | tiêu chuẩn | All products meet the same standard. | Mọi sản phẩm đều đạt cùng một tiêu chuẩn.
+streamline | verb | /ˈstriːmlaɪn/ | to make a process simpler and faster | tinh gọn | We streamlined the packing steps. | Chúng tôi tinh gọn các bước đóng gói.
+tolerance | noun | /ˈtɑːlərəns/ | the variation allowed in a measurement | dung sai | The part is within tolerance. | Chi tiết nằm trong dung sai cho phép.
+workshop | noun | /ˈwɜːrkʃɑːp/ | a room where things are made or repaired | xưởng | Repairs are done in the workshop next door. | Việc sửa chữa được làm ở xưởng bên cạnh.

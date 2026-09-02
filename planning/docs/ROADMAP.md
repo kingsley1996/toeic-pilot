@@ -20,8 +20,8 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 | Bảng · migration | 57 · 51 |
 | Endpoint | **189 thao tác** (114 admin) |
 | Route web | 49 |
-| Nội dung | **5 đề / 655 câu** (124 có giải thích) · **483 từ vựng / 11 chủ đề** · **134 câu dictation / 17 bài** |
-| Media | **6 761 bản thu**; từ vựng và dictation **toàn bộ ở `engine_version` 3** |
+| Nội dung | **5 đề / 655 câu** (124 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** |
+| Media | **5 115 hàng `audio_asset`**; từ vựng và dictation **toàn bộ ở `engine_version` 3** (4 796 + 134 clip) |
 | Nhãn | 233 câu + 45 cụm đã gắn |
 
 **Vòng đời nội dung khép kín và chạy thật**: dán hoặc sinh bằng đồ thị → `draft` → audio
@@ -48,6 +48,9 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 - [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
       thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
       không có bài nào thuộc dạng đó
+- [x] ~~Bộ "600 từ vựng thiết yếu" đủ 600 từ~~ — **600 từ / 14 chủ đề**. Ba chủ đề thêm ở
+      đợt này (`Restaurants & Dining`, `Health & Medical`, `Manufacturing & Quality`) chọn
+      theo mảng TOEIC thật sự hay hỏi mà bộ cũ trống hoàn toàn, không phải nhồi cho tròn số
 - [ ] Ảnh Part 1 chọn tay, ghi giấy phép (`ADR-004` §2.1)
 - [ ] `question.source` điền đúng từng hàng — **không** chép đề ETS thật
 
