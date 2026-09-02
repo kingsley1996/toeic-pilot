@@ -15,13 +15,16 @@
 
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 
+import { landing } from "@/content/landing";
+
+const T = landing.mocks;
+
 export const FPS = 30;
 
 /* ── 1. Thẻ từ vựng ──────────────────────────────────────────────────────── */
 
 export const VOCAB_DURATION = 300;
-const WORD = "invoice";
-const ACCENTS = ["US", "UK", "AU", "CA"];
+const WORD = T.vocab.word;
 
 export function VocabCard() {
   const frame = useCurrentFrame();
@@ -42,26 +45,26 @@ export function VocabCard() {
 
   return (
     <div className="l-mock-inner">
-      <div className="l-label">Business · Từ vựng</div>
+      <div className="l-label">{T.vocab.label}</div>
       <div className="l-word">
         {WORD.slice(0, typed)}
         {caret && <span style={{ opacity: frame % 16 < 8 ? 1 : 0 }}>|</span>}
       </div>
       <div className="l-phonetic" style={{ opacity: phonetic }}>
-        /ˈɪnvɔɪs/
+        {T.vocab.phonetic}
       </div>
       <div
         className="l-definition"
         style={{ opacity: definition, transform: `translateY(${(1 - definition) * 6}px)` }}
       >
-        <b>noun</b>
+        <b>{T.vocab.partOfSpeech}</b>
         <br />
-        <span>a document showing goods or services and the amount to be paid</span>
+        <span>{T.vocab.definition}</span>
       </div>
       <div className="l-audio">
         <div className="l-play">▶</div>
-        <span className="l-audio-label">Nghe phát âm</span>
-        {ACCENTS.map((code, i) => {
+        <span className="l-audio-label">{T.vocab.playLabel}</span>
+        {T.vocab.accents.map((code, i) => {
           // Bốn giọng sáng lên LẦN LƯỢT — đó là điều ô này muốn nói: cùng một từ,
           // bốn bản thu khác nhau.
           const at = 96 + i * 34;
@@ -89,7 +92,7 @@ export function VocabCard() {
 /* ── 2. Nghe chép chính tả ───────────────────────────────────────────────── */
 
 export const DICTATION_DURATION = 330;
-const ANSWER = "rescheduled";
+const ANSWER = T.dictation.answer;
 
 export function DictationBox() {
   const frame = useCurrentFrame();
@@ -105,7 +108,7 @@ export function DictationBox() {
 
   return (
     <div className="l-dark-box">
-      <div className="l-dark-label">Nghe và gõ lại</div>
+      <div className="l-dark-label">{T.dictation.label}</div>
       <div className="l-listen">
         <span style={{ display: "inline-flex", alignItems: "flex-end", gap: 3, height: 20 }}>
           {Array.from({ length: 14 }).map((_, i) => {
@@ -126,11 +129,11 @@ export function DictationBox() {
             );
           })}
         </span>
-        {listening ? "Đang phát…" : "Nghe kỹ"}
+        {listening ? T.dictation.playing : T.dictation.listen}
       </div>
       <div className="l-line" />
       <div className="l-answer">
-        The meeting has been{" "}
+        {T.dictation.sentenceBefore}{" "}
         <b
           style={{
             color: done ? "var(--l-green)" : undefined,
@@ -139,12 +142,10 @@ export function DictationBox() {
         >
           {typed === 0 ? "   " : ANSWER.slice(0, typed)}
         </b>{" "}
-        for Friday.
+        {T.dictation.sentenceAfter}
       </div>
       <div className="l-legend" style={{ opacity: done ? settle : 1 }}>
-        {done
-          ? "Đúng rồi — nghe lại lần nữa nếu muốn chắc."
-          : "Bấm phát lại nếu bạn cần nghe thêm một lần."}
+        {done ? T.dictation.done : T.dictation.hint}
       </div>
     </div>
   );
@@ -153,8 +154,8 @@ export function DictationBox() {
 /* ── 3. Câu Part 5 ───────────────────────────────────────────────────────── */
 
 export const EXAM_DURATION = 360;
-const OPTIONS = ["arrival", "arrived", "arriving", "arrive"];
-const CORRECT = 0;
+const OPTIONS = T.exam.options;
+const CORRECT = T.exam.correctIndex;
 
 export function ExamQuestion() {
   const frame = useCurrentFrame();
@@ -168,12 +169,12 @@ export function ExamQuestion() {
   return (
     <div className="l-mock-inner">
       <div className="l-q-head">
-        <span className="l-label">Part 5 · Câu chưa hoàn chỉnh</span>
+        <span className="l-label">{T.exam.label}</span>
         <b style={{ color: left <= 10 ? "var(--l-orange-dark)" : undefined }}>
           00:{String(left).padStart(2, "0")}
         </b>
       </div>
-      <p className="l-question">Customers can monitor the estimated ______ of their shipments.</p>
+      <p className="l-question">{T.exam.question}</p>
       <div className="l-options">
         {OPTIONS.map((opt, i) => {
           const at = 40 + i * 22;

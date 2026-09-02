@@ -1310,20 +1310,18 @@
 }
 
 /*
- * Bản mẫu tô dải này bằng #18212b viết cứng. Ở đây nó là bậc `panel` — bậc NỔI,
- * và phải là bậc nổi chứ không phải `recess`: dải ngay trên nó (`.l-alt`) đã là
- * `recess` rồi, nên dùng lại sẽ dán hai dải thành một mảng liền và mất hẳn nhịp
- * xen kẽ. Thang `recess → ground → panel` là cách hệ thiết kế diễn đạt độ nổi
- * khi không có bóng đổ, và nó tự lật đúng ở chế độ tối.
+ * Dải này KHÔNG có nền riêng, và đó là bản sửa của một lần chọn sai.
+ *
+ * Bản mẫu tô nó bằng #18212b viết cứng. Bản đầu ở đây đổi sang bậc `panel` chỉ
+ * để khỏi trùng màu với dải `.l-alt` ngay trên nó — giải quyết được chuyện trùng
+ * nhưng đổi lấy chuyện lạc lõng: nó thành dải trắng đục DUY NHẤT của trang, sáng
+ * hơn mọi thứ, mất lưới kẻ ô mà các dải thường đều để lộ, và bên trong thì lật
+ * ngược tương phản — ô xám trên nền trắng, ngược với mọi khối khác.
+ *
+ * Nhịp xen kẽ giờ do THỨ TỰ dải lo, không do dải này tự bịa ra một bậc thứ ba:
+ * `.l-pet-layout` phía dưới nhận `.l-alt`, và `habits` nhả nó ra. Xem chú thích
+ * ở `app/page.tsx`.
  */
-.landing .l-ai {
-  background: var(--l-card);
-}
-/* Ô bên trong phải chìm xuống, vì nền dải giờ là bậc nổi cao nhất. */
-.landing .l-ai .l-pipe,
-.landing .l-ai .l-note {
-  background: var(--l-sunken);
-}
 .landing .l-pipeline {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
