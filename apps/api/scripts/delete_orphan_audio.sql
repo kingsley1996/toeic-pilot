@@ -1,7 +1,12 @@
 -- Xoá HÀNG `audio_asset` không còn ai trỏ tới. KHÔNG đụng object trên provider.
 --
+-- Qua psql:
+--
 --     docker run --rm -i postgres:17 psql "$SUPABASE_URL" \
 --       -v ON_ERROR_STOP=1 -v expected=4047 < scripts/delete_orphan_audio.sql
+--
+-- Qua trình soạn SQL của Supabase (không có biến của psql): sửa thẳng con số ở
+-- dòng `SET LOCAL` bên dưới rồi chạy cả tệp.
 --
 -- Bản SQL của `app.content.reconcile_media --delete-rows`, dành cho đích mà công
 -- cụ Python không nói chuyện được (production).
@@ -18,26 +23,37 @@
 --     JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = k.att
 --     WHERE con.contype = 'f' AND f.relname = 'audio_asset';
 --
--- `:expected` là con số vừa đếm được, và nó không phải thủ tục cho vui: giữa lúc
--- đếm và lúc xoá, một lượt đồng bộ khác có thể đã đổi trạng thái, và xoá theo con
--- số cũ lúc đó là xoá nhầm. Lệch thì giao dịch nổ và không mất gì.
+-- Con số kỳ vọng không phải thủ tục cho vui: giữa lúc đếm và lúc xoá, một lượt
+-- đồng bộ khác có thể đã đổi trạng thái, và xoá theo con số cũ lúc đó là xoá
+-- nhầm. Lệch thì giao dịch nổ và không mất gì.
 --
 -- Một phép thử nhanh cho thấy điều kiện còn đúng: sau một lượt recast, **không**
 -- asset nào ở `engine_version` hiện hành được coi là mồ côi. Thấy có là danh sách
 -- tham chiếu đã thiếu cột.
+--
+-- **Con số đi qua một GUC, không đi thẳng vào khối `DO`.** psql chỉ thay biến
+-- `:tên` ở văn bản thường; bên trong `$$ ... $$` nó để nguyên hai dấu chấm, và
+-- server nhận đúng chuỗi `:expected` rồi báo `syntax error at or near ":"`. Bản
+-- đầu của tệp này viết `IF n <> :expected` ngay trong khối DO và hỏng đúng như
+-- thế (2026-09-02). `SET LOCAL` nằm ngoài dollar-quote nên thay được, và
+-- `current_setting` đọc lại giá trị ở trong.
 
 BEGIN;
 
+SET LOCAL app.expected_orphans = :'expected';
+
 DO $$
-DECLARE n int;
+DECLARE
+  n int;
+  want int := current_setting('app.expected_orphans')::int;
 BEGIN
   SELECT count(*) INTO n FROM audio_asset aa
   WHERE NOT EXISTS (SELECT 1 FROM vocabulary_audio v WHERE v.audio_asset_id = aa.id)
     AND NOT EXISTS (SELECT 1 FROM dictation_item d WHERE d.audio_asset_id = aa.id)
     AND NOT EXISTS (SELECT 1 FROM question q WHERE q.audio_asset_id = aa.id)
     AND NOT EXISTS (SELECT 1 FROM question_set s WHERE s.audio_asset_id = aa.id);
-  IF n <> :expected THEN
-    RAISE EXCEPTION 'mồ côi = %, không phải % như lúc đo — dừng lại', n, :expected;
+  IF n <> want THEN
+    RAISE EXCEPTION 'mồ côi = %, không phải % như lúc đo — dừng lại', n, want;
   END IF;
   RAISE NOTICE 'xác nhận % hàng mồ côi, đang xoá', n;
 END $$;
