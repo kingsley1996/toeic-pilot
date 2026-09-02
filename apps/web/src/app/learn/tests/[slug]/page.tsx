@@ -170,8 +170,6 @@ export default function CollectionPage() {
           onClose={() => setGated(null)}
           onSuccess={() => router.push(`/learn/tests/${slug}/${gated.slug}`)}
           next={`/learn/tests/${slug}/${gated.slug}`}
-          title="Đăng nhập để xem đề"
-          description={`“${gated.title}” miễn phí, nhưng cần tài khoản để lưu bài làm và điểm số.`}
         />
       )}
     </Page>

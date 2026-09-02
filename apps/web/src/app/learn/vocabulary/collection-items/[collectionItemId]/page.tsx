@@ -48,7 +48,7 @@ type TabId = (typeof TABS)[number]["id"];
 
 function CollectionItemDetail() {
   const itemId = String(useParams<{ collectionItemId: string }>().collectionItemId ?? "");
-  const { token } = useSession();
+  const { status, token } = useSession();
   /* `?topic=<slug>` mở thẳng một chủ đề cụ thể thay vì chủ đề đầu tiên. Cần cho
      lối "học tiếp" trên trang chủ: nếu học viên đang dở chủ đề thứ tư của cuốn
      sách, dẫn họ về cuốn sách rồi mở chủ đề đầu tiên là ném họ ra khỏi đúng chỗ
@@ -232,12 +232,18 @@ function CollectionItemDetail() {
                   <span className="font-data text-small text-ink-muted">
                     {activeTopic.entry_count} từ
                   </span>
-                  <PanelLink
-                    href={`/learn/vocabulary/${activeTopic.slug}`}
-                    className="ml-auto border-rule px-3 py-1.5 text-small font-semibold hover:bg-recess"
-                  >
-                    Xem danh sách từ
-                  </PanelLink>
+                  {/* Chỉ cho người đã đăng nhập. Điều kiện là `authenticated`
+                      chứ không phải phủ định của `anonymous`: phiên còn
+                      `loading` thì chưa biết là ai, và hiện trước rồi gỡ đi là
+                      một nút nháy lên rồi biến mất ngay dưới con trỏ. */}
+                  {status === "authenticated" && (
+                    <PanelLink
+                      href={`/learn/vocabulary/${activeTopic.slug}`}
+                      className="ml-auto border-rule px-3 py-1.5 text-small font-semibold hover:bg-recess"
+                    >
+                      Xem danh sách từ
+                    </PanelLink>
+                  )}
                 </div>
 
                 {/* Meter tiến độ chủ đề: đếm từ ĐÃ CHẤM — bấm bất kỳ mức nào

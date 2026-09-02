@@ -160,7 +160,12 @@ export default function TestDetailPage() {
           <EmptyState
             icon={Lock}
             title="Đăng nhập để xem đề"
-            description="Đề thi thử miễn phí, nhưng cần tài khoản để lưu bài làm và điểm số."
+            description={
+              <>
+                Đề thi thử <strong className="font-semibold text-ink">miễn phí</strong>. Cần tài
+                khoản để lưu bài làm và điểm số.
+              </>
+            }
             action={<Button onClick={() => setDismissed(false)}>Đăng nhập</Button>}
           />
         </div>

@@ -10,8 +10,18 @@ import { BookOpen, Library, Layers, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { Alert, EmptyState, Meter, Page, PageHeader, PanelLink, Skeleton } from "@/components/ui";
+import {
+  Alert,
+  ButtonLink,
+  EmptyState,
+  Meter,
+  Page,
+  PageHeader,
+  PanelLink,
+  Skeleton,
+} from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
 
 /*
@@ -92,6 +102,7 @@ function UnfiledTopicCard({
 
 function VocabularyLanding() {
   const { token } = useSession();
+  const due = useDueCount();
   const [collections, setCollections] = useState<VocabularyCollectionPublic[] | null>(null);
   const [topics, setTopics] = useState<TopicPublic[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -146,6 +157,29 @@ function VocabularyLanding() {
         title="Tuyển tập"
         description="Chọn một tuyển tập để học từ theo cuốn sách, nghe phát âm bốn giọng và chơi minigame."
       />
+
+      {/*
+       * Việc đến hạn đứng TRƯỚC danh sách tuyển tập, vì nó là câu trả lời cho
+       * "hôm nay tôi nên làm gì" — còn tuyển tập trả lời "tôi muốn học thêm gì".
+       * Đặt dưới danh sách thì người học phải cuộn qua mọi cuốn sách mới thấy
+       * việc đã đến hạn, và hàng đợi SM-2 chỉ có giá trị khi được làm đúng ngày.
+       *
+       * `useDueCount` trả 0 cho khách vãng lai, nên khối này tự vắng mặt.
+       */}
+      {due > 0 && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded border border-action bg-action-tint p-5">
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1.5 font-semibold text-action-ink">
+              <RotateCcw size={15} strokeWidth={2} aria-hidden />
+              <span className="font-data tabular-nums">{due}</span> từ đến hạn ôn
+            </p>
+            <p className="mt-0.5 text-small text-ink-muted">Ôn đúng lúc sắp quên thì nhớ lâu.</p>
+          </div>
+          <ButtonLink href="/learn/review" size="sm">
+            Ôn ngay
+          </ButtonLink>
+        </div>
+      )}
 
       {error && (
         <div className="mb-4">

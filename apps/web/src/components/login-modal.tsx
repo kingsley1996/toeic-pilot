@@ -1,5 +1,7 @@
 "use client";
 
+import { type ReactNode } from "react";
+
 import { LoginForm } from "@/components/login-form";
 import { Modal } from "@/components/modal";
 
@@ -20,14 +22,23 @@ export function LoginModal({
   onSuccess,
   next,
   title = "Đăng nhập để xem đề",
-  description = "Đề thi thử miễn phí, nhưng cần tài khoản để lưu bài làm và điểm số.",
+  /* Hai câu ngắn, không phải một câu nối bằng dấu phẩy: câu đầu là tin tốt và
+     phải đọc được một mình. Tên đề cố ý KHÔNG nằm ở đây — người dùng vừa bấm
+     vào nó, còn nhét thêm một cái tên dài trong ngoặc kép thì dòng ghi chú
+     xuống hai hàng và cái đáng nhớ nhất bị đẩy ra cuối. */
+  description = (
+    <>
+      Đề thi thử <strong className="font-semibold text-ink">miễn phí</strong>. Cần tài khoản để lưu
+      bài làm và điểm số.
+    </>
+  ),
 }: {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
   next: string;
   title?: string;
-  description?: string;
+  description?: ReactNode;
 }) {
   return (
     <Modal open={open} onClose={onClose} title={title} description={description}>
