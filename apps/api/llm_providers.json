@@ -16,7 +16,7 @@
           "rate_in": 0.075,
           "rate_out": 0.25,
           "rate_cached": 0.015,
-          "comment": "Giá chuẩn tham chiếu của B.AI (1 Credit/Token = $1/1M token). Model hiện đang 0 Credit theo hạn miễn phí, còn z.ai đang giảm 50% cùng hạn 2026-09-09 — miễn phí/khuyến mãi là thuộc tính tài khoản, bảng ghi giá chuẩn. ID model và khoá đã kiểm tay bằng GET /v1/models ngày 2026-08-29 (44 model, có glm-5.3-flash; khoá lấy từ config opencode của máy này — cùng kiểu hai chỗ đọc với tokenrouter)."
+          "comment": "Giá chuẩn tham chiếu của B.AI (1 Credit/Token = $1/1M token). Model hiện đang 0 Credit theo hạn miễn phí, còn z.ai đang giảm 50% cùng hạn 2026-09-09 — miễn phí/khuyến mãi là thuộc tính tài khoản, bảng ghi giá chuẩn. ID model và khoá đã kiểm tay bằng GET /v1/models ngày 2026-08-29 (44 model, có glm-5.3-flash; khoá lấy từ config opencode của máy này — cùng kiểu hai chỗ đọc với tokenrouter). KHÔNG tắt được `thinking` cho model này: b.ai trả 400 \"该模型始终思考，不支持关闭思考；请使用 low、high 或 max\" — chỉ nhận low/high/max, và `low` chính là thứ provider đã gửi sẵn. Hệ quả đo được 2026-09-03: lượt sinh bối cảnh chạy tốt (6 cảnh Part 1 trong 28 giây, 15 cảnh Part 7 trong 55 giây), nhưng lượt sinh brief hình tiêu trọn hạn mức vào phần nghĩ — 32 712 ký tự, `content` rỗng. Dùng model khác cho bước đó."
         },
         "gpt-5.6-sol": {
           "rate_in": 4.0,
@@ -65,6 +65,12 @@
           "rate_out": 6.0,
           "rate_cached": 0.25,
           "comment": "docs.b.ai ngày 2026-08-30. Qwen3.8-Max: input 2.0, output 6.0, cache_read 0.25, cache_write 2.0."
+        },
+        "qwen3.8-flash": {
+          "rate_in": 0.15,
+          "rate_out": 0.47,
+          "rate_cached": 0.016,
+          "comment": "CHƯA XÁC NHẬN Ở docs.b.ai — trang đó trả 403 ngày 2026-09-03. Con số lấy từ bảng giá gốc của Alibaba/OpenRouter cùng ngày: input 0.15, output 0.47, cache read 0.016. `GET /v1/models` xác nhận id `qwen3.8-flash` có thật trên b.ai (45 model). Nếu b.ai không bán lại đúng giá gốc thì sổ cái lệch ở model này — kiểm lại khi vào được docs."
         }
       }
     },

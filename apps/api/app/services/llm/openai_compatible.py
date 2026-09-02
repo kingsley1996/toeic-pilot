@@ -71,11 +71,14 @@ class OpenAICompatibleProvider:
         *,
         timeout_s: float = 300.0,
         extra_payload: dict[str, object] | None = None,
+        model_payload: dict[str, dict[str, object]] | None = None,
     ) -> None:
         self.name = name
         self._url = base_url.rstrip("/") + "/chat/completions"
         self._key = api_key
         self._extra = extra_payload or {}
+        # Payload riêng của từng model, đè lên `_extra` theo từng khoá.
+        self._model_extra = model_payload or {}
         # Mặc định của httpx là 5 giây, và 90 giây cũng vẫn ngắn: đo với
         # `qwen3.8-max-free` thì một lượt sinh một câu hỏi mất ~2,5 phút, vì
         # model suy luận viết hàng nghìn token suy nghĩ trước khi trả lời. Cả
@@ -104,6 +107,9 @@ class OpenAICompatibleProvider:
         if request.tools:
             payload["tools"] = request.tools
         payload.update(self._extra)
+        # Model thắng provider. Gộp theo từng khoá chứ không thay cả khối, để
+        # một model chỉ cần tắt `thinking` không phải khai lại mọi thứ khác.
+        payload.update(self._model_extra.get(model, {}))
         started = perf_counter()
         try:
             response = httpx.post(

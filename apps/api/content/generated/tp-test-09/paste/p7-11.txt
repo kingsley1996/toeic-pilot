@@ -1,0 +1,59 @@
+[PASSAGE]
+From: hr@example-office.com
+To: all-staff@example-office.com
+Subject: Vacation survey results and next steps
+Date: May 6
+
+Dear colleagues,
+
+Thank you for completing the spring vacation survey. The results are now available, and the chart below summarizes the total vacation days reported by each department. The survey was sent to 140 employees, and 112 responded. The response rate was highest in Sales and lowest in HR. Managers were asked to verify that each entry matched the timekeeping system before the data were compiled. Because some employees took vacation in overlapping periods, the totals may differ slightly from individual calendars. The People Operations team will publish a detailed breakdown after corrections close.
+
+The survey asked employees to record only vacation days taken between January 1 and April 30. It did not include sick leave, jury duty, or days taken under the new remote-work pilot. The chart shows total days reported by all staff who responded, including interns and part-time employees. To identify the department whose full-time staff took the most vacation days, subtract the days taken by interns and part-time employees listed below: Sales: 3, IT: 1, HR: 0, Ops: 2. Please review the figures carefully. If you believe a day was recorded incorrectly, submit a correction form through the intranet by May 15. Corrections received after that date will not be included in the summer planning report. The report will help managers schedule coverage for the busy season and decide whether to add temporary staff. We also remind you that the flexible-work pilot will be offered first to the department with the highest adjusted total. That department will receive two additional remote-work slots for the next quarter. The slots are eligible for use by employees who have completed at least six months of service and whose manager approves the request. If you have questions about the survey, contact the People Operations team. Thank you again for your participation.
+
+Sincerely,
+People Operations
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To share survey results and request corrections
+(B) To announce a new vacation policy
+(C) To invite employees to a training session
+(D) To confirm a manager's leave request
+Answer: A
+Source: original
+
+[QUESTION]
+What must employees do by May 15?
+(A) Submit a correction form
+(B) Complete the survey
+(C) Apply for remote-work slots
+(D) Meet with People Operations
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about the survey?
+(A) Some reported totals may change.
+(B) All employees responded.
+(C) Sick leave was included.
+(D) HR had the highest response rate.
+Answer: A
+Source: original
+
+[QUESTION]
+Which department's full-time staff took the most vacation days?
+(A) Sales
+(B) IT
+(C) HR
+(D) Ops
+Answer: A
+Source: original
+
+[QUESTION]
+In the e-mail, the word "eligible" in paragraph 2 is closest in meaning to
+(A) qualified
+(B) absent
+(C) hired
+(D) retired
+Answer: A
+Source: original

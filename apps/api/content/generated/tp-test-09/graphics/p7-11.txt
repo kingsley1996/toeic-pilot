@@ -1,0 +1,6 @@
+kind: chart
+Total Vacation Days Reported by Department
+Sales | 12
+IT | 8
+HR | 5
+Ops | 10

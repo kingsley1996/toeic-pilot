@@ -1,0 +1,37 @@
+[PASSAGE]
+Review: Warehouse Software for Logistics Companies
+
+When our regional distribution centre replaced its spreadsheet system with new warehouse software, the first improvement was visibility. Dispatchers could see incoming pallets, reserved stock, and delayed carriers on one dashboard. Inventory counts that once took two days were completed in four hours, and order errors fell by nearly thirty percent.
+
+The software is strongest for companies that need simple, reliable tracking rather than advanced automation. Its mobile scanning feature works well in narrow aisles, and the reporting templates are easy to edit. Customer support answered our setup questions within one business day.
+
+However, the program has a clear weakness. It cannot connect directly with several older customs documents used by international freight partners. Staff must export data, convert it, and upload it again, which adds time to cross-border shipments. For domestic logistics firms, this is minor. For companies handling frequent overseas deliveries, it may be a serious limitation.
+
+Overall, the software is a practical choice for growing warehouses, but buyers should test it against their own document workflow before signing a long contract.
+
+[QUESTION]
+What is the main purpose of the review?
+(A) To evaluate a software product
+(B) To compare two distribution centres
+(C) To announce a support policy
+(D) To recommend a customs agency
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about companies that frequently ship overseas?
+(A) They may need extra time for customs paperwork
+(B) They will find mobile scanning useless
+(C) They should avoid reporting templates
+(D) They need no dashboard
+Answer: A
+Source: original
+
+[QUESTION]
+What weakness of the software is mentioned?
+(A) It cannot connect directly with some older customs documents
+(B) Its mobile scanning feature is difficult to use
+(C) Customer support responds slowly
+(D) Inventory counts take two days
+Answer: A
+Source: original

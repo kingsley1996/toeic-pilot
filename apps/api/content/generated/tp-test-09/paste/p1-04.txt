@@ -1,0 +1,8 @@
+[QUESTION]
+voice: us_female_1
+(A) The scientist is writing in a notebook.
+(B) The scientist is pouring liquid into a beaker.
+(C) Two scientists are discussing the results.
+(D) The notebook is lying closed on the bench.
+Answer: A
+Source: original

@@ -1,0 +1,30 @@
+[PASSAGE]
+Lan [8:05 A.M.]
+Mr. Tuan, the Room 412 guest says the air conditioner is noisy and asks for a quieter room. Room 208 is free but near the elevator. Room 505 is free, far from the elevator, but costs 200,000 VND more per night.
+
+Tuan [8:09 A.M.]
+The guest booked a standard room, so do not charge extra unless she agrees. Call her first and explain the options. If she accepts the difference, move her to 505. If not, offer 208 and ask maintenance to check 412.
+
+Lan [8:12 A.M.]
+Understood. I will call her now. If she wants a different floor, can I also change breakfast time?
+
+Tuan [8:14 A.M.]
+No. Breakfast time is fixed. Only the front desk can process room changes after the guest confirms.
+
+[QUESTION]
+Who will process the room change?
+(A) The front desk
+(B) Mr. Tuan
+(C) Maintenance
+(D) The guest
+Answer: A
+Source: original
+
+[QUESTION]
+At 8:14 A.M., what does Mr. Tuan mean when he writes, "Only the front desk can process room changes after the guest confirms"?
+(A) Lan must wait for the guest's decision.
+(B) Mr. Tuan will process the change himself.
+(C) Maintenance staff must approve the room move.
+(D) The guest can change the breakfast time.
+Answer: A
+Source: original

@@ -29,6 +29,7 @@ from app.content.exam_cli.authoring import (
     cmd_prune,
     cmd_write,
 )
+from app.content.exam_cli.label import cmd_label
 from app.content.exam_cli.load import cmd_interact, cmd_load
 from app.content.exam_cli.media import cmd_attach_images, cmd_graphic, cmd_media, cmd_photo
 from app.content.exam_cli.paths import DEFAULT_ROOT, blueprint_path, workdir_for
@@ -52,6 +53,7 @@ __all__ = [
     "cmd_load",
     "cmd_media",
     "cmd_photo",
+    "cmd_label",
     "cmd_plan",
     "cmd_prune",
     "cmd_write",
@@ -165,6 +167,11 @@ def main(argv: list[str] | None = None) -> int:
         help="provider/model (vd `bai/gpt-5.6-sol`). Xem known_models() hoặc wizard interact",
     )
     prune_cmd.set_defaults(func=cmd_prune)
+
+    label_cmd = sub.add_parser("label", help="gắn nhãn phân loại từ blueprint cho đề đã nạp")
+    label_cmd.add_argument("--slug", required=True)
+    label_cmd.add_argument("--dry-run", action="store_true", help="đếm mà không ghi")
+    label_cmd.set_defaults(func=cmd_label)
 
     load_cmd = sub.add_parser("load", help="nạp vào database qua đường dán")
     load_cmd.add_argument("--slug", required=True)

@@ -1,0 +1,26 @@
+[PASSAGE]
+NOTICE
+To: All Claims and Underwriting Staff
+From: Office Administration
+Date: June 12
+Subject: Revised Lunch Periods
+
+Beginning Monday, June 16, the company will stagger lunch breaks to reduce congestion in the cafeteria and maintain phone coverage. Claims teams will eat from 11:30 a.m. to 12:15 p.m. Underwriting teams will eat from 12:30 p.m. to 1:15 p.m. All staff must update their calendar invitations and inform clients of the new availability. Managers should confirm that no more than half of each team is away at once. The change applies to all full-time and part-time employees, including temporary staff assigned to either department. The break room will remain open, but microwave use during staggered periods may be limited. Questions should be sent to administration@example-insurance.com.
+
+[QUESTION]
+What is the purpose of the notice?
+(A) To announce a change in lunch schedules
+(B) To report a shortage of cafeteria staff
+(C) To request feedback on client calls
+(D) To introduce a new insurance service
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about the new lunch periods?
+(A) The cafeteria is likely too small for all staff to eat at once.
+(B) Managers will no longer need to monitor team availability.
+(C) Clients will be unable to contact the company during lunch.
+(D) Temporary staff are exempt from the revised schedule.
+Answer: A
+Source: original

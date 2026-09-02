@@ -1,0 +1,8 @@
+[QUESTION]
+voice: uk_female_1
+(A) The bicycles are leaning against the fence.
+(B) The bicycles are lying on the ground.
+(C) The bicycles are hanging from the fence.
+(D) The fence is lying across the bicycles.
+Answer: A
+Source: original

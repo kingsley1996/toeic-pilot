@@ -1,0 +1,87 @@
+[PASSAGE]
+Linh [8:38 A.M.]
+I am opening a priority ticket. The finance group cannot receive external mail, and internal delivery is delayed.
+
+Duc [8:40 A.M.]
+Is it only finance?
+
+Linh [8:41 A.M.]
+No. The monitoring page shows errors for sales and operations too. The common factor is the desktop client.
+
+Linh [8:42 A.M.]
+The shared email server is rejecting messages for the finance group. I see a queue of 140 failed notices.
+
+Duc [8:44 A.M.]
+Did anyone change the password policy last night?
+
+Linh [8:46 A.M.]
+No. The help desk ticket says the certificate expired at midnight. I have asked the vendor to renew it.
+
+Duc [8:48 A.M.]
+Can users send mail from their phones?
+
+Linh [8:50 A.M.]
+Phones use a different route, so they may work. Desktop clients will fail until the new certificate is installed.
+
+Duc [8:52 A.M.]
+What should people do now?
+
+Linh [8:54 A.M.]
+Tell them to use the web portal for urgent messages. Do not keep resending from desktop clients, because that adds to the queue.
+
+Duc [8:56 A.M.]
+I can try.
+
+Linh [8:57 A.M.]
+Please post a short notice in the staff channel. Include the vendor's estimated repair time.
+
+Duc [8:59 A.M.]
+The vendor says noon. If it is not fixed by then, I will call again.
+
+Linh [9:01 A.M.]
+Good. Also remind users to save drafts locally. The portal may be slow during the repair.
+
+Duc [9:03 A.M.]
+Done. I will ask the reception team to help anyone without portal access.
+
+Linh [9:05 A.M.]
+Thanks. If the queue clears before noon, I will update the ticket and close it. Until then, keep the notice visible.
+
+Duc [9:07 A.M.]
+I will also check the portal login page again today. Some users may need temporary passwords soon.
+
+[QUESTION]
+What is the main purpose of the messages?
+(A) To coordinate a response to an email problem
+(B) To request a new password policy
+(C) To confirm a vendor contract
+(D) To schedule a staff meeting
+Answer: A
+Source: original
+
+[QUESTION]
+What should users do for urgent messages?
+(A) Use the web portal
+(B) Resend from desktop clients
+(C) Call the vendor directly
+(D) Wait until noon
+Answer: A
+Source: original
+
+[QUESTION]
+At 8:56 A.M., what does Duc mean when he writes, "I can try"?
+(A) He will attempt to inform users
+(B) He can fix the certificate
+(C) He will check the queue
+(D) He can access the vendor site
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about the repair?
+(A) It may not be finished by noon
+(B) It has already been completed
+(C) It affects only mobile phones
+(D) It needs no vendor action
+Answer: A
+Source: original

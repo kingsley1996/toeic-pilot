@@ -1,0 +1,34 @@
+[PASSAGE]
+From: accounting@example-office.com
+To: j.miller@example-office.com
+Subject: Travel expense receipts
+Date: May 12
+
+Dear Mr. Miller,
+
+This is a reminder that all receipts for your recent business trip to Lyon must be submitted to the accounting department. Please attach scanned copies through the expense portal, and keep the original paper receipts until the audit is complete. If any receipt is missing, submit a short explanation form instead.
+
+The deadline for this month’s travel expenses is Friday, May 23, at 5:00 P.M. Expenses received after that time will be processed in the next payroll cycle, which may delay reimbursement by two weeks. If you expect to be away before the deadline, ask your manager to approve an extension before May 20.
+
+Thank you for your cooperation.
+
+Sincerely,
+Accounting Team
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To remind an employee to submit travel receipts
+(B) To announce a new payroll cycle
+(C) To request approval for a business trip
+(D) To report an audit finding
+Answer: A
+Source: original
+
+[QUESTION]
+According to the e-mail, what is the deadline for submitting travel expenses?
+(A) May 12
+(B) May 20
+(C) May 23
+(D) Next payroll cycle
+Answer: C
+Source: original

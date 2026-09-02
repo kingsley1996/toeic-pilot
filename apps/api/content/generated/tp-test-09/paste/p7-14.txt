@@ -1,0 +1,74 @@
+[PASSAGE]
+From: facilities@riversidemall.example
+To: all tenants
+Subject: Elevator maintenance
+Date: Tuesday, May 6
+
+Dear Tenants, The central elevator will be serviced one floor at a time this week. Technicians will inspect cables, door sensors, and control panels. The maintenance window is 8 a.m. to noon each day. The map shows the interruption length for each floor. Please do not use the elevator or service elevator during your floor's closure. A four-hour interruption means the floor is closed for the entire window. Warning signs will be posted during each closure.
+
+For safety, the floor with the longest interruption will be reserved for a final load test on Thursday. All other floors will return to normal service after their inspections.
+
+If your store needs an urgent delivery, contact the facilities office before 5 p.m. Wednesday. Requests received later will be handled during the next available closure. We appreciate your patience.
+
+Sincerely,
+Facilities Office
+
+[PASSAGE]
+From: store.manager@riversidemall.example
+To: facilities@riversidemall.example
+Subject: Delivery request
+Date: Wednesday, May 7
+
+Dear Facilities Office, Our store is on the floor with the longest interruption. We need to receive a large display case on Thursday morning. The delivery company can arrive only between 9 a.m. and 11 a.m. I am sending this request before 5 p.m. Wednesday.
+
+Can we use the service elevator during that time? If not, please tell us the earliest time after the maintenance window when the elevator will be available. We also need to know whether the final load test will affect customer access to our entrance. If the elevator is unavailable, we may need to arrange a different route for customers.
+
+We understand that safety checks must be completed first. Please confirm whether our staff can move small items by hand during the closure. Thank you for your help.
+
+Best regards,
+A. Nguyen
+
+[QUESTION]
+Why was the notice sent?
+(A) To announce elevator maintenance
+(B) To request tenant feedback
+(C) To advertise a new store
+(D) To cancel a delivery
+Answer: A
+Source: original
+
+[QUESTION]
+What must tenants do if they need an urgent delivery?
+(A) Contact the office before 5 p.m. Wednesday
+(B) Move deliveries to the loading dock
+(C) Pay a fee for extra service
+(D) Ask a technician to inspect it
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about the delivery request?
+(A) It cannot use the elevator then.
+(B) It will be approved as sent.
+(C) It must wait for next closure.
+(D) It needs a new certificate.
+Answer: A
+Source: original
+
+[QUESTION]
+Which floor has the longest interruption?
+(A) Floor 1
+(B) Floor 2
+(C) Floor 3
+(D) Floor 4
+Answer: B
+Source: original
+
+[QUESTION]
+In the notice, the word "reserved" in paragraph 2 is closest in meaning to
+(A) booked
+(B) repaired
+(C) cleaned
+(D) inspected
+Answer: A
+Source: original

@@ -560,7 +560,7 @@ def build_part6(slug: str, title: str, seed: int) -> Blueprint:
 
 
 def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = None) -> Blueprint:
-    """Mười chín cụm Part 7, câu 147–200.
+    """Mười lăm cụm Part 7, câu 147–200 — 10 một đoạn, 2 hai đoạn, 3 ba đoạn.
 
     Số câu mỗi cụm KHÁC nhau (2 tới 5), nên nó nằm ở chính cái ô — `number` phải
     cộng dồn theo số câu của ô trước, không nhân với một hằng số.

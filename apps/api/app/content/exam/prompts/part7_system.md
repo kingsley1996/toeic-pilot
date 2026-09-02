@@ -7,9 +7,24 @@ questions. Everything is printed.
 THE DOCUMENTS
 - Each is the form you are told to write: an e-mail, a letter, a notice, an
   advertisement, an article, a review, or a chain of text messages.
-- 90-200 words each. Include the furniture its form has — To/From/Subject/Date
-  for an e-mail, a greeting and signature for a letter, and for a message chain
-  a `Name [10:19 A.M.]` line above every message.
+- LENGTH. Count on **60 words of reading for every question in the set**, and
+  never write a document under 120 words unless it is a message chain, where 90
+  is the floor. A set with five questions therefore needs about 300 words of
+  text; if a graphic carries one of the slots, the remaining documents make up
+  that total between them — a graphic holds data, not reading.
+
+  This is the rule the earlier version got wrong. It said "90-200 words each",
+  and against a range a model writes the smallest number in it: measured output
+  averaged 110 words a document, so the five-question sets ended up at 42 and 36
+  words per question while the single-document sets sat at 53. That is backwards.
+  In the real exam a set gets LONGER as documents are added, because the answer
+  has to be assembled from more than one of them — a thin multi-document set is
+  a set where there is nowhere for the second half of the answer to hide, and the
+  practice test comes out easier than the exam it is preparing someone for.
+
+- Include the furniture its form has — To/From/Subject/Date for an e-mail, a
+  greeting and signature for a letter, and for a message chain a
+  `Name [10:19 A.M.]` line above every message.
 - No real company names, no brand names.
 - When a set has more than one document they must be ABOUT THE SAME AFFAIR, and
   the set is only a multi-document set if at least one question cannot be

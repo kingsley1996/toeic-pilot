@@ -584,9 +584,14 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
         ),
         ("", "", "schedule: lịch bốn buổi đào tạo trong tháng"),
     ),
+    # Ô hình thứ hai của cụm này ĐÃ ĐỔI thành văn bản. Trước đó hai trong ba
+    # ngữ liệu là bảng biểu, nên năm câu hỏi chỉ dựa vào đúng một tài liệu có
+    # chữ chạy — trong khi cụm ba đoạn của đề thật là ba *tài liệu*, nhiều nhất
+    # một trong đó là bảng. Giữ lại bảng giá (đó là chỗ tra tự nhiên) và trả ô
+    # còn lại về email xác nhận, thứ đề thật vẫn dùng cho đúng vai trò này.
     (
-        "PART_7_FORM",
-        "thư mời hội viên, bảng giá vé, và phiếu đặt vé đã điền",
+        "PART_7_EMAIL_OR_LETTER",
+        "thư mời hội viên, bảng giá vé, và email xác nhận đặt vé",
         (
             "PART_7_INFERENCE",
             "PART_7_FALSE_INFORMATION",
@@ -594,14 +599,23 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
             "PART_7_INFORMATION_RETRIEVAL",
             "PART_7_INFORMATION_RETRIEVAL",
         ),
-        ("", "table: bảng giá vé bốn suất diễn", "form: phiếu đặt vé đã điền"),
+        # Hình ĐẶT CUỐI, không đặt giữa. Ba cụm có hình ở cuối đều sinh đạt ngay
+        # lượt đầu; hình ở giữa hỏng bốn lượt liên tiếp với hai cách diễn đạt bối
+        # cảnh khác nhau — model viết khối [PASSAGE] thứ nhất, gặp ô hình, rồi
+        # dừng thay vì viết tiếp ô chữ thứ ba. Đó là điểm yếu của chặng viết chứ
+        # không phải của blueprint; khi nào chặng viết xử lý được thì mở lại.
+        ("", "", "table: bảng giá vé bốn suất diễn"),
     ),
 )
 
 
-# Brief hình cho các PASSAGE HÌNH Part 7. Năm passage hình rải trong bốn cụm:
-# p7-11 (1), p7-13 (1), p7-14 (1), p7-15 (2). Pool đủ nhiều để `sample` chọn 5
-# mục không trùng.
+# Brief hình cho các PASSAGE HÌNH Part 7. BỐN ô hình, mỗi cụm nhiều đoạn nhiều
+# nhất một ô — cụm ba đoạn của đề thật là ba *tài liệu*, không phải một tài liệu
+# kèm hai bảng. `build_part7` tự đếm số ô từ `PART7_SETS` — nhưng `plan.py` từng
+# giữ thêm một bảng cứng `{3: 3, 4: 2, 7: 5}` cho lượt sinh brief, và đổi 5 → 4 ở
+# đây đã làm nó ném lỗi rồi lặng lẽ rơi về pool theo seed. Bảng đó đã bỏ; nếu
+# thêm một bản sao nữa của con số này ở đâu đó, nó sẽ lệch lần sau. Pool đủ nhiều
+# để mục không trùng.
 # Nhãn ghi bằng TIẾNG ANH vì chúng được in thẳng lên hình người thi đọc; phần
 # mô tả quanh chúng là ghi chú nội bộ nên vẫn tiếng Việt. Khác pool Part 3/4 ở
 # chỗ KHÔNG cần nêu trục đáp án: hình Part 7 là NGỮ LIỆU, câu hỏi hỏi về nội

@@ -1,0 +1,20 @@
+[PASSAGE]
+Keep your small office spotless without hiring full-time staff. BrightPath Cleaning offers flexible commercial cleaning plans designed for local businesses, coworking spaces, and professional studios. Our trained teams handle dusting, vacuuming, restroom sanitation, trash removal, and floor care using safe, low-odor products. Choose weekly, biweekly, or one-time service, and we will match your budget and schedule. New customers receive a free walkthrough and a written estimate. To reserve a regular cleaning visit, please book at least 48 hours in advance. For urgent requests, call our support line; same-day availability is limited and may require a service fee. Visit our website to compare plans, request a quote, or schedule your first appointment today. No long-term contract is required. Ask about discounts.
+
+[QUESTION]
+What is the advertisement mainly about?
+(A) A cleaning service for small businesses
+(B) A job opening for cleaning staff
+(C) A discount on office furniture
+(D) A training course for new employees
+Answer: A
+Source: original
+
+[QUESTION]
+How far in advance must a regular cleaning visit be booked?
+(A) 24 hours
+(B) 48 hours
+(C) One week
+(D) Two weeks
+Answer: B
+Source: original

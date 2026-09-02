@@ -45,6 +45,13 @@ class CustomModel(BaseModel):
     rate_out: Decimal
     rate_cached: Decimal | None = None
     comment: str | None = None
+    # Đè lên `extra_payload` của provider, theo TỪNG KHOÁ. Cần vì một endpoint
+    # có thể gom nhiều model rất khác nhau: b.ai bật `thinking` cho cả chín
+    # model của nó, và `glm-5.3-flash` tiêu trọn hạn mức đầu ra vào phần nghĩ —
+    # 32 712 ký tự suy nghĩ cho một câu trả lời bốn dòng, `content` về rỗng.
+    # Một công tắc chung cho cả provider sẽ tắt luôn thinking của những model
+    # đang cần nó.
+    extra_payload: dict[str, object] = Field(default_factory=dict)
 
 
 class CustomProvider(BaseModel):

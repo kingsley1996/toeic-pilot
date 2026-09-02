@@ -1,0 +1,69 @@
+[PASSAGE]
+From: training@safebuild.example
+To: all-staff@example-mail.net
+Subject: Safety Training Registration
+Date: May 6
+
+Dear Colleagues,
+
+The annual safety training registration form is now open. Please complete the attached form and return it to the Training Office by May 20. Registration is required for all staff, managers, contractors, and interns who will enter the construction site during the summer. The course covers hazard reporting, equipment use, and emergency evacuation. The training takes place in the main hall and lasts one day. Sessions are offered in the morning and afternoon. Participants must bring a photo identification card and wear closed-toe shoes. If you cannot attend your assigned session, notify the office at least two business days in advance. Late registrations will be processed as contractor requests and charged the contractor fee. Please review the attached fee table before submitting payment. Questions about the course may be sent to the Training Office.
+
+Sincerely,
+Training Office
+
+[PASSAGE]
+SAFETY TRAINING REGISTRATION FORM
+
+Name: ____________________
+Department: ____________________
+Category: Staff / Contractor / Manager / Intern
+Preferred session: Morning / Afternoon
+Payment method: Cash / Card / Invoice
+
+Notes:
+The category selected on this form determines the fee shown in the attached table. Managers must register through their department head. Interns who are enrolled in the university program may submit a student card instead of a photo identification card. Contractors must provide a company name and an insurance certificate. If the category field is left blank, the Training Office will assign the category based on the person's employment status. Payment must be made at the front desk before the first session. Please keep the confirmation email for your records. The form must be signed by the participant and dated. If you need a receipt, ask at the front desk. The attached table lists fees for each category. Please print clearly and use black ink. The Training Office reviews forms daily.
+
+[QUESTION]
+Why were the documents written?
+(A) To explain safety training registration
+(B) To announce a construction project
+(C) To request feedback on a course
+(D) To compare insurance policies
+Answer: A
+Source: original
+
+[QUESTION]
+Which group pays the highest fee?
+(A) Staff
+(B) Contractor
+(C) Manager
+(D) Intern
+Answer: C
+Source: original
+
+[QUESTION]
+What is NOT stated about the training?
+(A) It covers emergency evacuation.
+(B) It requires closed-toe shoes.
+(C) It lasts four hours.
+(D) It is required for site entry.
+Answer: C
+Source: original
+
+[QUESTION]
+What fee applies to a registration submitted after May 20?
+(A) $30
+(B) $50
+(C) $80
+(D) $120
+Answer: C
+Source: original
+
+[QUESTION]
+Which rule in the e-mail is modified by the form?
+(A) The photo identification requirement
+(B) The closed-toe shoe requirement
+(C) The registration deadline
+(D) The advance notice requirement
+Answer: A
+Source: original

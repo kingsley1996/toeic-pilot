@@ -98,7 +98,15 @@ def build_providers(names: set[str], *, strict: bool = True) -> dict[str, Provid
                 _skip(name, f"Thiếu {env_var}. Đặt vào .env ở gốc repo.")
                 continue
             built[name] = OpenAICompatibleProvider(
-                name, custom.base_url, key, extra_payload=custom.extra_payload
+                name,
+                custom.base_url,
+                key,
+                extra_payload=custom.extra_payload,
+                model_payload={
+                    model: spec.extra_payload
+                    for model, spec in custom.models.items()
+                    if spec.extra_payload
+                },
             )
         else:
             _skip(

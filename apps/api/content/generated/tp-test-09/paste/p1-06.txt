@@ -1,0 +1,8 @@
+[QUESTION]
+voice: uk_female_1
+(A) Some boxes are stacked beside the dock.
+(B) The boxes are lying flat on the dock.
+(C) There are boxes placed under the dock.
+(D) A row of boxes is lined up along the dock.
+Answer: A
+Source: original

@@ -1,0 +1,37 @@
+[PASSAGE]
+Hybrid Work Takes Hold at BrightPath Technologies
+
+When BrightPath Technologies introduced a hybrid schedule last spring, managers expected resistance. Instead, employees welcomed the flexibility. The policy allows staff to work from home two days a week, while requiring attendance in the office on Tuesday and Thursday. Those office days are reserved for team meetings, client calls, and collaborative design sessions.
+
+To make the arrangement successful, the company updated its rules. Employees must confirm their office days through the internal calendar by Friday. They also need a quiet workspace, a reliable internet connection, and a headset for video calls. If a worker cannot attend an in-person meeting, a supervisor must approve an alternative time.
+
+The change has improved morale, but it has also created new expectations. Remote days are not treated as vacation days. Staff are expected to answer messages during normal business hours and to join scheduled calls promptly. The company plans to review the policy after six months.
+
+Training sessions will help employees learn how to manage shared calendars and document project progress. Managers will monitor attendance patterns.
+
+[QUESTION]
+According to the article, what must employees do by Friday?
+(A) Confirm their office days through the internal calendar
+(B) Request a headset from the company
+(C) Attend all meetings in person
+(D) Review the hybrid policy
+Answer: A
+Source: original
+
+[QUESTION]
+What can be inferred about remote days?
+(A) They are treated as vacation days.
+(B) They require normal work availability.
+(C) They are assigned by supervisors.
+(D) They are only for new employees.
+Answer: B
+Source: original
+
+[QUESTION]
+In the article, the word "promptly" in paragraph 3 is closest in meaning to
+(A) quickly
+(B) quietly
+(C) rarely
+(D) formally
+Answer: A
+Source: original

@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The passengers are standing in the hotel lobby.
+(B) The man is checking his wristwatch.
+(C) The women are carrying suitcases up stairs.
+(D) The woman is signing a receipt.
+Answer: A
+Source: original

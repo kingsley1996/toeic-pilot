@@ -36,7 +36,16 @@ def _progress(message: str) -> None:
     print(message, flush=True)
 
 
-PLAN_MAX_TOKENS = 16000
+# Phải nằm DƯỚI `PROVIDER_CEILING_TOKENS` (13 000) — bài học `writer.py` đã trả
+# giá một lần và đường này chưa được áp. Ở nhịp ~38 token/giây đo được, 16 000
+# token là ~420 giây, vượt mốc ngắt kết nối 340 giây, nên model nào thật sự dùng
+# hết cửa sổ là chắc chắn đứt: `Server disconnected without sending a response`,
+# bảy lần theo `RETRY_TRIES`, rồi `cmd_plan` nuốt lỗi và rơi về bảng cấu hình.
+# Hỏng im lặng — đề vẫn dựng ra, chỉ là không còn nội dung do model sinh.
+#
+# Đầu ra thật của một lượt plan là 15 dòng bối cảnh hoặc 4 dòng brief, cỡ vài
+# trăm token. Phần còn lại là suy luận, nên hạ trần cắt đúng thứ đang thừa.
+PLAN_MAX_TOKENS = 8000
 
 
 def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, str]]:
@@ -188,12 +197,16 @@ def _scene_hosts(plan: Blueprint) -> list[str]:
         for slot in part_plan.slots:
             facets = [slot.topic, slot.question_type, slot.grammar]
             if part_plan.part == 7:
-                facets.append(
-                    ", ".join(
-                        f"đoạn {order} {'là HÌNH vẽ từ dữ liệu' if spec else 'là chữ'}"
-                        for order, spec in enumerate(slot.passages, start=1)
-                    )
+                # Bối cảnh phải GỌI TÊN đủ từng tài liệu, không chỉ mô tả tình
+                # huống. Prompt bảo viết "ngắn gọn", nên với một ô ba đoạn model
+                # trả về cảnh chỉ có hai tài liệu ("email kèm biểu đồ"), và bước
+                # `write` sau đó viết đúng hai — thiếu một khối [PASSAGE], cụm bị
+                # `check` chặn. Đo được ở `p7-15`, ba lượt sinh liên tiếp.
+                shape = ", ".join(
+                    f"đoạn {order} {'là HÌNH vẽ từ dữ liệu' if spec else 'là chữ'}"
+                    for order, spec in enumerate(slot.passages, start=1)
                 )
+                facets.append(f"{shape} — bối cảnh phải gọi tên đủ {len(slot.passages)} tài liệu")
             hosts.append(" / ".join(facet for facet in facets if facet) or "không ràng buộc")
     return hosts
 
@@ -231,9 +244,14 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int, hosts: list[
     from app.content.exam.graphics import AXIS_BRIEF, KINDS
     from app.services.llm.base import LLMRequest
 
-    count = {3: 3, 4: 2, 7: 5}[part]
-    if len(hosts) != count:
-        raise ValueError(f"Part {part} cần {count} bối cảnh ô, nhận {len(hosts)}")
+    # Số brief SUY RA từ blueprint, không tra bảng cứng. Bảng `{3: 3, 4: 2, 7: 5}`
+    # cũ là một bản sao của thứ `PART*_SETS` đã nói, và hai bản sao thì có ngày
+    # lệch: bỏ một ô hình Part 7 (5 → 4) làm lượt plan ném lỗi rồi lặng lẽ rơi về
+    # pool theo seed, tức mất đúng cái tính năng `--model` tồn tại để làm.
+    # `hosts` chính là các ô hình của blueprint, nên độ dài của nó LÀ con số.
+    count = len(hosts)
+    if not count:
+        raise ValueError(f"Part {part} không có ô hình nào để sinh brief")
     kinds = ", ".join(KINDS)
     prompt = exam_prompt("plan_graphics").render(
         count=count,

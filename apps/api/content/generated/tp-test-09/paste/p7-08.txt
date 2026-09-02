@@ -1,0 +1,49 @@
+[PASSAGE]
+To: Customer Service, Northline Freight
+From: Linh Tran
+Subject: Compensation request for delayed shipment NF-8842
+Date: May 12
+
+Dear Sir or Madam,
+
+I am writing to complain about shipment number NF-8842, which was scheduled for guaranteed delivery on May 3 but was not delivered until May 9. [1] The package contained printed materials for a client presentation on May 5, so the delay made the contents useless for their intended purpose. [2] I also paid an extra 65 US dollars for a rush service, which your website states will be refunded if the delivery date is missed. [3] I contacted your call center on May 4 and May 6, and both agents said that a supervisor would call back within twenty-four hours. [4] I have attached my receipt, the rush-service confirmation, and two call-center reference numbers. The printed materials cost 420 US dollars, but I am not asking for that amount. I expect a written apology as well too. No supervisor ever contacted me, and the tracking page did not explain the reason for the delay. According to your published terms, customers may receive compensation when a guaranteed delivery date is missed without an acceptable reason. I therefore request a payment of 180 US dollars to my bank account ending in 4471. Please confirm this amount in writing within five business days. If I do not receive a satisfactory reply, I will submit a formal complaint to the consumer protection office.
+
+Sincerely,
+Linh Tran
+
+[QUESTION]
+Why did Ms. Tran write the letter?
+(A) To request compensation for a delayed delivery
+(B) To ask for a new delivery date
+(C) To report a damaged package
+(D) To cancel a rush service
+Answer: A
+Source: original
+
+[QUESTION]
+How much compensation does the customer request?
+(A) 65 US dollars
+(B) 180 US dollars
+(C) 420 US dollars
+(D) 485 US dollars
+Answer: B
+Source: original
+
+[QUESTION]
+What can be inferred from the letter?
+(A) The customer is unhappy with the response so far.
+(B) The company has already approved the refund.
+(C) A supervisor called the customer.
+(D) The package arrived on May 5.
+Answer: A
+Source: original
+
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"The courier also left a notice card that gave an incorrect tracking number."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: C
+Source: original

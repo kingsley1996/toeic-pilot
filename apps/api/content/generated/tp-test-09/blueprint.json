@@ -1,0 +1,460 @@
+{
+  "slug": "tp-test-09",
+  "title": "TOEIC Pilot — tp-test-09",
+  "seed": 20260822,
+  "parts": [
+    {
+      "part": 1,
+      "slots": [
+        {
+          "id": "p1-01",
+          "number": 1,
+          "question_type": "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+          "grammar": "",
+          "context": "Một kỹ sư đội mũ bảo hộ đang cầm bản vẽ tại công trường.",
+          "voice": "au_male_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-02",
+          "number": 2,
+          "question_type": "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+          "grammar": "",
+          "context": "Vài chiếc xe đạp dựng dọc tường rào ở chợ ngoài trời.",
+          "voice": "uk_female_1",
+          "people": "none",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-03",
+          "number": 3,
+          "question_type": "PART_1_PERSON_DESCRIPTION",
+          "grammar": "",
+          "context": "Một nhân viên soát vé mặc đồng phục đứng ở nhà ga.",
+          "voice": "ca_male_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-04",
+          "number": 4,
+          "question_type": "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+          "grammar": "",
+          "context": "Một nhà khoa học mặc áo blouse trắng đang ghi chép bên bàn thí nghiệm.",
+          "voice": "us_female_1",
+          "people": "one",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-05",
+          "number": 5,
+          "question_type": "PART_1_PERSON_DESCRIPTION",
+          "grammar": "",
+          "context": "Một số hành khách đứng chờ ở sảnh khách sạn.",
+          "voice": "ca_male_1",
+          "people": "several",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p1-06",
+          "number": 6,
+          "question_type": "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+          "grammar": "",
+          "context": "Những thùng hàng xếp chồng cạnh cầu tàu tại bến cảng.",
+          "voice": "uk_female_1",
+          "people": "none",
+          "question_types": [],
+          "topic": "",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        }
+      ]
+    },
+    {
+      "part": 7,
+      "slots": [
+        {
+          "id": "p7-01",
+          "number": 147,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_TEXT_MESSAGE_CHAIN / đoạn 1 là chữ: Nhân viên lễ tân nhắn quản lý khách sạn về đổi phòng; câu hỏi: Ai xử lý?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-02",
+          "number": 149,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ADVERTISEMENT / đoạn 1 là chữ: Quảng cáo vệ sinh văn phòng cho doanh nghiệp nhỏ; câu hỏi: Cần đặt lịch trước bao lâu?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-03",
+          "number": 151,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ANNOUNCEMENT_OR_NOTICE / đoạn 1 là chữ: Thông báo đổi giờ ăn trưa tại công ty bảo hiểm; câu hỏi: Nhân viên phải làm gì?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-04",
+          "number": 153,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ADVERTISEMENT / đoạn 1 là chữ: Quảng cáo khóa chăm sóc khách hàng cho nhân viên ngân hàng; câu hỏi: Ai được giảm học phí?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ADVERTISEMENT",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-05",
+          "number": 156,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_EMAIL_OR_LETTER / đoạn 1 là chữ: Email kế toán gửi nhân viên về nộp hóa đơn công tác; câu hỏi: Hạn chót là khi nào?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-06",
+          "number": 158,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ARTICLE_OR_REVIEW / đoạn 1 là chữ: Bài đánh giá phần mềm quản lý kho cho công ty logistics; câu hỏi: Điểm yếu là gì?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-07",
+          "number": 161,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ARTICLE_OR_REVIEW / đoạn 1 là chữ: Bài viết về làm việc hybrid tại công ty công nghệ; câu hỏi: Nhân viên cần chuẩn bị gì?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-08",
+          "number": 164,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_EMAIL_OR_LETTER / đoạn 1 là chữ: Thư khách hàng gửi công ty vận tải về kiện hàng chậm; câu hỏi: Khách yêu cầu bồi thường bao nhiêu?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-09",
+          "number": 168,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ARTICLE_OR_REVIEW / đoạn 1 là chữ: Bài review dịch vụ in ấn cho văn phòng luật; câu hỏi: Dịch vụ nào được khen?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_SENTENCE_INSERTION"
+          ],
+          "topic": "PART_7_ARTICLE_OR_REVIEW",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-10",
+          "number": 172,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_TEXT_MESSAGE_CHAIN / đoạn 1 là chữ: Tin nhắn nhân viên IT và đồng nghiệp về lỗi máy chủ email; câu hỏi: Người dùng nên làm gì?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_IMPLICATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_TEXT_MESSAGE_CHAIN",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            ""
+          ],
+          "structure": "PART_7_SINGLE_PASSAGE"
+        },
+        {
+          "id": "p7-11",
+          "number": 176,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_EMAIL_OR_LETTER / đoạn 1 là chữ, đoạn 2 là HÌNH vẽ từ dữ liệu: Email nhân sự về khảo sát nghỉ phép kèm biểu đồ ngày nghỉ; câu hỏi: Nhóm nào nghỉ nhiều nhất?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "chart: biểu đồ cột kết quả khảo sát nghỉ phép, bốn đáp án là nhãn \"Sales\", \"IT\", \"HR\", \"Ops\", giá trị \"12\", \"8\", \"5\", \"10\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-12",
+          "number": 181,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_ANNOUNCEMENT_OR_NOTICE / đoạn 1 là chữ, đoạn 2 là chữ: Thông báo tòa nhà về phun thuốc diệt côn trùng và bảo quản tài liệu; câu hỏi: Nhân viên cần làm gì trước 18 giờ?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_ANNOUNCEMENT_OR_NOTICE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            ""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-13",
+          "number": 186,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_FORM / đoạn 1 là chữ, đoạn 2 là chữ, đoạn 3 là HÌNH vẽ từ dữ liệu: Mẫu đăng ký đào tạo an toàn lao động, hướng dẫn, điều kiện, kèm biểu đồ học phí; câu hỏi: Nhóm nào đóng phí cao nhất?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+            "PART_7_INFERENCE"
+          ],
+          "topic": "PART_7_FORM",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "table: bảng học phí đào tạo an toàn lao động, cột \"Group\" và \"Fee\", bốn đáp án là tên hàng \"Staff\", \"Contractor\", \"Manager\", \"Intern\", giá trị \"$50\", \"$80\", \"$120\", \"$30\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-14",
+          "number": 191,
+          "question_type": "",
+          "grammar": "",
+          "context": "PART_7_SCHEDULE / đoạn 1 là chữ, đoạn 2 là chữ, đoạn 3 là HÌNH vẽ từ dữ liệu: Lịch bảo trì thang máy trung tâm thương mại, ghi chú an toàn, kèm đồ thị thời gian từng tầng; câu hỏi: Tầng nào gián đoạn lâu nhất?",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT"
+          ],
+          "topic": "PART_7_SCHEDULE",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "map: sơ đồ bảo trì thang máy bốn tầng, bốn đáp án là tên ô \"Floor 1\", \"Floor 2\", \"Floor 3\", \"Floor 4\", mỗi ô có \"2 hours\", \"4 hours\", \"1 hour\", \"3 hours\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        },
+        {
+          "id": "p7-15",
+          "number": 196,
+          "question_type": "",
+          "grammar": "",
+          "context": "Ba tài liệu: (1) email khách hàng gửi công ty viễn thông khiếu nại hóa đơn tháng tăng bất thường; (2) phiếu yêu cầu xử lý đã điền; (3) email công ty trả lời nêu kết quả rà soát và việc sẽ làm",
+          "voice": "",
+          "people": "",
+          "question_types": [
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFORMATION_RETRIEVAL"
+          ],
+          "topic": "PART_7_EMAIL_OR_LETTER",
+          "voices": [],
+          "graphic": "",
+          "grammars": [],
+          "passages": [
+            "",
+            "",
+            "form: phiếu yêu cầu xử lý hóa đơn viễn thông ba tháng đã điền, cột đầu bốn mục \"Refund\", \"Discount\", \"Plan Change\", \"Apology\", cột \"Requested\" có \"Yes\", \"No\", \"No\", \"No\""
+          ],
+          "structure": "PART_7_MULTIPLE_PASSAGE"
+        }
+      ]
+    }
+  ]
+}

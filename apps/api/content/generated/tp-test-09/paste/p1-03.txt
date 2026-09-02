@@ -1,0 +1,8 @@
+[QUESTION]
+voice: ca_male_1
+(A) The man is standing beside a ticket gate.
+(B) The man is passing through a ticket gate.
+(C) The man is selling tickets at a counter.
+(D) The man is sitting on a bench.
+Answer: A
+Source: original

@@ -1,0 +1,8 @@
+[QUESTION]
+voice: au_male_1
+(A) The engineer is holding a blueprint.
+(B) The engineer is pouring concrete into a form.
+(C) Two workers are carrying a ladder.
+(D) The blueprint is lying on the ground.
+Answer: A
+Source: original

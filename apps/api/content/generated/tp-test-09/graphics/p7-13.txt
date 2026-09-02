@@ -1,0 +1,7 @@
+kind: table
+Safety Training Fees
+Group | Fee
+Staff | $50
+Contractor | $80
+Manager | $120
+Intern | $30

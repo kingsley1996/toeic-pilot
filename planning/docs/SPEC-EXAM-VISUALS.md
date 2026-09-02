@@ -131,12 +131,34 @@ Part 3/4 dùng `graphics.py` đúng chỗ của nó: 15 câu "Look at the graphi
 - nâng tỉ lệ ảnh không người lên khoảng 1/3;
 - thêm **"sai vị trí"** vào bảng bẫy của `part1_system.md`.
 
-**4.2 Part 7** (nhỏ hơn nhiều so với hai bản trước tưởng):
+**4.2 Part 7** — đã làm 2026-09-03:
 
-- thêm `kind` cho `graphics.py` — phiếu giảm giá, biên lai có bố cục, ảnh chụp
-  trang web, bản đồ có tuyến. Sáu dạng hiện tại đã dùng hết;
-- hạn chế bộ ba dùng hai hình (3/9 bộ đang thế);
-- chạy `enrich_skills` cho `passage_type` — 31/47 bộ chưa có nhãn.
+- [x] **Ngân sách chữ theo số câu hỏi.** `part7_system.md` ghi "90-200 words
+      each", và đứng trước một khoảng thì mô hình viết số nhỏ nhất trong đó: đo
+      được trung bình 110 từ một tài liệu, tức **53 → 42 → 36 từ mỗi câu hỏi**
+      khi số đoạn tăng từ một lên ba. Đề thật đi ngược lại — thêm tài liệu thì
+      thêm chữ, vì đáp án phải ghép từ nhiều tài liệu. Luật mới là **60 từ cho
+      mỗi câu hỏi**, và `part7.py` **nhân sẵn** con số đó rồi in vào prompt thay
+      vì để mô hình tự tính. Trần token không đổi: nội dung thật ~700 trên trần
+      10 000, phần vượt vốn là suy luận chứ không phải chữ.
+- [x] **Cụm ba đoạn dùng hai hình → ba tài liệu.** `p7-15` từng là thư + bảng
+      giá + phiếu đặt vé, tức năm câu hỏi dựa vào đúng một tài liệu có chữ chạy.
+      Giữ bảng giá (chỗ tra tự nhiên), trả ô còn lại về email xác nhận. Giờ mọi
+      cụm nhiều đoạn có nhiều nhất một ô hình. `build_part7` tự đếm số ô hình từ
+      `PART7_SETS` nên không hằng số nào phải sửa theo.
+- [x] **Mâu thuẫn giữa dòng "Tình huống" và brief hình.** Dòng tình huống viết
+      tay theo `PART7_SETS`, còn ô hình lấy từ `PART7_GRAPHIC_POOL` theo seed —
+      hai chỗ có thể gọi tên hai tài liệu khác nhau trong cùng một prompt. Đầu
+      ra hiện tại vẫn mạch lạc (mô hình tự hoà giải), nên đây là mâu thuẫn tiềm
+      ẩn chứ chưa phải lỗi đã xảy ra; prompt giờ nói thẳng **brief hình thắng**.
+
+Còn lại:
+
+- [ ] thêm `kind` cho `graphics.py`. Mười mẫu trong `PART7_GRAPHIC_POOL` phủ đủ
+      sáu `kind`, nhưng **cả sáu cùng một họ thị giác**: dữ liệu xếp hàng cột.
+      Thiếu hẳn tài liệu có bố cục — phiếu giảm giá, biên lai có dòng và tổng
+      tiền, ảnh chụp trang web, bản đồ có tuyến đường.
+- [ ] chạy `enrich_skills` cho `passage_type` — 31/47 bộ chưa có nhãn.
 
 ---
 
