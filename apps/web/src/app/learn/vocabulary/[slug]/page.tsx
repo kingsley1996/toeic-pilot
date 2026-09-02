@@ -16,14 +16,17 @@ import {
   Gamepad2,
   Library,
   ListChecks,
+  Lock,
 } from "lucide-react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
 import { AccentRow } from "@/components/audio-button";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { LoginModal } from "@/components/login-modal";
 import {
   Alert,
+  Button,
   ButtonLink,
   EmptyState,
   Meter,
@@ -61,8 +64,11 @@ function WordList() {
   const topicSlug = rawSlug === "all" ? null : rawSlug;
   const params = useSearchParams();
   const offset = Math.max(0, Number(params.get("offset") ?? 0) || 0);
-  const { canEdit, token } = useSession();
+  const { canEdit, status, token } = useSession();
   const router = useRouter();
+  // Suy ra "hộp thoại đang mở" từ phiên + một lần đóng tay, không mở nó bằng
+  // `setState` trong effect — luật `react-hooks/set-state-in-effect`.
+  const [dismissed, setDismissed] = useState(false);
 
   const [topic, setTopic] = useState<TopicPublic | null>(null);
   const [loaded, setLoaded] = useState<{
@@ -80,13 +86,18 @@ function WordList() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (status !== "authenticated") return;
     if (!topicSlug) return;
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then((topics) => setTopic(topics.find((t) => t.slug === topicSlug) ?? null))
       .catch(() => {});
-  }, [topicSlug]);
+  }, [topicSlug, status]);
 
   useEffect(() => {
+    // Khách vãng lai không được xem trang này, nên cũng không đi lấy dữ liệu cho
+    // nó. `GET /vocabulary` vốn công khai; đây là chuyện đỡ một vòng mạng, và
+    // không để danh sách từ hiện ra sau lưng hộp thoại.
+    if (status !== "authenticated") return;
     // `openId`/`detail` KHÔNG xoá ở đây: `loaded` đóng dấu chủ đề nên danh sách cũ
     // không bao giờ hiện dưới nhãn mới, và một openId trỏ vào từ không còn trong
     // danh sách thì đơn giản là không render. Xoá đồng bộ trong thân effect là
@@ -100,7 +111,7 @@ function WordList() {
         setTotal(page.total);
       })
       .catch(() => setError("Không tải được danh sách từ."));
-  }, [topicSlug, offset]);
+  }, [topicSlug, offset, status]);
 
   // Tiến độ chỉ tồn tại khi đã đăng nhập. Khách vãng lai vẫn duyệt được từ —
   // `GET /vocabulary` là endpoint công khai — nhưng không có gì để hiện, và
@@ -138,6 +149,50 @@ function WordList() {
   // trang danh sách với slug "quiz".
   const quizHref = `/learn/vocabulary/quiz/${rawSlug}`;
   const matchHref = `/learn/vocabulary/match/${rawSlug}`;
+
+  if (status === "loading") {
+    return (
+      <Page>
+        <SkeletonList rows={5} />
+      </Page>
+    );
+  }
+
+  /*
+   * Danh sách từ đứng SAU cổng đăng nhập, khác với cây tuyển tập ở trên nó.
+   *
+   * Tuyển tập và cuốn sách trả lời "ở đây có gì để học" — phải xem được trước
+   * khi quyết định lập tài khoản. Trang này thì đã là chính nội dung: toàn bộ
+   * từ, nghĩa, ví dụ, bốn giọng đọc. Và nó là chỗ duy nhất trong khu từ vựng
+   * mà mức thành thạo của từng từ hiện ra, thứ chỉ tồn tại khi có tài khoản.
+   *
+   * Chặn ở cả hai đầu, cùng luật với khu luyện thi: hai lối vào ("Xem toàn bộ
+   * từ vựng" ở trang tuyển tập, "Xem danh sách từ" ở trang cuốn sách) đã ẩn với
+   * khách, còn trang này chặn người gõ thẳng URL hay mở lại dấu trang.
+   */
+  if (status === "anonymous") {
+    return (
+      <Page>
+        <Breadcrumbs trail={[{ href: "/learn/vocabulary", label: "Từ vựng" }]} />
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để xem danh sách từ"
+            description="Cần tài khoản để lưu mức thuộc của từng từ và lịch ôn của bạn."
+            action={<Button onClick={() => setDismissed(false)}>Đăng nhập</Button>}
+          />
+        </div>
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={`/learn/vocabulary/${rawSlug}`}
+          title="Đăng nhập để xem danh sách từ"
+          description="Cần tài khoản để lưu mức thuộc của từng từ và lịch ôn của bạn."
+        />
+      </Page>
+    );
+  }
 
   return (
     <Page>

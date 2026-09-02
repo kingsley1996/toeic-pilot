@@ -101,7 +101,7 @@ function UnfiledTopicCard({
 }
 
 function VocabularyLanding() {
-  const { token } = useSession();
+  const { status, token } = useSession();
   const due = useDueCount();
   const [collections, setCollections] = useState<VocabularyCollectionPublic[] | null>(null);
   const [topics, setTopics] = useState<TopicPublic[] | null>(null);
@@ -227,7 +227,12 @@ function VocabularyLanding() {
         </section>
       )}
 
-      {topics && topics.length > 0 && (
+      {/* Lối vào danh sách từ, ẩn với khách vãng lai vì trang đích đã chặn —
+          bày ra một nút dẫn thẳng tới cổng đăng nhập là mời người ta bấm vào
+          chỗ sẽ đá họ ngược lại. Điều kiện là `authenticated` chứ không phải
+          phủ định của `anonymous`: lúc phiên còn `loading` thì chưa biết là ai,
+          và hiện trước rồi gỡ đi là một khối nháy lên rồi biến mất. */}
+      {status === "authenticated" && topics && topics.length > 0 && (
         <div className="mt-6 flex flex-wrap items-center gap-3 rounded border border-rule bg-panel p-5">
           <div className="min-w-0 flex-1">
             <p className="flex items-center gap-1.5 font-semibold">
