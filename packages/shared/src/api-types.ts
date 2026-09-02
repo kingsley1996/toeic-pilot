@@ -3283,6 +3283,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-review/due-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Review Due Count
+         * @description Bao nhiêu từ đang đến hạn, và không gì khác.
+         *
+         *     Huy hiệu trên thanh điều hướng gọi endpoint này ở mọi lần đổi trang, nên nó
+         *     phải là MỘT lượt `COUNT` chứ không phải một lượt dựng danh sách rồi đếm.
+         *
+         *     Đếm KHÔNG có `limit`, khác `review_session`: ở đó `limit` là kích thước một
+         *     buổi học, còn ở đây con số là toàn bộ hàng đợi. Mượn `due_count` của session
+         *     sẽ chặn ở 100 và người có 150 từ đến hạn thấy 100 — sai mà vẫn hợp lý, nên
+         *     không ai phát hiện.
+         */
+        get: operations["review_due_count_api_v1_vocabulary_review_due_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-review/session": {
         parameters: {
             query?: never;
@@ -6253,6 +6281,23 @@ export interface components {
             part_of_speech: string;
             /** Phonetic */
             phonetic: string | null;
+        };
+        /**
+         * ReviewDueCount
+         * @description Chỉ một con số, và đó là toàn bộ lý do nó tồn tại.
+         *
+         *     Huy hiệu trên thanh điều hướng cần con số này ở MỌI trang. Hai endpoint sẵn
+         *     có đều trả về nó nhưng kèm theo quá nhiều thứ khác: `/vocabulary-progress`
+         *     gửi kèm một hàng cho mỗi từ đã xuất bản, `/profile/stats` gửi kèm lịch 365
+         *     ngày. Gọi một trong hai ở mỗi lần đổi trang là trả giá lớn cho một con số.
+         *
+         *     **Và `ReviewSession.due_count` không dùng được**: nó đếm số thẻ TRONG LÔ,
+         *     mà lô bị chặn bởi `limit`. Người có 150 từ đến hạn sẽ thấy 100 — sai một
+         *     cách im lặng, vì con số vẫn hợp lý.
+         */
+        ReviewDueCount: {
+            /** Due */
+            due: number;
         };
         /** ReviewResult */
         ReviewResult: {
@@ -12599,6 +12644,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_due_count_api_v1_vocabulary_review_due_count_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewDueCount"];
                 };
             };
         };

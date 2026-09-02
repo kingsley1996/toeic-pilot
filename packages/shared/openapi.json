@@ -7360,6 +7360,20 @@
         "title": "ReviewCard",
         "type": "object"
       },
+      "ReviewDueCount": {
+        "description": "Chỉ một con số, và đó là toàn bộ lý do nó tồn tại.\n\nHuy hiệu trên thanh điều hướng cần con số này ở MỌI trang. Hai endpoint sẵn\ncó đều trả về nó nhưng kèm theo quá nhiều thứ khác: `/vocabulary-progress`\ngửi kèm một hàng cho mỗi từ đã xuất bản, `/profile/stats` gửi kèm lịch 365\nngày. Gọi một trong hai ở mỗi lần đổi trang là trả giá lớn cho một con số.\n\n**Và `ReviewSession.due_count` không dùng được**: nó đếm số thẻ TRONG LÔ,\nmà lô bị chặn bởi `limit`. Người có 150 từ đến hạn sẽ thấy 100 — sai một\ncách im lặng, vì con số vẫn hợp lý.",
+        "properties": {
+          "due": {
+            "title": "Due",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "due"
+        ],
+        "title": "ReviewDueCount",
+        "type": "object"
+      },
       "ReviewResult": {
         "properties": {
           "due_at": {
@@ -18456,6 +18470,33 @@
           }
         ],
         "summary": "Vocabulary Progress",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary-review/due-count": {
+      "get": {
+        "description": "Bao nhiêu từ đang đến hạn, và không gì khác.\n\nHuy hiệu trên thanh điều hướng gọi endpoint này ở mọi lần đổi trang, nên nó\nphải là MỘT lượt `COUNT` chứ không phải một lượt dựng danh sách rồi đếm.\n\nĐếm KHÔNG có `limit`, khác `review_session`: ở đó `limit` là kích thước một\nbuổi học, còn ở đây con số là toàn bộ hàng đợi. Mượn `due_count` của session\nsẽ chặn ở 100 và người có 150 từ đến hạn thấy 100 — sai mà vẫn hợp lý, nên\nkhông ai phát hiện.",
+        "operationId": "review_due_count_api_v1_vocabulary_review_due_count_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDueCount"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Review Due Count",
         "tags": [
           "learning"
         ]

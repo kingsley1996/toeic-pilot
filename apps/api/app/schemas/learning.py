@@ -194,6 +194,22 @@ class ReviewSession(BaseModel):
     cards: list[ReviewCard]
 
 
+class ReviewDueCount(BaseModel):
+    """Chỉ một con số, và đó là toàn bộ lý do nó tồn tại.
+
+    Huy hiệu trên thanh điều hướng cần con số này ở MỌI trang. Hai endpoint sẵn
+    có đều trả về nó nhưng kèm theo quá nhiều thứ khác: `/vocabulary-progress`
+    gửi kèm một hàng cho mỗi từ đã xuất bản, `/profile/stats` gửi kèm lịch 365
+    ngày. Gọi một trong hai ở mỗi lần đổi trang là trả giá lớn cho một con số.
+
+    **Và `ReviewSession.due_count` không dùng được**: nó đếm số thẻ TRONG LÔ,
+    mà lô bị chặn bởi `limit`. Người có 150 từ đến hạn sẽ thấy 100 — sai một
+    cách im lặng, vì con số vẫn hợp lý.
+    """
+
+    due: int
+
+
 class ReviewSubmit(BaseModel):
     # 0 forgot · 3 hard · 4 good · 5 easy · 6 mastered. SM-2's 1 and 2 are
     # rejected: the button UI cannot produce them, so accepting them would record

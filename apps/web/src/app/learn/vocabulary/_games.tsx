@@ -24,16 +24,22 @@
 
 import {
   API_ROUTES,
+  type AudioClip,
   type RecallCheck,
   type TopicSession as TopicSessionState,
+  type VocabularyDetail,
   type VocabularySummary,
 } from "@toeic-pilot/shared";
 import { RotateCcw, Trophy } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button, ButtonLink, Kbd, Panel, Skeleton, cx } from "@/components/ui";
+import { AccentRow } from "@/components/audio-button";
 import { apiFetch } from "@/lib/api";
+import { GRADE_OPTIONS } from "@/lib/grades";
 import { recordReview, shuffle } from "@/lib/game";
+
+export { GRADE_OPTIONS } from "@/lib/grades";
 
 export type LearnMode = "typing" | "flashcard" | "quiz";
 
@@ -41,17 +47,6 @@ export type LearnMode = "typing" | "flashcard" | "quiz";
 // hồ từ; match cần đủ cặp cho bàn cờ 4x4.
 export const MATCH_PAIRS = 8;
 export const MIN_WORDS = { typing: 1, flashcard: 1, quiz: 4, match: MATCH_PAIRS } as const;
-
-// Năm nút tự chấm — thứ tự trái sang phải, giá trị là thang SM-2 engine hiểu:
-// 0 quên · 3 khó · 4 tốt · 5 dễ · 6 thành thạo (điểm 6 là phần mở rộng có chủ
-// đích: học viên khẳng định "thuộc rồi" và engine tôn trọng điều đó).
-export const GRADE_OPTIONS = [
-  { grade: 0, label: "Học lại", hint: "chưa nhớ", key: "1", bar: "bg-alert" },
-  { grade: 3, label: "Khó", hint: "chật vật", key: "2", bar: "bg-warn" },
-  { grade: 4, label: "Tốt", hint: "nhớ ra", key: "3", bar: "bg-ink-muted" },
-  { grade: 5, label: "Dễ", hint: "nhớ ngay", key: "4", bar: "bg-action" },
-  { grade: 6, label: "Thành thạo", hint: "thuộc luôn", key: "5", bar: "bg-ok" },
-] as const;
 
 /* --- luồng học tuần tự theo chủ đề ------------------------------------------ */
 
@@ -252,7 +247,13 @@ export function TopicSession({
           <TypingStep key={word.id} word={word} token={token} revealed={revealed} onDone={reveal} />
         )}
         {mode === "flashcard" && (
-          <FlashcardStep key={word.id} word={word} revealed={revealed} onDone={reveal} />
+          <FlashcardStep
+            key={word.id}
+            word={word}
+            token={token}
+            revealed={revealed}
+            onDone={reveal}
+          />
         )}
         {mode === "quiz" && (
           <QuizStep key={word.id} word={word} pool={pool} revealed={revealed} onDone={reveal} />
@@ -308,15 +309,49 @@ function StepHeader({ word }: { word: VocabularySummary }) {
 
 /* --- thẻ lật: nhìn từ → lật ra nghĩa ---------------------------------------- */
 
+/**
+ * Bản thu của MỘT từ, nạp riêng khi thẻ hiện ra.
+ *
+ * `VocabularySummary` — thứ hồ từ mang theo — cố ý không có clip: nó là dữ liệu
+ * của một danh sách phân trang, và nhét tám clip vào mỗi hàng là bắt màn danh
+ * sách trả giá cho thứ chỉ thẻ lật dùng. Thẻ lật hiện đúng một từ một lúc, nên
+ * một lượt gọi cho mỗi thẻ là rẻ.
+ *
+ * Hỏng thì trả về mảng rỗng chứ không dựng màn lỗi: `AccentRow` tự ẩn khi không
+ * có clip nào, và mất phần nghe không được phép làm hỏng phần học.
+ */
+function useHeadwordAudio(entryId: string, token: string): AudioClip[] {
+  const [clips, setClips] = useState<AudioClip[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch<VocabularyDetail>(API_ROUTES.vocabularyDetail(entryId), { token })
+      .then((detail) => {
+        if (!cancelled) setClips(detail.headword_audio);
+      })
+      .catch(() => {
+        if (!cancelled) setClips([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [entryId, token]);
+
+  return clips;
+}
+
 function FlashcardStep({
   word,
+  token,
   revealed,
   onDone,
 }: {
   word: VocabularySummary;
+  token: string;
   revealed: boolean;
   onDone: () => void;
 }) {
+  const clips = useHeadwordAudio(word.id, token);
   // Space để lật, đúng nhịp của thẻ lật toàn cục (/learn/review). Enter thì
   // KHÔNG: lỡ bật phím Enter sang màn chấm thì người học lật thẻ mà chưa kịp
   // nhìn.
@@ -346,7 +381,7 @@ function FlashcardStep({
   // đang focus; `aria-hidden` không làm hai việc sau, và đặt nó lên chính cái
   // nút vừa được bấm là một vi phạm ARIA.
   return (
-    <div className="flip-scene w-full">
+    <div className="flip-scene relative w-full">
       <div className={cx("flip-card h-80", revealed && "is-flipped")}>
         <button
           type="button"
@@ -367,12 +402,21 @@ function FlashcardStep({
             <Kbd>Space</Kbd>
           </p>
         </button>
+        {/* Nút nghe nằm NGOÀI tấm thẻ, không nằm trong: cả tấm thẻ là một cái
+            nút lật, nên một nút lồng trong nút vừa sai HTML vừa khiến bấm nghe
+            là lật thẻ. Đặt tuyệt đối lên mặt trước để nghe được TRƯỚC khi lật —
+            phát âm là một manh mối để nhớ nghĩa, đưa xuống mặt sau thì nó chỉ
+            còn là phần thưởng sau khi đã trả lời. */}
+        {!revealed && (
+          <AccentRow clips={clips} className="absolute bottom-6 right-6 z-10 justify-end" />
+        )}
         <div
           className="flip-face flip-back flex flex-col justify-center rounded border border-rule-strong bg-panel p-6"
           inert={!revealed}
         >
           <p className="text-label font-semibold uppercase text-ink-faint">{word.headword}</p>
           <p className="mt-2 text-title">{word.meaning_vi}</p>
+          <AccentRow clips={clips} className="mt-5" />
         </div>
       </div>
     </div>

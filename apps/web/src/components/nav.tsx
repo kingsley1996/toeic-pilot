@@ -29,6 +29,15 @@ export type NavItem = {
    * người dùng mất dấu mình đang ở đâu — một lỗi im lặng, vì trang vẫn đúng.
    */
   covers?: string[];
+  /**
+   * Con số hiện trong huy hiệu bên phải nhãn. `undefined` hoặc 0 = không hiện.
+   *
+   * Số 0 KHÔNG được vẽ, và đó là một luật của hệ thiết kế chứ không phải tuỳ
+   * chọn: một huy hiệu "0" là màu và hình dạng dành cho "có việc cần làm" đem
+   * gán cho tình trạng không có việc gì. Cùng lý do bảng tiến độ không tô màu
+   * số 0.
+   */
+  badge?: number;
 };
 
 /**
@@ -42,6 +51,7 @@ export function NavLink({
   href,
   label,
   Icon,
+  badge,
   active,
   onClick,
   className,
@@ -59,6 +69,18 @@ export function NavLink({
     >
       <Icon size={16} strokeWidth={1.75} aria-hidden />
       {label}
+      {badge !== undefined && badge > 0 && (
+        // `ml-auto` để huy hiệu bám mép phải ở sidebar; ở thanh trên nằm ngang
+        // thì mục co theo nội dung nên nó chỉ nằm sát sau nhãn.
+        <span
+          className="ml-auto rounded-pill bg-action px-1.5 py-0.5 font-data text-label tabular-nums text-on-action"
+          // Con số một mình không nói nó đếm cái gì; trình đọc màn hình chỉ
+          // nghe "Từ vựng 12" và không biết 12 là gì.
+          aria-label={`${badge} từ cần ôn`}
+        >
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
     </Link>
   );
 }

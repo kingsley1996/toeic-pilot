@@ -349,13 +349,11 @@ function SidebarContent({
                   {item.group}
                 </p>
               )}
-              <NavLink
-                href={item.href}
-                label={item.label}
-                Icon={item.Icon}
-                active={item.href === active}
-                className="justify-start"
-              />
+              {/* Spread, không liệt kê từng prop: bản liệt kê chép ba trường và
+                  im lặng đánh rơi mọi trường thêm sau này. `badge` được thêm vào
+                  `NavItem` và không bao giờ tới nơi vì đúng chỗ này — kiểu vẫn
+                  đúng, trang vẫn chạy, huy hiệu chỉ đơn giản là không hiện. */}
+              <NavLink {...item} active={item.href === active} className="justify-start" />
               {/* Mục con chỉ hiện khi đang ở trong khu đó. Hiện thường trực sẽ
                   làm sidebar dài ra vì những việc người dùng chưa quan tâm, và
                   mỗi tính năng mới lại thêm một dòng nữa. */}

@@ -86,6 +86,7 @@ export type ChatTurn = components["schemas"]["ChatTurn"];
 export type ChatHistoryPage = components["schemas"]["Page_ChatMessagePublic_"];
 export type AttemptPage = components["schemas"]["Page_AttemptSummary_"];
 export type VocabularyPage = components["schemas"]["Page_VocabularySummary_"];
+export type ReviewDueCount = components["schemas"]["ReviewDueCount"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
 export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"];
 export type DictationAdminPage = components["schemas"]["Page_DictationAdmin_"];
@@ -275,6 +276,7 @@ export const API_ROUTES = {
   vocabulary: "/api/v1/vocabulary",
   vocabularyDetail: (id: string) => `/api/v1/vocabulary/${id}`,
   reviewSession: "/api/v1/vocabulary-review/session",
+  reviewDueCount: "/api/v1/vocabulary-review/due-count",
   // Gạch nối, không phải `/vocabulary/progress`: route `/vocabulary/{entry_id}`
   // sẽ bắt "progress" trước rồi 422 khi parse nó thành UUID.
   vocabularyProgress: "/api/v1/vocabulary-progress",

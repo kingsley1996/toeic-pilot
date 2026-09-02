@@ -19,25 +19,8 @@ import {
   cx,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { GRADE_OPTIONS } from "@/lib/grades";
 import { useRequireSession } from "@/lib/session";
-
-/**
- * Bốn mức chất lượng SM-2, thay cho sáu mức của bản gốc.
- *
- * 0, 1 và 2 đều có nghĩa "quên" và không ai phân biệt được ba mức đó một cách
- * đáng tin, nên chúng gộp làm một. Ba mức còn lại giữ nguyên ý nghĩa số học,
- * và đó là lý do dãy số nhảy từ 0 lên 3.
- *
- * Thang này là THỨ TỰ (kém → tốt), không phải phân loại — nên màu chạy thành
- * một dải alert → ok chứ không phải bốn sắc rời rạc. Bốn nút tô đặc bốn màu
- * cũng sẽ tranh mất chỗ với màu hành động, vốn chỉ dành cho "việc cần làm".
- */
-const GRADES = [
-  { grade: 0, label: "Quên", hint: "Lại từ đầu", key: "1", bar: "bg-alert" },
-  { grade: 3, label: "Khó", hint: "Chật vật", key: "2", bar: "bg-warn" },
-  { grade: 4, label: "Được", hint: "Nhớ ra", key: "3", bar: "bg-ink-muted" },
-  { grade: 5, label: "Dễ", hint: "Nhớ ngay", key: "4", bar: "bg-ok" },
-];
 
 export default function ReviewPage() {
   const { status, token } = useRequireSession();
@@ -98,7 +81,7 @@ export default function ReviewPage() {
         return;
       }
       if (!flipped) return;
-      const match = GRADES.find((entry) => entry.key === event.key);
+      const match = GRADE_OPTIONS.find((entry) => entry.key === event.key);
       if (match) void submit(match.grade);
     }
     window.addEventListener("keydown", onKey);
@@ -209,7 +192,7 @@ export default function ReviewPage() {
 
       {flipped && (
         <div className="animate-settle mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {GRADES.map((entry) => (
+          {GRADE_OPTIONS.map((entry) => (
             <button
               key={entry.grade}
               type="button"

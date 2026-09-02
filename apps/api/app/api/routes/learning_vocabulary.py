@@ -38,6 +38,7 @@ from app.schemas.learning import (
     RecallResult,
     RecallSubmit,
     ReviewCard,
+    ReviewDueCount,
     ReviewResult,
     ReviewSession,
     ReviewSubmit,
@@ -678,6 +679,34 @@ def _review_result(entry_id: uuid.UUID, grade: int, outcome: ReviewOutcome) -> R
 
 
 # --- review session -------------------------------------------------------
+
+
+@router.get("/vocabulary-review/due-count", response_model=ReviewDueCount)
+def review_due_count(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ReviewDueCount:
+    """Bao nhiêu từ đang đến hạn, và không gì khác.
+
+    Huy hiệu trên thanh điều hướng gọi endpoint này ở mọi lần đổi trang, nên nó
+    phải là MỘT lượt `COUNT` chứ không phải một lượt dựng danh sách rồi đếm.
+
+    Đếm KHÔNG có `limit`, khác `review_session`: ở đó `limit` là kích thước một
+    buổi học, còn ở đây con số là toàn bộ hàng đợi. Mượn `due_count` của session
+    sẽ chặn ở 100 và người có 150 từ đến hạn thấy 100 — sai mà vẫn hợp lý, nên
+    không ai phát hiện.
+    """
+    due = db.scalar(
+        select(func.count())
+        .select_from(VocabularyReviewState)
+        .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
+        .where(
+            VocabularyReviewState.user_id == current_user.id,
+            VocabularyReviewState.due_at <= datetime.now(UTC),
+            VocabularyEntry.status == PUBLISHED,
+        )
+    )
+    return ReviewDueCount(due=due or 0)
 
 
 @router.get("/vocabulary-review/session", response_model=ReviewSession)
