@@ -774,3 +774,39 @@ def test_archiving_the_last_sentence_blocks_republishing_the_story(
     response = client.post(f"/api/v1/admin/dictation/stories/{story.id}/publish", headers=headers)
     assert response.status_code == 409
     assert "no published sentences" in response.json()["detail"]
+
+
+def test_the_tree_opens_without_a_session(client: TestClient, db_session: Session) -> None:
+    """Khách vãng lai đi hết được cây, và tiến độ về 0 chứ không phải 401.
+
+    Đây là điều dễ mất lại nhất: thêm `Depends(get_current_user)` vào một trong
+    hai route là đóng cửa với người chưa đăng nhập, mà không phép kiểm nào khác
+    thấy — mọi test còn lại đều gửi token.
+    """
+    story = build_tree(db_session, marker="guest")
+    section = db_session.get(DictationSection, story.section_id)
+    assert section is not None
+
+    section_body = client.get(f"/api/v1/dictation-sections/{story.section_id}")
+    assert section_body.status_code == 200
+    assert section_body.json()["stories"][0]["progress"]["completed_items"] == 0
+
+    story_body = client.get(f"/api/v1/dictation-stories/{story.id}")
+    assert story_body.status_code == 200
+    assert all(item["completed"] is False for item in story_body.json()["items"])
+
+
+def test_a_broken_token_is_still_refused_on_the_open_tree(
+    client: TestClient, db_session: Session
+) -> None:
+    """Không có token = khách. Token HỎNG = 401, không phải khách.
+
+    Nuốt token sai sẽ khiến một phiên hết hạn trông y hệt chưa đăng nhập: tiến
+    độ lặng lẽ về 0 và không có gì nói cho người học biết phải đăng nhập lại.
+    """
+    story = build_tree(db_session, marker="rotten")
+    response = client.get(
+        f"/api/v1/dictation-stories/{story.id}",
+        headers={"Authorization": "Bearer khong-phai-mot-token"},
+    )
+    assert response.status_code == 401

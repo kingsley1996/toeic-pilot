@@ -8,11 +8,12 @@ import { useEffect, useState } from "react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Alert, EmptyState, Page, PageHeader, PanelLink, SkeletonList } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /** Tầng 2: các phần trong một dạng bài. */
 export default function DictationTopicPage() {
-  const { status } = useRequireSession();
+  const { status } = useSession();
   const topicId = String(useParams().topicId);
   const [topic, setTopic] = useState<DictationTopicDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +24,7 @@ export default function DictationTopicPage() {
       .catch(() => setError("Không tải được chủ đề này."));
   }, [topicId]);
 
-  if (status !== "authenticated" || (!topic && !error)) {
+  if (status === "loading" || (!topic && !error)) {
     return (
       <Page className="max-w-3xl">
         <SkeletonList rows={4} />
@@ -40,6 +41,8 @@ export default function DictationTopicPage() {
       {topic && (
         <>
           <PageHeader eyebrow="Dạng bài" title={topic.name} description={topic.description} />
+
+          <GuestNotice className="mb-4" />
 
           {topic.sections.length === 0 && (
             <EmptyState

@@ -9,23 +9,30 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { StoryProgressBar } from "@/components/story-progress";
 import { Alert, EmptyState, Page, PageHeader, PanelLink, SkeletonList, Tag } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /** Tầng 3: các bài trong một phần, kèm tiến độ của chính học viên. */
 export default function DictationSectionPage() {
-  const { status, token } = useRequireSession();
+  // `useSession`, KHÔNG `useRequireSession`: cây đọc chép mở cho cả khách
+  // vãng lai. Đăng nhập chỉ thêm cột tiến độ — endpoint đã nhận token tuỳ chọn.
+  const { status, token } = useSession();
   const sectionId = String(useParams().sectionId);
   const [section, setSection] = useState<DictationSectionDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
-    apiFetch<DictationSectionDetail>(API_ROUTES.dictationSection(sectionId), { token })
+    // Chờ phiên phân giải xong rồi mới gọi: gọi lúc `loading` là gọi KHÔNG
+    // kèm token, và người đã đăng nhập sẽ thấy một cây không có tiến độ.
+    if (status === "loading") return;
+    apiFetch<DictationSectionDetail>(API_ROUTES.dictationSection(sectionId), {
+      token: token ?? undefined,
+    })
       .then(setSection)
       .catch(() => setError("Không tải được phần này."));
-  }, [sectionId, token]);
+  }, [sectionId, token, status]);
 
-  if (status !== "authenticated" || (!section && !error)) {
+  if (status === "loading" || (!section && !error)) {
     return (
       <Page className="max-w-3xl">
         <SkeletonList rows={4} />
@@ -46,6 +53,8 @@ export default function DictationSectionPage() {
             ]}
           />
           <PageHeader eyebrow="Phần" title={section.name} description={section.description} />
+
+          <GuestNotice className="mb-4" />
 
           {section.stories.length === 0 && (
             <EmptyState

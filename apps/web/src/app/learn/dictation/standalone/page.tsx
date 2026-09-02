@@ -22,7 +22,8 @@ import {
   Tag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /**
  * Các câu chưa thuộc bài nào.
@@ -36,7 +37,7 @@ import { useRequireSession } from "@/lib/session";
 const PAGE_SIZE = 50;
 
 export default function StandaloneDictationPage() {
-  const { status } = useRequireSession();
+  const { status } = useSession();
   const [items, setItems] = useState<DictationSummary[] | null>(null);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
@@ -52,7 +53,7 @@ export default function StandaloneDictationPage() {
       .catch(() => setError("Không tải được danh sách câu."));
   }, [offset]);
 
-  if (status !== "authenticated") {
+  if (status === "loading") {
     return (
       <Page className="max-w-2xl">
         <SkeletonList rows={4} />
@@ -68,6 +69,8 @@ export default function StandaloneDictationPage() {
         title="Câu chưa thuộc bài nào"
         description="Mỗi câu đứng riêng, không theo thứ tự nào."
       />
+
+      <GuestNotice className="mb-4" />
 
       {error && (
         <div className="mb-4">

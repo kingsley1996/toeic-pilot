@@ -9,7 +9,6 @@ import {
   Clock,
   Flame,
   Headphones,
-  PawPrint,
   PencilLine,
   Target,
 } from "lucide-react";
@@ -17,7 +16,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { MockPlayer } from "@/components/mock-player";
-import { PetlandCreature, PetlandMap, PetlandSpecies } from "@/components/petland-preview";
+import { PetlandMap, PetlandSpecies } from "@/components/petland-preview";
 import {
   DICTATION_DURATION,
   DictationBox,
@@ -60,7 +59,6 @@ const ICONS: Record<IconName, typeof BookOpen> = {
 
 export default function HomePage() {
   const { status } = useSession();
-  const [petOpen, setPetOpen] = useState(false);
   const [words, setWords] = useState<number | null>(null);
 
   useEffect(() => {

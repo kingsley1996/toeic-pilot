@@ -8,7 +8,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DictationExercise } from "@/components/dictation-exercise";
 import { Alert, Button, Page, PageHeader, SkeletonList } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /**
  * Nghe ngẫu nhiên: một câu bất kỳ trong toàn bộ nội dung, không theo cây.
@@ -26,7 +27,8 @@ import { useRequireSession } from "@/lib/session";
  * đổi chế độ.
  */
 export default function RandomDictationPage() {
-  const { status, token } = useRequireSession();
+  // Không lấy `token`: trang này không hiện tiến độ và endpoint không cần auth.
+  const { status } = useSession();
   const [item, setItem] = useState<DictationDetail | null>(null);
   const [rolling, setRolling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,8 +55,13 @@ export default function RandomDictationPage() {
   }, []);
 
   useEffect(() => {
-    if (token) void roll();
-  }, [token, roll]);
+    // KHÔNG chờ token: `/dictation-random` không cần đăng nhập, và trang này
+    // không hiện tiến độ nên chẳng có gì để đợi. Điều kiện cũ là `if (token)`,
+    // và với khách vãng lai nó im lặng không bao giờ chạy — trang dựng xong với
+    // `item` là null, không skeleton vì phiên đã phân giải, không lỗi vì chưa ai
+    // gọi gì. Một trang trắng mà không có gì sai để mà báo.
+    void roll();
+  }, [roll]);
 
   /** Bốc lại theo yêu cầu của người dùng: khoá nút trong lúc chờ, rồi đi lấy. */
   function reroll(exclude: string) {
@@ -62,7 +69,7 @@ export default function RandomDictationPage() {
     void roll(exclude);
   }
 
-  if (status !== "authenticated") {
+  if (status === "loading") {
     return (
       <Page className="max-w-3xl">
         <SkeletonList rows={4} />
@@ -78,6 +85,8 @@ export default function RandomDictationPage() {
         title="Nghe ngẫu nhiên"
         description="Một câu bất kỳ trong toàn bộ nội dung. Không tính tiến độ, chỉ để quen tai."
       />
+
+      <GuestNotice className="mb-4" />
 
       {error && <Alert>{error}</Alert>}
 

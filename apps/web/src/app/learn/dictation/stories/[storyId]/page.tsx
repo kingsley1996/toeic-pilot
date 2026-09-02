@@ -11,18 +11,19 @@ import { DictationNextUp } from "@/components/dictation-next";
 import { StoryProgressBar } from "@/components/story-progress";
 import { Alert, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /** Tầng 4: một bài văn, làm tuần tự từng câu. */
 export default function DictationStoryPage() {
-  const { status, token } = useRequireSession();
+  const { status, token } = useSession();
   const storyId = String(useParams().storyId);
   const [story, setStory] = useState<DictationStoryDetail | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(
-    (t: string) =>
+    (t?: string) =>
       apiFetch<DictationStoryDetail>(API_ROUTES.dictationStory(storyId), { token: t })
         .then((data) => {
           setStory(data);
@@ -39,10 +40,13 @@ export default function DictationStoryPage() {
   );
 
   useEffect(() => {
-    if (token) void load(token);
-  }, [token, load]);
+    // Chờ phiên phân giải xong rồi mới gọi: gọi lúc `loading` là gọi KHÔNG kèm
+    // token, và người đã đăng nhập sẽ thấy một bài không có câu nào được đánh
+    // dấu đã xong.
+    if (status !== "loading") void load(token ?? undefined);
+  }, [token, status, load]);
 
-  if (status !== "authenticated" || (!story && !error)) {
+  if (status === "loading" || (!story && !error)) {
     return (
       <Page className="max-w-3xl">
         <SkeletonList rows={5} />
@@ -68,6 +72,8 @@ export default function DictationStoryPage() {
             ]}
           />
           <PageHeader eyebrow="Bài nghe" title={story.title} description={story.description} />
+
+          <GuestNotice className="mb-4" />
 
           <Panel className="mb-4 p-4">
             <StoryProgressBar progress={story.progress} />

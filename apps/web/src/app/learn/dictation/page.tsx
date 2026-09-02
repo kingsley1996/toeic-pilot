@@ -14,12 +14,14 @@ import {
   SkeletonList,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { useRequireSession, useSession } from "@/lib/session";
+import { GuestNotice } from "@/components/guest-notice";
+import { useSession } from "@/lib/session";
 
 /** Tầng 1: các dạng bài nghe. */
 export default function DictationTopicsPage() {
-  const { status } = useRequireSession();
-  const { canEdit } = useSession();
+  // Cây đọc chép mở cho khách vãng lai (ADR-015), nên `useSession` chứ không
+  // `useRequireSession`. Hai endpoint dùng ở đây vốn đã không cần token.
+  const { status, canEdit } = useSession();
   const [topics, setTopics] = useState<DictationTopicPublic[] | null>(null);
   // Chỉ cần CON SỐ, không cần danh sách — nên giữ `total` của máy chủ chứ không
   // đếm mảng đã bị cắt trang. `items.length` sẽ đứng yên ở 50 khi câu lẻ vượt
@@ -38,7 +40,7 @@ export default function DictationTopicsPage() {
       .catch(() => {});
   }, []);
 
-  if (status !== "authenticated") {
+  if (status === "loading") {
     return (
       <Page className="max-w-3xl">
         <SkeletonList rows={4} />
@@ -53,6 +55,8 @@ export default function DictationTopicsPage() {
         title="Luyện nghe chép chính tả"
         description="Chọn một dạng bài, rồi chọn phần và bài để nghe."
       />
+
+      <GuestNotice className="mb-4" />
 
       {error && (
         <div className="mb-4">

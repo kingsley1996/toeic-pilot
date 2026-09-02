@@ -102,6 +102,30 @@ def get_current_user(
     return user
 
 
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
+    db: Session = Depends(get_db),
+    redis_client: redis.Redis = Depends(get_redis),
+) -> User | None:
+    """Người đang đăng nhập, hoặc `None` nếu khách vãng lai.
+
+    Dành cho endpoint mà đăng nhập chỉ THÊM một thứ chứ không mở khoá nội dung:
+    cây đọc chép hiện được với mọi người, và tài khoản chỉ thêm cột tiến độ.
+
+    **Không có token thì trả `None`, nhưng token HỎNG vẫn 401.** Đây là chỗ
+    khác biệt duy nhất và nó quan trọng: nuốt luôn token sai sẽ khiến một phiên
+    hết hạn trông y như chưa đăng nhập, nên người học thấy tiến độ của mình lặng
+    lẽ biến mất và không có gì nói cho họ biết phải đăng nhập lại. Sai lặng lẽ
+    còn tệ hơn một lỗi nói thẳng.
+
+    Dùng lại nguyên `get_current_user` chứ không chép lại phần kiểm: bản chép sẽ
+    trôi khỏi bản gốc, và cái trôi ở đây là một lỗ xác thực.
+    """
+    if credentials is None:
+        return None
+    return get_current_user(credentials=credentials, db=db, redis_client=redis_client)
+
+
 def require_role(*allowed: str) -> Callable[[User], User]:
     """Gate an endpoint on the caller's role.
 

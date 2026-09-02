@@ -17,7 +17,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 from app.core.database import get_db
 from app.core.media import public_audio_url
 from app.models import (
@@ -410,7 +410,9 @@ def get_dictation_topic(topic_id: uuid.UUID, db: Session = Depends(get_db)) -> D
 def get_dictation_section(
     section_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
+    # Khách vãng lai xem được cây; đăng nhập chỉ THÊM cột "đã xong mấy câu".
+    # Nội dung không phải thứ tài khoản mở khoá — xem `ADR-015`.
+    user: User | None = Depends(get_optional_user),
 ) -> DictationSectionDetail:
     section = db.scalars(
         select(DictationSection)
@@ -436,7 +438,7 @@ def get_dictation_section(
     summaries: list[DictationStorySummary] = []
     for story in stories:
         item_ids = [item.id for item in story.items if item.status == PUBLISHED]
-        done = _completed_items(db, user.id, item_ids)
+        done = _completed_items(db, user.id, item_ids) if user else set()
         summaries.append(
             DictationStorySummary(
                 id=str(story.id),
@@ -462,7 +464,7 @@ def get_dictation_section(
 def get_dictation_story(
     story_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User | None = Depends(get_optional_user),
 ) -> DictationStoryDetail:
     story = db.scalars(
         select(DictationStory)
@@ -490,7 +492,7 @@ def get_dictation_story(
     ).all()
 
     item_ids = [item.id for item in items]
-    done = _completed_items(db, user.id, item_ids)
+    done = _completed_items(db, user.id, item_ids) if user else set()
 
     return DictationStoryDetail(
         id=str(story.id),
