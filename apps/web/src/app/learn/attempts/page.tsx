@@ -61,7 +61,14 @@ export default function AttemptHistoryPage() {
     );
   }
 
-  const unfinished = rows.filter((row) => row.status === "in_progress");
+  /* Cùng một luật với trang chủ: "đang làm dở" là bài CÒN LÀM TIẾP ĐƯỢC. Bài đã
+     quá giờ vẫn mang `status = in_progress` cho tới khi có người mở nó ra, nhưng
+     đếm nó vào lời nhắc là giục người học đi làm một việc không làm được nữa —
+     và hai trang đếm theo hai luật khác nhau thì con số ở đâu cũng đáng ngờ. Bài
+     quá giờ vẫn nằm trong danh sách bên dưới, mang nhãn đỏ. */
+  const unfinished = rows.filter(
+    (row) => row.status === "in_progress" && row.remaining_seconds !== 0,
+  );
   const shown =
     filter === "all"
       ? rows
@@ -188,8 +195,10 @@ function AttemptRow({ row }: { row: AttemptSummary }) {
             )}
           </>
         )}
+        {/* Bài quá giờ mở ra là bị chấm, không phải làm tiếp — nói đúng việc
+            sắp xảy ra thay vì hứa một việc không xảy ra. */}
         <span className="ml-auto font-semibold text-action-ink">
-          {running ? "Làm tiếp" : "Xem kết quả"}
+          {running && !expired ? "Làm tiếp" : "Xem kết quả"}
         </span>
       </div>
     </Link>

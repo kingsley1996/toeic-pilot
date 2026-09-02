@@ -210,9 +210,18 @@ export default function TodayPage() {
   const [progress, setProgress] = useState<VocabularyProgress | null>(null);
   const [stats, setStats] = useState<LearningStats | null>(null);
   const [sessions, setSessions] = useState<TopicSessionSummary[] | null>(null);
-  // Bài thi đang dở. Đứng trên trang chủ chứ không nằm sau hai cú bấm: đồng hồ
-  // của nó chạy ở MÁY CHỦ, nên đóng tab không dừng bài — chỉ làm mất đường quay
-  // lại. Không nhắc ở đây thì bài tự hết giờ rồi bị chấm với phần lớn câu bỏ trống.
+  /*
+   * Bài thi CÒN LÀM TIẾP ĐƯỢC. Đứng trên trang chủ chứ không nằm sau hai cú bấm:
+   * đồng hồ của nó chạy ở MÁY CHỦ, nên đóng tab không dừng bài — chỉ làm mất
+   * đường quay lại. Không nhắc ở đây thì bài tự hết giờ rồi bị chấm với phần lớn
+   * câu bỏ trống.
+   *
+   * **Bài đã quá giờ bị loại khỏi đây**, dù `status` của nó vẫn là
+   * `in_progress`. Khối này là lời nhắc "làm nốt đi", mà một bài hết giờ thì
+   * không còn gì để làm nốt: mở nó ra chỉ khiến máy chủ chốt và chấm. Mời "Làm
+   * tiếp" ở đó là hứa một việc không xảy ra. Chúng vẫn còn đủ ở `/learn/attempts`
+   * kèm nhãn đỏ, và mở từ đó là chốt.
+   */
   const [unfinished, setUnfinished] = useState<AttemptSummary[]>([]);
 
   useEffect(() => {
@@ -226,7 +235,11 @@ export default function TodayPage() {
       .then(setProgress)
       .catch(() => {});
     apiFetch<AttemptPage>(API_ROUTES.attempts, { token })
-      .then((page) => setUnfinished(page.items.filter((row) => row.status === "in_progress")))
+      .then((page) =>
+        setUnfinished(
+          page.items.filter((row) => row.status === "in_progress" && row.remaining_seconds !== 0),
+        ),
+      )
       .catch(() => {});
     apiFetch<LearningStats>(API_ROUTES.profileStats, { token })
       .then(setStats)
@@ -282,9 +295,7 @@ export default function TodayPage() {
                 <span className="text-small text-ink-muted">
                   {row.remaining_seconds === null
                     ? "không giới hạn giờ"
-                    : row.remaining_seconds === 0
-                      ? "đã quá giờ"
-                      : `còn ${clock(row.remaining_seconds)}`}
+                    : `còn ${clock(row.remaining_seconds)}`}
                 </span>
                 <ButtonLink href={`/learn/attempts/${row.id}`} size="sm" className="ml-auto">
                   Làm tiếp
