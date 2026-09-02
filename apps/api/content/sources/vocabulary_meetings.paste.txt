@@ -1,0 +1,45 @@
+action item | noun | /ˈækʃn ˌaɪtəm/ | a task someone agrees to do after a meeting | đầu việc cần làm | Each action item has a name and a date beside it. | Mỗi đầu việc đều có tên người phụ trách và ngày hoàn thành.
+minutes | noun | /ˈmɪnɪts/ | a written record of what was said at a meeting | biên bản họp | She volunteered to take the minutes this week. | Cô ấy xung phong ghi biên bản họp tuần này.
+attendee | noun | /əˌtenˈdiː/ | a person who is present at a meeting or event | người tham dự | Every attendee received a printed handout. | Mỗi người tham dự đều nhận một tờ tài liệu in.
+chair | verb | /tʃer/ | to lead a meeting and give people turns to speak | chủ trì | The finance director will chair the review. | Giám đốc tài chính sẽ chủ trì buổi rà soát.
+adjourn | verb | /əˈdʒɜːrn/ | to end a meeting, often to continue it later | tạm dừng, hoãn phiên họp | They adjourned the discussion until Monday. | Họ tạm dừng phần thảo luận tới thứ Hai.
+quorum | noun | /ˈkwɔːrəm/ | the smallest number of people needed for a decision to count | số đại biểu tối thiểu | Without a quorum the vote had to be postponed. | Không đủ số đại biểu nên cuộc bỏ phiếu phải hoãn.
+handout | noun | /ˈhændaʊt/ | a printed sheet given to people at a talk | tài liệu phát tay | The handout summarises the main figures. | Tài liệu phát tay tóm tắt các số liệu chính.
+slide | noun | /slaɪd/ | one screen of a presentation | trang trình chiếu | Could you go back to the previous slide? | Bạn quay lại trang trình chiếu trước được không?
+projector | noun | /prəˈdʒektər/ | a machine that shows images on a screen or wall | máy chiếu | The projector in the small room needs a new bulb. | Máy chiếu ở phòng nhỏ cần thay bóng đèn.
+briefing | noun | /ˈbriːfɪŋ/ | a short meeting giving people the information they need | buổi phổ biến thông tin | The morning briefing lasts about ten minutes. | Buổi phổ biến thông tin buổi sáng kéo dài khoảng mười phút.
+follow-up | noun | /ˈfɑːloʊ ʌp/ | further action taken after a meeting | việc theo dõi tiếp | She sent a follow-up email the same afternoon. | Cô ấy gửi email theo dõi tiếp ngay chiều hôm đó.
+consensus | noun | /kənˈsensəs/ | general agreement among a group | sự đồng thuận | The team reached a consensus after a long debate. | Nhóm đạt được đồng thuận sau một cuộc tranh luận dài.
+brainstorm | verb | /ˈbreɪnstɔːrm/ | to suggest many ideas quickly without judging them | động não | Let us brainstorm before choosing an approach. | Ta hãy động não trước khi chọn hướng đi.
+recap | verb | /ˈriːkæp/ | to repeat the main points briefly | tóm tắt lại | He recapped the decisions at the end. | Anh ấy tóm tắt lại các quyết định ở phần cuối.
+auditorium | noun | /ˌɔːdɪˈtɔːriəm/ | a large room where an audience sits | khán phòng | The auditorium was full by nine. | Khán phòng đã kín chỗ trước chín giờ.
+keynote | noun | /ˈkiːnoʊt/ | the most important talk at a conference | bài phát biểu chính | The keynote opens the conference on Tuesday. | Bài phát biểu chính mở màn hội nghị vào thứ Ba.
+panel | noun | /ˈpænl/ | a small group who answer questions in public | ban toạ đàm | The panel took questions for half an hour. | Ban toạ đàm nhận câu hỏi trong nửa giờ.
+handover | noun | /ˈhændoʊvər/ | the passing of work or duties to another person | việc bàn giao | The handover notes are stored on the shared drive. | Ghi chú bàn giao được lưu trên ổ dùng chung.
+timeframe | noun | /ˈtaɪmfreɪm/ | the period within which something should happen | khung thời gian | The timeframe for the pilot is eight weeks. | Khung thời gian cho đợt thử nghiệm là tám tuần.
+milestone | noun | /ˈmaɪlstoʊn/ | an important stage in a plan or project | cột mốc | Reaching the first milestone took three weeks. | Đạt được cột mốc đầu tiên mất ba tuần.
+objective | noun | /əbˈdʒektɪv/ | something you are trying to achieve | mục tiêu | Each objective has one person responsible for it. | Mỗi mục tiêu có một người chịu trách nhiệm.
+outcome | noun | /ˈaʊtkʌm/ | the result of a process or meeting | kết quả | The outcome was recorded in the minutes. | Kết quả được ghi vào biên bản họp.
+proposal | noun | /prəˈpoʊzl/ | a plan put forward for other people to consider | đề xuất | The proposal was approved with two small changes. | Đề xuất được duyệt kèm hai thay đổi nhỏ.
+rationale | noun | /ˌræʃəˈnæl/ | the reasons behind a decision | cơ sở lý luận | She explained the rationale for the new schedule. | Cô ấy giải thích cơ sở của lịch trình mới.
+input | noun | /ˈɪnpʊt/ | ideas or advice that people contribute | ý kiến đóng góp | We would welcome input from the technical team. | Chúng tôi rất mong nhận ý kiến đóng góp từ nhóm kỹ thuật.
+clarify | verb | /ˈklærəfaɪ/ | to make something easier to understand | làm rõ | Could you clarify the second point? | Bạn làm rõ ý thứ hai được không?
+summarise | verb | /ˈsʌməraɪz/ | to give only the main points | tóm tắt | He summarised the report in three sentences. | Anh ấy tóm tắt báo cáo trong ba câu.
+allocate | verb | /ˈæləkeɪt/ | to give a share of time, money or work to someone | phân bổ | We allocated an hour to each section. | Chúng tôi phân bổ một tiếng cho mỗi phần.
+reconvene | verb | /ˌriːkənˈviːn/ | to meet again after a break | họp lại | The group reconvened after a short lunch. | Nhóm họp lại sau bữa trưa ngắn.
+circulate | verb | /ˈsɜːrkjəleɪt/ | to send something around to a group of people | luân chuyển, gửi rộng rãi | Please circulate the draft to all department heads. | Vui lòng gửi bản nháp cho tất cả trưởng phòng.
+moderate | verb | /ˈmɑːdəreɪt/ | to lead a discussion and keep it fair | điều hành thảo luận | A colleague from another office moderated the session. | Một đồng nghiệp ở văn phòng khác điều hành phiên thảo luận.
+facilitate | verb | /fəˈsɪləteɪt/ | to make a discussion run smoothly | điều phối | An outside consultant facilitated the workshop. | Một chuyên gia bên ngoài điều phối buổi hội thảo.
+convene | verb | /kənˈviːn/ | to bring people together for a meeting | triệu tập | The board convenes twice a year. | Hội đồng quản trị họp hai lần mỗi năm.
+concise | adjective | /kənˈsaɪs/ | short and clear, with no extra words | ngắn gọn súc tích | Keep your update concise, we have little time. | Hãy báo cáo ngắn gọn, chúng ta ít thời gian.
+preliminary | adjective | /prɪˈlɪməneri/ | happening before the main part, and not final | sơ bộ | These are preliminary figures for the quarter. | Đây là số liệu sơ bộ của quý.
+provisional | adjective | /prəˈvɪʒənl/ | arranged for now but able to change | tạm thời chưa chính thức | These are provisional numbers only. | Đây mới chỉ là con số tạm thời.
+unanimous | adjective | /juːˈnænɪməs/ | agreed by everyone | nhất trí hoàn toàn | The decision was unanimous. | Quyết định được nhất trí hoàn toàn.
+constructive | adjective | /kənˈstrʌktɪv/ | helpful, and intended to improve something | mang tính xây dựng | She gave constructive comments on the layout. | Cô ấy góp ý mang tính xây dựng về bố cục.
+inconclusive | adjective | /ˌɪnkənˈkluːsɪv/ | not leading to a clear decision | không đi tới kết luận | The first round of talks was inconclusive. | Vòng đàm phán đầu tiên không đi tới kết luận.
+verbally | adverb | /ˈvɜːrbəli/ | using spoken words rather than writing | bằng lời nói | The offer was accepted verbally at the meeting. | Đề nghị được chấp thuận bằng lời tại cuộc họp.
+briefly | adverb | /ˈbriːfli/ | for a short time, or in few words | vắn tắt | He spoke briefly about the budget. | Anh ấy nói vắn tắt về ngân sách.
+in attendance | phrase | /ɪn əˈtendəns/ | present at a meeting or event | có mặt tham dự | Twelve people were in attendance this morning. | Mười hai người có mặt tham dự sáng nay.
+take the floor | phrase | /teɪk ðə flɔːr/ | to begin speaking to a group | phát biểu trước cuộc họp | The director took the floor after the break. | Giám đốc phát biểu sau giờ giải lao.
+run over | phrase | /rʌn ˈoʊvər/ | to continue past the planned finishing time | kéo dài quá giờ | The meeting ran over by twenty minutes. | Cuộc họp kéo dài quá giờ hai mươi phút. 
+touch base | phrase | /tʌtʃ beɪs/ | to speak briefly to share news or check progress | trao đổi nhanh | Let us touch base again on Thursday. | Ta trao đổi nhanh lại vào thứ Năm.

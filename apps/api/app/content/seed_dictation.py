@@ -138,6 +138,55 @@ SHORT_STORY_UNITS: tuple[Unit, ...] = (
             "The offer letter reached his inbox before the end of the week.",
         ),
     ),
+    Unit(
+        name="Unit 6 — Moving to a new office",
+        story_title="The Move Upstairs",
+        story_description="Một đội chuyển sang tầng mới, và sự cố mạng sáng thứ Hai.",
+        difficulty=3,
+        sentences=(
+            "The design team was told they would move to a new floor.",
+            "Boxes and labels arrived on Monday for everyone to pack their files.",
+            "The manager asked staff to leave the monitors on the desks.",
+            "Movers came on Friday evening after most people had gone home.",
+            "On Monday the team found their chairs already waiting by the window.",
+            "The network in one corner did not work for the first hour.",
+            "A technician traced the fault to a cable behind the wall panel.",
+            "By lunchtime the whole floor was online and the boxes were gone.",
+        ),
+    ),
+    Unit(
+        name="Unit 7 — A product launch",
+        story_title="Launch Day",
+        story_description="Buổi ra mắt sản phẩm, từ lúc chuẩn bị tới lúc chốt đơn.",
+        # Khó nhất của topic: câu dài, quá khứ hoàn thành, nhiều mệnh đề phụ.
+        difficulty=4,
+        sentences=(
+            "The marketing department had been preparing the launch since early spring.",
+            "They booked a hall downtown and invited reporters from several magazines.",
+            "The samples arrived two days late because of a customs inspection.",
+            "Staff worked through the evening to arrange the display tables.",
+            "On the morning of the event the microphone would not switch on.",
+            "A technician replaced it minutes before the first guests walked in.",
+            "The director opened with a short talk about how the idea began.",
+            "By the end of the week orders had passed every earlier record.",
+        ),
+    ),
+    Unit(
+        name="Unit 8 — A visit to the clinic",
+        story_title="An Appointment After Work",
+        story_description="Khám bệnh sau giờ làm, và phần bảo hiểm công ty chi trả.",
+        difficulty=3,
+        sentences=(
+            "Mr. Okafor booked an appointment at the clinic near his office.",
+            "The receptionist asked him to arrive fifteen minutes before his slot.",
+            "He filled in a short form about his medical history.",
+            "The doctor listened carefully and asked how long the pain had lasted.",
+            "She recommended a blood test and some rest for the coming week.",
+            "The nurse explained which counter to visit for the sample.",
+            "He was told the results would be sent by email on Thursday.",
+            "His employer covered most of the cost through the company insurance plan.",
+        ),
+    ),
 )
 
 
@@ -190,8 +239,110 @@ CONVERSATION_UNITS: tuple[Unit, ...] = (
             "See you there, it starts in about ten minutes.",
         ),
     ),
+    Unit(
+        name="Unit 4 — Welcoming a visitor",
+        story_title="At the Reception Desk",
+        story_description="Khách tới đúng hẹn, và thủ tục ở quầy lễ tân.",
+        difficulty=2,
+        sentences=(
+            "Good morning, I have an appointment with Miss Alvarez at ten.",
+            "Welcome, could I have your name and the company you represent?",
+            "My name is Peter Lang, and I am from the auditing firm.",
+            "Thank you, please sign the visitor book and take this badge.",
+            "Should I wait here, or go up to the fourth floor?",
+            "Please take a seat, someone will come down for you shortly.",
+            "Would you like a coffee or a glass of water while you wait?",
+            "A glass of water would be lovely, thank you very much.",
+        ),
+    ),
+    Unit(
+        name="Unit 5 — Rescheduling a training session",
+        story_title="Moving the Safety Training",
+        story_description="Nửa đội bận hội chợ, và buổi tập huấn phải tách làm hai.",
+        difficulty=3,
+        sentences=(
+            "I am calling about the safety training booked for next Tuesday.",
+            "Yes, I have the session down for the whole morning.",
+            "Unfortunately half the team will be at the trade fair that day.",
+            "Would you rather move the session or split it into two groups?",
+            "Splitting it would work better, if the trainer is available twice.",
+            "I will check her calendar and confirm before the end of today.",
+            "Please also let the facilities team know about the room.",
+            "I will copy them on the message so that nothing is missed.",
+        ),
+    ),
+    Unit(
+        name="Unit 6 — Ordering office supplies",
+        story_title="The Empty Cupboard",
+        story_description="Hết văn phòng phẩm, và một phiếu mua hàng cần chữ ký.",
+        difficulty=3,
+        sentences=(
+            "The stationery cupboard is nearly empty again on the second floor.",
+            "I noticed that too, shall I raise a purchase request?",
+            "Please do, and add the printer paper we ran out of.",
+            "Does the order still need approval from the department manager?",
+            "Anything above five hundred thousand dong does, so this one will.",
+            "I will draft it now and send it for signature this afternoon.",
+            "Ask the supplier whether delivery before Friday is still possible.",
+            "I will mention it, and I will forward whatever they reply.",
+        ),
+    ),
 )
 
+
+# Thông báo và tin nhắn: đúng dạng Part 4 — một người nói, không có người đáp.
+# Tách thành topic riêng vì giọng đọc chọn theo story, và một bản tin phát thanh
+# đọc bằng giọng kể chuyện thì nghe sai ngay từ câu đầu.
+ANNOUNCEMENT_UNITS: tuple[Unit, ...] = (
+    Unit(
+        name="Unit 1 — A store announcement",
+        story_title="Closing Time",
+        story_description="Thông báo trong siêu thị trước giờ đóng cửa.",
+        difficulty=2,
+        sentences=(
+            "Attention shoppers, the store will be closing in thirty minutes.",
+            "Please bring your final purchases to the checkout counters now.",
+            "The customer service desk on the ground floor closes even earlier.",
+            "Members of our loyalty program can collect double points this weekend.",
+            "The winter sale continues in the clothing section on the second floor.",
+            "Parking remains free for one hour with any purchase over fifty thousand dong.",
+            "We open again tomorrow morning at half past eight.",
+            "Thank you for shopping with us, and have a pleasant evening.",
+        ),
+    ),
+    Unit(
+        name="Unit 2 — A voicemail message",
+        story_title="A Missing Order Number",
+        story_description="Tin nhắn thoại từ phòng kế toán về một hoá đơn thiếu thông tin.",
+        difficulty=3,
+        sentences=(
+            "Hello, this is Ruth calling from the accounts department on Tuesday.",
+            "I am sorry to have missed you, I hope this reaches you today.",
+            "The invoice you sent last week is missing a purchase order number.",
+            "Without that number our system cannot release the payment.",
+            "Could you resend the document with the number in the subject line?",
+            "If it is easier, my extension is four one six.",
+            "I will be at my desk until about five this afternoon.",
+            "Thank you very much, and I look forward to hearing from you.",
+        ),
+    ),
+    Unit(
+        name="Unit 3 — A staff briefing",
+        story_title="Three Things Before the Shift",
+        story_description="Dặn dò đầu ca: khu bốc hàng, thẻ an toàn, và lịch đánh giá.",
+        difficulty=4,
+        sentences=(
+            "Good morning everyone, thank you for coming in a little earlier.",
+            "There are three things to cover before the shift begins.",
+            "First, the loading bay will be closed for repairs until Thursday.",
+            "Deliveries during that time should be directed to the side entrance.",
+            "Second, the new safety cards must be signed by the end of the month.",
+            "Anyone who has not received one should speak to their supervisor today.",
+            "Finally, the annual review meetings will start the week after next.",
+            "Your team leader will send round a sheet for choosing a time.",
+        ),
+    ),
+)
 
 TOPICS: tuple[Topic, ...] = (
     Topic(
@@ -207,6 +358,13 @@ TOPICS: tuple[Topic, ...] = (
         description="Hội thoại ngắn nơi làm việc, mỗi bài một cuộc trao đổi.",
         position=1,
         units=CONVERSATION_UNITS,
+    ),
+    Topic(
+        slug="announcements",
+        name="Announcements",
+        description="Thông báo và tin nhắn, mỗi bài một người nói từ đầu đến cuối.",
+        position=2,
+        units=ANNOUNCEMENT_UNITS,
     ),
 )
 

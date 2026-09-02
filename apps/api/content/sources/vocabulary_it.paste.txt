@@ -1,0 +1,45 @@
+software | noun | /ˈsɔːftwer/ | the programs a computer runs | phần mềm | The new software was installed overnight. | Phần mềm mới được cài đặt qua đêm.
+hardware | noun | /ˈhɑːrdwer/ | the physical parts of a computer system | phần cứng | Hardware faults are handled by the supplier. | Lỗi phần cứng do nhà cung cấp xử lý.
+server | noun | /ˈsɜːrvər/ | a computer that provides data to other computers | máy chủ | The server was restarted after the update. | Máy chủ được khởi động lại sau bản cập nhật.
+network | noun | /ˈnetwɜːrk/ | a set of computers connected together | mạng máy tính | The network was slow all morning. | Mạng chậm suốt buổi sáng.
+database | noun | /ˈdeɪtəbeɪs/ | an organised store of information on a computer | cơ sở dữ liệu | Customer records are kept in one database. | Hồ sơ khách hàng được lưu trong một cơ sở dữ liệu.
+backup | noun | /ˈbækʌp/ | a spare copy of data kept in case of loss | bản sao lưu | A backup runs automatically every night. | Bản sao lưu chạy tự động mỗi đêm.
+password | noun | /ˈpæswɜːrd/ | a secret word used to get into a system | mật khẩu | Change your password every three months. | Đổi mật khẩu ba tháng một lần.
+firewall | noun | /ˈfaɪərwɔːl/ | a system that blocks unwanted access to a network | tường lửa | The firewall blocked the request. | Tường lửa đã chặn yêu cầu đó.
+breach | noun | /briːtʃ/ | an occasion when security is broken | vụ xâm phạm | The bank reported a data breach last year. | Ngân hàng báo cáo một vụ xâm phạm dữ liệu năm ngoái.
+outage | noun | /ˈaʊtɪdʒ/ | a period when a service stops working | thời gian gián đoạn | The outage lasted about forty minutes. | Thời gian gián đoạn kéo dài khoảng bốn mươi phút.
+downtime | noun | /ˈdaʊntaɪm/ | time when a system is not available | thời gian ngừng hoạt động | Planned downtime is announced a week ahead. | Thời gian ngừng theo kế hoạch được báo trước một tuần.
+helpdesk | noun | /ˈhelpdesk/ | a service that answers technical questions | bộ phận hỗ trợ | Call the helpdesk if the printer fails. | Gọi bộ phận hỗ trợ nếu máy in hỏng.
+ticket | noun | /ˈtɪkɪt/ | a numbered record of a reported problem | phiếu yêu cầu hỗ trợ | Your ticket has been passed to a technician. | Phiếu yêu cầu của bạn đã chuyển cho kỹ thuật viên.
+attachment | noun | /əˈtætʃmənt/ | a file sent with an email | tệp đính kèm | The attachment was too large to send. | Tệp đính kèm quá lớn nên không gửi được.
+bandwidth | noun | /ˈbændwɪdθ/ | the amount of data a connection can carry | băng thông | Video meetings use a lot of bandwidth. | Họp video tiêu tốn nhiều băng thông.
+encryption | noun | /ɪnˈkrɪpʃn/ | the coding of data so others cannot read it | mã hoá | Encryption protects the files while they travel. | Mã hoá bảo vệ tệp trong lúc truyền đi.
+interface | noun | /ˈɪntərfeɪs/ | the part of a system that a person uses | giao diện | The new interface is easier to learn. | Giao diện mới dễ học hơn.
+dashboard | noun | /ˈdæʃbɔːrd/ | a screen showing the main figures at a glance | bảng điều khiển tổng quan | The dashboard shows yesterday orders and returns. | Bảng điều khiển hiển thị đơn hàng và hàng trả của hôm qua.
+subscription | noun | /səbˈskrɪpʃn/ | a payment made regularly to keep using a service | gói thuê bao | The subscription renews every twelve months. | Gói thuê bao gia hạn mỗi mười hai tháng.
+licence | noun | /ˈlaɪsns/ | official permission to use a program | giấy phép sử dụng | Each computer needs its own licence. | Mỗi máy tính cần một giấy phép riêng.
+patch | noun | /pætʃ/ | a small update that fixes a problem | bản vá lỗi | A patch was released the same evening. | Bản vá lỗi được phát hành ngay tối đó.
+prompt | noun | /prɑːmpt/ | a message on screen asking you to act | lời nhắc trên màn hình | Follow the prompt to confirm your details. | Làm theo lời nhắc để xác nhận thông tin.
+uninstall | verb | /ˌʌnɪnˈstɔːl/ | to remove a program from a computer | gỡ cài đặt | Please uninstall the old client first. | Vui lòng gỡ cài đặt ứng dụng cũ trước.
+upgrade | verb | /ˌʌpˈɡreɪd/ | to change to a newer or better version | nâng cấp | We upgraded every laptop in the office. | Chúng tôi nâng cấp mọi laptop trong văn phòng.
+reboot | verb | /ˌriːˈbuːt/ | to start a computer again | khởi động lại | Try to reboot the machine first. | Hãy thử khởi động lại máy trước.
+configure | verb | /kənˈfɪɡjər/ | to set up a system so it works the way you want | cấu hình | A technician configured the new printer. | Kỹ thuật viên đã cấu hình máy in mới.
+synchronise | verb | /ˈsɪŋkrənaɪz/ | to make two sets of data match | đồng bộ | The calendar synchronises across all devices. | Lịch được đồng bộ trên mọi thiết bị.
+retrieve | verb | /rɪˈtriːv/ | to find and bring back stored information | truy xuất | We retrieved the file from the backup. | Chúng tôi truy xuất tệp từ bản sao lưu.
+migrate | verb | /ˈmaɪɡreɪt/ | to move data or systems to a new place | chuyển đổi hệ thống | The records migrate to the new server in June. | Dữ liệu sẽ chuyển sang máy chủ mới vào tháng Sáu.
+troubleshoot | verb | /ˈtrʌblʃuːt/ | to find and solve a technical problem | dò tìm sự cố | She troubleshot the connection in ten minutes. | Cô ấy dò ra sự cố kết nối trong mười phút.
+disable | verb | /dɪsˈeɪbl/ | to stop a function from working | vô hiệu hoá | Disable the old account before Friday. | Vô hiệu hoá tài khoản cũ trước thứ Sáu.
+verify | verb | /ˈverɪfaɪ/ | to check that something is true or correct | xác minh | The system verifies your identity by email. | Hệ thống xác minh danh tính của bạn qua email.
+compatible | adjective | /kəmˈpætəbl/ | able to work together with something else | tương thích | The file is not compatible with older versions. | Tệp này không tương thích với phiên bản cũ.
+faulty | adjective | /ˈfɔːlti/ | not working correctly | bị lỗi | A faulty cable caused the whole problem. | Một sợi cáp bị lỗi gây ra toàn bộ vấn đề.
+secure | adjective | /sɪˈkjʊr/ | protected against unwanted access | an toàn, bảo mật | Use a secure connection when working remotely. | Dùng kết nối bảo mật khi làm việc từ xa.
+wireless | adjective | /ˈwaɪərləs/ | working without cables | không dây | The meeting room has a wireless keyboard. | Phòng họp có bàn phím không dây.
+automated | adjective | /ˈɔːtəmeɪtɪd/ | done by machines without a person | tự động hoá | An automated message confirms your request. | Một tin nhắn tự động xác nhận yêu cầu của bạn.
+obsolete | adjective | /ˌɑːbsəˈliːt/ | no longer used because something newer exists | lỗi thời | The old system became obsolete last year. | Hệ thống cũ đã lỗi thời từ năm ngoái.
+instantly | adverb | /ˈɪnstəntli/ | immediately, with no delay at all | ngay tức thì | The change appears instantly on every device. | Thay đổi hiện ngay tức thì trên mọi thiết bị.
+automatically | adverb | /ˌɔːtəˈmætɪkli/ | without a person needing to act | một cách tự động | The report is sent automatically every Monday. | Báo cáo được gửi tự động mỗi thứ Hai.
+log in | phrase | /lɔːɡ ɪn/ | to enter a system using your details | đăng nhập | You cannot log in without the new code. | Bạn không đăng nhập được nếu thiếu mã mới.
+back up | phrase | /bæk ʌp/ | to make a spare copy of data | sao lưu | Back up the folder before you change anything. | Hãy sao lưu thư mục trước khi thay đổi gì.
+roll out | phrase | /roʊl aʊt/ | to introduce something to everyone in stages | triển khai dần | The update rolls out to all branches in May. | Bản cập nhật triển khai tới mọi chi nhánh vào tháng Năm.
+log out | phrase | /lɔːɡ aʊt/ | to leave a system when you have finished | đăng xuất | Always log out on a shared computer. | Luôn đăng xuất khi dùng máy tính chung.
+set up | phrase | /set ʌp/ | to prepare something so it is ready to use | thiết lập | It takes an hour to set up a new laptop. | Thiết lập một laptop mới mất khoảng một tiếng.

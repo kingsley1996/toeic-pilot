@@ -20,8 +20,8 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 | Bảng · migration | 57 · 51 |
 | Endpoint | **189 thao tác** (114 admin) |
 | Route web | 49 |
-| Nội dung | **5 đề / 655 câu** (124 có giải thích) · 303 từ vựng · 62 câu dictation |
-| Media | 2 779 bản thu |
+| Nội dung | **5 đề / 655 câu** (124 có giải thích) · **483 từ vựng / 11 chủ đề** · **134 câu dictation / 17 bài** |
+| Media | **6 761 bản thu**; từ vựng và dictation **toàn bộ ở `engine_version` 3** |
 | Nhãn | 233 câu + 45 cụm đã gắn |
 
 **Vòng đời nội dung khép kín và chạy thật**: dán hoặc sinh bằng đồ thị → `draft` → audio
@@ -35,7 +35,7 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 
 | Việc | Còn gì | Ở đâu |
 |---|---|---|
-| **Dàn giọng narrator** | Ba đề đã chuyển. **Từ vựng + dictation còn dàn cũ và hai tốc độ đọc** (1 125 clip ở `engine_version` 1) | `PHASE2-AUDIO.md` §A4.6 |
+| **Dàn giọng narrator** | ~~Từ vựng + dictation~~ **xong**: 2 470 clip thu lại, cả 3 994 clip giờ ở `engine_version` 3, bốn narrator chia đều 965/giọng. Còn: đề trên production vẫn dàn cũ | `PHASE2-AUDIO.md` §A4.6 |
 | **Đưa đề lên production** | `tp-form-08` chưa nạp; 06/07 trên production vẫn dàn giọng cũ | `SYNC-TEST-TO-PRODUCTION.md` |
 | **Tách tệp quá dài** | Đợt 1–3 xong. Nợ: hai trang admin không có e2e | `REFACTOR-LONG-FILES.md` §4b |
 | **Gộp tài liệu** | Xong đợt này. Còn: quyết định giữ hay bỏ `PLAN.md` | mục 5 dưới đây |
@@ -45,7 +45,9 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 ### Nội dung — chặn mọi thứ khác
 
 - [ ] **Giải thích cho ≥ 300/655 câu.** Ngưỡng mở khoá RAG ở `ADR-003` §3.3
-- [ ] Soạn ≥ 50 câu dictation (đang có 62 — **kiểm lại ngưỡng này, có thể đã đạt**)
+- [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
+      thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
+      không có bài nào thuộc dạng đó
 - [ ] Ảnh Part 1 chọn tay, ghi giấy phép (`ADR-004` §2.1)
 - [ ] `question.source` điền đúng từng hàng — **không** chép đề ETS thật
 
@@ -92,7 +94,7 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 | Không gì kiểm media còn phục vụ được | `MEDIA-PIPELINE.md` §10.8 | Sai `AUDIO_PUBLIC_BASE_URL` ⇒ mọi media 404 mà container vẫn healthy |
 | Bảng quy đổi điểm là **xấp xỉ** | `score_scale.source_note` | Không phải bảng chính thức của ETS |
 | Bản quyền đề ETS | `adr/ADR-005` §2 | `question.source` phải đúng ở **từng hàng** |
-| 1 125 clip ở tốc độ đọc cũ | `PHASE2-AUDIO.md` §A4.6 | Từ vựng + dictation; một đề có thể trộn hai tốc độ |
+| ~~1 125 clip ở tốc độ đọc cũ~~ | `PHASE2-AUDIO.md` §A4.6 | Xong. Kho dev đồng nhất một phiên bản; **production thì chưa** |
 | ~1 500 hàng asset mồ côi | `reconcile_media` | Toàn `tts`, sinh lại được từ manifest |
 
 ## 5. Cách cập nhật tệp này

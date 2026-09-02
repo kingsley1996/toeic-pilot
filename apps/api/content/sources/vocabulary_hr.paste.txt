@@ -1,0 +1,45 @@
+headhunt | verb | /ˈhedhʌnt/ | to approach someone in another company about a job | săn đón nhân sự | A rival firm headhunted two of our engineers. | Một công ty đối thủ săn đón hai kỹ sư của chúng tôi.
+shortlist | noun | /ˈʃɔːrtlɪst/ | the small group chosen from all who applied | danh sách rút gọn | Four names made the shortlist. | Bốn cái tên lọt vào danh sách rút gọn.
+referee | noun | /ˌrefəˈriː/ | a person who describes your work to an employer | người giới thiệu | Please give the name of one referee. | Vui lòng cung cấp tên một người giới thiệu.
+resume | noun | /ˈrezəmeɪ/ | a short written record of your education and work | sơ yếu lý lịch | Please attach your resume as a single file. | Vui lòng đính kèm sơ yếu lý lịch trong một tệp.
+vacancy | noun | /ˈveɪkənsi/ | a job that is available | vị trí còn trống | The vacancy will be advertised next week. | Vị trí còn trống sẽ được đăng tuyển tuần tới.
+induction | noun | /ɪnˈdʌkʃn/ | the training given when someone starts a job | buổi định hướng nhân viên mới | Induction takes place on the first Monday. | Buổi định hướng diễn ra vào thứ Hai đầu tiên.
+onboarding | noun | /ˈɑːnbɔːrdɪŋ/ | the process of settling a new employee into a job | quá trình hội nhập nhân viên mới | Onboarding covers safety, systems and the team. | Quá trình hội nhập gồm an toàn, hệ thống và làm quen nhóm.
+appraisal | noun | /əˈpreɪzl/ | a formal review of how well someone works | đánh giá năng lực | Her annual appraisal is scheduled for June. | Buổi đánh giá năng lực hằng năm của cô ấy vào tháng Sáu.
+secondment | noun | /sɪˈkɑːndmənt/ | a temporary move to another job or place | biệt phái | She is on secondment to the branch in Hue. | Cô ấy đang biệt phái tới chi nhánh ở Huế.
+salary | noun | /ˈsæləri/ | the fixed money paid to an employee each month | lương tháng | The salary is reviewed every twelve months. | Mức lương được xem xét mỗi mười hai tháng.
+wage | noun | /weɪdʒ/ | money paid for work, often by the hour or week | tiền công | Overtime is paid at a higher wage. | Làm thêm giờ được trả với mức tiền công cao hơn.
+allowance | noun | /əˈlaʊəns/ | extra money given for a particular purpose | phụ cấp | Staff receive a travel allowance each month. | Nhân viên nhận phụ cấp đi lại hằng tháng.
+bonus | noun | /ˈboʊnəs/ | extra money paid for good results | tiền thưởng | The bonus depends on team performance. | Tiền thưởng phụ thuộc vào kết quả của nhóm.
+benefit | noun | /ˈbenɪfɪt/ | something useful an employer gives besides pay | phúc lợi | Health cover is the benefit people ask about most. | Bảo hiểm y tế là phúc lợi được hỏi nhiều nhất.
+deduction | noun | /dɪˈdʌkʃn/ | an amount taken away from pay | khoản khấu trừ | The deduction covers insurance and tax. | Khoản khấu trừ gồm bảo hiểm và thuế.
+timesheet | noun | /ˈtaɪmʃiːt/ | a record of the hours a person has worked | bảng chấm công | Please submit your timesheet before Friday. | Vui lòng nộp bảng chấm công trước thứ Sáu.
+rota | noun | /ˈroʊtə/ | a list showing who works at which time | bảng phân ca | The rota for next month is on the noticeboard. | Bảng phân ca tháng sau dán ở bảng tin.
+overtime | noun | /ˈoʊvərtaɪm/ | hours worked beyond the normal working time | giờ làm thêm | Overtime must be approved in advance. | Giờ làm thêm phải được duyệt trước.
+leave | noun | /liːv/ | time away from work that is allowed | ngày nghỉ phép | She has five days of leave remaining. | Cô ấy còn năm ngày nghỉ phép.
+resignation | noun | /ˌrezɪɡˈneɪʃn/ | a formal statement that you are leaving a job | đơn xin thôi việc | He handed in his resignation on Monday. | Anh ấy nộp đơn xin thôi việc vào thứ Hai.
+notice | noun | /ˈnoʊtɪs/ | warning given before leaving or ending a job | thời gian báo trước | The contract requires one month of notice. | Hợp đồng yêu cầu báo trước một tháng.
+severance | noun | /ˈsevərəns/ | money paid to someone whose job is ending | trợ cấp thôi việc | Severance is calculated from years of service. | Trợ cấp thôi việc tính theo số năm làm việc.
+turnover | noun | /ˈtɜːrnoʊvər/ | the rate at which staff leave and are replaced | tỷ lệ nghỉ việc | High turnover makes training expensive. | Tỷ lệ nghỉ việc cao khiến đào tạo tốn kém.
+workforce | noun | /ˈwɜːrkfɔːrs/ | all the people who work for a company | lực lượng lao động | The workforce has doubled in three years. | Lực lượng lao động đã tăng gấp đôi trong ba năm.
+line manager | noun | /laɪn ˈmænɪdʒər/ | the person you report to directly | quản lý trực tiếp | Discuss the request with your line manager first. | Hãy trao đổi yêu cầu này với quản lý trực tiếp trước.
+mentor | noun | /ˈmentɔːr/ | an experienced person who advises someone newer | người cố vấn | Every new hire is given a mentor. | Mỗi nhân viên mới được ghép một người cố vấn.
+appoint | verb | /əˈpɔɪnt/ | to choose someone officially for a position | bổ nhiệm | The board appointed a new head of sales. | Hội đồng bổ nhiệm trưởng phòng kinh doanh mới.
+retain | verb | /rɪˈteɪn/ | to keep employees rather than lose them | giữ chân | Flexible hours help the firm retain staff. | Giờ giấc linh hoạt giúp công ty giữ chân nhân viên.
+terminate | verb | /ˈtɜːrmɪneɪt/ | to end a contract or a period of employment | chấm dứt | Either side may terminate the agreement in writing. | Mỗi bên có thể chấm dứt thoả thuận bằng văn bản.
+comply | verb | /kəmˈplaɪ/ | to obey a rule or an instruction | tuân thủ | All sites must comply with the safety policy. | Mọi cơ sở phải tuân thủ chính sách an toàn.
+qualify | verb | /ˈkwɑːlɪfaɪ/ | to have the right training or right to something | đủ điều kiện | You qualify for the allowance after six months. | Bạn đủ điều kiện nhận phụ cấp sau sáu tháng.
+oversee | verb | /ˌoʊvərˈsiː/ | to watch a piece of work and make sure it is done | trông coi, giám sát | She oversees three sites in the province. | Cô ấy giám sát ba cơ sở trong tỉnh.
+evaluate | verb | /ɪˈvæljueɪt/ | to judge how good or useful something is | đánh giá | Managers evaluate progress every quarter. | Quản lý đánh giá tiến độ mỗi quý.
+entitled | adjective | /ɪnˈtaɪtld/ | having the right to something | được hưởng quyền | Full-time staff are entitled to fourteen days of leave. | Nhân viên toàn thời gian được hưởng mười bốn ngày nghỉ phép.
+permanent | adjective | /ˈpɜːrmənənt/ | lasting, and not for a fixed short period | chính thức, lâu dài | The role becomes permanent after probation. | Vị trí trở thành chính thức sau thời gian thử việc.
+temporary | adjective | /ˈtempəreri/ | lasting for a limited time only | tạm thời | They hired temporary staff for the busy season. | Họ thuê nhân viên tạm thời cho mùa cao điểm.
+competent | adjective | /ˈkɑːmpɪtənt/ | having enough skill to do something well | có năng lực | He is a competent and reliable technician. | Anh ấy là một kỹ thuật viên có năng lực và đáng tin.
+appraisee | noun | /əˌpreɪˈziː/ | the person whose work is being reviewed | người được đánh giá | The appraisee fills in the form before the meeting. | Người được đánh giá điền biểu mẫu trước buổi họp.
+redundant | adjective | /rɪˈdʌndənt/ | no longer needed in a job | dôi dư, bị cắt giảm | Two posts were made redundant last year. | Hai vị trí bị cắt giảm năm ngoái.
+formally | adverb | /ˈfɔːrməli/ | in an official way | một cách chính thức | The offer was formally confirmed by letter. | Đề nghị được xác nhận chính thức bằng thư.
+in writing | phrase | /ɪn ˈraɪtɪŋ/ | in a written form rather than spoken | bằng văn bản | Requests for leave must be made in writing. | Đơn xin nghỉ phép phải được lập bằng văn bản.
+hand in | phrase | /hænd ɪn/ | to give a document to a person in authority | nộp | You may hand in the form at reception. | Bạn có thể nộp biểu mẫu ở quầy lễ tân.
+step down | phrase | /step daʊn/ | to leave an important position | từ chức | The chairman stepped down in the autumn. | Chủ tịch từ chức vào mùa thu.
+fill in for | phrase | /fɪl ɪn fɔːr/ | to do the work of someone who is away | làm thay | Can you fill in for Nadia on Thursday? | Bạn làm thay Nadia hôm thứ Năm được không?
+call in sick | phrase | /kɔːl ɪn sɪk/ | to telephone work to say you are unwell | báo nghỉ ốm | Two drivers called in sick on the same day. | Hai tài xế báo nghỉ ốm cùng một ngày.
