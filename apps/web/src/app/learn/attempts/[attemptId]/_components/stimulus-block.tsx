@@ -49,6 +49,12 @@ export function StimulusBlock({
     </div>
   );
 
+  // Đánh số theo VỊ TRÍ TRONG DANH SÁCH, không theo `slot` ở database: ô rỗng
+  // đã bị `_passages` lọc đi, nên một bộ dùng slot 1 và slot 3 phải đọc là
+  // "Đoạn 1, Đoạn 2" — đúng thứ người học nhìn thấy. Đánh theo `slot` sẽ ra
+  // "Đoạn 1, Đoạn 3" và người học đi tìm đoạn 2 không tồn tại.
+  const numbered = block.passages.length > 1;
+
   // Không có ngữ liệu (Part 2, Part 5) thì không dựng lưới hai cột chỉ để bỏ
   // trống một nửa: một cột rỗng đọc như thứ đang tải dở.
   if (!block.hasStimulus) {
@@ -115,7 +121,25 @@ export function StimulusBlock({
         )}
 
         {block.passages.map((passage, index) => (
-          <article key={index} className="rounded border border-rule bg-panel p-4">
+          <article
+            key={index}
+            /* Nhãn cũng đi vào cây trợ năng, không chỉ lên màn hình: `article`
+               là landmark điều hướng được, nên một bộ ba tài liệu nhảy qua lại
+               được thay vì phải cuộn. Dùng `aria-label` chứ không dựng `<h2>` —
+               màn làm bài không có heading nào khác, và một heading đơn độc
+               không có h1 phía trên là một cây tiêu đề gãy. */
+            aria-label={numbered ? `Đoạn ${index + 1}` : undefined}
+            className="rounded border border-rule bg-panel p-4"
+          >
+            {/* Chỉ đánh số khi có từ hai đoạn trở lên. Một đoạn duy nhất mà đề
+                "Đoạn 1" là thêm một dòng chữ không trả lời câu hỏi nào — còn từ
+                hai đoạn thì câu hỏi bắt đầu nói "trong email thứ hai", và người
+                học phải đối chiếu được. */}
+            {numbered && (
+              <p className="mb-2 border-b border-rule pb-1.5 text-label font-semibold uppercase text-ink-faint">
+                Passage {index + 1}
+              </p>
+            )}
             {passage.text && (
               <p className="whitespace-pre-wrap text-small leading-relaxed">{passage.text}</p>
             )}
@@ -127,7 +151,7 @@ export function StimulusBlock({
                   alt={passage.image_alt ?? ""}
                   className={cx(
                     "max-h-[60vh] w-full rounded border border-rule object-contain",
-                    passage.text && "mt-3",
+                    (passage.text || numbered) && "mt-3",
                   )}
                 />
                 {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,

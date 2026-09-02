@@ -10,9 +10,9 @@ hai việc phải làm — chúng có bản chất khác nhau nên không đư�
 
 | | Part 1 | Part 7 |
 |---|---|---|
-| Triệu chứng | ảnh đơn điệu, gần như chỉ có văn phòng và người | hình nào cũng ra bảng/lịch/khảo sát/biểu mẫu |
-| Bản chất | **ràng buộc quá hẹp** trong prompt | **đặt sai bài toán** — module được đặc tả cho phần NGHE |
-| Cách sửa | nới ràng buộc, sửa prompt | bộ sinh **tài liệu** riêng, không phải thêm dạng vào `graphics.py` |
+| Triệu chứng | ảnh đơn điệu, gần như chỉ có văn phòng và người | 12 ngữ liệu hình đều là bảng/lịch/khảo sát/biểu mẫu |
+| Bản chất | **ràng buộc quá hẹp** trong prompt | **bảng màu của bộ vẽ hình hẹp** — cấu trúc và đa dạng tài liệu đều đã đúng |
+| Cách sửa | nới ràng buộc, sửa prompt | thêm `kind` vào `graphics.py` |
 
 ---
 
@@ -60,40 +60,65 @@ bối cảnh chỉ là sửa prompt, không phụ thuộc kho ảnh có sẵn g�
 
 ---
 
-## 3. Part 7 — đặt sai bài toán
+## 3. Part 7 — chỉ bảng màu của bộ vẽ là hẹp
 
-### 3.1 Module được đặc tả cho phần NGHE
+> **Sửa hai lần, 2026-09-03.** Bản đầu viết "0 bộ ba đoạn" và "đặt sai bài toán";
+> bản thứ hai vẫn giữ "0 chuỗi tin nhắn" và "4/7 dạng bài". **Cả bốn đều sai**,
+> và cùng một nguyên nhân: đo bằng thứ THAY THẾ cho nội dung thay vì đo nội dung.
+>
+> - "0 bộ ba" — đếm `passage_2`/`passage_3` (cột chữ) mà bỏ `passage_*_image_id`,
+>   nên bộ có slot là hình bị tụt xuống thành đơn/đôi.
+> - "0 chuỗi tin nhắn" — regex giả định ngoặc tròn `(9:15 A.M.)`, bộ sinh dùng
+>   ngoặc vuông `[9:15 A.M.]`.
+> - "4/7 dạng bài" — đếm nhãn `passage_type`, mà chỉ 16/47 bộ có nhãn. Đó là số
+>   đo **độ phủ nhãn**, không phải độ đa dạng nội dung.
+>
+> Giữ lại nguyên văn thay vì xoá: ba cái bẫy này đều còn nguyên trong dữ liệu.
 
-`graphics.py` tự khai nó dựng theo **câu 64, 67, 70, 96, 99** của đề mẫu ETS.
-Đánh số TOEIC: 32–70 là Part 3, 71–100 là Part 4. **Cả năm ví dụ đều là graphic
-của phần nghe.** Khái niệm tổ chức của module nói thẳng điều đó:
+### 3.1 Cấu trúc ĐÚNG
 
-> Điều thật sự phân biệt bốn dạng không phải cách vẽ, mà là **trục đáp án**: bốn
-> lựa chọn của câu **"Look at the graphic"** lấy từ đâu.
+| | tp-form-06 / 07 / 08 (mỗi đề) | đề thật |
+|---|---|---|
+| đoạn đơn | 10 | 10 |
+| đoạn đôi | 2 | 2 |
+| đoạn ba | 3 | 3 |
+| số câu | 54 | 54 |
 
-### 3.2 Nhưng nó đang sinh ngữ liệu cho phần ĐỌC
+### 3.2 Đa dạng tài liệu cũng ỔN — đo bằng nội dung
 
-**Cả 12 bộ có hình đều thuộc Part 7.** Một module đặc tả cho graphic phần nghe
-đang sinh vật liệu phần đọc — và ràng buộc `len(answer_axis()) != 4` là yêu cầu
-của câu nghe đang bị áp lên vật liệu đọc. Đó là lý do chúng đồng loạt ra bảng,
-lịch, khảo sát, biểu mẫu.
+Trên 47 bộ Part 7: **24** có tiêu đề thư/email (`From:`), **7** mang dấu hiệu hoá
+đơn/biên lai/xác nhận đơn, **6** là **chuỗi tin nhắn nhiều người**
+(`Tên [9:15 A.M.]`), **3** có lịch trình/chuyến bay, **3** có địa chỉ web, **12**
+có ngữ liệu hình.
 
-Part 7 thật **không có câu "Look at the graphic"**. Ngữ liệu hình của nó là **văn
-bản có định dạng** để đọc — hoá đơn, biên lai, lịch trình, phiếu giảm giá, trang
-web, quảng cáo, thông báo, biểu mẫu — với câu hỏi đọc hiểu bình thường, không có
-trục đáp án nào.
+### 3.3 Cái thật sự hẹp: bảng màu của bộ vẽ
 
-### 3.3 Hai lỗ nữa cùng chỗ
+Cả 12 bộ có hình đều do `graphics.py` sinh, và nó đang dùng **hết** sáu `kind`
+của mình: lịch ×4, khảo sát ×3, biểu mẫu ×2, bảng ×3, biểu đồ ×1, sơ đồ ×2.
 
-- **0 bộ ba đoạn.** Part 7 thật có 10 đơn, 2 đôi, **3 bộ ba**. Mình có 37 đơn, 10
-  đôi, **0 ba**.
-- **0 chuỗi tin nhắn / chat nhiều người.** Đây là dạng bản cập nhật TOEIC tháng
-  6/2018 thêm vào Part 7, và mình chưa có khuôn nào cho nó.
+Nên giới hạn nằm ở **bảng màu của module**, không phải ở cách dùng — muốn đa dạng
+hơn thì phải **thêm `kind`**, chứ dùng khéo hơn không giúp gì. Đề thật còn có
+những tài liệu hình mà sáu dạng này không vẽ ra được: phiếu giảm giá, biên lai có
+bố cục, ảnh chụp trang web, bản đồ có tuyến đường.
 
-### 3.4 Part 3/4 thì đang ĐÚNG
+Module KHÔNG bị dùng nhầm chỗ: `assign_passage_image` cố ý nhận cả part 7, và hai
+`kind` `survey`/`form` **được miễn** luật "trục đáp án đúng 4 mục" — tức nó đã có
+sẵn dạng dành cho phần đọc.
 
-15 câu "Look at the graphic" trên 5 đề, dùng đúng module được đặc tả cho nó. Đừng
-sửa `graphics.py` theo hướng Part 7 — nó đang phục vụ đúng chỗ của nó.
+### 3.4 Một lỗ có thật, nhưng là lỗ NHÃN
+
+Chỉ **16/47** bộ Part 7 có nhãn `passage_type` — `enrich_skills` chưa quét hết.
+Điều đó không làm nội dung nghèo đi, nhưng nó làm mọi kết luận rút từ nhãn trở
+nên vô giá trị, và §3 này đã trả giá đúng một lần vì thế.
+
+### 3.5 Còn lại
+
+**3/9 bộ ba dùng hai hình** (chữ + hình + hình). Bộ ba thật thường là ba *tài
+liệu*, nhiều nhất một trong đó là bảng biểu. Đây là điểm duy nhất trong mục này
+đo trực tiếp từ cột slot và đứng vững qua cả hai lần sửa.
+
+Part 3/4 dùng `graphics.py` đúng chỗ của nó: 15 câu "Look at the graphic" trên 5
+đề.
 
 ---
 
@@ -106,12 +131,12 @@ sửa `graphics.py` theo hướng Part 7 — nó đang phục vụ đúng chỗ 
 - nâng tỉ lệ ảnh không người lên khoảng 1/3;
 - thêm **"sai vị trí"** vào bảng bẫy của `part1_system.md`.
 
-**4.2 Part 7** (việc lớn hơn, làm sau):
+**4.2 Part 7** (nhỏ hơn nhiều so với hai bản trước tưởng):
 
-- một bộ sinh **tài liệu** riêng, không có trục đáp án — hoá đơn, biên lai, lịch
-  trình, phiếu giảm giá, trang web, quảng cáo;
-- dạng **chuỗi tin nhắn nhiều người**;
-- dựng **bộ ba đoạn**.
+- thêm `kind` cho `graphics.py` — phiếu giảm giá, biên lai có bố cục, ảnh chụp
+  trang web, bản đồ có tuyến. Sáu dạng hiện tại đã dùng hết;
+- hạn chế bộ ba dùng hai hình (3/9 bộ đang thế);
+- chạy `enrich_skills` cho `passage_type` — 31/47 bộ chưa có nhãn.
 
 ---
 
