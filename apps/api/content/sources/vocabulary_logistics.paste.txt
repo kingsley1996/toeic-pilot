@@ -20,6 +20,7 @@ backlog | noun | /ˈbæklɔːɡ/ | work or orders that have built up and are not
 surplus | noun | /ˈsɜːrpləs/ | an amount that is more than needed | phần dư thừa | The surplus stock was moved to another branch. | Hàng dư thừa được chuyển sang chi nhánh khác.
 shortage | noun | /ˈʃɔːrtɪdʒ/ | a situation where there is not enough of something | tình trạng thiếu hụt | A shortage of drivers slowed every route. | Tình trạng thiếu tài xế làm chậm mọi tuyến.
 tracking number | noun | /ˈtrækɪŋ ˌnʌmbər/ | a code used to follow a package on its journey | mã vận đơn | Enter the tracking number to see the status. | Nhập mã vận đơn để xem tình trạng.
+warehouse | noun | /ˈwerhaʊs/ | a large building where goods are stored before being sold or sent out | nhà kho | The warehouse near the port handles most of our exports. | Nhà kho gần cảng lo phần lớn hàng xuất khẩu của chúng tôi.
 warehouse manager | noun | /ˈwerhaʊs ˌmænɪdʒər/ | the person in charge of a store of goods | quản lý kho | The warehouse manager signs every transfer. | Quản lý kho ký duyệt mọi phiếu chuyển hàng.
 dispatch note | noun | /dɪsˈpætʃ noʊt/ | a document sent with goods listing what is inside | phiếu giao hàng | Check the dispatch note against the boxes. | Đối chiếu phiếu giao hàng với số thùng thực nhận.
 load | verb | /loʊd/ | to put goods onto a vehicle | xếp hàng lên xe | They loaded the truck before dawn. | Họ xếp hàng lên xe trước lúc rạng sáng.
