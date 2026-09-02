@@ -432,31 +432,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── Góc thú cưng nổi ─────────────────────────────────────────────── */}
-      {/* Bản mẫu có nút nổi này để xem thử góc thú cưng mà không phải đăng nhập.
-          Giữ nguyên, chỉ thay con rồng emoji bằng sprite thật của trò chơi. */}
-      <button
-        type="button"
-        className="l-pet-toggle"
-        aria-expanded={petOpen}
-        onClick={() => setPetOpen((v) => !v)}
-      >
-        <PawPrint size={15} strokeWidth={2.2} aria-hidden /> {landing.petWidget.toggle}
-      </button>
-      <div className={petOpen ? "l-pet-widget l-open" : "l-pet-widget"} aria-hidden={!petOpen}>
-        <div className="l-pet-widget-head">
-          <b>{landing.petWidget.title}</b>
-          <span className="l-ruby">{landing.petWidget.ruby}</span>
-        </div>
-        <div className="l-pet-mini">
-          <PetlandCreature name="Rồng lửa" size={72} />
-        </div>
-        <p className="l-pet-widget-foot">
-          {landing.petWidget.footStrong}
-          <small>{landing.petWidget.footNote}</small>
-        </p>
-      </div>
     </div>
   );
 }
