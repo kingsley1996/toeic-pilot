@@ -124,6 +124,25 @@ class VocabularyProgress(BaseModel):
     entries: list[VocabularyMastery]
 
 
+class VocabularyTopicProgress(BaseModel):
+    """Tiến độ của MỘT chủ đề, gọn tới mức đủ cho danh sách chủ đề.
+
+    Tách khỏi [`VocabularyProgress`] vì nó trả lời một câu hỏi khác: kia là "chủ
+    đề đang mở đi tới đâu" và kèm trạng thái từng từ, còn đây là "trong mười bốn
+    chủ đề của cuốn sách, cái nào đã xong". Gọi endpoint kia mười bốn lần cũng ra
+    câu trả lời, kèm mười bốn danh sách từ mà không ai vẽ ra.
+
+    Cùng cặp trường `total`/`new` với [`VocabularyProgress`] chứ không phải một
+    trường `done` tính sẵn: thanh tiến độ trên trang đó đọc `total - new`, và một
+    định nghĩa "xong" thứ hai tính ở máy chủ sẽ lệch khỏi thanh ấy vào đúng ngày
+    một trong hai bên đổi.
+    """
+
+    slug: str
+    total: int
+    new: int
+
+
 class TopicSessionSubmit(BaseModel):
     """Lưu lại bàn cờ của một chủ đề cho học viên.
 

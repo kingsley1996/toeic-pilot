@@ -3341,6 +3341,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-topic-progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Vocabulary Topic Progress
+         * @description Từng chủ đề của một cuốn sách đã đi tới đâu, cho danh sách chủ đề.
+         *
+         *     Mảng trần chứ không phải `Page[T]`: số chủ đề bị chặn trên bởi chính một
+         *     cuốn sách, cùng lý do đã ghi ở `/vocabulary-topic-sessions` ngay dưới.
+         *
+         *     Đếm "đã động tới" bằng CÓ HÀNG `vocabulary_review_state` hay không, vì đó
+         *     đúng là định nghĩa của `srs.mastery`: `None` là `new`, còn mọi trạng thái
+         *     khác đều đã được ôn ít nhất một lần. Một điều kiện riêng ở đây (ví dụ
+         *     `repetitions > 0`) sẽ tách khỏi thanh tiến độ trên cùng trang đó.
+         *
+         *     Endpoint RIÊNG có auth, không phải thêm cột vào `GET
+         *     /vocabulary-collection-items/{id}` vốn công khai — cùng ranh giới mà
+         *     `VocabularyProgress` đã vẽ: với khách chưa đăng nhập, mọi chủ đề sẽ mang
+         *     `new = total`, một lời nói dối chứ không phải "chưa có dữ liệu".
+         */
+        get: operations["vocabulary_topic_progress_api_v1_vocabulary_topic_progress_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-topic-sessions": {
         parameters: {
             query?: never;
@@ -7424,6 +7457,28 @@ export interface components {
             part_of_speech: string;
             /** Phonetic */
             phonetic: string | null;
+        };
+        /**
+         * VocabularyTopicProgress
+         * @description Tiến độ của MỘT chủ đề, gọn tới mức đủ cho danh sách chủ đề.
+         *
+         *     Tách khỏi [`VocabularyProgress`] vì nó trả lời một câu hỏi khác: kia là "chủ
+         *     đề đang mở đi tới đâu" và kèm trạng thái từng từ, còn đây là "trong mười bốn
+         *     chủ đề của cuốn sách, cái nào đã xong". Gọi endpoint kia mười bốn lần cũng ra
+         *     câu trả lời, kèm mười bốn danh sách từ mà không ai vẽ ra.
+         *
+         *     Cùng cặp trường `total`/`new` với [`VocabularyProgress`] chứ không phải một
+         *     trường `done` tính sẵn: thanh tiến độ trên trang đó đọc `total - new`, và một
+         *     định nghĩa "xong" thứ hai tính ở máy chủ sẽ lệch khỏi thanh ấy vào đúng ngày
+         *     một trong hai bên đổi.
+         */
+        VocabularyTopicProgress: {
+            /** New */
+            new: number;
+            /** Slug */
+            slug: string;
+            /** Total */
+            total: number;
         };
         /** VocabularyUpdate */
         VocabularyUpdate: {
@@ -12744,6 +12799,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vocabulary_topic_progress_api_v1_vocabulary_topic_progress_get: {
+        parameters: {
+            query: {
+                /** @description collection item id */
+                item: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyTopicProgress"][];
                 };
             };
             /** @description Validation Error */

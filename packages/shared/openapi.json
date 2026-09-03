@@ -10446,6 +10446,30 @@
         "title": "VocabularySummary",
         "type": "object"
       },
+      "VocabularyTopicProgress": {
+        "description": "Tiến độ của MỘT chủ đề, gọn tới mức đủ cho danh sách chủ đề.\n\nTách khỏi [`VocabularyProgress`] vì nó trả lời một câu hỏi khác: kia là \"chủ\nđề đang mở đi tới đâu\" và kèm trạng thái từng từ, còn đây là \"trong mười bốn\nchủ đề của cuốn sách, cái nào đã xong\". Gọi endpoint kia mười bốn lần cũng ra\ncâu trả lời, kèm mười bốn danh sách từ mà không ai vẽ ra.\n\nCùng cặp trường `total`/`new` với [`VocabularyProgress`] chứ không phải một\ntrường `done` tính sẵn: thanh tiến độ trên trang đó đọc `total - new`, và một\nđịnh nghĩa \"xong\" thứ hai tính ở máy chủ sẽ lệch khỏi thanh ấy vào đúng ngày\nmột trong hai bên đổi.",
+        "properties": {
+          "new": {
+            "title": "New",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slug",
+          "total",
+          "new"
+        ],
+        "title": "VocabularyTopicProgress",
+        "type": "object"
+      },
       "VocabularyUpdate": {
         "properties": {
           "difficulty": {
@@ -18695,6 +18719,61 @@
           }
         ],
         "summary": "Review Session",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary-topic-progress": {
+      "get": {
+        "description": "Từng chủ đề của một cuốn sách đã đi tới đâu, cho danh sách chủ đề.\n\nMảng trần chứ không phải `Page[T]`: số chủ đề bị chặn trên bởi chính một\ncuốn sách, cùng lý do đã ghi ở `/vocabulary-topic-sessions` ngay dưới.\n\nĐếm \"đã động tới\" bằng CÓ HÀNG `vocabulary_review_state` hay không, vì đó\nđúng là định nghĩa của `srs.mastery`: `None` là `new`, còn mọi trạng thái\nkhác đều đã được ôn ít nhất một lần. Một điều kiện riêng ở đây (ví dụ\n`repetitions > 0`) sẽ tách khỏi thanh tiến độ trên cùng trang đó.\n\nEndpoint RIÊNG có auth, không phải thêm cột vào `GET\n/vocabulary-collection-items/{id}` vốn công khai — cùng ranh giới mà\n`VocabularyProgress` đã vẽ: với khách chưa đăng nhập, mọi chủ đề sẽ mang\n`new = total`, một lời nói dối chứ không phải \"chưa có dữ liệu\".",
+        "operationId": "vocabulary_topic_progress_api_v1_vocabulary_topic_progress_get",
+        "parameters": [
+          {
+            "description": "collection item id",
+            "in": "query",
+            "name": "item",
+            "required": true,
+            "schema": {
+              "description": "collection item id",
+              "format": "uuid",
+              "title": "Item",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VocabularyTopicProgress"
+                  },
+                  "title": "Response Vocabulary Topic Progress Api V1 Vocabulary Topic Progress Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Vocabulary Topic Progress",
         "tags": [
           "learning"
         ]

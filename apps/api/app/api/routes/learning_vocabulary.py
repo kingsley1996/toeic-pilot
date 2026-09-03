@@ -55,6 +55,7 @@ from app.schemas.learning import (
     VocabularyMastery,
     VocabularyProgress,
     VocabularySummary,
+    VocabularyTopicProgress,
 )
 from app.services import progression, ruby
 from app.services.pet_state import StudyReward, reward_study
@@ -439,6 +440,65 @@ def _topic_session_public(session: VocabularyTopicSession) -> TopicSession:
     entry_ids = [uuid.UUID(raw) for raw in session.entry_ids]
     done = session.position >= len(entry_ids)
     return TopicSession(entry_ids=entry_ids, position=session.position, done=done)
+
+
+@router.get("/vocabulary-topic-progress", response_model=list[VocabularyTopicProgress])
+def vocabulary_topic_progress(
+    item: uuid.UUID = Query(description="collection item id"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[VocabularyTopicProgress]:
+    """Từng chủ đề của một cuốn sách đã đi tới đâu, cho danh sách chủ đề.
+
+    Mảng trần chứ không phải `Page[T]`: số chủ đề bị chặn trên bởi chính một
+    cuốn sách, cùng lý do đã ghi ở `/vocabulary-topic-sessions` ngay dưới.
+
+    Đếm "đã động tới" bằng CÓ HÀNG `vocabulary_review_state` hay không, vì đó
+    đúng là định nghĩa của `srs.mastery`: `None` là `new`, còn mọi trạng thái
+    khác đều đã được ôn ít nhất một lần. Một điều kiện riêng ở đây (ví dụ
+    `repetitions > 0`) sẽ tách khỏi thanh tiến độ trên cùng trang đó.
+
+    Endpoint RIÊNG có auth, không phải thêm cột vào `GET
+    /vocabulary-collection-items/{id}` vốn công khai — cùng ranh giới mà
+    `VocabularyProgress` đã vẽ: với khách chưa đăng nhập, mọi chủ đề sẽ mang
+    `new = total`, một lời nói dối chứ không phải "chưa có dữ liệu".
+    """
+    topic_ids = list(
+        db.scalars(
+            select(Topic.id).where(Topic.collection_item_id == item, Topic.status == PUBLISHED)
+        ).all()
+    )
+    if not topic_ids:
+        return []
+
+    # `outerjoin` chứ không `join`: chủ đề chưa ôn từ nào vẫn phải có hàng, nếu
+    # không nó biến mất khỏi kết quả và frontend đọc ra là "chưa tải xong".
+    rows = db.execute(
+        select(
+            Topic.slug,
+            func.count(VocabularyEntry.id),
+            func.count(VocabularyReviewState.entry_id),
+        )
+        .select_from(Topic)
+        .join(VocabularyTopic, VocabularyTopic.topic_id == Topic.id)
+        .join(
+            VocabularyEntry,
+            (VocabularyEntry.id == VocabularyTopic.entry_id)
+            & (VocabularyEntry.status == PUBLISHED),
+        )
+        .outerjoin(
+            VocabularyReviewState,
+            (VocabularyReviewState.entry_id == VocabularyEntry.id)
+            & (VocabularyReviewState.user_id == current_user.id),
+        )
+        .where(Topic.id.in_(topic_ids))
+        .group_by(Topic.slug)
+    ).all()
+
+    return [
+        VocabularyTopicProgress(slug=slug, total=total, new=total - seen)
+        for slug, total, seen in rows
+    ]
 
 
 @router.get("/vocabulary-topic-sessions", response_model=list[TopicSessionSummary])

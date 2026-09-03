@@ -5,6 +5,7 @@ between half-written material and a learner's screen, and it fails by simply
 showing the content — no error, no log line.
 """
 
+import uuid
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -631,6 +632,62 @@ def test_listing_sessions_carries_the_book_and_hides_unpublished_topics(
     # `entry_ids` cố ý KHÔNG có trong danh sách: nó dài bằng cả chủ đề và chỉ
     # cần cho màn đang học.
     assert "entry_ids" not in by_slug["business"]
+
+
+def test_topic_progress_counts_only_published_words_and_marks_a_finished_topic(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Danh sách chủ đề gắn tick theo `new == 0`, nên phép đếm phải khớp thanh tiến độ.
+
+    Ghim ba thứ hỏng im lặng. Từ NHÁP không được vào mẫu số, nếu không một chủ
+    đề đã học hết vẫn thiếu một từ và cái tick không bao giờ hiện. Chủ đề chưa ôn
+    từ nào vẫn phải có hàng — biến mất khỏi kết quả thì frontend đọc ra là "chưa
+    tải xong" chứ không phải "chưa học". Và "đã động tới" là CÓ hàng
+    `vocabulary_review_state`, đúng định nghĩa `new` của `srs.mastery`.
+    """
+    collection = VocabularyCollection(slug="toeic", name="Từ vựng TOEIC", status="published")
+    db_session.add(collection)
+    db_session.flush()
+    book = VocabularyCollectionItem(
+        collection_id=collection.id, name="600 từ vựng thiết yếu", status="published"
+    )
+    db_session.add(book)
+    db_session.flush()
+
+    done = Topic(slug="business", name="Business", status="published", collection_item_id=book.id)
+    fresh = Topic(slug="music", name="Music", status="published", collection_item_id=book.id)
+    outside = Topic(slug="misc", name="Chủ đề lẻ", status="published")
+    db_session.add_all([done, fresh, outside])
+    db_session.flush()
+
+    seen = make_word(db_session, "invoice", marker="a")
+    draft = make_word(db_session, "backlog", marker="b", status="draft")
+    untouched = make_word(db_session, "encore", marker="c")
+    elsewhere = make_word(db_session, "misc-word", marker="d")
+    for entry, topic in ((seen, done), (draft, done), (untouched, fresh), (elsewhere, outside)):
+        db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    db_session.add(
+        VocabularyReviewState(
+            user_id=learner.id,
+            entry_id=seen.id,
+            interval_days=6,
+            repetitions=3,
+            due_at=datetime.now(UTC) + timedelta(days=6),
+        )
+    )
+    db_session.commit()
+
+    body = client.get(f"/api/v1/vocabulary-topic-progress?item={book.id}", headers=headers).json()
+    by_slug = {row["slug"]: row for row in body}
+
+    assert set(by_slug) == {"business", "music"}, "chỉ chủ đề của cuốn sách này"
+    assert by_slug["business"] == {"slug": "business", "total": 1, "new": 0}
+    assert by_slug["music"] == {"slug": "music", "total": 1, "new": 1}
+
+
+def test_topic_progress_requires_authentication(client: TestClient) -> None:
+    response = client.get(f"/api/v1/vocabulary-topic-progress?item={uuid.uuid4()}")
+    assert response.status_code == 401
 
 
 # --- gõ lại từ -------------------------------------------------------------

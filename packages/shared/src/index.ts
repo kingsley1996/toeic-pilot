@@ -34,6 +34,7 @@ export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
 export type VocabularyProgress = components["schemas"]["VocabularyProgress"];
+export type VocabularyTopicProgress = components["schemas"]["VocabularyTopicProgress"];
 export type VocabularyMastery = components["schemas"]["VocabularyMastery"];
 export type ReviewCard = components["schemas"]["ReviewCard"];
 export type ReviewSession = components["schemas"]["ReviewSession"];
@@ -281,6 +282,7 @@ export const API_ROUTES = {
   // Gạch nối, không phải `/vocabulary/progress`: route `/vocabulary/{entry_id}`
   // sẽ bắt "progress" trước rồi 422 khi parse nó thành UUID.
   vocabularyProgress: "/api/v1/vocabulary-progress",
+  vocabularyTopicProgress: "/api/v1/vocabulary-topic-progress",
   submitReview: (id: string) => `/api/v1/vocabulary/${id}/review`,
   submitRecall: (id: string) => `/api/v1/vocabulary/${id}/recall`,
   // Chỉ chấm chính tả, không ghi điểm: luồng học tự chấm năm nút dùng.

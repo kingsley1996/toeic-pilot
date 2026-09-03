@@ -6,10 +6,11 @@ import {
   type VocabularyPage as VocabularyListPage,
   type VocabularyProgress,
   type VocabularySummary,
+  type VocabularyTopicProgress,
 } from "@toeic-pilot/shared";
-import { Gamepad2, Keyboard, Layers, Library } from "lucide-react";
+import { Check, Gamepad2, Keyboard, Layers, Library } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
@@ -46,8 +47,53 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
+/**
+ * Trần chiều cao cho panel danh sách chủ đề, ĐO chứ không viết cứng.
+ *
+ * Panel không bắt đầu ở sát header — trên nó còn breadcrumb và tiêu đề trang,
+ * và chiều cao khối đó đổi theo tên cuốn sách có xuống dòng hay không. Một
+ * `calc(100dvh - 6rem)` viết tay vì thế đúng ở màn hình này và hụt ở màn hình
+ * khác: panel thò xuống dưới mép màn hình đúng bằng phần chênh, và không có gì
+ * báo.
+ *
+ * Cộng dồn `offsetTop` chứ không lấy `getBoundingClientRect`: panel là `sticky`,
+ * nên rect trả về chỗ nó ĐANG được vẽ, còn `offsetTop` là chỗ nó nằm trong bố
+ * cục — đo lúc đang ghim thì ra một con số nhỏ hơn thật.
+ *
+ * Sàn 240px: trên màn hình rất thấp thì thà panel thò ra một chút còn hơn co lại
+ * thành một khe chỉ hở đúng một dòng.
+ */
+const LIST_GUTTER = 16;
+const LIST_MIN = 240;
+
+function fitTopicList(el: HTMLElement): void {
+  let top = 0;
+  for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) {
+    top += node.offsetTop;
+  }
+  const room = Math.max(LIST_MIN, window.innerHeight - top - LIST_GUTTER);
+  el.style.setProperty("--topic-list-max", `${room}px`);
+}
+
 function CollectionItemDetail() {
   const itemId = String(useParams<{ collectionItemId: string }>().collectionItemId ?? "");
+
+  /* Đo ngay lúc node GẮN VÀO, qua ref callback. Panel nằm sau một nhánh điều
+     kiện (`activeTopic &&`), nên một `useEffect` lúc mount chạy khi nó còn chưa
+     tồn tại và không đo được gì — cùng cái bẫy mà `petland.tsx` ghi lại. */
+  const topicPanel = useRef<HTMLElement | null>(null);
+  const attachTopicList = useCallback((el: HTMLElement | null) => {
+    topicPanel.current = el;
+    if (el) fitTopicList(el);
+  }, []);
+
+  useEffect(() => {
+    const refit = () => {
+      if (topicPanel.current) fitTopicList(topicPanel.current);
+    };
+    window.addEventListener("resize", refit);
+    return () => window.removeEventListener("resize", refit);
+  }, []);
   const { status, token } = useSession();
   /* `?topic=<slug>` mở thẳng một chủ đề cụ thể thay vì chủ đề đầu tiên. Cần cho
      lối "học tiếp" trên trang chủ: nếu học viên đang dở chủ đề thứ tư của cuốn
@@ -74,6 +120,9 @@ function CollectionItemDetail() {
   // client.
   const [progressBySlug, setProgressBySlug] = useState<Record<string, VocabularyProgress>>({});
   const [progressKey, setProgressKey] = useState(0);
+  /* Tiến độ của MỌI chủ đề trong cuốn sách, chỉ để đánh dấu chủ đề đã xong.
+     Một lượt gọi cho cả cuốn sách, không phải một lượt cho mỗi chủ đề. */
+  const [doneSlugs, setDoneSlugs] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!itemId) return;
@@ -123,6 +172,38 @@ function CollectionItemDetail() {
       stale = true;
     };
   }, [activeTopic, pools]);
+
+  /*
+   * Chủ đề nào đã học hết, để gắn dấu tick.
+   *
+   * Cùng định nghĩa với thanh tiến độ ngay bên phải — `total - new === total`,
+   * tức mọi từ đã được động tới — nên dấu tick xuất hiện đúng lúc thanh đầy.
+   * Hai định nghĩa "xong" khác nhau trên cùng một màn hình là thứ người học đọc
+   * ra là lỗi.
+   *
+   * Đọc lại theo `progressKey` y như meter: học xong từ cuối của một chủ đề thì
+   * tick phải hiện ngay, không đợi tải lại trang.
+   */
+  useEffect(() => {
+    if (!token || !itemId) return;
+    let stale = false;
+    apiFetch<VocabularyTopicProgress[]>(
+      `${API_ROUTES.vocabularyTopicProgress}?item=${encodeURIComponent(itemId)}`,
+      { token },
+    )
+      .then((rows) => {
+        if (stale) return;
+        setDoneSlugs(
+          new Set(rows.filter((row) => row.total > 0 && row.new === 0).map((row) => row.slug)),
+        );
+      })
+      .catch(() => {
+        /* Không có tick thì danh sách vẫn dùng được; đừng làm hỏng cả trang. */
+      });
+    return () => {
+      stale = true;
+    };
+  }, [token, itemId, progressKey]);
 
   // Tiến độ đọc lại theo (token, chủ đề, lần chấm xong): không auth thì không có
   // con số nào mà hiện — meter biến mất, không hiện số 0 giả.
@@ -184,17 +265,38 @@ function CollectionItemDetail() {
 
           {activeTopic && (
             <div className="grid items-start gap-4 lg:grid-cols-[18rem_1fr]">
-              {/* Danh sách chủ đề — panel cố định chiều rộng, cuộn cùng trang. */}
+              {/*
+               * Danh sách chủ đề — panel cố định chiều rộng, tự cuộn khi dài.
+               *
+               * Cuốn sách 14 chủ đề đã cao hơn một màn hình, và một danh sách
+               * dài thì kéo cả trang dài theo trong khi cột học bên phải đứng
+               * yên — người học phải cuộn qua hết danh sách mới về được chỗ
+               * đang học. Nên nó tự cuộn TRONG panel, và panel dính lại dưới
+               * header: một vùng cuộn trôi khỏi màn hình thì thanh cuộn của nó
+               * chẳng giúp được ai.
+               *
+               * Chỉ từ `lg`. Dưới mức đó danh sách nằm ngang và đã có cuộn
+               * ngang, còn dính lại thì lấy mất cả một dải chiều cao trên màn
+               * hình vốn đã hẹp.
+               */}
+              {/* Trần đặt trên CẢ panel, không trên riêng danh sách: chặn ở
+                  danh sách thì còn phải trừ tay chiều cao cái tiêu đề, và con số
+                  ấy sai ngay lần đầu ai đó sửa `py-3`. Cột dọc + `min-h-0` để
+                  danh sách co lại rồi tự cuộn, đúng khuôn `SidebarContent` dùng.
+                  `100dvh` chứ không `100vh` vì `vh` tính theo khung nhìn lúc
+                  thanh địa chỉ đã thu, tức cao hơn chỗ thật sự có. */}
               <section
+                ref={attachTopicList}
                 aria-label="Danh sách chủ đề (topic)"
-                className="rounded border border-rule-strong bg-panel"
+                className="rounded border border-rule-strong bg-panel lg:sticky lg:top-20 lg:flex lg:max-h-[var(--topic-list-max,calc(100dvh-6rem))] lg:flex-col"
               >
-                <h2 className="border-b border-rule px-4 py-3 text-small font-semibold uppercase tracking-wide text-ink-faint">
+                <h2 className="border-b border-rule px-4 py-3 text-small font-semibold uppercase tracking-wide text-ink-faint lg:shrink-0">
                   Danh sách chủ đề (topic)
                 </h2>
-                <div className="flex flex-row gap-1 overflow-x-auto p-2 lg:flex-col">
+                <div className="flex flex-row gap-1 overflow-x-auto p-2 lg:min-h-0 lg:flex-col lg:overflow-y-auto">
                   {topics.map((topic) => {
                     const isActive = topic.slug === activeTopic.slug;
+                    const isDone = doneSlugs.has(topic.slug);
                     return (
                       <button
                         key={topic.id}
@@ -210,14 +312,24 @@ function CollectionItemDetail() {
                       >
                         <span
                           className={cx(
-                            "block text-small font-semibold",
+                            "flex items-center gap-1.5 text-small font-semibold",
                             isActive ? "text-action-ink" : "text-ink",
                           )}
                         >
-                          {topic.name}
+                          {/* Dấu tick đứng TRƯỚC tên: chủ đề đã xong thì đọc
+                              được ngay từ mép trái, không phải rà hết tên mới
+                              thấy. `shrink-0` để tên dài đẩy nó đi mất. */}
+                          {isDone && (
+                            <Check size={14} strokeWidth={3} className="shrink-0 text-ok" />
+                          )}
+                          <span className="truncate">{topic.name}</span>
                         </span>
                         <span className="block font-data text-label tabular-nums text-ink-faint">
                           {topic.entry_count} từ
+                          {/* Nói ra bằng CHỮ cho người đọc màn hình: một cái
+                              tick là hình, và `aria-label` trên icon sẽ đọc
+                              chen vào giữa tên chủ đề. */}
+                          {isDone && <span className="sr-only"> — đã học xong</span>}
                         </span>
                       </button>
                     );
