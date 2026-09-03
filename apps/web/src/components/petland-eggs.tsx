@@ -19,7 +19,7 @@ import {
 import { PixelIcon } from "@/components/pixel-icon";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
-import { useToast } from "@/lib/toast";
+import { notifyPet } from "@/lib/pet-notice";
 
 /**
  * Màn mở trứng (ADR-010 §6).
@@ -79,7 +79,6 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
   const [hatching, setHatching] = useState(false);
   const [refused, setRefused] = useState<string | null>(null);
   const [showOdds, setShowOdds] = useState(false);
-  const { show } = useToast();
 
   useEffect(() => {
     let alive = true;
@@ -131,10 +130,10 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
         opened.opened[0],
       );
       const fresh = opened.new_species;
-      show({
+      notifyPet({
         tone: "ok",
         title: fresh > 0 ? (TIER_CHEER[best.species.tier] ?? "Con mới!") : "Mở xong mười quả",
-        description:
+        detail:
           fresh > 0
             ? `${fresh} con mới, cao nhất là ${best.species.label}` +
               (opened.refund > 0 ? ` · hoàn ${opened.refund} ruby` : "")
@@ -182,10 +181,10 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
        * hôm nay, vốn bắn ra từ lần `fetch` lúc mở trang và sẽ im lặng dù có xin.
        */
       if (!hatched.duplicate) {
-        show({
+        notifyPet({
           tone: "ok",
           title: TIER_CHEER[hatched.species.tier] ?? "Con mới!",
-          description: `${hatched.species.label} — ${
+          detail: `${hatched.species.label} — ${
             TIER_LABEL[hatched.species.tier] ?? hatched.species.tier
           }, tỉ lệ ${hatched.species.percent}%`,
           sound: "complete",

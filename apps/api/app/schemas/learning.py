@@ -217,6 +217,25 @@ class ReviewSubmit(BaseModel):
     grade: int = Field(description=f"One of {list(GRADES)}")
 
 
+class PetReward(BaseModel):
+    """Con thú vừa nhận được gì từ lượt học này.
+
+    Máy chủ nói ra, giao diện không tự tính. Trần XP ngày và mức trần 1.0 của
+    tinh thần đều có thể cắt bớt, nên một lượt "đáng" 8 XP có thể chỉ ghi được 2
+    — và cái toast phải nói đúng con số đã ghi.
+
+    `null` ở nơi dùng nghĩa là lượt này không cấp gì (đã kịch trần, hoặc người
+    học chưa từng mở góc thú cưng).
+    """
+
+    xp: int
+    # Chuỗi chứ không phải float, cùng lý do `ease_factor` là chuỗi: ba chỉ số
+    # lưu `Numeric(4,3)` và đọc ra là `Decimal`; đi qua float là thêm một lần
+    # làm tròn ở mỗi biên.
+    mood: str
+    ruby: int = 0
+
+
 class ReviewResult(BaseModel):
     entry_id: str
     grade: int
@@ -225,6 +244,7 @@ class ReviewResult(BaseModel):
     lapses: int
     ease_factor: str
     due_at: str
+    pet: PetReward | None = None
 
 
 class RecallSubmit(BaseModel):
@@ -324,6 +344,7 @@ class DictationResult(BaseModel):
     expected: int
     transcript: str
     diff: list[WordDiff]
+    pet: PetReward | None = None
     is_complete: bool
     """Đã gõ đúng từng từ, không thiếu không thừa.
 

@@ -33,6 +33,7 @@ from app.models import (
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.learning import (
     AudioClip,
+    PetReward,
     RecallCheck,
     RecallCheckSubmit,
     RecallResult,
@@ -56,7 +57,7 @@ from app.schemas.learning import (
     VocabularySummary,
 )
 from app.services import progression, ruby
-from app.services.pet_state import reward_study
+from app.services.pet_state import StudyReward, reward_study
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
 from app.services.srs import (
@@ -667,7 +668,12 @@ def _pay_ruby_for_a_mastered_topic(
         pass
 
 
-def _review_result(entry_id: uuid.UUID, grade: int, outcome: ReviewOutcome) -> ReviewResult:
+def _review_result(
+    entry_id: uuid.UUID,
+    grade: int,
+    outcome: ReviewOutcome,
+    reward: StudyReward | None = None,
+) -> ReviewResult:
     return ReviewResult(
         entry_id=str(entry_id),
         grade=grade,
@@ -676,6 +682,13 @@ def _review_result(entry_id: uuid.UUID, grade: int, outcome: ReviewOutcome) -> R
         lapses=outcome.lapses,
         ease_factor=str(outcome.ease_factor),
         due_at=outcome.due_at.isoformat(),
+        # `None` khi lượt này không cấp gì — đã kịch trần ngày, hoặc người học
+        # chưa từng mở góc thú cưng nên chưa có con nào để nuôi.
+        pet=(
+            PetReward(xp=reward.xp, mood=str(reward.mood))
+            if reward is not None and (reward.xp > 0 or reward.mood > 0)
+            else None
+        ),
     )
 
 
@@ -813,8 +826,8 @@ def submit_review(
     # `_apply_review`: hàm ấy còn được các cuộc chạm mặt gọi tới, và ở đó phần
     # thưởng đã là `XP_PER_ENCOUNTER` — móc vào hàm chung thì một lượt trả lời
     # NPC được trả hai lần. `test_encounters` bắt được đúng chỗ đó.
-    reward_study(db, current_user.id, "vocabulary_review")
-    return _review_result(entry.id, body.grade, outcome)
+    reward = reward_study(db, current_user.id, "vocabulary_review")
+    return _review_result(entry.id, body.grade, outcome, reward)
 
 
 @router.post("/vocabulary/{entry_id}/recall", response_model=RecallResult)
@@ -843,9 +856,9 @@ def submit_recall(
     # `_apply_review`: hàm ấy còn được các cuộc chạm mặt gọi tới, và ở đó phần
     # thưởng đã là `XP_PER_ENCOUNTER` — móc vào hàm chung thì một lượt trả lời
     # NPC được trả hai lần. `test_encounters` bắt được đúng chỗ đó.
-    reward_study(db, current_user.id, "vocabulary_review")
+    reward = reward_study(db, current_user.id, "vocabulary_review")
     return RecallResult(
-        **_review_result(entry.id, grade, outcome).model_dump(),
+        **_review_result(entry.id, grade, outcome, reward).model_dump(),
         verdict=verdict,
         expected=judgement.expected,
         typed=judgement.typed,

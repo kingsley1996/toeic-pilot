@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { clock, secondsLeft } from "@/components/petland-countdown";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
-import { useToast } from "@/lib/toast";
+import { notifyPet } from "@/lib/pet-notice";
 
 /**
  * Thẻ nhiệm vụ của một cuộc chạm mặt (ADR-012 §3).
@@ -76,7 +76,6 @@ export function QuestCard({
   const [hint, setHint] = useState<string | null>(null);
   const [hintsLeft, setHintsLeft] = useState(encounter.task.hints_left);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { show } = useToast();
 
   /*
    * Đồng hồ đếm ngược, nhịp một giây, sống trong chính thẻ này.
@@ -111,10 +110,12 @@ export function QuestCard({
       // khác nhau.
       if (danger && result.correct) onFight(result.done);
       if (result.done) {
-        show({
+        notifyPet({
           tone: "ok",
           title: danger ? "Đã đẩy lui!" : "Xong nhiệm vụ",
-          description: `+${result.reward_ruby} ruby.`,
+          // Ruby vào `gains` chứ không viết vào câu chữ: ba con số phần thưởng
+          // hiện cùng một kiểu ở mọi thông báo, nên mắt tìm chúng ở một chỗ.
+          gains: { ruby: result.reward_ruby },
           sound: "complete",
           dedupeKey: `quest-${encounter.id}`,
         });

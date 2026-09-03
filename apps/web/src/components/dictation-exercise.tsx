@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { Alert, Button, Kbd, Panel, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { cheer } from "@/lib/pet-cheer";
+import { notifyStudyReward } from "@/lib/pet-notice";
 import { useSession } from "@/lib/session";
 import { useToast } from "@/lib/toast";
 import {
@@ -160,12 +161,16 @@ export function DictationExercise({
     if (token) {
       // Server chấm lại từ `submitted_text`; kết quả của server mới là bản được
       // lưu, nên bản ghi không phụ thuộc vào bất cứ điều gì trình duyệt khai báo.
-      apiFetch(API_ROUTES.submitDictation(item.id), {
+      apiFetch<{ pet?: { xp: number; mood: string } | null }>(API_ROUTES.submitDictation(item.id), {
         method: "POST",
         token,
         body: JSON.stringify({ submitted_text: typed }),
       })
-        .then(() => onGraded?.())
+        .then((saved) => {
+          // Phần thưởng lấy từ phản hồi của MÁY CHỦ, không tính lại ở đây.
+          notifyStudyReward(saved.pet);
+          onGraded?.();
+        })
         .catch(() => setError("Đã chấm xong, nhưng không lưu được lượt làm này."));
     }
     return graded;

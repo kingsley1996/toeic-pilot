@@ -4438,6 +4438,7 @@ export interface components {
             is_complete: boolean;
             /** Matched */
             matched: number;
+            pet?: components["schemas"]["PetReward"] | null;
             /** Transcript */
             transcript: string;
         };
@@ -5746,6 +5747,28 @@ export interface components {
             /** Xp Today */
             xp_today: number;
         };
+        /**
+         * PetReward
+         * @description Con thú vừa nhận được gì từ lượt học này.
+         *
+         *     Máy chủ nói ra, giao diện không tự tính. Trần XP ngày và mức trần 1.0 của
+         *     tinh thần đều có thể cắt bớt, nên một lượt "đáng" 8 XP có thể chỉ ghi được 2
+         *     — và cái toast phải nói đúng con số đã ghi.
+         *
+         *     `null` ở nơi dùng nghĩa là lượt này không cấp gì (đã kịch trần, hoặc người
+         *     học chưa từng mở góc thú cưng).
+         */
+        PetReward: {
+            /** Mood */
+            mood: string;
+            /**
+             * Ruby
+             * @default 0
+             */
+            ruby: number;
+            /** Xp */
+            xp: number;
+        };
         /** PetSpeciesCreate */
         PetSpeciesCreate: {
             /** Code */
@@ -6229,6 +6252,7 @@ export interface components {
             interval_days: number;
             /** Lapses */
             lapses: number;
+            pet?: components["schemas"]["PetReward"] | null;
             /** Repetitions */
             repetitions: number;
             /** Typed */
@@ -6324,6 +6348,7 @@ export interface components {
             interval_days: number;
             /** Lapses */
             lapses: number;
+            pet?: components["schemas"]["PetReward"] | null;
             /** Repetitions */
             repetitions: number;
         };

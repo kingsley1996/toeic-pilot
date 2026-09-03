@@ -15,7 +15,9 @@ database.
 from __future__ import annotations
 
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, datetime
+from decimal import Decimal
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -196,7 +198,21 @@ def award_xp(
         pet.level_reached = level
 
 
-def reward_study(db: Session, user_id: uuid.UUID, source: str) -> None:
+@dataclass(frozen=True)
+class StudyReward:
+    """Thứ con thú vừa NHẬN ĐƯỢC THẬT, để giao diện khỏi phải đoán.
+
+    Trần XP ngày và trần 1.0 của tinh thần đều có thể cắt bớt phần thưởng, nên
+    con số hiện trên màn phải là con số đã ghi xuống — không phải con số trong
+    bảng. Một cái toast báo "+8 XP" trong ngày đã kịch trần là một lời nói dối
+    nhỏ mà không ai kiểm được.
+    """
+
+    xp: int
+    mood: Decimal
+
+
+def reward_study(db: Session, user_id: uuid.UUID, source: str) -> StudyReward | None:
     """Một lượt học vừa xong: con thú vui lên và nhận XP.
 
     **Đây là sợi dây nối việc học với con thú**, và trước đó nó không tồn tại:
@@ -216,21 +232,27 @@ def reward_study(db: Session, user_id: uuid.UUID, source: str) -> None:
     amount = needs_service.XP_PER_STUDY.get(source)
     lift = needs_service.MOOD_PER_STUDY.get(source)
     if amount is None or lift is None:
-        return
+        return None
     try:
         # Nhận `user_id` chứ không nhận `User`: chỗ gọi ở luồng ôn từ vựng chỉ có
         # id trong tay, và bắt nó nạp `User` lên chỉ để truyền xuống đây là bắt
         # đường nóng nhất của việc học trả giá cho một lớp gamification.
         user = db.get(User, user_id)
         if user is None:
-            return
+            return None
         at = now()
         _state, pet = ensure_pet(db, user_id)
-        after = needs_service.cheer(current_needs(pet, at), lift)
+        before_needs = current_needs(pet, at)
+        after = needs_service.cheer(before_needs, lift)
         pet.fullness = after.fullness
         pet.energy = after.energy
         pet.mood = after.mood
         pet.needs_at = at
+        before_xp = pet.xp
         award_xp(db, pet, user, amount, at)
+        # Chênh lệch THẬT, không phải `amount` và `lift`: trần XP ngày và mức
+        # trần 1.0 của tinh thần đều có thể đã cắt bớt. Một cái toast báo "+8 XP"
+        # trong ngày đã kịch trần là lời nói dối nhỏ mà không ai kiểm được.
+        return StudyReward(xp=pet.xp - before_xp, mood=after.mood - before_needs.mood)
     except Exception:  # noqa: BLE001 — xem docstring: không làm hỏng bài nộp
-        pass
+        return None

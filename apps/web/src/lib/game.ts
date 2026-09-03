@@ -3,6 +3,7 @@
 import { API_ROUTES, type ReviewResult } from "@toeic-pilot/shared";
 
 import { apiFetch } from "@/lib/api";
+import { notifyStudyReward } from "@/lib/pet-notice";
 
 /**
  * Ghi MỘT lượt ôn SM-2 từ một minigame, đi qua đúng endpoint thẻ lật dùng.
@@ -21,7 +22,11 @@ export function recordReview(token: string, entryId: string, grade: number): Pro
     token,
     body: JSON.stringify({ grade }),
   })
-    .then(() => {})
+    .then((result) => {
+      // Máy chủ nói con thú vừa nhận được gì; ở đây chỉ hiện lại. Tự tính là
+      // chép bảng mức thưởng sang client, và hai bảng sẽ lệch nhau.
+      notifyStudyReward(result.pet);
+    })
     .catch(() => {});
 }
 

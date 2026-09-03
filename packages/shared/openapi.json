@@ -2327,6 +2327,16 @@
             "title": "Matched",
             "type": "integer"
           },
+          "pet": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PetReward"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "transcript": {
             "title": "Transcript",
             "type": "string"
@@ -5793,6 +5803,30 @@
         "title": "PetPublic",
         "type": "object"
       },
+      "PetReward": {
+        "description": "Con thú vừa nhận được gì từ lượt học này.\n\nMáy chủ nói ra, giao diện không tự tính. Trần XP ngày và mức trần 1.0 của\ntinh thần đều có thể cắt bớt, nên một lượt \"đáng\" 8 XP có thể chỉ ghi được 2\n— và cái toast phải nói đúng con số đã ghi.\n\n`null` ở nơi dùng nghĩa là lượt này không cấp gì (đã kịch trần, hoặc người\nhọc chưa từng mở góc thú cưng).",
+        "properties": {
+          "mood": {
+            "title": "Mood",
+            "type": "string"
+          },
+          "ruby": {
+            "default": 0,
+            "title": "Ruby",
+            "type": "integer"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "xp",
+          "mood"
+        ],
+        "title": "PetReward",
+        "type": "object"
+      },
       "PetSpeciesCreate": {
         "properties": {
           "code": {
@@ -7240,6 +7274,16 @@
             "title": "Lapses",
             "type": "integer"
           },
+          "pet": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PetReward"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "repetitions": {
             "title": "Repetitions",
             "type": "integer"
@@ -7440,6 +7484,16 @@
           "lapses": {
             "title": "Lapses",
             "type": "integer"
+          },
+          "pet": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PetReward"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "repetitions": {
             "title": "Repetitions",

@@ -14,6 +14,7 @@ import { tierGlow } from "@/components/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
 import { PetlandMusicToggle } from "@/components/petland-music-toggle";
+import { PetlandToast } from "@/components/petland-toast";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
 import { subscribeToCheer } from "@/lib/pet-cheer";
 import { PixelIcon } from "@/components/pixel-icon";
@@ -1773,6 +1774,10 @@ function PetPanel({
             )}
           />
           <PixelBits bits={bits} />
+          {/* Thông báo của góc thú cưng ở ngay đây, không đi qua toast toàn
+              trang: "+1 XP" bay ra ở góc trên phải màn hình thì cách con thú
+              nửa màn, và người đọc phải tự nối hai thứ lại. */}
+          <PetlandToast />
           {/* Bong bóng thoại: phần tử DOM, không vẽ trên canvas.
 
               Canvas cố ý không nạp phông chữ nào — cùng lý do dấu chấm than là

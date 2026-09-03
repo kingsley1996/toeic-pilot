@@ -41,6 +41,7 @@ from app.schemas.learning import (
     DictationSummary,
     DictationTopicDetail,
     DictationTopicPublic,
+    PetReward,
     StoryItem,
     StoryProgress,
     WordDiff,
@@ -229,7 +230,6 @@ def record_dictation_attempt(
         except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
             pass
         _pay_ruby_for_a_finished_story(db, user.id, item)
-        reward_study(db, user.id, "dictation_item")
     return attempt, result
 
 
@@ -247,6 +247,11 @@ def submit_dictation(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
     attempt, result = record_dictation_attempt(db, current_user, item, body.submitted_text)
+    # Ở ĐÂY chứ không trong `record_dictation_attempt`: hàm ấy còn được các cuộc
+    # chạm mặt gọi tới, và ở đó phần thưởng đã là `XP_PER_ENCOUNTER` — móc vào
+    # hàm chung thì một lượt trả lời NPC được trả hai lần. Cùng cái bẫy mà
+    # `test_encounters` đã bắt ở phía từ vựng.
+    reward = reward_study(db, current_user.id, "dictation_item") if result.is_complete else None
     db.commit()
     db.refresh(attempt)
 
@@ -257,6 +262,11 @@ def submit_dictation(
         expected=result.expected,
         transcript=item.transcript,
         diff=[WordDiff(op=item_.op, word=item_.word) for item_ in result.diff],
+        pet=(
+            PetReward(xp=reward.xp, mood=str(reward.mood))
+            if reward is not None and (reward.xp > 0 or reward.mood > 0)
+            else None
+        ),
         is_complete=result.is_complete,
     )
 
