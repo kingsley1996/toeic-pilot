@@ -1,0 +1,9 @@
+[QUESTION]
+The delivery worker must confirm the ------- order before leaving the building.
+(A) delivery
+(B) invoice
+(C) schedule
+(D) departure
+Answer: A
+Explanation: Vị trí trống cần một từ ghép với "order" để tạo thành chứng từ giao hàng trong thương mại. | (A) "delivery" — tạo thành "delivery order", cụm từ thương mại phù hợp. | (B) "invoice" — không tạo thành "invoice order" với nghĩa chứng từ chuẩn. | (C) "schedule" — không đi với "order" để chỉ đơn hàng. | (D) "departure" — không tạo thành "departure order" trong ngữ cảnh giao hàng.
+Source: original

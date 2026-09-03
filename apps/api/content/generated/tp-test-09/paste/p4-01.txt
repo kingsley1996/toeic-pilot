@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Hi, this is Daniel at the front desk. I am calling about the meeting room you reserved for this afternoon. The original time was two thirty, but the room is now available at four fifteen instead. The change was made because another group needs the room earlier. The room is on the third floor, and the door code will be sent to your phone. Please come to the front desk before four o'clock to confirm the new time. If you cannot come in person, call the number on your room key card and leave a message. Thank you.
+
+[QUESTION]
+Why is the speaker calling?
+(A) To request a room cleaning
+(B) To cancel a room reservation
+(C) To report a changed meeting time
+(D) To confirm a door code
+Answer: C
+Explanation: Người nói mở đầu bằng "I am calling about the meeting room you reserved for this afternoon" và nói rõ "The original time was two thirty, but the room is now available at four fifteen instead". | (A) "To request a room cleaning" — không có yêu cầu dọn phòng. | (B) "To cancel a room reservation" — bài không nói hủy phòng, chỉ đổi giờ. | (C) "To report a changed meeting time" — khớp với việc thông báo giờ mới "four fifteen" thay cho giờ cũ. | (D) "To confirm a door code" — mã cửa sẽ được gửi, không phải mục đích gọi.
+Source: original
+[QUESTION]
+What is the new meeting time?
+(A) Two thirty
+(B) Three fifteen
+(C) Four o'clock
+(D) Four fifteen
+Answer: D
+Explanation: Câu quyết định là "The original time was two thirty, but the room is now available at four fifteen instead". | (A) "Two thirty" — là giờ cũ, đã được thay đổi. | (B) "Three fifteen" — không được nhắc đến trong bài. | (C) "Four o'clock" — là hạn đến quầy lễ tân, không phải giờ họp. | (D) "Four fifteen" — khớp đúng giờ mới được nói ra.
+Source: original
+[QUESTION]
+What does the speaker ask the listener to do at the front desk?
+(A) Confirm the new time
+(B) Call the number on the key card
+(C) Send the door code to the phone
+(D) Reserve another meeting room
+Answer: A
+Explanation: Câu quyết định là "Please come to the front desk before four o'clock to confirm the new time". | (A) "Confirm the new time" — khớp đúng việc được yêu cầu làm tại quầy lễ tân. | (B) "Call the number on the key card" — được nói đến như cách thay thế nếu không thể đến tận nơi, không phải việc làm tại quầy. | (C) "Send the door code to the phone" — mã cửa sẽ được gửi đến điện thoại, không phải việc khách phải làm tại quầy. | (D) "Reserve another meeting room" — không được nhắc đến trong bài.
+Source: original

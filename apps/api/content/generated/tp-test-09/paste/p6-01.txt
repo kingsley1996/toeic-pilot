@@ -1,0 +1,55 @@
+[PASSAGE]
+To: New Employee
+From: HR Manager
+Subject: Safety Training
+Date: 15 August
+
+Dear New Employee,
+
+Welcome to our logistics company. Your first safety training session ------- (1) next Monday at 9 a.m. in the warehouse office. Please arrive early to complete the registration forms.
+
+The training covers lifting techniques, emergency exits, and forklift safety. These rules help reduce workplace ------- (2). If you have questions, please ask the trainer directly.
+
+After the session, all participants must sign a confirmation sheet. This sheet shows that ------- (3) have understood the safety requirements. Please keep a copy for your records.
+
+The next practical assessment will take place in two weeks. ------- (4)
+
+Sincerely,
+HR Manager
+
+[QUESTION]
+Blank (1)
+(A) held
+(B) holds
+(C) will be held
+(D) is holding
+Answer: C
+Explanation: Câu "Your first safety training session ------- (1) next Monday at 9 a.m. in the warehouse office" có mốc "next Monday" và chủ ngữ "session" nhận hành động, nên cần tương lai bị động. | (A) "held" — quá khứ đơn hoặc quá khứ phân từ thiếu trợ động từ, không hợp mốc tương lai. | (B) "holds" — hiện tại chủ động, biến buổi đào tạo thành người tổ chức. | (C) "will be held" — đúng tương lai bị động cho lịch sắp tới. | (D) "is holding" — hiện tại tiếp diễn chủ động, sai thể và thì.
+Source: original
+[QUESTION]
+Blank (2)
+(A) deliveries
+(B) meetings
+(C) invoices
+(D) hazards
+Answer: D
+Explanation: Câu trước "The training covers lifting techniques, emergency exits, and forklift safety" cho thấy các quy tắc an toàn nhằm giảm nguy hiểm nơi làm việc. | (A) "deliveries" — là việc giao hàng, không hợp với mục đích an toàn. | (B) "meetings" — là cuộc họp, không phải thứ quy tắc an toàn giảm. | (C) "invoices" — là hóa đơn, sai trường nghĩa logistics. | (D) "hazards" — đúng nghĩa mối nguy, hợp với "reduce workplace".
+Source: original
+[QUESTION]
+Blank (3)
+(A) they
+(B) them
+(C) their
+(D) theirs
+Answer: A
+Explanation: Câu trước "After the session, all participants must sign a confirmation sheet" đặt ra chủ thể số nhiều, và chỗ trống đứng trước "have understood" nên cần đại từ chủ ngữ. | (A) "they" — đúng đại từ chủ ngữ thay cho all participants. | (B) "them" — đại từ tân ngữ, không làm chủ ngữ cho "have understood". | (C) "their" — tính từ sở hữu, cần danh từ đi sau. | (D) "theirs" — đại từ sở hữu, không đứng làm chủ ngữ trong cấu trúc này.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The warehouse office will be closed for maintenance that day.
+(B) Please bring your signed confirmation sheet to that assessment.
+(C) Our company offers several types of logistics services.
+(D) The training session lasted three hours yesterday.
+Answer: B
+Explanation: Câu ngay trước chỗ trống là "The next practical assessment will take place in two weeks", và đoạn trước nhắc "confirmation sheet", nên câu điền phải hướng dẫn việc cần làm với buổi đánh giá. | (A) "The warehouse office will be closed for maintenance that day." — nói văn phòng đóng cửa, mâu thuẫn với lịch đánh giá. | (B) "Please bring your signed confirmation sheet to that assessment." — nối đúng buổi đánh giá và phiếu xác nhận. | (C) "Our company offers several types of logistics services." — giới thiệu dịch vụ, lạc chủ đề đào tạo. | (D) "The training session lasted three hours yesterday." — nói buổi đào tạo đã qua, không hợp mốc tương lai của câu trước.
+Source: original

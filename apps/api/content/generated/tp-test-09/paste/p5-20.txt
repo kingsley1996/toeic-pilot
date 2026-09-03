@@ -1,0 +1,9 @@
+[QUESTION]
+The hotel ------- all of its furniture last year.
+(A) replacing
+(B) replaced
+(C) replaces
+(D) replace
+Answer: B
+Explanation: Sau chủ ngữ "The hotel" và trạng từ "last year" cần động từ quá khứ đơn. | (A) "replacing" — là dạng V-ing, không phải động từ chính ở thì quá khứ. | (B) "replaced" — đúng quá khứ đơn. | (C) "replaces" — là hiện tại đơn, sai thì với "last year". | (D) "replace" — là nguyên thể, sai dạng động từ với chủ ngữ số ít và quá khứ.
+Source: original

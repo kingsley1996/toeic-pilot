@@ -1,0 +1,9 @@
+[QUESTION]
+The company ------- a new branch last month.
+(A) opened
+(B) opens
+(C) opening
+(D) open
+Answer: A
+Explanation: Sau chủ ngữ "The company" và trạng từ "last month" cần động từ ở thì quá khứ đơn. | (A) "opened" — đúng dạng quá khứ đơn. | (B) "opens" — là hiện tại đơn, không hợp với mốc thời gian quá khứ. | (C) "opening" — là dạng V-ing, thiếu trợ động từ để tạo thì tiếp diễn. | (D) "open" — là dạng nguyên thể, không hợp với chủ ngữ số ít và quá khứ.
+Source: original

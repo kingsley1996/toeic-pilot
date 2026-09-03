@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, everyone, and welcome to our customer service skills workshop. I am Daniel, and today I will focus on practical ways to handle difficult customer interactions. First, we will review the importance of active listening. When a customer is upset, do not interrupt. Instead, repeat the main concern back to them to show understanding. In the final session, you will practice these techniques in short role plays with a partner. Please remember that the goal is not to win an argument, but to solve the problem quickly and politely. Thank you for your attention, and let us begin.
+
+[QUESTION]
+What is the talk mainly about?
+(A) Financial planning
+(B) Product design
+(C) Customer service skills
+(D) Employee recruitment
+Answer: C
+Explanation: Người nói mở đầu bằng "welcome to our customer service skills workshop" và nói "I will focus on practical ways to handle difficult customer interactions". | (A) "Financial planning" — lập kế hoạch tài chính không xuất hiện ở bất kỳ đâu trong bài. | (B) "Product design" — thiết kế sản phẩm không được nhắc đến trong bài. | (C) "Customer service skills" — khớp với mục đích chính vừa được nêu. | (D) "Employee recruitment" — tuyển dụng nhân viên không được nói tới.
+Source: original
+[QUESTION]
+What will participants do in the final session?
+(A) Present a sales report
+(B) Listen to a recorded call
+(C) Complete a written test
+(D) Practice role plays with a partner
+Answer: D
+Explanation: Người nói nói rõ "In the final session, you will practice these techniques in short role plays with a partner". | (A) "Present a sales report" — trình bày báo cáo bán hàng không được nói tới. | (B) "Listen to a recorded call" — nghe cuộc gọi ghi âm không được nhắc đến. | (C) "Complete a written test" — làm bài kiểm tra viết không xuất hiện trong bài. | (D) "Practice role plays with a partner" — khớp đúng hoạt động được nêu cho phiên cuối.
+Source: original
+[QUESTION]
+What does the speaker imply about winning an argument?
+(A) It is not the main goal of customer service
+(B) It helps employees gain respect
+(C) It should be done politely
+(D) It is required in role plays
+Answer: A
+Explanation: Người nói nói "the goal is not to win an argument, but to solve the problem quickly and politely". | (A) "It is not the main goal of customer service" — khớp với ý rằng mục tiêu không phải là thắng cuộc tranh luận. | (B) "It helps employees gain respect" — giúp nhân viên được tôn trọng không được nói tới. | (C) "It should be done politely" — "politely" được nghe thấy nhưng gắn với việc giải quyết vấn đề, không phải thắng cuộc tranh luận. | (D) "It is required in role plays" — được yêu cầu trong đóng vai không được nhắc đến.
+Source: original

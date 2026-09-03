@@ -1,0 +1,9 @@
+[QUESTION]
+The management team ------- the security system every week since March and is still doing so.
+(A) would check
+(B) had checked
+(C) will check
+(D) has checked
+Answer: D
+Explanation: Cụm "since March" và vế "is still doing so" cho thấy hành động bắt đầu từ quá khứ và tiếp diễn đến hiện tại, nên chỗ trống cần thì hiện tại hoàn thành. | (A) "would check" — là dạng would, không hợp thì với mốc thời gian và vế hiện tại. | (B) "had checked" — là quá khứ hoàn thành, sai thì vì không có mốc quá khứ khác. | (C) "will check" — là tương lai đơn, sai thì với "since March". | (D) "has checked" — đúng hiện tại hoàn thành, hợp chủ ngữ số ít.
+Source: original

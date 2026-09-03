@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When will the hiring results be announced?
+voice: us_female_1
+(A) They'll be announced next week.
+(B) In the main conference room.
+(C) Yes, the results are ready.
+Answer: A
+Explanation: Câu hỏi là "When will the hiring results be announced?" — hỏi THỜI ĐIỂM. | (A) "They'll be announced next week." — "They'll be announced next week." trả lời đúng loại. | (B) "In the main conference room." trả lời nơi chốn, tức đáp cho câu hỏi Where. | (C) "Yes, the results are ready." đáp Yes cho câu hỏi When, không trả lời được thời điểm.
+Source: original

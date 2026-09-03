@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon. This is the tenant in apartment 4B. I'm calling because the hot water stopped working this morning.
+voice: ca_male_1
+Thank you for letting me know. Is the cold water still running normally?
+voice: us_female_1
+Yes, but the shower only gives cold water.
+voice: ca_male_1
+I can send a plumber tomorrow between nine and eleven. Will that time work?
+voice: us_female_1
+Tomorrow is fine, but please call me before coming.
+voice: ca_male_1
+Of course. I'll note that and ask the plumber to phone first.
+
+[QUESTION]
+Why is the woman calling?
+(A) To request a new shower
+(B) To ask about rent payment
+(C) To schedule a move-out
+(D) To report a hot water problem
+Answer: D
+Explanation: Người phụ nữ nói "I'm calling because the hot water stopped working this morning". | (A) nói về yêu cầu vòi hoa sen mới, dùng từ "shower" đã nghe nhưng sai ngữ cảnh vì cô chỉ nói vòi hoa sen chỉ có nước lạnh. | (B) nói về thanh toán tiền thuê, thứ không được nhắc đến. | (C) nói về lịch chuyển ra, cũng không xuất hiện. | (D) "To report a hot water problem" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What does the man say he can do?
+(A) Send a plumber tomorrow
+(B) Repair the cold water today
+(C) Change the apartment number
+(D) Call the tenant next week
+Answer: A
+Explanation: Người quản lý nói "I can send a plumber tomorrow between nine and eleven". | (A) "Send a plumber tomorrow" — khớp đúng câu vừa dẫn. | (B) nói sửa nước lạnh hôm nay, dùng "cold water" đã nghe nhưng sai hành động và thời gian. | (C) nói đổi số căn hộ, dùng "apartment" đã nghe nhưng sai hành động. | (D) nói gọi người thuê tuần sau, dùng "call" đã nghe nhưng đổi thời gian.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Send a plumber today
+(B) Call her before the plumber arrives
+(C) Check the shower tomorrow
+(D) Give her a new key
+Answer: B
+Explanation: Người phụ nữ yêu cầu "Tomorrow is fine, but please call me before coming". | (A) nói gửi thợ hôm nay, trái với "tomorrow" đã được chấp nhận. | (B) "Call her before the plumber arrives" — khớp đúng câu vừa dẫn. | (C) nói kiểm tra vòi hoa sen ngày mai, dùng "shower" và "tomorrow" đã nghe nhưng không phải yêu cầu. | (D) nói đưa chìa khóa mới, không được nhắc đến.
+Source: original

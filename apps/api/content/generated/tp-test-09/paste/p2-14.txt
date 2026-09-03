@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who is in charge of this contract?
+voice: us_female_1
+(A) Yes, I signed it.
+(B) In the legal department.
+(C) Mr. Minh is in charge.
+Answer: C
+Explanation: Câu hỏi là "Who is in charge of this contract?" — hỏi NGƯỜI. | (A) "Yes, I signed it." trả lời Yes/No về việc ký hợp đồng, không đáp được ai phụ trách. | (B) "In the legal department." nói về nơi chốn, tức trả lời cho câu hỏi Where chứ không phải Who. | (C) "Mr. Minh is in charge." — "Mr. Minh is in charge." nêu đúng người phụ trách.
+Source: original

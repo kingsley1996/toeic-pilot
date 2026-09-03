@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you bring me some more water, please?
+voice: au_male_1
+(A) Yes, I'm thirsty too.
+(B) It's on the table by the window.
+(C) Sure, I'll bring it right away.
+Answer: C
+Explanation: Câu hỏi là "Could you bring me some more water, please?" — yêu cầu mang thêm nước. | (A) "Yes, I'm thirsty too." dùng Yes nhưng nói mình cũng khát, tức một câu trả lời Yes/No lạc hướng, không đồng ý mang nước. | (B) "It's on the table by the window." chỉ nói vị trí, tức trả lời cho câu hỏi Where chứ không đáp lại yêu cầu. | (C) "Sure, I'll bring it right away." — "Sure, I'll bring it right away." nhận lời và cho biết sẽ mang ngay.
+Source: original

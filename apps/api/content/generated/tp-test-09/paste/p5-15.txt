@@ -1,0 +1,9 @@
+[QUESTION]
+The new software is rated as very ------- for users.
+(A) accessible
+(B) accession
+(C) accessing
+(D) accessibly
+Answer: A
+Explanation: Sau "very" trong vị trí bổ ngữ sau "rated as" cần tính từ để mô tả phần mềm. | (A) "accessible" — đúng tính từ, phù hợp nghĩa "dễ tiếp cận/dễ sử dụng". | (B) "accession" — là danh từ, sai từ loại cho vị trí này. | (C) "accessing" — là V-ing, không đóng vai trò tính từ sau "very". | (D) "accessibly" — là trạng từ, không đứng sau "very" để bổ nghĩa cho danh từ.
+Source: original

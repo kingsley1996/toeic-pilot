@@ -1,8 +1,9 @@
 [QUESTION]
 voice: us_female_1
-(A) The scientist is writing in a notebook.
-(B) The scientist is pouring liquid into a beaker.
-(C) Two scientists are discussing the results.
-(D) The notebook is lying closed on the bench.
-Answer: A
+(A) The scientist is pouring liquid into a beaker.
+(B) The scientist is writing notes in a notebook.
+(C) The scientist is adjusting a microscope on the bench.
+(D) The scientist is cleaning the lab bench with a cloth.
+Answer: B
+Explanation: Trong ảnh, một nhà khoa học mặc áo blouse trắng đang đứng bên bàn thí nghiệm, tay phải cầm bút viết vào sổ mở, tay trái giữ sổ. | (A) nói đang rót chất lỏng vào cốc beaker, sai hành động vì hai tay đang viết và không có rót. | (B) "The scientist is writing notes in a notebook." — khớp đúng câu vừa dẫn. | (C) nói đang chỉnh kính hiển vi, sai hành động vì kính hiển vi chỉ đặt trên bàn và không được chạm vào. | (D) nói đang lau bàn bằng khăn, sai vì không có khăn và không có hành động lau.
 Source: original

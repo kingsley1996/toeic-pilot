@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Can I park my car here?
+voice: uk_female_1
+(A) It's near the entrance.
+(B) Yes, you can park here.
+(C) Yes, I parked yesterday.
+Answer: B
+Explanation: Câu hỏi là "Can I park my car here?" — hỏi có được phép đỗ xe ở đây không. | (A) "It's near the entrance." trả lời vị trí, tức đáp cho câu hỏi Where, không phải câu hỏi Yes/No. | (B) "Yes, you can park here." — "Yes, you can park here." trả lời đúng. | (C) "Yes, I parked yesterday." lặp lại từ park nhưng nói về việc đã đỗ xe hôm qua, không trả lời xin phép.
+Source: original

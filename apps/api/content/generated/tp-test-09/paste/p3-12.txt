@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon. As the project director, I need an update on the equipment handover for the launch event.
+voice: uk_female_1
+I'm the equipment engineer. The original handover must change because the calibration report is late.
+voice: ca_male_1
+I'm the event coordinator. Can we move it to the only open slot on Lee's row?
+voice: uk_female_1
+Yes. Lee's handover will happen then, and Patel and Nguyen keep their current slots.
+voice: us_female_1
+Please confirm the new time with the venue team.
+
+[QUESTION]
+Who is the first speaker?
+(A) The venue team member
+(B) The equipment engineer
+(C) The event coordinator
+(D) The project director
+Answer: D
+Explanation: Người nói đầu tiên nói "As the project director, I need an update...". | (A) là "venue team", chỉ được nhắc để xác nhận, không phải người nói. | (B) là "equipment engineer", do người nói thứ hai nói. | (C) là "event coordinator", do người nói thứ ba nói. | (D) "The project director" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+Why must the handover change?
+(A) The calibration report is late
+(B) The launch event was postponed
+(C) The venue team is unavailable
+(D) The equipment was damaged
+Answer: A
+Explanation: Người kỹ sư nói "The original handover must change because the calibration report is late.". | (A) "The calibration report is late" — khớp đúng câu vừa dẫn. | (B) nói "launch event" bị hoãn, từ này được nghe nhưng đặt sai ngữ cảnh. | (C) nói "venue team" không rảnh, từ này được nghe nhưng không phải lý do. | (D) nói thiết bị hỏng, từ "equipment" được nghe nhưng không có chi tiết hỏng.
+Source: original
+[QUESTION]
+Look at the graphic. When will the changed handover take place?
+(A) Mon 9-10
+(B) Tue 11-12
+(C) Tue 9-10
+(D) Mon 11-12
+Answer: B
+Explanation: Người điều phối hỏi "Can we move it to the only open slot on Lee's row?" và kỹ sư xác nhận "Lee's handover will happen then" — bảng cho thấy ô trống duy nhất của Lee là Tue 11-12. | (A) Mon 9-10 là ô trống của Patel, đúng nhưng không phải đáp án. | (B) "Tue 11-12" — khớp đúng câu vừa dẫn. | (C) Tue 9-10 là ô trống của Nguyen, đúng nhưng không phải đáp án. | (D) Mon 11-12 là ô trống của Nguyen, đúng nhưng không phải đáp án.
+Source: original

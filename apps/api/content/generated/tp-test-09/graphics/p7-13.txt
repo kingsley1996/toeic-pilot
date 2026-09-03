@@ -1,5 +1,5 @@
 kind: table
-Safety Training Fees
+Safety Training Fees by Group
 Group | Fee
 Staff | $50
 Contractor | $80

@@ -1,34 +1,37 @@
 [PASSAGE]
-From: accounting@example-office.com
-To: j.miller@example-office.com
-Subject: Travel expense receipts
-Date: May 12
+From: accounting@brightpath-office.com
+To: j.miller@example-mail.net
+Subject: Travel expense receipts for March
+Date: April 8
 
-Dear Mr. Miller,
+Dear Ms. Miller,
 
-This is a reminder that all receipts for your recent business trip to Lyon must be submitted to the accounting department. Please attach scanned copies through the expense portal, and keep the original paper receipts until the audit is complete. If any receipt is missing, submit a short explanation form instead.
+This is a reminder that all travel expense receipts for business trips taken in March must be submitted to the accounting department. Please attach scanned copies through the internal expense portal, or deliver paper copies to Room 214 if the portal is unavailable.
 
-The deadline for this month’s travel expenses is Friday, May 23, at 5:00 P.M. Expenses received after that time will be processed in the next payroll cycle, which may delay reimbursement by two weeks. If you expect to be away before the deadline, ask your manager to approve an extension before May 20.
+The deadline is 5:00 P.M. on Friday, April 18. Receipts received after this time will be processed in the next payroll cycle, which may delay reimbursement by two weeks. If you are missing a receipt, complete the replacement form and obtain approval from your department manager before the deadline.
+
+Please review the attached guidelines.
 
 Thank you for your cooperation.
 
 Sincerely,
-Accounting Team
+Accounting Department
 
 [QUESTION]
 Why was the e-mail sent?
-(A) To remind an employee to submit travel receipts
-(B) To announce a new payroll cycle
-(C) To request approval for a business trip
-(D) To report an audit finding
-Answer: A
+(A) To ask for a portal password
+(B) To request approval for a business trip
+(C) To announce a new payroll cycle
+(D) To remind an employee to submit travel expense receipts
+Answer: D
+Explanation: E-mail viết "This is a reminder that all travel expense receipts for business trips taken in March must be submitted to the accounting department" nên mục đích là nhắc nộp hóa đơn. | (A) nói yêu cầu mật khẩu cổng thông tin, không có trong bài. | (B) nói xin phê duyệt chuyến đi, trái với nội dung vì bài chỉ nhắc nộp hóa đơn sau chuyến đi. | (C) nói thông báo chu kỳ lương mới, chỉ nhắc đến "next payroll cycle" như hậu quả nếu nộp muộn, không phải mục đích. | (D) "To remind an employee to submit travel expense receipts" — khớp đúng câu vừa dẫn.
 Source: original
-
 [QUESTION]
-According to the e-mail, what is the deadline for submitting travel expenses?
-(A) May 12
-(B) May 20
-(C) May 23
-(D) Next payroll cycle
-Answer: C
+What is the deadline for submitting receipts?
+(A) April 18 at 5:00 P.M.
+(B) April 8 at 5:00 P.M.
+(C) The next payroll cycle
+(D) Room 214 by Friday
+Answer: A
+Explanation: E-mail viết "The deadline is 5:00 P.M. on Friday, April 18" nên hạn chót là 5:00 P.M. ngày 18/4. | (A) "April 18 at 5:00 P.M." — khớp đúng câu vừa dẫn. | (B) lấy ngày 8/4 là ngày gửi e-mail, không phải hạn chót. | (C) nói chu kỳ lương kế tiếp, chỉ là thời điểm xử lý nếu nộp muộn, không phải hạn chót. | (D) nói Phòng 214, là nơi nộp bản giấy khi cổng không dùng được, không phải thời hạn.
 Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How would you like to arrange the partner meeting?
+voice: au_male_1
+(A) Send a confirmation email, please.
+(B) At the main conference room.
+(C) The partner will confirm by email.
+Answer: A
+Explanation: Câu hỏi là "How would you like to arrange the partner meeting?" — hỏi CÁCH THỨC. | (A) "Send a confirmation email, please." — "Send a confirmation email, please." trả lời đúng loại. | (B) "At the main conference room." trả lời nơi chốn, tức đáp cho câu hỏi Where. | (C) "The partner will confirm by email." lặp lại các từ confirm/email trong câu hỏi nhưng chỉ nói đối tác sẽ xác nhận, không trả lời cách sắp xếp.
+Source: original

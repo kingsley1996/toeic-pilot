@@ -1,0 +1,6 @@
+kind: schedule
+Equipment Handover Schedule
+Engineer | Mon 9-10 | Mon 11-12 | Tue 9-10 | Tue 11-12
+Lee | Busy | Busy | Busy |
+Patel |  | Busy | Busy | Busy
+Nguyen | Busy |  |  | Busy

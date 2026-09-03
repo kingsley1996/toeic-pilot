@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How should I present the project to the team?
+voice: ca_male_1
+(A) I'll present it to the team.
+(B) Focus on the results.
+(C) In the main conference room.
+Answer: B
+Explanation: Câu hỏi là "How should I present the project to the team?" — hỏi CÁCH THỨC. | (A) "I'll present it to the team." dùng lại từ "present" đã nghe nhưng chỉ nói sẽ trình bày cho ai, không trả lời "thế nào". | (B) "Focus on the results." — "Focus on the results." trả lời đúng bằng cách chỉ tập trung vào kết quả. | (C) "In the main conference room." trả lời nơi chốn, tức sai loại câu hỏi.
+Source: original

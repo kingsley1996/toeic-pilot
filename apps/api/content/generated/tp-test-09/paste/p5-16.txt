@@ -1,0 +1,9 @@
+[QUESTION]
+Employees may leave early ------- they complete the report by Friday.
+(A) during
+(B) provided
+(C) despite
+(D) through
+Answer: B
+Explanation: Trước chỗ trống cần một liên từ để nối hai mệnh đề. | (A) "during" — là giới từ, không nối được mệnh đề. | (B) "provided" — đúng liên từ chỉ điều kiện. | (C) "despite" — là giới từ, không nối được mệnh đề. | (D) "through" — là giới từ, không nối được mệnh đề.
+Source: original

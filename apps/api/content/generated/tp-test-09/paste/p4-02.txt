@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, employees. This is Diane, the human resources manager, speaking over the internal announcement system. I am calling to confirm the company-wide leave schedule. All staff will take collective leave on Friday, the fifteenth, and Monday, the sixteenth. The office will remain closed for those two days. Please finish urgent tasks before Thursday evening. If you need to request an exception, submit a written form to your supervisor by Wednesday at noon. After the break, we will hold a short orientation for new employees in the main conference room.
+
+[QUESTION]
+Who is speaking?
+(A) A supervisor
+(B) A human resources manager
+(C) A new employee
+(D) A customer
+Answer: B
+Explanation: Người nói tự giới thiệu "This is Diane, the human resources manager, speaking over the internal announcement system." | (A) "A supervisor" — supervisor chỉ được nhắc là người nhận đơn xin ngoại lệ, không phải người nói. | (B) "A human resources manager" — khớp đúng lời giới thiệu trong bài. | (C) "A new employee" — new employees là đối tượng của buổi orientation sau kỳ nghỉ, không phải người nói. | (D) "A customer" — khách hàng không xuất hiện trong bài.
+Source: original
+[QUESTION]
+What will happen on Friday, the fifteenth, and Monday, the sixteenth?
+(A) Forms will be submitted.
+(B) An orientation will be held.
+(C) All staff will take collective leave.
+(D) Urgent tasks will be finished.
+Answer: C
+Explanation: Bài nói nêu "All staff will take collective leave on Friday, the fifteenth, and Monday, the sixteenth." | (A) "Forms will be submitted." — đơn phải nộp "by Wednesday at noon", không phải thứ Sáu và thứ Hai. | (B) "An orientation will be held." — orientation sẽ diễn ra "After the break", không phải hai ngày đó. | (C) "All staff will take collective leave." — khớp đúng hai ngày được hỏi. | (D) "Urgent tasks will be finished." — việc khẩn phải xong "before Thursday evening", không phải hai ngày nghỉ.
+Source: original
+[QUESTION]
+What will happen after the break?
+(A) The office will remain closed.
+(B) Staff will finish urgent tasks.
+(C) Employees will submit written forms.
+(D) A short orientation will be held.
+Answer: D
+Explanation: Bài nói kết bằng "After the break, we will hold a short orientation for new employees in the main conference room." | (A) "The office will remain closed." — việc đóng cửa chỉ áp dụng "for those two days", không phải sau kỳ nghỉ. | (B) "Staff will finish urgent tasks." — việc hoàn thành nhiệm vụ khẩn phải xong "before Thursday evening", trước kỳ nghỉ. | (C) "Employees will submit written forms." — việc nộp đơn phải hoàn tất "by Wednesday at noon", trước kỳ nghỉ. | (D) "A short orientation will be held." — khớp đúng hành động được nêu sau kỳ nghỉ.
+Source: original

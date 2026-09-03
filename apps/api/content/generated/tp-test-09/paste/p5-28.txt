@@ -1,0 +1,9 @@
+[QUESTION]
+The customer service representative is very ------- when resolving complaints.
+(A) patience
+(B) patient
+(C) patiently
+(D) patients
+Answer: B
+Explanation: Sau "very" và động từ liên hợp "is" cần một tính từ. | (A) "patience" — là danh từ, sai từ loại. | (B) "patient" — là tính từ, đúng vị trí. | (C) "patiently" — là trạng từ, không phù hợp sau "is". | (D) "patients" — là danh từ số nhiều, sai từ loại.
+Source: original

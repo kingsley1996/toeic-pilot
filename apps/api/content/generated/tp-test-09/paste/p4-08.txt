@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and welcome to our sales training session. I am Helen, the store manager, and I will be leading today’s workshop. Our main goal is to improve how we help customers choose products. Please remember that the fitting rooms are closed until two o’clock because a technician is repairing the lock. After the break, I will hand out the new customer-service checklist. Each team must review it before Friday’s meeting. At the end of the day, we will practice greeting customers and asking open questions. Thank you for your attention.
+
+[QUESTION]
+Who is the speaker?
+(A) A team leader
+(B) A technician
+(C) A customer
+(D) A store manager
+Answer: D
+Explanation: Người nói mở đầu bằng "I am Helen, the store manager" — người phát biểu là quản lý cửa hàng. | (A) "A team leader" — bài có nhắc "team" nhưng không nói người nói là trưởng nhóm. | (B) "A technician" — có nhắc "a technician" nhưng người đó đang sửa khóa, không phải người nói. | (C) "A customer" — khách hàng được nhắc chung chung, không phải người nói. | (D) "A store manager" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+Why are the fitting rooms closed?
+(A) A lock is being repaired
+(B) A technician is cleaning them
+(C) The store is being restocked
+(D) The manager is meeting customers
+Answer: A
+Explanation: Bài nói nêu "the fitting rooms are closed until two o’clock because a technician is repairing the lock" — phòng thử đồ đóng vì khóa đang được sửa. | (A) "A lock is being repaired" — khớp đúng lý do vừa dẫn. | (B) "A technician is cleaning them" — có từ "technician" nhưng hành động "cleaning" không được nói. | (C) "The store is being restocked" — không có chi tiết nào nói về việc bổ sung hàng. | (D) "The manager is meeting customers" — quản lý có nói chuyện với nhân viên, không phải đang gặp khách hàng.
+Source: original
+[QUESTION]
+What will the speaker do after the break?
+(A) Repair a lock
+(B) Hand out a checklist
+(C) Practice greeting customers
+(D) Review the checklist
+Answer: B
+Explanation: Bài nói nói "After the break, I will hand out the new customer-service checklist" — sau giờ giải lao, người nói sẽ phát bản kiểm tra dịch vụ khách hàng. | (A) "Repair a lock" — việc sửa khóa do kỹ thuật viên thực hiện, không phải hành động sau giờ giải lao. | (B) "Hand out a checklist" — khớp đúng hành động được nêu sau giờ giải lao. | (C) "Practice greeting customers" — có nói đến cuối ngày, không phải sau giờ giải lao. | (D) "Review the checklist" — các nhóm phải xem lại bản kiểm tra trước cuộc họp thứ Sáu, không phải người nói làm sau giờ giải lao.
+Source: original

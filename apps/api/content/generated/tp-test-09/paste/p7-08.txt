@@ -1,49 +1,56 @@
 [PASSAGE]
-To: Customer Service, Northline Freight
-From: Linh Tran
-Subject: Compensation request for delayed shipment NF-8842
-Date: May 12
+From: m.tran@example-mail.net
+To: claims@example-transport.com
+Subject: Delayed shipment and compensation request
+Date: June 12
 
-Dear Sir or Madam,
+Dear Customer Service Team,
 
-I am writing to complain about shipment number NF-8842, which was scheduled for guaranteed delivery on May 3 but was not delivered until May 9. [1] The package contained printed materials for a client presentation on May 5, so the delay made the contents useless for their intended purpose. [2] I also paid an extra 65 US dollars for a rush service, which your website states will be refunded if the delivery date is missed. [3] I contacted your call center on May 4 and May 6, and both agents said that a supervisor would call back within twenty-four hours. [4] I have attached my receipt, the rush-service confirmation, and two call-center reference numbers. The printed materials cost 420 US dollars, but I am not asking for that amount. I expect a written apology as well too. No supervisor ever contacted me, and the tracking page did not explain the reason for the delay. According to your published terms, customers may receive compensation when a guaranteed delivery date is missed without an acceptable reason. I therefore request a payment of 180 US dollars to my bank account ending in 4471. Please confirm this amount in writing within five business days. If I do not receive a satisfactory reply, I will submit a formal complaint to the consumer protection office.
+I am writing about package number 8842, which was scheduled for delivery on June 3 but arrived on June 10. The tracking page showed no movement for four days, and your call center could not explain the delay. Because the contents were needed for a family event, I had to buy replacement items locally. I have attached the receipt, the original shipping label, and a copy of the delivery confirmation.
+
+The package contained a gift and documents that were important for the event. I contacted your office on June 6 and June 8, but no revised delivery time was provided. This caused unnecessary inconvenience.
+
+I understand that weather can affect routes, but your service agreement promises a refund of shipping charges plus compensation for verified replacement costs when a package is more than five days late. [1] My shipping charge was 28 dollars, and the replacement items cost 122 dollars. [2] Therefore, I am requesting compensation of 150 dollars. [3] I would also appreciate a written explanation of why the package was not rerouted earlier. [4]
+
+Please review my claim by June 20. If the amount cannot be paid in full, I would like to speak with a supervisor about a partial settlement. I have been a customer for three years and hope this matter can be resolved without further escalation. I trust you will act promptly.
 
 Sincerely,
-Linh Tran
+Minh Tran
 
 [QUESTION]
-Why did Ms. Tran write the letter?
-(A) To request compensation for a delayed delivery
-(B) To ask for a new delivery date
-(C) To report a damaged package
-(D) To cancel a rush service
-Answer: A
+Why was the e-mail written?
+(A) To ask for a new tracking number
+(B) To confirm a delivery date
+(C) To report a lost package
+(D) To request compensation for a delayed delivery
+Answer: D
+Explanation: Đoạn 1 viết "I am writing about package number 8842, which was scheduled for delivery on June 3 but arrived on June 10" và đoạn 3 viết "Therefore, I am requesting compensation of 150 dollars", nên mục đích là yêu cầu bồi thường. | (A) nói xin số theo dõi mới, điều bài không nêu. | (B) "To confirm a delivery date" — nói xác nhận ngày giao, trái với việc phàn nàn về giao muộn. | (C) nói báo mất kiện, nhưng bài viết kiện đã đến. | (D) "To request compensation for a delayed delivery" — khớp đúng câu vừa dẫn.
 Source: original
-
 [QUESTION]
 How much compensation does the customer request?
-(A) 65 US dollars
-(B) 180 US dollars
-(C) 420 US dollars
-(D) 485 US dollars
-Answer: B
-Source: original
-
-[QUESTION]
-What can be inferred from the letter?
-(A) The customer is unhappy with the response so far.
-(B) The company has already approved the refund.
-(C) A supervisor called the customer.
-(D) The package arrived on May 5.
+(A) 150 dollars
+(B) 122 dollars
+(C) 28 dollars
+(D) 178 dollars
 Answer: A
+Explanation: Đoạn 3 viết "Therefore, I am requesting compensation of 150 dollars", nên đáp án là 150 dollars. | (A) "150 dollars" — khớp đúng câu vừa dẫn. | (B) 122 dollars là chi phí mua đồ thay thế, chưa gồm phí vận chuyển. | (C) "28 dollars" — 28 dollars là phí vận chuyển, không phải tổng bồi thường. | (D) 178 dollars không được nêu và trái với tổng 150 dollars.
 Source: original
-
+[QUESTION]
+What can be inferred about the customer's contact with the company?
+(A) The customer received a written apology.
+(B) The customer had difficulty obtaining information before delivery.
+(C) The customer accepted a partial settlement.
+(D) The customer spoke with a supervisor.
+Answer: B
+Explanation: Các câu "your call center could not explain the delay" và "I contacted your office on June 6 and June 8, but no revised delivery time was provided" cho thấy khách gặp khó khăn trong việc lấy thông tin. | (A) "The customer received a written apology." — nói nhận lời xin lỗi bằng văn bản, bài không nêu. | (B) "The customer had difficulty obtaining information before delivery." — khớp đúng câu vừa dẫn. | (C) nói chấp nhận bồi thường một phần, nhưng khách chỉ nói muốn nói chuyện nếu không trả đủ. | (D) nói đã gặp giám sát viên, nhưng khách mới đề nghị gặp nếu cần.
+Source: original
 [QUESTION]
 In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
-"The courier also left a notice card that gave an incorrect tracking number."
+"This amount includes both the shipping refund and the replacement costs."
 (A) [1]
 (B) [2]
 (C) [3]
 (D) [4]
 Answer: C
+Explanation: Câu chèn giải thích "This amount" là 150 dollars, nên phải đặt sau câu "Therefore, I am requesting compensation of 150 dollars." ở vị trí [3]. | (A) "[1]" — đặt trước khi các khoản tiền được nêu. | (B) đặt trước câu yêu cầu bồi thường nên chưa có "this amount". | (C) "[3]" — khớp đúng câu vừa dẫn. | (D) đặt sau câu xin giải thích bằng văn bản nên liên kết với chủ đề không phù hợp.
 Source: original

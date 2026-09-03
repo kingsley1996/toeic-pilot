@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Attention, passengers at Terminal two. This is a delay update for flights leaving this afternoon. The flight to Melbourne is delayed by about one hundred twenty minutes because of a maintenance check. The flight to Singapore is delayed by about ninety minutes. The flight to Auckland is delayed by about sixty minutes. The flight to Hanoi is delayed by about thirty minutes. Please remain in the waiting area and listen for boarding instructions. Free refreshments are available at the cafe near Gate fifteen. We apologize for the inconvenience. Please check the information screens for updated departure times.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a hotel
+(B) At an airport
+(C) At a train station
+(D) At a ferry landing
+Answer: B
+Explanation: "Attention, passengers at Terminal two" cùng "boarding instructions" và "Gate fifteen" — chỉ có ở sân bay. | (A) "At a hotel" — khách sạn không có "Terminal", "boarding", hay "Gate". | (B) "At an airport" — khớp đúng các chi tiết vừa dẫn. | (C) "At a train station" — nhà ga có thể có sân ga, nhưng không có "flight" hay "boarding". | (D) "At a ferry landing" — bến phà không xuất hiện ở bất kỳ đâu trong bài.
+Source: original
+[QUESTION]
+Look at the graphic. Which flight is the one to Melbourne?
+(A) VN 218
+(B) BA 452
+(C) CX 777
+(D) QF 12
+Answer: C
+Explanation: "The flight to Melbourne is delayed by about one hundred twenty minutes" — người nghe phải tra mức 120 phút trên biểu đồ. | (A) "VN 218" — ứng với 30 phút, không phải Melbourne. | (B) "BA 452" — ứng với 60 phút, không phải Melbourne. | (C) "CX 777" — ứng với 120 phút, khớp với chuyến đi Melbourne. | (D) "QF 12" — ứng với 90 phút, không phải Melbourne.
+Source: original
+[QUESTION]
+What are passengers asked to do?
+(A) Check in at the desk
+(B) Go to Gate 15
+(C) Collect free refreshments
+(D) Remain in the waiting area
+Answer: D
+Explanation: "Please remain in the waiting area and listen for boarding instructions" — đây là điều hành khách được yêu cầu làm. | (A) "Check in at the desk" — không có lời nào nhắc đến quầy làm thủ tục. | (B) "Go to Gate 15" — Gate fifteen chỉ là vị trí của quán cà phê, không phải nơi hành khách phải đến. | (C) "Collect free refreshments" — đồ uống miễn phí có sẵn, nhưng không phải điều hành khách được yêu cầu làm. | (D) "Remain in the waiting area" — khớp đúng lời yêu cầu vừa dẫn.
+Source: original

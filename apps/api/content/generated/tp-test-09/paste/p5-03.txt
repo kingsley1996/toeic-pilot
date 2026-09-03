@@ -1,0 +1,9 @@
+[QUESTION]
+The human resources department has sent ------- to all candidates.
+(A) notices
+(B) noticed
+(C) noticing
+(D) notifies
+Answer: A
+Explanation: Sau "has sent" cần danh từ làm tân ngữ. | (A) "notices" — là danh từ số nhiều, chỉ các thông báo, phù hợp. | (B) "noticed" — là động từ quá khứ/phân từ, sai từ loại. | (C) "noticing" — là V-ing, không phải danh từ phù hợp làm tân ngữ. | (D) "notifies" — là động từ, sai từ loại.
+Source: original

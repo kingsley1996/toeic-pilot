@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+You've received your room key, haven't you?
+voice: ca_male_1
+(A) The key is on the desk.
+(B) Yes, I have received it.
+(C) I received a call.
+Answer: B
+Explanation: Câu hỏi là "You've received your room key, haven't you?" — hỏi xác nhận khách đã nhận chìa khóa phòng chưa. | (A) "The key is on the desk." nói vị trí của chìa khóa, tức trả lời cho câu hỏi Where và dùng lại từ key trong ngữ cảnh sai. | (B) "Yes, I have received it." — "Yes, I have received it." trả lời đúng bằng cách xác nhận đã nhận. | (C) "I received a call." nói về một cuộc gọi, dùng lại từ received đã nghe nhưng không đáp lại việc nhận chìa khóa.
+Source: original

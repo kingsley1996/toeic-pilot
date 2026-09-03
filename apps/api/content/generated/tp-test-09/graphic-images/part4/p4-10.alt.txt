@@ -1,0 +1,1 @@
+Flight Delay (minutes). Biểu đồ cột. VN 218: 30. BA 452: 60. QF 12: 90. CX 777: 120.

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Thanks for joining me in the project room. How is the software update going?
+voice: ca_male_1
+The login module is finished, but the payment feature is delayed by two days.
+voice: us_female_1
+Can we still present it at the company event on Friday?
+voice: au_male_1
+I just checked the schedule. We can, if the testing team starts tomorrow morning.
+voice: ca_male_1
+I will email the testing team today and ask them to begin early.
+voice: us_female_1
+Good. That should keep the event on schedule.
+
+[QUESTION]
+Where does the conversation take place?
+(A) In a project room
+(B) At a company event
+(C) In a testing lab
+(D) At a software office
+Answer: A
+Explanation: Người phụ nữ mở đầu bằng "Thanks for joining me in the project room.". | (A) "In a project room" — khớp đúng câu vừa dẫn. | (B) nói ở sự kiện công ty, đây là từ đã nghe nhưng sai ngữ cảnh vì sự kiện chỉ là nơi sẽ trình bày vào thứ Sáu. | (C) nói ở phòng kiểm thử, đây là từ đã nghe nhưng không được nhắc đến vì chỉ có nhóm kiểm thử. | (D) nói ở văn phòng phần mềm, đây là từ đã nghe nhưng không được nhắc đến vì chỉ có bản cập nhật phần mềm.
+Source: original
+[QUESTION]
+What is delayed?
+(A) The login module
+(B) The payment feature
+(C) The company event
+(D) The testing schedule
+Answer: B
+Explanation: Người đàn ông nói "The login module is finished, but the payment feature is delayed by two days.". | (A) nói mô-đun đăng nhập, đây là chi tiết đã nghe nhưng bị sai vì nó đã hoàn thành. | (B) "The payment feature" — khớp đúng câu vừa dẫn. | (C) nói sự kiện công ty, đây là từ đã nghe nhưng không được nhắc đến là bị hoãn. | (D) nói lịch kiểm thử, đây là từ đã nghe nhưng không phải thứ bị hoãn; nhóm kiểm thử sẽ bắt đầu sáng mai.
+Source: original
+[QUESTION]
+What will the testing team do?
+(A) Delay the payment feature
+(B) Email the project room
+(C) Start tomorrow morning
+(D) Present at the company event
+Answer: C
+Explanation: Người đàn ông thứ ba nói "We can, if the testing team starts tomorrow morning.". | (A) nói làm chậm tính năng thanh toán, đây là chi tiết đã nghe nhưng không phải hành động của nhóm kiểm thử. | (B) nói gửi email cho phòng dự án, đây là từ đã nghe nhưng đặt sai ngữ cảnh vì email sẽ gửi cho nhóm kiểm thử, không phải phòng dự án. | (C) "Start tomorrow morning" — khớp đúng câu vừa dẫn. | (D) nói trình bày tại sự kiện công ty, đây là từ đã nghe nhưng không được nhắc đến là nhóm kiểm thử sẽ làm.
+Source: original

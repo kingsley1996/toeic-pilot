@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How can I submit my application?
+voice: uk_female_1
+(A) At the service desk.
+(B) Online or in person.
+(C) Yes, you can submit it.
+Answer: B
+Explanation: Câu hỏi là "How can I submit my application?" — hỏi CÁCH THỨC. | (A) "At the service desk." trả lời nơi nộp, tức đáp cho câu hỏi Where, không phải How. | (B) "Online or in person." — "Online or in person." trả lời đúng loại. | (C) "Yes, you can submit it." đáp Yes/No cho câu hỏi How, dùng lại từ submit nhưng không nêu cách thức.
+Source: original

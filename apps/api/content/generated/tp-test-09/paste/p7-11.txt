@@ -1,59 +1,65 @@
 [PASSAGE]
-From: hr@example-office.com
-To: all-staff@example-office.com
-Subject: Vacation survey results and next steps
-Date: May 6
+From: hr@example-company.com
+To: all-staff@example-company.com
+Subject: Annual Leave Survey Results
+Date: June 12
 
-Dear colleagues,
+Dear Colleagues,
 
-Thank you for completing the spring vacation survey. The results are now available, and the chart below summarizes the total vacation days reported by each department. The survey was sent to 140 employees, and 112 responded. The response rate was highest in Sales and lowest in HR. Managers were asked to verify that each entry matched the timekeeping system before the data were compiled. Because some employees took vacation in overlapping periods, the totals may differ slightly from individual calendars. The People Operations team will publish a detailed breakdown after corrections close.
+We are pleased to share the results of the annual leave survey. The purpose of the survey was to understand how employees use their paid time off and to identify departments that may need additional staffing support during peak periods. The survey was voluntary, and all responses were kept confidential. Employees were asked to report the number of leave days they took during the previous twelve months and to comment on whether taking leave created difficulties for their teams. A total of 53 employees responded, representing all four departments. The response rate was higher than last year, which gives us greater confidence in the results.
 
-The survey asked employees to record only vacation days taken between January 1 and April 30. It did not include sick leave, jury duty, or days taken under the new remote-work pilot. The chart shows total days reported by all staff who responded, including interns and part-time employees. To identify the department whose full-time staff took the most vacation days, subtract the days taken by interns and part-time employees listed below: Sales: 3, IT: 1, HR: 0, Ops: 2. Please review the figures carefully. If you believe a day was recorded incorrectly, submit a correction form through the intranet by May 15. Corrections received after that date will not be included in the summer planning report. The report will help managers schedule coverage for the busy season and decide whether to add temporary staff. We also remind you that the flexible-work pilot will be offered first to the department with the highest adjusted total. That department will receive two additional remote-work slots for the next quarter. The slots are eligible for use by employees who have completed at least six months of service and whose manager approves the request. If you have questions about the survey, contact the People Operations team. Thank you again for your participation.
+The figures below were compiled from responses received between May 1 and May 31. Each department's average number of leave days per employee is shown in the chart. For planning purposes, please note the current headcounts: Sales has 8 employees, IT has 10, HR has 20, and Ops has 15. These headcounts are needed when comparing total leave days across departments, because the chart reports averages rather than totals.
+
+The survey also asked whether employees felt comfortable taking leave without disrupting their teams. Most respondents said yes, but several noted that project deadlines can make time off difficult. In addition, the survey asked whether employees had enough notice of scheduled projects. Some said that short notice made it hard to arrange leave, especially in Sales and Ops. We will discuss these comments at the next departmental meeting and consider whether flexible scheduling could reduce pressure during busy periods.
+
+Thank you for participating. If you have questions about the results, please contact the HR office. Please review the chart before preparing your staffing plans for the second half of the year. The HR office will also provide a summary of common comments by department.
 
 Sincerely,
-People Operations
+Nina Alvarez
+Human Resources Director
 
 [QUESTION]
 Why was the e-mail sent?
-(A) To share survey results and request corrections
-(B) To announce a new vacation policy
-(C) To invite employees to a training session
-(D) To confirm a manager's leave request
-Answer: A
+(A) To schedule a departmental meeting
+(B) To announce a new leave policy
+(C) To request feedback on the chart
+(D) To report survey results
+Answer: D
+Explanation: Đoạn 1 viết "We are pleased to share the results of the annual leave survey" nên mục đích là báo cáo kết quả khảo sát. | (A) nói sắp xếp cuộc họp phòng ban, bài chỉ nhắc sẽ thảo luận ở cuộc họp tiếp theo. | (B) nói công bố chính sách nghỉ phép mới, điều bài không nêu. | (C) nói xin phản hồi về biểu đồ, bài chỉ yêu cầu xem biểu đồ để lập kế hoạch. | (D) "To report survey results" — khớp đúng câu vừa dẫn.
 Source: original
-
 [QUESTION]
-What must employees do by May 15?
-(A) Submit a correction form
-(B) Complete the survey
-(C) Apply for remote-work slots
-(D) Meet with People Operations
-Answer: A
-Source: original
-
-[QUESTION]
-What can be inferred about the survey?
-(A) Some reported totals may change.
-(B) All employees responded.
-(C) Sick leave was included.
-(D) HR had the highest response rate.
-Answer: A
-Source: original
-
-[QUESTION]
-Which department's full-time staff took the most vacation days?
+According to the chart, which department had the highest average leave days per employee?
 (A) Sales
 (B) IT
 (C) HR
 (D) Ops
 Answer: A
+Explanation: Biểu đồ ghi "Sales | 12", cao hơn "IT | 8", "HR | 5" và "Ops | 10". | (A) "Sales" — khớp đúng câu vừa dẫn. | (B) nói IT, bị trái bởi giá trị 8. | (C) nói HR, bị trái bởi giá trị 5. | (D) nói Ops, bị trái bởi giá trị 10.
 Source: original
-
 [QUESTION]
-In the e-mail, the word "eligible" in paragraph 2 is closest in meaning to
-(A) qualified
-(B) absent
-(C) hired
-(D) retired
-Answer: A
+What can be inferred about employees' leave experiences?
+(A) The survey found no problems with leave.
+(B) Some employees worry about project deadlines.
+(C) The company will cancel paid time off.
+(D) HR will reduce staffing in Sales.
+Answer: B
+Explanation: Đoạn 3 viết "several noted that project deadlines can make time off difficult" nên có thể suy ra một số nhân viên lo về thời hạn dự án. | (A) nói khảo sát không phát hiện vấn đề, trái với câu vừa trích. | (B) "Some employees worry about project deadlines." — khớp đúng câu vừa dẫn. | (C) nói công ty sẽ hủy nghỉ phép, không được bài hỗ trợ. | (D) nói HR sẽ giảm nhân sự ở Sales, không được bài hỗ trợ.
+Source: original
+[QUESTION]
+Which department had the greatest total number of leave days?
+(A) Sales
+(B) IT
+(C) Ops
+(D) HR
+Answer: C
+Explanation: Câu hỏi cần cả e-mail và biểu đồ: e-mail viết "Sales has 8 employees, IT has 10, HR has 20, and Ops has 15" và biểu đồ cho "Sales | 12", "IT | 8", "HR | 5", "Ops | 10", nên Ops có tổng 150 ngày. | (A) nói Sales, chỉ đúng về trung bình nhưng tổng là 96. | (B) nói IT, tổng là 80. | (C) "Ops" — khớp đúng câu vừa dẫn. | (D) nói HR, có số nhân viên lớn nhất nhưng tổng là 100.
+Source: original
+[QUESTION]
+In the e-mail, the word "compiled" in paragraph 2 is closest in meaning to
+(A) printed
+(B) ignored
+(C) delayed
+(D) collected
+Answer: D
+Explanation: Đoạn 2 viết "The figures below were compiled from responses received between May 1 and May 31", nghĩa là các số liệu được thu thập từ phản hồi. | (A) nói in ra, không phải nghĩa của compiled trong câu. | (B) nói bỏ qua, trái với ngữ cảnh. | (C) nói làm chậm, không khớp với việc lấy dữ liệu. | (D) "collected" — khớp đúng câu vừa dẫn.
 Source: original

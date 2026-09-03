@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Excuse me, I'm shopping here and saw a sign about a discount on fresh food. Is it still active?
+voice: ca_male_1
+Yes, ma'am. The fresh produce section has twenty percent off every weekday evening.
+voice: us_female_1
+That's helpful. I'm looking for vegetables for a dinner party tonight.
+voice: ca_male_1
+You can find them near the back. The meat counter also has a loyalty card offer.
+voice: us_female_1
+Do I need to sign up for the card today?
+voice: ca_male_1
+No, you can register at the service desk before you leave.
+
+[QUESTION]
+Who is the woman?
+(A) A manager checking the produce section
+(B) A customer asking about a discount
+(C) An employee at the service desk
+(D) A supplier delivering fresh food
+Answer: B
+Explanation: Người phụ nữ nói "I'm shopping here and saw a sign about a discount on fresh food" — tức là khách hàng đang hỏi về giảm giá. | (A) nói tới quản lý kiểm tra khu rau, không được nói ra. | (B) "A customer asking about a discount" — khớp đúng câu vừa dẫn. | (C) nói tới nhân viên ở quầy dịch vụ, chỉ là nơi đăng ký thẻ chứ không phải vai trò của cô. | (D) nói tới nhà cung cấp giao thực phẩm tươi, không xuất hiện trong hội thoại.
+Source: original
+[QUESTION]
+What does the man say about the fresh produce discount?
+(A) It requires a loyalty card
+(B) It applies only on weekends
+(C) It applies every weekday evening
+(D) It is available at the service desk
+Answer: C
+Explanation: Người đàn ông nói "The fresh produce section has twenty percent off every weekday evening" — tức giảm giá áp dụng mỗi tối trong tuần. | (A) nói tới thẻ khách hàng thân thiết, thẻ được nhắc cho quầy thịt chứ không phải điều kiện cho rau. | (B) nói tới cuối tuần, là thời gian bị đổi. | (C) "It applies every weekday evening" — khớp đúng câu vừa dẫn. | (D) nói tới quầy dịch vụ, quầy này chỉ được nhắc để đăng ký thẻ.
+Source: original
+[QUESTION]
+What does the man suggest the woman do?
+(A) Leave before signing up
+(B) Buy vegetables before the discount
+(C) Ask the meat counter for a sign
+(D) Register for the card at the service desk
+Answer: D
+Explanation: Người đàn ông nói "you can register at the service desk before you leave" — tức gợi ý đăng ký thẻ ở quầy dịch vụ trước khi rời đi. | (A) nói tới rời đi trước khi đăng ký, là thứ tự bị đổi. | (B) nói tới mua rau trước khi giảm giá, không được gợi ý. | (C) nói tới hỏi quầy thịt về tấm biển, biển được nhắc nhưng không phải hành động được gợi ý. | (D) "Register for the card at the service desk" — khớp đúng câu vừa dẫn.
+Source: original

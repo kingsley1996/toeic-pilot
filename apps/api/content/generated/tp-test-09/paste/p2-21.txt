@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Would you prefer a sea view or a mountain view?
+voice: us_female_1
+(A) A sea view, please.
+(B) Yes, I booked it online.
+(C) The mountain is very high.
+Answer: A
+Explanation: Câu hỏi là "Would you prefer a sea view or a mountain view?" — hỏi lựa chọn giữa phòng hướng biển hay hướng núi. | (A) "A sea view, please." — "A sea view, please." chọn đúng một phương án. | (B) "Yes, I booked it online." đáp Yes cho câu hỏi lựa chọn, tức sai loại câu hỏi. | (C) "The mountain is very high." dùng lại từ "mountain" đã nghe nhưng chỉ mô tả ngọn núi, không trả lời lựa chọn phòng.
+Source: original

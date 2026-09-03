@@ -1,0 +1,9 @@
+[QUESTION]
+Both parties will sign the contract ------- the terms remain unchanged.
+(A) assumes that
+(B) assume that
+(C) assuming that
+(D) assumption that
+Answer: C
+Explanation: Sau chỗ trống cần một liên từ dẫn đến mệnh đề "the terms remain unchanged". | (A) "assumes that" — là động từ chia số ít, không phải liên từ. | (B) "assume that" — là động từ nguyên thể, không phải liên từ. | (C) "assuming that" — đúng dạng liên từ dẫn mệnh đề giả định. | (D) "assumption that" — là danh từ, không thể dẫn mệnh đề ở vị trí này.
+Source: original

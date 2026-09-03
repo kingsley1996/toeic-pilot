@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Please book the meeting room for the training session.
+voice: au_male_1
+(A) The meeting room is on the second floor.
+(B) Yes, I'll book it right away.
+(C) I'll book the flight for you.
+Answer: B
+Explanation: Câu hỏi là "Please book the meeting room for the training session." — một lời yêu cầu đặt phòng họp. | (A) "The meeting room is on the second floor." nói vị trí phòng họp, tức trả lời cho câu hỏi "where" chứ không đáp lại yêu cầu. | (B) "Yes, I'll book it right away." — "Yes, I'll book it right away." chấp nhận và trả lời đúng. | (C) "I'll book the flight for you." dùng lại từ "book" đã nghe nhưng đặt trong ngữ cảnh sai là đặt vé máy bay, không phải đặt phòng họp.
+Source: original

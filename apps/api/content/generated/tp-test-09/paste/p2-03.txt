@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Where is the account opening counter?
+voice: au_male_1
+(A) On the second floor, to the left.
+(B) It opens at nine o'clock.
+(C) I can open an account.
+Answer: A
+Explanation: Câu hỏi là "Where is the account opening counter?" — hỏi NƠI CHỐN của quầy mở tài khoản. | (A) "On the second floor, to the left." — "On the second floor, to the left." chỉ đúng vị trí. | (B) "It opens at nine o'clock." nói giờ mở cửa, tức trả lời cho WHEN, không phải WHERE. | (C) "I can open an account." dùng lại từ "open" trong ngữ cảnh khác, chỉ khả năng mở tài khoản chứ không nói quầy ở đâu.
+Source: original

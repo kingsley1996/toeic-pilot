@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When do you need the delivery?
+voice: uk_female_1
+(A) Yes, I'll sign for it.
+(B) At the loading dock.
+(C) Before Friday, if possible.
+Answer: C
+Explanation: Câu hỏi là "When do you need the delivery?" — hỏi THỜI ĐIỂM. | (A) "Yes, I'll sign for it." đáp Yes cho một câu hỏi When, tức sai loại câu hỏi. | (B) "At the loading dock." trả lời nơi chốn, tức sai loại câu hỏi. | (C) "Before Friday, if possible." — "Before Friday, if possible." trả lời đúng loại.
+Source: original

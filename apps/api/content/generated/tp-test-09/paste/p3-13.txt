@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. I'm the maintenance worker. May I come into the apartment?
+voice: au_male_1
+Yes. The air conditioner is in the bedroom. It stopped cooling this morning.
+voice: uk_female_1
+I have your request here. The form lists three o'clock.
+voice: au_male_1
+That's right. I also left my name and the apartment number on it.
+voice: uk_female_1
+I'll check the filter first. If it needs a part, I'll return tomorrow.
+voice: au_male_1
+Please let me know before you leave. I need to confirm the repair.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To report a broken window
+(B) To sign a rental contract
+(C) To repair an air conditioner
+(D) To schedule a cleaning
+Answer: C
+Explanation: Người phụ nữ nói "I'm the maintenance worker. May I come into the apartment?" và người đàn ông nói "The air conditioner is in the bedroom. It stopped cooling this morning." — tức họ đang nói về việc sửa điều hòa. | (A) nói báo cửa sổ hỏng, không xuất hiện. | (B) nói ký hợp đồng thuê, không được nhắc đến. | (C) "To repair an air conditioner" — khớp đúng câu vừa dẫn. | (D) nói đặt lịch dọn dẹp, cũng không được đề cập.
+Source: original
+[QUESTION]
+Where does the conversation take place?
+(A) In a parking garage
+(B) In a maintenance office
+(C) In a hardware store
+(D) In an apartment
+Answer: D
+Explanation: Người phụ nữ hỏi "May I come into the apartment?" — tức cuộc trò chuyện diễn ra tại căn hộ. | (A) nói nhà để xe, cũng không được đề cập. | (B) nói văn phòng bảo trì, không được nhắc đến. | (C) nói cửa hàng phần cứng, không xuất hiện. | (D) "In an apartment" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+Look at the graphic. Which field on the form contains the value the woman mentions?
+(A) Time
+(B) Resident
+(C) Issue
+(D) Unit
+Answer: A
+Explanation: Người phụ nữ nói "The form lists three o'clock." — trên phiếu, giá trị "3 p.m." nằm ở dòng Time. | (A) "Time" — khớp đúng câu vừa dẫn. | (B) Resident là dòng tên cư dân, không chứa giá trị được nhắc. | (C) Issue là dòng vấn đề, không chứa giá trị được nhắc. | (D) Unit là dòng số căn hộ, không chứa giá trị được nhắc.
+Source: original

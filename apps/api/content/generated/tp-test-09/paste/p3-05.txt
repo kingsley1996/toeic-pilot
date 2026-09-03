@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+Good morning. I'm the new employee in your department, and I'd like to ask about annual leave.
+voice: au_male_1
+Sure. As your manager, I can explain the procedure. You must submit the request online at least two weeks before the first day off.
+voice: us_female_1
+I need three days off next month. Can I take them from Monday to Wednesday?
+voice: au_male_1
+Monday is a team meeting, so please start on Tuesday. I'll approve the leave if you finish the quarterly report by Friday.
+voice: us_female_1
+Understood. I'll send the online request today and complete the report before Friday.
+
+[QUESTION]
+Who is the woman?
+(A) A client
+(B) A manager
+(C) An employee
+(D) A receptionist
+Answer: C
+Explanation: Câu "I'm the new employee in your department" cho biết người phụ nữ là nhân viên. | (A) "A client" không được nhắc đến. | (B) "A manager" đúng nhưng thuộc về người nam vì anh ấy nói "As your manager". | (C) "An employee" — khớp đúng câu vừa dẫn. | (D) "A receptionist" cũng không xuất hiện.
+Source: original
+[QUESTION]
+What must the woman do at least two weeks before her leave?
+(A) Send an email today
+(B) Attend a team meeting
+(C) Finish the quarterly report
+(D) Submit the request online
+Answer: D
+Explanation: Câu "You must submit the request online at least two weeks before the first day off" quyết định đáp án. | (A) "Send an email today" không được nhắc đến, từ "today" chỉ đi với gửi yêu cầu trực tuyến. | (B) "Attend a team meeting" đúng nhưng chỉ là lịch họp thứ Hai, không phải việc trước hai tuần. | (C) "Finish the quarterly report" đúng nhưng là điều kiện để được duyệt phép trước thứ Sáu. | (D) "Submit the request online" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What will the woman probably do today?
+(A) Send the online request
+(B) Start the leave on Monday
+(C) Attend the team meeting
+(D) Approve the leave
+Answer: A
+Explanation: Câu "I'll send the online request today" cho biết hành động hôm nay của người phụ nữ. | (A) "Send the online request" — khớp đúng câu vừa dẫn. | (B) "Start the leave on Monday" là đề xuất ban đầu nhưng đã bị đổi sang thứ Ba. | (C) "Attend the team meeting" đúng nhưng vào thứ Hai, không phải hôm nay. | (D) "Approve the leave" là hành động của quản lý, không phải của người phụ nữ.
+Source: original

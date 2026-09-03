@@ -1,0 +1,9 @@
+[QUESTION]
+The customer ------- has booked a room is waiting in the lobby.
+(A) whom
+(B) who
+(C) whose
+(D) which
+Answer: B
+Explanation: Vị trí trống cần đại từ quan hệ làm chủ ngữ cho "has booked" và chỉ người. | (A) "whom" — là dạng tân ngữ, không thể làm chủ ngữ. | (B) "who" — đúng đại từ quan hệ chủ ngữ chỉ người. | (C) "whose" — là dạng sở hữu, cần danh từ đi sau. | (D) "which" — dùng cho vật hoặc sự việc, không dùng cho người.
+Source: original

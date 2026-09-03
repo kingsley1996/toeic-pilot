@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone. As project director, I want to update you on the software rollout. The first phase for the finance team is complete, and user testing for the sales team will finish next Thursday. We found two minor bugs in the reporting module, but they have already been fixed. The training sessions for customer service staff will start on Monday in the second-floor conference room. Please remind your teams to bring their login cards. After the final rollout, we will hold a review meeting with department heads to discuss any remaining issues.
+
+[QUESTION]
+Who is the speaker?
+(A) A department head
+(B) A software tester
+(C) A customer service employee
+(D) A project director
+Answer: D
+Explanation: Người nói giới thiệu rõ "As project director, I want to update you on the software rollout" — đây là giám đốc dự án đang báo cáo tiến độ. | (A) "A department head" — trưởng phòng được nhắc trong cuộc họp xem xét, không phải người đang nói. | (B) "A software tester" — bài có nhắc "user testing", nhưng không nói người nói là người kiểm thử. | (C) "A customer service employee" — nhân viên dịch vụ khách hàng được nhắc là người được đào tạo, không phải người phát biểu. | (D) "A project director" — khớp đúng lời giới thiệu vừa dẫn.
+Source: original
+[QUESTION]
+What has already been fixed?
+(A) Two minor bugs
+(B) The login cards
+(C) The training sessions
+(D) The finance team
+Answer: A
+Explanation: Người nói nói "We found two minor bugs in the reporting module, but they have already been fixed" — hai lỗi nhỏ đã được sửa. | (A) "Two minor bugs" — khớp đúng lỗi đã được sửa. | (B) "The login cards" — thẻ đăng nhập được nhắc là thứ cần mang theo, không phải thứ đã sửa. | (C) "The training sessions" — các buổi đào tạo sẽ bắt đầu vào thứ Hai, không phải đã sửa. | (D) "The finance team" — nhóm tài chính có giai đoạn đầu hoàn tất, không phải đã sửa.
+Source: original
+[QUESTION]
+What will happen after the final rollout?
+(A) User testing will finish
+(B) A review meeting will be held
+(C) Training sessions will start
+(D) Two bugs will be fixed
+Answer: B
+Explanation: Người nói nói "After the final rollout, we will hold a review meeting with department heads to discuss any remaining issues" — sau đợt triển khai cuối cùng sẽ có cuộc họp xem xét. | (A) "User testing will finish" — kiểm thử người dùng sẽ hoàn tất vào thứ Năm, không phải sau đợt triển khai cuối cùng. | (B) "A review meeting will be held" — khớp đúng hành động sau đợt triển khai cuối cùng. | (C) "Training sessions will start" — các buổi đào tạo sẽ bắt đầu vào thứ Hai, không phải sau đợt triển khai cuối cùng. | (D) "Two bugs will be fixed" — hai lỗi đã được sửa trước đó, không phải sẽ sửa sau đợt triển khai cuối cùng.
+Source: original

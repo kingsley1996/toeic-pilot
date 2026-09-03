@@ -1,30 +1,27 @@
 [PASSAGE]
-Lan [8:05 A.M.]
-Mr. Tuan, the Room 412 guest says the air conditioner is noisy and asks for a quieter room. Room 208 is free but near the elevator. Room 505 is free, far from the elevator, but costs 200,000 VND more per night.
-
-Tuan [8:09 A.M.]
-The guest booked a standard room, so do not charge extra unless she agrees. Call her first and explain the options. If she accepts the difference, move her to 505. If not, offer 208 and ask maintenance to check 412.
-
-Lan [8:12 A.M.]
-Understood. I will call her now. If she wants a different floor, can I also change breakfast time?
-
-Tuan [8:14 A.M.]
-No. Breakfast time is fixed. Only the front desk can process room changes after the guest confirms.
+Linh [8:42 A.M.] Good morning, Mr. Tran. This is Linh at the front desk. The guest in Room 412 says the air conditioner is noisy and asks to move to a quieter room tonight.
+Tran [8:44 A.M.] Did maintenance confirm that the unit is faulty before I respond to him?
+Linh [8:45 A.M.] Yes. They tested it at 8:10 and said it needs replacement, but parts arrive Thursday.
+Tran [8:47 A.M.] Please offer Room 508, which faces the courtyard. It is available because the guest checked out early.
+Linh [8:48 A.M.] Should I charge the difference?
+Tran [8:50 A.M.] No. The move is our responsibility. I will approve it in the system, and you can print the new key card after 9:15.
+Linh [8:51 A.M.] Thank you. I will call the guest now.
 
 [QUESTION]
-Who will process the room change?
-(A) The front desk
-(B) Mr. Tuan
-(C) Maintenance
+Who will handle the approval of the room change?
+(A) Linh
+(B) Maintenance staff
+(C) Mr. Tran
 (D) The guest
-Answer: A
+Answer: C
+Explanation: Tin nhắn lúc 8:50 A.M. của ông Tran viết "I will approve it in the system". | (A) "Linh" — nói Linh phê duyệt, nhưng Linh chỉ được nhờ in thẻ và gọi khách. | (B) nói bộ phận bảo trì phê duyệt, nhưng họ chỉ kiểm tra điều hòa và báo cần thay linh kiện. | (C) "Mr. Tran" — khớp đúng câu vừa dẫn. | (D) nói khách tự xử lý, trái với việc khách chỉ yêu cầu đổi phòng.
 Source: original
-
 [QUESTION]
-At 8:14 A.M., what does Mr. Tuan mean when he writes, "Only the front desk can process room changes after the guest confirms"?
-(A) Lan must wait for the guest's decision.
-(B) Mr. Tuan will process the change himself.
-(C) Maintenance staff must approve the room move.
-(D) The guest can change the breakfast time.
-Answer: A
+At 8:50 A.M., what does Mr. Tran mean when he writes, "The move is our responsibility"?
+(A) Linh must find another room.
+(B) The guest must pay an extra fee.
+(C) Maintenance must replace the air conditioner.
+(D) The hotel will cover the room change.
+Answer: D
+Explanation: Ông Tran trả lời "No" trước câu hỏi về phí và viết "The move is our responsibility". | (A) nói Linh phải tìm phòng khác, trái với việc ông Tran đã chỉ định Room 508. | (B) "The guest must pay an extra fee." — nói khách phải trả thêm phí, trái với câu "No". | (C) nói bảo trì phải thay điều hòa, có nhắc đến việc thay linh kiện nhưng không phải ý của câu nói. | (D) "The hotel will cover the room change." — khớp đúng câu vừa dẫn.
 Source: original

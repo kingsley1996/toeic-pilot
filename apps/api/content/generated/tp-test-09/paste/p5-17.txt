@@ -1,0 +1,9 @@
+[QUESTION]
+The manager asked the assistant to print the documents for -------, the clients.
+(A) their
+(B) they
+(C) them
+(D) theirs
+Answer: C
+Explanation: Sau giới từ "for" cần đại từ nhân xưng dạng tân ngữ, đồng vị với "the clients". | (A) "their" — là tính từ sở hữu, cần danh từ đi sau. | (B) "they" — là dạng chủ ngữ, không làm tân ngữ sau giới từ. | (C) "them" — đúng dạng tân ngữ của đại từ nhân xưng. | (D) "theirs" — là đại từ sở hữu, không phù hợp làm tân ngữ chỉ người ở đây.
+Source: original

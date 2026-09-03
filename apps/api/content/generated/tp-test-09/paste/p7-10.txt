@@ -1,87 +1,54 @@
 [PASSAGE]
-Linh [8:38 A.M.]
-I am opening a priority ticket. The finance group cannot receive external mail, and internal delivery is delayed.
-
-Duc [8:40 A.M.]
-Is it only finance?
-
-Linh [8:41 A.M.]
-No. The monitoring page shows errors for sales and operations too. The common factor is the desktop client.
-
-Linh [8:42 A.M.]
-The shared email server is rejecting messages for the finance group. I see a queue of 140 failed notices.
-
-Duc [8:44 A.M.]
-Did anyone change the password policy last night?
-
-Linh [8:46 A.M.]
-No. The help desk ticket says the certificate expired at midnight. I have asked the vendor to renew it.
-
-Duc [8:48 A.M.]
-Can users send mail from their phones?
-
-Linh [8:50 A.M.]
-Phones use a different route, so they may work. Desktop clients will fail until the new certificate is installed.
-
-Duc [8:52 A.M.]
-What should people do now?
-
-Linh [8:54 A.M.]
-Tell them to use the web portal for urgent messages. Do not keep resending from desktop clients, because that adds to the queue.
-
-Duc [8:56 A.M.]
-I can try.
-
-Linh [8:57 A.M.]
-Please post a short notice in the staff channel. Include the vendor's estimated repair time.
-
-Duc [8:59 A.M.]
-The vendor says noon. If it is not fixed by then, I will call again.
-
-Linh [9:01 A.M.]
-Good. Also remind users to save drafts locally. The portal may be slow during the repair.
-
-Duc [9:03 A.M.]
-Done. I will ask the reception team to help anyone without portal access.
-
-Linh [9:05 A.M.]
-Thanks. If the queue clears before noon, I will update the ticket and close it. Until then, keep the notice visible.
-
-Duc [9:07 A.M.]
-I will also check the portal login page again today. Some users may need temporary passwords soon.
+M. Tran [8:42 A.M.] The mail server is slow again. I cannot send attachments.
+L. Hoang [8:44 A.M.] Same here. My inbox has not refreshed since 8:15.
+M. Tran [8:46 A.M.] IT says there is a storage fault on the main mail server. They are moving accounts to a backup server.
+L. Hoang [8:48 A.M.] Will that affect our calendar?
+M. Tran [8:50 A.M.] Yes. Calendar events may disappear for a short time. Do not create new meetings until the repair is finished.
+L. Hoang [8:52 A.M.] What should users do if they need to send an urgent file?
+M. Tran [8:54 A.M.] Use the secure file transfer site. Do not attach files to email until you receive a confirmation message.
+L. Hoang [8:56 A.M.] I can try that, but the site asks for a new password.
+M. Tran [8:58 A.M.] The password reset link is in the IT notice. If it does not arrive, call the help desk.
+L. Hoang [9:01 A.M.] Thanks. I will tell the sales team to check the notice before sending invoices.
+M. Tran [9:03 A.M.] Good. Also, do not delete old emails. The backup process may restore them later.
+L. Hoang [9:05 A.M.] Understood. I will ask everyone to wait for the all-clear.
+M. Tran [9:07 A.M.] The help desk is open until 6:00 P.M. If a message is missing after the all-clear, submit a ticket.
+L. Hoang [9:09 A.M.] Should mobile users do anything different?
+M. Tran [9:11 A.M.] No. The same rules apply. Do not sync the mail app until the notice says the server is stable.
+L. Hoang [9:13 A.M.] I will add that to the reminder.
 
 [QUESTION]
-What is the main purpose of the messages?
-(A) To coordinate a response to an email problem
-(B) To request a new password policy
-(C) To confirm a vendor contract
-(D) To schedule a staff meeting
-Answer: A
+Why are the two people exchanging messages?
+(A) To compare two file transfer sites
+(B) To arrange a meeting with the sales team
+(C) To request a password reset from IT
+(D) To report a server issue and give instructions
+Answer: D
+Explanation: Tin nhắn 8:46 A.M. viết "IT says there is a storage fault on the main mail server. They are moving accounts to a backup server", và các tin sau đưa hướng dẫn tạm thời. | (A) nói so sánh hai trang truyền tệp, điều chuỗi tin không hề nêu. | (B) nói sắp xếp cuộc họp, trái với "Do not create new meetings until the repair is finished". | (C) nói yêu cầu đặt lại mật khẩu, chỉ được nêu như bước nếu liên kết không tới, không phải mục đích trao đổi. | (D) "To report a server issue and give instructions" — khớp đúng câu vừa dẫn.
 Source: original
-
 [QUESTION]
-What should users do for urgent messages?
-(A) Use the web portal
-(B) Resend from desktop clients
-(C) Call the vendor directly
-(D) Wait until noon
+What should users do if they need to send an urgent file?
+(A) Use the secure file transfer site
+(B) Attach the file to a new email
+(C) Call the help desk immediately
+(D) Delete old emails first
 Answer: A
+Explanation: Tin nhắn 8:54 A.M. viết "Use the secure file transfer site". | (A) "Use the secure file transfer site" — khớp đúng câu vừa dẫn. | (B) nói đính kèm tệp vào email mới, trái với "Do not attach files to email until you receive a confirmation message". | (C) nói gọi help desk ngay, chỉ được nêu nếu liên kết đặt lại mật khẩu không tới, không phải cách gửi tệp khẩn. | (D) nói xóa email cũ trước, trái với "do not delete old emails".
 Source: original
-
 [QUESTION]
-At 8:56 A.M., what does Duc mean when he writes, "I can try"?
-(A) He will attempt to inform users
-(B) He can fix the certificate
-(C) He will check the queue
-(D) He can access the vendor site
-Answer: A
+At 8:56 A.M., what does L. Hoang mean when he writes, "I can try"?
+(A) He refuses to use the file transfer site
+(B) He is willing to try but has a concern
+(C) He has already reset his password
+(D) He needs help from the sales team
+Answer: B
+Explanation: Tin nhắn 8:56 A.M. viết "I can try that, but the site asks for a new password", cho thấy anh ấy sẵn sàng thử nhưng còn lo ngại. | (A) nói từ chối dùng trang truyền tệp, trái với "I can try". | (B) "He is willing to try but has a concern" — khớp đúng câu vừa dẫn. | (C) nói đã đặt lại mật khẩu, trái với "the site asks for a new password". | (D) nói cần sự giúp đỡ từ nhóm bán hàng, chỉ nhắc đến nhóm bán hàng ở tin sau, không phải ý của câu này.
 Source: original
-
 [QUESTION]
-What can be inferred about the repair?
-(A) It may not be finished by noon
-(B) It has already been completed
-(C) It affects only mobile phones
-(D) It needs no vendor action
-Answer: A
+What can be inferred about old emails?
+(A) They must be resent through the secure site
+(B) They will be permanently deleted by the backup
+(C) They may be temporarily missing but could return
+(D) They are unaffected by the server fault
+Answer: C
+Explanation: Tin nhắn 9:03 A.M. viết "do not delete old emails. The backup process may restore them later", nên có thể suy ra email cũ có thể tạm thời biến mất nhưng có thể được khôi phục. | (A) nói phải gửi lại qua trang bảo mật, chỉ áp dụng cho tệp khẩn, không phải email cũ. | (B) nói bị xóa vĩnh viễn bởi quy trình sao lưu, trái với "may restore them later". | (C) "They may be temporarily missing but could return" — khớp đúng câu vừa dẫn. | (D) nói không bị ảnh hưởng bởi lỗi máy chủ, trái với cảnh báo về email thiếu và quy trình khôi phục.
 Source: original

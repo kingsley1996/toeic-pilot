@@ -1,4 +1,4 @@
 kind: map
-Elevator Maintenance by Floor
+Elevator Maintenance Interruptions by Floor
 Floor 1: 2 hours | Floor 2: 4 hours
 Floor 3: 1 hour | Floor 4: 3 hours

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Why is this product discounted today?
+voice: au_male_1
+(A) Yes, it is on sale now.
+(B) Because it was a display model.
+(C) In aisle three, near the register.
+Answer: B
+Explanation: Câu hỏi là "Why is this product discounted today?" — hỏi LÝ DO. | (A) "Yes, it is on sale now." đáp Yes cho một câu hỏi Why, tức sai loại câu hỏi. | (B) "Because it was a display model." — "Because it was a display model." trả lời đúng loại. | (C) "In aisle three, near the register." trả lời nơi chốn, dùng lại ý về sản phẩm nhưng không trả lời được "tại sao".
+Source: original

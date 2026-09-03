@@ -1,65 +1,60 @@
 [PASSAGE]
 NOTICE TO ALL STAFF
-Building Management will carry out pest-control spraying on Level 4 on Friday, May 16, from 8 p.m. to 6 a.m. The treatment is intended to reduce insects that can damage stored paper.
+From: Building Management
+Date: 10 June
+Subject: Insecticide treatment and document storage
 
-To protect records from chemical residue, all paper documents that must be preserved must be placed in the sealed plastic bins provided at the reception desk before 6 p.m. on Thursday, May 15. Desks, shelves, and printers must be cleared of food, cups, and personal papers. Do not use cardboard boxes, because they can absorb moisture and chemicals.
-
-The bins will be collected at 6 p.m. on Thursday and returned after ventilation on Monday, May 19. Employees who work from home on Friday should still follow the rule. If a bin is full, ask the floor warden for another one. The bins are available from 9 a.m. to 5 p.m. at reception.
+On Thursday, 12 June, a licensed contractor will spray the third-floor work areas from 19:00 to 23:00. The product is low-odor and safe for office furniture after it dries. To protect paper records, employees must remove loose documents from desks before 18:00 and place them in the container marked Code 7. Do not leave files, notebooks, or printed reports on open surfaces. Desks that are not cleared may be photographed for a follow-up report. The treatment will not affect electronic equipment, but staff should cover keyboards with the cloths provided at the reception desk. The contractor will also treat the storage room behind the break area. Employees who keep paper copies in that room should move them to a sealed container as well. The building will remain open during the treatment, but access to the third floor will be restricted after 18:30.
 
 [PASSAGE]
-MEMO FROM OFFICE MANAGER
-To: Level 4 staff
-From: Office Manager
-Date: May 12
-Subject: Document preservation during pest control
+SECOND NOTICE: CODE 7 CONTAINERS
+From: Facilities Office
+Date: 10 June
 
-Please read the building notice before moving files. The sealed bins are for original client contracts, signed invoices, and personnel records only. Draft reports, printed e-mails, and meeting notes should be shredded or placed in the locked recycling cabinet.
-
-If a file contains both a signed invoice and a draft copy, place only the signed invoice in the bin. Do not place electronic devices, paper clips, or staplers in the bins.
-
-The blue bins are assigned to the sales and finance teams; the green bins are for human resources. The floor warden will check that each bin is labeled with the team name and the date May 15. Any bin without a label will remain in the hallway until Monday. The office manager will inspect the hallway at 6:30 p.m. and report any unsealed bins.
+Code 7 identifies the sealed plastic bins placed outside Room 204. These bins are available from 16:00 on 12 June and must be returned to the same location by 08:00 on Friday, 13 June. The bins are waterproof and lined with chemical-resistant material. They are intended only for paper documents during the treatment. Employees should not place food, liquids, or personal items in them. If a bin is full, use the next available bin; do not stack boxes in the corridor. A list of bin locations is posted in the elevator lobby. Staff who need a larger container may request one from the facilities desk on the second floor. The request must be made before 17:00, because deliveries stop at 17:30. Labels for Code 7 bins are printed in red and white. Any container without that label is not approved for storage during the spraying.
 
 [QUESTION]
-Why were the documents issued?
-(A) To announce pest control and document handling
-(B) To request feedback on office cleaning
-(C) To introduce a new filing system
-(D) To schedule a staff meeting
+Why were the notices issued?
+(A) To explain required preparations for a pest-control treatment
+(B) To announce a change in office furniture suppliers
+(C) To request feedback on a new storage policy
+(D) To remind staff about an upcoming audit
 Answer: A
+Explanation: Đoạn 1 viết "On Thursday, 12 June, a licensed contractor will spray..." và "To protect paper records, employees must remove..." cho thấy mục đích là hướng dẫn chuẩn bị cho phun thuốc. | (A) "To explain required preparations for a pest-control treatment" — khớp đúng câu vừa dẫn. | (B) nói đổi nhà cung cấp nội thất, chỉ nhắc office furniture nên là chi tiết sai hướng. | (C) nói xin phản hồi về chính sách lưu trữ, không có yêu cầu phản hồi. | (D) nói nhắc kiểm toán, bài chỉ nhắc follow-up report nên không trả lời.
 Source: original
-
 [QUESTION]
-What do employees need to do before 6 p.m. on Thursday?
-(A) Place preserved paper documents in sealed bins
-(B) Return the bins to the reception desk
-(C) Shred all printed e-mails and notes
-(D) Attend a pest-control safety briefing
-Answer: A
-Source: original
-
-[QUESTION]
-What can be inferred about the bins?
-(A) They will be unavailable during the weekend.
-(B) They will be sold to employees.
-(C) They will be locked during spraying.
-(D) They will be reused by teams.
-Answer: A
-Source: original
-
-[QUESTION]
-What is NOT stated about the pest-control arrangements?
-(A) The spraying will occur on Friday evening.
-(B) The chemicals are safe for plants.
-(C) Desks must be cleared of food.
-(D) The bins will be returned on Monday.
+What must employees do before 18:00?
+(A) Return Code 7 bins to Room 204 by 08:00
+(B) Put paper documents in the sealed bins outside Room 204
+(C) Cover keyboards with cloths at the reception desk
+(D) Request larger containers from the second-floor desk
 Answer: B
+Explanation: Đoạn 1 yêu cầu "place them in the container marked Code 7" trước 18:00, còn đoạn 2 giải thích "Code 7 identifies the sealed plastic bins placed outside Room 204". | (A) nói trả thùng lúc 08:00, là việc sau đó chứ không phải trước 18:00. | (B) "Put paper documents in the sealed bins outside Room 204" — khớp đúng câu vừa dẫn. | (C) nói phủ bàn phím tại quầy lễ tân, bài chỉ nói cloths provided at the reception desk. | (D) nói xin thùng lớn ở tầng hai, là việc tùy chọn trước 17:00, không phải yêu cầu chung trước 18:00.
 Source: original
-
 [QUESTION]
-What can be inferred about a finance employee's signed invoice?
-(A) It may remain on a desk until Monday.
-(B) It must be placed in a labeled blue bin by Thursday evening.
-(C) It should be shredded before the spraying.
-(D) It can be stored in the recycling cabinet.
-Answer: B
+What can be inferred about the treatment?
+(A) It will damage paper documents.
+(B) It will require employees to leave the building.
+(C) It is scheduled to limit interference with normal work hours.
+(D) It will be repeated weekly.
+Answer: C
+Explanation: Đoạn 1 nêu giờ phun "from 19:00 to 23:00" và "The building will remain open during the treatment", suy ra lịch trình hạn chế ảnh hưởng giờ làm việc bình thường. | (A) nói làm hỏng tài liệu giấy, trái với "To protect paper records". | (B) nói nhân viên phải rời tòa nhà, trái với "The building will remain open". | (C) "It is scheduled to limit interference with normal work hours." — khớp đúng câu vừa dẫn. | (D) nói lặp lại hằng tuần, không có thông tin.
+Source: original
+[QUESTION]
+What is NOT stated about the Code 7 bins?
+(A) They are available from 16:00.
+(B) They are waterproof.
+(C) They must be returned by 08:00.
+(D) They are made of recycled material.
+Answer: D
+Explanation: Đây là câu hỏi NOT: ba lựa chọn đều nằm trong thông báo thứ hai, lựa chọn còn lại thì không. | (A) "They are available from 16:00." — được nêu ở "These bins are available from 16:00 on 12 June". | (B) "They are waterproof." — được nêu ở "The bins are waterproof and lined with chemical-resistant material". | (C) "They must be returned by 08:00." — được nêu ở "must be returned to the same location by 08:00 on Friday, 13 June". | (D) "They are made of recycled material." — thông báo nói lớp lót chống hoá chất chứ không nói vật liệu tái chế, nên đây là điều KHÔNG được nêu.
+Source: original
+[QUESTION]
+What can be inferred about the storage room behind the break area?
+(A) It may hold paper copies that need to be protected.
+(B) It will be treated before 18:00.
+(C) It contains the only Code 7 bins.
+(D) It is exempt from the treatment.
+Answer: A
+Explanation: Đoạn 1 viết "The contractor will also treat the storage room behind the break area" và "Employees who keep paper copies in that room should move them...", suy ra phòng đó có thể chứa bản giấy cần bảo vệ. | (A) "It may hold paper copies that need to be protected." — khớp đúng câu vừa dẫn. | (B) nói được phun trước 18:00, trái với "from 19:00 to 23:00". | (C) nói chứa các thùng Code 7 duy nhất, trái với "Code 7 identifies the sealed plastic bins placed outside Room 204" và "A list of bin locations". | (D) nói được miễn phun thuốc, trái với "will also treat the storage room".
 Source: original

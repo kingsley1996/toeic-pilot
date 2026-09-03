@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When is breakfast served at the hotel?
+voice: us_female_1
+(A) Yes, it's included in the room rate.
+(B) In the main dining room.
+(C) From six to nine.
+Answer: C
+Explanation: Câu hỏi là "When is breakfast served at the hotel?" — hỏi THỜI GIAN. | (A) "Yes, it's included in the room rate." đáp Yes cho một câu hỏi không thể trả lời Yes/No, chỉ gợi ý về bữa sáng nhưng không nói thời gian. | (B) "In the main dining room." trả lời nơi phục vụ, tức đáp sai loại câu hỏi WHEN. | (C) "From six to nine." — "From six to nine." trả lời đúng loại.
+Source: original

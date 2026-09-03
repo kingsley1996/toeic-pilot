@@ -1,0 +1,9 @@
+[QUESTION]
+Customers can pay ------- credit card or bank transfer.
+(A) at
+(B) to
+(C) by
+(D) in
+Answer: C
+Explanation: Trước "credit card" cần giới từ chỉ phương thức thanh toán. | (A) "at" — sai giới từ, không diễn đạt phương tiện thanh toán. | (B) "to" — sai giới từ, "pay to" chỉ người nhận, không chỉ phương tiện. | (C) "by" — đúng giới từ đi với "pay" để chỉ phương tiện. | (D) "in" — sai giới từ, không kết hợp với "credit card" ở đây.
+Source: original

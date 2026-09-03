@@ -1,0 +1,9 @@
+[QUESTION]
+Employees ------- performance improved significantly will receive a bonus.
+(A) whose
+(B) who
+(C) which
+(D) whom
+Answer: A
+Explanation: Vị trí trống cần một đại từ quan hệ sở hữu để nối "Employees" với "performance". | (A) "whose" — đúng vì là đại từ quan hệ sở hữu. | (B) "who" — là đại từ quan hệ chủ ngữ, không diễn đạt sở hữu. | (C) "which" — thường dùng cho vật, không diễn đạt sở hữu. | (D) "whom" — là đại từ quan hệ tân ngữ, không diễn đạt sở hữu.
+Source: original

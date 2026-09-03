@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Would you like to pay by card or cash?
+voice: ca_male_1
+(A) I'll pay by card, please.
+(B) Yes, I have some cash.
+(C) It's in the cash register.
+Answer: A
+Explanation: Câu hỏi là "Would you like to pay by card or cash?" — hỏi lựa chọn phương thức thanh toán. | (A) "I'll pay by card, please." — "I'll pay by card, please." trả lời đúng bằng cách chọn thẻ. | (B) "Yes, I have some cash." đáp Yes cho một câu hỏi lựa chọn, tức sai loại câu hỏi. | (C) "It's in the cash register." dùng lại từ "cash" đã nghe nhưng đặt trong ngữ cảnh sai, không trả lời phương thức thanh toán.
+Source: original

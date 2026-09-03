@@ -1,70 +1,78 @@
 [PASSAGE]
-From: l.ortiz@example-mail.net
-To: care@example-telecom.net
-Subject: Billing concern for account 4821
-Date: June 12
+From: mtran@example-mail.net
+To: billing@example-telecom.com
+Subject: Unexpected increase on May invoice
+Date: June 2
 
-Dear Customer Care,
+Dear Billing Team,
 
-My May invoice for account 4821 is 184.50, although my usual monthly charge is 129.99. The increase appeared after a promotional rate ended. I did not receive advance notice. The March and April invoices were correct, so I have not marked them. I have completed the attached three-month invoice review request form and marked only the remedy I will accept. Please investigate before the payment due date of June 25. If the charge is not corrected, I will dispute it with my bank. I have been a customer for six years and have always paid on time. Please treat this as urgent because my bank statement closes on June 20. I expect a clear explanation of the rate change. Thank you for your prompt attention. I can be reached at the address above.
+I am writing about my May invoice, which arrived on May 28. My April bill was $58, but the May bill was $94. I did not ask for any new service, and I did not receive a notice before the change. The invoice lists two charges I do not recognize: a network access fee and premium support. I believe these charges are unauthorized.
 
-Sincerely,
-Lena Ortiz
+I have used the same basic residential plan for two years, and my monthly usage has not changed. I also checked my online account, but it does not explain why these charges appeared. I have completed the attached three-month billing review form and submitted it through your customer portal. Please check my account and correct the problem. I would also like confirmation when the review is finished.
+
+Thank you for your help.
+
+Mai Tran
 
 [PASSAGE]
-From: care@example-telecom.net
-To: l.ortiz@example-mail.net
-Subject: Review of account 4821
-Date: June 18
+From: billing@example-telecom.com
+To: mtran@example-mail.net
+Subject: Re: Unexpected increase on May invoice
+Date: June 9
 
-Dear Ms. Ortiz,
+Dear Ms. Tran,
 
-We reviewed your May invoice and the three-month request form. The promotional rate ended on April 30, and the standard rate applied from May 1. However, the notice was sent to an old e-mail address, so we agree the communication was inadequate. We will take the action indicated by the single Yes entry on your request form. The adjustment will appear on your next invoice, and the June payment due date remains June 25. We also corrected the contact address in your account. A written confirmation will be mailed to your registered address within five business days. No further action is required from you at this time. If you have questions, reply to this message and reference account 4821. We value your continued business. Please keep this message for your records.
+Thank you for contacting us about your May invoice. We reviewed your account and found that a system error added premium support to your basic residential plan. The network access fee was also applied incorrectly because your address was entered in the wrong service zone.
+
+We have removed both charges and adjusted your May invoice. The total correction is $36. We have applied the remedy you requested on your completed three-month billing review form. The correction will be reflected in your account, and no further action is needed from you. You do not need to submit another form. The corrected invoice is available in your online account.
+
+We understand that unexpected charges can be frustrating. If you have questions about your account, please reply to this message or call the number on your invoice.
 
 Sincerely,
-Customer Care Team
+Telecom Billing Team
 
 [QUESTION]
-What can be inferred about the customer's previous bills?
-(A) They were usually predictable.
-(B) They were paid late.
-(C) They included no promotions.
-(D) They required bank disputes.
+What can be inferred about the customer's plan?
+(A) It required a new contract.
+(B) It was changed in May.
+(C) It had a lower rate in June.
+(D) It did not include premium support.
+Answer: D
+Explanation: Đoạn 2 viết "a system error added premium support to your basic residential plan" — suy ra gói của khách hàng không có premium support. | (A) nói cần hợp đồng mới, không có trong bài. | (B) nói gói bị thay đổi vào tháng Năm, trái với việc chỉ có lỗi hệ thống thêm phí. | (C) nói có mức phí thấp hơn vào tháng Sáu, điều các tài liệu không hỗ trợ. | (D) "It did not include premium support." — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What is NOT stated about the customer's May invoice?
+(A) It was paid by automatic withdrawal.
+(B) It was higher than the April invoice.
+(C) It included a network access fee.
+(D) It included a premium support charge.
 Answer: A
+Explanation: Đoạn 1 viết "The invoice lists two charges I do not recognize: a network access fee and premium support" và "My April bill was $58, but the May bill was $94". | (A) "It was paid by automatic withdrawal." — nói hóa đơn được trả bằng rút tiền tự động, điều không được nêu. | (B) nói hóa đơn cao hơn hóa đơn tháng Tư, đã nêu. | (C) nói có phí truy cập mạng, đã nêu. | (D) nói có phí premium support, đã nêu.
 Source: original
-
 [QUESTION]
-What is NOT stated about the billing problem?
-(A) The May charge was higher than usual.
-(B) The promotional rate ended on April 30.
-(C) The customer received the notice late.
-(D) The June payment due date is June 25.
-Answer: C
+In the first e-mail, the word "unauthorized" in paragraph 1 is closest in meaning to
+(A) illegal
+(B) unapproved
+(C) unexpected
+(D) unpaid
+Answer: B
+Explanation: Trong đoạn 1 của e-mail đầu tiên, câu "I believe these charges are unauthorized" cho thấy khách hàng cho rằng các khoản phí không được phép. | (A) illegal nói phạm pháp, quá mạnh so với bài. | (B) "unapproved" — unapproved gần nghĩa nhất. | (C) unexpected nói bất ngờ, chỉ mô tả mức tăng chứ không đồng nghĩa với unauthorized. | (D) unpaid nói chưa trả, một chi tiết khác.
 Source: original
-
 [QUESTION]
-In the reply e-mail, the word "inadequate" in paragraph 1 is closest in meaning to
-(A) insufficient
-(B) unexpected
-(C) unnecessary
-(D) unacceptable
-Answer: A
-Source: original
-
-[QUESTION]
-What action will the company take?
-(A) Refund
+Which remedy did the company apply?
+(A) Plan Change
 (B) Discount
-(C) Plan Change
+(C) Refund
 (D) Apology
-Answer: A
+Answer: C
+Explanation: Đoạn 2 viết "We have applied the remedy you requested on your completed three-month billing review form" và hình phiếu có dòng "Refund | Yes" — công ty áp dụng Refund. | (A) Plan Change bị đánh dấu No trong phiếu. | (B) Discount bị đánh dấu No trong phiếu. | (C) "Refund" — khớp đúng câu vừa dẫn. | (D) Apology bị đánh dấu No trong phiếu.
 Source: original
-
 [QUESTION]
-What will appear on the customer's next invoice?
-(A) An adjustment
-(B) A written confirmation
-(C) A new plan
-(D) A bank dispute
-Answer: A
+What is the total correction?
+(A) $130
+(B) $58
+(C) $94
+(D) $36
+Answer: D
+Explanation: Đoạn 2 viết "The total correction is $36". | (A) $130 không được nêu trong bài. | (B) $58 là hóa đơn tháng Tư, không phải khoản điều chỉnh. | (C) $94 là hóa đơn tháng Năm, không phải khoản điều chỉnh. | (D) "$36" — khớp đúng câu vừa dẫn.
 Source: original

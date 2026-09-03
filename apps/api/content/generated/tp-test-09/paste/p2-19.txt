@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where is the restroom in this supermarket?
+voice: us_female_1
+(A) It closes at ten o'clock.
+(B) At the end of the hallway on the right.
+(C) Yes, the restroom is nearby.
+Answer: B
+Explanation: Câu hỏi là "Where is the restroom in this supermarket?" — hỏi NƠI CHỐN. | (A) "It closes at ten o'clock." trả lời thời gian đóng cửa, tức đáp cho câu hỏi When, không phải Where. | (B) "At the end of the hallway on the right." — "At the end of the hallway on the right." trả lời đúng loại bằng cách chỉ vị trí cuối hành lang bên phải. | (C) "Yes, the restroom is nearby." mở đầu bằng Yes cho một câu hỏi Where không thể nhận Yes/No, và chỉ lặp lại từ restroom trong ngữ cảnh không trả lời chính xác vị trí.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. I'm the conference organizer, and we're finalizing logistics for the customer conference next month.
+voice: ca_male_1
+Our team can deliver the registration desks and signage on Monday.
+voice: uk_female_1
+Great. Will the audio equipment be tested before the opening session?
+voice: au_male_1
+Yes. I'm the supplier representative, and I'll run the sound check at four in the afternoon on Tuesday.
+voice: ca_male_1
+We also need the catering list by Friday.
+voice: au_male_1
+I'll email it to the organizers tonight.
+
+[QUESTION]
+What is the conversation mainly about?
+(A) Logistics for a customer conference
+(B) Training for new employees
+(C) Budget for a marketing campaign
+(D) Hiring event staff
+Answer: A
+Explanation: Người phụ nữ nói "we're finalizing logistics for the customer conference next month" — tức bàn về hậu cần cho hội nghị khách hàng. | (A) "Logistics for a customer conference" — khớp đúng câu vừa dẫn. | (B) nói đào tạo nhân viên mới, không được nhắc đến. | (C) nói ngân sách cho chiến dịch tiếp thị, không được nhắc đến. | (D) nói tuyển nhân sự sự kiện, không được nhắc đến.
+Source: original
+[QUESTION]
+Who is the third speaker?
+(A) A conference organizer
+(B) A supplier representative
+(C) A catering manager
+(D) An audio technician
+Answer: B
+Explanation: Người nói thứ ba nói "I'm the supplier representative". | (A) nói người tổ chức hội nghị, đúng nhưng do giọng đầu tiên nói. | (B) "A supplier representative" — khớp đúng câu vừa dẫn. | (C) nói quản lý ẩm thực, không được nhắc đến. | (D) nói kỹ thuật viên âm thanh, dùng từ audio/sound đã nghe nhưng sai ngữ cảnh.
+Source: original
+[QUESTION]
+What will the third speaker do tonight?
+(A) Deliver the registration desks
+(B) Run the sound check
+(C) Email the catering list
+(D) Test the audio equipment
+Answer: C
+Explanation: Người nói thứ ba nói "I'll email it to the organizers tonight". | (A) nói giao bàn đăng ký, đúng nhưng vào thứ Hai, không phải tối nay. | (B) nói chạy kiểm tra âm thanh, đúng nhưng vào chiều thứ Ba, không phải tối nay. | (C) "Email the catering list" — khớp đúng câu vừa dẫn. | (D) nói kiểm tra thiết bị âm thanh, được hỏi nhưng không phải hành động tối nay.
+Source: original

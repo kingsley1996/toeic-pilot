@@ -1,35 +1,40 @@
 [PASSAGE]
-Advance Bank Training presents Customer Care for Banking Professionals, a six-week online course designed to help staff handle difficult conversations, explain financial products clearly, and build trust with customers. Classes are held twice a week in the evenings, and all sessions are recorded for later review. Participants will practice real branch scenarios through live role-play, receive feedback from experienced trainers, and complete a short final assessment. Those who pass will receive a digital certificate.
+Customer Care for Banking Professionals
 
-Tuition is $450. Employees of partner banks receive a 20 percent discount. Groups of five or more from the same institution receive an additional $50 off per person. Early registration before June 10 saves $30. A limited number of scholarships are available for junior tellers who demonstrate strong customer-service potential.
+Improve service at every counter. This four-week online course teaches tellers, loan officers, and branch managers how to handle difficult customers, explain fees clearly, and protect privacy. Sessions are recorded for employees who cannot attend live classes.
 
-Each participant receives an online handbook, a set of conversation templates, and access to a private discussion board where trainers answer questions within one business day. The course is also suitable for tellers, service representatives, and branch supervisors.
+Tuition is $240. Bank employees who register by June 10 receive a 25 percent discount. Branch managers who enroll three or more staff members receive an additional $20 off each registration.
 
-For details, visit www.examplebanktraining.com or call 555-0142. Seats are limited, and registration closes when the class is full.
+Classes begin June 17 and meet Tuesdays and Thursdays from 6:00 to 7:30 P.M. Participants must have a work e-mail address and a supervisor's approval. Certificates are awarded after the final quiz.
+
+The course includes role-play exercises, a guide to complaint records, and a live question-and-answer hour with experienced service trainers. Employees who complete all assignments may request a printed handbook at no charge. Late registrations are accepted only if seats remain, and no discount applies after June 10. Payment must be made by credit card or branch account transfer before the first class.
+
+For more information, contact training@bankcare.example or visit the intranet page. Seats are limited to 30 per session.
 
 [QUESTION]
-Who is eligible for a tuition discount?
-(A) Employees of partner banks
-(B) Participants who register late
-(C) Trainers with branch experience
-(D) Customers who complete surveys
+Who receives the 25 percent tuition discount?
+(A) Employees registering by June 10
+(B) Employees requesting a handbook
+(C) Employees missing live classes
+(D) Customers opening accounts
 Answer: A
+Explanation: Quảng cáo viết "Bank employees who register by June 10 receive a 25 percent discount". | (A) "Employees registering by June 10" — khớp đúng câu vừa dẫn. | (B) nói nhân viên xin handbook, chỉ liên quan đến việc hoàn thành bài tập, không phải điều kiện giảm phí. | (C) nói nhân viên vắng lớp trực tiếp, bài chỉ nói lớp được ghi hình, không liên quan giảm phí. | (D) nói khách hàng mở tài khoản, điều quảng cáo không hề nêu.
 Source: original
-
 [QUESTION]
 What is NOT stated about the course?
-(A) It includes live role-play sessions.
-(B) It awards a digital certificate.
-(C) It offers free parking at branches.
-(D) It provides recorded sessions for review.
-Answer: C
+(A) Its final quiz
+(B) Its instructor's name
+(C) Its live question-and-answer hour
+(D) Its printed handbook
+Answer: B
+Explanation: Bài nêu "Certificates are awarded after the final quiz", "a live question-and-answer hour", và "a printed handbook at no charge", nhưng không nêu tên giảng viên. | (A) là chi tiết có trong bài, không phải đáp án NOT. | (B) "Its instructor's name" — khớp đúng câu vừa dẫn. | (C) là chi tiết có trong bài, không phải đáp án NOT. | (D) là chi tiết có trong bài, không phải đáp án NOT.
 Source: original
-
 [QUESTION]
 What can be inferred about the course?
-(A) It is intended for bank staff needing practical customer-service skills.
-(B) It requires participants to work at partner banks.
-(C) It will be cancelled if fewer than five people register.
-(D) It is available only to junior tellers.
-Answer: A
+(A) It requires attendance at a training center.
+(B) It is available only to new employees.
+(C) It is intended for staff who serve customers directly.
+(D) It includes a handbook in the tuition fee.
+Answer: C
+Explanation: Bài viết "teaches tellers, loan officers, and branch managers how to handle difficult customers, explain fees clearly", nên có thể suy ra khóa học dành cho nhân viên phục vụ khách hàng trực tiếp. | (A) nói phải đến trung tâm đào tạo, trái với "online course" và "Sessions are recorded". | (B) nói chỉ dành cho nhân viên mới, bài không giới hạn như vậy. | (C) "It is intended for staff who serve customers directly." — khớp đúng câu vừa dẫn. | (D) nói handbook đã gồm trong học phí, bài chỉ nói nhân viên hoàn thành bài tập có thể xin handbook miễn phí.
 Source: original

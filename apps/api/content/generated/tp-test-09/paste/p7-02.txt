@@ -1,20 +1,26 @@
 [PASSAGE]
-Keep your small office spotless without hiring full-time staff. BrightPath Cleaning offers flexible commercial cleaning plans designed for local businesses, coworking spaces, and professional studios. Our trained teams handle dusting, vacuuming, restroom sanitation, trash removal, and floor care using safe, low-odor products. Choose weekly, biweekly, or one-time service, and we will match your budget and schedule. New customers receive a free walkthrough and a written estimate. To reserve a regular cleaning visit, please book at least 48 hours in advance. For urgent requests, call our support line; same-day availability is limited and may require a service fee. Visit our website to compare plans, request a quote, or schedule your first appointment today. No long-term contract is required. Ask about discounts.
+Office Cleaning Services
+Small-business cleaning that fits your budget.
+Are dusty floors and cluttered meeting rooms slowing your team down? Our company provides reliable office cleaning for businesses with fewer than 50 employees. Our trained staff use eco-friendly products and flexible schedules, including evenings and weekends, so your workplace stays fresh without interrupting your workday.
+Choose weekly, biweekly, or monthly service. Basic plans include trash removal, restroom sanitation, vacuuming, and desk wiping. Premium plans add kitchen cleaning, window wiping, and carpet care.
+New clients receive a 30-minute assessment. To book, call 555-0142 or visit officeclean.example. Please schedule appointments at least 48 hours in advance. Same-day requests are accepted only for emergency spills.
+First-time customers save 15 percent on any plan.
 
 [QUESTION]
 What is the advertisement mainly about?
-(A) A cleaning service for small businesses
-(B) A job opening for cleaning staff
-(C) A discount on office furniture
-(D) A training course for new employees
+(A) Office cleaning services for small businesses
+(B) Eco-friendly products for home cleaning
+(C) Furniture repair for offices
+(D) Training for cleaning staff
 Answer: A
+Explanation: Đoạn quảng cáo viết "Our company provides reliable office cleaning for businesses with fewer than 50 employees". | (A) "Office cleaning services for small businesses" — khớp đúng câu vừa dẫn. | (B) nói sản phẩm cho gia đình, không được nêu. | (C) nói sửa đồ nội thất, trái với nội dung làm sạch. | (D) nói đào tạo nhân viên, chỉ có "trained staff" nhưng không phải dịch vụ đào tạo.
 Source: original
-
 [QUESTION]
-How far in advance must a regular cleaning visit be booked?
+How far in advance must a cleaning appointment be scheduled?
 (A) 24 hours
 (B) 48 hours
-(C) One week
-(D) Two weeks
+(C) 72 hours
+(D) One week
 Answer: B
+Explanation: Đoạn quảng cáo nêu "Please schedule appointments at least 48 hours in advance". | (A) trái với yêu cầu đặt trước ít nhất 48 giờ. | (B) "48 hours" — khớp đúng câu vừa dẫn. | (C) trái với mốc 48 giờ. | (D) trái với mốc 48 giờ.
 Source: original

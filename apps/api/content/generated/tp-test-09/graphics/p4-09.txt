@@ -1,0 +1,7 @@
+kind: table
+Campaign Budget
+Item | Amount
+Social | 12,000
+Search | 18,000
+Email | 6,500
+Print | 9,000

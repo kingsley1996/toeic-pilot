@@ -1,0 +1,1 @@
+Elevator Maintenance Interruptions by Floor. Sơ đồ 2 hàng. Hàng 1: thứ nhất từ trái là Floor 1: 2 hours, thứ hai từ trái là Floor 2: 4 hours. Hàng 2: thứ nhất từ trái là Floor 3: 1 hour, thứ hai từ trái là Floor 4: 3 hours.

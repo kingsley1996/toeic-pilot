@@ -1,0 +1,50 @@
+[PASSAGE]
+To: Team Leaders
+From: Finance Department
+Subject: End-of-Quarter Electronic Invoice Submission
+Date: March 28
+
+All team leaders are required ------- (1) invoices through the secure portal by June 30. This process replaces the previous paper-based system. Late submissions may delay project payments.
+
+Please ensure each invoice includes the correct project code before the ------- (2). Check the code list in the shared folder. Invoices without codes will be returned for correction.
+
+The finance team ------- (3) the portal last week, so please use the new link. Bookmark the address to avoid errors. The old link will be deactivated soon.
+
+Please submit all documents in PDF format. If you encounter technical issues, contact the help desk at ext. 2200. ------- (4)
+
+[QUESTION]
+Blank (1)
+(A) submitted
+(B) submitting
+(C) to submit
+(D) submit
+Answer: C
+Explanation: Câu chứa chỗ trống "All team leaders are required ------- (1) invoices through the secure portal by June 30" cho thấy sau "required" phải là động từ nguyên mẫu có "to". | (A) "submitted" — dạng quá khứ phân từ, không hợp cấu trúc. | (B) "submitting" — dạng V-ing, không hợp sau required. | (C) "to submit" — đúng cấu trúc required + to V. | (D) "submit" — thiếu "to" nên không phải nguyên mẫu có to.
+Source: original
+[QUESTION]
+Blank (2)
+(A) contract
+(B) receipt
+(C) budget
+(D) deadline
+Answer: D
+Explanation: Câu "Please ensure each invoice includes the correct project code before the ------- (2)" và câu sau "Invoices without codes will be returned for correction" cho thấy cần một mốc thời hạn nộp. | (A) "contract" — là hợp đồng, không hợp với "before the" trong ngữ cảnh nộp hóa đơn. | (B) "receipt" — là biên nhận, không phải mốc thời gian. | (C) "budget" — là ngân sách, sai trường nghĩa. | (D) "deadline" — đúng nghĩa thời hạn cuối cùng để nộp.
+Source: original
+[QUESTION]
+Blank (3)
+(A) updated
+(B) updates
+(C) has updated
+(D) will update
+Answer: A
+Explanation: Câu "The finance team ------- (3) the portal last week, so please use the new link" có mốc "last week", nên vị ngữ phải là quá khứ đơn. | (A) "updated" — quá khứ đơn, đúng mốc thời gian. | (B) "updates" — hiện tại đơn, không hợp với last week. | (C) "has updated" — hiện tại hoàn thành, không đi với last week. | (D) "will update" — tương lai, mâu thuẫn với mốc quá khứ.
+Source: original
+[QUESTION]
+Blank (4)
+(A) Other file types cannot be processed.
+(B) The help desk is available from 8 a.m. to 5 p.m.
+(C) Invoices must be approved by your supervisor.
+(D) The portal will be deactivated soon.
+Answer: B
+Explanation: Câu ngay trước chỗ trống "If you encounter technical issues, contact the help desk at ext. 2200" đòi hỏi câu tiếp theo phải cung cấp thông tin về bộ phận hỗ trợ. | (A) "Other file types cannot be processed." — hợp với câu PDF nhưng không nối được với câu liên hệ help desk. | (B) "The help desk is available from 8 a.m. to 5 p.m." — đúng thông tin mở rộng cho bộ phận hỗ trợ. | (C) "Invoices must be approved by your supervisor." — lạc đề, không liên quan đến kỹ thuật. | (D) "The portal will be deactivated soon." — nhắc lại ý đoạn trước, không hợp với câu trước.
+Source: original

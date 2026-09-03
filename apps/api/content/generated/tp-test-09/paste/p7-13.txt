@@ -1,69 +1,80 @@
 [PASSAGE]
-From: training@safebuild.example
-To: all-staff@example-mail.net
-Subject: Safety Training Registration
+From: training@example-site.com
+To: all-personnel@example-site.com
+Subject: Safety Training Registration Instructions
 Date: May 6
 
-Dear Colleagues,
+The training covers hazard recognition, emergency evacuation, and proper use of protective equipment. Attendance is mandatory for every person entering the construction area. Please complete the attached Safety Training Registration Form before the session. The form must be submitted to the Training Office no later than five business days before the scheduled date. Late forms will be accepted only if seats remain.
 
-The annual safety training registration form is now open. Please complete the attached form and return it to the Training Office by May 20. Registration is required for all staff, managers, contractors, and interns who will enter the construction site during the summer. The course covers hazard reporting, equipment use, and emergency evacuation. The training takes place in the main hall and lasts one day. Sessions are offered in the morning and afternoon. Participants must bring a photo identification card and wear closed-toe shoes. If you cannot attend your assigned session, notify the office at least two business days in advance. Late registrations will be processed as contractor requests and charged the contractor fee. Please review the attached fee table before submitting payment. Questions about the course may be sent to the Training Office.
+All participants must bring a photo identification card and wear closed shoes. Persons who will direct other workers during the session must register under the group with the highest fee. This rule applies even if the person's usual payroll category is different.
 
-Sincerely,
-Training Office
+If you need a certificate in another language, request it at least two weeks in advance. The certificate is issued after the final quiz. Questions about payment should be sent to the finance office.
 
 [PASSAGE]
-SAFETY TRAINING REGISTRATION FORM
+Safety Training Registration Form
+Applicant: Daniel Ortiz
+Employee ID: 4482
+Department: Site Operations
+Date of birth: March 14
+Contact: d.ortiz@example-site.com
+Emergency contact: Maria Ortiz, phone 555-0142
+Work location: Building C
+Supervisor approval: pending
 
-Name: ____________________
-Department: ____________________
-Category: Staff / Contractor / Manager / Intern
-Preferred session: Morning / Afternoon
-Payment method: Cash / Card / Invoice
+Session requested: June 10, morning
+Usual payroll category: Staff
+Will direct other workers during the session? Yes
+Preferred certificate language: Spanish
+Special needs: None
 
-Notes:
-The category selected on this form determines the fee shown in the attached table. Managers must register through their department head. Interns who are enrolled in the university program may submit a student card instead of a photo identification card. Contractors must provide a company name and an insurance certificate. If the category field is left blank, the Training Office will assign the category based on the person's employment status. Payment must be made at the front desk before the first session. Please keep the confirmation email for your records. The form must be signed by the participant and dated. If you need a receipt, ask at the front desk. The attached table lists fees for each category. Please print clearly and use black ink. The Training Office reviews forms daily.
+Payment authorization
+I confirm that the information above is accurate. I understand that the fee shown for the assigned group will be charged to my department account. I also understand that a missed session without cancellation may require re-registration. I certify that I have read the registration instructions and will follow all safety rules during the training. Please return this form with a copy of your identification card. The Training Office will send a confirmation e-mail after the form is reviewed. The form is valid only when all required fields are completed.
+
+Signature: Daniel Ortiz
+Date: May 7
 
 [QUESTION]
-Why were the documents written?
-(A) To explain safety training registration
-(B) To announce a construction project
-(C) To request feedback on a course
-(D) To compare insurance policies
-Answer: A
+Why were the documents sent?
+(A) To announce a payroll change
+(B) To guide registration and collect information
+(C) To request training feedback
+(D) To compare four fee groups
+Answer: B
+Explanation: Tài liệu 1 có tiêu đề "Safety Training Registration Instructions" và Tài liệu 2 là "Safety Training Registration Form" với các mục cần điền, nên mục đích là hướng dẫn đăng ký và thu thập thông tin. | (A) "To announce a payroll change" — không có thông báo thay đổi payroll category. | (B) "To guide registration and collect information" — khớp đúng câu vừa dẫn. | (C) không có yêu cầu phản hồi. | (D) chỉ là một phần của bảng phí, không phải mục đích chung.
 Source: original
-
 [QUESTION]
-Which group pays the highest fee?
-(A) Staff
-(B) Contractor
-(C) Manager
-(D) Intern
+When must the registration form be submitted?
+(A) On the morning of the session
+(B) Two weeks before the certificate
+(C) Five business days before the session
+(D) After the final quiz
 Answer: C
+Explanation: Tài liệu 1 viết "The form must be submitted to the Training Office no later than five business days before the scheduled date". | (A) trái với hạn nộp trước ngày học. | (B) "Two weeks before the certificate" — nhầm với hạn xin chứng chỉ bằng ngôn ngữ khác. | (C) "Five business days before the session" — khớp đúng câu vừa dẫn. | (D) trái với việc chứng chỉ được cấp sau bài kiểm tra cuối.
 Source: original
-
 [QUESTION]
 What is NOT stated about the training?
-(A) It covers emergency evacuation.
-(B) It requires closed-toe shoes.
-(C) It lasts four hours.
-(D) It is required for site entry.
-Answer: C
+(A) It requires closed shoes.
+(B) It includes a final quiz.
+(C) It covers hazard recognition.
+(D) It lasts three hours.
+Answer: D
+Explanation: Đây là câu hỏi NOT: ba lựa chọn đều tìm được trong tài liệu 1, lựa chọn còn lại thì không. | (A) "It requires closed shoes." — được nêu ở "wear closed shoes". | (B) "It includes a final quiz." — được nêu ở "after the final quiz". | (C) "It covers hazard recognition." — được nêu ở "covers hazard recognition". | (D) "It lasts three hours." — không câu nào trong tài liệu nói tới thời lượng ba giờ, nên đây là điều KHÔNG được nêu.
 Source: original
-
 [QUESTION]
-What fee applies to a registration submitted after May 20?
-(A) $30
-(B) $50
-(C) $80
-(D) $120
-Answer: C
-Source: original
-
-[QUESTION]
-Which rule in the e-mail is modified by the form?
-(A) The photo identification requirement
-(B) The closed-toe shoe requirement
-(C) The registration deadline
-(D) The advance notice requirement
+Which group must the applicant pay the fee for?
+(A) Manager
+(B) Contractor
+(C) Staff
+(D) Intern
 Answer: A
+Explanation: Tài liệu 1 viết "Persons who will direct other workers during the session must register under the group with the highest fee", Tài liệu 2 ghi "Will direct other workers during the session? Yes", và bảng cho thấy Manager có phí cao nhất "$120". | (A) "Manager" — nhóm có phí cao nhất, đúng thứ quy tắc yêu cầu. | (B) "Contractor" — không phải nhóm có phí cao nhất trong bảng. | (C) "Staff" — là nhóm theo bảng lương thông thường, nhưng quy tắc phí cao nhất ghi đè nó. | (D) "Intern" — cũng không phải nhóm có phí cao nhất.
+Source: original
+[QUESTION]
+What can be inferred about the applicant's certificate request?
+(A) It will be denied.
+(B) It was made early enough.
+(C) It was submitted too late.
+(D) It must be in English.
+Answer: B
+Explanation: Tài liệu 1 yêu cầu "request it at least two weeks in advance" cho chứng chỉ ngôn ngữ khác, Tài liệu 2 ghi ngày nộp "May 7" cho buổi học "June 10" và chọn "Spanish", nên còn hơn hai tuần. | (A) "It will be denied." — không có căn cứ. | (B) "It was made early enough." — khớp đúng câu vừa dẫn. | (C) trái với ngày nộp. | (D) trái với việc chọn Spanish.
 Source: original

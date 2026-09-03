@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Hi, this is Rachel from the bank's loan department. I am calling about your loan application. Good news: your application has been approved. However, we still need two documents before we can release the funds. Please send a copy of your most recent pay stub and a signed lease agreement. You can upload them through our secure online portal or bring them to any branch. If you choose the portal, please do it by Friday, because our processing team closes at five p.m. on Thursday. If you have questions, call me at the number on your statement. Thank you.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To confirm a loan approval and request documents
+(B) To cancel a loan application and refund fees
+(C) To invite the customer to a branch meeting
+(D) To report a problem with a monthly payment
+Answer: A
+Explanation: Người nói nói "I am calling about your loan application. Good news: your application has been approved. However, we still need two documents before we can release the funds." | (A) "To confirm a loan approval and request documents" — khớp đúng mục đích vừa được nêu. | (B) "To cancel a loan application and refund fees" — bài nói hồ sơ được duyệt, không hủy hay hoàn phí. | (C) "To invite the customer to a branch meeting" — có nhắc "branch" nhưng chỉ để nộp giấy tờ, không có cuộc họp. | (D) "To report a problem with a monthly payment" — không lời nào nhắc thanh toán hàng tháng.
+Source: original
+[QUESTION]
+What document must the customer provide?
+(A) A bank statement
+(B) A signed lease agreement
+(C) A tax return
+(D) A car title
+Answer: B
+Explanation: Người nói yêu cầu "Please send a copy of your most recent pay stub and a signed lease agreement." | (A) "A bank statement" — bài nhắc "statement" trong "the number on your statement", không phải giấy tờ cần nộp: đúng từ, sai ngữ cảnh. | (B) "A signed lease agreement" — khớp đúng giấy tờ được nêu. | (C) "A tax return" — không xuất hiện trong bài. | (D) "A car title" — không xuất hiện trong bài.
+Source: original
+[QUESTION]
+What does the speaker ask the customer to do by Friday?
+(A) Bring the documents to any branch
+(B) Call the processing team at five p.m.
+(C) Upload the documents through the online portal
+(D) Sign a new loan application
+Answer: C
+Explanation: Người nói nói "If you choose the portal, please do it by Friday, because our processing team closes at five p.m. on Thursday." | (A) "Bring the documents to any branch" — là cách nộp khác, không gắn với hạn Friday. | (B) "Call the processing team at five p.m." — bài nói "our processing team closes at five p.m. on Thursday", không yêu cầu gọi lúc năm giờ: đúng từ, sai ngữ cảnh. | (C) "Upload the documents through the online portal" — khớp với "choose the portal" và "do it by Friday". | (D) "Sign a new loan application" — không xuất hiện trong bài.
+Source: original

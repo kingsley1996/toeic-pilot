@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Hi. I'm from marketing. I'd like to discuss the promotion plan for the new product launch.
+voice: ca_male_1
+Sure. Sales can help. When do you need the final campaign details?
+voice: uk_female_1
+By next Monday, so we can book the venues.
+voice: ca_male_1
+Good. Which channel should we emphasize first?
+voice: uk_female_1
+The one owned by the regional team. It has the largest budget.
+voice: ca_male_1
+That makes sense. We'll prepare the customer list for it.
+voice: uk_female_1
+Thanks. I'll send the schedule after lunch.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To discuss a promotion plan
+(B) To book a venue
+(C) To prepare a customer list
+(D) To send a schedule
+Answer: A
+Explanation: Người nói mở đầu bằng "I'd like to discuss the promotion plan for the new product launch". | (A) "To discuss a promotion plan" — khớp đúng câu vừa dẫn. | (B) nói tới việc đặt địa điểm, chỉ được nhắc như mục đích sau hạn chót. | (C) là việc phòng bán hàng sẽ làm sau đó, không phải mục đích chính. | (D) là việc gửi lịch sau bữa trưa, cũng không phải lý do cuộc nói chuyện.
+Source: original
+[QUESTION]
+What must be completed by next Monday?
+(A) The customer list
+(B) The final campaign details
+(C) The venue booking
+(D) The schedule
+Answer: B
+Explanation: Người nam hỏi "When do you need the final campaign details?" và người nữ trả lời "By next Monday". | (A) là danh sách khách hàng sẽ được chuẩn bị sau đó, không phải việc cần hoàn thành trước thứ Hai. | (B) "The final campaign details" — khớp đúng câu vừa dẫn. | (C) là việc đặt địa điểm, chỉ được nói tới như kết quả sau khi có chi tiết chiến dịch. | (D) là lịch sẽ được gửi sau bữa trưa, không liên quan đến hạn chót thứ Hai.
+Source: original
+[QUESTION]
+Look at the graphic. Which promotion channel will the team emphasize first?
+(A) Social Media
+(B) In-store
+(C) Email
+(D) Trade Show
+Answer: C
+Explanation: Người nói chọn kênh qua câu "The one owned by the regional team. It has the largest budget.", nên bảng chỉ ra Email. | (A) "Social Media" — Social Media do Digital team phụ trách và không có ngân sách lớn nhất. | (B) In-store do Sales team phụ trách, không khớp với kênh được nhắc. | (C) "Email" — khớp đúng câu vừa dẫn. | (D) Trade Show do Events team phụ trách, cũng không phải kênh được chọn.
+Source: original

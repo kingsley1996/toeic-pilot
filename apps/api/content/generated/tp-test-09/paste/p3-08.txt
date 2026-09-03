@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. I'm at the leasing office to discuss renewing my apartment lease.
+voice: ca_male_1
+Thanks for coming in. Your current lease ends on June 30.
+voice: uk_female_1
+I'd like to extend it for another year, but I need a written confirmation first.
+voice: ca_male_1
+We can prepare that today. Please sign the renewal form before Friday.
+voice: uk_female_1
+Could you also email me a copy of the new terms?
+voice: ca_male_1
+Yes, I'll send it after you sign the form.
+
+[QUESTION]
+Where does the conversation take place?
+(A) At a confirmation office
+(B) In an apartment
+(C) At a renewal desk
+(D) At a leasing office
+Answer: D
+Explanation: Người phụ nữ nói "I'm at the leasing office to discuss renewing my apartment lease". | (A) nói tới confirmation office, confirmation và office đã nghe nhưng không phải địa điểm. | (B) nói tới apartment, một từ đã nghe nhưng sai ngữ cảnh. | (C) nói tới renewal desk, renewal đã nghe nhưng không phải nơi gặp. | (D) "At a leasing office" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+When does the current lease end?
+(A) June 30
+(B) Friday
+(C) today
+(D) another year
+Answer: A
+Explanation: Người đàn ông nói "Your current lease ends on June 30". | (A) "June 30" — khớp đúng câu vừa dẫn. | (B) nói tới Friday, thời hạn ký đơn gia hạn, không phải ngày hợp đồng kết thúc. | (C) nói tới today, thời điểm chuẩn bị xác nhận, không phải ngày kết thúc. | (D) nói tới another year, thời hạn gia hạn mong muốn, không phải ngày kết thúc.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Sign the renewal form
+(B) Email a copy of the new terms
+(C) Prepare a written confirmation
+(D) Extend the lease for another year
+Answer: B
+Explanation: Người phụ nữ hỏi "Could you also email me a copy of the new terms?". | (A) nói tới sign the renewal form, hành động người đàn ông yêu cầu cô ấy, không phải yêu cầu của cô ấy. | (B) "Email a copy of the new terms" — khớp đúng câu vừa dẫn. | (C) nói tới prepare a written confirmation, việc người đàn ông nói có thể làm, không phải điều cô ấy yêu cầu. | (D) nói tới extend the lease for another year, ý định của cô ấy, không phải yêu cầu gửi email.
+Source: original

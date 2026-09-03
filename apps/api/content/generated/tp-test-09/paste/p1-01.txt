@@ -1,8 +1,9 @@
 [QUESTION]
 voice: au_male_1
-(A) The engineer is holding a blueprint.
-(B) The engineer is pouring concrete into a form.
-(C) Two workers are carrying a ladder.
+(A) Two engineers are reviewing a blueprint.
+(B) The engineer is digging with a shovel.
+(C) The engineer is holding a blueprint.
 (D) The blueprint is lying on the ground.
-Answer: A
+Answer: C
+Explanation: Trong ảnh, một kỹ sư đội mũ bảo hộ đang cầm bản vẽ mở bằng cả hai tay, còn xẻng nằm trên mặt đất bên trái. | (A) nói hai kỹ sư đang xem bản vẽ, sai số lượng vì chỉ có một người. | (B) nói kỹ sư đang đào bằng xẻng, sai hành động vì xẻng không được cầm. | (C) "The engineer is holding a blueprint." — khớp đúng câu vừa dẫn. | (D) nói bản vẽ nằm trên đất, sai vị trí vì nó đang được cầm.
 Source: original

@@ -1,37 +1,37 @@
 [PASSAGE]
-Review: Warehouse Software for Logistics Companies
+Review: Warehouse Management Software for Logistics Teams
+By L. Tran
 
-When our regional distribution centre replaced its spreadsheet system with new warehouse software, the first improvement was visibility. Dispatchers could see incoming pallets, reserved stock, and delayed carriers on one dashboard. Inventory counts that once took two days were completed in four hours, and order errors fell by nearly thirty percent.
+The software has helped our regional distribution center reduce misplaced pallets by nearly thirty percent since March. The dashboard shows incoming shipments, storage zones, and staff assignments in one view, which makes morning planning faster. Barcode scanning is simple, and the mobile app works well even in aisles with weak Wi-Fi. Reports on delayed orders are clear enough for supervisors to act without extra training. We tested it across two shifts and found that the alerts for low stock arrived before shortages became urgent. That alone saved time for supervisors. It also reduced overtime.
 
-The software is strongest for companies that need simple, reliable tracking rather than advanced automation. Its mobile scanning feature works well in narrow aisles, and the reporting templates are easy to edit. Customer support answered our setup questions within one business day.
+The main weakness is the setup process. Importing old inventory records took longer than expected, and several fields had to be corrected manually. The vendor’s support team answered questions within a day, but the online guide assumes users already understand warehouse codes. For a company with a small IT staff, this can slow the first month.
 
-However, the program has a clear weakness. It cannot connect directly with several older customs documents used by international freight partners. Staff must export data, convert it, and upload it again, which adds time to cross-border shipments. For domestic logistics firms, this is minor. For companies handling frequent overseas deliveries, it may be a serious limitation.
-
-Overall, the software is a practical choice for growing warehouses, but buyers should test it against their own document workflow before signing a long contract.
+Still, the software is worth considering if your team needs better visibility and can spare time for initial data cleanup.
 
 [QUESTION]
-What is the main purpose of the review?
-(A) To evaluate a software product
-(B) To compare two distribution centres
-(C) To announce a support policy
-(D) To recommend a customs agency
-Answer: A
+What is the purpose of the review?
+(A) To announce a new mobile application for delivery drivers
+(B) To evaluate a warehouse management program for logistics teams
+(C) To compare the prices of two inventory systems
+(D) To ask readers to submit online support tickets
+Answer: B
+Explanation: Bài đánh giá viết "The software has helped our regional distribution center..." và "Still, the software is worth considering..." — mục đích là đánh giá phần mềm cho đội logistics. | (A) nói thông báo ứng dụng cho tài xế, không có trong bài. | (B) "To evaluate a warehouse management program for logistics teams" — khớp đúng câu vừa dẫn. | (C) nói so sánh giá, bài không nêu giá. | (D) nói yêu cầu gửi ticket hỗ trợ, bài chỉ nhắc đội hỗ trợ trả lời câu hỏi.
 Source: original
-
 [QUESTION]
-What can be inferred about companies that frequently ship overseas?
-(A) They may need extra time for customs paperwork
-(B) They will find mobile scanning useless
-(C) They should avoid reporting templates
-(D) They need no dashboard
-Answer: A
+What can be inferred about the software?
+(A) It is unsuitable for companies with weak Wi-Fi.
+(B) It has replaced all manual inventory tasks.
+(C) It may require extra help from an IT department.
+(D) It is mainly designed for small offices.
+Answer: C
+Explanation: Đoạn 2 viết "For a company with a small IT staff, this can slow the first month" — suy ra phần mềm có thể cần thêm hỗ trợ từ bộ phận IT. | (A) nói không phù hợp khi Wi-Fi yếu, trái với "the mobile app works well even in aisles with weak Wi-Fi". | (B) nói đã thay thế mọi thao tác thủ công, trái với "several fields had to be corrected manually". | (C) "It may require extra help from an IT department." — khớp đúng câu vừa dẫn. | (D) nói chủ yếu dành cho văn phòng nhỏ, trái với "regional distribution center" và "logistics teams".
 Source: original
-
 [QUESTION]
-What weakness of the software is mentioned?
-(A) It cannot connect directly with some older customs documents
-(B) Its mobile scanning feature is difficult to use
-(C) Customer support responds slowly
-(D) Inventory counts take two days
-Answer: A
+According to the review, what is the main weakness?
+(A) The mobile app
+(B) Barcode scanning
+(C) Reports on delayed orders
+(D) The setup process
+Answer: D
+Explanation: Đoạn 2 viết "The main weakness is the setup process" — điểm yếu chính là quá trình thiết lập. | (A) nói ứng dụng di động, trái với "the mobile app works well". | (B) nói quét mã vạch, trái với "Barcode scanning is simple". | (C) nói báo cáo đơn chậm, trái với "Reports on delayed orders are clear enough". | (D) "The setup process" — khớp đúng câu vừa dẫn.
 Source: original

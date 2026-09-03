@@ -1,8 +1,9 @@
 [QUESTION]
 voice: uk_female_1
-(A) Some boxes are stacked beside the dock.
-(B) The boxes are lying flat on the dock.
-(C) There are boxes placed under the dock.
-(D) A row of boxes is lined up along the dock.
-Answer: A
+(A) There is a worker loading the boxes.
+(B) The boxes are lying flat in the water.
+(C) The pallet is hanging from a crane hook.
+(D) The boxes are stacked on a pallet beside the dock.
+Answer: D
+Explanation: Trong ảnh, các thùng hàng được xếp chồng trên một pallet gỗ cạnh cầu tàu, không có người và không có cần cẩu nào. | (A) nói "There is a worker loading the boxes", nhắc tới người không hề có trong ảnh. | (B) nói "The boxes are lying flat in the water", sai vị trí vì thùng ở trên pallet cạnh cầu tàu. | (C) nói "The pallet is hanging from a crane hook", sai vì không có cần cẩu hay móc cẩu trong ảnh. | (D) "The boxes are stacked on a pallet beside the dock." — khớp đúng câu vừa dẫn.
 Source: original

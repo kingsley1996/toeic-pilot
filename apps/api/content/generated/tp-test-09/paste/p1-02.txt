@@ -1,8 +1,9 @@
 [QUESTION]
 voice: uk_female_1
-(A) The bicycles are leaning against the fence.
-(B) The bicycles are lying on the ground.
+(A) There is a vendor beside the bicycles.
+(B) The bicycles are lying flat on the ground.
 (C) The bicycles are hanging from the fence.
-(D) The fence is lying across the bicycles.
-Answer: A
+(D) The bicycles are leaning against a wooden fence.
+Answer: D
+Explanation: Trong ảnh, ba chiếc xe đạp đang tựa vào hàng rào gỗ, bánh chạm đất và khung nghiêng vào rào. | (A) nói "There is a vendor beside the bicycles", nhắc tới người không có trong ảnh. | (B) nói "The bicycles are lying flat on the ground", sai vị trí vì xe không nằm phẳng. | (C) nói "The bicycles are hanging from the fence", sai vị trí vì xe không treo. | (D) "The bicycles are leaning against a wooden fence." — khớp đúng câu vừa dẫn.
 Source: original

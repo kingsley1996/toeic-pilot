@@ -1,0 +1,47 @@
+[PASSAGE]
+A Productive Stop in District 1
+
+During a trip to Ho Chi Minh City, I needed a quiet place to work between meetings. A guide recommended a coworking space in District 1, and I booked a day pass. The reception area was ------- (1), with comfortable chairs and fast Wi-Fi.
+
+The staff were friendly and showed ------- (2) around the shared desks. I appreciated how they remembered my name after one visit.
+
+The space also had a small kitchen with free coffee and tea. It was perfect for short breaks, but I did not want to leave my laptop unattended. ------- (3)
+
+The locker ------- (4) with a code, so I could work without worry. Overall, the coworking space made my business trip smoother and more enjoyable.
+
+[QUESTION]
+Blank (1)
+(A) crowded
+(B) noisy
+(C) inviting
+(D) expensive
+Answer: C
+Explanation: Câu ngay TRƯỚC chỗ trống là "I needed a quiet place to work between meetings", và cụm sau chỗ trống "with comfortable chairs and fast Wi-Fi" cho thấy không gian dễ chịu. | (A) "crowded" — đông đúc, trái với mong muốn yên tĩnh. | (B) "noisy" — ồn ào, mâu thuẫn với quiet place. | (C) "inviting" — hấp dẫn, hợp với ghế thoải mái và Wi-Fi nhanh. | (D) "expensive" — đắt đỏ, không được các chi tiết sau gợi ra.
+Source: original
+[QUESTION]
+Blank (2)
+(A) I
+(B) mine
+(C) my
+(D) me
+Answer: D
+Explanation: Câu chứa chỗ trống là "The staff were friendly and showed ------- (2) around the shared desks", nên sau động từ "showed" cần tân ngữ chỉ người được dẫn đi. | (A) "I" — chủ ngữ, không làm tân ngữ sau showed. | (B) "mine" — đại từ sở hữu, không đóng vai trò tân ngữ trực tiếp ở đây. | (C) "my" — tính từ sở hữu, cần danh từ đi kèm. | (D) "me" — tân ngữ, đúng với người kể chuyện.
+Source: original
+[QUESTION]
+Blank (3)
+(A) A staff member suggested using a locker for personal items.
+(B) The coffee machine was cleaned every morning.
+(C) Many visitors preferred the outdoor terrace.
+(D) The meeting rooms were available for rent.
+Answer: A
+Explanation: Câu ngay TRƯỚC chỗ trống là "It was perfect for short breaks, but I did not want to leave my laptop unattended", còn câu SAU nhắc "The locker", nên câu điền phải dẫn tới việc dùng tủ khóa. | (A) "A staff member suggested using a locker for personal items." — giới thiệu locker, khớp với câu sau. | (B) "The coffee machine was cleaned every morning." — nói về máy pha cà phê, không nối với laptop hay locker. | (C) "Many visitors preferred the outdoor terrace." — lạc sang khu vực ngoài trời, không giải quyết lo lắng về laptop. | (D) "The meeting rooms were available for rent." — nói về phòng họp, không liên quan tới đồ cá nhân.
+Source: original
+[QUESTION]
+Blank (4)
+(A) secures
+(B) was secured
+(C) secured
+(D) securing
+Answer: B
+Explanation: Câu chứa chỗ trống là "The locker ------- (4) with a code, so I could work without worry", nên chủ ngữ "The locker" phải nhận hành động khóa. | (A) "secures" — chủ động hiện tại, biến locker thành vật tự khóa. | (B) "was secured" — bị động quá khứ, đúng với locker được khóa. | (C) "secured" — quá khứ chủ động, thiếu chủ thể thực hiện hành động. | (D) "securing" — thiếu trợ động từ nên không làm được vị ngữ.
+Source: original

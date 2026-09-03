@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone. In this meeting, we are reviewing the advertising campaign budget before the quarterly report. The total amount is fixed, so we need to decide which line to adjust first. Look at the table in your handouts. The line that costs eighteen thousand dollars will be examined in detail because its performance has been below expectations. The other three lines will keep their current amounts for now. After this discussion, I will send the revised figures to the finance team by Friday. Then we will meet again next Monday to approve the final plan.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To schedule a product launch
+(B) To introduce a finance team
+(C) To review a campaign budget
+(D) To report customer complaints
+Answer: C
+Explanation: Người nói mở đầu bằng "we are reviewing the advertising campaign budget before the quarterly report" — mục đích là xem xét ngân sách chiến dịch. | (A) "To schedule a product launch" — bài nói có lịch gặp lại, nhưng không nhắc ra mắt sản phẩm. | (B) "To introduce a finance team" — nhóm tài chính chỉ được nhắc là nơi sẽ nhận số liệu, không phải để giới thiệu. | (C) "To review a campaign budget" — khớp đúng câu vừa dẫn. | (D) "To report customer complaints" — bài nói nhắc hiệu suất thấp, không nhắc khiếu nại khách hàng.
+Source: original
+[QUESTION]
+Look at the graphic. Which item will be examined in detail?
+(A) Social
+(B) Print
+(C) Email
+(D) Search
+Answer: D
+Explanation: Người nói nói "The line that costs eighteen thousand dollars will be examined in detail" và bảng cho thấy dòng có số tiền 18,000 là mục cần chọn. | (A) "Social" — bảng ghi 12,000, không phải eighteen thousand dollars. | (B) "Print" — bảng ghi 9,000, không khớp số tiền được nói. | (C) "Email" — bảng ghi 6,500, không khớp số tiền được nói. | (D) "Search" — bảng ghi 18,000, khớp với số tiền được nói.
+Source: original
+[QUESTION]
+What will the speaker do by Friday?
+(A) Send revised figures to the finance team
+(B) Meet again next Monday
+(C) Approve the final plan
+(D) Examine the underperforming line
+Answer: A
+Explanation: Người nói nói "After this discussion, I will send the revised figures to the finance team by Friday" — hành động trước thứ Sáu là gửi số liệu đã sửa. | (A) "Send revised figures to the finance team" — khớp đúng hành động và hạn chót vừa dẫn. | (B) "Meet again next Monday" — có thật trong bài, nhưng là lịch thứ Hai, không phải việc làm trước thứ Sáu. | (C) "Approve the final plan" — có thật trong bài, nhưng diễn ra sau buổi gặp lại, không phải trước thứ Sáu. | (D) "Examine the underperforming line" — được nói là sẽ xem xét chi tiết trong cuộc họp, không phải hành động trước thứ Sáu.
+Source: original

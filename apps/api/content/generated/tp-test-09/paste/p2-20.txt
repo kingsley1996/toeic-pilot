@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+You're a guest of the company, aren't you?
+voice: au_male_1
+(A) I guess the appointment is at noon.
+(B) No, I'm not a manager.
+(C) Yes, I have an appointment.
+Answer: C
+Explanation: Câu hỏi đuôi là "You're a guest of the company, aren't you?" — hỏi xác nhận người nghe có phải khách của công ty không. | (A) "I guess the appointment is at noon." dùng từ "guess" gần âm với "guest" và trả lời thời gian, không đáp lại câu hỏi xác nhận. | (B) "No, I'm not a manager." là câu trả lời cho một câu hỏi khác về chức danh, không xác nhận việc là khách. | (C) "Yes, I have an appointment." — "Yes, I have an appointment." trả lời đúng bằng cách xác nhận và nêu lý do có hẹn.
+Source: original

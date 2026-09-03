@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Have you checked the customer order yet?
+voice: ca_male_1
+(A) No, the order is on the desk.
+(B) The order was placed yesterday.
+(C) Yes, everything looks fine.
+Answer: C
+Explanation: Câu hỏi là "Have you checked the customer order yet?" — hỏi YES/NO về việc đã kiểm tra đơn hàng. | (A) "No, the order is on the desk." dùng lại từ order nhưng trả lời nơi để đơn hàng, không phải trạng thái kiểm tra. | (B) "The order was placed yesterday." trả lời khi nào đơn hàng được đặt, tức đáp một câu hỏi When, không trả lời đã kiểm tra hay chưa. | (C) "Yes, everything looks fine." — "Yes, everything looks fine." xác nhận đã kiểm tra và mọi thứ ổn.
+Source: original

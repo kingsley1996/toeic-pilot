@@ -1,0 +1,7 @@
+kind: table
+New Product Promotion Channels
+Channel | Budget | Owner
+Social Media | 18,000 | Digital team
+Email | 24,000 | Regional team
+In-store | 12,000 | Sales team
+Trade Show | 9,000 | Events team

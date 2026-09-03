@@ -1,5 +1,5 @@
 kind: chart
-Total Vacation Days Reported by Department
+Average Leave Days per Employee
 Sales | 12
 IT | 8
 HR | 5

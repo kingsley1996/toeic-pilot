@@ -1,0 +1,9 @@
+[QUESTION]
+The online training program is designed to be very -------.
+(A) interactively
+(B) interactivity
+(C) interactive
+(D) interacted
+Answer: C
+Explanation: Sau "to be very" cần tính từ để mô tả chương trình. | (A) "interactively" — là trạng từ, không đứng sau "be very". | (B) "interactivity" — là danh từ, sai từ loại. | (C) "interactive" — đúng tính từ, phù hợp với "very". | (D) "interacted" — là động từ quá khứ/phân từ, sai dạng cho vị trí này.
+Source: original

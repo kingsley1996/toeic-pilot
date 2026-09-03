@@ -1,0 +1,9 @@
+[QUESTION]
+The invoice is ------- by the accounting department at the end of the day.
+(A) issuing
+(B) issued
+(C) issue
+(D) issues
+Answer: B
+Explanation: Sau "is" và trước "by" cần phân từ hai để tạo thể bị động. | (A) "issuing" — là dạng chủ động, không tạo thể bị động sau "is". | (B) "issued" — đúng phân từ hai của "issue" trong thể bị động. | (C) "issue" — là dạng nguyên thể, không phải phân từ hai. | (D) "issues" — là dạng động từ số ít hoặc danh từ số nhiều, không phải phân từ hai.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why was the meeting postponed this afternoon?
+voice: ca_male_1
+(A) In the main conference room.
+(B) Because the director is on a business trip.
+(C) The director postponed it.
+Answer: B
+Explanation: Câu hỏi là "Why was the meeting postponed this afternoon?" — hỏi LÝ DO. | (A) "In the main conference room." trả lời nơi chốn, tức sai loại câu hỏi. | (B) "Because the director is on a business trip." — "Because the director is on a business trip." trả lời đúng loại. | (C) "The director postponed it." chỉ nêu người hoãn, dùng lại director/postponed nhưng không trả lời được "tại sao".
+Source: original

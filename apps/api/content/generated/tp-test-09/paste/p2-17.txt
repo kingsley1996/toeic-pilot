@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Would you like a receipt for this meal?
+voice: uk_female_1
+(A) It's on the table.
+(B) No, I paid by card.
+(C) Yes, please. I need one.
+Answer: C
+Explanation: Câu hỏi là "Would you like a receipt for this meal?" — hỏi YES/NO về việc khách có muốn hóa đơn không. | (A) "It's on the table." chỉ vị trí, tức trả lời cho câu hỏi WHERE, không phải YES/NO. | (B) "No, I paid by card." nói về cách thanh toán, là một câu hợp lý nhưng không đáp lại việc có cần hóa đơn hay không. | (C) "Yes, please. I need one." — "Yes, please. I need one." trả lời đúng loại.
+Source: original

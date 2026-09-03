@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+There's no hot water in my room.
+voice: us_female_1
+(A) I'll have someone check it right away.
+(B) Yes, the hot water is working.
+(C) Room 205 is on the second floor.
+Answer: A
+Explanation: Câu trần thuật là "There's no hot water in my room." — khách báo phòng không có nước nóng. | (A) "I'll have someone check it right away." — "I'll have someone check it right away." là lời đáp lễ tân nhận xử lý. | (B) "Yes, the hot water is working." đáp Yes cho một câu trần thuật và dùng lại "hot water" theo hướng ngược lại, không phải lời đáp phù hợp. | (C) "Room 205 is on the second floor." trả lời câu hỏi về số phòng/vị trí, dùng lại "room" nhưng không phản hồi phàn nàn.
+Source: original

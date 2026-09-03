@@ -1,0 +1,9 @@
+[QUESTION]
+Having ------- the elevator, please stand aside.
+(A) vacating
+(B) vacate
+(C) vacates
+(D) vacated
+Answer: D
+Explanation: Sau "Having" trong cấu trúc phân từ hoàn thành cần quá khứ phân từ. | (A) "vacating" — là V-ing, không phải dạng sau "Having". | (B) "vacate" — là nguyên thể, không phải phân từ. | (C) "vacates" — là động từ chia ngôi, không phải phân từ. | (D) "vacated" — đúng dạng quá khứ phân từ trong "Having + V3".
+Source: original

@@ -1,0 +1,45 @@
+[SCRIPT]
+voice: us_female_1
+Welcome to the company. I'm from Human Resources. I'm calling to tell you about the internal training course at the beginning of the year.
+voice: au_male_1
+Thank you. Is it for all new employees?
+voice: us_female_1
+Yes. It covers company policies, safety rules, and basic software.
+voice: au_male_1
+When does it start?
+voice: us_female_1
+It starts on Monday, January fifteenth, at nine in the morning.
+voice: au_male_1
+Where should I go?
+voice: us_female_1
+Please go to Room 204 on the second floor. Bring your employee ID.
+voice: au_male_1
+I'll arrive early.
+
+[QUESTION]
+Why is the woman calling?
+(A) To request a software update
+(B) To ask about new employees
+(C) To announce a training course
+(D) To report a safety incident
+Answer: C
+Explanation: Người phụ nữ nói "I'm calling to tell you about the internal training course at the beginning of the year" — mục đích là thông báo khóa đào tạo. | (A) nói yêu cầu cập nhật phần mềm, dùng từ software đã nghe nhưng sai ngữ cảnh. | (B) nói hỏi về nhân viên mới, đúng là có hỏi nhưng do người đàn ông hỏi, không phải mục đích gọi. | (C) "To announce a training course" — khớp đúng câu vừa dẫn. | (D) nói báo cáo sự cố an toàn, dùng từ safety đã nghe nhưng sai ngữ cảnh.
+Source: original
+[QUESTION]
+What does the woman ask the man to bring?
+(A) Room 204
+(B) Company policies
+(C) Safety rules
+(D) Employee ID
+Answer: D
+Explanation: Người phụ nữ nói "Bring your employee ID." — thứ cần mang là thẻ nhân viên. | (A) nói Phòng 204, đúng là có nói nhưng không phải thứ cần mang. | (B) nói chính sách công ty, dùng từ company policies đã nghe nhưng sai ngữ cảnh. | (C) nói quy tắc an toàn, dùng từ safety rules đã nghe nhưng sai ngữ cảnh. | (D) "Employee ID" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What does the man say he will do?
+(A) Arrive early
+(B) Ask about safety rules
+(C) Go to Room 204
+(D) Bring company policies
+Answer: A
+Explanation: Người đàn ông nói "I'll arrive early." — hành động tương lai anh ấy nói sẽ làm là đến sớm. | (A) "Arrive early" — khớp đúng câu vừa dẫn. | (B) nói hỏi quy tắc an toàn, dùng từ safety rules đã nghe nhưng sai ngữ cảnh. | (C) nói đến Phòng 204, đúng là có nói nhưng do người phụ nữ yêu cầu, không phải điều người đàn ông nói sẽ làm. | (D) nói mang chính sách công ty, dùng từ company policies đã nghe nhưng sai ngữ cảnh.
+Source: original

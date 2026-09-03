@@ -1,37 +1,36 @@
 [PASSAGE]
-Hybrid Work Takes Hold at BrightPath Technologies
+Hybrid Work at Northbridge Tech
 
-When BrightPath Technologies introduced a hybrid schedule last spring, managers expected resistance. Instead, employees welcomed the flexibility. The policy allows staff to work from home two days a week, while requiring attendance in the office on Tuesday and Thursday. Those office days are reserved for team meetings, client calls, and collaborative design sessions.
+Northbridge Tech has moved from a fully remote model to a hybrid schedule, and employees are adjusting quickly. Under the new policy, staff work in the office on Tuesdays and Thursdays, while other days are remote. The change is intended to strengthen teamwork without eliminating the flexibility that many workers value.
 
-To make the arrangement successful, the company updated its rules. Employees must confirm their office days through the internal calendar by Friday. They also need a quiet workspace, a reliable internet connection, and a headset for video calls. If a worker cannot attend an in-person meeting, a supervisor must approve an alternative time.
+To make the transition smooth, the company has asked employees to prepare in three ways. First, each person must bring a company laptop, a secure badge, and a notebook to office days. Second, workers should check the shared calendar before booking a desk, because seating is limited. Third, teams are expected to agree on core hours so that colleagues can meet face to face. Employees who travel from outside the city can request a later start time on office days.
 
-The change has improved morale, but it has also created new expectations. Remote days are not treated as vacation days. Staff are expected to answer messages during normal business hours and to join scheduled calls promptly. The company plans to review the policy after six months.
-
-Training sessions will help employees learn how to manage shared calendars and document project progress. Managers will monitor attendance patterns.
+The office has been redesigned with quiet booths, small meeting rooms, and a shared kitchen. Managers say the space feels more collaborative, though some employees still miss the calm of home. Northbridge will review the policy after six months and may adjust the required office days.
 
 [QUESTION]
-According to the article, what must employees do by Friday?
-(A) Confirm their office days through the internal calendar
-(B) Request a headset from the company
-(C) Attend all meetings in person
-(D) Review the hybrid policy
+What must employees bring on office days?
+(A) A laptop, badge, and notebook
+(B) A printed calendar and kitchen key
+(C) A personal phone and home router
+(D) A travel ticket and later start
 Answer: A
+Explanation: Đoạn 2 viết "each person must bring a company laptop, a secure badge, and a notebook to office days". | (A) "A laptop, badge, and notebook" — khớp đúng câu vừa dẫn. | (B) nói lịch in và chìa khóa bếp, không có trong bài. | (C) nói điện thoại cá nhân và bộ định tuyến, trái với yêu cầu mang laptop công ty. | (D) nhắc giờ bắt đầu muộn, có trong bài nhưng không phải thứ cần mang.
 Source: original
-
 [QUESTION]
-What can be inferred about remote days?
-(A) They are treated as vacation days.
-(B) They require normal work availability.
-(C) They are assigned by supervisors.
-(D) They are only for new employees.
+What can be inferred about the hybrid policy?
+(A) It requires all staff to work remotely
+(B) It may be changed after a trial period
+(C) It has eliminated office seating
+(D) It was rejected by managers
 Answer: B
+Explanation: Câu cuối viết "Northbridge will review the policy after six months and may adjust the required office days" cho thấy chính sách có thể được điều chỉnh sau giai đoạn thử nghiệm. | (A) nói mọi nhân viên phải làm từ xa, trái với lịch hybrid. | (B) "It may be changed after a trial period" — khớp đúng câu vừa dẫn. | (C) nói chỗ ngồi văn phòng đã bị loại bỏ, trong khi bài nói chỗ ngồi hạn chế. | (D) nói quản lý bác bỏ chính sách, điều bài không nêu.
 Source: original
-
 [QUESTION]
-In the article, the word "promptly" in paragraph 3 is closest in meaning to
-(A) quickly
-(B) quietly
-(C) rarely
-(D) formally
-Answer: A
+In the article, the word "transition" in paragraph 2 is closest in meaning to
+(A) notebook
+(B) meeting
+(C) change
+(D) kitchen
+Answer: C
+Explanation: Trong đoạn 2, "To make the transition smooth" chỉ quá trình chuyển sang lịch làm việc hybrid, gần nghĩa với change. | (A) notebook là vật dụng phải mang, không liên quan nghĩa từ. | (B) meeting là cuộc họp, không phải quá trình chuyển đổi. | (C) "change" — khớp đúng câu vừa dẫn. | (D) kitchen là khu bếp trong văn phòng, không phải từ đồng nghĩa.
 Source: original

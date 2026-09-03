@@ -1,48 +1,48 @@
 [PASSAGE]
-[Review: Reliable Printing for a Busy Law Office]
-By Dana Whitfield, March 12
+Review: Reliable Printing for a Busy Law Office
+By M. Alvarez, Office Manager
+March 12
 
-When our firm needed a printing partner for case files, business cards, and client packets, we tried three local vendors. [1] The first vendor quoted a low price but missed two deadlines, and the second sent proofs with unclear margins. [2] The third, Harbor Print Services, impressed us immediately. [3] Its representative asked about our confidentiality rules, paper preferences, and delivery windows before giving a quote. [4] The quote included itemized charges for binding and color printing, so there were no surprise fees later.
+Our firm recently switched to a local print shop after our old vendor missed several deadlines. The new service has been a welcome change, especially for documents that must be finished quickly. The staff can print, trim, and bind court filings within two hours when we submit files before noon. That same-day binding option is the feature we praise most, because it saves us from rescheduling meetings with clients. We also appreciate that the staff understands confidentiality. They never leave unfinished files on the counter, and they ask us to confirm sensitive client names before printing.
 
-Harbor Print Services deserves praise for its document preparation service. Staff members checked every file for missing pages, corrected formatting, and produced professional packets. They also offered a secure pickup option. The online ordering system was simple, and the status updates were accurate. We could also reorder a corrected packet quickly when one client name was misspelled.
+The online ordering system is simple. We upload contracts, select paper weight, and choose delivery or pickup. [1] The confirmation e-mail lists the order number, the expected completion time, and the total cost. [2] For large jobs, the shop calls to check whether we want extra copies or a different cover. [3] This personal check has prevented several mistakes that would have been costly in court.
 
-The company’s customer service was strong. A project manager called within one hour of our first request and answered questions without pressuring us to sign a long contract. Delivery was on time, and the products looked polished.
-
-We did not use the company’s large-format banner printing, so we cannot comment on that service. The price was higher than the first vendor’s estimate, but the reliability and careful handling made the difference worthwhile. For a law office that values accuracy and confidentiality, Harbor Print Services is a sensible choice.
+The delivery drivers are polite and arrive within the promised window. They also scan receipts and send updates if traffic delays occur. [4] The only drawback is that the shop closes early on Fridays, so late-week requests must wait until Monday. Still, the overall quality is high, and the prices are reasonable for the level of service. We recommend this print shop to any office that needs dependable, fast, and careful document preparation.
 
 [QUESTION]
-Which service is praised in the review?
-(A) Document preparation
-(B) Large-format banner printing
-(C) Contract negotiation
-(D) Legal consulting
+Which service is praised most in the review?
+(A) Receipt scanning
+(B) Friday delivery
+(C) Paper selection
+(D) Same-day binding
+Answer: D
+Explanation: Đoạn 1 viết "That same-day binding option is the feature we praise most". | (A) nói quét biên lai, có nhắc "scan receipts" nhưng không được khen. | (B) nói giao hàng thứ Sáu, trái với "the shop closes early on Fridays". | (C) nói chọn giấy, có nhắc "select paper weight" nhưng không phải dịch vụ được khen nhất. | (D) "Same-day binding" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What can be inferred about the law office?
+(A) It often handles time-sensitive legal documents.
+(B) It uses the print shop only for contracts.
+(C) It pays a higher price for confidentiality.
+(D) It avoids online ordering for large jobs.
 Answer: A
+Explanation: Đoạn 1 viết "documents that must be finished quickly" và "within two hours" nên có thể suy ra. | (A) "It often handles time-sensitive legal documents." — rằng văn phòng thường xử lý tài liệu gấp. | (B) nói chỉ dùng cho hợp đồng, trái với "court filings". | (C) nói trả thêm phí bảo mật, không được nêu trong bài. | (D) nói tránh đặt hàng trực tuyến cho đơn lớn, trái với "online ordering system is simple" và chỉ có "the shop calls" để kiểm tra.
 Source: original
-
 [QUESTION]
-What can be inferred about the reviewer’s priorities?
-(A) Reliable handling matters more than the lowest price.
-(B) The reviewer prefers long contracts.
-(C) The reviewer needs banner printing.
-(D) The reviewer avoids online systems.
-Answer: A
+What is NOT stated about the print shop?
+(A) It closes early on Fridays.
+(B) It offers free delivery.
+(C) It sends confirmation e-mails.
+(D) It checks large orders by phone.
+Answer: B
+Explanation: Đây là câu hỏi NOT: ba lựa chọn đều tìm được trong bài, lựa chọn còn lại thì không. | (A) "It closes early on Fridays." — được nêu ở "the shop closes early on Fridays". | (B) "It offers free delivery." — bài chỉ có "choose delivery or pickup" mà không nêu phí, nên đây là điều KHÔNG được nêu. | (C) "It sends confirmation e-mails." — được nêu ở "The confirmation e-mail lists the order number, the expected completion time, and the total cost". | (D) "It checks large orders by phone." — được nêu ở "the shop calls to check whether we want extra copies or a different cover".
 Source: original
-
-[QUESTION]
-What is NOT stated about Harbor Print Services?
-(A) It offered secure pickup.
-(B) It provided itemized charges.
-(C) It required a long contract.
-(D) It called within one hour.
-Answer: C
-Source: original
-
 [QUESTION]
 In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
-"Those problems made us hesitant to continue with either company."
+"This information helps us plan our workday."
 (A) [1]
-(B) [2]
-(C) [3]
+(B) [3]
+(C) [2]
 (D) [4]
-Answer: B
+Answer: C
+Explanation: Câu chèn "This information helps us plan our workday." cần một câu ngay trước nó nêu ra thứ mà "this information" trỏ tới, và câu đó là "The confirmation e-mail lists the order number, the expected completion time, and the total cost." | (A) "[1]" — đứng trước e-mail xác nhận, chưa có thông tin nào để tham chiếu. | (B) "[3]" — đứng sau việc gọi kiểm tra đơn lớn, làm "this information" chỉ nhầm sang điện thoại thay vì e-mail. | (C) "[2]" — đứng ngay sau câu vừa dẫn, đúng chỗ cần chèn. | (D) "[4]" — đứng sau đoạn nói về tài xế và biên lai, không liên quan tới thông tin xác nhận.
 Source: original

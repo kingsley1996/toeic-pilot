@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good afternoon, listeners. This is Daniel from the travel office. Are you looking for a way to reward your hard-working staff? Our new corporate resort package is designed for teams of ten to thirty employees. For three nights, guests stay in ocean-view rooms, enjoy all meals, and use the fitness center at no extra cost. The package also includes a guided nature walk and a group dinner on the beach. To book, call our business office before Friday and mention the code team break. Spaces are limited, so please reserve early.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To promote a resort package for corporate teams
+(B) To recruit employees for the travel office
+(C) To announce a beach cleanup event
+(D) To remind listeners about a Friday meeting
+Answer: A
+Explanation: Người nói nêu "Our new corporate resort package is designed for teams of ten to thirty employees" — quảng bá gói nghỉ dưỡng cho nhóm nhân viên doanh nghiệp. | (A) "To promote a resort package for corporate teams" — khớp đúng câu vừa dẫn. | (B) "To recruit employees for the travel office" — "travel office" có được nhắc, nhưng không phải để tuyển nhân viên: đúng từ, sai bối cảnh. | (C) "To announce a beach cleanup event" — "beach" có xuất hiện trong bữa tối trên bãi biển, nhưng không có hoạt động dọn dẹp: đúng từ, sai bối cảnh. | (D) "To remind listeners about a Friday meeting" — "Friday" có xuất hiện khi yêu cầu gọi trước thứ Sáu, nhưng không có cuộc họp: đúng từ, sai bối cảnh.
+Source: original
+[QUESTION]
+What is included in the package?
+(A) A fitness class
+(B) A guided nature walk
+(C) A group meeting
+(D) A beach cleanup
+Answer: B
+Explanation: Người nói nói "The package also includes a guided nature walk and a group dinner on the beach" — gói có đi bộ trong thiên nhiên có hướng dẫn. | (A) "A fitness class" — "fitness center" có được nhắc, nhưng không có lớp thể dục: đúng từ, sai bối cảnh. | (B) "A guided nature walk" — khớp đúng chi tiết vừa dẫn. | (C) "A group meeting" — "group dinner" có được nhắc, nhưng không phải cuộc họp nhóm: đúng từ, sai bối cảnh. | (D) "A beach cleanup" — "beach" có được nhắc, nhưng không có hoạt động dọn dẹp: đúng từ, sai bối cảnh.
+Source: original
+[QUESTION]
+What does the speaker ask listeners to do?
+(A) Pay extra for the fitness center
+(B) Cancel the group dinner
+(C) Call the business office before Friday
+(D) Attend a meeting on the beach
+Answer: C
+Explanation: Người nói yêu cầu "To book, call our business office before Friday and mention the code team break" — phải gọi văn phòng doanh nghiệp trước thứ Sáu. | (A) "Pay extra for the fitness center" — bài nói "at no extra cost", nên không phải trả thêm: đúng từ, sai bối cảnh. | (B) "Cancel the group dinner" — bài nói gói bao gồm "a group dinner", không phải hủy: đúng từ, sai bối cảnh. | (C) "Call the business office before Friday" — khớp đúng yêu cầu vừa dẫn. | (D) "Attend a meeting on the beach" — "beach" có xuất hiện, nhưng không có cuộc họp: đúng từ, sai bối cảnh.
+Source: original

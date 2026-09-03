@@ -1,0 +1,9 @@
+[QUESTION]
+The chief executive will ------- the remote work policy next week.
+(A) budget
+(B) invoice
+(C) recruit
+(D) approve
+Answer: D
+Explanation: Sau "will" cần động từ nguyên thể, và động từ phải kết hợp được với "the remote work policy". | (A) "budget" — không kết hợp với "policy" vì dùng cho ngân sách hoặc chi phí. | (B) "invoice" — không kết hợp với "policy" vì dùng cho hóa đơn hoặc khách hàng. | (C) "recruit" — không kết hợp với "policy" vì dùng cho tuyển người. | (D) "approve" — đúng vì "approve a policy" là kết hợp thương mại chuẩn.
+Source: original

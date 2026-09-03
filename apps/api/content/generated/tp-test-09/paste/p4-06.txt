@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, residents of the Maple Court apartment building. This is Daniel, the building maintenance technician. I am posting this notice on the lobby bulletin board about elevator service. The east elevator will be shut down for scheduled maintenance on Saturday from eight in the morning until four in the afternoon. During that time, please use the west elevator or the stairs. The west elevator will remain open, but it may move more slowly because of extra traffic. After the maintenance is complete, the east elevator will return to normal service. If you need help moving large furniture, please contact the front desk before Friday. Thank you for your patience.
+
+[QUESTION]
+Who is the speaker?
+(A) A front desk clerk
+(B) A building maintenance technician
+(C) An elevator repair company representative
+(D) A security guard
+Answer: B
+Explanation: Người nói giới thiệu "This is Daniel, the building maintenance technician" nên người thông báo là nhân viên kỹ thuật tòa nhà. | (A) "A front desk clerk" — quầy lễ tân được nhắc để liên hệ, không phải người nói. | (B) "A building maintenance technician" — khớp đúng câu giới thiệu "This is Daniel, the building maintenance technician". | (C) "An elevator repair company representative" — đại diện công ty sửa thang máy không được nhắc, chỉ có từ elevator trong bài. | (D) "A security guard" — nhân viên bảo vệ không xuất hiện ở bất kỳ đâu trong bài.
+Source: original
+[QUESTION]
+What will happen to the east elevator on Saturday?
+(A) It will move furniture
+(B) It will move more slowly
+(C) It will be shut down
+(D) It will be replaced
+Answer: C
+Explanation: Bài nói nêu "The east elevator will be shut down for scheduled maintenance on Saturday from eight in the morning until four in the afternoon" nên thang máy phía đông sẽ bị ngừng hoạt động. | (A) "It will move furniture" — bài có nhắc "moving large furniture", nhưng đó là việc phải liên hệ quầy lễ tân trước thứ Sáu, không phải điều xảy ra với thang máy phía đông. | (B) "It will move more slowly" — chỉ đúng với thang máy phía tây vì "it may move more slowly". | (C) "It will be shut down" — khớp đúng chi tiết vừa dẫn. | (D) "It will be replaced" — không có thông tin thay thế thang máy.
+Source: original
+[QUESTION]
+What should residents do if they need help moving large furniture?
+(A) Post a notice on the bulletin board
+(B) Use the west elevator on Saturday
+(C) Wait until the maintenance is complete
+(D) Contact the front desk before Friday
+Answer: D
+Explanation: Bài nói yêu cầu "If you need help moving large furniture, please contact the front desk before Friday" nên hành động cần làm là liên hệ quầy lễ tân trước thứ Sáu. | (A) "Post a notice on the bulletin board" — là việc người nói đang làm, không phải việc cư dân cần làm. | (B) "Use the west elevator on Saturday" — là hướng dẫn chung trong thời gian bảo trì, không phải cách nhờ giúp chuyển đồ. | (C) "Wait until the maintenance is complete" — không được nêu là cách xử lý khi cần giúp chuyển đồ. | (D) "Contact the front desk before Friday" — khớp đúng yêu cầu vừa dẫn.
+Source: original

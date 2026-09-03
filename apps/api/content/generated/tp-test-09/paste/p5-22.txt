@@ -1,0 +1,9 @@
+[QUESTION]
+The director approved the ------- for the marketing project.
+(A) propose
+(B) proposed
+(C) proposing
+(D) proposal
+Answer: D
+Explanation: Sau mạo từ "the" cần một danh từ để làm tân ngữ cho "approved". | (A) "propose" — là động từ nguyên thể, không phải danh từ. | (B) "proposed" — là quá khứ phân từ/tính từ, không đứng một mình làm danh từ ở vị trí này. | (C) "proposing" — là V-ing/phân từ, không phải danh từ phù hợp trong cụm này. | (D) "proposal" — là danh từ, đúng nghĩa "đề xuất".
+Source: original

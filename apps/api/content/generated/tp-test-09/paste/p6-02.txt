@@ -1,0 +1,55 @@
+[PASSAGE]
+To: Ms. Lin
+From: Hotel Manager
+Subject: Meeting Room Update
+Date: June 12
+
+Dear Ms. Lin,
+
+Thank you for booking the Summit Room for your conference. We are writing to confirm that the meeting has been ------- (1) to the larger Horizon Hall.
+
+The new room offers more space ------- (2) your presentation equipment. It also has better lighting and a larger screen for slides.
+
+The lunch service will be provided at the same time as scheduled. The menu ------- (3) by our catering team each morning.
+
+We hope these changes will make your event more comfortable. ------- (4)
+
+Sincerely,
+Jorge Rodriguez
+
+[QUESTION]
+Blank (1)
+(A) reserved
+(B) renovated
+(C) relocated
+(D) canceled
+Answer: C
+Explanation: Câu "We are writing to confirm that the meeting has been ------- (1) to the larger Horizon Hall." có cụm "to the larger Horizon Hall" cho biết cuộc họp được chuyển sang phòng khác. | (A) "reserved" — nói về việc đặt trước, không hợp với ngữ cảnh đã đặt rồi và đang đổi phòng. | (B) "renovated" — nói về sửa chữa phòng, không phải chuyển cuộc họp sang phòng khác. | (C) "relocated" — diễn tả việc chuyển địa điểm, hợp với "to the larger Horizon Hall". | (D) "canceled" — nói về hủy bỏ, trái với mục đích xác nhận thay đổi.
+Source: original
+[QUESTION]
+Blank (2)
+(A) at
+(B) on
+(C) in
+(D) for
+Answer: D
+Explanation: Câu "The new room offers more space ------- (2) your presentation equipment." cần giới từ nối "space" với thứ mà không gian đó dành cho. | (A) "at" — chỉ vị trí tại một điểm, không diễn quan hệ dành cho thiết bị. | (B) "on" — chỉ trên bề mặt, không diễn quan hệ mục đích. | (C) "in" — chỉ bên trong, không hợp với việc dành không gian cho thiết bị. | (D) "for" — diễn tả mục đích hoặc đối tượng được dành cho, hợp với "space".
+Source: original
+[QUESTION]
+Blank (3)
+(A) is prepared
+(B) prepared
+(C) prepares
+(D) preparing
+Answer: A
+Explanation: Câu "The menu ------- (3) by our catering team each morning." có "by our catering team" chỉ đội catering thực hiện hành động lên menu, nên cần thể bị động. | (A) "is prepared" — đúng thể bị động với chủ ngữ "The menu". | (B) "prepared" — thiếu trợ động từ để tạo thể bị động, hoặc hiểu là quá khứ chủ động sai. | (C) "prepares" — chủ động, biến menu thành chủ thể chuẩn bị. | (D) "preparing" — dạng V-ing, không làm được vị ngữ hoàn chỉnh cho câu.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The Horizon Hall was opened last year.
+(B) Please contact us if you have any questions.
+(C) Our restaurant serves breakfast until ten.
+(D) We have received your payment.
+Answer: B
+Explanation: Câu ngay TRƯỚC chỗ trống là "We hope these changes will make your event more comfortable." và chỗ trống đứng cuối đoạn trước lời kết, nên cần câu kết thúc lịch sự liên quan đến hỗ trợ. | (A) "The Horizon Hall was opened last year." — nói về lịch sử phòng họp, không nối với lời chúc. | (B) "Please contact us if you have any questions." — tiếp nối lời chúc và dẫn vào lời kết thư. | (C) "Our restaurant serves breakfast until ten." — nói về bữa sáng, lạc khỏi thay đổi phòng và bữa trưa. | (D) "We have received your payment." — nói về thanh toán, không có trong đoạn trước.
+Source: original

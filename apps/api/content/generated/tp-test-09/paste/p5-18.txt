@@ -1,0 +1,9 @@
+[QUESTION]
+The customer service department received a ------- from the buyer.
+(A) complaints
+(B) complain
+(C) complained
+(D) complaint
+Answer: D
+Explanation: Sau mạo từ "a" cần danh từ đếm được số ít. | (A) "complaints" — là danh từ số nhiều, sai số lượng với "a". | (B) "complain" — là động từ nguyên thể, sai từ loại. | (C) "complained" — là động từ quá khứ, sai từ loại. | (D) "complaint" — đúng danh từ số ít phù hợp với "a".
+Source: original

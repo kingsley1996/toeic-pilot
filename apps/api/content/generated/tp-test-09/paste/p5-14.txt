@@ -1,0 +1,9 @@
+[QUESTION]
+The annual report ------- by the analysis team last Monday.
+(A) has issued
+(B) were issued
+(C) is issued
+(D) was issued
+Answer: D
+Explanation: Sau chủ ngữ số ít và trạng ngữ quá khứ cần động từ bị động thì quá khứ đơn. | (A) "has issued" — là chủ động, không hợp với "by the analysis team". | (B) "were issued" — là bị động nhưng số nhiều, không hợp với "report". | (C) "is issued" — là bị động nhưng thì hiện tại, không hợp với "last Monday". | (D) "was issued" — đúng thể bị động, số ít và thì quá khứ.
+Source: original

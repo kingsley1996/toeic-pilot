@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. This is the personnel office. We received your application for the marketing assistant position.
+voice: au_male_1
+Thank you. I'm glad to hear that. When could I come for an interview?
+voice: uk_female_1
+We have a slot on Tuesday at ten, but I can move it to Wednesday morning if that suits you.
+voice: au_male_1
+Wednesday at ten is better. I'll bring my portfolio and two references.
+voice: uk_female_1
+Please also email your updated resume before Monday. The interview will last about forty minutes.
+voice: au_male_1
+Understood. I'll email the resume tonight.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To report a missing portfolio
+(B) To negotiate a salary for a position
+(C) To arrange an interview and application documents
+(D) To cancel a marketing project
+Answer: C
+Explanation: Người phụ nữ nói "We received your application for the marketing assistant position" và người đàn ông hỏi "When could I come for an interview?" — tức cuộc trao đổi nhằm sắp xếp phỏng vấn và hồ sơ. | (A) nói báo cáo portfolio thiếu, nhưng portfolio được nói tới trong ngữ cảnh ứng viên sẽ mang đi. | (B) nói thương lượng lương, thứ không ai nhắc đến. | (C) "To arrange an interview and application documents" — khớp đúng câu vừa dẫn. | (D) nói hủy dự án marketing, dùng từ marketing nhưng đặt vào ngữ cảnh sai.
+Source: original
+[QUESTION]
+What time is the interview?
+(A) Tuesday at ten
+(B) Thursday at ten
+(C) Monday at ten
+(D) Wednesday at ten
+Answer: D
+Explanation: Người đàn ông đáp "Wednesday at ten is better." — nên lịch phỏng vấn là thứ Tư lúc mười giờ. | (A) Tuesday at ten là giờ được đề xuất rồi thay đổi. | (B) Thursday at ten không xuất hiện trong hội thoại. | (C) Monday at ten dùng thứ Hai là hạn gửi resume, không phải giờ phỏng vấn. | (D) "Wednesday at ten" — khớp đúng câu vừa dẫn.
+Source: original
+[QUESTION]
+What will the man do tonight?
+(A) Email his updated resume
+(B) Confirm the interview time
+(C) Bring his portfolio
+(D) Call the personnel office
+Answer: A
+Explanation: Người đàn ông nói "I'll email the resume tonight." — nên hành động tối nay là gửi hồ sơ qua email. | (A) "Email his updated resume" — khớp đúng câu vừa dẫn. | (B) Confirm the interview time là điều không được nói sẽ làm tối nay. | (C) Bring his portfolio đúng là sẽ làm nhưng không phải tối nay, mà là khi phỏng vấn. | (D) Call the personnel office không xuất hiện trong hội thoại.
+Source: original

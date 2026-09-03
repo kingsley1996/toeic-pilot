@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Could you send me the sales report before ten?
+voice: uk_female_1
+(A) Yes, the sales team reported record profits.
+(B) The report is on the printer.
+(C) Sure, I'll send it right away.
+Answer: C
+Explanation: Câu hỏi là "Could you send me the sales report before ten?" — yêu cầu gửi báo cáo trước 10 giờ. | (A) "Yes, the sales team reported record profits." — dùng lại "sales" và biến "report" thành "reported", nhưng nói về kết quả kinh doanh chứ không đáp lại lời nhờ. | (B) "The report is on the printer." nói vị trí của báo cáo, trả lời cho câu hỏi "Where...?" và dùng lại từ "report" nhưng không đáp lại yêu cầu. | (C) "Sure, I'll send it right away." — đồng ý với lời nhờ và cho biết sẽ gửi ngay.
+Source: original

@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon. I need to open a business account for my clothing store.
+voice: ca_male_1
+Certainly. Please bring your business license, tax number, and a photo ID.
+voice: us_female_1
+Can I submit the forms online instead of coming back here?
+voice: ca_male_1
+Yes, but you must visit a branch to activate the account.
+voice: us_female_1
+How long does the review take?
+voice: ca_male_1
+It usually takes three business days after all documents are received.
+voice: us_female_1
+Thank you. I will email the forms today.
+
+[QUESTION]
+What is the woman's purpose?
+(A) To activate an account
+(B) To open a business account
+(C) To report missing documents
+(D) To request a tax number
+Answer: B
+Explanation: Người phụ nữ nói "I need to open a business account for my clothing store". | (A) nói tới kích hoạt tài khoản, đúng là nhân viên có nhắc nhưng không phải mục đích của khách. | (B) "To open a business account" — khớp đúng câu vừa dẫn. | (C) nói tới báo cáo thiếu giấy tờ, thứ không ai nhắc đến. | (D) nói tới xin mã số thuế, nhưng mã số thuế là giấy tờ được yêu cầu, không phải thứ khách xin.
+Source: original
+[QUESTION]
+What does the woman ask about?
+(A) Visiting a branch
+(B) Emailing the forms today
+(C) Submitting forms online
+(D) Receiving documents
+Answer: C
+Explanation: Người phụ nữ hỏi "Can I submit the forms online instead of coming back here?". | (A) nói tới đến chi nhánh, đúng là yêu cầu của nhân viên nhưng không phải câu hỏi của khách. | (B) nói tới gửi biểu mẫu hôm nay, đúng là cô ấy tự nói ở cuối nhưng không phải điều cô ấy hỏi. | (C) "Submitting forms online" — khớp đúng câu vừa dẫn. | (D) nói tới nhận giấy tờ, chỉ là chi tiết trong câu "after all documents are received" và không phải chủ đề cô ấy hỏi.
+Source: original
+[QUESTION]
+What does the employee say the woman must do?
+(A) Call the review team
+(B) Email the forms today
+(C) Bring a tax number tomorrow
+(D) Visit a branch to activate the account
+Answer: D
+Explanation: Nhân viên nói "Yes, but you must visit a branch to activate the account.". | (A) nói tới gọi đội xem xét, thứ không ai nhắc đến. | (B) nói tới gửi biểu mẫu hôm nay, đúng là khách tự nói nhưng không phải yêu cầu của nhân viên. | (C) nói tới mang mã số thuế vào ngày mai, mã số thuế có được nhắc nhưng thời gian bị đổi. | (D) "Visit a branch to activate the account" — khớp đúng câu vừa dẫn.
+Source: original

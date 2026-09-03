@@ -1,26 +1,25 @@
 [PASSAGE]
-NOTICE
-To: All Claims and Underwriting Staff
-From: Office Administration
-Date: June 12
-Subject: Revised Lunch Periods
+NOTICE: Revised Lunch Period
+From: Office Administration, Northbridge Insurance Group
+Date: September 12
 
-Beginning Monday, June 16, the company will stagger lunch breaks to reduce congestion in the cafeteria and maintain phone coverage. Claims teams will eat from 11:30 a.m. to 12:15 p.m. Underwriting teams will eat from 12:30 p.m. to 1:15 p.m. All staff must update their calendar invitations and inform clients of the new availability. Managers should confirm that no more than half of each team is away at once. The change applies to all full-time and part-time employees, including temporary staff assigned to either department. The break room will remain open, but microwave use during staggered periods may be limited. Questions should be sent to administration@example-insurance.com.
+Effective Monday, September 18, the daily lunch period will move from 12:00 P.M. to 1:00 P.M. This change follows a review of call-center traffic, which showed that customer inquiries peak between 11:30 A.M. and 12:30 P.M. During the new lunch period, the front desk will remain open, but only two staff members may leave the floor at once. Employees should submit lunch preferences through the internal portal by Friday, September 15. Those who do not submit a preference will be assigned to the 1:00 P.M. slot automatically. Please note that the morning break remains unchanged at 10:00 A.M., and supervisors will monitor compliance with the new schedule. Thank you.
 
 [QUESTION]
 What is the purpose of the notice?
-(A) To announce a change in lunch schedules
-(B) To report a shortage of cafeteria staff
-(C) To request feedback on client calls
-(D) To introduce a new insurance service
-Answer: A
+(A) To remind employees about morning breaks
+(B) To request feedback on call-center traffic
+(C) To announce a change in lunch scheduling
+(D) To introduce a new front-desk manager
+Answer: C
+Explanation: Thông báo viết "Effective Monday, September 18, the daily lunch period will move from 12:00 P.M. to 1:00 P.M." nên mục đích là công bố thay đổi giờ ăn trưa. | (A) nhắc giờ giải lao buổi sáng, có được nêu nhưng chỉ là chi tiết kèm theo. | (B) nói xin phản hồi về lưu lượng tổng đài, trong khi bài chỉ nêu thay đổi dựa trên một cuộc rà soát. | (C) "To announce a change in lunch scheduling" — khớp đúng câu vừa dẫn. | (D) nói giới thiệu quản lý mới, điều thông báo không đề cập.
 Source: original
-
 [QUESTION]
-What can be inferred about the new lunch periods?
-(A) The cafeteria is likely too small for all staff to eat at once.
-(B) Managers will no longer need to monitor team availability.
-(C) Clients will be unable to contact the company during lunch.
-(D) Temporary staff are exempt from the revised schedule.
-Answer: A
+What can be inferred about the reason for the change?
+(A) The company expects fewer customer calls in the afternoon.
+(B) The company will reduce the number of lunch periods.
+(C) The company plans to close the front desk during lunch.
+(D) The company wants more staff available during peak inquiry hours.
+Answer: D
+Explanation: Thông báo viết "This change follows a review of call-center traffic, which showed that customer inquiries peak between 11:30 A.M. and 12:30 P.M." và "only two staff members may leave the floor at once," nên có thể suy ra công ty muốn giữ đủ nhân viên trong giờ cao điểm. | (A) nói ít cuộc gọi buổi chiều, điều bài không nêu. | (B) nói giảm số ca ăn trưa, trong khi bài chỉ đổi giờ. | (C) nói đóng quầy lễ tân, trái với "the front desk will remain open". | (D) "The company wants more staff available during peak inquiry hours." — khớp đúng câu vừa dẫn.
 Source: original

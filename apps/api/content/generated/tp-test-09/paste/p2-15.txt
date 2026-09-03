@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Where did you put the project documents?
+voice: ca_male_1
+(A) In the filing cabinet on the third floor.
+(B) I'll email them to you later.
+(C) Yes, they're in the meeting room.
+Answer: A
+Explanation: Câu hỏi là "Where did you put the project documents?" — hỏi NƠI CHỐT. | (A) "In the filing cabinet on the third floor." — "In the filing cabinet on the third floor." trả lời đúng loại. | (B) "I'll email them to you later." nói về cách gửi sau, không trả lời "ở đâu". | (C) "Yes, they're in the meeting room." đáp Yes cho một câu hỏi Where, tức sai loại câu hỏi.
+Source: original

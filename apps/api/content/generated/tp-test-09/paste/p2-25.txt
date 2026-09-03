@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who can help me change to another room?
+voice: us_female_1
+(A) Yes, you can change rooms.
+(B) I will call the manager.
+(C) On the second floor, I think.
+Answer: B
+Explanation: Câu hỏi là "Who can help me change to another room?" — hỏi NGƯỜI. | (A) "Yes, you can change rooms." đáp Yes cho một câu hỏi Who, tức sai loại câu hỏi. | (B) "I will call the manager." — "I will call the manager." trả lời đúng loại. | (C) "On the second floor, I think." trả lời nơi chốn, dùng lại ý đổi phòng nhưng không trả lời được "ai".
+Source: original

@@ -1,74 +1,66 @@
 [PASSAGE]
-From: facilities@riversidemall.example
-To: all tenants
-Subject: Elevator maintenance
-Date: Tuesday, May 6
+NOTICE: Elevator Maintenance at Northbridge Mall
+Date: June 12
 
-Dear Tenants, The central elevator will be serviced one floor at a time this week. Technicians will inspect cables, door sensors, and control panels. The maintenance window is 8 a.m. to noon each day. The map shows the interruption length for each floor. Please do not use the elevator or service elevator during your floor's closure. A four-hour interruption means the floor is closed for the entire window. Warning signs will be posted during each closure.
+Northbridge Mall will perform scheduled elevator maintenance on Saturday, June 15. Each elevator will experience a brief halt while technicians inspect cables, doors, and control panels. The maintenance map shows the expected interruption for each floor. For the floor with the longest interruption, the temporary information desk will be placed on the floor with the next lower number.
 
-For safety, the floor with the longest interruption will be reserved for a final load test on Thursday. All other floors will return to normal service after their inspections.
-
-If your store needs an urgent delivery, contact the facilities office before 5 p.m. Wednesday. Requests received later will be handled during the next available closure. We appreciate your patience.
-
-Sincerely,
-Facilities Office
+Retail tenants on any floor with an interruption of four hours or more must move displays away from elevator doors before 8 A.M. Customers should use the north stairwell or the remaining service elevator. Management apologises for the inconvenience and thanks everyone for following the posted safety notes. Technicians will begin at 7 A.M. and finish by 5 P.M. A floor is considered unavailable when its elevator doors cannot open for loading or passenger use. If an emergency occurs, press the call button and wait for a guard. Please read the map carefully before entering.
 
 [PASSAGE]
-From: store.manager@riversidemall.example
-To: facilities@riversidemall.example
-Subject: Delivery request
-Date: Wednesday, May 7
+From: tenant.services@northbridgemall.example
+To: store.managers@northbridgemall.example
+Subject: Reminder about elevator maintenance
+Date: June 13
 
-Dear Facilities Office, Our store is on the floor with the longest interruption. We need to receive a large display case on Thursday morning. The delivery company can arrive only between 9 a.m. and 11 a.m. I am sending this request before 5 p.m. Wednesday.
+Dear store managers,
 
-Can we use the service elevator during that time? If not, please tell us the earliest time after the maintenance window when the elevator will be available. We also need to know whether the final load test will affect customer access to our entrance. If the elevator is unavailable, we may need to arrange a different route for customers.
+This message reminds you of the elevator maintenance notice posted yesterday. Please confirm that your staff have read the safety notes and know which stairwell to use. If your store is on a floor with a four-hour interruption, photograph the display area before 8 A.M. and send the image to tenant services. The maintenance map will be updated if a technician finishes early. Store managers should not ask customers to use freight elevators, because those cars are reserved for emergency supplies. A printed copy of the notice is available at the tenant services office. We appreciate your cooperation in keeping the mall safe and orderly. The deadline for sending images is 9 A.M., so please assign one employee to complete this task. If you cannot photograph the area, reply to this message with your store number and reason. Tenant Services will then send a guard to check the display area.
 
-We understand that safety checks must be completed first. Please confirm whether our staff can move small items by hand during the closure. Thank you for your help.
-
-Best regards,
-A. Nguyen
+Sincerely,
+Tenant Services
 
 [QUESTION]
-Why was the notice sent?
-(A) To announce elevator maintenance
-(B) To request tenant feedback
-(C) To advertise a new store
-(D) To cancel a delivery
-Answer: A
+Why was the notice written?
+(A) To advertise a new store
+(B) To confirm a completed repair
+(C) To announce elevator maintenance
+(D) To request a customer survey
+Answer: C
+Explanation: Notice viết "Northbridge Mall will perform scheduled elevator maintenance on Saturday, June 15" nên mục đích là thông báo bảo trì. | (A) nói quảng cáo cửa hàng mới, không có trong ngữ liệu. | (B) "To confirm a completed repair" — nói đã hoàn thành sửa chữa, trái với thời gian tương lai. | (C) "To announce elevator maintenance" — khớp đúng câu vừa dẫn. | (D) nói khảo sát khách hàng, không có trong ngữ liệu.
 Source: original
-
 [QUESTION]
-What must tenants do if they need an urgent delivery?
-(A) Contact the office before 5 p.m. Wednesday
-(B) Move deliveries to the loading dock
-(C) Pay a fee for extra service
-(D) Ask a technician to inspect it
-Answer: A
+According to the e-mail, what must store managers do if their floor has a four-hour interruption?
+(A) Wait for a guard
+(B) Use a freight elevator
+(C) Move displays to Floor 1
+(D) Send a photograph
+Answer: D
+Explanation: E-mail viết "photograph the display area before 8 A.M. and send the image to tenant services". | (A) nói chờ bảo vệ, chỉ xảy ra nếu không chụp được ảnh. | (B) nói dùng thang hàng, trái với "should not ask customers to use freight elevators". | (C) nói chuyển sang Floor 1, không có trong e-mail. | (D) "Send a photograph" — khớp đúng câu vừa dẫn.
 Source: original
-
 [QUESTION]
-What can be inferred about the delivery request?
-(A) It cannot use the elevator then.
-(B) It will be approved as sent.
-(C) It must wait for next closure.
-(D) It needs a new certificate.
+Which floor will host the temporary information desk for the longest interruption?
+(A) Floor 1
+(B) Floor 2
+(C) Floor 3
+(D) Floor 4
 Answer: A
+Explanation: Notice viết "For the floor with the longest interruption, the temporary information desk will be placed on the floor with the next lower number" và graphic cho "Floor 2: 4 hours" là lâu nhất, nên bàn đặt ở Floor 1. | (A) "Floor 1" — khớp đúng câu vừa dẫn. | (B) "Floor 2" — nói chính tầng lâu nhất, trái với quy tắc tầng số thấp hơn. | (C) nói tầng có "Floor 3: 1 hour", không phải lâu nhất. | (D) nói tầng có "Floor 4: 3 hours", vẫn không phải lâu nhất.
 Source: original
-
 [QUESTION]
-Which floor has the longest interruption?
+According to the graphic, which floor has the longest interruption?
 (A) Floor 1
 (B) Floor 2
 (C) Floor 3
 (D) Floor 4
 Answer: B
+Explanation: Graphic ghi "Floor 2: 4 hours" so với "Floor 1: 2 hours", "Floor 3: 1 hour", "Floor 4: 3 hours". | (A) nói 2 hours, ngắn hơn. | (B) "Floor 2" — khớp đúng câu vừa dẫn. | (C) nói 1 hour, ngắn nhất. | (D) nói 3 hours, vẫn ngắn hơn 4 hours.
 Source: original
-
 [QUESTION]
-In the notice, the word "reserved" in paragraph 2 is closest in meaning to
-(A) booked
-(B) repaired
-(C) cleaned
-(D) inspected
-Answer: A
+In the notice, the word "halt" in paragraph 1 is closest in meaning to
+(A) inspection
+(B) delay
+(C) stop
+(D) closure
+Answer: C
+Explanation: Notice viết "Each elevator will experience a brief halt while technicians inspect cables, doors, and control panels" nên "halt" chỉ việc dừng tạm thời. | (A) nói cuộc kiểm tra, là việc kỹ thuật viên làm, không phải nghĩa của halt. | (B) "delay" — nói sự chậm trễ, không phải trạng thái dừng. | (C) "stop" — khớp đúng câu vừa dẫn. | (D) nói sự đóng cửa, trái với "brief" và ngữ cảnh thang vẫn hoạt động sau đó.
 Source: original

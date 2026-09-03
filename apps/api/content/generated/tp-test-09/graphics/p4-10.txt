@@ -1,0 +1,6 @@
+kind: chart
+Flight Delay (minutes)
+VN 218 | 30
+BA 452 | 60
+QF 12 | 90
+CX 777 | 120

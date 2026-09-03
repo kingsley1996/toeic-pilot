@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Excuse me, I bought a laptop here last week. What is the warranty policy?
+voice: au_male_1
+The standard warranty covers hardware faults for one year from the purchase date.
+voice: us_female_1
+Does it include accidental damage, like a cracked screen?
+voice: au_male_1
+No, that is not covered. You can add accidental damage protection for two hundred dollars.
+voice: us_female_1
+I see. Could you check whether my receipt is still valid for the basic warranty?
+voice: au_male_1
+Yes, bring the receipt and the serial number to the service desk tomorrow.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) A computer repair appointment
+(B) A laptop warranty policy
+(C) A store return policy
+(D) A software subscription
+Answer: B
+Explanation: Người phụ nữ hỏi "What is the warranty policy?" — tức cuộc nói chuyện chủ yếu về chính sách bảo hành laptop. | (A) nói về lịch sửa chữa, chỉ có "service desk tomorrow" để kiểm tra biên lai, không phải lịch sửa; đây là từ đã nghe đặt sai ngữ cảnh. | (B) "A laptop warranty policy" — khớp đúng câu vừa dẫn. | (C) nói về chính sách đổi trả, không được nhắc đến. | (D) nói về gói phần mềm, cũng không xuất hiện trong hội thoại.
+Source: original
+[QUESTION]
+Who is the woman?
+(A) A repair technician
+(B) A store employee
+(C) A customer
+(D) A delivery driver
+Answer: C
+Explanation: Người phụ nữ nói "I bought a laptop here last week" — cho thấy cô là khách hàng. | (A) nói kỹ thuật viên sửa chữa, không được nhắc đến. | (B) nói nhân viên cửa hàng, là vai của người đàn ông trả lời chính sách, không phải của cô; đây là đúng nhưng thuộc người nói khác. | (C) "A customer" — khớp đúng câu vừa dẫn. | (D) nói tài xế giao hàng, cũng không xuất hiện.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Call the warehouse
+(B) Pay for accidental damage protection
+(C) Replace the cracked screen
+(D) Bring the receipt and serial number tomorrow
+Answer: D
+Explanation: Người đàn ông nói "Yes, bring the receipt and the serial number to the service desk tomorrow" — yêu cầu cô mang biên lai và số sê-ri. | (A) nói gọi kho, không được nhắc đến. | (B) nói trả phí bảo vệ hư hỏng do tai nạn, anh ấy chỉ nêu "You can add accidental damage protection for two hundred dollars" chứ không yêu cầu trả ngay; đây là đúng nhưng không phải câu trả lời cho câu hỏi. | (C) nói thay màn hình nứt, chỉ là ví dụ về hư hỏng không được bảo hành. | (D) "Bring the receipt and serial number tomorrow" — khớp đúng câu vừa dẫn.
+Source: original

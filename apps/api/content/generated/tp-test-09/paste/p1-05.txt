@@ -1,8 +1,9 @@
 [QUESTION]
 voice: ca_male_1
-(A) The passengers are standing in the hotel lobby.
-(B) The man is checking his wristwatch.
-(C) The women are carrying suitcases up stairs.
-(D) The woman is signing a receipt.
-Answer: A
+(A) The man is carrying a suitcase.
+(B) The passengers are sitting on a bench.
+(C) The passengers are standing near the elevators.
+(D) The woman is looking at her phone.
+Answer: C
+Explanation: Trong ảnh, hai hành khách đứng thẳng cạnh thang máy, tay không và không có ghế, va li hay điện thoại. | (A) nói người đàn ông đang xách va li, sai hành động và thêm va li không có. | (B) nói các hành khách đang ngồi trên ghế, sai hành động và thêm ghế không có. | (C) "The passengers are standing near the elevators." — khớp đúng câu vừa dẫn. | (D) nói người phụ nữ đang nhìn điện thoại, sai hành động và thêm điện thoại không có.
 Source: original

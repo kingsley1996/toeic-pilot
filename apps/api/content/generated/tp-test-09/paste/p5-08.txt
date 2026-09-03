@@ -1,0 +1,9 @@
+[QUESTION]
+Employees can contact ------- if they need technical support.
+(A) they
+(B) them
+(C) their
+(D) theirs
+Answer: B
+Explanation: Sau động từ "contact" cần một đại từ làm tân ngữ. | (A) "they" — là đại từ chủ ngữ, không làm tân ngữ. | (B) "them" — đúng dạng đại từ tân ngữ. | (C) "their" — là tính từ sở hữu, cần danh từ đi sau. | (D) "theirs" — là đại từ sở hữu, không phù hợp sau "contact".
+Source: original

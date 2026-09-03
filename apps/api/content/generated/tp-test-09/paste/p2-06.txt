@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The server will be under maintenance at eight tonight.
+voice: uk_female_1
+(A) Thanks, I'll save my documents now.
+(B) Yes, I'll maintain the server.
+(C) At eight o'clock, in the main hall.
+Answer: A
+Explanation: Câu trần thuật "The server will be under maintenance at eight tonight." thông báo lịch bảo trì. | (A) "Thanks, I'll save my documents now." — "Thanks, I'll save my documents now." phản hồi phù hợp bằng cách cảm ơn và cho biết sẽ lưu tài liệu. | (B) "Yes, I'll maintain the server." lặp từ "maintenance" thành "maintain" trong ngữ cảnh sai, như thể nhận việc bảo trì máy chủ. | (C) "At eight o'clock, in the main hall." trả lời khi nào/ở đâu, không đáp lại lời thông báo.
+Source: original

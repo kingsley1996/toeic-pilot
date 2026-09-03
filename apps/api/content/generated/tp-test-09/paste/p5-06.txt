@@ -1,0 +1,9 @@
+[QUESTION]
+The service this year is ------- last year.
+(A) fast than
+(B) more fast
+(C) fastest than
+(D) faster than
+Answer: D
+Explanation: Sau "is" và trước "last year" cần cụm so sánh hơn với "than". | (A) "fast than" — là tính từ nguyên cấp đi với "than", sai dạng so sánh. | (B) "more fast" — sai dạng so sánh hơn vì "fast" một âm tiết và thiếu "than". | (C) "fastest than" — là so sánh nhất đi với "than", sai cấu trúc. | (D) "faster than" — đúng dạng so sánh hơn của "fast" kèm "than".
+Source: original
