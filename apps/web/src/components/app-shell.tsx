@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { type NavItem } from "@/components/nav";
 import { PetLand } from "@/components/petland";
+import { PetlandCard } from "@/components/petland-card";
 import { SidebarShell, TopBarShell } from "@/components/shell";
 import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
@@ -135,14 +136,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarShell links={sidebarLinks} sectionLabel="Học">
+    <SidebarShell links={sidebarLinks} sectionLabel="Học" sidebarBottom={<PetlandCard />}>
       {children}
-      {/*
-       * Chỉ ở khung có sidebar. Ba trang thanh trên đứng NGOÀI ứng dụng, còn khu
-       * quản trị và màn làm bài đi qua nhánh `bareLayout` phía trên — và màn làm
-       * bài là chỗ quan trọng nhất phải vắng mặt: một con thú nhảy nhót cạnh
-       * người đang tính giờ làm bài là thứ cạnh tranh trực tiếp với sự tập trung.
-       */}
+      {/* Bảng thú cưng: đóng thì không dựng gì, mở thì do thẻ ở sidebar gọi.
+          Chỉ ở khung có sidebar — ba trang thanh trên đứng NGOÀI ứng dụng, còn
+          khu quản trị và màn làm bài đi qua nhánh `bareLayout` phía trên. */}
       <PetLand />
     </SidebarShell>
   );

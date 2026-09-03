@@ -42,17 +42,20 @@ export function clamp(
 }
 
 /**
- * Chỗ mặc định: góc dưới bên trái, tránh cột sidebar.
+ * Chỗ mặc định: góc dưới bên PHẢI.
  *
- * `sidebar` truyền vào chứ không đọc DOM: hàm này không được biết layout, và
- * ngưỡng `lg` là chuyện của Tailwind chứ không phải của phép tính này.
+ * Trước đây là góc dưới bên trái, ngay sát mép sidebar — tức là nằm TRONG cột
+ * nội dung, đúng chỗ ô gõ của bài nghe chép chính tả. Cột nội dung căn giữa và
+ * có bề rộng tối đa, nên lề phải là dải trống rộng nhất trên màn; còn toast toàn
+ * trang thì ở góc trên phải, nên hai lớp không đụng nhau.
+ *
+ * Không cần biết sidebar rộng bao nhiêu nữa: sidebar nằm bên trái.
  */
 export function defaultPlace(
   panel: { w: number; h: number },
   screen: { w: number; h: number },
-  sidebar: number,
 ): Place {
-  return clamp({ x: sidebar + MARGIN, y: screen.h - panel.h - MARGIN }, panel, screen);
+  return clamp({ x: screen.w - panel.w - MARGIN, y: screen.h - panel.h - MARGIN }, panel, screen);
 }
 
 export function readPlace(): Place | null {

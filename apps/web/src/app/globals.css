@@ -1863,3 +1863,81 @@
 .landing .l-inline-cta {
   margin-top: 22px;
 }
+
+/*
+ * Con thú đứng yên trong thẻ ở sidebar: nhịp thở và vòng sáng dưới chân.
+ *
+ * Bằng `@keyframes` chứ không bằng `requestAnimationFrame` — thẻ có mặt trên mọi
+ * trang, nên một vòng lặp JS mỗi khung hình chạy suốt buổi học. Cả hai chỉ động
+ * tới `transform` và `opacity`, nên chúng ở lại trên compositor và không buộc
+ * trình duyệt bố cục lại gì.
+ *
+ * Nhịp vòng sáng LỆCH so với nhịp thở (2,86s so với ~1,6s), đúng như cảnh chơi:
+ * cùng pha thì hai chuyển động khoá vào nhau và đọc ra là một thứ nhấp nháy.
+ */
+.pet-idle {
+  transform-origin: bottom center;
+  animation-name: pet-breathe;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pet-breathe {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleY(1);
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.05);
+  }
+}
+
+.pet-glow {
+  opacity: var(--glow-a);
+  transform: translateX(-50%) scale(var(--glow-s));
+  animation: pet-glow 2860ms ease-in-out infinite;
+}
+
+@keyframes pet-glow {
+  0%,
+  100% {
+    opacity: var(--glow-a);
+    transform: translateX(-50%) scale(var(--glow-s));
+  }
+  50% {
+    opacity: var(--glow-b);
+    transform: translateX(-50%) scale(calc(var(--glow-s) + 0.08));
+  }
+}
+
+/* Vòng sáng vẫn CÓ, chỉ thôi thở: hạng hiếm là thông tin, nhịp phập phồng thì
+   không — cùng lời giải thích ở `petland-render.ts`. */
+@media (prefers-reduced-motion: reduce) {
+  .pet-idle,
+  .pet-glow {
+    animation: none;
+  }
+}
+
+/* Con trỏ nhấp nháy ở cuối câu con thú đang gõ dở. Tắt khi người dùng tắt hiệu
+   ứng — lúc đó cả câu hiện một lần nên cũng chẳng còn gì để trỏ. */
+.animate-blink {
+  animation: blink 900ms step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blink {
+    animation: none;
+    opacity: 0;
+  }
+}

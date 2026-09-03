@@ -23,9 +23,21 @@ async function signUp(page: Page) {
   await expect(page).toHaveURL(/\/dashboard$/);
 }
 
-const launcher = (page: Page) => page.getByRole("button", { name: "Thú cưng" });
+/*
+ * Đường vào góc thú cưng là THẺ Ở SIDEBAR, không còn nút nổi nào nữa.
+ *
+ * Chốt theo `title` chứ không theo tên hiển thị: tên trên thẻ là tên loài, và nó
+ * đổi theo con thú mà tài khoản mới bốc được.
+ *
+ * Giới hạn trong `<aside>` vì `SidebarContent` còn dựng một bản nữa cho ngăn kéo
+ * mobile — cùng một thẻ ở hai chỗ sẽ làm chế độ strict của Playwright từ chối.
+ */
+const openPet = (page: Page) => page.locator("aside").getByTitle("Mở góc thú cưng");
 
-test("sau khi nạp lại trang, góc thú cưng vẫn ở nửa dưới màn hình", async ({ page }) => {
+/** Thanh tiêu đề của bảng, cũng chính là tay cầm kéo. */
+const panelBar = (page: Page) => page.getByTitle("Kéo để đổi chỗ");
+
+test("sau khi nạp lại trang, bảng thú cưng mở ra nằm trong màn hình", async ({ page }) => {
   /*
    * Đây là một lỗi CÓ THẬT đã gặp, và nó là bẫy ba trạng thái của phiên.
    *
@@ -39,40 +51,47 @@ test("sau khi nạp lại trang, góc thú cưng vẫn ở nửa dưới màn h�
    */
   await signUp(page);
   await page.reload();
+  await openPet(page).click();
 
-  const box = await launcher(page).boundingBox();
+  const box = await panelBar(page).boundingBox();
   expect(box).not.toBeNull();
   const view = page.viewportSize();
   expect(view).not.toBeNull();
-  expect(box!.y).toBeGreaterThan(view!.height / 2);
+  // Toạ độ khởi tạo là (-9999, -9999): còn nằm ở đó nghĩa là `settle` không chạy.
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.y).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(view!.width);
 });
 
 test("kéo góc thú cưng sang chỗ khác thì chỗ đó được nhớ", async ({ page }) => {
   await signUp(page);
 
-  const handle = page.getByTitle("Kéo để đổi chỗ");
-  const before = await launcher(page).boundingBox();
+  await openPet(page).click();
+
+  const before = await panelBar(page).boundingBox();
   expect(before).not.toBeNull();
 
-  const grip = await handle.boundingBox();
-  await page.mouse.move(grip!.x + grip!.width / 2, grip!.y + grip!.height / 2);
+  // Bám mép TRÁI thanh tiêu đề: giữa thanh là chỗ mấy cái nút đóng/phóng to đứng,
+  // và một cú `mouse.down()` trúng nút thì không kéo được gì cả.
+  await page.mouse.move(before!.x + 16, before!.y + before!.height / 2);
   await page.mouse.down();
   await page.mouse.move(520, 260, { steps: 12 });
   await page.mouse.up();
 
-  const after = await launcher(page).boundingBox();
+  const after = await panelBar(page).boundingBox();
   expect(after!.y).toBeLessThan(before!.y - 50);
 
   // Nạp lại: `localStorage` phải giữ chỗ. Đây là nửa còn lại của bài đầu — đặt
   // chỗ đúng lúc mount thì cũng phải đọc được chỗ ĐÃ LƯU chứ không phải mặc định.
   await page.reload();
-  const reloaded = await launcher(page).boundingBox();
+  await openPet(page).click();
+  const reloaded = await panelBar(page).boundingBox();
   expect(Math.abs(reloaded!.y - after!.y)).toBeLessThan(24);
 });
 
 test("mở toàn bản đồ thì khung nhìn rộng ra", async ({ page }) => {
   await signUp(page);
-  await launcher(page).click();
+  await openPet(page).click();
 
   const canvas = page.locator("canvas");
   await expect(canvas).toBeVisible();
@@ -108,7 +127,7 @@ test("cho ăn làm chỉ số no tăng, và ăn tiếp khi đã no thì bị t�
     (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json()).needs
       .fullness as number;
 
-  await launcher(page).click();
+  await openPet(page).click();
   const feed = page.getByRole("button", { name: /Cho ăn/i });
   await expect(feed).toBeVisible();
 
@@ -132,7 +151,7 @@ test("cho ăn làm chỉ số no tăng, và ăn tiếp khi đã no thì bị t�
 
 test("chăm thú cưng làm nó lên level, và chạm trần ngày thì nói ra", async ({ page }) => {
   await signUp(page);
-  await launcher(page).click();
+  await openPet(page).click();
 
   await expect(page.getByText(/^Lv \d+$/)).toBeVisible();
   const poke = page.getByRole("button", { name: /Chọc/i });
@@ -175,7 +194,7 @@ test("màn trứng in tỉ lệ, và không có ruby thì nút mở bị khoá",
   ).json();
   expect(wallet.balance).toBe(0);
 
-  await launcher(page).click();
+  await openPet(page).click();
   await page.getByRole("button", { name: "Mở trứng" }).first().click();
 
   const open = page.getByRole("button", { name: "Mở trứng", exact: true });
@@ -215,7 +234,7 @@ test("lái bằng bàn phím đi ĐÚNG hướng, và thả phím thì đứng �
     return { x: pet.tile_x as number, y: pet.tile_y as number };
   };
 
-  await launcher(page).click();
+  await openPet(page).click();
   const map = page.getByRole("application", { name: /Bản đồ Petland/ });
   await expect(map).toBeVisible();
   await map.focus();
@@ -296,7 +315,7 @@ test("bấm nút trong bảng xong, bàn phím vẫn lái được", async ({ pa
     (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json())
       .tile_x as number;
 
-  await launcher(page).click();
+  await openPet(page).click();
   const map = page.getByRole("application", { name: /Bản đồ Petland/ });
   await expect(map).toBeVisible();
   await map.focus();
@@ -378,7 +397,7 @@ test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
   await page.waitForTimeout(1000);
   expect((await read()) - idle0).toBeLessThan(5);
 
-  await launcher(page).click();
+  await openPet(page).click();
   await expect(page.locator("canvas")).toBeVisible();
   const busy0 = await read();
   await page.waitForTimeout(1000);
@@ -441,7 +460,7 @@ test("xin giảm chuyển động thì vẫn chơi được bình thường", as
     (await (await request.get("http://localhost:8000/api/v1/pet", { headers: auth })).json())
       .tile_x as number;
 
-  await launcher(page).click();
+  await openPet(page).click();
   const canvas = page.locator("canvas");
   await expect(canvas).toBeVisible();
 

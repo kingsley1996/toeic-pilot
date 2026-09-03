@@ -213,3 +213,88 @@ export function Creature({
     </span>
   );
 }
+
+/**
+ * Con thú thật, đứng yên và đang thở, trên vòng sáng theo hạng.
+ *
+ * Đây là cùng một hình mà cảnh chơi vẽ, chỉ khác đường đi: cảnh chơi vẽ bằng
+ * Pixi, còn ở sidebar thì kéo Pixi về cho một con thú 32px là trả giá bundle và
+ * một ngữ cảnh WebGL cho mỗi lần dựng khung ứng dụng. Hình học vòng sáng chép
+ * theo `petland-render.ts` — quầng rộng và mờ, lõi nhỏ và chói, cả hai nở ra
+ * theo hạng — nên hai chỗ đọc ra cùng một thứ.
+ *
+ * Nhịp thở chạy bằng `@keyframes` chứ không bằng `requestAnimationFrame`: thẻ
+ * này có mặt trên MỌI trang, và một vòng lặp JS mỗi khung hình để nhún một sprite
+ * 32px là thứ đánh thức CPU suốt buổi học. Nhịp lấy theo tình trạng, cùng ba tốc
+ * độ mà cảnh chơi dùng.
+ *
+ * Không `box-shadow` — vòng sáng là `radial-gradient`, vì luật của hệ thiết kế
+ * cấm bóng đổ và một vầng sáng bằng `box-shadow` sẽ lọt qua mọi lần rà soát.
+ */
+const BREATHE_MS: Record<string, number> = {
+  hungry: 2620,
+  cheerful: 1210,
+};
+const BREATHE_DEFAULT_MS = 1610;
+
+export function PetIdle({
+  tile,
+  tier,
+  condition,
+  size = 32,
+  className,
+}: {
+  tile: number;
+  tier: string;
+  /** Tình trạng từ `conditionOf`; chỉ quyết định nhịp thở nhanh chậm. */
+  condition?: string;
+  size?: number;
+  className?: string;
+}) {
+  const strength = TIER_GLOW[tier] ?? TIER_GLOW.common;
+  const tone = TIER_VAR[tier] ?? TIER_VAR.common;
+
+  /* Nhấc con thú lên khỏi đáy, chừa chỗ cho vũng sáng nằm dưới chân nó. */
+  const lift = Math.round(size * 0.3);
+
+  /*
+   * Vũng sáng rộng gần gấp đôi con thú, chứ không vừa bằng nó.
+   *
+   * Cảnh chơi vẽ nó trên cỏ, nơi một mảng màu nhạt đọc ra ngay; sidebar thì nền
+   * gần đen, và ở đó phần vòng sáng nằm SAU con thú coi như mất trắng. Thứ còn
+   * đọc được là hai mảng thò ra hai bên — nên chúng phải đủ rộng để thấy. Cùng
+   * lý do độ đậm nhích lên so với thang của `petland-render.ts`.
+   */
+  const glowW = Math.round(size * 1.8);
+  const glowH = Math.round(size * 0.52);
+
+  return (
+    <span
+      aria-hidden
+      className={cx("relative block shrink-0", className)}
+      style={{ width: glowW, height: size + lift }}
+    >
+      <span
+        className="pet-glow absolute bottom-0 left-1/2"
+        style={{
+          width: glowW,
+          height: glowH,
+          background: `radial-gradient(closest-side, rgb(var(${tone}) / 0.85), rgb(var(${tone}) / 0.3) 52%, transparent 78%)`,
+          ["--glow-a" as string]: `${0.34 + 0.4 * strength}`,
+          ["--glow-b" as string]: `${0.34 + 0.52 * strength}`,
+          ["--glow-s" as string]: `${0.8 + 0.3 * strength}`,
+        }}
+      />
+      <span
+        className="pet-idle absolute left-1/2 -translate-x-1/2"
+        style={{
+          ...tileStyle(tile, size),
+          width: size,
+          height: size,
+          bottom: Math.round(lift * 0.55),
+          animationDuration: `${BREATHE_MS[condition ?? ""] ?? BREATHE_DEFAULT_MS}ms`,
+        }}
+      />
+    </span>
+  );
+}

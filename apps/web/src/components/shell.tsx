@@ -367,12 +367,14 @@ function SidebarContent({
   active,
   sectionLabel,
   sidebarTop,
+  sidebarBottom,
   showRole,
 }: {
   links: ShellNavItem[];
   active: string | undefined;
   sectionLabel?: string;
   sidebarTop?: React.ReactNode;
+  sidebarBottom?: React.ReactNode;
   showRole: boolean;
 }) {
   return (
@@ -439,6 +441,8 @@ function SidebarContent({
         </nav>
       </div>
 
+      {sidebarBottom}
+
       <AccountBlock showRole={showRole} />
     </div>
   );
@@ -449,6 +453,7 @@ export function SidebarShell({
   sectionLabel,
   headerExtra,
   sidebarTop,
+  sidebarBottom,
   showRole = false,
   footer,
   children,
@@ -459,6 +464,9 @@ export function SidebarShell({
   headerExtra?: React.ReactNode;
   /** Dựng trên đầu sidebar, phía trên bộ mục. */
   sidebarTop?: React.ReactNode;
+  /** Dựng dưới đáy sidebar, giữa bộ mục và khối tài khoản. Bộ mục cuộn được,
+      khe này thì không — nên thứ đặt vào đây luôn nhìn thấy. */
+  sidebarBottom?: React.ReactNode;
   showRole?: boolean;
   footer?: React.ReactNode;
   children: React.ReactNode;
@@ -540,6 +548,7 @@ export function SidebarShell({
             active={active}
             sectionLabel={sectionLabel}
             sidebarTop={sidebarTop}
+            sidebarBottom={sidebarBottom}
             showRole={showRole}
           />
         </aside>
@@ -556,6 +565,7 @@ export function SidebarShell({
             active={active}
             sectionLabel={sectionLabel}
             sidebarTop={sidebarTop}
+            sidebarBottom={sidebarBottom}
             showRole={showRole}
           />
         </div>

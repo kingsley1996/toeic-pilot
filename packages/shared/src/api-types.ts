@@ -5718,6 +5718,8 @@ export interface components {
              * Format: date-time
              */
             hatched_at: string;
+            /** Label */
+            label: string;
             /** Level */
             level: number;
             needs: components["schemas"]["PetNeeds"];

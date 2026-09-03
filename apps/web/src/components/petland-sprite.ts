@@ -26,18 +26,3 @@
  */
 export const CREATURE_COLS = 10;
 export const CREATURE_ROWS = 18;
-
-/**
- * Ô vẽ trên NÚT THU GỌN, và chỉ thế thôi.
- *
- * Trước đây chỗ này là một bảng `SPECIES_TILE` gồm mười hai mã loài — một bản
- * sao thứ hai của bảng loài, và nó đã trôi đúng như chú thích cạnh nó cảnh báo:
- * backend lên bốn mươi loài, bảng này vẫn nằm ở mười hai. Chưa hỏng gì, vì chỗ
- * duy nhất còn gọi tới nó luôn truyền `"cat"`.
- *
- * Nên cách sửa không phải là cập nhật bảng cho đủ bốn mươi — làm thế là hẹn một
- * lần trôi nữa vào ngày ai đó thêm loài thứ bốn mươi mốt. Xoá hẳn bảng đi: ô của
- * MỘT loài đến từ máy chủ (`PetPublic.tile`, xem chú thích ở `petland.tsx`), và
- * cái nút thu gọn thì vẽ trước khi có lượt gọi nào nên nó cần đúng một hằng số.
- */
-export const LAUNCHER_TILE = 169;

@@ -23,6 +23,14 @@ class PetNeeds(BaseModel):
 
 class PetPublic(BaseModel):
     species: str
+    label: str
+    """Tên loài để hiển thị, tra từ `pet_species` ngay ở đây.
+
+    Cùng lý do với `tile` và `tier` ngay dưới: bảng loài là dữ liệu admin sửa
+    được, nên một bảng tra mã→tên phía frontend sẽ trôi khỏi nó vào đúng ngày ai
+    đó thêm hoặc đổi tên một loài — và hậu quả là một con thú mang tên con khác,
+    không phải một lỗi.
+    """
     tile: int
     """Ô của loài, tra từ `pet_species` ngay ở đây.
 

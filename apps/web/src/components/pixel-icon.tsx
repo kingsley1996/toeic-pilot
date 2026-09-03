@@ -126,6 +126,23 @@ const ICONS = {
     palette: { o: "#6b5a3a", E: "#f6ecd2", s: "#e0d0aa" },
     rows: ["..oo..", ".oEEo.", "oEEEEo", "oEEEEo", "oEsEEo", "oEssEo", ".oEEo.", "..oo.."],
   },
+  /**
+   * Tinh thần. Mặt cười vẽ TRÒN chứ không vuông: ba chỉ số đứng cạnh nhau và
+   * khúc xương đã là hình vuông rồi, nên hình tròn là thứ tách nó ra ở 10px.
+   */
+  smile: {
+    palette: { o: "#a87a12", F: "#ffe58a", e: "#7a5a10" },
+    rows: [
+      "..oooo..",
+      ".oFFFFo.",
+      "oFeFFeFo",
+      "oFFFFFFo",
+      "oFeFFeFo",
+      "oFFeeFFo",
+      ".oFFFFo.",
+      "..oooo..",
+    ],
+  },
   /** Con thú đang ngủ. Ba chữ Z chồng lên nhau, to dần. */
   zzz: {
     palette: { o: "#3d4a72", Z: "#dfe6ff" },

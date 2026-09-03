@@ -14,9 +14,10 @@ import { tierGlow } from "@/components/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
 import { PetlandMusicToggle } from "@/components/petland-music-toggle";
-import { PetlandToast } from "@/components/petland-toast";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
 import { subscribeToCheer } from "@/lib/pet-cheer";
+import { subscribeToPetOpen } from "@/lib/pet-open";
+import { publishPet } from "@/lib/pet-state";
 import { PixelIcon } from "@/components/pixel-icon";
 import {
   advance,
@@ -32,7 +33,6 @@ import {
   type PetTrick,
   type Steer,
 } from "@/components/petland-pet";
-import { CREATURE_COLS, CREATURE_ROWS, LAUNCHER_TILE } from "@/components/petland-sprite";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -177,6 +177,9 @@ const ZOOM = 2;
 export function PetLand() {
   const { token, status } = useSession();
   const [open, setOpen] = useState(false);
+
+  /* Thẻ ở sidebar là đường vào chính; bảng nổi chỉ là chỗ nó bung ra. */
+  useEffect(() => subscribeToPetOpen(() => setOpen(true)), []);
   const wrap = useRef<HTMLDivElement | null>(null);
   const place = useRef<Place | null>(null);
   const watcher = useRef<ResizeObserver | null>(null);
@@ -194,13 +197,7 @@ export function PetLand() {
     if (!el) return;
     const panel = { w: el.offsetWidth, h: el.offsetHeight };
     const screen = { w: window.innerWidth, h: window.innerHeight };
-    const next = clamp(
-      place.current ??
-        readPlace() ??
-        defaultPlace(panel, screen, window.innerWidth >= 1024 ? 240 : 0),
-      panel,
-      screen,
-    );
+    const next = clamp(place.current ?? readPlace() ?? defaultPlace(panel, screen), panel, screen);
     place.current = next;
     el.style.left = `${next.x}px`;
     el.style.top = `${next.y}px`;
@@ -287,61 +284,18 @@ export function PetLand() {
          lựa chọn thiết kế. */
       style={{ left: -9999, top: -9999 }}
     >
-      {open ? (
-        <PetPanel token={token} onDrag={onDragStart} onClose={() => setOpen(false)} />
-      ) : (
-        <PetLauncher onOpen={() => setOpen(true)} onDrag={onDragStart} />
-      )}
+      {/*
+       * Đóng thì KHÔNG dựng gì cả — không còn nút thu gọn nổi trên nội dung.
+       *
+       * Thẻ thú cưng ở sidebar vừa là chỗ ở cố định vừa là đường vào, nên một
+       * cái nút thứ hai nổi đè lên trang chỉ còn là thứ che nội dung. Nó cũng là
+       * lý do `PetLand` không cần biết người học đang làm bài hay không nữa: con
+       * thú chỉ hiện ra khi có người mở nó.
+       *
+       * Toast và lời thoại cũng không ở đây — chúng bám vào thẻ ở sidebar.
+       */}
+      {open && <PetPanel token={token} onDrag={onDragStart} onClose={() => setOpen(false)} />}
     </div>
-  );
-}
-
-/**
- * Nút thu gọn. Vẽ con thú bằng CSS chứ không bằng Pixi — mở một context WebGL
- * chỉ để hiện một ô 16px là trả giá đúng thứ nhánh `open` sinh ra để tránh.
- */
-function PetLauncher({
-  onOpen,
-  onDrag,
-}: {
-  onOpen: () => void;
-  onDrag: (event: React.PointerEvent) => void;
-}) {
-  return (
-    <span className="inline-flex items-stretch">
-      {/* Tay cầm kéo tách khỏi nút mở: nếu cả cái nút vừa kéo được vừa bấm được
-          thì một cú kéo nhẹ vẫn kết thúc bằng `click` và bảng bật mở ngoài ý
-          muốn — người dùng đọc ra là nút tự nhảy. */}
-      <span
-        onPointerDown={onDrag}
-        role="presentation"
-        title="Kéo để đổi chỗ"
-        className="grid w-6 cursor-grab place-items-center rounded-l border border-r-0 border-rule-strong bg-panel text-ink-faint active:cursor-grabbing"
-      >
-        <GripHorizontal size={12} strokeWidth={2} aria-hidden />
-      </span>
-      <button
-        type="button"
-        onClick={onOpen}
-        className="inline-flex items-center gap-2 rounded-r border border-rule-strong bg-panel py-1.5 pl-1.5 pr-3 text-small font-semibold text-ink transition-colors hover:bg-recess"
-      >
-        <span
-          aria-hidden
-          className="block h-8 w-8 shrink-0"
-          style={{
-            backgroundImage: "url(/pet/creatures.png)",
-            // Số cột lấy từ `petland-sprite`, không từ `SHEET_COLS.town`: đó là
-            // số cột của tấm NỀN (12), còn tấm sinh vật có 10 — nên nút này vốn
-            // đang cắt ra một mảnh của con khác, đủ giống một con thú để không
-            // ai nhận ra là sai.
-            backgroundPosition: `-${(LAUNCHER_TILE % CREATURE_COLS) * TILE * 2}px -${Math.floor(LAUNCHER_TILE / CREATURE_COLS) * TILE * 2}px`,
-            backgroundSize: `${CREATURE_COLS * TILE * 2}px ${CREATURE_ROWS * TILE * 2}px`,
-            imageRendering: "pixelated",
-          }}
-        />
-        Thú cưng
-      </button>
-    </span>
   );
 }
 
@@ -369,7 +323,14 @@ function PetPanel({
    * vào state thì cả bảng dựng lại mỗi khung hình.
    */
   const [needs, setNeeds] = useState<PetNeeds | null>(null);
-  const [pet, setPet] = useState<PetPublic | null>(null);
+  const [pet, setPetHere] = useState<PetPublic | null>(null);
+
+  /* Mọi con thú mới — lúc mở bảng, sau một hành động, sau khi đổi con — đều đi
+     qua đây, nên thẻ ở sidebar không thể bị bỏ quên ở một nhánh nào đó. */
+  const setPet = useCallback((next: PetPublic) => {
+    setPetHere(next);
+    publishPet(next);
+  }, []);
   const [busy, setBusy] = useState(false);
   const [refused, setRefused] = useState<string | null>(null);
   /*
@@ -850,8 +811,6 @@ function PetPanel({
          * Bảng loài là dữ liệu admin sửa được (`pet_species`), nên một bảng tra
          * thứ hai phía frontend sẽ trôi khỏi nó vào đúng ngày ai đó đổi ô của
          * một loài — và hậu quả là con thú vẽ nhầm hình, không phải một lỗi.
-         * `LAUNCHER_TILE` chỉ dùng cho nút thu gọn, vốn vẽ trước khi có lượt
-         * gọi nào — nó là một hằng số, không phải một bảng tra song song.
          */
         speciesRef.current = pet.tile;
 
@@ -1153,7 +1112,7 @@ function PetPanel({
       stageRef.current = null;
       stage?.destroy();
     };
-  }, [token]);
+  }, [token, setPet]);
 
   /*
    * Màu vòng sáng đọc lại khi ĐỔI CON hoặc khi đổi sáng/tối.
@@ -1571,6 +1530,7 @@ function PetPanel({
           trên cùng một cú bấm thì cái nào cũng sai một nửa. */}
       <div
         onPointerDown={onDrag}
+        title="Kéo để đổi chỗ"
         className="flex cursor-grab items-center justify-between gap-3 border-b border-rule px-3 py-1.5 active:cursor-grabbing"
       >
         <span className="flex items-center gap-1.5 text-small font-semibold text-ink">
@@ -1774,10 +1734,6 @@ function PetPanel({
             )}
           />
           <PixelBits bits={bits} />
-          {/* Thông báo của góc thú cưng ở ngay đây, không đi qua toast toàn
-              trang: "+1 XP" bay ra ở góc trên phải màn hình thì cách con thú
-              nửa màn, và người đọc phải tự nối hai thứ lại. */}
-          <PetlandToast />
           {/* Bong bóng thoại: phần tử DOM, không vẽ trên canvas.
 
               Canvas cố ý không nạp phông chữ nào — cùng lý do dấu chấm than là

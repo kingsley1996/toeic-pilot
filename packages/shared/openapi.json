@@ -5707,6 +5707,10 @@
             "title": "Hatched At",
             "type": "string"
           },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
           "level": {
             "title": "Level",
             "type": "integer"
@@ -5784,6 +5788,7 @@
         },
         "required": [
           "species",
+          "label",
           "tile",
           "tier",
           "nickname",

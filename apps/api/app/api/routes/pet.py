@@ -76,6 +76,7 @@ def _as_public(
     row = row_for(db, pet.species)
     return PetPublic(
         species=pet.species,
+        label=row.label if row is not None else pet.species,
         tile=row.tile if row is not None else 0,
         tier=row.tier if row is not None else "common",  # type: ignore[arg-type]
         nickname=pet.nickname,
