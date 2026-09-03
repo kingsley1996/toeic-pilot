@@ -59,6 +59,16 @@ import { StimulusBlock } from "./_components/stimulus-block";
  *    không có gì để lộ.
  */
 
+/**
+ * Hộp "Hỏi trợ giảng" đang TẮT, ở cả màn kết quả lẫn màn xem lại.
+ *
+ * Tắt bằng một cờ có tên chứ không xoá lời gọi: đây là một quyết định tạm, và
+ * một hằng số đọc được nói ra điều đó — còn một dòng JSX bị xoá thì người sau
+ * chỉ thấy `coach-chat.tsx` nằm đó không ai dùng và không biết là cố ý hay bỏ
+ * quên. Bật lại bằng cách đổi thành `true`; toàn bộ dây nối vẫn nguyên.
+ */
+const SHOW_COACH_CHAT = false;
+
 export default function AttemptRunnerPage() {
   const params = useParams<{ attemptId: string }>();
   const attemptId = params.attemptId;
@@ -407,8 +417,6 @@ export default function AttemptRunnerPage() {
                     key={block.key}
                     block={block}
                     done={done}
-                    attemptId={attemptId}
-                    token={token}
                     onView={setCurrent}
                     onChoose={choose}
                     onFlag={toggleFlag}
@@ -461,7 +469,7 @@ export default function AttemptRunnerPage() {
 
       {/* Chỉ sau khi nộp: máy chủ trả 409 nếu chưa, và một hộp chat bấm được
           rồi báo lỗi là một lời mời hỏng. */}
-      {done && <CoachChat attemptId={attemptId} token={token} />}
+      {SHOW_COACH_CHAT && done && <CoachChat attemptId={attemptId} token={token} />}
 
       <Modal
         open={confirming === "exit" && !done}

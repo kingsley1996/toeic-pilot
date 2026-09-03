@@ -5,7 +5,6 @@ import { Flag } from "lucide-react";
 
 import { cx } from "@/components/ui";
 import { type Block, credit } from "@/lib/attempt";
-import { CoachBlock } from "@/components/coach-block";
 import { ExplanationNote } from "./explanation-note";
 
 /**
@@ -19,16 +18,12 @@ import { ExplanationNote } from "./explanation-note";
 export function StimulusBlock({
   block,
   done,
-  attemptId,
-  token,
   onView,
   onChoose,
   onFlag,
 }: {
   block: Block;
   done: boolean;
-  attemptId: string;
-  token: string | null;
   onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
@@ -40,8 +35,6 @@ export function StimulusBlock({
           key={question.id}
           question={question}
           done={done}
-          attemptId={attemptId}
-          token={token}
           onView={onView}
           onChoose={onChoose}
           onFlag={onFlag}
@@ -176,16 +169,12 @@ export function StimulusBlock({
 function QuestionCard({
   question,
   done,
-  attemptId,
-  token,
   onView,
   onChoose,
   onFlag,
 }: {
   question: QuestionPublic;
   done: boolean;
-  attemptId: string;
-  token: string | null;
   onView: (number: number) => void;
   onChoose: (question: QuestionPublic, optionId: string) => void;
   onFlag: (question: QuestionPublic) => void;
@@ -312,19 +301,6 @@ function QuestionCard({
           }
         />
       )}
-
-      {/*
-       * Chỉ hiện SAU KHI NỘP, và chỉ cho câu làm sai hoặc bỏ trống.
-       *
-       * Trước khi nộp thì máy chủ trả 409 — nhưng giao diện không được dựa vào
-       * đó: một nút bấm được rồi báo lỗi là một nút hứa sai. Và câu làm ĐÚNG thì
-       * không có gì để chẩn đoán; đưa nút ra đó chỉ mời người ta đốt hạn mức.
-       */}
-      {done &&
-        question.correct_option_id !== null &&
-        question.selected_option_id !== question.correct_option_id && (
-          <CoachBlock attemptId={attemptId} questionId={question.id} token={token} />
-        )}
     </div>
   );
 }
