@@ -63,8 +63,26 @@ test("làm một đề rồi nộp thì thấy kết quả và xem lại đượ
 
   // Bảng kết quả THAY danh sách câu, không nằm đè lên nó.
   await expect(page.getByText("Số câu đúng")).toBeVisible();
-  await expect(page.getByText("Thời gian đã dùng")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Theo từng phần" })).toBeVisible();
+
+  /*
+   * Bốn ô đếm, và ba trong số đó là lý do bảng này tồn tại: SAI và BỎ TRỐNG là
+   * hai chuyện khác nhau. Trước đây thanh mỗi part chỉ có đúng/tổng, nên người
+   * hết giờ ở Part 7 trông y hệt người đọc sai — một bên cần luyện tốc độ, bên
+   * kia cần luyện đọc.
+   */
+  const tallies = page.locator("dl").first();
+  for (const label of ["Đúng", "Sai", "Bỏ trống", "Thời gian"]) {
+    await expect(tallies.getByText(label, { exact: true })).toBeVisible();
+  }
+
+  /*
+   * KHÔNG có tab chọn part ở màn kết quả: ở đó không còn gì để điều hướng tới,
+   * và một hàng tab bấm được nhưng không đưa đi đâu là một lời hứa sai. Khẳng
+   * định phủ định này neo vào một thứ CÓ mặt ngay trên (`Theo từng phần`), nếu
+   * không nó xanh trên một trang chưa nạp xong.
+   */
+  await expect(page.getByRole("button", { name: /^P1\b/ })).toHaveCount(0);
 
   await page.getByRole("button", { name: /xem chi tiết từng câu/i }).click();
 
@@ -72,6 +90,9 @@ test("làm một đề rồi nộp thì thấy kết quả và xem lại đượ
   for (const label of ["Tất cả", "Câu sai", "Bỏ trống", "Đã đánh dấu"]) {
     await expect(page.getByRole("button", { name: label })).toBeVisible();
   }
+  // Tab part quay lại ngay khi rời màn kết quả — chúng chỉ vắng mặt ở đó.
+  await expect(page.getByRole("button", { name: /^P1\b/ })).toBeVisible();
+
   await page.getByRole("button", { name: "Kết quả" }).click();
   await expect(page.getByText("Số câu đúng")).toBeVisible();
 });

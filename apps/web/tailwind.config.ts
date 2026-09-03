@@ -9,7 +9,19 @@ import plugin from "tailwindcss/plugin";
 const c = (variable: string) => `rgb(var(${variable}) / <alpha-value>)`;
 
 export default {
-  content: ["./src/components/**/*.{ts,tsx}", "./src/app/**/*.{ts,tsx}"],
+  /*
+   * `src/remotion` phải có trong danh sách.
+   *
+   * Thiếu nó, mọi class Tailwind viết trong một cảnh Remotion chỉ chạy khi TÌNH
+   * CỜ có tệp khác dùng đúng class ấy — `p-3` thì có, `p-2.5` thì không, và thẻ
+   * mất sạch padding mà không một cổng kiểm nào thấy: `tsc` xanh, eslint xanh,
+   * class vẫn nằm trong HTML, chỉ không có luật CSS nào ứng với nó.
+   */
+  content: [
+    "./src/components/**/*.{ts,tsx}",
+    "./src/app/**/*.{ts,tsx}",
+    "./src/remotion/**/*.{ts,tsx}",
+  ],
   theme: {
     /*
      * MỘT bán kính (§6.2). Đặt ngoài `extend` là có chủ ý: nó thay thế toàn bộ

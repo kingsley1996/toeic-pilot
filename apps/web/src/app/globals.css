@@ -909,6 +909,13 @@
   --l-card: rgb(var(--panel));
   --l-sunken: rgb(var(--recess));
   --l-green: rgb(var(--ok));
+  --console-top: #f2f4f8;
+  --console-face: #dde1e9;
+  --console-edge: #bcc3cf;
+  --console-bezel: #6f7787;
+  --console-key: #9aa2b1;
+  --console-label: rgb(0 0 0 / 0.45);
+
   --l-shadow: 0 18px 50px rgb(0 0 0 / 0.12);
   --l-shadow-sm: 0 12px 40px rgb(0 0 0 / 0.08);
   /* Lớp phủ nổi: DESIGN-SYSTEM §6.3 ngoại lệ 3 cho đúng hai giá trị này. */
@@ -925,12 +932,26 @@
    chế độ tối cần bóng đậm hơn hẳn. Màu thì không, vì token đã tự lật. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .landing {
+    --console-top: #3a3f4d;
+    --console-face: #2b2f3a;
+    --console-edge: #1b1e26;
+    --console-bezel: #14161c;
+    --console-key: #171a21;
+    --console-label: rgb(255 255 255 / 0.55);
+
     --l-shadow: 0 18px 50px rgb(0 0 0 / 0.5);
     --l-shadow-sm: 0 12px 40px rgb(0 0 0 / 0.4);
     --l-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.5);
   }
 }
 :root[data-theme="dark"] .landing {
+  --console-top: #3a3f4d;
+  --console-face: #2b2f3a;
+  --console-edge: #1b1e26;
+  --console-bezel: #14161c;
+  --console-key: #171a21;
+  --console-label: rgb(255 255 255 / 0.55);
+
   --l-shadow: 0 18px 50px rgb(0 0 0 / 0.5);
   --l-shadow-sm: 0 12px 40px rgb(0 0 0 / 0.4);
   --l-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.5);
@@ -1375,6 +1396,108 @@
   box-shadow: var(--l-shadow);
   position: relative;
 }
+/*
+ * Khung máy chơi điện tử cầm tay bọc quanh ô Petland.
+ *
+ * Nó là KHUNG, không phải hoạt ảnh: dựng bằng CSS ở ngoài composition nên không
+ * tốn một phép tính nào mỗi khung hình. Vẽ nó bên trong cảnh Remotion sẽ bắt
+ * React dựng lại cả cái vỏ ba mươi lần mỗi giây cho một thứ không bao giờ đổi.
+ *
+ * Trang giới thiệu đứng ngoài design system (bo 4px, cấm đổ bóng), nên ở đây
+ * được dùng bo lớn và bóng — cùng lý do `.l-pet-card` bo 28px.
+ */
+/* Vỏ máy có HAI bảng màu, không phải một bảng tối dùng chung. Trên nền sáng,
+   một cục gần đen đọc ra như lỗ thủng trên trang — và máy chơi điện tử cầm tay
+   đời đầu vốn cũng là vỏ xám sáng. Bản tối nằm ở hai khối `dark` phía trên,
+   cùng chỗ với `--l-shadow`. */
+.landing .l-console {
+  background: linear-gradient(
+    165deg,
+    var(--console-top) 0%,
+    var(--console-face) 42%,
+    var(--console-edge) 100%
+  );
+  border-radius: 26px;
+  padding: 16px 16px 12px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    inset 0 -2px 6px rgb(0 0 0 / 0.18),
+    var(--l-shadow);
+}
+.landing .l-console-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px 8px;
+}
+.landing .l-console-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #56e08a;
+  box-shadow: 0 0 6px #56e08a;
+}
+.landing .l-console-name {
+  color: var(--console-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.landing .l-console-screen {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid var(--console-bezel);
+  background: var(--console-bezel);
+}
+.landing .l-console-pad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 6px 2px;
+}
+/* Nút bấm là TRANG TRÍ, nên `aria-hidden` ở JSX và không có `button` nào ở đây:
+   một cái nút trông bấm được mà không làm gì là một lời hứa sai. */
+.landing .l-console-dpad {
+  position: relative;
+  width: 42px;
+  height: 42px;
+}
+.landing .l-console-dpad::before,
+.landing .l-console-dpad::after {
+  content: "";
+  position: absolute;
+  background: var(--console-key);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+}
+.landing .l-console-dpad::before {
+  left: 15px;
+  top: 0;
+  width: 12px;
+  height: 42px;
+}
+.landing .l-console-dpad::after {
+  left: 0;
+  top: 15px;
+  width: 42px;
+  height: 12px;
+}
+.landing .l-console-keys {
+  display: flex;
+  gap: 10px;
+}
+.landing .l-console-key {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #8d5cf0, #5b34a8);
+  box-shadow: inset 0 -2px 3px rgb(0 0 0 / 0.4);
+}
+.landing .l-console-key:last-child {
+  background: radial-gradient(circle at 32% 28%, #f06a8d, #a83455);
+}
+
 .landing .l-pet-badge {
   position: absolute;
   right: 18px;

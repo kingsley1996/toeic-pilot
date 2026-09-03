@@ -16,7 +16,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { MockPlayer } from "@/components/mock-player";
-import { PetlandMap, PetlandSpecies } from "@/components/petland-preview";
+import { PetlandDemo } from "@/components/petland-demo";
+import { PetlandSpecies } from "@/components/petland-preview";
 import {
   DICTATION_DURATION,
   DictationBox,
@@ -374,7 +375,28 @@ export default function HomePage() {
           trên đã nhả nền riêng, nên nhịp sáng–tối phải nhích xuống một bậc. */}
       <section className="l-section l-alt">
         <div className="l-container l-pet-layout">
-          <PetlandMap className="l-pet-card" />
+          {/* Cảnh chạy thay cho bản đồ đứng yên. Nó tự lo vòng chạy: `rAF` ghi
+              thẳng vào DOM, và không chạy chút nào khi người dùng xin giảm
+              chuyển động. */}
+          <div className="l-console">
+            <div className="l-console-top">
+              <span className="l-console-led" aria-hidden />
+              <span className="l-console-name">Petland</span>
+            </div>
+            <div className="l-console-screen">
+              <PetlandDemo />
+            </div>
+            {/* Trang trí, không phải điều khiển — nên là `div` chứ không phải
+                `button`, và `aria-hidden` để trình đọc màn hình không mời người
+                dùng bấm vào thứ không làm gì. */}
+            <div className="l-console-pad" aria-hidden>
+              <span className="l-console-dpad" />
+              <span className="l-console-keys">
+                <span className="l-console-key" />
+                <span className="l-console-key" />
+              </span>
+            </div>
+          </div>
           <div>
             <div className="l-kicker">{landing.pet.kicker}</div>
             <h3>{landing.pet.title}</h3>

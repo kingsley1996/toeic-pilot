@@ -94,10 +94,11 @@ const ASSETS = [
  *
  * Bản trước chỉ đọc `src/components`, nên một đường dẫn ảnh viết thẳng trong một
  * `page.tsx` lọt qua mà không ai biết — đúng chỗ dễ viết nhất, vì trang mới thì
- * không ai nhớ tới luật này.
+ * không ai nhớ tới luật này. `src/remotion` vào danh sách vì cùng lý do, ngay
+ * khi thư mục đó bắt đầu vẽ cảnh Petland.
  */
 const files = [];
-for (const dir of ["src/components", "src/app"]) {
+for (const dir of ["src/components", "src/app", "src/remotion"]) {
   const stack = [path.join(root, dir)];
   while (stack.length > 0) {
     const at = stack.pop();
@@ -133,7 +134,7 @@ console.log("\n✓ ranh giới còn nguyên: đổi mascot hay đổi bối cả
 
 // Quét toàn thư mục nguồn: luật ở trên chỉ soi những tệp được liệt kê, còn tệp
 // MỚI thì không ai nhớ thêm vào bảng — mà đúng tệp mới mới là chỗ dễ nhập nhầm.
-const roots = ["src/components", "src/app"];
+const roots = ["src/components", "src/app", "src/remotion"];
 for (const dir of roots) {
   const stack = [path.join(root, dir)];
   while (stack.length > 0) {

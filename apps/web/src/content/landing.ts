@@ -23,7 +23,7 @@ export const landing = {
   hero: {
     eyebrow: "Học TOEIC theo cách dễ duy trì hơn",
     titleTop: "Học TOEIC.",
-    titleAccent: "Thấy mình tiến bộ.",
+    titleAccent: "Tinh gọn, hiệu quả.",
     lead: "Học từ vựng, luyện nghe chép chính tả và làm đề TOEIC Listening & Reading — tất cả trong một nền tảng giúp bạn học đều đặn và biết mình đang tiến bộ ở đâu.",
     ctaSignedIn: "Vào học",
     ctaSignedOut: "Bắt đầu miễn phí",
@@ -177,6 +177,32 @@ export const landing = {
       "Ấp trứng và sưu tầm thú cưng",
     ],
     speciesLabel: "45 loài, sáu bậc hiếm",
+
+    /* Chữ cho cảnh động ở `remotion/petland.tsx`.
+       Cảnh diễn đúng cơ chế trung tâm của Petland (ADR-013): ba chỉ số không
+       phải là số để ngắm, chúng đổi CÁCH CON THÚ ĐI. Đói thì nó quanh quẩn
+       bán kính hai ô; cho ăn xong thì vui, và vui thì nó đi xa gấp ba. */
+    scene: {
+      hungry: "Đang đói — nó chỉ quanh quẩn gần nhà",
+      feeding: "Cho ăn",
+      cheerful: "Đang vui — nó đi xa hơn hẳn",
+
+      /* Cuộc chạm mặt (ADR-012): NPC hiện ra ngay trên bản đồ, bài tập làm
+         NGAY TRONG thẻ chứ không đẩy sang màn học, và máy chủ mới là bên chấm.
+         Chữ ở đây chép đúng nhãn của `petland-quest.tsx`. */
+      encounter: "Một bạn nhỏ xuất hiện — đi tới xem nào",
+      quest: "Trả lời đúng để nhận ruby",
+      questName: "Cú",
+      questTimer: "0:18",
+      questLead: "Trả lời đúng để nhận ruby.",
+      questPrompt: "hoá đơn",
+      questPos: "noun",
+      questPlaceholder: "Gõ từ tiếng Anh",
+      questAnswer: "invoice",
+      questSubmit: "Trả lời",
+      questCorrect: "Chính xác",
+      questReward: "+8 ruby",
+    },
   },
 
   habits: {

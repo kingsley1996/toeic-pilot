@@ -1,7 +1,9 @@
 "use client";
 
 import { API_ROUTES } from "@toeic-pilot/shared";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland-map";
 
 /**
  * Petland trên trang giới thiệu: bản đồ thật và vài con thú, cả hai vẽ ra từ
@@ -39,7 +41,7 @@ const SHOWCASE = [
   { tile: 48, name: "Thần Bão", tier: "Thần", tone: "text-myth" },
 ];
 
-function Creature({ tile, size }: { tile: number; size: number }) {
+export function Creature({ tile, size }: { tile: number; size: number }) {
   const scale = size / CELL;
   return (
     <span
@@ -71,11 +73,11 @@ function Creature({ tile, size }: { tile: number; size: number }) {
  * là bản đang chạy. Lấy sai thứ tự thì trang này vẽ một bản đồ cũ.
  */
 
-const SHEET_COLS: Record<string, number> = { town: 12, farm: 12, water: 18, stone: 12 };
-const TILE = 16;
-
-type Cell = { sheet: string; index: number } | null;
-type MapData = { w: number; h: number; ground: Cell[]; objects: Cell[] };
+/* Hình học tấm nền và luật đọc bản đồ lấy THẲNG từ `petland-map.ts`, không chép
+   lại. Chú thích cũ ở đầu tệp lo rằng nhập từ lớp trò chơi sẽ kéo Pixi theo —
+   nhưng `petland-map` bị `check-petland-layers.mjs` CẤM nhập `pixi.js`, nên nó
+   là số học thuần và nhập được. Bản chép tay trước đây là một nguồn sự thật thứ
+   hai không cần thiết. */
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -86,8 +88,27 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-export function PetlandMap({ className }: { className?: string }) {
+/**
+ * Vẽ bản đồ thật vào canvas MỘT LẦN, rồi thôi.
+ *
+ * Là hook để cảnh Remotion dùng lại được, và nó tự GIỮ ref chứ không nhận vào:
+ * effect ghi `el.width`/`el.height`, mà ghi xuyên qua tham số của hook là thứ
+ * bộ biên dịch React từ chối thẳng.
+ *
+ * Nó phải vẽ một lần chứ không vẽ theo
+ * khung hình: bản đồ 18×13 với hai lớp là hơn bốn trăm lượt `drawImage`, và làm
+ * việc đó ba mươi lần mỗi giây cho một hình KHÔNG đổi là cách chắc chắn nhất để
+ * một trang giới thiệu làm nóng máy người xem. Thứ động duy nhất là con thú, và
+ * nó là một phần tử DOM dịch chuyển bằng `transform`.
+ */
+export function usePetlandMapCanvas() {
   const canvas = useRef<HTMLCanvasElement>(null);
+  /* Bản đồ đã đọc, để cảnh động hỏi ô nào đi được. State chứ không ref: đường
+     đi lang thang được dựng bằng `useMemo` từ nó, mà `useMemo` cần một lần
+     render mới sau khi bản đồ về. Đặt state ở đây không đụng luật
+     `react-hooks/set-state-in-effect` vì nó nằm sau `await`, không phải trong
+     thân effect. */
+  const [map, setMap] = useState<MapData | null>(null);
 
   useEffect(() => {
     // Effect này chỉ VẼ, không đặt state — không đụng tới luật
@@ -96,14 +117,17 @@ export function PetlandMap({ className }: { className?: string }) {
 
     void (async () => {
       const live = await fetch(API_ROUTES.petlandMap).catch(() => null);
-      const map: MapData | null =
+      const raw =
         live && live.status === 200
           ? await live.json().catch(() => null)
           : await fetch("/pet/map.json")
               .then((r) => r.json())
               .catch(() => null);
-      if (!alive || map === null) return;
+      const parsed = parseMap(raw);
+      if (!alive || parsed === null) return;
+      setMap(parsed);
 
+      const map = parsed;
       const sheets = Object.fromEntries(
         await Promise.all(
           Object.keys(SHEET_COLS).map(async (id) => [id, await loadImage(`/pet/${id}.png`)]),
@@ -144,6 +168,12 @@ export function PetlandMap({ className }: { className?: string }) {
       alive = false;
     };
   }, []);
+
+  return { canvas, map };
+}
+
+export function PetlandMap({ className }: { className?: string }) {
+  const { canvas } = usePetlandMapCanvas();
 
   return (
     <div className={className}>
