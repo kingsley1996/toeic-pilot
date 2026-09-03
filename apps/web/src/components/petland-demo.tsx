@@ -4,7 +4,8 @@
  * Góc thú cưng, chạy thật trên trang giới thiệu.
  *
  * Diễn đúng hai việc người học thật sự làm ở đó: con thú đi lang thang, **gặp
- * NPC và làm bài để lấy ruby** (ADR-012), rồi được cho ăn và ba chỉ số dâng lên
+ * một kẻ xâm nhập và làm bài để lấy ruby** (ADR-012), rồi được cho ăn và ba chỉ
+ * số dâng lên
  * (ADR-013).
  *
  * **Không dùng Remotion, và đó là lần sửa thứ ba của cùng một lỗi.** Cảnh này
@@ -48,17 +49,36 @@ const MAP_W = 18;
 const MAP_H = 13;
 
 const RESIDENT = 169; // Mèo
-const NPC_TILE = 117; // Cú
+/*
+ * Ô 123 — "tiểu quỷ đỏ", và nó được CHỌN chứ không đoán.
+ *
+ * `petland-bestiary.ts` xếp vai cho cả 180 ô của `creatures.png`, và 123 là một
+ * trong sáu ô được gọi tên thẳng là `intruder`. Bản trước ở đây là ô 33 vì trông
+ * nó dữ dằn — con rồng lửa — nhưng `roleOf(33)` trả về `pet`: nó nằm trong bốn
+ * mươi loài NUÔI ĐƯỢC, và tài liệu ngay cạnh bảng ấy nói rõ vì sao một con rồng
+ * vừa nở ra từ trứng thì không được phép quay lại tấn công chủ nó.
+ *
+ * Trò chơi bốc sprite bằng `tileForGuest(id, "intruder")`. Ở đây ghim một ô cố
+ * định thay vì bốc: cảnh này chạy đi chạy lại trên trang giới thiệu, và một con
+ * quái đổi hình mỗi lần tải là nhiễu chứ không phải sinh động.
+ */
+const INTRUDER_TILE = 123;
 const HOME: Tile = { x: 6, y: 6 };
-const NPC: Tile = { x: 12, y: 5 };
+const INTRUDER: Tile = { x: 12, y: 5 };
 
 /* Mọi mốc tính bằng MILI GIÂY, không bằng khung hình: vòng rAF chạy ở nhịp màn
    hình, và một máy 120Hz không được xem cảnh này nhanh gấp đôi. */
 const STEP_MS = 420; // một ô
 const PAUSE_MS = 150; // đứng nghỉ giữa hai bước
 const CYCLE_MS = STEP_MS + PAUSE_MS;
-const WANDER_STEPS = 3; // lang thang trước khi NPC hiện ra
+const WANDER_STEPS = 3; // lang thang trước khi kẻ xâm nhập hiện ra
 const QUEST_MS = 6200;
+/* Chấm đúng ở đâu trong nhịp nhiệm vụ. Hằng số vì HAI nơi đọc nó — cái thẻ đổi
+   sang "Đã đẩy lui", và cú hất văng trên bản đồ. Để hai con số rời nhau thì có
+   ngày thẻ báo thắng trong khi con quái vẫn đứng đó. */
+const SOLVED_AT = 0.66;
+/** Cú hất văng kéo bao lâu, tính từ lúc chấm đúng. */
+const KNOCK_MS = 750;
 const FEED_MS = 3800;
 
 /** PRNG có hạt giống: cùng một lượt xem cho ra cùng một đường đi. */
@@ -72,7 +92,7 @@ function mulberry32(seed: number) {
   };
 }
 
-/** Một bước tiến về phía NPC: ưu tiên trục lệch nhiều hơn, né ô không đi được. */
+/** Một bước tiến về phía kẻ xâm nhập: ưu tiên trục lệch nhiều hơn, né ô chặn. */
 function stepToward(map: MapData, from: Tile, target: Tile): Tile {
   const dx = Math.sign(target.x - from.x);
   const dy = Math.sign(target.y - from.y);
@@ -92,10 +112,10 @@ function stepToward(map: MapData, from: Tile, target: Tile): Tile {
 const adjacent = (a: Tile, b: Tile) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) <= 1;
 
 /**
- * Đường đi: lang thang quanh nhà, rồi tiến thẳng tới NPC.
+ * Đường đi: lang thang quanh nhà, rồi tiến thẳng tới kẻ xâm nhập.
  *
- * Dừng ngay khi đứng cạnh NPC — thẻ nhiệm vụ mở lúc CHẠM MẶT, không theo đồng
- * hồ, vì NPC chỉ mở nhiệm vụ khi người học đang ở đó (ADR-012 §1).
+ * Dừng ngay khi đứng cạnh nó — thẻ nhiệm vụ mở lúc CHẠM MẶT, không theo đồng hồ,
+ * vì một cuộc chạm mặt chỉ mở ra khi người học đang ở đó (ADR-012 §1).
  */
 function buildPath(map: MapData): Tile[] {
   const rand = mulberry32(20260904);
@@ -106,8 +126,8 @@ function buildPath(map: MapData): Tile[] {
   }
   for (let guard = 0; guard < 24; guard += 1) {
     const here = path[path.length - 1];
-    if (adjacent(here, NPC)) break;
-    const next = stepToward(map, here, NPC);
+    if (adjacent(here, INTRUDER)) break;
+    const next = stepToward(map, here, INTRUDER);
     if (next === here) break;
     path.push(next);
   }
@@ -119,6 +139,7 @@ type Phase = "walk" | "quest" | "feed";
 export function PetlandDemo() {
   const { canvas, map } = usePetlandMapCanvas();
   const pet = useRef<HTMLDivElement>(null);
+  const foe = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>("walk");
   /** 0 → 1 trong nhịp nhiệm vụ và nhịp cho ăn, để React vẽ phần đổi chậm. */
@@ -158,9 +179,28 @@ export function PetlandDemo() {
       const hop = t > 0 && t < 1 ? Math.abs(Math.sin(t * Math.PI)) * 1.5 * SCALE : 0;
       const facing = to.x < from.x ? -1 : 1;
       const breathe = 1 + Math.sin(now / 700) * 0.03;
+      /* Đẩy lui: con thú chồm lên một nhịp, kẻ xâm nhập bay ngược ra theo một
+         vòng cung rồi mờ hẳn. Tính ở đây chứ không bằng CSS transition, vì mốc
+         bắt đầu là một thời điểm TRONG vòng lặp — dùng transition thì nó phải
+         chờ một lần render của React, và cú đánh trễ mất một nhịp. */
+      const solvedMs = walkMs + QUEST_MS * SOLVED_AT;
+      const knock = at < solvedMs ? 0 : Math.min(1, (at - solvedMs) / KNOCK_MS);
+      const lunge = knock > 0 && knock < 0.25 ? Math.sin(knock * 4 * Math.PI) * 5 : 0;
+
       const node = pet.current;
       if (node !== null) {
-        node.style.transform = `translate3d(${x * CELL}px, ${y * CELL - hop}px, 0) scaleX(${facing}) scaleY(${breathe})`;
+        node.style.transform = `translate3d(${x * CELL + lunge}px, ${y * CELL - hop}px, 0) scaleX(${facing}) scaleY(${breathe})`;
+      }
+
+      const enemy = foe.current;
+      if (enemy !== null) {
+        /* Trước cú đánh nó chỉ nhấp nhô tại chỗ — đứng chết cứng thì đọc ra là
+           một hình dán, không phải một sinh vật. */
+        const idle = knock === 0 ? Math.sin(now / 380) * 2 : 0;
+        const push = knock * 4.5 * CELL;
+        const arc = Math.sin(knock * Math.PI) * 30;
+        enemy.style.transform = `translate3d(${INTRUDER.x * CELL + push}px, ${INTRUDER.y * CELL - arc + idle}px, 0) rotate(${knock * 120}deg)`;
+        enemy.style.opacity = String(1 - knock);
       }
 
       /* Phần đổi chậm: đánh thức React khoảng tám lần mỗi giây, không hơn. */
@@ -213,7 +253,7 @@ export function PetlandDemo() {
 
   const typed =
     phase === "quest" ? Math.floor(Math.max(0, progress - 0.2) * 2.6 * T.questAnswer.length) : 0;
-  const solved = phase === "quest" && progress > 0.66;
+  const solved = phase === "quest" && progress > SOLVED_AT;
   const rewarded = phase === "quest" && progress > 0.74;
   const caption = phase === "walk" ? T.encounter : phase === "quest" ? null : T.feeding;
 
@@ -239,14 +279,17 @@ export function PetlandDemo() {
         />
 
         <div
+          ref={foe}
           style={{
             position: "absolute",
             left: 0,
             top: 0,
-            transform: `translate3d(${NPC.x * CELL}px, ${NPC.y * CELL}px, 0)`,
+            transform: `translate3d(${INTRUDER.x * CELL}px, ${INTRUDER.y * CELL}px, 0)`,
+            transformOrigin: "bottom center",
+            willChange: "transform, opacity",
           }}
         >
-          <Creature tile={NPC_TILE} size={CELL} />
+          <Creature tile={INTRUDER_TILE} size={CELL} />
         </div>
 
         {phase === "walk" && (
@@ -255,12 +298,15 @@ export function PetlandDemo() {
             className="grid place-items-center rounded"
             style={{
               position: "absolute",
-              left: NPC.x * CELL + CELL * 0.3,
-              top: NPC.y * CELL - CELL * 0.85,
+              left: INTRUDER.x * CELL + CELL * 0.3,
+              top: INTRUDER.y * CELL - CELL * 0.85,
               width: 16,
               height: 20,
-              background: "#ffd447",
-              color: "#1b1e26",
+              /* Đỏ, không phải vàng. Cùng một dấu, khác màu — và nó là KHUNG
+                 CẢNH chứ không phải lời đe doạ: không đẩy lui được thì kẻ xâm
+                 nhập biến mất và không có gì xảy ra (ADR-012 §4). */
+              background: "#e0245e",
+              color: "#fff",
               font: "800 13px/1 ui-sans-serif, system-ui, sans-serif",
             }}
           >
@@ -293,8 +339,8 @@ export function PetlandDemo() {
                 aria-hidden
                 style={{
                   position: "absolute",
-                  left: NPC.x * CELL - CELL + (i - 1) * 12,
-                  top: NPC.y * CELL - age * 34,
+                  left: INTRUDER.x * CELL - CELL + (i - 1) * 12,
+                  top: INTRUDER.y * CELL - age * 34,
                   opacity: 1 - age,
                 }}
               >
@@ -312,9 +358,15 @@ export function PetlandDemo() {
             className="rounded border border-rule-strong bg-panel p-3"
             style={{ position: "absolute", left: 10, top: 10, width: 208 }}
           >
-            <span className="text-small font-semibold text-warn">
+            {/* `text-alert` chứ không `text-warn`, và có bộ đếm bước: đó đúng
+                là hai chỗ `petland-quest.tsx` phân biệt kẻ xâm nhập với NPC
+                thường (`danger = encounter.kind === "intruder"`). */}
+            <span className="text-small font-semibold text-alert">
               {T.questName}
               <span className="ml-2 font-data font-normal tabular-nums text-ink-muted">
+                {T.questSteps}
+              </span>
+              <span className="ml-2 font-data font-normal tabular-nums text-ink-faint">
                 {T.questTimer}
               </span>
             </span>

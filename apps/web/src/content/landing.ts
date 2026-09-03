@@ -187,21 +187,24 @@ export const landing = {
       feeding: "Cho ăn",
       cheerful: "Đang vui — nó đi xa hơn hẳn",
 
-      /* Cuộc chạm mặt (ADR-012): NPC hiện ra ngay trên bản đồ, bài tập làm
-         NGAY TRONG thẻ chứ không đẩy sang màn học, và máy chủ mới là bên chấm.
-         Chữ ở đây chép đúng nhãn của `petland-quest.tsx`. */
-      encounter: "Một bạn nhỏ xuất hiện — đi tới xem nào",
-      quest: "Trả lời đúng để nhận ruby",
-      questName: "Cú",
+      /* Cuộc chạm mặt (ADR-012). Ở đây là **kẻ xâm nhập**, không phải NPC
+         thường: cùng bộ máy, chỉ khác ba con số — nhiều bước hơn (3 thay vì 1),
+         thưởng lớn hơn (20 ruby thay vì 5), và hiếm hơn. Dấu cảnh báo đỏ trên
+         đầu nó là KHUNG CẢNH chứ không phải lời đe doạ: không đẩy lui được thì
+         nó biến mất và không có gì xảy ra (§4). Số và chữ chép từ
+         `EncounterSetting` và `petland-quest.tsx`. */
+      encounter: "Một kẻ xâm nhập xuất hiện",
+      questName: "Kẻ xâm nhập",
+      questSteps: "1/3",
       questTimer: "0:18",
-      questLead: "Trả lời đúng để nhận ruby.",
+      questLead: "Đẩy lui để nhận ruby.",
       questPrompt: "hoá đơn",
       questPos: "noun",
       questPlaceholder: "Gõ từ tiếng Anh",
       questAnswer: "invoice",
       questSubmit: "Trả lời",
-      questCorrect: "Chính xác",
-      questReward: "+8 ruby",
+      questCorrect: "Đã đẩy lui",
+      questReward: "+20 ruby",
     },
   },
 
