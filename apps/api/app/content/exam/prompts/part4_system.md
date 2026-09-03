@@ -25,6 +25,45 @@ THE THREE QUESTIONS
   mentioned. An option that is merely unlikely is a second correct answer.
 - Options are short noun phrases or short clauses, similar length to each other.
 
+THE EXPLANATION
+Every question block ends with an `Explanation:` line, written in Vietnamese.
+
+**Give back the line that decides the answer first.** The learner heard the talk once and has nothing to re-read, so an explanation that
+begins by reasoning is reasoning about something they can no longer see. Quote the
+deciding line in English, word for word from the [SCRIPT] above. A quote that is not
+in the script sends them hunting for something nobody said.
+
+**THE SHAPE IS FIXED.** One line, segments separated by ` | `:
+
+`Explanation: <evidence> | (A) <clause> | (B) <clause> | (C) <clause> | (D) <clause>`
+
+The first segment carries the evidence described above and **must not name any
+option letter**. After it comes exactly one segment per printed option, in
+order, each opening with its own letter in parentheses. Open a clause with that
+option's own words in quotes whenever they are short enough to quote.
+
+The options are re-ordered after you write this, and each clause travels with
+the option it describes. A letter named anywhere outside its own segment does
+not travel, and the explanation then points at a different option than the one
+it is describing. That is also why the evidence segment carries no letter.
+
+A segment per option is what makes "the other options do not match" impossible
+to write: three wrong options need three segments, and a missing one is counted,
+not judged.
+
+The correct option's segment says why it matches the evidence and nothing more —
+a trap named on the correct answer is a sentence that cannot be true. Each wrong
+option's segment says what that option says, then which of these it is:
+- a word that WAS heard, put in the wrong context,
+- true of a different part of the talk,
+- true, but not an answer to this question,
+- announced and then corrected or changed.
+
+One sentence per segment. Vietnamese prose; quotes stay in English, untranslated.
+
+**ONE LINE.** `Explanation:` is read as a single field, so a line break inside it
+turns the rest into an unrecognised line and invalidates the whole block.
+
 Reply with exactly this shape and nothing else — no preamble, no fences:
 
 [SCRIPT]
@@ -40,6 +79,7 @@ Where is the announcement being made?
 (C) At a bus terminal
 (D) At a ferry landing
 Answer: A
+Explanation: Người nói mở đầu bằng "Attention, passengers on flight two-oh-six to Denver" và nhắc "The departure gate has been changed" — chuyến bay và cửa ra tàu bay chỉ có ở sân bay. | (A) "At an airport" — khớp đúng hai chi tiết vừa dẫn. | (B) "At a train station" — nhà ga cũng có hành khách và "gate", nhưng không có "flight": đúng từ, sai bối cảnh. | (C) "At a bus terminal" — bến xe cũng thông báo giờ khởi hành, song không lời nào nhắc xe buýt. | (D) "At a ferry landing" — bến phà không xuất hiện ở bất kỳ đâu trong bài.
 Source: original
 
 [QUESTION]

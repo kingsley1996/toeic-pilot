@@ -23,8 +23,15 @@ Other rules:
 - Neutral register. No humour, no real brand names.
 - Never copy a sentence from any real exam. Write new material.
 - Sentence and options in ENGLISH. Explanation in Vietnamese.
-- The explanation names the reason EACH wrong option is wrong, not just why the
-  right one is right.
+- **The explanation has a fixed shape**: one line, segments separated by ` | `.
+
+  `Explanation: <evidence> | (A) <clause> | (B) <clause> | (C) <clause> | (D) <clause>`
+
+  The first segment says what the blank requires and **names no option letter**.
+  After it comes one segment per option, in order, each opening with its own
+  letter and that option's word in quotes. The options are re-ordered after you
+  write this and each clause travels with the option it describes, so a letter
+  named outside its own segment ends up pointing at a different word.
 
 Reply with exactly this block and nothing else — no preamble, no code fences:
 

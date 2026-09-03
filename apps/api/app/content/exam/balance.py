@@ -21,6 +21,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from app.content.exam import explanation
 from app.content.exam.blueprint import QUESTIONS_PER_SET, Blueprint
 from app.content.exam.writer import paste_path
 
@@ -107,6 +108,30 @@ def rewrite(block: str, target: str) -> str:
     lines[answer_index] = f"({answer}) {target_text}"
     lines[target_index] = f"({target}) {answer_text}"
     lines[answer_line] = f"Answer: {target}"
+
+    # Lời giải thích mô tả TỪNG lựa chọn, nên nó phải đi theo phép hoán vị.
+    #
+    # Không có bước này, cân xong là mọi lời giải thích nói dối: nó bảo "(A)
+    # đúng" trong khi đáp án đã sang (C). Đề vẫn nạp, đáp án vẫn đúng — chỉ phần
+    # dạy người học là sai, và không cổng nào thấy.
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped.lower().startswith("explanation:"):
+            continue
+        value = stripped.split(":", 1)[1].strip()
+        parsed = explanation.parse(value)
+        if parsed is not None:
+            lines[index] = f"Explanation: {parsed.swap(answer, target).render()}"
+            continue
+        # Lối cũ: văn xuôi tự do, chỉ tìm-thay được dạng có ngoặc. Giữ lại vì
+        # hàng trăm câu đã nạp viết theo lối đó, nhưng nó KHÔNG đủ — "đáp án B"
+        # hay một `(A)` nằm trong câu trích tiếng Anh đều lọt. Đó là lý do
+        # `explanation.py` tồn tại; đây chỉ là đường lui cho nội dung cũ.
+        lines[index] = re.sub(
+            rf"\(([{answer}{target}])\)",
+            lambda m: f"({target if m.group(1) == answer else answer})",
+            line,
+        )
     return "\n".join(lines)
 
 

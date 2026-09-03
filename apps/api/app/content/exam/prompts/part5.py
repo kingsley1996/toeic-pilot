@@ -13,9 +13,11 @@ from app.services.labels import LABELS
 # dòng theo, và parser coi dòng lạ sau các đáp án là lỗi — một lựa chọn định
 # dạng của tệp nguồn sẽ đi thẳng vào đầu ra của mô hình.
 EXAMPLE_EXPLANATION = (
-    'Explanation: Sau "must be" cần phân từ hai của thể bị động. '
-    '(B) là V-ing, không đi sau "be" theo nghĩa bị động; '
-    '(C) là danh từ; (D) là tính từ nghĩa "phục tùng", không liên quan.'
+    'Explanation: Sau "must be" cần phân từ hai để tạo thể bị động. '
+    '| (A) "submitted" — đúng phân từ hai mà thể bị động đòi. '
+    '| (B) "submitting" — là V-ing, không đi sau "be" theo nghĩa bị động. '
+    '| (C) "submission" — là danh từ, sai từ loại cho vị trí này. '
+    '| (D) "submissive" — là tính từ nghĩa "phục tùng", không liên quan.'
 )
 
 SYSTEM = exam_prompt("part5_system").render(EXAMPLE_EXPLANATION=EXAMPLE_EXPLANATION)

@@ -208,7 +208,9 @@ class Graphic:
         lines = [f"{self.title}."] + ([lead] if lead else [])
         if self.shape == "chart":
             lines.append("Biểu đồ cột.")
-            lines += [f"{row[0]}: {row[1]}." for row in self.rows]
+            # Hàng thiếu cột là lỗi `problems()` đã bắt; ở đây chỉ cần KHÔNG
+            # nổ, vì đây là hàm dựng chữ chứ không phải cổng kiểm.
+            lines += [f"{row[0]}: {row[1]}." for row in self.rows if len(row) >= 2]
         elif self.kind == "form":
             lines += [f"{row[0]}: {' '.join(row[1:])}." for row in self.rows if row]
         elif self.shape == "map":

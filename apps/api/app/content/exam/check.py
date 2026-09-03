@@ -23,6 +23,7 @@ import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from app.content.exam import explanation as exp_format
 from app.content.exam.blueprint import (
     LISTENING_QUESTIONS_PER_SET,
     QUESTIONS_PER_SET,
@@ -278,6 +279,76 @@ def check_options(question: ParsedQuestion) -> list[str]:
         average = sum(rest) / len(rest) if rest else longest
         if longest >= LENGTH_TELL_MIN_CHARS and average and longest > average * LENGTH_TELL_RATIO:
             flags.append(f"một lựa chọn dài bất thường ({longest} vs trung bình {average:.0f})")
+    return flags
+
+
+# Chữ cái nêu trong lời giải thích, ví dụ "(A) đúng" hay "nên (B)". Bắt cả dạng
+# có ngoặc lẫn không, vì hai kiểu đều xuất hiện trong đầu ra thật.
+_EXPLAINED_LETTER = re.compile(r"\(([A-D])\)\s*(?:là\s+)?(?:đáp án\s+)?đúng|nên\s*\(?([A-D])\)?\b")
+
+# Đoạn tiếng Anh đặt trong ngoặc kép — thứ lời giải thích dùng làm bằng chứng.
+#
+# KHÔNG lọc độ dài trong chính regex. `"([^"]{12,})"` ghép nhầm cặp: gặp một
+# trích dẫn ngắn (`"report"`, `"Where...?"` — Part 2 đầy thứ này) nó bỏ qua dấu
+# mở ấy rồi ghép dấu ĐÓNG của cặp đó với dấu MỞ của cặp sau, nuốt trọn đoạn
+# tiếng Việt ở giữa và coi đó là một trích dẫn. Đoạn ấy tất nhiên không có trong
+# ngữ liệu, nên cổng báo oan hàng loạt. Ghép hết rồi lọc bằng Python.
+_QUOTED = re.compile(r'"([^"]*)"')
+_QUOTE_MIN_CHARS = 12
+
+
+def check_explanation(question: ParsedQuestion, evidence: str) -> list[str]:
+    """Hai cổng cho lời giải thích. Cả hai bắt kiểu hỏng ĐỌC RẤT TRÔI CHẢY.
+
+    1. **Chữ cái nêu trong giải thích phải khớp đáp án.** Một mô hình biện hộ cho
+       đáp án sai cũng mượt mà y như biện hộ cho đáp án đúng, nên đọc bằng mắt
+       không phát hiện được ở quy mô vài trăm câu.
+    2. **Đoạn trích phải có thật trong ngữ liệu.** Đây là kiểu tệ nhất: người học
+       đi tìm một câu không tồn tại rồi kết luận tai mình có vấn đề, chứ không
+       kết luận lời giải thích sai.
+
+    `evidence` là lời thoại / đoạn văn / nội dung các lựa chọn — tuỳ part. Rỗng
+    thì bỏ qua cổng thứ hai: không có gì để đối chiếu thì im lặng còn hơn báo
+    bừa. Trả `flags` chứ không `problems`: một lời giải thích lệch không làm câu
+    hỏi sai, nên nó cần người nhìn chứ không đáng chặn cả đợt nạp.
+    """
+    text = (question.explanation or "").strip()
+    if not text:
+        return []
+
+    flags: list[str] = []
+    answer = next((o.label for o in question.options if o.is_correct), None)
+    labels = [o.label for o in question.options]
+    value = text.split(":", 1)[1].strip() if text.lower().startswith("explanation:") else text
+    parsed = exp_format.parse(value)
+
+    flags.extend(exp_format.problems(value, labels))
+    if parsed is None:
+        # Lối cũ, văn xuôi tự do: chỉ đối chiếu được chữ cái mà nó tự nêu là đúng.
+        claimed = {a or b for a, b in _EXPLAINED_LETTER.findall(text)} - {""}
+        if answer and claimed and answer not in claimed:
+            flags.append(
+                f"giải thích nói ({'/'.join(sorted(claimed))}) đúng nhưng đáp án là ({answer})"
+            )
+    else:
+        # Mệnh đề mở đầu bằng chính lời của lựa chọn thì đối chiếu được CHÍNH XÁC
+        # nó có nằm đúng nhãn không. Bắt lỗi lúc SINH, chứ phép cân thì đã đúng
+        # theo cấu trúc — nó đổi chỗ payload, không sửa chữ trong câu.
+        for label, clause in parsed.clauses.items():
+            opening = _QUOTED.match(clause.lstrip())
+            content = next((o.content for o in question.options if o.label == label), None)
+            if opening is None or not content:
+                continue
+            if _normalise(opening.group(1)) not in _normalise(content):
+                flags.append(f"mệnh đề ({label}) mở đầu bằng lời của một lựa chọn khác")
+
+    if evidence:
+        haystack = _normalise(evidence)
+        for quote in _QUOTED.findall(text):
+            if len(quote) < _QUOTE_MIN_CHARS:
+                continue
+            if _normalise(quote) not in haystack:
+                flags.append(f"trích dẫn không có trong ngữ liệu: {quote[:48]!r}")
     return flags
 
 
@@ -647,6 +718,14 @@ def _check_set(
     # chữ với hình — đúng hình dạng của bài đọc ba ngữ liệu — không bao giờ qua.
     text_passages = sum(1 for spec in slot.passages if not spec) if part == 7 else None
     questions, script, shared = parse_group(block, part, len(slot.question_types), text_passages)
+    # Ngữ liệu để đối chiếu trích dẫn: CHÍNH khối dán, trừ các dòng giải thích.
+    # Dùng cả khối thay vì ghép script + passage vì `parse_group` không trả ngữ
+    # liệu ra ngoài, và cả khối lại đúng hơn — nó phủ mọi part, kể cả Part 2 nơi
+    # bằng chứng nằm trong ba câu đáp. Phải trừ dòng `Explanation:` đi, nếu
+    # không một trích dẫn bịa sẽ khớp với chính nó và cổng thành vô dụng.
+    evidence = "\n".join(
+        line for line in block.splitlines() if not line.strip().lower().startswith("explanation:")
+    )
     if slot.graphic:
         source = workdir / "graphics" / f"{slot.id}.txt"
         graphic_problems, graphic_flags = check_graphic(questions, script, source, part)
@@ -677,8 +756,18 @@ def _check_set(
                 # Phán quyết không đọc được KHÔNG được thành "đạt" — nhưng cũng
                 # không chặn nạp, vì lỗi nằm ở lượt gọi chứ không ở nội dung.
                 graphic_flags = [*graphic_flags, f"phán quyết luật hình lạ: {verdict!r}"]
-        if source.exists():
+        # Cùng điều kiện với lượt hỏi phán quyết ngay trên: một tấm hình đã
+        # hỏng thì không dựng thành chữ được. Thiếu `not graphic_problems` ở
+        # đây, `alt_text()` gặp hàng biểu đồ thiếu cột và ném IndexError — một
+        # lỗi lẽ ra được BÁO CÁO lại giết cả lượt kiểm 103 ô ở ô thứ 54.
+        if source.exists() and not graphic_problems:
             script = f"{script}\n\n{_graphic_as_text(source)}"
+            # …và vào cả NGỮ LIỆU ĐỐI CHIẾU. Lời giải thích trích thẳng một ô
+            # của bảng ("Refund | Yes"), nhưng `evidence` chỉ dựng từ khối dán
+            # nên mọi trích dẫn kiểu đó bị báo là bịa. Ghép NGUỒN THÔ chứ không
+            # phải `alt_text`: mô hình trích đúng chữ trong tệp, còn alt_text đã
+            # diễn lại thành câu tiếng Việt nên không khớp.
+            evidence = f"{evidence}\n\n{source.read_text()}"
     else:
         graphic_flags = []
     if part == 7:
@@ -708,6 +797,7 @@ def _check_set(
                 ]
             ):
                 script = f"{script}\n\n{_graphic_as_text(found_path)}"
+                evidence = f"{evidence}\n\n{found_path.read_text()}"
     # Hội thoại trùng là lỗi ở tầng ĐỀ và đáng nói RIÊNG, không nấp trong một
     # thông báo về đề bài: ba câu vẫn khác nhau, chỉ có đoạn thoại là lặp lại,
     # và người học nghe lại đúng một đoạn hai lần trong cùng một đề.
@@ -727,6 +817,11 @@ def _check_set(
         report.problems.extend(check_shape(question, part))
         report.problems.extend(check_voice_names(question))
         report.flags.extend(check_options(question))
+        # Ngữ liệu để đối chiếu trích dẫn KHÁC nhau theo part: Part 3/4 là lời
+        # thoại, Part 6/7 là đoạn văn, Part 2 là chính ba câu đáp (đề không in
+        # gì nên lời giải thích phải thuật lại chúng). Part 1 và 5 không có ngữ
+        # liệu chữ — cổng trích dẫn tự tắt ở đó thay vì báo bừa.
+        report.flags.extend(check_explanation(question, evidence))
         from app.content.exam.blueprint import GRAPHIC_POSITION
 
         if index == GRAPHIC_POSITION.get(part, len(questions) - 1):

@@ -43,6 +43,45 @@ Other rules:
   names, no text in the photograph.
 - Never copy from any real exam.
 
+THE EXPLANATION
+Every question block ends with an `Explanation:` line, written in Vietnamese.
+
+**Say what is actually in the photograph first.** The learner can look at the photo again, but only if the explanation tells them
+what to look at. Describe the thing the true statement turns on — who is there,
+what they are doing, where the objects sit relative to each other.
+
+**THE SHAPE IS FIXED.** One line, segments separated by ` | `:
+
+`Explanation: <evidence> | (A) <clause> | (B) <clause> | (C) <clause> | (D) <clause>`
+
+The first segment carries the evidence described above and **must not name any
+option letter**. After it comes exactly one segment per printed option, in
+order, each opening with its own letter in parentheses. Open a clause with that
+option's own words in quotes whenever they are short enough to quote.
+
+The options are re-ordered after you write this, and each clause travels with
+the option it describes. A letter named anywhere outside its own segment does
+not travel, and the explanation then points at a different option than the one
+it is describing. That is also why the evidence segment carries no letter.
+
+A segment per option is what makes "the other options do not match" impossible
+to write: three wrong options need three segments, and a missing one is counted,
+not judged.
+
+The correct option's segment says why it matches the evidence and nothing more —
+a trap named on the correct answer is a sentence that cannot be true. Each wrong
+option's segment says what that option says, then which of these it is:
+- right object, wrong action,
+- right action, wrong object,
+- an object or person that is not in the photograph,
+- right objects, wrong position,
+- singular said as plural, or the reverse.
+
+One sentence per segment. Vietnamese prose; quotes stay in English, untranslated.
+
+**ONE LINE.** `Explanation:` is read as a single field, so a line break inside it
+turns the rest into an unrecognised line and invalidates the whole block.
+
 Reply with exactly these two blocks and nothing else — no preamble, no fences:
 
 {PHOTO_MARKER}
@@ -57,6 +96,7 @@ voice: VOICE_ID
 (C) Two colleagues are sharing a desk.
 (D) The notebook is lying open on the desk.
 Answer: A
+Explanation: Trong ảnh người đàn ông ngồi ở bàn, hai tay đặt trên bàn phím laptop; cạnh laptop có một cuốn sổ đã gấp và một chiếc cốc trắng. | (A) "typing on a laptop" — đúng việc người đàn ông đang làm. | (B) "pouring coffee into a mug" — chiếc cốc có trong ảnh nhưng không ai rót gì: đúng vật, sai hành động. | (C) "Two colleagues are sharing a desk" — trong ảnh chỉ có một người. | (D) "lying open on the desk" — cuốn sổ nằm đúng trên bàn nhưng đang gấp, sai hành động được nói về nó.
 Source: original
 
 `voice:` must be copied exactly from the instruction below.

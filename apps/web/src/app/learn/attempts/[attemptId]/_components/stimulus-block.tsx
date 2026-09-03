@@ -6,6 +6,7 @@ import { Flag } from "lucide-react";
 import { cx } from "@/components/ui";
 import { type Block, credit } from "@/lib/attempt";
 import { CoachBlock } from "@/components/coach-block";
+import { ExplanationNote } from "./explanation-note";
 
 /**
  * Ngữ liệu của một khối và các câu hỏi thuộc về nó.
@@ -303,9 +304,13 @@ function QuestionCard({
       </div>
 
       {question.explanation && (
-        <p className="mt-3 rounded border border-rule bg-recess p-3 text-small leading-relaxed">
-          {question.explanation}
-        </p>
+        <ExplanationNote
+          text={question.explanation}
+          correctLabel={
+            question.options.find((option) => option.id === question.correct_option_id)?.label ??
+            null
+          }
+        />
       )}
 
       {/*
