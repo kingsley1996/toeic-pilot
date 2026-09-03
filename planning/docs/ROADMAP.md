@@ -39,6 +39,7 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 | ~~**Đưa đề lên production**~~ | **Xong.** Cả năm đề đã `published` trên production, gồm `tp-form-08`. Đối chiếu 2026-09-02: audio đề ở production khớp từng con số với dev | `SYNC-TEST-TO-PRODUCTION.md` |
 | **Tách tệp quá dài** | Đợt 1–3 xong. Nợ: hai trang admin không có e2e | `REFACTOR-LONG-FILES.md` §4b |
 | **Gộp tài liệu** | Xong đợt này. Còn: quyết định giữ hay bỏ `PLAN.md` | mục 5 dưới đây |
+| ~~**Petland ra khỏi chỗ nổi**~~ | **Xong.** Thú cưng có thẻ cố định ở đáy sidebar — con thú thật (thở, vòng sáng theo hạng), ba chỉ số bằng biểu tượng, tên loài lấy từ `PetPublic.label` mới. Thẻ là đường vào duy nhất, nên nút nổi kéo-thả và danh sách sáu route `STUDYING` đã bỏ. Toast và lời thoại bám vào thẻ. Còn hở: **trên mobile mất một chạm** (cột trái là `hidden` dưới `lg`, phải mở ngăn kéo trước), và `petland.spec.ts` sửa 12 chỗ locator **chưa chạy lại** | `Evaluate_Pet_TOEIC_Pilot.md` §2.1 |
 
 ## 3. Việc còn mở, theo thứ tự nên làm
 
@@ -84,6 +85,10 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ
+- [ ] **Trần XP giảm dần** thay cho `DAILY_XP_CAP = 30` chặn cứng. Chặn cứng thì học
+      viên nào lấy con thú làm động lực sẽ dừng đúng lúc chạm trần — một luật trò chơi
+      đang bảo người ta thôi học (`Evaluate_Pet_TOEIC_Pilot.md` §2.2.1). Ledger `xp_event`
+      cho phép đổi tỉ lệ mà không đụng tới XP đã cấp, nên chỗ sửa nằm gọn ở lúc ghi
 - [ ] Petland lát 5 — nhiệm vụ trắc nghiệm, **chờ nội dung** (`ADR-012` §8.3)
 - [ ] Lối vào `MatchGame` từ trang chủ đề (vẫn tới được bằng URL trực tiếp)
 - [ ] Test component/frontend — **cố ý chưa làm**: mọi lỗi giao diện của dự án này đều ở
