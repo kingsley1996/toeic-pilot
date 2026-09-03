@@ -26,8 +26,11 @@ export function ReviewToolbar({
   onBack: (() => void) | null;
 }) {
   return (
-    <div className="border-b border-rule bg-recess px-4 py-2.5">
-      <div className="mx-auto flex w-full max-w-[110rem] flex-wrap items-center gap-2">
+    // Hàng thứ hai của header, cùng hình dạng với `PartTabs`: `border-t` (viền
+    // dưới đã là của header, thêm `border-b` thành hai gạch), và không có khung
+    // `max-w` riêng vì các hàng khác của header đều tràn hết bề ngang.
+    <div className="border-t border-rule bg-recess px-4 py-2">
+      <div className="flex flex-wrap items-center gap-2">
         {onBack && (
           <Button size="sm" variant="secondary" onClick={onBack}>
             <ArrowLeft size={14} strokeWidth={2} aria-hidden />

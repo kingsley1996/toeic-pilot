@@ -3661,6 +3661,11 @@ export interface components {
             reading_scaled: number | null;
             /** Scale Note */
             scale_note: string | null;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["SkillScore"][];
             /** Status */
             status: string;
             /** Total Scaled */
@@ -6485,6 +6490,22 @@ export interface components {
             audio_script?: components["schemas"]["TurnDraft"][] | null;
             /** Title */
             title?: string | null;
+        };
+        /**
+         * SkillScore
+         * @description Một dạng câu và kết quả của người học ở dạng đó.
+         *
+         *     `name` là tên đã GỘP (`label_vi`), không phải mã: các mã cùng nghĩa bị tách
+         *     theo part, và người học cần biết mình yếu "câu hỏi suy luận" chứ không phải
+         *     yếu `PART_7_INFERENCE` riêng lẻ.
+         */
+        SkillScore: {
+            /** Correct */
+            correct: number;
+            /** Count */
+            count: number;
+            /** Name */
+            name: string;
         };
         /** SkillTagRequestAck */
         SkillTagRequestAck: {

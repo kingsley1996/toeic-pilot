@@ -55,6 +55,7 @@ from app.schemas.practice import (
     section_of,
 )
 from app.services import progression, ruby
+from app.services.attempt_skills import skill_breakdown
 from app.services.profile import ensure_profile
 from app.services.scoring import score_attempt
 
@@ -637,7 +638,7 @@ def save_answer(
     return _state(db, attempt)
 
 
-def _result(attempt: Attempt) -> AttemptResult:
+def _result(db: Session, attempt: Attempt) -> AttemptResult:
     """Kết quả của một lượt đã chốt.
 
     Tách khỏi endpoint nộp bài để `GET .../result` dùng chung: tải lại trang kết
@@ -671,6 +672,7 @@ def _result(attempt: Attempt) -> AttemptResult:
         reading_scaled=attempt.reading_scaled,
         total_scaled=attempt.total_scaled,
         scale_note=note,
+        skills=skill_breakdown(db, attempt),
     )
 
 
@@ -704,7 +706,7 @@ def submit_attempt(
 
         db.commit()
         db.refresh(attempt)
-    return _result(attempt)
+    return _result(db, attempt)
 
 
 # Ngưỡng trả ruby cho một lượt làm đề: đã trả lời bao nhiêu phần số câu.
@@ -771,4 +773,4 @@ def read_result(
     attempt = _load(db, attempt_id, current_user)
     if attempt.status == "in_progress":
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Lượt làm này chưa nộp")
-    return _result(attempt)
+    return _result(db, attempt)

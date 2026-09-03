@@ -75,6 +75,7 @@ export type TestDetail = components["schemas"]["TestDetail"];
 export type PartBreakdown = components["schemas"]["PartBreakdown"];
 export type AttemptState = components["schemas"]["AttemptState"];
 export type AttemptResult = components["schemas"]["AttemptResult"];
+export type SkillScore = components["schemas"]["SkillScore"];
 export type AttemptSummary = components["schemas"]["AttemptSummary"];
 /**
  * Một trang kết quả. Chỉ endpoint nào PHÌNH được mới bọc phong bì này — danh

@@ -200,10 +200,14 @@ export default function AttemptRunnerPage() {
     if (target === null) return;
     pendingScroll.current = null;
     document.getElementById(`q-${target}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [activePart]);
+    // `view` cũng nằm trong deps: khi nhảy từ màn kết quả sang một cụm CÙNG
+    // part đang mở, `setActivePart` không đổi giá trị nên effect không chạy và
+    // trang đứng yên ở đầu danh sách.
+  }, [activePart, view]);
 
   const answered = state?.questions.filter((q) => q.selected_option_id).length ?? 0;
   const done = result !== null || state?.status === "submitted" || state?.status === "expired";
+  const showingResult = done && view === "result";
   const flaggedCount = state?.questions.filter((q) => q.flagged).length ?? 0;
 
   const visible = useMemo(() => {
@@ -274,6 +278,15 @@ export default function AttemptRunnerPage() {
             ),
           },
     );
+  }
+
+  /** Mở phần xem lại, và nếu có đích thì cuộn thẳng tới đó. */
+  function reviewAt(target?: QuestionPublic) {
+    setView("review");
+    if (!target) return;
+    setCurrent(target.number);
+    pendingScroll.current = target.number;
+    setActivePart(target.part);
   }
 
   function jumpTo(question: QuestionPublic) {
@@ -349,7 +362,25 @@ export default function AttemptRunnerPage() {
           </div>
         </div>
 
-        <PartTabs state={state} active={activePart} onSelect={(part) => setActivePart(part)} />
+        {/* Không có tab part ở màn KẾT QUẢ: ở đó không còn gì để điều hướng
+            tới, và một hàng tab bấm được nhưng không đưa đi đâu là một lời hứa
+            sai. Chúng quay lại ngay khi bấm "Xem chi tiết từng câu". */}
+        {!showingResult && (
+          <PartTabs state={state} active={activePart} onSelect={(part) => setActivePart(part)} />
+        )}
+        {/* Thanh lọc nằm TRONG header, không phải dưới nó.
+            Nó mang nút "← Kết quả", và bấm một cụm ở màn kết quả sẽ cuộn thẳng
+            xuống giữa một đề 200 câu — một thanh không dính thì trôi khỏi màn
+            hình đúng lúc người ta cần nó, và đường về duy nhất trông như không
+            tồn tại. */}
+        {!showingResult && done && (
+          <ReviewToolbar
+            filter={filter}
+            onFilter={setFilter}
+            shown={visible.length}
+            onBack={result ? () => setView("result") : null}
+          />
+        )}
       </header>
 
       {error && (
@@ -358,19 +389,10 @@ export default function AttemptRunnerPage() {
         </div>
       )}
 
-      {done && view === "result" && result ? (
-        <ResultScreen result={result} state={state} onReview={() => setView("review")} />
+      {showingResult && result ? (
+        <ResultScreen result={result} state={state} onReview={reviewAt} />
       ) : (
         <>
-          {done && (
-            <ReviewToolbar
-              filter={filter}
-              onFilter={setFilter}
-              shown={visible.length}
-              onBack={result ? () => setView("result") : null}
-            />
-          )}
-
           <div className="mx-auto flex w-full max-w-[110rem] gap-6 px-4 py-6">
             <main className="min-w-0 flex-1 space-y-8">
               {blocks.length === 0 ? (

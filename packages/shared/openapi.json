@@ -277,6 +277,14 @@
             ],
             "title": "Scale Note"
           },
+          "skills": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SkillScore"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
           "status": {
             "title": "Status",
             "type": "string"
@@ -7866,6 +7874,30 @@
           }
         },
         "title": "SetEdit",
+        "type": "object"
+      },
+      "SkillScore": {
+        "description": "Một dạng câu và kết quả của người học ở dạng đó.\n\n`name` là tên đã GỘP (`label_vi`), không phải mã: các mã cùng nghĩa bị tách\ntheo part, và người học cần biết mình yếu \"câu hỏi suy luận\" chứ không phải\nyếu `PART_7_INFERENCE` riêng lẻ.",
+        "properties": {
+          "correct": {
+            "title": "Correct",
+            "type": "integer"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "correct",
+          "count"
+        ],
+        "title": "SkillScore",
         "type": "object"
       },
       "SkillTagRequestAck": {

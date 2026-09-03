@@ -40,6 +40,22 @@ export function formatClock(seconds: number): string {
   return minutes ? `${minutes} phút ${safe % 60} giây` : `${safe} giây`;
 }
 
+/**
+ * Khoảng thời gian đã dùng, dạng đồng hồ: `1:47:41`, hoặc `47:41` khi dưới một giờ.
+ *
+ * Khác `formatClock` một cách CÓ CHỦ Ý. Đồng hồ đếm ngược đọc thành lời ("45
+ * phút 12 giây") vì người đang làm bài liếc một cái là phải hiểu. Còn ở trang
+ * kết quả nó đứng cạnh thời lượng đề, và "107 phút 41 giây / 120 phút 0 giây"
+ * dài tới mức phải đọc cả dòng mới so được hai số.
+ */
+export function formatDuration(seconds: number): string {
+  const safe = Math.max(0, Math.floor(seconds));
+  const pad = (value: number) => String(value).padStart(2, "0");
+  const hours = Math.floor(safe / 3600);
+  const rest = `${pad(Math.floor((safe % 3600) / 60))}:${pad(safe % 60)}`;
+  return hours ? `${hours}:${rest}` : rest;
+}
+
 export function Tally({
   label,
   value,

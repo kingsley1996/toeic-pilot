@@ -278,6 +278,19 @@ class AttemptSummary(BaseModel):
     remaining_seconds: int | None
 
 
+class SkillScore(BaseModel):
+    """Một dạng câu và kết quả của người học ở dạng đó.
+
+    `name` là tên đã GỘP (`label_vi`), không phải mã: các mã cùng nghĩa bị tách
+    theo part, và người học cần biết mình yếu "câu hỏi suy luận" chứ không phải
+    yếu `PART_7_INFERENCE` riêng lẻ.
+    """
+
+    name: str
+    correct: int
+    count: int
+
+
 class AttemptResult(BaseModel):
     id: str
     status: str
@@ -292,3 +305,6 @@ class AttemptResult(BaseModel):
     # Vì sao không có điểm quy đổi, khi không có. `scoring.py` từ chối đoán, và
     # giao diện phải nói ra lý do thay vì hiện số 0.
     scale_note: str | None
+    # Rỗng khi đề chưa được gắn nhãn — giao diện bỏ hẳn khối đó đi thay vì hiện
+    # một bảng trống.
+    skills: list[SkillScore] = []
