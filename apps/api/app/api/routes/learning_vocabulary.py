@@ -56,6 +56,7 @@ from app.schemas.learning import (
     VocabularySummary,
 )
 from app.services import progression, ruby
+from app.services.pet_state import reward_study
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
 from app.services.srs import (
@@ -807,6 +808,12 @@ def submit_review(
     outcome = _apply_review(
         db, current_user.id, entry.id, body.grade, ensure_profile(db, current_user).timezone
     )
+
+    # Con thú vui lên vì người học vừa ôn một từ. Ở ĐÂY chứ không trong
+    # `_apply_review`: hàm ấy còn được các cuộc chạm mặt gọi tới, và ở đó phần
+    # thưởng đã là `XP_PER_ENCOUNTER` — móc vào hàm chung thì một lượt trả lời
+    # NPC được trả hai lần. `test_encounters` bắt được đúng chỗ đó.
+    reward_study(db, current_user.id, "vocabulary_review")
     return _review_result(entry.id, body.grade, outcome)
 
 
@@ -831,6 +838,12 @@ def submit_recall(
     outcome = _apply_review(
         db, current_user.id, entry.id, grade, ensure_profile(db, current_user).timezone
     )
+
+    # Con thú vui lên vì người học vừa ôn một từ. Ở ĐÂY chứ không trong
+    # `_apply_review`: hàm ấy còn được các cuộc chạm mặt gọi tới, và ở đó phần
+    # thưởng đã là `XP_PER_ENCOUNTER` — móc vào hàm chung thì một lượt trả lời
+    # NPC được trả hai lần. `test_encounters` bắt được đúng chỗ đó.
+    reward_study(db, current_user.id, "vocabulary_review")
     return RecallResult(
         **_review_result(entry.id, grade, outcome).model_dump(),
         verdict=verdict,

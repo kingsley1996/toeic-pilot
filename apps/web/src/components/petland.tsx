@@ -15,6 +15,7 @@ import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-cl
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
 import { PetlandMusicToggle } from "@/components/petland-music-toggle";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
+import { subscribeToCheer } from "@/lib/pet-cheer";
 import { PixelIcon } from "@/components/pixel-icon";
 import {
   advance,
@@ -1452,6 +1453,25 @@ function PetPanel({
     }, EMOTE_EVERY_MS);
     return () => window.clearInterval(tick);
   }, [needs, asleep, spawnBits]);
+
+  /*
+   * Trả lời đúng ở màn học thì con thú loé sáng ngay (§22 của tài liệu cơ chế).
+   *
+   * Đây là nửa NHÌN THẤY của việc nối học với thú; nửa kia là `reward_study` bên
+   * máy chủ nâng tinh thần và cấp XP. Không có nửa này thì con thú vẫn lớn lên
+   * nhưng không ai thấy nó lớn vì cái gì.
+   *
+   * Đang ngủ thì im — cùng luật với mấy mẩu cảm xúc bên dưới: không đánh thức
+   * con thú bằng một hiệu ứng.
+   */
+  useEffect(
+    () =>
+      subscribeToCheer(() => {
+        if (document.hidden || reducedRef.current || asleepRef.current) return;
+        spawnBits("spark", 3);
+      }),
+    [spawnBits],
+  );
 
   /*
    * Zzz bay lên đều đều SUỐT giấc ngủ, không chỉ một lần lúc bấm.

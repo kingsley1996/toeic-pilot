@@ -56,6 +56,7 @@ from app.schemas.practice import (
 )
 from app.services import progression, ruby
 from app.services.attempt_skills import skill_breakdown
+from app.services.pet_state import reward_study
 from app.services.profile import ensure_profile
 from app.services.scoring import score_attempt
 
@@ -125,6 +126,11 @@ def _finalise(db: Session, attempt: Attempt, new_status: str) -> None:
             # Thiếu bảng quy đổi thì để trống, KHÔNG nội suy. Giao diện nói ra
             # lý do; một điểm sai âm thầm thì không ai phát hiện được.
             pass
+
+    # Nộp xong một đề là việc học lớn nhất trong ngày, nên con thú nhận nhiều
+    # hơn hẳn một lượt ôn từ. Chạy cho MỌI lượt nộp, kể cả lượt không quy đổi
+    # được điểm: người học vẫn đã ngồi làm.
+    reward_study(db, attempt.user_id, "attempt")
 
 
 def _speaker_labels(script: list[dict[str, str]]) -> dict[str, str]:

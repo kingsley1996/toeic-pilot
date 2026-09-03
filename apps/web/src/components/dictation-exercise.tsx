@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 
 import { Alert, Button, Kbd, Panel, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { cheer } from "@/lib/pet-cheer";
 import { useSession } from "@/lib/session";
 import { useToast } from "@/lib/toast";
 import {
@@ -141,6 +142,9 @@ export function DictationExercise({
      * thẻ nữa.
      */
     if (graded.is_complete) {
+      // Con thú loé sáng cùng lúc với thông báo. Cùng lý do dùng `graded` chứ
+      // không dùng `result`: state chưa có hiệu lực trong chính lần chạy này.
+      cheer();
       show({
         tone: "ok",
         title: "Đúng rồi",

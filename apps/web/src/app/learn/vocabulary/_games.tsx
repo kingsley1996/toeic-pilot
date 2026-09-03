@@ -30,6 +30,7 @@ import {
   type VocabularyDetail,
   type VocabularySummary,
 } from "@toeic-pilot/shared";
+import { cheer } from "@/lib/pet-cheer";
 import { RotateCcw, Trophy } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -469,6 +470,7 @@ function QuizStep({
 
   function pick(option: string) {
     if (picked !== null || revealed) return;
+    if (option === word.meaning_vi) cheer();
     setPicked(option);
     // Chờ một nhịp để người học kịp thấy đúng/sai rồi mới mở màn chấm.
     window.setTimeout(onDone, 550);
@@ -563,6 +565,7 @@ function TypingStep({
           body: JSON.stringify({ typed, give_up: giveUp }),
         });
         setResult(res);
+        if (res.verdict === "correct") cheer();
         window.setTimeout(onDone, 600);
       } catch {
         setError("Không chấm được câu trả lời.");
@@ -714,6 +717,7 @@ export function MatchGame({
       // năm nút vì nó diễn ra trên NHIỀU từ cùng lúc — năm nút chỉ dành cho
       // luồng đi qua từng từ.
       if (token) recordReview(token, first.entryId, 4);
+      cheer();
       setSolvedTiles((prev) => new Set(prev).add(picked).add(index));
       setPicked(null);
       return;
@@ -880,6 +884,9 @@ export function QuizGame({
     if (picked !== null) return;
     setPicked(option);
     const correct = option === question!.word.meaning_vi;
+    // Con thú loé sáng ngay khi đúng. Sai thì KHÔNG có phản hồi tiêu cực nào —
+    // tài liệu cơ chế §22 nói thẳng: "Pet looks curious", không phải "WRONG!".
+    if (correct) cheer();
     if (correct) setScore((value) => value + 1);
     if (token) recordReview(token, question!.word.id, correct ? GRADE_GOOD : GRADE_FORGOT);
   }

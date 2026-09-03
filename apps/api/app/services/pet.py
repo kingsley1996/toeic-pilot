@@ -241,6 +241,35 @@ cái nút chăm sóc trả điểm cho sự chăm chỉ; cái này trả cho vi�
 """
 XP_PER_ENCOUNTER: dict[str, int] = {"npc": 6, "intruder": 15}
 
+
+"""Việc HỌC cũng nuôi con thú — đây là chỗ vòng lặp khép lại.
+
+Trước đây con thú chỉ lớn lên nhờ bấm nút chăm sóc và đánh chạm mặt, nên nó là
+một trò chơi nhỏ nằm CẠNH app học chứ không phải một lớp nằm TRÊN nó: học xong
+một buổi từ vựng không làm con thú vui hơn chút nào. Ba con số dưới đây là sợi
+dây nối, và chúng cố ý nhỏ.
+
+**Chỉ nâng TINH THẦN, không nâng no.** Cho ăn là cho ăn; nếu học cũng làm no thì
+cái nút "Cho ăn" thành thừa và ba cái thanh thôi nói được điều gì khác nhau. Một
+người học đều sẽ có con thú luôn vui — đó chính là điều mong muốn, không phải
+tác dụng phụ.
+
+**XP đi qua đúng trần ngày** của `DAILY_XP_CAP`. Nhờ vậy một buổi cày trăm từ
+không thổi con thú lên mấy level trong mười phút.
+"""
+XP_PER_STUDY: dict[str, int] = {"vocabulary_review": 1, "dictation_item": 1, "attempt": 8}
+MOOD_PER_STUDY: dict[str, Decimal] = {
+    "vocabulary_review": Decimal("0.04"),
+    "dictation_item": Decimal("0.04"),
+    "attempt": Decimal("0.20"),
+}
+
+
+def cheer(needs: Needs, amount: Decimal) -> Needs:
+    """Nâng tinh thần, giữ nguyên no và sức."""
+    return Needs(fullness=needs.fullness, energy=needs.energy, mood=_clamp(needs.mood + amount))
+
+
 """Trần XP mỗi ngày, và nó là thứ giữ cho level pet còn nghĩa.
 
 Không có trần thì bấm "chọc" năm trăm lần là max level, và lúc đó con số ấy

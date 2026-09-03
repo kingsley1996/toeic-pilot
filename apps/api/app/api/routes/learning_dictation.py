@@ -47,6 +47,7 @@ from app.schemas.learning import (
 )
 from app.services import dictation as dictation_grader
 from app.services import progression, ruby
+from app.services.pet_state import reward_study
 from app.services.profile import ensure_profile
 
 router = APIRouter(tags=["learning"])
@@ -228,6 +229,7 @@ def record_dictation_attempt(
         except Exception:  # pragma: no cover - XP không được làm hỏng bài nộp
             pass
         _pay_ruby_for_a_finished_story(db, user.id, item)
+        reward_study(db, user.id, "dictation_item")
     return attempt, result
 
 

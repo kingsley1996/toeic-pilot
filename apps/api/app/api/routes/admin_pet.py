@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
-from app.api.routes.pet import ensure_pet
 from app.core.database import get_db
 from app.models import EncounterSetting, PetSpecies, User
 from app.schemas.pet import (
@@ -25,6 +24,7 @@ from app.schemas.pet import (
 from app.services import encounters
 from app.services.gacha import settings_row
 from app.services.pet_species import all_species
+from app.services.pet_state import ensure_pet
 
 router = APIRouter(prefix="/admin/pet", tags=["admin"])
 

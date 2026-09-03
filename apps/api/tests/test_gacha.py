@@ -12,10 +12,10 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.api.routes.pet import DEFAULT_SPECIES, ensure_pet
 from app.models import EggSetting, PetOwned, PetSpecies, User
 from app.models.pet import DEFAULT_PET_SPECIES, RARE_TIERS
 from app.services import gacha, ruby
+from app.services.pet_state import DEFAULT_SPECIES, ensure_pet
 
 
 def _learner(db: Session, email: str = "gacha@example.com", ruby_amount: int = 0) -> User:

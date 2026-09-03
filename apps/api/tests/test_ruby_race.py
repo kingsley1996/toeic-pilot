@@ -262,8 +262,14 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
     kiểm cả hai chiều: gỡ `try/except IntegrityError` trong `ensure_pet` thì bài
     này đỏ với đúng `IntegrityError` ấy.
     """
-    from app.api.routes import pet as pet_routes  # noqa: PLC0415 — chỉ tệp này cần
+    # Vá ở SERVICE, không ở route. `ensure_pet` và `db_get_state` đã dời sang
+    # `services/pet_state.py` khi việc học bắt đầu nuôi con thú — luồng học cần
+    # gọi sang góc thú cưng, và để cả hai ở tầng route thì hai chiều khép thành
+    # một vòng import. Vá `routes.pet` sau khi dời vẫn CHẠY và vẫn XANH: hàng rào
+    # chỉ không bao giờ được gọi, nên cuộc đua không xảy ra và bài kiểm khẳng
+    # định một thứ nó không còn kiểm nữa.
     from app.models import PetOwned, PetState  # noqa: PLC0415
+    from app.services import pet_state  # noqa: PLC0415
 
     factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
     session = factory()
@@ -274,7 +280,7 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
     session.close()
 
     barrier = threading.Barrier(SEEDERS)
-    real_get = pet_routes.db_get_state
+    real_get = pet_state.db_get_state
 
     def read_then_wait(db, user_id_):
         # Ngay giữa "chưa có" và "dựng" — đúng khe mà hai request đầu tiên rơi vào.
@@ -288,14 +294,14 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
     def open_panel() -> str:
         db = factory()
         try:
-            pet_routes.ensure_pet(db, user_id)
+            pet_state.ensure_pet(db, user_id)
             return "ok"
         except Exception as exc:  # pragma: no cover - chính là thứ đang được kiểm
             return f"vỡ: {type(exc).__name__}"
         finally:
             db.close()
 
-    with patch.object(pet_routes, "db_get_state", side_effect=read_then_wait):
+    with patch.object(pet_state, "db_get_state", side_effect=read_then_wait):
         with ThreadPoolExecutor(max_workers=SEEDERS) as pool:
             results = list(pool.map(lambda _: open_panel(), range(SEEDERS)))
 
