@@ -67,11 +67,16 @@ test("làm một đề rồi nộp thì thấy kết quả và xem lại đượ
 
   /*
    * Bốn ô đếm, và ba trong số đó là lý do bảng này tồn tại: SAI và BỎ TRỐNG là
-   * hai chuyện khác nhau. Trước đây thanh mỗi part chỉ có đúng/tổng, nên người
+   * hai chuyện khác nhau.
+   *
+   * Khoanh vùng bằng một nhãn CHỈ bảng này có, không phải `dl` thứ mấy: trang
+   * có hai `<dl>` — một ở đây, một trong hộp thoại xác nhận — và `.first()` chỉ
+   * đúng chừng nào thứ tự trong cây còn nguyên. (`getByRole("term")` không dùng
+   * được: `<dt>` không lấy tên trợ năng từ nội dung nên không khớp gì cả.) Trước đây thanh mỗi part chỉ có đúng/tổng, nên người
    * hết giờ ở Part 7 trông y hệt người đọc sai — một bên cần luyện tốc độ, bên
    * kia cần luyện đọc.
    */
-  const tallies = page.locator("dl").first();
+  const tallies = page.locator("dl").filter({ hasText: "Bỏ trống" });
   for (const label of ["Đúng", "Sai", "Bỏ trống", "Thời gian"]) {
     await expect(tallies.getByText(label, { exact: true })).toBeVisible();
   }
@@ -81,8 +86,15 @@ test("làm một đề rồi nộp thì thấy kết quả và xem lại đượ
    * và một hàng tab bấm được nhưng không đưa đi đâu là một lời hứa sai. Khẳng
    * định phủ định này neo vào một thứ CÓ mặt ngay trên (`Theo từng phần`), nếu
    * không nó xanh trên một trang chưa nạp xong.
+   *
+   * Khớp `P<số>` bất kỳ, KHÔNG ghim vào `P1`. Câu Part 1 của đề demo chỉ được
+   * seed khi database đã sẵn có một `audio_asset` và một `image_asset`
+   * (`seed_demo_test.py`), nên nó có trên máy dev và KHÔNG có trên CI — nơi
+   * database trắng. Một khẳng định ghim vào part cụ thể là ghim vào nội dung
+   * tình cờ có mặt.
    */
-  await expect(page.getByRole("button", { name: /^P1\b/ })).toHaveCount(0);
+  const partTabs = page.getByRole("button", { name: /^P\d/ });
+  await expect(partTabs).toHaveCount(0);
 
   await page.getByRole("button", { name: /xem chi tiết từng câu/i }).click();
 
@@ -91,7 +103,7 @@ test("làm một đề rồi nộp thì thấy kết quả và xem lại đượ
     await expect(page.getByRole("button", { name: label })).toBeVisible();
   }
   // Tab part quay lại ngay khi rời màn kết quả — chúng chỉ vắng mặt ở đó.
-  await expect(page.getByRole("button", { name: /^P1\b/ })).toBeVisible();
+  await expect(partTabs.first()).toBeVisible();
 
   await page.getByRole("button", { name: "Kết quả" }).click();
   await expect(page.getByText("Số câu đúng")).toBeVisible();
