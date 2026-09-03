@@ -153,7 +153,9 @@ test("chăm thú cưng làm nó lên level, và chạm trần ngày thì nói ra
   await signUp(page);
   await openPet(page).click();
 
-  await expect(page.getByText(/^Lv \d+$/)).toBeVisible();
+  // Chốt trong THANH TIÊU ĐỀ của bảng: thẻ ở sidebar cũng in `Lv N`, nên một
+  // `getByText` trần khớp hai chỗ và chế độ strict từ chối.
+  await expect(panelBar(page).getByText(/^Lv \d+$/)).toBeVisible();
   const poke = page.getByRole("button", { name: /Chọc/i });
 
   /*
