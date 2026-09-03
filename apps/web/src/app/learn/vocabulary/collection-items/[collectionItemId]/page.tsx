@@ -279,21 +279,34 @@ function CollectionItemDetail() {
                * ngang, còn dính lại thì lấy mất cả một dải chiều cao trên màn
                * hình vốn đã hẹp.
                */}
-              {/* Trần đặt trên CẢ panel, không trên riêng danh sách: chặn ở
-                  danh sách thì còn phải trừ tay chiều cao cái tiêu đề, và con số
-                  ấy sai ngay lần đầu ai đó sửa `py-3`. Cột dọc + `min-h-0` để
-                  danh sách co lại rồi tự cuộn, đúng khuôn `SidebarContent` dùng.
-                  `100dvh` chứ không `100vh` vì `vh` tính theo khung nhìn lúc
-                  thanh địa chỉ đã thu, tức cao hơn chỗ thật sự có. */}
+              {/*
+               * MỘT bố cục cho mọi bề ngang: danh sách dọc, tự cuộn trong panel.
+               *
+               * Bản trước xếp ngang dưới `lg` và cuộn ngang. Hai chuyện hỏng vì
+               * thế. Thứ nhất là dùng: mười bốn chủ đề trên một dải chỉ hở hai
+               * cái rưỡi, muốn biết cuốn sách có gì thì phải vuốt hết. Thứ hai
+               * là bố cục: bề ngang cộng dồn của mười bốn nút là 2 556px, và
+               * `overflow-x-auto` KHÔNG ngăn nó nới vùng cuộn của cả tài liệu —
+               * trang vuốt ngang được gần 300px dù không có thanh cuộn nào hiện
+               * ra, tức trên điện thoại nội dung trôi đi mà không ai hiểu vì sao.
+               * (`contain: paint` bịt được, nhưng đó là bịt triệu chứng.)
+               *
+               * Trần chiều cao thì khác nhau: dưới `lg` panel nằm TRÊN khu học
+               * nên nó chỉ được lấy một khoảng cố định, còn từ `lg` nó là cột
+               * riêng nên lấy hết chỗ trống đo được (xem `fitTopicList`).
+               *
+               * `min-w-0` vì ô lưới mặc định `min-width: auto`: một tên chủ đề
+               * dài không xuống dòng được sẽ lại nới panel ra như cũ.
+               */}
               <section
                 ref={attachTopicList}
                 aria-label="Danh sách chủ đề (topic)"
-                className="rounded border border-rule-strong bg-panel lg:sticky lg:top-20 lg:flex lg:max-h-[var(--topic-list-max,calc(100dvh-6rem))] lg:flex-col"
+                className="flex max-h-64 min-w-0 flex-col rounded border border-rule-strong bg-panel lg:sticky lg:top-20 lg:max-h-[var(--topic-list-max,calc(100dvh-6rem))]"
               >
-                <h2 className="border-b border-rule px-4 py-3 text-small font-semibold uppercase tracking-wide text-ink-faint lg:shrink-0">
+                <h2 className="shrink-0 border-b border-rule px-4 py-3 text-small font-semibold uppercase tracking-wide text-ink-faint">
                   Danh sách chủ đề (topic)
                 </h2>
-                <div className="flex flex-row gap-1 overflow-x-auto p-2 lg:min-h-0 lg:flex-col lg:overflow-y-auto">
+                <div className="flex min-h-0 flex-col gap-1 overflow-y-auto p-2">
                   {topics.map((topic) => {
                     const isActive = topic.slug === activeTopic.slug;
                     const isDone = doneSlugs.has(topic.slug);
@@ -304,7 +317,7 @@ function CollectionItemDetail() {
                         onClick={() => setActiveSlug(topic.slug)}
                         aria-current={isActive ? "true" : undefined}
                         className={cx(
-                          "min-w-44 shrink-0 rounded border px-3 py-2 text-left transition-colors lg:min-w-0",
+                          "shrink-0 rounded border px-3 py-2 text-left transition-colors",
                           isActive
                             ? "border-action bg-action-tint"
                             : "border-transparent hover:bg-recess",
