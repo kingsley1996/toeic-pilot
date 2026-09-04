@@ -141,6 +141,7 @@ export function PetlandDemo() {
   const pet = useRef<HTMLDivElement>(null);
   const foe = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
+  const fit = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>("walk");
   /** 0 → 1 trong nhịp nhiệm vụ và nhịp cho ăn, để React vẽ phần đổi chậm. */
   const [progress, setProgress] = useState(0);
@@ -241,6 +242,42 @@ export function PetlandDemo() {
     };
   }, [map]);
 
+  /*
+   * Co CẢ CẢNH bằng `transform`, không co từng phần.
+   *
+   * Mọi thứ trong cảnh này định vị bằng pixel cứng theo `CELL` — con thú, kẻ
+   * xâm nhập, lời thoại đều được ghi `translate3d(x * CELL, …)` từ vòng `rAF`.
+   * Nên hạ bề rộng của hộp sẽ kéo bản đồ hẹp lại trong khi các lớp đè lên nó
+   * đứng nguyên chỗ cũ: sprite rời khỏi ô của nó, và không có gì báo.
+   *
+   * `transform` co phần NHÌN THẤY mà không đụng tới hệ toạ độ bên trong, nên
+   * vòng `rAF` và mọi con số của nó không phải biết gì về chuyện này.
+   *
+   * Vỏ ngoài phải tự hạ chiều cao theo cùng hệ số: `transform` không đổi chỗ mà
+   * phần tử chiếm trong dòng chảy, nên thiếu dòng ấy thì dưới bản đồ đã co còn
+   * một khoảng trắng đúng bằng phần vừa co đi.
+   */
+  useEffect(() => {
+    const shell = fit.current;
+    const stage = box.current;
+    if (shell === null || stage === null) return;
+
+    const apply = () => {
+      const room = shell.clientWidth / (MAP_W * CELL);
+      /* Lệch vài pixel thì THÔI co. Đây là pixel art phóng đúng 2×, nên một hệ
+         số như 0,998 không làm nó vừa hơn — nó chỉ làm mọi ô pixel lệch nhau
+         một chút. Ở desktop chỗ trống hụt đúng 1px vì viền của vỏ máy, và cắt
+         1px là điều nó vẫn làm từ trước. */
+      const k = room > 0.99 ? 1 : room;
+      stage.style.transform = `scale(${k})`;
+      shell.style.height = `${MAP_H * CELL * k}px`;
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(shell);
+    return () => ro.disconnect();
+  }, []);
+
   /* Ba chỉ số: đói cho tới lúc được cho ăn, rồi dâng lên. `conditionOf` là hàm
      thật của trò chơi, nên chữ "Đang đói" và cái nút "Đi dạo" bị mờ đều tự đến. */
   const fed = phase === "feed" ? Math.min(1, progress * 2.2) : 0;
@@ -261,166 +298,168 @@ export function PetlandDemo() {
     <div style={{ background: "rgb(var(--panel))" }}>
       {/* `overflow: hidden` là chốt: mọi thứ đè lên bản đồ đều tính theo ô, và
           một ô ngoài lưới phải bị cắt ở mép bản đồ chứ không tràn ra vỏ máy. */}
-      <div
-        ref={box}
-        style={{
-          position: "relative",
-          width: MAP_W * CELL,
-          height: MAP_H * CELL,
-          maxWidth: "100%",
-          overflow: "hidden",
-        }}
-      >
-        <canvas
-          ref={canvas}
-          style={{ width: "100%", height: "100%", imageRendering: "pixelated", display: "block" }}
-          role="img"
-          aria-label="Bản đồ Petland: khu nhà, bãi cỏ và con suối mà con thú đi lại trên đó"
-        />
-
+      <div ref={fit} style={{ width: "100%", overflow: "hidden" }}>
         <div
-          ref={foe}
+          ref={box}
           style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            transform: `translate3d(${INTRUDER.x * CELL}px, ${INTRUDER.y * CELL}px, 0)`,
-            transformOrigin: "bottom center",
-            willChange: "transform, opacity",
+            position: "relative",
+            width: MAP_W * CELL,
+            height: MAP_H * CELL,
+            overflow: "hidden",
+            transformOrigin: "top left",
           }}
         >
-          <Creature tile={INTRUDER_TILE} size={CELL} />
-        </div>
+          <canvas
+            ref={canvas}
+            style={{ width: "100%", height: "100%", imageRendering: "pixelated", display: "block" }}
+            role="img"
+            aria-label="Bản đồ Petland: khu nhà, bãi cỏ và con suối mà con thú đi lại trên đó"
+          />
 
-        {phase === "walk" && (
           <div
-            aria-hidden
-            className="grid place-items-center rounded"
+            ref={foe}
             style={{
               position: "absolute",
-              left: INTRUDER.x * CELL + CELL * 0.3,
-              top: INTRUDER.y * CELL - CELL * 0.85,
-              width: 16,
-              height: 20,
-              /* Đỏ, không phải vàng. Cùng một dấu, khác màu — và nó là KHUNG
-                 CẢNH chứ không phải lời đe doạ: không đẩy lui được thì kẻ xâm
-                 nhập biến mất và không có gì xảy ra (ADR-012 §4). */
-              background: "#e0245e",
-              color: "#fff",
-              font: "800 13px/1 ui-sans-serif, system-ui, sans-serif",
+              left: 0,
+              top: 0,
+              transform: `translate3d(${INTRUDER.x * CELL}px, ${INTRUDER.y * CELL}px, 0)`,
+              transformOrigin: "bottom center",
+              willChange: "transform, opacity",
             }}
           >
-            !
+            <Creature tile={INTRUDER_TILE} size={CELL} />
           </div>
-        )}
 
-        {/* Con thú: `transform` do vòng rAF ghi vào, React không đụng tới. */}
-        <div
-          ref={pet}
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            transform: `translate3d(${HOME.x * CELL}px, ${HOME.y * CELL}px, 0)`,
-            transformOrigin: "bottom center",
-            willChange: "transform",
-          }}
-        >
-          <Creature tile={RESIDENT} size={CELL} />
-        </div>
+          {phase === "walk" && (
+            <div
+              aria-hidden
+              className="grid place-items-center rounded"
+              style={{
+                position: "absolute",
+                left: INTRUDER.x * CELL + CELL * 0.3,
+                top: INTRUDER.y * CELL - CELL * 0.85,
+                width: 16,
+                height: 20,
+                /* Đỏ, không phải vàng. Cùng một dấu, khác màu — và nó là KHUNG
+                 CẢNH chứ không phải lời đe doạ: không đẩy lui được thì kẻ xâm
+                 nhập biến mất và không có gì xảy ra (ADR-012 §4). */
+                background: "#e0245e",
+                color: "#fff",
+                font: "800 13px/1 ui-sans-serif, system-ui, sans-serif",
+              }}
+            >
+              !
+            </div>
+          )}
 
-        {phase === "feed" &&
-          [0, 1, 2].map((i) => {
-            const age = Math.min(1, Math.max(0, progress * 3 - i * 0.22));
-            if (age <= 0 || age >= 1) return null;
-            return (
-              <span
-                key={i}
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  left: INTRUDER.x * CELL - CELL + (i - 1) * 12,
-                  top: INTRUDER.y * CELL - age * 34,
-                  opacity: 1 - age,
-                }}
-              >
-                <PixelIcon name={i === 1 ? "heart" : "bone"} scale={2} />
-              </span>
-            );
-          })}
+          {/* Con thú: `transform` do vòng rAF ghi vào, React không đụng tới. */}
+          <div
+            ref={pet}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              transform: `translate3d(${HOME.x * CELL}px, ${HOME.y * CELL}px, 0)`,
+              transformOrigin: "bottom center",
+              willChange: "transform",
+            }}
+          >
+            <Creature tile={RESIDENT} size={CELL} />
+          </div>
 
-        {/* Thẻ nhiệm vụ, dựng theo `petland-quest.tsx`: tên con vật + đồng hồ
+          {phase === "feed" &&
+            [0, 1, 2].map((i) => {
+              const age = Math.min(1, Math.max(0, progress * 3 - i * 0.22));
+              if (age <= 0 || age >= 1) return null;
+              return (
+                <span
+                  key={i}
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    left: INTRUDER.x * CELL - CELL + (i - 1) * 12,
+                    top: INTRUDER.y * CELL - age * 34,
+                    opacity: 1 - age,
+                  }}
+                >
+                  <PixelIcon name={i === 1 ? "heart" : "bone"} scale={2} />
+                </span>
+              );
+            })}
+
+          {/* Thẻ nhiệm vụ, dựng theo `petland-quest.tsx`: tên con vật + đồng hồ
             đếm ngược, đề bài, ô gõ, nút Trả lời. Bài tập nằm NGAY TRONG thẻ —
             một cú chuyển trang cho xung động hai mươi giây thì xung động ấy
             chết giữa đường (ADR-012 §3). */}
-        {phase === "quest" && (
-          <div
-            className="rounded border border-rule-strong bg-panel p-3"
-            style={{ position: "absolute", left: 10, top: 10, width: 208 }}
-          >
-            {/* `text-alert` chứ không `text-warn`, và có bộ đếm bước: đó đúng
+          {phase === "quest" && (
+            <div
+              className="rounded border border-rule-strong bg-panel p-3"
+              style={{ position: "absolute", left: 10, top: 10, width: 208 }}
+            >
+              {/* `text-alert` chứ không `text-warn`, và có bộ đếm bước: đó đúng
                 là hai chỗ `petland-quest.tsx` phân biệt kẻ xâm nhập với NPC
                 thường (`danger = encounter.kind === "intruder"`). */}
-            <span className="text-small font-semibold text-alert">
-              {T.questName}
-              <span className="ml-2 font-data font-normal tabular-nums text-ink-muted">
-                {T.questSteps}
+              <span className="text-small font-semibold text-alert">
+                {T.questName}
+                <span className="ml-2 font-data font-normal tabular-nums text-ink-muted">
+                  {T.questSteps}
+                </span>
+                <span className="ml-2 font-data font-normal tabular-nums text-ink-faint">
+                  {T.questTimer}
+                </span>
               </span>
-              <span className="ml-2 font-data font-normal tabular-nums text-ink-faint">
-                {T.questTimer}
-              </span>
-            </span>
-            <p className="mt-1 text-small text-ink-muted">{T.questLead}</p>
+              <p className="mt-1 text-small text-ink-muted">{T.questLead}</p>
 
-            <div className="mt-2 rounded border border-rule-strong p-2">
-              <p className="text-body text-ink">{T.questPrompt}</p>
-              <p className="font-data text-label text-ink-faint">{T.questPos}</p>
-              <div className="mt-2 w-full rounded border border-rule-strong px-2 py-1 text-small">
-                {typed === 0 ? (
-                  <span className="text-ink-faint">{T.questPlaceholder}</span>
-                ) : (
-                  <span className="text-ink">{T.questAnswer.slice(0, typed)}</span>
-                )}
-              </div>
-              {/* `flex-wrap` chứ không phải một hàng cứng: nhãn nút dài ra khi
+              <div className="mt-2 rounded border border-rule-strong p-2">
+                <p className="text-body text-ink">{T.questPrompt}</p>
+                <p className="font-data text-label text-ink-faint">{T.questPos}</p>
+                <div className="mt-2 w-full rounded border border-rule-strong px-2 py-1 text-small">
+                  {typed === 0 ? (
+                    <span className="text-ink-faint">{T.questPlaceholder}</span>
+                  ) : (
+                    <span className="text-ink">{T.questAnswer.slice(0, typed)}</span>
+                  )}
+                </div>
+                {/* `flex-wrap` chứ không phải một hàng cứng: nhãn nút dài ra khi
                   chấm xong ("Trả lời" → "✓ Chính xác") và phần thưởng hiện
                   thêm bên cạnh, nên hai thẻ ép nhau tràn khỏi thẻ. Cho phần
                   thưởng rơi xuống dòng dưới thì không bao giờ vỡ. */}
-              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                <span
-                  className={cx(
-                    "inline-flex h-7 shrink-0 items-center whitespace-nowrap rounded border px-2 text-small font-semibold",
-                    solved ? "border-ok bg-ok-tint text-ok" : "border-rule-strong text-ink-muted",
-                  )}
-                >
-                  {solved ? `✓ ${T.questCorrect}` : T.questSubmit}
-                </span>
-                {rewarded && (
-                  <span className="font-data text-small font-semibold tabular-nums text-warn">
-                    {T.questReward}
+                <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                  <span
+                    className={cx(
+                      "inline-flex h-7 shrink-0 items-center whitespace-nowrap rounded border px-2 text-small font-semibold",
+                      solved ? "border-ok bg-ok-tint text-ok" : "border-rule-strong text-ink-muted",
+                    )}
+                  >
+                    {solved ? `✓ ${T.questCorrect}` : T.questSubmit}
                   </span>
-                )}
+                  {rewarded && (
+                    <span className="font-data text-small font-semibold tabular-nums text-warn">
+                      {T.questReward}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {caption !== null && (
-          <div
-            className="rounded"
-            style={{
-              position: "absolute",
-              left: 10,
-              bottom: 10,
-              padding: "5px 9px",
-              background: "rgb(17 20 26 / 0.86)",
-              color: "#fff",
-              font: "600 12px/1.2 ui-sans-serif, system-ui, sans-serif",
-            }}
-          >
-            {caption}
-          </div>
-        )}
+          {caption !== null && (
+            <div
+              className="rounded"
+              style={{
+                position: "absolute",
+                left: 10,
+                bottom: 10,
+                padding: "5px 9px",
+                background: "rgb(17 20 26 / 0.86)",
+                color: "#fff",
+                font: "600 12px/1.2 ui-sans-serif, system-ui, sans-serif",
+              }}
+            >
+              {caption}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Bảng chỉ số THẬT, không phải bản vẽ lại: tám ô mỗi thanh, màu cảnh báo

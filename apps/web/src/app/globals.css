@@ -1411,6 +1411,11 @@
    đời đầu vốn cũng là vỏ xám sáng. Bản tối nằm ở hai khối `dark` phía trên,
    cùng chỗ với `--l-shadow`. */
 .landing .l-console {
+  /* Grid item mặc định `min-width: auto`, tức là không co xuống dưới min-content
+     — nên cái vỏ máy nở theo cảnh bên trong (576px) và đẩy cả trang tràn ngang
+     ở khổ điện thoại, dù cảnh đã tự khai `max-width: 100%`. Khai báo ấy không
+     bao giờ ăn khi cha đã nở ra vừa nó. */
+  min-width: 0;
   background: linear-gradient(
     165deg,
     var(--console-top) 0%,
