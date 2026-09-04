@@ -11,7 +11,7 @@ Ngày khảo sát: **2026-09-05**.
 
 | | Trạng thái |
 |---|---|
-| `apps/web/src/app/favicon.ico` | ~~Vẫn là favicon mặc định của Next.js~~ **Đã thay 2026-09-05.** Trước đó là bản của Next.js — 25 931 byte, vào repo từ commit đầu tiên (`V1 - githubpilot init project`, 2026-08-07) và chưa ai đụng, nên mọi tab trình duyệt hiện logo Vercel suốt một tháng |
+| `apps/web/src/app/favicon.ico` | ~~Vẫn là favicon mặc định của Next.js~~ **Đã thay 2026-09-05**, và thay hai lần: bản đầu cắt từ ảnh §3.1 chỉ là chỗ tạm, nay là bản vẽ riêng của §3.2. Trước đó là bản của Next.js — 25 931 byte, vào repo từ commit đầu tiên (`V1 - githubpilot init project`, 2026-08-07) và chưa ai đụng, nên mọi tab trình duyệt hiện logo Vercel suốt một tháng |
 | `icon.png`, `apple-icon.png` | **Đã có** (512 và 180), sinh từ §3.1 |
 | Ảnh OG | **Không có.** `layout.tsx` chỉ khai `title` và `description`, nên link dán vào Zalo hay Messenger hiện ra trống. Với sản phẩm người học chuyền tay nhau, đây là chỗ thiếu đắt nhất |
 | Dấu hiệu ở thanh trên | Ô vuông cam chữ **T** — chỗ tạm, và nó không nhắc gì tới con mascot |
@@ -134,10 +134,19 @@ kính đọc ra hai ô, mũ và mặt tách bạch. Ở 16px nó là một vệt
 nhận ra được là "một nhân vật đội mũ", không hơn. Cắt sát thêm 7% mỗi bên giúp
 thấy rõ hơn hẳn, và đó là lý do `favicon.ico` cắt sát hơn `icon.png`.
 
-Nên §3.2 vẫn còn nguyên giá trị: favicon 16px xứng đáng có một bản vẽ riêng.
-Bản đang dùng là chỗ tạm — nó đúng thương hiệu, chỉ là chưa sắc.
+Nên §3.2 đã được dựng, và nó chứng minh luận điểm: **cặp kính đọc rõ ở 16px**
+trong khi cái đầu gấu ở cùng cỡ là một vệt nâu. Hai mắt kính kem tương phản mạnh
+với khung nâu sẫm, và cả hình chỉ có bốn khối — đó là toàn bộ lý do nó sống sót
+qua phép thu nhỏ. `favicon.ico` nay dùng bản này; `icon.png` và `apple-icon.png`
+vẫn là cái đầu, vì ở 512 và 180 thì chi tiết là ưu điểm chứ không phải gánh nặng.
 
-**Màu nền model trả về là `#FA3F19`**, không khớp token nào; đã tô lại thành
+**Model tự thêm một hạt sáng** ở góc dưới phải tấm §3.2, dù `Negative` đã cấm
+`fine detail`. Ở 512 nó vô hại, ở 16 nó là một pixel lạ giữa nền phẳng. Đã xoá
+bằng cách tô phẳng mọi thứ dưới `y=750` — kính kết thúc ở `y≈710`, nên vùng ấy
+đáng lẽ không được có gì. Kiểm ảnh nhận về bằng mắt trước khi lắp: `Negative`
+là một lời yêu cầu, không phải một bảo đảm.
+
+**Màu nền model trả về sai ở cả hai lần** — `#FA3F19` ở §3.1 và `#DC4C31` ở §3.2, không khớp token nào; đã tô lại thành
 `#C2340F` để nó khớp ô cam ở thanh trên. Ngưỡng 40 trên tổng sai lệch ba kênh là
 đủ: nó bắt hết nền phẳng mà không đụng vào nét viền nâu.
 
