@@ -327,14 +327,24 @@ def test_poking_five_hundred_times_does_not_max_the_level(client: TestClient) ->
     """
     headers = auth_headers(client, "spammer@example.com")
     client.get("/api/v1/pet", headers=headers)
-    last = None
+
+    last, refusal, presses = None, None, 0
     for _ in range(60):
-        last = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
+        response = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
+        if response.status_code == 409:
+            refusal = response.json()["detail"]
+            break
+        last, presses = response.json(), presses + 1
+
     assert last is not None
     assert last["needs"]["mood"] < 1.0, "cộng theo phần còn thiếu thì không bao giờ chạm nóc"
     assert 0 < last["xp_today"] < last["daily_full_xp"], (
-        "sáu mươi cú bấm không được tiêu hết suất đầy của ngày"
+        "không cú bấm nào được tiêu hết suất đầy của ngày"
     )
+    # Luật thứ ba, và nó đóng nốt đường spam: chọc TỐN sức, nên chọc mãi thì
+    # chính nó dẫn tới lời từ chối — lúc đó việc đáng làm là cho ngủ.
+    assert refusal == "Nó đang mệt, để nó nghỉ đã."
+    assert presses < 60, "phải bị chặn trước khi hết vòng lặp"
 
 
 def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Session) -> None:

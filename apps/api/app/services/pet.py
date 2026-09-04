@@ -58,7 +58,7 @@ FULLNESS_DECAY = ONE / _PER_DAY  # đầy → cạn: 1 ngày
 MOOD_DECAY = ONE / (_PER_DAY * Decimal("1.5"))  # 1,5 ngày
 ENERGY_RECOVER = ONE / (_PER_DAY / Decimal(2))  # cạn → đầy: 12 giờ
 
-"""Ngủ: hồi sức NHANH GẤP BỐN, và đây là cả cơ chế.
+"""Ngủ: hồi sức NHANH GẤP TÁM, và đây là cả cơ chế.
 
 Sức vốn đã tự hồi (1 điểm mỗi 12 giờ) mà không cần ai làm gì. Nếu ngủ chỉ là một
 dòng chảy thứ hai chạy song song thì nó không phải cơ chế, chỉ là một cái nút
@@ -68,15 +68,23 @@ vài giờ không chơi được với con thú để lấy lại sức đi dạ
 **Ngủ tự hết, không cần ai đánh thức.** Đây là ràng buộc quan trọng nhất, và nó
 đến thẳng từ luật của cả góc thú cưng: một chỉ số cạn sau vài giờ biến nó thành
 việc phải làm, và một con thú nằm chờ được đánh thức thì cũng đúng như thế. Giấc
-ngủ dài tối đa `SLEEP_MAX_SECONDS` rồi tự dứt, và ba giờ là vừa đủ đầy sức từ số
-không — nên không có trạng thái nào đòi người dùng quay lại.
+ngủ dài tối đa `SLEEP_MAX_SECONDS` rồi tự dứt, và độ dài ấy đặt **bằng đúng thời
+gian đầy sức từ số không** — nên giấc ngủ kết thúc đúng lúc nó xong việc, và
+không có trạng thái nào đòi người dùng quay lại. Đổi một trong hai con số mà quên
+con kia thì hoặc thừa một quãng nằm không, hoặc tỉnh dậy khi còn dở.
+
+Trước đây là gấp bốn, tức một giấc ba tiếng. Với một ứng dụng người ta mở hai
+mươi tới bốn mươi phút rồi đóng, ba tiếng nghĩa là con thú ngủ qua cả buổi học và
+tỉnh lại vào lúc không ai còn ngồi đó. Gấp tám rút xuống chín mươi phút: vẫn là
+một đánh đổi thật — vẫn phải bỏ vài chục phút không chơi được — nhưng nằm trong
+tầm một buổi.
 
 Trong lúc ngủ **vui không tụt**: nghỉ ngơi là chuyện dễ chịu. Nhưng **đói vẫn
 xuống bình thường** — một con vật đang ngủ vẫn đói đi, và cho nó ngủ để né cơn
 đói sẽ là một mẹo mà người chơi tìm ra rồi dùng mãi.
 """
-SLEEP_ENERGY_RECOVER = ENERGY_RECOVER * Decimal(4)
-SLEEP_MAX_SECONDS = 3 * 60 * 60
+SLEEP_ENERGY_RECOVER = ENERGY_RECOVER * Decimal(8)
+SLEEP_MAX_SECONDS = 90 * 60
 
 """Đã gần đầy sức thì không ngủ được, cùng lý do đã no thì không ăn thêm.
 
@@ -178,7 +186,17 @@ def refusal(action: PetAction, needs: Needs) -> str | None:
     """Lý do KHÔNG làm được, bằng tiếng Việt, hoặc `None` nếu làm được."""
     if action == "feed" and needs.fullness >= FEED_REFUSED_ABOVE:
         return "Nó đang no, chưa ăn thêm được."
-    if action == "walk" and needs.energy < WALK_REFUSED_BELOW:
+    if action in ("walk", "poke") and needs.energy < WALK_REFUSED_BELOW:
+        # Chọc cũng TỐN sức (-0,03), chỉ ít hơn đi dạo. Cho cái này qua mà chặn
+        # cái kia là võ đoán từ phía người chơi, và tệ hơn thế: lúc kiệt sức thì
+        # chọc là cái nút duy nhất còn sáng, mà nó lại kéo dài đúng tình trạng
+        # ấy — từ 0,14 thì năm cú bấm về 0, và hồi lại tới ngưỡng mất gần hai
+        # tiếng thức.
+        #
+        # Chặn chứ không giảm thưởng như `HUNGRY_POKE_FACTOR`: ở kia vấn đề là
+        # phần thưởng quá hời, ở đây là CÁI GIÁ — con thú không có sức để mất.
+        # Luật này khép kín thứ tự mà `WALK_HUNGRY_BELOW` mở ra: cho ăn trước rồi
+        # mới dắt đi, và kiệt sức thì cho ngủ.
         return "Nó đang mệt, để nó nghỉ đã."
     if action == "walk" and needs.fullness < WALK_HUNGRY_BELOW:
         return "Nó đang đói, cho ăn trước đã."

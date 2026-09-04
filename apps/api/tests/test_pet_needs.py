@@ -14,6 +14,7 @@ from app.services.pet import (
     MAX_PET_LEVEL,
     ONE,
     PET_LEVEL_XP,
+    SLEEP_MAX_SECONDS,
     XP_PER_ACTION,
     Needs,
     apply,
@@ -104,6 +105,22 @@ def test_sleeping_recovers_energy_four_times_faster() -> None:
     assert float(slept.energy) == pytest.approx(1.0, abs=0.01)
 
 
+def test_one_full_sleep_is_exactly_long_enough_to_refill() -> None:
+    """Độ dài giấc ngủ và tốc độ hồi sức là MỘT cặp, không phải hai con số rời.
+
+    Giấc tự dứt sau `SLEEP_MAX_SECONDS`, và nó phải kết thúc đúng lúc sức vừa
+    đầy: dài hơn thì thừa một quãng nằm không, ngắn hơn thì tỉnh dậy khi còn dở
+    và người dùng phải quay lại bấm tiếp — đúng thứ "ngủ tự hết" sinh ra để
+    tránh. Đổi một con số mà quên con kia sẽ không có gì báo.
+    """
+    flat = fresh(energy="0.0")
+    slept = decay(flat, SLEEP_MAX_SECONDS, asleep_seconds=SLEEP_MAX_SECONDS)
+    assert float(slept.energy) == pytest.approx(1.0, abs=0.001)
+
+    just_short = decay(flat, SLEEP_MAX_SECONDS * 0.9, asleep_seconds=SLEEP_MAX_SECONDS * 0.9)
+    assert float(just_short.energy) < 1.0, "ngắn hơn một chút thì CHƯA đầy — không dư thừa"
+
+
 def test_a_nap_that_ended_mid_window_only_counts_while_it_lasted() -> None:
     """Chỗ dễ sai nhất: giấc ngủ gần như luôn kết thúc GIỮA hai lần đọc.
 
@@ -111,18 +128,22 @@ def test_a_nap_that_ended_mid_window_only_counts_while_it_lasted() -> None:
     thức. Nhân cả quãng với tốc độ ngủ thì con thú hồi sức trong lúc nó đã dậy từ
     lâu — con số vẫn hợp lệ, chỉ là sai, và không có gì báo.
 
-    Ba giờ tính từ số không: thức cả ba được 0,25; ngủ nửa đầu rồi thức nửa sau
-    được 0,5 + 0,125. Bắt đầu từ một con số cao hơn thì cả hai đều kịch trần 1,0
-    và phép so sánh không nói lên điều gì — chính bài kiểm này đã đỏ vì thế.
+    Một tiếng rưỡi tính từ số không: thức cả quãng được 0,125; ngủ nửa đầu rồi
+    thức nửa sau được 0,5 + 0,0625.
+
+    **Quãng phải đủ NGẮN để cả hai vế còn dưới 1,0.** Kịch trần thì hai vế bằng
+    nhau và phép so sánh không nói lên điều gì — bài kiểm này đã đỏ đúng vì thế
+    một lần rồi, và đỏ lần nữa khi tốc độ ngủ tăng từ gấp bốn lên gấp tám. Đổi
+    tốc độ thì phải rút quãng theo, chứ không phải sửa con số kỳ vọng.
     """
     flat = fresh(energy="0.0")
-    all_awake = decay(flat, DAY / 8)
-    half_slept = decay(flat, DAY / 8, asleep_seconds=DAY / 16)
-    assert float(all_awake.energy) == pytest.approx(0.25, abs=0.01)
-    assert float(half_slept.energy) == pytest.approx(0.625, abs=0.01)
+    all_awake = decay(flat, DAY / 16)
+    half_slept = decay(flat, DAY / 16, asleep_seconds=DAY / 32)
+    assert float(all_awake.energy) == pytest.approx(0.125, abs=0.01)
+    assert float(half_slept.energy) == pytest.approx(0.5625, abs=0.01)
 
     # Quãng ngủ dài hơn cả quãng thời gian thì bị kẹp lại, không cộng khống.
-    over = decay(flat, DAY / 16, asleep_seconds=DAY)
+    over = decay(flat, DAY / 32, asleep_seconds=DAY)
     assert float(over.energy) == pytest.approx(0.5, abs=0.01)
 
 

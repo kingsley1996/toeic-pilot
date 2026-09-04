@@ -135,7 +135,11 @@ export function whyUnavailable(needs: PetNeeds, action: PetAction): string | nul
   if (action === "feed" && needs.fullness >= FEED_FULL_ABOVE) {
     return "Nó đang no, chưa ăn thêm được.";
   }
-  if (action === "walk" && needs.energy < WALK_TIRED_BELOW) {
+  // Chọc đi cùng đi dạo, vì nó cũng TỐN sức — ít hơn, nhưng cùng chiều. Lúc kiệt
+  // sức thì chọc là cái nút duy nhất còn sáng mà lại kéo dài đúng tình trạng ấy;
+  // `services/pet.py::refusal` chặn cùng ngưỡng, và hai bên phải nói cùng một câu
+  // vì đây là bản sao có chủ ý — máy chủ mới là chỗ quyết định.
+  if ((action === "walk" || action === "poke") && needs.energy < WALK_TIRED_BELOW) {
     return "Nó đang mệt, để nó nghỉ đã.";
   }
   if (action === "walk" && needs.fullness < WALK_HUNGRY_BELOW) {
