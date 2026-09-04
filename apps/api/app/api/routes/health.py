@@ -14,7 +14,20 @@ from app.services import health_history
 router = APIRouter(tags=["health"])
 logger = logging.getLogger(__name__)
 
+# Uptime monitor mặc định gửi HEAD, và `@router.get` một mình TỪ CHỐI nó bằng 405.
+#
+# Starlette tự thêm HEAD vào mọi route có GET (`routing.py`, `self.methods.add("HEAD")`),
+# nhưng `APIRoute` của FastAPI ghi đè `route.methods` bằng đúng tập được khai — nên thói
+# quen "GET thì HEAD cũng chạy" đúng ở Starlette trần và sai ở đây.
+#
+# Khai HEAD thành route RIÊNG và để ngoài schema, chứ không phải `api_route(methods=[...])`:
+# gộp hai method vào một route thì FastAPI đặt cho chúng cùng một `operationId`, và bộ sinh
+# hợp đồng TypeScript đổ ngay ở `Duplicate identifier`. Ngoài schema cũng đúng chỗ của nó —
+# đây là đầu dò hạ tầng, frontend không gọi bao giờ.
+HEAD_ONLY = {"include_in_schema": False}
 
+
+@router.head("/health", **HEAD_ONLY)  # type: ignore[arg-type]
 @router.get("/health")
 def health() -> dict[str, str]:
     """Liveness: the process is up. Deliberately checks no dependencies —
@@ -22,6 +35,7 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@router.head("/ready", **HEAD_ONLY)  # type: ignore[arg-type]
 @router.get("/ready")
 def ready(response: Response, db: Session = Depends(get_db)) -> dict[str, object]:
     """Readiness: can this instance actually serve traffic?

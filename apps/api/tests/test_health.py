@@ -35,6 +35,25 @@ def test_health_does_not_depend_on_the_database(client: TestClient, db_session):
         assert client.get("/health").status_code == 200
 
 
+def test_both_probes_answer_HEAD(client: TestClient):
+    """Uptime monitor gửi HEAD, và một `@router.get` trần trả về 405.
+
+    Đây là một sự cố CÓ THẬT: UptimeRobot theo dõi `/ready` (ADR-014 §9) bằng
+    HEAD và nhận 405 Method Not Allowed. Nó im lặng theo kiểu xấu nhất — trang
+    `/admin/health` dựng lịch sử từ `health_sample` mà chính `/ready` ghi, nên
+    mỗi lượt ping bị chặn trước khi tới handler là một khoảng trống trên biểu đồ
+    trông y hệt một lần sập.
+
+    Nguyên nhân là chỗ FastAPI khác Starlette: Starlette tự thêm HEAD vào route
+    có GET, còn `APIRoute` thì ghi đè bằng đúng tập method được khai. Nên thói
+    quen "có GET là có HEAD" đúng ở nơi khác và sai ở đây, và nó chỉ lộ ra khi
+    có máy ngoài gọi tới.
+    """
+    with _redis_ok():
+        assert client.head("/ready").status_code == 200
+    assert client.head("/health").status_code == 200
+
+
 # --- readiness ------------------------------------------------------------
 
 
