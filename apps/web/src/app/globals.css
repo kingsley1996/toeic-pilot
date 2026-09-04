@@ -1882,13 +1882,95 @@
   animation-iteration-count: infinite;
 }
 
+/*
+ * Nhịp thở là ép-giãn CỘNG một cú nhún, không chỉ cao thấp.
+ *
+ * Bản đầu chỉ đổi `scaleY` 1 → 1,05: ở cỡ 24px thì một phần trăm chiều cao là
+ * chưa tới nửa pixel, nên con thú đứng như một tấm ảnh. Ép ngang ngược pha với
+ * giãn dọc (`scale(0.98, 1.04)`) mới đọc ra là đang thở, còn cú nhún hai pixel
+ * là thứ bắt được mắt ở khoé nhìn — đó mới là việc của cái thẻ này.
+ *
+ * Vũng sáng KHÔNG nhún theo: nó nằm trên mặt đất, và chính khoảng hở giữa chân
+ * với vũng sáng là thứ làm cú nhún thành cú nhún. Cùng lời giải thích đã ghi ở
+ * `petland-render.ts`.
+ */
 @keyframes pet-breathe {
   0%,
   100% {
-    transform: translateX(-50%) scaleY(1);
+    transform: translateX(-50%) translateY(0) scale(1, 1);
+  }
+  25% {
+    transform: translateX(-50%) translateY(-1px) scale(0.98, 1.04);
   }
   50% {
-    transform: translateX(-50%) scaleY(1.05);
+    transform: translateX(-50%) translateY(-2px) scale(1.02, 1.02);
+  }
+  75% {
+    transform: translateX(-50%) translateY(-1px) scale(1.01, 0.985);
+  }
+}
+
+/* Ngủ thì nhịp chậm lại và SÂU gấp đôi, không nhún — cùng cách cảnh chơi phân
+   biệt ngủ với thức khi mẩu Zzz đã bay hết. */
+.pet-idle.is-asleep {
+  animation-name: pet-sleep;
+}
+
+@keyframes pet-sleep {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1, 1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.04, 0.93);
+  }
+}
+
+/* Mẩu Zzz bay lên chếch phải rồi tan. Ba mẩu lệch pha nhau bằng `animation-delay`.
+
+   Đường bay giữ trong bề ngang con thú: neo ở `left-1/2` và dạt 4px, vì thẻ ở
+   sidebar có chữ ngay bên phải và một mẩu Zzz bay đè lên tên là trang trí che
+   mất nội dung. */
+.pet-zzz {
+  animation: pet-zzz 2600ms ease-out infinite;
+}
+
+@keyframes pet-zzz {
+  0% {
+    opacity: 0;
+    transform: translate(0, 2px) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(4px, -12px) scale(1);
+  }
+}
+
+/*
+ * Tia sáng lúc người học trả lời đúng — bản CSS của `spawnBits("spark")`.
+ *
+ * Chạy MỘT lần rồi thôi, và thẻ dựng lại nó bằng một khoá tăng dần: đặt lại
+ * animation trên cùng một node không khởi động lại nó, nên hai câu đúng liền
+ * nhau sẽ chỉ loé đúng lần đầu.
+ */
+.pet-spark {
+  animation: pet-spark 900ms ease-out forwards;
+}
+
+@keyframes pet-spark {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spark-x), -16px) scale(1.1);
   }
 }
 
@@ -1914,8 +1996,19 @@
    không — cùng lời giải thích ở `petland-render.ts`. */
 @media (prefers-reduced-motion: reduce) {
   .pet-idle,
-  .pet-glow {
+  .pet-glow,
+  .pet-zzz,
+  .pet-spark {
     animation: none;
+  }
+  /* Zzz và tia sáng thôi bay, nhưng Zzz phải Ở LẠI — nó là thứ NÓI con thú đang
+     ngủ, chứ không phải một hiệu ứng trang trí. Tia sáng thì ngược lại: nó chỉ
+     là lời khen cho một câu vừa đúng, nên không có nó cũng không mất thông tin. */
+  .pet-zzz {
+    opacity: 1;
+  }
+  .pet-spark {
+    opacity: 0;
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { TILE } from "@/components/petland-map";
 import { CREATURE_COLS, CREATURE_ROWS } from "@/components/petland-sprite";
+import { PixelIcon } from "@/components/pixel-icon";
 import { cx } from "@/components/ui";
 
 /**
@@ -236,11 +237,15 @@ const BREATHE_MS: Record<string, number> = {
   cheerful: 1210,
 };
 const BREATHE_DEFAULT_MS = 1610;
+/* Ngủ: chậm còn một phần ba, đúng tỉ lệ `petland-render.ts` dùng. */
+const SLEEP_BREATHE_MS = 4830;
 
 export function PetIdle({
   tile,
   tier,
   condition,
+  sleeping = false,
+  cheerKey = 0,
   size = 32,
   className,
 }: {
@@ -248,6 +253,17 @@ export function PetIdle({
   tier: string;
   /** Tình trạng từ `conditionOf`; chỉ quyết định nhịp thở nhanh chậm. */
   condition?: string;
+  /** Đang ngủ thì thở chậm và sâu, kèm mấy mẩu Zzz. */
+  sleeping?: boolean;
+  /**
+   * Khoá của tiếng reo gần nhất; đổi giá trị là loé một lần.
+   *
+   * Nhận một con SỐ chứ không một cờ bật/tắt: đặt lại animation trên cùng một
+   * node không khởi động lại nó, nên hai câu đúng liền nhau sẽ chỉ loé lần đầu.
+   * Khoá đổi thì `key` của node đổi, React dựng node mới, animation chạy lại từ
+   * đầu — cùng mẹo mà danh sách toast dùng.
+   */
+  cheerKey?: number;
   size?: number;
   className?: string;
 }) {
@@ -286,15 +302,51 @@ export function PetIdle({
         }}
       />
       <span
-        className="pet-idle absolute left-1/2 -translate-x-1/2"
+        className={cx("pet-idle absolute left-1/2 -translate-x-1/2", sleeping && "is-asleep")}
         style={{
           ...tileStyle(tile, size),
           width: size,
           height: size,
           bottom: Math.round(lift * 0.55),
-          animationDuration: `${BREATHE_MS[condition ?? ""] ?? BREATHE_DEFAULT_MS}ms`,
+          animationDuration: sleeping
+            ? `${SLEEP_BREATHE_MS}ms`
+            : `${BREATHE_MS[condition ?? ""] ?? BREATHE_DEFAULT_MS}ms`,
         }}
       />
+
+      {sleeping && (
+        <span className="absolute bottom-full left-1/2 -mb-1 block">
+          {/* Span bọc mang animation, `PixelIcon` chỉ vẽ hình — nó không nhận
+              `style`, và mở rộng API của nó cho đúng một chỗ dùng là đổi một
+              component dùng chung vì một nhu cầu riêng. */}
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="pet-zzz absolute bottom-0 left-0 block"
+              style={{ animationDelay: `${i * 850}ms` }}
+            >
+              <PixelIcon name="zzz" scale={1} />
+            </span>
+          ))}
+        </span>
+      )}
+
+      {/* Loé sáng lúc trả lời đúng. `key` mang khoá nên node được dựng lại mỗi
+          lần reo — xem chú thích của `cheerKey`. Không dựng khi đang ngủ: cảnh
+          chơi cũng im lúc đó, và đánh thức bằng một câu đúng thì không ai chọn. */}
+      {cheerKey > 0 && !sleeping && (
+        <span key={cheerKey} className="pointer-events-none absolute inset-0 block">
+          {[-6, 0, 7].map((dx, i) => (
+            <span
+              key={dx}
+              className="pet-spark absolute left-1/2 top-0 block"
+              style={{ ["--spark-x" as string]: `${dx}px`, animationDelay: `${i * 110}ms` }}
+            >
+              <PixelIcon name="spark" scale={1} />
+            </span>
+          ))}
+        </span>
+      )}
     </span>
   );
 }

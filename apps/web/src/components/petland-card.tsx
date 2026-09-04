@@ -4,11 +4,12 @@ import { API_ROUTES, type PetPublic } from "@toeic-pilot/shared";
 import { useCallback, useEffect, useState } from "react";
 
 import { PetIdle } from "@/components/petland-creature";
-import { conditionOf } from "@/components/petland-pet";
+import { CONDITION_LABEL, conditionOf } from "@/components/petland-pet";
 import { PetlandToast } from "@/components/petland-toast";
 import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
-import { Skeleton } from "@/components/ui";
+import { Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { subscribeToCheer } from "@/lib/pet-cheer";
 import { subscribeToPetNotices } from "@/lib/pet-notice";
 import { requestPetOpen } from "@/lib/pet-open";
 import { subscribeToPetState } from "@/lib/pet-state";
@@ -82,19 +83,32 @@ export function PetlandCard() {
      đọc lại — cùng kênh mà toast dùng, nên hai bên không lệch nhau. */
   useEffect(() => subscribeToPetNotices(load), [load]);
 
+  /* Trả lời đúng một câu thì con thú ở đây loé sáng y như con trong bảng —
+     cùng kênh, nên hai chỗ không bao giờ reo lệch nhau. Đếm tăng dần chứ không
+     bật/tắt: xem `cheerKey` ở `PetIdle`. */
+  const [cheers, setCheers] = useState(0);
+  useEffect(() => subscribeToCheer(() => setCheers((n) => n + 1)), []);
+
   if (status !== "authenticated") return null;
 
   const condition = pet === null ? undefined : conditionOf(pet.needs);
   return (
     <div className="relative shrink-0 border-t border-rule px-2 py-2">
       <PetlandToast condition={condition} />
-      {pet === null ? <Skeleton className="h-12 w-full" /> : <PetCard pet={pet} />}
+      {pet === null ? <Skeleton className="h-14 w-full" /> : <PetCard pet={pet} cheers={cheers} />}
     </div>
   );
 }
 
-function PetCard({ pet }: { pet: PetPublic }) {
+/** Còn ngủ tới lúc nào; `null` hoặc mốc đã qua đều là đang thức. */
+function isAsleep(pet: PetPublic): boolean {
+  return pet.sleep_until !== null && new Date(pet.sleep_until).getTime() > Date.now();
+}
+
+function PetCard({ pet, cheers }: { pet: PetPublic; cheers: number }) {
   const needs = pet.needs;
+  const asleep = isAsleep(pet);
+  const condition = conditionOf(needs);
   return (
     <button
       type="button"
@@ -117,7 +131,14 @@ function PetCard({ pet }: { pet: PetPublic }) {
        * 43px, và bỏ lề ngang của nút khi thu gọn thì còn đúng 46px lọt. Con thú
        * không đổi gì khi toggle, nên không còn gì để giật.
        */}
-      <PetIdle tile={pet.tile} tier={pet.tier} condition={conditionOf(needs)} size={24} />
+      <PetIdle
+        tile={pet.tile}
+        tier={pet.tier}
+        condition={condition}
+        sleeping={asleep}
+        cheerKey={cheers}
+        size={24}
+      />
 
       {/* Ở dải thu gọn chỉ còn con thú: tên và ba con số không đọc được ở bề
           rộng đó. Mờ dần rồi bị cột hẹp lại cắt đi, chứ không `hidden` — biến
@@ -128,6 +149,32 @@ function PetCard({ pet }: { pet: PetPublic }) {
           <span className="shrink-0 font-data text-label tabular-nums text-ink-faint">
             Lv {pet.level}
           </span>
+        </span>
+
+        {/*
+         * Tình trạng bằng CHỮ, ngay dưới tên.
+         *
+         * Ba con số nói con thú đang thế nào, nhưng chúng bắt người đọc tự dịch:
+         * "no 18%" phải so với một ngưỡng nằm trong đầu ai đó mới thành "đang
+         * đói". Câu chữ nói thẳng, và nó dùng đúng `CONDITION_LABEL` mà bảng
+         * dùng — một bảng nhãn thứ hai ở đây là hai chỗ gọi cùng một trạng thái
+         * bằng hai cái tên.
+         *
+         * Ngủ đè lên tình trạng chứ không xếp cạnh: lúc ngủ thì đói hay mệt đều
+         * không phải thứ người dùng làm gì được, còn "đang ngủ" thì giải thích
+         * luôn vì sao mấy cái nút đang từ chối.
+         */}
+        <span
+          className={cx(
+            "mt-0.5 block truncate text-label",
+            asleep
+              ? "text-ink-faint"
+              : condition === "exhausted" || condition === "hungry"
+                ? "text-warn"
+                : "text-ink-muted",
+          )}
+        >
+          {asleep ? "Đang ngủ" : CONDITION_LABEL[condition]}
         </span>
         <span className="mt-1 flex items-center gap-2 font-data text-label tabular-nums">
           {STATS.map(({ key, icon, name }) => (
