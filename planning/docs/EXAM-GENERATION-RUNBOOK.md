@@ -237,7 +237,7 @@ lịch sử làm bài của học viên trên đề đó. Dùng đường chỉ-
 |---|---|---|
 | `blueprint.json`, `paste/`, `graphics/`, `graphic-images/` | ✅ commit | nguồn để tái tạo lại đề, nhẹ, diff được |
 | `images/` (ảnh Part 1 model sinh) | ❌ ignore | tái sinh từ `*.prompt.txt`; giống mp3 |
-| `photos/` (mô tả ảnh) | ❌ ignore | phụ phẩm của `photo` |
+| `photos/` (mô tả ảnh) | ✅ commit | **đổi 2026-09-05.** Trước đây bỏ qua vì coi là phụ phẩm của `photo` — tái sinh được. Sai: tệp trong đó là bản **đặt hàng** bức ảnh, không phải mô tả bức ảnh đã **giao**, và hai thứ lệch nhau thật (bản đặt hàng ghi *no papers on the desk* trong khi ảnh có giấy; *four rows of chairs* trong khi ảnh có hai hàng). Mười hai tệp của tp-form-06/07 nay viết tay từ ảnh đã giao nên **không tái sinh được** — chạy lại `photo` ghi đè bằng bản sai, và lần backfill giải thích sau sẽ viết lại những lời giải sai mà không gì báo |
 | `apps/api/media/` (mp3) | ❌ ignore | lớn, tái sinh từ manifest |
 | `content/manifest/*.jsonl` | ✅ commit | manifest là bản ghi nội dung đã sinh |
 

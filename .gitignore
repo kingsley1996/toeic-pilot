@@ -47,7 +47,18 @@ apps/api/media/
 # Giống mp3: không giữ trong git vì tái tạo được. Các phần khác của đề (paste,
 # graphics, graphic-images) thì commit — chúng là nguồn để tái tạo lại đề.
 apps/api/content/generated/*/images/
-apps/api/content/generated/*/photos/
+
+# `photos/` TỪNG nằm ở đây, và lý do ấy đã hết hiệu lực (2026-09-05).
+#
+# Nó bị bỏ qua vì được coi là phụ phẩm của lệnh `photo` — tái sinh được. Nhưng
+# tệp trong đó là bản ĐẶT HÀNG bức ảnh, không phải mô tả bức ảnh đã giao, và hai
+# thứ đó lệch nhau thật: bản đặt hàng ghi "no papers on the desk" trong khi ảnh
+# có giấy, ghi "four rows of chairs" trong khi ảnh có hai hàng.
+#
+# Mười hai tệp của tp-form-06 và tp-form-07 nay được viết tay từ chính bức ảnh
+# đã giao, nên chúng KHÔNG tái sinh được — chạy lại `photo` sẽ ghi đè bằng bản
+# sai. Chúng là ngữ liệu mà mọi lời giải Part 1 dựa vào, nên mất chúng nghĩa là
+# lần backfill sau viết lại những lời giải sai, và không có gì báo.
 
 # Logs
 *.log
