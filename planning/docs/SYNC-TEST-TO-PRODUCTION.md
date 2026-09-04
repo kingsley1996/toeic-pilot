@@ -164,6 +164,58 @@ Sau khi áp, các hàng `audio_asset` cũ trở thành mồ côi (production gi�
 hại — object vẫn còn trên provider). Dọn bằng `reconcile_media --delete-rows`,
 là một quyết định riêng.
 
+## 5c. Đồng bộ RIÊNG cột `explanation` của một đề đã publish
+
+**Không dùng `export-test.sh` cho việc này.** Khối reset của nó có dòng
+
+```sql
+DELETE FROM attempt WHERE test_id = (SELECT id FROM practice_test WHERE slug = …);
+```
+
+nên nạp lại một đề đã publish sẽ **xoá sạch lịch sử làm bài của học viên trên đề
+đó**. Hồi các đề chưa ai làm thì vô hại; production nay đã có người dùng thật,
+và kiểu hỏng này im lặng — import báo thành công, còn thứ mất đi không nằm trong
+tệp dump nên không có gì để đối chiếu ra.
+
+Việc vá giải thích chỉ chạm đúng một cột, nên nó có đường riêng chỉ toàn `UPDATE`:
+
+```bash
+./scripts/export-explanations.sh tp-form-06 /tmp/expl-06.sql
+
+# Xem trước: phải là 0.
+grep -ciE '^(DELETE|INSERT|DROP|TRUNCATE|ALTER)' /tmp/expl-06.sql
+
+docker run --rm -i --env-file <env-file> postgres:17 \
+  psql -v ON_ERROR_STOP=1 < /tmp/expl-06.sql
+```
+
+**Khoá đồng bộ là `question.id`, và điều đó đúng vì id TRÙNG hai bên** — đối
+chiếu ngày 2026-09-04 trên `tp-form-06` ở bốn vị trí (1, 7, 101, 200), khớp
+tuyệt đối, vì lần import đầu chép nguyên hàng kèm id. Checksum toàn bộ cột
+`explanation` của đề cũng khớp giữa hai bên ở cùng ngày.
+
+Ba thứ được xây vào tệp sinh ra:
+
+- **Chuỗi được escape bằng `format('%L')` của chính Postgres**, không phải bằng
+  sed/awk. §4 ghi lại hai lần `export-test.sh` sai đúng chỗ này, và cái sai ấy
+  không nổ — nó chỉ biến một `\n` thành hai ký tự literal trong bài học viên đọc.
+- **Đếm lại ngay trong giao dịch, trước `COMMIT`**, và `RAISE EXCEPTION` nếu
+  thiếu. Một tệp chạy xong không chứng minh nó chạm đúng số hàng: id không tồn
+  tại thì `UPDATE` khớp 0 hàng và psql vẫn in `UPDATE 0` — một dòng không ai
+  nhìn ra giữa 170 dòng giống hệt. Đây cũng là chỗ phát hiện nếu giả định "id
+  trùng" một ngày nào đó hết đúng.
+- **Idempotent.** Chạy lại bao nhiêu lần cũng ra cùng kết quả.
+
+Kiểm sau khi nạp:
+
+```sql
+SELECT count(*) FILTER (WHERE explanation IS NOT NULL AND explanation <> '') || '/' || count(*)
+FROM practice_test pt
+JOIN practice_test_question ptq ON ptq.test_id = pt.id
+JOIN question q ON q.id = ptq.question_id
+WHERE pt.slug = 'tp-form-06';
+```
+
 ## 6. Bảo mật
 
 Connection string chứa mật khẩu — nếu từng dán vào chat/lỗi, hãy **rotate

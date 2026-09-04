@@ -189,6 +189,48 @@ Tóm tắt:
 - Assets chèn bằng `INSERT ... ON CONFLICT (id) DO UPDATE` — an toàn chạy lại.
 - Khác `export-content.sh` (nạp toàn bộ, dành cho lần đầu dựng production).
 
+## 11b. Vá giải thích cho đề CŨ (`backfill_explanations`)
+
+Dùng khi một đề đã nằm trong database mà thiếu `explanation` — không phải một
+chặng của việc sinh đề mới, vì đề sinh sau khi các prompt part được sửa đã phủ
+100% sẵn (`tp-test-09`: 200/200).
+
+Vì sao cần: `tp-form-06/07/08` mỗi đề chỉ **30/200**, và cả ba đang chạy trên
+production. Học viên làm sai một câu Part 7 rồi không được nói gì — vòng học đứt
+ở đúng chỗ nó phải đóng.
+
+```bash
+cd apps/api
+# Xem trước: gọi model, in ra, KHÔNG ghi.
+uv run python -m app.content.backfill_explanations \
+  --test tp-form-06 --part 7 --limit 3 --model bai/qwen3.8-flash --dry-run
+
+# Chạy thật, một đề một lần.
+uv run python -m app.content.backfill_explanations \
+  --test tp-form-06 --model bai/qwen3.8-flash
+```
+
+**Part 1 làm được, nhưng nó cần `--test` và cần thư mục làm việc còn nguyên.**
+Model không nhìn thấy bức ảnh, và ảnh Part 1 cố ý không có `alt_text` (ADR-004)
+vì mô tả nó là cho luôn đáp án. Thứ cứu được là **bản mô tả cảnh** mà chặng lập
+kế hoạch đã dựng để đặt hàng bức ảnh ấy — `content/generated/<slug>/photos/`,
+vẫn còn cho cả ba đề. Tên tệp tra qua `blueprint.json` chứ không đoán theo số
+thứ tự. Không tìm thấy bản mô tả thì câu đó **bị bỏ qua và in ra**, vì viết tiếp
+là bịa dẫn chứng.
+
+**Ghi từng câu một**, nên Ctrl-C hay hết ngân sách giữa chừng không vứt phần đã
+trả tiền; chạy lại chỉ tìm thấy ít việc hơn vì hàng đợi là một truy vấn.
+
+**Đo thật ngày 2026-09-04** (`bai/qwen3.8-flash`, đọc từ `ai_interaction`):
+**$0,0007 mỗi câu** → khoảng **$0,36 cho cả 510 câu**. `max_tokens=3000` nghe
+rộng nhưng phần lớn là chỗ cho model suy luận — 900 đã chết với "hết hạn mức đầu
+ra khi đang suy luận" trên Part 7.
+
+**Xong ở dev chưa phải là xong, và đường lên production KHÔNG phải §11.**
+`export-test.sh` thay cả đề, mà khối reset của nó xoá luôn `attempt` — tức là
+lịch sử làm bài của học viên trên đề đó. Dùng đường chỉ-UPDATE:
+`SYNC-TEST-TO-PRODUCTION.md` §5c.
+
 ## 12. Git: cái gì commit, cái gì bỏ
 
 | Thư mục | Git | Vì sao |

@@ -49,10 +49,16 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 
 ### Nội dung — chặn mọi thứ khác
 
-- [ ] **Giải thích cho ≥ 300/655 câu.** Ngưỡng mở khoá RAG ở `ADR-003` §3.3. Hiện **124**,
-      và độ phủ lệch hẳn: Part 5 đạt 96% còn Part 6 và 7 bằng 0 — vì trong bảy prompt sinh
-      đề chỉ `part5_system.md` có đòi dòng `Explanation:`. Hình dạng lời giải thích cho từng
-      part và hai cổng chặn bịa dẫn chứng: `SPEC-EXPLANATIONS.md`
+- [ ] **Vá giải thích cho `tp-form-06/07/08`** — 510 câu, công cụ đã dựng và đã kiểm:
+      `app/content/backfill_explanations.py`, runbook §11b. Đo thật $0,0007/câu ≈ **$0,36**
+      cho cả ba đề. Part 1 dùng bản mô tả cảnh còn lưu ở `content/generated/<slug>/photos/`,
+      nên nó không phải suy ngược từ đáp án; mất bản ấy thì câu đó bị bỏ qua chứ không bịa.
+
+      Ba dòng cũ ở đây đã SAI và được thay: ngưỡng RAG ghi 300 trong khi `ADR-003` §3.3 viết
+      **≥150**; con số "hiện 124" thực ra là **324/855**, tức ngưỡng đã vượt từ lâu; và
+      "chỉ `part5_system.md` đòi `Explanation:`" cũng hết đúng — cả sáu prompt part đều đòi,
+      nên đề sinh sau đó (`tp-test-09`) phủ 200/200. Chỗ hổng còn lại hoàn toàn là nội dung
+      cũ, không phải dây chuyền.
 - [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
       thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
       không có bài nào thuộc dạng đó
