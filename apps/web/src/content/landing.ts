@@ -238,6 +238,30 @@ export const landing = {
     lead: "Học từ vựng. Rèn kỹ năng nghe. Luyện đề TOEIC. Và từng bước tiến gần hơn đến điểm số bạn muốn.",
   },
 
+  /*
+   * Chân trang, và nó hiện ở BA trang chứ không riêng trang giới thiệu —
+   * `TopBarShell` dựng nó cho `/`, `/login` và `/register`. Chữ vẫn để đây vì
+   * tệp này tồn tại để dịch cả trang bằng cách chép đúng một tệp, và một chân
+   * trang nằm ngoài nó sẽ là chỗ duy nhất còn tiếng Việt sau khi dịch xong.
+   *
+   * KHÔNG có nhãn của ba mục nội dung ở đây: chúng lấy thẳng từ `CONTENT_LINKS`
+   * của `app-shell.tsx`, cùng nguồn với thanh trên. Chép lại vào đây thì đổi tên
+   * một mục ở nav xong chân trang vẫn gọi nó bằng tên cũ, và không gì báo.
+   */
+  footer: {
+    tagline:
+      "Học TOEIC dễ dàng hơn — từ vựng, nghe chép chính tả và luyện đề, tất cả trong một nơi.",
+    learnLabel: "Học",
+    accountLabel: "Tài khoản",
+    signIn: "Đăng nhập",
+    signUp: "Tạo tài khoản",
+    dashboard: "Vào học",
+    /* Nói ra vì đây là câu hỏi đầu tiên của người vừa đọc xong trang, và câu trả
+       lời có thật: `/register` không hỏi thẻ, không có bậc trả tiền nào. */
+    free: "Miễn phí, không cần thẻ.",
+    made: "Nội dung học do đội ngũ tự biên soạn.",
+  },
+
   petWidget: {
     toggle: "Góc thú cưng",
     title: "Góc thú cưng",
