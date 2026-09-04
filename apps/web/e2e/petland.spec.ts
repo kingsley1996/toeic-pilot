@@ -21,6 +21,38 @@ async function signUp(page: Page) {
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await hatch(page);
+}
+
+/**
+ * Nở quả trứng đầu tiên, để tài khoản có một con thú.
+ *
+ * Người mới không còn được tặng thẳng một con nữa: họ nhận một quả trứng và tự
+ * mở. Mọi bài dưới đây nói về CON THÚ — chỗ nó đứng, chỉ số của nó, mấy cái nút
+ * chăm nó — nên chúng cần bước qua khoảnh khắc ấy trước.
+ *
+ * Gọi thẳng API chứ không bấm qua giao diện: đây là DỰNG BỐI CẢNH, không phải
+ * thứ đang được đo. Bấm qua giao diện thêm bốn thao tác cùng một hoạt cảnh nở
+ * dài vào đầu mười bài, và biến mọi bài thành một bài kiểm gián tiếp cho màn mở
+ * trứng — hỏng ở đó là mười bài đỏ cùng lúc, không bài nào chỉ đúng chỗ.
+ *
+ * Bản thân màn mở trứng có bài riêng ngay dưới, đi qua đúng giao diện thật.
+ */
+async function hatch(page: Page) {
+  const ok = await page.evaluate(async () => {
+    const token = window.localStorage.getItem("toeic_pilot_access_token");
+    const res = await fetch("http://localhost:8000/api/v1/pet/eggs/open", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.ok;
+  });
+  expect(ok, "quả trứng đầu tiên phải mở được và không tốn ruby").toBe(true);
+  // Nạp lại vì quả trứng vừa nở NGOÀI React: thẻ ở sidebar đã đọc `/pet` một lần
+  // lúc dựng, thấy 204, và vẽ lời mời nhận trứng. Không có gì báo cho nó biết,
+  // nên nó giữ nguyên ảnh chụp ấy — và mọi bài sau đó đi tìm một cái thẻ thú
+  // cưng không tồn tại.
+  await page.reload();
 }
 
 /*
@@ -36,6 +68,43 @@ const openPet = (page: Page) => page.locator("aside").getByTitle("Mở góc thú
 
 /** Thanh tiêu đề của bảng, cũng chính là tay cầm kéo. */
 const panelBar = (page: Page) => page.getByTitle("Kéo để đổi chỗ");
+
+test("người mới nhận một quả trứng, mở xong mới có thú cưng", async ({ page }) => {
+  /*
+   * Bài DUY NHẤT ở đây không gọi `signUp`: nó đo đúng khoảnh khắc mà `signUp`
+   * bước qua hộ mọi bài khác.
+   *
+   * Trước đây mở góc thú cưng lần đầu là được tặng thẳng một con mèo. Giờ tài
+   * khoản mới chưa nuôi con nào, và cả hai chỗ hiện con thú — thẻ ở sidebar và
+   * bảng — phải nói ra điều đó thay vì hiện một khung rỗng hay một con thú
+   * không có thật.
+   */
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+
+  // Thẻ ở sidebar mời nhận trứng, và thẻ thú cưng thì chưa tồn tại.
+  const invite = page.locator("aside").getByTitle("Mở quả trứng đầu tiên");
+  await expect(invite).toBeVisible();
+  await expect(openPet(page)).toHaveCount(0);
+
+  await invite.click();
+  await expect(page.getByText("Mở ra để nhận thú cưng đầu tiên")).toBeVisible();
+  // Ví rỗng mà vẫn mở được: đó là cả điểm của việc tặng TRỨNG thay vì tặng tiền.
+  const open = page.getByRole("button", { name: "Mở trứng" });
+  await open.first().click();
+  // Đợi màn trứng dựng xong RỒI mới bấm nút thứ hai. `.last()` phân giải theo
+  // những gì khớp NGAY LÚC ẤY: bấm ngay thì lúc đó mới có đúng một nút, nên
+  // `.last()` chính là cái vừa bấm và quả trứng không bao giờ được mở.
+  await expect(page.getByRole("button", { name: "Mở 10" })).toBeVisible();
+  await open.last().click();
+
+  // Nở xong thì thẻ đổi hẳn vai: lời mời biến mất, con thú thế chỗ.
+  await expect(openPet(page)).toBeVisible({ timeout: 15_000 });
+  await expect(invite).toHaveCount(0);
+});
 
 test("sau khi nạp lại trang, bảng thú cưng mở ra nằm trong màn hình", async ({ page }) => {
   /*

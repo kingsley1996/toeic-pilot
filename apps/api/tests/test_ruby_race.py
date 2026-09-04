@@ -184,7 +184,7 @@ def test_seeding_the_species_table_survives_a_tie(pg_engine):
     """Hai request đầu tiên sau một lần triển khai cùng gieo bảng loài.
 
     `all_species` là bảng gieo lười CUỐI CÙNG còn thiếu chốt chống đua, và nó
-    nằm trên đường đọc nóng nhất của cả góc thú cưng: `ensure_pet` gọi nó ở mỗi
+    nằm trên đường đọc nóng nhất của cả góc thú cưng: `current_pet` gọi nó ở mỗi
     lần mở bảng. Người thua cuộc đua vỡ khoá chính và mất nguyên một lượt học vì
     một cuộc đua trên bảng CẤU HÌNH.
 
@@ -249,20 +249,20 @@ def test_seeding_the_species_table_survives_a_tie(pg_engine):
 def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
     """Lần mở bảng ĐẦU TIÊN của một tài khoản bắn hai request cùng lúc.
 
-    `GET /pet` và `GET /pet/encounters` cùng đi qua `ensure_pet`, và trên một tài
-    khoản chưa có hàng nào thì cả hai cùng thấy `None` và cùng dựng — người thua
-    vỡ `pet_state_pkey` và nhận 500 ngay ở lần mở góc thú cưng đầu tiên của đời
-    tài khoản đó.
+    `GET /pet` và `GET /pet/encounters` cùng đi qua `ensure_state`, và trên một
+    tài khoản chưa có hàng nào thì cả hai cùng thấy `None` và cùng dựng — người
+    thua vỡ `pet_state_pkey` và nhận 500 ngay ở lần mở góc thú cưng đầu tiên của
+    đời tài khoản đó.
 
     Bắt được nhờ một lượt chạy e2e đỏ ở chỗ chẳng liên quan (`SyntaxError:
     Unexpected token 'I', "Internal S"...`), không phải nhờ đọc mã: cuộc đua chỉ
     trúng khi hai request rơi vào đúng vài mili giây của nhau.
 
     Hàng rào nằm giữa lần đọc thấy `None` và lần ghi, đúng chỗ khe mở ra. Đã
-    kiểm cả hai chiều: gỡ `try/except IntegrityError` trong `ensure_pet` thì bài
-    này đỏ với đúng `IntegrityError` ấy.
+    kiểm cả hai chiều: gỡ `try/except IntegrityError` trong `ensure_state` thì
+    bài này đỏ với đúng `IntegrityError` ấy.
     """
-    # Vá ở SERVICE, không ở route. `ensure_pet` và `db_get_state` đã dời sang
+    # Vá ở SERVICE, không ở route. `ensure_state` và `db_get_state` đã dời sang
     # `services/pet_state.py` khi việc học bắt đầu nuôi con thú — luồng học cần
     # gọi sang góc thú cưng, và để cả hai ở tầng route thì hai chiều khép thành
     # một vòng import. Vá `routes.pet` sau khi dời vẫn CHẠY và vẫn XANH: hàng rào
@@ -294,7 +294,7 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
     def open_panel() -> str:
         db = factory()
         try:
-            pet_state.ensure_pet(db, user_id)
+            pet_state.ensure_state(db, user_id)
             return "ok"
         except Exception as exc:  # pragma: no cover - chính là thứ đang được kiểm
             return f"vỡ: {type(exc).__name__}"
@@ -315,7 +315,10 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
         select(func.count()).select_from(PetOwned).where(PetOwned.user_id == user_id)
     )
     session.close()
-    assert (states, owned) == (1, 1)
+    # `owned` bằng 0, không phải 1: mở bảng lần đầu chỉ dựng cái GÓC. Con thú
+    # đến từ quả trứng đầu tiên, và người dùng phải tự mở nó — nên cuộc đua ở đây
+    # chỉ còn tranh nhau đúng một hàng, và đó vẫn là hàng từng vỡ.
+    assert (states, owned) == (1, 0)
 
     with pg_engine.begin() as conn:
         conn.execute(text("DELETE FROM pet_owned WHERE user_id = :u"), {"u": user_id})

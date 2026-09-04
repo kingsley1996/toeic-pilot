@@ -35,7 +35,7 @@ def all_species(db: Session, *, include_disabled: bool = False) -> list[PetSpeci
             #
             # `pet_species` là bảng CUỐI CÙNG trong nhóm gieo lười còn thiếu chốt
             # này, và nó lại nằm trên đường đọc nóng nhất của cả góc thú cưng:
-            # `ensure_pet` gọi nó ở mỗi lần mở bảng.
+            # `current_pet` gọi nó ở mỗi lần mở bảng.
             db.rollback()
         rows = list(db.scalars(select(PetSpecies).order_by(*order)))
     return rows if include_disabled else [row for row in rows if row.enabled]

@@ -110,7 +110,7 @@ def own_pet(db: Session, user_id: uuid.UUID, species: str) -> PetOwned:
         try:
             db.commit()
         except IntegrityError:
-            # Cùng cuộc đua với `ensure_pet`, và cùng cách chữa: hai request đầu
+            # Cùng cuộc đua với `ensure_state`, và cùng cách chữa: hai request đầu
             # tiên cùng dựng con thú đầu tiên.
             db.rollback()
             owned = db.get(PetOwned, (user_id, species))

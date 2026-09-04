@@ -515,10 +515,16 @@ def test_a_freshly_hatched_pet_can_still_earn_today(
     db_session.commit()
 
     # Một con khác vào tủ, rồi đổi sang nó.
+    #
+    # Chọn con KHÁC con vừa nở, không viết cứng "duck": quả trứng đầu tiên bốc
+    # ngẫu nhiên, nên có ngày nó ra đúng con vịt và bài kiểm đỏ vì trùng khoá
+    # chính — đỏ vì may rủi chứ không vì lỗi, đúng loại đỏ khiến người ta thôi
+    # tin bộ kiểm.
     user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
-    db_session.add(PetOwned(user_id=user.id, species="duck"))
+    other = "duck" if first_pet.species != "duck" else "cat"
+    db_session.add(PetOwned(user_id=user.id, species=other))
     db_session.commit()
-    switched = client.patch("/api/v1/pet", json={"species": "duck"}, headers=headers)
+    switched = client.patch("/api/v1/pet", json={"species": other}, headers=headers)
     assert switched.status_code == 200
     assert switched.json()["xp_today"] == 0
 

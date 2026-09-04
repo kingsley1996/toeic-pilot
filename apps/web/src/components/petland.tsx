@@ -335,6 +335,17 @@ function PetPanel({
    * là cái nháy đúng vào thứ quan trọng nhất trên màn hình.
    */
   const [hatched, setHatched] = useState<boolean | undefined>(undefined);
+  /*
+   * "Có gì để dựng sân khấu không", và nó KHÁC `hatched` ở đúng một chỗ: lúc
+   * chưa đọc xong.
+   *
+   * Effect dựng Pixi lấy cờ này làm phụ thuộc. Nếu lấy thẳng `hatched` thì với
+   * người ĐÃ có thú, giá trị đi `undefined → true` và effect chạy lại — tức tháo
+   * cả sân khấu vừa dựng rồi dựng lại giữa chừng, và canvas biến mất một quãng.
+   * `hatched !== false` thì hai trạng thái ấy trùng nhau, nên chỉ đúng lần nở
+   * trứng (`false → true`) mới dựng lại.
+   */
+  const canBoot = hatched !== false;
   const [pet, setPetHere] = useState<PetPublic | null>(null);
 
   /* Mọi con thú mới — lúc mở bảng, sau một hành động, sau khi đổi con — đều đi
@@ -1154,11 +1165,11 @@ function PetPanel({
       stageRef.current = null;
       stage?.destroy();
     };
-    // `hatched` trong danh sách: người mới mở quả trứng đầu tiên xong thì sân
+    // `canBoot` trong danh sách: người mới mở quả trứng đầu tiên xong thì sân
     // khấu phải được dựng NGAY, mà lúc lời mời tặng trứng còn hiện thì effect
-    // này đã thoát sớm và chưa mở context WebGL nào. Cờ chỉ lật đúng một lần
-    // trong đời tài khoản, nên nó không làm sân khấu dựng lại vô cớ.
-  }, [token, setPet, hatched]);
+    // này đã thoát sớm và chưa mở context WebGL nào. Xem chú thích của `canBoot`
+    // về lý do nó không phải là `hatched`.
+  }, [token, setPet, canBoot]);
 
   /*
    * Màu vòng sáng đọc lại khi ĐỔI CON hoặc khi đổi sáng/tối.
