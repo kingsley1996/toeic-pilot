@@ -21,7 +21,7 @@ import random
 import uuid
 from dataclasses import dataclass
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -180,6 +180,36 @@ def _roll(
     return species, duplicate, forced
 
 
+def first_egg_is_free(db: Session, user_id: uuid.UUID) -> bool:
+    """Chưa sở hữu con nào thì quả trứng đầu tiên KHÔNG tốn ruby.
+
+    Người mới không được tặng thẳng một con thú nữa; họ nhận một quả trứng và tự
+    mở. "Miễn phí" viết thành một luật về TRẠNG THÁI chứ không thành một cột đếm
+    lượt hay một khoản ruby tặng sẵn, và điều đó mua về ba thứ:
+
+    * không có khái niệm mới nào phải giữ đồng bộ;
+    * tự giới hạn — mỗi tài khoản chỉ có đúng một lúc sở hữu 0 con, và không có
+      đường nào xoá con thú để quay lại đó;
+    * người mới không thể tiêu nhầm số ruby ấy vào việc khác rồi kẹt không có
+      thú, thứ sẽ xảy ra nếu tặng tiền thay vì tặng trứng.
+    """
+    return (
+        db.scalar(select(func.count()).select_from(PetOwned).where(PetOwned.user_id == user_id))
+        == 0
+    )
+
+
+def cost_for(db: Session, *, user_id: uuid.UUID, config: EggSetting, count: int = 1) -> int:
+    """Giá thật của một lượt mở, sau khi tính quả trứng đầu tiên.
+
+    Chỉ quả ĐẦU được miễn: mở mười quả lúc chưa có con nào vẫn trả tiền chín
+    quả. Miễn cả lượt sẽ biến nút "mở mười" thành đường vào rẻ nhất của cả trò
+    chơi, và người mới thì chưa có gì để so mà biết đó là bất thường.
+    """
+    free = 1 if first_egg_is_free(db, user_id) else 0
+    return config.ruby_cost * max(0, count - free)
+
+
 def open_eggs(
     db: Session,
     *,
@@ -220,13 +250,19 @@ def open_eggs(
         raise NoSpeciesAvailable
 
     config = settings_row(db)
-    spent = config.ruby_cost * count
+    spent = cost_for(db, user_id=user_id, config=config, count=count)
     # `source_id` là một uuid MỚI mỗi lần, không phải một khoá tất định: mở trứng
     # lần thứ hai là một sự kiện khác, không phải cùng một sự kiện được ghi lại.
     # Đây là chỗ khác hẳn các nguồn KIẾM, nơi khoá duy nhất chính là thứ chống
     # cày.
-    balance = ruby.spend(
-        db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent
+    # Không ghi một dòng sổ 0 đồng. `ruby.spend` từ chối khoản không dương, và
+    # đúng thế: một giao dịch 0 ruby là một dòng không nói lên điều gì, và nó lại
+    # đi qua đường CÓ KHOÁ. Quả trứng đầu tiên miễn phí thì đơn giản là không có
+    # giao dịch nào.
+    balance = (
+        ruby.spend(db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent)
+        if spent > 0
+        else ruby.balance(db, user_id)
     )
 
     hatched: list[Hatched] = []
@@ -247,6 +283,15 @@ def open_eggs(
                 forced_rare=forced,
             )
         )
+
+    # Con ĐẦU TIÊN của một tài khoản trở thành con đang nuôi ngay.
+    #
+    # Không để người dùng tự vào tủ chọn: họ vừa mở quả trứng đầu tiên và màn
+    # hình vừa khoe con vật vừa nở — bắt họ đi thêm một bước nữa mới thật sự
+    # "có" nó là dựng một thủ tục giữa món quà và người nhận. Chỉ chạm khi
+    # `species` còn rỗng, nên nó không bao giờ giật con đang nuôi của người cũ.
+    if state.species is None and hatched:
+        state.species = hatched[0].species.code
 
     refund = 0
     if duplicates and config.duplicate_refund > 0:

@@ -17487,6 +17487,9 @@
               }
             },
             "description": "Successful Response"
+          },
+          "204": {
+            "description": "Chưa mở trứng"
           }
         },
         "security": [

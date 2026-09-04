@@ -14,7 +14,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models import PetOwned, PetState, User
+from app.models import PetOwned, PetState, RubyEvent, User
 
 
 def make_user(db: Session, email: str) -> User:
@@ -79,14 +79,18 @@ def test_one_pet_corner_per_learner(db_session: Session) -> None:
     db_session.rollback()
 
 
-def test_the_pet_is_created_on_first_read_not_at_registration(
+def test_a_new_account_has_no_pet_until_it_opens_the_first_egg(
     client: TestClient, db_session: Session
 ) -> None:
-    """Con thú dựng LÚC ĐỌC, không lúc đăng ký.
+    """Người mới nhận một quả TRỨNG, không nhận sẵn một con mèo.
 
-    Khác `user_profile`, vốn phải luôn tồn tại vì `get_current_user` đọc nó ở mọi
-    request. Con thú chỉ có nghĩa với người đã mở góc này; tạo sẵn cho mọi tài
-    khoản để chờ vài người bấm vào là trả tiền cho thứ chưa ai xin.
+    Góc thú cưng vẫn dựng lúc đọc (khác `user_profile`, vốn phải luôn tồn tại vì
+    `get_current_user` đọc nó ở mọi request) — nhưng nó dựng RỖNG. Cho tới khi
+    người dùng mở quả trứng, tài khoản có góc mà chưa nuôi con nào.
+
+    `GET /pet` trả **204**, không phải 404: "chưa mở trứng" là đường đi bình
+    thường của một tài khoản mới, và một 404 sẽ hiện thành lỗi đỏ trong log ở mỗi
+    lần mở trang của mỗi người mới. Cùng lý do `GET /petland/map` trả 204.
     """
     client.post(
         "/api/v1/auth/register", json={"email": "petless@example.com", "password": "supersecret123"}
@@ -99,11 +103,25 @@ def test_the_pet_is_created_on_first_read_not_at_registration(
     user = db_session.scalars(select(User).where(User.email == "petless@example.com")).one()
     assert db_session.get(PetState, user.id) is None
 
-    body = client.get("/api/v1/pet", headers=headers).json()
-    assert body["species"] == "cat"
-    assert (body["tile_x"], body["tile_y"]) == (3, 5)
+    assert client.get("/api/v1/pet", headers=headers).status_code == 204
     db_session.expire_all()
-    assert db_session.get(PetState, user.id) is not None
+    state = db_session.get(PetState, user.id)
+    assert state is not None, "góc thú cưng vẫn dựng — chỉ là chưa có con nào"
+    assert state.species is None
+
+    # Quả trứng đầu tiên MIỄN PHÍ, và tài khoản mới chưa có đồng ruby nào.
+    assert (
+        db_session.scalar(select(func.count(RubyEvent.id)).where(RubyEvent.user_id == user.id)) == 0
+    ), "không có giao dịch nào: quả đầu miễn phí thì không có gì để ghi sổ"
+    hatched = client.post("/api/v1/pet/eggs/open", headers=headers)
+    assert hatched.status_code == 200
+
+    body = client.get("/api/v1/pet", headers=headers).json()
+    assert (body["tile_x"], body["tile_y"]) == (3, 5)
+    assert body["species"] == hatched.json()["species"]["code"], (
+        "con vừa nở phải thành con ĐANG NUÔI ngay — bắt người ta vào tủ chọn "
+        "thêm một bước nữa là dựng thủ tục giữa món quà và người nhận"
+    )
 
 
 def test_reading_twice_does_not_make_a_second_pet(client: TestClient, db_session: Session) -> None:
@@ -116,6 +134,7 @@ def test_reading_twice_does_not_make_a_second_pet(client: TestClient, db_session
         "/api/v1/auth/login", json={"email": "twice@example.com", "password": "supersecret123"}
     ).json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
+    adopt(client, headers)
     first = client.get("/api/v1/pet", headers=headers).json()
     second = client.get("/api/v1/pet", headers=headers).json()
     # So phần ỔN ĐỊNH, không so cả response: `needs.at` là "tại thời điểm đọc"
@@ -138,6 +157,7 @@ def test_the_needs_carry_their_own_timestamp(client: TestClient, db_session: Ses
     token = client.post(
         "/api/v1/auth/login", json={"email": "needs@example.com", "password": "supersecret123"}
     ).json()["access_token"]
+    adopt(client, {"Authorization": f"Bearer {token}"})
     needs = client.get("/api/v1/pet", headers={"Authorization": f"Bearer {token}"}).json()["needs"]
     assert set(needs) == {"fullness", "energy", "mood", "at"}
     assert 0 <= needs["fullness"] <= 1
@@ -156,6 +176,32 @@ def auth_headers(client: TestClient, email: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
+def hatched_pet(db: Session, email: str) -> PetOwned:
+    """Con thú đang nuôi của tài khoản này.
+
+    Không tra thẳng `("cat")` nữa: loài không còn cố định — nó là thứ quả trứng
+    đầu tiên bốc ra. Đi qua `pet_state.species` thì bài kiểm nói về CON ĐANG
+    NUÔI thay vì về một mã loài mà nó tình cờ biết.
+    """
+    user = db.scalars(select(User).where(User.email == email)).one()
+    state = db.get(PetState, user.id)
+    assert state is not None and state.species is not None
+    pet = db.get(PetOwned, (user.id, state.species))
+    assert pet is not None
+    return pet
+
+
+def adopt(client: TestClient, headers: dict[str, str]) -> None:
+    """Cho tài khoản này một con thú, bằng đúng đường mà người dùng thật đi.
+
+    Người mới không còn được tặng thẳng một con nữa — họ mở quả trứng đầu tiên,
+    và quả ấy miễn phí. Nên bài kiểm nào nói về CON THÚ thì phải nở nó ra trước;
+    dựng thẳng hàng `pet_owned` sẽ bỏ qua đúng đoạn mà lỗi hay nằm (`pet_state`
+    có được đặt loài không).
+    """
+    assert client.post("/api/v1/pet/eggs/open", headers=headers).status_code == 200
+
+
 def test_the_pet_stays_where_it_stopped(client: TestClient, db_session: Session) -> None:
     """Vị trí phải sống sót qua lần đọc sau — đó là cả lý do bảng này tồn tại.
 
@@ -163,6 +209,7 @@ def test_the_pet_stays_where_it_stopped(client: TestClient, db_session: Session)
     mặc định, và không có gì báo vì trang mới trông hoàn toàn bình thường.
     """
     headers = auth_headers(client, "walker@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
 
     moved = client.put(
@@ -187,6 +234,7 @@ def test_moving_does_not_let_the_client_set_its_own_needs(
     Pydantic bỏ khoá lạ, nên phép kiểm là con số KHÔNG đổi.
     """
     headers = auth_headers(client, "cheater@example.com")
+    adopt(client, headers)
     before = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
     after = client.put(
         "/api/v1/pet/position",
@@ -200,6 +248,7 @@ def test_a_facing_outside_the_two_values_is_refused(client: TestClient) -> None:
     # Cột `facing` có CHECK ở database; chặn từ tầng schema để lỗi là 422 nói rõ
     # trường nào, chứ không phải một IntegrityError 500.
     headers = auth_headers(client, "sideways@example.com")
+    adopt(client, headers)
     bad = client.put(
         "/api/v1/pet/position", json={"tile_x": 1, "tile_y": 1, "facing": "up"}, headers=headers
     )
@@ -216,11 +265,10 @@ def test_needs_fall_between_reads_without_anyone_doing_anything(
     duy nhất kiểm được điều đó mà không phải chờ.
     """
     headers = auth_headers(client, "hungry@example.com")
+    adopt(client, headers)
     before = client.get("/api/v1/pet", headers=headers).json()["needs"]["fullness"]
 
-    user = db_session.scalars(select(User).where(User.email == "hungry@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "hungry@example.com")
     pet.needs_at = datetime.now(UTC) - timedelta(hours=12)
     db_session.commit()
 
@@ -236,17 +284,16 @@ def test_reading_does_not_write(client: TestClient, db_session: Session) -> None
     bằng `needs_at` — nếu lần đọc có ghi thì mốc đã nhảy lên hiện tại.
     """
     headers = auth_headers(client, "readonly@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "readonly@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "readonly@example.com")
     pet.needs_at = datetime.now(UTC) - timedelta(hours=6)
     db_session.commit()
     stamp = pet.needs_at
 
     client.get("/api/v1/pet", headers=headers)
     db_session.expire_all()
-    assert db_session.get(PetOwned, (user.id, "cat")).needs_at == stamp  # type: ignore[union-attr]
+    assert hatched_pet(db_session, "readonly@example.com").needs_at == stamp
 
 
 def test_feeding_after_a_long_absence_still_counts(client: TestClient, db_session: Session) -> None:
@@ -256,10 +303,9 @@ def test_feeding_after_a_long_absence_still_counts(client: TestClient, db_sessio
     như không có tác dụng, mà con số vẫn hợp lệ nên không có gì báo.
     """
     headers = auth_headers(client, "returning@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "returning@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "returning@example.com")
     pet.needs_at = datetime.now(UTC) - timedelta(days=7)
     db_session.commit()
 
@@ -276,10 +322,9 @@ def test_an_action_moves_the_timestamp_forward(client: TestClient, db_session: S
     # Không dời mốc thì lần đọc kế tiếp trừ lại đúng quãng vừa rồi một lần nữa,
     # và phần thưởng bốc hơi ngay sau khi hiện ra.
     headers = auth_headers(client, "stamp@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "stamp@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "stamp@example.com")
     pet.needs_at = datetime.now(UTC) - timedelta(days=2)
     db_session.commit()
 
@@ -290,6 +335,7 @@ def test_an_action_moves_the_timestamp_forward(client: TestClient, db_session: S
 
 def test_feeding_a_full_pet_is_a_409_that_says_why(client: TestClient) -> None:
     headers = auth_headers(client, "stuffed@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
     for _ in range(3):
         client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers)
@@ -300,6 +346,7 @@ def test_feeding_a_full_pet_is_a_409_that_says_why(client: TestClient) -> None:
 
 def test_an_unknown_action_is_refused_by_the_schema(client: TestClient) -> None:
     headers = auth_headers(client, "weird@example.com")
+    adopt(client, headers)
     assert (
         client.post("/api/v1/pet/actions", json={"action": "fly"}, headers=headers).status_code
         == 422
@@ -308,6 +355,7 @@ def test_an_unknown_action_is_refused_by_the_schema(client: TestClient) -> None:
 
 def test_actions_earn_xp_and_the_level_follows(client: TestClient) -> None:
     headers = auth_headers(client, "leveller@example.com")
+    adopt(client, headers)
     start = client.get("/api/v1/pet", headers=headers).json()
     assert (start["xp"], start["level"], start["xp_today"]) == (0, 1, 0)
 
@@ -326,6 +374,7 @@ def test_poking_five_hundred_times_does_not_max_the_level(client: TestClient) ->
     còn ĐỐT mất phần đầy suất đáng ra dành cho việc học.
     """
     headers = auth_headers(client, "spammer@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
 
     last, refusal, presses = None, None, 0
@@ -354,11 +403,10 @@ def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Ses
     mà sổ cái XP người học dựng ra để giữ.
     """
     headers = auth_headers(client, "capped@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
 
-    user = db_session.scalars(select(User).where(User.email == "capped@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "capped@example.com")
     # Đặt thẳng bộ đếm thay vì bấm cho hết suất: bài này nói về NHU CẦU lúc điểm
     # đã chậm lại, nên đường tới đó không phải thứ nó đo.
     pet.xp_raw_today = 200
@@ -374,14 +422,11 @@ def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Ses
 
 def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Session) -> None:
     headers = auth_headers(client, "tomorrow@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
     client.post("/api/v1/pet/actions", json={"action": "walk"}, headers=headers)
 
-    user = db_session.scalars(select(User).where(User.email == "tomorrow@example.com")).one()
-    # Bộ đếm ngày nằm trên CON, không trên góc (migration `042`): để ở góc thì
-    # một con vừa nở ra không nhận nổi điểm nào cho tới hôm sau.
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "tomorrow@example.com")
     assert pet.xp_today == 5
     pet.xp_day = pet.xp_day - timedelta(days=1) if pet.xp_day else None
     # Vui thấp hẳn: chọc chỉ sinh điểm khi con thú CHƯA vui sẵn, mà bài này đo
@@ -407,10 +452,9 @@ def test_sleeping_refuses_the_other_actions_and_wakes_on_its_own(
     về quá khứ — cùng cách `needs_at` được lùi để kiểm phép trừ dần.
     """
     headers = auth_headers(client, "sleepy@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "sleepy@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "sleepy@example.com")
     pet.energy = Decimal("0.20")
     pet.needs_at = datetime.now(UTC)
     db_session.commit()
@@ -423,8 +467,7 @@ def test_sleeping_refuses_the_other_actions_and_wakes_on_its_own(
 
     # Giấc ngủ hết hạn: không ai đánh thức, không job nào chạy.
     db_session.expire_all()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "sleepy@example.com")
     pet.sleep_until = datetime.now(UTC) - timedelta(seconds=1)
     db_session.commit()
 
@@ -436,10 +479,9 @@ def test_a_nap_actually_returns_energy(client: TestClient, db_session: Session) 
     """Ngủ ba tiếng phải hồi nhiều hơn hẳn thức ba tiếng, nếu không nó chỉ là cái
     nút làm đúng việc mà đồng hồ đang làm."""
     headers = auth_headers(client, "napper@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "napper@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "napper@example.com")
     pet.energy = Decimal("0.10")
     pet.needs_at = datetime.now(UTC) - timedelta(hours=3)
     pet.sleep_until = datetime.now(UTC)  # vừa ngủ trọn ba tiếng ấy
@@ -463,17 +505,17 @@ def test_a_freshly_hatched_pet_can_still_earn_today(
     là của từng con — nên trần theo từng con giữ nguyên đúng điều đó.
     """
     headers = auth_headers(client, "second-pet@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
 
     # Dùng hết suất đầy của con đang nuôi.
-    user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
-    first_pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert first_pet is not None
+    first_pet = hatched_pet(db_session, "second-pet@example.com")
     first_pet.xp_raw_today = 200
     first_pet.xp_today = 30
     db_session.commit()
 
     # Một con khác vào tủ, rồi đổi sang nó.
+    user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
     db_session.add(PetOwned(user_id=user.id, species="duck"))
     db_session.commit()
     switched = client.patch("/api/v1/pet", json={"species": "duck"}, headers=headers)
@@ -490,10 +532,9 @@ def test_the_pet_level_never_drops(client: TestClient, db_session: Session) -> N
     Đổi đường cong XP về sau không được lấy mất level của con thú đã đạt tới nó.
     """
     headers = auth_headers(client, "highwater@example.com")
+    adopt(client, headers)
     client.get("/api/v1/pet", headers=headers)
-    user = db_session.scalars(select(User).where(User.email == "highwater@example.com")).one()
-    pet = db_session.get(PetOwned, (user.id, "cat"))
-    assert pet is not None
+    pet = hatched_pet(db_session, "highwater@example.com")
     pet.level_reached = 7
     pet.xp = 0
     db_session.commit()

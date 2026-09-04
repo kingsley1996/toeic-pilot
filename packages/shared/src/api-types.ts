@@ -11958,6 +11958,13 @@ export interface operations {
                     "application/json": components["schemas"]["PetPublic"];
                 };
             };
+            /** @description Chưa mở trứng */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     switch_pet_api_v1_pet_patch: {

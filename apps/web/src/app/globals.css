@@ -2034,3 +2034,37 @@
     opacity: 0;
   }
 }
+
+/* Quả trứng đang chờ được mở: lắc rất nhẹ, và chỉ lắc.
+
+   Nó là thứ duy nhất trên thẻ có việc để làm, nên nó được phép xin một cái
+   liếc — nhưng một quả trứng nảy tưng tưng thì thành quảng cáo. Nhịp dài và
+   biên độ nhỏ: đủ để mắt bắt được ở khoé nhìn, không đủ để làm phiền người
+   đang học. */
+.egg-wait {
+  animation: egg-wait 3200ms ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes egg-wait {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(-6deg);
+  }
+  86% {
+    transform: rotate(5deg);
+  }
+  94% {
+    transform: rotate(-2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-wait {
+    animation: none;
+  }
+}

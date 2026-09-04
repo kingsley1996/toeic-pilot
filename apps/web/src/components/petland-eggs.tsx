@@ -71,7 +71,22 @@ const TIER_CHEER: Record<string, string> = {
   god: "THẦN!",
 };
 
-export function EggScreen({ token, onClose }: { token: string; onClose: () => void }) {
+export function EggScreen({
+  token,
+  onHatched,
+  onClose,
+}: {
+  token: string;
+  /**
+   * Vừa nở ra một con. Bảng cần biết để dựng sân khấu.
+   *
+   * Với người dùng đã có thú thì đây chỉ là một con nữa vào tủ; với người MỚI
+   * thì đó là khoảnh khắc góc thú cưng có nội dung lần đầu, và bảng đang hiện
+   * lời mời tặng trứng chứ chưa mở context WebGL nào.
+   */
+  onHatched?: () => void;
+  onClose: () => void;
+}) {
   const [egg, setEgg] = useState<EggPublic | null>(null);
   const [result, setResult] = useState<EggResult | null>(null);
   const [batch, setBatch] = useState<EggBatchResult | null>(null);
@@ -141,6 +156,7 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
         sound: "complete",
         dedupeKey: `egg-batch-${opened.balance}`,
       });
+      onHatched?.();
     } catch (err) {
       setRefused(err instanceof ApiError ? err.message : "Chưa mở được trứng.");
     } finally {
@@ -168,6 +184,7 @@ export function EggScreen({ token, onClose }: { token: string; onClose: () => vo
       const owed = HATCH_MS - (performance.now() - started);
       if (owed > 0) await new Promise((done) => window.setTimeout(done, owed));
       setResult(hatched);
+      onHatched?.();
 
       /*
        * Chúc mừng CHỈ khi là con chưa từng có.

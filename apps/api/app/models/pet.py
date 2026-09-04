@@ -66,8 +66,12 @@ class PetState(Base):
         primary_key=True,
     )
 
-    species: Mapped[str] = mapped_column(String(32), nullable=False)
-    """Mã loài ĐANG NUÔI.
+    species: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    """Mã loài ĐANG NUÔI, hoặc `None` khi người dùng chưa mở quả trứng đầu tiên.
+
+    `None` chứ không phải một mã giả (`""`, `"none"`): mã giả thì mọi đường đọc
+    phải nhớ so với nó, và chỗ ai đó quên sẽ đi tra một loài không tồn tại rồi
+    im lặng trả về rỗng. `None` thì mypy bắt được ở từng chỗ.
 
     **Không có CHECK, và đó là chủ ý** — cùng lý do `user_profile.pet` không có:
     danh sách loài sống ở bảng `pet_species` để admin sửa được mà không cần

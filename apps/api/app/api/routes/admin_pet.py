@@ -24,7 +24,7 @@ from app.schemas.pet import (
 from app.services import encounters
 from app.services.gacha import settings_row
 from app.services.pet_species import all_species
-from app.services.pet_state import ensure_pet
+from app.services.pet_state import ensure_state
 
 router = APIRouter(prefix="/admin/pet", tags=["admin"])
 
@@ -214,9 +214,9 @@ def spawn_encounters(
     `require_role("admin")` chứ không `editor`: đây là quyền vận hành, cùng ranh
     giới mà cả tệp này đã vẽ.
     """
-    # `ensure_pet` chứ không tự dựng hàng: `pet_state.species` là NOT NULL và
-    # loài mặc định là dữ liệu, không phải hằng số ở đây.
-    pet, _owned = ensure_pet(db, admin.id)
+    # `ensure_state` chứ không tự dựng hàng: góc thú cưng là thứ `encounters`
+    # cần, và nó tồn tại kể cả khi admin chưa mở quả trứng nào.
+    pet = ensure_state(db, admin.id)
     rows = encounters.fill_now(db, user_id=admin.id, pet=pet)
     db.commit()
     return {

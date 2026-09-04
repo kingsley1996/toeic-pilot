@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 from app.models import EggSetting, PetOwned, PetSpecies, User
 from app.models.pet import DEFAULT_PET_SPECIES, RARE_TIERS
 from app.services import gacha, ruby
-from app.services.pet_state import DEFAULT_SPECIES, ensure_pet
+from app.services.pet_state import ensure_state
 
 
 def _learner(db: Session, email: str = "gacha@example.com", ruby_amount: int = 0) -> User:
@@ -65,10 +65,21 @@ def test_a_zero_weight_species_never_drops(db_session: Session) -> None:
     assert [row.code for row in gacha.chances(db_session)] == ["duck"]
 
 
+def already_has_a_pet(db: Session, user: User) -> None:
+    """Cho tài khoản này một con thú sẵn, để lượt mở tới TÍNH TIỀN như bình thường.
+
+    Quả trứng đầu tiên của mỗi tài khoản miễn phí, nên bài kiểm nào nói về GIÁ
+    phải bước qua nó trước — nếu không nó đo con số 0 và tưởng đang đo giá.
+    """
+    db.add(PetOwned(user_id=user.id, species="starter"))
+    db.commit()
+
+
 def test_opening_an_egg_spends_ruby_and_writes_the_collection(db_session: Session) -> None:
     user = _learner(db_session, ruby_amount=30)
     _only(db_session, "duck")
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+    state = ensure_state(db_session, user.id)
 
     result = gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
     db_session.commit()
@@ -88,7 +99,8 @@ def test_a_duplicate_refunds_ruby_instead_of_handing_out_nothing(db_session: Ses
     """
     user = _learner(db_session, ruby_amount=60)
     _only(db_session, "duck")
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+    state = ensure_state(db_session, user.id)
 
     gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
     second = gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(2))
@@ -113,7 +125,9 @@ def test_the_pity_counter_forces_a_rare_and_then_resets(db_session: Session) -> 
     duck.drop_weight = 1000  # gần như chắc chắn ra vịt nếu không có pity
     db_session.commit()
 
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+
+    state = ensure_state(db_session, user.id)
     config = gacha.settings_row(db_session)
     seen = []
     for _ in range(config.pity_rolls + 1):
@@ -130,7 +144,8 @@ def test_the_pity_counter_forces_a_rare_and_then_resets(db_session: Session) -> 
 def test_opening_without_enough_ruby_is_refused_and_costs_nothing(db_session: Session) -> None:
     user = _learner(db_session, ruby_amount=5)
     _only(db_session, "duck")
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+    state = ensure_state(db_session, user.id)
 
     with pytest.raises(ruby.NotEnoughRuby):
         gacha.open_egg(db_session, user_id=user.id, state=state, rng=random.Random(1))
@@ -147,7 +162,8 @@ def test_ten_eggs_are_one_transaction_in_the_ledger(db_session: Session) -> None
     """
     user = _learner(db_session, ruby_amount=400)
     _only(db_session, "duck")  # chắc chắn trùng từ quả thứ hai
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+    state = ensure_state(db_session, user.id)
 
     batch = gacha.open_eggs(
         db_session, user_id=user.id, state=state, count=10, rng=random.Random(3)
@@ -184,7 +200,9 @@ def test_the_pity_counter_runs_through_a_batch(db_session: Session) -> None:
     duck.drop_weight = 1000
     db_session.commit()
 
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+
+    state = ensure_state(db_session, user.id)
     config = gacha.settings_row(db_session)
     state.rolls_since_rare = config.pity_rolls - 1  # quả thứ hai trong lượt sẽ bị ép
     db_session.commit()
@@ -203,7 +221,8 @@ def test_ten_eggs_are_refused_all_or_nothing(db_session: Session) -> None:
     """Thiếu tiền cho cả lượt thì KHÔNG mở quả nào, chứ không mở được mấy quả."""
     user = _learner(db_session, ruby_amount=100)  # đủ 4 quả, không đủ 10
     _only(db_session, "duck")
-    state, _pet = ensure_pet(db_session, user.id)
+    already_has_a_pet(db_session, user)
+    state = ensure_state(db_session, user.id)
 
     with pytest.raises(ruby.NotEnoughRuby):
         gacha.open_eggs(db_session, user_id=user.id, state=state, count=10)
@@ -215,7 +234,11 @@ def test_the_ten_endpoint_names_the_price_of_the_batch(
     client: TestClient, auth: Callable[[str], dict[str, str]]
 ) -> None:
     """Lời từ chối nói con số của CẢ LƯỢT: người bấm "Mở 10" cần biết thiếu bao nhiêu."""
-    refused = client.post("/api/v1/pet/eggs/open-ten", headers=auth("learner"))
+    headers = auth("learner")
+    # Bước qua quả trứng miễn phí trước: bài này nói về LỜI TỪ CHỐI vì thiếu
+    # tiền, mà quả đầu thì không đòi tiền.
+    assert client.post("/api/v1/pet/eggs/open", headers=headers).status_code == 200
+    refused = client.post("/api/v1/pet/eggs/open-ten", headers=headers)
     assert refused.status_code == 409
     assert "250" in refused.json()["detail"]
 
@@ -229,6 +252,9 @@ def test_the_endpoint_refuses_with_409_and_names_the_number(
     khuôn lời từ chối của `POST /pet/actions`.
     """
     headers = auth("learner")
+    # Bước qua quả trứng miễn phí trước: bài này nói về LỜI TỪ CHỐI vì thiếu
+    # tiền, mà quả đầu thì không đòi tiền.
+    assert client.post("/api/v1/pet/eggs/open", headers=headers).status_code == 200
     refused = client.post("/api/v1/pet/eggs/open", headers=headers)
     assert refused.status_code == 409
     assert "25" in refused.json()["detail"]
@@ -238,6 +264,14 @@ def test_the_egg_screen_reads_everything_in_one_call(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:
     headers = auth("learner")
+    # Tài khoản mới CHƯA có con nào, nên quả đầu miễn phí — và màn hình phải nói
+    # ra giá thật, không nói giá niêm yết.
+    free = client.get("/api/v1/pet/eggs", headers=headers).json()
+    assert free["ruby_cost"] == 0 and free["can_open"] is True, (
+        "mở được dù ví rỗng: đó là cả điểm của việc tặng trứng thay vì tặng tiền"
+    )
+    assert client.post("/api/v1/pet/eggs/open", headers=headers).status_code == 200
+
     body = client.get("/api/v1/pet/eggs", headers=headers).json()
     assert body["ruby_cost"] == 25 and body["can_open"] is False
     # Đếm theo bảng loài chứ không theo một con số chép tay: bộ mặc định là thứ
@@ -245,9 +279,8 @@ def test_the_egg_screen_reads_everything_in_one_call(
     # lỗi — đúng loại đỏ khiến người ta thôi tin bộ kiểm.
     assert len(body["chances"]) == len(DEFAULT_PET_SPECIES)
     assert sum(row["percent"] for row in body["chances"]) == pytest.approx(100, abs=0.5)
-    # Con đầu tiên đã nằm trong tủ: `ensure_pet` ghi nó ở đường đọc, vì nó không
-    # đến từ quả trứng nào và sẽ không có gì khác ghi nó vào.
-    assert body["owned"] == [DEFAULT_SPECIES]
+    # Trong tủ đúng một con: con vừa nở ra từ quả trứng miễn phí.
+    assert len(body["owned"]) == 1
 
 
 def test_only_an_admin_can_price_an_egg(

@@ -38,21 +38,20 @@ def db_get_state(db: Session, user_id: uuid.UUID) -> PetState | None:
     return db.get(PetState, user_id)
 
 
-def ensure_pet(db: Session, user_id: uuid.UUID) -> tuple[PetState, PetOwned]:
-    """Góc thú cưng của người này, cùng CON ĐANG NUÔI. Dựng nếu chưa có.
+def ensure_state(db: Session, user_id: uuid.UUID) -> PetState:
+    """Góc thú cưng của người này, dựng nếu chưa có. **Chưa chắc đã có con thú.**
 
-    Trả về cả hai vì mọi đường ghi đều cần cả hai: chỉ số nằm trên con
-    (`PetOwned`), còn trần XP ngày và bộ đếm gacha nằm trên góc (`PetState`).
-    Trả về một cái rồi để người gọi tự tra cái kia là chỗ ai đó sẽ quên tra.
+    Dựng với `species = None`: người mới nhận một quả TRỨNG và tự mở, chứ không
+    được tặng thẳng một con mèo. Cho tới lúc họ mở, tài khoản có góc thú cưng mà
+    chưa nuôi con nào — một trạng thái thật, không phải dữ liệu thiếu.
 
     Dựng NGAY LÚC ĐỌC chứ không lúc đăng ký, khác `user_profile`. Hồ sơ được
-    `get_current_user` đọc trên mọi request nên nó phải luôn tồn tại; con thú thì
-    chỉ có nghĩa với người đã mở góc này, và tạo sẵn cho 821 tài khoản để chờ vài
-    người bấm vào là trả tiền cho một thứ chưa ai xin.
+    `get_current_user` đọc trên mọi request nên nó phải luôn tồn tại; góc thú
+    cưng thì chỉ có nghĩa với người đã mở nó ra.
     """
     state = db_get_state(db, user_id)
     if state is None:
-        state = PetState(user_id=user_id, species=DEFAULT_SPECIES)
+        state = PetState(user_id=user_id, species=None)
         db.add(state)
         try:
             db.commit()
@@ -71,6 +70,24 @@ def ensure_pet(db: Session, user_id: uuid.UUID) -> tuple[PetState, PetOwned]:
             assert state is not None
         else:
             db.refresh(state)
+    return state
+
+
+def current_pet(db: Session, user_id: uuid.UUID) -> tuple[PetState, PetOwned | None]:
+    """Góc thú cưng cùng CON ĐANG NUÔI — hoặc `None` khi chưa mở trứng.
+
+    Trả về cả hai vì mọi đường ghi đều cần cả hai: chỉ số nằm trên con
+    (`PetOwned`), còn trần XP ngày và bộ đếm gacha nằm trên góc (`PetState`).
+    Trả về một cái rồi để người gọi tự tra cái kia là chỗ ai đó sẽ quên tra.
+
+    Tên cũ là `ensure_pet`, và đổi tên là cố ý: nó từng **bảo đảm** có con thú,
+    nên mười hai chỗ gọi đều viết như thể chắc chắn có. Giữ nguyên tên mà đổi
+    kiểu trả về thì mypy chỉ ra vài chỗ; đổi tên thì mọi chỗ gọi phải được đọc
+    lại đúng một lần, và đó là điều cần ở đây.
+    """
+    state = ensure_state(db, user_id)
+    if state.species is None:
+        return state, None
     return state, own_pet(db, user_id, state.species)
 
 
@@ -245,7 +262,12 @@ def reward_study(db: Session, user_id: uuid.UUID, source: str) -> StudyReward | 
         if user is None:
             return None
         at = now()
-        _state, pet = ensure_pet(db, user_id)
+        _state, pet = current_pet(db, user_id)
+        # Chưa mở trứng thì không có gì để nuôi. Im lặng bỏ qua, không tích luỹ:
+        # một con thú vừa nở đã lên vài level vì quãng học trước đó đọc ra là lạ,
+        # và chỗ tích luỹ ấy lại là một khái niệm nữa phải giữ đồng bộ.
+        if pet is None:
+            return None
         before_needs = current_needs(pet, at)
         after = needs_service.cheer(before_needs, lift)
         pet.fullness = after.fullness

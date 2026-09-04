@@ -10,7 +10,7 @@ import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -19,7 +19,7 @@ from app.api.routes.learning_dictation import record_dictation_attempt
 from app.api.routes.learning_vocabulary import _apply_review as apply_review
 from app.core.database import get_db
 from app.core.media import public_audio_url
-from app.models import Encounter, PetOwned, PetState, User
+from app.models import Encounter, PetOwned, User
 from app.models.dictation import DictationItem
 from app.models.encounter import MAX_HINTS
 from app.models.vocabulary import VocabularyEntry
@@ -48,13 +48,28 @@ from app.services.dictation import normalise as dictation_words
 from app.services.pet_species import all_species, row_for
 from app.services.pet_state import award_xp as _award
 from app.services.pet_state import current_needs as _current_needs
-from app.services.pet_state import ensure_pet, is_asleep, own_pet
+from app.services.pet_state import current_pet, ensure_state, is_asleep, own_pet
 from app.services.pet_state import now as _now
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_CORRECT, grade_for, judge
 from app.services.srs import GRADE_FORGOT, GRADE_GOOD
 
 router = APIRouter(prefix="/pet", tags=["pet"])
+
+
+NO_PET_YET = "Chưa có thú cưng nào — mở quả trứng đầu tiên đã."
+
+
+def _require_pet(pet: PetOwned | None) -> PetOwned:
+    """Con thú, hoặc 409 nếu người dùng chưa mở quả trứng đầu tiên.
+
+    409 chứ không 404: góc thú cưng CÓ tồn tại, chỉ là chưa nuôi con nào — cùng
+    hình dạng với mọi lời từ chối khác ở tệp này, và lời từ chối nói ra điều kiện
+    để giao diện lặp lại được nguyên văn.
+    """
+    if pet is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=NO_PET_YET)
+    return pet
 
 
 # Loài mặc định khi một người mở góc thú cưng lần đầu. Là một MÃ, không phải chỉ
@@ -102,17 +117,27 @@ def _as_public(
     )
 
 
-@router.get("", response_model=PetPublic)
+@router.get("", response_model=PetPublic, responses={204: {"description": "Chưa mở trứng"}})
 def read_pet(
-    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
-) -> PetPublic:
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> PetPublic | Response:
     """Trạng thái con thú, kèm MỐC THỜI GIAN của nhu cầu.
 
     Chưa trừ dần ở đây: phép trừ theo thời gian là lát 5. Nhưng `needs.at` đã có
     mặt từ bây giờ, vì thêm nó sau là một thay đổi hợp đồng ở đúng chỗ client đã
     kịp tin rằng ba con số kia là "bây giờ".
     """
-    _state, pet = ensure_pet(db, current_user.id)
+    _state, pet = current_pet(db, current_user.id)
+    if pet is None:
+        # 204 chứ không 404: "chưa mở trứng" là đường ĐI BÌNH THƯỜNG của một tài
+        # khoản mới, không phải một lỗi — cùng lý do `GET /petland/map` trả 204
+        # khi chưa ai sửa bản đồ. Một 404 ở đây sẽ hiện thành lỗi đỏ trong log
+        # trên mỗi lần mở trang của mỗi người mới.
+        # Trả thẳng `Response` chứ không `None`: `response_model=PetPublic` vẫn
+        # kiểm body, và `None` không qua được nó. Một `Response` thì FastAPI để
+        # nguyên, nên 204 đi ra KHÔNG kèm body — đúng nghĩa của mã ấy.
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     at = _now()
     # Đọc KHÔNG ghi. Trừ dần rồi lưu lại ở mỗi lần đọc sẽ biến một GET thành một
     # lệnh ghi trên đường nóng, và không được gì: mốc cộng ảnh chụp đã đủ để suy
@@ -138,7 +163,8 @@ def move_pet(
     Đây là lý do khoảng hợp lệ chỉ chặn ở 0..255: đủ để không ai nhét được số âm
     hay số khổng lồ vào cột `SmallInteger`, không hơn.
     """
-    _state, pet = ensure_pet(db, current_user.id)
+    _state, found = current_pet(db, current_user.id)
+    pet = _require_pet(found)
     # Ghi lên CON, không lên góc: mỗi con nhớ chỗ của riêng nó, nên đổi qua con
     # khác rồi quay lại thì nó vẫn đứng chỗ cũ.
     pet.tile_x = body.tile_x
@@ -171,7 +197,8 @@ def act(
     nguyên văn thay vì tự đoán.
     """
     at = _now()
-    _state, pet = ensure_pet(db, current_user.id)
+    _state, found = current_pet(db, current_user.id)
+    pet = _require_pet(found)
     now = _current_needs(pet, at)
 
     # Đang ngủ thì ba hành động kia bị từ chối, KHÔNG phải tự đánh thức. Một cú
@@ -238,7 +265,7 @@ def read_egg(
     hình có cái nút, và một lần đọc thứ hai là một cơ hội để hai con số lệch nhau
     (ADR-010 §6.4).
     """
-    state, _pet = ensure_pet(db, current_user.id)
+    state = ensure_state(db, current_user.id)
     config = gacha.settings_row(db)
     rows = gacha.chances(db)
     # Cùng lý do như ở ví ruby: bù TRƯỚC khi đọc, nếu không màn trứng in ra số
@@ -246,10 +273,15 @@ def read_egg(
     if ruby.top_up_admin(db, user_id=current_user.id, role=current_user.role):
         db.commit()
     balance = ruby.balance(db, current_user.id)
+    # Giá THẬT của lượt tới, không phải giá niêm yết: quả trứng đầu tiên của một
+    # tài khoản không tốn gì. Tính ở máy chủ vì cả hai vế là dữ liệu máy chủ —
+    # tính lại ở client là hai định nghĩa cho một cái giá, và chúng lệch nhau vào
+    # đúng ngày ai đó chỉnh luật.
+    cost = gacha.cost_for(db, user_id=current_user.id, config=config)
     return EggPublic(
-        ruby_cost=config.ruby_cost,
+        ruby_cost=cost,
         balance=balance,
-        can_open=bool(rows) and balance >= config.ruby_cost,
+        can_open=bool(rows) and balance >= cost,
         pity_rolls=config.pity_rolls,
         rolls_since_rare=state.rolls_since_rare,
         duplicate_refund=config.duplicate_refund,
@@ -273,7 +305,7 @@ def open_egg(
     Không có tham số nào cả. Một hạng trứng duy nhất nên không có gì để chọn, và
     một endpoint nhận `tier` từ client là một endpoint nhận giá từ client.
     """
-    state, _pet = ensure_pet(db, current_user.id)
+    state = ensure_state(db, current_user.id)
     # Bù cả ở đường TIÊU, không chỉ ở đường đọc: một admin mở liên tiếp sẽ cạn
     # giữa chừng, và lời từ chối "cần 25 ruby" giữa một phiên thử là đúng chỗ
     # người ta kết luận nhầm rằng tính năng hỏng.
@@ -340,7 +372,7 @@ def switch_pet(
     Loài đã bị TẮT vẫn đổi được nếu đã sở hữu — tắt một loài là gỡ nó khỏi
     gacha, không phải tịch thu của người đã có (cùng luật `tile_for` đang giữ).
     """
-    state, _pet = ensure_pet(db, current_user.id)
+    state = ensure_state(db, current_user.id)
     if db.get(PetOwned, (current_user.id, body.species)) is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -379,7 +411,7 @@ def open_ten_eggs(
     Thiếu ruby trả **409** kèm CON SỐ của cả lượt, không phải giá một quả: người
     bấm "Mở 10" cần biết mình thiếu bao nhiêu cho lượt đó.
     """
-    state, _pet = ensure_pet(db, current_user.id)
+    state = ensure_state(db, current_user.id)
     ruby.top_up_admin(db, user_id=current_user.id, role=current_user.role)
     try:
         batch = gacha.open_eggs(db, user_id=current_user.id, state=state, count=EGGS_PER_BATCH)
@@ -572,9 +604,12 @@ def read_encounters(
     không tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.
     """
     at = _now()
-    _state, pet = ensure_pet(db, current_user.id)
-    state = db.get(PetState, current_user.id)
-    assert state is not None
+    state, pet = current_pet(db, current_user.id)
+    if pet is None:
+        # Chưa mở trứng thì không ai ghé qua. Cả cơ chế chạm mặt là chuyện xảy
+        # ra VỚI con thú — không có con thú thì không có gì để kể, và một vị
+        # khách đứng chờ trên bản đồ rỗng chỉ làm màn hình tặng trứng rối thêm.
+        return []
     # Ốm thì gọi người tới ngay thay vì đợi hết nhịp — xem `encounters.sync`.
     sick = needs_service.is_sick(_current_needs(pet, at))
     rows = encounters.sync(db, user_id=current_user.id, pet=state, sick=sick, now=at)
@@ -623,7 +658,10 @@ def answer_encounter(
             status_code=status.HTTP_409_CONFLICT, detail="Cuộc chạm mặt này đã kết thúc."
         )
 
-    _state, pet_row = ensure_pet(db, current_user.id)
+    _state, found = current_pet(db, current_user.id)
+    # Tới được đây nghĩa là có một cuộc chạm mặt, mà chúng chỉ sinh ra khi đã có
+    # con thú — nên `None` ở đây là dữ liệu tự mâu thuẫn, không phải trạng thái.
+    pet_row = _require_pet(found)
     profile = ensure_profile(db, current_user)
     correct = False
     diff: list[DiffWord] | None = None

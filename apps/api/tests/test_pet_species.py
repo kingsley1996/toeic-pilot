@@ -65,11 +65,15 @@ def test_a_disabled_species_still_draws_for_whoever_owns_it(
     """Tắt phải làm loài biến khỏi gacha, KHÔNG làm con thú đang nuôi thành ô trống."""
     admin = auth("admin")
     client.get("/api/v1/admin/pet/species", headers=admin)
-    before = client.get("/api/v1/pet", headers=admin).json()["tile"]
+    # Con đang nuôi không còn cố định là "cat" — nó là thứ quả trứng đầu tiên
+    # bốc ra, nên bài này phải nở nó ra rồi hỏi xem đó là con gì.
+    assert client.post("/api/v1/pet/eggs/open", headers=admin).status_code == 200
+    mine = client.get("/api/v1/pet", headers=admin).json()
+    species, before = mine["species"], mine["tile"]
 
-    client.patch("/api/v1/admin/pet/species/cat", json={"enabled": False}, headers=admin)
+    client.patch(f"/api/v1/admin/pet/species/{species}", json={"enabled": False}, headers=admin)
     after = client.get("/api/v1/pet", headers=admin).json()
-    assert after["species"] == "cat"
+    assert after["species"] == species
     assert after["tile"] == before
 
 

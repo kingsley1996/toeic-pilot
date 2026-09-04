@@ -61,12 +61,20 @@ function toneFor(value: number): string {
 
 export function PetlandCard() {
   const { token, status } = useSession();
-  const [pet, setPet] = useState<PetPublic | null>(null);
+  /*
+   * Ba trạng thái, không hai — cùng cái bẫy mà `session.status` đã ghi lại.
+   *
+   * `undefined` là CHƯA ĐỌC XONG, `null` là ĐỌC RỒI VÀ CHƯA CÓ THÚ (máy chủ trả
+   * 204 vì người dùng chưa mở quả trứng đầu tiên). Gộp hai thứ ấy làm một thì
+   * lời mời "nhận thú cưng" nháy lên ở mỗi lần tải trang của người ĐÃ có thú.
+   */
+  const [pet, setPet] = useState<PetPublic | null | undefined>(undefined);
 
   const load = useCallback(() => {
     if (!token) return;
-    apiFetch<PetPublic>(API_ROUTES.pet, { token })
-      .then(setPet)
+    // 204 làm `apiFetch` trả về `undefined`; ở đây nó nghĩa là "chưa có thú".
+    apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token })
+      .then((body) => setPet(body ?? null))
       .catch(() => {
         /* Góc thú cưng hỏng thì sidebar vẫn phải dùng được. */
       });
@@ -91,12 +99,51 @@ export function PetlandCard() {
 
   if (status !== "authenticated") return null;
 
-  const condition = pet === null ? undefined : conditionOf(pet.needs);
+  const condition = pet ? conditionOf(pet.needs) : undefined;
   return (
     <div className="relative shrink-0 border-t border-rule px-2 py-2">
       <PetlandToast condition={condition} />
-      {pet === null ? <Skeleton className="h-14 w-full" /> : <PetCard pet={pet} cheers={cheers} />}
+      {pet === undefined ? (
+        <Skeleton className="h-14 w-full" />
+      ) : pet === null ? (
+        <EggCard />
+      ) : (
+        <PetCard pet={pet} cheers={cheers} />
+      )}
     </div>
+  );
+}
+
+/**
+ * Chưa có thú: một quả trứng và một lời mời.
+ *
+ * Cùng khuôn thẻ thật — cùng bề cao, cùng viền, cùng chỗ bấm — nên lúc con thú
+ * nở ra, chỗ ấy không nhảy và người dùng không phải đi tìm lại. Đó cũng là lý do
+ * nó là một cái NÚT chứ không phải một dòng chữ: thao tác duy nhất ở đây là mở
+ * bảng ra, y hệt thẻ thật.
+ */
+function EggCard() {
+  return (
+    <button
+      type="button"
+      onClick={requestPetOpen}
+      title="Mở quả trứng đầu tiên"
+      className="flex w-full items-center gap-2 rounded border border-action bg-action-tint px-2 py-1.5 text-left transition-[padding] duration-enter hover:border-action motion-reduce:transition-none rail:px-0"
+    >
+      {/* Trứng lắc nhẹ: nó là thứ DUY NHẤT trên thẻ này có việc để làm, nên nó
+          được phép xin một cái liếc. Ở dải thu gọn thì chỉ còn nó. */}
+      <span className="egg-wait block shrink-0 px-2">
+        <PixelIcon name="egg" scale={3} />
+      </span>
+      <span className="min-w-0 flex-1 overflow-hidden transition-opacity duration-enter motion-reduce:transition-none rail:opacity-0">
+        <span className="block truncate text-small font-semibold text-action-ink">
+          Bạn có một quả trứng
+        </span>
+        <span className="mt-0.5 block truncate text-label text-ink-muted">
+          Mở ra xem được con gì
+        </span>
+      </span>
+    </button>
   );
 }
 

@@ -327,6 +327,14 @@ function PetPanel({
    * vào state thì cả bảng dựng lại mỗi khung hình.
    */
   const [needs, setNeeds] = useState<PetNeeds | null>(null);
+  /*
+   * Đã mở quả trứng đầu tiên chưa. `undefined` là chưa đọc xong.
+   *
+   * Tách khỏi `needs === null`, vốn cũng đúng lúc đang tải: gộp lại thì màn hình
+   * tặng trứng nháy lên một nhịp ở mỗi lần mở bảng của người đã có thú — và đó
+   * là cái nháy đúng vào thứ quan trọng nhất trên màn hình.
+   */
+  const [hatched, setHatched] = useState<boolean | undefined>(undefined);
   const [pet, setPetHere] = useState<PetPublic | null>(null);
 
   /* Mọi con thú mới — lúc mở bảng, sau một hành động, sau khi đổi con — đều đi
@@ -795,10 +803,13 @@ function PetPanel({
      * nó phải hiện ngay khi API trả lời. Một promise, hai người tiêu thụ: không
      * gọi API hai lần.
      */
-    const petLoad = apiFetch<PetPublic>(API_ROUTES.pet, { token });
+    // 204 (chưa mở trứng) làm `apiFetch` trả `undefined` — xem `PetlandCard`.
+    const petLoad = apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token });
     void petLoad
       .then((pet) => {
         if (!alive) return;
+        setHatched(pet !== undefined);
+        if (!pet) return;
         setNeeds(pet.needs);
         setPet(pet);
       })
@@ -807,7 +818,9 @@ function PetPanel({
     void Promise.all([loadPetlandMap(), petLoad, import("@/components/petland-render")])
       .then(async ([loaded, pet, render]) => {
         const parsed = loaded?.map ?? null;
-        if (!parsed || !alive) return;
+        // Chưa mở trứng thì KHÔNG dựng sân khấu: không có con nào để vẽ, và một
+        // context WebGL mở ra để hiện một bản đồ trống là trả giá cho hư không.
+        if (!parsed || !pet || !alive) return;
         map = parsed;
         mapRef.current = parsed;
         setMapReady(true);
@@ -1141,7 +1154,11 @@ function PetPanel({
       stageRef.current = null;
       stage?.destroy();
     };
-  }, [token, setPet]);
+    // `hatched` trong danh sách: người mới mở quả trứng đầu tiên xong thì sân
+    // khấu phải được dựng NGAY, mà lúc lời mời tặng trứng còn hiện thì effect
+    // này đã thoát sớm và chưa mở context WebGL nào. Cờ chỉ lật đúng một lần
+    // trong đời tài khoản, nên nó không làm sân khấu dựng lại vô cớ.
+  }, [token, setPet, hatched]);
 
   /*
    * Màu vòng sáng đọc lại khi ĐỔI CON hoặc khi đổi sáng/tối.
@@ -1304,9 +1321,11 @@ function PetPanel({
        * cái nút hồi phục không bao giờ xuất hiện — giao diện tin vào một ảnh
        * chụp đã cũ.
        */
-      apiFetch<PetPublic>(API_ROUTES.pet, { token })
+      apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token })
         .then((fresh) => {
-          if (alive) setNeeds(fresh.needs);
+          if (!alive) return;
+          setHatched(fresh !== undefined);
+          if (fresh) setNeeds(fresh.needs);
         })
         .catch(() => {});
     };
@@ -1860,6 +1879,33 @@ function PetPanel({
            * Nút mở đúng thẻ nhiệm vụ mà một vị khách bình thường mở — không có
            * đường chấm điểm thứ hai nào ở đây (ADR-012 §2).
            */}
+          {/*
+           * Người mới: bản đồ chưa có ai, nên chỗ ấy dành cho quả trứng.
+           *
+           * Phủ kín khung bản đồ thay vì dựng một màn hình riêng: bảng vẫn đúng
+           * bề rộng ấy, thanh tiêu đề vẫn ở đó, và lúc con thú nở ra thì cảnh
+           * hiện lên NGAY TẠI CHỖ quả trứng vừa nằm — không có cú nhảy bố cục
+           * nào giữa món quà và thứ nhận được.
+           *
+           * `hatched === false` chứ không `!hatched`: `undefined` là chưa đọc
+           * xong, và lời mời nháy lên một nhịp ở mỗi lần mở bảng của người đã có
+           * thú là cái nháy đúng vào thứ quan trọng nhất trên màn hình.
+           */}
+          {hatched === false && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-ground px-6 text-center">
+              <span className="egg-wait block">
+                <PixelIcon name="egg" scale={6} />
+              </span>
+              <p className="text-small font-semibold text-ink">Bạn có một quả trứng</p>
+              <p className="max-w-[15rem] text-label text-ink-muted">
+                Mở ra để nhận thú cưng đầu tiên. Quả này không tốn ruby.
+              </p>
+              <Button size="sm" onClick={() => setPanel({ kind: "eggs" })}>
+                Mở trứng
+              </Button>
+            </div>
+          )}
+
           {sick && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-ground/75 px-4 text-center">
               <p className="text-small font-semibold text-ink">Thú cưng đang ốm</p>
@@ -1912,7 +1958,16 @@ function PetPanel({
             onClose={() => setPanel(null)}
           />
         )}
-        {shown?.kind === "eggs" && <EggScreen token={token} onClose={() => setPanel(null)} />}
+        {shown?.kind === "eggs" && (
+          <EggScreen
+            token={token}
+            /* Con đầu tiên vừa nở: bảng phải dựng sân khấu, mà lúc lời mời tặng
+               trứng còn hiện thì nó chưa mở context WebGL nào. Đặt cờ là đủ —
+               effect dựng sân khấu nhận `hatched` trong danh sách phụ thuộc. */
+            onHatched={() => setHatched(true)}
+            onClose={() => setPanel(null)}
+          />
+        )}
         {shown?.kind === "collection" && (
           <CollectionScreen
             token={token}
