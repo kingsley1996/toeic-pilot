@@ -11,6 +11,13 @@ Cả Google lẫn Apple đều có SDK JavaScript nhúng được vào trang, v�
 
 Lý do không phải sở thích. `CLAUDE.md` và `ROADMAP.md` P1-7b ghi một lời hứa: token còn nằm trong `localStorage` thay vì cookie httpOnly **vì ứng dụng này không có script bên thứ ba nào** và chỉ có đúng một `dangerouslySetInnerHTML` in ra một hằng số. Nhúng `accounts.google.com/gsi/client` là làm lý do đó hết hiệu lực ngay lập tức — và khi đó nợ P1-7b phải trả **trước** tính năng đang làm, chứ không phải sau.
 
+> **Cập nhật 2026-09-04 (ADR-015).** Điều kiện hết hiệu lực nói ở trên **đã xảy ra**: Turnstile
+> nhúng `challenges.cloudflare.com/turnstile/v0/api.js` vào các trang có form đăng nhập. Tiền đề
+> "không script bên thứ ba nào" không còn đúng, và P1-7b chuyển thành nợ mở không còn lý lẽ —
+> `ADR-015` §6 ghi lại sự đánh đổi ấy. Quyết định của mục này **không đổi**: nó không chỉ dựa
+> vào tiền đề đó, và giao đường đăng nhập cho SDK của nhà cung cấp vẫn là một thay đổi lớn hơn
+> hẳn việc đặt một ô kiểm cạnh form.
+
 Nên luồng là mã uỷ quyền phía máy chủ: `/auth/{provider}/start` → chuyển hướng cả trang → nhà cung cấp → callback về API → API đổi mã lấy `id_token`, xác minh, rồi phát token của **chính hệ thống này**. Token của Google hay Apple không bao giờ đi tiếp vào ứng dụng; nó là bằng chứng danh tính cho đúng một lần đăng nhập.
 
 ## 2. `user_identity`, không phải cột `google_id`

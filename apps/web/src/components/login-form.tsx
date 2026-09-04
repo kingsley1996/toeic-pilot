@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 import { OAuthButtons } from "@/components/oauth-buttons";
+import { TurnstileUnavailable, turnstileHeader, useTurnstile } from "@/components/turnstile";
 import { Button, Field, FieldError, Input, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { setAccessToken } from "@/lib/auth-storage";
@@ -29,6 +30,7 @@ export function LoginForm({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const gate = useTurnstile();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,8 +43,14 @@ export function LoginForm({
     };
 
     try {
+      /* Lấy token TRƯỚC khi gửi. Nó dùng một lần, nên mỗi lần bấm là một lần
+         xin mới — gõ sai mật khẩu rồi thử lại là chuyện thường ở đúng cái form
+         này, và dùng lại token cũ sẽ đổi "sai mật khẩu" thành một lời từ chối
+         chống bot khó hiểu. */
+      const gateToken = await gate.take();
       const token = await apiFetch<TokenResponse>(API_ROUTES.login, {
         method: "POST",
+        headers: turnstileHeader(gateToken),
         body: JSON.stringify(body),
       });
       setAccessToken(token.access_token);
@@ -50,7 +58,11 @@ export function LoginForm({
       // hoặc chuyển trang, và bật lại chỉ kịp nháy một nút bấm được lên màn.
       onSuccess();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Không đăng nhập được.");
+      setError(
+        err instanceof ApiError || err instanceof TurnstileUnavailable
+          ? err.message
+          : "Không đăng nhập được.",
+      );
       setLoading(false);
     }
   }
@@ -79,6 +91,8 @@ export function LoginForm({
             autoComplete="current-password"
           />
         </Field>
+
+        {gate.widget}
 
         {/* Lỗi không bao giờ chỉ là màu: có icon, có viền, có chữ. */}
         {(error ?? initialError) && <FieldError>{error ?? initialError}</FieldError>}

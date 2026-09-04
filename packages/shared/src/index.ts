@@ -8,6 +8,7 @@ export type AuthProviderPublic = components["schemas"]["AuthProviderPublic"];
 export type UserPublic = components["schemas"]["UserPublic"];
 export type UserRegister = components["schemas"]["UserRegister"];
 export type UserLogin = components["schemas"]["UserLogin"];
+export type TurnstilePublic = components["schemas"]["TurnstilePublic"];
 export type HTTPValidationError = components["schemas"]["HTTPValidationError"];
 
 // Learning Hub
@@ -173,6 +174,7 @@ export const API_ROUTES = {
   ready: "/ready",
   register: "/api/v1/auth/register",
   login: "/api/v1/auth/login",
+  turnstile: "/api/v1/auth/turnstile",
   me: "/api/v1/auth/me",
   changePassword: "/api/v1/auth/password",
   logout: "/api/v1/auth/logout",

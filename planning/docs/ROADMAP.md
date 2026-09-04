@@ -39,6 +39,7 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 | ~~**Đưa đề lên production**~~ | **Xong.** Cả năm đề đã `published` trên production, gồm `tp-form-08`. Đối chiếu 2026-09-02: audio đề ở production khớp từng con số với dev | `SYNC-TEST-TO-PRODUCTION.md` |
 | **Tách tệp quá dài** | Đợt 1–3 xong. Nợ: hai trang admin không có e2e | `REFACTOR-LONG-FILES.md` §4b |
 | **Gộp tài liệu** | Xong đợt này. Còn: quyết định giữ hay bỏ `PLAN.md` | mục 5 dưới đây |
+| ~~**Turnstile ở cửa đăng ký/đăng nhập**~~ | **Xong, tắt mặc định.** Vá đúng lỗ mà `auth.py` tự nhận là có: rate limit theo IP không chặn nổi botnet xoay IP, còn đếm theo tài khoản thì mở đường khoá tài khoản người khác. Turnstile không đếm gì — nó bắt mỗi lần gửi form trả một cái giá tính toán. Bật bằng hai biến môi trường; **một nửa cấu hình thì API từ chối khởi động**. Giá: ~0,5 giây mỗi lần đăng nhập, và **một script bên thứ ba** — xem nợ P1-7b ở §4 | `adr/ADR-015-TURNSTILE.md` |
 | ~~**Ba chỉ số nuôi nhau, và một trạng thái đáy**~~ | **Xong.** Đói rút sức, buồn làm sức hồi chậm một nửa, nên "vừa đói vừa buồn mà sức 100%" không còn dựng được. Cả ba chạm đáy thì con thú **ốm**: đứng im, có biểu tượng trên đầu, bản đồ phủ mờ, và một nút giữa bản đồ mở **nhiệm vụ hồi phục một câu** — làn riêng, không dùng chung với khách hay kẻ xâm nhập, và không có dictation. Trần XP ngày cũng đổi từ chặn cứng sang giảm dần cùng đợt. Migration 053, 054 | `ADR-012`, `Evaluate_Pet_TOEIC_Pilot.md` §2.2.1 |
 | ~~**Người mới nhận một quả trứng**~~ | **Xong.** Không còn tặng thẳng một con mèo: `pet_state.species` nullable (migration 055), quả đầu miễn phí, và cả bảng Petland lẫn thẻ sidebar có giao diện riêng cho lúc chưa có thú. `GET /pet` trả **204** cho "chưa mở trứng", cùng lý lẽ với `GET /petland/map`. Tám tệp e2e phải nở trứng trước vì chúng đều giả định có sẵn một con | `ADR-012` |
 | ~~**Tour chào người mới**~~ | **Xong.** Bốn bước trên trang chủ, tự dựng trên `@floating-ui/react-dom` — không thư viện tour, để lớp phủ theo được ba luật hỏng-im-lặng của hệ thiết kế. Đèn rọi là SVG khoét lỗ chứ không phải `box-shadow`. Mốc "đã xem" nằm ở `user_profile.toured_at` (migration 056) chứ không ở `localStorage`, nên nó không chào lại ở thiết bị thứ hai. `e2e/tour.spec.ts` + `e2e/support.ts` (`skipTour`) | `frontend.md` |
@@ -67,8 +68,16 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
       bắt buộc thì chỉ là gợi ý
 - [ ] **Xoay mật khẩu database production** — đã lộ trong một phiên làm việc (2026-09-01)
 - [ ] Cron ping giữ Supabase khỏi ngủ sau 7 ngày. Kiểu hỏng là **chỉ audio 404**
-- [ ] Giới hạn đăng nhập đếm theo **tài khoản** — chặn được botnet xoay IP, nhưng mở đường
-      khoá tài khoản người khác. Chưa làm vì đánh đổi chưa rõ
+- [x] ~~Giới hạn đăng nhập đếm theo **tài khoản**~~ — **không làm, và không cần nữa.** Thế
+      lưỡng nan là thật: đếm theo IP không chặn được botnet xoay IP, đếm theo tài khoản thì
+      ai cũng khoá được tài khoản người khác. Turnstile là lối ra thứ ba — nó không đếm gì
+      cả, nó bắt mỗi lần gửi form trả một cái giá tính toán (`ADR-015` §1)
+- [ ] **Mua một tên miền.** Nó đang chặn BA thứ cùng lúc, và đó là dữ kiện đáng chú ý hơn
+      từng thứ riêng lẻ: R2 (`ADR-006` §2.8a), toàn bộ nửa proxy của Cloudflare — chống
+      DDoS, WAF, giấu IP gốc (`ADR-015` §0, §8) — và đăng nhập Apple. Kèm một cái bẫy hỏng
+      im lặng phải xử lý cùng lúc với việc trỏ nameserver: `client_ip()` đọc hop cuối của
+      `X-Forwarded-For`, mà sau Cloudflare hop cuối là IP CỦA Cloudflare, nên cả thế giới
+      dùng chung một khoá rate limit (`ADR-015` §8)
 - [ ] Monitoring và deploy — phương án chốt ở `adr/ADR-014-DEPLOY-FREE.md`, chưa dựng
 
 ### Lớp AI
@@ -103,7 +112,7 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 | Mục | Ở đâu | Ghi chú |
 |---|---|---|
 | Hai trang admin không có e2e | `REFACTOR-LONG-FILES.md` §4b | `/admin/progression`, `/admin/tests/[slug]` |
-| Token trong `localStorage` | P1-7b | **Hoãn có lý do viết ra**: không script bên thứ ba nào. Thêm một cái là lý do hết hiệu lực |
+| Token trong `localStorage` | P1-7b, `ADR-015` §6 | **Nợ mở, không còn lý lẽ.** Lý do hoãn là "không script bên thứ ba nào"; Turnstile đã nhúng một cái vào đúng các trang ghi token. ADR-008 §1 đòi trả nợ này TRƯỚC — thứ tự ấy đã bị đảo có ý thức, không phải bỏ sót |
 | Ảnh không tái tạo được | `MEDIA-PIPELINE.md` §10.3 | Đầu vào là URL của người khác; `media/` bị gitignore ⇒ thư mục media là **bản sao duy nhất** |
 | `seed` không bao giờ xoá | `MEDIA-PIPELINE.md` §10.4 | Xoá dòng khỏi manifest ⇒ hàng DB ở lại vĩnh viễn |
 | Không gì kiểm media còn phục vụ được | `MEDIA-PIPELINE.md` §10.8 | Sai `AUDIO_PUBLIC_BASE_URL` ⇒ mọi media 404 mà container vẫn healthy |

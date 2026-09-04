@@ -9039,6 +9039,20 @@
         "title": "TurnDraft",
         "type": "object"
       },
+      "TurnstilePublic": {
+        "description": "Site key của Turnstile, để giao diện dựng ô kiểm.\n\nKhoá này CÔNG KHAI theo thiết kế — nó nằm trong HTML của mọi trang có ô kiểm.\nMáy chủ phát nó ra thay vì để giao diện tự đọc biến môi trường của mình, vì\nchỉ khi ấy mới có đúng một nguồn sự thật: hai bên đọc hai biến khác nhau thì\nsẽ có ngày trang vẽ ô kiểm mà máy chủ không kiểm, và không gì báo cả.",
+        "properties": {
+          "site_key": {
+            "title": "Site Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_key"
+        ],
+        "title": "TurnstilePublic",
+        "type": "object"
+      },
       "UploadTicket": {
         "description": "Vé để trình duyệt tự tải file lên, không đi qua API (ADR-006 §2.3).",
         "properties": {
@@ -16656,6 +16670,18 @@
     "/api/v1/auth/login": {
       "post": {
         "operationId": "login_api_v1_auth_login_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "cf-turnstile-response",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Cf-Turnstile-Response",
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -16816,6 +16842,18 @@
     "/api/v1/auth/register": {
       "post": {
         "operationId": "register_api_v1_auth_register_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "cf-turnstile-response",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Cf-Turnstile-Response",
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -16849,6 +16887,28 @@
           }
         },
         "summary": "Register",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/turnstile": {
+      "get": {
+        "description": "Site key, hoặc 204 khi Turnstile tắt.\n\n204 chứ không phải 404: \"chưa bật\" là đường chạy bình thường ở dev và ở mọi\nlần chạy CI, còn 404 sẽ đỏ trong tab Network của mọi người mở máy ra làm\nviệc. Cùng lý lẽ với `GET /petland/map` và `GET /pet`.",
+        "operationId": "turnstile_config_api_v1_auth_turnstile_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TurnstilePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Turnstile Config",
         "tags": [
           "auth"
         ]

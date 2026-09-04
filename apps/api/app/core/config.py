@@ -168,6 +168,19 @@ class Settings(BaseSettings):
     apple_key_id: str = ""
     apple_private_key: SecretStr = SecretStr("")
 
+    # --- Cloudflare Turnstile (ADR-015) -------------------------------------
+    #
+    # Bật khi và chỉ khi có ĐỦ CẢ HAI khoá — cùng luật với nhà cung cấp đăng nhập
+    # ở trên, và ở đây nó còn quan trọng hơn: chỉ có site key thì trang vẽ ra một
+    # ô kiểm mà máy chủ không hề kiểm, tức là **trông như được bảo vệ mà không
+    # hề**. Đó là kiểu hỏng tệ nhất, vì nó tự nhận là đã xong.
+    #
+    # Site key là công khai theo thiết kế (nó nằm trong HTML), nên máy chủ phát
+    # nó ra cho giao diện thay vì để giao diện tự đọc biến môi trường của mình —
+    # một nguồn sự thật, và không có cách nào để hai bên lệch nhau.
+    turnstile_site_key: str = ""
+    turnstile_secret_key: SecretStr = SecretStr("")
+
     # Gốc CÔNG KHAI của API, dùng để dựng redirect URI đăng ký với nhà cung cấp.
     # Phải khớp từng ký tự với thứ đã khai bên Google/Apple, kể cả dấu `/` cuối.
     oauth_callback_base_url: str = "http://localhost:8000"
@@ -184,6 +197,25 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SECRET_KEY must be set to a unique value when ENVIRONMENT=production. "
                 "Generate one with: openssl rand -hex 32"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _reject_half_configured_turnstile(self) -> "Settings":
+        """Một nửa cấu hình Turnstile là tệ hơn không có gì, nên nó chặn khởi động.
+
+        Thiếu secret: giao diện vẽ ô kiểm, máy chủ không kiểm — được bảo vệ trên
+        giấy. Thiếu site key: máy chủ đòi token mà không chỗ nào phát ra token,
+        nên **không ai đăng nhập được nữa**. Cả hai đều là lỗi cấu hình, và lỗi
+        cấu hình phải nổ lúc khởi động chứ không phải ở lần đăng nhập đầu tiên.
+        """
+        has_site = bool(self.turnstile_site_key)
+        has_secret = bool(self.turnstile_secret_key.get_secret_value())
+        if has_site != has_secret:
+            missing = "TURNSTILE_SECRET_KEY" if has_site else "TURNSTILE_SITE_KEY"
+            raise ValueError(
+                f"Turnstile is half configured: {missing} is empty. "
+                "Set both keys to turn it on, or neither to leave it off."
             )
         return self
 

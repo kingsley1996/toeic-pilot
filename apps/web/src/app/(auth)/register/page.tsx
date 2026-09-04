@@ -12,6 +12,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { AuthLayout } from "@/components/auth-layout";
 import { OAuthButtons } from "@/components/oauth-buttons";
+import { TurnstileUnavailable, turnstileHeader, useTurnstile } from "@/components/turnstile";
 import { Button, Field, FieldError, Input, Spinner } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { setAccessToken } from "@/lib/auth-storage";
@@ -21,6 +22,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const gate = useTurnstile();
 
   // `?next=` là chỗ quay về khi người dùng tới đây từ một hộp thoại chặn giữa
   // chừng. Đọc một lần lúc hạ cánh rồi xoá khỏi thanh địa chỉ, cùng luật với
@@ -41,6 +43,7 @@ export default function RegisterPage() {
     try {
       await apiFetch<UserPublic>(API_ROUTES.register, {
         method: "POST",
+        headers: turnstileHeader(await gate.take()),
         body: JSON.stringify(body),
       });
       /*
@@ -57,8 +60,12 @@ export default function RegisterPage() {
        * `/login` là đúng — người dùng đăng nhập tay và không mất gì.
        */
       try {
+        /* Token thứ HAI, và nó bắt buộc phải là một cái mới: Cloudflare chỉ
+           nhận mỗi token đúng một lần, còn một lần bấm "Tạo tài khoản" ở đây lại
+           gọi hai endpoint. `take()` tự làm mới, nên chỗ này chỉ cần gọi lại. */
         const token = await apiFetch<TokenResponse>(API_ROUTES.login, {
           method: "POST",
+          headers: turnstileHeader(await gate.take()),
           body: JSON.stringify(body),
         });
         setAccessToken(token.access_token);
@@ -67,7 +74,11 @@ export default function RegisterPage() {
         router.push(`/login?next=${encodeURIComponent(next)}`);
       }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Không tạo được tài khoản.");
+      setError(
+        err instanceof ApiError || err instanceof TurnstileUnavailable
+          ? err.message
+          : "Không tạo được tài khoản.",
+      );
     } finally {
       setLoading(false);
     }
@@ -103,6 +114,8 @@ export default function RegisterPage() {
             autoComplete="new-password"
           />
         </Field>
+
+        {gate.widget}
 
         {error && <FieldError>{error}</FieldError>}
 

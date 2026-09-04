@@ -2,14 +2,15 @@ import logging
 from datetime import UTC, datetime
 
 import redis
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, security
+from app.core.config import settings
 from app.core.database import get_db
-from app.core.rate_limit import Quota, rate_limit, rate_limit_anonymous
+from app.core.rate_limit import Quota, client_ip, rate_limit, rate_limit_anonymous
 from app.core.redis_client import get_redis
 from app.core.security import (
     PASSWORD_CLAIM,
@@ -26,10 +27,12 @@ from app.models.user import User
 from app.schemas.auth import (
     PasswordChange,
     TokenResponse,
+    TurnstilePublic,
     UserLogin,
     UserPublic,
     UserRegister,
 )
+from app.services import turnstile
 from app.services.profile import ensure_profile, profile_public
 
 logger = logging.getLogger(__name__)
@@ -47,6 +50,56 @@ def _user_public(db: Session, user: User) -> UserPublic:
         created_at=user.created_at.isoformat(),
         profile=profile_public(ensure_profile(db, user)),
     )
+
+
+def require_turnstile(
+    request: Request,
+    cf_turnstile_response: str = Header(default="", alias=turnstile.TOKEN_HEADER),
+) -> None:
+    """Đòi một token Turnstile hợp lệ, nếu Turnstile đang bật.
+
+    Chưa cấu hình thì đây là hàm rỗng — cùng luật với nhà cung cấp đăng nhập:
+    thiếu biến môi trường thì tính năng TẮT, không phải hỏng. Nhờ đó dev, CI và
+    bộ e2e chạy y như trước mà không cần khoá nào.
+
+    Đứng SAU `rate_limit_anonymous` trong danh sách `dependencies`, và thứ tự ấy
+    có nghĩa: rate limit là một phép đếm trong Redis, còn cái này là một vòng
+    mạng ra ngoài. Đảo lại thì một trận lụt request biến thành một trận lụt
+    request đi RA, tức là ta tự trả tiền băng thông cho kẻ tấn công.
+
+    Token dùng ĐÚNG MỘT LẦN và sống 5 phút. Nên 403 ở đây không có nghĩa "người
+    này là bot" — nó cũng là câu trả lời cho một form gửi lại sau khi gõ sai mật
+    khẩu. Giao diện phải xin token mới sau mỗi lần gửi, và lời nhắn dưới đây nói
+    thẳng ra điều đó thay vì buộc tội người đang gõ.
+    """
+    if not turnstile.is_configured():
+        return
+    token = cf_turnstile_response.strip()
+    if not token or len(token) > turnstile.MAX_TOKEN_LENGTH:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Thiếu xác minh chống bot. Tải lại trang rồi thử lại.",
+        )
+    try:
+        turnstile.verify(token, client_ip(request))
+    except turnstile.TurnstileRejected:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Xác minh chống bot đã hết hạn. Thử lại lần nữa.",
+        ) from None
+
+
+@router.get("/turnstile", response_model=TurnstilePublic)
+def turnstile_config() -> Response | TurnstilePublic:
+    """Site key, hoặc 204 khi Turnstile tắt.
+
+    204 chứ không phải 404: "chưa bật" là đường chạy bình thường ở dev và ở mọi
+    lần chạy CI, còn 404 sẽ đỏ trong tab Network của mọi người mở máy ra làm
+    việc. Cùng lý lẽ với `GET /petland/map` và `GET /pet`.
+    """
+    if not turnstile.is_configured():
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return TurnstilePublic(site_key=settings.turnstile_site_key)
 
 
 # Hạn mức RỘNG, và con số này được chọn bằng cách hỏi "ai bị chặn oan" trước khi
@@ -90,7 +143,10 @@ PASSWORD_QUOTA = Quota(limit=10, window_seconds=60 * 10)
     "/register",
     response_model=UserPublic,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(rate_limit_anonymous("register", REGISTER_QUOTA))],
+    dependencies=[
+        Depends(rate_limit_anonymous("register", REGISTER_QUOTA)),
+        Depends(require_turnstile),
+    ],
 )
 def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
     existing = db.query(User).filter(User.email == body.email.lower()).first()
@@ -126,7 +182,10 @@ def register(body: UserRegister, db: Session = Depends(get_db)) -> UserPublic:
 @router.post(
     "/login",
     response_model=TokenResponse,
-    dependencies=[Depends(rate_limit_anonymous("login", LOGIN_QUOTA))],
+    dependencies=[
+        Depends(rate_limit_anonymous("login", LOGIN_QUOTA)),
+        Depends(require_turnstile),
+    ],
 )
 def login(body: UserLogin, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(User).filter(User.email == body.email.lower()).first()

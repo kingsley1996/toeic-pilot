@@ -2294,6 +2294,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/turnstile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Turnstile Config
+         * @description Site key, hoặc 204 khi Turnstile tắt.
+         *
+         *     204 chứ không phải 404: "chưa bật" là đường chạy bình thường ở dev và ở mọi
+         *     lần chạy CI, còn 404 sẽ đỏ trong tab Network của mọi người mở máy ra làm
+         *     việc. Cùng lý lẽ với `GET /petland/map` và `GET /pet`.
+         */
+        get: operations["turnstile_config_api_v1_auth_turnstile_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/{provider_id}/callback": {
         parameters: {
             query?: never;
@@ -7012,6 +7036,19 @@ export interface components {
             voice: string;
         };
         /**
+         * TurnstilePublic
+         * @description Site key của Turnstile, để giao diện dựng ô kiểm.
+         *
+         *     Khoá này CÔNG KHAI theo thiết kế — nó nằm trong HTML của mọi trang có ô kiểm.
+         *     Máy chủ phát nó ra thay vì để giao diện tự đọc biến môi trường của mình, vì
+         *     chỉ khi ấy mới có đúng một nguồn sự thật: hai bên đọc hai biến khác nhau thì
+         *     sẽ có ngày trang vẽ ô kiểm mà máy chủ không kiểm, và không gì báo cả.
+         */
+        TurnstilePublic: {
+            /** Site Key */
+            site_key: string;
+        };
+        /**
          * UploadTicket
          * @description Vé để trình duyệt tự tải file lên, không đi qua API (ADR-006 §2.3).
          */
@@ -11429,7 +11466,9 @@ export interface operations {
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "cf-turnstile-response"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11553,7 +11592,9 @@ export interface operations {
     register_api_v1_auth_register_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "cf-turnstile-response"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -11579,6 +11620,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    turnstile_config_api_v1_auth_turnstile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnstilePublic"];
                 };
             };
         };

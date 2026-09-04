@@ -43,6 +43,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `adr/ADR-005-CONTENT-TOOLING.md` · `adr/ADR-007-TEST-AUTHORING.md` | Admin nhập đề · lời thoại nằm trên câu, không nằm cạnh tệp spec |
 | `adr/ADR-008-AUTH-PROVIDERS.md` | Google/Apple qua **code flow phía máy chủ**, không SDK. Thêm script bên thứ ba là hết hiệu lực lý do hoãn P1-7b |
 | `adr/` — ADR-010, 011, 012, 013 | Petland, ruby, chạm mặt, chỉ số thú cưng |
+| `adr/ADR-015-TURNSTILE.md` | Ô kiểm chống bot. §0: nửa còn lại của Cloudflare cần **tên miền**. §3 hỏng thì mở, chối thì đóng. §6 nó tiêu món nợ P1-7b |
 | `adr/ADR-014-DEPLOY-FREE.md` | Production trên free tier. §0 đọc trước; ba thứ hỏng im lặng ở §7 |
 | `docs/AI-ENGINEERING-PLAN.md` | §3: giải thích một câu **giống nhau với mọi người học** nên tính sẵn offline. §2: chấm điểm, SM-2, quy đổi điểm **không bao giờ** chạm LLM |
 | `docs/PROMPT-SYSTEM.md` | Kiểm kê prompt. §0: hai sổ đăng ký, và ranh giới giữa chúng là ranh giới kiến trúc |

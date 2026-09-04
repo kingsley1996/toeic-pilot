@@ -71,3 +71,15 @@ class AuthProviderPublic(BaseModel):
 
     id: str
     label: str
+
+
+class TurnstilePublic(BaseModel):
+    """Site key của Turnstile, để giao diện dựng ô kiểm.
+
+    Khoá này CÔNG KHAI theo thiết kế — nó nằm trong HTML của mọi trang có ô kiểm.
+    Máy chủ phát nó ra thay vì để giao diện tự đọc biến môi trường của mình, vì
+    chỉ khi ấy mới có đúng một nguồn sự thật: hai bên đọc hai biến khác nhau thì
+    sẽ có ngày trang vẽ ô kiểm mà máy chủ không kiểm, và không gì báo cả.
+    """
+
+    site_key: str

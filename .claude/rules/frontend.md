@@ -95,13 +95,37 @@ Three parts of it fail quietly if changed:
   asked to leave. The client clears its own token unconditionally; the denylist is the
   second layer, for copies of the token this browser cannot reach.
 
-The other half — httpOnly cookies and refresh tokens — is **deferred with a written
-reason** rather than pending: `ROADMAP.md` P1-7b. Short version: cookies exist to survive
-XSS, this app has no third-party script and one `dangerouslySetInnerHTML` rendering a
-constant, and cookies would introduce CSRF in exchange. **Add any third-party script and
-that reasoning expires.**
+The other half — httpOnly cookies and refresh tokens — **used to be deferred with a
+written reason, and that reason has now been spent.** The argument was: cookies exist to
+survive XSS, this app has no third-party script and one `dangerouslySetInnerHTML`
+rendering a constant, and cookies would introduce CSRF in exchange. `ADR-008` §1 spelled
+out the expiry condition — add a third-party script and P1-7b must be paid **before** the
+feature that adds it.
 
-Still open: branch protection on `main` (needs repo-admin rights), and the token in `localStorage` (P1-7b, deferred above with its reasoning).
+`ADR-015` added one: Cloudflare Turnstile loads `challenges.cloudflare.com/turnstile/v0/api.js`
+on `/login`, `/register` and the tests-area login modal. The premise is false now, so
+P1-7b is **open debt with no argument behind it** rather than a considered deferral, and
+that ADR §6 records the trade deliberately rather than quietly. Two things narrow the
+exposure without rescuing the premise: the script loads only on the auth pages, which are
+precisely the pages that write the token, and it comes from a security vendor rather than
+an ad network — which changes the probability, not the threat model the premise asserted.
+
+**Turnstile is off unless both keys are set, and half-configured refuses to boot.** Site
+key alone is the silent half: the page draws a checkbox, the server checks nothing, every
+request succeeds, and the fence does not exist. Secret alone is loud — nobody can sign in.
+The site key is served by the API (`GET /auth/turnstile`, 204 when off) rather than read
+from a `NEXT_PUBLIC_` variable, so the two sides cannot drift into the silent half.
+Verification **fails open** when Cloudflare is unreachable and closed when Cloudflare says
+no — same call `rate_limit_anonymous` makes about Redis, and for the same reason: during a
+Cloudflare outage the defence drops back to yesterday's IP limiter rather than to nothing,
+whereas failing closed would mean nobody can sign in at all.
+
+A Turnstile token is **single use and lives 5 minutes**, which is why `useTurnstile()`
+exposes `take()` rather than a token: registration calls `register` then `login` — two
+submissions per button press — and a mistyped password is another. Reusing one token
+produces a 403 at the exact moment the user finally typed the right password.
+
+Still open: branch protection on `main` (needs repo-admin rights), and the token in `localStorage` (P1-7b — no longer deferred, see above).
 
 **The Petland map is saved on the server now, and "no row" is a meaningful state.** `/admin/petland` used to only *download* `map.json` for you to commit — a deliberate call, on the grounds that the map is content and content belongs in git. That reasoning predates production, where changing one grass tile now costs a deploy. `petland_map` (migration 048, one row pinned by `CHECK id = 1`) is an **override**: an empty table means nobody has edited on the web and the committed `public/pet/map.json` is what runs, which is why `GET /petland/map` answers **204 rather than 404** — "not configured" is the normal path, and a 404 would look like a fault on every page load. The old design's real fear, two maps disagreeing silently, is answered by *saying which one is live* in the editor header rather than by forbidding it. Validation is server-side because a bad map is still valid JSON: the layers must each be exactly `w*h`, not every tile may block, and **the spawn tile (3, 5) must be walkable** — migration 046 exists because a default spawn inside a wall is a real bug, and a saved map could reintroduce it.
 
