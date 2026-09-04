@@ -251,6 +251,43 @@ def refusal(action: PetAction, needs: Needs) -> str | None:
     return None
 
 
+"""Cả ba chỉ số cùng dưới ngưỡng: con thú ỐM.
+
+Không đặt ngưỡng mới. Ốm là "cả ba cái ngưỡng đã có cùng bị phá", nên nó không
+thêm một con số nào để chỉnh lệch khỏi ba con số kia — và nó tự đúng khi ai đó
+chỉnh một trong ba.
+
+**Không phải một cái chết, và cũng không khoá gì cả.** §12 của tài liệu cơ chế
+gốc từ chối kiểu "ba ngày không học thì thú chết" và thay bằng vòng: bỏ bê → thú
+buồn → chỉ số tụt → **thú xin được chú ý** → hồi phục. Nên ốm không chặn cho ăn,
+không chặn ngủ; nó chỉ gọi một vị khách tới ngay thay vì đợi hết đồng hồ hai mươi
+phút, và làm xong việc của khách thì con thú được vực dậy.
+
+Vực dậy chứ không chữa lành: `REVIVE_TO` nhấc cả ba lên vừa qua ngưỡng, đủ để
+đường chăm sóc bình thường chạy lại được, chứ không phải một con thú đầy ắp từ
+một câu trả lời. Nó cũng không thể farm: chỉ nhận được khi đang ốm, mà muốn ốm
+thì phải bỏ bê cả ngày, và thứ nhận được là nhu cầu chứ không phải tiền.
+"""
+REVIVE_TO = Decimal("0.35")
+
+
+def is_sick(needs: Needs) -> bool:
+    return (
+        needs.fullness < HUNGRY_BELOW
+        and needs.mood < SAD_BELOW
+        and needs.energy < WALK_REFUSED_BELOW
+    )
+
+
+def revive(needs: Needs) -> Needs:
+    """Nhấc mọi chỉ số đang dưới `REVIVE_TO` lên đúng mức ấy, không đụng cái nào đã cao hơn."""
+    return Needs(
+        fullness=max(needs.fullness, REVIVE_TO),
+        energy=max(needs.energy, REVIVE_TO),
+        mood=max(needs.mood, REVIVE_TO),
+    )
+
+
 def apply(action: PetAction, needs: Needs) -> Needs:
     """Nhu cầu sau khi làm `action`. Gọi SAU `decay`, không phải trước.
 
@@ -350,7 +387,10 @@ Cao hơn hẳn `walk` (5 điểm) có chủ ý — đây là XP duy nhất phả
 cái nút chăm sóc trả điểm cho sự chăm chỉ; cái này trả cho việc trả lời đúng.
 Để nó ngang một cú bấm là nói rằng hai thứ ấy đáng như nhau.
 """
-XP_PER_ENCOUNTER: dict[str, int] = {"npc": 6, "intruder": 15}
+XP_PER_ENCOUNTER: dict[str, int] = {"npc": 6, "intruder": 15, "rescue": 0}
+"""Hồi phục trao 0 XP, cùng lý do nó trao 0 ruby: phần thưởng của nó là con thú
+đứng dậy được. Có mặt trong bảng chứ không để `KeyError` lo — thiếu khoá ở đây
+là một 500 trên đúng đường mà người dùng đang cố cứu con thú."""
 
 
 """Việc HỌC cũng nuôi con thú — đây là chỗ vòng lặp khép lại.

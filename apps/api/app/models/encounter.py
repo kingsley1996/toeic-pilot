@@ -29,7 +29,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
 
-ENCOUNTER_KINDS = ("npc", "intruder")
+ENCOUNTER_KINDS = ("npc", "intruder", "rescue")
 """Hai loại chạm mặt, và chúng dùng CHUNG bộ máy.
 
 Kẻ xâm nhập chỉ khác NPC ở ba con số — nhiều bước hơn, thưởng lớn hơn, hiếm hơn
@@ -63,7 +63,7 @@ class Encounter(Base):
 
     __tablename__ = "encounter"
     __table_args__ = (
-        CheckConstraint("kind IN ('npc', 'intruder')", name="ck_encounter_kind"),
+        CheckConstraint("kind IN ('npc', 'intruder', 'rescue')", name="ck_encounter_kind"),
         CheckConstraint(
             "task_kind IN ('vocabulary', 'dictation', 'quiz')", name="ck_encounter_task"
         ),

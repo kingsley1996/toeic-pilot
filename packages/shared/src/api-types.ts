@@ -4960,7 +4960,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "npc" | "intruder";
+            kind: "npc" | "intruder" | "rescue";
             /** Reward Ruby */
             reward_ruby: number;
             /** Steps Done */

@@ -332,7 +332,7 @@ class EncounterPublic(BaseModel):
     """
 
     id: str
-    kind: Literal["npc", "intruder"]
+    kind: Literal["npc", "intruder", "rescue"]
     steps_total: int
     steps_done: int
     reward_ruby: int

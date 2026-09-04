@@ -94,9 +94,13 @@ export const SAD_BELOW = 0.25;
  *
  * Thứ tự ưu tiên là thứ tự cấp bách: kiệt sức trước đói, đói trước vui.
  */
-export type PetCondition = "exhausted" | "hungry" | "sad" | "cheerful" | "content";
+export type PetCondition = "sick" | "exhausted" | "hungry" | "sad" | "cheerful" | "content";
 
 export function conditionOf(needs: PetNeeds): PetCondition {
+  // Ốm đứng ĐẦU vì nó là cả ba cái dưới cùng lúc, không phải một cái tệ nhất
+  // trong ba. Xếp sau thì nó không bao giờ tới lượt — "kiệt sức" đã nuốt mất nó,
+  // và người dùng chỉ thấy một chỉ số hỏng trong khi cả ba đang chạm đáy.
+  if (isSick(needs)) return "sick";
   if (needs.energy < WALK_TIRED_BELOW) return "exhausted";
   if (needs.fullness < HUNGRY_BELOW) return "hungry";
   // Buồn đứng SAU đói vì đói là gốc: nó kéo cả vui xuống theo, nên hiện "Đang
@@ -106,7 +110,18 @@ export function conditionOf(needs: PetNeeds): PetCondition {
   return "content";
 }
 
+/**
+ * Cả ba chỉ số cùng dưới ngưỡng. Không thêm ngưỡng nào mới, và đó là chủ ý:
+ * "ốm" là ba cái ngưỡng đã có cùng bị phá, nên nó tự đúng khi ai đó chỉnh một
+ * trong ba. Bản sao của `services/pet.py::is_sick`; máy chủ mới là chỗ quyết
+ * định, ở đây chỉ để đặt tên và vẽ.
+ */
+export function isSick(needs: PetNeeds): boolean {
+  return needs.fullness < HUNGRY_BELOW && needs.mood < SAD_BELOW && needs.energy < WALK_TIRED_BELOW;
+}
+
 export const CONDITION_LABEL: Record<PetCondition, string> = {
+  sick: "Đang ốm",
   exhausted: "Đang kiệt sức",
   hungry: "Đang đói",
   sad: "Đang buồn",
@@ -131,7 +146,11 @@ export function wanderRange(condition: PetCondition, reduced = false): number | 
   // vòng vẽ, vì ở đây nó đo được — bài kiểm ảnh chụp không với tới nổi (nó chỉ
   // thấy hai khung hình liền nhau, còn chuyến đi thì vài giây mới tới một lần).
   if (reduced) return null;
-  if (condition === "exhausted") return null;
+  // Ốm thì KHÔNG đi, và đây là nửa nhìn thấy được của trạng thái ấy: bảng phủ
+  // một lớp mờ với cái nút hồi phục nói ra bằng chữ, còn con thú đứng chôn chân
+  // nói ra bằng hình. Một con thú vẫn tung tăng dưới lớp mờ thì lớp mờ đọc ra là
+  // lỗi giao diện.
+  if (condition === "exhausted" || condition === "sick") return null;
   if (condition === "hungry") return 2;
   return condition === "cheerful" ? 6 : 4;
 }

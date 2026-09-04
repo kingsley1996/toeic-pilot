@@ -3619,7 +3619,8 @@
           "kind": {
             "enum": [
               "npc",
-              "intruder"
+              "intruder",
+              "rescue"
             ],
             "title": "Kind",
             "type": "string"

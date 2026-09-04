@@ -121,6 +121,66 @@ def test_nothing_spawns_before_the_appointment_and_one_does_after(db_session: Se
     assert len(late) == 1 and late[0].state == "waiting"
 
 
+class _PickDictation(random.Random):
+    """`rng` luôn bốc ra dạng chép chính tả, để luật "chỉ giao từ vựng" đo được thật.
+
+    Với `SystemRandom` thì bài này xanh phần lớn số lần dù luật có bị gỡ ra hay
+    không — và một bài kiểm xanh vì may thì không nói được điều gì.
+    """
+
+    def random(self) -> float:
+        return 0.0
+
+
+def test_a_sick_pet_gets_a_one_step_rescue_task_in_a_lane_of_its_own(
+    db_session: Session,
+) -> None:
+    """Nửa "thú xin được chú ý" của §12, và nó KHÔNG mượn làn NPC.
+
+    Mượn thì kéo theo cả những thứ không thuộc về nó: nhịp hai mươi phút, trần
+    hai cuộc mỗi loại, số bước, và mức thưởng ruby — nên cứu con thú lại thành
+    một nguồn thu, và một lần cứu tiêu mất suất NPC của người học.
+
+    Làn riêng nên không có giờ hẹn: sinh theo TRẠNG THÁI, không theo đồng hồ. Và
+    nó tự dọn khi con thú khoẻ lại — để lại thì đó là một câu hỏi lơ lửng mà
+    không ai biết vì sao có.
+    """
+    user = _learner(db_session)
+    pet = _pet(db_session, user)
+    _npc_only(db_session)
+    _words(db_session)
+    # Kho chép chính tả CÓ hàng, và `rng` bốc luôn ra nó — nếu không, "hồi phục
+    # chỉ giao từ vựng" sẽ xanh vì may chứ không vì luật.
+    _sentence(db_session)
+    rng = _PickDictation()
+    at5 = T0 + timedelta(minutes=5)
+    encounters.sync(db_session, user_id=user.id, pet=pet, now=T0, rng=rng)
+
+    # Chưa tới giờ hẹn của NPC: khoẻ thì trống, ốm thì có nhiệm vụ hồi phục.
+    assert encounters.sync(db_session, user_id=user.id, pet=pet, now=at5, rng=rng) == []
+    rows = encounters.sync(db_session, user_id=user.id, pet=pet, sick=True, now=at5, rng=rng)
+    assert len(rows) == 1
+    task = rows[0]
+    assert task.kind == "rescue"
+    assert task.steps_total == 1, "một câu duy nhất — đây là lối ra, không phải một trận"
+    assert task.reward_ruby == 0, "phần thưởng là con thú đứng dậy, không phải tiền"
+    assert task.task_kind == "vocabulary", (
+        "chỉ giao từ vựng: gõ lại trọn một câu nghe được là một bức tường nữa "
+        "trước cái cửa, mà đây là LỐI RA chứ không phải bài để thử sức"
+    )
+
+    again = encounters.sync(
+        db_session, user_id=user.id, pet=pet, sick=True, now=T0 + timedelta(minutes=6), rng=rng
+    )
+    assert len(again) == 1, "đã có nhiệm vụ thì không sinh thêm"
+
+    # Không tiêu suất của NPC: giờ hẹn của làn kia không bị đụng tới.
+    healthy = encounters.sync(
+        db_session, user_id=user.id, pet=pet, now=T0 + timedelta(minutes=7), rng=rng
+    )
+    assert healthy == [], "khoẻ lại thì nhiệm vụ hồi phục được dọn đi"
+
+
 def test_reading_ten_times_in_a_row_does_not_make_ten_encounters(db_session: Session) -> None:
     """`GET /pet/encounters` ghi, nên gọi lại phải là chuyện an toàn.
 

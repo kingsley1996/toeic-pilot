@@ -2,12 +2,13 @@
 
 import { API_ROUTES, type EncounterPublic, type PetPublic } from "@toeic-pilot/shared";
 import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { clamp, defaultPlace, readPlace, writePlace, type Place } from "@/components/petland-place";
 import { tileForGuest } from "@/components/petland-bestiary";
 import { speechFor } from "@/components/petland-speech";
 import { CollectionScreen } from "@/components/petland-collection";
+import { petLine } from "@/components/petland-lines";
 import { QuestCard } from "@/components/petland-quest";
 import { GuestList } from "@/components/petland-quest-list";
 import { tierGlow } from "@/components/petland-creature";
@@ -23,6 +24,7 @@ import {
   advance,
   atRest,
   conditionOf,
+  isSick,
   tricksOf,
   restAt,
   takeOver,
@@ -33,7 +35,7 @@ import {
   type PetTrick,
   type Steer,
 } from "@/components/petland-pet";
-import { cx } from "@/components/ui";
+import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import {
@@ -132,6 +134,7 @@ const WANDER_FIRST_MS = 2500;
  * trong hai ngày.
  */
 const EMOTE_ICON: Record<PetCondition, Bit["icon"] | null> = {
+  sick: "frown",
   hungry: "crumb",
   exhausted: "moon",
   sad: "frown",
@@ -473,6 +476,15 @@ function PetPanel({
   const reducedRef = useRef(false);
   /** Tình trạng con thú, cho vòng vẽ đọc mỗi khung. Xem `conditionOf`. */
   const conditionRef = useRef<PetCondition>("content");
+  /*
+   * "Không đi được", và nó gộp HAI lý do: đang ngủ, hoặc đang ốm.
+   *
+   * Bốn chỗ trong vòng vẽ phải chặn đường đi, và bản trước chỉ hỏi `asleepRef` ở
+   * cả bốn — nên chặn thêm một lý do nữa là sửa bốn chỗ và quên một chỗ. Ốm đã
+   * lọt đúng như thế: `wanderRange` trả `null` nên con thú thôi TỰ đi, nhưng
+   * người dùng vẫn lái được bằng phím và bằng chuột.
+   */
+  const stillRef = useRef(false);
   /** Vốn tiết mục của con đang nuôi, theo bậc hiếm. Xem `tricksOf`. */
   const tricksRef = useRef<ReadonlySet<PetTrick>>(new Set());
   /** Ô con trỏ đang chỉ vào, cho tiết mục "nhìn theo con trỏ". */
@@ -492,6 +504,7 @@ function PetPanel({
   const speechUntil = useRef(0);
   /** Ai đang nói — bong bóng phải mọc trên đầu đúng người đó, không phải người đầu mảng. */
   const speakingRef = useRef<string | null>(null);
+  const sickMark = useRef<HTMLDivElement | null>(null);
   const refreshMeetings = useRef<() => void>(() => {});
   /*
    * Trận đánh đang chạy: mốc bắt đầu và có hạ gục được không.
@@ -757,13 +770,13 @@ function PetPanel({
          * nên xếp đường ở đây chỉ là xếp cho có. Thẻ nhiệm vụ vẫn mở như thường
          * — trả lời một câu hỏi không dính gì tới việc con thú đang ngủ.
          */
-        if (!asleepRef.current) {
+        if (!stillRef.current) {
           const spot = neighbourOf(map, { x: guest.x, y: guest.y }, walk.tile);
           if (spot) walk.queue = findPath(map, walk.tile, spot, occupiedRef.current);
         }
         return;
       }
-      if (asleepRef.current) return;
+      if (stillRef.current) return;
       walk.queue = findPath(map, walk.tile, target, occupiedRef.current);
       ambient = false;
       idleUntil = 0;
@@ -857,7 +870,7 @@ function PetPanel({
           // ngoắt giữa đường, đọc ra là giật chứ không phải đổi ý.
           // Đang ngủ thì không nhận đường đi mới, và bỏ luôn đường đang đi dở:
           // một con thú vừa ngủ vừa băng qua bản đồ đọc ra là hỏng.
-          if (asleepRef.current) {
+          if (stillRef.current) {
             strollRef.current = false;
             walk.queue = [];
           }
@@ -908,7 +921,7 @@ function PetPanel({
           bumpRef.current = bumped;
 
           const steer: Steer = (at) => {
-            if (!map || asleepRef.current) return null;
+            if (!map || stillRef.current) return null;
             const held = heldRef.current;
             const key = held.length > 0 ? STEER[held[held.length - 1]] : null;
             if (!key) return null;
@@ -1073,10 +1086,25 @@ function PetPanel({
            */
           const balloon = bubble.current;
           if (balloon) {
+            /* Ốm thì bong bóng TẮT: lời thoại chuyển vào lớp phủ, ngay trên cái
+               nút. Con thú đứng giữa bản đồ và cái nút cũng ở giữa, nên một bong
+               bóng bám đầu nó sẽ đè lên nút — hai thứ tranh nhau đúng một chỗ.
+               Chỉ còn biểu tượng ở lại trên đầu, vì nó nhỏ và neo cao hơn. */
+            const ill = conditionRef.current === "sick";
             const talker = speakingRef.current;
             const at = talker ? (stage?.guestScreen(talker) ?? null) : null;
-            const showing = at !== null && now < speechUntil.current;
+            const showing = !ill && at !== null && now < speechUntil.current;
             balloon.style.opacity = showing ? "1" : "0";
+
+            const mark = sickMark.current;
+            if (mark) {
+              const head = ill ? (stage?.petScreen() ?? null) : null;
+              mark.style.opacity = head ? "1" : "0";
+              if (head) {
+                mark.style.left = `${head.x}px`;
+                mark.style.top = `${head.y - 4}px`;
+              }
+            }
             if (at) {
               // Khung bản đồ cắt phần tràn ra ngoài, nên một vị khách đứng sát
               // mép trên sẽ có bong bóng bị xén mất một nửa. Hết chỗ ở trên thì
@@ -1154,6 +1182,43 @@ function PetPanel({
   const active = meetings.find((one) => one.id === activeId) ?? null;
 
   /*
+   * Ốm: cả ba chỉ số cùng dưới ngưỡng. Máy chủ quyết định — nó cũng là bên gọi
+   * vị khách tới và bên vực con thú dậy — còn đây chỉ đọc lại cùng phép so để
+   * biết có phủ mờ hay không.
+   *
+   * Câu thoại bốc MỘT lần cho mỗi lượt ốm, không bốc lại mỗi khung hình: một
+   * dòng chữ tự đổi trong lúc người ta đang đọc nó là thứ không ai muốn. Khoá
+   * theo chính con thú, nên đổi con là đổi câu.
+   */
+  const sick = needs !== null && isSick(needs);
+  const sickLine = useMemo(() => (sick ? petLine("sick") : null), [sick]);
+  /* Làn RIÊNG, không mượn của NPC: đúng một câu, không ruby, và không có ai
+     đứng trên bản đồ. Máy chủ sinh nó theo trạng thái và tự dọn khi con thú
+     khoẻ lại. */
+  const rescue = meetings.find((one) => one.kind === "rescue") ?? null;
+
+  /*
+   * Vừa ốm thì hỏi máy chủ NGAY, không đợi hết nhịp một phút.
+   *
+   * Nhiệm vụ hồi phục sinh ra ở `GET /pet/encounters`, mà nhịp hỏi là mỗi phút —
+   * nên có cả một khoảng con thú đã ốm, lớp phủ mờ đã hiện, mà cái nút thì chưa
+   * có. Chỗ lộ rõ nhất là ĐỔI CON: cứu xong con này, sang một con cũng đang ốm
+   * trong tủ, và bảng chỉ đưa ra dòng "cho nó ăn" trong khi lẽ ra phải có nút.
+   *
+   * Khoá theo CẢ HAI — đang ốm và chưa có nhiệm vụ — chứ không riêng `sick`.
+   * Riêng `sick` thì cái ca hay gặp nhất lọt lưới: cứu xong con này rồi sang
+   * con khác cũng đang ốm, cờ `sick` không hề lật nên effect không chạy, và
+   * bảng đứng đó không có nút.
+   *
+   * Không thành vòng lặp: `rescue` là `null` khi không có, mà `null` thì ổn
+   * định giữa hai lần dựng — nên kho nội dung rỗng chỉ tốn đúng một lượt hỏi,
+   * không phải một lượt cho mỗi lần `meetings` đổi.
+   */
+  useEffect(() => {
+    if (sick && rescue === null) refreshMeetings.current();
+  }, [sick, rescue]);
+
+  /*
    * Ô bên phải RỖNG thì coi như đóng.
    *
    * Một cuộc chạm mặt sống mười phút và có thể hết hạn ngay trong lúc thẻ của nó
@@ -1201,7 +1266,8 @@ function PetPanel({
     // `null` là lúc chưa đọc xong lượt gọi đầu — coi như bình thường, chứ không
     // vẽ một con thú kiệt sức rồi sửa lại sau nửa giây.
     conditionRef.current = needs ? conditionOf(needs) : "content";
-  }, [needs]);
+    stillRef.current = asleep || conditionRef.current === "sick";
+  }, [needs, asleep]);
 
   /*
    * Hỏi máy chủ có ai đang đứng chờ không — lúc mở bảng, rồi mỗi phút.
@@ -1226,6 +1292,21 @@ function PetPanel({
       apiFetch<EncounterPublic[]>(API_ROUTES.petEncounters, { token })
         .then((rows) => {
           if (alive) setMeetings(rows);
+        })
+        .catch(() => {});
+      /*
+       * Đọc lại NHU CẦU trên cùng nhịp ấy.
+       *
+       * Bản trước chỉ đọc một lần lúc mở bảng rồi cập nhật khi bấm nút, nên ba
+       * cái thanh ĐỨNG IM suốt thời gian bảng mở — mà nhu cầu thì trôi liên
+       * tục. Với con thú ốm nó tệ hơn hẳn một cái thanh sai vài phần trăm: mở
+       * bảng lúc còn khoẻ rồi để đó, con thú tụt xuống ốm, và cả lớp phủ mờ lẫn
+       * cái nút hồi phục không bao giờ xuất hiện — giao diện tin vào một ảnh
+       * chụp đã cũ.
+       */
+      apiFetch<PetPublic>(API_ROUTES.pet, { token })
+        .then((fresh) => {
+          if (alive) setNeeds(fresh.needs);
         })
         .catch(() => {});
     };
@@ -1273,6 +1354,11 @@ function PetPanel({
 
     const next: Guest[] = [];
     for (const meeting of meetings) {
+      // Nhiệm vụ hồi phục KHÔNG có người đứng trên bản đồ: nó là lối ra khỏi
+      // một trạng thái, không phải một vị khách ghé qua. Vẽ một nhân vật cho nó
+      // thì bản đồ có thêm một người mà không ai gọi tới, và người ấy lại đứng
+      // dưới lớp phủ mờ nên chỉ còn là một cái bóng khó hiểu.
+      if (meeting.kind === "rescue") continue;
       const already = kept.get(meeting.id);
       if (already) {
         next.push(already);
@@ -1744,11 +1830,53 @@ function PetPanel({
           <div
             ref={bubble}
             aria-live="polite"
-            className="pointer-events-none absolute z-10 max-w-[13rem] rounded border border-rule-strong bg-panel px-2 py-1 text-label leading-snug text-ink opacity-0 transition-opacity duration-200"
+            className="pointer-events-none absolute z-30 max-w-[13rem] rounded border border-rule-strong bg-panel px-2 py-1 text-label leading-snug text-ink opacity-0 transition-opacity duration-200"
             style={{ left: -9999, top: -9999 }}
           >
             {speech}
           </div>
+
+          {/* Dấu hiệu trên đầu con thú, và nó Ở LẠI chứ không bay lên rồi tan
+              như `spawnBits`: mấy mẩu kia báo một chuyện vừa xảy ra, cái này nói
+              một trạng thái đang diễn ra. `z-30` để nó nằm TRÊN lớp mờ — con thú
+              bị làm tối đi, còn dấu hiệu thì không, nên mắt rơi đúng vào nó. */}
+          <div
+            ref={sickMark}
+            aria-hidden
+            className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full opacity-0 transition-opacity duration-200"
+            style={{ left: -9999, top: -9999 }}
+          >
+            <PixelIcon name="frown" scale={2} />
+          </div>
+
+          {/*
+           * Ốm: phủ mờ bản đồ và đưa ra đúng MỘT việc để làm.
+           *
+           * Chỉ phủ BẢN ĐỒ, không phủ cả bảng — mấy cái nút chăm sóc nằm dưới
+           * khung này và vẫn bấm được. Cho ăn với cho ngủ vẫn vực con thú lên
+           * được, chỉ chậm hơn; một lớp phủ chặn hết mọi đường sẽ biến trạng
+           * thái này thành cái bẫy, đúng thứ §12 tài liệu cơ chế từ chối.
+           *
+           * Nút mở đúng thẻ nhiệm vụ mà một vị khách bình thường mở — không có
+           * đường chấm điểm thứ hai nào ở đây (ADR-012 §2).
+           */}
+          {sick && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-ground/75 px-4 text-center">
+              <p className="text-small font-semibold text-ink">Thú cưng đang ốm</p>
+              {sickLine && (
+                <p className="max-w-[16rem] text-label italic text-ink-muted">{sickLine}</p>
+              )}
+              {rescue ? (
+                <Button size="sm" onClick={() => openQuestRef.current(rescue.id)}>
+                  Hồi phục
+                </Button>
+              ) : (
+                // Kho nội dung rỗng thì KHÔNG để một cái nút chết ở đây: nói ra
+                // đường còn lại, vốn vẫn mở.
+                <p className="text-label text-ink-muted">Cho nó ăn hoặc cho nó ngủ để khá lên.</p>
+              )}
+            </div>
+          )}
         </div>
         {shown?.kind === "list" && (
           <GuestList
@@ -1823,6 +1951,9 @@ function PetPanel({
             condition={conditionOf(needs)}
             busy={busy}
             asleep={asleep}
+            // Chỉ khoá khi nhiệm vụ THẬT SỰ có. Không có mà vẫn khoá thì con
+            // thú kẹt lại không đường nào ra, và bảng đã nói sẵn đường còn lại.
+            halted={sick && rescue !== null ? "Làm nhiệm vụ hồi phục trước đã." : null}
             onAction={act}
             leading={<PetlandMusicToggle />}
           />

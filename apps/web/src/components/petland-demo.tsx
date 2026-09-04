@@ -430,6 +430,7 @@ export function PetlandDemo() {
           needs={needs}
           condition={condition}
           asleep={false}
+          halted={null}
           busy={phase === "feed" && progress < 0.2}
           onAction={() => {}}
         />

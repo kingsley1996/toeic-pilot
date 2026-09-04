@@ -78,6 +78,7 @@ export function PetHud({
   condition,
   busy,
   asleep,
+  halted,
   onAction,
   leading,
 }: {
@@ -92,6 +93,18 @@ export function PetHud({
    * màn hình, nên không phải đi tìm.
    */
   asleep: boolean;
+  /**
+   * Lý do MỌI hành động chăm sóc đang bị chặn, hoặc `null` nếu không bị.
+   *
+   * Khác `whyUnavailable`: hàm kia thuần tuý đọc ba chỉ số, còn đây là một tình
+   * huống mà chỉ chỗ gọi mới biết — con thú ốm và đang có một nhiệm vụ hồi phục
+   * chờ sẵn, nên việc đáng làm là bấm cái nút ấy chứ không phải cho ăn.
+   *
+   * Chỗ gọi chỉ truyền vào khi nhiệm vụ THẬT SỰ có: không có nhiệm vụ mà vẫn
+   * khoá nút thì con thú kẹt lại và không đường nào ra — một cái bẫy, đúng thứ
+   * §12 tài liệu cơ chế từ chối.
+   */
+  halted: string | null;
   /** Có hành động đang gửi đi — khoá nút trong lúc đó. */
   busy: boolean;
   onAction: (action: PetAction) => void;
@@ -139,11 +152,13 @@ export function PetHud({
           const sent = sleepButton && asleep ? "wake" : action;
           // Đang ngủ thì mọi nút trừ nút đánh thức đều mờ, và lý do nói đúng
           // chuyện đang xảy ra chứ không phải chuyện chỉ số.
-          const why = asleep
-            ? sleepButton
-              ? null
-              : "Nó đang ngủ, để nó ngủ đã."
-            : whyUnavailable(needs, action);
+          const why = halted
+            ? halted
+            : asleep
+              ? sleepButton
+                ? null
+                : "Nó đang ngủ, để nó ngủ đã."
+              : whyUnavailable(needs, action);
           const blocked = busy || why !== null;
           return (
             <button

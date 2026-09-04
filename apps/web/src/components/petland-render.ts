@@ -144,7 +144,7 @@ export type PetView = {
    * thứ hai, và nó lệch khỏi bộ kia vào đúng ngày ai đó chỉnh một con số — lúc
    * ấy con thú ngồi bệt trong khi dòng chữ nói nó vui vẻ.
    */
-  condition: "exhausted" | "hungry" | "sad" | "cheerful" | "content";
+  condition: "sick" | "exhausted" | "hungry" | "sad" | "cheerful" | "content";
   /**
    * Tiết mục theo bậc hiếm, đã quy ra cờ (ADR-013 §5).
    *
@@ -723,7 +723,8 @@ export async function createStage(
        *
        * Giấc ngủ THẮNG tình trạng: con thú đang ngủ thì nằm, dù nó đói.
        */
-      const sitting = !view.sleeping && view.condition === "exhausted";
+      const sitting =
+        !view.sleeping && (view.condition === "exhausted" || view.condition === "sick");
       const lying = view.sleeping
         ? { x: 1.12, y: 0.82 }
         : sitting

@@ -571,10 +571,13 @@ def read_encounters(
     An toàn vì nhịp sinh được **hẹn trước**: gọi lại mười lần trong một giây
     không tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.
     """
+    at = _now()
     _state, pet = ensure_pet(db, current_user.id)
     state = db.get(PetState, current_user.id)
     assert state is not None
-    rows = encounters.sync(db, user_id=current_user.id, pet=state)
+    # Ốm thì gọi người tới ngay thay vì đợi hết nhịp — xem `encounters.sync`.
+    sick = needs_service.is_sick(_current_needs(pet, at))
+    rows = encounters.sync(db, user_id=current_user.id, pet=state, sick=sick, now=at)
     db.commit()
     # Mảng trần, không bọc `Page[T]`: số cuộc bị chặn cứng bởi miền
     # (`MAX_PER_KIND` mỗi loại, hai loại), nên đây là nhóm (A) của
@@ -659,6 +662,16 @@ def answer_encounter(
         if row.steps_done >= row.steps_total:
             row.state = "done"
             granted = encounters.reward(db, row)
+            # Con thú ỐM được vực dậy khi việc xong — nửa "recover" của vòng mà
+            # §12 tài liệu cơ chế mô tả. Ghi cả `needs_at`: từ giây này ảnh chụp
+            # mới là mốc, nếu không lần đọc sau trừ lại đúng quãng vừa rồi.
+            before = _current_needs(pet_row, at)
+            if needs_service.is_sick(before):
+                after = needs_service.revive(before)
+                pet_row.fullness = after.fullness
+                pet_row.energy = after.energy
+                pet_row.mood = after.mood
+                pet_row.needs_at = at
             # Con thú cũng lên XP: nó vừa được người nuôi dắt đi làm một việc,
             # và với kẻ xâm nhập thì nó đứng ra đánh nhau. Đi qua đúng `_award`
             # nên trần ngày, mốc level và múi giờ người học đều là một bộ với

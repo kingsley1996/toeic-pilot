@@ -110,12 +110,17 @@ export function QuestCard({
       // khác nhau.
       if (danger && result.correct) onFight(result.done);
       if (result.done) {
+        const rescue = encounter.kind === "rescue";
         notifyPet({
           tone: "ok",
-          title: danger ? "Đã đẩy lui!" : "Xong nhiệm vụ",
+          title: rescue ? "Thú cưng đã hồi phục" : danger ? "Đã đẩy lui!" : "Xong nhiệm vụ",
           // Ruby vào `gains` chứ không viết vào câu chữ: ba con số phần thưởng
           // hiện cùng một kiểu ở mọi thông báo, nên mắt tìm chúng ở một chỗ.
-          gains: { ruby: result.reward_ruby },
+          //
+          // Hồi phục KHÔNG có `gains`: nó trả 0 ruby, và một dòng "+0" là nhiễu
+          // — tệ hơn thế, nó đọc ra như một phần thưởng bị hụt. Thứ vừa nhận
+          // được nằm ở chính cái tiêu đề.
+          gains: rescue ? undefined : { ruby: result.reward_ruby },
           sound: "complete",
           dedupeKey: `quest-${encounter.id}`,
         });

@@ -14,15 +14,18 @@ from app.services.pet import (
     MAX_PET_LEVEL,
     ONE,
     PET_LEVEL_XP,
+    REVIVE_TO,
     SLEEP_MAX_SECONDS,
     XP_PER_ACTION,
     Needs,
     apply,
     decay,
     grant,
+    is_sick,
     level_from_xp,
     level_progress,
     refusal,
+    revive,
     xp_for_action,
 )
 
@@ -81,6 +84,31 @@ def test_a_starving_pet_loses_energy_instead_of_gaining_it() -> None:
     # Và luôn có lối ra: cho ăn xong thì đồng hồ chạy xuôi trở lại.
     fed = decay(fresh(fullness="0.90", energy=str(starving.energy)), DAY / 4)
     assert fed.energy > starving.energy
+
+
+def test_sick_is_all_three_at_once_and_reviving_lifts_all_three() -> None:
+    """Ốm là cả BA cùng dưới ngưỡng, không phải cái tệ nhất trong ba.
+
+    Hai chỉ số cạn mà cái thứ ba còn ổn thì vẫn còn một đường chăm sóc bình
+    thường chạy được, nên đó chưa phải chuyện cần gọi người tới giúp.
+
+    Vực dậy chứ không chữa lành: `REVIVE_TO` nhấc vừa qua ngưỡng, đủ để đường
+    chăm sóc bình thường chạy lại được. Một câu trả lời mà trả về con thú đầy ắp
+    thì bỏ bê hoá ra lại là đường đi nhanh.
+    """
+    low = Decimal("0.05")
+    sick = Needs(fullness=low, energy=low, mood=low)
+    assert is_sick(sick)
+    assert not is_sick(Needs(fullness=low, energy=Decimal("0.80"), mood=low))
+    assert not is_sick(Needs(fullness=Decimal("0.80"), energy=low, mood=low))
+
+    back = revive(sick)
+    assert back.fullness == back.energy == back.mood == REVIVE_TO
+    assert not is_sick(back), "vực dậy xong thì phải thôi ốm, nếu không nó gọi khách mãi"
+
+    # Chỉ số đã cao hơn thì KHÔNG bị kéo xuống — vực dậy là nhấc lên, không phải đặt lại.
+    mixed = Needs(fullness=Decimal("0.90"), energy=low, mood=low)
+    assert revive(mixed).fullness == Decimal("0.90")
 
 
 def test_a_sad_pet_rests_only_half_as_well() -> None:

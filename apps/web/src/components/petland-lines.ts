@@ -22,6 +22,12 @@
 import { type PetCondition } from "@/components/petland-pet";
 
 const LINES: Record<PetCondition, readonly string[]> = {
+  sick: [
+    "Mình thấy không ổn lắm…",
+    "Bạn ở lại với mình một lát nhé?",
+    "Hình như có ai đang tới. Bạn giúp mình với.",
+    "Mình cần bạn một chút.",
+  ],
   exhausted: [
     "Mình mỏi chân quá…",
     "Cho mình chợp mắt một lát nhé?",

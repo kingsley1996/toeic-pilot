@@ -69,6 +69,15 @@ còn lại — cả năm cùng mất giá.
 """
 MAX_PER_KIND = 2
 
+"""Nhiệm vụ hồi phục sống cả ngày, khác hẳn mười phút của một vị khách.
+
+Đồng hồ ngắn của NPC là thứ biến một lời mời thành một khoảnh khắc (ADR-012 §1).
+Nhưng đây không phải lời mời — nó là lối DUY NHẤT ra khỏi trạng thái ốm bằng một
+bước, và một lối ra hết hạn giữa chừng thì con thú kẹt lại tới lần đọc sau. Cho
+nó cả ngày, và nó tự biến mất khi con thú đã khoẻ.
+"""
+RESCUE_LIFE_SECONDS = 24 * 60 * 60
+
 __all__ = [
     "MAX_HINTS",
     "MAX_PER_KIND",
@@ -200,6 +209,7 @@ def sync(
     *,
     user_id: uuid.UUID,
     pet: PetState,
+    sick: bool = False,
     now: datetime | None = None,
     rng: random.Random | None = None,
 ) -> list[Encounter]:
@@ -251,6 +261,31 @@ def sync(
         pet.next_intruder_at = _schedule(picker, at, config.intruder_gap_seconds)
     if pet.next_npc_at is None or pet.next_intruder_at is None:
         return alive
+
+    # 2b. Con thú ỐM thì có một nhiệm vụ HỒI PHỤC, làn riêng.
+    #
+    #     Đây là nửa "thú xin được chú ý" của §12 tài liệu cơ chế. Bản đầu mượn
+    #     làn NPC bằng cách hạ giờ hẹn xuống, và mượn thì kéo theo cả những thứ
+    #     không thuộc về nó: nhịp hai mươi phút, trần hai cuộc, số bước, và mức
+    #     thưởng ruby — nên cứu con thú lại thành một nguồn thu, và một lần cứu
+    #     tiêu mất suất NPC của người học.
+    #
+    #     Làn riêng nên KHÔNG có giờ hẹn: nó sinh theo trạng thái, không theo
+    #     đồng hồ. ADR-012 §1 vẫn nguyên — vẫn sinh lúc đọc, vẫn không có gì
+    #     chạy lúc vắng mặt, và một con thú ốm lúc người ta vắng mặt thì đơn giản
+    #     là chưa có nhiệm vụ nào cho tới khi họ mở bảng ra.
+    if sick and not any(row.kind == "rescue" for row in alive):
+        made = _spawn(db, user_id=user_id, kind="rescue", at=at, config=config, rng=picker)
+        if made is not None:
+            alive.append(made)
+    elif not sick:
+        # Khoẻ lại rồi thì dọn nhiệm vụ hồi phục đang treo: nó thuộc về một trạng
+        # thái không còn nữa, và để lại thì nó là một câu hỏi lơ lửng không ai
+        # biết vì sao có.
+        for row in alive:
+            if row.kind == "rescue":
+                row.state = "expired"
+        alive = [row for row in alive if row.kind != "rescue"]
 
     # 3. Mỗi loại một làn riêng, xét kẻ xâm nhập trước: nó hiếm hơn nhiều, nên
     #    một lần lỡ nhịp của nó tốn hàng giờ, còn của NPC thì tốn vài phút.
@@ -356,29 +391,52 @@ def _spawn(
     chính tả, nên rải đều hai dạng sẽ làm người học gặp lại cùng một câu nghe
     nhiều lần trong tuần.
     """
-    task_kind = "dictation" if rng.random() < DICTATION_SHARE else "vocabulary"
+    # Hồi phục chỉ giao TỪ VỰNG. Chép chính tả là gõ lại trọn một câu nghe được
+    # — nặng hơn hẳn một câu chọn nghĩa, và đây là lối ra khỏi một trạng thái
+    # chứ không phải một bài để thử sức. Bắt gõ cả câu lúc con thú đang nằm bẹp
+    # là dựng thêm một bức tường trước cái cửa.
+    if kind == "rescue":
+        task_kind = "vocabulary"
+    else:
+        task_kind = "dictation" if rng.random() < DICTATION_SHARE else "vocabulary"
     target = pick_target(db, user_id, task_kind, rng)
-    if target is None:
-        # Kho của dạng vừa bốc đang rỗng — thử dạng kia trước khi bỏ cuộc.
+    if target is None and kind != "rescue":
+        # Kho của dạng vừa bốc đang rỗng — thử dạng kia trước khi bỏ cuộc. Hồi
+        # phục thì KHÔNG đổi sang chép chính tả: thà không có nhiệm vụ (bảng tự
+        # nói ra đường cho ăn) còn hơn đưa ra đúng dạng vừa loại đi.
         task_kind = "vocabulary" if task_kind == "dictation" else "dictation"
         target = pick_target(db, user_id, task_kind, rng)
     if target is None:
         return None
 
     intruder = kind == "intruder"
+    rescue = kind == "rescue"
     row = Encounter(
         user_id=user_id,
         kind=kind,
         task_kind=task_kind,
         target_id=target,
+        # Hồi phục đúng MỘT câu. Nó không phải một cuộc chạm mặt để chơi, nó là
+        # lối ra khỏi một trạng thái — bắt làm ba bước lúc con thú đang nằm bẹp
+        # là dựng một cái cổng, không phải một lối ra.
         steps_total=config.intruder_steps if intruder else 1,
         steps_done=0,
         # Chốt mức thưởng NGAY LÚC SINH: hạ mức giữa lúc một NPC đang đứng chờ
         # không được đổi lời hứa đã hiện trên màn hình.
-        reward_ruby=config.intruder_reward if intruder else config.npc_reward,
+        #
+        # Hồi phục KHÔNG trả ruby: phần thưởng của nó là con thú đứng dậy được.
+        # Trả thêm tiền thì bỏ bê hoá ra là một nguồn thu, và lúc ấy cái trạng
+        # thái này thôi là chuyện đáng tránh.
+        reward_ruby=0 if rescue else (config.intruder_reward if intruder else config.npc_reward),
         state="waiting",
+        # Không hết hạn theo đồng hồ ngắn: một lời mời bỏ lỡ thì thôi, còn một
+        # lối ra bỏ lỡ thì con thú kẹt lại. Cho nó cả ngày.
         expires_at=at
-        + timedelta(seconds=config.intruder_life_seconds if intruder else config.npc_life_seconds),
+        + timedelta(
+            seconds=RESCUE_LIFE_SECONDS
+            if rescue
+            else (config.intruder_life_seconds if intruder else config.npc_life_seconds)
+        ),
     )
     db.add(row)
     db.flush()
