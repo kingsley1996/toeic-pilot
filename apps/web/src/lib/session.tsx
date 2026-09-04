@@ -8,12 +8,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
 
-import { apiFetch } from "@/lib/api";
+import { ApiError, apiFetch } from "@/lib/api";
 import { clearAccessToken, getAccessToken, subscribeToToken } from "@/lib/auth-storage";
 
 export type SessionStatus = "loading" | "authenticated" | "anonymous";
@@ -67,27 +68,55 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   // Bộ đếm chứ không phải cờ boolean: hai lần lưu liên tiếp phải chạy hai lượt
   // đọc, còn cờ bật-tắt sẽ nuốt mất lượt thứ hai.
   const [reloadKey, setReloadKey] = useState(0);
+  const refresh = useCallback(() => setReloadKey((key) => key + 1), []);
+  /* Đếm số lần thử lại của lượt đọc bên dưới. Ref chứ không phải state: nó điều
+     khiển vòng thử lại chứ không vẽ ra gì, và đặt vào state thì mỗi lần tăng là
+     một lần dựng lại cả cây. */
+  const tries = useRef(0);
 
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
+    let again = 0;
     apiFetch<UserPublic>(API_ROUTES.me, { token })
       .then((me) => {
-        if (!cancelled) setUser(me);
-      })
-      .catch(() => {
         if (cancelled) return;
-        // An expired or tampered token looks the same as none at all from here,
-        // and leaving it in storage would retry on every navigation.
-        clearAccessToken();
-        setRejected(true);
+        tries.current = 0;
+        setUser(me);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        /*
+         * Chỉ vứt token khi MÁY CHỦ chối nó, không phải khi request hỏng.
+         *
+         * Token hết hạn hay bị sửa thì từ đây trông y như không có token, và giữ
+         * nó lại chỉ để thử lại ở mọi lần điều hướng. Nhưng một request HỎNG thì
+         * không nói gì về token cả: mạng chập, máy chủ 503, hay — dễ gặp nhất —
+         * `fetch` bị chính cú điều hướng huỷ giữa chừng. Vứt token trong những
+         * ca đó là **tự đăng xuất người dùng vì một cú nhấp chuột nhanh**, và họ
+         * chỉ thấy mình đột nhiên ở màn hình đăng nhập, không một lời giải thích.
+         */
+        if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+          clearAccessToken();
+          setRejected(true);
+          return;
+        }
+        /*
+         * Giữ token thôi thì chưa đủ: `status` suy ra từ `user`, nên một lượt
+         * đọc hỏng mà không thử lại sẽ treo cả app ở `loading` — người dùng ngồi
+         * nhìn khung xám mãi mãi, còn tệ hơn bị đá ra màn hình đăng nhập. Thử
+         * lại vài lần rồi thôi: hỏng dai thì đó là chuyện của mạng, và thử mãi
+         * chỉ đổi một chỗ treo lấy một vòng lặp.
+         */
+        if (tries.current >= 2) return;
+        tries.current += 1;
+        again = window.setTimeout(refresh, 700 * tries.current);
       });
     return () => {
       cancelled = true;
+      window.clearTimeout(again);
     };
-  }, [token, reloadKey]);
-
-  const refresh = useCallback(() => setReloadKey((key) => key + 1), []);
+  }, [token, reloadKey, refresh]);
 
   const router = useRouter();
   const logout = useCallback(() => {

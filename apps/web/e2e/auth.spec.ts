@@ -113,3 +113,73 @@ test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được
   }, token);
   expect(status).toBe(401);
 });
+
+/*
+ * Một lượt đọc `/auth/me` HỎNG không phải là một token hỏng.
+ *
+ * Đây là một lỗi có thật, và nó tự lộ ra khi ba lần nạp lại nối nhau: cú điều
+ * hướng huỷ luôn `fetch` đang bay, `SessionProvider` bắt được lỗi và — vì nó
+ * coi mọi thất bại là "token bị chối" — xoá token đi. Người dùng chỉ thấy mình
+ * đột nhiên ở màn hình đăng nhập sau một cú bấm hơi nhanh, không lời giải thích
+ * nào, và không lỗi nào in ra ở đâu cả.
+ *
+ * Chặn đúng MỘT lượt gọi thay vì nạp lại thật nhanh: cuộc đua kia không tái
+ * hiện chắc chắn, nên một bài dựa vào nó sẽ xanh cả khi luật đã bị gỡ — đúng
+ * loại bài vô dụng mà repo này đã gặp hai lần.
+ */
+test("một lượt đọc phiên hỏng thì không đăng xuất người dùng", async ({ page }) => {
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
+
+  let blocked = 0;
+  await page.route("**/api/v1/auth/me", async (route) => {
+    if (blocked === 0) {
+      blocked += 1;
+      await route.abort("failed");
+      return;
+    }
+    await route.continue();
+  });
+
+  await page.reload();
+
+  // Nửa thứ nhất: token còn nguyên. Nửa thứ hai: phiên TỰ hồi lại — giữ token
+  // mà không thử đọc lại thì `status` kẹt ở `loading` và người dùng ngồi nhìn
+  // khung xám mãi, chỉ là một chỗ hỏng khác thay cho chỗ cũ.
+  await expect(page.getByRole("navigation").getByRole("link", { name: "Hôm nay" })).toBeVisible();
+  expect(blocked).toBe(1);
+  expect(
+    await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token")),
+  ).not.toBeNull();
+});
+
+/* Chiều ngược lại, và nó mới là chiều bảo mật: máy chủ CHỐI token thì phải vứt
+   ngay. Không có bài này thì nới lỏng ở trên trông giống hệt một lần bỏ luôn
+   việc kiểm token. */
+test("máy chủ chối token thì phiên bị vứt ngay", async ({ page }) => {
+  await page.goto("/register");
+  await page.getByLabel("Email").fill(freshEmail());
+  await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
+  await page.getByRole("button", { name: "Tạo tài khoản" }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
+
+  await page.route("**/api/v1/auth/me", (route) =>
+    route.fulfill({
+      status: 401,
+      contentType: "application/json",
+      body: JSON.stringify({ detail: "Not authenticated" }),
+    }),
+  );
+
+  await page.reload();
+
+  await expect(page).toHaveURL(/\/login/);
+  expect(
+    await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token")),
+  ).toBeNull();
+});
