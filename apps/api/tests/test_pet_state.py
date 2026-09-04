@@ -317,10 +317,13 @@ def test_actions_earn_xp_and_the_level_follows(client: TestClient) -> None:
 
 
 def test_poking_five_hundred_times_does_not_max_the_level(client: TestClient) -> None:
-    """Trần ngày là thứ giữ cho level pet còn nghĩa.
+    """Chọc là hành động rẻ nhất, nên nó phải là hành động tự cạn nhanh nhất.
 
-    Không có nó thì con số ấy chỉ đo được sự kiên nhẫn của ngón tay, không đo
-    được việc nuôi con thú.
+    Hai luật cùng làm việc đó, và không luật nào là đồng hồ hồi chiêu. Vui cộng
+    theo PHẦN CÒN THIẾU nên nó tiến tới 1 mà không bao giờ nhảy tới; và điểm thôi
+    sinh khi con thú đã vui sẵn. Trước đó chọc đủ ba mươi cái là hết suất đầy của
+    ngày mà không học một chữ nào — sau khi trần cứng thành đường cong, chuyện đó
+    còn ĐỐT mất phần đầy suất đáng ra dành cho việc học.
     """
     headers = auth_headers(client, "spammer@example.com")
     client.get("/api/v1/pet", headers=headers)
@@ -328,8 +331,10 @@ def test_poking_five_hundred_times_does_not_max_the_level(client: TestClient) ->
     for _ in range(60):
         last = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
     assert last is not None
-    assert last["xp_today"] == last["daily_cap"]
-    assert last["xp"] == last["daily_cap"]
+    assert last["needs"]["mood"] < 1.0, "cộng theo phần còn thiếu thì không bao giờ chạm nóc"
+    assert 0 < last["xp_today"] < last["daily_full_xp"], (
+        "sáu mươi cú bấm không được tiêu hết suất đầy của ngày"
+    )
 
 
 def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Session) -> None:
@@ -340,19 +345,21 @@ def test_hitting_the_cap_still_feeds_the_pet(client: TestClient, db_session: Ses
     """
     headers = auth_headers(client, "capped@example.com")
     client.get("/api/v1/pet", headers=headers)
-    for _ in range(40):
-        client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
 
     user = db_session.scalars(select(User).where(User.email == "capped@example.com")).one()
     pet = db_session.get(PetOwned, (user.id, "cat"))
     assert pet is not None
+    # Đặt thẳng bộ đếm thay vì bấm cho hết suất: bài này nói về NHU CẦU lúc điểm
+    # đã chậm lại, nên đường tới đó không phải thứ nó đo.
+    pet.xp_raw_today = 200
+    pet.xp_today = 0
+    pet.xp_day = None
     pet.fullness = Decimal("0.10")
     pet.needs_at = datetime.now(UTC)
     db_session.commit()
 
     fed = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers).json()
-    assert fed["xp_today"] == fed["daily_cap"]  # XP đã kịch trần
-    assert fed["needs"]["fullness"] > 0.10  # nhưng vẫn no lên
+    assert fed["needs"]["fullness"] > 0.10, "chậm điểm không được đụng tới nhu cầu"
 
 
 def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Session) -> None:
@@ -367,6 +374,10 @@ def test_a_new_day_resets_the_daily_counter(client: TestClient, db_session: Sess
     assert pet is not None
     assert pet.xp_today == 5
     pet.xp_day = pet.xp_day - timedelta(days=1) if pet.xp_day else None
+    # Vui thấp hẳn: chọc chỉ sinh điểm khi con thú CHƯA vui sẵn, mà bài này đo
+    # bộ đếm ngày chứ không đo luật đó.
+    pet.mood = Decimal("0.10")
+    pet.needs_at = datetime.now(UTC)
     db_session.commit()
 
     again = client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers).json()
@@ -444,14 +455,15 @@ def test_a_freshly_hatched_pet_can_still_earn_today(
     headers = auth_headers(client, "second-pet@example.com")
     client.get("/api/v1/pet", headers=headers)
 
-    # Dùng hết trần của con đang nuôi.
-    for _ in range(40):
-        client.post("/api/v1/pet/actions", json={"action": "poke"}, headers=headers)
-    first = client.get("/api/v1/pet", headers=headers).json()
-    assert first["xp_today"] == first["daily_cap"]
+    # Dùng hết suất đầy của con đang nuôi.
+    user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
+    first_pet = db_session.get(PetOwned, (user.id, "cat"))
+    assert first_pet is not None
+    first_pet.xp_raw_today = 200
+    first_pet.xp_today = 30
+    db_session.commit()
 
     # Một con khác vào tủ, rồi đổi sang nó.
-    user = db_session.scalars(select(User).where(User.email == "second-pet@example.com")).one()
     db_session.add(PetOwned(user_id=user.id, species="duck"))
     db_session.commit()
     switched = client.patch("/api/v1/pet", json={"species": "duck"}, headers=headers)

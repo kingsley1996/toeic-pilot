@@ -149,29 +149,53 @@ test("cho ăn làm chỉ số no tăng, và ăn tiếp khi đã no thì bị t�
   await expect(feed).toHaveAttribute("title", /đang no/i);
 });
 
-test("chăm thú cưng làm nó lên level, và chạm trần ngày thì nói ra", async ({ page }) => {
+test("chọc một con đã vui sẵn thì thôi sinh điểm", async ({ page, request }) => {
+  /*
+   * Bài này thay cho một bài cũ chốt "chạm trần ngày thì nói ra", và lý do thay
+   * đáng ghi lại: bài cũ chỉ tới được mốc 30 XP bằng cách bấm "Chọc" ba mươi
+   * lần — tức nó xanh nhờ ĐÚNG cái lỗ hổng đã bịt. Một con thú mới chỉ kiếm
+   * được chừng hai mươi điểm bằng đường chăm sóc hợp lệ (một lần ăn, ba lần đi
+   * dạo), nên mốc ấy giờ không tới được trong một phiên, và đó là chủ ý.
+   *
+   * Thứ đo ở đây là luật thay thế: chọc cộng vui theo phần CÒN THIẾU, và thôi
+   * sinh điểm khi con thú đã vui sẵn. Đi qua đúng cái nút thật, rồi hỏi máy chủ
+   * — con số trên bảng là thanh XP, không đọc thành số được.
+   */
   await signUp(page);
   await openPet(page).click();
 
-  // Chốt trong THANH TIÊU ĐỀ của bảng: thẻ ở sidebar cũng in `Lv N`, nên một
-  // `getByText` trần khớp hai chỗ và chế độ strict từ chối.
-  await expect(panelBar(page).getByText(/^Lv \d+$/)).toBeVisible();
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  const readPet = async () =>
+    (
+      await request.get("http://localhost:8000/api/v1/pet", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    ).json();
+
   const poke = page.getByRole("button", { name: /Chọc/i });
 
-  /*
-   * Bấm cho tới khi kịch trần. Ba mươi lần chọc là đúng ba mươi XP, tức vừa đủ
-   * trần — nên vòng lặp này chạm tới nó chứ không phải chỉ tiến gần.
-   *
-   * Nút KHÔNG tự mờ khi hết XP, và đó là chủ ý: chăm con thú vẫn có tác dụng
-   * lên nhu cầu sau khi điểm đã dừng. Khoá nút ở đó sẽ nói dối rằng hành động
-   * không còn nghĩa gì.
-   */
-  for (let i = 0; i < 31; i += 1) {
+  // Con thú mới bắt đầu ở vui 0,70 — ngay dưới mốc "đang vui" (0,75). Vài cú
+  // bấm là qua, và đó chính là điều bài này muốn thấy.
+  for (let i = 0; i < 6; i += 1) {
     await poke.click();
-    await page.waitForTimeout(40);
+    await page.waitForTimeout(120);
   }
+  const cheerful = await readPet();
+  expect(cheerful.needs.mood).toBeGreaterThanOrEqual(0.75);
 
-  await expect(page.getByText(/đã nhận đủ 30 XP/i)).toBeVisible();
+  const before = cheerful.xp_today;
+  const moodBefore = cheerful.needs.mood;
+  for (let i = 0; i < 5; i += 1) {
+    await poke.click();
+    await page.waitForTimeout(120);
+  }
+  const after = await readPet();
+
+  expect(after.xp_today).toBe(before);
+  // Nhưng nút KHÔNG chết: vui vẫn nhích lên. Chặn hẳn sẽ là phạt người dùng,
+  // còn một nút bấm không làm gì thì đọc ra là hỏng.
+  expect(after.needs.mood).toBeGreaterThan(moodBefore);
+  expect(after.needs.mood).toBeLessThan(1);
 });
 
 test("màn trứng in tỉ lệ, và không có ruby thì nút mở bị khoá", async ({ page, request }) => {

@@ -5742,8 +5742,8 @@ export interface components {
         };
         /** PetPublic */
         PetPublic: {
-            /** Daily Cap */
-            daily_cap: number;
+            /** Daily Full Xp */
+            daily_full_xp: number;
             /** Facing */
             facing: string;
             /**

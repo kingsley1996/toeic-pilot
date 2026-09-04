@@ -5694,8 +5694,8 @@
       },
       "PetPublic": {
         "properties": {
-          "daily_cap": {
-            "title": "Daily Cap",
+          "daily_full_xp": {
+            "title": "Daily Full Xp",
             "type": "integer"
           },
           "facing": {
@@ -5797,7 +5797,7 @@
           "xp_into_level",
           "xp_for_next",
           "xp_today",
-          "daily_cap",
+          "daily_full_xp",
           "tile_x",
           "tile_y",
           "facing",

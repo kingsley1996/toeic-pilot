@@ -1826,13 +1826,17 @@ function PetPanel({
             leading={<PetlandMusicToggle />}
           />
           {refused && <p className="px-3 pb-2 text-small text-warn">{refused}</p>}
-          {/* Chạm trần phải NÓI RA. Không nói thì người dùng cho ăn tiếp và
-              tưởng hệ thống hỏng khi con số đứng yên — cùng lý do khối việc
-              hôm nay in câu tương tự. */}
-          {pet && pet.xp_today >= pet.daily_cap && (
+          {/* Điểm chậm lại thì phải NÓI RA. Không nói thì người dùng chăm tiếp
+              và tưởng hệ thống hỏng khi con số gần như đứng yên.
+
+              Và câu này phải nói đúng cái đang xảy ra: điểm KHÔNG dừng nữa, nó
+              giảm suất. Một câu "hết điểm tới ngày mai" ở đây sẽ dựng lại đúng
+              cái trần cứng mà đường cong sinh ra để bỏ — trong đầu người đọc,
+              chỗ duy nhất mà nó còn quan trọng. */}
+          {pet && pet.xp_today >= pet.daily_full_xp && (
             <p className="px-3 pb-2 text-small text-ink-muted">
-              Hôm nay thú cưng đã nhận đủ {pet.daily_cap} XP. Chăm tiếp vẫn có tác dụng, chỉ có điểm
-              là dừng tới ngày mai.
+              Hôm nay thú cưng đã nhận đủ {pet.daily_full_xp} XP ở suất đầy. Chăm tiếp vẫn được
+              điểm, chỉ chậm hơn.
             </p>
           )}
         </div>

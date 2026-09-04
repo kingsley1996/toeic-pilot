@@ -665,6 +665,14 @@ class PetOwned(Base):
     """
 
     xp_today: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="0")
+    xp_raw_today: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="0")
+    """XP đã KIẾM trong ngày, trước khi áp đường cong giảm dần.
+
+    Cần cột riêng vì `xp_today` (đã trao) không suy ngược ra được: nhiều mức thô
+    khác nhau cùng cho một mức đã trao, nên chia tỉ lệ từ nó sẽ sai. Chia tỉ lệ
+    trên từng lượt thay vì trên tổng thô cũng không được — một lượt đáng một
+    điểm sau mốc sẽ thành không điểm, tức lại là trần cứng.
+    """
     xp_day: Mapped[date | None] = mapped_column(Date, nullable=True)
     """XP con này đã nhận trong NGÀY nào, theo múi giờ người học.
 

@@ -55,7 +55,13 @@ class PetPublic(BaseModel):
     xp_for_next: int
     """`0 / 0` khi đã kịch bảng — một thanh đầy 100% ở đó đọc ra là "sắp lên level"."""
     xp_today: int
-    daily_cap: int
+    daily_full_xp: int
+    """Bao nhiêu XP mỗi ngày còn ăn ĐỦ SUẤT; qua mốc này vẫn có điểm, chỉ ít đi.
+
+    Không còn là một cái trần, nên tên cũng không được là `daily_cap` nữa — giao
+    diện đọc nó để nói "chăm tiếp vẫn được điểm, chỉ chậm lại", và một cái tên
+    nói "trần" sẽ dẫn thẳng về câu cũ ở lần sửa sau.
+    """
     tile_x: int
     tile_y: int
     facing: str

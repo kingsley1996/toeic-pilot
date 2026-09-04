@@ -87,7 +87,7 @@ def _as_public(
         xp_into_level=progress.into_level,
         xp_for_next=progress.for_next,
         xp_today=pet.xp_today,
-        daily_cap=needs_service.DAILY_XP_CAP,
+        daily_full_xp=needs_service.DAILY_XP_FULL,
         tile_x=pet.tile_x,
         tile_y=pet.tile_y,
         facing=pet.facing,
@@ -203,7 +203,9 @@ def act(
     pet.needs_at = at
 
     # Trao XP sau khi nhu cầu đã ghi — xem docstring của `_award`.
-    _award(db, pet, current_user, needs_service.XP_PER_ACTION[body.action], at)
+    # XP đọc trên nhu cầu TRƯỚC hành động: chọc một con đã vui sẵn thì thôi
+    # sinh điểm, mà `after` thì đã vui hơn rồi nên đọc ở đó là đọc sai mốc.
+    _award(db, pet, current_user, needs_service.xp_for_action(body.action, now), at)
 
     db.commit()
     return _as_public(db, pet, after, at)

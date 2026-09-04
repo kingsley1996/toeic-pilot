@@ -195,6 +195,26 @@ def apply(action: PetAction, needs: Needs) -> Needs:
     con số vẫn hợp lệ nên không có gì báo.
     """
     effect = EFFECTS[action]
+    if action == "poke":
+        # Chọc cộng theo PHẦN CÒN THIẾU, không cộng một khoản cố định.
+        #
+        # Cố định thì chín cú bấm là vui kịch nóc, và cái nút rẻ nhất trong ba
+        # nút lại là đường nhanh nhất tới một con thú hoàn hảo — §6 của
+        # `toeic_pilot_tamagotchi_mechanics.md` gọi đúng đó là spam action. Tài
+        # liệu đưa hai cách chặn: đồng hồ hồi chiêu, hoặc trần sức chứa làm phần
+        # dư bỏ phí. Đây là cách thứ hai, ở dạng liên tục — mỗi cú bấm vẫn có tác
+        # dụng, chỉ nhỏ dần, nên không có lúc nào nút "hỏng" mà cũng không có
+        # đường tắt.
+        #
+        # Đồng hồ hồi chiêu bị loại có lý do: nó sẽ phá chính thứ tự "cho ăn
+        # trước, rồi mới dắt đi" mà `WALK_HUNGRY_BELOW` dựng lên, và bảo một
+        # người mỗi ngày mở ứng dụng một lần rằng hãy quay lại sau ba mươi phút
+        # là phạt đúng nhịp dùng bình thường (ADR-010 §11).
+        effect = Needs(
+            fullness=effect.fullness,
+            energy=effect.energy,
+            mood=effect.mood * (ONE - needs.mood),
+        )
     if action == "poke" and needs.fullness < HUNGRY_BELOW:
         # Chọc một con đang đói thì nó không vui lên mấy — cùng một bậc mà
         # `decay` đã dùng để trừ vui khi đói, nên hai chỗ nói cùng một điều về
@@ -223,6 +243,33 @@ def apply(action: PetAction, needs: Needs) -> Needs:
 no. Ba cái nút mà cái nào cũng cùng một phần thưởng thì không có gì để chọn.
 """
 XP_PER_ACTION: dict[PetAction, int] = {"feed": 3, "poke": 1, "walk": 5, "sleep": 0, "wake": 0}
+
+"""Trên mức này thì chọc thôi sinh điểm.
+
+Bằng đúng `CHEERFUL_ABOVE` của `petland-pet.ts`, và cố ý: đó là mốc mà giao diện
+đã gọi con thú là "Đang vui", nên lúc điểm dừng lại thì trên màn hình đã có sẵn
+một câu giải thích vì sao. Đổi một trong hai mà quên chỗ kia thì không có gì báo
+— hai con số vẫn hợp lệ, chỉ là không còn nói cùng một điều.
+
+Vì sao cần: chọc là hành động duy nhất gần như không có giá (`-0,03` sức), nên
+một điểm mỗi lượt biến nó thành đường kiếm XP rẻ nhất — bấm ba mươi lần là hết
+suất đầy của ngày mà không học một chữ nào. Sau khi trần cứng thành đường cong
+giảm dần, chuyện đó còn tệ hơn: nó ĐỐT mất phần đầy suất đáng ra dành cho việc
+học. Chặn ở đây, chứ không chặn bằng đồng hồ, vì nó nói một điều có nghĩa — một
+con thú đang vui sẵn thì chọc thêm không dạy nó được gì.
+
+Không phạt: cú bấm vẫn cộng vui (nhỏ dần), chỉ là thôi cộng điểm.
+"""
+POKE_XP_MOOD_CEILING = Decimal("0.75")
+
+
+def xp_for_action(action: PetAction, before: Needs) -> int:
+    """XP của một lượt chăm, đọc trên nhu cầu TRƯỚC khi hành động chạy."""
+    if action == "poke" and before.mood >= POKE_XP_MOOD_CEILING:
+        return 0
+    return XP_PER_ACTION[action]
+
+
 """Ngủ và dậy KHÔNG cho XP, có chủ ý.
 
 Chúng không tốn gì và không đòi hỏi gì, nên trả điểm cho chúng là mở lại đúng
@@ -270,25 +317,36 @@ def cheer(needs: Needs, amount: Decimal) -> Needs:
     return Needs(fullness=needs.fullness, energy=needs.energy, mood=_clamp(needs.mood + amount))
 
 
-"""Trần XP mỗi ngày, và nó là thứ giữ cho level pet còn nghĩa.
+"""XP mỗi ngày GIẢM DẦN, không chặn cứng.
 
-Không có trần thì bấm "chọc" năm trăm lần là max level, và lúc đó con số ấy
-không nói lên điều gì về việc nuôi con thú. Cùng lý do XP người học có trần.
+Bản trước chặn cứng ở 30: qua mốc đó thì chăm tiếp không sinh thêm điểm nào. Nó
+giữ cho level pet còn nghĩa, nhưng nói sai một điều — người học lấy con thú làm
+động lực sẽ dừng đúng lúc chạm trần, tức một luật trò chơi đang bảo người ta thôi
+học (`Evaluate_Pet_TOEIC_Pilot.md` §2.2.1).
 
-Trần **cắt bớt** phần thưởng cuối chứ không bỏ hẳn nó: còn hai điểm mà hành động
-đáng năm điểm thì được hai. Bỏ hẳn sẽ khiến một hành động hợp lệ trông như không
-xảy ra.
+Nên giờ 30 điểm đầu ăn đủ suất, phần sau ăn một phần năm. Chăm thêm luôn còn
+đáng, chỉ là không còn là đường nhanh nhất — đúng thứ trần cứng định làm mà không
+kèm câu "thôi đi".
 
-Và **chạm trần không bao giờ đụng tới nhu cầu** — cho ăn vẫn làm con thú no, chỉ
-là không sinh thêm XP. Luật gamification không được phép đổi thứ đã thật sự xảy
-ra; đây đúng là luật mà sổ cái XP người học dựng ra để giữ.
+**Tính trên tổng THÔ của ngày, không phải trên từng lượt.** Chia tỉ lệ từng lượt
+thì một lượt đáng 1 điểm sau mốc sẽ thành `1 // 5 = 0`, tức lại là trần cứng, chỉ
+khác chỗ đặt. Đo trên tổng dồn thì năm lượt một điểm cộng lại đúng một điểm, và
+hàm vẫn đơn điệu — mỗi lượt trao đúng phần chênh mà nó tạo ra.
 """
-DAILY_XP_CAP = 30
+DAILY_XP_FULL = 30
+REDUCED_DIVISOR = 5
 
 
-def grant(xp_today: int, award: int, cap: int = DAILY_XP_CAP) -> int:
-    """Phần XP thật sự được trao sau khi áp trần. Không bao giờ âm."""
-    return max(0, min(award, cap - xp_today))
+def granted_from_raw(raw_today: int) -> int:
+    """Tổng XP thật sự được trao, từ tổng THÔ đã kiếm trong ngày."""
+    return min(raw_today, DAILY_XP_FULL) + max(0, raw_today - DAILY_XP_FULL) // REDUCED_DIVISOR
+
+
+def grant(raw_today: int, award: int) -> int:
+    """Phần XP trao cho lượt này. Không bao giờ âm."""
+    if award <= 0:
+        return 0
+    return granted_from_raw(raw_today + award) - granted_from_raw(raw_today)
 
 
 """Ngưỡng XP CỘNG DỒN của từng level, chỉ số 0 là level 1.

@@ -183,12 +183,16 @@ def award_xp(
     # Trần VÀ xp đều trên con. Để trần ở góc thì con vừa nở không nhận nổi một
     # điểm nào cho tới hôm sau, vì con trước đó đã dùng hết trần của ngày.
     if pet.xp_day != today:
-        # Đặt lại lúc GHI, không phải lúc đọc: kẹp ở đường đọc sẽ biến trần thành
-        # một công thức, và đổi trần sau này sẽ viết lại quá khứ.
+        # Đặt lại lúc GHI, không phải lúc đọc: kẹp ở đường đọc sẽ biến đường cong
+        # thành một công thức, và chỉnh nó sau này sẽ viết lại quá khứ.
         pet.xp_day = today
         pet.xp_today = 0
+        pet.xp_raw_today = 0
 
-    awarded = needs_service.grant(pet.xp_today, amount)
+    awarded = needs_service.grant(pet.xp_raw_today, amount)
+    # Tổng thô cộng dù lượt này được trao 0 điểm: nó là mẫu số của đường cong,
+    # nên bỏ qua sẽ khiến năm lượt một điểm sau mốc mãi mãi không thành một điểm.
+    pet.xp_raw_today += amount
     if awarded == 0:
         return
     pet.xp_today += awarded

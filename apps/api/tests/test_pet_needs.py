@@ -12,6 +12,7 @@ from app.services.pet import (
     EFFECTS,
     FEED_REFUSED_ABOVE,
     MAX_PET_LEVEL,
+    ONE,
     PET_LEVEL_XP,
     XP_PER_ACTION,
     Needs,
@@ -21,6 +22,7 @@ from app.services.pet import (
     level_from_xp,
     level_progress,
     refusal,
+    xp_for_action,
 )
 
 DAY = 86_400.0
@@ -165,21 +167,71 @@ def test_walking_is_the_only_action_that_costs_something() -> None:
 # --- XP và level của con thú ------------------------------------------------
 
 
-def test_the_cap_trims_the_last_award_instead_of_dropping_it() -> None:
-    """Còn hai điểm mà hành động đáng năm điểm thì được hai, không phải không.
+def test_poking_gains_less_the_happier_the_pet_already_is() -> None:
+    """Đây là cách chặn spam mà §6 tài liệu Tamagotchi gọi là trần sức chứa.
 
-    Bỏ hẳn sẽ khiến một hành động hợp lệ trông như không xảy ra — cùng luật với
-    trần XP của người học.
+    Cộng một khoản cố định thì chín cú bấm là vui kịch nóc, và cái nút rẻ nhất
+    trong ba nút thành đường nhanh nhất tới một con thú hoàn hảo. Cộng theo phần
+    còn thiếu thì mỗi cú vẫn có tác dụng — không có lúc nào nút trông như hỏng —
+    nhưng nó tiến tới 1 chứ không nhảy tới.
     """
-    assert grant(xp_today=28, award=5) == 2
-    assert grant(xp_today=30, award=5) == 0
-    assert grant(xp_today=0, award=5) == 5
+    # Hai mốc đều CÁCH XA 1.0: chọn 0,9 thì phép kẹp một mình cũng làm phần cộng
+    # nhỏ đi, và bài kiểm sẽ xanh cả khi luật này bị gỡ ra.
+    low = Needs(fullness=ONE, energy=ONE, mood=Decimal("0.10"))
+    mid = Needs(fullness=ONE, energy=ONE, mood=Decimal("0.50"))
+    gain_low = apply("poke", low).mood - low.mood
+    gain_mid = apply("poke", mid).mood - mid.mood
+    assert gain_low > gain_mid > 0, "vẫn cộng, chỉ nhỏ dần"
+
+    # Và nó không bao giờ CHẠM 1.0 — thứ mà một khoản cộng cố định sẽ làm ngay ở
+    # cú bấm kế tiếp, rồi dừng lại đó.
+    nearly = Needs(fullness=ONE, energy=ONE, mood=Decimal("0.95"))
+    assert apply("poke", nearly).mood < ONE
 
 
-def test_the_cap_never_hands_back_negative_xp() -> None:
-    # Trần bị hạ xuống dưới mức đã trao hôm nay là chuyện xảy ra được; trả về số
-    # âm ở đó sẽ TRỪ XP, tức lấy lại thứ đã cho.
-    assert grant(xp_today=50, award=5, cap=30) == 0
+def test_poking_a_pet_that_is_already_cheerful_earns_nothing() -> None:
+    """Chọc gần như không có giá (-0,03 sức), nên nó không được là đường kiếm XP.
+
+    Trước đây một điểm mỗi lượt nghĩa là ba mươi cú bấm ăn hết suất đầy của
+    ngày; sau khi trần cứng thành đường cong giảm dần thì nó còn ĐỐT mất phần
+    đầy suất đáng ra dành cho việc học. Mốc bằng đúng `CHEERFUL_ABOVE` của giao
+    diện, nên lúc điểm dừng thì màn hình đã sẵn chữ "Đang vui" giải thích.
+    """
+    sad = Needs(fullness=ONE, energy=ONE, mood=Decimal("0.10"))
+    cheerful = Needs(fullness=ONE, energy=ONE, mood=Decimal("0.80"))
+    assert xp_for_action("poke", sad) == XP_PER_ACTION["poke"]
+    assert xp_for_action("poke", cheerful) == 0
+    assert xp_for_action("feed", cheerful) == XP_PER_ACTION["feed"], "chỉ chọc bị chặn"
+
+
+def test_the_curve_trims_the_award_that_crosses_the_mark() -> None:
+    """Còn hai điểm đủ suất mà hành động đáng năm thì được hai, rồi phần dư ăn 1/5.
+
+    Bỏ hẳn phần dư sẽ khiến một hành động hợp lệ trông như không xảy ra.
+    """
+    assert grant(raw_today=0, award=5) == 5
+    assert grant(raw_today=28, award=5) == 2, "2 điểm đủ suất, 3 điểm dư chưa đủ một phần năm"
+    assert grant(raw_today=30, award=5) == 1, "qua mốc vẫn có điểm — đây là thứ trần cứng không có"
+
+
+def test_five_small_awards_past_the_mark_add_up_to_exactly_one() -> None:
+    """Đây là lý do đường cong đo trên tổng THÔ chứ không trên từng lượt.
+
+    Chia tỉ lệ từng lượt thì `1 // 5 = 0` với mọi lượt một điểm, tức trần cứng
+    quay lại nguyên vẹn chỉ khác chỗ đặt — và nó sẽ hỏng im lặng, vì mọi con số
+    vẫn hợp lệ.
+    """
+    raw, total = 30, 0
+    for _ in range(5):
+        total += grant(raw_today=raw, award=1)
+        raw += 1
+    assert total == 1
+
+
+def test_the_curve_never_hands_back_negative_xp() -> None:
+    # Trả về số âm sẽ TRỪ XP, tức lấy lại thứ đã cho.
+    assert grant(raw_today=50, award=0) == 0
+    assert grant(raw_today=50, award=-5) == 0
 
 
 def test_level_is_derived_from_xp_not_stored() -> None:
