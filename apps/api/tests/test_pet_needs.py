@@ -55,8 +55,43 @@ def test_a_hungry_pet_also_gets_sad() -> None:
     assert hungry.mood < fed.mood
 
 
-def test_energy_comes_back_on_its_own() -> None:
-    assert decay(fresh(energy="0.10"), DAY).energy > Decimal("0.10")
+def test_energy_comes_back_on_its_own_but_only_while_the_pet_is_fed() -> None:
+    """Cửa sổ đo phải NGẮN hơn thời gian con thú kịp đói.
+
+    Từ no 0,62 thì sáu tiếng còn 0,37, vẫn trên ngưỡng — nên quãng này đo đúng
+    một chuyện: sức tự lên. Đo cả một ngày thì con thú đói mất giữa chừng và bài
+    kiểm lặng lẽ chuyển sang đo luật khác, đúng như nó đã làm.
+    """
+    assert decay(fresh(energy="0.10"), DAY / 4).energy > Decimal("0.10")
+
+
+def test_a_starving_pet_loses_energy_instead_of_gaining_it() -> None:
+    """Ba chỉ số phải ăn vào nhau, và đây là mắt xích đã thiếu.
+
+    Trước đó sức chỉ đi lên, bất kể no với vui ở đâu — nên "đói 0%, vui 0%, sức
+    100%" là cảnh thường gặp của một con thú bị bỏ quên, và ba cái thanh khi ấy
+    không mô tả một sinh vật nào.
+
+    Chỉ NGỪNG hồi thì không sửa được: một con thú đã đầy sức trước lúc bị bỏ quên
+    vẫn đứng nguyên ở 100%. Nên nó phải TỤT.
+    """
+    starving = decay(fresh(fullness="0.05", energy="1.0"), DAY / 4)
+    assert starving.energy < 1
+
+    # Và luôn có lối ra: cho ăn xong thì đồng hồ chạy xuôi trở lại.
+    fed = decay(fresh(fullness="0.90", energy=str(starving.energy)), DAY / 4)
+    assert fed.energy > starving.energy
+
+
+def test_a_sad_pet_rests_only_half_as_well() -> None:
+    """Nhẹ hơn đói, vì đói là GỐC — nó kéo cả vui xuống theo.
+
+    Phạt hai lần bằng nhau thì một con thú bị bỏ quên rơi thẳng xuống đáy cả ba
+    chỉ số cùng lúc, và lúc đó ba cái thanh lại thôi nói ba điều khác nhau.
+    """
+    sad = decay(fresh(fullness="1.0", energy="0.10", mood="0.10"), DAY / 4)
+    happy = decay(fresh(fullness="1.0", energy="0.10", mood="0.80"), DAY / 4)
+    assert Decimal("0.10") < sad.energy < happy.energy
 
 
 def test_a_clock_that_runs_backwards_is_not_a_free_meal() -> None:
@@ -92,16 +127,16 @@ def test_walking_needs_energy() -> None:
     assert refusal("walk", fresh(energy="0.90")) is None
 
 
-def test_sleeping_recovers_energy_four_times_faster() -> None:
+def test_sleeping_recovers_energy_eight_times_faster() -> None:
     """Ngủ là một ĐÁNH ĐỔI, không phải một dòng chảy thứ hai.
 
     Sức vốn tự hồi mà không cần ai làm gì; nếu ngủ chỉ nhanh hơn một chút thì nó
     không phải cơ chế, chỉ là một cái nút làm cùng việc đồng hồ đang làm.
     """
     tired = fresh(energy="0.10")
-    awake = decay(tired, DAY / 8)  # ba tiếng thức
-    slept = decay(tired, DAY / 8, asleep_seconds=DAY / 8)  # ba tiếng ngủ
-    assert float(awake.energy) == pytest.approx(0.35, abs=0.01)
+    awake = decay(tired, DAY / 16)  # tiếng rưỡi thức
+    slept = decay(tired, DAY / 16, asleep_seconds=DAY / 16)  # tiếng rưỡi ngủ
+    assert float(awake.energy) == pytest.approx(0.225, abs=0.01)
     assert float(slept.energy) == pytest.approx(1.0, abs=0.01)
 
 

@@ -34,6 +34,12 @@ const LINES: Record<PetCondition, readonly string[]> = {
     "Mình nghĩ tới đồ ăn suốt từ nãy.",
     "Học xong nhớ cho mình ăn nhé.",
   ],
+  sad: [
+    "Mình hơi buồn một chút…",
+    "Lâu rồi bạn không chơi với mình.",
+    "Bạn nói chuyện với mình một lát nhé?",
+    "Mình vẫn ở đây mà.",
+  ],
   cheerful: [
     "Hôm nay vui ghê!",
     "Bạn học chăm thật đấy.",

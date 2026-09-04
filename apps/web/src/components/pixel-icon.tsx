@@ -143,6 +143,25 @@ const ICONS = {
       "..oooo..",
     ],
   },
+  /**
+   * Tinh thần xuống thấp. Cùng khuôn `smile`, chỉ lật cái miệng.
+   *
+   * Cần một hình riêng chứ không dùng lại `smile` màu khác: màu là tín hiệu ở
+   * dự án này, và một mặt cười màu xám vẫn là một mặt cười.
+   */
+  frown: {
+    palette: { o: "#7a6a86", F: "#cfc6dd", e: "#4a3f58" },
+    rows: [
+      "..oooo..",
+      ".oFFFFo.",
+      "oFeFFeFo",
+      "oFFFFFFo",
+      "oFFeeFFo",
+      "oFeFFeFo",
+      ".oFFFFo.",
+      "..oooo..",
+    ],
+  },
   /** Con thú đang ngủ. Ba chữ Z chồng lên nhau, to dần. */
   zzz: {
     palette: { o: "#3d4a72", Z: "#dfe6ff" },

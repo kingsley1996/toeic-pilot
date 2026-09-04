@@ -144,7 +144,7 @@ export type PetView = {
    * thứ hai, và nó lệch khỏi bộ kia vào đúng ngày ai đó chỉnh một con số — lúc
    * ấy con thú ngồi bệt trong khi dòng chữ nói nó vui vẻ.
    */
-  condition: "exhausted" | "hungry" | "cheerful" | "content";
+  condition: "exhausted" | "hungry" | "sad" | "cheerful" | "content";
   /**
    * Tiết mục theo bậc hiếm, đã quy ra cờ (ADR-013 §5).
    *
@@ -705,7 +705,13 @@ export async function createStage(
           : 1 +
             Math.sin(
               view.clock *
-                (view.condition === "hungry" ? 2.4 : view.condition === "cheerful" ? 5.2 : 3.9),
+                (view.condition === "hungry"
+                  ? 2.4
+                  : view.condition === "sad"
+                    ? 3.0
+                    : view.condition === "cheerful"
+                      ? 5.2
+                      : 3.9),
             ) *
               0.04;
       /*

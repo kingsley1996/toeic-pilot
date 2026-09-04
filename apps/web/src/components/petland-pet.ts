@@ -76,6 +76,15 @@ export const HUNGRY_BELOW = 0.25;
 export const CHEERFUL_ABOVE = 0.75;
 
 /**
+ * Dưới mức này thì con thú buồn, và nghỉ chỉ lại NỬA sức.
+ *
+ * Bằng đúng `SAD_BELOW` của `services/pet.py` — máy chủ mới là chỗ áp hình phạt,
+ * còn đây chỉ đặt tên cho nó. Cái tên là phần bắt buộc: một bậc phạt không có
+ * nhãn thì người dùng chỉ thấy sức đứng yên và không biết vì sao.
+ */
+export const SAD_BELOW = 0.25;
+
+/**
  * Tình trạng con thú, gộp ba chỉ số thành MỘT từ (ADR-013 §2).
  *
  * Một từ chứ không ba con số, vì cả tầng vẽ lẫn dòng chữ trong HUD đều cần cùng
@@ -85,11 +94,14 @@ export const CHEERFUL_ABOVE = 0.75;
  *
  * Thứ tự ưu tiên là thứ tự cấp bách: kiệt sức trước đói, đói trước vui.
  */
-export type PetCondition = "exhausted" | "hungry" | "cheerful" | "content";
+export type PetCondition = "exhausted" | "hungry" | "sad" | "cheerful" | "content";
 
 export function conditionOf(needs: PetNeeds): PetCondition {
   if (needs.energy < WALK_TIRED_BELOW) return "exhausted";
   if (needs.fullness < HUNGRY_BELOW) return "hungry";
+  // Buồn đứng SAU đói vì đói là gốc: nó kéo cả vui xuống theo, nên hiện "Đang
+  // buồn" trong lúc nguyên nhân là cái bụng sẽ chỉ đường sang việc sai.
+  if (needs.mood < SAD_BELOW) return "sad";
   if (needs.mood >= CHEERFUL_ABOVE) return "cheerful";
   return "content";
 }
@@ -97,6 +109,7 @@ export function conditionOf(needs: PetNeeds): PetCondition {
 export const CONDITION_LABEL: Record<PetCondition, string> = {
   exhausted: "Đang kiệt sức",
   hungry: "Đang đói",
+  sad: "Đang buồn",
   cheerful: "Đang vui",
   content: "Bình thường",
 };

@@ -134,6 +134,7 @@ const WANDER_FIRST_MS = 2500;
 const EMOTE_ICON: Record<PetCondition, Bit["icon"] | null> = {
   hungry: "crumb",
   exhausted: "moon",
+  sad: "frown",
   cheerful: "heart",
   content: null,
 };

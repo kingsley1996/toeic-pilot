@@ -106,6 +106,19 @@ HUNGRY_MOOD_PENALTY = ONE / _PER_DAY
 """Chọc lúc đói thì vui lên ít hơn — xem `apply`."""
 HUNGRY_POKE_FACTOR = Decimal("0.35")
 
+"""Đói thì sức TỤT, đúng bằng tốc độ nó vốn hồi lúc thức — xem `_energy_after`."""
+HUNGRY_ENERGY_DRAIN = ENERGY_RECOVER
+
+"""Dưới mức này thì con thú buồn, và nghỉ chỉ lại nửa sức.
+
+Đối xứng với `CHEERFUL_ABOVE` (0,75) của giao diện và bằng đúng `HUNGRY_BELOW`,
+nên ba cái bậc của hệ này nằm ở hai con số chứ không phải ba. Giao diện gọi mức
+này là "Đang buồn" — một hình phạt không có nhãn thì người dùng chỉ thấy sức đứng
+yên mà không biết vì sao.
+"""
+SAD_BELOW = Decimal("0.25")
+SAD_ENERGY_FACTOR = Decimal("0.5")
+
 
 def decay(needs: Needs, seconds: float, asleep_seconds: float = 0) -> Needs:
     """Nhu cầu sau `seconds` giây không ai đụng tới, trong đó `asleep_seconds` là ngủ.
@@ -134,12 +147,45 @@ def decay(needs: Needs, seconds: float, asleep_seconds: float = 0) -> Needs:
     mood = needs.mood - MOOD_DECAY * awake
     if fullness < HUNGRY_BELOW:
         mood -= HUNGRY_MOOD_PENALTY * elapsed
-    energy = needs.energy + ENERGY_RECOVER * awake + SLEEP_ENERGY_RECOVER * asleep
-    return Needs(
-        fullness=fullness,
-        energy=_clamp(energy),
-        mood=_clamp(mood),
-    )
+    mood = _clamp(mood)
+
+    energy = _clamp(_energy_after(needs.energy, fullness, mood, awake, asleep))
+    return Needs(fullness=fullness, mood=mood, energy=energy)
+
+
+def _energy_after(
+    energy: Decimal, fullness: Decimal, mood: Decimal, awake: Decimal, asleep: Decimal
+) -> Decimal:
+    """Sức sau một quãng, và đây là chỗ ba chỉ số ăn vào nhau.
+
+    Trước đó sức chỉ đi LÊN và đi lên bất kể no với vui đang ở đâu, nên trạng
+    thái "đói 0%, vui 0%, sức 100%" là chuyện thường gặp chứ không phải hiếm: bỏ
+    con thú một tuần thì no và vui rơi về 0 còn sức leo lên kịch trần và nằm đó.
+    Ba cái thanh khi ấy không mô tả một sinh vật nào cả.
+
+    **Đói thì sức TỤT, không phải chỉ ngừng hồi.** Ngừng hồi không sửa được đúng
+    cái cảnh trên — một con thú đã đầy sức trước khi bị bỏ quên vẫn đứng nguyên ở
+    100%. Tốc độ tụt đặt bằng đúng tốc độ nó vốn hồi lúc thức, nên một câu là đủ
+    tả: bụng rỗng thì cái đồng hồ chạy ngược.
+
+    **Buồn thì nghỉ chỉ lại nửa sức.** Nhẹ hơn đói vì đói là gốc — nó kéo cả vui
+    xuống theo (`HUNGRY_MOOD_PENALTY`) — còn buồn là ngọn. Phạt hai lần bằng nhau
+    thì một con thú bị bỏ quên rơi thẳng xuống đáy cả ba chỉ số cùng lúc, và lúc
+    đó ba cái thanh lại thôi nói ba điều khác nhau.
+
+    Cả hai là BẬC chứ không phải dải liên tục, cùng lý do đã ghi ở `HUNGRY_BELOW`:
+    một hàm trơn nghe hợp lý hơn nhưng không ai đọc ra được nó từ mấy cái thanh,
+    còn một bậc thì giải thích được bằng một câu — và cả hai bậc đều có nhãn trên
+    màn hình ("Đang đói", "Đang buồn") nên người dùng thấy được vì sao sức không
+    lên.
+
+    Luôn có lối ra: cho ăn không bao giờ bị từ chối vì đói, nên một con thú kiệt
+    quệ vẫn cứu được bằng đúng hành động rẻ nhất.
+    """
+    if fullness < HUNGRY_BELOW:
+        return energy - HUNGRY_ENERGY_DRAIN * (awake + asleep)
+    gain = ENERGY_RECOVER * awake + SLEEP_ENERGY_RECOVER * asleep
+    return energy + (gain * SAD_ENERGY_FACTOR if mood < SAD_BELOW else gain)
 
 
 """Tác động của từng hành động. Số dương là cho, số âm là lấy đi.
