@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { BrandMark } from "@/components/brand";
 import { type NavItem } from "@/components/nav";
 import { landing } from "@/content/landing";
 import { useSession } from "@/lib/session";
@@ -47,17 +48,8 @@ export function SiteFooter({ links }: { links: readonly NavItem[] }) {
             trang. */}
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 sm:grid-cols-[1fr_auto_auto] sm:gap-16">
         <div>
-          {/* Cùng dấu hiệu thương hiệu với thanh trên: ô vuông màu hành động,
-              chữ T. Vẽ lại ở đây thay vì tách thành component dùng chung vì hai
-              chỗ có kích cỡ khác nhau, và một component nhận `size` chỉ để phục
-              vụ hai lần gọi thì đắt hơn là chép mười ký tự. */}
           <div className="flex items-center gap-2">
-            <span
-              aria-hidden
-              className="grid h-7 w-7 place-items-center rounded bg-action font-semibold text-on-action"
-            >
-              T
-            </span>
+            <BrandMark />
             <span className="font-semibold">TOEIC Pilot</span>
           </div>
           <p className="mt-3 max-w-xs text-small leading-relaxed text-ink-muted">

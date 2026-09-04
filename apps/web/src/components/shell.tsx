@@ -16,6 +16,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
+import { BrandMark } from "@/components/brand";
 import { NavLink, SessionControls, type NavItem } from "@/components/nav";
 import { activeHref, isBranchOpen } from "@/components/nav-active";
 import { SoundToggle } from "@/components/sound-toggle";
@@ -510,13 +511,7 @@ export function SidebarShell({
             href="/"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
-            {/* Dấu vuông, không phải tròn: bo góc 4px là ngôn ngữ của cả hệ. */}
-            <span
-              aria-hidden
-              className="grid h-7 w-7 place-items-center rounded bg-action font-data text-small text-on-action"
-            >
-              T
-            </span>
+            <BrandMark />
             <span className="hidden sm:inline">TOEIC Pilot</span>
           </Link>
 
@@ -638,12 +633,7 @@ export function TopBarShell({
             href="/"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
-            <span
-              aria-hidden
-              className="grid h-7 w-7 place-items-center rounded bg-action font-data text-small text-on-action"
-            >
-              T
-            </span>
+            <BrandMark />
             <span className="hidden sm:inline">TOEIC Pilot</span>
           </Link>
 
