@@ -101,7 +101,10 @@ export function PetlandCard() {
 
   const condition = pet ? conditionOf(pet.needs) : undefined;
   return (
-    <div className="relative shrink-0 border-t border-rule px-2 py-2">
+    // `data-tour`: chỗ bám của tour giới thiệu. Tồn tại CHỈ để tour trỏ vào,
+    // nên xoá nó là hành động có ý thức chứ không phải tác dụng phụ của việc
+    // chỉnh giao diện — khác hẳn nếu tour bám vào một tên lớp.
+    <div data-tour="pet" className="relative shrink-0 border-t border-rule px-2 py-2">
       <PetlandToast condition={condition} />
       {pet === undefined ? (
         <Skeleton className="h-14 w-full" />

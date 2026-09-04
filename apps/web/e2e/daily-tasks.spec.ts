@@ -1,5 +1,7 @@
 import { type APIRequestContext, expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Ba việc hôm nay trên `/dashboard` (USER-ROAD §6).
  *
@@ -63,6 +65,7 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   const panel = page.getByRole("region", { name: "Việc hôm nay" });
   await expect(panel.getByRole("link", { name: /Ôn từ vựng/ })).toBeVisible();

@@ -1,5 +1,7 @@
 import { type APIRequestContext, expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Huy hiệu (USER-ROAD §4).
  *
@@ -45,6 +47,7 @@ test("huy hiệu đầu tiên: báo ở trang chủ, mở trang thì tắt chấ
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();

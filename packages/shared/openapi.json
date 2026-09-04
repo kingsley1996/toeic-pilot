@@ -9344,6 +9344,10 @@
           "timezone": {
             "title": "Timezone",
             "type": "string"
+          },
+          "tour_done": {
+            "title": "Tour Done",
+            "type": "boolean"
           }
         },
         "required": [
@@ -9356,7 +9360,8 @@
           "daily_new_limit",
           "preferred_accent",
           "pet",
-          "avatar_url"
+          "avatar_url",
+          "tour_done"
         ],
         "title": "UserProfilePublic",
         "type": "object"
@@ -18199,6 +18204,26 @@
           }
         ],
         "summary": "Read Stats",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/tour-seen": {
+      "post": {
+        "description": "Người học đã xem xong — hoặc đã bỏ qua — tour giới thiệu.\n\nKhông phân biệt \"xem hết\" với \"bỏ qua\", và đó là chủ ý: cả hai đều là câu\n\"tôi không cần thấy lại cái này\", mà một tour bật lại vì người ta bấm Bỏ qua\nthì đúng là thứ khiến người ta bấm Bỏ qua lần nữa.\n\nGhi ĐÈ không được: `toured_at` chỉ đặt một lần. Gọi lại thì giữ nguyên mốc\ncũ — nó ghi lại một chuyện ĐÃ XẢY RA, cùng tính chất `xp_event` và\n`level_reached`, nên một lần gọi lặp không được phép dời nó.\n\n204 kể cả khi đã đánh dấu rồi: phía gọi đang nói \"tôi đã xem\", và câu đó luôn\nđúng. Cùng khuôn `/progression/badges/seen` ngay dưới.",
+        "operationId": "mark_tour_seen_api_v1_profile_tour_seen_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mark Tour Seen",
         "tags": [
           "profile"
         ]

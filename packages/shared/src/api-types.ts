@@ -3035,6 +3035,37 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profile/tour-seen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark Tour Seen
+         * @description Người học đã xem xong — hoặc đã bỏ qua — tour giới thiệu.
+         *
+         *     Không phân biệt "xem hết" với "bỏ qua", và đó là chủ ý: cả hai đều là câu
+         *     "tôi không cần thấy lại cái này", mà một tour bật lại vì người ta bấm Bỏ qua
+         *     thì đúng là thứ khiến người ta bấm Bỏ qua lần nữa.
+         *
+         *     Ghi ĐÈ không được: `toured_at` chỉ đặt một lần. Gọi lại thì giữ nguyên mốc
+         *     cũ — nó ghi lại một chuyện ĐÃ XẢY RA, cùng tính chất `xp_event` và
+         *     `level_reached`, nên một lần gọi lặp không được phép dời nó.
+         *
+         *     204 kể cả khi đã đánh dấu rồi: phía gọi đang nói "tôi đã xem", và câu đó luôn
+         *     đúng. Cùng khuôn `/progression/badges/seen` ngay dưới.
+         */
+        post: operations["mark_tour_seen_api_v1_profile_tour_seen_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/progression/badges": {
         parameters: {
             query?: never;
@@ -7092,6 +7123,8 @@ export interface components {
             target_score: number | null;
             /** Timezone */
             timezone: string;
+            /** Tour Done */
+            tour_done: boolean;
         };
         /**
          * UserProfileUpdate
@@ -12466,6 +12499,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["LearningStats"];
                 };
+            };
+        };
+    };
+    mark_tour_seen_api_v1_profile_tour_seen_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

@@ -48,6 +48,7 @@ def profile_public(profile: UserProfile) -> UserProfilePublic:
         # hàng cũ mang mascot đã bị gỡ thì vẫn có thể tồn tại. Đọc nó ra như
         # "chưa chọn" thay vì để Pydantic ném lỗi và làm hỏng cả trang hồ sơ.
         pet=profile.pet if profile.pet in PETS else None,  # type: ignore[arg-type]
+        tour_done=profile.toured_at is not None,
         avatar_url=(
             get_driver("image").public_url(profile.avatar_storage_key)
             if profile.avatar_storage_key

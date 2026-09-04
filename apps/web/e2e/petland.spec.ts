@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Góc thú cưng, bản bản-đồ-ô (ADR-010).
  *
@@ -21,6 +23,7 @@ async function signUp(page: Page) {
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
   await hatch(page);
 }
 
@@ -84,6 +87,7 @@ test("người mới nhận một quả trứng, mở xong mới có thú cưng"
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   // Thẻ ở sidebar mời nhận trứng, và thẻ thú cưng thì chưa tồn tại.
   const invite = page.locator("aside").getByTitle("Mở quả trứng đầu tiên");

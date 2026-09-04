@@ -67,6 +67,14 @@ class UserProfilePublic(BaseModel):
     # khoá: chỉ driver biết tiền tố thư mục mà Cloudinary đòi, và ghép ở phía
     # client nghĩa là quy tắc đó bị nhân bản ra một nơi không có test nào phủ.
     avatar_url: str | None
+    tour_done: bool
+    """Đã xem tour giới thiệu chưa.
+
+    Gửi ra dạng `bool` chứ không gửi cả mốc thời gian: frontend chỉ có một câu
+    hỏi ở đây — chạy tour hay không. Mốc thật nằm ở cột `toured_at` và dùng để
+    trả lời một câu khác (bao nhiêu người mới xem tới cuối), mà câu ấy hỏi ở
+    database chứ không hỏi qua endpoint này.
+    """
 
 
 class AvatarConfirm(BaseModel):

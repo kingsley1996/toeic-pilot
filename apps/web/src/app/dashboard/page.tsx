@@ -30,6 +30,7 @@ import { BadgeNotice } from "@/components/badges";
 import { DailyTasksPanel } from "@/components/daily-tasks";
 import { RubyWalletPanel } from "@/components/ruby-wallet";
 import { ButtonLink, Page, PageHeader, Panel, PanelLink, Skeleton, Tag, cx } from "@/components/ui";
+import { Tour, type TourStep } from "@/components/tour";
 import { apiFetch } from "@/lib/api";
 import { clock } from "@/lib/attempt";
 import { useRequireSession } from "@/lib/session";
@@ -79,6 +80,42 @@ import { useRequireSession } from "@/lib/session";
  * trong payload (và không nên nằm: client không cần biết mốc thời gian, chỉ cần
  * thứ tự).
  */
+/*
+ * Bốn bước, và không hơn.
+ *
+ * Mỗi bước là một chỗ người mới sẽ quay lại hằng ngày; thứ chỉ dùng một lần thì
+ * không đáng chặn màn hình để giới thiệu. Thứ tự theo đúng thứ tự trên trang, nên
+ * mắt đi xuống chứ không nhảy qua lại — một tour bắt người ta nhìn lên rồi nhìn
+ * xuống rồi lại nhìn lên đọc ra là lộn xộn dù từng bước đều đúng.
+ *
+ * Bám `data-tour` chứ không bám tên lớp: tên lớp là chuyện của cách tô màu và đổi
+ * bất cứ lúc nào, còn thuộc tính này tồn tại CHỈ để tour bám vào — nên xoá nó là
+ * một hành động có ý thức, không phải một tác dụng phụ của việc chỉnh giao diện.
+ * Bước nào không tìm thấy đích thì tự bỏ qua (xem `Tour`).
+ */
+const TOUR: readonly TourStep[] = [
+  {
+    target: '[data-tour="daily"]',
+    title: "Ba việc mỗi ngày",
+    body: "Làm xong cả ba là đủ một ngày học. Mỗi việc cộng XP, và chuỗi ngày của bạn tính từ đây.",
+  },
+  {
+    target: '[data-tour="ruby"]',
+    title: "Ruby để nuôi thú cưng",
+    body: "Học xong một bài, một chủ đề hay một đề thì có ruby. Ruby dùng để mở trứng.",
+  },
+  {
+    target: '[data-tour="stats"]',
+    title: "Bạn đang ở đâu",
+    body: "Số từ đã thuộc, số câu đã nghe, và số từ đang chờ ôn. Chỉ số chờ ôn là số duy nhất đòi bạn làm gì đó.",
+  },
+  {
+    target: '[data-tour="pet"]',
+    title: "Góc thú cưng",
+    body: "Bạn có sẵn một quả trứng. Mở ra để nhận thú cưng đầu tiên — pet sẽ cùng bạn học tập.",
+  },
+];
+
 function latestUnfinished(sessions: TopicSessionSummary[] | null): TopicSessionSummary | null {
   return sessions?.find((row) => !row.done) ?? null;
 }
@@ -314,6 +351,10 @@ export default function TodayPage() {
         </Panel>
       )}
 
+      {/* Tour chào người mới. Nằm ở màn hình chính vì đây là nơi người ta hạ
+          cánh sau khi đăng ký, và nó tự im lặng với ai đã xem rồi. */}
+      <Tour steps={TOUR} />
+
       {/* Huy hiệu vừa mở mà chưa xem — MỘT dòng cho tất cả, không phải một
           dòng mỗi cái: tài khoản có sẵn lịch sử mở một loạt cùng lúc ở lần đọc
           đầu tiên, và mười thông báo liên tiếp đọc như hệ thống hỏng. Nó tự ẩn
@@ -323,15 +364,19 @@ export default function TodayPage() {
       {/* Ba việc hôm nay đứng TRÊN khối từ vựng (USER-ROAD §6.4) nhưng DƯỚI
           bài đang làm dở: bài dở có đồng hồ chạy ở máy chủ, nên nó là thứ duy
           nhất trên trang này mất mát nếu bị đẩy xuống. */}
-      <DailyTasksPanel token={token} />
+      <div data-tour="daily">
+        <DailyTasksPanel token={token} />
+      </div>
 
       {/* Ví ruby đứng NGAY DƯỚI việc hôm nay: xong cả ba việc là một nguồn
           ruby, nên hai khối này nói tiếp nhau. Nó ở đây chứ không ở góc thú
           cưng vì người ta phải thấy nó ở chỗ họ HỌC (ADR-011 §7). */}
-      <RubyWalletPanel token={token} />
+      <div data-tour="ruby">
+        <RubyWalletPanel token={token} />
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel className="flex flex-col p-5 sm:p-6">
+        <Panel data-tour="stats" className="flex flex-col p-5 sm:p-6">
           <h2 className="text-subtitle">Thống kê học tập</h2>
 
           <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5">

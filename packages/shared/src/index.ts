@@ -189,6 +189,7 @@ export const API_ROUTES = {
 
   profile: "/api/v1/profile",
   profileStats: "/api/v1/profile/stats",
+  profileTourSeen: "/api/v1/profile/tour-seen",
   progression: "/api/v1/profile/progression",
   dailyTasks: "/api/v1/daily-tasks",
   badges: "/api/v1/progression/badges",

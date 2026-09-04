@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -317,6 +318,30 @@ def read_badges(
         earned_count=sum(1 for s in statuses if s.earned),
         unseen_count=sum(1 for s in statuses if s.earned and not s.seen),
     )
+
+
+@router.post("/profile/tour-seen", status_code=status.HTTP_204_NO_CONTENT)
+def mark_tour_seen(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> None:
+    """Người học đã xem xong — hoặc đã bỏ qua — tour giới thiệu.
+
+    Không phân biệt "xem hết" với "bỏ qua", và đó là chủ ý: cả hai đều là câu
+    "tôi không cần thấy lại cái này", mà một tour bật lại vì người ta bấm Bỏ qua
+    thì đúng là thứ khiến người ta bấm Bỏ qua lần nữa.
+
+    Ghi ĐÈ không được: `toured_at` chỉ đặt một lần. Gọi lại thì giữ nguyên mốc
+    cũ — nó ghi lại một chuyện ĐÃ XẢY RA, cùng tính chất `xp_event` và
+    `level_reached`, nên một lần gọi lặp không được phép dời nó.
+
+    204 kể cả khi đã đánh dấu rồi: phía gọi đang nói "tôi đã xem", và câu đó luôn
+    đúng. Cùng khuôn `/progression/badges/seen` ngay dưới.
+    """
+    profile = ensure_profile(db, current_user)
+    if profile.toured_at is None:
+        profile.toured_at = datetime.now(UTC)
+        db.commit()
 
 
 @router.post("/progression/badges/seen", status_code=status.HTTP_204_NO_CONTENT)

@@ -473,3 +473,32 @@ def test_pet_distinguishes_absent_from_null(client: TestClient):
     # null tường minh: xoá
     r = client.patch("/api/v1/profile", json={"pet": None}, headers=headers)
     assert r.json()["pet"] is None
+
+
+def test_the_tour_is_marked_seen_once_and_the_mark_never_moves(
+    client: TestClient, db_session: Session
+):
+    """Tour chạy đúng một lần trong đời tài khoản, và mốc ấy ghi một chuyện ĐÃ XẢY RA.
+
+    Gọi lại không được dời mốc — cùng tính chất `xp_event` và `level_reached`:
+    một lần gọi lặp (bấm Bỏ qua rồi tải lại trang, hay StrictMode của bản dev
+    chạy đường này hai lần) không được viết lại quá khứ.
+
+    Không phân biệt "xem hết" với "bỏ qua": cả hai đều là câu "tôi không cần thấy
+    lại", mà một tour bật lại vì người ta bấm Bỏ qua thì đúng là thứ khiến người
+    ta bấm Bỏ qua lần nữa.
+    """
+    headers = signed_in(client)
+    assert client.get("/api/v1/profile", headers=headers).json()["tour_done"] is False
+
+    assert client.post("/api/v1/profile/tour-seen", headers=headers).status_code == 204
+    assert client.get("/api/v1/profile", headers=headers).json()["tour_done"] is True
+
+    db_session.expire_all()
+    first = db_session.query(UserProfile).one().toured_at
+    assert first is not None
+
+    # Gọi lần nữa vẫn 204 — phía gọi đang nói "tôi đã xem", và câu đó luôn đúng.
+    assert client.post("/api/v1/profile/tour-seen", headers=headers).status_code == 204
+    db_session.expire_all()
+    assert db_session.query(UserProfile).one().toured_at == first

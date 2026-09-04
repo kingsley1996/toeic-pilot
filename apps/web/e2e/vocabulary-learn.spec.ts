@@ -1,5 +1,7 @@
 import { type APIRequestContext, type Page, expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Luồng học từ vựng theo chủ đề (`TopicSession`): mở cuốn sách → gõ/lật/chọn →
  * tự chấm bằng năm nút → sang từ kế.
@@ -79,6 +81,7 @@ async function signUp(page: Page): Promise<void> {
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 }
 
 /** "Từ 3/42" — bộ đếm là thứ duy nhất nói ván đang đứng ở đâu. */

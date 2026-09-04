@@ -1,5 +1,7 @@
 import { type APIRequestContext, expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Gõ xong một câu chép chính tả thì có thông báo tạm, và thông báo đó có tiếng.
  *
@@ -73,6 +75,7 @@ test("gõ đúng một câu thì có thông báo tạm kèm tiếng báo", async
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();
@@ -135,6 +138,7 @@ test("nghe ngẫu nhiên: bấm câu khác thì ra câu khác thật", async ({ 
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   /*
    * Bỏ qua khi kho rỗng, HỎI Ở THỜI ĐIỂM CHẠY — và đây là chỗ đã đỏ suốt bảy
@@ -184,6 +188,7 @@ test("xong hết một bài thì có lối đi tiếp", async ({ page, request }
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   const story = await firstStory(request, token as string);

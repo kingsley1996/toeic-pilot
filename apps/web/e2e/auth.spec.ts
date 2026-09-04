@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Luồng đăng ký → vào khu học.
  *
@@ -20,6 +22,7 @@ test("đăng ký xong thì vào thẳng khu học và đã đăng nhập", async
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
 
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   /*
    * Kiểm ĐÃ ĐĂNG NHẬP, không chỉ kiểm URL.
@@ -83,6 +86,7 @@ test("đăng xuất thì thoát hẳn, và token cũ không dùng lại được
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
   expect(token).toBeTruthy();

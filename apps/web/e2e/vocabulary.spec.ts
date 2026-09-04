@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * TẠM BỎ QUA: CI chạy e2e trên một database TRẮNG — chỉ seed thang điểm và đề
  * demo (`seed_scores` + `seed_demo_test`), KHÔNG có chủ đề từ vựng, không có từ,
@@ -38,6 +40,7 @@ async function registerLearner(page: import("@playwright/test").Page): Promise<v
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 }
 
 test("trang /learn/vocabulary là lưới card chủ đề, không còn danh sách từ", async ({ page }) => {
@@ -169,6 +172,7 @@ test("admin sửa và xoá được chủ đề qua UI", async ({ page, request 
   await page.locator('input[name="password"]').fill(ADMIN_PASSWORD);
   await page.getByRole("button", { name: "Đăng nhập" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 
   // Tạo một chủ đề throwaway qua API rồi thao tác trên UI.
   // `request` không chia sẻ localStorage với trang, nên tự đăng nhập lấy token.

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { skipTour } from "./support";
+
 /*
  * Một vòng làm bài: mở đề → trả lời → nộp → xem kết quả → xem lại từng câu.
  *
@@ -27,6 +29,7 @@ async function signUp(page: import("@playwright/test").Page): Promise<void> {
   await page.locator('input[name="password"]').fill("mat-khau-du-dai-123");
   await page.getByRole("button", { name: "Tạo tài khoản" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  await skipTour(page);
 }
 
 test("làm một đề rồi nộp thì thấy kết quả và xem lại được từng câu", async ({ page }) => {

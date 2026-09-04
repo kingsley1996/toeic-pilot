@@ -1,7 +1,7 @@
 import uuid
-from datetime import date
+from datetime import date, datetime
 
-from sqlalchemy import CheckConstraint, Date, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -118,6 +118,16 @@ class UserProfile(Base, TimestampMixin):
     # `app/schemas/profile.py::PetId`, nên nó đi qua OpenAPI ra tới TypeScript và
     # `tsc` bắt được frontend thiếu con nào. Một CHECK trong cơ sở dữ liệu chỉ
     # thêm một chỗ thứ hai phải nhớ sửa, và chỗ bị quên sẽ là chỗ báo lỗi muộn nhất.
+    toured_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    """Lúc người học xem xong tour giới thiệu, hoặc `None` nếu chưa.
+
+    Mốc chứ không phải cờ `boolean`: nó còn trả lời được "bao nhiêu người mới xem
+    tới cuối", mà một cột true/false thì không. Cùng hình dạng `user_badge.seen_at`.
+
+    Ở máy chủ chứ không `localStorage`: "tôi đã xem rồi" là dữ liệu người dùng —
+    nó phải đi theo tài khoản, nếu không lời chào ấy bật lại ở mỗi thiết bị mới.
+    """
+
     pet: Mapped[str | None] = mapped_column(String(32), nullable=True)
 
     # Ảnh đại diện đã tải lên. NULL là trạng thái bình thường, không phải dữ
