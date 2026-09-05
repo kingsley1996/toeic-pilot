@@ -1,8 +1,8 @@
 """Admin ngữ pháp (G1 — SPEC-GRAMMAR.md §7).
 
-Trọng tâm là hai cổng hỏng im lặng của §8: publish chủ đề phải đo bằng TRUY VẤN
-THẬT vào kho nhãn (một chủ đề 4 câu vẫn chấm được và trông hoàn toàn bình
-thường), và câu nháp không được tính vào ngưỡng.
+Cổng hỏng im lặng của §8 là mở trang trống: publish chủ đề đòi ≥1 bài đã
+publish. Ngưỡng ≥12 câu trong kho nhãn từng chặn đã BỎ — lý thuyết đứng được
+một mình (SPEC-GRAMMAR §2).
 """
 
 import uuid
@@ -79,9 +79,11 @@ def test_duplicate_code_is_a_conflict(
     assert response.status_code == 409
 
 
-def test_publish_below_threshold_is_refused_with_the_real_count(
+def test_publish_without_a_lesson_is_refused(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:
+    """Cổng duy nhất của topic: đừng mở trang trống. Ngưỡng ≥12 câu đã BỎ —
+    lý thuyết đứng được một mình (SPEC-GRAMMAR §2)."""
     topic = make_topic(client, auth)
     for _ in range(3):
         a_labeled_question(db_session, "GRAMMAR_TENSE")
@@ -89,35 +91,29 @@ def test_publish_below_threshold_is_refused_with_the_real_count(
         f"/api/v1/admin/grammar/topics/{topic['id']}/publish", headers=auth("admin")
     )
     assert response.status_code == 409
-    assert "3/12" in response.json()["detail"]
+    assert "trang trống" in response.json()["detail"]
 
 
-def test_draft_questions_do_not_count_toward_the_threshold(
+def test_publish_with_one_lesson_and_a_thin_bank_succeeds(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:
-    """Cổng đo câu PUBLISHED. Câu nháp mang nhãn không phải bài tập ai làm được."""
+    """Chủ đề 3 câu vẫn mở được, miễn là có bài đã publish — điều ngược lại với
+    luật cũ, và là lý do bài test này tồn tại."""
     topic = make_topic(client, auth)
-    for _ in range(12):
-        a_labeled_question(db_session, "GRAMMAR_TENSE", status="draft")
-    response = client.post(
-        f"/api/v1/admin/grammar/topics/{topic['id']}/publish", headers=auth("admin")
-    )
-    assert response.status_code == 409
-    assert "0/12" in response.json()["detail"]
-
-
-def test_publish_at_threshold_succeeds(
-    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
-) -> None:
-    topic = make_topic(client, auth)
-    for _ in range(12):
+    for _ in range(3):
         a_labeled_question(db_session, "GRAMMAR_TENSE")
+    lesson = client.post(
+        "/api/v1/admin/grammar/lessons",
+        json={"topic_id": topic["id"], "slug": "l1", "title": "Bài 1", "body": "x"},
+        headers=auth("editor"),
+    ).json()
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson['id']}/publish", headers=auth("admin"))
     response = client.post(
         f"/api/v1/admin/grammar/topics/{topic['id']}/publish", headers=auth("admin")
     )
     assert response.status_code == 200
     assert response.json()["status"] == "published"
-    assert response.json()["question_count"] == 12
+    assert response.json()["question_count"] == 3
 
 
 def test_an_editor_cannot_publish(

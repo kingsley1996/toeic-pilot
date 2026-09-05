@@ -30,8 +30,7 @@ Chủ đề gắn mã **là** các mã trên, không phải danh sách thứ hai
 Sáu chủ đề nền tảng — "Kiến thức cơ bản 1/2", "Động từ nguyên mẫu", "Danh động
 từ", "Câu điều kiện", "Cấu trúc phân từ" — dạy từ loại và cấu trúc câu, không
 tương ứng mã nhãn nào, và chúng phải đứng TRƯỚC các chủ đề taxonomy trong chuỗi
-học. Không có mã thì không có kho nhãn để đo ngưỡng, nên cổng publish của chúng
-là "≥1 bài đã publish" — đừng mở trang trống.
+học. Cổng publish chung cho mọi chủ đề: "≥1 bài đã publish" (§4).
 
 ## 2. Bài tập: là bài học, không phải truy vấn theo nhãn
 
@@ -48,7 +47,9 @@ bộ picker trong admin, hoặc soạn mới tại chỗ. "Bài tập của bài
 soạn quyết, không do truy vấn suy ra.
 
 Kho vẫn là nguồn: màn chọn câu lọc theo `code` của chủ đề, và nó tự lớn lên mỗi
-đợt gắn nhãn. Ngưỡng **12 câu published** vẫn là cổng publish cho chủ đề CÓ mã.
+đợt gắn nhãn. **Ngưỡng 12 câu từng là cổng publish đã BỎ (2026-09-06)**: lý
+thuyết đứng được một mình, chủ đề mỏng vẫn là bài học có giá trị — bài tập ít
+chỉ nghĩa là người học làm hết nhanh, không phải trang vô nghĩa.
 
 ## 3. Lý thuyết Part 1–7: TÁCH RA, và không đối xứng
 
@@ -89,9 +90,10 @@ grammar_attempt (id, user_id, question_id, option_id?, is_correct, created_at)
 
 Bốn điều đáng nói:
 
-**`code` nullable**, như §1. Chủ đề có mã đo ngưỡng bằng truy vấn câu published
-mang nhãn (`GRAMMAR_MIN_QUESTIONS = 12`); chủ đề không mã đo bằng "có bài publish".
-Cả hai ngả đều ở `publish_grammar_topic`, không phải một cơ chế mới.
+**`code` nullable**, như §1. Cổng publish là MỘT luật cho mọi chủ đề: **≥1 bài
+đã publish** — đừng mở trang trống. Ngưỡng 12 câu trong kho (`GRAMMAR_MIN_QUESTIONS`)
+đã bỏ cùng ngày với quyết định "lý thuyết không cần bài tập để tồn tại"; số câu
+vẫn hiển thị trong admin nhưng chỉ là thông tin biên tập.
 
 **Bài tập LÀ hàng `question`, không phải một loại nội dung mới.** Một câu ngữ
 pháp đúng là hình dạng của một câu Part 5. Dùng lại `question` thì được không mất
@@ -191,10 +193,9 @@ phần thưởng của nó là thanh tiến độ. Trần XP ngày vẫn chặn 
 
 ## 9. Ba chỗ sẽ hỏng im lặng
 
-**Chủ đề dưới ngưỡng.** Một chủ đề bốn câu vẫn dựng ra trang, vẫn chấm, và người
-học làm xong trong ba phút rồi tưởng mình đã học xong "So sánh". Cổng `status`
-chặn ở tầng chủ đề, ngưỡng kiểm bằng truy vấn thật (`GRAMMAR_MIN_QUESTIONS`),
-và chủ đề không mã thì cổng là "≥1 bài publish".
+**Trang trống.** Cổng `status` chặn ở tầng chủ đề bằng đúng một luật: không mở
+khi chưa có bài nào publish. Phần còn lại — chủ đề mỏng câu hỏi — là quyết định
+biên tập, không phải thứ machine phải giữ hộ.
 
 **Một câu hỏi nằm ở hai chỗ.** Câu đã gắn vào bài học vẫn nằm trong đề thi. Người
 học làm đề rồi vào bài học sẽ gặp lại đúng câu ấy. Đó **không phải lỗi** — gặp

@@ -1,294 +1,76 @@
-# Danh từ (phần 1)
+# Danh từ phần 1: đếm được, số nhiều, và từ loại
 
-Ở bài **Kiến thức cơ bản 1**, chúng ta đã điểm qua khái niệm danh từ, phân biệt danh từ đếm được và không đếm được và tìm hiểu qua về khái niệm từ hạn định.
+## 1. Hai loại danh từ — nguồn của mọi lỗi kết hợp
 
-Trong bài học hôm nay, chúng ta sẽ tìm hiểu sâu hơn về:
+- **Đếm được** (countable): có số ít và số nhiều — `a book / two books`
+- **Không đếm được** (uncountable): không có mạo từ `a`, không có số nhiều — `water, information, equipment`
 
-- Danh từ đếm được và không đếm được
-- Danh từ số ít và số nhiều
-- Dấu hiệu nhận biết danh từ
-- Cách hình thành cụm danh từ
-- Danh từ ghép
-- Vị trí danh từ trong câu
+Bảng kết hợp quyết định đáp án nhiều câu Part 5:
 
----
-
-## 1. Phân loại
-
-### 1.1. Danh từ đếm được (countable nouns)
-
-Danh từ đếm được chia làm 2 dạng:
-
-- **Danh từ số ít** (singular)
-- **Danh từ số nhiều** (plural)
-
-**Ví dụ:**
-
-> She's got **two sisters** and **a younger brother**.
-
-*Cô ấy có 2 chị gái và một em trai.*
-
-> I'll take **a few magazines** with me for **the flight**.
-
-*Tôi sẽ mang theo một vài cuốn tạp chí cho chuyến bay.*
-
----
-
-### Cách hình thành danh từ số nhiều
-
-| Quy tắc | Số ít | Số nhiều |
-|---|---|---|
-| Phần lớn danh từ: thêm **-s** | book<br>student<br>monkey<br>school | books<br>students<br>monkeys<br>schools |
-| Danh từ tận cùng là **-o, -s, -ch, -x, -sh**: thêm **-es**<br>*(Ngoại lệ: radio → radios, video → videos)* | potato<br>bus<br>church<br>box<br>dish | potatoes<br>buses<br>churches<br>boxes<br>dishes |
-| Danh từ tận cùng là **phụ âm + -y**: bỏ **-y**, thêm **-ies** | baby<br>party<br>city | babies<br>parties<br>cities |
-| Danh từ tận cùng là **-f/-fe**: bỏ **-f/-fe**, thêm **-ves**<br>*(Ngoại lệ: roof → roofs, belief → beliefs, cliff → cliffs)* | knife<br>leaf<br>wife<br>thief | knives<br>leaves<br>wives<br>thieves |
-
----
-
-### Danh từ bất quy tắc
-
-Một số danh từ không tuân theo các quy tắc trên, gọi là **danh từ bất quy tắc**. Ta cần nhớ dạng số nhiều của những danh từ này.
-
-| Số ít | Số nhiều |
-|---|---|
-| child | children |
-| man | men |
-| woman | women |
-| person | people |
-| sheep | sheep |
-| fish | fish |
-| deer | deer |
-| tooth | teeth |
-| foot | feet |
-
----
-
-### Danh từ chỉ có dạng số nhiều
-
-Những vật có cấu tạo gồm **2 bộ phận giống hệt nhau** mà nếu thiếu một bộ phận thì không thể sử dụng được, chẳng hạn như kính, tai nghe, kéo, quần,... thường có danh từ ở **dạng số nhiều**.
-
-#### Dụng cụ (Tools)
-
-| Danh từ |
-|---|
-| binoculars |
-| headphones |
-| sunglasses |
-| glasses |
-| scissors |
-| tweezers |
-
-#### Quần áo (Clothing)
-
-| Danh từ |
-|---|
-| jeans |
-| pajamas |
-| tights |
-| pants |
-| shorts |
-| trousers |
-
-> **Lưu ý:** Để nói về số lượng của những danh từ này, chúng ta **không thể dùng số đếm trực tiếp** như với các danh từ số nhiều thông thường.
-
-Thay vào đó, để diễn tả số lượng, ta dùng:
-
-- **a pair of**: một đôi / một cặp
-- **pairs of**: nhiều đôi / nhiều cặp
-
-**Ví dụ:**
-
-> I bought **a new pair of binoculars** last week.
-
-~~I bought two binoculars.~~
-
-*Tôi đã mua một cái ống nhòm mới vào tuần trước.*
-
-> That **old pair of trousers** will be useful for doing jobs in the garden.
-
-*Chiếc quần cũ đó sẽ có ích cho việc làm vườn đấy.*
-
-> They're advertising **two pairs of glasses** for the price of one.
-
-*Họ đang quảng cáo mua 2 cặp kính tính tiền 1.*
-
-> I bought **three pairs of shorts** for the summer.
-
-*Tôi đã mua 3 chiếc quần đùi cho mùa hè.*
-
----
-
-### Những danh từ khác luôn ở dạng số nhiều
-
-Một số danh từ khác cũng luôn được dùng ở dạng số nhiều:
-
-| Danh từ |
-|---|
-| belongings |
-| surroundings |
-| earnings |
-| outskirts |
-| clothes |
-| premises |
-| savings |
-| stairs |
-| goods |
-| thanks |
-| congratulations |
-| likes / dislikes |
-
-**Ví dụ:**
-
-> Please ensure that you take all your **belongings** with you as you leave the aircraft.
-
-*Làm ơn đảm bảo rằng quý khách mang theo toàn bộ hành lý của mình khi rời khỏi máy bay.*
-
-> They live on the **outskirts** of Frankfurt, almost in the countryside.
-
-*Họ sống ở vùng ngoại ô Frankfurt, gần như ở vùng nông thôn.*
-
-> My **clothes** are wet. I'll have to go upstairs and change.
-
-*Quần áo của tôi bị ướt. Tôi sẽ phải lên lầu và thay.*
-
-> She spent all her **savings** on a trip to South America.
-
-*Cô ấy đã dành toàn bộ tiền tiết kiệm của mình vào một chuyến đi tới Nam Mỹ.*
-
----
-
-### Danh từ tập hợp (collective nouns)
-
-**Danh từ tập hợp** là danh từ chỉ một nhóm người.
-
-Một số danh từ tập hợp thường gặp:
-
-| Danh từ |
-|---|
-| audience |
-| crew |
-| public |
-| committee |
-| staff |
-| team |
-| company |
-| government |
-| family |
-
-> **Lưu ý:** Danh từ tập hợp có thể được coi là **danh từ số ít hoặc số nhiều**, tùy thuộc vào việc nó được xem như **một nhóm thống nhất** hay **nhiều cá nhân trong nhóm**.
-
-#### Khi xem như một nhóm
-
-> The audience **was** larger than average.
-
-*Khán giả đông hơn trung bình.*
-
-> The government **is** hoping that online voting will attract more young people to vote.
-
-*Chính phủ đang hy vọng rằng bỏ phiếu trực tuyến sẽ thu hút nhiều người trẻ đi bầu hơn.*
-
-#### Khi nhấn mạnh các cá nhân trong nhóm
-
-> The audience **were** all cheering wildly.
-
-*Khán giả đều cổ vũ nhiệt tình.*
-
-> The government **are** all very nervous about the report, which will be published tomorrow.
-
-*Các thành viên chính phủ đều rất lo lắng về bản báo cáo, cái mà sẽ được công bố vào ngày mai.*
-
-> **Lưu ý:** Nhìn chung, trong ngữ cảnh đời thường, không trang trọng, cách dùng các danh từ trên như một nhóm người phổ biến hơn.
-
----
-
-### Danh từ kết thúc với đuôi -s có thể là danh từ số ít hoặc số nhiều
-
-Một số danh từ kết thúc bằng **-s** có thể được sử dụng ở cả dạng số ít và số nhiều.
-
-| Danh từ | Nghĩa | Số ít | Số nhiều |
+| | Danh từ đếm được số ít | Đếm được số nhiều | Không đếm được |
 |---|---|---|---|
-| **means** | cách thức | a means of transport | many means of transport |
-| **series** | loạt phim / chương trình | a television series | two television series |
-| **species** | loài | a species of bird | 200 species of bird |
+| mạo từ | a / the | the | the (không có `a`) |
+| many/much | — | **many** | **much** |
+| a few / a little | — | **a few** | **a little** |
+| số từ | two books | — | ✗ *two informations* |
 
-**Lưu ý:** Với những danh từ này, **dạng số ít và số nhiều có thể giống nhau**.
+Một số từ **cả hai**: `hope, experience, work, paper` — nghĩa cụ thể thì đếm được, nghĩa trừu tượng thì không: *I have many experiences* (nhiều trải nghiệm) vs *Experience is valuable* (kinh nghiệm nói chung).
 
----
+## 2. Nhóm không đếm được kinh điển của TOEIC
 
-## 1.2. Danh từ không đếm được (uncountable nouns)
+Đề thi lặp đi lặp lại cùng một danh sách — học thuộc là xong một dạng:
 
-Danh từ không đếm được là những danh từ thường **không thể đếm trực tiếp bằng số**.
+`information, equipment, luggage/baggage, furniture, machinery, software, hardware, knowledge, progress, advice, research, evidence, news, weather, traffic, transportation, accommodation, paperwork, staff`
 
-Ví dụ:
+> The office provides free ------- for visitors.
+> (A) advices (B) advice ✓ (C) advisable (D) adviser
 
-- Không nói: ~~a furniture~~
-- Không nói: ~~two furnitures~~
-- Không nói: ~~a weather~~
+*Lưu ý tiếng Việt:* "một lời khuyên", "ba cái ghế" khiến đếm được — tiếng Anh **không**: *an advice, three furnitures* đều sai. Muốn đếm: `a piece of advice`, `three chairs`.
 
----
+## 3. Số nhiều: quy tắc và bất quy tắc
 
-### Các nhóm danh từ không đếm được thường gặp
+Quy tắc: `-s` / `-es` (sau `s, x, z, ch, sh`) / phụ âm + `y` → `-ies`.
 
-| Nhóm | Ví dụ |
-|---|---|
-| **Ý tưởng và trải nghiệm** | advice, information, progress, news, luck, fun, work |
-| **Chất liệu và nguyên liệu** | water, rice, cement, gold, milk, flour, sugar, salt |
-| **Thời tiết** | weather, thunder, lightning, rain, snow |
-| **Tên một nhóm sự vật** | furniture, equipment, rubbish, luggage |
-| **Các từ khác** | accommodation, baggage, homework, knowledge, money, permission, research, traffic, travel |
+Bất quy tắc hay gặp trong văn phòng: `man → men`, `woman → women`, `child → children`, `person → people`, `foot → feet`, `tooth → teeth`, `mouse → mice`, `datum → data`, `medium → media`, `analysis → analyses`, `crisis → crises`.
 
----
+**Luôn số nhiều** (đi với động từ số nhiều): `scissors, trousers, glasses, headphones, tweezers, premises, surroundings, earnings, savings, damages, goods`.
 
-### Ví dụ
+**Hình thức -s nhưng nghĩa số ít**: `news, statistics, physics, measles` — động từ số ít: *The news **is** out.*
 
-> We're going to get new **furniture** for the living room.
+## 4. Danh từ tập hợp: một hay nhiều?
 
-~~We're going to get a new furniture for the living room.~~
+`team, staff, committee, department, company, audience, family, crew` — nhìn như **một khối** → động từ số ít; nhấn mạnh **từng thành viên** → số nhiều (Anh-Anh hay dùng hơn Anh-Mỹ):
 
-~~We're going to get new furnitures for the living room.~~
+> The management **team is** expanding. / The committee **have** argued among themselves.
 
-*Chúng ta sẽ mua nội thất mới cho phòng khách.*
+Trong đề TOEIC: an toàn nhất là số ít.
 
-> We had terrible **weather** last week.
+## 5. Dạng câu hỏi số một: chọn từ loại danh từ
 
-~~We had a terrible weather last week.~~
+Giống chủ đề Tính từ, phần lớn câu GRAMMAR_NOUN trong đề thật là **bốn đáp án cùng gốc**:
 
-*Chúng tôi đã trải qua thời tiết rất tệ vào tuần trước.*
+> The coordinator made a ------- about the meeting schedule.
+> (A) decide (B) decided (C) decisive (D) decision ✓
 
-> We need **rice** next time we go shopping.
+→ `made a ___` — sau mạo từ cần **danh từ**: **decision**.
 
-*Chúng ta cần (mua) gạo lần tới đi chợ.*
+*Điều phối viên đã đưa ra quyết định về lịch họp.*
 
----
+> Support staff provide ------- for system errors reported by customers.
+> (A) solved (B) solve (C) solving (D) solutions ✓
 
-### Danh từ không đếm được dễ bị nhầm lẫn
+Đuôi nhận diện danh từ: `-tion/-sion, -ment, -ity, -ness, -ance/-ence, -ship, -er/-or/-ant` (chỉ người).
 
-Nhiều danh từ kết thúc với đuôi **-s** dễ bị nhầm là danh từ số nhiều, nhưng thực chất lại là **danh từ không đếm được** và thường đi với động từ số ít.
+## 6. Sở hữu cách và cụm danh từ kép
 
-Một số từ thường gặp:
+- **`'s`** cho người và sinh vật: `the manager's report`; **`of`** cho vật: `the roof of the building` (*the building's roof* nghe nặng)
+- Danh ngữ kép chỉ **một** sở hữu: `the CEO and founder` (một người) vs `the CEO's and the founder's` (hai người, hai thứ riêng)
+- Mạo từ chỉ xuất hiện **một lần** ở đầu cụm: `the annual company report` ✓
 
-| Danh từ |
-|---|
-| classics |
-| athletics |
-| economics |
-| electronics |
-| gymnastics |
-| maths (mathematics) |
-| physics |
-| politics |
-| news |
+## 7. Quy trình chọn
 
-**Ví dụ:**
+- **Bước 1** — vị trí quyết định từ loại (bảng mục 3 chủ đề Kiến thức cơ bản 1).
+- **Bước 2** — danh từ đếm được hay không (mục 1–2): quyết định mạo từ, `many/much`, số nhiều.
+- **Bước 3** — số nhiều bất quy tắc hay "luôn số nhiều"? Động từ sau nó phải khớp.
 
-> **Gymnastics is** my favorite sport.
-
-~~Gymnastics are my favorite sport.~~
-
-*Thể dục dụng cụ là môn thể thao yêu thích của tôi.*
-
-> What time **is the news** on TV?
-
-~~What time are the news on TV?~~
-
-*Mấy giờ chiếu thời sự trên TV?*
+**Lưu ý**: `resume` trong "email a cover letter along with their updated -------" là **danh từ** (sơ yếu lý lịch) — đừng loại vì tưởng chỉ là động từ "tiếp tục". Từ điển mặt chữ, không phải từ điển nghĩa quen.

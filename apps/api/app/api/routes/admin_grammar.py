@@ -3,11 +3,11 @@
 Theo khuôn `admin_dictation`: editor viết, admin phát hành, publish là endpoint
 riêng, PATCH phân biệt "không đụng tới" với "đặt về rỗng" qua `_apply`.
 
-Hai cổng riêng của module này (SPEC-GRAMMAR §8), cả hai chặn lỗi hỏng im lặng:
+Hai cổng riêng của module này, cả hai chặn lỗi hỏng im lặng:
 
-- Publish **chủ đề** đòi ≥ ngưỡng câu published mang nhãn — đếm bằng truy vấn
-  thật, không bằng con số ai đó nhớ. Một chủ đề 4 câu dựng ra trang vẫn chấm
-  được, và người học làm xong trong ba phút rồi tưởng mình đã học xong "So sánh".
+- Publish **chủ đề** đòi ≥1 bài đã publish — đừng mở trang trống. (Ngưỡng ≥12
+  câu trong kho nhãn từng chặn ở đây đã BỎ 2026-09-06: lý thuyết đứng được một
+  mình, chủ đề mỏng câu hỏi là quyết định biên tập chứ không phải lỗi.)
 - Publish **bài học** đòi body không trống — trang lý thuyết rỗng hiện ra như
   bài hỏng chứ không như bài chưa soạn xong.
 """
@@ -57,11 +57,6 @@ can_publish = require_role("admin")
 # `bp.validate` dùng. Một danh sách chép tay ở đây sẽ là chỗ thứ hai phải sửa
 # khi taxonomy đổi, và chỗ thứ hai sẽ không ai nhớ (`SPEC-GRAMMAR.md` §1).
 GRAMMAR_CODES = {label.code for facet in FACETS if facet.key == "grammar" for label in facet.labels}
-
-# Ngưỡng đề nghị của SPEC-GRAMMAR §2. Đặt ở đây chứ không trong config: nó là
-# quyết định biên tập của spec, và spec nói đổi thì đổi cả luật chứ không đổi
-# mỗi môi trường.
-GRAMMAR_MIN_QUESTIONS = 12
 
 
 def _grammar_question_count(db: Session, code: str) -> int:
@@ -260,35 +255,22 @@ def publish_grammar_topic(
     topic = db.get(GrammarTopic, topic_id)
     if topic is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
-    if topic.code is None:
-        # Bài nền tảng ngoài taxonomy: không có kho nhãn để đo ngưỡng, nên cổng
-        # tối thiểu vẫn phải là "đừng mở trang trống" — một bài đã publish.
-        published_lessons = (
-            db.scalar(
-                select(func.count(GrammarLesson.id)).where(
-                    GrammarLesson.topic_id == topic.id, GrammarLesson.status == "published"
-                )
+    # Cổng duy nhất: đừng mở trang trống. Ngưỡng ≥12 câu từng chặn publish đã
+    # BỎ — lý thuyết đứng được một mình, bài tập là lựa chọn biên tập chứ không
+    # phải điều kiện tồn tại của chủ đề (SPEC-GRAMMAR §2, đổi 2026-09-06).
+    published_lessons = (
+        db.scalar(
+            select(func.count(GrammarLesson.id)).where(
+                GrammarLesson.topic_id == topic.id, GrammarLesson.status == "published"
             )
-            or 0
         )
-        if not published_lessons:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Chủ đề không có mã nhãn nên không đo ngưỡng câu — nhưng cũng "
-                "không được mở một trang trống: publish ít nhất một bài trước.",
-            )
-    else:
-        count = _grammar_question_count(db, topic.code)
-        if count < GRAMMAR_MIN_QUESTIONS:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail=(
-                    f"Chủ đề mới có {count}/{GRAMMAR_MIN_QUESTIONS} câu published mang nhãn "
-                    f"{topic.code}. Giữ ở draft cho tới khi kho đủ dày — một chủ đề mỏng "
-                    f"vẫn chấm được và trông hoàn toàn bình thường cho tới khi người học "
-                    f"làm xong nó trong ba phút."
-                ),
-            )
+        or 0
+    )
+    if not published_lessons:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Chưa có bài nào đã publish — chủ đề mở ra sẽ là trang trống.",
+        )
     topic.status = "published"
     topic.published_by = user.id
     topic.published_at = datetime.now(UTC)

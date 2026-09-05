@@ -14,13 +14,13 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 
 | | |
 |---|---|
-| Test API | **1019 passed**, 8 skipped, 2 `external` deselect |
+| Test API | **1018 passed**, 8 skipped, 2 `external` deselect |
 | E2E | 8 tệp, **22 passed / 4 skipped** |
 | Gate CI | 4 job xanh. **Branch protection chưa bật** |
 | Bảng · migration | 62 · 62 |
 | Endpoint | **217 thao tác** (132 admin) |
 | Route web | 55 |
-| Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18 chủ đề (4 published) / 6 bài học** |
+| Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18/18 chủ đề published / 20 bài học** |
 | Media | **5 115 hàng `audio_asset`**; từ vựng và dictation **toàn bộ ở `engine_version` 3** (4 796 + 134 clip) |
 | Nhãn | **838/855 câu** đã gắn (989 hàng) |
 
@@ -29,8 +29,8 @@ sinh ngoài luồng → cổng publish từ chối khi audio lệch → học vi
 (`tp-form-06/07/08`) đã qua đường đó.
 
 **Nút thắt vẫn là nội dung, không phải mã** — nhưng đã đổi chỗ: giải thích không còn
-chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), mà là **14 chủ đề ngữ pháp draft
-chưa có bài** và chất lượng câu soạn mới.
+chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình ngữ pháp đã đủ
+18/18 chủ đề; cái còn thiếu là **bài practice gắn câu** cho từng chủ đề.
 
 ## 2. Đang làm dở
 
@@ -47,7 +47,9 @@ chưa có bài** và chất lượng câu soạn mới.
 | ~~**Petland ra khỏi chỗ nổi**~~ | **Xong.** Thú cưng có thẻ cố định ở đáy sidebar — con thú thật (thở, vòng sáng theo hạng), ba chỉ số bằng biểu tượng, tên loài lấy từ `PetPublic.label` mới. Thẻ là đường vào duy nhất, nên nút nổi kéo-thả và danh sách sáu route `STUDYING` đã bỏ. Toast và lời thoại bám vào thẻ. `petland.spec.ts` đã trỏ lại và **10/10 xanh**. Còn hở: **trên mobile mất một chạm** (cột trái là `hidden` dưới `lg`, phải mở ngăn kéo trước) | `Evaluate_Pet_TOEIC_Pilot.md` §2.1 |
 | ~~**Ngữ pháp — module thứ năm, G1–G5**~~ | **Xong.** Năm bảng (migration 057–060), admin CRUD + màn soạn bài theo trang riêng với ô xem trước, cây học `/learn/grammar`, bài `practice` gắn câu từ kho nhãn hoặc soạn tại chỗ, tiến độ bằng nút hoàn thành ghi bảng (không suy ra từ `attempt` — lý do đảo ở spec), chuỗi `next_topic` nối chủ đề nền tảng không mã với chủ đề theo nhãn. G5 (migration 061–062): một câu đúng = 2 XP tất định theo (người, câu), khe "Học
   ngữ pháp" 3 bài kẹp theo số bài còn lại, completion gỡ dấu bằng `revoked_at`
-  chứ không xoá — nên cả câu lẫn bài học đều tính vào chuỗi ngày và quà ruby. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. markdown-lite 81 → 242 dòng. **Còn**: 14/18 chủ đề `draft` không bài | `SPEC-GRAMMAR.md` |
+  chứ không xoá — nên cả câu lẫn bài học đều tính vào chuỗi ngày và quà ruby. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. Cổng ≥12 câu đã bỏ —
+  publish chỉ cần ≥1 bài. markdown-lite 81 → 242 dòng. Lý thuyết đủ 18 chủ đề,
+  5 bài cũ viết lại cùng format | `SPEC-GRAMMAR.md` |
 
 ## 3. Việc còn mở, theo thứ tự nên làm
 
@@ -100,8 +102,9 @@ chưa có bài** và chất lượng câu soạn mới.
 - [ ] `GET /practice/parts/{part}` — luyện theo part rời, tôn trọng `question_set`.
       Lý thuyết Part 1–7 (P1 của ngữ pháp) nên ship cùng lát này, không dựng bộ máy
       bài học riêng (`SPEC-GRAMMAR.md` §3)
-- [ ] **Ngữ pháp: nạp nội dung** — 14/18 chủ đề còn `draft` chưa có bài; máy đã xong,
-      thiếu bài viết (`SPEC-GRAMMAR.md`)
+- [ ] **Ngữ pháp: bài practice cho các chủ đề taxonomy** — lý thuyết đủ 18/18;
+      mới có "Luyện tập 1" (Danh từ). Gắn câu từ kho theo nhãn qua admin, mỗi
+      chủ đề một bài là đủ dùng (`SPEC-GRAMMAR.md` §2)
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ

@@ -36,9 +36,9 @@ class GrammarTopic(Base, PublishableMixin):
 
     NULL hợp lệ và có chủ đích: giáo trình ngữ pháp có những bài nền tảng
     ("Kiến thức cơ bản", "Câu điều kiện") nằm ngoài 12 mã của taxonomy. Không
-    mã = không có "luyện tập theo nhãn" và không có cổng ngưỡng 12 câu — bài
-    practice của nó vẫn gắn câu tay bình thường, và cổng publish của nó đòi
-    ít nhất một bài đã publish thay vì một con số trong kho.
+    mã = không có "luyện tập theo nhãn"; bài practice của nó vẫn gắn câu tay
+    bình thường. Cổng publish nay là "≥1 bài đã publish" cho MỌI chủ đề — ngưỡng
+    12 câu trong kho từng chặn đã bị bỏ (SPEC-GRAMMAR §2).
     """
 
     __tablename__ = "grammar_topic"

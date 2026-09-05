@@ -32,13 +32,10 @@ import { useRequireSession } from "@/lib/session";
  * Ngữ pháp: chủ đề → bài học (SPEC-GRAMMAR G1).
  *
  * Hai tầng chứ không ba như cây dictation — một bài ngữ pháp không phải đơn vị
- * audio. Cổng publish của CHỦ ĐỀ đo bằng số câu thật trong kho nhãn (≥12), nên
- * mỗi hàng mang con số đó ngay trên giao diện: chủ đề dưới ngưỡng vẫn soạn được
- * bình thường, chỉ là chưa mở cho người học — và màn này phải nói rõ vì sao nút
- * mờ.
+ * audio. Cổng publish của CHỦ ĐỀ là "≥1 bài đã publish" (ngưỡng 12 câu trong kho
+ * đã bỏ — lý thuyết đứng được một mình); số câu vẫn hiện trên mỗi hàng nhưng chỉ
+ * là thông tin biên tập.
  */
-
-const MIN_QUESTIONS = 12;
 
 export default function AdminGrammarPage() {
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
@@ -109,7 +106,7 @@ export default function AdminGrammarPage() {
     <Page>
       <PageHeader
         title="Ngữ pháp"
-        description="Chủ đề là mã nhãn của taxonomy; bài tập cuối chủ đề rút tự động theo nhãn."
+        description="Chủ đề là mã nhãn của taxonomy; bài tập là lesson loại practice gắn câu tay."
       />
 
       {error && (
@@ -119,9 +116,8 @@ export default function AdminGrammarPage() {
       )}
 
       <Alert tone="info">
-        Chủ đề chỉ xuất bản được khi kho có đủ {MIN_QUESTIONS} câu published mang nhãn — một chủ đề
-        mỏng vẫn chấm được và trông hoàn toàn bình thường, cho tới khi người học làm xong nó trong
-        ba phút.
+        Chủ đề xuất bản được khi có ít nhất một bài đã xuất bản — cổng duy nhất là “đừng mở trang
+        trống”. Số câu trong kho nhãn chỉ là thông tin: lý thuyết đứng được một mình.
       </Alert>
 
       <section className="mt-8">
@@ -165,12 +161,9 @@ export default function AdminGrammarPage() {
         <div className="space-y-3">
           {topics?.map((topic, topicIndex) => {
             const inTopic = lessons.filter((lesson) => lesson.topic_id === topic.id);
-            // Hai cổng publish khác nhau theo code (server giữ luật thật, ở đây
-            // chỉ là nút mờ nói đúng lý do): có mã → đo kho nhãn; không mã →
-            // phải có ít nhất một bài đã publish.
-            const enough = topic.code
-              ? topic.question_count >= MIN_QUESTIONS
-              : topic.lesson_count > 0;
+            // Cổng publish duy nhất (server giữ luật thật, ở đây nút mờ nói đúng
+            // lý do): ≥1 bài đã publish. Ngưỡng 12 câu trong kho đã bỏ.
+            const enough = topic.lesson_count > 0;
             return (
               <TreeNode
                 key={topic.id}
@@ -190,11 +183,7 @@ export default function AdminGrammarPage() {
                     ) : (
                       <span className="text-small text-ink-faint">nền tảng</span>
                     )}
-                    {topic.code && (
-                      <Tag tone={enough ? "ok" : "warn"}>
-                        {topic.question_count}/{MIN_QUESTIONS} câu
-                      </Tag>
-                    )}
+                    {topic.code && <Tag tone="ok">{topic.question_count} câu trong kho</Tag>}
                     <span className="font-data text-small text-ink-muted">
                       {topic.lesson_count} bài
                     </span>
@@ -224,9 +213,7 @@ export default function AdminGrammarPage() {
                             ? "Chỉ admin mới xuất bản được"
                             : enough
                               ? "Xuất bản chủ đề"
-                              : topic.code
-                                ? `Cần tối thiểu ${MIN_QUESTIONS} câu published mang nhãn này`
-                                : "Chủ đề nền tảng cần ít nhất một bài đã xuất bản"
+                              : "Cần ít nhất một bài đã xuất bản"
                         }
                         onClick={() =>
                           void send(API_ROUTES.adminGrammarTopicPublish(topic.id), "POST")
