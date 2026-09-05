@@ -2923,14 +2923,20 @@ export interface paths {
         /**
          * Complete Grammar Lesson
          * @description Bấm "Hoàn thành" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).
+         *
+         *     Bấm lại một bài đã gỡ dấu KHÔNG dời `created_at`: ngày của bằng chứng cũ là
+         *     ngày cũ, và đó cũng là lúc "bấm lại bài cũ" hết tính là bài của hôm nay
+         *     trong daily task.
          */
         post: operations["complete_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_post"];
         /**
          * Unmark Grammar Lesson
-         * @description Bấm "Bỏ hoàn thành" — dấu tay thì gỡ được, đó là lý do nó là dấu tay.
+         * @description Bấm "Bỏ hoàn thành" — ĐÁNH DẤU `revoked_at`, không xoá.
          *
-         *     Xoá hàng completion, KHÔNG xoá `grammar_attempt`: đã làm câu nào thì câu đó
-         *     vẫn nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.
+         *     Dấu tay thì gỡ được, nhưng bằng chứng "hôm đó có học" phải ở lại: streak và
+         *     ruby đọc những ngày này, và một hàng xoá được sẽ viết lại chuỗi của người ta
+         *     sau lưng họ. `grammar_attempt` vẫn nguyên — đã làm câu nào thì câu đó vẫn
+         *     nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.
          */
         delete: operations["unmark_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_delete"];
         options?: never;

@@ -19629,7 +19629,7 @@
     },
     "/api/v1/grammar-lessons/{lesson_id}/complete": {
       "delete": {
-        "description": "Bấm \"Bỏ hoàn thành\" — dấu tay thì gỡ được, đó là lý do nó là dấu tay.\n\nXoá hàng completion, KHÔNG xoá `grammar_attempt`: đã làm câu nào thì câu đó\nvẫn nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.",
+        "description": "Bấm \"Bỏ hoàn thành\" — ĐÁNH DẤU `revoked_at`, không xoá.\n\nDấu tay thì gỡ được, nhưng bằng chứng \"hôm đó có học\" phải ở lại: streak và\nruby đọc những ngày này, và một hàng xoá được sẽ viết lại chuỗi của người ta\nsau lưng họ. `grammar_attempt` vẫn nguyên — đã làm câu nào thì câu đó vẫn\nnằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.",
         "operationId": "unmark_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_delete",
         "parameters": [
           {
@@ -19669,7 +19669,7 @@
         ]
       },
       "post": {
-        "description": "Bấm \"Hoàn thành\" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).",
+        "description": "Bấm \"Hoàn thành\" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).\n\nBấm lại một bài đã gỡ dấu KHÔNG dời `created_at`: ngày của bằng chứng cũ là\nngày cũ, và đó cũng là lúc \"bấm lại bài cũ\" hết tính là bài của hôm nay\ntrong daily task.",
         "operationId": "complete_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_post",
         "parameters": [
           {
