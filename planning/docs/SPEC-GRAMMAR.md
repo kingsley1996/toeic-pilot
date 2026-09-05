@@ -83,7 +83,7 @@ Cái **dùng chung** là bộ render lý thuyết ở §5 — một bộ, hai ch
 grammar_topic   (id, code?, slug, title, summary, position, status)
 grammar_lesson  (id, topic_id, slug, title, kind, body, position, status)
 grammar_lesson_question (lesson_id, question_id, position)   -- bảng nối
-grammar_lesson_completion (user_id, lesson_id, created_at)   -- UNIQUE(user, lesson)
+grammar_lesson_completion (user_id, lesson_id, created_at, revoked_at)
 grammar_attempt (id, user_id, question_id, option_id?, is_correct, created_at)
 ```
 
@@ -107,7 +107,8 @@ thứ một, rồi hai bên trôi khỏi nhau.
 ban đầu.** Bản kế hoạch nói "một bài xong khi mọi câu đã trả lời đúng, tính từ
 `grammar_attempt`". Lý do đảo: phần lớn bài ngữ pháp là **lý thuyết, không có
 câu hỏi nào** — tiến độ suy ra không có gì mà suy. Nên người học bấm "Đã học
-xong", và nút đó hợp lệ với mọi `kind`. `grammar_attempt` vẫn ghi mọi lượt làm
+xong", và nút đó hợp lệ với mọi `kind`. Gỡ dấu chỉ là `revoked_at` — hàng ở
+lại làm bằng chứng cho chuỗi ngày (§7). `grammar_attempt` vẫn ghi mọi lượt làm
 câu (kể cả lượt sai và làm lại) — lịch sử không bị xoá khi bấm/bỏ bấm hoàn
 thành; bỏ đánh dấu xong không thu hồi được việc đã làm một câu.
 
@@ -165,14 +166,14 @@ Ba đường, cả ba đi trên hệ có sẵn, không bảng mới:
   bài còn chưa học cộng với số đã học hôm nay (`_grammar_available`), đúng lập
   luận `_reviewable`: giáo trình là hữu hạn, và "học 3 bài" khi cả kho còn 2 bài
   chưa học là một việc không bao giờ xong. Đếm hàng completion chứ không đếm
-  câu: phần lớn giáo trình là lý thuyết không có câu hỏi nào. Kẽ hở đã biết và
-  chấp nhận: "bỏ hoàn thành" làm thanh lùi, và bấm lại bài cũ vẫn tính là bài
-  của hôm nay — thưởng của khe sinh tất định theo ngày nên không nhân đôi được.
-- **Chuỗi ngày.** Một `grammar_attempt` là một ngày học: `gather_stats` và
-  `ruby_daily.studied_today` cùng nạp thêm nguồn này, lưới lịch có cột
-  `grammar`. Cố ý KHÔNG đếm hàng completion vào chuỗi — completion bị xoá khi
-  bấm "Bỏ hoàn thành", và lịch sử của chuỗi không được phép co lại sau lưng
-  người ta.
+  câu: phần lớn giáo trình là lý thuyết không có câu hỏi nào.
+- **Chuỗi ngày.** Một ngày có `grammar_attempt` HOẶC một cú bấm hoàn thành là
+  một ngày học: `gather_stats` và `ruby_daily.studied_today` cùng nạp hai nguồn
+  này, lưới lịch gộp thành `grammar`. Điều kiện để completion được nuôi chuỗi:
+  "Bỏ hoàn thành" chỉ đánh dấu `revoked_at`, KHÔNG xoá — `created_at` là bằng
+  chứng vĩnh viễn, lịch sử không bị viết lại sau lưng người học. Task và nút
+  "đã xong" chỉ đếm hàng đang hiệu lực; bấm lại bài cũ không tính bài hôm nay
+  vì `created_at` không dời.
 
 Bấm "Hoàn thành" bài **không cộng XP** — nó là tự báo, không phải làm được;
 phần thưởng của nó là thanh tiến độ. Trần XP ngày vẫn chặn ở tầng ghi như cũ.

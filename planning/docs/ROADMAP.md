@@ -14,10 +14,10 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 
 | | |
 |---|---|
-| Test API | **1018 passed**, 8 skipped, 2 `external` deselect |
+| Test API | **1019 passed**, 8 skipped, 2 `external` deselect |
 | E2E | 8 tệp, **22 passed / 4 skipped** |
 | Gate CI | 4 job xanh. **Branch protection chưa bật** |
-| Bảng · migration | 62 · 61 |
+| Bảng · migration | 62 · 62 |
 | Endpoint | **217 thao tác** (132 admin) |
 | Route web | 55 |
 | Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18 chủ đề (4 published) / 6 bài học** |
@@ -45,9 +45,9 @@ chưa có bài** và chất lượng câu soạn mới.
 | ~~**Người mới nhận một quả trứng**~~ | **Xong.** Không còn tặng thẳng một con mèo: `pet_state.species` nullable (migration 055), quả đầu miễn phí, và cả bảng Petland lẫn thẻ sidebar có giao diện riêng cho lúc chưa có thú. `GET /pet` trả **204** cho "chưa mở trứng", cùng lý lẽ với `GET /petland/map`. Tám tệp e2e phải nở trứng trước vì chúng đều giả định có sẵn một con | `ADR-012` |
 | ~~**Tour chào người mới**~~ | **Xong.** Bốn bước trên trang chủ, tự dựng trên `@floating-ui/react-dom` — không thư viện tour, để lớp phủ theo được ba luật hỏng-im-lặng của hệ thiết kế. Đèn rọi là SVG khoét lỗ chứ không phải `box-shadow`. Mốc "đã xem" nằm ở `user_profile.toured_at` (migration 056) chứ không ở `localStorage`, nên nó không chào lại ở thiết bị thứ hai. `e2e/tour.spec.ts` + `e2e/support.ts` (`skipTour`) | `frontend.md` |
 | ~~**Petland ra khỏi chỗ nổi**~~ | **Xong.** Thú cưng có thẻ cố định ở đáy sidebar — con thú thật (thở, vòng sáng theo hạng), ba chỉ số bằng biểu tượng, tên loài lấy từ `PetPublic.label` mới. Thẻ là đường vào duy nhất, nên nút nổi kéo-thả và danh sách sáu route `STUDYING` đã bỏ. Toast và lời thoại bám vào thẻ. `petland.spec.ts` đã trỏ lại và **10/10 xanh**. Còn hở: **trên mobile mất một chạm** (cột trái là `hidden` dưới `lg`, phải mở ngăn kéo trước) | `Evaluate_Pet_TOEIC_Pilot.md` §2.1 |
-| ~~**Ngữ pháp — module thứ năm, G1–G5**~~ | **Xong.** Năm bảng (migration 057–060), admin CRUD + màn soạn bài theo trang riêng với ô xem trước, cây học `/learn/grammar`, bài `practice` gắn câu từ kho nhãn hoặc soạn tại chỗ, tiến độ bằng nút hoàn thành ghi bảng (không suy ra từ `attempt` — lý do đảo ở spec), chuỗi `next_topic` nối chủ đề nền tảng không mã với chủ đề theo nhãn. G5 (migration 061): một câu đúng = 2 XP tất định theo (người, câu), khe "Học ngữ
-  pháp" 3 bài kẹp theo số bài còn lại, và `grammar_attempt` tính vào chuỗi ngày +
-  quà ruby. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. markdown-lite 81 → 242 dòng. **Còn**: 14/18 chủ đề `draft` không bài | `SPEC-GRAMMAR.md` |
+| ~~**Ngữ pháp — module thứ năm, G1–G5**~~ | **Xong.** Năm bảng (migration 057–060), admin CRUD + màn soạn bài theo trang riêng với ô xem trước, cây học `/learn/grammar`, bài `practice` gắn câu từ kho nhãn hoặc soạn tại chỗ, tiến độ bằng nút hoàn thành ghi bảng (không suy ra từ `attempt` — lý do đảo ở spec), chuỗi `next_topic` nối chủ đề nền tảng không mã với chủ đề theo nhãn. G5 (migration 061–062): một câu đúng = 2 XP tất định theo (người, câu), khe "Học
+  ngữ pháp" 3 bài kẹp theo số bài còn lại, completion gỡ dấu bằng `revoked_at`
+  chứ không xoá — nên cả câu lẫn bài học đều tính vào chuỗi ngày và quà ruby. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. markdown-lite 81 → 242 dòng. **Còn**: 14/18 chủ đề `draft` không bài | `SPEC-GRAMMAR.md` |
 
 ## 3. Việc còn mở, theo thứ tự nên làm
 

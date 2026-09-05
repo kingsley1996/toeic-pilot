@@ -14,9 +14,10 @@ câu nháp mang nhãn không được xuất hiện trong luyện tập.
 
 import uuid
 from collections.abc import Sequence
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import and_, delete, or_, select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_optional_user
@@ -70,6 +71,7 @@ def _lesson_completion(
     marked = db.scalars(
         select(GrammarLessonCompletion.lesson_id).where(
             GrammarLessonCompletion.user_id == user.id,
+            GrammarLessonCompletion.revoked_at.is_(None),
             GrammarLessonCompletion.lesson_id.in_([lesson_id for lesson_id, _ in lessons]),
         )
     )
@@ -269,14 +271,23 @@ def complete_grammar_lesson(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> None:
-    """Bấm "Hoàn thành" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson)."""
+    """Bấm "Hoàn thành" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).
+
+    Bấm lại một bài đã gỡ dấu KHÔNG dời `created_at`: ngày của bằng chứng cũ là
+    ngày cũ, và đó cũng là lúc "bấm lại bài cũ" hết tính là bài của hôm nay
+    trong daily task.
+    """
     lesson = db.get(GrammarLesson, lesson_id)
     if lesson is None or lesson.status != PUBLISHED:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lesson not found")
     topic = db.get(GrammarTopic, lesson.topic_id)
     if topic is None or topic.status != PUBLISHED:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lesson not found")
-    db.merge(GrammarLessonCompletion(user_id=user.id, lesson_id=lesson.id))
+    row = db.get(GrammarLessonCompletion, (user.id, lesson.id))
+    if row is None:
+        db.add(GrammarLessonCompletion(user_id=user.id, lesson_id=lesson.id))
+    else:
+        row.revoked_at = None
     db.commit()
 
 
@@ -286,17 +297,16 @@ def unmark_grammar_lesson(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> None:
-    """Bấm "Bỏ hoàn thành" — dấu tay thì gỡ được, đó là lý do nó là dấu tay.
+    """Bấm "Bỏ hoàn thành" — ĐÁNH DẤU `revoked_at`, không xoá.
 
-    Xoá hàng completion, KHÔNG xoá `grammar_attempt`: đã làm câu nào thì câu đó
-    vẫn nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.
+    Dấu tay thì gỡ được, nhưng bằng chứng "hôm đó có học" phải ở lại: streak và
+    ruby đọc những ngày này, và một hàng xoá được sẽ viết lại chuỗi của người ta
+    sau lưng họ. `grammar_attempt` vẫn nguyên — đã làm câu nào thì câu đó vẫn
+    nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.
     """
-    db.execute(
-        delete(GrammarLessonCompletion).where(
-            GrammarLessonCompletion.user_id == user.id,
-            GrammarLessonCompletion.lesson_id == lesson_id,
-        )
-    )
+    row = db.get(GrammarLessonCompletion, (user.id, lesson_id))
+    if row is not None and row.revoked_at is None:
+        row.revoked_at = datetime.now(tz=UTC)
     db.commit()
 
 

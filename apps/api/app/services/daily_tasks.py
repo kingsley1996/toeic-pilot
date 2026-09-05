@@ -167,10 +167,9 @@ def _grammar_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) 
 
     Đếm hàng completion chứ không đếm câu làm được: việc là "học ba BÀI", và phần
     lớn giáo trình là lý thuyết không có câu hỏi nào — đo theo attempt thì người
-    học hết phần lý thuyết mà thanh tiến độ không nhích. Giá phải trả đã biết:
-    "bỏ hoàn thành" làm thanh lùi (nó chỉ được hứa "chỉ tăng" với các nguồn append-only),
-    và bấm lại một bài cũ vẫn tính là bài của hôm nay. Cả hai đều không nhân đôi
-    được thưởng: XP của khe sinh tất định từ (người, ngày, khe).
+    học hết phần lý thuyết mà thanh tiến độ không nhích. Chỉ hàng ĐANG hiệu lực
+    và chỉ ngày `created_at` của nó: gỡ dấu thì thanh lùi (tự tay họ), còn bấm
+    lại một bài cũ không biến thành "bài của hôm nay" lần thứ hai.
     """
     return int(
         db.scalar(
@@ -178,6 +177,7 @@ def _grammar_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) 
             .select_from(GrammarLessonCompletion)
             .where(
                 GrammarLessonCompletion.user_id == user_id,
+                GrammarLessonCompletion.revoked_at.is_(None),
                 GrammarLessonCompletion.created_at >= lo,
                 GrammarLessonCompletion.created_at < hi,
             )
@@ -195,7 +195,8 @@ def _grammar_available(db: Session, user_id: uuid.UUID, target: int) -> int:
     vĩnh viễn còn hơn một phần thưởng ăn sẵn mỗi ngày.
     """
     completed = select(GrammarLessonCompletion.lesson_id).where(
-        GrammarLessonCompletion.user_id == user_id
+        GrammarLessonCompletion.user_id == user_id,
+        GrammarLessonCompletion.revoked_at.is_(None),
     )
     available = (
         select(GrammarLesson.id)

@@ -853,3 +853,42 @@ def test_a_grammar_only_day_counts_as_studied(
     stats = gather_stats(db_session, learner.id, "UTC")
     assert stats.current_streak == 1
     assert stats.calendar[-1].grammar == 1
+
+
+def test_unmark_revokes_but_keeps_the_evidence(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Gỡ dấu là `revoked_at`, không phải DELETE — ngày học vẫn còn trong lịch sử.
+
+    Hàng bị xoá nuôi chuỗi ngày nghĩa là một cú bấm hôm nay viết lại chuỗi của
+    hôm qua. Kèm luôn chiều ngược: bài đã học từ hôm qua rồi không được tính
+    làm bài của hôm nay khi bấm lại.
+    """
+    _, lesson_id, _ = make_practice_lesson(client, db_session, auth, "xp5", n_questions=1)
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
+    headers = auth("learner")
+    client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=headers)
+    client.delete(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=headers)
+
+    learner = headers_user_id(db_session)
+    row = db_session.get(GrammarLessonCompletion, (learner, uuid.UUID(lesson_id)))
+    assert row is not None and row.revoked_at is not None
+
+    # Bấm lại: hàng sống lại, `created_at` giữ nguyên ngày cũ.
+    before = row.created_at
+    client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=headers)
+    db_session.expire_all()
+    again = db_session.get(GrammarLessonCompletion, (learner, uuid.UUID(lesson_id)))
+    assert again is not None and again.created_at == before
+
+    # Và streak vẫn thấy ngày học dù dấu đang bị gỡ:
+    client.delete(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=headers)
+    learner = db_session.scalar(select(User).where(User.email == "learner@example.com"))
+    assert learner is not None
+    assert gather_stats(db_session, learner.id, "UTC").current_streak == 1
+
+
+def headers_user_id(db_session: Session) -> uuid.UUID:
+    user = db_session.scalar(select(User).where(User.email == "learner@example.com"))
+    assert user is not None
+    return user.id

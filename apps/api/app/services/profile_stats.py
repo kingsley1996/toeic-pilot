@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
-from app.models.grammar import GrammarAttempt
+from app.models.grammar import GrammarAttempt, GrammarLessonCompletion
 from app.models.vocabulary import (
     VocabularyEntry,
     VocabularyReviewLog,
@@ -179,16 +179,25 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
         ),
         zone,
     )
-    # Lượt làm câu ngữ pháp cũng là một ngày học. Chỉ `grammar_attempt`, KHÔNG
-    # gồm hàng completion: completion bị xoá khi người học bấm "Bỏ hoàn thành",
-    # và một lịch sử có thể bị rút lại thì không được dùng để tính chuỗi — ngày
-    # trong quá khứ sẽ biến mất khỏi chuỗi mà không ai giải thích được.
+    # Lượt làm câu ngữ pháp VÀ ngày bấm hoàn thành bài đều là "đã học". Hàng
+    # completion không còn xoá được ("bỏ hoàn thành" chỉ đánh dấu `revoked_at`),
+    # nên `created_at` của nó là bằng chứng vĩnh viễn và đủ điều kiện nuôi chuỗi
+    # — đóng được daily task thì cũng phải giữ được streak, hai định nghĩa "đã
+    # học" lệch nhau là cái bẫy `ruby_daily` đã ghi.
     grammar_days = _local_days(
         list(
             db.scalars(
                 select(GrammarAttempt.created_at).where(
                     GrammarAttempt.user_id == user_id,
                     GrammarAttempt.created_at >= since,
+                )
+            ).all()
+        )
+        + list(
+            db.scalars(
+                select(GrammarLessonCompletion.created_at).where(
+                    GrammarLessonCompletion.user_id == user_id,
+                    GrammarLessonCompletion.created_at >= since,
                 )
             ).all()
         ),

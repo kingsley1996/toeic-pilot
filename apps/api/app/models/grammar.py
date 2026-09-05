@@ -144,6 +144,11 @@ class GrammarLessonCompletion(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    # "Bỏ hoàn thành" ĐÁNH DẤU chứ không xoá. Hàng xoá được mà nuôi chuỗi ngày
+    # thì một cú bấm hôm nay sẽ viết lại lịch sử của hôm qua — cái bẫy mà
+    # `profile_stats` đã ghi. Giữ hàng làm bằng chứng: streak đếm ngày nó từng
+    # tồn tại, còn task và nút "đã xong" chỉ đếm hàng đang hiệu lực.
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class GrammarAttempt(Base):

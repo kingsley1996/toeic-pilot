@@ -19,7 +19,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
-from app.models.grammar import GrammarAttempt
+from app.models.grammar import GrammarAttempt, GrammarLessonCompletion
 from app.models.ruby import RubyEvent
 from app.models.vocabulary import VocabularyReviewLog
 from app.services import ruby
@@ -33,9 +33,9 @@ def studied_today(db: Session, user_id: uuid.UUID, timezone: str, day: date) -> 
     """Hôm nay đã có một hoạt động HỌC thật chưa.
 
     Cùng định nghĩa "có học" mà `compute_streaks` dùng — một lượt ôn từ, một lượt
-    gõ dictation, hay một câu ngữ pháp — chứ không phải "đã mở app". Hai định
-    nghĩa sẽ lệch nhau, và cái lệch sẽ là một nút quà sáng lên vào ngày người ta
-    chưa học gì.
+    gõ dictation, một câu ngữ pháp, hay một bài được bấm hoàn thành — chứ không
+    phải "đã mở app". Hai định nghĩa sẽ lệch nhau, và cái lệch sẽ là một nút quà
+    sáng lên vào ngày người ta chưa học gì.
 
     `EXISTS` chứ không `COUNT`: câu hỏi là có hay không, và ngày nào có thì hàng
     đầu tiên đã trả lời xong.
@@ -54,12 +54,19 @@ def studied_today(db: Session, user_id: uuid.UUID, timezone: str, day: date) -> 
     )
     if reviewed:
         return True
-    for model, column in (
-        (DictationAttempt, DictationAttempt.created_at),
-        (GrammarAttempt, GrammarAttempt.created_at),
+    # `__table__` chứ không phải attribute trên class: vòng qua các model khác
+    # nhau thì `model.id` là lỗi mypy, còn cột của table thì cùng hình dạng.
+    # `user_id` là cột chung của cả ba; `lesson_id` riêng của completion (PK ghép
+    # của nó không có `id`).
+    for table, marker in (
+        (DictationAttempt.__table__, DictationAttempt.__table__.c.id),
+        (GrammarAttempt.__table__, GrammarAttempt.__table__.c.id),
+        (GrammarLessonCompletion.__table__, GrammarLessonCompletion.__table__.c.lesson_id),
     ):
         stmt = select(
-            select(model.id).where(model.user_id == user_id, column >= lo, column < hi).exists()
+            select(marker)
+            .where(table.c.user_id == user_id, table.c.created_at >= lo, table.c.created_at < hi)
+            .exists()
         )
         if db.scalar(stmt):
             return True

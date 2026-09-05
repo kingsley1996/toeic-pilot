@@ -176,7 +176,7 @@ export function ContributionGraph({
                         key={cell.iso}
                         title={
                           cell.inRange
-                            ? `${cell.iso}: ${cell.reviews} lượt ôn · ${cell.dictation} câu nghe · ${cell.grammar} câu ngữ pháp`
+                            ? `${cell.iso}: ${cell.reviews} lượt ôn · ${cell.dictation} câu nghe · ${cell.grammar} lượt ngữ pháp`
                             : cell.iso
                         }
                         className={cx(
