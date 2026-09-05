@@ -304,10 +304,17 @@ export default function GrammarLessonPage() {
                       <ArrowRight size={13} strokeWidth={2} aria-hidden />
                     </Link>
                   ) : shown.next_topic ? (
-                    /* Bài cuối chủ đề nhưng còn chủ đề kế: KHÔNG nói "Hết chủ
-                     đề" — đối chọi với đúng cái nút đang nằm ở sidebar. Hành
-                     động đã có chỗ của nó; thanh này chỉ còn lời xác nhận. */
-                    <span className="text-small text-ink-faint">Bạn đã học xong chủ đề này.</span>
+                    /* Bài cuối chủ đề nhưng còn chủ đề kế: hành động ngay ở
+                     đây, cùng hình với "Học bài tiếp theo" — người học vừa xong
+                     một bài thì thứ họ cần là cái nút tiếp, không phải một lời
+                     xác nhận. */
+                    <Link
+                      href={`/learn/grammar/${shown.next_topic.topic_id}/${shown.next_topic.lesson_id}`}
+                      className="inline-flex items-center gap-1.5 rounded border border-action bg-action px-3 py-1.5 text-small font-semibold text-on-action hover:bg-action-hover"
+                    >
+                      Học chủ đề tiếp theo
+                      <ArrowRight size={13} strokeWidth={2} aria-hidden />
+                    </Link>
                   ) : (
                     <Link
                       href={`/learn/grammar/${topicId}`}
