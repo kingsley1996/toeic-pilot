@@ -52,7 +52,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `docs/SYSTEM-OVERVIEW.md` · `docs/MEDIA-PIPELINE.md` · `docs/EXAM-GRAPH.md` | Mô tả **hành vi hiện tại**, không phải quyết định |
 | `docs/REFACTOR-LONG-FILES.md` | Tách tệp quá dài. §0: dài không tự nó là lỗi |
 | `docs/USER-ROAD.md` · `docs/SPEC-*.md` | Level/badge/XP · các mặc định dựng để sửa |
-| `docs/SPEC-GRAMMAR.md` | Module ngữ pháp — **kế hoạch, chưa dựng**. §1: danh sách chủ đề đã có trong taxonomy. §2: bài tập rút theo nhãn. §3: vì sao lý thuyết Part 1–7 tách ra |
+| `docs/SPEC-GRAMMAR.md` | Module ngữ pháp — **G1–G4 đã dựng, G5 (XP) còn mở**. §2: bài tập là bài học, không rút theo nhãn. §4: tiến độ là bảng ghi, không suy ra. §3: vì sao lý thuyết Part 1–7 tách ra |
 | `docs/BRAND-ASSETS.md` | Prompt sinh logo/favicon/ảnh OG. §0: favicon vẫn là bản mặc định của Next.js. §2: ba thứ model làm không được |
 | `docs/import_media.md` · `docs/EXAM-GENERATION-RUNBOOK.md` · `docs/SYNC-TEST-TO-PRODUCTION.md` | Runbook thao tác |
 | `docs/REVIEW-OPUS.md` · `docs/qwen3p8-review.md` | Hai bản review, ghim theo commit, **không cập nhật** |

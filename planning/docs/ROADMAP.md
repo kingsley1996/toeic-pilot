@@ -10,26 +10,27 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 
 ## 1. Đang ở đâu
 
-Đo trên `main`, 2026-09-01. Lệnh đo ghi ở [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md) §1.
+Đo trên `main`, 2026-09-06. Lệnh đo ghi ở [`SYSTEM-OVERVIEW.md`](SYSTEM-OVERVIEW.md) §1.
 
 | | |
 |---|---|
-| Test API | **949 passed**, 2 skipped, 2 `external` deselect |
+| Test API | **1014 passed**, 8 skipped, 2 `external` deselect |
 | E2E | 8 tệp, **22 passed / 4 skipped** |
 | Gate CI | 4 job xanh. **Branch protection chưa bật** |
-| Bảng · migration | 57 · 51 |
-| Endpoint | **189 thao tác** (114 admin) |
-| Route web | 49 |
-| Nội dung | **5 đề / 655 câu** (124 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** |
+| Bảng · migration | 62 · 60 |
+| Endpoint | **217 thao tác** (132 admin) |
+| Route web | 55 |
+| Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18 chủ đề (4 published) / 6 bài học** |
 | Media | **5 115 hàng `audio_asset`**; từ vựng và dictation **toàn bộ ở `engine_version` 3** (4 796 + 134 clip) |
-| Nhãn | 233 câu + 45 cụm đã gắn |
+| Nhãn | **838/855 câu** đã gắn (989 hàng) |
 
 **Vòng đời nội dung khép kín và chạy thật**: dán hoặc sinh bằng đồ thị → `draft` → audio
 sinh ngoài luồng → cổng publish từ chối khi audio lệch → học viên làm bài. Ba đề 200 câu
 (`tp-form-06/07/08`) đã qua đường đó.
 
-**Nút thắt vẫn là nội dung, không phải mã.** 124/655 câu có giải thích, và đó là con số
-chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
+**Nút thắt vẫn là nội dung, không phải mã** — nhưng đã đổi chỗ: giải thích không còn
+chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), mà là **14 chủ đề ngữ pháp draft
+chưa có bài** và chất lượng câu soạn mới.
 
 ## 2. Đang làm dở
 
@@ -44,21 +45,16 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
 | ~~**Người mới nhận một quả trứng**~~ | **Xong.** Không còn tặng thẳng một con mèo: `pet_state.species` nullable (migration 055), quả đầu miễn phí, và cả bảng Petland lẫn thẻ sidebar có giao diện riêng cho lúc chưa có thú. `GET /pet` trả **204** cho "chưa mở trứng", cùng lý lẽ với `GET /petland/map`. Tám tệp e2e phải nở trứng trước vì chúng đều giả định có sẵn một con | `ADR-012` |
 | ~~**Tour chào người mới**~~ | **Xong.** Bốn bước trên trang chủ, tự dựng trên `@floating-ui/react-dom` — không thư viện tour, để lớp phủ theo được ba luật hỏng-im-lặng của hệ thiết kế. Đèn rọi là SVG khoét lỗ chứ không phải `box-shadow`. Mốc "đã xem" nằm ở `user_profile.toured_at` (migration 056) chứ không ở `localStorage`, nên nó không chào lại ở thiết bị thứ hai. `e2e/tour.spec.ts` + `e2e/support.ts` (`skipTour`) | `frontend.md` |
 | ~~**Petland ra khỏi chỗ nổi**~~ | **Xong.** Thú cưng có thẻ cố định ở đáy sidebar — con thú thật (thở, vòng sáng theo hạng), ba chỉ số bằng biểu tượng, tên loài lấy từ `PetPublic.label` mới. Thẻ là đường vào duy nhất, nên nút nổi kéo-thả và danh sách sáu route `STUDYING` đã bỏ. Toast và lời thoại bám vào thẻ. `petland.spec.ts` đã trỏ lại và **10/10 xanh**. Còn hở: **trên mobile mất một chạm** (cột trái là `hidden` dưới `lg`, phải mở ngăn kéo trước) | `Evaluate_Pet_TOEIC_Pilot.md` §2.1 |
+| ~~**Ngữ pháp — module thứ năm, G1–G4**~~ | **Xong phần máy.** Năm bảng (migration 057–060), admin CRUD + màn soạn bài theo trang riêng với ô xem trước, cây học `/learn/grammar`, bài `practice` gắn câu từ kho nhãn hoặc soạn tại chỗ, tiến độ bằng nút hoàn thành ghi bảng (không suy ra từ `attempt` — lý do đảo ở spec), chuỗi `next_topic` nối chủ đề nền tảng không mã với chủ đề theo nhãn. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. markdown-lite 81 → 242 dòng. **Chưa**: G5 XP, và 14/18 chủ đề còn `draft` không bài | `SPEC-GRAMMAR.md` |
 
 ## 3. Việc còn mở, theo thứ tự nên làm
 
 ### Nội dung — chặn mọi thứ khác
 
-- [ ] **Vá giải thích cho `tp-form-06/07/08`** — 510 câu, công cụ đã dựng và đã kiểm:
-      `app/content/backfill_explanations.py`, runbook §11b. Đo thật $0,0007/câu ≈ **$0,36**
-      cho cả ba đề. Part 1 dùng bản mô tả cảnh còn lưu ở `content/generated/<slug>/photos/`,
-      nên nó không phải suy ngược từ đáp án; mất bản ấy thì câu đó bị bỏ qua chứ không bịa.
-
-      Ba dòng cũ ở đây đã SAI và được thay: ngưỡng RAG ghi 300 trong khi `ADR-003` §3.3 viết
-      **≥150**; con số "hiện 124" thực ra là **324/855**, tức ngưỡng đã vượt từ lâu; và
-      "chỉ `part5_system.md` đòi `Explanation:`" cũng hết đúng — cả sáu prompt part đều đòi,
-      nên đề sinh sau đó (`tp-test-09`) phủ 200/200. Chỗ hổng còn lại hoàn toàn là nội dung
-      cũ, không phải dây chuyền.
+- [x] ~~**Vá giải thích cho `tp-form-06/07/08`**~~ — **Xong.** Backfill 2026-09-04:
+      **834/855** câu có giải thích, chỉ còn 21 trắng. Công cụ:
+      `app/content/backfill_explanations.py`, runbook §11b. Ngưỡng RAG (`ADR-003` §3.3)
+      đã vượt xa từ lâu; nút thắt nội dung giờ là **chất lượng**, không phải số lượng.
 - [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
       thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
       không có bài nào thuộc dạng đó
@@ -92,14 +88,20 @@ chặn RAG (`adr/ADR-003-AI-LAYER.md` §3.3).
       tính năng; bốn tính năng AI đã ship trước nó, nên đây là nợ có thật
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
-- [ ] Gắn nhãn nốt: 233/655 câu đã có
+- [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17
 - [ ] Prompt caching — đòn bẩy chi phí lớn nhất chưa dùng
 - [ ] Structured output cho study plan
 - [ ] AI Study Planner — **chặn bởi dữ liệu**: `target_score` mới điền trên 3/53 hồ sơ
 
 ### Tính năng còn thiếu
 
-- [ ] `GET /practice/parts/{part}` — luyện theo part rời, tôn trọng `question_set`
+- [ ] `GET /practice/parts/{part}` — luyện theo part rời, tôn trọng `question_set`.
+      Lý thuyết Part 1–7 (P1 của ngữ pháp) nên ship cùng lát này, không dựng bộ máy
+      bài học riêng (`SPEC-GRAMMAR.md` §3)
+- [ ] **Ngữ pháp G5** — XP + `kind` việc hôm nay cho grammar; hiện làm bài ngữ pháp
+      không cộng điểm, không vào chuỗi ngày (`SPEC-GRAMMAR.md` §7)
+- [ ] **Ngữ pháp: nạp nội dung** — 14/18 chủ đề còn `draft` chưa có bài; máy đã xong,
+      thiếu bài viết (`SPEC-GRAMMAR.md`)
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ
