@@ -45,10 +45,15 @@ def _progress(message: str) -> None:
 #
 # Đầu ra thật của một lượt plan là 15 dòng bối cảnh hoặc 4 dòng brief, cỡ vài
 # trăm token. Phần còn lại là suy luận, nên hạ trần cắt đúng thứ đang thừa.
+# Model suy luận ăn trần vào reasoning thì nâng bằng `--max-tokens`, đừng nâng
+# hằng số: `bai/hy3` (2026-09-05) cần 12 000 cho Part 5 (30 dòng) trong khi mọi
+# model khác đủ ở 8 000.
 PLAN_MAX_TOKENS = 8000
 
 
-def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, str]]:
+def generate_part1_scenes(
+    gateway: Gateway, tier: Tier, *, max_tokens: int = PLAN_MAX_TOKENS
+) -> list[tuple[str, str, str]]:
     """Hỏi model sinh sáu bối cảnh Part 1 khác nhau cho một đề.
 
     Vì sao để model quyết định chỗ này mà không phải chỗ khác: Part 1 chỉ có sáu
@@ -72,7 +77,7 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
             LLMRequest(
                 system=prompt,
                 user="Sinh sáu bối cảnh ảnh Part 1.",
-                max_tokens=PLAN_MAX_TOKENS,
+                max_tokens=max_tokens,
             ),
             feature="exam_plan",
             tier=tier,
@@ -96,7 +101,14 @@ def generate_part1_scenes(gateway: Gateway, tier: Tier) -> list[tuple[str, str, 
     return scenes
 
 
-def generate_part_scenes(gateway: Gateway, tier: Tier, part: int, hosts: list[str]) -> list[str]:
+def generate_part_scenes(
+    gateway: Gateway,
+    tier: Tier,
+    part: int,
+    hosts: list[str],
+    *,
+    max_tokens: int = PLAN_MAX_TOKENS,
+) -> list[str]:
     """Hỏi model sinh bối cảnh MỚI cho các ô của một part (2–7).
 
     Chỉ sinh `context` — bối cảnh — KHÔNG động vào cấu trúc (loại câu, số người
@@ -149,7 +161,7 @@ def generate_part_scenes(gateway: Gateway, tier: Tier, part: int, hosts: list[st
             LLMRequest(
                 system=prompt,
                 user=f"Sinh {count} bối cảnh Part {part}.",
-                max_tokens=PLAN_MAX_TOKENS,
+                max_tokens=max_tokens,
             ),
             feature="exam_plan",
             tier=tier,
@@ -229,7 +241,14 @@ def _graphic_hosts(plan: Blueprint) -> list[str]:
     return hosts
 
 
-def generate_part_graphics(gateway: Gateway, tier: Tier, part: int, hosts: list[str]) -> list[str]:
+def generate_part_graphics(
+    gateway: Gateway,
+    tier: Tier,
+    part: int,
+    hosts: list[str],
+    *,
+    max_tokens: int = PLAN_MAX_TOKENS,
+) -> list[str]:
     """Hỏi model sinh brief hình MỚI cho các vị trí graphic của part (3, 4, 7).
 
     Chỉ sinh `graphic`/`passages` — brief `kind: mô tả` — KHÔNG đụng vị trí hay
@@ -270,7 +289,7 @@ def generate_part_graphics(gateway: Gateway, tier: Tier, part: int, hosts: list[
             LLMRequest(
                 system=prompt,
                 user=f"Sinh {count} brief hình Part {part}.",
-                max_tokens=PLAN_MAX_TOKENS,
+                max_tokens=max_tokens,
             ),
             feature="exam_plan",
             tier=tier,
@@ -313,21 +332,27 @@ def cmd_plan(args: argparse.Namespace) -> int:
     # chỉ sinh NỘI DUNG bối cảnh và hình.
     built = builder(args.slug, title, args.seed)
     if args.model:
+        # Wizard dựng Namespace tay, không có cờ này — getattr, đừng bắt nó sửa.
+        max_tokens = getattr(args, "max_tokens", PLAN_MAX_TOKENS)
         try:
             gateway = _gateway(args.model)
             if args.part == 1:
-                scenes = generate_part1_scenes(gateway, Tier(args.tier))
+                scenes = generate_part1_scenes(gateway, Tier(args.tier), max_tokens=max_tokens)
                 built = bp.build_part1(args.slug, title, args.seed, scenes)
             else:
                 contexts = generate_part_scenes(
-                    gateway, Tier(args.tier), args.part, _scene_hosts(built)
+                    gateway, Tier(args.tier), args.part, _scene_hosts(built), max_tokens=max_tokens
                 )
                 if args.part in (3, 4, 7):
                     # Bối cảnh model phải áp TRƯỚC: `_graphic_hosts` đọc `context`,
                     # và bản của bảng sắp bị dập đè ở dòng dưới.
                     _override_contexts(built, contexts)
                     graphics = generate_part_graphics(
-                        gateway, Tier(args.tier), args.part, _graphic_hosts(built)
+                        gateway,
+                        Tier(args.tier),
+                        args.part,
+                        _graphic_hosts(built),
+                        max_tokens=max_tokens,
                     )
                     built = {
                         3: bp.build_part3,

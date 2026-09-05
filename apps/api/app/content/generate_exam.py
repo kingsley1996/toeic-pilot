@@ -33,7 +33,7 @@ from app.content.exam_cli.label import cmd_label
 from app.content.exam_cli.load import cmd_interact, cmd_load
 from app.content.exam_cli.media import cmd_attach_images, cmd_graphic, cmd_media, cmd_photo
 from app.content.exam_cli.paths import DEFAULT_ROOT, blueprint_path, workdir_for
-from app.content.exam_cli.plan import cmd_plan
+from app.content.exam_cli.plan import PLAN_MAX_TOKENS, cmd_plan
 from app.content.settings import content_settings
 from app.services.llm.router import Tier
 
@@ -77,6 +77,12 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="provider/model cho Part 1 (vd `bai/glm-5.3-flash`) — sinh 6 bối cảnh; "
         "bỏ trống thì dùng PART1_MIX",
+    )
+    plan_cmd.add_argument(
+        "--max-tokens",
+        type=int,
+        default=PLAN_MAX_TOKENS,
+        help="trần đầu ra mỗi lượt plan; model suy luận ăn trần vào reasoning thì nâng",
     )
     plan_cmd.set_defaults(func=cmd_plan)
 

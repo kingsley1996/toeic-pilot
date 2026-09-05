@@ -71,6 +71,12 @@
           "rate_out": 0.47,
           "rate_cached": 0.016,
           "comment": "CHƯA XÁC NHẬN Ở docs.b.ai — trang đó trả 403 ngày 2026-09-03. Con số lấy từ bảng giá gốc của Alibaba/OpenRouter cùng ngày: input 0.15, output 0.47, cache read 0.016. `GET /v1/models` xác nhận id `qwen3.8-flash` có thật trên b.ai (45 model). Nếu b.ai không bán lại đúng giá gốc thì sổ cái lệch ở model này — kiểm lại khi vào được docs."
+        },
+        "hy3": {
+          "rate_in": 0.132,
+          "rate_out": 0.528,
+          "rate_cached": 0.033,
+          "comment": "docs.b.ai ngày 2026-09-05. Hy3 (Tencent Hunyuan): input 0.132, output 0.528, cache_read 0.033, cache_write 0.132. ID model kiểm bằng GET /v1/models cùng ngày (47 model, có hy3; hy4-preview cũng có nhưng chưa khai giá)."
         }
       }
     },
