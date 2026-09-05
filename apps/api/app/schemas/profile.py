@@ -222,7 +222,7 @@ class ProgressionPublic(BaseModel):
 # admin thêm/sửa/tắt được. Cái đóng lại là loại việc, vì mỗi loại là một phép
 # đếm có thật trong `app/services/daily_tasks.py`.
 DailyTaskKind = Literal[
-    "vocabulary_review", "dictation_complete", "attempt_answer", "grammar_attempt"
+    "vocabulary_review", "dictation_complete", "attempt_answer", "grammar_lesson_complete"
 ]
 
 

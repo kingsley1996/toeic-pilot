@@ -43,7 +43,7 @@ const KINDS: { value: DailyTaskSlotAdmin["kind"]; label: string }[] = [
   { value: "vocabulary_review", label: "Vocabulary reviews" },
   { value: "dictation_complete", label: "Dictation sentences completed" },
   { value: "attempt_answer", label: "Questions answered in a test" },
-  { value: "grammar_attempt", label: "Grammar questions attempted" },
+  { value: "grammar_lesson_complete", label: "Grammar lessons completed" },
 ];
 
 export function SlotsSection({ config, setConfig, busy, send }: SectionProps) {

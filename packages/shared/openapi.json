@@ -1781,7 +1781,7 @@
               "vocabulary_review",
               "dictation_complete",
               "attempt_answer",
-              "grammar_attempt"
+              "grammar_lesson_complete"
             ],
             "title": "Kind",
             "type": "string"
@@ -1834,7 +1834,7 @@
               "vocabulary_review",
               "dictation_complete",
               "attempt_answer",
-              "grammar_attempt"
+              "grammar_lesson_complete"
             ],
             "title": "Kind",
             "type": "string"
@@ -1880,7 +1880,7 @@
               "vocabulary_review",
               "dictation_complete",
               "attempt_answer",
-              "grammar_attempt"
+              "grammar_lesson_complete"
             ],
             "title": "Kind",
             "type": "string"
@@ -1940,7 +1940,7 @@
                   "vocabulary_review",
                   "dictation_complete",
                   "attempt_answer",
-                  "grammar_attempt"
+                  "grammar_lesson_complete"
                 ],
                 "type": "string"
               },

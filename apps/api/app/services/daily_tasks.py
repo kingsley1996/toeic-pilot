@@ -24,7 +24,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
-from app.models.grammar import GrammarAttempt
+from app.models.grammar import GrammarLesson, GrammarLessonCompletion, GrammarTopic
 from app.models.practice import Attempt, AttemptItem
 from app.models.vocabulary import (
     VocabularyEntry,
@@ -39,7 +39,7 @@ from app.services import progression, progression_config
 KIND_REVIEW = "vocabulary_review"
 KIND_DICTATION = "dictation_complete"
 KIND_TEST = "attempt_answer"
-KIND_GRAMMAR = "grammar_attempt"
+KIND_GRAMMAR = "grammar_lesson_complete"
 
 
 @dataclass(frozen=True)
@@ -163,22 +163,52 @@ def _answers_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) 
 
 
 def _grammar_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) -> int:
-    """Số CÂU riêng biệt đã làm hôm nay — đúng sai đều tính.
+    """Số bài ngữ pháp BẤM HOÀN THÀNH hôm nay.
 
-    `DISTINCT question_id` vì một câu làm lại ba lần không phải ba câu mới; đếm
-    cả lượt sai vì đây là phép đo khối lượng, cùng nghĩa với `attempt_answer`
-    (câu đã trả lời), không phải cổng "đã giỏi".
+    Đếm hàng completion chứ không đếm câu làm được: việc là "học ba BÀI", và phần
+    lớn giáo trình là lý thuyết không có câu hỏi nào — đo theo attempt thì người
+    học hết phần lý thuyết mà thanh tiến độ không nhích. Giá phải trả đã biết:
+    "bỏ hoàn thành" làm thanh lùi (nó chỉ được hứa "chỉ tăng" với các nguồn append-only),
+    và bấm lại một bài cũ vẫn tính là bài của hôm nay. Cả hai đều không nhân đôi
+    được thưởng: XP của khe sinh tất định từ (người, ngày, khe).
     """
     return int(
         db.scalar(
-            select(func.count(func.distinct(GrammarAttempt.question_id))).where(
-                GrammarAttempt.user_id == user_id,
-                GrammarAttempt.created_at >= lo,
-                GrammarAttempt.created_at < hi,
+            select(func.count())
+            .select_from(GrammarLessonCompletion)
+            .where(
+                GrammarLessonCompletion.user_id == user_id,
+                GrammarLessonCompletion.created_at >= lo,
+                GrammarLessonCompletion.created_at < hi,
             )
         )
         or 0
     )
+
+
+def _grammar_available(db: Session, user_id: uuid.UUID, target: int) -> int:
+    """Số bài còn chưa học — CÁI KẸP, cùng lập luận với `_reviewable`.
+
+    Kho bài là hữu hạn (khác kho câu hỏi thi, vốn chỉ lớn dần): mục tiêu 3 bài
+    khi cả giáo trình còn 2 bài chưa học là một việc không bao giờ xong. Hết
+    sạch thì kẹp trả về 0 và `tasks_for` giữ nguyên mục tiêu — thà một việc đóng
+    vĩnh viễn còn hơn một phần thưởng ăn sẵn mỗi ngày.
+    """
+    completed = select(GrammarLessonCompletion.lesson_id).where(
+        GrammarLessonCompletion.user_id == user_id
+    )
+    available = (
+        select(GrammarLesson.id)
+        .join(GrammarTopic, GrammarTopic.id == GrammarLesson.topic_id)
+        .where(
+            GrammarLesson.status == "published",
+            GrammarTopic.status == "published",
+            GrammarLesson.id.notin_(completed),
+        )
+        .limit(target)
+        .subquery()
+    )
+    return int(db.scalar(select(func.count()).select_from(available)) or 0)
 
 
 def tasks_for(
@@ -216,6 +246,13 @@ def tasks_for(
             # Kẹp xuống theo số từ thật sự có, không bao giờ kẹp lên. Con số động
             # ở đây là CÁI KẸP, không phải cái đích — xem chú thích đầu tệp.
             target = min(slot.target, _reviewable(db, user_id, when, slot.target)) or slot.target
+        elif slot.kind == KIND_GRAMMAR:
+            # Cùng cái kẹp, cộng `progress`: mục tiêu là "học hết phần còn lại,
+            # tối đa 3". Không cộng thì học xong bài CUỐI cùng lúc kẹp còn 2 sẽ
+            # làm target nhảy về 3 đúng khoảnh khắc việc đáng ra xong — và việc
+            # đóng vĩnh viễn ngay khi người ta vừa hoàn thành giáo trình.
+            available = _grammar_available(db, user_id, slot.target)
+            target = min(slot.target, available + progress) or slot.target
 
         tasks.append(
             DailyTask(

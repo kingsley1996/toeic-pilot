@@ -4724,7 +4724,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_lesson_complete";
             /** Label */
             label: string;
             /** Progress */
@@ -4746,7 +4746,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_lesson_complete";
             /** Label */
             label: string;
             /** Position */
@@ -4767,7 +4767,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_lesson_complete";
             /** Label */
             label: string;
             /**
@@ -4785,7 +4785,7 @@ export interface components {
             /** Enabled */
             enabled?: boolean | null;
             /** Kind */
-            kind?: ("vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt") | null;
+            kind?: ("vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_lesson_complete") | null;
             /** Label */
             label?: string | null;
             /** Position */

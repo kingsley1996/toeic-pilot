@@ -783,20 +783,61 @@ def test_a_correct_attempt_awards_xp_once_per_question(
     assert len(_xp_rows(db_session)) == 2
 
 
-def test_grammar_questions_fill_a_daily_task(
+def test_grammar_lessons_fill_a_daily_task(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:
-    """Đếm CÂU RIÊNG, đúng sai đều tính — cùng nghĩa với `attempt_answer`."""
-    _, lesson_id, questions = make_practice_lesson(client, db_session, auth, "xp2", n_questions=2)
+    """Việc là "học 3 bài", đo bằng bấm hoàn thành — lý thuyết cũng tính."""
+    topic_id, lesson_id, _ = make_practice_lesson(client, db_session, auth, "xp2", n_questions=1)
     client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
-    q1, q2 = questions
-    _submit(client, auth, q1, "B")
-    _submit(client, auth, q1, "B")  # làm lại — vẫn một câu
-    _submit(client, auth, q2, "A")  # sai — vẫn là một câu đã làm
+    lessons = [lesson_id]
+    for n in (2, 3):
+        body = {
+            "topic_id": topic_id,
+            "slug": f"bai-{n}",
+            "title": f"Bài {n}",
+            "body": "x",
+            "position": n,
+        }
+        lessons.append(
+            client.post("/api/v1/admin/grammar/lessons", json=body, headers=auth("editor")).json()[
+                "id"
+            ]
+        )
+    for lesson in lessons:
+        client.post(f"/api/v1/admin/grammar/lessons/{lesson}/publish", headers=auth("admin"))
+        client.post(f"/api/v1/grammar-lessons/{lesson}/complete", headers=auth("learner"))
 
     tasks = client.get("/api/v1/daily-tasks", headers=auth("learner")).json()["tasks"]
-    grammar = next(t for t in tasks if t["kind"] == "grammar_attempt")
-    assert grammar["progress"] == 2
+    grammar = next(t for t in tasks if t["kind"] == "grammar_lesson_complete")
+    assert (grammar["progress"], grammar["done"]) == (3, True)
+
+
+def test_grammar_task_target_clamps_to_what_is_left(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Còn 2 bài chưa học thì mục tiêu là 2, không phải 3 mãi mãi không với tới.
+
+    Và khi KHÔNG còn bài nào, mục tiêu giữ nguyên 3 — thà việc đóng vĩnh viễn
+    còn hơn phần thưởng ăn sẵn mỗi ngày (`or slot.target`, như kẹp từ vựng).
+    """
+    topic_id, lesson_id, _ = make_practice_lesson(client, db_session, auth, "xp4", n_questions=1)
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
+    second = client.post(
+        "/api/v1/admin/grammar/lessons",
+        json={"topic_id": topic_id, "slug": "bai-2", "title": "Bài 2", "body": "x", "position": 2},
+        headers=auth("editor"),
+    ).json()["id"]
+    client.post(f"/api/v1/admin/grammar/lessons/{second}/publish", headers=auth("admin"))
+
+    def grammar_task() -> dict:
+        tasks = client.get("/api/v1/daily-tasks", headers=auth("learner")).json()["tasks"]
+        return next(t for t in tasks if t["kind"] == "grammar_lesson_complete")
+
+    assert grammar_task()["target"] == 2  # cả giáo trình còn đúng 2 bài
+    client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=auth("learner"))
+    client.post(f"/api/v1/grammar-lessons/{second}/complete", headers=auth("learner"))
+    task = grammar_task()
+    assert (task["progress"], task["done"]) == (2, True)
 
 
 def test_a_grammar_only_day_counts_as_studied(

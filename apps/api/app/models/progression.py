@@ -151,7 +151,12 @@ class UserBadge(Base):
 
 # Loại việc của một khe daily task. Mỗi loại ứng với một phép đếm có sẵn trong
 # `app/services/daily_tasks.py`.
-DAILY_TASK_KINDS = ("vocabulary_review", "dictation_complete", "attempt_answer", "grammar_attempt")
+DAILY_TASK_KINDS = (
+    "vocabulary_review",
+    "dictation_complete",
+    "attempt_answer",
+    "grammar_lesson_complete",
+)
 
 # Số đo mà một badge có thể so ngưỡng. Ứng với `app/services/badges.py`.
 BADGE_METRICS = (
@@ -422,9 +427,9 @@ DEFAULT_DAILY_TASK_SLOTS: tuple[dict[str, object], ...] = (
     },
     {
         "id": SLOT_ID_GRAMMAR,
-        "kind": "grammar_attempt",
-        "label": "Làm câu ngữ pháp",
-        "target": 10,
+        "kind": "grammar_lesson_complete",
+        "label": "Học ngữ pháp",
+        "target": 3,
         "xp": 10,
         "position": 4,
     },

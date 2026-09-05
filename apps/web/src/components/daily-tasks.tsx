@@ -51,7 +51,7 @@ const KINDS: Record<TaskKind, { hint: string; href: string; Icon: LucideIcon }> 
   vocabulary_review: { hint: "lượt ôn", href: "/learn/review", Icon: RotateCcw },
   dictation_complete: { hint: "câu đúng trọn", href: "/learn/dictation", Icon: Headphones },
   attempt_answer: { hint: "câu đã trả lời", href: "/learn/tests", Icon: FileText },
-  grammar_attempt: { hint: "câu đã làm", href: "/learn/grammar", Icon: GraduationCap },
+  grammar_lesson_complete: { hint: "bài đã học", href: "/learn/grammar", Icon: GraduationCap },
 };
 
 function TaskRow({ task }: { task: DailyTaskPublic }) {

@@ -157,12 +157,17 @@ Ba đường, cả ba đi trên hệ có sẵn, không bảng mới:
   như mọi mức khác — migration 061). `source_id` là uuid tất định từ
   (người, câu), KHÔNG phải id lượt: đường nộp bài ghi mọi lượt, và khoá bằng id
   lượt biến "làm lại cho thuộc" thành máy in XP. Sai không được gì; đúng rồi
-  làm lại không được lần hai.
-- **Việc hôm nay.** Loại `grammar_attempt` đếm CÂU RIÊNG đã làm trong ngày
-  (đúng sai đều tính — cùng nghĩa với `attempt_answer`). Khe mặc định "Làm câu
-  ngữ pháp" 10 câu / 10 XP, id cố định như ba khe kia. Môi trường đã seed từ
-  trước không tự có khe mới — seed chỉ chạy khi bảng trống — nên dev nhận nó
-  bằng một hàng INSERT; production muốn thì POST qua admin.
+  làm lại không được lần hai. Môi trường đã seed slot từ trước không tự có khe
+  mới — seed chỉ chạy khi bảng trống — nên dev nhận nó bằng một hàng INSERT;
+  production muốn thì POST qua admin.
+- **Việc hôm nay.** Loại `grammar_lesson_complete`: "Học ngữ pháp" — bấm hoàn
+  thành 3 bài trong ngày, lý thuyết cũng như luyện tập. Mục tiêu **kẹp** theo số
+  bài còn chưa học cộng với số đã học hôm nay (`_grammar_available`), đúng lập
+  luận `_reviewable`: giáo trình là hữu hạn, và "học 3 bài" khi cả kho còn 2 bài
+  chưa học là một việc không bao giờ xong. Đếm hàng completion chứ không đếm
+  câu: phần lớn giáo trình là lý thuyết không có câu hỏi nào. Kẽ hở đã biết và
+  chấp nhận: "bỏ hoàn thành" làm thanh lùi, và bấm lại bài cũ vẫn tính là bài
+  của hôm nay — thưởng của khe sinh tất định theo ngày nên không nhân đôi được.
 - **Chuỗi ngày.** Một `grammar_attempt` là một ngày học: `gather_stats` và
   `ruby_daily.studied_today` cùng nạp thêm nguồn này, lưới lịch có cột
   `grammar`. Cố ý KHÔNG đếm hàng completion vào chuỗi — completion bị xoá khi

@@ -71,7 +71,7 @@ test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đ
   await expect(panel.getByRole("link", { name: /Ôn từ vựng/ })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Nghe chép chính tả/ })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Luyện đề/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /Làm câu ngữ pháp/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /Học ngữ pháp/ })).toBeVisible();
   // Tài khoản mới chưa làm gì, nên con số XP hôm nay phải là 0 — không phải
   // "chưa có". Khối này in ra một cái thang, và một cái thang không có mốc bắt
   // đầu thì không đọc được.
