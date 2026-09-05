@@ -1780,7 +1780,8 @@
             "enum": [
               "vocabulary_review",
               "dictation_complete",
-              "attempt_answer"
+              "attempt_answer",
+              "grammar_attempt"
             ],
             "title": "Kind",
             "type": "string"
@@ -1832,7 +1833,8 @@
             "enum": [
               "vocabulary_review",
               "dictation_complete",
-              "attempt_answer"
+              "attempt_answer",
+              "grammar_attempt"
             ],
             "title": "Kind",
             "type": "string"
@@ -1877,7 +1879,8 @@
             "enum": [
               "vocabulary_review",
               "dictation_complete",
-              "attempt_answer"
+              "attempt_answer",
+              "grammar_attempt"
             ],
             "title": "Kind",
             "type": "string"
@@ -1936,7 +1939,8 @@
                 "enum": [
                   "vocabulary_review",
                   "dictation_complete",
-                  "attempt_answer"
+                  "attempt_answer",
+                  "grammar_attempt"
                 ],
                 "type": "string"
               },
@@ -7267,6 +7271,10 @@
             "title": "Xp Dictation Complete",
             "type": "integer"
           },
+          "xp_grammar_attempt": {
+            "title": "Xp Grammar Attempt",
+            "type": "integer"
+          },
           "xp_vocabulary_review": {
             "title": "Xp Vocabulary Review",
             "type": "integer"
@@ -7276,6 +7284,7 @@
           "xp_vocabulary_review",
           "xp_dictation_complete",
           "xp_attempt_submit",
+          "xp_grammar_attempt",
           "daily_xp_cap",
           "curve_coefficient",
           "curve_exponent",
@@ -7393,6 +7402,19 @@
               }
             ],
             "title": "Xp Dictation Complete"
+          },
+          "xp_grammar_attempt": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Grammar Attempt"
           },
           "xp_vocabulary_review": {
             "anyOf": [
@@ -9048,6 +9070,10 @@
             "title": "Dictation Items",
             "type": "integer"
           },
+          "grammar": {
+            "title": "Grammar",
+            "type": "integer"
+          },
           "reviews": {
             "title": "Reviews",
             "type": "integer"
@@ -9056,7 +9082,8 @@
         "required": [
           "date",
           "reviews",
-          "dictation_items"
+          "dictation_items",
+          "grammar"
         ],
         "title": "StudyDay",
         "type": "object"

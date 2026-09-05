@@ -62,7 +62,14 @@ function toIso(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-type Cell = { iso: string; total: number; reviews: number; dictation: number; inRange: boolean };
+type Cell = {
+  iso: string;
+  total: number;
+  reviews: number;
+  dictation: number;
+  grammar: number;
+  inRange: boolean;
+};
 
 export function ContributionGraph({
   calendar,
@@ -100,11 +107,13 @@ export function ContributionGraph({
         const day = byDay.get(iso);
         const reviews = day?.reviews ?? 0;
         const dictation = day?.dictation_items ?? 0;
+        const grammar = day?.grammar ?? 0;
         column.push({
           iso,
           reviews,
           dictation,
-          total: reviews + dictation,
+          grammar,
+          total: reviews + dictation + grammar,
           inRange: cursor >= start && cursor <= end,
         });
         cursor.setUTCDate(cursor.getUTCDate() + 1);
@@ -167,7 +176,7 @@ export function ContributionGraph({
                         key={cell.iso}
                         title={
                           cell.inRange
-                            ? `${cell.iso}: ${cell.reviews} lượt ôn · ${cell.dictation} câu nghe`
+                            ? `${cell.iso}: ${cell.reviews} lượt ôn · ${cell.dictation} câu nghe · ${cell.grammar} câu ngữ pháp`
                             : cell.iso
                         }
                         className={cx(

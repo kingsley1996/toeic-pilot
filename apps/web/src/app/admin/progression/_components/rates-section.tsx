@@ -16,7 +16,7 @@ export function RatesSection({ config, setConfig, busy, send }: SectionProps) {
     <section className="mt-8">
       <SectionHeader title="XP rates and daily cap" />
       <Panel className="p-5 sm:p-6">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           <NumberField
             label="Per review"
             hint="Every SM-2 review, any grade."
@@ -36,6 +36,12 @@ export function RatesSection({ config, setConfig, busy, send }: SectionProps) {
             onChange={(xp_attempt_submit) => patch({ xp_attempt_submit })}
           />
           <NumberField
+            label="Per grammar question"
+            hint="Correct only, once per question ever."
+            value={form.xp_grammar_attempt}
+            onChange={(xp_grammar_attempt) => patch({ xp_grammar_attempt })}
+          />
+          <NumberField
             label="Daily cap"
             hint="Trims the last award instead of dropping it. Learning itself is never blocked."
             value={form.daily_xp_cap}
@@ -50,6 +56,7 @@ export function RatesSection({ config, setConfig, busy, send }: SectionProps) {
                 xp_vocabulary_review: form.xp_vocabulary_review,
                 xp_dictation_complete: form.xp_dictation_complete,
                 xp_attempt_submit: form.xp_attempt_submit,
+                xp_grammar_attempt: form.xp_grammar_attempt,
                 daily_xp_cap: form.daily_xp_cap,
               })
             }

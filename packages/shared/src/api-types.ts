@@ -4724,7 +4724,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
             /** Label */
             label: string;
             /** Progress */
@@ -4746,7 +4746,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
             /** Label */
             label: string;
             /** Position */
@@ -4767,7 +4767,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer";
+            kind: "vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt";
             /** Label */
             label: string;
             /**
@@ -4785,7 +4785,7 @@ export interface components {
             /** Enabled */
             enabled?: boolean | null;
             /** Kind */
-            kind?: ("vocabulary_review" | "dictation_complete" | "attempt_answer") | null;
+            kind?: ("vocabulary_review" | "dictation_complete" | "attempt_answer" | "grammar_attempt") | null;
             /** Label */
             label?: string | null;
             /** Position */
@@ -6752,6 +6752,8 @@ export interface components {
             xp_attempt_submit: number;
             /** Xp Dictation Complete */
             xp_dictation_complete: number;
+            /** Xp Grammar Attempt */
+            xp_grammar_attempt: number;
             /** Xp Vocabulary Review */
             xp_vocabulary_review: number;
         };
@@ -6781,6 +6783,8 @@ export interface components {
             xp_attempt_submit?: number | null;
             /** Xp Dictation Complete */
             xp_dictation_complete?: number | null;
+            /** Xp Grammar Attempt */
+            xp_grammar_attempt?: number | null;
             /** Xp Vocabulary Review */
             xp_vocabulary_review?: number | null;
         };
@@ -7407,6 +7411,8 @@ export interface components {
             date: string;
             /** Dictation Items */
             dictation_items: number;
+            /** Grammar */
+            grammar: number;
             /** Reviews */
             reviews: number;
         };

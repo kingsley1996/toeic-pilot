@@ -19,6 +19,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
+from app.models.grammar import GrammarAttempt
 from app.models.ruby import RubyEvent
 from app.models.vocabulary import VocabularyReviewLog
 from app.services import ruby
@@ -31,9 +32,10 @@ STREAK_STEP = 7
 def studied_today(db: Session, user_id: uuid.UUID, timezone: str, day: date) -> bool:
     """Hôm nay đã có một hoạt động HỌC thật chưa.
 
-    Cùng định nghĩa "có học" mà `compute_streaks` dùng — một lượt ôn từ hoặc một
-    lượt gõ dictation — chứ không phải "đã mở app". Hai định nghĩa sẽ lệch nhau,
-    và cái lệch sẽ là một nút quà sáng lên vào ngày người ta chưa học gì.
+    Cùng định nghĩa "có học" mà `compute_streaks` dùng — một lượt ôn từ, một lượt
+    gõ dictation, hay một câu ngữ pháp — chứ không phải "đã mở app". Hai định
+    nghĩa sẽ lệch nhau, và cái lệch sẽ là một nút quà sáng lên vào ngày người ta
+    chưa học gì.
 
     `EXISTS` chứ không `COUNT`: câu hỏi là có hay không, và ngày nào có thì hàng
     đầu tiên đã trả lời xong.
@@ -52,19 +54,16 @@ def studied_today(db: Session, user_id: uuid.UUID, timezone: str, day: date) -> 
     )
     if reviewed:
         return True
-    return bool(
-        db.scalar(
-            select(
-                select(DictationAttempt.id)
-                .where(
-                    DictationAttempt.user_id == user_id,
-                    DictationAttempt.created_at >= lo,
-                    DictationAttempt.created_at < hi,
-                )
-                .exists()
-            )
+    for model, column in (
+        (DictationAttempt, DictationAttempt.created_at),
+        (GrammarAttempt, GrammarAttempt.created_at),
+    ):
+        stmt = select(
+            select(model.id).where(model.user_id == user_id, column >= lo, column < hi).exists()
         )
-    )
+        if db.scalar(stmt):
+            return True
+    return False
 
 
 @dataclass(frozen=True)

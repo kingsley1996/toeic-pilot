@@ -24,6 +24,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
+from app.models.grammar import GrammarAttempt
 from app.models.practice import Attempt, AttemptItem
 from app.models.vocabulary import (
     VocabularyEntry,
@@ -38,6 +39,7 @@ from app.services import progression, progression_config
 KIND_REVIEW = "vocabulary_review"
 KIND_DICTATION = "dictation_complete"
 KIND_TEST = "attempt_answer"
+KIND_GRAMMAR = "grammar_attempt"
 
 
 @dataclass(frozen=True)
@@ -160,6 +162,25 @@ def _answers_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) 
     )
 
 
+def _grammar_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime) -> int:
+    """Số CÂU riêng biệt đã làm hôm nay — đúng sai đều tính.
+
+    `DISTINCT question_id` vì một câu làm lại ba lần không phải ba câu mới; đếm
+    cả lượt sai vì đây là phép đo khối lượng, cùng nghĩa với `attempt_answer`
+    (câu đã trả lời), không phải cổng "đã giỏi".
+    """
+    return int(
+        db.scalar(
+            select(func.count(func.distinct(GrammarAttempt.question_id))).where(
+                GrammarAttempt.user_id == user_id,
+                GrammarAttempt.created_at >= lo,
+                GrammarAttempt.created_at < hi,
+            )
+        )
+        or 0
+    )
+
+
 def tasks_for(
     db: Session, user_id: uuid.UUID, timezone: str, now: datetime | None = None
 ) -> tuple[date, list[DailyTask]]:
@@ -219,6 +240,8 @@ def _measure(
         return _dictation_today(db, user_id, lo, hi)
     if kind == KIND_TEST:
         return _answers_today(db, user_id, lo, hi)
+    if kind == KIND_GRAMMAR:
+        return _grammar_today(db, user_id, lo, hi)
     # Một khe mang loại việc mà code không biết đo. Không thể xảy ra qua giao diện
     # quản trị (danh sách đóng, kiểm ở tầng schema), nhưng nếu có thì nó phải là
     # một việc KHÔNG BAO GIỜ xong chứ không phải một việc xong sẵn: trao XP cho

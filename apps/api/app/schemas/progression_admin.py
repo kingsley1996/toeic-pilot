@@ -37,6 +37,7 @@ class ProgressionSettingAdmin(BaseModel):
     xp_vocabulary_review: int
     xp_dictation_complete: int
     xp_attempt_submit: int
+    xp_grammar_attempt: int
     daily_xp_cap: int
     curve_coefficient: float
     curve_exponent: float
@@ -58,6 +59,7 @@ class ProgressionSettingUpdate(BaseModel):
     xp_vocabulary_review: int | None = Field(default=None, ge=0, le=100)
     xp_dictation_complete: int | None = Field(default=None, ge=0, le=100)
     xp_attempt_submit: int | None = Field(default=None, ge=0, le=500)
+    xp_grammar_attempt: int | None = Field(default=None, ge=0, le=100)
     daily_xp_cap: int | None = Field(default=None, ge=1, le=10_000)
     curve_coefficient: float | None = Field(default=None, gt=0, le=10_000)
     curve_exponent: float | None = Field(default=None, ge=1.0, le=3.0)

@@ -38,8 +38,9 @@ from app.services.leveling import Progress, frame_for_level, level_from_xp
 # mỗi hàng ghi số điểm ĐÃ TRAO lúc đó, nên hạ giá một hoạt động hôm nay không
 # rút XP của ai trong quá khứ.
 
-# Namespace để sinh uuid tất định cho nguồn không có hàng gốc. Cố định vĩnh viễn:
-# đổi nó là mọi daily task trong quá khứ trở thành "chưa trao" và được trao lại.
+# Namespace để sinh uuid tất định cho nguồn không lấy id hàng gốc làm khoá chống
+# trùng. Cố định vĩnh viễn: đổi nó là mọi daily task trong quá khứ trở thành
+# "chưa trao" và được trao lại.
 _TASK_NAMESPACE = uuid.UUID("6f9619ff-8b86-d011-b42d-00c04fc964ff")
 
 
@@ -70,6 +71,18 @@ def task_source_id(user_id: uuid.UUID, day: date, slot: str) -> uuid.UUID:
     return uuid.uuid5(_TASK_NAMESPACE, f"{user_id}:{day.isoformat()}:{slot}")
 
 
+def grammar_source_id(user_id: uuid.UUID, question_id: uuid.UUID) -> uuid.UUID:
+    """uuid tất định cho XP một câu ngữ pháp, khoá (người, câu) chứ KHÔNG phải id
+    lượt làm.
+
+    Đường nộp bài ghi MỌI lượt — làm lại câu đã đúng là thao tác bình thường ở
+    đây. Lấy id lượt làm `source_id` thì mỗi lần bấm lại là một XP mới, và khác
+    dictation (thứ cũng dùng id lượt), ngữ pháp không có bước "nghe lại từ đầu"
+    nào tự nhiên giới hạn tần suất bấm.
+    """
+    return uuid.uuid5(_TASK_NAMESPACE, f"grammar-attempt:{user_id}:{question_id}")
+
+
 def daily_cap(db: Session) -> int:
     return progression_config.settings_row(db).daily_xp_cap
 
@@ -81,6 +94,7 @@ _XP_COLUMN = {
     "vocabulary_review": "xp_vocabulary_review",
     "dictation_complete": "xp_dictation_complete",
     "attempt_submit": "xp_attempt_submit",
+    "grammar_attempt": "xp_grammar_attempt",
 }
 
 

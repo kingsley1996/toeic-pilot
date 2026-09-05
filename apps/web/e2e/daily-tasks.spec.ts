@@ -3,7 +3,7 @@ import { type APIRequestContext, expect, test } from "@playwright/test";
 import { skipTour } from "./support";
 
 /*
- * Ba việc hôm nay trên `/dashboard` (USER-ROAD §6).
+ * Việc hôm nay trên `/dashboard` (USER-ROAD §6) — bốn khe mặc định.
  *
  * Bài này bắc qua ĐÚNG chỗ nối mà cả hai phía đều xanh khi đứng riêng: máy chủ
  * suy ra tiến độ từ hoạt động trong ngày và trao XP ngay trong lần đọc, còn
@@ -56,7 +56,7 @@ async function completeDictation(request: APIRequestContext, token: string): Pro
   return done;
 }
 
-test("tài khoản mới thấy ba việc, làm xong một việc thì nó đóng và XP tăng", async ({
+test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đóng và XP tăng", async ({
   page,
   request,
 }) => {
@@ -71,6 +71,7 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
   await expect(panel.getByRole("link", { name: /Ôn từ vựng/ })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Nghe chép chính tả/ })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Luyện đề/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: /Làm câu ngữ pháp/ })).toBeVisible();
   // Tài khoản mới chưa làm gì, nên con số XP hôm nay phải là 0 — không phải
   // "chưa có". Khối này in ra một cái thang, và một cái thang không có mốc bắt
   // đầu thì không đọc được.
@@ -96,8 +97,8 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
 
   await page.reload();
 
-  // Việc đã đóng: dòng nghe chép biến khỏi danh sách việc-còn-lại và đếm còn 2.
-  await expect(panel.getByText(/Xong 1\/3 việc/)).toBeVisible();
+  // Việc đã đóng: dòng nghe chép biến khỏi danh sách việc-còn-lại và đếm còn 3.
+  await expect(panel.getByText(/Xong 1\/4 việc/)).toBeVisible();
   await expect(panel.getByText(/3\/3\s*câu đúng trọn/)).toBeVisible();
 
   // Và XP đã nhích TRONG CÙNG lần dựng đó: 3 câu × 5 + 10 thưởng việc = 25.
@@ -109,12 +110,12 @@ test("tài khoản mới thấy ba việc, làm xong một việc thì nó đón
    * DOM từ trước — chèn cả vùng lẫn nội dung cùng lúc thì trình đọc màn hình
    * không đọc gì, một lỗi chỉ nghe thấy chứ không nhìn thấy.
    *
-   * "Còn 2 việc nữa" là phần đáng giá của khẳng định này: nó chứng minh con số
+   * "Còn 3 việc nữa" là phần đáng giá của khẳng định này: nó chứng minh con số
    * đến từ chính lần đọc vừa rồi chứ không phải một câu chữ cố định.
    */
   const toast = page.getByRole("status").getByText("Đã xong việc hôm nay");
   await expect(toast).toBeVisible();
-  await expect(page.getByRole("status").getByText(/\+10 XP\. Còn 2 việc nữa\./)).toBeVisible();
+  await expect(page.getByRole("status").getByText(/\+10 XP\. Còn 3 việc nữa\./)).toBeVisible();
 
   // Nạp lại lần nữa: máy chủ trả `xp_awarded = 0` vì `source_id` tất định, nên
   // không chúc mừng lại chuyện đã chúc mừng rồi.

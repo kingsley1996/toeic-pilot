@@ -43,6 +43,7 @@ XP_SOURCES = (
     "vocabulary_review",
     "dictation_complete",
     "attempt_submit",
+    "grammar_attempt",
     "daily_task",
     "streak_bonus",
 )
@@ -150,7 +151,7 @@ class UserBadge(Base):
 
 # Loại việc của một khe daily task. Mỗi loại ứng với một phép đếm có sẵn trong
 # `app/services/daily_tasks.py`.
-DAILY_TASK_KINDS = ("vocabulary_review", "dictation_complete", "attempt_answer")
+DAILY_TASK_KINDS = ("vocabulary_review", "dictation_complete", "attempt_answer", "grammar_attempt")
 
 # Số đo mà một badge có thể so ngưỡng. Ứng với `app/services/badges.py`.
 BADGE_METRICS = (
@@ -207,6 +208,7 @@ class ProgressionSetting(Base):
     xp_vocabulary_review: Mapped[int] = mapped_column(Integer, nullable=False)
     xp_dictation_complete: Mapped[int] = mapped_column(Integer, nullable=False)
     xp_attempt_submit: Mapped[int] = mapped_column(Integer, nullable=False)
+    xp_grammar_attempt: Mapped[int] = mapped_column(Integer, nullable=False)
     daily_xp_cap: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Tham số của MÁY SINH bảng level, không phải của phép tra cứu.
@@ -354,6 +356,8 @@ PROGRESSION_DEFAULTS: dict[str, object] = {
     "xp_vocabulary_review": 2,
     "xp_dictation_complete": 5,
     "xp_attempt_submit": 30,
+    # Một câu ngữ pháp đúng = một hành động vi mô, cùng cỡ với một lượt ôn từ.
+    "xp_grammar_attempt": 2,
     "daily_xp_cap": 120,
     # Hạ từ (50 · n^1.6, tuyến tính 500) xuống sau khi đối chiếu với NHỊP THẬT.
     #
@@ -389,6 +393,7 @@ PROGRESSION_DEFAULTS: dict[str, object] = {
 SLOT_ID_REVIEW = uuid.UUID("2b1c0d4e-0000-5000-8000-000000000001")
 SLOT_ID_DICTATION = uuid.UUID("2b1c0d4e-0000-5000-8000-000000000002")
 SLOT_ID_TEST = uuid.UUID("2b1c0d4e-0000-5000-8000-000000000003")
+SLOT_ID_GRAMMAR = uuid.UUID("2b1c0d4e-0000-5000-8000-000000000004")
 
 DEFAULT_DAILY_TASK_SLOTS: tuple[dict[str, object], ...] = (
     {
@@ -414,6 +419,14 @@ DEFAULT_DAILY_TASK_SLOTS: tuple[dict[str, object], ...] = (
         "target": 10,
         "xp": 10,
         "position": 3,
+    },
+    {
+        "id": SLOT_ID_GRAMMAR,
+        "kind": "grammar_attempt",
+        "label": "Làm câu ngữ pháp",
+        "target": 10,
+        "xp": 10,
+        "position": 4,
     },
 )
 

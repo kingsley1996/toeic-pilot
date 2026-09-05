@@ -6,7 +6,7 @@ import {
   type DailyTasksPublic,
   type ProgressionPublic,
 } from "@toeic-pilot/shared";
-import { Check, FileText, Headphones, RotateCcw } from "lucide-react";
+import { Check, FileText, GraduationCap, Headphones, RotateCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,11 +16,12 @@ import { apiFetch } from "@/lib/api";
 import { useToast } from "@/lib/toast";
 
 /**
- * Ba việc hôm nay — khối đầu tiên của `/dashboard`.
+ * Việc hôm nay — khối đầu tiên của `/dashboard`.
  *
  * Mục tiêu của tính năng này (USER-ROAD §6) là *mở lên là biết làm gì*, nên nó
- * luôn đúng ba dòng, luôn cùng thứ tự, và không có menu để chọn. Trạng thái ba
- * việc suy ra từ hoạt động trong ngày ở máy chủ; ở đây không tính gì cả.
+ * luôn cùng thứ tự, mỗi ngày, và không có menu để chọn. Số dòng là dữ liệu khe
+ * (mặc định bốn), không phải hằng số. Trạng thái suy ra từ hoạt động trong ngày
+ * ở máy chủ; ở đây không tính gì cả.
  *
  * Ba chi tiết dễ làm hỏng khi sửa:
  *
@@ -50,6 +51,7 @@ const KINDS: Record<TaskKind, { hint: string; href: string; Icon: LucideIcon }> 
   vocabulary_review: { hint: "lượt ôn", href: "/learn/review", Icon: RotateCcw },
   dictation_complete: { hint: "câu đúng trọn", href: "/learn/dictation", Icon: Headphones },
   attempt_answer: { hint: "câu đã trả lời", href: "/learn/tests", Icon: FileText },
+  grammar_attempt: { hint: "câu đã làm", href: "/learn/grammar", Icon: GraduationCap },
 };
 
 function TaskRow({ task }: { task: DailyTaskPublic }) {
@@ -241,12 +243,13 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
       </div>
 
       {allDone ? (
-        /* Xong cả ba thì thu lại một dòng chứ KHÔNG biến mất (§6.4): một khối
-           biến mất đọc như hỏng, và nó lấy mất phần thưởng của việc đã làm. */
+        /* Xong hết thì thu lại một dòng chứ KHÔNG biến mất (§6.4): một khối biến
+           mất đọc như hỏng, và nó lấy mất phần thưởng của việc đã làm. Đếm theo
+           `tasks.length` chứ không nói "cả ba": số khe là dữ liệu admin sửa được. */
         <p className="mt-3 flex items-center gap-2 text-ok">
           <Check size={16} strokeWidth={2.25} aria-hidden />
           <span className="text-ink">
-            Xong cả ba việc hôm nay. Học thêm vẫn tính vào XP và chuỗi ngày.
+            Xong {done} việc hôm nay. Học thêm vẫn tính vào XP và chuỗi ngày.
           </span>
         </p>
       ) : (

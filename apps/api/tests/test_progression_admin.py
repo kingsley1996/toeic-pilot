@@ -58,7 +58,7 @@ def test_admin_reads_a_seeded_config_on_the_first_open(client, db_session):
     body = client.get("/api/v1/admin/progression", headers=headers).json()
 
     assert body["setting"]["daily_xp_cap"] == 120
-    assert len(body["slots"]) == 3
+    assert len(body["slots"]) == 4
     assert len(body["badges"]) == 15
     assert len(body["frames"]) == 4
     assert body["levels"][0] == {"level": 1, "xp_required": 0}
@@ -232,7 +232,7 @@ def test_a_new_slot_shows_up_for_learners(client, db_session):
     db_session.flush()
     _, tasks = tasks_for(db_session, user.id, "UTC")
     assert [t.label for t in tasks][-1] == "Chép thêm 5 câu"
-    assert len(tasks) == 4
+    assert len(tasks) == 5
 
     # Và tắt nó thì học viên không thấy nữa, nhưng hàng vẫn còn để chống trao lại.
     row = db_session.scalars(
@@ -243,7 +243,7 @@ def test_a_new_slot_shows_up_for_learners(client, db_session):
     )
     db_session.expire_all()
     _, after = tasks_for(db_session, user.id, "UTC")
-    assert len(after) == 3
+    assert len(after) == 4
     assert db_session.get(DailyTaskSlot, row.id) is not None
 
 

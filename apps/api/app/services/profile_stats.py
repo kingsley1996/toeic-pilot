@@ -16,6 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
+from app.models.grammar import GrammarAttempt
 from app.models.vocabulary import (
     VocabularyEntry,
     VocabularyReviewLog,
@@ -178,8 +179,23 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
         ),
         zone,
     )
+    # Lượt làm câu ngữ pháp cũng là một ngày học. Chỉ `grammar_attempt`, KHÔNG
+    # gồm hàng completion: completion bị xoá khi người học bấm "Bỏ hoàn thành",
+    # và một lịch sử có thể bị rút lại thì không được dùng để tính chuỗi — ngày
+    # trong quá khứ sẽ biến mất khỏi chuỗi mà không ai giải thích được.
+    grammar_days = _local_days(
+        list(
+            db.scalars(
+                select(GrammarAttempt.created_at).where(
+                    GrammarAttempt.user_id == user_id,
+                    GrammarAttempt.created_at >= since,
+                )
+            ).all()
+        ),
+        zone,
+    )
 
-    active = set(review_days) | set(dictation_days)
+    active = set(review_days) | set(dictation_days) | set(grammar_days)
     current_streak, longest_streak = compute_streaks(active, today)
 
     calendar = [
@@ -187,6 +203,7 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
             date=day,
             reviews=review_days.get(day, 0),
             dictation_items=dictation_days.get(day, 0),
+            grammar=grammar_days.get(day, 0),
         )
         for day in sorted(active)
     ]

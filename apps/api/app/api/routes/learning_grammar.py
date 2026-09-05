@@ -1,6 +1,5 @@
-"""Learning GRAMMAR — cây chủ đề → bài học → lý thuyết (SPEC-GRAMMAR G2),
-luyện tập cuối chủ đề rút theo nhãn (G3), và bài LUYỆN TẬP như một loại lesson
-với tiến độ suy ra từ lượt làm (G4).
+"""Learning GRAMMAR — cây chủ đề → bài học → lý thuyết, và bài LUYỆN TẬP như một
+loại lesson với câu gắn tay (SPEC-GRAMMAR G2 + G4).
 
 Đọc công khai như cây dictation: lý thuyết ngữ pháp không có tiến độ ẩn sau
 account, và cổng chặn nội dung là `status`, không phải đăng nhập. NỘP bài thì
@@ -43,6 +42,8 @@ from app.schemas.learning import (
     GrammarTopicDetail,
     GrammarTopicPublic,
 )
+from app.services import progression
+from app.services.profile import ensure_profile
 
 router = APIRouter(tags=["learning"])
 
@@ -330,6 +331,21 @@ def submit_grammar_attempt(
             user_id=user.id, question_id=question.id, option_id=option.id, is_correct=is_correct
         )
     )
+    # Chỉ câu ĐÚNG mới có XP, và mỗi (người, câu) chỉ một lần — `source_id` tất
+    # định, không phải id lượt. XP hỏng thì lượt chấm vẫn chạy (invariant của
+    # `services/progression`).
+    if is_correct:
+        try:
+            progression.award(
+                db,
+                user_id=user.id,
+                source_type="grammar_attempt",
+                source_id=progression.grammar_source_id(user.id, question.id),
+                amount=progression.xp_for(db, "grammar_attempt"),
+                timezone=ensure_profile(db, user).timezone,
+            )
+        except Exception:  # pragma: no cover - XP không được làm hỏng việc học
+            pass
     db.commit()
     return GrammarPracticeResult(
         is_correct=is_correct,

@@ -112,6 +112,7 @@ class StudyDay(BaseModel):
     date: date
     reviews: int
     dictation_items: int
+    grammar: int
 
 
 class LearningStats(BaseModel):
@@ -220,7 +221,9 @@ class ProgressionPublic(BaseModel):
 # Danh sách KHE thì không còn cố định — khe là hàng trong `daily_task_slot` và
 # admin thêm/sửa/tắt được. Cái đóng lại là loại việc, vì mỗi loại là một phép
 # đếm có thật trong `app/services/daily_tasks.py`.
-DailyTaskKind = Literal["vocabulary_review", "dictation_complete", "attempt_answer"]
+DailyTaskKind = Literal[
+    "vocabulary_review", "dictation_complete", "attempt_answer", "grammar_attempt"
+]
 
 
 class DailyTaskPublic(BaseModel):

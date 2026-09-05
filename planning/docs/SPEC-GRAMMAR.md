@@ -1,7 +1,7 @@
 # SPEC — Ngữ pháp TOEIC
 
-Trạng thái: **G1–G4 đã dựng** trên `main` (2026-09-06). G5 (XP) và P1 (lý thuyết
-part) còn mở. Bài học ngữ pháp theo chủ đề, mỗi bài có lý thuyết và/hoặc bài tập.
+Trạng thái: **G1–G5 đã dựng** trên `main` (2026-09-06). P1 (lý thuyết part) còn
+mở. Bài học ngữ pháp theo chủ đề, mỗi bài có lý thuyết và/hoặc bài tập.
 
 ## 0. Chỗ nó đứng, nói thẳng
 
@@ -148,14 +148,29 @@ nghiêng, không phải bullet.
   mới tại chỗ, và endpoint đổi thứ tự topic/lesson (PUT cả khối, kiểu
   `StoryReorder`).
 
-## 7. XP và việc hôm nay — CÒN MỞ (G5)
+## 7. XP và việc hôm nay — ĐÃ DỰNG (G5)
 
-`xp_event.source_type` là chuỗi tự do — thêm nguồn cho grammar không cần đổi
-schema. `daily_task_slot.kind` thì **là tập đóng**: muốn có việc hôm nay kiểu
-"làm 10 câu ngữ pháp" phải thêm một `kind` mới, một thay đổi mã chứ không phải
-một hàng dữ liệu. Trần XP ngày vẫn chặn ở tầng ghi như cũ.
+Ba đường, cả ba đi trên hệ có sẵn, không bảng mới:
 
-Chưa dựng. Hiện làm bài ngữ pháp không cộng XP, không vào chuỗi ngày.
+- **Một câu đúng = XP.** Nguồn `grammar_attempt`, mức là cột
+  `xp_grammar_attempt` trong `progression_setting` (mặc định 2, admin sửa được
+  như mọi mức khác — migration 061). `source_id` là uuid tất định từ
+  (người, câu), KHÔNG phải id lượt: đường nộp bài ghi mọi lượt, và khoá bằng id
+  lượt biến "làm lại cho thuộc" thành máy in XP. Sai không được gì; đúng rồi
+  làm lại không được lần hai.
+- **Việc hôm nay.** Loại `grammar_attempt` đếm CÂU RIÊNG đã làm trong ngày
+  (đúng sai đều tính — cùng nghĩa với `attempt_answer`). Khe mặc định "Làm câu
+  ngữ pháp" 10 câu / 10 XP, id cố định như ba khe kia. Môi trường đã seed từ
+  trước không tự có khe mới — seed chỉ chạy khi bảng trống — nên dev nhận nó
+  bằng một hàng INSERT; production muốn thì POST qua admin.
+- **Chuỗi ngày.** Một `grammar_attempt` là một ngày học: `gather_stats` và
+  `ruby_daily.studied_today` cùng nạp thêm nguồn này, lưới lịch có cột
+  `grammar`. Cố ý KHÔNG đếm hàng completion vào chuỗi — completion bị xoá khi
+  bấm "Bỏ hoàn thành", và lịch sử của chuỗi không được phép co lại sau lưng
+  người ta.
+
+Bấm "Hoàn thành" bài **không cộng XP** — nó là tự báo, không phải làm được;
+phần thưởng của nó là thanh tiến độ. Trần XP ngày vẫn chặn ở tầng ghi như cũ.
 
 ## 8. Lát cắt — trạng thái thật
 
@@ -165,7 +180,7 @@ Chưa dựng. Hiện làm bài ngữ pháp không cộng XP, không vào chuỗi
 | **G2** | Trang học: cây chủ đề → bài → lý thuyết | ✅ |
 | **G3** | Luyện tập cuối chủ đề rút theo nhãn | ❌ **đã dựng rồi bỏ** — xem §2 |
 | **G4** | Bài `practice` + gắn câu + `grammar_attempt` + tiến độ | ✅ (tiến độ là bảng ghi, không suy ra — §4) |
-| **G5** | XP + việc hôm nay | mở |
+| **G5** | XP + việc hôm nay + chuỗi ngày | ✅ migration 061 — xem §7 |
 | **P1** | Lý thuyết Part 1–7, đi cùng `GET /practice/parts/{part}` | mở, xem §3 |
 
 ## 9. Ba chỗ sẽ hỏng im lặng

@@ -19,8 +19,11 @@ from app.models import (
     GrammarTopic,
     Question,
     QuestionOption,
+    User,
+    XpEvent,
 )
 from app.models.labels import QuestionLabel
+from app.services.profile_stats import gather_stats
 
 
 def a_labeled_question(db: Session, code: str, *, status: str = "published") -> Question:
@@ -736,3 +739,76 @@ def test_next_topic_present_on_every_lesson_not_just_the_last(
     assert first["next_lesson"]["id"] == lessons1[1]["id"]  # không phải bài cuối
     assert first["next_topic"]["topic_id"] == t2["id"]
     assert first["next_topic"]["lesson_id"] == l2["id"]
+
+
+# --- G5: XP, việc hôm nay, chuỗi ngày (SPEC-GRAMMAR §7) -----------------------
+
+
+def _submit(
+    client: TestClient, auth: Callable[[str], dict[str, str]], question: Question, label: str
+) -> None:
+    option = next(o for o in question.options if o.label == label)
+    response = client.post(
+        "/api/v1/grammar-attempts",
+        json={"question_id": str(question.id), "option_id": str(option.id)},
+        headers=auth("learner"),
+    )
+    assert response.status_code == 200
+
+
+def _xp_rows(db_session: Session) -> list[XpEvent]:
+    return db_session.query(XpEvent).filter_by(source_type="grammar_attempt").all()
+
+
+def test_a_correct_attempt_awards_xp_once_per_question(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Sai → 0, đúng → 2, đúng LẠI câu đó vẫn → 1 hàng XP.
+
+    `source_id` là uuid tất định từ (người, câu), không phải id lượt: đường nộp
+    bài ghi mọi lượt, và khoá bằng id lượt biến "làm lại cho thuộc" thành máy in
+    XP — thứ mà dictation không phải lo vì nó không có nút làm lại miễn phí.
+    """
+    _, lesson_id, questions = make_practice_lesson(client, db_session, auth, "xp1", n_questions=2)
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
+    q1, q2 = questions
+
+    _submit(client, auth, q1, "A")  # sai
+    assert _xp_rows(db_session) == []
+    _submit(client, auth, q1, "B")  # đúng
+    assert [e.amount for e in _xp_rows(db_session)] == [2]
+    _submit(client, auth, q1, "B")  # đúng lại — không thưởng lần hai
+    assert len(_xp_rows(db_session)) == 1
+    _submit(client, auth, q2, "B")  # câu khác, người khác... cùng người — một hàng mới
+    assert len(_xp_rows(db_session)) == 2
+
+
+def test_grammar_questions_fill_a_daily_task(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Đếm CÂU RIÊNG, đúng sai đều tính — cùng nghĩa với `attempt_answer`."""
+    _, lesson_id, questions = make_practice_lesson(client, db_session, auth, "xp2", n_questions=2)
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
+    q1, q2 = questions
+    _submit(client, auth, q1, "B")
+    _submit(client, auth, q1, "B")  # làm lại — vẫn một câu
+    _submit(client, auth, q2, "A")  # sai — vẫn là một câu đã làm
+
+    tasks = client.get("/api/v1/daily-tasks", headers=auth("learner")).json()["tasks"]
+    grammar = next(t for t in tasks if t["kind"] == "grammar_attempt")
+    assert grammar["progress"] == 2
+
+
+def test_a_grammar_only_day_counts_as_studied(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Một câu ngữ pháp duy nhất cũng là một ngày học — chuỗi không phân biệt module."""
+    _, lesson_id, questions = make_practice_lesson(client, db_session, auth, "xp3", n_questions=1)
+    client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
+    _submit(client, auth, questions[0], "B")
+
+    learner = db_session.scalar(select(User).where(User.email == "learner@example.com"))
+    assert learner is not None
+    stats = gather_stats(db_session, learner.id, "UTC")
+    assert stats.current_streak == 1
+    assert stats.calendar[-1].grammar == 1
