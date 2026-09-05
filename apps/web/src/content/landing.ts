@@ -258,7 +258,7 @@ export const landing = {
     dashboard: "Vào học",
     /* Nói ra vì đây là câu hỏi đầu tiên của người vừa đọc xong trang, và câu trả
        lời có thật: `/register` không hỏi thẻ, không có bậc trả tiền nào. */
-    free: "Miễn phí, không cần thẻ.",
+    free: "Miễn phí, không quảng cáo.",
     made: "Nội dung học do đội ngũ tự biên soạn.",
   },
 
