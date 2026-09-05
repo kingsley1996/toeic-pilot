@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
 
 import { IconButton } from "@/components/ui";
+import { cx } from "@/components/ui";
 
 /**
  * Hộp thoại, dựng trên `<dialog>` gốc của trình duyệt.
@@ -26,12 +27,16 @@ export function Modal({
   onClose,
   title,
   description,
+  wide = false,
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   description?: ReactNode;
+  /** 56rem thay vì 34rem — cho màn soạn có ô xem trước hoặc danh sách chọn.
+      Mặc định hẹp vì đa số modal ở đây là một câu hỏi xác nhận. */
+  wide?: boolean;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -88,7 +93,10 @@ export function Modal({
   return (
     <dialog
       ref={ref}
-      className="shadow-overlay w-[min(34rem,calc(100vw-2rem))] rounded border border-rule-strong bg-panel p-0 text-ink backdrop:bg-black/50"
+      className={cx(
+        "shadow-overlay rounded border border-rule-strong bg-panel p-0 text-ink backdrop:bg-black/50",
+        wide ? "w-[min(56rem,calc(100vw-2rem))]" : "w-[min(34rem,calc(100vw-2rem))]",
+      )}
     >
       <div className="flex items-start justify-between gap-4 border-b border-rule px-5 py-4">
         <div className="min-w-0">
@@ -97,7 +105,10 @@ export function Modal({
         </div>
         <IconButton icon={X} aria-label="Đóng" onClick={onClose} />
       </div>
-      <div className="px-5 py-5">{children}</div>
+      {/* Thân cuộn: modal rộng + cao tới 85vh mà nội dung dài thì không được
+          đẩy nút hành động ra ngoài màn hình — người soạn phải luôn với tới
+          được Lưu/Huỷ. */}
+      <div className="max-h-[calc(85vh-5rem)] overflow-y-auto px-5 py-5">{children}</div>
     </dialog>
   );
 }

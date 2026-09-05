@@ -448,3 +448,101 @@ class DictationStoryDetail(BaseModel):
     topic_name: str
     items: list[StoryItem]
     progress: StoryProgress
+
+
+# --- G3: luyện tập cuối chủ đề ----------------------------------------------
+
+
+class GrammarPracticeOption(BaseModel):
+    id: str
+    label: str
+    content: str | None
+
+
+class GrammarPracticeQuestion(BaseModel):
+    """Một câu rút theo nhãn. Không `is_correct` — đáp án chỉ rời máy chủ khi nộp."""
+
+    id: str
+    part: int
+    prompt_text: str | None
+    options: list[GrammarPracticeOption]
+    completed: bool
+    """Đã từng trả lời đúng ít nhất một lần — suy từ `grammar_attempt`."""
+
+
+class GrammarPracticeSubmit(BaseModel):
+    question_id: str
+    option_id: str
+
+
+class GrammarPracticeResult(BaseModel):
+    is_correct: bool
+    correct_option_id: str
+    explanation: str | None
+
+
+# --- ngữ pháp (SPEC-GRAMMAR G2) ---------------------------------------------
+
+
+class GrammarTopicPublic(BaseModel):
+    id: str
+    code: str | None
+    """Null với bài nền tảng ngoài taxonomy — UI phải ẩn lối "Luyện tập" theo
+    nhãn khi thấy null, đừng để người học bấm vào một màn 404."""
+
+    slug: str
+    title: str
+    summary: str | None
+    lesson_count: int
+    completed_lesson_count: int = 0
+    """Số bài người học đã bấm Hoàn thành — 0 khi vô danh. Chủ đề được tính là
+    hoàn thành khi hai con số này bằng nhau và lớn hơn 0."""
+
+
+class GrammarLessonSummary(BaseModel):
+    id: str
+    slug: str
+    title: str
+    kind: str
+    position: int
+    completed: bool
+
+
+class GrammarTopicDetail(GrammarTopicPublic):
+    lessons: list[GrammarLessonSummary]
+
+
+class GrammarNextTopic(BaseModel):
+    """Chủ đề kế tiếp CÓ ít nhất một bài đã publish — đích đến của bài cuối topic."""
+
+    topic_id: str
+    topic_title: str
+    lesson_id: str
+    lesson_title: str
+
+
+class GrammarLessonDetail(BaseModel):
+    id: str
+    topic_id: str
+    topic_title: str
+    slug: str
+    title: str
+    kind: str
+    body: str
+    """Rỗng với practice — nội dung của nó là `questions`."""
+
+    questions: list[GrammarPracticeQuestion] = []
+    """Chỉ dựng cho lesson `practice`: câu từ bảng nối, `completed` từng câu suy
+    từ `grammar_attempt`. Lesson theory luôn rỗng."""
+
+    completed: bool = False
+    """Dấu tay "Hoàn thành" — cả hai loại lesson, người học tự bấm."""
+
+    next_lesson: GrammarLessonSummary | None = None
+    """Bài kế theo `position` trong cùng chủ đề — thanh sticky cần nó để không
+    phải tải cả cây chủ đề chỉ để biết đi đâu tiếp."""
+
+    next_topic: GrammarNextTopic | None = None
+    """Chủ đề kế (theo `position`) có bài đã publish, kèm bài đầu của nó — tính
+    vô điều kiện để sidebar hiện đường đi còn lại ở MỌI bài, không chỉ bài cuối.
+    Rỗng khi không còn chủ đề nào phía trước có nội dung."""

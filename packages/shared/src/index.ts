@@ -32,6 +32,13 @@ export type StoryProgress = components["schemas"]["StoryProgress"];
 export type DictationTopicAdmin = components["schemas"]["DictationTopicAdmin"];
 export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin"];
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
+export type GrammarTopicAdmin = components["schemas"]["GrammarTopicAdmin"];
+export type GrammarLessonAdmin = components["schemas"]["GrammarLessonAdmin"];
+export type GrammarTopicPublic = components["schemas"]["GrammarTopicPublic"];
+export type GrammarTopicDetail = components["schemas"]["GrammarTopicDetail"];
+export type GrammarLessonDetail = components["schemas"]["GrammarLessonDetail"];
+export type GrammarPracticeQuestion = components["schemas"]["GrammarPracticeQuestion"];
+export type GrammarPracticeResult = components["schemas"]["GrammarPracticeResult"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
 export type VocabularyProgress = components["schemas"]["VocabularyProgress"];
@@ -95,6 +102,8 @@ export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"]
 export type DictationAdminPage = components["schemas"]["Page_DictationAdmin_"];
 export type DictationStoryAdminPage = components["schemas"]["Page_DictationStoryAdmin_"];
 export type DictationSectionAdminPage = components["schemas"]["Page_DictationSectionAdmin_"];
+export type GrammarTopicAdminPage = components["schemas"]["Page_GrammarTopicAdmin_"];
+export type GrammarLessonAdminPage = components["schemas"]["Page_GrammarLessonAdmin_"];
 export type TestAdminPage = components["schemas"]["Page_TestAdmin_"];
 export type QuestionPublic = components["schemas"]["QuestionPublic"];
 export type PassagePublic = components["schemas"]["PassagePublic"];
@@ -321,6 +330,13 @@ export const API_ROUTES = {
   dictationSection: (id: string) => `/api/v1/dictation-sections/${id}`,
   dictationStory: (id: string) => `/api/v1/dictation-stories/${id}`,
 
+  // Ngữ pháp (SPEC-GRAMMAR G2). Gạch nối cùng luật với cây dictation.
+  grammarTopics: "/api/v1/grammar-topics",
+  grammarTopic: (id: string) => `/api/v1/grammar-topics/${id}`,
+  grammarLesson: (id: string) => `/api/v1/grammar-lessons/${id}`,
+  grammarLessonComplete: (id: string) => `/api/v1/grammar-lessons/${id}/complete`,
+  grammarAttempts: "/api/v1/grammar-attempts",
+
   // Content admin
   adminTopics: "/api/v1/admin/topics",
   adminTopic: (id: string) => `/api/v1/admin/topics/${id}`,
@@ -374,6 +390,21 @@ export const API_ROUTES = {
   adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
   adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
   adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,
+  // Ngữ pháp (SPEC-GRAMMAR G1). Hai tầng chứ không ba: topic → lesson.
+  adminGrammarTopics: "/api/v1/admin/grammar/topics",
+  adminGrammarTopicsOrder: "/api/v1/admin/grammar/topics/order",
+  adminGrammarTopic: (id: string) => `/api/v1/admin/grammar/topics/${id}`,
+  adminGrammarTopicPublish: (id: string) => `/api/v1/admin/grammar/topics/${id}/publish`,
+  adminGrammarTopicLessonOrder: (id: string) => `/api/v1/admin/grammar/topics/${id}/lessons/order`,
+  adminGrammarLabels: "/api/v1/admin/grammar/labels",
+  adminGrammarTopicUnattached: (id: string) =>
+    `/api/v1/admin/grammar/topics/${id}/unattached-questions`,
+  adminGrammarLessons: "/api/v1/admin/grammar/lessons",
+  adminGrammarLesson: (id: string) => `/api/v1/admin/grammar/lessons/${id}`,
+  adminGrammarLessonPublish: (id: string) => `/api/v1/admin/grammar/lessons/${id}/publish`,
+  adminGrammarLessonQuestions: (id: string) => `/api/v1/admin/grammar/lessons/${id}/questions`,
+  adminGrammarQuestionBank: "/api/v1/admin/grammar/question-bank",
+  adminGrammarQuestions: "/api/v1/admin/grammar/questions",
   // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa
   // nhãn đã có; API không gắn nhãn được (không import nổi `app.content`).
   adminAiStats: "/api/v1/admin/ai/stats",

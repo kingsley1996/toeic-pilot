@@ -8,6 +8,7 @@ import {
   Frame,
   Gauge,
   Gem,
+  GraduationCap,
   Grid2x2,
   Headphones,
   Library,
@@ -65,6 +66,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
     children: [{ href: "/admin/dictation/tree", label: "Topics & lessons", Icon: FolderTree }],
   },
   { href: "/admin/tests", label: "Tests", Icon: ClipboardList, group: "Content" },
+  { href: "/admin/grammar", label: "Grammar", Icon: GraduationCap, group: "Content" },
 
   { href: "/admin/appearance", label: "Appearance", Icon: Palette, group: "System" },
   {

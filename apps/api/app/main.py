@@ -11,6 +11,7 @@ from app import models  # noqa: F401 — registers every table on Base.metadata
 from app.api.routes import (
     admin_ai,
     admin_dictation,
+    admin_grammar,
     admin_pet,
     admin_progression,
     admin_questions,
@@ -25,6 +26,7 @@ from app.api.routes import (
     coach,
     health,
     learning_dictation,
+    learning_grammar,
     learning_vocabulary,
     media,
     oauth,
@@ -82,6 +84,7 @@ app.include_router(oauth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning_vocabulary.router, prefix="/api/v1")
 app.include_router(learning_dictation.router, prefix="/api/v1")
+app.include_router(learning_grammar.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")
@@ -91,6 +94,7 @@ app.include_router(petland_map.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")
 app.include_router(admin_vocabulary.router, prefix="/api/v1")
 app.include_router(admin_dictation.router, prefix="/api/v1")
+app.include_router(admin_grammar.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_questions.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")

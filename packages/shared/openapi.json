@@ -4291,6 +4291,898 @@
         "title": "FrameTierUpdate",
         "type": "object"
       },
+      "GrammarLessonAdmin": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Question Ids",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_title": {
+            "title": "Topic Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "topic_id",
+          "topic_title",
+          "slug",
+          "title",
+          "kind",
+          "body",
+          "position",
+          "status",
+          "question_count",
+          "question_ids"
+        ],
+        "title": "GrammarLessonAdmin",
+        "type": "object"
+      },
+      "GrammarLessonCreate": {
+        "properties": {
+          "body": {
+            "default": "",
+            "title": "Body",
+            "type": "string"
+          },
+          "kind": {
+            "default": "theory",
+            "title": "Kind",
+            "type": "string"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic_id",
+          "slug",
+          "title"
+        ],
+        "title": "GrammarLessonCreate",
+        "type": "object"
+      },
+      "GrammarLessonDetail": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "completed": {
+            "default": false,
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "next_lesson": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GrammarLessonSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "next_topic": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GrammarNextTopic"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "questions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrammarPracticeQuestion"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_title": {
+            "title": "Topic Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "topic_id",
+          "topic_title",
+          "slug",
+          "title",
+          "kind",
+          "body"
+        ],
+        "title": "GrammarLessonDetail",
+        "type": "object"
+      },
+      "GrammarLessonOrder": {
+        "properties": {
+          "lesson_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Lesson Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "lesson_ids"
+        ],
+        "title": "GrammarLessonOrder",
+        "type": "object"
+      },
+      "GrammarLessonQuestions": {
+        "properties": {
+          "question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Question Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "question_ids"
+        ],
+        "title": "GrammarLessonQuestions",
+        "type": "object"
+      },
+      "GrammarLessonSummary": {
+        "properties": {
+          "completed": {
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "kind",
+          "position",
+          "completed"
+        ],
+        "title": "GrammarLessonSummary",
+        "type": "object"
+      },
+      "GrammarLessonUpdate": {
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          }
+        },
+        "title": "GrammarLessonUpdate",
+        "type": "object"
+      },
+      "GrammarNextTopic": {
+        "description": "Chủ đề kế tiếp CÓ ít nhất một bài đã publish — đích đến của bài cuối topic.",
+        "properties": {
+          "lesson_id": {
+            "title": "Lesson Id",
+            "type": "string"
+          },
+          "lesson_title": {
+            "title": "Lesson Title",
+            "type": "string"
+          },
+          "topic_id": {
+            "title": "Topic Id",
+            "type": "string"
+          },
+          "topic_title": {
+            "title": "Topic Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic_id",
+          "topic_title",
+          "lesson_id",
+          "lesson_title"
+        ],
+        "title": "GrammarNextTopic",
+        "type": "object"
+      },
+      "GrammarPracticeOption": {
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "content"
+        ],
+        "title": "GrammarPracticeOption",
+        "type": "object"
+      },
+      "GrammarPracticeQuestion": {
+        "description": "Một câu rút theo nhãn. Không `is_correct` — đáp án chỉ rời máy chủ khi nộp.",
+        "properties": {
+          "completed": {
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/GrammarPracticeOption"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "prompt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Text"
+          }
+        },
+        "required": [
+          "id",
+          "part",
+          "prompt_text",
+          "options",
+          "completed"
+        ],
+        "title": "GrammarPracticeQuestion",
+        "type": "object"
+      },
+      "GrammarPracticeResult": {
+        "properties": {
+          "correct_option_id": {
+            "title": "Correct Option Id",
+            "type": "string"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "is_correct": {
+            "title": "Is Correct",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "is_correct",
+          "correct_option_id",
+          "explanation"
+        ],
+        "title": "GrammarPracticeResult",
+        "type": "object"
+      },
+      "GrammarPracticeSubmit": {
+        "properties": {
+          "option_id": {
+            "title": "Option Id",
+            "type": "string"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "option_id"
+        ],
+        "title": "GrammarPracticeSubmit",
+        "type": "object"
+      },
+      "GrammarQuestionDraft": {
+        "description": "Thêm TAY một câu cho bài luyện tập — không phải câu suy ra từ nhãn.\n\nPart bị khoá ở 5: đó là hình dạng \"một câu trắc nghiệm ngữ pháp\" của kho\n(Part 6 câu nằm trong passage, không dựng độc lập được). `source` bắt buộc\ntại tầng validator, mặc định ở đây là `original` vì câu soạn tay cho ngữ\npháp là câu tự viết — câu mượn từ đề thật phải đi qua màn soạn đề của khu\nluyện thi, nơi ghi rõ nguồn gốc giấy phép.",
+        "properties": {
+          "difficulty": {
+            "default": 3,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/GrammarQuestionDraftOption"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "title": "Options",
+            "type": "array"
+          },
+          "prompt_text": {
+            "minLength": 1,
+            "title": "Prompt Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_text",
+          "options"
+        ],
+        "title": "GrammarQuestionDraft",
+        "type": "object"
+      },
+      "GrammarQuestionDraftOption": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "is_correct": {
+            "title": "Is Correct",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "content",
+          "is_correct"
+        ],
+        "title": "GrammarQuestionDraftOption",
+        "type": "object"
+      },
+      "GrammarTopicAdmin": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "lesson_count": {
+            "title": "Lesson Count",
+            "type": "integer"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "slug",
+          "title",
+          "summary",
+          "position",
+          "status",
+          "lesson_count",
+          "question_count"
+        ],
+        "title": "GrammarTopicAdmin",
+        "type": "object"
+      },
+      "GrammarTopicCreate": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "maxLength": 48,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "slug": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title"
+        ],
+        "title": "GrammarTopicCreate",
+        "type": "object"
+      },
+      "GrammarTopicDetail": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "completed_lesson_count": {
+            "default": 0,
+            "title": "Completed Lesson Count",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "lesson_count": {
+            "title": "Lesson Count",
+            "type": "integer"
+          },
+          "lessons": {
+            "items": {
+              "$ref": "#/components/schemas/GrammarLessonSummary"
+            },
+            "title": "Lessons",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "slug",
+          "title",
+          "summary",
+          "lesson_count",
+          "lessons"
+        ],
+        "title": "GrammarTopicDetail",
+        "type": "object"
+      },
+      "GrammarTopicOrder": {
+        "properties": {
+          "topic_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Topic Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "topic_ids"
+        ],
+        "title": "GrammarTopicOrder",
+        "type": "object"
+      },
+      "GrammarTopicPublic": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "completed_lesson_count": {
+            "default": 0,
+            "title": "Completed Lesson Count",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "lesson_count": {
+            "title": "Lesson Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "slug",
+          "title",
+          "summary",
+          "lesson_count"
+        ],
+        "title": "GrammarTopicPublic",
+        "type": "object"
+      },
+      "GrammarTopicUpdate": {
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "maxLength": 48,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "GrammarTopicUpdate",
+        "type": "object"
+      },
       "GroupDraft": {
         "description": "Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.\n\nPart 5 cũng đi qua hình dạng này với đúng một câu và không ngữ liệu, nên\nđường ghi vào database chỉ có một nhánh.",
         "properties": {
@@ -5219,6 +6111,68 @@
           "offset"
         ],
         "title": "Page[DictationSummary]",
+        "type": "object"
+      },
+      "Page_GrammarLessonAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GrammarLessonAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[GrammarLessonAdmin]",
+        "type": "object"
+      },
+      "Page_GrammarTopicAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GrammarTopicAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[GrammarTopicAdmin]",
         "type": "object"
       },
       "Page_QuestionLabelRow_": {
@@ -12257,6 +13211,1019 @@
         ]
       }
     },
+    "/api/v1/admin/grammar/labels": {
+      "get": {
+        "description": "Mã + tên tiếng Việt của facet grammar — dropdown filter cho picker.\n\nĐọc từ registry, không chép danh sách: cùng lý do mà `code` của topic bị\nkiểm bằng registry thay vì một tuple cứng ở đầu tệp này.",
+        "operationId": "list_grammar_labels_api_v1_admin_grammar_labels_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "title": "Response List Grammar Labels Api V1 Admin Grammar Labels Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Grammar Labels",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons": {
+      "get": {
+        "operationId": "list_grammar_lessons_api_v1_admin_grammar_lessons_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "topic_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topic Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_GrammarLessonAdmin_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Grammar Lessons",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_grammar_lesson_api_v1_admin_grammar_lessons_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarLessonCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Grammar Lesson",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons/{lesson_id}": {
+      "delete": {
+        "operationId": "delete_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Grammar Lesson",
+        "tags": [
+          "admin"
+        ]
+      },
+      "get": {
+        "description": "Một bài — trang soạn riêng cần nó, không phải tải cả danh sách rồi tìm.",
+        "operationId": "get_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Grammar Lesson",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarLessonUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Grammar Lesson",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons/{lesson_id}/publish": {
+      "post": {
+        "operationId": "publish_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Grammar Lesson",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons/{lesson_id}/questions": {
+      "put": {
+        "description": "Gán TOÀN BỘ danh sách câu cho bài, xoá những câu không còn trong danh sách.\n\nPUT cả danh sách thay vì attach/detach từng câu: cùng lập luận với\n`StoryReorder` — một giao dịch gán lại 1..N, không trạng thái trung gian.",
+        "operationId": "set_lesson_questions_api_v1_admin_grammar_lessons__lesson_id__questions_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarLessonQuestions"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Lesson Questions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/question-bank": {
+      "get": {
+        "description": "Kho câu để picker của lesson practice CHỌN — không suy ra từ nhãn.\n\nPart 5 là hình dạng duy nhất dựng độc lập được: câu Part 6 bắt buộc thuộc\nmột `question_set` (CHECK của `question.set_id`) và màn drill không có\npassage để đi kèm; Parts 1–2 không in gì ra chữ nào.\n\n`code` lọc theo nhãn grammar của chính câu; `search` tìm theo chữ trong\nprompt. Trả kèm `grammar_code` (có thể null — chưa gắn nhãn không phải sai\nnhãn) để picker hiện đúng thứ người đang lọc.",
+        "operationId": "list_question_bank_api_v1_admin_grammar_question_bank_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "title": "Response List Question Bank Api V1 Admin Grammar Question Bank Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Question Bank",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/questions": {
+      "post": {
+        "description": "Thêm TAY một câu vào kho ngữ pháp.\n\nGhi thẳng `published`, khác luật \"commit luôn ghi draft\" của đường dán: màn\nnày là người soạn ĐANG chọn từng câu cho một bài cụ thể, không phải máy đổ\nhàng loạt cần người duyệt; và câu draft thì vô hình với cả picker lẫn lesson\n— tạo ra là để dùng ngay. Cổng publish của BÀI vẫn chặn bài practice chưa có\ncâu nào, nên thứ quyết định lên sóng vẫn là bước đó.\n\n`validate_question` chạy đúng như cửa commit của khu luyện thi: thiếu đáp án\nđúng, thừa phương án, trùng nhãn — 422 hết, không cho lọt.",
+        "operationId": "create_grammar_question_api_v1_admin_grammar_questions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarQuestionDraft"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Grammar Question Api V1 Admin Grammar Questions Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Grammar Question",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics": {
+      "get": {
+        "operationId": "list_grammar_topics_api_v1_admin_grammar_topics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_GrammarTopicAdmin_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Grammar Topics",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_grammar_topic_api_v1_admin_grammar_topics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarTopicCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Grammar Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics/order": {
+      "put": {
+        "description": "Gán lại thứ tự TOÀN BỘ chủ đề — cùng kiểu `StoryReorder`/order của lesson:\nmột giao dịch gán 1..N, danh sách phải phủ đủ cây.",
+        "operationId": "reorder_grammar_topics_api_v1_admin_grammar_topics_order_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarTopicOrder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GrammarTopicAdmin"
+                  },
+                  "title": "Response Reorder Grammar Topics Api V1 Admin Grammar Topics Order Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reorder Grammar Topics",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics/{topic_id}": {
+      "delete": {
+        "operationId": "delete_grammar_topic_api_v1_admin_grammar_topics__topic_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Grammar Topic",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_grammar_topic_api_v1_admin_grammar_topics__topic_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarTopicUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Grammar Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics/{topic_id}/lessons/order": {
+      "put": {
+        "description": "Gán lại thứ tự TOÀN BỘ bài của chủ đề — cùng luật `StoryReorder`.\n\nNhận cả danh sách chứ không nhận \"đổi chỗ A và B\": một giao dịch gán 1..N,\nkhông trạng thái trung gian hai bài cùng số. Đủ bài phải nằm trong danh sách\n— thiếu nghĩa là client đang làm việc với ảnh cũ của cây.",
+        "operationId": "reorder_grammar_lessons_api_v1_admin_grammar_topics__topic_id__lessons_order_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarLessonOrder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GrammarLessonAdmin"
+                  },
+                  "title": "Response Reorder Grammar Lessons Api V1 Admin Grammar Topics  Topic Id  Lessons Order Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reorder Grammar Lessons",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics/{topic_id}/publish": {
+      "post": {
+        "operationId": "publish_grammar_topic_api_v1_admin_grammar_topics__topic_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarTopicAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Publish Grammar Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/topics/{topic_id}/unattached-questions": {
+      "get": {
+        "description": "Câu published mang nhãn của chủ đề, chưa gắn vào bài học NÀO KHÁC.\n\n§2: màn soạn phải liệt sẵn danh sách này để việc gắn rẻ nhất có thể. Không\ncó nó, người soạn mở từng câu trong khu luyện thi và tự nhớ cái nào đã dùng\n— và \"đã dùng rồi\" là thứ không ai nhớ nổi khi kho lớn.\n\n`lesson_id` (khi sửa một bài practice): câu đang gắn ở CHÍNH bài đó được trả\nvề kèm `attached: true` để picker tick sẵn; câu gắn ở bài khác vẫn bị loại —\nmột câu nằm hai bài practice là hai màn drill trùng nội dung.",
+        "operationId": "list_unattached_questions_api_v1_admin_grammar_topics__topic_id__unattached_questions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lesson_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lesson Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "title": "Response List Unattached Questions Api V1 Admin Grammar Topics  Topic Id  Unattached Questions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Unattached Questions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/media/audio/confirm": {
       "post": {
         "operationId": "audio_confirm_api_v1_admin_media_audio_confirm_post",
@@ -17533,6 +19500,261 @@
           }
         ],
         "summary": "Submit Dictation",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/grammar-attempts": {
+      "post": {
+        "description": "Chấm MỘT câu. Ghi mọi lượt, không chỉ lượt đầu — tiến độ đếm lần ĐÚNG,\nlàm lại câu đã đúng không bỏ được gì, và giấu các lượt sai đi sẽ làm lịch\nsử thành ảnh tự hoạ.",
+        "operationId": "submit_grammar_attempt_api_v1_grammar_attempts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrammarPracticeSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarPracticeResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Grammar Attempt",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/grammar-lessons/{lesson_id}": {
+      "get": {
+        "operationId": "get_grammar_lesson_api_v1_grammar_lessons__lesson_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Grammar Lesson",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/grammar-lessons/{lesson_id}/complete": {
+      "delete": {
+        "description": "Bấm \"Bỏ hoàn thành\" — dấu tay thì gỡ được, đó là lý do nó là dấu tay.\n\nXoá hàng completion, KHÔNG xoá `grammar_attempt`: đã làm câu nào thì câu đó\nvẫn nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.",
+        "operationId": "unmark_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Unmark Grammar Lesson",
+        "tags": [
+          "learning"
+        ]
+      },
+      "post": {
+        "description": "Bấm \"Hoàn thành\" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).",
+        "operationId": "complete_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Complete Grammar Lesson",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/grammar-topics": {
+      "get": {
+        "operationId": "list_grammar_topics_api_v1_grammar_topics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GrammarTopicPublic"
+                  },
+                  "title": "Response List Grammar Topics Api V1 Grammar Topics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Grammar Topics",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/grammar-topics/{topic_id}": {
+      "get": {
+        "operationId": "get_grammar_topic_api_v1_grammar_topics__topic_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "topic_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Topic Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarTopicDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Grammar Topic",
         "tags": [
           "learning"
         ]

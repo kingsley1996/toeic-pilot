@@ -12,6 +12,13 @@ from app.models.dictation import (
     DictationTopic,
 )
 from app.models.encounter import Encounter, EncounterSetting
+from app.models.grammar import (
+    GrammarAttempt,
+    GrammarLesson,
+    GrammarLessonCompletion,
+    GrammarLessonQuestion,
+    GrammarTopic,
+)
 from app.models.health import HealthSample
 from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
@@ -97,6 +104,11 @@ __all__ = [
     "DictationSection",
     "DictationStory",
     "DictationTopic",
+    "GrammarAttempt",
+    "GrammarLesson",
+    "GrammarLessonCompletion",
+    "GrammarLessonQuestion",
+    "GrammarTopic",
     "ImageAsset",
     "KnowledgeChunk",
     "PracticeTest",

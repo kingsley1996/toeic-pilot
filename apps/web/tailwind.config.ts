@@ -83,6 +83,11 @@ export default {
         label: ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.08em" }],
         small: ["0.8125rem", { lineHeight: "1.3125rem" }],
         body: ["0.9375rem", { lineHeight: "1.5625rem" }],
+        // 16px: cỡ chữ cho tài liệu đọc dài (bài học ngữ pháp). `body` 15px là
+        // cỡ giao diện; trang lý thuyết cần nhỉnh hơn một bậc để đọc cả trang
+        // không mỏi, và con số phải là token — `text-[16px]` rải rác sẽ đổi
+        // thành hai cỡ khác nhau ngay lần chỉnh tiếp theo.
+        lesson: ["1rem", { lineHeight: "1.75rem" }],
         subtitle: ["1.0625rem", { lineHeight: "1.625rem" }],
         title: ["1.375rem", { lineHeight: "1.875rem", letterSpacing: "-0.01em" }],
         display: ["1.875rem", { lineHeight: "2.375rem", letterSpacing: "-0.015em" }],

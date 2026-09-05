@@ -536,7 +536,7 @@ export function SidebarShell({
              `data-sidebar` trên `<html>` sẽ thu gọn cả nav ngang của trang giới
              thiệu lẫn ngăn kéo mobile, hai chỗ dùng chung component này. */
           data-rail
-          className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 border-r border-rule transition-[width] duration-enter motion-reduce:transition-none lg:block rail:w-16"
+          className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 border-r border-rule bg-ground transition-[width] duration-enter motion-reduce:transition-none lg:block rail:w-16"
         >
           <SidebarContent
             links={links}

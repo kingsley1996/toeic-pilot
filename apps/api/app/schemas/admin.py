@@ -336,6 +336,123 @@ class StoryReorder(BaseModel):
     """
 
 
+# --- ngữ pháp (SPEC-GRAMMAR §4) ---------------------------------------------
+
+
+class GrammarTopicCreate(BaseModel):
+    code: str | None = Field(default=None, min_length=1, max_length=48)
+    """Mã nhãn `GRAMMAR_*` — dây nối tới kho câu. Bỏ trống cho bài nền tảng
+    ngoài taxonomy: không luyện-tập-theo-nhãn, không cổng ngưỡng 12 câu."""
+
+    slug: str = Field(min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=128)
+    summary: str | None = None
+    position: int = 0
+
+
+class GrammarTopicAdmin(BaseModel):
+    id: str
+    code: str | None
+    slug: str
+    title: str
+    summary: str | None
+    position: int
+    status: str
+    lesson_count: int
+    question_count: int
+    """Số câu published mang nhãn này — đúng con số cổng publish đo. Trả về cùng
+    danh sách để màn admin thấy chủ đề nào đang dưới ngưỡng mà không phải bấm
+    publish rồi ăn 409."""
+
+
+class GrammarTopicUpdate(BaseModel):
+    code: str | None = Field(default=None, min_length=1, max_length=48)
+    """`None` = không đổi; rỗng do client gửi lên thì server coi là xoá mã."""
+    slug: str | None = Field(default=None, min_length=1, max_length=64)
+    title: str | None = Field(default=None, min_length=1, max_length=128)
+    summary: str | None = None
+    position: int | None = None
+    status: str | None = None
+
+
+class GrammarLessonCreate(BaseModel):
+    topic_id: str
+    slug: str = Field(min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=200)
+    kind: str = "theory"
+    """`theory` · `practice`. Practice không có body; câu của nó gắn qua
+    `/grammar/lessons/{id}/questions`."""
+
+    body: str = ""
+    position: int = 0
+
+
+class GrammarLessonAdmin(BaseModel):
+    id: str
+    topic_id: str
+    topic_title: str
+    slug: str
+    title: str
+    kind: str
+    body: str
+    position: int
+    status: str
+    question_count: int
+    question_ids: list[str]
+    """Id của câu đang gắn, theo `position` — màn attach cần đúng danh sách này
+    để PUT cả khối (kiểu `StoryReorder`) mà không phải đoán lại."""
+
+
+class GrammarLessonUpdate(BaseModel):
+    topic_id: str | None = None
+    slug: str | None = Field(default=None, min_length=1, max_length=64)
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    kind: str | None = None
+    body: str | None = None
+    position: int | None = None
+    status: str | None = None
+
+
+class GrammarLessonQuestions(BaseModel):
+    question_ids: list[str]
+    """Toàn bộ câu của bài, theo thứ tự mong muốn — cùng lập luận với
+    `StoryReorder`: gán lại 1..N trong một giao dịch, không trạng thái trung
+    gian hai câu cùng số. Danh sách rỗng là hợp lệ: nghĩa là bỏ hết bài tập."""
+
+
+class GrammarLessonOrder(BaseModel):
+    lesson_ids: list[str]
+    """Toàn bộ bài của một chủ đề, theo thứ tự mong muốn — cùng kiểu
+    `StoryReorder`, và vì cùng lý do: một lần gán 1..N, không va chạm số."""
+
+
+class GrammarTopicOrder(BaseModel):
+    topic_ids: list[str]
+    """Toàn bộ chủ đề, theo thứ tự mong muốn — cùng kiểu `StoryReorder`."""
+
+
+class GrammarQuestionDraftOption(BaseModel):
+    label: str
+    content: str
+    is_correct: bool
+
+
+class GrammarQuestionDraft(BaseModel):
+    """Thêm TAY một câu cho bài luyện tập — không phải câu suy ra từ nhãn.
+
+    Part bị khoá ở 5: đó là hình dạng "một câu trắc nghiệm ngữ pháp" của kho
+    (Part 6 câu nằm trong passage, không dựng độc lập được). `source` bắt buộc
+    tại tầng validator, mặc định ở đây là `original` vì câu soạn tay cho ngữ
+    pháp là câu tự viết — câu mượn từ đề thật phải đi qua màn soạn đề của khu
+    luyện thi, nơi ghi rõ nguồn gốc giấy phép.
+    """
+
+    prompt_text: str = Field(min_length=1)
+    options: list[GrammarQuestionDraftOption] = Field(min_length=4, max_length=4)
+    explanation: str | None = None
+    difficulty: int = Field(default=3, ge=1, le=5)
+
+
 # --- đề thi (ADR-007) -------------------------------------------------------
 
 

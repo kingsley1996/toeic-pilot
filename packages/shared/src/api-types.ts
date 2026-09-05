@@ -597,6 +597,292 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/grammar/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Grammar Labels
+         * @description Mã + tên tiếng Việt của facet grammar — dropdown filter cho picker.
+         *
+         *     Đọc từ registry, không chép danh sách: cùng lý do mà `code` của topic bị
+         *     kiểm bằng registry thay vì một tuple cứng ở đầu tệp này.
+         */
+        get: operations["list_grammar_labels_api_v1_admin_grammar_labels_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/lessons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Grammar Lessons */
+        get: operations["list_grammar_lessons_api_v1_admin_grammar_lessons_get"];
+        put?: never;
+        /** Create Grammar Lesson */
+        post: operations["create_grammar_lesson_api_v1_admin_grammar_lessons_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/lessons/{lesson_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Grammar Lesson
+         * @description Một bài — trang soạn riêng cần nó, không phải tải cả danh sách rồi tìm.
+         */
+        get: operations["get_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Grammar Lesson */
+        delete: operations["delete_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Grammar Lesson */
+        patch: operations["update_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/lessons/{lesson_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Grammar Lesson */
+        post: operations["publish_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/lessons/{lesson_id}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Lesson Questions
+         * @description Gán TOÀN BỘ danh sách câu cho bài, xoá những câu không còn trong danh sách.
+         *
+         *     PUT cả danh sách thay vì attach/detach từng câu: cùng lập luận với
+         *     `StoryReorder` — một giao dịch gán lại 1..N, không trạng thái trung gian.
+         */
+        put: operations["set_lesson_questions_api_v1_admin_grammar_lessons__lesson_id__questions_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/question-bank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Question Bank
+         * @description Kho câu để picker của lesson practice CHỌN — không suy ra từ nhãn.
+         *
+         *     Part 5 là hình dạng duy nhất dựng độc lập được: câu Part 6 bắt buộc thuộc
+         *     một `question_set` (CHECK của `question.set_id`) và màn drill không có
+         *     passage để đi kèm; Parts 1–2 không in gì ra chữ nào.
+         *
+         *     `code` lọc theo nhãn grammar của chính câu; `search` tìm theo chữ trong
+         *     prompt. Trả kèm `grammar_code` (có thể null — chưa gắn nhãn không phải sai
+         *     nhãn) để picker hiện đúng thứ người đang lọc.
+         */
+        get: operations["list_question_bank_api_v1_admin_grammar_question_bank_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Grammar Question
+         * @description Thêm TAY một câu vào kho ngữ pháp.
+         *
+         *     Ghi thẳng `published`, khác luật "commit luôn ghi draft" của đường dán: màn
+         *     này là người soạn ĐANG chọn từng câu cho một bài cụ thể, không phải máy đổ
+         *     hàng loạt cần người duyệt; và câu draft thì vô hình với cả picker lẫn lesson
+         *     — tạo ra là để dùng ngay. Cổng publish của BÀI vẫn chặn bài practice chưa có
+         *     câu nào, nên thứ quyết định lên sóng vẫn là bước đó.
+         *
+         *     `validate_question` chạy đúng như cửa commit của khu luyện thi: thiếu đáp án
+         *     đúng, thừa phương án, trùng nhãn — 422 hết, không cho lọt.
+         */
+        post: operations["create_grammar_question_api_v1_admin_grammar_questions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Grammar Topics */
+        get: operations["list_grammar_topics_api_v1_admin_grammar_topics_get"];
+        put?: never;
+        /** Create Grammar Topic */
+        post: operations["create_grammar_topic_api_v1_admin_grammar_topics_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder Grammar Topics
+         * @description Gán lại thứ tự TOÀN BỘ chủ đề — cùng kiểu `StoryReorder`/order của lesson:
+         *     một giao dịch gán 1..N, danh sách phải phủ đủ cây.
+         */
+        put: operations["reorder_grammar_topics_api_v1_admin_grammar_topics_order_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Grammar Topic */
+        delete: operations["delete_grammar_topic_api_v1_admin_grammar_topics__topic_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Grammar Topic */
+        patch: operations["update_grammar_topic_api_v1_admin_grammar_topics__topic_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics/{topic_id}/lessons/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder Grammar Lessons
+         * @description Gán lại thứ tự TOÀN BỘ bài của chủ đề — cùng luật `StoryReorder`.
+         *
+         *     Nhận cả danh sách chứ không nhận "đổi chỗ A và B": một giao dịch gán 1..N,
+         *     không trạng thái trung gian hai bài cùng số. Đủ bài phải nằm trong danh sách
+         *     — thiếu nghĩa là client đang làm việc với ảnh cũ của cây.
+         */
+        put: operations["reorder_grammar_lessons_api_v1_admin_grammar_topics__topic_id__lessons_order_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics/{topic_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Grammar Topic */
+        post: operations["publish_grammar_topic_api_v1_admin_grammar_topics__topic_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/topics/{topic_id}/unattached-questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Unattached Questions
+         * @description Câu published mang nhãn của chủ đề, chưa gắn vào bài học NÀO KHÁC.
+         *
+         *     §2: màn soạn phải liệt sẵn danh sách này để việc gắn rẻ nhất có thể. Không
+         *     có nó, người soạn mở từng câu trong khu luyện thi và tự nhớ cái nào đã dùng
+         *     — và "đã dùng rồi" là thứ không ai nhớ nổi khi kho lớn.
+         *
+         *     `lesson_id` (khi sửa một bài practice): câu đang gắn ở CHÍNH bài đó được trả
+         *     về kèm `attached: true` để picker tick sẵn; câu gắn ở bài khác vẫn bị loại —
+         *     một câu nằm hai bài practice là hai màn drill trùng nội dung.
+         */
+        get: operations["list_unattached_questions_api_v1_admin_grammar_topics__topic_id__unattached_questions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/media/audio/confirm": {
         parameters: {
             query?: never;
@@ -2580,6 +2866,106 @@ export interface paths {
         put?: never;
         /** Submit Dictation */
         post: operations["submit_dictation_api_v1_dictation__item_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/grammar-attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit Grammar Attempt
+         * @description Chấm MỘT câu. Ghi mọi lượt, không chỉ lượt đầu — tiến độ đếm lần ĐÚNG,
+         *     làm lại câu đã đúng không bỏ được gì, và giấu các lượt sai đi sẽ làm lịch
+         *     sử thành ảnh tự hoạ.
+         */
+        post: operations["submit_grammar_attempt_api_v1_grammar_attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/grammar-lessons/{lesson_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Grammar Lesson */
+        get: operations["get_grammar_lesson_api_v1_grammar_lessons__lesson_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/grammar-lessons/{lesson_id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete Grammar Lesson
+         * @description Bấm "Hoàn thành" — mọi loại lesson như nhau. Idempotent theo PK (user, lesson).
+         */
+        post: operations["complete_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_post"];
+        /**
+         * Unmark Grammar Lesson
+         * @description Bấm "Bỏ hoàn thành" — dấu tay thì gỡ được, đó là lý do nó là dấu tay.
+         *
+         *     Xoá hàng completion, KHÔNG xoá `grammar_attempt`: đã làm câu nào thì câu đó
+         *     vẫn nằm trong lịch sử, đúng như mọi số liệu học tập khác ở dự án này.
+         */
+        delete: operations["unmark_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/grammar-topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Grammar Topics */
+        get: operations["list_grammar_topics_api_v1_grammar_topics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/grammar-topics/{topic_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Grammar Topic */
+        get: operations["get_grammar_topic_api_v1_grammar_topics__topic_id__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5245,6 +5631,312 @@ export interface components {
             /** Tone */
             tone?: ("ok" | "action" | "warn" | "alert") | null;
         };
+        /** GrammarLessonAdmin */
+        GrammarLessonAdmin: {
+            /** Body */
+            body: string;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Position */
+            position: number;
+            /** Question Count */
+            question_count: number;
+            /** Question Ids */
+            question_ids: string[];
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Title */
+            topic_title: string;
+        };
+        /** GrammarLessonCreate */
+        GrammarLessonCreate: {
+            /**
+             * Body
+             * @default
+             */
+            body: string;
+            /**
+             * Kind
+             * @default theory
+             */
+            kind: string;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string;
+        };
+        /** GrammarLessonDetail */
+        GrammarLessonDetail: {
+            /** Body */
+            body: string;
+            /**
+             * Completed
+             * @default false
+             */
+            completed: boolean;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            next_lesson?: components["schemas"]["GrammarLessonSummary"] | null;
+            next_topic?: components["schemas"]["GrammarNextTopic"] | null;
+            /**
+             * Questions
+             * @default []
+             */
+            questions: components["schemas"]["GrammarPracticeQuestion"][];
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Title */
+            topic_title: string;
+        };
+        /** GrammarLessonOrder */
+        GrammarLessonOrder: {
+            /** Lesson Ids */
+            lesson_ids: string[];
+        };
+        /** GrammarLessonQuestions */
+        GrammarLessonQuestions: {
+            /** Question Ids */
+            question_ids: string[];
+        };
+        /** GrammarLessonSummary */
+        GrammarLessonSummary: {
+            /** Completed */
+            completed: boolean;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Position */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+        };
+        /** GrammarLessonUpdate */
+        GrammarLessonUpdate: {
+            /** Body */
+            body?: string | null;
+            /** Kind */
+            kind?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Topic Id */
+            topic_id?: string | null;
+        };
+        /**
+         * GrammarNextTopic
+         * @description Chủ đề kế tiếp CÓ ít nhất một bài đã publish — đích đến của bài cuối topic.
+         */
+        GrammarNextTopic: {
+            /** Lesson Id */
+            lesson_id: string;
+            /** Lesson Title */
+            lesson_title: string;
+            /** Topic Id */
+            topic_id: string;
+            /** Topic Title */
+            topic_title: string;
+        };
+        /** GrammarPracticeOption */
+        GrammarPracticeOption: {
+            /** Content */
+            content: string | null;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /**
+         * GrammarPracticeQuestion
+         * @description Một câu rút theo nhãn. Không `is_correct` — đáp án chỉ rời máy chủ khi nộp.
+         */
+        GrammarPracticeQuestion: {
+            /** Completed */
+            completed: boolean;
+            /** Id */
+            id: string;
+            /** Options */
+            options: components["schemas"]["GrammarPracticeOption"][];
+            /** Part */
+            part: number;
+            /** Prompt Text */
+            prompt_text: string | null;
+        };
+        /** GrammarPracticeResult */
+        GrammarPracticeResult: {
+            /** Correct Option Id */
+            correct_option_id: string;
+            /** Explanation */
+            explanation: string | null;
+            /** Is Correct */
+            is_correct: boolean;
+        };
+        /** GrammarPracticeSubmit */
+        GrammarPracticeSubmit: {
+            /** Option Id */
+            option_id: string;
+            /** Question Id */
+            question_id: string;
+        };
+        /**
+         * GrammarQuestionDraft
+         * @description Thêm TAY một câu cho bài luyện tập — không phải câu suy ra từ nhãn.
+         *
+         *     Part bị khoá ở 5: đó là hình dạng "một câu trắc nghiệm ngữ pháp" của kho
+         *     (Part 6 câu nằm trong passage, không dựng độc lập được). `source` bắt buộc
+         *     tại tầng validator, mặc định ở đây là `original` vì câu soạn tay cho ngữ
+         *     pháp là câu tự viết — câu mượn từ đề thật phải đi qua màn soạn đề của khu
+         *     luyện thi, nơi ghi rõ nguồn gốc giấy phép.
+         */
+        GrammarQuestionDraft: {
+            /**
+             * Difficulty
+             * @default 3
+             */
+            difficulty: number;
+            /** Explanation */
+            explanation?: string | null;
+            /** Options */
+            options: components["schemas"]["GrammarQuestionDraftOption"][];
+            /** Prompt Text */
+            prompt_text: string;
+        };
+        /** GrammarQuestionDraftOption */
+        GrammarQuestionDraftOption: {
+            /** Content */
+            content: string;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Label */
+            label: string;
+        };
+        /** GrammarTopicAdmin */
+        GrammarTopicAdmin: {
+            /** Code */
+            code: string | null;
+            /** Id */
+            id: string;
+            /** Lesson Count */
+            lesson_count: number;
+            /** Position */
+            position: number;
+            /** Question Count */
+            question_count: number;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Summary */
+            summary: string | null;
+            /** Title */
+            title: string;
+        };
+        /** GrammarTopicCreate */
+        GrammarTopicCreate: {
+            /** Code */
+            code?: string | null;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /** Slug */
+            slug: string;
+            /** Summary */
+            summary?: string | null;
+            /** Title */
+            title: string;
+        };
+        /** GrammarTopicDetail */
+        GrammarTopicDetail: {
+            /** Code */
+            code: string | null;
+            /**
+             * Completed Lesson Count
+             * @default 0
+             */
+            completed_lesson_count: number;
+            /** Id */
+            id: string;
+            /** Lesson Count */
+            lesson_count: number;
+            /** Lessons */
+            lessons: components["schemas"]["GrammarLessonSummary"][];
+            /** Slug */
+            slug: string;
+            /** Summary */
+            summary: string | null;
+            /** Title */
+            title: string;
+        };
+        /** GrammarTopicOrder */
+        GrammarTopicOrder: {
+            /** Topic Ids */
+            topic_ids: string[];
+        };
+        /** GrammarTopicPublic */
+        GrammarTopicPublic: {
+            /** Code */
+            code: string | null;
+            /**
+             * Completed Lesson Count
+             * @default 0
+             */
+            completed_lesson_count: number;
+            /** Id */
+            id: string;
+            /** Lesson Count */
+            lesson_count: number;
+            /** Slug */
+            slug: string;
+            /** Summary */
+            summary: string | null;
+            /** Title */
+            title: string;
+        };
+        /** GrammarTopicUpdate */
+        GrammarTopicUpdate: {
+            /** Code */
+            code?: string | null;
+            /** Position */
+            position?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Summary */
+            summary?: string | null;
+            /** Title */
+            title?: string | null;
+        };
         /**
          * GroupDraft
          * @description Một cụm đã phân tích: ngữ liệu dùng chung và các câu thuộc về nó.
@@ -5602,6 +6294,28 @@ export interface components {
         Page_DictationSummary_: {
             /** Items */
             items: components["schemas"]["DictationSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[GrammarLessonAdmin] */
+        Page_GrammarLessonAdmin_: {
+            /** Items */
+            items: components["schemas"]["GrammarLessonAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[GrammarTopicAdmin] */
+        Page_GrammarTopicAdmin_: {
+            /** Items */
+            items: components["schemas"]["GrammarTopicAdmin"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -8612,6 +9326,591 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_grammar_labels_api_v1_admin_grammar_labels_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    }[];
+                };
+            };
+        };
+    };
+    list_grammar_lessons_api_v1_admin_grammar_lessons_get: {
+        parameters: {
+            query?: {
+                topic_id?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_GrammarLessonAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_grammar_lesson_api_v1_admin_grammar_lessons_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarLessonCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarLessonUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_grammar_lesson_api_v1_admin_grammar_lessons__lesson_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_lesson_questions_api_v1_admin_grammar_lessons__lesson_id__questions_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarLessonQuestions"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_question_bank_api_v1_admin_grammar_question_bank_get: {
+        parameters: {
+            query?: {
+                search?: string | null;
+                code?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    }[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_grammar_question_api_v1_admin_grammar_questions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarQuestionDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_grammar_topics_api_v1_admin_grammar_topics_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_GrammarTopicAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_grammar_topic_api_v1_admin_grammar_topics_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarTopicCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_grammar_topics_api_v1_admin_grammar_topics_order_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarTopicOrder"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_grammar_topic_api_v1_admin_grammar_topics__topic_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_grammar_topic_api_v1_admin_grammar_topics__topic_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarTopicUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_grammar_lessons_api_v1_admin_grammar_topics__topic_id__lessons_order_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarLessonOrder"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_grammar_topic_api_v1_admin_grammar_topics__topic_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_unattached_questions_api_v1_admin_grammar_topics__topic_id__unattached_questions_get: {
+        parameters: {
+            query?: {
+                lesson_id?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    }[];
                 };
             };
             /** @description Validation Error */
@@ -12021,6 +13320,179 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_grammar_attempt_api_v1_grammar_attempts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarPracticeSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_grammar_lesson_api_v1_grammar_lessons__lesson_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    complete_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unmark_grammar_lesson_api_v1_grammar_lessons__lesson_id__complete_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_grammar_topics_api_v1_grammar_topics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicPublic"][];
+                };
+            };
+        };
+    };
+    get_grammar_topic_api_v1_grammar_topics__topic_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarTopicDetail"];
                 };
             };
             /** @description Validation Error */
