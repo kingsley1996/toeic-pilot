@@ -17,6 +17,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_, select, union_all
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import Subquery
 
@@ -157,7 +158,12 @@ def list_users(
 
 @router.get("/stats", response_model=AdminUserStats)
 def stats(db: Session = Depends(get_db), _: User = Depends(can_manage)) -> AdminUserStats:
-    """Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang."""
+    """Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.
+
+    # ponytail: `active_7d` quét union 6 bảng mỗi lần mở trang — Postgres đẩy
+    # điều kiện ngày xuống được nên hiện tại rẻ; nếu prod chậm thì chuyển sang
+    # bảng tóm tắt hoặc giới hạn theo `user_ids` của trang đang xem.
+    """
     now = datetime.now(UTC)
     since = now - timedelta(days=30)
     # Gom theo Python, không `date_trunc`: hàng là số NGƯỜI (vài nghìn), và
@@ -281,7 +287,17 @@ def delete_user(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     _own_guard(caller, target)
     db.delete(target)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # FK RESTRICT (`question.created_by`...): người này còn nội dung gắn
+        # với họ. Database từ chối là đúng; việc của route là nói ra lý do
+        # thay vì để một IntegrityError thoát ra thành 500 không lời.
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Người này còn nội dung do họ tạo — xử lý nội dung trước khi xoá tài khoản.",
+        )
 
 
 @router.get("/{user_id}/activity", response_model=list[UserActivity])

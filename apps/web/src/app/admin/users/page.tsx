@@ -54,6 +54,7 @@ export default function AdminUsersPage() {
   const { token, user: me } = useRequireSession({ canEdit: true });
   const [stats, setStats] = useState<AdminUserStats | null>(null);
   const [page, setPage] = useState<AdminUserPage | null>(null);
+  const [qInput, setQInput] = useState("");
   const [q, setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +84,17 @@ export default function AdminUsersPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Gõ mượt chứ không bắn request theo từng phím: ô tìm kiếm nạp lại danh
+  // sách sau 300ms im lặng — setState nằm trong setTimeout chứ không thân
+  // effect, đúng khe `react-hooks/set-state-in-effect` cho phép.
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setQ(qInput);
+      setOffset(0);
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [qInput]);
 
   function act(user: AdminUserPublic, body: Record<string, unknown>, path: string) {
     if (!token) return;
@@ -146,11 +158,8 @@ export default function AdminUsersPage() {
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Input
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
-            setOffset(0);
-          }}
+          value={qInput}
+          onChange={(e) => setQInput(e.target.value)}
           placeholder="Tìm email…"
           aria-label="Tìm theo email"
           className="w-64"
@@ -191,7 +200,12 @@ export default function AdminUsersPage() {
                         body: JSON.stringify({ role: e.target.value }),
                       })
                         .then(load)
-                        .catch(() => setError("Không đổi được quyền."))
+                        // Select đã vẽ giá trị mới; server từ chối thì nạp lại
+                        // để nó về giá trị thật thay vì nói dối bằng UI cũ.
+                        .catch(() => {
+                          setError("Không đổi được quyền.");
+                          load();
+                        })
                     }
                     className="w-auto py-1 text-small"
                   >

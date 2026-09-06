@@ -124,3 +124,27 @@ def test_stats_counts_growth_and_activity(client: TestClient, db_session: Sessio
 
     feed = client.get(f"/api/v1/admin/users/{fresh.id}/activity", headers=auth("admin")).json()
     assert feed[0]["kind"] == "ruby" and "daily_gift" in feed[0]["label"]
+
+
+def test_activity_of_stranger_is_404_and_bad_role_is_422(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    assert (
+        client.get(
+            f"/api/v1/admin/users/{uuid.uuid4()}/activity", headers=auth("admin")
+        ).status_code
+        == 404
+    )
+
+    target = User(email="role-vi-pham@example.com", hashed_password="x", role="learner")
+    db_session.add(target)
+    db_session.commit()
+    # `pattern` chặn ở schema: role lạ không bao giờ chạm tới handler.
+    assert (
+        client.patch(
+            f"/api/v1/admin/users/{target.id}",
+            json={"role": "superadmin"},
+            headers=auth("admin"),
+        ).status_code
+        == 422
+    )
