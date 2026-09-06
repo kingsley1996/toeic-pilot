@@ -503,6 +503,51 @@
 }
 
 /*
+ * Viền gradient cho CTA bài test đầu vào trên dashboard — ngoại lệ CÓ Ý THỨC
+ * thứ hai của §6, theo đúng khuôn `.ai-border` (người dùng 2026-09-07: panel
+ * chưa đo trình độ phải luôn nổi bật). Cùng ba luật giữ nguyên: không bóng,
+ * bo 4px, chỉ dùng token đã có (`action` / `rule`).
+ *
+ * Chậm hơn `.ai-border` (12s thay vì 5s): cái này luôn hiển thị cho tới khi
+ * người học làm bài, một viền quay nhanh trên bảng điều khiển hằng ngày là
+ * thứ bào mòn sự chú ý chứ không tạo ra nó.
+ */
+@property --placement-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes placement-border-spin {
+  to {
+    --placement-angle: 360deg;
+  }
+}
+
+.placement-cta {
+  border-radius: 4px;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--placement-angle),
+    rgb(var(--action)),
+    rgb(var(--rule)),
+    rgb(var(--action-tint)),
+    rgb(var(--action)),
+    rgb(var(--action-tint)),
+    rgb(var(--rule)),
+    rgb(var(--action))
+  );
+  animation: placement-border-spin 12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placement-cta {
+    animation: none;
+    background: linear-gradient(100deg, rgb(var(--action)), rgb(var(--rule)));
+  }
+}
+
+/*
  * Ba chấm "đang gõ" — ngôn ngữ quen thuộc của mọi ứng dụng chat.
  *
  * Dùng thay một spinner vì hai thứ nói hai điều khác nhau: spinner nói "hệ

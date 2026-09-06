@@ -486,6 +486,11 @@
             "title": "Id",
             "type": "string"
           },
+          "is_placement": {
+            "default": false,
+            "title": "Is Placement",
+            "type": "boolean"
+          },
           "parts": {
             "items": {
               "$ref": "#/components/schemas/AttemptPartProgress"
@@ -7814,6 +7819,235 @@
           "solid"
         ],
         "title": "PetlandMapPublic",
+        "type": "object"
+      },
+      "PlacementBand": {
+        "properties": {
+          "high": {
+            "title": "High",
+            "type": "integer"
+          },
+          "low": {
+            "title": "Low",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "low",
+          "high"
+        ],
+        "title": "PlacementBand",
+        "type": "object"
+      },
+      "PlacementGate": {
+        "description": "Trả lời cho câu \"được làm bài test đầu vào không, khi nào làm lại được\".",
+        "properties": {
+          "can_start": {
+            "title": "Can Start",
+            "type": "boolean"
+          },
+          "in_progress_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "In Progress Attempt Id"
+          },
+          "latest_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Attempt Id"
+          },
+          "latest_cefr_overall": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Cefr Overall"
+          },
+          "latest_total_high": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Total High"
+          },
+          "latest_total_low": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Total Low"
+          },
+          "next_available_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Available At"
+          }
+        },
+        "required": [
+          "can_start"
+        ],
+        "title": "PlacementGate",
+        "type": "object"
+      },
+      "PlacementResultPublic": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cefr_listening": {
+            "title": "Cefr Listening",
+            "type": "string"
+          },
+          "cefr_overall": {
+            "title": "Cefr Overall",
+            "type": "string"
+          },
+          "cefr_reading": {
+            "title": "Cefr Reading",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "estimator_version": {
+            "title": "Estimator Version",
+            "type": "string"
+          },
+          "listening_band": {
+            "$ref": "#/components/schemas/PlacementBand"
+          },
+          "listening_raw": {
+            "title": "Listening Raw",
+            "type": "integer"
+          },
+          "reading_band": {
+            "$ref": "#/components/schemas/PlacementBand"
+          },
+          "reading_raw": {
+            "title": "Reading Raw",
+            "type": "integer"
+          },
+          "self_reported_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Reported Score"
+          },
+          "strengths": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Strengths",
+            "type": "array"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          },
+          "weaknesses": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Weaknesses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "estimator_version",
+          "listening_raw",
+          "reading_raw",
+          "listening_band",
+          "reading_band",
+          "cefr_listening",
+          "cefr_reading",
+          "cefr_overall",
+          "self_reported_score",
+          "target_score",
+          "created_at"
+        ],
+        "title": "PlacementResultPublic",
+        "type": "object"
+      },
+      "PlacementStart": {
+        "description": "Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.",
+        "properties": {
+          "self_reported_score": {
+            "anyOf": [
+              {
+                "maximum": 990.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Reported Score"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "maximum": 990.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          }
+        },
+        "title": "PlacementStart",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -18082,7 +18316,7 @@
     },
     "/api/v1/admin/users/stats": {
       "get": {
-        "description": "Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.",
+        "description": "Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.\n\n# ponytail: `active_7d` quét union 6 bảng mỗi lần mở trang — Postgres đẩy\n# điều kiện ngày xuống được nên hiện tại rẻ; nếu prod chậm thì chuyển sang\n# bảng tóm tắt hoặc giới hạn theo `user_ids` của trang đang xem.",
         "operationId": "stats_api_v1_admin_users_stats_get",
         "responses": {
           "200": {
@@ -21319,6 +21553,127 @@
         "summary": "Read Map",
         "tags": [
           "petland"
+        ]
+      }
+    },
+    "/api/v1/placement/attempts/{attempt_id}/analyze": {
+      "post": {
+        "operationId": "analyze_attempt_api_v1_placement_attempts__attempt_id__analyze_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacementResultPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Analyze Attempt",
+        "tags": [
+          "placement"
+        ]
+      }
+    },
+    "/api/v1/placement/gate": {
+      "get": {
+        "operationId": "gate_api_v1_placement_gate_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacementGate"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Gate",
+        "tags": [
+          "placement"
+        ]
+      }
+    },
+    "/api/v1/placement/start": {
+      "post": {
+        "description": "Mở lượt placement + ghi mốc tự khai. Lượt đang dở thì trả lại lượt đó —\ntạo lượt thứ hai song song là hai phán quyết cho cùng một tuần.",
+        "operationId": "start_api_v1_placement_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlacementStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacementGate"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start",
+        "tags": [
+          "placement"
         ]
       }
     },

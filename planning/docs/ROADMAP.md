@@ -99,6 +99,15 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Tính năng còn thiếu
 
+- [x] ~~Bài test đầu vào (placement) — lát 1~~ — **Xong (2026-09-07).** Đề
+      `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua
+      `app/content/make_placement.py` (định mức §0 của spec), máy thi tái dùng
+      đường `/attempts`, `placement_result` (067) với estimator v1 (tỉ lệ + CI
+      95% ≈ ±75 điểm, CEFR theo bảng ETS từng section, trần C1 — không phát minh
+      C2), cooldown retake 7 ngày, mốc điểm tự khai trước bài, màn setup + kết
+      quả tại `/learn/placement`. Lat 2: study planner (rule-based rồi LLM, so
+      sánh theo §5) — `SPEC-PLACEMENT.md`
+
 - [x] ~~Màn quản trị thành viên~~ — **Xong (2026-09-07).** `/admin/users` +
       `admin_users.py` (6 endpoint, mọi thứ `require_role("admin")`): danh sách
       kèm số dư ruby / hoạt động cuối / số đề đã làm (UNION sáu bảng hoạt động),

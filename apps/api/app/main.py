@@ -33,6 +33,7 @@ from app.api.routes import (
     oauth,
     pet,
     petland_map,
+    placement,
     practice,
     practice_parts,
     profile,
@@ -94,6 +95,7 @@ app.include_router(coach.router, prefix="/api/v1")
 app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
 app.include_router(petland_map.router, prefix="/api/v1")
+app.include_router(placement.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")
 app.include_router(admin_vocabulary.router, prefix="/api/v1")
 app.include_router(admin_dictation.router, prefix="/api/v1")

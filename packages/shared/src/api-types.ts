@@ -2053,6 +2053,10 @@ export interface paths {
         /**
          * Stats
          * @description Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.
+         *
+         *     # ponytail: `active_7d` quét union 6 bảng mỗi lần mở trang — Postgres đẩy
+         *     # điều kiện ngày xuống được nên hiện tại rẻ; nếu prod chậm thì chuyển sang
+         *     # bảng tóm tắt hoặc giới hạn theo `user_ids` của trang đang xem.
          */
         get: operations["stats_api_v1_admin_users_stats_get"];
         put?: never;
@@ -3398,6 +3402,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/placement/attempts/{attempt_id}/analyze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Analyze Attempt */
+        post: operations["analyze_attempt_api_v1_placement_attempts__attempt_id__analyze_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/placement/gate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gate */
+        get: operations["gate_api_v1_placement_gate_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/placement/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start
+         * @description Mở lượt placement + ghi mốc tự khai. Lượt đang dở thì trả lại lượt đó —
+         *     tạo lượt thứ hai song song là hai phán quyết cho cùng một tuần.
+         */
+        post: operations["start_api_v1_placement_start_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/practice-tests/{slug}": {
         parameters: {
             query?: never;
@@ -4475,6 +4534,11 @@ export interface components {
             elapsed_seconds: number;
             /** Id */
             id: string;
+            /**
+             * Is Placement
+             * @default false
+             */
+            is_placement: boolean;
             /** Parts */
             parts: components["schemas"]["AttemptPartProgress"][];
             /** Question Count */
@@ -7198,6 +7262,81 @@ export interface components {
             updated_at?: string | null;
             /** W */
             w: number;
+        };
+        /** PlacementBand */
+        PlacementBand: {
+            /** High */
+            high: number;
+            /** Low */
+            low: number;
+        };
+        /**
+         * PlacementGate
+         * @description Trả lời cho câu "được làm bài test đầu vào không, khi nào làm lại được".
+         */
+        PlacementGate: {
+            /** Can Start */
+            can_start: boolean;
+            /** In Progress Attempt Id */
+            in_progress_attempt_id?: string | null;
+            /** Latest Attempt Id */
+            latest_attempt_id?: string | null;
+            /** Latest Cefr Overall */
+            latest_cefr_overall?: string | null;
+            /** Latest Total High */
+            latest_total_high?: number | null;
+            /** Latest Total Low */
+            latest_total_low?: number | null;
+            /** Next Available At */
+            next_available_at?: string | null;
+        };
+        /** PlacementResultPublic */
+        PlacementResultPublic: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Cefr Listening */
+            cefr_listening: string;
+            /** Cefr Overall */
+            cefr_overall: string;
+            /** Cefr Reading */
+            cefr_reading: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Estimator Version */
+            estimator_version: string;
+            listening_band: components["schemas"]["PlacementBand"];
+            /** Listening Raw */
+            listening_raw: number;
+            reading_band: components["schemas"]["PlacementBand"];
+            /** Reading Raw */
+            reading_raw: number;
+            /** Self Reported Score */
+            self_reported_score: number | null;
+            /**
+             * Strengths
+             * @default []
+             */
+            strengths: string[];
+            /** Target Score */
+            target_score: number | null;
+            /**
+             * Weaknesses
+             * @default []
+             */
+            weaknesses: string[];
+        };
+        /**
+         * PlacementStart
+         * @description Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.
+         */
+        PlacementStart: {
+            /** Self Reported Score */
+            self_reported_score?: number | null;
+            /** Target Score */
+            target_score?: number | null;
         };
         /**
          * ProgressionConfigAdmin
@@ -14574,6 +14713,90 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    analyze_attempt_api_v1_placement_attempts__attempt_id__analyze_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementResultPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    gate_api_v1_placement_gate_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementGate"];
+                };
+            };
+        };
+    };
+    start_api_v1_placement_start_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlacementStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementGate"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

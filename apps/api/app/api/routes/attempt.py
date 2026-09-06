@@ -390,6 +390,7 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         answered_count=sum(1 for q in questions if q.selected_option_id is not None),
         question_count=len(questions),
         elapsed_seconds=attempt.elapsed_seconds,
+        is_placement=attempt.test.is_placement,
         parts=parts,
         questions=questions,
     )

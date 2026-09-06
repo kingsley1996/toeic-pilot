@@ -167,6 +167,8 @@ export type AdminUserPublic = components["schemas"]["AdminUserPublic"];
 export type AdminUserStats = components["schemas"]["AdminUserStats"];
 export type UserActivity = components["schemas"]["UserActivity"];
 export type AdminUserPage = components["schemas"]["Page_AdminUserPublic_"];
+export type PlacementGate = components["schemas"]["PlacementGate"];
+export type PlacementResultPublic = components["schemas"]["PlacementResultPublic"];
 export type SystemStatus = components["schemas"]["SystemStatus"];
 export type UptimeReport = components["schemas"]["UptimeReport"];
 export type ServiceUptime = components["schemas"]["ServiceUptime"];
@@ -252,6 +254,9 @@ export const API_ROUTES = {
   adminSystemStatus: "/api/v1/admin/system/status",
   adminSystemUptime: "/api/v1/admin/system/uptime",
   adminRubyRules: "/api/v1/admin/ruby/rules",
+  placementGate: "/api/v1/placement/gate",
+  placementStart: "/api/v1/placement/start",
+  placementAnalyze: (attemptId: string) => `/api/v1/placement/attempts/${attemptId}/analyze`,
   adminUsers: "/api/v1/admin/users",
   adminUserStats: "/api/v1/admin/users/stats",
   adminUser: (id: string) => `/api/v1/admin/users/${id}`,

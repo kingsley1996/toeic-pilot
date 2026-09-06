@@ -239,6 +239,9 @@ class AttemptState(BaseModel):
     # `now() - started_at`, vì lượt làm tạm dừng được và đồng hồ treo tường sẽ
     # ăn mất thời gian người học không hề ngồi trước màn hình.
     elapsed_seconds: int
+    # Đề xếp lớp: sau khi nộp, màn kết quả phải dẫn sang phân tích placement
+    # thay vì bảng điểm quy đổi đề thường (mini không có đường quy đổi).
+    is_placement: bool = False
     parts: list[AttemptPartProgress]
     questions: list[QuestionPublic]
 

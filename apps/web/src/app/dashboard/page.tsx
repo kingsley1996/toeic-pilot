@@ -5,6 +5,7 @@ import {
   type AttemptPage,
   type AttemptSummary,
   type LearningStats,
+  type PlacementGate,
   type ReviewSession,
   type TopicSessionSummary,
   type VocabularyProgress,
@@ -12,6 +13,7 @@ import {
 import {
   BookOpen,
   CalendarCheck,
+  ClipboardList,
   Clock,
   FileText,
   Flame,
@@ -81,7 +83,7 @@ import { useRequireSession } from "@/lib/session";
  * thứ tự).
  */
 /*
- * Bốn bước, và không hơn.
+ * Năm bước, theo đúng thứ tự trên trang.
  *
  * Mỗi bước là một chỗ người mới sẽ quay lại hằng ngày; thứ chỉ dùng một lần thì
  * không đáng chặn màn hình để giới thiệu. Thứ tự theo đúng thứ tự trên trang, nên
@@ -94,6 +96,11 @@ import { useRequireSession } from "@/lib/session";
  * Bước nào không tìm thấy đích thì tự bỏ qua (xem `Tour`).
  */
 const TOUR: readonly TourStep[] = [
+  {
+    target: '[data-tour="placement"]',
+    title: "Đo trình độ trước tiên",
+    body: "Bài test đầu vào 84 câu, khoảng 50 phút: biết trình độ (CEFR), điểm TOEIC ước tính và nên luyện gì trước.",
+  },
   {
     target: '[data-tour="daily"]',
     title: "Ba việc mỗi ngày",
@@ -260,6 +267,7 @@ export default function TodayPage() {
    * kèm nhãn đỏ, và mở từ đó là chốt.
    */
   const [unfinished, setUnfinished] = useState<AttemptSummary[]>([]);
+  const [placement, setPlacement] = useState<PlacementGate | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -267,6 +275,9 @@ export default function TodayPage() {
     // được, nên nó xuống cấp thành "không có số" chứ không thành màn lỗi.
     apiFetch<ReviewSession>(API_ROUTES.reviewSession, { token })
       .then(setSession)
+      .catch(() => {});
+    apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
+      .then(setPlacement)
       .catch(() => {});
     apiFetch<VocabularyProgress>(API_ROUTES.vocabularyProgress, { token })
       .then(setProgress)
@@ -350,6 +361,13 @@ export default function TodayPage() {
           )}
         </Panel>
       )}
+
+      {/* Panel placement đứng TRƯỚC mọi thứ: chưa đo trình độ thì mọi lời
+          gợi ý khác đều là đoán. Panel LUÔN tồn tại (dù chỉ là khung) — tour
+          bám vào nó, và mất đích là tour im lặng với người mới. */}
+      <div data-tour="placement" className="mb-4">
+        <PlacementPanel gate={placement} />
+      </div>
 
       {/* Tour chào người mới. Nằm ở màn hình chính vì đây là nơi người ta hạ
           cánh sau khi đăng ký, và nó tự im lặng với ai đã xem rồi. */}
@@ -551,5 +569,73 @@ export default function TodayPage() {
         </div>
       )}
     </Page>
+  );
+}
+
+/**
+ * Cổng vào bài test đầu vào, ba trạng thái theo `gate` của server:
+ *
+ * · chưa từng làm → mời làm, đứng đầu trang vì mọi gợi ý trước khi biết trình
+ *   độ đều là đoán;
+ * · lượt đang dở → tiếp tục (đồng hồ chạy ở máy chủ, delay là mất bài);
+ * · đã làm → hiện băng CEFR + dải điểm như một thành tích, kèm lối vào phân
+ *   tích. Không mời làm lại ở đây — cooldown 7 ngày, và ngày khả dụng đã có
+ *   lời nhắc ở trang placement.
+ */
+function PlacementPanel({ gate }: { gate: PlacementGate | null }) {
+  if (gate === null) {
+    return <Panel className="min-h-[5.5rem]" aria-hidden />;
+  }
+  if (gate.in_progress_attempt_id) {
+    return (
+      <Panel className="flex flex-wrap items-center gap-4 p-4">
+        <ClipboardList size={20} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+        <p className="min-w-0 flex-1 font-semibold">Bài test đầu vào đang làm dở</p>
+        <ButtonLink href={`/learn/attempts/${gate.in_progress_attempt_id}`} size="sm">
+          Tiếp tục
+        </ButtonLink>
+      </Panel>
+    );
+  }
+  if (gate.latest_cefr_overall === null) {
+    return (
+      /* Viền gradient (ngoại lệ §6 — xem `.placement-cta`): lớp bọc 1px + con
+         đắp nền panel. Chỉ ở trạng thái CHƯA LÀM — sau khi đo xong, panel trở
+         lại viền thường vì nó không còn việc gì phải gây chú ý nữa. */
+      <div className="placement-cta">
+        <PanelLink
+          href="/learn/placement"
+          className="flex flex-wrap items-center gap-4 rounded p-4"
+        >
+          <ClipboardList size={20} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+          <span className="min-w-0 flex-1">
+            <span className="font-semibold">Đo trình độ của bạn</span>
+            <span className="mt-0.5 block text-small text-ink-muted">
+              84 câu, khoảng 50 phút — kết quả cho biết nên luyện gì trước.
+            </span>
+          </span>
+          <span className="text-small font-semibold text-action-ink">Bắt đầu →</span>
+        </PanelLink>
+      </div>
+    );
+  }
+  return (
+    <Panel className="flex flex-wrap items-center gap-x-4 gap-y-2 p-4">
+      <ClipboardList size={20} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+      <p className="min-w-0 flex-1">
+        <span className="font-semibold">Trình độ ước tính: {gate.latest_cefr_overall}</span>
+        <span className="font-data tabular-nums text-ink-muted">
+          {" "}
+          · {gate.latest_total_low}–{gate.latest_total_high} điểm
+        </span>
+      </p>
+      <ButtonLink
+        href={`/learn/placement/result/${gate.latest_attempt_id}`}
+        size="sm"
+        variant="secondary"
+      >
+        Xem phân tích
+      </ButtonLink>
+    </Panel>
   );
 }

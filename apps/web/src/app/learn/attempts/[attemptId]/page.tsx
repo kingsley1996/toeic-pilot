@@ -400,7 +400,16 @@ export default function AttemptRunnerPage() {
       )}
 
       {showingResult && result ? (
-        <ResultScreen result={result} state={state} onReview={reviewAt} />
+        state.is_placement ? (
+          /*
+           * Placement không có bảng điểm quy đổi — mini không tra được bảng
+           * dựng cho 200 câu. Phân tích trình độ sống ở trang riêng; đưa
+           * người học thẳng tới đó thay vì để ResultScreen tự bịa một bảng.
+           */
+          <PlacementResultRedirect attemptId={attemptId} />
+        ) : (
+          <ResultScreen result={result} state={state} onReview={reviewAt} />
+        )
       ) : (
         <>
           <div className="mx-auto flex w-full max-w-[110rem] gap-6 px-4 py-6">
@@ -491,6 +500,18 @@ export default function AttemptRunnerPage() {
           </Button>
         </div>
       </Modal>
+    </div>
+  );
+}
+
+function PlacementResultRedirect({ attemptId }: { attemptId: string }) {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace(`/learn/placement/result/${attemptId}`);
+  }, [attemptId, router]);
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 py-16">
+      <p className="text-ink-muted">Đang mở phân tích bài test đầu vào…</p>
     </div>
   );
 }
