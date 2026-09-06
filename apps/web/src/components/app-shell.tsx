@@ -1,6 +1,14 @@
 "use client";
 
-import { BookOpen, FileText, GraduationCap, Headphones, House, Sparkles } from "lucide-react";
+import {
+  BookOpen,
+  Dumbbell,
+  FileText,
+  GraduationCap,
+  Headphones,
+  House,
+  Sparkles,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { type NavItem } from "@/components/nav";
@@ -46,6 +54,7 @@ const CONTENT_LINKS: NavItem[] = [
   { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
   { href: "/learn/grammar", label: "Ngữ pháp", Icon: GraduationCap },
+  { href: "/learn/parts", label: "Luyện theo part", Icon: Dumbbell },
   { href: "/learn/tests", label: "Luyện thi", Icon: FileText },
 ];
 
