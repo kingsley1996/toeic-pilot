@@ -10,6 +10,7 @@ import {
   ListTree,
   Palette,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -110,6 +111,13 @@ export default function AdminPage() {
             <h2 className="mt-3 text-subtitle">Cấp độ và huy hiệu</h2>
             <p className="mt-1 text-small text-ink-muted">
               XP, mốc cấp, nhiệm vụ hằng ngày, khung avatar — tất cả là dữ liệu.
+            </p>
+          </PanelLink>
+          <PanelLink href="/admin/users">
+            <Users size={16} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
+            <h2 className="mt-3 text-subtitle">Thành viên</h2>
+            <p className="mt-1 text-small text-ink-muted">
+              Người mới, nhịp hoạt động, tăng trưởng — và quyền, ruby, xoá tài khoản.
             </p>
           </PanelLink>
           <PanelLink href="/admin/ai">

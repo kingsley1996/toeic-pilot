@@ -163,6 +163,10 @@ export type RubyEntry = components["schemas"]["RubyEntryPublic"];
 export type RubyGift = components["schemas"]["RubyGiftPublic"];
 export type RubyClaimResult = components["schemas"]["RubyClaimResult"];
 export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
+export type AdminUserPublic = components["schemas"]["AdminUserPublic"];
+export type AdminUserStats = components["schemas"]["AdminUserStats"];
+export type UserActivity = components["schemas"]["UserActivity"];
+export type AdminUserPage = components["schemas"]["Page_AdminUserPublic_"];
 export type SystemStatus = components["schemas"]["SystemStatus"];
 export type UptimeReport = components["schemas"]["UptimeReport"];
 export type ServiceUptime = components["schemas"]["ServiceUptime"];
@@ -248,6 +252,11 @@ export const API_ROUTES = {
   adminSystemStatus: "/api/v1/admin/system/status",
   adminSystemUptime: "/api/v1/admin/system/uptime",
   adminRubyRules: "/api/v1/admin/ruby/rules",
+  adminUsers: "/api/v1/admin/users",
+  adminUserStats: "/api/v1/admin/users/stats",
+  adminUser: (id: string) => `/api/v1/admin/users/${id}`,
+  adminUserRuby: (id: string) => `/api/v1/admin/users/${id}/ruby`,
+  adminUserActivity: (id: string) => `/api/v1/admin/users/${id}/activity`,
   adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",
   adminPetSpeciesItem: (code: string) => `/api/v1/admin/pet/species/${code}`,

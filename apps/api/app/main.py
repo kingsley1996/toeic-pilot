@@ -18,6 +18,7 @@ from app.api.routes import (
     admin_ruby,
     admin_system,
     admin_tests,
+    admin_users,
     admin_vocabulary,
     appearance,
     assistant,
@@ -104,6 +105,7 @@ app.include_router(admin_progression.router, prefix="/api/v1")
 app.include_router(admin_pet.router, prefix="/api/v1")
 app.include_router(admin_ruby.router, prefix="/api/v1")
 app.include_router(admin_system.router, prefix="/api/v1")
+app.include_router(admin_users.router, prefix="/api/v1")
 app.include_router(media.router, prefix="/api/v1")
 app.include_router(appearance.router, prefix="/api/v1")
 

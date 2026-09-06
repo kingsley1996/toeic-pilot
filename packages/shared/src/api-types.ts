@@ -2017,6 +2017,115 @@ export interface paths {
         patch: operations["update_topic_api_v1_admin_topics__topic_id__patch"];
         trace?: never;
     };
+    "/api/v1/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Users
+         * @description Danh sách kèm số dư ruby và nhịp hoạt động — đủ để quyết định mở ai.
+         */
+        get: operations["list_users_api_v1_admin_users_get"];
+        put?: never;
+        /**
+         * Create User
+         * @description Tạo tài khoản hộ người chưa tự đăng ký được (đặt mật khẩu giúp lần đầu).
+         *
+         *     Email trùng → 409, cùng thông báo như chính người dùng gặp khi đăng ký.
+         */
+        post: operations["create_user_api_v1_admin_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/users/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stats
+         * @description Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.
+         */
+        get: operations["stats_api_v1_admin_users_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete User
+         * @description Xoá tài khoản. Mọi bảng của người đó CASCADE; `question`/nội dung dùng
+         *     chung có FK RESTRICT tới `users` (created_by) — nếu còn thứ gì trỏ về,
+         *     database sẽ từ chối và lỗi nổi lên thay vì để lại nội dung mồ côi.
+         */
+        delete: operations["delete_user_api_v1_admin_users__user_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Role */
+        patch: operations["update_role_api_v1_admin_users__user_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/users/{user_id}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Activity
+         * @description Feed thao tác gần nhất của một người, mới trước — 'hôm qua bạn ấy làm gì'.
+         */
+        get: operations["activity_api_v1_admin_users__user_id__activity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/users/{user_id}/ruby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant Ruby
+         * @description Cấp ruby — một hàng `admin_grant` trong sổ cái, không phải sửa số dư.
+         */
+        post: operations["grant_ruby_api_v1_admin_users__user_id__ruby_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/vocabulary": {
         parameters: {
             query?: never;
@@ -4181,6 +4290,59 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdminUserCreate */
+        AdminUserCreate: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+            /**
+             * Role
+             * @default learner
+             */
+            role: string;
+        };
+        /** AdminUserEdit */
+        AdminUserEdit: {
+            /** Role */
+            role: string;
+        };
+        /** AdminUserPublic */
+        AdminUserPublic: {
+            /** Attempt Count */
+            attempt_count: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Email */
+            email: string;
+            /** Id */
+            id: string;
+            /** Last Activity */
+            last_activity: string | null;
+            /** Role */
+            role: string;
+            /** Ruby Balance */
+            ruby_balance: number;
+        };
+        /** AdminUserStats */
+        AdminUserStats: {
+            /** Active 7D */
+            active_7d: number;
+            /** Growth */
+            growth: components["schemas"]["GrowthDay"][];
+            /** New 30D */
+            new_30d: number;
+            /** New 7D */
+            new_7d: number;
+            /** Total */
+            total: number;
+        };
         /** AiFeatureRow */
         AiFeatureRow: {
             /**
@@ -6106,6 +6268,13 @@ export interface components {
             /** Title */
             title?: string | null;
         };
+        /** GrowthDay */
+        GrowthDay: {
+            /** Count */
+            count: number;
+            /** Day */
+            day: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -6379,6 +6548,17 @@ export interface components {
             label: string;
             /** Spoken Text */
             spoken_text?: string | null;
+        };
+        /** Page[AdminUserPublic] */
+        Page_AdminUserPublic_: {
+            /** Items */
+            items: components["schemas"]["AdminUserPublic"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
         };
         /** Page[AttemptSummary] */
         Page_AttemptSummary_: {
@@ -7551,6 +7731,11 @@ export interface components {
             /** Unlocked */
             unlocked: boolean;
         };
+        /** RubyGrant */
+        RubyGrant: {
+            /** Amount */
+            amount: number;
+        };
         /**
          * RubyRuleEdit
          * @description Sửa một mức thưởng.
@@ -8174,6 +8359,18 @@ export interface components {
             key: string;
             /** Prompt Tokens */
             prompt_tokens: number;
+        };
+        /** UserActivity */
+        UserActivity: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
         };
         /** UserLogin */
         UserLogin: {
@@ -12193,6 +12390,224 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TopicAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_users_api_v1_admin_users_get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AdminUserPublic_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_user_api_v1_admin_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminUserCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stats_api_v1_admin_users_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserStats"];
+                };
+            };
+        };
+    };
+    delete_user_api_v1_admin_users__user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_role_api_v1_admin_users__user_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminUserEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    activity_api_v1_admin_users__user_id__activity_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserActivity"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grant_ruby_api_v1_admin_users__user_id__ruby_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RubyGrant"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPublic"];
                 };
             };
             /** @description Validation Error */

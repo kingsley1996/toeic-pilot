@@ -21,6 +21,7 @@ import {
   SquarePen,
   Tags,
   ListChecks,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -101,6 +102,14 @@ const ADMIN_LINKS: AdminNavItem[] = [
       { href: "/admin/petland", label: "Map editor", Icon: Grid2x2 },
       { href: "/admin/ruby", label: "Ruby rates", Icon: Gem },
     ],
+  },
+  {
+    // Vòng đời người dùng là quyền VẬN HÀNH (admin), không phải biên tập —
+    // cùng ranh giới với bảng giá ruby và sơ đồ hệ thống.
+    href: "/admin/users",
+    label: "Members",
+    Icon: Users,
+    group: "System",
   },
   {
     // Sơ đồ hạ tầng, không phải nội dung: `require_role("admin")` chứ không

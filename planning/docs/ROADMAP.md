@@ -14,12 +14,12 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 
 | | |
 |---|---|
-| Test API | **1026 passed**, 8 skipped, 2 `external` deselect |
+| Test API | **1035 passed**, 4 skipped, 2 `external` deselect |
 | E2E | 8 tệp, **22 passed / 4 skipped** |
 | Gate CI | 4 job xanh. **Branch protection chưa bật** |
-| Bảng · migration | 64 · 63 |
-| Endpoint | **221 thao tác** (132 admin) |
-| Route web | 55 |
+| Bảng · migration | 65 · 66 |
+| Endpoint | **231 thao tác** (139 admin) |
+| Route web | 61 |
 | Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18/18 chủ đề published / 20 bài học** |
 | Media | **5 115 hàng `audio_asset`**; từ vựng và dictation **toàn bộ ở `engine_version` 3** (4 796 + 134 clip) |
 | Nhãn | **838/855 câu** đã gắn (989 hàng) |
@@ -98,6 +98,14 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 - [ ] AI Study Planner — **chặn bởi dữ liệu**: `target_score` mới điền trên 3/53 hồ sơ
 
 ### Tính năng còn thiếu
+
+- [x] ~~Màn quản trị thành viên~~ — **Xong (2026-09-07).** `/admin/users` +
+      `admin_users.py` (6 endpoint, mọi thứ `require_role("admin")`): danh sách
+      kèm số dư ruby / hoạt động cuối / số đề đã làm (UNION sáu bảng hoạt động),
+      thống kê tăng trưởng 30 ngày gom theo Python (không `date_trunc` — SQLite
+      của bộ test không có), tạo tài khoản có mật khẩu, đổi quyền, xoá (chặn
+      tự-thao-tác trên chính mình), cấp ruby qua sổ cái `admin_grant` — không có
+      ô sửa số dư.
 
 - [x] ~~`GET /practice/parts/{part}`~~ — **Xong, cả khu.** Bảy endpoint
       (`/practice/parts`, tactics, CRUD phiên: POST sessions, GET list/detail,

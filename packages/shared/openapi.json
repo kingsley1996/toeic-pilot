@@ -1,6 +1,135 @@
 {
   "components": {
     "schemas": {
+      "AdminUserCreate": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string"
+          },
+          "role": {
+            "default": "learner",
+            "pattern": "^(learner|editor|admin)$",
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "AdminUserCreate",
+        "type": "object"
+      },
+      "AdminUserEdit": {
+        "properties": {
+          "role": {
+            "pattern": "^(learner|editor|admin)$",
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "title": "AdminUserEdit",
+        "type": "object"
+      },
+      "AdminUserPublic": {
+        "properties": {
+          "attempt_count": {
+            "title": "Attempt Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "last_activity": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Activity"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "ruby_balance": {
+            "title": "Ruby Balance",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "created_at",
+          "ruby_balance",
+          "last_activity",
+          "attempt_count"
+        ],
+        "title": "AdminUserPublic",
+        "type": "object"
+      },
+      "AdminUserStats": {
+        "properties": {
+          "active_7d": {
+            "title": "Active 7D",
+            "type": "integer"
+          },
+          "growth": {
+            "items": {
+              "$ref": "#/components/schemas/GrowthDay"
+            },
+            "title": "Growth",
+            "type": "array"
+          },
+          "new_30d": {
+            "title": "New 30D",
+            "type": "integer"
+          },
+          "new_7d": {
+            "title": "New 7D",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "new_7d",
+          "new_30d",
+          "active_7d",
+          "growth"
+        ],
+        "title": "AdminUserStats",
+        "type": "object"
+      },
       "AiFeatureRow": {
         "properties": {
           "configured": {
@@ -5244,6 +5373,24 @@
         "title": "GroupDraft",
         "type": "object"
       },
+      "GrowthDay": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "count"
+        ],
+        "title": "GrowthDay",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -5929,6 +6076,37 @@
           "content"
         ],
         "title": "OptionPublic",
+        "type": "object"
+      },
+      "Page_AdminUserPublic_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminUserPublic"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[AdminUserPublic]",
         "type": "object"
       },
       "Page_AttemptSummary_": {
@@ -9116,6 +9294,21 @@
         "title": "RubyGiftPublic",
         "type": "object"
       },
+      "RubyGrant": {
+        "properties": {
+          "amount": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 10000.0,
+            "title": "Amount",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "title": "RubyGrant",
+        "type": "object"
+      },
       "RubyRuleEdit": {
         "description": "Sửa một mức thưởng.\n\n`source_type` KHÔNG sửa được và không có đường tạo hàng mới: mỗi nguồn là\nmột truy vấn có thật trong mã (xong bài, thuộc chủ đề, nộp đề…), nên thêm\nmột mã lạ chỉ tạo ra một hàng không bao giờ được trao — đúng ranh giới mà\n`kind` của daily task và `metric` của huy hiệu đã vẽ giữa dữ liệu và mã.\n\nMuốn bỏ một nguồn thì TẮT nó. Xoá hàng cuối cùng khiến bảng rỗng, và bảng\nrỗng nghĩa là \"chưa từng cấu hình\" — lần đọc sau gieo lại bộ mặc định.",
         "properties": {
@@ -10716,6 +10909,30 @@
           "completion_tokens"
         ],
         "title": "UsageRow",
+        "type": "object"
+      },
+      "UserActivity": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "at"
+        ],
+        "title": "UserActivity",
         "type": "object"
       },
       "UserLogin": {
@@ -17734,6 +17951,379 @@
           }
         ],
         "summary": "Update Topic",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "description": "Danh sách kèm số dư ruby và nhịp hoạt động — đủ để quyết định mở ai.",
+        "operationId": "list_users_api_v1_admin_users_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AdminUserPublic_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Users",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "description": "Tạo tài khoản hộ người chưa tự đăng ký được (đặt mật khẩu giúp lần đầu).\n\nEmail trùng → 409, cùng thông báo như chính người dùng gặp khi đăng ký.",
+        "operationId": "create_user_api_v1_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create User",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users/stats": {
+      "get": {
+        "description": "Tăng trưởng 30 ngày + số đang hoạt động — các con số đầu trang.",
+        "operationId": "stats_api_v1_admin_users_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserStats"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Stats",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users/{user_id}": {
+      "delete": {
+        "description": "Xoá tài khoản. Mọi bảng của người đó CASCADE; `question`/nội dung dùng\nchung có FK RESTRICT tới `users` (created_by) — nếu còn thứ gì trỏ về,\ndatabase sẽ từ chối và lỗi nổi lên thay vì để lại nội dung mồ côi.",
+        "operationId": "delete_user_api_v1_admin_users__user_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete User",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_role_api_v1_admin_users__user_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Role",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users/{user_id}/activity": {
+      "get": {
+        "description": "Feed thao tác gần nhất của một người, mới trước — 'hôm qua bạn ấy làm gì'.",
+        "operationId": "activity_api_v1_admin_users__user_id__activity_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserActivity"
+                  },
+                  "title": "Response Activity Api V1 Admin Users  User Id  Activity Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Activity",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users/{user_id}/ruby": {
+      "post": {
+        "description": "Cấp ruby — một hàng `admin_grant` trong sổ cái, không phải sửa số dư.",
+        "operationId": "grant_ruby_api_v1_admin_users__user_id__ruby_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RubyGrant"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Grant Ruby",
         "tags": [
           "admin"
         ]
