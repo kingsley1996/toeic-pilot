@@ -1,15 +1,28 @@
 """Schemas cho bài test đầu vào (SPEC-PLACEMENT)."""
 
-from datetime import datetime
+from datetime import date, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class PlacementStart(BaseModel):
-    """Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm."""
+    """Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.
+
+    `target_score` / `exam_date` người dùng điền ở đây là NGUỒN DUY NHẤT của
+    mục tiêu ôn thi: route ghi thẳng vào `user_profile` (form đã prefill giá
+    trị cũ, nên submit là một hành động nhìn thấy, không phải ghi đè sau lưng).
+    """
 
     self_reported_score: int | None = Field(default=None, ge=10, le=990)
     target_score: int | None = Field(default=None, ge=10, le=990)
+    exam_date: date | None = None
+
+    @field_validator("exam_date")
+    @classmethod
+    def exam_date_not_past(cls, value: date | None) -> date | None:
+        if value is not None and value < date.today():
+            raise ValueError("ngày thi dự kiến không thể ở quá khứ")
+        return value
 
 
 class PlacementGate(BaseModel):
@@ -25,6 +38,10 @@ class PlacementGate(BaseModel):
     latest_cefr_overall: str | None = None
     latest_total_low: int | None = None
     latest_total_high: int | None = None
+    # Giá trị `user_profile` để PREFILL form điểm mốc — một nguồn sự thật: giá
+    # trị cũ hiện sẵn, người dùng đổi thì submit ghi về lại profile.
+    profile_target_score: int | None = None
+    profile_exam_date: date | None = None
 
 
 class PlacementBand(BaseModel):

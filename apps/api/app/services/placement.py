@@ -26,13 +26,18 @@ def _section_of(part: int) -> str:
 
 
 def _scaled_range(db: Session, scale_slug: str, section: str, raw: int, n: int) -> tuple[int, int]:
-    """Dải quy đổi quanh `raw` theo CI 95% của tỉ lệ đúng, kẹp vào [0, 495]."""
+    """Dải quy đổi quanh `raw` theo CI 95% của tỉ lệ đúng, kẹp vào [0, 495].
+
+    Bảng quy đổi dựng cho thang 100 câu — CI tính trên n câu của đề mini phải
+    quy về thang 100 TRƯỚC khi tra, nếu không dải thấp một bậc đơn vị và nói
+    một thứ khác với điểm trung tâm.
+    """
     p = raw / n if n else 0.0
     half_width = CI_Z * math.sqrt(p * (1 - p) / n) if n else 0.0
     raw_low = max(0, round(raw - half_width * n))
     raw_high = min(n, round(raw + half_width * n))
-    low = raw_to_scaled(db, scale_slug, section, raw_low)
-    high = raw_to_scaled(db, scale_slug, section, raw_high)
+    low = raw_to_scaled(db, scale_slug, section, round(raw_low / n * 100))
+    high = raw_to_scaled(db, scale_slug, section, round(raw_high / n * 100))
     return low, high
 
 

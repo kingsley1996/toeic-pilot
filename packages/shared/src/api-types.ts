@@ -3894,6 +3894,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/study-plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Plan */
+        get: operations["get_plan_api_v1_study_plan_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/study-plan/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate
+         * @description Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.
+         */
+        post: operations["generate_api_v1_study_plan_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/test-collections": {
         parameters: {
             query?: never;
@@ -6002,6 +6039,14 @@ export interface components {
             /** Tone */
             tone?: ("ok" | "action" | "warn" | "alert") | null;
         };
+        /**
+         * GenerateFromPlacement
+         * @description Không gửi gì = dùng lượt placement phân tích gần nhất.
+         */
+        GenerateFromPlacement: {
+            /** Attempt Id */
+            attempt_id?: string | null;
+        };
         /** GrammarLessonAdmin */
         GrammarLessonAdmin: {
             /** Body */
@@ -7289,6 +7334,10 @@ export interface components {
             latest_total_low?: number | null;
             /** Next Available At */
             next_available_at?: string | null;
+            /** Profile Exam Date */
+            profile_exam_date?: string | null;
+            /** Profile Target Score */
+            profile_target_score?: number | null;
         };
         /** PlacementResultPublic */
         PlacementResultPublic: {
@@ -7331,8 +7380,14 @@ export interface components {
         /**
          * PlacementStart
          * @description Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.
+         *
+         *     `target_score` / `exam_date` người dùng điền ở đây là NGUỒN DUY NHẤT của
+         *     mục tiêu ôn thi: route ghi thẳng vào `user_profile` (form đã prefill giá
+         *     trị cũ, nên submit là một hành động nhìn thấy, không phải ghi đè sau lưng).
          */
         PlacementStart: {
+            /** Exam Date */
+            exam_date?: string | null;
             /** Self Reported Score */
             self_reported_score?: number | null;
             /** Target Score */
@@ -8070,6 +8125,45 @@ export interface components {
             grammar: number;
             /** Reviews */
             reviews: number;
+        };
+        /** StudyPlanItemPublic */
+        StudyPlanItemPublic: {
+            /** Done */
+            done: boolean;
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+            /** Part */
+            part: number;
+            /** Position */
+            position: number;
+            /** Reason */
+            reason: string | null;
+            /** Ref Id */
+            ref_id: string | null;
+        };
+        /** StudyPlanPublic */
+        StudyPlanPublic: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Done Count */
+            done_count: number;
+            /** Exam Date */
+            exam_date: string | null;
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["StudyPlanItemPublic"][];
+            /** Placement Attempt Id */
+            placement_attempt_id: string;
+            /** Source */
+            source: string;
+            /** Target Score */
+            target_score: number | null;
         };
         /** SystemStatus */
         SystemStatus: {
@@ -15305,6 +15399,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RubyClaimResult"];
+                };
+            };
+        };
+    };
+    get_plan_api_v1_study_plan_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudyPlanPublic"] | null;
+                };
+            };
+        };
+    };
+    generate_api_v1_study_plan_generate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GenerateFromPlacement"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudyPlanPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

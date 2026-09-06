@@ -1,13 +1,23 @@
 # Bài test đầu vào (placement) — SPEC
 
-**Trạng thái: lát 1 ĐÃ DỰNG (2026-09-07).** Script `app/content/make_placement.py`
+**Trạng thái: lát 1 + lát 2 ĐÃ DỤNG (2026-09-07).** Script `app/content/make_placement.py`
 (path A từ `tp-test-09`, đề `tp-placement-01` 84 câu published), bảng
 `placement_result` + `practice_test.is_placement` (migration 067), estimator v1
 (tỉ lệ + CI 95% ±~75 điểm) + bảng CEFR ETS trong `services/placement.py`, ba
 endpoint `/placement` (gate/start/analyze, cooldown 7 ngày = `RETAKE_COOLDOWN_DAYS`),
 màn setup `/learn/placement` + kết quả `/learn/placement/result/[attemptId]`;
 máy thi `/learn/attempts/[id]` dẫn thẳng sang phân tích khi đề là placement.
-Lát 2 (planner) và lát 3 (path B + so sánh) còn mở.
+
+**Lát 2 — planner V1:** `study_plan`/`study_plan_item` (migration 068), planner
+rule-based trong `services/study_planner.py` (kỹ năng yếu ≥3 câu mẫu → bài học
+ngữ pháp, rồi part drill; ngân sách mục co còn 6 khi ngày thi ≤14 ngày —
+không dồn, chỉ cắt), endpoint `/study-plan` (GET kế hoạch hiện hành + tiến độ
+suy từ `grammar_lesson_completion` / phiên part sinh sau kế hoạch) và
+`POST /study-plan/generate`. Mục tiêu ôn thi là MỘT nguồn sự thật
+`user_profile`: form placement prefill từ profile qua gate, submit ghi về —
+không còn "hai chỗ thông tin giống nhau". Web: `/learn/plan` (+ `?from=`
+sinh từ lượt chỉ định), entry "Tạo kế hoạch học" ở màn kết quả placement.
+Lát 3 (path B AI sinh form + LLM planner + so sánh theo §5) còn mở.
 
 ## 0. Vì sao 84 câu
 

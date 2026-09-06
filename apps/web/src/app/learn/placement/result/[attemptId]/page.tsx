@@ -129,9 +129,9 @@ export default function PlacementResultPage() {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3 border-t border-rule pt-5">
-        <ButtonLink href="/learn/parts">Luyện theo phần</ButtonLink>
-        <ButtonLink href="/learn/tests" variant="secondary">
-          Làm đề thi thử
+        <ButtonLink href={`/learn/plan?from=${result.attempt_id}`}>Tạo kế hoạch học</ButtonLink>
+        <ButtonLink href="/learn/parts" variant="secondary">
+          Luyện theo phần
         </ButtonLink>
         <Link
           href="/dashboard"

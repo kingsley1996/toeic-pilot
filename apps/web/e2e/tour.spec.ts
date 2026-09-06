@@ -30,19 +30,24 @@ async function signUp(page: Page): Promise<void> {
    màn hình thấy, nên bài kiểm và người dùng khiếm thị nhìn vào một chỗ. */
 const overlay = (page: Page) => page.locator('[role="dialog"][aria-modal="true"]');
 
-test("người mới được chào, và đi hết bốn bước", async ({ page }) => {
+test("người mới được chào, và đi hết năm bước", async ({ page }) => {
   await signUp(page);
 
   await expect(overlay(page)).toBeVisible();
-  await expect(page.getByText("Ba việc mỗi ngày")).toBeVisible();
-  await expect(page.getByText("1/4")).toBeVisible();
+  /* Bước đầu tiên là placement — bài test đầu vào là việc đầu tiên của người
+     mới, nên nó được giới thiệu trước cả việc hằng ngày. */
+  await expect(page.getByText("Đo trình độ trước tiên")).toBeVisible();
+  await expect(page.getByText("1/5")).toBeVisible();
 
   await page.getByRole("button", { name: "Tiếp" }).click();
-  await expect(page.getByText("2/4")).toBeVisible();
+  await expect(page.getByText("Ba việc mỗi ngày")).toBeVisible();
+  await expect(page.getByText("2/5")).toBeVisible();
   await page.getByRole("button", { name: "Tiếp" }).click();
-  await expect(page.getByText("3/4")).toBeVisible();
+  await expect(page.getByText("3/5")).toBeVisible();
   await page.getByRole("button", { name: "Tiếp" }).click();
-  await expect(page.getByText("4/4")).toBeVisible();
+  await expect(page.getByText("4/5")).toBeVisible();
+  await page.getByRole("button", { name: "Tiếp" }).click();
+  await expect(page.getByText("5/5")).toBeVisible();
 
   /* Bước cuối đổi nút thành "Xong": nếu nó vẫn là "Tiếp" thì người dùng bấm mãi
      mà không thoát được, và lớp phủ thì chặn hết mọi thứ phía sau. */

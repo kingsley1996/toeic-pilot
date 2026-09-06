@@ -99,14 +99,18 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Tính năng còn thiếu
 
-- [x] ~~Bài test đầu vào (placement) — lát 1~~ — **Xong (2026-09-07).** Đề
+- [x] ~~Bài test đầu vào + planner V1~~ — **Xong (2026-09-07).** Đề
       `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua
       `app/content/make_placement.py` (định mức §0 của spec), máy thi tái dùng
       đường `/attempts`, `placement_result` (067) với estimator v1 (tỉ lệ + CI
       95% ≈ ±75 điểm, CEFR theo bảng ETS từng section, trần C1 — không phát minh
       C2), cooldown retake 7 ngày, mốc điểm tự khai trước bài, màn setup + kết
-      quả tại `/learn/placement`. Lat 2: study planner (rule-based rồi LLM, so
-      sánh theo §5) — `SPEC-PLACEMENT.md`
+      quả tại `/learn/placement`; dashboard có CTA viền gradient (ngoại lệ §6)
+      + bước đầu tiên của tour. Planner V1 rule-based: `study_plan`/`study_plan_item`
+      (068), kỹ năng yếu → bài học grammar / part drill, exam_date co ngân sách
+      mục, tiến độ suy từ bản ghi học thật, `/learn/plan`; mục tiêu ôn thi là
+      MỘT nguồn `user_profile` (form placement prefill + ghi về). Lát 3: path B
+      (AI sinh form) + LLM planner + so sánh V1/V2 — `SPEC-PLACEMENT.md`
 
 - [x] ~~Màn quản trị thành viên~~ — **Xong (2026-09-07).** `/admin/users` +
       `admin_users.py` (6 endpoint, mọi thứ `require_role("admin")`): danh sách

@@ -31,13 +31,20 @@ export default function PlacementSetupPage() {
   const [gate, setGate] = useState<PlacementGate | null>(null);
   const [selfScore, setSelfScore] = useState("");
   const [targetScore, setTargetScore] = useState("");
+  const [examDate, setExamDate] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) return;
     apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
-      .then(setGate)
+      .then((g) => {
+        setGate(g);
+        // Prefill từ hồ sơ — một nguồn sự thật: giá trị cũ hiện sẵn, đổi thì
+        // submit ghi về lại profile.
+        if (g.profile_target_score !== null) setTargetScore(String(g.profile_target_score));
+        if (g.profile_exam_date) setExamDate(g.profile_exam_date);
+      })
       .catch((err) =>
         setError(err instanceof ApiError ? err.message : "Không tải được trạng thái bài test."),
       );
@@ -54,6 +61,7 @@ export default function PlacementSetupPage() {
         body: JSON.stringify({
           self_reported_score: selfScore ? Number(selfScore) : null,
           target_score: targetScore ? Number(targetScore) : null,
+          exam_date: examDate || null,
         }),
       });
       router.push(`/learn/attempts/${g.in_progress_attempt_id}`);
@@ -119,7 +127,7 @@ export default function PlacementSetupPage() {
       {gate && !inProgress && gate.can_start && (
         <Panel className="mt-6 p-5">
           <p className="text-label font-semibold uppercase text-ink-faint">
-            Điểm mốc (không bắt buộc)
+            Mục tiêu ôn thi (không bắt buộc)
           </p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Input
@@ -141,8 +149,18 @@ export default function PlacementSetupPage() {
               aria-label="Điểm mục tiêu"
             />
           </div>
+          <div className="mt-3">
+            <Input
+              value={examDate}
+              onChange={(e) => setExamDate(e.target.value)}
+              type="date"
+              min={new Date().toISOString().slice(0, 10)}
+              aria-label="Ngày thi dự kiến"
+            />
+          </div>
           <p className="mt-2 text-small text-ink-muted">
-            Đã từng thi thật thì điền điểm hiện tại để đối chiếu với kết quả ước lượng.
+            Điểm mục tiêu và ngày thi dự kiến là mục tiêu ôn thi của bạn — kế hoạch học dùng chúng
+            để xếp lịch. Đổi ở đây cũng cập nhật hồ sơ.
           </p>
 
           <div className="mt-5">

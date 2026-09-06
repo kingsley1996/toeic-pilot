@@ -609,33 +609,47 @@ function PlacementPanel({ gate }: { gate: PlacementGate | null }) {
         >
           <ClipboardList size={20} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
           <span className="min-w-0 flex-1">
-            <span className="font-semibold">Đo trình độ của bạn</span>
+            <span className="font-semibold">Kiểm tra trình độ của bạn</span>
             <span className="mt-0.5 block text-small text-ink-muted">
               84 câu, khoảng 50 phút — kết quả cho biết nên luyện gì trước.
             </span>
           </span>
-          <span className="text-small font-semibold text-action-ink">Bắt đầu →</span>
+          <span className="text-small font-semibold text-myth">Bắt đầu →</span>
         </PanelLink>
       </div>
     );
   }
   return (
-    <Panel className="flex flex-wrap items-center gap-x-4 gap-y-2 p-4">
-      <ClipboardList size={20} strokeWidth={1.75} className="text-ink-muted" aria-hidden />
-      <p className="min-w-0 flex-1">
-        <span className="font-semibold">Trình độ ước tính: {gate.latest_cefr_overall}</span>
-        <span className="font-data tabular-nums text-ink-muted">
-          {" "}
-          · {gate.latest_total_low}–{gate.latest_total_high} điểm
-        </span>
-      </p>
-      <ButtonLink
+    /* Đã có kết quả: khối lớn viền `rule-strong` (nổi hơn panel thường) nhưng
+       nền vẫn `panel` — §6.3: độ nổi là viền + bậc nền, màu chỉ được làm tín
+       hiệu nhỏ. Ở đây tín hiệu màu nằm ở con số B1, không ở cả khối. */
+    <div className="rounded border border-rule-strong bg-panel">
+      <Link
         href={`/learn/placement/result/${gate.latest_attempt_id}`}
-        size="sm"
-        variant="secondary"
+        className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded p-5 transition-colors hover:bg-recess"
       >
-        Xem phân tích
-      </ButtonLink>
-    </Panel>
+        <span className="min-w-0">
+          {/* Băng CEFR là số LỚN: nó trả lời trực tiếp "tôi trình độ gì". */}
+          <span className="block font-data text-title font-semibold leading-none text-action-ink">
+            {gate.latest_cefr_overall}
+          </span>
+          <span className="mt-1 block text-label font-semibold uppercase text-ink-muted">
+            Trình độ ước tính
+          </span>
+        </span>
+        <span className="min-w-0 flex-1 border-l border-rule pl-5">
+          {/* Một con số giữa + chữ "khoảng": dải ±~145 điểm hiện đầy đủ sẽ gây
+              hiểu nhầm là hệ thống không chắc gì; thực ra ĐÚNG là ước lượng từ
+              84 câu, và con số giữa là điểm quy đổi tại tỉ lệ đúng thật. */}
+          <span className="block font-data text-subtitle font-semibold tabular-nums text-ink">
+            ~{Math.round(((gate.latest_total_low ?? 0) + (gate.latest_total_high ?? 0)) / 2)}
+          </span>
+          <span className="block text-small text-ink-muted">
+            điểm TOEIC ước tính (từ bài test đầu vào)
+          </span>
+        </span>
+        <span className="text-small font-semibold text-action-ink">Xem phân tích →</span>
+      </Link>
+    </div>
   );
 }

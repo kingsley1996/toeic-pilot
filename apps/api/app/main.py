@@ -38,6 +38,7 @@ from app.api.routes import (
     practice_parts,
     profile,
     ruby,
+    study_plan,
 )
 from app.core.config import settings
 from app.core.database import Base, engine
@@ -96,6 +97,7 @@ app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
 app.include_router(petland_map.router, prefix="/api/v1")
 app.include_router(placement.router, prefix="/api/v1")
+app.include_router(study_plan.router, prefix="/api/v1")
 app.include_router(ruby.router, prefix="/api/v1")
 app.include_router(admin_vocabulary.router, prefix="/api/v1")
 app.include_router(admin_dictation.router, prefix="/api/v1")

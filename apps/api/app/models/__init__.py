@@ -55,6 +55,7 @@ from app.models.progression import (
 )
 from app.models.ruby import RubyEvent, RubyRule
 from app.models.scoring import ScoreConversion, ScoreScale
+from app.models.study_plan import StudyPlan, StudyPlanItem
 from app.models.topic import Topic
 from app.models.user import User
 from app.models.vocabulary import (
@@ -115,6 +116,8 @@ __all__ = [
     "KnowledgeChunk",
     "PartSession",
     "PlacementResult",
+    "StudyPlan",
+    "StudyPlanItem",
     "PartSessionItem",
     "PartTactics",
     "PracticeTest",

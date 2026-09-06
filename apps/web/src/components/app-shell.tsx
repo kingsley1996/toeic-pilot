@@ -7,6 +7,7 @@ import {
   GraduationCap,
   Headphones,
   House,
+  Map,
   Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -67,12 +68,20 @@ const CONTENT_LINKS: NavItem[] = [
  * đúng cái mà bộ mục cũ đã tránh, và lý do đó vẫn còn nguyên với hai mục này.
  */
 const TODAY_LINK: NavItem = {
-  // `covers`: ba chế độ mở ra từ trang chủ nhưng không nằm dưới `/dashboard`.
+  // `covers`: các chế độ mở ra từ trang chủ nhưng không nằm dưới `/dashboard`.
   // Không khai báo thì mở "Ôn tập" xong cả sidebar tắt đèn.
   href: "/dashboard",
   label: "Hôm nay",
   Icon: House,
   covers: ["/learn/review", "/learn/typing", "/learn/attempts"],
+};
+const PLAN_LINK: NavItem = {
+  // Kế hoạch + màn setup placement là cùng một câu hỏi ("học gì bây giờ?"),
+  // nên `/learn/placement` nằm dưới mục này chứ không tạo mục thứ hai.
+  href: "/learn/plan",
+  label: "Kế hoạch học",
+  Icon: Map,
+  covers: ["/learn/placement"],
 };
 const ASSISTANT_LINK: NavItem = {
   href: "/learn/assistant",
@@ -105,11 +114,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     list.map((link) => (link.href === "/learn/vocabulary" ? { ...link, badge: due } : link));
 
   // Thanh trên của trang giới thiệu: LUÔN đúng ba kho nội dung, không phụ thuộc
-  // phiên. Sidebar thì thêm hai mục của tài khoản khi đã đăng nhập, giữ nguyên
-  // thứ tự cũ — "Hôm nay" mở đầu, "Trợ lý AI" khép lại.
+  // phiên. Sidebar thì thêm các mục của tài khoản khi đã đăng nhập, giữ nguyên
+  // thứ tự cũ — "Hôm nay" mở đầu, kế hoạch học cạnh nó (cả hai là "học gì bây
+  // giờ" của một người cụ thể), rồi các kho nội dung, "Trợ lý AI" khép lại.
   const topBarLinks = withBadge(CONTENT_LINKS);
   const sidebarLinks = withBadge(
-    signedIn ? [TODAY_LINK, ...CONTENT_LINKS, ASSISTANT_LINK] : CONTENT_LINKS,
+    signedIn ? [TODAY_LINK, PLAN_LINK, ...CONTENT_LINKS, ASSISTANT_LINK] : CONTENT_LINKS,
   );
 
   /*

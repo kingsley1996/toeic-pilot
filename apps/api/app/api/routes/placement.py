@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.api.routes.attempt import start_attempt
 from app.core.database import get_db
-from app.models import Attempt, PlacementResult, PracticeTest, User
+from app.models import Attempt, PlacementResult, PracticeTest, User, UserProfile
 from app.schemas.placement import (
     PlacementBand,
     PlacementGate,
@@ -82,6 +82,7 @@ def _gate(db: Session, user: User) -> PlacementGate:
     # "pending" là lượt đang dở chứ không phải kết quả: trình độ của nó
     # chưa tồn tại, hiện hàng đó là hiện một phán quyết chưa từng có.
     result = None if last is None or last.estimator_version == "pending" else last
+    profile = db.get(UserProfile, user.id)
     return PlacementGate(
         can_start=can_start,
         next_available_at=next_at,
@@ -92,6 +93,9 @@ def _gate(db: Session, user: User) -> PlacementGate:
         latest_cefr_overall=result.cefr_overall if result else None,
         latest_total_low=(result.listening_low + result.reading_low) if result else None,
         latest_total_high=(result.listening_high + result.reading_high) if result else None,
+        # Prefill từ profile — người dùng thấy giá trị cũ, đổi thì ghi về.
+        profile_target_score=profile.target_score if profile else None,
+        profile_exam_date=profile.exam_date if profile else None,
     )
 
 
@@ -117,6 +121,14 @@ def start(
             detail=f"Được làm lại mỗi {RETAKE_COOLDOWN_DAYS} ngày một lần.",
         )
     test = _placement_test(db)
+    # Mục tiêu điền ở đây là NGUỒN DUY NHẤT: ghi thẳng về user_profile — form
+    # đã prefill giá trị cũ nên submit là một hành động người dùng nhìn thấy.
+    profile = db.get(UserProfile, user.id)
+    if profile is not None:
+        if body.target_score is not None:
+            profile.target_score = body.target_score
+        if body.exam_date is not None:
+            profile.exam_date = body.exam_date
     state = start_attempt(
         AttemptStart(test_slug=test.slug, review_mode="exam", parts=[]), db=db, current_user=user
     )

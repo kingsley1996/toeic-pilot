@@ -4429,6 +4429,25 @@
         "title": "FrameTierUpdate",
         "type": "object"
       },
+      "GenerateFromPlacement": {
+        "description": "Không gửi gì = dùng lượt placement phân tích gần nhất.",
+        "properties": {
+          "attempt_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          }
+        },
+        "title": "GenerateFromPlacement",
+        "type": "object"
+      },
       "GrammarLessonAdmin": {
         "properties": {
           "body": {
@@ -7912,6 +7931,29 @@
               }
             ],
             "title": "Next Available At"
+          },
+          "profile_exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Exam Date"
+          },
+          "profile_target_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Target Score"
           }
         },
         "required": [
@@ -8018,8 +8060,20 @@
         "type": "object"
       },
       "PlacementStart": {
-        "description": "Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.",
+        "description": "Điểm mốc tự khai trước khi làm — mốc so sánh, không phải dữ liệu chấm.\n\n`target_score` / `exam_date` người dùng điền ở đây là NGUỒN DUY NHẤT của\nmục tiêu ôn thi: route ghi thẳng vào `user_profile` (form đã prefill giá\ntrị cũ, nên submit là một hành động nhìn thấy, không phải ghi đè sau lưng).",
         "properties": {
+          "exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Date"
+          },
           "self_reported_score": {
             "anyOf": [
               {
@@ -10014,6 +10068,130 @@
           "grammar"
         ],
         "title": "StudyDay",
+        "type": "object"
+      },
+      "StudyPlanItemPublic": {
+        "properties": {
+          "done": {
+            "title": "Done",
+            "type": "boolean"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "ref_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref Id"
+          }
+        },
+        "required": [
+          "position",
+          "kind",
+          "part",
+          "ref_id",
+          "label",
+          "reason",
+          "done"
+        ],
+        "title": "StudyPlanItemPublic",
+        "type": "object"
+      },
+      "StudyPlanPublic": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "done_count": {
+            "title": "Done Count",
+            "type": "integer"
+          },
+          "exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Date"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StudyPlanItemPublic"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "placement_attempt_id": {
+            "title": "Placement Attempt Id",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          }
+        },
+        "required": [
+          "id",
+          "placement_attempt_id",
+          "target_score",
+          "exam_date",
+          "source",
+          "created_at",
+          "items",
+          "done_count"
+        ],
+        "title": "StudyPlanPublic",
         "type": "object"
       },
       "SystemStatus": {
@@ -22395,6 +22573,94 @@
         "summary": "Claim Gift",
         "tags": [
           "ruby"
+        ]
+      }
+    },
+    "/api/v1/study-plan": {
+      "get": {
+        "operationId": "get_plan_api_v1_study_plan_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/StudyPlanPublic"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Plan Api V1 Study Plan Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Plan",
+        "tags": [
+          "study-plan"
+        ]
+      }
+    },
+    "/api/v1/study-plan/generate": {
+      "post": {
+        "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.",
+        "operationId": "generate_api_v1_study_plan_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/GenerateFromPlacement"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudyPlanPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Generate",
+        "tags": [
+          "study-plan"
         ]
       }
     },
