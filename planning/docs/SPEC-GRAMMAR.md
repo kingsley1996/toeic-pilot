@@ -1,7 +1,7 @@
 # SPEC — Ngữ pháp TOEIC
 
-Trạng thái: **G1–G5 đã dựng** trên `main` (2026-09-06). P1 (lý thuyết part) còn
-mở. Bài học ngữ pháp theo chủ đề, mỗi bài có lý thuyết và/hoặc bài tập.
+Trạng thái: **G1–G5 và P1 đã dựng** trên `main` (2026-09-06). Bài học ngữ pháp
+theo chủ đề, mỗi bài có lý thuyết và/hoặc bài tập.
 
 ## 0. Chỗ nó đứng, nói thẳng
 
@@ -77,6 +77,18 @@ Và nó có sẵn chỗ để đi cùng: `GET /practice/parts/{part}` **đang l�
 `ROADMAP.md` §3. Lý thuyết part nên ship cùng lát đó (P1), không cùng ngữ pháp.
 
 Cái **dùng chung** là bộ render lý thuyết ở §5 — một bộ, hai chỗ gọi.
+
+**Đã dựng (2026-09-06, đổi sang PHIÊN 2026-09-07):** bảy endpoint
+`/practice/parts*` + `part_tactics` (063) + `part_session`/`part_session_item`
+(064) + cột giờ (065). Một lần luyện là một PHIÊN theo khuôn khu luyện thi:
+toàn bộ kho câu của part/nhãn chốt snapshot lúc bắt đầu, checkbox nhiều nhãn
+theo khuôn đề thi (rỗng = tất cả), đồng hồ do máy chủ tính (không giới hạn
+hoặc 5–135 phút), hết giờ thì tự nộp. Chiến thuật sống
+trong DB vì production web không có thư mục content; nguồn soạn một chiều
+md → DB qua `scripts/sync-parts.sh`.
+Phân loại drill theo nhãn taxonomy thật (`question_type` mỗi part, `grammar`
+cho Part 5/6, deep-link sang chủ đề ngữ pháp). Drill part **chưa** có XP/streak
+— đó là quyết định sản phẩm mở, không phải việc nối dây còn sót.
 
 ## 4. Dữ liệu — năm bảng, như đang chạy
 
@@ -189,7 +201,7 @@ phần thưởng của nó là thanh tiến độ. Trần XP ngày vẫn chặn 
 | **G3** | Luyện tập cuối chủ đề rút theo nhãn | ❌ **đã dựng rồi bỏ** — xem §2 |
 | **G4** | Bài `practice` + gắn câu + `grammar_attempt` + tiến độ | ✅ (tiến độ là bảng ghi, không suy ra — §4) |
 | **G5** | XP + việc hôm nay + chuỗi ngày | ✅ migration 061 — xem §7 |
-| **P1** | Lý thuyết Part 1–7, đi cùng `GET /practice/parts/{part}` | mở, xem §3 |
+| **P1** | Lý thuyết Part 1–7, đi cùng `GET /practice/parts/{part}` | ✅ xem §3 |
 
 ## 9. Ba chỗ sẽ hỏng im lặng
 

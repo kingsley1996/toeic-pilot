@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Tên hiển thị của từng phần. Ở backend chứ không ở frontend: nó cũng là thứ
 # trình nhập nội dung và màn quản trị cần, và ba bản sao của cùng một bảng tra
@@ -308,3 +308,128 @@ class AttemptResult(BaseModel):
     # Rỗng khi đề chưa được gắn nhãn — giao diện bỏ hẳn khối đó đi thay vì hiện
     # một bảng trống.
     skills: list[SkillScore] = []
+
+
+# --- luyện theo part rời (GET /practice/parts) --------------------------------
+
+
+class PartLabelCount(BaseModel):
+    """Một nhãn của một part, kèm số câu published đang mang nó."""
+
+    code: str
+    title: str
+    """`label_vi` từ registry — frontend không giữ bảng dịch thứ hai."""
+    count: int
+    grammar_topic_slug: str | None = None
+    """Nhãn `GRAMMAR_*` → slug chủ đề ngữ pháp để deep-link. Không phải FK —
+    chủ đề có thể chưa tồn tại, và một nhãn không có chỗ ôn vẫn hiển thị đúng."""
+
+
+class PartSummary(BaseModel):
+    part: int
+    question_count: int
+    labels: list[PartLabelCount]
+
+
+class PartTacticsPublic(BaseModel):
+    part: int
+    body: str
+    """Markdown theo luật `markdown-lite` — h1 đầu đã bị cắt khi sync."""
+
+
+class PartDrillQuestion(BaseModel):
+    """Một câu của phiên luyện rời.
+
+    Không có `correct_option_id` — đáp án chỉ đi theo LƯỢT NỘP, cùng luật gác
+    cổng của khu luyện thi: gửi đáp án xuống trước khi làm là gửi cả đáp án
+    cho người chưa làm.
+    """
+
+    id: str
+    part: int
+    # Part 1/2 không in prompt — nội dung nằm trong audio.
+    prompt_text: str | None
+    audio_url: str | None
+    image_url: str | None
+    set_id: str | None
+    """Ngữ liệu chỉ đi kèm câu ĐẦU của cụm — client nhóm theo id này."""
+    passages: list[PassagePublic] = []
+    transcript: list[TranscriptTurn] = []
+    options: list[OptionPublic]
+    labels: list[PartLabelCount] = []
+
+
+class PartSessionCreate(BaseModel):
+    labels: list[str] = []
+    """Mã taxonomy (`PART_5_GRAMMAR`, `GRAMMAR_TENSE`...). Rỗng = tất cả —
+    cùng luật "không chọn = làm hết" với phần chọn part của khu luyện thi."""
+    time_limit_minutes: int | None = Field(default=None, ge=5, le=135, multiple_of=5)
+    """NULL = không giới hạn. Phiên lấy TOÀN BỘ câu published của part/nhãn —
+    số câu không còn là lựa chọn, đồng hồ mới là thứ người học chỉnh."""
+
+
+class PartSessionSummary(BaseModel):
+    """Một hàng trong danh sách phiên — đủ để quyết có mở lại không."""
+
+    id: str
+    part: int
+    labels: list[str]
+    label_titles: list[str]
+    created_at: datetime
+    finished_at: datetime | None
+    total: int
+    answered: int
+    correct: int
+
+
+class PartSessionItemPublic(BaseModel):
+    """Một câu của phiên, kèm đáp án đã chọn.
+
+    Ba trường lộ đáp án chỉ có giá trị khi câu ĐÃ trả lời — cùng luật gác
+    cổng của khu luyện thi: chưa làm mà thấy `correct_option_id` trên đường
+    truyền thì hết luyện.
+    """
+
+    position: int
+    question: PartDrillQuestion
+    selected_option_id: str | None
+    is_correct: bool | None
+    correct_option_id: str | None = None
+    explanation: str | None = None
+
+
+class PartSessionDetail(BaseModel):
+    id: str
+    part: int
+    labels: list[str]
+    label_titles: list[str]
+    created_at: datetime
+    finished_at: datetime | None
+    expired: bool
+    time_limit_seconds: int | None
+    # Do MÁY CHỦ tính từ `created_at` — đồng hồ máy khách chỉ vẽ, cùng luật với
+    # `AttemptState.remaining_seconds`.
+    remaining_seconds: int | None
+    items: list[PartSessionItemPublic]
+
+
+class PartSessionAnswer(BaseModel):
+    question_id: str
+    option_id: str
+
+
+class PartAnswerResult(BaseModel):
+    is_correct: bool
+    correct_option_id: str
+    explanation: str | None
+    labels: list[PartLabelCount] = []
+    """Trả lại để màn tổng kết gom điểm yếu theo nhãn mà không phải giữ bản sao
+    danh sách nhãn từ lúc tải câu."""
+    spoken: dict[str, str] = {}
+    """option_id → lời đọc, chỉ có sau khi câu được trả lời. Part 1/2 không in
+    chữ nào lúc làm — hiện lại lời đọc là cách duy nhất người học biết mình
+    vừa nghe gì."""
+    transcript: list[TranscriptTurn] = []
+    """Lời thoại của câu/cụm, lộ khi câu này đã trả lời (câu lẻ) hoặc khi CẢ
+    cụm đã trả lời — cùng luật với `attempt.py`: lộ hội thoại sau câu đầu của
+    cụm là lộ đáp án những câu sau."""

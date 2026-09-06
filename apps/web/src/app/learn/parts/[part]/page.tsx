@@ -1,73 +1,70 @@
+"use client";
+
+import { API_ROUTES, type PartTacticsPublic } from "@toeic-pilot/shared";
 import { ArrowRight, Dumbbell } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MarkdownLite } from "@/components/markdown-lite";
-import { Page, PageHeader, Panel } from "@/components/ui";
-import { getPart } from "@/lib/parts";
+import { Alert, Page, PageHeader, Panel, SkeletonList } from "@/components/ui";
+import { apiFetch } from "@/lib/api";
+import { getPartMeta } from "@/lib/parts";
 
 /**
- * Trang chiến thuật của MỘT part — SERVER component đọc tệp markdown từ đĩa.
+ * Trang chiến thuật của MỘT part — đọc `part_tactics` từ API, không đọc từ đĩa
+ * (production web không có thư mục content; nguồn soạn là markdown trong
+ * `apps/web/content/parts/`, đường một chiều md → DB qua `scripts/sync-parts.sh`).
  *
- * Nội dung sống ở `content/parts/part-N.md`, cùng triết lý viết-offline như
- * `apps/api/content/grammar/` nhưng KHÔNG qua database: lý thuyết part là trang
- * chiến thuật tĩnh cạnh chỗ luyện (SPEC-GRAMMAR §3) — không lesson, không
- * progress, không XP. h1 đầu tệp bị cắt vì PageHeader đã mang tiêu đề, đúng
- * như bài ngữ pháp.
+ * Không progress, không XP: đây là trang chiến thuật cạnh chỗ luyện, không phải
+ * bài học trong cây (SPEC-GRAMMAR §3).
  */
-export default async function PartTacticsPage({ params }: { params: Promise<{ part: string }> }) {
-  const { part } = await params;
-  const info = getPart(part);
-  if (!info) notFound();
+export default function PartTacticsPage() {
+  const meta = getPartMeta(String(useParams().part));
+  const [tactics, setTactics] = useState<PartTacticsPublic | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const raw = await readFile(
-    path.join(process.cwd(), "content", "parts", `part-${info.part}.md`),
-    "utf8",
-  );
-  const tactics = raw.replace(/^# .+\n\n/, "");
+  useEffect(() => {
+    if (!meta) return;
+    apiFetch<PartTacticsPublic>(API_ROUTES.partTactics(meta.part))
+      .then(setTactics)
+      .catch(() => setError("Không tải được trang chiến thuật này."));
+  }, [meta]);
+
+  if (!meta) {
+    return (
+      <Page className="max-w-3xl">
+        <Alert>Không có phần này — bài thi TOEIC có bảy phần, từ 1 đến 7.</Alert>
+      </Page>
+    );
+  }
 
   return (
     <Page className="max-w-3xl">
       <Breadcrumbs trail={[{ href: "/learn/parts", label: "Luyện theo phần" }]} />
-      <PageHeader eyebrow={`Part ${info.part}`} title={info.title} description={info.short} />
+      <PageHeader eyebrow={`Part ${meta.part}`} title={meta.title} description={meta.short} />
 
-      {/* Nền trắng như trang lesson: tài liệu đọc dài cần bề mặt đọc, không
-          phải nền xám của khung trang. */}
-      <Panel className="mt-6 p-6 sm:p-8">
-        <MarkdownLite text={tactics} className="text-lesson" />
-      </Panel>
+      {error && <Alert>{error}</Alert>}
+      {!tactics && !error && <SkeletonList rows={4} />}
 
-      <div className="mt-6">
-        <h2 className="text-label font-semibold uppercase text-ink-faint">Luyện theo nhãn</h2>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {info.labels.map((l) => (
-            <Link
-              key={l.code}
-              href={`/learn/parts/${info.part}/drill?label=${l.code}`}
-              className="rounded border border-rule-strong bg-panel px-2.5 py-1 font-data text-small tabular-nums hover:bg-recess"
-            >
-              {l.title} · {l.count}
-              {l.grammarSlug && <span className="ml-1 text-action">→ Ngữ pháp</span>}
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* Nền trắng như trang lesson: tài liệu đọc dài cần bề mặt đọc. */}
+      {tactics && (
+        <Panel className="mt-6 p-6 sm:p-8">
+          <MarkdownLite text={tactics.body} className="text-lesson" />
+        </Panel>
+      )}
 
       <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-rule pt-5">
         <Link
-          href={`/learn/parts/${info.part}/drill`}
+          href={`/learn/parts/${meta.part}/drill`}
           className="inline-flex items-center gap-1.5 rounded border border-action bg-action px-4 py-2 text-small font-semibold text-on-action hover:bg-action-hover"
         >
           <Dumbbell size={14} strokeWidth={2} aria-hidden />
-          Luyện Part {info.part}
+          Luyện Part {meta.part}
           <ArrowRight size={13} strokeWidth={2} aria-hidden />
         </Link>
-        <span className="font-data text-small tabular-nums text-ink-faint">
-          {info.questionCount} câu trong kho · {info.minutes}
-        </span>
+        <span className="text-small text-ink-faint">{meta.minutes}</span>
       </div>
     </Page>
   );

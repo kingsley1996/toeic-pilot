@@ -14,11 +14,11 @@ phần *vì sao* vẫn đọc được, nhưng bảng trạng thái ở đó sai
 
 | | |
 |---|---|
-| Test API | **1018 passed**, 8 skipped, 2 `external` deselect |
+| Test API | **1026 passed**, 8 skipped, 2 `external` deselect |
 | E2E | 8 tệp, **22 passed / 4 skipped** |
 | Gate CI | 4 job xanh. **Branch protection chưa bật** |
-| Bảng · migration | 62 · 62 |
-| Endpoint | **217 thao tác** (132 admin) |
+| Bảng · migration | 64 · 63 |
+| Endpoint | **221 thao tác** (132 admin) |
 | Route web | 55 |
 | Nội dung | **6 đề / 855 câu** (834 có giải thích) · **600 từ vựng / 14 chủ đề** · **134 câu dictation / 17 bài** · **ngữ pháp: 18/18 chủ đề published / 20 bài học** |
 | Media | **5 115 hàng `audio_asset`**; từ vựng và dictation **toàn bộ ở `engine_version` 3** (4 796 + 134 clip) |
@@ -99,9 +99,18 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Tính năng còn thiếu
 
-- [ ] `GET /practice/parts/{part}` — luyện theo part rời, tôn trọng `question_set`.
-      Lý thuyết Part 1–7 (P1 của ngữ pháp) nên ship cùng lát này, không dựng bộ máy
-      bài học riêng (`SPEC-GRAMMAR.md` §3)
+- [x] ~~`GET /practice/parts/{part}`~~ — **Xong, cả khu.** Bảy endpoint
+      (`/practice/parts`, tactics, CRUD phiên: POST sessions, GET list/detail,
+      answers, finish), phân loại theo nhãn taxonomy thật (checkbox nhiều nhãn,
+      rỗng = tất cả), passage đi kèm một
+      lần mỗi cụm, hai tầng published. Một phiên lấy **toàn bộ** kho của
+      part/nhãn + đồng hồ tự chọn (không giới hạn hoặc 5–135 phút, bước 5) —
+      theo khuôn khu luyện thi: server tính `remaining_seconds`, hết giờ thì
+      đọc/ghi tiếp theo chốt phiên `expired`. Chiến thuật Part 1–7 vào DB
+      (`part_tactics`, 063; phiên + cột giờ + labels JSON: 064/065/066) — nguồn soạn vẫn là
+      `apps/web/content/parts/*.md`, đồng bộ một chiều bằng
+      `scripts/sync-parts.sh [--prod]`. Chưa có XP/streak cho drill part —
+      quyết định sản phẩm mở, không phải dây nối còn thừa.
 - [ ] **Ngữ pháp: bài practice cho các chủ đề taxonomy** — lý thuyết đủ 18/18;
       mới có "Luyện tập 1" (Danh từ). Gắn câu từ kho theo nhãn qua admin, mỗi
       chủ đề một bài là đủ dùng (`SPEC-GRAMMAR.md` §2)

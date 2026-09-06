@@ -24,6 +24,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user
+from app.api.routes._transcript import transcript_of
 from app.core.database import get_db
 from app.core.media import public_audio_url
 from app.core.storage import StorageDriver, get_driver
@@ -131,45 +132,6 @@ def _finalise(db: Session, attempt: Attempt, new_status: str) -> None:
     # hơn hẳn một lượt ôn từ. Chạy cho MỌI lượt nộp, kể cả lượt không quy đổi
     # được điểm: người học vẫn đã ngồi làm.
     reward_study(db, attempt.user_id, "attempt")
-
-
-def _speaker_labels(script: list[dict[str, str]]) -> dict[str, str]:
-    """Tên giọng logic -> nhãn để hiện, theo thứ tự XUẤT HIỆN trong lời thoại.
-
-    `uk_female_1` là quy ước của phía offline và vô nghĩa với người học. Giới
-    tính suy từ đoạn giữa; đánh số chỉ khi có TỪ HAI giọng cùng giới trong một
-    lời thoại, vì "Man 1" khi chỉ có một người đàn ông đọc ra như thiếu mất
-    người thứ hai.
-    """
-    order: list[str] = []
-    for turn in script:
-        voice = str(turn.get("voice", ""))
-        if voice and voice not in order:
-            order.append(voice)
-    by_gender: dict[str, list[str]] = {}
-    for voice in order:
-        parts = voice.split("_")
-        gender = "Woman" if len(parts) > 1 and parts[1] == "female" else "Man"
-        by_gender.setdefault(gender, []).append(voice)
-    labels: dict[str, str] = {}
-    for gender, voices in by_gender.items():
-        for index, voice in enumerate(voices, start=1):
-            labels[voice] = gender if len(voices) == 1 else f"{gender} {index}"
-    return labels
-
-
-def _transcript(script: list[dict[str, str]] | None) -> list[TranscriptTurn]:
-    if not script:
-        return []
-    labels = _speaker_labels(script)
-    return [
-        TranscriptTurn(
-            speaker=labels.get(str(turn.get("voice", "")), "Speaker"),
-            text=str(turn.get("text", "")),
-        )
-        for turn in script
-        if turn.get("text")
-    ]
 
 
 def _correct_option_ids(db: Session, question_ids: list[uuid.UUID]) -> dict[uuid.UUID, uuid.UUID]:
@@ -345,9 +307,9 @@ def _state(db: Session, attempt: Attempt) -> AttemptState:
         transcript: list[TranscriptTurn] = []
         if show_script:
             if question.set_id is None:
-                transcript = _transcript(question.audio_script)
+                transcript = transcript_of(question.audio_script)
             elif first_of_set and stimulus is not None:
-                transcript = _transcript(stimulus.audio_script)
+                transcript = transcript_of(stimulus.audio_script)
 
         questions.append(
             QuestionPublic(

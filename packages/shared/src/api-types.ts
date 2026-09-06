@@ -3306,6 +3306,145 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/practice/parts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Parts
+         * @description Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub.
+         */
+        get: operations["list_parts_api_v1_practice_parts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Sessions
+         * @description Lịch sử phiên của chính mình, mới nhất trước.
+         */
+        get: operations["list_sessions_api_v1_practice_parts_sessions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Session */
+        get: operations["get_session_api_v1_practice_parts_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/sessions/{session_id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer
+         * @description Trả lời một câu của phiên. Lần ĐẦU là lần cuối — phản hồi tức thì nên
+         *     câu đã trả lời là đóng; làm lại thì mở phiên mới.
+         */
+        post: operations["answer_api_v1_practice_parts_sessions__session_id__answers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/sessions/{session_id}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Finish
+         * @description Chốt phiên sớm (bỏ dở cũng tính) — `finished_at` chỉ ghi một lần.
+         */
+        post: operations["finish_api_v1_practice_parts_sessions__session_id__finish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/{part}/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Session
+         * @description Chốt một phiên: TOÀN BỘ câu published của part (+ nhãn), snapshot vào item.
+         *
+         *     Mẫu ở SERVER chứ không ở client: client tự chọn câu thì "lịch sử phiên"
+         *     chỉ là lời kể của bên dễ nói dối nhất. Số câu không còn là lựa chọn —
+         *     người học chỉnh đồng hồ, không chỉnh đề.
+         */
+        post: operations["create_session_api_v1_practice_parts__part__sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practice/parts/{part}/tactics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Tactics */
+        get: operations["get_tactics_api_v1_practice_parts__part__tactics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profile": {
         parameters: {
             query?: never;
@@ -6378,6 +6517,32 @@ export interface components {
             /** Raw Text */
             raw_text: string;
         };
+        /** PartAnswerResult */
+        PartAnswerResult: {
+            /** Correct Option Id */
+            correct_option_id: string;
+            /** Explanation */
+            explanation: string | null;
+            /** Is Correct */
+            is_correct: boolean;
+            /**
+             * Labels
+             * @default []
+             */
+            labels: components["schemas"]["PartLabelCount"][];
+            /**
+             * Spoken
+             * @default {}
+             */
+            spoken: {
+                [key: string]: string;
+            };
+            /**
+             * Transcript
+             * @default []
+             */
+            transcript: components["schemas"]["TranscriptTurn"][];
+        };
         /**
          * PartBreakdown
          * @description Một dòng của bảng SECTION / PART / TYPE / QUESTIONS.
@@ -6393,6 +6558,166 @@ export interface components {
             section: string;
             /** Title */
             title: string;
+        };
+        /**
+         * PartDrillQuestion
+         * @description Một câu của phiên luyện rời.
+         *
+         *     Không có `correct_option_id` — đáp án chỉ đi theo LƯỢT NỘP, cùng luật gác
+         *     cổng của khu luyện thi: gửi đáp án xuống trước khi làm là gửi cả đáp án
+         *     cho người chưa làm.
+         */
+        PartDrillQuestion: {
+            /** Audio Url */
+            audio_url: string | null;
+            /** Id */
+            id: string;
+            /** Image Url */
+            image_url: string | null;
+            /**
+             * Labels
+             * @default []
+             */
+            labels: components["schemas"]["PartLabelCount"][];
+            /** Options */
+            options: components["schemas"]["OptionPublic"][];
+            /** Part */
+            part: number;
+            /**
+             * Passages
+             * @default []
+             */
+            passages: components["schemas"]["PassagePublic"][];
+            /** Prompt Text */
+            prompt_text: string | null;
+            /** Set Id */
+            set_id: string | null;
+            /**
+             * Transcript
+             * @default []
+             */
+            transcript: components["schemas"]["TranscriptTurn"][];
+        };
+        /**
+         * PartLabelCount
+         * @description Một nhãn của một part, kèm số câu published đang mang nó.
+         */
+        PartLabelCount: {
+            /** Code */
+            code: string;
+            /** Count */
+            count: number;
+            /** Grammar Topic Slug */
+            grammar_topic_slug?: string | null;
+            /** Title */
+            title: string;
+        };
+        /** PartSessionAnswer */
+        PartSessionAnswer: {
+            /** Option Id */
+            option_id: string;
+            /** Question Id */
+            question_id: string;
+        };
+        /** PartSessionCreate */
+        PartSessionCreate: {
+            /**
+             * Labels
+             * @default []
+             */
+            labels: string[];
+            /** Time Limit Minutes */
+            time_limit_minutes?: number | null;
+        };
+        /** PartSessionDetail */
+        PartSessionDetail: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Expired */
+            expired: boolean;
+            /** Finished At */
+            finished_at: string | null;
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["PartSessionItemPublic"][];
+            /** Label Titles */
+            label_titles: string[];
+            /** Labels */
+            labels: string[];
+            /** Part */
+            part: number;
+            /** Remaining Seconds */
+            remaining_seconds: number | null;
+            /** Time Limit Seconds */
+            time_limit_seconds: number | null;
+        };
+        /**
+         * PartSessionItemPublic
+         * @description Một câu của phiên, kèm đáp án đã chọn.
+         *
+         *     Ba trường lộ đáp án chỉ có giá trị khi câu ĐÃ trả lời — cùng luật gác
+         *     cổng của khu luyện thi: chưa làm mà thấy `correct_option_id` trên đường
+         *     truyền thì hết luyện.
+         */
+        PartSessionItemPublic: {
+            /** Correct Option Id */
+            correct_option_id?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Is Correct */
+            is_correct: boolean | null;
+            /** Position */
+            position: number;
+            question: components["schemas"]["PartDrillQuestion"];
+            /** Selected Option Id */
+            selected_option_id: string | null;
+        };
+        /**
+         * PartSessionSummary
+         * @description Một hàng trong danh sách phiên — đủ để quyết có mở lại không.
+         */
+        PartSessionSummary: {
+            /** Answered */
+            answered: number;
+            /** Correct */
+            correct: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Finished At */
+            finished_at: string | null;
+            /** Id */
+            id: string;
+            /** Label Titles */
+            label_titles: string[];
+            /** Labels */
+            labels: string[];
+            /** Part */
+            part: number;
+            /** Total */
+            total: number;
+        };
+        /** PartSummary */
+        PartSummary: {
+            /** Labels */
+            labels: components["schemas"]["PartLabelCount"][];
+            /** Part */
+            part: number;
+            /** Question Count */
+            question_count: number;
+        };
+        /** PartTacticsPublic */
+        PartTacticsPublic: {
+            /** Body */
+            body: string;
+            /** Part */
+            part: number;
         };
         /** PassageAdmin */
         PassageAdmin: {
@@ -13855,6 +14180,209 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TestDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_parts_api_v1_practice_parts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartSummary"][];
+                };
+            };
+        };
+    };
+    list_sessions_api_v1_practice_parts_sessions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartSessionSummary"][];
+                };
+            };
+        };
+    };
+    get_session_api_v1_practice_parts_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartSessionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    answer_api_v1_practice_parts_sessions__session_id__answers_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartSessionAnswer"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartAnswerResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    finish_api_v1_practice_parts_sessions__session_id__finish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartSessionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_session_api_v1_practice_parts__part__sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartSessionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartSessionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_tactics_api_v1_practice_parts__part__tactics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartTacticsPublic"];
                 };
             };
             /** @description Validation Error */

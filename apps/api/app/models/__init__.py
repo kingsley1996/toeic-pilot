@@ -24,6 +24,7 @@ from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.knowledge import KnowledgeChunk
 from app.models.labels import QuestionLabel, QuestionSetLabel
+from app.models.part_practice import PartSession, PartSessionItem, PartTactics
 from app.models.pet import EggSetting, PetlandMap, PetOwned, PetSpecies, PetState
 from app.models.practice import (
     Attempt,
@@ -111,6 +112,9 @@ __all__ = [
     "GrammarTopic",
     "ImageAsset",
     "KnowledgeChunk",
+    "PartSession",
+    "PartSessionItem",
+    "PartTactics",
     "PracticeTest",
     "PracticeTestQuestion",
     "EggSetting",

@@ -38,6 +38,14 @@ export type GrammarTopicPublic = components["schemas"]["GrammarTopicPublic"];
 export type GrammarTopicDetail = components["schemas"]["GrammarTopicDetail"];
 export type GrammarLessonDetail = components["schemas"]["GrammarLessonDetail"];
 export type GrammarPracticeQuestion = components["schemas"]["GrammarPracticeQuestion"];
+export type PartSummary = components["schemas"]["PartSummary"];
+export type PartLabelCount = components["schemas"]["PartLabelCount"];
+export type PartTacticsPublic = components["schemas"]["PartTacticsPublic"];
+export type PartDrillQuestion = components["schemas"]["PartDrillQuestion"];
+export type PartAnswerResult = components["schemas"]["PartAnswerResult"];
+export type PartSessionDetail = components["schemas"]["PartSessionDetail"];
+export type PartSessionItemPublic = components["schemas"]["PartSessionItemPublic"];
+export type PartSessionSummary = components["schemas"]["PartSessionSummary"];
 export type GrammarPracticeResult = components["schemas"]["GrammarPracticeResult"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
@@ -336,6 +344,15 @@ export const API_ROUTES = {
   grammarLesson: (id: string) => `/api/v1/grammar-lessons/${id}`,
   grammarLessonComplete: (id: string) => `/api/v1/grammar-lessons/${id}/complete`,
   grammarAttempts: "/api/v1/grammar-attempts",
+
+  // Luyện theo part rời (ROADMAP §3).
+  practiceParts: "/api/v1/practice/parts",
+  partTactics: (part: number) => `/api/v1/practice/parts/${part}/tactics`,
+  partCreateSession: (part: number) => `/api/v1/practice/parts/${part}/sessions`,
+  partSessions: "/api/v1/practice/parts/sessions",
+  partSession: (id: string) => `/api/v1/practice/parts/sessions/${id}`,
+  partSessionAnswer: (id: string) => `/api/v1/practice/parts/sessions/${id}/answers`,
+  partSessionFinish: (id: string) => `/api/v1/practice/parts/sessions/${id}/finish`,
 
   // Content admin
   adminTopics: "/api/v1/admin/topics",

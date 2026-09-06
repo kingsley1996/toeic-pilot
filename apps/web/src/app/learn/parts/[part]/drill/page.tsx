@@ -1,45 +1,51 @@
 "use client";
 
-import { ArrowRight, Check, Dumbbell, Play, RotateCcw, X } from "lucide-react";
+import { API_ROUTES, type PartSessionDetail, type PartSummary } from "@toeic-pilot/shared";
+import { History } from "lucide-react";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Button, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
-import { getPart, labelTitle, type PartMockQuestion } from "@/lib/parts";
+import { LoginModal } from "@/components/login-modal";
+import { Button, Page, PageHeader, Panel, Select, SkeletonList } from "@/components/ui";
+import { apiFetch } from "@/lib/api";
+import { useSession } from "@/lib/session";
+import { getPartMeta } from "@/lib/parts";
 
 /**
- * Drill một part — GIAO DIỆN DUY NHẤT, dữ liệu mock.
+ * Màn bắt đầu phiên luyện — CHỌN rồi mới VÀO, như vào đề thi.
  *
- * Luồng thật (`GET /practice/parts/{part}` + ghi attempt + XP) chưa tồn tại.
- * Phiên ở đây lặp câu mock ba lần để nhìn đủ trạng thái: chọn → nộp → phản hồi
- * → câu tiếp → tổng kết. `?label=CODE` (nhãn taxonomy thật của câu) lọc nội dung
- * và đổi tiêu đề phiên — drill thật sẽ nhận đúng tham số đó từ API.
+ * Checkbox nhãn theo đúng khuôn "Chọn phần muốn làm" của `tests/[slug]/[test]`:
+ * không chọn = làm TẤT CẢ, nhiều nhãn là hợp câu. Không chọn số câu: một phiên
+ * lấy toàn bộ kho, thứ người học chỉnh là đồng hồ.
  */
 
-const SESSION_LEN = 3;
+// 5..135 phút, mỗi bước 5 — 135 là trần của đề thi TOEIC cả hai kỹ năng.
+const MINUTES = Array.from({ length: 27 }, (_, i) => (i + 1) * 5);
 
-function buildSession(questions: PartMockQuestion[]): PartMockQuestion[] {
-  if (questions.length === 0) return [];
-  return Array.from({ length: SESSION_LEN }, (_, i) => questions[i % questions.length]!);
-}
+export default function PartDrillSetupPage() {
+  const meta = getPartMeta(String(useParams().part));
+  const router = useRouter();
+  const { token } = useSession();
+  const [summary, setSummary] = useState<PartSummary | null>(null);
+  const [chosen, setChosen] = useState<Set<string>>(new Set());
+  const [minutes, setMinutes] = useState<number | null>(null);
+  const [gated, setGated] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-function Drill({ partCode, label }: { partCode: string; label: string | null }) {
-  const info = getPart(partCode);
-  const labelInfo = info && label ? labelTitle(info, label) : undefined;
-  const pool = info ? (label ? info.drill.filter((q) => q.label === label) : info.drill) : [];
-  const [session, setSession] = useState<PartMockQuestion[]>(() => buildSession(pool));
-  const [idx, setIdx] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
-  const [revealed, setRevealed] = useState(false);
-  const [results, setResults] = useState<boolean[]>([]);
+  useEffect(() => {
+    if (!meta) return;
+    apiFetch<PartSummary[]>(API_ROUTES.practiceParts)
+      .then((all) => setSummary(all.find((p) => String(p.part) === String(meta.part)) ?? null))
+      .catch(() => setError("Không tải được dữ liệu phần này."));
+  }, [meta]);
 
-  if (!info) {
+  if (!meta) {
     return (
       <Page className="max-w-3xl">
-        <EmptyState
-          icon={Dumbbell}
+        <PageHeader
           title="Không có phần này"
           description="Bài thi TOEIC có bảy phần, từ 1 đến 7."
         />
@@ -47,279 +53,190 @@ function Drill({ partCode, label }: { partCode: string; label: string | null }) 
     );
   }
 
-  if (session.length === 0) {
-    return (
-      <Page className="max-w-3xl">
+  const labels = summary?.labels ?? [];
+  const isAll = chosen.size === 0 || chosen.size === labels.length;
+  const selectedCount = isAll
+    ? (summary?.question_count ?? 0)
+    : labels.filter((l) => chosen.has(l.code)).reduce((sum, l) => sum + l.count, 0);
+
+  function toggle(code: string) {
+    setChosen((current) => {
+      const next = new Set(current);
+      if (next.has(code)) next.delete(code);
+      else next.add(code);
+      return next;
+    });
+  }
+
+  async function start() {
+    if (!token) {
+      setGated(true);
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const sess = await apiFetch<PartSessionDetail>(API_ROUTES.partCreateSession(meta!.part), {
+        method: "POST",
+        token,
+        body: JSON.stringify({
+          labels: isAll ? [] : [...chosen],
+          time_limit_minutes: minutes,
+        }),
+      });
+      router.push(`/learn/parts/sessions/${sess.id}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Không tạo được phiên.");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Page className="max-w-3xl">
+      <div className="flex items-center justify-between gap-4">
         <Breadcrumbs
           trail={[
             { href: "/learn/parts", label: "Luyện theo phần" },
-            { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
+            { href: `/learn/parts/${meta.part}`, label: `Part ${meta.part}` },
           ]}
         />
-        <EmptyState
-          icon={Dumbbell}
-          title="Bản mock chưa có câu cho nhãn này"
-          description="Khi API thật chạy, mọi nhãn của phần này đều có câu — số liệu nhãn trên trang chiến thuật đo từ kho thật."
-        />
-        <div className="mt-4 text-center">
-          <Link
-            href={`/learn/parts/${info.part}/drill`}
-            className="text-small font-semibold text-action hover:underline"
-          >
-            Luyện toàn bộ Part {info.part}
-          </Link>
-        </div>
-      </Page>
-    );
-  }
+        <Link
+          href="/learn/parts/sessions"
+          className="inline-flex shrink-0 items-center gap-1.5 text-small font-semibold text-ink-muted hover:text-ink"
+        >
+          <History size={13} strokeWidth={2} aria-hidden />
+          Lịch sử luyện tập
+        </Link>
+      </div>
+      <PageHeader
+        eyebrow={`Part ${meta.part} · ${meta.title}`}
+        title="Bắt đầu phiên luyện"
+        description="Chọn nhãn muốn luyện (hoặc tất cả) và thời gian. Phiên được lưu và xem lại được."
+      />
 
-  const done = idx >= session.length;
-  const correctCount = results.filter(Boolean).length;
+      {!summary && !error && <SkeletonList rows={3} />}
 
-  function restart() {
-    setSession(buildSession(pool));
-    setIdx(0);
-    setPicked(null);
-    setRevealed(false);
-    setResults([]);
-  }
-
-  function submit() {
-    if (!picked) return;
-    const q = session[idx]!;
-    setResults((r) => [...r, picked === q.correct]);
-    setRevealed(true);
-  }
-
-  function next() {
-    setIdx((i) => i + 1);
-    setPicked(null);
-    setRevealed(false);
-  }
-
-  const crumbs = [
-    { href: "/learn/parts", label: "Luyện theo phần" },
-    { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
-  ];
-
-  /* --- tổng kết phiên ------------------------------------------------------ */
-  if (done) {
-    // Gom câu sai theo nhãn — cùng đơn vị phân loại với trang chiến thuật.
-    const missedCodes = [...new Set(session.filter((_, i) => !results[i]).map((q) => q.label))];
-    return (
-      <Page className="max-w-3xl">
-        <Breadcrumbs trail={crumbs} />
-        <PageHeader eyebrow={`Part ${info.part}`} title="Kết quả phiên luyện" />
-
-        <Panel className="mt-6 p-6 text-center">
-          <p className="font-data text-title font-semibold tabular-nums">
-            {correctCount}/{session.length}
-          </p>
-          <p className="mt-1 text-small text-ink-muted">
-            {correctCount === session.length
-              ? "Chính xác tuyệt đối."
-              : "Sai ở đây rẻ hơn sai trong phòng thi."}
-          </p>
-        </Panel>
-
-        {missedCodes.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-subtitle font-semibold">Điểm yếu theo nhãn</h2>
-            <div className="mt-3 space-y-2">
-              {missedCodes.map((code) => {
-                const l = labelTitle(info, code);
-                return (
-                  <div
-                    key={code}
-                    className="flex items-center gap-3 rounded border border-rule-strong p-3"
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="font-semibold">{l?.title ?? code}</span>
-                      <span className="block text-small text-ink-muted">
-                        {l ? `${l.count} câu trong kho · Part ${info.part}` : code}
-                      </span>
-                    </span>
-                    {l?.grammarSlug ? (
-                      <Link
-                        href="/learn/grammar"
-                        className="inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
-                      >
-                        Ôn Ngữ pháp
-                        <ArrowRight size={12} strokeWidth={2} aria-hidden />
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/learn/parts/${info.part}/drill?label=${code}`}
-                        className="inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
-                      >
-                        Luyện riêng nhãn này
-                        <ArrowRight size={12} strokeWidth={2} aria-hidden />
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
+      {summary && (
+        <>
+          <section className="mt-6">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-label font-semibold uppercase text-ink-faint">
+                Chọn nhãn muốn luyện
+              </h2>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setChosen(new Set(labels.map((l) => l.code)))}
+                  disabled={labels.length === 0}
+                  className="text-small font-semibold text-ink-muted hover:text-ink disabled:opacity-50"
+                >
+                  Chọn tất cả
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChosen(new Set())}
+                  className="text-small font-semibold text-ink-muted hover:text-ink"
+                >
+                  Bỏ chọn
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+            <Panel className="mt-2 p-4">
+              {labels.length === 0 ? (
+                <p className="text-small text-ink-muted">
+                  Phần này chưa có câu hỏi nào được gắn nhãn.
+                </p>
+              ) : (
+                <div className="max-h-72 space-y-1.5 overflow-y-auto">
+                  {labels.map((l) => (
+                    <label
+                      key={l.code}
+                      className="flex cursor-pointer items-center gap-2.5 rounded px-2 py-1.5 hover:bg-recess"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={chosen.has(l.code)}
+                        onChange={() => toggle(l.code)}
+                        className="h-4 w-4 rounded border-rule-strong accent-action"
+                      />
+                      <span className="min-w-0 flex-1 truncate text-small font-semibold">
+                        {l.title}
+                      </span>
+                      <span className="font-data text-small text-ink-faint">({l.count})</span>
+                    </label>
+                  ))}
+                </div>
+              )}
 
-        <div className="mt-8 flex flex-wrap gap-3 border-t border-rule pt-5">
-          <Button onClick={restart}>
-            <RotateCcw size={13} strokeWidth={2} aria-hidden />
-            Làm lại
-          </Button>
-          <Link
-            href={`/learn/parts/${info.part}`}
-            className="inline-flex items-center rounded border border-rule-strong px-4 py-2 text-small font-semibold hover:bg-recess"
-          >
-            Xem lại chiến thuật
-          </Link>
-        </div>
-      </Page>
-    );
-  }
-
-  /* --- một câu -------------------------------------------------------------- */
-  const q = session[idx]!;
-  const qLabel = labelTitle(info, q.label);
-  return (
-    <Page className="max-w-3xl">
-      <Breadcrumbs trail={crumbs} />
-
-      <div className="flex items-baseline justify-between gap-4">
-        <h1 className="text-subtitle font-semibold">
-          Part {info.part} · Câu {idx + 1}/{session.length}
-        </h1>
-        <span className="font-data text-small tabular-nums text-ink-muted">
-          đúng {correctCount}
-        </span>
-      </div>
-      <div
-        role="progressbar"
-        aria-valuenow={idx + (revealed ? 1 : 0)}
-        aria-valuemin={0}
-        aria-valuemax={session.length}
-        aria-label="Tiến độ phiên"
-        className="mt-2 h-1.5 w-full overflow-hidden rounded bg-recess"
-      >
-        <div
-          className="block h-full bg-action transition-all"
-          style={{ width: `${((idx + (revealed ? 1 : 0)) / session.length) * 100}%` }}
-        />
-      </div>
-
-      <Panel className="mt-5 p-5">
-        <div className="mb-3 flex items-center gap-2">
-          <span className="rounded bg-recess px-2 py-0.5 font-data text-small text-ink-muted">
-            {qLabel?.title ?? q.label}
-          </span>
-          {labelInfo && <span className="text-small text-ink-faint">· đang lọc theo nhãn</span>}
-        </div>
-        {q.audio && (
-          <button
-            type="button"
-            className="mb-4 inline-flex items-center gap-2 rounded border border-rule-strong px-3 py-2 text-small font-semibold hover:bg-recess"
-            aria-label="Nghe đoạn ghi âm (mock — chưa có audio)"
-          >
-            <Play size={14} strokeWidth={2} aria-hidden />
-            Nghe đoạn ghi âm
-          </button>
-        )}
-        {q.passage && (
-          <div className="mb-4 rounded bg-recess p-4 text-small leading-relaxed whitespace-pre-line">
-            {q.passage}
-          </div>
-        )}
-
-        <p className="text-lesson font-medium">{q.prompt}</p>
-
-        <div className="mt-4 space-y-2" role="radiogroup" aria-label="Các lựa chọn">
-          {q.options.map((o) => {
-            const isCorrect = o.label === `(${q.correct})`;
-            const isPicked = picked === o.label;
-            const state = !revealed
-              ? picked === o.label
-                ? "border-action bg-action/5"
-                : "border-rule-strong hover:bg-recess"
-              : isCorrect
-                ? "border-ok bg-ok-tint"
-                : isPicked
-                  ? "border-alert bg-alert-tint"
-                  : "border-rule-strong opacity-60";
-            return (
-              <button
-                key={o.label}
-                type="button"
-                role="radio"
-                aria-checked={picked === o.label}
-                disabled={revealed}
-                onClick={() => setPicked(o.label)}
-                className={cx(
-                  "flex w-full items-center gap-3 rounded border p-3 text-left transition-colors",
-                  state,
+              <div className="mt-3 rounded border border-rule bg-recess px-3 py-2 text-small">
+                {isAll ? (
+                  <>
+                    Toàn bộ <span className="font-data tabular-nums">{labels.length}</span> nhãn —{" "}
+                    <span className="font-data tabular-nums">{summary.question_count}</span> câu
+                  </>
+                ) : (
+                  <>
+                    Đã chọn <span className="font-data tabular-nums">{chosen.size}</span> nhãn —{" "}
+                    <span className="font-data tabular-nums">{selectedCount}</span> câu (có thể
+                    trùng nhau giữa các nhãn)
+                  </>
                 )}
+              </div>
+            </Panel>
+          </section>
+
+          <section className="mt-6">
+            <h2 className="text-label font-semibold uppercase text-ink-faint">Thời gian làm bài</h2>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <Select
+                aria-label="Thời gian làm bài"
+                value={minutes === null ? "" : String(minutes)}
+                onChange={(e) => setMinutes(e.target.value ? Number(e.target.value) : null)}
+                className="w-auto"
               >
-                <span className="font-data text-small font-semibold text-ink-muted">{o.label}</span>
-                <span className="min-w-0 flex-1">{o.content}</span>
-                {revealed && isCorrect && (
-                  <Check size={15} strokeWidth={2.25} className="shrink-0 text-ok" aria-hidden />
-                )}
-                {revealed && isPicked && !isCorrect && (
-                  <X size={15} strokeWidth={2.25} className="shrink-0 text-alert" aria-hidden />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </Panel>
+                <option value="">Không giới hạn</option>
+                {MINUTES.map((m) => (
+                  <option key={m} value={m}>
+                    {m} phút
+                  </option>
+                ))}
+              </Select>
+              <span className="text-small text-ink-muted">
+                Hết giờ là nộp — câu chưa trả lời tính là sai.
+              </span>
+            </div>
+          </section>
 
-      {revealed && (
-        <Panel className="mt-4 p-4">
-          <p
-            className={cx(
-              "text-small font-semibold",
-              results[results.length - 1] ? "text-ok" : "text-alert",
-            )}
-          >
-            {results[results.length - 1] ? "Chính xác." : `Đáp án đúng là (${q.correct}).`}
-          </p>
-          <p className="mt-1 text-small leading-relaxed text-ink-muted">{q.explanation}</p>
-          {!results[results.length - 1] && qLabel?.grammarSlug && (
-            <Link
-              href="/learn/grammar"
-              className="mt-2 inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
+          {error && <p className="mt-3 text-small text-alert">{error}</p>}
+
+          <div className="mt-6">
+            <Button
+              size="lg"
+              className="w-full"
+              disabled={busy || summary.question_count === 0}
+              onClick={() => void start()}
             >
-              Ôn chủ đề {qLabel.title}
-              <ArrowRight size={12} strokeWidth={2} aria-hidden />
-            </Link>
-          )}
-        </Panel>
+              {busy ? "Đang tạo phiên…" : "Bắt đầu làm bài"}
+            </Button>
+          </div>
+        </>
       )}
 
-      <div className="mt-5 flex justify-end gap-3">
-        {!revealed ? (
-          <Button disabled={!picked} onClick={submit}>
-            Nộp
-          </Button>
-        ) : (
-          <Button onClick={next}>
-            {idx + 1 === session.length ? "Xem kết quả" : "Câu tiếp theo"}
-            <ArrowRight size={13} strokeWidth={2} className="ml-1.5" aria-hidden />
-          </Button>
-        )}
-      </div>
+      {gated && (
+        <LoginModal
+          open
+          onClose={() => setGated(false)}
+          onSuccess={() => void start()}
+          next={`/learn/parts/${meta.part}/drill`}
+          title="Đăng nhập để luyện theo part"
+          description={
+            <>
+              Phiên luyện được lưu để <strong className="font-semibold text-ink">xem lại</strong>.
+              Cần tài khoản.
+            </>
+          }
+        />
+      )}
     </Page>
-  );
-}
-
-export default function PartDrillPage() {
-  const part = String(useParams().part);
-  const label = useSearchParams().get("label");
-  return (
-    // useSearchParams đẩy route khỏi render tĩnh nếu không có Suspense boundary
-    // — cùng khuôn với `learn/vocabulary/[slug]`.
-    <Suspense fallback={<SkeletonList rows={4} />}>
-      <Drill partCode={part} label={label} />
-    </Suspense>
   );
 }
