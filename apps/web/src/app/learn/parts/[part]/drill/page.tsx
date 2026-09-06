@@ -2,40 +2,40 @@
 
 import { ArrowRight, Check, Dumbbell, Play, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Button, EmptyState, Page, PageHeader, Panel } from "@/components/ui";
-import { cx } from "@/components/ui";
-import { getPart, type PartMockQuestion } from "@/lib/parts";
+import { Button, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
+import { getPart, labelTitle, type PartMockQuestion } from "@/lib/parts";
 
 /**
  * Drill một part — GIAO DIỆN DUY NHẤT, dữ liệu mock.
  *
- * Luồng thật (`GET /practice/parts/{part}` + ghi attempt + XP) chưa tồn tại;
- * phiên ở đây lặp câu mock `lib/parts.ts` ba lần để nhìn thấy đủ các trạng
- * thái: chọn → nộp → phản hồi → câu tiếp → tổng kết. Audio và passage cũng
- * mock (nút play không phát gì) — hình dạng chỗ của chúng mới là thứ cần duyệt.
+ * Luồng thật (`GET /practice/parts/{part}` + ghi attempt + XP) chưa tồn tại.
+ * Phiên ở đây lặp câu mock ba lần để nhìn đủ trạng thái: chọn → nộp → phản hồi
+ * → câu tiếp → tổng kết. `?label=CODE` (nhãn taxonomy thật của câu) lọc nội dung
+ * và đổi tiêu đề phiên — drill thật sẽ nhận đúng tham số đó từ API.
  */
 
 const SESSION_LEN = 3;
 
-function buildSession(question: PartMockQuestion): PartMockQuestion[] {
-  return Array.from({ length: SESSION_LEN }, () => question);
+function buildSession(questions: PartMockQuestion[]): PartMockQuestion[] {
+  if (questions.length === 0) return [];
+  return Array.from({ length: SESSION_LEN }, (_, i) => questions[i % questions.length]!);
 }
 
-export default function PartDrillPage() {
-  const info = getPart(String(useParams().part));
-  const [session, setSession] = useState<PartMockQuestion[] | null>(
-    info ? buildSession(info.drill[0]!) : null,
-  );
+function Drill({ partCode, label }: { partCode: string; label: string | null }) {
+  const info = getPart(partCode);
+  const labelInfo = info && label ? labelTitle(info, label) : undefined;
+  const pool = info ? (label ? info.drill.filter((q) => q.label === label) : info.drill) : [];
+  const [session, setSession] = useState<PartMockQuestion[]>(() => buildSession(pool));
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [results, setResults] = useState<boolean[]>([]);
 
-  if (!info || !session) {
+  if (!info) {
     return (
       <Page className="max-w-3xl">
         <EmptyState
@@ -47,11 +47,37 @@ export default function PartDrillPage() {
     );
   }
 
+  if (session.length === 0) {
+    return (
+      <Page className="max-w-3xl">
+        <Breadcrumbs
+          trail={[
+            { href: "/learn/parts", label: "Luyện theo phần" },
+            { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
+          ]}
+        />
+        <EmptyState
+          icon={Dumbbell}
+          title="Bản mock chưa có câu cho nhãn này"
+          description="Khi API thật chạy, mọi nhãn của phần này đều có câu — số liệu nhãn trên trang chiến thuật đo từ kho thật."
+        />
+        <div className="mt-4 text-center">
+          <Link
+            href={`/learn/parts/${info.part}/drill`}
+            className="text-small font-semibold text-action hover:underline"
+          >
+            Luyện toàn bộ Part {info.part}
+          </Link>
+        </div>
+      </Page>
+    );
+  }
+
   const done = idx >= session.length;
   const correctCount = results.filter(Boolean).length;
 
   function restart() {
-    setSession(buildSession(info!.drill[0]!));
+    setSession(buildSession(pool));
     setIdx(0);
     setPicked(null);
     setRevealed(false);
@@ -60,7 +86,7 @@ export default function PartDrillPage() {
 
   function submit() {
     if (!picked) return;
-    const q = session![idx]!;
+    const q = session[idx]!;
     setResults((r) => [...r, picked === q.correct]);
     setRevealed(true);
   }
@@ -71,20 +97,18 @@ export default function PartDrillPage() {
     setRevealed(false);
   }
 
+  const crumbs = [
+    { href: "/learn/parts", label: "Luyện theo phần" },
+    { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
+  ];
+
   /* --- tổng kết phiên ------------------------------------------------------ */
   if (done) {
-    const missed = session.filter((_, i) => !results[i]);
-    const grammarHints = [
-      ...new Map(missed.filter((q) => q.grammarSlug).map((q) => [q.grammarSlug!, q])).values(),
-    ];
+    // Gom câu sai theo nhãn — cùng đơn vị phân loại với trang chiến thuật.
+    const missedCodes = [...new Set(session.filter((_, i) => !results[i]).map((q) => q.label))];
     return (
       <Page className="max-w-3xl">
-        <Breadcrumbs
-          trail={[
-            { href: "/learn/parts", label: "Luyện theo phần" },
-            { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
-          ]}
-        />
+        <Breadcrumbs trail={crumbs} />
         <PageHeader eyebrow={`Part ${info.part}`} title="Kết quả phiên luyện" />
 
         <Panel className="mt-6 p-6 text-center">
@@ -98,25 +122,43 @@ export default function PartDrillPage() {
           </p>
         </Panel>
 
-        {grammarHints.length > 0 && (
+        {missedCodes.length > 0 && (
           <div className="mt-6">
-            <h2 className="text-subtitle font-semibold">Luyện thêm theo điểm yếu</h2>
+            <h2 className="text-subtitle font-semibold">Điểm yếu theo nhãn</h2>
             <div className="mt-3 space-y-2">
-              {grammarHints.map((q) => (
-                <Link
-                  key={q.grammarSlug}
-                  href="/learn/grammar"
-                  className="flex items-center gap-3 rounded border border-rule-strong p-3 hover:bg-recess"
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="font-semibold">Chủ đề {q.grammarTitle}</span>
-                    <span className="block text-small text-ink-muted">
-                      Bạn sai câu kiểm điểm ngữ pháp này
+              {missedCodes.map((code) => {
+                const l = labelTitle(info, code);
+                return (
+                  <div
+                    key={code}
+                    className="flex items-center gap-3 rounded border border-rule-strong p-3"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="font-semibold">{l?.title ?? code}</span>
+                      <span className="block text-small text-ink-muted">
+                        {l ? `${l.count} câu trong kho · Part ${info.part}` : code}
+                      </span>
                     </span>
-                  </span>
-                  <ArrowRight size={15} strokeWidth={2} className="text-ink-faint" aria-hidden />
-                </Link>
-              ))}
+                    {l?.grammarSlug ? (
+                      <Link
+                        href="/learn/grammar"
+                        className="inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
+                      >
+                        Ôn Ngữ pháp
+                        <ArrowRight size={12} strokeWidth={2} aria-hidden />
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/learn/parts/${info.part}/drill?label=${code}`}
+                        className="inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
+                      >
+                        Luyện riêng nhãn này
+                        <ArrowRight size={12} strokeWidth={2} aria-hidden />
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -139,14 +181,10 @@ export default function PartDrillPage() {
 
   /* --- một câu -------------------------------------------------------------- */
   const q = session[idx]!;
+  const qLabel = labelTitle(info, q.label);
   return (
     <Page className="max-w-3xl">
-      <Breadcrumbs
-        trail={[
-          { href: "/learn/parts", label: "Luyện theo phần" },
-          { href: `/learn/parts/${info.part}`, label: `Part ${info.part}` },
-        ]}
-      />
+      <Breadcrumbs trail={crumbs} />
 
       <div className="flex items-baseline justify-between gap-4">
         <h1 className="text-subtitle font-semibold">
@@ -171,6 +209,12 @@ export default function PartDrillPage() {
       </div>
 
       <Panel className="mt-5 p-5">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="rounded bg-recess px-2 py-0.5 font-data text-small text-ink-muted">
+            {qLabel?.title ?? q.label}
+          </span>
+          {labelInfo && <span className="text-small text-ink-faint">· đang lọc theo nhãn</span>}
+        </div>
         {q.audio && (
           <button
             type="button"
@@ -240,12 +284,12 @@ export default function PartDrillPage() {
             {results[results.length - 1] ? "Chính xác." : `Đáp án đúng là (${q.correct}).`}
           </p>
           <p className="mt-1 text-small leading-relaxed text-ink-muted">{q.explanation}</p>
-          {!results[results.length - 1] && q.grammarSlug && (
+          {!results[results.length - 1] && qLabel?.grammarSlug && (
             <Link
               href="/learn/grammar"
               className="mt-2 inline-flex items-center gap-1 text-small font-semibold text-action hover:underline"
             >
-              Ôn chủ đề {q.grammarTitle}
+              Ôn chủ đề {qLabel.title}
               <ArrowRight size={12} strokeWidth={2} aria-hidden />
             </Link>
           )}
@@ -265,5 +309,17 @@ export default function PartDrillPage() {
         )}
       </div>
     </Page>
+  );
+}
+
+export default function PartDrillPage() {
+  const part = String(useParams().part);
+  const label = useSearchParams().get("label");
+  return (
+    // useSearchParams đẩy route khỏi render tĩnh nếu không có Suspense boundary
+    // — cùng khuôn với `learn/vocabulary/[slug]`.
+    <Suspense fallback={<SkeletonList rows={4} />}>
+      <Drill partCode={part} label={label} />
+    </Suspense>
   );
 }
