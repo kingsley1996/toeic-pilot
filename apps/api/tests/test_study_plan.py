@@ -98,6 +98,8 @@ def build_world(db: Session, learner_id: uuid.UUID) -> Attempt:
             estimator_version="v1",
             listening_raw=1,
             reading_raw=0,
+            listening_scaled=60,
+            reading_scaled=30,
             listening_low=0,
             listening_high=100,
             reading_low=0,

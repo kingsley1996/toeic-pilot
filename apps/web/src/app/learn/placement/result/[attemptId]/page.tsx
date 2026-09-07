@@ -46,7 +46,8 @@ export default function PlacementResultPage() {
     return (
       <Page className="max-w-2xl">
         <Alert tone="alert">
-          Không phân tích được bài này. Nếu bài chưa nộp, hãy nộp trước khi quay lại.
+          Không phân tích được bài này. Bài chưa nộp thì hãy nộp trước khi quay lại; bài không có
+          câu trả lời nào thì không xếp được trình độ — mở lại bài test đầu vào và làm từ đầu.
         </Alert>
       </Page>
     );
@@ -59,10 +60,11 @@ export default function PlacementResultPage() {
     );
   }
 
-  const estMid = (low: number, high: number) => Math.round((low + high) / 2);
-  const listeningMid = estMid(result.listening_band.low, result.listening_band.high);
-  const readingMid = estMid(result.reading_band.low, result.reading_band.high);
-  const estimatedTotal = listeningMid + readingMid;
+  // Điểm tự khai nằm TRONG dải thì không có chuyện cao hơn hay thấp hơn —
+  // dải là toàn bộ điều bài 84 câu nói được.
+  const self = result.self_reported_score;
+  const selfInBand =
+    self !== null && self >= result.total_band.low && self <= result.total_band.high;
 
   return (
     <Page className="max-w-2xl">
@@ -75,9 +77,21 @@ export default function PlacementResultPage() {
       <Panel className="mt-6 p-6 text-center">
         <p className="font-data text-title font-semibold tabular-nums">{result.cefr_overall}</p>
         <p className="mt-1 font-semibold">{CEFR_VI[result.cefr_overall] ?? result.cefr_overall}</p>
+        {/* Dải, không phải một con số — SPEC-PLACEMENT §2: 84 câu cho ra
+            ±~75 điểm mỗi section, và in "612 / 990" là hứa một độ chính xác
+            phép đo này không có. Con số giữa đứng nhỏ bên dưới, và nó là điểm
+            quy đổi tại tỉ lệ đúng thật (`total_scaled`) chứ không phải trung
+            điểm của dải — hai thứ lệch nhau tới 40 điểm ở hai cực. */}
         <p className="mt-2 text-small text-ink-muted">
           Tổng điểm TOEIC ước tính:{" "}
-          <span className="font-data tabular-nums text-ink">{estimatedTotal}</span> / 990
+          <span className="font-data tabular-nums text-ink">
+            {result.total_band.low}–{result.total_band.high}
+          </span>{" "}
+          / 990
+        </p>
+        <p className="mt-1 text-small text-ink-faint">
+          sát nhất ở khoảng <span className="font-data tabular-nums">{result.total_scaled}</span>{" "}
+          điểm
         </p>
         <p className="mt-1 text-small text-ink-muted">
           Thời gian làm bài:{" "}
@@ -89,24 +103,27 @@ export default function PlacementResultPage() {
         <SectionCard
           title="Nghe"
           raw={result.listening_raw}
+          scaled={result.listening_scaled}
           band={result.listening_band}
           cefr={result.cefr_listening}
         />
         <SectionCard
           title="Đọc"
           raw={result.reading_raw}
+          scaled={result.reading_scaled}
           band={result.reading_band}
           cefr={result.cefr_reading}
         />
       </div>
 
-      {result.self_reported_score !== null && (
+      {self !== null && (
         <Panel className="mt-4 p-4">
           <p className="text-small">
-            So với điểm bạn tự khai (
-            <span className="font-data tabular-nums text-ink">{result.self_reported_score}</span>
+            So với điểm bạn tự khai (<span className="font-data tabular-nums text-ink">{self}</span>
             ):{" "}
-            {estimatedTotal >= result.self_reported_score ? (
+            {selfInBand ? (
+              <span className="font-semibold text-ok">nằm trong dải ước lượng</span>
+            ) : self < result.total_band.low ? (
               <span className="font-semibold text-ok">ước lượng cao hơn</span>
             ) : (
               <span className="font-semibold text-alert">ước lượng thấp hơn</span>
@@ -158,11 +175,13 @@ export default function PlacementResultPage() {
 function SectionCard({
   title,
   raw,
+  scaled,
   band,
   cefr,
 }: {
   title: string;
   raw: number;
+  scaled: number;
   band: { low: number; high: number };
   cefr: string;
 }) {
@@ -174,7 +193,8 @@ function SectionCard({
         <span className="ml-1 text-small font-normal text-ink-muted">điểm ước tính</span>
       </p>
       <p className="mt-1 text-small text-ink-muted">
-        {CEFR_VI[cefr] ?? cefr} · đúng {raw} câu
+        {CEFR_VI[cefr] ?? cefr} · đúng {raw} câu · sát nhất{" "}
+        <span className="font-data tabular-nums">{scaled}</span>
       </p>
     </Panel>
   );

@@ -113,7 +113,13 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       planner V2 LLM (`study_plan` qua `AiFeatureConfig`, chọn từ danh sách
       ứng viên, fallback rule khi hỏng/tắt) + màn admin so sánh
       `/admin/planner-compare` (chạy V1/V2 cùng input, lưu `planner_eval`
-      069, tổng hợp cost/trễ từ sổ `ai_interaction`) — `SPEC-PLACEMENT.md`
+      069, tổng hợp cost/trễ từ sổ `ai_interaction`) — `SPEC-PLACEMENT.md`.
+      **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
+      không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
+      vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở
+      không thành phán quyết A1 và không tiêu cooldown; `POST /attempts` từ chối
+      đề placement; `is_placement` sửa `server_default` (chuỗi trần làm MỌI đề
+      đọc ra là placement trên SQLite); `POST /placement/start` có test.
 
 - [x] ~~Màn quản trị thành viên~~ — **Xong (2026-09-07).** `/admin/users` +
       `admin_users.py` (6 endpoint, mọi thứ `require_role("admin")`): danh sách

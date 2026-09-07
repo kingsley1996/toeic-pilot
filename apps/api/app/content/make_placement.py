@@ -33,16 +33,21 @@ DESCRIPTION = (
     "(ước lượng) và những kỹ năng cần luyện — làm một lần mỗi tuần."
 )
 KIND = "mini"
+TOTAL_QUESTIONS = 84
 # 40 phút, không phải 50: đề 84 câu ở tốc độ thật còn dư trên 15 phút khi chặn
 # 50 — nói dối về thời lượng là làm người học nghỉ tay giữa bài. Bài 50 phút
 # từng là chuẩn trước khi có dữ liệu lượt làm thật.
 TIME_LIMIT_SECONDS = 40 * 60
 
 
-def _source_questions(db: Session) -> list[Question]:
+def _source_test(db: Session) -> PracticeTest:
     test = db.scalar(select(PracticeTest).where(PracticeTest.slug == SOURCE_SLUG))
     if test is None:
         raise SystemExit(f"không có đề nguồn {SOURCE_SLUG}")
+    return test
+
+
+def _source_questions(db: Session, test: PracticeTest) -> list[Question]:
     rows = db.execute(
         select(PracticeTestQuestion.position, Question)
         .join(Question, Question.id == PracticeTestQuestion.question_id)
@@ -101,14 +106,19 @@ def _pick_by_labels(
 
 
 def _whole_sets(questions: list[Question], target: int, want: int) -> list[Question]:
-    """Cụm NGUYÊN tới khi đủ `want` cụm hoặc hết `target` câu."""
+    """Cụm NGUYÊN tới khi đủ `want` cụm hoặc hết `target` câu.
+
+    Cả hai trần đều chặn thật. `want` từng được giảm mà không ai đọc, và số
+    trùng nhau che mất điều đó: cụm P3 đúng 3 câu nên 12 câu vừa đúng 4 cụm.
+    Một cụm 4 câu thì đề lấy 3 cụm và không có gì báo.
+    """
     by_set: dict[UUID, list[Question]] = {}
     for q in questions:
         if q.set_id is not None:
             by_set.setdefault(q.set_id, []).append(q)
     out: list[Question] = []
     for set_id in by_set:
-        if len(out) >= target:
+        if len(out) >= target or want <= 0:
             break
         group = by_set[set_id]
         if len(out) + len(group) <= target:
@@ -138,7 +148,8 @@ def _pick_part(
 
 
 def build(db: Session, publish: bool) -> None:
-    source = _source_questions(db)
+    source_test = _source_test(db)
+    source = _source_questions(db, source_test)
     ids = [q.id for q in source]
     type_labels = _labels_of(db, "question_type", ids)
     grammar_labels = _labels_of(db, "grammar", ids)
@@ -150,6 +161,15 @@ def build(db: Session, publish: bool) -> None:
         report.append((part, len(picked)))
         chosen.extend(picked)
 
+    # Định mức 84 câu là cả lập luận §0 của spec (84 → dải ±~75 điểm). Thiếu
+    # câu thì `_pick_by_labels` thoát êm ở `not grew` — một đề 79 câu xuất bản
+    # được, và con số ±75 in trên màn kết quả lặng lẽ sai.
+    if len(chosen) != TOTAL_QUESTIONS:
+        raise SystemExit(
+            f"lắp ra {len(chosen)} câu, cần {TOTAL_QUESTIONS} — "
+            f"đề nguồn {SOURCE_SLUG} thiếu nhãn hoặc thiếu câu: {report}"
+        )
+
     existing = db.scalar(select(PracticeTest).where(PracticeTest.slug == PLACEMENT_SLUG))
     if existing is not None and existing.status == "published":
         raise SystemExit("đề placement đã published — dựng lại là đổi đề dưới chân người học")
@@ -160,7 +180,12 @@ def build(db: Session, publish: bool) -> None:
             description=DESCRIPTION,
             kind=KIND,
             time_limit_seconds=TIME_LIMIT_SECONDS,
-            score_scale_slug="default",
+            # Bảng quy đổi của ĐỀ NGUỒN, không phải `"default"` ghi cứng. Cả lý
+            # do chọn path A (spec §1) là "có neo: câu lấy từ form có sẵn
+            # `score_conversion` nên quy đổi dựa trên đường cong thật". Hôm nay
+            # cả hai đang là `default` nên ghi cứng không lệch — ngày ai đó gắn
+            # bảng riêng cho đề nguồn thì placement vẫn quy đổi bằng bảng cũ.
+            score_scale_slug=source_test.score_scale_slug,
             is_placement=True,
         )
         db.add(existing)

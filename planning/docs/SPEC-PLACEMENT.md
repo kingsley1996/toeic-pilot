@@ -167,3 +167,62 @@ Quyết định "LLM có đáng không" = (1)–(3) thắng đủ xa so với ch
   (ước lượng cao hơn/thấp hơn tự khai bao nhiêu) và là đầu vào planner — KHÔNG
   ghi đè `user_profile.target_score`, chỉ điền giúp ô trống nếu người dùng bấm
   đồng ý ở màn kết quả.
+
+## 9. Review 2026-09-07 — tám chỗ đã sửa
+
+Đọc lại toàn bộ lát placement sau khi dựng xong. Sáu chỗ hỏng, hai chỗ nợ.
+
+**Màn kết quả in một con số điểm, đúng thứ §2 cấm.** Nó cộng trung điểm hai dải
+ra `612 / 990`. Nay hiện **dải tổng** như §2 đòi, và con số sát nhất đứng nhỏ
+bên dưới.
+
+**Trung điểm của dải không phải điểm quy đổi.** Đường cong `score_conversion`
+dốc khác nhau từng khúc và dải bị kẹp ở `0` và `n`, nên trung điểm luôn bị kéo
+về giữa thang: Nghe 40/42 quy đổi thật là **490**, dải 440–495, trung điểm
+**468** — lệch 22 điểm một section, cùng chiều ở cả hai. Migration 070 thêm
+`listening_scaled` / `reading_scaled` (điểm tại tỉ lệ đúng thật) và cả hai màn
+đọc cột đó. Comment ở dashboard trước đây khẳng định ngược lại.
+
+**Một lượt bỏ dở không được thành phán quyết.** `_finalise` chấm ô trống là sai
+— đúng cho đề thi — nên mở bài rồi đóng tab tới hết giờ ra A1 với 0 câu đúng,
+ghi vĩnh viễn và khoá bảy ngày. Nay `analyze` từ chối lượt không có câu trả lời
+nào (409), và `_settle_pending` ở đầu `POST /start` dọn hàng "pending" của lượt
+đã chốt: không câu trả lời nào thì **xoá**, có thì **chấm ngay**. Cooldown đếm
+giữa hai *phán quyết*, không giữa hai lần bấm nút — hàng "pending" không còn
+tiêu bảy ngày. `in_progress_attempt_id` chỉ báo lượt thật sự còn dở.
+
+**`POST /attempts` nhận slug đề placement.** Vào thẳng máy thi là đi vòng qua cả
+cổng lẫn hàng "pending" giữ mốc tự khai. Route nay trả 409 cho đề `is_placement`;
+`/placement/start` gọi `open_attempt` — cùng thân hàm, tách khỏi cổng.
+
+**`is_placement` mang `server_default="false"` dạng chuỗi trần.** Postgres ép về
+boolean nên không lộ; SQLite lưu đúng chuỗi `'false'`, truthy trong Python, tức
+**mọi đề đọc ra là đề placement trên cả bộ test**. Đó là lý do `analyze_attempt`
+từng phải viết `is not True`. Nay `text("false")` + `default=False` như mọi cột
+Boolean khác.
+
+**`_whole_sets` có tham số `want` là mã chết** — giảm rồi không ai đọc, và số
+trùng nhau che mất (cụm P3 đúng 3 câu nên 12 câu vừa đúng 4 cụm). Nay chặn thật.
+`build()` cũng kiểm tổng đúng 84 câu trước khi xuất bản: `_pick_by_labels` bỏ
+qua câu không nhãn và thoát êm, nên một đề 79 câu published được và con số ±75
+in trên màn kết quả lặng lẽ sai.
+
+**`score_scale_slug` ghi cứng `"default"`** — mâu thuẫn với chính lý do chọn path
+A ở §1 ("có neo… dựa trên đường cong thật"). Nay lấy của đề nguồn.
+
+**Khe giữa hai băng CEFR nay nổ thay vì rơi về A1.** Không có khe nào hôm nay
+(mọi điểm quy đổi là bội của 5, các băng liền nhau ở bội 5); một bảng quy đổi
+tương lai trả 452 thì đó là người đọc gần B2.
+
+**Test.** `POST /placement/start` trước đó không có một dòng test nào — bốn
+nhánh, gồm cả lời khẳng định "một nguồn sự thật" của §5. Nay có: mốc tự khai
+sống sót qua `analyze`, mục tiêu chạy về `user_profile`, lượt đang dở trả lại
+chính nó, 409 khi còn cooldown, lượt trắng không thành phán quyết, đề placement
+bị máy thi từ chối, và phép quy về thang 100 (bỏ nó đi thì `low <= high` vẫn
+đúng — phép kiểm duy nhất trước đây — trong khi cả dải tụt xuống 85–140 thay vì
+185–325).
+
+**Còn nợ:** `exam_date` vẫn kiểm ở tầng schema, nay khoan dung một ngày vì
+schema không biết múi giờ hồ sơ; đúng ra phải tính "hôm nay" theo
+`user_profile.timezone` như `profile_stats` làm cho streak. Và `/learn/placement`
+chưa có e2e spec.

@@ -1,6 +1,6 @@
 """Schemas cho bài test đầu vào (SPEC-PLACEMENT)."""
 
-from datetime import date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -20,7 +20,13 @@ class PlacementStart(BaseModel):
     @field_validator("exam_date")
     @classmethod
     def exam_date_not_past(cls, value: date | None) -> date | None:
-        if value is not None and value < date.today():
+        # Khoan dung một ngày, không so với `date.today()` của máy chủ. Ngày
+        # hôm nay của người học nằm trong ±1 ngày quanh ngày UTC (UTC−12 tới
+        # UTC+14), và schema không biết múi giờ hồ sơ để tính đúng. Chấp nhận
+        # nhầm một ngày cũ thì vô hại; TỪ CHỐI nhầm ngày hôm nay của một người
+        # ở Hà Nội lúc nửa đêm thì họ không đặt được ngày thi và không hiểu vì
+        # sao — cùng lớp lỗi mà `profile_stats` tính streak theo múi giờ hồ sơ.
+        if value is not None and value < (datetime.now(UTC).date() - timedelta(days=1)):
             raise ValueError("ngày thi dự kiến không thể ở quá khứ")
         return value
 
@@ -38,6 +44,9 @@ class PlacementGate(BaseModel):
     latest_cefr_overall: str | None = None
     latest_total_low: int | None = None
     latest_total_high: int | None = None
+    # Điểm quy đổi tại tỉ lệ đúng thật, cộng hai section. KHÔNG phải trung
+    # điểm của dải — xem `PlacementResultPublic.total_scaled`.
+    latest_total_scaled: int | None = None
     # Giá trị `user_profile` để PREFILL form điểm mốc — một nguồn sự thật: giá
     # trị cũ hiện sẵn, người dùng đổi thì submit ghi về lại profile.
     profile_target_score: int | None = None
@@ -54,8 +63,18 @@ class PlacementResultPublic(BaseModel):
     estimator_version: str
     listening_raw: int
     reading_raw: int
+    # Điểm quy đổi tại tỉ lệ đúng THẬT, và tổng của hai section. Giao diện phải
+    # dùng con số này, không phải trung điểm của dải: đường cong quy đổi dốc
+    # khác nhau từng khúc và dải bị kẹp ở 0 và n, nên ở hai cực trung điểm lệch
+    # hơn 20 điểm mỗi section — luôn kéo về giữa thang.
+    listening_scaled: int
+    reading_scaled: int
+    total_scaled: int
     listening_band: PlacementBand
     reading_band: PlacementBand
+    # Dải tổng = cộng hai dải section. SPEC §2: giao diện BẮT BUỘC hiện dải,
+    # không hiện một con số giả chính xác.
+    total_band: PlacementBand
     cefr_listening: str
     cefr_reading: str
     cefr_overall: str

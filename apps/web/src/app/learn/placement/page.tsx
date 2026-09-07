@@ -68,6 +68,12 @@ export default function PlacementSetupPage() {
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Không mở được bài test.");
       setBusy(false);
+      // Đọc lại cổng: `POST /start` là chỗ DUY NHẤT kết một lượt bỏ dở (chấm
+      // lượt đã nộp mà chưa ai mở phân tích, xoá lượt không có câu trả lời
+      // nào), nên trạng thái sau một lần từ chối thường đã khác trước.
+      apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
+        .then(setGate)
+        .catch(() => {});
     }
   }
 
@@ -119,7 +125,15 @@ export default function PlacementSetupPage() {
                 ? `Bạn có thể làm lại từ ${new Date(gate.next_available_at).toLocaleDateString("vi-VN")}.`
                 : "Hãy quay lại sau."
             }
-            action={<ButtonLink href="/dashboard">Về trang học</ButtonLink>}
+            action={
+              gate.latest_attempt_id ? (
+                <ButtonLink href={`/learn/placement/result/${gate.latest_attempt_id}`}>
+                  Xem kết quả gần nhất
+                </ButtonLink>
+              ) : (
+                <ButtonLink href="/dashboard">Về trang học</ButtonLink>
+              )
+            }
           />
         </div>
       )}
@@ -154,7 +168,9 @@ export default function PlacementSetupPage() {
               value={examDate}
               onChange={(e) => setExamDate(e.target.value)}
               type="date"
-              min={new Date().toISOString().slice(0, 10)}
+              // Ngày hôm nay THEO MÚI GIỜ TRÌNH DUYỆT. `toISOString()` là UTC,
+              // nên ở Hà Nội trước 07:00 nó chặn mất chính ngày hôm nay.
+              min={new Date().toLocaleDateString("en-CA")}
               aria-label="Ngày thi dự kiến"
             />
           </div>

@@ -649,11 +649,15 @@ function PlacementPanel({ gate }: { gate: PlacementGate | null }) {
           </span>
         </span>
         <span className="min-w-0 flex-1 border-l border-rule pl-5">
-          {/* Một con số giữa + chữ "khoảng": dải ±~145 điểm hiện đầy đủ sẽ gây
-              hiểu nhầm là hệ thống không chắc gì; thực ra ĐÚNG là ước lượng từ
-              84 câu, và con số giữa là điểm quy đổi tại tỉ lệ đúng thật. */}
+          {/* Một con số + chữ "khoảng": dải ±~145 điểm hiện đầy đủ ở đây sẽ
+              gây hiểu nhầm là hệ thống không chắc gì; dải đầy đủ nằm ở màn kết
+              quả, nơi có chỗ nói ra nó là dải gì. Con số này là
+              `latest_total_scaled` — điểm quy đổi tại tỉ lệ đúng THẬT, không
+              phải trung điểm của dải: đường cong quy đổi dốc khác nhau từng
+              khúc và dải bị kẹp ở hai đầu, nên trung điểm lệch tới 40 điểm ở
+              hai cực và luôn kéo về giữa thang. */}
           <span className="block font-data text-subtitle font-semibold tabular-nums text-ink">
-            ~{Math.round(((gate.latest_total_low ?? 0) + (gate.latest_total_high ?? 0)) / 2)}
+            ~{gate.latest_total_scaled ?? 0}
           </span>
           <span className="block text-small text-ink-muted">
             điểm TOEIC ước tính (từ bài test đầu vào)

@@ -353,7 +353,13 @@ class PracticeTest(Base, PublishableMixin):
     kind: Mapped[str] = mapped_column(String(16), nullable=False, default="full")
     # Đề xếp lớp (SPEC-PLACEMENT): một đề mỗi thời điểm, máy thi tái dùng đường
     # thường, nhưng điểm đầu ra là ƯỚC LƯỢNG — không đi qua bảng quy đổi đề full.
-    is_placement: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    # `text("false")` và `default=False`, như mọi cột Boolean khác ở đây. Chuỗi
+    # `"false"` trần được render thành literal có nháy: Postgres ép về boolean
+    # nên không sao, còn SQLite lưu đúng chuỗi `'false'` — truthy trong Python,
+    # tức MỌI đề đọc ra là đề placement trên cả bộ test.
+    is_placement: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False
+    )
     time_limit_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # Which raw-to-scaled curve this form uses. Real TOEIC forms differ, so the
     # scale belongs to the test rather than to the application.

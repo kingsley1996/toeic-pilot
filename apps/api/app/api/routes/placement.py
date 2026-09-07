@@ -10,13 +10,13 @@ import uuid
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
-from app.api.routes.attempt import start_attempt
+from app.api.routes.attempt import open_attempt
 from app.core.database import get_db
-from app.models import Attempt, PlacementResult, PracticeTest, User, UserProfile
+from app.models import Attempt, AttemptItem, PlacementResult, PracticeTest, User, UserProfile
 from app.schemas.placement import (
     PlacementBand,
     PlacementGate,
@@ -60,39 +60,98 @@ def _aware(dt: datetime) -> datetime:
     return dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt
 
 
-def _gate(db: Session, user: User) -> PlacementGate:
-    last = db.scalar(
-        select(PlacementResult)
-        .where(PlacementResult.user_id == user.id)
-        .order_by(PlacementResult.created_at.desc())
-        .limit(1)
-    )
-    running = db.scalar(
+def _pending(db: Session, user: User) -> PlacementResult | None:
+    return db.scalar(
         select(PlacementResult).where(
             PlacementResult.user_id == user.id,
             PlacementResult.estimator_version == "pending",
         )
     )
-    can_start = last is None or datetime.now(UTC) - _aware(last.created_at) >= timedelta(
+
+
+def _answered(db: Session, attempt: Attempt) -> int:
+    return (
+        db.scalar(
+            select(func.count())
+            .select_from(AttemptItem)
+            .where(
+                AttemptItem.attempt_id == attempt.id,
+                AttemptItem.selected_option_id.is_not(None),
+            )
+        )
+        or 0
+    )
+
+
+def _settle_pending(db: Session, user: User) -> None:
+    """Kết một hàng "pending" mà lượt của nó đã hết vòng đời.
+
+    Cùng luật với "hết giờ thì chốt ở lần chạm tiếp theo" của máy thi: không có
+    tiến trình nền nào ở đây, nên một lượt bỏ dở chỉ được dọn khi có người gõ
+    cửa. Chỉ gọi từ POST — nó ghi.
+
+    Hai lối ra, và sự khác nhau giữa chúng là điều đáng nhớ: một lượt đã chốt
+    mà KHÔNG có câu trả lời nào thì bị xoá, không thành phán quyết. Chấm nó ra
+    A1 với 0 câu đúng — `_finalise` chấm ô trống là sai, đúng cho đề thi — rồi
+    khoá người ta bảy ngày với một trình độ họ chưa từng làm bài để có.
+    """
+    row = _pending(db, user)
+    if row is None:
+        return
+    attempt = db.get(Attempt, row.attempt_id)
+    if attempt is None:
+        db.delete(row)
+        db.commit()
+        return
+    if attempt.status == "in_progress":
+        return
+    if _answered(db, attempt) == 0:
+        db.delete(row)
+        db.commit()
+        return
+    analyze(db, attempt)
+
+
+def _gate(db: Session, user: User) -> PlacementGate:
+    # Cooldown đếm giữa hai PHÁN QUYẾT, không giữa hai lần bấm nút. Một hàng
+    # "pending" là lượt chưa có kết quả; tính nó vào cooldown nghĩa là mở nhầm
+    # bài rồi đóng tab đã tiêu mất bảy ngày.
+    result = db.scalar(
+        select(PlacementResult)
+        .where(
+            PlacementResult.user_id == user.id,
+            PlacementResult.estimator_version != "pending",
+        )
+        .order_by(PlacementResult.created_at.desc())
+        .limit(1)
+    )
+    pending = _pending(db, user)
+    # Chỉ lượt CÒN DỞ mới là "đang làm dở". Đọc mỗi hàng pending thì một lượt
+    # đã nộp mà chưa ai mở phân tích vẫn hiện nút "Tiếp tục" — bấm vào chỉ để
+    # nhìn một bài đã chốt.
+    running = pending
+    if pending is not None:
+        attempt = db.get(Attempt, pending.attempt_id)
+        if attempt is None or attempt.status != "in_progress":
+            running = None
+    can_start = result is None or datetime.now(UTC) - _aware(result.created_at) >= timedelta(
         days=RETAKE_COOLDOWN_DAYS
     )
     next_at = None
-    if last is not None and not can_start:
-        next_at = _aware(last.created_at) + timedelta(days=RETAKE_COOLDOWN_DAYS)
-    # "pending" là lượt đang dở chứ không phải kết quả: trình độ của nó
-    # chưa tồn tại, hiện hàng đó là hiện một phán quyết chưa từng có.
-    result = None if last is None or last.estimator_version == "pending" else last
+    if result is not None and not can_start:
+        next_at = _aware(result.created_at) + timedelta(days=RETAKE_COOLDOWN_DAYS)
     profile = db.get(UserProfile, user.id)
     return PlacementGate(
         can_start=can_start,
         next_available_at=next_at,
         in_progress_attempt_id=str(running.attempt_id) if running else None,
-        latest_attempt_id=str(last.attempt_id) if last else None,
+        latest_attempt_id=str(result.attempt_id) if result else None,
         # Dải tổng = cộng hai dải section. Trên đề thật hai section không độc
         # lập tới vậy, nhưng làm tròn thêm ở đây là thêm sai số giả.
         latest_cefr_overall=result.cefr_overall if result else None,
         latest_total_low=(result.listening_low + result.reading_low) if result else None,
         latest_total_high=(result.listening_high + result.reading_high) if result else None,
+        latest_total_scaled=((result.listening_scaled + result.reading_scaled) if result else None),
         # Prefill từ profile — người dùng thấy giá trị cũ, đổi thì ghi về.
         profile_target_score=profile.target_score if profile else None,
         profile_exam_date=profile.exam_date if profile else None,
@@ -112,6 +171,7 @@ def start(
 ) -> PlacementGate:
     """Mở lượt placement + ghi mốc tự khai. Lượt đang dở thì trả lại lượt đó —
     tạo lượt thứ hai song song là hai phán quyết cho cùng một tuần."""
+    _settle_pending(db, user)
     gate_now = _gate(db, user)
     if gate_now.in_progress_attempt_id:
         return gate_now
@@ -129,8 +189,10 @@ def start(
             profile.target_score = body.target_score
         if body.exam_date is not None:
             profile.exam_date = body.exam_date
-    state = start_attempt(
-        AttemptStart(test_slug=test.slug, review_mode="exam", parts=[]), db=db, current_user=user
+    # `open_attempt`, không phải route `POST /attempts`: route ấy nay từ chối đề
+    # placement, vì đi thẳng vào nó là đi vòng qua cả cổng lẫn hàng "pending".
+    state = open_attempt(
+        db, test, AttemptStart(test_slug=test.slug, review_mode="exam", parts=[]), user
     )
     # Hàng kết quả "pending" cầm mốc tự khai cho tới khi nộp bài, khi đó
     # `analyze` điền phán quyết thật vào đúng hàng này.
@@ -141,6 +203,8 @@ def start(
             estimator_version="pending",
             listening_raw=0,
             reading_raw=0,
+            listening_scaled=0,
+            reading_scaled=0,
             listening_low=0,
             listening_high=0,
             reading_low=0,
@@ -163,12 +227,21 @@ def analyze_attempt(
     user: User = Depends(get_current_user),
 ) -> PlacementResultPublic:
     attempt = _own_attempt(db, attempt_id, user)
-    if attempt.test.is_placement is not True:
+    if not attempt.test.is_placement:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Không phải lượt làm placement"
         )
     if attempt.status == "in_progress":
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Phiên chưa nộp")
+    # Không phán quyết trên một lượt không có câu trả lời nào. `_finalise` chấm
+    # ô trống là SAI (đúng cho đề thi), nên một lượt mở ra rồi bỏ đó tới hết giờ
+    # sẽ ra A1 với 0 câu đúng — một trình độ người ta chưa từng làm bài để có,
+    # ghi vĩnh viễn và khoá cổng bảy ngày.
+    if _answered(db, attempt) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Bài này không có câu trả lời nào nên không xếp được trình độ.",
+        )
     row = analyze(db, attempt)
 
     skills = attempt_skills.skill_breakdown(db, attempt)
@@ -180,8 +253,15 @@ def analyze_attempt(
         estimator_version=row.estimator_version,
         listening_raw=row.listening_raw,
         reading_raw=row.reading_raw,
+        listening_scaled=row.listening_scaled,
+        reading_scaled=row.reading_scaled,
+        total_scaled=row.listening_scaled + row.reading_scaled,
         listening_band=PlacementBand(low=row.listening_low, high=row.listening_high),
         reading_band=PlacementBand(low=row.reading_low, high=row.reading_high),
+        total_band=PlacementBand(
+            low=row.listening_low + row.reading_low,
+            high=row.listening_high + row.reading_high,
+        ),
         cefr_listening=row.cefr_listening,
         cefr_reading=row.cefr_reading,
         cefr_overall=row.cefr_overall,

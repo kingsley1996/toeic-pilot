@@ -7462,6 +7462,8 @@ export interface components {
             latest_total_high?: number | null;
             /** Latest Total Low */
             latest_total_low?: number | null;
+            /** Latest Total Scaled */
+            latest_total_scaled?: number | null;
             /** Next Available At */
             next_available_at?: string | null;
             /** Profile Exam Date */
@@ -7491,9 +7493,13 @@ export interface components {
             listening_band: components["schemas"]["PlacementBand"];
             /** Listening Raw */
             listening_raw: number;
+            /** Listening Scaled */
+            listening_scaled: number;
             reading_band: components["schemas"]["PlacementBand"];
             /** Reading Raw */
             reading_raw: number;
+            /** Reading Scaled */
+            reading_scaled: number;
             /** Self Reported Score */
             self_reported_score: number | null;
             /**
@@ -7503,6 +7509,9 @@ export interface components {
             strengths: string[];
             /** Target Score */
             target_score: number | null;
+            total_band: components["schemas"]["PlacementBand"];
+            /** Total Scaled */
+            total_scaled: number;
             /**
              * Weaknesses
              * @default []

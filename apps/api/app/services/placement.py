@@ -56,13 +56,19 @@ _LISTENING, _READING = 0, 1
 
 def cefr_of(section: str, scaled: int) -> str:
     band_index = _LISTENING if section == "listening" else _READING
-    for level, (listening_range, reading_range) in CEFR_BANDS.items():
-        low, high = (listening_range, reading_range)[band_index]
+    ranges = [(level, r[band_index]) for level, r in CEFR_BANDS.items()]
+    for level, (low, high) in ranges:
         if low <= scaled <= high:
             return level
     # Dưới A1 (điểm sàn của bảng ETS là 60): vẫn là A1 — băng thấp nhất là
     # nơi điểm thấp dồn về, không phải một khoảng trống để bịa "A0".
-    return "A1"
+    if scaled < min(low for _, (low, _high) in ranges):
+        return "A1"
+    # Trên sàn mà không khớp băng nào = khe hở giữa hai băng. Không có khe nào
+    # hôm nay vì mọi điểm quy đổi là bội của 5 và các băng liền nhau ở bội 5;
+    # một bảng quy đổi tương lai trả 452 thì rơi vào đây, và trả về "A1" cho
+    # một người đọc gần B2 là nói dối có số liệu.
+    raise ValueError(f"{section} {scaled} rơi vào khe giữa hai băng CEFR")
 
 
 def analyze(db: Session, attempt: Attempt) -> PlacementResult:
@@ -96,6 +102,8 @@ def analyze(db: Session, attempt: Attempt) -> PlacementResult:
             attempt_id=attempt.id,
             user_id=attempt.user_id,
             estimator_version=VERSION,
+            listening_scaled=0,
+            reading_scaled=0,
             cefr_listening="A1",
             cefr_reading="A1",
             cefr_overall="A1",
@@ -110,6 +118,7 @@ def analyze(db: Session, attempt: Attempt) -> PlacementResult:
         setattr(out, f"{section}_low", low)
         setattr(out, f"{section}_high", high)
         scaled = raw_to_scaled(db, scale, section, round(raw / total * 100))
+        setattr(out, f"{section}_scaled", scaled)
         setattr(out, f"cefr_{section}", cefr_of(section, scaled))
     # Tổng thể = section YẾU hơn: bảo thủ, cùng luật với việc đếm cả câu bỏ
     # trống vào mẫu số — không tặng trình độ cho phần chưa đọc/kịp nghe.

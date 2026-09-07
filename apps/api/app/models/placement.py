@@ -8,7 +8,7 @@ cậy) và v2 (IRT) cho cùng một lượt làm sẽ khác nhau, nên phán quy
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, SmallInteger, String, func
+from sqlalchemy import DateTime, ForeignKey, Index, SmallInteger, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -16,18 +16,27 @@ from app.core.database import Base
 
 class PlacementResult(Base):
     __tablename__ = "placement_result"
+    # Tên index khai TAY để khớp migration 067. `index=True` sinh ra
+    # `ix_placement_result_user_id`, tức dev (`create_all`) và prod (alembic)
+    # mang hai tên khác nhau và autogenerate sau này đòi drop + create.
+    __table_args__ = (Index("ix_placement_result_user", "user_id"),)
 
     # Một lượt làm — một phán quyết. Lượt placement là 1-1 với kết quả của nó.
     attempt_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("attempt.id", ondelete="CASCADE"), primary_key=True
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     estimator_version: Mapped[str] = mapped_column(String(16), nullable=False)
 
     listening_raw: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     reading_raw: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    # Điểm quy đổi tại tỉ lệ đúng THẬT. Không suy được từ dải: đường cong quy
+    # đổi dốc khác nhau từng khúc và dải bị kẹp ở hai đầu, nên trung điểm của
+    # dải lệch tới hơn 20 điểm ở hai cực.
+    listening_scaled: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    reading_scaled: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     listening_low: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     listening_high: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     reading_low: Mapped[int] = mapped_column(SmallInteger, nullable=False)

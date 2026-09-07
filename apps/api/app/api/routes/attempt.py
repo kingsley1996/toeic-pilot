@@ -411,9 +411,22 @@ def start_attempt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> AttemptState:
+    test = _open_test(db, body)
+    # Đề test đầu vào chỉ mở qua `/placement/start`. Vào thẳng đây là đi vòng
+    # qua cooldown 7 ngày VÀ qua hàng "pending" giữ mốc tự khai — lượt sinh ra
+    # không nằm trong cổng, nhưng `/placement/.../analyze` vẫn chấm nó, nên
+    # planner đọc phải một kết quả sinh ngoài luồng.
+    if test.is_placement:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Đề test đầu vào chỉ mở qua bài kiểm tra đầu vào.",
+        )
+    return open_attempt(db, test, body, current_user)
+
+
+def _open_test(db: Session, body: AttemptStart) -> PracticeTest:
     if body.review_mode not in ("exam", "practice"):
         raise HTTPException(status_code=400, detail="Chế độ làm bài không hợp lệ")
-
     test = db.scalars(
         select(PracticeTest).where(
             PracticeTest.slug == body.test_slug, PracticeTest.status == PUBLISHED
@@ -421,7 +434,14 @@ def start_attempt(
     ).one_or_none()
     if test is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có đề này")
+    return test
 
+
+def open_attempt(
+    db: Session, test: PracticeTest, body: AttemptStart, current_user: User
+) -> AttemptState:
+    """Mở một lượt trên `test`. Tách khỏi route để `/placement/start` dùng lại
+    được máy thi mà không phải đi qua cổng chặn đề placement ở trên."""
     # Lọc `published` ở CẢ HAI tầng: câu, và cụm mà câu thuộc về.
     #
     # Lọc mỗi câu là chưa đủ, và chỗ hở im lặng: một câu đã xuất bản nằm dưới

@@ -8204,6 +8204,17 @@
             ],
             "title": "Latest Total Low"
           },
+          "latest_total_scaled": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Total Scaled"
+          },
           "next_available_at": {
             "anyOf": [
               {
@@ -8284,11 +8295,19 @@
             "title": "Listening Raw",
             "type": "integer"
           },
+          "listening_scaled": {
+            "title": "Listening Scaled",
+            "type": "integer"
+          },
           "reading_band": {
             "$ref": "#/components/schemas/PlacementBand"
           },
           "reading_raw": {
             "title": "Reading Raw",
+            "type": "integer"
+          },
+          "reading_scaled": {
+            "title": "Reading Scaled",
             "type": "integer"
           },
           "self_reported_score": {
@@ -8321,6 +8340,13 @@
             ],
             "title": "Target Score"
           },
+          "total_band": {
+            "$ref": "#/components/schemas/PlacementBand"
+          },
+          "total_scaled": {
+            "title": "Total Scaled",
+            "type": "integer"
+          },
           "weaknesses": {
             "default": [],
             "items": {
@@ -8335,8 +8361,12 @@
           "estimator_version",
           "listening_raw",
           "reading_raw",
+          "listening_scaled",
+          "reading_scaled",
+          "total_scaled",
           "listening_band",
           "reading_band",
+          "total_band",
           "cefr_listening",
           "cefr_reading",
           "cefr_overall",
