@@ -29,6 +29,7 @@
 - `PART_3_CONVERSATION_DETAIL` — Câu hỏi về chi tiết cuộc hội thoại
 - `PART_3_FUTURE_ACTION` — Câu hỏi về hành động tương lai
 - `PART_3_GRAPH_OR_TABLE_QUESTION` — Câu hỏi kết hợp bảng biểu
+- `PART_3_IMPLICATION` — Câu hỏi về hàm ý câu nói
 - `PART_3_LOCATION` — Câu hỏi về địa điểm hội thoại
 - `PART_3_REQUEST_OR_SUGGESTION` — Câu hỏi về yêu cầu, gợi ý
 

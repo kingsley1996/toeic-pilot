@@ -207,7 +207,7 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         "PART_3_COMPANY_PERSONNEL",
         2,
         "trưởng phòng và nhân viên bàn về khoá đào tạo bắt buộc",
-        ("PART_3_SPEAKER_IDENTITY", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        ("PART_3_SPEAKER_IDENTITY", "PART_3_IMPLICATION", "PART_3_FUTURE_ACTION"),
         "",
     ),
     (
@@ -228,7 +228,7 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         "PART_3_HOUSING",
         2,
         "hai người xem một mặt bằng văn phòng cho thuê",
-        ("PART_3_LOCATION", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        ("PART_3_LOCATION", "PART_3_IMPLICATION", "PART_3_REQUEST_OR_SUGGESTION"),
         "",
     ),
     (
@@ -242,7 +242,7 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         "PART_3_SHOPPING_OR_SERVICE",
         2,
         "khách hỏi về gói bảo hành mở rộng ở quầy dịch vụ",
-        ("PART_3_SPEAKER_IDENTITY", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        ("PART_3_SPEAKER_IDENTITY", "PART_3_IMPLICATION", "PART_3_REQUEST_OR_SUGGESTION"),
         "",
     ),
     (
@@ -309,7 +309,7 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     (
         "PART_4_ANNOUNCEMENT",
         "thông báo trong toà nhà về việc bảo trì thang máy cuối tuần",
-        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_IMPLICATION", "PART_4_FUTURE_ACTION"),
         "",
     ),
     (
@@ -339,7 +339,7 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     (
         "PART_4_TELEPHONE_MESSAGE",
         "lời nhắn của khách hàng hỏi về lịch lắp đặt thiết bị",
-        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_REQUEST_OR_SUGGESTION"),
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_IMPLICATION", "PART_4_REQUEST_OR_SUGGESTION"),
         "",
     ),
     (
@@ -383,17 +383,29 @@ PART4_GRAPHIC_POOL: tuple[str, ...] = (
 # Trọng số theo tỉ lệ thường thấy: câu hỏi WH chiếm phần lớn, câu đuôi và câu
 # lựa chọn ít hơn, và luôn có vài câu trần thuật (thứ người học hay trượt nhất
 # vì không có từ để hỏi mà bám vào).
-PART2_MIX: tuple[tuple[str, int], ...] = (
-    ("PART_2_WHERE_QUESTION", 3),
-    ("PART_2_WHEN_QUESTION", 3),
-    ("PART_2_HOW_QUESTION", 3),
-    ("PART_2_YES_NO_QUESTION", 3),
-    ("PART_2_REQUEST_OR_SUGGESTION", 3),
-    ("PART_2_WHO_QUESTION", 2),
-    ("PART_2_WHY_QUESTION", 2),
-    ("PART_2_TAG_QUESTION", 2),
-    ("PART_2_CHOICE_QUESTION", 2),
-    ("PART_2_STATEMENT", 2),
+# Cột thứ ba là số câu mà ĐÁP ÁN ĐÚNG trả lời **gián tiếp** — và nó là trục độ
+# khó lớn nhất của Part 2, không phải dạng câu hỏi.
+#
+# Một câu WHERE có đáp đúng "It's on Rachel's desk" thì người nghe chỉ cần bắt
+# được từ để hỏi. Cũng câu ấy mà đáp đúng là "I just got back from lunch" thì
+# phải hiểu cả câu rồi suy ra rằng người kia đang nói mình không biết. Đề thật
+# dùng loại sau cho khoảng một phần ba số câu; nếu không nói ra, mô hình viết
+# đáp thẳng ở cả 25 câu, vì đó là vùng xác suất cao nhất — cùng cơ chế mà
+# `blueprint.py` đã ghi lại cho phân bố điểm ngữ pháp, chỉ sâu hơn một tầng.
+#
+# 8/25 câu gián tiếp. Câu đuôi và câu lựa chọn để 0: chúng đã khó sẵn ở chỗ
+# khác, và đáp gián tiếp cho một câu lựa chọn thường ra câu nghe không tự nhiên.
+PART2_MIX: tuple[tuple[str, int, int], ...] = (
+    ("PART_2_WHERE_QUESTION", 2, 1),
+    ("PART_2_WHEN_QUESTION", 2, 1),
+    ("PART_2_HOW_QUESTION", 2, 1),
+    ("PART_2_YES_NO_QUESTION", 2, 1),
+    ("PART_2_REQUEST_OR_SUGGESTION", 2, 1),
+    ("PART_2_WHO_QUESTION", 1, 1),
+    ("PART_2_WHY_QUESTION", 1, 1),
+    ("PART_2_TAG_QUESTION", 2, 0),
+    ("PART_2_CHOICE_QUESTION", 2, 0),
+    ("PART_2_STATEMENT", 1, 1),
 )
 
 
@@ -468,7 +480,7 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
     (
         "PART_7_ADVERTISEMENT",
         "quảng cáo dịch vụ dọn văn phòng theo tháng",
-        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("PART_7_INFERENCE", "PART_7_INFORMATION_RETRIEVAL"),
         ("",),
     ),
     (
@@ -486,13 +498,13 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
     (
         "PART_7_EMAIL_OR_LETTER",
         "thư cảm ơn khách hàng lâu năm kèm ưu đãi",
-        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_VOCABULARY_IN_CONTEXT"),
         ("",),
     ),
     (
         "PART_7_ARTICLE_OR_REVIEW",
         "bài đánh giá một quán ăn mới mở gần khu văn phòng",
-        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFERENCE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFERENCE", "PART_7_VOCABULARY_IN_CONTEXT"),
         ("",),
     ),
     (
@@ -564,7 +576,7 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
         "PART_7_FORM",
         "email xác nhận đặt phòng, thư phàn nàn, và phiếu khảo sát đã điền",
         (
-            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE",
             "PART_7_INFORMATION_RETRIEVAL",
             "PART_7_FALSE_INFORMATION",
             "PART_7_INFERENCE",
@@ -576,10 +588,10 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
         "PART_7_SCHEDULE",
         "thông báo nội bộ, email hỏi lại, và lịch buổi đào tạo",
         (
-            "PART_7_TOPIC_OR_PURPOSE",
-            "PART_7_INFORMATION_RETRIEVAL",
             "PART_7_INFERENCE",
             "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
             "PART_7_VOCABULARY_IN_CONTEXT",
         ),
         ("", "", "schedule: lịch bốn buổi đào tạo trong tháng"),
@@ -597,7 +609,7 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
             "PART_7_FALSE_INFORMATION",
             "PART_7_VOCABULARY_IN_CONTEXT",
             "PART_7_INFORMATION_RETRIEVAL",
-            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
         ),
         # Hình ĐẶT CUỐI, không đặt giữa. Ba cụm có hình ở cuối đều sinh đạt ngay
         # lượt đầu; hình ở giữa hỏng bốn lượt liên tiếp với hai cách diễn đạt bối

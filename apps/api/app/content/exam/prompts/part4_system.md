@@ -25,6 +25,28 @@ THE THREE QUESTIONS
   mentioned. An option that is merely unlikely is a second correct answer.
 - Options are short noun phrases or short clauses, similar length to each other.
 
+A QUESTION LABELLED `PART_4_IMPLICATION`
+This is the hardest item type in Part 4 and it has a fixed shape. The question
+quotes a short line the speaker actually said and asks what that speaker means
+by it:
+
+    What does the speaker mean when he says, "I've already been to the warehouse"?
+
+Three things make it work, and dropping any one turns it back into a detail
+question:
+- The quoted line must be **short and literally in your script**, word for word.
+  Quote 4-9 words, and quote a line whose plain meaning is not the point.
+- The answer must be the **implied** meaning, available only from what came
+  before and after — never a restatement of the words themselves. If someone
+  could answer having heard only that one line, the item is too easy.
+- The wrong options are the *literal* readings: what the sentence says on its
+  face, a second thing that could be implied but is ruled out by the rest of the
+  talk, and a reading that fits the words but not the situation.
+
+Write the talk so the implication actually exists. A line means "we do not need
+to send anyone else" only if the talk has just raised sending someone; the setup
+is your job, not the listener's guess.
+
 THE EXPLANATION
 Every question block ends with an `Explanation:` line, written in Vietnamese.
 

@@ -22,6 +22,35 @@ THE THREE RESPONSES
 - Do NOT make a wrong response absurd. It should be tempting to someone who
   caught only part of the prompt.
 
+A DIRECT OR AN INDIRECT CORRECT RESPONSE
+You are told which of the two to write, and they are different items.
+
+A **direct** response answers the question on its own terms: "Where's the sales
+report?" / "It's on Rachel's desk."
+
+An **indirect** response is the harder item and the one the real test uses for
+about a third of the section. The correct answer does not supply what was asked.
+It is still the only reasonable reply, but the listener has to understand the
+whole sentence to see why:
+- it says the speaker does not know, or cannot say yet
+  ("Where's the sales report?" / "I just got back from lunch."),
+- it points at someone or something else
+  ("When does the shipment arrive?" / "Ask the warehouse manager."),
+- it answers with a question of its own
+  ("Should we book the larger room?" / "How many people are coming?"),
+- it makes the question moot
+  ("Who's leading the training?" / "It was cancelled this morning.").
+
+Two rules for an indirect item, and both fail quietly:
+- **Never restate the question word.** If your response names a place for a
+  *where*, a time for a *when*, or a person for a *who*, it is a direct answer
+  and the item is not the one you were asked for.
+- **Keep it a reply a person would actually give**, not a riddle. It must be
+  obvious once heard and understood, only not obvious to someone who caught a
+  few words.
+
+The two wrong responses are written the same way for both kinds.
+
 THE EXPLANATION
 Every question block ends with an `Explanation:` line, written in Vietnamese.
 

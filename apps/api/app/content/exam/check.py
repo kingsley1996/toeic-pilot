@@ -646,6 +646,32 @@ _QUOTE_RE = re.compile(r'writes,\s*["“]([^"”]+)["”]', re.IGNORECASE)
 
 _LINE_REF = re.compile(r"\bline\s+\d+", re.IGNORECASE)
 
+# Part 3/4 nói chứ không viết, nên lời trích đứng sau `says` chứ sau `writes`.
+_SAYS_RE = re.compile(r'says?,?\s*["“]([^"”]+)["”]', re.IGNORECASE)
+
+
+def check_implication(question: ParsedQuestion, script: str) -> list[str]:
+    """Câu hàm ý phải TRÍCH một lời đã nói, đúng từng chữ.
+
+    Đây là dạng câu khó nhất của Part 3/4 và cũng là dạng dễ trượt về dạng dễ
+    nhất: bỏ lời trích đi thì còn lại một câu hỏi chi tiết hoàn toàn hợp lệ, và
+    không có gì trong đầu ra nói cho ta biết ô này đã không viết đúng thứ được
+    giao. Trích một câu KHÔNG có trong lời thoại thì tệ hơn — người nghe không
+    bao giờ nghe thấy nó, nên câu hỏi không trả lời được.
+
+    Cả hai đều kiểm được tất định, nên chúng là `problems` chứ không phải `flags`:
+    ô bị xoá và sinh lại, thay vì đi tiếp vào đề.
+    """
+    quoted = _SAYS_RE.search(question.prompt_text or "")
+    if quoted is None:
+        return ["câu hàm ý không trích lời nào — phải hỏi về một câu người nói đã nói"]
+    said = quoted.group(1).strip()
+    # Chuẩn hoá CẢ HAI vế: `_normalise` bỏ dấu câu, nên so một vế thô với một vế
+    # đã chuẩn hoá thì mọi lời trích có dấu phẩy hay dấu nháy đều báo là bịa.
+    if _normalise(said) not in _normalise(script):
+        return [f"lời trích {said[:40]!r} không có trong lời thoại"]
+    return []
+
 
 def check_part7_forms(questions: list[ParsedQuestion], passages: str) -> list[str]:
     """Ba dạng câu của Part 7 áp ràng buộc lên chính NGỮ LIỆU.
@@ -826,6 +852,8 @@ def _check_set(
 
         if index == GRAPHIC_POSITION.get(part, len(questions) - 1):
             report.flags.extend(graphic_flags)
+        if index < len(slot.question_types) and slot.question_types[index].endswith("_IMPLICATION"):
+            report.problems.extend(check_implication(question, script))
 
         # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.
         #

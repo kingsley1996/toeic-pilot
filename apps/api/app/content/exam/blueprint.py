@@ -148,6 +148,10 @@ class QuestionSlot:
     # chọn: giọng là thuộc tính của ĐỀ (rải đều bốn accent), không phải của một
     # câu, và để mô hình chọn thì sáu câu sẽ cùng một giọng.
     voice: str = ""
+    # Part 2: đáp án ĐÚNG trả lời gián tiếp. Ở blueprint chứ không để người viết
+    # câu chọn, cùng lý do với `people` ngay dưới: tỉ lệ gián tiếp là thuộc tính
+    # của ĐỀ (8/25 câu), và để mô hình tự quyết thì cả 25 câu sẽ đáp thẳng.
+    indirect: bool = False
     # Part 1: "one" / "several" / "none". Blueprint giữ nó chứ không để người
     # viết câu suy ra từ bối cảnh, vì đây là thứ phải phủ đủ trên CẢ đề — một
     # thuộc tính của đề thì phải nằm ở nơi mô tả đề.
@@ -284,7 +288,14 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
     Ô là MỘT câu, như Part 1 và Part 5 — không phải cụm. Nhưng nó mang **hai**
     giọng: một người hỏi, một người đáp.
     """
-    kinds = [code for code, weight in PART2_MIX for _ in range(weight)]
+    # (mã, gián tiếp?) — hai hạng ngạch của cùng một dạng câu, trộn chung rồi
+    # xáo, nên câu gián tiếp rải khắp đề chứ không dồn về cuối.
+    kinds = [
+        (code, indirect)
+        for code, direct, indirect_count in PART2_MIX
+        for indirect, weight in ((False, direct), (True, indirect_count))
+        for _ in range(weight)
+    ]
     random.Random(seed).shuffle(kinds)
     # Rải trên NGƯỜI HỎI, không trên cả cặp: hai câu liền nhau đổi người đáp mà
     # giữ nguyên người hỏi vẫn nghe như một câu bị lặp.
@@ -301,8 +312,9 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
             grammar="",
             context=BUSINESS_CONTEXTS[(index - 1 + seed) % len(BUSINESS_CONTEXTS)],
             voices=list(pairs[index - 1]),
+            indirect=indirect,
         )
-        for index, code in enumerate(kinds, start=1)
+        for index, (code, indirect) in enumerate(kinds, start=1)
     ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=2, slots=slots)])
 

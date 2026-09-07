@@ -62,6 +62,7 @@ FACETS: tuple[Facet, ...] = (
             Label("PART_3_CONVERSATION_DETAIL", "Câu hỏi về chi tiết cuộc hội thoại", (3,)),
             Label("PART_3_FUTURE_ACTION", "Câu hỏi về hành động tương lai", (3,)),
             Label("PART_3_GRAPH_OR_TABLE_QUESTION", "Câu hỏi kết hợp bảng biểu", (3,)),
+            Label("PART_3_IMPLICATION", "Câu hỏi về hàm ý câu nói", (3,)),
             Label("PART_3_LOCATION", "Câu hỏi về địa điểm hội thoại", (3,)),
             Label("PART_3_REQUEST_OR_SUGGESTION", "Câu hỏi về yêu cầu, gợi ý", (3,)),
             Label("PART_4_TOPIC_OR_PURPOSE", "Câu hỏi về chủ đề, mục đích", (4,)),

@@ -1667,3 +1667,96 @@ def test_balance_counts_questions_per_slot_instead_of_multiplying(tmp_path):
 
     # Và các ô KHÔNG cùng số câu, thứ làm phép nhân sai ngay từ đầu.
     assert len(set(counts)) > 1
+
+
+# --- Phân bố độ khó -------------------------------------------------------
+#
+# Mix quyết định đề khó hay dễ, và nó trôi bằng một dòng sửa mà không ai thấy.
+# Ba bài dưới đây ghim đúng những con số mà `SPEC-EXAM-DIFFICULTY` lập luận.
+
+
+def _question_types(rows, index: int) -> list[str]:
+    return [code for row in rows for code in row[index]]
+
+
+def test_part2_keeps_a_third_of_its_answers_indirect() -> None:
+    """Trục độ khó lớn nhất của Part 2 là đáp án GIÁN TIẾP, không phải dạng câu.
+
+    Bỏ cột này đi thì mọi câu là đáp thẳng — vẫn 25 câu Part 2 hợp lệ, vẫn phủ
+    đủ mười dạng câu hỏi, và không phép kiểm nào khác thấy đề đã dễ đi.
+    """
+    from app.content.exam.mixes import PART2_MIX
+
+    direct = sum(row[1] for row in PART2_MIX)
+    indirect = sum(row[2] for row in PART2_MIX)
+    assert direct + indirect == 25
+    assert indirect == 8
+
+    slots = bp.build_part2("x", "X", 7).parts[0].slots
+    assert sum(slot.indirect for slot in slots) == 8
+    # Rải khắp đề, không dồn về cuối: người làm gặp câu khó từ sớm.
+    positions = [i for i, slot in enumerate(slots) if slot.indirect]
+    assert min(positions) < 12 and max(positions) > 12
+
+
+def test_every_listening_part_carries_its_implication_questions() -> None:
+    """Câu hàm ý là dạng khó nhất của Part 3/4 và là dạng dễ vắng mặt nhất.
+
+    Part 3 từng có **không câu nào** — mã `PART_3_IMPLICATION` chưa tồn tại
+    trong taxonomy — nên cả part chỉ còn chủ đề, chi tiết và hành động tiếp
+    theo, tức ba dạng dễ nhất.
+    """
+    from app.content.exam.mixes import PART3_MIX, PART4_MIX
+
+    p3 = _question_types(PART3_MIX, 3)
+    p4 = _question_types(PART4_MIX, 2)
+    assert len(p3) == 39 and len(p4) == 30
+    assert p3.count("PART_3_IMPLICATION") == 3
+    assert p4.count("PART_4_IMPLICATION") == 3
+    # Một cụm ba câu không được mang hai câu hàm ý — đề thật không làm thế, và
+    # hai lời trích trong một hội thoại ngắn thì lời sau không còn hàm ý gì.
+    for row in PART3_MIX:
+        assert list(row[3]).count("PART_3_IMPLICATION") <= 1
+    for row in PART4_MIX:
+        assert list(row[2]).count("PART_4_IMPLICATION") <= 1
+
+
+def test_part7_does_not_lean_on_its_two_easiest_question_types() -> None:
+    """Tìm-thông-tin và chủ đề là hai dạng dễ nhất của Part 7.
+
+    Chúng từng chiếm 27/54 câu — một nửa cả part. Đề thật nghiêng hẳn về suy
+    luận; mức trần ở đây là thứ giữ cho nó không trôi ngược lại.
+    """
+    from app.content.exam.mixes import PART7_SETS
+
+    codes = _question_types(PART7_SETS, 2)
+    assert len(codes) == 54
+    easy = codes.count("PART_7_INFORMATION_RETRIEVAL") + codes.count("PART_7_TOPIC_OR_PURPOSE")
+    assert easy <= 20
+    assert codes.count("PART_7_INFERENCE") >= 18
+    # Đề thật có đúng hai câu điền câu và hai câu hàm ý (hai cụm tin nhắn).
+    assert codes.count("PART_7_SENTENCE_INSERTION") == 2
+    assert codes.count("PART_7_IMPLICATION") == 2
+
+
+def test_an_implication_question_must_quote_the_script_word_for_word() -> None:
+    """Bỏ lời trích đi thì còn lại một câu hỏi chi tiết hoàn toàn hợp lệ — và
+    không có gì trong đầu ra nói cho ta biết ô này đã viết sai dạng."""
+    from app.content.exam.check import check_implication
+    from app.services.content_import import ParsedQuestion
+
+    script = "M: I've already been to the warehouse.\nW: Then we can skip the second run."
+
+    quoted = ParsedQuestion(
+        line=1,
+        prompt_text='What does the man mean when he says, "I\'ve already been to the warehouse"?',
+    )
+    assert check_implication(quoted, script) == []
+
+    bare = ParsedQuestion(line=1, prompt_text="What did the man do this morning?")
+    assert check_implication(bare, script)
+
+    invented = ParsedQuestion(
+        line=1, prompt_text='What does the man mean when he says, "I will call the supplier"?'
+    )
+    assert check_implication(invented, script)
