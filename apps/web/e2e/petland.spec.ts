@@ -470,38 +470,65 @@ test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
    * cái bảng này vẽ WebGL sáu chục lần một giây, để nó chạy sau lưng người dùng
    * là đốt pin cho một khung hình không ai nhìn.
    *
-   * Đếm mọi lượt `requestAnimationFrame` của trang, cài TRƯỚC khi app chạy.
-   * Playwright không ẩn tab thật được (`bringToFront` sang trang khác vẫn để
-   * `document.hidden === false` — đã đo), nên ép thuộc tính rồi bắn đúng sự kiện
-   * mà trình duyệt sẽ bắn.
+   * **Đếm theo TỪNG VÒNG, không đếm tổng.** Trang có hai chuỗi `rAF` độc lập:
+   * vòng vẽ của bảng, và ticker nội bộ của Pixi — thứ làm việc dọn dẹp chứ
+   * không vẽ, và `app.stop()` không tắt được. Chốt cần canh là "vòng của bảng
+   * về 0", một mệnh đề đúng/sai; tổng của hai vòng thì là một con số phụ thuộc
+   * máy chạy nhanh hay chậm.
    *
-   * Đo được: trang chưa mở bảng gọi rAF **0 lần** một giây; mở bảng ra là ~135;
-   * ẩn đi còn ~60. Phần còn lại là ticker nội bộ của Pixi — nó làm việc dọn dẹp
-   * chứ không vẽ, và `app.stop()` không tắt được nó. Cả vòng vẽ của bảng lẫn
-   * ticker của renderer đều đã dừng.
+   * Hai bản trước đều đo tổng và đều đỏ trên CI vì lý do chẳng liên quan tới
+   * chốt: `quiet < busy / 2` đỏ vì phần dư của Pixi gần như cố định trong khi
+   * `busy` tuỳ máy; `busy - quiet > 25` đỏ vì nó thực chất đòi vòng vẽ chạy
+   * trên 25 khung/giây, và CI vốn chỉ đạt ~49 nên bất cứ thứ gì thêm vào luồng
+   * chính — một lượt fetch mới, một bảng gieo lười 180 hàng — đều đẩy nó xuống.
+   * Mỗi lần như thế lại chỉnh ngưỡng là chỉnh bài test theo máy, không theo
+   * điều nó muốn nói.
+   *
+   * Khoá phân biệt hai vòng là CHÍNH HÀM callback: một chuỗi `rAF` tự lặp lại
+   * bằng cùng một tham chiếu hàm, nên đếm theo danh tính hàm là tách được
+   * chúng — và cách này sống sót qua bản production đã rút gọn tên, chỗ mà
+   * `cb.name` thì không.
+   *
+   * Playwright không ẩn tab thật được (`bringToFront` sang trang khác vẫn để
+   * `document.hidden === false` — đã đo), nên ép thuộc tính rồi bắn đúng sự
+   * kiện mà trình duyệt sẽ bắn.
    */
   await page.addInitScript(() => {
     const real = window.requestAnimationFrame.bind(window);
-    (window as unknown as { rafCount: number }).rafCount = 0;
+    const ids = new Map<FrameRequestCallback, number>();
+    const counts: number[] = [];
+    (window as unknown as { rafCounts: () => number[] }).rafCounts = () => counts.slice();
     window.requestAnimationFrame = (cb: FrameRequestCallback) => {
-      (window as unknown as { rafCount: number }).rafCount += 1;
+      let id = ids.get(cb);
+      if (id === undefined) {
+        id = counts.length;
+        ids.set(cb, id);
+        counts.push(0);
+      }
+      counts[id] += 1;
       return real(cb);
     };
   });
   await signUp(page);
 
-  const read = () => page.evaluate(() => (window as unknown as { rafCount: number }).rafCount);
+  const read = () =>
+    page.evaluate(() => (window as unknown as { rafCounts: () => number[] }).rafCounts());
+  const since = (before: number[], after: number[]) =>
+    after.map((value, index) => value - (before[index] ?? 0));
+
   // Nền: chưa mở bảng thì trang không dùng rAF chút nào.
   const idle0 = await read();
   await page.waitForTimeout(1000);
-  expect((await read()) - idle0).toBeLessThan(5);
+  expect(since(idle0, await read()).reduce((a, b) => a + b, 0)).toBeLessThan(5);
 
   await openPet(page).click();
   await expect(page.locator("canvas")).toBeVisible();
   const busy0 = await read();
   await page.waitForTimeout(1000);
-  const busy = (await read()) - busy0;
-  expect(busy).toBeGreaterThan(50);
+  const busy = since(busy0, await read());
+  // Ít nhất một vòng phải đang chạy thật, nếu không phần sau chẳng chứng minh gì.
+  const running = busy.filter((n) => n > 20);
+  expect(running.length).toBeGreaterThan(0);
 
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", { value: true, configurable: true });
@@ -511,23 +538,27 @@ test("tab bị ẩn thì bảng thôi vẽ", async ({ page }) => {
   await page.waitForTimeout(250);
   const quiet0 = await read();
   await page.waitForTimeout(1000);
-  const quiet = (await read()) - quiet0;
+  const quiet = since(quiet0, await read());
 
   /*
-   * Đo phần công việc BIẾN MẤT, không đo tỉ lệ còn lại.
+   * Đếm SỐ VÒNG còn sống, không đếm số khung. Đo được (máy dev, ba chuỗi):
    *
-   * Bản đầu là `quiet < busy / 2` và nó đỏ trên CI: phần dư — ticker nội bộ của
-   * Pixi, thứ không tắt được từ đây — là một con số gần như CỐ ĐỊNH (~60 lượt
-   * mỗi giây), trong khi `busy` thì tuỳ máy. CI chạy bản production trên máy ảo
-   * và chỉ đạt ~110 thay vì ~135 như máy dev, nên `busy / 2` tụt xuống dưới cái
-   * phần dư cố định ấy và bài đỏ vì một lý do chẳng liên quan gì tới cái chốt nó
-   * đang canh.
+   *     có chốt : hiện [61,61,61] → ẩn [60, 0, 0]
+   *     gỡ chốt : hiện [62,62,62] → ẩn [73, 0,73]
    *
-   * Hiệu số thì nói đúng điều cần nói: "ít nhất chừng này lượt vẽ mỗi giây đã
-   * ngừng". Đo được: máy dev 135 → 60 (mất 75), CI 110 → 61 (mất 49). Gỡ chốt
-   * ra thì hiệu số về 0 và bài đỏ.
+   * Chuỗi 2 là vòng vẽ của bảng. Đúng một chuỗi được phép sống sót — ticker nội
+   * bộ của Pixi, thứ `app.stop()` không tắt được và bài này không canh.
+   *
+   * Ngưỡng 20 ở đây KHÔNG phải phép đo hiệu năng: nó tách "đang chạy" (60) khỏi
+   * "đã dừng" (0), một khoảng cách mà không máy chậm nào lấp được. Đó là toàn
+   * bộ khác biệt với hai bản trước, vốn đòi vòng vẽ đạt một tốc độ tối thiểu và
+   * vì thế đỏ mỗi khi CI có thêm việc trên luồng chính.
+   *
+   * Gỡ `cancelAnimationFrame` trong `onVisibility` của `petland.tsx` ra thì còn
+   * hai chuỗi sống và bài đỏ — đã kiểm.
    */
-  expect(busy - quiet).toBeGreaterThan(25);
+  const alive = busy.filter((frames, index) => frames > 20 && quiet[index] > 20).length;
+  expect(alive).toBeLessThanOrEqual(1);
 });
 
 test("xin giảm chuyển động thì vẫn chơi được bình thường", async ({ page, request }) => {
