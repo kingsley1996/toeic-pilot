@@ -57,6 +57,12 @@ FEATURES: tuple[AiFeature, ...] = (
         "PHẢI khác model sinh: model chấm bài của chính nó thì thiên vị bản thân, và điểm "
         "đẹp lên mà chất lượng không đổi.",
     ),
+    AiFeature(
+        "study_plan",
+        "Kế hoạch học bằng AI",
+        "Planner V2: AI xếp thứ tự ưu tiên mục kế hoạch từ danh sách ứng viên. Hỏng/tắt là "
+        "im lặng rơi về planner rule — người học không bao giờ thấy lỗi vì cái này.",
+    ),
 )
 
 

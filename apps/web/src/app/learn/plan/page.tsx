@@ -1,7 +1,15 @@
 "use client";
 
 import { API_ROUTES, type StudyPlanPublic } from "@toeic-pilot/shared";
-import { BookOpen, Calendar, CheckCircle2, Circle, RefreshCw, Target } from "lucide-react";
+import {
+  BookOpen,
+  Calendar,
+  CheckCircle2,
+  Circle,
+  RefreshCw,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
@@ -43,7 +51,7 @@ function PlanView() {
   const [error, setError] = useState<string | null>(null);
 
   const generate = useCallback(
-    async (attemptId: string | null) => {
+    async (attemptId: string | null, source: "rule" | "llm" = "rule") => {
       if (!token) return;
       setBusy(true);
       setError(null);
@@ -51,7 +59,10 @@ function PlanView() {
         const p = await apiFetch<StudyPlanPublic>(API_ROUTES.studyPlanGenerate, {
           method: "POST",
           token,
-          body: JSON.stringify(attemptId ? { attempt_id: attemptId } : {}),
+          body: JSON.stringify({
+            attempt_id: attemptId,
+            source,
+          }),
         });
         setPlan(p);
         setNone(false);
@@ -94,8 +105,8 @@ function PlanView() {
     return () => window.clearTimeout(t);
   }, [from, generate, load, token]);
 
-  async function regenerate() {
-    await generate(null);
+  async function regenerate(source: "rule" | "llm") {
+    await generate(null, source);
   }
 
   if (error) {
@@ -217,15 +228,25 @@ function PlanView() {
         ))}
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-3 border-t border-rule pt-5">
+      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-rule pt-5">
         <button
           type="button"
-          onClick={() => void regenerate()}
+          onClick={() => void regenerate("rule")}
           disabled={busy}
           className="inline-flex items-center gap-1.5 text-small font-semibold text-ink-muted hover:text-ink disabled:opacity-50"
         >
           <RefreshCw size={13} strokeWidth={2} aria-hidden />
-          {busy ? "Đang sinh lại…" : "Sinh lại kế hoạch từ kết quả mới nhất"}
+          Sinh lại kế hoạch từ kết quả mới nhất
+        </button>
+        <button
+          type="button"
+          onClick={() => void regenerate("llm")}
+          disabled={busy}
+          title="Planner thử nghiệm: AI xếp thứ tự ưu tiên từ cùng dữ liệu. Hỏng thì tự quay về planner thường."
+          className="inline-flex items-center gap-1.5 text-small font-semibold text-ink-muted hover:text-ink disabled:opacity-50"
+        >
+          <Sparkles size={13} strokeWidth={2} aria-hidden />
+          {busy ? "Đang sinh…" : "Thử xếp lại bằng AI"}
         </button>
         <Link
           href="/dashboard"

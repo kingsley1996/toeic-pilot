@@ -166,6 +166,8 @@ export type RubyRulePublic = components["schemas"]["RubyRulePublic"];
 export type AdminUserPublic = components["schemas"]["AdminUserPublic"];
 export type AdminUserStats = components["schemas"]["AdminUserStats"];
 export type UserActivity = components["schemas"]["UserActivity"];
+export type ComparePayload = components["schemas"]["ComparePayload"];
+export type EvalRow = components["schemas"]["EvalRow"];
 export type AdminUserPage = components["schemas"]["Page_AdminUserPublic_"];
 export type PlacementGate = components["schemas"]["PlacementGate"];
 export type PlacementResultPublic = components["schemas"]["PlacementResultPublic"];
@@ -265,6 +267,8 @@ export const API_ROUTES = {
   adminUser: (id: string) => `/api/v1/admin/users/${id}`,
   adminUserRuby: (id: string) => `/api/v1/admin/users/${id}/ruby`,
   adminUserActivity: (id: string) => `/api/v1/admin/users/${id}/activity`,
+  adminPlannerCompare: "/api/v1/admin/planner-compare",
+  adminPlannerRun: "/api/v1/admin/planner-compare/run",
   adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",
   adminPetSpeciesItem: (code: string) => `/api/v1/admin/pet/species/${code}`,

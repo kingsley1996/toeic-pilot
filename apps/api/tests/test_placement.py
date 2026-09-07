@@ -128,9 +128,9 @@ def test_gate_carries_latest_result_and_hides_pending(
     assert gate["in_progress_attempt_id"] is not None and gate["latest_cefr_overall"] is None
 
     # Nộp + phân tích: kết quả hiện lên, lượt dở biến mất.
+    detail = client.get(f"/api/v1/attempts/{attempt.id}", headers=auth("learner")).json()
     client.patch(
-        f"/api/v1/attempts/{attempt.id}/questions/"
-        f"{client.get(f'/api/v1/attempts/{attempt.id}', headers=auth('learner')).json()['questions'][0]['id']}",
+        f"/api/v1/attempts/{attempt.id}/questions/{detail['questions'][0]['id']}",
         json={"selected_option_id": None},
         headers=auth("learner"),
     )

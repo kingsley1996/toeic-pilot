@@ -102,10 +102,19 @@ TOEIC thật) — trừ khi người dùng bấm "dùng làm điểm hiện tạ
 
 | | V1 — Rule-based | V2 — LLM (UC4, T2) |
 |---|---|---|
-| Cách làm | Map tĩnh: kỹ năng yếu `GRAMMAR_*` → bài học ngữ pháp qua `grammar_topic_slug`; yếu part → part drill; thiếu nội dung → bỏ mục (N4) | Structured output, model **chọn từ danh sách ứng viên đã tra** (bài học, drill, đề) theo placement + target + thời gian/ngày; tầng ghi từ chối tham chiếu treo |
+| Cách làm | Map tĩnh: kỹ năng yếu `GRAMMAR_*` → bài học ngữ pháp qua `grammar_topic_slug`; yếu part → part drill; thiếu nội dung → bỏ mục (N4) | Structured output, model **chọn từ danh sách ứng viên đã tra** (bài học, drill) theo placement + target + thời gian/ngày; tầng ghi từ chối tham chiếu treo |
 | Ưu | Miễn phí, tức thời, test được từng nhánh | Cá nhân hoá theo bối cảnh (thời gian/ngày, exam date, trần target) |
 | Nhược | Cứng, không giải thích "vì sao thứ tự này" | Đắt, chậm, cần eval |
-| Bật khi nào | Mặc định | Flag, so sánh trước khi mặc định |
+| Bật khi nào | Mặc định | Nút "Thử xếp lại bằng AI" trên `/learn/plan`; hỏng ở BẤT KỲ bước nào → rơi về V1, không lỗi |
+
+**Đã dựng (2026-09-07):** V2 trong `services/planner_llm.py` — model chỉ nhận
+danh sách ứng viên (id ngắn + lý do dữ liệu), trả JSON `{items: [{id, reason}]}`;
+mỗi id được tra ngược ứng viên, ref trùng/launched ngoài danh sách bị bỏ.
+Prompt `plan_select.md` (runtime registry, version = hash nội dung), feature
+`study_plan` qua `AiFeatureConfig` (tắt → FeatureDisabled → fallback rule).
+Nguyên tắc sinh-lại: cùng lượt + cùng source = no-op trả kế hoạch hiện có;
+lượt CŨ hơn không được thay kế hoạch từ lượt mới hơn; đổi source (rule ↔ llm)
+= sinh lại — người dùng muốn nhìn planner khác đọc cùng một kết quả.
 
 **Thiết kế so sánh (N5):** cùng một bộ hồ sơ golden (placement result + target +
 thời gian) → cả hai planner → đo:

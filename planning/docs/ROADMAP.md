@@ -109,8 +109,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       + bước đầu tiên của tour. Planner V1 rule-based: `study_plan`/`study_plan_item`
       (068), kỹ năng yếu → bài học grammar / part drill, exam_date co ngân sách
       mục, tiến độ suy từ bản ghi học thật, `/learn/plan`; mục tiêu ôn thi là
-      MỘT nguồn `user_profile` (form placement prefill + ghi về). Lát 3: path B
-      (AI sinh form) + LLM planner + so sánh V1/V2 — `SPEC-PLACEMENT.md`
+      MỘT nguồn `user_profile` (form placement prefill + ghi về). Lát 3:
+      planner V2 LLM (`study_plan` qua `AiFeatureConfig`, chọn từ danh sách
+      ứng viên, fallback rule khi hỏng/tắt) + màn admin so sánh
+      `/admin/planner-compare` (chạy V1/V2 cùng input, lưu `planner_eval`
+      069, tổng hợp cost/trễ từ sổ `ai_interaction`) — `SPEC-PLACEMENT.md`
 
 - [x] ~~Màn quản trị thành viên~~ — **Xong (2026-09-07).** `/admin/users` +
       `admin_users.py` (6 endpoint, mọi thứ `require_role("admin")`): danh sách

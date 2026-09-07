@@ -1141,6 +1141,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/planner-compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare Data
+         * @description Các lượt placement đã phân tích gần nhất (để chọn chạy) + kết quả đã lưu
+         *     + tổng hợp sổ gọi model.
+         */
+        get: operations["compare_data_api_v1_admin_planner_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/planner-compare/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Run Compare
+         * @description Chạy so sánh trên một lượt: V1 (miễn phí) + V2 (gọi model thật). Kết
+         *     quả LƯU — trang đọc chỉ đọc, không ai mở trang là tốn một lượt gọi.
+         */
+        post: operations["run_compare_api_v1_admin_planner_compare_run_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/progression": {
         parameters: {
             query?: never;
@@ -3923,6 +3965,11 @@ export interface paths {
         /**
          * Generate
          * @description Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.
+         *
+         *     KHÔNG sinh lại mù quáng: trùng lượt với kế hoạch hiện hành → trả lại kế
+         *     hoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm "Tạo kế
+         *     hoạch" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả
+         *     mới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.
          */
         post: operations["generate_api_v1_study_plan_generate_post"];
         delete?: never;
@@ -4500,6 +4547,21 @@ export interface components {
         AssistantAsk: {
             /** Message */
             message: string;
+        };
+        /** AttemptOption */
+        AttemptOption: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Cefr Overall */
+            cefr_overall: string | null;
+            /** Email */
+            email: string;
+            /** Plan Source */
+            plan_source: string | null;
+            /** Started At */
+            started_at: string;
+            /** Weak Count */
+            weak_count: number;
         };
         /** AttemptPartProgress */
         AttemptPartProgress: {
@@ -5116,6 +5178,14 @@ export interface components {
             problems: string[];
             /** Skipped */
             skipped: number;
+        };
+        /** ComparePayload */
+        ComparePayload: {
+            /** Attempts */
+            attempts: components["schemas"]["AttemptOption"][];
+            /** Rows */
+            rows: components["schemas"]["EvalRow"][];
+            stats: components["schemas"]["LlmStats"];
         };
         /**
          * DailyTaskPublic
@@ -5925,6 +5995,44 @@ export interface components {
             /** Word Count */
             word_count?: number | null;
         };
+        /** EvalItem */
+        EvalItem: {
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+            /** Reason */
+            reason: string | null;
+        };
+        /** EvalRow */
+        EvalRow: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Cost Usd */
+            cost_usd: number | null;
+            /** Coverage */
+            coverage: number | null;
+            /** Created At */
+            created_at: string;
+            /** Dangling */
+            dangling: number;
+            /** Email */
+            email: string;
+            /** Error */
+            error: string | null;
+            /** Id */
+            id: string;
+            /** Latency Ms */
+            latency_ms: number;
+            /** Model */
+            model: string | null;
+            /** V1 Items */
+            v1_items: components["schemas"]["EvalItem"][];
+            /** V2 Items */
+            v2_items: components["schemas"]["EvalItem"][] | null;
+            /** Weak Count */
+            weak_count: number;
+        };
         /** FacetAccuracy */
         FacetAccuracy: {
             /** Agreeing */
@@ -6042,10 +6150,19 @@ export interface components {
         /**
          * GenerateFromPlacement
          * @description Không gửi gì = dùng lượt placement phân tích gần nhất.
+         *
+         *     `source`: `rule` (mặc định) hoặc `llm`. `llm` đi qua gateway — tính năng
+         *     `study_plan` chưa cấu hình/tắt/hỏng thì rơi về `rule`, KHÔNG lỗi: một kế
+         *     hoạch rule luôn tốt hơn một màn hình báo lỗi cho người học.
          */
         GenerateFromPlacement: {
             /** Attempt Id */
             attempt_id?: string | null;
+            /**
+             * Source
+             * @default rule
+             */
+            source: string;
         };
         /** GrammarLessonAdmin */
         GrammarLessonAdmin: {
@@ -6540,6 +6657,19 @@ export interface components {
         LevelTierUpdate: {
             /** Tiers */
             tiers: components["schemas"]["LevelTierAdmin"][];
+        };
+        /** LlmStats */
+        LlmStats: {
+            /** Avg Completion Tokens */
+            avg_completion_tokens: number | null;
+            /** Avg Cost Usd */
+            avg_cost_usd: number | null;
+            /** Avg Latency Ms */
+            avg_latency_ms: number | null;
+            /** Error */
+            error: number;
+            /** Ok */
+            ok: number;
         };
         /** LlmStatsPublic */
         LlmStatsPublic: {
@@ -7975,6 +8105,11 @@ export interface components {
             gift: components["schemas"]["RubyGiftPublic"];
             /** Recent */
             recent: components["schemas"]["RubyEntryPublic"][];
+        };
+        /** RunRequest */
+        RunRequest: {
+            /** Attempt Id */
+            attempt_id: string;
         };
         /** ServiceUptime */
         ServiceUptime: {
@@ -11079,6 +11214,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PetlandMapPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_data_api_v1_admin_planner_compare_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComparePayload"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_compare_api_v1_admin_planner_compare_run_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RunRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRow"];
                 };
             };
             /** @description Validation Error */

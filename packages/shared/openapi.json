@@ -290,6 +290,58 @@
         "title": "AssistantAsk",
         "type": "object"
       },
+      "AttemptOption": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cefr_overall": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cefr Overall"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "plan_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Source"
+          },
+          "started_at": {
+            "title": "Started At",
+            "type": "string"
+          },
+          "weak_count": {
+            "title": "Weak Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "email",
+          "started_at",
+          "cefr_overall",
+          "weak_count",
+          "plan_source"
+        ],
+        "title": "AttemptOption",
+        "type": "object"
+      },
       "AttemptPartProgress": {
         "properties": {
           "answered": {
@@ -1901,6 +1953,34 @@
           "problems"
         ],
         "title": "CommitResult",
+        "type": "object"
+      },
+      "ComparePayload": {
+        "properties": {
+          "attempts": {
+            "items": {
+              "$ref": "#/components/schemas/AttemptOption"
+            },
+            "title": "Attempts",
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/EvalRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/LlmStats"
+          }
+        },
+        "required": [
+          "attempts",
+          "rows",
+          "stats"
+        ],
+        "title": "ComparePayload",
         "type": "object"
       },
       "DailyTaskPublic": {
@@ -4099,6 +4179,150 @@
         "title": "EncounterTask",
         "type": "object"
       },
+      "EvalItem": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "label",
+          "kind",
+          "reason"
+        ],
+        "title": "EvalItem",
+        "type": "object"
+      },
+      "EvalRow": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cost_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Usd"
+          },
+          "coverage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coverage"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "dangling": {
+            "title": "Dangling",
+            "type": "integer"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "latency_ms": {
+            "title": "Latency Ms",
+            "type": "integer"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "v1_items": {
+            "items": {
+              "$ref": "#/components/schemas/EvalItem"
+            },
+            "title": "V1 Items",
+            "type": "array"
+          },
+          "v2_items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/EvalItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "V2 Items"
+          },
+          "weak_count": {
+            "title": "Weak Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "attempt_id",
+          "email",
+          "weak_count",
+          "v1_items",
+          "v2_items",
+          "coverage",
+          "dangling",
+          "model",
+          "cost_usd",
+          "latency_ms",
+          "error",
+          "created_at"
+        ],
+        "title": "EvalRow",
+        "type": "object"
+      },
       "FacetAccuracy": {
         "properties": {
           "agreeing": {
@@ -4430,7 +4654,7 @@
         "type": "object"
       },
       "GenerateFromPlacement": {
-        "description": "Không gửi gì = dùng lượt placement phân tích gần nhất.",
+        "description": "Không gửi gì = dùng lượt placement phân tích gần nhất.\n\n`source`: `rule` (mặc định) hoặc `llm`. `llm` đi qua gateway — tính năng\n`study_plan` chưa cấu hình/tắt/hỏng thì rơi về `rule`, KHÔNG lỗi: một kế\nhoạch rule luôn tốt hơn một màn hình báo lỗi cho người học.",
         "properties": {
           "attempt_id": {
             "anyOf": [
@@ -4443,6 +4667,12 @@
               }
             ],
             "title": "Attempt Id"
+          },
+          "source": {
+            "default": "rule",
+            "pattern": "^(rule|llm)$",
+            "title": "Source",
+            "type": "string"
           }
         },
         "title": "GenerateFromPlacement",
@@ -5775,6 +6005,60 @@
           "tiers"
         ],
         "title": "LevelTierUpdate",
+        "type": "object"
+      },
+      "LlmStats": {
+        "properties": {
+          "avg_completion_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Completion Tokens"
+          },
+          "avg_cost_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Cost Usd"
+          },
+          "avg_latency_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Latency Ms"
+          },
+          "error": {
+            "title": "Error",
+            "type": "integer"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ok",
+          "error",
+          "avg_cost_usd",
+          "avg_latency_ms",
+          "avg_completion_tokens"
+        ],
+        "title": "LlmStats",
         "type": "object"
       },
       "LlmStatsPublic": {
@@ -9711,6 +9995,19 @@
           "recent"
         ],
         "title": "RubyWallet",
+        "type": "object"
+      },
+      "RunRequest": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id"
+        ],
+        "title": "RunRequest",
         "type": "object"
       },
       "ServiceUptime": {
@@ -15942,6 +16239,104 @@
         "summary": "Save Map",
         "tags": [
           "petland"
+        ]
+      }
+    },
+    "/api/v1/admin/planner-compare": {
+      "get": {
+        "description": "Các lượt placement đã phân tích gần nhất (để chọn chạy) + kết quả đã lưu\n+ tổng hợp sổ gọi model.",
+        "operationId": "compare_data_api_v1_admin_planner_compare_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 30,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparePayload"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Compare Data",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/planner-compare/run": {
+      "post": {
+        "description": "Chạy so sánh trên một lượt: V1 (miễn phí) + V2 (gọi model thật). Kết\nquả LƯU — trang đọc chỉ đọc, không ai mở trang là tốn một lượt gọi.",
+        "operationId": "run_compare_api_v1_admin_planner_compare_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Run Compare",
+        "tags": [
+          "admin"
         ]
       }
     },
@@ -22612,7 +23007,7 @@
     },
     "/api/v1/study-plan/generate": {
       "post": {
-        "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.",
+        "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.\n\nKHÔNG sinh lại mù quáng: trùng lượt với kế hoạch hiện hành → trả lại kế\nhoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm \"Tạo kế\nhoạch\" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả\nmới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.",
         "operationId": "generate_api_v1_study_plan_generate_post",
         "requestBody": {
           "content": {

@@ -27,6 +27,7 @@ from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.part_practice import PartSession, PartSessionItem, PartTactics
 from app.models.pet import EggSetting, PetlandMap, PetOwned, PetSpecies, PetState
 from app.models.placement import PlacementResult
+from app.models.planner_eval import PlannerEval
 from app.models.practice import (
     Attempt,
     AttemptItem,
@@ -116,6 +117,7 @@ __all__ = [
     "KnowledgeChunk",
     "PartSession",
     "PlacementResult",
+    "PlannerEval",
     "StudyPlan",
     "StudyPlanItem",
     "PartSessionItem",

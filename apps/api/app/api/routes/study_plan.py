@@ -2,18 +2,19 @@
 
 GET trả kế hoạch hiện hành KÈM tiến độ suy từ bản ghi học thật (bài ngữ pháp
 đã hoàn thành, phiên part đã làm) — không có cột tick nào để lệch thực tế.
-POST `/generate` sinh từ một lượt placement đã phân tích; đi qua planner V1
-(rule-based), lượt llm có cột `source` sẵn nhưng chưa có đường ghi (lát 3).
+POST `/generate` sinh từ một lượt placement đã phân tích, qua planner V1
+(rule) hoặc V2 (llm, chọn từ danh sách ứng viên) — V2 hỏng ở bất kỳ đâu thì
+rơi về V1 thay vì báo lỗi cho người học.
 """
 
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_gateway
 from app.core.database import get_db
 from app.models import (
     Attempt,
@@ -24,17 +25,24 @@ from app.models import (
     StudyPlan,
     StudyPlanItem,
     User,
+    UserProfile,
 )
 from app.schemas.study_plan import StudyPlanItemPublic, StudyPlanPublic
-from app.services.study_planner import generate_plan
+from app.services.study_planner import generate_plan, write_plan
 
 router = APIRouter(prefix="/study-plan", tags=["study-plan"])
 
 
 class GenerateFromPlacement(BaseModel):
-    """Không gửi gì = dùng lượt placement phân tích gần nhất."""
+    """Không gửi gì = dùng lượt placement phân tích gần nhất.
+
+    `source`: `rule` (mặc định) hoặc `llm`. `llm` đi qua gateway — tính năng
+    `study_plan` chưa cấu hình/tắt/hỏng thì rơi về `rule`, KHÔNG lỗi: một kế
+    hoạch rule luôn tốt hơn một màn hình báo lỗi cho người học.
+    """
 
     attempt_id: uuid.UUID | None = None
+    source: str = Field(default="rule", pattern="^(rule|llm)$")
 
 
 def _current_plan(db: Session, user_id: uuid.UUID) -> StudyPlan | None:
@@ -155,17 +163,62 @@ def generate(
             )
     current = _current_plan(db, user.id)
     if current is not None:
-        source = db.get(Attempt, current.placement_attempt_id)
+        source_attempt = db.get(Attempt, current.placement_attempt_id)
         # `started_at` hai lượt so trong cùng một DB nên luôn cùng múi; trùng
         # lượt thì bằng nhau — rơi vào cả hai nhánh "không sinh mới". `source`
         # không thể None: kế hoạch luôn trỏ lượt placement có thật (N4), nhưng
         # `db.get` trả Optional nên phải chốt trước khi so.
-        if source is not None and (
-            source.id == attempt.id or attempt.started_at <= source.started_at
-        ):
+        #
+        # Không sinh mới chỉ khi MỌI thứ không đổi: lượt cũ hơn hoặc bằng, VÀ
+        # cùng source. Đổi source (rule ↔ llm) là muốn nhìn planner khác đọc
+        # cùng một kết quả — sinh lại.
+        same_or_older = source_attempt is not None and (
+            source_attempt.id == attempt.id or attempt.started_at <= source_attempt.started_at
+        )
+        same_source = body is not None and current.source == body.source
+        if same_or_older and same_source:
             return _plan_public(db, user.id, current)
+    if body is not None and body.source == "llm":
+        try:
+            plan = _generate_llm(db, user.id, attempt)
+        except Exception:  # noqa: BLE001 — mọi hỏng hóc của đường LLM rơi về rule
+            plan = generate_plan(db, user.id, attempt)
+        return _plan_public(db, user.id, plan)
     try:
         plan = generate_plan(db, user.id, attempt)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
     return _plan_public(db, user.id, plan)
+
+
+def _generate_llm(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPlan:
+    """Planner V2: LLM chọn từ danh sách ứng viên. Hỏng ở bất kỳ bước nào →
+    ném ra để nơi gọi rơi về V1."""
+    from datetime import UTC, datetime
+
+    from app.services.planner_llm import llm_select
+    from app.services.study_planner import budget_for, weak_items
+
+    profile = db.get(UserProfile, user_id)
+    weak = weak_items(db, attempt)
+    if not weak:
+        raise ValueError("không có điểm yếu nào đủ mẫu số để lập kế hoạch")
+    raw = db.get(PlacementResult, attempt.id)
+    summary = (
+        f"Nghe {raw.listening_raw}/{42 if raw.listening_raw else '?'} câu, "
+        f"Đọc {raw.reading_raw}/{42 if raw.reading_raw else '?'} câu"
+        if raw
+        else "không có tóm tắt"
+    )
+    picks = llm_select(
+        get_gateway(db),
+        db,
+        weak=weak,
+        budget=budget_for(datetime.now(UTC).date(), profile.exam_date if profile else None),
+        target_score=profile.target_score if profile else None,
+        exam_date=profile.exam_date if profile else None,
+        raw_summary=summary,
+    )
+    if picks is None:
+        raise ValueError("LLM không trả được lựa chọn hợp lệ")
+    return write_plan(db, user_id, attempt, picks, source="llm")

@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ClipboardList,
   Cpu,
+  FlaskConical,
   FolderTree,
   Frame,
   Gauge,
@@ -134,6 +135,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
       { href: "/admin/ai/skill-tags", label: "Skill labels", Icon: Tags },
       { href: "/admin/ai/providers", label: "Providers", Icon: Cpu },
       { href: "/admin/ai/features", label: "Model picker", Icon: ListChecks },
+      { href: "/admin/planner-compare", label: "Planner compare", Icon: FlaskConical },
     ],
   },
 ];

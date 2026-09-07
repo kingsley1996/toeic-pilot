@@ -13,6 +13,7 @@ from app.api.routes import (
     admin_dictation,
     admin_grammar,
     admin_pet,
+    admin_planner,
     admin_progression,
     admin_questions,
     admin_ruby,
@@ -107,6 +108,7 @@ app.include_router(admin_questions.router, prefix="/api/v1")
 app.include_router(admin_ai.router, prefix="/api/v1")
 app.include_router(admin_progression.router, prefix="/api/v1")
 app.include_router(admin_pet.router, prefix="/api/v1")
+app.include_router(admin_planner.router, prefix="/api/v1")
 app.include_router(admin_ruby.router, prefix="/api/v1")
 app.include_router(admin_system.router, prefix="/api/v1")
 app.include_router(admin_users.router, prefix="/api/v1")

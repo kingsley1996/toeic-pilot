@@ -206,21 +206,29 @@ def test_older_result_click_cannot_replace_newer_plan(
     for q in db_session.scalars(select(Question).where(Question.part == 5)).all():
         db_session.add(QuestionLabel(question_id=q.id, facet="grammar", code="GRAMMAR_TENSE"))
     db_session.commit()
-    first = client.post(
-        "/api/v1/study-plan/generate", headers=auth("learner"), json={"attempt_id": str(attempt_old.id)}
-    ).json()
+    # Sinh kế hoạch cho lượt CŨ; nội dung của nó không được kiểm ở đây, chỉ cần
+    # nó tồn tại để lượt mới có cái mà thay thế.
+    client.post(
+        "/api/v1/study-plan/generate",
+        headers=auth("learner"),
+        json={"attempt_id": str(attempt_old.id)},
+    )
 
     # Lượt placement MỚI hơn (bài retake) → sinh lại.
     time.sleep(0.02)  # đảm bảo started_at mới hơn
     attempt_new = build_world(db_session, me)
     second = client.post(
-        "/api/v1/study-plan/generate", headers=auth("learner"), json={"attempt_id": str(attempt_new.id)}
+        "/api/v1/study-plan/generate",
+        headers=auth("learner"),
+        json={"attempt_id": str(attempt_new.id)},
     ).json()
     assert second["placement_attempt_id"] == str(attempt_new.id)
 
     # Bấm lại từ lượt CŨ: kế hoạch hiện hành giữ nguyên.
     stale = client.post(
-        "/api/v1/study-plan/generate", headers=auth("learner"), json={"attempt_id": str(attempt_old.id)}
+        "/api/v1/study-plan/generate",
+        headers=auth("learner"),
+        json={"attempt_id": str(attempt_old.id)},
     ).json()
     assert stale["placement_attempt_id"] == str(attempt_new.id)
 
@@ -300,7 +308,9 @@ def test_part_drill_needs_at_least_one_answer(
     build_world(db_session, me)
     weak_questions = db_session.scalars(select(Question).where(Question.part == 5)).all()
     for weak_question in weak_questions:
-        db_session.add(QuestionLabel(question_id=weak_question.id, facet="grammar", code="GRAMMAR_TENSE"))
+        db_session.add(
+            QuestionLabel(question_id=weak_question.id, facet="grammar", code="GRAMMAR_TENSE")
+        )
     db_session.commit()
 
     plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
@@ -318,7 +328,9 @@ def test_part_drill_needs_at_least_one_answer(
     db_session.add(
         PartSessionItem(
             session_id=answered_session.id,
-            question_id=db_session.scalar(select(Question).where(Question.part == part).limit(1)).id,
+            question_id=db_session.scalar(
+                select(Question).where(Question.part == part).limit(1)
+            ).id,
             position=1,
             answered_at=now,
         )
@@ -328,3 +340,100 @@ def test_part_drill_needs_at_least_one_answer(
     again = client.get("/api/v1/study-plan", headers=auth("learner")).json()
     drill_after = next(i for i in again["items"] if i["kind"] == "part_drill")
     assert drill_after["done"] is True
+
+
+def test_llm_planner_picks_from_candidates_and_falls_back(
+    client: TestClient, db_session: Session, auth, fake_redis, monkeypatch
+) -> None:
+    """V2 chọn từ ứng viên và DÙNG được; hỏng thì rơi về V1 — kế hoạch vẫn có."""
+    import json as _json
+
+    from app.services.llm.fake import FakeProvider
+    from tests.test_enrich_skills import gateway_with  # type: ignore[attr-defined]
+
+    me = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    build_world(db_session, me)
+    for q in db_session.scalars(select(Question).where(Question.part == 5)).all():
+        db_session.add(QuestionLabel(question_id=q.id, facet="grammar", code="GRAMMAR_TENSE"))
+        # Một nhãn question_type cho part 5 — LLM cần ÍT NHẤT HAI ứng viên
+        # (MIN_PICKS) để không rơi về rule trong kịch bản thành công.
+        db_session.add(
+            QuestionLabel(question_id=q.id, facet="question_type", code="PART_5_GRAMMAR")
+        )
+    make_weak_topic_with_lesson(db_session)
+    db_session.add(
+        GrammarTopic(
+            code="GRAMMAR_TENSE",
+            slug=f"thi-{uuid.uuid4().hex[:4]}",
+            title="Thì",
+            status="published",
+            position=1,
+        )
+    )
+    db_session.flush()
+    topic = db_session.scalar(select(GrammarTopic).where(GrammarTopic.code == "GRAMMAR_TENSE"))
+    db_session.add(
+        GrammarLesson(
+            topic_id=topic.id,
+            slug=f"thi-{uuid.uuid4().hex[:4]}",
+            title="Thì 1",
+            kind="theory",
+            body="Nội dung",
+            status="published",
+            position=1,
+        )
+    )
+    db_session.commit()
+
+    # Model trả đúng JSON: chọn 1 ứng viên grammar + 1 ứng viên part.
+    def reply(request):
+        picks = []
+        for line in request.user.splitlines():
+            if "candidate_id: g" in line:
+                picks.append(
+                    {"id": line.split("candidate_id: ")[1].split(" ")[0], "reason": "yếu nhất"}
+                )
+            elif "candidate_id: p" in line:
+                picks.append(
+                    {"id": line.split("candidate_id: ")[1].split(" ")[0], "reason": "part yếu"}
+                )
+        return _json.dumps({"items": picks})
+
+    provider = FakeProvider(reply=reply)
+    gw = gateway_with(db_session, fake_redis, provider)
+    monkeypatch.setattr("app.api.routes.study_plan.get_gateway", lambda db: gw)
+
+    plan = client.post(
+        "/api/v1/study-plan/generate", headers=auth("learner"), json={"source": "llm"}
+    ).json()
+    assert plan["source"] == "llm"
+    assert len(plan["items"]) == 2
+    assert all(i["reason"] for i in plan["items"])
+
+    # Model trả rác: rơi về rule, kế hoạch vẫn có và source là rule.
+    # Thế giới MỚI — vì kế hoạch llm của lượt này đã tồn tại, POST lại cùng
+    # lượt + cùng source là no-op đúng nghĩa (trả cái cũ, không gọi provider).
+    broken = FakeProvider(reply="không phải json")
+    gw2 = gateway_with(db_session, fake_redis, broken)
+    monkeypatch.setattr("app.api.routes.study_plan.get_gateway", lambda db: gw2)
+    fresh = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    attempt_fresh = build_world(db_session, fresh)
+    fresh_qids = [
+        row[0]
+        for row in db_session.execute(
+            select(Question.id)
+            .join(QuestionLabel, QuestionLabel.question_id == Question.id, isouter=True)
+            .where(Question.part == 5, QuestionLabel.question_id.is_(None))
+        ).all()
+    ]
+    for qid in fresh_qids:
+        db_session.add(QuestionLabel(question_id=qid, facet="grammar", code="GRAMMAR_TENSE"))
+        db_session.add(QuestionLabel(question_id=qid, facet="question_type", code="PART_5_GRAMMAR"))
+    db_session.commit()
+    fallback = client.post(
+        "/api/v1/study-plan/generate",
+        headers=auth("learner"),
+        json={"source": "llm", "attempt_id": str(attempt_fresh.id)},
+    ).json()
+    assert fallback["source"] == "rule"
+    assert fallback["items"]

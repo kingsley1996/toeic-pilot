@@ -10,6 +10,7 @@ N4 áp cho từng mục: bài học không tồn tại thì mục không đượ
 """
 
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 
 from sqlalchemy import select, update
@@ -38,10 +39,27 @@ _ITEMS_FEW_DAYS = 6
 _ITEMS_NORMAL = 10
 
 
-def _items_budget(today: date, exam_date: date | None) -> int:
+@dataclass(frozen=True, slots=True)
+class DraftItem:
+    """Một mục kế hoạch trước khi ghi — cả hai planner cùng trả hình dạng này."""
+
+    kind: str
+    part: int
+    ref_id: uuid.UUID | None
+    label: str
+    reason: str | None
+
+
+def budget_for(today: date, exam_date: date | None) -> int:
+    """Số mục tối đa — tên công khai vì planner LLM dùng chung phép này."""
     if exam_date is None:
         return _ITEMS_NORMAL
     return _ITEMS_FEW_DAYS if (exam_date - today).days <= 14 else _ITEMS_NORMAL
+
+
+def weak_items(db: Session, attempt: Attempt) -> list[tuple[str, int, int]]:
+    """Tên công khai của `_weak_skills` — planner LLM đọc cùng dữ liệu này."""
+    return _weak_skills(db, attempt)
 
 
 def _weak_skills(db: Session, attempt: Attempt) -> list[tuple[str, int, int]]:
@@ -101,41 +119,64 @@ def _weak_parts(db: Session, attempt: Attempt) -> list[tuple[int, int, int]]:
     )
 
 
-def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPlan:
-    """Sinh kế hoạch hiện hành mới từ một lượt placement ĐÃ phân tích.
-
-    Kế hoạch cũ bị hạ `is_current` trong cùng giao dịch — hai kế hoạch hiện
-    hành không bao giờ cùng tồn tại, dù hai request tới cạnh nhau.
-    """
-    result = db.get(PlacementResult, attempt.id)
-    if result is None or result.estimator_version == "pending":
-        raise ValueError("lượt làm này chưa được phân tích")
-
+def write_plan(
+    db: Session,
+    user_id: uuid.UUID,
+    attempt: Attempt,
+    items: list[DraftItem],
+    *,
+    source: str = "rule",
+) -> StudyPlan:
+    """Ghi danh sách mục thành kế hoạch hiện hành — phần dùng chung của cả hai
+    planner. Hạ kế hoạch cũ trong cùng giao dịch: hai kế hoạch hiện hành không
+    bao giờ cùng tồn tại, dù hai request tới cạnh nhau."""
     profile = db.get(UserProfile, user_id)
-    target = profile.target_score if profile else None
-    exam_date = profile.exam_date if profile else None
-    today = datetime.now(UTC).date()
 
     db.execute(
         update(StudyPlan)
         .where(StudyPlan.user_id == user_id, StudyPlan.is_current.is_(True))
         .values(is_current=False)
     )
-
     plan = StudyPlan(
         user_id=user_id,
         placement_attempt_id=attempt.id,
-        target_score=target,
-        exam_date=exam_date,
-        source="rule",
+        target_score=profile.target_score if profile else None,
+        exam_date=profile.exam_date if profile else None,
+        source=source,
         is_current=True,
     )
     db.add(plan)
     db.flush()
+    for position, item in enumerate(items, start=1):
+        db.add(
+            StudyPlanItem(
+                plan_id=plan.id,
+                position=position,
+                kind=item.kind,
+                part=item.part,
+                ref_id=item.ref_id,
+                label=item.label,
+                reason=item.reason,
+            )
+        )
+    db.commit()
+    db.refresh(plan)
+    return plan
 
-    budget = _items_budget(today, exam_date)
+
+def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPlan:
+    """Sinh kế hoạch hiện hành mới từ một lượt placement ĐÃ phân tích."""
+    result = db.get(PlacementResult, attempt.id)
+    if result is None or result.estimator_version == "pending":
+        raise ValueError("lượt làm này chưa được phân tích")
+
+    profile = db.get(UserProfile, user_id)
+    exam_date = profile.exam_date if profile else None
+    today = datetime.now(UTC).date()
+    budget = budget_for(today, exam_date)
     position = 1
     drilled_parts: set[int] = set()
+    items: list[DraftItem] = []
 
     # 1. Kỹ năng yếu, yếu nhất trước. Mã `grammar` → bài học đầu tiên của chủ
     #    đề cùng mã; mã `question_type` → drill part khai trong registry. Mục
@@ -162,10 +203,8 @@ def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
             )
             if lesson is None:
                 continue
-            db.add(
-                StudyPlanItem(
-                    plan_id=plan.id,
-                    position=position,
+            items.append(
+                DraftItem(
                     kind="grammar_lesson",
                     part=5,
                     ref_id=lesson.id,
@@ -179,10 +218,8 @@ def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
         part = label.parts[0] if label.parts else None
         if part is not None and part not in drilled_parts:
             drilled_parts.add(part)
-            db.add(
-                StudyPlanItem(
-                    plan_id=plan.id,
-                    position=position,
+            items.append(
+                DraftItem(
                     kind="part_drill",
                     part=part,
                     ref_id=None,
@@ -201,10 +238,8 @@ def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
         if part in drilled_parts:
             continue
         drilled_parts.add(part)
-        db.add(
-            StudyPlanItem(
-                plan_id=plan.id,
-                position=position,
+        items.append(
+            DraftItem(
                 kind="part_drill",
                 part=part,
                 ref_id=None,
@@ -214,6 +249,4 @@ def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
         )
         position += 1
 
-    db.commit()
-    db.refresh(plan)
-    return plan
+    return write_plan(db, user_id, attempt, items, source="rule")
