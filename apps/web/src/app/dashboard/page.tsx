@@ -451,6 +451,17 @@ export default function TodayPage() {
                chiếm cả chiều ngang như ảnh mẫu: trên một bảng điều khiển đầy số,
                việc cần làm phải to hơn thứ đang mô tả tình hình. */
             <div className="mt-6 flex flex-col gap-2 border-t border-rule pt-5">
+              {/* Hai badge riêng thay vì một con số gộp: tổng trên nút bằng
+                  tổng thẻ trong lô, mà không tách thì số đó mâu thuẫn với
+                  huy hiệu "đến hạn" trên nav khi lô có kèm từ mới. */}
+              <div className="flex flex-wrap gap-2">
+                {session && session.due_count > 0 && (
+                  <Tag tone="warn">{session.due_count} ôn lại</Tag>
+                )}
+                {session && session.new_count > 0 && (
+                  <Tag tone="action">{session.new_count} từ mới</Tag>
+                )}
+              </div>
               <ButtonLink href="/learn/review" size="lg" className="w-full justify-center">
                 <RotateCcw size={16} strokeWidth={2} aria-hidden />
                 {onlyNew ? "Học từ mới" : "Ôn tập ngay"}

@@ -25,6 +25,8 @@ import { useRequireSession } from "@/lib/session";
 export default function ReviewPage() {
   const { status, token } = useRequireSession();
   const [cards, setCards] = useState<ReviewCard[] | null>(null);
+  const [dueCount, setDueCount] = useState(0);
+  const [newCount, setNewCount] = useState(0);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -35,6 +37,8 @@ export default function ReviewPage() {
       apiFetch<ReviewSession>(API_ROUTES.reviewSession, { token: t })
         .then((session) => {
           setCards(session.cards);
+          setDueCount(session.due_count);
+          setNewCount(session.new_count);
           setIndex(0);
           setFlipped(false);
         })
@@ -142,14 +146,25 @@ export default function ReviewPage() {
 
   return (
     <Page className="max-w-2xl">
-      <div className="mb-6 flex items-center gap-4">
+      <div className="mb-4 flex items-center gap-4">
         <div className="flex-1">
           <Meter value={index} max={cards.length} ticks={Math.min(cards.length, 8)} />
         </div>
         <span className="shrink-0 font-data text-small text-ink-muted">
           {index + 1}/{cards.length}
         </span>
-        {card?.is_new && <Tag tone="action">từ mới</Tag>}
+        {card && (
+          <Tag tone={card.is_new ? "action" : "warn"}>{card.is_new ? "từ mới" : "ôn lại"}</Tag>
+        )}
+      </div>
+
+      {/* Thành phần của lô: hàng đợi SM-2 và ngạch từ mới mỗi ngày chảy vào
+          cùng một lượt ôn, nên tổng thẻ có thể lớn hơn số đến hạn trên huy
+          hiệu. Hai con số phải hiện rõ ở đây, không để người học tự đếm rồi
+          nghi ngờ con số ở nơi khác. */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {dueCount > 0 && <Tag tone="warn">{dueCount} ôn lại</Tag>}
+        {newCount > 0 && <Tag tone="action">{newCount} từ mới</Tag>}
       </div>
 
       {error && (
