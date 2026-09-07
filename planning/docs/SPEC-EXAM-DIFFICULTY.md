@@ -120,15 +120,87 @@ thì mọi lời trích có dấu phẩy hay dấu nháy đều bị báo là b�
 Phân bố ở §2 được ghim bằng test trong `tests/test_exam_generation.py`: mix trôi
 bằng một dòng sửa mà không ai thấy.
 
-## 4. Việc này KHÔNG sửa được gì cho đề đang có
+## 4. Bộ chọn đề placement — sửa riêng, và có tác dụng ngay
 
-Mix và prompt chỉ ảnh hưởng đề **sinh mới**. 855 câu trong kho không đổi.
+Mix và prompt ở §2 chỉ ảnh hưởng đề **sinh mới**; 855 câu trong kho không đổi.
+Với đề đã có, chỗ hỏng nằm ở **bộ chọn** chứ không ở nội dung.
 
-Với đề đã có, chỗ hỏng nằm ở **bộ chọn** chứ không ở nội dung: `make_placement.py`
-lấy các cụm ĐẦU của mỗi part, mà đề TOEIC xếp từ dễ đến khó trong từng part. Đo
-trên `tp-test-09`: câu biểu đồ Part 3 nằm ở 64–70 còn bộ chọn lấy 32–43; Part 4
-là 85–99 và bộ chọn lấy 71–82. **Không giao nhau chút nào.** Kết quả:
-`tp-placement-01` có 0 câu biểu đồ (kho có 15), 0 câu hàm ý Part 4 (kho có 7), 0
-câu điền câu Part 7 (kho có 6). Kho đã có sẵn câu khó; đề chỉ không lấy chúng.
+`make_placement.py` lấy các cụm ĐẦU của mỗi part, mà đề TOEIC xếp từ dễ đến khó
+trong từng part. Đo trên `tp-test-09`:
 
-Đó là một việc riêng, rẻ hơn, và có tác dụng ngay trên kho hiện tại.
+| Part | Part trải từ câu | Câu dạng khó nằm ở | Bộ chọn lấy |
+|---|---|---|---|
+| 3 | 32–70 | **64–70** | 32–43 |
+| 4 | 71–100 | **85–99** | 71–82 |
+
+Không giao nhau chút nào. Kết quả: `tp-placement-01` có **0** câu biểu đồ (kho
+có 15), **0** câu hàm ý Part 4 (kho có 7), **0** câu điền câu Part 7 (kho có 6),
+**0** câu từ vựng trong ngữ cảnh (kho có 22), và Part 5 chỉ 2/20 câu từ vựng
+trong khi chính đề nguồn có tỉ lệ 7/30. Kho đã có sẵn câu khó; đề chỉ không lấy.
+
+### 4.1 Chọn theo dạng câu, không theo vị trí
+
+Vị trí **không** phải thứ để sửa theo. Đề nguồn do chính pipeline này sinh ra, và
+blueprint xáo Part 2 và Part 5 theo seed — ở đó vị trí không mang tín hiệu độ khó
+nào. Thứ mang tín hiệu là dạng câu, và nó có nhãn.
+
+- `PLACEMENT_MIX` — định mức từng dạng cho Part 2 và Part 5 (chọn được từng câu).
+  Part 5 nay là 8 ngữ pháp / 6 từ loại / **6 từ vựng**.
+- `PRIORITY` — dạng khó mà đề PHẢI có ít nhất một câu. Đúng những dạng bộ chọn cũ
+  lấy trọn 0.
+- `EASY` — hai dạng dễ nhất của mỗi part nghe/đọc dài; cụm đặc chúng lấy sau cùng.
+  Đây là thứ thay cho "lấy cụm đầu tiên".
+
+Với part chọn theo cụm, hai chặng và **thứ tự giữa chúng là toàn bộ điểm**: mỗi
+mã `PRIORITY` lấy một cụm chứa nó (cụm nhỏ nhất, để còn chỗ), rồi phần còn lại
+xếp theo tỉ lệ câu dễ tăng dần. Đảo lại thì chặng hai ăn hết định mức và cụm có
+biểu đồ không bao giờ tới lượt — đúng cái đã xảy ra, chỉ khác lý do.
+
+### 4.2 Lấp cho ĐÚNG định mức, không "gần đủ"
+
+Cụm Part 7 dài 2 tới 5 câu, nên "lấy tiếp nếu còn vừa" dừng ở 13/14 rồi tắc:
+không có cụm một câu nào để bù. `_fill_exactly` là quy hoạch động trên số câu —
+mười lăm cụm và `need ≤ 14` nên nó tức thời. Phép kiểm 84 câu vẫn đứng nguyên;
+thứ được sửa là phép chọn, không phải phép kiểm.
+
+### 4.3 Đủ 12 mã ngữ pháp, bằng luật chứ không bằng may
+
+§0.4 của spec placement chọn 20 câu Part 5 chính vì "mỗi nhãn `grammar` hiện diện
+ít nhất một câu". Định mức mới xếp theo `question_type`, nên một mã ngữ pháp hiếm
+có thể rơi ra ngoài — và điều đó không vô hại: planner đọc kỹ năng yếu theo mã
+`GRAMMAR_*`, nên một mã vắng mặt nghĩa là người yếu điểm ấy không bao giờ bị phát
+hiện.
+
+Hai lần vá, cả hai đều **đổi chỗ chứ không thêm câu**, nên định mức không đổi:
+trong Part 5 đổi câu cùng `question_type`; ở Part 6 (lấy 2 trong 4 cụm) đổi cả
+cụm cùng kích thước. Bộ chọn cũ phủ đủ 12 mã, nhưng do may — nó lấy hai cụm đầu.
+
+### 4.4 Kết quả đo được
+
+`--preview` in phân bố mà không ghi gì. Trên kho ngày 2026-09-07:
+
+| | Cũ | Mới |
+|---|---|---|
+| Câu biểu đồ (P3+P4) | 0 | 2 |
+| Câu hàm ý (P4) | 0 | 1 |
+| Điền câu (P7) | 0 | 1 |
+| Từ vựng trong ngữ cảnh (P7) | 0 | 1 |
+| Từ vựng Part 5 | 2/20 | 6/20 |
+| Hai dạng dễ nhất của P7 | 9/14 (64%) | 6/14 (43%) |
+| Mã ngữ pháp phủ được | 12 (do may) | 12 (do luật) |
+
+`PART_3_IMPLICATION` vẫn thiếu và `describe()` nói ra điều đó: mã ấy mới thêm ở
+§2.2, đề nguồn cũ không có câu nào. Nó sẽ có ở đề sinh sau.
+
+## 5. Đổi đề placement thì đổi thế nào
+
+`build()` từ chối dựng lại một đề đã published — đổi đề dưới chân người học. Nên
+đề mới là **slug mới** (`--slug`), và `--publish` chuyển đề cũ sang `archived`,
+không xoá: lượt làm cũ vẫn trỏ vào nó và màn xem lại vẫn phải đọc được.
+
+Lưu trữ đề cũ là bắt buộc chứ không phải dọn dẹp. `_placement_test()` chọn bằng
+`db.scalar` trên `(is_placement, published)`; hai đề cùng thoả thì nó lấy một cái
+tuỳ ý, và hai người học làm hai đề khác nhau mà kết quả vẫn được đem so với nhau.
+
+Kết quả cũ không bị ảnh hưởng: `placement_result` là snapshot gắn lượt làm
+(SPEC-PLACEMENT §4), nên người đã đo trình độ giữ nguyên phán quyết của đề cũ.

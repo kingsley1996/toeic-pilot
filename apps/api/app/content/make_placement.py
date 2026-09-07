@@ -3,11 +3,18 @@
     uv run python -m app.content.make_placement                # tạo/cập nhật draft
     uv run python -m app.content.make_placement --publish      # duyệt + xuất bản
 
-Định mức 84 câu (§0 của spec) được cắt theo NGUYÊN CỤM: P1 6, P2 12 (đủ phủ
-nhãn `question_type`), P3 4 cụm, P4 4 cụm, P5 20 (mỗi nhãn `grammar` ít nhất
-một câu), P6 2 set, P7 chọn cụm nguyên cộng lại gần nhất 14. Cắt lệch phần dư
-chấp nhận được; cắt cụm thì không — một nửa cuộc hội thoại không phải một câu
-hỏi trắc nghiệm độc lập.
+    uv run python -m app.content.make_placement --preview     # chỉ xem, không ghi
+
+Định mức 84 câu (§0 của spec): P1 6, P2 12, P3 12, P4 12, P5 20, P6 8, P7 14.
+Cắt lệch phần dư chấp nhận được; cắt cụm thì không — một nửa cuộc hội thoại
+không phải một câu hỏi trắc nghiệm độc lập.
+
+**Chọn theo DẠNG CÂU, không theo vị trí.** Bản đầu lấy phần đầu của mỗi part, và
+đề TOEIC xếp từ dễ đến khó trong từng part, nên đề placement là đầu của bảy part
+cộng lại: 0 câu biểu đồ, 0 câu hàm ý, 0 câu điền câu — trong khi kho có đủ cả ba.
+`PRIORITY` liệt kê những dạng khó phải có mặt và `EASY` liệt kê hai dạng dễ nhất
+của mỗi part để cụm đặc chúng bị lấy sau. Đo và lập luận ở
+`SPEC-EXAM-DIFFICULTY` §4.
 
 Số câu (`number`) đánh tuần tự 1..N theo part — đề mini không nhảy cóc kiểu
 đề 200 câu, và số nhảy cóc phải là thứ có người nhìn thấy và đồng ý (ADR-007
@@ -16,6 +23,7 @@ Số câu (`number`) đánh tuần tự 1..N theo part — đề mini không nh�
 
 import argparse
 from collections import Counter
+from collections.abc import Callable
 from uuid import UUID
 
 from sqlalchemy import select
@@ -71,60 +79,301 @@ def _labels_of(db: Session, facet: str, ids: list[UUID]) -> dict[UUID, list[str]
     return out
 
 
-def _pick_by_labels(
-    questions: list[Question], labels: dict[UUID, list[str]], n: int
+# Định mức theo DẠNG CÂU, cho những part chọn được từng câu một.
+#
+# Bộ chọn cũ lấy **phần đầu** của mỗi part, và đề TOEIC xếp từ dễ đến khó trong
+# từng part — nên đề placement là đầu của bảy part cộng lại. Đo trên `tp-test-09`:
+# câu biểu đồ Part 3 nằm ở 64–70 còn bộ chọn lấy 32–43, Part 4 là 85–99 và bộ
+# chọn lấy 71–82. Không giao nhau chút nào.
+#
+# Nhưng vị trí KHÔNG phải thứ để sửa theo. Đề nguồn do chính pipeline này sinh
+# ra, và blueprint xáo Part 2 và Part 5 theo seed — ở đó vị trí không mang tín
+# hiệu độ khó nào. Thứ mang tín hiệu là **dạng câu**, và nó có nhãn.
+PLACEMENT_MIX: dict[int, dict[str, int]] = {
+    # Mười dạng câu hỏi, mỗi dạng ít nhất một câu. Trục độ khó thật của Part 2 —
+    # đáp án đúng trả lời gián tiếp hay không — KHÔNG có nhãn, nên bộ chọn không
+    # thấy nó; xem `SPEC-EXAM-DIFFICULTY` §2.1.
+    2: {
+        "PART_2_WHERE_QUESTION": 2,
+        "PART_2_REQUEST_OR_SUGGESTION": 2,
+        "PART_2_WHO_QUESTION": 1,
+        "PART_2_WHEN_QUESTION": 1,
+        "PART_2_HOW_QUESTION": 1,
+        "PART_2_WHY_QUESTION": 1,
+        "PART_2_YES_NO_QUESTION": 1,
+        "PART_2_TAG_QUESTION": 1,
+        "PART_2_CHOICE_QUESTION": 1,
+        "PART_2_STATEMENT": 1,
+    },
+    # Từ vựng là dạng khó nhất của Part 5 — nó không có quy tắc để suy ra. Bộ
+    # chọn cũ phủ theo nhãn `grammar` và ra 2/20 câu từ vựng, mỏng hơn cả tỉ lệ
+    # của chính kho (7/30 trong đề nguồn).
+    5: {
+        "PART_5_GRAMMAR": 8,
+        "PART_5_PART_OF_SPEECH": 6,
+        "PART_5_VOCABULARY": 6,
+    },
+}
+
+# Dạng câu mà đề placement PHẢI có ít nhất một câu, dù nó nằm ở cụm nào trong
+# part. Đây là những dạng khó nhất, và đúng những dạng mà bộ chọn cũ lấy trọn 0.
+PRIORITY: dict[int, tuple[str, ...]] = {
+    3: ("PART_3_GRAPH_OR_TABLE_QUESTION", "PART_3_IMPLICATION"),
+    4: ("PART_4_GRAPH_OR_TABLE_QUESTION", "PART_4_IMPLICATION"),
+    7: ("PART_7_SENTENCE_INSERTION", "PART_7_IMPLICATION", "PART_7_VOCABULARY_IN_CONTEXT"),
+}
+
+# Hai dạng dễ nhất của mỗi part nghe/đọc dài. Cụm nào đặc hai dạng này thì lấy
+# sau cùng — đây là thứ thay cho "lấy cụm đầu tiên".
+EASY: dict[int, tuple[str, ...]] = {
+    3: ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL"),
+    4: ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL"),
+    7: ("PART_7_INFORMATION_RETRIEVAL", "PART_7_TOPIC_OR_PURPOSE"),
+}
+
+
+def _pick_to_mix(
+    questions: list[Question],
+    labels: dict[UUID, list[str]],
+    grammar_labels: dict[UUID, list[str]],
+    mix: dict[str, int],
+    n: int,
 ) -> list[Question]:
-    """Phủ nhãn trước (mỗi mã một câu), phần dư ưu tiên mã phổ biến."""
-    by_label: dict[str, list[Question]] = {}
+    """Lấy đúng định mức từng dạng câu; phần dư bù bằng dạng còn nhiều nhất.
+
+    Trong cùng một dạng, ưu tiên câu mang một mã `grammar` chưa ai lấy — đó là
+    tính chất §0.4 của spec ("mỗi kỹ năng chính có 2–4 câu") mà bộ chọn cũ đạt
+    được bằng cách phủ theo nhãn `grammar`, và nó không được mất đi khi định mức
+    chuyển sang `question_type`.
+    """
+    by_code: dict[str, list[Question]] = {}
     for q in questions:
         for code in labels.get(q.id, []):
-            by_label.setdefault(code, []).append(q)
+            by_code.setdefault(code, []).append(q)
+
     picked: set[UUID] = set()
     out: list[Question] = []
-    # Mã hiếm trước — một câu duy nhất của mã đó đáng hơn câu của mã đã dày.
-    for code in sorted(by_label, key=lambda c: len(by_label[c])):
-        for q in by_label[code]:
-            if q.id not in picked:
-                picked.add(q.id)
-                out.append(q)
-                break
-    freq = Counter({c: len(qs) for c, qs in by_label.items()})
-    while len(out) < n:
-        grew = False
-        for code, _ in freq.most_common():
-            for q in by_label[code]:
-                if q.id not in picked:
-                    picked.add(q.id)
-                    out.append(q)
-                    grew = True
-                    break
+    seen_grammar: set[str] = set()
+
+    def take(code: str) -> bool:
+        pool = [q for q in by_code.get(code, []) if q.id not in picked]
+        if not pool:
+            return False
+        fresh = [q for q in pool if set(grammar_labels.get(q.id, [])) - seen_grammar]
+        chosen = (fresh or pool)[0]
+        picked.add(chosen.id)
+        seen_grammar.update(grammar_labels.get(chosen.id, []))
+        out.append(chosen)
+        return True
+
+    for code, want in mix.items():
+        for _ in range(want):
             if len(out) >= n:
                 break
-        if not grew:
+            take(code)
+    # Định mức không đủ (kho thiếu một dạng) thì bù bằng dạng còn nhiều nhất,
+    # chứ không bỏ trống: 84 câu là con số cả §0 của spec dựa vào.
+    while len(out) < n:
+        remaining = Counter(
+            {c: len([q for q in qs if q.id not in picked]) for c, qs in by_code.items()}
+        )
+        code, left = remaining.most_common(1)[0] if remaining else ("", 0)
+        if left <= 0 or not take(code):
             break
+    _cover_grammar(out, questions, labels, grammar_labels)
     return out
 
 
-def _whole_sets(questions: list[Question], target: int, want: int) -> list[Question]:
-    """Cụm NGUYÊN tới khi đủ `want` cụm hoặc hết `target` câu.
+def _cover_grammar(
+    out: list[Question],
+    questions: list[Question],
+    labels: dict[UUID, list[str]],
+    grammar_labels: dict[UUID, list[str]],
+) -> None:
+    """Kéo về đủ mọi mã `grammar` bằng cách ĐỔI CHỖ, không thêm câu.
 
-    Cả hai trần đều chặn thật. `want` từng được giảm mà không ai đọc, và số
-    trùng nhau che mất điều đó: cụm P3 đúng 3 câu nên 12 câu vừa đúng 4 cụm.
-    Một cụm 4 câu thì đề lấy 3 cụm và không có gì báo.
+    §0.4 của spec chọn 20 câu Part 5 chính vì "mỗi nhãn `grammar` hiện diện ít
+    nhất một câu" — breakdown kỹ năng đứng trên đó. Định mức mới xếp theo
+    `question_type`, nên một mã ngữ pháp hiếm có thể rơi ra ngoài; ở đề nguồn
+    hôm nay đúng một mã rơi (`GRAMMAR_TO_INFINITIVE`).
+
+    Đổi trong CÙNG một `question_type`, và chỉ đổi một câu mà mọi mã ngữ pháp
+    của nó đã có ở câu khác — nên định mức dạng câu không đổi và không mã nào
+    mất đi để mã khác vào.
     """
+
+    def type_of(q: Question) -> str:
+        codes = labels.get(q.id, [])
+        return codes[0] if codes else ""
+
+    for _ in range(len(questions)):
+        chosen_ids = {q.id for q in out}
+        covered = Counter(code for q in out for code in grammar_labels.get(q.id, []))
+        wanted = {
+            code for q in questions for code in grammar_labels.get(q.id, []) if code not in covered
+        }
+        if not wanted:
+            return
+        swap = next(
+            (
+                (incoming, outgoing)
+                for incoming in questions
+                if incoming.id not in chosen_ids
+                and wanted & set(grammar_labels.get(incoming.id, []))
+                for outgoing in out
+                if type_of(outgoing) == type_of(incoming)
+                and all(covered[code] > 1 for code in grammar_labels.get(outgoing.id, []))
+            ),
+            None,
+        )
+        if swap is None:
+            return
+        incoming, outgoing = swap
+        out[out.index(outgoing)] = incoming
+
+
+def _cover_grammar_by_set(
+    chosen: list[Question],
+    part6: list[Question],
+    grammar_labels: dict[UUID, list[str]],
+) -> None:
+    """Đổi một cụm Part 6 lấy một cụm khác, nếu nó kéo về một mã ngữ pháp đang thiếu.
+
+    Part 6 lấy 2 trong 4 cụm, và mã ngữ pháp nào nằm ở hai cụm kia thì rơi ra
+    ngoài. Điều đó không vô hại: planner đọc kỹ năng yếu theo mã `GRAMMAR_*`, nên
+    một mã vắng mặt trong đề nghĩa là người yếu điểm ngữ pháp ấy không bao giờ bị
+    phát hiện. Bộ chọn cũ phủ đủ 12 mã, nhưng do may chứ không do luật.
+
+    Đổi cả CỤM và chỉ đổi cụm cùng kích thước, nên tổng 84 câu không đổi. Việc
+    này chạy sau cùng, khi đã biết Part 5 phủ được những mã nào.
+    """
+    groups = _sets_of(part6)
+    for _ in range(len(groups)):
+        chosen_ids = {q.id for q in chosen}
+        covered = {code for q in chosen for code in grammar_labels.get(q.id, [])}
+        missing = {code for q in part6 for code in grammar_labels.get(q.id, [])} - covered
+        if not missing:
+            return
+        inside = [g for g in groups if all(q.id in chosen_ids for q in g)]
+        outside = [g for g in groups if not any(q.id in chosen_ids for q in g)]
+        swap = next(
+            (
+                (incoming, outgoing)
+                for incoming in outside
+                if missing & {c for q in incoming for c in grammar_labels.get(q.id, [])}
+                for outgoing in inside
+                if len(outgoing) == len(incoming)
+                # Không đánh đổi một mã lấy một mã: cụm bị bỏ chỉ được mang
+                # những mã còn xuất hiện ở chỗ khác trong đề.
+                and not {
+                    c
+                    for q in outgoing
+                    for c in grammar_labels.get(q.id, [])
+                    if not any(
+                        c in grammar_labels.get(other.id, [])
+                        for other in chosen
+                        if other not in outgoing
+                    )
+                }
+            ),
+            None,
+        )
+        if swap is None:
+            return
+        incoming, outgoing = swap
+        start = chosen.index(outgoing[0])
+        for question in outgoing:
+            chosen.remove(question)
+        chosen[start:start] = incoming
+
+
+def _sets_of(questions: list[Question]) -> list[list[Question]]:
     by_set: dict[UUID, list[Question]] = {}
     for q in questions:
         if q.set_id is not None:
             by_set.setdefault(q.set_id, []).append(q)
+    return list(by_set.values())
+
+
+def _pick_sets(
+    questions: list[Question],
+    labels: dict[UUID, list[str]],
+    part: int,
+    n: int,
+) -> list[Question]:
+    """Cụm NGUYÊN, ưu tiên cụm mang dạng câu khó — không phải cụm đứng đầu.
+
+    Cắt lệch phần dư chấp nhận được; cắt cụm thì không — một nửa cuộc hội thoại
+    không phải một câu hỏi trắc nghiệm độc lập. Nên định mức từng dạng ở đây là
+    thứ *hướng tới*, không phải thứ đạt đúng: đơn vị chọn là cụm.
+
+    Hai chặng, và thứ tự giữa chúng là toàn bộ điểm của hàm này:
+
+    1. mỗi mã trong `PRIORITY` lấy MỘT cụm chứa nó, cụm nhỏ nhất để còn chỗ;
+    2. phần còn lại xếp theo tỉ lệ câu DỄ tăng dần.
+
+    Đảo thứ tự thì chặng 2 ăn hết định mức trước và cụm có biểu đồ không bao giờ
+    tới lượt — đúng cái đã xảy ra với bộ chọn cũ, chỉ khác lý do.
+    """
+    groups = _sets_of(questions)
+    easy = set(EASY.get(part, ()))
+
+    def codes_of(group: list[Question]) -> set[str]:
+        return {code for q in group for code in labels.get(q.id, [])}
+
+    def easy_ratio(group: list[Question]) -> float:
+        hits = sum(1 for q in group for code in labels.get(q.id, []) if code in easy)
+        return hits / len(group)
+
     out: list[Question] = []
-    for set_id in by_set:
-        if len(out) >= target or want <= 0:
-            break
-        group = by_set[set_id]
-        if len(out) + len(group) <= target:
-            out.extend(group)
-            want -= 1
+    used: set[int] = set()
+
+    for wanted in PRIORITY.get(part, ()):
+        pool = [
+            (i, g)
+            for i, g in enumerate(groups)
+            if i not in used and wanted in codes_of(g) and len(out) + len(g) <= n
+        ]
+        if not pool:
+            continue
+        index, group = min(pool, key=lambda pair: len(pair[1]))
+        used.add(index)
+        out.extend(group)
+
+    rest = [(i, g) for i, g in enumerate(groups) if i not in used]
+    for index in _fill_exactly(rest, n - len(out), easy_ratio):
+        out.extend(groups[index])
     return out
+
+
+def _fill_exactly(
+    rest: list[tuple[int, list[Question]]],
+    need: int,
+    easy_ratio: Callable[[list[Question]], float],
+) -> list[int]:
+    """Chọn tập cụm cộng lại ĐÚNG `need` câu, ít câu dễ nhất.
+
+    Lấy tham lam theo tỉ lệ câu dễ thì thường hụt vài câu: cụm Part 7 dài 2 tới
+    5 câu, và "lấy tiếp nếu còn vừa" dừng ở 13/14 rồi không có cụm 1 câu nào để
+    bù. Một câu thiếu làm cả lượt dựng đổ ở phép kiểm tổng — đúng như nó nên,
+    nhưng thứ cần sửa là phép chọn chứ không phải phép kiểm.
+
+    Quy hoạch động trên số câu, y như xếp balo: `best[k]` là tập cụm rẻ nhất
+    cộng lại đúng `k` câu. Kho có mười lăm cụm và `need` không quá 14, nên nó
+    tức thời. Không có tổ hợp nào khớp đúng thì lấy tổng lớn nhất còn dưới —
+    phép kiểm 84 câu ở `select_questions` mới là chỗ nói ra điều đó.
+    """
+    best: dict[int, tuple[float, list[int]]] = {0: (0.0, [])}
+    for index, group in sorted(rest, key=lambda pair: easy_ratio(pair[1])):
+        cost = easy_ratio(group)
+        for size in sorted(best, reverse=True):
+            total = size + len(group)
+            if total > need:
+                continue
+            score = best[size][0] + cost
+            if total not in best or score < best[total][0]:
+                best[total] = (score, [*best[size][1], index])
+    return best[max(best)][1]
 
 
 def _pick_part(
@@ -133,49 +382,78 @@ def _pick_part(
     type_labels: dict[UUID, list[str]],
     grammar_labels: dict[UUID, list[str]],
 ) -> list[Question]:
+    # Part 1 của đề nguồn có đúng sáu câu, tức lấy hết — không có gì để chọn.
     if part == 1:
         return questions[:6]
-    if part == 2:
-        return _pick_by_labels(questions, type_labels, 12)
-    if part in (3, 4):
-        return _whole_sets(questions, 12, 4)
-    if part == 5:
-        return _pick_by_labels(questions, grammar_labels, 20)
-    if part == 6:
-        return _whole_sets(questions, 8, 2)
-    # P7: cụm nguyên cộng lại gần 14 nhất mà không vượt.
-    return _whole_sets(questions, 14, 99)
+    if part in PLACEMENT_MIX:
+        quota = 12 if part == 2 else 20
+        return _pick_to_mix(questions, type_labels, grammar_labels, PLACEMENT_MIX[part], quota)
+    quota = {3: 12, 4: 12, 6: 8, 7: 14}[part]
+    return _pick_sets(questions, type_labels, part, quota)
 
 
-def build(db: Session, publish: bool) -> None:
+def select_questions(
+    db: Session,
+) -> tuple[PracticeTest, list[Question], dict[UUID, list[str]], dict[UUID, list[str]]]:
+    """Chọn 84 câu. KHÔNG ghi gì — `--preview` gọi đúng hàm này."""
     source_test = _source_test(db)
     source = _source_questions(db, source_test)
     ids = [q.id for q in source]
     type_labels = _labels_of(db, "question_type", ids)
     grammar_labels = _labels_of(db, "grammar", ids)
     chosen: list[Question] = []
-    report: list[tuple[int, int]] = []
     for part in range(1, 8):
         part_qs = [q for q in source if q.part == part]
-        picked = _pick_part(part, part_qs, type_labels, grammar_labels)
-        report.append((part, len(picked)))
-        chosen.extend(picked)
+        chosen.extend(_pick_part(part, part_qs, type_labels, grammar_labels))
+    _cover_grammar_by_set(chosen, [q for q in source if q.part == 6], grammar_labels)
 
     # Định mức 84 câu là cả lập luận §0 của spec (84 → dải ±~75 điểm). Thiếu
-    # câu thì `_pick_by_labels` thoát êm ở `not grew` — một đề 79 câu xuất bản
-    # được, và con số ±75 in trên màn kết quả lặng lẽ sai.
+    # câu thì bộ chọn thoát êm — một đề 79 câu xuất bản được, và con số ±75 in
+    # trên màn kết quả lặng lẽ sai.
     if len(chosen) != TOTAL_QUESTIONS:
+        per_part = Counter(q.part for q in chosen)
         raise SystemExit(
             f"lắp ra {len(chosen)} câu, cần {TOTAL_QUESTIONS} — "
-            f"đề nguồn {SOURCE_SLUG} thiếu nhãn hoặc thiếu câu: {report}"
+            f"đề nguồn {SOURCE_SLUG} thiếu nhãn hoặc thiếu câu: {dict(sorted(per_part.items()))}"
         )
+    return source_test, chosen, type_labels, grammar_labels
 
-    existing = db.scalar(select(PracticeTest).where(PracticeTest.slug == PLACEMENT_SLUG))
+
+def describe(
+    chosen: list[Question],
+    type_labels: dict[UUID, list[str]],
+    grammar_labels: dict[UUID, list[str]],
+) -> None:
+    """In phân bố dạng câu để NGƯỜI DUYỆT nhìn thấy trước khi xuất bản.
+
+    Con số duy nhất từng in ra là tổng số câu mỗi part, mà tổng ấy giống hệt
+    nhau dù đề gồm toàn câu tìm-thông-tin hay toàn câu suy luận.
+    """
+    for part in range(1, 8):
+        part_qs = [q for q in chosen if q.part == part]
+        counts = Counter(code for q in part_qs for code in type_labels.get(q.id, []))
+        print(f"  part {part}: {len(part_qs)} câu")
+        for code, n in counts.most_common():
+            mark = " ←" if code in PRIORITY.get(part, ()) else ""
+            print(f"      {n:>2}  {code}{mark}")
+        missing = [c for c in PRIORITY.get(part, ()) if c not in counts]
+        if missing:
+            # Cảnh báo, không chặn: kho có thể chưa có dạng đó câu nào —
+            # `PART_3_IMPLICATION` là mã mới, đề nguồn cũ không có câu nào.
+            print(f"      THIẾU dạng khó: {', '.join(missing)}")
+    grammar_codes = {code for q in chosen for code in grammar_labels.get(q.id, [])}
+    print(f"  nhãn grammar: {len(grammar_codes)} mã")
+
+
+def build(db: Session, publish: bool, slug: str = PLACEMENT_SLUG) -> None:
+    source_test, chosen, type_labels, grammar_labels = select_questions(db)
+
+    existing = db.scalar(select(PracticeTest).where(PracticeTest.slug == slug))
     if existing is not None and existing.status == "published":
         raise SystemExit("đề placement đã published — dựng lại là đổi đề dưới chân người học")
     if existing is None:
         existing = PracticeTest(
-            slug=PLACEMENT_SLUG,
+            slug=slug,
             title=TITLE,
             description=DESCRIPTION,
             kind=KIND,
@@ -204,22 +482,47 @@ def build(db: Session, publish: bool) -> None:
             )
         )
     if publish:
+        # Một đề placement published mỗi thời điểm. `_placement_test()` chọn
+        # bằng `db.scalar` trên (is_placement, published) — hai đề cùng thoả thì
+        # nó lấy một cái tuỳ ý, và hai người học làm hai đề khác nhau mà kết quả
+        # vẫn được so với nhau. Đề cũ chuyển `archived`, không xoá: lượt làm cũ
+        # vẫn trỏ vào nó và màn xem lại vẫn phải đọc được.
+        for old_form in db.scalars(
+            select(PracticeTest).where(
+                PracticeTest.is_placement.is_(True),
+                PracticeTest.status == "published",
+                PracticeTest.id != existing.id,
+            )
+        ):
+            old_form.status = "archived"
+            print(f"  {old_form.slug}: published → archived")
         existing.status = "published"
     db.commit()
 
-    print(f"{PLACEMENT_SLUG}: {len(chosen)} câu ({'published' if publish else 'draft'})")
-    for part, count in report:
-        print(f"  part {part}: {count}")
-    grammar_codes = {code for q in chosen for code in grammar_labels.get(q.id, [])}
-    print(f"  nhãn grammar: {len(grammar_codes)} mã")
+    print(f"{slug}: {len(chosen)} câu ({'published' if publish else 'draft'})")
+    describe(chosen, type_labels, grammar_labels)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--slug",
+        default=PLACEMENT_SLUG,
+        help="slug đề placement. Đề đã published KHÔNG dựng lại được — đổi đề dưới "
+        "chân người học; dùng slug mới, `--publish` sẽ tự lưu trữ đề cũ.",
+    )
     parser.add_argument("--publish", action="store_true", help="xuất bản sau khi lắp")
+    parser.add_argument(
+        "--preview", action="store_true", help="chỉ in phân bố dạng câu, không ghi gì"
+    )
     args = parser.parse_args()
     with SessionLocal() as db:
-        build(db, publish=args.publish)
+        if args.preview:
+            _source, chosen, type_labels, grammar_labels = select_questions(db)
+            print(f"{PLACEMENT_SLUG}: {len(chosen)} câu (preview, chưa ghi)")
+            describe(chosen, type_labels, grammar_labels)
+            return
+        build(db, publish=args.publish, slug=args.slug)
 
 
 if __name__ == "__main__":
