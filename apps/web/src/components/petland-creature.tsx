@@ -1,7 +1,7 @@
 "use client";
 
 import { TILE } from "@/components/petland-map";
-import { CREATURE_COLS, CREATURE_ROWS } from "@/components/petland-sprite";
+import { creatureSheet } from "@/components/petland-sprite";
 import { PixelIcon } from "@/components/pixel-icon";
 import { cx } from "@/components/ui";
 
@@ -32,12 +32,15 @@ import { cx } from "@/components/ui";
  * chia hết cho 16 vẫn đúng khung, chỉ là pixel bị nội suy — nên hãy dùng bội số
  * của 16 khi có thể (16, 32, 48).
  */
-function tileStyle(tile: number, size: number) {
+function tileStyle(tile: number, size: number, sheet?: string) {
   const scale = size / TILE;
+  // Đường dẫn ảnh và số cột ĐỀU hỏi `petland-sprite.ts`. Trước đây tệp này giữ
+  // bản sao của cả hai, và bản sao số cột là thứ đã cắt nhầm ô một lần rồi.
+  const art = creatureSheet(sheet);
   return {
-    backgroundImage: "url(/pet/creatures.png)",
-    backgroundPosition: `-${(tile % CREATURE_COLS) * TILE * scale}px -${Math.floor(tile / CREATURE_COLS) * TILE * scale}px`,
-    backgroundSize: `${CREATURE_COLS * TILE * scale}px ${CREATURE_ROWS * TILE * scale}px`,
+    backgroundImage: `url(${art.url})`,
+    backgroundPosition: `-${(tile % art.cols) * TILE * scale}px -${Math.floor(tile / art.cols) * TILE * scale}px`,
+    backgroundSize: `${art.cols * TILE * scale}px ${art.rows * TILE * scale}px`,
     imageRendering: "pixelated" as const,
   };
 }
@@ -195,11 +198,14 @@ const TIER_FRAME: Record<string, string> = {
 
 export function Creature({
   tile,
+  sheet,
   size = 32,
   tier,
   className,
 }: {
   tile: number;
+  /** Tấm ghép chứa ô. Vắng mặt = tấm gốc, nên mọi chỗ gọi cũ vẫn đúng. */
+  sheet?: string;
   size?: number;
   /** Có hạng thì đeo khung theo hạng; không có thì nền ca-rô như cũ. */
   tier?: string;
@@ -217,7 +223,7 @@ export function Creature({
     >
       {/* Ô nằm trong lòng khung: `inset-0` sẽ để viền đè lên chân con vật, và ở
           cỡ 24px thì mất hẳn một hàng pixel. */}
-      <span className="absolute inset-[1px]" style={tileStyle(tile, size - 2)} />
+      <span className="absolute inset-[1px]" style={tileStyle(tile, size - 2, sheet)} />
     </span>
   );
 }
@@ -249,6 +255,7 @@ const SLEEP_BREATHE_MS = 4830;
 
 export function PetIdle({
   tile,
+  sheet,
   tier,
   condition,
   sleeping = false,
@@ -257,6 +264,8 @@ export function PetIdle({
   className,
 }: {
   tile: number;
+  /** Tấm ghép chứa ô. Vắng mặt = tấm gốc. */
+  sheet?: string;
   tier: string;
   /** Tình trạng từ `conditionOf`; chỉ quyết định nhịp thở nhanh chậm. */
   condition?: string;
@@ -311,7 +320,7 @@ export function PetIdle({
       <span
         className={cx("pet-idle absolute left-1/2 -translate-x-1/2", sleeping && "is-asleep")}
         style={{
-          ...tileStyle(tile, size),
+          ...tileStyle(tile, size, sheet),
           width: size,
           height: size,
           bottom: Math.round(lift * 0.55),

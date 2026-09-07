@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import ClassVar, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class PetNeeds(BaseModel):
@@ -21,6 +21,34 @@ class PetNeeds(BaseModel):
     at: datetime
 
 
+CreatureSheetId = Literal["creatures", "dinos", "myth"]
+"""Tấm ghép sinh vật nào đang có.
+
+Khai ở API chứ không ở frontend, cùng lý do đã ghi cho `PetId`: khai ở đây thì nó
+đi qua OpenAPI thành một union TypeScript, nên `Record<CreatureSheetId, …>` thiếu
+một tấm là lỗi `tsc` chứ không phải `undefined` lúc chạy. Số ô của từng tấm nằm ở
+`models.pet.CREATURE_SHEET_TILES`; đường dẫn ảnh và số cột thì ở frontend, vì đó
+là chuyện của bộ art.
+"""
+
+
+def check_tile(sheet: str, tile: int) -> int:
+    """Ô phải nằm trong tấm của nó.
+
+    Trần trên là thuộc tính của TẤM, nên database không kiểm được — CHECK ở đó chỉ
+    còn chặn số âm. Ô vượt trần vẽ ra một mảnh trong suốt: con thú tàng hình,
+    không lỗi nào, và chỉ người mở trứng mới biết.
+    """
+    from app.models.pet import CREATURE_SHEET_TILES
+
+    limit = CREATURE_SHEET_TILES.get(sheet)
+    if limit is None:
+        raise ValueError(f"không có tấm ghép {sheet!r}")
+    if not 0 <= tile < limit:
+        raise ValueError(f"tấm {sheet!r} chỉ có {limit} ô, không có ô {tile}")
+    return tile
+
+
 class PetPublic(BaseModel):
     species: str
     label: str
@@ -31,6 +59,9 @@ class PetPublic(BaseModel):
     đó thêm hoặc đổi tên một loài — và hậu quả là một con thú mang tên con khác,
     không phải một lỗi.
     """
+    sheet: CreatureSheetId = "creatures"
+    """Tấm ghép chứa ô của loài. Cùng lý do `tile` được gửi kèm: không có nó thì
+    ô 5 của hai tấm là cùng một con số và trình duyệt cắt nhầm tấm."""
     tile: int
     """Ô của loài, tra từ `pet_species` ngay ở đây.
 
@@ -117,7 +148,8 @@ class PetSpeciesPublic(BaseModel):
 
     code: str
     label: str
-    tile: int = Field(ge=0, lt=180)
+    sheet: CreatureSheetId = "creatures"
+    tile: int = Field(ge=0)
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"]
     drop_weight: int = Field(ge=0, le=1000)
     """Trọng số rơi khi mở trứng, KHÔNG phải phần trăm.
@@ -141,7 +173,8 @@ class PetSpeciesEdit(BaseModel):
     """
 
     label: str | None = Field(default=None, min_length=1, max_length=64)
-    tile: int | None = Field(default=None, ge=0, lt=180)
+    sheet: CreatureSheetId | None = None
+    tile: int | None = Field(default=None, ge=0)
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] | None = None
     drop_weight: int | None = Field(default=None, ge=0, le=1000)
     position: int | None = None
@@ -151,10 +184,16 @@ class PetSpeciesEdit(BaseModel):
 class PetSpeciesCreate(BaseModel):
     code: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
     label: str = Field(min_length=1, max_length=64)
-    tile: int = Field(ge=0, lt=180)
+    sheet: CreatureSheetId = "creatures"
+    tile: int = Field(ge=0)
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
     drop_weight: int = Field(default=10, ge=0, le=1000)
     position: int = 0
+
+    @model_validator(mode="after")
+    def tile_in_sheet(self) -> "PetSpeciesCreate":
+        check_tile(self.sheet, self.tile)
+        return self
 
 
 # --- phân vai ô sinh vật (ADR-010 §6.3, `petland-bestiary.ts` xuống database) ---
@@ -244,6 +283,7 @@ class EggChance(BaseModel):
 
     code: str
     label: str
+    sheet: CreatureSheetId = "creatures"
     tile: int
     tier: str
     percent: float
@@ -300,6 +340,7 @@ class EggBatchResult(BaseModel):
 class PetOwnedPublic(BaseModel):
     code: str
     label: str
+    sheet: CreatureSheetId = "creatures"
     tile: int
     tier: str
     copies: int

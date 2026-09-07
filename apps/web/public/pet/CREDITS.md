@@ -10,6 +10,8 @@ hai gói, chỉ đổi tên cho dễ đọc. Không sửa pixel nào.
 | `water.png` | [Tiny Battle](https://kenney.nl/assets/tiny-battle) — Kenney | 8,6 KB · 18×11 = 198 ô | **bộ ghép bờ nước** (ao, hồ), đường, cây |
 | `stone.png` | [Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon) — Kenney | 5,2 KB · 12×11 = 132 ô | **gạch lát nền**, tường đá, cửa |
 | `creatures.png` | [Tiny Creatures](https://opengameart.org/content/tiny-creatures) — Clint Bellanger | 11,5 KB · 10×18 = 180 ô | hơn 50 động vật và hơn 100 sinh vật huyền thoại |
+| `dinos.png` | **NGUỒN CHƯA XÁC ĐỊNH — xem dưới** | 10×2 = 16 ô | mười sáu khủng long |
+| `myth.png` | **NGUỒN CHƯA XÁC ĐỊNH — xem dưới** | 10×4 = 32 ô | rồng, kỳ lân, phượng hoàng, sư tử, nhân sư, cửu vĩ hồ, voi ma mút |
 
 - **Giấy phép: cả hai đều CC0 1.0** (Creative Commons Zero, Public Domain
   Dedication). Nguyên văn: *"free to use in personal, educational and commercial
@@ -56,3 +58,32 @@ hàng = i // 10      y = hàng * 16
 `town.png`, `farm.png` và `stone.png` là lưới **12 cột**; `water.png` là **18 cột**. Số cột
 nằm ở `SHEET_COLS` trong `petland-map.ts` — sai số cột thì ô vẫn vẽ ra, chỉ là
 vẽ nhầm ô, nên không có gì báo.
+
+## `dinos.png` và `myth.png` — chưa trả lời được câu "ở đâu ra"
+
+**Hai tệp này đang thiếu đúng thứ mà tài liệu này tồn tại để ghi.** Chúng được
+đóng bằng `app.content.pack_sprites` từ `~/Downloads/dinasour-assets.png`,
+`god-pet.png` và `god-pet-02.png`; cả ba ảnh gốc có nền magenta phẳng — dấu vết
+của một đường sinh ảnh. Nhưng "sinh bằng model nào, hay tải từ đâu" thì chưa ai
+ghi lại, nên **giấy phép chưa biết**.
+
+Đừng suy ra từ việc nó trông giống hàng tự sinh. Cùng kỷ luật với
+`question.source` không có giá trị mặc định: một ô trống phải đọc ra là ô trống,
+không phải là một phỏng đoán.
+
+Cần điền trước khi phát hành: nguồn, tác giả (nếu có), giấy phép. Nếu nó do
+chính dự án sinh ra thì ghi model và ngày, và chuyện bản quyền chấm dứt ở đó.
+
+`myth.png` giữ **cả 32 ô**, kể cả những ô đọc kém. Chất lượng chênh nhau rõ giữa
+hai ảnh gốc — `god-pet-02.png` ra 16 ô sạch, `god-pet.png` thì phần lớn nhoè — và
+khác biệt nằm ở **cỡ pixel của ảnh gốc**, không ở đề tài: bộ sau vẽ khối to hơn
+hẳn nên phép thu về 16×16 giữ được hình. Xem `PETLAND-SPRITE-PROMPTS.md` §0.
+
+Nhưng "đọc được hay không" là **quyết định của người ra nội dung**, nên tấm giữ
+đủ và màn quản trị hiện cả tấm để chọn bằng mắt. Lọc sẵn ở bước đóng gói là thay
+người khác quyết, và một ô bị bỏ thì không có đường nào nhìn thấy lại.
+
+**Chúng KHÔNG phải bản gốc, và đó là điều phải ghi kèm giấy phép.** `pack_sprites`
+thu ảnh về 16×16 rồi **ép màu về đúng bảng 22 màu của `creatures.png`** và tô lại
+vành ngoài bằng màu viền. Tệp trong repo là bản đã biến đổi, không phải bản nhận
+về.

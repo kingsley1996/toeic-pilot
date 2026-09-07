@@ -48,6 +48,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `docs/AI-ENGINEERING-PLAN.md` | §3: giải thích một câu **giống nhau với mọi người học** nên tính sẵn offline. §2: chấm điểm, SM-2, quy đổi điểm **không bao giờ** chạm LLM |
 | `docs/PROMPT-SYSTEM.md` | Kiểm kê prompt. §0: hai sổ đăng ký, và ranh giới giữa chúng là ranh giới kiến trúc |
 | `docs/DESIGN-SYSTEM.md` | Ba luật hỏng im lặng: **không `box-shadow`**, **một bán kính 4px**, **`rule-strong`** cho viền |
+| `docs/PETLAND-SPRITE-PROMPTS.md` | Prompt sinh ô sinh vật mới. §0: model **không vẽ được 16×16**, nó vẽ ảnh *về* pixel art rồi ta thu nhỏ. §1: sprite lấp 79% ô và **chạm mép** — ngược lời khuyên prompt thông thường. §7: ô mới cần tấm thứ hai, và ba chỗ hỏng im lặng |
 | `docs/SPEC-EXAM-DIFFICULTY.md` | Vì sao đề tự sinh dễ hơn đề thật. §0: `difficulty` là hằng số và **đừng để LLM điền nó**. §1: mix giao dạng câu, mô hình vẫn chọn thể hiện dễ nhất trong dạng |
 | `docs/toeic_question_label_taxonomy.md` | Bảng nhãn, **duy trì bằng tay** và là nguồn sự thật; `labels.py` được *sinh ra* từ nó |
 | `docs/SYSTEM-OVERVIEW.md` · `docs/MEDIA-PIPELINE.md` · `docs/EXAM-GRAPH.md` | Mô tả **hành vi hiện tại**, không phải quyết định |

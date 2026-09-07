@@ -114,7 +114,7 @@ export function CollectionScreen({
                     : "border-rule-strong hover:bg-recess disabled:opacity-45",
                 )}
               >
-                <Creature tile={row.tile} size={24} tier={row.tier} />
+                <Creature tile={row.tile} sheet={row.sheet} size={24} tier={row.tier} />
                 {/* KHÔNG in "×2".
                     Mở trúng con đã có thì được hoàn ruby, nên bản thứ hai không
                     phải một thứ người chơi đang giữ: in ×2 bên cạnh tên là nói

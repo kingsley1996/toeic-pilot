@@ -20,6 +20,7 @@ from app.schemas.pet import (
     PetSpeciesCreate,
     PetSpeciesEdit,
     PetSpeciesPublic,
+    check_tile,
 )
 from app.services import encounters
 from app.services.gacha import settings_row
@@ -35,6 +36,7 @@ def _public(row: PetSpecies) -> PetSpeciesPublic:
     return PetSpeciesPublic(
         code=row.code,
         label=row.label,
+        sheet=row.sheet,  # type: ignore[arg-type]
         tile=row.tile,
         tier=row.tier,  # type: ignore[arg-type]
         drop_weight=row.drop_weight,
@@ -85,7 +87,19 @@ def update_species(
     row = db.get(PetSpecies, code)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Species not found")
-    for field, value in body.model_dump(exclude_unset=True).items():
+    fields = body.model_dump(exclude_unset=True)
+    # Ô và tấm phải kiểm CÙNG NHAU, và chỉ ở đây mới đủ dữ kiện: một lượt PATCH
+    # có thể gửi mỗi `tile`, mỗi `sheet`, hoặc cả hai — trần trên là của tấm SAU
+    # khi đã áp thay đổi, không phải của tấm đang lưu. Schema không thấy được
+    # điều đó vì nó chỉ nhìn thân yêu cầu.
+    if "tile" in fields or "sheet" in fields:
+        try:
+            check_tile(fields.get("sheet", row.sheet), fields.get("tile", row.tile))
+        except ValueError as bad:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(bad)
+            ) from bad
+    for field, value in fields.items():
         setattr(row, field, value)
     db.commit()
     return _public(row)

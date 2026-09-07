@@ -5903,6 +5903,12 @@ export interface components {
             label: string;
             /** Percent */
             percent: number;
+            /**
+             * Sheet
+             * @default creatures
+             * @enum {string}
+             */
+            sheet: "creatures" | "dinos" | "myth";
             /** Tier */
             tier: string;
             /** Tile */
@@ -7423,6 +7429,12 @@ export interface components {
              * Format: date-time
              */
             obtained_at: string;
+            /**
+             * Sheet
+             * @default creatures
+             * @enum {string}
+             */
+            sheet: "creatures" | "dinos" | "myth";
             /** Tier */
             tier: string;
             /** Tile */
@@ -7446,6 +7458,12 @@ export interface components {
             needs: components["schemas"]["PetNeeds"];
             /** Nickname */
             nickname: string | null;
+            /**
+             * Sheet
+             * @default creatures
+             * @enum {string}
+             */
+            sheet: "creatures" | "dinos" | "myth";
             /** Sleep Until */
             sleep_until: string | null;
             /** Species */
@@ -7509,6 +7527,12 @@ export interface components {
              */
             position: number;
             /**
+             * Sheet
+             * @default creatures
+             * @enum {string}
+             */
+            sheet: "creatures" | "dinos" | "myth";
+            /**
              * Tier
              * @default common
              * @enum {string}
@@ -7534,6 +7558,8 @@ export interface components {
             label?: string | null;
             /** Position */
             position?: number | null;
+            /** Sheet */
+            sheet?: ("creatures" | "dinos" | "myth") | null;
             /** Tier */
             tier?: ("common" | "uncommon" | "rare" | "epic" | "legendary" | "god") | null;
             /** Tile */
@@ -7559,6 +7585,12 @@ export interface components {
             label: string;
             /** Position */
             position: number;
+            /**
+             * Sheet
+             * @default creatures
+             * @enum {string}
+             */
+            sheet: "creatures" | "dinos" | "myth";
             /**
              * Tier
              * @enum {string}

@@ -111,6 +111,23 @@ class PetState(Base):
         return f"<PetState nuôi {self.species}>"
 
 
+# Tấm ghép sinh vật nào đang có, và mỗi tấm bao nhiêu ô.
+#
+# Ở phía API chứ không phía frontend, cùng lý do đã ghi cho `PetId`: khai ở đây
+# thì nó đi qua OpenAPI thành một union TypeScript, nên `Record<CreatureSheetId,
+# …>` thiếu một tấm là lỗi `tsc` chứ không phải `undefined` lúc chạy. Frontend
+# giữ phần còn lại — đường dẫn ảnh và số cột — vì đó là chuyện của bộ art.
+#
+# Thêm một tấm: thêm một dòng ở đây, một dòng ở `CREATURE_SHEETS` bên
+# `petland-sprite.ts`, và chạy `pnpm gen:api-types`.
+CREATURE_SHEET_TILES: dict[str, int] = {
+    "creatures": 180,
+    "dinos": 16,
+    "myth": 32,
+}
+DEFAULT_CREATURE_SHEET = "creatures"
+
+
 class PetSpecies(Base):
     """Một loài thú nuôi được.
 
@@ -128,10 +145,12 @@ class PetSpecies(Base):
 
     __tablename__ = "pet_species"
     __table_args__ = (
-        # `creatures.png` là lưới 10x18. Ô ngoài khoảng đó vẽ ra một mảnh trong
-        # suốt — con thú tàng hình, không có lỗi nào, và chỉ người mở trứng ra
-        # mới biết.
-        CheckConstraint("tile >= 0 AND tile < 180", name="ck_pet_species_tile"),
+        # Chỉ chặn số âm. Trần trên phụ thuộc TẤM, mà database không biết tấm nào
+        # bao nhiêu ô — nó nằm ở `CREATURE_SHEET_TILES` và được cưỡng chế ở tầng
+        # schema. Ràng buộc cũ ghi cứng `< 180`, tức khoá vào đúng `creatures.png`;
+        # để nguyên thì tấm thứ hai vẫn lọt qua nhưng ràng buộc lại nói một điều
+        # không còn đúng, và đó là loại sai lệch chỉ lộ ra khi có người đọc nó.
+        CheckConstraint("tile >= 0", name="ck_pet_species_tile"),
         CheckConstraint(
             "tier IN ('common', 'uncommon', 'rare', 'epic', 'legendary', 'god')",
             name="ck_pet_species_tier",
@@ -141,6 +160,17 @@ class PetSpecies(Base):
     code: Mapped[str] = mapped_column(String(32), primary_key=True)
     label: Mapped[str] = mapped_column(String(64), nullable=False)
     """Tên hiện cho người học. Tiếng Việt: đây là phần học viên nhìn thấy."""
+
+    sheet: Mapped[str] = mapped_column(
+        String(16),
+        nullable=False,
+        server_default=DEFAULT_CREATURE_SHEET,
+        default=DEFAULT_CREATURE_SHEET,
+    )
+    """Tấm ghép chứa ô này. `tile` chỉ có nghĩa khi đi kèm nó.
+
+    Không có cột này thì ô 5 của `dinos.png` và ô 5 của `creatures.png` là cùng
+    một hàng dữ liệu — và cái nào vẽ ra thì tuỳ tệp nào frontend nạp trước."""
 
     tile: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     tier: Mapped[str] = mapped_column(String(16), nullable=False, server_default="common")
@@ -170,7 +200,7 @@ class PetSpecies(Base):
     """
 
     def __repr__(self) -> str:
-        return f"<PetSpecies {self.code} tile={self.tile} {self.tier}>"
+        return f"<PetSpecies {self.code} {self.sheet}#{self.tile} {self.tier}>"
 
 
 """Mười hai loài đầu tiên, gieo LƯỜI ở lần đọc đầu — không gieo trong migration.

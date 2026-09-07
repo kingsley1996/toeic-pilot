@@ -64,6 +64,15 @@ export type ProgressionPublic = components["schemas"]["ProgressionPublic"];
 export type PetPublic = components["schemas"]["PetPublic"];
 export type PetMove = components["schemas"]["PetMove"];
 export type PetSpeciesPublic = components["schemas"]["PetSpeciesPublic"];
+/**
+ * Tấm ghép sinh vật nào đang có.
+ *
+ * Suy TỪ hợp đồng, không viết tay: thêm một tấm ở API rồi `pnpm gen:api-types`
+ * là union này rộng ra, và `Record<CreatureSheetId, …>` ở `petland-sprite.ts`
+ * thiếu tấm mới thành lỗi `tsc`. Viết tay ở đây thì hai bên trôi khỏi nhau và
+ * không có gì báo.
+ */
+export type CreatureSheetId = components["schemas"]["PetSpeciesPublic"]["sheet"];
 export type DailyTasksPublic = components["schemas"]["DailyTasksPublic"];
 export type BadgesPublic = components["schemas"]["BadgesPublic"];
 export type BadgePublic = components["schemas"]["BadgePublic"];

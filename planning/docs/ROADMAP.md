@@ -152,6 +152,7 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       (`pet_owned.xp_raw_today`, migration 053), không trên từng lượt: chia tỉ lệ mỗi lượt
       thì một lượt đáng một điểm sau mốc thành `1 // 5 = 0`, tức lại là trần cứng, chỉ
       khác chỗ đặt. Chọc cũng thôi trả XP khi tinh thần đã cao
+- [x] ~~Tấm ghép sinh vật thứ hai~~ — **Xong (2026-09-07).** `pet_species.sheet` (migration 072) + `CreatureSheetId` khai ở API để đi qua OpenAPI thành union TS; `petland-sprite.ts` nay là nơi DUY NHẤT biết đường dẫn và số cột (trước đó `creatures.png` viết cứng ở bốn tệp). `app.content.pack_sprites` đóng ảnh sinh ra thành tấm 16×16 ép về đúng 22 màu — nền nhận bằng **liên thông từ mép**, không bằng ngưỡng màu. Hai tấm mới: `dinos.png` 16 ô, `myth.png` 32 ô. Màn `/admin/pet` có nút thêm loài và **lưới chọn ô bằng mắt** thay cho ô nhập số. **Còn nợ: giấy phép của hai tấm mới chưa xác định** (`public/pet/CREDITS.md`) — `PETLAND-SPRITE-PROMPTS.md`
 - [ ] Petland lát 5 — nhiệm vụ trắc nghiệm, **chờ nội dung** (`ADR-012` §8.3)
 - [ ] Lối vào `MatchGame` từ trang chủ đề (vẫn tới được bằng URL trực tiếp)
 - [ ] Test component/frontend — **cố ý chưa làm**: mọi lỗi giao diện của dự án này đều ở

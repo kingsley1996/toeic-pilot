@@ -264,3 +264,50 @@ rồi `curl -o /dev/null -w '%{http_code}'`:
 
 Đo ngày 2026-09-07 khi đồng bộ `tp-placement-02`: audio 200, ảnh Part 1 200, ảnh
 biểu đồ Part 3/4 200.
+
+
+## 7. Thú cưng mới — ba thứ, và thứ tự giữa chúng là chỗ hỏng
+
+Thêm một loài thú không phải một thao tác database. Nó là **ba** thứ, ở ba nơi:
+
+| | Cái gì | Đi lên production bằng cách nào |
+|---|---|---|
+| 1 | **Cột `pet_species.sheet`** (migration 072) | `api-entrypoint.sh` chạy `alembic upgrade head` trước khi uvicorn nghe cổng — tức là khi **ảnh API** deploy. Render **không** tự deploy: CI phải gọi deploy hook (ADR-014 §7.1) |
+| 2 | **Tấm ghép `public/pet/*.png`** | Tài sản tĩnh của web. Vercel tự deploy mỗi lần push |
+| 3 | **Hàng `pet_species`** | `./scripts/export-pet-species.sh`, nạp bằng tay |
+
+**Làm đúng thứ tự 1 → 2 → 3.** Hai cách sai hỏng theo hai kiểu khác hẳn nhau:
+
+- **Nạp hàng trước khi API deploy** → mọi câu INSERT đổ vì chưa có cột `sheet`.
+  Ồn ào, nên vô hại; tệp sinh ra có sẵn một cổng nói đúng nguyên nhân thay vì để
+  psql kêu "column does not exist".
+- **Nạp hàng trước khi WEB deploy** → hàng đúng, API trả đúng, và con thú là một
+  **ô trống**. Không lỗi nào ở đâu cả: `myth.png` chưa có trên Vercel nên trình
+  duyệt 404 một tấm ảnh, còn mọi phép kiểm phía máy chủ đều xanh. Đây là kiểu
+  hỏng đắt hơn, và nó chỉ lộ ra khi có người mở góc thú cưng.
+
+```bash
+# sau khi CI đã deploy CẢ api lẫn web
+./scripts/export-pet-species.sh /tmp/species.sql
+docker run --rm -i --env-file <env> postgres:17 psql -v ON_ERROR_STOP=1 -q < /tmp/species.sql
+```
+
+Mặc định script lấy **mọi tấm khác `creatures`**; thêm `all` để lấy cả ba tấm.
+
+### Vì sao chỉ INSERT … ON CONFLICT, không bao giờ DELETE
+
+`pet_species` gieo lười ở lần đọc đầu, nên production đã có sẵn các loài mặc
+định với đúng mã ấy — `DO UPDATE` là cách duy nhất chạy lại được mà không đụng
+khoá chính.
+
+Và **không được DELETE**: `pet_state.species` cùng `pet_owned.code` trỏ vào
+`pet_species.code` mà **không có khoá ngoại**, nên database sẽ không ngăn. Xoá
+một loài để lại con thú của người ta trỏ vào hư không, và nó hiện ra là một ô
+trống chứ không phải một lỗi. Muốn bỏ một loài thì `enabled = false` — cùng lý
+do đã ghi trong chính model.
+
+### Kiểm sau khi chạy
+
+Hàng đúng không chứng minh người học nhìn thấy. Mở góc thú cưng trên production,
+hoặc `curl -o /dev/null -w '%{http_code}'` thẳng vào tấm ghép:
+`https://<web>/pet/myth.png`.

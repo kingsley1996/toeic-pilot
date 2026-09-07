@@ -67,6 +67,7 @@ class Chance:
 
     code: str
     label: str
+    sheet: str
     tile: int
     tier: str
     weight: int
@@ -87,6 +88,7 @@ def chances(db: Session) -> list[Chance]:
         Chance(
             code=row.code,
             label=row.label,
+            sheet=row.sheet,
             tile=row.tile,
             tier=row.tier,
             weight=row.drop_weight,

@@ -477,6 +477,9 @@ function PetPanel({
    * tập trông như bấm không ăn.
    */
   const speciesRef = useRef(0);
+  // Tấm ghép của loài, đi cùng `speciesRef` — cùng lý do: vòng vẽ đọc ref chứ
+  // không đọc state, và hai tấm khác số cột thì cùng một ô cắt ra hai con.
+  const sheetRef = useRef<string>("creatures");
   /**
    * Vòng sáng dưới chân, theo hạng hiếm. REF vì vòng vẽ đọc nó mỗi khung hình.
    *
@@ -876,6 +879,7 @@ function PetPanel({
          * một loài — và hậu quả là con thú vẽ nhầm hình, không phải một lỗi.
          */
         speciesRef.current = pet.tile;
+        sheetRef.current = pet.sheet;
 
         const made = await render.createStage(el, parsed, {
           zoom: ZOOM,
@@ -1101,6 +1105,7 @@ function PetPanel({
             progress: reducedRef.current ? 1 : walk.progress,
             facing: walk.facing,
             species: speciesRef.current,
+            sheet: sheetRef.current,
             glow: glowRef.current,
             // Giờ Petland tính lại MỖI KHUNG HÌNH, và nó rẻ hơn nhớ lại: một
             // phép chia lấy dư trên `Date.now()`. Nhớ lại rồi làm mới theo hẹn
@@ -2023,6 +2028,7 @@ function PetPanel({
               // về một con thú mà không khớp nhau, và không có gì báo.
               setNeeds(updated.needs);
               speciesRef.current = updated.tile;
+              sheetRef.current = updated.sheet;
               placeRef.current = {
                 x: updated.tile_x,
                 y: updated.tile_y,

@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { Creature, TIER_LABEL, byCommonness } from "@/components/petland-creature";
+import { CREATURE_SHEETS, creatureSheet } from "@/components/petland-sprite";
 import { Modal } from "@/components/modal";
 import { Alert, Button, Input, Page, PageHeader, Panel, Select, Tag, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
@@ -31,12 +32,38 @@ import { useRequireSession } from "@/lib/session";
    nhận ra là mở bảng loài lên thấy một ô chọn không có lựa chọn đang dùng. */
 const TIERS = ["common", "uncommon", "rare", "epic", "legendary", "god"] as const;
 
+/**
+ * Tên hiển thị → mã.
+ *
+ * `code` là KHOÁ CHÍNH và là thứ `pet_state.species` trỏ tới, nên nó phải là
+ * slug `^[a-z0-9_-]+$`. Bắt người vận hành tự nghĩ ra slug ấy là chuyển một luật
+ * của database thành việc của họ, và cái giá là một lỗi 422 ở đúng lúc họ vừa gõ
+ * xong mọi thứ khác.
+ *
+ * Bỏ dấu tiếng Việt là bắt buộc chứ không phải tiện nghi: tên loài viết bằng
+ * tiếng Việt ("Phượng hoàng"), và `NFD` tách dấu ra thành ký tự tổ hợp riêng để
+ * xoá. `đ`/`Đ` không có dạng tổ hợp nên phải thay tay — bỏ sót nó thì "Rồng đỏ"
+ * ra `rng-` thay vì `rong-do`.
+ */
+function slugify(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 32);
+}
+
 export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);
   const [egg, setEgg] = useState<EggSettingPublic | null>(null);
   const [meet, setMeet] = useState<EncounterSettingPublic | null>(null);
   const [editing, setEditing] = useState<PetSpeciesPublic | null>(null);
+  const [adding, setAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -260,7 +287,7 @@ export default function PetSpeciesAdminPage() {
                     !row.enabled && "opacity-45",
                   )}
                 >
-                  <Creature tile={row.tile} size={48} tier={row.tier} />
+                  <Creature tile={row.tile} sheet={row.sheet} size={48} tier={row.tier} />
                   <span className="w-full truncate text-small font-medium">{row.label}</span>
                   {/* Tắt phải ĐỌC ra được ngay trên lưới, không phải đoán qua
                       độ mờ — độ mờ dễ bị coi là trạng thái hover. */}
@@ -272,6 +299,10 @@ export default function PetSpeciesAdminPage() {
         ),
       )}
 
+      <div className="mt-4">
+        <Button onClick={() => setAdding(true)}>Thêm loài</Button>
+      </div>
+
       <p className="mt-4 text-small text-ink-muted">
         {/* Nói ra hệ quả của việc gieo lười, vì nó bất ngờ: bảng rỗng không phải
             một cấu hình, nó là "chưa từng cấu hình". */}
@@ -279,6 +310,16 @@ export default function PetSpeciesAdminPage() {
         every row is not a way to empty the table — the defaults seed themselves on the next read.
       </p>
 
+      {adding && (
+        <AddSpecies
+          onDone={(made) => {
+            setRows((current) => (current ? [...current, made] : [made]));
+            setAdding(false);
+          }}
+          onFail={setError}
+          onClose={() => setAdding(false)}
+        />
+      )}
       {editing && <SpeciesModal row={editing} onPatch={patch} onClose={() => setEditing(null)} />}
     </Page>
   );
@@ -296,7 +337,7 @@ function SpeciesModal({
   return (
     <Modal open onClose={onClose} title={row.label} description={`Mã: ${row.code}`}>
       <div className="flex items-start gap-5">
-        <Creature tile={row.tile} size={96} tier={row.tier} />
+        <Creature tile={row.tile} sheet={row.sheet} size={96} tier={row.tier} />
         <div className="grid flex-1 gap-3 sm:grid-cols-2">
           <label className="flex items-center gap-2 text-small text-ink-muted">
             Tên
@@ -310,20 +351,26 @@ function SpeciesModal({
               }}
             />
           </label>
+          {/* Tấm đứng TRƯỚC ô, và thứ tự ấy có lý do: `tile` chỉ có nghĩa khi
+              biết tấm, nên đọc theo thứ tự này thì hai ô nhập tự giải thích
+              nhau. Đổi tấm mà ô hiện tại vượt trần tấm mới thì máy chủ trả 422
+              nói rõ tấm nào bao nhiêu ô. */}
           <label className="flex items-center gap-2 text-small text-ink-muted">
-            Tile
-            <Input
-              type="number"
-              min={0}
-              max={179}
-              defaultValue={row.tile}
-              aria-label={`Tile for ${row.code}`}
-              className="w-20"
-              onBlur={(event) => {
-                const next = Number(event.target.value);
-                if (Number.isInteger(next) && next !== row.tile) onPatch(row.code, { tile: next });
-              }}
-            />
+            Tấm
+            <Select
+              value={row.sheet}
+              aria-label={`Sheet for ${row.code}`}
+              className="flex-1"
+              onChange={(event) =>
+                onPatch(row.code, { sheet: event.target.value as PetSpeciesPublic["sheet"] })
+              }
+            >
+              {Object.keys(CREATURE_SHEETS).map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </Select>
           </label>
           <label className="flex items-center gap-2 text-small text-ink-muted">
             Hạng
@@ -385,6 +432,13 @@ function SpeciesModal({
           nhưng nó không hiện trong tủ sưu tập nữa.
         </p>
       )}
+      <div className="mt-4 border-t border-rule pt-4">
+        <TilePicker
+          sheet={row.sheet}
+          tile={row.tile}
+          onPick={(next) => next !== row.tile && onPatch(row.code, { tile: next })}
+        />
+      </div>
     </Modal>
   );
 }
@@ -428,5 +482,190 @@ function NumberField({
         }}
       />
     </label>
+  );
+}
+
+/**
+ * Thêm một loài, và đó là **cửa duy nhất** để dùng một tấm ghép mới.
+ *
+ * Trước màn này, đường tạo loài duy nhất trong giao diện là nút "promote" ở
+ * `/admin/petland/creatures` — mà màn ấy là bảng PHÂN VAI của `creatures.png`,
+ * đánh số 0–179 và không có khái niệm tấm. Nên thêm một tấm mới xong thì ảnh
+ * nằm trong `public/pet/` mà không cách nào trỏ tới: không lỗi nào, chỉ là
+ * không có gì xuất hiện.
+ *
+ * Ô xem trước cập nhật theo tấm và số ô đang gõ, vì đó là phép kiểm duy nhất
+ * đáng tin ở đây: một chỉ số hợp lệ nhưng sai vẫn vẽ ra một con vật, chỉ là con
+ * khác. Ô trống nghĩa là gõ ra ngoài vùng có vẽ.
+ */
+function AddSpecies({
+  onDone,
+  onFail,
+  onClose,
+}: {
+  onDone: (made: PetSpeciesPublic) => void;
+  onFail: (message: string) => void;
+  onClose: () => void;
+}) {
+  const { token } = useRequireSession({ canEdit: true });
+  const [sheet, setSheet] = useState<PetSpeciesPublic["sheet"]>("myth");
+  const [tile, setTile] = useState(0);
+  const [code, setCode] = useState("");
+  // Mã tự chạy theo tên cho tới khi người dùng tự sửa mã. Sau đó thì thôi —
+  // gõ lại tên không được xoá mất một mã người ta đã cố ý đặt.
+  const [codeTouched, setCodeTouched] = useState(false);
+  const [label, setLabel] = useState("");
+  const [tier, setTier] = useState<PetSpeciesPublic["tier"]>("legendary");
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    if (!token || busy) return;
+    setBusy(true);
+    try {
+      const made = await apiFetch<PetSpeciesPublic>(API_ROUTES.adminPetSpecies, {
+        method: "POST",
+        token,
+        body: JSON.stringify({ code: code.trim(), label: label.trim(), sheet, tile, tier }),
+      });
+      onDone(made);
+    } catch (bad) {
+      onFail(bad instanceof ApiError ? bad.message : "Không thêm được loài.");
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal open onClose={onClose} title="Thêm loài" description="Chọn tấm rồi chọn ô.">
+      <div className="flex items-start gap-5">
+        <Creature tile={tile} sheet={sheet} size={96} tier={tier} />
+        <div className="grid flex-1 gap-3 sm:grid-cols-2">
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Tấm
+            <Select
+              value={sheet}
+              aria-label="Sheet"
+              className="flex-1"
+              onChange={(event) => setSheet(event.target.value as PetSpeciesPublic["sheet"])}
+            >
+              {Object.keys(CREATURE_SHEETS).map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </Select>
+          </label>
+          {/* TÊN trước, MÃ sau: mã suy ra từ tên, nên đọc ngược lại thì ô thứ
+              hai trông như một thứ phải tự nghĩ. */}
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Tên
+            <Input
+              value={label}
+              aria-label="Label"
+              className="flex-1"
+              placeholder="Phượng hoàng"
+              onChange={(event) => {
+                setLabel(event.target.value);
+                if (!codeTouched) setCode(slugify(event.target.value));
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Mã
+            <Input
+              value={code}
+              aria-label="Code"
+              className="flex-1"
+              placeholder="phuong-hoang"
+              onChange={(event) => {
+                setCodeTouched(true);
+                // Chuẩn hoá NGAY khi gõ, không đợi máy chủ từ chối: chữ hoa và
+                // dấu cách là hai thứ người ta gõ vào đây nhiều nhất.
+                setCode(slugify(event.target.value));
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Hạng
+            <Select
+              value={tier}
+              aria-label="Tier"
+              className="flex-1"
+              onChange={(event) => setTier(event.target.value as PetSpeciesPublic["tier"])}
+            >
+              {TIERS.map((one) => (
+                <option key={one} value={one}>
+                  {one}
+                </option>
+              ))}
+            </Select>
+          </label>
+        </div>
+      </div>
+
+      <div className="mt-4 border-t border-rule pt-4">
+        <TilePicker sheet={sheet} tile={tile} onPick={setTile} />
+      </div>
+
+      <div className="mt-5 flex justify-end gap-2">
+        <Button variant="secondary" onClick={onClose}>
+          Huỷ
+        </Button>
+        <Button disabled={busy || !code.trim() || !label.trim()} onClick={() => void save()}>
+          {busy ? "Đang thêm…" : "Thêm"}
+        </Button>
+      </div>
+    </Modal>
+  );
+}
+
+/**
+ * Chọn ô bằng MẮT, cho cả màn thêm lẫn màn sửa.
+ *
+ * Trước đây chỗ này là một ô nhập số. Nó đúng về mặt dữ liệu và vô dụng về mặt
+ * sử dụng: `tile` là chỉ số trong tấm ghép, nên muốn biết ô 13 là con gì thì
+ * phải gõ 13 rồi nhìn ô xem trước, rồi gõ 14, rồi 15. Với `creatures.png` 180 ô
+ * thì đó không phải một thao tác, đó là một buổi chiều.
+ *
+ * Tệ hơn: một chỉ số sai vẫn hợp lệ và vẫn vẽ ra một con vật, chỉ là con khác.
+ * Không có gì báo. Bấm thẳng vào con mình muốn thì lỗi ấy không tồn tại.
+ */
+function TilePicker({
+  sheet,
+  tile,
+  onPick,
+}: {
+  sheet: PetSpeciesPublic["sheet"];
+  tile: number;
+  onPick: (next: number) => void;
+}) {
+  const art = creatureSheet(sheet);
+  return (
+    <div>
+      <p className="text-label font-semibold uppercase tracking-wide text-ink-faint">
+        Chọn ô — tấm {sheet}, {art.tiles} ô
+      </p>
+      {/* Cao tối đa rồi cuộn: `creatures.png` có 180 ô, và một lưới 180 ô đẩy
+          hai nút ở chân hộp thoại ra ngoài màn hình. */}
+      <div className="mt-2 max-h-64 overflow-y-auto rounded border border-rule p-1">
+        <div className="flex flex-wrap gap-1">
+          {Array.from({ length: art.tiles }, (_, index) => (
+            <button
+              key={index}
+              type="button"
+              title={`Ô ${index}`}
+              aria-label={`Ô ${index}`}
+              aria-pressed={index === tile}
+              onClick={() => onPick(index)}
+              className={cx(
+                "cursor-pointer rounded border p-0.5 transition-colors hover:bg-recess",
+                index === tile ? "border-rule-strong bg-recess" : "border-transparent",
+              )}
+            >
+              <Creature tile={index} sheet={sheet} size={32} />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

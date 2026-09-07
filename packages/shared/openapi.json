@@ -3760,6 +3760,16 @@
             "title": "Percent",
             "type": "number"
           },
+          "sheet": {
+            "default": "creatures",
+            "enum": [
+              "creatures",
+              "dinos",
+              "myth"
+            ],
+            "title": "Sheet",
+            "type": "string"
+          },
           "tier": {
             "title": "Tier",
             "type": "string"
@@ -7794,6 +7804,16 @@
             "title": "Obtained At",
             "type": "string"
           },
+          "sheet": {
+            "default": "creatures",
+            "enum": [
+              "creatures",
+              "dinos",
+              "myth"
+            ],
+            "title": "Sheet",
+            "type": "string"
+          },
           "tier": {
             "title": "Tier",
             "type": "string"
@@ -7850,6 +7870,16 @@
               }
             ],
             "title": "Nickname"
+          },
+          "sheet": {
+            "default": "creatures",
+            "enum": [
+              "creatures",
+              "dinos",
+              "myth"
+            ],
+            "title": "Sheet",
+            "type": "string"
           },
           "sleep_until": {
             "anyOf": [
@@ -7981,6 +8011,16 @@
             "title": "Position",
             "type": "integer"
           },
+          "sheet": {
+            "default": "creatures",
+            "enum": [
+              "creatures",
+              "dinos",
+              "myth"
+            ],
+            "title": "Sheet",
+            "type": "string"
+          },
           "tier": {
             "default": "common",
             "enum": [
@@ -7995,7 +8035,6 @@
             "type": "string"
           },
           "tile": {
-            "exclusiveMaximum": 180.0,
             "minimum": 0.0,
             "title": "Tile",
             "type": "integer"
@@ -8060,6 +8099,22 @@
             ],
             "title": "Position"
           },
+          "sheet": {
+            "anyOf": [
+              {
+                "enum": [
+                  "creatures",
+                  "dinos",
+                  "myth"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet"
+          },
           "tier": {
             "anyOf": [
               {
@@ -8082,7 +8137,6 @@
           "tile": {
             "anyOf": [
               {
-                "exclusiveMaximum": 180.0,
                 "minimum": 0.0,
                 "type": "integer"
               },
@@ -8121,6 +8175,16 @@
             "title": "Position",
             "type": "integer"
           },
+          "sheet": {
+            "default": "creatures",
+            "enum": [
+              "creatures",
+              "dinos",
+              "myth"
+            ],
+            "title": "Sheet",
+            "type": "string"
+          },
           "tier": {
             "enum": [
               "common",
@@ -8134,7 +8198,6 @@
             "type": "string"
           },
           "tile": {
-            "exclusiveMaximum": 180.0,
             "minimum": 0.0,
             "title": "Tile",
             "type": "integer"

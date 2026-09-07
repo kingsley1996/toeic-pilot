@@ -29,6 +29,12 @@ import {
   type SheetId,
   type Tile,
 } from "@/components/petland-map";
+import {
+  CREATURE_SHEETS,
+  DEFAULT_CREATURE_SHEET,
+  creatureSheet,
+} from "@/components/petland-sprite";
+import type { CreatureSheetId } from "@toeic-pilot/shared";
 
 const SHEET_URL: Record<SheetId, string> = {
   town: "/pet/town.png",
@@ -36,10 +42,8 @@ const SHEET_URL: Record<SheetId, string> = {
   water: "/pet/water.png",
   stone: "/pet/stone.png",
 };
-const CREATURES_URL = "/pet/creatures.png";
-
-/** Số cột của tấm sinh vật. Số cột của các tấm nền nằm ở `SHEET_COLS`. */
-const CREATURE_COLS = 10;
+/** Số cột của tấm sinh vật GỐC. Số cột của các tấm nền nằm ở `SHEET_COLS`. */
+const CREATURE_COLS = CREATURE_SHEETS[DEFAULT_CREATURE_SHEET].cols;
 
 /**
  * Những ô trong lớp `objects` là SINH VẬT, không phải đồ vật.
@@ -68,6 +72,8 @@ export type PetView = {
   facing: "left" | "right";
   /** Chỉ số ô trong `creatures.png`. */
   species: number;
+  /** Tấm ghép chứa ô của loài. Vắng mặt = tấm gốc. */
+  sheet?: string;
   /** Đồng hồ giây, để sinh nhịp thở. */
   clock: number;
   /**
@@ -342,14 +348,24 @@ export async function createStage(
   });
   host.appendChild(app.canvas);
 
-  const [town, farm, water, stone, creatures] = await Promise.all([
+  // Mọi tấm sinh vật nạp CÙNG LÚC, không nạp theo loài đang nuôi. Nạp muộn thì
+  // lúc đổi thú cưng con vật biến mất vài trăm mili-giây giữa sân — và đây là
+  // vài KB, không phải vài trăm.
+  const creatureIds = Object.keys(CREATURE_SHEETS) as CreatureSheetId[];
+  const [town, farm, water, stone, ...creatureArt] = await Promise.all([
     Assets.load<Texture>(SHEET_URL.town),
     Assets.load<Texture>(SHEET_URL.farm),
     Assets.load<Texture>(SHEET_URL.water),
     Assets.load<Texture>(SHEET_URL.stone),
-    Assets.load<Texture>(CREATURES_URL),
+    ...creatureIds.map((id) => Assets.load<Texture>(CREATURE_SHEETS[id].url)),
   ]);
   const sheets: Record<SheetId, Texture> = { town, farm, water, stone };
+  const creatureTextures = Object.fromEntries(
+    creatureIds.map((id, i) => [id, creatureArt[i]]),
+  ) as Record<CreatureSheetId, Texture>;
+  // Đám dân làng và kẻ xâm nhập luôn thuộc tấm gốc: bảng phân vai (`creature`)
+  // đánh số theo đúng tấm ấy và không có cột tấm.
+  const creatures = creatureTextures[DEFAULT_CREATURE_SHEET];
 
   const world = new Container();
   world.scale.set(zoom);
@@ -642,6 +658,7 @@ export async function createStage(
 
   let currentSpecies = -1;
   let currentWet = false;
+  let currentSheet: string = DEFAULT_CREATURE_SHEET;
   let camX = 0;
   let camY = 0;
   // `dt` suy ra từ chính `clock` của khung hình thay vì thêm một tham số: người
@@ -670,15 +687,23 @@ export async function createStage(
       // Đổi khung khi đổi loài HOẶC khi xuống/lên khỏi nước. Dựng `Texture` mỗi
       // khung hình là dựng một đối tượng GPU sáu chục lần mỗi giây cho một tấm
       // ảnh không đổi.
-      if (view.species !== currentSpecies || view.swimming !== currentWet) {
+      // Đổi TẤM cũng phải dựng lại khung, không chỉ đổi ô: hai tấm khác số cột
+      // thì cùng một chỉ số cắt ra hai con khác nhau, và không có gì báo.
+      if (
+        view.species !== currentSpecies ||
+        view.swimming !== currentWet ||
+        (view.sheet ?? DEFAULT_CREATURE_SHEET) !== currentSheet
+      ) {
+        const art = creatureSheet(view.sheet);
         pet.texture = slice(
-          creatures,
+          creatureTextures[(view.sheet ?? DEFAULT_CREATURE_SHEET) as CreatureSheetId] ?? creatures,
           view.species,
-          CREATURE_COLS,
+          art.cols,
           view.swimming ? TILE - SUNK : TILE,
         );
         currentSpecies = view.species;
         currentWet = view.swimming;
+        currentSheet = view.sheet ?? DEFAULT_CREATURE_SHEET;
       }
 
       // Nội suy giữa hai ô: đây là chỗ "mượt" đến từ, chứ không phải từ việc bỏ

@@ -92,6 +92,7 @@ def _as_public(
     return PetPublic(
         species=pet.species,
         label=row.label if row is not None else pet.species,
+        sheet=row.sheet if row is not None else "creatures",  # type: ignore[arg-type]
         tile=row.tile if row is not None else 0,
         tier=row.tier if row is not None else "common",  # type: ignore[arg-type]
         nickname=pet.nickname,
@@ -245,6 +246,7 @@ def _chance_public(chance: gacha.Chance) -> EggChance:
     return EggChance(
         code=chance.code,
         label=chance.label,
+        sheet=chance.sheet,  # type: ignore[arg-type]
         tile=chance.tile,
         tier=chance.tier,
         # Một chữ số thập phân: "3.4%" đọc được, "3.389830508474576%" thì không,
@@ -328,6 +330,7 @@ def open_egg(
         species=EggChance(
             code=result.species.code,
             label=result.species.label,
+            sheet=result.species.sheet,  # type: ignore[arg-type]
             tile=result.species.tile,
             tier=result.species.tier,
             # Tỉ lệ của chính con vừa ra, để màn hình nói được "3.4% đấy".
@@ -434,6 +437,7 @@ def open_ten_eggs(
                 species=EggChance(
                     code=one.species.code,
                     label=one.species.label,
+                    sheet=one.species.sheet,  # type: ignore[arg-type]
                     tile=one.species.tile,
                     tier=one.species.tier,
                     percent=chances.get(one.species.code, 0.0),
@@ -479,6 +483,7 @@ def read_collection(
             PetOwnedPublic(
                 code=row.code,
                 label=row.label,
+                sheet=row.sheet,  # type: ignore[arg-type]
                 tile=row.tile,
                 tier=row.tier,
                 copies=owned.copies,

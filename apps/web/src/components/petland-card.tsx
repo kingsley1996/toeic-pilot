@@ -183,6 +183,7 @@ function PetCard({ pet, cheers }: { pet: PetPublic; cheers: number }) {
        */}
       <PetIdle
         tile={pet.tile}
+        sheet={pet.sheet}
         tier={pet.tier}
         condition={condition}
         sleeping={asleep}

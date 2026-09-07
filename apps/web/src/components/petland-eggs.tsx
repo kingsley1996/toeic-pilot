@@ -293,7 +293,12 @@ export function EggScreen({
                 // ngoài chỉ làm loãng lớp trong.
                 className={cx("grid place-items-center", one.duplicate && "opacity-55")}
               >
-                <Creature tile={one.species.tile} size={28} tier={one.species.tier} />
+                <Creature
+                  tile={one.species.tile}
+                  sheet={one.species.sheet}
+                  size={28}
+                  tier={one.species.tier}
+                />
               </li>
             ))}
           </ul>
@@ -385,7 +390,7 @@ export function EggScreen({
             const owned = egg.owned.includes(row.code);
             return (
               <li key={row.code} className="flex items-center gap-2 text-small">
-                <Creature tile={row.tile} size={24} tier={row.tier} />
+                <Creature tile={row.tile} sheet={row.sheet} size={24} tier={row.tier} />
                 <span className={cx("flex-1 truncate", owned ? "text-ink" : "text-ink-muted")}>
                   {row.label}
                   {owned && <span className="ml-1 text-ink-faint">· đã có</span>}

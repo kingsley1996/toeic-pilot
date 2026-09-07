@@ -77,18 +77,53 @@ def test_a_disabled_species_still_draws_for_whoever_owns_it(
     assert after["tile"] == before
 
 
-@pytest.mark.parametrize("tile", [-1, 180, 999])
-def test_a_tile_outside_the_sheet_is_refused(
-    client: TestClient, auth: Callable[[str], dict[str, str]], tile: int
+@pytest.mark.parametrize(
+    ("body", "why"),
+    [
+        ({"tile": -1}, "số âm — schema chặn"),
+        ({"tile": 180}, "vượt trần của tấm gốc"),
+        ({"tile": 999}, "vượt xa trần"),
+        ({"sheet": "dinos", "tile": 20}, "hợp lệ ở tấm gốc, vượt trần ở tấm 16 ô"),
+        ({"sheet": "khong-co-tam-nay", "tile": 0}, "tấm không tồn tại"),
+    ],
+)
+def test_a_tile_outside_its_sheet_is_refused(
+    client: TestClient, auth: Callable[[str], dict[str, str]], body: dict[str, object], why: str
 ) -> None:
-    """Ô ngoài lưới 10x18 vẽ ra một mảnh TRONG SUỐT.
+    """Ô ngoài tấm của nó vẽ ra một mảnh TRONG SUỐT — con thú tàng hình, không
+    lỗi nào, và chỉ người mở trứng ra mới biết.
 
-    Con thú tàng hình, không lỗi nào, và chỉ người mở trứng ra mới biết — nên nó
-    bị chặn ở tầng schema để lỗi là 422 nói rõ trường nào.
+    Trần trên là thuộc tính của TẤM, không phải một hằng số: ô 20 hợp lệ trên
+    `creatures` (180 ô) và không hợp lệ trên `dinos` (16 ô). Nên phép kiểm phải
+    đọc cả hai trường cùng lúc, và với một lượt PATCH thì "cả hai" nghĩa là giá
+    trị SAU khi áp thay đổi — chỉ nơi gọi mới biết điều đó.
+
+    Bài này ĐỌC danh sách loài trước, và đó không phải giàn giáo thừa: bảng loài
+    gieo lười ở lần đọc đầu, nên PATCH thẳng vào một bảng rỗng trả 404 và bài
+    xanh mà chưa từng chạm tới phép kiểm.
     """
     headers = auth("admin")
-    bad = client.patch("/api/v1/admin/pet/species/cat", json={"tile": tile}, headers=headers)
-    assert bad.status_code == 422
+    species = client.get("/api/v1/admin/pet/species", headers=headers).json()
+    code = species[0]["code"]
+    bad = client.patch(f"/api/v1/admin/pet/species/{code}", json=body, headers=headers)
+    assert bad.status_code == 422, why
+
+
+def test_a_species_can_live_on_a_second_sheet(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Ô 5 của `dinos` và ô 5 của `creatures` là hai con khác nhau."""
+    headers = auth("admin")
+    made = client.post(
+        "/api/v1/admin/pet/species",
+        json={"code": "trex", "label": "Khủng long bạo chúa", "sheet": "dinos", "tile": 0},
+        headers=headers,
+    )
+    assert made.status_code == 201
+    assert made.json()["sheet"] == "dinos"
+    # Loài cũ giữ nguyên tấm gốc — cột mới không được đổi nghĩa hàng đã có.
+    listed = client.get("/api/v1/admin/pet/species", headers=headers).json()
+    assert {row["sheet"] for row in listed if row["code"] != "trex"} == {"creatures"}
 
 
 def test_the_code_cannot_be_changed_by_editing(
