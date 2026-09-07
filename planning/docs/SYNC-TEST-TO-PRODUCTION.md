@@ -221,3 +221,46 @@ WHERE pt.slug = 'tp-form-06';
 Connection string chứa mật khẩu — nếu từng dán vào chat/lỗi, hãy **rotate
 password trên Supabase** sau khi xong việc. Không commit `$SUPABASE_URL` hay bản
 dump vào git.
+
+
+## 6. Đề placement là một trường hợp KHÁC, và `export-test.sh` phá dữ liệu ở đó
+
+Đề placement **không có câu hỏi của riêng nó** — 84 câu của nó là câu của
+`tp-test-09`, đã nằm trên production từ lâu. `export-test.sh` xuất cả câu hỏi và
+mở đầu bằng một khối reset xoá câu của đề theo slug, nên chạy nó cho đề placement
+sẽ **xoá luôn câu của `tp-test-09`**: thủng một đề 200 câu mà bản dump không hề
+nhắc tới. Nó cũng có `DELETE FROM attempt WHERE test_id = …`, tức xoá lịch sử làm
+bài — cùng lý do `export-explanations.sh` tồn tại.
+
+Dùng `scripts/export-placement.sh`. Nó chỉ sinh: một hàng `practice_test`, N hàng
+`practice_test_question`, và một `UPDATE` lưu trữ đề placement cũ. Không đụng
+`question` một dòng nào.
+
+```bash
+cd apps/api && uv run python -m app.content.make_placement --slug tp-placement-0X --publish
+cd ../.. && ./scripts/export-placement.sh tp-placement-0X /tmp/p0X.sql
+docker run --rm -i --env-file <env> postgres:17 psql -v ON_ERROR_STOP=1 -q < /tmp/p0X.sql
+```
+
+Ba cổng chạy **trong giao dịch**, nên sai thì huỷ chứ không để lại một đề dở dang:
+mọi câu phải có mặt, đã `published`, và cụm của nó cũng `published` (`open_attempt`
+lọc ở cả hai tầng, nên một cụm còn nháp làm đề ngắn đi mà không có gì báo); đúng N
+hàng sau khi ghi; và **đúng một** đề placement `published`.
+
+Cái cuối là bắt buộc, không phải dọn dẹp: `_placement_test()` chọn bằng
+`db.scalar` trên `(is_placement, published)`, nên hai đề cùng thoả thì nó lấy một
+cái tuỳ ý và hai người học làm hai đề khác nhau mà kết quả vẫn được đem so với
+nhau. Đề cũ chuyển `archived`, **không xoá** — lượt làm cũ vẫn trỏ vào nó và màn
+xem lại vẫn phải đọc được.
+
+### Kiểm sau khi chạy
+
+Hàng dữ liệu đúng **không** chứng minh người học nghe được. Lấy một `storage_key`
+rồi `curl -o /dev/null -w '%{http_code}'`:
+
+- audio: `{AUDIO_PUBLIC_BASE_URL}/{storage_key}`
+- ảnh: `{IMAGE_PUBLIC_BASE_URL}/{CLOUDINARY_FOLDER}/{storage_key}` — **thiếu đoạn
+  thư mục thì 404**, và cái 404 ấy trông y hệt một ảnh chưa được đẩy lên.
+
+Đo ngày 2026-09-07 khi đồng bộ `tp-placement-02`: audio 200, ảnh Part 1 200, ảnh
+biểu đồ Part 3/4 200.
