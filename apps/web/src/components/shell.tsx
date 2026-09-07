@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChevronDown,
   LogIn,
   LogOut,
   Menu,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { API_ROUTES, type BackdropPublic } from "@toeic-pilot/shared";
 
@@ -583,20 +584,101 @@ export function SidebarShell({
  * được sau khi JS chạy, nên chọn theo nó sẽ dựng một khung rồi đổi sang khung
  * kia ngay trước mắt người dùng.
  */
+/**
+ * Nút "Thêm" của nav ngang: gom các mục ít dùng lại thành một menu xổ.
+ *
+ * Khuôn đóng/mở, click-outside và Escape chép từ `UserMenu` — hai menu cùng một
+ * hành vi là đúng, hai hành vi là một lỗi phải nhớ hai lần. `activeHref` trả về
+ * mục đang đứng kể cả khi nó nằm TRONG menu này, nên nút tô sáng khi người đang
+ * ở trang "Luyện theo part" dù mục đó không thẳng trên hàng.
+ */
+function NavMore({ items, active }: { items: NavItem[]; active: string | undefined }) {
+  const pathname = usePathname();
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const open = openedAt === pathname;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) setOpenedAt(null);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpenedAt(null);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const activeInside = items.some((item) => item.href === active);
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpenedAt(open ? null : pathname)}
+        className={cx(
+          "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
+          activeInside || open
+            ? "bg-action-tint text-action-ink"
+            : "text-ink-muted hover:bg-recess hover:text-ink",
+        )}
+      >
+        Thêm
+        <ChevronDown
+          size={14}
+          strokeWidth={2}
+          aria-hidden
+          className={cx("text-ink-faint transition-transform", open && "rotate-180")}
+        />
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="shadow-overlay absolute left-0 top-[calc(100%+6px)] z-30 w-56 rounded border border-rule-strong bg-panel py-1"
+        >
+          {items.map((item) => (
+            <NavLink
+              key={item.href}
+              {...item}
+              active={item.href === active}
+              className="w-full rounded-none px-3 py-2 hover:bg-recess"
+              onClick={() => setOpenedAt(null)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TopBarShell({
   links,
   sectionLabel,
+  more,
   children,
   footer,
 }: {
   links: NavItem[];
   sectionLabel?: string;
+  /** Mục nav gộp vào nút "Thêm" ở nav ngang — ngăn kéo vẫn hiện phẳng cả bộ. */
+  more?: NavItem[];
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
   const pathname = usePathname();
   const { status } = useSession();
   const active = activeHref(links, pathname);
+  // Nav ngang chỉ hiện phần KHÔNG thuộc "Thêm"; ngăn kéo vẫn nhận `links` đầy
+  // đủ — một nguồn, hai khung, không ai phải nhớ đồng bộ hai danh sách.
+  const direct = more?.length ? links.filter((l) => !more.some((m) => m.href === l.href)) : links;
 
   /*
    * Cùng cách đóng dấu bằng đường dẫn như `SidebarShell` — xem chú thích dài ở
@@ -638,23 +720,30 @@ export function TopBarShell({
           </Link>
 
           {hasNav && (
-            <nav className="ml-1 hidden items-center gap-0.5 md:flex">
-              {links.map((link) => (
+            <nav className="ml-1 hidden items-center gap-0.5 lg:flex">
+              {direct.map((link) => (
                 <NavLink key={link.href} {...link} active={link.href === active} />
               ))}
+              {more?.length ? <NavMore items={more} active={active} /> : null}
             </nav>
           )}
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            {/* Giữ nguyên nút CHỮ ở mọi bề rộng (yêu cầu rõ ràng): nav chỉ còn
+                3 mục + "Thêm", nên hàng đủ chỗ cho cả cặp. Trên mobile chúng
+                vẫn vào ngăn kéo burger (qua `AccountBlock`) — hiện cả hai nơi
+                là hai lối vào giống hệt nhau chiếm trọn một nửa header điện
+                thoại. Ẩn CHỈ khi burger tồn tại: trang không có nav thì header
+                là nơi duy nhất, không được giấu. */}
             {status === "anonymous" && (
-              <>
+              <div className={cx("flex items-center gap-2", hasNav && "hidden lg:flex")}>
                 <ButtonLink href="/login" variant="quiet" size="sm">
                   Đăng nhập
                 </ButtonLink>
                 <ButtonLink href="/register" size="sm">
                   Tạo tài khoản
                 </ButtonLink>
-              </>
+              </div>
             )}
 
             {/* Menu tài khoản vẫn ở đây, KHÔNG chỉ ở sidebar. Ba trang này không

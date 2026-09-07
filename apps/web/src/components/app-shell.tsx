@@ -144,6 +144,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <TopBarShell
         links={topBarLinks}
+        // Nav ngang: hai mục chính thẳng hàng, phần còn lại gộp vào "Thêm"
+        // (yêu cầu bố cục 2026-09-07). Ngăn kéo mobile vẫn hiện phẳng cả bộ
+        // — `TopBarShell` tự lọc, đây chỉ là NGUỒN.
+        more={topBarLinks.filter((l) => ["/learn/grammar", "/learn/parts"].includes(l.href))}
         sectionLabel="Học"
         footer={<SiteFooter links={topBarLinks} />}
       >
