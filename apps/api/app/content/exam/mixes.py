@@ -37,7 +37,18 @@ PART5_MIX: tuple[tuple[str, str, int], ...] = (
 # Bối cảnh của câu. TOEIC lấy trọn bối cảnh công sở và thương mại, không bao giờ
 # lấy đời sống riêng tư — nên danh sách này vừa là chỉ dẫn cho mô hình vừa là
 # phép chống trôi: 30 câu cùng nói về "the manager" đọc ra ngay là máy viết.
+#
+# Bản đầu chỉ có MƯỜI mục và toàn đời sống văn phòng. Nó là hạt giống cho mọi
+# bối cảnh model viết, nên cả bốn đề đầu dồn vào một dải hẹp — đếm từ khoá:
+# "hàng" 146 lần, "quản/giám" 90, "lịch" 42, "email" 31. Người làm hai đề nhận
+# ra ngay mình đang đọc lại cùng một thế giới.
+#
+# Đề thật trải rộng hơn nhiều: đi lại, ăn uống, y tế, nhà cửa, ngân hàng, thư
+# viện, bảo tàng, thời tiết. Danh sách dưới đây giữ nguyên mười mục cũ và thêm
+# hai mươi mục ở những vùng ấy — vẫn là đời sống công việc và nơi công cộng,
+# không phải chuyện riêng tư.
 BUSINESS_CONTEXTS: tuple[str, ...] = (
+    # -- công sở --
     "hợp đồng và đàm phán",
     "tuyển dụng và nhân sự",
     "lịch họp và lịch công tác",
@@ -48,6 +59,31 @@ BUSINESS_CONTEXTS: tuple[str, ...] = (
     "dịch vụ khách hàng",
     "đào tạo nội bộ",
     "thuê và sửa chữa mặt bằng",
+    # -- đi lại và lưu trú --
+    "đặt vé và đổi chuyến bay",
+    "nhận phòng khách sạn và tiện nghi",
+    "thuê xe và chỗ đỗ",
+    "tàu điện, xe buýt và giờ chạy",
+    # -- cửa hàng, ăn uống, dịch vụ --
+    "đặt bàn nhà hàng và thực đơn",
+    "đổi trả hàng và bảo hành",
+    "giao đồ ăn và đặt tiệc",
+    "tiệm sửa chữa và bảo dưỡng xe",
+    # -- đời sống công cộng --
+    "thư viện, mượn sách và thẻ thành viên",
+    "bảo tàng, triển lãm và vé tham quan",
+    "phòng tập, lớp học và đăng ký hội viên",
+    "phòng khám, lịch hẹn và hồ sơ bệnh nhân",
+    # -- nhà cửa, tiện ích, tài chính cá nhân --
+    "chuyển nhà, kho gửi đồ và dọn dẹp",
+    "hoá đơn điện nước và sự cố cung cấp",
+    "ngân hàng, tài khoản và khoản vay",
+    "bảo hiểm và bồi thường",
+    # -- truyền thông, sự kiện, môi trường --
+    "đài phát thanh, bản tin và thời tiết",
+    "hội chợ, hội thảo và gian trưng bày",
+    "công trình xây dựng và giấy phép",
+    "vườn ươm, nông trại và chợ nông sản",
 )
 
 

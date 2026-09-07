@@ -462,8 +462,8 @@ That works. I'll book Room B for ten o'clock.
 [QUESTION]
 What are the speakers discussing?
 (A) An interview schedule
-(B) A budget report
-(C) An office move
+(B) A candidate's flight on Thursday
+(C) A room booked for tomorrow morning
 (D) A training course
 Answer: A
 Source: original
@@ -471,18 +471,18 @@ Source: original
 [QUESTION]
 What problem does the man mention?
 (A) A scheduling conflict
-(B) A broken laptop
-(C) A missing resume
-(D) A cancelled flight
+(B) A candidate cancelled an interview
+(C) Room B is taken at ten o'clock
+(D) A missing resume
 Answer: A
 Source: original
 
 [QUESTION]
 What will the woman do next?
 (A) Reserve a room
-(B) Email a candidate
-(C) Print some forms
-(D) Call the manager
+(B) Interview a candidate at ten o'clock
+(C) Move the schedule to Thursday morning
+(D) Print some forms
 Answer: A
 Source: original
 """
@@ -551,7 +551,13 @@ def test_a_generic_part_3_stem_may_repeat_across_conversations(tmp_path):
     nó. Cái đáng bắt là hai câu giống nhau về CÙNG một đoạn thoại.
     """
     plan = bp.build_part3("tp-test", "Test", seed=7)
-    plan.parts[0].slots = plan.parts[0].slots[:2]
+    # Lấy hai ô KHÔNG có câu hàm ý, thay vì hai ô đầu. `PART3_GOOD` là một hội
+    # thoại thường; ô mang `PART_3_IMPLICATION` đòi một lời trích có thật trong
+    # lời thoại (`check_implication`), nên dùng nó ở đây sẽ đỏ vì một lý do
+    # chẳng liên quan tới chống trùng. Bảng mix nay được xáo theo seed, nên
+    # "hai ô đầu" không còn là một hình dạng cố định.
+    plain = [s for s in plan.parts[0].slots if "PART_3_IMPLICATION" not in s.question_types]
+    plan.parts[0].slots = plain[:2]
     first, second = plan.parts[0].slots
     writer.save_slot(tmp_path, first, PART3_GOOD)
     # Cùng ba đề bài, hội thoại khác — đây là chuyện bình thường.
@@ -608,8 +614,8 @@ Then there's one package that fits exactly. I'll book it this afternoon.
 [QUESTION]
 What event are the speakers planning?
 (A) A company anniversary
-(B) A product launch
-(C) A training day
+(B) An eighteen-hundred-dollar refund
+(C) A package booked last afternoon
 (D) A retirement party
 Answer: A
 Source: original
@@ -617,8 +623,8 @@ Source: original
 [QUESTION]
 What will the man do this afternoon?
 (A) Book a package
-(B) Call a caterer
-(C) Email the budget
+(B) Raise the event budget
+(C) Ask about a cheaper package
 (D) Visit a venue
 Answer: A
 Source: original
@@ -727,8 +733,8 @@ Petra speaking — looking at it now, there's exactly one hour free for both.
 [QUESTION]
 What are the speakers trying to arrange?
 (A) A meeting time
-(B) A client visit
-(C) A budget review
+(B) An hour booked on Friday
+(C) A free hour for one of them
 (D) A team lunch
 Answer: A
 Source: original
@@ -736,8 +742,8 @@ Source: original
 [QUESTION]
 What does the man do?
 (A) Check a schedule
-(B) Call a client
-(C) Book a room
+(B) Book an hour on Friday
+(C) Tell Noor he is free all day
 (D) Send an invitation
 Answer: A
 Source: original
@@ -787,7 +793,7 @@ def test_a_voice_name_can_never_be_a_printed_option(tmp_path):
     writer.save_slot(
         tmp_path,
         plan.parts[0].slots[0],
-        PART3_GOOD.replace("(B) A budget report", "(B) uk_female_1"),
+        PART3_GOOD.replace("(B) A candidate's flight on Thursday", "(B) uk_female_1"),
     )
     problems = [p for r in checker.check_blueprint(plan, tmp_path, only=3) for p in r.problems]
     assert any("TÊN GIỌNG" in problem for problem in problems)
@@ -1760,3 +1766,183 @@ def test_an_implication_question_must_quote_the_script_word_for_word() -> None:
         line=1, prompt_text='What does the man mean when he says, "I will call the supplier"?'
     )
     assert check_implication(invented, script)
+
+
+# --- Chống trùng khung giữa các đề ---------------------------------------
+#
+# Năm đề đầu tiên đều mang seed `20260822` — mặc định ghi cứng của `--seed` —
+# nên khung của chúng giống hệt nhau: cùng dãy dạng câu, cùng chủ đề cụm, cùng
+# thứ tự bài. Nội dung thì khác thật (trùng từ vựng giữa các cụm khác đề đo được
+# Jaccard trung vị 0,03–0,07), nhưng người làm hai đề vẫn gặp đúng một hình dạng
+# đề: câu 32 luôn hỏi chủ đề, câu 34 luôn hỏi hành động tiếp theo.
+
+
+def _skeleton(slug: str, seed: int) -> list[tuple]:
+    builders = {
+        1: bp.build_part1,
+        2: bp.build_part2,
+        3: bp.build_part3,
+        4: bp.build_part4,
+        5: bp.build_part5,
+        6: bp.build_part6,
+        7: bp.build_part7,
+    }
+    out = []
+    for part, build in builders.items():
+        for slot in build(slug, slug, seed).parts[0].slots:
+            out.append(
+                (
+                    part,
+                    slot.question_type,
+                    tuple(slot.question_types),
+                    slot.grammar,
+                    tuple(slot.grammars),
+                    slot.topic,
+                    slot.people,
+                    slot.context,
+                    slot.graphic,
+                    tuple(slot.passages),
+                    slot.structure,
+                )
+            )
+    return out
+
+
+def test_two_forms_do_not_share_a_skeleton() -> None:
+    """Hai đề khác tên phải khác khung, và điều đó không được phụ thuộc vào việc
+    ai đó nhớ truyền `--seed`.
+
+    Đo trước khi sửa: cùng seed mặc định thì hai blueprint trùng **99/99 ô**.
+    """
+    from app.content.exam_cli.plan import seed_for
+
+    a = _skeleton("tp-form-11", seed_for("tp-form-11"))
+    b = _skeleton("tp-form-12", seed_for("tp-form-12"))
+    same = sum(1 for x, y in zip(a, b) if x == y)
+    assert same < len(a) * 0.25, f"{same}/{len(a)} ô trùng — khung hai đề quá giống nhau"
+
+
+def test_the_same_slug_still_rebuilds_the_same_form() -> None:
+    """Suy seed từ slug không được lấy mất tính tái lập.
+
+    `hash()` của Python ngẫu nhiên hoá theo tiến trình, nên dùng nó ở đây thì
+    dựng lại cùng một slug ở lần chạy sau ra một đề khác — bài này là chỗ điều
+    đó bị bắt.
+    """
+    from app.content.exam_cli.plan import seed_for
+
+    assert seed_for("tp-form-11") == seed_for("tp-form-11")
+    assert _skeleton("tp-form-11", seed_for("tp-form-11")) == _skeleton(
+        "tp-form-11", seed_for("tp-form-11")
+    )
+
+
+@pytest.mark.parametrize(
+    ("part", "build", "at"),
+    [(3, bp.build_part3, (10, 11, 12)), (4, bp.build_part4, (8, 9))],
+)
+def test_the_graphic_sets_stay_at_the_end_however_the_mix_is_shuffled(part, build, at) -> None:
+    """Câu hỏi về hình nằm ở CUỐI part, ở mọi đề thật.
+
+    `build_part3` gán brief cho ô 10–12 và `build_part4` cho ô 8–9 theo VỊ TRÍ,
+    nên xáo cả bảng sẽ đẩy một hàng vốn có hình lên đầu và đẻ ra câu hỏi hình ở
+    giữa part. Từng câu vẫn hợp lệ, nên không có gì báo.
+    """
+    for seed in (1, 20260822, 987654321):
+        slots = build("x", "X", seed).parts[0].slots
+        assert tuple(i for i, s in enumerate(slots) if s.graphic) == at
+
+
+def test_part7_keeps_single_then_double_then_triple() -> None:
+    """Đề thật xếp cụm một đoạn trước, rồi hai đoạn, rồi ba.
+
+    `number` cộng dồn theo số câu của ô trước, nên trộn một cụm 5 câu vào giữa
+    đám cụm 2 câu vẫn đánh số liền mạch tới 200 — không có gì báo, chỉ là đề
+    không còn giống đề thi.
+    """
+    for seed in (1, 20260822, 987654321):
+        slots = bp.build_part7("x", "X", seed).parts[0].slots
+        counts = [len(s.passages) for s in slots]
+        assert counts == sorted(counts), f"seed {seed}: thứ tự đoạn {counts}"
+        assert slots[0].number == 147
+        assert slots[-1].number + len(slots[-1].question_types) - 1 == 200
+
+
+# --- Đáp án nhiễu phải nhại lời thoại ------------------------------------
+#
+# Bẫy trung tâm của Part 3/4 đề thật: đáp án SAI mới là chỗ dùng lại từ của lời
+# thoại rồi bẻ nghĩa. Đề tự sinh làm ngược — đo trên 276 câu của bốn đề đầu, 58%
+# đáp án ĐÚNG nhại gần hết lời thoại còn 37% đáp án nhiễu không nhắc tới gì, nên
+# "chọn cái nghe quen nhất" đúng 46–49% số câu thay vì 25%.
+
+
+def _mc(script: str, correct: str, wrong: list[str]):
+    from app.services.content_import import ParsedOption, ParsedQuestion
+
+    return ParsedQuestion(
+        line=1,
+        prompt_text="What will the man do next?",
+        options=[ParsedOption(label="A", content=correct, is_correct=True)]
+        + [
+            ParsedOption(label=chr(66 + i), content=w, is_correct=False)
+            for i, w in enumerate(wrong)
+        ],
+    )
+
+
+SHIFT_SCRIPT = (
+    "W: The delivery van is scheduled for Thursday morning. "
+    "M: Actually we moved it to Friday, and I will email the warehouse manager today."
+)
+
+
+def test_two_unrelated_distractors_are_refused() -> None:
+    """Ba đáp án sai không nhắc tới gì thì đáp án đúng là lựa chọn DUY NHẤT chứa
+    từ nào của lời thoại — một điểm cho không với người bắt được một từ."""
+    from app.content.exam.check import check_distractors
+
+    lazy = _mc(
+        SHIFT_SCRIPT,
+        "Email the warehouse manager",
+        ["Repaint the lobby", "Cancel a magazine subscription", "Book a dentist appointment"],
+    )
+    assert check_distractors(lazy, SHIFT_SCRIPT)
+
+
+def test_distractors_that_echo_the_script_pass() -> None:
+    """Kế hoạch bị đổi, người nói khác, quan hệ bị bẻ — cả ba đều dùng lại từ đã
+    nói. Đây là hình dạng đề thật dùng."""
+    from app.content.exam.check import check_distractors
+
+    good = _mc(
+        SHIFT_SCRIPT,
+        "Email the warehouse manager",
+        [
+            "Send the van on Thursday morning",  # kế hoạch cũ, đã bị đổi
+            "Ask the warehouse manager to email him",  # bẻ quan hệ
+            "Reschedule the delivery for next week",  # nghe quen, không ai nói
+        ],
+    )
+    assert check_distractors(good, SHIFT_SCRIPT) == []
+
+
+def test_a_correct_answer_may_still_echo_the_script() -> None:
+    """KHÔNG chặn đáp án đúng nhại lời thoại.
+
+    Đề thật có những câu trả lời được bằng cách khớp cụm từ; bỏ chúng đi làm đề
+    KHÓ hơn đề thật, sai theo hướng ngược lại. Cổng này chỉ canh sàn của đáp án
+    nhiễu, nên một đáp án đúng lấy nguyên chữ vẫn phải qua.
+    """
+    from app.content.exam.check import check_distractors, echo
+
+    item = _mc(
+        SHIFT_SCRIPT,
+        "Email the warehouse manager",
+        [
+            "Send the van on Thursday morning",
+            "Ask the warehouse manager to email him",
+            "Meet the delivery van on Friday",
+        ],
+    )
+    assert echo("Email the warehouse manager", SHIFT_SCRIPT) == 1.0
+    assert check_distractors(item, SHIFT_SCRIPT) == []

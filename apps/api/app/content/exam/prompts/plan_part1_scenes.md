@@ -10,4 +10,12 @@ BỐI CẢNH phải trải rộng, KHÔNG phải sáu biến thể của một v
 
 HAI DÒNG `none` phải nói về QUAN HỆ VỊ TRÍ giữa vật và cảnh xung quanh, vì đó là thứ Part 1 hay hỏi nhất ở dạng này — vật dựa vào đâu, chồng lên đâu, đặt cạnh đâu, treo trên đâu, xếp thành hàng thế nào. Ví dụ dạng cần: xe đạp dựng vào tường, thang tựa vào mặt tiền toà nhà, thùng hàng xếp chồng trên bến, ghế úp lên bàn, thuyền neo dọc cầu tàu. KHÔNG viết dòng `none` chỉ là "một căn phòng trống".
 
+ĐỘ PHỨC TẠP: mỗi mô tả phải có **ít nhất hai thứ đang diễn ra**, không phải một
+người làm một việc. Dòng `one` vẫn một người, nhưng phải nói thêm cảnh quanh họ
+đang có gì. Dòng `several` phải cho hai nhóm người làm HAI việc khác nhau. Dòng
+`none` phải có ít nhất ba nhóm vật ở ba quan hệ vị trí khác nhau.
+
+Ảnh chỉ có một người làm một việc thì mọi đáp án sai đều bị bác bởi đúng một sự
+thật ấy, và câu hỏi trả lời được chỉ bằng cách nhìn thấy một hành động.
+
 Không thêm tiêu đề, không thêm dòng nào khác.

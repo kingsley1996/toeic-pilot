@@ -650,6 +650,112 @@ _LINE_REF = re.compile(r"\bline\s+\d+", re.IGNORECASE)
 _SAYS_RE = re.compile(r'says?,?\s*["“]([^"”]+)["”]', re.IGNORECASE)
 
 
+# Từ chức năng — bỏ ra khi đo độ phủ, vì chúng có mặt ở mọi câu và làm mọi lựa
+# chọn trông như đang nhại lời thoại.
+_FUNCTION_WORDS = frozenset(
+    "the a an and or but of to in on at for with from by is are was were be been am "
+    "this that these those it its you he she we they will would can could should "
+    "have has had do does did not no yes as if so up out about your our my me him her "
+    "there their them what when where who how why which than then also more most just".split()
+)
+
+# Dưới ngưỡng này coi như lựa chọn KHÔNG nhắc tới gì trong ngữ liệu.
+UNRELATED = 0.2
+
+
+def _content_words(text: str) -> list[str]:
+    return [
+        w for w in re.findall(r"[a-z]+", text.lower()) if len(w) > 2 and w not in _FUNCTION_WORDS
+    ]
+
+
+def echo(option: str, source: str) -> float:
+    """Bao nhiêu phần từ nội dung của một lựa chọn có sẵn trong ngữ liệu."""
+    words = _content_words(option)
+    if not words:
+        return 0.0
+    have = set(_content_words(source))
+    return sum(1 for w in words if w in have) / len(words)
+
+
+def check_distractors(question: ParsedQuestion, script: str) -> list[str]:
+    """Đáp án nhiễu của Part 3/4 phải NHẠI lời thoại, không được là chuyện lạ.
+
+    Đây là bẫy trung tâm của đề thật, và tài liệu luyện thi mô tả nó thẳng —
+    *"distractors copy words from the audio but twist the meaning"*. Người nghe
+    được một từ quen rồi chọn đại phải SAI phần lớn số lần.
+
+    Đề tự sinh đang làm ngược. Đo trên 276 câu Part 3/4 của bốn đề đầu:
+
+        đáp án ĐÚNG nhại gần hết lời thoại    58%
+        đáp án NHIỄU không nhắc tới gì        37%
+        câu có TỪ HAI nhiễu "không nhắc tới"  35%   (17% có cả ba)
+
+    Ở 17% ấy, đáp án đúng là lựa chọn DUY NHẤT chứa từ nào của lời thoại — một
+    điểm cho không với người bắt được đúng một từ.
+
+    **Không chặn đáp án đúng nhại lời thoại.** Đề thật có những câu trả lời được
+    bằng cách khớp cụm từ; bỏ chúng đi làm đề khó hơn đề thật, sai theo hướng
+    ngược lại. Thứ bị chặn là **sàn của đáp án nhiễu**.
+    """
+    wrong = [option_text(o) for o in question.options if not o.is_correct]
+    if len(wrong) < 3 or not script.strip():
+        return []
+    unrelated = sum(1 for o in wrong if echo(o, script) < UNRELATED)
+    if unrelated > 1:
+        return [
+            f"{unrelated}/3 đáp án nhiễu không nhắc tới gì trong lời thoại — "
+            "nhiều nhất một, phần còn lại phải nhại lời đã nói rồi bẻ nghĩa"
+        ]
+    return []
+
+
+def check_paraphrase_balance(questions: list[ParsedQuestion], script: str) -> list[str]:
+    """Trong một cụm ba câu, độ trùng chữ không được ĐOÁN ĐƯỢC đáp án — cả hai chiều.
+
+    Đây là nửa còn lại của `check_distractors`, và nó phải là luật của CỤM chứ
+    không của từng câu. Đề thật **có** câu khớp cụm từ — cấm sạch là làm đề khó
+    hơn đề thật.
+
+    Luật đối xứng, và sự đối xứng ấy là bài học phải trả giá mới có. Bản đầu chỉ
+    chặn một phía ("nhiều nhất một câu có đáp án đúng giống lời thoại nhất"), và
+    model làm đúng lời — rồi lật hẳn sang phía kia:
+
+        chiến thuật đoán bừa      may rủi   kho cũ   sau luật một phía
+        chọn cái GIỐNG nhất          25%      47%          0%
+        chọn cái ÍT GIỐNG nhất       25%       3%         67%
+
+    Thiên lệch 47% bị thay bằng thiên lệch 67% ngược chiều — tệ hơn chỗ xuất
+    phát. Một cổng chặn một phía không làm tín hiệu biến mất, nó chỉ đổi dấu.
+    """
+    if not script.strip() or len(questions) < 3:
+        return []
+    highest = lowest = 0
+    for question in questions:
+        correct = [option_text(o) for o in question.options if o.is_correct]
+        wrong = [option_text(o) for o in question.options if not o.is_correct]
+        if not correct or not wrong:
+            continue
+        mine = echo(correct[0], script)
+        theirs = [echo(o, script) for o in wrong]
+        if mine > max(theirs):
+            highest += 1
+        if mine < min(theirs):
+            lowest += 1
+    problems = []
+    if highest > 1:
+        problems.append(
+            f"{highest}/3 câu có đáp án đúng GIỐNG lời thoại nhất — nhiều nhất một; "
+            "sửa các đáp án sai cho nhại lời thoại hơn"
+        )
+    if lowest > 1:
+        problems.append(
+            f"{lowest}/3 câu có đáp án đúng ÍT GIỐNG lời thoại nhất — nhiều nhất một; "
+            "chọn cái nghe lạ nhất cũng thành một mẹo đoán đúng"
+        )
+    return problems
+
+
 def check_implication(question: ParsedQuestion, script: str) -> list[str]:
     """Câu hàm ý phải TRÍCH một lời đã nói, đúng từng chữ.
 
@@ -796,6 +902,17 @@ def _check_set(
             evidence = f"{evidence}\n\n{source.read_text()}"
     else:
         graphic_flags = []
+    if part in (3, 4):
+        from app.content.exam.blueprint import GRAPHIC_POSITION
+
+        # Luật của CỤM, nên nó vào `shared` — mỗi câu riêng lẻ hoàn toàn hợp lệ,
+        # thứ sai là ba câu cùng trả lời được bằng cách khớp chữ.
+        #
+        # Bỏ câu hỏi về HÌNH ra: lựa chọn của nó là tên hàng trong bảng và lời
+        # thoại cố ý không đọc tên ấy, nên nó không bao giờ là "khớp chữ".
+        graphic_at = GRAPHIC_POSITION.get(part, len(questions) - 1)
+        judged = [q for i, q in enumerate(questions) if not (slot.graphic and i == graphic_at)]
+        shared = [*shared, *check_paraphrase_balance(judged, script)]
     if part == 7:
         shared = [*shared, *check_part7_forms(questions, script)]
         # …và đếm riêng số HÌNH, thứ nằm ở hiện vật khác.
@@ -854,6 +971,13 @@ def _check_set(
             report.flags.extend(graphic_flags)
         if index < len(slot.question_types) and slot.question_types[index].endswith("_IMPLICATION"):
             report.problems.extend(check_implication(question, script))
+        # Câu hỏi về HÌNH được miễn, và không phải vì tiện: lựa chọn của nó là
+        # tên hàng trong bảng, còn lời thoại CỐ Ý không đọc tên ấy ra — đó là
+        # toàn bộ cơ chế của dạng câu này (xem `graphic_rule_verdict`). Bắt nó
+        # nhại lời thoại là bắt nó thôi làm câu hỏi về hình.
+        graphic_index = GRAPHIC_POSITION.get(part, len(questions) - 1)
+        if part in (3, 4) and not (slot.graphic and index == graphic_index):
+            report.problems.extend(check_distractors(question, script))
 
         # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.
         #

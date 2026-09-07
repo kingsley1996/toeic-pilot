@@ -70,7 +70,21 @@ def main(argv: list[str] | None = None) -> int:
     plan_cmd = sub.add_parser("plan", help="dựng blueprint")
     plan_cmd.add_argument("--slug", required=True)
     plan_cmd.add_argument("--title")
-    plan_cmd.add_argument("--seed", type=int, default=20260822)
+    # KHÔNG mặc định ghi cứng. Một hằng số ở đây nghĩa là mọi đề dùng cùng seed
+    # trừ khi có người nhớ truyền cờ, và không ai nhớ: năm đề đầu tiên đều mang
+    # `20260822`, nên khung của chúng — dãy dạng câu, chủ đề cụm, thứ tự bài —
+    # giống hệt nhau. Đo được: cùng seed thì hai blueprint trùng 99/99 ô, đổi
+    # seed còn 18/99.
+    #
+    # Suy từ slug thì hai đề khác tên tự khắc khác khung, mà dựng lại cùng một
+    # slug vẫn ra đúng đề cũ — tính tái lập vẫn còn, chỉ không phải trả bằng
+    # việc mọi đề giống nhau.
+    plan_cmd.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="mặc định suy từ slug, nên hai đề khác tên có khung khác nhau",
+    )
     plan_cmd.add_argument("--part", type=int, default=5, choices=(1, 2, 3, 4, 5, 6, 7))
     plan_cmd.add_argument(
         "--model",

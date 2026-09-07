@@ -22,6 +22,29 @@ one of them true. The description will be used to create the photograph, so it
 must fix every detail the four statements depend on: how many people, what each
 is doing, what objects are visible and where.
 
+**Then put MORE in the photograph than the four statements use.** That extra is
+not decoration — it is where the difficulty of a real Part 1 photograph lives. A
+picture built to the minimum shows one person doing one thing, and then every
+wrong statement is refuted by that single fact; the item can be answered by
+noticing the one action. A real photograph carries several things at once, so a
+wrong statement about a *different* corner of it sounds plausible until you look
+there.
+
+Concretely, on top of whatever the statements need:
+- a photograph with people must show **at least two separate subjects doing
+  different things** — someone at the counter and someone carrying boxes behind
+  them, a worker on a ladder and two others holding it steady;
+- a photograph with no people must show **at least three groups of objects in
+  three different spatial relations** — crates stacked on a pallet, bicycles
+  leaning on a railing, crates and bicycles side by side under an awning;
+- name the background: what is on the walls, through the window, further down
+  the street. Say where each thing is relative to the others.
+
+Do not then write statements about every one of those extra things. They are
+there so that a wrong statement *could* have been written about them, which is
+what makes a listener check the photograph instead of the one thing they
+already noticed.
+
 PHOTOGRAPHS WITH NO PEOPLE
 A third of real Part 1 items show an object or a scene with nobody in it, and
 those items are mostly about **where things are in relation to each other** —

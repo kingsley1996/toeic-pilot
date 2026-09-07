@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import sys
 from time import perf_counter
@@ -312,6 +313,16 @@ def generate_part_graphics(
     return briefs
 
 
+def seed_for(slug: str) -> int:
+    """Seed ổn định của một đề, suy từ slug.
+
+    `hash()` của Python KHÔNG dùng được: nó ngẫu nhiên hoá theo tiến trình
+    (`PYTHONHASHSEED`), nên dựng lại cùng một slug ở lần chạy sau ra một đề khác
+    — đúng thứ mà tính tái lập của seed tồn tại để ngăn.
+    """
+    return int(hashlib.sha256(slug.encode()).hexdigest()[:8], 16)
+
+
 def cmd_plan(args: argparse.Namespace) -> int:
     title = args.title or f"TOEIC Pilot — {args.slug}"
     builder = {
@@ -330,7 +341,11 @@ def cmd_plan(args: argparse.Namespace) -> int:
     # hỏng thì rơi về bảng cấu hình / pool theo seed — một lượt plan không được
     # chết vì model. Cấu trúc (loại câu, vị trí hình, giọng) luôn từ bảng; model
     # chỉ sinh NỘI DUNG bối cảnh và hình.
-    built = builder(args.slug, title, args.seed)
+    # Wizard dựng Namespace tay và có thể không có cờ này.
+    seed = getattr(args, "seed", None)
+    if seed is None:
+        seed = seed_for(args.slug)
+    built = builder(args.slug, title, seed)
     if args.model:
         # Wizard dựng Namespace tay, không có cờ này — getattr, đừng bắt nó sửa.
         max_tokens = getattr(args, "max_tokens", PLAN_MAX_TOKENS)
@@ -338,7 +353,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
             gateway = _gateway(args.model)
             if args.part == 1:
                 scenes = generate_part1_scenes(gateway, Tier(args.tier), max_tokens=max_tokens)
-                built = bp.build_part1(args.slug, title, args.seed, scenes)
+                built = bp.build_part1(args.slug, title, seed, scenes)
             else:
                 contexts = generate_part_scenes(
                     gateway, Tier(args.tier), args.part, _scene_hosts(built), max_tokens=max_tokens
@@ -358,7 +373,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
                         3: bp.build_part3,
                         4: bp.build_part4,
                         7: bp.build_part7,
-                    }[args.part](args.slug, title, args.seed, graphics)
+                    }[args.part](args.slug, title, seed, graphics)
                 _override_contexts(built, contexts)
             print(f"model {args.model} sinh nội dung Part {args.part}.")
         except Exception as failure:  # noqa: BLE001 — rơi về bảng là đường đúng
@@ -366,7 +381,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
                 f"không sinh được nội dung bằng model ({failure}) — dùng bảng cấu hình.",
                 file=sys.stderr,
             )
-            built = builder(args.slug, title, args.seed)
+            built = builder(args.slug, title, seed)
 
     plan = bp.merge(existing, built)
     problems = bp.validate(plan)

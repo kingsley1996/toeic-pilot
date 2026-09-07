@@ -19,6 +19,7 @@ import json
 import random
 from collections.abc import Callable, Sequence
 from dataclasses import asdict, dataclass, field
+from itertools import groupby
 from pathlib import Path
 
 from app.content.exam.mixes import (
@@ -128,6 +129,33 @@ def _spread[T](
             plan[index], plan[other] = plan[other], plan[index]
             break
     return plan
+
+
+def _shuffle_within[T](rows: Sequence[T], groups: Sequence[int], rng: random.Random) -> list[T]:
+    """Xáo trong TỪNG NHÓM rồi nối lại theo đúng thứ tự nhóm.
+
+    Xáo cả bảng thì phá hai bất biến của đề thật, và cả hai hỏng im lặng:
+
+    · **Câu hỏi về hình nằm ở CUỐI part.** `build_part3` gán brief cho ô 10–12 và
+      `build_part4` cho ô 8–9 theo VỊ TRÍ, nên một hàng vốn có hình mà trôi lên
+      đầu bảng sẽ đẻ ra một câu hỏi hình ở giữa Part 3 — hợp lệ từng câu, sai với
+      mọi đề thật.
+    · **Part 7 xếp cụm một đoạn trước, rồi hai, rồi ba.** `number` cộng dồn theo
+      số câu của ô trước, nên trộn cụm 5 câu vào giữa đám cụm 2 câu vẫn đánh số
+      liền mạch — không có gì báo, chỉ là đề không còn giống đề thi.
+
+    `groups` là kích thước từng nhóm, cộng lại phải bằng `len(rows)`.
+    """
+    out: list[T] = []
+    start = 0
+    for size in groups:
+        chunk = list(rows[start : start + size])
+        rng.shuffle(chunk)
+        out.extend(chunk)
+        start += size
+    if start != len(rows):
+        raise ValueError(f"nhóm cộng lại {start}, bảng có {len(rows)} hàng")
+    return out
 
 
 @dataclass
@@ -336,15 +364,18 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
     # Chia riêng hai nhóm rồi lấy lần lượt: gộp lại thì dàn ba người và dàn hai
     # người tranh nhau cùng một hạn ngạch, và số cuộc ba người ít hơn hẳn nên
     # nhóm đó lãnh trọn phần lệch.
+    # Mười cụm đầu là cụm thường, ba cụm cuối là cụm có hình — xáo trong từng
+    # nhóm để câu hỏi hình vẫn nằm ở cuối part như đề thật.
+    rows = _shuffle_within(PART3_MIX, (10, 3), _rng(seed, "p3-order"))
     casts = {
         2: _spread(
-            _deal(PART3_CASTS, sum(1 for row in PART3_MIX if row[1] == 2), _rng(seed, "p3-duo")),
+            _deal(PART3_CASTS, sum(1 for row in rows if row[1] == 2), _rng(seed, "p3-duo")),
             _rng(seed, "p3-duo-spread"),
         ),
-        3: _deal(PART3_TRIOS, sum(1 for row in PART3_MIX if row[1] == 3), _rng(seed, "p3-trio")),
+        3: _deal(PART3_TRIOS, sum(1 for row in rows if row[1] == 3), _rng(seed, "p3-trio")),
     }
     slots: list[QuestionSlot] = []
-    for index, (topic, speakers, scene, types, graphic) in enumerate(PART3_MIX):
+    for index, (topic, speakers, scene, types, graphic) in enumerate(rows):
         cast = casts[speakers].pop()
         # Ba cụm cuối là cụm có hình (đề thật). Brief lấy từ `picks`, còn lại
         # giữ nguyên (không hình).
@@ -530,7 +561,9 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
     """
     rng = random.Random(seed)
     picks = graphics or rng.sample(PART4_GRAPHIC_POOL, 2)
-    voices = _spread(_deal(NARRATORS, len(PART4_MIX), _rng(seed, "p4")), _rng(seed, "p4-spread"))
+    # Tám bài đầu là bài thường, hai bài cuối có hình — cùng lý do như Part 3.
+    rows = _shuffle_within(PART4_MIX, (8, 2), _rng(seed, "p4-order"))
+    voices = _spread(_deal(NARRATORS, len(rows), _rng(seed, "p4")), _rng(seed, "p4-spread"))
     slots = [
         QuestionSlot(
             id=f"p4-{index + 1:02d}",
@@ -543,7 +576,7 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
             voices=[voices[index]],
             graphic=picks[index - 8] if index >= 8 else graphic,
         )
-        for index, (speech_type, scene, types, graphic) in enumerate(PART4_MIX)
+        for index, (speech_type, scene, types, graphic) in enumerate(rows)
     ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=4, slots=slots)])
 
@@ -587,9 +620,16 @@ def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = N
     picks = graphics or rng.sample(PART7_GRAPHIC_POOL, graphic_count)
     pick_at = 0
 
+    # Xáo trong từng nhóm CÙNG SỐ ĐOẠN ngữ liệu: đề thật xếp cụm một đoạn trước,
+    # rồi hai đoạn, rồi ba. Kích thước nhóm đọc từ chính bảng chứ không viết
+    # cứng — thêm một cụm vào `PART7_SETS` mà quên sửa con số ở đây là đúng loại
+    # sai lệch không ai thấy.
+    sizes = tuple(len(list(group)) for _, group in groupby(PART7_SETS, key=lambda row: len(row[3])))
+    rows = _shuffle_within(PART7_SETS, sizes, _rng(seed, "p7-order"))
+
     slots: list[QuestionSlot] = []
     number = 147
-    for index, (passage_type, scene, types, passages) in enumerate(PART7_SETS, start=1):
+    for index, (passage_type, scene, types, passages) in enumerate(rows, start=1):
         structure = "PART_7_SINGLE_PASSAGE" if len(passages) == 1 else "PART_7_MULTIPLE_PASSAGE"
         filled = []
         for passage in passages:

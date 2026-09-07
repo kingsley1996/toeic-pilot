@@ -20,9 +20,37 @@ THE TALK
 THE THREE QUESTIONS
 - Each asks about something different. Do not ask twice about the same sentence.
 - Four printed options each, exactly one correct.
-- The three wrong options must be wrong **against what was said**: a detail that
-  was corrected, an action ruled out, a time that changed, or something never
-  mentioned. An option that is merely unlikely is a second correct answer.
+- **At least TWO of the three wrong options must reuse words the speakers
+  actually said**, with the meaning twisted. This is the central trap of the
+  real test — a listener who catches a familiar word and picks that option must
+  be wrong most of the time. Build them this way:
+    · **the changed plan** — the time, place, or price that was mentioned and
+      then corrected ("Thursday" when they moved it to Friday),
+    · **the wrong speaker** — something true, said by the other person,
+    · **the rejected idea** — a suggestion that was raised and turned down,
+    · **the right words, wrong relation** — the same nouns joined the wrong way
+      ("send the report to the client" when the client sent it to them).
+- **At most ONE** wrong option may be something never mentioned at all. Three of
+  those makes the correct answer the only choice containing any word from the
+  audio, which is a free point for anyone who caught a single word.
+- The correct answer does **not** have to avoid the speakers' words — the real
+  test has items answerable by matching a phrase, and stripping them out makes
+  the exam harder than the real one. What must not happen is that word overlap
+  *predicts* the answer: if the correct option is the only one echoing the
+  audio, rewrite the wrong options, not the right one.
+- **Across the three questions, MIX how close the correct option sits to the
+  speakers' words.** Aim for one item where it echoes the audio, one where it
+  restates the idea in different words ("Send updated targets by email" for
+  *"I'll email each team leader the revised goals"*), and one in between.
+  Two rules, and they are a pair — obeying one alone makes the set worse:
+    · at most one of the three may have the correct option be the choice that
+      reuses the MOST words from the audio;
+    · at most one may have it be the choice that reuses the FEWEST.
+  Get the first alone and the set becomes answerable by "pick the option that
+  sounds least familiar", which is the same free point wearing the opposite
+  coat. Measured: after a one-sided rule, that strategy scored **67%** against
+  25% for guessing — worse than the 47% the original problem gave.
+- An option that is merely unlikely is a second correct answer.
 - Options are short noun phrases or short clauses, similar length to each other.
 
 A QUESTION LABELLED `PART_4_IMPLICATION`
