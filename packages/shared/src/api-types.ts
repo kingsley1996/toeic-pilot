@@ -1124,6 +1124,68 @@ export interface paths {
         patch: operations["update_species_api_v1_admin_pet_species__code__patch"];
         trace?: never;
     };
+    "/api/v1/admin/petland/creatures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Creatures */
+        get: operations["list_creatures_api_v1_admin_petland_creatures_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/petland/creatures/{tile}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit Creature */
+        patch: operations["edit_creature_api_v1_admin_petland_creatures__tile__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/petland/creatures/{tile}/promote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Promote Creature
+         * @description Chuyển một ô thành thú nuôi: tạo hàng loài tại đúng ô đó.
+         *
+         *     Thú nuôi là hàng trong `pet_species`, nên "chuyển vai" ở đây KHÔNG đụng tới
+         *     bảng creature — nó tạo loài. Trước khi tạo phải đảm bảo ô chưa có chủ: hai
+         *     loài dùng chung một ô nghĩa là gacha trả về con này mà màn hình vẽ con kia,
+         *     và không có gì báo.
+         *
+         *     Vai cũ được GIỮ NGUYÊN trong hàng creature — nó là vai phụ, dùng khi loài
+         *     bị xoá bỏ hay chuyển đi nơi khác, không phải vai đang chạy.
+         */
+        post: operations["promote_creature_api_v1_admin_petland_creatures__tile__promote_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/petland/map": {
         parameters: {
             query?: never;
@@ -3427,6 +3489,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/petland/creatures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Creature Roles
+         * @description {tile: role} + danh sách ô thú nuôi, cho runtime phía frontend.
+         *
+         *     Vai "pet" không nằm trong `roles` — nó là join với `pet_species` (xem
+         *     `CREATURE_ROLES`), nên client nhận kèm danh sách ô của loài để loại chúng
+         *     khỏi đám NPC/quái. Gieo lười chạy ở đây: người học mở Petland trước cả khi
+         *     admin mở màn quản trị, và bảng rỗng vẫn phải trả lời được.
+         */
+        get: operations["read_creature_roles_api_v1_petland_creatures_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/petland/map": {
         parameters: {
             query?: never;
@@ -5186,6 +5273,85 @@ export interface components {
             /** Rows */
             rows: components["schemas"]["EvalRow"][];
             stats: components["schemas"]["LlmStats"];
+        };
+        /**
+         * CreatureEdit
+         * @description Đổi vai hoặc đổi tên một ô. Khoá vắng mặt = đừng đụng tới.
+         */
+        CreatureEdit: {
+            /** Label */
+            label?: string | null;
+            /** Role */
+            role?: ("npc" | "wildlife" | "intruder") | null;
+        };
+        /**
+         * CreaturePromote
+         * @description Chuyển một ô thành thú nuôi = tạo hàng loài tại ô đó.
+         *
+         *     Mã bắt buộc vì nó là khoá mà `pet_state.species` trỏ tới — suy từ tên là tạo
+         *     mã trùng vào đúng ngày ai đó đặt tên con thứ hai trùng tên con thứ nhất.
+         *     `drop_weight` để trống thì suy theo hạng — nếu không, mọi loài promote đều
+         *     nhận 10 và một con god mới về rơi DỄ hơn cả epic: hạng hiếm mà không hiếm.
+         */
+        CreaturePromote: {
+            /** Code */
+            code: string;
+            /** Drop Weight */
+            drop_weight?: number | null;
+            /** Label */
+            label?: string | null;
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /**
+             * Tier
+             * @default common
+             * @enum {string}
+             */
+            tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
+        };
+        /**
+         * CreaturePublic
+         * @description Một ô sinh vật như màn quản trị nhìn thấy.
+         *
+         *     `species_code` khác NULL nghĩa là ô này có loài thú nuôi trỏ tới — vai thật
+         *     của nó là "pet" bất kể `role` nói gì (vai trong bảng là vai phụ), và màn
+         *     quản trị phải khoá nó lại, trỏ người vận hành sang `/admin/pet`.
+         */
+        CreaturePublic: {
+            /** Label */
+            label: string | null;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "npc" | "wildlife" | "intruder";
+            /** Species Code */
+            species_code?: string | null;
+            /** Tile */
+            tile: number;
+        };
+        /**
+         * CreatureRoleMap
+         * @description {tile: role} cho runtime phía frontend, dạng chuỗi vì JSON dict key là chuỗi.
+         *
+         *     Gửi đủ 180 ô chứ không gửi phần lệch khỏi bảng tĩnh: client so hai bảng để
+         *     tìm sai lệch là một tính năng không ai hỏi, còn hai kilobyte thì không ai đo.
+         *
+         *     `pets` là danh sách ô đang có loài trỏ tới — vai "pet" KHÔNG nằm trong `roles`
+         *     (nó là join, xem `CREATURE_ROLES`), nên client cần danh sách này để một ô
+         *     vừa được chuyển thành thú nuôi thôi xuất hiện trong đám NPC/quái ngay lượt
+         *     vẽ kế tiếp, không phải chờ bảng tĩnh `PET_TILES` cập nhật theo deploy.
+         */
+        CreatureRoleMap: {
+            /** Pets */
+            pets: number[];
+            /** Roles */
+            roles: {
+                [key: string]: "npc" | "wildlife" | "intruder";
+            };
         };
         /**
          * DailyTaskPublic
@@ -11205,6 +11371,96 @@ export interface operations {
             };
         };
     };
+    list_creatures_api_v1_admin_petland_creatures_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreaturePublic"][];
+                };
+            };
+        };
+    };
+    edit_creature_api_v1_admin_petland_creatures__tile__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tile: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatureEdit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreaturePublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    promote_creature_api_v1_admin_petland_creatures__tile__promote_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tile: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreaturePromote"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreaturePublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     save_map_api_v1_admin_petland_map_put: {
         parameters: {
             query?: never;
@@ -14989,6 +15245,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_creature_roles_api_v1_petland_creatures_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatureRoleMap"];
                 };
             };
         };

@@ -1983,6 +1983,182 @@
         "title": "ComparePayload",
         "type": "object"
       },
+      "CreatureEdit": {
+        "description": "Đổi vai hoặc đổi tên một ô. Khoá vắng mặt = đừng đụng tới.",
+        "properties": {
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 0,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "npc",
+                  "wildlife",
+                  "intruder"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          }
+        },
+        "title": "CreatureEdit",
+        "type": "object"
+      },
+      "CreaturePromote": {
+        "description": "Chuyển một ô thành thú nuôi = tạo hàng loài tại ô đó.\n\nMã bắt buộc vì nó là khoá mà `pet_state.species` trỏ tới — suy từ tên là tạo\nmã trùng vào đúng ngày ai đó đặt tên con thứ hai trùng tên con thứ nhất.\n`drop_weight` để trống thì suy theo hạng — nếu không, mọi loài promote đều\nnhận 10 và một con god mới về rơi DỄ hơn cả epic: hạng hiếm mà không hiếm.",
+        "properties": {
+          "code": {
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^[a-z0-9_-]+$",
+            "title": "Code",
+            "type": "string"
+          },
+          "drop_weight": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drop Weight"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "tier": {
+            "default": "common",
+            "enum": [
+              "common",
+              "uncommon",
+              "rare",
+              "epic",
+              "legendary",
+              "god"
+            ],
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "CreaturePromote",
+        "type": "object"
+      },
+      "CreaturePublic": {
+        "description": "Một ô sinh vật như màn quản trị nhìn thấy.\n\n`species_code` khác NULL nghĩa là ô này có loài thú nuôi trỏ tới — vai thật\ncủa nó là \"pet\" bất kể `role` nói gì (vai trong bảng là vai phụ), và màn\nquản trị phải khoá nó lại, trỏ người vận hành sang `/admin/pet`.",
+        "properties": {
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "role": {
+            "enum": [
+              "npc",
+              "wildlife",
+              "intruder"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "species_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Species Code"
+          },
+          "tile": {
+            "exclusiveMaximum": 180.0,
+            "minimum": 0.0,
+            "title": "Tile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tile",
+          "role",
+          "label"
+        ],
+        "title": "CreaturePublic",
+        "type": "object"
+      },
+      "CreatureRoleMap": {
+        "description": "{tile: role} cho runtime phía frontend, dạng chuỗi vì JSON dict key là chuỗi.\n\nGửi đủ 180 ô chứ không gửi phần lệch khỏi bảng tĩnh: client so hai bảng để\ntìm sai lệch là một tính năng không ai hỏi, còn hai kilobyte thì không ai đo.\n\n`pets` là danh sách ô đang có loài trỏ tới — vai \"pet\" KHÔNG nằm trong `roles`\n(nó là join, xem `CREATURE_ROLES`), nên client cần danh sách này để một ô\nvừa được chuyển thành thú nuôi thôi xuất hiện trong đám NPC/quái ngay lượt\nvẽ kế tiếp, không phải chờ bảng tĩnh `PET_TILES` cập nhật theo deploy.",
+        "properties": {
+          "pets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Pets",
+            "type": "array"
+          },
+          "roles": {
+            "additionalProperties": {
+              "enum": [
+                "npc",
+                "wildlife",
+                "intruder"
+              ],
+              "type": "string"
+            },
+            "title": "Roles",
+            "type": "object"
+          }
+        },
+        "required": [
+          "roles",
+          "pets"
+        ],
+        "title": "CreatureRoleMap",
+        "type": "object"
+      },
       "DailyTaskPublic": {
         "description": "Một việc hôm nay.\n\n`target` là số CỐ ĐỊNH đã kẹp theo thứ thật sự có, không phải tình trạng hiện\nthời — xem `app/services/daily_tasks.py`. `progress` đếm hoạt động trong ngày\nnên nó chỉ tăng.",
         "properties": {
@@ -16231,6 +16407,151 @@
         ]
       }
     },
+    "/api/v1/admin/petland/creatures": {
+      "get": {
+        "operationId": "list_creatures_api_v1_admin_petland_creatures_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CreaturePublic"
+                  },
+                  "title": "Response List Creatures Api V1 Admin Petland Creatures Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Creatures",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
+    "/api/v1/admin/petland/creatures/{tile}": {
+      "patch": {
+        "operationId": "edit_creature_api_v1_admin_petland_creatures__tile__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tile",
+            "required": true,
+            "schema": {
+              "title": "Tile",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatureEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreaturePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Edit Creature",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
+    "/api/v1/admin/petland/creatures/{tile}/promote": {
+      "post": {
+        "description": "Chuyển một ô thành thú nuôi: tạo hàng loài tại đúng ô đó.\n\nThú nuôi là hàng trong `pet_species`, nên \"chuyển vai\" ở đây KHÔNG đụng tới\nbảng creature — nó tạo loài. Trước khi tạo phải đảm bảo ô chưa có chủ: hai\nloài dùng chung một ô nghĩa là gacha trả về con này mà màn hình vẽ con kia,\nvà không có gì báo.\n\nVai cũ được GIỮ NGUYÊN trong hàng creature — nó là vai phụ, dùng khi loài\nbị xoá bỏ hay chuyển đi nơi khác, không phải vai đang chạy.",
+        "operationId": "promote_creature_api_v1_admin_petland_creatures__tile__promote_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tile",
+            "required": true,
+            "schema": {
+              "title": "Tile",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreaturePromote"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreaturePublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Promote Creature",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
     "/api/v1/admin/petland/map": {
       "put": {
         "operationId": "save_map_api_v1_admin_petland_map_put",
@@ -22137,6 +22458,28 @@
         "summary": "Move Pet",
         "tags": [
           "pet"
+        ]
+      }
+    },
+    "/api/v1/petland/creatures": {
+      "get": {
+        "description": "{tile: role} + danh sách ô thú nuôi, cho runtime phía frontend.\n\nVai \"pet\" không nằm trong `roles` — nó là join với `pet_species` (xem\n`CREATURE_ROLES`), nên client nhận kèm danh sách ô của loài để loại chúng\nkhỏi đám NPC/quái. Gieo lười chạy ở đây: người học mở Petland trước cả khi\nadmin mở màn quản trị, và bảng rỗng vẫn phải trả lời được.",
+        "operationId": "read_creature_roles_api_v1_petland_creatures_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatureRoleMap"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read Creature Roles",
+        "tags": [
+          "petland"
         ]
       }
     },

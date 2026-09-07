@@ -77,6 +77,13 @@ export function byRarity<T extends { tier: string; label: string }>(a: T, b: T):
   return gap !== 0 ? gap : a.label.localeCompare(b.label, "vi");
 }
 
+/** Thường nhất lên trước — thứ tự đọc bảng của màn quản trị: đếm nhanh các loài
+ *  thường trước khi nhìn xuống hàng hiếm. Ngược `byRarity` cho cùng một bảng. */
+export function byCommonness<T extends { tier: string; label: string }>(a: T, b: T): number {
+  const gap = (TIER_RANK[a.tier] ?? 0) - (TIER_RANK[b.tier] ?? 0);
+  return gap !== 0 ? gap : a.label.localeCompare(b.label, "vi");
+}
+
 export const TIER_TONE: Record<string, string> = {
   common: "text-ink-muted",
   uncommon: "text-ok",

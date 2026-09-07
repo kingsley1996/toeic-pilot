@@ -133,9 +133,20 @@ const PET_TILES: readonly number[] = [
   154, 155, 156, 157, 158, 159, 160, 161, 164, 165, 166, 168, 169, 170, 175, 176, 177, 178, 179,
 ];
 
-/** Vai của một ô sinh vật. Ngoại lệ thắng khoảng; ô lạ coi như hoang dã. */
-export function roleOf(tile: number): CreatureRole {
-  if (PET_TILES.includes(tile)) return "pet";
+/** Vai của một ô sinh vật. Ngoại lệ thắng khoảng; ô lạ coi như hoang dã.
+ *
+ *  `map` là bảng phân vai từ máy chủ (`/petland/creatures`) — thứ người vận hành
+ *  sửa được. `map.pets` là ô của loài thú nuôi và luôn thắng mọi thứ: một ô vừa
+ *  được chuyển thành thú nuôi thôi là NPC/quái ngay lượt vẽ kế tiếp, không chờ
+ *  `PET_TILES` tĩnh (bảng tĩnh chỉ còn là dự phòng khi fetch hỏng).
+ */
+export type RoleOverrides = Readonly<Record<number, CreatureRole>>;
+export type RoleMap = Readonly<{ roles: RoleOverrides; pets?: readonly number[] }>;
+
+export function roleOf(tile: number, map?: RoleMap): CreatureRole {
+  if (PET_TILES.includes(tile) || map?.pets?.includes(tile)) return "pet";
+  const override = map?.roles?.[tile];
+  if (override) return override;
   const exception = EXCEPTIONS.find((row) => row.tile === tile);
   if (exception) return exception.role;
   const range = RANGES.find((row) => tile >= row.from && tile <= row.to);
@@ -146,10 +157,10 @@ export function roleOf(tile: number): CreatureRole {
 }
 
 /** Mọi ô thuộc một vai, theo thứ tự tăng dần. Dùng khi cần bốc ngẫu nhiên. */
-export function tilesOf(role: CreatureRole): number[] {
+export function tilesOf(role: CreatureRole, map?: RoleMap): number[] {
   const all: number[] = [];
   for (let tile = 0; tile < 180; tile += 1) {
-    if (roleOf(tile) === role) all.push(tile);
+    if (roleOf(tile, map) === role) all.push(tile);
   }
   return all;
 }
@@ -190,7 +201,7 @@ function seedOf(text: string): number {
  * đó thêm một ô vào bảng phân vai — lúc đó danh sách in một con, bản đồ vẽ một
  * con khác, và không có gì báo vì cả hai đều là ô hợp lệ.
  */
-export function tileForGuest(id: string, role: CreatureRole): number {
-  const pool = tilesOf(role);
+export function tileForGuest(id: string, role: CreatureRole, map?: RoleMap): number {
+  const pool = tilesOf(role, map);
   return pool.length > 0 ? pool[seedOf(id) % pool.length] : 0;
 }

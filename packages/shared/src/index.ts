@@ -178,6 +178,9 @@ export type ServiceUptime = components["schemas"]["ServiceUptime"];
 export type UptimeBucket = components["schemas"]["UptimeBucket"];
 export type PetlandMapPublic = components["schemas"]["PetlandMapPublic"];
 export type PetlandMapBody = components["schemas"]["PetlandMapBody"];
+export type CreaturePublic = components["schemas"]["CreaturePublic"];
+export type CreatureEdit = components["schemas"]["CreatureEdit"];
+export type CreatureRoleMap = components["schemas"]["CreatureRoleMap"];
 export type DependencyStatus = components["schemas"]["DependencyStatus"];
 export type MediaChannel = components["schemas"]["MediaChannel"];
 export type EggPublic = components["schemas"]["EggPublic"];
@@ -254,6 +257,10 @@ export const API_ROUTES = {
   rubyGift: "/api/v1/ruby/gift",
   petlandMap: "/api/v1/petland/map",
   adminPetlandMap: "/api/v1/admin/petland/map",
+  petlandCreatures: "/api/v1/petland/creatures",
+  adminPetlandCreatures: "/api/v1/admin/petland/creatures",
+  adminPetlandCreature: (tile: number) => `/api/v1/admin/petland/creatures/${tile}`,
+  adminPetlandCreaturePromote: (tile: number) => `/api/v1/admin/petland/creatures/${tile}/promote`,
   adminSystemStatus: "/api/v1/admin/system/status",
   adminSystemUptime: "/api/v1/admin/system/uptime",
   adminRubyRules: "/api/v1/admin/ruby/rules",

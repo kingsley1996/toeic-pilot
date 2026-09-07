@@ -25,7 +25,14 @@ from app.models.image import ImageAsset
 from app.models.knowledge import KnowledgeChunk
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.part_practice import PartSession, PartSessionItem, PartTactics
-from app.models.pet import EggSetting, PetlandMap, PetOwned, PetSpecies, PetState
+from app.models.pet import (
+    Creature,
+    EggSetting,
+    PetlandMap,
+    PetOwned,
+    PetSpecies,
+    PetState,
+)
 from app.models.placement import PlacementResult
 from app.models.planner_eval import PlannerEval
 from app.models.practice import (
@@ -130,6 +137,7 @@ __all__ = [
     "PetOwned",
     "PetSpecies",
     "HealthSample",
+    "Creature",
     "PetlandMap",
     "PetState",
     "RubyEvent",

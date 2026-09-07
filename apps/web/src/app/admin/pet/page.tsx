@@ -8,8 +8,9 @@ import {
 } from "@toeic-pilot/shared";
 import { useEffect, useState } from "react";
 
-import { Creature } from "@/components/petland-creature";
-import { Alert, Button, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
+import { Creature, TIER_LABEL, byCommonness } from "@/components/petland-creature";
+import { Modal } from "@/components/modal";
+import { Alert, Button, Input, Page, PageHeader, Panel, Select, Tag, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -19,20 +20,23 @@ import { useRequireSession } from "@/lib/session";
  * Mọi con số về loài là một HÀNG, không phải một hằng số trong mã — cùng khuôn
  * `/admin/progression`, và cùng lý do: thêm một loài không nên cần deploy.
  *
- * Không có nút xoá, chỉ có công tắc bật/tắt. Xoá một loài mà ai đó đang nuôi để
- * lại `pet_state.species` trỏ vào hư không; tắt thì loài biến khỏi gacha còn con
- * thú đang nuôi vẫn vẽ ra được.
+ * Danh sách là GRID ô vuông xếp theo hạng (thường trước, hiếm sau) — bảng loài
+ * chỉ cần trả lời "có những con gì", còn từng con số nằm trong modal sửa. Không
+ * có nút xoá, chỉ có công tắc bật/tắt: xoá một loài mà ai đó đang nuôi để lại
+ * `pet_state.species` trỏ vào hư không.
  */
 
 /* Khớp `ck_pet_species_tier` ở database. Thiếu một hạng ở đây thì màn quản trị
    không đặt được hạng đó, dù hàng dữ liệu hoàn toàn hợp lệ — và cách duy nhất
    nhận ra là mở bảng loài lên thấy một ô chọn không có lựa chọn đang dùng. */
 const TIERS = ["common", "uncommon", "rare", "epic", "legendary", "god"] as const;
+
 export default function PetSpeciesAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<PetSpeciesPublic[] | null>(null);
   const [egg, setEgg] = useState<EggSettingPublic | null>(null);
   const [meet, setMeet] = useState<EncounterSettingPublic | null>(null);
+  const [editing, setEditing] = useState<PetSpeciesPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,6 +53,24 @@ export default function PetSpeciesAdminPage() {
       .then(setMeet)
       .catch(() => {});
   }, [token]);
+
+  const patch = (code: string, changes: Partial<PetSpeciesPublic>) => {
+    if (!token) return;
+    setError(null);
+    // Gửi ĐÚNG trường vừa đổi. `PATCH` phân biệt khoá vắng mặt với khoá null,
+    // nên gửi cả hàng sẽ biến một lần sửa nhãn thành một lần ghi đè — và nếu
+    // state cũ hơn database thì nó lặng lẽ khôi phục giá trị cũ.
+    void apiFetch<PetSpeciesPublic>(API_ROUTES.adminPetSpeciesItem(code), {
+      method: "PATCH",
+      token,
+      body: JSON.stringify(changes),
+    })
+      .then((updated) => {
+        setRows((current) => (current ?? []).map((row) => (row.code === code ? updated : row)));
+        setEditing((current) => (current?.code === code ? updated : current));
+      })
+      .catch((err) => setError(err instanceof ApiError ? err.message : "Save failed."));
+  };
 
   const patchMeet = (changes: Partial<EncounterSettingPublic>) => {
     if (!token) return;
@@ -74,23 +96,6 @@ export default function PetSpeciesAdminPage() {
       .catch((err) => setError(err instanceof ApiError ? err.message : "Save failed."));
   };
 
-  const patch = (code: string, changes: Partial<PetSpeciesPublic>) => {
-    if (!token) return;
-    setError(null);
-    // Gửi ĐÚNG trường vừa đổi. `PATCH` phân biệt khoá vắng mặt với khoá null,
-    // nên gửi cả hàng sẽ biến một lần sửa nhãn thành một lần ghi đè — và nếu
-    // state cũ hơn database thì nó lặng lẽ khôi phục giá trị cũ.
-    void apiFetch<PetSpeciesPublic>(API_ROUTES.adminPetSpeciesItem(code), {
-      method: "PATCH",
-      token,
-      body: JSON.stringify(changes),
-    })
-      .then((updated) =>
-        setRows((current) => (current ?? []).map((row) => (row.code === code ? updated : row))),
-      )
-      .catch((err) => setError(err instanceof ApiError ? err.message : "Save failed."));
-  };
-
   if (status !== "authenticated") {
     return (
       <Page>
@@ -99,8 +104,14 @@ export default function PetSpeciesAdminPage() {
     );
   }
 
+  const sorted = [...(rows ?? [])].sort(byCommonness);
+  const tiers = TIERS.map((tier) => ({
+    tier,
+    species: sorted.filter((row) => row.tier === tier),
+  }));
+
   return (
-    <Page className="max-w-4xl">
+    <Page className="max-w-5xl">
       <PageHeader
         eyebrow="Petland"
         title="Species"
@@ -229,54 +240,99 @@ export default function PetSpeciesAdminPage() {
         </Panel>
       )}
 
-      <div className="grid gap-2">
-        {rows?.map((row) => (
-          <Panel
-            key={row.code}
-            className={cx("flex flex-wrap items-center gap-3 p-3", !row.enabled && "opacity-60")}
-          >
-            {/* Nền ca-rô: ô sinh vật là PNG trong suốt, và trên nền panel ở chế
-                độ tối chúng chỉ còn là những mảng đen. */}
-            {/* Dùng chung `Creature` với khu học: hai bản sao của một phép cắt
-                ô là hai chỗ để lệch số cột, mà lệch số cột thì ô vẫn vẽ ra —
-                chỉ là vẽ nhầm con, nên không có gì báo. Bản ở đây từng phóng
-                cứng 2 lần trong một khung 36px và lòi ô bên cạnh vào. */}
-            <Creature tile={row.tile} size={32} className="border border-rule" />
+      {tiers.map(({ tier, species }) =>
+        species.length === 0 ? null : (
+          <Panel key={tier} className="mb-4 p-4">
+            <h2 className="flex items-center gap-2 text-subtitle font-semibold">
+              {TIER_LABEL[tier] ?? tier}
+              <span className="font-data text-small font-normal text-ink-faint">
+                {species.length}
+              </span>
+            </h2>
+            <div className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2">
+              {species.map((row) => (
+                <button
+                  key={row.code}
+                  type="button"
+                  onClick={() => setEditing(row)}
+                  className={cx(
+                    "flex cursor-pointer flex-col items-center gap-1 rounded p-2 transition-colors hover:bg-recess",
+                    !row.enabled && "opacity-45",
+                  )}
+                >
+                  <Creature tile={row.tile} size={48} tier={row.tier} />
+                  <span className="w-full truncate text-small font-medium">{row.label}</span>
+                  {/* Tắt phải ĐỌC ra được ngay trên lưới, không phải đoán qua
+                      độ mờ — độ mờ dễ bị coi là trạng thái hover. */}
+                  {!row.enabled && <Tag tone="alert">tắt</Tag>}
+                </button>
+              ))}
+            </div>
+          </Panel>
+        ),
+      )}
 
-            <span className="w-28 shrink-0 font-data text-small text-ink-faint">{row.code}</span>
+      <p className="mt-4 text-small text-ink-muted">
+        {/* Nói ra hệ quả của việc gieo lười, vì nó bất ngờ: bảng rỗng không phải
+            một cấu hình, nó là "chưa từng cấu hình". */}
+        Disabling keeps a species out of gacha while whoever already owns one keeps it. Deleting
+        every row is not a way to empty the table — the defaults seed themselves on the next read.
+      </p>
 
+      {editing && <SpeciesModal row={editing} onPatch={patch} onClose={() => setEditing(null)} />}
+    </Page>
+  );
+}
+
+function SpeciesModal({
+  row,
+  onPatch,
+  onClose,
+}: {
+  row: PetSpeciesPublic;
+  onPatch: (code: string, changes: Partial<PetSpeciesPublic>) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal open onClose={onClose} title={row.label} description={`Mã: ${row.code}`}>
+      <div className="flex items-start gap-5">
+        <Creature tile={row.tile} size={96} tier={row.tier} />
+        <div className="grid flex-1 gap-3 sm:grid-cols-2">
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Tên
             <Input
               defaultValue={row.label}
               aria-label={`Label for ${row.code}`}
-              className="w-40"
+              className="flex-1"
               onBlur={(event) => {
                 const next = event.target.value.trim();
-                if (next && next !== row.label) patch(row.code, { label: next });
+                if (next && next !== row.label) onPatch(row.code, { label: next });
               }}
             />
-
-            <label className="flex items-center gap-1.5 text-small text-ink-muted">
-              Tile
-              <Input
-                type="number"
-                min={0}
-                max={179}
-                defaultValue={row.tile}
-                aria-label={`Tile for ${row.code}`}
-                className="w-20"
-                onBlur={(event) => {
-                  const next = Number(event.target.value);
-                  if (Number.isInteger(next) && next !== row.tile) patch(row.code, { tile: next });
-                }}
-              />
-            </label>
-
+          </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Tile
+            <Input
+              type="number"
+              min={0}
+              max={179}
+              defaultValue={row.tile}
+              aria-label={`Tile for ${row.code}`}
+              className="w-20"
+              onBlur={(event) => {
+                const next = Number(event.target.value);
+                if (Number.isInteger(next) && next !== row.tile) onPatch(row.code, { tile: next });
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            Hạng
             <Select
               value={row.tier}
               aria-label={`Tier for ${row.code}`}
-              className="w-32"
+              className="flex-1"
               onChange={(event) =>
-                patch(row.code, { tier: event.target.value as PetSpeciesPublic["tier"] })
+                onPatch(row.code, { tier: event.target.value as PetSpeciesPublic["tier"] })
               }
             >
               {TIERS.map((tier) => (
@@ -285,48 +341,51 @@ export default function PetSpeciesAdminPage() {
                 </option>
               ))}
             </Select>
-
-            <label className="flex items-center gap-1.5 text-small text-ink-muted">
-              {/* Trọng số, không phải phần trăm. Phần trăm phải cộng lại đúng
-                  100, nên tắt hay thêm một loài biến cả bảng thành sai và ai đó
-                  phải chỉnh tay từng hàng. Tỉ lệ hiện cho người chơi được chuẩn
-                  hoá từ tổng của các loài đang bật. */}
-              Weight
-              <Input
-                type="number"
-                min={0}
-                max={1000}
-                defaultValue={row.drop_weight}
-                aria-label={`Drop weight for ${row.code}`}
-                className="w-20"
-                onBlur={(event) => {
-                  const next = Number(event.target.value);
-                  if (Number.isInteger(next) && next >= 0 && next !== row.drop_weight) {
-                    patch(row.code, { drop_weight: next });
-                  }
-                }}
-              />
-            </label>
-
-            <Button
-              size="sm"
-              variant={row.enabled ? "secondary" : "primary"}
-              className="ml-auto"
-              onClick={() => patch(row.code, { enabled: !row.enabled })}
-            >
-              {row.enabled ? "Disable" : "Enable"}
-            </Button>
-          </Panel>
-        ))}
+          </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            {/* Trọng số, không phải phần trăm. Phần trăm phải cộng lại đúng
+                100, nên tắt hay thêm một loài biến cả bảng thành sai và ai đó
+                phải chỉnh tay từng hàng. Tỉ lệ hiện cho người chơi được chuẩn
+                hoá từ tổng của các loài đang bật. */}
+            Trọng số rơi
+            <Input
+              type="number"
+              min={0}
+              max={1000}
+              defaultValue={row.drop_weight}
+              aria-label={`Drop weight for ${row.code}`}
+              className="w-20"
+              onBlur={(event) => {
+                const next = Number(event.target.value);
+                if (Number.isInteger(next) && next >= 0 && next !== row.drop_weight) {
+                  onPatch(row.code, { drop_weight: next });
+                }
+              }}
+            />
+          </label>
+        </div>
       </div>
 
-      <p className="mt-4 text-small text-ink-muted">
-        {/* Nói ra hệ quả của việc gieo lười, vì nó bất ngờ: bảng rỗng không phải
-            một cấu hình, nó là "chưa từng cấu hình". */}
-        Disabling keeps a species out of gacha while whoever already owns one keeps it. Deleting
-        every row is not a way to empty the table — the defaults seed themselves on the next read.
-      </p>
-    </Page>
+      <div className="mt-5 flex items-center justify-between gap-2 border-t border-rule pt-4">
+        {/* Công tắc bật/tắt nằm TRONG modal: lưới không cần một nút hành động
+            trên mỗi ô, và tắt là hành động đáng một lượt xác nhận bằng mắt. */}
+        <Button
+          variant={row.enabled ? "destructive" : "primary"}
+          onClick={() => onPatch(row.code, { enabled: !row.enabled })}
+        >
+          {row.enabled ? "Tắt khỏi gacha" : "Bật lại"}
+        </Button>
+        <Button variant="secondary" onClick={onClose}>
+          Đóng
+        </Button>
+      </div>
+      {!row.enabled && (
+        <p className="mt-3 text-small text-ink-muted">
+          Loài tắt biến khỏi gacha và khỏi bộ sưu tập của người học — ai đang nuôi vẫn giữ con thú,
+          nhưng nó không hiện trong tủ sưu tập nữa.
+        </p>
+      )}
+    </Modal>
   );
 }
 

@@ -461,16 +461,19 @@ def read_collection(
 ) -> list[PetOwnedPublic]:
     """Bộ sưu tập. Mảng trần: nó bị chặn trên bởi số loài có trong `pet_species`.
 
-    Đọc cả loài đã TẮT, cùng lý do `tile_for` đọc chúng: tắt một loài phải làm nó
-    biến khỏi gacha, không được làm con thú người ta đã có biến mất khỏi tủ.
+    **Loài đã TẮT thì ẩn khỏi đây** — quyết định của người vận hành (2026-09-07),
+    khác docstring cũ vốn giữ chúng lại: tủ sưu tập là mặt tiền, và một con bị
+    rút khỏi gacha vì lý do vận hành không nên tiếp tục hiện như một thứ có thể
+    kiếm được. Con thú đang NUÔI vẫn vẽ ra được bình thường (`tile_for` đọc cả
+    hàng đã tắt) — chỉ ô trong tủ là ẩn.
     """
-    species = {row.code: row for row in all_species(db, include_disabled=True)}
+    species = {row.code: row for row in all_species(db)}
     out: list[PetOwnedPublic] = []
     for owned in gacha.collection(db, current_user.id):
         row = species.get(owned.species)
         if row is None:
-            # Mã mồ côi — loài bị xoá hẳn. Bỏ qua chứ không dựng một ô trống:
-            # một khoảng trống trong tủ đọc như dữ liệu hỏng.
+            # Mã mồ côi — loài bị xoá hẳn, hoặc đã tắt. Bỏ qua chứ không dựng một
+            # ô trống: một khoảng trống trong tủ đọc như dữ liệu hỏng.
             continue
         out.append(
             PetOwnedPublic(

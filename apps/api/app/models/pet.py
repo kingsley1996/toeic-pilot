@@ -822,3 +822,35 @@ class PetlandMap(Base):
     updated_by: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
+
+
+CREATURE_ROLES = ("npc", "wildlife", "intruder")
+"""Ba vai cấu hình được của một ô sinh vật. Vai thứ tư — `pet` — KHÔNG nằm ở
+đây vì nó không phải một hàng: ô nào có loài trong `pet_species` trỏ tới thì là
+thú nuôi. Hai nguồn hai chuyện, và trộn lại thành một là tạo bản sao lệch nhau.
+
+Cùng lý do, `role` của một ô thú nuôi trong bảng này là vai PHỤ — cái nó sẽ là
+nếu ngày nào đó không còn là loài nuôi được. Khi đọc, loài luôn thắng.
+"""
+
+
+class Creature(Base):
+    """Phân vai của một ô trong `creatures.png`, sửa được ở `/admin` (migration 071).
+
+    Đây là `petland-bestiary.ts` xuống database — đúng như docstring tệp đó hứa:
+    khi phân vai thành thứ người vận hành cân chỉnh, nó thôi là hằng số của lập
+    trình viên. 180 hàng, gieo LƯỜI ở lần đọc đầu; bảng rỗng nghĩa là "chưa từng
+    cấu hình" chứ không phải "cố ý để trống" — xoá hết thì lần đọc sau gieo lại.
+    """
+
+    __tablename__ = "creature"
+    __table_args__ = (
+        CheckConstraint("tile >= 0 AND tile < 180", name="ck_creature_tile"),
+        CheckConstraint(f"role IN {CREATURE_ROLES}", name="ck_creature_role"),
+    )
+
+    tile: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+    role: Mapped[str] = mapped_column(String(16), nullable=False)
+    label: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    """Tên người đọc ra được ("tiên cá", "mắt bay"). Chỉ exceptions của bảng TS
+    có tên — phần còn lại để NULL, người vận hành đặt dần khi soi."""

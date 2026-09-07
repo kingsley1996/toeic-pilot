@@ -1,11 +1,16 @@
 "use client";
 
-import { API_ROUTES, type EncounterPublic, type PetPublic } from "@toeic-pilot/shared";
+import {
+  API_ROUTES,
+  type CreatureRoleMap,
+  type EncounterPublic,
+  type PetPublic,
+} from "@toeic-pilot/shared";
 import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { clamp, defaultPlace, readPlace, writePlace, type Place } from "@/components/petland-place";
-import { tileForGuest } from "@/components/petland-bestiary";
+import { tileForGuest, type RoleMap } from "@/components/petland-bestiary";
 import { speechFor } from "@/components/petland-speech";
 import { CollectionScreen } from "@/components/petland-collection";
 import { petLine } from "@/components/petland-lines";
@@ -544,6 +549,13 @@ function PetPanel({
    */
   const mapRef = useRef<MapData | null>(null);
   const petTileRef = useRef<Tile>({ x: 2, y: 2 });
+  /*
+   * Bảng phân vai do admin sửa (`creature`, migration 071). Fetch một lượt lúc
+   * dựng sân khấu, cùng lượt với bản đồ; hỏng thì để NULL — mọi hàm tra vai
+   * rơi về bảng tĩnh của `petland-bestiary`, tức là đúng hành vi trước khi có
+   * bảng. Một lượt gọi hỏng không được khoá tính năng gặp NPC và đánh quái.
+   */
+  const rolesRef = useRef<RoleMap | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
@@ -835,6 +847,19 @@ function PetPanel({
         map = parsed;
         mapRef.current = parsed;
         setMapReady(true);
+        // Bảng phân vai từ máy chủ đi cùng lượt dựng sân khấu. Không `await`:
+        // hỏng hay chậm đều không được giữ lại khách, chỉ là khách đầu tiên có
+        // thể vẽ theo bảng tĩnh.
+        void apiFetch<CreatureRoleMap>(API_ROUTES.petlandCreatures)
+          .then((data) => {
+            rolesRef.current = {
+              roles: Object.fromEntries(
+                Object.entries(data.roles).map(([tile, role]) => [Number(tile), role]),
+              ),
+              pets: data.pets,
+            };
+          })
+          .catch(() => {});
         // Ô đã lưu có thể trỏ vào tường sau khi bản đồ được vẽ lại trong trình
         // sửa. Kéo con thú ra chỗ đứng được thay vì để nó kẹt trong hàng rào.
         const start = nearestWalkable(parsed, { x: pet.tile_x, y: pet.tile_y });
@@ -1404,7 +1429,7 @@ function PetPanel({
       taken.add(`${spot.x},${spot.y}`);
       next.push({
         id: meeting.id,
-        tile: tileForGuest(meeting.id, danger ? "intruder" : "npc"),
+        tile: tileForGuest(meeting.id, danger ? "intruder" : "npc", rolesRef.current ?? undefined),
         ...spot,
         danger,
       });

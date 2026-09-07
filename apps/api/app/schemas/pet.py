@@ -1,7 +1,7 @@
 """Hình dạng trạng thái con thú gửi cho trình duyệt (ADR-010 §4)."""
 
 from datetime import datetime
-from typing import Literal
+from typing import ClassVar, Literal
 
 from pydantic import BaseModel, Field
 
@@ -155,6 +155,79 @@ class PetSpeciesCreate(BaseModel):
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
     drop_weight: int = Field(default=10, ge=0, le=1000)
     position: int = 0
+
+
+# --- phân vai ô sinh vật (ADR-010 §6.3, `petland-bestiary.ts` xuống database) ---
+
+CreatureRoleLiteral = Literal["npc", "wildlife", "intruder"]
+"""Ba vai cấu hình được. Vai "pet" không nằm ở đây: nó là join với `pet_species`,
+không phải một hàng — schema chỉ nhận ba vai để ô thú nuôi không thể bị ghi đè
+thành vai khác bằng một lượt PATCH lẻ."""
+
+
+class CreaturePublic(BaseModel):
+    """Một ô sinh vật như màn quản trị nhìn thấy.
+
+    `species_code` khác NULL nghĩa là ô này có loài thú nuôi trỏ tới — vai thật
+    của nó là "pet" bất kể `role` nói gì (vai trong bảng là vai phụ), và màn
+    quản trị phải khoá nó lại, trỏ người vận hành sang `/admin/pet`.
+    """
+
+    tile: int = Field(ge=0, lt=180)
+    role: CreatureRoleLiteral
+    label: str | None
+    species_code: str | None = None
+
+
+class CreatureEdit(BaseModel):
+    """Đổi vai hoặc đổi tên một ô. Khoá vắng mặt = đừng đụng tới."""
+
+    role: CreatureRoleLiteral | None = None
+    label: str | None = Field(default=None, min_length=0, max_length=64)
+
+
+class CreatureRoleMap(BaseModel):
+    """{tile: role} cho runtime phía frontend, dạng chuỗi vì JSON dict key là chuỗi.
+
+    Gửi đủ 180 ô chứ không gửi phần lệch khỏi bảng tĩnh: client so hai bảng để
+    tìm sai lệch là một tính năng không ai hỏi, còn hai kilobyte thì không ai đo.
+
+    `pets` là danh sách ô đang có loài trỏ tới — vai "pet" KHÔNG nằm trong `roles`
+    (nó là join, xem `CREATURE_ROLES`), nên client cần danh sách này để một ô
+    vừa được chuyển thành thú nuôi thôi xuất hiện trong đám NPC/quái ngay lượt
+    vẽ kế tiếp, không phải chờ bảng tĩnh `PET_TILES` cập nhật theo deploy.
+    """
+
+    roles: dict[str, CreatureRoleLiteral]
+    pets: list[int]
+
+
+class CreaturePromote(BaseModel):
+    """Chuyển một ô thành thú nuôi = tạo hàng loài tại ô đó.
+
+    Mã bắt buộc vì nó là khoá mà `pet_state.species` trỏ tới — suy từ tên là tạo
+    mã trùng vào đúng ngày ai đó đặt tên con thứ hai trùng tên con thứ nhất.
+    `drop_weight` để trống thì suy theo hạng — nếu không, mọi loài promote đều
+    nhận 10 và một con god mới về rơi DỄ hơn cả epic: hạng hiếm mà không hiếm.
+    """
+
+    code: str = Field(min_length=1, max_length=32, pattern=r"^[a-z0-9_-]+$")
+    label: str | None = Field(default=None, min_length=1, max_length=64)
+    tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
+    drop_weight: int | None = Field(default=None, ge=0, le=1000)
+    position: int = 0
+
+    TIER_WEIGHTS: ClassVar[dict[str, int]] = {
+        "common": 40,
+        "uncommon": 25,
+        "rare": 10,
+        "epic": 4,
+        "legendary": 2,
+        "god": 1,
+    }
+    """Trọng số suy khi không điền — chép từ bảng gieo `DEFAULT_PET_SPECIES`,
+    nơi mỗi hạng đã có một cỡ. God = 1 chứ không phải 10: ba con angel trong
+    bảng seed từng mang 10 và đó là sai số được giữ lại quá lâu."""
 
 
 # --- gacha (ADR-010 lát 8) --------------------------------------------------

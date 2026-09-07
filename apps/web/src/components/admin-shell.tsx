@@ -18,6 +18,7 @@ import {
   HeartPulse,
   Palette,
   PawPrint,
+  Squirrel,
   Sparkles,
   SquarePen,
   Tags,
@@ -101,6 +102,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
      */
     children: [
       { href: "/admin/petland", label: "Map editor", Icon: Grid2x2 },
+      { href: "/admin/petland/creatures", label: "Creatures", Icon: Squirrel },
       { href: "/admin/ruby", label: "Ruby rates", Icon: Gem },
     ],
   },
