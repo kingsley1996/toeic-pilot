@@ -29,11 +29,14 @@ SOURCE_SLUG = "tp-test-09"
 PLACEMENT_SLUG = "tp-placement-01"
 TITLE = "Bài test đầu vào"
 DESCRIPTION = (
-    "84 câu rút từ đề mẫu, ~50 phút. Kết quả cho biết trình độ hiện tại "
+    "84 câu rút từ đề mẫu, ~40 phút. Kết quả cho biết trình độ hiện tại "
     "(ước lượng) và những kỹ năng cần luyện — làm một lần mỗi tuần."
 )
 KIND = "mini"
-TIME_LIMIT_SECONDS = 50 * 60
+# 40 phút, không phải 50: đề 84 câu ở tốc độ thật còn dư trên 15 phút khi chặn
+# 50 — nói dối về thời lượng là làm người học nghỉ tay giữa bài. Bài 50 phút
+# từng là chuẩn trước khi có dữ liệu lượt làm thật.
+TIME_LIMIT_SECONDS = 40 * 60
 
 
 def _source_questions(db: Session) -> list[Question]:

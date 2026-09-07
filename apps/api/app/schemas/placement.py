@@ -61,6 +61,9 @@ class PlacementResultPublic(BaseModel):
     cefr_overall: str
     self_reported_score: int | None
     target_score: int | None
+    # Thời gian đã dùng, để "làm nhanh hay chậm" đọc được ngay cạnh dải điểm —
+    # same figure the mock-test result screen shows alongside the time limit.
+    elapsed_seconds: int
     created_at: datetime
     # Đường dọc cho UI: mỗi kỹ năng, câu đúng / tổng — nguồn của phần điểm
     # mạnh / yếu ở màn kết quả.

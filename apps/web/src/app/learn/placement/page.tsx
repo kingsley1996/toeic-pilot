@@ -20,7 +20,7 @@ import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
 /**
- * Bài test đầu vào — 84 câu rút từ đề mẫu, ~50 phút (SPEC-PLACEMENT).
+ * Bài test đầu vào — 84 câu rút từ đề mẫu, ~40 phút (SPEC-PLACEMENT).
  *
  * Điểm tự khai TRƯỚC bài là mốc so sánh, không phải dữ liệu chấm: người từng
  * thi thật có một con số để đối chiếu với ước lượng; chưa từng thi thì bỏ trống.
@@ -86,7 +86,7 @@ export default function PlacementSetupPage() {
       <PageHeader
         eyebrow="Bài test đầu vào"
         title="Xác định trình độ của bạn"
-        description="84 câu theo đủ bảy phần, khoảng 50 phút. Kết quả là trình độ ước lượng (CEFR), dải điểm TOEIC ước tính, và những kỹ năng nên luyện trước."
+        description="84 câu theo đủ bảy phần, khoảng 40 phút. Kết quả là trình độ ước lượng (CEFR), dải điểm TOEIC ước tính, và những kỹ năng nên luyện trước."
       />
 
       {error && (
@@ -169,7 +169,7 @@ export default function PlacementSetupPage() {
               <ArrowRight size={15} strokeWidth={2} className="ml-1.5" aria-hidden />
             </Button>
             <p className="mt-2 text-center text-small text-ink-muted">
-              Đồng hồ 50 phút chạy ở máy chủ — hết giờ là tự nộp.
+              Đồng hồ 40 phút chạy ở máy chủ — hết giờ là tự nộp.
             </p>
           </div>
         </Panel>

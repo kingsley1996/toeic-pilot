@@ -127,6 +127,11 @@ export default function AttemptRunnerPage() {
       .then((data) => {
         if (cancelled) return;
         applyState(data);
+        // Placement đã nộp mở lại ở màn XEM LẠI, không phải màn kết quả: màn
+        // "kết quả" của placement là trang phân tích riêng, nên mặc định
+        // "result" ở đây chỉ đủ điều kiện bắn người học ngược về đó — vòng
+        // lặp khi tới từ nút "Xem lại bài làm" trên trang phân tích.
+        if (data.is_placement && data.status !== "in_progress") setView("review");
         // Mở lại một lượt ĐÃ nộp thì cũng phải thấy bảng kết quả. `POST /submit`
         // trả kết quả đúng một lần, nên không đọc lại ở đây thì một lần F5 sẽ
         // đưa người học thẳng sang màn xem đáp án và điểm biến mất không lý do.

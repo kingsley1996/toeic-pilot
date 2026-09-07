@@ -7484,6 +7484,8 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Elapsed Seconds */
+            elapsed_seconds: number;
             /** Estimator Version */
             estimator_version: string;
             listening_band: components["schemas"]["PlacementBand"];

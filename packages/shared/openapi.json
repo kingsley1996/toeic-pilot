@@ -8269,6 +8269,10 @@
             "title": "Created At",
             "type": "string"
           },
+          "elapsed_seconds": {
+            "title": "Elapsed Seconds",
+            "type": "integer"
+          },
           "estimator_version": {
             "title": "Estimator Version",
             "type": "string"
@@ -8338,6 +8342,7 @@
           "cefr_overall",
           "self_reported_score",
           "target_score",
+          "elapsed_seconds",
           "created_at"
         ],
         "title": "PlacementResultPublic",

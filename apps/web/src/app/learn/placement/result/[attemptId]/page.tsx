@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Alert, ButtonLink, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
+import { formatDuration } from "@/app/learn/attempts/[attemptId]/_components/shared";
 import { apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -76,7 +77,9 @@ export default function PlacementResultPage() {
         <p className="mt-1 font-semibold">{CEFR_VI[result.cefr_overall] ?? result.cefr_overall}</p>
         <p className="mt-2 text-small text-ink-muted">
           Tổng điểm TOEIC ước tính:{" "}
-          <span className="font-data tabular-nums text-ink">{estimatedTotal}</span> / 990
+          <span className="font-data tabular-nums text-ink">{estimatedTotal}</span> / 990 ·{" "}
+          <span className="font-data tabular-nums">{formatDuration(result.elapsed_seconds)}</span>{" "}
+          làm bài
         </p>
       </Panel>
 
@@ -130,6 +133,12 @@ export default function PlacementResultPage() {
 
       <div className="mt-8 flex flex-wrap gap-3 border-t border-rule pt-5">
         <ButtonLink href={`/learn/plan?from=${result.attempt_id}`}>Tạo kế hoạch học</ButtonLink>
+        {/* Xem lại từng câu dùng lại màn làm bài của đề thi thử: GET
+            /attempts/{id} trả đáp án đã chấm cho mọi đề đã nộp, không riêng đề
+            200 câu — chỉ bảng điểm quy đổi mới không áp dụng cho đề 84 câu. */}
+        <ButtonLink href={`/learn/attempts/${result.attempt_id}`} variant="secondary">
+          Xem lại bài làm
+        </ButtonLink>
         <ButtonLink href="/learn/parts" variant="secondary">
           Luyện theo phần
         </ButtonLink>

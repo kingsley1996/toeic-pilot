@@ -99,7 +99,7 @@ const TOUR: readonly TourStep[] = [
   {
     target: '[data-tour="placement"]',
     title: "Đo trình độ trước tiên",
-    body: "Bài test đầu vào 84 câu, khoảng 50 phút: biết trình độ (CEFR), điểm TOEIC ước tính và nên luyện gì trước.",
+    body: "Bài test đầu vào 84 câu, khoảng 40 phút: biết trình độ (CEFR), điểm TOEIC ước tính và nên luyện gì trước.",
   },
   {
     target: '[data-tour="daily"]',
@@ -622,7 +622,7 @@ function PlacementPanel({ gate }: { gate: PlacementGate | null }) {
           <span className="min-w-0 flex-1">
             <span className="font-semibold">Kiểm tra trình độ của bạn</span>
             <span className="mt-0.5 block text-small text-ink-muted">
-              84 câu, khoảng 50 phút — kết quả cho biết nên luyện gì trước.
+              84 câu, khoảng 40 phút — kết quả cho biết nên luyện gì trước.
             </span>
           </span>
           <span className="text-small font-semibold text-myth">Bắt đầu →</span>

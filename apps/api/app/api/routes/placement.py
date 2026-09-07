@@ -187,6 +187,7 @@ def analyze_attempt(
         cefr_overall=row.cefr_overall,
         self_reported_score=row.self_reported_score,
         target_score=row.target_score,
+        elapsed_seconds=attempt.elapsed_seconds,
         created_at=row.created_at,
         strengths=strengths,
         weaknesses=weaknesses,
