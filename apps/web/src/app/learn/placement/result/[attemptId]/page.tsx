@@ -77,9 +77,11 @@ export default function PlacementResultPage() {
         <p className="mt-1 font-semibold">{CEFR_VI[result.cefr_overall] ?? result.cefr_overall}</p>
         <p className="mt-2 text-small text-ink-muted">
           Tổng điểm TOEIC ước tính:{" "}
-          <span className="font-data tabular-nums text-ink">{estimatedTotal}</span> / 990 ·{" "}
-          <span className="font-data tabular-nums">{formatDuration(result.elapsed_seconds)}</span>{" "}
-          làm bài
+          <span className="font-data tabular-nums text-ink">{estimatedTotal}</span> / 990
+        </p>
+        <p className="mt-1 text-small text-ink-muted">
+          Thời gian làm bài:{" "}
+          <span className="font-data tabular-nums">{formatDuration(result.elapsed_seconds)}</span>
         </p>
       </Panel>
 

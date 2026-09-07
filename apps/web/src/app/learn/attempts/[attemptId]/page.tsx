@@ -361,11 +361,21 @@ export default function AttemptRunnerPage() {
              * một hành động không mất gì là nhiễu — và tệ hơn, nó dạy người dùng
              * bấm qua hộp thoại mà không đọc, đúng lúc ta cần họ đọc là lúc bài
              * còn dở.
+             *
+             * Placement đã nộp thì "Xong" về trang phân tích của chính lượt đó —
+             * kết quả của placement sống ở đó, còn danh sách đề thi thử không
+             * chứa nó.
              */}
             <Button
               size="sm"
               variant="secondary"
-              onClick={() => (done ? router.push("/learn/tests") : setConfirming("exit"))}
+              onClick={() =>
+                done
+                  ? router.push(
+                      state.is_placement ? `/learn/placement/result/${attemptId}` : "/learn/tests",
+                    )
+                  : setConfirming("exit")
+              }
             >
               <LogOut size={14} strokeWidth={2} aria-hidden />
               {done ? "Xong" : "Thoát"}
