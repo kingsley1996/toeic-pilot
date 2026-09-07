@@ -7455,6 +7455,8 @@ export interface components {
             label: string;
             /** Level */
             level: number;
+            /** Lines */
+            lines?: string[] | null;
             needs: components["schemas"]["PetNeeds"];
             /** Nickname */
             nickname: string | null;
@@ -7556,6 +7558,8 @@ export interface components {
             enabled?: boolean | null;
             /** Label */
             label?: string | null;
+            /** Lines */
+            lines?: string[] | null;
             /** Position */
             position?: number | null;
             /** Sheet */
@@ -7583,6 +7587,8 @@ export interface components {
             enabled: boolean;
             /** Label */
             label: string;
+            /** Lines */
+            lines?: string[] | null;
             /** Position */
             position: number;
             /**

@@ -144,6 +144,38 @@ def test_the_code_cannot_be_changed_by_editing(
     assert "cat" in codes and "kitty" not in codes
 
 
+def test_lines_round_trip_and_clear(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Bộ lời thoại: gửi danh sách là thay, gửi rỗng là NULL, vắng mặt là giữ.
+
+    Danh sách rỗng không phải một trạng thái riêng — mọi đường đọc chỉ được xét
+    `None`, nên máy chủ chuẩn hoá `[]` thành NULL thay vì lưu một mảng trống.
+    """
+    headers = auth("admin")
+    client.get("/api/v1/admin/pet/species", headers=headers)
+    code = "cat"
+
+    put = client.patch(
+        f"/api/v1/admin/pet/species/{code}",
+        json={"lines": ["Ta đã ngủ đủ rồi.", "Ngươi tới rồi à?"]},
+        headers=headers,
+    )
+    assert put.status_code == 200 and put.json()["lines"] == [
+        "Ta đã ngủ đủ rồi.",
+        "Ngươi tới rồi à?",
+    ]
+
+    cleared = client.patch(f"/api/v1/admin/pet/species/{code}", json={"lines": []}, headers=headers)
+    assert cleared.status_code == 200 and cleared.json()["lines"] is None
+
+    untouched = client.patch(
+        f"/api/v1/admin/pet/species/{code}", json={"label": "Mèo hoang"}, headers=headers
+    )
+    assert untouched.status_code == 200
+    assert db_session.get(PetSpecies, code).lines is None
+
+
 def test_only_admins_may_configure_species(
     client: TestClient, auth: Callable[[str], dict[str, str]]
 ) -> None:

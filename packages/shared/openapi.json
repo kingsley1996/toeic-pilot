@@ -7857,6 +7857,20 @@
             "title": "Level",
             "type": "integer"
           },
+          "lines": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lines"
+          },
           "needs": {
             "$ref": "#/components/schemas/PetNeeds"
           },
@@ -8088,6 +8102,22 @@
             ],
             "title": "Label"
           },
+          "lines": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "minItems": 0,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lines"
+          },
           "position": {
             "anyOf": [
               {
@@ -8170,6 +8200,20 @@
           "label": {
             "title": "Label",
             "type": "string"
+          },
+          "lines": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lines"
           },
           "position": {
             "title": "Position",

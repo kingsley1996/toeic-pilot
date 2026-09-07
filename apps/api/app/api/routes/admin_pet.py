@@ -42,6 +42,7 @@ def _public(row: PetSpecies) -> PetSpeciesPublic:
         drop_weight=row.drop_weight,
         position=row.position,
         enabled=row.enabled,
+        lines=row.lines,
     )
 
 
@@ -100,6 +101,10 @@ def update_species(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(bad)
             ) from bad
     for field, value in fields.items():
+        # Danh sách rỗng không phải một trạng thái riêng: muốn im lặng thì để
+        # NULL, để mọi đường đọc chỉ phải xét một giá trị.
+        if field == "lines" and value == []:
+            value = None
         setattr(row, field, value)
     db.commit()
     return _public(row)

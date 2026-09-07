@@ -16,7 +16,7 @@ import { CollectionScreen } from "@/components/petland-collection";
 import { petLine } from "@/components/petland-lines";
 import { QuestCard } from "@/components/petland-quest";
 import { GuestList } from "@/components/petland-quest-list";
-import { tierGlow } from "@/components/petland-creature";
+import { TIER_RANK, tierGlow } from "@/components/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
 import { PetlandMusicToggle } from "@/components/petland-music-toggle";
@@ -151,6 +151,9 @@ const EMOTE_ICON: Record<PetCondition, Bit["icon"] | null> = {
 const EMOTE_EVERY_MS = 14_000;
 
 const SPEECH_MS = 4500;
+
+/** Nhịp con thú tự nói, khi loài có bộ lời thoại riêng. Thưa — xem chỗ dùng. */
+const PET_LINE_EVERY_MS = 26_000;
 
 /**
  * Trận đánh dài bao lâu.
@@ -1146,7 +1149,14 @@ function PetPanel({
                Chỉ còn biểu tượng ở lại trên đầu, vì nó nhỏ và neo cao hơn. */
             const ill = conditionRef.current === "sick";
             const talker = speakingRef.current;
-            const at = talker ? (stage?.guestScreen(talker) ?? null) : null;
+            // "pet" là bí danh của con thú đang nuôi — khách thì tra theo id,
+            // còn nó thì bám vào chỗ nó đang đứng.
+            const at =
+              talker === "pet"
+                ? (stage?.petScreen() ?? null)
+                : talker
+                  ? (stage?.guestScreen(talker) ?? null)
+                  : null;
             const showing = !ill && at !== null && now < speechUntil.current;
             balloon.style.opacity = showing ? "1" : "0";
 
@@ -1465,6 +1475,33 @@ function PetPanel({
       speechUntil.current = performance.now() + SPEECH_MS;
     };
   }, [meetings]);
+
+  /*
+   * Con thú tự nói — CHỈ loài huyền thoại trở lên có bộ lời thoại riêng.
+   *
+   * Thưa và nhịp không đều, cùng tinh thần với bong bóng cảm xúc: một con thú
+   * nói liên tục là một cái ticker, còn câu thỉnh thoảng mới là nhân vật. Câu
+   * chọn xoay vòng theo lượt chứ không bốc ngẫu nhiên — cùng lời với `speechFor`:
+   * bốc lại mỗi lần là một cỗ máy phát chữ, không phải con thú.
+   *
+   * Trùng lúc đang ngủ thì im; đang có ai khác nói thì nhường — bong bóng chỉ
+   * một cái, ai lấy nó thì con thú phải chờ.
+   */
+  const petLineRef = useRef(0);
+  useEffect(() => {
+    const lines = pet?.lines;
+    const rank = TIER_RANK[pet?.tier ?? "common"] ?? 0;
+    if (!lines || lines.length === 0 || rank < TIER_RANK.legendary) return;
+    const tick = window.setInterval(() => {
+      if (document.hidden || asleepRef.current || reducedRef.current) return;
+      if (performance.now() < speechUntil.current) return;
+      setSpeech(lines[petLineRef.current % lines.length]);
+      petLineRef.current += 1;
+      speakingRef.current = "pet";
+      speechUntil.current = performance.now() + SPEECH_MS;
+    }, PET_LINE_EVERY_MS);
+    return () => window.clearInterval(tick);
+  }, [pet?.lines, pet?.tier]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");

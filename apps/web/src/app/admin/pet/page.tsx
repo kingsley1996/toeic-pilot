@@ -413,6 +413,31 @@ function SpeciesModal({
         </div>
       </div>
 
+      {/*
+       * Bộ lời thoại riêng — chỉ hiển thị trên bản đồ với loài HUYỀN THOẠI
+       * trở lên. Mỗi dòng một câu; xoá hết để im lặng. Luôn hiện ở đây dù hạng
+       * đang thấp hơn: hạ hạng không được lặng lẽ xoá mất những gì đã viết.
+       */}
+      <label className="mt-4 block border-t border-rule pt-4 text-small text-ink-muted">
+        Lời thoại (mỗi dòng một câu — chỉ hiển thị từ hạng huyền thoại trở lên)
+        <textarea
+          key={(row.lines ?? []).join("\n")}
+          defaultValue={(row.lines ?? []).join("\n")}
+          rows={4}
+          aria-label={`Lines for ${row.code}`}
+          className="mt-1.5 w-full rounded-[4px] border border-rule bg-surface px-3 py-2 font-sans text-small text-ink focus:border-ink focus:outline-none"
+          onBlur={(event) => {
+            const next = event.target.value
+              .split("\n")
+              .map((line) => line.trim())
+              .filter(Boolean);
+            if (JSON.stringify(next) !== JSON.stringify(row.lines ?? [])) {
+              onPatch(row.code, { lines: next });
+            }
+          }}
+        />
+      </label>
+
       <div className="mt-5 flex items-center justify-between gap-2 border-t border-rule pt-4">
         {/* Công tắc bật/tắt nằm TRONG modal: lưới không cần một nút hành động
             trên mỗi ô, và tắt là hành động đáng một lượt xác nhận bằng mắt. */}

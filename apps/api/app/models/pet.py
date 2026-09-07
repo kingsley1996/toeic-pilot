@@ -199,6 +199,12 @@ class PetSpecies(Base):
     loài biến khỏi gacha nhưng con thú đang nuôi vẫn vẽ ra được.
     """
 
+    lines: Mapped[list[str] | None] = mapped_column(_JSON_TYPE, nullable=True)
+    """Bộ lời thoại riêng của loài, chỉ hiển thị từ hạng huyền thoại trở lên.
+
+    `None` = chưa có; danh sách rỗng không dùng — muốn im lặng thì để `None`.
+    """
+
     def __repr__(self) -> str:
         return f"<PetSpecies {self.code} {self.sheet}#{self.tile} {self.tier}>"
 

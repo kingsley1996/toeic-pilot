@@ -95,6 +95,7 @@ def _as_public(
         sheet=row.sheet if row is not None else "creatures",  # type: ignore[arg-type]
         tile=row.tile if row is not None else 0,
         tier=row.tier if row is not None else "common",  # type: ignore[arg-type]
+        lines=row.lines if row is not None else None,
         nickname=pet.nickname,
         # Mốc cao nhất, không phải level vừa tính: chỉnh đường cong XP về sau
         # không được lấy mất level của con thú đã đạt tới nó.

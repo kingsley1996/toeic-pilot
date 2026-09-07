@@ -78,6 +78,9 @@ class PetPublic(BaseModel):
     hiếm mang vòng sáng của loài thường — không lỗi nào, chỉ sai. Cùng lý do
     `tile` được gửi kèm chứ không để client tra.
     """
+    lines: list[str] | None = None
+    """Bộ lời thoại riêng của loài — gửi kèm cùng lý do `tier`: bảng loài là dữ
+    liệu admin sửa được, và con thú huyền thoại cần nói câu của chính nó."""
     nickname: str | None
     level: int
     """Level ĐANG hiển thị: đã áp mốc cao nhất từng đạt, nên nó không bao giờ tụt."""
@@ -162,6 +165,8 @@ class PetSpeciesPublic(BaseModel):
 
     position: int
     enabled: bool
+    lines: list[str] | None = None
+    """Bộ lời thoại riêng, chỉ hiển thị từ hạng huyền thoại trở lên."""
 
 
 class PetSpeciesEdit(BaseModel):
@@ -179,6 +184,9 @@ class PetSpeciesEdit(BaseModel):
     drop_weight: int | None = Field(default=None, ge=0, le=1000)
     position: int | None = None
     enabled: bool | None = None
+    lines: list[str] | None = Field(default=None, min_length=0, max_length=12)
+    """`None` = đừng đụng tới (exclude_unset); danh sách = thay cả bộ; danh sách
+    rỗng = xoá sạch (máy chủ chuẩn hoá thành NULL)."""
 
 
 class PetSpeciesCreate(BaseModel):
