@@ -517,6 +517,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 35,
         "drop_weight": 2,
+        "lines": (
+            "Sừng mình sáng lên khi bạn học xong một bài đấy.",
+            "Nghe nói ai tâm hồn trong trẻo thì mới thấy mình.",
+            "Cứ học đi, mình sẽ chạy theo bên cạnh.",
+            "Mình chỉ hiện ra với người kiên trì thôi.",
+        ),
     },
     {
         "code": "pegasus",
@@ -525,6 +531,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 36,
         "drop_weight": 2,
+        "lines": (
+            "Hôm nay mình bay vòng quanh thế giới rồi về đấy.",
+            "Gió kể mình nghe bạn học chăm lắm.",
+            "Cứ học đi, bao mệt thì mình chở bạn đi chơi.",
+            "Mình đi nhanh lắm, nhưng vẫn đợi bạn kịp.",
+        ),
     },
     {
         "code": "dragon_fire",
@@ -533,6 +545,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 37,
         "drop_weight": 2,
+        "lines": (
+            "Hơ nóng bài vở cho, nhìn còn sáng chữ hơn.",
+            "Lửa của mình chỉ dùng để sưởi, bạn đừng sợ.",
+            "Học giỏi như mình thì đâu cần ôn bài… đùa đấy.",
+            "Ngồi gần mình một chút, mùa đông thế này mà.",
+        ),
     },
     {
         "code": "dragon_ice",
@@ -541,6 +559,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 38,
         "drop_weight": 2,
+        "lines": (
+            "Bình tĩnh như băng vậy — làm bài chậm mà chắc.",
+            "Câu khó cứ để đó, tuyết rơi rồi cũng tan.",
+            "Mình lạnh lắm, ngồi gần mình cho đỡ nóng đầu.",
+            "Mình ngủ trong tuyết cả ngàn năm, chưa bỏ cuộc lần nào.",
+        ),
     },
     {
         "code": "fairy",
@@ -549,6 +573,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 39,
         "drop_weight": 2,
+        "lines": (
+            "Mình vừa rắc bụi tiên lên quyển vở của bạn rồi.",
+            "Ước gì đi? Mình cho một câu khó hơn nhé.",
+            "Mình nhỏ thôi, nhưng chú ý tới bạn lắm đấy.",
+            "Làm đúng câu này mình nhảy múa cho xem.",
+        ),
     },
     {
         "code": "djinn",
@@ -557,6 +587,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "legendary",
         "position": 40,
         "drop_weight": 2,
+        "lines": (
+            "Điều ước thứ nhất: mỗi ngày biết thêm một từ mới.",
+            "Mình ở trong đèn ngàn năm, chưa ai học giỏi như bạn.",
+            "Chà xát đèn đi, mình đang ngủ trong này.",
+            "Học trước đi, ước sau không kịp đâu.",
+        ),
     },
     # --- bậc THẦN --------------------------------------------------------
     #
@@ -574,6 +610,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "god",
         "position": 41,
         "drop_weight": 1,
+        "lines": (
+            "Mình là lửa của bếp lò, không phải của rừng cháy.",
+            "Ấm chưa? Học xong câu này thì ấm hơn.",
+            "Ngọn lửa nhỏ mà cháy đều là ngọn lửa tốt.",
+            "Nhà nào học chăm, mình về nhà đấy sưởi.",
+        ),
     },
     {
         "code": "spirit_water",
@@ -582,6 +624,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "god",
         "position": 42,
         "drop_weight": 1,
+        "lines": (
+            "Nước chảy đá mòn, học đều từ khó cũng tan.",
+            "Mình lỏng lắm, đổ vào lịch học nào cũng vừa.",
+            "Uống nước đi, rồi đọc tiếp câu này.",
+            "Sâu thẳm nhất là nơi mình ở — như bài cuối cùng.",
+        ),
     },
     {
         "code": "spirit_stone",
@@ -590,6 +638,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "god",
         "position": 43,
         "drop_weight": 1,
+        "lines": (
+            "Mình nặng lắm, nhưng lời nhắc học chưa còn nặng hơn.",
+            "Đá ngàn năm chưa đổi, bạn đổi mỗi ngày đấy.",
+            "Ngồi vững như đá đi, mình ngồi cùng.",
+            "Chữ khắc trên đá thì không phai — nhớ kiểu mình nhé.",
+        ),
     },
     {
         "code": "spirit_storm",
@@ -598,6 +652,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "god",
         "position": 44,
         "drop_weight": 1,
+        "lines": (
+            "Bão đến thì mình đến, bài khó thì mình giúp.",
+            "Sấm mình đánh cho riêng câu khó nhất.",
+            "Gió mưa rồi cũng qua, chữ còn lại đấy.",
+            "Mình ồn thôi, chứ không dọa — học đi rồi mình về.",
+        ),
     },
     {
         "code": "seraph",
@@ -606,6 +666,12 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
         "tier": "god",
         "position": 45,
         "drop_weight": 1,
+        "lines": (
+            "Sáu cánh của mình: bốn để học, hai để vỗ khi bạn làm đúng.",
+            "Ánh sáng không phải ở trên trời, nó ở trang sách mở ra.",
+            "Mình xuống đây vì nghe thấy bạn đang cố.",
+            "Thần cũng phải thuộc bài, bạn không cô đơn đâu.",
+        ),
     },
 )
 

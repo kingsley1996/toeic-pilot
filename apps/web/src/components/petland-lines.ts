@@ -62,14 +62,27 @@ const LINES: Record<PetCondition, readonly string[]> = {
 };
 
 /**
- * Một câu bất kỳ hợp với tình trạng hiện tại.
+ * Pool mặc định của một tình trạng.
+ *
+ * Tách cho chỗ chỉ cần POOL chứ không bốc câu — toast sidebar cần nó để chọn
+ * giữa pool mặc định và bộ lời thoại admin viết.
+ */
+export function conditionLines(condition: PetCondition): readonly string[] {
+  return LINES[condition];
+}
+
+/**
+ * Một câu bất kỳ từ một pool, trừ câu vừa nói.
  *
  * Nhận `avoid` để không bốc trúng đúng câu vừa nói: bốc ngẫu nhiên trên năm câu
  * thì cứ năm lần lại có một lần trùng liền nhau, và trùng liền nhau đọc ra là
  * hỏng chứ không phải ngẫu nhiên.
  */
+export function lineFrom(pool: readonly string[], avoid?: string): string {
+  const usable = pool.length > 1 && avoid ? pool.filter((line) => line !== avoid) : pool;
+  return usable[Math.floor(Math.random() * usable.length)];
+}
+
 export function petLine(condition: PetCondition, avoid?: string): string {
-  const all = LINES[condition];
-  const pool = all.length > 1 && avoid ? all.filter((line) => line !== avoid) : all;
-  return pool[Math.floor(Math.random() * pool.length)];
+  return lineFrom(LINES[condition], avoid);
 }

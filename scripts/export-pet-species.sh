@@ -38,11 +38,12 @@ SHEETS=$(pg -c "SELECT string_agg(DISTINCT sheet, ', ' ORDER BY sheet) FROM pet_
   echo "BEGIN;"
   echo
   cat <<'SQL'
--- 1. Cổng. Cột `sheet` đến từ migration 072, và nó chạy khi ẢNH API deploy
---    (`api-entrypoint.sh` gọi `alembic upgrade head` trước khi uvicorn nghe
---    cổng). Nạp tệp này TRƯỚC khi API mới lên thì mọi câu INSERT đổ vì không có
---    cột — ồn ào, nên không nguy hiểm. Cổng này chỉ để lời báo nói đúng nguyên
---    nhân thay vì để psql kêu "column does not exist" ở dòng 12.
+-- 1. Cổng. Cột `sheet` đến từ migration 072 và `lines` từ 073, và chúng chạy
+--    khi ẢNH API deploy (`api-entrypoint.sh` gọi `alembic upgrade head` trước
+--    khi uvicorn nghe cổng). Nạp tệp này TRƯỚC khi API mới lên thì mọi câu
+--    INSERT đổ vì không có cột — ồn ào, nên không nguy hiểm. Cổng này chỉ để
+--    lời báo nói đúng nguyên nhân thay vì để psql kêu "column does not exist"
+--    ở dòng 12.
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -51,17 +52,24 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'production chưa có pet_species.sheet — deploy API (migration 072) trước';
   END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+     WHERE table_name = 'pet_species' AND column_name = 'lines'
+  ) THEN
+    RAISE EXCEPTION 'production chưa có pet_species.lines — deploy API (migration 073) trước';
+  END IF;
 END $$;
 
 SQL
   echo "-- 2. Loài. Chạy lại thì cập nhật; không DELETE, không đụng con ai đang nuôi."
   pg -c "SELECT format(
-      'INSERT INTO pet_species (code, label, sheet, tile, tier, drop_weight, position, enabled)'
-      ' VALUES (%L, %L, %L, %s, %L, %s, %s, %L)'
+      'INSERT INTO pet_species (code, label, sheet, tile, tier, drop_weight, position, enabled, lines)'
+      ' VALUES (%L, %L, %L, %s, %L, %s, %s, %L, %s)'
       ' ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, sheet = EXCLUDED.sheet,'
       ' tile = EXCLUDED.tile, tier = EXCLUDED.tier, drop_weight = EXCLUDED.drop_weight,'
-      ' position = EXCLUDED.position, enabled = EXCLUDED.enabled;',
-      code, label, sheet, tile, tier, drop_weight, position, enabled)
+      ' position = EXCLUDED.position, enabled = EXCLUDED.enabled, lines = EXCLUDED.lines;',
+      code, label, sheet, tile, tier, drop_weight, position, enabled,
+      COALESCE(quote_nullable(lines::text), 'NULL'))
     FROM pet_species WHERE $WHERE ORDER BY sheet, tile;"
   cat <<SQL
 

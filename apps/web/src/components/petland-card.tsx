@@ -3,7 +3,7 @@
 import { API_ROUTES, type PetPublic } from "@toeic-pilot/shared";
 import { useCallback, useEffect, useState } from "react";
 
-import { PetIdle } from "@/components/petland-creature";
+import { PetIdle, TIER_RANK } from "@/components/petland-creature";
 import { CONDITION_LABEL, conditionOf } from "@/components/petland-pet";
 import { PetlandToast } from "@/components/petland-toast";
 import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
@@ -100,12 +100,16 @@ export function PetlandCard() {
   if (status !== "authenticated") return null;
 
   const condition = pet ? conditionOf(pet.needs) : undefined;
+  // Bộ lời thoại riêng chỉ có hiệu lực từ hạng huyền thoại — cùng gate với bong
+  // bóng trên bản đồ, để hai mặt nói cùng một thứ.
+  const lines =
+    pet && (TIER_RANK[pet.tier] ?? 0) >= TIER_RANK.legendary ? (pet.lines ?? undefined) : undefined;
   return (
     // `data-tour`: chỗ bám của tour giới thiệu. Tồn tại CHỈ để tour trỏ vào,
     // nên xoá nó là hành động có ý thức chứ không phải tác dụng phụ của việc
     // chỉnh giao diện — khác hẳn nếu tour bám vào một tên lớp.
     <div data-tour="pet" className="relative shrink-0 border-t border-rule px-2 py-2">
-      <PetlandToast condition={condition} />
+      <PetlandToast condition={condition} lines={lines} />
       {pet === undefined ? (
         <Skeleton className="h-14 w-full" />
       ) : pet === null ? (

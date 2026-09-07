@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 
-import { petLine } from "@/components/petland-lines";
+import { conditionLines, lineFrom } from "@/components/petland-lines";
 import { type PetCondition } from "@/components/petland-pet";
 import { cx } from "@/components/ui";
 import { subscribeToPetNotices, type PetNotice } from "@/lib/pet-notice";
@@ -60,9 +60,15 @@ function moodLabel(mood: number): string {
   return `+${Math.max(1, Math.round(mood * 100))}% vui`;
 }
 
-export function PetlandToast({ condition }: { condition?: PetCondition }) {
+export function PetlandToast({
+  condition,
+  lines,
+}: {
+  condition?: PetCondition;
+  lines?: readonly string[] | null;
+}) {
   const [shown, setShown] = useState<Shown[]>([]);
-  const line = useIdleLine(condition);
+  const line = useIdleLine(condition, lines);
 
   /* `serverSidebarState` báo "chưa biết" lúc dựng ở máy chủ — cùng ba trạng thái
      mà `session` có, và ở đây "chưa biết" xử như mở rộng, đúng bề rộng mà HTML
@@ -168,11 +174,18 @@ const SAY_MS = 5200;
 const QUIET_MIN_MS = 24_000;
 const QUIET_MAX_MS = 52_000;
 
-function useIdleLine(condition: PetCondition | undefined): string | null {
+function useIdleLine(
+  condition: PetCondition | undefined,
+  lines?: readonly string[] | null,
+): string | null {
   const [line, setLine] = useState<string | null>(null);
 
   useEffect(() => {
     if (condition === undefined) return;
+    // Bộ lời thoại riêng (huyền thoại trở lên) thay pool mặc định — TRỪ lúc ốm:
+    // câu ốm là tín hiệu cần chăm, không phải màu nhân vật.
+    const pool =
+      lines && lines.length > 0 && condition !== "sick" ? lines : conditionLines(condition);
     let timer = 0;
     let last: string | undefined;
 
@@ -188,7 +201,7 @@ function useIdleLine(condition: PetCondition | undefined): string | null {
         timer = window.setTimeout(say, QUIET_MIN_MS);
         return;
       }
-      last = petLine(condition, last);
+      last = lineFrom(pool, last);
       setLine(last);
       timer = window.setTimeout(hide, SAY_MS);
     };
@@ -204,7 +217,7 @@ function useIdleLine(condition: PetCondition | undefined): string | null {
       // thì câu cũ đứng lại vĩnh viễn — và nó đang nói sai về con thú.
       setLine(null);
     };
-  }, [condition]);
+  }, [condition, lines]);
 
   return condition === undefined ? null : line;
 }
