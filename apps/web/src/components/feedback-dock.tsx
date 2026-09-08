@@ -64,20 +64,15 @@ export function FeedbackDock() {
         </button>
       </div>
 
-      <FeedbackModal open={open} onClose={() => setOpen(false)} token={token} />
+      {/* Chỉ mount khi MỞ: modal đóng vẫn nằm trong DOM (`<dialog>` giữ
+          children), và chữ trong nó — "chưa đúng", "Gửi góp ý" — trở thành
+          trùng khớp dôi cho mọi locator getByText trên mọi trang có dock. */}
+      {open && <FeedbackModal onClose={() => setOpen(false)} token={token} />}
     </>
   );
 }
 
-function FeedbackModal({
-  open,
-  onClose,
-  token,
-}: {
-  open: boolean;
-  onClose: () => void;
-  token: string | null;
-}) {
+function FeedbackModal({ onClose, token }: { onClose: () => void; token: string | null }) {
   const { show } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [tab, setTab] = useState<"send" | "mine">("send");
@@ -100,7 +95,7 @@ function FeedbackModal({
   // nhiều hơn thứ thật sự trao. Trả 0 nghĩa là nguồn đang tắt, và câu hứa biến
   // mất theo.
   useEffect(() => {
-    if (!open || !token) return;
+    if (!token) return;
     apiFetch<{ amount: number }>(API_ROUTES.feedbackReward, { token })
       .then((row) => setReward(row.amount))
       .catch(() => setReward(0));
@@ -111,7 +106,7 @@ function FeedbackModal({
   // admin, và một danh sách nhớ từ lần mở trước sẽ nói "chờ xử lý" về một góp ý
   // đã được duyệt xong.
   useEffect(() => {
-    if (!open || tab !== "mine" || !token) return;
+    if (tab !== "mine" || !token) return;
     fetchMine()
       .then(setMine)
       .catch(() => setMine([]));
@@ -189,7 +184,7 @@ function FeedbackModal({
 
   return (
     <Modal
-      open={open}
+      open={true}
       onClose={onClose}
       title="Gửi góp ý"
       description={

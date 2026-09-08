@@ -40,7 +40,10 @@ export default function PartsHubPage() {
           PART_META.map((m) => {
             const summary = parts.find((p) => p.part === m.part);
             return (
-              <Panel key={m.part} className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+              <Panel
+                key={m.part}
+                className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
+              >
                 {/* Icon + chữ là một hàng ở MỌI cỡ; chỉ hàng nút mới rơi xuống
                     dòng dưới mobile. `flex-1` nhường cho chữ ở sm trở lên — trên
                     mobile nhường là ép đoạn văn co thành dọc một-từ-một-dòng. */}

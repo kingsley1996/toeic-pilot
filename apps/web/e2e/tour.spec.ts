@@ -40,7 +40,7 @@ test("người mới được chào, và đi hết năm bước", async ({ page 
   await expect(page.getByText("1/5")).toBeVisible();
 
   await page.getByRole("button", { name: "Tiếp" }).click();
-  await expect(page.getByText("Ba việc mỗi ngày")).toBeVisible();
+  await expect(page.getByText("Nhiệm vụ mỗi ngày")).toBeVisible();
   await expect(page.getByText("2/5")).toBeVisible();
   await page.getByRole("button", { name: "Tiếp" }).click();
   await expect(page.getByText("3/5")).toBeVisible();

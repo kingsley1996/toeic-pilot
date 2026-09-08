@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  API_ROUTES,
-  type DailyTaskPublic,
-  type DailyTasksPublic,
-} from "@toeic-pilot/shared";
+import { API_ROUTES, type DailyTaskPublic, type DailyTasksPublic } from "@toeic-pilot/shared";
 import { Check, FileText, GraduationCap, Headphones, RotateCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -267,8 +263,8 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
           câu này nói đúng chuyện gì dừng và chuyện gì không. */}
       {capped && (
         <p className="mt-4 border-t border-rule pt-3 text-small text-ink-muted">
-          Hôm nay đã đạt tối đa {daily.daily_cap} XP. Tiến độ học vẫn được ghi bình thường,
-          chỉ có điểm là dừng tới ngày mai.
+          Hôm nay đã đạt tối đa {daily.daily_cap} XP. Tiến độ học vẫn được ghi bình thường, chỉ có
+          điểm là dừng tới ngày mai.
         </p>
       )}
     </Panel>
