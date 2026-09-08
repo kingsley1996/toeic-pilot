@@ -61,6 +61,12 @@ export type BackdropPublic = components["schemas"]["BackdropPublic"];
 export type BackdropUpdate = components["schemas"]["BackdropUpdate"];
 export type UserProfilePublic = components["schemas"]["UserProfilePublic"];
 export type ProgressionPublic = components["schemas"]["ProgressionPublic"];
+export type FeedbackPublic = components["schemas"]["FeedbackPublic"];
+export type FeedbackCreate = components["schemas"]["FeedbackCreate"];
+// Bốn loại góp ý đến TỪ hợp đồng, không viết lại tay: thêm một loại ở Pydantic
+// mà quên ở đây thì `tsc` báo, thay vì giao diện lặng lẽ thiếu một lựa chọn.
+export type FeedbackType = components["schemas"]["FeedbackCreate"]["type"];
+export type FeedbackStatus = components["schemas"]["FeedbackPublic"]["status"];
 export type PetPublic = components["schemas"]["PetPublic"];
 export type PetMove = components["schemas"]["PetMove"];
 export type PetSpeciesPublic = components["schemas"]["PetSpeciesPublic"];
@@ -112,6 +118,7 @@ export type ChatMessagePublic = components["schemas"]["ChatMessagePublic"];
 export type ChatTurn = components["schemas"]["ChatTurn"];
 export type ChatHistoryPage = components["schemas"]["Page_ChatMessagePublic_"];
 export type AttemptPage = components["schemas"]["Page_AttemptSummary_"];
+export type FeedbackPage = components["schemas"]["Page_FeedbackPublic_"];
 export type VocabularyPage = components["schemas"]["Page_VocabularySummary_"];
 export type ReviewDueCount = components["schemas"]["ReviewDueCount"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
@@ -263,6 +270,10 @@ export const API_ROUTES = {
   // đặt nó dưới góc thú cưng sẽ dựng đúng cái liên tưởng ADR-011 §3 cấm — rằng
   // con thú cần ruby để sống.
   ruby: "/api/v1/ruby",
+  feedback: "/api/v1/feedback",
+  feedbackMine: "/api/v1/feedback/mine",
+  feedbackReward: "/api/v1/feedback/reward",
+  feedbackScreenshotTicket: "/api/v1/feedback/screenshot/ticket",
   rubyGift: "/api/v1/ruby/gift",
   petlandMap: "/api/v1/petland/map",
   adminPetlandMap: "/api/v1/admin/petland/map",
@@ -272,6 +283,7 @@ export const API_ROUTES = {
   adminPetlandCreaturePromote: (tile: number) => `/api/v1/admin/petland/creatures/${tile}/promote`,
   adminSystemStatus: "/api/v1/admin/system/status",
   adminSystemUptime: "/api/v1/admin/system/uptime",
+  adminFeedback: "/api/v1/admin/feedback",
   adminRubyRules: "/api/v1/admin/ruby/rules",
   placementGate: "/api/v1/placement/gate",
   placementStart: "/api/v1/placement/start",
@@ -285,6 +297,9 @@ export const API_ROUTES = {
   adminUserActivity: (id: string) => `/api/v1/admin/users/${id}/activity`,
   adminPlannerCompare: "/api/v1/admin/planner-compare",
   adminPlannerRun: "/api/v1/admin/planner-compare/run",
+  adminFeedbackApprove: (id: string) => `/api/v1/admin/feedback/${id}/approve`,
+  adminFeedbackReject: (id: string) => `/api/v1/admin/feedback/${id}/reject`,
+  adminFeedbackEdit: (id: string) => `/api/v1/admin/feedback/${id}`,
   adminRubyRule: (sourceType: string) => `/api/v1/admin/ruby/rules/${sourceType}`,
   adminPetSpecies: "/api/v1/admin/pet/species",
   adminPetSpeciesItem: (code: string) => `/api/v1/admin/pet/species/${code}`,

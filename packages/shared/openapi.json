@@ -4606,6 +4606,172 @@
         "title": "FacetShare",
         "type": "object"
       },
+      "FeedbackCreate": {
+        "properties": {
+          "description": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "screenshot_keys": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 3,
+            "title": "Screenshot Keys",
+            "type": "array"
+          },
+          "type": {
+            "enum": [
+              "bug",
+              "feature",
+              "content",
+              "other"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "description"
+        ],
+        "title": "FeedbackCreate",
+        "type": "object"
+      },
+      "FeedbackNoteBody": {
+        "properties": {
+          "admin_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Note"
+          }
+        },
+        "title": "FeedbackNoteBody",
+        "type": "object"
+      },
+      "FeedbackPublic": {
+        "properties": {
+          "admin_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Note"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "image_urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Image Urls",
+            "type": "array"
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed At"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "bug",
+              "feature",
+              "content",
+              "other"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "type",
+          "description",
+          "status",
+          "admin_note",
+          "reviewed_at",
+          "created_at"
+        ],
+        "title": "FeedbackPublic",
+        "type": "object"
+      },
+      "FeedbackRejectBody": {
+        "properties": {
+          "admin_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Note"
+          }
+        },
+        "title": "FeedbackRejectBody",
+        "type": "object"
+      },
+      "FeedbackReward": {
+        "description": "Mức thưởng hiện hành. 0 nghĩa là nguồn đang tắt — đừng hứa gì.",
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "title": "FeedbackReward",
+        "type": "object"
+      },
       "FramePublic": {
         "description": "Khung avatar đang mở, hoặc vắng mặt khi chưa tới bậc nào.\n\nTrả về cả CÁCH VẼ chứ không chỉ mã: bậc khung là dữ liệu admin thêm được, nên\nmột bảng tra mã→màu nằm trong frontend sẽ thiếu ngay khi có bậc mới, và thiếu\nmột cách im lặng (khung không hiện, không ai báo).",
         "properties": {
@@ -6787,6 +6953,37 @@
           "offset"
         ],
         "title": "Page[DictationSummary]",
+        "type": "object"
+      },
+      "Page_FeedbackPublic_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FeedbackPublic"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[FeedbackPublic]",
         "type": "object"
       },
       "Page_GrammarLessonAdmin_": {
@@ -14983,6 +15180,256 @@
         ]
       }
     },
+    "/api/v1/admin/feedback": {
+      "get": {
+        "description": "Danh sách góp ý. `Page[T]` vì nó lớn theo lượng người dùng — nhóm (C).",
+        "operationId": "list_feedback_api_v1_admin_feedback_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "pending",
+                    "approved",
+                    "rejected"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_FeedbackPublic_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Feedback",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/feedback/{feedback_id}": {
+      "patch": {
+        "description": "Sửa ghi chú. Vắng khoá `admin_note` là GIỮ NGUYÊN, `null` là XOÁ.\n\nCùng luật với `PATCH /profile`: một phép gộp `body.admin_note or existing`\nkhông phân biệt được hai chuyện đó, và hệ quả là xoá ghi chú trả về 200 mà\nkhông xoá gì.",
+        "operationId": "edit_note_api_v1_admin_feedback__feedback_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feedback_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Feedback Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackNoteBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Edit Note",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/feedback/{feedback_id}/approve": {
+      "post": {
+        "description": "Duyệt và trao ruby, trong CÙNG một transaction.\n\n409 khi đã duyệt, chứ không lặng lẽ trả về như cũ: `earn()` đã idempotent\nnhờ `uq_ruby_event_source`, nên bấm hai lần không trao hai lần — nhưng một\n200 im lặng khiến người bấm tưởng lần thứ hai vừa làm được việc gì đó.",
+        "operationId": "approve_api_v1_admin_feedback__feedback_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feedback_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Feedback Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/feedback/{feedback_id}/reject": {
+      "post": {
+        "description": "Từ chối. KHÔNG rút ruby nếu trước đó đã duyệt — sổ cái bất biến.\n\nĐó là tính chất của `ruby_event` chứ không phải sơ suất ở đây: một hàng đã\nghi thì không bị xoá, cùng lý do `xp_event` không bao giờ bị trừ ngược.",
+        "operationId": "reject_api_v1_admin_feedback__feedback_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feedback_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Feedback Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackRejectBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reject",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/grammar/labels": {
       "get": {
         "description": "Mã + tên tiếng Việt của facet grammar — dropdown filter cho picker.\n\nĐọc từ registry, không chép danh sách: cùng lý do mà `code` của topic bị\nkiểm bằng registry thay vì một tuple cứng ở đầu tệp này.",
@@ -21890,6 +22337,158 @@
         "summary": "Submit Dictation",
         "tags": [
           "learning"
+        ]
+      }
+    },
+    "/api/v1/feedback": {
+      "post": {
+        "description": "Gửi góp ý. Tạo LÀ bước xác nhận ảnh — không có bước thứ ba.\n\nAvatar tách `ticket` và `confirm` vì hồ sơ đã tồn tại sẵn và ảnh chỉ gắn\nvào. Ở đây hàng góp ý chưa có gì để gắn vào cho tới lúc gửi, nên gộp lại là\nđúng: một lần ghi, và ảnh không bao giờ trỏ tới một hàng chưa tồn tại.",
+        "operationId": "create_feedback_api_v1_feedback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Feedback",
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/api/v1/feedback/mine": {
+      "get": {
+        "description": "Góp ý của chính mình, mới nhất trước.\n\nMảng trần chứ không `Page[T]`: số góp ý một người gửi có trần cứng ở\n`PENDING_CAP` cho phần chờ, và phần đã xử lý cũng không phải thứ tăng theo\nthời gian dùng app — đây là nhóm (A) của `schemas/common.py`.",
+        "operationId": "my_feedback_api_v1_feedback_mine_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FeedbackPublic"
+                  },
+                  "title": "Response My Feedback Api V1 Feedback Mine Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "My Feedback",
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/api/v1/feedback/reward": {
+      "get": {
+        "description": "Mức ruby cho một góp ý được duyệt, đọc từ `ruby_rule`.\n\nPhục vụ đúng một việc: để giao diện KHÔNG viết cứng con số. Mức thưởng là\nmột hàng admin sửa được ở `/admin/ruby` mà không cần deploy, nên một số viết\nthẳng vào modal sẽ lệch ngay lần chỉnh đầu tiên — và lệch theo hướng tệ\nnhất, là hứa nhiều hơn thứ thật sự trao.\n\n`rules()` chỉ trả hàng ĐANG BẬT, nên tắt hàng ấy đi thì `amount` về 0 và\ngiao diện bỏ luôn câu hứa. Một lời hứa thưởng khi phần thưởng đã tắt còn tệ\nhơn không hứa gì.",
+        "operationId": "reward_api_v1_feedback_reward_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackReward"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reward",
+        "tags": [
+          "feedback"
+        ]
+      }
+    },
+    "/api/v1/feedback/screenshot/ticket": {
+      "post": {
+        "description": "Vé để trình duyệt tự tải ảnh lên, không đi qua API (ADR-006 §2.3).",
+        "operationId": "screenshot_ticket_api_v1_feedback_screenshot_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Screenshot Ticket",
+        "tags": [
+          "feedback"
         ]
       }
     },

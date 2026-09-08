@@ -597,6 +597,97 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Feedback
+         * @description Danh sách góp ý. `Page[T]` vì nó lớn theo lượng người dùng — nhóm (C).
+         */
+        get: operations["list_feedback_api_v1_admin_feedback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/feedback/{feedback_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Edit Note
+         * @description Sửa ghi chú. Vắng khoá `admin_note` là GIỮ NGUYÊN, `null` là XOÁ.
+         *
+         *     Cùng luật với `PATCH /profile`: một phép gộp `body.admin_note or existing`
+         *     không phân biệt được hai chuyện đó, và hệ quả là xoá ghi chú trả về 200 mà
+         *     không xoá gì.
+         */
+        patch: operations["edit_note_api_v1_admin_feedback__feedback_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/feedback/{feedback_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve
+         * @description Duyệt và trao ruby, trong CÙNG một transaction.
+         *
+         *     409 khi đã duyệt, chứ không lặng lẽ trả về như cũ: `earn()` đã idempotent
+         *     nhờ `uq_ruby_event_source`, nên bấm hai lần không trao hai lần — nhưng một
+         *     200 im lặng khiến người bấm tưởng lần thứ hai vừa làm được việc gì đó.
+         */
+        post: operations["approve_api_v1_admin_feedback__feedback_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/feedback/{feedback_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reject
+         * @description Từ chối. KHÔNG rút ruby nếu trước đó đã duyệt — sổ cái bất biến.
+         *
+         *     Đó là tính chất của `ruby_event` chứ không phải sơ suất ở đây: một hàng đã
+         *     ghi thì không bị xoá, cùng lý do `xp_event` không bao giờ bị trừ ngược.
+         */
+        post: operations["reject_api_v1_admin_feedback__feedback_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/grammar/labels": {
         parameters: {
             query?: never;
@@ -3083,6 +3174,103 @@ export interface paths {
         put?: never;
         /** Submit Dictation */
         post: operations["submit_dictation_api_v1_dictation__item_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Feedback
+         * @description Gửi góp ý. Tạo LÀ bước xác nhận ảnh — không có bước thứ ba.
+         *
+         *     Avatar tách `ticket` và `confirm` vì hồ sơ đã tồn tại sẵn và ảnh chỉ gắn
+         *     vào. Ở đây hàng góp ý chưa có gì để gắn vào cho tới lúc gửi, nên gộp lại là
+         *     đúng: một lần ghi, và ảnh không bao giờ trỏ tới một hàng chưa tồn tại.
+         */
+        post: operations["create_feedback_api_v1_feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feedback/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Feedback
+         * @description Góp ý của chính mình, mới nhất trước.
+         *
+         *     Mảng trần chứ không `Page[T]`: số góp ý một người gửi có trần cứng ở
+         *     `PENDING_CAP` cho phần chờ, và phần đã xử lý cũng không phải thứ tăng theo
+         *     thời gian dùng app — đây là nhóm (A) của `schemas/common.py`.
+         */
+        get: operations["my_feedback_api_v1_feedback_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feedback/reward": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Reward
+         * @description Mức ruby cho một góp ý được duyệt, đọc từ `ruby_rule`.
+         *
+         *     Phục vụ đúng một việc: để giao diện KHÔNG viết cứng con số. Mức thưởng là
+         *     một hàng admin sửa được ở `/admin/ruby` mà không cần deploy, nên một số viết
+         *     thẳng vào modal sẽ lệch ngay lần chỉnh đầu tiên — và lệch theo hướng tệ
+         *     nhất, là hứa nhiều hơn thứ thật sự trao.
+         *
+         *     `rules()` chỉ trả hàng ĐANG BẬT, nên tắt hàng ấy đi thì `amount` về 0 và
+         *     giao diện bỏ luôn câu hứa. Một lời hứa thưởng khi phần thưởng đã tắt còn tệ
+         *     hơn không hứa gì.
+         */
+        get: operations["reward_api_v1_feedback_reward_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feedback/screenshot/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Screenshot Ticket
+         * @description Vé để trình duyệt tự tải ảnh lên, không đi qua API (ADR-006 §2.3).
+         */
+        post: operations["screenshot_ticket_api_v1_feedback_screenshot_ticket_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6245,6 +6433,72 @@ export interface components {
             /** Share */
             share: number;
         };
+        /** FeedbackCreate */
+        FeedbackCreate: {
+            /** Description */
+            description: string;
+            /** Screenshot Keys */
+            screenshot_keys?: string[];
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "bug" | "feature" | "content" | "other";
+        };
+        /** FeedbackNoteBody */
+        FeedbackNoteBody: {
+            /** Admin Note */
+            admin_note?: string | null;
+        };
+        /** FeedbackPublic */
+        FeedbackPublic: {
+            /** Admin Note */
+            admin_note: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Image Urls */
+            image_urls?: string[];
+            /** Reviewed At */
+            reviewed_at: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "rejected";
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "bug" | "feature" | "content" | "other";
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** FeedbackRejectBody */
+        FeedbackRejectBody: {
+            /** Admin Note */
+            admin_note?: string | null;
+        };
+        /**
+         * FeedbackReward
+         * @description Mức thưởng hiện hành. 0 nghĩa là nguồn đang tắt — đừng hứa gì.
+         */
+        FeedbackReward: {
+            /** Amount */
+            amount: number;
+        };
         /**
          * FramePublic
          * @description Khung avatar đang mở, hoặc vắng mặt khi chưa tới bậc nào.
@@ -7033,6 +7287,17 @@ export interface components {
         Page_DictationSummary_: {
             /** Items */
             items: components["schemas"]["DictationSummary"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[FeedbackPublic] */
+        Page_FeedbackPublic_: {
+            /** Items */
+            items: components["schemas"]["FeedbackPublic"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -10446,6 +10711,140 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_feedback_api_v1_admin_feedback_get: {
+        parameters: {
+            query?: {
+                status?: ("pending" | "approved" | "rejected") | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_FeedbackPublic_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_note_api_v1_admin_feedback__feedback_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackNoteBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_api_v1_admin_feedback__feedback_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_api_v1_admin_feedback__feedback_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackRejectBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackPublic"];
                 };
             };
             /** @description Validation Error */
@@ -14812,6 +15211,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DictationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_feedback_api_v1_feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_feedback_api_v1_feedback_mine_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackPublic"][];
+                };
+            };
+        };
+    };
+    reward_api_v1_feedback_reward_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackReward"];
+                };
+            };
+        };
+    };
+    screenshot_ticket_api_v1_feedback_screenshot_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
                 };
             };
             /** @description Validation Error */

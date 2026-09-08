@@ -34,6 +34,11 @@ RUBY_SOURCES = (
     "daily_all",
     "daily_gift",
     "streak_week",
+    # Góp ý được admin duyệt. NẰM TRONG `ruby_rule`, khác `admin_grant` ngay
+    # dưới: mức thưởng ở đây là quyết định vận hành — thấy ít góp ý thì nâng —
+    # và nó không phải một công tắc có thể vô tình bật cho người học, vì ruby
+    # chỉ chảy khi một admin bấm duyệt.
+    "feedback_reward",
     # Hoàn ruby khi mở trứng ra con đã có. Là một đường KIẾM, nhưng không nằm
     # trong `ruby_rule`: mức hoàn là thuộc tính của quả trứng (`egg_setting`),
     # không phải một phần thưởng cho việc học, và đặt nó vào bảng mức thưởng sẽ
@@ -142,4 +147,8 @@ DEFAULT_RUBY_RULES: tuple[dict[str, object], ...] = (
     {"source_type": "daily_all", "label": "Xong cả ba việc hôm nay", "amount": 10, "position": 5},
     {"source_type": "daily_gift", "label": "Quà hàng ngày", "amount": 3, "position": 6},
     {"source_type": "streak_week", "label": "Giữ chuỗi bảy ngày", "amount": 20, "position": 7},
+    # Hằng số này CHỈ có tác dụng trên một cài đặt mới: `rules()` gieo khi bảng
+    # rỗng, mà mọi cài đặt đang chạy đã có bảy hàng. Hàng thứ tám tới nơi bằng
+    # migration `074`, không bằng chỗ này.
+    {"source_type": "feedback_reward", "label": "Góp ý được duyệt", "amount": 200, "position": 8},
 )

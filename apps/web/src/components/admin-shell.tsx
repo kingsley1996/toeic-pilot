@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  MessageSquarePlus,
   ArrowLeft,
   ClipboardList,
   Cpu,
@@ -105,6 +106,14 @@ const ADMIN_LINKS: AdminNavItem[] = [
       { href: "/admin/petland/creatures", label: "Creatures", Icon: Squirrel },
       { href: "/admin/ruby", label: "Ruby rates", Icon: Gem },
     ],
+  },
+  {
+    // Duyệt một góp ý là TRAO RUBY, nên nó ở nhóm System cạnh bảng giá — cùng
+    // ranh giới quyền: biên tập viên sửa nội dung, admin chạm vào nền kinh tế.
+    href: "/admin/feedback",
+    label: "Feedback",
+    Icon: MessageSquarePlus,
+    group: "System",
   },
   {
     // Vòng đời người dùng là quyền VẬN HÀNH (admin), không phải biên tập —

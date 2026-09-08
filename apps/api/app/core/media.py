@@ -24,6 +24,11 @@ IMAGE_KEY_PREFIX = "image"
 # khác nhau ngay ở đường dẫn, nên một lệnh dọn nhắm vào nhánh này không thể vô
 # tình chạm vào nhánh kia.
 AVATAR_KEY_PREFIX = "avatar"
+# Ảnh người học đính kèm góp ý. Tiền tố RIÊNG, cùng lý do với `avatar/`
+# (ADR-006 §2.1): nó không có giấy phép, không có nguồn, không có hàng
+# `image_asset` — nên một lệnh dọn ảnh mồ côi khu nội dung không được phép chạm
+# tới, và cách rẻ nhất để bảo đảm điều đó là để nó ở một vùng khoá khác.
+FEEDBACK_KEY_PREFIX = "feedback"
 
 # Tranh của khung avatar và huy hiệu. Tiền tố RIÊNG, cùng lý do như `avatar/`
 # (ADR-006 §2.1): một lệnh dọn nhắm vào ảnh nội dung không được chạm nhầm vào
@@ -240,6 +245,10 @@ def image_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
 
 def avatar_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
     return storage_key_for(source_hash_value, ext=ext, prefix=AVATAR_KEY_PREFIX)
+
+
+def feedback_storage_key_for(source_hash_value: str, ext: str = "jpg") -> str:
+    return storage_key_for(source_hash_value, ext=ext, prefix=FEEDBACK_KEY_PREFIX)
 
 
 def progression_storage_key_for(source_hash_value: str, ext: str = "png") -> str:

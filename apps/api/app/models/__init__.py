@@ -12,6 +12,12 @@ from app.models.dictation import (
     DictationTopic,
 )
 from app.models.encounter import Encounter, EncounterSetting
+from app.models.feedback import (
+    FEEDBACK_STATUSES,
+    FEEDBACK_TYPES,
+    PENDING_CAP,
+    Feedback,
+)
 from app.models.grammar import (
     GrammarAttempt,
     GrammarLesson,
@@ -136,7 +142,11 @@ __all__ = [
     "EncounterSetting",
     "PetOwned",
     "PetSpecies",
+    "FEEDBACK_STATUSES",
+    "FEEDBACK_TYPES",
+    "Feedback",
     "HealthSample",
+    "PENDING_CAP",
     "Creature",
     "PetlandMap",
     "PetState",

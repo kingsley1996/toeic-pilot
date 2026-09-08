@@ -13,6 +13,7 @@ import {
 import { usePathname } from "next/navigation";
 
 import { type NavItem } from "@/components/nav";
+import { FeedbackDock } from "@/components/feedback-dock";
 import { PetLand } from "@/components/petland";
 import { PetlandCard } from "@/components/petland-card";
 import { SidebarShell, TopBarShell } from "@/components/shell";
@@ -163,6 +164,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           Chỉ ở khung có sidebar — ba trang thanh trên đứng NGOÀI ứng dụng, còn
           khu quản trị và màn làm bài đi qua nhánh `bareLayout` phía trên. */}
       <PetLand />
+      {/* Nút góp ý: cùng phạm vi với `PetLand`, và cùng lý do. Khu quản trị đã
+          có đường riêng để xem góp ý, còn người đang thi thì không nên được mời
+          làm gì khác — cả hai đi qua nhánh `bareLayout` phía trên nên không
+          nhận nút này. Ba trang thanh trên là trang giới thiệu, chưa đăng nhập,
+          mà `feedback.user_id` là NOT NULL. */}
+      <FeedbackDock />
     </SidebarShell>
   );
 }

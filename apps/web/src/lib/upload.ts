@@ -111,6 +111,20 @@ export function messageFor(error: unknown, fallback: string): string {
  * hàng, và nó kiểm tiền tố rồi hỏi lại nhà cung cấp trước khi ghi. Nên phía gọi
  * phải gửi khoá này đi; bỏ dở ở đây chỉ để lại một file mồ côi trên kho.
  */
+export async function uploadFeedbackScreenshot(file: File, token: string): Promise<string> {
+  // Đuôi suy từ chính file, không ghi cứng: người học chụp màn hình ra png trên
+  // Windows và jpg trên máy khác, và đuôi chỉ dùng để đặt tên khoá — định dạng
+  // thật do nhà cung cấp báo lại ở bước xác nhận.
+  const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+  const { storageKey } = await uploadViaTicket(
+    API_ROUTES.feedbackScreenshotTicket,
+    file,
+    token,
+    ext,
+  );
+  return storageKey;
+}
+
 export async function uploadProgressionArt(file: File, token: string): Promise<string> {
   const { storageKey } = await uploadViaTicket(
     API_ROUTES.adminProgressionAssetTicket,
