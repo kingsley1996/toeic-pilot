@@ -4803,6 +4803,22 @@ export interface components {
             /** Provider */
             provider: string;
         };
+        /**
+         * AnswerSaved
+         * @description Trạng thái MỚI NHẤT của đúng câu vừa lưu, sau khi áp luật lộ.
+         *
+         *     PATCH trước đây trả cả `AttemptState` — rebuild 200 câu cho một cú bấm —
+         *     trong khi giao diện chỉ đọc lại ba trường này của đúng câu vừa đụng. Câu
+         *     kế bên client đã có; gửi lại là băng thông bỏ đi.
+         */
+        AnswerSaved: {
+            /** Correct Option Id */
+            correct_option_id?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Options */
+            options: components["schemas"]["OptionPublic"][];
+        };
         /** AnswerSubmit */
         AnswerSubmit: {
             /** Flagged */
@@ -14579,7 +14595,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AttemptState"];
+                    "application/json": components["schemas"]["AnswerSaved"];
                 };
             };
             /** @description Validation Error */

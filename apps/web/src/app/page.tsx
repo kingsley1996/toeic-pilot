@@ -13,22 +13,50 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { MockPlayer } from "@/components/mock-player";
-import { PetlandDemo } from "@/components/petland-demo";
-import { PetlandSpecies } from "@/components/petland-preview";
 import {
   DICTATION_DURATION,
-  DictationBox,
   EXAM_DURATION,
-  ExamQuestion,
+  type IconName,
+  landing,
   VOCAB_DURATION,
-  VocabCard,
-} from "@/remotion/mocks";
-import { type IconName, landing } from "@/content/landing";
+} from "@/content/landing";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
+
+/*
+ * Ba khối nặng nhất của trang nằm NGOÀI khung nhìn đầu tiên, và mỗi khối kéo
+ * theo một runtime đắt (Remotion cho ô minh hoạ, canvas + dữ liệu bản đồ cho
+ * Petland). Tải lười từng khối: khách truy cập đầu tiên chỉ trả đúng phần họ
+ * cuộn tới. `ssr: false` an toàn vì cả ba đều chỉ hiện khi đã hydrate
+ * (`MockPlayer` tự đo bằng `useSyncExternalStore`, hai khối Petland đo bằng
+ * IntersectionObserver).
+ */
+const MockPlayer = dynamic(() => import("@/components/mock-player").then((m) => m.MockPlayer), {
+  ssr: false,
+});
+const PetlandDemo = dynamic(() => import("@/components/petland-demo").then((m) => m.PetlandDemo), {
+  ssr: false,
+});
+const PetlandSpecies = dynamic(
+  () => import("@/components/petland-preview").then((m) => m.PetlandSpecies),
+  { ssr: false },
+);
+/*
+ * `mocks.tsx` là nơi duy nhất kéo runtime `remotion` vào bundle — tách nó khỏi
+ * trang bằng đúng nhánh lazy trên, còn duration là hằng số bé nên giữ ở đây.
+ */
+const VocabCard = dynamic(() => import("@/remotion/mocks").then((m) => m.VocabCard), {
+  ssr: false,
+});
+const DictationBox = dynamic(() => import("@/remotion/mocks").then((m) => m.DictationBox), {
+  ssr: false,
+});
+const ExamQuestion = dynamic(() => import("@/remotion/mocks").then((m) => m.ExamQuestion), {
+  ssr: false,
+});
 
 /* Icon tra theo TÊN, không ghép theo chỉ số mảng: người dịch thêm hay bớt một
    mục thì ghép theo chỉ số lệch hết mà TypeScript không kêu gì. */

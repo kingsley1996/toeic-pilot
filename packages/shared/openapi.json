@@ -235,6 +235,45 @@
         "title": "AiFeatureWrite",
         "type": "object"
       },
+      "AnswerSaved": {
+        "description": "Trạng thái MỚI NHẤT của đúng câu vừa lưu, sau khi áp luật lộ.\n\nPATCH trước đây trả cả `AttemptState` — rebuild 200 câu cho một cú bấm —\ntrong khi giao diện chỉ đọc lại ba trường này của đúng câu vừa đụng. Câu\nkế bên client đã có; gửi lại là băng thông bỏ đi.",
+        "properties": {
+          "correct_option_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Option Id"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/OptionPublic"
+            },
+            "title": "Options",
+            "type": "array"
+          }
+        },
+        "required": [
+          "options"
+        ],
+        "title": "AnswerSaved",
+        "type": "object"
+      },
       "AnswerSubmit": {
         "properties": {
           "flagged": {
@@ -21362,7 +21401,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AttemptState"
+                  "$ref": "#/components/schemas/AnswerSaved"
                 }
               }
             },

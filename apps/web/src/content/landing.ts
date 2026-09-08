@@ -307,6 +307,15 @@ export const landing = {
 } as const;
 
 /*
+ * Duration từng cảnh minh hoạ, tính theo khung ở 30 FPS. `remotion/mocks.tsx`
+ * re-export từ đây, còn trang giới thiệu lazy-load runtime remotion nên cũng
+ * nhập từ đây — một bản sự thật, hai nơi nhập.
+ */
+export const VOCAB_DURATION = 300;
+export const DICTATION_DURATION = 330;
+export const EXAM_DURATION = 360;
+
+/*
  * HAI CHỖ CỐ Ý KHÔNG NẰM Ở ĐÂY:
  *
  * 1. Tên loài và bậc hiếm trong `components/petland-preview.tsx` — chúng soi

@@ -106,6 +106,7 @@ export type TestSummary = components["schemas"]["TestSummary"];
 export type TestDetail = components["schemas"]["TestDetail"];
 export type PartBreakdown = components["schemas"]["PartBreakdown"];
 export type AttemptState = components["schemas"]["AttemptState"];
+export type AnswerSaved = components["schemas"]["AnswerSaved"];
 export type AttemptResult = components["schemas"]["AttemptResult"];
 export type SkillScore = components["schemas"]["SkillScore"];
 export type AttemptSummary = components["schemas"]["AttemptSummary"];

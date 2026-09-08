@@ -253,6 +253,19 @@ class AnswerSubmit(BaseModel):
     flagged: bool | None = None
 
 
+class AnswerSaved(BaseModel):
+    """Trạng thái MỚI NHẤT của đúng câu vừa lưu, sau khi áp luật lộ.
+
+    PATCH trước đây trả cả `AttemptState` — rebuild 200 câu cho một cú bấm —
+    trong khi giao diện chỉ đọc lại ba trường này của đúng câu vừa đụng. Câu
+    kế bên client đã có; gửi lại là băng thông bỏ đi.
+    """
+
+    options: list[OptionPublic]
+    correct_option_id: str | None = None
+    explanation: str | None = None
+
+
 class AttemptSummary(BaseModel):
     """Một lượt làm bài trong danh sách lịch sử.
 

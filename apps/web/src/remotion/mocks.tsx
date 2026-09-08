@@ -21,9 +21,15 @@ const T = landing.mocks;
 
 export const FPS = 30;
 
+/*
+ * Duration từng cảnh sống ở `content/landing.ts` và re-export từ đây: nơi duy
+ * nhất trang giới thiệu đọc chúng mà không phải nạp runtime remotion chỉ để
+ * lấy ba con số.
+ */
+export { DICTATION_DURATION, EXAM_DURATION, VOCAB_DURATION } from "@/content/landing";
+
 /* ── 1. Thẻ từ vựng ──────────────────────────────────────────────────────── */
 
-export const VOCAB_DURATION = 300;
 const WORD = T.vocab.word;
 
 export function VocabCard() {
@@ -91,7 +97,6 @@ export function VocabCard() {
 
 /* ── 2. Nghe chép chính tả ───────────────────────────────────────────────── */
 
-export const DICTATION_DURATION = 330;
 const ANSWER = T.dictation.answer;
 
 export function DictationBox() {
@@ -153,7 +158,6 @@ export function DictationBox() {
 
 /* ── 3. Câu Part 5 ───────────────────────────────────────────────────────── */
 
-export const EXAM_DURATION = 360;
 const OPTIONS = T.exam.options;
 const CORRECT = T.exam.correctIndex;
 

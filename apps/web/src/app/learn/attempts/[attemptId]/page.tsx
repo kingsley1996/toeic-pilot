@@ -2,6 +2,7 @@
 
 import {
   API_ROUTES,
+  type AnswerSaved,
   type AttemptResult,
   type AttemptState,
   type QuestionPublic,
@@ -239,7 +240,7 @@ export default function AttemptRunnerPage() {
     setCurrent(null);
     patch(question.id, { selected_option_id: next });
     try {
-      const fresh = await apiFetch<AttemptState>(API_ROUTES.attemptAnswer(attemptId, question.id), {
+      const fresh = await apiFetch<AnswerSaved>(API_ROUTES.attemptAnswer(attemptId, question.id), {
         method: "PATCH",
         token,
         body: JSON.stringify({ selected_option_id: next }),
@@ -249,17 +250,15 @@ export default function AttemptRunnerPage() {
        * án — với Part 1 và 2 thì "lời giải" bao gồm cả nguyên văn lời đọc, và
        * gửi sớm là xoá mất phần nghe. Nên phải lấy lại đúng câu vừa trả lời.
        *
-       * Lấy một câu chứ không thay cả `state`: lần bấm kế tiếp có thể đã xảy ra
-       * trong lúc chờ, và bản trả về này sẽ ghi đè ngược lên nó.
+       * Máy chủ giờ chỉ trả đúng câu này (một đề 200 câu thì rebuild cả state
+       * cho mỗi cú bấm là băng thông bỏ đi); `selected_option_id` client đã
+       * có sẵn từ lần `patch` optimistic phía trên.
        */
-      const updated = fresh.questions.find((q) => q.id === question.id);
-      if (updated) {
-        patch(question.id, {
-          options: updated.options,
-          correct_option_id: updated.correct_option_id,
-          explanation: updated.explanation,
-        });
-      }
+      patch(question.id, {
+        options: fresh.options,
+        correct_option_id: fresh.correct_option_id,
+        explanation: fresh.explanation,
+      });
     } catch {
       // Trả lại giá trị cũ: một ô tick sai sự thật tệ hơn một thông báo lỗi,
       // vì nó khiến người làm bài tin rằng câu đó đã được ghi nhận.

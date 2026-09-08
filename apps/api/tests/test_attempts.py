@@ -358,18 +358,21 @@ def test_luyen_tap_chi_lo_dap_an_cua_cau_da_tra_loi(
         assert all(o["content_vi"] is None for o in question["options"])
 
     answered, untouched = state["questions"]
+    # PATCH trả đúng câu vừa lưu, không phải cả state: một đề 200 câu mà
+    # rebuild cho mỗi cú bấm là băng thông bỏ đi. Câu bên cạnh client tự giữ.
     after = client.patch(
         f"/api/v1/attempts/{state['id']}/questions/{answered['id']}",
         json={"selected_option_id": answered["options"][0]["id"]},
         headers=learner,
     ).json()
+    assert "questions" not in after
+    assert after["correct_option_id"] is not None
+    assert any(o["content_vi"] for o in after["options"])
 
-    now_answered = next(q for q in after["questions"] if q["id"] == answered["id"])
-    now_untouched = next(q for q in after["questions"] if q["id"] == untouched["id"])
-
-    assert now_answered["correct_option_id"] is not None
-    assert any(o["content_vi"] for o in now_answered["options"])
-    # Câu bên cạnh vẫn kín: lộ theo câu, không theo lượt làm.
+    # Câu bên cạnh vẫn kín: lộ theo câu, không theo lượt làm. Đọc lại state
+    # trọn để thấy nó — PATCH không gửi câu đó nữa.
+    reread = client.get(f"/api/v1/attempts/{state['id']}", headers=learner).json()
+    now_untouched = next(q for q in reread["questions"] if q["id"] == untouched["id"])
     assert now_untouched["correct_option_id"] is None
     assert all(o["content_vi"] is None for o in now_untouched["options"])
 

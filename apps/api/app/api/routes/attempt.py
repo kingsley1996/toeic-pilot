@@ -43,6 +43,7 @@ from app.models.user import User
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.practice import (
     PART_TITLES,
+    AnswerSaved,
     AnswerSubmit,
     AttemptPartProgress,
     AttemptResult,
@@ -596,14 +597,14 @@ def read_attempt(
     return _state(db, attempt)
 
 
-@router.patch("/{attempt_id}/questions/{question_id}", response_model=AttemptState)
+@router.patch("/{attempt_id}/questions/{question_id}", response_model=AnswerSaved)
 def save_answer(
     attempt_id: uuid.UUID,
     question_id: uuid.UUID,
     body: AnswerSubmit,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> AttemptState:
+) -> AnswerSaved:
     attempt = _load(db, attempt_id, current_user)
     _expire_if_out_of_time(db, attempt)
     if attempt.status != "in_progress":
@@ -624,7 +625,37 @@ def save_answer(
         item.answered_at = datetime.now(UTC)
     db.commit()
     db.refresh(attempt)
-    return _state(db, attempt)
+
+    # Trả đúng câu vừa đụng, không rebuild cả `AttemptState`: một đề 200 câu
+    # nghĩa là mỗi cú bấm kéo theo 200 câu serialization mà client đọc đúng
+    # một. Reveal theo cùng luật của `_state`: nộp rồi thì lộ hết (không tới
+    # đây — 409 phía trên), Luyện tập thì lộ khi câu đã có đáp án.
+    question = db.scalar(
+        select(Question)
+        .options(selectinload(Question.options))
+        .where(Question.id == question_id)
+    )
+    if question is None:
+        raise HTTPException(status_code=404, detail="Câu này không thuộc lượt làm")
+    practice = attempt.review_mode == "practice"
+    reveal = practice and item.selected_option_id is not None
+    correct_ids = _correct_option_ids(db, [question_id]) if reveal else {}
+    return AnswerSaved(
+        options=[
+            OptionPublic(
+                id=str(option.id),
+                label=option.label,
+                content=option.content,
+                content_vi=option.content_vi if reveal else None,
+                spoken_text=option.spoken_text if reveal else None,
+            )
+            for option in sorted(question.options, key=lambda o: o.label)
+        ],
+        correct_option_id=(
+            str(correct_ids[question_id]) if reveal and question_id in correct_ids else None
+        ),
+        explanation=question.explanation if reveal else None,
+    )
 
 
 def _result(db: Session, attempt: Attempt) -> AttemptResult:
