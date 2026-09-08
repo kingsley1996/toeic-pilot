@@ -40,7 +40,7 @@ DESCRIPTION = (
     "84 câu rút từ đề mẫu, ~40 phút. Kết quả cho biết trình độ hiện tại "
     "(ước lượng) và những kỹ năng cần luyện — làm một lần mỗi tuần."
 )
-KIND = "mini"
+KIND = "placement"
 TOTAL_QUESTIONS = 84
 # 40 phút, không phải 50: đề 84 câu ở tốc độ thật còn dư trên 15 phút khi chặn
 # 50 — nói dối về thời lượng là làm người học nghỉ tay giữa bài. Bài 50 phút
@@ -48,10 +48,10 @@ TOTAL_QUESTIONS = 84
 TIME_LIMIT_SECONDS = 40 * 60
 
 
-def _source_test(db: Session) -> PracticeTest:
-    test = db.scalar(select(PracticeTest).where(PracticeTest.slug == SOURCE_SLUG))
+def _source_test(db: Session, slug: str = SOURCE_SLUG) -> PracticeTest:
+    test = db.scalar(select(PracticeTest).where(PracticeTest.slug == slug))
     if test is None:
-        raise SystemExit(f"không có đề nguồn {SOURCE_SLUG}")
+        raise SystemExit(f"không có đề nguồn {slug}")
     return test
 
 
@@ -393,10 +393,10 @@ def _pick_part(
 
 
 def select_questions(
-    db: Session,
+    db: Session, source_slug: str = SOURCE_SLUG
 ) -> tuple[PracticeTest, list[Question], dict[UUID, list[str]], dict[UUID, list[str]]]:
     """Chọn 84 câu. KHÔNG ghi gì — `--preview` gọi đúng hàm này."""
-    source_test = _source_test(db)
+    source_test = _source_test(db, source_slug)
     source = _source_questions(db, source_test)
     ids = [q.id for q in source]
     type_labels = _labels_of(db, "question_type", ids)
@@ -445,8 +445,10 @@ def describe(
     print(f"  nhãn grammar: {len(grammar_codes)} mã")
 
 
-def build(db: Session, publish: bool, slug: str = PLACEMENT_SLUG) -> None:
-    source_test, chosen, type_labels, grammar_labels = select_questions(db)
+def build(
+    db: Session, publish: bool, slug: str = PLACEMENT_SLUG, source_slug: str = SOURCE_SLUG
+) -> None:
+    source_test, chosen, type_labels, grammar_labels = select_questions(db, source_slug)
 
     existing = db.scalar(select(PracticeTest).where(PracticeTest.slug == slug))
     if existing is not None and existing.status == "published":
@@ -482,20 +484,11 @@ def build(db: Session, publish: bool, slug: str = PLACEMENT_SLUG) -> None:
             )
         )
     if publish:
-        # Một đề placement published mỗi thời điểm. `_placement_test()` chọn
-        # bằng `db.scalar` trên (is_placement, published) — hai đề cùng thoả thì
-        # nó lấy một cái tuỳ ý, và hai người học làm hai đề khác nhau mà kết quả
-        # vẫn được so với nhau. Đề cũ chuyển `archived`, không xoá: lượt làm cũ
-        # vẫn trỏ vào nó và màn xem lại vẫn phải đọc được.
-        for old_form in db.scalars(
-            select(PracticeTest).where(
-                PracticeTest.is_placement.is_(True),
-                PracticeTest.status == "published",
-                PracticeTest.id != existing.id,
-            )
-        ):
-            old_form.status = "archived"
-            print(f"  {old_form.slug}: published → archived")
+        # KHÔNG lưu trữ các đề cũ nữa. `_placement_test()` giờ rút ngẫu nhiên
+        # trong nhóm đang published, nên xuất bản một đề là THÊM vào nhóm chứ
+        # không thay chỗ. Muốn bỏ một đề khỏi nhóm thì lưu trữ nó ở
+        # `/admin/placement` — một quyết định vận hành, không phải hệ quả kèm
+        # theo của việc dựng đề mới.
         existing.status = "published"
     db.commit()
 
@@ -511,6 +504,14 @@ def main() -> None:
         help="slug đề placement. Đề đã published KHÔNG dựng lại được — đổi đề dưới "
         "chân người học; dùng slug mới, `--publish` sẽ tự lưu trữ đề cũ.",
     )
+    parser.add_argument(
+        # Nguồn là thứ đổi theo từng lượt dựng, không phải một hằng số của công
+        # cụ: mỗi đề mới sinh ra là một nguồn mới có thể lấy. Mặc định giữ đề cũ
+        # để lệnh không đổi nghĩa với người đang gõ nó theo thói quen.
+        "--source",
+        default=SOURCE_SLUG,
+        help=f"slug đề nguồn để rút câu (mặc định {SOURCE_SLUG})",
+    )
     parser.add_argument("--publish", action="store_true", help="xuất bản sau khi lắp")
     parser.add_argument(
         "--preview", action="store_true", help="chỉ in phân bố dạng câu, không ghi gì"
@@ -518,11 +519,11 @@ def main() -> None:
     args = parser.parse_args()
     with SessionLocal() as db:
         if args.preview:
-            _source, chosen, type_labels, grammar_labels = select_questions(db)
-            print(f"{PLACEMENT_SLUG}: {len(chosen)} câu (preview, chưa ghi)")
+            _source, chosen, type_labels, grammar_labels = select_questions(db, args.source)
+            print(f"{args.slug} ← {args.source}: {len(chosen)} câu (preview, chưa ghi)")
             describe(chosen, type_labels, grammar_labels)
             return
-        build(db, publish=args.publish, slug=args.slug)
+        build(db, publish=args.publish, slug=args.slug, source_slug=args.source)
 
 
 if __name__ == "__main__":

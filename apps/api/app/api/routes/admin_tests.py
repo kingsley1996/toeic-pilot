@@ -249,12 +249,17 @@ def delete_collection(
 
 @router.get("/tests", response_model=Page[TestAdmin])
 def list_tests(
+    kind: str | None = Query(default=None, description="lọc theo kiểu, vd `placement`"),
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
     _: User = Depends(can_edit),
 ) -> Page[TestAdmin]:
+    # Lọc ở MÁY CHỦ, không ở trình duyệt: danh sách này phân trang, nên lọc sau
+    # khi đã cắt trang sẽ bỏ sót đúng những đề nằm ở trang sau.
     query = select(PracticeTest)
+    if kind:
+        query = query.where(PracticeTest.kind == kind)
     tests = db.scalars(
         query.order_by(PracticeTest.created_at.desc(), PracticeTest.id.desc())
         .limit(limit)

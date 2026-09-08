@@ -6,6 +6,7 @@ và PHÁN QUYẾT sau khi nộp (ước lượng v1 + CEFR). Điểm placement l
 không bao giờ ghi vào `total_scaled` của lượt làm — hai thang khác nhau.
 """
 
+import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -36,16 +37,36 @@ MIN_SKILL_SAMPLE = 3
 
 
 def _placement_test(db: Session) -> PracticeTest:
-    test = db.scalar(
-        select(PracticeTest).where(
-            PracticeTest.is_placement.is_(True), PracticeTest.status == "published"
+    """Một đề đầu vào, rút NGẪU NHIÊN trong nhóm admin đang bật.
+
+    Trước đây đúng một đề được published mỗi thời điểm, và lý do cũ vẫn đáng
+    nhắc: hai người làm hai đề khác nhau mà điểm vẫn được đặt cạnh nhau. Đổi
+    sang nhóm là chấp nhận đánh đổi ấy để lấy hai thứ — người làm lại sau bảy
+    ngày không gặp đúng đề cũ, và một đề bị lộ không kéo theo cả hệ.
+
+    Cái giữ cho việc so sánh còn nghĩa là **bảng quy đổi**: điểm scaled tính
+    bằng `score_conversion` của chính đề đã làm, nên hai form khác nhau vẫn quy
+    về một thang. Đề nào vào nhóm mà thiếu bảng quy đổi đúng thì đó là chỗ hỏng,
+    không phải phép rút ngẫu nhiên.
+
+    `placement_result` trỏ `attempt_id`, và `attempt` giữ `test_id` — nên "ai
+    làm đề nào" luôn tra được, kể cả sau khi một đề bị lưu trữ.
+    """
+    pool = list(
+        db.scalars(
+            select(PracticeTest).where(
+                PracticeTest.is_placement.is_(True), PracticeTest.status == "published"
+            )
         )
     )
-    if test is None:
+    if not pool:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Chưa có đề placement nào được xuất bản"
         )
-    return test
+    # `random`, không `func.random()`: một câu ORDER BY ngẫu nhiên ở database
+    # quét cả bảng và không test được mà không giả lập driver. Nhóm này có vài
+    # hàng, nên rút ở Python vừa rẻ vừa thay được trong bài test.
+    return random.choice(pool)
 
 
 def _own_attempt(db: Session, attempt_id: uuid.UUID, user: User) -> Attempt:

@@ -54,7 +54,7 @@ def build_world(db: Session, learner_id: uuid.UUID) -> Attempt:
     test = PracticeTest(
         slug=f"place-{uuid.uuid4().hex[:8]}",
         title="Placement",
-        kind="mini",
+        kind="placement",
         status="published",
         is_placement=True,
         time_limit_seconds=3000,

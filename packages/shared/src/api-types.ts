@@ -13036,6 +13036,8 @@ export interface operations {
     list_tests_api_v1_admin_tests_get: {
         parameters: {
             query?: {
+                /** @description lọc theo kiểu, vd `placement` */
+                kind?: string | null;
                 limit?: number;
                 offset?: number;
             };

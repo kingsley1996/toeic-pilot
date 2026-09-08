@@ -28,7 +28,7 @@ def make_placement_test(db: Session) -> PracticeTest:
     test = PracticeTest(
         slug=f"place-{uuid.uuid4().hex[:8]}",
         title="Placement",
-        kind="mini",
+        kind="placement",
         status="published",
         is_placement=True,
         time_limit_seconds=3000,
@@ -410,3 +410,44 @@ def test_cefr_refuses_a_score_that_falls_between_two_bands() -> None:
     """
     with pytest.raises(ValueError):
         cefr_of("reading", 452)
+
+
+def test_the_entrance_test_is_drawn_from_every_published_form(db_session):
+    """Nhiều đề cùng bật thì mỗi lượt bắt đầu rút một đề trong nhóm.
+
+    Trước đây đúng một đề được published, và `_placement_test` dùng `db.scalar`
+    — hai đề cùng thoả thì SQLAlchemy ném `MultipleResultsFound`, tức bật đề thứ
+    hai làm hỏng cả tính năng chứ không phải mở rộng nó.
+
+    Đề đã lưu trữ KHÔNG được vào nhóm: lưu trữ là cách admin rút một đề ra, và
+    nếu nó vẫn được rút thì cái nút ấy không làm gì cả.
+    """
+    from app.api.routes.placement import _placement_test
+
+    pool = {make_placement_test(db_session).slug for _ in range(3)}
+    retired = make_placement_test(db_session)
+    retired.status = "archived"
+    db_session.commit()
+
+    drawn = {_placement_test(db_session).slug for _ in range(60)}
+    assert drawn <= pool
+    assert retired.slug not in drawn
+    # 60 lượt rút trên ba đề: xác suất bỏ sót một đề là (2/3)^60 ≈ 10^-11.
+    assert drawn == pool
+
+
+def test_no_published_form_is_a_404_not_a_crash(db_session):
+    from fastapi import HTTPException
+
+    from app.api.routes.placement import _placement_test
+
+    only = make_placement_test(db_session)
+    only.status = "archived"
+    db_session.commit()
+
+    try:
+        _placement_test(db_session)
+    except HTTPException as error:
+        assert error.status_code == 404
+    else:
+        raise AssertionError("phải 404 khi nhóm rỗng")

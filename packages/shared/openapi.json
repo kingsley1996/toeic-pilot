@@ -18869,6 +18869,24 @@
         "operationId": "list_tests_api_v1_admin_tests_get",
         "parameters": [
           {
+            "description": "lọc theo kiểu, vd `placement`",
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "lọc theo kiểu, vd `placement`",
+              "title": "Kind"
+            }
+          },
+          {
             "in": "query",
             "name": "limit",
             "required": false,

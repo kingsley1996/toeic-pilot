@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Shuffle,
   MessageSquarePlus,
   ArrowLeft,
   ClipboardList,
@@ -69,7 +70,15 @@ const ADMIN_LINKS: AdminNavItem[] = [
     group: "Content",
     children: [{ href: "/admin/dictation/tree", label: "Topics & lessons", Icon: FolderTree }],
   },
-  { href: "/admin/tests", label: "Tests", Icon: ClipboardList, group: "Content" },
+  {
+    href: "/admin/tests",
+    label: "Tests",
+    Icon: ClipboardList,
+    group: "Content",
+    // Nhóm đề đầu vào là một LÁT của khu đề thi — đúng quan hệ mà "Collections
+    // & topics" có với Vocabulary — nên nó là mục con, không phải mục gốc.
+    children: [{ href: "/admin/placement", label: "Placement pool", Icon: Shuffle }],
+  },
   { href: "/admin/grammar", label: "Grammar", Icon: GraduationCap, group: "Content" },
 
   { href: "/admin/appearance", label: "Appearance", Icon: Palette, group: "System" },

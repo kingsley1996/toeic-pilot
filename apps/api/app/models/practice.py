@@ -335,7 +335,17 @@ PASSAGE_IMAGE_COLUMNS = {
 class PracticeTest(Base, PublishableMixin):
     __tablename__ = "practice_test"
     __table_args__ = (
-        CheckConstraint("kind IN ('full', 'mini')", name="ck_practice_test_kind"),
+        # `placement` là KIỂU RIÊNG, không phải một đề `mini` có cờ. Cờ
+        # `is_placement` vẫn còn vì hợp đồng API và bốn chỗ gọi đang đọc nó,
+        # nhưng kiểu mới là thứ trả lời "đề này để làm gì" — và nó là thứ màn
+        # quản trị lọc theo, thay vì lọc theo một boolean không hiện trong bảng.
+        CheckConstraint("kind IN ('full', 'mini', 'placement')", name="ck_practice_test_kind"),
+        # Hai cột nói cùng một điều, nên chúng không được phép nói khác nhau:
+        # một hàng `kind='placement'` với `is_placement=false` rơi ra khỏi nhóm
+        # được rút mà không có gì báo.
+        CheckConstraint(
+            "(kind = 'placement') = is_placement", name="ck_practice_test_placement_kind"
+        ),
         status_check("practice_test"),
     )
 
