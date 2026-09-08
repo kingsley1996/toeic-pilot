@@ -5648,17 +5648,23 @@ export interface components {
         };
         /** DailyTasksPublic */
         DailyTasksPublic: {
+            /** Daily Cap */
+            daily_cap: number;
             /**
              * Date
              * Format: date
              */
             date: string;
+            /** Level */
+            level: number;
             /** Ruby Awarded */
             ruby_awarded: number;
             /** Tasks */
             tasks: components["schemas"]["DailyTaskPublic"][];
             /** Xp Awarded */
             xp_awarded: number;
+            /** Xp Today */
+            xp_today: number;
         };
         /**
          * DependencyStatus

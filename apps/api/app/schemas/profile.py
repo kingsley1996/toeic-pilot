@@ -266,6 +266,13 @@ class DailyTasksPublic(BaseModel):
     Tách khỏi `xp_awarded` chứ không cộng chung: hai đơn vị đo hai thứ khác nhau
     (khối lượng và việc làm xong), và một tổng gộp là chỗ người dùng thôi phân
     biệt được chúng — đúng thứ ADR-011 §1 dựng cả hệ này để tránh."""
+    # Ba con số của `/profile/progression` đi kèm: panel daily task là nơi duy
+    # nhất hiện "Level N · XP hôm nay", và riêng `xp_today` ĐÒI phải đọc SAU khi
+    # trao thưởng — tách hai endpoint là buộc frontend gọi nối tiếp, tức gấp đôi
+    # round-trip cho đúng một khối màn hình.
+    level: int
+    xp_today: int
+    daily_cap: int
 
 
 # Biểu tượng mà frontend biết vẽ. Đây là thứ DUY NHẤT còn đóng ở phía huy hiệu:

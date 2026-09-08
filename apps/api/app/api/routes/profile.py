@@ -27,12 +27,12 @@ from app.schemas.profile import (
     UserProfilePublic,
     UserProfileUpdate,
 )
-from app.services import progression_config, ruby_daily
+from app.services import profile_stats, progression_config, ruby_daily
 from app.services.badges import evaluate, mark_seen, record_new
 from app.services.daily_tasks import grant_rewards, tasks_for
 from app.services.profile import ensure_profile, profile_public
 from app.services.profile_stats import gather_stats
-from app.services.progression import daily_cap, progression_of
+from app.services.progression import daily_cap, level_of, progression_of, xp_awarded_on
 
 router = APIRouter(tags=["profile"])
 
@@ -253,17 +253,26 @@ def read_daily_tasks(
     # `grant_rewards` được phép ghi trong một lần đọc: đây là điểm chạm mỗi ngày
     # của người học, và cả hai khoản đều tất định nên gọi lại không trao thêm.
     #
-    # Chuỗi ngày lấy từ `gather_stats`, tức là CÙNG con số hiển thị trên hồ sơ —
-    # một phép đếm thứ hai ở đây sẽ trả thưởng vào một ngày khác với ngày thanh
-    # chuỗi ngày sáng lên, và không có gì báo.
+    # Chuỗi ngày lấy từ `profile_stats.current_streak` — cùng phép tính với
+    # `gather_stats` (cùng `compute_streaks`, cùng cửa sổ, cùng tập ngày) nên
+    # trả thưởng vào cùng ngày mà chuỗi trên hồ sơ sáng lên; gọn hơn là gọi cả
+    # `gather_stats` chỉ để lấy một con số. Một phép đếm thứ hai thật sự ở đây
+    # sẽ trả thưởng vào một ngày khác với ngày thanh chuỗi, và không có gì báo.
     ruby_awarded = ruby_daily.grant_all_tasks_done(db, current_user.id, day, tasks)
     ruby_awarded += ruby_daily.grant_streak_milestone(
-        db, current_user.id, gather_stats(db, current_user.id, profile.timezone).current_streak
+        db, current_user.id, profile_stats.current_streak(db, current_user.id, profile.timezone)
     )
     if awarded or ruby_awarded:
         db.commit()
+    # Ba con số progression đi cùng response: `xp_today` phải đọc SAU khi trao,
+    # nên nó tự nhiên sống ở đây — và panel chỉ hiện `level/xp_today/cap`, đủ để
+    # frontend bỏ lượt gọi `/profile/progression` nối tiếp (một round-trip).
+    progress = level_of(db, current_user.id)
     return DailyTasksPublic(
         date=day,
+        level=progress.level,
+        xp_today=xp_awarded_on(db, current_user.id, day),
+        daily_cap=daily_cap(db),
         tasks=[
             DailyTaskPublic(
                 slot_id=str(t.slot_id),

@@ -12,7 +12,7 @@ from collections import defaultdict
 from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, union_all
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
@@ -83,6 +83,69 @@ def _local_days(stamps: list[datetime], zone: ZoneInfo) -> defaultdict[date, int
     for stamp in stamps:
         counted[_as_utc(stamp).astimezone(zone).date()] += 1
     return counted
+
+
+def _streak_days(db: Session, user_id: uuid.UUID, since: datetime, zone: ZoneInfo) -> set[date]:
+    """Cùng tập ngày "đã học" với ba `_local_days` gộp lại, nhưng MỘT round-trip.
+
+    `UNION ALL` bốn nguồn timestamp (ôn từ, dictation, câu ngữ pháp, bài hoàn
+    thành) — MySQL-style UNION đã khử trùng lặp trước khi ta tính ngày, khử sai
+    điều kiện của từng nguồn nên phải `ALL` rồi `distinct` sau. Chỉ dev nào cần
+    ngày; mỗi nguồn giữ nguyên điều kiện của nó, tức cùng luật với ba truy vấn
+    mà nó thay thế.
+
+    Trên production mỗi truy vấn là một round-trip tới Postgres: bốn thành một
+    là bớt ba lần đi về trên đường daily-tasks — thứ học viên mở mỗi ngày.
+
+    Quy ngày về múi giờ học viên làm ở PYTHON chứ không trong SQL: SQLite của
+    bộ test không có `AT TIME ZONE`, và viết hai bản SQL cho hai engine là hai
+    bản luật cho một phép tính — đúng cái bẫy `_as_utc` đã ghi ở đầu tệp.
+    """
+    review = select(VocabularyReviewLog.reviewed_at).where(
+        VocabularyReviewLog.user_id == user_id,
+        VocabularyReviewLog.reviewed_at >= since,
+    )
+    dictation = select(DictationAttempt.created_at).where(
+        DictationAttempt.user_id == user_id,
+        DictationAttempt.created_at >= since,
+    )
+    grammar = select(GrammarAttempt.created_at).where(
+        GrammarAttempt.user_id == user_id,
+        GrammarAttempt.created_at >= since,
+    )
+    completion = select(GrammarLessonCompletion.created_at).where(
+        GrammarLessonCompletion.user_id == user_id,
+        GrammarLessonCompletion.created_at >= since,
+    )
+    stamps = list(db.scalars(union_all(review, dictation, grammar, completion)).all())
+    # `_as_utc`: SQLite trả datetime naive, Postgres trả có tz — cùng bẫy đã
+    # ghi ở đầu tệp.
+    return {_as_utc(stamp).astimezone(zone).date() for stamp in stamps}
+
+
+def current_streak(db: Session, user_id: uuid.UUID, timezone: str) -> int:
+    """Chuỗi ngày hiện tại — đúng phép tính của `gather_stats`, một phần chi phí.
+
+    `gather_stats` trả cả lịch sử 365 ngày cho calendar; đường milestone ruby
+    (`grant_streak_milestone`) chỉ cần MỘT con số. Khách hàng của hàm này là
+    `GET /daily-tasks` — thứ học viên mở mỗi ngày — nên bốn truy vấn timestamp
+    gộp thành một `UNION ALL` và bỏ hẳn việc dựng calendar.
+
+    Đọc `gather_stats` cho ra CÙNG con số: cùng `compute_streaks`, cùng cửa sổ,
+    cùng tập ngày. Định nghĩa thứ hai chỉ xuất hiện nếu ai đó sửa một trong hai
+    mà quên bên kia — đó là lý do test bám cả hai.
+    """
+    try:
+        zone = ZoneInfo(timezone)
+    except Exception:
+        zone = ZoneInfo("UTC")
+
+    now = datetime.now(UTC)
+    since = now - timedelta(days=STREAK_WINDOW_DAYS)
+    today = now.astimezone(zone).date()
+    days = _streak_days(db, user_id, since, zone)
+    streak, _ = compute_streaks(days, today)
+    return streak
 
 
 def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStats:

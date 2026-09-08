@@ -2437,10 +2437,18 @@
       },
       "DailyTasksPublic": {
         "properties": {
+          "daily_cap": {
+            "title": "Daily Cap",
+            "type": "integer"
+          },
           "date": {
             "format": "date",
             "title": "Date",
             "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
           },
           "ruby_awarded": {
             "title": "Ruby Awarded",
@@ -2456,13 +2464,20 @@
           "xp_awarded": {
             "title": "Xp Awarded",
             "type": "integer"
+          },
+          "xp_today": {
+            "title": "Xp Today",
+            "type": "integer"
           }
         },
         "required": [
           "date",
           "tasks",
           "xp_awarded",
-          "ruby_awarded"
+          "ruby_awarded",
+          "level",
+          "xp_today",
+          "daily_cap"
         ],
         "title": "DailyTasksPublic",
         "type": "object"

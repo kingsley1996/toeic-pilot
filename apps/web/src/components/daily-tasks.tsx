@@ -4,7 +4,6 @@ import {
   API_ROUTES,
   type DailyTaskPublic,
   type DailyTasksPublic,
-  type ProgressionPublic,
 } from "@toeic-pilot/shared";
 import { Check, FileText, GraduationCap, Headphones, RotateCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -162,17 +161,16 @@ function announceAward(data: DailyTasksPublic, show: ReturnType<typeof useToast>
 
 export function DailyTasksPanel({ token }: { token: string | null }) {
   const [daily, setDaily] = useState<DailyTasksPublic | null>(null);
-  const [progression, setProgression] = useState<ProgressionPublic | null>(null);
   const { show } = useToast();
 
   useEffect(() => {
     if (!token) return;
     let alive = true;
-    // Đọc daily task TRƯỚC rồi mới đọc level, và thứ tự đó là bắt buộc:
-    // `GET /daily-tasks` là lần đọc có ghi — nó trao XP cho việc vừa xong — nên
-    // gọi song song sẽ hay đọc được số XP của trước khi trao, và người học thấy
-    // việc đóng lại mà điểm không nhích. Nạp lại trang thì nó đúng, đó chính là
-    // kiểu lỗi không ai báo.
+    // Level, XP hôm nay và trần XP đi thẳng trong response `daily-tasks`
+    // (`level`, `xp_today`, `daily_cap`): `xp_today` PHẢI được đọc sau khi
+    // trao thưởng, nên máy chủ tính nó ở đúng chỗ đó — gửi một request thứ hai
+    // đi lấy lại chính những con số này chỉ để khỏi chờ nối tiếp là một
+    // round-trip bỏ đi trên khối màn hình mở nhiều nhất.
     apiFetch<DailyTasksPublic>(API_ROUTES.dailyTasks, { token })
       .then((data) => {
         if (alive) setDaily(data);
@@ -192,10 +190,6 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
          * thấy dù cái khối gọi nó đã bị tháo.
          */
         announceAward(data, show);
-        return apiFetch<ProgressionPublic>(API_ROUTES.progression, { token });
-      })
-      .then((data) => {
-        if (alive && data) setProgression(data);
       })
       .catch(() => {});
     return () => {
@@ -218,7 +212,7 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
 
   const done = daily.tasks.filter((task) => task.done).length;
   const allDone = done === daily.tasks.length;
-  const capped = progression !== null && progression.xp_today >= progression.daily_cap;
+  const capped = daily.xp_today >= daily.daily_cap;
   const sameXp =
     daily.tasks.length > 0 && daily.tasks.every((task) => task.xp === daily.tasks[0].xp)
       ? daily.tasks[0].xp
@@ -233,13 +227,11 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
         <h2 id="daily-tasks-title" className="text-subtitle">
           Việc hôm nay
         </h2>
-        {progression && (
-          <p className="font-data text-small tabular-nums text-ink-muted">
-            Level {progression.level}
-            <span className="mx-1.5 text-ink-faint">·</span>
-            {progression.xp_today}/{progression.daily_cap} XP hôm nay
-          </p>
-        )}
+        <p className="font-data text-small tabular-nums text-ink-muted">
+          Level {daily.level}
+          <span className="mx-1.5 text-ink-faint">·</span>
+          {daily.xp_today}/{daily.daily_cap} XP hôm nay
+        </p>
       </div>
 
       {allDone ? (
@@ -275,7 +267,7 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
           câu này nói đúng chuyện gì dừng và chuyện gì không. */}
       {capped && (
         <p className="mt-4 border-t border-rule pt-3 text-small text-ink-muted">
-          Hôm nay đã đạt tối đa {progression?.daily_cap} XP. Tiến độ học vẫn được ghi bình thường,
+          Hôm nay đã đạt tối đa {daily.daily_cap} XP. Tiến độ học vẫn được ghi bình thường,
           chỉ có điểm là dừng tới ngày mai.
         </p>
       )}
