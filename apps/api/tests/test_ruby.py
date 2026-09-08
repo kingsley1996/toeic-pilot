@@ -39,6 +39,37 @@ def test_the_rule_table_seeds_itself_on_first_read(db_session: Session) -> None:
     assert len(ruby.rules(db_session)) == len(DEFAULT_RUBY_RULES)
 
 
+def test_a_table_holding_one_rule_still_gets_the_other_seven(db_session: Session) -> None:
+    """Đúng cách migration `074` làm hỏng phần thưởng trên mọi database mới.
+
+    Nó chèn một hàng `feedback_reward` vào bảng gieo lười, và điều kiện cũ —
+    "gieo khi bảng RỖNG" — đọc bảng một-hàng-ấy là đã cấu hình. Bảy mức kia
+    không bao giờ tới, `amount_for` trả 0 cho mọi nguồn, và không có gì báo:
+    người học vẫn học xong bài, chỉ là không nhận ruby. CI bắt được nó vì
+    database ở đó bắt đầu từ số không, còn dev và production thì không thấy gì.
+    """
+    db_session.add(RubyRule(source_type="feedback_reward", label="Góp ý được duyệt", amount=200))
+    db_session.commit()
+
+    assert len(ruby.rules(db_session)) == len(DEFAULT_RUBY_RULES)
+    assert ruby.amount_for(db_session, "story_complete") > 0
+
+
+def test_a_disabled_rule_is_not_reseeded(db_session: Session) -> None:
+    """Tắt vẫn là cách bỏ một nguồn — một hàng bị tắt vẫn là một hàng.
+
+    Gieo theo hàng còn thiếu sẽ vô nghĩa nếu nó bật lại thứ admin vừa tắt.
+    """
+    ruby.rules(db_session)
+    rule = db_session.get(RubyRule, "daily_gift")
+    assert rule is not None
+    rule.enabled = False
+    db_session.commit()
+
+    assert ruby.amount_for(db_session, "daily_gift") == 0
+    assert db_session.get(RubyRule, "daily_gift").enabled is False  # type: ignore[union-attr]
+
+
 def test_finishing_the_same_story_twice_pays_once(db_session: Session) -> None:
     """Khoá duy nhất LÀM LUÔN việc chống cày, thay cho một đoạn `if` phải nhớ viết.
 

@@ -68,16 +68,23 @@ def rules(db: Session, *, include_disabled: bool = False) -> list[RubyRule]:
     thì lần đọc sau gieo lại đủ bảy. Muốn bỏ một nguồn thì TẮT nó.
     """
     rows = _ordered(db)
-    if not rows:
+    # Gieo theo hàng CÒN THIẾU, không theo "bảng rỗng". Migration `074` chèn
+    # đúng một hàng vào bảng này, và điều kiện cũ đọc bảng một-hàng-ấy là "đã
+    # cấu hình" — bảy mức kia không bao giờ tới và mọi khoản thưởng trả 0 ruby,
+    # im lặng, trên mọi cài đặt bắt đầu từ số không. Một hàng bị TẮT vẫn là một
+    # hàng, nên tắt một nguồn vẫn là cách bỏ nó.
+    present = {row.source_type for row in rows}
+    missing = [spec for spec in DEFAULT_RUBY_RULES if spec["source_type"] not in present]
+    if missing:
         # Gieo trong SAVEPOINT và nuốt va chạm: hai request đầu tiên sau một lần
-        # triển khai đọc bảng rỗng cùng lúc và cùng gieo, và người thua sẽ vỡ
-        # khoá chính. Đây không phải chuyện lý thuyết — `tests/test_ruby_race.py`
-        # đỏ đúng vì nó, vì tám luồng cùng hỏi mức thưởng trước khi bảng có gì.
-        # Người thua chỉ cần đọc lại: hàng đã ở đó rồi, và một lượt học không
-        # được hỏng vì một cuộc đua trên bảng cấu hình.
+        # triển khai đọc cùng lúc và cùng gieo, và người thua sẽ vỡ khoá chính.
+        # Đây không phải chuyện lý thuyết — `tests/test_ruby_race.py` đỏ đúng vì
+        # nó, vì tám luồng cùng hỏi mức thưởng trước khi bảng có gì. Người thua
+        # chỉ cần đọc lại: hàng đã ở đó rồi, và một lượt học không được hỏng vì
+        # một cuộc đua trên bảng cấu hình.
         try:
             with db.begin_nested():
-                for spec in DEFAULT_RUBY_RULES:
+                for spec in missing:
                     db.add(RubyRule(**spec))
         except IntegrityError:
             pass

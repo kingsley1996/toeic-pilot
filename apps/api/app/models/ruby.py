@@ -147,8 +147,9 @@ DEFAULT_RUBY_RULES: tuple[dict[str, object], ...] = (
     {"source_type": "daily_all", "label": "Xong cả ba việc hôm nay", "amount": 10, "position": 5},
     {"source_type": "daily_gift", "label": "Quà hàng ngày", "amount": 3, "position": 6},
     {"source_type": "streak_week", "label": "Giữ chuỗi bảy ngày", "amount": 20, "position": 7},
-    # Hằng số này CHỈ có tác dụng trên một cài đặt mới: `rules()` gieo khi bảng
-    # rỗng, mà mọi cài đặt đang chạy đã có bảy hàng. Hàng thứ tám tới nơi bằng
-    # migration `074`, không bằng chỗ này.
+    # Hàng thứ tám tới các cài đặt đang chạy bằng migration `074`, không bằng
+    # chỗ này — nhưng chèn MỘT hàng vào bảng gieo lười làm bảng hết rỗng, nên
+    # `074` đã tự tay chặn bảy hàng kia trên mọi database mới. `076` gieo bù, và
+    # `rules()` giờ gieo theo hàng còn thiếu để lỗi ấy không lặp lại được.
     {"source_type": "feedback_reward", "label": "Góp ý được duyệt", "amount": 200, "position": 8},
 )
