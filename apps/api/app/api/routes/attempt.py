@@ -631,9 +631,7 @@ def save_answer(
     # một. Reveal theo cùng luật của `_state`: nộp rồi thì lộ hết (không tới
     # đây — 409 phía trên), Luyện tập thì lộ khi câu đã có đáp án.
     question = db.scalar(
-        select(Question)
-        .options(selectinload(Question.options))
-        .where(Question.id == question_id)
+        select(Question).options(selectinload(Question.options)).where(Question.id == question_id)
     )
     if question is None:
         raise HTTPException(status_code=404, detail="Câu này không thuộc lượt làm")

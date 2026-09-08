@@ -12,7 +12,7 @@ from collections import defaultdict
 from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
@@ -23,7 +23,7 @@ from app.models.vocabulary import (
     VocabularyReviewState,
 )
 from app.schemas.profile import LearningStats, StudyDay
-from app.services.srs import MASTERY_MASTERED, ReviewState, mastery
+from app.services.srs import MASTERED_INTERVAL_DAYS
 
 PUBLISHED = "published"
 
@@ -101,41 +101,43 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
     # --- từ vựng: cùng mẫu số với `GET /vocabulary-progress`, tức là chỉ những
     # từ đã publish. Đếm cả từ draft sẽ cho ra một tổng mà học viên không bao giờ
     # nhìn thấy trong danh sách.
-    published_ids = set(
-        db.scalars(select(VocabularyEntry.id).where(VocabularyEntry.status == PUBLISHED)).all()
+    #
+    # Cả ba con số đếm trong SQL. Kéo toàn bộ id từ đã publish và toàn bộ review
+    # state về Python là hai phép quét PHÁT TRIỂN VÔ HẠN — kho từ tăng mỗi sprint
+    # và review state tăng theo từng người, còn trang hồ sơ mở mỗi ngày.
+    published = VocabularyEntry.status == PUBLISHED
+    vocabulary_total = int(
+        db.scalar(select(func.count()).select_from(VocabularyEntry).where(published)) or 0
     )
-    states = list(
-        db.scalars(
-            select(VocabularyReviewState).where(VocabularyReviewState.user_id == user_id)
-        ).all()
-    )
-    mastered = sum(
-        1
-        for state in states
-        if state.entry_id in published_ids
-        and mastery(
-            ReviewState(
-                ease_factor=state.ease_factor,
-                interval_days=state.interval_days,
-                repetitions=state.repetitions,
-                lapses=state.lapses,
+
+    has_mastered = VocabularyReviewState.interval_days >= MASTERED_INTERVAL_DAYS
+    mastered = int(
+        db.scalar(
+            select(func.count())
+            .select_from(VocabularyReviewState)
+            .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
+            .where(
+                VocabularyReviewState.user_id == user_id,
+                published,
+                has_mastered,
             )
         )
-        == MASTERY_MASTERED
+        or 0
     )
     # So sánh hạn trong SQL chứ không trong Python, cùng lý do đã ghi ở
     # `vocabulary_progress`: hai bên trả về datetime khác kiểu tz nhau.
-    due = len(
-        [
-            entry_id
-            for entry_id in db.scalars(
-                select(VocabularyReviewState.entry_id).where(
-                    VocabularyReviewState.user_id == user_id,
-                    VocabularyReviewState.due_at <= now,
-                )
-            ).all()
-            if entry_id in published_ids
-        ]
+    due = int(
+        db.scalar(
+            select(func.count())
+            .select_from(VocabularyReviewState)
+            .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
+            .where(
+                VocabularyReviewState.user_id == user_id,
+                published,
+                VocabularyReviewState.due_at <= now,
+            )
+        )
+        or 0
     )
 
     reviews_total = (
@@ -145,16 +147,16 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
         db.query(DictationAttempt).filter(DictationAttempt.user_id == user_id).count()
     )
     # Đếm CÂU đã xong, không đếm lượt nộp: nộp đúng một câu ba lần vẫn là một câu.
-    # Cùng định nghĩa với tiến độ bài dictation, nên hai nơi không thể nói khác nhau.
-    dictation_completed = len(
-        set(
-            db.scalars(
-                select(DictationAttempt.item_id).where(
-                    DictationAttempt.user_id == user_id,
-                    DictationAttempt.is_complete.is_(True),
-                )
-            ).all()
+    # Cùng định nghĩa với tiến độ dictation, nên hai nơi không thể nói khác nhau —
+    # và `COUNT(DISTINCT)` cho ra đúng tập đó mà không kéo mọi item_id về Python.
+    dictation_completed = int(
+        db.scalar(
+            select(func.count(func.distinct(DictationAttempt.item_id))).where(
+                DictationAttempt.user_id == user_id,
+                DictationAttempt.is_complete.is_(True),
+            )
         )
+        or 0
     )
 
     review_days = _local_days(
@@ -218,7 +220,7 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
     ]
 
     return LearningStats(
-        vocabulary_total=len(published_ids),
+        vocabulary_total=vocabulary_total,
         vocabulary_mastered=mastered,
         vocabulary_due=due,
         reviews_total=reviews_total,

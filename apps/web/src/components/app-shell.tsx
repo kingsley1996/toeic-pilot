@@ -11,15 +11,25 @@ import {
   Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 
 import { type NavItem } from "@/components/nav";
 import { FeedbackDock } from "@/components/feedback-dock";
-import { PetLand } from "@/components/petland";
 import { PetlandCard } from "@/components/petland-card";
 import { SidebarShell, TopBarShell } from "@/components/shell";
 import { SiteFooter } from "@/components/site-footer";
 import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
+
+/*
+ * Bảng thú cưng là khối TSX lớn nhất của app (kèm dữ liệu bản đồ + bestiary),
+ * nhưng nó chỉ hiện khi có người mở nó — còn khi đóng thì bản thân component
+ * dựng ra `null`. Tải lười nó ra khỏi bundle của MỌI trang có sidebar: thẻ nhỏ
+ * ở sidebar (`PetlandCard`) vẫn nhập tĩnh vì nó hiện luôn.
+ */
+const PetLand = dynamic(() => import("@/components/petland").then((m) => m.PetLand), {
+  ssr: false,
+});
 
 /*
  * Chỉ điều hướng của khu HỌC. Các trang quản trị có bộ mục riêng
