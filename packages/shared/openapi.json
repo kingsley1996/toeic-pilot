@@ -24498,6 +24498,18 @@
               "description": "topic slug",
               "title": "Topic"
             }
+          },
+          {
+            "description": "False = chỉ bốn con số, bỏ danh sách mastery từng từ — dành cho dashboard, nơi danh sách 600 hàng là 50 KB không ai đọc",
+            "in": "query",
+            "name": "include_entries",
+            "required": false,
+            "schema": {
+              "default": true,
+              "description": "False = chỉ bốn con số, bỏ danh sách mastery từng từ — dành cho dashboard, nơi danh sách 600 hàng là 50 KB không ai đọc",
+              "title": "Include Entries",
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -24586,6 +24598,18 @@
               "default": true,
               "description": "False = chỉ những từ học viên đã gặp, không kèm từ mới",
               "title": "Include New",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "False = chỉ hai con số, bỏ 55 thẻ kèm audio URL — dành cho dashboard, vốn chỉ đọc `due_count`/`new_count` và không cần 112 KB thẻ",
+            "in": "query",
+            "name": "include_cards",
+            "required": false,
+            "schema": {
+              "default": true,
+              "description": "False = chỉ hai con số, bỏ 55 thẻ kèm audio URL — dành cho dashboard, vốn chỉ đọc `due_count`/`new_count` và không cần 112 KB thẻ",
+              "title": "Include Cards",
               "type": "boolean"
             }
           }

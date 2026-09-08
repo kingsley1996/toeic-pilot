@@ -357,6 +357,11 @@ def get_vocabulary(entry_id: uuid.UUID, db: Session = Depends(get_db)) -> Vocabu
 @router.get("/vocabulary-progress", response_model=VocabularyProgress)
 def vocabulary_progress(
     topic: str | None = Query(default=None, description="topic slug"),
+    include_entries: bool = Query(
+        default=True,
+        description="False = chỉ bốn con số, bỏ danh sách mastery từng từ — "
+        "dành cho dashboard, nơi danh sách 600 hàng là 50 KB không ai đọc",
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> VocabularyProgress:
@@ -419,6 +424,8 @@ def vocabulary_progress(
             else None
         )
         counts[level] += 1
+        if not include_entries:
+            continue
         # Một từ chưa từng ôn thì chưa "đến hạn" — nó chỉ đang chờ được học lần
         # đầu, và trộn hai thứ đó sẽ làm con số đến hạn nhảy vọt ngay ngày đầu
         # tiên của một chủ đề mới. `due_ids` chỉ chứa từ đã có state nên điều
@@ -798,6 +805,11 @@ def review_session(
         default=True,
         description="False = chỉ những từ học viên đã gặp, không kèm từ mới",
     ),
+    include_cards: bool = Query(
+        default=True,
+        description="False = chỉ hai con số, bỏ 55 thẻ kèm audio URL — dành cho "
+        "dashboard, vốn chỉ đọc `due_count`/`new_count` và không cần 112 KB thẻ",
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ReviewSession:
@@ -840,6 +852,41 @@ def review_session(
         )
         or 0
     )
+
+    if not include_cards:
+        # Dashboard hỏi "hôm nay còn việc không": hai con số trả lời trọn câu
+        # đó, còn 55 thẻ là một trăm khối audio URL mà trang không đọc tới.
+        # `due_ids` đã cắt theo `limit` — giống hệt những gì một buổi học thật
+        # sẽ nhận; số từ mới đếm trên cùng điều kiện + trần như đường đầy đủ,
+        # nên hai nơi không thể nói hai con số khác nhau.
+        new_budget = (
+            max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids)))
+            if include_new
+            else 0
+        )
+        new_seen = select(VocabularyReviewState.entry_id).where(
+            VocabularyReviewState.user_id == current_user.id
+        )
+        new_count = (
+            int(
+                db.scalar(
+                    select(func.count()).select_from(
+                        select(VocabularyEntry.id)
+                        .where(
+                            VocabularyEntry.status == PUBLISHED,
+                            VocabularyEntry.id.not_in(new_seen),
+                        )
+                        .limit(new_budget)
+                        .subquery()
+                    )
+                )
+                or 0
+            )
+            if new_budget
+            else 0
+        )
+        return ReviewSession(due_count=len(due_ids), new_count=new_count, cards=[])
+
     new_budget = (
         max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids))) if include_new else 0
     )

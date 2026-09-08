@@ -16698,6 +16698,8 @@ export interface operations {
             query?: {
                 /** @description topic slug */
                 topic?: string | null;
+                /** @description False = chỉ bốn con số, bỏ danh sách mastery từng từ — dành cho dashboard, nơi danh sách 600 hàng là 50 KB không ai đọc */
+                include_entries?: boolean;
             };
             header?: never;
             path?: never;
@@ -16751,6 +16753,8 @@ export interface operations {
                 limit?: number;
                 /** @description False = chỉ những từ học viên đã gặp, không kèm từ mới */
                 include_new?: boolean;
+                /** @description False = chỉ hai con số, bỏ 55 thẻ kèm audio URL — dành cho dashboard, vốn chỉ đọc `due_count`/`new_count` và không cần 112 KB thẻ */
+                include_cards?: boolean;
             };
             header?: never;
             path?: never;

@@ -273,13 +273,19 @@ export default function TodayPage() {
     if (!token) return;
     // Một bộ đếm hỏng không được kéo cả trang xuống theo: phần còn lại vẫn dùng
     // được, nên nó xuống cấp thành "không có số" chứ không thành màn lỗi.
-    apiFetch<ReviewSession>(API_ROUTES.reviewSession, { token })
+    //
+    // `include_cards=false`: dashboard chỉ đọc `due_count`/`new_count`, còn 55
+    // thẻ kèm một trăm khối audio URL là 112 KB mà trang này không đụng tới —
+    // cùng endpoint, một phần mười payload.
+    apiFetch<ReviewSession>(`${API_ROUTES.reviewSession}?include_cards=false`, { token })
       .then(setSession)
       .catch(() => {});
     apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
       .then(setPlacement)
       .catch(() => {});
-    apiFetch<VocabularyProgress>(API_ROUTES.vocabularyProgress, { token })
+    apiFetch<VocabularyProgress>(`${API_ROUTES.vocabularyProgress}?include_entries=false`, {
+      token,
+    })
       .then(setProgress)
       .catch(() => {});
     apiFetch<AttemptPage>(API_ROUTES.attempts, { token })
