@@ -58,7 +58,13 @@
           "rate_in": 0.44,
           "rate_out": 1.32,
           "rate_cached": 0.0147,
-          "comment": "docs.b.ai ngày 2026-08-30. DeepSeek-V4-Flash: idle 0.22/busy 0.44 input, 0.66/1.32 output, cache_read 0.0073/0.0147. Ghi giá busy. Hiện đang free trên B.AI."
+          "comment": "docs.b.ai ngày 2026-08-30. DeepSeek-V4-Flash: idle 0.22/busy 0.44 input, 0.66/1.32 output, cache_read 0.0073/0.0147. Ghi giá busy. Từng free trên B.AI nhưng ĐO 2026-09-08: lượt gọi nhỏ nhất cũng trừ credit (400 'insufficient_user_quota') — cần nạp credit mới chạy được."
+        },
+        "deepseek-v4-flash-vision-exp": {
+          "rate_in": 0.44,
+          "rate_out": 1.32,
+          "rate_cached": 0.0147,
+          "comment": "BẢNG GIÁ SẼ SAU (mượn của deepseek-v4-flash, cùng nhà cung cấp và cùng thế hệ) — kiểm lại ở docs.b.ai khi vào được. Danh sách giá bạn dán 2026-09-08 cho cùng idle/busy 0.22/0.66 và cache 0.0073/0.0147 như flash thường. Kiểm thật: lượt gọi nhỏ nhất cũng 400 'insufficient_user_quota' — tài khoản đang 0 credit, model KHÔNG miễn phí."
         },
         "qwen3.8-max": {
           "rate_in": 2.0,
@@ -77,6 +83,12 @@
           "rate_out": 0.528,
           "rate_cached": 0.033,
           "comment": "docs.b.ai ngày 2026-09-05. Hy3 (Tencent Hunyuan): input 0.132, output 0.528, cache_read 0.033, cache_write 0.132. ID model kiểm bằng GET /v1/models cùng ngày (47 model, có hy3; hy4-preview cũng có nhưng chưa khai giá)."
+        },
+        "mimo-v2.5": {
+          "rate_in": 0.0,
+          "rate_out": 0.0,
+          "rate_cached": 0.0,
+          "comment": "Đang trong 'Model Hat' 0 Credit của B.AI theo bảng giá bạn dán 2026-09-08 (cùng nhóm GLM-5.3-Flash, Qwen3.8-Flash, Hy3). Giá 0 là thuộc tính tài khoản chứ không phải model — nếu hết hạn miễn phí thì phải tra docs.b.ai rồi điền giá list. ID kiểm bằng GET /v1/models 2026-09-08."
         }
       }
     },
