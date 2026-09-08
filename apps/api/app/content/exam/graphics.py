@@ -117,7 +117,7 @@ class Graphic:
     columns: list[str] = field(default_factory=list)
     rows: list[list[str]] = field(default_factory=list)
 
-    def problems(self) -> list[str]:
+    def problems(self, part: int = 3) -> list[str]:
         out: list[str] = []
         if self.kind not in KINDS:
             out.append(f"dạng hình phải là một trong {KINDS}, đang là {self.kind!r}")
@@ -163,6 +163,13 @@ class Graphic:
             # thức thanh toán. Mười hàng là chật.
             {"table": (2, 16), "schedule": (2, 6)}
             if self.kind in ("survey", "form")
+            # Hình của Part 7 là NGỮ LIỆU, không phải trục đáp án — nên nó không
+            # chịu trần bốn hàng của Part 3/4, nơi bốn hàng CHÍNH LÀ bốn lựa
+            # chọn. Đo được: brief `PART7_GRAPHIC_POOL` xin "lịch của NĂM nhân
+            # viên mới" và bộ vẽ từ chối với "cần 2–4 hàng, đang có 5" — hai chỗ
+            # trong cùng repo đòi hai thứ khác nhau, và cái đúng là brief.
+            else {"schedule": (2, 8), "table": (3, 12), "chart": (3, 8)}
+            if part == 7
             else {"schedule": (2, 4), "table": (3, 6), "chart": (3, 6)}
         )
         if self.shape in limits:

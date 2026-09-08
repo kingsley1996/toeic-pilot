@@ -455,6 +455,15 @@ PART2_MIX: tuple[tuple[str, int, int], ...] = (
 # Part 6 chỉ kiểm **năm** điểm ngữ pháp, không phải mười một như Part 5 — hai
 # danh sách khác nhau trong `labels.py`, và dùng nhầm là một mã hợp lệ nhưng sai
 # part.
+# Câu ĐIỀN CÂU chia đều hai vị trí hợp lệ: blank 3 và blank 4, mỗi vị trí hai
+# cụm. Đề thật không đặt nó ở blank 1 hay 2 — đầu văn bản chưa đủ ngữ cảnh xung
+# quanh — nên `validate` cấm hẳn, và `test_part_6_pins_the_sentence_insertion…`
+# ghim luật ấy.
+#
+# Nhưng bản trước dồn 4·4·4·3, tức ba trên bốn cụm đặt ở chỗ trống cuối, và
+# người luyện vài đề học được "chỗ trống cuối là câu điền" mà không cần đọc.
+# Cùng loại manh mối vị trí với thiên lệch chữ cái đáp án, và cùng kiểu hỏng im
+# lặng: từng cụm hoàn toàn hợp lệ.
 PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
     (
         "PART_6_EMAIL_OR_LETTER",
@@ -462,8 +471,8 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
         (
             ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
             ("PART_6_VOCABULARY", ""),
-            ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
             ("PART_6_SENTENCE_INSERTION", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
         ),
     ),
     (
@@ -482,8 +491,8 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
         (
             ("PART_6_GRAMMAR", "GRAMMAR_TO_INFINITIVE"),
             ("PART_6_VOCABULARY", ""),
-            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
             ("PART_6_SENTENCE_INSERTION", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
         ),
     ),
     (
@@ -492,8 +501,8 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
         (
             ("PART_6_VOCABULARY", ""),
             ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
-            ("PART_6_SENTENCE_INSERTION", ""),
             ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
         ),
     ),
 )

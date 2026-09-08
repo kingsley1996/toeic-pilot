@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from app.content.exam.blueprint import QuestionSlot
 from app.content.exam.prompts._registry import exam_prompt
+from app.content.exam.prompts.contract import BLOCK_TAIL
+from app.content.exam.prompts.difficulty import hard_note
 from app.content.exam.prompts.graphic import graphic_note
 from app.services.labels import LABELS
 
@@ -23,4 +25,6 @@ def prompt_for_part4(slot: QuestionSlot) -> str:
         f"- Ba câu hỏi, theo đúng thứ tự này:\n{kinds}\n"
         f"- Mọi dữ kiện mà ba câu hỏi cần phải được NÓI RA trong bài."
         + graphic_note(slot, "Bài nói")
+        + hard_note(slot, "bài nói")
+        + BLOCK_TAIL
     )

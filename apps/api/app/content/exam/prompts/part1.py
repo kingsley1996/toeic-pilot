@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from app.content.exam.blueprint import QuestionSlot
 from app.content.exam.prompts._registry import exam_prompt
-from app.content.exam.prompts.contract import PHOTO_MARKER
+from app.content.exam.prompts.contract import BLOCK_TAIL, PHOTO_MARKER
 from app.services.labels import LABELS
 
 SYSTEM_PART1 = exam_prompt("part1_system").render(PHOTO_MARKER=PHOTO_MARKER)
@@ -46,5 +46,5 @@ def prompt_for_part1(slot: QuestionSlot) -> str:
         # không phải của mô hình.
         f"- Dòng đầu tiên sau [QUESTION] phải là chính xác:\nvoice: {slot.voice}\n"
         f"- Ba câu sai phải SAI KIỂM CHỨNG ĐƯỢC so với tấm ảnh sẽ vẽ, "
-        f"không phải chỉ 'ít khả năng'."
+        f"không phải chỉ 'ít khả năng'." + BLOCK_TAIL
     )

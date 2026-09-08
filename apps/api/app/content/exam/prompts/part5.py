@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.content.exam.blueprint import QuestionSlot
 from app.content.exam.prompts._registry import exam_prompt
+from app.content.exam.prompts.contract import BLOCK_TAIL
 from app.services.labels import LABELS
 
 # Hợp đồng định dạng, gửi kèm mọi lượt gọi. Viết ra tường minh chứ không tả bằng
@@ -50,4 +51,4 @@ def prompt_for(slot: QuestionSlot) -> str:
     lines.append(
         "- Bốn lựa chọn dài xấp xỉ nhau: lựa chọn dài hơn hẳn là một manh mối rò rỉ đáp án."
     )
-    return "\n".join(lines)
+    return "\n".join(lines) + BLOCK_TAIL

@@ -43,7 +43,11 @@ Where the answer options come from, per kind:
 For `schedule`, LEAVE A CELL EMPTY when that person is free; that emptiness is
 what the question turns on, and a grid with every cell filled has no answer.
 Use ordinary personal names for the people — never a voice name like
-`us_female_1`, which is a recording instruction and not a person.
+`us_female_1`, which is a recording instruction and not a person. EVERY name in
+that first column must be spoken aloud somewhere in the talk: the grid and the
+talk have to be about one group of people, and a name nobody says is a row the
+listener has no reason to believe exists. Naming all four people does not leak
+anything — the answer axis is the TIME SLOTS, and rule 2 below governs those.
 
 Separate cells with a vertical bar. Keep every value short."""
 
@@ -117,10 +121,22 @@ Three rules make it a real graphic question rather than a detail question:
 _TALK_SUPPLIES = {
     "table": "một giá trị ở CỘT KHÁC (số ngày, hạn chót, giá…)",
     "form": "một giá trị ở CỘT KHÁC của phiếu",
-    "schedule": "biết HÀNG nào (tên người, tên phòng)",
-    "survey": "biết HÀNG nào (ai, chi nhánh nào trả lời)",
+    "schedule": "HÀNG nào (tên người, tên phòng)",
+    "survey": "HÀNG nào (ai, chi nhánh nào trả lời)",
     "chart": "một trị số hoặc một phép so sánh",
     "map": "một vị trí hoặc một quan hệ vị trí",
+}
+
+
+# `check_graphic` đòi MỌI tên ở cột đầu của lưới lịch có mặt trong lời thoại.
+# Bản trước chỉ dặn "cho biết HÀNG nào" (số ít), và hai model độc lập đều viết
+# hội thoại gọi tên một phần các hàng rồi rớt đúng cổng ấy.
+_NAME_EVERY_ROW = {
+    "schedule": (
+        " Và phải nhắc tên CẢ BỐN người ở cột đầu của bảng: bảng với lời thoại"
+        " phải nói về cùng một nhóm người. Nói đủ bốn tên KHÔNG lộ gì, vì trục"
+        " đáp án là các khung giờ chứ không phải người."
+    ),
 }
 
 
@@ -143,6 +159,7 @@ def graphic_note(slot: QuestionSlot, speaker: str) -> str:
         f" Nói tối đa MỘT trong bốn mục và không bao giờ nói mục là đáp án —"
         f" kể tên ba mục kia cũng lộ đáp án bằng loại trừ."
         f" Ngược lại, nhìn hình một mình cũng KHÔNG được đủ để chọn."
+        f"{_NAME_EVERY_ROW.get(kind, '')}"
     )
 
 

@@ -297,6 +297,19 @@ _QUOTED = re.compile(r'"([^"]*)"')
 _QUOTE_MIN_CHARS = 12
 
 
+# Lời giải hay trích HAI mảnh cách xa nhau, nối bằng dấu lược: *"the review is
+# finished... below is an overview"*. Đó là cách trích ĐÚNG, và nó chính là dấu
+# hiệu của một câu ghép hai chỗ — thứ trục D1 đang cố tăng. So cả chuỗi kể cả
+# dấu lược thì không bao giờ khớp; ba cờ giả trên `tp-form-11` đều là dạng này.
+_ELLIPSIS = re.compile(r"\.{3,}|…")
+
+
+def quote_parts(quote: str) -> list[str]:
+    """Các mảnh của một trích dẫn, tách ở dấu lược. Bỏ mảnh quá ngắn để so."""
+    parts = [part.strip(" .,;:") for part in _ELLIPSIS.split(quote)]
+    return [part for part in parts if len(part) >= _QUOTE_MIN_CHARS]
+
+
 def check_explanation(question: ParsedQuestion, evidence: str) -> list[str]:
     """Hai cổng cho lời giải thích. Cả hai bắt kiểu hỏng ĐỌC RẤT TRÔI CHẢY.
 
@@ -347,8 +360,10 @@ def check_explanation(question: ParsedQuestion, evidence: str) -> list[str]:
         for quote in _QUOTED.findall(text):
             if len(quote) < _QUOTE_MIN_CHARS:
                 continue
-            if _normalise(quote) not in haystack:
-                flags.append(f"trích dẫn không có trong ngữ liệu: {quote[:48]!r}")
+            parts = quote_parts(quote) or [quote]
+            missing = [part for part in parts if _normalise(part) not in haystack]
+            if missing:
+                flags.append(f"trích dẫn không có trong ngữ liệu: {missing[0][:48]!r}")
     return flags
 
 
@@ -497,7 +512,7 @@ def check_graphic(
     if not source.exists():
         return [f"thiếu dữ liệu bảng ({source.name})"], []
     graphic = parse_graphic(source.read_text())
-    problems = list(graphic.problems())
+    problems = list(graphic.problems(part))
     # Mô hình chép nguyên VÍ DỤ trong prompt khá thường. Nó không sai về hình
     # thức, nên không cổng nào khác thấy — nhưng hai đề sinh bằng cùng prompt sẽ
     # dùng chung một tấm hình, và người luyện nhiều đề nhận ra ngay.
@@ -646,8 +661,11 @@ _QUOTE_RE = re.compile(r'writes,\s*["“]([^"”]+)["”]', re.IGNORECASE)
 
 _LINE_REF = re.compile(r"\bline\s+\d+", re.IGNORECASE)
 
-# Part 3/4 nói chứ không viết, nên lời trích đứng sau `says` chứ sau `writes`.
-_SAYS_RE = re.compile(r'says?,?\s*["“]([^"”]+)["”]', re.IGNORECASE)
+# Part 3/4 NÓI, Part 7 VIẾT — và cụm tin nhắn của Part 7 là chỗ duy nhất dạng
+# câu hàm ý sống được ở phần Đọc, nên đề thật viết "what does Mr. X mean when he
+# **writes**". Bản chỉ bắt `says` chặn oan 100% câu hàm ý Part 7: hai ô mỗi đề,
+# và cả hai trích dẫn hoàn toàn đúng.
+_SAYS_RE = re.compile(r'(?:says?|writes?|wrote),?\s*["“]([^"”]+)["”]', re.IGNORECASE)
 
 
 # Từ chức năng — bỏ ra khi đo độ phủ, vì chúng có mặt ở mọi câu và làm mọi lựa
@@ -710,8 +728,26 @@ def check_distractors(question: ParsedQuestion, script: str) -> list[str]:
     return []
 
 
-def check_paraphrase_balance(questions: list[ParsedQuestion], script: str) -> list[str]:
-    """Trong một cụm ba câu, độ trùng chữ không được ĐOÁN ĐƯỢC đáp án — cả hai chiều.
+# Hai dạng câu mà đáp án đúng là KHÁI NIỆM BAO TRÙM chứ không phải một lời đã
+# nói: hàm ý (theo định nghĩa là thứ người nói không nói ra) và mục đích. Chúng
+# không thể có độ phủ cao, nên đếm chúng vào phép cân là phạt cụm vì nó khó.
+ABSTRACT_ANSWER = (
+    "_IMPLICATION",
+    "_TOPIC_OR_PURPOSE",
+    # Đáp án của câu nhận diện người nói và câu nơi chốn cũng là một PHẠM TRÙ
+    # ("At an airport", "A caller making a reservation"), không phải một lời đã
+    # nói — nên độ phủ thấp là tính chất của dạng câu, không phải khuyết điểm.
+    # Đo trên `tp-form-11`: 6 trên 7 cờ `thin_paraphrase` rơi vào bốn dạng này.
+    "_SPEAKER_IDENTITY",
+    "_SPEAKER_OR_LOCATION",
+    "_LOCATION",
+)
+
+
+def check_paraphrase_balance(
+    questions: list[ParsedQuestion], script: str, codes: list[str] | None = None
+) -> list[str]:
+    """Trong một cụm, độ trùng chữ không được ĐOÁN ĐƯỢC đáp án — cả hai chiều.
 
     Đây là nửa còn lại của `check_distractors`, và nó phải là luật của CỤM chứ
     không của từng câu. Đề thật **có** câu khớp cụm từ — cấm sạch là làm đề khó
@@ -728,10 +764,15 @@ def check_paraphrase_balance(questions: list[ParsedQuestion], script: str) -> li
     Thiên lệch 47% bị thay bằng thiên lệch 67% ngược chiều — tệ hơn chỗ xuất
     phát. Một cổng chặn một phía không làm tín hiệu biến mất, nó chỉ đổi dấu.
     """
-    if not script.strip() or len(questions) < 3:
+    if not script.strip():
+        return []
+    # `strict=False`: gọi không kèm `codes` thì đếm mọi câu, đúng hành vi cũ.
+    pairs = zip(questions, codes or [""] * len(questions), strict=False)
+    judged = [q for q, code in pairs if not code.endswith(ABSTRACT_ANSWER)]
+    if len(judged) < 2:
         return []
     highest = lowest = 0
-    for question in questions:
+    for question in judged:
         correct = [option_text(o) for o in question.options if o.is_correct]
         wrong = [option_text(o) for o in question.options if not o.is_correct]
         if not correct or not wrong:
@@ -745,15 +786,227 @@ def check_paraphrase_balance(questions: list[ParsedQuestion], script: str) -> li
     problems = []
     if highest > 1:
         problems.append(
-            f"{highest}/3 câu có đáp án đúng GIỐNG lời thoại nhất — nhiều nhất một; "
-            "sửa các đáp án sai cho nhại lời thoại hơn"
+            f"{highest}/{len(judged)} câu có đáp án đúng GIỐNG lời thoại nhất — nhiều nhất "
+            "một; sửa các đáp án sai cho nhại lời thoại hơn"
         )
     if lowest > 1:
         problems.append(
-            f"{lowest}/3 câu có đáp án đúng ÍT GIỐNG lời thoại nhất — nhiều nhất một; "
-            "chọn cái nghe lạ nhất cũng thành một mẹo đoán đúng"
+            f"{lowest}/{len(judged)} câu có đáp án đúng ÍT GIỐNG lời thoại nhất — nhiều nhất "
+            "một; chọn cái nghe lạ nhất cũng thành một mẹo đoán đúng"
         )
     return problems
+
+
+def evidence_sentences(option: str, script: str) -> set[int]:
+    """Chỉ số những câu của ngữ liệu mà một lựa chọn chạm tới.
+
+    Xấp xỉ theo TỪ CHUNG, không phải phép hiểu — nên nó đọc là "chứng cứ có thể
+    nằm ở đâu", không phải "chứng cứ nằm ở đâu". Đủ dùng cho hai việc: xem hai
+    câu có cùng dựa vào một chỗ không, và xem đáp án có phải ghép nhiều chỗ không.
+    """
+    words = set(_content_words(option))
+    if not words:
+        return set()
+    sentences = [s for s in re.split(r"(?<=[.?!])\s+", script) if s.strip()]
+    return {i for i, sentence in enumerate(sentences) if words & set(_content_words(sentence))}
+
+
+def check_leakage(questions: list[ParsedQuestion]) -> list[str]:
+    """Không câu nào được gọi tên đáp án của câu khác trong cùng cụm (guide §27–28).
+
+    Đo được trên 30 câu Part 4 vừa sinh: **23%** có một lựa chọn gọi tên đáp án
+    của câu bên cạnh. Một trường hợp trùng gần nguyên ví dụ của guide — câu 1 có
+    nhiễu "To explain how to use the pool access" trong khi đáp án câu 2 là
+    "Personal training, group classes, and pool access". Ai đọc câu 1 trước thì
+    đã gặp từ vựng của đáp án câu 2 trước khi nghe.
+
+    Chặn chứ không cảnh báo: đây là tính chất đọc được của bốn dòng chữ, không
+    phải phán đoán về độ khó.
+
+    **Chỉ tính những từ RIÊNG của đáp án đúng.** Một từ có mặt cả trong nhiễu
+    của câu kia không trỏ vào đâu cả, nên gặp trước nó không biết thêm gì. Đo
+    được: `p4-03` bị báo oan vì "eleven fifteen" — cụm ấy nằm ở ba trên bốn lựa
+    chọn của câu bên cạnh.
+    """
+    problems = []
+    for i, mine in enumerate(questions):
+        for j, other in enumerate(questions):
+            if i == j:
+                continue
+            gold = [option_text(o) for o in other.options if o.is_correct]
+            if not gold:
+                continue
+            decoys = {
+                word
+                for o in other.options
+                if not o.is_correct
+                for word in _content_words(option_text(o))
+            }
+            keys = set(_content_words(gold[0])) - decoys
+            for option in mine.options:
+                shared = keys & set(_content_words(option_text(option)))
+                if len(shared) >= 2:
+                    problems.append(
+                        f"câu {i + 1} lựa chọn ({option.label}) gọi tên đáp án của câu {j + 1} "
+                        f"({', '.join(sorted(shared))}) — đọc câu này là biết trước câu kia"
+                    )
+                    break
+    return problems
+
+
+def check_redundancy(questions: list[ParsedQuestion], script: str) -> list[str]:
+    """Hai câu cùng dựa vào một chỗ của ngữ liệu là MỘT câu in hai lần (guide §27).
+
+    Đề bài khác nhau không cứu được: thứ được đo là cùng một sự kiện, và người
+    làm trả lời câu thứ hai bằng đúng thao tác vừa làm cho câu thứ nhất.
+    """
+    if not script.strip():
+        return []
+    spots = []
+    for question in questions:
+        gold = [option_text(o) for o in question.options if o.is_correct]
+        spots.append(evidence_sentences(gold[0], script) if gold else set())
+    problems = []
+    for i in range(len(spots)):
+        for j in range(i + 1, len(spots)):
+            if spots[i] and spots[i] == spots[j]:
+                problems.append(
+                    f"câu {i + 1} và câu {j + 1} cùng dựa vào một chỗ của ngữ liệu — "
+                    "hỏi hai lần về một sự kiện"
+                )
+    return problems
+
+
+# Dưới ngưỡng này, đáp án đúng gần như không dùng chữ nào của ngữ liệu.
+THIN_PARAPHRASE = 0.25
+
+
+def check_retrieval_spread(questions: list[ParsedQuestion], script: str) -> list[str]:
+    """CỜ, không chặn: cụm nên có ít nhất một câu phải ghép hai chỗ (guide §10, D1).
+
+    Đo được: 63% câu Part 4 vừa sinh có toàn bộ chứng cứ nằm gọn trong MỘT câu
+    của lời thoại, và nhóm "phải ghép từ ba chỗ trở lên" tụt từ 20% (kho cũ)
+    xuống 7%. Luật cân bằng độ trùng chữ đã đẩy đáp án về phía cục bộ hơn — cách
+    rẻ nhất để thoả nó là giữ chứng cứ một chỗ rồi đổi vài từ bề mặt.
+
+    Là CỜ chứ không phải vấn đề, vì guide §23 xếp "difficulty questionable" vào
+    REVIEW chứ không REJECT, và phép đo này là xấp xỉ theo từ chung: một đáp án
+    diễn đạt lại giỏi có thể chạm ít câu mà vẫn khó. Chặn nạp bằng một xấp xỉ là
+    cách chắc chắn để không ai chạy cổng nữa.
+    """
+    if not script.strip() or len(questions) < 2:
+        return []
+    spans = []
+    for question in questions:
+        gold = [option_text(o) for o in question.options if o.is_correct]
+        spans.append(len(evidence_sentences(gold[0], script)) if gold else 0)
+    # Một câu KHÔNG ĐO ĐƯỢC làm cả lời phàn nàn mất căn cứ.
+    #
+    # Lời phàn nàn là "KHÔNG câu nào trong cụm phải ghép hai chỗ", và muốn khẳng
+    # định điều đó thì phải đo được mọi câu. Hai dạng câu hợp lệ luôn cho span 0:
+    # đáp án là một CON SỐ tính ra (`_content_words` chỉ bắt `[a-z]+`, nên
+    # "¥18,700" tách ra rỗng), và câu NOT/EXCEPT, nơi đáp án đúng theo định nghĩa
+    # KHÔNG có trong ngữ liệu. Đo trên `p7-01`: câu 3 đúng là câu ghép mà prompt
+    # yêu cầu — giá Advanced ở một chỗ, ưu đãi 15% ở chỗ khác — và cổng vẫn chặn
+    # cả cụm vì không nhìn thấy nó.
+    if 0 in spans:
+        return []
+    if max(spans, default=0) < 2:
+        return [
+            "cả cụm chỉ hỏi những gì nằm gọn trong một câu — nên có một câu buộc "
+            "ghép hai chỗ tách rời"
+        ]
+    return []
+
+
+def check_thin_paraphrase(question: ParsedQuestion, script: str, code: str = "") -> list[str]:
+    """CỜ: đáp án đúng gần như không dùng chữ nào của ngữ liệu (guide §26, Failure 5).
+
+    Mặt còn lại của `check_paraphrase_balance`. Diễn đạt lại là điều được khuyến
+    khích, nhưng một diễn đạt không ai nói là lỗi riêng của nó: guide lấy ví dụ
+    "Transmit a lexical token through a mobile communication service" cho
+    *"Text the word OPEN"*.
+
+    Cờ chứ không chặn, vì độ phủ thấp KHÔNG chứng minh câu đó không tự nhiên —
+    nó chỉ nói đáp án dùng chữ khác. Người duyệt đọc một dòng là biết.
+    """
+    if not script.strip() or code.endswith(ABSTRACT_ANSWER):
+        return []
+    gold = [option_text(o) for o in question.options if o.is_correct]
+    if not gold or not _content_words(gold[0]):
+        return []
+    if echo(gold[0], script) < THIN_PARAPHRASE:
+        return [f"đáp án đúng gần như không dùng chữ nào của ngữ liệu: {gold[0][:48]!r}"]
+    return []
+
+
+def passage_blocks(block: str) -> list[str]:
+    """Từng khối `[PASSAGE]` của một cụm, theo thứ tự, chưa chuẩn hoá.
+
+    `parse_group` nối chúng lại thành một chuỗi, mà câu hỏi ở đây là trích dẫn
+    nằm ở tài liệu NÀO — nên biên giới giữa các khối phải còn.
+    """
+    from app.content.exam.prompts.contract import PASSAGE_MARKER
+
+    out: list[list[str]] = []
+    current: list[str] | None = None
+    for line in block.splitlines():
+        stripped = line.strip()
+        if stripped == PASSAGE_MARKER:
+            current = []
+            out.append(current)
+        elif stripped.startswith("[") and stripped.endswith("]"):
+            current = None
+        elif current is not None:
+            current.append(line)
+    return ["\n".join(lines).strip() for lines in out]
+
+
+def check_cross_passage(questions: list[ParsedQuestion], block: str) -> list[str]:
+    """Cụm NHIỀU tài liệu phải có một câu vắt qua hai tài liệu (guide §9.4–9.5).
+
+    Đây là toàn bộ lý do cụm nhiều ngữ liệu tồn tại. Không có câu bắc cầu thì ba
+    tài liệu chỉ là ba cụm một tài liệu in cạnh nhau.
+
+    **Đo bằng TRÍCH DẪN, không bằng từ chung**, và đó là điểm khác `check_retrieval_spread`.
+    Trích dẫn trong lời giải là nguyên văn theo hợp đồng — `check_explanation` đã
+    cưỡng chế điều đó — còn biên giới các khối thì biết chính xác, nên câu hỏi
+    "đoạn này nằm ở tài liệu nào" là phép tra bảng chứ không phải ước lượng. Phép
+    đếm từ chung mù với ba thứ Part 7 đầy rẫy: đáp án là con số tính ra, câu
+    NOT/EXCEPT, và suy luận. Đo được: nó im ở **69%** cụm Part 7.
+
+    Cái giá là nó đặt một yêu cầu lên LỜI GIẢI, không chỉ quan sát câu hỏi — một
+    câu thật sự bắc cầu mà lời giải chỉ dẫn một bên sẽ bị bắt. Chấp nhận được, vì
+    người học cần thấy cả hai vế mới hiểu vì sao đáp án đúng; nhưng vì thế
+    `prompt_for_part7` phải nói ra luật này, nếu không cổng lại chặt hơn prompt.
+    """
+    docs = [_normalise(doc) for doc in passage_blocks(block) if doc.strip()]
+    if len(docs) < 2:
+        return []
+    for question in questions:
+        touched: set[int] = set()
+        for quote in _QUOTED.findall(question.explanation or ""):
+            if len(quote) < _QUOTE_MIN_CHARS:
+                continue
+            for part in quote_parts(quote) or [quote]:
+                needle = _normalise(part)
+                touched.update(i for i, doc in enumerate(docs) if needle and needle in doc)
+        if len(touched) >= 2:
+            return []
+    return [
+        f"cụm {len(docs)} tài liệu nhưng không lời giải nào dẫn chứng từ hai tài liệu "
+        "khác nhau — không có câu nào bắc cầu thì đây là mấy cụm một tài liệu in cạnh nhau"
+    ]
+
+
+def _filled_passage(passage: str, questions: list[ParsedQuestion]) -> str:
+    """Ngữ liệu Part 6 với mỗi chỗ trống thay bằng đáp án đúng của nó."""
+    out = passage
+    for index, question in enumerate(questions, start=1):
+        gold = next((option_text(o) for o in question.options if o.is_correct), None)
+        if gold:
+            out = out.replace(f"{BLANK} ({index})", gold)
+    return out
 
 
 def check_implication(question: ParsedQuestion, script: str) -> list[str]:
@@ -850,6 +1103,9 @@ def _check_set(
     # chữ với hình — đúng hình dạng của bài đọc ba ngữ liệu — không bao giờ qua.
     text_passages = sum(1 for spec in slot.passages if not spec) if part == 7 else None
     questions, script, shared = parse_group(block, part, len(slot.question_types), text_passages)
+    # Cờ của CẢ CỤM, nhân ra mọi báo cáo giống như `shared` — cùng lý do: đơn vị
+    # đọc là từng câu, còn thứ sai là quan hệ giữa ba câu.
+    shared_flags: list[str] = []
     # Ngữ liệu để đối chiếu trích dẫn: CHÍNH khối dán, trừ các dòng giải thích.
     # Dùng cả khối thay vì ghép script + passage vì `parse_group` không trả ngữ
     # liệu ra ngoài, và cả khối lại đúng hơn — nó phủ mọi part, kể cả Part 2 nơi
@@ -858,6 +1114,12 @@ def _check_set(
     evidence = "\n".join(
         line for line in block.splitlines() if not line.strip().lower().startswith("explanation:")
     )
+    if part == 6:
+        # Ngữ liệu Part 6 MANG chỗ trống trong chính nó, nên lời giải trích câu
+        # "đã điền" không bao giờ khớp — mà đoạn ấy bắt buộc phải có, không cho
+        # người học thấy kết quả điền thì lời giải không giải thích gì. Ghép thêm
+        # bản đã điền vào ngữ liệu đối chiếu; cùng cách hình được ghép vào dưới.
+        evidence = f"{evidence}\n\n{_filled_passage(script, questions)}"
     if slot.graphic:
         source = workdir / "graphics" / f"{slot.id}.txt"
         graphic_problems, graphic_flags = check_graphic(questions, script, source, part)
@@ -911,8 +1173,37 @@ def _check_set(
         # Bỏ câu hỏi về HÌNH ra: lựa chọn của nó là tên hàng trong bảng và lời
         # thoại cố ý không đọc tên ấy, nên nó không bao giờ là "khớp chữ".
         graphic_at = GRAPHIC_POSITION.get(part, len(questions) - 1)
-        judged = [q for i, q in enumerate(questions) if not (slot.graphic and i == graphic_at)]
-        shared = [*shared, *check_paraphrase_balance(judged, script)]
+        keep = [i for i in range(len(questions)) if not (slot.graphic and i == graphic_at)]
+        judged = [questions[i] for i in keep]
+        kinds = [slot.question_types[i] if i < len(slot.question_types) else "" for i in keep]
+        shared = [*shared, *check_paraphrase_balance(judged, script, kinds)]
+        shared = [*shared, *check_redundancy(judged, script)]
+    if part in (3, 4, 7):
+        # CHẶN ở ô blueprint đã đánh dấu `hard`, CỜ ở ô không. Cùng một phép đo,
+        # hai mức — vì ô cũ không mang cột ấy (mặc định 0) nên đề đã sinh giữ
+        # nguyên hành vi, còn ô dựng sau khi có cột thì phải đạt.
+        #
+        # `judged` chứ không phải `questions`: câu hỏi về HÌNH được miễn ở đây y
+        # như ở `check_paraphrase_balance` và `check_distractors`. Ở ô có hình,
+        # `script` đã được ghép thêm bảng, nên đáp án của nó (một tên hàng) tìm
+        # thấy trong phần bảng và span thành 1 — cổng bèn đếm nó rồi kết luận
+        # "không câu nào ghép hai chỗ", trong khi chính câu ấy là câu ghép HAI
+        # NGUỒN: thoại cấp toạ độ, hình tra ra đáp án. Đo trên `p3-13`.
+        # Cụm có HÌNH được miễn hẳn: câu hỏi về hình CHÍNH LÀ câu ghép hai
+        # nguồn — thoại cấp một toạ độ ngoài trục đáp án, hình tra toạ độ ấy ra
+        # đáp án — và phép đếm câu văn không nhìn thấy điều đó. Bỏ nó ra rồi đòi
+        # một câu ghép nữa trong hai câu còn lại là bắt cụm ba câu mang HAI câu
+        # khó, thứ đề thật không làm. Đo trên `p3-13`.
+        spread = [] if slot.graphic else check_retrieval_spread(questions, script)
+        if part == 7:
+            spread = [*spread, *check_cross_passage(questions, block)]
+        if slot.hard:
+            shared = [*shared, *spread]
+        else:
+            shared_flags = [*shared_flags, *spread]
+        # Rò rỉ chéo áp cho MỌI cụm, kể cả Part 7 — guide §27 nói về cụm câu
+        # hỏi, không về phương thức nghe hay đọc.
+        shared = [*shared, *check_leakage(questions)]
     if part == 7:
         shared = [*shared, *check_part7_forms(questions, script)]
         # …và đếm riêng số HÌNH, thứ nằm ở hiện vật khác.
@@ -957,9 +1248,18 @@ def _check_set(
     for index, question in enumerate(questions):
         report = SlotReport(slot_id=slot.id, number=slot.number + index)
         report.problems.extend(shared)
+        report.flags.extend(shared_flags)
         report.problems.extend(check_shape(question, part))
         report.problems.extend(check_voice_names(question))
-        report.flags.extend(check_options(question))
+        # Câu hỏi về HÌNH được miễn phép so độ dài: bốn lựa chọn của nó BẮT
+        # BUỘC đúng bằng nhãn trục đáp án của bảng (`check_graphic` cưỡng chế),
+        # nên độ dài do tấm hình quyết định chứ không phải người viết. Đo trên
+        # `p3-13`: "Social Media" (12) cạnh "Email" (5) bị gắn cờ, mà rút ngắn
+        # nó là làm bốn lựa chọn thôi khớp trục và cụm rớt một cổng khác.
+        from app.content.exam.blueprint import GRAPHIC_POSITION as _AT
+
+        if not (slot.graphic and index == _AT.get(part, len(questions) - 1)):
+            report.flags.extend(check_options(question))
         # Ngữ liệu để đối chiếu trích dẫn KHÁC nhau theo part: Part 3/4 là lời
         # thoại, Part 6/7 là đoạn văn, Part 2 là chính ba câu đáp (đề không in
         # gì nên lời giải thích phải thuật lại chúng). Part 1 và 5 không có ngữ
@@ -978,6 +1278,8 @@ def _check_set(
         graphic_index = GRAPHIC_POSITION.get(part, len(questions) - 1)
         if part in (3, 4) and not (slot.graphic and index == graphic_index):
             report.problems.extend(check_distractors(question, script))
+            kind = slot.question_types[index] if index < len(slot.question_types) else ""
+            report.flags.extend(check_thin_paraphrase(question, script, kind))
 
         # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.
         #
@@ -1174,6 +1476,67 @@ def check_blueprint(
 # Ngưỡng lệch của phân bố đáp án trên cả đề. Đều tuyệt đối là 25%; cho phép trôi
 # tới 40% vì 30 câu là mẫu nhỏ, nhưng quá đó thì không còn là ngẫu nhiên.
 ANSWER_SKEW_LIMIT = 0.40
+
+
+# Nhiễu mở đầu bằng Yes/No cho một câu hỏi WH là bẫy THẬT của đề thật — nhưng ở
+# tần suất cao nó thôi là bẫy và thành một luật, mà luật nào cũng là một lần
+# loại trừ miễn phí. Đo trên `tp-form-11`: 11/15 câu WH (73%) dùng nó, nên người
+# làm chỉ còn chọn giữa hai phương án và cái gián tiếp không bao giờ được kiểm.
+#
+# **Con số 0.3 KHÔNG tra từ đề thật** — nó là một trần đặt tay để chặn thiên
+# lệch, không phải một tỉ lệ đo được. Và mẫu chỉ có 15 câu WH, nên mỗi câu là
+# 6,7 điểm phần trăm: trần 0.25 thực chất là "nhiều nhất 3 câu", còn 0.3 là
+# "nhiều nhất 4". Sinh lại để cạo một ô cuối cùng đã thất bại BỐN lượt liên tiếp
+# trên `p2-15` — mô hình chọn lại đúng nhiễu ấy mỗi lần — nên trần được nới cho
+# khớp với thứ mẫu này phân giải được, thay vì đuổi theo hai điểm phần trăm.
+YES_NO_DECOY_LIMIT = 0.3
+_YES_NO_OPENER = re.compile(r"^(yes|no|sure|of course)\b[,.]?", re.IGNORECASE)
+# Dạng câu Part 2 mà một lời đáp Yes/No là SAI theo định nghĩa.
+_WH_CODES = ("_WHO_", "_WHERE_", "_WHEN_", "_WHY_", "_HOW_", "_WHAT_", "_STATEMENT")
+
+
+def check_yes_no_spread(reports_dir: Path, blueprint: Blueprint) -> list[str]:
+    """Bao nhiêu câu WH của Part 2 có nhiễu loại được ngay từ chữ đầu tiên.
+
+    Lỗi ở tầng ĐỀ, không tầng câu — y như phân bố đáp án. Một câu WH có nhiễu mở
+    đầu bằng "Yes" hoàn toàn hợp lệ và là bẫy đúng của đề thật; ba trên bốn câu
+    như thế thì người làm học được một luật thay vì nghe.
+    """
+    from app.content.exam.writer import paste_path
+
+    total = 0
+    using: list[str] = []
+    for part in blueprint.parts:
+        if part.part != 2:
+            continue
+        for slot in part.slots:
+            if not any(code in slot.question_type for code in _WH_CODES):
+                continue
+            path = paste_path(reports_dir, slot)
+            if not path.exists():
+                continue
+            question, _ = parse_one(path.read_text(), 2)
+            if question is None:
+                continue
+            total += 1
+            wrong = [o for o in question.options if not o.is_correct]
+            if any(_YES_NO_OPENER.match((o.spoken_text or option_text(o)).strip()) for o in wrong):
+                using.append(slot.id)
+
+    if total < 8 or len(using) / total <= YES_NO_DECOY_LIMIT:
+        return []
+    # Giữ lại phần trong hạn ngạch, gọi tên phần VƯỢT. Bẫy này hợp lệ, nên xoá
+    # sạch là sai — thứ phải xoá là số dôi ra. Cắt theo thứ tự id để hai lần chạy
+    # trên cùng nội dung chỉ đúng một tập ô, nếu không `prune` sẽ đuổi theo một
+    # đích di động.
+    keep = int(total * YES_NO_DECOY_LIMIT)
+    over = sorted(using)[keep:]
+    return [
+        f"nhiễu Yes/No cho câu WH: {len(using)}/{total} = {len(using) / total * 100:.0f}% "
+        f"— quá {YES_NO_DECOY_LIMIT * 100:.0f}% thì nó thôi là bẫy và thành một luật, "
+        f"loại được từ chữ đầu tiên mà không cần nghe hết câu. Sinh lại {len(over)} ô "
+        f"dôi ra: {' '.join(over)}"
+    ]
 
 
 def check_answer_spread(reports_dir: Path, blueprint: Blueprint) -> list[str]:

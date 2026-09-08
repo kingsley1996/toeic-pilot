@@ -479,7 +479,7 @@ Source: original
 
 [QUESTION]
 What will the woman do next?
-(A) Reserve a room
+(A) Reserve a room for the Thursday candidate
 (B) Interview a candidate at ten o'clock
 (C) Move the schedule to Thursday morning
 (D) Print some forms
@@ -593,7 +593,11 @@ def test_each_question_in_a_set_gets_its_own_answer_target(tmp_path):
     questions, _, problems = checker.parse_group(text, 3)
     assert problems == []
     correct = [next(o for o in q.options if o.is_correct).content for q in questions]
-    assert correct == ["An interview schedule", "A scheduling conflict", "Reserve a room"]
+    assert correct == [
+        "An interview schedule",
+        "A scheduling conflict",
+        "Reserve a room for the Thursday candidate",
+    ]
 
 
 GRAPHIC_DATA = """kind: table
@@ -643,6 +647,9 @@ Source: original
 def _graphic_plan(tmp_path, data=GRAPHIC_DATA, block=PART3_GRAPHIC):
     plan = bp.build_part3("tp-test", "Test", seed=7)
     slot = next(s for s in plan.parts[0].slots if s.graphic)
+    # `hard` tắt: các bài dùng fixture này ghim LUẬT HÌNH. Bắt nó thoả thêm trục
+    # D1 làm mỗi lần sửa luật độ khó lại phải sửa một fixture nói về chuyện khác.
+    slot.hard = 0
     plan.parts[0].slots = [slot]
     writer.save_slot(tmp_path, slot, block)
     (tmp_path / "graphics").mkdir(exist_ok=True)
@@ -777,6 +784,36 @@ def test_a_schedule_answers_on_its_columns_and_keeps_empty_cells(tmp_path):
 
     plan = _graphic_plan(tmp_path, data=SCHEDULE_DATA, block=PART3_SCHEDULE)
     assert all(r.problems == [] for r in checker.check_blueprint(plan, tmp_path, only=3))
+
+
+def test_the_spread_gate_blocks_on_a_hard_slot_and_only_flags_elsewhere(tmp_path):
+    """Cột `hard` của blueprint quyết định phép đo này CHẶN hay chỉ gắn cờ.
+
+    Một mức duy nhất không dùng được. Chặn tất cả thì mọi ô của các đề đã sinh
+    hoá đỏ — đo trên `tp-form-11`: 3 trên 13 cụm Part 3 dính. Cờ tất cả thì trục
+    D1 không bao giờ được cưỡng chế, và `SPEC-EXAM-DIFFICULTY` §1 đã đo rằng
+    thiếu cổng thì mix chỉ là gợi ý. Nên ô mang `hard` phải đạt, ô không mang
+    giữ nguyên hành vi cũ.
+    """
+    # Bản cũ của fixture: cả ba đáp án nằm gọn trong một câu văn — và cả ba phải
+    # ĐO ĐƯỢC, nếu không cổng im theo luật ở `test_an_unmeasurable_answer…`.
+    # "A scheduling conflict" không dùng chữ nào của lời thoại, nên phải đổi.
+    easy = PART3_GOOD.replace(
+        "(A) Reserve a room for the Thursday candidate", "(A) Reserve a room"
+    ).replace("(A) A scheduling conflict", "(A) A candidate asked to move")
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    slot = plan.parts[0].slots[0]
+    plan.parts[0].slots = [slot]
+    writer.save_slot(tmp_path, slot, easy)
+
+    assert slot.hard, "build_part3 phải đánh dấu cụm ba câu là hard"
+    blocked = checker.check_blueprint(plan, tmp_path, only=3)
+    assert any("ghép hai chỗ tách rời" in problem for r in blocked for problem in r.problems)
+
+    slot.hard = 0
+    lenient = checker.check_blueprint(plan, tmp_path, only=3)
+    assert all(r.problems == [] for r in lenient)
+    assert any("ghép hai chỗ tách rời" in flag for r in lenient for flag in r.flags)
 
 
 def test_a_voice_name_can_never_be_a_printed_option(tmp_path):
@@ -1063,11 +1100,17 @@ def test_part_6_pins_the_sentence_insertion_to_blank_3_or_4():
     """
     plan = bp.build_part6("tp-test", "Test", seed=3)
     assert bp.validate(plan) == []
+    where = []
     for slot in plan.parts[0].slots:
         at = [
             i for i, code in enumerate(slot.question_types) if code == "PART_6_SENTENCE_INSERTION"
         ]
         assert len(at) == 1 and at[0] in (2, 3)
+        where.append(at[0])
+    # Và CHIA ĐỀU hai vị trí ấy. Bản trước dồn 4·4·4·3, tức ba trên bốn cụm đặt ở
+    # chỗ trống cuối — người luyện vài đề học được "chỗ trống cuối là câu điền"
+    # mà không cần đọc, cùng loại manh mối với thiên lệch chữ cái đáp án.
+    assert sorted(where) == [2, 2, 3, 3]
     # Đặt ở blank 1 (chưa đủ câu chữ xung quanh) là sai — cổng phải bắt được.
     plan.parts[0].slots[0].question_types[0] = "PART_6_SENTENCE_INSERTION"
     assert any("câu điền câu phải ở blank 3 hoặc 4" in problem for problem in bp.validate(plan))
@@ -1221,6 +1264,8 @@ def test_a_multi_passage_set_must_actually_have_its_passages(tmp_path):
     plan = bp.build_part7("tp-test", "Test", seed=3)
     slot = next(s for s in plan.parts[0].slots if len(s.passages) > 1 and not any(s.passages))
     slot.question_types = slot.question_types[:2]
+    # Bài này ghim PHÉP ĐẾM NGỮ LIỆU, không phải trục độ khó — xem `_graphic_plan`.
+    slot.hard = 0
     plan.parts[0].slots = [slot]
 
     writer.save_slot(tmp_path, slot, PART7_TWO)
@@ -1946,3 +1991,364 @@ def test_a_correct_answer_may_still_echo_the_script() -> None:
     )
     assert echo("Email the warehouse manager", SHIFT_SCRIPT) == 1.0
     assert check_distractors(item, SHIFT_SCRIPT) == []
+
+
+# --- Bốn luật của CỤM (guide §10, §26, §27–28) ---------------------------
+
+
+GYM_TALK = (
+    "The new City Fitness Center opens on Saturday at the old market square. "
+    "Every membership plan is fifty percent off for the first three months. "
+    "That includes personal training, group classes, and pool access. "
+    "The offer ends next Friday, so please visit the front desk before closing."
+)
+
+
+def _q(stem: str, correct: str, wrong: list[str]):
+    from app.services.content_import import ParsedOption, ParsedQuestion
+
+    return ParsedQuestion(
+        line=1,
+        prompt_text=stem,
+        options=[ParsedOption(label="A", content=correct, is_correct=True)]
+        + [
+            ParsedOption(label=chr(66 + i), content=w, is_correct=False)
+            for i, w in enumerate(wrong)
+        ],
+    )
+
+
+def test_a_question_may_not_name_another_answer_in_the_same_set() -> None:
+    """Guide §27–28. Đây là lỗi ĐÃ xảy ra, gần nguyên ví dụ của tài liệu: câu 1
+    có nhiễu "To explain how to use the pool access" trong khi đáp án câu 2 là
+    "Personal training, group classes, and pool access" — đọc câu 1 là gặp trước
+    từ vựng của đáp án câu 2. Đo trên 30 câu Part 4: 23% dính lỗi này."""
+    from app.content.exam.check import check_leakage
+
+    leaky = [
+        _q("What is the purpose?", "To announce a discount", ["To explain the pool access"]),
+        _q("What is included?", "Personal training and pool access", ["A free towel"]),
+    ]
+    assert check_leakage(leaky)
+
+    clean = [
+        _q("What is the purpose?", "To announce a discount", ["To explain a refund policy"]),
+        _q("What is included?", "Personal training and pool access", ["A free towel"]),
+    ]
+    assert check_leakage(clean) == []
+
+    # Chỉ những từ RIÊNG của đáp án đúng mới rò rỉ. `p4-03` bị báo oan vì
+    # "eleven fifteen" — cụm ấy nằm ở ba trên bốn lựa chọn của câu bên cạnh, nên
+    # gặp trước nó không tách được đáp án đúng khỏi nhiễu.
+    spread = [
+        _q(
+            "What is the new boarding time?",
+            "Thirty minutes after eleven fifteen",
+            ["At eleven fifteen", "Twenty-two minutes after eleven fifteen", "At noon"],
+        ),
+        _q(
+            "What will happen after the weather clears?",
+            "Passengers receive seat information by text",
+            [
+                "Passengers board at eleven fifteen",
+                "Passengers wait beside the desk",
+                "Passengers collect vouchers",
+            ],
+        ),
+    ]
+    assert check_leakage(spread) == []
+
+
+def test_two_questions_on_the_same_sentence_are_one_question_twice() -> None:
+    """Guide §27. Đề bài khác nhau không cứu được: người làm trả lời câu thứ hai
+    bằng đúng thao tác vừa dùng cho câu thứ nhất."""
+    from app.content.exam.check import check_redundancy
+
+    same = [
+        _q("What is included?", "Personal training and group classes", ["A towel"]),
+        _q("What does the plan cover?", "Group classes and pool access", ["Parking"]),
+    ]
+    assert check_redundancy(same, GYM_TALK)
+
+    apart = [
+        _q("What is included?", "Personal training and group classes", ["A towel"]),
+        _q("When does the offer end?", "Next Friday", ["On Saturday"]),
+    ]
+    assert check_redundancy(apart, GYM_TALK) == []
+
+
+def test_a_set_answerable_from_single_sentences_is_flagged_not_blocked() -> None:
+    """Guide §10 (D1) và §23: độ khó đáng ngờ là REVIEW, không phải REJECT.
+
+    Phép đo là xấp xỉ theo từ chung — một đáp án diễn đạt lại giỏi có thể chạm
+    ít câu mà vẫn khó — nên chặn nạp bằng nó là cách chắc chắn để không ai chạy
+    cổng nữa. Đo được: 63% câu Part 4 vừa sinh nằm gọn trong một câu, và nhóm
+    "ghép từ ba chỗ" tụt 20% → 7% sau khi thêm luật cân bằng độ trùng chữ.
+    """
+    from app.content.exam.check import check_retrieval_spread
+
+    local = [
+        _q("When does the offer end?", "Next Friday", ["On Saturday"]),
+        _q("Where is the centre?", "At the old market square", ["At the front desk"]),
+    ]
+    assert check_retrieval_spread(local, GYM_TALK)
+
+    spread = [
+        _q("When does the offer end?", "Next Friday", ["On Saturday"]),
+        _q(
+            "What must a member do to get the discount?",
+            "Visit the front desk before Friday to start a membership plan",
+            ["Pay online after Saturday"],
+        ),
+    ]
+    assert check_retrieval_spread(spread, GYM_TALK) == []
+
+
+CROSS_SET = """[PASSAGE]
+MEMO
+The spring supplier fair opens on March 9 at the Halden Centre.
+Booth fees are due one week before the fair.
+
+[PASSAGE]
+Dear Ms. Ito,
+Your booth fee of four hundred dollars was received on March 1.
+Thank you for registering early.
+
+[QUESTION]
+Was the booth fee paid on time?
+(A) Yes, it arrived before the deadline
+(B) No, it arrived after the fair
+(C) The fee was waived
+(D) The fee is still outstanding
+Answer: A
+Explanation: {evidence} | (A) đúng. | (B) sai. | (C) sai. | (D) sai.
+Source: original
+"""
+
+
+def test_a_graphic_set_is_exempt_from_the_combining_requirement(tmp_path):
+    """Ở cụm có hình, câu hỏi về hình CHÍNH LÀ câu ghép hai nguồn.
+
+    Thoại cấp một toạ độ NGOÀI trục đáp án, hình tra toạ độ ấy ra đáp án — dạng
+    khó nhất của cụm. Nhưng phép đếm câu văn không nhìn thấy nó: lời thoại cố ý
+    không đọc tên hàng, nên đáp án chỉ khớp phần BẢNG được ghép vào `script`.
+
+    Đo trên `p3-13`: bỏ câu hỏi về hình ra thì còn hai câu, cả hai span 1, và
+    cổng đòi thêm một câu ghép nữa — tức bắt cụm ba câu mang HAI câu khó, thứ đề
+    thật không làm.
+    """
+    plan = _graphic_plan(tmp_path)
+    slot = plan.parts[0].slots[0]
+    assert slot.graphic, "fixture phải là ô có hình"
+    slot.hard = 1
+
+    reports = checker.check_blueprint(plan, tmp_path, only=3)
+    assert all("ghép hai chỗ tách rời" not in problem for r in reports for problem in r.problems)
+
+
+def test_a_yes_no_decoy_is_a_trap_until_most_questions_use_it(tmp_path):
+    """Bẫy thật của đề thật, nhưng ở tần suất cao nó thôi là bẫy và thành một luật.
+
+    Đo trên `tp-form-11`: **11/15** câu WH (73%) có một nhiễu mở đầu bằng "Yes",
+    loại được từ chữ đầu tiên. Người làm khi đó chỉ còn chọn giữa hai phương án,
+    và đáp án gián tiếp — trục độ khó lớn nhất của Part 2 — không bao giờ được
+    kiểm, vì loại trừ đưa tới nó trước khi phải hiểu lời né.
+
+    Lỗi ở tầng ĐỀ: từng câu hoàn toàn hợp lệ, y như thiên lệch chữ cái đáp án.
+    """
+    plan = bp.build_part2("tp-test", "Test", seed=7)
+    wh = [
+        s
+        for s in plan.parts[0].slots
+        if any(code in s.question_type for code in ("_WHO_", "_WHERE_", "_WHEN_", "_WHY_"))
+    ][:12]
+    plan.parts[0].slots = wh
+
+    def paste(question: str, decoy: str) -> str:
+        return (
+            f"[QUESTION]\nvoice: us_female_1\n{question}\nvoice: us_male_1\n"
+            f"(A) On the second floor.\n(B) {decoy}\n(C) At nine tomorrow.\n"
+            "Answer: A\nSource: original\n"
+        )
+
+    for slot in wh:
+        writer.save_slot(tmp_path, slot, paste("Where is the report?", "Yes, I sent it."))
+    problems = checker.check_yes_no_spread(tmp_path, plan)
+    assert any("nhiễu Yes/No" in problem for problem in problems)
+    # Gọi tên phần VƯỢT hạn ngạch, không phải tất cả — bẫy này hợp lệ, thứ phải
+    # sinh lại là số dôi ra. Cắt theo thứ tự id để `prune` không đuổi theo một
+    # đích di động giữa hai lần chạy trên cùng nội dung.
+    named = [word for word in problems[0].split() if word.startswith("p2-")]
+    assert len(named) == len(wh) - int(len(wh) * checker.YES_NO_DECOY_LIMIT)
+    assert named == sorted(named)
+
+    # Một vài câu dùng nó thì vẫn là bẫy, không phải luật.
+    for index, slot in enumerate(wh):
+        decoy = "Yes, I sent it." if index < 2 else "The printer is broken."
+        writer.save_slot(tmp_path, slot, paste("Where is the report?", decoy))
+    assert checker.check_yes_no_spread(tmp_path, plan) == []
+
+
+def test_a_part_6_explanation_may_quote_the_blank_filled_in() -> None:
+    """Ngữ liệu Part 6 MANG chỗ trống trong chính nó, nên lời giải trích câu "đã
+    điền" không bao giờ khớp ngữ liệu thô — mà đoạn ấy bắt buộc phải có: không
+    cho người học thấy kết quả điền thì lời giải không giải thích gì cả.
+
+    Đo được: cả bốn ô Part 6 của `tp-form-11` mang một cờ giả, và bốn ô ấy hoàn
+    toàn sạch. Cờ giả theo cấu tạo còn tệ hơn không có cờ — nó dạy người duyệt bỏ
+    qua cờ.
+    """
+    from app.content.exam.check import _filled_passage
+
+    passage = "All requests ------- (1) online. The work may ------- (2) postponed."
+    qs = [
+        _q("Blank (1)", "are submitted", ["submit"]),
+        _q("Blank (2)", "be", ["been"]),
+    ]
+    filled = _filled_passage(passage, qs)
+    assert "All requests are submitted online." in filled
+    assert "may be postponed" in filled
+    # Mỗi đáp án vào ĐÚNG chỗ trống mang số của nó, không phải chỗ trống kế tiếp.
+    assert "-------" not in filled
+
+
+def test_a_part_7_implication_question_quotes_with_writes_not_says() -> None:
+    """Part 3/4 NÓI, Part 7 VIẾT — và cụm tin nhắn là chỗ duy nhất dạng câu hàm ý
+    sống được ở phần Đọc, nên đề thật viết *"what does Mr. X mean when he writes"*.
+
+    Bản chỉ bắt `says` chặn oan **100%** câu hàm ý Part 7 — hai ô mỗi đề, và cả
+    hai trích dẫn hoàn toàn đúng. Không có bài này thì triệu chứng đọc như "mô
+    hình không viết nổi câu hàm ý", đúng kiểu quy oan cho model mà một cổng chặt
+    hơn prompt luôn tạo ra.
+    """
+    from app.content.exam.check import check_implication
+
+    script = "Nolan Reyes [9:40 A.M.]\nI'll have the warehouse layout ready by then."
+    written = _q(
+        "At 9:40 A.M., what does Mr. Reyes mean when he writes, "
+        '"I\'ll have the warehouse layout ready by then"?',
+        "He will finish it before the Friday briefing",
+        ["He will ask someone else to prepare it"],
+    )
+    assert check_implication(written, script) == []
+
+    # Vẫn bắt đúng hai lỗi cũ: không trích, và trích một câu không có thật.
+    bare = _q("What does Mr. Reyes plan to do?", "Finish the layout", ["Cancel the meeting"])
+    assert check_implication(bare, script)
+    invented = _q(
+        'What does Mr. Reyes mean when he writes, "the depot closes at noon"?',
+        "The depot shuts early",
+        ["The depot stays open"],
+    )
+    assert check_implication(invented, script)
+
+
+def test_a_multi_passage_set_needs_one_explanation_citing_both_documents() -> None:
+    """Câu bắc cầu là LÝ DO cụm nhiều tài liệu tồn tại — không có nó thì ba tài
+    liệu chỉ là ba cụm một tài liệu in cạnh nhau.
+
+    Đo bằng TRÍCH DẪN chứ không bằng từ chung, vì `check_retrieval_spread` im ở
+    **69%** cụm Part 7: đáp án Part 7 phần lớn là số tính ra, câu NOT, hoặc suy
+    luận — cả ba đều vô hình với phép đếm từ chung. Trích dẫn thì nguyên văn theo
+    hợp đồng và biên giới khối thì biết chính xác, nên phép đo là tra bảng.
+    """
+    from app.content.exam.check import check_cross_passage, parse_group
+
+    one_side = CROSS_SET.format(
+        evidence='Thông báo ghi "Booth fees are due one week before the fair"'
+    )
+    qs, _, _ = parse_group(one_side, 7, 1, 2)
+    assert check_cross_passage(qs, one_side)
+
+    both = CROSS_SET.format(
+        evidence='Thông báo ghi "the spring supplier fair opens on March 9" và hạn nộp là '
+        'trước đó một tuần; thư xác nhận "was received on March 1"'
+    )
+    qs, _, _ = parse_group(both, 7, 1, 2)
+    assert check_cross_passage(qs, both) == []
+
+
+def test_an_unmeasurable_answer_makes_the_spread_gate_abstain() -> None:
+    """Đáp án là con số tính ra, hoặc câu NOT — cả hai cho span 0 một cách hợp lệ.
+
+    Lời phàn nàn của cổng là "KHÔNG câu nào trong cụm phải ghép hai chỗ", và muốn
+    khẳng định thế thì phải đo được mọi câu. `_content_words` chỉ bắt `[a-z]+`
+    nên "¥18,700" tách ra rỗng, còn đáp án của câu NOT thì theo định nghĩa không
+    có trong ngữ liệu. Đo trên `p7-01`: câu tính giá đúng là câu ghép mà prompt
+    yêu cầu, và cổng vẫn chặn cả cụm vì không nhìn thấy nó.
+    """
+    from app.content.exam.check import check_retrieval_spread
+
+    local = [
+        _q("When does the offer end?", "Next Friday", ["On Saturday"]),
+        _q("Where is the centre?", "At the old market square", ["At the front desk"]),
+    ]
+    assert check_retrieval_spread(local, GYM_TALK)
+
+    # Cùng cụm ấy, thêm một câu có đáp án KHÔNG đo được → cổng phải im.
+    priced = [*local, _q("How much is the plan?", "$1,250", ["$900"])]
+    assert check_retrieval_spread(priced, GYM_TALK) == []
+
+
+def test_an_answer_that_shares_nothing_with_the_source_is_flagged() -> None:
+    """Guide §26 Failure 5 — mặt còn lại của `check_paraphrase_balance`.
+
+    "Transmit a lexical token through a mobile communication service" cho
+    *"Text the word OPEN"* là lỗi riêng của nó. Cờ chứ không chặn: độ phủ thấp
+    nói đáp án dùng chữ khác, KHÔNG chứng minh nó không tự nhiên.
+    """
+    from app.content.exam.check import check_thin_paraphrase
+
+    thin = _q("What is included?", "Ancillary wellness provisions", ["A towel"])
+    assert check_thin_paraphrase(thin, GYM_TALK)
+
+    plain = _q("What is included?", "Group classes and pool access", ["A towel"])
+    assert check_thin_paraphrase(plain, GYM_TALK) == []
+
+
+def test_purpose_and_implication_do_not_count_toward_the_balance_gate() -> None:
+    """`p4-06` rớt cổng này hai lượt sinh liên tiếp dù cụm đúng hình dạng prompt
+    đòi — một câu khớp cụm từ (phủ 1.00), một câu mục đích (0.25), một câu hàm ý
+    (0.40). Đáp án của mục đích và hàm ý là khái niệm bao trùm chứ không phải một
+    lời đã nói, nên chúng KHÔNG THỂ có phủ cao; đếm chúng là phạt cụm vì nó khó,
+    và đó là ràng buộc không thoả được. Cùng lý do câu hỏi về hình được miễn khỏi
+    `check_distractors`."""
+    from app.content.exam.check import check_paraphrase_balance
+
+    trio = [
+        _q(
+            "What is the purpose of the announcement?",
+            "To announce a promotion",
+            [
+                "To describe the training classes",
+                "To open the market square",
+                "To sell membership plans",
+            ],
+        ),
+        _q(
+            'What does the speaker mean when she says, "before closing"?',
+            "Sign up soon to save money",
+            [
+                "Personal training is free",
+                "The pool access ends Friday",
+                "Group classes start Saturday",
+            ],
+        ),
+        _q(
+            "What is included in the plan?",
+            "Personal training, group classes, and pool access",
+            [
+                "Membership plans and parking",
+                "The front desk and the square",
+                "Three months of classes",
+            ],
+        ),
+    ]
+    assert check_paraphrase_balance(trio, GYM_TALK)
+
+    kinds = ["PART_4_TOPIC_OR_PURPOSE", "PART_4_IMPLICATION", "PART_4_DETAIL"]
+    assert check_paraphrase_balance(trio, GYM_TALK, kinds) == []
+
+    # Miễn theo MÃ, không phải miễn cả cụm: hai câu truy hồi cùng chạm đáy vẫn chặn.
+    retrieval = ["PART_4_DETAIL", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"]
+    assert check_paraphrase_balance(trio, GYM_TALK, retrieval)

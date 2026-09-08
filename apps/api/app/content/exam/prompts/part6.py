@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from app.content.exam.blueprint import QuestionSlot
 from app.content.exam.prompts._registry import exam_prompt
-from app.content.exam.prompts.contract import BLANK
+from app.content.exam.prompts.contract import BLANK, BLOCK_TAIL
 from app.services.labels import LABELS
 
 SYSTEM_PART6 = exam_prompt("part6_system").render(BLANK=BLANK)
@@ -29,5 +29,5 @@ def prompt_for_part6(slot: QuestionSlot) -> str:
         f"- Bốn chỗ trống, theo đúng thứ tự này:\n{listed}\n"
         f"- Chỗ trống ({insert_at}) là câu ĐIỀN CÂU: bốn lựa chọn là bốn câu hoàn chỉnh, "
         f"và ba câu sai phải sai vì KHÔNG HỢP với đoạn văn quanh nó, không phải "
-        f"vì sai ngữ pháp."
+        f"vì sai ngữ pháp." + BLOCK_TAIL
     )

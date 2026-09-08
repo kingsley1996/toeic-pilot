@@ -64,6 +64,17 @@ THE DOCUMENTS
   the price of a Deluxe room?"). That is two questions sharing one answer key,
   and no option can be right for both halves.
 
+THE SET AS A WHOLE
+- **No question may hand another one its answer.** Read each option against the
+  other questions' answers before you finish; if it names one of them, rewrite
+  it. A reader who works through the questions in order must not meet the next
+  answer's wording early.
+- **Do not ask twice about the same fact.** Two questions resting on the same
+  sentence are one question printed twice.
+- **At least one question per set must need two separate places in the
+  passage** — and in a double or triple set, at least one must cross from one
+  document to another, which is the whole reason those sets exist.
+
 THE QUESTIONS
 - Four printed options each, exactly one correct.
 - A wrong option must be contradicted by the documents or absent from them —

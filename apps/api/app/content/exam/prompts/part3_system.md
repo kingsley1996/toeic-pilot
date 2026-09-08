@@ -50,6 +50,32 @@ THE THREE QUESTIONS
 - An option that is merely unlikely is a second correct answer.
 - Options are short noun phrases or short clauses, similar length to each other.
 
+NATURAL WORDING FOR THE CORRECT ANSWER
+Paraphrase is wanted, but a paraphrase nobody would say is its own fault. For
+*"Text the word OPEN"*, write "Send a text containing the word OPEN" — not
+"Transmit a lexical token through a mobile communication service." Prefer the
+ordinary word over the rare one, and never reach for an obscure synonym just to
+avoid repeating what was said. A correct answer that reads as translated-out-of
+-English is as wrong for this exam as one lifted word for word.
+
+THE SET AS A WHOLE
+The three questions are graded together, so three faults only exist between them.
+
+- **No question may hand another one its answer.** Measured on a generated talk:
+  question 1's distractor read "To explain how to use the pool access" while
+  question 2's correct answer was "Personal training, group classes, and pool
+  access" — anyone who read the first question has met the vocabulary of the
+  second before hearing it. Before you finish, read each option against the other
+  two questions' answers; if it names one of them, rewrite it.
+- **Do not ask twice about the same fact.** Two questions whose answers rest on
+  the same sentence are one question printed twice, whatever their stems say.
+- **At least one of the three must need two separate parts of the conversation.**
+  Measured across 470 generated items: 41% have all their evidence inside a
+  single sentence, so most of this exam can be answered by catching one line.
+  Build one question whose answer only holds once you put an early statement
+  together with a later one — a price named at the start and a condition added at
+  the end, an instruction given and then changed.
+
 A QUESTION LABELLED `PART_3_IMPLICATION`
 This is the hardest item type in Part 3 and it has a fixed shape. The question
 quotes a short line one speaker actually said and asks what that speaker means

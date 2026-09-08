@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from app.content.exam.blueprint import QuestionSlot
 from app.content.exam.prompts._registry import exam_prompt
+from app.content.exam.prompts.contract import BLOCK_TAIL
+from app.content.exam.prompts.difficulty import hard_note
 from app.services.labels import LABELS
 
 SYSTEM_PART7 = exam_prompt("part7_system").render()
@@ -51,6 +53,11 @@ def prompt_for_part7(slot: QuestionSlot) -> str:
     multi = (
         "\n- ÍT NHẤT MỘT câu phải cần CẢ HAI (hoặc cả ba) ngữ liệu mới trả lời "
         "được: một ngữ liệu cho cái tên/ngày/số, ngữ liệu kia nói cái đó nghĩa là gì."
+        # Cổng đo luật trên bằng chính LỜI GIẢI của câu ấy, nên prompt phải đòi
+        # cả hai vế được dẫn ra — không nói thì cổng chặt hơn prompt.
+        "\n- Lời giải của CHÍNH câu đó phải trích dẫn từ CẢ HAI tài liệu, mỗi bên "
+        "một đoạn nguyên văn. Dẫn một bên là người học không thấy được vì sao phải "
+        "đọc tài liệu kia."
         if len(slot.passages) > 1
         else ""
     )
@@ -75,5 +82,5 @@ def prompt_for_part7(slot: QuestionSlot) -> str:
         # làm theo con số đầu: một khối [PASSAGE] duy nhất, không có [GRAPHIC].
         f"- ĐÚNG {text_slots} khối [PASSAGE]. Cụm có {len(slot.passages)} ngữ liệu:\n{listed}\n"
         f"- {len(slot.question_types)} câu hỏi, theo đúng thứ tự này:\n{kinds}"
-        f"{budget_line}{multi}{note}"
+        f"{budget_line}{multi}{note}" + hard_note(slot, "tài liệu") + BLOCK_TAIL
     )

@@ -190,6 +190,17 @@ class QuestionSlot:
     question_types: list[str] = field(default_factory=list)
     topic: str = ""
     voices: list[str] = field(default_factory=list)
+    # Part 2, chỉ có nghĩa khi `indirect`: KIỂU né nào trong bốn kiểu mà
+    # `part2_system.md` tả. Ở blueprint chứ không để mô hình chọn, vì đo được nó
+    # dồn về một kiểu: 5 trên 8 ô gián tiếp của `tp-form-11` đều là "Ask the ___",
+    # và người luyện vài đề nhận ra khuôn ấy mà không cần nghe câu hỏi.
+    indirect_kind: int = 0
+    # Bao nhiêu câu trong ô BUỘC phải ghép chứng cứ từ hai chỗ tách rời — trục
+    # D1 của `toeic_ai_question_generation_guidelines` §10. Ở blueprint chứ
+    # không để mô hình tự quyết, cùng lý do với `indirect`: đo trên 470 câu đã
+    # sinh, 41% có toàn bộ chứng cứ trong MỘT câu văn. Mặc định 0 nên ô của các
+    # đề cũ giữ nguyên hành vi — cổng chỉ CHẶN ở ô có `hard`, còn lại vẫn là cờ.
+    hard: int = 0
     # Brief của hình đi kèm (Part 3/4), dạng `kind: mô tả`. Rỗng nghĩa là cụm
     # không có hình — và phần lớn cụm không có: đề thật chỉ có ba hình ở Part 3,
     # hai ở Part 4.
@@ -332,6 +343,9 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
         _rng(seed, "p2-spread"),
         key=lambda pair: pair[0],
     )
+    # Vòng tròn trên RIÊNG các ô gián tiếp, không trên cả 25 ô: chia theo chỉ số
+    # ô thì tám ô gián tiếp rơi lung tung và một kiểu có thể không bao giờ dùng.
+    rotation = iter(range(10_000))
     slots = [
         QuestionSlot(
             id=f"p2-{index:02d}",
@@ -341,6 +355,7 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
             context=BUSINESS_CONTEXTS[(index - 1 + seed) % len(BUSINESS_CONTEXTS)],
             voices=list(pairs[index - 1]),
             indirect=indirect,
+            indirect_kind=(next(rotation) % 4) if indirect else 0,
         )
         for index, (code, indirect) in enumerate(kinds, start=1)
     ]
@@ -391,6 +406,7 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
                 topic=topic,
                 voices=list(cast),
                 graphic=brief,
+                hard=1,
             )
         )
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=3, slots=slots)])
@@ -575,6 +591,7 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
             topic=speech_type,
             voices=[voices[index]],
             graphic=picks[index - 8] if index >= 8 else graphic,
+            hard=1,
         )
         for index, (speech_type, scene, types, graphic) in enumerate(rows)
     ]
@@ -649,6 +666,7 @@ def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = N
                 topic=passage_type,
                 structure=structure,
                 passages=filled,
+                hard=1 if len(passages) > 1 or len(types) >= 3 else 0,
             )
         )
         number += len(types)

@@ -51,6 +51,15 @@ Two rules for an indirect item, and both fail quietly:
 
 The two wrong responses are written the same way for both kinds.
 
+**A wrong response must be wrong for a reason that survives deleting its opening
+word.** "Who approved the permit?" / "Yes, the engineer signed it." is wrong only
+because of the "Yes" — strip that and it names a person, which answers the
+question better than the correct response does. Write the option so that it is
+still wrong once the "Yes" or "No" is gone. Opening a wrong response with Yes or
+No is a real trap of the real test, but it is one trap among several: if most of
+your wrong responses start that way, a listener stops listening and just
+eliminates them.
+
 THE EXPLANATION
 Every question block ends with an `Explanation:` line, written in Vietnamese.
 
