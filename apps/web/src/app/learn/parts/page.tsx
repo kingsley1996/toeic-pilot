@@ -40,37 +40,42 @@ export default function PartsHubPage() {
           PART_META.map((m) => {
             const summary = parts.find((p) => p.part === m.part);
             return (
-              <Panel key={m.part} className="flex flex-wrap items-center gap-4 p-4">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-recess text-ink-muted">
-                  <m.Icon size={18} strokeWidth={1.75} aria-hidden />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-baseline gap-2">
-                    <span className="font-semibold">
-                      Part {m.part} · {m.title}
-                    </span>
-                    {summary && (
-                      <span className="font-data text-small tabular-nums text-ink-faint">
-                        {summary.question_count} câu
+              <Panel key={m.part} className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                {/* Icon + chữ là một hàng ở MỌI cỡ; chỉ hàng nút mới rơi xuống
+                    dòng dưới mobile. `flex-1` nhường cho chữ ở sm trở lên — trên
+                    mobile nhường là ép đoạn văn co thành dọc một-từ-một-dòng. */}
+                <span className="flex min-w-0 items-center gap-3 sm:flex-1">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-recess text-ink-muted">
+                    <m.Icon size={18} strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="flex items-baseline gap-2">
+                      <span className="font-semibold">
+                        Part {m.part} · {m.title}
                       </span>
-                    )}
-                  </span>
-                  <span className="block text-small text-ink-muted">{m.short}</span>
-                  <span className="mt-0.5 flex items-center gap-1 text-small text-ink-faint">
-                    <Clock size={11} strokeWidth={2} aria-hidden />
-                    {m.minutes}
+                      {summary && (
+                        <span className="font-data text-small tabular-nums text-ink-faint">
+                          {summary.question_count} câu
+                        </span>
+                      )}
+                    </span>
+                    <span className="block text-small text-ink-muted">{m.short}</span>
+                    <span className="mt-0.5 flex items-center gap-1 text-small text-ink-faint">
+                      <Clock size={11} strokeWidth={2} aria-hidden />
+                      {m.minutes}
+                    </span>
                   </span>
                 </span>
-                <span className="flex shrink-0 items-center gap-2">
+                <span className="flex gap-2 max-sm:[&>a]:flex-1">
                   <Link
                     href={`/learn/parts/${m.part}`}
-                    className="inline-flex items-center rounded border border-rule-strong px-3 py-1.5 text-small font-semibold hover:bg-recess"
+                    className="inline-flex items-center justify-center rounded border border-rule-strong px-3 py-1.5 text-small font-semibold hover:bg-recess"
                   >
                     Chiến thuật
                   </Link>
                   <Link
                     href={`/learn/parts/${m.part}/drill`}
-                    className="inline-flex items-center gap-1.5 rounded border border-action bg-action px-3 py-1.5 text-small font-semibold text-on-action hover:bg-action-hover"
+                    className="inline-flex items-center justify-center gap-1.5 rounded border border-action bg-action px-3 py-1.5 text-small font-semibold text-on-action hover:bg-action-hover"
                   >
                     Luyện ngay
                     <ArrowRight size={13} strokeWidth={2} aria-hidden />

@@ -27,19 +27,21 @@ export function GuestNotice({ className }: { className?: string }) {
       className={`rounded border border-warn bg-warn-tint px-4 py-3 ${className ?? ""}`}
       role="status"
     >
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <p className="flex-1 text-small">
+      {/* Mobile: xếp dọc, chữ dòng đầu và nút chiếm trọn hàng — `flex-1` trên
+          một hàng ngang hẹp ép đoạn văn co lại thành dọc chữ một-từ-một-dòng. */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
+        <p className="text-small sm:min-w-48 sm:flex-1">
           <span className="font-semibold">Bạn chưa đăng nhập — tiến độ sẽ không được lưu.</span>{" "}
           <span className="text-ink-muted">
             Bài nghe vẫn chấm bình thường, nhưng tải lại trang là mất hết.
           </span>
         </p>
-        <div className="flex shrink-0 items-center gap-2">
-          <ButtonLink href="/login" variant="secondary" size="sm">
+        <div className="flex items-center gap-2 max-sm:[&>a]:flex-1">
+          <ButtonLink href="/login" variant="secondary" size="sm" className="max-sm:justify-center">
             <LogIn size={14} strokeWidth={2} aria-hidden />
             Đăng nhập
           </ButtonLink>
-          <ButtonLink href="/register" size="sm">
+          <ButtonLink href="/register" size="sm" className="max-sm:justify-center">
             Tạo tài khoản
           </ButtonLink>
         </div>
