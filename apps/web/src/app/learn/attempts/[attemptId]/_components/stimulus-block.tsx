@@ -49,118 +49,158 @@ export function StimulusBlock({
   // "Đoạn 1, Đoạn 3" và người học đi tìm đoạn 2 không tồn tại.
   const numbered = block.passages.length > 1;
 
-  // Không có ngữ liệu (Part 2, Part 5) thì không dựng lưới hai cột chỉ để bỏ
-  // trống một nửa: một cột rỗng đọc như thứ đang tải dở.
-  if (!block.hasStimulus) {
-    return <section className="max-w-3xl">{questions}</section>;
-  }
+  // Hai cột dành cho ngữ liệu phải NHÌN trong lúc trả lời: ảnh Part 1, bảng
+  // biểu Part 3/4, đoạn văn Part 6/7. Mắt đi lại giữa hai bên nên tách cột là
+  // đúng, và cột trái dính lại khi cuộn.
+  //
+  // Audio thì ngược hẳn — nó là một nút bấm rồi thôi, không phải thứ để nhìn.
+  // Cho nó một cột riêng đẩy câu hỏi và bốn đáp án vào nửa màn hình trong khi
+  // nửa kia gần như trống; Part 2 tệ nhất, vì ở đó "câu hỏi" chỉ là bốn ô chữ
+  // cái. Nên khối chỉ-có-audio xếp dọc: nghe, rồi trả lời ngay bên dưới.
+  //
+  // Đây đúng là `hasStimulus` trừ audio đi. Giữ hai biểu thức riêng vì chúng
+  // trả lời hai câu hỏi khác nhau: "có ngữ liệu không" và "ngữ liệu có đáng
+  // chiếm một cột không".
+  const sideBySide = Boolean(block.imageUrl) || block.passages.length > 0;
 
-  return (
-    <section className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-3 lg:sticky lg:top-32 lg:self-start">
-        {block.title && <p className="text-small font-semibold text-ink-muted">{block.title}</p>}
+  const stimulus = (
+    <>
+      {block.title && <p className="text-small font-semibold text-ink-muted">{block.title}</p>}
 
-        {/* Ảnh nằm ở object store ngoài, và `next/image` cần khai domain cho
+      {/* Ảnh nằm ở object store ngoài, và `next/image` cần khai domain cho
             từng nhà cung cấp trong `next.config` — trong khi nhà cung cấp ở
             đây là một biến môi trường (ADR-006 §2.8). Nên dùng <img> thẳng. */}
-        {block.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={block.imageUrl}
-            alt={block.imageAlt ?? ""}
-            // Chặn chiều cao: ảnh Part 1 là ảnh dọc thì nó đẩy trình phát audio
-            // xuống dưới màn hình, và người làm bài phải cuộn đi tìm nút Play ở
-            // một phần thi tính bằng giây.
-            className="max-h-[55vh] w-full rounded border border-rule object-contain"
-          />
-        )}
+      {block.imageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={block.imageUrl}
+          alt={block.imageAlt ?? ""}
+          // Chặn chiều cao: ảnh Part 1 là ảnh dọc thì nó đẩy trình phát audio
+          // xuống dưới màn hình, và người làm bài phải cuộn đi tìm nút Play ở
+          // một phần thi tính bằng giây.
+          className="max-h-[55vh] w-full rounded border border-rule object-contain"
+        />
+      )}
 
-        {/* Ghi công là ĐIỀU KIỆN của giấy phép, không phải chú thích tuỳ chọn:
+      {/* Ghi công là ĐIỀU KIỆN của giấy phép, không phải chú thích tuỳ chọn:
             ảnh CC-BY chỉ được dùng khi có ghi công (ADR-004 §4.2). Lưu vào
             database mà không hiện ra vẫn là vi phạm. */}
-        {block.imageUrl && block.imageCredit && (
-          <p className="text-label text-ink-faint">{block.imageCredit}</p>
-        )}
+      {block.imageUrl && block.imageCredit && (
+        <p className="text-label text-ink-faint">{block.imageCredit}</p>
+      )}
 
-        {block.audioUrl && (
-          // `controls` gốc của trình duyệt, không tự dựng player: nó đã có tua,
-          // âm lượng, tốc độ phát và phím tắt — và quan trọng hơn, nó đọc được
-          // bằng trình đọc màn hình mà không cần ta làm gì thêm.
-          /* `preload="metadata"`, không phải `"none"`: với `"none"` trình duyệt
+      {block.audioUrl && (
+        // `controls` gốc của trình duyệt, không tự dựng player: nó đã có tua,
+        // âm lượng, tốc độ phát và phím tắt — và quan trọng hơn, nó đọc được
+        // bằng trình đọc màn hình mà không cần ta làm gì thêm.
+        /* `preload="metadata"`, không phải `"none"`: với `"none"` trình duyệt
              chưa tải header nên thanh phát hiện "0:00 / 0:00", và người làm bài
              không biết clip dài bao nhiêu trước khi bấm — thứ họ cần biết ở một
              bài thi có giới hạn giờ. Metadata chỉ vài KB, không phải cả file. */
-          <audio src={block.audioUrl} controls preload="metadata" className="w-full">
-            Trình duyệt của bạn không phát được audio.
-          </audio>
-        )}
+        /* `color-scheme: dark` — đổi CHÍNH trình phát, không vẽ gì quanh nó.
+           Chrome dựng nó nền gần trắng, mà `--panel` ở light mode đúng là trắng
+           nên nó chìm; còn viền thì không ôm được, vì bo góc của widget lớn hơn
+           hẳn bán kính 4px mà design system cho phép, và góc nào cũng hở.
+           Ép nó vẽ bản TỐI thì tương phản nằm trong chính widget. Đặt vô điều
+           kiện: dark mode vốn đã tối nên không đổi gì ở đó.
 
-        {block.transcript.length > 0 && (
-          /* Đóng sẵn, không mở sẵn. Lời thoại về được nghĩa là người học đã trả
+           `brightness-125` kéo nền widget từ ~#3b3b3b lên ~#4a4a4a — vẫn tối
+           hơn trang nên vẫn nổi, nhưng thôi nặng như một khối đen. Biểu tượng
+           vốn đã trắng nên chúng không sáng thêm được, tức tương phản bên trong
+           widget không mất đi. */
+        <audio
+          src={block.audioUrl}
+          controls
+          preload="metadata"
+          className="w-full brightness-150 [color-scheme:dark]"
+        >
+          Trình duyệt của bạn không phát được audio.
+        </audio>
+      )}
+
+      {block.transcript.length > 0 && (
+        /* Đóng sẵn, không mở sẵn. Lời thoại về được nghĩa là người học đã trả
              lời xong, nhưng họ có thể muốn nghe lại lần nữa trước khi đọc — mở
              sẵn thì mắt đọc trước tai, và lần nghe lại đó mất giá trị. */
-          <details className="rounded border border-rule bg-panel">
-            <summary className="cursor-pointer select-none px-4 py-2 text-small font-medium">
-              Full transcript
-            </summary>
-            <div className="space-y-2 border-t border-rule px-4 py-3">
-              {block.transcript.map((turn, index) => (
-                <p key={index} className="text-small leading-relaxed">
-                  <span className="text-ink-faint">{turn.speaker}: </span>
-                  {turn.text}
-                </p>
-              ))}
-            </div>
-          </details>
-        )}
+        <details className="rounded border border-rule bg-panel">
+          <summary className="cursor-pointer select-none px-4 py-2 text-small font-medium">
+            Full transcript
+          </summary>
+          <div className="space-y-2 border-t border-rule px-4 py-3">
+            {block.transcript.map((turn, index) => (
+              <p key={index} className="text-small leading-relaxed">
+                <span className="text-ink-faint">{turn.speaker}: </span>
+                {turn.text}
+              </p>
+            ))}
+          </div>
+        </details>
+      )}
 
-        {block.passages.map((passage, index) => (
-          <article
-            key={index}
-            /* Nhãn cũng đi vào cây trợ năng, không chỉ lên màn hình: `article`
+      {block.passages.map((passage, index) => (
+        <article
+          key={index}
+          /* Nhãn cũng đi vào cây trợ năng, không chỉ lên màn hình: `article`
                là landmark điều hướng được, nên một bộ ba tài liệu nhảy qua lại
                được thay vì phải cuộn. Dùng `aria-label` chứ không dựng `<h2>` —
                màn làm bài không có heading nào khác, và một heading đơn độc
                không có h1 phía trên là một cây tiêu đề gãy. */
-            aria-label={numbered ? `Đoạn ${index + 1}` : undefined}
-            className="rounded border border-rule bg-panel p-4"
-          >
-            {/* Chỉ đánh số khi có từ hai đoạn trở lên. Một đoạn duy nhất mà đề
+          aria-label={numbered ? `Đoạn ${index + 1}` : undefined}
+          className="rounded border border-rule bg-panel p-4"
+        >
+          {/* Chỉ đánh số khi có từ hai đoạn trở lên. Một đoạn duy nhất mà đề
                 "Đoạn 1" là thêm một dòng chữ không trả lời câu hỏi nào — còn từ
                 hai đoạn thì câu hỏi bắt đầu nói "trong email thứ hai", và người
                 học phải đối chiếu được. */}
-            {numbered && (
-              <p className="mb-2 border-b border-rule pb-1.5 text-label font-semibold uppercase text-ink-faint">
-                Passage {index + 1}
-              </p>
-            )}
-            {passage.text && (
-              <p className="whitespace-pre-wrap text-small leading-relaxed">{passage.text}</p>
-            )}
-            {passage.image_url && (
-              <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={passage.image_url}
-                  alt={passage.image_alt ?? ""}
-                  className={cx(
-                    "max-h-[60vh] w-full rounded border border-rule object-contain",
-                    (passage.text || numbered) && "mt-3",
-                  )}
-                />
-                {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,
-                    không riêng Part 1 (ADR-004 §4.2). */}
-                {credit(passage.image_attribution, passage.image_license) && (
-                  <p className="mt-1.5 text-label text-ink-faint">
-                    {credit(passage.image_attribution, passage.image_license)}
-                  </p>
+          {numbered && (
+            <p className="mb-2 border-b border-rule pb-1.5 text-label font-semibold uppercase text-ink-faint">
+              Passage {index + 1}
+            </p>
+          )}
+          {passage.text && (
+            <p className="whitespace-pre-wrap text-small leading-relaxed">{passage.text}</p>
+          )}
+          {passage.image_url && (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={passage.image_url}
+                alt={passage.image_alt ?? ""}
+                className={cx(
+                  "max-h-[60vh] w-full rounded border border-rule object-contain",
+                  (passage.text || numbered) && "mt-3",
                 )}
-              </>
-            )}
-          </article>
-        ))}
-      </div>
+              />
+              {/* Ghi công là điều kiện của giấy phép ở MỌI nơi ảnh xuất hiện,
+                    không riêng Part 1 (ADR-004 §4.2). */}
+              {credit(passage.image_attribution, passage.image_license) && (
+                <p className="mt-1.5 text-label text-ink-faint">
+                  {credit(passage.image_attribution, passage.image_license)}
+                </p>
+              )}
+            </>
+          )}
+        </article>
+      ))}
+    </>
+  );
 
+  // Không chặn bề rộng ở nhánh này. `max-w-3xl` cũ xấp xỉ đúng MỘT cột của lưới
+  // hai cột, nên khối chỉ-có-audio vẫn ngồi trong nửa màn hình với nửa kia bỏ
+  // trống — đúng thứ việc bỏ lưới đi định sửa. Khung ngoài đã chặn ở
+  // `max-w-[110rem]`.
+  if (!sideBySide) {
+    return (
+      <section className="space-y-4">
+        {stimulus}
+        {questions}
+      </section>
+    );
+  }
+
+  return (
+    <section className="grid gap-6 lg:grid-cols-2">
+      <div className="space-y-3 lg:sticky lg:top-32 lg:self-start">{stimulus}</div>
       {questions}
     </section>
   );
