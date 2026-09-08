@@ -22,6 +22,7 @@ from app.core.media import public_audio_url
 from app.models import (
     Topic,
     User,
+    VocabularyAudio,
     VocabularyCollection,
     VocabularyCollectionItem,
     VocabularyEntry,
@@ -117,10 +118,15 @@ def _detail(entry: VocabularyEntry) -> VocabularyDetail:
 
 
 def _entry_query() -> Select[tuple[VocabularyEntry]]:
+    # Nạp hai tầng relationship: mỗi từ có ~8 clip (4 giọng × 2 loại), và mỗi
+    # clip trỏ một `asset` — bỏ tầng dưới là mỗi lượt render thẻ một truy vấn
+    # `audio_asset` riêng, tức vài trăm query cho một phiên ôn 55 thẻ.
     return (
         select(VocabularyEntry)
         .where(VocabularyEntry.status == PUBLISHED)
-        .options(selectinload(VocabularyEntry.audio))
+        .options(
+            selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
+        )
     )
 
 
@@ -332,7 +338,9 @@ def get_vocabulary(entry_id: uuid.UUID, db: Session = Depends(get_db)) -> Vocabu
     entry = db.scalars(
         select(VocabularyEntry)
         .where(VocabularyEntry.id == entry_id, VocabularyEntry.status == PUBLISHED)
-        .options(selectinload(VocabularyEntry.audio))
+        .options(
+            selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
+        )
     ).first()
     if entry is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")

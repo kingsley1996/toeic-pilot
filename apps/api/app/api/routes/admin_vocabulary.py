@@ -28,6 +28,7 @@ from app.models import (
     DictationItem,
     Topic,
     User,
+    VocabularyAudio,
     VocabularyCollection,
     VocabularyCollectionItem,
     VocabularyEntry,
@@ -598,7 +599,9 @@ def list_vocabulary_admin(
 ) -> Page[VocabularyAdmin]:
     query = select(VocabularyEntry)
     entries = db.scalars(
-        query.options(selectinload(VocabularyEntry.audio))
+        query.options(
+            selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
+        )
         # `id` khép thứ tự lại thành toàn phần: `headword` KHÔNG duy nhất (khoá
         # duy nhất là cặp headword + part_of_speech), nên thiếu nó thì lật trang
         # sẽ lặp một từ và nuốt mất một từ khác, không lỗi nào được ném ra.
@@ -643,7 +646,9 @@ def publish_vocabulary(
     entry = db.scalars(
         select(VocabularyEntry)
         .where(VocabularyEntry.id == entry_id)
-        .options(selectinload(VocabularyEntry.audio))
+        .options(
+            selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
+        )
     ).first()
     if entry is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
