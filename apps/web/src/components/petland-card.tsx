@@ -12,7 +12,7 @@ import { apiFetch } from "@/lib/api";
 import { subscribeToCheer } from "@/lib/pet-cheer";
 import { subscribeToPetNotices } from "@/lib/pet-notice";
 import { requestPetOpen } from "@/lib/pet-open";
-import { subscribeToPetState } from "@/lib/pet-state";
+import { publishPet, subscribeToPetState } from "@/lib/pet-state";
 import { useSession } from "@/lib/session";
 
 /**
@@ -74,7 +74,12 @@ export function PetlandCard() {
     if (!token) return;
     // 204 làm `apiFetch` trả về `undefined`; ở đây nó nghĩa là "chưa có thú".
     apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token })
-      .then((body) => setPet(body ?? null))
+      .then((body) => {
+        setPet(body ?? null);
+        // Kết quả của chính card cũng đi qua kênh: nó là nguồn đầu tiên làm ấm
+        // bộ đệm `lastPet()`, để bảng (mở SAU) khỏi phải gọi lại đường này.
+        if (body) publishPet(body);
+      })
       .catch(() => {
         /* Góc thú cưng hỏng thì sidebar vẫn phải dùng được. */
       });

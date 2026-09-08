@@ -18,6 +18,16 @@ import { type PetPublic } from "@toeic-pilot/shared";
 
 const listeners = new Set<(pet: PetPublic) => void>();
 
+// Bản PetPublic MỚI NHẤT đã đi qua kênh này. Chỉ bộ đệm một giá trị: thứ duy
+// nhất người tiêu thụ cần khi vào giữa phiên là "con thú đang là gì", và giá
+// trị cũ hơn giá trị mới không có vai trò nào — còn lịch sử đầy đủ là việc của
+// máy chủ, không của client.
+let latest: PetPublic | null = null;
+
+export function lastPet(): PetPublic | null {
+  return latest;
+}
+
 export function subscribeToPetState(onPet: (pet: PetPublic) => void): () => void {
   listeners.add(onPet);
   return () => {
@@ -26,5 +36,6 @@ export function subscribeToPetState(onPet: (pet: PetPublic) => void): () => void
 }
 
 export function publishPet(pet: PetPublic): void {
+  latest = pet;
   for (const listener of listeners) listener(pet);
 }

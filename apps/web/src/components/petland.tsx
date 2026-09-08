@@ -23,7 +23,7 @@ import { PetlandMusicToggle } from "@/components/petland-music-toggle";
 import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
 import { subscribeToCheer } from "@/lib/pet-cheer";
 import { subscribeToPetOpen } from "@/lib/pet-open";
-import { publishPet } from "@/lib/pet-state";
+import { lastPet, publishPet } from "@/lib/pet-state";
 import { PixelIcon } from "@/components/pixel-icon";
 import {
   advance,
@@ -832,8 +832,19 @@ function PetPanel({
      * nó phải hiện ngay khi API trả lời. Một promise, hai người tiêu thụ: không
      * gọi API hai lần.
      */
-    // 204 (chưa mở trứng) làm `apiFetch` trả `undefined` — xem `PetlandCard`.
-    const petLoad = apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token });
+    /*
+     * Bộ đệm `lastPet()` trước, mạng sau: thẻ ở sidebar đã gọi đúng đường này
+     * lúc trang dựng, và mọi cập nhật của nó đi qua kênh pet-state. Mở bảng
+     * WITHOUT đó là một lượt GET nữa cho thứ đã có — chỉ người KHÔNG có thú (bộ
+     * đệm rỗng) mới phải đi mạng ở đây.
+     *
+     * Giá trị đệm có thể cũ: nhu cầu trôi theo thời gian thật, và lượt poll một
+     * phút (effect chạm mặt) là thứ kéo chúng về hiện tại — cùng đánh đổi với
+     * cái thẻ, vốn cũng chỉ đúng đến lượt đọc cuối của nó.
+     */
+    const petLoad: Promise<PetPublic | undefined> = lastPet()
+      ? Promise.resolve(lastPet() ?? undefined)
+      : apiFetch<PetPublic | undefined>(API_ROUTES.pet, { token });
     void petLoad
       .then((pet) => {
         if (!alive) return;
