@@ -1,0 +1,48 @@
+[PASSAGE]
+To: All Office Staff
+From: Head of Technical Department
+Subject: Printer Maintenance and Repair Requests
+Date: 15 May
+
+This memo reminds everyone of the correct procedure for printer maintenance and repair requests. The new policy requires every user ------- (1) the online maintenance checklist before using the shared printer. If a machine jams or displays an error code, do not attempt to repair it yourself. Instead, contact the help desk and request a ------- (2) from a certified technician.
+
+All repair requests ------- (3) by 4 p.m. each day, and technicians will respond within two business days. ------- (4)
+
+Thank you for your cooperation.
+
+[QUESTION]
+Blank (1)
+(A) to complete
+(B) complete
+(C) completing
+(D) completed
+Answer: A
+Explanation: Câu "The new policy requires every user ------- (1) the online maintenance checklist before using the shared printer." có mẫu "requires every user" nên cần nguyên mẫu có to. | (A) "to complete" — đúng dạng nguyên mẫu có to sau "requires every user". | (B) "complete" — thiếu "to" nên không hợp mẫu require + object + to-infinitive. | (C) "completing" — dạng V-ing không hợp sau tân ngữ của "requires". | (D) "completed" — dạng quá khứ hoặc phân từ, không hợp vị trí nguyên mẫu.
+Source: original
+[QUESTION]
+Blank (2)
+(A) receipt
+(B) repair
+(C) refund
+(D) reservation
+Answer: B
+Explanation: Câu trước "If a machine jams or displays an error code, do not attempt to repair it yourself." cho biết máy hỏng nên cần một dịch vụ sửa chữa. | (A) "receipt" — là biên lai, không liên quan đến máy hỏng. | (B) "repair" — đúng nghĩa sửa chữa mà máy lỗi đòi hỏi. | (C) "refund" — là hoàn tiền, sai trường nghĩa. | (D) "reservation" — là đặt chỗ, không hợp với kỹ thuật viên.
+Source: original
+[QUESTION]
+Blank (3)
+(A) submit
+(B) submitted
+(C) are submitted
+(D) will submit
+Answer: C
+Explanation: Câu "All repair requests ------- (3) by 4 p.m. each day, and technicians will respond within two business days." có "each day" chỉ thói quen và "requests" nhận hành động, nên cần bị động hiện tại đơn. | (A) "submit" — chủ động, biến requests thành người nộp. | (B) "submitted" — thiếu trợ động từ nên không làm được vị ngữ. | (C) "are submitted" — đúng bị động hiện tại đơn cho lịch nộp hằng ngày. | (D) "will submit" — chủ động tương lai, sai nghĩa và sai thể.
+Source: original
+[QUESTION]
+Blank (4)
+(A) Our department will hold a meeting next week.
+(B) The new printer model has a faster warm-up time.
+(C) Please keep the maintenance checklist in a safe place.
+(D) Requests received after this time will be handled the next business day.
+Answer: D
+Explanation: Câu trước "All repair requests are submitted by 4 p.m. each day, and technicians will respond within two business days." đặt ra mốc giờ và thời gian phản hồi, nên câu điền phải nói tiếp về yêu cầu nộp sau mốc đó. | (A) "Our department will hold a meeting next week." — lạc đề vì không liên quan đến lịch nộp yêu cầu. | (B) "The new printer model has a faster warm-up time." — nói về model máy in, lạc đoạn quy trình sửa chữa. | (C) "Please keep the maintenance checklist in a safe place." — nhắc checklist nhưng không nối với deadline vừa nêu. | (D) "Requests received after this time will be handled the next business day." — tiếp nối trực tiếp mốc 4 p.m. và quy trình phản hồi.
+Source: original

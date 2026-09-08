@@ -1,0 +1,6 @@
+kind: chart
+Quarterly Performance Review Scores
+Sales | 78
+Marketing | 80
+IT | 82
+Finance | 84

@@ -1,0 +1,55 @@
+[PASSAGE]
+Lan [8:02 A.M.]
+Hi Minh, the client asked whether our Thursday stand-up can move from 10:00 A.M. to 9:30 A.M. The warehouse team can start early, but the broker's office opens at 9:00 A.M. The customs broker only replies after 9:15 A.M. If we start at 9:30, we may not have his answer before the meeting.
+
+Minh [8:06 A.M.]
+The port delay is resolved, so it is not on the agenda. The agenda includes customs paperwork and the delivery window. The customs paperwork needs the broker's confirmation, and the delivery window depends on the trucking partner's morning route update.
+
+Lan [8:10 A.M.]
+The trucking partner sends the route update at 9:45 A.M. If we keep the meeting at 10:00 A.M., we can include both items. If we move it to 9:30, we will have to postpone the customs item until Friday.
+
+Minh [8:14 A.M.]
+I can ask the client if 10:00 A.M. is still acceptable. The client wants to know whether the shipment will leave before the weekend. We can answer that if the route update confirms the truck arrives by noon.
+
+Lan [8:18 A.M.]
+Please do. Also, any change to the stand-up must be posted in the shared calendar before 8:30 A.M. It is now 8:18, so we have twelve minutes. If the client insists on 9:30, we must update the calendar and tell the broker.
+
+Minh [8:22 A.M.]
+Understood. I will send the client a short note now. If there is no reply by 8:30, I will assume the original 10:00 A.M. time remains.
+
+[QUESTION]
+Why are the colleagues exchanging messages?
+(A) To confirm a broker's office hours
+(B) To report a completed shipment
+(C) To request a new trucking partner
+(D) To decide whether to change a meeting time
+Answer: D
+Explanation: Tin nhắn mở đầu nêu "the client asked whether our Thursday stand-up can move from 10:00 A.M. to 9:30 A.M.", tức mục đích trao đổi là xem có dời giờ họp hay không. | (A) "To confirm a broker's office hours" — giờ mở cửa của broker chỉ là chi tiết, không phải mục đích trao đổi. | (B) "To report a completed shipment" — lô hàng chưa được báo là đã rời đi, chỉ có câu hỏi về việc rời trước cuối tuần. | (C) "To request a new trucking partner" — không có yêu cầu đổi đối tác vận tải. | (D) "To decide whether to change a meeting time" — đúng với câu hỏi về việc dời giờ họp.
+Source: original
+[QUESTION]
+What time does the trucking partner send the route update?
+(A) 9:45 A.M.
+(B) 9:15 A.M.
+(C) 9:00 A.M.
+(D) 10:00 A.M.
+Answer: A
+Explanation: Tin nhắn lúc 8:10 A.M. ghi rõ "The trucking partner sends the route update at 9:45 A.M.". | (A) "9:45 A.M." — đúng với câu nói về đối tác vận tải gửi cập nhật tuyến. | (B) "9:15 A.M." — đó là thời điểm broker mới trả lời, không phải giờ gửi cập nhật tuyến. | (C) "9:00 A.M." — đó là giờ văn phòng broker mở cửa, không phải giờ gửi cập nhật tuyến. | (D) "10:00 A.M." — đó là giờ họp gốc, không phải giờ gửi cập nhật tuyến.
+Source: original
+[QUESTION]
+At 8:18 A.M., what does Lan mean when she writes, "we have twelve minutes"?
+(A) The meeting will last twelve minutes.
+(B) They must post any change before 8:30.
+(C) The broker will reply in twelve minutes.
+(D) The trucking update is twelve minutes late.
+Answer: B
+Explanation: Tin nhắn lúc 8:18 A.M. nói "any change to the stand-up must be posted in the shared calendar before 8:30 A.M. It is now 8:18, so we have twelve minutes", tức còn mười hai phút trước hạn chót cập nhật lịch. | (A) "The meeting will last twelve minutes." — mười hai phút chỉ là thời gian còn lại, không phải độ dài cuộc họp. | (B) "They must post any change before 8:30." — đúng vì hạn chót đăng thay đổi là trước 8:30 A.M. | (C) "The broker will reply in twelve minutes." — không có thông tin broker sẽ trả lời sau mười hai phút. | (D) "The trucking update is twelve minutes late." — không có thông tin cập nhật tuyến bị trễ mười hai phút.
+Source: original
+[QUESTION]
+What will happen if the client does not reply by 8:30 A.M.?
+(A) The customs item will be postponed until Friday.
+(B) The calendar must be updated immediately.
+(C) The meeting will cover both agenda items.
+(D) The broker's office will open earlier.
+Answer: C
+Explanation: Tin nhắn cuối nêu "If there is no reply by 8:30, I will assume the original 10:00 A.M. time remains", và tin nhắn trước đó nêu "If we keep the meeting at 10:00 A.M., we can include both items". | (A) "The customs item will be postponed until Friday." — điều này chỉ xảy ra nếu họp dời sang 9:30, còn không có phản hồi thì giữ 10:00. | (B) "The calendar must be updated immediately." — không có phản hồi thì không cần đổi lịch, chỉ cần cập nhật nếu client khăng khăng 9:30. | (C) "The meeting will cover both agenda items." — đúng vì không có phản hồi thì giữ 10:00, và giữ 10:00 thì có thể đưa cả hai mục vào. | (D) "The broker's office will open earlier." — không có thông tin nào cho thấy văn phòng broker sẽ mở sớm hơn.
+Source: original

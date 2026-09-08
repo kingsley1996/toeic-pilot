@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good evening, passengers. This is Elena, the station manager, at Central Metro Station. Line two trains will not run today because of urgent track maintenance. The line is expected to reopen tomorrow morning. For now, please use the free replacement service. Buses leave every ten minutes from the area directly to the left of Area B. Show your metro pass to the driver. The service runs until ten p.m. tonight. If you need a refund, visit the office before you leave. We apologize for the delay and thank you for your patience.
+
+[QUESTION]
+Who is most likely making the announcement?
+(A) A train passenger
+(B) A bus driver
+(C) A maintenance worker
+(D) A station manager
+Answer: D
+Explanation: Người nói mở đầu bằng "This is Elena, the station manager, at Central Metro Station" — người đang thông báo là quản lý nhà ga. | (A) "A train passenger" — bài có "trains" và "passengers", nhưng người nói đang phát thông báo, không phải hành khách. | (B) "A bus driver" — bài có "Buses" và "driver", nhưng tài xế chỉ được nhắc khi hành khách đưa thẻ. | (C) "A maintenance worker" — bài có "track maintenance", nhưng không nói người nói là nhân viên bảo trì. | (D) "A station manager" — khớp đúng chức danh được nói ra.
+Source: original
+[QUESTION]
+Look at the graphic. Where should passengers go to catch the replacement buses?
+(A) Area A
+(B) Area B
+(C) Area C
+(D) Area D
+Answer: A
+Explanation: Người nói nói "Buses leave every ten minutes from the area directly to the left of Area B"; trên sơ đồ, ô bên trái Area B là Area A. | (A) "Area A" — khớp vị trí được suy ra từ sơ đồ. | (B) "Area B" — được nhắc đến như mốc vị trí, không phải nơi đón xe. | (C) "Area C" — có từ "area" trong bài nhưng không khớp vị trí bên trái Area B. | (D) "Area D" — có từ "area" trong bài nhưng không khớp vị trí bên trái Area B.
+Source: original
+[QUESTION]
+What is true about the replacement buses?
+(A) They leave from Platform 4.
+(B) They run every ten minutes until ten p.m.
+(C) They require a refund.
+(D) They reopen tomorrow morning.
+Answer: B
+Explanation: Hai chi tiết quyết định là "Buses leave every ten minutes" và "The service runs until ten p.m. tonight". | (A) "They leave from Platform 4" — Platform 4 không được nói đến trong bài. | (B) "They run every ten minutes until ten p.m." — khớp cả hai chi tiết vừa dẫn. | (C) "They require a refund" — bài có "refund", nhưng refund là việc cần làm nếu muốn hoàn tiền, không phải yêu cầu khi đi xe. | (D) "They reopen tomorrow morning" — bài có "reopen tomorrow morning", nhưng đó là tuyến đường sắt, không phải xe buýt.
+Source: original

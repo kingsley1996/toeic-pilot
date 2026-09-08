@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Welcome to the apartment building. I'm the agent.
+voice: au_male_1
+Thank you. My wife and I are looking for a home near her office.
+voice: us_female_1
+This two-bedroom unit is ten minutes from the train station and close to the business district.
+voice: au_male_1
+The kitchen is nice, but the parking space is too small.
+voice: us_female_1
+We can show you a larger unit on the fifth floor. It has two parking spaces.
+voice: au_male_1
+Please send us photos of that unit by email.
+
+[QUESTION]
+Where does the conversation most likely take place?
+(A) At a rental office
+(B) At a train station
+(C) At a business district
+(D) At an apartment complex
+Answer: D
+Explanation: Người phụ nữ nói "Welcome to the apartment building" và "This two-bedroom unit", nên cuộc trò chuyện diễn ra ở khu căn hộ. | (A) "At a rental office" — văn phòng cho thuê không được nhắc đến trong hội thoại. | (B) "At a train station" — ga tàu chỉ được nhắc đến như khoảng cách, không phải nơi đang nói chuyện. | (C) "At a business district" — khu thương mại chỉ được nhắc đến như nơi gần căn hộ. | (D) "At an apartment complex" — đúng vì người môi giới chào khách đến tòa nhà căn hộ.
+Source: original
+[QUESTION]
+What does the man mean when he says, "the parking space is too small"?
+(A) The parking space makes this unit unsuitable
+(B) He wants to visit the fifth floor
+(C) The kitchen is not nice
+(D) The parking space is unavailable
+Answer: A
+Explanation: Người đàn ông nói "the parking space is too small" sau khi khen nhà bếp, và người môi giới đề nghị căn hộ lớn hơn, nên ý anh là căn này không phù hợp. | (A) "The parking space makes this unit unsuitable" — đúng vì chỗ đậu xe quá nhỏ khiến căn hộ không đáp ứng nhu cầu. | (B) "He wants to visit the fifth floor" — tầng năm được nhắc đến sau đó, nhưng không phải ý của câu nói. | (C) "The kitchen is not nice" — nhà bếp được nói là đẹp, không phải xấu. | (D) "The parking space is unavailable" — chỗ đậu xe không được nói là không có, chỉ là quá nhỏ.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Call his wife
+(B) Email photos of another apartment
+(C) Reserve the parking space
+(D) Show the fifth-floor unit
+Answer: B
+Explanation: Người đàn ông nói "Please send us photos of that unit by email", tức anh ấy xin ảnh qua email. | (A) "Call his wife" — vợ được nhắc đến, nhưng không có yêu cầu gọi điện. | (B) "Email photos of another apartment" — đúng vì anh ấy xin ảnh của căn hộ khác qua email. | (C) "Reserve the parking space" — chỗ đậu xe được nhắc đến, nhưng không có yêu cầu giữ chỗ. | (D) "Show the fifth-floor unit" — người môi giới đề nghị xem căn hộ tầng năm, không phải yêu cầu của người đàn ông.
+Source: original

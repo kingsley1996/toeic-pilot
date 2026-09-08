@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Good morning. We need to interview candidates for the marketing coordinator position.
+voice: au_male_1
+I have three applicants. The first one has five years of experience.
+voice: us_female_1
+Please schedule her for Monday at ten. Can you also call the second applicant?
+voice: au_male_1
+Sure. He asked for a video interview instead of an office meeting.
+voice: us_female_1
+That is fine. Tell him we will send the link on Friday.
+voice: au_male_1
+I will. Should I ask the third applicant to come next week?
+voice: us_female_1
+No. Her resume is incomplete, so we will not interview her.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To arrange interviews for an open position
+(B) To evaluate a marketing coordinator's performance
+(C) To request a video link for Friday
+(D) To reject an incomplete resume
+Answer: A
+Explanation: Người phụ nữ nói "We need to interview candidates for the marketing coordinator position", tức bàn việc sắp xếp phỏng vấn cho vị trí đang trống. | (A) "To arrange interviews for an open position" — đúng mục đích chính. | (B) "To evaluate a marketing coordinator's performance" — "marketing coordinator" được nhắc đến nhưng không phải đánh giá hiệu suất. | (C) "To request a video link for Friday" — "video" và "Friday" có xuất hiện nhưng không phải mục đích cuộc trao đổi. | (D) "To reject an incomplete resume" — "incomplete resume" được nói về ứng viên thứ ba, không phải lý do chính.
+Source: original
+[QUESTION]
+What does the man say about the second applicant?
+(A) He has five years of experience
+(B) He requested a video interview
+(C) He will come next week
+(D) He sent an incomplete resume
+Answer: B
+Explanation: Người đàn ông nói "He asked for a video interview instead of an office meeting", tức ứng viên thứ hai xin phỏng vấn qua video. | (A) "He has five years of experience" — "five years of experience" là của ứng viên đầu tiên. | (B) "He requested a video interview" — đúng chi tiết về ứng viên thứ hai. | (C) "He will come next week" — "next week" được hỏi về ứng viên thứ ba, không phải ứng viên thứ hai. | (D) "He sent an incomplete resume" — "incomplete resume" thuộc về ứng viên thứ ba.
+Source: original
+[QUESTION]
+What will the man do on Friday?
+(A) Schedule the first applicant
+(B) Call the second applicant
+(C) Send the applicant a link
+(D) Interview the third applicant
+Answer: C
+Explanation: Người phụ nữ nói "Tell him we will send the link on Friday" và người đàn ông đáp "I will", tức anh ấy sẽ gửi liên kết vào thứ Sáu. | (A) "Schedule the first applicant" — "schedule" và "first applicant" có nhắc đến nhưng không phải việc vào thứ Sáu. | (B) "Call the second applicant" — "call the second applicant" được yêu cầu nhưng không gắn với thứ Sáu. | (C) "Send the applicant a link" — đúng hành động vào thứ Sáu. | (D) "Interview the third applicant" — "interview" và "third applicant" xuất hiện nhưng ứng viên này sẽ không được phỏng vấn.
+Source: original

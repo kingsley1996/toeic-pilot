@@ -1,0 +1,6 @@
+kind: chart
+Monthly Sales Revenue in Thousands of Dollars
+March | 180
+April | 145
+May | 210
+June | 265

@@ -1,0 +1,37 @@
+[PASSAGE]
+**Local Dining Review: Verdant Table**
+By Alicia Gomez
+
+Verdant Table, a contemporary plant-based bistro, recently opened its doors on Elmwood Avenue. As a resident of the area, I was eager to determine whether this new dining spot could successfully expand our neighborhood's culinary variety. To celebrate its launch, the restaurant is currently offering a complimentary dessert to every guest who orders an entrée before 6:00 P.M.
+
+During my visit on Thursday evening, I sampled the roasted squash risotto. The dish demonstrated remarkable creativity, combining rich herbs with fresh, locally sourced vegetables. Diners will appreciate that the chef updates the dinner selections every two weeks to reflect the changing agricultural harvest. 
+
+The service was efficient throughout my meal, with the waitstaff readily answering questions about gluten-free preparation. Although the dining room has modest dimensions with only ten tables, the cozy setting provides an inviting atmosphere. Keep in mind that the introductory dessert special applies exclusively to weekday visits and ends after this month. Overall, Verdant Table delivers outstanding food, and I encourage local food enthusiasts to frequent this delightful new establishment.
+
+[QUESTION]
+What is the main purpose of the review?
+(A) To assess a newly opened dining establishment
+(B) To announce changes to a restaurant's operating hours
+(C) To compare several vegetarian menus in the area
+(D) To advertise a local agricultural produce market
+Answer: A
+Explanation: Bài viết mở đầu bằng "Verdant Table, a contemporary plant-based bistro, recently opened its doors... I was eager to determine whether this new dining spot could successfully expand our neighborhood's culinary variety", cho thấy mục đích chính là đánh giá một nhà hàng mới mở tại địa phương. | (A) "To assess a newly opened dining establishment" — đúng với mục đích đánh giá nhà hàng mới mở được nêu ở phần mở đầu và xuyên suốt bài viết. | (B) "To announce changes to a restaurant's operating hours" — bài viết không hề thông báo việc thay đổi giờ hoạt động. | (C) "To compare several vegetarian menus in the area" — bài viết chỉ tập trung đánh giá một nhà hàng duy nhất là Verdant Table. | (D) "To advertise a local agricultural produce market" — chợ nông sản địa phương chỉ được nhắc thoáng qua như nguồn cung cấp nguyên liệu, không phải đối tượng được quảng cáo.
+Source: original
+[QUESTION]
+What is suggested about the complimentary dessert promotion?
+(A) It requires customers to make a reservation in advance.
+(B) It is valid only on certain days for a limited period.
+(C) It is available to anyone who orders a side dish.
+(D) It will become a permanent feature next month.
+Answer: B
+Explanation: Đoạn 1 nêu "To celebrate its launch, the restaurant is currently offering a complimentary dessert to every guest who orders an entrée before 6:00 P.M." và đoạn 3 bổ sung "the introductory dessert special applies exclusively to weekday visits and ends after this month", kết hợp hai đoạn suy ra ưu đãi này chỉ áp dụng vào một số ngày nhất định trong tuần (ngày thường) và trong thời gian giới hạn (hết tháng này). | (A) "It requires customers to make a reservation in advance" — bài viết không đề cập yêu cầu phải đặt bàn trước để nhận ưu đãi. | (B) "It is valid only on certain days for a limited period" — suy luận đúng từ sự kết hợp của hai dữ kiện nêu ở đoạn 1 và đoạn 3. | (C) "It is available to anyone who orders a side dish" — đoạn 1 nêu rõ ưu đãi áp dụng khi gọi món chính (entrée), không phải món phụ (side dish). | (D) "It will become a permanent feature next month" — đoạn 3 nói rõ chương trình sẽ kết thúc sau tháng này (ends after this month), trái ngược với việc trở thành ưu đãi vĩnh viễn.
+Source: original
+[QUESTION]
+In the review, the word "frequent" in paragraph 3 is closest in meaning to
+(A) discuss
+(B) manage
+(C) visit
+(D) inspect
+Answer: C
+Explanation: Trong đoạn 3, câu "I encourage local food enthusiasts to frequent this delightful new establishment" mang nghĩa người viết khuyến khích những người mê ẩm thực hãy thường xuyên ghé thăm/lui tới nhà hàng mới này, nên "frequent" đồng nghĩa với "visit". | (A) "discuss" — mang nghĩa thảo luận, không khớp với hành động hướng tới một địa điểm nhà hàng. | (B) "manage" — mang nghĩa quản lý, không phù hợp với ngữ cảnh thực khách đến ủng hộ quán. | (C) "visit" — mang nghĩa ghé thăm, phù hợp nhất với ngữ cảnh lui tới một địa điểm ăn uống. | (D) "inspect" — mang nghĩa thanh tra/kiểm tra, sai nghĩa trong văn cảnh bài đánh giá ẩm thực.
+Source: original

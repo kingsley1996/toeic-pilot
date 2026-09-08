@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Attention, passengers on flight four-oh-two to Hanoi. This is the gate agent. I am sorry to announce that departure has been delayed by thirty minutes because of bad weather at the destination. The new departure time is six-fifteen. Boarding will begin at six-oh-five at gate twenty-three. While you wait, please remain in the departure lounge and keep your boarding pass ready. At six-oh-zero, a staff member will hand out updated boarding passes at the gate. Passengers who need assistance with meals or hotel vouchers should speak to the customer service desk near gate twenty-three. Thank you for your patience.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a customer service desk
+(B) At a hotel desk
+(C) At an airport
+(D) At a train station
+Answer: C
+Explanation: Người nói mở đầu bằng "Attention, passengers on flight four-oh-two to Hanoi" và nhắc "Boarding will begin at six-oh-five at gate twenty-three" — chuyến bay và cửa ra tàu bay cho thấy thông báo ở sân bay. | (A) "At a customer service desk" — bài có nhắc "customer service desk", nhưng đó là nơi hành khách cần hỗ trợ, không phải nơi phát thông báo. | (B) "At a hotel desk" — bài có nhắc "hotel vouchers" và "desk", nhưng không nói thông báo được phát ở quầy khách sạn. | (C) "At an airport" — khớp với các chi tiết về chuyến bay và cửa ra tàu bay. | (D) "At a train station" — nhà ga không được nhắc đến trong bài.
+Source: original
+[QUESTION]
+Why is the flight delayed?
+(A) A request for hotel vouchers
+(B) A problem at gate twenty-three
+(C) A delay in updated boarding passes
+(D) Bad weather at the destination
+Answer: D
+Explanation: Người nói nói rõ "departure has been delayed by thirty minutes because of bad weather at the destination" — lý do hoãn là thời tiết xấu ở nơi đến. | (A) "A request for hotel vouchers" — "hotel vouchers" có được nhắc, nhưng không liên quan đến lý do hoãn. | (B) "A problem at gate twenty-three" — "gate twenty-three" có được nhắc, nhưng không phải nguyên nhân hoãn. | (C) "A delay in updated boarding passes" — "updated boarding passes" có được nhắc, nhưng chúng là kết quả của việc hoãn, không phải nguyên nhân. | (D) "Bad weather at the destination" — khớp đúng lý do vừa được nêu.
+Source: original
+[QUESTION]
+What will happen after updated boarding passes are handed out?
+(A) Passengers will start boarding at the gate
+(B) Boarding will begin at six-oh-zero at gate twenty-three
+(C) Hotel vouchers will be distributed near the desk
+(D) The departure time will change to six-fifteen
+Answer: A
+Explanation: Người nói cho biết "At six-oh-zero, a staff member will hand out updated boarding passes at the gate" và trước đó "Boarding will begin at six-oh-five at gate twenty-three" — sau khi phát thẻ lên máy bay mới, việc lên tàu bay sẽ bắt đầu. | (A) "Passengers will start boarding at the gate" — diễn đạt lại việc "Boarding will begin" sau mốc phát thẻ. | (B) "Boarding will begin at six-oh-zero at gate twenty-three" — đổi sai thời gian, vì "six-oh-zero" là lúc phát thẻ, không phải lúc boarding. | (C) "Hotel vouchers will be distributed near the desk" — "hotel vouchers" và "desk" có được nhắc, nhưng không phải việc xảy ra sau khi phát thẻ. | (D) "The departure time will change to six-fifteen" — đúng là giờ khởi hành mới, nhưng không phải hành động xảy ra sau khi phát thẻ.
+Source: original

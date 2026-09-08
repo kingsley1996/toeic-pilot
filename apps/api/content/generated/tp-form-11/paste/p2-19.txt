@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who approved the building permit for phase two?
+voice: uk_female_1
+(A) At the main office, I think.
+(B) Do you mean the original or revised permit?
+(C) The approval came through yesterday.
+Answer: B
+Explanation: Câu hỏi là "Who approved the building permit for phase two?", hỏi NGƯỜI. | (A) "At the main office, I think." — nêu một địa điểm, trả lời cho câu hỏi WHERE. | (B) "Do you mean the original or revised permit?" — đáp lại bằng một câu hỏi để làm rõ loại giấy phép. | (C) "The approval came through yesterday." — dùng lại từ approval nhưng trả lời thời gian, không nêu người.
+Source: original

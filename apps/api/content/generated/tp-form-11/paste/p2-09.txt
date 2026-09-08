@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Can I borrow these books with my membership card?
+voice: us_female_1
+(A) Have you checked the borrowing limit?
+(B) Yes, the books are on the shelf.
+(C) The membership fee is due today.
+Answer: A
+Explanation: Câu hỏi là "Can I borrow these books with my membership card?", hỏi YES/NO về việc mượn sách bằng thẻ thành viên. | (A) "Have you checked the borrowing limit?" — đáp gián tiếp bằng một câu hỏi ngược lại, không nêu trực tiếp Yes/No. | (B) "Yes, the books are on the shelf." — đáp Yes nhưng nếu bỏ Yes thì vẫn chỉ nêu vị trí của sách, trả lời câu hỏi khác. | (C) "The membership fee is due today." — dùng lại membership nhưng nói về phí đến hạn, không trả lời việc có mượn được không.
+Source: original

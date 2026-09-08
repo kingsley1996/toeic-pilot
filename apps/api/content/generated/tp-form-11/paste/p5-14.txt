@@ -1,0 +1,9 @@
+[QUESTION]
+The restaurant manager asked the host to confirm the ------- for the table and the menu before the corporate lunch.
+(A) reserved
+(B) reservation
+(C) reserving
+(D) reservable
+Answer: B
+Explanation: Sau "the" cần một danh từ để làm tân ngữ cho "confirm". | (A) "reserved" — là tính từ/phân từ, sai từ loại cho vị trí này. | (B) "reservation" — là danh từ, phù hợp với vị trí sau "the". | (C) "reserving" — là V-ing, không phải danh từ phù hợp sau "the" ở đây. | (D) "reservable" — là tính từ, sai từ loại.
+Source: original

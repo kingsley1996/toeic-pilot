@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Have we accepted the revised contract terms?
+voice: ca_male_1
+(A) Yes, we signed them yesterday.
+(B) No, they're in the office.
+(C) About thirty copies, I think.
+Answer: A
+Explanation: Câu hỏi là "Have we accepted the revised contract terms?", hỏi YES/NO về việc chấp nhận các điều khoản hợp đồng sửa đổi. | (A) "Yes, we signed them yesterday." — trả lời thẳng bằng Yes và xác nhận đã ký. | (B) "No, they're in the office." — nêu nơi chốn, tức trả lời cho câu hỏi Where, không đáp việc chấp nhận. | (C) "About thirty copies, I think." — nêu số lượng bản sao, tức trả lời cho câu hỏi How many, không đáp việc chấp nhận.
+Source: original

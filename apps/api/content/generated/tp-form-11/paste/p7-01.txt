@@ -1,0 +1,41 @@
+[PASSAGE]
+SAKURA ONLINE JAPANESE ACADEMY
+Learn Japanese from anywhere — start speaking with confidence!
+
+Whether you are preparing for the JLPT, planning a trip to Japan, or simply passionate about the language, Sakura Online Japanese Academy has the right course for you. We offer three levels: Beginner (N5–N4), Intermediate (N3–N2), and Advanced (N1), each taught by native-speaking instructors with at least eight years of classroom experience.
+
+Classes meet twice a week through our custom video platform, with sessions available in both morning (9:00–10:30 A.M.) and evening (7:00–8:30 P.M.) slots to fit your schedule. Every student receives a digital textbook, access to recorded lessons for 30 days, and monthly one-on-one progress consultations with an assigned tutor.
+
+Tuition is ¥18,000 per month for the Beginner and Intermediate levels and ¥22,000 per month for the Advanced level.
+
+Enrol before April 30 and receive a 15-percent early-registration discount on your first two months. Students who register with a friend will each receive an additional 5-percent discount applied for the full duration of the course.
+
+Visit www.sakura-ja-academy.com to register today. For questions, e-mail info@sakura-ja.com or call 03-5555-0192.
+
+[QUESTION]
+How often do classes meet at Sakura Online Japanese Academy?
+(A) Twice a week
+(B) Once a week
+(C) Three times a week
+(D) Four times a week
+Answer: A
+Explanation: Quảng cáo nêu rõ "Classes meet twice a week through our custom video platform". | (A) "Twice a week" — khớp chính xác câu dẫn. | (B) "Once a week" — mâu thuẫn, quảng cáo nói "twice". | (C) "Three times a week" — không được đề cập. | (D) "Four times a week" — không được đề cập.
+Source: original
+[QUESTION]
+Which of the following is NOT mentioned as included with enrollment?
+(A) A digital textbook
+(B) A certificate of completion
+(C) Recorded lesson access
+(D) One-on-one consultations
+Answer: B
+Explanation: Quảng cáo liệt kê quyền lợi: "a digital textbook, access to recorded lessons for 30 days, and monthly one-on-one progress consultations with an assigned tutor". | (A) "A digital textbook" — nằm trong danh sách quyền lợi được nêu. | (B) "A certificate of completion" — không xuất hiện trong bất kỳ quyền lợi nào được liệt kê. | (C) "Recorded lesson access" — tương ứng "access to recorded lessons for 30 days". | (D) "One-on-one consultations" — tương ứng "monthly one-on-one progress consultations".
+Source: original
+[QUESTION]
+If a person enrolls in the Advanced-level course before April 30, how much will that person pay per month for the first two months?
+(A) ¥15,300
+(B) ¥18,000
+(C) ¥18,700
+(D) ¥22,000
+Answer: C
+Explanation: Giá khóa Advanced là "¥22,000 per month" (đoạn giá), và điều kiện giảm giá là "Enrol before April 30 and receive a 15-percent early-registration discount on your first two months" (đoạn khuyến mãi) — phải kết hợp hai chỗ riêng biệt, ¥22,000 × 85% = ¥18,700. | (A) "¥15,300" — tương ứng giảm khoảng 30%, không khớp mức 15%. | (B) "¥18,000" — đây là giá khóa Beginner/Intermediate, không phải giá Advanced sau giảm. | (C) "¥18,700" — đúng, ¥22,000 giảm 15%. | (D) "¥22,000" — giá gốc chưa áp dụng bất kỳ giảm giá nào.
+Source: original

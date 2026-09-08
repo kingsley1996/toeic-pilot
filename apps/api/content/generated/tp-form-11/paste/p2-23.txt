@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How should we arrange the trip for the meeting?
+voice: uk_female_1
+(A) Next Tuesday afternoon.
+(B) Rachel will handle it.
+(C) The meeting was cancelled.
+Answer: C
+Explanation: Câu hỏi là "How should we arrange the trip for the meeting?", hỏi CÁCH THỨC. | (A) "Next Tuesday afternoon." — trả lời thời gian, tức đáp cho câu hỏi When. | (B) "Rachel will handle it." — trả lời người phụ trách, tức đáp cho câu hỏi Who. | (C) "The meeting was cancelled." — làm câu hỏi trở nên vô nghĩa vì không còn cuộc họp để sắp xếp chuyến đi.
+Source: original

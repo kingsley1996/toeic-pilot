@@ -1,0 +1,9 @@
+[QUESTION]
+The radio station postponed the weather report ------- the news anchor was checking the updated forecast.
+(A) due to
+(B) because
+(C) despite
+(D) during
+Answer: B
+Explanation: Sau chỗ trống cần một liên từ để nối với mệnh đề phía sau. | (A) "due to" — là giới từ, cần cụm danh từ, không nối được mệnh đề. | (B) "because" — đúng liên từ nối mệnh đề. | (C) "despite" — là giới từ, cần danh từ hoặc V-ing. | (D) "during" — là giới từ, cần danh từ chỉ thời gian.
+Source: original

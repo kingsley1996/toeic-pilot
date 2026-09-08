@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+The room key doesn't work for the gym.
+voice: ca_male_1
+(A) Yes, I checked it.
+(B) It's on the second floor.
+(C) Ask the front desk.
+Answer: C
+Explanation: Câu trần thuật là "The room key doesn't work for the gym.", ngụ ý cần được xử lý. | (A) "Yes, I checked it." — đáp Yes/No cho câu trần thuật; bỏ Yes vẫn chỉ trả lời câu hỏi Did you check it?. | (B) "It's on the second floor." — trả lời câu hỏi ở đâu, không đáp lại câu trần thuật. | (C) "Ask the front desk." — chỉ sang người khác có thể giúp, không tự cung cấp giải pháp.
+Source: original

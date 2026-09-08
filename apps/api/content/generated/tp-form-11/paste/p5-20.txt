@@ -1,0 +1,9 @@
+[QUESTION]
+The introductory gym class is ------- for all registered members.
+(A) complimenting
+(B) compliment
+(C) complimented
+(D) complimentary
+Answer: D
+Explanation: Sau "is" cần tính từ để mô tả lớp học. | (A) "complimenting" — là V-ing, sai dạng sau "is". | (B) "compliment" — là danh từ/động từ, sai từ loại. | (C) "complimented" — là quá khứ phân từ, không hợp thể bị động ở đây. | (D) "complimentary" — đúng tính từ, nghĩa "miễn phí".
+Source: original

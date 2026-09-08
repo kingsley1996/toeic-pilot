@@ -1,0 +1,9 @@
+[QUESTION]
+The clinic reviews patient records ------- detail before each appointment.
+(A) in
+(B) on
+(C) at
+(D) by
+Answer: A
+Explanation: Vị trí trống cần giới từ tạo cụm trạng ngữ chỉ cách thức với "detail". | (A) "in" — đúng giới từ trong cụm "in detail". | (B) "on" — sai giới từ, không tạo cụm "on detail". | (C) "at" — sai giới từ, không tạo cụm "at detail". | (D) "by" — sai giới từ, không tạo cụm "by detail".
+Source: original

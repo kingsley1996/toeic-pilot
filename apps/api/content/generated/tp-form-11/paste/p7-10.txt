@@ -1,0 +1,49 @@
+[PASSAGE]
+**SILVERDALE DAILY HERALD**
+**Council Approves Major Expansion for Silverdale Regional Airport**
+*By David Miller*
+*November 14*
+
+The Silverdale City Council voted unanimously on Tuesday to approve the long-debated Phase II expansion plan for Silverdale Regional Airport. [1] The $45 million initiative is designed to handle rising passenger volumes and attract direct flights from major international carriers.
+
+Under the approved plan, the facility will construct a new passenger concourse featuring six additional departure gates, dedicated customs facilities, and modernized baggage handling systems. [2] In addition, Runway 3 will be extended by 800 meters to accommodate larger wide-body aircraft. Construction is scheduled to commence in March and will conclude before the busy holiday travel season in late 2027. [3] Funding for the project will come from federal transportation grants, with the remainder covered by municipal airport revenue bonds.
+
+To address persistent noise concerns from nearby neighborhoods, airport authorities agreed to several concessions. A sound insulation subsidy will be offered to property owners located within two miles of the southern runway corridor. Furthermore, the mandatory curfew prohibiting departures and landings between 11:00 P.M. and 5:30 A.M. will remain strictly in effect. A public forum will be held at the Silverdale Community Center next Thursday evening to allow residents to review detailed architectural blueprints. [4]
+
+[QUESTION]
+According to the article, how will the expansion project be financed?
+(A) Entirely by private airline investments
+(B) Through federal grants and municipal bonds
+(C) Through an increase in local property taxes
+(D) By selling adjacent commercial real estate
+Answer: B
+Explanation: Đoạn 2 nêu rõ nguồn vốn: "Funding for the project will come from federal transportation grants, with the remainder covered by municipal airport revenue bonds." | (A) "Entirely by private airline investments" — trái với bài đọc khi kinh phí đến từ ngân sách liên bang và trái phiếu, không phải từ các hãng hàng không tư nhân. | (B) "Through federal grants and municipal bonds" — phản ánh chính xác nguồn tài trợ từ trợ cấp liên bang và trái phiếu sân bay đô thị. | (C) "Through an increase in local property taxes" — chi tiết thuế bất động sản không hề được nhắc đến trong bài. | (D) "By selling adjacent commercial real estate" — bài viết không đề cập đến việc bán bất động sản để lấy tiền thực hiện dự án.
+Source: original
+[QUESTION]
+What is suggested about local residents living near the airport?
+(A) They voted against the project during Tuesday's council session.
+(B) They will be required to pay for the new runway extension.
+(C) They have previously voiced objections regarding aircraft noise.
+(D) They are prohibited from attending the upcoming public forum.
+Answer: C
+Explanation: Kết hợp đoạn 1 nhắc đến dự án từng gây tranh luận ("long-debated Phase II expansion plan") và đoạn 3 nêu rõ các nhượng bộ nhằm giải quyết bức xúc ("To address persistent noise concerns from nearby neighborhoods, airport authorities agreed to several concessions"), chứng tỏ cư dân từng phàn nàn về tiếng ồn máy bay. | (A) "They voted against the project during Tuesday's council session" — bài chỉ ghi hội đồng thành phố biểu quyết ("The Silverdale City Council voted"), không phải cư dân. | (B) "They will be required to pay for the new runway extension" — trái với đoạn 2 khi chi phí do chính phủ liên bang và trái phiếu chi trả. | (C) "They have previously voiced objections regarding aircraft noise" — suy luận đúng từ sự kết hợp của hai đoạn về tranh luận và các nhượng bộ liên quan đến tiếng ồn. | (D) "They are prohibited from attending the upcoming public forum" — trái với đoạn 3 vì buổi diễn đàn mở ra cho cư dân tham gia ("to allow residents to review detailed architectural blueprints").
+Source: original
+[QUESTION]
+What is NOT mentioned as a feature of the new concourse?
+(A) Dedicated customs facilities
+(B) A modernized baggage handling system
+(C) Six additional departure gates
+(D) A multi-story parking garage
+Answer: D
+Explanation: Đoạn 2 liệt kê các hạng mục của nhà ga gồm "six additional departure gates, dedicated customs facilities, and modernized baggage handling systems", không nhắc đến nhà để xe. | (A) "Dedicated customs facilities" — có được nhắc đến trong đoạn 2. | (B) "A modernized baggage handling system" — có được nhắc đến trong đoạn 2. | (C) "Six additional departure gates" — có được nhắc đến trong đoạn 2. | (D) "A multi-story parking garage" — không hề được đề cập trong toàn bộ bài viết.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"Representatives from the engineering team will also be present to answer questions about the construction timeline."
+(A) [4]
+(B) [2]
+(C) [3]
+(D) [1]
+Answer: A
+Explanation: Vị trí [4] đứng ngay sau câu thông báo về buổi diễn đàn công chúng ("A public forum will be held at the Silverdale Community Center next Thursday evening..."), nên câu điền vào bổ sung thông tin đại diện đội kỹ sư sẽ có mặt để trả lời câu hỏi là hoàn toàn liền mạch. | (A) [4] — nối tiếp hoàn hảo câu giới thiệu buổi diễn đàn cộng đồng ở trung tâm Silverdale. | (B) [2] — đứng giữa các chi tiết kỹ thuật về nhà ga và đường băng, không hợp lý để chèn thông tin về việc trả lời thắc mắc. | (C) [3] — đứng sau thời gian thi công và trước nguồn kinh phí dự án, không có sự kết nối ngữ cảnh với buổi gặp mặt. | (D) [1] — đứng giữa phần thông qua dự án và mục tiêu nâng cao lượng khách, không liên quan đến đội ngũ kỹ sư giải đáp câu hỏi.
+Source: original

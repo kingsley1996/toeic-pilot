@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why was the quarterly financial report delayed?
+voice: uk_female_1
+(A) It was delayed until Friday.
+(B) Because the Asia figures arrived late.
+(C) The report is on Rachel's desk.
+Answer: B
+Explanation: Câu hỏi "Why was the quarterly financial report delayed?" hỏi LÝ DO. | (A) "It was delayed until Friday." — trả lời thời gian, không phải lý do. | (B) "Because the Asia figures arrived late." — nêu đúng lý do. | (C) "The report is on Rachel's desk." — trả lời nơi chốn, dùng lại "report" nhưng không giải thích lý do.
+Source: original

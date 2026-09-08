@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, new employees, and welcome to the safety orientation at our manufacturing plant. I am Daniel, the training manager, and I will be your main contact for workplace rules. Before you enter the production floor, you must complete the online safety module and collect your protective equipment from the west office. The module takes about thirty minutes, and the equipment desk closes at four o'clock today. If you cannot finish the module before lunch, please tell your supervisor, because no one may work near the machines without it. Tomorrow we will review emergency exits and reporting procedures in the main hall.
+
+[QUESTION]
+Who is the speaker?
+(A) A manager who gives safety instructions
+(B) A supervisor at the production floor
+(C) A safety officer at the equipment desk
+(D) A plant worker in the main hall
+Answer: A
+Explanation: Người nói nói "I am Daniel, the training manager" và mở đầu bằng "welcome to the safety orientation", nên ông là người quản lý hướng dẫn an toàn. | (A) "A manager who gives safety instructions" — khớp với "training manager" và buổi định hướng an toàn. | (B) "A supervisor at the production floor" — "supervisor" và "production floor" có được nhắc đến, nhưng không phải người nói. | (C) "A safety officer at the equipment desk" — "safety", "equipment", và "desk" có trong bài, nhưng không có "safety officer" và không phải người nói. | (D) "A plant worker in the main hall" — "plant", "main", và "hall" có trong bài, nhưng người nói không phải công nhân.
+Source: original
+[QUESTION]
+What is true about the online safety module?
+(A) It closes at four o'clock today.
+(B) It is required before machine work.
+(C) It takes place in the hall.
+(D) It is collected from the office.
+Answer: B
+Explanation: Bài nói có "Before you enter the production floor, you must complete the online safety module" và "no one may work near the machines without it", nên module phải hoàn thành trước khi làm việc gần máy. | (A) "It closes at four o'clock today" — "closes at four o'clock today" là bàn thiết bị, không phải module. | (B) "It is required before machine work" — khớp với yêu cầu hoàn thành module trước khi làm việc gần máy. | (C) "It takes place in the hall" — "hall" là nơi buổi xem xét ngày mai diễn ra, không phải nơi module diễn ra. | (D) "It is collected from the office" — "collected" và "office" thuộc việc lấy thiết bị bảo hộ, không phải module.
+Source: original
+[QUESTION]
+What will happen tomorrow?
+(A) They will collect protective equipment from the west office.
+(B) They will complete the online safety module before lunch.
+(C) They will review emergency exits and reporting procedures.
+(D) They will tell their supervisor about the machines.
+Answer: C
+Explanation: Bài nói kết bằng "Tomorrow we will review emergency exits and reporting procedures in the main hall", nên hoạt động ngày mai là xem xét lối thoát hiểm và quy trình báo cáo. | (A) "They will collect protective equipment from the west office" — việc lấy thiết bị bảo hộ là của hôm nay, không phải ngày mai. | (B) "They will complete the online safety module before lunch" — hoàn thành module trước bữa trưa là điều kiện hôm nay, không phải hoạt động ngày mai. | (C) "They will review emergency exits and reporting procedures" — khớp đúng với câu nói về ngày mai. | (D) "They will tell their supervisor about the machines" — báo cho giám sát viên là nếu không hoàn thành module, không phải hoạt động ngày mai.
+Source: original

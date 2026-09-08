@@ -1,0 +1,9 @@
+[QUESTION]
+The marketing campaign ------- increased brand awareness but also boosted sales.
+(A) although
+(B) not only
+(C) despite
+(D) because
+Answer: B
+Explanation: Vị trí trống cần một liên từ tương quan đi với "but also" ở sau. | (A) "although" — là liên từ chỉ nhượng bộ, không đi với "but also". | (B) "not only" — tạo cặp "not only ... but also" đúng ngữ pháp. | (C) "despite" — là giới từ, không đứng trước động từ chia "increased". | (D) "because" — là liên từ chỉ nguyên nhân, không tạo cặp tương quan với "but also".
+Source: original

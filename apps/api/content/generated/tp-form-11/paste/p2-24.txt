@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+How will the customer's order be delivered?
+voice: au_male_1
+(A) By express courier from our warehouse.
+(B) It arrives on Friday morning.
+(C) The order was placed online.
+Answer: A
+Explanation: Câu hỏi là "How will the customer's order be delivered?", hỏi CÁCH THỨC giao hàng. | (A) "By express courier from our warehouse." — nêu đúng cách thức giao hàng. | (B) "It arrives on Friday morning." — trả lời thời gian, tức hỏi khi nào, không phải cách thức. | (C) "The order was placed online." — dùng lại từ "order" nhưng nói cách đặt hàng, không trả lời cách giao hàng.
+Source: original

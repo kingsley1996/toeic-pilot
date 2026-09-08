@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good evening, listeners. This is a special announcement from a brand-new fitness centre opening next Saturday. To celebrate our opening, every membership plan is fifty percent off for the first three months. That means you can use the gym floor, the swimming pool, and all group classes for half the usual price. The offer begins at nine a.m. Saturday and ends at eight p.m. Sunday. If you want to join, please bring a photo identification to the front desk. You can also reserve a free trial session by calling the number on our website before Friday.
+
+[QUESTION]
+What is the purpose of the announcement?
+(A) To announce a change in membership plan prices
+(B) To explain to listeners how to use the swimming pool
+(C) To invite listeners to a group class on Saturday
+(D) To promote a new gym's opening offer
+Answer: D
+Explanation: Người nói mở đầu bằng "This is a special announcement from a brand-new fitness centre opening next Saturday" và nói "To celebrate our opening, every membership plan is fifty percent off". | (A) "To announce a change in membership plan prices" — "membership plan" và "price" có trong bài, nhưng không có thay đổi giá. | (B) "To explain to listeners how to use the swimming pool" — "listeners", "use", "swimming pool" có trong bài, nhưng không hướng dẫn sử dụng hồ bơi. | (C) "To invite listeners to a group class on Saturday" — "listeners", "group classes", "Saturday" có trong bài, nhưng không mời dự một lớp nhóm cụ thể. | (D) "To promote a new gym's opening offer" — khớp mục đích quảng bá ưu đãi khai trương của phòng tập mới.
+Source: original
+[QUESTION]
+What does the speaker say about the fifty percent discount?
+(A) It lasts three months and ends Sunday
+(B) It applies to all group classes only
+(C) It begins Friday and lasts three months
+(D) It requires photo identification at the front desk
+Answer: A
+Explanation: Người nói nói "every membership plan is fifty percent off for the first three months" và "The offer begins at nine a.m. Saturday and ends at eight p.m. Sunday". | (A) "It lasts three months and ends Sunday" — khớp hai phần vừa dẫn. | (B) "It applies to all group classes only" — "all group classes" được nhắc, nhưng ưu đãi áp dụng cho mọi membership plan, không chỉ lớp nhóm. | (C) "It begins Friday and lasts three months" — "Friday" được nhắc cho việc gọi đặt buổi thử, không phải ngày bắt đầu ưu đãi. | (D) "It requires photo identification at the front desk" — "photo identification" và "front desk" được nhắc cho việc tham gia, không phải điều kiện của ưu đãi.
+Source: original
+[QUESTION]
+What does the speaker ask listeners to do before Friday?
+(A) Bring a photo identification to the front desk
+(B) Call the number on the website to reserve a free trial session
+(C) Join the gym at nine a.m. Saturday
+(D) Use the swimming pool for half the price
+Answer: B
+Explanation: Người nói nói "You can also reserve a free trial session by calling the number on our website before Friday". | (A) "Bring a photo identification to the front desk" — được yêu cầu khi muốn tham gia, không phải việc làm trước Friday. | (B) "Call the number on the website to reserve a free trial session" — khớp yêu cầu gọi số trên website để đặt buổi thử miễn phí. | (C) "Join the gym at nine a.m. Saturday" — "gym", "nine a.m.", "Saturday" được nhắc, nhưng không phải yêu cầu trước Friday. | (D) "Use the swimming pool for half the price" — "swimming pool" và "half the price" được nhắc, nhưng không phải hành động được yêu cầu.
+Source: original

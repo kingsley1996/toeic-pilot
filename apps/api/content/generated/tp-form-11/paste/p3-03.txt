@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Excuse me, I'm a customer looking at the new phone model. What is the warranty policy?
+voice: ca_male_1
+I'm a store associate. The standard warranty covers manufacturing defects for twelve months.
+voice: us_female_1
+Does that include accidental screen damage?
+voice: ca_male_1
+No, but we offer an extended service plan for twenty-four months.
+voice: us_female_1
+I'd like to buy the phone today. Can you add the extended plan?
+voice: ca_male_1
+Sure. Please bring your receipt to the service desk if you need repairs.
+
+[QUESTION]
+What is the woman's main purpose?
+(A) To cancel an extended service plan
+(B) To report accidental screen damage
+(C) To ask about warranty coverage for a phone she wants to buy
+(D) To check for manufacturing defects
+Answer: C
+Explanation: Người phụ nữ hỏi "What is the warranty policy?" và nói "I'd like to buy the phone today", nên mục đích chính là hỏi bảo hành cho chiếc điện thoại cô muốn mua. | (A) "To cancel an extended service plan" — "extended service plan" được nhắc đến, nhưng cô muốn thêm chứ không hủy. | (B) "To report accidental screen damage" — cô chỉ hỏi bảo hành có bao gồm "accidental screen damage" không, không báo hỏng. | (C) "To ask about warranty coverage for a phone she wants to buy" — đúng mục đích chính của người phụ nữ. | (D) "To check for manufacturing defects" — "manufacturing defects" được nhắc đến, nhưng không phải việc cô yêu cầu kiểm tra.
+Source: original
+[QUESTION]
+Who is the woman?
+(A) A person offering a plan
+(B) A store associate
+(C) A person needing repairs
+(D) A customer
+Answer: D
+Explanation: Người phụ nữ tự giới thiệu "I'm a customer looking at the new phone model". | (A) "A person offering a plan" — "offer an extended service plan" là lời của người nam. | (B) "A store associate" — đúng với người nam, không phải người nữ. | (C) "A person needing repairs" — "repairs" được nhắc đến, nhưng cô chưa cần sửa máy. | (D) "A customer" — đúng vì cô nói mình là khách hàng.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Take the receipt to the service desk
+(B) Add the extended plan to her purchase
+(C) Cover manufacturing defects
+(D) Offer an extended service plan
+Answer: A
+Explanation: Người nam nói "Please bring your receipt to the service desk if you need repairs". | (A) "Take the receipt to the service desk" — đúng yêu cầu của người nam, với "take" thay cho "bring". | (B) "Add the extended plan to her purchase" — đây là yêu cầu của người nữ, không phải người nam. | (C) "Cover manufacturing defects" — "manufacturing defects" được nhắc đến, nhưng không ai yêu cầu người nữ làm việc này. | (D) "Offer an extended service plan" — người nam nói cửa hàng có "offer an extended service plan", không phải yêu cầu người nữ làm.
+Source: original

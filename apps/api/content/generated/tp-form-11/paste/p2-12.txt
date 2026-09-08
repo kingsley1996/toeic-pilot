@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Could you update the patient's record before the appointment?
+voice: us_female_1
+(A) Sure, I'll update it right away.
+(B) At three o'clock this afternoon.
+(C) The record is in the drawer.
+Answer: A
+Explanation: Câu hỏi là "Could you update the patient's record before the appointment?", hỏi một yêu cầu cập nhật hồ sơ bệnh nhân trước lịch hẹn. | (A) "Sure, I'll update it right away." — trực tiếp đồng ý và nêu việc sẽ làm. | (B) "At three o'clock this afternoon." — trả lời thời điểm, không đáp lại yêu cầu. | (C) "The record is in the drawer." — trả lời nơi chốn, dùng lại record nhưng không đáp lại yêu cầu.
+Source: original

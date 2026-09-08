@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Will the weather report be included in tonight's radio news?
+voice: au_male_1
+(A) About thirty minutes, I think.
+(B) It's on the second floor.
+(C) Yes, it starts right after the headlines.
+Answer: C
+Explanation: Câu hỏi là "Will the weather report be included in tonight's radio news?", hỏi CÓ HAY KHÔNG về việc bản tin thời tiết có được đưa vào tin tức radio tối nay. | (A) "About thirty minutes, I think." — nêu thời lượng, trả lời cho How long, không phải yes/no. | (B) "It's on the second floor." — nêu nơi chốn, trả lời cho câu hỏi Where, không phải yes/no. | (C) "Yes, it starts right after the headlines." — trả lời thẳng bằng Yes và xác nhận có đưa tin.
+Source: original

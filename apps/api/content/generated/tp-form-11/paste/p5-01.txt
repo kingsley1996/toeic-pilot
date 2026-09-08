@@ -1,0 +1,9 @@
+[QUESTION]
+The applicant ------- was selected for the interview will receive an email today.
+(A) who
+(B) whom
+(C) whose
+(D) which
+Answer: A
+Explanation: Trước động từ "was selected" cần đại từ quan hệ làm chủ ngữ chỉ người. | (A) "who" — đúng dạng chủ ngữ chỉ người. | (B) "whom" — là dạng tân ngữ, không làm chủ ngữ. | (C) "whose" — là dạng sở hữu, cần danh từ theo sau. | (D) "which" — dùng cho vật, không dùng cho người.
+Source: original

@@ -1,0 +1,34 @@
+[PASSAGE]
+Sarah Lin [8:40 A.M.]
+Hi Marcus. The laser printer at the main reception desk is malfunctioning again. It keeps displaying "Paper Feed Error 3" whenever we try to print new patient intake packets.
+
+Marcus Vance [8:42 A.M.]
+Did you check if the paper tray guide is aligned? Sometimes the letterhead stock causes jams if the rollers are worn out.
+
+Sarah Lin [8:43 A.M.]
+Yes, I cleared the tray and reset the paper, but it still won't feed. Dr. Aris begins morning consultations in twenty minutes, so we'll have patients waiting at the counter shortly.
+
+Marcus Vance [8:45 A.M.]
+I'm wrapping up here.
+
+Sarah Lin [8:46 A.M.]
+Thank you. In the meantime, I'll send urgent print jobs to the triage station printer down the hall.
+
+[QUESTION]
+Why does Ms. Lin contact Mr. Vance?
+(A) To schedule maintenance for computers in Radiology
+(B) To ask for assistance with patient check-in software
+(C) To request extra paper supplies for Dr. Aris's clinic
+(D) To report a malfunctioning printer at the reception desk
+Answer: D
+Explanation: Ở tin nhắn lúc 8:40 A.M., Sarah Lin nêu rõ: "The laser printer at the main reception desk is malfunctioning again", cho thấy cô liên hệ để thông báo máy in ở quầy tiếp đón bị hỏng. | (A) "To schedule maintenance for computers in Radiology" — nội dung này không hề xuất hiện trong cuộc trò chuyện. | (B) "To ask for assistance with patient check-in software" — vấn đề được nêu là trục trặc phần cứng máy in chứ không phải lỗi phần mềm. | (C) "To request extra paper supplies for Dr. Aris's clinic" — văn bản chỉ nhắc bác sĩ Aris sắp khám bệnh chứ cô Lin không xin thêm giấy in. | (D) "To report a malfunctioning printer at the reception desk" — phản ánh chính xác bằng chứng đã trích.
+Source: original
+[QUESTION]
+At 8:45 A.M., what does Mr. Vance mean when he writes, "I'm wrapping up here"?
+(A) He will come to assist Ms. Lin shortly.
+(B) He has resolved the network outage.
+(C) He is ready to leave the hospital for the day.
+(D) He wants Ms. Lin to restart the device.
+Answer: A
+Explanation: Sau khi Ms. Lin giải thích tình huống khẩn cấp rằng bệnh nhân sắp đến ("Dr. Aris begins morning consultations in twenty minutes, so we'll have patients waiting..."), Mr. Vance nhắn "I'm wrapping up here" để báo anh sắp làm xong việc hiện tại và sẽ tới giúp ngay. | (A) "He will come to assist Ms. Lin shortly" — khớp hoàn toàn với ngữ cảnh anh sắp kết thúc công việc đang làm để tới hỗ trợ sửa máy in. | (B) "He has resolved the network outage" — đoạn tin nhắn bàn về máy in kẹt giấy, không đề cập đến sự cố ngắt mạng nào. | (C) "He is ready to leave the hospital for the day" — thời điểm này mới là đầu buổi sáng (8:45 A.M.), không phải lúc hết giờ làm việc. | (D) "He wants Ms. Lin to restart the device" — anh không đưa ra hướng dẫn khởi động lại thiết bị ở tin nhắn này.
+Source: original

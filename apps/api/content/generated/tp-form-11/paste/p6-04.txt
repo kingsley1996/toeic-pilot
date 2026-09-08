@@ -1,0 +1,43 @@
+[PASSAGE]
+City Center Coffee Branch Draws Crowds
+
+The city's newest coffee chain opened its third branch last week in the city center. The opening ------- (1) local residents and office workers, who lined up before the doors opened. Customers can order from ------- (2) mobile app, which offers discounts on first visits. ------- (3)
+
+The new location features a bright, minimalist interior and a terrace. The manager said the branch will also host small networking events. The chain has ------- (4) by several local food bloggers, who praised its fast service and comfortable seating. The reviewers also noted that the branch is already becoming a popular meeting place.
+
+[QUESTION]
+Blank (1)
+(A) attracted
+(B) received
+(C) attended
+(D) included
+Answer: A
+Explanation: Câu ngay SAU chỗ trống có "who lined up before the doors opened", nên chỗ trống cần động từ chỉ việc khai trương kéo người dân và nhân viên văn phòng đến. | (A) "attracted" — đúng nghĩa thu hút khách đến sự kiện. | (B) "received" — nghĩa nhận, không hợp với chủ ngữ "The opening". | (C) "attended" — nghĩa tham dự, biến khai trương thành chủ thể tham dự người. | (D) "included" — nghĩa bao gồm, không diễn tả việc kéo khách đến.
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) their
+(C) theirs
+(D) them
+Answer: B
+Explanation: Câu chứa chỗ trống có "Customers" làm chủ ngữ và chỗ trống đứng ngay trước "mobile app", nên vị trí này cần tính từ sở hữu. | (A) "they" — đại từ nhân xưng, không đứng trước danh từ để bổ nghĩa. | (B) "their" — đúng tính từ sở hữu cho "Customers". | (C) "theirs" — đại từ sở hữu, đứng một mình chứ không kèm danh từ. | (D) "them" — tân ngữ, không bổ nghĩa cho "mobile app".
+Source: original
+[QUESTION]
+Blank (3)
+(A) Several customers complained about the long queue.
+(B) The branch will close early on public holidays.
+(C) The company also highlighted the branch's modern design during the launch.
+(D) The app requires a separate monthly subscription.
+Answer: C
+Explanation: Câu ngay SAU chỗ trống là "The new location features a bright, minimalist interior and a terrace.", nên câu điền phải dẫn vào thiết kế của chi nhánh. | (A) "Several customers complained about the long queue." — nêu phàn nàn, mâu thuẫn giọng khen và không nối vào thiết kế. | (B) "The branch will close early on public holidays." — nói giờ đóng cửa, không dẫn vào thiết kế. | (C) "The company also highlighted the branch's modern design during the launch." — giới thiệu thiết kế và nối đúng vào câu sau. | (D) "The app requires a separate monthly subscription." — nói ứng dụng, mâu thuẫn với "offers discounts" và không dẫn vào thiết kế.
+Source: original
+[QUESTION]
+Blank (4)
+(A) reviewed
+(B) reviewing
+(C) be reviewed
+(D) been reviewed
+Answer: D
+Explanation: Câu chứa chỗ trống có "by several local food bloggers" chỉ tác nhân và "has" ở thì hiện tại hoàn thành, nên cần thể bị động hoàn thành. | (A) "reviewed" — thiếu "been" nên không tạo được hiện tại hoàn thành bị động. | (B) "reviewing" — chủ động, không hợp với "by". | (C) "be reviewed" — không hợp sau "has". | (D) "been reviewed" — đúng cấu trúc "has been reviewed".
+Source: original

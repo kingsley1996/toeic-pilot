@@ -1,0 +1,67 @@
+[PASSAGE]
+From: registration@futureworksummit.example
+To: all registrants
+Subject: Before you arrive
+Date: October 2
+
+Dear Participant,
+
+Thank you for registering for the Future Work Technology Summit. Please bring a printed or digital copy of your registration form. Badge pickup opens at 7:30 A.M. in the North Lobby and closes at 9:00 A.M. If you miss this window, collect your badge at the Help Desk in Exhibit Hall 2.
+
+Session rooms are assigned by registration category. Standard registrants attend the morning keynote in Room A. Premium registrants attend the same keynote in Room B, which includes a reserved seat and a printed workbook. Lunch choices are linked to your session: attendees in Room A receive boxed meals, while attendees in Room B receive hot meals.
+
+If your form lists a dietary option, present it at badge pickup. Late arrivals who collect badges at the Help Desk should show the same form before entering the exhibit hall.
+
+[PASSAGE]
+Exhibit Hall 2 Layout Notice
+Updated October 3
+
+The exhibit hall opens at 8:00 A.M. and closes at 5:00 P.M. The Help Desk is located between Booth 14 and the east entrance. Booth 14 is the registration information booth, and staff there can reprint lost badges. Room A is directly across from the coffee counter. Room B is next to the networking lounge and behind Booth 22. Booth 22 is the sponsor booth for the afternoon demonstrations.
+
+Meal pickup tables are placed near the rooms they serve. The boxed meal pickup table is beside Room A. The hot meal pickup table is beside the networking lounge. The vegetarian meal pickup table is beside the Help Desk. Attendees should not take meals into the session rooms. A quiet room is available near the west entrance for participants who need a break. The sponsor booth closes at 4:30 P.M. Please keep aisles clear.
+
+[QUESTION]
+What can be inferred about a participant who arrives at 9:15 A.M.?
+(A) They need to reprint a lost badge.
+(B) They cannot enter the exhibit hall.
+(C) They will miss the morning keynote.
+(D) They must collect a badge in Exhibit Hall 2.
+Answer: D
+Explanation: Thư hướng dẫn nêu "Badge pickup opens at 7:30 A.M. in the North Lobby and closes at 9:00 A.M." và "If you miss this window, collect your badge at the Help Desk in Exhibit Hall 2". | (A) "They need to reprint a lost badge" — chỉ nhân viên Help Desk có thể in lại badge bị mất, không phải mọi người đến muộn. | (B) “They cannot enter the exhibit hall” — không đúng, vì passage cho biết người đến muộn có thể nhận badge tại Help Desk và phải xuất trình registration form trước khi vào exhibit hall. | (C) "They will miss the morning keynote" — không có thông tin nào nói họ sẽ lỡ keynote. | (D) "They must collect a badge in Exhibit Hall 2" — đúng vì 9:15 A.M. là sau 9:00 A.M.
+Source: original
+[QUESTION]
+Where is Room B located?
+(A) Behind Booth 22
+(B) Across from the coffee counter
+(C) Between Booth 14 and the east entrance
+(D) Beside the Help Desk
+Answer: A
+Explanation: Thông báo bố trí nêu "Room B is next to the networking lounge and behind Booth 22". | (A) "Behind Booth 22" — đúng với câu vừa dẫn. | (B) "Across from the coffee counter" — là vị trí của Room A, không phải Room B. | (C) "Between Booth 14 and the east entrance" — là vị trí của Help Desk. | (D) "Beside the Help Desk" — là vị trí của bàn nhận bữa ăn chay.
+Source: original
+[QUESTION]
+What is NOT stated about meal pickup?
+(A) Boxed meals are picked up beside Room A.
+(B) Meal pickup tables are staffed by volunteers.
+(C) Vegetarian meals are picked up beside the Help Desk.
+(D) Hot meals are picked up beside the networking lounge.
+Answer: B
+Explanation: Thông báo bố trí nêu "The boxed meal pickup table is beside Room A", "The hot meal pickup table is beside the networking lounge", và "The vegetarian meal pickup table is beside the Help Desk". | (A) "Boxed meals are picked up beside Room A" — được nêu rõ. | (B) "Meal pickup tables are staffed by volunteers" — không có chi tiết nào nói về nhân viên phục vụ bàn nhận bữa ăn. | (C) "Vegetarian meals are picked up beside the Help Desk" — được nêu rõ. | (D) "Hot meals are picked up beside the networking lounge" — được nêu rõ.
+Source: original
+[QUESTION]
+What can be inferred about Dana Reyes?
+(A) She will miss the morning keynote.
+(B) She will receive a boxed meal.
+(C) She should present her form at badge pickup.
+(D) She will sit in Room A.
+Answer: C
+Explanation: Phiếu đăng ký ghi "Vegetarian" ở mục Lunch Option, và thư hướng dẫn nêu "If your form lists a dietary option, present it at badge pickup". | (A) "She will miss the morning keynote" — không có thông tin nào nói Dana đến muộn. | (B) "She will receive a boxed meal" — trái với thư vì Premium registrants receive hot meals. | (C) "She should present her form at badge pickup" — đúng vì phiếu của Dana có mục lựa chọn ăn uống. | (D) "She will sit in Room A" — trái với phiếu và thư vì Session của Dana là Premium, dẫn tới Room B.
+Source: original
+[QUESTION]
+Which item is Dana most likely to receive?
+(A) A quiet room
+(B) A boxed meal
+(C) A lost badge
+(D) A printed workbook
+Answer: D
+Explanation: Phiếu đăng ký ghi "Premium" ở mục Session, và thư hướng dẫn nêu "Premium registrants attend the same keynote in Room B, which includes a reserved seat and a printed workbook". | (A) "A quiet room" — là khu vực nghỉ ngơi, không phải vật phẩm được phát. | (B) "A boxed meal" — là phần dành cho Room A, không phải Premium. | (C) "A lost badge" — không có thông tin nào nói badge của Dana bị mất. | (D) "A printed workbook" — đúng vì Dana đăng ký Premium.
+Source: original

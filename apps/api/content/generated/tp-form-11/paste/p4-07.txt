@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone. As marketing director, I want to outline our campaign for the new smart kettle next quarter. We will launch with a short online video, followed by email offers to existing customers. The main message is that the kettle heats water in under sixty seconds. We had planned to add radio spots, but our budget is limited, so we will postpone them until the following quarter. After the launch, the design team will collect customer comments for two weeks. Please send your suggestions to me by Friday, not to the sales team, so I can combine them before the next meeting.
+
+[QUESTION]
+Who is the speaker?
+(A) A sales team representative
+(B) The director of the design team
+(C) The marketing director
+(D) A radio producer
+Answer: C
+Explanation: Người nói tự giới thiệu "As marketing director" — người nói là giám đốc marketing. | (A) "A sales team representative" — có "sales team", nhưng bài nói yêu cầu gửi gợi ý cho người nói, không cho bộ phận bán hàng. | (B) "The director of the design team" — có "design team" và "director", nhưng không có ai là giám đốc của nhóm thiết kế. | (C) "The marketing director" — khớp đúng lời giới thiệu. | (D) "A radio producer" — có "radio", nhưng chỉ nhắc radio spots bị hoãn, không có nhà sản xuất radio.
+Source: original
+[QUESTION]
+What is the main message of the campaign?
+(A) The budget is limited.
+(B) Online video and email offers will be used.
+(C) Existing customers will receive the product.
+(D) The kettle heats water quickly.
+Answer: D
+Explanation: Bài nói có câu "The main message is that the kettle heats water in under sixty seconds" — thông điệp chính là ấm đun nước nhanh. | (A) "The budget is limited" — có "budget is limited", nhưng đó là lý do hoãn radio spots, không phải thông điệp chính. | (B) "Online video and email offers will be used" — có "online video" và "email offers", nhưng đó là kênh triển khai, không phải thông điệp chính. | (C) "Existing customers will receive the product" — có "existing customers", nhưng email offers gửi cho khách hàng cũ, không phải sản phẩm được gửi. | (D) "The kettle heats water quickly" — diễn đạt lại đúng ý "heats water in under sixty seconds".
+Source: original
+[QUESTION]
+What will the speaker do before the next meeting?
+(A) Combine suggestions before the next meeting.
+(B) Send suggestions to the sales team.
+(C) Postpone the launch until next quarter.
+(D) Collect comments from the design team.
+Answer: A
+Explanation: Người nói nói "Please send your suggestions to me by Friday, not to the sales team, so I can combine them before the next meeting" — gợi ý sẽ được tổng hợp trước cuộc họp tiếp theo. | (A) "Combine suggestions before the next meeting" — khớp với hành động "combine them before the next meeting". | (B) "Send suggestions to the sales team" — có "send suggestions" và "sales team", nhưng bài nói rõ "not to the sales team". | (C) "Postpone the launch until next quarter" — có "postpone", "launch", "next quarter", nhưng bài nói chỉ hoãn radio spots, còn chiến dịch vẫn vào quý tới. | (D) "Collect comments from the design team" — có "collect", "comments", "design team", nhưng nhóm thiết kế thu thập ý kiến khách hàng, không phải người nói thu thập từ nhóm thiết kế.
+Source: original

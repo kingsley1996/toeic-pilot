@@ -1,0 +1,9 @@
+[QUESTION]
+All flight changes must be ------- by the airline before the new ticket is issued.
+(A) reconfirming
+(B) reconfirmed
+(C) reconfirmation
+(D) reconfirms
+Answer: B
+Explanation: Sau "must be" trong câu bị động cần phân từ hai. | (A) "reconfirming" — là V-ing, tạo nghĩa chủ động, sai thể. | (B) "reconfirmed" — đúng phân từ hai tạo thể bị động. | (C) "reconfirmation" — là danh từ, sai từ loại. | (D) "reconfirms" — là động từ chia số ít, sai dạng sau "be".
+Source: original

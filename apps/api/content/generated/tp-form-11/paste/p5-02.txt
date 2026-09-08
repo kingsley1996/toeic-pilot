@@ -1,0 +1,9 @@
+[QUESTION]
+The ------- for next week's meetings and business trips has been updated.
+(A) itineraries
+(B) itinerary
+(C) itinerant
+(D) itinerate
+Answer: B
+Explanation: Sau "The" và trước "has been updated" cần một danh từ số ít. | (A) "itineraries" — là danh từ số nhiều, sai hòa hợp với "has". | (B) "itinerary" — đúng danh từ số ít chỉ lịch trình. | (C) "itinerant" — là tính từ (hoặc danh từ chỉ người), không phải lịch trình, sai từ loại/ngữ nghĩa. | (D) "itinerate" — là động từ, không thể làm chủ ngữ sau "The".
+Source: original

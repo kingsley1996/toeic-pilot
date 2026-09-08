@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) A crate of vegetables is sitting on the prep table.
+(B) The workers are washing the vegetables in the sink.
+(C) The woman is stacking plates on the shelf.
+(D) The chef is placing a pot of boiling water on the stove.
+Answer: D
+Explanation: Trong ảnh người đầu bếp đội mũ cao đứng trước bếp, hai tay đang đặt một nồi inox nước sôi (hơi bốc lên rõ ràng) lên cửa bếp, trong khi người phụ bếp bên phải bày cà rốt và bông cải đã cắt lên khay inox trên bàn chế biến, bồn rửa ở tường sau không có ai đứng cạnh, và thùng cà chua nằm dưới sàn. | (A) "sitting on the prep table" — thùng rau để trên sàn cạnh bàn chứ không phải trên mặt bàn: đúng vật, sai vị trí. | (B) "washing the vegetables in the sink" — rau có trong ảnh nhưng đang được bày lên khay, còn bồn rửa thì trống không ai đứng: đúng vật, sai hành động. | (C) "stacking plates on the shelf" — đĩa đã xếp sẵn trên kệ còn hai tay người phụ bếp đang cầm rau: đúng vật, sai hành động. | (D) "placing a pot of boiling water on the stove" — đúng hành động của đầu bếp với chiếc nồi đang cầm trên tay.
+Source: original

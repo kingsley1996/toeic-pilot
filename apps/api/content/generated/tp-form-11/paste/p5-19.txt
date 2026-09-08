@@ -1,0 +1,9 @@
+[QUESTION]
+The museum ------- the sale of admission tickets for the exhibition last month after the sponsor withdrew.
+(A) has postponed
+(B) will postpone
+(C) postponed
+(D) is postponing
+Answer: C
+Explanation: Sau "last month" cần động từ ở thì quá khứ đơn. | (A) "has postponed" — là hiện tại hoàn thành, không đi với trạng ngữ thời gian quá khứ cụ thể. | (B) "will postpone" — là tương lai đơn, không hợp với "last month". | (C) "postponed" — đúng dạng quá khứ đơn phù hợp với mốc thời gian đã qua. | (D) "is postponing" — là hiện tại tiếp diễn, sai thì trong câu.
+Source: original

@@ -1,0 +1,37 @@
+[PASSAGE]
+**Metroville Business Review**
+October 14
+
+Solstice Coffee, a rapidly expanding regional beverage company known for ethical sourcing, officially opened its first downtown Metroville location yesterday on Elm Street. The firm has already recruited 25 full-time staff members from the surrounding municipal area to manage daily cafe operations.
+
+To distinguish itself from established competitors in the district, Solstice Coffee transformed its second floor into a quiet co-working lounge equipped with individual workstations and high-speed Internet access. Furthermore, patrons who bring a reusable container during the store's inaugural week will receive a complimentary pastry with every specialty beverage purchase.
+
+According to Chief Executive Officer Nathan Drake, the brand invested substantially in energy-efficient espresso machines to minimize electricity usage. Mr. Drake noted that if customer attendance remains robust throughout the initial quarter, management intends to launch two suburban drive-through outlets before the end of the current fiscal year.
+
+[QUESTION]
+What amenity is available on the second floor of Solstice Coffee?
+(A) An outdoor patio
+(B) A quiet workspace
+(C) A baking kitchen
+(D) A conference room
+Answer: B
+Explanation: Đoạn 2 cho biết quán đã cải tạo tầng hai thành "a quiet co-working lounge equipped with individual workstations", tức một khu làm việc yên tĩnh. | (A) "An outdoor patio" — bài viết không nhắc tới sân hiên ngoài trời. | (B) "A quiet workspace" — khớp chính xác với thông tin về khu vực làm việc yên tĩnh ở tầng trên. | (C) "A baking kitchen" — bài viết chỉ đề cập bánh nướng tặng kèm chứ không có gian bếp làm bánh cho khách. | (D) "A conference room" — bài viết chỉ nêu các bàn làm việc cá nhân chứ không có phòng hội nghị.
+Source: original
+[QUESTION]
+What is suggested about Solstice Coffee's expansion plans?
+(A) They have already received municipal funding.
+(B) They involve closing older regional stores.
+(C) They depend on the initial performance of the downtown location.
+(D) They will focus exclusively on city centers.
+Answer: C
+Explanation: Đoạn 1 nêu chi nhánh trung tâm Metroville vừa mở hôm qua ("opened its first downtown Metroville location yesterday"), kết hợp với đoạn 3 cho biết việc mở thêm chi nhánh phụ thuộc vào kết quả tại đây ("if customer attendance remains robust throughout the initial quarter, management intends to launch two suburban drive-through outlets"). | (A) "They have already received municipal funding" — bài viết không nhắc tới việc nhận tài trợ từ chính quyền. | (B) "They involve closing older regional stores" — bài viết không đề cập đến việc đóng bất kỳ cửa hàng nào. | (C) "They depend on the initial performance of the downtown location" — phản ánh đúng việc kế hoạch mở thêm điểm bán tùy thuộc vào lượng khách quý đầu của cửa hàng mới mở. | (D) "They will focus exclusively on city centers" — đoạn 3 nói rõ kế hoạch mở cơ sở ở vùng ngoại ô ("suburban drive-through outlets") chứ không chỉ tập trung ở trung tâm.
+Source: original
+[QUESTION]
+In the article, the word "robust" in paragraph 3 is closest in meaning to
+(A) rigid
+(B) complex
+(C) physical
+(D) strong
+Answer: D
+Explanation: Từ "robust" trong ngữ cảnh "customer attendance remains robust" mang nghĩa lượng khách duy trì ở mức cao và ổn định. | (A) "rigid" — mang nghĩa cứng nhắc, không phù hợp. | (B) "complex" — mang nghĩa phức tạp, không hợp nghĩa. | (C) "physical" — mang nghĩa thuộc về thể chất hoặc vật chất, sai ngữ cảnh. | (D) "strong" — mang nghĩa vững mạnh hoặc khả quan, đồng nghĩa với "robust" trong việc miêu tả hoạt động kinh doanh tốt.
+Source: original

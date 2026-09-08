@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+As project team leader, I need an update on the construction progress before the customer handover event.
+voice: ca_male_1
+The prototype is almost complete. I can finish the safety check by Thursday and send the report then.
+voice: au_male_1
+I'm the customer's site manager. If the check fails, please wait until Monday.
+voice: uk_female_1
+Then we'll move the handover to Friday, not Thursday.
+voice: ca_male_1
+Understood. I'll confirm the delivery time after the check.
+voice: au_male_1
+Good. Please copy me on the report when it is ready.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) The status of a construction project and its handover date
+(B) A customer complaint about a damaged prototype
+(C) The safety check for the customer's site manager
+(D) An event to celebrate the handover of a product
+Answer: A
+Explanation: Người phụ nữ mở đầu bằng "I need an update on the construction progress before the customer handover event" và sau đó nói "Then we'll move the handover to Friday, not Thursday", cho thấy họ bàn tiến độ dự án và ngày bàn giao. | (A) "The status of a construction project and its handover date" — đúng chủ đề chính. | (B) "A customer complaint about a damaged prototype" — customer và prototype được nhắc đến, nhưng complaint và damaged không xuất hiện. | (C) "The safety check for the customer's site manager" — safety check, customer và site manager được nhắc đến, nhưng không phải chủ đề chính. | (D) "An event to celebrate the handover of a product" — event và handover được nhắc đến, nhưng không có lễ ăn mừng.
+Source: original
+
+[QUESTION]
+Who is the woman?
+(A) The customer's site manager
+(B) The project team leader
+(C) The prototype's designer
+(D) The safety check inspector
+Answer: B
+Explanation: Người phụ nữ nói "As project team leader", nên cô là trưởng nhóm dự án. | (A) "The customer's site manager" — đúng là chức danh, nhưng do người đàn ông khác nói. | (B) "The project team leader" — đúng với lời mở đầu của người phụ nữ. | (C) "The prototype's designer" — prototype được nhắc đến, nhưng designer không được nói. | (D) "The safety check inspector" — safety check được nhắc đến, nhưng inspector không được nói.
+Source: original
+
+[QUESTION]
+What will the man who says he can finish the safety check do if the check fails?
+(A) Send the report to the customer tonight
+(B) Check the prototype before Monday
+(C) Hold the report back
+(D) Confirm the delivery time before the check
+Answer: C
+Explanation: Người đàn ông nói "I can finish the safety check by Thursday and send the report then", nhưng người đàn ông khác yêu cầu "If the check fails, please wait until Monday", nên nếu kiểm tra hỏng thì anh ấy sẽ giữ báo cáo lại. | (A) "Send the report to the customer tonight" — send, report và customer được nhắc đến, nhưng tonight không phải lịch đã nêu. | (B) "Check the prototype before Monday" — check, prototype và Monday được nhắc đến, nhưng không phải hành động được yêu cầu. | (C) "Hold the report back" — đúng vì phải ghép lịch gửi báo cáo với điều kiện chờ đến thứ Hai. | (D) "Confirm the delivery time before the check" — confirm, delivery time và check được nhắc đến, nhưng lịch đúng là sau khi kiểm tra.
+Source: original

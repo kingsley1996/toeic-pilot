@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How should we arrange for the food to be delivered to the party?
+voice: au_male_1
+(A) Yes, the party is booked.
+(B) By courier before six o'clock.
+(C) The delivery driver is here.
+Answer: B
+Explanation: Câu hỏi là "How should we arrange for the food to be delivered to the party?", hỏi CÁCH THỨC. | (A) "Yes, the party is booked." — đáp Yes cho câu hỏi How, tức sai loại câu hỏi. | (B) "By courier before six o'clock." — nêu đúng cách sắp xếp giao đồ ăn. | (C) "The delivery driver is here." — dùng lại từ "delivery" nhưng chỉ nói tài xế đã đến, không trả lời cách sắp xếp.
+Source: original

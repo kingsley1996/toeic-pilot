@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Did you hear that Liam resigned? He gave notice yesterday.
+voice: au_male_1
+Yes. He was our only project coordinator, so his last day is in two weeks.
+voice: uk_female_1
+Since we're colleagues in the same department, we'll have to cover the client meetings and update the schedule.
+voice: au_male_1
+I can take the meetings after Friday, but you should handle the schedule after Friday.
+voice: uk_female_1
+Okay. I'll ask the manager to approve overtime. It can wait until after Friday.
+voice: au_male_1
+Good. We should also start looking for a replacement before Friday.
+
+[QUESTION]
+Who are the speakers?
+(A) A manager and an employee
+(B) A client and a project coordinator
+(C) Workmates in one department
+(D) A software trainer and a trainee
+Answer: C
+Explanation: Người nói nữ nói "Since we're colleagues in the same department, we'll have to cover the client meetings and update the schedule", cho thấy họ cùng làm trong một phòng ban. | (A) "A manager and an employee" — người quản lý được nhắc đến nhưng không phải là người nói. | (B) "A client and a project coordinator" — khách hàng và điều phối viên dự án được nhắc đến nhưng không phải hai người nói. | (C) "Workmates in one department" — đúng vì họ cùng phòng ban và cùng chia việc. | (D) "A software trainer and a trainee" — phần mềm được nhắc đến nhưng không có ai dạy hay học phần mềm.
+Source: original
+[QUESTION]
+What does the woman mean when she says, "I'll ask the manager to approve overtime"?
+(A) She wants to change her work schedule.
+(B) She will receive overtime pay immediately.
+(C) She needs permission to hold client meetings.
+(D) She expects extra hours may be needed.
+Answer: D
+Explanation: Người phụ nữ nói "I'll ask the manager to approve overtime" sau khi cô nói "we'll have to cover the client meetings and update the schedule", nên cô ngụ ý công việc có thể cần thêm giờ. | (A) "She wants to change her work schedule" — lịch trình được nhắc đến nhưng không phải đổi lịch làm việc. | (B) "She will receive overtime pay immediately" — cô mới chỉ xin phê duyệt và việc đó còn chờ sau thứ Sáu. | (C) "She needs permission to hold client meetings" — người đàn ông sẽ lo các cuộc họp, không phải xin phép họp. | (D) "She expects extra hours may be needed" — đúng vì khối lượng công việc tăng sau khi Liam nghỉ.
+Source: original
+[QUESTION]
+What will the speakers do before Friday?
+(A) Start looking for a replacement
+(B) Cover the client meetings
+(C) Ask the manager for overtime
+(D) Update the schedule
+Answer: A
+Explanation: Người đàn ông nói "We should also start looking for a replacement before Friday", nên hành động trước thứ Sáu là tìm người thay thế. | (A) "Start looking for a replacement" — đúng vì câu cuối nêu rõ trước thứ Sáu. | (B) "Cover the client meetings" — các cuộc họp khách hàng được nói là sau thứ Sáu. | (C) "Ask the manager for overtime" — việc xin thêm giờ được nói nhưng có thể chờ sau thứ Sáu. | (D) "Update the schedule" — cập nhật lịch được nói là sau thứ Sáu.
+Source: original

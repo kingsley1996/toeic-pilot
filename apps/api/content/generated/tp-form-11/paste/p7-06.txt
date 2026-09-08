@@ -1,0 +1,37 @@
+[PASSAGE]
+From: l.tran@globalparts-supply.com
+To: m.santos@brightech-electronics.com
+Subject: Revised delivery schedule — Order BTE-2287
+Date: June 12
+
+Dear Ms. Santos,
+
+Thank you for your recent order of 5,000 printed circuit boards (Order BTE-2287). We regret to inform you that the delivery originally scheduled for June 25 will be postponed until July 9 due to an unexpected shortage of copper-clad laminate at our manufacturing facility.
+
+We have secured an alternative source and anticipate no further disruptions. To minimise the impact on your production timeline, we can arrange a partial shipment of 2,000 units by June 25, with the remaining 3,000 units delivered on July 9. Please let us know by June 15 if you would like to proceed with this arrangement.
+
+We sincerely apologise for any inconvenience.
+
+Best regards,
+Linh Tran
+Logistics Coordinator
+Global Parts Supply
+
+[QUESTION]
+What is the main purpose of the e-mail?
+(A) To request payment for additional components
+(B) To confirm that an order has been completed
+(C) To introduce a new supplier partnership
+(D) To inform Ms. Santos about a revised delivery date
+Answer: D
+Explanation: E-mail mở đầu bằng "We regret to inform you that the delivery originally scheduled for June 25 will be postponed until July 9", tức mục đích chính là thông báo thay đổi lịch giao hàng. | (A) "To request payment for additional components" — thư không nhắc bất kỳ khoản thanh toán nào. | (B) "To confirm that an order has been completed" — thư nói lô hàng chưa giao, không phải đã hoàn tất. | (C) "To introduce a new supplier partnership" — thư không giới thiệu đối tác mới. | (D) "To inform Ms. Santos about a revised delivery date" — đúng mục đích, thư báo lùi ngày giao từ 25/6 sang 9/7.
+Source: original
+[QUESTION]
+In the e-mail, the word "postponed" is closest in meaning to
+(A) delayed
+(B) confirmed
+(C) accelerated
+(D) cancelled
+Answer: A
+Explanation: Câu "the delivery originally scheduled for June 25 will be postponed until July 9" cho thấy "postponed" nghĩa là dời ngày, tức lùi lại. | (A) "delayed" — đúng đồng nghĩa, "bị trì hoãn" tương đương "bị hoãn lại". | (B) "confirmed" — nghĩa là xác nhận, không liên quan đến việc thay đổi thời gian. | (C) "accelerated" — nghĩa ngược lại, tăng tốc, không phù hợp ngữ cảnh lùi ngày giao. | (D) "cancelled" — nghĩa là hủy bỏ, nhưng thư nói lô hàng vẫn sẽ giao vào ngày 9/7, không bị hủy.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, everyone, and welcome to the exhibition of ancient art. My name is Daniel, and I will guide you through the gallery. Before we begin, please note that photography is allowed in the first hall, but not in the second hall, where the fragile clay figures are displayed. The second hall is just across the courtyard. The tour will last about forty minutes. I will not be handing out materials during the tour. If you need a printed map, ask at the desk by the gift shop. At the end, I will answer questions near the entrance. We will start in the first hall at the stone carvings, then move to the gold jewelry, and finish with the pottery.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To introduce the tour and the gallery rules
+(B) To sell printed maps at the gift shop
+(C) To explain how to make clay figures
+(D) To announce a change in exhibition hours
+Answer: A
+Explanation: Người nói mở đầu bằng "My name is Daniel, and I will guide you through the gallery" và nhắc "Before we begin, please note" — bài nói giới thiệu tour, gallery và quy tắc. | (A) "To introduce the tour and the gallery rules" — khớp với việc giới thiệu tour, gallery và các quy tắc. | (B) "To sell printed maps at the gift shop" — "printed map" và "gift shop" đã được nhắc, nhưng chỉ để hỏi bản đồ, không phải bán. | (C) "To explain how to make clay figures" — "clay figures" đã được nhắc, nhưng không nói về cách làm. | (D) "To announce a change in exhibition hours" — "exhibition" đã được nhắc, nhưng không có thay đổi giờ nào.
+Source: original
+[QUESTION]
+What is true about the first stop?
+(A) Visitors can ask for a printed map
+(B) Photography is allowed at the stone carvings
+(C) Visitors can view fragile clay figures
+(D) Visitors can buy gold jewelry
+Answer: B
+Explanation: Người nói nói "photography is allowed in the first hall" và "We will start in the first hall at the stone carvings" — điểm dừng đầu tiên nằm ở hall một, nên được chụp ảnh ở stone carvings. | (A) "Visitors can ask for a printed map" — "printed map" và "ask" đã được nhắc, nhưng phải hỏi ở desk by the gift shop, không phải ở điểm dừng đầu. | (B) "Photography is allowed at the stone carvings" — khớp với việc chụp ảnh ở hall một và bắt đầu bằng stone carvings. | (C) "Visitors can view fragile clay figures" — "fragile clay figures" đã được nhắc, nhưng ở second hall. | (D) "Visitors can buy gold jewelry" — "gold jewelry" đã được nhắc, nhưng không có việc mua và không phải điểm dừng đầu.
+Source: original
+[QUESTION]
+What does the speaker mean when he says, "The second hall is just across the courtyard"?
+(A) Visitors should ask at the courtyard desk.
+(B) The clay figures are in the courtyard.
+(C) The second hall is easy to reach.
+(D) The tour will start across the courtyard.
+Answer: C
+Explanation: Người nói nói "The second hall is just across the courtyard" — "just across" cho thấy khoảng cách rất gần, dễ đi tới. | (A) "Visitors should ask at the courtyard desk" — "ask" và "desk" đã được nhắc, nhưng desk ở by the gift shop, không phải courtyard. | (B) "The clay figures are in the courtyard" — "clay figures" đã được nhắc, nhưng ở second hall, không phải courtyard. | (C) "The second hall is easy to reach" — khớp với ý "just across the courtyard". | (D) "The tour will start across the courtyard" — "tour" và "will start" đã được nhắc, nhưng tour sẽ bắt đầu ở first hall.
+Source: original

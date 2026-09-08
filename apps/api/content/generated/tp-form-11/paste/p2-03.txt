@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Would you prefer a rental car or a parking pass?
+voice: ca_male_1
+(A) A parking pass, please.
+(B) Yes, it is included.
+(C) At the rental counter.
+Answer: A
+Explanation: Câu hỏi là "Would you prefer a rental car or a parking pass?", hỏi LỰA CHỌN giữa hai phương án. | (A) "A parking pass, please." — chọn trực tiếp một phương án. | (B) "Yes, it is included." — Sai vì câu trả lời "Yes" không cho biết người nghe chọn phương án nào trong hai lựa chọn được đưa ra. | (C) "At the rental counter." — trả lời nơi chốn, không chọn phương án nào.
+Source: original

@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. I'm calling to book a room for two nights next weekend.
+voice: ca_male_1
+This is the front desk. We have a quiet room on the fifth floor. It includes breakfast and free parking.
+voice: uk_female_1
+Great. Does the hotel have a gym and a pool?
+voice: ca_male_1
+The gym is open until ten, but the pool closes at eight.
+voice: uk_female_1
+I'd like a late checkout if possible.
+voice: ca_male_1
+Normal checkout is at eleven, but we can hold your room until noon. I'll email the confirmation now.
+voice: uk_female_1
+Please send it to my work address, not my personal one.
+
+[QUESTION]
+Who is the woman?
+(A) A guest booking a room
+(B) A hotel receptionist
+(C) A gym member
+(D) A pool attendant
+Answer: A
+Explanation: Người phụ nữ nói "I'm calling to book a room", tức cô là người gọi để đặt phòng. | (A) "A guest booking a room" — đúng vì cô nói đang gọi để đặt phòng. | (B) "A hotel receptionist" — lễ tân là người đàn ông, không phải người phụ nữ. | (C) "A gym member" — phòng tập chỉ được hỏi đến, không nói cô là thành viên. | (D) "A pool attendant" — hồ bơi chỉ được nhắc đến, không có nhân viên hồ bơi.
+Source: original
+[QUESTION]
+What does the woman mean when she says, "I'd like a late checkout if possible"?
+(A) She needs to check in late.
+(B) She wants to keep the room past the normal checkout time.
+(C) She is asking for a discount on the room.
+(D) She wants to cancel her reservation.
+Answer: B
+Explanation: Người phụ nữ nói "I'd like a late checkout if possible", và người đàn ông đáp "Normal checkout is at eleven", nên cô muốn giữ phòng sau giờ checkout bình thường. | (A) "She needs to check in late" — hiểu nhầm late checkout thành check in late. | (B) "She wants to keep the room past the normal checkout time" — đúng vì late checkout nghĩa là giữ phòng sau giờ checkout bình thường. | (C) "She is asking for a discount on the room" — phòng có được nhắc đến, nhưng không có yêu cầu giảm giá. | (D) "She wants to cancel her reservation" — không có ý hủy đặt phòng.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Email the confirmation now
+(B) Include breakfast and free parking
+(C) Send the confirmation to her work address
+(D) Close the pool at eight
+Answer: C
+Explanation: Người đàn ông nói "I'll email the confirmation now", rồi người phụ nữ đáp "Please send it to my work address", nên cô yêu cầu gửi xác nhận đến địa chỉ công việc. | (A) "Email the confirmation now" — đây là ý của người đàn ông, không phải yêu cầu của người phụ nữ. | (B) "Include breakfast and free parking" — đây là thông tin về phòng, không phải điều người phụ nữ yêu cầu. | (C) "Send the confirmation to her work address" — đúng vì cô nói send it to my work address. | (D) "Close the pool at eight" — đây là thông tin về hồ bơi, không phải điều người phụ nữ yêu cầu.
+Source: original

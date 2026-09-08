@@ -1,0 +1,50 @@
+[PASSAGE]
+To: All Branch Staff
+From: Director, Riverside Branch
+Subject: Updated Leave Policy
+Date: 15 September
+
+Dear colleagues,
+
+Starting next month, our branch ------- (1) a revised leave policy. The policy was developed after reviewing feedback from last year. Employees must submit requests at least five days in advance, and supervisors will approve or reject them based on staffing needs. All approved leave must be recorded in the online system. Please remember that unused vacation days cannot be carried over, so every ------- (2) should plan carefully. If you have questions, contact ------- (3) human resources representative. ------- (4)
+
+Thank you for your cooperation.
+
+Director
+
+[QUESTION]
+Blank (1)
+(A) will implement
+(B) implemented
+(C) implements
+(D) implementing
+Answer: A
+Explanation: Câu chứa chỗ trống có mốc "Starting next month", nên hành động áp dụng chính sách thuộc tương lai. | (A) "will implement" — đúng tương lai cho mốc "Starting next month". | (B) "implemented" — quá khứ, trái với "Starting next month". | (C) “implements” — không phù hợp bằng “will implement” trong ngữ cảnh thông báo một hành động sẽ được thực hiện từ tháng tới. | (D) "implementing" — thiếu trợ động từ nên không làm được vị ngữ.
+Source: original
+[QUESTION]
+Blank (2)
+(A) employment
+(B) employee
+(C) employed
+(D) employer
+Answer: B
+Explanation: Câu chứa chỗ trống có "every" và ngữ cảnh nhắc "Employees", nên cần danh từ số ít chỉ nhân viên. | (A) "employment" — là việc làm, không phải người cần lập kế hoạch. | (B) "employee" — danh từ số ít chỉ nhân viên, hợp với "every". | (C) "employed" — tính từ hoặc động từ, không đứng sau "every" làm danh từ. | (D) "employer" — là người sử dụng lao động, ngược với đối tượng nhận thư.
+Source: original
+[QUESTION]
+Blank (3)
+(A) you
+(B) yours
+(C) your
+(D) yourself
+Answer: C
+Explanation: Câu trước "If you have questions" hướng tới người nhận, và chỗ trống đứng trước "human resources representative" nên cần tính từ sở hữu. | (A) "you" — đại từ nhân xưng, không bổ nghĩa cho danh từ. | (B) "yours" — đại từ sở hữu đứng một mình, không kèm danh từ. | (C) "your" — đúng tính từ sở hữu đi với "representative". | (D) "yourself" — đại từ phản thân, sai chức năng.
+Source: original
+[QUESTION]
+Blank (4)
+(A) We appreciate your prompt payment of the annual fee.
+(B) The branch has served the local community for many years.
+(C) Please submit your expense report by the end of the month.
+(D) This representative can explain how the new policy affects your schedule.
+Answer: D
+Explanation: Câu ngay trước chỗ trống là "If you have questions, contact your human resources representative", nên câu điền phải nói về việc đại diện đó có thể hỗ trợ. | (A) "We appreciate your prompt payment of the annual fee." — cảm ơn thanh toán phí, sai chủ đề. | (B) "The branch has served the local community for many years." — nói về lịch sử chi nhánh, lạc khỏi chính sách nghỉ phép. | (C) "Please submit your expense report by the end of the month." — yêu cầu báo cáo chi phí, không liên quan đến câu hỏi về nghỉ phép. | (D) "This representative can explain how the new policy affects your schedule." — đúng là thông tin tiếp nối từ "representative".
+Source: original

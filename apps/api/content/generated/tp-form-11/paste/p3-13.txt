@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+As marketing manager, I need the new product campaign budget approved today.
+voice: uk_female_1
+The launch is next month. I can review the numbers.
+voice: ca_male_1
+I handle finance approvals. The total is seventy thousand.
+voice: us_female_1
+Forty-five thousand goes to the media budget, twenty to Email, ten to the smallest, and thirty-five to the channel we'll increase.
+voice: uk_female_1
+We can add ten thousand to the thirty-five thousand channel only after the product team confirms the launch.
+voice: ca_male_1
+The product team meets Friday, so the budget approval waits until then.
+
+[QUESTION]
+Who is the first speaker?
+(A) A marketing manager
+(B) A new product manager
+(C) A finance officer
+(D) A campaign reviewer
+Answer: A
+Explanation: Người nói đầu tiên tự giới thiệu "As marketing manager, I need the new product campaign budget approved today". | (A) "A marketing manager" — đúng vì đó là chức danh được nói ra. | (B) "A new product manager" — từ "new product" được nhắc đến nhưng gắn với campaign, không phải chức danh của người này. | (C) "A finance officer" — đúng với người đàn ông, vì anh ấy nói "I handle finance approvals". | (D) "A campaign reviewer" — từ "campaign" và "review" được nghe thấy, nhưng không phải người nói đầu tiên.
+Source: original
+
+[QUESTION]
+What will happen to the budget approval?
+(A) It waits until Friday
+(B) It is approved today
+(C) It is reviewed next month
+(D) It confirms the launch
+Answer: A
+Explanation: Dòng đầu nói "I need the new product campaign budget approved today" và dòng cuối nói "The product team meets Friday, so the budget approval waits until then". | (A) "It waits until Friday" — đúng vì "then" trỏ tới Friday. | (B) "It is approved today" — là mong muốn ban đầu, không phải kết quả cuối cùng. | (C) "It is reviewed next month" — ghép "review" và "next month" nhưng không phải điều xảy ra với budget approval. | (D) "It confirms the launch" — là việc của product team, không phải của budget approval.
+Source: original
+
+[QUESTION]
+Look at the graphic. Which channel will receive the extra ten thousand?
+(A) Social Media
+(B) Email
+(C) Print Ads
+(D) Radio
+Answer: C
+Explanation: Người nói nói "We can add ten thousand to the thirty-five thousand channel" và bảng cho thấy kênh có 35 là mục cần chọn. | (A) "Social Media" — "media budget" được nhắc đến với 45, không phải kênh 35. | (B) "Email" — "Email" được nhắc đến với 20, không phải kênh được thêm tiền. | (C) "Print Ads" — đúng vì bảng nối 35 với Print Ads. | (D) "Radio" — kênh nhỏ nhất có 10, không phải kênh được thêm tiền.
+Source: original

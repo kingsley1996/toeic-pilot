@@ -1,0 +1,9 @@
+[QUESTION]
+The library ------- membership cards only after verifying a borrower's address.
+(A) invoices
+(B) issues
+(C) schedules
+(D) insures
+Answer: B
+Explanation: Sau chủ ngữ "The library" và trước tân ngữ "membership cards" cần động từ chỉ việc cấp phát. | (A) "invoices" — là động từ xuất hóa đơn, không kết hợp với "membership cards" như đối tượng được cấp. | (B) "issues" — đúng động từ kết hợp với "membership cards" theo nghĩa cấp thẻ. | (C) "schedules" — là động từ lên lịch, không đi với "membership cards" trong ngữ cảnh này. | (D) "insures" — là động từ bảo hiểm, không kết hợp với "membership cards" theo nghĩa cấp thẻ.
+Source: original

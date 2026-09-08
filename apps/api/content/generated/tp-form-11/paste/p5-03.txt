@@ -1,0 +1,9 @@
+[QUESTION]
+The ------- order was shipped immediately after payment confirmation.
+(A) urgently
+(B) urgency
+(C) urgent
+(D) urging
+Answer: C
+Explanation: Sau mạo từ "The" và trước danh từ "order" cần một tính từ. | (A) "urgently" — là trạng từ, không đứng trước danh từ để bổ nghĩa. | (B) "urgency" — là danh từ, sai từ loại cho vị trí này. | (C) "urgent" — đúng tính từ, phù hợp với "order". | (D) "urging" — là dạng V-ing, không phải tính từ phù hợp trong ngữ cảnh.
+Source: original

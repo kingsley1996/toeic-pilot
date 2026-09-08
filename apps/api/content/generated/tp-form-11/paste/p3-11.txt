@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for meeting me at the rental property. I want the kitchen ready before the tenant moves in next month.
+voice: au_male_1
+I've brought the kitchen renovation estimate. The cabinets are the most expensive item, but they'll be installed first.
+voice: uk_female_1
+What about the work that costs about three thousand eight hundred dollars?
+voice: au_male_1
+That's the final task. We'll finish it after the other work is done.
+voice: uk_female_1
+Good. Please email me the plan by Friday.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To email a renovation plan
+(B) To arrange a tenant move-in
+(C) To review a kitchen estimate
+(D) To install cabinets first
+Answer: C
+Explanation: Người đàn ông nói "I've brought the kitchen renovation estimate", cho thấy mục đích là xem xét dự toán cải tạo bếp. | (A) "To email a renovation plan" — việc gửi email được nêu ở cuối, không phải mục đích chính. | (B) "To arrange a tenant move-in" — "tenant moves in" được nhắc đến nhưng không phải việc họ đang sắp xếp. | (C) "To review a kitchen estimate" — đúng vì họ trao đổi về dự toán cho khu bếp. | (D) "To install cabinets first" — tủ được nói là lắp trước, nhưng đó là chi tiết kế hoạch, không phải mục đích.
+Source: original
+[QUESTION]
+Where does the conversation take place?
+(A) At a hardware store
+(B) In a kitchen showroom
+(C) At the estimate office
+(D) At the rental property
+Answer: D
+Explanation: Người phụ nữ mở đầu bằng "Thanks for meeting me at the rental property", nên địa điểm là bất động sản cho thuê. | (A) "At a hardware store" — cửa hàng phần cứng không được nhắc đến. | (B) "In a kitchen showroom" — từ "kitchen" có xuất hiện, nhưng không có showroom. | (C) "At the estimate office" — từ "estimate" có xuất hiện, nhưng không có văn phòng. | (D) "At the rental property" — đúng vì câu mở đầu nêu rõ địa điểm.
+Source: original
+[QUESTION]
+Look at the graphic. Which item will be completed last?
+(A) Lighting
+(B) Countertops
+(C) Flooring
+(D) Cabinets
+Answer: A
+Explanation: Người phụ nữ hỏi "What about the work that costs about three thousand eight hundred dollars?" và người đàn ông đáp "That's the final task."; bảng cho thấy mục có chi phí 3,800 dollars là hạng mục cuối cùng. | (A) "Lighting" — đúng vì bảng chỉ ra mục này có chi phí 3,800 dollars. | (B) "Countertops" — không khớp mức chi phí 3,800 dollars trong bảng. | (C) "Flooring" — không khớp mức chi phí 3,800 dollars trong bảng. | (D) "Cabinets" — được nhắc đến nhưng là hạng mục lắp trước.
+Source: original

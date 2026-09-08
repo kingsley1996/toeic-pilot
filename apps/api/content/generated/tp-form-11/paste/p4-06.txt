@@ -1,0 +1,33 @@
+[SCRIPT]
+voice: us_female_1
+Hi, this is Rachel from the office supply store. I'm leaving this message about the wireless keyboard you ordered last Tuesday. I'm sorry to say that the black model is temporarily out of stock. The silver model is available now, and it costs the same. I've already checked with our warehouse, so I don't need to send anyone else. I'll call you back tomorrow afternoon after the delivery schedule is confirmed. If you prefer, you can also email me at sales at office supply dot com. Please let me know if you would like to switch. Thank you for your patience.
+
+[QUESTION]
+Why did the speaker call?
+(A) To say that the ordered keyboard is out of stock
+(B) To confirm a delivery schedule
+(C) To ask for a customer's email address
+(D) To offer a discount on a keyboard
+Answer: A
+Explanation: Người nói mở đầu bằng "I'm leaving this message about the wireless keyboard you ordered last Tuesday" và nói rõ "the black model is temporarily out of stock" — mục đích là báo tin sản phẩm đặt mua tạm hết hàng. | (A) "To say that the ordered keyboard is out of stock" — khớp đúng với "ordered" và "out of stock". | (B) "To confirm a delivery schedule" — "delivery schedule" có được nhắc, nhưng chỉ là điều kiện để gọi lại, không phải mục đích gọi. | (C) "To ask for a customer's email address" — "email" có được nhắc, nhưng người nói cho sẵn địa chỉ chứ không xin. | (D) "To offer a discount on a keyboard" — không có từ nào nói về giảm giá, dù "keyboard" có xuất hiện.
+Source: original
+
+[QUESTION]
+What does the speaker mean when she says, "I've already checked with our warehouse"?
+(A) She has already checked the stock herself.
+(B) She has already checked with the warehouse.
+(C) She will send someone to the warehouse.
+(D) She has not contacted the warehouse.
+Answer: A
+Explanation: Người nói nói "I've already checked with our warehouse, so I don't need to send anyone else" — câu sau cho biết ý chính là cô ấy đã tự kiểm tra xong và không cần cử thêm người. | (A) "She has already checked the stock herself." — khớp với "already checked" và việc không cần "send anyone else". | (B) "She has already checked with the warehouse." — chỉ lặp lại nghĩa đen của câu được trích, không nêu hàm ý. | (C) "She will send someone to the warehouse." — có "send" và "warehouse", nhưng bị câu "don't need to send anyone else" phủ định. | (D) "She has not contacted the warehouse." — trái với "already checked".
+Source: original
+
+[QUESTION]
+What does the speaker ask the customer to do?
+(A) Let her know whether to change the order
+(B) Email the warehouse about the delivery schedule
+(C) Call her back tomorrow afternoon
+(D) Check the stock of the black model
+Answer: A
+Explanation: Người nói cho biết "the black model is temporarily out of stock" và "The silver model is available now", rồi yêu cầu "Please let me know if you would like to switch" — phải ghép hai phần mới hiểu là hỏi có đổi sang mẫu bạc không. | (A) "Let her know whether to change the order" — khớp với yêu cầu "let me know" và ý "switch" sau khi biết mẫu đen hết hàng. | (B) "Email the warehouse about the delivery schedule" — các từ "email", "warehouse", "delivery schedule" đều có, nhưng ghép sai đối tượng. | (C) "Call her back tomorrow afternoon" — "call you back tomorrow afternoon" có được nói, nhưng người gọi lại là nhân viên, không phải khách hàng. | (D) "Check the stock of the black model" — "stock" và "black model" có xuất hiện, nhưng người nói đã kiểm tra xong.
+Source: original

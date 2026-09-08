@@ -1,0 +1,51 @@
+[PASSAGE]
+To: Ms. Nguyen, Facilities Manager
+From: Office Equipment Supplier
+Subject: Delivery and Installation Schedule
+Date: May 12
+
+Dear Ms. Nguyen,
+
+Thank you for ordering the new copiers. The delivery ------- (1) is 9:00 a.m. on May 20. Before the technicians leave, they will install the machines and show your staff how to use them. This service is included in the purchase price.
+
+Please make sure that the delivery area is clear ------- (2) boxes and cables. If the area is not ready, the installation may ------- (3) postponed until next week. ------- (4)
+
+Sincerely,
+Office Equipment Supplier
+
+[QUESTION]
+Blank (1)
+(A) time
+(B) receipt
+(C) invoice
+(D) warranty
+Answer: A
+Explanation: Câu "The delivery ------- (1) is 9:00 a.m. on May 20" có mốc giờ và ngày, nên chỗ trống cần từ chỉ thời gian. | (A) "time" — đúng nghĩa thời gian giao hàng. | (B) "receipt" — là biên lai, không hợp với mốc giờ. | (C) "invoice" — là hóa đơn, không hợp với mốc giờ. | (D) "warranty" — là bảo hành, không hợp với mốc giờ.
+Source: original
+[QUESTION]
+Blank (2)
+(A) in
+(B) of
+(C) at
+(D) by
+Answer: B
+Explanation: Câu "Please make sure that the delivery area is clear ------- (2) boxes and cables" đòi giới từ đi với "clear" để nói khu vực không còn thùng và cáp. | (A) "in" — nói ở trong, không hợp với "clear". | (B) "of" — đúng giới từ đi với "clear". | (C) "at" — chỉ địa điểm, không hợp với "clear". | (D) "by" — chỉ bên cạnh hoặc bởi, không hợp với "clear".
+Source: original
+[QUESTION]
+Blank (3)
+(A) being
+(B) been
+(C) be
+(D) is
+Answer: C
+Explanation: Câu "If the area is not ready, the installation may ------- (3) postponed until next week" có modal "may" trước động từ "postponed", nên cần dạng bị động "may be postponed". | (A) "being" — cần trợ động từ "be", không hợp sau "may". | (B) "been" — cần trợ động từ "have", không hợp sau "may". | (C) "be" — đúng sau modal để tạo thể bị động. | (D) "is" — không đi sau modal.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The delivery team will arrive at 9:00 a.m.
+(B) Please contact us if you need to return the copiers.
+(C) Our copiers are available in several colors.
+(D) We will contact you to arrange a new date.
+Answer: D
+Explanation: Câu ngay TRƯỚC chỗ trống là "If the area is not ready, the installation may ------- (3) postponed until next week", nên câu điền phải nói việc sẽ làm nếu lịch bị hoãn. | (A) "The delivery team will arrive at 9:00 a.m." — nhắc lại giờ giao đã nêu trước đó, không nối với việc hoãn. | (B) "Please contact us if you need to return the copiers." — nói về trả hàng, lạc đề với việc chuẩn bị khu vực giao hàng. | (C) "Our copiers are available in several colors." — nói về màu sắc, không liên quan đến lịch bị hoãn. | (D) "We will contact you to arrange a new date." — đúng hệ quả của việc hoãn lịch.
+Source: original

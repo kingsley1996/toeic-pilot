@@ -1,0 +1,9 @@
+[QUESTION]
+The company's shuttle bus schedule ------- after the subway service was suspended yesterday.
+(A) was updated
+(B) had updated
+(C) has updated
+(D) will update
+Answer: A
+Explanation: Sau chủ ngữ "The company's shuttle bus schedule" và trạng từ "yesterday" cần động từ quá khứ đơn ở thể bị động. | (A) "was updated" — đúng quá khứ đơn bị động. | (B) "had updated" — là quá khứ hoàn thành chủ động, sai thì và thể. | (C) "has updated" — là hiện tại hoàn thành chủ động, sai thì và thể. | (D) "will update" — là tương lai chủ động, sai thì và thể.
+Source: original

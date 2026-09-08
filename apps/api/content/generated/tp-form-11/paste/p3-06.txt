@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning. I wanted to ask about promotion opportunities in the operations team.
+voice: ca_male_1
+Sure. You've done well this year, but a team leader role won't open until next quarter.
+voice: uk_female_1
+What should I do to prepare for that role?
+voice: ca_male_1
+Complete the leadership course and lead one small project before the review.
+voice: uk_female_1
+Would that make me ready for the next promotion cycle?
+voice: ca_male_1
+Yes. I'll send you the course dates and project options by email tomorrow.
+voice: uk_female_1
+Thank you. I'll review them and choose a project this week.
+
+[QUESTION]
+What is the conversation mainly about?
+(A) To schedule a leadership course
+(B) To ask about the operations team
+(C) To confirm a role opening next quarter
+(D) To learn about career advancement
+Answer: D
+Explanation: Người nữ nói "I wanted to ask about promotion opportunities in the operations team", tức cô muốn tìm hiểu cơ hội thăng tiến. | (A) "To schedule a leadership course" — khóa lãnh đạo là yêu cầu chuẩn bị, không phải việc cần lên lịch. | (B) "To ask about the operations team" — nhóm vận hành chỉ được nhắc như nơi có cơ hội, không phải chủ đề chính. | (C) "To confirm a role opening next quarter" — quý sau được nhắc là lúc vị trí mở, không phải mục đích xác nhận. | (D) "To learn about career advancement" — đúng vì cô hỏi về cơ hội thăng tiến.
+Source: original
+[QUESTION]
+What does the man say about the woman?
+(A) She has done well this year.
+(B) She has completed a leadership course.
+(C) She will send an email tomorrow.
+(D) She has applied for a team leader role.
+Answer: A
+Explanation: Người nam nói "You've done well this year", tức ông khen cô làm tốt trong năm. | (A) "She has done well this year" — đúng vì đây là lời khen trực tiếp về cô. | (B) "She has completed a leadership course" — khóa học là việc cần hoàn thành, chưa nói đã xong. | (C) "She will send an email tomorrow" — gửi email là hành động của người nam, không phải điều nói về cô. | (D) "She has applied for a team leader role" — việc nộp đơn cho vị trí trưởng nhóm không được nhắc.
+Source: original
+[QUESTION]
+What will the woman do after the man sends the email?
+(A) Send the course dates by email
+(B) Review the information and choose a project
+(C) Confirm the team leader role
+(D) Schedule the next promotion cycle
+Answer: B
+Explanation: Người nam nói "I'll send you the course dates and project options by email tomorrow", rồi người nữ đáp "I'll review them and choose a project this week". | (A) "Send the course dates by email" — gửi email là hành động của người nam, không phải của cô. | (B) "Review the information and choose a project" — đúng vì cô sẽ xem các thông tin được gửi và chọn dự án. | (C) "Confirm the team leader role" — vị trí trưởng nhóm được nhắc nhưng cô không xác nhận nó. | (D) "Schedule the next promotion cycle" — chu kỳ thăng tiến được nhắc nhưng không có việc lên lịch.
+Source: original

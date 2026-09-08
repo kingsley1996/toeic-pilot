@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Thanks for coming to the second-floor meeting room to plan our tenth anniversary event.
+voice: uk_female_1
+Yes. The catering company can serve lunch in the main hall, but the hall is booked on Friday.
+voice: au_male_1
+I just checked. The hall is free on Saturday, and the finance office approved the budget.
+voice: us_female_1
+Good. I'll invite all staff to the Saturday lunch in the main hall.
+voice: uk_female_1
+I'll email the updated plan to the department heads this afternoon.
+voice: au_male_1
+I'll reserve the hall and order the flowers from the usual vendor.
+
+[QUESTION]
+Where does the conversation take place?
+(A) In the main hall
+(B) In a second-floor meeting room
+(C) In the finance office
+(D) At a catering company
+Answer: B
+Explanation: Người nói đầu tiên nói "Thanks for coming to the second-floor meeting room to plan our tenth anniversary event." | (A) "In the main hall" — main hall là nơi tổ chức bữa trưa, không phải nơi đang nói chuyện. | (B) "In a second-floor meeting room" — đúng vì đó là nơi người nói mời mọi người đến. | (C) "In the finance office" — finance office chỉ được nhắc đến vì đã duyệt ngân sách. | (D) "At a catering company" — catering company chỉ được nhắc đến vì có thể phục vụ bữa trưa.
+Source: original
+[QUESTION]
+What is the status of the main hall on Friday?
+(A) It is free on Friday
+(B) It is booked on Saturday
+(C) It is already booked
+(D) It is approved by the office
+Answer: C
+Explanation: Người phụ nữ thứ hai nói "the hall is booked on Friday." | (A) "It is free on Friday" — free là cho thứ Bảy, không phải thứ Sáu. | (B) "It is booked on Saturday" — đổi ngày; thứ Bảy thì trống. | (C) "It is already booked" — khớp đúng lời "the hall is booked on Friday". | (D) "It is approved by the office" — office duyệt ngân sách, không duyệt hội trường.
+Source: original
+[QUESTION]
+What will the man do?
+(A) Email the updated plan to department heads
+(B) Invite all staff to the Saturday lunch
+(C) Call the vendor
+(D) Arrange the hall reservation and flowers
+Answer: D
+Explanation: Người đàn ông nói "I'll reserve the hall and order the flowers from the usual vendor." | (A) "Email the updated plan to department heads" — người phụ nữ thứ hai sẽ làm việc này, không phải người đàn ông. | (B) "Invite all staff to the Saturday lunch" — người phụ nữ đầu tiên sẽ làm việc này, không phải người đàn ông. | (C) "Call the vendor" — vendor được nhắc đến, nhưng không ai nói sẽ gọi vendor. | (D) "Arrange the hall reservation and flowers" — đúng vì người đàn ông nói sẽ reserve the hall và order the flowers.
+Source: original

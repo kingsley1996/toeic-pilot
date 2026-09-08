@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Derek, we need to finalize the weekend software training for our department.
+voice: au_male_1
+Right. Marcus volunteered for a session, and Fiona is taking the Sat 9-11 slot.
+voice: us_female_1
+Since you requested an afternoon slot, Clara will handle the archiving module during her only opening.
+voice: au_male_1
+Sounds good. I'll go ahead and reserve the main conference room now.
+voice: us_female_1
+Actually, that room is undergoing maintenance, so please print handbooks for Room 302 instead.
+voice: au_male_1
+Got it. I'll print seventy copies for Room 302 right away.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Requesting repairs for a conference room
+(B) Coordinating a staff training schedule
+(C) Recruiting volunteers for weekend maintenance
+(D) Purchasing new software for the department
+Answer: B
+Explanation: Người phụ nữ mở đầu bằng "Derek, we need to finalize the weekend software training for our department" để bàn về việc sắp xếp lịch đào tạo nội bộ. | (A) "Requesting repairs for a conference room" — phòng họp đang bảo trì ("undergoing maintenance"), hai người không bàn việc yêu cầu sửa chữa. | (B) "Coordinating a staff training schedule" — diễn đạt lại đúng mục đích cuộc trao đổi. | (C) "Recruiting volunteers for weekend maintenance" — từ "volunteered" và "maintenance" bị ghép sai ngữ cảnh; Marcus tình nguyện nhận đứng lớp chứ không phải tuyển người bảo trì. | (D) "Purchasing new software for the department" — các từ "software" và "department" được nhắc đến nhưng họ đào tạo sử dụng phần mềm chứ không mua mới.
+Source: original
+[QUESTION]
+What does the woman ask Derek to do?
+(A) Reserve the main conference room
+(B) Lead the Sat 9-11 module
+(C) Print participant handbooks
+(D) Submit an equipment budget report
+Answer: C
+Explanation: Người phụ nữ đưa ra yêu cầu trực tiếp "so please print handbooks for Room 302 instead" sau khi thông báo đổi phòng. | (A) "Reserve the main conference room" — ý định do Derek đề xuất nhưng đã bị hủy bỏ do phòng đang bảo trì. | (B) "Lead the Sat 9-11 module" — đây là ca đào tạo do Fiona phụ trách ("Fiona is taking the Sat 9-11 slot"). | (C) "Print participant handbooks" — đúng yêu cầu người phụ nữ giao cho Derek. | (D) "Submit an equipment budget report" — báo cáo ngân sách thiết bị không xuất hiện trong hội thoại.
+Source: original
+[QUESTION]
+Look at the graphic. When will Clara lead her training session?
+(A) Sat 9-11
+(B) Sat 13-15
+(C) Sun 13-15
+(D) Sun 9-11
+Answer: D
+Explanation: Người phụ nữ cho biết "Clara will handle the archiving module during her only opening", đối chiếu hàng của Clara trên bảng lịch trình thì ô trống duy nhất nằm ở cột Sun 9-11. | (A) "Sat 9-11" — Clara bận việc "Records" và đây là ca của Fiona ("Fiona is taking the Sat 9-11 slot"). | (B) "Sat 13-15" — Clara bận việc "Review", ô trống thuộc về Derek. | (C) "Sun 13-15" — Clara bận việc "Filing", ô trống thuộc về Marcus. | (D) "Sun 9-11" — đúng thời gian trống duy nhất trên lịch của Clara.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The finance team ------- reviewed the quarterly financial report before submitting it to the board.
+(A) cautious
+(B) cautioned
+(C) caution
+(D) cautiously
+Answer: D
+Explanation: Trước động từ "reviewed" cần một trạng từ để bổ nghĩa cho hành động. | (A) "cautious" — là tính từ, không thể bổ nghĩa cho động từ. | (B) "cautioned" — là động từ ở dạng quá khứ, không phải trạng từ. | (C) "caution" — là danh từ hoặc động từ, sai từ loại cho vị trí này. | (D) "cautiously" — đúng trạng từ chỉ cách thức.
+Source: original

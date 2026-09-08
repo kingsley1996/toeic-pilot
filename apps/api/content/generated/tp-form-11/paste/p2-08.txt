@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Would you like me to check the oil now?
+voice: ca_male_1
+(A) About five quarts, I think.
+(B) It's under the hood.
+(C) Yes, please check it now.
+Answer: C
+Explanation: Câu hỏi là "Would you like me to check the oil now?", hỏi đề nghị kiểm tra dầu. | (A) "About five quarts, I think." — trả lời số lượng dầu, không đáp đề nghị. | (B) "It's under the hood." — trả lời nơi chốn của oil, không đáp đề nghị. | (C) "Yes, please check it now." — đồng ý trực tiếp với đề nghị.
+Source: original

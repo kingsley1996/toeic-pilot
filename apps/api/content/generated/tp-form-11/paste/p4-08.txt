@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, this is Rachel from the repair service. I'm calling about the air-conditioning repair scheduled for this morning. I'm sorry, but our van had a flat tire, so the technician cannot arrive until tomorrow afternoon, between two and four. The repair will take about one hour, so please be at home during that period. Please keep the side gate unlocked and make sure the outdoor unit is clear of boxes. If you prefer a different time, call our office before noon and ask for a new appointment. I'll also send a reminder text tonight. Thank you.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To confirm the original morning appointment
+(B) To change the time of a service visit
+(C) To explain why the van was late
+(D) To request a new access code
+Answer: B
+Explanation: Người nói nói "I'm calling about the air-conditioning repair scheduled for this morning" và "the technician cannot arrive until tomorrow afternoon", cho thấy mục đích là đổi lịch sửa chữa. | (A) "To confirm the original morning appointment" — xác nhận lịch sáng, nhưng bài nói đã dời lịch: đúng từ, sai ý. | (B) "To change the time of a service visit" — khớp với việc dời lịch sửa chữa sang chiều mai. | (C) "To explain why the van was late" — nhắc "van" nhưng không nói xe đến muộn, chỉ giải thích lý do dời lịch. | (D) "To request a new access code" — mã số không xuất hiện trong bài.
+Source: original
+[QUESTION]
+What does the speaker say about the repair visit?
+(A) It will begin before noon today
+(B) It will require a new van
+(C) It will last about one hour tomorrow afternoon
+(D) It will be confirmed by text tonight
+Answer: C
+Explanation: Người nói nói "the technician cannot arrive until tomorrow afternoon" và "The repair will take about one hour", nên buổi sửa chữa kéo dài khoảng một giờ vào chiều mai. | (A) "It will begin before noon today" — "before noon" chỉ dùng cho việc gọi văn phòng nếu đổi lịch, không phải giờ bắt đầu. | (B) "It will require a new van" — "van" được nhắc vì bị thủng lốp, không phải cần xe mới. | (C) "It will last about one hour tomorrow afternoon" — khớp với hai chi tiết vừa dẫn. | (D) "It will be confirmed by text tonight" — "text tonight" là tin nhắn nhắc nhở, không phải xác nhận buổi sửa.
+Source: original
+[QUESTION]
+What does the speaker ask the homeowner to do if the new time is inconvenient?
+(A) Send a reminder text tonight
+(B) Keep the side gate unlocked
+(C) Ask for a new van
+(D) Phone the office by noon
+Answer: D
+Explanation: Người nói nói "If you prefer a different time, call our office before noon and ask for a new appointment", tức là nếu giờ mới bất tiện thì gọi văn phòng trước buổi trưa. | (A) "Send a reminder text tonight" — "reminder text tonight" là việc người nói sẽ làm, không phải việc chủ nhà cần làm. | (B) "Keep the side gate unlocked" — đúng là một yêu cầu trong bài, nhưng không phải khi muốn đổi giờ. | (C) "Ask for a new van" — "van" được nhắc vì sự cố, còn "ask for" đi với "new appointment". | (D) "Phone the office by noon" — khớp với "call our office before noon".
+Source: original

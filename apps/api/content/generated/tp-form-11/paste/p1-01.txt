@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) The workers are stretching a safety cable around the scaffolding.
+(B) One of the workers is climbing up the scaffolding.
+(C) The other worker is shoveling sand into the mixer.
+(D) The workers are loading cement bags onto a truck.
+Answer: A
+Explanation: Trong ảnh có ba công nhân đội mũ bảo hộ: hai người đứng dưới chân giàn giáo, một người giữ cuộn dây, người kia kéo căng dây an toàn màu vàng quanh cột giàn giáo; người thứ ba đứng cạnh máy trộn đặt sát hàng rào tấm, đổ vữa từ xô vào trống máy; quanh đó có xe cút kít, đống cát, túi xi măng xếp trên pallet, và phía sau hàng rào có xe tải cùng máy đào. | (A) "stretching a safety cable around the scaffolding" — đúng việc hai công nhân đang làm quanh giàn giáo. | (B) "climbing up the scaffolding" — giàn giáo có trong ảnh nhưng cả ba người đều đứng dưới đất, không ai đang leo: đúng vật, sai hành động. | (C) "shoveling sand into the mixer" — đống cát và máy trộn đều có trong ảnh nhưng người thợ đang đổ vữa từ xô, không ai cầm xẻng: đúng vật, sai hành động. | (D) "loading cement bags onto a truck" — túi xi măng có trong ảnh nhưng đang xếp sẵn trên pallet, không ai bốc hàng, xe tải đỗ xa bên kia hàng rào: đúng vật, sai hành động.
+Source: original

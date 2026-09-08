@@ -1,0 +1,9 @@
+[QUESTION]
+The customer ------- meter was damaged during the outage will receive a revised utility bill.
+(A) who
+(B) whom
+(C) whose
+(D) which
+Answer: C
+Explanation: Trước danh từ "meter" cần một đại từ quan hệ sở hữu để liên kết với "customer". | (A) "who" — là đại từ quan hệ làm chủ ngữ, không thể hiện quan hệ sở hữu. | (B) "whom" — là đại từ quan hệ làm tân ngữ, không thể hiện quan hệ sở hữu. | (C) "whose" — là đại từ quan hệ sở hữu, đúng cấu trúc. | (D) "which" — là đại từ quan hệ chỉ vật, không thể hiện quan hệ sở hữu với "customer".
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The warehouse inventory ------- by the relocation team will be cleaned before the office move.
+(A) checking
+(B) checked
+(C) checks
+(D) to check
+Answer: B
+Explanation: Sau danh từ "warehouse inventory" cần phân từ hai để rút gọn mệnh đề quan hệ bị động. | (A) "checking" — là phân từ hiện tại, sai thể vì kho không tự kiểm tra. | (B) "checked" — đúng phân từ hai, tạo nghĩa "được kiểm tra". | (C) "checks" — là động từ chia thì hiện tại, sai cấu trúc rút gọn. | (D) "to check" — là nguyên thể chủ động, cần dạng "to be checked".
+Source: original

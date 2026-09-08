@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) Some workers are loading the crates onto a boat.
+(B) A coil of rope is hanging from a lamp post.
+(C) The crates have been stacked beside the lamp post.
+(D) The small boats are moored along the opposite shore.
+Answer: B
+Explanation: Trong ảnh không có bóng người: một cuộn dây thừng lớn đang treo trên móc của cột đèn ở đầu cầu, còn các thùng gỗ xếp hai tầng nằm giữa mặt cầu và những chiếc thuyền nhỏ neo sát dọc mép cầu trên mặt nước gần đó. | (A) "Some workers are loading the crates onto a boat" — câu này nhắc đến các công nhân, nhưng trong ảnh không có bất kỳ người nào: nhân vật không hề có trong ảnh. | (B) "hanging from a lamp post" — cuộn dây thừng đúng là đang treo trên cột đèn ở đầu cầu. | (C) "stacked beside the lamp post" — các thùng gỗ được xếp ở giữa mặt cầu, cách xa cột đèn, vật nằm cạnh cột đèn lại là một thùng gỗ tròn: đúng vật, sai vị trí. | (D) "moored along the opposite shore" — các thuyền đang neo sát dọc mép cầu tàu phía gần, bờ bên kia chỉ có tường đá và hải đăng: đúng vật, sai vị trí.
+Source: original

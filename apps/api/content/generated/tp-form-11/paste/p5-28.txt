@@ -1,0 +1,9 @@
+[QUESTION]
+The revised permit application must be ------- processed by the building department.
+(A) prompting
+(B) promptness
+(C) prompted
+(D) promptly
+Answer: D
+Explanation: Sau "must be" trước "processed" cần trạng từ chỉ cách thức. | (A) "prompting" — là V-ing/gerund, không phải trạng từ. | (B) "promptness" — là danh từ, không thể đứng trước "processed" để bổ nghĩa. | (C) "prompted" — là quá khứ phân từ/động từ, sai dạng cho vị trí trạng từ. | (D) "promptly" — đúng trạng từ, tạo "must be promptly processed".
+Source: original

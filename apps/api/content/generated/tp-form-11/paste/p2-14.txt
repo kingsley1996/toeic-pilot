@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Can you confirm whether the outage affected our water bill?
+voice: uk_female_1
+(A) Yes, the bill is due Friday.
+(B) The waiter brought the bill.
+(C) I'm not sure what happened yet.
+Answer: C
+Explanation: Câu hỏi là "Can you confirm whether the outage affected our water bill?", yêu cầu xác nhận sự cố có ảnh hưởng hóa đơn nước không. | (A) "Yes, the bill is due Friday." — đáp Yes và nêu thời hạn thanh toán, trả lời câu hỏi khác (khi nào), không xác nhận ảnh hưởng. | (B) "The waiter brought the bill." — dùng lại "bill" và âm gần giống "water"/"waiter", nhưng không trả lời yêu cầu xác nhận. | (C) "I'm not sure what happened yet." — nói rằng mình chưa biết nên chưa thể xác nhận, là đáp án gián tiếp phù hợp.
+Source: original

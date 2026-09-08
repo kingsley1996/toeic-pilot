@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning. I'm calling about the leaking pipe under the kitchen sink.
+voice: au_male_1
+Thanks for letting me know. Has water damaged the cabinet?
+voice: uk_female_1
+No, but the floor is wet, and the drip is getting worse.
+voice: au_male_1
+I can send a plumber tomorrow morning, if that works.
+voice: uk_female_1
+Tomorrow is fine. Could you also check the bathroom tap?
+voice: au_male_1
+Yes. Please leave the door unlocked for the plumber.
+voice: uk_female_1
+I'll do that. Thank you.
+
+[QUESTION]
+Why does the woman call?
+(A) To report a plumbing problem
+(B) To ask about the damaged cabinet
+(C) To replace the kitchen sink
+(D) To arrange a new sink
+Answer: A
+Explanation: Người phụ nữ nói "I'm calling about the leaking pipe under the kitchen sink." | (A) "To report a plumbing problem" — đúng vì cô báo đường ống rò rỉ. | (B) "To ask about the damaged cabinet" — đây là câu hỏi của người đàn ông, không phải mục đích gọi. | (C) "To replace the kitchen sink" — bồn rửa được nhắc đến nhưng không có việc thay thế. | (D) "To arrange a new sink" — bồn rửa được nhắc đến nhưng không có việc sắp xếp bồn mới.
+Source: original
+[QUESTION]
+What does the woman agree to?
+(A) The cabinet is damaged
+(B) The plumber's visit tomorrow morning
+(C) The sink is repaired
+(D) The bathroom tap is leaking
+Answer: B
+Explanation: Người đàn ông đề nghị "I can send a plumber tomorrow morning, if that works." và cô đáp "Tomorrow is fine." | (A) "The cabinet is damaged" — cô nói không, nên đây là ý bị phủ nhận. | (B) "The plumber's visit tomorrow morning" — đúng vì cô đồng ý với lịch thợ ống nước sáng mai. | (C) "The sink is repaired" — bồn rửa được nhắc đến nhưng việc sửa chữa không được xác nhận. | (D) "The bathroom tap is leaking" — cô chỉ yêu cầu kiểm tra vòi nước, không nói nó rò rỉ.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Check the bathroom tap
+(B) Report the leaking pipe
+(C) Leave the door unlocked
+(D) Ask about the cabinet
+Answer: C
+Explanation: Người đàn ông nói "Please leave the door unlocked for the plumber." | (A) "Check the bathroom tap" — đây là yêu cầu của người phụ nữ dành cho người đàn ông. | (B) "Report the leaking pipe" — đây là việc người phụ nữ đã làm, không phải yêu cầu dành cho cô. | (C) "Leave the door unlocked" — đúng vì người đàn ông yêu cầu cô để cửa không khóa. | (D) "Ask about the cabinet" — người đàn ông hỏi về tủ, không yêu cầu cô hỏi lại.
+Source: original

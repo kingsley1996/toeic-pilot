@@ -1,0 +1,4 @@
+kind: map
+Station Layout During Line Two Maintenance
+Area A: Shuttle Bus Stop | Area B: Ticket Office
+Area C: Platform 4 | Area D: Exit 3

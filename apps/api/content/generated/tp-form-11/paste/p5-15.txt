@@ -1,0 +1,9 @@
+[QUESTION]
+Customers must provide a ------- receipt to process a return under warranty.
+(A) validate
+(B) validity
+(C) valid
+(D) validly
+Answer: C
+Explanation: Sau mạo từ "a" và trước danh từ "receipt" cần một tính từ. | (A) "validate" — là động từ, sai từ loại cho vị trí này. | (B) "validity" — là danh từ, sai từ loại cho vị trí này. | (C) "valid" — đúng tính từ để bổ nghĩa cho "receipt". | (D) "validly" — là trạng từ, sai từ loại cho vị trí này.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) The inspector is opening the door of the train.
+(B) The passengers are lining up in front of the train door.
+(C) A woman is pulling a suitcase along the platform.
+(D) Some passengers are sitting on a bench near a pillar.
+Answer: B
+Explanation: Trong ảnh một người phụ nữ đứng đầu hàng khách, đưa tấm vé trong tay cho nhân viên soát vé mặc đồng phục đứng ngay cạnh cửa toa tàu đang mở, và phía sau cô là một hàng hành khách đứng xếp dọc sân ga, người đàn ông ngay sau cô kéo một chiếc va li. | (A) "opening the door of the train" — nhân viên soát vé đang cầm máy quét kiểm tra vé còn cửa đã mở sẵn: đúng đối tượng, sai hành động. | (B) "lining up in front of the train door" — đúng: các hành khách đang đứng xếp hàng phía trước cửa toa tàu. | (C) "pulling a suitcase" — người phụ nữ đang đưa vé, người kéo va li là người đàn ông đứng phía sau cô: đúng hành động, sai đối tượng. | (D) "sitting on a bench" — các hành khách đều đang đứng xếp hàng, chiếc ghế gần cột chỉ có va li đặt trên đó và không ai ngồi: đúng đối tượng, sai vị trí.
+Source: original

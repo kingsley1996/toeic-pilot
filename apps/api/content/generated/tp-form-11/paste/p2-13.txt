@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+When should we move the boxes into the storage unit?
+voice: ca_male_1
+(A) In the hallway by the front door.
+(B) Tomorrow morning, after the cleaners arrive.
+(C) About thirty boxes, I think.
+Answer: B
+Explanation: Câu hỏi là "When should we move the boxes into the storage unit?", hỏi THỜI ĐIỂM. | (A) "In the hallway by the front door." — trả lời nơi chốn, không phải khi nào. | (B) "Tomorrow morning, after the cleaners arrive." — nêu đúng thời điểm. | (C) "About thirty boxes, I think." — trả lời số lượng, dùng lại từ boxes nhưng không nói thời điểm.
+Source: original

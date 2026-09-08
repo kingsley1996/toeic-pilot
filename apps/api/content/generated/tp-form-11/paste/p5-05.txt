@@ -1,0 +1,9 @@
+[QUESTION]
+The office equipment is scheduled ------- maintenance next Monday.
+(A) for
+(B) to
+(C) at
+(D) in
+Answer: A
+Explanation: Sau "scheduled" cần giới từ đi với "maintenance" để chỉ lịch bảo trì. | (A) "for" — đúng giới từ trong "scheduled for maintenance". | (B) "to" — không đi với "scheduled" trước "maintenance". | (C) "at" — không tạo cụm "scheduled at maintenance". | (D) "in" — không tạo cụm "scheduled in maintenance".
+Source: original

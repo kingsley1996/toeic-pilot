@@ -1,0 +1,7 @@
+kind: table
+Kitchen Renovation Estimate
+Item | Estimated Cost
+Cabinets | 6,500 dollars
+Countertops | 2,900 dollars
+Flooring | 4,100 dollars
+Lighting | 3,800 dollars

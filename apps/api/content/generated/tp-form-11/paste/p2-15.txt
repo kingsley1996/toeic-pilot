@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Why was my account flagged during the loan review?
+voice: us_female_1
+(A) Ask the credit officer.
+(B) Yes, the account was flagged.
+(C) At the downtown branch.
+Answer: A
+Explanation: Câu hỏi là "Why was my account flagged during the loan review?", hỏi LÝ DO. | (A) "Ask the credit officer." — chỉ sang người khác để hỏi lý do, là đáp án gián tiếp phù hợp. | (B) "Yes, the account was flagged." — đáp Yes cho câu hỏi Why, và nếu bỏ Yes thì chỉ lặp lại tình trạng bị gắn cờ, không nêu lý do. | (C) "At the downtown branch." — trả lời nơi chốn, tức sai loại câu hỏi.
+Source: original

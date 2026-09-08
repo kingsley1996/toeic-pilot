@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Thank you for joining this leadership meeting. As quarterly performance reviews closed, I want to summarize the results and propose a benefits change. Overall, the average score across departments was eighty-one, up three points from last quarter. The department that scored eighty-four will pilot the new flexible-work benefit first. To support the pilot, we will add a wellness stipend of forty dollars per month. Employees in that department must complete the online training by the fifteenth to receive it. After the pilot, I will present a revised policy to the executive committee next month.
+
+[QUESTION]
+What is the main purpose of the talk?
+(A) To report review outcomes and suggest a benefits update
+(B) To announce the average score across departments
+(C) To ask leaders to approve the pilot immediately
+(D) To explain the new wellness stipend amount
+Answer: A
+Explanation: Người nói nói rõ "I want to summarize the results and propose a benefits change" — mục đích chính là báo cáo kết quả và đề xuất thay đổi phúc lợi. | (A) "To report review outcomes and suggest a benefits update" — diễn đạt lại đúng mục đích vừa dẫn. | (B) "To announce the average score across departments" — điểm trung bình được nêu nhưng chỉ là chi tiết, không phải mục đích chính. | (C) "To ask leaders to approve the pilot immediately" — có từ "pilot" và "leadership", nhưng người nói không yêu cầu phê duyệt ngay. | (D) "To explain the new wellness stipend amount" — khoản trợ cấp phúc lợi được nhắc đến nhưng chỉ là một phần của đề xuất.
+Source: original
+[QUESTION]
+Look at the graphic. Which department will pilot the new flexible-work benefit?
+(A) Sales
+(B) Finance
+(C) IT
+(D) Marketing
+Answer: B
+Explanation: "The department that scored eighty-four will pilot the new flexible-work benefit first" cho biết phòng ban có điểm 84 sẽ thí điểm, và biểu đồ gán điểm đó cho Finance. | (A) "Sales" — trong biểu đồ, Sales có điểm 78, không phải 84. | (B) "Finance" — Finance có điểm 84, khớp với phòng ban sẽ thí điểm. | (C) "IT" — IT có điểm 82, không khớp điểm 84. | (D) "Marketing" — Marketing có điểm 80, không khớp điểm 84.
+Source: original
+[QUESTION]
+What will employees in the pilot department need to do?
+(A) Present a revised policy to the executive committee
+(B) Add a wellness stipend of forty dollars
+(C) Complete the online training by the fifteenth
+(D) Pilot the new flexible-work benefit first
+Answer: C
+Explanation: "The department that scored eighty-four will pilot the new flexible-work benefit first" kết hợp với "Employees in that department must complete the online training by the fifteenth to receive it" cho biết nhân viên ở phòng ban thí điểm phải hoàn thành khóa đào tạo trực tuyến chậm nhất vào ngày mười lăm. | (A) "Present a revised policy to the executive committee" — người nói sẽ trình chính sách sau thí điểm, không phải nhân viên. | (B) "Add a wellness stipend of forty dollars" — công ty sẽ thêm khoản trợ cấp, không phải việc nhân viên phải làm. | (C) "Complete the online training by the fifteenth" — khớp đúng yêu cầu vừa dẫn. | (D) "Pilot the new flexible-work benefit first" — phòng ban thí điểm, không phải hành động nhân viên cần làm.
+Source: original

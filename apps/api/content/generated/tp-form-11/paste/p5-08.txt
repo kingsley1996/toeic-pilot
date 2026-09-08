@@ -1,0 +1,9 @@
+[QUESTION]
+All mandatory training sessions are ------- by the HR department each month.
+(A) schedules
+(B) scheduling
+(C) schedule
+(D) scheduled
+Answer: D
+Explanation: Sau "are ... by" cần quá khứ phân từ để tạo thể bị động. | (A) "schedules" — là động từ hiện tại số ít, sai dạng và thì. | (B) "scheduling" — là V-ing, tạo thể chủ động, không hợp với "by". | (C) "schedule" — là nguyên thể/danh từ, sai dạng sau "are". | (D) "scheduled" — đúng quá khứ phân từ tạo bị động.
+Source: original

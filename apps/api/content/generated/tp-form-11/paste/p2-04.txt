@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where does the airport bus leave from?
+voice: us_female_1
+(A) Yes, it leaves every ten minutes.
+(B) From Gate 4, near the metro station.
+(C) At 3:15, according to the schedule.
+Answer: B
+Explanation: Câu hỏi là "Where does the airport bus leave from?", hỏi NƠI CHỐN. | (A) "Yes, it leaves every ten minutes." — đáp Yes cho một câu hỏi Where, tức sai loại câu hỏi. | (B) "From Gate 4, near the metro station." — nêu đúng một nơi chốn. | (C) "At 3:15, according to the schedule." — trả lời thời gian, không nói được "ở đâu".
+Source: original

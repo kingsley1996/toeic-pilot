@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+When does the exhibition booth open for visitors?
+voice: au_male_1
+(A) Tomorrow at nine o'clock.
+(B) The exhibition is in the main hall.
+(C) About fifty visitors are expected.
+Answer: A
+Explanation: Câu hỏi là "When does the exhibition booth open for visitors?", hỏi THỜI GIAN. | (A) "Tomorrow at nine o'clock." — nêu đúng thời gian mở cửa. | (B) "The exhibition is in the main hall." — trả lời nơi chốn, không phải thời gian. | (C) "About fifty visitors are expected." — trả lời số lượng khách, không phải thời gian.
+Source: original

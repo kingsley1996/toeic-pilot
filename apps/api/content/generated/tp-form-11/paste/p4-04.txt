@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good evening, shoppers. This is Dana from the customer service desk. The fresh food section will close in fifteen minutes, so please bring any items you still want to the checkout counters now. The meat and seafood counters will stop serving at eight o'clock, but the dairy and produce shelves will remain open until nine. If you are holding a coupon for fresh fruit, please use it before the section closes, because it cannot be applied to frozen goods. Thank you for shopping with us, and please have your bags ready for scanning.
+
+[QUESTION]
+Who is the speaker?
+(A) A checkout cashier
+(B) A customer service employee
+(C) A coupon holder
+(D) A frozen goods manager
+Answer: B
+Explanation: Người nói tự giới thiệu "This is Dana from the customer service desk", nên cô ấy là nhân viên dịch vụ khách hàng. | (A) "A checkout cashier" — "checkout counters" được nhắc đến nhưng không phải người nói. | (B) "A customer service employee" — khớp với "customer service desk". | (C) "A coupon holder" — "coupon" xuất hiện trong bài nhưng không mô tả người nói. | (D) "A frozen goods manager" — "frozen goods" được nhắc đến nhưng không có chức danh này.
+Source: original
+[QUESTION]
+What does the speaker mean when she says, "shelves will remain open until nine"?
+(A) The produce shelves will close in fifteen minutes.
+(B) The dairy shelves will be cleaned at nine.
+(C) Some shelves stay open after the section closes.
+(D) The checkout counters will remain open until nine.
+Answer: C
+Explanation: Người nói cho biết "The fresh food section will close in fifteen minutes" rồi nói "shelves will remain open until nine", nên một số kệ vẫn mở sau khi khu vực đóng cửa. | (A) "The produce shelves will close in fifteen minutes" — "produce shelves" và "fifteen minutes" có trong bài, nhưng bị đảo ngược ý. | (B) "The dairy shelves will be cleaned at nine" — "dairy" và "nine" có trong bài, nhưng không nói về việc dọn dẹp. | (C) "Some shelves stay open after the section closes" — diễn đạt đúng ý tương phản vừa dẫn. | (D) "The checkout counters will remain open until nine" — dùng lại "checkout counters" và "remain open until nine", nhưng không phải ý của câu được trích.
+Source: original
+[QUESTION]
+What will happen at eight o'clock?
+(A) The fresh food section will reopen.
+(B) The dairy shelves will close.
+(C) The checkout counters will stop scanning.
+(D) The meat and seafood counters will stop serving.
+Answer: D
+Explanation: Người nói nói rõ "The meat and seafood counters will stop serving at eight o'clock", nên lúc tám giờ các quầy này ngừng phục vụ. | (A) "The fresh food section will reopen" — "fresh food section" được nhắc đến, nhưng nó đóng chứ không mở lại. | (B) "The dairy shelves will close" — "dairy shelves" được nhắc đến, nhưng chúng mở đến chín giờ. | (C) "The checkout counters will stop scanning" — "checkout counters" và "scanning" có trong bài, nhưng không gắn với tám giờ. | (D) "The meat and seafood counters will stop serving" — khớp đúng câu vừa dẫn.
+Source: original

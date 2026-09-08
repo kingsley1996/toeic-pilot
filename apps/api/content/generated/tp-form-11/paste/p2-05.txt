@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Would you like the fish menu or the steak menu?
+voice: au_male_1
+(A) The menu is printed.
+(B) Yes, I'll order it.
+(C) The fish menu, please.
+Answer: C
+Explanation: Câu hỏi là "Would you like the fish menu or the steak menu?", hỏi lựa chọn giữa hai thực đơn. | (A) "The menu is printed." — lặp lại từ "menu" nhưng không trả lời chọn thực đơn nào. | (B) "Yes, I'll order it." — đáp Yes cho câu hỏi lựa chọn, tức sai loại câu hỏi. | (C) "The fish menu, please." — chọn thẳng một trong hai lựa chọn.
+Source: original

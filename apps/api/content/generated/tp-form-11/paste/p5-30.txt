@@ -1,0 +1,9 @@
+[QUESTION]
+------- the draft contract, the negotiating team identified several ambiguous clauses.
+(A) Examined
+(B) Examining
+(C) Examine
+(D) Examines
+Answer: B
+Explanation: Sau dấu phẩy, cụm phân từ cần phân từ hiện tại để chỉ hành động chủ động của chủ ngữ "the negotiating team". | (A) "Examined" — là phân từ hai, chỉ nghĩa bị động, không phù hợp với chủ ngữ. | (B) "Examining" — đúng dạng phân từ hiện tại, tạo cụm phân từ chủ động. | (C) "Examine" — là động từ nguyên thể, sai dạng cho cụm phân từ. | (D) "Examines" — là động từ chia thì, sai dạng vì không có chủ ngữ phù hợp.
+Source: original

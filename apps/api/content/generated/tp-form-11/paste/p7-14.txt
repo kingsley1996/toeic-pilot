@@ -1,0 +1,58 @@
+[PASSAGE]
+From: hr@example-training.org
+To: instructor@example-training.org
+Subject: New employee course requirements
+Date: June 10
+
+All new employees must complete Safety Orientation before Customer Service Skills. The two courses are offered on the same day, and an employee may take Customer Service Skills only in a session that begins after that employee's Safety Orientation session ends. Room 204 can host only one group at a time. The training center is on the second floor of the Riverside Annex. Enter through the east door, take the stairs, and follow the signs to Room 204. Employees who arrive after 9:15 A.M. must wait in the lobby until the next session. A certificate is issued only after both courses are completed. The morning Safety Orientation is full, so any employee not listed for it must use the afternoon session. The instructor may adjust assignments only when the course order is satisfied.
+
+[PASSAGE]
+I reviewed the HR memo and the training schedule for five new employees: Nguyen, Patel, Kim, Alvarez, and Brooks. The schedule shows each employee's assigned course for the day. Because Room 204 can host only one group at a time, I cannot move a course into a slot already occupied by another group. The morning Safety Orientation is full, and the afternoon Customer Service Skills session has room for one more employee. I must still place the remaining employees in sessions that satisfy the memo's rule.
+
+If an employee has no assigned course in a slot, that employee may be considered for a make-up session. The east door will be staffed from 8:30 A.M. onward. The lobby has a sign-in desk, and employees should keep their badges visible. I will confirm the final assignments before the first session and report any conflict to the HR office.
+
+[QUESTION]
+What can be inferred about employees who want a certificate?
+(A) They must complete the courses in the required order.
+(B) They must enter through the west door.
+(C) They must wait in the lobby until 5:00 P.M.
+(D) They must attend only the afternoon session.
+Answer: A
+Explanation: The memo says "All new employees must complete Safety Orientation before Customer Service Skills" and "A certificate is issued only after both courses are completed". | (A) "They must complete the courses in the required order" — đúng vì chứng chỉ chỉ cấp sau khi hoàn thành cả hai môn theo thứ tự đã nêu. | (B) "They must enter through the west door" — trái với memo vì memo chỉ dẫn "Enter through the east door". | (C) "They must wait in the lobby until 5:00 P.M." — không được nêu; memo chỉ nói chờ đến buổi kế tiếp. | (D) "They must attend only the afternoon session" — trái với memo vì có buổi sáng và buổi chiều.
+Source: original
+[QUESTION]
+Which time slot can be assigned to Mr. Patel for Customer Service Skills?
+(A) 9:00-10:30
+(B) 15:15-16:45
+(C) 13:30-15:00
+(D) 10:45-12:00
+Answer: B
+Explanation: The memo says "an employee may take Customer Service Skills only in a session that begins after that employee's Safety Orientation session ends", the note says "the afternoon Customer Service Skills session has room for one more employee", and the schedule shows "Patel |  |  | Safety |" and "Kim | Safety |  |  | Customer". | (A) "9:00-10:30" — là buổi Safety Orientation, không phải Customer Service Skills. | (B) "15:15-16:45" — là khung giờ sau khi Safety Orientation kết thúc và có buổi Customer Service Skills còn chỗ. | (C) "13:30-15:00" — Patel đã có Safety Orientation trong khung giờ này. | (D) "10:45-12:00" — có Customer Service Skills nhưng bắt đầu trước khi Safety Orientation của Patel kết thúc.
+Source: original
+[QUESTION]
+What can be inferred about the 10:45-12:00 slot?
+(A) It is open for a make-up session.
+(B) It will be moved to the afternoon.
+(C) It cannot be used for a different course.
+(D) It requires no sign-in.
+Answer: C
+Explanation: The schedule shows "Nguyen | Safety | Customer |  |" at 10:45-12:00, and the note says "I cannot move a course into a slot already occupied by another group". | (A) "It is open for a make-up session" — trái với schedule vì khung giờ đã có môn học. | (B) "It will be moved to the afternoon" — trái với note vì không thể chuyển môn vào khung giờ đã có nhóm khác. | (C) "It cannot be used for a different course" — đúng vì khung giờ này đã có nhóm Customer Service Skills. | (D) "It requires no sign-in" — không được nêu; note chỉ nói lobby có sign-in desk.
+Source: original
+[QUESTION]
+What is NOT stated about the training center?
+(A) It is on the second floor.
+(B) It has a sign-in desk in the lobby.
+(C) It can be entered through the east door.
+(D) It has an elevator to Room 204.
+Answer: D
+Explanation: The memo says "The training center is on the second floor of the Riverside Annex" and "Enter through the east door", and the note says "The lobby has a sign-in desk". | (A) "It is on the second floor" — được nêu trong memo. | (B) "It has a sign-in desk in the lobby" — được nêu trong note. | (C) "It can be entered through the east door" — được nêu trong memo. | (D) "It has an elevator to Room 204" — không được nêu; memo chỉ nói "take the stairs".
+Source: original
+[QUESTION]
+In the note, the word "staffed" in paragraph 2 is closest in meaning to
+(A) attended
+(B) closed
+(C) rented
+(D) cleaned
+Answer: A
+Explanation: The note says "The east door will be staffed from 8:30 A.M. onward", meaning someone will be present to watch or manage the door. | (A) "attended" — gần nghĩa nhất với "staffed" trong ngữ cảnh có người trực cửa. | (B) "closed" — trái nghĩa với việc có người trực từ 8:30 A.M. | (C) "rented" — không được nêu và không liên quan đến việc trực cửa. | (D) "cleaned" — không được nêu và không liên quan đến việc trực cửa.
+Source: original

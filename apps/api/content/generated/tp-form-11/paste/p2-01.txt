@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When can you change my flight to a later date?
+voice: us_female_1
+(A) At the airport ticket counter.
+(B) I'm still checking the airline's available options.
+(C) The gate number is on your ticket.
+Answer: B
+Explanation: Câu hỏi là "When can you change my flight to a later date?", hỏi THỜI GIAN. | (A) "At the airport ticket counter." — trả lời nơi chốn cho câu hỏi When. | (B) "I'm still checking the airline's available options." — nói chưa thể trả lời vì đang kiểm tra hãng bay, không nêu thời gian. | (C) "The gate number is on your ticket." — nói vị trí số cổng, không trả lời thời gian.
+Source: original

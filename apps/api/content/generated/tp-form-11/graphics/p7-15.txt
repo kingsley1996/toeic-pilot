@@ -1,0 +1,4 @@
+kind: map
+Partner Appreciation Banquet Seating Plan
+Table 1: Gold Partners | Table 2: Media Guests
+Table 3: VIPs | Table 4: Sponsors

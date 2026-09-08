@@ -1,0 +1,78 @@
+[PASSAGE]
+**Shieldstone Insurance — Corporate Notice**
+**Subject:** Grand Opening Celebration: New Headquarters
+**Date:** October 15
+
+We are pleased to announce the official opening of Shieldstone Insurance’s new global headquarters at Horizon Plaza on Friday, October 24. This state-of-the-art facility brings our regional operations, claims processing, and underwriting teams under one roof for the first time.
+
+**Event Itinerary:**
+- **9:30 A.M.** – Registration and welcome refreshments (Main Atrium)
+- **10:30 A.M.** – Ribbon-cutting ceremony & address by the CEO (Grand Auditorium, Level 2)
+- **12:00 P.M.** – Buffet luncheon (Skyline Lounge, Level 15)
+- **1:45 P.M.** – Guided tours of departmental workspaces, starting with the teams that arrived on the first morning shuttle
+- **3:00 P.M.** – Event concludes
+
+Please note that business formal attire is required. Because underground parking at Horizon Plaza is reserved strictly for senior executives and client delegates, personal vehicles will not be permitted in the facility garage. All other personnel must take the chartered shuttle buses departing from our West End branch.
+
+[PASSAGE]
+**MEMORANDUM**
+**To:** All Personnel
+**From:** Logistics & Facilities Committee
+**Date:** October 17
+**Subject:** Transportation Schedule for October 24 Event
+
+To ensure everyone arrives smoothly for the opening event at Horizon Plaza, chartered coaches will run from the West End branch parking lot (420 Elm Street). Please check your designated departure time below:
+
+- **Shuttle 1 (Departs 8:40 A.M.):** Claims Processing and Customer Relations
+- **Shuttle 2 (Departs 8:55 A.M.):** Actuarial Analysis and Underwriting
+- **Shuttle 3 (Departs 9:10 A.M.):** Information Technology, Legal, and Human Resources
+
+All coaches take approximately 30 minutes to reach Horizon Plaza. Return services will depart from the plaza entrance at 3:15 P.M., 3:45 P.M., and 4:15 P.M.
+
+Employees needing accessibility accommodations should notify Martin Vance in Fleet Management no later than October 20 so modified transport can be arranged. Anyone who fails to board their assigned shuttle will be responsible for their own transit and must check in at Security Gate B upon arrival.
+
+[QUESTION]
+What is the main purpose of the notice?
+(A) To introduce changes to corporate insurance policies
+(B) To provide details about a headquarters inauguration event
+(C) To announce promotions within the executive board
+(D) To advertise available office space for lease
+Answer: B
+Explanation: Thông báo mở đầu bằng "We are pleased to announce the official opening of Shieldstone Insurance’s new global headquarters at Horizon Plaza on Friday, October 24" và cung cấp toàn bộ lịch trình chi tiết cho buổi lễ. | (A) "To introduce changes to corporate insurance policies" — văn bản không đề cập đến việc thay đổi chính sách bảo hiểm. | (B) "To provide details about a headquarters inauguration event" — đúng với nội dung cung cấp thông tin và lịch trình lễ khánh thành trụ sở mới. | (C) "To announce promotions within the executive board" — văn bản chỉ nêu ban giám đốc sẽ phát biểu chứ không thông báo bổ nhiệm nhân sự. | (D) "To advertise available office space for lease" — không có thông tin nào về việc cho thuê văn phòng.
+Source: original
+[QUESTION]
+According to the notice, where will the buffet lunch be held?
+(A) In the Main Atrium
+(B) In the Grand Auditorium
+(C) In the Skyline Lounge
+(D) At the West End branch
+Answer: C
+Explanation: Thông báo ghi rõ tại mốc 12:00 P.M.: "- 12:00 P.M. – Buffet luncheon (Skyline Lounge, Level 15)". | (A) "In the Main Atrium" — sảnh chính là nơi đón tiếp và làm thủ tục lúc 9:30 A.M. | (B) "In the Grand Auditorium" — khán phòng tầng 2 là nơi diễn ra lễ cắt băng khánh thành và phát biểu. | (C) "In the Skyline Lounge" — khớp hoàn toàn với thông tin tiệc trưa tự chọn diễn ra tại Skyline Lounge tầng 15. | (D) "At the West End branch" — chi nhánh West End là điểm tập kết xe buýt chứ không phải nơi ăn trưa.
+Source: original
+[QUESTION]
+What is suggested about Shieldstone Insurance's staff?
+(A) They are required to wear informal clothing during the tours.
+(B) They are permanently relocating to the West End branch.
+(C) They must reserve parking spots in the underground garage.
+(D) Their departments previously operated in separate locations.
+Answer: D
+Explanation: Đoạn 1 nêu "brings our regional operations, claims processing, and underwriting teams under one roof for the first time", kết hợp với đoạn cuối nêu "All other personnel must take the chartered shuttle buses departing from our West End branch", cho thấy trước đây các bộ phận làm việc tại các văn phòng riêng biệt. | (A) "They are required to wear informal clothing during the tours" — mâu thuẫn với quy định trang phục công sở trang trọng ("business formal attire is required"). | (B) "They are permanently relocating to the West End branch" — thông tin sai vì họ đang chuyển về trụ sở mới Horizon Plaza. | (C) "They must reserve parking spots in the underground garage" — thông tin sai vì bãi đỗ xe ngầm chỉ dành cho lãnh đạo cấp cao ("reserved strictly for senior executives"). | (D) "Their departments previously operated in separate locations" — suy luận chính xác từ hai chi tiết được ghép lại trong thông báo.
+Source: original
+[QUESTION]
+What is NOT mentioned as a scheduled activity during the celebration?
+(A) A performance by a musical guest
+(B) A tour of departmental workspaces
+(C) A speech delivered by the CEO
+(D) A morning registration session
+Answer: A
+Explanation: Lịch trình trong thông báo bao gồm "Registration and welcome refreshments", "Ribbon-cutting ceremony & address by the CEO", "Buffet luncheon", và "Guided tours", hoàn toàn không nhắc tới tiết mục biểu diễn âm nhạc. | (A) "A performance by a musical guest" — không xuất hiện trong bất kỳ phần nào của lịch trình. | (B) "A tour of departmental workspaces" — có nhắc ở mốc 1:45 P.M. qua cụm "Guided tours of departmental workspaces". | (C) "A speech delivered by the CEO" — có nhắc ở mốc 10:30 A.M. qua cụm "address by the CEO". | (D) "A morning registration session" — có nhắc ở mốc 9:30 A.M. qua cụm "Registration and welcome refreshments".
+Source: original
+[QUESTION]
+Which department will most likely participate in the first facility tour?
+(A) Human Resources
+(B) Claims Processing
+(C) Actuarial Analysis
+(D) Information Technology
+Answer: B
+Explanation: Thông báo thứ nhất nêu chuyến tham quan bắt đầu bằng nhóm nhân viên đến trên chuyến xe buýt sớm nhất ("starting with the teams that arrived on the first morning shuttle"), trong khi bản ghi nhớ thứ hai xác định chuyến xe buýt sớm nhất chở bộ phận xử lý bồi thường ("Shuttle 1 (Departs 8:40 A.M.): Claims Processing and Customer Relations"). | (A) "Human Resources" — nhân sự thuộc nhóm đi chuyến xe số 3 khởi hành lúc 9:10 A.M. | (B) "Claims Processing" — kết luận đúng khi đối chiếu quy tắc thứ tự tham quan ở thông báo thứ nhất với danh sách chuyến xe buýt đầu tiên ở bản ghi nhớ thứ hai. | (C) "Actuarial Analysis" — bộ phận này đi chuyến xe số 2 khởi hành lúc 8:55 A.M. | (D) "Information Technology" — bộ phận này đi chuyến xe số 3 khởi hành lúc 9:10 A.M.
+Source: original

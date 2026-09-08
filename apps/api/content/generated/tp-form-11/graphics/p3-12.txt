@@ -1,0 +1,7 @@
+kind: schedule
+Weekend Training Availability
+Staff | Sat 9-11 | Sat 13-15 | Sun 9-11 | Sun 13-15
+Clara | Records | Review |  | Filing
+Derek | Meeting |  | Setup | Briefing
+Fiona |  | Audit | Workshop | Support
+Marcus | Training | Inventory | Systems |

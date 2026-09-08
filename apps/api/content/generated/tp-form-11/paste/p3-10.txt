@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Good evening. I'm looking for a vegetarian main course.
+voice: ca_male_1
+The lentil curry is vegetarian, but it contains peanuts.
+voice: us_female_1
+I'm allergic to peanuts. Do you have another option without nuts?
+voice: ca_male_1
+The mushroom pasta is nut-free, and the chef can make it without cheese.
+voice: us_female_1
+Please ask the chef to remove the cheese, and bring the pasta with no butter.
+voice: ca_male_1
+Certainly. I'll also bring a glass of sparkling water instead of the lemonade.
+
+[QUESTION]
+What is the conversation mainly about?
+(A) Reporting a problem with a delivery
+(B) Replacing lemonade with sparkling water
+(C) Explaining how to cook mushroom pasta
+(D) Choosing a vegetarian dish and checking ingredients
+Answer: D
+Explanation: Người phụ nữ mở đầu bằng "I'm looking for a vegetarian main course" rồi hỏi "Do you have another option without nuts?", nên cuộc hội thoại chủ yếu về chọn món chay và kiểm tra nguyên liệu. | (A) "Reporting a problem with a delivery" — giao hàng không được nhắc đến. | (B) "Replacing lemonade with sparkling water" — đây là chi tiết cuối do nhân viên nói, không phải mục đích chính. | (C) "Explaining how to cook mushroom pasta" — món pasta được nhắc nhưng không có hướng dẫn nấu. | (D) "Choosing a vegetarian dish and checking ingredients" — đúng chủ đề.
+Source: original
+[QUESTION]
+Why does the woman avoid the lentil curry?
+(A) She is allergic to peanuts
+(B) It contains cheese
+(C) It is not available
+(D) It is served with lemonade
+Answer: A
+Explanation: Nhân viên nói "The lentil curry is vegetarian, but it contains peanuts", và người phụ nữ đáp "I'm allergic to peanuts", nên cô tránh món đó vì dị ứng đậu phộng. | (A) "She is allergic to peanuts" — đúng lý do được nói rõ. | (B) "It contains cheese" — cheese được nhắc với pasta, không phải với curry. | (C) "It is not available" — tình trạng còn hàng không được nhắc đến. | (D) "It is served with lemonade" — lemonade được nhắc với đồ uống, không phải lý do tránh curry.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Bring a glass of sparkling water
+(B) Have the pasta served without butter
+(C) Replace the curry with cheese
+(D) Add cheese to the mushroom dish
+Answer: B
+Explanation: Người phụ nữ nói "Please ask the chef to remove the cheese, and bring the pasta with no butter", tức yêu cầu pasta được phục vụ không có bơ. | (A) "Bring a glass of sparkling water" — nhân viên nói sẽ mang sparkling water, không phải yêu cầu của khách. | (B) "Have the pasta served without butter" — đúng yêu cầu "bring the pasta with no butter". | (C) "Replace the curry with cheese" — curry và cheese được nhắc nhưng không có yêu cầu thay thế. | (D) "Add cheese to the mushroom dish" — ngược với yêu cầu "remove the cheese".
+Source: original

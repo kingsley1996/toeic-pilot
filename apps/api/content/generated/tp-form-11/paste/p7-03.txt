@@ -1,0 +1,34 @@
+[PASSAGE]
+**NOTICE TO ALL TENANTS**
+Meridian Office Complex – Building Management Office
+Date: March 10
+
+As part of our annual safety program, scheduled maintenance will be performed on the passenger elevators in Building C. The service work will take place on Saturday, March 22, from 7:00 A.M. to approximately 4:00 P.M.
+
+During this time, both passenger elevators will be out of operation. Tenants and visitors may use the freight elevator located at the east corridor for building access. Stairwells will also remain available on all floors.
+
+We kindly ask that any large deliveries or equipment moves be rescheduled to avoid congestion at the freight elevator.
+
+If you have questions or concerns, please contact the Building Management Office at extension 205 or visit us in Suite 1A.
+
+Thank you for your cooperation.
+—Meridian Office Complex Management
+
+[QUESTION]
+What is the main purpose of this notice?
+(A) To announce a change in building ownership
+(B) To inform tenants about scheduled elevator maintenance
+(C) To introduce new freight elevator procedures
+(D) To remind tenants of monthly fire drill requirements
+Answer: B
+Explanation: Thông báo mở đầu bằng "scheduled maintenance will be performed on the passenger elevators in Building C", xác định mục đích chính là thông báo cho người thuê về đợt bảo trì sắp tới. | (A) "To announce a change in building ownership" — không có thông tin nào về chuyển nhượng tòa nhà. | (B) "To inform tenants about scheduled elevator maintenance" — đúng nội dung mở đầu vừa dẫn. | (C) "To introduce new freight elevator procedures" — thang chở hàng chỉ được nhắc đến như phương án tạm thời, không phải quy trình mới. | (D) "To remind tenants of monthly fire drill requirements" — không đề cập diễn tập chữa cháy.
+Source: original
+[QUESTION]
+What can be inferred about Building C on March 22?
+(A) The entire building will be closed for the day.
+(B) The freight elevator will also be unavailable.
+(C) Tenants will still be able to access their offices.
+(D) Large deliveries can proceed as normally scheduled.
+Answer: C
+Explanation: Thông báo ghi "Tenants and visitors may use the freight elevator located at the east corridor for building access. Stairwells will also remain available on all floors", cho thấy tòa nhà vẫn có thể tiếp cận được. | (A) "The entire building will be closed for the day" — mâu thuẫn vì thang chở hàng và cầu thang bộ vẫn hoạt động. | (B) "The freight elevator will also be unavailable" — mâu thuẫn trực tiếp với dòng dẫn chứng. | (C) "Tenants will still be able to access their offices" — suy luận hợp lý từ bằng chứng trên. | (D) "Large deliveries can proceed as normally scheduled" — mâu thuẫn vì thông báo yêu cầu hoãn giao hàng lớn.
+Source: original

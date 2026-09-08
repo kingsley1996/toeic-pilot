@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Where can I buy tickets for the museum exhibition?
+voice: us_female_1
+(A) The exhibition closes at six.
+(B) At the ticket counter near the entrance.
+(C) I need two student tickets.
+Answer: B
+Explanation: Câu hỏi là "Where can I buy tickets for the museum exhibition?", hỏi nơi chốn. | (A) "The exhibition closes at six." — nói thời gian đóng cửa, tức trả lời cho câu hỏi When. | (B) "At the ticket counter near the entrance." — nêu đúng một nơi để mua vé. | (C) "I need two student tickets." — nhắc lại từ tickets nhưng chỉ nêu nhu cầu mua vé, không trả lời được "ở đâu".
+Source: original

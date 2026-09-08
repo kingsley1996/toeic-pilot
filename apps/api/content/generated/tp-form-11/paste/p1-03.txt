@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Two workers are loading boxes onto a pallet.
+(B) The forklifts are parked outside the receiving door.
+(C) The man is scanning a carton on the shelf.
+(D) The man is standing on a ladder to reach the shelf.
+Answer: C
+Explanation: Trong ảnh chỉ có một nhân viên kho, đứng trên sàn trước một kệ hàng cao nhiều tầng, tay phải đưa máy quét mã vào nhãn của một thùng hàng đặt trên tầng kệ ngang tầm ngực, tay trái đỡ cạnh thùng; phía sau anh, hai chiếc xe nâng đỗ cạnh nhau bên trong kho, cách cửa cuốn nhận hàng vài mét, và không có người thứ hai nào. | (A) "Two workers are loading boxes onto a pallet" — trong kho có sẵn hai kiện hàng bọc màng đặt trên sàn, nhưng cả ảnh chỉ một người và anh ta đang quét mã chứ không bốc dỡ: đúng vật, sai cả số người lẫn hành động. | (B) "The forklifts are parked outside the receiving door" — hai xe nâng có thật và đang đỗ, nhưng chúng nằm hẳn bên trong kho, cách cửa cuốn vài mét: đúng vật, sai vị trí. | (C) "The man is scanning a carton on the shelf" — đúng việc người nhân viên đang làm với chiếc máy quét cầm trên tay. | (D) "The man is standing on a ladder to reach the shelf" — kệ hàng và người đều có trong ảnh, nhưng anh ta đứng trên sàn và với tới thùng đặt ngang tầm ngực, không dùng thang: đúng vật, sai chỗ đứng.
+Source: original

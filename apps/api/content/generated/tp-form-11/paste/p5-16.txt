@@ -1,0 +1,9 @@
+[QUESTION]
+The catering company must submit the ------- for the office party by Friday.
+(A) delivery
+(B) meeting
+(C) uniform
+(D) invoice
+Answer: D
+Explanation: Sau "submit the" trong ngữ cảnh công ty catering cần một danh từ chỉ chứng từ thanh toán. | (A) "delivery" — không đi với "submit the"; thường dùng "make/complete a delivery". | (B) "meeting" — không đi với "submit the"; thường dùng "schedule/hold a meeting". | (C) "uniform" — không đi với "submit the"; thường dùng "provide/issue a uniform". | (D) "invoice" — đúng collocation "submit the invoice".
+Source: original

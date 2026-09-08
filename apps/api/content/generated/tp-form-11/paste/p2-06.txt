@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who handles warranty claims for returned products?
+voice: uk_female_1
+(A) Ms. Nguyen in customer service.
+(B) It takes about five days.
+(C) The returned item is defective.
+Answer: A
+Explanation: Câu hỏi là "Who handles warranty claims for returned products?", hỏi NGƯỜI. | (A) "Ms. Nguyen in customer service." — nêu đúng một người phụ trách. | (B) "It takes about five days." — trả lời thời gian, không đáp ai. | (C) "The returned item is defective." — lặp lại "returned" nhưng nói về tình trạng hàng, không đáp ai.
+Source: original

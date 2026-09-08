@@ -1,0 +1,9 @@
+[QUESTION]
+The tenant ------- leased premises were damaged during the repair work has requested compensation.
+(A) whose
+(B) which
+(C) whom
+(D) that
+Answer: A
+Explanation: Sau "tenant" và trước "leased premises" cần đại từ quan hệ sở hữu. | (A) "whose" — đúng đại từ quan hệ sở hữu. | (B) "which" — là đại từ quan hệ chỉ vật, không sở hữu. | (C) "whom" — là đại từ quan hệ tân ngữ, không sở hữu. | (D) "that" — là đại từ quan hệ chủ ngữ/tân ngữ, không sở hữu.
+Source: original

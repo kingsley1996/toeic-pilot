@@ -1,0 +1,9 @@
+[QUESTION]
+The rental company added a small ------- for parking near the terminal.
+(A) charges
+(B) charged
+(C) charging
+(D) charge
+Answer: D
+Explanation: Sau "a small" cần một danh từ số ít đếm được. | (A) "charges" — là danh từ số nhiều, sai số với mạo từ "a". | (B) "charged" — là quá khứ phân từ/tính từ, sai từ loại cho vị trí này. | (C) "charging" — là dạng V-ing, không phải danh từ số ít phù hợp với "a small". | (D) "charge" — đúng danh từ số ít phù hợp với "a small".
+Source: original

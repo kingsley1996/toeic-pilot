@@ -1,0 +1,55 @@
+[PASSAGE]
+To: Elena Vargas <elena.vargas@novismail.com>
+From: Seaside Haven Resort <reservations@seasidehavenresort.com>
+Date: June 12
+Subject: Updated Reservation Confirmation - Booking #SH-88412
+
+Dear Ms. Vargas,
+
+Thank you for choosing Seaside Haven Resort. We are writing to confirm the modification to your upcoming stay. As requested during your phone call yesterday, your three-night booking in an Ocean View Villa has been rescheduled from July 14–17 to July 16–19.
+
+[1] Your reservation still includes complimentary daily buffet breakfast at the Palm Terrace and full access to our beachfront pool facilities. [2] However, please note that our standard rate of $220 per night applies only to weekday stays (Sunday through Thursday nights). Because your new dates include Friday and Saturday nights (July 17 and 18), a weekend surcharge of $40 per night has been added to your account. [3] The $200 deposit you provided during initial booking has been applied, and your remaining balance of $540 will be collected at check-in.
+
+We also offer a complimentary shuttle service for guests traveling from Marisol Regional Airport. Drivers depart from the terminal arrival area every hour between 8:00 A.M. and 8:00 P.M. [4] Should you need to make any further adjustments or cancel your booking, you may do so through our website without penalty up to 48 hours prior to your 3:00 P.M. check-in on July 16. We look forward to welcoming you soon.
+
+Sincerely,
+Julian Gomez
+Guest Services Manager, Seaside Haven Resort
+
+[QUESTION]
+What is the primary purpose of the e-mail?
+(A) To announce changes to resort dining hours
+(B) To promote a newly renovated villa
+(C) To notify a guest about an overdue balance
+(D) To confirm an adjustment to a reservation
+Answer: D
+Explanation: Thư mở đầu bằng câu "We are writing to confirm the modification to your upcoming stay", cho thấy mục đích chính là xác nhận thay đổi đối với lịch đặt phòng. | (A) "To announce changes to resort dining hours" — thư chỉ nhắc đến bữa sáng miễn phí, không thông báo đổi giờ ăn. | (B) "To promote a newly renovated villa" — thư chỉ xác nhận phòng đã đặt, không quảng bá phòng mới nâng cấp. | (C) "To notify a guest about an overdue balance" — số tiền còn lại sẽ thu lúc nhận phòng chứ không phải khoản nợ quá hạn. | (D) "To confirm an adjustment to a reservation" — phản ánh chính xác mục đích được nêu ngay câu đầu của thư.
+Source: original
+[QUESTION]
+What service is provided to Ms. Vargas at no extra charge?
+(A) Airport transportation
+(B) Late checkout on July 19
+(C) Ocean wellness treatments
+(D) Covered garage parking
+Answer: A
+Explanation: Thư có đoạn "We also offer a complimentary shuttle service for guests traveling from Marisol Regional Airport", chứng minh dịch vụ đưa đón sân bay là miễn phí. | (A) "Airport transportation" — khớp với dịch vụ "complimentary shuttle service" từ sân bay. | (B) "Late checkout on July 19" — thư không nhắc đến việc cho phép trả phòng muộn. | (C) "Ocean wellness treatments" — thư chỉ nêu quyền sử dụng "beachfront pool facilities", không nói liệu trình spa là miễn phí. | (D) "Covered garage parking" — tiện ích đỗ xe không được đề cập trong thư.
+Source: original
+[QUESTION]
+What is implied about Ms. Vargas's revised stay?
+(A) It is longer than her original reservation.
+(B) It costs more in total than her initial booking.
+(C) It requires full payment prior to arrival.
+(D) It includes a higher category of room.
+Answer: B
+Explanation: Đoạn 1 nêu lịch cũ là "July 14–17" (các đêm thứ Ba đến thứ Năm) và lịch mới là "July 16–19", còn đoạn 2 giải thích giá ngày thường là $220/đêm và "Because your new dates include Friday and Saturday nights (July 17 and 18), a weekend surcharge of $40 per night has been added", kết hợp lại suy ra tổng tiền của kỳ nghỉ mới cao hơn kỳ nghỉ ban đầu do phát sinh phụ phí cuối tuần. | (A) "It is longer than her original reservation" — cả hai lịch đều kéo dài đúng 3 đêm ("three-night booking"). | (B) "It costs more in total than her initial booking" — đúng vì ngày mới rơi vào hai đêm cuối tuần nên bị cộng thêm phụ phí $40 mỗi đêm. | (C) "It requires full payment prior to arrival" — thư nêu rõ "remaining balance of $540 will be collected at check-in". | (D) "It includes a higher category of room" — hạng phòng "Ocean View Villa" vẫn được giữ nguyên từ lúc đặt ban đầu.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"Please contact our front desk at least 24 hours in advance if you wish to arrange this pickup."
+(A) [1]
+(B) [2]
+(C) [4]
+(D) [3]
+Answer: C
+Explanation: Cụm "this pickup" trong câu cần điền liên kết trực tiếp với dịch vụ xe đưa đón sân bay ("complimentary shuttle service for guests traveling from Marisol Regional Airport") được trình bày ngay trước vị trí [4]. | (A) Vị trí [1] — đứng sau câu xác nhận đổi ngày đặt phòng và trước câu về bữa sáng, không liên quan đến việc đón khách. | (B) Vị trí [2] — đứng giữa câu về tiện ích ăn sáng/hồ bơi và câu về phụ phí cuối tuần, không phù hợp ngữ cảnh. | (C) Vị trí [4] — đứng liền sau thông tin xe buýt đón khách tại sân bay ga đến theo từng khung giờ, tạo nên sự liền mạch logic. | (D) Vị trí [3] — đứng giữa câu giải thích phụ phí và câu thông báo tiền đặt cọc/số dư thanh toán.
+Source: original

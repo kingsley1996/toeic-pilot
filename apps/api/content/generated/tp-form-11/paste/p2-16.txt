@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The insurance claim for compensation was denied.
+voice: au_male_1
+(A) At the claims office.
+(B) I'll prepare an appeal letter.
+(C) About two weeks ago.
+Answer: B
+Explanation: Câu trần thuật "The insurance claim for compensation was denied." cần một phản hồi trực tiếp vào việc từ chối bồi thường. | (A) "At the claims office." — nêu nơi chốn, trả lời cho câu hỏi where không được hỏi. | (B) "I'll prepare an appeal letter." — nêu đúng hành động phản hồi phù hợp. | (C) "About two weeks ago." — nêu thời gian, trả lời cho câu hỏi when không được hỏi.
+Source: original

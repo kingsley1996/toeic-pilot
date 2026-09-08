@@ -1,0 +1,66 @@
+[PASSAGE]
+From: Clara Sterling <c.sterling@solaris-tech.com>
+To: Marcus Vance <m.vance@solaris-tech.com>
+Date: July 8
+Subject: Second-quarter sales review and strategy
+
+Dear Marcus,
+
+I have finalized our comprehensive review of the sales team's performance across the second quarter, specifically assessing the adoption of our corporate cloud solutions. Overall, I am genuinely impressed by the resilience and determination your team demonstrated, which culminated in an exceptional finish to the reporting period. Below is an overview of the key operational factors that influenced our numbers, alongside the attached visual summary illustrating our monthly intake.
+
+As you will recall, we encountered significant logistical challenges early in the period. When the primary server migration occurred, onboarding for new corporate accounts had to be temporarily halted, resulting in our lowest revenue intake of the quarter. Fortunately, this disruption was brief. The introduction of the client referral program quickly revitalized sales pipelines, producing substantial gains right before the official debut of our flagship predictive analytics suite.
+
+The release of that flagship analytics suite propelled our sales to their highest peak in the four-month timeframe. Because total cumulative revenue across these months comfortably exceeded our baseline target of $750,000, all regional sales managers are eligible to receive the full mid-year performance incentive. To ensure accounting processes these disbursements on time, please submit the verified individual commission summaries to the payroll department no later than July 15. Please remember that documentation submitted after 5:00 P.M. on that day will not be cleared until the August payroll cycle.
+
+Looking ahead, we intend to branch out into overseas markets during the third quarter. I would like to convene a brief planning session next Tuesday at 10:00 A.M. to discuss regional quota adjustments and marketing expenditures. Please let me know by tomorrow if you are available to meet.
+
+Sincerely,
+
+Clara Sterling
+Managing Director, Solaris Technologies
+
+[QUESTION]
+What is the primary purpose of the e-mail?
+(A) To advertise an overseas job opening
+(B) To announce the immediate launch of a new product
+(C) To provide an evaluation of quarterly sales performance
+(D) To request feedback on a recent server migration
+Answer: C
+Explanation: Thư mở đầu bằng "I have finalized our comprehensive review of the sales team's performance across the second quarter... Below is an overview of the key operational factors that influenced our numbers", cho thấy mục đích chính là đánh giá kết quả bán hàng trong quý. | (A) "To advertise an overseas job opening" — thư chỉ nhắc đến việc mở rộng thị trường quốc tế ("branch out into overseas markets"), không hề đăng tuyển dụng việc làm. | (B) "To announce the immediate launch of a new product" — sản phẩm mới (analytics suite) đã được ra mắt trước đó trong quý chứ không phải thông báo ra mắt ngay lúc này. | (C) "To provide an evaluation of quarterly sales performance" — đúng với nội dung tổng kết hiệu suất bán hàng được nêu ở đoạn mở đầu. | (D) "To request feedback on a recent server migration" — việc chuyển đổi máy chủ chỉ được nhắc đến như một nguyên nhân gây chậm trễ, không có yêu cầu đóng góp ý kiến.
+Source: original
+[QUESTION]
+According to the e-mail, in which month did the server migration occur?
+(A) March
+(B) June
+(C) May
+(D) April
+Answer: D
+Explanation: Trong email, người gửi nêu "When the primary server migration occurred... resulting in our lowest revenue intake of the quarter", và biểu đồ doanh thu cho thấy tháng có doanh thu thấp nhất là "April | 145". | (A) "March" — biểu đồ ghi mức 180, không phải mức thấp nhất của quý. | (B) "June" — biểu đồ ghi mức cao nhất là 265 chứ không phải thấp nhất. | (C) "May" — biểu đồ ghi mức 210, không phải mức thấp nhất. | (D) "April" — khớp với dữ liệu tháng có doanh thu thấp nhất (145 nghìn đô la), tương ứng với thời điểm diễn ra chuyển đổi máy chủ.
+Source: original
+[QUESTION]
+What is suggested about Solaris Technologies?
+(A) Its total revenue for the second quarter exceeded $750,000.
+(B) It failed to meet its corporate sales target for the term.
+(C) Its flagship analytics suite was launched in March.
+(D) It currently operates offices in several overseas countries.
+Answer: A
+Explanation: Đoạn 3 có viết "Because total cumulative revenue across these months comfortably exceeded our baseline target of $750,000, all regional sales managers are eligible to receive the full mid-year performance incentive." | (A) "Its total revenue for the second quarter exceeded $750,000" — đúng theo thông tin tổng doanh thu tích lũy đã vượt mức 750.000 đô la. | (B) "It failed to meet its corporate sales target for the term" — mâu thuẫn với thông tin công ty đã vượt chỉ tiêu đề ra ("exceeded our baseline target"). | (C) "Its flagship analytics suite was launched in March" — sản phẩm này tạo ra đỉnh doanh thu cao nhất ("highest peak"), tương ứng với tháng 6 trên biểu đồ chứ không phải tháng 3. | (D) "It currently operates offices in several overseas countries" — công ty mới chỉ có kế hoạch tiếp cận thị trường nước ngoài trong quý 3 ("intend to branch out into overseas markets"), chưa vận hành văn phòng ở đó.
+Source: original
+[QUESTION]
+What must Mr. Vance do by 5:00 P.M. on July 15?
+(A) Reschedule a meeting with Ms. Sterling
+(B) Submit verified commission reports to payroll
+(C) Complete the corporate account onboarding process
+(D) Finalize the overseas marketing budget
+Answer: B
+Explanation: Đoạn 3 kết hợp hai câu: "please submit the verified individual commission summaries to the payroll department no later than July 15" và "documentation submitted after 5:00 P.M. on that day will not be cleared until the August payroll cycle". | (A) "Reschedule a meeting with Ms. Sterling" — cuộc họp với bà Sterling được đề xuất vào thứ Ba tuần tới, không liên quan đến hạn 15 tháng 7. | (B) "Submit verified commission reports to payroll" — đúng với yêu cầu nộp báo cáo hoa hồng đã xác thực cho bộ phận tính lương trước hạn chót. | (C) "Complete the corporate account onboarding process" — quy trình này đã bị hoãn tạm thời trong quá khứ lúc chuyển đổi máy chủ, không phải nhiệm vụ hạn chót ngày 15 tháng 7. | (D) "Finalize the overseas marketing budget" — ngân sách tiếp thị là chủ đề sẽ thảo luận trong cuộc họp, không phải tài liệu phải nộp trước 5 giờ chiều ngày 15 tháng 7.
+Source: original
+[QUESTION]
+In the e-mail, the word "convene" in paragraph 4 is closest in meaning to
+(A) evaluate
+(B) postpone
+(C) organize
+(D) terminate
+Answer: C
+Explanation: Trong đoạn 4, cụm "convene a brief planning session" mang nghĩa triệu tập/tổ chức một buổi họp lên kế hoạch, do đó "organize" là từ đồng nghĩa chính xác nhất. | (A) "evaluate" — mang nghĩa đánh giá, không mang nghĩa triệu tập hay đứng ra tổ chức một phiên họp. | (B) "postpone" — mang nghĩa trì hoãn, trái ngược với việc chủ động sắp xếp cuộc gặp. | (C) "organize" — đúng ngữ cảnh tổ chức hoặc sắp xếp một buổi họp. | (D) "terminate" — mang nghĩa chấm dứt/hủy bỏ, sai nghĩa hoàn toàn.
+Source: original

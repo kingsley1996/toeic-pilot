@@ -1,0 +1,75 @@
+[PASSAGE]
+From: l.tanaka@example-client.com
+To: events@example-garden.com
+Subject: Partner Appreciation Banquet
+Date: May 6
+
+Dear Events Team,
+
+We are finalizing the Partner Appreciation Banquet for 120 guests on June 14 at the Harborview Hotel. The program will begin at 6:00 P.M. with a short welcome, followed by dinner at 6:45 P.M. The Gold Partners table should be placed near the entrance, while the Media Guests table must be moved to the head of the hall because they have the largest number of attendees. The VIPs table will remain unchanged. Please confirm the final seating plan by Friday.
+
+In addition, the printed programs must list all sponsors in alphabetical order, and the microphone schedule should be checked before the welcome remarks. The hotel has asked for a final guest count by Wednesday. A brief thank-you speech will be delivered by the client’s director after dinner.
+
+Sincerely,
+Lena Tanaka
+
+[PASSAGE]
+From: events@example-garden.com
+To: l.tanaka@example-client.com
+Subject: Re: Partner Appreciation Banquet
+Date: May 7
+
+Dear Ms. Tanaka,
+
+Thank you for your message. The banquet will be held in the Grand Ballroom, and the current seating plan is attached. We have noted that the Media Guests table has the largest number of attendees, so it will be moved to the head of the hall. The Gold Partners table will be placed near the entrance. The VIPs table will remain unchanged. The floral centerpieces will be replaced with smaller arrangements to improve sightlines.
+
+One item requires your approval. The original menu included a seafood course, but two guests have reported allergies. We propose to postpone the dessert service by fifteen minutes so the kitchen can prepare an alternative. This change will not affect the dinner start time. Please reply by May 9 if you approve. The final invoice will be sent after the event. Please note that the hotel requires a signed copy of this reply.
+
+Best regards,
+Event Coordinator
+
+[QUESTION]
+What can be inferred about the dessert service?
+(A) The dinner will start later.
+(B) The kitchen will need extra time.
+(C) The seafood course will be canceled.
+(D) The dessert will be served earlier.
+Answer: B
+Explanation: Email 2 states "two guests have reported allergies" and "We propose to postpone the dessert service by fifteen minutes so the kitchen can prepare an alternative." | (A) "The dinner will start later" — bị phủ định bởi "This change will not affect the dinner start time". | (B) "The kitchen will need extra time" — đúng vì hai câu vừa dẫn cho thấy nhà bếp cần thêm thời gian để xử lý dị ứng. | (C) "The seafood course will be canceled" — tài liệu không nói món hải sản bị hủy. | (D) "The dessert will be served earlier" — trái ngược với "postpone the dessert service by fifteen minutes".
+Source: original
+[QUESTION]
+What is NOT stated about the banquet?
+(A) It will include a dinner.
+(B) It will be in the Grand Ballroom.
+(C) It will have a live band.
+(D) It will begin at 6:00 P.M.
+Answer: C
+Explanation: The e-mails mention "followed by dinner", "Grand Ballroom", and "begin at 6:00 P.M.", but no live band is mentioned. | (A) "It will include a dinner" — được nêu trong "followed by dinner". | (B) "It will be in the Grand Ballroom" — được nêu trong "The banquet will be held in the Grand Ballroom". | (C) "It will have a live band" — không có trong hai e-mail. | (D) "It will begin at 6:00 P.M." — được nêu trong "begin at 6:00 P.M.".
+Source: original
+[QUESTION]
+In the second e-mail, the word "approval" in paragraph 2 is closest in meaning to
+(A) menu
+(B) payment
+(C) signature
+(D) permission
+Answer: D
+Explanation: In the second e-mail, paragraph 2 says "One item requires your approval", meaning the client must give permission. | (A) "menu" — không liên quan đến nghĩa của từ cần hỏi. | (B) "payment" — không liên quan đến việc chấp thuận một đề xuất. | (C) "signature" — thư có nhắc "signed copy", nhưng từ cần hỏi không có nghĩa là chữ ký. | (D) "permission" — gần nghĩa nhất với "approval" trong ngữ cảnh cần sự chấp thuận.
+Source: original
+[QUESTION]
+Which table will be moved to the head of the hall?
+(A) Table 2
+(B) Table 1
+(C) Table 3
+(D) Table 4
+Answer: A
+Explanation: Email 1 states "the Media Guests table must be moved to the head of the hall", and the seating map lists "Table 2: Media Guests". | (A) "Table 2" — đúng vì Media Guests được chuyển và sơ đồ ghi Table 2: Media Guests. | (B) "Table 1" — sơ đồ gán Table 1 cho Gold Partners, không phải bàn được chuyển. | (C) "Table 3" — sơ đồ gán Table 3 cho VIPs, bàn này giữ nguyên. | (D) "Table 4" — sơ đồ gán Table 4 cho Sponsors, không có yêu cầu chuyển.
+Source: original
+[QUESTION]
+What can be inferred about the thank-you speech?
+(A) It will replace the welcome remarks.
+(B) It will occur after 6:45 P.M.
+(C) It will be given by the coordinator.
+(D) It will be delayed fifteen minutes.
+Answer: B
+Explanation: Email 1 states "followed by dinner at 6:45 P.M." and "A brief thank-you speech will be delivered by the client’s director after dinner." | (A) "It will replace the welcome remarks" — bị phủ định vì "short welcome" diễn ra trước bữa tối, còn bài phát biểu diễn ra sau bữa tối. | (B) "It will occur after 6:45 P.M." — đúng vì bài phát biểu diễn ra sau bữa tối bắt đầu lúc 6:45 P.M. | (C) "It will be given by the coordinator" — trái với "client’s director". | (D) "It will be delayed fifteen minutes" — fifteen minutes refers to dessert service, not the speech.
+Source: original

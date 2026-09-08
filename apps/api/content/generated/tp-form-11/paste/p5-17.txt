@@ -1,0 +1,9 @@
+[QUESTION]
+The repair shop offers a one-year ------- on all replacement parts.
+(A) warranty
+(B) mileage
+(C) invoice
+(D) chassis
+Answer: A
+Explanation: Sau "offers a one-year" và trước "on all replacement parts" cần một danh từ chỉ chế độ bảo hành. | (A) "warranty" — đúng collocation "offer a warranty on parts". | (B) "mileage" — chỉ quãng đường hoặc số km, không đi với "offers a one-year ... on parts". | (C) "invoice" — chỉ hóa đơn, không phải thứ được đưa ra kèm thời hạn một năm cho phụ tùng. | (D) "chassis" — chỉ khung xe, không kết hợp với "one-year ... on parts".
+Source: original

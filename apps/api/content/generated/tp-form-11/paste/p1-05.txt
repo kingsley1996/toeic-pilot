@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) A long ladder is leaning against the window frame.
+(B) The ladder is being held steady by a worker.
+(C) The chairs have been stacked on the floor beside the tables.
+(D) The sign is hanging above the shop's entrance.
+Answer: A
+Explanation: Trong ảnh không có bóng người; một chiếc thang dài đang tựa vào khung cửa kính ở mặt tiền cửa hàng, phía trong các ghế được úp ngược trên những chiếc bàn xếp ngay ngắn, còn tấm biển rời đang dựa vào chân tường ở mép vỉa hè. | (A) "leaning against the window frame" — đúng vật và đúng vị trí của chiếc thang trong ảnh. | (B) "being held steady by a worker" — ảnh không hề có người nào, chiếc thang tựa một mình vào khung cửa: nêu một người không có trong ảnh. | (C) "stacked on the floor beside the tables" — các ghế đang úp ngược trên mặt bàn chứ không xếp dưới sàn: đúng vật, sai vị trí. | (D) "hanging above the shop's entrance" — tấm biển đang dựa vào chân tường chứ không treo phía trên lối vào: đúng vật, sai vị trí.
+Source: original
