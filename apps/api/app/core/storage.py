@@ -426,7 +426,16 @@ class CloudinaryDriver:
         # định dạng gốc, bỏ mất phần chuyển đổi mà ta đã trả tiền để làm.
         # Không kèm `v<version>` — nó chỉ dùng để phá cache, và `overwrite=false`
         # nghĩa là một khoá luôn trỏ tới đúng một file.
-        return f"{self.base_url.rstrip('/')}/{self.folder.strip('/')}/{storage_key.lstrip('/')}"
+        #
+        # Đích đến của URL này là ô `<img>` cỡ ~400px trong đề, còn bản lưu đã
+        # bị chặn ở 2000px lúc upload — gửi nguyên bản là băng thông gấp năm
+        # lần cần. `f_auto,q_auto` là phép biến đổi phân phối: Cloudinary tự
+        # chọn định dạng (AVIF/WebP) và mức nén theo trình duyệt, tạo ra một
+        # dẫn xuất được CDN cache riêng thay vì nén lại mỗi lượt.
+        return (
+            f"{self.base_url.rstrip('/')}/f_auto,q_auto,w_1200/"
+            f"{self.folder.strip('/')}/{storage_key.lstrip('/')}"
+        )
 
 
 # --- driver S3 (mọi object store nói giao thức S3) ---------------------------

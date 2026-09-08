@@ -26,6 +26,7 @@ from sqlalchemy.orm import Session
 from app.models.dictation import DictationAttempt
 from app.models.grammar import GrammarLesson, GrammarLessonCompletion, GrammarTopic
 from app.models.practice import Attempt, AttemptItem
+from app.models.progression import XpEvent
 from app.models.vocabulary import (
     VocabularyEntry,
     VocabularyReviewLog,
@@ -301,16 +302,40 @@ def grant_rewards(
     An toàn vì **tất định và bất biến**: `source_id` sinh từ (người, ngày, khe),
     nên `uq_xp_event_source` chặn lần trao thứ hai. Gọi lại bao nhiêu lần cũng
     ra cùng một kết quả — kể cả khi React gọi hai lần lúc dựng.
+
+    Đường đọc nóng nhất của app, gọi mỗi lần mở dashboard. Hồi thường, mỗi việc
+    đã xong vẫn trả giá của một lượt trao trọn: SUM cho trần ngày + đọc cấu hình
+    + một SAVEPOINT vỡ. Một truy vấn EXISTS thay cho cả ba khi mọi thứ đã trao —
+    ca phổ biến từ lần mở thứ hai của ngày trở đi.
     """
+    done = [task for task in tasks if task.done]
+    if not done:
+        return 0
+
+    # `uq_xp_event_source` là chỉ mục, nên IN trên đó là một tra chỉ mục chứ
+    # không phải đếm bảng. Chỉ trao những khoản CHƯA có hàng: kỳ này phủ cả ca
+    # "mới xong giữa phiên" lẫn ca "đã trao hết" mà không đụng đường trao.
+    pending_ids = [progression.task_source_id(user_id, day, str(task.slot_id)) for task in done]
+    already = set(
+        db.scalars(
+            select(XpEvent.source_id).where(
+                XpEvent.user_id == user_id,
+                XpEvent.source_type == "daily_task",
+                XpEvent.source_id.in_(pending_ids),
+            )
+        ).all()
+    )
+
     granted = 0
-    for task in tasks:
-        if not task.done:
+    for task in done:
+        source_id = progression.task_source_id(user_id, day, str(task.slot_id))
+        if source_id in already:
             continue
         granted += progression.award(
             db,
             user_id=user_id,
             source_type="daily_task",
-            source_id=progression.task_source_id(user_id, day, str(task.slot_id)),
+            source_id=source_id,
             amount=task.xp,
             timezone=timezone,
         )
