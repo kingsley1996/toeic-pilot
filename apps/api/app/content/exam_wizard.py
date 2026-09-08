@@ -185,7 +185,7 @@ def _run_write(state: State) -> None:
     ).ask()
     limit = int((limit_text or "0").strip() or 0)
     code = cmd_write(
-        Namespace(slug=state.slug, limit=limit, tier="t1", max_tokens=6000, model=state.model)
+        Namespace(slug=state.slug, limit=limit, tier="t1", max_tokens=None, model=state.model)
     )
     if code == 3:  # LLMQuotaExhausted — hạn mức ngày, chờ chứ không cày tiếp
         print("\nHết hạn mức LLM trong ngày. Chạy lại sau khi có lại hạn mức.\n")
@@ -310,7 +310,7 @@ def _run_all(state: State) -> None:
     from app.content.generate_exam import cmd_check, cmd_write
 
     code = cmd_write(
-        Namespace(slug=state.slug, limit=0, tier="t1", max_tokens=6000, model=state.model)
+        Namespace(slug=state.slug, limit=0, tier="t1", max_tokens=None, model=state.model)
     )
     if code == 3:
         print("Hết hạn mức LLM. Dừng — chạy lại sau.")

@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 
-from app.content.exam import writer
 from app.content.exam_cli.authoring import (
     cmd_balance,
     cmd_check,
@@ -102,12 +101,21 @@ def main(argv: list[str] | None = None) -> int:
 
     write_cmd = sub.add_parser("write", help="sinh tệp dán cho các ô còn thiếu")
     write_cmd.add_argument("--slug", required=True)
+    # Hàng đợi đi theo thứ tự blueprint, nên `--limit` một mình luôn rơi vào part
+    # sớm nhất còn thiếu — muốn viết riêng Part 4 thì phải viết xong 25 ô Part 2
+    # trước. Cờ này để nhắm thẳng, cùng khuôn `--part` của `balance` và `check`.
+    write_cmd.add_argument(
+        "--part", type=int, choices=range(1, 8), default=None, help="chỉ viết một part"
+    )
     write_cmd.add_argument("--limit", type=int, default=0)
+    # `None` chứ không phải một con số: mặc định là trần THEO HÌNH DẠNG Ô
+    # (`writer.max_tokens_for`), và một default cứng thì không phân biệt được
+    # "không truyền" với "truyền đúng con số ấy".
     write_cmd.add_argument(
         "--max-tokens",
         type=int,
-        default=writer.DEFAULT_MAX_TOKENS,
-        help="trần đầu ra mỗi lượt gọi; model suy luận cần rộng, hạn mức TPM lại cần hẹp",
+        default=None,
+        help="trần đầu ra mỗi lượt gọi; bỏ trống thì suy theo part và hình dạng ô",
     )
     write_cmd.add_argument(
         "--model",
@@ -177,6 +185,13 @@ def main(argv: list[str] | None = None) -> int:
     prune_cmd = sub.add_parser("prune", help="xoá tệp dán của những ô không đạt")
     prune_cmd.add_argument("--slug", required=True)
     prune_cmd.add_argument("--part", type=int, default=None, help="chỉ loại trong một part")
+    prune_cmd.add_argument(
+        "--slot",
+        action="append",
+        default=None,
+        metavar="Ô",
+        help="chỉ kiểm những ô này, vd `--slot p2-09 --slot p2-11`. Lặp lại cờ.",
+    )
     prune_cmd.add_argument("--dry-run", action="store_true")
     prune_cmd.add_argument(
         "--ambiguity", action="store_true", help="loại cả câu có hơn một phương án điền được"

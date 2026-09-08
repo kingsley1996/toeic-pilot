@@ -19,6 +19,11 @@ def cmd_write(args: argparse.Namespace) -> int:
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
     todo = writer.pending(plan, workdir)
+    # `getattr`: wizard dựng Namespace tay và không có cờ này.
+    only = getattr(args, "part", None)
+    if only:
+        wanted = {slot.id for part in plan.parts if part.part == only for slot in part.slots}
+        todo = [slot for slot in todo if slot.id in wanted]
     if args.limit:
         todo = todo[: args.limit]
     print(f"{len(todo)} ô còn thiếu tệp dán.\n", flush=True)
@@ -41,7 +46,11 @@ def cmd_write(args: argparse.Namespace) -> int:
         print(f"  … [{index}/{len(todo)}] {slot.id} (part {part})", flush=True)
         each = time.monotonic()
         try:
-            block = writer.write_slot(gateway, slot, tier, part, args.max_tokens)
+            # Trần theo HÌNH DẠNG ô, không phải một con số cho cả trăm ô. Trước
+            # đây `write` luôn chạy ở 6000 trong khi `writer` đã có trần đo sẵn
+            # cho từng part — và `p1-03` cụt giữa lời giải thích vì đúng chỗ này.
+            ceiling = args.max_tokens or writer.max_tokens_for(part, slot)
+            block = writer.write_slot(gateway, slot, tier, part, ceiling)
         except LLMQuotaExhausted as quota:
             # Hạn mức NGÀY không tự hết sau ba mươi giây. Backoff ở đây sẽ cày
             # hết mọi ô còn lại, hỏng y hệt nhau, và chôn mất dòng nói đúng
@@ -118,7 +127,10 @@ def cmd_check(args: argparse.Namespace) -> int:
         print("Chạy lại lệnh này sau; các ô đã kiểm không mất gì.", file=sys.stderr)
         return 3
 
-    spread = checker.check_answer_spread(workdir_for(args.slug), plan)
+    spread = [
+        *checker.check_answer_spread(workdir_for(args.slug), plan),
+        *checker.check_yes_no_spread(workdir_for(args.slug), plan),
+    ]
     for problem in spread:
         print(f"  ✗ CẢ ĐỀ: {problem}")
 
@@ -157,6 +169,18 @@ def cmd_prune(args: argparse.Namespace) -> int:
     plan = bp.load(blueprint_path(args.slug))
     workdir = workdir_for(args.slug)
     gateway = _gateway(args.model) if args.ambiguity else None
+    # `--slot`: cắt BLUEPRINT xuống những ô được nêu, chứ không dùng `slot_id`
+    # của `check_blueprint`. Hai lý do, và lý do thứ hai đắt hơn lý do thứ nhất.
+    #
+    # Phép kiểm mơ hồ gọi model một lượt mỗi câu, nên nhắm đúng vài ô là tiết
+    # kiệm thật — 8 lượt thay vì 25. Nhưng `slot_id` chỉ nhận MỘT ô, và guard
+    # ngay dưới cần một MẪU để phát hiện người chấm trả lời bằng phản xạ: với
+    # một câu thì `1/1 = 100%` luôn vượt ngưỡng 0.7 và phép kiểm tự tắt mọi lần.
+    # Cắt blueprint giữ được cả hai — nhắm đúng ô, mà vẫn đủ mẫu để đo người chấm.
+    wanted = set(getattr(args, "slot", None) or [])
+    if wanted:
+        for part in plan.parts:
+            part.slots = [slot for slot in part.slots if slot.id in wanted]
     reports = checker.check_blueprint(
         plan, workdir, gateway, Tier(args.tier), args.ambiguity, args.part
     )

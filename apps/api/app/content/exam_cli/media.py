@@ -310,7 +310,7 @@ def cmd_graphic(args: argparse.Namespace) -> int:
                     problems += 1
                     continue
                 graphic = parse_graphic(source.read_text())
-                found = graphic.problems()
+                found = graphic.problems(part.part)
                 if found:
                     print(f"  ✗ {name}: {'; '.join(found)}", file=sys.stderr)
                     problems += 1
