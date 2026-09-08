@@ -63,8 +63,8 @@ vẽ nhầm ô, nên không có gì báo.
 
 **Hai tệp này đang thiếu đúng thứ mà tài liệu này tồn tại để ghi.** Chúng được
 đóng bằng `app.content.pack_sprites` từ `~/Downloads/dinasour-assets.png`,
-`god-pet.png` và `god-pet-02.png`; cả ba ảnh gốc có nền magenta phẳng — dấu vết
-của một đường sinh ảnh. Nhưng "sinh bằng model nào, hay tải từ đâu" thì chưa ai
+`god-pet.png`, `god-pet-02.png` và `god-pet-03.png`; cả bốn ảnh gốc có nền
+magenta phẳng — dấu vết của một đường sinh ảnh. Nhưng "sinh bằng model nào, hay tải từ đâu" thì chưa ai
 ghi lại, nên **giấy phép chưa biết**.
 
 Đừng suy ra từ việc nó trông giống hàng tự sinh. Cùng kỷ luật với
@@ -74,7 +74,12 @@ không phải là một phỏng đoán.
 Cần điền trước khi phát hành: nguồn, tác giả (nếu có), giấy phép. Nếu nó do
 chính dự án sinh ra thì ghi model và ngày, và chuyện bản quyền chấm dứt ở đó.
 
-`myth.png` giữ **cả 32 ô**, kể cả những ô đọc kém. Chất lượng chênh nhau rõ giữa
+`myth.png` giữ **cả 44 ô**, kể cả những ô đọc kém. Ô 32–43 đến từ
+`god-pet-03.png`, thêm ngày 2026-09-08; ba mươi hai ô đầu giữ nguyên **từng
+pixel**, và điều đó được kiểm trước khi ghi chứ không phải suy ra — `pet_species`
+tham chiếu ô theo CHỈ SỐ, nên một ô xê dịch là một loài đang nuôi đổi hình mà
+không gì báo. Thứ tự `--input` là thứ giữ chỉ số đứng yên: thêm ảnh mới vào
+CUỐI, không bao giờ chèn vào giữa. Chất lượng chênh nhau rõ giữa
 hai ảnh gốc — `god-pet-02.png` ra 16 ô sạch, `god-pet.png` thì phần lớn nhoè — và
 khác biệt nằm ở **cỡ pixel của ảnh gốc**, không ở đề tài: bộ sau vẽ khối to hơn
 hẳn nên phép thu về 16×16 giữ được hình. Xem `PETLAND-SPRITE-PROMPTS.md` §0.

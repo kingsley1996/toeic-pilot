@@ -46,7 +46,7 @@ export type CreatureSheet = {
 export const CREATURE_SHEETS: Record<CreatureSheetId, CreatureSheet> = {
   creatures: { url: "/pet/creatures.png", cols: 10, rows: 18, tiles: 180 },
   dinos: { url: "/pet/dinos.png", cols: 10, rows: 2, tiles: 16 },
-  myth: { url: "/pet/myth.png", cols: 10, rows: 4, tiles: 32 },
+  myth: { url: "/pet/myth.png", cols: 10, rows: 5, tiles: 44 },
 };
 
 export const DEFAULT_CREATURE_SHEET: CreatureSheetId = "creatures";

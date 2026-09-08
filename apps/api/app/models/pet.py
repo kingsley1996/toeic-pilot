@@ -123,7 +123,7 @@ class PetState(Base):
 CREATURE_SHEET_TILES: dict[str, int] = {
     "creatures": 180,
     "dinos": 16,
-    "myth": 32,
+    "myth": 44,
 }
 DEFAULT_CREATURE_SHEET = "creatures"
 
