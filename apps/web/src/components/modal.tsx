@@ -69,6 +69,11 @@ export function Modal({
      * cho phần tử DOM và state luôn nói cùng một điều.
      */
     function onCancel(event: Event) {
+      // Chỉ nhận `cancel` của CHÍNH hộp thoại. `cancel` của `<dialog>` không
+      // nổi bọt — nhưng `cancel` của `<input type="file">` thì CÓ, và nó nổi
+      // lên đúng thẻ này. Không có phép lọc ấy thì người dùng bấm "chọn tệp"
+      // rồi bấm Huỷ ở cửa sổ chọn file, và cả hộp thoại đóng theo.
+      if (event.target !== dialog) return;
       event.preventDefault();
       onClose();
     }
