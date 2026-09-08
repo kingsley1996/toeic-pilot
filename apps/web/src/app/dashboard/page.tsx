@@ -112,8 +112,8 @@ const TOUR: readonly TourStep[] = [
   },
   {
     target: '[data-tour="daily"]',
-    title: "Ba việc mỗi ngày",
-    body: "Làm xong cả ba là đủ một ngày học. Mỗi việc cộng XP, và chuỗi ngày của bạn tính từ đây.",
+    title: "Nhiệm vụ mỗi ngày",
+    body: "Làm xong hết nhiệm vụ là đủ một ngày học. Mỗi việc cộng XP, và chuỗi ngày của bạn tính từ đây.",
   },
   {
     target: '[data-tour="ruby"]',
