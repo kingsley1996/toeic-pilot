@@ -418,3 +418,353 @@ khả năng so hai model trên cùng luật ở lượt ấy.
 
 **Đừng đổi hai biến cùng lúc.** Lượt đầu đổi cả luật lẫn model, nên 0%/67% không
 quy được cho cái nào. Phải chạy thêm một lượt mới tách ra.
+
+---
+
+## 10. Năm trục của D1–D5, và ba trục còn trống (2026-09-08)
+
+Tiếp §9. Nguồn mới: `planning/docs/toeic_ai_question_generation_guidelines.md`,
+§10 dựng năm trục độ khó **D1–D5** và nói thẳng điều mà §0 ở trên đã nói theo
+cách khác — *"Do not use difficult vocabulary alone to create a hard question."*
+
+Đối chiếu năm đề bằng chính các cổng ở `check.py`. Part 4 so được thẳng, 10 cụm
+mỗi đề:
+
+| | 06 | 07 | 08 | test-09 | **11** |
+|---|---|---|---|---|---|
+| nhiễu "không nhắc gì" (chặn) | 33.3% | 33.3% | 36.7% | 20.0% | **3.3%** |
+| mẹo "chọn cái GIỐNG lời thoại nhất" | 56.7% | 50.0% | 60.0% | 30.0% | **10.0%** |
+| mẹo "chọn cái ÍT GIỐNG nhất" | 0% | 0% | 3.3% | 6.7% | **30.0%** |
+| câu gói gọn trong một câu văn | 43.3% | 56.7% | 43.3% | 53.3% | **30.0%** |
+| câu phải ghép ≥3 chỗ | 23.3% | 16.7% | 20.0% | 20.0% | **26.7%** |
+
+Part 3 cùng hướng: sàn nhiễu 38–46% → **0%**, mẹo "giống nhất" 33–59% → **6.7%**,
+câu ghép ≥3 chỗ 2.6–25.6% → **40%**.
+
+**D4 và nửa dưới của D2 coi như xong.** Ba trục còn lại thì chưa.
+
+### D1 — cổng đang đo bằng xấp xỉ, và xấp xỉ ấy lách được
+
+`check_retrieval_spread` hỏi "đáp án đúng chạm mấy câu của ngữ liệu", đếm bằng từ
+chung. Nó là **cờ cấp cụm** và chỉ đòi *một* trong ba câu chạm từ hai câu văn trở
+lên — một cái sàn thấp.
+
+Xấp xỉ ấy lách được, và ví dụ của chính tài liệu lách qua nó. §10 D1 lấy mẫu "đổi
+lịch": *"originally scheduled for Tuesday"* rồi *"we've moved it to Thursday"*.
+Đo trên một mẫu viết đúng như vậy: đáp án `"On Thursday afternoon"` chạm hai câu
+văn, nhưng **chỉ vì `afternoon` nằm ở câu cũ còn `Thursday` ở câu mới**. Người
+nghe không phải ghép gì — câu sau một mình đã trả lời được. Đây là câu *đổi kế
+hoạch*, không phải câu *ghép hai chỗ*.
+
+Hệ quả: một cụm toàn câu đổi-kế-hoạch vẫn qua cổng.
+
+### D2 — ta đếm TỪ CHUNG, tài liệu nói về TRỪU TƯỢNG HOÁ
+
+Ví dụ D2-High của §10:
+
+> Audio: *"bring a friend and both receive a free towel"*
+> Answer: *"The promotion provides an additional benefit for referrals."*
+
+Đó là **trừu tượng hoá** — đáp án dùng một khái niệm bao trùm điều đã nói. `echo()`
+chấm nó độ phủ gần bằng 0, nên `check_thin_paraphrase` sẽ **gắn cờ đúng cái ví dụ
+mà tài liệu nêu là khó**. Cùng chỉ số ấy cũng gắn cờ diễn đạt lố kiểu *"Transmit a
+lexical token through a mobile communication service"* — hai thứ trái ngược nhau
+rơi vào cùng một ô đo.
+
+Phân biệt chúng không làm được bằng đếm từ. Đó là việc của validator LLM
+(`check --verify`), không phải của một cổng từ vựng.
+
+Mặt thứ hai: **`hi = 10%`, thấp hơn may rủi 25%.** Ta đã gần như cấm sạch câu trả
+lời được bằng khớp cụm từ — đúng cái §7 đã cảnh báo là sai theo hướng ngược lại.
+`check_paraphrase_balance` hiện chỉ chặn `highest > 1`; nó cần chặn cả
+`highest == 0`. Một cổng đối xứng phải đối xứng ở **cả hai đầu**, không chỉ ở hai
+cực.
+
+### D3 — phần Nghe gần như không có câu suy luận. Đây là khoảng trống lớn nhất
+
+Đếm mã trên blueprint thật:
+
+| | tổng câu | khó (hàm ý · suy luận · NOT) | |
+|---|---|---|---|
+| Part 3 | 39 | 3 | **8%** |
+| Part 4 | 30 | 3 | **10%** |
+| Part 7 | 54 | 26 | **48%** |
+
+Part 7 đã được sửa ở §2.4 và giờ ổn. Phần Nghe thì mỗi part có **đúng một** dạng
+khó — `*_IMPLICATION`, 3 câu — còn lại toàn nhận diện và truy hồi.
+
+§6.8 của tài liệu liệt kê năm loại Hard cho Part 4: *purpose, inference,
+relationship between details, indirect implication, changed conditions*. Ta mới
+có loại thứ tư.
+
+Cách sửa theo đúng nguyên tắc §1 — **ghi thành dữ liệu, rồi dựng cổng cưỡng chế**
+— là thêm một **cột độ khó cho từng ô** vào `PART3_MIX` và `PART4_MIX`, y hệt cách
+§2.1 thêm cột "đáp gián tiếp" cho Part 2. Ô được đánh dấu `hard` thì đáp án đúng
+phải **ghép hai chỗ tách rời** hoặc **trừu tượng hoá**, và
+`check_retrieval_spread` chuyển từ cờ cấp cụm thành **cổng chặn theo từng ô** cho
+đúng những ô ấy.
+
+Vì sao là mix chứ không phải prompt: §1 đã đo rồi. Bảo mô hình "viết khó hơn" thì
+nó vẫn rơi vào thể hiện dễ nhất của dạng được giao, và không có gì trong đầu ra
+nói cho ta biết điều đó đã xảy ra.
+
+### D4 — có sàn, chưa có trần
+
+`check_distractors` chặn nhiễu quá lỏng lẻo. Không có gì chặn nhiễu **quá dễ
+loại**: §12 đòi bốn lựa chọn *grammatically parallel, similar specificity, similar
+register*, còn `check_options` mới kiểm trùng lặp và một lựa chọn dài bất thường.
+Một nhiễu vẫn có thể nhại đủ chữ mà nhìn là loại được vì nó khác dạng ngữ pháp với
+ba cái kia — Tier 4 theo thang §11.
+
+Xấp xỉ tất định rẻ: bốn lựa chọn phải cùng khuôn mở đầu (cùng `To + V`, cùng giới
+từ + danh ngữ, cùng danh ngữ trần).
+
+### D5 — chưa động tới, và audio đang đọc chậm hơn đề thật
+
+`ContentSettings.tts_rate = "-20%"`. Đo thật trên **150 clip** của thư viện
+(số từ ÷ thời lượng, lấy clip từ 25 từ trở lên):
+
+```
+wpm trung vị : 124
+khoảng       : 93 – 191
+```
+
+Đề thật chạy quãng **150–160 wpm**. Tức toàn bộ phần Nghe đang dễ hơn đề thật ở
+một trục áp lên **mọi câu**, và trục đó chưa từng được đo cho tới hôm nay.
+
+**Nhưng đổi nó rất đắt, và cái đắt ấy đã có tiền lệ.** `source_hash` gói cả phiên
+bản giọng, nên đổi `tts_rate` là dời **mọi clip** sang khoá nội dung mới — đúng sự
+cố 2026-09-02, khi một lượt recast 2 470 clip làm cả thư viện từ vựng và chép
+chính tả offline cho tới lúc `push_media` đuổi kịp. Nếu đổi thì đổi **một lần,
+ngay khi kho còn nhỏ**, không phải sau.
+
+Trục còn lại của D5 là mật độ mệnh đề. Kéo dài bài nói **không** phải cách đúng
+(§31 nói rõ); tăng mệnh đề phụ và bước nhảy chủ đề trong cùng số từ thì đúng.
+
+### §34–35: ta có nửa tất định, thiếu nửa chấm điểm
+
+Kiến trúc nhiều chặng mà §34 đề xuất thì `exam_agents/` và `check --verify` đã phủ
+phần lớn. Thiếu **thang 9 trục / 45 điểm** của §24 và luồng GOLD·PASS·REVIEW·REJECT
+— `check` hiện chỉ nhị phân: chặn hoặc không.
+
+Nếu làm thì có một cái bẫy nằm ngay trong tài liệu: §24 để một agent chấm đầu ra
+của agent khác, cùng vấn đề mà **§0 ở trên đã cấm**. Điều kiện: model chấm phải
+**khác** model viết, và điểm đi vào hàng đợi người duyệt chứ **không** đi vào cột
+`difficulty`.
+
+### Rò rỉ chéo: ngưỡng phải phân biệt được, không chỉ trùng nhau
+
+`check_leakage` (thêm cùng ngày) chặn khi một lựa chọn dùng chung ≥2 từ nội dung
+với đáp án đúng của câu khác. Bản đầu **báo oan 3 trên 8 ca** đo trên `tp-form-11`:
+`p4-03` bị chặn vì `eleven fifteen`, mà cụm ấy nằm ở **ba trên bốn** lựa chọn của
+câu bên cạnh — gặp trước nó không tách được đáp án đúng khỏi nhiễu, nên không rò
+rỉ gì.
+
+Đã sửa: chỉ đếm những từ **riêng** của đáp án đúng, tức trừ đi từ vựng của các
+nhiễu cùng câu. Năm ca còn lại đều thật.
+
+Và nó lộ ra một va chạm giữa hai luật của prompt: nhiễu **phải** nhại lời thoại
+(§7), nhưng khi cụm chữ ấy đúng là đáp án của câu khác thì hai luật cãi nhau —
+`p4-08` là ca đó. Điều kiện phân biệt không gỡ được nó; ở đây mô hình phải chọn
+cụm khác thật.
+
+Quan hệ nghịch giữa hai luật đo được trên cột Part 3: sàn nhiễu
+46.2 / 46.2 / 38.5 / 23.1 / 0% đi với rò rỉ 0 / 23.1 / 15.4 / 38.5 / 40%. Đề cũ
+sạch rò rỉ vì nhiễu của chúng **không dính gì tới bài**, mà thứ không dính gì thì
+không rò rỉ được. Đây là cái giá của thắng lợi ở D4, không phải một thoái lui độc
+lập.
+
+### Cổng cân bằng đang phạt đúng những cụm mà D3 muốn có thêm
+
+Đo trên `p4-06` sau khi sinh lại — cụm mang ba mã `TOPIC_OR_PURPOSE`,
+`IMPLICATION`, `REQUEST_OR_SUGGESTION`:
+
+| câu | mã | phủ của đáp án đúng | phủ của ba nhiễu |
+|---|---|---|---|
+| 1 | `TOPIC_OR_PURPOSE` | 0.25 | 0.50 · 0.50 · 0.40 |
+| 2 | `IMPLICATION` | 0.40 | 0.75 · 0.80 · 0.50 |
+| 3 | `REQUEST_OR_SUGGESTION` | 1.00 | 0.50 · 0.40 · 0.40 |
+
+Cụm này **đúng hình dạng prompt yêu cầu**: một câu khớp cụm từ, một câu diễn đạt
+lại, một câu ở giữa. Nhưng `check_paraphrase_balance` đếm được **hai** câu có đáp
+án đúng thấp nhất cụm, nên nó chặn.
+
+Nguyên nhân là cấu trúc, không phải chất lượng. Đáp án của câu **mục đích** là một
+khái niệm bao trùm điều đã nói, và đáp án của câu **hàm ý** — theo đúng định nghĩa
+— là thứ người nói *không* nói ra. Cả hai dạng ấy **không thể** có độ phủ cao. Một
+cụm chứa cả hai thì tối thiểu hai câu rơi xuống đáy, và cổng chặn.
+
+Ô này rớt đúng cổng ấy **hai lần liên tiếp, qua hai lượt sinh khác nhau** — dấu
+hiệu của một ràng buộc không thoả được, không phải của một lượt sinh kém.
+
+Hệ quả cho việc số 1: **thêm câu suy luận sẽ làm cổng này nổ nhiều hơn.** Hai đề
+xuất đang chống nhau, và phải gỡ trước khi làm D3.
+
+Cách gỡ có tiền lệ ngay trong tài liệu này: §7 miễn câu hỏi về **hình** khỏi
+`check_distractors`, và không phải vì tiện — lựa chọn của nó là tên hàng trong
+bảng mà lời thoại cố ý không đọc, nên bắt nó nhại lời thoại là bắt nó thôi làm câu
+hỏi về hình. Ở đây y hệt: đếm câu hàm ý và câu mục đích vào phép cân độ phủ là
+bắt chúng thôi làm đúng dạng của mình.
+
+**Đã sửa.** `check_paraphrase_balance` nhận thêm danh sách mã của cụm và bỏ qua
+`ABSTRACT_ANSWER = ("_IMPLICATION", "_TOPIC_OR_PURPOSE")`; ngưỡng "nhiều nhất một"
+tính trên số câu **còn lại** chứ không cứng là ba, và cổng ngừng chạy khi còn dưới
+hai câu so được. Miễn theo **mã**, không phải miễn cả cụm — hai câu truy hồi cùng
+chạm đáy vẫn bị chặn, và có một bài test ghim đúng điều đó. Sau khi sửa, Part 4
+của `tp-form-11` xuống **0 ô chặn nạp** trên 10 ô.
+
+Còn một chỗ cùng dạng chưa xử: `check_thin_paraphrase` gắn cờ
+`'At an airport'` (`PART_4_SPEAKER_OR_LOCATION`) và `'To report a plumbing
+problem'` (`PART_3_TOPIC_OR_PURPOSE`). Đáp án của câu **nơi chốn** cũng là một
+phạm trù chứ không phải lời đã nói, nên nó có đúng tính chất cấu trúc ấy. Chưa
+đưa vào `ABSTRACT_ANSWER` vì đó là cờ chứ không phải cổng chặn — người duyệt vẫn
+đọc được một dòng và bỏ qua.
+
+### Lưới lịch: prompt đòi một hàng, cổng đòi mọi hàng
+
+Cùng loại lệch, tìm ra bằng cách chạy `p3-12` qua **hai model độc lập**.
+
+`check_graphic` chặn khi một tên ở cột đầu của lưới lịch không xuất hiện trong
+lời thoại — lý do trong docstring của nó là một cụm có bảng ghi "Liam", "Emma"
+trong khi hai người nói tên Sarah và James, tức bảng và hội thoại nói về hai nhóm
+người khác nhau. Nhưng prompt chỉ dặn *"cho biết HÀNG nào"*, số ít, và
+`GRAPHIC_RULES_TEMPLATE` cũng chỉ nói *"the talk supplies which ROW"*.
+
+Kết quả đo:
+
+| model | thiếu tên |
+|---|---|
+| `bai/qwen3.8-flash` | Leo, Priya, Omar |
+| `google/gemini-3.7-flash` | Elena, Clara |
+
+Hai model không liên quan gì nhau, cùng một kiểu trượt — dấu hiệu của luật viết
+thiếu chứ không phải model yếu. `groq/openai/gpt-oss-120b` không tính được vì nó
+rớt sớm hơn, ở tầng định dạng bảng.
+
+**Đã sửa.** `_NAME_EVERY_ROW` trong `prompts/graphic.py` thêm một câu vào prompt
+của **từng ô** dạng `schedule`: phải nhắc tên cả bốn người ở cột đầu, kèm lý do
+điều đó không lộ đáp án — trục đáp án của lưới lịch là các **khung giờ**, nên
+luật "nói tối đa một trong bốn mục" không đụng gì tới tên người. `GRAPHIC_FORMAT`
+trong system prompt cũng được bổ sung cùng ý.
+
+Bài học lặp lại lần thứ ba trong §10 này: **một cổng chặt hơn prompt thì mọi
+model đều rớt, và số đo trông như model kém.** Cách phân biệt là chạy cùng ô qua
+hai model — nếu cả hai trượt cùng một chỗ, hãy đọc lại prompt trước khi đổi model
+lần nữa.
+
+### Cổng D1 mù với hai dạng câu hợp lệ, và cả hai đều thường gặp ở Part 7
+
+Lần thứ tư của cùng khuôn, tìm ra ngay lượt chạy Part 7 đầu tiên có cột `hard`.
+
+`evidence_sentences` đếm từ chung, và `_content_words` chỉ bắt `[a-z]+`. Hai dạng
+câu vì thế luôn cho span **0** một cách hoàn toàn hợp lệ:
+
+- **Đáp án là con số tính ra.** `p7-01` câu 3 — *"Advanced trước 30/4, trả bao
+  nhiêu mỗi tháng"* — đúng là câu ghép mà prompt yêu cầu: giá ¥22,000 ở một chỗ,
+  ưu đãi 15% ở chỗ khác. Đáp án `¥18,700` tách ra **rỗng chữ**, nên cổng không
+  nhìn thấy nó và chặn cả cụm vì "không câu nào phải ghép".
+- **Câu NOT/EXCEPT.** Đáp án đúng theo định nghĩa KHÔNG có trong ngữ liệu — đó là
+  cả dạng câu. `p7-01` câu 2 cũng span 0 vì lý do này.
+
+**Đã sửa:** `check_retrieval_spread` **im** khi bất kỳ câu nào trong cụm có span 0.
+Lời phàn nàn của nó là *"KHÔNG câu nào phải ghép hai chỗ"*, và muốn khẳng định
+điều đó thì phải đo được **mọi** câu; một câu không đo được là lời khẳng định mất
+căn cứ. Nó vẫn chặn bình thường ở cụm mà cả ba đáp án đều đo được.
+
+Sau bản vá, `p7-01` qua sạch và Part 4 giữ nguyên 0 ô chặn.
+
+Bài học vẫn là bài học cũ, thêm một mặt: **cổng chặt hơn prompt thì mọi model đều
+rớt** — và một xấp xỉ có vùng mù thì vùng mù ấy chính là chỗ nó chặt hơn. Trước
+khi nâng một phép đo xấp xỉ từ CỜ lên CHẶN, hãy liệt kê những đầu vào hợp lệ mà
+nó không đo được.
+
+### Thứ tự đề xuất
+
+1. ~~**D3 — cột độ khó cộng cổng chặn theo ô.**~~ **Đã làm (2026-09-08).**
+   `QuestionSlot.hard` đếm số câu buộc phải ghép chứng cứ từ hai chỗ tách rời.
+   `build_part3`/`build_part4` gán 1 cho mọi cụm; `build_part7` gán 1 cho cụm
+   nhiều ngữ liệu hoặc cụm từ ba câu trở lên. `prompts/difficulty.py` đưa nó vào
+   prompt của TỪNG Ô, và `check_retrieval_spread` **chặn** ở ô có `hard`, chỉ gắn
+   **cờ** ở ô không có.
+
+   Hai mức là điều kiện để ship được: chặn tất cả thì mọi đề đã sinh hoá đỏ —
+   3 trên 13 cụm Part 3 của `tp-form-11` dính — còn cờ tất cả thì §1 đã đo rằng
+   mix không có cổng chỉ là gợi ý. Mặc định 0 nên ô cũ giữ nguyên hành vi, và chỉ
+   ô dựng sau khi có cột mới phải đạt.
+
+   Áp cho `tp-form-11`: **11 trên 15 cụm Part 7** được đánh dấu, các part đã sinh
+   không đụng tới. Bốn cụm không đánh dấu là cụm một ngữ liệu hai câu — ép chúng
+   là ép một hình dạng đề thật không có.
+
+   **Đừng dựng lại part để thêm cột.** `cmd_plan` ghi đè `context` bằng bối cảnh
+   do LLM sinh, nên `build_part7` chạy lại trả về bối cảnh của bảng `PART7_SETS`
+   và xoá mất chúng. Gán thẳng một trường trên blueprint đã có, rồi đối chiếu mọi
+   trường khác trước khi ghi.
+2. **D2 — chặn `highest == 0`.** Một dòng, và nó gỡ thiên lệch ngược hiện tại.
+
+   Kèm theo: `cmd_write` từng bỏ qua `writer.max_tokens_for()` — hàm ấy chỉ được
+   `exam_agents/graph.py` gọi — nên mọi lượt `write` chạy ở trần 6000 bất kể part,
+   trong khi bảng trần đo sẵn cho Part 6 là 16000 và cho ô có hình là 24000. Hai ô
+   mất vì đúng chỗ này (`p1-03` cụt giữa lời giải thích, `p3-10` trả về 0 ký tự),
+   và cái cụt không hiện ra như lỗi mà như một ô đã ghi xong. Đã nối lại
+   (2026-09-08); `--max-tokens` truyền tay vẫn thắng.
+3. **D4 — kiểm bốn lựa chọn song song.**
+4. **D5 — quyết định về `tts_rate` sớm**, vì chi phí đổi tăng theo kích thước kho.
+5. **§24 — thang điểm và hàng đợi REVIEW**, sau cùng, và bằng model khác.
+
+### Ba điều đừng làm
+
+- **Đừng nâng độ khó bằng từ vựng khó.** §31 của tài liệu và §0 ở trên cùng một ý.
+- **Đừng thêm cổng một phía.** §9 đã đo: luật một chiều biến thiên lệch 47% thành
+  67% ngược chiều, tệ hơn chỗ xuất phát.
+- **Đừng coi con số nào ở trên là độ khó thật.** Tất cả đều là proxy. Thứ duy nhất
+  kiểm được là tỉ lệ đúng thật ở `attempt_item`, và nó vẫn quá mỏng — trung vị 5
+  lượt/câu (§0).
+
+---
+
+## 11. Độ khó được thiết lập ở đâu, theo từng part (2026-09-08)
+
+Đọc bảng này theo ba tầng của §1, và thứ tự ấy quan trọng: **ghi thành dữ liệu →
+prompt của TỪNG Ô nói ra → cổng cưỡng chế**. Thiếu tầng cuối thì hai tầng trên chỉ
+là gợi ý — mô hình vẫn rơi vào thể hiện dễ nhất của dạng được giao, và không có gì
+trong đầu ra nói cho ta biết điều đó đã xảy ra.
+
+Số liệu lấy từ `tp-form-11`, đề đầu tiên đi hết pipeline với đủ các cổng.
+
+| Part | Trục ghi ở blueprint | Prompt từng ô nói gì | Cổng cưỡng chế |
+|---|---|---|---|
+| **1** · 6 ô | `people` = one · several · none | ảnh phải chứa **nhiều hơn** bốn câu cần: ≥2 nhóm chủ thể làm 2 việc, hoặc ≥3 nhóm vật ở 3 quan hệ vị trí | **không có** |
+| **2** · 25 ô | `indirect` = 8/25<br>`indirect_kind` = 0·1·2·3, chia 2/2/2/2 | trực tiếp hay gián tiếp, và **kiểu né nào** trong bốn kiểu | `check_yes_no_spread` — cấp ĐỀ, ≤30% |
+| **3** · 13 ô, 39 câu | `question_types` (3 câu hàm ý) · `hard` = 13/13 · `graphic` = 3 ô | dạng từng câu · ≥1 câu buộc **ghép hai chỗ tách rời** · luật hình | `check_retrieval_spread` **chặn** (miễn ô có hình) · `check_distractors` · `check_paraphrase_balance` · `check_redundancy` · `check_leakage` · `check_implication` · `check_graphic` |
+| **4** · 10 ô, 30 câu | như Part 3 · `hard` = 10/10 · `graphic` = 2 | như Part 3 | như Part 3 |
+| **5** · 30 ô | `grammar` — 12 mã theo `PART5_MIX` | điểm ngữ pháp phải kiểm · ba nhiễu sai vì **đúng điểm đó** · bốn lựa chọn dài xấp xỉ nhau | **không có cổng tất định**; chỉ `prune --ambiguity` |
+| **6** · 4 ô, 16 câu | `grammars` 4 mã/ô · vị trí **câu điền câu** = blank 3 hoặc 4, chia 2/2 | mã từng chỗ trống · chỗ nào là câu điền câu · ba câu sai phải sai vì **không hợp mạch văn** | `validate` chặn câu điền câu ở blank 1–2; không có cổng độ khó khác |
+| **7** · 15 ô, 54 câu | `question_types` — 26/54 (**48%**) là suy luận · hàm ý · NOT<br>`hard` = 11/15 · `structure` + số ngữ liệu | ≥1 câu ghép hai chỗ · cụm nhiều tài liệu phải có câu **bắc cầu**, và lời giải phải dẫn **cả hai** tài liệu | `check_cross_passage` **chặn** · `check_retrieval_spread` · `check_leakage` · `check_part7_forms` · `check_implication` |
+
+### Cấp ĐỀ — từng câu hợp lệ, thứ sai là phân bố
+
+| Cổng | Đo gì | Trần |
+|---|---|---|
+| `check_answer_spread` | chữ cái đáp án | ≤40% mỗi chữ |
+| `check_yes_no_spread` | nhiễu Yes/No ở câu WH của Part 2 | ≤30% |
+
+Cả hai chỉ lộ ra ở tầng đề. `balance` sửa được cái thứ nhất bằng hoán vị; cái thứ
+hai phải sinh lại, và **cổng gọi đích danh phần VƯỢT hạn ngạch** chứ không gọi tất
+cả — bẫy Yes/No là bẫy thật của đề thật, xoá sạch là làm đề dễ hơn đề thật.
+
+### Hai chỗ trống, và chúng không cùng loại
+
+**Part 5 là chỗ hở lớn nhất.** Ba mươi câu — phần lớn nhất đề — và kiểu hỏng của
+nó là *hai phương án cùng điền được*, thứ không cổng tất định nào bắt được. Nó
+báo 0 dòng chặn không phải vì sạch mà vì **chưa ai nhìn**. `prune --ambiguity` là
+bắt buộc ở đây, không phải tuỳ chọn.
+
+**Part 1 không có cổng nào cho trục của nó.** `people` được chia ở blueprint và
+prompt đòi ảnh giàu chi tiết, nhưng không gì kiểm tấm ảnh vẽ ra có đúng thế không.
+Đây là chỗ duy nhất kiểm định phải bằng **mắt người**, và runbook đã ghi thế.
+
+**Part 6 có trục tương đương chưa dựng:** chỗ trống mà đáp án bị quyết định bởi
+một câu KHÁC câu chứa nó. Đo được tất định bằng đúng cơ chế `check_cross_passage`
+— trích dẫn nguyên văn, biên giới câu biết chính xác.
+

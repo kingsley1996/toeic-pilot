@@ -50,6 +50,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `docs/DESIGN-SYSTEM.md` | Ba luật hỏng im lặng: **không `box-shadow`**, **một bán kính 4px**, **`rule-strong`** cho viền |
 | `docs/PETLAND-SPRITE-PROMPTS.md` | Prompt sinh ô sinh vật mới. §0: model **không vẽ được 16×16**, nó vẽ ảnh *về* pixel art rồi ta thu nhỏ. §1: sprite lấp 79% ô và **chạm mép** — ngược lời khuyên prompt thông thường. §7: ô mới cần tấm thứ hai, và ba chỗ hỏng im lặng |
 | `docs/SPEC-EXAM-DIFFICULTY.md` | Vì sao đề tự sinh dễ hơn đề thật. §0: `difficulty` là hằng số và **đừng để LLM điền nó**. §1: mix giao dạng câu, mô hình vẫn chọn thể hiện dễ nhất trong dạng |
+| `docs/toeic_ai_question_generation_guidelines.md` | Đặc tả cho agent sinh đề, viết từ góc người ra đề chứ không từ mã. §10 dựng năm trục độ khó **D1–D5** — `SPEC-EXAM-DIFFICULTY` §10 đối chiếu từng trục với số đo thật. §11 xếp hạng đáp án nhiễu, §27–28 là luật cấp **cụm**, §34–35 là kiến trúc nhiều chặng |
 | `docs/toeic_question_label_taxonomy.md` | Bảng nhãn, **duy trì bằng tay** và là nguồn sự thật; `labels.py` được *sinh ra* từ nó |
 | `docs/SYSTEM-OVERVIEW.md` · `docs/MEDIA-PIPELINE.md` · `docs/EXAM-GRAPH.md` | Mô tả **hành vi hiện tại**, không phải quyết định |
 | `docs/REFACTOR-LONG-FILES.md` | Tách tệp quá dài. §0: dài không tự nó là lỗi |
