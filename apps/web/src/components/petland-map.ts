@@ -14,8 +14,8 @@
  * Bản đồ sống ở `public/pet/map.json`, do `/admin/petland` xuất ra.
  */
 
-/** Cỡ ô nguồn. Mọi hệ số phóng phải là SỐ NGUYÊN của con số này (ADR-010 §13). */
-export const TILE = 16;
+/** Cỡ ô nguồn. Xem lý do nó sống ở `petland-sprite.ts` thay vì ở đây. */
+export { TILE } from "@/components/petland-sprite";
 
 /** Tấm ghép ô nào. Xem `public/pet/CREDITS.md`. */
 export type SheetId = "town" | "farm" | "water" | "stone";

@@ -14,6 +14,16 @@
 
 import type { CreatureSheetId } from "@toeic-pilot/shared";
 
+/**
+ * Cỡ ô nguồn. Mọi hệ số phóng phải là SỐ NGUYÊN của con số này (ADR-010 §13).
+ *
+ * Sống ở đây chứ không ở `petland-map.ts`: thẻ thú ở sidebar cần đúng hằng số
+ * này nhưng KHÔNG cần máy phân tích bản đồ (`parseMap`, `wanderStep`, bảng
+ * sheet…) — trỏ `TILE` về phía module map là kéo cả module đó vào first-load
+ * của mọi trang có sidebar, chỉ để đọc một con số.
+ */
+export const TILE = 16;
+
 export type CreatureSheet = {
   /** Đường dẫn ảnh. Chỉ tệp này được biết nó. */
   url: string;

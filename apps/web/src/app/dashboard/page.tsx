@@ -32,10 +32,19 @@ import { BadgeNotice } from "@/components/badges";
 import { DailyTasksPanel } from "@/components/daily-tasks";
 import { RubyWalletPanel } from "@/components/ruby-wallet";
 import { ButtonLink, Page, PageHeader, Panel, PanelLink, Skeleton, Tag, cx } from "@/components/ui";
-import { Tour, type TourStep } from "@/components/tour";
 import { apiFetch } from "@/lib/api";
 import { clock } from "@/lib/attempt";
 import { useRequireSession } from "@/lib/session";
+
+import dynamic from "next/dynamic";
+import type { TourStep } from "@/components/tour";
+
+/*
+ * Tour + thư viện định vị của nó chỉ có việc làm với người MỚI chưa từng xem —
+ * tức gần như không ai vào trang này lần thứ hai. Tải lười để cả bộ (~54 KB
+ * kèm `@floating-ui`) không nằm trong first-load của mọi lần mở dashboard.
+ */
+const Tour = dynamic(() => import("@/components/tour").then((m) => m.Tour), { ssr: false });
 
 /**
  * Nhà của khu học.
