@@ -12,7 +12,16 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token
-from app.models import Topic, User, VocabularyCollection, VocabularyCollectionItem
+from app.models import (
+    ImageAsset,
+    Topic,
+    User,
+    VocabularyCollection,
+    VocabularyCollectionItem,
+    VocabularyEntry,
+    VocabularyReviewState,
+    VocabularyTopic,
+)
 
 ZERO = "00000000-0000-0000-0000-000000000000"
 
@@ -320,3 +329,113 @@ def test_missing_nodes_404(client: TestClient) -> None:
     assert client.get(f"/api/v1/vocabulary-collections/{uuid.uuid4()}").status_code == 404
     assert client.get("/api/v1/vocabulary-collections/khong-ton-tai").status_code == 404
     assert client.get(f"/api/v1/vocabulary-collection-items/{uuid.uuid4()}").status_code == 404
+
+
+def _make_image(db: Session, marker: str) -> ImageAsset:
+    asset = ImageAsset(
+        storage_key=f"image/aa/{marker}.jpg",
+        source_hash=marker * 64,
+        mime_type="image/jpeg",
+        size_bytes=10,
+        width=10,
+        height=10,
+        source="uploaded",
+        source_url="https://example.com",
+        license="CC0",
+        attribution="Ai đó",
+        alt_text=None,
+    )
+    db.add(asset)
+    db.flush()
+    return asset
+
+
+def test_item_cover_reaches_the_public_card(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Ảnh cover đi hết đường: gắn qua PATCH admin → URL hiện trên card public."""
+    collection, item, _ = build_tree(db_session)
+    db_session.commit()
+    asset = _make_image(db_session, "cover")
+    db_session.commit()
+
+    headers = auth("editor")
+    patched = client.patch(
+        f"/api/v1/admin/vocabulary-collection-items/{item.id}",
+        json={"image_id": str(asset.id)},
+        headers=headers,
+    )
+    assert patched.status_code == 200
+    assert patched.json()["image_id"] == str(asset.id)
+    assert patched.json()["image_url"] is not None
+
+    detail = client.get(f"/api/v1/vocabulary-collections/{collection.id}").json()
+    assert detail["items"][0]["image_url"] == patched.json()["image_url"]
+
+    # Gỡ ảnh: card quay về null, không lỗi.
+    removed = client.patch(
+        f"/api/v1/admin/vocabulary-collection-items/{item.id}",
+        json={"image_id": None},
+        headers=headers,
+    )
+    assert removed.status_code == 200
+    assert removed.json()["image_id"] is None
+
+    # Id ảnh lạ bị chặn — client chỉ được trỏ tới ảnh đã qua confirm.
+    assert (
+        client.patch(
+            f"/api/v1/admin/vocabulary-collection-items/{item.id}",
+            json={"image_id": str(uuid.uuid4())},
+            headers=headers,
+        ).status_code
+        == 404
+    )
+
+
+def test_learned_count_counts_words_reviewed_at_least_once(
+    client: TestClient, db_session: Session
+) -> None:
+    """`learned_count` = từ đã chấm ≥1 lượt, cùng định nghĩa tick chủ đề.
+
+    Một từ chấm "Học lại" (grade 0, interval 1) vẫn tính — đã được động tới.
+    Khách chưa đăng nhập thì không hiện số học của ai cả.
+    """
+    collection, item, topic = build_tree(db_session)
+    entry = VocabularyEntry(
+        headword="invoice",
+        part_of_speech="noun",
+        meaning_en="a bill",
+        meaning_vi="hóa đơn",
+        status="published",
+    )
+    db_session.add(entry)
+    db_session.flush()
+    db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
+    db_session.flush()
+    learner = User(email="learner@example.com", hashed_password="x", role="learner")
+    db_session.add(learner)
+    db_session.flush()
+    # Chấm một lượt grade 0 — vẫn là "đã học".
+    db_session.add(
+        VocabularyReviewState(
+            user_id=learner.id,
+            entry_id=entry.id,
+            ease_factor=2.5,
+            interval_days=1,
+            repetitions=0,
+            lapses=0,
+            due_at=None,
+        )
+    )
+    db_session.commit()
+
+    token = {"Authorization": f"Bearer {create_access_token(str(learner.id))}"}
+    learned = client.get(
+        f"/api/v1/vocabulary-collections/{collection.id}", headers=token
+    ).json()["items"][0]
+    assert learned["learned_count"] == 1
+    assert learned["entry_count"] == 1
+
+    anonymous = client.get(f"/api/v1/vocabulary-collections/{collection.id}").json()["items"][0]
+    assert anonymous["learned_count"] == 0
+    assert anonymous["entry_count"] == 1

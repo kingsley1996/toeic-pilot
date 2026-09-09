@@ -3,10 +3,12 @@
 import {
   API_ROUTES,
   type TopicPublic,
+  type VocabularyCollectionDetail,
+  type VocabularyCollectionItemPublic,
   type VocabularyCollectionPublic,
   type VocabularyProgress,
 } from "@toeic-pilot/shared";
-import { BookOpen, Library, Layers, RotateCcw } from "lucide-react";
+import { BookOpen, Library, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -25,37 +27,66 @@ import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
 
 /*
- * Trang từ vựng mở ra ở tầng TUYỂN TẬP (collection), không còn là danh sách chủ
- * đề phẳng: học viên nghĩ "học bộ TOEIC 600 từ" trước khi nghĩ "chủ đề nào".
- * Từ vựng → tuyển tập → cuốn sách → chủ đề → trang từ.
+ * Trang từ vựng mở ra ở tầng TUYỂN TẬP, không còn là danh sách chủ đề phẳng:
+ * học viên nghĩ "học bộ TOEIC 600 từ" trước khi nghĩ "chủ đề nào". Từ vựng →
+ * tuyển tập → cuốn sách → chủ đề → trang từ.
  *
- * Chủ đề chưa được xếp vào cuốn nào (collection_item_id = null) vẫn liệt kê ở
- * đây thay vì biến mất — dữ liệu cũ không mất dấu khi cây phân cấp ra đời.
+ * Card của TRANG NÀY là cuốn sách (collection_item), không phải tuyển tập:
+ * bấm vào là học luôn, không có một tầng trung gian chỉ có một nút. Tuyển tập
+ * chỉ là tiêu đề nhóm. Chủ đề chưa xếp vào cuốn nào vẫn liệt kê riêng — dữ
+ * liệu cũ không mất dấu khi cây phân cấp ra đời.
  */
 const TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
 
-function CollectionCard({
-  collection,
+function BookCard({
+  item,
   index,
+  signedIn,
 }: {
-  collection: VocabularyCollectionPublic;
+  item: VocabularyCollectionItemPublic;
   index: number;
+  signedIn: boolean;
 }) {
   const tone = TONES[index % TONES.length]!;
   return (
     <PanelLink
-      href={`/learn/vocabulary/collections/${collection.id}`}
-      className="flex flex-col p-6"
+      href={`/learn/vocabulary/collection-items/${item.id}`}
+      className="flex flex-col overflow-hidden p-0"
     >
-      <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
-      <h2 className="mt-4 text-subtitle">{collection.name}</h2>
-      {collection.description && (
-        <p className="mt-1.5 text-small text-ink-muted">{collection.description}</p>
+      {/* Cover hoặc placeholder — khung cố định tỉ lệ để hai card cùng hàng
+          không nhảy chiều cao khi một cuốn chưa có ảnh. */}
+      {item.image_url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.image_url}
+          alt=""
+          className="aspect-[4/3] w-full border-b border-rule bg-recess object-cover"
+        />
+      ) : (
+        <span
+          aria-hidden
+          className="flex aspect-[4/3] w-full items-center justify-center border-b border-rule bg-recess"
+        >
+          <BookOpen size={28} strokeWidth={1.25} className="text-ink-faint" />
+        </span>
       )}
-      <p className="mt-3 flex items-center gap-1.5 font-data text-small tabular-nums text-ink-faint">
-        <Layers size={13} strokeWidth={2} aria-hidden />
-        {collection.topic_count} chủ đề
-      </p>
+      <div className="flex flex-1 flex-col p-4">
+        <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
+        <h3 className="mt-3 text-subtitle">{item.name}</h3>
+        {item.description && (
+          <p className="mt-1.5 line-clamp-2 text-small text-ink-muted">{item.description}</p>
+        )}
+        <p className="mt-3 font-data text-small tabular-nums text-ink-faint">
+          {item.entry_count} thẻ
+        </p>
+        {/* learned_count chỉ có nghĩa khi đăng nhập; số 0 của khách vãng lai là
+            "chưa có dữ liệu", không phải "chưa học từ nào" — nên ẩn hẳn dòng. */}
+        {signedIn && (
+          <p className="mt-1 font-data text-small tabular-nums text-ink-muted">
+            Đã học {item.learned_count} từ
+          </p>
+        )}
+      </div>
     </PanelLink>
   );
 }
@@ -103,7 +134,9 @@ function UnfiledTopicCard({
 function VocabularyLanding() {
   const { status, token } = useSession();
   const due = useDueCount();
-  const [collections, setCollections] = useState<VocabularyCollectionPublic[] | null>(null);
+  // Mỗi tuyển tập một detail (mỗi cái chứa items của nó) — card trang này là
+  // cuốn sách, nên cần một tầng sâu hơn `GET /vocabulary-collections` phẳng.
+  const [collections, setCollections] = useState<VocabularyCollectionDetail[] | null>(null);
   const [topics, setTopics] = useState<TopicPublic[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   // Tiến độ chỉ xin cho chủ đề CHƯA XẾP (đăng nhập mới có), map đóng dấu token để
@@ -115,7 +148,20 @@ function VocabularyLanding() {
 
   useEffect(() => {
     apiFetch<VocabularyCollectionPublic[]>(API_ROUTES.vocabularyCollections)
-      .then(setCollections)
+      .then((rows) =>
+        // Tải song song chi tiết từng tuyển tập; một cái hỏng vẫn giữ cái còn lại.
+        Promise.all(
+          rows.map((row) =>
+            apiFetch<VocabularyCollectionDetail>(API_ROUTES.vocabularyCollection(row.id)).catch(
+              () => null,
+            ),
+          ),
+        ).then((details) => {
+          setCollections(
+            details.filter((detail): detail is VocabularyCollectionDetail => detail !== null),
+          );
+        }),
+      )
       .catch(() => setError("Không tải được danh sách tuyển tập."));
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then(setTopics)
@@ -155,14 +201,14 @@ function VocabularyLanding() {
       <PageHeader
         eyebrow="Từ vựng"
         title="Tuyển tập"
-        description="Chọn một tuyển tập để học từ theo cuốn sách, nghe phát âm bốn giọng và chơi minigame."
+        description="Chọn một cuốn sách để học từ theo chủ đề, nghe phát âm bốn giọng và chơi minigame."
       />
 
       {/*
-       * Việc đến hạn đứng TRƯỚC danh sách tuyển tập, vì nó là câu trả lời cho
-       * "hôm nay tôi nên làm gì" — còn tuyển tập trả lời "tôi muốn học thêm gì".
-       * Đặt dưới danh sách thì người học phải cuộn qua mọi cuốn sách mới thấy
-       * việc đã đến hạn, và hàng đợi SM-2 chỉ có giá trị khi được làm đúng ngày.
+       * Việc đến hạn đứng TRƯỚC danh sách cuốn sách, vì nó là câu trả lời cho
+       * "hôm nay tôi nên làm gì" — còn cuốn sách trả lời "tôi muốn học thêm gì".
+       * Đặt dưới danh sách thì người học phải cuộn qua mọi cuốn mới thấy việc
+       * đã đến hạn, và hàng đợi SM-2 chỉ có giá trị khi được làm đúng ngày.
        *
        * `useDueCount` trả 0 cho khách vãng lai, nên khối này tự vắng mặt.
        */}
@@ -194,11 +240,30 @@ function VocabularyLanding() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {collections?.map((collection, index) => (
-          <CollectionCard key={collection.id} collection={collection} index={index} />
-        ))}
-      </div>
+      {/* Mỗi tuyển tập một khối: tiêu đề kèm đếm số cuốn, dưới là card CUỐN SÁCH
+          bấm thẳng vào trang học — không còn tầng trung gian "trang tuyển tập"
+          chỉ để bấm tiếp một lần nữa. */}
+      {collections?.map((collection) => (
+        <section key={collection.id} className="mb-8">
+          <h2 className="text-heading text-ink">
+            {collection.name}{" "}
+            <span className="text-ink-faint">({collection.items.length} bộ thẻ)</span>
+          </h2>
+          {collection.description && (
+            <p className="mt-1 text-small text-ink-muted">{collection.description}</p>
+          )}
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {collection.items.map((item, index) => (
+              <BookCard
+                key={item.id}
+                item={item}
+                index={index}
+                signedIn={status === "authenticated"}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
 
       {collections?.length === 0 && (
         <EmptyState

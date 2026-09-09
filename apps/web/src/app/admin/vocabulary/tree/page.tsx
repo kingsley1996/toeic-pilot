@@ -2,6 +2,7 @@
 
 import {
   API_ROUTES,
+  type ImageAssetPublic,
   type TopicAdmin,
   type VocabularyCollectionAdmin,
   type VocabularyCollectionItemAdmin,
@@ -27,6 +28,7 @@ import {
   Spinner,
 } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
+import { uploadImage } from "@/lib/image-upload";
 import { useRequireSession } from "@/lib/session";
 
 /**
@@ -42,6 +44,113 @@ import { useRequireSession } from "@/lib/session";
  * là tầng ba của cây bị chẻ làm đôi qua hai màn hình. Toàn bộ vòng đời của nó
  * chuyển về đây; `/admin` quay lại làm đúng việc của một trang tổng quan.
  */
+
+// Ba trường xuất xứ là NOT NULL ở `image_asset` — thiếu thì ảnh chưa tải lên
+// được, đúng luật của phần ảnh đề thi. Cover bìa dùng chung khuôn đó.
+const PROVENANCE_LABELS = {
+  source_url: "URL nguồn",
+  license: "Giấy phép",
+  attribution: "Ghi công",
+} as const;
+
+function CoverUpload({
+  book,
+  token,
+  provenance,
+  blocked,
+  onUploaded,
+  onError,
+}: {
+  book: VocabularyCollectionItemAdmin;
+  token: string;
+  provenance: { source_url: string; license: string; attribution: string };
+  /** Lý do chưa tải được (thiếu xuất xứ), hoặc null. */
+  blocked: string | null;
+  onUploaded: () => void;
+  onError: (message: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  async function upload(file: File) {
+    if (blocked) {
+      onError(blocked);
+      return;
+    }
+    setBusy(true);
+    try {
+      const asset: ImageAssetPublic = await uploadImage(
+        file,
+        { ...provenance, alt_text: null },
+        token,
+      );
+      await apiFetch(API_ROUTES.adminVocabularyCollectionItem(book.id), {
+        method: "PATCH",
+        token,
+        body: JSON.stringify({ image_id: asset.id }),
+      });
+      onUploaded();
+    } catch (err) {
+      onError(err instanceof ApiError ? err.message : "Tải ảnh bìa không thành công.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove() {
+    setBusy(true);
+    try {
+      await apiFetch(API_ROUTES.adminVocabularyCollectionItem(book.id), {
+        method: "PATCH",
+        token,
+        body: JSON.stringify({ image_id: null }),
+      });
+      onUploaded();
+    } catch (err) {
+      onError(err instanceof ApiError ? err.message : "Gỡ ảnh bìa không thành công.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-3 pt-1">
+      {book.image_url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={book.image_url}
+          alt=""
+          className="h-10 w-14 rounded border border-rule bg-recess object-cover"
+        />
+      ) : (
+        <span
+          aria-hidden
+          className="flex h-10 w-14 items-center justify-center rounded border border-rule bg-recess"
+        >
+          <BookOpen size={14} strokeWidth={1.5} className="text-ink-faint" />
+        </span>
+      )}
+      <label className="inline-flex cursor-pointer items-center gap-1.5 text-small font-semibold text-action-ink">
+        {book.image_url ? "Thay ảnh bìa" : "Tải ảnh bìa"}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+          disabled={busy}
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = "";
+            if (file) void upload(file);
+          }}
+        />
+      </label>
+      {book.image_url && (
+        <Button size="sm" variant="quiet" disabled={busy} onClick={() => void remove()}>
+          Gỡ
+        </Button>
+      )}
+    </div>
+  );
+}
+
 export default function AdminVocabularyTreePage() {
   const { status, token, canPublish } = useRequireSession({ canEdit: true });
   const [collections, setCollections] = useState<VocabularyCollectionAdmin[] | null>(null);
@@ -49,6 +158,19 @@ export default function AdminVocabularyTreePage() {
   const [topics, setTopics] = useState<TopicAdmin[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<TopicAdmin | null>(null);
+  // Xuất xứ của ảnh bìa sắp tải lên — khai một lần đầu trang cho mọi cuốn,
+  // cùng khuôn với phần ảnh của màn soạn đề (NOT NULL, không mặc định).
+  const [provenance, setProvenance] = useState({
+    source_url: "",
+    license: "",
+    attribution: "",
+  });
+  const missingProvenance = (["source_url", "license", "attribution"] as const).filter(
+    (key) => !provenance[key].trim(),
+  );
+  const coverBlocked = missingProvenance.length
+    ? `Điền ${missingProvenance.map((key) => PROVENANCE_LABELS[key]).join(", ")} trước khi tải ảnh bìa.`
+    : null;
 
   const refresh = useCallback((t: string) => {
     void apiFetch<VocabularyCollectionAdmin[]>(API_ROUTES.adminVocabularyCollections, { token: t })
@@ -131,6 +253,21 @@ export default function AdminVocabularyTreePage() {
             />
           }
         />
+
+        {/* Xuất xứ ảnh bìa khai một lần cho cả trang: một lô bìa thường lấy từ
+            cùng một nguồn. Thiếu trường nào thì nút tải ở từng cuốn tự báo. */}
+        <div className="mb-4 grid gap-3 sm:grid-cols-3">
+          {(["source_url", "license", "attribution"] as const).map((key) => (
+            <Field key={key} label={`${PROVENANCE_LABELS[key]} (ảnh bìa)`}>
+              <Input
+                value={provenance[key]}
+                onChange={(event) =>
+                  setProvenance((prev) => ({ ...prev, [key]: event.target.value }))
+                }
+              />
+            </Field>
+          ))}
+        </div>
 
         {!collections && <SkeletonList rows={2} />}
 
@@ -262,6 +399,22 @@ export default function AdminVocabularyTreePage() {
                       }
                     >
                       {inBook.length === 0 && <TreeEmpty>Cuốn này chưa có chủ đề nào.</TreeEmpty>}
+                      {/* Cover bìa: tải thẳng từ đây — quản trị nội dung cần
+                          gắn ảnh đúng chỗ nó hiện ra, không qua màn khác. */}
+                      {token && (
+                        <CoverUpload
+                          book={book}
+                          token={token}
+                          provenance={provenance}
+                          blocked={coverBlocked}
+                          onUploaded={() => {
+                            if (token) refresh(token);
+                          }}
+                          onError={(message) => {
+                            setError(message);
+                          }}
+                        />
+                      )}
                       {inBook.map((topic) => (
                         <TopicRow
                           key={topic.id}

@@ -176,10 +176,10 @@ function CollectionItemDetail() {
   /*
    * Chủ đề nào đã học hết, để gắn dấu tick.
    *
-   * Cùng định nghĩa với thanh tiến độ ngay bên phải — `total - new === total`,
-   * tức mọi từ đã được động tới — nên dấu tick xuất hiện đúng lúc thanh đầy.
-   * Hai định nghĩa "xong" khác nhau trên cùng một màn hình là thứ người học đọc
-   * ra là lỗi.
+   * `new === 0` = mọi từ đã được chấm ít nhất một lượt, từ đường nào cũng được.
+   * Đây là định nghĩa "đã đi qua hết", CỐ Ý khác với meter "Đã thuộc" bên dưới
+   * (đếm `mastered`): tick trả lời "đã học qua chưa", meter trả lời "thuộc sâu
+   * chưa" — hai chữ khác nhau nên hai con số không bị đọc ra là mâu thuẫn.
    *
    * Đọc lại theo `progressKey` y như meter: học xong từ cuối của một chủ đề thì
    * tick phải hiện ngay, không đợi tải lại trang.
@@ -371,29 +371,31 @@ function CollectionItemDetail() {
                   )}
                 </div>
 
-                {/* Meter tiến độ chủ đề: đếm từ ĐÃ CHẤM — bấm bất kỳ mức nào
-                    (kể cả "Học lại") là từ ra khỏi `new`, nên con số nhích sau
-                    MỖI từ chấm. `mastered` chỉ tăng khi interval chạm ngưỡng,
-                    không phải thước đo của một phiên học. Đọc lại sau mỗi lần
-                    chấm, không tự cộng ở client. Không auth thì không hiện:
+                {/* Meter chủ đề: đếm MASTERED — interval đã chạm ngưỡng 21 ngày,
+                    cùng định nghĩa "thuộc" với meter trên trang danh sách từ.
+                    Không đếm `total - new` (đã-chấm): hai thứ đó khác trục với
+                    "Từ X/Y" của ván học và từng bị đọc ra là mâu thuẫn. Tick
+                    chủ đề ở panel trái vẫn dùng `new === 0` — tick nghĩa "đã
+                    đi qua hết", meter nghĩa "thuộc bao nhiêu"; hai chữ khác
+                    nhau thì không ai đọc ra là lỗi. Không auth thì không hiện:
                     con số 0 cho khách là lời nói dối chứ không phải "chưa có
                     dữ liệu". */}
                 {progress && progress.total > 0 && (
                   <div
-                    aria-label={`Tiến độ ${progress.total - progress.new} trên ${progress.total} từ`}
+                    aria-label={`Đã thuộc ${progress.mastered} trên ${progress.total} từ`}
                     className="mb-4 rounded border border-rule-strong bg-panel px-4 py-3"
                   >
                     <div className="flex flex-wrap justify-between gap-2 font-data text-small tabular-nums text-ink-muted">
-                      <span>Tiến độ</span>
+                      <span>Đã thuộc</span>
                       <span>
-                        {progress.total - progress.new}/{progress.total}
+                        {progress.mastered}/{progress.total}
                       </span>
                     </div>
                     <div className="mt-2 h-1.5 overflow-hidden rounded bg-recess">
                       <div
                         className="h-full rounded bg-ok transition-all"
                         style={{
-                          width: `${Math.round(((progress.total - progress.new) / progress.total) * 100)}%`,
+                          width: `${Math.round((progress.mastered / progress.total) * 100)}%`,
                         }}
                       />
                     </div>

@@ -33,6 +33,14 @@ class VocabularyCollectionItemPublic(BaseModel):
     description: str | None
     position: int
     topic_count: int
+    # Số từ published trong cuốn — "xx thẻ" trên card trang từ vựng.
+    entry_count: int = 0
+    # Số từ học viên này đã chấm ít nhất một lượt — "đã học x từ". 0 khi không
+    # đăng nhập; card ẩn dòng thay vì hiện 0 giả.
+    learned_count: int = 0
+    # URL ảnh cover đã public (nếu có) — card trên trang từ vựng render thẳng
+    # URL này, không cần id gọi ngược.
+    image_url: str | None = None
 
 
 class VocabularyCollectionPublic(BaseModel):
@@ -62,6 +70,7 @@ class VocabularyItemDetail(BaseModel):
     # Cha của tầng này — cần cho breadcrumb "Từ vựng → <tuyển tập> → <cuốn sách>".
     collection_id: str
     collection_name: str
+    image_url: str | None = None
 
 
 class AudioClip(BaseModel):

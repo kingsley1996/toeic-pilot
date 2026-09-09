@@ -9869,6 +9869,10 @@ export interface components {
             description: string | null;
             /** Id */
             id: string;
+            /** Image Id */
+            image_id?: string | null;
+            /** Image Url */
+            image_url?: string | null;
             /** Name */
             name: string;
             /** Position */
@@ -9884,6 +9888,8 @@ export interface components {
             collection_id: string;
             /** Description */
             description?: string | null;
+            /** Image Id */
+            image_id?: string | null;
             /** Name */
             name: string;
             /**
@@ -9896,8 +9902,20 @@ export interface components {
         VocabularyCollectionItemPublic: {
             /** Description */
             description: string | null;
+            /**
+             * Entry Count
+             * @default 0
+             */
+            entry_count: number;
             /** Id */
             id: string;
+            /** Image Url */
+            image_url?: string | null;
+            /**
+             * Learned Count
+             * @default 0
+             */
+            learned_count: number;
             /** Name */
             name: string;
             /** Position */
@@ -9909,6 +9927,8 @@ export interface components {
         VocabularyCollectionItemUpdate: {
             /** Description */
             description?: string | null;
+            /** Image Id */
+            image_id?: string | null;
             /** Name */
             name?: string | null;
             /** Position */
@@ -10000,6 +10020,8 @@ export interface components {
             description: string | null;
             /** Id */
             id: string;
+            /** Image Url */
+            image_url?: string | null;
             /** Name */
             name: string;
             /** Position */

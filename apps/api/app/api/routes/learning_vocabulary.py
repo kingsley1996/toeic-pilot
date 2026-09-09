@@ -17,9 +17,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import Select, func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 from app.core.database import get_db
 from app.core.media import public_audio_url
+from app.core.storage import get_driver
 from app.models import (
     CollocationDetail,
     Topic,
@@ -180,6 +181,61 @@ def _visible_topic_counts(db: Session) -> dict[uuid.UUID, int]:
     }
 
 
+def _learned_counts_by_item(
+    db: Session, item_ids: list[uuid.UUID], user_id: uuid.UUID | None
+) -> dict[uuid.UUID, int]:
+    """item_id -> số từ published trong cuốn mà học viên đã chấm ít nhất một lượt.
+
+    Cùng định nghĩa "đã học" với tick chủ đề (`new === 0`): có hàng
+    `vocabulary_review_state` là đủ, bất kể điểm. `user_id` None (khách vãng
+    lai) thì trả rỗng — con số 0 cho người không đăng nhập là lời nói dối, card
+    ẩn dòng này thay vì dựa vào 0. Một truy vấn cho cả cuốn, không N+1.
+    """
+    if not item_ids or user_id is None:
+        return {}
+    return {
+        item_id: count
+        for item_id, count in db.execute(
+            select(Topic.collection_item_id, func.count(VocabularyReviewState.entry_id))
+            .select_from(VocabularyEntry)
+            .join(VocabularyTopic, VocabularyTopic.entry_id == VocabularyEntry.id)
+            .join(Topic, Topic.id == VocabularyTopic.topic_id)
+            .join(
+                VocabularyReviewState,
+                (VocabularyReviewState.entry_id == VocabularyEntry.id)
+                & (VocabularyReviewState.user_id == user_id),
+            )
+            .where(
+                VocabularyEntry.status == PUBLISHED,
+                Topic.status == PUBLISHED,
+                Topic.collection_item_id.in_(item_ids),
+            )
+            .group_by(Topic.collection_item_id)
+        ).all()
+    }
+
+
+def _entry_counts_by_item(db: Session, item_ids: list[uuid.UUID]) -> dict[uuid.UUID, int]:
+    """item_id -> số từ published trong cuốn (trục từ, "xx thẻ" trên card)."""
+    if not item_ids:
+        return {}
+    return {
+        item_id: count
+        for item_id, count in db.execute(
+            select(Topic.collection_item_id, func.count(VocabularyTopic.entry_id))
+            .select_from(VocabularyTopic)
+            .join(Topic, Topic.id == VocabularyTopic.topic_id)
+            .join(VocabularyEntry, VocabularyEntry.id == VocabularyTopic.entry_id)
+            .where(
+                VocabularyEntry.status == PUBLISHED,
+                Topic.status == PUBLISHED,
+                Topic.collection_item_id.in_(item_ids),
+            )
+            .group_by(Topic.collection_item_id)
+        ).all()
+    }
+
+
 def _topic_public(topic: Topic, entry_count: int) -> TopicPublic:
     return TopicPublic(
         id=str(topic.id),
@@ -256,7 +312,9 @@ def _published_collection(db: Session, ref: str) -> VocabularyCollection:
 
 @router.get("/vocabulary-collections/{collection_ref}", response_model=VocabularyCollectionDetail)
 def get_vocabulary_collection(
-    collection_ref: str, db: Session = Depends(get_db)
+    collection_ref: str,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_user),
 ) -> VocabularyCollectionDetail:
     collection = _published_collection(db, collection_ref)
     items = db.scalars(
@@ -268,6 +326,12 @@ def get_vocabulary_collection(
         .order_by(VocabularyCollectionItem.position, VocabularyCollectionItem.name)
     ).all()
     topics_per_item = _visible_topic_counts(db)
+    image_driver = get_driver("image")
+    item_ids = [item.id for item in items]
+    learned_per_item = _learned_counts_by_item(
+        db, item_ids, current_user.id if current_user else None
+    )
+    entries_per_item = _entry_counts_by_item(db, item_ids)
     return VocabularyCollectionDetail(
         id=str(collection.id),
         slug=collection.slug,
@@ -281,6 +345,9 @@ def get_vocabulary_collection(
                 description=item.description,
                 position=item.position,
                 topic_count=topics_per_item.get(item.id, 0),
+                entry_count=entries_per_item.get(item.id, 0),
+                learned_count=learned_per_item.get(item.id, 0),
+                image_url=(image_driver.public_url(item.image.storage_key) if item.image else None),
             )
             for item in items
         ],
@@ -316,6 +383,7 @@ def get_vocabulary_collection_item(
         topics=[_topic_public(topic, counts.get(topic.id, 0)) for topic in topics],
         collection_id=str(collection.id),
         collection_name=collection.name,
+        image_url=(get_driver("image").public_url(item.image.storage_key) if item.image else None),
     )
 
 

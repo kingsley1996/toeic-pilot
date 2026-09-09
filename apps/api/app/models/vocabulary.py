@@ -23,6 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 from app.core.media import AUDIO_ACCENTS
 from app.models.audio import AudioAsset  # noqa: F401 — resolves the relationship below
+from app.models.image import ImageAsset  # noqa: F401 — resolves the relationship below
 from app.models.mixins import PublishableMixin, TimestampMixin, difficulty_check, status_check
 from app.models.topic import Topic  # noqa: F401 — target của VocabularyCollectionItem.topics
 
@@ -146,8 +147,14 @@ class VocabularyCollectionItem(Base, PublishableMixin):
     name: Mapped[str] = mapped_column(String(128), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Ảnh cover của bộ thẻ, theo đường ống image_asset (ADR-006). Nullable:
+    # cuốn chưa có cover vẫn hiện được — card rơi về placeholder.
+    image_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("image_asset.id", ondelete="SET NULL"), nullable=True
+    )
 
     collection: Mapped["VocabularyCollection"] = relationship(back_populates="items")
+    image: Mapped["ImageAsset | None"] = relationship()
     # `passive_deletes=True`: xoá cuốn sách thì các topic bên trong trở về "chưa
     # xếp" (SET NULL), KHÔNG bị xoá — để database lo thay vì ORM gỡ tay.
     topics: Mapped[list["Topic"]] = relationship(order_by="Topic.position", passive_deletes=True)

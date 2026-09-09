@@ -26,9 +26,11 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import require_role
 from app.api.routes._admin_content import _apply
 from app.core.database import get_db
+from app.core.storage import get_driver
 from app.models import (
     CollocationDetail,
     DictationItem,
+    ImageAsset,
     Topic,
     User,
     VocabularyAudio,
@@ -276,6 +278,8 @@ def _collection_item_admin(
         position=item.position,
         status=item.status,
         topic_count=topic_count,
+        image_id=str(item.image_id) if item.image_id else None,
+        image_url=get_driver("image").public_url(item.image.storage_key) if item.image else None,
     )
 
 
@@ -429,6 +433,18 @@ def list_vocabulary_collection_items(
     return [_collection_item_admin(item, topics_per_item.get(item.id, 0)) for item in items]
 
 
+def _set_item_image(db: Session, item: VocabularyCollectionItem, image_id: str | None) -> None:
+    """Gắn ảnh cover (id của `image_asset`) hoặc gỡ (null). 404 khi id lạ —
+    client chỉ được trỏ tới ảnh đã tạo qua confirm, không phải URL tự bịa."""
+    if image_id is None:
+        item.image_id = None
+        return
+    asset = db.get(ImageAsset, uuid.UUID(image_id))
+    if asset is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+    item.image_id = asset.id
+
+
 @router.post(
     "/vocabulary-collection-items",
     response_model=VocabularyCollectionItemAdmin,
@@ -448,6 +464,7 @@ def create_vocabulary_collection_item(
         status="draft",
         created_by=user.id,
     )
+    _set_item_image(db, item, body.image_id)
     db.add(item)
     db.commit()
     db.refresh(item)
@@ -489,6 +506,8 @@ def update_vocabulary_collection_item(
             status_code=status.HTTP_404_NOT_FOUND, detail="Vocabulary collection item not found"
         )
     _apply(item, body, ("name", "description", "position", "status"))
+    if "image_id" in body.model_dump(exclude_unset=True):
+        _set_item_image(db, item, body.image_id)
     db.commit()
     db.refresh(item)
     _items_per_collection, topics_per_item = _item_counts(db)

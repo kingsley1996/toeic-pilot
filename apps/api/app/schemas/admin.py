@@ -71,6 +71,7 @@ class VocabularyCollectionItemCreate(BaseModel):
     name: str = Field(min_length=1, max_length=128)
     description: str | None = None
     position: int = 0
+    image_id: str | None = None
 
 
 class VocabularyCollectionItemAdmin(BaseModel):
@@ -82,6 +83,8 @@ class VocabularyCollectionItemAdmin(BaseModel):
     position: int
     status: str
     topic_count: int
+    image_id: str | None = None
+    image_url: str | None = None
 
 
 class VocabularyCollectionItemUpdate(BaseModel):
@@ -89,6 +92,7 @@ class VocabularyCollectionItemUpdate(BaseModel):
     description: str | None = None
     position: int | None = None
     status: str | None = None
+    image_id: str | None = None
 
 
 class ParseRequest(BaseModel):
