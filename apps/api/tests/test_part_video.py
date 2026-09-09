@@ -170,7 +170,7 @@ def test_public_tactics_carry_video_url_only_when_present(
     from app.models import PartTactics
 
     _seed_tactics(db_session)
-    empty = client.get("/api/v1/practice/parts/3/tactics")
+    empty = client.get("/api/v1/practice/parts/3/tactics", headers=auth("learner"))
     assert empty.status_code == 200
     assert empty.json()["video_url"] is None
 
@@ -179,7 +179,7 @@ def test_public_tactics_carry_video_url_only_when_present(
         json={"storage_key": "part-video/ab/abcdef.mp4", "duration_s": 90},
         headers=auth("editor"),
     )
-    with_video = client.get("/api/v1/practice/parts/3/tactics")
+    with_video = client.get("/api/v1/practice/parts/3/tactics", headers=auth("learner"))
     assert with_video.json()["video_url"] is not None
     assert with_video.json()["video_url"].endswith("part-video/ab/abcdef.mp4")
 

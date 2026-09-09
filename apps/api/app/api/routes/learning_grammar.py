@@ -1,9 +1,11 @@
 """Learning GRAMMAR — cây chủ đề → bài học → lý thuyết, và bài LUYỆN TẬP như một
 loại lesson với câu gắn tay (SPEC-GRAMMAR G2 + G4).
 
-Đọc công khai như cây dictation: lý thuyết ngữ pháp không có tiến độ ẩn sau
-account, và cổng chặn nội dung là `status`, không phải đăng nhập. NỘP bài thì
-cần tài khoản — `grammar_attempt` là dữ liệu của một người cụ thể.
+Ranh giới đăng nhập nằm ở NỘI DUNG, không ở danh sách (đổi 2026-09-09, khuôn
+khu luyện thi): danh sách chủ đề mở cho khách — phải xem được học những gì rồi
+mới quyết định lập tài khoản — còn chủ đề chi tiết, bài học và mọi thao tác ghi
+(hoàn thành, nộp bài) đòi token. Frontend hiện icon khoá và mở hộp thoại đăng
+nhập ngay tại chỗ bấm; API vẫn là chốt cuối.
 
 Bất biến dictation đã trả giá để học, ghi lại ở `learning-domain.md`: **mỗi tầng
 lọc `published` độc lập**. Một bài published nằm dưới chủ đề draft vẫn lọt ra nếu
@@ -134,7 +136,7 @@ def list_grammar_topics(
 def get_grammar_topic(
     topic_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: User | None = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
 ) -> GrammarTopicDetail:
     topic = db.get(GrammarTopic, topic_id)
     if topic is None or topic.status != PUBLISHED:
@@ -200,7 +202,7 @@ def _practice_questions(
 def get_grammar_lesson(
     lesson_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: User | None = Depends(get_optional_user),
+    user: User = Depends(get_current_user),
 ) -> GrammarLessonDetail:
     lesson = db.get(GrammarLesson, lesson_id)
     if lesson is None or lesson.status != PUBLISHED:

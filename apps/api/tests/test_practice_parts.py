@@ -71,7 +71,9 @@ def create_session(client: TestClient, auth, part: int, **body: object) -> dict:
     return response.json()
 
 
-def test_list_parts_counts_only_open_questions(client: TestClient, db_session: Session) -> None:
+def test_list_parts_counts_only_open_questions(
+    client: TestClient, db_session: Session, auth
+) -> None:
     a_question(db_session, 5)
     a_question(db_session, 5, status="draft")
     draft_set = a_set(db_session, 7, status="draft")
@@ -83,7 +85,9 @@ def test_list_parts_counts_only_open_questions(client: TestClient, db_session: S
     assert parts[7]["question_count"] == 0  # published nhưng dưới set nháp
 
 
-def test_labels_carry_vi_titles_and_grammar_slugs(client: TestClient, db_session: Session) -> None:
+def test_labels_carry_vi_titles_and_grammar_slugs(
+    client: TestClient, db_session: Session, auth
+) -> None:
     db_session.add(
         GrammarTopic(code="GRAMMAR_TENSE", slug="thi", title="Thì", status="published", position=1)
     )
@@ -96,11 +100,13 @@ def test_labels_carry_vi_titles_and_grammar_slugs(client: TestClient, db_session
     assert tense["grammar_topic_slug"] == "thi"
 
 
-def test_tactics_404_until_seeded(client: TestClient, db_session: Session) -> None:
-    assert client.get("/api/v1/practice/parts/3/tactics").status_code == 404
+def test_tactics_404_until_seeded(client: TestClient, db_session: Session, auth) -> None:
+    assert (
+        client.get("/api/v1/practice/parts/3/tactics", headers=auth("learner")).status_code == 404
+    )
     db_session.add(PartTactics(part=3, body="## Đọc trước đáp án"))
     db_session.commit()
-    body = client.get("/api/v1/practice/parts/3/tactics").json()["body"]
+    body = client.get("/api/v1/practice/parts/3/tactics", headers=auth("learner")).json()["body"]
     assert body.startswith("##")
 
 

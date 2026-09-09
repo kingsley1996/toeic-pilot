@@ -8,7 +8,7 @@ import {
   type PartLabelCount,
   type PartSessionDetail,
 } from "@toeic-pilot/shared";
-import { ArrowLeft, ArrowRight, Check, Clock, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock, X, Lock } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,10 +16,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { Modal } from "@/components/modal";
-import { Button, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
+import { Button, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { clock } from "@/lib/attempt";
 import { useSession } from "@/lib/session";
+import { LoginModal } from "@/components/login-modal";
 import { getPartMeta } from "@/lib/parts";
 
 /**
@@ -38,6 +39,8 @@ type LocalAnswer = { pickedOptionId: string; result: PartAnswerResult };
 export default function PartSessionPage() {
   const id = String(useParams().id);
   const { token } = useSession();
+  // Hộp đăng nhập cho khách gõ thẳng URL phiên.
+  const [dismissed, setDismissed] = useState(false);
   const [sess, setSess] = useState<PartSessionDetail | null>(null);
   const [topics, setTopics] = useState<GrammarTopicPublic[]>([]);
   const [answers, setAnswers] = useState<Record<string, LocalAnswer>>({});
@@ -140,6 +143,34 @@ export default function PartSessionPage() {
     });
     setSess(s);
     setConfirming(false);
+  }
+
+  // Chặn đầu URL (khuôn trang đề chi tiết): phiên là dữ liệu của một người,
+  // khách gõ thẳng hay mở lại dấu trang thấy cổng đăng nhập ngay tại chỗ.
+  if (token === null) {
+    return (
+      <Page className="max-w-3xl">
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để xem phiên"
+            description={
+              <>
+                Luyện theo part <strong className="font-semibold text-ink">miễn phí</strong>. Đăng
+                nhập để xem lại kết quả từng câu và có trải nghiệm học tập tốt hơn.
+              </>
+            }
+          />
+        </div>
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={`/learn/parts/sessions/${id}`}
+          title="Đăng nhập để xem phiên"
+        />
+      </Page>
+    );
   }
 
   if (error && !sess) {

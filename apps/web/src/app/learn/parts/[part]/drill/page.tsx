@@ -1,14 +1,14 @@
 "use client";
 
 import { API_ROUTES, type PartSessionDetail, type PartSummary } from "@toeic-pilot/shared";
-import { History } from "lucide-react";
+import { History, Lock } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { LoginModal } from "@/components/login-modal";
-import { Button, Page, PageHeader, Panel, Select, SkeletonList } from "@/components/ui";
+import { Button, EmptyState, Page, PageHeader, Panel, Select, SkeletonList } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 import { getPartMeta } from "@/lib/parts";
@@ -27,11 +27,13 @@ const MINUTES = Array.from({ length: 27 }, (_, i) => (i + 1) * 5);
 export default function PartDrillSetupPage() {
   const meta = getPartMeta(String(useParams().part));
   const router = useRouter();
-  const { token } = useSession();
+  const { status, token } = useSession();
   const [summary, setSummary] = useState<PartSummary | null>(null);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [minutes, setMinutes] = useState<number | null>(null);
   const [gated, setGated] = useState(false);
+  // Hộp đăng nhập cho khách gõ thẳng URL — đóng được để quay về hub.
+  const [dismissed, setDismissed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,6 +50,34 @@ export default function PartDrillSetupPage() {
         <PageHeader
           title="Không có phần này"
           description="Bài thi TOEIC có bảy phần, từ 1 đến 7."
+        />
+      </Page>
+    );
+  }
+
+  // Chặn đầu URL (khuôn trang đề chi tiết): bấm nút đã có hộp đăng nhập riêng,
+  // còn đây là bắt người gõ thẳng hay mở lại dấu trang.
+  if (status === "anonymous") {
+    return (
+      <Page className="max-w-3xl">
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để luyện"
+            description={
+              <>
+                Luyện theo part <strong className="font-semibold text-ink">miễn phí</strong>. Đăng
+                nhập để lưu tiến độ và có trải nghiệm học tập tốt hơn.
+              </>
+            }
+          />
+        </div>
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={`/learn/parts/${meta.part}/drill`}
+          title="Đăng nhập để luyện"
         />
       </Page>
     );
@@ -231,8 +261,8 @@ export default function PartDrillSetupPage() {
           title="Đăng nhập để luyện theo part"
           description={
             <>
-              Phiên luyện được lưu để <strong className="font-semibold text-ink">xem lại</strong>.
-              Cần tài khoản.
+              Luyện theo part <strong className="font-semibold text-ink">miễn phí</strong>. Đăng
+              nhập để lưu tiến độ và có trải nghiệm học tập tốt hơn.
             </>
           }
         />

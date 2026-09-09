@@ -276,7 +276,10 @@ def test_a_published_lesson_under_a_draft_topic_is_invisible(
     _, lesson_id = make_published_topic_with_lesson(
         client, db_session, auth, topic_status="draft", lesson_status="published", marker="g1"
     )
-    assert client.get(f"/api/v1/grammar-lessons/{lesson_id}").status_code == 404
+    assert (
+        client.get(f"/api/v1/grammar-lessons/{lesson_id}", headers=auth("learner")).status_code
+        == 404
+    )
 
 
 def test_a_draft_lesson_under_a_published_topic_is_invisible(
@@ -285,8 +288,11 @@ def test_a_draft_lesson_under_a_published_topic_is_invisible(
     topic_id, lesson_id = make_published_topic_with_lesson(
         client, db_session, auth, topic_status="published", lesson_status="draft", marker="g2"
     )
-    assert client.get(f"/api/v1/grammar-lessons/{lesson_id}").status_code == 404
-    body = client.get(f"/api/v1/grammar-topics/{topic_id}").json()
+    assert (
+        client.get(f"/api/v1/grammar-lessons/{lesson_id}", headers=auth("learner")).status_code
+        == 404
+    )
+    body = client.get(f"/api/v1/grammar-topics/{topic_id}", headers=auth("learner")).json()
     assert body["lessons"] == []
     assert body["lesson_count"] == 0
 
@@ -305,7 +311,7 @@ def test_the_full_path_opens_when_both_levels_are_published(
     topics = client.get("/api/v1/grammar-topics").json()
     assert [t["id"] for t in topics] == [topic_id]
     assert topics[0]["lesson_count"] == 1
-    detail = client.get(f"/api/v1/grammar-lessons/{lesson_id}").json()
+    detail = client.get(f"/api/v1/grammar-lessons/{lesson_id}", headers=auth("learner")).json()
     assert detail["body"].startswith("##")
     assert detail["topic_title"] == "Thì"
 
@@ -331,7 +337,9 @@ def test_attempt_grades_records_and_reveals_answer_only_after_submit(
     question = questions[0]
     options = {o.label: o for o in question.options}
 
-    rows = client.get(f"/api/v1/grammar-lessons/{lesson_id}").json()["questions"]
+    rows = client.get(f"/api/v1/grammar-lessons/{lesson_id}", headers=auth("learner")).json()[
+        "questions"
+    ]
     assert "is_correct" not in rows[0]["options"][0]
 
     result = client.post(
@@ -411,9 +419,13 @@ def test_complete_is_idempotent_and_shows_up_everywhere(
     assert [t["completed_lesson_count"] for t in listed if t["id"] == topic_id] == [1]
 
 
-def test_anonymous_sees_zeroes_and_complete_needs_an_account(
+def test_anonymous_reads_the_list_but_nothing_behind_it(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:
+    """Ranh giới nằm ở NỘI DUNG, không ở danh sách (khuôn khu luyện thi):
+    danh sách chủ đề công khai — khách phải xem được học những gì — còn chi tiết
+    chủ đề, bài học và thao tác ghi đều 401. Frontend mở hộp đăng nhập tại chỗ
+    bấm; API vẫn là chốt cuối."""
     topic_id, lesson_id = make_published_topic_with_lesson(
         client,
         db_session,
@@ -422,9 +434,9 @@ def test_anonymous_sees_zeroes_and_complete_needs_an_account(
         lesson_status="published",
         marker="cp2",
     )
-    listed = client.get("/api/v1/grammar-topics").json()
-    assert [t["completed_lesson_count"] for t in listed if t["id"] == topic_id] == [0]
-    assert client.get(f"/api/v1/grammar-lessons/{lesson_id}").json()["completed"] is False
+    assert client.get("/api/v1/grammar-topics").status_code == 200
+    assert client.get(f"/api/v1/grammar-topics/{topic_id}").status_code == 401
+    assert client.get(f"/api/v1/grammar-lessons/{lesson_id}").status_code == 401
     assert client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete").status_code == 401
 
 
@@ -450,7 +462,7 @@ def test_next_lesson_follows_position_not_click_order(
         client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
     db_session.get(GrammarTopic, uuid.UUID(topic["id"])).status = "published"
     db_session.commit()
-    first = client.get(f"/api/v1/grammar-lessons/{ids[0]}").json()
+    first = client.get(f"/api/v1/grammar-lessons/{ids[0]}", headers=auth("learner")).json()
     assert first["next_lesson"]["id"] == ids[1]
 
 
@@ -561,7 +573,7 @@ def test_practice_lesson_counts_in_topic_progress(
         client, db_session, auth, "g4d", n_questions=1
     )
     client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
-    detail = client.get(f"/api/v1/grammar-topics/{topic_id}").json()
+    detail = client.get(f"/api/v1/grammar-topics/{topic_id}", headers=auth("learner")).json()
     assert detail["lesson_count"] == 1
     assert detail["completed_lesson_count"] == 0
     assert detail["lessons"][0]["kind"] == "practice"
@@ -582,6 +594,7 @@ def test_practice_lesson_counts_in_topic_progress(
     client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=auth("learner"))
     detail = client.get(f"/api/v1/grammar-topics/{topic_id}", headers=auth("learner")).json()
     assert detail["completed_lesson_count"] == 1
+    # Danh sách công khai, nhưng số tiến độ là CỦA NGƯỜI HỌC — phải mang token.
     listed = client.get("/api/v1/grammar-topics", headers=auth("learner")).json()
     assert [t for t in listed if t["id"] == topic_id][0]["completed_lesson_count"] == 1
 
@@ -666,7 +679,12 @@ def test_a_topic_without_code_is_theory_only(
     assert response.status_code == 200
 
     # Không nhãn → không có màn luyện tập theo nhãn, và unattached trả rỗng.
-    assert client.get(f"/api/v1/grammar-topics/{body['id']}/practice").status_code == 404
+    assert (
+        client.get(
+            f"/api/v1/grammar-topics/{body['id']}/practice", headers=auth("learner")
+        ).status_code
+        == 404
+    )
     assert (
         client.get(
             f"/api/v1/admin/grammar/topics/{body['id']}/unattached-questions",
@@ -731,7 +749,9 @@ def test_next_topic_present_on_every_lesson_not_just_the_last(
         db_session.get(GrammarTopic, uuid.UUID(topic["id"])).status = "published"
     db_session.commit()
 
-    first = client.get(f"/api/v1/grammar-lessons/{lessons1[0]['id']}").json()
+    first = client.get(
+        f"/api/v1/grammar-lessons/{lessons1[0]['id']}", headers=auth("learner")
+    ).json()
     assert first["next_lesson"]["id"] == lessons1[1]["id"]  # không phải bài cuối
     assert first["next_topic"]["topic_id"] == t2["id"]
     assert first["next_topic"]["lesson_id"] == l2["id"]

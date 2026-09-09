@@ -1,28 +1,63 @@
 "use client";
 
 import { API_ROUTES, type GrammarTopicDetail } from "@toeic-pilot/shared";
-import { BookOpen, Check, PenLine } from "lucide-react";
+import { BookOpen, Check, Lock, PenLine } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { GuestNotice } from "@/components/guest-notice";
+import { LoginModal } from "@/components/login-modal";
 import { Alert, EmptyState, Page, PageHeader, PanelLink, SkeletonList } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 
-/** Tầng 2: các bài học trong một chủ đề. */
+/**
+ * Tầng 2: các bài học trong một chủ đề.
+ *
+ * Chặn ở CẢ HAI đầu (khuôn trang đề chi tiết): trang danh sách bắt lần bấm, còn
+ * đây bắt người gõ thẳng URL hay mở lại dấu trang — khách vào là thấy cổng đăng
+ * nhập ngay tại chỗ, kèm nút đóng để quay lại.
+ */
 export default function GrammarTopicPage() {
-  const { status } = useSession();
+  const { status, token } = useSession();
   const topicId = String(useParams().topicId);
   const [topic, setTopic] = useState<GrammarTopicDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    apiFetch<GrammarTopicDetail>(API_ROUTES.grammarTopic(topicId))
+    apiFetch<GrammarTopicDetail>(API_ROUTES.grammarTopic(topicId), { token: token ?? undefined })
       .then(setTopic)
       .catch(() => setError("Không tải được chủ đề này."));
-  }, [topicId]);
+    // `token` trong deps: đăng nhập xong từ hộp thoại là fetch lại có token.
+  }, [topicId, token]);
+
+  if (status === "anonymous") {
+    return (
+      <Page className="max-w-3xl">
+        <Breadcrumbs trail={[{ href: "/learn/grammar", label: "Ngữ pháp" }]} />
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để học ngữ pháp"
+            description={
+              <>
+                Học ngữ pháp <strong className="font-semibold text-ink">miễn phí</strong>. Đăng nhập
+                để lưu tiến độ bài học và có trải nghiệm học tập trọn vẹn hơn.
+              </>
+            }
+          />
+        </div>
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={`/learn/grammar/${topicId}`}
+          title="Đăng nhập để học ngữ pháp"
+        />
+      </Page>
+    );
+  }
 
   if (status === "loading" || (!topic && !error)) {
     return (
@@ -41,8 +76,6 @@ export default function GrammarTopicPage() {
       {topic && (
         <>
           <PageHeader eyebrow="Chủ đề" title={topic.title} description={topic.summary} />
-
-          <GuestNotice className="mb-4" />
 
           {topic.lessons.length === 0 && (
             <EmptyState

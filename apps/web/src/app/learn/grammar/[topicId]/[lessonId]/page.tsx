@@ -1,16 +1,25 @@
 "use client";
 
 import { API_ROUTES, type GrammarLessonDetail, type GrammarTopicDetail } from "@toeic-pilot/shared";
-import { ArrowRight, BookOpen, Check, PenLine } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Lock, PenLine } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { GrammarQuestionCard } from "@/components/grammar-question-card";
-import { GuestNotice } from "@/components/guest-notice";
+import { LoginModal } from "@/components/login-modal";
 import { MarkdownLite } from "@/components/markdown-lite";
-import { Alert, Button, cx, Page, PageHeader, Panel, SkeletonList } from "@/components/ui";
+import {
+  Alert,
+  Button,
+  cx,
+  EmptyState,
+  Page,
+  PageHeader,
+  Panel,
+  SkeletonList,
+} from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { getSidebarState, setSidebarState } from "@/lib/sidebar";
 import { useSession } from "@/lib/session";
@@ -68,6 +77,8 @@ export default function GrammarLessonPage() {
     lessonId: "",
     ids: new Set(),
   });
+  // Hộp đăng nhập cho khách gõ thẳng URL — đóng được để quay về cây ngữ pháp.
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     apiFetch<GrammarLessonDetail>(API_ROUTES.grammarLesson(lessonId), {
@@ -161,6 +172,41 @@ export default function GrammarLessonPage() {
     );
   }
 
+  // Chặn ở CẢ HAI đầu (khuôn trang đề chi tiết): danh sách bắt lần bấm, còn
+  // đây bắt người gõ thẳng URL hay mở lại dấu trang. Cache KHÔNG cho khách xem
+  // nội dung đã tải trước đó — khoá là khoá, không phụ thuộc lịch sử trình duyệt.
+  if (status === "anonymous") {
+    return (
+      <Page className="max-w-3xl">
+        <Breadcrumbs
+          trail={[
+            { href: "/learn/grammar", label: "Ngữ pháp" },
+            { href: `/learn/grammar/${topicId}`, label: "Chủ đề" },
+          ]}
+        />
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="Đăng nhập để học bài này"
+            description={
+              <>
+                Học ngữ pháp <strong className="font-semibold text-ink">miễn phí</strong>. Đăng nhập
+                để lưu tiến độ bài học và có trải nghiệm học tập trọn vẹn hơn.
+              </>
+            }
+          />
+        </div>
+        <LoginModal
+          open={!dismissed}
+          onClose={() => setDismissed(true)}
+          onSuccess={() => setDismissed(true)}
+          next={`/learn/grammar/${topicId}/${lessonId}`}
+          title="Đăng nhập để học bài này"
+        />
+      </Page>
+    );
+  }
+
   const isPractice = shown?.kind === "practice";
   const fresh = justCorrect.lessonId === lessonId ? justCorrect.ids : new Set<string>();
   const answeredCorrect =
@@ -244,8 +290,6 @@ export default function GrammarLessonPage() {
             {error && <Alert>{error}</Alert>}
 
             <PageHeader eyebrow={isPractice ? "Luyện tập" : "Bài học"} title={shown.title} />
-
-            <GuestNotice className="mb-4" />
 
             {isPractice ? (
               <div className="space-y-4">

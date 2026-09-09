@@ -116,7 +116,9 @@ def _question_labels(db: Session, question_id: uuid.UUID) -> list[PartLabelCount
 
 @router.get("/practice/parts", response_model=list[PartSummary])
 def list_parts(db: Session = Depends(get_db)) -> list[PartSummary]:
-    """Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub."""
+    """Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub. Danh sách công
+    khai (khuôn khu luyện thi): khách phải xem được luyện những gì; chiến thuật
+    và phiên mới đòi tài khoản."""
     counts: dict[int, int] = {
         part: n
         for part, n in db.execute(
@@ -136,7 +138,11 @@ def list_parts(db: Session = Depends(get_db)) -> list[PartSummary]:
 
 
 @router.get("/practice/parts/{part}/tactics", response_model=PartTacticsPublic)
-def get_tactics(part: int, db: Session = Depends(get_db)) -> PartTacticsPublic:
+def get_tactics(
+    part: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
+) -> PartTacticsPublic:
+    """Trang chiến thuật — nội dung, nên đòi đăng nhập; danh sách part phía trên
+    nó thì công khai để khách biết có gì để luyện."""
     row = db.get(PartTactics, part)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tactics not found")

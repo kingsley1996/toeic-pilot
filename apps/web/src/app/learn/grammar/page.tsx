@@ -1,11 +1,12 @@
 "use client";
 
 import { API_ROUTES, type GrammarTopicDetail, type GrammarTopicPublic } from "@toeic-pilot/shared";
-import { BookOpen, Check, ChevronDown, GraduationCap, PenLine } from "lucide-react";
+import { BookOpen, Check, ChevronDown, GraduationCap, Lock, PenLine } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { GuestNotice } from "@/components/guest-notice";
+import { LoginModal } from "@/components/login-modal";
 import { Alert, EmptyState, Meter, Page, PageHeader, Panel, SkeletonList } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -14,13 +15,23 @@ import { useSession } from "@/lib/session";
  * Tầng 1: chủ đề ngữ pháp, dạng accordion — bấm một chủ đề, danh sách bài mở
  * ra ngay bên dưới. Một trang toàn liên kết cấp hai bắt người học bấm vào rồi
  * bấm ra để biết bên trong có gì; accordion trả lời câu đó tại chỗ.
+ *
+ * Danh sách CÔNG KHAI (khuôn khu luyện thi): khách xem được học những gì. Mỗi
+ * chủ đề mang icon khoá và một lần bấm của khách mở hộp thoại đăng nhập ngay tại
+ * chỗ thay vì đá họ sang `/login` — bấm xong vẫn đứng ở cây ngữ pháp. API chặn
+ * `GET /grammar-topics/{id}` 401 là chốt cuối, chỗ này chỉ là lời mời.
  */
 export default function GrammarTopicsPage() {
   const { status, token } = useSession();
+  const router = useRouter();
   const [topics, setTopics] = useState<GrammarTopicPublic[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [details, setDetails] = useState<Record<string, GrammarTopicDetail>>({});
+  // Chủ đề khách vừa bấm — quyết định hộp đăng nhập có mở hay không, cùng khuôn
+  // `gated` của trang bộ đề: một state, không có trạng thái mở mà không biết mở
+  // cho ai.
+  const [gated, setGated] = useState<string | null>(null);
 
   useEffect(() => {
     // Token PHẢI đi theo: `completed_lesson_count` do máy chủ tính từ
@@ -33,6 +44,10 @@ export default function GrammarTopicsPage() {
   }, [token]);
 
   function toggle(id: string) {
+    if (status === "anonymous") {
+      setGated(id);
+      return;
+    }
     const next = openId === id ? null : id;
     setOpenId(next);
     if (next && !details[next]) {
@@ -68,8 +83,6 @@ export default function GrammarTopicsPage() {
         description="Mỗi chủ đề ứng với một điểm ngữ pháp của đề — học theo bài, rồi luyện ngay bằng câu thật."
       />
 
-      <GuestNotice className="mb-4" />
-
       {error && (
         <div className="mb-4">
           <Alert>{error}</Alert>
@@ -101,6 +114,7 @@ export default function GrammarTopicsPage() {
         {topics?.map((topic) => {
           const open = openId === topic.id;
           const detail = details[topic.id];
+          const locked = status === "anonymous";
           return (
             <Panel key={topic.id} className="overflow-hidden">
               <button
@@ -118,7 +132,7 @@ export default function GrammarTopicsPage() {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <span className="block font-semibold">{topic.title}</span>
-                    {isDone(topic) && (
+                    {!locked && isDone(topic) && (
                       <Check size={14} strokeWidth={2} className="shrink-0 text-ok" aria-hidden />
                     )}
                   </span>
@@ -126,9 +140,15 @@ export default function GrammarTopicsPage() {
                     <span className="mt-0.5 block text-small text-ink-muted">{topic.summary}</span>
                   )}
                 </span>
-                <span className="font-data text-small text-ink-faint">
-                  {topic.completed_lesson_count}/{topic.lesson_count} bài
-                </span>
+                {/* Khách không có số nào của riêng mình — hiện tiến độ 0/Y của
+                    người vô danh là nói dối, icon khoá nói đúng điều kiện vào. */}
+                {locked ? (
+                  <Lock size={15} strokeWidth={2} className="shrink-0 text-ink-faint" aria-hidden />
+                ) : (
+                  <span className="font-data text-small text-ink-faint">
+                    {topic.completed_lesson_count}/{topic.lesson_count} bài
+                  </span>
+                )}
                 <ChevronDown
                   size={16}
                   strokeWidth={2}
@@ -188,6 +208,22 @@ export default function GrammarTopicsPage() {
           icon={GraduationCap}
           title="Chưa có chủ đề nào"
           description="Nội dung đang được soạn."
+        />
+      )}
+
+      {gated && (
+        <LoginModal
+          open
+          onClose={() => setGated(null)}
+          onSuccess={() => router.push(`/learn/grammar/${gated}`)}
+          next={`/learn/grammar/${gated}`}
+          title="Đăng nhập để học ngữ pháp"
+          description={
+            <>
+              Học ngữ pháp <strong className="font-semibold text-ink">miễn phí</strong>. Đăng nhập
+              để lưu tiến độ bài học và có trải nghiệm học tập trọn vẹn hơn.
+            </>
+          }
         />
       )}
     </Page>

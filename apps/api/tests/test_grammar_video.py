@@ -168,7 +168,7 @@ def test_public_lesson_carries_video_url_only_when_present(
     client.post(f"/api/v1/admin/grammar/lessons/{lesson['id']}/publish", headers=auth("admin"))
     client.post(f"/api/v1/admin/grammar/topics/{lesson['topic_id']}/publish", headers=auth("admin"))
 
-    empty = client.get(f"/api/v1/grammar-lessons/{lesson['id']}")
+    empty = client.get(f"/api/v1/grammar-lessons/{lesson['id']}", headers=auth("learner"))
     assert empty.status_code == 200
     assert empty.json()["video_url"] is None
 
@@ -178,7 +178,7 @@ def test_public_lesson_carries_video_url_only_when_present(
     stored.video_duration_s = 61
     db_session.commit()
 
-    with_video = client.get(f"/api/v1/grammar-lessons/{lesson['id']}")
+    with_video = client.get(f"/api/v1/grammar-lessons/{lesson['id']}", headers=auth("learner"))
     assert with_video.json()["video_url"] is not None
     assert with_video.json()["video_url"].endswith("grammar-video/ab/abcdef.mp4")
 
