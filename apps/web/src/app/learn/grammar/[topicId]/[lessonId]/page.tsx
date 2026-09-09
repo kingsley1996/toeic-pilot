@@ -265,24 +265,27 @@ export default function GrammarLessonPage() {
                 ))}
               </div>
             ) : (
-              /* Nền trắng (`bg-panel`) chứ không nền xám của trang: đây là tài
-                 liệu đọc dài, và design system đã có sẵn bề mặt trắng cho việc
-                 đó. */
-              <Panel className="p-6 sm:p-8">
-                {/* Video bài giảng (SPEC-GRAMMAR-VIDEO): dưới tiêu đề, trước
-                    phần chữ. `preload="metadata"` — video là cỡ vài chục đến
-                    vài trăm MB, tải nguyên file trước khi bấm phát là băng
+              <>
+                {/* Video bài giảng đứng RIÊNG ngoài Panel lý thuyết (SPEC-GRAMMAR-VIDEO):
+                    tài liệu đọc dài là một bề mặt riêng, và video là một bề mặt khác —
+                    gộp chung thì kéo dài khối chữ và video mất viền riêng của nó.
+                    `preload="metadata"` — tải nguyên file trước khi bấm phát là băng
                     thông bỏ đi. Không autoplay, không thư viện player. */}
                 {shown.video_url && (
                   <video
                     controls
                     preload="metadata"
                     src={shown.video_url}
-                    className="mb-6 w-full rounded"
+                    className="mb-4 w-full rounded"
                   />
                 )}
-                <MarkdownLite text={shown.body} className="text-lesson" />
-              </Panel>
+                {/* Nền trắng (`bg-panel`) chứ không nền xám của trang: đây là tài
+                    liệu đọc dài, và design system đã có sẵn bề mặt trắng cho việc
+                    đó. */}
+                <Panel className="p-6 sm:p-8">
+                  <MarkdownLite text={shown.body} className="text-lesson" />
+                </Panel>
+              </>
             )}
           </Page>
         )}
