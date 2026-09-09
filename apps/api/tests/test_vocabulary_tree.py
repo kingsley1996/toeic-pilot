@@ -430,9 +430,9 @@ def test_learned_count_counts_words_reviewed_at_least_once(
     db_session.commit()
 
     token = {"Authorization": f"Bearer {create_access_token(str(learner.id))}"}
-    learned = client.get(
-        f"/api/v1/vocabulary-collections/{collection.id}", headers=token
-    ).json()["items"][0]
+    learned = client.get(f"/api/v1/vocabulary-collections/{collection.id}", headers=token).json()[
+        "items"
+    ][0]
     assert learned["learned_count"] == 1
     assert learned["entry_count"] == 1
 

@@ -202,7 +202,18 @@ jobs:
       - name: Build web
         run: pnpm --filter @toeic-pilot/web build
       - name: Playwright browsers
-        run: pnpm --filter @toeic-pilot/web exec playwright install --with-deps chromium
+        # `--with-deps` chạy `apt-get update`, và runner mặc định có nguồn
+        # Google Chrome (dl.google.com) mà index của nó đôi lúc lệch hash — lỗi
+        # của mirror đó, không phải của thứ ta cài. E2E chỉ cần Chromium từ CDN
+        # của Playwright, nên gỡ nguồn Chrome khỏi apt rồi mới cài; kèm thử lại
+        # cho các mirror khác chập mạng.
+        run: |
+          sudo grep -rl "dl.google.com" /etc/apt/sources.list.d/ 2>/dev/null | sudo xargs -r rm -f
+          for attempt in 1 2 3; do
+            pnpm --filter @toeic-pilot/web exec playwright install --with-deps chromium && break
+            [ "$attempt" = 3 ] && exit 1
+            echo "cài browser hỏng, thử lại lần $((attempt + 1))"; sleep 10
+          done
       - name: Chạy web nền
         run: |
           pnpm --filter @toeic-pilot/web start &

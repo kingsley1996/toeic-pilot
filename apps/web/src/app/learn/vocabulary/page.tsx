@@ -62,12 +62,12 @@ function BookCard({
         <img
           src={item.image_url}
           alt=""
-          className="aspect-[3/4] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
+          className="aspect-[3/2] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
         <span
           aria-hidden
-          className="flex aspect-[3/4] w-full items-center justify-center border-b border-rule bg-recess transition-transform duration-300 group-hover:scale-105"
+          className="flex aspect-[3/2] w-full items-center justify-center border-b border-rule bg-recess transition-transform duration-300 group-hover:scale-105"
         >
           <BookOpen size={28} strokeWidth={1.25} className="text-ink-faint" />
         </span>
@@ -148,11 +148,14 @@ function VocabularyLanding() {
     apiFetch<VocabularyCollectionPublic[]>(API_ROUTES.vocabularyCollections)
       .then((rows) =>
         // Tải song song chi tiết từng tuyển tập; một cái hỏng vẫn giữ cái còn lại.
+        // Detail kèm TOKEN: learned_count của card chỉ tồn tại khi server biết
+        // người xem là ai — quên token thì server trả 0 đúng luật "khách vãng
+        // lai", và card hiện "Đã học 0" cho cả người đã học.
         Promise.all(
           rows.map((row) =>
-            apiFetch<VocabularyCollectionDetail>(API_ROUTES.vocabularyCollection(row.id)).catch(
-              () => null,
-            ),
+            apiFetch<VocabularyCollectionDetail>(API_ROUTES.vocabularyCollection(row.id), {
+              ...(token ? { token } : {}),
+            }).catch(() => null),
           ),
         ).then((details) => {
           setCollections(
@@ -164,7 +167,10 @@ function VocabularyLanding() {
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then(setTopics)
       .catch(() => setError("Không tải được danh sách chủ đề."));
-  }, []);
+    // Phụ thuộc `token`: phiên nạp xong SAU lần chạy đầu (status `loading` lúc
+    // mount), không phụ thuộc lại thì lượt fetch đầu đi không token và con số
+    // học của người đã đăng nhập kẹt ở 0 mãi.
+  }, [token]);
 
   const unfiled = (topics ?? []).filter((topic) => topic.collection_item_id === null);
 
@@ -250,7 +256,7 @@ function VocabularyLanding() {
           {collection.description && (
             <p className="mt-1 text-small text-ink-muted">{collection.description}</p>
           )}
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {collection.items.map((item, index) => (
               <BookCard
                 key={item.id}
