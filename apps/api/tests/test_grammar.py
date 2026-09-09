@@ -7,6 +7,7 @@ một mình (SPEC-GRAMMAR §2).
 
 import uuid
 from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -833,8 +834,14 @@ def test_grammar_task_target_clamps_to_what_is_left(
 ) -> None:
     """Còn 2 bài chưa học thì mục tiêu là 2, không phải 3 mãi mãi không với tới.
 
-    Và khi KHÔNG còn bài nào, mục tiêu giữ nguyên 3 — thà việc đóng vĩnh viễn
-    còn hơn phần thưởng ăn sẵn mỗi ngày (`or slot.target`, như kẹp từ vựng).
+    Học nốt bài CUỐI cùng NGAY HÔM NAY thì việc vẫn đóng đúng — kẹp theo
+    `available + progress`, nên khoảnh khắc bài cuối được chấm là khoảnh khắc
+    việc đạt 2/2, không phải đột nhiên thành 0/3.
+
+    Nhưng hôm SAU, kho đã cạn và hôm nay chưa học gì: khe biến mất hẳn thay vì
+    hiện một việc 0/3 không bao giờ xong. Cùng lập luận với phần thưởng ăn sẵn —
+    chỉ khác là ở đây người ta thấy ít đi một cái thẻ, chứ không thấy một cái
+    thẻ chết.
     """
     topic_id, lesson_id, _ = make_practice_lesson(client, db_session, auth, "xp4", n_questions=1)
     client.post(f"/api/v1/admin/grammar/lessons/{lesson_id}/publish", headers=auth("admin"))
@@ -845,15 +852,25 @@ def test_grammar_task_target_clamps_to_what_is_left(
     ).json()["id"]
     client.post(f"/api/v1/admin/grammar/lessons/{second}/publish", headers=auth("admin"))
 
-    def grammar_task() -> dict:
+    def grammar_task() -> dict | None:
         tasks = client.get("/api/v1/daily-tasks", headers=auth("learner")).json()["tasks"]
-        return next(t for t in tasks if t["kind"] == "grammar_lesson_complete")
+        return next((t for t in tasks if t["kind"] == "grammar_lesson_complete"), None)
 
-    assert grammar_task()["target"] == 2  # cả giáo trình còn đúng 2 bài
+    assert grammar_task() is not None and grammar_task()["target"] == 2  # còn đúng 2 bài
     client.post(f"/api/v1/grammar-lessons/{lesson_id}/complete", headers=auth("learner"))
     client.post(f"/api/v1/grammar-lessons/{second}/complete", headers=auth("learner"))
     task = grammar_task()
     assert (task["progress"], task["done"]) == (2, True)
+
+    # Lùi `created_at` của lượt hoàn thành về hôm qua — cùng kết quả với hôm sau
+    # mà không cần nhả đồng hồ của API.
+    learner_id = db_session.scalar(select(User.id).where(User.email == "learner@example.com"))
+    yesterday = datetime.now(tz=UTC) - timedelta(days=1)
+    db_session.query(GrammarLessonCompletion).filter(
+        GrammarLessonCompletion.user_id == learner_id,
+    ).update({GrammarLessonCompletion.created_at: yesterday})
+    db_session.commit()
+    assert grammar_task() is None
 
 
 def test_a_grammar_only_day_counts_as_studied(

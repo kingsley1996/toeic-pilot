@@ -254,7 +254,15 @@ def tasks_for(
             # làm target nhảy về 3 đúng khoảnh khắc việc đáng ra xong — và việc
             # đóng vĩnh viễn ngay khi người ta vừa hoàn thành giáo trình.
             available = _grammar_available(db, user_id, slot.target)
-            target = min(slot.target, available + progress) or slot.target
+            if available == 0 and progress == 0:
+                # Giáo trình đã học SẠCH và hôm nay chưa học gì: ẨN khe thay vì
+                # in một việc 0/3 không bao giờ xong. Kho bài là hữu hạn, nên
+                # đây là trạng thái vĩnh viễn — task chết để khoe phần thưởng
+                # không bao giờ nhận được là nhiễu mỗi lần mở app. Cùng ngày
+                # học nốt bài cuối thì khe vẫn hiện và đóng đúng, vì progress
+                # khi ấy lớn hơn 0.
+                continue
+            target = min(slot.target, available + progress)
 
         tasks.append(
             DailyTask(
