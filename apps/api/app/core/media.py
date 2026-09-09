@@ -43,6 +43,11 @@ PROGRESSION_KEY_PREFIX = "progression"
 # chung hạn mức credit với ảnh (ADR-006 §2.2 sửa 2026-09-09).
 VIDEO_KEY_PREFIX = "grammar-video"
 
+# Video chiến thuật Part 1–7. Cùng nguyên nhân với `grammar-video/` nhưng là
+# vùng khoá RIÊNG: hai khu soạn khác nhau, một lệnh dọn nhầm không được chạm
+# sang nhau.
+PART_VIDEO_KEY_PREFIX = "part-video"
+
 # Kept as plain tuples rather than a native PostgreSQL enum: adding a value to a
 # native enum needs its own migration, and Alembic downgrades across enum types
 # are painful enough that a CHECK constraint is the cheaper trade.
@@ -270,6 +275,11 @@ def video_storage_key_for(source_hash_value: str, ext: str = "mp4") -> str:
     việc `reconcile_media` dọn).
     """
     return storage_key_for(source_hash_value, ext=ext, prefix=VIDEO_KEY_PREFIX)
+
+
+def part_video_storage_key_for(source_hash_value: str, ext: str = "mp4") -> str:
+    """Khoá cho video chiến thuật part — `part-video/ab/<hash>.<ext>`."""
+    return storage_key_for(source_hash_value, ext=ext, prefix=PART_VIDEO_KEY_PREFIX)
 
 
 def public_audio_url(storage_key: str, base_url: str | None = None) -> str:

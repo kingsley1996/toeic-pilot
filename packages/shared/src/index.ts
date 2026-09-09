@@ -34,6 +34,7 @@ export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
 export type GrammarTopicAdmin = components["schemas"]["GrammarTopicAdmin"];
 export type GrammarLessonAdmin = components["schemas"]["GrammarLessonAdmin"];
+export type PartTacticsAdmin = components["schemas"]["PartTacticsAdmin"];
 export type GrammarTopicPublic = components["schemas"]["GrammarTopicPublic"];
 export type GrammarTopicDetail = components["schemas"]["GrammarTopicDetail"];
 export type GrammarLessonDetail = components["schemas"]["GrammarLessonDetail"];
@@ -475,6 +476,9 @@ export const API_ROUTES = {
   adminGrammarLessonQuestions: (id: string) => `/api/v1/admin/grammar/lessons/${id}/questions`,
   adminGrammarLessonVideoTicket: (id: string) => `/api/v1/admin/grammar/lessons/${id}/video/ticket`,
   adminGrammarLessonVideo: (id: string) => `/api/v1/admin/grammar/lessons/${id}/video`,
+  adminPartTactics: (part: number) => `/api/v1/admin/parts/${part}/tactics`,
+  adminPartTacticsVideoTicket: (part: number) => `/api/v1/admin/parts/${part}/tactics/video/ticket`,
+  adminPartTacticsVideo: (part: number) => `/api/v1/admin/parts/${part}/tactics/video`,
   adminGrammarQuestionBank: "/api/v1/admin/grammar/question-bank",
   adminGrammarQuestions: "/api/v1/admin/grammar/questions",
   // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa

@@ -50,9 +50,22 @@ export default function PartTacticsPage() {
 
       {/* Nền trắng như trang lesson: tài liệu đọc dài cần bề mặt đọc. */}
       {tactics && (
-        <Panel className="mt-6 p-6 sm:p-8">
-          <MarkdownLite text={tactics.body} className="text-lesson" />
-        </Panel>
+        <>
+          {/* Video chiến thuật đứng RIÊNG ngoài Panel chữ — cùng hình dạng với
+              trang lesson ngữ pháp. `preload="metadata"`: tải nguyên file trước
+              khi bấm phát là băng thông bỏ đi. */}
+          {tactics.video_url && (
+            <video
+              controls
+              preload="metadata"
+              src={tactics.video_url}
+              className="mt-6 w-full rounded"
+            />
+          )}
+          <Panel className="mt-4 p-6 sm:p-8">
+            <MarkdownLite text={tactics.body} className="text-lesson" />
+          </Panel>
+        </>
       )}
 
       <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-rule pt-5">

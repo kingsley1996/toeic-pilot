@@ -7789,6 +7789,59 @@
         "title": "PartSummary",
         "type": "object"
       },
+      "PartTacticsAdmin": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "video_duration_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Duration S"
+          },
+          "video_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Url"
+          }
+        },
+        "required": [
+          "part",
+          "body"
+        ],
+        "title": "PartTacticsAdmin",
+        "type": "object"
+      },
+      "PartTacticsBody": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "PartTacticsBody",
+        "type": "object"
+      },
       "PartTacticsPublic": {
         "properties": {
           "body": {
@@ -7798,6 +7851,17 @@
           "part": {
             "title": "Part",
             "type": "integer"
+          },
+          "video_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Url"
           }
         },
         "required": [
@@ -16947,6 +17011,272 @@
         "summary": "Image Ticket",
         "tags": [
           "media"
+        ]
+      }
+    },
+    "/api/v1/admin/parts/{part}/tactics": {
+      "get": {
+        "description": "Một trang chiến thuật cho màn soạn. Part chưa từng sync là trang RỖNG\nchứ không 404 — màn soạn phải mở được rồi `PUT` tạo hàng.",
+        "operationId": "get_tactics_api_v1_admin_parts__part__tactics_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartTacticsAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Tactics",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "description": "Upsert body — lần đầu soạn part chưa từng sync là TẠO hàng, không 404.",
+        "operationId": "update_tactics_api_v1_admin_parts__part__tactics_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartTacticsBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartTacticsAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Tactics",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/parts/{part}/tactics/video": {
+      "delete": {
+        "description": "Gỡ video khỏi part. Idempotent. File để MỒ CÔI cho đường dọn dẹp media —\nxoá đồng nghĩa với một request chờ dịch vụ ngoài.",
+        "operationId": "part_video_remove_api_v1_admin_parts__part__tactics_video_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartTacticsAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Part Video Remove",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "description": "Gắn video vừa tải lên. Hai kiểm, cùng khuôn `avatar_confirm`: khoá phải\nnằm dưới `part-video/` (không thì có thể trỏ vào vùng media khác và lệnh dọn\nmồ côi sau này xoá mất thứ đang dùng), và `verify()` hỏi lại nhà cung cấp —\nthiếu bước này là đường ghi một chuỗi tuỳ ý, người học sẽ thấy player vỡ.",
+        "operationId": "part_video_confirm_api_v1_admin_parts__part__tactics_video_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartTacticsAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Part Video Confirm",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/parts/{part}/tactics/video/ticket": {
+      "post": {
+        "description": "Vé upload video chiến thuật — trình duyệt PUT thẳng object store.",
+        "operationId": "part_video_ticket_api_v1_admin_parts__part__tactics_video_ticket_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "part",
+            "required": true,
+            "schema": {
+              "title": "Part",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Part Video Ticket",
+        "tags": [
+          "admin"
         ]
       }
     },

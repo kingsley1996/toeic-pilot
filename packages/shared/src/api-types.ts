@@ -1141,6 +1141,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/parts/{part}/tactics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Tactics
+         * @description Một trang chiến thuật cho màn soạn. Part chưa từng sync là trang RỖNG
+         *     chứ không 404 — màn soạn phải mở được rồi `PUT` tạo hàng.
+         */
+        get: operations["get_tactics_api_v1_admin_parts__part__tactics_get"];
+        /**
+         * Update Tactics
+         * @description Upsert body — lần đầu soạn part chưa từng sync là TẠO hàng, không 404.
+         */
+        put: operations["update_tactics_api_v1_admin_parts__part__tactics_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parts/{part}/tactics/video": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Part Video Confirm
+         * @description Gắn video vừa tải lên. Hai kiểm, cùng khuôn `avatar_confirm`: khoá phải
+         *     nằm dưới `part-video/` (không thì có thể trỏ vào vùng media khác và lệnh dọn
+         *     mồ côi sau này xoá mất thứ đang dùng), và `verify()` hỏi lại nhà cung cấp —
+         *     thiếu bước này là đường ghi một chuỗi tuỳ ý, người học sẽ thấy player vỡ.
+         */
+        put: operations["part_video_confirm_api_v1_admin_parts__part__tactics_video_put"];
+        post?: never;
+        /**
+         * Part Video Remove
+         * @description Gỡ video khỏi part. Idempotent. File để MỒ CÔI cho đường dọn dẹp media —
+         *     xoá đồng nghĩa với một request chờ dịch vụ ngoài.
+         */
+        delete: operations["part_video_remove_api_v1_admin_parts__part__tactics_video_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parts/{part}/tactics/video/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Part Video Ticket
+         * @description Vé upload video chiến thuật — trình duyệt PUT thẳng object store.
+         */
+        post: operations["part_video_ticket_api_v1_admin_parts__part__tactics_video_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/pet/eggs": {
         parameters: {
             query?: never;
@@ -7655,12 +7728,30 @@ export interface components {
             /** Question Count */
             question_count: number;
         };
+        /** PartTacticsAdmin */
+        PartTacticsAdmin: {
+            /** Body */
+            body: string;
+            /** Part */
+            part: number;
+            /** Video Duration S */
+            video_duration_s?: number | null;
+            /** Video Url */
+            video_url?: string | null;
+        };
+        /** PartTacticsBody */
+        PartTacticsBody: {
+            /** Body */
+            body: string;
+        };
         /** PartTacticsPublic */
         PartTacticsPublic: {
             /** Body */
             body: string;
             /** Part */
             part: number;
+            /** Video Url */
+            video_url?: string | null;
         };
         /** PassageAdmin */
         PassageAdmin: {
@@ -11780,6 +11871,173 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["UploadTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_tactics_api_v1_admin_parts__part__tactics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartTacticsAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_tactics_api_v1_admin_parts__part__tactics_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartTacticsBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartTacticsAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    part_video_confirm_api_v1_admin_parts__part__tactics_video_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartTacticsAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    part_video_remove_api_v1_admin_parts__part__tactics_video_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartTacticsAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    part_video_ticket_api_v1_admin_parts__part__tactics_video_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoTicketRequest"];
             };
         };
         responses: {

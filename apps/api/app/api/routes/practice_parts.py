@@ -25,7 +25,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import get_current_user
 from app.api.routes._transcript import transcript_of
 from app.core.database import get_db
-from app.core.media import public_audio_url
+from app.core.media import public_audio_url, public_video_url
 from app.core.storage import get_driver
 from app.models import (
     AudioAsset,
@@ -140,7 +140,13 @@ def get_tactics(part: int, db: Session = Depends(get_db)) -> PartTacticsPublic:
     row = db.get(PartTactics, part)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tactics not found")
-    return PartTacticsPublic(part=row.part, body=row.body)
+    # URL sinh ở máy chủ từ khoá, không trả khoá thô — nhà cung cấp là một biến
+    # cấu hình (cùng lý do `video_url` của grammar).
+    return PartTacticsPublic(
+        part=row.part,
+        body=row.body,
+        video_url=public_video_url(row.video_storage_key) if row.video_storage_key else None,
+    )
 
 
 def _question_payloads(

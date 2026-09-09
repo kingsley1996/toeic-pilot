@@ -153,6 +153,17 @@ export async function uploadGrammarVideo(
   return storageKey;
 }
 
+/** Video chiến thuật part 1–7 — cùng luồng, vùng khoá riêng `part-video/`. */
+export async function uploadPartVideo(part: number, file: File, token: string): Promise<string> {
+  const { storageKey } = await uploadViaTicket(
+    API_ROUTES.adminPartTacticsVideoTicket(part),
+    file,
+    token,
+    "mp4",
+  );
+  return storageKey;
+}
+
 /** Đọc thời lượng video/phát hiện file hỏng trước khi xin vé — độ dài chỉ để hiển thị. */
 export function videoDurationSeconds(file: File): Promise<number | null> {
   return new Promise((resolve) => {

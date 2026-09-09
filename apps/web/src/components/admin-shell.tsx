@@ -4,6 +4,7 @@ import {
   Shuffle,
   MessageSquarePlus,
   ArrowLeft,
+  BookOpenText,
   ClipboardList,
   Cpu,
   FlaskConical,
@@ -80,6 +81,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
     children: [{ href: "/admin/placement", label: "Placement pool", Icon: Shuffle }],
   },
   { href: "/admin/grammar", label: "Grammar", Icon: GraduationCap, group: "Content" },
+  { href: "/admin/parts", label: "Part tactics", Icon: BookOpenText, group: "Content" },
 
   { href: "/admin/appearance", label: "Appearance", Icon: Palette, group: "System" },
   {

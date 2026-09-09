@@ -4,7 +4,7 @@ import { API_ROUTES, type GrammarLessonAdmin } from "@toeic-pilot/shared";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MarkdownLite } from "@/components/markdown-lite";
 import {
@@ -19,9 +19,9 @@ import {
   SkeletonList,
   Textarea,
 } from "@/components/ui";
+import { VideoBlock } from "@/components/video-block";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
-import { messageFor, videoDurationSeconds, uploadGrammarVideo } from "@/lib/upload";
 
 type LessonKind = "theory" | "practice";
 
@@ -196,10 +196,11 @@ export function LessonForm({
       {kind === "theory" && lessonId !== null && (
         <VideoBlock
           token={token}
-          lessonId={lessonId}
+          scope={{ kind: "grammar", lessonId }}
           videoUrl={video.url}
           duration={video.duration}
           onChanged={(next) => setVideo(next)}
+          hint="Tùy chọn — mp4/webm/mov, tối đa 300 MB. Người học thấy player dưới tiêu đề bài học."
         />
       )}
 
@@ -450,127 +451,5 @@ function NewQuestionForm({
         </Button>
       </div>
     </div>
-  );
-}
-
-function formatDuration(totalSeconds: number): string {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
-
-/**
- * Khối "Video bài giảng" của màn soạn (SPEC-GRAMMAR-VIDEO §4): xin vé → PUT
- * thẳng object store → confirm gắn khoá. Chỉ lesson đã lưu mới có video — bài
- * mới chưa có id để gắn khoá vào.
- */
-function VideoBlock({
-  token,
-  lessonId,
-  videoUrl,
-  duration,
-  onChanged,
-}: {
-  token: string | null;
-  lessonId: string;
-  videoUrl: string | null;
-  duration: number | null;
-  onChanged: (next: { url: string | null; duration: number | null }) => void;
-}) {
-  const input = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
-
-  async function pick(file: File) {
-    if (!token || busy) return;
-    setBusy(true);
-    setFailure(null);
-    try {
-      const durationS = await videoDurationSeconds(file);
-      const storageKey = await uploadGrammarVideo(lessonId, file, token);
-      const updated = await apiFetch<GrammarLessonAdmin>(
-        API_ROUTES.adminGrammarLessonVideo(lessonId),
-        {
-          method: "PUT",
-          token,
-          body: JSON.stringify({ storage_key: storageKey, duration_s: durationS }),
-        },
-      );
-      onChanged({ url: updated.video_url ?? null, duration: updated.video_duration_s ?? null });
-    } catch (err) {
-      setFailure(messageFor(err, "Không tải được video."));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function remove() {
-    if (!token || busy) return;
-    setBusy(true);
-    setFailure(null);
-    try {
-      const updated = await apiFetch<GrammarLessonAdmin>(
-        API_ROUTES.adminGrammarLessonVideo(lessonId),
-        { method: "DELETE", token },
-      );
-      onChanged({ url: updated.video_url ?? null, duration: updated.video_duration_s ?? null });
-    } catch (err) {
-      setFailure(messageFor(err, "Không gỡ được video."));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <Panel className="mt-4 p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <p className="text-small font-semibold">Video bài giảng</p>
-        <span className="flex-1" />
-        {videoUrl && duration !== null && (
-          <span className="text-small text-ink-muted" title="Thời lượng (do trình duyệt đọc)">
-            {formatDuration(duration)}
-          </span>
-        )}
-        {videoUrl && (
-          <Button size="sm" variant="quiet" disabled={busy} onClick={() => void remove()}>
-            Xoá
-          </Button>
-        )}
-        <input
-          ref={input}
-          type="file"
-          accept="video/mp4,video/webm,video/quicktime"
-          className="hidden"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) void pick(file);
-            // Cho phép chọn LẠI cùng một file: không xoá giá trị thì `change`
-            // không bắn lần thứ hai, và nút trông như hỏng.
-            event.target.value = "";
-          }}
-        />
-        <Button
-          size="sm"
-          variant="secondary"
-          disabled={busy}
-          onClick={() => input.current?.click()}
-        >
-          {busy ? "Đang tải lên…" : videoUrl ? "Thay thế" : "Tải video lên"}
-        </Button>
-      </div>
-      {failure && (
-        <div className="mt-2">
-          <Alert>{failure}</Alert>
-        </div>
-      )}
-      {videoUrl && (
-        <video controls preload="metadata" src={videoUrl} className="mt-3 w-full rounded" />
-      )}
-      {!videoUrl && !busy && (
-        <p className="mt-2 text-small text-ink-muted">
-          Tùy chọn — mp4/webm/mov, tối đa 300 MB. Người học thấy player dưới tiêu đề bài học.
-        </p>
-      )}
-    </Panel>
   );
 }

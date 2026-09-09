@@ -18,6 +18,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     SmallInteger,
+    String,
     Text,
     UniqueConstraint,
     func,
@@ -43,6 +44,11 @@ class PartTactics(Base):
 
     part: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
     body: Mapped[str] = mapped_column(Text, nullable=False)
+    # Video chiến thuật (khuôn SPEC-GRAMMAR-VIDEO). Nullable: video là phụ kiện,
+    # trang không video vẫn render bình thường. Đổi video = ghi đè khoá; file cũ
+    # mồ côi cho đường dọn dẹp media.
+    video_storage_key: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    video_duration_s: Mapped[int | None] = mapped_column(Integer, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

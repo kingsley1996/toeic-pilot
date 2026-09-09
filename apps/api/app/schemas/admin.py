@@ -753,3 +753,14 @@ class MediaAssign(BaseModel):
     """Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra."""
 
     asset_id: str | None = None
+
+
+class PartTacticsAdmin(BaseModel):
+    part: int
+    body: str
+    video_url: str | None = None
+    video_duration_s: int | None = None
+
+
+class PartTacticsBody(BaseModel):
+    body: str

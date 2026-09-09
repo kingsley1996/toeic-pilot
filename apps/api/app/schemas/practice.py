@@ -352,6 +352,9 @@ class PartTacticsPublic(BaseModel):
     body: str
     """Markdown theo luật `markdown-lite` — h1 đầu đã bị cắt khi sync."""
 
+    video_url: str | None = None
+    """Video chiến thuật của part, nếu có — player vẽ trên khối chữ."""
+
 
 class PartDrillQuestion(BaseModel):
     """Một câu của phiên luyện rời.
