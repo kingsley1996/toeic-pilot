@@ -48,12 +48,11 @@ JITTER_HIGH = 1.4
 
 """Tỉ lệ nhiệm vụ rơi vào dạng chép chính tả.
 
-Một phần tư, không phải một nửa: kho từ vựng dày gấp gần mười lần kho câu chép
-chính tả (303 so với 35), nên chia đều sẽ làm người học gặp lại cùng một câu
-nghe nhiều lần trong tuần — và lúc đó nhiệm vụ dạy thuộc lòng câu đó chứ không
-dạy nghe.
+ĐÃ BỎ (2026-09-09): cuộc chạm mặt KHÔNG BAO GIỜ giao chép chính tả nữa — chỉ từ
+vựng. `_pick_dictation` và nhánh "dictation" của `pick_target` vẫn sống vì kẻ
+xâm nhập đi nhiều bước chuẩn bị mục tiêu cho bước SAU, và các cuộc nhiệm vụ
+nghe đang chờ từ chỗ cũ phải đi tới nơi được, không thành nhiệm vụ cụt.
 """
-DICTATION_SHARE = 0.25
 
 """Bao nhiêu cuộc mỗi loại được cùng tồn tại.
 
@@ -382,30 +381,18 @@ def _spawn(
 ) -> Encounter | None:
     """Dựng một cuộc chạm mặt, hoặc `None` nếu không có nội dung để giao.
 
-    Hai dạng: TỪ VỰNG và CHÉP CHÍNH TẢ. Trắc nghiệm chưa mở — kho chỉ có 55 câu,
-    nên một người học chăm gặp lại câu cũ trong vài ngày và nhiệm vụ sẽ dạy thuộc
-    lòng đáp án chứ không dạy tiếng Anh (ADR-012 §8.3). Dạng bài mở theo độ dày
-    của kho, không theo thứ tự dễ code.
+    Từ vựng là dạng DUY NHẤT được sinh từ 2026-09-09: nhiệm vụ nghe-chép từng
+    chiếm một phần tư bốc thăm, nhưng nó nặng hơn hẳn — gõ lại trọn một câu
+    nghe — trong khi cuộc chạm mặt chỉ là một lời mời ngắn. Trắc nghiệm vẫn chưa
+    mở (ADR-012 §8.3).
 
-    Từ vựng chiếm phần lớn có chủ ý: kho từ dày gấp gần mười lần kho câu chép
-    chính tả, nên rải đều hai dạng sẽ làm người học gặp lại cùng một câu nghe
-    nhiều lần trong tuần.
+    Các cuộc nhiệm vụ nghe SINH TRƯỚC ĐÂY vẫn chạy tới khi hết hạn; `pick_target`
+    giữ nhánh dictation cho bước kế tiếp của chúng.
     """
-    # Hồi phục chỉ giao TỪ VỰNG. Chép chính tả là gõ lại trọn một câu nghe được
-    # — nặng hơn hẳn một câu chọn nghĩa, và đây là lối ra khỏi một trạng thái
-    # chứ không phải một bài để thử sức. Bắt gõ cả câu lúc con thú đang nằm bẹp
-    # là dựng thêm một bức tường trước cái cửa.
-    if kind == "rescue":
-        task_kind = "vocabulary"
-    else:
-        task_kind = "dictation" if rng.random() < DICTATION_SHARE else "vocabulary"
+    # Hồi phục cũng là từ vựng: bắt gõ cả câu lúc con thú đang nằm bẹp là dựng
+    # thêm một bức tường trước cái cửa.
+    task_kind = "vocabulary"
     target = pick_target(db, user_id, task_kind, rng)
-    if target is None and kind != "rescue":
-        # Kho của dạng vừa bốc đang rỗng — thử dạng kia trước khi bỏ cuộc. Hồi
-        # phục thì KHÔNG đổi sang chép chính tả: thà không có nhiệm vụ (bảng tự
-        # nói ra đường cho ăn) còn hơn đưa ra đúng dạng vừa loại đi.
-        task_kind = "vocabulary" if task_kind == "dictation" else "dictation"
-        target = pick_target(db, user_id, task_kind, rng)
     if target is None:
         return None
 

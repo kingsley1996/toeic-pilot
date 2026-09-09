@@ -624,3 +624,28 @@ def test_the_hint_button_runs_out_and_the_cap_lives_on_the_server(
     listed = client.get("/api/v1/pet/encounters", headers=headers).json()
     task = next(item for item in listed if item["id"] == str(row.id))["task"]
     assert task["hints_left"] == 0
+
+
+def test_new_encounters_never_offer_a_dictation_task(db_session: Session) -> None:
+    """Sinh lại chỉ TỪ VỰNG — chép chính tả đã rút khỏi vòng quay (2026-09-09).
+
+    Bốc thăm cũ (`DICTATION_SHARE = 0.25`) với hạt giống nào cũng phải ra từ
+    vựng; kho câu nghe rỗng hay đầy không còn đổi được kết quả.
+    """
+    user = _learner(db_session)
+    pet = _pet(db_session, user)
+    _words(db_session, count=8)
+    _sentence(db_session)  # kho câu nghe còn đầy — và vẫn không được chọn
+
+    spawned = encounters.sync(db_session, user_id=user.id, pet=pet, now=T0, rng=random.Random(1))
+    # Lượt sync đầu chỉ ĐẶT GIỜ hẹn; tới giờ hẹn thì cuộc chạm mặt xuất hiện.
+    assert pet.next_npc_at is not None
+    spawned = encounters.sync(
+        db_session,
+        user_id=user.id,
+        pet=pet,
+        now=pet.next_npc_at.replace(tzinfo=UTC),
+        rng=random.Random(1),
+    )
+    assert spawned
+    assert all(enc.task_kind == "vocabulary" for enc in spawned)
