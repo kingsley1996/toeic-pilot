@@ -73,6 +73,7 @@ from app.models.study_plan import StudyPlan, StudyPlanItem
 from app.models.topic import Topic
 from app.models.user import User
 from app.models.vocabulary import (
+    CollocationDetail,
     VocabularyAudio,
     VocabularyCollection,
     VocabularyCollectionItem,
@@ -92,6 +93,7 @@ __all__ = [
     "UserIdentity",
     "BADGE_ICONS",
     "BADGE_METRICS",
+    "COLLOCATION_PATTERNS",
     "DAILY_TASK_KINDS",
     "FRAME_TONES",
     "XP_SOURCES",
@@ -171,4 +173,5 @@ __all__ = [
     "VocabularyReviewState",
     "VocabularyTopic",
     "VocabularyTopicSession",
+    "CollocationDetail",
 ]

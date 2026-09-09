@@ -2,6 +2,7 @@
 
 import {
   API_ROUTES,
+  type CollocationItem,
   type TopicPublic,
   type VocabularyDetail,
   type VocabularyPage as VocabularyListPage,
@@ -57,6 +58,48 @@ const MASTERY = {
 type MasteryLevel = keyof typeof MASTERY;
 
 const PAGE_SIZE = 50;
+
+/** Nhãn pattern cho người học; hằng canonical sống ở API (SPEC-COLLOCATION §7). */
+const PATTERN_LABELS: Record<string, string> = {
+  VERB_NOUN: "Động từ + Danh từ",
+  ADJ_PREP: "Tính từ + Giới từ",
+  NOUN_NOUN: "Danh từ + Danh từ",
+  VERB_PREP: "Động từ + Giới từ",
+  PREP_PHRASE: "Cụm giới từ",
+};
+
+/** Các cụm cùng `base_word`, nạp khi detail là collocation và mởRelated=true. */
+function RelatedCollocations({ baseWord, excludeId }: { baseWord: string; excludeId: string }) {
+  const [related, setRelated] = useState<CollocationItem[] | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    apiFetch<{ items: CollocationItem[] }>(
+      `${API_ROUTES.vocabularyCollocations}?base_word=${encodeURIComponent(baseWord)}`,
+    )
+      .then((page) => {
+        if (alive) setRelated(page.items.filter((item) => item.id !== excludeId));
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [baseWord, excludeId]);
+
+  if (!related?.length) return null;
+  return (
+    <div className="mt-4">
+      <p className="text-small text-ink-muted">
+        Cụm khác với <span className="font-semibold">&ldquo;{baseWord}&rdquo;</span>
+      </p>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {related.map((item) => (
+          <Tag key={item.id}>{item.headword}</Tag>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function WordList() {
   // `all` là lối xem toàn bộ; các slug khác lọc theo chủ đề.
@@ -323,6 +366,14 @@ function WordList() {
                     <>
                       <p className="font-semibold sm:hidden">{detail.meaning_vi}</p>
                       <p className="text-small text-ink-muted">{detail.meaning_en}</p>
+                      {detail.collocation && (
+                        <div className="mt-2">
+                          <Tag>
+                            {PATTERN_LABELS[detail.collocation.pattern] ??
+                              detail.collocation.pattern}
+                          </Tag>
+                        </div>
+                      )}
                       {/* `showMissing` để giọng chưa có clip vẫn hiện ở dạng vô
                           hiệu hoá — người học cần biết nó tồn tại nhưng chưa
                           được thu, chứ không tưởng app chỉ có ba giọng. */}
@@ -335,6 +386,12 @@ function WordList() {
                           )}
                           <AccentRow clips={detail.example_audio} className="mt-3" />
                         </div>
+                      )}
+                      {detail.collocation && (
+                        <RelatedCollocations
+                          baseWord={detail.collocation.baseWord}
+                          excludeId={detail.id}
+                        />
                       )}
                     </>
                   )}

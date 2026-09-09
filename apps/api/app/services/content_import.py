@@ -11,7 +11,11 @@ import unicodedata
 from dataclasses import dataclass, field
 
 from app.core.media import LOGICAL_VOICE_ACCENTS
-from app.models.vocabulary import PARTS_OF_SPEECH
+from app.models.vocabulary import (
+    COLLOCATION_PATTERNS,
+    MAX_COLLOCATION_DISTRACTORS,
+    PARTS_OF_SPEECH,
+)
 
 # Pipe-delimited because the fields are short and a paste from a spreadsheet or a
 # notes file needs no escaping rules to be readable. It breaks if a meaning
@@ -57,6 +61,159 @@ class ParsedDictation:
     @property
     def ok(self) -> bool:
         return not self.problems
+
+
+# --- collocation (SPEC-COLLOCATION §10) --------------------------------------
+#
+# Cùng khuôn parse → validate → review → commit của vocabulary, nhưng đủ 8 cột
+# bắt buộc phải có mặt (cột tuỳ chọn để trống chứ không được bỏ): một dòng
+# collocation thiếu cột giữa gần như chắc chắn là dán lệch hàng, và im lặng
+# dịch mọi cột sau nó lên một bậc thì mắt người không thấy được.
+
+COLLOCATION_COLUMNS = (
+    "headword",
+    "base_word",
+    "gap_word",
+    "pattern",
+    "meaning_vi",
+    "example",
+    "example_vi",
+    "distractors",
+)
+REQUIRED_COLLOCATION_COLUMNS = ("headword", "base_word", "pattern", "meaning_vi")
+
+
+@dataclass
+class ParsedCollocation:
+    line: int
+    headword: str = ""
+    base_word: str = ""
+    gap_word: str | None = None
+    pattern: str = ""
+    meaning_vi: str = ""
+    example: str | None = None
+    example_vi: str | None = None
+    distractors: list[str] = field(default_factory=list)
+    problems: list[str] = field(default_factory=list)
+    # WARNING không chặn commit (§11) — nó chỉ đòi một cặp mắt ở bước review.
+    # Nằm cạnh problems nhưng tách field, để `ok` và counter client không nhầm.
+    warnings: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.problems
+
+
+def parse_collocation(
+    raw: str,
+    *,
+    existing_headwords: set[str] | None = None,
+) -> list[ParsedCollocation]:
+    """Một collocation mỗi dòng (SPEC-COLLOCATION §10). **Không ghi database.**
+
+    `existing_headwords` là tập headword (đã lowercase) của collocation đang có
+    trong kho, phục vụ heuristic WARNING §9: điền thử distractor vào gap, cụm
+    kết quả trùng một collocation khác là distractor có khả năng tạo thành cụm
+    đúng. Heuristic chỉ thấy những gì trong kho/lô — không WARNING ≠ đúng.
+
+    Lỗi ngữ nghĩa (distractor tạo ra cụm đúng nhưng cụm đó chưa có trong kho)
+    không máy nào bắt được — đó là việc của người duyệt ở bước review.
+    """
+    rows: list[ParsedCollocation] = []
+    seen: dict[str, int] = {}
+    batch_headwords = set(existing_headwords or ())
+
+    for lineno, line in enumerate(raw.splitlines(), start=1):
+        if not line.strip():
+            continue
+        parts = [part.strip() for part in line.split(FIELD_SEP)]
+        row = ParsedCollocation(line=lineno)
+
+        if len(parts) != len(COLLOCATION_COLUMNS):
+            row.problems.append(
+                f"expected exactly {len(COLLOCATION_COLUMNS)} fields "
+                f"(optional ones left empty): {', '.join(COLLOCATION_COLUMNS)}"
+            )
+            rows.append(row)
+            continue
+
+        values = dict(zip(COLLOCATION_COLUMNS, parts, strict=True))
+        row.headword = values["headword"]
+        row.base_word = values["base_word"].lower()
+        gap = values["gap_word"].lower() or None
+        row.gap_word = gap
+        row.pattern = values["pattern"].upper()
+        row.meaning_vi = values["meaning_vi"]
+        row.example = _clean(values["example"])
+        row.example_vi = _clean(values["example_vi"])
+        row.distractors = [
+            word.lower() for word in values["distractors"].split(",") if word.strip()
+        ]
+
+        for column in REQUIRED_COLLOCATION_COLUMNS:
+            if not getattr(row, column):
+                row.problems.append(f"{column} is required")
+
+        if row.pattern and row.pattern not in COLLOCATION_PATTERNS:
+            row.problems.append(
+                f"pattern {row.pattern!r} is not one of {list(COLLOCATION_PATTERNS)}"
+            )
+
+        if gap and row.headword:
+            if re.search(r"\s", gap):
+                row.problems.append("gap_word must be a single token without whitespace")
+            elif gap == row.headword.lower():
+                row.problems.append("gap_word must not be the entire headword")
+            elif gap not in row.headword.lower().split():
+                row.problems.append(f"gap_word {gap!r} does not appear in headword")
+
+        if len(row.distractors) > MAX_COLLOCATION_DISTRACTORS:
+            row.problems.append(
+                f"at most {MAX_COLLOCATION_DISTRACTORS} distractors, got {len(row.distractors)}"
+            )
+        if len(set(row.distractors)) != len(row.distractors):
+            row.problems.append("duplicate distractors")
+        if gap and gap in row.distractors:
+            row.problems.append("distractor must not equal gap_word")
+
+        key = row.headword.lower()
+        if key:
+            if key in seen:
+                row.problems.append(f"duplicate of line {seen[key]} in this paste")
+            else:
+                seen[key] = lineno
+            batch_headwords.add(key)
+
+        rows.append(row)
+
+    # Heuristic WARNING chạy SAU khi cả lô đã đọc xong: một distractor có thể
+    # tạo thành cụm đúng của chính một dòng khác trong lô. Điền thử theo TOKEN
+    # (đầu tiên khớp gap — cùng quy ước renderGap phía client), không replace
+    # chuỗi con: "in" với tư cách gap không được khớp trong "interested".
+    headword_by_fill = {headword: line for headword, line in seen.items()}
+    for row in rows:
+        if row.problems or not row.gap_word:
+            continue
+        tokens = row.headword.lower().split()
+        for index, token in enumerate(tokens):
+            if token != row.gap_word:
+                continue
+            for distractor in row.distractors:
+                candidate = " ".join(tokens[:index] + [distractor] + tokens[index + 1 :])
+                if candidate == row.headword.lower():
+                    continue
+                if candidate in headword_by_fill:
+                    row.warnings.append(
+                        f"WARNING: distractor {distractor!r} forms "
+                        f"{candidate!r} (line {headword_by_fill[candidate]}) — "
+                        "review whether it is a valid collocation"
+                    )
+                elif candidate in batch_headwords:
+                    row.warnings.append(
+                        f"WARNING: distractor {distractor!r} forms {candidate!r} — "
+                        "review whether it is a valid collocation"
+                    )
+    return rows
 
 
 def _clean(value: str) -> str | None:

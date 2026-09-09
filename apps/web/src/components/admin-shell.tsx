@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BookOpenText,
   ClipboardList,
+  Combine,
   Cpu,
   FlaskConical,
   FolderTree,
@@ -63,6 +64,12 @@ const ADMIN_LINKS: AdminNavItem[] = [
     Icon: Library,
     group: "Content",
     children: [{ href: "/admin/vocabulary/tree", label: "Collections & topics", Icon: ListTree }],
+  },
+  {
+    href: "/admin/collocation",
+    label: "Collocation",
+    Icon: Combine,
+    group: "Content",
   },
   {
     href: "/admin/dictation",

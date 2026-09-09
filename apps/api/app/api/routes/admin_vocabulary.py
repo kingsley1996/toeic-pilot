@@ -13,7 +13,9 @@ Tách khỏi dictation vì hai miền đổi vì lý do khác nhau, không phả
 dài: `REFACTOR-LONG-FILES.md` §0.
 """
 
+import re
 import uuid
+from dataclasses import asdict
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -25,6 +27,7 @@ from app.api.deps import require_role
 from app.api.routes._admin_content import _apply
 from app.core.database import get_db
 from app.models import (
+    CollocationDetail,
     DictationItem,
     Topic,
     User,
@@ -34,8 +37,13 @@ from app.models import (
     VocabularyEntry,
     VocabularyTopic,
 )
+from app.models.vocabulary import COLLOCATION_PATTERNS, MAX_COLLOCATION_DISTRACTORS
 from app.schemas.admin import (
     AudioSlotState,
+    CollocationCommit,
+    CollocationParseResponse,
+    CollocationRow,
+    CollocationUpdate,
     CommitResult,
     ParseRequest,
     TopicAdmin,
@@ -54,7 +62,7 @@ from app.schemas.admin import (
     VocabularyUpdate,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
-from app.services.content_import import parse_vocabulary
+from app.services.content_import import parse_collocation, parse_vocabulary
 from app.services.media_state import (
     vocabulary_audio_slots,
     vocabulary_is_publishable,
@@ -594,10 +602,17 @@ def commit_vocabulary(
 def list_vocabulary_admin(
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
+    collocation: int = Query(default=0, description="1 = chỉ entry có collocation_detail"),
     db: Session = Depends(get_db),
     _: User = Depends(can_edit),
 ) -> Page[VocabularyAdmin]:
+    # Định nghĩa collocation là SỰ TỒN TẠI của detail (spec §2.1) chứ không phải
+    # part_of_speech='phrase' — 59 hàng phrase cũ không phải collocation.
     query = select(VocabularyEntry)
+    if collocation == 1:
+        query = query.join(
+            CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id
+        )
     entries = db.scalars(
         query.options(
             selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
@@ -671,3 +686,199 @@ def publish_vocabulary(
     db.commit()
     db.refresh(entry)
     return _vocabulary_admin(entry)
+
+
+# --- collocation (SPEC-COLLOCATION §10–§12) --------------------------------
+
+
+def _validate_collocation_detail(
+    *,
+    headword: str,
+    base_word: str,
+    gap_word: str | None,
+    pattern: str,
+    distractors: list[str],
+) -> list[str]:
+    """Bộ luật §11 dùng chung cho commit và PATCH — hai bản sao sẽ trôi."""
+    problems: list[str] = []
+    if not headword.strip():
+        problems.append("headword is required")
+    if not base_word.strip():
+        problems.append("base_word is required")
+    if pattern not in COLLOCATION_PATTERNS:
+        problems.append(f"pattern {pattern!r} is not one of {list(COLLOCATION_PATTERNS)}")
+    if gap_word:
+        if re.search(r"\s", gap_word):
+            problems.append("gap_word must be a single token without whitespace")
+        elif gap_word == headword.lower():
+            problems.append("gap_word must not be the entire headword")
+        elif gap_word not in headword.lower().split():
+            problems.append(f"gap_word {gap_word!r} does not appear in headword")
+    if len(distractors) > MAX_COLLOCATION_DISTRACTORS:
+        problems.append(f"at most {MAX_COLLOCATION_DISTRACTORS} distractors")
+    if len(set(distractors)) != len(distractors):
+        problems.append("duplicate distractors")
+    if any(not word.strip() for word in distractors):
+        problems.append("empty distractor")
+    if gap_word and gap_word in distractors:
+        problems.append("distractor must not equal gap_word")
+    return problems
+
+
+def _collocation_row(entry: VocabularyEntry) -> CollocationRow:
+    detail = entry.collocation
+    assert detail is not None  # callers filter on the relationship
+    return CollocationRow(
+        line=0,
+        headword=entry.headword,
+        base_word=detail.base_word,
+        gap_word=detail.gap_word,
+        pattern=detail.pattern,
+        meaning_vi=entry.meaning_vi,
+        example=entry.example,
+        example_vi=entry.example_vi,
+        distractors=list(detail.distractors or []),
+    )
+
+
+@router.post("/collocations/parse", response_model=CollocationParseResponse)
+def parse_collocation_paste(
+    body: ParseRequest, db: Session = Depends(get_db), _: User = Depends(can_edit)
+) -> CollocationParseResponse:
+    """Parse a collocation paste and report every problem. Writes nothing."""
+    existing = set(
+        db.scalars(
+            select(VocabularyEntry.headword).join(
+                CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id
+            )
+        )
+    )
+    existing = {word.lower() for word in existing}
+    rows = [
+        CollocationRow(**asdict(row))
+        for row in parse_collocation(body.raw_text, existing_headwords=existing)
+    ]
+    ok = sum(1 for row in rows if not row.problems)
+    return CollocationParseResponse(ok_count=ok, error_count=len(rows) - ok, rows=rows)
+
+
+@router.post("/collocations", response_model=CommitResult, status_code=status.HTTP_201_CREATED)
+def commit_collocations(
+    body: CollocationCommit, db: Session = Depends(get_db), user: User = Depends(can_edit)
+) -> CommitResult:
+    topic_id = uuid.UUID(body.topic_id) if body.topic_id else None
+    if topic_id is not None and db.get(Topic, topic_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+
+    created = 0
+    skipped = 0
+    problems: list[str] = []
+
+    for row in body.rows:
+        if row.problems:
+            skipped += 1
+            problems.append(f"line {row.line}: skipped, still has problems")
+            continue
+        if remaining := _validate_collocation_detail(
+            headword=row.headword,
+            base_word=row.base_word,
+            gap_word=row.gap_word,
+            pattern=row.pattern,
+            distractors=row.distractors,
+        ):
+            skipped += 1
+            problems.append(f"line {row.line}: {'; '.join(remaining)}")
+            continue
+
+        entry = VocabularyEntry(
+            headword=row.headword,
+            part_of_speech="phrase",
+            meaning_en=row.headword,
+            meaning_vi=row.meaning_vi,
+            example=row.example,
+            example_vi=row.example_vi,
+            difficulty=body.difficulty,
+            status="draft",
+            created_by=user.id,
+            collocation=CollocationDetail(
+                base_word=row.base_word,
+                gap_word=row.gap_word,
+                pattern=row.pattern,
+                distractors=row.distractors or None,
+            ),
+        )
+        try:
+            with db.begin_nested():
+                db.add(entry)
+                db.flush()
+        except IntegrityError:
+            skipped += 1
+            problems.append(f"line {row.line}: {row.headword!r} (phrase) already exists")
+            continue
+
+        if topic_id is not None:
+            db.add(VocabularyTopic(entry_id=entry.id, topic_id=topic_id))
+        created += 1
+
+    db.commit()
+    return CommitResult(created=created, skipped=skipped, problems=problems)
+
+
+@router.get("/vocabulary/{entry_id}/collocation", response_model=CollocationRow)
+def get_collocation(
+    entry_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> CollocationRow:
+    """Detail của một entry, cho form sửa sau commit (§12)."""
+    entry = db.scalars(
+        select(VocabularyEntry)
+        .where(VocabularyEntry.id == entry_id)
+        .options(selectinload(VocabularyEntry.collocation))
+    ).first()
+    if entry is None or entry.part_of_speech != "phrase" or entry.collocation is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
+    return _collocation_row(entry)
+
+
+@router.patch("/vocabulary/{entry_id}/collocation", response_model=CollocationRow)
+def update_collocation(
+    entry_id: uuid.UUID,
+    body: CollocationUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> CollocationRow:
+    entry = db.get(VocabularyEntry, entry_id)
+    if entry is None or entry.part_of_speech != "phrase":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
+    detail = entry.collocation
+    if detail is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Entry has no collocation detail"
+        )
+
+    updates = body.model_dump(exclude_unset=True)
+    if "base_word" in updates and updates["base_word"]:
+        updates["base_word"] = updates["base_word"].lower()
+    if "gap_word" in updates:
+        # Chuỗi rỗng là ý "gỡ gap" (client không có cách gửi null riêng với
+        # absent); empty qua CHECK thì vỡ, nên map sang None.
+        updates["gap_word"] = updates["gap_word"].lower() or None
+    if "pattern" in updates and updates["pattern"]:
+        updates["pattern"] = updates["pattern"].upper()
+
+    merged = {
+        "headword": entry.headword,
+        "base_word": updates.get("base_word", detail.base_word),
+        "gap_word": updates.get("gap_word", detail.gap_word),
+        "pattern": updates.get("pattern", detail.pattern),
+        "distractors": updates.get("distractors", list(detail.distractors or [])),
+    }
+    if remaining := _validate_collocation_detail(**merged):
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=remaining)
+
+    for field_name, value in updates.items():
+        setattr(detail, field_name, value)
+    db.commit()
+    db.refresh(detail)
+    return _collocation_row(entry)

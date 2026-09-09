@@ -78,6 +78,43 @@ class VocabularySummary(BaseModel):
     meaning_vi: str
 
 
+class CollocationItem(BaseModel):
+    """Một hàng trong discovery `/vocabulary/collocations` (SPEC-COLLOCATION §16)."""
+
+    id: str
+    headword: str
+    baseWord: str
+    pattern: str
+
+
+class CollocationMeta(BaseModel):
+    """Khối hiển thị trên trang detail của một entry là collocation (§15)."""
+
+    baseWord: str
+    pattern: str
+
+
+class CollocationPlay(BaseModel):
+    """Khối chơi slot-fill gắn vào summary (§18–§19).
+
+    `choices` gồm gap + distractors đã lưu sẵn lúc nhập — server không sinh
+    runtime; thứ tự đã được xáo ở lúc trả payload.
+    """
+
+    gapWord: str
+    choices: list[str]
+
+
+class CollocationAnswerSubmit(BaseModel):
+    answer: str
+
+
+class CollocationAnswer(BaseModel):
+    correct: bool
+    # Gap thật, trả về để client hiện đáp án khi sai (§19).
+    expected: str
+
+
 class VocabularyDetail(VocabularySummary):
     meaning_en: str
     example: str | None
@@ -89,6 +126,19 @@ class VocabularyDetail(VocabularySummary):
     # until every clip exists and matches the text.
     headword_audio: list[AudioClip]
     example_audio: list[AudioClip]
+    # Chỉ có mặt khi entry là collocation; entry thường để None (§15).
+    collocation: CollocationMeta | None = None
+
+
+class CollocationQuizItem(VocabularySummary):
+    """Một câu COLLOCATION_SLOT_FILL trong board quiz (§18).
+
+    Tách type khỏi `VocabularySummary` thay vì cột tuỳ chọn trên nó: một câu
+    quiz collocation LUÔN có khối chơi, một summary thường KHÔNG BAO GIỜ có —
+    union giả làm client phải `if` ở nơi không thể xảy ra.
+    """
+
+    collocation: CollocationPlay
 
 
 class VocabularyMastery(BaseModel):

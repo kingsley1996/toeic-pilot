@@ -50,6 +50,11 @@ export type PartSessionSummary = components["schemas"]["PartSessionSummary"];
 export type GrammarPracticeResult = components["schemas"]["GrammarPracticeResult"];
 export type VocabularySummary = components["schemas"]["VocabularySummary"];
 export type VocabularyDetail = components["schemas"]["VocabularyDetail"];
+export type CollocationItem = components["schemas"]["CollocationItem"];
+export type CollocationMeta = components["schemas"]["CollocationMeta"];
+export type CollocationPlay = components["schemas"]["CollocationPlay"];
+export type CollocationQuizItem = components["schemas"]["CollocationQuizItem"];
+export type CollocationAnswer = components["schemas"]["CollocationAnswer"];
 export type VocabularyProgress = components["schemas"]["VocabularyProgress"];
 export type VocabularyTopicProgress = components["schemas"]["VocabularyTopicProgress"];
 export type VocabularyMastery = components["schemas"]["VocabularyMastery"];
@@ -121,7 +126,13 @@ export type ChatTurn = components["schemas"]["ChatTurn"];
 export type ChatHistoryPage = components["schemas"]["Page_ChatMessagePublic_"];
 export type AttemptPage = components["schemas"]["Page_AttemptSummary_"];
 export type FeedbackPage = components["schemas"]["Page_FeedbackPublic_"];
-export type VocabularyPage = components["schemas"]["Page_VocabularySummary_"];
+// `/vocabulary` trả union khi query kèm `collocation=1` (quiz) — tên schema
+// openapi theo union, không còn `Page_VocabularySummary_`.
+export type VocabularyPage =
+  components["schemas"]["Page_Union_CollocationQuizItem__VocabularySummary__"];
+export type CollocationRow = components["schemas"]["CollocationRow"];
+export type CollocationParseResponse = components["schemas"]["CollocationParseResponse"];
+export type CollocationUpdate = components["schemas"]["CollocationUpdate"];
 export type ReviewDueCount = components["schemas"]["ReviewDueCount"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
 export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"];
@@ -351,6 +362,9 @@ export const API_ROUTES = {
   topics: "/api/v1/topics",
   vocabulary: "/api/v1/vocabulary",
   vocabularyDetail: (id: string) => `/api/v1/vocabulary/${id}`,
+  // Gạch nối, không phải `/vocabulary/collocations` — cùng bẫy `/vocabulary-progress`.
+  vocabularyCollocations: "/api/v1/vocabulary-collocations",
+  collocationAnswer: (id: string) => `/api/v1/vocabulary/${id}/collocation-answer`,
   reviewSession: "/api/v1/vocabulary-review/session",
   reviewDueCount: "/api/v1/vocabulary-review/due-count",
   // Gạch nối, không phải `/vocabulary/progress`: route `/vocabulary/{entry_id}`
@@ -412,6 +426,11 @@ export const API_ROUTES = {
   adminTopics: "/api/v1/admin/topics",
   adminTopic: (id: string) => `/api/v1/admin/topics/${id}`,
   adminVocabularyCollections: "/api/v1/admin/vocabulary-collections",
+  // Collocation: parse/commit dùng đường riêng `/admin/collocations*`, PATCH
+  // detail sống dưới `/admin/vocabulary/{id}/collocation` (SPEC-COLLOCATION §12).
+  adminCollocationParse: "/api/v1/admin/collocations/parse",
+  adminCollocationCommit: "/api/v1/admin/collocations",
+  adminCollocationUpdate: (id: string) => `/api/v1/admin/vocabulary/${id}/collocation`,
   adminVocabularyCollection: (id: string) => `/api/v1/admin/vocabulary-collections/${id}`,
   adminVocabularyCollectionPublish: (id: string) =>
     `/api/v1/admin/vocabulary-collections/${id}/publish`,

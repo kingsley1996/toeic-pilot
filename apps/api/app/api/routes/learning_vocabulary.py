@@ -9,6 +9,7 @@ Tách khỏi dictation vì hai miền đổi vì lý do khác nhau, không phả
 dài: `REFACTOR-LONG-FILES.md` §0.
 """
 
+import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -20,6 +21,7 @@ from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.core.media import public_audio_url
 from app.models import (
+    CollocationDetail,
     Topic,
     User,
     VocabularyAudio,
@@ -34,6 +36,12 @@ from app.models import (
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
 from app.schemas.learning import (
     AudioClip,
+    CollocationAnswer,
+    CollocationAnswerSubmit,
+    CollocationItem,
+    CollocationMeta,
+    CollocationPlay,
+    CollocationQuizItem,
     PetReward,
     RecallCheck,
     RecallCheckSubmit,
@@ -114,6 +122,11 @@ def _detail(entry: VocabularyEntry) -> VocabularyDetail:
         difficulty=entry.difficulty,
         headword_audio=_clips(entry, "headword"),
         example_audio=_clips(entry, "example"),
+        collocation=(
+            CollocationMeta(baseWord=entry.collocation.base_word, pattern=entry.collocation.pattern)
+            if entry.collocation
+            else None
+        ),
     )
 
 
@@ -309,9 +322,11 @@ def get_vocabulary_collection_item(
 # --- vocabulary -----------------------------------------------------------
 
 
-@router.get("/vocabulary", response_model=Page[VocabularySummary])
+@router.get("/vocabulary", response_model=Page[CollocationQuizItem | VocabularySummary])
 def list_vocabulary(
     topic: str | None = Query(default=None, description="topic slug"),
+    # Quiz page cần khối chơi slot-fill; mọi chỗ khác không phải trả nó.
+    collocation: int = Query(default=0),
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
@@ -322,15 +337,44 @@ def list_vocabulary(
             Topic,
             (Topic.id == VocabularyTopic.topic_id) & (Topic.slug == topic),
         )
+    play = collocation == 1
+    if play:
+        # Quiz eligibility (§18): chỉ entry có gap — gap-NULL không ra đề.
+        query = query.join(
+            CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id
+        ).where(CollocationDetail.gap_word.is_not(None))
     # `id` làm khoá phụ, không phải trang trí: `headword` KHÔNG duy nhất — khoá
     # duy nhất là cặp (headword, part_of_speech), nên "invoice" danh từ và
     # "invoice" động từ có thứ tự tương đối *không xác định* giữa hai truy vấn.
     # Với LIMIT/OFFSET, điều đó nghĩa là một từ hiện ở cả trang 1 lẫn trang 2 còn
     # một từ khác không hiện ở đâu cả — và không có lỗi nào được ném ra.
+    load = (
+        selectinload(VocabularyEntry.collocation)
+        if play
+        else selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset)
+    )
     entries = db.scalars(
-        query.order_by(VocabularyEntry.headword, VocabularyEntry.id).limit(limit).offset(offset)
+        query.order_by(VocabularyEntry.headword, VocabularyEntry.id)
+        .options(load)
+        .limit(limit)
+        .offset(offset)
     ).all()
-    return page_of([_summary(entry) for entry in entries], count_rows(db, query), limit, offset)
+    items = [_summary(entry) for entry in entries]
+    if play:
+        quiz_items: list[VocabularySummary | CollocationQuizItem] = []
+        for entry, item in zip(entries, items, strict=True):
+            detail = entry.collocation
+            assert detail is not None and detail.gap_word is not None  # filtered above
+            choices = [detail.gap_word, *(detail.distractors or [])]
+            random.shuffle(choices)
+            quiz_items.append(
+                CollocationQuizItem(
+                    **item.model_dump(),
+                    collocation=CollocationPlay(gapWord=detail.gap_word, choices=choices),
+                )
+            )
+        return page_of(quiz_items, count_rows(db, query), limit, offset)
+    return page_of(items, count_rows(db, query), limit, offset)
 
 
 @router.get("/vocabulary/{entry_id}", response_model=VocabularyDetail)
@@ -340,11 +384,76 @@ def get_vocabulary(entry_id: uuid.UUID, db: Session = Depends(get_db)) -> Vocabu
         .where(VocabularyEntry.id == entry_id, VocabularyEntry.status == PUBLISHED)
         .options(
             selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
+            selectinload(VocabularyEntry.collocation),
         )
     ).first()
     if entry is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     return _detail(entry)
+
+
+@router.post("/vocabulary/{entry_id}/collocation-answer", response_model=CollocationAnswer)
+def submit_collocation_answer(
+    entry_id: uuid.UUID,
+    body: CollocationAnswerSubmit,
+    db: Session = Depends(get_db),
+) -> CollocationAnswer:
+    """Chấm slot-fill phía server (SPEC-COLLOCATION §19–§20).
+
+    `questionId` là stateless — chính là entry_id. Client không tự chấm: quy
+    ước "token đầu tiên khớp gap" của `renderGap` đủ để client render nhưng
+    không phải để chấm, và mọi chỗ so sánh khác (cả headword) là sai.
+    """
+    entry = db.scalars(
+        select(VocabularyEntry)
+        .where(VocabularyEntry.id == entry_id, VocabularyEntry.status == PUBLISHED)
+        .options(selectinload(VocabularyEntry.collocation))
+    ).first()
+    detail = entry.collocation if entry else None
+    if detail is None or detail.gap_word is None:
+        # Không phải collocation eligible → không tồn tại câu này (§20).
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Question not found")
+    correct = body.answer.strip().lower() == detail.gap_word
+    return CollocationAnswer(correct=correct, expected=detail.gap_word)
+
+
+@router.get("/vocabulary-collocations", response_model=Page[CollocationItem])
+def list_collocations(
+    base_word: str | None = Query(default=None),
+    pattern: str | None = Query(default=None),
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+) -> Page[CollocationItem]:
+    """Discovery các cụm liên quan (SPEC-COLLOCATION §16).
+
+    Đường `/vocabulary-collocations`, không phải `/vocabulary/collocations`:
+    route `/vocabulary/{entry_id}` khai `entry_id: uuid.UUID` sẽ bắt
+    "collocations" trước và trả 422 — cùng cái bẫy `/vocabulary-progress`.
+    """
+    query = (
+        select(VocabularyEntry)
+        .join(CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id)
+        .where(VocabularyEntry.status == PUBLISHED)
+    )
+    if base_word is not None:
+        query = query.where(CollocationDetail.base_word == base_word.lower())
+    if pattern is not None:
+        query = query.where(CollocationDetail.pattern == pattern.upper())
+    query = query.order_by(VocabularyEntry.headword, VocabularyEntry.id)
+    rows = db.scalars(query.limit(limit).offset(offset)).all()
+    items = [
+        CollocationItem(
+            id=str(entry.id),
+            headword=entry.headword,
+            # JOIN trên CollocationDetail đảm bảo detail luôn có mặt; joinload
+            # thay selectinload cho relationship 1:1 rẻ hơn và mypy thấy không-None.
+            baseWord=entry.collocation.base_word,  # type: ignore[union-attr]
+            pattern=entry.collocation.pattern,  # type: ignore[union-attr]
+        )
+        for entry in rows
+    ]
+    return page_of(items, count_rows(db, query), limit, offset)
 
 
 # --- vocabulary progress --------------------------------------------------

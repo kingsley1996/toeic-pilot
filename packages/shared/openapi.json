@@ -1968,6 +1968,357 @@
         "title": "CollectionUpdate",
         "type": "object"
       },
+      "CollocationAnswer": {
+        "properties": {
+          "correct": {
+            "title": "Correct",
+            "type": "boolean"
+          },
+          "expected": {
+            "title": "Expected",
+            "type": "string"
+          }
+        },
+        "required": [
+          "correct",
+          "expected"
+        ],
+        "title": "CollocationAnswer",
+        "type": "object"
+      },
+      "CollocationAnswerSubmit": {
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "title": "CollocationAnswerSubmit",
+        "type": "object"
+      },
+      "CollocationCommit": {
+        "description": "Hàng collocation đã duyệt; entry ghi `draft` như mọi nội dung nhập vào.",
+        "properties": {
+          "difficulty": {
+            "default": 3,
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CollocationRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "title": "CollocationCommit",
+        "type": "object"
+      },
+      "CollocationItem": {
+        "description": "Một hàng trong discovery `/vocabulary/collocations` (SPEC-COLLOCATION §16).",
+        "properties": {
+          "baseWord": {
+            "title": "Baseword",
+            "type": "string"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "baseWord",
+          "pattern"
+        ],
+        "title": "CollocationItem",
+        "type": "object"
+      },
+      "CollocationMeta": {
+        "description": "Khối hiển thị trên trang detail của một entry là collocation (§15).",
+        "properties": {
+          "baseWord": {
+            "title": "Baseword",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseWord",
+          "pattern"
+        ],
+        "title": "CollocationMeta",
+        "type": "object"
+      },
+      "CollocationParseResponse": {
+        "properties": {
+          "error_count": {
+            "title": "Error Count",
+            "type": "integer"
+          },
+          "ok_count": {
+            "title": "Ok Count",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CollocationRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok_count",
+          "error_count",
+          "rows"
+        ],
+        "title": "CollocationParseResponse",
+        "type": "object"
+      },
+      "CollocationPlay": {
+        "description": "Khối chơi slot-fill gắn vào summary (§18–§19).\n\n`choices` gồm gap + distractors đã lưu sẵn lúc nhập — server không sinh\nruntime; thứ tự đã được xáo ở lúc trả payload.",
+        "properties": {
+          "choices": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Choices",
+            "type": "array"
+          },
+          "gapWord": {
+            "title": "Gapword",
+            "type": "string"
+          }
+        },
+        "required": [
+          "gapWord",
+          "choices"
+        ],
+        "title": "CollocationPlay",
+        "type": "object"
+      },
+      "CollocationQuizItem": {
+        "description": "Một câu COLLOCATION_SLOT_FILL trong board quiz (§18).\n\nTách type khỏi `VocabularySummary` thay vì cột tuỳ chọn trên nó: một câu\nquiz collocation LUÔN có khối chơi, một summary thường KHÔNG BAO GIỜ có —\nunion giả làm client phải `if` ở nơi không thể xảy ra.",
+        "properties": {
+          "collocation": {
+            "$ref": "#/components/schemas/CollocationPlay"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "part_of_speech": {
+            "title": "Part Of Speech",
+            "type": "string"
+          },
+          "phonetic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonetic"
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "part_of_speech",
+          "phonetic",
+          "meaning_vi",
+          "collocation"
+        ],
+        "title": "CollocationQuizItem",
+        "type": "object"
+      },
+      "CollocationRow": {
+        "properties": {
+          "base_word": {
+            "title": "Base Word",
+            "type": "string"
+          },
+          "distractors": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Distractors",
+            "type": "array"
+          },
+          "example": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example"
+          },
+          "example_vi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Example Vi"
+          },
+          "gap_word": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Word"
+          },
+          "headword": {
+            "title": "Headword",
+            "type": "string"
+          },
+          "line": {
+            "title": "Line",
+            "type": "integer"
+          },
+          "meaning_vi": {
+            "title": "Meaning Vi",
+            "type": "string"
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          },
+          "problems": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "line",
+          "headword",
+          "base_word",
+          "pattern",
+          "meaning_vi"
+        ],
+        "title": "CollocationRow",
+        "type": "object"
+      },
+      "CollocationUpdate": {
+        "description": "PATCH detail sau commit (SPEC-COLLOCATION §12); entry phải là `phrase`.",
+        "properties": {
+          "base_word": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Word"
+          },
+          "distractors": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distractors"
+          },
+          "gap_word": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap Word"
+          },
+          "pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pattern"
+          }
+        },
+        "title": "CollocationUpdate",
+        "type": "object"
+      },
       "CommitResult": {
         "properties": {
           "created": {
@@ -6918,6 +7269,37 @@
         "title": "Page[ChatMessagePublic]",
         "type": "object"
       },
+      "Page_CollocationItem_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CollocationItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[CollocationItem]",
+        "type": "object"
+      },
       "Page_DictationAdmin_": {
         "properties": {
           "items": {
@@ -7197,6 +7579,44 @@
         "title": "Page[TestAdmin]",
         "type": "object"
       },
+      "Page_Union_CollocationQuizItem__VocabularySummary__": {
+        "properties": {
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CollocationQuizItem"
+                },
+                {
+                  "$ref": "#/components/schemas/VocabularySummary"
+                }
+              ]
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[Union[CollocationQuizItem, VocabularySummary]]",
+        "type": "object"
+      },
       "Page_VocabularyAdmin_": {
         "properties": {
           "items": {
@@ -7226,37 +7646,6 @@
           "offset"
         ],
         "title": "Page[VocabularyAdmin]",
-        "type": "object"
-      },
-      "Page_VocabularySummary_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/VocabularySummary"
-            },
-            "title": "Items",
-            "type": "array"
-          },
-          "limit": {
-            "title": "Limit",
-            "type": "integer"
-          },
-          "offset": {
-            "title": "Offset",
-            "type": "integer"
-          },
-          "total": {
-            "title": "Total",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "Page[VocabularySummary]",
         "type": "object"
       },
       "ParseRequest": {
@@ -10250,6 +10639,16 @@
             ],
             "title": "Cefr Level"
           },
+          "collocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CollocationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "difficulty": {
             "title": "Difficulty",
             "type": "integer"
@@ -13234,6 +13633,16 @@
             ],
             "title": "Cefr Level"
           },
+          "collocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CollocationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "difficulty": {
             "title": "Difficulty",
             "type": "integer"
@@ -14279,6 +14688,99 @@
         "summary": "Update Backdrop",
         "tags": [
           "appearance"
+        ]
+      }
+    },
+    "/api/v1/admin/collocations": {
+      "post": {
+        "operationId": "commit_collocations_api_v1_admin_collocations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollocationCommit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Commit Collocations",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/collocations/parse": {
+      "post": {
+        "description": "Parse a collocation paste and report every problem. Writes nothing.",
+        "operationId": "parse_collocation_paste_api_v1_admin_collocations_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollocationParseResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Parse Collocation Paste",
+        "tags": [
+          "admin"
         ]
       }
     },
@@ -21338,6 +21840,111 @@
         ]
       }
     },
+    "/api/v1/admin/vocabulary/{entry_id}/collocation": {
+      "get": {
+        "description": "Detail của một entry, cho form sửa sau commit (§12).",
+        "operationId": "get_collocation_api_v1_admin_vocabulary__entry_id__collocation_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollocationRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Collocation",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "update_collocation_api_v1_admin_vocabulary__entry_id__collocation_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollocationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollocationRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Collocation",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/vocabulary/{entry_id}/publish": {
       "post": {
         "operationId": "publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post",
@@ -24907,6 +25514,16 @@
           },
           {
             "in": "query",
+            "name": "collocation",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "title": "Collocation",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
             "name": "limit",
             "required": false,
             "schema": {
@@ -24934,7 +25551,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Page_VocabularySummary_"
+                  "$ref": "#/components/schemas/Page_Union_CollocationQuizItem__VocabularySummary__"
                 }
               }
             },
@@ -25062,6 +25679,95 @@
           }
         },
         "summary": "Get Vocabulary Collection",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary-collocations": {
+      "get": {
+        "description": "Discovery các cụm liên quan (SPEC-COLLOCATION §16).\n\nĐường `/vocabulary-collocations`, không phải `/vocabulary/collocations`:\nroute `/vocabulary/{entry_id}` khai `entry_id: uuid.UUID` sẽ bắt\n\"collocations\" trước và trả 422 — cùng cái bẫy `/vocabulary-progress`.",
+        "operationId": "list_collocations_api_v1_vocabulary_collocations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "base_word",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Base Word"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pattern",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pattern"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_CollocationItem_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Collocations",
         "tags": [
           "learning"
         ]
@@ -25468,6 +26174,60 @@
           }
         },
         "summary": "Get Vocabulary",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/vocabulary/{entry_id}/collocation-answer": {
+      "post": {
+        "description": "Chấm slot-fill phía server (SPEC-COLLOCATION §19–§20).\n\n`questionId` là stateless — chính là entry_id. Client không tự chấm: quy\nước \"token đầu tiên khớp gap\" của `renderGap` đủ để client render nhưng\nkhông phải để chấm, và mọi chỗ so sánh khác (cả headword) là sai.",
+        "operationId": "submit_collocation_answer_api_v1_vocabulary__entry_id__collocation_answer_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollocationAnswerSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollocationAnswer"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit Collocation Answer",
         "tags": [
           "learning"
         ]

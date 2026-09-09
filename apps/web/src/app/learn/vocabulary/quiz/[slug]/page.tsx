@@ -29,7 +29,13 @@ export default function QuizPage() {
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then(setTopics)
       .catch(() => {});
-    const parts = [topicSlug ? `topic=${encodeURIComponent(topicSlug)}` : "", "limit=200"];
+    // `collocation=1` chuyển pool sang board COLLOCATION_SLOT_FILL: server lọc
+    // published + gap NOT NULL và gắn khối choices; client không tự sinh đề.
+    const parts = [
+      topicSlug ? `topic=${encodeURIComponent(topicSlug)}` : "",
+      "limit=200",
+      "collocation=1",
+    ];
     apiFetch<VocabularyListPage>(`${API_ROUTES.vocabulary}?${parts.filter(Boolean).join("&")}`)
       .then((page) => setPool(page.items))
       .catch(() => setError("Không tải được từ vựng."));

@@ -25,6 +25,8 @@
 import {
   API_ROUTES,
   type AudioClip,
+  type CollocationAnswer,
+  type CollocationQuizItem,
   type RecallCheck,
   type TopicSession as TopicSessionState,
   type VocabularyDetail,
@@ -48,6 +50,12 @@ export type LearnMode = "typing" | "flashcard" | "quiz";
 // hồ từ; match cần đủ cặp cho bàn cờ 4x4.
 export const MATCH_PAIRS = 8;
 export const MIN_WORDS = { typing: 1, flashcard: 1, quiz: 4, match: MATCH_PAIRS } as const;
+
+function isCollocationQuizItem(
+  item: VocabularySummary | CollocationQuizItem,
+): item is CollocationQuizItem {
+  return "collocation" in item;
+}
 
 /* --- luồng học tuần tự theo chủ đề ------------------------------------------ */
 
@@ -440,7 +448,13 @@ function FlashcardStep({
  * câu ba lựa chọn vẫn trả lời được, còn bốn lựa chọn trong đó hai cái không phân
  * biệt được thì không.
  */
-function buildOptions(word: VocabularySummary, pool: VocabularySummary[]): string[] {
+function buildOptions(
+  word: VocabularySummary | CollocationQuizItem,
+  pool: (VocabularySummary | CollocationQuizItem)[],
+): string[] {
+  // Câu collocation mang sẵn choices từ server (gap + distractors) — không
+  // sinh runtime, đúng luật §8.
+  if ("collocation" in word && word.collocation) return word.collocation.choices;
   const seen = new Set([word.meaning_vi]);
   const distractors: string[] = [];
   for (const entry of shuffle(pool)) {
@@ -820,7 +834,25 @@ interface Question {
   options: string[];
 }
 
-function buildRound(pool: VocabularySummary[]): Question[] {
+/**
+ * Che token khớp `gapWord` (case-insensitive, đầu tiên) thành `_____` (§19).
+ *
+ * So theo TOKEN chứ không replace chuỗi con — "in" là gap của "interested in"
+ * nhưng không được khớp trong "interested". Một utility duy nhất: mỗi component
+ * tự replace là hai chỗ trôi khỏi nhau, và chấm phía server so theo gap nên
+ * phần render sai là câu hiện một thứ chấm một thứ.
+ */
+export function renderGap(headword: string, gapWord: string): string {
+  const tokens = headword.split(/(\s+)/);
+  for (let i = 0; i < tokens.length; i += 1) {
+    if (tokens[i]!.trim().toLowerCase() === gapWord.trim().toLowerCase()) {
+      tokens[i] = "_____";
+    }
+  }
+  return tokens.join("");
+}
+
+function buildRound(pool: (VocabularySummary | CollocationQuizItem)[]): Question[] {
   const cards = shuffle(pool).slice(0, ROUND_SIZE);
   return cards.map((word) => ({ word, options: buildOptions(word, pool) }));
 }
@@ -830,13 +862,15 @@ export function QuizGame({
   token,
   backHref,
 }: {
-  pool: VocabularySummary[];
+  pool: (VocabularySummary | CollocationQuizItem)[];
   token: string | null;
   backHref?: string;
 }) {
   const [round, setRound] = useState<Question[]>(() => buildRound(pool));
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
+  // Phán quyết server cho câu collocation; null = chưa có/chưa chấm xong.
+  const [serverVerdict, setServerVerdict] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -844,6 +878,7 @@ export function QuizGame({
     setRound(buildRound(pool));
     setIndex(0);
     setPicked(null);
+    setServerVerdict(null);
     setScore(0);
     setDone(false);
   }, [pool]);
@@ -880,15 +915,42 @@ export function QuizGame({
   const question = round[index];
   if (!question) return null;
 
+  const collocationItem = isCollocationQuizItem(question.word) ? question.word : null;
+  // Câu collocation chỉ lộ đúng/sai SAU khi server chấm xong (§20).
+  const revealed = collocationItem ? picked !== null && serverVerdict !== null : picked !== null;
+  const correct = collocationItem
+    ? serverVerdict === true
+      ? collocationItem.collocation.gapWord
+      : null
+    : question.word.meaning_vi;
+
   function pick(option: string) {
     if (picked !== null) return;
     setPicked(option);
-    const correct = option === question!.word.meaning_vi;
+    // Câu collocation chấm phía SERVER qua `/collocation-answer` (§20) — quy
+    // ước client chỉ đủ để render, không đủ để chấm. Còn lại chấm client như cũ.
+    if (collocationItem) {
+      apiFetch<CollocationAnswer>(API_ROUTES.collocationAnswer(collocationItem.id), {
+        method: "POST",
+        token: token ?? undefined,
+        body: JSON.stringify({ answer: option }),
+      })
+        .then((result) => {
+          setServerVerdict(result.correct);
+          if (result.correct) cheer();
+          if (result.correct) setScore((value) => value + 1);
+          if (token)
+            recordReview(token, collocationItem.id, result.correct ? GRADE_GOOD : GRADE_FORGOT);
+        })
+        .catch(() => setServerVerdict(false));
+      return;
+    }
+    const isRight = option === question.word.meaning_vi;
     // Con thú loé sáng ngay khi đúng. Sai thì KHÔNG có phản hồi tiêu cực nào —
     // tài liệu cơ chế §22 nói thẳng: "Pet looks curious", không phải "WRONG!".
-    if (correct) cheer();
-    if (correct) setScore((value) => value + 1);
-    if (token) recordReview(token, question!.word.id, correct ? GRADE_GOOD : GRADE_FORGOT);
+    if (isRight) cheer();
+    if (isRight) setScore((value) => value + 1);
+    if (token) recordReview(token, question.word.id, isRight ? GRADE_GOOD : GRADE_FORGOT);
   }
 
   function next() {
@@ -898,17 +960,22 @@ export function QuizGame({
     }
     setIndex(index + 1);
     setPicked(null);
+    setServerVerdict(null);
   }
-
-  const correct = question.word.meaning_vi;
 
   return (
     <Panel className="p-6">
       <p className="font-data text-small tabular-nums text-ink-muted">
         Câu {index + 1}/{round.length} · đúng {score}
       </p>
-      <p className="mt-3 text-label font-semibold uppercase text-ink-faint">Chọn nghĩa của</p>
-      <p className="mt-2 text-[1.6rem] font-semibold leading-tight">{question.word.headword}</p>
+      <p className="mt-3 text-label font-semibold uppercase text-ink-faint">
+        {collocationItem ? "Điền vào chỗ trống" : "Chọn nghĩa của"}
+      </p>
+      <p className="mt-2 text-[1.6rem] font-semibold leading-tight">
+        {collocationItem
+          ? renderGap(collocationItem.headword, collocationItem.collocation.gapWord)
+          : question.word.headword}
+      </p>
       {question.word.phonetic && (
         <p className="mt-1 font-data text-small text-ink-faint">{question.word.phonetic}</p>
       )}
@@ -917,6 +984,7 @@ export function QuizGame({
         {question.options.map((option) => {
           const isCorrect = option === correct;
           const isPicked = option === picked;
+          const showState = revealed;
           return (
             <button
               key={option}
@@ -926,12 +994,9 @@ export function QuizGame({
               className={[
                 "rounded border px-4 py-3 text-left transition-colors",
                 picked === null && "border-rule-strong hover:bg-recess",
-                picked !== null && isCorrect && "border-ok bg-ok-tint text-ok",
-                picked !== null &&
-                  isPicked &&
-                  !isCorrect &&
-                  "border-alert bg-alert-tint text-alert",
-                picked !== null && !isPicked && !isCorrect && "border-rule opacity-60",
+                showState && isCorrect && "border-ok bg-ok-tint text-ok",
+                showState && isPicked && !isCorrect && "border-alert bg-alert-tint text-alert",
+                showState && !isPicked && !isCorrect && "border-rule opacity-60",
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -942,10 +1007,10 @@ export function QuizGame({
         })}
       </div>
 
-      {picked !== null && (
+      {revealed && (
         <div className="mt-5 flex items-center justify-between gap-3">
           <p className="text-small text-ink-muted">
-            {picked === correct ? "Đúng rồi!" : `Đáp án: ${correct}`}
+            {serverVerdict === true ? "Đúng rồi!" : `Đáp án: ${correct ?? question.options[0]}`}
           </p>
           <Button size="sm" onClick={next}>
             {index + 1 >= round.length ? "Xem kết quả" : "Câu tiếp"}

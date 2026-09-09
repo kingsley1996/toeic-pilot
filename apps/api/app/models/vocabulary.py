@@ -32,6 +32,20 @@ _JSON = JSON().with_variant(JSONB(), "postgresql")
 PARTS_OF_SPEECH = ("noun", "verb", "adjective", "adverb", "preposition", "phrase")
 CEFR_LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
 
+# Canonical values only — "verb+noun" hay "Verb+Noun" bị import từ chối (SPEC-COLLOCATION §7).
+# ADJ_NOUN và VERB_ADJ thêm cùng đợt nội dung đầu: 53/182 cụm của kho nhập
+# nằm ở hai dạng này (2026-09-09); migration 079 chưa ship nên sửa trực tiếp.
+COLLOCATION_PATTERNS = (
+    "VERB_NOUN",
+    "ADJ_PREP",
+    "NOUN_NOUN",
+    "VERB_PREP",
+    "PREP_PHRASE",
+    "ADJ_NOUN",
+    "VERB_ADJ",
+)
+MAX_COLLOCATION_DISTRACTORS = 3
+
 # Which piece of the entry an audio clip renders. Without this the example
 # sentence would either collide with the headword on the unique key or need a
 # second, near-identical join table (ADR-001 A4.4).
@@ -74,6 +88,11 @@ class VocabularyEntry(Base, PublishableMixin):
     )
     topics: Mapped[list["VocabularyTopic"]] = relationship(
         back_populates="entry", cascade="all, delete-orphan"
+    )
+    # 1:1; tồn tại của hàng này — không phải một cột cờ — là định nghĩa
+    # "entry này là collocation" (SPEC-COLLOCATION §2.1).
+    collocation: Mapped["CollocationDetail | None"] = relationship(
+        back_populates="entry", uselist=False, cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
@@ -251,6 +270,57 @@ class VocabularyReviewLog(Base):
     reviewed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+class CollocationDetail(Base, TimestampMixin):
+    """Siêu dữ liệu collocation của một `VocabularyEntry` (SPEC-COLLOCATION §2).
+
+    1:1 với entry, `part_of_speech` của entry phải là `phrase` — luật đó thuộc
+    tầng import/PATCH chứ không CHECK, vì hai bảng khác database.
+
+    `gap_word` NULL nghĩa là entry vẫn là collocation nhưng không ra đề
+    slot-fill — quiz eligibility, không phải nội dung hỏng (§6).
+    """
+
+    __tablename__ = "collocation_detail"
+    __table_args__ = (
+        CheckConstraint("trim(base_word) <> ''", name="ck_collocation_detail_base_word"),
+        # So whitespace bằng `replace` chứ không regex `!~ '\s'`: replace là
+        # SQL chuẩn, chạy đúng cả SQLite của bộ test — và parser/PATCH đã chặn
+        # mọi whitespace trước khi hàng tới đây, nên space là thứ CHECK giữ.
+        CheckConstraint(
+            "gap_word IS NULL OR (trim(gap_word) <> '' AND gap_word = replace(gap_word, ' ', ''))",
+            name="ck_collocation_detail_gap_word",
+        ),
+        CheckConstraint(
+            "pattern IN (" + ", ".join(f"'{p}'" for p in COLLOCATION_PATTERNS) + ")",
+            name="ck_collocation_detail_pattern",
+        ),
+        # Query discovery chỉ theo base_word dùng prefix; pattern đi kèm hiếm
+        # khi đứng một mình (§23).
+        Index(
+            "ix_collocation_detail_base_word_pattern",
+            "base_word",
+            "pattern",
+        ),
+    )
+
+    entry_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("vocabulary_entry.id", ondelete="CASCADE"), primary_key=True
+    )
+    # Lexical anchor để nhóm các cụm liên quan ("submit a report", "submit a
+    # claim" → "submit"). TEXT, không FK — không phải mọi base_word đều là
+    # một entry trong kho.
+    base_word: Mapped[str] = mapped_column(Text, nullable=False)
+    gap_word: Mapped[str | None] = mapped_column(Text, nullable=True)
+    pattern: Mapped[str] = mapped_column(String(16), nullable=False)
+    # Lưu sẵn lúc nhập; runtime quiz không sinh distractor (§8).
+    distractors: Mapped[list[str] | None] = mapped_column(_JSON, nullable=True)
+
+    entry: Mapped["VocabularyEntry"] = relationship(back_populates="collocation")
+
+    def __repr__(self) -> str:
+        return f"<CollocationDetail {self.entry_id} ({self.pattern})>"
 
 
 class VocabularyTopicSession(Base, TimestampMixin):

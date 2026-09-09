@@ -119,6 +119,44 @@ class VocabularyParseResponse(BaseModel):
     rows: list[VocabularyRow]
 
 
+class CollocationRow(BaseModel):
+    line: int
+    headword: str
+    base_word: str
+    gap_word: str | None = None
+    pattern: str
+    meaning_vi: str
+    example: str | None = None
+    example_vi: str | None = None
+    distractors: list[str] = []
+    problems: list[str] = []
+    # Không chặn commit; đòi human review (§9). Commit bỏ qua field này.
+    warnings: list[str] = []
+
+
+class CollocationParseResponse(BaseModel):
+    ok_count: int
+    error_count: int
+    rows: list[CollocationRow]
+
+
+class CollocationCommit(BaseModel):
+    """Hàng collocation đã duyệt; entry ghi `draft` như mọi nội dung nhập vào."""
+
+    rows: list[CollocationRow]
+    topic_id: str | None = None
+    difficulty: int = Field(default=3, ge=1, le=5)
+
+
+class CollocationUpdate(BaseModel):
+    """PATCH detail sau commit (SPEC-COLLOCATION §12); entry phải là `phrase`."""
+
+    base_word: str | None = None
+    gap_word: str | None = None
+    pattern: str | None = None
+    distractors: list[str] | None = None
+
+
 class DictationParseResponse(BaseModel):
     ok_count: int
     error_count: int

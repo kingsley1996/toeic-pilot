@@ -1,0 +1,180 @@
+take a break | take | take | VERB_NOUN | nghỉ giải lao | Take a break now and let your stress melt away! | Vui lòng nghỉ giải lao và để căng thẳng tan biến. | make,do,get
+take a chance | take | take | VERB_NOUN | chấp nhận sự may rủi | Come on, take a chance. You may lose, but it’s worth trying. | Hãy thử một lần; bạn có thể thất bại nhưng đáng để thử. | make,do,get
+take a look | take | take | VERB_NOUN | nhìn; xem xét | Take a look inside the world’s largest cave. Son Doong Cave in Vietnam. | Hãy xem bên trong hang động lớn nhất thế giới. | make,do,get
+take a rest | take | take | VERB_NOUN | nghỉ ngơi | Please go take a rest. Your body needs it. | Vui lòng nghỉ ngơi; cơ thể bạn cần điều đó. | make,do,get
+take a seat | take | take | VERB_NOUN | ngồi xuống | Can everyone go ahead and take a seat, and let’s get started. | Mọi người hãy ngồi xuống để chúng ta bắt đầu. | make,do,get
+take a taxi | take | take | VERB_NOUN | đón một chiếc taxi | Never, ever take a taxi from the Sài Gòn Airport. | Đừng bao giờ đón taxi từ sân bay Sài Gòn. | make,do,get
+take an exam | take | take | VERB_NOUN | đi thi | Ngọc has to take an exam but she doesn’t know any of the answers! | Ngọc phải đi thi nhưng không biết đáp án nào. | make,do,get
+take notes | take | take | VERB_NOUN | ghi chú | Students use laptops or pen and paper to take notes. | Sinh viên dùng máy tính hoặc giấy bút để ghi chú. | make,do,get
+take someone’s place | take | take | VERB_NOUN | thế chỗ ai đó | Someday someone’s going to take your place. | Một ngày nào đó sẽ có người thế chỗ bạn. | make,do,get
+take someone’s temperature | take | take | VERB_NOUN | đo nhiệt độ của ai đó | You can take someone’s temperature quickly and easily using a thermometer. | Bạn có thể nhanh chóng đo nhiệt độ của ai đó bằng nhiệt kế. | make,do,get
+make preparations | make | make | VERB_NOUN | chuẩn bị | Any intelligent person must make preparations for the future. | Mọi người thông minh đều phải chuẩn bị cho tương lai. | do,take,have
+make a decision | make | make | VERB_NOUN | ra một quyết định | Once you make a decision, the universe conspires to make it happen. | Khi đã quyết định, bạn cần thực hiện quyết định đó. | do,take,have
+make a discovery | make | make | VERB_NOUN | khám phá ra | Scientists make a discovery to boost drug development. | Các nhà khoa học khám phá ra điều này để thúc đẩy phát triển thuốc. | do,take,have
+make a call | make | make | VERB_NOUN | gọi điện thoại | You can make a call from your Gmail account. | Bạn có thể gọi điện từ tài khoản Gmail. | do,take,have
+make a noise | make | make | VERB_NOUN | gây tiếng ồn | Let’s just make a noise before someone else gets hurt. | Chúng ta hãy gây chút tiếng động trước khi có người bị thương. | do,take,have
+make a promise | make | make | VERB_NOUN | hứa một điều gì | It is better to say nothing than to make a promise and not keep it. | Tốt hơn là không nói gì còn hơn hứa rồi không giữ lời. | do,take,have
+make a complaint | make | make | VERB_NOUN | đưa ra khiếu nại | You can make a complaint over the phone, by email or in writing. | Bạn có thể khiếu nại qua điện thoại, email hoặc bằng văn bản. | do,take,have
+make an effort | make | make | VERB_NOUN | nỗ lực; cố gắng | My advice is to stop worrying about it and make an effort. | Lời khuyên của tôi là ngừng lo lắng và cố gắng. | do,take,have
+make a comment | make | make | VERB_NOUN | đưa ra lời bình luận | I want to make a comment on ANCNV. | Tôi muốn đưa ra một bình luận về ANCNV. | do,take,have
+make a suggestion | make | make | VERB_NOUN | đưa ra một đề nghị | May I make a suggestion? | Tôi có thể đưa ra một đề nghị không? | do,take,have
+make a list | make | make | VERB_NOUN | lập danh sách | First, I must make a list of all the things I need to do. | Trước tiên, tôi phải lập danh sách tất cả những việc cần làm. | do,take,have
+make a connection | make | make | VERB_NOUN | tạo một kết nối | Let’s make a connection and have a conversation! | Hãy tạo một kết nối và trò chuyện với nhau. | do,take,have
+make a difference | make | make | VERB_NOUN | tạo nên sự khác biệt | Together, we can make a difference. | Cùng nhau, chúng ta có thể tạo nên sự khác biệt. | do,take,have
+make a mess | make | make | VERB_NOUN | làm bừa bộn | Give it a try, but don’t make a mess of it - Sandy made a mess of the kitchen. | Hãy thử, nhưng đừng làm bừa bộn. | do,take,have
+make a mistake | make | make | VERB_NOUN | mắc lỗi | When you make a mistake, your boss will be watching you closely. | Khi bạn mắc lỗi, sếp sẽ theo dõi bạn chặt chẽ. | do,take,have
+make money | make | make | VERB_NOUN | kiếm tiền | It is possible to make money from home if you have the right set of skills. | Có thể kiếm tiền tại nhà nếu bạn có kỹ năng phù hợp. | do,take,have
+make progress | make | make | VERB_NOUN | tiến bộ | Why do some people make progress and others don’t? | Tại sao một số người tiến bộ còn những người khác thì không? | do,take,have
+make room | make | make | VERB_NOUN | tạo chỗ trống | Make room for Vinnie. He needs a place to sit - I’ll make room for this package. | Hãy tạo chỗ cho Vinnie; anh ấy cần một chỗ ngồi. | do,take,have
+make trouble | make | make | VERB_NOUN | gây rắc rối | China makes trouble with Vietnam in South China Sea. | Đừng gây rắc rối trong khu vực này. | do,take,have
+do damage | do | do | VERB_NOUN | gây thiệt hại | Unsupervised TV watching would do damage to the child. | Việc xem TV không có người giám sát có thể gây hại cho trẻ. | make,take,have
+do research | do | do | VERB_NOUN | nghiên cứu | He tried to do research on the language of bees. | Anh ấy cố gắng nghiên cứu về ngôn ngữ của loài ong. | make,take,have
+do justice | do | do | VERB_NOUN | thực hiện tốt một việc | She did justice to our side in the contract negotiations. | Cô ấy đã thực hiện tốt phần việc của mình trong cuộc đàm phán hợp đồng. | make,take,have
+do harm | do | do | VERB_NOUN | gây tổn hại | Dogs are capable of doing harm to human beings. | Chó có thể gây tổn hại cho con người. | make,take,have
+do business | do | do | VERB_NOUN | kinh doanh | I found them very easy to do business with. | Tôi thấy họ rất dễ hợp tác kinh doanh. | make,take,have
+do nothing | do | do | VERB_NOUN | không làm gì | I can’t just sit at home and do nothing. | Tôi không thể cứ ngồi ở nhà và không làm gì. | make,take,have
+do someone a favor | do | do | VERB_NOUN | giúp ai đó | Can you do me a favor? | Bạn có thể giúp tôi một việc được không? | make,take,have
+do the cooking | do | do | VERB_NOUN | nấu ăn | I always do the cooking around here. | Tôi luôn là người nấu ăn ở đây. | make,take,have
+do the housework | do | do | VERB_NOUN | làm việc nhà | I always help my mom to do the housework. | Tôi luôn giúp mẹ làm việc nhà. | make,take,have
+do the shopping | do | do | VERB_NOUN | mua sắm | I often do the shopping in the evenings. | Tôi thường đi mua sắm vào buổi tối. | make,take,have
+do your best | do | do | VERB_NOUN | làm hết sức mình | You must do the best for your health. | Bạn phải làm hết sức vì sức khỏe của mình. | make,take,have
+do your hair | do | do | VERB_NOUN | làm tóc | You can do your hair after a shower. | Bạn có thể làm tóc sau khi tắm. | make,take,have
+do your homework | do | do | VERB_NOUN | làm bài tập về nhà | You must do your homework every day. | Bạn phải làm bài tập về nhà mỗi ngày. | make,take,have
+break a habit | break | break | VERB_NOUN | phá bỏ một thói quen | Thumb sucking can be a difficult habit for a child to break. | Bỏ thói quen mút ngón tay có thể khó đối với trẻ. | make,keep,do
+break a leg | break | break | VERB_NOUN | chúc may mắn | Let’s all go and do our best. Break a leg! | Chúc may mắn! | make,keep,do
+break a promise | break | break | VERB_NOUN | thất hứa | I know it is a bad thing to break a promise. | Tôi biết thất hứa là điều không tốt. | do,hear,take
+break a record | break | break | VERB_NOUN | phá kỷ lục | The league record was broken after thirty years. | Kỷ lục của giải đấu đã bị phá sau ba mươi năm. | make,keep,do
+break free | break | break | VERB_NOUN | thoát ra; giải thoát | I broke the gun free from her grasp. | Tôi đã thoát khẩu súng khỏi tay cô ấy. | make,keep,do
+break someone’s heart | break | break | VERB_NOUN | làm ai đó đau khổ | It breaks my heart to see him so unhappy. | Tôi đau lòng khi thấy anh ấy buồn như vậy. | make,keep,do
+break the ice | break | break | VERB_NOUN | phá vỡ sự im lặng | He tried to break the ice, but she was a little cold. | Anh ấy cố gắng phá vỡ sự im lặng. | make,keep,do
+break the law | break | break | VERB_NOUN | phạm luật | If you never break the law, you will never get arrested. | Nếu bạn không phạm luật, bạn sẽ không bị bắt. | make,keep,do
+break the news | break | break | VERB_NOUN | đưa tin xấu | I hate to break the news, but you’re fired. | Tôi ghét phải báo tin xấu rằng bạn bị sa thải. | make,keep,do
+break the rules | break | break | VERB_NOUN | vi phạm quy tắc | Some people break a few rules, others break all of them. | Một số người vi phạm vài quy tắc, số khác vi phạm tất cả. | make,keep,do
+get angry | get | get | VERB_ADJ | nổi giận | Vinnie would never get angry at anything or anybody. | Vinnie sẽ không bao giờ nổi giận với bất cứ ai. | become,make,take
+get divorced | get | get | VERB_ADJ | ly hôn | The city where couples are most likely to get divorced. | Đó là thành phố nơi các cặp đôi dễ ly hôn nhất. | become,make,take
+get frightened | get | get | VERB_ADJ | bị khiếp sợ | She gets frightened when he shouts at her. | Cô ấy sợ hãi khi anh ấy quát cô. | become,make,take
+get married | get | get | VERB_ADJ | kết hôn | Before you can get married in Florida, you need a Marriage License. | Trước khi kết hôn, bạn cần giấy phép kết hôn. | become,make,take
+get pregnant | get | get | VERB_ADJ | mang thai | Once you stop using birth control, you can get pregnant at any time. | Bạn có thể mang thai bất cứ lúc nào sau khi ngừng tránh thai. | become,make,take
+get ready | get | get | VERB_ADJ | sẵn sàng | Are you ready, Sandy? I got ready for bed. | Tôi đã sẵn sàng đi ngủ. | become,make,take
+get upset | get | get | VERB_ADJ | khó chịu; buồn bực | Please don’t get upset over minor setbacks. | Đừng buồn bực vì những thất bại nhỏ. | become,make,take
+get wet | get | get | VERB_ADJ | bị ướt | If you use a raincoat, you won’t get wet. | Nếu mặc áo mưa, bạn sẽ không bị ướt. | become,make,take
+get worried | get | get | VERB_ADJ | lo lắng | Try not to get worried. Don’t let them upset you. | Đừng lo lắng; đừng để họ làm bạn buồn. | become,make,take
+catch a ball | catch | catch | VERB_NOUN | bắt một quả bóng | He can catch the ball before it hits the ground. | Anh ấy có thể bắt được quả bóng trước khi nó chạm đất. | take,get,make
+catch a cold | catch | catch | VERB_NOUN | bị cảm lạnh | Most people will catch a cold two to four times a year. | Hầu hết mọi người bị cảm lạnh hai đến bốn lần mỗi năm. | take,get,make
+catch a movie | catch | catch | VERB_NOUN | đi xem phim | Want to catch a movie tonight? | Tối nay đi xem phim không? | take,get,make
+catch a train | catch | catch | VERB_NOUN | đón tàu hỏa | Hey dude, I gotta go catch a train, I’ll see you later | Tôi phải đi đón tàu; hẹn gặp lại. | take,get,make
+catch a crook | catch | catch | VERB_NOUN | bắt một kẻ lừa đảo | It takes a crook to catch a crook | Để bắt kẻ lừa đảo, đôi khi cần một kẻ lừa đảo khác. | take,get,make
+catch a bus | catch | catch | VERB_NOUN | đón xe buýt | I saw a man trying to catch a bus. | Tôi thấy một người đàn ông đang cố đón xe buýt. | take,get,make
+catch a chill | catch | catch | VERB_NOUN | bị lạnh | You can catch a chill from being out in the cold | Bạn có thể bị lạnh nếu ở ngoài trời lạnh quá lâu. | take,get,make
+catch a thief | catch | catch | VERB_NOUN | bắt kẻ trộm | The best person to catch a thief is another thief. | Người thích hợp nhất để bắt kẻ trộm đôi khi lại là một tên trộm khác. | take,get,make
+catch fire | catch | catch | VERB_NOUN | bắt lửa | Her clothes catch fire while cooking. | Quần áo của cô ấy bắt lửa khi đang nấu ăn. | take,get,make
+catch sight of | catch | catch | VERB_PREP | thoáng thấy | I caught sight of the bird just before it flew out of sight. | Tôi thoáng thấy con chim ngay trước khi nó bay khỏi tầm mắt. | take,get,make
+catch someone’s attention | catch | catch | VERB_NOUN | thu hút sự chú ý | Lots of girls will show a little leg to catch a guy’s attention. | Nhiều cô gái sẽ cố thu hút sự chú ý của một chàng trai. | take,get,make
+catch someone’s eye | catch | catch | VERB_NOUN | lọt vào mắt; thu hút ánh nhìn | A beautiful girl passing by caught his eye | Một cô gái xinh đẹp đi ngang qua đã lọt vào mắt anh ấy. | take,get,make
+catch the flu | catch | catch | VERB_NOUN | bị cúm | People can catch the flu every year. | Mọi người có thể bị cúm mỗi năm. | take,get,make
+come close | come | come | VERB_NOUN | đến gần | He came close to her, but she ran away. | Anh ấy đến gần cô ấy nhưng cô ấy bỏ chạy. | go,get,reach
+come early | come | come | VERB_NOUN | đến sớm | Parking is limited, so come early to enjoy the fireworks. | Chỗ đậu xe có hạn, vì vậy hãy đến sớm. | go,get,reach
+come first | come | come | VERB_NOUN | được ưu tiên; đến trước | Which comes first, your customers or your employees? | Khách hàng hay nhân viên, ai được ưu tiên hơn? | go,get,reach
+come into view | come | come | VERB_NOUN | lọt vào tầm mắt | A large herd of elephants came into view in the distance. | Một đàn voi lớn xuất hiện trong tầm mắt ở phía xa. | go,get,reach
+come last | come | come | VERB_NOUN | đến sau cùng | Never put them first, if you always come last. | Đừng luôn đặt họ lên đầu nếu bạn luôn là người đến sau. | go,get,reach
+come late | come | come | VERB_NOUN | đến muộn | He doesn’t always come late. | Anh ấy không phải lúc nào cũng đến muộn. | go,get,reach
+come on time | come | come | VERB_PREP | đến đúng giờ | He had come on time. | Anh ấy đã đến đúng giờ. | go,get,reach
+come prepared | come | come | VERB_NOUN | đến với sự chuẩn bị | We must always come prepared. | Chúng ta luôn phải đến với sự chuẩn bị đầy đủ. | go,get,reach
+come right back | come | come | VERB_NOUN | quay lại ngay | I’ll come right back and give you a hand! | Tôi sẽ quay lại ngay và giúp bạn. | go,get,reach
+come to a compromise | come | come | VERB_PREP | đi đến một thỏa hiệp | Coming to a compromise can be incredibly difficult. | Đi đến một thỏa hiệp có thể vô cùng khó khăn. | go,get,reach
+come to a decision | come | come | VERB_PREP | đi đến quyết định | Have you come to a decision yet? | Bạn đã đi đến quyết định chưa? | go,get,reach
+come to an agreement | come | come | VERB_PREP | đi đến thỏa thuận | They have come to an agreement. | Họ đã đi đến một thỏa thuận. | go,get,reach
+come to an end | come | come | VERB_PREP | đi đến kết thúc | The celebration came to an end about midnight. | Buổi lễ kết thúc vào khoảng nửa đêm. | go,get,reach
+come to a standstill | come | come | VERB_PREP | rơi vào bế tắc | The accident caused traffic to come to a standstill on the freeway. | Vụ tai nạn khiến giao thông rơi vào bế tắc trên đường cao tốc. | go,get,reach
+come to terms with | come | come | VERB_PREP | chấp nhận sự thật | She’s never really come to terms with her son’s death. | Cô ấy chưa bao giờ thực sự chấp nhận sự thật về cái chết của con trai. | go,get,reach
+come under attack | come | come | VERB_PREP | bị tấn công | Vietnamese boats come under attack in South China Sea. | Các tàu Việt Nam bị tấn công ở Biển Đông. | go,get,reach
+go abroad | go | go | VERB_NOUN | đi ra nước ngoài | As Vietnam’s women go abroad, dads tend the home. | Khi phụ nữ Việt Nam ra nước ngoài, các ông bố chăm sóc gia đình. | come,get,make
+go astray | go | go | VERB_NOUN | đi sai đường; lạc lối | We went astray but a man redirected us. 2. Parents must do more to ensure teens do not go astray. 3. The money seems to have gone astray. | Chúng tôi đã đi sai đường nhưng một người đàn ông đã chỉ lại đường. | come,get,make
+go to bed | go | go | VERB_PREP | đi ngủ | It’s almost midnight, and we must go to bed. | Đã gần nửa đêm và chúng ta phải đi ngủ. | come,get,make
+go bald | go | go | VERB_ADJ | bị hói | Many men go bald because of an inherited condition. | Nhiều người đàn ông bị hói do một tình trạng di truyền. | come,get,make
+go bankrupt | go | go | VERB_ADJ | phá sản | When you go bankrupt you will get a bankruptcy trustee | Khi phá sản, bạn sẽ có người quản lý thủ tục phá sản. | come,get,make
+go blind | go | go | VERB_ADJ | bị mù | The disease made her go blind in one eye. | Căn bệnh khiến cô ấy mù một mắt. | come,get,make
+go crazy | go | go | VERB_ADJ | phát điên | Don’t go crazy trying to find the right words | Đừng phát điên khi cố tìm từ thích hợp. | come,get,make
+go deaf | go | go | VERB_ADJ | bị điếc | He was trying to hang on to his hearing in fear of going deaf. | Anh ấy sợ bị điếc và mất khả năng nghe. | come,get,make
+go fishing | go | go | VERB_NOUN | đi câu cá | I would go mad if I had to stay in bed for three weeks. | Anh ấy chắc chắn đã đi câu cá. | come,get,make
+go mad | go | go | VERB_ADJ | phát điên | I would go mad if I had to stay in bed for three weeks. | Tôi sẽ phát điên nếu phải nằm trên giường ba tuần. | come,get,make
+go missing | go | go | VERB_ADJ | mất tích | Two people went missing while swimming at Hoàng Kiếm Lake. | Hai người mất tích khi đang bơi ở hồ Hoàn Kiếm. | come,get,make
+go on foot | go | go | VERB_PREP | đi bộ | Children go to school on foot (/walk to school) | Trẻ em đi học bằng cách đi bộ. | come,get,make
+go online | go | go | VERB_NOUN | lên mạng | I need to go online every single day. | Tôi cần lên mạng mỗi ngày. | come,get,make
+go out of business | go | go | VERB_PREP | đóng cửa vì làm ăn thua lỗ | I have to work hard to keep from going out of business. | Tôi phải làm việc chăm chỉ để tránh doanh nghiệp đóng cửa. | come,get,make
+go overseas | go | go | VERB_NOUN | đi nước ngoài | Many more people go overseas these days . | Ngày nay có nhiều người đi nước ngoài hơn. | come,get,make
+go sailing | go | go | VERB_NOUN | đi thuyền buồm | When we woke up this morning, paradise seemed to demand that we go sailing. | Buổi sáng ấy, chúng tôi đi thuyền buồm. | come,get,make
+go to war | go | go | VERB_PREP | tham chiến | What happens to the US when Vietnam goes to war with China? | Điều gì xảy ra nếu Hoa Kỳ tham chiến với Trung Quốc? | come,get,make
+keep a diary | keep | keep | VERB_NOUN | giữ nhật ký | I have kept a diary since the age of 16. | Tôi đã giữ nhật ký từ năm mười sáu tuổi. | make,hold,take
+keep a secret | keep | keep | VERB_NOUN | giữ bí mật | Three can keep a secret, if two of them are dead. | Ba người có thể giữ bí mật nếu hai người trong số họ đã chết. | make,hold,take
+keep a promise | keep | keep | VERB_NOUN | giữ lời hứa | If you can’t keep a promise then don’t make one. | Nếu không giữ được lời hứa thì đừng hứa. | hold,hear,do
+keep an appointment | keep | keep | VERB_NOUN | giữ cuộc hẹn | If you are unable to keep an appointment, please notify us within 24 hours. | Nếu không thể giữ cuộc hẹn, hãy báo trước trong vòng 24 giờ. | make,hold,take
+keep calm | keep | keep | VERB_NOUN | giữ bình tĩnh | Now keep calm everyone, the police are on their way. | Mọi người hãy bình tĩnh; cảnh sát đang trên đường. | make,hold,take
+keep control | keep | keep | VERB_NOUN | giữ quyền kiểm soát | U.S. should keep control of Internet. | Bạn cần giữ quyền kiểm soát tình hình. | make,hold,take
+keep in touch | keep | keep | VERB_NOUN | giữ liên lạc | When friends move away, it’s hard to keep in touch with them. | Khi bạn bè chuyển đi, rất khó giữ liên lạc. | make,hold,take
+keep quiet | keep | keep | VERB_NOUN | giữ yên lặng | if they keep quiet, the stones will cry out. | Nếu họ giữ im lặng, mọi chuyện sẽ ổn. | make,hold,take
+keep the change | keep | keep | VERB_NOUN | giữ tiền thối | Here’s five dollars, and keep the change. | Đây là năm đô la, hãy giữ tiền thối. | make,hold,take
+pay a fine | pay | pay | VERB_NOUN | nộp tiền phạt | Vinnie, pay attention to what you’re doing! | Tôi thà nộp tiền phạt còn hơn xin lỗi. | make,take,do
+pay attention | pay | pay | VERB_NOUN | chú ý | Vinnie, pay attention to what you’re doing! | Hãy chú ý đến việc bạn đang làm. | make,take,do
+pay by credit card | pay | pay | VERB_PREP | trả bằng thẻ tín dụng | You may choose to pay by credit card. instead of cash or check. | Bạn có thể chọn trả bằng thẻ tín dụng thay vì tiền mặt hoặc séc. | make,take,do
+pay cash | pay | pay | VERB_NOUN | trả tiền mặt | Should I finance or pay cash for a vehicle? | Bạn muốn trả tiền mặt cho chiếc xe hay vay tài chính? | make,take,do
+pay interest | pay | pay | VERB_NOUN | trả tiền lãi | They must pay interest on the money that they borrow. | Họ phải trả tiền lãi cho khoản tiền đã vay. | make,take,do
+pay a compliment | pay | pay | VERB_NOUN | đưa lời khen | I wanna pay a compliment to ANCNV. | Tôi muốn dành một lời khen cho ANCNV. | make,take,do
+pay a visit | pay | pay | VERB_NOUN | đến thăm | Please pay a visit to our house whenever you are in town. | Hãy ghé thăm nhà chúng tôi khi bạn ở trong thành phố. | make,take,do
+pay the bill | pay | pay | VERB_NOUN | thanh toán hóa đơn | You can pay the bill online. | Bạn có thể thanh toán hóa đơn trực tuyến. | make,take,do
+pay the price | pay | pay | VERB_NOUN | trả giá; gánh hậu quả | Oh, my head! I am paying the price for drinking too much last night. | Tôi đang phải gánh hậu quả vì đã uống quá nhiều tối qua. | make,take,do
+save energy | save | save | VERB_NOUN | tiết kiệm năng lượng | One of the easiest ways to save energy is to use your body properly. | Một trong những cách dễ nhất để tiết kiệm năng lượng là sử dụng cơ thể đúng cách. | keep,make,spend
+save money | save | save | VERB_NOUN | tiết kiệm tiền | You’ll be more likely to save money if you make it a priority. | Bạn sẽ dễ tiết kiệm tiền hơn nếu coi đó là ưu tiên. | keep,spend,waste
+save one’s strength | save | save | VERB_NOUN | giữ sức | Animals have to save their strength, and wait for the perfect moment to strike at their prey. | Động vật phải giữ sức và chờ thời điểm hoàn hảo để tấn công con mồi. | keep,make,spend
+save someone a seat | save | save | VERB_NOUN | dành chỗ cho ai | Sandy, you just make sure to save me a seat at the table. | Hãy nhớ dành cho tôi một chỗ ngồi ở bàn. | keep,make,spend
+save someone’s life | save | save | VERB_NOUN | cứu mạng ai đó | I have donated my blood to save someone’s life. | Tôi đã hiến máu để cứu mạng một người. | keep,make,spend
+save something to a disk | save | save | VERB_PREP | lưu thứ gì vào đĩa | Once you’ve entered all the code, save the code to a disk | Sau khi nhập toàn bộ mã, hãy lưu mã vào đĩa. | keep,make,spend
+save space | save | save | VERB_NOUN | tiết kiệm không gian | Roll your clothes to save space. | Gấp quần áo để tiết kiệm không gian. | keep,make,spend
+save time | save | save | VERB_NOUN | tiết kiệm thời gian | Buy online and save time and money! | Mua hàng trực tuyến để tiết kiệm thời gian và tiền bạc. | keep,make,spend
+save yourself the trouble | save | save | VERB_NOUN | tránh cho bản thân rắc rối | Save yourself the trouble and don’t stay here!!. | Đừng ở lại đây; như vậy bạn sẽ tránh được rắc rối. | keep,make,spend
+a big accomplishment | big | big | ADJ_NOUN | một thành quả lớn | Graduating high school was a big accomplishment for me. | Tốt nghiệp trung học là một thành quả lớn đối với tôi. | large,great,strong
+a big decision | big | big | ADJ_NOUN | một quyết định lớn | Ngọc has a big decision to make. | Ngọc có một quyết định lớn cần đưa ra. | large,great,strong
+a big disappointment | big | big | ADJ_NOUN | một sự thất vọng lớn | Your odyssey of hope is nothing but a big disappointment. | Chuyến đi đầy hy vọng của bạn chỉ là một sự thất vọng lớn. | large,great,strong
+a big failure | big | big | ADJ_NOUN | một thất bại lớn | I believe that multiculturalism is a big failure. | Tôi tin chủ nghĩa đa văn hóa là một thất bại lớn. | large,great,strong
+a big improvement | big | big | ADJ_NOUN | một sự cải thiện lớn | There’s been a big improvement in the children’s behaviour. | Có một sự cải thiện lớn trong hành vi của trẻ. | large,great,strong
+a big mistake | big | big | ADJ_NOUN | một sai lầm lớn | Voting for Obama was a big mistake. | Bỏ phiếu cho Obama là một sai lầm lớn. | large,great,strong
+a big surprise | big | big | ADJ_NOUN | một bất ngờ lớn | Life is a big surprise. | Cuộc sống là một bất ngờ lớn. | large,great,strong
+a big eater | big | big | ADJ_NOUN | người ăn nhiều | I am not a big eater, but I can’t lose weight. | Tôi không ăn nhiều nhưng vẫn không thể giảm cân. | large,great,strong
+a big dreamer | big | big | ADJ_NOUN | người có ước mơ lớn | I am a big dreamer and my dreams turn to reality a lot of the times. | Tôi là người có ước mơ lớn và nhiều ước mơ đã thành hiện thực. | large,great,strong
+a big drinker | big | big | ADJ_NOUN | người uống rượu nhiều | I am not a big drinker, but when I go out I like Heineken. | Tôi không uống nhiều, nhưng khi ra ngoài tôi thích Heineken. | large,great,strong
+a big spender | big | big | ADJ_NOUN | người tiêu tiền nhiều | Man, I’m a big spender and I got money all in my pocket. | Tôi tiêu tiền rất nhiều và tiền luôn ở trong túi. | large,great,strong
+a big talker | big | big | ADJ_NOUN | người nói khoác | That dude over there is a big talker. | Anh chàng kia là một người rất hay nói khoác. | large,great,strong
+great admiration | great | great | ADJ_NOUN | sự ngưỡng mộ lớn | I have great admiration for him. | Tôi rất ngưỡng mộ anh ấy. | big,strong,large
+great anger | great | great | ADJ_NOUN | sự giận dữ lớn | A man of great anger will bear the penalty. | Một người quá tức giận sẽ phải chịu hậu quả. | big,strong,large
+great enjoyment | great | great | ADJ_NOUN | sự thích thú lớn | Hunting is his greatest enjoyment. | Săn bắn là niềm thích thú lớn nhất của anh ấy. | big,strong,large
+great excitement | great | great | ADJ_NOUN | sự phấn khích lớn | Video games are great fun for kids and adults as well! | Tin tức khiến bạn bè cô ấy vô cùng phấn khích. | big,strong,large
+great fun | great | great | ADJ_NOUN | niềm vui lớn | Video games are great fun for kids and adults as well! | Trò chơi điện tử rất vui đối với cả trẻ em và người lớn. | big,strong,large
+great happiness | great | great | ADJ_NOUN | hạnh phúc lớn | Only love can bring peace and great happiness in this world. | Chỉ tình yêu mới có thể mang lại bình yên và hạnh phúc lớn. | big,strong,large
+great joy | great | great | ADJ_NOUN | niềm vui lớn | Your love has given me great joy and encouragement. | Tình yêu của bạn đã mang lại cho tôi niềm vui và sự động viên lớn. | big,strong,large
+in great detail | great | great | PREP_PHRASE | hết sức chi tiết | We have explained that in great detail. | Chúng tôi đã giải thích điều đó hết sức chi tiết. | big,strong,large
+great power | great | great | ADJ_NOUN | quyền lực lớn | Knowledge is a great power. Do you agree with me? | Kiến thức là một quyền lực lớn. | big,strong,large
+great pride | great | great | ADJ_NOUN | niềm tự hào lớn | She took great pride in her sons. | Cô ấy rất tự hào về các con trai của mình. | big,strong,large
+great sensitivity | great | great | ADJ_NOUN | sự nhạy cảm cao | You don’t need great skill to be a great artist. | Cô ấy xử lý tình huống với sự nhạy cảm cao. | big,strong,large
+great skill | great | great | ADJ_NOUN | kỹ năng cao | You don’t need great skill to be a great artist. | Bạn không cần kỹ năng cao để trở thành một nghệ sĩ giỏi. | big,strong,large
+great strength | great | great | ADJ_NOUN | sức mạnh lớn | Sacrifice gives us great strength. | Sự hy sinh mang lại cho chúng ta sức mạnh lớn. | big,strong,large
+great understanding | great | great | ADJ_NOUN | sự hiểu biết sâu rộng | Whoever is patient has great understanding, but one who is quick-tempered displays folly. | Người kiên nhẫn có sự hiểu biết sâu rộng, còn người nóng tính thì thiếu sáng suốt. | big,strong,large
+great wisdom | great | great | ADJ_NOUN | trí tuệ cao | Our present intellectual superiority is no guarantee of great wisdom or survival. | Trí tuệ cao không phải lúc nào cũng bảo đảm sự sống còn. | big,strong,large
+a large amount | large | large | ADJ_NOUN | một số lượng lớn | I am getting a large amount of money in my saving account. | Tôi đang nhận một số tiền lớn vào tài khoản tiết kiệm. | great,big,high
+a large collection | large | large | ADJ_NOUN | một bộ sưu tập lớn | Vinnie has a large collection of famous love quotes and sayings. | Vinnie có một bộ sưu tập lớn các câu nói nổi tiếng về tình yêu. | great,big,high
+a large number (of) | large | large | ADJ_NOUN | một số lượng lớn | Vinnie catches a large number of fish every day. | Vinnie bắt được một số lượng lớn cá mỗi ngày. | great,big,high
+a large population | large | large | ADJ_NOUN | dân số lớn | Water covers a large proportion of the earth’s surface. | Tại sao Trung Quốc lại phát triển một dân số lớn như vậy? | great,big,high
+a large proportion | large | large | ADJ_NOUN | một tỷ lệ lớn | Water covers a large proportion of the earth’s surface. | Nước bao phủ một phần lớn bề mặt Trái Đất. | great,big,high
+a large quantity | large | large | ADJ_NOUN | một số lượng lớn | A large quantity of heroin was discovered by police. | Cảnh sát phát hiện một số lượng lớn ma túy. | great,big,high
+a large scale | large | large | ADJ_NOUN | quy mô lớn | When planning a large scale event there are many more issues to keep in mind. | Khi tổ chức sự kiện quy mô lớn, có nhiều vấn đề hơn cần lưu ý. | great,big,high
+strong argument | strong | strong | ADJ_NOUN | lập luận mạnh mẽ | After making a strong argument, let your opponent do all the talking. | Sau khi đưa ra một lập luận mạnh mẽ, hãy để đối phương nói. | big,great,heavy
+strong emphasis | strong | strong | ADJ_NOUN | sự nhấn mạnh mạnh mẽ | There is a strong emphasis on math and science at the school. | Trường học đặc biệt nhấn mạnh toán học và khoa học. | big,great,heavy
+strong evidence | strong | strong | ADJ_NOUN | bằng chứng mạnh mẽ | Doctors now have strong evidence that colonoscopies save lives. | Các bác sĩ hiện có bằng chứng mạnh mẽ rằng nội soi đại tràng cứu sống người bệnh. | big,great,heavy
+strong contrast | strong | strong | ADJ_NOUN | sự tương phản mạnh | Chiaroscuro in art is the use of strong contrasts between light and dark. | Trong nghệ thuật, sự tương phản mạnh tạo ra khác biệt rõ giữa sáng và tối. | big,great,heavy
+strong commitment | strong | strong | ADJ_NOUN | cam kết mạnh mẽ | The boss noticed her strong commitment to her work. | Ông chủ nhận thấy cô ấy có cam kết mạnh mẽ với công việc. | big,great,heavy
+strong criticism | strong | strong | ADJ_NOUN | sự chỉ trích nặng nề | Vinnie has faced some strong criticism from Vietnam lately. | Vinnie gần đây phải đối mặt với sự chỉ trích nặng nề từ Việt Nam. | big,great,heavy
+a strong denial | strong | strong | ADJ_NOUN | sự phủ nhận mạnh mẽ | The government has issued a strong denial of responsibility for the mistake. | Chính phủ đã đưa ra sự phủ nhận mạnh mẽ về trách nhiệm đối với sai lầm. | big,great,heavy
+a strong feeling | strong | strong | ADJ_NOUN | cảm giác mạnh | I have a strong feeling that I was born in the wrong body. | Tôi có cảm giác mạnh rằng mình đã sinh nhầm cơ thể. | big,great,heavy
+a strong opinion | strong | strong | ADJ_NOUN | ý kiến mạnh mẽ | Vinnie has a strong opinion on almost every topic. | Vinnie có ý kiến mạnh mẽ về hầu hết mọi chủ đề. | big,great,heavy
+strong resistance | strong | strong | ADJ_NOUN | sự kháng cự mạnh | Durian has a strong smell and a unique taste. a strong taste một mùi vịmạnh mẽ Fish sauce has a strong taste and smell bad. | Việt Nam thể hiện sự kháng cự mạnh mẽ. | big,great,heavy
+a strong smell | strong | strong | ADJ_NOUN | mùi nồng | Durian has a strong smell and a unique taste. | Quả sầu riêng có mùi nồng và hương vị đặc trưng. | big,great,heavy
+come complete with | come | come | VERB_PREP | đi kèm đầy đủ | Our machines come complete with a ten-year warranty. | Máy móc của chúng tôi đi kèm đầy đủ với bảo hành mười năm. | go,ship,arrive

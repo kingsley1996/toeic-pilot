@@ -312,6 +312,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/collocations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Commit Collocations */
+        post: operations["commit_collocations_api_v1_admin_collocations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/collocations/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse Collocation Paste
+         * @description Parse a collocation paste and report every problem. Writes nothing.
+         */
+        post: operations["parse_collocation_paste_api_v1_admin_collocations_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/dictation": {
         parameters: {
             query?: never;
@@ -2624,6 +2661,27 @@ export interface paths {
         patch: operations["update_vocabulary_api_v1_admin_vocabulary__entry_id__patch"];
         trace?: never;
     };
+    "/api/v1/admin/vocabulary/{entry_id}/collocation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Collocation
+         * @description Detail của một entry, cho form sửa sau commit (§12).
+         */
+        get: operations["get_collocation_api_v1_admin_vocabulary__entry_id__collocation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Collocation */
+        patch: operations["update_collocation_api_v1_admin_vocabulary__entry_id__collocation_patch"];
+        trace?: never;
+    };
     "/api/v1/admin/vocabulary/{entry_id}/publish": {
         parameters: {
             query?: never;
@@ -4510,6 +4568,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-collocations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Collocations
+         * @description Discovery các cụm liên quan (SPEC-COLLOCATION §16).
+         *
+         *     Đường `/vocabulary-collocations`, không phải `/vocabulary/collocations`:
+         *     route `/vocabulary/{entry_id}` khai `entry_id: uuid.UUID` sẽ bắt
+         *     "collocations" trước và trả 422 — cùng cái bẫy `/vocabulary-progress`.
+         */
+        get: operations["list_collocations_api_v1_vocabulary_collocations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-progress": {
         parameters: {
             query?: never;
@@ -4693,6 +4775,30 @@ export interface paths {
         get: operations["get_vocabulary_api_v1_vocabulary__entry_id__get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vocabulary/{entry_id}/collocation-answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit Collocation Answer
+         * @description Chấm slot-fill phía server (SPEC-COLLOCATION §19–§20).
+         *
+         *     `questionId` là stateless — chính là entry_id. Client không tự chấm: quy
+         *     ước "token đầu tiên khớp gap" của `renderGap` đủ để client render nhưng
+         *     không phải để chấm, và mọi chỗ so sánh khác (cả headword) là sai.
+         */
+        post: operations["submit_collocation_answer_api_v1_vocabulary__entry_id__collocation_answer_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5598,6 +5704,148 @@ export interface components {
             title?: string | null;
             /** Year */
             year?: number | null;
+        };
+        /** CollocationAnswer */
+        CollocationAnswer: {
+            /** Correct */
+            correct: boolean;
+            /** Expected */
+            expected: string;
+        };
+        /** CollocationAnswerSubmit */
+        CollocationAnswerSubmit: {
+            /** Answer */
+            answer: string;
+        };
+        /**
+         * CollocationCommit
+         * @description Hàng collocation đã duyệt; entry ghi `draft` như mọi nội dung nhập vào.
+         */
+        CollocationCommit: {
+            /**
+             * Difficulty
+             * @default 3
+             */
+            difficulty: number;
+            /** Rows */
+            rows: components["schemas"]["CollocationRow"][];
+            /** Topic Id */
+            topic_id?: string | null;
+        };
+        /**
+         * CollocationItem
+         * @description Một hàng trong discovery `/vocabulary/collocations` (SPEC-COLLOCATION §16).
+         */
+        CollocationItem: {
+            /** Baseword */
+            baseWord: string;
+            /** Headword */
+            headword: string;
+            /** Id */
+            id: string;
+            /** Pattern */
+            pattern: string;
+        };
+        /**
+         * CollocationMeta
+         * @description Khối hiển thị trên trang detail của một entry là collocation (§15).
+         */
+        CollocationMeta: {
+            /** Baseword */
+            baseWord: string;
+            /** Pattern */
+            pattern: string;
+        };
+        /** CollocationParseResponse */
+        CollocationParseResponse: {
+            /** Error Count */
+            error_count: number;
+            /** Ok Count */
+            ok_count: number;
+            /** Rows */
+            rows: components["schemas"]["CollocationRow"][];
+        };
+        /**
+         * CollocationPlay
+         * @description Khối chơi slot-fill gắn vào summary (§18–§19).
+         *
+         *     `choices` gồm gap + distractors đã lưu sẵn lúc nhập — server không sinh
+         *     runtime; thứ tự đã được xáo ở lúc trả payload.
+         */
+        CollocationPlay: {
+            /** Choices */
+            choices: string[];
+            /** Gapword */
+            gapWord: string;
+        };
+        /**
+         * CollocationQuizItem
+         * @description Một câu COLLOCATION_SLOT_FILL trong board quiz (§18).
+         *
+         *     Tách type khỏi `VocabularySummary` thay vì cột tuỳ chọn trên nó: một câu
+         *     quiz collocation LUÔN có khối chơi, một summary thường KHÔNG BAO GIỜ có —
+         *     union giả làm client phải `if` ở nơi không thể xảy ra.
+         */
+        CollocationQuizItem: {
+            collocation: components["schemas"]["CollocationPlay"];
+            /** Headword */
+            headword: string;
+            /** Id */
+            id: string;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Part Of Speech */
+            part_of_speech: string;
+            /** Phonetic */
+            phonetic: string | null;
+        };
+        /** CollocationRow */
+        CollocationRow: {
+            /** Base Word */
+            base_word: string;
+            /**
+             * Distractors
+             * @default []
+             */
+            distractors: string[];
+            /** Example */
+            example?: string | null;
+            /** Example Vi */
+            example_vi?: string | null;
+            /** Gap Word */
+            gap_word?: string | null;
+            /** Headword */
+            headword: string;
+            /** Line */
+            line: number;
+            /** Meaning Vi */
+            meaning_vi: string;
+            /** Pattern */
+            pattern: string;
+            /**
+             * Problems
+             * @default []
+             */
+            problems: string[];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /**
+         * CollocationUpdate
+         * @description PATCH detail sau commit (SPEC-COLLOCATION §12); entry phải là `phrase`.
+         */
+        CollocationUpdate: {
+            /** Base Word */
+            base_word?: string | null;
+            /** Distractors */
+            distractors?: string[] | null;
+            /** Gap Word */
+            gap_word?: string | null;
+            /** Pattern */
+            pattern?: string | null;
         };
         /** CommitResult */
         CommitResult: {
@@ -7413,6 +7661,17 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** Page[CollocationItem] */
+        Page_CollocationItem_: {
+            /** Items */
+            items: components["schemas"]["CollocationItem"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
         /** Page[DictationAdmin] */
         Page_DictationAdmin_: {
             /** Items */
@@ -7512,10 +7771,10 @@ export interface components {
             /** Total */
             total: number;
         };
-        /** Page[VocabularyAdmin] */
-        Page_VocabularyAdmin_: {
+        /** Page[Union[CollocationQuizItem, VocabularySummary]] */
+        Page_Union_CollocationQuizItem__VocabularySummary__: {
             /** Items */
-            items: components["schemas"]["VocabularyAdmin"][];
+            items: (components["schemas"]["CollocationQuizItem"] | components["schemas"]["VocabularySummary"])[];
             /** Limit */
             limit: number;
             /** Offset */
@@ -7523,10 +7782,10 @@ export interface components {
             /** Total */
             total: number;
         };
-        /** Page[VocabularySummary] */
-        Page_VocabularySummary_: {
+        /** Page[VocabularyAdmin] */
+        Page_VocabularyAdmin_: {
             /** Items */
-            items: components["schemas"]["VocabularySummary"][];
+            items: components["schemas"]["VocabularyAdmin"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -8599,6 +8858,7 @@ export interface components {
         ReviewCard: {
             /** Cefr Level */
             cefr_level: string | null;
+            collocation?: components["schemas"]["CollocationMeta"] | null;
             /** Difficulty */
             difficulty: number;
             /** Example */
@@ -9706,6 +9966,7 @@ export interface components {
         VocabularyDetail: {
             /** Cefr Level */
             cefr_level: string | null;
+            collocation?: components["schemas"]["CollocationMeta"] | null;
             /** Difficulty */
             difficulty: number;
             /** Example */
@@ -10216,6 +10477,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BackdropPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    commit_collocations_api_v1_admin_collocations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollocationCommit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    parse_collocation_paste_api_v1_admin_collocations_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollocationParseResponse"];
                 };
             };
             /** @description Validation Error */
@@ -14663,6 +14990,72 @@ export interface operations {
             };
         };
     };
+    get_collocation_api_v1_admin_vocabulary__entry_id__collocation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollocationRow"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_collocation_api_v1_admin_vocabulary__entry_id__collocation_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollocationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollocationRow"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     publish_vocabulary_api_v1_admin_vocabulary__entry_id__publish_post: {
         parameters: {
             query?: never;
@@ -17038,6 +17431,7 @@ export interface operations {
             query?: {
                 /** @description topic slug */
                 topic?: string | null;
+                collocation?: number;
                 limit?: number;
                 offset?: number;
             };
@@ -17053,7 +17447,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Page_VocabularySummary_"];
+                    "application/json": components["schemas"]["Page_Union_CollocationQuizItem__VocabularySummary__"];
                 };
             };
             /** @description Validation Error */
@@ -17136,6 +17530,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VocabularyCollectionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_collocations_api_v1_vocabulary_collocations_get: {
+        parameters: {
+            query?: {
+                base_word?: string | null;
+                pattern?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_CollocationItem_"];
                 };
             };
             /** @description Validation Error */
@@ -17374,6 +17802,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VocabularyDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_collocation_answer_api_v1_vocabulary__entry_id__collocation_answer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollocationAnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollocationAnswer"];
                 };
             };
             /** @description Validation Error */
