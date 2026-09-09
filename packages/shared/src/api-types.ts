@@ -791,6 +791,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/grammar/lessons/{lesson_id}/video": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Grammar Video Confirm
+         * @description Gắn video vừa tải lên vào bài. Ba kiểm, cùng khuôn `avatar_confirm`:
+         *
+         *     1. khoá phải nằm dưới `grammar-video/` — không thì nó có thể trỏ vào vùng
+         *        media người khác, và lệnh dọn mồ côi sau này xoá mất thứ đang được dùng;
+         *     2. `verify()` hỏi lại nhà cung cấp — thiếu bước này là đường ghi một chuỗi
+         *        tuỳ ý và người học sẽ thấy player vỡ (ADR-006 §2.3);
+         *     3. bài phải `kind='theory'` — practice không có chỗ hiển thị video, chặn ở
+         *        biên thay vì nuôi một cột không bao giờ đọc.
+         */
+        put: operations["grammar_video_confirm_api_v1_admin_grammar_lessons__lesson_id__video_put"];
+        post?: never;
+        /**
+         * Grammar Video Remove
+         * @description Gỡ video khỏi bài. Idempotent. File để MỒ CÔI cho `reconcile_media` dọn —
+         *     xoá đồng nghĩa với một request chờ dịch vụ ngoài, đúng thứ avatar đã từ chối.
+         */
+        delete: operations["grammar_video_remove_api_v1_admin_grammar_lessons__lesson_id__video_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/grammar/lessons/{lesson_id}/video/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grammar Video Ticket
+         * @description Vé upload video bài giảng — trình duyệt PUT thẳng object store (§2.1).
+         *
+         *     Cùng bốn bước với avatar/feedback; byte KHÔNG đi qua FastAPI. Driver là
+         *     `get_driver("video")` — chỉ tới S3/local, Cloudinary bị chặn ở `get_driver`
+         *     vì băng thông video ăn credit Cloudinary là thứ ảnh đang sống bằng.
+         */
+        post: operations["grammar_video_ticket_api_v1_admin_grammar_lessons__lesson_id__video_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/grammar/question-bank": {
         parameters: {
             query?: never;
@@ -6639,6 +6695,10 @@ export interface components {
             topic_id: string;
             /** Topic Title */
             topic_title: string;
+            /** Video Duration S */
+            video_duration_s?: number | null;
+            /** Video Url */
+            video_url?: string | null;
         };
         /** GrammarLessonCreate */
         GrammarLessonCreate: {
@@ -6692,6 +6752,8 @@ export interface components {
             topic_id: string;
             /** Topic Title */
             topic_title: string;
+            /** Video Url */
+            video_url?: string | null;
         };
         /** GrammarLessonOrder */
         GrammarLessonOrder: {
@@ -9354,6 +9416,29 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /**
+         * VideoConfirm
+         * @description Bước 4 cho video bài giảng grammar (SPEC-GRAMMAR-VIDEO §3).
+         *
+         *     `duration_s` là lời khai của TRÌNH DUYỆT, cùng ngoại lệ có chủ ý với
+         *     `duration_ms` của audio: nó chỉ dùng để hiển thị, còn tồn tại + cỡ file vẫn
+         *     được hỏi lại kho lưu trữ ở `verify()`.
+         */
+        VideoConfirm: {
+            /** Duration S */
+            duration_s?: number | null;
+            /** Storage Key */
+            storage_key: string;
+        };
+        /** VideoTicketRequest */
+        VideoTicketRequest: {
+            /**
+             * Ext
+             * @default mp4
+             * @enum {string}
+             */
+            ext: "mp4" | "webm" | "mov";
+        };
         /** VocabularyAdmin */
         VocabularyAdmin: {
             /** Audio */
@@ -11116,6 +11201,107 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grammar_video_confirm_api_v1_admin_grammar_lessons__lesson_id__video_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoConfirm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grammar_video_remove_api_v1_admin_grammar_lessons__lesson_id__video_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarLessonAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grammar_video_ticket_api_v1_admin_grammar_lessons__lesson_id__video_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoTicketRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadTicket"];
                 };
             };
             /** @description Validation Error */

@@ -269,6 +269,18 @@ export default function GrammarLessonPage() {
                  liệu đọc dài, và design system đã có sẵn bề mặt trắng cho việc
                  đó. */
               <Panel className="p-6 sm:p-8">
+                {/* Video bài giảng (SPEC-GRAMMAR-VIDEO): dưới tiêu đề, trước
+                    phần chữ. `preload="metadata"` — video là cỡ vài chục đến
+                    vài trăm MB, tải nguyên file trước khi bấm phát là băng
+                    thông bỏ đi. Không autoplay, không thư viện player. */}
+                {shown.video_url && (
+                  <video
+                    controls
+                    preload="metadata"
+                    src={shown.video_url}
+                    className="mb-6 w-full rounded"
+                  />
+                )}
                 <MarkdownLite text={shown.body} className="text-lesson" />
               </Panel>
             )}

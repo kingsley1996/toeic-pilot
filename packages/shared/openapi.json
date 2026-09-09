@@ -5132,6 +5132,28 @@
           "topic_title": {
             "title": "Topic Title",
             "type": "string"
+          },
+          "video_duration_s": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Duration S"
+          },
+          "video_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Url"
           }
         },
         "required": [
@@ -5254,6 +5276,17 @@
           "topic_title": {
             "title": "Topic Title",
             "type": "string"
+          },
+          "video_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Url"
           }
         },
         "required": [
@@ -12572,6 +12605,48 @@
         "title": "ValidationError",
         "type": "object"
       },
+      "VideoConfirm": {
+        "description": "Bước 4 cho video bài giảng grammar (SPEC-GRAMMAR-VIDEO §3).\n\n`duration_s` là lời khai của TRÌNH DUYỆT, cùng ngoại lệ có chủ ý với\n`duration_ms` của audio: nó chỉ dùng để hiển thị, còn tồn tại + cỡ file vẫn\nđược hỏi lại kho lưu trữ ở `verify()`.",
+        "properties": {
+          "duration_s": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "storage_key"
+        ],
+        "title": "VideoConfirm",
+        "type": "object"
+      },
+      "VideoTicketRequest": {
+        "properties": {
+          "ext": {
+            "default": "mp4",
+            "enum": [
+              "mp4",
+              "webm",
+              "mov"
+            ],
+            "title": "Ext",
+            "type": "string"
+          }
+        },
+        "title": "VideoTicketRequest",
+        "type": "object"
+      },
       "VocabularyAdmin": {
         "properties": {
           "audio": {
@@ -15886,6 +15961,171 @@
           }
         ],
         "summary": "Set Lesson Questions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons/{lesson_id}/video": {
+      "delete": {
+        "description": "Gỡ video khỏi bài. Idempotent. File để MỒ CÔI cho `reconcile_media` dọn —\nxoá đồng nghĩa với một request chờ dịch vụ ngoài, đúng thứ avatar đã từ chối.",
+        "operationId": "grammar_video_remove_api_v1_admin_grammar_lessons__lesson_id__video_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Grammar Video Remove",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "description": "Gắn video vừa tải lên vào bài. Ba kiểm, cùng khuôn `avatar_confirm`:\n\n1. khoá phải nằm dưới `grammar-video/` — không thì nó có thể trỏ vào vùng\n   media người khác, và lệnh dọn mồ côi sau này xoá mất thứ đang được dùng;\n2. `verify()` hỏi lại nhà cung cấp — thiếu bước này là đường ghi một chuỗi\n   tuỳ ý và người học sẽ thấy player vỡ (ADR-006 §2.3);\n3. bài phải `kind='theory'` — practice không có chỗ hiển thị video, chặn ở\n   biên thay vì nuôi một cột không bao giờ đọc.",
+        "operationId": "grammar_video_confirm_api_v1_admin_grammar_lessons__lesson_id__video_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoConfirm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrammarLessonAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Grammar Video Confirm",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/grammar/lessons/{lesson_id}/video/ticket": {
+      "post": {
+        "description": "Vé upload video bài giảng — trình duyệt PUT thẳng object store (§2.1).\n\nCùng bốn bước với avatar/feedback; byte KHÔNG đi qua FastAPI. Driver là\n`get_driver(\"video\")` — chỉ tới S3/local, Cloudinary bị chặn ở `get_driver`\nvì băng thông video ăn credit Cloudinary là thứ ảnh đang sống bằng.",
+        "operationId": "grammar_video_ticket_api_v1_admin_grammar_lessons__lesson_id__video_ticket_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lesson_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Lesson Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadTicket"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Grammar Video Ticket",
         "tags": [
           "admin"
         ]

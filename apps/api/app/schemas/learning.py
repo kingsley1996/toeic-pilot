@@ -531,6 +531,10 @@ class GrammarLessonDetail(BaseModel):
     body: str
     """Rỗng với practice — nội dung của nó là `questions`."""
 
+    video_url: str | None = None
+    """Video bài giảng của lesson `theory` (SPEC-GRAMMAR-VIDEO), nếu có. Player
+    vẽ dưới tiêu đề, trước phần chữ; `None` thì không vẽ gì."""
+
     questions: list[GrammarPracticeQuestion] = []
     """Chỉ dựng cho lesson `practice`: câu từ bảng nối, `completed` từng câu suy
     từ `grammar_attempt`. Lesson theory luôn rỗng."""

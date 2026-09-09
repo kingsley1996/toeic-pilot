@@ -22,7 +22,7 @@ from typing import Any, Literal, Protocol
 
 import httpx
 
-MediaKind = Literal["image", "audio"]
+MediaKind = Literal["image", "audio", "video"]
 
 # Định dạng được nhận, theo từng loại.
 #
@@ -31,11 +31,18 @@ MediaKind = Literal["image", "audio"]
 # một lỗ XSS — "ảnh" ở đây là tên gọi, không phải bảo đảm về nội dung.
 ALLOWED_IMAGE_FORMATS = ("jpg", "jpeg", "png", "webp")
 ALLOWED_AUDIO_FORMATS = ("mp3", "m4a", "wav")
+# `mov` ở đây nghĩa là QuickTime trước khi trình duyệt nuốt được — người soạn
+# thu bằng điện thoại/iPhone rất hay ra đuôi này; player web vẫn chỉ nhận những
+# gì `<video>` phát được.
+ALLOWED_VIDEO_FORMATS = ("mp4", "webm", "mov")
 
 # Trần dung lượng. Ghim vào chữ ký chứ không kiểm sau khi lưu: kiểm sau nghĩa là
 # file đã nằm trên đĩa của nhà cung cấp và đã tính tiền rồi.
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 MAX_AUDIO_BYTES = 25 * 1024 * 1024
+# Một bài giảng 15–30 phút nén tốt nằm quanh cỡ này; trần này ăn ở cả `max_bytes`
+# của vé (client chặn sớm) lẫn `verify()` (driver S3 xoá file vượt trần).
+MAX_VIDEO_BYTES = 300 * 1024 * 1024
 
 # Hạn dùng của một vé upload. Ngắn có chủ ý — vé bị lộ chỉ dùng được trong vài
 # phút, mà người dùng thật thì bấm chọn file xong là tải lên ngay.
@@ -629,11 +636,15 @@ def _public_id(storage_key: str) -> str:
 
 
 def _allowed_formats(kind: MediaKind) -> tuple[str, ...]:
-    return ALLOWED_IMAGE_FORMATS if kind == "image" else ALLOWED_AUDIO_FORMATS
+    if kind == "image":
+        return ALLOWED_IMAGE_FORMATS
+    return ALLOWED_VIDEO_FORMATS if kind == "video" else ALLOWED_AUDIO_FORMATS
 
 
 def _max_bytes(kind: MediaKind) -> int:
-    return MAX_IMAGE_BYTES if kind == "image" else MAX_AUDIO_BYTES
+    if kind == "image":
+        return MAX_IMAGE_BYTES
+    return MAX_VIDEO_BYTES if kind == "video" else MAX_AUDIO_BYTES
 
 
 _MIME_BY_EXT = {
@@ -644,6 +655,9 @@ _MIME_BY_EXT = {
     "mp3": "audio/mpeg",
     "m4a": "audio/mp4",
     "wav": "audio/wav",
+    "mp4": "video/mp4",
+    "webm": "video/webm",
+    "mov": "video/quicktime",
 }
 
 
@@ -698,6 +712,8 @@ def get_driver(kind: MediaKind) -> StorageDriver:
             base_url=(
                 settings.image_public_base_url
                 if kind == "image"
+                else settings.video_public_base_url
+                if kind == "video"
                 else settings.audio_public_base_url
             ),
         )
@@ -709,7 +725,11 @@ def get_driver(kind: MediaKind) -> StorageDriver:
         kind=kind,
         root=settings.media_root,
         base_url=(
-            settings.image_public_base_url if kind == "image" else settings.audio_public_base_url
+            settings.image_public_base_url
+            if kind == "image"
+            else settings.video_public_base_url
+            if kind == "video"
+            else settings.audio_public_base_url
         ),
         upload_endpoint=LOCAL_UPLOAD_PATH,
         secret=settings.secret_key,

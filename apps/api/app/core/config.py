@@ -127,6 +127,10 @@ class Settings(BaseSettings):
     # Tiền tố URL công khai của ảnh. Cùng vai trò với `audio_public_base_url`:
     # runtime chỉ NỐI CHUỖI, không bao giờ gọi object store lúc có request.
     image_public_base_url: str = "http://localhost:8000/media"
+    # Cùng vai trò, cho video bài giảng grammar. Driver video đi chung lựa chọn
+    # với audio (`audio_storage_driver`) vì cùng bài toán băng thông; URL công
+    # khai thì tách riêng, vì vùng khoá khác nhau.
+    video_public_base_url: str = "http://localhost:8000/media"
 
     cloudinary_cloud_name: str = ""
     cloudinary_api_key: str = ""

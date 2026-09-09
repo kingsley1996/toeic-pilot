@@ -22,6 +22,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_optional_user
 from app.core.database import get_db
+from app.core.media import public_video_url
 from app.models import (
     GrammarAttempt,
     GrammarLesson,
@@ -258,6 +259,11 @@ def get_grammar_lesson(
         title=lesson.title,
         kind=lesson.kind,
         body=lesson.body,
+        # URL sinh ở máy chủ từ khoá, không trả khoá thô — nhà cung cấp là một
+        # biến cấu hình (cùng lý do với `image_urls` của feedback).
+        video_url=(
+            public_video_url(lesson.video_storage_key) if lesson.video_storage_key else None
+        ),
         questions=_practice_questions(db, lesson.id, user) if lesson.kind == "practice" else [],
         completed=completion[lesson.id],
         next_lesson=next_lesson,

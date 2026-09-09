@@ -134,3 +134,22 @@ class AudioAssetPublic(BaseModel):
     duration_ms: int
     accent: str
     voice: str
+
+
+VideoExtension = Literal["mp4", "webm", "mov"]
+
+
+class VideoTicketRequest(BaseModel):
+    ext: VideoExtension = "mp4"
+
+
+class VideoConfirm(BaseModel):
+    """Bước 4 cho video bài giảng grammar (SPEC-GRAMMAR-VIDEO §3).
+
+    `duration_s` là lời khai của TRÌNH DUYỆT, cùng ngoại lệ có chủ ý với
+    `duration_ms` của audio: nó chỉ dùng để hiển thị, còn tồn tại + cỡ file vẫn
+    được hỏi lại kho lưu trữ ở `verify()`.
+    """
+
+    storage_key: str
+    duration_s: int | None = Field(default=None, ge=0)

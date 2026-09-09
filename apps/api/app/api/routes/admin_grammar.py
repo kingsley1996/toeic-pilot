@@ -22,7 +22,15 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
 from app.api.routes._admin_content import _apply
+from app.core import rate_limit
 from app.core.database import get_db
+from app.core.media import (
+    VIDEO_KEY_PREFIX,
+    public_video_url,
+    upload_source_hash,
+    video_storage_key_for,
+)
+from app.core.storage import StorageError, get_driver
 from app.models import (
     GrammarLesson,
     GrammarLessonQuestion,
@@ -46,6 +54,7 @@ from app.schemas.admin import (
     GrammarTopicUpdate,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
+from app.schemas.media import UploadTicket, VideoConfirm, VideoTicketRequest
 from app.services.labels import FACETS
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -136,6 +145,8 @@ def _lesson_admin(db: Session, lesson: GrammarLesson) -> GrammarLessonAdmin:
         status=lesson.status,
         question_count=len(attached),
         question_ids=[str(question_id) for question_id in attached],
+        video_url=public_video_url(lesson.video_storage_key) if lesson.video_storage_key else None,
+        video_duration_s=lesson.video_duration_s,
     )
 
 
@@ -606,6 +617,101 @@ def list_unattached_questions(
         {"id": str(qid), "part": part, "prompt_text": prompt, "attached": qid in here}
         for qid, part, prompt in rows
     ]
+
+
+# --- video bài giảng (SPEC-GRAMMAR-VIDEO) -------------------------------------
+
+# Hạn mức RIÊNG và chặt hơn mọi khu khác: một bài chỉ một video, nhu cầu thật là
+# vài lần mỗi buổi soạn. Rộng hơn thế chỉ mời dùng bucket làm ổ đĩa.
+VIDEO_TICKET_QUOTA = rate_limit.Quota(limit=5, window_seconds=600)
+
+
+def _lesson_for_video(lesson_id: uuid.UUID, db: Session) -> GrammarLesson:
+    lesson = db.get(GrammarLesson, lesson_id)
+    if lesson is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lesson not found")
+    return lesson
+
+
+@router.post(
+    "/grammar/lessons/{lesson_id}/video/ticket",
+    response_model=UploadTicket,
+    dependencies=[
+        Depends(can_edit),
+        Depends(rate_limit.rate_limit("grammar-video-ticket", VIDEO_TICKET_QUOTA)),
+    ],
+)
+def grammar_video_ticket(
+    lesson_id: uuid.UUID,
+    body: VideoTicketRequest,
+    db: Session = Depends(get_db),
+) -> UploadTicket:
+    """Vé upload video bài giảng — trình duyệt PUT thẳng object store (§2.1).
+
+    Cùng bốn bước với avatar/feedback; byte KHÔNG đi qua FastAPI. Driver là
+    `get_driver("video")` — chỉ tới S3/local, Cloudinary bị chặn ở `get_driver`
+    vì băng thông video ăn credit Cloudinary là thứ ảnh đang sống bằng.
+    """
+    _lesson_for_video(lesson_id, db)
+    storage_key = video_storage_key_for(upload_source_hash(str(uuid.uuid4())), ext=body.ext)
+    return UploadTicket.of(get_driver("video").ticket(storage_key))
+
+
+@router.put("/grammar/lessons/{lesson_id}/video", response_model=GrammarLessonAdmin)
+def grammar_video_confirm(
+    lesson_id: uuid.UUID,
+    body: VideoConfirm,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> GrammarLessonAdmin:
+    """Gắn video vừa tải lên vào bài. Ba kiểm, cùng khuôn `avatar_confirm`:
+
+    1. khoá phải nằm dưới `grammar-video/` — không thì nó có thể trỏ vào vùng
+       media người khác, và lệnh dọn mồ côi sau này xoá mất thứ đang được dùng;
+    2. `verify()` hỏi lại nhà cung cấp — thiếu bước này là đường ghi một chuỗi
+       tuỳ ý và người học sẽ thấy player vỡ (ADR-006 §2.3);
+    3. bài phải `kind='theory'` — practice không có chỗ hiển thị video, chặn ở
+       biên thay vì nuôi một cột không bao giờ đọc.
+    """
+    lesson = _lesson_for_video(lesson_id, db)
+    if not body.storage_key.startswith(f"{VIDEO_KEY_PREFIX}/"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Khoá không thuộc vùng video bài giảng",
+        )
+    try:
+        get_driver("video").verify(body.storage_key)
+    except StorageError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Chưa thấy file trên kho lưu trữ: {error}",
+        ) from None
+    if lesson.kind != "theory":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Chỉ bài lý thuyết có video bài giảng — bài luyện tập không có chỗ hiển thị.",
+        )
+    lesson.video_storage_key = body.storage_key
+    lesson.video_duration_s = body.duration_s
+    db.commit()
+    db.refresh(lesson)
+    return _lesson_admin(db, lesson)
+
+
+@router.delete("/grammar/lessons/{lesson_id}/video", response_model=GrammarLessonAdmin)
+def grammar_video_remove(
+    lesson_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> GrammarLessonAdmin:
+    """Gỡ video khỏi bài. Idempotent. File để MỒ CÔI cho `reconcile_media` dọn —
+    xoá đồng nghĩa với một request chờ dịch vụ ngoài, đúng thứ avatar đã từ chối."""
+    lesson = _lesson_for_video(lesson_id, db)
+    lesson.video_storage_key = None
+    lesson.video_duration_s = None
+    db.commit()
+    db.refresh(lesson)
+    return _lesson_admin(db, lesson)
 
 
 # --- kho câu hỏi cho bài luyện tập -------------------------------------------

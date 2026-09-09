@@ -50,6 +50,7 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
   chứ không xoá — nên cả câu lẫn bài học đều tính vào chuỗi ngày và quà ruby. G3 (luyện theo nhãn cuối chủ đề) từng dựng rồi **bỏ**. Cổng ≥12 câu đã bỏ —
   publish chỉ cần ≥1 bài. markdown-lite 81 → 242 dòng. Lý thuyết đủ 18 chủ đề,
   5 bài cũ viết lại cùng format | `SPEC-GRAMMAR.md` |
+| ~~**Video bài giảng cho lesson ngữ pháp**~~ | **Xong code (2026-09-09).** `grammar_lesson` hai cột nullable (migration 077), `MediaKind="video"` — ticket/confirm/delete đúng luồng ADR-006, byte PUT thẳng object store, Cloudinary bị chặn cho video (băng thông ăn credit ảnh), driver đi chung lựa chọn với audio, `VIDEO_PUBLIC_BASE_URL` cấu hình riêng, vùng khoá `grammar-video/`. Màn soạn: khối "Video bài giảng" chỉ với lesson theory đã lưu; người học: `<video controls preload="metadata">` trên body. 8 bài test `test_grammar_video.py`. Còn lại: đụng `ADR-006` §2.2 (điều kiện spec §1), cấu hình Supabase public bucket + `VIDEO_PUBLIC_BASE_URL` ở production, và chạy `alembic upgrade` | `SPEC-GRAMMAR-VIDEO.md` |
 
 ## 3. Việc còn mở, theo thứ tự nên làm
 

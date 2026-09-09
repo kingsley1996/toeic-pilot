@@ -89,6 +89,14 @@ class GrammarLesson(Base, PublishableMixin):
     body: Mapped[str] = mapped_column(Text, nullable=False, default="")
     position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
+    # Video bài giảng (SPEC-GRAMMAR-VIDEO). Chỉ lesson `theory` được gắn —
+    # `practice` không có chỗ hiển thị video. Nullable cả hai: video là phụ
+    # kiện, một bài không video vẫn publish được (§5). Đổi video = ghi đè khoá;
+    # file cũ mồ côi, `reconcile_media` dọn — cùng chủ sách với avatar.
+    video_storage_key: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    video_duration_s: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    """Client khai lúc confirm, chỉ để hiển thị "12:34" — không chấm điểm."""
+
     topic: Mapped[GrammarTopic] = relationship(back_populates="lessons")
     questions: Mapped[list["GrammarLessonQuestion"]] = relationship(
         back_populates="lesson",

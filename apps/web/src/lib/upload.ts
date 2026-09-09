@@ -134,3 +134,39 @@ export async function uploadProgressionArt(file: File, token: string): Promise<s
   );
   return storageKey;
 }
+
+/**
+ * Video bài giảng grammar: xin vé, tải lên — confirm do nơi gọi tự làm vì nó
+ * cần kèm `duration_s` đọc từ chính file vừa chọn.
+ */
+export async function uploadGrammarVideo(
+  lessonId: string,
+  file: File,
+  token: string,
+): Promise<string> {
+  const { storageKey } = await uploadViaTicket(
+    API_ROUTES.adminGrammarLessonVideoTicket(lessonId),
+    file,
+    token,
+    "mp4",
+  );
+  return storageKey;
+}
+
+/** Đọc thời lượng video/phát hiện file hỏng trước khi xin vé — độ dài chỉ để hiển thị. */
+export function videoDurationSeconds(file: File): Promise<number | null> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const probe = document.createElement("video");
+    probe.preload = "metadata";
+    probe.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      resolve(Number.isFinite(probe.duration) ? Math.round(probe.duration) : null);
+    };
+    probe.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+    probe.src = url;
+  });
+}

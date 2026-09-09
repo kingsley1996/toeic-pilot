@@ -473,6 +473,8 @@ export const API_ROUTES = {
   adminGrammarLesson: (id: string) => `/api/v1/admin/grammar/lessons/${id}`,
   adminGrammarLessonPublish: (id: string) => `/api/v1/admin/grammar/lessons/${id}/publish`,
   adminGrammarLessonQuestions: (id: string) => `/api/v1/admin/grammar/lessons/${id}/questions`,
+  adminGrammarLessonVideoTicket: (id: string) => `/api/v1/admin/grammar/lessons/${id}/video/ticket`,
+  adminGrammarLessonVideo: (id: string) => `/api/v1/admin/grammar/lessons/${id}/video`,
   adminGrammarQuestionBank: "/api/v1/admin/grammar/question-bank",
   adminGrammarQuestions: "/api/v1/admin/grammar/questions",
   // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa

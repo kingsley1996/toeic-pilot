@@ -37,6 +37,12 @@ FEEDBACK_KEY_PREFIX = "feedback"
 # sản phẩm, giống hệt avatar.
 PROGRESSION_KEY_PREFIX = "progression"
 
+# Video bài giảng grammar (SPEC-GRAMMAR-VIDEO). Tiền tố RIÊNG, cùng lý do với
+# `avatar/` và `feedback/`: media của NGƯỜI SOẠN, không có giấy phép/provenance
+# như ảnh CC, và video của ta thì KHÔNG đi Cloudinary — băng thông video ăn
+# chung hạn mức credit với ảnh (ADR-006 §2.2 sửa 2026-09-09).
+VIDEO_KEY_PREFIX = "grammar-video"
+
 # Kept as plain tuples rather than a native PostgreSQL enum: adding a value to a
 # native enum needs its own migration, and Alembic downgrades across enum types
 # are painful enough that a CHECK constraint is the cheaper trade.
@@ -256,6 +262,16 @@ def progression_storage_key_for(source_hash_value: str, ext: str = "png") -> str
     return storage_key_for(source_hash_value, ext=ext, prefix=PROGRESSION_KEY_PREFIX)
 
 
+def video_storage_key_for(source_hash_value: str, ext: str = "mp4") -> str:
+    """Khoá cho video bài giảng — `grammar-video/ab/<hash>.<ext>`.
+
+    Tên file upload gốc KHÔNG vào khoá: đuôi quyết định định dạng phát, còn hash
+    là danh tính của lần upload (avatar sẽ mồ côi file cũ khi thay mới, và đó là
+    việc `reconcile_media` dọn).
+    """
+    return storage_key_for(source_hash_value, ext=ext, prefix=VIDEO_KEY_PREFIX)
+
+
 def public_audio_url(storage_key: str, base_url: str | None = None) -> str:
     """Join the public base URL and a storage key into a playable URL.
 
@@ -270,6 +286,20 @@ def public_audio_url(storage_key: str, base_url: str | None = None) -> str:
         from app.core.config import settings
 
         base_url = settings.audio_public_base_url
+    return f"{base_url.rstrip('/')}/{storage_key.lstrip('/')}"
+
+
+def public_video_url(storage_key: str, base_url: str | None = None) -> str:
+    """URL phát video bài giảng — nối chuỗi thuần, y hệt `public_audio_url`.
+
+    `base_url` mặc định là `settings.video_public_base_url`; để là tham số vì
+    cùng lý do bản audio: test và công cụ offline phải trỏ được chỗ khác mà
+    không đụng settings toàn cục.
+    """
+    if base_url is None:
+        from app.core.config import settings
+
+        base_url = settings.video_public_base_url
     return f"{base_url.rstrip('/')}/{storage_key.lstrip('/')}"
 
 

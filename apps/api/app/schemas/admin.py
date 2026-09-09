@@ -402,6 +402,13 @@ class GrammarLessonAdmin(BaseModel):
     """Id của câu đang gắn, theo `position` — màn attach cần đúng danh sách này
     để PUT cả khối (kiểu `StoryReorder`) mà không phải đoán lại."""
 
+    video_url: str | None = None
+    """Có khi bài mang video bài giảng (chỉ `theory`) — khối "Video bài giảng"
+    dùng nó để hiện placeholder thay vì khoá thô."""
+
+    video_duration_s: int | None = None
+    """Lời khai của trình duyệt lúc confirm — chỉ để hiển thị "12:34"."""
+
 
 class GrammarLessonUpdate(BaseModel):
     topic_id: str | None = None
