@@ -20,6 +20,8 @@ PRIMARY_KEYS = {
     "collocation_detail": ["entry_id"],
     "vocabulary_audio": ["entry_id", "kind", "accent"],
     "vocabulary_topic": ["entry_id", "topic_id"],
+    "vocabulary_collection": ["id"],
+    "vocabulary_collection_item": ["id"],
 }
 
 INSERT_RE = re.compile(r"INSERT INTO (?:public\.)?(\w+) \(([^)]*)\) VALUES \((.*)\);\s*$")
@@ -48,9 +50,19 @@ for line in sys.stdin:
         sys.stdout.write(line)
         continue
 
-    updates = ", ".join(f"{c} = EXCLUDED.{c}" for c in collist if c not in keys)
     conflict = ", ".join(keys)
+    # Bảng nối thuần khoá (vocabulary_topic...) không còn cột nào để SET —
+    # DO UPDATE SET rỗng là lỗi cú pháp; DO NOTHING đủ vì hàng nối không có
+    # gì cần cập nhật.
+    updates = [c for c in collist if c not in keys]
+    if not updates:
+        sys.stdout.write(
+            f"INSERT INTO public.{table} ({cols}) VALUES ({vals}) "
+            f"ON CONFLICT ({conflict}) DO NOTHING;\n"
+        )
+        continue
+    set_clause = ", ".join(f"{c} = EXCLUDED.{c}" for c in updates)
     sys.stdout.write(
         f"INSERT INTO public.{table} ({cols}) VALUES ({vals}) "
-        f"ON CONFLICT ({conflict}) DO UPDATE SET {updates};\n"
+        f"ON CONFLICT ({conflict}) DO UPDATE SET {set_clause};\n"
     )

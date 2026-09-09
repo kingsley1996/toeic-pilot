@@ -97,8 +97,9 @@ DELETE FROM image_asset;
 SQL
 
 echo "3/4  Dump + viết lại thành ON CONFLICT DO UPDATE"
-# Chỉ đúng sáu bảng nội dung của đợt này; phần cài đặt (badge_rule, level_tier,
-# progression_setting...) production đã có từ trước.
+# Chỉ đúng tám bảng nội dung của đợt này (cuốn "300 collocations…" phải đi
+# cùng topic); phần cài đặt (badge_rule, level_tier, progression_setting...)
+# production đã có từ trước.
 pg pg_dump -U toeic -d toeic_export --data-only --column-inserts \
   --table=audio_asset \
   --table=topic \
@@ -106,6 +107,8 @@ pg pg_dump -U toeic -d toeic_export --data-only --column-inserts \
   --table=collocation_detail \
   --table=vocabulary_audio \
   --table=vocabulary_topic \
+  --table=vocabulary_collection \
+  --table=vocabulary_collection_item \
   | python3 "$(dirname "$0")/.export-add-on-conflict.py" > "$OUT"
 
 echo "4/4  Dọn bản sao"
