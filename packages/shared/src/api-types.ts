@@ -3932,7 +3932,9 @@ export interface paths {
         };
         /**
          * List Parts
-         * @description Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub.
+         * @description Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub. Danh sách công
+         *     khai (khuôn khu luyện thi): khách phải xem được luyện những gì; chiến thuật
+         *     và phiên mới đòi tài khoản.
          */
         get: operations["list_parts_api_v1_practice_parts_get"];
         put?: never;
@@ -4052,7 +4054,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Tactics */
+        /**
+         * Get Tactics
+         * @description Trang chiến thuật — nội dung, nên đòi đăng nhập; danh sách part phía trên
+         *     nó thì công khai để khách biết có gì để luyện.
+         */
         get: operations["get_tactics_api_v1_practice_parts__part__tactics_get"];
         put?: never;
         post?: never;

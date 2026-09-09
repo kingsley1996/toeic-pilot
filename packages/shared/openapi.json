@@ -24020,7 +24020,7 @@
     },
     "/api/v1/practice/parts": {
       "get": {
-        "description": "Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub.",
+        "description": "Bảy part, số câu và nhãn ĐO THẬT — nguồn số liệu cho hub. Danh sách công\nkhai (khuôn khu luyện thi): khách phải xem được luyện những gì; chiến thuật\nvà phiên mới đòi tài khoản.",
         "operationId": "list_parts_api_v1_practice_parts_get",
         "responses": {
           "200": {
@@ -24291,6 +24291,7 @@
     },
     "/api/v1/practice/parts/{part}/tactics": {
       "get": {
+        "description": "Trang chiến thuật — nội dung, nên đòi đăng nhập; danh sách part phía trên\nnó thì công khai để khách biết có gì để luyện.",
         "operationId": "get_tactics_api_v1_practice_parts__part__tactics_get",
         "parameters": [
           {
@@ -24325,6 +24326,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Get Tactics",
         "tags": [
           "practice"
