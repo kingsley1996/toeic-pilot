@@ -49,9 +49,11 @@ function BookCard({
 }) {
   const tone = TONES[index % TONES.length]!;
   return (
+    // `group` cho hover zoom ảnh cover — ảnh phóng TO trong khung bị cắt
+    // (`overflow-hidden`), card không nhấc lên (DESIGN-SYSTEM: không lift).
     <PanelLink
       href={`/learn/vocabulary/collection-items/${item.id}`}
-      className="flex flex-col overflow-hidden p-0"
+      className="group flex flex-col overflow-hidden p-0"
     >
       {/* Cover hoặc placeholder — khung cố định tỉ lệ để hai card cùng hàng
           không nhảy chiều cao khi một cuốn chưa có ảnh. */}
@@ -60,32 +62,28 @@ function BookCard({
         <img
           src={item.image_url}
           alt=""
-          className="aspect-[4/3] w-full border-b border-rule bg-recess object-cover"
+          className="aspect-[3/4] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
         <span
           aria-hidden
-          className="flex aspect-[4/3] w-full items-center justify-center border-b border-rule bg-recess"
+          className="flex aspect-[3/4] w-full items-center justify-center border-b border-rule bg-recess transition-transform duration-300 group-hover:scale-105"
         >
           <BookOpen size={28} strokeWidth={1.25} className="text-ink-faint" />
         </span>
       )}
-      <div className="flex flex-1 flex-col p-4">
-        <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
-        <h3 className="mt-3 text-subtitle">{item.name}</h3>
+      <div className="flex flex-1 flex-col p-3">
+        <span aria-hidden className={`h-1 w-8 rounded ${tone}`} />
+        <h3 className="mt-2.5 line-clamp-2 text-body font-semibold leading-snug">{item.name}</h3>
         {item.description && (
-          <p className="mt-1.5 line-clamp-2 text-small text-ink-muted">{item.description}</p>
+          <p className="mt-1 line-clamp-2 text-small text-ink-muted">{item.description}</p>
         )}
-        <p className="mt-3 font-data text-small tabular-nums text-ink-faint">
+        <p className="mt-auto pt-2.5 font-data text-small tabular-nums text-ink-faint">
           {item.entry_count} thẻ
+          {/* learned_count chỉ có nghĩa khi đăng nhập; số 0 của khách vãng lai
+              là "chưa có dữ liệu", không phải "chưa học từ nào" — nên ẩn hẳn. */}
+          {signedIn && <span className="text-ink-muted"> · Đã học {item.learned_count}</span>}
         </p>
-        {/* learned_count chỉ có nghĩa khi đăng nhập; số 0 của khách vãng lai là
-            "chưa có dữ liệu", không phải "chưa học từ nào" — nên ẩn hẳn dòng. */}
-        {signedIn && (
-          <p className="mt-1 font-data text-small tabular-nums text-ink-muted">
-            Đã học {item.learned_count} từ
-          </p>
-        )}
       </div>
     </PanelLink>
   );
