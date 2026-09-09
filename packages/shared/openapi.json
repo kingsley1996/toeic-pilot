@@ -21216,6 +21216,18 @@
               "title": "Offset",
               "type": "integer"
             }
+          },
+          {
+            "description": "1 = chỉ entry có collocation_detail",
+            "in": "query",
+            "name": "collocation",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "description": "1 = chỉ entry có collocation_detail",
+              "title": "Collocation",
+              "type": "integer"
+            }
           }
         ],
         "responses": {

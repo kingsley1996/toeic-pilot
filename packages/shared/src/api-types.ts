@@ -14566,6 +14566,8 @@ export interface operations {
             query?: {
                 limit?: number;
                 offset?: number;
+                /** @description 1 = chỉ entry có collocation_detail */
+                collocation?: number;
             };
             header?: never;
             path?: never;

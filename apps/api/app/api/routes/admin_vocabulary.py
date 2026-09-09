@@ -610,9 +610,7 @@ def list_vocabulary_admin(
     # part_of_speech='phrase' — 59 hàng phrase cũ không phải collocation.
     query = select(VocabularyEntry)
     if collocation == 1:
-        query = query.join(
-            CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id
-        )
+        query = query.join(CollocationDetail, CollocationDetail.entry_id == VocabularyEntry.id)
     entries = db.scalars(
         query.options(
             selectinload(VocabularyEntry.audio).selectinload(VocabularyAudio.asset),
