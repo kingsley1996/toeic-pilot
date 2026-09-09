@@ -92,13 +92,13 @@ export const TIER_TONE: Record<string, string> = {
   uncommon: "text-ok",
   rare: "text-action",
   epic: "text-alert",
+  // Tím đen, và nó là token trạng thái THỨ NĂM của hệ thiết kế — thêm vào chính
+  // vì bốn cái kia đã kín. Mượn lại một cái sẽ bắt một màu mang hai nghĩa.
+  legendary: "text-myth",
   // Vàng ở đỉnh thang, và `--warn` là token vàng DUY NHẤT của hệ thiết kế. Thang
   // bốn accent vẫn không mượn được: nó phân loại giọng đọc, và mượn sang đây là
   // bắt một màu mang hai nghĩa.
-  legendary: "text-warn",
-  // Tím đen, và nó là token trạng thái THỨ NĂM của hệ thiết kế — thêm vào chính
-  // vì bốn cái kia đã kín. Mượn lại một cái sẽ bắt một màu mang hai nghĩa.
-  god: "text-myth",
+  god: "text-warn",
 };
 
 /**
@@ -118,8 +118,8 @@ const TIER_VAR: Record<string, string> = {
   uncommon: "--ok",
   rare: "--action",
   epic: "--alert",
-  legendary: "--warn",
-  god: "--myth",
+  legendary: "--myth",
+  god: "--warn",
 };
 
 /**
@@ -192,8 +192,8 @@ const TIER_FRAME: Record<string, string> = {
   uncommon: "border-ok bg-ok-tint",
   rare: "border-action bg-action-tint",
   epic: "border-alert bg-alert-tint",
-  legendary: "border-2 border-warn bg-warn-tint",
-  god: "border-2 border-myth bg-myth-tint",
+  legendary: "border-2 border-myth bg-myth-tint",
+  god: "border-2 border-warn bg-warn-tint",
 };
 
 export function Creature({

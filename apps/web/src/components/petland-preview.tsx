@@ -37,8 +37,8 @@ const SHOWCASE = [
   { tile: 169, name: "Mèo", tier: "Ít gặp", tone: "text-ok" },
   { tile: 117, name: "Cú", tier: "Hiếm", tone: "text-action-ink" },
   { tile: 157, name: "Hổ", tier: "Sử thi", tone: "text-alert" },
-  { tile: 33, name: "Rồng lửa", tier: "Huyền thoại", tone: "text-warn" },
-  { tile: 48, name: "Thần Bão", tier: "Thần", tone: "text-myth" },
+  { tile: 33, name: "Rồng lửa", tier: "Huyền thoại", tone: "text-myth" },
+  { tile: 48, name: "Thần Bão", tier: "Thần", tone: "text-warn" },
 ];
 
 export function Creature({ tile, size }: { tile: number; size: number }) {
