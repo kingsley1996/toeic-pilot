@@ -6593,6 +6593,11 @@ export interface components {
              */
             choice: string;
             /**
+             * Give Up
+             * @default false
+             */
+            give_up: boolean;
+            /**
              * Text
              * @default
              */
@@ -6658,6 +6663,8 @@ export interface components {
         };
         /** EncounterResult */
         EncounterResult: {
+            /** Answer */
+            answer?: string | null;
             /** Balance */
             balance: number;
             /** Correct */
@@ -6665,6 +6672,8 @@ export interface components {
             /** Done */
             done: boolean;
             encounter: components["schemas"]["EncounterPublic"] | null;
+            /** New Level */
+            new_level?: number | null;
             /** Reward Ruby */
             reward_ruby: number;
             /** Steps Done */

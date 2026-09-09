@@ -674,10 +674,26 @@ def answer_encounter(
     profile = ensure_profile(db, current_user)
     correct = False
     diff: list[DiffWord] | None = None
+    answer: str | None = None
+    new_level: int | None = None
+    if body.give_up and row.task_kind != "vocabulary":
+        # Đầu hàng chỉ có ở nhiệm vụ từ vựng. Chép chính tả thì "đáp án" là cả
+        # một câu: kho cạn không thay được đề, và để lộ một trọn câu trên đề còn
+        # nguyên là giao luôn câu trả lời.
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Nhiệm vụ này không có nút đầu hàng.",
+        )
     if row.task_kind == "vocabulary" and row.target_id is not None:
         entry = db.get(VocabularyEntry, row.target_id)
         if entry is not None:
-            if _answer_mode(row) == "choice":
+            if body.give_up:
+                # "Tôi chưa biết": lượt ôn vẫn ghi ở mức QUÊN — người học đã gặp
+                # từ, đã nhận ra mình không nhớ, và đó là một lượt học thật —
+                # nhưng bước KHÔNG được tính, và đáp án lộ ra kèm đề mới.
+                grade = GRADE_FORGOT
+                answer = entry.headword
+            elif _answer_mode(row) == "choice":
                 # Chọn đúng ô nào thì so bằng mã băm, không so bằng id: id đúng
                 # là thứ trình duyệt đọc được từ chính đề bài.
                 correct = body.choice == _choice_key(row.id, entry.id)
@@ -724,7 +740,10 @@ def answer_encounter(
             # nên trần ngày, mốc level và múi giờ người học đều là một bộ với
             # mấy cái nút chăm sóc — một đường trao XP thứ hai là chỗ trần ngày
             # đếm thiếu mà không ai thấy.
+            level_before = pet_row.level_reached
             _award(db, pet_row, current_user, needs_service.XP_PER_ENCOUNTER[row.kind], at)
+            if pet_row.level_reached > level_before:
+                new_level = pet_row.level_reached
         else:
             # Bước sau phải là một câu KHÁC. Ba bước cùng một từ thì bước hai và
             # ba chỉ là gõ lại đáp án vừa nhìn thấy, và cả đợt xâm nhập rút gọn
@@ -736,6 +755,19 @@ def answer_encounter(
                 # Không đặt lại thì bước hai và ba của một đợt xâm nhập thừa
                 # hưởng cái trần đã dùng hết ở bước một.
                 row.hints_used = 0
+    elif body.give_up and row.target_id is not None:
+        # Bỏ qua một bước thì từ vừa lộ đáp án KHÔNG được ở lại: để nguyên đề và
+        # hiện đáp án là biến lượt sau thành gõ chép lấy thưởng. Bốc đề khác,
+        # đặt lại gợi ý, không cộng bước, không thưởng.
+        nxt = encounters.pick_target(db, current_user.id, row.task_kind, random.SystemRandom())
+        if nxt is not None:
+            row.target_id = nxt
+            row.hints_used = 0
+        else:
+            # Kho cạn, không còn đề thay thế: đáp án phải tiếp tục giấu, nếu
+            # không đề cũ còn nguyên trên màn cùng đáp án vừa lộ — gõ lại là có
+            # ruby. Bước ấy sẽ hết hạn cùng cuộc.
+            answer = None
     db.commit()
     db.refresh(row)
 
@@ -748,6 +780,8 @@ def answer_encounter(
         balance=ruby.balance(db, current_user.id),
         encounter=None if row.state != "waiting" else _encounter_public(db, row),
         word_diff=diff,
+        answer=answer,
+        new_level=new_level,
     )
 
 

@@ -1616,14 +1616,28 @@ function PetPanel({
    * máy chủ nâng tinh thần và cấp XP. Không có nửa này thì con thú vẫn lớn lên
    * nhưng không ai thấy nó lớn vì cái gì.
    *
+   * `power` đi kèm cú reo: 1 là một cú trả lời đúng, số lớn hơn là một cột mốc —
+   * bắn nhiều mẩu hơn VÀ đẩy vòng sáng dưới chân lên mức hiếm nhất trong chốc
+   * lát rồi trả lại. Lòng vòng sáng là của hạng, mượn nó một nhịp là cách con
+   * thú "loá sáng" mà không cần một đường vẽ thứ hai.
+   *
    * Đang ngủ thì im — cùng luật với mấy mẩu cảm xúc bên dưới: không đánh thức
    * con thú bằng một hiệu ứng.
    */
   useEffect(
     () =>
-      subscribeToCheer(() => {
+      subscribeToCheer((power) => {
         if (document.hidden || reducedRef.current || asleepRef.current) return;
-        spawnBits("spark", 3);
+        spawnBits("spark", 3 * power);
+        if (power > 1) {
+          const previous = glowRef.current;
+          glowRef.current = { color: previous.color, strength: 1 };
+          // Trả lại đúng đối tượng đã mượn; hiệu ứng 1,8s là một chốc lát so với
+          // tuổi của trang, nên không bận tâm huỷ timer lúc unmount.
+          window.setTimeout(() => {
+            glowRef.current = previous;
+          }, 1800);
+        }
       }),
     [spawnBits],
   );

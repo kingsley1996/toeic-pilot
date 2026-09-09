@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { clock, secondsLeft } from "@/components/petland-countdown";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
+import { cheer } from "@/lib/pet-cheer";
 import { notifyPet } from "@/lib/pet-notice";
 
 /**
@@ -75,6 +76,8 @@ export function QuestCard({
    */
   const [hint, setHint] = useState<string | null>(null);
   const [hintsLeft, setHintsLeft] = useState(encounter.task.hints_left);
+  /** Đáp án của bước vừa ĐẦU HÀNG — đề đã đổi nhưng màn ở lại với từ cũ. */
+  const [reveal, setReveal] = useState<{ word: string; meaning: string | null } | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   /*
@@ -93,8 +96,9 @@ export function QuestCard({
 
   const task = encounter.task;
   const danger = encounter.kind === "intruder";
+  const rescue = encounter.kind === "rescue";
 
-  async function answer(payload: { text?: string; choice?: string }) {
+  async function answer(payload: { text?: string; choice?: string; give_up?: boolean }) {
     if (busy) return;
     setBusy(true);
     setFailed(null);
@@ -124,6 +128,16 @@ export function QuestCard({
           sound: "complete",
           dedupeKey: `quest-${encounter.id}`,
         });
+        if (result.new_level) {
+          // Cột mốc nói bằng chính con số máy chủ ghi. `cheer(3)` là cú reo to:
+          // mẩu loé nhiều gấp ba và vòng sáng dưới chân con thú cháy sáng rồi
+          // tự lùi lại — một khoảnh khắc xứng với một level.
+          cheer(3);
+          notifyPet({
+            tone: "ok",
+            title: `Con thú lên level ${result.new_level}!`,
+          });
+        }
         onChange(null);
         onClose();
         return;
@@ -137,10 +151,30 @@ export function QuestCard({
         setTyped("");
         setTried([]);
         setDiff(null);
+        setReveal(null);
         // Bước sau là một từ khác, và máy chủ đã đặt lại lượt gợi ý của nó. Giữ
         // lại gợi ý cũ ở đây là in một nửa từ CŨ lên trên đề bài mới.
         setHint(null);
         setHintsLeft(result.encounter?.task.hints_left ?? 0);
+        return;
+      }
+      if (payload.give_up) {
+        // Đầu hàng: đề đã đổi, nhưng MÀN thì ở lại với từ cũ — đáp án hiện to
+        // cùng nghĩa của nó, đề mới nằm dưới chờ một cú bấm. Dồn mọi thứ vào
+        // một khoảnh khắc là màn rối: đề mới, đáp án cũ, nút gợi ý reset tất
+        // cả cùng đổ ra và mắt không biết đọc thứ nào trước.
+        setTyped("");
+        setTried([]);
+        setDiff(null);
+        setHint(null);
+        setHintsLeft(result.encounter?.task.hints_left ?? 0);
+        // `task` ở đây vẫn là đề CŨ — đề mới nằm trong `result.encounter`.
+        // Kho cạn thì máy chủ không lộ đáp án (đề cũ còn nguyên), chỉ báo hết đường.
+        if (result.answer) {
+          setReveal({ word: result.answer, meaning: task.prompt ?? null });
+        } else {
+          setFailed("Kho không còn từ thay thế — cuộc này sẽ tự hết hạn.");
+        }
         return;
       }
       // Sai thì KHÔNG hiện đáp án. Cuộc chạm mặt vẫn đang chờ nên người học thử
@@ -187,7 +221,7 @@ export function QuestCard({
     <div className="max-h-[35vh] w-full shrink-0 overflow-y-auto border-t border-rule p-3 sm:h-[var(--pet-map-h)] sm:max-h-none sm:w-[var(--pet-egg-w)] sm:border-l sm:border-t-0">
       <div className="flex items-center justify-between gap-3">
         <h3 className={cx("text-small font-semibold", danger ? "text-alert" : "text-warn")}>
-          {danger ? "Kẻ xâm nhập" : "Có người cần giúp"}
+          {danger ? "Kẻ xâm nhập" : rescue ? "Nhiệm vụ hồi phục" : "Có người cần giúp"}
           {encounter.steps_total > 1 && (
             <span className="ml-2 font-data font-normal tabular-nums text-ink-muted">
               {encounter.steps_done}/{encounter.steps_total}
@@ -217,12 +251,34 @@ export function QuestCard({
       <p className="mt-1 text-small text-ink-muted">
         {danger
           ? `Trả lời đúng ${encounter.steps_total} lần để đẩy lui.`
-          : task.mode === "dictation"
-            ? "Nghe và chép lại giúp một câu, nhận thưởng."
-            : "Trả lời giúp một từ, nhận thưởng."}
+          : rescue
+            ? "Trả lời đúng để con thú hồi phục — không có ruby, nhưng có health."
+            : task.mode === "dictation"
+              ? "Nghe và chép lại giúp một câu, nhận thưởng."
+              : "Trả lời giúp một từ, nhận thưởng."}
       </p>
 
-      {task.mode === "typing" && task.prompt ? (
+      {reveal ? (
+        // Màn SAU KHI ĐẦU HÀNG: chỉ từ cũ, nghĩa cũ, và một lối ra. Đề mới nằm
+        // trong `encounter` nhưng CHƯA hiện — một lúc một chuyện, nếu không thì
+        // đề mới, đáp án cũ và nút gợi ý reset đổ ra cùng lúc thành màn rối.
+        <div className="mt-3 rounded border border-rule-strong bg-recess p-3">
+          <p className="text-label text-ink-faint">Đáp án của từ vừa rồi</p>
+          <p className="mt-1 font-data text-title text-ink">{reveal.word}</p>
+          {reveal.meaning && <p className="mt-0.5 text-small text-ink-muted">{reveal.meaning}</p>}
+          <Button
+            size="sm"
+            className="mt-3"
+            disabled={busy}
+            onClick={() => {
+              setReveal(null);
+              setTyped("");
+            }}
+          >
+            Sang từ mới
+          </Button>
+        </div>
+      ) : task.mode === "typing" && task.prompt ? (
         <div className="mt-3 rounded border border-rule-strong p-3">
           <p className="text-body text-ink">{task.prompt}</p>
           {task.part_of_speech && (
@@ -245,7 +301,7 @@ export function QuestCard({
               không phân biệt được mình đã nhớ tới đâu. */}
           {hint && <p className="mt-2 font-data text-body tracking-widest text-warn">{hint}</p>}
 
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <Button size="sm" disabled={busy || !ready} onClick={() => answer({ text: typed })}>
               Kiểm tra
             </Button>
@@ -266,6 +322,17 @@ export function QuestCard({
             >
               <Lightbulb size={14} strokeWidth={2} aria-hidden />
               {hintsLeft > 0 ? `Gợi ý (${hintsLeft})` : "Hết gợi ý"}
+            </Button>
+            {/* Đầu hàng không phải thất bại của bài kiểm: nó ghi lượt ôn ở mức
+                QUÊN, không cộng bước và không có ruby — cái giá của việc nhìn
+                đáp án là chính việc phải học nó. */}
+            <Button
+              size="sm"
+              variant="quiet"
+              disabled={busy}
+              onClick={() => void answer({ give_up: true })}
+            >
+              Tôi chưa biết
             </Button>
           </div>
         </div>

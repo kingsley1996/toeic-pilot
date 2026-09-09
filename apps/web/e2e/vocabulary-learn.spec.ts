@@ -147,8 +147,10 @@ test("gõ một từ rồi tự chấm: ghi ĐÚNG một lượt ôn, và F5 v�
   expect(recallChecks).toBe(1);
   expect(boardWrites, "mở ván ghi một lần, chấm xong ghi một lần").toBeGreaterThanOrEqual(2);
 
-  // Thanh tiến độ đếm từ ĐÃ CHẤM, đọc lại từ máy chủ chứ không tự cộng ở client.
-  await expect(page.getByLabel(`Tiến độ 1 trên ${entryCount} từ`)).toBeVisible();
+  // Meter chủ đề đếm MASTERED, đọc lại từ máy chủ chứ không tự cộng ở client.
+  // Chấm "Thành thạo" đưa từ thẳng tới mốc 21 ngày, nên ngay sau một lượt
+  // chấm meter phải đọc 1 — không phải 0.
+  await expect(page.getByLabel(`Đã thuộc 1 trên ${entryCount} từ`)).toBeVisible();
 
   // Đây là bài kiểm chính: bàn cờ nằm trên máy chủ, nên tải lại trang phải nối
   // tiếp đúng chỗ. localStorage hay state trong bộ nhớ đều xanh cho tới dòng này.

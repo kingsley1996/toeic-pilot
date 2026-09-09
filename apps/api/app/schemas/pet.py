@@ -483,6 +483,13 @@ class EncounterAnswer(BaseModel):
     """Câu đã gõ: cả câu cho chép chính tả, một từ cho dạng gõ lại."""
     choice: str = Field(default="", max_length=64)
     """`key` của lựa chọn đã chọn, cho dạng chọn nghĩa."""
+    give_up: bool = False
+    """Đầu hàng bước này: không chấm, ghi lượt ôn ở mức QUÊN, và lộ đáp án.
+
+    Máy chủ quyết định điều gì xảy ra sau đầu hàng — bốc đề khác, đặt lại gợi ý —
+    client chỉ khai ý định. Một cờ "skip" do trình duyệt tự xử là một đường trả
+    thưởng tự vẽ.
+    """
 
 
 class DiffWord(BaseModel):
@@ -525,6 +532,23 @@ class EncounterResult(BaseModel):
 
     `null` cho dạng khác. Chỉ có ở đây, KHÔNG có ở `EncounterTask`: nó là thứ
     máy chủ trả lại SAU khi chấm, nên nó không tiết lộ gì trước lúc trả lời.
+    """
+
+    answer: str | None = None
+    """Đáp án của bước vừa ĐẦU HÀNG, chỉ khác `null` khi `give_up` được nhận.
+
+    Nó chỉ xuất hiện sau khi máy chủ đã rút đề cũ đi: đầu hàng bốc đề khác trước
+    khi trả về, nên đáp án lộ ra không thể được gõ lại trên cùng một đề để lấy
+    thưởng — khác nhánh "sai", nơi đề vẫn đứng và đáp án phải giấu.
+    """
+
+    new_level: int | None = None
+    """Level con thú vừa chạm lần ĐẦU trong lượt trả lời này, hay `null`.
+
+    Gửi số mốc chứ không gửi cờ "đã lên level": client chỉ đọc một con số và nói
+    thẳng nó ra, còn suy "level mới là mấy" từ level cũ bên client là hai nguồn
+    sự thật cho một con số máy chủ vừa ghi. Chỉ có ở đường XÓA cuộc — trao XP là
+    việc của lúc hoàn thành, không phải của từng bước.
     """
 
 

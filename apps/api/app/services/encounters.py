@@ -25,7 +25,6 @@ công sức của họ biến mất vì một cái đồng hồ ở đâu đó v
 
 from __future__ import annotations
 
-import math
 import random
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -90,24 +89,30 @@ __all__ = [
 
 
 def hint_for(word: str, used: int) -> str:
-    """Từ cần gõ, che một phần — càng xin thì hở ra càng nhiều.
+    """Từ cần gõ, che theo **vị trí**, không che theo đoạn liền nhau.
 
-    Lần thứ nhất mở **một phần tư** số chữ, lần thứ hai mở **một nửa**. Không mở
-    một chữ mỗi lần: với một từ mười chữ thì hai lần gợi ý chỉ ra hai chữ, tức là
-    không gỡ được gì và cái nút thành trang trí. Và không mở quá một nửa, vì phần
-    còn phải nhớ chính là thứ phân biệt một bài kiểm với một ô điền sẵn.
+    Bản trước mở tiền tố — `neg·····` rồi `negoti····` — và một tiền tố là một
+    lúc bắt đầu quá dễ: đoán "negotiation" từ "n-e-g" là đoán từ tự điển, không
+    phải nhớ. Giờ gợi ý rải **những chữ ở vị trí chẵn** trên khắp chiều dài từ,
+    nên mỗi lần xin hở ra càng nhiều TỬ VỊ nhưng không bao giờ hở ra một đầu từ;
+    người học phải ghép các mảnh rời với ký ức của họ.
 
-    Chỗ chưa mở in thành dấu chấm giữa dòng, nên **độ dài của từ cũng lộ ra** —
-    đó là chủ ý: biết từ cần gõ dài mấy chữ là nửa phần giá trị của một gợi ý.
+    Lần thứ nhất hở một chữ trên bốn vị trí chẵn, lần thứ hai hở mọi vị trí chẵn.
+    Chỗ chưa mở in thành dấu chấm, nên **độ dài của từ vẫn lộ ra** — đó là chủ
+    ý: biết từ cần gõ dài mấy chữ là nửa phần giá trị của một gợi ý.
 
     `used` là số lần ĐÃ xin TRƯỚC lần này, nên lần xin đầu tiên truyền vào 0.
     Hàm thuần, không kẹp `used` theo trần: trần là việc của đường ghi, còn ở đây
     kẹp im lặng sẽ giấu mất một lỗi gọi sai.
     """
     letters = len(word)
-    share = 0.25 if used <= 0 else 0.5
-    shown = max(1, min(letters, math.ceil(letters * share)))
-    return word[:shown] + "·" * (letters - shown)
+    # Bước nhảy của chữ lộ: lần 1 hở các vị trí 0, 4, 8, …; lần 2 hở mọi vị trí
+    # chẵn (0, 2, 4, …). Từ rất ngắn luôn hở chữ đầu, và không bao giờ hở hết —
+    # phần còn phải nhớ chính là thứ phân biệt một bài kiểm với một ô điền sẵn.
+    step = 4 if used <= 0 else 2
+    masked = [word[i] if i % step == 0 else "·" for i in range(letters)]
+    masked[0] = word[0]
+    return "".join(masked)
 
 
 def settings_row(db: Session) -> EncounterSetting:

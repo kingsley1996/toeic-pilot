@@ -16,17 +16,23 @@
  * — nên ở đây chỉ có một hàm, và nó chỉ dành cho lúc đúng.
  */
 
-const listeners = new Set<() => void>();
+const listeners = new Set<(power: number) => void>();
 
 /** Nghe tiếng reo. Trả về hàm huỷ đăng ký. */
-export function subscribeToCheer(onCheer: () => void): () => void {
+export function subscribeToCheer(onCheer: (power: number) => void): () => void {
   listeners.add(onCheer);
   return () => {
     listeners.delete(onCheer);
   };
 }
 
-/** Người học vừa trả lời đúng một câu. */
-export function cheer(): void {
-  for (const listener of listeners) listener();
+/**
+ * Người học vừa trả lời đúng một câu.
+ *
+ * `power = 1` là một cú đúng thường; số lớn hơn là một cột mốc (lên level…) và
+ * người nghe trả lời bằng một hiệu ứng to hơn. Mặc định 1 để mọi lời gọi cũ
+ * không phải đổi.
+ */
+export function cheer(power = 1): void {
+  for (const listener of listeners) listener(power);
 }

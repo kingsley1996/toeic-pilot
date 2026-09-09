@@ -11,8 +11,14 @@ export function secondsLeft(iso: string, now: number): number {
   return Math.max(0, Math.floor((new Date(iso).getTime() - now) / 1000));
 }
 
-/** `m:ss`. Phút không đệm 0, giây thì có — "0:09" đọc ra ngay là chín giây. */
+/** `m:ss`, và từ một giờ lên là `h:mm:ss` — "1439:50" đọc là phút của một giờ,
+ * không phải một ngày. Nhiệm vụ hồi phục sống cả ngày nên cần vạch giờ. */
 export function clock(seconds: number): string {
+  if (seconds >= 3600) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  }
   const minutes = Math.floor(seconds / 60);
   return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }

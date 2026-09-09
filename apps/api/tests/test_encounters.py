@@ -398,6 +398,142 @@ def test_answering_an_intruder_step_moves_on_to_a_different_word(
     assert row.target_id != first_target
 
 
+def test_giving_up_reveals_the_answer_without_counting_the_step(
+    client: TestClient, db_session: Session, auth: dict
+) -> None:
+    """Đầu hàng lộ đáp án, KHÔNG cộng bước, KHÔNG thưởng — và đề đổi.
+
+    Đáp án chỉ có thể lộ sau khi đề cũ đã rút đi, nếu không nút "tôi chưa biết"
+    là một nút in tiền: nhìn đáp án, gõ lại, nhận ruby. Lượt ôn vẫn ghi ở mức
+    QUÊN — người học đã gặp từ và nhận ra mình không nhớ.
+    """
+    from app.models.vocabulary import VocabularyReviewState
+
+    headers = auth("learner")
+    user = db_session.query(User).filter(User.role == "learner").one()
+    words = _words(db_session, count=8)
+    _pet(db_session, user)
+
+    # Chốt id sao cho nó rơi vào dạng GÕ LẠI TỪ — đầu hàng là của dạng gõ.
+    while True:
+        rid = uuid.uuid4()
+        if rid.int % 2 == 0:
+            break
+    row = Encounter(
+        id=rid,
+        user_id=user.id,
+        kind="npc",
+        task_kind="vocabulary",
+        target_id=words[0].id,
+        steps_total=1,
+        reward_ruby=5,
+        expires_at=datetime.now(UTC) + timedelta(minutes=10),
+    )
+    db_session.add(row)
+    db_session.commit()
+
+    body = client.post(
+        f"/api/v1/pet/encounters/{row.id}/answer",
+        headers=headers,
+        json={"give_up": True},
+    ).json()
+    assert body["correct"] is False and body["reward_ruby"] == 0 and body["done"] is False
+    assert body["answer"] == words[0].headword
+    db_session.refresh(row)
+    assert row.steps_done == 0 and row.state == "waiting"
+    # Đề cũ rút TRƯỚC khi trả đáp án: từ vừa lộ không thể được gõ lại lấy thưởng.
+    assert row.target_id != words[0].id
+    # Lượt ôn ghi ở mức QUÊN, đúng một lượt học thật đã xảy ra.
+    state = db_session.query(VocabularyReviewState).filter_by(user_id=user.id).one()
+    assert state.entry_id == words[0].id
+    # Gợi ý của đề mới đầy lại từ đầu.
+    assert body["encounter"]["task"]["hints_left"] == 2
+
+
+def test_giving_up_one_step_of_an_intruder_keeps_the_fight_alive(
+    client: TestClient, db_session: Session, auth: dict
+) -> None:
+    """Đầu hàng một bước của đợt nhiều bước: bước KHÔNG được tính, trận đánh còn.
+
+    Kẻ xâm nhập đòi đúng đủ ba lần; một lần "tôi chưa biết" phải chỉ bỏ một từ,
+    không phải bỏ cả đợt — cũng không được bấm nút hoạt cảnh đòn đánh, vì không
+    có đòn nào trúng khi chưa có câu trả lời nào đúng.
+    """
+    headers = auth("learner")
+    user = db_session.query(User).filter(User.role == "learner").one()
+    words = _words(db_session, count=8)
+    _pet(db_session, user)
+
+    while True:
+        rid = uuid.uuid4()
+        if rid.int % 2 == 0:
+            break
+    row = Encounter(
+        id=rid,
+        user_id=user.id,
+        kind="intruder",
+        task_kind="vocabulary",
+        target_id=words[0].id,
+        steps_total=3,
+        reward_ruby=20,
+        expires_at=datetime.now(UTC) + timedelta(minutes=10),
+    )
+    db_session.add(row)
+    db_session.commit()
+
+    body = client.post(
+        f"/api/v1/pet/encounters/{row.id}/answer",
+        headers=headers,
+        json={"give_up": True},
+    ).json()
+    assert body["correct"] is False and body["steps_done"] == 0 and body["done"] is False
+    assert body["answer"] == words[0].headword
+
+    # Đề mới thay từ vừa lộ, và trận đánh vẫn chờ bước đúng kế tiếp.
+    db_session.refresh(row)
+    assert row.state == "waiting" and row.target_id != words[0].id
+    next_body = client.post(
+        f"/api/v1/pet/encounters/{row.id}/answer",
+        headers=headers,
+        json=_solve(db_session, row, row.target_id),
+    ).json()
+    assert next_body["correct"] is True and next_body["steps_done"] == 1
+
+
+def test_giving_up_with_no_replacement_word_hides_the_answer(
+    client: TestClient, db_session: Session, auth: dict
+) -> None:
+    """Kho cạn, không thay được đề: đáp án phải GIẤU, đề cũ ở lại.
+
+    Một từ duy nhất trong kho: đầu hàng ghi lượt ôn cho nó, nó rơi khỏi vòng
+    quay từ-chưa-gặp, và không còn đề nào thay thế. Lộ đáp án lúc này là in
+    đáp án lên một đề còn nguyên — gõ lại là có ruby.
+    """
+    headers = auth("learner")
+    user = db_session.query(User).filter(User.role == "learner").one()
+    words = _words(db_session, count=1)
+    _pet(db_session, user)
+
+    row = Encounter(
+        user_id=user.id,
+        kind="npc",
+        task_kind="vocabulary",
+        target_id=words[0].id,
+        steps_total=1,
+        reward_ruby=5,
+        expires_at=datetime.now(UTC) + timedelta(minutes=10),
+    )
+    db_session.add(row)
+    db_session.commit()
+
+    body = client.post(
+        f"/api/v1/pet/encounters/{row.id}/answer",
+        headers=headers,
+        json={"give_up": True},
+    ).json()
+    assert body["answer"] is None and body["done"] is False
+
+
 def test_a_wrong_vocabulary_answer_still_records_the_review(
     client: TestClient, db_session: Session, auth: dict
 ) -> None:
@@ -563,17 +699,17 @@ def test_only_an_admin_can_summon_encounters(client: TestClient, auth: dict) -> 
     )
 
 
-def test_a_hint_opens_a_quarter_then_a_half_and_stops(db_session: Session) -> None:
+def test_a_hint_scatters_letters_instead_of_a_prefix(db_session: Session) -> None:
     """Luật gợi ý, đo thẳng trên hàm thuần.
 
-    Một phần tư rồi một nửa, chứ không phải một chữ mỗi lần: với một từ mười chữ
-    thì mở từng chữ nghĩa là hai lần gợi ý chỉ ra hai chữ — không gỡ được gì, và
-    cái nút thành trang trí. Không quá một nửa, vì phần còn phải nhớ chính là thứ
-    phân biệt một bài kiểm với một ô điền sẵn.
+    Gợi ý rải các chữ ở vị trí chẵn trên khắp từ chứ không mở một đầu: một tiền
+    tố là một lúc bắt đầu quá dễ, đoán "negotiation" từ "negoti" là đoán từ tự
+    điển. Lần đầu hở thưa (mỗi 4 vị trí chẵn), lần hai hở dày (mọi vị trí chẵn),
+    và không bao giờ hở hết.
     """
-    assert encounters.hint_for("negotiation", 0) == "neg········"
-    assert encounters.hint_for("negotiation", 1) == "negoti·····"
-    # Từ ngắn vẫn phải hở ít nhất một chữ, và không bao giờ hở hết.
+    assert encounters.hint_for("negotiation", 0) == "n···t···i··"
+    assert encounters.hint_for("negotiation", 1) == "n·g·t·a·i·n"
+    # Chữ đầu luôn hở, kể cả với từ rất ngắn.
     assert encounters.hint_for("go", 0) == "g·"
     assert encounters.hint_for("go", 1) == "g·"
     assert all("·" in encounters.hint_for(word, 1) for word in ("go", "invoice", "a" * 20))

@@ -4365,6 +4365,11 @@
             "title": "Choice",
             "type": "string"
           },
+          "give_up": {
+            "default": false,
+            "title": "Give Up",
+            "type": "boolean"
+          },
           "text": {
             "default": "",
             "maxLength": 2000,
@@ -4464,6 +4469,17 @@
       },
       "EncounterResult": {
         "properties": {
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
           "balance": {
             "title": "Balance",
             "type": "integer"
@@ -4485,6 +4501,17 @@
                 "type": "null"
               }
             ]
+          },
+          "new_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Level"
           },
           "reward_ruby": {
             "title": "Reward Ruby",
