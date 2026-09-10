@@ -1,8 +1,9 @@
 [QUESTION]
-voice: us_female_1
-(A) He is holding a cup of tea.
-(B) He is pouring tea into a cup.
-(C) Two men are looking out the window.
-(D) He is sitting at the conference table.
-Answer: A
+voice: ca_male_1
+(A) A woman is reading a magazine while walking.
+(B) A ground crew worker is placing bags onto the conveyor belt.
+(C) Several passengers are pulling luggage through a corridor.
+(D) The baggage cart is parked next to the aircraft.
+Answer: C
+Explanation: Trong ảnh có bốn hành khách đi dọc hành lang kính, mỗi người kéo va li bánh xe; ngoài cửa sổ lớn trên sân đỗ, hai nhân viên đang đẩy xe chở hành lý về phía băng chuyền bên cạnh máy bay nhưng xe chưa tới. | (A) "reading a magazine" — không có tạp chí nào trong ảnh: vật không có trong ảnh. | (B) "placing bags onto the conveyor belt" — nhân viên đang đẩy xe trên sân, chưa đặt hành lý lên băng chuyền: đúng vật, sai hành động. | (C) "pulling luggage through a corridor" — đúng việc nhóm hành khách đang làm. | (D) "parked next to the aircraft" — xe hành lý đang được đẩy trên sân đỗ, chưa ở cạnh máy bay: đúng vật, sai vị trí.
 Source: original

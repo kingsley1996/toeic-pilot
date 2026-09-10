@@ -1,8 +1,9 @@
 [QUESTION]
-voice: ca_male_1
-(A) The worker is holding a clipboard.
-(B) The worker is sweeping the warehouse floor.
-(C) Two workers are unloading a truck.
-(D) The worker is placing a box on a shelf.
-Answer: D
+voice: us_female_1
+(A) Wooden pallets are lined up beside the conveyor belt.
+(B) Some cartons are stacked against the wall near the workstations.
+(C) A crane is moving along a rail above the production line.
+(D) Workstations are arranged in a circle around the conveyor.
+Answer: B
+Explanation: Trong ảnh, băng chuyền nhựa xám chạy giữa xưởng, các trạm thao tác bằng kim loại xếp thành hàng thẳng dọc hai bên; bên trái thùng carton chồng cao sát tường bê tông; cần trục nhỏ màu vàng nằm yên trên ray treo trần; cuối xưởng cửa cuốn mở nhìn ra bến xếp hàng với pallet gỗ xếp song song. | (A) "Wooden pallets are lined up beside the conveyor belt" — pallet gỗ có trong ảnh nhưng nằm ở bến xếp hàng bên ngoài cửa cuốn phía cuối xưởng, không phải bên cạnh băng chuyền: đúng vật, sai vị trí. | (B) "Some cartons are stacked against the wall near the workstations" — đúng: thùng carton chồng sát tường bê tông bên trái, gần các trạm thao tác. | (C) "A crane is moving along a rail above the production line" — cần trục nằm trên ray treo trần nhưng đang đứng yên, không có bằng chứng đang di chuyển: hành động không có căn cứ. | (D) "Workstations are arranged in a circle around the conveyor" — các trạm thao tác có trong ảnh nhưng xếp thành hàng thẳng, không phải hình tròn: đúng vật, sai bố cục.
 Source: original

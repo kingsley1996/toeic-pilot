@@ -1,8 +1,9 @@
 [QUESTION]
-voice: uk_female_1
-(A) Two women are sitting at the desk.
-(B) The woman is drinking from a glass.
-(C) The woman is typing on a keyboard.
-(D) The woman is reading a document.
-Answer: C
+voice: au_male_1
+(A) A mechanic is lying beneath a vehicle on a lift.
+(B) The workers are assembling an engine at the workbench.
+(C) Several tools are arranged on shelves above the workbench.
+(D) Two workers are examining the exhaust system at the workbench.
+Answer: A
+Explanation: Ảnh chụp xưởng sửa chữa ô tô: bên trái, một thợ cơ khí nằm ngửa dưới gầm ô tô trên cầu nâng, tay cầm cờ lê với lên hệ thống xả; bên phải, hai thợ đứng trước bàn thao tác, một người giữ khối động cơ đã tháo rời, người kia chỉ vào chi tiết trên động cơ; trên tường phía sau bàn treo đầy cờ lê và mỏ lết trên bảng móc. | (A) "lying beneath a vehicle on a lift" — đúng việc thợ cơ khí đang làm. | (B) "assembling an engine" — hai người ở bàn đang kiểm tra động cơ đã tháo, không phải lắp ráp: đúng vật, sai hành động. | (C) "arranged on shelves" — dụng cụ treo trên bảng móc gắn tường, không đặt trên kệ: đúng vật, sai vị trí. | (D) "examining the exhaust system" — hai người ở bàn đang kiểm tra động cơ, hệ thống xả ở gầm xe bên kia: đúng người, sai vật.
 Source: original

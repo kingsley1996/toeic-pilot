@@ -1,8 +1,9 @@
 [QUESTION]
 voice: au_male_1
-(A) The guests are waiting in line at the desk.
-(B) The receptionist is handing a key to the guest.
-(C) The receptionist is writing on a piece of paper.
-(D) The workers are all wearing name badges.
-Answer: B
+(A) The color-coded bin is placed directly under the lab bench.
+(B) Several Erlenmeyer flasks are lined up on the lab bench surface.
+(C) A rubber hose is hanging from a hook above the sink.
+(D) Some Petri dishes are stacked beside the microscope on the bench.
+Answer: D
+Explanation: Trong ảnh là phòng thí nghiệm không người; trên mặt bàn có kính hiển vi và chồng đĩa Petri đặt ngay bên cạnh, bình tam giác và cốc đong xếp trên kệ gỗ phía trên bàn, còn góc phải phòng có bồn rửa với ống cao su treo trên móc gắn tường bên phải bồn và thùng rác phân loại màu cạnh bồn. | (A) "placed directly under the lab bench" — thùng rác có trong ảnh nhưng đặt cạnh bồn rửa góc phải phòng, không phải dưới gầm bàn: đúng vật, sai vị trí. | (B) "Erlenmeyer flasks are lined up on the lab bench surface" — bình tam giác có trong ảnh nhưng nằm trên kệ gỗ phía trên bàn, không phải trên mặt bàn: đúng vật, sai vị trí. | (C) "hanging from a hook above the sink" — ống cao su có trong ảnh nhưng treo trên móc ở tường bên phải bồn rửa, không phải phía trên bồn: đúng vật, đổi giới từ vị trí. | (D) "Petri dishes are stacked beside the microscope on the bench" — đúng vị trí đĩa Petri cạnh kính hiển vi trên mặt bàn.
 Source: original

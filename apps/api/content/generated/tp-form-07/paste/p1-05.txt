@@ -1,8 +1,9 @@
 [QUESTION]
 voice: uk_female_1
-(A) The chairs have been placed on top of the desks.
-(B) A woman is typing on a computer.
-(C) There are three rows of desks in the office.
-(D) Several coffee mugs are sitting on the desks.
-Answer: C
+(A) The man is scattering grain for the pigeons.
+(B) The pigeons are perching on the fountain behind him.
+(C) Several people are sitting on the wooden benches.
+(D) The man is walking along the path toward the fountain.
+Answer: A
+Explanation: Trong ảnh một người đàn ông lớn tuổi đứng yên trên lối đi rải sỏi, tay rải thóc cho bầy bồ câu tụ quanh chân; phía sau có đài phun nước bằng đá và bốn băng ghế gỗ đều trống, trên cây phong treo đèn lồng giấy. | (A) "scattering grain for the pigeons" — đúng việc người đàn ông đang làm. | (B) "perching on the fountain" — bồ câu và đài phun nước đều có trong ảnh nhưng bồ câu tụ quanh chân người đàn ông trên lối đi, không đậu trên đài phun nước: đúng vật, sai vị trí. | (C) "Several people are sitting on the wooden benches" — băng ghế có trong ảnh nhưng không ai ngồi và trong ảnh chỉ có một người. | (D) "walking along the path" — người đàn ông đứng yên tại chỗ rải thóc, không đi bộ: đúng người, sai hành động.
 Source: original

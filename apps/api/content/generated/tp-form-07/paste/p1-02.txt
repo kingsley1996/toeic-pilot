@@ -1,8 +1,9 @@
 [QUESTION]
-voice: ca_male_1
-(A) The workers are drinking from paper cups.
-(B) The woman is operating the photocopier.
-(C) The man is sitting at a nearby desk.
-(D) The workers are standing near the photocopier.
-Answer: D
+voice: us_female_1
+(A) The cart has been pushed against the wall.
+(B) A woman is reaching up to shelve some books.
+(C) Several people are sitting at the tables.
+(D) The table lamps are turned off.
+Answer: B
+Explanation: Trong ảnh một nữ sinh viên đứng trên thang gấp kim loại giữa lối đi, hai tay giơ cao để đặt sách lên kệ gỗ phía trên; bên dưới chân thang có xe đẩy hai tầng đầy sách, và hậu cảnh là bàn đọc dài bằng gỗ sồi với đèn đồng đang sáng. | (A) "pushed against the wall" — xe đẩy có trong ảnh nhưng đang nằm cạnh thang giữa lối đi, không sát tường: đúng vật, sai vị trí. | (B) "reaching up to shelve some books" — đúng hành động người phụ nữ đang làm. | (C) "Several people are sitting" — trong ảnh chỉ có một người và cô ấy đang đứng trên thang, không ai ngồi ở bàn đọc. | (D) "turned off" — đèn bàn có trong ảnh nhưng đang sáng: đúng vật, sai trạng thái.
 Source: original
