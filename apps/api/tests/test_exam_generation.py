@@ -2494,3 +2494,62 @@ def test_purpose_and_implication_do_not_count_toward_the_balance_gate() -> None:
     # Miễn theo MÃ, không phải miễn cả cụm: hai câu truy hồi cùng chạm đáy vẫn chặn.
     retrieval = ["PART_4_DETAIL", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"]
     assert check_paraphrase_balance(trio, GYM_TALK, retrieval)
+
+
+def test_full_load_attaches_labels_but_part_load_does_not(monkeypatch) -> None:
+    """`load` trọn đề phải tự gắn nhãn; `load --part` thì không.
+
+    Chốt chặn cho một lỗi hỏng im lặng: regen một part = DELETE cả đề rồi nạp lại,
+    và `question_label` rơi theo CASCADE (FK ondelete). Thiếu bước này thì đề lên
+    production trắng nhãn, `make_placement` + màn phân tích kỹ năng câm lặng sai.
+    """
+    import argparse
+
+    from app.content.exam.blueprint import Blueprint, PartPlan, QuestionSlot
+    from app.content.exam_cli import load as load_cmd
+
+    plan = Blueprint(
+        slug="tp-test",
+        title="t",
+        seed=1,
+        parts=[
+            PartPlan(
+                part=5,
+                slots=[
+                    QuestionSlot(
+                        id="p5-01",
+                        number=101,
+                        question_type="PART_5_GRAMMAR",
+                        grammar="GRAMMAR_VERB_TENSE",
+                        context="x",
+                    )
+                ],
+            )
+        ],
+    )
+    calls: list[int] = []
+    monkeypatch.setattr(load_cmd.bp, "load", lambda path: plan)
+    monkeypatch.setattr(load_cmd, "workdir_for", lambda slug: "/tmp")
+    monkeypatch.setattr(load_cmd.loader, "ensure_test", lambda *a, **k: None)
+    monkeypatch.setattr(load_cmd.loader, "load_part", lambda *a, **k: 1)
+
+    class _DB:
+        def __enter__(self) -> object:
+            return object()
+
+        def __exit__(self, *a: object) -> bool:
+            return False
+
+    monkeypatch.setattr(load_cmd, "SessionLocal", lambda: _DB())
+    monkeypatch.setattr(
+        load_cmd, "apply_labels", lambda db, p, **k: calls.append(1) or (0, 0, [])
+    )
+
+    full = argparse.Namespace(slug="tp-test", token="t", api="http://x", part=None, slot=None)
+    assert load_cmd.cmd_load(full) == 0
+    assert len(calls) == 1, "full load phải gọi apply_labels"
+
+    calls.clear()
+    partial = argparse.Namespace(slug="tp-test", token="t", api="http://x", part=5, slot=None)
+    assert load_cmd.cmd_load(partial) == 0
+    assert calls == [], "load --part không được gọi apply_labels (các ô part khác chưa nạp)"

@@ -111,6 +111,12 @@ uv run python -m app.content.generate_exam load --slug $S --token "$TOK"
 uv run python -m app.content.backfill_audio --only questions --test $S
 ```
 
+**`load` trọn đề tự gắn nhãn từ blueprint.** Xoá trọn đề kéo theo mọi `question_label`
+rơi theo CASCADE (FK `ondelete`), và `export-test.sh` chỉ chép nhãn của dev — nên nếu
+dev không nhãn thì prod cũng mất nhãn, và `make_placement` + màn phân tích kỹ năng câm
+lặng hỏng. `cmd_load` gọi `apply_labels` khi nạp nguyên đề (không gọi khi `--part`/`--slot`,
+vì các ô chưa nạp sẽ báo "chưa nạp câu"). Không còn bước nhãn thủ công.
+
 **Không tốn TTS cho Parts 2–7.** `audio_asset` nội-dung-địa-chỉ (`source_hash`), và
 `backfill_audio` tra theo hash trước khi gọi máy (`--dry-run` trên 07: `6 synthesised
 · 48 reused · 48 linked`). Chỉ 6 câu Part 1 mới thực sự tổng hợp.
