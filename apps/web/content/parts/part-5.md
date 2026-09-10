@@ -1,422 +1,389 @@
-# PART 4 TOEIC: Chiến thuật nghe bài nói và xử lý câu hỏi
+# PART 5 TOEIC: Chiến thuật xử lý câu hỏi Ngữ pháp & Từ vựng
 
-**Mục tiêu bài học (Learning Objective):**
-Sau bài học này, học viên có thể **xác định chủ đề, thông tin chi tiết, mục đích và hành động tiếp theo trong các bài nói Part 4**, đồng thời áp dụng chiến thuật **đọc trước – dự đoán – nghe từ khóa – loại bẫy** để trả lời câu hỏi chính xác.
+**Mục tiêu bài học (Learning Objective):** Sau bài học, người học có thể xác định nhanh dạng câu hỏi Part 5, áp dụng đúng quy tắc ngữ pháp/từ vựng và hoàn thành mỗi câu trong khoảng **20–30 giây**.
 
----
+### SECTION 1: Tổng quan & Tần suất xuất hiện trong đề thi TOEIC
 
-## SECTION 1: Tổng quan & Tần suất xuất hiện trong đề thi TOEIC
+**Part 5 – Incomplete Sentences** kiểm tra khả năng hoàn thành một câu tiếng Anh bằng cách chọn đáp án phù hợp nhất. Đây là phần có thể **ăn điểm nhanh** nếu bạn nhận diện được dạng câu hỏi thay vì đọc và dịch toàn bộ câu.
 
-**Part 4 – Talks** kiểm tra khả năng nghe hiểu **đoạn độc thoại ngắn**. Khác với Part 3, chỉ có **một người nói**, chẳng hạn:
+Các nhóm kiến thức quan trọng gồm:
 
-* Thông báo tại sân bay
-* Tin nhắn điện thoại
-* Quảng cáo
-* Thông báo công ty
-* Bài phát biểu
-* Hướng dẫn
-* Tin tức
-* Thông báo cửa hàng
-* Giới thiệu sản phẩm hoặc dịch vụ
+| Nhóm                   | Dạng thường gặp                        | Cách nhận diện                          |
+| ---------------------- | -------------------------------------- | --------------------------------------- |
+| **Từ loại**            | noun / verb / adjective / adverb       | Nhìn vị trí trước & sau chỗ trống       |
+| **Động từ**            | tense, voice, agreement                | Xác định chủ ngữ + thời gian + cấu trúc |
+| **Danh từ**            | singular/plural, countable/uncountable | Determiner + noun                       |
+| **Đại từ**             | subject/object/possessive/reflexive    | Vị trí của đại từ                       |
+| **Tính từ & trạng từ** | adjective vs. adverb                   | Xác định từ đang bổ nghĩa cho ai        |
+| **Giới từ**            | in, on, at, for, by, with...           | Cụm từ cố định                          |
+| **Liên từ**            | because, although, while, if...        | Quan hệ giữa các mệnh đề                |
+| **Từ vựng**            | word meaning / collocation             | Nghĩa và cách kết hợp từ                |
 
-Mỗi đoạn nói thường đi kèm **3 câu hỏi**.
-
-### Các dạng câu hỏi thường gặp
-
-| Dạng câu hỏi           | Cần xác định                               |
-| ---------------------- | ------------------------------------------ |
-| **Main Idea**          | Chủ đề chính                               |
-| **Purpose**            | Mục đích bài nói                           |
-| **Detail**             | Thông tin cụ thể                           |
-| **Who / Where / When** | Người / địa điểm / thời gian               |
-| **Why**                | Lý do                                      |
-| **Inference**          | Thông tin suy luận                         |
-| **Next Action**        | Việc sẽ xảy ra tiếp theo                   |
-| **Graphic**            | Liên hệ thông tin với bảng / lịch / bản đồ |
-
-> **Điểm mấu chốt:** Part 4 không yêu cầu bạn nhớ toàn bộ bài nói. Bạn cần biết **câu hỏi đang yêu cầu thông tin nào** trước khi nghe.
+> **Tư duy quan trọng:** Part 5 không phải bài kiểm tra “dịch câu”. Hãy xem đây là bài kiểm tra **nhận diện cấu trúc → loại đáp án → chọn đáp án**.
 
 ---
 
-## SECTION 2: Bản chất kiến thức – Nhận diện cấu trúc bài nói
+### SECTION 2: Bản chất kiến thức / Quy tắc cốt lõi
 
-Một bài nói Part 4 thường có cấu trúc tương đối dễ dự đoán:
+#### 1. Xác định **từ loại** trước
 
-```text
-INTRODUCTION
-     ↓
-MAIN TOPIC / PURPOSE
-     ↓
-DETAILS
-     ↓
-CHANGE / PROBLEM / IMPORTANT INFORMATION
-     ↓
-NEXT ACTION
-```
-
-Ví dụ một thông báo:
-
-> “Good morning, passengers. Flight 728 to Chicago has been delayed due to bad weather. The flight was originally scheduled to depart at 10:30, but it will now leave at 12:15. Passengers should remain near Gate 14.”
-
-Có thể lập tức xác định:
-
-* **Topic:** Flight 728
-* **Problem:** Delayed
-* **Reason:** Bad weather
-* **Original time:** 10:30
-* **New time:** 12:15
-* **Action:** Remain near Gate 14
-
-### Tín hiệu quan trọng cần nghe
-
-| Tín hiệu               | Chức năng           |
-| ---------------------- | ------------------- |
-| `originally`           | Thông tin ban đầu   |
-| `but`                  | Thông tin thay đổi  |
-| `however`              | Đối lập / thay đổi  |
-| `instead`              | Thay thế            |
-| `due to`               | Nguyên nhân         |
-| `because of`           | Nguyên nhân         |
-| `please`               | Yêu cầu / hướng dẫn |
-| `will` / `be going to` | Kế hoạch            |
-| `now`                  | Tình trạng hiện tại |
-
-> **Đặc biệt:** Khi nghe `but`, `however`, `instead`, hãy tăng mức tập trung. Thông tin ngay sau đó thường rất quan trọng.
-
----
-
-## SECTION 3: TOEIC Traps & Mẹo làm bài nhanh
-
-### Trap 1: Thông tin ban đầu và thông tin mới
-
-Đây là một trong những bẫy quan trọng nhất của Part 4.
-
-Audio:
-
-> “The workshop was originally scheduled for Monday, but it has been moved to Wednesday.”
-
-Nếu câu hỏi hỏi:
-
-> When will the workshop take place?
-
-Không được chọn **Monday**.
-
-**Monday = thông tin cũ**
-**Wednesday = thông tin hiện tại**
-
-### Trap 2: Từ giống trong audio
-
-Audio:
-
-> “The restaurant is closed for renovations, so customers should use the café across the street.”
-
-Nếu đáp án có:
-
-* A. The restaurant is being renovated.
-* B. The café is across the street.
-* C. The restaurant serves breakfast.
-
-Cả A và B đều có thông tin xuất hiện hoặc liên quan đến audio, nhưng câu hỏi quyết định đáp án nào đúng.
-
-> **Không săn từ giống nhau. Hãy tìm ý nghĩa phù hợp với câu hỏi.**
-
-### Trap 3: Suy luận từ hành động
-
-Audio:
-
-> “Please bring your receipt to the customer service desk.”
-
-Question:
-
-> What are listeners asked to do?
-
-Đáp án có thể không lặp nguyên câu, mà viết:
-
-> **Present their receipt to customer service.**
-
-Đây là cách TOEIC kiểm tra khả năng **paraphrase**.
-
----
-
-## SECTION 4: Phân tích TOEIC Examples 1 & 2
-
-### Example 1 – Main Idea
-
-**Audio:**
-
-> Good afternoon, passengers. This is an announcement for Flight 215 to Singapore. Due to severe weather conditions, the flight will depart approximately one hour later than scheduled. We apologize for the inconvenience. Please remain in the waiting area until further notice.
-
-**Question:**
-What is the announcement mainly about?
-
-* **A.** A flight delay
-* **B.** A canceled flight
-* **C.** A new boarding procedure
-* **D.** A weather report
-
-**Đáp án: A**
-
-**Phân tích:**
-Ngay đầu bài nói đã xác định chủ đề:
-
-> “This is an announcement for Flight 215...”
-
-Sau đó thông tin trọng tâm là:
-
-> “the flight will depart approximately one hour later”
-
-→ Chuyến bay bị **delay**.
-
-B sai vì chuyến bay **không bị hủy**. D chỉ là nguyên nhân, không phải chủ đề chính.
-
-**Dịch:** Thông báo này chủ yếu nói về vấn đề gì?
-
-**Vocabulary Boost:**
-
-* `announcement` = thông báo
-* `depart` = khởi hành
-* `severe weather` = thời tiết khắc nghiệt
-* `inconvenience` = sự bất tiện
-* `waiting area` = khu vực chờ
-
----
-
-### Example 2 – Detail
-
-**Audio:**
-
-> Thank you for calling Green Valley Hotel. Our front desk is available 24 hours a day. However, our restaurant is currently closed for renovation and will reopen next Monday. Guests may order room service between 6 a.m. and 10 p.m.
-
-**Question:**
-When will the hotel restaurant reopen?
-
-* **A.** Today
-* **B.** Tomorrow
-* **C.** Next Monday
-* **D.** Next month
-
-**Đáp án: C**
-
-**Phân tích:**
-Thông tin xuất hiện trực tiếp:
-
-> “will reopen **next Monday**.”
-
-Đây là câu hỏi **When**, vì vậy chỉ cần tìm thông tin thời gian.
-
-Bẫy nằm ở từ `currently closed`. Một số học viên có thể tập trung vào “closed” mà bỏ qua thông tin quan trọng phía sau.
-
-**Dịch:** Nhà hàng của khách sạn sẽ mở cửa trở lại khi nào?
-
----
-
-## SECTION 5: Quy trình làm Part 4 từng bước
-
-### Bước 1: Đọc trước 3 câu hỏi
-
-Khi có thời gian trước khi audio bắt đầu, đọc nhanh cả ba câu.
+Đây là một trong những dạng dễ lấy điểm nhất.
 
 Ví dụ:
 
-```text
-Q1: What is the announcement about?
-→ MAIN IDEA
+> The new software is extremely ______.
 
-Q2: Why has the event been changed?
-→ REASON
+Sau `is` và trước `extremely` cần một **tính từ**.
 
-Q3: What should attendees do?
-→ ACTION
-```
+* success → noun
+* successfully → adverb
+* successful → adjective
+* succeed → verb
 
-Bạn đã biết cần nghe:
+→ Đáp án: **successful**
 
-**Topic → Reason → Action**
+Một số dấu hiệu thường gặp:
+
+* `a/an/the + ___` → thường là **noun**
+* `be + ___` → thường là **adjective** hoặc V-ing/V-ed tùy cấu trúc
+* `very/extremely/highly + ___` → thường là **adjective/adverb**
+* `___ + noun` → thường là **adjective**
+* `verb + ___` → thường là **adverb** nếu bổ nghĩa cho động từ
 
 ---
 
-### Bước 2: Đọc đáp án và dự đoán thông tin
+#### 2. Kiểm tra **động từ**
+
+Khi các đáp án đều là dạng động từ, hãy kiểm tra lần lượt:
+
+**Bước 1:** Chủ ngữ là số ít hay số nhiều?
+
+**Bước 2:** Thời gian của hành động?
+
+**Bước 3:** Chủ động hay bị động?
+
+**Bước 4:** Có cấu trúc đặc biệt nào không?
 
 Ví dụ:
 
-> Where will the event be held?
+> The manager ______ the report yesterday.
 
-Các đáp án:
+`yesterday` → quá khứ đơn.
 
-* Conference Room A
-* Main auditorium
-* Hotel lobby
-* Training center
+→ `reviewed`
 
-Bạn đã biết mình cần nghe **địa điểm**.
+Nếu câu là:
 
-Không cần cố ghi nhớ cả bốn đáp án.
+> The report ______ by the manager yesterday.
 
----
+Chủ ngữ `The report` nhận hành động → **bị động**.
 
-### Bước 3: Nghe theo “điểm neo”
-
-Trong Part 4, hãy chú ý những từ có khả năng dẫn đến đáp án:
-
-```text
-The purpose of this announcement is...
-The reason is...
-Originally...
-However...
-Instead...
-Please...
-You are asked to...
-The event will...
-```
-
-Những cấu trúc này thường báo hiệu **thông tin có giá trị cao**.
+→ `was reviewed`
 
 ---
 
-### Bước 4: Trả lời ngay sau khi có đủ thông tin
+#### 3. Phân biệt **tính từ và trạng từ**
 
-Không nên chờ đến cuối bài nói mới giải quyết cả ba câu hỏi.
+Đây là bẫy xuất hiện thường xuyên.
 
-Nếu đã nghe thấy thông tin chắc chắn cho câu 1 → **chọn ngay trong đầu** và chuyển sự tập trung sang câu 2.
+> The technician worked ______ to repair the machine.
 
-> **Part 4 là cuộc đua về khả năng phân bổ sự chú ý. Đừng để một câu khó làm mất luôn hai câu tiếp theo.**
+`worked` là động từ → cần trạng từ bổ nghĩa cho cách làm việc.
 
----
+→ **carefully**
 
-## SECTION 6: Thực hành ứng dụng – Examples 3, 4 & 5
+Không chọn `careful`.
 
-### Example 3 – Information Change
+So sánh:
 
-**Audio:**
-
-> Good morning, everyone. I'd like to remind you that the annual company picnic was originally planned for this Saturday. However, the weather forecast calls for heavy rain, so the event has been postponed until next Saturday. The location will remain the same.
-
-**Question:**
-When will the company picnic take place?
-
-* **A.** This Saturday
-* **B.** Next Saturday
-* **C.** This Sunday
-* **D.** Next month
-
-**Đáp án: B**
-
-**Phân tích:**
-Từ khóa quan trọng:
-
-> `originally` → this Saturday
-> `however` → thông tin thay đổi
-> `postponed until` → next Saturday
-
-→ Đáp án **B**.
+* a **careful** technician → adjective + noun
+* worked **carefully** → verb + adverb
 
 ---
 
-### Example 4 – Purpose
+#### 4. Từ vựng: không chỉ nhìn nghĩa
 
-**Audio:**
+Khi các đáp án đều đúng từ loại, câu hỏi thường chuyển thành **Vocabulary / Collocation**.
 
-> Hello, Ms. Davis. This is Robert from Lakeside Dental Clinic. I'm calling to remind you about your appointment tomorrow at 3 p.m. If you need to reschedule, please call us before noon today.
+Ví dụ:
 
-**Question:**
-Why is the man calling?
+> The company will ______ a new advertising campaign next month.
 
-* **A.** To cancel an appointment
-* **B.** To confirm a payment
-* **C.** To remind the woman about an appointment
-* **D.** To schedule a dental examination
+Các động từ có thể mang nghĩa “thực hiện”, nhưng cách kết hợp tự nhiên là:
 
-**Đáp án: C**
+> **launch a campaign**
 
-**Phân tích:**
-Câu đầu tiên đã cung cấp mục đích:
-
-> “I'm calling to **remind you about your appointment**.”
-
-`Why is the man calling?` → hỏi **purpose**.
-
-Không chọn D vì cuộc hẹn đã được đặt; người đàn ông chỉ đang nhắc lại lịch hẹn.
-
-**Vocabulary Boost:**
-
-* `appointment` = cuộc hẹn
-* `remind` = nhắc nhở
-* `reschedule` = đổi lịch
-* `dental clinic` = phòng khám nha khoa
+Do đó đáp án phải dựa vào **collocation**, không chỉ dựa vào nghĩa tiếng Việt.
 
 ---
 
-### Example 5 – Next Action
+### SECTION 3: Bẫy thường gặp & Mẹo làm bài nhanh
 
-**Audio:**
+#### Bẫy 1: Đáp án chứa từ xuất hiện trong câu
 
-> Thank you for attending today's product presentation. Before you leave, please complete the short survey on the table near the exit. Your feedback will help us improve future presentations. You may also speak with one of our representatives if you have any questions.
+TOEIC có thể đưa một từ rất giống với từ trong câu để đánh lạc hướng.
 
-**Question:**
-What are listeners asked to do?
+> The company ______ announced the changes.
 
-* **A.** Purchase a new product
-* **B.** Complete a survey
-* **C.** Attend another presentation
-* **D.** Meet with the manager
+Nếu cần trạng từ, không thể chọn một danh từ chỉ vì nó có nghĩa phù hợp.
 
-**Đáp án: B**
+**→ Đừng chọn vì “trông quen”. Hãy xác định từ loại trước.**
 
-**Phân tích:**
-Từ khóa:
+#### Bẫy 2: Dịch từng từ
 
-> “Before you leave, **please complete the short survey**...”
+Bạn có thể hiểu nghĩa của cả câu nhưng vẫn chọn sai vì cấu trúc.
 
-→ Người nghe được yêu cầu **hoàn thành một khảo sát**.
+Ví dụ:
 
-`Your feedback` là lý do của yêu cầu, không phải hành động cần thực hiện.
+> The employees are ______ for completing the project.
+
+`are + adjective + for` → cần tính từ.
+
+→ **responsible**
+
+#### Bẫy 3: Đáp án đúng ngữ pháp nhưng sai ngữ cảnh
+
+> The company ______ its new product last week.
+
+`developed` và `launched` đều có thể đúng ngữ pháp, nhưng nếu câu nói về việc đưa sản phẩm ra thị trường:
+
+→ **launched**
+
+#### Bẫy 4: Bỏ qua từ khóa
+
+Các từ như:
+
+* **yesterday / last year** → past
+* **since / for** → thường liên quan perfect
+* **already / yet** → thường liên quan perfect
+* **by + time** → thường cần chú ý thời điểm hoàn thành
+* **every day / usually** → present simple
+* **next month / tomorrow** → future
+
+> **Mẹo:** Nếu nhìn thấy một “time marker”, hãy kiểm tra động từ ngay lập tức.
 
 ---
 
-## SECTION 7: Tổng kết & Key Vocabulary
+### SECTION 4: Phân tích Ví dụ Thực tế
 
-### Công thức xử lý Part 4
+#### TOEIC Example 1 – Từ loại
 
-```text
-READ QUESTIONS
-      ↓
-IDENTIFY QUESTION TYPES
-      ↓
-PREDICT INFORMATION
-      ↓
-LISTEN FOR KEYWORDS
-      ↓
-NOTICE CHANGES / PARAPHRASES
-      ↓
-ELIMINATE TRAPS
-      ↓
-ANSWER
-```
+The marketing department prepared a ______ proposal for the new advertising campaign.
 
-### 6 dạng câu hỏi cần ưu tiên
+(A) success
+(B) successful
+(C) successfully
+(D) succeed
 
-| Dạng            | Câu hỏi mẫu                    | Chiến thuật                |
-| --------------- | ------------------------------ | -------------------------- |
-| **Main Idea**   | What is the talk mainly about? | Xác định chủ đề toàn bài   |
-| **Purpose**     | Why is the speaker calling?    | Tìm mục đích               |
-| **Detail**      | When/Where/What...?            | Bắt thông tin cụ thể       |
-| **Reason**      | Why...?                        | Tìm nguyên nhân            |
-| **Inference**   | What does the speaker imply?   | Suy luận                   |
-| **Next Action** | What should listeners do?      | Nghe hướng dẫn / hành động |
+**Đáp án: B. successful**
 
-### Key Vocabulary
+**Giải thích:** Chỗ trống đứng trước danh từ `proposal`, nên cần **tính từ** để bổ nghĩa cho danh từ.
 
-| Từ/Cụm từ      | Nghĩa         |
-| -------------- | ------------- |
-| `announcement` | thông báo     |
-| `depart`       | khởi hành     |
-| `postpone`     | hoãn          |
-| `renovation`   | sự cải tạo    |
-| `appointment`  | cuộc hẹn      |
-| `reschedule`   | đổi lịch      |
-| `attendee`     | người tham dự |
-| `feedback`     | phản hồi      |
+* (A) `success` → noun
+* (B) `successful` → adjective → **đúng**
+* (C) `successfully` → adverb
+* (D) `succeed` → verb
 
-> **Cốt lõi của Part 4:** Đừng cố hiểu từng câu. Hãy đọc câu hỏi trước, dự đoán thông tin cần nghe, sau đó tập trung vào **từ khóa, thông tin thay đổi và cách diễn đạt lại (paraphrase)**.
+**Công thức:** `Adjective + Noun`
 
-**READ → PREDICT → LISTEN → CATCH → ELIMINATE → ANSWER.**
+---
+
+#### TOEIC Example 2 – Thì động từ
+
+The accounting department ______ the invoices before the end of each month.
+
+(A) reviews
+(B) reviewed
+(C) reviewing
+(D) has reviewed
+
+**Đáp án: A. reviews**
+
+**Giải thích:** `before the end of each month` diễn tả một hoạt động có tính **thường xuyên/lặp lại**. Chủ ngữ `the accounting department` là số ít.
+
+→ Dùng **Present Simple**: `reviews`.
+
+---
+
+### SECTION 5: Quy trình / Chiến thuật làm bài từng bước
+
+Hãy sử dụng quy trình **5 bước** sau:
+
+#### Bước 1: Nhìn vào 4 đáp án
+
+Nếu đáp án có dạng:
+
+* `success`
+* `successful`
+* `successfully`
+* `succeed`
+
+→ Gần như chắc chắn đây là câu hỏi **Word Form**.
+
+Nếu đáp án là:
+
+* `work`
+* `worked`
+* `has worked`
+* `will work`
+
+→ Đây là câu hỏi **Verb/Tense**.
+
+#### Bước 2: Xác định vị trí chỗ trống
+
+Hỏi:
+
+> “Từ đứng ở đây phải thuộc từ loại nào?”
+
+Đây thường là cách nhanh nhất để loại 2–3 đáp án.
+
+#### Bước 3: Tìm từ khóa
+
+Tìm:
+
+* chủ ngữ
+* động từ chính
+* giới từ
+* liên từ
+* time marker
+* danh từ ngay trước/sau chỗ trống
+
+#### Bước 4: Loại đáp án sai
+
+Không cần chứng minh ngay đáp án đúng. Hãy **loại đáp án chắc chắn sai trước**.
+
+Ví dụ:
+
+`___ + noun`
+
+→ loại verb/adverb nếu cấu trúc không cho phép.
+
+#### Bước 5: Kiểm tra nghĩa và collocation
+
+Nếu còn 2 đáp án:
+
+> **Ngữ pháp → Nghĩa → Collocation**
+
+Đây là thứ tự ưu tiên hiệu quả trong Part 5.
+
+> **Công thức Part 5:**
+> `Nhìn đáp án → Nhận diện dạng câu → Xác định cấu trúc → Loại đáp án → Kiểm tra nghĩa → Chọn`
+
+---
+
+### SECTION 6: Thực hành ứng dụng
+
+#### TOEIC Example 3 – Bị động
+
+All customer complaints ______ by the service department within 24 hours.
+
+(A) review
+(B) reviewed
+(C) are reviewed
+(D) reviewing
+
+**Đáp án: C. are reviewed**
+
+**Giải thích:** `complaints` là đối tượng **được xem xét**, không tự thực hiện hành động.
+
+Cần câu bị động:
+
+`Subject + be + VPII`
+
+`complaints + are + reviewed`
+
+---
+
+#### TOEIC Example 4 – Tính từ / Trạng từ
+
+The new employee completed the training program ______.
+
+(A) successful
+(B) success
+(C) successfully
+(D) succeed
+
+**Đáp án: C. successfully**
+
+**Giải thích:** `completed` là động từ. Chỗ trống mô tả **cách hoàn thành**, nên cần trạng từ.
+
+→ `completed ... successfully`
+
+---
+
+#### TOEIC Example 5 – Giới từ
+
+Employees are required to submit their expense reports ______ Friday.
+
+(A) at
+(B) by
+(C) in
+(D) during
+
+**Đáp án: B. by**
+
+**Giải thích:** `by Friday` = **không muộn hơn thứ Sáu / trước hoặc vào thứ Sáu**.
+
+* `at` → thời điểm cụ thể
+* `in` → tháng, năm, khoảng thời gian
+* `during` → trong suốt một khoảng thời gian
+* `by` → hạn chót
+
+---
+
+#### TOEIC Example 6 – Từ vựng & Collocation
+
+The company plans to ______ a new customer loyalty program next quarter.
+
+(A) launch
+(B) arrive
+(C) attend
+(D) reach
+
+**Đáp án: A. launch**
+
+**Giải thích:** Collocation tự nhiên là:
+
+> **launch a program** = triển khai/ra mắt một chương trình.
+
+Các đáp án khác không kết hợp phù hợp với `program`.
+
+---
+
+### SECTION 7: Tổng kết & Bảng từ vựng ăn điểm
+
+#### 1. Checklist Part 5
+
+| Khi thấy                         | Hãy nghĩ ngay                 |
+| -------------------------------- | ----------------------------- |
+| Các đáp án khác từ loại          | **Word Form**                 |
+| Các đáp án đều là động từ        | **Tense / Voice / Agreement** |
+| Adj vs. Adv                      | **Vị trí bổ nghĩa**           |
+| Giới từ khác nhau                | **Collocation / cấu trúc**    |
+| Các từ đồng nghĩa                | **Vocabulary / Context**      |
+| `since`, `for`, `already`, `yet` | **Perfect tense**             |
+| `yesterday`, `last...`           | **Past**                      |
+| `every`, `usually`, `often`      | **Present Simple**            |
+
+#### 2. Vocabulary & Collocations cần nhớ
+
+| Cụm từ                 | Nghĩa                   |
+| ---------------------- | ----------------------- |
+| **launch a campaign**  | triển khai chiến dịch   |
+| **launch a program**   | triển khai chương trình |
+| **submit a report**    | nộp báo cáo             |
+| **review a document**  | xem xét tài liệu        |
+| **meet a deadline**    | đáp ứng hạn chót        |
+| **be responsible for** | chịu trách nhiệm về     |
+| **be required to**     | được yêu cầu làm gì     |
+| **be available for**   | có sẵn/phù hợp cho      |
+| **within 24 hours**    | trong vòng 24 giờ       |
+| **by Friday**          | không muộn hơn thứ Sáu  |
+
+> ### 🎯 Tư duy để đạt 650–700+
+>
+> **Part 5 không cần đọc chậm.** Hãy luyện khả năng nhận diện dạng câu trong vài giây đầu tiên.
+>
+> **Word Form → Grammar → Vocabulary → Context**
+>
+> Nếu nhận diện đúng dạng câu, bạn thường có thể loại ngay 2–3 đáp án mà **không cần dịch toàn bộ câu**.
