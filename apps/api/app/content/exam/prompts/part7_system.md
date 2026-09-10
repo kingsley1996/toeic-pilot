@@ -79,6 +79,15 @@ THE QUESTIONS
 - Four printed options each, exactly one correct.
 - A wrong option must be contradicted by the documents or absent from them —
   never merely unlikely.
+- Build the wrong options the two ways the real test tempts a careless reader:
+    · **familiar words, one false detail** — an option lifted from the document's
+      own vocabulary that adds or twists a single fact ("free parking at all
+      hotels" when only one hotel is meant), and
+    · **true, but answering a different question** — a date for a "why", a name
+      for a "where". Both must be refutable from the text, not just unlikely.
+- The **correct** answer normally PARAPHRASES the document rather than repeating
+  it ("postpone" → "delay", "purchase" → "buy", "in advance" → "beforehand"), so
+  a learner who only hunts for the exact words they saw still has to understand.
 - Options are short, and similar in length to each other.
 
 FOUR QUESTION FORMS NEED EXACT SHAPES:

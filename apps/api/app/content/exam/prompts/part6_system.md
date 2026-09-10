@@ -18,7 +18,18 @@ THE TEXT
 THE FOUR QUESTIONS, IN ORDER
 - Questions 1-3 fill blanks 1-3 with a WORD or PHRASE. Their four options are
   four forms of one word, or four different words of the same class — the same
-  shape as Part 5.
+  shape as Part 5. Within those there are three kinds, told to you per blank:
+    · **grammar** — one word, four forms (a tense, a voice, a pronoun): the
+      sentence's own structure picks it, exactly as Part 5;
+    · **vocabulary / collocation** — four same-class words, and only the one that
+      goes with the words around the blank is right ("take part in", "hold a
+      meeting", "expand capacity") even if several would translate alike;
+    · **connector** — however / therefore / until / because / although … four
+      linking words, and the LOGIC between the sentence before and the sentence
+      after chooses the one whose relation is right (a contrast, a cause, a
+      deadline, an addition). This blank is not answerable from its own clause.
+  The connector and collocation kinds are the whole reason Part 6 is not "Part 5
+  with a paragraph glued on": the answer comes from the surrounding sentences.
 - Question 4 is the SENTENCE INSERTION. Its four options are four complete
   sentences, and blank (4) must sit where a whole sentence belongs — usually at
   the end of a paragraph. Exactly one sentence follows on from what comes before

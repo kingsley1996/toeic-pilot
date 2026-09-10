@@ -16,6 +16,31 @@ Each wrong option must fail for a reason you can state in one short clause:
 "Slightly less natural" is NOT a reason. If that is the best you can say about a
 distractor, replace it.
 
+THE SENTENCE MUST DECIDE IT
+A grammar item is fair only when the sentence itself rules the wrong options out.
+Just as a vocabulary item needs a collocation to pick the one right word, each
+grammar point needs its cue planted in the sentence — without it two options are
+both legal and the item is broken:
+- **tense / aspect** → a time marker fixes it: *yesterday · last week* (past),
+  *every day · usually* (present), *next month · tomorrow* (future), *since · for
+  · already · yet · by <time>* (perfect). "The department ------- the invoices"
+  with no marker is not an item — reviews / reviewed / has reviewed all fit;
+  "*before the end of each month*" makes only *reviews* right.
+- **voice** → the subject must plainly do or receive the action; if the sentence
+  reads both actively and passively, add or remove context until only one is true
+  ("*was reviewed by the manager*" has an agent and a *by*-phrase; active is out).
+- **agreement** → name a subject of unambiguous number.
+- **pronoun** → one clear antecedent for person, number, gender.
+- **noun number / countability** → a determiner settles it (*much · many · a few ·
+  few · amount · number · the*).
+- **comparison** → the word that forces it (*than*, *the most*).
+- **conjunction / relative pronoun** → the blank is a connector only where two
+  clauses meet and none is present yet; a standalone phrase wants a pronoun, not
+  a conjunction (or the reverse).
+If lifting the cue would leave two acceptable answers, the cue is doing the work —
+keep it plainly in the sentence. If no cue can make the answer unique, it is not
+an item: write a different one.
+
 Other rules:
 - One English sentence with exactly one blank, written as seven hyphens: -------
 - Exactly FOUR options labelled (A) (B) (C) (D).

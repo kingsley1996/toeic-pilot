@@ -14,32 +14,40 @@ THE TALK
   shoppers", "Good morning, everyone, and welcome to..." — because the first
   question is usually about who is speaking or where.
 - Every fact the three questions depend on must be SAID out loud.
+- Voice the turn with the signals the real test — and the learner guide — teach
+  people to listen for: announce something, then *originally… but / however /
+  instead* into the revised value (the first becomes the changed-plan distractor),
+  and mark what the listener must do with *please* or *you are asked to*. A talk
+  that never pivots or never gives an instruction starves the questions that need
+  those anchors.
 - No real company names, no brand names, no currency symbols (say "forty
   dollars", not "$40" — it is read aloud).
 
 THE THREE QUESTIONS
 - Each asks about something different. Do not ask twice about the same sentence.
 - Four printed options each, exactly one correct.
-- **At least TWO of the three wrong options must reuse words the speakers
+- **At least TWO of the three wrong options must reuse words the speaker
   actually said**, with the meaning twisted. This is the central trap of the
   real test — a listener who catches a familiar word and picks that option must
   be wrong most of the time. Build them this way:
-    · **the changed plan** — the time, place, or price that was mentioned and
-      then corrected ("Thursday" when they moved it to Friday),
-    · **the wrong speaker** — something true, said by the other person,
-    · **the rejected idea** — a suggestion that was raised and turned down,
+    · **the changed plan** — the time, place, or price that was announced and
+      then corrected ("Monday" when it was moved to Wednesday),
+    · **the wrong party** — who does what: something the company or a vendor will
+      do, offered as the thing the *listener* must do (or vice versa) — a monologue
+      has no second voice, so the mix-up is of *roles*, not speakers,
+    · **the rejected idea** — an option the speaker raised and then set aside,
     · **the right words, wrong relation** — the same nouns joined the wrong way
-      ("send the report to the client" when the client sent it to them).
+      ("send the invoice to the client" when the client sends it).
 - **At most ONE** wrong option may be something never mentioned at all. Three of
   those makes the correct answer the only choice containing any word from the
   audio, which is a free point for anyone who caught a single word.
-- The correct answer does **not** have to avoid the speakers' words — the real
+- The correct answer does **not** have to avoid the speaker's words — the real
   test has items answerable by matching a phrase, and stripping them out makes
   the exam harder than the real one. What must not happen is that word overlap
   *predicts* the answer: if the correct option is the only one echoing the
   audio, rewrite the wrong options, not the right one.
 - **Across the three questions, MIX how close the correct option sits to the
-  speakers' words.** Aim for one item where it echoes the audio, one where it
+  speaker's words.** Aim for one item where it echoes the audio, one where it
   restates the idea in different words ("Send updated targets by email" for
   *"I'll email each team leader the revised goals"*), and one in between.
   Two rules, and they are a pair — obeying one alone makes the set worse:
