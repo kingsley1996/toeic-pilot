@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-How do I send a fax to an international client?
+How far is the new printer from the main office?
 voice: au_male_1
-(A) By the end of the day should be fine.
-(B) The fax number is listed on the contact sheet.
-(C) Just use the machine in the copy room.
+(A) Three hundred dollars, I believe.
+(B) About an hour to set up.
+(C) It's about ten meters down the hallway.
 Answer: C
-Explanation: Câu hỏi là "How do I send a fax to an international client?", hỏi CÁCH THỰC HIỆN. | (A) "By the end of the day should be fine." — trả lời về thời gian, không phải cách thức, nghe "send" nên dễ nhầm sang câu hỏi When. | (B) "The fax number is listed on the contact sheet." — nói về số fax chứ không hướng dẫn cách gửi, trả lời cho câu hỏi khác. | (C) "Just use the machine in the copy room." — hướng dẫn đúng cách thực hiện, trả lời trực tiếp câu hỏi How.
+Explanation: Câu hỏi là "How far is the new printer from the main office?", hỏi KHOẢNG CÁCH. | (A) "Three hundred dollars, I believe." — đưa giá tiền, dùng lại ngữ cảnh máy in nhưng không nói khoảng cách. | (B) "About an hour to set up." — đưa thời lượng thay vì khoảng cách, nghe có con số nhưng sai đơn vị đo. | (C) "It's about ten meters down the hallway." — nêu đúng một khoảng cách.
 Source: original

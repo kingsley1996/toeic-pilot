@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-The morning briefing will start ten minutes late today.
+The computer system is currently undergoing scheduled maintenance.
 voice: us_female_1
-(A) About ten new employees joined last month.
-(B) She briefed the clients yesterday afternoon.
-(C) I thought it was rescheduled to Thursday.
+(A) The maintenance report is on your desk.
+(B) It should be back online by three o'clock.
+(C) I already saved everything to the external drive.
 Answer: C
-Explanation: "The morning briefing will start ten minutes late today." là câu trần thuật thông báo cuộc họp giao ban sáng nay bắt đầu muộn mười phút. | (A) "About ten new employees joined last month." — lặp lại từ "ten" nhưng trả lời cho một câu hỏi khác về số lượng nhân viên. | (B) "She briefed the clients yesterday afternoon." — dùng lại từ "briefed" nhưng với nghĩa khác, không phản hồi lời nhắc. | (C) "I thought it was rescheduled to Thursday." — cho rằng cuộc họp đã bị dời sang ngày khác, khiến lời nhắc về việc trễ mười phút hôm nay trở nên vô nghĩa.
+Explanation: Câu nói là "The computer system is currently undergoing scheduled maintenance.", đây là câu TRẦN THUẬT thông báo hệ thống đang bảo trì, không hỏi gì. | (A) "The maintenance report is on your desk." — dùng lại từ "maintenance" nhưng với nghĩa khác (báo cáo về bảo trì vs. hành động bảo trì), trả lời như một câu hỏi Where không được đặt ra. | (B) "It should be back online by three o'clock." — cung cấp thời gian cụ thể, trả lời như thể được hỏi "khi nào" trong khi đây chỉ là thông báo. | (C) "I already saved everything to the external drive." — phản hồi gián tiếp, cho biết đã lưu dữ liệu trước đó, làm thông tin bảo trì trở nên ít cấp bách và câu hỏi trở nên vô nghĩa.
 Source: original

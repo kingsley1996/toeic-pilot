@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-You submitted the financial report on time, didn't you?
+The new policy has already been implemented, hasn't it?
 voice: uk_female_1
-(A) Yes, I filed it before the deadline.
-(B) I think Mr. Thompson signed off on that.
-(C) We should discuss it at the next meeting.
+(A) Yes, it took effect at the start of this month.
+(B) The new policy manual is in the filing cabinet.
+(C) I heard the marketing team requested some changes.
 Answer: A
-Explanation: Câu hỏi là "You submitted the financial report on time, didn't you?", một câu hỏi đuôi yêu cầu xác nhận Yes/No. | (A) "Yes, I filed it before the deadline." — xác nhận trực tiếp bằng "Yes" và cho biết đã nộp trước hạn, đúng ý câu hỏi. | (B) "I think Mr. Thompson signed off on that." — trả lời về người ký duyệt (ai), dùng lại ngữ cảnh tài chính nhưng không xác nhận câu hỏi đuôi. | (C) "We should discuss it at the next meeting." — đề nghị hành động tương lai liên quan đến báo cáo, không trả lời Yes/No cho câu hỏi đuôi.
+Explanation: Câu hỏi là "The new policy has already been implemented, hasn't it?", đây là câu hỏi đuôi yêu cầu xác nhận hoặc phủ nhận. | (A) "Yes, it took effect at the start of this month." — xác nhận trực tiếp và bổ sung thời điểm có hiệu lực, đúng cách phản hồi câu hỏi đuôi. | (B) "The new policy manual is in the filing cabinet." — dùng lại "new policy" nhưng trả lời câu hỏi Where (ở đâu), không xác nhận hay phủ nhận. | (C) "I heard the marketing team requested some changes." — nói về chính sách nhưng cung cấp thông tin ngoài lề, không trả lời câu hỏi đuôi.
 Source: original

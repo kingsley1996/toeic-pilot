@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Have you finished the mandatory online training course yet?
+Have you finished the financial report yet?
 voice: us_female_1
-(A) Around three hours, I'd say.
-(B) It's available on the company website.
-(C) Yes, I completed it yesterday afternoon.
+(A) It covers the third quarter only.
+(B) By the end of last week.
+(C) Yes, I submitted it this morning.
 Answer: C
-Explanation: Câu hỏi là "Have you finished the mandatory online training course yet?", dạng CÓ/KHÔNG. | (A) "Around three hours, I'd say." — trả lời cho câu hỏi How long ("mất bao lâu"), không phải Yes/No. | (B) "It's available on the company website." — dùng lại từ "training" nhưng trả lời cho câu hỏi Where ("ở đâu"), không phải Yes/No. | (C) "Yes, I completed it yesterday afternoon." — trả lời trực tiếp Có và nêu rõ thời điểm hoàn thành.
+Explanation: Câu hỏi là "Have you finished the financial report yet?", đây là câu hỏi YES/NO hỏi đã hoàn thành hay chưa. | (A) "It covers the third quarter only." — dùng lại ý "báo cáo tài chính" nhưng nói về nội dung báo cáo, không trả lời đã hoàn thành hay chưa. | (B) "By the end the end of last week." — trả lời như thể câu hỏi hỏi "khi nào" (how soon/when), cho một mốc thời gian thay vì xác nhận hay phủ nhận. | (C) "Yes, I submitted it this morning." — xác nhận trực tiếp và cho biết đã nộp, đúng cách trả lời câu hỏi Yes/No.
 Source: original

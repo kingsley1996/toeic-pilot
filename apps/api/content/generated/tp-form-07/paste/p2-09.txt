@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-How do I set the new copier to print double-sided?
+How often do we need to renew the contract with our partners?
 voice: ca_male_1
-(A) It's on the second floor, next to the supply closet.
-(B) Go to settings and select the duplex option.
-(C) I believe it arrived just last week.
+(A) For a period of three years.
+(B) Usually once every two years.
+(C) About twenty partners are listed.
 Answer: B
-Explanation: Câu hỏi là "How do I set the new copier to print double-sided?", hỏi CÁCH THỰC HIỆN. | (A) "It's on the second floor, next to the supply closet." — trả lời NƠI CHỐN cho câu hỏi How, nghe thấy "copier" rồi nêu vị trí, sai loại câu hỏi. | (B) "Go to settings and select the duplex option." — nêu đúng cách thực hiện, hướng dẫn chọn chức năng in hai mặt. | (C) "I believe it arrived just last week." — trả lời THỜI GIAN cho câu hỏi How, gợi ý thời điểm giao máy photocopy mới, sai loại câu hỏi.
+Explanation: Câu hỏi là "How often do we need to renew the contract with our partners?", hỏi TẦN SUẤT. | (A) "For a period of three years." — trả lời thời lượng (how long) thay vì tần suất (how often), dễ nhầm vì hợp đồng liên quan đến thời hạn. | (B) "Usually once every two years." — nêu đúng tần suất, trả lời trực tiếp vào câu hỏi. | (C) "About twenty partners are listed." — trả lời số lượng, dùng lại từ "partners" trong câu hỏi nhưng không nói về tần suất gia hạn.
 Source: original

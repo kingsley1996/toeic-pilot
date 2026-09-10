@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-When do we get our pay stubs each month?
+When is the project being handed over to the client?
 voice: us_female_1
-(A) Mine are always kept in the top drawer.
-(B) I'd check with the payroll department on that.
-(C) The new payroll system launches next quarter.
+(A) It took about three weeks to prepare.
+(B) Check with Ms. Lin — she's managing the timeline.
+(C) The handover documents are almost ready.
 Answer: B
-Explanation: Câu hỏi là "When do we get our pay stubs each month?", hỏi THỜI GIAN. | (A) "Mine are always kept in the top drawer." — trả lời NƠI CHỐN ("in the top drawer"), sai loại câu hỏi. | (B) "I'd check with the payroll department on that." — không nêu thời gian, chỉ sang bộ phận khác để hỏi, đúng kiểu gián tiếp. | (C) "The new payroll system launches next quarter." — dùng lại từ "payroll" liên quan đến "pay stubs" nhưng nói về hệ thống mới, không trả lời khi nào phát phiếu lương.
+Explanation: Câu hỏi là "When is the project being handed over to the client?", hỏi THỜI GIAN. | (A) "It took about three weeks to prepare." — nêu thời lượng (how long) thay vì thời điểm (when), trả lời sai loại từ để hỏi. | (B) "Check with Ms. Lin — she's managing the timeline." — chỉ sang người khác, không nêu thời gian cụ thể, đúng kiểu trả lời gián tiếp. | (C) "The handover documents are almost ready." — dùng lại từ "handover" nhưng chỉ cho biết trạng thái tài liệu, không trả lời được "khi nào".
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-When will the shipment be delivered to our warehouse?
+When does the quarterly review meeting begin?
 voice: us_female_1
-(A) By Thursday afternoon, the carrier confirmed.
-(B) To the distribution center on Oak Road.
-(C) We haven't received the shipping documents yet.
+(A) At two thirty this Thursday afternoon.
+(B) In the main conference room.
+(C) We reviewed the sales figures last quarter.
 Answer: A
-Explanation: Câu hỏi là "When will the shipment be delivered to our warehouse?", hỏi THỜI GIAN. | (A) "By Thursday afternoon, the carrier confirmed." — nêu đúng thời gian giao hàng, trả lời trực tiếp câu hỏi When. | (B) "To the distribution center on Oak Road." — trả lời địa điểm (WHERE) thay vì thời gian, dùng lại ý kho hàng nhưng không nói "khi nào". | (C) "We haven't received the shipping documents yet." — dùng lại từ "shipping" liên quan đến "shipment" trong câu hỏi, nhưng không đưa ra thời gian.
+Explanation: Câu hỏi là "When does the quarterly review meeting begin?", hỏi THỜI ĐIỂM. | (A) "At two thirty this Thursday afternoon." — nêu đúng thời điểm, trả lời trực tiếp cho câu hỏi When. | (B) "In the main conference room." — nêu nơi chốn cho câu hỏi When, tức trả lời sai loại câu hỏi (trả lời Where thay vì When). | (C) "We reviewed the sales figures last quarter." — dùng lại từ "quarterly" và "reviewed" nhưng nói về việc đã làm trong quá khứ, không trả lời "khi nào" cuộc họp bắt đầu.
 Source: original

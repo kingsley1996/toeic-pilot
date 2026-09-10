@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Should we ship the new equipment by air or by sea?
+Would you like to pay by cash or bank transfer?
 voice: ca_male_1
-(A) Yes, the cargo has already been inspected.
-(B) By air, since the deadline is quite tight.
-(C) The freight costs have gone up recently.
+(A) The receipt is in the envelope.
+(B) Bank transfer would be fine, thank you.
+(C) It was processed last Friday.
 Answer: B
-Explanation: Câu hỏi "Should we ship the new equipment by air or by sea?" yêu cầu lựa chọn giữa hai phương án vận chuyển đường hàng không hoặc đường biển. | (A) "Yes, the cargo has already been inspected." — dùng Yes cho câu hỏi Or, vốn không nhận Yes/No; bỏ "Yes" ra vẫn không chọn air hay sea, chỉ nói tình trạng hàng. | (B) "By air, since the deadline is quite tight." — trực tiếp chọn đường hàng không kèm lý do. | (C) "The freight costs have gone up recently." — đề cập chi phí vận chuyển, liên quan bối cảnh logistics nhưng không trả lời câu hỏi lựa chọn.
+Explanation: Câu hỏi là "Would you like to pay by cash or bank transfer?", đây là câu hỏi LỰA CHỌN giữa hai phương thức thanh toán. | (A) "The receipt is in the envelope." — dùng lại từ vựng liên quan đến thanh toán nhưng trả lời cho câu hỏi "ở đâu" mà không ai hỏi. | (B) "Bank transfer would be fine, thank you." — chọn thẳng một trong hai phương thức được đề xuất, đúng cách trả lời câu hỏi lựa chọn. | (C) "It was processed last Friday." — nêu thời gian xử lý giao dịch, không chọn phương thức thanh toán nào.
 Source: original

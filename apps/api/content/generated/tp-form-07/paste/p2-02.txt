@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Where are we holding the client conference next month?
+Where is the new warehouse going to be located?
 voice: uk_female_1
-(A) It's at the Grand Hotel downtown.
-(B) The marketing team is organizing it.
-(C) I think it's the second week of June.
+(A) It's near the industrial park on Highway 10.
+(B) The relocation plan was approved last week.
+(C) About fifteen thousand square feet.
 Answer: A
-Explanation: Câu hỏi là "Where are we holding the client conference next month?", hỏi NƠI CHỐN. | (A) "It's at the Grand Hotel downtown." — nêu đúng một nơi chốn. | (B) "The marketing team is organizing it." — trả lời ai tổ chức, không nói ở đâu. | (C) "I think it's the second week of June." — trả lời thời gian, không phải nơi chốn.
+Explanation: Câu hỏi là "Where is the new warehouse going to be located?", hỏi NƠI CHỐN. | (A) "It's near the industrial park on Highway 10." — nêu đúng một nơi chốn, trả lời trực tiếp. | (B) "The relocation plan was approved last week." — dùng lại ý "located" → "relocation" nhưng trả lời như hỏi về thời gian, không chỉ nơi chốn. | (C) "About fifteen thousand square feet." — trả lời diện tích, tức trả lời cho câu hỏi "How big" thay vì "Where".
 Source: original

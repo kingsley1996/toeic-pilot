@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Where should I leave the documents for the international clients?
+Where can I find the registration form?
 voice: ca_male_1
-(A) I think Ms. Tran handled those documents.
-(B) Right behind the reception counter, please.
-(C) They're arriving early Thursday morning.
+(A) Yes, we have plenty of copies left.
+(B) In the binder next to the front entrance.
+(C) The registration deadline is tomorrow.
 Answer: B
-Explanation: Câu hỏi là "Where should I leave the documents for the international clients?", hỏi NƠI CHỐN. | (A) "I think Ms. Tran handled those documents." — dùng lại từ "documents" nhưng trả lời về AI (who) chứ không trả lời Ở ĐÂU. | (B) "Right behind the reception counter, please." — nêu đúng một nơi chốn, trả lời trực tiếp cho câu hỏi Where. | (C) "They're arriving early Thursday morning." — trả lời THỜI GIAN (when), phù hợp nếu người nghe chỉ bắt được "international clients" và nghĩ đến lịch trình của khách.
+Explanation: Câu hỏi là "Where can I find the registration form?", hỏi NƠI CHỐN. | (A) "Yes, we have plenty of copies left." — mở đầu bằng Yes cho câu hỏi Where; bỏ "Yes" ra thì "We have plenty of copies left" vẫn không nói nơi chốn. | (B) "In the binder next to the front entrance." — nêu đúng một nơi chốn, trả lời trực tiếp cho câu hỏi Where. | (C) "The registration deadline is tomorrow." — dùng lại từ "registration" nhưng nêu thời hạn, trả lời cho câu hỏi When chứ không phải Where.
 Source: original

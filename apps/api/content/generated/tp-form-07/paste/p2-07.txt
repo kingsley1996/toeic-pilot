@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Would you like to meet with the sales team or the technical department?
+Would you like to meet at the café or in the meeting room?
 voice: au_male_1
-(A) The technical report was just finished.
-(B) Yes, I called earlier today.
-(C) The sales team, please.
+(A) I already booked the room for Thursday.
+(B) At three o'clock this afternoon.
+(C) The café sounds good to me.
 Answer: C
-Explanation: Câu hỏi là "Would you like to meet with the sales team or the technical department?", hỏi LỰA CHỌN giữa hai bộ phận. | (A) "The technical report was just finished." — lặp từ "technical" nhưng dùng trong ngữ cảnh khác ("báo cáo kỹ thuật" thay vì "bộ phận kỹ thuật"). | (B) "Yes, I called earlier today." — dùng Yes cho câu hỏi or, đồng thời cung cấp thời gian thay vì nêu bộ phận cần gặp. | (C) "The sales team, please." — trực tiếp chọn một trong hai phương án được nêu.
+Explanation: Câu hỏi là "Would you like to meet at the café or in the meeting room?", đây là câu hỏi LỰA CHỌN yêu cầu chọn một trong hai phương án. | (A) "I already booked the room for Thursday." — dùng lại từ "room" từ câu hỏi nhưng cung cấp thông tin về việc đặt phòng, không đưa ra lựa chọn. | (B) "At three o'clock this afternoon." — trả lời "khi nào" thay vì chọn địa điểm, sai loại câu hỏi. | (C) "The café sounds good to me." — chọn đúng một phương án, phản hồi trực tiếp câu hỏi lựa chọn.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-Why is the assembly line running behind schedule?
+Why was the advertising budget increased without consulting the board?
 voice: ca_male_1
-(A) Have you asked the quality control team?
-(B) The night shift reported it to the supervisor.
-(C) We're about two weeks behind the original timeline.
+(A) Should we schedule a review meeting to go over the numbers?
+(B) The board met last Thursday afternoon.
+(C) It increased by nearly forty percent.
 Answer: A
-Explanation: Câu hỏi là "Why is the assembly line running behind schedule?", hỏi LÝ DO. | (A) "Have you asked the quality control team?" — đáp lại bằng một câu hỏi của chính mình, không nêu lý do, đúng kiểu gián tiếp. | (B) "The night shift reported it to the supervisor." — nêu người báo cáo, trả lời cho câu hỏi WHO chứ không phải WHY. | (C) "We're about two weeks behind the original timeline." — dùng lại từ "behind" trong ngữ cảnh khác, nêu mức độ trễ thay vì lý do.
+Explanation: Câu hỏi là "Why was the advertising budget increased without consulting the board?", hỏi LÝ DO. | (A) "Should we schedule a review meeting to go over the numbers?" — đáp lại bằng một câu hỏi đề xuất hành động tiếp theo, đúng kiểu phản hồi gián tiếp. | (B) "The board met last Thursday afternoon." — dùng lại từ "board" nhưng nêu thời gian, tức trả lời cho WHEN thay vì WHY. | (C) "It increased by nearly forty percent." — dùng lại từ "increased" nhưng đưa ra con số phần trăm, trả lời cho HOW MUCH chứ không phải WHY.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Which building is the product showroom located in?
+Which floor is the accounting department on?
 voice: us_female_1
-(A) The showroom tour starts at ten.
-(B) I believe it was shut down last month.
-(C) The building manager approved the proposal.
+(A) The accounting report should be on your desk by now.
+(B) I believe they're all working remotely this week.
+(C) It closes at six, I think.
 Answer: B
-Explanation: Câu hỏi là "Which building is the product showroom located in?", hỏi NƠI CHỐN. | (A) "The showroom tour starts at ten." — dùng lại từ "showroom" nhưng trả lời thời gian, không phải nơi chốn. | (B) "I believe it was shut down last month." — đúng vì làm câu hỏi trở nên vô nghĩa: phòng trưng bày đã đóng cửa nên việc hỏi nằm ở tòa nhà nào không còn ý nghĩa. | (C) "The building manager approved the proposal." — dùng lại từ "building" với nghĩa khác (quản lý tòa nhà), không trả lời câu hỏi WHERE.
+Explanation: Câu hỏi là "Which floor is the accounting department on?", hỏi NƠI CHỐN (tầng nào). | (A) "The accounting report should be on your desk by now." — dùng lại từ "accounting" nhưng nói về báo cáo, không trả lời nơi chốn. | (B) "I believe they're all working remotely this week." — cho biết không ai có mặt tại tòa nhà, làm câu hỏi "tầng nào" trở nên vô nghĩa, đúng cách phản hồi gián tiếp. | (C) "It closes at six, I think." — trả lời thời gian (giờ đóng cửa) cho câu hỏi Where, sai loại từ để hỏi.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Why was the customer's order cancelled so suddenly?
+Why was the Henderson order delivered two days late?
 voice: uk_female_1
-(A) Yes, I'll contact them right away.
-(B) They cancelled it at the warehouse yesterday.
-(C) The client's funding was unexpectedly frozen.
+(A) It should arrive by tomorrow afternoon.
+(B) At the warehouse in Portland.
+(C) The shipment was held up at customs.
 Answer: C
-Explanation: Câu hỏi là "Why was the customer's order cancelled so suddenly?", hỏi LÝ DO. | (A) "Yes, I'll contact them right away." — đáp Yes cho câu hỏi Why, tức sai loại câu hỏi; bỏ "Yes" thì vẫn không nói được lý do. | (B) "They cancelled it at the warehouse yesterday." — dùng lại từ "cancelled" nhưng trả lời ai/ở đâu/khi nào, không giải thích tại sao. | (C) "The client's funding was unexpectedly frozen." — nêu đúng lý do, trả lời trực tiếp cho câu hỏi Why.
+Explanation: Câu hỏi là "Why was the Henderson order delivered two days late?", hỏi LÝ DO. | (A) "It should arrive by tomorrow afternoon." — nói về thời điểm giao sắp tới, dùng lại chủ đề giao hàng nhưng không giải thích lý do vì sao bị trễ. | (B) "At the warehouse in Portland." — nêu nơi chốn, trả lời câu hỏi Where thay vì Why. | (C) "The shipment was held up at customs." — nêu đúng lý do giao hàng trễ, trả lời trực tiếp vào câu hỏi Why.
 Source: original

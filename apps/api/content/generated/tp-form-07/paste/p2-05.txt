@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-The conference room has been booked for this afternoon, hasn't it?
+The meeting room has been booked, hasn't it?
 voice: au_male_1
-(A) Yes, I reserved it earlier this morning.
-(B) It's on the second floor, near the elevator.
-(C) The meeting starts at two o'clock.
+(A) Yes, it's reserved for two o'clock.
+(B) I booked the flights for the conference.
+(C) On the third floor, near the elevator.
 Answer: A
-Explanation: Câu hỏi đuôi là "The conference room has been booked for this afternoon, hasn't it?", yêu cầu xác nhận Yes/No về việc đặt phòng. | (A) "Yes, I reserved it earlier this morning." — xác nhận trực tiếp việc đặt phòng. | (B) "It's on the second floor, near the elevator." — trả lời NƠI CHỐN cho câu hỏi yêu cầu xác nhận, dùng lại ý "conference room" nhưng không xác nhận việc đặt. | (C) "The meeting starts at two o'clock." — trả lời THỜI GIAN, dùng lại ý "afternoon" nhưng không xác nhận việc đặt phòng.
+Explanation: Câu nói là "The meeting room has been booked, hasn't it?", đây là câu hỏi đuôi yêu cầu xác nhận. | (A) "Yes, it's reserved for two o'clock." — xác nhận trực tiếp bằng Yes và bổ sung chi tiết thời gian, đúng cách phản hồi câu hỏi đuôi. | (B) "I booked the flights for the conference." — dùng lại từ "booked" nhưng nói về chuyến bay, không xác nhận việc đặt phòng họp. | (C) "On the third floor, near the elevator." — trả lời nơi chốn cho một câu hỏi đuôi không hề hỏi ở đâu.
 Source: original

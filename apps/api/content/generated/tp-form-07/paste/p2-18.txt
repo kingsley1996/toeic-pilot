@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Who is in charge of approving leave requests here?
+Who's in charge of welcoming the Japanese delegation?
 voice: uk_female_1
-(A) They can be submitted through the company portal.
-(B) That would be Ms. Tran from the HR department.
-(C) The approval process usually takes about two days.
+(A) They're arriving next Tuesday morning.
+(B) Ms. Tanaka from the international relations department.
+(C) We've reserved the executive boardroom.
 Answer: B
-Explanation: Câu hỏi là "Who is in charge of approving leave requests here?", hỏi NGƯỜI phụ trách. | (A) "They can be submitted through the company portal." — trả lời cách thức gửi đơn, không nêu ai, sai loại câu hỏi. | (B) "That would be Ms. Tran from the HR department." — nêu đúng một người cụ thể, trả lời trực tiếp. | (C) "The approval process usually takes about two days." — dùng lại từ "approval" nhưng trả lời thời gian xử lý, không nêu người.
+Explanation: Câu hỏi là "Who's in charge of welcoming the Japanese delegation?", hỏi NGƯỜI phụ trách. | (A) "They're arriving next Tuesday morning." — trả lời thời gian (khi nào) thay vì người (ai). | (B) "Ms. Tanaka from the international relations department." — nêu đúng người phụ trách. | (C) "We've reserved the executive boardroom." — trả lời nơi chốn, dùng lại ý tiếp đón đoàn nhưng không nói ai phụ trách.
 Source: original

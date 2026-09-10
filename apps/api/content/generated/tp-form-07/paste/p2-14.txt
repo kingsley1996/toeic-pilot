@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Would you like to place your order early for the holiday discount?
+Could you double-check the figures in the spreadsheet for me?
 voice: uk_female_1
-(A) Yes, that would be a smart decision.
-(B) I think the holiday starts in December.
-(C) The early shipment will arrive by Tuesday.
+(A) Of course, I'll go over them this afternoon.
+(B) The figures were revised last quarter.
+(C) In the shared drive folder.
 Answer: A
-Explanation: Câu hỏi là "Would you like to place your order early for the holiday discount?", đây là câu đề nghị khách đặt hàng sớm để được giảm giá. | (A) "Yes, that would be a smart decision." — chấp nhận trực tiếp lời đề nghị. | (B) "I think the holiday starts in December." — trả lời thời điểm ngày lễ, dùng lại từ "holiday" nhưng không phản hồi câu đề nghị. | (C) "The early shipment will arrive by Tuesday." — nói thời gian giao hàng, dùng lại từ "early" nhưng không trả lời lời đề nghị.
+Explanation: "Could you double-check the figures in the spreadsheet for me?" là một YÊU CẦU, không phải câu hỏi thông tin. | (A) "Of course, I'll go over them this afternoon." — nhận lời và cam kết thời gian, đúng cách phản hồi một yêu cầu. | (B) "The figures were revised last quarter." — dùng lại từ "figures" nhưng trả lời như câu hỏi WHEN, không phải đáp lại yêu cầu. | (C) "In the shared drive folder." — nêu nơi chốn cho một yêu cầu không hỏi WHERE.
 Source: original

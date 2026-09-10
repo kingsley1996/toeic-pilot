@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-Do you need any help finishing the quarterly report?
+Have you received the notification about the training schedule yet?
 voice: ca_male_1
-(A) Yes, the quarterly figures were updated yesterday.
-(B) No, I should have it done by this afternoon.
-(C) At the main conference room, I think.
+(A) The sessions will be held in the training room.
+(B) Yes, it came through to my email this morning.
+(C) About fifteen people are attending.
 Answer: B
-Explanation: Câu hỏi là "Do you need any help finishing the quarterly report?", câu hỏi YES/NO xác nhận có cần hỗ trợ thêm không. | (A) "Yes, the quarterly figures were updated yesterday." — dùng lại từ "quarterly" nhưng nói về số liệu đã cập nhật, không trả lời câu hỏi có cần giúp hay không. | (B) "No, I should have it done by this afternoon." — trả lời trực tiếp No, cho biết không cần hỗ trợ. | (C) "At the main conference room, I think." — trả lời cho câu hỏi Where, không phải câu hỏi Yes/No.
+Explanation: Câu hỏi là "Have you received the notification about the training schedule yet?", câu hỏi YES/NO hỏi đã nhận thông báo hay chưa. | (A) "The sessions will be held in the training room." — dùng lại từ "training" nhưng trả lời cho câu hỏi Where (nơi chốn), không xác nhận việc nhận thông báo. | (B) "Yes, it came through to my email this morning." — xác nhận trực tiếp đã nhận, đúng cách trả lời câu hỏi Yes/No. | (C) "About fifteen people are attending." — đưa ra số lượng, trả lời cho câu hỏi How many thay vì xác nhận hoặc phủ nhận đã nhận.
 Source: original

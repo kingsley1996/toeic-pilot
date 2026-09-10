@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-The network maintenance has been moved to Saturday afternoon.
+I just received a confirmation email from the supplier.
 voice: ca_male_1
-(A) I'll update the schedule and notify the team.
-(B) The network was repaired last week.
-(C) I usually take the afternoon shift.
+(A) That's great — I'll let the warehouse team know.
+(B) At around two o'clock this afternoon.
+(C) Yes, I sent them the supply list yesterday.
 Answer: A
-Explanation: Câu trần thuật "The network maintenance has been moved to Saturday afternoon.", thông báo lịch bảo trì mạng đã được dời sang chiều thứ Bảy. | (A) "I'll update the schedule and notify the team." — đáp ứng trực tiếp bằng cách xác nhận sẽ cập nhật và thông báo cho mọi người. | (B) "The network was repaired last week." — lặp lại từ "network" nhưng nói về việc sửa chữa đã qua, không phản hồi đúng thông tin thay đổi lịch. | (C) "I usually take the afternoon shift." — lặp lại từ "afternoon" nhưng nói về ca làm cá nhân, không liên quan đến lịch bảo trì.
+Explanation: Câu nói là "I just received a confirmation email from the supplier.", đây là một CÂU TRẦN THUẬT thông báo tin tức, không phải câu hỏi. | (A) "That's great — I'll let the warehouse team know." — phản hồi trực tiếp bằng cách ghi nhận tin tốt và nêu hành động tiếp theo, đúng cách đáp lại một câu trần thuật. | (B) "At around two o'clock this afternoon." — nêu thời gian, trả lời như thể bị hỏi "when" nhưng không ai hỏi vậy. | (C) "Yes, I sent them the supply list yesterday." — dùng lại từ "supply" giống "supplier" nhưng nói về việc gửi danh sách, không liên quan đến email xác nhận vừa nhận.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Have you signed up for the online seminar yet?
+Are you planning to attend the seminar next week?
 voice: au_male_1
-(A) I think it's next Wednesday.
-(B) Yes, the online platform works fine.
-(C) I've been meaning to do that all week.
+(A) The seminar starts at nine o'clock.
+(B) Yes, I attended a similar one last month.
+(C) I'm still waiting for my manager to confirm my schedule.
 Answer: C
-Explanation: Câu hỏi là "Have you signed up for the online seminar yet?", dạng CÓ/KHÔNG. | (A) "I think it's next Wednesday." — trả lời thời gian diễn ra hội thảo, tức trả lời câu hỏi WHEN khác. | (B) "Yes, the online platform works fine." — lặp lại từ "online" nhưng nói về nền tảng, không trả lời câu hỏi về đăng ký; bỏ "Yes" vẫn sai. | (C) "I've been meaning to do that all week." — gián tiếp ngụ ý chưa đăng ký, không trực tiếp trả lời Có hoặc Không.
+Explanation: Câu hỏi là "Are you planning to attend the seminar next week?", đây là câu hỏi YES/NO hỏi người đó có dự định tham dự hội thảo tuần sau không. | (A) "The seminar starts at nine o'clock." — trả lời thời gian bắt đầu, như thể câu hỏi hỏi WHEN, bỏ qua đây là câu hỏi Yes/No. | (B) "Yes, I attended a similar one last month." — dùng lại từ "attend" và nói Yes, nhưng nói về hội thảo đã qua, không trả lời về tuần sau. | (C) "I'm still waiting for my manager to confirm my schedule." — không nói Yes hay No, cho biết chưa thể trả lời vì đang chờ cấp trên xác nhận, đúng kiểu hồi đáp gián tiếp cho câu hỏi Yes/No.
 Source: original

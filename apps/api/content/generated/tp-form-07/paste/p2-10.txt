@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Could you email the updated quote to me this afternoon?
+Could you resend the contract file to me, please?
 voice: us_female_1
-(A) It's about three hundred dollars more than before.
-(B) I sent the original version last Monday.
-(C) Absolutely, I'll have it in your inbox by three.
+(A) It's saved in the shared documents folder.
+(B) The client signed it on Monday.
+(C) Of course, I'll send it to you right away.
 Answer: C
-Explanation: Câu hỏi là "Could you email the updated quote to me this afternoon?", một câu yêu cầu gửi báo giá cập nhật qua email. | (A) "It's about three hundred dollars more than before." — cung cấp thông tin giá cả liên quan đến báo giá nhưng không trả lời câu yêu cầu gửi email. | (B) "I sent the original version last Monday." — dùng lại "sent" giống "send" trong câu hỏi nhưng nói về hành động quá khứ, không phải đồng ý yêu cầu hiện tại. | (C) "Absolutely, I'll have it in your inbox by three." — đồng ý trực tiếp và cam kết thời gian gửi, trả lời đúng yêu cầu.
+Explanation: Câu hỏi là "Could you resend the contract file to me, please?", đây là một YÊU CẦU chứ không phải câu hỏi thông tin. | (A) "It's saved in the shared documents folder." — dùng lại từ "file" nhưng trả lời Where, nêu nơi lưu trữ thay vì đồng ý gửi lại. | (B) "The client signed it on Monday." — dùng lại ý "hợp đồng" nhưng trả lời như câu hỏi When, cung cấp thời gian thay vì chấp nhận yêu cầu. | (C) "Of course, I'll send it to you right away." — nhận lời và cam kết gửi lại, đúng cách phản hồi trực tiếp một yêu cầu.
 Source: original

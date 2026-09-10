@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-How do I check the backlog inventory on the system?
+How much does the company contribute to each employee's retirement plan?
 voice: us_female_1
-(A) Yes, the inventory was checked this morning.
-(B) I haven't been trained on that system yet.
-(C) It's located in the main storage area.
+(A) About twenty people enrolled in it last month.
+(B) I'm not certain — you should check with the benefits office.
+(C) For five years before the benefits are fully vested.
 Answer: B
-Explanation: Câu hỏi là "How do I check the backlog inventory on the system?", hỏi CÁCH THỰC HIỆN. | (A) "Yes, the inventory was checked this morning." — mở đầu bằng Yes cho câu hỏi How, lặp từ "inventory" và "checked" nhưng không trả lời cách thực hiện; bỏ "Yes" vẫn sai. | (B) "I haven't been trained on that system yet." — nói rõ mình chưa biết cách, không cung cấp phương pháp nào, là đáp án gián tiếp hợp lý. | (C) "It's located in the main storage area." — trả lời NƠI CHỐN thay vì CÁCH, dùng lại ý hàng tồn đọng nhưng sai loại câu hỏi.
+Explanation: Câu hỏi là "How much does the company contribute to each employee's retirement plan?", hỏi MỘT LƯỢNG TIỀN hoặc lượng không đếm được (how much). | (B) "I'm not certain — you should check with the benefits office." — người trả lời không biết con số cụ thể và giới thiệu sang bộ phận phụ trách, đúng kiểu trả lời gián tiếp. | (A) "About twenty people enrolled in it last month." — nêu SỐ ĐẾM (twenty people), sai loại cho câu hỏi how much. | (C) "For five years before the benefits are fully vested." — nêu THỜI LƯỢNG (five years), trả lời như câu hỏi "how long" thay vì "how much".
 Source: original
