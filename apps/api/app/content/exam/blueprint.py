@@ -729,18 +729,34 @@ def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = N
     # cụm một đoạn phải cộng đúng 29 câu — quota theo số câu của mỗi cụm, loại
     # chỉ được cân TRONG từng bậc.
     by_len = {n: [row for row in PART7_SETS if len(row[3]) == n] for n in (1, 2, 3)}
-    selected: list[tuple[str, str, tuple[str, ...], tuple[str, ...]]] = []
+    # Ba PASSAGE HÌNH luôn được chọn (1 cụm đôi + 2 cụm ba) — một seed từng
+    # chọn không hình nào, mất trục ghép hai nguồn mà validate từng ô không
+    # thấy. Nên nhóm hình tách khỏi `_pick_balanced`, vòng tròn loại chỉ chạy
+    # trên các cụm CHỮ, và bậc ba giữ một slot chữ cho cụm không hình.
+    graphic_rows = {n: [row for row in by_len[n] if any(row[3])] for n in (2, 3)}
+    graphics_selected = [
+        *_pick_balanced(graphic_rows[2], 1, _rng(seed, "p7-g2"), lambda row: row[0]),
+        *_pick_balanced(graphic_rows[3], 2, _rng(seed, "p7-g3"), lambda row: row[0]),
+    ]
+    text_rows: list[tuple[str, str, tuple[str, ...], tuple[str, ...]]] = []
     for size, want in sorted(PART7_SINGLE_QUOTA.items()):
         stratum = [row for row in by_len[1] if len(row[2]) == size]
-        selected += _pick_balanced(stratum, want, _rng(seed, f"p7-one{size}"), lambda row: row[0])
-    got = sum(len(row[2]) for row in selected)
-    if len(selected) != 10 or got != 29:
+        text_rows += _pick_balanced(stratum, want, _rng(seed, f"p7-one{size}"), lambda row: row[0])
+    got = sum(len(row[2]) for row in text_rows)
+    if len(text_rows) != 10 or got != 29:
         raise ValueError(
             f"pool Part 7 một đoạn không đủ cho quota {PART7_SINGLE_QUOTA}: "
-            f"chọn được {len(selected)} cụm, {got} câu (cần 10 cụm, 29 câu)"
+            f"chọn được {len(text_rows)} cụm, {got} câu (cần 10 cụm, 29 câu)"
         )
-    selected += _pick_balanced(by_len[2], 2, _rng(seed, "p7-two"), lambda row: row[0])
-    selected += _pick_balanced(by_len[3], 3, _rng(seed, "p7-three"), lambda row: row[0])
+    text_rows += _pick_balanced(
+        [row for row in by_len[2] if not any(row[3])], 1, _rng(seed, "p7-t2"), lambda row: row[0]
+    )
+    text_rows += _pick_balanced(
+        [row for row in by_len[3] if not any(row[3])], 1, _rng(seed, "p7-t3"), lambda row: row[0]
+    )
+    # Hai nhóm (cụm chữ + cụm hình) rời rạc theo bậc số đoạn; sắp lại tăng dần
+    # để "một đoạn → hai → ba" của đề thật giữ nguyên trước khi xáo trong nhóm.
+    selected = sorted([*text_rows, *graphics_selected], key=lambda row: len(row[3]))
     # Số hình đến từ LỰA CHỌN, không từ pool: thêm cụm chữ vào pool không được
     # đổi số brief mà chặng vẽ hình phải nhận.
     graphic_count = sum(1 for row in selected for p in row[3] if p)
@@ -857,6 +873,14 @@ def validate(blueprint: Blueprint) -> list[str]:
             total = sum(len(slot.question_types) for slot in part.slots)
             if total != 54:
                 problems.append(f"part 7 có {total} câu, phải là đúng 54 (147–200)")
+            # Và 3–5 PASSAGE HÌNH (mục không rỗng của `passages`): một đề không
+            # hình nào là mất trục ghép hai nguồn (câu hỏi tra bảng/sơ đồ).
+            # Hình của Part 7 nằm trong `passages`, KHÔNG phải `slot.graphic`
+            # — trường đó cố ý rỗng cho Part 7, và đếm nhầm trường là thấy
+            # "0 hình" trên đề vốn có bốn. Trần 5 = mỗi cụm multi một hình.
+            graphic_passages = sum(1 for slot in part.slots for spec in slot.passages if spec)
+            if not 3 <= graphic_passages <= 5:
+                problems.append(f"part 7 có {graphic_passages} passage hình — đề thật có 3–5")
     return problems
 
 
