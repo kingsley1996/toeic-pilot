@@ -115,3 +115,15 @@ def test_a_scene_is_read_through_the_blueprint_not_a_guessed_filename(tmp_path, 
     assert mod.scene_for("tp-form-06", 3) == "A photograph of one man at a desk."
     # Số không có trong blueprint thì không có cảnh, chứ không phải đoán bừa.
     assert mod.scene_for("tp-form-06", 4) is None
+
+
+def test_force_without_a_scope_refuses_to_run(monkeypatch, capsys) -> None:
+    """`--force` trên toàn kho = 800+ lượt gọi và ghi đè mọi giải thích đang chạy.
+
+    Chốt ngay ở parse, trước khi mở DB hay gọi model — đây là thao tác tốn tiền
+    nên phải tự khai phạm vi (`--test`/`--part`), không dựa vào người chạy nhớ.
+    """
+    from app.content import backfill_explanations as mod
+
+    assert mod.main(["--force"]) == 2
+    assert "--force cần" in capsys.readouterr().err

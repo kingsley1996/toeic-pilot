@@ -25,6 +25,7 @@ không có thì câu đó bị **bỏ qua**, vì viết tiếp là bịa.
     uv run python -m app.content.backfill_explanations --test tp-form-06 --dry-run
     uv run python -m app.content.backfill_explanations --test tp-form-06 --limit 5
     uv run python -m app.content.backfill_explanations --test tp-form-06
+    uv run python -m app.content.backfill_explanations --test tp-form-06 --force
 """
 
 from __future__ import annotations
@@ -241,20 +242,29 @@ def explain(gateway: Gateway, question: Question, tier: Tier, scene: str | None 
 
 
 def pending(
-    session: Session, test_slug: str | None, part: int | None, limit: int | None
+    session: Session,
+    test_slug: str | None,
+    part: int | None,
+    limit: int | None,
+    force: bool = False,
 ) -> list[Question]:
-    """Hàng đợi là một TRUY VẤN: câu nào chưa có giải thích.
+    """Hàng đợi là một TRUY VẤN: câu nào cần giải thích.
 
-    Chuỗi rỗng tính là chưa có. Cột `explanation` nullable, nhưng một đường ghi
-    nào đó đặt `''` thì hàng ấy sẽ không bao giờ được nhặt lên nếu chỉ hỏi
-    `IS NULL` — và nó cũng không hiện gì cho học viên, vì giao diện kiểm
-    `question.explanation &&`.
+    Mặc định: câu nào CHƯA có. Chuỗi rỗng tính là chưa có. Cột `explanation`
+    nullable, nhưng một đường ghi nào đó đặt `''` thì hàng ấy sẽ không bao giờ
+    được nhặt lên nếu chỉ hỏi `IS NULL` — và nó cũng không hiện gì cho học viên,
+    vì giao diện kiểm `question.explanation &&`.
+
+    `force`: lấy MỌI câu trong phạm vi, kể cả đã có, để viết lại theo prompt hiện
+    tại. Prompt runtime (`backfill_explanation.md`) đã đổi từ lần chạy đầu, nên
+    hàng trăm câu đã ghi vẫn là văn phong cũ. Chỉ ghi đè khi có `--test`/`--part`
+    thu hẹp phạm vi — không thì đây là 800+ lượt gọi cho cả kho.
     """
-    stmt = (
-        select(Question)
-        .options(selectinload(Question.options), joinedload(Question.question_set))
-        .where((Question.explanation.is_(None)) | (Question.explanation == ""))
+    stmt = select(Question).options(
+        selectinload(Question.options), joinedload(Question.question_set)
     )
+    if not force:
+        stmt = stmt.where((Question.explanation.is_(None)) | (Question.explanation == ""))
     if test_slug is not None:
         stmt = (
             stmt.join(PracticeTestQuestion, PracticeTestQuestion.question_id == Question.id)
@@ -278,6 +288,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--test", default=None, help="slug của đề, ví dụ tp-form-06")
     parser.add_argument("--part", type=int, default=None, choices=range(1, 8))
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="viết lại cả câu ĐÃ có giải thích, theo prompt hiện tại; cần --test/--part",
+    )
     parser.add_argument("--dry-run", action="store_true", help="gọi model nhưng KHÔNG ghi")
     parser.add_argument("--tier", choices=["t1", "t2"], default="t2")
     parser.add_argument(
@@ -287,6 +302,12 @@ def main(argv: list[str] | None = None) -> int:
         "sinh tp-test-09 với độ phủ giải thích 100%%",
     )
     args = parser.parse_args(argv)
+
+    # `--force` trên toàn kho là 800+ lượt gọi và ghi đè mọi giải thích đang phục
+    # vụ. Đây là thao tác tốn tiền, nên bắt buộc thu hẹp phạm vi trước đã.
+    if args.force and not (args.test or args.part):
+        print("--force cần --test hoặc --part để giới hạn phạm vi.", file=sys.stderr)
+        return 2
 
     # Dùng lại bộ dựng gateway của đường sinh đề chứ không viết bản thứ hai: nó
     # đã nối sẵn `resolve_feature`, và quên nối thứ đó thì màn `/admin/ai/providers`
@@ -302,9 +323,10 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
         tier = Tier(args.tier)
-        questions = pending(session, args.test, args.part, args.limit)
+        questions = pending(session, args.test, args.part, args.limit, args.force)
         where = f" trong {args.test}" if args.test else ""
-        print(f"{len(questions)} câu{where} chưa có giải thích.\n")
+        verb = "câu" if not args.force else "câu (ghi lại)"
+        print(f"{len(questions)} {verb}{where} cần giải thích.\n")
 
         # Số thứ tự trong đề, cần để tra bản mô tả ảnh của Part 1. Chỉ có khi
         # biết đề nào — một câu hỏi nằm được trong nhiều đề, nên `--test` là
