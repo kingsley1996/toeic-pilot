@@ -30,6 +30,8 @@ from app.models import (
     Attempt,
     AttemptItem,
     AttemptPart,
+    GrammarAttempt,
+    PartSessionItem,
     PracticeTest,
     PracticeTestQuestion,
     Question,
@@ -193,6 +195,28 @@ def _purge_attempts_of_test(db: Session, test_id: uuid.UUID) -> None:
         synchronize_session=False
     )
     db.query(Attempt).filter(Attempt.id.in_(attempt_ids)).delete(synchronize_session=False)
+    db.flush()
+
+
+def _purge_sessions_of_questions(db: Session, question_ids: list[uuid.UUID]) -> None:
+    """Xoá hàng tham chiếu RESTRICT tới các câu sắp bị xoá, từ các bảng phiên
+    luyện tập mới hơn mà `_delete_test_core` ban đầu chưa biết tới.
+
+    `attempt` (đề full) là lịch sử duy nhất khi hàm đó ra đời. `part_session_item`
+    (luyện theo part) và `grammar_attempt` (module ngữ pháp) cũng giữ `question_id`
+    với ondelete=**RESTRICT**, nên một câu đã từng được làm ở đó không xoá được:
+    `DELETE FROM question` nổ IntegrityError giữa chừng transaction. `option_id`
+    của hai bảng này là SET NULL nên không chặn. Chỉ xoá đúng hàng trỏ vào câu của
+    đề này — câu dùng chung để nguyên (đã loại ở `shared` bên trên).
+    """
+    if not question_ids:
+        return
+    db.query(PartSessionItem).filter(PartSessionItem.question_id.in_(question_ids)).delete(
+        synchronize_session=False
+    )
+    db.query(GrammarAttempt).filter(GrammarAttempt.question_id.in_(question_ids)).delete(
+        synchronize_session=False
+    )
     db.flush()
 
 
@@ -445,6 +469,10 @@ def _delete_test_core(db: Session, test: PracticeTest, force: bool) -> None:
             db.query(QuestionOption).filter(QuestionOption.question_id.in_(doomed)).delete(
                 synchronize_session=False
             )
+            # Dọn hàng RESTRICT từ các bảng phiên luyện tập trước khi xoá câu —
+            # `attempt` đã xử lý ở trên, nhưng `part_session_item`/`grammar_attempt`
+            # trỏ `question_id` RESTRICT và sẽ chặn `DELETE FROM question`.
+            _purge_sessions_of_questions(db, doomed)
             db.query(Question).filter(Question.id.in_(doomed)).delete(synchronize_session=False)
             db.flush()
         _drop_empty_sets(db, set_ids)

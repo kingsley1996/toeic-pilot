@@ -57,7 +57,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `docs/USER-ROAD.md` · `docs/SPEC-*.md` | Level/badge/XP · các mặc định dựng để sửa |
 | `docs/SPEC-GRAMMAR.md` | Module ngữ pháp — **G1–G5 + P1 đã dựng**. §2: bài tập là bài học, không rút theo nhãn. §4: tiến độ là bảng ghi, không suy ra. §3: vì sao lý thuyết Part 1–7 tách ra |
 | `docs/BRAND-ASSETS.md` | Prompt sinh logo/favicon/ảnh OG. §0: favicon vẫn là bản mặc định của Next.js. §2: ba thứ model làm không được |
-| `docs/import_media.md` · `docs/EXAM-GENERATION-RUNBOOK.md` · `docs/SYNC-TEST-TO-PRODUCTION.md` | Runbook thao tác |
+| `docs/import_media.md` · `docs/EXAM-GENERATION-RUNBOOK.md` · `docs/SYNC-TEST-TO-PRODUCTION.md` · `docs/REGEN-PART-SYNC.md` | Runbook thao tác — `REGEN-PART-SYNC` là thay MỘT part của đề đã publish + resync prod |
 | `docs/REVIEW-OPUS.md` · `docs/qwen3p8-review.md` | Hai bản review, ghim theo commit, **không cập nhật** |
 | `archive/**` | Kế hoạch của việc đã làm xong, và ROADMAP cũ. Ghim theo commit, **không cập nhật** — đọc để biết *vì sao*, không phải để biết *đang thế nào* |
 

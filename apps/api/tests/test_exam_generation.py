@@ -403,6 +403,97 @@ def test_part_1_must_carry_all_three_picture_shapes():
     assert any("thiếu dạng tranh" in problem and "none" in problem for problem in problems)
 
 
+def test_part1_pool_is_wide_and_carries_all_three_shapes():
+    """Pool tĩnh phải đủ rộng để fallback không tái chế đúng sáu cảnh ấy mãi.
+
+    Bản 18 mẫu khiến mọi đề không-`--model` cùng rơi vào dải văn phòng–họp–kho.
+    Giữ một ngưỡng tối thiểu và đủ ba dạng tranh để người ra đề không vô tình
+    thu hẹp lại `PART1_MIX` khi chỉnh nội dung.
+    """
+    from app.content.exam.mixes import PART1_MIX
+
+    shapes = {slot[1] for slot in PART1_MIX}
+    assert shapes == set(bp.PEOPLE_SHAPES)
+    assert len(PART1_MIX) >= 36
+    scenes = [slot[2] for slot in PART1_MIX]
+    assert len(set(scenes)) == len(scenes), "bối cảnh trùng nhau trong PART1_MIX"
+
+
+def test_part1_avoid_compresses_history_to_motifs(tmp_path: Path, monkeypatch):
+    """Cơ chế chống trùng làm việc ở tầng motif, không ở tầng chuỗi.
+
+    Hai câu khác từng chữ nhưng cùng một nguyên mẫu ("công trường") là đúng thứ
+    khiến model tưởng nó đang viết mới. List motif GỘP chúng lại thành MỘT mục
+    duy nhất — đó là điểm toàn bộ cơ chế tồn tại — và đề đang chạy không bị
+    chính bối cảnh cũ của nó trói.
+    """
+    from app.content.exam_cli import plan
+
+    def _write(root: Path, slug: str, context: str) -> None:
+        form = bp.build_part1(slug, slug, seed=1)
+        for slot in form.parts[0].slots:
+            slot.context = context  # ghim motif để phép kiểm xác định được
+        (root / slug).mkdir(parents=True)
+        bp.save(form, root / slug / "blueprint.json")
+
+    # Hai đề cũ, cùng motif "công trường" bằng hai chuỗi khác nhau.
+    history = tmp_path / "history"
+    _write(history, "tp-old-a", "một công nhân xây dựng đang buộc cốt thép")
+    _write(history, "tp-old-b", "thợ hồ đang trát tường trên giàn giáo")
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", history)
+
+    avoid, _ = plan._part1_avoid_and_lean("tp-new", seed=7)
+    assert "công trường" in avoid
+    assert avoid.count("công trường") == 1, "motif phải gộp về một mục, không liệt từng câu"
+    assert "giàn giáo" not in avoid and "cốt thép" not in avoid, "không được đống cả câu văn"
+
+    # Chạy lại chính đề A: motif của nó bị loại trừ (đường gọi có exclude_slug).
+    solo = tmp_path / "solo"
+    _write(solo, "tp-old-a", "một công nhân xây dựng đang buộc cốt thép")
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", solo)
+    assert plan._part1_avoid_and_lean("tp-old-a", seed=7) == ("", "")
+    assert "công trường" in plan._part1_avoid_and_lean("tp-fresh", seed=7)[0]
+
+
+def test_part1_avoid_is_a_sliding_window_not_all_history(tmp_path: Path, monkeypatch):
+    """Cảnh cũ phải được quay vòng sau `PART1_AVOID_WINDOW` đề.
+
+    Nếu tránh MỌI đề từng tồn tại thì sau ~10 đề `used` phủ kín bảng motif,
+    `avoid` thành "đừng vẽ cảnh TOEIC nào" và `lean` rỗng vĩnh viễn. Cửa sổ recency
+    (mtime) cắt phần cũ đi — đây là điểm phân biệt sổ-trượt với-cấm-vĩnh-viễn.
+    """
+    import os
+
+    from app.content.exam_cli import plan
+
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", tmp_path)
+    monkeypatch.setattr(plan, "PART1_AVOID_WINDOW", 2)
+
+    def _write(slug: str, context: str, stamp: int) -> None:
+        form = bp.build_part1(slug, slug, seed=1)
+        for slot in form.parts[0].slots:
+            slot.context = context
+        (tmp_path / slug).mkdir(parents=True)
+        path = tmp_path / slug / "blueprint.json"
+        bp.save(form, path)
+        os.utime(path, (stamp, stamp))  # ghim recency, đừng tin mtime tự nhiên
+
+    _write("tp-stale", "một công nhân xây dựng đang buộc cốt thép", stamp=100)  # cũ nhất
+    _write("tp-mid", "bệnh nhân ngồi chờ ở phòng khám", stamp=200)
+    _write("tp-new", "hành khách lần lượt bước lên xe buýt", stamp=300)  # mới nhất
+
+    # Window=2 → chỉ hai đề mới nhất được tính; "công trường" rơi khỏi cửa sổ.
+    avoid, _ = plan._part1_avoid_and_lean("tp-brand-new", seed=7)
+    assert "công trường" not in avoid, "motif ngoài cửa sổ phải được quay vòng, không cấm mãi"
+    assert "y tế / phòng khám" in avoid and "xe buýt / giao thông công cộng" in avoid
+
+    # Cùng dữ liệu nhưng window rộng hơn → "công trường" quay lại đúng vai motif
+    # đã-dùng: chứng minh nó bị cắt bởi CỬA SỔ, không phải bị bug bỏ sót.
+    monkeypatch.setattr(plan, "PART1_AVOID_WINDOW", 3)
+    avoid_wide, _ = plan._part1_avoid_and_lean("tp-brand-new", seed=7)
+    assert "công trường" in avoid_wide
+
+
 def test_the_voice_line_is_given_verbatim_not_described():
     """Mô hình nhỏ chép nguyên cả dấu ngoặc ngược nếu prompt mô tả dòng cần in.
 

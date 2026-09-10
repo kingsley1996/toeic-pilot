@@ -1,0 +1,165 @@
+# Thay một Part của đề đã publish, rồi đồng bộ lên production
+
+Runbook cho thao tác: **một đề đã load + publish, nhưng một Part (ở đây Part 1) có
+chất lượng kém / trùng với các đề khác** → sinh lại Part đó, làm lại media, và cập
+nhập đúng đề đó trên production **mà không đụng các Part còn lại**.
+
+Khác hai runbook anh em:
+- `EXAM-GENERATION-RUNBOOK.md` — dựng **đề mới** từ đầu.
+- `SYNC-TEST-TO-PRODUCTION.md` — đưa **đề mới** dev → prod.
+
+Cái này là **thay nội dung một phần của đề đã có**, nên hai chỗ không có ở đề mới:
+`load` chỉ **cộng thêm** (phải xử lý hàng cũ), và production **đã có attempt** cho đề
+đó (phải xử lý ràng buộc FK).
+
+## 0. Điều kiện và khoá
+
+- Stack dev chạy (`postgres`, `redis`, `api` ở `ENVIRONMENT=development`).
+- Khoá `$SUPABASE_URL` (prod, **thực ra đang là staging alpha** — attempt là data
+  thử, chấp nhận mất; xem §5 trước khi đổi giả định này).
+- Token editor: mint JWT **ngay trong container `api`** để đúng `SECRET_KEY` với API
+  đang phục vụ. `require_role` chỉ cần `sub` = id một user `editor`/`admin`:
+
+  ```bash
+  docker compose -f docker/docker-compose.yml exec -T api sh -c \
+    'uv run python -c "from app.core.security import create_access_token; print(create_access_token(\"<user-id>\"))"'
+  ```
+
+  Token hết hạn sau `ACCESS_TOKEN_EXPIRE_MINUTES`; mint lại khi cần. **Không** commit
+  token hay `$SUPABASE_URL`.
+
+## 1. Sinh lại Part 1 (bốn chặng cục bộ trên tệp)
+
+```bash
+cd apps/api
+S=tp-form-07
+mv content/generated/$S/paste/p1-0?.txt <thư-mục-backup>   # write chỉ sinh Ô CÒN THIẾU
+uv run python -m app.content.generate_exam plan   --slug $S --part 1 --model bai/mimo-v2.5
+uv run python -m app.content.generate_exam write  --slug $S --part 1 --model bai/mimo-v2.5
+uv run python -m app.content.generate_exam balance --slug $S --part 1
+uv run python -m app.content.generate_exam check   --slug $S --part 1
+```
+
+**Vì sao `balance` không thể bỏ.** `write` đổ hết đáp án về một vị trí (đo trên
+`tp-form-07`: 6/6 `Answer: A`). Một đề có sáu câu Part 1 cùng đáp án thì người học
+đoán được mà không cần nghe. `balance` rải lại A/B/C/D và — nhờ thiết kế Explanation
+"một segment mỗi phương án, chữ cái đi theo phương án" — giải thích vẫn đúng sau khi
+đổi chỗ (`check` xác nhận).
+
+**Cơ chế chống trùng liên-đề (Part 1).** `plan --model` đọc bối cảnh Part 1 của
+`PART1_AVOID_WINDOW` (=8) đề **gần nhất** theo `mtime` — trừ chính đề đang chạy —
+gom về **motif** qua `PART1_MOTIF_KEYWORDS`, rồi đưa vào `plan_part1_scenes` hai khối:
+`{avoid}` (motif đã dùng → tránh) và `{lean}` (motif chưa dùng gần đây → ưu tiên thử).
+Gom **motif** chứ không liệt câu văn: trùng lặp nằm ở chủ đề, hai câu khác từng chữ
+cùng một nguyên mẫu ("thêm biến thể công trường nữa") vẫn là trùng. Cửa sổ trượt để
+`sau ~10 đề` không rơi vào trạng thái "tránh cả thế giới, không còn gì để lean".
+
+## 2. Ảnh Part 1 — vẽ lại, XEM, rồi mới gắn
+
+```bash
+rm content/generated/$S/images/p1-0?.png            # hàng đợi là truy vấn: không PNG = cần vẽ
+uv run python -m app.content.generate_exam photo --slug $S
+# >>> DỪNG LẠI. Người xem từng tấm. Sửa/tái sinh tấm nào chưa đạt. <<<
+uv run python -m app.content.generate_exam attach-images --slug $S --part 1 --commit
+```
+
+- Ảnh chỉ lên Cloudinary **khi `attach-images --commit`**; `photo` chỉ vẽ ra đĩa.
+- `--commit` **từ chối** khi còn "file thừa hoặc ô trống": một file `p1-01-draft.png`
+  lạc giữa `images/` sẽ bị khớp nhầm vào ô rồi chặn cả lô. Dọn file rác trước.
+- **Reload trọn đề (§3) xoá luôn liên kết ảnh của các Part graphic (3/4/7).** Các
+  `attach-images --commit` cho Part 1 KHÔNG khôi phục chúng. Phải chạy nốt:
+
+  ```bash
+  for p in 3 4 7; do uv run python -m app.content.generate_exam attach-images --slug $S --part $p --commit; done
+  ```
+
+  (File graphic vẫn còn trên đĩa; chỉ mất liên kết trong DB. `check` trước khi
+  `--commit` cho thấy đúng `N khớp · 0 file thừa`.)
+
+## 3. Reload dev: xoá theo slug rồi nạp lại TRỌN đề
+
+`load` **cộng thêm** (`commit_part` không thay thế) — nạp Part 1 vào đề còn nguyên
+Part 1 sẽ thành 12 câu. Và `attempt` tham chiếu `question.id` của cả 6 câu cũ bằng
+RESTRICT, nên "xoá đúng 6 câu Part 1" vướng FK. Đường gọn và khớp với prod (vẫn
+export nguyên đề): **xoá trọn đề, nạp lại**.
+
+```bash
+TOK=$(cat /tmp/editor_token.txt)
+curl -X DELETE -H "Authorization: Bearer $TOK" "http://localhost:8000/api/v1/admin/tests/$S?force=true"
+uv run python -m app.content.generate_exam load --slug $S --token "$TOK"
+uv run python -m app.content.backfill_audio --only questions --test $S
+```
+
+**Không tốn TTS cho Parts 2–7.** `audio_asset` nội-dung-địa-chỉ (`source_hash`), và
+`backfill_audio` tra theo hash trước khi gọi máy (`--dry-run` trên 07: `6 synthesised
+· 48 reused · 48 linked`). Chỉ 6 câu Part 1 mới thực sự tổng hợp.
+
+## 4. Push media rồi kiểm người học nghe/xem được
+
+```bash
+uv run python -m app.content.generate_exam media --slug $S --push
+# ĐỌC provider bằng curl — hàng DB đúng không chứng minh object tồn tại:
+curl -s -o /dev/null -w '%{http_code}\n' "$AUDIO_PUBLIC_BASE_URL/<storage_key>"
+curl -s -o /dev/null -w '%{http_code}\n' "$IMAGE_PUBLIC_BASE_URL/$CLOUDINARY_FOLDER/<storage_key>"
+```
+
+Đường dẫn ảnh **phải có `$CLOUDINARY_FOLDER`**; thiếu đoạn đó ra 404 y hệt một ảnh
+chưa đẩy.
+
+## 5. Publish dev rồi export → prod
+
+`load` để **draft**, và export-test.sh chép **nguyên `status`** → nếu không publish,
+prod nhận về một đề draft (học viên không làm được). Không có endpoint "publish cả
+đề" cho hàng loạt câu, nên bulk-update status trong dev rồi bật đề qua endpoint (nó
+kiểm gate một lần cuối):
+
+```bash
+# UPDATE question/question_set.status='published' theo slug (dev), rồi:
+curl -X POST -H "Authorization: Bearer $TOK" "http://localhost:8000/api/v1/admin/tests/$S/publish"
+
+./scripts/export-test.sh $S /tmp/$S.sql
+docker run --rm -i postgres:17 psql "$SUPABASE_URL" --single-transaction -v ON_ERROR_STOP=1 < /tmp/$S.sql
+```
+
+**Luôn `--single-transaction`.** Tệp gồm nhiều COPY/INSERT autocommit; một statement
+fail giữa chừng để prod nửa vời. Một transaction = all-or-nothing. (Lần đầu của chính
+runbook này fail vì FK và **prod không hề đổi** — xem §6.)
+
+**Kiểm sau khi áp** (đọc prod): `status='published'`, đủ 200 câu, Part 1 `is_correct`
+khớp bản đã balance, và `curl` một audio/ảnh URL trả **200**.
+
+## 6. Hai bug RESTRICT đã gặp — và đã vá
+
+Cả hai cùng một hình dạng: bảng lịch sử học viên **mới hơn** giữ `question_id` kiểu
+`ondelete=RESTRICT`, và các đường xoá viết trước đó không biết tới chúng. Cả hai chỉ
+lộ khi đề **đã có người làm** — lần import đầu tiên không có attempt nên không nổ.
+
+1. `admin_tests.py::_delete_test_core` (route `DELETE /tests/{slug}?force`) chỉ purge
+   `attempt`, bỏ quên `part_session_item` và `grammar_attempt` → `DELETE FROM question`
+   nổ IntegrityError, trả **500**. Vá bằng `_purge_sessions_of_questions(db, doomed)`
+   gọi trước khi xoá câu.
+2. `scripts/export-test.sh` khối reset xoá `question_option` **trước** `attempt`;
+   prod có `attempt_item` tham chiếu option RESTRICT → vi phạm FK. Vá bằng thứ tự
+   con→cha: `attempt` → `part_session_item` → `grammar_attempt` → `question_option` …
+
+`DELETE FROM attempt WHERE test_id=…` trong cả hai đường là **cố ý** và có chủ đích
+phá lịch sử làm bài của đề đó. Nó chỉ an toàn vì prod đang là staging. Ngày đề có học
+viên thật, đừng chạy đường này cho part-swap — dùng hướng "UPDATE tại chỗ, giữ nguyên
+`question.id`" (`export-explanations.sh` là khuôn mẫu).
+
+## 7. Bẫy của `cmd_plan` (đã sửa)
+
+`cmd_plan` từng `validate` **toàn bộ blueprint đã merge**. Một đề có lỗi ở Part 4
+(hợp lệ lúc ra đời, phạm quy sau khi luật accent siết) sẽ **chặn đứng việc regen bất
+kỳ Part nào khác**, và `--model` vứt luôn nội dung vừa sinh vì `return 1`. Vì mọi bất
+biến của `validate` đều per-part, `cmd_plan` giờ chỉ validate part vừa build; phần còn
+lại của form vẫn do `check` và cổng publish giữ.
+
+## Ghi chú tái sử dụng
+
+- Đổi `S` sang đề khác (`tp-form-08`, …). `tp-form-09` **không tồn tại** (chỉ có
+  `tp-test-09`).
+- `--model` cho Part 1: gemini free (`google/gemini-3.7-flash`) hoặc `bai/mimo-v2.5`.
+  `--model` cho `write` có thể khác; chạy chậm (mimo ~60–225s/câu), cứ để nền.
+- Paste + `blueprint.json` + `.prompt.txt` là **tệp commit** (nguồn tái tạo); `.mp3`,
+  `.png` gitignore (đã ở provider).

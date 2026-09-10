@@ -192,7 +192,239 @@ PART1_MIX: tuple[tuple[str, str, str], ...] = (
         "none",
         "một bãi đỗ xe trống với vài chiếc xe đậu rải rác",
     ),
+    # --- Mở rộng: phần 18 mẫu đầu xoáy vào văn phòng–họp–kho, và model lẫn
+    # `build_part1` đều rơi lại đúng dải đó nên đề nào cũng na ná. Các mẫu dưới
+    # trải thêm những nơi chốn có thật trong ảnh Part 1 (y tế, giáo dục, nông
+    # trại, xưởng, bảo tàng, phòng thí nghiệm, vườn ươm...) và ép dòng `none` tả
+    # QUAN HỆ VỊ TRÍ giữa vật — thứ đề thật hỏi nhiều nhất ở dạng không người.
+    ("PART_1_PERSON_DESCRIPTION", "one", "một nông dân đang kiểm tra luống rau trong nhà kính"),
+    (
+        "PART_1_PERSON_DESCRIPTION",
+        "one",
+        "một thợ máy đang cúi kiểm tra động cơ cạnh chiếc xe nâng trong garage",
+    ),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một y tá đang chỉnh giá truyền dịch bên giường bệnh"),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một thủ thư đang xếp sách lên kệ trong phòng kho"),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một thợ sơn đứng trên thang quét vôi tường"),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một kỹ sư đang nối dây trong tủ điện của nhà máy"),
+    ("PART_1_PERSON_DESCRIPTION", "one", "một barista đang tạo bọt sữa bên máy pha ở quầy cà phê"),
+    (
+        "PART_1_PERSON_DESCRIPTION",
+        "one",
+        "một kỹ thuật viên phòng thí nghiệm đang nhìn qua kính hiển vi",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "hành khách lần lượt bước lên xe buýt trong khi tài xế soát vé ở cửa",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "khách xếp hàng ở quầy thu ngân trong khi nhân viên chất đồ lên băng truyền",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "thực khách ngồi ở bàn trong khi bồi bàn bê khay đồ uống qua lại",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "hành khách ngồi trong toa tàu trong khi một người đứng đọc bảng giờ chạy",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "hai người chạy trên máy chạy bộ trong khi người thứ ba nâng tạ ở giá",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "sinh viên ngồi ghi trong giảng đường trong khi giảng viên chỉ lên màn chiếu",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "công nhân chất thùng lên xe tải ở bến trong khi thủ kho ghi sổ ngay cạnh",
+    ),
+    (
+        "PART_1_PERSON_AND_OBJECT_DESCRIPTION",
+        "several",
+        "bệnh nhân ngồi chờ trên hàng ghế trong khi y tá gọi tên ở quầy tiếp nhận",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "dãy xe đạp dựng nghiêng dọc giá để xe trên vỉa hè, hàng cây thẳng tắp phía sau",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "những thùng rau xếp chồng trên sạp chợ, vài giỏ tre treo lủng lẳng phía trên",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "các container xếp tầng dưới cần cẩu, xe nâng đậu dọc mép cầu tàu",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "ghế nhựa úp ngược trên mặt bàn trong quán cà phê đã đóng cửa, khăn treo dọc tường",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "dãy xe đẩy hành lý và vali xếp dọc tường kính của sảnh khách sạn",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "dụng cụ thợ nằm thành hàng trên bàn thao tác, bảng khoan và kìm treo phía trên",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "chậu cây xếp trên nhiều tầng giá ở vườn ươm, bình tưới đặt nghiêng cạnh lối đi",
+    ),
+    (
+        "PART_1_OBJECT_OR_SCENE_DESCRIPTION",
+        "none",
+        "khay thức ăn xếp dài trên băng chuyền căng-tin, ghế đẩu dựng sát tường",
+    ),
 )
+
+
+# Nhãn motif của Part 1: mỗi nhãn một nhóm "nguyên mẫu ảnh" mà model hay bị hút
+# về (công trường, bếp, cảng...). Đường `--model` dùng bảng này để gom TOÀN BỘ
+# bối cảnh part 1 của các đề cũ thành một danh sách motif đã-dùng, rồi đưa vào
+# prompt `plan_part1_scenes` bảo model tránh. Lý do gom motif chứ không đống cả
+# câu văn: sự trùng lặp nằm ở CHỦ ĐỀ ("thêm một biến thể công trường nữa") chứ
+# không ở chuỗi — hai câu khác từng chữ vẫn cùng một motif và model coi là mới.
+#
+# Bảng là dữ liệu, người ra đề thêm motif mới khi thấy một nguyên mẫu mới nổi.
+# Từ khoá tiếng Việt thường KHÔNG có dấu để bắt được nhiều cách viết; chọn token
+# đủ đặc hiệu để "xe buýt" không bị tính là "xe đạp".
+PART1_MOTIF_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "công trường": ("công trường", "giàn giáo", "công nhân xây", "vật liệu xây"),
+    "bếp / nhà hàng": (
+        "bếp",
+        "đầu bếp",
+        "món ăn",
+        "nhà hàng",
+        "bồi bàn",
+        "nấu",
+        "nồi",
+        "chảo",
+    ),
+    "bến cảng / tàu": (
+        "cảng",
+        "container",
+        "cầu tàu",
+        "neo",
+        "thuyền",
+        "cần cẩu",
+        "xe nâng",
+    ),
+    "khách sạn / lễ tân": (
+        "khách sạn",
+        "lễ tân",
+        "nhận phòng",
+        "chìa khóa",
+        "vali",
+        "sảnh",
+        "hành lý",
+    ),
+    "sân bay / máy bay": (
+        "sân bay",
+        "máy bay",
+        "đường băng",
+        "tiếp viên",
+        "thủ tục",
+        "cổng lên tàu",
+    ),
+    "nhà ga / tàu hoả": (
+        "nhà ga",
+        "sân ga",
+        "đường sắt",
+        "toa tàu",
+        "đoàn tàu",
+        "ray",
+    ),
+    "xe buýt / giao thông công cộng": (
+        "xe buýt",
+        "bến xe",
+        "tài xế",
+        "soát vé",
+        "bến chờ",
+    ),
+    "xe đạp / xe máy": ("xe đạp", "đạp xe", "xe máy", "giá để xe", "dựng nghiêng"),
+    "văn phòng / phòng họp": (
+        "văn phòng",
+        "bàn làm việc",
+        "phòng họp",
+        "màn chiếu",
+        "máy chiếu",
+        "đồng nghiệp",
+        "máy in",
+    ),
+    "kho hàng": ("nhà kho", "kho hàng", "kiểm kê", "dãy kệ", "bốc dỡ", "xe đẩy hàng"),
+    "cửa hàng / bán lẻ": (
+        "cửa hàng",
+        "siêu thị",
+        "thanh toán",
+        "thu ngân",
+        "mua sắm",
+        "bán hàng",
+        "băng truyền",
+    ),
+    "chợ / sạp hàng": ("chợ", "sạp", "giỏ tre", "rau củ", "cân hàng"),
+    "thư viện / trường học": (
+        "thư viện",
+        "kệ sách",
+        "sinh viên",
+        "giảng đường",
+        "lớp học",
+        "bảng thông báo",
+        "thủ thư",
+    ),
+    "bảo tàng / triển lãm": ("bảo tàng", "triển lãm", "hiện vật", "trưng bày", "du khách"),
+    "y tế / phòng khám": (
+        "phòng khám",
+        "bệnh nhân",
+        "bác sĩ",
+        "y tá",
+        "giường bệnh",
+        "truyền dịch",
+        "tiếp nhận",
+    ),
+    "phòng tập / bể bơi": ("phòng tập", "máy chạy bộ", "bể bơi", "nâng tạ", "tập gym"),
+    "xưởng / thợ sửa": (
+        "xưởng",
+        "garage",
+        "ống nước",
+        "sửa chữa",
+        "dụng cụ",
+        "thợ máy",
+        "bảng khoan",
+        "tủ điện",
+    ),
+    "nông trại / vườn ươm": (
+        "nông trại",
+        "cánh đồng",
+        "vườn ươm",
+        "nhà kính",
+        "thu hoạch",
+        "luống rau",
+        "chậu cây",
+    ),
+    "quán cà phê": ("quán cà phê", "barista", "espresso", "pha chế", "tạo bọt sữa"),
+    "phòng thí nghiệm": ("phòng thí nghiệm", "ống nghiệm", "kính hiển vi", "nuôi cấy"),
+    "bãi đỗ xe": ("bãi đỗ xe", "chỗ đỗ", "xe đậu", "làn đỗ"),
+    "xây dựng / sửa toà nhà": ("lau cửa", "sơn", "quét vôi", "thang dài", "mặt tiền"),
+    "giao hàng / vận chuyển": ("giao hàng", "thùng các-tông", "vận chuyển", "chất lên xe"),
+}
 
 
 # Part 3: mười ba cuộc hội thoại, mỗi cuộc ba câu — câu 32 tới 70 của đề thật.

@@ -14,6 +14,19 @@ merely unlikely. Each one fails in one of these ways:
 - **right objects, wrong position** ("The bicycles are lying on the ground" when
   they are propped against a wall; "The boxes are stacked on a cart" when they
   are on the floor beside it).
+- a near-synonym preposition swapped ("The lamp is on the desk" when it is above
+  it; "beside" for "between"; "in front of" for "behind") — the subtlest and most
+  common trap for photographs with no people, where the objects are all there and
+  only the relation is wrong,
+- an ongoing action asserted of an object with no evidence it is happening ("The
+  boxes are being unloaded" when they are simply stacked there; "The car is being
+  repaired" when nobody is touching it) — a passive in progress that the photo
+  cannot support,
+- a role or purpose inferred rather than seen ("The woman is checking in a guest"
+  when she is only standing behind the counter; "The doctor is examining a
+  patient" from a person in a white coat) — the photo shows posture and objects,
+  never a job title or an intention, and the true statement must describe only
+  what is visible.
 A statement that *might* be true depending on how you look at the photo is not a
 distractor — it is a second right answer. Rewrite it.
 
@@ -98,6 +111,9 @@ option's segment says what that option says, then which of these it is:
 - right action, wrong object,
 - an object or person that is not in the photograph,
 - right objects, wrong position,
+- a near-synonym preposition swapped (on for above, beside for between),
+- an ongoing action with no evidence it is happening ("being unloaded"),
+- a role or purpose inferred rather than seen (a job title, an intention),
 - singular said as plural, or the reverse.
 
 One sentence per segment. Vietnamese prose; quotes stay in English, untranslated.

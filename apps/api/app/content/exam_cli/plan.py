@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import random
 import re
 import sys
 from time import perf_counter
@@ -11,8 +12,9 @@ from time import perf_counter
 from app.content.exam import blueprint as bp
 from app.content.exam import writer
 from app.content.exam.blueprint import Blueprint
+from app.content.exam.mixes import PART1_MOTIF_KEYWORDS
 from app.content.exam.prompts._registry import exam_prompt
-from app.content.exam_cli.paths import _gateway, blueprint_path
+from app.content.exam_cli.paths import DEFAULT_ROOT, _gateway, blueprint_path
 from app.services.llm.gateway import Gateway
 from app.services.llm.retry import with_backoff
 from app.services.llm.router import Tier
@@ -52,8 +54,83 @@ def _progress(message: str) -> None:
 PLAN_MAX_TOKENS = 8000
 
 
+# Số đề GẦN NHẤT đưa vào danh sách "phải tránh". Của sổ trượt, không phải toàn bộ
+# lịch sử: tránh MỌI đề từng tồn tại thì tới ~10 đề sau, `used` phủ kín bảng motif,
+# `avoid` biến thành "đừng vẽ bất kỳ cảnh TOEIC nào", và `lean` rỗng vĩnh viễn —
+# cơ chế tự triệt tiêu. Cửa sổ K giữ động lực đẩy (luôn còn motif chưa-dùng-TRONG-K)
+# và cho phép cảnh CŨ quay vòng sau K đề, đúng tinh thần cache eviction.
+PART1_AVOID_WINDOW = 8
+
+
+def _prior_part1_contexts(exclude_slug: str) -> list[str]:
+    """Bối cảnh part 1 của K đề GẦN NHẤT (sửa theo `mtime`), trừ đề đang chạy.
+
+    Nguồn là tệp, không phải DB — cùng lý do `pending` là một truy vấn trên thư
+    mục: một lượt plan không cần cả stack để biết nó từng sinh gì. Bỏ qua đề đang
+    chạy (`exclude_slug`) để chạy lại part 1 một đề lấy motif của CHÍNH nó làm
+    ràng buộc thì không phải "tránh quá khứ", mà là tự lặp mình. Lấy theo recency
+    (`mtime` giảm dần) chứ không phải toàn bộ: xem `PART1_AVOID_WINDOW`.
+    """
+    # (mtime, texts) của từng đề — giữ theo ĐỀ rồi mới cắt window, đừng trộn
+    # hết bối cảnh vào một list rồi cắt: cắt list trộn sẽ ăn mông lung số câu
+    # của mỗi đề, còn cắt theo đề thì window là "K đề gần nhất" đúng nghĩa.
+    per_form: list[tuple[float, list[str]]] = []
+    for path in DEFAULT_ROOT.glob("*/blueprint.json"):
+        if path.parent.name == exclude_slug:
+            continue
+        try:
+            plan = bp.load(path)
+            mtime = path.stat().st_mtime
+        except (OSError, ValueError, KeyError):
+            continue  # blueprint hỏng/đọc dở — bỏ qua, đừng làm chết lượt plan
+        part1 = next((p for p in plan.parts if p.part == 1), None)
+        if not part1:
+            continue
+        form_texts = [slot.context for slot in part1.slots if slot.context]
+        if form_texts:
+            per_form.append((mtime, form_texts))
+    per_form.sort(key=lambda item: item[0], reverse=True)
+    texts: list[str] = []
+    for _, form_texts in per_form[:PART1_AVOID_WINDOW]:
+        texts.extend(form_texts)
+    return texts
+
+
+def _part1_avoid_and_lean(slug: str, seed: int) -> tuple[str, str]:
+    """(avoid, lean): motif đã-dùng nên tránh, và vài motif chưa-dùng nên thử.
+
+    Gom về MOTIF (qua `PART1_MOTIF_KEYWORDS`) chứ không liệt cả câu văn: trùng lặp
+    của part 1 nằm ở chủ đề, và đống câu gần-giống nhau chỉ khiến model tưởng một
+    biến thể mới của cùng một cảnh là khác. "Đã dùng" tính trên `PART1_AVOID_WINDOW`
+    đề gần nhất, nên cảnh cũ được quay vòng chứ không bị cấm vĩnh viễn. `lean` đẩy
+    chủ động vào phần chưa dùng TRONG K đó, suy từ `seed` để tái lập được.
+    """
+    texts = _prior_part1_contexts(slug)
+    if not texts:
+        return "", ""
+    blob = " \n ".join(texts).lower()
+    used = {motif for motif, kws in PART1_MOTIF_KEYWORDS.items() if any(kw in blob for kw in kws)}
+    avoid = ""
+    if used:
+        avoid = (
+            "CẢNH ĐÃ DÙNG GẦN ĐÂY ở vài đề trước — KHÔNG lặp lại chủ đề của bất kỳ motif nào "
+            "dưới đây, hãy chọn nơi chốn và tình huống khác hẳn: " + ", ".join(sorted(used)) + "."
+        )
+    unused = [motif for motif in PART1_MOTIF_KEYWORDS if motif not in used]
+    lean = ""
+    if unused:
+        pick = random.Random(f"p1-lean:{seed}").sample(unused, k=min(3, len(unused)))
+        lean = "Ưu tiên thử những nhóm cảnh chưa gặp gần đây: " + ", ".join(pick) + "."
+    return avoid, lean
+
+
 def generate_part1_scenes(
-    gateway: Gateway, tier: Tier, *, max_tokens: int = PLAN_MAX_TOKENS
+    gateway: Gateway,
+    tier: Tier,
+    *,
+    slug: str = "",
+    seed: int = 0,
+    max_tokens: int = PLAN_MAX_TOKENS,
 ) -> list[tuple[str, str, str]]:
     """Hỏi model sinh sáu bối cảnh Part 1 khác nhau cho một đề.
 
@@ -63,6 +140,10 @@ def generate_part1_scenes(
     chỉ có sáu mẫu. `build_part1` vẫn giữ vai trò gán `number`/`voice`; model chỉ
     cung cấp `(question_type, people, scene)`.
 
+    `slug`/`seed` bật cơ chế chống trùng liên-đề: đọc motif part 1 của các đề cũ
+    và đưa vào prompt như danh sách phải tránh + vài nhóm để ưu tiên. Thiếu chúng
+    (hoặc repo chưa có đề nào) prompt giữ nguyên như cũ — không có gì để tránh.
+
     Đầu ra phải khớp đúng định dạng từng dòng `question_type|people|mô tả` — nếu
     model làm sai thì NÉM để `cmd_plan` rơi về `PART1_MIX` thay vì lưu một đề
     thiếu câu.
@@ -70,7 +151,8 @@ def generate_part1_scenes(
 
     from app.services.llm.base import LLMRequest
 
-    prompt = exam_prompt("plan_part1_scenes").render()
+    avoid, lean = _part1_avoid_and_lean(slug, seed)
+    prompt = exam_prompt("plan_part1_scenes").render(avoid=avoid, lean=lean)
     _progress("  part 1: đang sinh 6 bối cảnh ảnh…")
     started = perf_counter()
     result = with_backoff(
@@ -352,7 +434,9 @@ def cmd_plan(args: argparse.Namespace) -> int:
         try:
             gateway = _gateway(args.model)
             if args.part == 1:
-                scenes = generate_part1_scenes(gateway, Tier(args.tier), max_tokens=max_tokens)
+                scenes = generate_part1_scenes(
+                    gateway, Tier(args.tier), slug=args.slug, seed=seed, max_tokens=max_tokens
+                )
                 built = bp.build_part1(args.slug, title, seed, scenes)
             else:
                 contexts = generate_part_scenes(
@@ -384,7 +468,13 @@ def cmd_plan(args: argparse.Namespace) -> int:
             built = builder(args.slug, title, seed)
 
     plan = bp.merge(existing, built)
-    problems = bp.validate(plan)
+    # Chỉ validate part VỪA BUILD, không validate cả form đã merge. `plan` là
+    # lệnh per-part; nếu kiểm cả form thì một lỗi ở part KHÁC — hợp lệ khi đề ra
+    # đời, chỉ thành phạm quy sau khi luật siết (vd mốc accent) — chặn đứng việc
+    # regen một part lành, và `except` bên dưới vứt luôn nội dung model vừa sinh.
+    # Mọi bất biến của `validate` đều per-part, nên kiểm `built` đơn lẻ không bỏ
+    # sót invariant nào; phần còn lại của form vẫn do `check` và cổng publish giữ.
+    problems = bp.validate(built)
     if problems:
         for problem in problems:
             print(f"  ✗ {problem}", file=sys.stderr)

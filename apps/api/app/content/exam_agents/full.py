@@ -114,7 +114,7 @@ def plan_blueprint(
             try:
                 gateway = _gateway(model)
                 if part_number == 1:
-                    scenes = generate_part1_scenes(gateway, tier)
+                    scenes = generate_part1_scenes(gateway, tier, slug=slug, seed=seed)
                     built = bp.build_part1(slug, title, seed, scenes)
                 else:
                     contexts = generate_part_scenes(gateway, tier, part_number, _scene_hosts(built))

@@ -151,6 +151,16 @@ echo "3/4  Reset (nếu test đã có trên đích) + dump assets (INSERT ON CON
   echo "  FROM practice_test_question tq"
   echo "  JOIN question q ON q.id = tq.question_id"
   echo "  WHERE tq.test_id = (SELECT id FROM practice_test WHERE slug = '$SLUG');"
+  # Thứ tự xoá là con→cha theo RÀNG BUỘC FK, không phải theo trí nhớ. `attempt`
+  # lên ĐẦU: `attempt_item` giữ cả `question_id` VÀ `selected_option_id` kiểu
+  # RESTRICT, nên attempt (kèm attempt_item qua CASCADE) phải biến mất TRƯỚC khi
+  # đụng option/question. Lần import đầu chưa có attempt nên chỗ này chưa ai vấp.
+  echo "DELETE FROM attempt WHERE test_id = (SELECT id FROM practice_test WHERE slug = '$SLUG');"
+  # Hai bảng phiên luyện tập cũng giữ `question_id` RESTRICT (đúng bug đã vá ở
+  # route `delete_test`): câu từng được làm trong part-session/grammar phải gỡ
+  # hàng phiên trước khi xoá câu.
+  echo "DELETE FROM part_session_item WHERE question_id IN (SELECT question_id FROM _tp_q);"
+  echo "DELETE FROM grammar_attempt WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_option WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_label WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_set_label WHERE set_id IN ("
@@ -160,7 +170,6 @@ echo "3/4  Reset (nếu test đã có trên đích) + dump assets (INSERT ON CON
   echo "DELETE FROM question WHERE id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_set WHERE id IN ("
   echo "  SELECT DISTINCT set_id FROM _tp_q WHERE set_id IS NOT NULL);"
-  echo "DELETE FROM attempt WHERE test_id = (SELECT id FROM practice_test WHERE slug = '$SLUG');"
   echo "DELETE FROM practice_test WHERE slug = '$SLUG';"
   echo "DROP TABLE _tp_q;"
   echo "COMMIT;"
