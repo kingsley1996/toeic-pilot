@@ -256,7 +256,7 @@ function VocabularyLanding() {
           {collection.description && (
             <p className="mt-1 text-small text-ink-muted">{collection.description}</p>
           )}
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {collection.items.map((item, index) => (
               <BookCard
                 key={item.id}
