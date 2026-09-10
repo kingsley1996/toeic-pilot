@@ -209,8 +209,23 @@ def test_lowering_an_xp_rate_leaves_the_ledger_alone(client, db_session):
 
 
 def test_a_new_slot_shows_up_for_learners(client, db_session):
-    """Thêm một khe là thêm một hàng — không cần triển khai lại gì cả."""
+    """Thêm một khe là thêm một hàng — không cần triển khai lại gì cả.
+
+    Đếm THEO NỀN (số hàng trước khi thêm) chứ không số cứng: khe ngữ pháp tự ẩn
+    khi database không có bài nào đã publish, nên "mặc định là bốn việc" chỉ
+    đúng trên database có nội dung — và bài này phải chạy được trên cả database
+    trắng của CI.
+    """
     headers = _headers(client, db_session, "admin")
+
+    user = User(
+        email=f"newslot-{uuid.uuid4().hex[:8]}@example.com",
+        hashed_password=get_password_hash("x" * 12),
+    )
+    db_session.add(user)
+    db_session.flush()
+    _, baseline = tasks_for(db_session, user.id, "UTC")
+
     created = client.post(
         "/api/v1/admin/progression/slots",
         headers=headers,
@@ -224,15 +239,9 @@ def test_a_new_slot_shows_up_for_learners(client, db_session):
     )
     assert created.status_code == 201
 
-    user = User(
-        email=f"newslot-{uuid.uuid4().hex[:8]}@example.com",
-        hashed_password=get_password_hash("x" * 12),
-    )
-    db_session.add(user)
-    db_session.flush()
     _, tasks = tasks_for(db_session, user.id, "UTC")
     assert [t.label for t in tasks][-1] == "Chép thêm 5 câu"
-    assert len(tasks) == 5
+    assert len(tasks) == len(baseline) + 1
 
     # Và tắt nó thì học viên không thấy nữa, nhưng hàng vẫn còn để chống trao lại.
     row = db_session.scalars(
@@ -243,7 +252,7 @@ def test_a_new_slot_shows_up_for_learners(client, db_session):
     )
     db_session.expire_all()
     _, after = tasks_for(db_session, user.id, "UTC")
-    assert len(after) == 4
+    assert len(after) == len(baseline)
     assert db_session.get(DailyTaskSlot, row.id) is not None
 
 

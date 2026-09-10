@@ -56,7 +56,7 @@ async function completeDictation(request: APIRequestContext, token: string): Pro
   return done;
 }
 
-test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đóng và XP tăng", async ({
+test("tài khoản mới thấy các việc của máy chủ, làm xong một việc thì nó đóng và XP tăng", async ({
   page,
   request,
 }) => {
@@ -67,11 +67,32 @@ test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đ
   await expect(page).toHaveURL(/\/dashboard$/);
   await skipTour(page);
 
+  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
+  expect(token).toBeTruthy();
+  /*
+   * Danh sách việc lấy từ chính API chứ không đếm tay trong bài kiểm.
+   *
+   * Khe ngữ pháp BIẾN MẤT khi giáo trình đã cạn (hoặc chưa publish bài nào),
+   * nên "mới thì thấy mấy việc" là một câu trả lời thay đổi theo nội dung của
+   * database — CI chạy trên database trắng với 3 việc, dev có bài ngữ pháp thì
+   * 4. Bắt bài này đếm 3 hay 4 tức là mã hóa nội dung của một database vào chỗ
+   * đáng lẽ kiểm cái NỐI; so với máy chủ thì nó đúng trên mọi database.
+   */
+  const tasks = (
+    (
+      await (
+        await request.get(`${API_BASE}/api/v1/daily-tasks`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ).json()
+    ).tasks as { label: string }[]
+  ).map((t) => t.label);
+  expect(tasks.length).toBeGreaterThanOrEqual(3);
+
   const panel = page.getByRole("region", { name: "Việc hôm nay" });
-  await expect(panel.getByRole("link", { name: /Ôn từ vựng/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /Nghe chép chính tả/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /Luyện đề/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /Học ngữ pháp/ })).toBeVisible();
+  for (const label of tasks) {
+    await expect(panel.getByRole("link", { name: label })).toBeVisible();
+  }
   // Tài khoản mới chưa làm gì, nên con số XP hôm nay phải là 0 — không phải
   // "chưa có". Khối này in ra một cái thang, và một cái thang không có mốc bắt
   // đầu thì không đọc được.
@@ -86,9 +107,6 @@ test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đ
   const toasts = page.getByRole("status").getByText("Đã xong việc hôm nay");
   await expect(toasts).toHaveCount(0);
 
-  const token = await page.evaluate(() => window.localStorage.getItem("toeic_pilot_access_token"));
-  expect(token).toBeTruthy();
-
   const completed = await completeDictation(request, token as string);
   test.skip(
     completed < DICTATION_TARGET,
@@ -97,8 +115,8 @@ test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đ
 
   await page.reload();
 
-  // Việc đã đóng: dòng nghe chép biến khỏi danh sách việc-còn-lại và đếm còn 3.
-  await expect(panel.getByText(/Xong 1\/4 việc/)).toBeVisible();
+  // Việc đã đóng: dòng nghe chép biến khỏi danh sách việc-còn-lại, đếm tụt một.
+  await expect(panel.getByText(new RegExp(`Xong 1/${tasks.length} việc`))).toBeVisible();
   await expect(panel.getByText(/3\/3\s*câu đúng trọn/)).toBeVisible();
 
   // Và XP đã nhích TRONG CÙNG lần dựng đó: 3 câu × 5 + 10 thưởng việc = 25.
@@ -110,12 +128,16 @@ test("tài khoản mới thấy bốn việc, làm xong một việc thì nó đ
    * DOM từ trước — chèn cả vùng lẫn nội dung cùng lúc thì trình đọc màn hình
    * không đọc gì, một lỗi chỉ nghe thấy chứ không nhìn thấy.
    *
-   * "Còn 3 việc nữa" là phần đáng giá của khẳng định này: nó chứng minh con số
+   * "Còn N-1 việc nữa" là phần đáng giá của khẳng định này: nó chứng minh con số
    * đến từ chính lần đọc vừa rồi chứ không phải một câu chữ cố định.
    */
   const toast = page.getByRole("status").getByText("Đã xong việc hôm nay");
   await expect(toast).toBeVisible();
-  await expect(page.getByRole("status").getByText(/\+10 XP\. Còn 3 việc nữa\./)).toBeVisible();
+  await expect(
+    page
+      .getByRole("status")
+      .getByText(new RegExp(`\\+10 XP\\. Còn ${tasks.length - 1} việc nữa\\.`)),
+  ).toBeVisible();
 
   // Nạp lại lần nữa: máy chủ trả `xp_awarded = 0` vì `source_id` tất định, nên
   // không chúc mừng lại chuyện đã chúc mừng rồi.
