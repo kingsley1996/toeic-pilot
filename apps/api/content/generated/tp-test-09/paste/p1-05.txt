@@ -1,9 +1,9 @@
 [QUESTION]
 voice: ca_male_1
-(A) The man is carrying a suitcase.
-(B) The passengers are sitting on a bench.
-(C) The passengers are standing near the elevators.
-(D) The woman is looking at her phone.
+(A) The iron railing has been installed along the floor of the corridor.
+(B) A potted plant is sitting on the windowsill near the door.
+(C) Some shirts are hanging from a clothesline above the staircase.
+(D) A bicycle is leaning against the brick chimney.
 Answer: C
-Explanation: Trong ảnh, hai hành khách đứng thẳng cạnh thang máy, tay không và không có ghế, va li hay điện thoại. | (A) nói người đàn ông đang xách va li, sai hành động và thêm va li không có. | (B) nói các hành khách đang ngồi trên ghế, sai hành động và thêm ghế không có. | (C) "The passengers are standing near the elevators." — khớp đúng câu vừa dẫn. | (D) nói người phụ nữ đang nhìn điện thoại, sai hành động và thêm điện thoại không có.
+Explanation: Ở phần trên bức ảnh, áo sơ mi trắng và quần tối màu phơi trên dây giăng ngang từ ống khói sang cột thép phía trên cầu thang; chậu cây nhỏ đặt trên bậc tam cấp cạnh cửa gỗ sơn xanh, lan can sắt đen chạy dọc cầu thang bên tường gạch, và không có xe đạp. | (A) "installed along the floor of the corridor" — lan can sắt có trong ảnh nhưng chạy dọc cầu thang bên tường gạch, không phải dọc sàn hành lang: đúng vật, sai vị trí. | (B) "sitting on the windowsill near the door" — chậu cây có trong ảnh nhưng nằm trên bậc tam cấp, không phải trên bệ cửa sổ: đúng vật, sai vị trí. | (C) "shirts are hanging from a clothesline above the staircase" — đúng việc áo đang phơi trên dây phía trên cầu thang. | (D) "A bicycle is leaning against the brick chimney" — không có xe đạp nào trong ảnh: vật không tồn tại.
 Source: original

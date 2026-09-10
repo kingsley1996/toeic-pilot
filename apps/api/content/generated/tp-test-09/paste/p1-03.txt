@@ -1,9 +1,9 @@
 [QUESTION]
-voice: ca_male_1
-(A) The man is holding a ticket in his hand.
-(B) The man is selling tickets at a counter.
-(C) Two inspectors are walking along the platform.
-(D) The ticket is lying on the bench.
+voice: au_male_1
+(A) The man is folding his umbrella on the sidewalk.
+(B) Some boxes are being unloaded near the entrance.
+(C) The motorcycles are parked across the sidewalk.
+(D) The man is putting on his jacket by the steps.
 Answer: A
-Explanation: Trong ảnh, một nhân viên soát vé nam mặc đồng phục đứng trên sân ga, tay phải cầm một vé giấy ngang ngực. | (A) "The man is holding a ticket in his hand." — khớp đúng câu vừa dẫn. | (B) nói anh ấy bán vé ở quầy, nhưng không có quầy và không có hành động bán. | (C) nói hai nhân viên đang đi, sai số lượng và hành động. | (D) nói vé nằm trên ghế, sai vị trí và không có ghế.
+Explanation: Trong ảnh một người đàn ông mặc áo sơ mi xanh nhạt đứng trên vỉa hè, hai tay đang gấp chiếc ô đen trước hai bậc tam cấp vào quán ăn; phía sau là cửa kính phản chiếu nắng chiều, bên phải xe máy xếp dọc theo tường gạch, bên trái thùng carton chồng dưới gốc cây. | (A) "folding his umbrella on the sidewalk" — đúng người đàn ông và hành động anh ta đang thực hiện. | (B) "being unloaded near the entrance" — thùng carton có trong ảnh nhưng đang chồng dưới gốc cây, không ai bốc dỡ: có bằng chứng cho hành động đang diễn ra. | (C) "parked across the sidewalk" — xe máy có trong ảnh nhưng xếp dọc theo tường gạch, không nằm ngang qua vỉa hè: đúng vật, sai vị trí. | (D) "putting on his jacket by the steps" — người đàn ông có trong ảnh nhưng đang gấp ô, không có áo khoác nào: đúng người, sai hành động.
 Source: original

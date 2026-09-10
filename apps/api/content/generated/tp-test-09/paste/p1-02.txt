@@ -1,9 +1,9 @@
 [QUESTION]
-voice: uk_female_1
-(A) There is a vendor beside the bicycles.
-(B) The bicycles are lying flat on the ground.
-(C) The bicycles are hanging from the fence.
-(D) The bicycles are leaning against a wooden fence.
+voice: ca_male_1
+(A) A worker is adjusting the canopy above the pumps.
+(B) A worker is wiping the hood of a truck.
+(C) A worker is standing near the electronic sign.
+(D) A worker is pumping fuel into a sedan.
 Answer: D
-Explanation: Trong ảnh, ba chiếc xe đạp đang tựa vào hàng rào gỗ, bánh chạm đất và khung nghiêng vào rào. | (A) nói "There is a vendor beside the bicycles", nhắc tới người không có trong ảnh. | (B) nói "The bicycles are lying flat on the ground", sai vị trí vì xe không nằm phẳng. | (C) nói "The bicycles are hanging from the fence", sai vị trí vì xe không treo. | (D) "The bicycles are leaning against a wooden fence." — khớp đúng câu vừa dẫn.
+Explanation: Trong ảnh, một nhân viên mặc áo polo đồng phục đang cầm vòi bơm và đổ nhiên liệu vào một chiếc sedan bạc đỗ bên phải hai trụ bơm dưới mái che kim loại; phía sau có cột biển báo giá điện tử và một hàng bụi cây thấp dọc lề đường. | (A) "adjusting the canopy above the pumps" — nhân viên đang bơm nhiên liệu, không điều chỉnh mái che: đúng người, sai hành động. | (B) "wiping the hood of a truck" — người có trong ảnh nhưng đang bơm xăng chứ không lau xe, và xe là sedan chứ không phải truck: đúng người, sai hành động và sai vật. | (C) "standing near the electronic sign" — nhân viên đang đứng cạnh trụ bơm và chiếc sedan, không ở gần cột biển báo giá điện tử: sai vị trí. | (D) "pumping fuel into a sedan" — đúng việc nhân viên đang làm và đúng loại xe.
 Source: original

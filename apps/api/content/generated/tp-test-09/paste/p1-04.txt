@@ -1,9 +1,9 @@
 [QUESTION]
 voice: us_female_1
-(A) The scientist is pouring liquid into a beaker.
-(B) The scientist is writing notes in a notebook.
-(C) The scientist is adjusting a microscope on the bench.
-(D) The scientist is cleaning the lab bench with a cloth.
+(A) Two people are standing near the counter.
+(B) A woman is seated behind a glass partition.
+(C) The security camera is hanging from the ceiling.
+(D) The employee is handing a document to the customer.
 Answer: B
-Explanation: Trong ảnh, một nhà khoa học mặc áo blouse trắng đang đứng bên bàn thí nghiệm, tay phải cầm bút viết vào sổ mở, tay trái giữ sổ. | (A) nói đang rót chất lỏng vào cốc beaker, sai hành động vì hai tay đang viết và không có rót. | (B) "The scientist is writing notes in a notebook." — khớp đúng câu vừa dẫn. | (C) nói đang chỉnh kính hiển vi, sai hành động vì kính hiển vi chỉ đặt trên bàn và không được chạm vào. | (D) nói đang lau bàn bằng khăn, sai vì không có khăn và không có hành động lau.
+Explanation: Trong ảnh, một nữ nhân viên mặc đồng phục ngồi sau quầy kính, đối diện một khách hàng nam đang ký tài liệu trên mặt quầy; phía xa bên phải, hai người khác đứng chờ trước máy ATM gắn trên tường đá granit, camera an ninh dạng hình vòm lắp ở góc tường phía trên. | (A) "Two people are standing near the counter" — hai người đang đứng trước máy ATM, không phải gần quầy: đúng người, sai vị trí. | (B) "A woman is seated behind a glass partition" — nữ nhân viên ngồi sau quầy kính, khớp hoàn toàn với ảnh. | (C) "hanging from the ceiling" — camera an ninh có trong ảnh nhưng lắp trên góc tường, không treo từ trần: đúng vật, sai vị trí. | (D) "handing a document to the customer" — nhân viên và khách hàng đều có trong ảnh nhưng khách hàng đang tự ký tài liệu trên quầy, nhân viên không đang đưa tài liệu: đúng người, sai hành động.
 Source: original

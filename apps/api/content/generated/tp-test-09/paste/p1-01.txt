@@ -1,9 +1,9 @@
 [QUESTION]
-voice: au_male_1
-(A) Two engineers are reviewing a blueprint.
-(B) The engineer is digging with a shovel.
-(C) The engineer is holding a blueprint.
-(D) The blueprint is lying on the ground.
+voice: us_female_1
+(A) The curtain on the stage is partially open.
+(B) The ushers are standing near the stage.
+(C) An usher is pointing toward a row of seats.
+(D) Several people are seated in the front row.
 Answer: C
-Explanation: Trong ảnh, một kỹ sư đội mũ bảo hộ đang cầm bản vẽ mở bằng cả hai tay, còn xẻng nằm trên mặt đất bên trái. | (A) nói hai kỹ sư đang xem bản vẽ, sai số lượng vì chỉ có một người. | (B) nói kỹ sư đang đào bằng xẻng, sai hành động vì xẻng không được cầm. | (C) "The engineer is holding a blueprint." — khớp đúng câu vừa dẫn. | (D) nói bản vẽ nằm trên đất, sai vị trí vì nó đang được cầm.
+Explanation: Ảnh chụp bên trong rạp hát với hàng ghế nhung đỏ, sân khấu có rèm nhung khép kín, và hai nữ nhân viên soát vé đứng gần lối vào; một người đang chỉ tay về phía hàng ghế, người kia đứng sau bục nhỏ. | (A) "partially open" — bức rèm trên sân khấu đang khép hoàn toàn: đúng vật, sai trạng thái. | (B) "standing near the stage" — hai nữ nhân viên đứng gần lối vào phía sau, không phải gần sân khấu: đúng người, sai vị trí. | (C) "An usher is pointing toward a row of seats" — đúng nữ nhân viên bên trái đang chỉ tay về phía hàng ghế. | (D) "Several people are seated in the front row" — khán giả ngồi ở các hàng giữa, hàng đầu trống: đúng hành động, sai vị trí.
 Source: original

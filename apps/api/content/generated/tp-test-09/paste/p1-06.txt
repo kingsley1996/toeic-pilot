@@ -1,9 +1,9 @@
 [QUESTION]
 voice: uk_female_1
-(A) There is a worker loading the boxes.
-(B) The boxes are lying flat in the water.
-(C) The pallet is hanging from a crane hook.
-(D) The boxes are stacked on a pallet beside the dock.
+(A) A round clock is hanging below the menu.
+(B) The man is wiping the display case with a cloth.
+(C) Boxes are being stacked on the counter.
+(D) The man is placing a pastry onto a plate.
 Answer: D
-Explanation: Trong ảnh, các thùng hàng được xếp chồng trên một pallet gỗ cạnh cầu tàu, không có người và không có cần cẩu nào. | (A) nói "There is a worker loading the boxes", nhắc tới người không hề có trong ảnh. | (B) nói "The boxes are lying flat in the water", sai vị trí vì thùng ở trên pallet cạnh cầu tàu. | (C) nói "The pallet is hanging from a crane hook", sai vì không có cần cẩu hay móc cẩu trong ảnh. | (D) "The boxes are stacked on a pallet beside the dock." — khớp đúng câu vừa dẫn.
+Explanation: Trong ảnh, người thợ đứng sau tủ kính, tay phải đặt chiếc bánh lên đĩa sứ; phía sau trên kệ gỗ gắn tường có hộp giấy bọc nylon và lọ gia vị, trên tường gạch treo thực đơn và đồng hồ tròn nằm bên phải thực đơn, trên quầy bên trái tủ kính có giỏ mây. | (A) "A round clock is hanging below the menu" — đồng hồ và thực đơn đều có trên tường, nhưng đồng hồ nằm bên phải thực đơn, không phải phía dưới: đúng vật, sai vị trí. | (B) "wiping the display case with a cloth" — tủ kính có trong ảnh nhưng người thợ đang đặt bánh, không lau: đúng vật, sai hành động. | (C) "Boxes are being stacked on the counter" — hộp giấy có trong ảnh nhưng nằm trên kệ gắn tường phía sau, không phải trên quầy: đúng vật, sai vị trí. | (D) "placing a pastry onto a plate" — đúng hành động người thợ đang làm.
 Source: original
