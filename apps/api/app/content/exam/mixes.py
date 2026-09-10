@@ -513,6 +513,53 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         ("PART_3_SPEAKER_IDENTITY", "PART_3_IMPLICATION", "PART_3_REQUEST_OR_SUGGESTION"),
         "",
     ),
+    # --- phần pool dôi ra: ngữ cảnh theo 13 mục của handbook ETS mà 13 dòng
+    # đầu bỏ trống (y tế, tài chính cá nhân, giải trí, ẩm thực, kỹ thuật).
+    # `build_part3` chỉ lấy 10 dòng thường + 3 dòng có hình mỗi đề, cân theo
+    # topic — thêm dòng ở đây là thêm hạt giống cho `cmd_plan`, không đổi số
+    # câu của đề. ---
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "bệnh nhân gọi phòng khám nha khoa để dời lịch hẹn vì trùng chuyến công tác",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "khách gọi ngân hàng hỏi phí thường niên và cách mở tài khoản chung",
+        ("PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION", "PART_3_IMPLICATION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "hai bạn bàn đặt vé buổi hòa nhạc từ thiện cuối tuần",
+        ("PART_3_LOCATION", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_3_SHOPPING_OR_SERVICE",
+        2,
+        "khách gọi nhà hàng đổi thực đơn cho tiệc tất niên của công ty",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_REQUEST_OR_SUGGESTION", "PART_3_CONVERSATION_DETAIL"),
+        "",
+    ),
+    (
+        "PART_3_COMPANY_PERSONNEL",
+        2,
+        "phỏng vấn ứng viên kỹ sư cho nhóm phát triển ứng dụng đặt lịch",
+        ("PART_3_SPEAKER_IDENTITY", "PART_3_IMPLICATION", "PART_3_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_3_HOUSING",
+        2,
+        "ban quản lý và chủ kho bàn kế hoạch sửa mái sau trận ngập",
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_IMPLICATION"),
+        "",
+    ),
     (
         "PART_3_COMPANY_EVENT_OR_PROJECT",
         2,
@@ -614,6 +661,32 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
         "PART_4_TALK",
         "hướng dẫn viên giới thiệu lịch tham quan nhà máy",
         ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_IMPLICATION"),
+        "",
+    ),
+    # Pool dôi ra — cùng lý do với phần thêm ở Part 3; `build_part4` lấy 8
+    # thường + 2 có hình, cân theo dạng bài nói.
+    (
+        "PART_4_ADVERTISEMENT",
+        "quảng cáo gói hội viên phòng tập kèm lớp yoga và bơi buổi tối",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_4_TELEPHONE_MESSAGE",
+        "tin nhắn của phòng khám nhắc lịch tái khám và hướng dẫn đến sớm",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_ANNOUNCEMENT",
+        "thông báo ở bảo tàng về đêm triển lãm mở cửa muộn cuối tuần",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_IMPLICATION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "trưởng nhóm an toàn phổ biến quy trình mới trong buổi họp đầu ca",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_IMPLICATION", "PART_4_FUTURE_ACTION"),
         "",
     ),
     (
@@ -734,6 +807,48 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
             ("PART_6_VOCABULARY", ""),
             ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
             ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    # Pool dôi ra (ngân hàng — y tế — ẩm thực — công nghệ): `build_part6` lấy 4
+    # trong 8, cân theo dạng văn bản.
+    (
+        "PART_6_EMAIL_OR_LETTER",
+        "thư giới thiệu ứng dụng quản lý chi tiêu cho chủ doanh nghiệp nhỏ",
+        (
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_TO_INFINITIVE"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    (
+        "PART_6_MEMO",
+        "thông báo nội bộ về buổi tiêm chủng miễn phí tại tầng ba",
+        (
+            ("PART_6_GRAMMAR", "GRAMMAR_VOICE"),
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_SENTENCE_INSERTION", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
+        ),
+    ),
+    (
+        "PART_6_ARTICLE_OR_REVIEW",
+        "bài đánh giá chuỗi cà phê mở thêm khu ngồi ngoài trời",
+        (
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_PREPOSITION"),
+            ("PART_6_GRAMMAR", "GRAMMAR_CONJUNCTION"),
+            ("PART_6_SENTENCE_INSERTION", ""),
+        ),
+    ),
+    (
+        "PART_6_EMAIL_OR_LETTER",
+        "thư phản hồi khách về hồ sơ bồi thường bảo hiểm sức khỏe",
+        (
+            ("PART_6_GRAMMAR", "GRAMMAR_PRONOUN"),
+            ("PART_6_VOCABULARY", ""),
+            ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),
             ("PART_6_SENTENCE_INSERTION", ""),
         ),
     ),
@@ -894,6 +1009,56 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
         # dừng thay vì viết tiếp ô chữ thứ ba. Đó là điểm yếu của chặng viết chứ
         # không phải của blueprint; khi nào chặng viết xử lý được thì mở lại.
         ("", "", "table: bảng giá vé bốn suất diễn"),
+    ),
+    # --- Pool dôi ra theo 13 ngữ cảnh ETS (xem ghi chú ở Part 3): `build_part7`
+    # lấy 10 đơn / 2 đôi / 3 ba, cân theo dạng ngữ liệu. ---
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài báo về lợi ích của việc đi xe đạp đến nơi làm việc",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_INFERENCE", "PART_7_VOCABULARY_IN_CONTEXT"),
+        ("",),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "email của nhân sự hướng dẫn đăng ký gói bảo hiểm sức khỏe",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_FALSE_INFORMATION", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "thông báo về hội sách cuối tuần ở nhà văn hóa quận",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_INFERENCE", "PART_7_VOCABULARY_IN_CONTEXT"),
+        ("",),
+    ),
+    (
+        "PART_7_FORM",
+        "phiếu đăng ký lớp an toàn lao động thường niên",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_SENTENCE_INSERTION", "PART_7_FALSE_INFORMATION"),
+        ("",),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "thư phàn nàn về món tiệc công ty và thư trả lời của nhà hàng",
+        (
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_TOPIC_OR_PURPOSE",
+        ),
+        ("", ""),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "thư đăng ký hội viên phòng tập, bảng phí, và email xác nhận lịch học",
+        (
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_INFERENCE",
+            "PART_7_INFERENCE",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+        ),
+        ("", "", ""),
     ),
 )
 

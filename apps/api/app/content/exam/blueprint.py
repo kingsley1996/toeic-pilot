@@ -69,6 +69,12 @@ LISTENING_QUESTIONS_PER_SET = 3
 # và mỗi văn bản đúng bốn chỗ trống (131–134, 135–138, 139–142, 143–146).
 QUESTIONS_PER_SET = {3: 3, 4: 3, 6: 4}
 
+# Pool Part 7 giờ DÔI hơn 15 cụm của một đề, và mười cụm một đoạn không được lấy
+# tự do theo loại: cả nhóm phải cộng đúng 29 câu thì Part 7 mới kết thúc ở câu
+# 200. Quota theo SỐ CÂU của cụm; `passage_type` chỉ được cân trong từng bậc.
+# Sửa các con số này là sửa cấu trúc đề.
+PART7_SINGLE_QUOTA = {2: 4, 3: 3, 4: 3}
+
 
 def _rng(seed: int, salt: str) -> random.Random:
     """Một luồng ngẫu nhiên riêng cho mỗi việc chia.
@@ -98,6 +104,34 @@ def _deal[T](items: Sequence[T], count: int, rng: random.Random) -> list[T]:
 
 def _around[T](plan: list[T], index: int, at: Callable[[T], object]) -> list[object]:
     return [at(plan[i]) for i in (index - 1, index + 1) if 0 <= i < len(plan)]
+
+
+def _pick_balanced[T](
+    rows: Sequence[T], n: int, rng: random.Random, key: Callable[[T], object]
+) -> list[T]:
+    """`n` dòng lấy từ pool lớn hơn, chia vòng tròn đều qua các nhóm `key`.
+
+    Pool mix giờ dôi so với số ô mỗi đề (các part cụm sinh thêm bối cảnh cho đủ
+    13 ngữ cảnh của handbook ETS), nên mỗi đề chỉ dùng một mẫu. Vòng tròn theo
+    loại — topic/speech/passage — là thứ giữ một đề Part 3 không biến thành bốn
+    cuộc đối thoại toàn mua hàng, đúng cái mà "lấy 13 dòng đầu pool" đã không
+    đảm bảo khi pool bắt đầu dài ra.
+    """
+    buckets: dict[object, list[T]] = {}
+    for row in rows:
+        buckets.setdefault(key(row), []).append(row)
+    order = list(buckets)
+    rng.shuffle(order)
+    for bucket in buckets.values():
+        rng.shuffle(bucket)
+    out: list[T] = []
+    i = 0
+    while len(out) < n and any(buckets.values()):
+        bucket = buckets[order[i % len(order)]]
+        if bucket:
+            out.append(bucket.pop(0))
+        i += 1
+    return out
 
 
 def _spread[T](
@@ -396,12 +430,18 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
     """
     rng = random.Random(seed)
     picks = graphics or rng.sample(PART3_GRAPHIC_POOL, 3)
+    # Pool lớn hơn số ô: chọn 10 cụm thường + 3 cụm có hình, cân theo topic
+    # (`_pick_balanced`) — 13 dòng pool không còn là 13 câu của đề.
     # Chia riêng hai nhóm rồi lấy lần lượt: gộp lại thì dàn ba người và dàn hai
     # người tranh nhau cùng một hạn ngạch, và số cuộc ba người ít hơn hẳn nên
     # nhóm đó lãnh trọn phần lệch.
-    # Mười cụm đầu là cụm thường, ba cụm cuối là cụm có hình — xáo trong từng
-    # nhóm để câu hỏi hình vẫn nằm ở cuối part như đề thật.
-    rows = _shuffle_within(PART3_MIX, (10, 3), _rng(seed, "p3-order"))
+    # Mười cụm thường trước, ba cụm có hình sau — xáo trong từng nhóm để câu
+    # hỏi hình vẫn nằm ở cuối part như đề thật.
+    plain = [row for row in PART3_MIX if not row[4]]
+    graphic_pool_rows = [row for row in PART3_MIX if row[4]]
+    selected = _pick_balanced(plain, 10, _rng(seed, "p3-plain"), lambda row: row[0])
+    selected += _pick_balanced(graphic_pool_rows, 3, _rng(seed, "p3-graphic"), lambda row: row[0])
+    rows = _shuffle_within(selected, (10, 3), _rng(seed, "p3-order"))
     casts = {
         2: _spread(
             _deal(PART3_CASTS, sum(1 for row in rows if row[1] == 2), _rng(seed, "p3-duo")),
@@ -608,8 +648,13 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
     """
     rng = random.Random(seed)
     picks = graphics or rng.sample(PART4_GRAPHIC_POOL, 2)
-    # Tám bài đầu là bài thường, hai bài cuối có hình — cùng lý do như Part 3.
-    rows = _shuffle_within(PART4_MIX, (8, 2), _rng(seed, "p4-order"))
+    # Tám bài thường + hai bài có hình, chọn từ pool dôi, cân theo dạng bài nói
+    # — cùng cơ chế vừa thêm ở Part 3.
+    plain = [row for row in PART4_MIX if not row[3]]
+    graphic_pool_rows = [row for row in PART4_MIX if row[3]]
+    selected = _pick_balanced(plain, 8, _rng(seed, "p4-plain"), lambda row: row[0])
+    selected += _pick_balanced(graphic_pool_rows, 2, _rng(seed, "p4-graphic"), lambda row: row[0])
+    rows = _shuffle_within(selected, (8, 2), _rng(seed, "p4-order"))
     voices = _spread(_deal(NARRATORS, len(rows), _rng(seed, "p4")), _rng(seed, "p4-spread"))
     # Biến thể hàm ý quay vòng trên riêng các cụm có IMPLICATION (xem build_part3).
     impl_order = [0, 1, 2, 3]
@@ -646,6 +691,11 @@ def build_part6(slug: str, title: str, seed: int) -> Blueprint:
     nhau, vì chúng nằm trong một đoạn văn liền mạch và mỗi chỗ trống phải khớp
     với câu chữ xung quanh nó.
     """
+    # Pool dôi (8 văn bản cho 4 ô): lấy mẫu cân theo dạng văn bản để một đề
+    # không gồm bốn bức email — định mức 1 thư/1 memo/1 bài báo... của đề thật
+    # được giữ bằng vòng tròn loại, không bằng thứ tự dòng trong tệp.
+    chosen = _pick_balanced(PART6_MIX, 4, _rng(seed, "p6"), lambda row: row[0])
+    random.Random(f"p6-order:{seed}").shuffle(chosen)
     slots = [
         QuestionSlot(
             id=f"p6-{index + 1:02d}",
@@ -657,7 +707,7 @@ def build_part6(slug: str, title: str, seed: int) -> Blueprint:
             grammars=[grammar for _, grammar in types],
             topic=passage_type,
         )
-        for index, (passage_type, scene, types) in enumerate(PART6_MIX)
+        for index, (passage_type, scene, types) in enumerate(chosen)
     ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=6, slots=slots)])
 
@@ -674,16 +724,35 @@ def build_part7(slug: str, title: str, seed: int, graphics: list[str] | None = N
     `PART7_GRAPHIC_POOL` theo `seed`.
     """
     rng = random.Random(seed)
-    graphic_count = sum(1 for row in PART7_SETS for p in row[3] if p)
+    # Pool dôi (như Part 3/4): 10 cụm một đoạn / 2 hai đoạn / 3 ba đoạn. Nhóm
+    # MỘT đoạn không được cân thuần theo loại: Part 7 đánh số 147–200, nên mười
+    # cụm một đoạn phải cộng đúng 29 câu — quota theo số câu của mỗi cụm, loại
+    # chỉ được cân TRONG từng bậc.
+    by_len = {n: [row for row in PART7_SETS if len(row[3]) == n] for n in (1, 2, 3)}
+    selected: list[tuple[str, str, tuple[str, ...], tuple[str, ...]]] = []
+    for size, want in sorted(PART7_SINGLE_QUOTA.items()):
+        stratum = [row for row in by_len[1] if len(row[2]) == size]
+        selected += _pick_balanced(stratum, want, _rng(seed, f"p7-one{size}"), lambda row: row[0])
+    got = sum(len(row[2]) for row in selected)
+    if len(selected) != 10 or got != 29:
+        raise ValueError(
+            f"pool Part 7 một đoạn không đủ cho quota {PART7_SINGLE_QUOTA}: "
+            f"chọn được {len(selected)} cụm, {got} câu (cần 10 cụm, 29 câu)"
+        )
+    selected += _pick_balanced(by_len[2], 2, _rng(seed, "p7-two"), lambda row: row[0])
+    selected += _pick_balanced(by_len[3], 3, _rng(seed, "p7-three"), lambda row: row[0])
+    # Số hình đến từ LỰA CHỌN, không từ pool: thêm cụm chữ vào pool không được
+    # đổi số brief mà chặng vẽ hình phải nhận.
+    graphic_count = sum(1 for row in selected for p in row[3] if p)
     picks = graphics or rng.sample(PART7_GRAPHIC_POOL, graphic_count)
     pick_at = 0
 
     # Xáo trong từng nhóm CÙNG SỐ ĐOẠN ngữ liệu: đề thật xếp cụm một đoạn trước,
-    # rồi hai đoạn, rồi ba. Kích thước nhóm đọc từ chính bảng chứ không viết
-    # cứng — thêm một cụm vào `PART7_SETS` mà quên sửa con số ở đây là đúng loại
-    # sai lệch không ai thấy.
-    sizes = tuple(len(list(group)) for _, group in groupby(PART7_SETS, key=lambda row: len(row[3])))
-    rows = _shuffle_within(PART7_SETS, sizes, _rng(seed, "p7-order"))
+    # rồi hai đoạn, rồi ba. Kích thước nhóm đọc từ chính lựa chọn — pool không
+    # còn là đề, và thêm dòng vào pool mà quên sửa số ở đây là đúng loại sai lệch
+    # không ai thấy.
+    sizes = tuple(len(list(group)) for _, group in groupby(selected, key=lambda row: len(row[3])))
+    rows = _shuffle_within(selected, sizes, _rng(seed, "p7-order"))
 
     slots: list[QuestionSlot] = []
     number = 147
@@ -780,6 +849,14 @@ def validate(blueprint: Blueprint) -> list[str]:
                 )
 
         problems.extend(_casting_problems(part))
+
+        # Bất biến cấp ĐỀ cho Part 7: pool động + sampling nghĩa là một dòng mix
+        # thêm vào có thể âm thầm làm đề thành 52 câu — số 200 ở cuối không còn,
+        # và từng ô riêng lẻ thì vẫn hoàn toàn hợp lệ.
+        if part.part == 7:
+            total = sum(len(slot.question_types) for slot in part.slots)
+            if total != 54:
+                problems.append(f"part 7 có {total} câu, phải là đúng 54 (147–200)")
     return problems
 
 

@@ -602,8 +602,14 @@ class _Recorder:
 
 def _part3_plan(tmp_path):
     plan = bp.build_part3("tp-test", "Test", seed=7)
-    plan.parts[0].slots = plan.parts[0].slots[:1]
-    writer.save_slot(tmp_path, plan.parts[0].slots[0], PART3_GOOD)
+    # Lấy cụm THƯỜNG đầu tiên, không lấy cụm đầu danh sách: `PART3_GOOD` là hội
+    # thoại không có lời trích hàm ý, rơi vào ô `PART_3_IMPLICATION` thì
+    # `check_implication` đỏ vì lý do chẳng liên quan tới điều các bài dùng helper
+    # này để kiểm. Pool giờ được lấy mẫu theo seed nên "cụm đầu" không còn là
+    # một hình dạng cố định — lọc theo loại mới sống qua mọi lần đổi pool.
+    plain = [s for s in plan.parts[0].slots if "PART_3_IMPLICATION" not in s.question_types]
+    plan.parts[0].slots = [plain[0]]
+    writer.save_slot(tmp_path, plain[0], PART3_GOOD)
     return plan
 
 
@@ -615,8 +621,9 @@ def test_a_part_3_paste_file_becomes_three_reports(tmp_path):
     mỗi câu có báo cáo riêng, đánh đúng số câu của nó.
     """
     plan = _part3_plan(tmp_path)
+    first = plan.parts[0].slots[0].number
     reports = checker.check_blueprint(plan, tmp_path, only=3)
-    assert [report.number for report in reports] == [32, 33, 34]
+    assert [report.number for report in reports] == [first, first + 1, first + 2]
     assert all(report.problems == [] for report in reports)
 
 
@@ -896,7 +903,8 @@ def test_the_spread_gate_blocks_on_a_hard_slot_and_only_flags_elsewhere(tmp_path
         "(A) Reserve a room for the Thursday candidate", "(A) Reserve a room"
     ).replace("(A) A scheduling conflict", "(A) A candidate asked to move")
     plan = bp.build_part3("tp-test", "Test", seed=7)
-    slot = plan.parts[0].slots[0]
+    # Cụm thường (không implication) — cùng lý do lọc theo loại với `_part3_plan`.
+    slot = next(s for s in plan.parts[0].slots if "PART_3_IMPLICATION" not in s.question_types)
     plan.parts[0].slots = [slot]
     writer.save_slot(tmp_path, slot, easy)
 
@@ -1851,15 +1859,16 @@ def test_every_listening_part_carries_its_implication_questions() -> None:
     trong taxonomy — nên cả part chỉ còn chủ đề, chi tiết và hành động tiếp
     theo, tức ba dạng dễ nhất. `SPEC-EXAM-DIFFICULTY` §10 D3 đo lại và thấy ba
     câu mỗi part vẫn quá thưa (8% số câu, và chỉ MỘT khuôn), nên mix nay rải hàm
-    ý trên ~nửa số cụm.
+    ý dày hơn — và vì mix là POOL chứ không còn là đúng 13/10 cụm của đề, ngưỡng
+    tính trên toàn pool.
     """
     from app.content.exam.mixes import PART3_MIX, PART4_MIX
 
     p3 = _question_types(PART3_MIX, 3)
     p4 = _question_types(PART4_MIX, 2)
-    assert len(p3) == 39 and len(p4) == 30
-    assert p3.count("PART_3_IMPLICATION") == 6
-    assert p4.count("PART_4_IMPLICATION") == 6
+    assert len(p3) % 3 == 0 and len(p4) % 3 == 0
+    assert p3.count("PART_3_IMPLICATION") >= 6
+    assert p4.count("PART_4_IMPLICATION") >= 6
     # Một cụm ba câu không được mang hai câu hàm ý — đề thật không làm thế, và
     # hai lời trích trong một hội thoại ngắn thì lời sau không còn hàm ý gì.
     for row in PART3_MIX:
@@ -1914,6 +1923,44 @@ def test_an_old_blueprint_still_loads_with_implication_kind_zero(tmp_path) -> No
     assert bp.validate(restored) == []
 
 
+def test_the_growing_pools_are_sampled_not_spilled() -> None:
+    """Mix là POOL ngữ cảnh, không còn là đúng số cụm của một đề.
+
+    Thêm bối cảnh theo 13 ngữ cảnh ETS mà build vẫn lấy CẢ pool thì một đề sẽ
+    thành 19 hội thoại Part 3 — và không cổng nào gọi tên nó vì validate chỉ
+    nhìn từng ô. Bài này ghim ba thứ cùng lúc: kích thước đề không đổi, lấy mẫu
+    thật sự xoay theo seed, và cân theo loại giữ một đề không toàn một dạng.
+    """
+    from collections import Counter
+
+    from app.content.exam.mixes import PART3_MIX, PART6_MIX, PART7_SETS
+
+    assert len([r for r in PART3_MIX if not r[4]]) > 10, "pool Part 3 phải dôi ra"
+    assert len(PART6_MIX) > 4 and len(PART7_SETS) > 15
+
+    scene_sets: set[tuple[str, ...]] = set()
+    for seed in range(1, 9):
+        p3 = bp.build_part3("t3", "t", seed).parts[0].slots
+        p4 = bp.build_part4("t4", "t", seed).parts[0].slots
+        p6 = bp.build_part6("t6", "t", seed).parts[0].slots
+        p7 = bp.build_part7("t7", "t", seed).parts[0].slots
+        assert (len(p3), len(p4), len(p6), len(p7)) == (13, 10, 4, 15)
+        # Đề vẫn validate sạch với pool động.
+        assert bp.validate(bp.build_part7("t7", "t", seed)) == []
+        # Cluster có hình vẫn nằm cuối part sau khi lấy mẫu.
+        assert all(s.graphic for s in p3[10:]) and not any(s.graphic for s in p3[:10])
+        assert all(s.graphic for s in p4[8:]) and not any(s.graphic for s in p4[:8])
+        # Cân loại: Part 6 bốn văn bản không được là bốn email; Part 3 topic
+        # không lệch quá một hạn ngạch vòng tròn (max-min ≤ 2 kể cả 3 cụm hình).
+        assert Counter(s.topic for s in p6).most_common(1)[0][1] <= 2
+        topics = Counter(s.topic for s in p3)
+        assert max(topics.values()) - min(topics.values()) <= 2
+        # Hàm ý từng đề không sập dưới sàn D3 đặt ra (6/13 cụm trước sampling).
+        assert sum(any(c.endswith("_IMPLICATION") for c in s.question_types) for s in p3) >= 4
+        scene_sets.add(tuple(s.context for s in p3))
+    assert len(scene_sets) > 1, "cùng pool mà mọi seed ra y hệ scene => không lấy mẫu"
+
+
 def test_part7_does_not_lean_on_its_two_easiest_question_types() -> None:
     """Tìm-thông-tin và chủ đề là hai dạng dễ nhất của Part 7.
 
@@ -1923,13 +1970,13 @@ def test_part7_does_not_lean_on_its_two_easiest_question_types() -> None:
     from app.content.exam.mixes import PART7_SETS
 
     codes = _question_types(PART7_SETS, 2)
-    assert len(codes) == 54
     easy = codes.count("PART_7_INFORMATION_RETRIEVAL") + codes.count("PART_7_TOPIC_OR_PURPOSE")
-    assert easy <= 20
-    assert codes.count("PART_7_INFERENCE") >= 18
-    # Đề thật có đúng hai câu điền câu và hai câu hàm ý (hai cụm tin nhắn).
-    assert codes.count("PART_7_SENTENCE_INSERTION") == 2
-    assert codes.count("PART_7_IMPLICATION") == 2
+    # Pool giờ lớn hơn 15 cụm (mọi đề chỉ lấy mẫu), nên ngưỡng là TỈ LỆ, không
+    # phải số câu của một đề.
+    assert easy / len(codes) <= 0.42, f"dạng dễ chiếm {easy}/{len(codes)}"
+    assert codes.count("PART_7_INFERENCE") / len(codes) >= 0.30
+    assert codes.count("PART_7_SENTENCE_INSERTION") >= 2
+    assert codes.count("PART_7_IMPLICATION") >= 2
 
 
 def test_an_implication_question_must_quote_the_script_word_for_word() -> None:
@@ -2541,9 +2588,7 @@ def test_full_load_attaches_labels_but_part_load_does_not(monkeypatch) -> None:
             return False
 
     monkeypatch.setattr(load_cmd, "SessionLocal", lambda: _DB())
-    monkeypatch.setattr(
-        load_cmd, "apply_labels", lambda db, p, **k: calls.append(1) or (0, 0, [])
-    )
+    monkeypatch.setattr(load_cmd, "apply_labels", lambda db, p, **k: calls.append(1) or (0, 0, []))
 
     full = argparse.Namespace(slug="tp-test", token="t", api="http://x", part=None, slot=None)
     assert load_cmd.cmd_load(full) == 0
