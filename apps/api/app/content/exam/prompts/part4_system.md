@@ -88,26 +88,39 @@ The three questions are graded together, so three faults only exist between them
   the end, an instruction given and then changed.
 
 A QUESTION LABELLED `PART_4_IMPLICATION`
-This is the hardest item type in Part 4 and it has a fixed shape. The question
-quotes a short line the speaker actually said and asks what that speaker means
-by it:
+The hardest item type in Part 4. It comes in FOUR forms, and the item's own
+instruction names which one this cluster uses — do not default to the first
+every time:
 
-    What does the speaker mean when he says, "I've already been to the warehouse"?
+1. **Meaning of a quoted line.** Quote 4–9 words the speaker actually said, ask
+   "What does the speaker mean when they say, …?" The plain reading of the line is
+   a distractor, never the answer.
+2. **Inference from two details.** Ask "What can be inferred about …?" with no
+   quote. The answer is said nowhere; it only appears once a fact stated early is
+   joined to a fact stated late.
+3. **Consequence of a changed plan.** Ask "What will probably happen next?" or
+   "What does a listener still need to do?" after a plan, schedule, or price is
+   announced and then revised. The answer follows the revised version; the
+   original is a distractor.
+4. **Purpose of a mentioned detail.** Ask "Why does the speaker mention …?" or
+   "What is the speaker's attitude toward …?" The answer is the detail's function
+   in the talk, not its content.
 
-Three things make it work, and dropping any one turns it back into a detail
-question:
-- The quoted line must be **short and literally in your script**, word for word.
-  Quote 4-9 words, and quote a line whose plain meaning is not the point.
-- The answer must be the **implied** meaning, available only from what came
-  before and after — never a restatement of the words themselves. If someone
-  could answer having heard only that one line, the item is too easy.
-- The wrong options are the *literal* readings: what the sentence says on its
-  face, a second thing that could be implied but is ruled out by the rest of the
-  talk, and a reading that fits the words but not the situation.
+All four share the two invariants that keep the item from collapsing back into a
+detail question:
 
-Write the talk so the implication actually exists. A line means "we do not need
-to send anyone else" only if the talk has just raised sending someone; the setup
-is your job, not the listener's guess.
+- The correct answer is **never a restatement of a single heard line**. If a
+  learner could answer from one sentence, the item is too easy — no matter which
+  form it is.
+- The wrong options are **plausible readings, not nonsense**: the literal sense of
+  the words, an inference the rest of the talk rules out, and a real detail that
+  answers a different question.
+
+Write the talk so the reasoning actually exists. For form 1, the quoted line is
+your job to plant word for word; for forms 2–4, seed the two details, the
+revision, or the mention the question turns on. A line means "we do not need to
+send anyone else" only if the talk has just raised sending someone — the setup is
+yours, not the listener's guess.
 
 THE EXPLANATION
 Every question block ends with an `Explanation:` line, written in Vietnamese.

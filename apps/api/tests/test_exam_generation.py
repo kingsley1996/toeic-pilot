@@ -13,6 +13,9 @@ Ba thứ được ghim, và cả ba đều hỏng im lặng:
     hai đều là câu Part 5 hợp lệ, nên không có gì báo.
 """
 
+from __future__ import annotations
+
+import json
 from pathlib import Path
 
 import pytest
@@ -1846,21 +1849,69 @@ def test_every_listening_part_carries_its_implication_questions() -> None:
 
     Part 3 từng có **không câu nào** — mã `PART_3_IMPLICATION` chưa tồn tại
     trong taxonomy — nên cả part chỉ còn chủ đề, chi tiết và hành động tiếp
-    theo, tức ba dạng dễ nhất.
+    theo, tức ba dạng dễ nhất. `SPEC-EXAM-DIFFICULTY` §10 D3 đo lại và thấy ba
+    câu mỗi part vẫn quá thưa (8% số câu, và chỉ MỘT khuôn), nên mix nay rải hàm
+    ý trên ~nửa số cụm.
     """
     from app.content.exam.mixes import PART3_MIX, PART4_MIX
 
     p3 = _question_types(PART3_MIX, 3)
     p4 = _question_types(PART4_MIX, 2)
     assert len(p3) == 39 and len(p4) == 30
-    assert p3.count("PART_3_IMPLICATION") == 3
-    assert p4.count("PART_4_IMPLICATION") == 3
+    assert p3.count("PART_3_IMPLICATION") == 6
+    assert p4.count("PART_4_IMPLICATION") == 6
     # Một cụm ba câu không được mang hai câu hàm ý — đề thật không làm thế, và
     # hai lời trích trong một hội thoại ngắn thì lời sau không còn hàm ý gì.
     for row in PART3_MIX:
         assert list(row[3]).count("PART_3_IMPLICATION") <= 1
     for row in PART4_MIX:
         assert list(row[2]).count("PART_4_IMPLICATION") <= 1
+
+
+def test_listening_implications_span_all_four_forms() -> None:
+    """Đủ số câu hàm ý là một nửa; nửa kia là chúng phải KHÁC khuôn.
+
+    `*_IMPLICATION` chỉ có một shape trong system prompt, nên thêm ô mà không có
+    `implication_kind` thì cả sáu câu cùng ra "What does she mean when she
+    says…?" — y khuôn sụp-How mà `how_variant` đã phải sửa. `build_part3`/`4`
+    quay vòng bốn biến thể TRÊN RIÊNG các cụm hàm ý, xáo theo seed.
+    """
+    from app.content.exam.prompts.difficulty import _IMPLICATION_VARIANTS
+
+    n = len(_IMPLICATION_VARIANTS)
+    for part, build in ((3, bp.build_part3), (4, bp.build_part4)):
+        plan = build("tp-test", "Test", seed=7)
+        kinds = [
+            slot.implication_kind
+            for slot in plan.parts[0].slots
+            if any(code.endswith("_IMPLICATION") for code in slot.question_types)
+        ]
+        assert len(kinds) >= n, f"part {part} có {len(kinds)} cụm hàm ý, không đủ phủ {n} biến thể"
+        assert set(kinds) == set(range(n)), f"part {part} không dùng đủ {n} biến thể: {kinds}"
+        # Ô không hàm ý phải giữ kind 0 (mặc định), không ăn chỉ số của vòng quay.
+        for slot in plan.parts[0].slots:
+            if not any(code.endswith("_IMPLICATION") for code in slot.question_types):
+                assert slot.implication_kind == 0
+
+
+def test_an_old_blueprint_still_loads_with_implication_kind_zero(tmp_path) -> None:
+    """Blueprint sinh trước khi có `implication_kind` phải nạp được nguyên vẹn.
+
+    `QuestionSlot` thêm field mới với default 0, nên `load` một tệp cũ (thiếu
+    khoá) giữ hành vi cũ — không phải migrate, và một đề đã duyệt không tự nhiên
+    đổi biến thể hàm ý khi chạy lại chặng sinh.
+    """
+    plan = bp.build_part3("tp-old", "Old", seed=7)
+    path = tmp_path / "blueprint.json"
+    bp.save(plan, path)
+    raw = json.loads(path.read_text())
+    for part in raw["parts"]:
+        for slot in part["slots"]:
+            slot.pop("implication_kind", None)
+    path.write_text(json.dumps(raw))
+    restored = bp.load(path)
+    assert all(slot.implication_kind == 0 for slot in restored.parts[0].slots)
+    assert bp.validate(restored) == []
 
 
 def test_part7_does_not_lean_on_its_two_easiest_question_types() -> None:

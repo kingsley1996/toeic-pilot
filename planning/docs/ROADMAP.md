@@ -61,6 +61,15 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       **834/855** câu có giải thích, chỉ còn 21 trắng. Công cụ:
       `app/content/backfill_explanations.py`, runbook §11b. Ngưỡng RAG (`ADR-003` §3.3)
       đã vượt xa từ lâu; nút thắt nội dung giờ là **chất lượng**, không phải số lượng.
+- [x] ~~Chuẩn hoá prompt Part 2–7 theo learner-guide + siết độ khó~~ — **Xong
+      (2026-09-10).** Mỗi `partN_system.md` đối chiếu `content/parts/part-N.md`;
+      `part-5.md` vốn là bản copy của part-4 nên viết lại. Explanation: mọi đáp án
+      nhiễu **khớp chữ** phải trích đúng cụm bị mượn và nói chữ nào bị bẻ (ngày,
+      người, chỗ, chiều hành động), "not mentioned" chỉ dành cho đáp không có thật
+      trong ngữ liệu. D3 (phần Nghe chỉ có MỘT dạng câu khó, MỘT khuôn): mix rải
+      `*_IMPLICATION` 3→6 cụm mỗi part, thêm `implication_kind` quay 4 biến thể (y
+      `how_variant`). D2 và D5 đã xem và **quyết không làm** — lý do ở
+      `SPEC-EXAM-DIFFICULTY` §10. 1155 test API xanh.
 - [x] ~~Soạn ≥ 50 câu dictation~~ — **134 câu / 17 bài / 3 chủ đề**. Chủ đề `Announcements`
       thêm ở đợt này vì dạng độc thoại (thông báo, tin nhắn thoại) là Part 4 và cây cũ
       không có bài nào thuộc dạng đó

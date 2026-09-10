@@ -700,16 +700,44 @@ nó không đo được.
    do LLM sinh, nên `build_part7` chạy lại trả về bối cảnh của bảng `PART7_SETS`
    và xoá mất chúng. Gán thẳng một trường trên blueprint đã có, rồi đối chiếu mọi
    trường khác trước khi ghi.
-2. **D2 — chặn `highest == 0`.** Một dòng, và nó gỡ thiên lệch ngược hiện tại.
+ 2. **D2 — chặn `highest == 0`.** **Không làm, và đã hiểu vì sao (2026-09-10).**
+    Một dòng này trông như "đối xứng ở cả hai đầu" nhưng nó là cái bẫy. `highest`
+    đếm câu mà đáp án đúng nhại lời thoại **nhiều hơn mọi** nhiễu (so strict `>`);
+    một nhiễu keyword-trap tốt trích đúng câu chứa đáp án, nên `echo` **hoà** và câu
+    rơi vào giữa, không vào `highest`. `highest == 0` vì vậy là **trạng thái đẹp**
+    của một cụm toàn bẫy hòa phủ, không phải tín hiệu quá-chỉnh. Chặn nó sẽ thưởng
+    cho việc đẩy đáp án đúng lên trên nhiễu — tức **đoán dễ hơn**, ngược đích.
+    Thiên lệch "đáp đúng gần như không bao giờ là cái giống nhất" (`hi` = 10%) đã có
+    **đúng ba cổng** phủ: `check_distractors` (`unrelated > 1` — nhiễu phải nhại),
+    `check_paraphrase_balance` (`lowest > 1` — đừng để đáp đúng luôn là cái lạ nhất),
+    và `check_thin_paraphrase` (cờ khi đáp đúng phủ < 25%). Người duyệt đọc cờ ấy;
+    không cần một cổng chặn tự đánh oan các cụm khó nhất.
 
-   Kèm theo: `cmd_write` từng bỏ qua `writer.max_tokens_for()` — hàm ấy chỉ được
-   `exam_agents/graph.py` gọi — nên mọi lượt `write` chạy ở trần 6000 bất kể part,
-   trong khi bảng trần đo sẵn cho Part 6 là 16000 và cho ô có hình là 24000. Hai ô
-   mất vì đúng chỗ này (`p1-03` cụt giữa lời giải thích, `p3-10` trả về 0 ký tự),
-   và cái cụt không hiện ra như lỗi mà như một ô đã ghi xong. Đã nối lại
-   (2026-09-08); `--max-tokens` truyền tay vẫn thắng.
-3. **D4 — kiểm bốn lựa chọn song song.**
-4. **D5 — quyết định về `tts_rate` sớm**, vì chi phí đổi tăng theo kích thước kho.
+    Kèm theo: `cmd_write` từng bỏ qua `writer.max_tokens_for()` — hàm ấy chỉ được
+    `exam_agents/graph.py` gọi — nên mọi lượt `write` chạy ở trần 6000 bất kể part,
+    trong khi bảng trần đo sẵn cho Part 6 là 16000 và cho ô có hình là 24000. Hai ô
+    mất vì đúng chỗ này (`p1-03` cụt giữa lời giải thích, `p3-10` trả về 0 ký tự),
+    và cái cụt không hiện ra như lỗi mà như một ô đã ghi xong. Đã nối lại
+    (2026-09-08); `--max-tokens` truyền tay vẫn thắng.
+ 3. **D4 — kiểm bốn lựa chọn song song.**
+ 3b. **D3 — đa dạng hoá câu suy luận.** **Đã làm (2026-09-10).** Item 1 ở trên dựng
+     cột `hard` nhưng đó là trục **D1** (ghép hai chỗ); **D3 thật** là ở chỗ mục D3
+     đã chỉ ra: mỗi part Nghe chỉ có **một** dạng khó (`*_IMPLICATION`, 3 câu) và
+     dạng đó chỉ có **một khuôn** (trích một dòng hỏi "ý là gì"). Đã sửa cả hai vế
+     theo đúng ba tầng §1: (a) mix rải `*_IMPLICATION` từ 3 lên **6 cụm** mỗi part
+     (P3 6/13, P4 6/10 ≈ 15–20% số câu, vẫn ≤1 mỗi cụm); (b) thêm
+     `QuestionSlot.implication_kind` (0–3) quay vòng seeded y `how_variant`, chọn
+     một trong **bốn khuôn** — nghĩa-của-dòng-được-trích · suy-từ-hai-chi-tiết ·
+     hệ-quả-kế-hoạch-bị-đổi · mục-đích-của-chi-tiết (§6.8 liệt kê đúng bốn loại này
+     cho Part 4) — `prompts/difficulty.py:implication_note` nói ra ở prompt TỪNG Ô,
+     system prompt giờ liệt kê cả bốn. Mặc định 0 = khuôn cũ nên đề đã sinh không
+     đổi; có test ghim rotation phủ đủ bốn và blueprint cũ nạp lại vẫn kind 0.
+ 4. **D5 — quyết định về `tts_rate` sớm**, vì chi phí đổi tăng theo kích thước kho.
+    **Chốt: GIỮ `-20%` (~124 wpm) (2026-09-10).** Đổi nó dời `source_hash` của mọi
+    clip → recast cả thư viện (tiền lệ 2026-09-02), đắt mà không ai phàn nàn tai
+    người học thật về tốc độ. Nếu sau này có dữ liệu `attempt_item` cho thấy phần
+    Nghe bị "quá dễ" một cách đồng loạt thì hãy đổi MỘT lần khi kho còn nhỏ — chưa
+    phải bây giờ.
 5. **§24 — thang điểm và hàng đợi REVIEW**, sau cùng, và bằng model khác.
 
 ### Ba điều đừng làm
@@ -736,8 +764,8 @@ Số liệu lấy từ `tp-form-11`, đề đầu tiên đi hết pipeline với
 |---|---|---|---|
 | **1** · 6 ô | `people` = one · several · none | ảnh phải chứa **nhiều hơn** bốn câu cần: ≥2 nhóm chủ thể làm 2 việc, hoặc ≥3 nhóm vật ở 3 quan hệ vị trí | **không có** |
 | **2** · 25 ô | `indirect` = 8/25<br>`indirect_kind` = 0·1·2·3, chia 2/2/2/2 | trực tiếp hay gián tiếp, và **kiểu né nào** trong bốn kiểu | `check_yes_no_spread` — cấp ĐỀ, ≤30% |
-| **3** · 13 ô, 39 câu | `question_types` (3 câu hàm ý) · `hard` = 13/13 · `graphic` = 3 ô | dạng từng câu · ≥1 câu buộc **ghép hai chỗ tách rời** · luật hình | `check_retrieval_spread` **chặn** (miễn ô có hình) · `check_distractors` · `check_paraphrase_balance` · `check_redundancy` · `check_leakage` · `check_implication` · `check_graphic` |
-| **4** · 10 ô, 30 câu | như Part 3 · `hard` = 10/10 · `graphic` = 2 | như Part 3 | như Part 3 |
+| **3** · 13 ô, 39 câu | `question_types` (6 câu hàm ý) · `implication_kind` = 0·1·2·3, quay vòng · `hard` = 13/13 · `graphic` = 3 ô | dạng từng câu · **biến thể hàm ý nào** cho cụm này · ≥1 câu buộc **ghép hai chỗ tách rời** · luật hình | `check_retrieval_spread` **chặn** (miễn ô có hình) · `check_distractors` · `check_paraphrase_balance` · `check_redundancy` · `check_leakage` · `check_implication` · `check_graphic` |
+| **4** · 10 ô, 30 câu | như Part 3 (6 câu hàm ý, `implication_kind`) · `hard` = 10/10 · `graphic` = 2 | như Part 3 | như Part 3 |
 | **5** · 30 ô | `grammar` — 12 mã theo `PART5_MIX` | điểm ngữ pháp phải kiểm · ba nhiễu sai vì **đúng điểm đó** · bốn lựa chọn dài xấp xỉ nhau | **không có cổng tất định**; chỉ `prune --ambiguity` |
 | **6** · 4 ô, 16 câu | `grammars` 4 mã/ô · vị trí **câu điền câu** = blank 3 hoặc 4, chia 2/2 | mã từng chỗ trống · chỗ nào là câu điền câu · ba câu sai phải sai vì **không hợp mạch văn** | `validate` chặn câu điền câu ở blank 1–2; không có cổng độ khó khác |
 | **7** · 15 ô, 54 câu | `question_types` — 26/54 (**48%**) là suy luận · hàm ý · NOT<br>`hard` = 11/15 · `structure` + số ngữ liệu | ≥1 câu ghép hai chỗ · cụm nhiều tài liệu phải có câu **bắc cầu**, và lời giải phải dẫn **cả hai** tài liệu | `check_cross_passage` **chặn** · `check_retrieval_spread` · `check_leakage` · `check_part7_forms` · `check_implication` |

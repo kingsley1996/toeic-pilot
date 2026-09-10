@@ -461,14 +461,14 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         "PART_3_COMPANY_EVENT_OR_PROJECT",
         3,
         "ba người chuẩn bị gian hàng cho hội chợ thương mại",
-        ("PART_3_LOCATION", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        ("PART_3_IMPLICATION", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
         "",
     ),
     (
         "PART_3_HOUSING",
         2,
         "người thuê hỏi ban quản lý toà nhà về việc sửa hệ thống sưởi",
-        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_REQUEST_OR_SUGGESTION"),
+        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_IMPLICATION"),
         "",
     ),
     (
@@ -503,7 +503,7 @@ PART3_MIX: tuple[tuple[str, int, str, tuple[str, str, str], str], ...] = (
         "PART_3_COMPANY_PERSONNEL",
         2,
         "nhân viên xin đổi ca và đồng nghiệp trả lời",
-        ("PART_3_TOPIC_OR_PURPOSE", "PART_3_CONVERSATION_DETAIL", "PART_3_FUTURE_ACTION"),
+        ("PART_3_CONVERSATION_DETAIL", "PART_3_IMPLICATION", "PART_3_FUTURE_ACTION"),
         "",
     ),
     (
@@ -589,7 +589,7 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     (
         "PART_4_MEETING_EXCERPT",
         "trích buổi họp phòng kinh doanh về kết quả quý vừa rồi",
-        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_IMPLICATION"),
         "",
     ),
     (
@@ -601,7 +601,7 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     (
         "PART_4_ANNOUNCEMENT",
         "thông báo ở sân bay về việc đổi cửa lên máy bay",
-        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        ("PART_4_IMPLICATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
         "",
     ),
     (
@@ -613,7 +613,7 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
     (
         "PART_4_TALK",
         "hướng dẫn viên giới thiệu lịch tham quan nhà máy",
-        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_IMPLICATION"),
         "",
     ),
     (

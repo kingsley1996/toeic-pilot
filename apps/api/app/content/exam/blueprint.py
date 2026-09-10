@@ -201,6 +201,13 @@ class QuestionSlot:
     # mất chiều nhầm lẫn số liệu mà người ra đề thật khai thác. Mặc định 0 nên ô
     # của đề cũ giữ nguyên hành vi.
     how_variant: int = 0
+    # Part 3 và 4: BIẾN THỂ hàm ý nào cho câu `*_IMPLICATION` của cụm — xem
+    # `_IMPLICATION_VARIANTS`. Cùng lý do với `how_variant`: `*_IMPLICATION` chỉ có
+    # MỘT khuôn trong system prompt (trích một dòng rồi hỏi "ý là gì"), nên tăng số
+    # cụm hàm ý mà không có trục này thì cả đề ra toàn "What does she mean when she
+    # says…?" — một dạng khó nhưng chỉ một cách hỏi, và người luyện vài đề thuộc
+    # khuôn. Mặc định 0 = đúng khuôn cũ, nên ô của đề đã sinh giữ nguyên.
+    implication_kind: int = 0
     # Bao nhiêu câu trong ô BUỘC phải ghép chứng cứ từ hai chỗ tách rời — trục
     # D1 của `toeic_ai_question_generation_guidelines` §10. Ở blueprint chứ
     # không để mô hình tự quyết, cùng lý do với `indirect`: đo trên 470 câu đã
@@ -403,11 +410,21 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
         3: _deal(PART3_TRIOS, sum(1 for row in rows if row[1] == 3), _rng(seed, "p3-trio")),
     }
     slots: list[QuestionSlot] = []
+    # Bốn biến thể hàm ý (xem QuestionSlot.implication_kind) quay vòng TRÊN RIÊNG
+    # các cụm có câu IMPLICATION, xáo theo seed — không import tuple từ prompts để
+    # khỏi vòng lặp import; độ dài khớp `check` bên dưới.
+    impl_order = [0, 1, 2, 3]
+    random.Random(f"p3-impl:{seed}").shuffle(impl_order)
+    impl_at = 0
     for index, (topic, speakers, scene, types, graphic) in enumerate(rows):
         cast = casts[speakers].pop()
         # Ba cụm cuối là cụm có hình (đề thật). Brief lấy từ `picks`, còn lại
         # giữ nguyên (không hình).
         brief = picks[len(slots) - 10] if 10 <= len(slots) <= 12 else graphic
+        implication_kind = 0
+        if any(code.endswith("_IMPLICATION") for code in types):
+            implication_kind = impl_order[impl_at % len(impl_order)]
+            impl_at += 1
         slots.append(
             QuestionSlot(
                 id=f"p3-{index + 1:02d}",
@@ -420,6 +437,7 @@ def build_part3(slug: str, title: str, seed: int, graphics: list[str] | None = N
                 voices=list(cast),
                 graphic=brief,
                 hard=1,
+                implication_kind=implication_kind,
             )
         )
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=3, slots=slots)])
@@ -593,21 +611,31 @@ def build_part4(slug: str, title: str, seed: int, graphics: list[str] | None = N
     # Tám bài đầu là bài thường, hai bài cuối có hình — cùng lý do như Part 3.
     rows = _shuffle_within(PART4_MIX, (8, 2), _rng(seed, "p4-order"))
     voices = _spread(_deal(NARRATORS, len(rows), _rng(seed, "p4")), _rng(seed, "p4-spread"))
-    slots = [
-        QuestionSlot(
-            id=f"p4-{index + 1:02d}",
-            number=71 + index * 3,
-            question_type="",
-            grammar="",
-            context=scene,
-            question_types=list(types),
-            topic=speech_type,
-            voices=[voices[index]],
-            graphic=picks[index - 8] if index >= 8 else graphic,
-            hard=1,
+    # Biến thể hàm ý quay vòng trên riêng các cụm có IMPLICATION (xem build_part3).
+    impl_order = [0, 1, 2, 3]
+    random.Random(f"p4-impl:{seed}").shuffle(impl_order)
+    impl_at = 0
+    slots: list[QuestionSlot] = []
+    for index, (speech_type, scene, types, graphic) in enumerate(rows):
+        implication_kind = 0
+        if any(code.endswith("_IMPLICATION") for code in types):
+            implication_kind = impl_order[impl_at % len(impl_order)]
+            impl_at += 1
+        slots.append(
+            QuestionSlot(
+                id=f"p4-{index + 1:02d}",
+                number=71 + index * 3,
+                question_type="",
+                grammar="",
+                context=scene,
+                question_types=list(types),
+                topic=speech_type,
+                voices=[voices[index]],
+                graphic=picks[index - 8] if index >= 8 else graphic,
+                hard=1,
+                implication_kind=implication_kind,
+            )
         )
-        for index, (speech_type, scene, types, graphic) in enumerate(rows)
-    ]
     return Blueprint(slug=slug, title=title, seed=seed, parts=[PartPlan(part=4, slots=slots)])
 
 
