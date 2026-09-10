@@ -80,6 +80,23 @@ uv run python -m app.content.generate_exam attach-images --slug $S --part 1 --co
   (File graphic vẫn còn trên đĩa; chỉ mất liên kết trong DB. `check` trước khi
   `--commit` cho thấy đúng `N khớp · 0 file thừa`.)
 
+## 2b. Biệt lệ Part 2 (Question-Response)
+
+Luồng y hệt, khác bốn chỗ (đã chạy thật trên `tp-form-07`):
+
+- **Không có ảnh.** Part 2 chỉ nghe. `attach-images --part` không nhận `2`; **bỏ hẳn
+  §2**. Reload vẫn phải attach lại 1/3/4/7 (chúng mất liên kết), nhưng Part 2 đóng góp 0 ảnh.
+- **Ba phương án A/B/C.** `balance` biết điều đó (`balance.py`: không gán đích `D` cho
+  Part 2), nên phân bố đọc kiểu `A=8 B=8 C=9 · D=0`.
+- **Câu hỏi nằm ở `question.audio_script`** (không phải `prompt_text` — đề không in gì),
+  mỗi câu **4 lượt nói** = 1 hỏi + 3 đáp → `backfill_audio --only questions` phủ Part 2,
+  và regen 25 câu = ~25 tổng hợp (không reuse được như part khác vì nội dung đổi hết).
+- **Cổng chất lượng là `check`**: "nhiễu Yes/No cho câu WH > 30%". `part2_system.md` đã
+  có luật (sai ngay cả khi bỏ chữ Yes/No đầu câu), nhưng mimo vẫn lơ một phần. 07 đi từ
+  **80% → 33% sau regen trọn → 27% sau khi re-roll đúng 1 ô** `check` gọi tên
+  (`mv paste/p2-XX.txt` rồi `write` lại, nó chỉ sinh ô thiếu). Không cần re-plan cả part
+  cho lần siết cuối.
+
 ## 3. Reload dev: xoá theo slug rồi nạp lại TRỌN đề
 
 `load` **cộng thêm** (`commit_part` không thay thế) — nạp Part 1 vào đề còn nguyên
