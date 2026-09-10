@@ -66,6 +66,10 @@ uv run python -m app.content.generate_exam attach-images --slug $S --part 1 --co
 - Ảnh chỉ lên Cloudinary **khi `attach-images --commit`**; `photo` chỉ vẽ ra đĩa.
 - `--commit` **từ chối** khi còn "file thừa hoặc ô trống": một file `p1-01-draft.png`
   lạc giữa `images/` sẽ bị khớp nhầm vào ô rồi chặn cả lô. Dọn file rác trước.
+- Hàng đợi `photo` = **`photos/p1-XX.txt` có mà `images/p1-XX.png` thiếu**, và `write`
+  mới là chặng ghi `photos/p1-XX.txt`. **Đừng dời/xoá `photos/` sau `write`** — làm vậy
+  xoá luôn thứ tự vẽ, `photo` báo "0 cần vẽ". Muốn vẽ lại một tấm chỉ `rm images/p1-XX.png`.
+  (Một lần render lẻ thi thoảng ghi file rồi biến mất; `photo` bắt lại đúng ô trống đó.)
 - **Reload trọn đề (§3) xoá luôn liên kết ảnh của các Part graphic (3/4/7).** Các
   `attach-images --commit` cho Part 1 KHÔNG khôi phục chúng. Phải chạy nốt:
 
@@ -109,24 +113,33 @@ chưa đẩy.
 ## 5. Publish dev rồi export → prod
 
 `load` để **draft**, và export-test.sh chép **nguyên `status`** → nếu không publish,
-prod nhận về một đề draft (học viên không làm được). Không có endpoint "publish cả
-đề" cho hàng loạt câu, nên bulk-update status trong dev rồi bật đề qua endpoint (nó
-kiểm gate một lần cuối):
+prod nhận về một đề draft (học viên không làm được). Có **hai** endpoint, chạy theo thứ
+tự (mình đã dùng cho 07 và 08 — `load` đi qua HTTP nên tự khớp schema `practice_test`):
 
 ```bash
-# UPDATE question/question_set.status='published' theo slug (dev), rồi:
+# (a) publish từng câu ĐẠT cổng `validate_question` (kèm cụm của nó); câu nào hỏng
+#     thì nó bỏ qua và NÓI RÕ trong `skipped`, không im lặng:
+curl -X POST -H "Authorization: Bearer $TOK" "http://localhost:8000/api/v1/admin/tests/$S/questions/publish"
+# (b) publish cả đề — route này TỪ CHỐI 409 nếu còn câu draft, nên (a) phải sạch trước:
 curl -X POST -H "Authorization: Bearer $TOK" "http://localhost:8000/api/v1/admin/tests/$S/publish"
 
 ./scripts/export-test.sh $S /tmp/$S.sql
 docker run --rm -i postgres:17 psql "$SUPABASE_URL" --single-transaction -v ON_ERROR_STOP=1 < /tmp/$S.sql
 ```
 
+**Đừng xuất bản bằng `UPDATE question SET status` viết tay.** Một bulk-publish bỏ qua
+`validate_question` là cách chắc chắn nhất để một câu thiếu bản thu lọt ra ngoài.
+
 **Luôn `--single-transaction`.** Tệp gồm nhiều COPY/INSERT autocommit; một statement
 fail giữa chừng để prod nửa vời. Một transaction = all-or-nothing. (Lần đầu của chính
 runbook này fail vì FK và **prod không hề đổi** — xem §6.)
 
-**Kiểm sau khi áp** (đọc prod): `status='published'`, đủ 200 câu, Part 1 `is_correct`
-khớp bản đã balance, và `curl` một audio/ảnh URL trả **200**.
+**Kiểm sau khi áp** (đọc prod, schema `practice_test`): `practice_test.status='published'`,
+đủ 200 câu **qua bảng nối** `practice_test_question` (không có `question.test_id` nữa),
+Part 1 `is_correct` khớp bản đã balance, và `curl` một audio/ảnh URL trả **200**. Part 1
+mang `audio_asset_id`/`image_asset_id` trên `question`; **Parts 3/4/7 mang media trên
+`question_set`** (`audio_asset_id`, `passage_image_id`) nên `count(question.image_asset_id)`
+bằng 0 ở ba part đó là **đúng**, không phải mất ảnh.
 
 ## 6. Hai bug RESTRICT đã gặp — và đã vá
 
