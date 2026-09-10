@@ -1,9 +1,10 @@
 [QUESTION]
-voice: us_female_1
-How do I register my entry at the security desk?
 voice: au_male_1
-(A) Just swipe your card and sign the log at the desk.
-(B) Yes, the security desk is on the ground floor.
-(C) About ten minutes, depending on the line.
-Answer: A
+Who is in charge of approving leave requests here?
+voice: uk_female_1
+(A) They can be submitted through the company portal.
+(B) That would be Ms. Tran from the HR department.
+(C) The approval process usually takes about two days.
+Answer: B
+Explanation: Câu hỏi là "Who is in charge of approving leave requests here?", hỏi NGƯỜI phụ trách. | (A) "They can be submitted through the company portal." — trả lời cách thức gửi đơn, không nêu ai, sai loại câu hỏi. | (B) "That would be Ms. Tran from the HR department." — nêu đúng một người cụ thể, trả lời trực tiếp. | (C) "The approval process usually takes about two days." — dùng lại từ "approval" nhưng trả lời thời gian xử lý, không nêu người.
 Source: original

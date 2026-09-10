@@ -1,9 +1,10 @@
 [QUESTION]
-voice: ca_male_1
-Where is the parent-teacher meeting this semester?
 voice: uk_female_1
-(A) In the auditorium next Friday at 5 PM.
-(B) Yes, I have the schedule here.
-(C) About twenty parents, I think.
-Answer: A
+Do you need any help finishing the quarterly report?
+voice: ca_male_1
+(A) Yes, the quarterly figures were updated yesterday.
+(B) No, I should have it done by this afternoon.
+(C) At the main conference room, I think.
+Answer: B
+Explanation: Câu hỏi là "Do you need any help finishing the quarterly report?", câu hỏi YES/NO xác nhận có cần hỗ trợ thêm không. | (A) "Yes, the quarterly figures were updated yesterday." — dùng lại từ "quarterly" nhưng nói về số liệu đã cập nhật, không trả lời câu hỏi có cần giúp hay không. | (B) "No, I should have it done by this afternoon." — trả lời trực tiếp No, cho biết không cần hỗ trợ. | (C) "At the main conference room, I think." — trả lời cho câu hỏi Where, không phải câu hỏi Yes/No.
 Source: original

@@ -1,9 +1,10 @@
 [QUESTION]
-voice: uk_female_1
-Can I pay with my e-wallet, or do you accept only cash?
+voice: us_female_1
+Should we ship the new equipment by air or by sea?
 voice: ca_male_1
-(A) Yes, just scan the QR code here.
-(B) The wallet is on the counter.
-(C) I paid with a credit card.
-Answer: A
+(A) Yes, the cargo has already been inspected.
+(B) By air, since the deadline is quite tight.
+(C) The freight costs have gone up recently.
+Answer: B
+Explanation: Câu hỏi "Should we ship the new equipment by air or by sea?" yêu cầu lựa chọn giữa hai phương án vận chuyển đường hàng không hoặc đường biển. | (A) "Yes, the cargo has already been inspected." — dùng Yes cho câu hỏi Or, vốn không nhận Yes/No; bỏ "Yes" ra vẫn không chọn air hay sea, chỉ nói tình trạng hàng. | (B) "By air, since the deadline is quite tight." — trực tiếp chọn đường hàng không kèm lý do. | (C) "The freight costs have gone up recently." — đề cập chi phí vận chuyển, liên quan bối cảnh logistics nhưng không trả lời câu hỏi lựa chọn.
 Source: original

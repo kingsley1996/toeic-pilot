@@ -1,9 +1,10 @@
 [QUESTION]
-voice: uk_female_1
-Do I need to come back for a follow-up visit?
 voice: au_male_1
-(A) No, the pharmacy is on the first floor.
-(B) Yes, let's schedule a checkup next week.
-(C) Yes, I followed up with the lab results.
-Answer: B
+Could you email the updated quote to me this afternoon?
+voice: us_female_1
+(A) It's about three hundred dollars more than before.
+(B) I sent the original version last Monday.
+(C) Absolutely, I'll have it in your inbox by three.
+Answer: C
+Explanation: Câu hỏi là "Could you email the updated quote to me this afternoon?", một câu yêu cầu gửi báo giá cập nhật qua email. | (A) "It's about three hundred dollars more than before." — cung cấp thông tin giá cả liên quan đến báo giá nhưng không trả lời câu yêu cầu gửi email. | (B) "I sent the original version last Monday." — dùng lại "sent" giống "send" trong câu hỏi nhưng nói về hành động quá khứ, không phải đồng ý yêu cầu hiện tại. | (C) "Absolutely, I'll have it in your inbox by three." — đồng ý trực tiếp và cam kết thời gian gửi, trả lời đúng yêu cầu.
 Source: original

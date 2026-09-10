@@ -1,9 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-When do I need to provide my ID and income proof?
-voice: au_male_1
-(A) Yes, I have them right here.
-(B) On the counter, next to the forms.
-(C) As soon as you come to the counter.
-Answer: C
+The network maintenance has been moved to Saturday afternoon.
+voice: ca_male_1
+(A) I'll update the schedule and notify the team.
+(B) The network was repaired last week.
+(C) I usually take the afternoon shift.
+Answer: A
+Explanation: Câu trần thuật "The network maintenance has been moved to Saturday afternoon.", thông báo lịch bảo trì mạng đã được dời sang chiều thứ Bảy. | (A) "I'll update the schedule and notify the team." — đáp ứng trực tiếp bằng cách xác nhận sẽ cập nhật và thông báo cho mọi người. | (B) "The network was repaired last week." — lặp lại từ "network" nhưng nói về việc sửa chữa đã qua, không phản hồi đúng thông tin thay đổi lịch. | (C) "I usually take the afternoon shift." — lặp lại từ "afternoon" nhưng nói về ca làm cá nhân, không liên quan đến lịch bảo trì.
 Source: original

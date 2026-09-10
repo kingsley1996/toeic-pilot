@@ -1,9 +1,10 @@
 [QUESTION]
-voice: uk_female_1
-Why do you charge extra for urgent printing?
-voice: ca_male_1
-(A) Yes, we can finish it in thirty minutes.
-(B) To cover overtime costs for our staff.
-(C) The extra charge is twenty percent.
-Answer: B
+voice: us_female_1
+Have you signed up for the online seminar yet?
+voice: au_male_1
+(A) I think it's next Wednesday.
+(B) Yes, the online platform works fine.
+(C) I've been meaning to do that all week.
+Answer: C
+Explanation: Câu hỏi là "Have you signed up for the online seminar yet?", dạng CÓ/KHÔNG. | (A) "I think it's next Wednesday." — trả lời thời gian diễn ra hội thảo, tức trả lời câu hỏi WHEN khác. | (B) "Yes, the online platform works fine." — lặp lại từ "online" nhưng nói về nền tảng, không trả lời câu hỏi về đăng ký; bỏ "Yes" vẫn sai. | (C) "I've been meaning to do that all week." — gián tiếp ngụ ý chưa đăng ký, không trực tiếp trả lời Có hoặc Không.
 Source: original

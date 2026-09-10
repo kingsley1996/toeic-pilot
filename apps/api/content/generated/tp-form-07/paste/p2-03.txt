@@ -1,9 +1,10 @@
 [QUESTION]
-voice: us_female_1
-Where is the interview for the afternoon session?
 voice: au_male_1
-(A) In the conference room on the second floor.
-(B) At three o'clock this afternoon.
-(C) I'll interview the candidate later.
-Answer: A
+How do I check the backlog inventory on the system?
+voice: us_female_1
+(A) Yes, the inventory was checked this morning.
+(B) I haven't been trained on that system yet.
+(C) It's located in the main storage area.
+Answer: B
+Explanation: Câu hỏi là "How do I check the backlog inventory on the system?", hỏi CÁCH THỰC HIỆN. | (A) "Yes, the inventory was checked this morning." — mở đầu bằng Yes cho câu hỏi How, lặp từ "inventory" và "checked" nhưng không trả lời cách thực hiện; bỏ "Yes" vẫn sai. | (B) "I haven't been trained on that system yet." — nói rõ mình chưa biết cách, không cung cấp phương pháp nào, là đáp án gián tiếp hợp lý. | (C) "It's located in the main storage area." — trả lời NƠI CHỐN thay vì CÁCH, dùng lại ý hàng tồn đọng nhưng sai loại câu hỏi.
 Source: original

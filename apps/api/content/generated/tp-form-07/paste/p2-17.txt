@@ -1,9 +1,10 @@
 [QUESTION]
-voice: au_male_1
-Is breakfast served until nine in the morning?
+voice: ca_male_1
+When will the shipment be delivered to our warehouse?
 voice: us_female_1
-(A) I'll have the continental breakfast, please.
-(B) In the dining room, just past the lobby.
-(C) Yes, it is — breakfast is available until nine.
-Answer: C
+(A) By Thursday afternoon, the carrier confirmed.
+(B) To the distribution center on Oak Road.
+(C) We haven't received the shipping documents yet.
+Answer: A
+Explanation: Câu hỏi là "When will the shipment be delivered to our warehouse?", hỏi THỜI GIAN. | (A) "By Thursday afternoon, the carrier confirmed." — nêu đúng thời gian giao hàng, trả lời trực tiếp câu hỏi When. | (B) "To the distribution center on Oak Road." — trả lời địa điểm (WHERE) thay vì thời gian, dùng lại ý kho hàng nhưng không nói "khi nào". | (C) "We haven't received the shipping documents yet." — dùng lại từ "shipping" liên quan đến "shipment" trong câu hỏi, nhưng không đưa ra thời gian.
 Source: original

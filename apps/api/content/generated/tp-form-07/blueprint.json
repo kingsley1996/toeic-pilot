@@ -128,17 +128,17 @@
         {
           "id": "p2-01",
           "number": 7,
-          "question_type": "PART_2_TAG_QUESTION",
+          "question_type": "PART_2_HOW_QUESTION",
           "grammar": "",
-          "context": "Tại quầy lễ tân khách sạn: lễ tân hỏi khách có cần đặt báo thức không – khách đáp cần lúc 6 giờ sáng.",
+          "context": "Nhân viên mới hỏi đồng nghiệp cách gửi fax tài liệu cho khách hàng nước ngoài.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
-            "uk_female_1"
+            "uk_female_1",
+            "au_male_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -150,17 +150,17 @@
         {
           "id": "p2-02",
           "number": 8,
-          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "question_type": "PART_2_WHERE_QUESTION",
           "grammar": "",
-          "context": "Trong cuộc họp giao ban: trưởng phòng hỏi nhân viên đã cập nhật báo cáo doanh số chưa – nhân viên đáp đã gửi qua email.",
+          "context": "Giám đốc hỏi trợ lý địa điểm tổ chức hội nghị khách hàng tháng sau.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_female_1",
-            "au_male_1"
+            "ca_male_1",
+            "uk_female_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -172,17 +172,17 @@
         {
           "id": "p2-03",
           "number": 9,
-          "question_type": "PART_2_WHERE_QUESTION",
+          "question_type": "PART_2_HOW_QUESTION",
           "grammar": "",
-          "context": "Tại văn phòng tuyển dụng: ứng viên hỏi giờ phỏng vấn có thể dời sang chiều không – thư ký đáp được, 3 giờ chiều.",
+          "context": "Quản lý kho hỏi nhân viên cách kiểm tra tồn đọng hàng hóa trên hệ thống.",
           "voice": "",
-          "indirect": false,
+          "indirect": true,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_female_1",
-            "au_male_1"
+            "au_male_1",
+            "us_female_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -194,16 +194,16 @@
         {
           "id": "p2-04",
           "number": 10,
-          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "question_type": "PART_2_YES_NO_QUESTION",
           "grammar": "",
-          "context": "Trong cửa hàng thời trang: khách hỏi còn size M không – nhân viên đáp hết size M, chỉ còn size L.",
+          "context": "Đồng nghiệp hỏi bạn đã hoàn thành khóa đào tạo trực tuyến bắt buộc chưa.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
+            "ca_male_1",
             "us_female_1"
           ],
           "indirect_kind": 0,
@@ -216,17 +216,17 @@
         {
           "id": "p2-05",
           "number": 11,
-          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "question_type": "PART_2_TAG_QUESTION",
           "grammar": "",
-          "context": "Tại nhà hàng: khách hỏi món đặc sản ở đây là gì – phục vụ đáp gợi ý món cá hồi nướng.",
+          "context": "Trưởng nhóm hỏi phòng họp đã được đặt sẵn cho buổi chiều, phải không?",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_female_1",
-            "ca_male_1"
+            "uk_female_1",
+            "au_male_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -238,19 +238,19 @@
         {
           "id": "p2-06",
           "number": 12,
-          "question_type": "PART_2_STATEMENT",
+          "question_type": "PART_2_WHEN_QUESTION",
           "grammar": "",
-          "context": "Tại phòng giám đốc: giám đốc hỏi thư mời họp đã gửi cho đối tác chưa – trợ lý đáp đã gửi sáng nay.",
+          "context": "Thực tập sinh hỏi khi nào phiếu lương được phát trong tháng.",
           "voice": "",
-          "indirect": false,
+          "indirect": true,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "ca_male_1",
+            "au_male_1",
             "us_female_1"
           ],
-          "indirect_kind": 0,
+          "indirect_kind": 1,
           "hard": 0,
           "graphic": "",
           "grammars": [],
@@ -260,17 +260,17 @@
         {
           "id": "p2-07",
           "number": 13,
-          "question_type": "PART_2_HOW_QUESTION",
+          "question_type": "PART_2_CHOICE_QUESTION",
           "grammar": "",
-          "context": "Tại sân bay, quầy làm thủ tục: hành khách hỏi chuyến bay có bị hoãn không – nhân viên đáp chuyến bay khởi hành đúng giờ.",
+          "context": "Lễ tân hỏi khách muốn gặp bộ phận kinh doanh hay bộ phận kỹ thuật.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
-            "uk_female_1"
+            "us_female_1",
+            "au_male_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -282,9 +282,9 @@
         {
           "id": "p2-08",
           "number": 14,
-          "question_type": "PART_2_WHEN_QUESTION",
+          "question_type": "PART_2_STATEMENT",
           "grammar": "",
-          "context": "Tại ngân hàng: khách hàng hỏi cách mở tài khoản tiết kiệm – giao dịch viên đáp cần xuất trình CMND và chứng minh thu nhập.",
+          "context": "Trợ lý giám đốc nhắc nhở lịch bảo trì hệ thống mạng vào cuối tuần.",
           "voice": "",
           "indirect": false,
           "people": "",
@@ -292,7 +292,7 @@
           "topic": "",
           "voices": [
             "uk_female_1",
-            "au_male_1"
+            "ca_male_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -304,53 +304,9 @@
         {
           "id": "p2-09",
           "number": 15,
-          "question_type": "PART_2_CHOICE_QUESTION",
+          "question_type": "PART_2_HOW_QUESTION",
           "grammar": "",
-          "context": "Tại phòng họp: đồng nghiệp hỏi ai phụ trách bài thuyết trình – người đáp nói anh Tuấn phụ trách phần mở đầu.",
-          "voice": "",
-          "indirect": false,
-          "people": "",
-          "question_types": [],
-          "topic": "",
-          "voices": [
-            "au_male_1",
-            "uk_female_1"
-          ],
-          "indirect_kind": 0,
-          "hard": 0,
-          "graphic": "",
-          "grammars": [],
-          "passages": [],
-          "structure": ""
-        },
-        {
-          "id": "p2-10",
-          "number": 16,
-          "question_type": "PART_2_YES_NO_QUESTION",
-          "grammar": "",
-          "context": "Tại phòng khám: bệnh nhân hỏi bác sĩ có cần tái khám không – bác sĩ đáp hẹn tuần sau kiểm tra lại.",
-          "voice": "",
-          "indirect": false,
-          "people": "",
-          "question_types": [],
-          "topic": "",
-          "voices": [
-            "uk_female_1",
-            "au_male_1"
-          ],
-          "indirect_kind": 0,
-          "hard": 0,
-          "graphic": "",
-          "grammars": [],
-          "passages": [],
-          "structure": ""
-        },
-        {
-          "id": "p2-11",
-          "number": 17,
-          "question_type": "PART_2_YES_NO_QUESTION",
-          "grammar": "",
-          "context": "Tại quầy lễ tân công ty: khách hỏi gặp phòng nhân sự ở tầng mấy – lễ tân đáp tầng 5, phòng 502.",
+          "context": "Nhân viên hỏi cách in tài liệu hai mặt trên máy photocopy mới của văn phòng.",
           "voice": "",
           "indirect": false,
           "people": "",
@@ -368,11 +324,11 @@
           "structure": ""
         },
         {
-          "id": "p2-12",
-          "number": 18,
-          "question_type": "PART_2_STATEMENT",
+          "id": "p2-10",
+          "number": 16,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
           "grammar": "",
-          "context": "Tại trung tâm hội nghị: nhân viên hỏi ban tổ chức cần bao nhiêu bàn trưng bày – ban tổ chức đáp cần 12 bàn, mỗi bàn 2 ghế.",
+          "context": "Khách hàng đề nghị nhà cung cấp gửi bản báo giá cập nhật qua email.",
           "voice": "",
           "indirect": false,
           "people": "",
@@ -390,11 +346,99 @@
           "structure": ""
         },
         {
+          "id": "p2-11",
+          "number": 17,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "Trưởng phòng đề nghị cả nhóm dành thêm nửa giờ để duyệt lại hợp đồng.",
+          "voice": "",
+          "indirect": true,
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "uk_female_1",
+            "au_male_1"
+          ],
+          "indirect_kind": 2,
+          "hard": 0,
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-12",
+          "number": 18,
+          "question_type": "PART_2_WHERE_QUESTION",
+          "grammar": "",
+          "context": "Đối tác hỏi phòng trưng bày sản phẩm mẫu nằm ở tòa nhà nào.",
+          "voice": "",
+          "indirect": true,
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "ca_male_1",
+            "us_female_1"
+          ],
+          "indirect_kind": 3,
+          "hard": 0,
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
           "id": "p2-13",
           "number": 19,
-          "question_type": "PART_2_WHY_QUESTION",
+          "question_type": "PART_2_YES_NO_QUESTION",
           "grammar": "",
-          "context": "Tại văn phòng in ấn: khách hỏi có thể in gấp tài liệu trong 30 phút không – nhân viên đáp có, tính phí gấp thêm 20%.",
+          "context": "Đồng nghiệp hỏi bạn đã đăng ký tham dự hội thảo trực tuyến chưa.",
+          "voice": "",
+          "indirect": true,
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "us_female_1",
+            "au_male_1"
+          ],
+          "indirect_kind": 0,
+          "hard": 0,
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-14",
+          "number": 20,
+          "question_type": "PART_2_REQUEST_OR_SUGGESTION",
+          "grammar": "",
+          "context": "Nhân viên bán hàng đề nghị khách đặt hàng sớm để được giảm giá mùa lễ.",
+          "voice": "",
+          "indirect": false,
+          "people": "",
+          "question_types": [],
+          "topic": "",
+          "voices": [
+            "au_male_1",
+            "uk_female_1"
+          ],
+          "indirect_kind": 0,
+          "hard": 0,
+          "graphic": "",
+          "grammars": [],
+          "passages": [],
+          "structure": ""
+        },
+        {
+          "id": "p2-15",
+          "number": 21,
+          "question_type": "PART_2_YES_NO_QUESTION",
+          "grammar": "",
+          "context": "Quản lý hỏi nhân viên có cần hỗ trợ thêm để hoàn thành báo cáo không.",
           "voice": "",
           "indirect": false,
           "people": "",
@@ -412,62 +456,18 @@
           "structure": ""
         },
         {
-          "id": "p2-14",
-          "number": 20,
-          "question_type": "PART_2_WHO_QUESTION",
-          "grammar": "",
-          "context": "Tại công ty logistics: nhân viên hỏi lô hàng nhập kho khi nào đến – quản lý đáp chuyến xe tải đến lúc 2 giờ chiều.",
-          "voice": "",
-          "indirect": false,
-          "people": "",
-          "question_types": [],
-          "topic": "",
-          "voices": [
-            "ca_male_1",
-            "us_female_1"
-          ],
-          "indirect_kind": 0,
-          "hard": 0,
-          "graphic": "",
-          "grammars": [],
-          "passages": [],
-          "structure": ""
-        },
-        {
-          "id": "p2-15",
-          "number": 21,
-          "question_type": "PART_2_WHERE_QUESTION",
-          "grammar": "",
-          "context": "Tại văn phòng giáo vụ: phụ huynh hỏi lịch họp phụ huynh học kỳ này – thư ký đáp thứ Sáu tuần tới lúc 17 giờ.",
-          "voice": "",
-          "indirect": false,
-          "people": "",
-          "question_types": [],
-          "topic": "",
-          "voices": [
-            "ca_male_1",
-            "uk_female_1"
-          ],
-          "indirect_kind": 0,
-          "hard": 0,
-          "graphic": "",
-          "grammars": [],
-          "passages": [],
-          "structure": ""
-        },
-        {
           "id": "p2-16",
           "number": 22,
-          "question_type": "PART_2_HOW_QUESTION",
+          "question_type": "PART_2_WHEN_QUESTION",
           "grammar": "",
-          "context": "Tại cửa hàng điện máy: khách hỏi máy giặt này có được bảo hành 2 năm không – nhân viên đáp chỉ bảo hành 1 năm cho model này.",
+          "context": "Nhân viên hỏi lễ tân khi nào văn phòng chi nhánh mở cửa trở lại sau nghỉ lễ.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_female_1",
+            "us_female_1",
             "au_male_1"
           ],
           "indirect_kind": 0,
@@ -480,16 +480,16 @@
         {
           "id": "p2-17",
           "number": 23,
-          "question_type": "PART_2_YES_NO_QUESTION",
+          "question_type": "PART_2_WHEN_QUESTION",
           "grammar": "",
-          "context": "Tại khách sạn, nhà hàng sáng: khách hỏi bữa sáng phục vụ đến mấy giờ – nhân viên đáp phục vụ đến 9 giờ sáng.",
+          "context": "Khách hàng hỏi bao giờ lô hàng vận chuyển sẽ được giao đến kho.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
+            "ca_male_1",
             "us_female_1"
           ],
           "indirect_kind": 0,
@@ -502,17 +502,17 @@
         {
           "id": "p2-18",
           "number": 24,
-          "question_type": "PART_2_HOW_QUESTION",
+          "question_type": "PART_2_WHO_QUESTION",
           "grammar": "",
-          "context": "Tại tòa nhà văn phòng, quầy bảo vệ: khách hỏi đăng ký ra vào bằng cách nào – bảo vệ đáp quẹt thẻ và ký sổ tại quầy.",
+          "context": "Nhân viên mới hỏi ai là người phụ trách phê duyệt đơn xin nghỉ phép.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_female_1",
-            "au_male_1"
+            "au_male_1",
+            "uk_female_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -524,17 +524,17 @@
         {
           "id": "p2-19",
           "number": 25,
-          "question_type": "PART_2_WHERE_QUESTION",
+          "question_type": "PART_2_WHY_QUESTION",
           "grammar": "",
-          "context": "Tại công ty bảo hiểm: nhân viên hỏi khách muốn chọn gói bảo hiểm nào – khách đáp muốn tư vấn gói toàn diện.",
+          "context": "Trưởng phòng hỏi tại sao đơn đặt hàng của khách bị hủy đột ngột.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "us_female_1",
-            "ca_male_1"
+            "ca_male_1",
+            "uk_female_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -548,7 +548,7 @@
           "number": 26,
           "question_type": "PART_2_TAG_QUESTION",
           "grammar": "",
-          "context": "Tại phòng kỹ thuật: kỹ sư hỏi đồng nghiệp máy photocopy đã sửa xong chưa – đồng nghiệp đáp đã thay trục lăn và test OK.",
+          "context": "Kế toán trưởng nhắc báo cáo tài chính đã nộp đúng hạn rồi, đúng không?",
           "voice": "",
           "indirect": false,
           "people": "",
@@ -556,7 +556,7 @@
           "topic": "",
           "voices": [
             "au_male_1",
-            "us_female_1"
+            "uk_female_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -570,14 +570,14 @@
           "number": 27,
           "question_type": "PART_2_CHOICE_QUESTION",
           "grammar": "",
-          "context": "Tại siêu thị, quầy thanh toán: khách hỏi có chấp nhận thanh toán qua ví điện tử không – thu ngân đáp có, quét mã QR.",
+          "context": "Nhân viên logistics hỏi muốn vận chuyển lô hàng bằng đường hàng không hay đường biển.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_female_1",
+            "us_female_1",
             "ca_male_1"
           ],
           "indirect_kind": 0,
@@ -590,19 +590,19 @@
         {
           "id": "p2-22",
           "number": 28,
-          "question_type": "PART_2_WHY_QUESTION",
+          "question_type": "PART_2_WHO_QUESTION",
           "grammar": "",
-          "context": "Tại trung tâm chăm sóc khách hàng: khách gọi đến hỏi hợp đồng mạng đang bị lỗi, khi nào nhân viên đến kiểm tra – nhân viên đáp sẽ đến trong khung giờ chiều nay.",
+          "context": "Giám đốc hỏi trợ lý ai đã soạn bản hợp đồng gửi cho đối tác.",
           "voice": "",
-          "indirect": false,
+          "indirect": true,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
             "ca_male_1",
-            "us_female_1"
+            "uk_female_1"
           ],
-          "indirect_kind": 0,
+          "indirect_kind": 1,
           "hard": 0,
           "graphic": "",
           "grammars": [],
@@ -612,19 +612,19 @@
         {
           "id": "p2-23",
           "number": 29,
-          "question_type": "PART_2_WHEN_QUESTION",
+          "question_type": "PART_2_WHY_QUESTION",
           "grammar": "",
-          "context": "Tại phòng marketing: trưởng nhóm hỏi nhân viên đã chạy chiến dịch quảng cáo trên mạng xã hội chưa – nhân viên đáp đã lên lịch đăng lúc 10 giờ sáng mai.",
+          "context": "Quản lý sản xuất hỏi tại sao tiến độ lắp ráp bị chậm so với kế hoạch.",
           "voice": "",
-          "indirect": false,
+          "indirect": true,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
-            "uk_female_1"
+            "uk_female_1",
+            "ca_male_1"
           ],
-          "indirect_kind": 0,
+          "indirect_kind": 2,
           "hard": 0,
           "graphic": "",
           "grammars": [],
@@ -634,17 +634,17 @@
         {
           "id": "p2-24",
           "number": 30,
-          "question_type": "PART_2_WHEN_QUESTION",
+          "question_type": "PART_2_WHERE_QUESTION",
           "grammar": "",
-          "context": "Tại quán cà phê công ty: đồng nghiệp hỏi máy pha cà phê cần thêm hạt cà phê không – người đáp nói kiểm tra bình chứa thấy còn đầy.",
+          "context": "Nhân viên hỏi lễ tân để bộ tài liệu gửi cho khách quốc tế ở đâu.",
           "voice": "",
           "indirect": false,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "uk_female_1",
-            "au_male_1"
+            "us_female_1",
+            "ca_male_1"
           ],
           "indirect_kind": 0,
           "hard": 0,
@@ -656,19 +656,19 @@
         {
           "id": "p2-25",
           "number": 31,
-          "question_type": "PART_2_WHO_QUESTION",
+          "question_type": "PART_2_STATEMENT",
           "grammar": "",
-          "context": "Tại phòng họp đối tác: giám đốc công ty hỏi đối tác có muốn ký hợp đồng ngay hôm nay không – đối tác đáp muốn luật sư rà soát trước khi ký.",
+          "context": "Trợ lý nhắc rằng cuộc họp giao ban sẽ bắt đầu muộn mười phút hôm nay.",
           "voice": "",
-          "indirect": false,
+          "indirect": true,
           "people": "",
           "question_types": [],
           "topic": "",
           "voices": [
-            "au_male_1",
-            "uk_female_1"
+            "ca_male_1",
+            "us_female_1"
           ],
-          "indirect_kind": 0,
+          "indirect_kind": 3,
           "hard": 0,
           "graphic": "",
           "grammars": [],

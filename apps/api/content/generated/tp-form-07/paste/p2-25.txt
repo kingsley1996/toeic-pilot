@@ -1,9 +1,10 @@
 [QUESTION]
-voice: au_male_1
-Who wants to sign the contract today?
-voice: uk_female_1
-(A) Yes, I'd like to sign it today.
-(B) I do, but only if my lawyer reviews it first.
-(C) In the conference room, at noon.
-Answer: B
+voice: ca_male_1
+The morning briefing will start ten minutes late today.
+voice: us_female_1
+(A) About ten new employees joined last month.
+(B) She briefed the clients yesterday afternoon.
+(C) I thought it was rescheduled to Thursday.
+Answer: C
+Explanation: "The morning briefing will start ten minutes late today." là câu trần thuật thông báo cuộc họp giao ban sáng nay bắt đầu muộn mười phút. | (A) "About ten new employees joined last month." — lặp lại từ "ten" nhưng trả lời cho một câu hỏi khác về số lượng nhân viên. | (B) "She briefed the clients yesterday afternoon." — dùng lại từ "briefed" nhưng với nghĩa khác, không phản hồi lời nhắc. | (C) "I thought it was rescheduled to Thursday." — cho rằng cuộc họp đã bị dời sang ngày khác, khiến lời nhắc về việc trễ mười phút hôm nay trở nên vô nghĩa.
 Source: original

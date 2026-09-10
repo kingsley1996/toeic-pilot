@@ -1,9 +1,10 @@
 [QUESTION]
-voice: us_female_1
-Is the HR department on the fifth floor?
-voice: ca_male_1
-(A) Yes, it's a five-floor building.
-(B) It's on the second floor, next to the stairs.
-(C) Yes, it's room 502, just down the hall.
-Answer: C
+voice: uk_female_1
+Why don't we stay another thirty minutes to go over the contract?
+voice: au_male_1
+(A) Have the legal team finished reviewing it yet?
+(B) I already reviewed it this morning.
+(C) About thirty minutes should be enough.
+Answer: A
+Explanation: Câu nói là "Why don't we stay another thirty minutes to go over the contract?", đưa ra đề nghị ở lại thêm để duyệt hợp đồng. | (A) "Have the legal team finished reviewing it yet?" — đáp lại bằng câu hỏi của riêng mình, hợp lý vì nếu pháp lý đã duyệt rồi thì không cần ở lại thêm. | (B) "I already reviewed it this morning." — dùng lại từ "reviewed" tương ứng "go over", nhưng trả lời như thể bị hỏi "Anh đã xem hợp đồng chưa?", không đáp lời đề nghị. | (C) "About thirty minutes should be enough." — dùng lại từ "thirty minutes", nhưng trả lời cho câu hỏi "bao lâu thì đủ?" thay vì cho đề nghị có nên ở lại hay không.
 Source: original

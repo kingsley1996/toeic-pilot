@@ -1,9 +1,10 @@
 [QUESTION]
-voice: au_male_1
-I'd like to know how many display tables you'll need.
+voice: ca_male_1
+Which building is the product showroom located in?
 voice: us_female_1
-(A) Twelve tables, each with two chairs.
-(B) In the main hall, near the entrance.
-(C) Yes, we have plenty of chairs.
-Answer: A
+(A) The showroom tour starts at ten.
+(B) I believe it was shut down last month.
+(C) The building manager approved the proposal.
+Answer: B
+Explanation: Câu hỏi là "Which building is the product showroom located in?", hỏi NƠI CHỐN. | (A) "The showroom tour starts at ten." — dùng lại từ "showroom" nhưng trả lời thời gian, không phải nơi chốn. | (B) "I believe it was shut down last month." — đúng vì làm câu hỏi trở nên vô nghĩa: phòng trưng bày đã đóng cửa nên việc hỏi nằm ở tòa nhà nào không còn ý nghĩa. | (C) "The building manager approved the proposal." — dùng lại từ "building" với nghĩa khác (quản lý tòa nhà), không trả lời câu hỏi WHERE.
 Source: original

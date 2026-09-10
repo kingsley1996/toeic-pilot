@@ -1,9 +1,10 @@
 [QUESTION]
-voice: au_male_1
-Is Mr. Tuan or Ms. Linh handling the presentation?
-voice: uk_female_1
-(A) Mr. Tuan is in charge of the opening part.
-(B) Yes, I think that's correct.
-(C) The presentation is scheduled for tomorrow.
-Answer: A
+voice: us_female_1
+How do I set the new copier to print double-sided?
+voice: ca_male_1
+(A) It's on the second floor, next to the supply closet.
+(B) Go to settings and select the duplex option.
+(C) I believe it arrived just last week.
+Answer: B
+Explanation: Câu hỏi là "How do I set the new copier to print double-sided?", hỏi CÁCH THỰC HIỆN. | (A) "It's on the second floor, next to the supply closet." — trả lời NƠI CHỐN cho câu hỏi How, nghe thấy "copier" rồi nêu vị trí, sai loại câu hỏi. | (B) "Go to settings and select the duplex option." — nêu đúng cách thực hiện, hướng dẫn chọn chức năng in hai mặt. | (C) "I believe it arrived just last week." — trả lời THỜI GIAN cho câu hỏi How, gợi ý thời điểm giao máy photocopy mới, sai loại câu hỏi.
 Source: original

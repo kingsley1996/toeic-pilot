@@ -1,9 +1,10 @@
 [QUESTION]
-voice: ca_male_1
-I need to confirm that the meeting invitation was sent to the partner.
+voice: au_male_1
+When do we get our pay stubs each month?
 voice: us_female_1
-(A) Yes, I sent it this morning.
-(B) It's on your desk, next to the printer.
-(C) The scent of the flowers is lovely.
-Answer: A
+(A) Mine are always kept in the top drawer.
+(B) I'd check with the payroll department on that.
+(C) The new payroll system launches next quarter.
+Answer: B
+Explanation: Câu hỏi là "When do we get our pay stubs each month?", hỏi THỜI GIAN. | (A) "Mine are always kept in the top drawer." — trả lời NƠI CHỐN ("in the top drawer"), sai loại câu hỏi. | (B) "I'd check with the payroll department on that." — không nêu thời gian, chỉ sang bộ phận khác để hỏi, đúng kiểu gián tiếp. | (C) "The new payroll system launches next quarter." — dùng lại từ "payroll" liên quan đến "pay stubs" nhưng nói về hệ thống mới, không trả lời khi nào phát phiếu lương.
 Source: original

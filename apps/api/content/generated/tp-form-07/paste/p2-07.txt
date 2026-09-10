@@ -1,9 +1,10 @@
 [QUESTION]
+voice: us_female_1
+Would you like to meet with the sales team or the technical department?
 voice: au_male_1
-How will the delay affect my connecting flight?
-voice: uk_female_1
-(A) The delay is about two hours, I’m afraid.
-(B) Your flight will depart on time, so you’ll make the connection.
-(C) You can connect to the Wi-Fi at the gate.
-Answer: B
+(A) The technical report was just finished.
+(B) Yes, I called earlier today.
+(C) The sales team, please.
+Answer: C
+Explanation: Câu hỏi là "Would you like to meet with the sales team or the technical department?", hỏi LỰA CHỌN giữa hai bộ phận. | (A) "The technical report was just finished." — lặp từ "technical" nhưng dùng trong ngữ cảnh khác ("báo cáo kỹ thuật" thay vì "bộ phận kỹ thuật"). | (B) "Yes, I called earlier today." — dùng Yes cho câu hỏi or, đồng thời cung cấp thời gian thay vì nêu bộ phận cần gặp. | (C) "The sales team, please." — trực tiếp chọn một trong hai phương án được nêu.
 Source: original

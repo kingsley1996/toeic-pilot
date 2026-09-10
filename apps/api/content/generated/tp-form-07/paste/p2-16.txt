@@ -1,9 +1,10 @@
-[QUESTION]  
-voice: uk_female_1  
-How long is the warranty on this washing machine?  
-voice: au_male_1  
-(A) Yes, it has a two-year warranty.
-(B) Only one year for this model.
-(C) The warranty card is in the box.  
-Answer: B
+[QUESTION]
+voice: us_female_1
+When will the branch office reopen after the holiday?
+voice: au_male_1
+(A) The branch is on Oak Street, I think.
+(B) Yes, I checked with the holiday coordinator.
+(C) It's scheduled to reopen on January second.
+Answer: C
+Explanation: Câu hỏi là "When will the branch office reopen after the holiday?", hỏi THỜI ĐIỂM. | (C) "It's scheduled to reopen on January second." — nêu đúng một thời điểm cụ thể, trả lời trực tiếp cho câu hỏi When. | (A) "The branch is on Oak Street, I think." — trả lời NƠI CHỐN thay vì thời điểm, dùng lại từ "branch" trong ngữ cảnh khác. | (B) "Yes, I checked with the holiday coordinator." — mở đầu bằng Yes cho câu hỏi When không thể đáp Yes/No; dùng lại từ "holiday" nhưng không cung cấp thời điểm nào.
 Source: original

@@ -1,9 +1,10 @@
 [QUESTION]
-voice: uk_female_1
-When do we need to add more coffee beans to the machine?
-voice: au_male_1
-(A) I checked the container and it's still full.
-(B) Yes, I already did.
-(C) The beans are in the cabinet.
-Answer: A
+voice: us_female_1
+Where should I leave the documents for the international clients?
+voice: ca_male_1
+(A) I think Ms. Tran handled those documents.
+(B) Right behind the reception counter, please.
+(C) They're arriving early Thursday morning.
+Answer: B
+Explanation: Câu hỏi là "Where should I leave the documents for the international clients?", hỏi NƠI CHỐN. | (A) "I think Ms. Tran handled those documents." — dùng lại từ "documents" nhưng trả lời về AI (who) chứ không trả lời Ở ĐÂU. | (B) "Right behind the reception counter, please." — nêu đúng một nơi chốn, trả lời trực tiếp cho câu hỏi Where. | (C) "They're arriving early Thursday morning." — trả lời THỜI GIAN (when), phù hợp nếu người nghe chỉ bắt được "international clients" và nghĩ đến lịch trình của khách.
 Source: original

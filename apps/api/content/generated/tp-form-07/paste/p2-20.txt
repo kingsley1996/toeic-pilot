@@ -1,9 +1,10 @@
 [QUESTION]
 voice: au_male_1
-The copier is fixed now, isn't it?
-voice: us_female_1
-(A) Yes, the price is fixed.
-(B) It's in the supply room.
-(C) Yes, I replaced the roller and tested it.
-Answer: C
+You submitted the financial report on time, didn't you?
+voice: uk_female_1
+(A) Yes, I filed it before the deadline.
+(B) I think Mr. Thompson signed off on that.
+(C) We should discuss it at the next meeting.
+Answer: A
+Explanation: Câu hỏi là "You submitted the financial report on time, didn't you?", một câu hỏi đuôi yêu cầu xác nhận Yes/No. | (A) "Yes, I filed it before the deadline." — xác nhận trực tiếp bằng "Yes" và cho biết đã nộp trước hạn, đúng ý câu hỏi. | (B) "I think Mr. Thompson signed off on that." — trả lời về người ký duyệt (ai), dùng lại ngữ cảnh tài chính nhưng không xác nhận câu hỏi đuôi. | (C) "We should discuss it at the next meeting." — đề nghị hành động tương lai liên quan đến báo cáo, không trả lời Yes/No cho câu hỏi đuôi.
 Source: original

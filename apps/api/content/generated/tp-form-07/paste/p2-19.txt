@@ -1,9 +1,10 @@
 [QUESTION]
-voice: us_female_1
-Where would you like to discuss the comprehensive insurance plan?
 voice: ca_male_1
-(A) Yes, I'd like to see the options.
-(B) In the consultation room, please.
-(C) The commission on this plan is quite high.
-Answer: B
+Why was the customer's order cancelled so suddenly?
+voice: uk_female_1
+(A) Yes, I'll contact them right away.
+(B) They cancelled it at the warehouse yesterday.
+(C) The client's funding was unexpectedly frozen.
+Answer: C
+Explanation: Câu hỏi là "Why was the customer's order cancelled so suddenly?", hỏi LÝ DO. | (A) "Yes, I'll contact them right away." — đáp Yes cho câu hỏi Why, tức sai loại câu hỏi; bỏ "Yes" thì vẫn không nói được lý do. | (B) "They cancelled it at the warehouse yesterday." — dùng lại từ "cancelled" nhưng trả lời ai/ở đâu/khi nào, không giải thích tại sao. | (C) "The client's funding was unexpectedly frozen." — nêu đúng lý do, trả lời trực tiếp cho câu hỏi Why.
 Source: original

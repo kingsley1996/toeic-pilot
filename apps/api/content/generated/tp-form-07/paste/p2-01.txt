@@ -1,9 +1,10 @@
 [QUESTION]
-voice: au_male_1
-You need a wake-up call, don't you?
 voice: uk_female_1
-(A) At the front desk, please.
-(B) Yes, at 6 AM, please.
-(C) I'll call my office now.
-Answer: B
+How do I send a fax to an international client?
+voice: au_male_1
+(A) By the end of the day should be fine.
+(B) The fax number is listed on the contact sheet.
+(C) Just use the machine in the copy room.
+Answer: C
+Explanation: Câu hỏi là "How do I send a fax to an international client?", hỏi CÁCH THỰC HIỆN. | (A) "By the end of the day should be fine." — trả lời về thời gian, không phải cách thức, nghe "send" nên dễ nhầm sang câu hỏi When. | (B) "The fax number is listed on the contact sheet." — nói về số fax chứ không hướng dẫn cách gửi, trả lời cho câu hỏi khác. | (C) "Just use the machine in the copy room." — hướng dẫn đúng cách thực hiện, trả lời trực tiếp câu hỏi How.
 Source: original
