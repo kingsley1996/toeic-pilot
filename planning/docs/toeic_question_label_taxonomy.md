@@ -95,6 +95,7 @@
 - `GRAMMAR_VOICE` — Thể
 - `GRAMMAR_TO_INFINITIVE` — Động từ nguyên mẫu có to
 - `GRAMMAR_PREPOSITION` — Giới từ
+- `GRAMMAR_CONJUNCTION` — Liên từ
 
 ## Part 7
 

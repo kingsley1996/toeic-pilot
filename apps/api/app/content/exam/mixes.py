@@ -721,7 +721,7 @@ PART6_MIX: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...] = (
         "PART_6_MEMO",
         "thông báo nội bộ về việc chuyển sang hệ thống chấm công mới",
         (
-            ("PART_6_GRAMMAR", "GRAMMAR_TO_INFINITIVE"),
+            ("PART_6_GRAMMAR", "GRAMMAR_CONJUNCTION"),
             ("PART_6_VOCABULARY", ""),
             ("PART_6_SENTENCE_INSERTION", ""),
             ("PART_6_GRAMMAR", "GRAMMAR_TENSE"),

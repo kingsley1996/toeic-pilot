@@ -131,7 +131,7 @@ FACETS: tuple[Facet, ...] = (
             Label("GRAMMAR_ADVERB", "Trạng từ", (5,)),
             Label("GRAMMAR_PARTICIPLE", "Phân từ và cấu trúc phân từ", (5,)),
             Label("GRAMMAR_PREPOSITION", "Giới từ", (5, 6)),
-            Label("GRAMMAR_CONJUNCTION", "Liên từ", (5,)),
+            Label("GRAMMAR_CONJUNCTION", "Liên từ", (5, 6)),
             Label("GRAMMAR_RELATIVE_CLAUSE", "Mệnh đề quan hệ", (5,)),
             Label("GRAMMAR_COMPARISON", "Cấu trúc so sánh", (5,)),
             Label("GRAMMAR_TO_INFINITIVE", "Động từ nguyên mẫu có to", (6,)),
