@@ -7,8 +7,10 @@ Exactly one response is an appropriate reply.
 
 THE PROMPT LINE
 - One sentence, 6-14 words, natural spoken business English.
-- It is the form you are told to write: a WHERE question, a tag question, a
-  request, a plain statement, and so on.
+- It is the form you are told to write. The real section mixes them: a WH question
+  (where/when/who/why/what/how), a yes/no question, a how-variant (how much/many/
+  long/often/soon/far), a request or suggestion, a choice ("…or…?"), a tag question,
+  and a plain statement. Each wants a different reply — see BY QUESTION FORM.
 
 THE THREE RESPONSES
 - Short — usually 4-12 words, the length a person actually answers in.
@@ -57,8 +59,35 @@ because of the "Yes" — strip that and it names a person, which answers the
 question better than the correct response does. Write the option so that it is
 still wrong once the "Yes" or "No" is gone. Opening a wrong response with Yes or
 No is a real trap of the real test, but it is one trap among several: if most of
-your wrong responses start that way, a listener stops listening and just
-eliminates them.
+ your wrong responses start that way, a listener stops listening and just
+ eliminates them.
+
+BY QUESTION FORM
+The failures named above are for WH questions. But the section is not all WH
+questions, and the form you are told to write changes both what the ONE correct
+reply must be and what the two tempting-wrong replies look like. For the other
+forms:
+
+- **HOW — vary the variant.** Do not write "How do I…?" every time. The real test
+  spreads across how much (price/quantity), how many (count), how long (duration),
+  how often (frequency), how soon (time until), how far (distance). The two wrong
+  replies give a genuine number or measure in the WRONG dimension — a price for a
+  *how many*, a duration for a *how often* — so the listener has to catch which how
+  was asked, not just grab the number they hear.
+- **YES/NO — do not always answer with the words yes or no.** The correct reply
+  confirms or denies, and often does it without saying so
+  ("Did you reserve the room?" / "It's already booked."). Reserve literal "Yes,…" /
+  "No,…" for only some of them. A tempting-wrong reply answers it as if it were a WH
+  question ("At six o'clock.").
+- **REQUEST / SUGGESTION** ("Could you…?", "Why don't we…?", "Would you like…?") —
+  the correct reply accepts, declines, or commits to act ("Certainly, I'll send it
+  this afternoon."). A tempting-wrong reply treats it as a request for information
+  and answers a question nobody asked ("The contract was revised last week.").
+- **CHOICE** ("…or…?", "Which of these…?") — the correct reply picks one alternative.
+  A tempting-wrong reply answers both, neither, or a WH question.
+- **TAG and STATEMENT** ("…hasn't it?", "The briefing will start late.") — the correct
+  reply confirms, corrects, or reacts to what was said. It is not an answer to a
+  wh-word, and it need not echo the auxiliary.
 
 THE EXPLANATION
 Every question block ends with an `Explanation:` line, written in Vietnamese.
@@ -67,9 +96,10 @@ Every question block ends with an `Explanation:` line, written in Vietnamese.
 explanation is the ONLY written record of what the learner heard. Give the prompt
 back in English, word for word, before reasoning about it.
 
-**THE SHAPE IS FIXED.** One line, segments separated by ` | `:
+**THE SHAPE IS FIXED.** One line, segments separated by ` | `. Part 2 has three
+options, so there are exactly three lettered segments (A, B, C) and no (D):
 
-`Explanation: <evidence> | (A) <clause> | (B) <clause> | (C) <clause> | (D) <clause>`
+`Explanation: <evidence> | (A) <clause> | (B) <clause> | (C) <clause>`
 
 The first segment carries the evidence described above and **must not name any
 option letter**. After it comes exactly one segment per printed option, in
@@ -82,8 +112,8 @@ not travel, and the explanation then points at a different option than the one
 it is describing. That is also why the evidence segment carries no letter.
 
 A segment per option is what makes "the other options do not match" impossible
-to write: three wrong options need three segments, and a missing one is counted,
-not judged.
+to write: the two wrong options each need a named segment, and a missing one is
+counted, not judged.
 
 The correct option's segment says why it matches the evidence and nothing more —
 a trap named on the correct answer is a sentence that cannot be true. Each wrong
@@ -109,6 +139,21 @@ voice: VOICE_REPLY
 (C) About thirty copies, I think.
 Answer: A
 Explanation: Câu hỏi là "Where did you put the quarterly sales report?", hỏi NƠI CHỐN. | (A) "On your desk, next to the printer." — nêu đúng một nơi chốn. | (B) "Yes, I finished it last night." — đáp Yes cho một câu hỏi Where, tức sai loại câu hỏi. | (C) "About thirty copies, I think." — trả lời số lượng, dùng lại ý bản báo cáo nhưng không nói được "ở đâu".
+Source: original
+
+One block per item. Here is a second item, a non-WH form (a request) with the same
+shape — the correct reply accepts, and a wrong reply answers information nobody
+asked for:
+
+[QUESTION]
+voice: VOICE_ASK
+Could you have the revised contract ready by Friday?
+voice: VOICE_REPLY
+(A) Sure, I'll email it Thursday afternoon.
+(B) It was revised last week.
+(C) In the main conference room.
+Answer: A
+Explanation: Câu hỏi là "Could you have the revised contract ready by Friday?", đây là một YÊU CẦU chứ không phải câu hỏi thông tin. | (A) "Sure, I'll email it Thursday afternoon." — nhận lời và cam kết thời điểm, đúng cách phản hồi một yêu cầu. | (B) "It was revised last week." — dùng lại từ "revised" nhưng trả lời như hỏi về thời gian, bỏ qua đây là yêu cầu. | (C) "In the main conference room." — nêu nơi chốn cho một yêu cầu không hỏi ở đâu.
 Source: original
 
 There are THREE responses, not four — Part 2 has no (D). The two `voice:` lines
