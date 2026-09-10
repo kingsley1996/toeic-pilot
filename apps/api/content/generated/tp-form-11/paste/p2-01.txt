@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-When can you change my flight to a later date?
+When will the meeting room be available for our use?
 voice: us_female_1
-(A) At the airport ticket counter.
-(B) I'm still checking the airline's available options.
-(C) The gate number is on your ticket.
+(A) On the third floor, next to the elevator.
+(B) I'm not sure — let me check with the reservations team.
+(C) Yes, we have several meeting rooms available.
 Answer: B
-Explanation: Câu hỏi là "When can you change my flight to a later date?", hỏi THỜI GIAN. | (A) "At the airport ticket counter." — trả lời nơi chốn cho câu hỏi When. | (B) "I'm still checking the airline's available options." — nói chưa thể trả lời vì đang kiểm tra hãng bay, không nêu thời gian. | (C) "The gate number is on your ticket." — nói vị trí số cổng, không trả lời thời gian.
+Explanation: Câu hỏi là "When will the meeting room be available for our use?", hỏi THỜI ĐIỂM. | (A) "On the third floor, next to the elevator." — dùng lại ý "meeting room" nhưng nêu nơi chốn, trả lời cho câu hỏi Where thay vì When. | (B) "I'm not sure — let me check with the reservations team." — nói không biết và sẽ kiểm tra lại, đúng kiểu phản hồi gián tiếp cho câu hỏi When. | (C) "Yes, we have several meeting rooms available." — dùng lại từ "meeting rooms" và "available" nhưng đáp Yes cho câu hỏi When, sai loại câu hỏi.
 Source: original

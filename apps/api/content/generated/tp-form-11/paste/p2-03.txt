@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Would you prefer a rental car or a parking pass?
+Would you like to have lunch at the cafeteria or at the Italian restaurant downtown?
 voice: ca_male_1
-(A) A parking pass, please.
-(B) Yes, it is included.
-(C) At the rental counter.
+(A) Let's go to the Italian place today.
+(B) The cafeteria opens at eleven thirty.
+(C) About twenty minutes if we leave now.
 Answer: A
-Explanation: Câu hỏi là "Would you prefer a rental car or a parking pass?", hỏi LỰA CHỌN giữa hai phương án. | (A) "A parking pass, please." — chọn trực tiếp một phương án. | (B) "Yes, it is included." — Sai vì câu trả lời "Yes" không cho biết người nghe chọn phương án nào trong hai lựa chọn được đưa ra. | (C) "At the rental counter." — trả lời nơi chốn, không chọn phương án nào.
+Explanation: Câu hỏi là "Would you like to have lunch at the cafeteria or at the Italian restaurant downtown?", đây là câu hỏi LỰA CHỌN giữa hai địa điểm. | (A) "Let's go to the Italian place today." — chọn thẳng một trong hai phương án, đúng cách trả lời câu hỏi lựa chọn. | (B) "The cafeteria opens at eleven thirty." — dùng lại từ "cafeteria" nhưng đưa ra thông tin giờ mở cửa thay vì đưa ra lựa chọn. | (C) "About twenty minutes if we leave now." — trả lời thời gian di chuyển, tức trả lời cho câu hỏi "how long" không được đặt ra, chỉ vì gợi ý đi "downtown".
 Source: original

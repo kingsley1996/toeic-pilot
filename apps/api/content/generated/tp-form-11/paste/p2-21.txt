@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-Have we accepted the revised contract terms?
+Do I need a prescription to buy this cough medicine?
 voice: ca_male_1
-(A) Yes, we signed them yesterday.
-(B) No, they're in the office.
-(C) About thirty copies, I think.
+(A) No, you can buy it over the counter.
+(B) It costs about twelve dollars a bottle.
+(C) The prescription counter is at the back of the store.
 Answer: A
-Explanation: Câu hỏi là "Have we accepted the revised contract terms?", hỏi YES/NO về việc chấp nhận các điều khoản hợp đồng sửa đổi. | (A) "Yes, we signed them yesterday." — trả lời thẳng bằng Yes và xác nhận đã ký. | (B) "No, they're in the office." — nêu nơi chốn, tức trả lời cho câu hỏi Where, không đáp việc chấp nhận. | (C) "About thirty copies, I think." — nêu số lượng bản sao, tức trả lời cho câu hỏi How many, không đáp việc chấp nhận.
+Explanation: Câu hỏi là "Do I need a prescription to buy this cough medicine?", một câu hỏi YES/NO hỏi có cần toa thuốc để mua hay không. | (A) "No, you can buy it over the counter." — trả lời thẳng "không" và xác nhận thuốc bán không cần toa, đúng trọng tâm câu hỏi. | (B) "It costs about twelve dollars a bottle." — nêu giá tiền, nghe hấp dẫn vì lặp lại ý mua thuốc nhưng thực chất trả lời câu hỏi How much thay vì Yes/No. | (C) "The prescription counter is at the back of the store." — dùng lại từ "prescription" nhưng lại nêu nơi chốn, tức trả lời một câu hỏi Where.
 Source: original

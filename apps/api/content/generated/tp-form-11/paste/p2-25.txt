@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Why was the quarterly financial report delayed?
+Why was my online order delivered to the wrong address?
 voice: uk_female_1
-(A) It was delayed until Friday.
-(B) Because the Asia figures arrived late.
-(C) The report is on Rachel's desk.
+(A) It arrived at the distribution center this morning.
+(B) The shipping label may have been printed incorrectly.
+(C) You can change your address in your account settings.
 Answer: B
-Explanation: Câu hỏi "Why was the quarterly financial report delayed?" hỏi LÝ DO. | (A) "It was delayed until Friday." — trả lời thời gian, không phải lý do. | (B) "Because the Asia figures arrived late." — nêu đúng lý do. | (C) "The report is on Rachel's desk." — trả lời nơi chốn, dùng lại "report" nhưng không giải thích lý do.
+Explanation: Câu hỏi là "Why was my online order delivered to the wrong address?", hỏi LÝ DO vì sao đơn hàng trực tuyến bị giao nhầm địa chỉ. | (A) "It arrived at the distribution center this morning." — cho biết thời điểm hàng về kho, tức trả lời cho When chứ không phải Why, rất hấp dẫn với người chỉ bắt được từ "delivered". | (B) "The shipping label may have been printed incorrectly." — nêu thẳng nguyên nhân là nhãn vận chuyển có thể bị in sai, trả lời trực tiếp cho câu hỏi Why. | (C) "You can change your address in your account settings." — dùng lại từ "address" đã nghe trong câu hỏi nhưng đưa hướng dẫn thao tác, không hề giải thích được nguyên nhân giao nhầm.
 Source: original

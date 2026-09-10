@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-When should we move the boxes into the storage unit?
+When will my salary transfer be credited to my account?
 voice: ca_male_1
-(A) In the hallway by the front door.
-(B) Tomorrow morning, after the cleaners arrive.
-(C) About thirty boxes, I think.
+(A) At the customer service counter, I believe.
+(B) It usually shows up by 10 a.m. on payday.
+(C) The transfer form needs your account number.
 Answer: B
-Explanation: Câu hỏi là "When should we move the boxes into the storage unit?", hỏi THỜI ĐIỂM. | (A) "In the hallway by the front door." — trả lời nơi chốn, không phải khi nào. | (B) "Tomorrow morning, after the cleaners arrive." — nêu đúng thời điểm. | (C) "About thirty boxes, I think." — trả lời số lượng, dùng lại từ boxes nhưng không nói thời điểm.
+Explanation: Câu hỏi là "When will my salary transfer be credited to my account?", hỏi THỜI ĐIỂM tiền lương được vào tài khoản. | (A) "At the customer service counter, I believe." — trả lời nơi chốn cho một câu hỏi When, hợp với bối cảnh ngân hàng nên dễ đánh lừa người nghe lướt qua từ "When". | (B) "It usually shows up by 10 a.m. on payday." — nêu đúng thời điểm tiền hiển thị trong tài khoản. | (C) "The transfer form needs your account number." — dùng lại từ "transfer" và "account" nhưng nói về giấy tờ, không trả lời được "khi nào".
 Source: original

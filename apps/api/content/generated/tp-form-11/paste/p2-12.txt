@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Could you update the patient's record before the appointment?
+Would you mind closing the window? It's getting too cold in here.
 voice: us_female_1
-(A) Sure, I'll update it right away.
-(B) At three o'clock this afternoon.
-(C) The record is in the drawer.
+(A) Not at all, I'll close it right now.
+(B) Yes, it's quite cold in here.
+(C) The window faces the parking lot.
 Answer: A
-Explanation: Câu hỏi là "Could you update the patient's record before the appointment?", hỏi một yêu cầu cập nhật hồ sơ bệnh nhân trước lịch hẹn. | (A) "Sure, I'll update it right away." — trực tiếp đồng ý và nêu việc sẽ làm. | (B) "At three o'clock this afternoon." — trả lời thời điểm, không đáp lại yêu cầu. | (C) "The record is in the drawer." — trả lời nơi chốn, dùng lại record nhưng không đáp lại yêu cầu.
+Explanation: Câu hỏi là "Would you mind closing the window? It's getting too cold in here?", đây là một LỜI NHỜ đóng cửa sổ chứ không phải câu hỏi thông tin. | (A) "Not at all, I'll close it right now." — nhận lời một cách trực tiếp và cam kết hành động ngay, đúng cách phản hồi một lời nhờ. | (B) "Yes, it's quite cold in here." — dùng lại từ "cold" nhưng chỉ xác nhận nhiệt độ phòng, trả lời như thể được hỏi phòng có lạnh không mà không chấp nhận hay từ chối việc đóng cửa sổ. | (C) "The window faces the parking lot." — dùng lại từ "window" nhưng đưa ra thông tin không ai hỏi, bỏ qua hoàn toàn lời nhờ.
 Source: original

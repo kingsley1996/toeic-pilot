@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-How should we arrange for the food to be delivered to the party?
+How often should we back up the project files to the server?
 voice: au_male_1
-(A) Yes, the party is booked.
-(B) By courier before six o'clock.
-(C) The delivery driver is here.
+(A) For about three hours each time.
+(B) Every two weeks, according to IT guidelines.
+(C) Around fifty gigabytes of data.
 Answer: B
-Explanation: Câu hỏi là "How should we arrange for the food to be delivered to the party?", hỏi CÁCH THỨC. | (A) "Yes, the party is booked." — đáp Yes cho câu hỏi How, tức sai loại câu hỏi. | (B) "By courier before six o'clock." — nêu đúng cách sắp xếp giao đồ ăn. | (C) "The delivery driver is here." — dùng lại từ "delivery" nhưng chỉ nói tài xế đã đến, không trả lời cách sắp xếp.
+Explanation: Câu hỏi là "How often should we back up the project files to the server?", hỏi TẦN SUẤT (how often). | (A) "For about three hours each time." — đưa thời lượng (duration) thay vì tần suất, nghe có vẻ liên quan đến quy trình backup nhưng sai loại thông tin. | (B) "Every two weeks, according to IT guidelines." — nêu đúng tần suất, trả lời trực tiếp cho "how often". | (C) "Around fifty gigabytes of data." — đưa dung lượng (quantity) thay vì tần suất, dùng lại ngữ cảnh lưu file nhưng không trả lời "bao lâu một lần".
 Source: original

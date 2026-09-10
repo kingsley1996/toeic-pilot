@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Can you confirm whether the outage affected our water bill?
+Why don't we book the rooftop restaurant for the company anniversary party?
 voice: uk_female_1
-(A) Yes, the bill is due Friday.
-(B) The waiter brought the bill.
-(C) I'm not sure what happened yet.
+(A) I booked my flight to Singapore this morning.
+(B) At seven o'clock, right after the meeting.
+(C) I can't say until we know how many guests are coming.
 Answer: C
-Explanation: Câu hỏi là "Can you confirm whether the outage affected our water bill?", yêu cầu xác nhận sự cố có ảnh hưởng hóa đơn nước không. | (A) "Yes, the bill is due Friday." — đáp Yes và nêu thời hạn thanh toán, trả lời câu hỏi khác (khi nào), không xác nhận ảnh hưởng. | (B) "The waiter brought the bill." — dùng lại "bill" và âm gần giống "water"/"waiter", nhưng không trả lời yêu cầu xác nhận. | (C) "I'm not sure what happened yet." — nói rằng mình chưa biết nên chưa thể xác nhận, là đáp án gián tiếp phù hợp.
+Explanation: Câu hỏi là "Why don't we book the rooftop restaurant for the company anniversary party?", một lời GỢI Ý cùng làm gì chứ không phải câu hỏi thông tin. | (A) "I booked my flight to Singapore this morning." — lặp lại từ "book" nhưng theo nghĩa đặt vé máy bay, câu nghe hợp lý nhưng không phản hồi lời đề nghị. | (B) "At seven o'clock, right after the meeting." — đưa ra giờ giấc, trả lời như thể được hỏi "khi nào" chứ không đáp lại lời gợi ý. | (C) "I can't say until we know how many guests are coming." — nói chưa thể trả lời cho đến khi biết số lượng khách, phản hồi gián tiếp đúng với một lời đề nghị.
 Source: original

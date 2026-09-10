@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Where can I register for the beginner yoga class?
+Where should I return the borrowed laptop after the training session?
 voice: ca_male_1
-(A) At six o'clock tomorrow.
-(B) The register is by the door.
-(C) The class is already full.
+(A) Right after the closing session on Friday.
+(B) Yes, you can keep it for another week.
+(C) Oh, IT already picked it up this morning.
 Answer: C
-Explanation: Câu hỏi là "Where can I register for the beginner yoga class?", hỏi NƠI CHỐN để đăng ký lớp yoga. | (A) "At six o'clock tomorrow." — trả lời thời gian, không phải nơi chốn. | (B) "The register is by the door." — dùng lại "register" theo nghĩa máy thu ngân, không trả lời nơi đăng ký lớp. | (C) "The class is already full." — làm câu hỏi trở nên vô nghĩa vì không còn chỗ để đăng ký.
+Explanation: Câu hỏi là "Where should I return the borrowed laptop after the training session?", hỏi NƠI CHỐN để trả lại chiếc laptop đã mượn. Đáp án đúng GIÁN TIẾP làm câu hỏi trở nên vô nghĩa: phòng IT đã đến lấy máy từ sáng nay, nên không còn gì để trả lại ở đâu cả, và câu trả lời không nêu bất kỳ địa điểm nào. | (A) "Right after the closing session on Friday." — nêu thời điểm, tức trả lời một câu hỏi WHEN chứ không phải WHERE, đánh lừa bằng cách dùng lại ý "after the training session" trong câu hỏi. | (B) "Yes, you can keep it for another week." — đáp Yes cho một câu hỏi Where, xử câu hỏi như một lời xin phép mượn thêm thay vì hỏi địa điểm. | (C) "Oh, IT already picked it up this morning." — máy đã được lấy đi nên việc trả lại ở đâu không còn là vấn đề, đúng kiểu trả lời gián tiếp cho câu hỏi Where.
 Source: original

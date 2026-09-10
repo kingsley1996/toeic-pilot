@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-The insurance claim for compensation was denied.
+The server will be down for maintenance tonight from 10 to midnight.
 voice: au_male_1
-(A) At the claims office.
-(B) I'll prepare an appeal letter.
-(C) About two weeks ago.
+(A) The maintenance report is on your desk.
+(B) Okay, I'll save my files before ten.
+(C) In the server room, down the hall.
 Answer: B
-Explanation: Câu trần thuật "The insurance claim for compensation was denied." cần một phản hồi trực tiếp vào việc từ chối bồi thường. | (A) "At the claims office." — nêu nơi chốn, trả lời cho câu hỏi where không được hỏi. | (B) "I'll prepare an appeal letter." — nêu đúng hành động phản hồi phù hợp. | (C) "About two weeks ago." — nêu thời gian, trả lời cho câu hỏi when không được hỏi.
+Explanation: Câu trần thuật là "The server will be down for maintenance tonight from 10 to midnight.", một thông báo của kỹ thuật viên về việc máy chủ bảo trì tối nay từ 10 đến 12 giờ, nên phản hồi phù hợp là xác nhận đã nghe và ứng phó với thông tin đó. | (A) "The maintenance report is on your desk." — mượn từ "maintenance" nhưng nói về một bản báo cáo trên bàn, câu nghe hợp lý nhưng không phản hồi thông báo. | (B) "Okay, I'll save my files before ten." — xác nhận đã hiểu thông báo và cho biết sẽ lưu việc trước giờ bảo trì, phản ứng trực tiếp với nội dung được nói. | (C) "In the server room, down the hall." — mượn từ "server" rồi nêu nơi chốn, trả lời như thể câu hỏi là Where trong khi đây chỉ là một thông báo, không hỏi ở đâu.
 Source: original

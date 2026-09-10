@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Who approved the building permit for phase two?
+Who has been assigned to lead the quality assurance team?
 voice: uk_female_1
-(A) At the main office, I think.
-(B) Do you mean the original or revised permit?
-(C) The approval came through yesterday.
+(A) In the meeting room down the hall.
+(B) Hasn't the director announced it yet?
+(C) The team usually meets on Friday mornings.
 Answer: B
-Explanation: Câu hỏi là "Who approved the building permit for phase two?", hỏi NGƯỜI. | (A) "At the main office, I think." — nêu một địa điểm, trả lời cho câu hỏi WHERE. | (B) "Do you mean the original or revised permit?" — đáp lại bằng một câu hỏi để làm rõ loại giấy phép. | (C) "The approval came through yesterday." — dùng lại từ approval nhưng trả lời thời gian, không nêu người.
+Explanation: Câu hỏi là "Who has been assigned to lead the quality assurance team?", hỏi NGƯỜI được giao dẫn dắt nhóm đảm bảo chất lượng, và đáp án đúng là GIÁN TIẾP — không được nêu tên người. | (A) "In the meeting room down the hall." — nêu nơi chốn, tức trả lời một câu hỏi Where chứ không phải Who. | (B) "Hasn't the director announced it yet?" — đáp lại bằng một câu hỏi của chính mình, hàm ý thông báo chưa có nên chưa ai biết, đúng kiểu phản hồi gián tiếp mà không nêu ai. | (C) "The team usually meets on Friday mornings." — dùng lại từ "team" nghe được trong câu hỏi nhưng trả lời về thời gian họp, không cho biết ai được giao nhiệm vụ.
 Source: original

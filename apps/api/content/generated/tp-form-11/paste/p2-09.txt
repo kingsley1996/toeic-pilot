@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Can I borrow these books with my membership card?
+Can you bind these documents with a hard cover by this afternoon?
 voice: us_female_1
-(A) Have you checked the borrowing limit?
-(B) Yes, the books are on the shelf.
-(C) The membership fee is due today.
+(A) How many pages need binding?
+(B) Around four o'clock, I'd say.
+(C) The hard covers are three dollars each.
 Answer: A
-Explanation: Câu hỏi là "Can I borrow these books with my membership card?", hỏi YES/NO về việc mượn sách bằng thẻ thành viên. | (A) "Have you checked the borrowing limit?" — đáp gián tiếp bằng một câu hỏi ngược lại, không nêu trực tiếp Yes/No. | (B) "Yes, the books are on the shelf." — đáp Yes nhưng nếu bỏ Yes thì vẫn chỉ nêu vị trí của sách, trả lời câu hỏi khác. | (C) "The membership fee is due today." — dùng lại membership nhưng nói về phí đến hạn, không trả lời việc có mượn được không.
+Explanation: Câu hỏi là "Can you bind these documents with a hard cover by this afternoon?", một câu hỏi YES/NO hỏi liệu người trả lời có thể đóng bìa cứng kịp chiều nay hay không. | (A) "How many pages need binding?" — hỏi ngược lại số trang để biết độ dày trước khi hẹn, không xác nhận cũng không phủ định, đúng kiểu phản hồi gián tiếp bằng một câu hỏi của riêng mình. | (B) "Around four o'clock, I'd say." — nêu thời gian, trả lời như cho một câu hỏi WHEN trong khi câu hỏi thật là yes/no về khả năng làm kịp. | (C) "The hard covers are three dollars each." — lấy lại từ "hard cover" từ câu hỏi nhưng trả lời về giá tiền, một câu hỏi không ai đặt ra.
 Source: original

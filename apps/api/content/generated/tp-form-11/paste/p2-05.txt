@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-Would you like the fish menu or the steak menu?
+Shall I book the sedan or the SUV for your business trip?
 voice: au_male_1
-(A) The menu is printed.
-(B) Yes, I'll order it.
-(C) The fish menu, please.
+(A) Yes, the reservations are confirmed.
+(B) I'll be traveling for about three days.
+(C) The SUV would be more comfortable, please.
 Answer: C
-Explanation: Câu hỏi là "Would you like the fish menu or the steak menu?", hỏi lựa chọn giữa hai thực đơn. | (A) "The menu is printed." — lặp lại từ "menu" nhưng không trả lời chọn thực đơn nào. | (B) "Yes, I'll order it." — đáp Yes cho câu hỏi lựa chọn, tức sai loại câu hỏi. | (C) "The fish menu, please." — chọn thẳng một trong hai lựa chọn.
+Explanation: Câu hỏi là "Shall I book the sedan or the SUV for your business trip?", đây là câu hỏi LỰA CHỌN yêu cầu người nghe chọn một trong hai phương án sedan hoặc SUV. | (A) "Yes, the reservations are confirmed." — đáp Yes cho câu hỏi lựa chọn, sai vì không chỉ ra phương án nào được chọn. | (B) "I'll be traveling for about three days." — trả lời về thời gian chuyến đi, dùng lại ý "business trip" nhưng không chọn sedan hay SUV, tức trả lời cho câu hỏi How long. | (C) "The SUV would be more comfortable, please." — chọn đúng SUV, phản hồi trực tiếp vào lựa chọn được hỏi.
 Source: original

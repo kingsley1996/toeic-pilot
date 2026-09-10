@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-How should we arrange the trip for the meeting?
+How much do you charge to alter a wedding dress?
 voice: uk_female_1
-(A) Next Tuesday afternoon.
-(B) Rachel will handle it.
-(C) The meeting was cancelled.
+(A) Usually two to three business days.
+(B) It'll need two fittings, I'd say.
+(C) I'm afraid we no longer alter wedding dresses.
 Answer: C
-Explanation: Câu hỏi là "How should we arrange the trip for the meeting?", hỏi CÁCH THỨC. | (A) "Next Tuesday afternoon." — trả lời thời gian, tức đáp cho câu hỏi When. | (B) "Rachel will handle it." — trả lời người phụ trách, tức đáp cho câu hỏi Who. | (C) "The meeting was cancelled." — làm câu hỏi trở nên vô nghĩa vì không còn cuộc họp để sắp xếp chuyến đi.
+Explanation: Câu hỏi là "How much do you charge to alter a wedding dress?", hỏi về GIÁ TIỀN — biến thể How much của câu hỏi HOW. | (A) "Usually two to three business days." — nêu thời gian hoàn thành, tức trả lời cho How long chứ không phải cho giá. | (B) "It'll need two fittings, I'd say." — đưa một con số đếm được là số lần thử đo, trả lời cho How many chứ không phải tiền. | (C) "I'm afraid we no longer alter wedding dresses." — không nêu bất kỳ khoản tiền nào mà làm câu hỏi trở nên vô nghĩa, vì tiệm không nhận váy cưới nữa thì không còn mức phí để hỏi.
 Source: original

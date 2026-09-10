@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-You're posting the job opening, aren't you?
+You've already reviewed the contract, haven't you?
 voice: ca_male_1
-(A) At the recruitment fair, I think.
-(B) Yes, it's going live this afternoon.
-(C) No, the candidates are already hired.
+(A) In the conference room down the hall.
+(B) Yes, I went through it this morning.
+(C) I'll contact the vendor this afternoon.
 Answer: B
-Explanation: Câu hỏi là "You're posting the job opening, aren't you?", là câu hỏi đuôi xác nhận việc đăng tin tuyển dụng. | (A) "At the recruitment fair, I think." — trả lời cho câu hỏi ở đâu, không xác nhận việc đăng tin. | (B) "Yes, it's going live this afternoon." — trả lời trực tiếp bằng Yes và xác nhận việc đăng tin. | (C) "No, the candidates are already hired." — nói về ứng viên đã được tuyển, không đáp lại việc đăng tin.
+Explanation: Câu hỏi là "You've already reviewed the contract, haven't you?", một CÂU HỎI ĐUỘI cần được xác nhận hoặc phủ nhận. | (A) "In the conference room down the hall." — nêu nơi chốn, trả lời như một câu hỏi Where chứ không phản hồi gì vào câu hỏi đuôi. | (B) "Yes, I went through it this morning." — đáp Yes và xác nhận thẳng rằng đã xem hợp đồng, đúng thứ câu hỏi đuôi cần. | (C) "I'll contact the vendor this afternoon." — dùng từ "contact" nghe gần giống "contract" nhưng nói về việc liên hệ nhà cung cấp, không xác nhận việc đã xem hợp đồng.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-Will the weather report be included in tonight's radio news?
+Do you have this technical manual in a newer edition?
 voice: au_male_1
-(A) About thirty minutes, I think.
-(B) It's on the second floor.
-(C) Yes, it starts right after the headlines.
+(A) The new edition costs forty-nine dollars.
+(B) It's on the shelf by the front window.
+(C) Yes, the third edition just came in last week.
 Answer: C
-Explanation: Câu hỏi là "Will the weather report be included in tonight's radio news?", hỏi CÓ HAY KHÔNG về việc bản tin thời tiết có được đưa vào tin tức radio tối nay. | (A) "About thirty minutes, I think." — nêu thời lượng, trả lời cho How long, không phải yes/no. | (B) "It's on the second floor." — nêu nơi chốn, trả lời cho câu hỏi Where, không phải yes/no. | (C) "Yes, it starts right after the headlines." — trả lời thẳng bằng Yes và xác nhận có đưa tin.
+Explanation: Câu hỏi là "Do you have this technical manual in a newer edition?", một câu hỏi YES/NO hỏi xem cửa hàng có phiên bản mới hơn của cuốn cẩm nang kỹ thuật này hay không. | (A) "The new edition costs forty-nine dollars." — dùng lại từ "edition" nhưng trả lời giá tiền, một câu hỏi mà nobody đã hỏi. | (B) "It's on the shelf by the front window." — nêu nơi đặt sách, tức trả lời một câu Where thay vì xác nhận có hay không. | (C) "Yes, the third edition just came in last week." — xác nhận thẳng là có, bản thứ ba vừa về tuần trước, đúng cách trả lời một câu hỏi có/không.
 Source: original

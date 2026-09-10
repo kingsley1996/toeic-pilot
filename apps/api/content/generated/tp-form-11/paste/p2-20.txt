@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-The seedlings are ready for the farmers market, aren't they?
+The quarterly report has been submitted, hasn't it?
 voice: uk_female_1
-(A) At the farmers market, I think.
-(B) No, the market closes at noon.
-(C) Yes, they're packed and labeled.
+(A) The report took nearly two weeks to finish.
+(B) In the director's office, I believe.
+(C) Yes, I turned it in to the director this morning.
 Answer: C
-Explanation: Câu hỏi đuôi "The seedlings are ready for the farmers market, aren't they?" hỏi xác nhận việc cây giống đã sẵn sàng cho chợ nông sản. | (A) "At the farmers market, I think." — trả lời nơi chốn, dùng lại "farmers market" nhưng không xác nhận. | (B) "No, the market closes at noon." — dùng lại "market" nhưng trả lời thời gian đóng cửa, không xác nhận cây giống đã sẵn sàng. | (C) "Yes, they're packed and labeled." — xác nhận trực tiếp và cho biết chúng đã được đóng gói, dán nhãn.
+Explanation: Câu hỏi là "The quarterly report has been submitted, hasn't it?", một câu hỏi đuôi xác nhận xem báo cáo quý đã được nộp hay chưa. | (A) "The report took nearly two weeks to finish." — nói về thời gian hoàn thành bản báo cáo, nghe có vẻ liên quan nhưng không xác nhận được việc đã nộp hay chưa. | (B) "In the director's office, I believe." — mượn từ "director" nhưng trả lời nơi chốn, tức sai loại câu hỏi vì câu đuôi không hỏi ở đâu. | (C) "Yes, I turned it in to the director this morning." — xác nhận thẳng việc đã nộp báo cáo, đúng cách phản hồi một câu hỏi đuôi.
 Source: original

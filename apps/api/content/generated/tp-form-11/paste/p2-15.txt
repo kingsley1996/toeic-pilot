@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Why was my account flagged during the loan review?
+Why was the client presentation moved from Monday to Wednesday?
 voice: us_female_1
-(A) Ask the credit officer.
-(B) Yes, the account was flagged.
-(C) At the downtown branch.
+(A) You'd have to ask the client's assistant.
+(B) At ten o'clock on Wednesday.
+(C) Yes, the updated agenda was emailed this morning.
 Answer: A
-Explanation: Câu hỏi là "Why was my account flagged during the loan review?", hỏi LÝ DO. | (A) "Ask the credit officer." — chỉ sang người khác để hỏi lý do, là đáp án gián tiếp phù hợp. | (B) "Yes, the account was flagged." — đáp Yes cho câu hỏi Why, và nếu bỏ Yes thì chỉ lặp lại tình trạng bị gắn cờ, không nêu lý do. | (C) "At the downtown branch." — trả lời nơi chốn, tức sai loại câu hỏi.
+Explanation: Câu hỏi là "Why was the client presentation moved from Monday to Wednesday?", hỏi LÝ DO bài thuyết trình bị dời lịch. | (A) "You'd have to ask the client's assistant." — không nêu lý do mà chỉ sang người khác là trợ lý của khách hàng, cách đáp gián tiếp đúng cho câu hỏi Why. | (B) "At ten o'clock on Wednesday." — trả lời giờ giấc, tức đáp một câu WHEN thay vì WHY, và dùng lại từ "Wednesday" nghe được trong câu hỏi. | (C) "Yes, the updated agenda was emailed this morning." — mở đầu bằng Yes cho câu hỏi Why không thể trả lời có/không; kể cả bỏ từ "Yes" đi, câu này vẫn chỉ nói về việc gửi chương trình nghị sự chứ không phản hồi lý do dời lịch.
 Source: original

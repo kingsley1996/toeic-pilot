@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-How will the customer's order be delivered?
+How soon will the technician fix the email problem on my computer?
 voice: au_male_1
-(A) By express courier from our warehouse.
-(B) It arrives on Friday morning.
-(C) The order was placed online.
+(A) In about twenty minutes.
+(B) Once a week.
+(C) On Monday morning.
 Answer: A
-Explanation: Câu hỏi là "How will the customer's order be delivered?", hỏi CÁCH THỨC giao hàng. | (A) "By express courier from our warehouse." — nêu đúng cách thức giao hàng. | (B) "It arrives on Friday morning." — trả lời thời gian, tức hỏi khi nào, không phải cách thức. | (C) "The order was placed online." — dùng lại từ "order" nhưng nói cách đặt hàng, không trả lời cách giao hàng.
+Explanation: Câu hỏi là "How soon will the technician fix the email problem on my computer?", hỏi BAO LÂU NỮA — khoảng thời gian còn lại tới khi việc xảy ra. | (A) "In about twenty minutes." — cho đúng một khoảng thời gian tính từ bây giờ đến khi kỹ thuật viên sửa xong. | (B) "Once a week." — đưa tần suất, trả lời cho "how often" chứ không phải "how soon". | (C) "On Monday morning." — đưa một mốc thời gian cụ thể, trả lời cho "when" nhưng không cho biết còn bao lâu nữa.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: au_male_1
-Where can I buy tickets for the museum exhibition?
+Where is the boarding gate for the flight to Tokyo?
 voice: us_female_1
-(A) The exhibition closes at six.
-(B) At the ticket counter near the entrance.
-(C) I need two student tickets.
+(A) It departs at three fifteen.
+(B) Gate 22B, on the second level.
+(C) Boarding starts in about twenty minutes.
 Answer: B
-Explanation: Câu hỏi là "Where can I buy tickets for the museum exhibition?", hỏi nơi chốn. | (A) "The exhibition closes at six." — nói thời gian đóng cửa, tức trả lời cho câu hỏi When. | (B) "At the ticket counter near the entrance." — nêu đúng một nơi để mua vé. | (C) "I need two student tickets." — nhắc lại từ tickets nhưng chỉ nêu nhu cầu mua vé, không trả lời được "ở đâu".
+Explanation: Câu hỏi là "Where is the boarding gate for the flight to Tokyo?", hỏi NƠI CHỐN của cổng lên máy bay. | (A) "It departs at three fifteen." — trả lời thời gian khởi hành, tức đáp một câu hỏi When thay vì Where, hấp dẫn vì người nghe bắt được từ "flight". | (B) "Gate 22B, on the second level." — nêu đúng số cổng và vị trí, trả lời thẳng vào chỗ được hỏi. | (C) "Boarding starts in about twenty minutes." — dùng lại từ "boarding" nhưng nói về thời điểm bắt đầu lên máy bay, không nói được cổng nằm ở đâu.
 Source: original

@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-When does the exhibition booth open for visitors?
+When does the early-bird registration for the conference close?
 voice: au_male_1
-(A) Tomorrow at nine o'clock.
-(B) The exhibition is in the main hall.
-(C) About fifty visitors are expected.
+(A) You have until the end of this month.
+(B) At the convention center box office.
+(C) The conference lasts three days this year.
 Answer: A
-Explanation: Câu hỏi là "When does the exhibition booth open for visitors?", hỏi THỜI GIAN. | (A) "Tomorrow at nine o'clock." — nêu đúng thời gian mở cửa. | (B) "The exhibition is in the main hall." — trả lời nơi chốn, không phải thời gian. | (C) "About fifty visitors are expected." — trả lời số lượng khách, không phải thời gian.
+Explanation: Câu hỏi là "When does the early-bird registration for the conference close?", hỏi THỜI ĐIỂM HẠN CHÓT của việc đăng ký sớm. | (A) "You have until the end of this month." — nêu đúng mốc thời gian kết thúc mà câu hỏi yêu cầu. | (B) "At the convention center box office." — người nghe bắt được từ "registration/conference" nhưng đáp lại bằng NƠI CHỐN, trả lời Where thay vì When. | (C) "The conference lasts three days this year." — dùng lại từ "conference" nhưng trả lời THỜI LƯỢNG (how long) thay vì thời điểm chót.
 Source: original

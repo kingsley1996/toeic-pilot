@@ -1,10 +1,10 @@
 [QUESTION]
 voice: us_female_1
-Would you like me to check the oil now?
+Would you mind sending the meeting notes to everyone on the team?
 voice: ca_male_1
-(A) About five quarts, I think.
-(B) It's under the hood.
-(C) Yes, please check it now.
+(A) They're all in the marketing department.
+(B) The notes were taken by Sarah, I believe.
+(C) Not at all — I'll have them out within the hour.
 Answer: C
-Explanation: Câu hỏi là "Would you like me to check the oil now?", hỏi đề nghị kiểm tra dầu. | (A) "About five quarts, I think." — trả lời số lượng dầu, không đáp đề nghị. | (B) "It's under the hood." — trả lời nơi chốn của oil, không đáp đề nghị. | (C) "Yes, please check it now." — đồng ý trực tiếp với đề nghị.
+Explanation: Câu hỏi là "Would you mind sending the meeting notes to everyone on the team?", đây là một YÊU CẦU nhờ gửi tài liệu, không phải câu hỏi thông tin. | (A) "They're all in the marketing department." — nêu nơi chốn cho một yêu cầu không hề hỏi WHERE. | (B) "The notes were taken by Sarah, I believe." — dùng lại từ "notes" nhưng trả lời như câu hỏi WHO, tức ai đã ghi biên bản, bỏ qua đây là yêu cầu gửi đi. | (C) "Not at all — I'll have them out within the hour." — nhận lời yêu cầu và cam kết thực hiện, đúng cách phản hồi trực tiếp.
 Source: original

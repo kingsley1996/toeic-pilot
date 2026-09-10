@@ -1,10 +1,10 @@
 [QUESTION]
 voice: uk_female_1
-The room key doesn't work for the gym.
+The shipment of office supplies has just arrived at the loading dock.
 voice: ca_male_1
-(A) Yes, I checked it.
-(B) It's on the second floor.
-(C) Ask the front desk.
+(A) The loading dock will be closed after five o'clock.
+(B) Yes, they should be delivered by Thursday.
+(C) You should let the purchasing coordinator know.
 Answer: C
-Explanation: Câu trần thuật là "The room key doesn't work for the gym.", ngụ ý cần được xử lý. | (A) "Yes, I checked it." — đáp Yes/No cho câu trần thuật; bỏ Yes vẫn chỉ trả lời câu hỏi Did you check it?. | (B) "It's on the second floor." — trả lời câu hỏi ở đâu, không đáp lại câu trần thuật. | (C) "Ask the front desk." — chỉ sang người khác có thể giúp, không tự cung cấp giải pháp.
+Explanation: Câu trần thuật "The shipment of office supplies has just arrived at the loading dock." thông báo lô hàng văn phòng phẩm vừa đến khu bốc xếp. | (C) "You should let the purchasing coordinator know." — phản hồi gián tiếp bằng cách chỉ sang người khác cần xử lý, cách phản hồi tự nhiên cho một lời thông báo. | (A) "The loading dock will be closed after five o'clock." — dùng lại từ "loading dock" nhưng đưa ra thông tin giờ hoạt động, không phản hồi đúng nội dung thông báo. | (B) "Yes, they should be delivered by Thursday." — dùng từ "delivered" liên quan đến lô hàng nhưng mâu thuẫn vì hàng đã đến rồi, và đáp Yes cho câu trần thuật không phải câu hỏi Yes/No.
 Source: original

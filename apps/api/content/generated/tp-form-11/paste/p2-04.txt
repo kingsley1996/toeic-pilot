@@ -1,10 +1,10 @@
 [QUESTION]
 voice: ca_male_1
-Where does the airport bus leave from?
+Where did Mr. Tanaka leave the supplier contracts?
 voice: us_female_1
-(A) Yes, it leaves every ten minutes.
-(B) From Gate 4, near the metro station.
-(C) At 3:15, according to the schedule.
+(A) He signed them yesterday afternoon.
+(B) They're in the top drawer of his filing cabinet.
+(C) About five suppliers are listed.
 Answer: B
-Explanation: Câu hỏi là "Where does the airport bus leave from?", hỏi NƠI CHỐN. | (A) "Yes, it leaves every ten minutes." — đáp Yes cho một câu hỏi Where, tức sai loại câu hỏi. | (B) "From Gate 4, near the metro station." — nêu đúng một nơi chốn. | (C) "At 3:15, according to the schedule." — trả lời thời gian, không nói được "ở đâu".
+Explanation: Câu hỏi là "Where did Mr. Tanaka leave the supplier contracts?", hỏi NƠI CHỐN. | (A) "He signed them yesterday afternoon." — trả lời thời gian (WHEN) cho câu hỏi Where, dùng lại từ "contracts" nhưng sai loại câu hỏi. | (B) "They're in the top drawer of his filing cabinet." — nêu đúng một nơi chốn, trả lời trực tiếp cho câu hỏi Where. | (C) "About five suppliers are listed." — trả lời số lượng, dùng lại từ "suppliers" nhưng không nói được nơi chốn.
 Source: original

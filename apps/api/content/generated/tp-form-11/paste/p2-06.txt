@@ -1,10 +1,11 @@
 [QUESTION]
 voice: au_male_1
-Who handles warranty claims for returned products?
+Who should I contact to get my employee ID card?
 voice: uk_female_1
-(A) Ms. Nguyen in customer service.
-(B) It takes about five days.
-(C) The returned item is defective.
+(A) You should speak with Ms. Lin in the HR department.
+(B) Go to the HR department on the fifth floor.
+(C) The new batch of cards arrives next Monday.
+
 Answer: A
-Explanation: Câu hỏi là "Who handles warranty claims for returned products?", hỏi NGƯỜI. | (A) "Ms. Nguyen in customer service." — nêu đúng một người phụ trách. | (B) "It takes about five days." — trả lời thời gian, không đáp ai. | (C) "The returned item is defective." — lặp lại "returned" nhưng nói về tình trạng hàng, không đáp ai.
+Explanation: Câu hỏi là "Who should I contact to get my employee ID card?", hỏi VỀ NGƯỜI (WHO). | (A) "You should speak with Ms. Lin in the HR department." — nêu đúng một người cụ thể, trả lời trực tiếp cho câu hỏi WHO. | (B) "Go to the HR department on the fifth floor." — chỉ nơi chốn, trả lời cho WHERE thay vì WHO; dễ nhầm vì liên quan đến cùng chủ đề. | (C) "The new batch of cards arrives next Monday." — dùng lại từ "cards" nhưng nêu thời gian, trả lời cho WHEN thay vì WHO.
 Source: original
