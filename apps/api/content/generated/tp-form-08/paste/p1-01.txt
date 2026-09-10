@@ -1,8 +1,9 @@
 [QUESTION]
 voice: uk_female_1
-(A) The woman is sitting at the conference table.
-(B) The woman is writing on a whiteboard.
-(C) The woman is pointing at the projection screen.
-(D) Two coworkers are watching the presentation.
+(A) The stethoscope is hanging from the cabinet.
+(B) The woman is adjusting the blood pressure monitor.
+(C) The woman is writing on a clipboard.
+(D) Several drawers on the cabinet are closed.
 Answer: C
+Explanation: Trong ảnh người phụ nữ mặc áo blouse trắng đứng cạnh bàn khám, tay trái cầm bảng kẹp hồ sơ, tay phải đang viết số liệu bằng bút. | (A) "hanging from the cabinet" — ống nghe có trong ảnh nhưng nằm trên bàn khám, không treo trên tủ thuốc: đúng vật, sai vị trí. | (B) "adjusting the blood pressure monitor" — máy đo huyết áp có trong ảnh trên bàn khám nhưng người phụ nữ đang viết, không chạm vào máy: đúng vật, sai hành động. | (C) "writing on a clipboard" — đúng hành động người phụ nữ đang thực hiện. | (D) "Several drawers on the cabinet are closed" — tủ thuốc có trong ảnh và các ngăn kéo đang mở, không phải đóng: đúng vật, sai trạng thái.
 Source: original

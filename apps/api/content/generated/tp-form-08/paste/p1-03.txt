@@ -1,8 +1,9 @@
 [QUESTION]
-voice: us_female_1
-(A) The man is pulling a suitcase through the lobby.
-(B) The man is checking in at the front desk.
-(C) A porter is carrying the luggage for the guest.
-(D) Two guests are sitting in the lobby armchairs.
+voice: ca_male_1
+(A) Several cars are parked along white lines on pavement.
+(B) A surveillance camera is mounted on top of the lamp.
+(C) The trash bin is standing near the lot entrance.
+(D) Some motorcycles are lined up between the cars.
 Answer: A
+Explanation: Trong ảnh có một dãy ô tô con đỗ song song dọc vạch sơn trắng trên mặt đường nhựa, camera giám sát gắn dưới chụp đèn ở cuối bãi, thùng rác kim loại đặt ở góc xa sát hàng rào phủ dây thường xuân leo. | (A) "Several cars are parked along white lines on pavement" — đúng vị trí và cách sắp xếp của các xe. | (B) "mounted on top of the lamp" — camera trong ảnh gắn ngay dưới chụp đèn, không phải trên đỉnh cột: đúng vật, sai vị trí. | (C) "near the lot entrance" — thùng rác đặt ở góc xa nhất của bãi sát hàng rào, không phải gần lối vào: đúng vật, sai vị trí. | (D) "Some motorcycles are lined up between the cars" — trong ảnh không có xe máy nào: vật không có trong ảnh.
 Source: original

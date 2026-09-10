@@ -1,8 +1,9 @@
 [QUESTION]
-voice: ca_male_1
-(A) The trays are stacked on the counter.
-(B) The workers are washing dishes at the sink.
-(C) A chef is cooking vegetables in a pan.
-(D) A waitress is carrying a tray of food.
+voice: us_female_1
+(A) The customers are standing near the entrance.
+(B) The workers are preparing food behind the counter.
+(C) A staff member is handing a glass to a customer.
+(D) One of the workers is reaching for a mug.
 Answer: D
+Explanation: Trong ảnh có hai nhân viên đứng sau quầy bar bằng đá granite: một người đang với tay lên giá treo trên tường để lấy cốc sứ, người kia đang ghi đơn hàng vào sổ; phía trước quầy, nhiều khách ngồi trên ghế cao đối diện cửa kính lớn. | (A) "standing near the entrance" — khách ngồi trên ghế cao, không đứng: đúng người, sai tư thế. | (B) "preparing food" — hai nhân viên đứng sau quầy nhưng không ai chuẩn bị thức ăn: đúng vị trí, sai hành động. | (C) "handing a glass to a customer" — không ai đưa gì cho khách, nhân viên đang với tay lấy cốc từ giá treo trên tường: sai hành động. | (D) "reaching for a mug" — đúng hành động một nhân viên đang thực hiện.
 Source: original

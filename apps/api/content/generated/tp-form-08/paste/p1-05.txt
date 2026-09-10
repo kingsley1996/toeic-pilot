@@ -1,8 +1,9 @@
 [QUESTION]
-voice: uk_female_1
-(A) A man is standing near the printer.
-(B) The woman is talking on the telephone.
-(C) The workers are sitting at their computers.
-(D) There are four monitors on the desks.
+voice: au_male_1
+(A) A bicycle is leaning against the tree.
+(B) The woman is sitting on a wooden bench.
+(C) The woman is photographing a stone fountain.
+(D) Several people are strolling along the path.
 Answer: C
+Explanation: Trong ảnh một phụ nữ trẻ đứng trên lối đi lát gạch, giơ điện thoại hướng về đài phun nước bằng đá hoa cương phía trước; phía sau cô, một xe đạp leo núi dựng chống trên bãi cỏ cạnh gốc cây cổ thụ, và hàng ghế gỗ trống xếp đều dọc lối đi. | (A) "leaning against the tree" — xe đạp và cây đều có trong ảnh nhưng xe dựng chống trên cỏ cạnh cây, không tựa vào cây: đúng vật, sai vị trí. | (B) "sitting on a wooden bench" — ghế gỗ có trong ảnh nhưng người phụ nữ đang đứng, không ngồi: đúng vật, sai hành động. | (C) "photographing a stone fountain" — đúng hành động người phụ nữ đang thực hiện. | (D) "Several people are strolling along the path" — trong ảnh chỉ có một người.
 Source: original

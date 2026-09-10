@@ -1,8 +1,9 @@
 [QUESTION]
-voice: ca_male_1
-(A) The man is driving a forklift down the aisle.
-(B) The man is carrying a large cardboard box.
-(C) Two workers are inspecting goods in the warehouse.
-(D) The man is checking items on a warehouse shelf.
+voice: us_female_1
+(A) A rolled-up mat is lying flat on the floor.
+(B) The yoga balls are stacked on the lower shelf of the rack.
+(C) The dumbbells are arranged from largest to smallest.
+(D) Several treadmills are lined up facing a row of televisions.
 Answer: D
+Explanation: Trong ảnh là phòng gym không có người: một dãy máy chạy bộ bằng kim loại xếp song song đối diện các màn hình TV treo trên tường trắng; bên phải là giá tạ hai tầng với tạ xếp từ nhỏ đến lớn; góc trái phòng có ba quả bóng yoga xếp chồng trên sàn cạnh một tấm thảm cuộn tròn dựa nghiêng vào tường gương. | (A) "lying flat on the floor" — tấm thảm cuộn tròn đang dựa nghiêng vào tường gương, không nằm phẳng trên sàn: sai vị trí. | (B) "stacked on the lower shelf of the rack" — bóng yoga nằm ở góc phòng, không đặt trên giá tạ: sai vị trí. | (C) "from largest to smallest" — tạ trên giá xếp từ nhỏ đến lớn, không phải từ lớn đến nhỏ: sai thứ tự sắp xếp. | (D) "lined up facing a row of televisions" — đúng: máy chạy bộ xếp hàng đối diện TV trên tường trắng.
 Source: original

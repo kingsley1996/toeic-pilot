@@ -1,8 +1,9 @@
 [QUESTION]
-voice: au_male_1
-(A) A woman is adjusting the projector at the front.
-(B) Some chairs have been arranged in rows.
-(C) The screen is being taken down from the wall.
-(D) There is a long table in front of the screen.
+voice: uk_female_1
+(A) Both clients are seated in front of LED-framed mirrors.
+(B) A woman is having her hair trimmed with scissors.
+(C) A worker is applying dye to the second customer's hair.
+(D) A hair dryer is resting on a countertop.
 Answer: B
+Explanation: Trong ảnh có hai thợ cắt tóc phục vụ hai khách nữ: thợ bên trái dùng kéo cắt tóc cho khách ngồi trước gương viền đèn LED, thợ bên phải quấn giấy bạc lên tóc khách thứ hai trước gương thường; phía trên có máy sấy tóc treo trên giá inox xoay. | (A) "Both clients are seated in front of LED-framed mirrors" — chỉ có một gương viền đèn LED, gương thứ hai là gương thường: sai chi tiết về vị trí/đặc điểm. | (B) "having her hair trimmed with scissors" — đúng việc thợ đang làm cho khách nữ bên trái. | (C) "applying dye to the second customer's hair" — thợ đang quấn giấy bạc chứ không bôi thuốc nhuộm: đúng đối tượng, sai hành động. | (D) "resting on a countertop" — máy sấy tóc có trong ảnh nhưng đang treo trên giá inox, không đặt trên quầy: đúng vật, sai vị trí.
 Source: original
