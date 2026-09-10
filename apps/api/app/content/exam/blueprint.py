@@ -195,6 +195,12 @@ class QuestionSlot:
     # dồn về một kiểu: 5 trên 8 ô gián tiếp của `tp-form-11` đều là "Ask the ___",
     # và người luyện vài đề nhận ra khuôn ấy mà không cần nghe câu hỏi.
     indirect_kind: int = 0
+    # Part 2, chỉ có nghĩa khi `question_type` là HOW: BIẾN THỂ nào trong
+    # how-much/many/long/often/soon/far. Ở blueprint chứ không để mô hình chọn, y
+    # hệt `indirect_kind`: đo thấy mô hình sụp hết về "How do I…?" (cách làm), bỏ
+    # mất chiều nhầm lẫn số liệu mà người ra đề thật khai thác. Mặc định 0 nên ô
+    # của đề cũ giữ nguyên hành vi.
+    how_variant: int = 0
     # Bao nhiêu câu trong ô BUỘC phải ghép chứng cứ từ hai chỗ tách rời — trục
     # D1 của `toeic_ai_question_generation_guidelines` §10. Ở blueprint chứ
     # không để mô hình tự quyết, cùng lý do với `indirect`: đo trên 470 câu đã
@@ -346,6 +352,12 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
     # Vòng tròn trên RIÊNG các ô gián tiếp, không trên cả 25 ô: chia theo chỉ số
     # ô thì tám ô gián tiếp rơi lung tung và một kiểu có thể không bao giờ dùng.
     rotation = iter(range(10_000))
+    # Biến thể HOW rải trên RIÊNG các ô How, xáo theo seed. Đếm bằng một vòng
+    # đếm riêng (chỉ tiến khi gặp ô How) nên How nào cũng lấy một chiều số liệu
+    # khác nhau — mô hình tự viết thì sụp hết về "How do I…?" (xem QuestionSlot).
+    how_order = list(range(6))
+    random.Random(f"p2-how:{seed}").shuffle(how_order)
+    how_pick = iter(range(10_000))
     slots = [
         QuestionSlot(
             id=f"p2-{index:02d}",
@@ -356,6 +368,7 @@ def build_part2(slug: str, title: str, seed: int) -> Blueprint:
             voices=list(pairs[index - 1]),
             indirect=indirect,
             indirect_kind=(next(rotation) % 4) if indirect else 0,
+            how_variant=how_order[next(how_pick) % 6] if code == "PART_2_HOW_QUESTION" else 0,
         )
         for index, (code, indirect) in enumerate(kinds, start=1)
     ]
