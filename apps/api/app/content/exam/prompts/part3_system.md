@@ -134,6 +134,13 @@ option's segment says what that option says, then which of these it is:
 - true, but not an answer to this question,
 - proposed and then rejected or changed.
 
+**Show the trap, do not just reject it.** When a wrong option recycles words that
+really appear in the conversation, quote the phrase it borrows and say what was
+changed — the time, the person who does it, the place, the action, whether it was
+accepted or refused. A bare "not mentioned" or "wrong" teaches the learner nothing
+about why the option was tempting. Keep "not mentioned" only for options the
+conversation genuinely never touches.
+
 One sentence per segment. Vietnamese prose; quotes stay in English, untranslated —
 they are what the learner has to match against what they heard.
 

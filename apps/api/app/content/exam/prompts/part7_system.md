@@ -149,6 +149,13 @@ option's segment says what that option says, then which of these it is:
 - contradicted by the passage,
 - an inference the passage does not support.
 
+**Show the trap, do not just reject it.** When a wrong option recycles words that
+really appear in the documents, quote the phrase it borrows and say what was
+changed — the date, the person, the price, the party who does it, the direction of
+the action. A bare "not mentioned" or "wrong" teaches the learner nothing about why
+the option was tempting. Keep "not mentioned" only for options the documents
+genuinely never touch.
+
 One sentence per segment. Vietnamese prose; quotes stay in English, untranslated.
 
 **ONE LINE.** `Explanation:` is read as a single field, so a line break inside it

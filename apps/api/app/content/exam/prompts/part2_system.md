@@ -123,6 +123,12 @@ option's segment says what that option says, then which of these it is:
 - an answer to a different question word (a place for a *when*),
 - a plausible sentence that does not respond to the prompt at all.
 
+**Show the trap, do not just reject it.** When a wrong option recycles a word that
+really appears in the prompt, name the word it borrows and say what was twisted —
+a place for a *when*, a fact for a request, a confirmation for a *how*. A bare
+"irrelevant" or "wrong" teaches nothing about why the option was tempting. Keep
+"not mentioned" only for options the prompt genuinely never touches.
+
 One sentence per segment. Vietnamese prose; quotes stay in English, untranslated.
 
 **ONE LINE.** `Explanation:` is read as a single field, so a line break inside it
