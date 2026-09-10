@@ -141,11 +141,12 @@ mang `audio_asset_id`/`image_asset_id` trên `question`; **Parts 3/4/7 mang medi
 `question_set`** (`audio_asset_id`, `passage_image_id`) nên `count(question.image_asset_id)`
 bằng 0 ở ba part đó là **đúng**, không phải mất ảnh.
 
-## 6. Hai bug RESTRICT đã gặp — và đã vá
+## 6. Ba bug RESTRICT đã gặp — và đã vá
 
-Cả hai cùng một hình dạng: bảng lịch sử học viên **mới hơn** giữ `question_id` kiểu
-`ondelete=RESTRICT`, và các đường xoá viết trước đó không biết tới chúng. Cả hai chỉ
-lộ khi đề **đã có người làm** — lần import đầu tiên không có attempt nên không nổ.
+Cả ba cùng một hình dạng: bảng lịch sử học viên **mới hơn** giữ `question_id`/`option_id`
+kiểu `ondelete=RESTRICT`, và các đường xoá viết trước đó không biết tới chúng. Cả ba chỉ
+lộ khi đề **đã có người làm / đã vào pool** — lần import đầu tiên không có attempt nên
+không nổ.
 
 1. `admin_tests.py::_delete_test_core` (route `DELETE /tests/{slug}?force`) chỉ purge
    `attempt`, bỏ quên `part_session_item` và `grammar_attempt` → `DELETE FROM question`
@@ -154,6 +155,15 @@ lộ khi đề **đã có người làm** — lần import đầu tiên không c
 2. `scripts/export-test.sh` khối reset xoá `question_option` **trước** `attempt`;
    prod có `attempt_item` tham chiếu option RESTRICT → vi phạm FK. Vá bằng thứ tự
    con→cha: `attempt` → `part_session_item` → `grammar_attempt` → `question_option` …
+3. **Pool placement** (ADR từ commit "publishing a form adds it to the pool"). Một đề đã
+   publish bị `tp-placement-*` **tham chiếu đúng hàng `question` của nó** (không copy id),
+   qua `practice_test_question` (test_id = đề placement) và `attempt_item` của attempt
+   placement. Full-reload đổi **toàn bộ id** của đề → khối reset phải gỡ các liên kết
+   phái sinh **ở mọi đề khác** chứ không chỉ `test_id = slug`. Vá: `DELETE FROM
+   attempt_item` theo `question_id IN _tp_q OR selected_option_id IN (options của _tp_q)`;
+   `practice_test_question … OR question_id IN _tp_q`; thêm `grammar_lesson_question`.
+   Dấu hiệu nhận biết: import fail `violates … _fkey on table "practice_test_question"`
+   ngay sau khi lỗi option đã hết. **Chỉ an toàn vì placement ở prod là archived/thử.**
 
 `DELETE FROM attempt WHERE test_id=…` trong cả hai đường là **cố ý** và có chủ đích
 phá lịch sử làm bài của đề đó. Nó chỉ an toàn vì prod đang là staging. Ngày đề có học
@@ -170,8 +180,11 @@ lại của form vẫn do `check` và cổng publish giữ.
 
 ## Ghi chú tái sử dụng
 
-- Đổi `S` sang đề khác (`tp-form-08`, …). `tp-form-09` **không tồn tại** (chỉ có
-  `tp-test-09`).
+- Đổi `S` sang đề khác. Ba đề đã đi qua đường này: `tp-form-07`, `tp-form-08`,
+  `tp-test-09` (tên là `test` nhưng nó là đề `full` đã publish thật, **không phải**
+  artifact). `tp-form-09` thì không tồn tại.
+- **Đề đã vào pool placement thì phải có các DELETE §6.3** — nếu không import fail vì
+  `practice_test_question`/`attempt_item` của đề placement RESTRICT-trỏ vào câu đề này.
 - `--model` cho Part 1: gemini free (`google/gemini-3.7-flash`) hoặc `bai/mimo-v2.5`.
   `--model` cho `write` có thể khác; chạy chậm (mimo ~60–225s/câu), cứ để nền.
 - Paste + `blueprint.json` + `.prompt.txt` là **tệp commit** (nguồn tái tạo); `.mp3`,

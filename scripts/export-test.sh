@@ -159,14 +159,32 @@ echo "3/4  Reset (nếu test đã có trên đích) + dump assets (INSERT ON CON
   # Hai bảng phiên luyện tập cũng giữ `question_id` RESTRICT (đúng bug đã vá ở
   # route `delete_test`): câu từng được làm trong part-session/grammar phải gỡ
   # hàng phiên trước khi xoá câu.
+  # attempt_item RESTRICT-trỏ vào cả `question` lẫn `question_option`, và **không
+  # chỉ từ attempt của đề này**: placement rút ngẫu nhiên từ pool đã publish, nên
+  # attempt của tp-placement-* giữ selected_option_id/question_id trỏ vào câu của
+  # đề đang thay. Xoá `attempt WHERE test_id=slug` không với tới chúng → xoá option
+  # nổ RESTRICT. Gỡ mọi attempt_item chạm câu/option của đề này TRƯỚC, từ bất kỳ
+  # attempt nào (attempt placement còn lại sẽ thiếu item — chấp nhận được vì staging).
+  echo "DELETE FROM attempt_item"
+  echo "  WHERE question_id IN (SELECT question_id FROM _tp_q)"
+  echo "     OR selected_option_id IN (SELECT id FROM question_option WHERE question_id IN (SELECT question_id FROM _tp_q));"
   echo "DELETE FROM part_session_item WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM grammar_attempt WHERE question_id IN (SELECT question_id FROM _tp_q);"
+  # Placement draw từ pool đã publish bằng CÁCH THAM CHIẾU đúng hàng question của đề
+  # nguồn (không copy), nên `practice_test_question` của tp-placement-* và
+  # `grammar_lesson_question` giữ question_id RESTRICT trỏ vào câu đề này. Full-reload
+  # đổi id toàn bộ → phải gỡ mọi liên kết phái sinh đó, ở MỌI đề, trước khi xoá câu.
+  # Attempt placement còn lại sẽ mất item rút từ đề này — chỉ chấp nhận được vì
+  # placement/archived là dữ liệu thử (ponytail: nếu người học thật, sync part-swap
+  # bằng UPDATE tại chỗ giữ nguyên question.id, đừng đi đường xoá-dựng này).
+  echo "DELETE FROM grammar_lesson_question WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_option WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_label WHERE question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_set_label WHERE set_id IN ("
   echo "  SELECT DISTINCT set_id FROM _tp_q WHERE set_id IS NOT NULL);"
   echo "DELETE FROM practice_test_question"
-  echo "  WHERE test_id = (SELECT id FROM practice_test WHERE slug = '$SLUG');"
+  echo "  WHERE test_id = (SELECT id FROM practice_test WHERE slug = '$SLUG')"
+  echo "     OR question_id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question WHERE id IN (SELECT question_id FROM _tp_q);"
   echo "DELETE FROM question_set WHERE id IN ("
   echo "  SELECT DISTINCT set_id FROM _tp_q WHERE set_id IS NOT NULL);"
