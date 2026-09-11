@@ -378,6 +378,10 @@ class PracticeTest(Base, PublishableMixin):
         nullable=False,
         server_default="default",
     )
+    # Đề placement được rút 84 câu TỪ đề nào (SPEC-PLACEMENT path A). Chuỗi
+    # thuần, không FK: đây là dấu vết xuất xứ chứ không phải liên kết sống —
+    # hàng dựng trước khi có cột giữ NULL và card chỉ im lặng về nguồn.
+    source_slug: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     def __repr__(self) -> str:
         return f"<PracticeTest {self.slug}>"

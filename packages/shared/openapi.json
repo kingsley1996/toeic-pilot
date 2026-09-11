@@ -9189,6 +9189,55 @@
         "title": "PlacementBand",
         "type": "object"
       },
+      "PlacementBuildIn": {
+        "properties": {
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "title": "PlacementBuildIn",
+        "type": "object"
+      },
+      "PlacementBuildOut": {
+        "properties": {
+          "grammar_code_count": {
+            "title": "Grammar Code Count",
+            "type": "integer"
+          },
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/PlacementPartOut"
+            },
+            "title": "Parts",
+            "type": "array"
+          },
+          "question_count": {
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "source_slug": {
+            "title": "Source Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "source_slug",
+          "question_count",
+          "grammar_code_count",
+          "parts"
+        ],
+        "title": "PlacementBuildOut",
+        "type": "object"
+      },
       "PlacementGate": {
         "description": "Trả lời cho câu \"được làm bài test đầu vào không, khi nào làm lại được\".",
         "properties": {
@@ -9302,6 +9351,40 @@
           "can_start"
         ],
         "title": "PlacementGate",
+        "type": "object"
+      },
+      "PlacementPartOut": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "missing_priority": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing Priority",
+            "type": "array"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "types": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Types",
+            "type": "object"
+          }
+        },
+        "required": [
+          "part",
+          "count",
+          "types",
+          "missing_priority"
+        ],
+        "title": "PlacementPartOut",
         "type": "object"
       },
       "PlacementResultPublic": {
@@ -11676,6 +11759,17 @@
           "slug": {
             "title": "Slug",
             "type": "string"
+          },
+          "source_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Slug"
           },
           "status": {
             "title": "Status",
@@ -20743,6 +20837,64 @@
           }
         ],
         "summary": "List Test Sets",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tests/{source_slug}/placement": {
+      "post": {
+        "description": "Lắp một đề placement DRAFT rút 84 câu từ đề nguồn có sẵn.\n\nViệc biên tập, không phải phát hành: kết quả luôn là draft, nút \"Đưa vào\nnhóm\" trên `/admin/placement` mới là chỗ xuất bản — và cổng của nó (mọi câu\nphải published) tự nhiên buộc đề nguồn phải published trước. Chọn theo dạng\ncâu, không theo vị trí: lập luận ở `app/services/placement_builder.py`.",
+        "operationId": "build_placement_api_v1_admin_tests__source_slug__placement_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source_slug",
+            "required": true,
+            "schema": {
+              "title": "Source Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlacementBuildIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacementBuildOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Build Placement",
         "tags": [
           "admin"
         ]

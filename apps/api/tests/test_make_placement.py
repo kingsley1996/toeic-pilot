@@ -11,7 +11,7 @@ không có phép kiểm nào thấy điều đó. Số câu vẫn đúng 84, m�
 import uuid
 from dataclasses import dataclass, field
 
-from app.content.make_placement import _fill_exactly, _pick_part
+from app.services.placement_builder import _fill_exactly, _pick_part
 
 
 @dataclass

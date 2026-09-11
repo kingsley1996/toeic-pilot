@@ -45,11 +45,15 @@ from app.schemas.admin import (
     CollectionAdmin,
     CollectionCreate,
     CollectionUpdate,
+    PlacementBuildIn,
+    PlacementBuildOut,
     TestAdmin,
     TestCreate,
     TestUpdate,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
+from app.services import placement_builder
+from app.services.placement_builder import PlacementError
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -336,6 +340,27 @@ def create_test(
             status_code=status.HTTP_409_CONFLICT, detail=f"Đã có đề với slug {body.slug!r}"
         ) from None
     return _as_admin(db, test)
+
+
+@router.post("/tests/{source_slug}/placement", response_model=PlacementBuildOut)
+def build_placement(
+    source_slug: str,
+    body: PlacementBuildIn,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> PlacementBuildOut:
+    """Lắp một đề placement DRAFT rút 84 câu từ đề nguồn có sẵn.
+
+    Việc biên tập, không phải phát hành: kết quả luôn là draft, nút "Đưa vào
+    nhóm" trên `/admin/placement` mới là chỗ xuất bản — và cổng của nó (mọi câu
+    phải published) tự nhiên buộc đề nguồn phải published trước. Chọn theo dạng
+    câu, không theo vị trí: lập luận ở `app/services/placement_builder.py`.
+    """
+    try:
+        info = placement_builder.build(db, slug=body.slug, source_slug=source_slug)
+    except PlacementError as failure:
+        raise HTTPException(status_code=failure.status, detail=str(failure)) from None
+    return PlacementBuildOut(**info)
 
 
 @router.get("/tests/{slug}", response_model=TestAdmin)

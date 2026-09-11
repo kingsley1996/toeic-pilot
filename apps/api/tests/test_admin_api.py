@@ -76,6 +76,7 @@ ADMIN_CALLS = [
     ("POST", "/api/v1/admin/test-collections", {"slug": "x", "title": "X"}),
     ("POST", "/api/v1/admin/test-collections/x/publish", None),
     ("GET", "/api/v1/admin/tests", None),
+    ("POST", "/api/v1/admin/tests/x/placement", {"slug": "tp-placement-99"}),
     ("POST", "/api/v1/admin/test-collections/x/archive", {"archived": True}),
     ("DELETE", "/api/v1/admin/test-collections/x", None),
     ("POST", "/api/v1/admin/tests/x/archive", {"archived": True}),
@@ -617,6 +618,75 @@ def test_a_test_refuses_to_publish_while_a_question_is_still_draft(
     # Lời từ chối phải nêu ĐÚNG câu nào, không chỉ "còn câu chưa xuất bản":
     # người soạn cần biết đi sửa ở đâu, và số câu là cách họ định vị.
     assert "147" in refused.json()["detail"]
+
+
+# --- dựng placement từ đề có sẵn ---------------------------------------------
+
+
+def _commit_one_reading_part(client: TestClient, headers: dict[str, str], slug: str) -> None:
+    """Một đề draft với đúng một part 7 bốn câu — đủ để cổng đếm câu kêu."""
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": slug, "title": slug, "kind": "full"},
+        headers=headers,
+    )
+    parsed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts/7/parse",
+        json={"raw_text": _reading_paste()},
+        headers=headers,
+    ).json()
+    committed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts",
+        json={"part": 7, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    assert committed.status_code == 201
+
+
+def test_building_a_placement_from_a_missing_source_is_404(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    headers = auth("editor")
+    refused = client.post(
+        "/api/v1/admin/tests/nope/placement",
+        json={"slug": "tp-placement-99"},
+        headers=headers,
+    )
+    assert refused.status_code == 404
+    assert "nope" in refused.json()["detail"]
+
+
+def test_building_a_placement_refuses_a_source_with_too_few_questions(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Bộ chọn thoát êm là một đề 79 câu xuất bản được — phép kiểm 84 là chỗ
+    duy nhất nói ra điều đó, nên lời của nó phải lộ ra nguyên văn qua API."""
+    headers = auth("editor")
+    _commit_one_reading_part(client, headers, "skinny-source")
+    refused = client.post(
+        "/api/v1/admin/tests/skinny-source/placement",
+        json={"slug": "tp-placement-99"},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert "84" in refused.json()["detail"]
+
+
+def test_the_placement_slug_cannot_swallow_an_existing_exam(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Dựng placement với slug của một đề draft có sẵn sẽ XOÁ sạch nối câu của
+    đề ấy — guard chặn trước cả khi đề nguồn được tra, vì cổng đếm câu của đề
+    nguồn không được che mất lỗi này."""
+    headers = auth("editor")
+    _commit_one_reading_part(client, headers, "full-01")
+    refused = client.post(
+        "/api/v1/admin/tests/skinny-source/placement",
+        json={"slug": "full-01"},
+        headers=headers,
+    )
+    assert refused.status_code == 409
+    assert "full-01" in refused.json()["detail"]
 
 
 def test_commit_refuses_a_paste_that_still_has_problems(

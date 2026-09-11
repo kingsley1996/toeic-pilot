@@ -1,10 +1,10 @@
 "use client";
 
-import { API_ROUTES, type TestAdmin } from "@toeic-pilot/shared";
+import { API_ROUTES, type PlacementBuildOut, type TestAdmin } from "@toeic-pilot/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
-import { Alert, Button, Page, PageHeader, Panel, cx } from "@/components/ui";
+import { Alert, Button, Field, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";
 
@@ -28,6 +28,10 @@ type Envelope = { items: TestAdmin[]; total: number };
 export default function PlacementAdminPage() {
   const { status, token } = useRequireSession({ canEdit: true });
   const [rows, setRows] = useState<TestAdmin[] | null>(null);
+  const [sources, setSources] = useState<TestAdmin[] | null>(null);
+  const [sourceSlug, setSourceSlug] = useState("");
+  const [slug, setSlug] = useState("");
+  const [buildInfo, setBuildInfo] = useState<PlacementBuildOut | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -52,7 +56,44 @@ export default function PlacementAdminPage() {
       .catch((failure) =>
         setError(failure instanceof ApiError ? failure.message : "Không tải được danh sách."),
       );
+    // Đề nguồn: mọi đề KHÔNG phải placement. Số câu hiển thị để thấy ngay đề
+    // thiếu nội dung, còn trạng thái là cổng thật: đề nguồn phải published
+    // trước thì đề placement mới được đưa vào nhóm (cổng publish chặn).
+    apiFetch<Envelope>(`${API_ROUTES.adminTests}?limit=100`, { token })
+      .then((page) => setSources(page.items.filter((item) => item.kind !== "placement")))
+      .catch(() => setSources([]));
   }, [apply, fetchRows, token]);
+
+  // Gợi ý số kế tiếp từ slug đang có — người soạn vẫn sửa được.
+  const suggested =
+    rows && rows.length > 0
+      ? `tp-placement-${String(
+          rows.reduce(
+            (max, row) => Math.max(max, Number(/tp-placement-(\d+)/.exec(row.slug)?.[1] ?? 0)),
+            0,
+          ) + 1,
+        ).padStart(2, "0")}`
+      : "tp-placement-01";
+  const chosen = sources?.find((item) => item.slug === sourceSlug);
+
+  async function build() {
+    if (!token || !sourceSlug) return;
+    setBusy("build");
+    setBuildInfo(null);
+    try {
+      const info = await apiFetch<PlacementBuildOut>(
+        API_ROUTES.adminTestPlacementBuild(sourceSlug),
+        { method: "POST", token, body: JSON.stringify({ slug: slug || suggested }) },
+      );
+      setBuildInfo(info);
+      setSlug("");
+      apply(await fetchRows());
+    } catch (failure) {
+      setError(failure instanceof ApiError ? failure.message : "Không dựng được đề.");
+    } finally {
+      setBusy(null);
+    }
+  }
 
   async function toggle(row: TestAdmin) {
     if (!token) return;
@@ -104,12 +145,77 @@ export default function PlacementAdminPage() {
         </div>
       )}
 
+      <Panel className="mt-5 space-y-4 p-4">
+        <div>
+          <h2 className="font-semibold">Dựng đề placement mới</h2>
+          <p className="text-small text-ink-muted">
+            Rút 84 câu theo dạng câu từ một đề full có sẵn, ghi dưới dạng nháp. Đề nguồn phải
+            published trước khi đề placement được đưa vào nhóm.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Đề nguồn">
+            <Select
+              value={sourceSlug}
+              onChange={(event) => {
+                setSourceSlug(event.target.value);
+                setBuildInfo(null);
+              }}
+            >
+              <option value="">— chọn đề nguồn —</option>
+              {sources?.map((item) => (
+                <option key={item.id} value={item.slug}>
+                  {item.slug} · {item.question_count} câu ·{" "}
+                  {item.status === "published" ? "published" : "draft"}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="Slug đề mới" hint={`Để trống sẽ dùng ${suggested}.`}>
+            <Input
+              value={slug || suggested}
+              onChange={(event) => setSlug(event.target.value)}
+              placeholder={suggested}
+            />
+          </Field>
+        </div>
+        {chosen && chosen.status !== "published" && (
+          <Alert tone="alert">
+            Đề nguồn đang ở trạng thái {chosen.status}. Hãy published đề nguồn trước — đề placement
+            chứa câu của nó, và cổng xuất bản sẽ chặn khi còn câu nháp.
+          </Alert>
+        )}
+        <div>
+          <Button size="sm" disabled={!sourceSlug || busy === "build"} onClick={() => void build()}>
+            {busy === "build" ? "Đang dựng…" : "Dựng nháp"}
+          </Button>
+        </div>
+        {buildInfo && (
+          <>
+            <Alert tone="info">
+              Đã tạo {buildInfo.slug} — {buildInfo.question_count} câu,{" "}
+              {buildInfo.grammar_code_count} mã ngữ pháp, trạng thái nháp.
+            </Alert>
+            <div className="text-small">
+              {buildInfo.parts.map((part) => (
+                <p key={part.part}>
+                  Part {part.part}: {part.count} câu
+                  {part.missing_priority.length > 0 && (
+                    <span className="text-ink-muted">
+                      {" "}
+                      — thiếu dạng khó: {part.missing_priority.join(", ")}
+                    </span>
+                  )}
+                </p>
+              ))}
+            </div>
+          </>
+        )}
+      </Panel>
+
       <div className="mt-5 space-y-3">
         {rows?.length === 0 && (
-          <p className="text-small text-ink-muted">
-            Chưa có đề đầu vào nào. Dựng bằng{" "}
-            <code className="text-label">make_placement --source &lt;slug đề nguồn&gt;</code>.
-          </p>
+          <p className="text-small text-ink-muted">Chưa có đề đầu vào nào — dựng ở khung trên.</p>
         )}
         {rows?.map((row) => (
           <Panel key={row.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
@@ -131,6 +237,7 @@ export default function PlacementAdminPage() {
               </div>
               <p className="mt-1 text-small text-ink-muted">
                 {row.slug} · {row.question_count} câu
+                {row.source_slug ? ` · nguồn: ${row.source_slug}` : ""}
                 {row.time_limit_seconds ? ` · ${Math.round(row.time_limit_seconds / 60)} phút` : ""}
               </p>
             </div>

@@ -620,8 +620,29 @@ class TestAdmin(BaseModel):
     status: str
     time_limit_seconds: int | None
     collection_slug: str | None
+    # Đề mà một placement được rút 84 câu ra (null với các hàng cũ).
+    source_slug: str | None = None
     question_count: int
     parts: list[TestPartSummary]
+
+
+class PlacementBuildIn(BaseModel):
+    slug: str
+
+
+class PlacementPartOut(BaseModel):
+    part: int
+    count: int
+    types: dict[str, int]
+    missing_priority: list[str]
+
+
+class PlacementBuildOut(BaseModel):
+    slug: str
+    source_slug: str
+    question_count: int
+    grammar_code_count: int
+    parts: list[PlacementPartOut]
 
 
 class CollectionCreate(BaseModel):

@@ -120,6 +120,14 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       95% ≈ ±75 điểm, CEFR theo bảng ETS từng section, trần C1 — không phát minh
       C2), cooldown retake 7 ngày, mốc điểm tự khai trước bài, màn setup + kết
       quả tại `/learn/placement`; dashboard có CTA viền gradient (ngoại lệ §6)
+      + bước đầu tiên của tour. **Bổ sung (2026-09-11):** dựng placement từ đề
+      có sẵn ngay trên `/admin/placement` — `POST /admin/tests/{source}/placement`
+      gọi `app/services/placement_builder.py` (logic tách khỏi `app/content/`
+      vì luật không import `app.content` từ `app/main.py`), trả breakdown dạng
+      câu; CLI thành wrapper mỏng cùng service. Cổng: slug đã published → 409,
+      slug trùng đề không-placement → 409, đề nguồn thiếu câu/nhãn → 400; publish
+      vẫn qua nút nhóm (tự nhiên buộc đề nguồn phải published). `tp-placement-05`
+      đã dựng draft từ `tp-form-12` (84 câu · 11 mã ngữ pháp)
       + bước đầu tiên của tour. Planner V1 rule-based: `study_plan`/`study_plan_item`
       (068), kỹ năng yếu → bài học grammar / part drill, exam_date co ngân sách
       mục, tiến độ suy từ bản ghi học thật, `/learn/plan`; mục tiêu ôn thi là

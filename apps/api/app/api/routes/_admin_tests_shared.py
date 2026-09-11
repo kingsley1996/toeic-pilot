@@ -140,6 +140,7 @@ def _as_admin(db: Session, test: PracticeTest) -> TestAdmin:
         status=test.status,
         time_limit_seconds=test.time_limit_seconds,
         collection_slug=collection_slug,
+        source_slug=test.source_slug,
         question_count=len(rows),
         parts=parts,
     )

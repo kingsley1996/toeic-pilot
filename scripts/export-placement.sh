@@ -45,13 +45,15 @@ fi
   echo "-- 1. Đề. Chạy lại thì cập nhật, không đụng khoá chính."
   pg -c "SELECT format(
       'INSERT INTO practice_test (id, slug, title, description, kind, status, is_placement,'
-      ' time_limit_seconds, score_scale_slug, position) '
-      'VALUES (%L, %L, %L, %L, %L, %L, true, %s, %L, 0) '
+      ' time_limit_seconds, score_scale_slug, position, source_slug) '
+      'VALUES (%L, %L, %L, %L, %L, %L, true, %s, %L, 0, %L) '
       'ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title,'
       ' description = EXCLUDED.description, kind = EXCLUDED.kind, status = EXCLUDED.status,'
       ' is_placement = true, time_limit_seconds = EXCLUDED.time_limit_seconds,'
-      ' score_scale_slug = EXCLUDED.score_scale_slug;',
-      id, slug, title, description, kind, status, time_limit_seconds, score_scale_slug)
+      ' score_scale_slug = EXCLUDED.score_scale_slug,'
+      ' source_slug = EXCLUDED.source_slug;',
+      id, slug, title, description, kind, status, time_limit_seconds, score_scale_slug,
+      source_slug)
     FROM practice_test WHERE slug = '$SLUG';"
   echo
   echo "-- 2. Danh sách câu, vào bảng tạm trước khi kiểm."

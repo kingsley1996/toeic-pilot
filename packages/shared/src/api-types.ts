@@ -2333,6 +2333,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/tests/{source_slug}/placement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Build Placement
+         * @description Lắp một đề placement DRAFT rút 84 câu từ đề nguồn có sẵn.
+         *
+         *     Việc biên tập, không phải phát hành: kết quả luôn là draft, nút "Đưa vào
+         *     nhóm" trên `/admin/placement` mới là chỗ xuất bản — và cổng của nó (mọi câu
+         *     phải published) tự nhiên buộc đề nguồn phải published trước. Chọn theo dạng
+         *     câu, không theo vị trí: lập luận ở `app/services/placement_builder.py`.
+         */
+        post: operations["build_placement_api_v1_admin_tests__source_slug__placement_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/topics": {
         parameters: {
             query?: never;
@@ -8366,6 +8391,24 @@ export interface components {
             /** Low */
             low: number;
         };
+        /** PlacementBuildIn */
+        PlacementBuildIn: {
+            /** Slug */
+            slug: string;
+        };
+        /** PlacementBuildOut */
+        PlacementBuildOut: {
+            /** Grammar Code Count */
+            grammar_code_count: number;
+            /** Parts */
+            parts: components["schemas"]["PlacementPartOut"][];
+            /** Question Count */
+            question_count: number;
+            /** Slug */
+            slug: string;
+            /** Source Slug */
+            source_slug: string;
+        };
         /**
          * PlacementGate
          * @description Trả lời cho câu "được làm bài test đầu vào không, khi nào làm lại được".
@@ -8391,6 +8434,19 @@ export interface components {
             profile_exam_date?: string | null;
             /** Profile Target Score */
             profile_target_score?: number | null;
+        };
+        /** PlacementPartOut */
+        PlacementPartOut: {
+            /** Count */
+            count: number;
+            /** Missing Priority */
+            missing_priority: string[];
+            /** Part */
+            part: number;
+            /** Types */
+            types: {
+                [key: string]: number;
+            };
         };
         /** PlacementResultPublic */
         PlacementResultPublic: {
@@ -9268,6 +9324,8 @@ export interface components {
             question_count: number;
             /** Slug */
             slug: string;
+            /** Source Slug */
+            source_slug?: string | null;
             /** Status */
             status: string;
             /** Time Limit Seconds */
@@ -14244,6 +14302,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SetAdmin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    build_placement_api_v1_admin_tests__source_slug__placement_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlacementBuildIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementBuildOut"];
                 };
             };
             /** @description Validation Error */
