@@ -1,0 +1,9 @@
+[QUESTION]
+Because the new employee has not ------- completed the mandatory training course, she has not yet been assigned any independent shifts.
+(A) complete
+(B) completed
+(C) completely
+(D) completion
+Answer: C
+Explanation: Chỗ trống nằm giữa "has not" và "completed" nên phải là trạng từ bổ nghĩa cho phân từ "completed". | (A) "complete" — là động từ nguyên mẫu hoặc tính từ, không đứng được trước phân từ "completed". | (B) "completed" — là phân từ, trùng lặp với "completed" ngay sau chỗ trống, sai từ loại. | (C) "completely" — là trạng từ, bổ nghĩa đúng cho "completed". | (D) "completion" — là danh từ, sai từ loại cho vị trí này.
+Source: original

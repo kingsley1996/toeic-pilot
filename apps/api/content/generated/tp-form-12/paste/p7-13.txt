@@ -1,0 +1,71 @@
+[PASSAGE]
+To: Annual Conference Planning Team
+From: Fiona Grant, Conference Coordinator
+Subject: Final Conference Details
+Date: September 8
+
+Dear Team,
+
+Thank you for confirming the final arrangements for the annual customer conference. Registration will open at 8:30 A.M., followed by the opening presentation at 9:00. The first discussion session begins at 10:15.
+
+Please remind speakers that the afternoon workshop begins at 1:30 P.M. Refreshments will be available near the registration area during the morning break.
+
+Best regards,
+Fiona Grant
+Conference Coordinator
+
+[PASSAGE]
+ANNUAL CUSTOMER CONFERENCE — EVENT SCHEDULE
+
+Time | Activity | Location
+8:30 A.M. | Registration | Main Entrance
+9:00 A.M. | Opening Presentation | Main Hall
+10:15 A.M. | Discussion Session | Main Hall
+11:30 A.M. | Morning Break | Registration Area
+1:30 P.M. | Afternoon Workshop | Room B
+
+[QUESTION]
+What can be inferred about the afternoon workshop?
+(A) It begins before registration.
+(B) It is held in the main hall.
+(C) It takes place later in the day than the break.
+(D) It includes the opening presentation.
+Answer: C
+Explanation: Schedule cho thấy morning break lúc 11:30 và afternoon workshop bắt đầu lúc 1:30, nên workshop diễn ra sau break. | (A) "It begins before registration." — registration bắt đầu lúc 8:30, sớm hơn workshop. | (B) "It is held in the main hall." — workshop diễn ra ở Room B. | (C) "It takes place later in the day than the break." — đúng vì workshop bắt đầu lúc 1:30 sau break lúc 11:30. | (D) "It includes the opening presentation." — opening presentation là một hoạt động riêng lúc 9:00.
+Source: original
+[QUESTION]
+Where does registration take place?
+(A) Meeting Room B
+(B) Main Hall
+(C) Registration Area
+(D) Main Entrance
+Answer: D
+Explanation: Event schedule ghi rõ "8:30 A.M. | Registration | Main Entrance". | (A) "Meeting Room B" — đây là địa điểm của afternoon workshop. | (B) "Main Hall" — đây là nơi diễn ra opening presentation và discussion session. | (C) "Registration Area" — đây là nơi diễn ra morning break, không phải registration. | (D) "Main Entrance" — đúng với thông tin trong schedule.
+Source: original
+[QUESTION]
+What can be inferred about the refreshment area?
+(A) It is used during the morning break.
+(B) It is located outside the conference venue.
+(C) It is reserved for speakers only.
+(D) It is used for afternoon workshops.
+Answer: A
+Explanation: Email nói "Refreshments will be available near the registration area during the morning break", và seating map đặt refreshment area bên trong Main Hall. | (A) "It is used during the morning break." — đúng vì refreshments được phục vụ trong thời gian này. | (B) "It is located outside the conference venue." — seating map cho thấy refreshment area nằm trong hội trường. | (C) "It is reserved for speakers only." — không có thông tin giới hạn người sử dụng. | (D) "It is used for afternoon workshops." — workshop diễn ra ở Room B.
+Source: original
+[QUESTION]
+Which of the following is NOT true?
+(A) Registration begins at 8:30 A.M.
+(B) The afternoon workshop begins at 2:30 P.M.
+(C) The first discussion session begins at 10:15 A.M.
+(D) The opening presentation starts at 9:00 A.M.
+Answer: B
+Explanation: Schedule ghi afternoon workshop bắt đầu lúc 1:30 P.M., không phải 2:30 P.M. | (A) "Registration begins at 8:30 A.M." — đúng theo schedule. | (B) "The afternoon workshop begins at 2:30 P.M." — sai vì workshop bắt đầu lúc 1:30 P.M. | (C) "The first discussion session begins at 10:15 A.M." — đúng theo schedule. | (D) "The opening presentation starts at 9:00 A.M." — đúng theo schedule.
+Source: original
+[QUESTION]
+The word "arrangements" in the email is closest in meaning to
+(A) complaints
+(B) payments
+(C) plans
+(D) invitations
+Answer: C
+Explanation: "the final arrangements for the annual customer conference" đề cập đến các kế hoạch và công tác chuẩn bị cuối cùng cho hội nghị. | (A) "complaints" — là khiếu nại, không phù hợp. | (B) "payments" — là các khoản thanh toán. | (C) "plans" — gần nghĩa nhất với arrangements trong ngữ cảnh tổ chức sự kiện. | (D) "invitations" — là lời mời, chỉ một loại tài liệu chứ không phải toàn bộ arrangements.
+Source: original

@@ -1,0 +1,6 @@
+kind: chart
+Next Quarter Ad Budget After Reallocation, thousands
+Social Media | 46
+Search Ads | 30
+Email | 27
+Video | 15

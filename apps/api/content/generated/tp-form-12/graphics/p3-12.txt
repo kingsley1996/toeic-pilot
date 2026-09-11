@@ -1,0 +1,4 @@
+kind: map
+Trade Show Exhibition Layout
+Booth 1: New Arrivals | Booth 2: Best Sellers
+Booth 3: Demo Area | Booth 4: Information Desk

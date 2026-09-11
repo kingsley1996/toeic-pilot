@@ -1,0 +1,9 @@
+[QUESTION]
+The technician ------- the printer on the third floor right after receiving the support request yesterday.
+(A) repairs
+(B) repaired
+(C) has repaired
+(D) will repair
+Answer: B
+Explanation: Trạng từ "yesterday" cùng cấu trúc "right after receiving" cho biết hành động đã xảy ra và kết thúc tại một thời điểm xác định trong quá khứ, nên chỗ trống cần thì quá khứ đơn. | (A) "repairs" — thì hiện tại đơn, mâu thuẫn với mốc thời gian "yesterday". | (B) "repaired" — thì quá khứ đơn, khớp hoàn toàn với "yesterday". | (C) "has repaired" — thì hiện tại hoàn thành, không đứng cùng trạng từ chỉ thời gian quá khứ xác định "yesterday". | (D) "will repair" — thì tương lai, trái với thời điểm trong quá khứ đã nêu.
+Source: original

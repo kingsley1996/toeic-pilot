@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Did you finish the quarterly performance evaluations for the sales team?
+voice: au_male_1
+Yes, I sent the summary to HR yesterday. The review meeting was scheduled for Thursday at ten.
+voice: us_female_1
+Thursday no longer works. The department head has training, so we moved it to Friday at two.
+voice: au_male_1
+I still need to invite the new analyst. Should I include the written evaluations?
+voice: us_female_1
+Yes, but only completed ones. HR said an employee without a signed form cannot be discussed.
+voice: au_male_1
+Understood. I'll send the invitations this afternoon and ask her to bring a copy.
+voice: us_female_1
+Please mark the new time in the meeting room booking.
+
+[QUESTION]
+What does HR say is required before an employee can be discussed?
+(A) The evaluations must be completed.
+(B) A summary must be sent to HR.
+(C) A signed form must be present.
+(D) The department head must have training.
+Answer: C
+Explanation: Dòng quyết định là "HR said an employee without a signed form cannot be discussed.", tức phải có "a signed form" mới được bàn về nhân viên. | (A) "The evaluations must be completed" — việc hoàn thành bài đánh giá được nhắc đến, nhưng không phải yêu cầu của HR trong câu này. | (B) "A summary must be sent to HR" — bản tóm tắt đã được gửi, nhưng không phải điều kiện để thảo luận. | (C) "A signed form must be present" — đúng điều kiện mà HR nêu. | (D) "The department head must have training" — buổi training của trưởng phòng là lý do dời lịch, không phải điều kiện này.
+Source: original
+[QUESTION]
+What is the woman asking the man to update?
+(A) The evaluation summary
+(B) The employee forms
+(C) The meeting invitations
+(D) The meeting room reservation
+Answer: D
+Explanation: Cuối cuộc trò chuyện, người phụ nữ nói "Please mark the new time in the meeting room booking", tức yêu cầu cập nhật lại booking phòng họp theo giờ mới. | (A) "The evaluation summary" — bản tóm tắt đã được người đàn ông gửi cho HR từ hôm qua. | (B) "The employee forms" — mẫu đơn có được nhắc đến nhưng không ai yêu cầu cập nhật chúng. | (C) "The meeting invitations" — người đàn ông định gửi thư mời, nhưng yêu cầu cuối cùng của cô là về booking phòng họp. | (D) "The meeting room reservation" — đúng với yêu cầu cập nhật thời gian mới trong booking phòng họp.
+Source: original
+[QUESTION]
+What will the man probably do this afternoon?
+(A) Send the analyst a meeting invitation.
+(B) Deliver the evaluation summary to HR.
+(C) Attend the department head's training.
+(D) Complete the written evaluations.
+Answer: A
+Explanation: Người đàn ông nói "I'll send the invitations this afternoon and ask her to bring a copy", nên hành động chiều nay của anh là gửi thư mời cho nữ chuyên viên phân tích mới. | (A) "Send the analyst a meeting invitation." — đúng với kế hoạch của người đàn ông cho chiều nay. | (B) "Deliver the evaluation summary to HR." — bản tóm tắt đã được gửi hôm qua. | (C) "Attend the department head's training." — buổi training được nhắc đến như lý do thay đổi lịch, không phải kế hoạch của người đàn ông. | (D) "Complete the written evaluations." — việc đánh giá đã được hoàn thành trước đó.
+Source: original

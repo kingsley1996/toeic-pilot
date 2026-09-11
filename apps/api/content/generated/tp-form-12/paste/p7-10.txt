@@ -1,0 +1,27 @@
+[PASSAGE]
+NOTICE TO TENANTS
+Hòa Bình Office Building Management
+
+Electrical maintenance will be carried out on Saturday, 12 May, from 8:00 A.M. to 4:00 P.M. During this period, all power outlets, elevators, air-conditioning systems, and corridor lighting will be shut down. Please save electronic files and turn off computers before leaving on Friday, 11 May, to prevent data loss.
+
+Tenants requiring continuous power for servers or medical equipment must submit Form P-7 to the front desk by Tuesday, 8 May. Requests received after that date cannot be guaranteed. A temporary generator will serve only essential systems.
+
+Parking in Lot B will be closed for utility trucks. Use Lot C. If work finishes early, power will be restored without notice. We apologise for the inconvenience.
+[QUESTION]
+What is the purpose of the notice?
+(A) To request repair of the building elevators
+(B) To invite tenants to a management meeting
+(C) To announce a planned power interruption
+(D) To introduce permanent parking restrictions
+Answer: C
+Explanation: Thông báo nêu "Electrical maintenance will be carried out on Saturday, 12 May" và "all power outlets, elevators, air-conditioning systems, and corridor lighting will be shut down", tức công bố một lần cúp điện có kế hoạch. | (A) "To request repair of the building elevators" — thang máy chỉ bị tạm ngừng hoạt động để bảo trì, không phải được yêu cầu sửa chữa. | (B) "To invite tenants to a management meeting" — không có cuộc họp nào được nhắc tới. | (C) "To announce a planned power interruption" — đúng vì toàn văn nói lịch bảo trì và việc cúp điện. | (D) "To introduce permanent parking restrictions" — Lot B chỉ đóng tạm thời trong thời gian bảo trì, không phải quy định lâu dài.
+Source: original
+[QUESTION]
+What can be inferred about tenants who submit Form P-7?
+(A) They must attend a safety briefing
+(B) They must move their offices to Lot B
+(C) They will be charged for generator use
+(D) They may be able to receive backup power
+Answer: D
+Explanation: Thông báo viết "Tenants requiring continuous power for servers or medical equipment must submit Form P-7" và "A temporary generator will serve only essential systems", ngụ ý các hồ sơ gửi lên liên quan tới điện dự phòng trong thời gian cúp. | (A) "They must attend a safety briefing" — không có buổi họp an toàn nào được nêu. | (B) "They must move their offices to Lot B" — Lot B bị đóng cho xe bảo trì, không phải nơi dời văn phòng. | (C) "They will be charged for generator use" — thông báo không đề cập phí. | (D) "They may be able to receive backup power" — đúng vì mẫu P-7 dành cho thiết bị cần điện liên tục và máy phát dự phòng phục vụ hệ thống thiết yếu.
+Source: original

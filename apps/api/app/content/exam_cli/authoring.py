@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+from pathlib import Path
 
 from app.content.exam import balance as balancer
 from app.content.exam import blueprint as bp
@@ -12,6 +13,7 @@ from app.content.exam import check as checker
 from app.content.exam import writer
 from app.content.exam_cli.paths import _gateway, blueprint_path, workdir_for
 from app.services.llm.base import LLMQuotaExhausted
+from app.services.llm.gateway import Gateway
 from app.services.llm.router import Tier
 
 
@@ -31,6 +33,7 @@ def cmd_write(args: argparse.Namespace) -> int:
     gateway = _gateway(args.model)
     tier = Tier(args.tier)
     written = 0
+    wrote: set[str] = set()
     started = time.monotonic()
     for index, slot in enumerate(todo, start=1):
         part = next(p.part for p in plan.parts if slot in p.slots)
@@ -50,7 +53,7 @@ def cmd_write(args: argparse.Namespace) -> int:
             # đây `write` luôn chạy ở 6000 trong khi `writer` đã có trần đo sẵn
             # cho từng part — và `p1-03` cụt giữa lời giải thích vì đúng chỗ này.
             ceiling = args.max_tokens or writer.max_tokens_for(part, slot)
-            block = writer.write_slot(gateway, slot, tier, part, ceiling)
+            block = _write_slot(gateway, slot, tier, part, ceiling)
         except LLMQuotaExhausted as quota:
             # Hạn mức NGÀY không tự hết sau ba mươi giây. Backoff ở đây sẽ cày
             # hết mọi ô còn lại, hỏng y hệt nhau, và chôn mất dòng nói đúng
@@ -66,34 +69,113 @@ def cmd_write(args: argparse.Namespace) -> int:
                 flush=True,
             )
             continue
-        # Part 1 trả về hai khối. Mô tả ảnh đi ra hiện vật RIÊNG: parser từ chối
-        # dòng lạ sau các đáp án, nên nhét nó vào tệp dán là làm cả khối không
-        # đọc được.
-        photo, block = writer.split_photo(block)
-        if photo:
-            photo_path = workdir / "photos" / f"{slot.id}.txt"
-            photo_path.parent.mkdir(parents=True, exist_ok=True)
-            photo_path.write_text(photo + "\n")
-        # Bảng của Part 3/4 cũng là hiện vật riêng, cùng lý do như mô tả ảnh: nó
-        # là DỮ LIỆU để vẽ và để sinh chữ thay ảnh, không phải dòng để dán.
-        tables, block = writer.split_all(block, writer.GRAPHIC_MARKER)
-        for order, table in enumerate(tables, start=1):
-            # Một cụm Part 7 có thể mang hai hình, nên tên tệp mang số thứ tự.
-            # Ô chỉ có một hình vẫn giữ tên cũ `<slot>.txt`, để Part 3/4 không
-            # phải sinh lại.
-            suffix = "" if len(tables) == 1 else f"-{order}"
-            table_path = workdir / "graphics" / f"{slot.id}{suffix}.txt"
-            table_path.parent.mkdir(parents=True, exist_ok=True)
-            table_path.write_text(table + "\n")
-        path = writer.save_slot(workdir, slot, block)
+        path = _save_block(workdir, slot, block)
         written += 1
+        wrote.add(slot.id)
         print(
             f"  ✓ [{index}/{len(todo)}] {slot.id} sau {time.monotonic() - each:.0f}s  {path}",
             flush=True,
         )
     minutes = (time.monotonic() - started) / 60
     print(f"\nĐã ghi {written}/{len(todo)} ô trong {minutes:.1f} phút.", flush=True)
+    _fix_pass(plan, workdir, gateway, tier, wrote)
     return 0
+
+
+def _write_slot(
+    gateway: Gateway,
+    slot: bp.QuestionSlot,
+    tier: Tier,
+    part: int,
+    ceiling: int,
+    hint: str | None = None,
+) -> str:
+    try:
+        return writer.write_slot(gateway, slot, tier, part, ceiling, fix_hint=hint)
+    except Exception as failure:
+        # "Tăng `max_tokens`" của model suy luận chỉ đúng theo nghĩa đen: cùng
+        # trần thì nó cụt lại đúng chỗ cũ sau hai phút chờ. Nhấn đúp một lần;
+        # mọi lỗi khác ném nguyên để vòng gọi xử lý như trước.
+        if "max_tokens" not in str(failure):
+            raise
+        return writer.write_slot(gateway, slot, tier, part, ceiling * 2, fix_hint=hint)
+
+
+def _save_block(workdir: Path, slot: bp.QuestionSlot, block: str) -> Path:
+    # Part 1 trả về hai khối. Mô tả ảnh đi ra hiện vật RIÊNG: parser từ chối
+    # dòng lạ sau các đáp án, nên nhét nó vào tệp dán là làm cả khối không
+    # đọc được.
+    photo, block = writer.split_photo(block)
+    if photo:
+        photo_path = workdir / "photos" / f"{slot.id}.txt"
+        photo_path.parent.mkdir(parents=True, exist_ok=True)
+        photo_path.write_text(photo + "\n")
+    # Bảng của Part 3/4 cũng là hiện vật riêng, cùng lý do như mô tả ảnh: nó
+    # là DỮ LIỆU để vẽ và để sinh chữ thay ảnh, không phải dòng để dán.
+    tables, block = writer.split_all(block, writer.GRAPHIC_MARKER)
+    for order, table in enumerate(tables, start=1):
+        # Một cụm Part 7 có thể mang hai hình, nên tên tệp mang số thứ tự.
+        # Ô chỉ có một hình vẫn giữ tên cũ `<slot>.txt`, để Part 3/4 không
+        # phải sinh lại.
+        suffix = "" if len(tables) == 1 else f"-{order}"
+        table_path = workdir / "graphics" / f"{slot.id}{suffix}.txt"
+        table_path.parent.mkdir(parents=True, exist_ok=True)
+        table_path.write_text(table + "\n")
+    return writer.save_slot(workdir, slot, block)
+
+
+def _fix_pass(
+    plan: bp.Blueprint, workdir: Path, gateway: Gateway, tier: Tier, wrote: set[str]
+) -> None:
+    """Kiểm tất định MIỄN PHÍ ngay các cụm vừa viết; đỏ thì viết lại MỘT lần với
+    nguyên lời phê. `write` trước đây chỉ sinh, lời phê nằm ở lệnh `check` chạy
+    sau — và khoảng giữa ấy chẳng có ai viết lại: phê rơi vào mắt người thay vì
+    rơi vào đúng model vừa viết sai. `fix_hint` đã có sẵn cho vòng agent; đường
+    lệnh là chỗ duy nhất chưa dùng nó.
+    """
+    if not wrote:
+        return
+    by_id = {slot.id: (pp.part, slot) for pp in plan.parts for slot in pp.slots}
+    for part in sorted({by_id[sid][0] for sid in wrote}):
+        reports = checker.check_blueprint(
+            plan, workdir, gateway=None, tier=tier, only=part, quiet=True
+        )
+        # Cụm ba câu nhân một lỗi thành ba báo cáo (đơn vị ĐỌC là từng câu) —
+        # gom lại trước khi đưa vào lời phê.
+        blocked: dict[str, list[str]] = {}
+        for r in reports:
+            if r.slot_id in wrote and r.problems:
+                found = blocked.setdefault(r.slot_id, [])
+                found.extend(p for p in r.problems if p not in found)
+        for slot_id, problems in blocked.items():
+            part_number, slot = by_id[slot_id]
+            hint = "; ".join(problems)
+            print(f"  ⟲ {slot_id} viết lại vì: {hint[:160]}", flush=True)
+            writer.paste_path(workdir, slot).unlink(missing_ok=True)
+            for old in (workdir / "graphics").glob(f"{slot_id}*.txt"):
+                old.unlink()
+            try:
+                block = _write_slot(
+                    gateway, slot, tier, part_number, writer.max_tokens_for(part_number, slot), hint
+                )
+            except Exception as failure:  # noqa: BLE001
+                print(f"  ✗ {slot_id} viết lại hỏng: {failure}", file=sys.stderr, flush=True)
+                continue
+            _save_block(workdir, slot, block)
+            again = checker.check_blueprint(
+                plan,
+                workdir,
+                gateway=None,
+                tier=tier,
+                only=part_number,
+                quiet=True,
+                slot_id=slot_id,
+            )
+            left = [p for r in again if r.problems for p in r.problems]
+            if left:
+                print(f"  ⚠ {slot_id} vẫn cần người nhìn: {'; '.join(dict.fromkeys(left))[:160]}")
+            else:
+                print(f"  ✓ {slot_id} sạch sau viết lại", flush=True)
 
 
 # Bộ sinh ảnh nằm ngoài repo — cùng lệnh mà bộ skill sprite dùng, và cũng là

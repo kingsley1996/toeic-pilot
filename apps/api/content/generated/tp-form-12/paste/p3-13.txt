@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, team. As project manager, I want to remind everyone about our report deadlines. Sarah completed hers on Wednesday, but the rest of us must stay on schedule.
+voice: uk_female_1
+Thanks. Elena, Marcus, David, and I are finalizing our sections today. However, our online survey results won't be ready until next week.
+voice: au_male_1
+That's right. Should we submit our reports without that client feedback section for now?
+voice: us_female_1
+No, it's required. Please attach your notes from client interviews instead.
+voice: uk_female_1
+Understood. I will make sure David includes those interview notes before he submits his report.
+voice: au_male_1
+Sounds good. We'll all follow those instructions.
+
+[QUESTION]
+What is the first speaker's role?
+(A) She collects the survey results.
+(B) She completed her report on Wednesday.
+(C) She manages the online database.
+(D) She leads the project team.
+Answer: D
+Explanation: Người phụ nữ tự giới thiệu "As project manager", cho biết cô là quản lý dự án và đang đưa ra hướng dẫn cho các thành viên trong nhóm. | (A) "She collects the survey results" — khảo sát do cả nhóm phụ trách và kết quả chưa sẵn sàng, không phải việc cô thu thập. | (B) "She completed her report on Wednesday" — người hoàn thành vào Wednesday là Sarah, không phải cô. | (C) "She manages the online database" — không có thông tin nào về việc quản lý cơ sở dữ liệu. | (D) "She leads the project team" — đúng vì vai trò project manager cho thấy cô chịu trách nhiệm quản lý và hướng dẫn nhóm dự án.
+Source: original
+[QUESTION]
+What are the employees instructed to attach to their reports?
+(A) Notes from client interviews
+(B) Online survey results
+(C) Updated budget plans
+(D) Client contact numbers
+Answer: A
+Explanation: Người nam hỏi liệu họ có nên nộp báo cáo mà không có phần phản hồi của khách hàng hay không. Người phụ nữ trả lời rằng phần này vẫn bắt buộc và yêu cầu họ đính kèm ghi chú từ các cuộc phỏng vấn khách hàng thay thế. | (A) "Notes from client interviews" — đúng vì người phụ nữ trực tiếp yêu cầu "Please attach your notes from client interviews instead." | (B) "Online survey results" — kết quả khảo sát chưa sẵn sàng cho đến tuần sau nên nhân viên không được yêu cầu đính kèm chúng. | (C) "Updated budget plans" — kế hoạch ngân sách không được đề cập. | (D) "Client contact numbers" — thông tin liên hệ của khách hàng không được nhắc đến.
+Source: original
+[QUESTION]
+Look at the graphic. On which day is David scheduled to submit his report?
+(A) Wednesday
+(B) Friday
+(C) Thursday
+(D) Saturday
+Answer: B
+Explanation: Ở lượt nói cuối, người phụ nữ thứ hai cho biết David sẽ đưa các ghi chú phỏng vấn vào báo cáo trước khi nộp. Đối chiếu tên David trên graphic, lịch nộp báo cáo của anh ấy là Friday. | (A) "Wednesday" — đây là ngày Sarah đã hoàn thành báo cáo, không phải ngày nộp của David. | (B) "Friday" — đúng vì graphic cho thấy David được lên lịch nộp báo cáo vào thứ Sáu. | (C) "Thursday" — theo graphic, đây là ngày được phân cho Elena. | (D) "Saturday" — theo graphic, đây là ngày được phân cho Marcus.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why was the order delivered so late?
+voice: au_male_1
+(A) It was two days behind schedule.
+(B) It got here around four yesterday afternoon.
+(C) Actually, it arrived on time this morning.
+Answer: C
+Explanation: Câu hỏi là "Why was the order delivered so late?", giám đốc hỏi nhân viên kho về NGUYÊN NHÂN đơn hàng bị giao trễ. | (A) "It was two days behind schedule." — nêu mức độ trễ bao nhiêu ngày, tức trả lời chiều "how late" chứ không đưa ra lý do. | (B) "It got here around four yesterday afternoon." — nêu thời điểm giao hàng, trả lời câu hỏi When thay vì Why. | (C) "Actually, it arrived on time this morning." — bác bỏ tiền đề của câu hỏi vì đơn đến đúng hạn, nên việc tìm nguyên nhân trễ trở nên vô nghĩa; đây là đáp án gián tiếp đúng.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Some folded clothes are stacked on the counter.
+(B) The laundry carts are lined up between the machines.
+(C) One of the washing machines is being repaired.
+(D) A customer is loading clothes into a machine.
+Answer: A
+Explanation: Trong ảnh là một tiệm giặt ủi tự động không có bóng người: sáu máy giặt xếp thành một hàng dọc theo tường trái, mỗi xe đẩy đỗ cạnh bên một máy, và những chồng quần áo đã gấp nằm ngay ngắn trên quầy ở giữa phòng. | (A) "stacked on the counter" — đúng vị trí: những chồng quần áo đã gấp nằm trên quầy giữa phòng. | (B) "lined up between the machines" — các xe đẩy có trong ảnh nhưng đỗ cạnh từng máy chứ không nằm giữa hai máy: đúng vật, sai vị trí. | (C) "is being repaired" — máy giặt đứng nguyên thành hàng, không có dụng cụ hay ai chạm vào: hành động đang diễn ra không có bằng chứng. | (D) "A customer is loading clothes" — trong ảnh không có bất kỳ người nào: nhân vật không hề tồn tại trong ảnh.
+Source: original

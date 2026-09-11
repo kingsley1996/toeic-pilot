@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone. This is Linda from building management. To replace safety controls, we will shut down power to the east elevator bank this weekend. Originally, the outage was scheduled from Friday evening until Monday morning; however, contractors need more time, so it will now last from Friday at six p.m. until Tuesday at six a.m. During that period, please enter through the south lobby and use the west elevators. You are asked to carry your employee badge with you at all times, because the south turnstiles will be locked for testing. For deliveries, bring packages to the loading dock on level one, not to the mailroom, which will be closed all weekend.
+
+[QUESTION]
+What does the speaker mean when she says, "the south turnstiles will be locked for testing"?
+
+(A) The south lobby will be closed for testing.
+(B) Employees will not be able to enter through the usual turnstiles.
+(C) Employees must use the west elevators to reach the south lobby.
+(D) The employee badge system will be unavailable throughout the building.
+
+Answer: B
+Explanation: Người nói yêu cầu nhân viên mang thẻ và cho biết các turnstiles ở phía nam sẽ bị khóa để kiểm tra, nên nhân viên không thể sử dụng lối turnstile thông thường tại đó. | (A) "The south lobby will be closed for testing." — sai vì người nói vẫn hướng dẫn nhân viên đi vào qua south lobby. | (B) "Employees will not be able to enter through the usual turnstiles." — diễn đạt lại đúng ý rằng các turnstiles phía nam sẽ bị khóa trong thời gian kiểm tra. | (C) "Employees must use the west elevators to reach the south lobby." — west elevators được dùng trong thời gian mất điện, nhưng không phải ý của câu được trích. | (D) "The employee badge system will be unavailable throughout the building." — chỉ các south turnstiles bị khóa, không phải toàn bộ hệ thống thẻ trong tòa nhà.
+
+Source: original
+[QUESTION]
+What change has been made to the shutdown schedule?
+
+(A) It will finish on Monday morning.
+(B) It will start on Friday at six a.m.
+(C) It will now end on Tuesday at six a.m.
+(D) It will affect only the west elevators.
+
+Answer: C
+Explanation: Người nói cho biết lịch ban đầu kéo dài từ Friday evening đến Monday morning nhưng sau đó được thay đổi thành Friday at six p.m. đến Tuesday at six a.m. | (A) "It will finish on Monday morning." — đây là thời điểm kết thúc của lịch ban đầu, không phải lịch mới. | (B) "It will start on Friday at six a.m." — sai thời gian vì lịch mới bắt đầu lúc six p.m. | (C) "It will now end on Tuesday at six a.m." — khớp chính xác với lịch mới được thông báo. | (D) "It will affect only the west elevators." — sai vì power shutdown ảnh hưởng đến east elevator bank, còn west elevators vẫn được sử dụng.
+
+Source: original
+[QUESTION]
+What should an employee do with a delivery during the shutdown?
+
+(A) Leave it in the mailroom before Friday evening.
+(B) Bring it to the south lobby by six p.m.
+(C) Have it delivered through the west elevator bank.
+(D) Take it to the loading dock on the first floor.
+
+Answer: D
+Explanation: Người nói chỉ rõ "bring packages to the loading dock on level one" và nói mailroom sẽ đóng cửa suốt cuối tuần. | (A) "Leave it in the mailroom before Friday evening." — mailroom sẽ đóng cửa trong thời gian shutdown và người nói yêu cầu đưa hàng đến nơi khác. | (B) "Bring it to the south lobby by six p.m." — south lobby là lối vào được sử dụng, không phải địa điểm nhận hàng. | (C) "Have it delivered through the west elevator bank." — west elevators được chỉ dẫn cho việc di chuyển của nhân viên, không được chỉ định là nơi nhận hàng. | (D) "Take it to the loading dock on the first floor." — diễn đạt lại chính xác hướng dẫn đưa hàng đến loading dock ở level one.
+
+Source: original

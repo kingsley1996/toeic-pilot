@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for joining the weekly meeting, everyone. To start, the user interface design for our new mobile app is complete, but software testing was delayed because the server crashed on Monday.
+voice: ca_male_1
+Our IT team fixed the server yesterday morning, so developers resumed testing today. We need three days to complete all the security checks.
+voice: au_male_1
+That means testing will finish on Friday afternoon. Should I go ahead and notify the marketing team to prepare the press release?
+voice: uk_female_1
+Not yet, Mark. Let me review the final test report on Monday first. Once I approve it, I'll send the updated timeline to all department heads.
+voice: ca_male_1
+Understood. In the meantime, I'll start drafting the user manual so it's ready when you give the green light.
+
+[QUESTION]
+What can be inferred about the mobile app project?
+(A) She will send the updated timeline after the Friday testing is finished.
+(B) The department heads will review the report themselves.
+(C) Testing resumes before the server is fixed.
+(D) The marketing team prepares the press release.
+Answer: A
+Explanation: Người nam báo "testing will finish on Friday afternoon", còn người phụ nữ chỉ "send the updated timeline" sau khi cô duyệt báo cáo kiểm thử vào thứ Hai — việc gửi lịch trình nằm sau cả ngày kết thúc kiểm thử. | (A) "She will send the updated timeline after the Friday testing is finished." — đúng vì phải ghép lịch kiểm thử với điều kiện phê duyệt ở hai lượt nói khác nhau. | (B) "The department heads will review the report themselves." — chính cô là người xem báo cáo; các trưởng phòng chỉ nhận lịch trình. | (C) "Testing resumes before the server is fixed." — ngược với lời thoại. | (D) "The marketing team prepares the press release." — cô đã chặn việc này bằng câu từ chối ở đầu lượt nói của mình.
+Source: original
+[QUESTION]
+What will the woman do on Monday?
+(A) Fix a server issue
+(B) Examine a test report
+(C) Issue a press release
+(D) Meet with department heads
+Answer: B
+Explanation: Người phụ nữ nói "Let me review the final test report on Monday first", cho biết cô sẽ xem xét báo cáo kiểm thử cuối cùng vào thứ Hai. | (A) "Fix a server issue" — sự cố máy chủ đã được đội IT xử lý từ hôm trước, không phải việc người phụ nữ sẽ làm vào thứ Hai. | (B) "Examine a test report" — diễn đạt lại chính xác ý "review the final test report". | (C) "Issue a press release" — thông cáo báo chí được nhắc đến trong kế hoạch của đội marketing, nhưng người phụ nữ chưa cho phép họ bắt đầu chuẩn bị. | (D) "Meet with department heads" — người phụ nữ sẽ gửi lịch trình cập nhật cho các trưởng bộ phận sau khi phê duyệt báo cáo, nhưng không nói rằng cô sẽ gặp họ.
+Source: original
+[QUESTION]
+What does the first man say he will do next?
+(A) Contact the marketing department
+(B) Send a schedule to department heads
+(C) Prepare a user manual
+(D) Reschedule a weekly meeting
+Answer: C
+Explanation: Ở lượt cuối, người đàn ông đầu tiên nói "In the meantime, I'll start drafting the user manual", cho biết anh ấy sẽ bắt đầu soạn hướng dẫn sử dụng. | (A) "Contact the marketing department" — việc thông báo cho marketing được người đàn ông thứ hai đề xuất, nhưng người phụ nữ nói "Not yet." | (B) "Send a schedule to department heads" — đây là việc người phụ nữ sẽ làm sau khi phê duyệt báo cáo kiểm thử. | (C) "Prepare a user manual" — diễn đạt lại chính xác ý "start drafting the user manual". | (D) "Reschedule a weekly meeting" — việc đổi lịch cuộc họp tuần không được đề cập trong bài.
+Source: original

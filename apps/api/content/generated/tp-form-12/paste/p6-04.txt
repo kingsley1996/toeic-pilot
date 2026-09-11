@@ -1,0 +1,54 @@
+[PASSAGE]
+TO: All Branch Staff
+FROM: Branch Director
+SUBJECT: New Meeting Room Booking Process
+DATE: June 12
+
+All meeting room reservations must now ------- (1) through the online portal by 5 p.m. the day before use. This change helps us avoid double bookings.
+
+The portal lists each room's capacity, equipment, and ------- (2), so you can choose the space that fits your meeting. Please check these details before sending any request.
+
+Requests from clients or external partners require a separate approval form. ------- (3)
+
+That form must be submitted at least three days in advance, and confirmation is sent only after approval. All booked rooms must be vacated when the next reservation ------- (4).
+
+[QUESTION]
+Blank (1)
+(A) submit
+(B) submitting
+(C) have submitted
+(D) be submitted
+Answer: D
+Explanation: "All meeting room reservations must now ------- (1) through the online portal" cho thấy reservations nhận hành động gửi, nên cần cấu trúc bị động sau "must". | (A) "submit" — chủ động, khiến reservations trở thành bên thực hiện hành động. | (B) "submitting" — dạng V-ing không thể đứng trực tiếp sau "must". | (C) "have submitted" — chủ động và không phù hợp với vai trò của reservations. | (D) "be submitted" — đúng cấu trúc bị động must + be + past participle.
+
+Source: original
+[QUESTION]
+Blank (2)
+(A) availability
+(B) attendance
+(C) appointment
+(D) advertisement
+Answer: A
+Explanation: "The portal lists each room's capacity, equipment, and -------" cần một danh từ chỉ thông tin về tình trạng có thể sử dụng của phòng. | (A) "availability" — phù hợp vì người dùng cần biết phòng còn trống hay không trước khi đặt. | (B) "attendance" — chỉ số người tham dự, không phải trạng thái của phòng. | (C) "appointment" — chỉ một cuộc hẹn, không phải thông tin về phòng. | (D) "advertisement" — chỉ quảng cáo, không phù hợp với danh sách thông tin đặt phòng.
+
+Source: original
+[QUESTION]
+Blank (3)
+(A) Internal staff can book rooms without using the portal.
+(B) The form is available under “Meeting Resources” on the intranet.
+(C) The coordinator handles all client visits personally.
+(D) Meeting rooms are reserved automatically at midnight.
+Answer: B
+Explanation: Câu trước giới thiệu "a separate approval form" và câu sau dùng "That form", nên chỗ trống phù hợp nhất là thông tin giúp người đọc biết nơi lấy form. | (A) "Internal staff can book rooms without using the portal." — mâu thuẫn với quy định tất cả reservations phải được gửi qua portal. | (B) "The form is available under “Meeting Resources” on the intranet." — giới thiệu nơi tìm chính approval form được nhắc đến. | (C) "The coordinator handles all client visits personally." — nói về việc tiếp khách, không liên quan đến approval form. | (D) "Meeting rooms are reserved automatically at midnight." — không liên quan đến quy trình phê duyệt form.
+
+Source: original
+[QUESTION]
+Blank (4)
+(A) has begun
+(B) began
+(C) begins
+(D) will begin
+Answer: C
+Explanation: Trong mệnh đề thời gian bắt đầu bằng "when" để nói về một sự kiện trong tương lai, dùng hiện tại đơn thay cho "will". | (A) "has begun" — hiện tại hoàn thành diễn tả hành động đã bắt đầu, không phù hợp với ý nghĩa về lịch đặt phòng tiếp theo. | (B) "began" — quá khứ, không phù hợp với một reservation sắp tới. | (C) "begins" — đúng hiện tại đơn trong mệnh đề thời gian "when the next reservation begins". | (D) "will begin" — không dùng "will" trong mệnh đề thời gian bắt đầu bằng "when" khi nói về tương lai.
+
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) A driver is replacing a flat tire.
+(B) An attendant is signaling a car into a space.
+(C) The drivers are washing their cars in the lot.
+(D) The parked cars are lined up along a fence.
+Answer: B
+Explanation: Trong ảnh một nhân viên mặc áo phản quang đứng cạnh chỗ trống, giơ một tay ra hiệu cho chiếc sedan đang lùi vào vị trí, trong khi một tài xế khác cúi xuống đặt đồng hồ đo áp suất vào van lốp xe bạc phía bên phải, và các xe còn lại đậu thẳng hàng giữa các vạch sơn trắng ở giữa bãi. | (A) "replacing a flat tire" — người tài xế chỉ đang đo áp suất lốp, không có kích hay bánh dự phòng: đúng người, sai hành động. | (B) "signaling a car into a space" — đúng hành động của nhân viên và chiếc xe đang lùi vào chỗ trống. | (C) "washing their cars" — không ai đang rửa xe, cũng không có xô hay vòi nước nào trong bãi: đúng vật, sai hành động. | (D) "lined up along a fence" — các xe đậu thành hàng giữa các vạch trắng ở giữa bãi, hàng rào chỉ chạy dọc phía cuối bãi: đúng các xe, sai vị trí.
+Source: original

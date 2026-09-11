@@ -1,0 +1,33 @@
+[PASSAGE]
+Lan [1:42 P.M.]
+The group meeting for the new campaign cannot stay at 9 A.M. on Tuesday. The studio is booked for a client shoot, and we need the room for camera tests.
+
+Minh [1:44 P.M.]
+Can we move it to Wednesday instead? I have a video call until 11 A.M., but I can join afterward if needed.
+
+Lan [1:45 P.M.]
+Wednesday morning is possible, but the client review is at 2 P.M., so the meeting must end by 1:30 P.M. The copy team also wants to finish the taglines before that.
+
+Minh [1:47 P.M.]
+What about Thursday? I can start at 10:30 A.M. and stay until noon.
+
+Lan [1:49 P.M.]
+Thursday works. The design team will share the storyboard then, and we can confirm the taglines at the same time.
+[QUESTION]
+When is the meeting scheduled to begin?
+(A) Thursday at 10:30 A.M.
+(B) Wednesday at 2 P.M.
+(C) Tuesday at 9 A.M.
+(D) Thursday at 12 P.M.
+Answer: A
+Explanation: Tin nhắn "What about Thursday? I can start at 10:30 A.M." được Lan xác nhận bằng "Thursday works", nên thời điểm bắt đầu là 10:30 A.M. ngày thứ Năm. | (A) "Thursday at 10:30 A.M." — đúng vì đó là thời điểm Lan đồng ý sau khi Minh đề nghị. | (B) "Wednesday at 2 P.M." — contradicted by "the client review is at 2 P.M.". | (C) "Tuesday at 9 A.M." — contradicted by "cannot stay at 9 A.M. on Tuesday". | (D) "Thursday at 12 P.M." — mentioned as "stay until noon", but not the start time.
+Source: original
+[QUESTION]
+At 1:45 P.M., what does Lan mean when she writes, "the meeting must end by 1:30 P.M."?
+(A) The client review will be moved.
+(B) Wednesday may not leave enough time.
+(C) The copy team can join later.
+(D) The meeting should start at 2 P.M.
+Answer: B
+Explanation: Tin nhắn "Wednesday morning is possible, but the client review is at 2 P.M., so the meeting must end by 1:30 P.M." cho thấy ngày thứ Tư khó bảo đảm đủ thời gian trước buổi review. | (A) "The client review will be moved." — contradicted by the passage keeping the review at 2 P.M. | (B) "Wednesday may not leave enough time." — đúng vì meeting must end by 1:30 P.M. and the copy team wants to finish before that. | (C) "The copy team can join later." — contradicted by "The copy team also wants to finish the taglines before that." | (D) "The meeting should start at 2 P.M." — contradicted by 2 P.M. being the client review time.
+Source: original

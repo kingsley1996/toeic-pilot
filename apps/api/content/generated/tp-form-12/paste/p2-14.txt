@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Where did you put the contract file?
+voice: us_female_1
+(A) It's about the Henderson merger.
+(B) At three o'clock this afternoon.
+(C) It's on the shelf to the left of my desk.
+Answer: C
+Explanation: Câu hỏi là "Where did you put the contract file?", quản lý hỏi NƠI CHỐN của hồ sơ hợp đồng. | (A) "It's about the Henderson merger." — dùng lại từ "contract" theo nghĩa nội dung hồ sơ, không trả lời được hồ sơ đang để ở đâu. | (B) "At three o'clock this afternoon." — đưa thời gian thay vì nơi chốn, trả lời một câu hỏi When cho câu hỏi Where. | (C) "It's on the shelf to the left of my desk." — nêu đúng một nơi chốn (trên kệ bên trái bàn), trả lời trực tiếp cho Where.
+Source: original

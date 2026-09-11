@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When will this month's salary be transferred?
+voice: us_female_1
+(A) Mr. Pham was transferred to the Hanoi branch.
+(B) On the twenty-eighth, same as every month.
+(C) The payroll department is on the third floor.
+Answer: B
+Explanation: Câu hỏi là "When will this month's salary be transferred?", hỏi THỜI ĐIỂM lương được chuyển. | (A) "Mr. Pham was transferred to the Hanoi branch." — dùng lại từ "transferred" nhưng theo nghĩa điều chuyển nhân sự, không trả lời được thời điểm nhận lương. | (B) "On the twenty-eighth, same as every month." — nêu đúng ngày chuyển lương như mọi tháng. | (C) "The payroll department is on the third floor." — trả lời nơi chốn cho một câu hỏi When, sai loại từ hỏi.
+Source: original

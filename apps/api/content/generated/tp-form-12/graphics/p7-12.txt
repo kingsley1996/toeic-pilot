@@ -1,0 +1,6 @@
+kind: chart
+Quarterly Sales Revenue (in Thousands of Dollars)
+September | 420
+October | 465
+November | 510
+December | 480

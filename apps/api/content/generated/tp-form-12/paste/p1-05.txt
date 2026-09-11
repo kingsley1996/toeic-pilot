@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) The benches have been stacked on top of one another.
+(B) The flowerbeds are being watered by a gardener.
+(C) There is only one bicycle at the rack.
+(D) The bicycles are leaning against a rack near the gate.
+Answer: D
+Explanation: Ảnh công viên buổi sáng không có người nào; bốn chiếc xe đạp đang tựa vào một giá đỗ kim loại đặt sát cổng, trong khi một hàng ghế gỗ xếp dọc đường mòn và thùng rác đứng cạnh từng cột đèn. | (A) "stacked on top of one another" — các ghế gỗ đứng thẳng thành một hàng dọc đường mòn chứ không chồng lên nhau: đúng vật, sai vị trí. | (B) "being watered by a gardener" — ảnh không có bất kỳ ai và không có bằng chứng ai đang tưới nước: nhắc đến người không có trong ảnh. | (C) "only one bicycle" — ở giá đỗ có tới bốn chiếc xe đạp: số nhiều bị nói thành số ít. | (D) "leaning against a rack near the gate" — đúng vị trí: bốn chiếc xe đạp đang tựa vào giá đỗ sát cổng.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Which is better, the orange juice or the mango smoothie?
+voice: ca_male_1
+(A) A small juice is three dollars.
+(B) Both are freshly made every morning.
+(C) The mango smoothie — it's today's special.
+Answer: C
+Explanation: Câu hỏi là "Which is better, the orange juice or the mango smoothie?", một câu hỏi LỰA CHỌN giữa nước ép cam và sinh xoài, muốn nhân viên chọn một bên. | (A) "A small juice is three dollars." — dùng lại từ "juice" nghe được trong câu hỏi nhưng trả lời về giá tiền, tức trả lời một câu hỏi How much mà không ai hỏi. | (B) "Both are freshly made every morning." — khen cả hai món nên thực chất không chọn bên nào, đáp cho cả hai thay vì một. | (C) "The mango smoothie — it's today's special." — chọn thẳng một trong hai và giới thiệu sinh xoài là món đặc biệt hôm nay, đúng cách trả lời câu hỏi lựa chọn.
+Source: original

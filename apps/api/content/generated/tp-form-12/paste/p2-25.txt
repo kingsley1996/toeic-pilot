@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Could you fill out this registration form and show me your passport, please?
+voice: au_male_1
+(A) The form was emailed to me last week.
+(B) Of course, I'll fill it out right away.
+(C) Yes, it expires next March.
+Answer: B
+Explanation: Câu hỏi là "Could you fill out this registration form and show me your passport, please?", một YÊU CẦU của lễ tân khách sạn, nên người nghe phải đồng ý làm theo. | (A) "The form was emailed to me last week." — dùng lại từ "form" nhưng chỉ nêu một sự việc, trả lời một câu hỏi thông tin không ai hỏi thay vì đồng ý làm theo. | (B) "Of course, I'll fill it out right away." — nhận lời ngay và cam kết hành động, phản hồi trực tiếp đúng với một yêu cầu. | (C) "Yes, it expires next March." — mở đầu bằng "Yes" nghe như đồng ý, nhưng thật ra nói về ngày hết hạn của hộ chiếu, biến yêu cầu thành câu hỏi về thời gian.
+Source: original

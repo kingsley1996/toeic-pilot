@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Excuse me, where is meeting room B?
+voice: uk_female_1
+(A) It starts at two, right after lunch.
+(B) I'm meeting the new clients at noon.
+(C) It's been closed for repairs since Monday.
+Answer: C
+Explanation: Câu hỏi là "Excuse me, where is meeting room B?", khách dự hội nghị hỏi bảo vệ phòng họp B nằm ở đâu — một câu hỏi WHERE. | (A) "It starts at two, right after lunch." — nêu giờ bắt đầu, trả lời thời gian cho một câu hỏi nơi chốn. | (B) "I'm meeting the new clients at noon." — lấy lại từ "meeting" nhưng theo nghĩa khác là gặp gỡ, một câu nghe hợp lý nhưng không phản hồi việc phòng B ở đâu. | (C) "It's been closed for repairs since Monday." — cho biết phòng đang bị đóng cửa để sửa chữa, khiến việc hỏi nó ở đâu trở nên vô nghĩa mà không hề nêu một địa điểm nào.
+Source: original

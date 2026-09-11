@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Should I meet with the director on Monday or Tuesday?
+voice: uk_female_1
+(A) Tuesday would suit him better.
+(B) The director meets the team every Monday.
+(C) In his office, on the fifth floor.
+Answer: A
+Explanation: Câu hỏi là "Should I meet with the director on Monday or Tuesday?", một câu hỏi LỰA CHỌN giữa hai ngày, người nghe phải chọn Monday hoặc Tuesday. | (A) "Tuesday would suit him better." — chọn thẳng một trong hai ngày được hỏi, đúng cách đáp một câu hỏi lựa chọn. | (B) "The director meets the team every Monday." — nêu lịch họp định kỳ, không chọn ngày nào cho buổi gặp được hỏi. | (C) "In his office, on the fifth floor." — trả lời nơi chốn, bắt từ "meet with the director" nhưng đáp một câu hỏi Where không hề được hỏi.
+Source: original

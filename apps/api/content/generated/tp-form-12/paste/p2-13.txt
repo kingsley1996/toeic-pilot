@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+How soon will my online banking account be activated?
+voice: au_male_1
+(A) You can update your account once a week.
+(B) Ask our mobile app team — they handle new sign-ups.
+(C) The account must be activated before first use.
+Answer: B
+Explanation: Câu hỏi là "How soon will my online banking account be activated?", khách hàng hỏi nhân viên ngân hàng BAO LÂU NỮA tài khoản trực tuyến được kích hoạt — cần một khoảng thời gian tới khi việc xảy ra. | (A) "You can update your account once a week." — mượn từ "account" nhưng đưa ra tần suất, trả lời kiểu how often chứ không phải how soon. | (B) "Ask our mobile app team — they handle new sign-ups." — không nêu khoảng thời gian nào mà hướng sang bộ phận phụ trách đăng ký, đúng kiểu trả lời gián tiếp cho câu hỏi how soon. | (C) "The account must be activated before first use." — nêu một quy tắc sử dụng, không cho biết việc kích hoạt còn mất bao lâu.
+Source: original

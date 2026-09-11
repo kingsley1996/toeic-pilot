@@ -1,0 +1,4 @@
+kind: map
+Main Hall Seating Plan — Annual Customer Conference
+Stage: front of hall | Registration Desk: beside the entrance
+Table 1: center of hall | Refreshment Area: rear corner

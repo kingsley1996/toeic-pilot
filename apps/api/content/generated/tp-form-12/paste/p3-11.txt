@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Thanks for coming over to inspect the electrical system in my apartment. Did you find any problems?
+voice: ca_male_1
+Overall, everything was done well. However, during the inspection, I noticed one area where the wiring has a loose connection.
+voice: us_female_1
+Oh, I see. Is that something you can fix today?
+voice: ca_male_1
+Yes, it's a quick fix. I can repair that wire right away.
+voice: us_female_1
+Great! Since you're already here in the apartment building, could you also check the main circuit breaker in the basement before you go?
+voice: ca_male_1
+No problem. I'll handle the wiring repair first and then head downstairs.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Apartment rental fees
+(B) Electrical inspection results
+(C) Circuit breaker prices
+(D) Basement renovation plans
+Answer: B
+Explanation: Người phụ nữ mở đầu bằng việc cảm ơn người nam đã đến kiểm tra hệ thống điện trong căn hộ, sau đó người nam báo cáo về một vấn đề được phát hiện trong quá trình kiểm tra. Vì vậy, chủ đề chính của cuộc trò chuyện là kết quả kiểm tra hệ thống điện. | (A) "Apartment rental fees" — "apartment" được nhắc đến nhưng không có thông tin nào về tiền thuê căn hộ. | (B) "Electrical inspection results" — đúng vì hai người đang thảo luận về kết quả kiểm tra và vấn đề về hệ thống dây điện được phát hiện. | (C) "Circuit breaker prices" — circuit breaker được nhắc đến ở cuối cuộc hội thoại, nhưng không có cuộc thảo luận nào về giá cả. | (D) "Basement renovation plans" — basement được nhắc đến vì người nam sẽ xuống đó kiểm tra circuit breaker, nhưng không có kế hoạch cải tạo nào được đề cập.
+Source: original
+[QUESTION]
+Where is the conversation taking place?
+(A) In a basement workshop
+(B) At a hardware store
+(C) At an apartment building
+(D) At an electrical supply warehouse
+Answer: C
+Explanation: Người phụ nữ nói người nam đang ở "my apartment" và sau đó nhắc đến việc anh ấy "already here in the apartment building", cho thấy cuộc trò chuyện đang diễn ra tại một tòa nhà căn hộ. | (A) "In a basement workshop" — tầng hầm chỉ là nơi người nam sẽ đến sau để kiểm tra circuit breaker, không phải vị trí hiện tại. | (B) "At a hardware store" — không có thông tin nào cho thấy họ đang ở cửa hàng dụng cụ. | (C) "At an apartment building" — đúng vì người nam đang ở căn hộ của người phụ nữ để kiểm tra hệ thống điện. | (D) "At an electrical supply warehouse" — không có thông tin nào cho thấy họ đang ở một kho cung cấp thiết bị điện.
+Source: original
+[QUESTION]
+Look at the graphic. Which room will the man repair?
+(A) Living Room
+(B) Bedroom
+(C) Bathroom
+(D) Kitchen
+Answer: D
+Explanation: Người nam cho biết hệ thống dây điện có một "loose connection". Đối chiếu thông tin này với cột Wiring Status trong graphic, lỗi "Loose connection" tương ứng với Kitchen. Vì vậy, người nam sẽ sửa hệ thống dây điện ở phòng bếp. | (A) "Living Room" — theo graphic, phòng khách có trạng thái đạt yêu cầu và không có lỗi loose connection. | (B) "Bedroom" — theo graphic, phòng ngủ cũng không có lỗi loose connection. | (C) "Bathroom" — phòng tắm có vấn đề khác là "Needs grounding", không phải loose connection. | (D) "Kitchen" — đúng vì graphic cho thấy Kitchen có trạng thái "Loose connection", phù hợp với vấn đề người nam phát hiện.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Welcome to Oakridge Apartments! As you requested, this two-bedroom unit is just a ten-minute walk from your downtown office.
+voice: ca_male_1
+That commute sounds ideal. Does the monthly rent of twelve hundred dollars include parking? My company provides a vehicle.
+voice: uk_female_1
+The base rent is twelve hundred, but parking is an extra fifty dollars. Also, this apartment is available starting October first.
+voice: ca_male_1
+Oh, my job transfer begins on September fifteenth, so I need to move in before then.
+voice: uk_female_1
+In that case, unit 4B is available immediately. It is slightly smaller, but it fits your schedule.
+voice: ca_male_1
+Great! Let's go inspect unit 4B now.
+
+[QUESTION]
+What is the main purpose of the conversation?
+(A) To discuss a job transfer at a downtown office
+(B) To buy a company vehicle
+(C) To find an apartment to rent
+(D) To apply for a job at Oakridge Apartments
+Answer: C
+Explanation: Người phụ nữ mở đầu "Welcome to Oakridge Apartments! As you requested, this two-bedroom unit..." và sau đó hai người thảo luận về giá thuê, phí đỗ xe, ngày có thể chuyển vào và một căn hộ thay thế. | (A) "To discuss a job transfer at a downtown office" — "job transfer" và "downtown office" được nhắc đến nhưng đó chỉ là lý do người đàn ông cần tìm một căn hộ phù hợp. | (B) "To buy a company vehicle" — người đàn ông chỉ nói công ty cung cấp xe cho anh ấy, không có ý định mua xe. | (C) "To find an apartment to rent" — đúng vì mục đích chính của cuộc trò chuyện là tìm một căn hộ để thuê. | (D) "To apply for a job at Oakridge Apartments" — người đàn ông đang tìm chỗ ở chứ không phải xin việc tại khu căn hộ.
+Source: original
+[QUESTION]
+What would be the total monthly cost for the first apartment with parking?
+(A) Fifty dollars
+(B) Twelve hundred dollars
+(C) One thousand three hundred dollars
+(D) Twelve hundred and fifty dollars
+Answer: D
+Explanation: Người đàn ông hỏi liệu tiền thuê $1,200 có bao gồm phí đỗ xe hay không. Người phụ nữ giải thích rằng tiền thuê cơ bản là $1,200 và phí đỗ xe là $50 mỗi tháng. Vì vậy, tổng chi phí hàng tháng là $1,250. | (A) "Fifty dollars" — đây chỉ là khoản phí đỗ xe cộng thêm. | (B) "Twelve hundred dollars" — đây chỉ là tiền thuê cơ bản, chưa bao gồm phí đỗ xe. | (C) "One thousand three hundred dollars" — không có thông tin nào trong bài cho biết khoản phí bổ sung là $100. | (D) "Twelve hundred and fifty dollars" — đúng vì $1,200 tiền thuê cộng với $50 phí đỗ xe bằng $1,250.
+Source: original
+[QUESTION]
+What will the man most likely do next?
+(A) Look at unit 4B
+(B) Move in on October first
+(C) Delay his job transfer
+(D) Pay fifty dollars for parking
+Answer: A
+Explanation: Sau khi biết căn hộ ban đầu chỉ có thể nhận từ ngày 1 tháng 10, người đàn ông giải thích rằng công việc mới bắt đầu từ ngày 15 tháng 9. Người phụ nữ sau đó giới thiệu căn 4B có thể chuyển vào ngay, và người đàn ông nói "Let's go inspect unit 4B now." | (A) "Look at unit 4B" — đúng vì người đàn ông trực tiếp nói rằng họ sẽ đi xem căn hộ 4B ngay. | (B) "Move in on October first" — sai vì căn hộ ban đầu có ngày nhận nhà là 1 tháng 10, nhưng người đàn ông cần chuyển vào trước ngày 15 tháng 9. | (C) "Delay his job transfer" — sai vì anh không nói sẽ hoãn việc chuyển công tác mà chọn một căn hộ có thể chuyển vào ngay. | (D) "Pay fifty dollars for parking" — đây là phí đỗ xe của căn hộ đầu tiên, nhưng người đàn ông chưa quyết định thuê căn hộ đó.
+Source: original

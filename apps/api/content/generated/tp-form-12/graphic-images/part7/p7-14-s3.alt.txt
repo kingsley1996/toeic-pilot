@@ -1,0 +1,1 @@
+Number of Delegates by Department. Department: Marketing, Delegates: 2. Department: Finance, Delegates: 1. Department: Operations, Delegates: 1. Department: Human Resources, Delegates: 1.

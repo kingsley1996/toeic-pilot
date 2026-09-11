@@ -1,0 +1,58 @@
+[PASSAGE]
+[Mr. Long] [9:02 A.M.]
+We need the laser printer on floor three repaired before Friday. Last week it stopped feeding paper during the accounting audit, so I need it working by Thursday at 3 P.M. Can you come in this morning, preferably before noon?
+
+[Ms. Hoa] [9:07 A.M.]
+I can start at 10:15 A.M., but I will need the access code for the copy room. Maintenance left it on a sticky note last time, and I have not found a new one. Please confirm if it changed.
+
+[Mr. Long] [9:10 A.M.]
+The current code is posted inside the staff lounge, not on the door. Do not open the printer before checking the service contract. If the fault is outside the warranty, I must get approval before parts are replaced.
+
+[Ms. Hoa] [9:16 A.M.]
+Understood. I will bring the standard toolkit and a spare roller. If the roller solves the paper jam, I can finish quickly and send you a closing note. If it is the main motor, I will call you before touching anything else.
+
+[Mr. Long] [9:22 A.M.]
+Good. The floor-three manager is on a client visit until 11 A.M., so please do not use the hallway lift for the large machine. Take the freight lift.
+
+[Ms. Hoa] [9:27 A.M.]
+No problem. I can try to complete the work before lunch, but I cannot promise the printer will be ready for Thursday if the motor needs an external part.
+
+[Mr. Long] [9:31 A.M.]
+That is acceptable. If an external part is needed, tell me by noon so I can arrange delivery and notify the audit team of the new schedule.
+
+[QUESTION]
+Why are Mr. Long and Ms. Hoa exchanging these messages?
+(A) To request a new copy room
+(B) To report an audit result
+(C) To organize a repair
+(D) To cancel a service contract
+Answer: C
+Explanation: Tin nhắn đầu tiên nêu "We need the laser printer on floor three repaired before Friday" and asks "Can you come in this morning, preferably before noon?" | (A) "To request a new copy room" — "copy room" chỉ là nơi đặt máy cần mã vào, không phải yêu cầu phòng mới. | (B) "To report an audit result" — có nhắc "accounting audit" nhưng chỉ là lý do lịch sử, không phải báo cáo kết quả kiểm toán. | (C) "To organize a repair" — đúng vì nội dung chính là sắp xếp việc sửa máy in. | (D) "To cancel a service contract" — "service contract" cần được kiểm tra, không phải hủy.
+Source: original
+[QUESTION]
+Where is the current access code posted?
+(A) On the copy room door
+(B) In the audit file
+(C) In the maintenance binder
+(D) Inside the staff lounge
+Answer: D
+Explanation: Mr. Long cho biết "The current code is posted inside the staff lounge, not on the door." | (A) "On the copy room door" — bị phủ định bởi "not on the door". | (B) "In the audit file" — chỉ có "audit team", không có hồ sơ kiểm toán chứa mã. | (C) "In the maintenance binder" — không có trong tin nhắn. | (D) "Inside the staff lounge" — đúng nguyên văn vị trí được nêu.
+Source: original
+[QUESTION]
+At 9:27 A.M., what does Ms. Hoa mean when she writes, "I can try to complete the work before lunch"?
+(A) She may finish by lunch if no serious part is needed.
+(B) She needs another technician.
+(C) She will replace the motor herself.
+(D) She will report to the audit team.
+Answer: A
+Explanation: Ms. Hoa viết "I can try to complete the work before lunch, but I cannot promise the printer will be ready for Thursday if the motor needs an external part", sau khi trước đó nói sẽ xong nhanh nếu trục lô xử lý được kẹt giấy. | (A) "She may finish by lunch if no serious part is needed" — đúng vì cô chỉ hứa nếu không phải thay mô-tơ cần linh kiện ngoài. | (B) "She needs another technician" — không có chi tiết nào về kỹ thuật viên thứ hai. | (C) "She will replace the motor herself" — trái với "If it is the main motor, I will call you before touching anything else". | (D) "She will report to the audit team" — Mr. Long mới là người "notify the audit team".
+Source: original
+[QUESTION]
+What can be inferred about the repair if it begins as planned?
+(A) She must leave the copy room before 10:15 A.M.
+(B) She must use the freight lift for the large machine.
+(C) She can approve external parts.
+(D) She can postpone the audit team's work.
+Answer: B
+Explanation: Ms. Hoa nói "I can start at 10:15 A.M." và Mr. Long dặn "The floor-three manager is on a client visit until 11 A.M., so please do not use the hallway lift for the large machine. Take the freight lift." | (A) "She must leave the copy room before 10:15 A.M." — không có yêu cầu rời phòng trước khi bắt đầu. | (B) "She must use the freight lift for the large machine" — đúng vì việc bắt đầu lúc 10:15 A.M. rơi vào khoảng thời gian thang hành lang bị hạn chế. | (C) "She can approve external parts" — trái với "I must get approval before parts are replaced". | (D) "She can postpone the audit team's work" — không có chi tiết nào cho phép cô hoãn công việc kiểm toán.
+Source: original

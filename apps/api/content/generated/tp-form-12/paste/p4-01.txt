@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Hello, this is Sarah calling from Crestview Pharmacy for Mr. Miller. I am calling to let you know that your prescription order is ready for pickup. We originally planned to stay open until eight P.M. tonight. However, due to mandatory staff training, the pharmacy will close early today at five P.M. instead. Please make sure to collect your medication before five P.M. if you need it today. Otherwise, you can pick it up tomorrow when we reopen at eight A.M. If you have any questions about your dosage, please call us back and press option two to speak with a pharmacist. Thank you.
+
+[QUESTION]
+What is the main purpose of the message?
+(A) To reschedule a staff training session
+(B) To set up an appointment with a doctor
+(C) To request payment for a prescription
+(D) To notify a customer that an order is available for pickup
+Answer: D
+Explanation: Người nói gọi cho Mr. Miller để thông báo rằng đơn thuốc của ông đã sẵn sàng để nhận. | (A) "To reschedule a staff training session" — staff training chỉ được nhắc đến như lý do nhà thuốc đóng cửa sớm, không phải mục đích của cuộc gọi. | (B) "To set up an appointment with a doctor" — bài nói không đề cập đến việc đặt lịch với bác sĩ. | (C) "To request payment for a prescription" — bài nói không yêu cầu khách hàng thanh toán cho đơn thuốc. | (D) "To notify a customer that an order is available for pickup" — đúng vì người nói thông báo rằng prescription order đã sẵn sàng để khách hàng đến nhận.
+Source: original
+[QUESTION]
+By what time must Mr. Miller pick up his prescription if he needs it today?
+(A) 5:00 P.M.
+(B) 2:00 P.M.
+(C) 8:00 A.M.
+(D) 8:00 P.M.
+Answer: A
+Explanation: Nhà thuốc sẽ đóng cửa sớm lúc 5:00 P.M. hôm nay, vì vậy Mr. Miller phải lấy thuốc trước thời điểm đó nếu cần thuốc trong ngày hôm nay. | (A) "5:00 P.M." — đúng vì nhà thuốc sẽ đóng cửa lúc 5:00 P.M. hôm nay và khách hàng phải lấy thuốc trước thời điểm đó. | (B) "2:00 P.M." — thời gian này không được đề cập trong bài nói. | (C) "8:00 A.M." — đây là thời điểm nhà thuốc mở cửa trở lại vào ngày hôm sau, không phải hạn chót nhận thuốc hôm nay. | (D) "8:00 P.M." — đây là thời gian nhà thuốc dự định đóng cửa ban đầu, nhưng giờ đóng cửa đã được thay đổi do staff training.
+Source: original
+[QUESTION]
+What is the listener asked to do to speak with a pharmacist?
+(A) Visit the pharmacy tomorrow morning
+(B) Press option two when calling back
+(C) Speak with a staff member upon arrival
+(D) Leave a voicemail message after the beep
+Answer: B
+Explanation: Cuối bài nói, người nghe được hướng dẫn gọi lại và nhấn phím 2 nếu có câu hỏi về liều dùng và muốn nói chuyện với dược sĩ. | (A) "Visit the pharmacy tomorrow morning" — người nghe có thể nhận thuốc vào ngày mai, nhưng đây không phải hướng dẫn để nói chuyện với dược sĩ. | (B) "Press option two when calling back" — đúng vì đây là hướng dẫn trực tiếp để kết nối với a pharmacist. | (C) "Speak with a staff member upon arrival" — bài nói không yêu cầu khách hàng gặp nhân viên khi đến nhà thuốc. | (D) "Leave a voicemail message after the beep" — không có hướng dẫn để lại tin nhắn thoại.
+Source: original

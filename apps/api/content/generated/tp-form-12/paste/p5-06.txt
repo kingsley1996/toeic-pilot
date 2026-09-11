@@ -1,0 +1,9 @@
+[QUESTION]
+Customers may pay the deposit ------- credit card or bank transfer.
+(A) by
+(B) at
+(C) to
+(D) of
+Answer: A
+Explanation: Cần giới từ chỉ phương thức thanh toán, và danh từ "credit card / bank transfer" chỉ kết hợp được với một giới từ cố định sau "pay". | (A) "by" — đúng collocation "pay by credit card / by bank transfer". | (B) "at" — chỉ địa điểm hoặc thời điểm, không kết hợp với phương thức thanh toán. | (C) "to" — chỉ hướng đi hoặc người nhận, không dùng cho phương thức thanh toán. | (D) "of" — chỉ sở hữu hoặc bộ phận, sai collocation với "pay".
+Source: original

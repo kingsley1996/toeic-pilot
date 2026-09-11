@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Excuse me, where is the human resources department?
+voice: ca_male_1
+(A) On the second floor, next to the large meeting room.
+(B) At nine o'clock, just before the orientation session.
+(C) Our department handles recruiting and payroll.
+Answer: A
+Explanation: Câu hỏi là "Excuse me, where is the human resources department?", hỏi NƠI CHỐN của phòng nhân sự. | (A) "On the second floor, next to the large meeting room." — nêu đúng nơi chốn: tầng hai, cạnh phòng họp lớn. | (B) "At nine o'clock, just before the orientation session." — trả lời bằng giờ giấc, sai loại câu hỏi vì người ta hỏi ở đâu chứ không hỏi khi nào. | (C) "Our department handles recruiting and payroll." — dùng lại từ "department" nhưng chỉ nói về chức năng của phòng, không cho biết vị trí.
+Source: original

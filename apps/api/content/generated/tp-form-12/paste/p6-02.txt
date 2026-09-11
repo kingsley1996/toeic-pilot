@@ -1,0 +1,59 @@
+[PASSAGE]
+To: All Staff, Ho Chi Minh City Office
+From: Human Resources Manager
+Date: June 3
+Subject: New Skills Training Program
+
+Dear Colleagues,
+
+The first session of our new skills training program ------- (1) on July 5, and a detailed schedule follows below.
+
+Participants should complete the online registration form. This form will help us record ------- (2) needs and arrange suitable classrooms.
+
+The first session will be led by an internal trainer. Employees are encouraged to bring questions related to their current work. ------- (3)
+
+If you cannot attend the scheduled date, please notify us at least two days in advance. Please review ------- (4) schedule carefully.
+
+Sincerely,
+Nguyen Minh
+
+[QUESTION]
+Blank (1)
+(A) started
+(B) had started
+(C) has started
+(D) will start
+Answer: D
+Explanation: Dòng "Date: June 3" cho biết email được gửi trước ngày 5 tháng 7 nên buổi học là sự kiện trong tương lai. | (A) "started" — quá khứ đơn, không phù hợp với thời điểm ngày 5 tháng 7. | (B) "had started" — quá khứ hoàn thành cần một mốc quá khứ khác để đối chiếu. | (C) "has started" — hiện tại hoàn thành cho biết sự việc đã bắt đầu, trái với mốc thời gian trong bài. | (D) "will start" — đúng vì diễn tả một sự kiện sẽ diễn ra vào ngày 5 tháng 7.
+
+Source: original
+[QUESTION]
+Blank (2)
+(A) training
+(B) hiring
+(C) printing
+(D) leaving
+Answer: A
+Explanation: Biểu mẫu được dùng để ghi nhận nhu cầu và sắp xếp phòng học cho chương trình đào tạo nên cần danh từ "training" trước "needs". | (A) "training" — tạo thành cụm tự nhiên "training needs", phù hợp với mục đích của biểu mẫu. | (B) "hiring" — liên quan đến tuyển dụng, không phù hợp với chương trình đào tạo. | (C) "printing" — liên quan đến việc in ấn, không phù hợp với nhu cầu được ghi nhận. | (D) "leaving" — liên quan đến việc rời đi hoặc nghỉ việc, không phù hợp với ngữ cảnh.
+
+Source: original
+[QUESTION]
+Blank (3)
+(A) The trainer will distribute certificates after the session.
+(B) Participants may submit questions before the session.
+(C) Employees from other offices must attend this session.
+(D) The training room will be closed after the session.
+Answer: B
+Explanation: Câu trước nói nhân viên được khuyến khích mang câu hỏi đến buổi học, nên câu tiếp theo phù hợp nhất là hướng dẫn liên quan đến việc gửi câu hỏi trước buổi học. | (A) "The trainer will distribute certificates after the session." — nói về chứng nhận sau buổi học, không liên kết với thông tin ngay trước đó. | (B) "Participants may submit questions before the session." — tiếp nối trực tiếp chủ đề câu hỏi và bổ sung cách chuẩn bị cho buổi học. | (C) "Employees from other offices must attend this session." — đưa ra yêu cầu bắt buộc không được hỗ trợ bởi thông tin trong đoạn. | (D) "The training room will be closed after the session." — là thông tin về phòng học nhưng không liên quan đến mạch nội dung đang nói về việc chuẩn bị câu hỏi.
+
+Source: original
+[QUESTION]
+Blank (4)
+(A) you
+(B) yours
+(C) your
+(D) yourself
+Answer: C
+Explanation: Trong câu "Please review ------- (4) schedule carefully.", chỗ trống đứng trước danh từ "schedule" nên cần tính từ sở hữu. | (A) "you" — là đại từ nhân xưng, không thể đứng trực tiếp trước danh từ để chỉ sở hữu. | (B) "yours" — là đại từ sở hữu, không đi kèm danh từ. | (C) "your" — là tính từ sở hữu và tạo thành cụm đúng "your schedule". | (D) "yourself" — là đại từ phản thân, không phù hợp với vị trí này.
+
+Source: original

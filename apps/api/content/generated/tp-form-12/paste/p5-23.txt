@@ -1,0 +1,9 @@
+[QUESTION]
+Customers who purchase an air conditioner this month will receive free delivery and -------.
+(A) subscription
+(B) installation
+(C) compensation
+(D) reservation
+Answer: B
+Explanation: Chỗ trống cần danh từ chỉ một dịch vụ được tặng miễn phí cùng với "free delivery" cho người mua máy điều hòa, tức dịch vụ lắp đặt. | (A) "subscription" — nghĩa "đăng ký dịch vụ trả phí định kỳ", không phải dịch vụ tặng kèm khi mua thiết bị. | (B) "installation" — "free delivery and installation" là cụm dịch vụ chuẩn đi kèm khi bán máy điều hòa. | (C) "compensation" — nghĩa "tiền bồi thường", không phải dịch vụ miễn phí đi kèm giao hàng. | (D) "reservation" — nghĩa "việc đặt chỗ", không liên quan đến dịch vụ mua và lắp đặt thiết bị.
+Source: original

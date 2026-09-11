@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, Mr. Davis. I'm calling to discuss renewing my apartment lease for another year.
+voice: au_male_1
+Hi, Sarah. I'd love to have you stay! You've been a reliable tenant since moving in two years ago.
+voice: uk_female_1
+Thanks! My current lease ends on October thirty-first. Can we keep the rent at eight hundred dollars?
+voice: au_male_1
+I usually raise rent by five percent, but I'll waive that if you sign for twelve months. However, I'm traveling abroad starting October twenty-eighth.
+voice: uk_female_1
+Great! Could you also fix the leaking kitchen faucet before you leave?
+voice: au_male_1
+Sure, I'll send a plumber tomorrow, and we can sign the contract then.
+
+[QUESTION]
+Why is the woman calling the man?
+(A) To report a problem with the plumber
+(B) To ask about a five percent discount
+(C) To negotiate a lease renewal
+(D) To purchase a new apartment
+Answer: C
+Explanation: Người phụ nữ nói ngay ở đầu cuộc gọi "I'm calling to discuss renewing my apartment lease for another year", cho biết cô gọi để thảo luận việc gia hạn hợp đồng thuê căn hộ. | (A) "To report a problem with the plumber" — người phụ nữ đề cập vòi nước bị rò rỉ và nhờ người đàn ông sửa, nhưng đây không phải lý do ban đầu của cuộc gọi. | (B) "To ask about a five percent discount" — 5% là mức tăng tiền thuê mà người đàn ông thường áp dụng, không phải mức giảm giá mà người phụ nữ yêu cầu. | (C) "To negotiate a lease renewal" — đúng vì hai người đang thảo luận các điều khoản cho việc gia hạn hợp đồng thêm một năm. | (D) "To purchase a new apartment" — cô ấy muốn gia hạn hợp đồng thuê căn hộ hiện tại chứ không phải mua căn hộ mới.
+Source: original
+[QUESTION]
+What does the man agree to do tomorrow?
+(A) Refund an eight hundred dollar deposit
+(B) Increase the monthly rent by five percent
+(C) Travel abroad for a vacation
+(D) Send someone to repair a faucet
+Answer: D
+Explanation: Người phụ nữ hỏi "Could you also fix the leaking kitchen faucet before you leave?" và người đàn ông trả lời "I'll send a plumber tomorrow", cho biết anh sẽ cử thợ sửa ống nước đến sửa vòi nước vào ngày mai. | (A) "Refund an eight hundred dollar deposit" — $800 là mức tiền thuê hiện tại mỗi tháng, không phải khoản tiền đặt cọc được hoàn lại. | (B) "Increase the monthly rent by five percent" — người đàn ông nói anh sẽ bỏ qua mức tăng 5% nếu người phụ nữ ký hợp đồng 12 tháng. | (C) "Travel abroad for a vacation" — chuyến đi nước ngoài của người đàn ông bắt đầu vào ngày 28 tháng 10, không phải ngày mai. | (D) "Send someone to repair a faucet" — diễn đạt lại chính xác việc cử plumber đến sửa vòi nước.
+Source: original
+[QUESTION]
+What can be inferred about the new lease agreement?
+(A) The current rent will remain unchanged if the tenant signs for twelve months.
+(B) It will take effect on October twenty-eighth.
+(C) The rent will increase by five percent after renewal.
+(D) It was signed when the woman moved in two years ago.
+Answer: A
+Explanation: Người đàn ông nói "I usually raise rent by five percent, but I'll waive that if you sign for twelve months." Điều này cho thấy ông đồng ý không tăng tiền thuê hiện tại nếu người phụ nữ ký hợp đồng mới với thời hạn 12 tháng. | (A) "The current rent will remain unchanged if the tenant signs for twelve months." — đúng vì người đàn ông cam kết bỏ qua mức tăng 5% với điều kiện ký hợp đồng 12 tháng. | (B) "It will take effect on October twenty-eighth." — ngày 28 tháng 10 chỉ được nhắc đến là ngày người đàn ông bắt đầu đi nước ngoài; không có thông tin xác nhận đây là ngày hợp đồng mới có hiệu lực. | (C) "The rent will increase by five percent after renewal." — sai vì người đàn ông nói ông sẽ bỏ qua mức tăng 5% nếu người phụ nữ ký hợp đồng 12 tháng. | (D) "It was signed when the woman moved in two years ago." — hợp đồng mới đang được thảo luận hiện tại; hai năm trước chỉ là thời điểm người phụ nữ bắt đầu thuê căn hộ.
+Source: original

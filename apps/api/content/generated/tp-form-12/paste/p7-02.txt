@@ -1,0 +1,33 @@
+[PASSAGE]
+From: a.reyes@greenleaf-restaurant.example.com
+To: deliveries@freshharvest-supply.example.com
+Subject: Late vegetable delivery
+Date: May 8
+
+Dear Mr. Lin, I am writing to report that our scheduled vegetable delivery on May 6 did not arrive until the evening. The delay forced us to buy backup greens from a nearby market, which increased our costs. Because your contract promises morning delivery, this situation is unacceptable.
+
+Please explain why the shipment was late and confirm that future orders will arrive on time. The missing spinach and herbs were essential for two lunch services, and several dishes had to be removed from the menu.
+
+We value our long business relationship, but repeated problems of this kind could harm it.
+
+Sincerely,
+Ana Reyes
+Manager, Green Leaf Restaurant
+[QUESTION]
+Why was the e-mail written?
+(A) To ask for a price quote
+(B) To confirm a meeting time
+(C) To complain about a shipment
+(D) To apologize for a product
+Answer: C
+Explanation: E-mail mở đầu bằng "I am writing to report that our scheduled vegetable delivery on May 6 did not arrive until the evening", tức mục đích là phàn nàn về chuyến hàng. | (A) "To ask for a price quote" — thư không hỏi báo giá. | (B) "To confirm a meeting time" — không có cuộc hẹn nào được đề cập. | (C) "To complain about a shipment" — đúng với việc báo giao hàng chậm. | (D) "To apologize for a product" — người gửi phàn nàn, không xin lỗi.
+Source: original
+[QUESTION]
+In the e-mail, the word "unacceptable" in paragraph 1 is closest in meaning to
+(A) unusual
+(B) unnecessary
+(C) unexpected
+(D) intolerable
+Answer: D
+Explanation: Câu "Because your contract promises morning delivery, this situation is unacceptable" cho thấy unacceptable nghĩa là không thể chấp nhận được. | (A) "unusual" — chỉ bất thường, chưa đủ mức không chấp nhận. | (B) "unnecessary" — nói không cần thiết, không đúng ngữ cảnh. | (C) "unexpected" — nói về sự bất ngờ, không nói mức độ nghiêm trọng. | (D) "intolerable" — đúng vì nghĩa là không thể chấp nhận được, sát với unacceptable.
+Source: original

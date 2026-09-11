@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) The guide is explaining a statue to some visitors.
+(B) The visitors are taking photographs of the statue.
+(C) A man is hanging a painting on the wall.
+(D) Some visitors are sitting on a bench.
+Answer: A
+Explanation: Trong sảnh bảo tàng, nữ hướng dẫn viên đứng cạnh bức tượng đá trên bệ, một tay cầm tập tài liệu và tay kia chỉ vào tượng khi đang nói với hai khách lớn tuổi đứng đối diện, trong khi nhóm ba khách ở phía tường trái chụp ảnh bức tranh sơn dầu lớn và chiếc ghế băng sát tường sau thì trống. | (A) "explaining a statue to some visitors" — đúng: hướng dẫn viên đang chỉ vào tượng đá và giải thích cho hai khách đứng nghe. | (B) "taking photographs of the statue" — nhóm khách giơ máy chụp bức tranh trên tường chứ không phải bức tượng: đúng hành động, sai vật. | (C) "hanging a painting on the wall" — người đàn ông đang giơ máy ảnh lên chụp, tranh đã treo sẵn và không ai động vào nó: đúng vật, sai hành động. | (D) "sitting on a bench" — ghế băng ở tường sau đang trống, cả sáu người trong ảnh đều đang đứng: đúng vật, sai vị trí.
+Source: original

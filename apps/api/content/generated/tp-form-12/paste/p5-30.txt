@@ -1,0 +1,9 @@
+[QUESTION]
+The representative office in Hanoi is currently being -------, so the staff members are working temporarily on the fifth floor.
+(A) renovated
+(B) renovating
+(C) renovate
+(D) renovation
+Answer: A
+Explanation: Sau "is being" câu cần phân từ hai để lập thể bị động tiếp diễn. | (A) "renovated" — là phân từ hai, tạo đúng cấu trúc bị động "is being renovated". | (B) "renovating" — là V-ing, khiến cấu trúc bị động sau "being" sai dạng. | (C) "renovate" — là động từ nguyên mẫu, không thể đứng sau "being". | (D) "renovation" — là danh từ, sai từ loại ở vị trí này.
+Source: original

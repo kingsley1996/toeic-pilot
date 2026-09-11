@@ -1,0 +1,56 @@
+[PASSAGE]
+To: Ms. Nguyen, Insurance Department
+From: Customer Service, Office Equipment Supplier
+Subject: Apology for Delayed Delivery
+Date: May 12
+
+Dear Ms. Nguyen,
+
+On behalf of our company, we sincerely apologize for the late delivery of the printers ordered last month. The delay was caused by a ------- (1) in our shipping department.
+
+We understand this situation was inconvenient, especially ------- (2) you are preparing for the policy renewal deadline next week.
+
+Your new equipment ------- (3) by our service team this Friday.
+
+To thank you for your patience, we are offering a discount on maintenance services for the next year. ------- (4)
+
+Sincerely,
+Linh Tran
+Customer Service Manager
+
+[QUESTION]
+Blank (1)
+(A) bonus
+(B) budget
+(C) brochure
+(D) backlog
+Answer: D
+Explanation: Câu "The delay was caused by a ------- (1) in our shipping department" cần một danh từ chỉ lượng công việc tồn đọng có thể gây chậm trễ. | (A) "bonus" — chỉ khoản tiền thưởng, không phù hợp với ngữ cảnh. | (B) "budget" — chỉ ngân sách, không phù hợp với nguyên nhân được nêu. | (C) "brochure" — chỉ tài liệu quảng cáo, sai trường nghĩa. | (D) "backlog" — chỉ lượng công việc chưa được xử lý và phù hợp với nguyên nhân giao hàng chậm.
+Source: original
+[QUESTION]
+Blank (2)
+(A) while
+(B) until
+(C) during
+(D) despite
+Answer: A
+Explanation: Câu cần một liên từ nối "this situation was inconvenient" với tình huống khách hàng đang chuẩn bị cho hạn gia hạn hợp đồng vào tuần sau. | (A) "while" — diễn tả hai tình huống xảy ra đồng thời và phù hợp với "you are preparing". | (B) "until" — trái nghĩa với mạch câu: sự bất tiện không kết thúc khi việc chuẩn bị bắt đầu. | (C) "during" — là giới từ, không thể đứng trước mệnh đề có chủ ngữ "you". | (D) "despite" — phải đi với danh từ hoặc cụm danh từ, không đi trực tiếp với mệnh đề "you are preparing".
+Source: original
+[QUESTION]
+Blank (3)
+(A) installed
+(B) will be installed
+(C) installs
+(D) is installing
+Answer: B
+Explanation: Câu "Your new equipment ------- (3) by our service team this Friday" có chủ ngữ là "equipment", chịu tác động của đội dịch vụ và có mốc thời gian tương lai. | (A) "installed" — thiếu trợ động từ để tạo thành câu bị động hoàn chỉnh. | (B) "will be installed" — đúng thể bị động và phù hợp với mốc tương lai "this Friday". | (C) "installs" — là chủ động, không phù hợp vì "equipment" không thực hiện hành động lắp đặt. | (D) "is installing" — là chủ động tiếp diễn và không phù hợp với chủ ngữ "equipment".
+Source: original
+[QUESTION]
+Blank (4)
+(A) Please contact us if you need a copy of the original order.
+(B) The printers are currently being stored at our warehouse.
+(C) We hope this gesture demonstrates our commitment to your company.
+(D) Our service team will inspect the equipment after installation.
+Answer: C
+Explanation: Câu trước thông báo một khoản giảm giá để cảm ơn khách hàng, nên câu sau phù hợp nhất là giải thích ý nghĩa của ưu đãi đó. | (A) "Please contact us if you need a copy of the original order." — đưa ra một hướng dẫn mới không được chuẩn bị bởi ngữ cảnh trước. | (B) "The printers are currently being stored at our warehouse." — nói về tình trạng thiết bị nhưng không phát triển ý về khoản giảm giá. | (C) "We hope this gesture demonstrates our commitment to your company." — tiếp nối tự nhiên với ưu đãi vừa được đề nghị và thể hiện thiện chí của công ty. | (D) "Our service team will inspect the equipment after installation." — nói về quy trình dịch vụ, không liên kết trực tiếp với lời cảm ơn và ưu đãi.
+Source: original

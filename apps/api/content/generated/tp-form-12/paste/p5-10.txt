@@ -1,0 +1,9 @@
+[QUESTION]
+Because of the unexpected network outage, the technical department is working urgently to ------- the problem before the morning shift begins.
+(A) resolve
+(B) install
+(C) approve
+(D) promote
+Answer: A
+Explanation: Chỗ trống cần một động từ kết hợp được với danh từ "the problem" trong ngữ cảnh khắc phục sự cố mạng. | (A) "resolve" — collocation chuẩn "resolve the problem", đúng nghĩa xử lý sự cố. | (B) "install" — chỉ đi với "software/equipment/system", không đứng trước "problem". | (C) "approve" — chỉ đi với "plan/budget/request", không dùng với "problem". | (D) "promote" — chỉ đi với "product/event/campaign", không hợp với "problem".
+Source: original

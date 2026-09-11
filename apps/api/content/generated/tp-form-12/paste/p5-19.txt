@@ -1,0 +1,9 @@
+[QUESTION]
+The new uniform design looks ------- than the previous one, so many employees prefer it.
+(A) sleekness
+(B) sleeker
+(C) sleek
+(D) sleekly
+Answer: B
+Explanation: Sau động từ nối "looks" và trước "than" cần tính từ ở dạng so sánh hơn. | (A) "sleekness" — là danh từ, sai từ loại cho vị trí sau động từ nối. | (B) "sleeker" — đúng tính từ dạng so sánh hơn mà "than" đòi hỏi. | (C) "sleek" — là tính từ nguyên thể, không kết hợp được với "than" để tạo so sánh hơn. | (D) "sleekly" — là trạng từ, không đứng sau động từ nối "looks".
+Source: original

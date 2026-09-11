@@ -1,0 +1,9 @@
+[QUESTION]
+The hotel ------- we held our annual conference last year is launching a year-end promotion for corporate clients.
+(A) which
+(B) where
+(C) when
+(D) whose
+Answer: B
+Explanation: Mệnh đề "we held our annual conference last year" đã đầy đủ chủ ngữ, động từ và tân ngữ nên chỗ trống cần một trạng từ quan hệ chỉ nơi chốn đứng sau danh từ chỉ địa điểm "the hotel". | (A) "which" — là đại từ quan hệ, phải làm chủ ngữ hoặc tân ngữ trong mệnh đề, nhưng mệnh đề này đã đủ cả hai. | (B) "where" — đúng: trạng từ quan hệ chỉ nơi chốn, tương đương "at which". | (C) "when" — là trạng từ quan hệ chỉ thời gian, không thể đứng sau danh từ chỉ địa điểm "hotel". | (D) "whose" — là sở hữu cách, bắt buộc phải có danh từ theo ngay sau, trong khi sau chỗ trống là đại từ "we".
+Source: original

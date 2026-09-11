@@ -1,0 +1,9 @@
+[QUESTION]
+Larkspur Retail plans to expand into neighboring markets ------- demand for its products is increasing rapidly.
+(A) because of
+(B) because
+(C) due to
+(D) despite
+Answer: B
+Explanation: Sau chỗ trống là một mệnh đề đầy đủ (chủ ngữ "demand" + động từ "is increasing"), nên cần một liên từ nối hai mệnh đề. | (A) "because of" — là cụm giới từ, phải theo sau bằng danh từ chứ không nhận mệnh đề. | (B) "because" — liên từ chỉ nguyên nhân, đứng trước mệnh đề chủ-vị nên đúng cấu trúc. | (C) "due to" — cũng chỉ đi với danh từ/cụm danh từ, không nối được hai mệnh đề. | (D) "despite" — giới từ nhượng bộ, theo sau phải là danh từ và sai logic nguyên nhân.
+Source: original

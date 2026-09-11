@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon, everyone, and welcome to the regional business conference. This is Fiona from the programme team, speaking to you here in the main hall. Lunch is now being served on the terrace. After lunch, each discussion group should move to a different room on the ground floor. For the small budget review group, please go to the room in the lower left corner. Originally, that group was set to meet at two o'clock, but it now starts at two fifteen. Please also collect updated schedules at the help desk before joining your group. Thank you.
+
+[QUESTION]
+Where is the talk being given?
+
+(A) At a help desk
+(B) On a lunch terrace
+(C) In a conference hall
+(D) In a discussion room
+
+Answer: C
+Explanation: Người nói xác định rõ địa điểm bằng câu "speaking to you here in the main hall", cho biết cô ấy đang phát biểu tại sảnh chính của hội nghị. | (A) "At a help desk" — help desk là nơi người tham dự lấy lịch trình cập nhật. | (B) "On a lunch terrace" — terrace là nơi phục vụ bữa trưa, không phải nơi người nói đang phát biểu. | (C) "In a conference hall" — phù hợp với thông tin "here in the main hall". | (D) "In a discussion room" — các discussion room được sử dụng sau bữa trưa, không phải nơi bài phát biểu đang diễn ra.
+
+Source: original
+[QUESTION]
+Look at the graphic. Which room should the budget review group use?
+
+(A) Room 1
+(B) Room 2
+(C) Room 4
+(D) Room 3
+
+Answer: D
+Explanation: Người nói yêu cầu nhóm budget review đi đến "the room in the lower left corner", vì vậy người nghe phải xác định căn phòng nằm ở vị trí góc dưới bên trái trên sơ đồ. | (A) "Room 1" — nằm ở vị trí khác với góc dưới bên trái. | (B) "Room 2" — nằm ở vị trí khác với góc dưới bên trái. | (C) "Room 4" — nằm ở vị trí khác với góc dưới bên trái. | (D) "Room 3" — là căn phòng nằm ở góc dưới bên trái trên sơ đồ.
+
+Source: original
+[QUESTION]
+When will the budget review group start?
+
+(A) At a quarter past two
+(B) Before lunch
+(C) At two o'clock
+(D) At the help desk
+
+Answer: A
+Explanation: Người nói cho biết nhóm ban đầu dự kiến gặp lúc two o'clock nhưng đã được thay đổi thành "two fifteen", tức 2:15. | (A) "At a quarter past two" — là cách diễn đạt khác của "two fifteen", thời gian mới của nhóm. | (B) "Before lunch" — nhóm sẽ họp sau lunch theo trình tự được thông báo. | (C) "At two o'clock" — là thời gian ban đầu và đã được thay đổi. | (D) "At the help desk" — help desk là nơi lấy lịch trình cập nhật, không phải thời gian bắt đầu.
+
+Source: original

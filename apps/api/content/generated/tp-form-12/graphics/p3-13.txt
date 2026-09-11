@@ -1,0 +1,7 @@
+kind: schedule
+Project Report Submissions
+Employee | Wednesday | Thursday | Friday | Saturday
+Sarah | Submitted | | |
+Elena | | Scheduled | |
+David | | | Scheduled |
+Marcus | | | | Scheduled

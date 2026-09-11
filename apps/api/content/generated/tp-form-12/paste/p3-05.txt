@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Hello Mr. Henderson, I'm calling about apartment 4B. The pipe under the kitchen sink is leaking heavily.
+voice: ca_male_1
+Oh, I'm sorry to hear that. Have you tried turning off the water valve under the sink?
+voice: us_female_1
+Yes, but water is still dripping onto the floor, so I'm worried about damage.
+voice: ca_male_1
+I see. I can send a plumber tomorrow at nine in the morning, but I'll be out of town all day.
+voice: us_female_1
+That time is fine, but I'll be at work until noon, so no one will be home.
+voice: ca_male_1
+In that case, please drop off your spare key at the front desk downstairs. I'll ask the building manager to let the plumber in.
+
+[QUESTION]
+Where is the reported problem located?
+(A) In a hardware store
+(B) In the building lobby
+(C) Under a bathroom sink
+(D) In an apartment kitchen
+Answer: D
+Explanation: Người phụ nữ mở đầu bằng "I'm calling about apartment 4B. The pipe under the kitchen sink is leaking heavily." | (A) "In a hardware store" — cửa hàng dụng cụ không được đề cập trong hội thoại. | (B) "In the building lobby" — sảnh chung cư là nơi liên quan đến việc gửi chìa khóa, không phải nơi xảy ra sự cố. | (C) "Under a bathroom sink" — dùng lại từ "sink" nhưng đổi phòng bếp thành phòng tắm. | (D) "In an apartment kitchen" — đúng vì sự cố rò rỉ đường ống nằm dưới bồn rửa trong nhà bếp của căn hộ 4B.
+Source: original
+[QUESTION]
+Why does the man mention that he will be out of town?
+(A) To explain why he cannot personally let the plumber in
+(B) To ask the woman to reschedule the plumber's visit
+(C) To notify the building manager about a trip
+(D) To request a day off from his job
+Answer: A
+Explanation: Người đàn ông nói "I'll be out of town all day" và sau đó cho biết "I'll ask the building manager to let the plumber in", cho thấy anh không thể trực tiếp có mặt để mở cửa cho thợ sửa ống nước. | (A) "To explain why he cannot personally let the plumber in" — đúng vì anh sẽ vắng mặt cả ngày và cần nhờ building manager mở cửa cho thợ. | (B) "To ask the woman to reschedule the plumber's visit" — sai vì anh vẫn đề xuất cho thợ đến vào chín giờ sáng hôm sau. | (C) "To notify the building manager about a trip" — sai vì building manager được nhờ mở cửa cho thợ, không phải để được thông báo về chuyến đi. | (D) "To request a day off from his job" — việc xin nghỉ làm không được đề cập.
+Source: original
+[QUESTION]
+What does the man suggest the woman do?
+(A) Turn off the main water valve
+(B) Leave a key at the front desk
+(C) Stay home tomorrow morning
+(D) Pay the maintenance worker directly
+Answer: B
+Explanation: Người đàn ông nói "please drop off your spare key at the front desk downstairs", yêu cầu người phụ nữ để lại chìa khóa dự phòng tại quầy lễ tân. | (A) "Turn off the main water valve" — sai vì người phụ nữ đã thử khóa van nước trước đó và cho biết nước vẫn tiếp tục nhỏ xuống sàn. | (B) "Leave a key at the front desk" — diễn đạt lại chính xác lời đề nghị của người đàn ông. | (C) "Stay home tomorrow morning" — sai vì người phụ nữ nói cô sẽ ở chỗ làm đến trưa. | (D) "Pay the maintenance worker directly" — việc thanh toán trực tiếp cho thợ sửa chữa không được đề cập.
+Source: original

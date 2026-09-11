@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+When does breakfast start at the hotel?
+voice: ca_male_1
+(A) Yes, it's included in your room rate.
+(B) In the main dining room, next to the lobby.
+(C) From six until nine every morning.
+Answer: C
+Explanation: Câu hỏi là "When does breakfast start at the hotel?", hỏi THỜI ĐIỂM bữa sáng bắt đầu. | (A) "Yes, it's included in your room rate." — đáp Yes cho một câu hỏi WH và chỉ nói bữa sáng đã tính trong tiền phòng, không cho biết giờ giấc. | (B) "In the main dining room, next to the lobby." — nêu nơi chốn, trả lời Where thay vì When, đánh lừa người chỉ nghe được từ "breakfast". | (C) "From six until nine every morning." — nêu đúng khung giờ bắt đầu và kết thúc, trả lời thẳng câu hỏi When.
+Source: original

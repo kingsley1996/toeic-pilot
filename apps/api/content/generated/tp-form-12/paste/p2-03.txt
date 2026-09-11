@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Could you book my flight to Da Nang for the business trip?
+voice: au_male_1
+(A) I'll take care of it this afternoon.
+(B) The flight to Da Nang takes about eighty minutes.
+(C) My colleague booked her ticket last week.
+Answer: A
+Explanation: Câu hỏi là "Could you book my flight to Da Nang for the business trip?", giám đốc nhờ trợ lý đặt vé máy bay, đây là một YÊU CẦU chứ không phải câu hỏi thông tin. | (A) "I'll take care of it this afternoon." — nhận lời và cam kết hành động vào chiều nay, đúng cách phản hồi một lời nhờ. | (B) "The flight to Da Nang takes about eighty minutes." — dùng lại "flight" và "Da Nang" nhưng trả lời một câu hỏi thời lượng mà không ai hỏi, coi yêu cầu là câu hỏi thông tin. | (C) "My colleague booked her ticket last week." — lặp lại ý "booked ticket" nhưng nói về đồng nghiệp khác, không phản hồi lời nhờ đặt vé.
+Source: original

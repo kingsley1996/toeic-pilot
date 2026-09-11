@@ -1,0 +1,9 @@
+[QUESTION]
+The restaurant manager was very ------- when receiving positive feedback from diners.
+(A) appreciation
+(B) appreciate
+(C) appreciative
+(D) appreciatively
+Answer: C
+Explanation: Sau "was very" cần một tính từ làm bổ ngữ cho chủ ngữ "the restaurant manager". | (A) "appreciation" — là danh từ, không thể đứng sau "was very" làm bổ ngữ. | (B) "appreciate" — là động từ nguyên mẫu, sai từ loại ở vị trí này. | (C) "appreciative" — là tính từ, đúng từ loại mà vị trí trống đòi hỏi. | (D) "appreciatively" — là trạng từ, không thể làm bổ ngữ cho động từ "was".
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How often does the printer lose its connection to the internal Wi-Fi?
+voice: uk_female_1
+(A) For about two hours each time.
+(B) Once a week, usually on Monday morning.
+(C) Around twenty pages at a time, I think.
+Answer: B
+Explanation: Câu hỏi là "How often does the printer lose its connection to the internal Wi-Fi?", hỏi về TẦN SUẤT. | (A) "For about two hours each time." — đưa thời lượng cho câu hỏi tần suất, nghe hấp dẫn vì cùng nói về việc mất kết nối Wi-Fi. | (B) "Once a week, usually on Monday morning." — nêu đúng một tần suất, trả lời thẳng thứ được hỏi. | (C) "Around twenty pages at a time, I think." — đưa số lượng trang, dùng lại bối cảnh máy in nhưng trả lời sai chiều đo.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+You sent the old version of this report by mistake, didn't you?
+voice: ca_male_1
+(A) In the shared folder on the server.
+(B) Yes, I'll resend the revised version right away.
+(C) The old files were archived last week.
+Answer: B
+Explanation: Câu hỏi là "You sent the old version of this report by mistake, didn't you?", một câu hỏi đuôi xác nhận việc gửi nhầm bản cũ. | (A) "In the shared folder on the server." — nêu nơi chốn, trả lời như một câu hỏi Where chứ không xác nhận hay phủ nhận. | (B) "Yes, I'll resend the revised version right away." — xác nhận thẳng vào điều được hỏi và cam kết gửi lại bản chỉnh sửa. | (C) "The old files were archived last week." — dùng lại từ "old" nhưng chỉ kể về việc lưu trữ hồ sơ, không phản hồi việc có gửi nhầm hay không.
+Source: original

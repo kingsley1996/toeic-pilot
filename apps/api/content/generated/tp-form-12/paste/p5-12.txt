@@ -1,0 +1,9 @@
+[QUESTION]
+Guests will receive a full refund if they ------- their room reservations before 6:00 p.m. on the day of arrival.
+(A) deliver
+(B) install
+(C) cancel
+(D) translate
+Answer: C
+Explanation: Chỗ trống cần một động từ kết hợp được với "room reservations" và hợp logic với việc khách được hoàn tiền toàn bộ. | (A) "deliver" — dùng cho hàng hóa, thư từ, không kết hợp với "reservations". | (B) "install" — dùng cho thiết bị, phần mềm, không đi với "reservations". | (C) "cancel" — "cancel reservations" là cụm đúng và hợp với ngữ cảnh hoàn tiền khi hủy phòng trước giờ quy định. | (D) "translate" — nghĩa là dịch ngôn ngữ, hoàn toàn không liên quan đến đặt phòng.
+Source: original

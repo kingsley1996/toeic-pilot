@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The air conditioner in the server room has been fixed.
+voice: us_female_1
+(A) Lunch was served in the staff cafeteria at noon.
+(B) Great, thanks for taking care of it so quickly.
+(C) The server room is on the third floor, near the stairs.
+Answer: B
+Explanation: Câu trần thuật là "The air conditioner in the server room has been fixed.", kỹ thuật viên báo máy lạnh phòng server đã sửa xong, nên phản hồi phù hợp là lời ghi nhận hoặc cảm ơn tin vừa nghe. | (A) "Lunch was served in the staff cafeteria at noon." — dùng từ "served" nghe giống "server" nhưng nói về bữa trưa, không liên quan gì đến tin về máy lạnh. | (B) "Great, thanks for taking care of it so quickly." — quản lý cảm ơn và ghi nhận trực tiếp thông tin vừa được báo. | (C) "The server room is on the third floor, near the stairs." — lấy lại "server room" đã nghe rồi nêu nơi chốn, như đang trả lời một câu hỏi Where mà câu trần thuật không hề hỏi.
+Source: original

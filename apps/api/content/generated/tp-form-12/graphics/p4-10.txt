@@ -1,0 +1,4 @@
+kind: map
+Conference Centre Floor Plan, Ground Floor
+Room 1: Marketing Trends | Room 2: Global Expansion
+Room 3: Digital Tools | Room 4: Networking

@@ -1,0 +1,9 @@
+[QUESTION]
+The corner café stayed open to welcome customers ------- it was raining heavily all morning.
+(A) however
+(B) despite
+(C) although
+(D) because of
+Answer: C
+Explanation: Vị trí trống nằm giữa hai mệnh đề đầy đủ mang quan hệ tương phản nên cần một liên từ phụ thuộc. | (A) "however" — là trạng từ liên kết, không thể nối hai mệnh đề chỉ bằng dấu phẩy. | (B) "despite" — là giới từ, sau nó phải là danh từ hoặc V-ing chứ không nhận được mệnh đề. | (C) "although" — là liên từ chỉ tương phản, nối đúng hai mệnh đề chủ vị đầy đủ. | (D) "because of" — là cụm giới từ, bắt buộc có danh từ theo sau nên không đứng trước mệnh đề.
+Source: original

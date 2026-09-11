@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, this is Fiona Gallagher calling from Apex Commercial Bank for Mr. Dawson. I am calling to remind you about your appointment to sign your mortgage contract this Thursday morning at ten o'clock. Originally, we planned to meet at our downtown branch, but that office is undergoing renovations this week. Instead, our meeting will take place at the Westside branch on Elm Street. Please remember to bring two valid forms of photo identification and your latest bank statement, as our legal department requires physical copies before finalizing the loan. If you need to reschedule, please call me back at extension four-zero-two before five o'clock today.
+
+[QUESTION]
+What is the main purpose of the call?
+(A) To report a delay in a loan approval
+(B) To announce a schedule change at the office
+(C) To confirm the original meeting location
+(D) To remind a customer about an upcoming loan-signing appointment
+Answer: D
+Explanation: Người nói cho biết cô gọi để nhắc ông Dawson về cuộc hẹn ký hợp đồng vay thế chấp vào sáng thứ Năm. | (A) "To report a delay in a loan approval" — bài nói không đề cập khoản vay bị trì hoãn; việc hoàn tất khoản vay vẫn đang được chuẩn bị. | (B) "To announce a schedule change at the office" — lời nhắn là nhắc hẹn, không phải đổi lịch làm việc tại văn phòng. | (C) "To confirm the original meeting location" — ngược lại: cuộc hẹn đã được chuyển sang Westside, không phải xác nhận chỗ cũ. | (D) "To remind a customer about an upcoming loan-signing appointment" — đúng vì người nói gọi để nhắc khách hàng về cuộc hẹn ký hợp đồng vay thế chấp.
+Source: original
+[QUESTION]
+What can be inferred about the venue for Thursday's meeting?
+(A) The meeting place differs from the downtown branch first planned.
+(B) It is currently closed for renovations.
+(C) It houses the bank's main legal department.
+(D) It will close for the day at five o'clock.
+Answer: A
+Explanation: Ban đầu cuộc họp được lên kế hoạch tại chi nhánh downtown, nhưng sau đó được chuyển sang chi nhánh Westside trên Elm Street vì chi nhánh downtown đang được sửa chữa. | (A) "The meeting place differs from the downtown branch first planned." — đúng vì phải ghép kế hoạch cũ ở downtown với địa điểm mới ở Westside. | (B) "It is currently closed for renovations." — chi nhánh đang sửa chữa là downtown branch, không phải địa điểm mới là Westside branch. | (C) "It houses the bank's main legal department." — bài nói chỉ cho biết bộ phận pháp lý yêu cầu bản sao giấy tờ, không nói bộ phận này đặt tại Westside branch. | (D) "It will close for the day at five o'clock." — năm giờ chiều là hạn chót gọi lại nếu muốn đổi lịch, không phải giờ đóng cửa của chi nhánh.
+Source: original
+[QUESTION]
+What is the listener instructed to bring to the appointment?
+(A) A completed mortgage application
+(B) Photo identification and a bank statement
+(C) A payment for renovation costs
+(D) A written request to reschedule the appointment
+Answer: B
+Explanation: Người nói yêu cầu người nghe mang theo hai giấy tờ tùy thân có ảnh hợp lệ và bản sao kê ngân hàng gần nhất vì bộ phận pháp lý yêu cầu bản giấy trước khi hoàn tất khoản vay. | (A) "A completed mortgage application" — bài nói không yêu cầu mang đơn đăng ký vay đã hoàn tất. | (B) "Photo identification and a bank statement" — đúng vì đây là hai loại giấy tờ được yêu cầu trực tiếp trong bài. | (C) "A payment for renovation costs" — việc chi nhánh đang sửa chữa không liên quan đến bất kỳ khoản thanh toán nào mà khách hàng phải mang theo. | (D) "A written request to reschedule the appointment" — nếu muốn đổi lịch, người nghe được hướng dẫn gọi lại chứ không phải mang đơn yêu cầu bằng văn bản.
+Source: original

@@ -48,6 +48,10 @@ apps/api/media/
 # graphics, graphic-images) thì commit — chúng là nguồn để tái tạo lại đề.
 apps/api/content/generated/*/images/
 
+# Cache kết quả verify theo từng câu (khoá theo hash paste, tái tạo bằng cách
+# chạy lại `check --verify` — chỉ gọi phần thiếu). Không giữ trong git.
+apps/api/content/generated/*/verify/
+
 # `photos/` TỪNG nằm ở đây, và lý do ấy đã hết hiệu lực (2026-09-05).
 #
 # Nó bị bỏ qua vì được coi là phụ phẩm của lệnh `photo` — tái sinh được. Nhưng

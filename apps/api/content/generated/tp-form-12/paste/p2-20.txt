@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+How long does it take to book a room for the training?
+voice: uk_female_1
+(A) Around twenty people have signed up.
+(B) At nine o'clock tomorrow morning.
+(C) Just a few minutes on the internal calendar system.
+Answer: C
+Explanation: Câu hỏi là "How long does it take to book a room for the training?", hỏi về THỜI LƯỢNG — mất bao lâu để đặt phòng, không phải thời điểm hay số lượng. | (A) "Around twenty people have signed up." — đưa một số lượng người, trả lời theo kiểu How many chứ không phải how long. | (B) "At nine o'clock tomorrow morning." — đưa một mốc giờ cụ thể, tức trả lời câu hỏi When chứ không phải độ dài thời gian. | (C) "Just a few minutes on the internal calendar system." — nêu đúng một khoảng thời gian, trả lời thẳng vào how long và khớp bối cảnh đặt phòng qua hệ thống lịch nội bộ.
+Source: original

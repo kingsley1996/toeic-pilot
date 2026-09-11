@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The bags of coffee are stacked on the counter.
+(B) The man is wiping the counter with a cloth.
+(C) Two baristas are making drinks behind the counter.
+(D) The man is pouring milk into a cup.
+Answer: D
+Explanation: Trong ảnh chỉ có một nam nhân viên mặc tạp dề đứng sau quầy, đang nghiêng bình rót sữa xuống một chiếc ly trắng đặt trên mặt quầy; máy xay đá đang chạy bên cạnh và các gói cà phê xếp ngay ngắn trên kệ gắn ở tường phía sau anh ấy. | (A) "stacked on the counter" — các gói cà phê nằm trên kệ phía sau quầy chứ không nằm trên mặt quầy: đúng vật, sai vị trí. | (B) "wiping the counter with a cloth" — mặt quầy có trong ảnh nhưng anh ấy đang rót sữa và tay không cầm khăn nào: đúng vật, sai hành động. | (C) "Two baristas are making drinks" — trong ảnh chỉ có đúng một người, không có ai khác: số nhiều sai so với ảnh. | (D) "pouring milk into a cup" — đúng hành động người nhân viên đang thực hiện.
+Source: original

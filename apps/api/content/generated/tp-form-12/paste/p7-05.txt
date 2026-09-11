@@ -1,0 +1,44 @@
+[PASSAGE]
+From: An Tam Insurance <renewal@antam.example>
+To: m.lan@example-mail.net
+Subject: Renewal Notice for Life Insurance Contract 8874
+Date: May 20
+
+Dear Ms. Lan,
+
+Our records show that your term life insurance contract, number 8874, will reach its anniversary on June 15. The contract has remained in force continuously since July 2019, and no lapse has been recorded. To keep your protection active, the standard renewal premium for the coming year is 4,800,000 dong. Please pay it by June 10 through any branch, by bank transfer, or through our mobile application. A reminder will also be sent by text message and e-mail five days before the payment deadline.
+
+Customers who maintain coverage continuously since 2019 qualify for a five percent loyalty reduction, which will be applied automatically at billing. Because your beneficiary details were last updated in 2021, we ask that you confirm the named recipient at least ten days before the anniversary. This confirmation can be done online or by visiting a branch with a photo identification card. Failure to update these details may delay claim review later.
+
+If you need help, contact your account manager.
+
+Sincerely,
+Renewal Services Department
+
+[QUESTION]
+What amount will Ms. Lan pay for the coming year?
+(A) 5,040,000 dong
+(B) 4,800,000 dong
+(C) 4,560,000 dong
+(D) 4,320,000 dong
+Answer: C
+Explanation: E-mail nêu "the standard renewal premium for the coming year is 4,800,000 dong", xác nhận hợp đồng "has remained in force continuously since July 2019" và kèm "a five percent loyalty reduction", nên phí gia hạn được giảm 5%. | (A) "5,040,000 dong" — con số này tăng 5% trong khi tài liệu nói giảm 5%. | (B) "4,800,000 dong" — đây là mức phí tiêu chuẩn trước khi áp dụng giảm giá khách hàng trung thành. | (C) "4,560,000 dong" — mức phí sau khi trừ 5% từ 4,800,000 dong. | (D) "4,320,000 dong" — con số này giảm 10% trong khi tài liệu chỉ nêu giảm 5%.
+Source: original
+[QUESTION]
+What is NOT stated in the e-mail?
+(A) The contract reaches its anniversary in June.
+(B) The loyalty reduction is applied automatically.
+(C) Beneficiary details were last updated in 2021.
+(D) A fixed late fee will be charged.
+Answer: D
+Explanation: E-mail nêu "will reach its anniversary on June 15", "which will be applied automatically at billing" và "beneficiary details were last updated in 2021", nhưng không đề cập khoản phí trễ hạn cố định nào. | (A) "The contract reaches its anniversary in June." — được nêu qua "June 15". | (B) "The loyalty reduction is applied automatically." — được nêu qua "applied automatically at billing". | (C) "Beneficiary details were last updated in 2021." — được nêu qua câu về beneficiary details. | (D) "A fixed late fee will be charged." — không được nêu, nên đây là chi tiết sai cần tìm.
+Source: original
+[QUESTION]
+What can be inferred from the e-mail?
+(A) The customer’s protection could be affected if payment is not made by June 10.
+(B) The customer must claim the loyalty reduction by phone.
+(C) The beneficiary confirmation is only needed after the anniversary.
+(D) The standard premium will increase by five percent this year.
+Answer: A
+Explanation: E-mail viết "To keep your protection active" và "Please pay it by June 10", ngụ ý nếu không đóng phí gia hạn thì quyền lợi bảo hiểm có thể bị ảnh hưởng. | (A) "The customer’s protection could be affected if payment is not made by June 10." — suy ra từ yêu cầu thanh toán để duy trì bảo vệ. | (B) "The customer must claim the loyalty reduction by phone." — bị phủ định vì mức giảm giá được áp dụng tự động tại billing. | (C) "The beneficiary confirmation is only needed after the anniversary." — bị phủ định vì phải xác nhận trước ít nhất 10 ngày. | (D) "The standard premium will increase by five percent this year." — bị phủ định vì 5% là mức giảm giá khách hàng trung thành.
+Source: original

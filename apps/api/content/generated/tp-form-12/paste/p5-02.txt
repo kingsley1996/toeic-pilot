@@ -1,0 +1,9 @@
+[QUESTION]
+All vendor invoices are ------- by the accounting department every Friday.
+(A) processed
+(B) processing
+(C) process
+(D) processor
+Answer: A
+Explanation: Chủ ngữ "invoices" nhận hành động và câu đã có "by the accounting department", nên cần phân từ hai để lập thể bị động. | (A) "processed" — phân từ hai, tạo đúng bị động "are processed by...". | (B) "processing" — V-ing lập thể chủ động "are processing", mâu thuẫn với tác nhân "by...". | (C) "process" — động từ nguyên mẫu không đứng sau "are" ở vị trí này. | (D) "processor" — danh từ, sai từ loại cho chỗ trống.
+Source: original

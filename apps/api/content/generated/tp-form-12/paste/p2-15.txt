@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The afternoon meeting has been postponed, hasn't it?
+voice: ca_male_1
+(A) Yes, it's been moved to Thursday at two.
+(B) It's in the main conference room.
+(C) The budget review was postponed instead.
+Answer: A
+Explanation: Câu hỏi là "The afternoon meeting has been postponed, hasn't it?", một câu hỏi đuôi xin xác nhận rằng cuộc họp chiều nay đã bị hoãn. | (A) "Yes, it's been moved to Thursday at two." — xác nhận thẳng "có, đã hoãn" và nêu ngày mới thứ Năm, trả lời trực tiếp điều được hỏi. | (B) "It's in the main conference room." — nêu nơi chốn, tức trả lời một câu hỏi Where cho câu hỏi đuôi cần xác nhận. | (C) "The budget review was postponed instead." — dùng lại từ "postponed" nhưng nói về cuộc họp khác, không xác nhận được chuyện cuộc họp chiều nay.
+Source: original

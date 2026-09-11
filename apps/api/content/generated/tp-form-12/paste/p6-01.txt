@@ -1,0 +1,47 @@
+[PASSAGE]
+New Resort in Da Nang Offers a Relaxed Getaway
+
+The new beachfront resort in Da Nang has quickly become a favorite for travelers seeking calm after a busy city tour. Its rooftop bar provides a ------- (1) for guests, especially during sunset.
+
+Guests can book spa treatments ------- (2) advance, and the private beach is open only to resort visitors. The resort opened only last month. ------- (3), the staff are already praised for their service.
+
+Rooms feature wooden furniture, soft lighting, and large windows. Each room also includes a quiet work desk, which is useful for business travelers.
+
+The resort also has a small gym and a children's pool. ------- (4) These facilities are especially convenient for families who travel with young children. Overall, the resort balances comfort with thoughtful design.
+
+[QUESTION]
+Blank (1)
+(A) peek
+(B) look
+(C) glance
+(D) view
+Answer: D
+Explanation: Câu "Its rooftop bar provides a ------- (1) for guests, especially during sunset" cần một danh từ chỉ cảnh hoặc quang cảnh có thể ngắm từ sân thượng. | (A) "peek" — chỉ hành động nhìn nhanh hoặc nhìn lén, không phù hợp với ngữ cảnh. | (B) "look" — thường chỉ vẻ ngoài hoặc hành động nhìn, không phù hợp với ý chỉ quang cảnh ở đây. | (C) "glance" — chỉ một cái liếc nhanh, không phải cảnh vật. | (D) "view" — đúng nghĩa và tạo thành cách diễn đạt tự nhiên "provides a view".
+Source: original
+[QUESTION]
+Blank (2)
+(A) in
+(B) on
+(C) at
+(D) by
+Answer: A
+Explanation: Câu "Guests can book spa treatments ------- (2) advance" cần cụm giới từ cố định chỉ việc thực hiện trước một thời điểm. | (A) "in" — tạo thành cụm "in advance", nghĩa là trước đó, đúng ngữ pháp và ngữ nghĩa. | (B) "on" — không dùng với "advance" trong cụm này. | (C) "at" — không tạo thành cụm giới từ phù hợp với "advance" ở đây. | (D) "by" — thường chỉ thời hạn, nhưng không tạo thành cụm "by advance".
+Source: original
+[QUESTION]
+Blank (3)
+(A) Because
+(B) However
+(C) Therefore
+(D) Until
+Answer: B
+Explanation: Câu trước nói khu nghỉ mới chỉ mở vào tháng trước, trong khi câu sau cho biết nhân viên đã được khen ngợi, tạo quan hệ tương phản. | (A) "Because" — chỉ nguyên nhân, không phù hợp với mối quan hệ giữa hai câu. | (B) "However" — diễn tả đúng sự tương phản giữa thời gian hoạt động ngắn và việc nhân viên đã được khen. | (C) "Therefore" — chỉ kết quả, trong khi câu sau không phải kết quả trực tiếp của việc khu nghỉ mới mở. | (D) "Until" — chỉ thời gian và không thể liên kết hai ý này.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The restaurant serves dinner until ten p.m.
+(B) Guests must reserve the spa at least one day early.
+(C) Both facilities are clean and well maintained.
+(D) The beach is crowded during the holiday season.
+Answer: C
+Explanation: Câu trước giới thiệu một phòng gym và hồ bơi trẻ em, sau đó câu "These facilities" tiếp tục đề cập đến hai tiện ích này, nên câu điền cần mô tả chúng. | (A) "The restaurant serves dinner until ten p.m." — nói về nhà hàng, không liên kết với gym và hồ bơi trẻ em. | (B) "Guests must reserve the spa at least one day early." — nói về dịch vụ spa, không liên quan đến hai tiện ích vừa nêu. | (C) "Both facilities are clean and well maintained." — phù hợp vì "Both facilities" chỉ hai tiện ích vừa được đề cập và dẫn tự nhiên đến "These facilities". | (D) "The beach is crowded during the holiday season." — nói về bãi biển và không tạo liên kết với câu sau.
+Source: original

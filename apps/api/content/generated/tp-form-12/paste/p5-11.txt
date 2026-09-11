@@ -1,0 +1,9 @@
+[QUESTION]
+The company representative ------- answered every question from reporters during the press conference.
+(A) conviction
+(B) convincingly
+(C) convincing
+(D) convinced
+Answer: B
+Explanation: Vị trí trống đứng ngay trước động từ "answered" nên cần một trạng từ để bổ nghĩa cho động từ. | (A) "conviction" — là danh từ, không thể bổ nghĩa cho động từ. | (B) "convincingly" — là trạng từ, bổ nghĩa đúng cho động từ "answered". | (C) "convincing" — là tính từ, chỉ bổ nghĩa cho danh từ chứ không bổ nghĩa được động từ. | (D) "convinced" — là phân từ hai dùng như tính từ, sai từ loại ở vị trí này.
+Source: original

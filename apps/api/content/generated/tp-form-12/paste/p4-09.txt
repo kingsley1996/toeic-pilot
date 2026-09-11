@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, everyone. Thanks for joining the online marketing meeting. We need to reallocate next quarter's ad budget and assign responsibilities. Originally, we had planned a thirty-thousand increase for one campaign, but after reviewing last year's results, we will move fifteen thousand from another instead. The campaign ending at thirty thousand will be the priority. Please update its creative brief by Wednesday. The vendor will provide the final cost estimate on Thursday, and we will confirm the total on Friday. If the estimate is higher than thirty-two thousand, bring the revised brief to Monday's meeting.
+
+[QUESTION]
+What is the main purpose of the speaker's remarks?
+(A) To confirm the total on Friday
+(B) To review last year's results
+(C) To meet the vendor on Thursday
+(D) To revise budget allocations and assign tasks
+Answer: D
+Explanation: Người nói mở đầu "We need to reallocate next quarter's ad budget and assign responsibilities" — mục đích chính là phân bổ ngân sách và giao việc. | (A) "To confirm the total on Friday" — là việc sau khi có estimate, không phải mục đích chính. | (B) "To review last year's results" — là chi tiết dẫn tới thay đổi, không phải mục đích chính. | (C) "To meet the vendor on Thursday" — vendor gửi estimate, không phải lý do họp. | (D) "To revise budget allocations and assign tasks" — paraphrase khớp đúng mục đích vừa dẫn.
+Source: original
+[QUESTION]
+Look at the graphic. Which campaign will be the priority?
+(A) Search Ads
+(B) Social Media
+(C) Email
+(D) Video
+Answer: A
+Explanation: Người nói nói "The campaign ending at thirty thousand will be the priority", và trên biểu đồ mục có giá trị 30 là Search Ads. | (A) "Search Ads" — có giá trị 30, khớp với chi tiết vừa dẫn. | (B) "Social Media" — có giá trị 46, không khớp với thirty thousand. | (C) "Email" — có giá trị 27, không phải mức được nêu. | (D) "Video" — có giá trị 15, không phải mức được nêu.
+Source: original
+[QUESTION]
+What must the listener bring to Monday's meeting if the estimate is high?
+(A) The final cost estimate from the vendor
+(B) The revised creative brief
+(C) The total to be confirmed on Friday
+(D) The original thirty-thousand increase
+Answer: B
+Explanation: Người nói nói "Please update its creative brief by Wednesday" rồi "bring the revised brief to Monday's meeting" — vật mang đến Monday là bản brief đã cập nhật. | (A) "The final cost estimate from the vendor" — vendor cung cấp estimate, không phải thứ người nghe mang đến. | (B) "The revised creative brief" — khớp "creative brief" với "revised brief". | (C) "The total to be confirmed on Friday" — việc confirm total thuộc Friday, không phải Monday. | (D) "The original thirty-thousand increase" — mức increase originally đã được thay bằng "move fifteen thousand".
+Source: original

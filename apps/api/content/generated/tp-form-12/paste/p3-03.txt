@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, I bought this tablet here yesterday, but I forgot to ask about the warranty coverage.
+voice: ca_male_1
+It comes with a one-year standard warranty that covers manufacturing defects. However, accidental drops and liquid damage are excluded.
+voice: uk_female_1
+I often travel for work, so I'm worried about dropping it. Is there an option to protect against that?
+voice: ca_male_1
+Yes, our complete care package covers accidental damage for two years. It must be added within thirty days of purchase.
+voice: uk_female_1
+My receipt is from yesterday. Could you print out the details for me?
+voice: ca_male_1
+I have a brochure right here.
+
+[QUESTION]
+According to the man, what does the standard warranty cover?
+(A) Accidental drops
+(B) Manufacturing defects
+(C) Liquid damage
+(D) Travel-related theft
+Answer: B
+Explanation: Người đàn ông nói rằng gói bảo hành tiêu chuẩn một năm "covers manufacturing defects." | (A) "Accidental drops" — được nhắc đến nhưng bị loại trừ khỏi bảo hành tiêu chuẩn. | (B) "Manufacturing defects" — đúng nội dung được bảo hành. | (C) "Liquid damage" — cũng bị loại trừ khỏi gói tiêu chuẩn. | (D) "Travel-related theft" — không được đề cập trong bài.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Process a refund for a tablet
+(B) Repair a damaged screen
+(C) Provide printed information about the care package
+(D) Sign her up for coverage immediately
+Answer: C
+Explanation: Người phụ nữ hỏi, "Could you print out the details for me?", tức cô ấy muốn người đàn ông cung cấp thông tin bằng văn bản về gói bảo vệ. | (A) "Process a refund for a tablet" — cô không yêu cầu hoàn tiền. | (B) "Repair a damaged screen" — không có yêu cầu sửa chữa thiết bị. | (C) "Provide printed information about the care package" — đúng với yêu cầu in thông tin chi tiết về gói dịch vụ. | (D) "Sign her up for coverage immediately" — cô chỉ yêu cầu thông tin, chưa yêu cầu đăng ký.
+Source: original
+[QUESTION]
+What does the woman mean when she says, "My receipt is from yesterday"?
+(A) She plans to return the tablet today.
+(B) She wants to extend the standard warranty.
+(C) She has already added the extra coverage.
+(D) She bought the tablet yesterday and can add the package.
+Answer: D
+Explanation: Người đàn ông vừa nói rằng gói complete care phải được thêm vào trong vòng 30 ngày kể từ ngày mua. Khi người phụ nữ nói hóa đơn của cô ấy là từ hôm qua, cô ấy ngụ ý rằng mình vẫn đang trong khoảng thời gian cho phép để thêm gói bảo vệ. | (A) "She plans to return the tablet today." — không có dấu hiệu cô muốn trả máy. | (B) "She wants to extend the standard warranty." — cô đang hỏi về bảo vệ hư hỏng do tai nạn, không phải yêu cầu gia hạn bảo hành tiêu chuẩn. | (C) "She has already added the extra coverage." — cô ấy mới đang hỏi về gói bảo vệ, chưa đăng ký. | (D) "She bought the tablet yesterday and can add the package." — đúng hàm ý dựa trên ngày mua và điều kiện 30 ngày.
+Source: original

@@ -1,0 +1,7 @@
+kind: table
+Number of Delegates by Department
+Department | Delegates
+Marketing | 2
+Finance | 1
+Operations | 1
+Human Resources | 1

@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Hi Mark, we need to finish setting up our booth layout for tomorrow's trade show. Did you bring the promotional banners?
+voice: au_male_1
+Yes, but I noticed the print shop forgot to include our updated company logo on them.
+voice: us_female_1
+Oh no. Did you contact them about it?
+voice: au_male_1
+Yes, I called them back, and they'll drop off the corrected ones by two o'clock.
+voice: us_female_1
+Great. While we wait, where should we arrange the interactive trial tables?
+voice: au_male_1
+According to our floor plan, those belong in the section located directly underneath Booth 1.
+voice: us_female_1
+Okay, I'll start moving the display equipment over to that spot now.
+
+[QUESTION]
+What are the speakers preparing for?
+(A) An upcoming trade show
+(B) A print shop presentation
+(C) An interactive product demonstration
+(D) An equipment inspection
+Answer: A
+Explanation: Người phụ nữ mở đầu bằng "we need to finish setting up our booth layout for tomorrow's trade show", cho biết họ đang chuẩn bị cho một hội chợ thương mại sắp diễn ra. | (A) "An upcoming trade show" — đúng vì hai người đang hoàn tất việc bố trí gian hàng cho hội chợ thương mại vào ngày mai. | (B) "A print shop presentation" — print shop chỉ được nhắc đến vì nơi này đã in các biểu ngữ, không phải nơi tổ chức sự kiện. | (C) "An interactive product demonstration" — interactive trial tables được nhắc đến như một phần của gian hàng, không phải sự kiện mà họ đang chuẩn bị. | (D) "An equipment inspection" — display equipment được nhắc đến khi người phụ nữ chuẩn bị di chuyển thiết bị, nhưng không có hoạt động kiểm tra thiết bị.
+Source: original
+[QUESTION]
+Why will the corrected banners be delivered at two o'clock?
+(A) To return equipment left at the print shop
+(B) To replace banners that had a missing logo
+(C) To deliver interactive trial tables
+(D) To bring an updated floor plan
+Answer: B
+Explanation: Người nam nói rằng print shop đã quên in logo công ty được cập nhật trên các biểu ngữ. Sau đó, anh cho biết họ sẽ giao các biểu ngữ đã được sửa vào lúc hai giờ. Vì vậy, chuyến giao hàng nhằm thay thế các biểu ngữ bị thiếu logo. | (A) "To return equipment left at the print shop" — không có thông tin nào cho biết thiết bị bị bỏ quên tại xưởng in. | (B) "To replace banners that had a missing logo" — đúng vì các biểu ngữ mới được sửa lại để bổ sung logo công ty đã bị thiếu. | (C) "To deliver interactive trial tables" — các bàn dùng thử được đề cập trong kế hoạch bố trí gian hàng, không phải là hàng được giao lúc hai giờ. | (D) "To bring an updated floor plan" — floor plan đã có sẵn và được người nam sử dụng để xác định vị trí đặt bàn.
+Source: original
+[QUESTION]
+Look at the graphic. Where will the interactive trial tables be placed?
+(A) Booth 1
+(B) Booth 2
+(C) Booth 3
+(D) Booth 4
+Answer: C
+Explanation: Người nam nói rằng các bàn dùng thử sẽ được đặt ở khu vực "directly underneath Booth 1". Đối chiếu với graphic, khu vực ngay bên dưới Booth 1 là Booth 3. | (A) "Booth 1" — đây là vị trí được dùng làm mốc để xác định nơi đặt bàn, không phải vị trí của các bàn. | (B) "Booth 2" — nằm bên phải Booth 1, không phải trực tiếp bên dưới Booth 1. | (C) "Booth 3" — đúng vì đây là khu vực nằm trực tiếp bên dưới Booth 1 trên graphic. | (D) "Booth 4" — nằm bên dưới Booth 2, không phải bên dưới Booth 1.
+Source: original

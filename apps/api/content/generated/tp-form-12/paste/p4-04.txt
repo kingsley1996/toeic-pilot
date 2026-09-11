@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Looking to refresh your living space before the new year? Visit Oakridge Furniture this week for our annual year-end clearance sale. We are offering up to fifty percent off on selected dining sets and sofas. Originally, our interest-free payment plan required a minimum purchase of one thousand dollars, but for this event only, we have lowered the threshold to just five hundred dollars. That means you can spread your payments over twelve months with zero extra fees. To take advantage of these special savings, stop by our showroom on Main Street or check out our website to place an order today.
+
+[QUESTION]
+What is the main purpose of the commercial?
+(A) To promote a year-end clearance event
+(B) To advertise the opening of a new showroom
+(C) To explain how to assemble dining sets
+(D) To recruit new sales representatives
+Answer: A
+Explanation: Người nói quảng bá chương trình year-end clearance sale của Oakridge Furniture và giới thiệu các sản phẩm được giảm giá cùng điều kiện thanh toán đặc biệt. Vì vậy, mục đích chính của quảng cáo là quảng bá một chương trình thanh lý cuối năm. | (A) "To promote a year-end clearance event" — đúng vì toàn bộ quảng cáo tập trung vào chương trình giảm giá cuối năm của cửa hàng. | (B) "To advertise the opening of a new showroom" — showroom chỉ được nhắc đến như một địa điểm khách hàng có thể đến mua hàng, không có thông tin về việc khai trương showroom mới. | (C) "To explain how to assemble dining sets" — dining sets được nhắc đến là sản phẩm được giảm giá, không có hướng dẫn lắp ráp. | (D) "To recruit new sales representatives" — không có thông tin nào về tuyển dụng nhân viên.
+Source: original
+[QUESTION]
+What is the minimum purchase required for the twelve-month payment plan during the sale?
+(A) Six hundred dollars
+(B) Five hundred dollars
+(C) One thousand dollars
+(D) Twelve hundred dollars
+Answer: B
+Explanation: Người nói cho biết mức mua tối thiểu trước đây là $1,000 nhưng trong chương trình này đã được hạ xuống còn $500. Sau đó, anh nói khách hàng có thể trải đều khoản thanh toán trong 12 tháng mà không phải trả thêm phí. Vì vậy, mức mua tối thiểu để áp dụng kế hoạch thanh toán này là $500. | (A) "Six hundred dollars" — số tiền này không được đề cập trong bài. | (B) "Five hundred dollars" — đúng vì ngưỡng tối thiểu đã được hạ từ $1,000 xuống $500 cho chương trình này. | (C) "One thousand dollars" — đây là mức mua tối thiểu ban đầu trước khi chương trình được điều chỉnh. | (D) "Twelve hundred dollars" — số "twelve" trong bài liên quan đến thời hạn thanh toán 12 tháng, không phải mức mua tối thiểu.
+Source: original
+[QUESTION]
+What are listeners encouraged to do to receive the special savings?
+(A) Email a representative about selected dining sets
+(B) Pay with a minimum deposit of fifty percent
+(C) Shop in person or place an order online
+(D) Apply for the payment plan at the showroom
+Answer: C
+Explanation: Cuối quảng cáo, người nói hướng dẫn khách hàng đến showroom trên Main Street hoặc truy cập website để đặt hàng nhằm tận dụng các ưu đãi đặc biệt. | (A) "Email a representative about selected dining sets" — "selected dining sets" là hàng giảm giá, không có yêu cầu email về chúng. | (B) "Pay with a minimum deposit of fifty percent" — "fifty percent" là mức giảm giá tối đa cho một số sản phẩm, không phải tỷ lệ tiền đặt cọc. | (C) "Shop in person or place an order online" — đúng vì diễn đạt lại hai lựa chọn được đưa ra: đến showroom hoặc đặt hàng thông qua website. | (D) "Apply for the payment plan at the showroom" — kế hoạch trả góp không cần đăng ký trước; khách chỉ mua và chọn hình thức trả.
+Source: original

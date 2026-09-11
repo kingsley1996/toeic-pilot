@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Excuse me, do you still have this model in stock?
+voice: us_female_1
+(A) It's three hundred ninety-nine dollars.
+(B) Yes, we do, in black and white.
+(C) Our new stock arrives every Monday.
+Answer: B
+Explanation: Câu hỏi là "Excuse me, do you still have this model in stock?", một câu hỏi YES/NO của khách hàng về việc mẫu máy này còn hàng hay không. | (A) "It's three hundred ninety-nine dollars." — đưa ra mức giá, tức trả lời một câu hỏi how much thay vì xác nhận còn hàng hay không. | (B) "Yes, we do, in black and white." — xác nhận thẳng còn hàng và nêu đủ hai màu đen, trắng, đúng thứ được hỏi. | (C) "Our new stock arrives every Monday." — dùng lại từ "stock" đã nghe trong câu hỏi nhưng nói về đợt hàng nhập định kỳ, không cho biết mẫu máy này còn hay hết.
+Source: original

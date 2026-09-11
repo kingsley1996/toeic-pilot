@@ -17,11 +17,14 @@ kiểm thành một nghi thức luôn xanh.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import random
 import re
 import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from app.content.exam import explanation as exp_format
 from app.content.exam.blueprint import (
@@ -365,6 +368,33 @@ def check_explanation(question: ParsedQuestion, evidence: str) -> list[str]:
             if missing:
                 flags.append(f"trích dẫn không có trong ngữ liệu: {missing[0][:48]!r}")
     return flags
+
+
+def _digest(text: str) -> str:
+    return hashlib.sha256(text.encode()).hexdigest()[:16]
+
+
+def _cached_verify(workdir: Path, name: str, digest: str) -> dict[str, Any] | None:
+    """Kết quả đối chiếu lưu MỖI CÂU một xuống `verify/<slot>-<câu>-<loại>.json`.
+
+    Chặng verify là chặng đắt nhất của pipeline — một lượt gọi model cho mỗi
+    câu, cả đề hàng trăm lượt. Không lưu thì một lần Ctrl-C hay hết quota giữa
+    đường đốt sạch những gì đã trả tiền, và chạy lại bắt đầu từ số không. Hàng
+    đợi là một truy vấn trên thư mục: chạy lại chỉ gọi những câu chưa có kết
+    quả. Khoá là nội dung khối dán — sửa câu hỏi làm kết quả cũ tự hết hiệu
+    lực, cờ xanh cũ không sống sót qua nội dung mới.
+    """
+    try:
+        data = json.loads((workdir / "verify" / f"{name}.json").read_text())
+    except (OSError, ValueError):
+        return None
+    return data if data.get("h") == digest else None
+
+
+def _store_verify(workdir: Path, name: str, digest: str, payload: dict[str, Any]) -> None:
+    path = workdir / "verify" / f"{name}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"h": digest, **payload}))
 
 
 def verify_answer(
@@ -719,10 +749,15 @@ def check_distractors(question: ParsedQuestion, script: str) -> list[str]:
     wrong = [option_text(o) for o in question.options if not o.is_correct]
     if len(wrong) < 3 or not script.strip():
         return []
-    unrelated = sum(1 for o in wrong if echo(o, script) < UNRELATED)
+    # Một lựa chọn không có từ nội dung nào ("At 2:30 P.M.") không ĐO được:
+    # bẫy giờ trên đề thật là nhầm con số, không phải nhầm từ — nắn nó về phía
+    # "nhại lời thoại" là phá đúng cái bẫy nó dựng. Cùng tiền lệ với đáp án số
+    # trong `check_retrieval_spread`.
+    measurable = [o for o in wrong if _content_words(o)]
+    unrelated = sum(1 for o in measurable if echo(o, script) < UNRELATED)
     if unrelated > 1:
         return [
-            f"{unrelated}/3 đáp án nhiễu không nhắc tới gì trong lời thoại — "
+            f"{unrelated}/{len(measurable)} đáp án nhiễu không nhắc tới gì trong lời thoại — "
             "nhiều nhất một, phần còn lại phải nhại lời đã nói rồi bẻ nghĩa"
         ]
     return []
@@ -1009,18 +1044,38 @@ def _filled_passage(passage: str, questions: list[ParsedQuestion]) -> str:
     return out
 
 
-def check_implication(question: ParsedQuestion, script: str) -> list[str]:
-    """Câu hàm ý phải TRÍCH một lời đã nói, đúng từng chữ.
+def check_implication(question: ParsedQuestion, script: str, kind: int = 0) -> list[str]:
+    """Câu hàm ý phải đúng khuôn của BIẾN THỂ mà blueprint giao (`implication_kind`).
 
     Đây là dạng câu khó nhất của Part 3/4 và cũng là dạng dễ trượt về dạng dễ
     nhất: bỏ lời trích đi thì còn lại một câu hỏi chi tiết hoàn toàn hợp lệ, và
     không có gì trong đầu ra nói cho ta biết ô này đã không viết đúng thứ được
-    giao. Trích một câu KHÔNG có trong lời thoại thì tệ hơn — người nghe không
-    bao giờ nghe thấy nó, nên câu hỏi không trả lời được.
+    giao.
 
-    Cả hai đều kiểm được tất định, nên chúng là `problems` chứ không phải `flags`:
-    ô bị xoá và sinh lại, thay vì đi tiếp vào đề.
+    `difficulty.py` dạy bốn biến thể và rotation cố ý chia chúng đều, nên cổng
+    không được ép tất cả về form 1. Chỉ form 0 mới có lời trích để kiểm tất định.
+
+    - kind 0 (quote-a-line): stem phải trích `"..."` sau says/writes, và lời
+      trích phải CÓ THẬT trong lời thoại.
+    - kind 1 (suy từ hai chi tiết rời): đáp án đúng phải chạm ÍT NHẤT HAI câu
+      của lời thoại — đó chính là định nghĩa của biến thể. Đáp án không có từ
+      nội dung nào (con số, tên riêng) thì không đo được, bỏ qua.
+    - kind 2, 3 (hệ quả kế hoạch đổi / mục đích chi tiết): không có dấu vết tất
+      định nào trong đầu ra phân biệt chúng với câu chi tiết — chỉ prompt và
+      `--verify` giữ được chúng.
     """
+    if kind == 1:
+        gold = [option_text(o) for o in question.options if o.is_correct]
+        if gold:
+            spans = evidence_sentences(gold[0], script)
+            if spans and len(spans) < 2:
+                return [
+                    "câu hàm ý 'suy từ hai chi tiết rời' phải dựa trên ít nhất "
+                    "hai câu tách rời của lời thoại"
+                ]
+        return []
+    if kind > 1:
+        return []
     quoted = _SAYS_RE.search(question.prompt_text or "")
     if quoted is None:
         return ["câu hàm ý không trích lời nào — phải hỏi về một câu người nói đã nói"]
@@ -1137,13 +1192,25 @@ def _check_set(
             from app.content.exam.blueprint import GRAPHIC_POSITION
 
             asked = questions[GRAPHIC_POSITION.get(part, len(questions) - 1)]
-            try:
-                verdict, complaint = graphic_rule_verdict(gateway, asked, script, source, tier)
-            except LLMQuotaExhausted:
-                raise
-            except Exception as failure:  # noqa: BLE001
-                verdict, complaint = "", None
-                graphic_flags = [*graphic_flags, f"không xét được luật hình: {failure}"]
+            digest = _digest(block + source.read_text())
+            hit = _cached_verify(workdir, f"{slot.id}-graphic", digest)
+            if hit is not None:
+                verdict, complaint = hit["verdict"], hit["complaint"]
+            else:
+                try:
+                    verdict, complaint = graphic_rule_verdict(gateway, asked, script, source, tier)
+                except LLMQuotaExhausted:
+                    raise
+                except Exception as failure:  # noqa: BLE001
+                    verdict, complaint = "", None
+                    graphic_flags = [*graphic_flags, f"không xét được luật hình: {failure}"]
+                else:
+                    _store_verify(
+                        workdir,
+                        f"{slot.id}-graphic",
+                        digest,
+                        {"verdict": verdict, "complaint": complaint},
+                    )
             if complaint:
                 shared = [*shared, complaint]
             elif verdict and verdict != "OK":
@@ -1270,7 +1337,7 @@ def _check_set(
         if index == GRAPHIC_POSITION.get(part, len(questions) - 1):
             report.flags.extend(graphic_flags)
         if index < len(slot.question_types) and slot.question_types[index].endswith("_IMPLICATION"):
-            report.problems.extend(check_implication(question, script))
+            report.problems.extend(check_implication(question, script, slot.implication_kind))
         # Câu hỏi về HÌNH được miễn, và không phải vì tiện: lựa chọn của nó là
         # tên hàng trong bảng, còn lời thoại CỐ Ý không đọc tên ấy ra — đó là
         # toàn bộ cơ chế của dạng câu này (xem `graphic_rule_verdict`). Bắt nó
@@ -1299,30 +1366,54 @@ def _check_set(
             seen[key] = f"{slot.id} câu {index + 1}"
 
         if gateway is not None:
-            try:
-                flag = verify_answer(
-                    gateway, question, tier, blueprint.seed + report.number, part, script
-                )
-            except LLMQuotaExhausted:
-                raise
-            except Exception as failure:  # noqa: BLE001
-                flag = f"không đối chiếu được đáp án: {failure}"
-            if flag:
-                report.flags.append(flag)
-            if ambiguity:
+            digest = _digest(block)
+            hit = _cached_verify(workdir, f"{slot.id}-{index + 1}-answer", digest)
+            if hit is not None:
+                flag = hit["flag"]
+            else:
                 try:
-                    count, found = count_workable_options(gateway, question, tier, part, script)
+                    flag = verify_answer(
+                        gateway, question, tier, blueprint.seed + report.number, part, script
+                    )
                 except LLMQuotaExhausted:
                     raise
                 except Exception as failure:  # noqa: BLE001
-                    count, found = 1, None
-                    report.flags.append(f"không đếm được phương án điền được: {failure}")
-                report.workable = found
-                if count != 1:
-                    report.flags.append(
-                        f"có {count} phương án điền được ({found or 'không đọc được'}) — "
-                        f"một câu chỉ được có đúng một"
-                    )
+                    flag = f"không đối chiếu được đáp án: {failure}"
+                else:
+                    _store_verify(workdir, f"{slot.id}-{index + 1}-answer", digest, {"flag": flag})
+            if flag:
+                report.flags.append(flag)
+            if ambiguity:
+                hit = _cached_verify(workdir, f"{slot.id}-{index + 1}-workable", digest)
+                if hit is not None:
+                    count, found = hit["count"], hit["found"]
+                    report.workable = found
+                    if count != 1:
+                        report.flags.append(
+                            f"có {count} phương án điền được ({found or 'không đọc được'}) — "
+                            f"một câu chỉ được có đúng một"
+                        )
+                else:
+                    try:
+                        count, found = count_workable_options(gateway, question, tier, part, script)
+                    except LLMQuotaExhausted:
+                        raise
+                    except Exception as failure:  # noqa: BLE001
+                        count, found = 1, None
+                        report.flags.append(f"không đếm được phương án điền được: {failure}")
+                    else:
+                        _store_verify(
+                            workdir,
+                            f"{slot.id}-{index + 1}-workable",
+                            digest,
+                            {"count": count, "found": found},
+                        )
+                    report.workable = found
+                    if count != 1:
+                        report.flags.append(
+                            f"có {count} phương án điền được ({found or 'không đọc được'}) — "
+                            f"một câu chỉ được có đúng một"
+                        )
         reports.append(report)
     return reports
 
@@ -1392,7 +1483,8 @@ def check_blueprint(
             )
             continue
 
-        question, problems = parse_one(path.read_text(), part_number)
+        block = path.read_text()
+        question, problems = parse_one(block, part_number)
         # Mô tả ảnh là hiện vật RIÊNG (writer.split_photo), nên chặng kiểm phải
         # đi lấy nó. Không có nó thì mọi phép kiểm ngữ nghĩa của Part 1 đang so
         # bốn câu mô tả với hư không — và chúng đều "đạt".
@@ -1435,33 +1527,51 @@ def check_blueprint(
             # quả của những ô đã kiểm là cách chắc chắn nhất khiến không ai chạy
             # nó. Ghi thành cờ: ô đó "chưa đối chiếu được" — nhìn thấy được, và
             # chạy lại được.
-            try:
-                flag = verify_answer(
-                    gateway, question, tier, blueprint.seed + slot.number, part_number, context
-                )
-            except LLMQuotaExhausted:
-                # Hạn mức NGÀY không tự hết sau vài giây, nên đi tiếp chỉ sinh ra
-                # đúng dòng cờ đó cho mọi ô còn lại — và dòng nói đúng nguyên nhân
-                # bị chôn dưới ba mươi dòng giống hệt. Dừng hẳn, giữ lại những ô
-                # đã kiểm. Cùng cách xử lý mà `write` đã dùng.
-                raise
-            except Exception as failure:  # noqa: BLE001
-                flag = f"không đối chiếu được đáp án: {failure}"
+            digest = _digest(block)
+            hit = _cached_verify(workdir, f"{slot.id}-answer", digest)
+            if hit is not None:
+                flag = hit["flag"]
+            else:
+                try:
+                    flag = verify_answer(
+                        gateway, question, tier, blueprint.seed + slot.number, part_number, context
+                    )
+                except LLMQuotaExhausted:
+                    # Hạn mức NGÀY không tự hết sau vài giây, nên đi tiếp chỉ sinh ra
+                    # đúng dòng cờ đó cho mọi ô còn lại — và dòng nói đúng nguyên nhân
+                    # bị chôn dưới ba mươi dòng giống hệt. Dừng hẳn, giữ lại những ô
+                    # đã kiểm. Cùng cách xử lý mà `write` đã dùng.
+                    raise
+                except Exception as failure:  # noqa: BLE001
+                    flag = f"không đối chiếu được đáp án: {failure}"
+                else:
+                    _store_verify(workdir, f"{slot.id}-answer", digest, {"flag": flag})
             if flag:
                 report.flags.append(flag)
             if ambiguity:
-                try:
-                    count, found = count_workable_options(
-                        gateway, question, tier, part_number, context
-                    )
-                except LLMQuotaExhausted:
-                    raise
-                except Exception as failure:  # noqa: BLE001
-                    # `count = 1` để phép kiểm này KHÔNG gắn thêm cờ "nhiều phương
-                    # án" từ một con số chưa từng được đo. Cờ nói đúng chuyện đã
-                    # xảy ra nằm ngay dưới.
-                    count, found = 1, None
-                    report.flags.append(f"không đếm được phương án điền được: {failure}")
+                hit = _cached_verify(workdir, f"{slot.id}-workable", digest)
+                if hit is not None:
+                    count, found = hit["count"], hit["found"]
+                else:
+                    try:
+                        count, found = count_workable_options(
+                            gateway, question, tier, part_number, context
+                        )
+                    except LLMQuotaExhausted:
+                        raise
+                    except Exception as failure:  # noqa: BLE001
+                        # `count = 1` để phép kiểm này KHÔNG gắn thêm cờ "nhiều
+                        # phương án" từ một con số chưa từng được đo. Cờ nói đúng
+                        # chuyện đã xảy ra nằm ngay dưới.
+                        count, found = 1, None
+                        report.flags.append(f"không đếm được phương án điền được: {failure}")
+                    else:
+                        _store_verify(
+                            workdir,
+                            f"{slot.id}-workable",
+                            digest,
+                            {"count": count, "found": found},
+                        )
                 report.workable = found
                 if count != 1:
                     report.flags.append(

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and welcome to your new employee orientation here in the main auditorium. I'm Sarah Jenkins, the Human Resources Director. Today, we'll introduce you to our key departments and outline our comprehensive welfare policies. Originally, we planned to conduct the building tour right after this opening talk. However, because the second-floor finance wing is undergoing urgent repairs, we have rescheduled the tour to three o'clock this afternoon. Instead, we will head directly to cafeteria room B for the department briefings. Please make sure to collect your temporary security badges from the desk near the exit before we move.
+
+[QUESTION]
+What is the main purpose of the talk?
+(A) To announce new welfare policies
+(B) To explain repairs in the finance department
+(C) To introduce new employees to the organization
+(D) To recruit new human resources personnel
+Answer: C
+Explanation: Người nói mở đầu bằng việc chào mừng mọi người đến buổi định hướng nhân viên mới và cho biết chương trình sẽ giới thiệu các phòng ban chính cùng chính sách phúc lợi. Vì vậy, mục đích chính của bài nói là giới thiệu nhân viên mới với tổ chức. | (A) "To announce new welfare policies" — chính sách phúc lợi là một trong những nội dung được đề cập, nhưng không phải mục đích chính của toàn bộ bài nói. | (B) "To explain repairs in the finance department" — việc sửa chữa chỉ được đề cập để giải thích lý do chuyến tham quan bị thay đổi lịch. | (C) "To introduce new employees to the organization" — đúng vì buổi orientation nhằm cung cấp cho nhân viên mới thông tin về các phòng ban và chính sách của tổ chức. | (D) "To recruit new human resources personnel" — người nói là Human Resources Director, nhưng không có hoạt động tuyển dụng nào được đề cập.
+Source: original
+[QUESTION]
+What will the listeners probably do next?
+(A) Go on a tour of the building
+(B) Meet in the main auditorium at three o'clock
+(C) Perform repairs on the second floor
+(D) Attend briefings about the company's departments
+Answer: D
+Explanation: Người nói cho biết chuyến tham quan tòa nhà vốn được lên kế hoạch ngay sau bài nói đã được dời sang 3 giờ chiều. Thay vào đó, mọi người sẽ đi thẳng đến cafeteria room B để tham gia các buổi giới thiệu về phòng ban, nên đây là hoạt động họ có khả năng thực hiện tiếp theo. | (A) "Go on a tour of the building" — chuyến tham quan đã được dời sang 3 giờ chiều do khu vực tài chính ở tầng hai đang sửa chữa. | (B) "Meet in the main auditorium at three o'clock" — 3 giờ chiều là thời gian mới của chuyến tham quan tòa nhà, không phải thời gian quay lại hội trường. | (C) "Perform repairs on the second floor" — người nghe là nhân viên mới tham dự orientation, không phải người được giao sửa chữa khu vực tài chính. | (D) "Attend briefings about the company's departments" — đúng vì người nói cho biết mọi người sẽ đi thẳng đến cafeteria room B để tham gia các buổi giới thiệu về các phòng ban.
+Source: original
+[QUESTION]
+What are the listeners asked to do before leaving the auditorium?
+(A) Obtain temporary security badges
+(B) Visit the second-floor finance wing
+(C) Pay for meals in cafeteria room B
+(D) Return badge forms to human resources
+Answer: A
+Explanation: Người nói yêu cầu mọi người lấy thẻ an ninh tạm thời tại bàn gần lối ra trước khi di chuyển khỏi hội trường. | (A) "Obtain temporary security badges" — đúng vì người nói trực tiếp yêu cầu mọi người collect their temporary security badges trước khi rời đi. | (B) "Visit the second-floor finance wing" — khu vực này đang được sửa chữa và chuyến tham quan đã được dời sang 3 giờ chiều. | (C) "Pay for meals in cafeteria room B" — cafeteria room B là nơi diễn ra các buổi giới thiệu phòng ban, nhưng không có thông tin về việc thanh toán tiền ăn. | (D) "Return badge forms to human resources" — người nghe được yêu cầu lấy thẻ an ninh, không phải trả lại biểu mẫu cho phòng nhân sự.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: ca_male_1
+As project managers, we need to pick a grand opening gift for our firm's new branch today.
+voice: uk_female_1
+How about this framed wooden clock? The clerk said adding our company logo takes three days.
+voice: ca_male_1
+The opening ceremony is not until next Friday.
+voice: uk_female_1
+We have plenty of time.
+voice: ca_male_1
+True. Can you email the high-resolution logo to the store manager while I fill out the order form?
+voice: uk_female_1
+Sure, I'll send that file right away.
+
+[QUESTION]
+Who most likely are the speakers?
+(A) Project managers
+(B) Store clerks
+(C) Branch directors
+(D) Gift shop owners
+Answer: A
+Explanation: Người nam mở đầu bằng "As project managers, we need to pick a grand opening gift..." và trực tiếp xác định vai trò của hai người trong cuộc trò chuyện. | (A) "Project managers" — đúng vì người nam tự xác định họ là project managers. | (B) "Store clerks" — "clerk" được nhắc đến khi người phụ nữ nói về nhân viên cửa hàng, không phải người nói. | (C) "Branch directors" — "branch" được nhắc đến vì công ty đang mở chi nhánh mới, nhưng không có thông tin cho thấy họ là giám đốc chi nhánh. | (D) "Gift shop owners" — hai người đang chọn và đặt mua quà từ cửa hàng, không phải chủ cửa hàng.
+Source: original
+[QUESTION]
+What does the woman mean when she says, "We have plenty of time"?
+(A) A ceremony has been postponed.
+(B) The three-day logo work will finish well before next Friday.
+(C) The shop is staying open late.
+(D) They should compare prices at another store.
+Answer: B
+Explanation: Người phụ nữ biết rằng việc thêm logo công ty mất ba ngày, trong khi người nam cho biết lễ khai trương sẽ diễn ra vào thứ Sáu tuần sau. Vì vậy, khi nói "We have plenty of time", cô muốn nói họ có đủ thời gian để hoàn thiện món quà. | (A) "A ceremony has been postponed." — sai vì không có thông tin nào cho biết buổi lễ bị hoãn. | (B) "The three-day logo work will finish well before next Friday." — đúng vì ba ngày thêm logo vẫn còn nằm trước ngày diễn ra lễ khai trương. | (C) "The shop is staying open late." — không có thông tin về giờ đóng cửa của cửa hàng. | (D) "They should compare prices at another store." — việc so sánh giá tại cửa hàng khác không được đề cập.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Fill out an order form
+(B) Talk to the store manager
+(C) Email a company logo
+(D) Select a different gift item
+Answer: C
+Explanation: Người nam hỏi "Can you email the high-resolution logo to the store manager while I fill out the order form?", tức là anh ấy nhờ người phụ nữ gửi logo có độ phân giải cao cho quản lý cửa hàng qua email. | (A) "Fill out an order form" — người nam nói "while I fill out the order form", cho biết chính anh ấy sẽ điền đơn đặt hàng. | (B) "Talk to the store manager" — store manager là người nhận logo qua email, không phải người mà người phụ nữ được yêu cầu gọi hoặc nói chuyện trực tiếp. | (C) "Email a company logo" — đúng vì người nam trực tiếp yêu cầu người phụ nữ gửi high-resolution logo cho store manager. | (D) "Select a different gift item" — hai người đang xem xét chiếc đồng hồ gỗ và không có yêu cầu chọn một món quà khác.
+Source: original

@@ -16,6 +16,7 @@ Ba thứ được ghim, và cả ba đều hỏng im lặng:
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -1588,6 +1589,10 @@ def test_the_paid_check_costs_one_slot_not_one_part(tmp_path, monkeypatch):
 
     whole = _Counting()
     check_blueprint(plan, tmp_path, gateway=whole, ambiguity=True, only=5, quiet=True)
+    # Lượt đầu giờ để lại cache verify — đúng chức năng của nó, nhưng bài này
+    # đếm BẠC QUẠT gọi theo ô, không đo cache. Xoá cache để lượt hai trả lời
+    # đúng câu hỏi của bài.
+    shutil.rmtree(tmp_path / "verify")
     one = _Counting()
     reports = check_blueprint(
         plan, tmp_path, gateway=one, ambiguity=True, only=5, quiet=True, slot_id=slots[2].id
@@ -2000,6 +2005,31 @@ def test_an_implication_question_must_quote_the_script_word_for_word() -> None:
         line=1, prompt_text='What does the man mean when he says, "I will call the supplier"?'
     )
     assert check_implication(invented, script)
+
+
+def test_implication_variants_are_gated_by_their_own_kind() -> None:
+    """Rotation bốn biến thể nằm trong blueprint; cổng chỉ được đòi lời trích ở
+    form 0 — ép cả bốn về trích-dòng là giết đúng thứ `difficulty.py` tạo ra."""
+    from app.content.exam.check import check_distractors, check_implication
+    from app.services.content_import import ParsedQuestion
+
+    script = (
+        "M: The show opens Friday but we need three more days.\nW: Then we will move it to Monday."
+    )
+
+    # kind 1: đáp án phải chạm hai câu rời.
+    two = _mc(script, "The opening moved from Friday to Monday.", ["a", "b", "c"])
+    assert check_implication(two, script, kind=1) == []
+    one = _mc(script, "The show opens Friday.", ["a", "b", "c"])
+    assert check_implication(one, script, kind=1)
+    # kind 2/3: không có khuôn tất định nào ngoài prompt — không chặn.
+    bare = ParsedQuestion(line=1, prompt_text="What will probably happen next?")
+    assert check_implication(bare, script, kind=2) == []
+
+    # Lựa chọn giờ thuần ("At 2:30 P.M.") không đo được thì không tính.
+    time_options = ["At 2:30 P.M.", "8:00 P.M.", "5:00 P.M."]
+    times = _mc("M: Opens at 9. W: The bank closes at 2:30.", "9:00 A.M.", time_options)
+    assert check_distractors(times, script) == []
 
 
 # --- Chống trùng khung giữa các đề ---------------------------------------
@@ -2541,6 +2571,58 @@ def test_purpose_and_implication_do_not_count_toward_the_balance_gate() -> None:
     # Miễn theo MÃ, không phải miễn cả cụm: hai câu truy hồi cùng chạm đáy vẫn chặn.
     retrieval = ["PART_4_DETAIL", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"]
     assert check_paraphrase_balance(trio, GYM_TALK, retrieval)
+
+
+def test_a_reasoning_model_cut_off_retries_once_at_double_ceiling(monkeypatch) -> None:
+    """Ba ô Part 3 liên tiếp chết vì lý do duy nhất: hết trần đầu ra khi model
+    còn đang suy luận. Cùng trần thì cụt lại đúng chỗ cũ — nhấn đúp một lần là
+    lệnh của chính thông báo lỗi; lỗi khác thì ném nguyên, không nhân bản."""
+    import pytest
+
+    from app.content.exam_cli import authoring
+
+    calls: list[int] = []
+
+    def fake_write(gateway, slot, tier, part, ceiling, fix_hint=None):
+        calls.append(ceiling)
+        if len(calls) == 1:
+            raise RuntimeError("bai: hết hạn mức đầu ra khi đang suy luận. Tăng `max_tokens`.")
+        return "block"
+
+    monkeypatch.setattr(authoring.writer, "write_slot", fake_write)
+    assert authoring._write_slot(None, None, None, 3, 6000) == "block"  # type: ignore[arg-type]
+    assert calls == [6000, 12000]
+
+    def always_fail(gateway, slot, tier, part, ceiling, fix_hint=None):
+        raise ValueError("lỗi khác")
+
+    monkeypatch.setattr(authoring.writer, "write_slot", always_fail)
+    with pytest.raises(ValueError):
+        authoring._write_slot(None, None, None, 3, 6000)  # type: ignore[arg-type]
+
+
+def test_verify_results_survive_a_restart_and_die_with_the_paste(tmp_path) -> None:
+    """Verify là chặng đắt nhất — một lượt gọi mỗi câu. Chặn giữa đường không
+    được đốt lại những gì đã trả tiền: kết quả lưu theo câu, chạy lại chỉ gọi
+    phần thiếu. VÀ một lá phiếu xanh không được sống sót qua việc nội dung bị
+    sửa — khoá cache là chính khối dán."""
+    plan = _part3_plan(tmp_path)
+    slot = plan.parts[0].slots[0]
+
+    first = _Recorder()
+    reports = checker.check_blueprint(plan, tmp_path, first, Tier.CHEAP, False, 3)  # type: ignore[arg-type]
+    assert len(first.seen) == 3
+    flags = [r.flags for r in reports]
+
+    second = _Recorder()
+    again = checker.check_blueprint(plan, tmp_path, second, Tier.CHEAP, False, 3)  # type: ignore[arg-type]
+    assert not second.seen, "lượt hai vẫn gọi model dù cache còn hạn"
+    assert [r.flags for r in again] == flags, "cache phải tái hiện đúng cờ của lượt đầu"
+
+    writer.save_slot(tmp_path, slot, PART3_GOOD.replace("interview schedule", "meeting agenda"))
+    third = _Recorder()
+    checker.check_blueprint(plan, tmp_path, third, Tier.CHEAP, False, 3)  # type: ignore[arg-type]
+    assert len(third.seen) == 3, "sửa paste mà cache không tự hết hạn"
 
 
 def test_full_load_attaches_labels_but_part_load_does_not(monkeypatch) -> None:

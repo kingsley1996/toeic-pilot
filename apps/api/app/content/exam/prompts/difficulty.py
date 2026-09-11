@@ -43,7 +43,8 @@ _IMPLICATION_VARIANTS = (
         "SUY RA TỪ HAI CHI TIẾT RỜI NHAU",
         "Hỏi \u201cWhat can be inferred about \u2026?\u201d \u2014 không trích dòng nào. "
         "Đáp án KHÔNG được nói ra ở đâu cả; phải ghép một dữ kiện nêu sớm với một "
-        "dữ kiện nêu muộn mới ra.",
+        "dữ kiện nêu muộn mới ra. Cổng kiểm chặn đáp án mà từ khóa chỉ chạm "
+        "ĐÚNG MỘT câu của lời thoại.",
     ),
     (
         "HỆ QUẢ CỦA MỘT KẾ HOẠCH BỊ ĐỔI",

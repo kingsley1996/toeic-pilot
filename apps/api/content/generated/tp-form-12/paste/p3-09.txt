@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+Thanks for meeting with me, team. As head of the event planning committee, I want to finalize our company year-end party.
+voice: ca_male_1
+I reviewed the budget. The downtown bistro fits our funds, but their dining hall only holds seventy guests.
+voice: au_male_1
+That is a problem. Since we recently hired twenty new staff members, we now have ninety people attending.
+voice: us_female_1
+Then we must choose the waterfront restaurant instead.
+voice: ca_male_1
+Agreed. I'll contact the waterfront restaurant right now to confirm our reservation.
+
+[QUESTION]
+What is the main purpose of the conversation?
+(A) To announce a budget reduction
+(B) To review new employee resumes
+(C) To negotiate a catering contract
+(D) To choose a venue and confirm the year-end party
+Answer: D
+Explanation: Người phụ nữ mở đầu bằng "I want to finalize our company year-end party", sau đó nhóm phải chọn giữa downtown bistro và waterfront restaurant rồi chốt việc đặt chỗ. | (A) "To announce a budget reduction" — "budget" được nhắc đến để xem xét khả năng chi trả của địa điểm, không phải để thông báo cắt giảm ngân sách. | (B) "To review new employee resumes" — "new staff members" được nhắc đến nhưng họ không thảo luận về hồ sơ xin việc. | (C) "To negotiate a catering contract" — không có cuộc đàm phán hợp đồng dịch vụ ăn uống nào trong hội thoại. | (D) "To choose a venue and confirm the year-end party" — đúng vì cả nhóm chốt địa điểm rồi xác nhận đặt chỗ cho tiệc tất niên.
+Source: original
+[QUESTION]
+Who most likely is the female speaker?
+(A) An event planning committee head
+(B) A restaurant manager
+(C) A new staff member
+(D) A financial analyst
+Answer: A
+Explanation: Người phụ nữ tự giới thiệu "As head of the event planning committee", cho biết cô là người đứng đầu ban tổ chức sự kiện. | (A) "An event planning committee head" — khớp trực tiếp với lời tự giới thiệu của người phụ nữ. | (B) "A restaurant manager" — "restaurant" được nhắc đến vì họ đang lựa chọn địa điểm tổ chức tiệc, nhưng người phụ nữ không làm việc tại nhà hàng. | (C) "A new staff member" — "new staff members" được nhắc đến để giải thích số lượng khách tham dự, không phải vai trò của người phụ nữ. | (D) "A financial analyst" — người phụ nữ không được xác định là chuyên viên phân tích tài chính.
+Source: original
+[QUESTION]
+What will the second man do next?
+(A) Interview job candidates
+(B) Reserve the waterfront restaurant
+(C) Book the downtown bistro
+(D) Expand the dining hall
+Answer: B
+Explanation: Sau khi biết nhà hàng downtown bistro chỉ có thể chứa 70 khách trong khi có 90 người tham dự, nhóm quyết định chọn waterfront restaurant. Người đàn ông thứ hai sau đó nói "I'll contact the waterfront restaurant right now to confirm our reservation." | (A) "Interview job candidates" — việc tuyển thêm nhân viên chỉ được nhắc đến để giải thích số lượng khách tham dự, không liên quan đến hành động tiếp theo của người đàn ông. | (B) "Reserve the waterfront restaurant" — đúng vì người đàn ông nói anh sẽ liên hệ nhà hàng ven sông ngay để xác nhận đặt chỗ. | (C) "Book the downtown bistro" — địa điểm này bị loại vì phòng ăn chỉ chứa được 70 người. | (D) "Expand the dining hall" — không có thông tin cho thấy nhà hàng sẽ mở rộng phòng ăn; nhóm đã quyết định chọn một địa điểm khác.
+Source: original

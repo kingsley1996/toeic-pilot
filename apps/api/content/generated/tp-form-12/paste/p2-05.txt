@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When will I hear back about the interview results?
+voice: uk_female_1
+(A) The interviews were held last Tuesday.
+(B) In the meeting room on the third floor.
+(C) How many candidates are they still interviewing?
+Answer: C
+Explanation: Câu hỏi là "When will I hear back about the interview results?", ứng viên hỏi nhân sự phòng nhân sự khi nào sẽ nhận được kết quả phỏng vấn, tức cần một mốc THỜI GIAN. | (A) "The interviews were held last Tuesday." — dùng lại từ "interview" nhưng nói về thời điểm diễn ra buổi phỏng vấn trong quá khứ, không phải khi nào nhận được kết quả. | (B) "In the meeting room on the third floor." — nêu nơi chốn cho một câu hỏi WHEN, tức trả lời sai loại câu hỏi (WHERE thay vì WHEN). | (C) "How many candidates are they still interviewing?" — đáp lại bằng một câu hỏi ngược, ngầm cho biết kết quả chưa thể ấn định ngày vì vẫn còn ứng viên đang được xem xét, đúng kiểu trả lời gián tiếp.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, I'm calling from Apex Law. Our main photocopier stopped working this morning, and we need it fixed today.
+voice: au_male_1
+I can help with that. Is there an error code on the screen?
+voice: uk_female_1
+Yes, it shows Error 40, but we already restarted the machine and it still won't print.
+voice: au_male_1
+Okay. We can send a technician. Would two o'clock work for you?
+voice: uk_female_1
+Our office is closed for lunch until two thirty. Could someone come at three o'clock instead?
+voice: au_male_1
+Three o'clock works fine. Please ensure someone is at the front desk to badge him in.
+
+[QUESTION]
+Why is the woman calling the service center?
+(A) To change the time of a lunch meeting
+(B) To request repair for office equipment
+(C) To ask how to clear an error code
+(D) To order a replacement photocopier
+Answer: B
+Explanation: Người phụ nữ mở đầu bằng "Our main photocopier stopped working this morning, and we need it fixed today", cho biết lý do cô gọi đến trung tâm dịch vụ là để yêu cầu sửa máy photocopy bị hỏng. | (A) "To change the time of a lunch meeting" — từ "lunch" xuất hiện trong bài nhưng dùng để nói về giờ nghỉ trưa của văn phòng, không phải một cuộc họp ăn trưa. | (B) "To request repair for office equipment" — diễn đạt lại chính xác mục đích của cuộc gọi. | (C) "To ask how to clear an error code" — người phụ nữ có đề cập "Error 40", nhưng cô không gọi để hỏi cách xử lý mã lỗi mà yêu cầu kỹ thuật viên đến sửa máy. | (D) "To order a replacement photocopier" — máy photocopy được nhắc đến vì nó bị hỏng; không có thông tin cho thấy cô muốn mua một máy mới.
+Source: original
+[QUESTION]
+What does the man request that the woman do?
+(A) Restart the photocopier again
+(B) Call back after two thirty
+(C) Let the technician in at the front desk
+(D) Provide the technician's badge number
+Answer: C
+Explanation: Ở lượt nói cuối, người đàn ông yêu cầu "Please ensure someone is at the front desk to badge him in", nghĩa là cần có người tại quầy lễ tân để cho kỹ thuật viên vào. | (A) "Restart the photocopier again" — người phụ nữ đã khởi động lại máy trước đó nhưng máy vẫn không hoạt động. | (B) "Call back after two thirty" — "two thirty" chỉ là thời điểm văn phòng kết thúc giờ nghỉ trưa, không phải yêu cầu gọi lại. | (C) "Let the technician in at the front desk" — diễn đạt lại chính xác yêu cầu có người tại quầy lễ tân để cho kỹ thuật viên vào. | (D) "Provide the technician's badge number" — người đàn ông nói "badge him in", tức là cho kỹ thuật viên vào bằng hệ thống thẻ/ID, chứ không yêu cầu cung cấp số thẻ.
+Source: original
+[QUESTION]
+What time will the technician visit the office?
+(A) At 2:30 P.M.
+(B) At 2:00 P.M.
+(C) At 12:00 P.M.
+(D) At 3:00 P.M.
+Answer: D
+Explanation: Ban đầu người đàn ông đề xuất "Would two o'clock work for you?", nhưng người phụ nữ nói văn phòng đóng cửa nghỉ trưa đến "two thirty" và đề nghị ba giờ; anh đồng ý bằng câu "Three o'clock works fine." | (A) "At 2:30 P.M." — đó là lúc văn phòng xong giờ nghỉ, không phải giờ hẹn thợ. | (B) "At 2:00 P.M." — đề xuất ban đầu đã bị thay đổi vì văn phòng vẫn đang nghỉ trưa. | (C) "At 12:00 P.M." — mốc này không được đề cập. | (D) "At 3:00 P.M." — đúng vì đây là thời gian cuối cùng hai bên đã thống nhất.
+Source: original

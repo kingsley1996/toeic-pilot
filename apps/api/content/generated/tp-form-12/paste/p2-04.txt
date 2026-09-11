@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Have you sent the financial report to the head office yet?
+voice: us_female_1
+(A) In the shared drive, under Finance.
+(B) Mr. Lopez confirmed he received it this morning.
+(C) I'll report the final figures tomorrow.
+Answer: B
+Explanation: Câu hỏi là "Have you sent the financial report to the head office yet?", một câu hỏi YES/NO hỏi đồng nghiệp đã gửi báo cáo tài chính chưa. | (A) "In the shared drive, under Finance." — bắt sóng từ "financial" nhưng trả lời nơi lưu tài liệu, tức đáp một câu WHERE thay vì câu hỏi có hay chưa. | (B) "Mr. Lopez confirmed he received it this morning." — hàm ý đã gửi vì chính người nhận xác nhận đã nhận được sáng nay, xác nhận gián tiếp mà không cần nói Yes. | (C) "I'll report the final figures tomorrow." — dùng lại từ "report" với nghĩa khác, chuyển thành việc báo cáo số liệu trong tương lai, không phản hồi việc đã gửi hay chưa.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Shipping merchandise by air is much more expensive ------- shipping it by land, but delivery times are considerably shorter.
+(A) most
+(B) as
+(C) more
+(D) than
+Answer: D
+Explanation: Cụm "more expensive" ngay trước chỗ trống đòi hỏi "than" để hoàn thành cấu trúc so sánh hơn. | (A) "most" — là dấu so sánh nhất, phải đứng trước tính từ và không dùng được khi so sánh giữa hai đối tượng. | (B) "as" — so sánh bằng phải có dạng "as expensive as", một mình "as" đứng sau tính từ là sai dạng so sánh. | (C) "more" — dấu so sánh hơn phải đứng trước tính từ, lặp lại sau "more expensive" là sai cấu trúc. | (D) "than" — từ nối đúng cho công thức "more + tính từ + than" khi so sánh hai đối tượng.
+Source: original

@@ -1,0 +1,48 @@
+[PASSAGE]
+Review: A Promising Start at the City-Center Coffee Chain
+By staff reporter
+April 3
+
+The new city-center coffee chain opened last weekend with polished oak counters, soft lighting, and a menu that favors simple classics over trendy syrups. At launch, a small espresso costs $2.80, a drip coffee $3.10, and a flat white $3.90. Those prices are modest for a central location, and the first-floor seating feels calm enough for laptop work. Most tables also include power outlets, though only two sections have quiet zones.
+
+Service, however, was slower than the signage suggested. A chalkboard promised drinks in under four minutes, yet my order required nine minutes on a Tuesday morning. Staff explained that the espresso machine had been misconfigured during training. That problem may disappear as the team settles, but customers should still plan for a short wait during rush hours.
+
+The chain's loyalty app is the strongest part of the offer. Members receive 15 percent off any drink purchased before 10 A.M., and on Fridays they may add a second drink for $1.50 after the first discount is applied. To get the Friday bonus, the order must be placed through the app, not at the counter. [1] The app also sends a weekly coupon for a free pastry with a drink. [2] The pastries are baked offsite, so they arrive earlier than expected but lose warmth by afternoon. [3] If management improves speed, this chain could become a serious neighborhood favorite. [4]
+
+[QUESTION]
+How much does a loyalty member pay for a small espresso before 10 A.M.?
+(A) $3.10
+(B) $2.80
+(C) $2.38
+(D) $3.90
+Answer: C
+Explanation: Bài viết nêu "a small espresso costs $2.80" and "Members receive 15 percent off any drink purchased before 10 A.M." | (A) "$3.10" — là giá của drip coffee, không phải espresso. | (B) "$2.80" — là giá gốc trước khi áp dụng giảm giá cho thành viên. | (C) "$2.38" — đúng vì giá gốc $2.80 được giảm 15%. | (D) "$3.90" — là giá của flat white, không phải espresso.
+Source: original
+[QUESTION]
+What can be inferred about the service problem?
+(A) It was fixed before the reporter ordered.
+(B) It is caused by a broken machine.
+(C) It will force the chain to close.
+(D) It may lessen with experience.
+Answer: D
+Explanation: Bài viết cho biết "That problem may disappear as the team settles" and "my order required nine minutes". | (A) "It was fixed before the reporter ordered" — trái với việc đơn hàng "required nine minutes". | (B) "It is caused by a broken machine" — đoạn văn nói máy "had been misconfigured during training", không nói hỏng. | (C) "It will force the chain to close" — không có ý đóng cửa; bài còn nói chain "could become a serious neighborhood favorite". | (D) "It may lessen with experience" — khớp với "may disappear as the team settles".
+Source: original
+[QUESTION]
+What is NOT stated about the chain?
+(A) The chain has a rooftop terrace.
+(B) A weekly coupon is sent by the app.
+(C) Pastries lose warmth by afternoon.
+(D) A chalkboard promised fast service.
+Answer: A
+Explanation: Bài viết có các chi tiết "A chalkboard promised drinks in under four minutes", "The app also sends a weekly coupon", and "lose warmth by afternoon". | (A) "The chain has a rooftop terrace" — không xuất hiện trong bài. | (B) "A weekly coupon is sent by the app" — được nêu bằng câu "The app also sends a weekly coupon". | (C) "Pastries lose warmth by afternoon" — được nêu bằng câu "lose warmth by afternoon". | (D) "A chalkboard promised fast service" — được nêu trực tiếp bằng câu về chalkboard.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"For that reason, the second drink cannot simply be ordered at the register."
+(A) [2]
+(B) [1]
+(C) [3]
+(D) [4]
+Answer: B
+Explanation: Câu cần chèn nối với quy định "the order must be placed through the app, not at the counter", còn câu ngay sau đó bắt đầu bằng "The app also sends". | (A) "[2]" — đặt sau câu về coupon, câu chèn không liên hệ với "that reason" vì trước đó không còn là quy định tại quầy. | (B) "[1]" — là vị trí ngay sau quy định đặt hàng qua app, trước câu bổ sung về coupon, nên "that reason" chỉ rõ ràng. | (C) "[3]" — đặt sau câu về bánh ngọt mất nhiệt, không có lý do nào để nói về hai đồ uống. | (D) "[4]" — đặt cuối bài, sau câu kết, nên mất liên kết với quy định Friday bonus.
+Source: original

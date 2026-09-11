@@ -1,0 +1,9 @@
+[QUESTION]
+The human resources department has sent interview invitations to all ------- who applied for the marketing position.
+(A) applied
+(B) apply
+(C) applicable
+(D) applicants
+Answer: D
+Explanation: Sau "all" và trước mệnh đề quan hệ "who applied" cần một danh từ số nhiều chỉ người để làm chủ ngữ của "applied". | (A) "applied" — là dạng quá khứ/phân từ hai của động từ "apply", không làm được danh từ chỉ người. | (B) "apply" — là động từ nguyên mẫu, không đứng sau "all" với chức năng danh từ được. | (C) "applicable" — là tính từ nghĩa "có thể áp dụng", sai từ loại cho vị trí danh từ. | (D) "applicants" — là danh từ số nhiều nghĩa "ứng viên", đúng từ loại và hợp với "who applied".
+Source: original

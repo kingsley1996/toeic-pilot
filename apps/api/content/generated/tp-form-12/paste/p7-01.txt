@@ -1,0 +1,63 @@
+[PASSAGE]
+Hotel Aurora — Corporate Group Reservation Form
+Date completed: June 12
+Agent: L. Nguyen, Front Desk
+Company: Brightline Consulting
+Contact: [m.okafor@example-mail.net](mailto:m.okafor@example-mail.net)
+
+Rooms requested: 3
+Check-in: August 5, 3:30 P.M.
+Check-out: August 8, 10:45 A.M.
+Room types: Two Deluxe rooms, one Standard room
+Rate per room per night: Deluxe $150; Standard $120
+Group discount: 10% off total room charges when three or more rooms are booked for the same stay [1]
+Extra charges are $20 per room for late checkout after 11 A.M. [2] They also charge $15 per room for early check-in before 3 P.M. [3]
+Breakfast: Included for all registered guests
+Payment: Credit card on arrival; company invoice not accepted for this discounted rate [4]
+Special request: Quiet floor away from elevator; extra laptop table in Standard room
+Conference room: Emerald Hall, August 6, 9 A.M. to 4 P.M.; catering ordered separately
+Deposit: None; credit card guarantee required at booking
+All rates include taxes and service charges.
+Notes: All cancellations must be made 72 hours before arrival. The quiet-floor request is subject to room availability. Late checkout and early check-in are not included in the discount.
+
+[QUESTION]
+What is the total room charge for the three nights after the discount?
+
+(A) $1,350
+(B) $1,260
+(C) $1,170
+(D) $1,134
+
+Answer: D
+
+Explanation: Có 3 phòng gồm hai phòng Deluxe giá $150 và một phòng Standard giá $120 mỗi đêm, nên tổng tiền mỗi đêm là $420; trong 3 đêm là $1,260 và giảm 10% còn $1,134. | (A) "$1,350" — cao hơn tổng tiền trước giảm giá và không phản ánh mức giảm 10%. | (B) "$1,260" — là tổng tiền trước khi áp dụng giảm giá. | (C) "$1,170" — không phù hợp với mức giảm 10% trên toàn bộ tiền phòng. | (D) "$1,134" — đúng vì $1,260 × 90% = $1,134.
+
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+
+"This fee is charged only if the guest keeps the room beyond the scheduled departure time."
+
+(A) [2]
+(B) [1]
+(C) [3]
+(D) [4]
+
+Answer: A
+
+Explanation: Câu "This fee" cần tham chiếu đến khoản phí vừa được đề cập, còn "beyond the scheduled departure time" giải thích điều kiện của late checkout; vì vậy câu này phù hợp nhất ngay sau thông tin về phí late checkout. | (A) [2] — đứng ngay sau thông tin "$20 per room for late checkout after 11 A.M.", tạo liên kết tham chiếu rõ ràng. | (B) [1] — nằm sau thông tin về group discount, chưa có khoản phí để "This fee" tham chiếu. | (C) [3] — đứng sau thông tin về early check-in, không phù hợp với "scheduled departure time". | (D) [4] — nằm sau thông tin thanh toán và quá xa phần mô tả phí late checkout.
+
+Source: original
+[QUESTION]
+What is NOT stated about the reservation?
+
+(A) Breakfast is provided for guests.
+(B) A complimentary airport shuttle is offered.
+(C) A credit card is required at arrival.
+(D) Cancellations must be made 72 hours before arrival.
+
+Answer: B
+
+Explanation: Form nêu rõ breakfast được bao gồm, thanh toán bằng credit card khi đến và việc hủy phải được thực hiện trước 72 giờ, nhưng không cung cấp thông tin về airport shuttle. | (A) "Breakfast is provided for guests." — được nêu rõ trong dòng "Breakfast: Included for all registered guests." | (B) "A complimentary airport shuttle is offered." — không có thông tin nào trong form xác nhận dịch vụ này. | (C) "A credit card is required at arrival." — được nêu rõ trong dòng "Payment: Credit card on arrival." | (D) "Cancellations must be made 72 hours before arrival." — được nêu rõ trong phần "Notes."
+
+Source: original

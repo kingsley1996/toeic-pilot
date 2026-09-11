@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you clear and reset table five for the new customers?
+voice: ca_male_1
+(A) Of course, I'll take care of it right now.
+(B) The new customers usually arrive around seven.
+(C) Table five is by the window, near the bar.
+Answer: A
+Explanation: Câu hỏi là "Could you clear and reset table five for the new customers?", đây là một YÊU CẦU dọn bàn chứ không phải câu hỏi thông tin. | (A) "Of course, I'll take care of it right now." — nhận lời ngay và cam kết hành động, đúng cách phản hồi một yêu cầu. | (B) "The new customers usually arrive around seven." — dùng lại "new customers" nhưng trả lời thời gian khách đến, tức câu hỏi không ai hỏi. | (C) "Table five is by the window, near the bar." — lặp lại "table five" nhưng chỉ nêu vị trí bàn, không đáp lại việc được yêu cầu dọn bàn.
+Source: original

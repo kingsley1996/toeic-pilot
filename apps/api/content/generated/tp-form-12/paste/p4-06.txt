@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Welcome back to the program. Today's episode is brought to you by LedgerPro, an accounting software application designed specifically for small business owners. Are you spending too many hours each week manually tracking invoices and generating tax reports? Originally, companies had to hire an outside bookkeeping firm, which cost hundreds of dollars every month. LedgerPro streamlines all your financial record-keeping into one easy tool. Plus, we are offering our standard fourteen-day trial period, but podcast listeners who sign up on our website before Friday and enter promo code PODCAST will get a full thirty days free. Visit ledgerpro.com to start managing your business finances today.
+
+[QUESTION]
+What product is being advertised?
+(A) A podcast production service
+(B) An outside bookkeeping firm
+(C) An accounting software program
+(D) A legal consultation service
+Answer: C
+Explanation: Người nói giới thiệu "LedgerPro, an accounting software application designed specifically for small business owners". | (A) "A podcast production service" — từ "podcast" xuất hiện vì bài quảng cáo phát trên một podcast, không phải quảng cáo dịch vụ làm podcast: đúng từ, sai mối quan hệ. | (B) "An outside bookkeeping firm" — công ty kế toán bên ngoài được nhắc tới như phương pháp cũ tốn kém ("hire an outside bookkeeping firm"), không phải sản phẩm đang quảng cáo: đúng từ, sai ngữ cảnh. | (C) "An accounting software program" — khớp đúng với nội dung bài nói giới thiệu phần mềm kế toán LedgerPro. | (D) "A legal consultation service" — dịch vụ tư vấn pháp lý không xuất hiện trong bài nói.
+Source: original
+[QUESTION]
+According to the speaker, how can listeners receive thirty days of free service?
+(A) By accepting a standard fourteen-day trial
+(B) By calling the podcast host directly
+(C) By hiring a bookkeeping firm for tax reports
+(D) By registering before Friday and entering a special code
+Answer: D
+Explanation: Người nói nêu hai điều kiện để nhận 30 ngày miễn phí thay vì 14 ngày tiêu chuẩn: đăng ký trên website trước thứ Sáu và nhập promo code PODCAST. | (A) "By accepting a standard fourteen-day trial" — thời hạn 14 ngày là bản dùng thử tiêu chuẩn, không phải ưu đãi 30 ngày miễn phí. | (B) "By calling the podcast host directly" — hành động gọi cho người dẫn podcast không được đề cập. | (C) "By hiring a bookkeeping firm for tax reports" — thuê công ty kế toán bên ngoài là giải pháp truyền thống được nhắc đến, không phải điều kiện nhận ưu đãi. | (D) "By registering before Friday and entering a special code" — đúng vì người nghe phải đăng ký trước Friday và nhập mã khuyến mãi PODCAST để nhận thời hạn dùng thử kéo dài.
+Source: original
+[QUESTION]
+What are listeners invited to do?
+(A) Visit the LedgerPro Web site
+(B) Calculate monthly expenses manually
+(C) Email their tax reports to a firm
+(D) Submit feedback about the podcast
+Answer: A
+Explanation: Người nói kết thúc bài quảng cáo bằng lời mời "Visit ledgerpro.com to start managing your business finances today". | (A) "Visit the LedgerPro Web site" — diễn đạt lại lời mời truy cập trang web của LedgerPro để bắt đầu quản lý tài chính doanh nghiệp. | (B) "Calculate monthly expenses manually" — việc theo dõi hóa đơn thủ công là vấn đề người nghe đang gặp phải, không phải hành động được mời thực hiện: đúng từ, sai ngữ cảnh. | (C) "Email their tax reports to a firm" — bài nói có từ "tax reports" và "firm", nhưng không yêu cầu người nghe gửi báo cáo thuế qua email: kết hợp sai các từ đã nghe. | (D) "Submit feedback about the podcast" — việc gửi phản hồi về podcast không được nhắc đến trong bài.
+Source: original

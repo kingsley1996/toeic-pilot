@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Will you be attending the three o'clock video meeting?
+voice: au_male_1
+(A) It usually lasts about two hours.
+(B) In the main conference room, I believe.
+(C) No, I'll be on a flight to Chicago then.
+Answer: C
+Explanation: Câu hỏi là "Will you be attending the three o'clock video meeting?", một câu hỏi YES/NO hỏi liệu ông có tham dự cuộc họp video lúc 3 giờ hay không. | (A) "It usually lasts about two hours." — nói độ dài cuộc họp, bắt lại ý thời gian "three o'clock" nhưng trả lời sai chiều thông tin và không đáp được câu hỏi có/không. | (B) "In the main conference room, I believe." — nêu nơi chốn, tức trả lời một câu hỏi Where thay vì xác nhận hay phủ nhận việc tham dự. | (C) "No, I'll be on a flight to Chicago then." — phủ nhận thẳng và nêu lý do là lúc đó đang bay công tác, đúng cách trả lời một câu hỏi có/không.
+Source: original

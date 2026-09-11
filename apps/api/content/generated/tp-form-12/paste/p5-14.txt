@@ -1,0 +1,9 @@
+[QUESTION]
+At the year-end meeting, the director presented ------- business strategy for the coming year to all employees.
+(A) their
+(B) theirs
+(C) them
+(D) they
+Answer: A
+Explanation: Trước danh từ "business strategy" cần một đại từ sở hữu dạng tính từ để chỉ "the director". | (A) "their" — là tính từ sở hữu, đứng trước danh từ "business strategy" đúng vị trí. | (B) "theirs" — là đại từ sở hữu đứng độc lập, không thể bổ nghĩa cho danh từ. | (C) "them" — là đại từ tân ngữ, không đứng trước danh từ được. | (D) "they" — là đại từ chủ ngữ, sai dạng khi đặt trước danh từ.
+Source: original

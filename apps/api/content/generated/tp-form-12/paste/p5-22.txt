@@ -1,0 +1,9 @@
+[QUESTION]
+Passengers are advised to check in at least two hours early to avoid ------- their flight.
+(A) missing
+(B) losing
+(C) failing
+(D) dropping
+Answer: A
+Explanation: Chỗ trống cần một động từ kết hợp được với "flight" để diễn tả việc "bỏ lỡ chuyến bay" sau "avoid". | (A) "missing" — đúng collocation "miss a flight", nghĩa là bỏ lỡ chuyến bay. | (B) "losing" — đi với "luggage" hay "time", không có cụm "lose a flight". | (C) "failing" — đi với kỳ thi hay kế hoạch, không kết hợp với "flight". | (D) "dropping" — nghĩa là thả hay bỏ, không kết hợp với "flight" trong ngữ cảnh này.
+Source: original

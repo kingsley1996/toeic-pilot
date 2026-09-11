@@ -1,0 +1,40 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone. Welcome to our weekly production meeting, where we review last week's output and next week's schedule. I am sorry to report that the client order at our plant is now three days late. Originally, we planned to finish it with the normal day shift on Thursday. However, the packaging machine failed on Tuesday, and a replacement part did not arrive until Friday. Instead, please arrange overtime for the night shift from Monday to Wednesday. You are asked to submit revised overtime rosters by noon today so we can confirm the extra hours with the scheduler.
+
+[QUESTION]
+Where is the talk given?
+
+(A) At a weekly production meeting
+(B) In a meeting with a client
+(C) At a training session for new workers
+(D) At a packaging department review
+
+Answer: A
+Explanation: Người nói mở đầu bằng "Welcome to our weekly production meeting" và cho biết cuộc họp dùng để xem xét sản lượng tuần trước và lịch tuần tới. | (A) "At a weekly production meeting" — khớp trực tiếp với thông tin mở đầu của người nói. | (B) "In a meeting with a client" — "client" chỉ xuất hiện khi nói về đơn hàng, không phải địa điểm hoặc đối tượng tham dự cuộc họp. | (C) "At a training session for new workers" — không có thông tin về đào tạo hoặc nhân viên mới. | (D) "At a packaging department review" — "packaging machine" được nhắc đến như nguyên nhân sự cố, không phải tên hoặc mục đích của cuộc họp.
+
+Source: original
+[QUESTION]
+Why was the original Thursday finish date not possible?
+
+(A) The normal day shift on Thursday was canceled.
+(B) A replacement part arrived after the planned finish date.
+(C) The scheduler had not approved the plan.
+(D) The client requested a different delivery date.
+
+Answer: B
+Explanation: Kế hoạch ban đầu là hoàn thành đơn hàng vào thứ Năm, nhưng "the packaging machine failed on Tuesday" và "a replacement part did not arrive until Friday", khiến kế hoạch đó không thể thực hiện. | (A) "The normal day shift on Thursday was canceled." — ca ngày thứ Năm được nhắc đến trong kế hoạch ban đầu nhưng không có thông tin cho biết ca này bị hủy. | (B) "A replacement part arrived after the planned finish date." — đúng vì bộ phận thay thế chỉ đến vào thứ Sáu, sau thời điểm dự kiến hoàn thành vào thứ Năm. | (C) "The scheduler had not approved the plan." — scheduler chỉ xuất hiện ở cuối bài để xác nhận giờ tăng ca, không phải lý do trễ. | (D) "The client requested a different delivery date." — không có thông tin khách hàng yêu cầu thay đổi ngày giao hàng.
+
+Source: original
+[QUESTION]
+What are the listeners asked to do by noon today?
+
+(A) Complete the normal day shift schedule.
+(B) Contact the client about the delayed order.
+(C) Hand in updated lists of night-shift hours.
+(D) Confirm the extra hours with the scheduler.
+
+Answer: C
+Explanation: Cuối bài người nói yêu cầu "submit revised overtime rosters by noon today" để công ty có thể xác nhận số giờ làm thêm với scheduler. | (A) "Complete the normal day shift schedule." — kế hoạch ca ngày đã được thay đổi thành ca đêm từ Monday to Wednesday. | (B) "Contact the client about the delayed order." — khách hàng được nhắc đến trong đơn hàng bị trễ nhưng không được yêu cầu liên hệ. | (C) "Hand in updated lists of night-shift hours." — khớp với hành động nộp danh sách giờ tăng ca được yêu cầu trước noon today. | (D) "Confirm the extra hours with the scheduler." — xác nhận giờ làm thêm là mục đích ở bước sau, do người nói lo sau khi nhận danh sách.
+
+Source: original

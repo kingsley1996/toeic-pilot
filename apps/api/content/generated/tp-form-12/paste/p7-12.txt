@@ -1,0 +1,61 @@
+[PASSAGE]
+To: Executive Board
+From: Daniel Lee, Sales Director
+Subject: Quarterly Sales Report
+Date: January 5
+
+Dear Board Members,
+
+Attached is our sales report for the final quarter of the year. The chart lists the revenue for each month: overall revenue rose through the quarter and peaked in November before easing in December.
+
+The increase through November was largely attributed to stronger corporate orders. I recommend that we review our corporate sales strategy before the next quarter begins.
+
+Best regards,
+Daniel Lee
+Sales Director
+
+[QUESTION]
+What is the main purpose of the email?
+(A) To announce a new corporate sales team
+(B) To report quarterly sales performance
+(C) To request approval for a new advertising campaign
+(D) To explain a decline in annual revenue
+Answer: B
+Explanation: Người gửi giới thiệu "our sales report for the final quarter" và tóm tắt doanh thu từng tháng. | (A) "To announce a new corporate sales team" — không có thông tin về việc thành lập đội mới. | (B) "To report quarterly sales performance" — đúng với mục đích chính của email. | (C) "To request approval for a new advertising campaign" — người gửi chỉ đề xuất review sales strategy. | (D) "To explain a decline in annual revenue" — doanh thu không giảm trong toàn quý mà tăng đến November.
+Source: original
+[QUESTION]
+According to the chart, which month had the highest revenue?
+(A) September
+(B) October
+(C) November
+(D) December
+Answer: C
+Explanation: Biểu đồ cho thấy November đạt 510 (nghìn đô la), cao hơn ba tháng còn lại. | (A) "September" — doanh thu là 420 nghìn đô la. | (B) "October" — doanh thu là 465 nghìn đô la. | (C) "November" — doanh thu đạt mức cao nhất là 510 nghìn đô la. | (D) "December" — doanh thu giảm xuống 480 nghìn đô la.
+Source: original
+[QUESTION]
+Why does the director recommend reviewing the corporate sales strategy?
+(A) Corporate orders were canceled during the quarter.
+(B) December revenue exceeded the November result.
+(C) The company plans to open another sales office.
+(D) Corporate orders became more important to revenue growth.
+Answer: D
+Explanation: Email cho biết "The increase through November was largely attributed to stronger corporate orders." | (A) "Corporate orders were canceled during the quarter." — email nói corporate orders tăng, không phải bị hủy. | (B) "December revenue exceeded the November result." — ngược với chart vì December thấp hơn November. | (C) "The company plans to open another sales office." — không được đề cập. | (D) "Corporate orders became more important to revenue growth." — phù hợp với việc corporate orders đóng góp lớn vào mức tăng doanh thu.
+Source: original
+[QUESTION]
+What can be inferred about December sales?
+(A) They were lower than the previous month.
+(B) They were the highest of the quarter.
+(C) They were exactly equal to September sales.
+(D) They were caused by weaker corporate orders.
+Answer: A
+Explanation: Trên chart, November đạt 510 nghìn đô la trong khi December là 480, nên doanh thu tháng cuối quý thấp hơn tháng trước. | (A) "They were lower than the previous month." — đúng vì 480 nghìn thấp hơn 510 nghìn. | (B) "They were the highest of the quarter." — November mới là tháng có doanh thu cao nhất. | (C) "They were exactly equal to September sales." — September là 420 nghìn, không bằng 480 nghìn. | (D) "They were caused by weaker corporate orders." — email không khẳng định nguyên nhân của mức giảm December.
+Source: original
+[QUESTION]
+The word "peaked" in the email is closest in meaning to
+(A) changed its sales target
+(B) reached its highest level
+(C) remained unchanged
+(D) returned to its earlier level
+Answer: B
+Explanation: Trong câu "overall revenue rose through the quarter and peaked in November before easing in December", peaked chỉ mức cao nhất của chuỗi tăng. | (A) "changed its sales target" — target là mục tiêu, không phải mức doanh thu đạt được. | (B) "reached its highest level" — đúng với nghĩa của peaked trong ngữ cảnh doanh thu. | (C) "remained unchanged" — trái với việc doanh thu thay đổi qua các tháng. | (D) "returned to its earlier level" — không diễn tả việc đạt đỉnh.
+Source: original

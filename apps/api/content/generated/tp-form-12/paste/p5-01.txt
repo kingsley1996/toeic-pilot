@@ -1,0 +1,9 @@
+[QUESTION]
+Warehouse staff ------- take a full inventory at the end of each month to keep the stock figures accurate.
+(A) regularize
+(B) regular
+(C) regularity
+(D) regularly
+Answer: D
+Explanation: Vị trí trống nằm giữa chủ từ và động từ thường "take", nên chỗ này cần một trạng từ bổ nghĩa cho động từ. | (A) "regularize" — là động từ, khiến mệnh đề có hai động từ chính mà không có cấu trúc nối. | (B) "regular" — là tính từ, chỉ đứng trước danh từ chứ không thể bổ nghĩa cho động từ. | (C) "regularity" — là danh từ, không giữ được chức năng trạng từ trước động từ chính. | (D) "regularly" — là trạng từ, bổ nghĩa đúng cho động từ "take" theo yêu cầu của vị trí trống.
+Source: original

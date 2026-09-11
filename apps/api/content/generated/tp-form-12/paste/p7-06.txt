@@ -1,0 +1,27 @@
+[PASSAGE]
+New Way Language Center
+
+Intensive TOEIC Preparation
+
+Start next month and reach your target score faster. Small classes of no more than twelve students allow teachers to give personal feedback during every session. The course runs from 6:30 p.m. to 9:00 p.m., Monday through Thursday, for eight weeks. All lessons focus on listening and reading tasks modeled on the current exam format. Places are limited, so booking is advised.
+
+Registration closes on April 28. Bring your ID and the course fee of 4,500,000 VND to the front desk. A free placement test is offered from 5:00 p.m. to 6:30 p.m. on May 5. Students who miss the placement test may join the next available class after consulting the center director.
+
+[QUESTION]
+What can be inferred about the schedule on May 5?
+(A) Class begins at 5:00 p.m.
+(B) The test ends as class begins.
+(C) The test lasts eight weeks.
+(D) Registration closes on May 5.
+Answer: B
+Explanation: Quảng cáo nêu "A free placement test is offered from 5:00 p.m. to 6:30 p.m. on May 5." và "The course runs from 6:30 p.m. to 9:00 p.m., Monday through Thursday, for eight weeks.", nên bài test kết thúc đúng lúc lớp bắt đầu. | (A) "Class begins at 5:00 p.m." — bị phủ nhận bởi giờ học bắt đầu lúc "6:30 p.m.". | (B) "The test ends as class begins" — đúng vì bài test kết thúc lúc "6:30 p.m." và lớp bắt đầu lúc "6:30 p.m.". | (C) "The test lasts eight weeks" — bị phủ nhận bởi "from 5:00 p.m. to 6:30 p.m."; "eight weeks" chỉ khóa học. | (D) "Registration closes on May 5" — bị phủ nhận bởi "Registration closes on April 28."
+Source: original
+[QUESTION]
+What must a person bring to register?
+(A) A feedback form
+(B) A score report
+(C) ID and payment
+(D) Director approval
+Answer: C
+Explanation: Quảng cáo nêu "Bring your ID and the course fee of 4,500,000 VND to the front desk." | (A) "A feedback form" — không phải thứ cần mang; "personal feedback" chỉ là phản hồi từ giáo viên trong lớp. | (B) "A score report" — không phải thứ cần mang; "target score" chỉ là mục tiêu điểm. | (C) "ID and payment" — đúng vì là cách diễn đạt khác của "ID and the course fee". | (D) "Director approval" — chỉ liên quan đến "consulting the center director" khi vắng mặt ở bài placement test, không phải khi đăng ký.
+Source: original

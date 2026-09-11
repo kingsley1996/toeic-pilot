@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for making time. I've shortlisted five candidates for the marketing coordinator role.
+voice: au_male_1
+Five sounds manageable. When were you planning to see them?
+voice: uk_female_1
+The interviews were set for next Wednesday, but two candidates can't come that day.
+voice: au_male_1
+Then let's move everything to Thursday afternoon. I'm free any time after two.
+voice: uk_female_1
+Thursday works, though the meeting room is booked until three. We'd have to start at three thirty.
+voice: au_male_1
+Three thirty suits me. Just email each candidate the new time today, and I'll read their files over the weekend.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Selecting the final candidate for the role
+(B) Holding the interviews on Wednesday
+(C) Posting an advertisement for a vacant position
+(D) Scheduling interviews for a job opening
+Answer: D
+Explanation: Người phụ nữ nói "I've shortlisted five candidates for the marketing coordinator role" và hai người sau đó cùng bàn việc dời giờ phỏng vấn, nên trọng tâm là sắp xếp lịch phỏng vấn cho vị trí trống. | (A) "Selecting the final candidate for the role" — "candidates", "role" đều được nhắc nhưng họ mới chốt lịch, chưa chọn ai. | (B) "Holding the interviews on Wednesday" — "Wednesday" là lịch ban đầu đã bị bỏ khi họ chuyển sang Thursday. | (C) "Posting an advertisement for a vacant position" — việc đăng tin tuyển dụng không hề được nhắc đến. | (D) "Scheduling interviews for a job opening" — tóm đúng việc hai người đang làm.
+Source: original
+[QUESTION]
+When will the interviews be held?
+(A) On Thursday afternoon at three thirty
+(B) On Wednesday, as originally planned
+(C) On Friday morning
+(D) On Thursday at two o'clock
+Answer: A
+Explanation: Người đàn ông đề nghị "let's move everything to Thursday afternoon", người phụ nữ đáp "the meeting room is booked until three. We'd have to start at three thirty" và ông xác nhận "Three thirty suits me" — ngày nằm ở lượt trước còn giờ nằm ở lượt sau, phải ghép hai chỗ mới ra đáp án. | (A) "On Thursday afternoon at three thirty" — ghép đúng ngày mới với giờ mới đã được xác nhận. | (B) "On Wednesday, as originally planned" — "Wednesday" là lịch cũ đã bị thay đổi. | (C) "On Friday morning" — thứ Sáu không được ai nhắc đến. | (D) "On Thursday at two o'clock" — "after two" chỉ cho biết ông ấy rảnh từ giờ đó, còn phòng họp bận đến ba giờ nên phải bắt đầu lúc ba ba mươi.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Review the files over the weekend
+(B) Send the revised meeting time to the applicants
+(C) Reserve a different meeting room
+(D) Call the two candidates who missed Wednesday
+Answer: B
+Explanation: Người đàn ông kết thúc bằng "Just email each candidate the new time today", tức ông giao việc gửi giờ phỏng vấn mới cho từng ứng viên trong hôm nay. | (A) "Review the files over the weekend" — "read their files over the weekend" là việc ông tự nhận làm, không phải việc ông giao cho cô. | (B) "Send the revised meeting time to the applicants" — diễn đạt lại đúng yêu cầu của người đàn ông: gửi thời gian phỏng vấn mới cho từng ứng viên trong hôm nay. | (C) "Reserve a different meeting room" — "meeting room" được nhắc nhưng không ai đề nghị đặt phòng khác. | (D) "Call the two candidates who missed Wednesday" — "two candidates can't come that day" có thật nhưng không ai đề nghị gọi điện cho họ.
+Source: original

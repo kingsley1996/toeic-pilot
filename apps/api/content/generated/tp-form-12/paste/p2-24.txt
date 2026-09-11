@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who's in charge of the marketing department?
+voice: uk_female_1
+(A) Mr. Minh — he's been here since last year.
+(B) In the office next to the conference room.
+(C) Ms. Carter is in charge of the sales team.
+Answer: A
+Explanation: Câu hỏi là "Who's in charge of the marketing department?", hỏi NGƯỜI phụ trách bộ phận marketing. | (A) "Mr. Minh — he's been here since last year." — gọi thẳng tên người được hỏi và kèm thông tin anh vào làm từ năm ngoái, đúng thứ câu hỏi cần. | (B) "In the office next to the conference room." — nêu nơi chốn, tức trả lời một câu hỏi Where chứ không cho biết ai phụ trách. | (C) "Ms. Carter is in charge of the sales team." — dùng lại cụm "in charge" nghe rất giống câu hỏi nhưng nêu người phụ trách nhóm khác, tức trả lời một câu hỏi khác.
+Source: original

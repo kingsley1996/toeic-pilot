@@ -1,0 +1,7 @@
+kind: table
+Electrical Inspection Results
+Room | Outlet Test | Wiring Status
+Living Room | Passed | Standard
+Bedroom | Passed | Up to code
+Kitchen | Failed | Loose connection
+Bathroom | Failed | Needs grounding

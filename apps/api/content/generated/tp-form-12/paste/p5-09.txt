@@ -1,0 +1,9 @@
+[QUESTION]
+After the quarterly review meeting, the secretary drafted a ------- of the main decisions to send to every member of the board.
+(A) summarize
+(B) summarized
+(C) summarily
+(D) summary
+Answer: D
+Explanation: Sau mạo từ "a" và làm tân ngữ cho "drafted", chỗ trống cần một danh từ số ít. | (A) "summarize" — là động từ, không thể đứng sau mạo từ "a". | (B) "summarized" — là phân từ quá khứ dùng như tính từ, không thể làm tân ngữ cho "drafted". | (C) "summarily" — là trạng từ, sai từ loại ở vị trí này. | (D) "summary" — là danh từ, đúng cấu trúc "drafted a summary of...".
+Source: original

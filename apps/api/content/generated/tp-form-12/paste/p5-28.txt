@@ -1,0 +1,9 @@
+[QUESTION]
+This month's outstanding employee is Ms. Hoa, of ------- everyone in the department is very fond.
+(A) who
+(B) which
+(C) whom
+(D) that
+Answer: C
+Explanation: Sau giới từ "of" đứng ngay trước chỗ trống cần đại từ quan hệ dạng tân ngữ chỉ người. | (A) "who" — là đại từ chủ ngữ, không đứng ngay sau giới từ. | (B) "which" — chỉ dùng cho vật, không thay thế cho chị Hoa là người. | (C) "whom" — đại từ tân ngữ chỉ người, là dạng duy nhất đứng được ngay sau giới từ "of". | (D) "that" — không bao giờ đứng ngay sau giới từ trong mệnh đề quan hệ.
+Source: original

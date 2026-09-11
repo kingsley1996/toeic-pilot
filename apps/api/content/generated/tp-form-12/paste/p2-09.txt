@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The photocopier down on the first floor just ran out of paper.
+voice: us_female_1
+(A) I didn't know that. I'll get some from the supply room.
+(B) It's on the first floor, across from the elevator.
+(C) I'll pick up a newspaper on my way home.
+Answer: A
+Explanation: Câu nói là "The photocopier down on the first floor just ran out of paper.", một câu TRẦN THUẬT báo rằng máy photocopy ở tầng một vừa hết giấy chứ không phải câu hỏi, nên lời đáp phải phản ứng lại điều vừa được nói. | (A) "I didn't know that. I'll get some from the supply room." — phản ứng tự nhiên: nói mình không biết rồi hứa lấy thêm giấy từ kho, đúng cách đáp một câu trần thuật mà không xác nhận hay phủ nhận sự việc. | (B) "It's on the first floor, across from the elevator." — nêu nơi chốn như thể được hỏi máy ở đâu, dùng lại "first floor" từ câu nói nhưng trả lời một câu hỏi Where không hề tồn tại. | (C) "I'll pick up a newspaper on my way home." — lặp lại từ "paper" nhưng theo nghĩa báo giấy, hoàn toàn không phản hồi việc máy hết giấy.
+Source: original

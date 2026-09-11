@@ -1,0 +1,9 @@
+[QUESTION]
+------- the purchase order from the client, the sales representative immediately sent a confirmation email.
+(A) Received
+(B) Have received
+(C) Being received
+(D) Having received
+Answer: D
+Explanation: Mệnh đề đầu thiếu chủ ngữ và cần một dạng phân từ chủ động chỉ hành động xảy ra trước hành động chính "sent" của chủ ngữ "the sales representative". | (A) "Received" — quá khứ phân từ mang nghĩa bị động, không thể đứng ngay trước tân ngữ "the purchase order". | (B) "Have received" — là động từ chia ở hiện tại hoàn thành, không thể mở đầu mệnh đề phân từ khi vế sau đã có chủ ngữ riêng. | (C) "Being received" — dạng bị động, không thể theo sau bởi tân ngữ "the purchase order". | (D) "Having received" — phân từ hoàn thành chủ động, đúng cấu trúc cho hành động xảy ra trước hành động của mệnh đề chính.
+Source: original

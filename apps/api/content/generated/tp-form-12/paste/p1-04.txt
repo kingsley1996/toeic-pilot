@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) Two workers are harvesting lettuce side by side.
+(B) The farmer is watering the seedlings with a hose.
+(C) The farmer is picking vegetables from a raised bed.
+(D) The seedling trays are stacked on a cart.
+Answer: C
+Explanation: Trong ảnh chỉ có một nông dân là phụ nữ đội mũ rơm, đang cúi xuống hái rau từ một luống raised bed bên trái và đặt lá vào thùng nhựa ở đầu gối; các khay cây con xếp thành từng chồng trên mặt đất dọc lối đi, hệ thống phun sương đang hoạt động phía trên trần. | (A) "Two workers are harvesting lettuce side by side" — trong ảnh chỉ có một người duy nhất, không có người thứ hai: số ít bị nói thành số nhiều. | (B) "watering the seedlings with a hose" — trong ảnh không có ống nước nào, hai tay bà đang hái rau chứ không tưới cây: đúng vật, sai hành động. | (C) "picking vegetables from a raised bed" — đúng hành động người phụ nữ đang thực hiện trong ảnh. | (D) "stacked on a cart" — các khay cây con xếp trên mặt đất dọc lối đi, xe đẩy ở cuối lối đi đang trống: đúng vật, sai vị trí.
+Source: original

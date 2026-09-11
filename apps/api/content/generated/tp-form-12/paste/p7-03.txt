@@ -1,0 +1,57 @@
+[PASSAGE]
+From: hr@techviet.com
+To: j.le@example-mail.net
+Subject: Interview invitation: Programmer position
+Date: May 2
+
+Dear Mr. Le,
+
+Thank you for applying for the full-time programmer position at TechViet. After reviewing your application, we are pleased to invite you to an interview at our central office on Monday, May 15, at 9:30 A.M. The session will begin with a short technical exercise, followed by a conversation with the development team. [1] Please confirm your participation by replying to this email or completing the online form on our website.
+
+Because several candidates have asked for different times, we have added an alternative interview slot on Wednesday, May 17, at 2:00 P.M. Please note that the May 15 session is reserved for candidates who confirm by noon on May 5. [2] Due to a maintenance notice, that same day's interview will move to the training center only for candidates who meet this early deadline. [3] Candidates who confirm after May 5 will be assigned to May 17 at the central office, and their confirmation email must arrive by noon on May 9.
+
+On the day of the interview, wear business casual clothing and bring a photo identification card and two printed copies of your portfolio. Parking is available in Lot B, but spaces are limited, so public transportation is recommended. [4]
+
+If you have questions about directions or accessibility, contact our scheduling office. We look forward to meeting you.
+
+Sincerely,
+Nguyen Thi Lan
+Human Resources Director
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To invite a candidate to an interview
+(B) To ask for a salary expectation
+(C) To announce a new training center
+(D) To reject an application
+Answer: A
+Explanation: Thư có câu "we are pleased to invite you to an interview", tức mục đích gửi là mời ứng viên đến phỏng vấn. | (A) "To invite a candidate to an interview" — đúng với câu mời phỏng vấn vừa dẫn. | (B) "To ask for a salary expectation" — thư không yêu cầu ứng viên nêu mong muốn lương. | (C) "To announce a new training center" — training center được nhắc tới như địa điểm thay thế, không phải thông báo mở mới. | (D) "To reject an application" — thư đang mời phỏng vấn, nên không phải từ chối.
+Source: original
+[QUESTION]
+Where will a candidate who confirmed on May 4 interview?
+(A) At the central office on May 15
+(B) At the training center on May 15
+(C) At the central office on May 17
+(D) At the training center on May 17
+Answer: B
+Explanation: Thư nêu "the May 15 session is reserved for candidates who confirm by noon on May 5" và "that same day's interview will move to the training center only for candidates who meet this early deadline". | (A) "At the central office on May 15" — central office là địa điểm ban đầu, nhưng ngày 15 đã chuyển sang training center cho người xác nhận sớm. | (B) "At the training center on May 15" — ứng viên xác nhận ngày 4 đáp ứng hạn 5, nên vẫn ở ngày 15 nhưng sang training center. | (C) "At the central office on May 17" — lịch 17 chỉ dành cho người xác nhận sau ngày 5. | (D) "At the training center on May 17" — không có chỗ nào nói ngày 17 ở training center.
+Source: original
+[QUESTION]
+What can be inferred about the response deadline?
+(A) TechViet has filled the position.
+(B) The development team will send reminders.
+(C) Candidates have only a few days to reply.
+(D) The online form will close on May 15.
+Answer: C
+Explanation: Thư có dòng "Date: May 2" và yêu cầu ứng viên "confirm by noon on May 5", nên thời gian phản hồi rất ngắn. | (A) "TechViet has filled the position." — thư vẫn đang mời phỏng vấn, nên chưa thể nói đã tuyển xong. | (B) "The development team will send reminders." — không có nhắc đến việc gửi nhắc nhở. | (C) "Candidates have only a few days to reply." — đúng vì từ ngày gửi 2/5 đến hạn 5/5 chỉ còn vài ngày. | (D) "The online form will close on May 15." — online form chỉ dùng để xác nhận, không có ngày đóng 15/5.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"Candidates should plan to arrive fifteen minutes early."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: D
+Explanation: Câu cần chèn nói về việc đến sớm, nên hợp với đoạn "On the day of the interview" và "Parking is available in Lot B, but spaces are limited, so public transportation is recommended." | (A) [1] — vị trí này còn đang mô tả nội dung buổi phỏng vấn, chưa vào hướng dẫn đến nơi. | (B) [2] — vị trí này nằm giữa các điều kiện xác nhận sớm, không liên quan đến việc đi lại. | (C) [3] — vị trí này nằm giữa đoạn đổi địa điểm, chưa chuyển sang hướng dẫn ngày phỏng vấn. | (D) [4] — vị trí này nằm sau hướng dẫn đỗ xe và trước phần hỏi liên lạc, nên hợp nhất.
+Source: original

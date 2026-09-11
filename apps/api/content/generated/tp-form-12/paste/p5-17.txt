@@ -1,0 +1,9 @@
+[QUESTION]
+The receptionist always maintains a ------- attitude toward every guest, even during the busiest hours.
+(A) courtesies
+(B) courteously
+(C) courtesy
+(D) courteous
+Answer: D
+Explanation: Sau mạo từ "a" và đứng trước danh từ "attitude" thì vị trí trống đòi một tính từ để bổ nghĩa. | (A) "courtesies" — là danh từ số nhiều, không thể bổ nghĩa cho "attitude" ngay sau mạo từ "a". | (B) "courteously" — là trạng từ, không thể đứng bổ nghĩa cho danh từ "attitude". | (C) "courtesy" — là danh từ "sự lịch sự", sai từ loại ở vị trí cần tính từ. | (D) "courteous" — là tính từ "lịch sự, nhã nhặn", bổ nghĩa đúng cho danh từ "attitude".
+Source: original

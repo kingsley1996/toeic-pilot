@@ -1,0 +1,84 @@
+[PASSAGE]
+To: Laura Bennett <laura.bennett@brightwave.com>
+From: Kevin Tran <kevin.tran@marketbridge.com>
+Subject: Clarification of Service Quote
+Date: November 6
+
+Dear Ms. Bennett,
+
+Thank you for sending the revised service quote. I would like to clarify two points before we finalize the memorandum of agreement.
+
+First, the monthly reporting service is listed at $600, while our earlier discussion indicated a fee of $500. Second, the quote includes three on-site consultation sessions. Our team would prefer two sessions during the initial three-month period.
+
+Could you confirm whether the monthly fee can remain at $500 and whether the third consultation can be moved to the following quarter?
+
+Best regards,
+Kevin Tran
+Marketing Manager
+MarketBridge
+
+[PASSAGE]
+MARKETING SUPPORT SERVICES — REVISED QUOTE
+
+Service | Current Quote
+Monthly reporting | $600 per month
+On-site consultations | 3 sessions
+Contract period | 3 months
+Monthly strategy meeting | Included
+
+Note: A third consultation may be scheduled during the following quarter if both parties agree.
+
+[PASSAGE]
+MEMORANDUM OF AGREEMENT — KEY TERMS
+
+Initial contract period: Three months
+Monthly reporting: $500 per month, pending final confirmation
+On-site consultations: Two during the initial period
+Additional consultation: May be scheduled in the following quarter
+Final pricing: To be confirmed by both parties
+
+[QUESTION]
+What is the main reason Kevin Tran sent the email?
+(A) To clarify terms before finalizing an agreement
+(B) To cancel the marketing support service
+(C) To request a longer initial contract
+(D) To introduce a new reporting service
+Answer: A
+Explanation: Kevin nói "I would like to clarify two points before we finalize the memorandum of agreement." | (A) "To clarify terms before finalizing an agreement" — đúng với mục đích trực tiếp của email. | (B) "To cancel the marketing support service" — anh ấy đang thương lượng điều khoản, không hủy dịch vụ. | (C) "To request a longer initial contract" — contract period vẫn là ba tháng. | (D) "To introduce a new reporting service" — reporting service đã có trong quote.
+Source: original
+[QUESTION]
+Which of the following is NOT true about the proposed arrangement?
+(A) The initial contract lasts three months.
+(B) Three consultations are required during the initial period.
+(C) Monthly reporting is expected to cost $500.
+(D) Two consultations are planned for the initial period.
+Answer: B
+Explanation: Memorandum Summary ghi rõ "On-site consultations: Two during the initial period", nên ba consultations không được yêu cầu trong giai đoạn đầu. | (A) "The initial contract lasts three months." — đúng theo memorandum summary. | (B) "Three consultations are required during the initial period." — sai vì chỉ có hai consultations trong giai đoạn đầu. | (C) "Monthly reporting is expected to cost $500." — summary ghi $500, pending final confirmation. | (D) "Two consultations are planned for the initial period." — đúng với điều khoản tóm tắt.
+Source: original
+[QUESTION]
+Why does Kevin want the third consultation to be moved?
+(A) The consultation fee has increased.
+(B) The vendor has canceled the consultation.
+(C) His team prefers a reduced number of sessions.
+(D) His company is extending the contract.
+Answer: C
+Explanation: Kevin viết "Our team would prefer two sessions during the initial three-month period." | (A) "The consultation fee has increased." — vấn đề về giá $600 liên quan monthly reporting, không phải consultation. | (B) "The vendor has canceled the consultation." — không có thông tin vendor hủy session. | (C) "His team prefers a reduced number of sessions." — đúng vì họ muốn hai sessions thay vì ba. | (D) "His company is extending the contract." — contract ban đầu vẫn là ba tháng.
+Source: original
+[QUESTION]
+What is indicated about the monthly reporting fee?
+(A) It has been permanently reduced to $500.
+(B) It is included at no additional cost.
+(C) It will increase to $600 next quarter.
+(D) It was originally discussed at $500.
+Answer: D
+Explanation: Email của Kevin nêu "our earlier discussion indicated a fee of $500", trong khi memorandum ghi "Monthly reporting: $500 per month, pending final confirmation" — con số 500 từng được thảo luận nhưng chưa chốt. | (A) "It has been permanently reduced to $500." — giá $500 vẫn pending final confirmation. | (B) "It is included at no additional cost." — quote ghi monthly reporting $600 per month. | (C) "It will increase to $600 next quarter." — không có thông tin này. | (D) "It was originally discussed at $500." — đúng theo email của Kevin.
+Source: original
+[QUESTION]
+The word "clarify" in the email is closest in meaning to
+(A) explain more clearly
+(B) approve officially
+(C) postpone temporarily
+(D) calculate accurately
+Answer: A
+Explanation: Trong câu "I would like to clarify two points", clarify có nghĩa là làm cho hai vấn đề trở nên rõ ràng hơn trước khi thỏa thuận được hoàn tất. | (A) "explain more clearly" — gần nghĩa nhất với clarify trong ngữ cảnh này. | (B) "approve officially" — là phê duyệt chính thức, không phải làm rõ. | (C) "postpone temporarily" — là trì hoãn, không phù hợp. | (D) "calculate accurately" — là tính toán chính xác, không phải nghĩa của clarify.
+Source: original

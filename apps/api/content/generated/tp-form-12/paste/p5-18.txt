@@ -1,0 +1,9 @@
+[QUESTION]
+The insurance company ------- the new refund policy since the beginning of this quarter.
+(A) has implemented
+(B) implemented
+(C) will implement
+(D) is implementing
+Answer: A
+Explanation: Cụm "since the beginning of this quarter" là dấu hiệu thì hiện tại hoàn thành, nên chỗ trống cần "has + phân từ hai". | (A) "has implemented" — đúng dạng hiện tại hoàn thành đi cùng "since". | (B) "implemented" — quá khứ đơn, không kết hợp được với "since". | (C) "will implement" — thì tương lai, mâu thuẫn với mốc thời gian "since". | (D) "is implementing" — hiện tại tiếp diễn, không đứng cùng "since" trong câu này.
+Source: original

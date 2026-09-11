@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Attention, passengers on Flight 820 to Tokyo. This is an urgent boarding announcement. The departure gate for Flight 820 has been changed from Gate 12 to Gate 27 at the far end of Terminal B. Maintenance technicians are currently inspecting a minor mechanical issue at Gate 12, so the aircraft was moved to ensure on-time departure. Boarding will conclude in just ten minutes, so all ticket holders must proceed to Gate 27 immediately. Please have your passport and printed boarding pass ready in your hand as you approach the gate agent to speed up the process.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At a train station
+(B) At an airport
+(C) At a maintenance facility
+(D) At a bus terminal
+Answer: B
+Explanation: Người nói mở đầu bằng "Attention, passengers on Flight 820 to Tokyo" và sử dụng các từ ngữ như "boarding announcement", "departure gate", "aircraft" và "gate agent", cho thấy thông báo được phát tại sân bay. | (A) "At a train station" — hành khách có thể xuất hiện ở ga tàu, nhưng Flight 820 và aircraft cho thấy đây không phải ga tàu. | (B) "At an airport" — đúng vì các chi tiết về chuyến bay, cổng khởi hành và máy bay đều xác định bối cảnh sân bay. | (C) "At a maintenance facility" — maintenance chỉ được nhắc đến để giải thích tình trạng tại Gate 12, không phải địa điểm phát thông báo. | (D) "At a bus terminal" — không có thông tin nào cho thấy đây là bến xe buýt.
+Source: original
+[QUESTION]
+Why does the speaker mention "a minor mechanical issue"?
+(A) To ask for additional maintenance technicians
+(B) To warn passengers that the flight will be canceled
+(C) To explain why the departure gate was changed
+(D) To apologize for a ten-minute schedule delay
+Answer: C
+Explanation: Người nói giải thích rằng các kỹ thuật viên đang kiểm tra một vấn đề cơ khí nhỏ tại Gate 12, "so the aircraft was moved to ensure on-time departure." Vì vậy, chi tiết này được đưa ra để giải thích lý do cổng khởi hành được thay đổi. | (A) "To ask for additional maintenance technicians" — các kỹ thuật viên đã có mặt để kiểm tra vấn đề; không có yêu cầu bổ sung nhân sự. | (B) "To warn passengers that the flight will be canceled" — không đúng vì người nói cho biết máy bay được chuyển đi để đảm bảo khởi hành đúng giờ, không phải để hủy chuyến. | (C) "To explain why the departure gate was changed" — đúng vì vấn đề cơ khí tại Gate 12 khiến máy bay được chuyển sang vị trí khác và hành khách được yêu cầu đến Gate 27. | (D) "To apologize for a ten-minute schedule delay" — mười phút là khoảng thời gian còn lại trước khi boarding kết thúc, không phải thời gian chuyến bay bị trễ.
+Source: original
+[QUESTION]
+What are passengers on Flight 820 instructed to do next?
+(A) Request a new seat assignment at Terminal B
+(B) Remain at Gate 12 until boarding begins
+(C) Hand their printed boarding pass to a maintenance technician
+(D) Proceed to the new location with documents ready
+Answer: D
+Explanation: Người nói yêu cầu tất cả hành khách "proceed to Gate 27 immediately" và chuẩn bị hộ chiếu cùng thẻ lên máy bay khi đến gặp nhân viên tại cổng. Vì vậy, hành động tiếp theo là đi đến cổng mới với các giấy tờ cần thiết đã sẵn sàng. | (A) "Request a new seat assignment at Terminal B" — Terminal B chỉ cho biết vị trí của Gate 27; không có yêu cầu đổi chỗ ngồi. | (B) "Remain at Gate 12 until boarding begins" — Gate 12 là cổng cũ và hành khách được yêu cầu chuyển sang Gate 27 ngay lập tức. | (C) "Hand their printed boarding pass to a maintenance technician" — boarding pass sẽ được trình cho gate agent, không phải maintenance technician. | (D) "Proceed to the new location with documents ready" — đúng vì diễn đạt lại yêu cầu đi đến Gate 27 ngay và chuẩn bị passport cùng printed boarding pass.
+Source: original

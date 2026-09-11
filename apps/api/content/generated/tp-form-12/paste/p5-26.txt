@@ -1,0 +1,9 @@
+[QUESTION]
+------- by the storm, the flight from Hanoi was delayed until the following morning.
+(A) Disrupted
+(B) Disrupting
+(C) To disrupt
+(D) Disruption
+Answer: A
+Explanation: Cần phân từ hai ở đầu câu để bổ nghĩa cho "the flight" — chuyến bay chịu tác động của bão, tương thích với "by the storm". | (A) "Disrupted" — phân từ hai đúng, mang nghĩa bị động phù hợp với "by the storm". | (B) "Disrupting" — phân từ hiện tại mang nghĩa chủ động, mâu thuẫn với "by the storm". | (C) "To disrupt" — động từ nguyên mẫu chỉ mục đích, không kết hợp được với "by the storm". | (D) "Disruption" — là danh từ, không thể đứng đầu bổ nghĩa cho mệnh đề phía sau.
+Source: original

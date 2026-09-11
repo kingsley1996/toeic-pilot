@@ -1,0 +1,71 @@
+[PASSAGE]
+SMALL BUSINESS ASSOCIATION — WORKSHOP REGISTRATION FORM
+
+Workshop: Digital Marketing for Small Businesses
+Date: October 18
+Location: Training Center
+
+Participant Name: Sarah Kim
+Company: Bright Path Consulting
+Department: Marketing
+Registration type: Standard
+Lunch: Yes
+Special request: Vegetarian meal
+
+Please notify the association of any cancellation at least 48 hours before the workshop.
+
+[PASSAGE]
+WORKSHOP ATTENDEE LIST
+
+Name | Company | Department | Registration
+Sarah Kim | Bright Path Consulting | Marketing | Standard
+Michael Chen | Northline Services | Finance | Standard
+Olivia Grant | Citywide Retail | Operations | Premium
+David Park | Greenfield Systems | Human Resources | Standard
+Anna Lopez | Metro Design | Marketing | Premium
+
+[QUESTION]
+What can be inferred about Sarah Kim?
+(A) She registered for the premium package.
+(B) She requested a standard meal.
+(C) She will not attend the workshop.
+(D) She is employed by Bright Path Consulting.
+Answer: D
+Explanation: Registration form ghi "Participant Name: Sarah Kim" cùng "Company: Bright Path Consulting". | (A) "She registered for the premium package." — form ghi "Registration type: Standard". | (B) "She requested a standard meal." — cô ấy yêu cầu vegetarian meal, không phải standard meal. | (C) "She will not attend the workshop." — cô ấy đã hoàn thành registration và chọn lunch. | (D) "She is employed by Bright Path Consulting." — đúng theo mục Company của registration form.
+Source: original
+[QUESTION]
+How many delegates are from the Marketing Department?
+(A) Two
+(B) One
+(C) Three
+(D) Four
+Answer: A
+Explanation: Delegate Summary ghi Marketing có 2 delegates. | (A) "Two" — đúng với số lượng Marketing trong bảng. | (B) "One" — Finance, Operations và Human Resources mỗi phòng có 1 delegate. | (C) "Three" — không có department nào có 3 delegates. | (D) "Four" — tổng số delegates là 5, không phải 4 người thuộc Marketing.
+Source: original
+[QUESTION]
+Which of the following is NOT indicated about Sarah Kim?
+(A) Her company
+(B) Her workshop payment amount
+(C) Her registration type
+(D) Her department
+Answer: B
+Explanation: Registration form cung cấp company, department và registration type nhưng không nêu số tiền Sarah Kim đã trả. | (A) "Her company" — cô ấy làm việc tại Bright Path Consulting. | (B) "Her workshop payment amount" — không có thông tin về số tiền thanh toán. | (C) "Her registration type" — registration type là Standard. | (D) "Her department" — cô ấy thuộc Marketing.
+Source: original
+[QUESTION]
+What can be inferred from the attendee list and delegate summary?
+(A) All delegates are from the same company.
+(B) Finance has more delegates than Marketing.
+(C) Marketing has more delegates than any other listed department.
+(D) Only premium registrants work in Marketing.
+Answer: C
+Explanation: Delegate Summary cho thấy Marketing có 2 delegates, trong khi mỗi department còn lại chỉ có 1. | (A) "All delegates are from the same company." — danh sách cho thấy 5 công ty khác nhau. | (B) "Finance has more delegates than Marketing." — Finance chỉ có 1 delegate. | (C) "Marketing has more delegates than any other listed department." — đúng vì Marketing có 2 người, các phòng khác có 1. | (D) "Only premium registrants work in Marketing." — Sarah thuộc Marketing nhưng đăng ký Standard.
+Source: original
+[QUESTION]
+What can be inferred about the workshop?
+(A) No participants work in Marketing.
+(B) Every participant selected lunch.
+(C) The workshop is limited to premium registrants.
+(D) At least one participant has a dietary preference.
+Answer: D
+Explanation: Registration form ghi "Special request: Vegetarian meal", và attendee list vẫn giữ dòng "Sarah Kim | Bright Path Consulting | Marketing | Standard", nghĩa là cô tham dự và có yêu cầu ăn uống đặc biệt. | (A) "No participants work in Marketing." — có Sarah và Anna thuộc Marketing. | (B) "Every participant selected lunch." — chỉ Sarah được xác nhận chọn lunch. | (C) "The workshop is limited to premium registrants." — danh sách có nhiều người đăng ký Standard. | (D) "At least one participant has a dietary preference." — đúng vì Sarah yêu cầu vegetarian meal.
+Source: original

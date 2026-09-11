@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who is in charge of handling customer complaints here?
+voice: uk_female_1
+(A) What is the complaint about, sir?
+(B) At the customer service counter downstairs.
+(C) She usually handles them by email.
+Answer: A
+Explanation: Câu hỏi là "Who is in charge of handling customer complaints here?", hỏi AI là người phụ trách giải quyết khiếu nại của khách. | (A) "What is the complaint about, sir?" — lễ tân đáp lại bằng một câu hỏi làm rõ của chính mình, không nêu danh tính, đúng kiểu phản hồi gián tiếp cho câu hỏi WHO. | (B) "At the customer service counter downstairs." — nêu NƠI CHỐN cho một câu hỏi WHO, đồng thời dùng lại từ "customer" nghe được trong câu hỏi. | (C) "She usually handles them by email." — dùng lại từ "handles" nhưng không cho biết "she" là ai, một câu nghe hợp lý mà không trả lời được câu hỏi WHO.
+Source: original

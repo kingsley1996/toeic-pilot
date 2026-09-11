@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Why is the company closed this Friday?
+voice: au_male_1
+(A) From nine to five, same as usual.
+(B) Because the electrical system is being serviced.
+(C) The office closes at six on weekdays.
+Answer: B
+Explanation: Câu hỏi là "Why is the company closed this Friday?", hỏi LÝ DO công ty nghỉ làm thứ Sáu tuần này. | (A) "From nine to five, same as usual." — nêu khung giờ làm việc, tức trả lời thời gian cho một câu hỏi WHY. | (B) "Because the electrical system is being serviced." — đưa thẳng lý do là hệ thống điện đang được bảo trì, đúng thứ được hỏi. | (C) "The office closes at six on weekdays." — dùng lại từ "closed" nhưng hiểu thành giờ đóng cửa hàng ngày, không phải lý do nghỉ riêng thứ Sáu.
+Source: original

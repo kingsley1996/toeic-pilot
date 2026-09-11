@@ -1,0 +1,47 @@
+[PASSAGE]
+PREMIUM CARS — CORPORATE RENTAL PROGRAM
+
+Need reliable transportation for employees traveling between offices, airports, and client sites? Premium Cars now offers a Corporate Rental Program designed for businesses with frequent travel needs.
+
+Program benefits:
+• A dedicated account manager to arrange vehicle pick-up and return.
+• Access to a fleet of sedans, vans, and SUVs with basic insurance included.
+• A 20% discount on weekly rental rates for any qualifying business.
+• One free airport transfer per month for accounts that maintain at least three active rentals.
+
+Qualifying rules:
+• Companies must submit a signed corporate agreement before June 30.
+• The 20% discount applies only to rentals of seven days or longer.
+• Accounts must reserve at least two vehicles at the same time to receive the free airport transfer.
+
+Employees must be at least twenty-five years old and present a valid corporate identification card when collecting a vehicle. The free airport transfer cannot be exchanged for cash or additional rental days. Call early to confirm availability.
+
+To join, visit premiumcars.example or call your existing account representative. Space is limited, and rates may change after July 15.
+
+[QUESTION]
+What must a company do to receive the free airport transfer?
+(A) Use a sedan or van and call the account representative early
+(B) Sign the agreement before June 30 and rent for a week
+(C) Pay a monthly fee and present identification when collecting
+(D) Maintain three active rentals and reserve two vehicles simultaneously
+Answer: D
+Explanation: Quảng cáo nêu "One free airport transfer per month for accounts that maintain at least three active rentals" and later "Accounts must reserve at least two vehicles at the same time to receive the free airport transfer". | (A) "Use a sedan or van and call the account representative early" — có nhắc sedan/van và "Call early", nhưng không phải yêu cầu để nhận dịch vụ đưa đón sân bay. | (B) "Sign the agreement before June 30 and rent for a week" — là điều kiện ký thỏa thuận và thời hạn thuê để giảm giá, không phải điều kiện nhận airport transfer. | (C) "Pay a monthly fee and present identification when collecting" — tài liệu không nói phí hàng tháng, chỉ yêu cầu thẻ nhận dạng khi nhận xe. | (D) "Maintain three active rentals and reserve two vehicles simultaneously" — khớp với cả hai câu vừa dẫn.
+Source: original
+[QUESTION]
+What is NOT stated about the 20% discount?
+(A) It can be combined with another promotional offer.
+(B) It applies to weekly rental rates.
+(C) It is available for rentals of seven days or longer.
+(D) It is offered to qualifying businesses.
+Answer: A
+Explanation: Quảng cáo nêu "A 20% discount on weekly rental rates for any qualifying business" and "The 20% discount applies only to rentals of seven days or longer". | (A) "It can be combined with another promotional offer" — tài liệu không đề cập việc kết hợp với khuyến mãi khác. | (B) "It applies to weekly rental rates" — đúng với cụm "on weekly rental rates". | (C) "It is available for rentals of seven days or longer" — đúng với câu về thời hạn thuê tối thiểu. | (D) "It is offered to qualifying businesses" — đúng với cụm "for any qualifying business".
+Source: original
+[QUESTION]
+What can be inferred from the dates given in the advertisement?
+(A) Companies can join after June 30 without any penalty.
+(B) The program deadline occurs before the possible rate change.
+(C) The current rates are guaranteed beyond July 15.
+(D) Free airport transfers end on July 15.
+Answer: B
+Explanation: Quảng cáo đưa ra hạn chót "Companies must submit a signed corporate agreement before June 30" and the warning "Space is limited, and rates may change after July 15". | (A) "Companies can join after June 30 without any penalty" — trái với yêu cầu phải nộp thỏa thuận trước June 30. | (B) "The program deadline occurs before the possible rate change" — suy ra được vì June 30 trước July 15. | (C) "The current rates are guaranteed beyond July 15" — trái với cảnh báo rates may change after July 15. | (D) "Free airport transfers end on July 15" — không có câu nào nói dịch vụ này kết thúc vào July 15.
+Source: original
