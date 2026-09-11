@@ -26,6 +26,7 @@ from app.models import (
     VocabularyReviewLog,
     VocabularyReviewState,
     VocabularyTopic,
+    XpEvent,
 )
 from app.services.srs import GRADE_FORGOT, GRADE_GOOD, GRADE_HARD, GRADE_MASTERED
 from tests.test_domain_model import make_audio
@@ -202,6 +203,34 @@ def test_forgetting_records_a_lapse(
     assert body["lapses"] == 1
     assert body["repetitions"] == 0
     assert db_session.query(VocabularyReviewLog).count() == 2
+
+
+def test_a_word_regraded_the_same_day_awards_xp_once(
+    client: TestClient, db_session: Session, headers: dict[str, str], learner: User
+) -> None:
+    """Một từ một ngày tính XP MỘT lần, dù gặp lại mấy lần.
+
+    `source_id` cũ là id của log: nó chặn một request trao hai lần, nhưng gửi lại
+    cùng một từ là thêm một suất XP — và ô-đô ấy mua được bằng một vòng lặp.
+    Hai chiều của bất biến đều phải đúng: sổ cái đứng lại, còn lịch sử học và
+    SM-2 vẫn ghi đủ mọi lượt (ôn sớm là hành vi hợp lệ, không phải tội).
+    """
+    entry = make_word(db_session)
+    other = make_word(db_session, "deadline", marker="b")
+    for target in (entry, entry, other):
+        response = client.post(
+            f"/api/v1/vocabulary/{target.id}/review",
+            json={"grade": GRADE_GOOD},
+            headers=headers,
+        )
+        assert response.status_code == 200
+
+    assert db_session.query(XpEvent).filter_by(user_id=learner.id).count() == 2
+    assert db_session.query(VocabularyReviewLog).count() == 3
+    # Từ bị chấm trùng vẫn được SM-2 xử lý cả hai lượt: repetitions = 2 sau hai
+    # lần good (1 ngày rồi 6 ngày), không phải một lượt bị sổ cái chặn ngược.
+    state = db_session.get(VocabularyReviewState, (learner.id, entry.id))
+    assert state is not None and state.repetitions == 2
 
 
 def test_a_grade_outside_the_four_buttons_is_rejected(

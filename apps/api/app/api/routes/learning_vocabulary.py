@@ -9,6 +9,7 @@ Tách khỏi dictation vì hai miền đổi vì lý do khác nhau, không phả
 dài: `REFACTOR-LONG-FILES.md` §0.
 """
 
+import logging
 import random
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -87,6 +88,8 @@ from app.services.srs import (
 )
 
 router = APIRouter(tags=["learning"])
+
+logger = logging.getLogger(__name__)
 
 PUBLISHED = "published"
 
@@ -840,21 +843,28 @@ def _apply_review(
     # XP đi cùng giao dịch của lượt ôn, không phải sau nó. Trao XP cho một lượt
     # ôn bị rollback là sổ cái nói về việc chưa từng xảy ra; và ngược lại, một
     # lỗi ở nhánh XP không được phép làm mất lượt ôn — nên nó nằm trong `try`.
+    # Nhưng nó PHẢI để lại dấu: điểm mất vĩnh viễn mà không một dòng log nào là
+    # đúng kiểu hỏng im lặng mà cả bảng log tồn tại để chống lại.
     #
-    # `flush` để `log.id` tồn tại: nó là `source_id`, và chính nó làm
-    # `uq_xp_event_source` chặn được việc trao hai lần cho cùng một lượt ôn.
+    # `source_id` là uuid tất định theo (người, từ, ngày), KHÔNG phải `log.id`:
+    # id log chỉ chặn một request trao hai lần, còn gửi-lại-thành-lập-trình thì
+    # mỗi lần là một suất XP. `now` truyền vào để ngày trong source_id và ngày
+    # kiểm trần của `award` là MỘT thời điểm, không phải hai lần đọc đồng hồ.
     db.flush()
     try:
         progression.award(
             db,
             user_id=user_id,
             source_type="vocabulary_review",
-            source_id=log.id,
+            source_id=progression.vocabulary_source_id(
+                user_id, entry_id, progression.local_today(now, timezone)
+            ),
             amount=progression.xp_for(db, "vocabulary_review"),
             timezone=timezone,
+            now=now,
         )
     except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
-        pass
+        logger.warning("trao XP cho lượt ôn từ vựng thất bại", exc_info=True)
 
     _pay_ruby_for_a_mastered_topic(db, user_id, entry_id, outcome)
 
@@ -916,8 +926,10 @@ def _pay_ruby_for_a_mastered_topic(
                     source_type="topic_mastered",
                     source_id=topic_id,
                 )
-    except Exception:  # pragma: no cover - lưới an toàn, xem chú thích trên
-        pass
+    except Exception:  # pragma: no cover - lưới an toàn: ruby lỗi không được
+        # làm mất lượt ôn, nhưng mất mà không có dòng log thì cũng không ai biết
+        # mà sửa.
+        logger.warning("trả ruby chủ đề thành thạo thất bại", exc_info=True)
 
 
 def _review_result(

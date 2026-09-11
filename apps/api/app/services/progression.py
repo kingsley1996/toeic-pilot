@@ -83,6 +83,20 @@ def grammar_source_id(user_id: uuid.UUID, question_id: uuid.UUID) -> uuid.UUID:
     return uuid.uuid5(_TASK_NAMESPACE, f"grammar-attempt:{user_id}:{question_id}")
 
 
+def vocabulary_source_id(user_id: uuid.UUID, entry_id: uuid.UUID, day: date) -> uuid.UUID:
+    """uuid tất định cho XP ôn từ vựng, khoá (người, từ, NGÀY cục bộ).
+
+    `log.id` cũ chỉ chặn được MỘT request trao hai lần; một client gửi lại cho
+    cùng một từ là thêm một log, thêm một suất XP — ô-đô bán được cho người học
+    nào biết lặp lại một request. Một từ một ngày tính XP MỘT lần; lượt ôn vẫn
+    ghi log đầy đủ và vẫn chạy SM-2 như thường (ôn sớm là hành vi Anki cho phép,
+    lịch trình tự nó đưa thẻ về đúng nhịp). Cổng nằm ở sổ cái XP, không ở hoạt
+    động học. Ngày chứ không vĩnh viễn: từ hôm nay gặp lại ngày mai là công sức
+    khác.
+    """
+    return uuid.uuid5(_TASK_NAMESPACE, f"vocabulary:{user_id}:{entry_id}:{day.isoformat()}")
+
+
 def daily_cap(db: Session) -> int:
     return progression_config.settings_row(db).daily_xp_cap
 
