@@ -9657,6 +9657,14 @@
             },
             "title": "Trend",
             "type": "array"
+          },
+          "weeks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanWeekStat"
+            },
+            "title": "Weeks",
+            "type": "array"
           }
         },
         "required": [
@@ -9720,19 +9728,30 @@
         "type": "object"
       },
       "PlanRetake": {
-        "description": "Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian.",
+        "description": "Một MỐC trên chuỗi điểm: phán quyết placement (mini) hoặc lượt nộp\nđề thi thử full đã quy đổi. `kind` để UI phân biệt hai loại đo — chúng\nkhông phải cùng một sự kiện.",
         "properties": {
           "attempt_id": {
             "title": "Attempt Id",
             "type": "string"
           },
           "cefr": {
+            "default": "",
             "title": "Cefr",
             "type": "string"
           },
           "created_at": {
             "format": "date-time",
             "title": "Created At",
+            "type": "string"
+          },
+          "kind": {
+            "default": "mini",
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
             "type": "string"
           },
           "total_scaled": {
@@ -9743,8 +9762,7 @@
         "required": [
           "attempt_id",
           "created_at",
-          "total_scaled",
-          "cefr"
+          "total_scaled"
         ],
         "title": "PlanRetake",
         "type": "object"
@@ -9863,6 +9881,45 @@
           "done_count"
         ],
         "title": "PlanVersionPublic",
+        "type": "object"
+      },
+      "PlanWeekStat": {
+        "description": "§31 bản trung thực: `minutes` là GIÂY THẬT của các lượt nộp trong tuần\n(`elapsed_seconds`), không phải `est_minutes` của mục — phút ước lượng\nnằm ở lịch hiển thị, còn đây là bằng chứng người học đã ngồi bao lâu.\nKhông bôi số phút ôn từ vựng: không có thời lượng từng lượt review thì\nmọi con số phút ở đó đều là bịa.",
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "dictation": {
+            "title": "Dictation",
+            "type": "integer"
+          },
+          "grammar": {
+            "title": "Grammar",
+            "type": "integer"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "reviews": {
+            "title": "Reviews",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "index",
+          "minutes",
+          "attempts",
+          "reviews",
+          "dictation",
+          "grammar"
+        ],
+        "title": "PlanWeekStat",
         "type": "object"
       },
       "ProgressionConfigAdmin": {

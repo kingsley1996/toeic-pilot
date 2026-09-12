@@ -8673,6 +8673,11 @@ export interface components {
             retakes: components["schemas"]["PlanRetake"][];
             /** Trend */
             trend: components["schemas"]["PlanTrendRow"][];
+            /**
+             * Weeks
+             * @default []
+             */
+            weeks: components["schemas"]["PlanWeekStat"][];
         };
         /**
          * PlanFocus
@@ -8705,18 +8710,33 @@ export interface components {
         };
         /**
          * PlanRetake
-         * @description Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian.
+         * @description Một MỐC trên chuỗi điểm: phán quyết placement (mini) hoặc lượt nộp
+         *     đề thi thử full đã quy đổi. `kind` để UI phân biệt hai loại đo — chúng
+         *     không phải cùng một sự kiện.
          */
         PlanRetake: {
             /** Attempt Id */
             attempt_id: string;
-            /** Cefr */
+            /**
+             * Cefr
+             * @default
+             */
             cefr: string;
             /**
              * Created At
              * Format: date-time
              */
             created_at: string;
+            /**
+             * Kind
+             * @default mini
+             */
+            kind: string;
+            /**
+             * Label
+             * @default
+             */
+            label: string;
             /** Total Scaled */
             total_scaled: number;
         };
@@ -8764,6 +8784,28 @@ export interface components {
             target_score: number | null;
             /** Version */
             version: number;
+        };
+        /**
+         * PlanWeekStat
+         * @description §31 bản trung thực: `minutes` là GIÂY THẬT của các lượt nộp trong tuần
+         *     (`elapsed_seconds`), không phải `est_minutes` của mục — phút ước lượng
+         *     nằm ở lịch hiển thị, còn đây là bằng chứng người học đã ngồi bao lâu.
+         *     Không bôi số phút ôn từ vựng: không có thời lượng từng lượt review thì
+         *     mọi con số phút ở đó đều là bịa.
+         */
+        PlanWeekStat: {
+            /** Attempts */
+            attempts: number;
+            /** Dictation */
+            dictation: number;
+            /** Grammar */
+            grammar: number;
+            /** Index */
+            index: number;
+            /** Minutes */
+            minutes: number;
+            /** Reviews */
+            reviews: number;
         };
         /**
          * ProgressionConfigAdmin

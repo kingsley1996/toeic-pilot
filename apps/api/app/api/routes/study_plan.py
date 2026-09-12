@@ -26,6 +26,7 @@ from app.core.database import get_db
 from app.models import (
     Attempt,
     AttemptItem,
+    DictationAttempt,
     GrammarLesson,
     GrammarLessonCompletion,
     PartSession,
@@ -38,6 +39,7 @@ from app.models import (
     TestCollection,
     User,
     UserProfile,
+    VocabularyReviewLog,
 )
 from app.schemas.study_plan import (
     PlanEstimate,
@@ -50,6 +52,7 @@ from app.schemas.study_plan import (
     PlanRetake,
     PlanTrendRow,
     PlanVersionPublic,
+    PlanWeekStat,
     StudyPlanItemPublic,
     StudyPlanPublic,
 )
@@ -589,7 +592,87 @@ def evaluation(
                 recent_total=r[1],
             )
         )
-    return PlanEvaluationPublic(retakes=retakes, trend=trend, new_diagnostic=new_diagnostic)
+    # Nút THI THỬ trên cùng một chuỗi: đề full đã nộp, có điểm quy đổi thật.
+    # Không trộn vào `retakes` mù quáng — `kind` để UI nói rõ điểm nào là đo
+    # lại trình độ, điểm nào là thi thử kiểm chứng.
+    for att_id, when, total, title in db.execute(
+        select(
+            Attempt.id,
+            Attempt.submitted_at,
+            Attempt.total_scaled,
+            PracticeTest.title,
+        )
+        .join(PracticeTest, PracticeTest.id == Attempt.test_id)
+        .where(
+            Attempt.user_id == user.id,
+            Attempt.status == "submitted",
+            Attempt.total_scaled.is_not(None),
+            PracticeTest.kind == "full",
+            Attempt.submitted_at >= plan.created_at,
+        )
+    ).all():
+        retakes.append(
+            PlanRetake(
+                attempt_id=str(att_id),
+                created_at=when,
+                total_scaled=total,
+                kind="mock",
+                label=(title or "")[:60],
+            )
+        )
+    retakes.sort(key=lambda r: r.created_at)
+
+    # Phút THẬT theo tuần của kế hoạch: chỉ thời lượng lượt làm bài; các
+    # loại việc khác đếm bằng số kiện, không gán phút ảo.
+    zone = profile.timezone if profile else "UTC"
+    start = plan.starts_at or _local_day(plan.created_at, zone)
+    acc: dict[int, PlanWeekStat] = {}
+
+    def _bucket(when: datetime) -> PlanWeekStat:
+        idx = max(0, (_local_day(when, zone) - start).days // 7)
+        if idx not in acc:
+            acc[idx] = PlanWeekStat(
+                index=idx, minutes=0, attempts=0, reviews=0, dictation=0, grammar=0
+            )
+        return acc[idx]
+
+    for when, elapsed in db.execute(
+        select(Attempt.submitted_at, Attempt.elapsed_seconds).where(
+            Attempt.user_id == user.id,
+            Attempt.status == "submitted",
+            Attempt.submitted_at.is_not(None),
+            Attempt.submitted_at >= plan.created_at,
+        )
+    ).all():
+        row = _bucket(when)
+        row.attempts += 1
+        row.minutes += int(elapsed or 0) // 60
+    for stamp in db.scalars(
+        select(VocabularyReviewLog.reviewed_at).where(
+            VocabularyReviewLog.user_id == user.id,
+            VocabularyReviewLog.reviewed_at >= plan.created_at,
+        )
+    ):
+        _bucket(stamp).reviews += 1
+    for stamp in db.scalars(
+        select(DictationAttempt.created_at).where(
+            DictationAttempt.user_id == user.id,
+            DictationAttempt.created_at >= plan.created_at,
+        )
+    ):
+        _bucket(stamp).dictation += 1
+    for stamp in db.scalars(
+        select(GrammarLessonCompletion.created_at).where(
+            GrammarLessonCompletion.user_id == user.id,
+            GrammarLessonCompletion.created_at >= plan.created_at,
+        )
+    ):
+        _bucket(stamp).grammar += 1
+    weeks = [acc[k] for k in sorted(acc)]
+
+    return PlanEvaluationPublic(
+        retakes=retakes, trend=trend, weeks=weeks, new_diagnostic=new_diagnostic
+    )
 
 
 @router.patch("/items/{position}", response_model=StudyPlanPublic)

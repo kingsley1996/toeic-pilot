@@ -1292,3 +1292,62 @@ def test_retake_analyze_creates_new_plan_version(
     assert third["version"] == 2, "analyze lại cùng lượt không nở phiên bản"
     versions = client.get("/api/v1/study-plan/versions", headers=auth("learner")).json()
     assert [v["version"] for v in versions] == [2, 1]
+
+
+def test_evaluation_weeks_are_real_minutes_and_mocks_join_the_series(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """§31: phút của tuần là `elapsed_seconds` THẬT, và điểm thi thử đứng
+    cùng chuỗi đo với nhãn `mock` — hai loại sự kiện khác nhau nhưng cùng một
+    câu hỏi "bạn đang ở đâu theo thời gian"."""
+    me, profile = _learner_with_profile(client, auth, db_session)
+    profile.target_score = 700
+    profile.exam_date = date.today() + timedelta(days=40)
+    db_session.commit()
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    base = db_session.get(Attempt, uuid.UUID(plan["placement_attempt_id"]))
+    assert base is not None
+
+    base.submitted_at = datetime.now(UTC) - timedelta(days=2)  # bài gốc TRƯỚC plan
+    db_session.commit()
+    drill = Attempt(
+        user_id=me,
+        test_id=base.test_id,
+        scope="partial",
+        review_mode="exam",
+        status="submitted",
+        started_at=datetime.now(UTC),
+        submitted_at=datetime.now(UTC),
+        elapsed_seconds=1200,
+    )
+    mock_test = PracticeTest(
+        slug="t-full-eval",
+        title="Đề thi thử kiểm chứng",
+        kind="full",
+        status="published",
+        score_scale_slug="default",
+        collection_id=None,
+    )
+    db_session.add(mock_test)
+    db_session.flush()
+    mock_att = Attempt(
+        user_id=me,
+        test_id=mock_test.id,
+        scope="full",
+        review_mode="exam",
+        status="submitted",
+        started_at=datetime.now(UTC),
+        submitted_at=datetime.now(UTC),
+        elapsed_seconds=7500,
+        total_scaled=610,
+    )
+    db_session.add_all([drill, mock_att])
+    db_session.commit()
+
+    ev = client.get("/api/v1/study-plan/evaluation", headers=auth("learner")).json()
+    wk = ev["weeks"][0]
+    assert wk["index"] == 0
+    assert wk["minutes"] == 20 + 125  # đúng hai lượt nộp, không phút bịa
+    assert wk["attempts"] == 2
+    kinds = [(r["kind"], r["total_scaled"]) for r in ev["retakes"]]
+    assert ("mini", 90) in kinds and ("mock", 610) in kinds

@@ -182,8 +182,14 @@ False và `/study-plan/versions` đọc lại cả lịch sử; đó là lý do 
 completed work" của §32 không cần copy mục đã xong sang bản mới: lịch sử
 nằm ở CHÍNH các phiên bản.
 
-`/study-plan/evaluation` trả ba thứ, tất cả từ sự kiện ĐÃ CÓ (không bảng
-event riêng — attempt đã là học-kiện): chuỗi phán quyết theo thời gian,
+`/study-plan/evaluation` trả mọi thứ từ sự kiện ĐÃ CÓ (không bảng event riêng
+— attempt đã là học-kiện): chuỗi điểm theo thời gian — phán quyết placement
+`kind="mini"` VÀ lượt nộp đề full đã quy đổi `kind="mock"` đi cùng một trục,
+vì cả hai đều trả lời "bạn đang ở đâu, lúc nào"; `weeks`: phút THẬT mỗi tuần
+(tổng `elapsed_seconds` của lượt nộp) + số kiện review/chép/ngữ pháp — phút
+ước lượng của mục chỉ đứng ở lịch, không đội làm bằng chứng, và không có thời
+lượng từng lượt review nên KHÔNG ai bịa phút cho từ vựng. UI in "+N′ so với
+tuần trước" khi hai tuần cạnh nhau có số thật,
 trend đúng/tổng theo nhãn câu (baseline = bài gốc của plan; recent = MỌI
 bài nộp sau `plan.created_at`, drill câu thật có nhãn đếm được), và
 `new_diagnostic` — có phán quyết mới hơn ca mọc plan.

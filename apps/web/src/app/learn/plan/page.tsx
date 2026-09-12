@@ -885,6 +885,10 @@ function ProgressPanel({
     .filter(([, w]) => w.due > 0)
     .sort((a, b) => a[0] - b[0])
     .slice(0, 10);
+  // Phút THẬT (`elapsed_seconds` của các lượt nộp) từ /evaluation — phút ước
+  // lượng của mục chỉ để đếm việc, không phải bằng chứng ngồi bàn.
+  const real = new Map((evaluation?.weeks ?? []).map((w) => [w.index, w]));
+  const realOf = (idx: number) => real.get(idx)?.minutes ?? null;
   const series = evaluation?.retakes ?? [];
   const stale = evaluation?.new_diagnostic && !busy;
 
@@ -946,12 +950,30 @@ function ProgressPanel({
               <p className="text-label font-semibold uppercase text-ink-faint">Tuần {idx + 1}</p>
               <p className="font-data tabular-nums text-ink">
                 {w.done}/{w.due}
-                {w.minutes > 0 && (
+                {realOf(idx) != null ? (
                   <span className="ml-1 text-label font-normal text-ink-faint">
-                    ~{w.minutes}&apos;
+                    {realOf(idx)}&apos; thật
                   </span>
+                ) : (
+                  w.minutes > 0 && (
+                    <span className="ml-1 text-label font-normal text-ink-faint">
+                      ~{w.minutes}&apos;
+                    </span>
+                  )
                 )}
               </p>
+              {(() => {
+                const cur = realOf(idx);
+                const prev = realOf(idx - 1);
+                if (cur == null || prev == null || cur === prev) return null;
+                const delta = cur - prev;
+                return (
+                  <p className={cx("text-label", delta > 0 ? "text-ok" : "text-ink-faint")}>
+                    {delta > 0 ? "+" : "−"}
+                    {Math.abs(delta)}&apos; so với tuần trước
+                  </p>
+                );
+              })()}
             </li>
           ))}
         </ul>

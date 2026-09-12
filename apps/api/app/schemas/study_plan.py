@@ -138,12 +138,16 @@ class PlanVersionPublic(BaseModel):
 
 
 class PlanRetake(BaseModel):
-    """Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian."""
+    """Một MỐC trên chuỗi điểm: phán quyết placement (mini) hoặc lượt nộp
+    đề thi thử full đã quy đổi. `kind` để UI phân biệt hai loại đo — chúng
+    không phải cùng một sự kiện."""
 
     attempt_id: str
     created_at: datetime
     total_scaled: int
-    cefr: str
+    cefr: str = ""
+    kind: str = "mini"  # "mini" | "mock"
+    label: str = ""
 
 
 class PlanTrendRow(BaseModel):
@@ -157,8 +161,24 @@ class PlanTrendRow(BaseModel):
     recent_total: int
 
 
+class PlanWeekStat(BaseModel):
+    """§31 bản trung thực: `minutes` là GIÂY THẬT của các lượt nộp trong tuần
+    (`elapsed_seconds`), không phải `est_minutes` của mục — phút ước lượng
+    nằm ở lịch hiển thị, còn đây là bằng chứng người học đã ngồi bao lâu.
+    Không bôi số phút ôn từ vựng: không có thời lượng từng lượt review thì
+    mọi con số phút ở đó đều là bịa."""
+
+    index: int
+    minutes: int
+    attempts: int
+    reviews: int
+    dictation: int
+    grammar: int
+
+
 class PlanEvaluationPublic(BaseModel):
     retakes: list[PlanRetake]
+    weeks: list[PlanWeekStat] = []
     trend: list[PlanTrendRow]
     # Một phán quyết MỚI HƠN ca chốt hiện hành đã tồn tại (bấm "Đo lại" theo
     # lịch xong rồi) → UI nhắc dựng phiên bản mới, vì lời khuyên hiện hành

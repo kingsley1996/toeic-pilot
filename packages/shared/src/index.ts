@@ -204,6 +204,7 @@ export type PlacementResultPublic = components["schemas"]["PlacementResultPublic
 export type StudyPlanPublic = components["schemas"]["StudyPlanPublic"];
 export type PlanEvaluationPublic = components["schemas"]["PlanEvaluationPublic"];
 export type PlanVersionPublic = components["schemas"]["PlanVersionPublic"];
+export type PlanWeekStat = components["schemas"]["PlanWeekStat"];
 export type StudyPlanItemPublic = components["schemas"]["StudyPlanItemPublic"];
 export type SystemStatus = components["schemas"]["SystemStatus"];
 export type UptimeReport = components["schemas"]["UptimeReport"];
