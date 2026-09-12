@@ -34,6 +34,13 @@ export function RubyWalletPanel({ token }: { token: string | null }) {
   const [wallet, setWallet] = useState<RubyWallet | null>(null);
   const [claiming, setClaiming] = useState(false);
   const { show } = useToast();
+  // Đổi acc thì số cũ không được hiện dù chỉ một frame: token là prop nên so
+  // trong render (idiom React cho "prop đổi"), không phải trong effect.
+  const [shownFor, setShownFor] = useState(token);
+  if (token !== shownFor) {
+    setShownFor(token);
+    setWallet(null);
+  }
 
   useEffect(() => {
     if (!token) return;

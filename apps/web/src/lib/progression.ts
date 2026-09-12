@@ -59,6 +59,12 @@ function announceLevel(level: number, show: ReturnType<typeof useToast>["show"])
 export function useProgression(token: string | null): ProgressionPublic | null {
   const [progression, setProgression] = useState<ProgressionPublic | null>(null);
   const { show } = useToast();
+  // Như RubyWalletPanel: đổi acc thì level/khung người cũ không được hiện.
+  const [shownFor, setShownFor] = useState(token);
+  if (token !== shownFor) {
+    setShownFor(token);
+    setProgression(null);
+  }
 
   useEffect(() => {
     if (!token) return;

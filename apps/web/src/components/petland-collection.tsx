@@ -34,6 +34,12 @@ export function CollectionScreen({
   const [owned, setOwned] = useState<PetOwnedPublic[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
+  // Như RubyWalletPanel: đổi acc thì tủ cũ không được hiện dù chỉ một frame.
+  const [shownFor, setShownFor] = useState(token);
+  if (token !== shownFor) {
+    setShownFor(token);
+    setOwned(null);
+  }
 
   useEffect(() => {
     let alive = true;
