@@ -5,7 +5,6 @@ import {
   type TopicPublic,
   type VocabularyCollectionDetail,
   type VocabularyCollectionItemPublic,
-  type VocabularyCollectionPublic,
   type VocabularyProgress,
 } from "@toeic-pilot/shared";
 import { BookOpen, Library, RotateCcw } from "lucide-react";
@@ -145,24 +144,14 @@ function VocabularyLanding() {
   }>({ token: "", data: {} });
 
   useEffect(() => {
-    apiFetch<VocabularyCollectionPublic[]>(API_ROUTES.vocabularyCollections)
-      .then((rows) =>
-        // Tải song song chi tiết từng tuyển tập; một cái hỏng vẫn giữ cái còn lại.
-        // Detail kèm TOKEN: learned_count của card chỉ tồn tại khi server biết
-        // người xem là ai — quên token thì server trả 0 đúng luật "khách vãng
-        // lai", và card hiện "Đã học 0" cho cả người đã học.
-        Promise.all(
-          rows.map((row) =>
-            apiFetch<VocabularyCollectionDetail>(API_ROUTES.vocabularyCollection(row.id), {
-              ...(token ? { token } : {}),
-            }).catch(() => null),
-          ),
-        ).then((details) => {
-          setCollections(
-            details.filter((detail): detail is VocabularyCollectionDetail => detail !== null),
-          );
-        }),
-      )
+    // MỘT request cho tất cả cuốn kèm items — endpoint `/details` gộp ở server.
+    // Detail kèm TOKEN: learned_count của card chỉ tồn tại khi server biết
+    // người xem là ai — quên token thì server trả 0 đúng luật "khách vãng
+    // lai", và card hiện "Đã học 0" cho cả người đã học.
+    apiFetch<VocabularyCollectionDetail[]>(API_ROUTES.vocabularyCollectionDetails, {
+      ...(token ? { token } : {}),
+    })
+      .then(setCollections)
       .catch(() => setError("Không tải được danh sách tuyển tập."));
     apiFetch<TopicPublic[]>(API_ROUTES.topics)
       .then(setTopics)

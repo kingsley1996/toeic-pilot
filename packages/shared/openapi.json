@@ -26687,6 +26687,37 @@
         ]
       }
     },
+    "/api/v1/vocabulary-collections/details": {
+      "get": {
+        "description": "TẤT CẢ cuốn sách kèm items trong MỘT request.\n\nTrang tuyển tập gọi endpoint 1-cuốn N lần (N+1 phía client, mỗi lần tính\nlại cả những con số toàn cục). Gộp ở đây: 1 query collections + 1 items\nIN + 3 batch có sẵn — cùng con số với gọi lẻ từng cuốn.\n\nĐăng ký TRƯỚC `/{collection_ref}` phía dưới: FastAPI khớp theo thứ tự,\nvà một cuốn slug đúng \"details\" sẽ bị route này nuốt (chấp nhận được —\nslug đó không ai đặt).",
+        "operationId": "list_vocabulary_collection_details_api_v1_vocabulary_collections_details_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VocabularyCollectionDetail"
+                  },
+                  "title": "Response List Vocabulary Collection Details Api V1 Vocabulary Collections Details Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Vocabulary Collection Details",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
     "/api/v1/vocabulary-collections/{collection_ref}": {
       "get": {
         "operationId": "get_vocabulary_collection_api_v1_vocabulary_collections__collection_ref__get",

@@ -4682,6 +4682,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vocabulary-collections/details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Vocabulary Collection Details
+         * @description TẤT CẢ cuốn sách kèm items trong MỘT request.
+         *
+         *     Trang tuyển tập gọi endpoint 1-cuốn N lần (N+1 phía client, mỗi lần tính
+         *     lại cả những con số toàn cục). Gộp ở đây: 1 query collections + 1 items
+         *     IN + 3 batch có sẵn — cùng con số với gọi lẻ từng cuốn.
+         *
+         *     Đăng ký TRƯỚC `/{collection_ref}` phía dưới: FastAPI khớp theo thứ tự,
+         *     và một cuốn slug đúng "details" sẽ bị route này nuốt (chấp nhận được —
+         *     slug đó không ai đặt).
+         */
+        get: operations["list_vocabulary_collection_details_api_v1_vocabulary_collections_details_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vocabulary-collections/{collection_ref}": {
         parameters: {
             query?: never;
@@ -18100,6 +18128,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VocabularyCollectionPublic"][];
+                };
+            };
+        };
+    };
+    list_vocabulary_collection_details_api_v1_vocabulary_collections_details_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyCollectionDetail"][];
                 };
             };
         };

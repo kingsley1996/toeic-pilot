@@ -80,6 +80,20 @@ def test_a_draft_collection_is_invisible(client: TestClient, db_session: Session
     assert [row["slug"] for row in body] == ["col-t"]
 
 
+def test_merged_details_match_single_requests(client: TestClient, db_session: Session) -> None:
+    """Endpoint gop phai tra dung thu N request le tra — mot nguon duy nhat."""
+    build_tree(db_session)
+    build_tree(db_session, marker="u")
+    db_session.commit()
+
+    merged = client.get("/api/v1/vocabulary-collections/details").json()
+    singles = [
+        client.get(f"/api/v1/vocabulary-collections/{row['slug']}").json()
+        for row in client.get("/api/v1/vocabulary-collections").json()
+    ]
+    assert merged == singles
+
+
 def test_a_draft_item_stays_invisible_under_a_published_collection(
     client: TestClient, db_session: Session
 ) -> None:

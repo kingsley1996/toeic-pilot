@@ -399,6 +399,7 @@ export const API_ROUTES = {
   // `/vocabulary/...` (cùng luật với `dictation-topics` bên dưới).
   vocabularyCollections: "/api/v1/vocabulary-collections",
   vocabularyCollection: (id: string) => `/api/v1/vocabulary-collections/${id}`,
+  vocabularyCollectionDetails: "/api/v1/vocabulary-collections/details",
   vocabularyCollectionItem: (id: string) => `/api/v1/vocabulary-collection-items/${id}`,
   dictation: "/api/v1/dictation",
   dictationDetail: (id: string) => `/api/v1/dictation/${id}`,

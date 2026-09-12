@@ -12,7 +12,9 @@ dài: `REFACTOR-LONG-FILES.md` §0.
 import logging
 import random
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import Select, func, select
@@ -313,6 +315,85 @@ def _published_collection(db: Session, ref: str) -> VocabularyCollection:
     return collection
 
 
+def _collection_detail(
+    collection: VocabularyCollection,
+    items: Sequence[VocabularyCollectionItem],
+    topics_per_item: dict[uuid.UUID, int],
+    learned_per_item: dict[uuid.UUID, int],
+    entries_per_item: dict[uuid.UUID, int],
+    image_driver: Any,
+) -> VocabularyCollectionDetail:
+    """Một cuốn kèm items — một nguồn duy nhất cho endpoint 1-cuốn và N-cuốn."""
+    return VocabularyCollectionDetail(
+        id=str(collection.id),
+        slug=collection.slug,
+        name=collection.name,
+        description=collection.description,
+        position=collection.position,
+        items=[
+            VocabularyCollectionItemPublic(
+                id=str(item.id),
+                name=item.name,
+                description=item.description,
+                position=item.position,
+                topic_count=topics_per_item.get(item.id, 0),
+                entry_count=entries_per_item.get(item.id, 0),
+                learned_count=learned_per_item.get(item.id, 0),
+                image_url=(image_driver.public_url(item.image.storage_key) if item.image else None),
+            )
+            for item in items
+        ],
+    )
+
+
+@router.get("/vocabulary-collections/details", response_model=list[VocabularyCollectionDetail])
+def list_vocabulary_collection_details(
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_user),
+) -> list[VocabularyCollectionDetail]:
+    """TẤT CẢ cuốn sách kèm items trong MỘT request.
+
+    Trang tuyển tập gọi endpoint 1-cuốn N lần (N+1 phía client, mỗi lần tính
+    lại cả những con số toàn cục). Gộp ở đây: 1 query collections + 1 items
+    IN + 3 batch có sẵn — cùng con số với gọi lẻ từng cuốn.
+
+    Đăng ký TRƯỚC `/{collection_ref}` phía dưới: FastAPI khớp theo thứ tự,
+    và một cuốn slug đúng "details" sẽ bị route này nuốt (chấp nhận được —
+    slug đó không ai đặt).
+    """
+    collections = db.scalars(
+        select(VocabularyCollection)
+        .where(VocabularyCollection.status == PUBLISHED)
+        .order_by(VocabularyCollection.position, VocabularyCollection.name)
+        .options(selectinload(VocabularyCollection.items))
+    ).all()
+    items_by_collection = {
+        collection.id: sorted(
+            (item for item in collection.items if item.status == PUBLISHED),
+            key=lambda item: (item.position, item.name),
+        )
+        for collection in collections
+    }
+    item_ids = [item.id for items in items_by_collection.values() for item in items]
+    topics_per_item = _visible_topic_counts(db)
+    learned_per_item = _learned_counts_by_item(
+        db, item_ids, current_user.id if current_user else None
+    )
+    entries_per_item = _entry_counts_by_item(db, item_ids)
+    image_driver = get_driver("image")
+    return [
+        _collection_detail(
+            collection,
+            items_by_collection[collection.id],
+            topics_per_item,
+            learned_per_item,
+            entries_per_item,
+            image_driver,
+        )
+        for collection in collections
+    ]
+
+
 @router.get("/vocabulary-collections/{collection_ref}", response_model=VocabularyCollectionDetail)
 def get_vocabulary_collection(
     collection_ref: str,
@@ -335,25 +416,8 @@ def get_vocabulary_collection(
         db, item_ids, current_user.id if current_user else None
     )
     entries_per_item = _entry_counts_by_item(db, item_ids)
-    return VocabularyCollectionDetail(
-        id=str(collection.id),
-        slug=collection.slug,
-        name=collection.name,
-        description=collection.description,
-        position=collection.position,
-        items=[
-            VocabularyCollectionItemPublic(
-                id=str(item.id),
-                name=item.name,
-                description=item.description,
-                position=item.position,
-                topic_count=topics_per_item.get(item.id, 0),
-                entry_count=entries_per_item.get(item.id, 0),
-                learned_count=learned_per_item.get(item.id, 0),
-                image_url=(image_driver.public_url(item.image.storage_key) if item.image else None),
-            )
-            for item in items
-        ],
+    return _collection_detail(
+        collection, items, topics_per_item, learned_per_item, entries_per_item, image_driver
     )
 
 
