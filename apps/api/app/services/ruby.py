@@ -17,12 +17,12 @@ from __future__ import annotations
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import func, select, text
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.ruby import DEFAULT_RUBY_RULES, RUBY_SOURCES, SPEND_SOURCES, RubyEvent, RubyRule
-from app.services.progression import local_today
+from app.services.progression import local_today, lock_user
 
 # "Ngày" là ngày theo múi giờ người học, và định nghĩa ấy được MƯỢN chứ không
 # viết lại: `progression.local_today` đã ghi rõ rằng một định nghĩa thứ hai là chỗ
@@ -205,30 +205,6 @@ class NotEnoughRuby(Exception):
         self.available = available
 
 
-def _lock_user(db: Session, user_id: uuid.UUID) -> None:
-    """Nối tiếp hoá mọi đường tiêu của ĐÚNG một người, trong giao dịch hiện tại.
-
-    `pg_advisory_xact_lock` nhả khi giao dịch kết thúc — commit hay rollback —
-    nên không có đường nào để lại một khoá treo. Khoá theo `user_id` chứ không
-    theo bảng: hai người mua trứng cùng lúc không việc gì phải chờ nhau.
-
-    Khoá nhận hai `int4`; lấy 64 bit đầu của uuid rồi tách đôi cho ổn định giữa
-    các lần chạy. Va chạm băm chỉ khiến hai người dùng chung một khoá, tức là
-    chậm hơn một chút — không bao giờ sai.
-
-    **SQLite không có khoá tư vấn, và ở đó nó không cần**: bộ test mặc định chạy
-    một luồng trên một kết nối. Bài kiểm đua thật là `integration`, chạy trên
-    Postgres, và có `threading.Barrier` — vì bắn N luồng không kiểm được chuyện
-    đua ở đây (`tests/test_concurrency.py` đã ghi lại bài học ấy).
-    """
-    if db.bind is None or db.bind.dialect.name != "postgresql":
-        return
-    key = int.from_bytes(user_id.bytes[:8], "big", signed=False)
-    hi = ((key >> 32) & 0xFFFFFFFF) - 0x80000000
-    lo = (key & 0xFFFFFFFF) - 0x80000000
-    db.execute(text("SELECT pg_advisory_xact_lock(:hi, :lo)"), {"hi": hi, "lo": lo})
-
-
 def spend(
     db: Session,
     *,
@@ -256,7 +232,7 @@ def spend(
     if amount <= 0:
         raise ValueError("khoản tiêu phải dương")
 
-    _lock_user(db, user_id)
+    lock_user(db, user_id)
     available = balance(db, user_id)
     if available < amount:
         raise NotEnoughRuby(amount, available)
@@ -312,7 +288,7 @@ def top_up_admin(db: Session, *, user_id: uuid.UUID, role: str) -> int:
     """
     if role != "admin":
         return 0
-    _lock_user(db, user_id)
+    lock_user(db, user_id)
     available = balance(db, user_id)
     missing = ADMIN_RUBY_FLOOR - available
     if missing <= 0:

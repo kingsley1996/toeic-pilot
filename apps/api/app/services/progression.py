@@ -22,7 +22,7 @@ import uuid
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -58,6 +58,31 @@ def local_today(when: datetime, timezone: str) -> date:
         # kiểm ở tầng schema; đây là lưới an toàn cuối.
         zone = ZoneInfo("UTC")
     return when.astimezone(zone).date()
+
+
+def lock_user(db: Session, user_id: uuid.UUID) -> None:
+    """Nối tiếp hoá mọi đường ghi tiền/điểm của ĐÚNG một người, trong giao dịch
+    hiện tại.
+
+    `pg_advisory_xact_lock` nhả khi giao dịch kết thúc — commit hay rollback —
+    nên không có đường nào để lại một khoá treo. Khoá theo `user_id` chứ không
+    theo bảng: hai người học cùng lúc không việc gì phải chờ nhau. Chỉ có MỘT
+    khoá nên không có thứ tự khoá nào để nhớ nhầm thành chết khoá.
+
+    Khoá nhận hai `int4`; lấy 64 bit đầu của uuid rồi tách đôi cho ổn định giữa
+    các lần chạy. Va chạm băm chỉ khiến hai người dùng chung một khoá, tức là
+    chậm hơn một chút — không bao giờ sai.
+
+    **SQLite không có khoá tư vấn, và ở đó nó không cần**: bộ test mặc định chạy
+    một luồng trên một kết nối. Bài kiểm đua thật là `integration`, chạy trên
+    Postgres, và có `threading.Barrier`.
+    """
+    if db.bind is None or db.bind.dialect.name != "postgresql":
+        return
+    key = int.from_bytes(user_id.bytes[:8], "big", signed=False)
+    hi = ((key >> 32) & 0xFFFFFFFF) - 0x80000000
+    lo = (key & 0xFFFFFFFF) - 0x80000000
+    db.execute(text("SELECT pg_advisory_xact_lock(:hi, :lo)"), {"hi": hi, "lo": lo})
 
 
 def task_source_id(user_id: uuid.UUID, day: date, slot: str) -> uuid.UUID:
@@ -155,6 +180,12 @@ def award(
         raise ValueError(f"nguồn XP không hợp lệ: {source_type}")
     if amount <= 0:
         return 0
+
+    # Trần ngày là "đọc SUM rồi chèn": hai lần trao song song cùng đọc thấy còn
+    # phòng và cùng chèn, vượt trần mà không vi phạm ràng buộc nào (khoá duy
+    # nhất chỉ bắt được CÙNG nguồn). Nối tiếp hoá theo người, cùng cơ chế
+    # `ruby.spend` dùng để chống tiêu âm.
+    lock_user(db, user_id)
 
     when = now or datetime.now(tz=ZoneInfo("UTC"))
     day = local_today(when, timezone)

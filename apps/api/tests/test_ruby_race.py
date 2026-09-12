@@ -324,3 +324,139 @@ def test_the_first_panel_open_never_collides_on_the_pet_row(pg_engine):
         conn.execute(text("DELETE FROM pet_owned WHERE user_id = :u"), {"u": user_id})
         conn.execute(text("DELETE FROM pet_state WHERE user_id = :u"), {"u": user_id})
         conn.execute(text("DELETE FROM users WHERE id = :u"), {"u": user_id})
+
+
+def test_two_first_eggs_opened_together_yield_exactly_one_free_pet(pg_engine):
+    """Hai quả trứng đầu tiên mở song song: đúng một quả miễn phí, không 500.
+
+    Nhánh miễn phí bỏ qua `spend` nên không có khoá: cả hai cùng đọc thấy 0
+    con, cùng được miễn, và kẻ thua vỡ khoá chính `pet_owned` thành 500 (route
+    không bắt `IntegrityError`). Khoá trong `open_eggs` nối tiếp hoá hai lượt;
+    kẻ thua thấy đã có thú, tính lại giá và thiếu ruby như một cú bấm đúp nối
+    tiếp.
+
+    Hàng rào đặt ở lần kiểm ĐẦU (trước khoá) nên cả hai cùng tới được — khác
+    với bài mua trứng, ở đây vỡ hàng rào không phải đáp án đúng.
+    """
+    from app.models import PetOwned, PetState  # noqa: PLC0415
+    from app.services import gacha  # noqa: PLC0415
+
+    factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
+    session = factory()
+    user = User(email=f"free-race-{uuid.uuid4().hex}@example.com", hashed_password="x")
+    session.add(user)
+    session.commit()
+    session.add(PetState(user_id=user.id, species=None))
+    session.commit()
+    gacha.chances(session)  # gieo loài trước, khỏi đua gieo trong luồng
+    gacha.settings_row(session)  # gieo giá trứng trước, cùng lý do
+    user_id = user.id
+    session.close()
+
+    barrier = threading.Barrier(2)
+    real_free = gacha.first_egg_is_free
+    seen = threading.local()
+
+    def check_then_wait(db, user_id_):
+        free = real_free(db, user_id_)
+        # Hàm này chạy HAI lần mỗi lượt (kiểm trước khoá + kiểm lại dưới
+        # khoá): chỉ chờ ở lần đầu, lần hai mà chờ là treo vì luồng kia đang
+        # kẹt ở khoá chờ chính mình.
+        if getattr(seen, "waited", False):
+            return free
+        seen.waited = True
+        barrier.wait(timeout=5)
+        return free
+
+    def open_once() -> str:
+        db = factory()
+        try:
+            state = db.get(PetState, user_id)
+            batch = gacha.open_eggs(db, user_id=user_id, state=state, count=1)
+            db.commit()
+            return f"ok:{batch.spent}"
+        except ruby.NotEnoughRuby:
+            db.rollback()
+            return "refused"
+        except Exception as exc:  # chính là thứ đang được kiểm
+            db.rollback()
+            return f"vo:{type(exc).__name__}"
+        finally:
+            db.close()
+
+    with patch.object(gacha, "first_egg_is_free", side_effect=check_then_wait):
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(lambda _: open_once(), range(2)))
+
+    assert sorted(outcomes) == ["ok:0", "refused"], outcomes
+
+    session = factory()
+    owned = session.scalar(
+        select(func.count()).select_from(PetOwned).where(PetOwned.user_id == user_id)
+    )
+    moved = session.scalar(
+        select(func.coalesce(func.sum(RubyEvent.amount), 0)).where(RubyEvent.user_id == user_id)
+    )
+    session.close()
+    assert (owned, moved) == (1, 0)
+
+    with pg_engine.begin() as conn:
+        conn.execute(text("DELETE FROM pet_owned WHERE user_id = :u"), {"u": user_id})
+        conn.execute(text("DELETE FROM pet_state WHERE user_id = :u"), {"u": user_id})
+        conn.execute(text("DELETE FROM users WHERE id = :u"), {"u": user_id})
+
+
+def test_parallel_awards_never_exceed_daily_cap(pg_engine):
+    """Bốn lần trao 100 XP song song: tổng đúng trần 120, không phải 400.
+
+    Trần ngày là "đọc SUM rồi chèn": cùng đọc thấy còn phòng và cùng chèn thì
+    vượt trần mà không vi phạm ràng buộc nào (khoá duy nhất chỉ bắt được CÙNG
+    nguồn). Khoá theo người trong `award` nối tiếp hoá bốn lượt.
+    """
+    from app.services import progression  # noqa: PLC0415
+
+    factory = sessionmaker(bind=pg_engine, autocommit=False, autoflush=False)
+    session = factory()
+    user = User(email=f"cap-race-{uuid.uuid4().hex}@example.com", hashed_password="x")
+    session.add(user)
+    session.commit()
+    cap = progression.daily_cap(session)  # gieo cấu hình trước, khỏi đua gieo
+    user_id = user.id
+    session.close()
+
+    barrier = threading.Barrier(4)
+    real_used = progression.xp_awarded_on
+
+    def read_then_wait(db, user_id_, day):
+        used = real_used(db, user_id_, day)
+        try:
+            barrier.wait(timeout=2)
+        except threading.BrokenBarrierError:
+            pass
+        return used
+
+    def award_once(_: int) -> int:
+        db = factory()
+        try:
+            granted = progression.award(
+                db,
+                user_id=user_id,
+                source_type="attempt_submit",
+                source_id=uuid.uuid4(),
+                amount=100,
+                timezone="UTC",
+            )
+            db.commit()
+            return granted
+        finally:
+            db.close()
+
+    with patch.object(progression, "xp_awarded_on", side_effect=read_then_wait):
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            outcomes = list(pool.map(award_once, range(4)))
+
+    assert sum(outcomes) == cap == 120, outcomes
+
+    with pg_engine.begin() as conn:
+        conn.execute(text("DELETE FROM xp_event WHERE user_id = :u"), {"u": user_id})
+        conn.execute(text("DELETE FROM users WHERE id = :u"), {"u": user_id})

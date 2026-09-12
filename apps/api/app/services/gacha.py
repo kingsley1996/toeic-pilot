@@ -35,6 +35,7 @@ from app.models.pet import (
 )
 from app.services import ruby
 from app.services.pet_species import all_species
+from app.services.progression import lock_user
 
 
 def settings_row(db: Session) -> EggSetting:
@@ -261,11 +262,22 @@ def open_eggs(
     # đúng thế: một giao dịch 0 ruby là một dòng không nói lên điều gì, và nó lại
     # đi qua đường CÓ KHOÁ. Quả trứng đầu tiên miễn phí thì đơn giản là không có
     # giao dịch nào.
-    balance = (
-        ruby.spend(db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent)
-        if spent > 0
-        else ruby.balance(db, user_id)
-    )
+    if spent > 0:
+        balance = ruby.spend(
+            db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent
+        )
+    else:
+        # Nhánh miễn phí bỏ qua `spend` nên không có khoá: hai lần mở song song
+        # cùng đọc thấy 0 con và cùng được miễn — một bên vỡ khoá chính thành
+        # 500. Lấy khoá quanh kiểm tra + quay; kẻ thua thấy đã có thú (tính lại
+        # giá) và đi đường trả tiền như một cú bấm đúp nối tiếp.
+        lock_user(db, user_id)
+        spent = cost_for(db, user_id=user_id, config=config, count=count)
+        balance = (
+            ruby.spend(db, user_id=user_id, source_type="egg", source_id=uuid.uuid4(), amount=spent)
+            if spent > 0
+            else ruby.balance(db, user_id)
+        )
 
     hatched: list[Hatched] = []
     duplicates = 0
