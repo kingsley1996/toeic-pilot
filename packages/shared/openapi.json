@@ -5452,6 +5452,11 @@
             ],
             "title": "Attempt Id"
           },
+          "force": {
+            "default": false,
+            "title": "Force",
+            "type": "boolean"
+          },
           "source": {
             "default": "rule",
             "pattern": "^(rule|llm)$",
@@ -6593,6 +6598,36 @@
           "attribution"
         ],
         "title": "ImageConfirm",
+        "type": "object"
+      },
+      "ItemTick": {
+        "description": "Hai hành động trên MỘT endpoint vì cả hai cùng trả lại cả kế hoạch:\n`done` = khẳng định của người học; `test_id` = đổi đề thi thử trước khi\nnộp (chọn từ danh sách `mock_options` của payload).",
+        "properties": {
+          "done": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Done"
+          },
+          "test_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Id"
+          }
+        },
+        "title": "ItemTick",
         "type": "object"
       },
       "KnownModel": {
@@ -9245,6 +9280,16 @@
             "title": "Can Start",
             "type": "boolean"
           },
+          "checkin_scheduled": {
+            "default": true,
+            "title": "Checkin Scheduled",
+            "type": "boolean"
+          },
+          "cooldown_ok": {
+            "default": true,
+            "title": "Cooldown Ok",
+            "type": "boolean"
+          },
           "in_progress_attempt_id": {
             "anyOf": [
               {
@@ -9551,6 +9596,98 @@
           }
         },
         "title": "PlacementStart",
+        "type": "object"
+      },
+      "PlanEstimate": {
+        "description": "Khối \"bạn đang ở đâu\" của header §34 — đọc từ placement_result gốc.",
+        "properties": {
+          "band_high": {
+            "title": "Band High",
+            "type": "integer"
+          },
+          "band_low": {
+            "title": "Band Low",
+            "type": "integer"
+          },
+          "cefr": {
+            "title": "Cefr",
+            "type": "string"
+          },
+          "listening": {
+            "title": "Listening",
+            "type": "integer"
+          },
+          "reading": {
+            "title": "Reading",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "listening",
+          "reading",
+          "total",
+          "band_low",
+          "band_high",
+          "cefr"
+        ],
+        "title": "PlanEstimate",
+        "type": "object"
+      },
+      "PlanFocus": {
+        "description": "Một kỹ năng trong top priority — nhãn + bằng chứng thô, không điểm\npriority: người học đọc \"đúng 2/6\" chứ không đọc \"0.21\". `code`+`part` để\nchip bấm thẳng vào drill đã lọc đúng dạng câu.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "correct",
+          "total",
+          "code",
+          "part"
+        ],
+        "title": "PlanFocus",
+        "type": "object"
+      },
+      "PlanMockOption": {
+        "description": "Một đề full đã publish — danh sách cho ô `mock_test` đổi đích trước khi\nnộp. id để PATCH, title để hiển thị.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "PlanMockOption",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -11544,11 +11681,59 @@
       },
       "StudyPlanItemPublic": {
         "properties": {
+          "collection_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Slug"
+          },
+          "completed_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed On"
+          },
+          "day": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Day"
+          },
           "done": {
             "title": "Done",
             "type": "boolean"
           },
+          "est_minutes": {
+            "default": 30,
+            "title": "Est Minutes",
+            "type": "integer"
+          },
           "kind": {
+            "enum": [
+              "grammar_lesson",
+              "part_drill",
+              "vocab_review",
+              "dictation",
+              "mini_test",
+              "mock_test"
+            ],
             "title": "Kind",
             "type": "string"
           },
@@ -11556,9 +11741,42 @@
             "title": "Label",
             "type": "string"
           },
+          "link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link"
+          },
+          "manual_done": {
+            "default": false,
+            "title": "Manual Done",
+            "type": "boolean"
+          },
           "part": {
             "title": "Part",
             "type": "integer"
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "enum": [
+                  "foundation",
+                  "weakness",
+                  "integrated",
+                  "final"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phase"
           },
           "position": {
             "title": "Position",
@@ -11585,6 +11803,28 @@
               }
             ],
             "title": "Ref Id"
+          },
+          "test_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Slug"
+          },
+          "topic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Id"
           }
         },
         "required": [
@@ -11606,9 +11846,30 @@
             "title": "Created At",
             "type": "string"
           },
+          "days_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Left"
+          },
           "done_count": {
             "title": "Done Count",
             "type": "integer"
+          },
+          "estimate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanEstimate"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "exam_date": {
             "anyOf": [
@@ -11622,6 +11883,33 @@
             ],
             "title": "Exam Date"
           },
+          "feasibility": {
+            "anyOf": [
+              {
+                "enum": [
+                  "FEASIBLE",
+                  "CHALLENGING",
+                  "HIGH_RISK"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feasibility"
+          },
+          "gap": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap"
+          },
           "id": {
             "title": "Id",
             "type": "string"
@@ -11633,6 +11921,18 @@
             "title": "Items",
             "type": "array"
           },
+          "minutes_per_day": {
+            "title": "Minutes Per Day",
+            "type": "integer"
+          },
+          "mock_options": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanMockOption"
+            },
+            "title": "Mock Options",
+            "type": "array"
+          },
           "placement_attempt_id": {
             "title": "Placement Attempt Id",
             "type": "string"
@@ -11640,6 +11940,15 @@
           "source": {
             "title": "Source",
             "type": "string"
+          },
+          "starts_at": {
+            "format": "date",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "study_days_per_week": {
+            "title": "Study Days Per Week",
+            "type": "integer"
           },
           "target_score": {
             "anyOf": [
@@ -11651,6 +11960,41 @@
               }
             ],
             "title": "Target Score"
+          },
+          "today": {
+            "format": "date",
+            "title": "Today",
+            "type": "string"
+          },
+          "top_focus": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/PlanFocus"
+            },
+            "title": "Top Focus",
+            "type": "array"
+          },
+          "weeks_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weeks Left"
+          },
+          "why": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Why"
           }
         },
         "required": [
@@ -11661,7 +12005,11 @@
           "source",
           "created_at",
           "items",
-          "done_count"
+          "done_count",
+          "today",
+          "starts_at",
+          "minutes_per_day",
+          "study_days_per_week"
         ],
         "title": "StudyPlanPublic",
         "type": "object"
@@ -12938,6 +13286,17 @@
             ],
             "title": "Preferred Accent"
           },
+          "study_days_per_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Study Days Per Week"
+          },
           "target_score": {
             "anyOf": [
               {
@@ -12965,6 +13324,7 @@
           "target_score",
           "exam_date",
           "minutes_per_day",
+          "study_days_per_week",
           "daily_new_limit",
           "preferred_accent",
           "pet",
@@ -13066,6 +13426,19 @@
               }
             ],
             "title": "Preferred Accent"
+          },
+          "study_days_per_week": {
+            "anyOf": [
+              {
+                "maximum": 7.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Study Days Per Week"
           },
           "target_score": {
             "anyOf": [
@@ -25613,7 +25986,7 @@
     },
     "/api/v1/study-plan/generate": {
       "post": {
-        "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.\n\nKHÔNG sinh lại mù quáng: trùng lượt với kế hoạch hiện hành → trả lại kế\nhoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm \"Tạo kế\nhoạch\" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả\nmới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.",
+        "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.\n\nKHÔNG sinh lại mù quáng: trùng lượt với kế hoạch hiện hành → trả lại kế\nhoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm \"Tạo kế\nhoạch\" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả\nmới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.\n`force=True` là lối thoát khi đầu vào profile đổi (ngày thi, phút/ngày):\nlịch được trải lại từ cùng một kết quả.",
         "operationId": "generate_api_v1_study_plan_generate_post",
         "requestBody": {
           "content": {
@@ -25660,6 +26033,91 @@
           }
         ],
         "summary": "Generate",
+        "tags": [
+          "study-plan"
+        ]
+      }
+    },
+    "/api/v1/study-plan/items/{position}": {
+      "patch": {
+        "description": "Tick (hoặc bỏ tick) thủ công một mục của kế hoạch hiện hành.\n\nCột riêng với tiến độ suy từ học thật: bỏ tick tay không được động vào bản\nghi học, và mục đã học thật vẫn xong dù không ai tick — với mục đó checkbox\nbị khoá phía UI, vì \"bỏ xong\" một việc đã xảy ra là nói dối theo chiều\nngược lại. Trả cả kế hoạch mới để client khỏi cần GET lại.",
+        "operationId": "tick_item_api_v1_study_plan_items__position__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "position",
+            "required": true,
+            "schema": {
+              "title": "Position",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemTick"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudyPlanPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Tick Item",
+        "tags": [
+          "study-plan"
+        ]
+      }
+    },
+    "/api/v1/study-plan/repack": {
+      "post": {
+        "description": "Dời móc neo của lịch về hôm nay — hành động TƯỜNG MINH thay cho lịch\ntự trôi. Nội dung và tick giữ nguyên; chỉ ngày của các mục chưa xảy ra\nđổi. Ai bỏ vài tuần mới cần nó, và khi cần thì phải tự bấm: đó là điểm\nkhác biệt với cái lịch nhảy theo từng cú tick vừa bị người học bác.",
+        "operationId": "repack_api_v1_study_plan_repack_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudyPlanPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Repack",
         "tags": [
           "study-plan"
         ]

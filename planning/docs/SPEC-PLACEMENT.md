@@ -4,7 +4,8 @@
 (path A từ `tp-test-09`, đề `tp-placement-01` 84 câu published), bảng
 `placement_result` + `practice_test.is_placement` (migration 067), estimator v1
 (tỉ lệ + CI 95% ±~75 điểm) + bảng CEFR ETS trong `services/placement.py`, ba
-endpoint `/placement` (gate/start/analyze, cooldown 7 ngày = `RETAKE_COOLDOWN_DAYS`),
+endpoint `/placement` (gate/start/analyze — cooldown 7 ngày = `RETAKE_COOLDOWN_DAYS`
+LÀ CỬA MỘT, cửa hai là ô "Kiểm tra lại" còn mở của kế hoạch, xem §10),
 màn setup `/learn/placement` + kết quả `/learn/placement/result/[attemptId]`;
 máy thi `/learn/attempts/[id]` dẫn thẳng sang phân tích khi đề là placement.
 
@@ -16,7 +17,8 @@ suy từ `grammar_lesson_completion` / phiên part sinh sau kế hoạch) và
 `POST /study-plan/generate`. Mục tiêu ôn thi là MỘT nguồn sự thật
 `user_profile`: form placement prefill từ profile qua gate, submit ghi về —
 không còn "hai chỗ thông tin giống nhau". Web: `/learn/plan` (+ `?from=`
-sinh từ lượt chỉ định), entry "Tạo kế hoạch học" ở màn kết quả placement.
+sinh từ lượt chỉ định), entry "Tạo kế hoạch học" ở màn kết quả placement — từ
+2026-09-12 nút đó đọc "Xem kế hoạch học" khi chính lượt này đã dựng kế hoạch.
 Lát 3 (path B AI sinh form + LLM planner + so sánh theo §5) còn mở.
 
 ## 0. Vì sao 84 câu
@@ -133,8 +135,21 @@ Quyết định "LLM có đáng không" = (1)–(3) thắng đủ xa so với ch
   lô này.
 - Mục kế hoạch = một nội dung thật (bài ngữ pháp / part drill / đề) + lý do một
   dòng ("yếu câu hỏi suy luận 4/14") + trạng thái xong/chưa.
-- Nguồn sự thật tiến độ = bản ghi học thật (completion, part session), không phải
-  cột tick trên kế hoạch — cùng nguyên tắc §4 SPEC-GRAMMAR.
+- Nguồn sự thật tiến độ = bản ghi học thật (completion, part session); NGOẠI LE
+  có chủ đích: ô tick tay (`done_at`) cho những mục không có bản ghi học để suy
+  (nhịp nền) — hai nguồn giữ riêng, không hoà. Cùng nguyên tắc §4 SPEC-GRAMMAR.
+- **Lịch theo ngày (2026-09-12):** ngày không lưu, suy lúc đọc từ hạng mục chưa
+  xong // nhịp buổi (theo `minutes_per_day`, "hôm nay" của múi người học) — bỏ
+  một hôm thì lịch trôi, không "quá hạn" giả; mục đã xong đứng ở ngày THẬT của
+  bản ghi học. Hai tuần cuối giữ danh sách ngắn của §5; xa hơn thì `write_plan`
+  lấp nhịp nền `vocab_review`/`dictation` (không XP — Daily Tasks vẫn là giọng
+  "hôm nay" duy nhất). UI: lưới tháng tự vẽ (date-picker lib đã thử và bỏ), mọi
+  mục nằm trong ô, bấm ô mở chi tiết + tick; sửa mục tiêu/ngày thi tại chỗ qua
+  `PATCH /profile` + `generate {force}`.
+  **Hành vi chi tiết, hằng số và các chỗ hỏng im lặng: `STUDY-PLAN-CALENDAR.md`.**
+- Đầu vào đổi (ngày thi, phút/ngày) → lịch trải lại bằng `generate {force:
+  true}` ("Sinh lại"); idempotence cũ vẫn đứng: không force thì trùng lượt +
+  trùng source trả nguyên kế hoạch.
 
 ## 7. Các lát cắt triển khai
 
@@ -226,3 +241,29 @@ bị máy thi từ chối, và phép quy về thang 100 (bỏ nó đi thì `low 
 schema không biết múi giờ hồ sơ; đúng ra phải tính "hôm nay" theo
 `user_profile.timezone` như `profile_stats` làm cho streak. Và `/learn/placement`
 chưa có e2e spec.
+
+
+## 10. Chốt 2026-09-12 — retest đi qua kế hoạch, không qua nút bấm
+
+Yêu cầu của soạn giả: *sau lần test đầu tiên, mọi lượt đo lại phải dựa theo
+study plan — hết tự bấm*. Ba thay đổi đóng chốt ở `/placement/start` và gate:
+
+* **Cửa hai trên `PlacementGate`:** `can_start = cooldown_ok AND
+  checkin_scheduled` (từ phán quyết thứ hai). `checkin_scheduled` = kế hoạch
+  hiện hành còn ô `mini_test` chưa khép — ĐẾM CÙNG CÔNG THỨC với dấu ✓ trên
+  lịch (`_open_checkin_exists` ↔ `_plan_public`), và loại seed tường minh vì
+  `created_at` trên SQLite chỉ chính xác tới giây. Chưa có kế hoạch / nước rút
+  ≤14 ngày / đã đo hết ô ⇒ không đo lại; màn placement nói đúng từng cửa.
+* **Pool thi thử = đề VÀO ĐƯỢC:** `mock_pool()` đòi full published **trong
+  collection published** — "test published" một mình từng đưa 5/7 đề không URL
+  nào tới được vào select. Cùng pool cho rút ngẫu nhiên lúc sinh, `mock_options`,
+  và guard PATCH `{test_id}` (đổi đề tới lúc nộp, đã nộp 409).
+* **`?plan=mock` khóa màn đề:** vào từ CTA thi thử của kế hoạch thì "Luyện tập"
+  bị disable và toàn bộ part tick sẵn, bỏ không được — buổi thi thử chỉ là thi
+  thử khi nó diễn ra như thi thật. Vào qua catalog vẫn tự do như cũ.
+
+Hành vi hiện tại của lịch/thi thử nằm ở `STUDY-PLAN-CALENDAR.md`; §5 ở trên
+giữ nguyên như quyết định cũ (V1/V2 so sánh, LLM sau flag) — không gì ở đây
+đổi nó. Test: `test_retest_follows_the_plan` (4 trạng thái hai cửa),
+`test_mock_test_target_is_a_choice_until_submitted` (pool, 404 đề mồ côi,
+khóa sau nộp).

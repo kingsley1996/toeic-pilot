@@ -17,7 +17,16 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.api.routes.attempt import open_attempt
 from app.core.database import get_db
-from app.models import Attempt, AttemptItem, PlacementResult, PracticeTest, User, UserProfile
+from app.models import (
+    Attempt,
+    AttemptItem,
+    PlacementResult,
+    PracticeTest,
+    StudyPlan,
+    StudyPlanItem,
+    User,
+    UserProfile,
+)
 from app.schemas.placement import (
     PlacementBand,
     PlacementGate,
@@ -133,6 +142,53 @@ def _settle_pending(db: Session, user: User) -> None:
     analyze(db, attempt)
 
 
+def _open_checkin_exists(db: Session, user_id: uuid.UUID) -> bool:
+    """Kế hoạch HIỆN HÀNH còn ô `mini_test` chưa khép không?
+
+    Đây là cái cổng thứ hai của lượt đo lại (sau cooldown): từ bản "retest dựa
+    theo kế hoạch", một người đã có phán quyết chỉ được bấm làm lại khi lịch
+    của họ hẹn một ô kiểm tra còn mở. Ô khép đúng cách `_plan_public` đếm —
+    lượt placement nộp sau `plan.created_at` khép lần lượt từng ô — nên con số
+    ở đây và dấu ✓ trên lịch không thể lệch nhau.
+
+    Không có kế hoạch, hoặc kế hoạch không hẹn ô nào (thi ≤14 ngày → nước rút
+    không đo lại, hay đã đo hết các tuần) → trả False: người học phải tạo /
+    "Sinh lại" kế hoạch để mở nhịp đo mới, chứ không đo tùy hứng.
+    """
+    plan = db.scalar(
+        select(StudyPlan)
+        .where(StudyPlan.user_id == user_id, StudyPlan.is_current.is_(True))
+        .order_by(StudyPlan.created_at.desc())
+        .limit(1)
+    )
+    if plan is None:
+        return False
+    mini_slots = db.scalar(
+        select(func.count())
+        .select_from(StudyPlanItem)
+        .where(StudyPlanItem.plan_id == plan.id, StudyPlanItem.kind == "mini_test")
+    )
+    if not mini_slots:
+        return False
+    retakes = db.scalar(
+        select(func.count(Attempt.id))
+        .join(PracticeTest, PracticeTest.id == Attempt.test_id)
+        .where(
+            Attempt.user_id == user_id,
+            PracticeTest.kind == "placement",
+            Attempt.status == "submitted",
+            Attempt.submitted_at.is_not(None),
+            # Seed loại tường minh, đúng như `_plan_public`: trên SQLite
+            # `created_at` chỉ chính xác tới GIÂY, một kế hoạch sinh trong cùng
+            # giây với lượt seed sẽ đếm lượt đó là retake nếu chỉ so `>=` —
+            # ô kiểm tra bị "khép" ngay khi vừa sinh ra.
+            Attempt.id != plan.placement_attempt_id,
+            Attempt.submitted_at >= plan.created_at,
+        )
+    )
+    return mini_slots > (retakes or 0)
+
+
 def _gate(db: Session, user: User) -> PlacementGate:
     # Cooldown đếm giữa hai PHÁN QUYẾT, không giữa hai lần bấm nút. Một hàng
     # "pending" là lượt chưa có kết quả; tính nó vào cooldown nghĩa là mở nhầm
@@ -155,15 +211,22 @@ def _gate(db: Session, user: User) -> PlacementGate:
         attempt = db.get(Attempt, pending.attempt_id)
         if attempt is None or attempt.status != "in_progress":
             running = None
-    can_start = result is None or datetime.now(UTC) - _aware(result.created_at) >= timedelta(
+    cooldown_ok = result is None or datetime.now(UTC) - _aware(result.created_at) >= timedelta(
         days=RETAKE_COOLDOWN_DAYS
     )
+    # Lượt ĐẦU (chưa phán quyết) luôn được bấm; từ phán quyết thứ hai trở đi
+    # còn cần một ô kiểm tra còn mở của kế hoạch — retest là nhịp của kế
+    # hoạch, không phải nút tự do.
+    checkin_scheduled = result is None or _open_checkin_exists(db, user.id)
+    can_start = cooldown_ok and checkin_scheduled
     next_at = None
-    if result is not None and not can_start:
+    if result is not None and not cooldown_ok:
         next_at = _aware(result.created_at) + timedelta(days=RETAKE_COOLDOWN_DAYS)
     profile = db.get(UserProfile, user.id)
     return PlacementGate(
         can_start=can_start,
+        cooldown_ok=cooldown_ok,
+        checkin_scheduled=checkin_scheduled,
         next_available_at=next_at,
         in_progress_attempt_id=str(running.attempt_id) if running else None,
         latest_attempt_id=str(result.attempt_id) if result else None,
@@ -197,10 +260,16 @@ def start(
     if gate_now.in_progress_attempt_id:
         return gate_now
     if not gate_now.can_start:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"Được làm lại mỗi {RETAKE_COOLDOWN_DAYS} ngày một lần.",
+        # Hai lý do, hai câu khác nhau — gộp một là nói dối một nửa: người đã
+        # có kế hoạch mà còn chờ 7 ngày đừng bị bảo "hãy tạo kế hoạch", và
+        # người chưa có ô hẹn đừng tưởng chờ thêm bảy ngày là được đo.
+        detail = (
+            f"Được làm lại mỗi {RETAKE_COOLDOWN_DAYS} ngày một lần."
+            if not gate_now.cooldown_ok
+            else "Lượt đo lại theo nhịp của kế hoạch học — hãy tạo hoặc "
+            '"Sinh lại" kế hoạch để mở ô kiểm tra.'
         )
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
     test = _placement_test(db)
     # Mục tiêu điền ở đây là NGUỒN DUY NHẤT: ghi thẳng về user_profile — form
     # đã prefill giá trị cũ nên submit là một hành động người dùng nhìn thấy.

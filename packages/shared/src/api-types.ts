@@ -4466,8 +4466,58 @@ export interface paths {
          *     hoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm "Tạo kế
          *     hoạch" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả
          *     mới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.
+         *     `force=True` là lối thoát khi đầu vào profile đổi (ngày thi, phút/ngày):
+         *     lịch được trải lại từ cùng một kết quả.
          */
         post: operations["generate_api_v1_study_plan_generate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/study-plan/items/{position}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Tick Item
+         * @description Tick (hoặc bỏ tick) thủ công một mục của kế hoạch hiện hành.
+         *
+         *     Cột riêng với tiến độ suy từ học thật: bỏ tick tay không được động vào bản
+         *     ghi học, và mục đã học thật vẫn xong dù không ai tick — với mục đó checkbox
+         *     bị khoá phía UI, vì "bỏ xong" một việc đã xảy ra là nói dối theo chiều
+         *     ngược lại. Trả cả kế hoạch mới để client khỏi cần GET lại.
+         */
+        patch: operations["tick_item_api_v1_study_plan_items__position__patch"];
+        trace?: never;
+    };
+    "/api/v1/study-plan/repack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Repack
+         * @description Dời móc neo của lịch về hôm nay — hành động TƯỜNG MINH thay cho lịch
+         *     tự trôi. Nội dung và tick giữ nguyên; chỉ ngày của các mục chưa xảy ra
+         *     đổi. Ai bỏ vài tuần mới cần nó, và khi cần thì phải tự bấm: đó là điểm
+         *     khác biệt với cái lịch nhảy theo từng cú tick vừa bị người học bác.
+         */
+        post: operations["repack_api_v1_study_plan_repack_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -7027,6 +7077,11 @@ export interface components {
             /** Attempt Id */
             attempt_id?: string | null;
             /**
+             * Force
+             * @default false
+             */
+            force: boolean;
+            /**
              * Source
              * @default rule
              */
@@ -7431,6 +7486,18 @@ export interface components {
             source_url: string;
             /** Storage Key */
             storage_key: string;
+        };
+        /**
+         * ItemTick
+         * @description Hai hành động trên MỘT endpoint vì cả hai cùng trả lại cả kế hoạch:
+         *     `done` = khẳng định của người học; `test_id` = đổi đề thi thử trước khi
+         *     nộp (chọn từ danh sách `mock_options` của payload).
+         */
+        ItemTick: {
+            /** Done */
+            done?: boolean | null;
+            /** Test Id */
+            test_id?: string | null;
         };
         /** KnownModel */
         KnownModel: {
@@ -8416,6 +8483,16 @@ export interface components {
         PlacementGate: {
             /** Can Start */
             can_start: boolean;
+            /**
+             * Checkin Scheduled
+             * @default true
+             */
+            checkin_scheduled: boolean;
+            /**
+             * Cooldown Ok
+             * @default true
+             */
+            cooldown_ok: boolean;
             /** In Progress Attempt Id */
             in_progress_attempt_id?: string | null;
             /** Latest Attempt Id */
@@ -8510,6 +8587,53 @@ export interface components {
             self_reported_score?: number | null;
             /** Target Score */
             target_score?: number | null;
+        };
+        /**
+         * PlanEstimate
+         * @description Khối "bạn đang ở đâu" của header §34 — đọc từ placement_result gốc.
+         */
+        PlanEstimate: {
+            /** Band High */
+            band_high: number;
+            /** Band Low */
+            band_low: number;
+            /** Cefr */
+            cefr: string;
+            /** Listening */
+            listening: number;
+            /** Reading */
+            reading: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * PlanFocus
+         * @description Một kỹ năng trong top priority — nhãn + bằng chứng thô, không điểm
+         *     priority: người học đọc "đúng 2/6" chứ không đọc "0.21". `code`+`part` để
+         *     chip bấm thẳng vào drill đã lọc đúng dạng câu.
+         */
+        PlanFocus: {
+            /** Code */
+            code: string;
+            /** Correct */
+            correct: number;
+            /** Label */
+            label: string;
+            /** Part */
+            part: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * PlanMockOption
+         * @description Một đề full đã publish — danh sách cho ô `mock_test` đổi đích trước khi
+         *     nộp. id để PATCH, title để hiển thị.
+         */
+        PlanMockOption: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
         };
         /**
          * ProgressionConfigAdmin
@@ -9252,20 +9376,47 @@ export interface components {
         };
         /** StudyPlanItemPublic */
         StudyPlanItemPublic: {
+            /** Collection Slug */
+            collection_slug?: string | null;
+            /** Completed On */
+            completed_on?: string | null;
+            /** Day */
+            day?: string | null;
             /** Done */
             done: boolean;
-            /** Kind */
-            kind: string;
+            /**
+             * Est Minutes
+             * @default 30
+             */
+            est_minutes: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "grammar_lesson" | "part_drill" | "vocab_review" | "dictation" | "mini_test" | "mock_test";
             /** Label */
             label: string;
+            /** Link */
+            link?: string | null;
+            /**
+             * Manual Done
+             * @default false
+             */
+            manual_done: boolean;
             /** Part */
             part: number;
+            /** Phase */
+            phase?: ("foundation" | "weakness" | "integrated" | "final") | null;
             /** Position */
             position: number;
             /** Reason */
             reason: string | null;
             /** Ref Id */
             ref_id: string | null;
+            /** Test Slug */
+            test_slug?: string | null;
+            /** Topic Id */
+            topic_id?: string | null;
         };
         /** StudyPlanPublic */
         StudyPlanPublic: {
@@ -9274,20 +9425,55 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Days Left */
+            days_left?: number | null;
             /** Done Count */
             done_count: number;
+            estimate?: components["schemas"]["PlanEstimate"] | null;
             /** Exam Date */
             exam_date: string | null;
+            /** Feasibility */
+            feasibility?: ("FEASIBLE" | "CHALLENGING" | "HIGH_RISK") | null;
+            /** Gap */
+            gap?: number | null;
             /** Id */
             id: string;
             /** Items */
             items: components["schemas"]["StudyPlanItemPublic"][];
+            /** Minutes Per Day */
+            minutes_per_day: number;
+            /**
+             * Mock Options
+             * @default []
+             */
+            mock_options: components["schemas"]["PlanMockOption"][];
             /** Placement Attempt Id */
             placement_attempt_id: string;
             /** Source */
             source: string;
+            /**
+             * Starts At
+             * Format: date
+             */
+            starts_at: string;
+            /** Study Days Per Week */
+            study_days_per_week: number;
             /** Target Score */
             target_score: number | null;
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /**
+             * Top Focus
+             * @default []
+             */
+            top_focus: components["schemas"]["PlanFocus"][];
+            /** Weeks Left */
+            weeks_left?: number | null;
+            /** Why */
+            why?: string | null;
         };
         /** SystemStatus */
         SystemStatus: {
@@ -9763,6 +9949,8 @@ export interface components {
             pet: ("cat" | "rex") | null;
             /** Preferred Accent */
             preferred_accent: string | null;
+            /** Study Days Per Week */
+            study_days_per_week: number | null;
             /** Target Score */
             target_score: number | null;
             /** Timezone */
@@ -9797,6 +9985,8 @@ export interface components {
             pet?: ("cat" | "rex") | null;
             /** Preferred Accent */
             preferred_accent?: string | null;
+            /** Study Days Per Week */
+            study_days_per_week?: number | null;
             /** Target Score */
             target_score?: number | null;
             /** Timezone */
@@ -17477,6 +17667,61 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tick_item_api_v1_study_plan_items__position__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                position: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ItemTick"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudyPlanPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    repack_api_v1_study_plan_repack_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudyPlanPublic"];
                 };
             };
         };

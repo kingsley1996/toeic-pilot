@@ -100,6 +100,83 @@ def test_gate_and_cooldown(client: TestClient, db_session: Session, auth) -> Non
     gate = client.get("/api/v1/placement/gate", headers=auth("learner")).json()
     assert gate["can_start"] is False and gate["next_available_at"] is not None
     assert gate["latest_attempt_id"]
+    # Cooldown là cửa thứ NHẤT; cửa thứ hai (kế hoạch) chưa kịp xét — pin thứ
+    # tự của từng cửa để một lần đổi logic không lẫn hai thông điệp.
+    assert gate["cooldown_ok"] is False and gate["checkin_scheduled"] is False
+
+
+def test_retest_follows_the_plan(client: TestClient, db_session: Session, auth) -> None:
+    """Từ phán quyết thứ hai: chỉ đo lại khi kế hoạch hiện hành hẹn một ô
+    `mini_test` còn mở VÀ đã qua bảy ngày. Không có kế hoạch thì không có
+    quyền "tự bấm test lại" — đó là yêu cầu, giờ là luật."""
+    from app.models import StudyPlan, StudyPlanItem
+
+    seed_scales(db_session)
+    make_placement_test(db_session)
+    db_session.commit()
+    me = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    test = _placement_test(db_session)
+    seed = _placement_attempt(db_session, test, me)
+    db_session.add(
+        PlacementResult(
+            attempt_id=seed.id,
+            user_id=me,
+            estimator_version="v1",
+            listening_raw=10,
+            reading_raw=10,
+            listening_scaled=250,
+            reading_scaled=250,
+            listening_low=0,
+            listening_high=100,
+            reading_low=0,
+            reading_high=100,
+            cefr_listening="A2",
+            cefr_reading="A2",
+            cefr_overall="A2",
+            # Phán quyết CŨ 8 ngày: cooldown đã qua — nếu vẫn chặn thì thủ
+            # phạm là cửa kế hoạch, đúng cái cần test.
+            created_at=datetime.now(UTC) - timedelta(days=8),
+        )
+    )
+    db_session.commit()
+
+    gated = client.get("/api/v1/placement/gate", headers=auth("learner")).json()
+    assert gated["cooldown_ok"] is True and gated["checkin_scheduled"] is False
+    refused = client.post("/api/v1/placement/start", json={}, headers=auth("learner"))
+    assert refused.status_code == 409
+    assert "kế hoạch" in refused.json()["detail"].lower()
+
+    # Kế hoạch có MỘT ô kiểm tra còn mở → cửa mở.
+    plan = StudyPlan(user_id=me, placement_attempt_id=seed.id, is_current=True)
+    db_session.add(plan)
+    db_session.flush()
+    db_session.add(
+        StudyPlanItem(
+            plan_id=plan.id, position=1, kind="mini_test", part=0, label="Kiểm tra lại — tuần 1"
+        )
+    )
+    db_session.commit()
+    opened = client.get("/api/v1/placement/gate", headers=auth("learner")).json()
+    assert opened["checkin_scheduled"] is True and opened["can_start"] is True
+    started = client.post("/api/v1/placement/start", json={}, headers=auth("learner"))
+    assert started.status_code == 201
+
+    # ...và một lượt nộp KHÉP ô đó (đếm giống hệt dấu ✓ trên lịch) → cửa đóng
+    # lại: đo tùy hứng lần hai trong cùng ô hẹn không phải "lỡ quên", là vượt
+    # nhịp mà kế hoạch không hẹn.
+    attempt_id = uuid.UUID(started.json()["in_progress_attempt_id"])
+    detail = client.get(f"/api/v1/attempts/{attempt_id}", headers=auth("learner")).json()
+    picked = detail["questions"][0]
+    client.patch(
+        f"/api/v1/attempts/{attempt_id}/questions/{picked['id']}",
+        json={"selected_option_id": picked["options"][0]["id"]},
+        headers=auth("learner"),
+    )
+    client.post(f"/api/v1/attempts/{attempt_id}/submit", headers=auth("learner"))
+    client.post(f"/api/v1/placement/attempts/{attempt_id}/analyze", headers=auth("learner"))
+    after = client.get("/api/v1/placement/gate", headers=auth("learner")).json()
+    assert after["checkin_scheduled"] is False and after["can_start"] is False
+    assert after["cooldown_ok"] is False  # phán quyết mới cũng vừa đóng cửa 7 ngày
 
 
 def test_gate_carries_latest_result_and_hides_pending(

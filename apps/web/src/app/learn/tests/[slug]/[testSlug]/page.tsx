@@ -8,8 +8,8 @@ import {
 } from "@toeic-pilot/shared";
 import { ArrowLeft, BookOpen, Clock, FileText, Headphones, Lock, Users } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { LoginModal } from "@/components/login-modal";
 import {
@@ -42,7 +42,30 @@ const MODES: Array<{ value: ReviewMode; title: string; description: string }> = 
   },
 ];
 
+/* `?plan=mock` — CTA "Thi thử" của kế hoạch học mở đề vào ĐÚNG chế độ thi:
+   ô "Luyện tập" bị khóa và toàn bộ part được tick sẵn, bỏ chọn không được.
+   Một buổi thi thử chỉ là thi thử khi nó diễn ra như thi thật; để nó tùy
+   chọn từng phần là biến lời khuyên của kế hoạch thành gợi ý. */
 export default function TestDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <Page>
+          <Skeleton className="h-8 w-56" />
+        </Page>
+      }
+    >
+      <TestDetailFromSearch />
+    </Suspense>
+  );
+}
+
+function TestDetailFromSearch() {
+  const search = useSearchParams();
+  return <TestDetail planMock={search.get("plan") === "mock"} />;
+}
+
+function TestDetail({ planMock }: { planMock: boolean }) {
   const params = useParams<{ slug: string; testSlug: string }>();
   const router = useRouter();
   const { status, token } = useSession();
@@ -76,6 +99,10 @@ export default function TestDetailPage() {
   }, [params.testSlug, status]);
 
   const available = useMemo(() => (test?.parts ?? []).filter((part) => part.has_content), [test]);
+  /* Chế độ kế hoạch: "đã chọn" là MỌI part có nội dung, hiển thị đúng như vậy
+     thay vì dựa quy ước "rỗng = cả đề" — người được thấy mình sắp làm gì. */
+  const allChosen = useMemo(() => new Set(available.map((part) => part.part)), [available]);
+  const chosenView = planMock ? allChosen : chosen;
 
   /*
    * Không chọn part nào = làm CẢ ĐỀ, chứ không phải làm rỗng.
@@ -84,11 +111,11 @@ export default function TestDetailPage() {
    * dùng tick đủ bảy ô để nói "làm cả đề" là biến trường hợp phổ biến nhất
    * thành trường hợp tốn công nhất.
    */
-  const isFullTest = chosen.size === 0 || chosen.size === available.length;
+  const isFullTest = chosenView.size === 0 || chosenView.size === available.length;
   const selectedCount = isFullTest
     ? available.reduce((sum, part) => sum + part.question_count, 0)
     : available
-        .filter((part) => chosen.has(part.part))
+        .filter((part) => chosenView.has(part.part))
         .reduce((sum, part) => sum + part.question_count, 0);
 
   async function start() {
@@ -105,7 +132,7 @@ export default function TestDetailPage() {
           // Rỗng = làm CẢ ĐỀ, khớp với `scope='full'` ở schema. Gửi đủ bảy
           // part để nói "làm tất" sẽ tạo ra bảy hàng `attempt_part` mô tả đúng
           // thứ mà việc không có hàng nào đã mô tả rồi.
-          parts: isFullTest ? [] : [...chosen],
+          parts: isFullTest ? [] : [...chosenView],
         }),
       });
       router.push(`/learn/attempts/${attempt.id}`);
@@ -282,10 +309,13 @@ export default function TestDetailPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             {MODES.map((option) => {
               const active = mode === option.value;
+              const locked = planMock && option.value !== "exam";
               return (
                 <button
                   key={option.value}
                   type="button"
+                  disabled={locked}
+                  title={locked ? "Thi thử theo kế hoạch giữ đúng chế độ thi" : undefined}
                   onClick={() => setMode(option.value)}
                   aria-pressed={active}
                   className={cx(
@@ -293,6 +323,7 @@ export default function TestDetailPage() {
                     active
                       ? "border-rule-strong bg-recess"
                       : "border-rule bg-panel hover:border-rule-strong",
+                    locked && "cursor-not-allowed opacity-50 hover:border-rule",
                   )}
                 >
                   <p className={cx("font-semibold", active && "text-action-ink")}>{option.title}</p>
@@ -306,7 +337,7 @@ export default function TestDetailPage() {
             <SectionHeader
               title="Chọn phần muốn làm"
               aside={
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3" hidden={planMock}>
                   {/* "Chọn tất cả" và "Bỏ chọn" cho ra CÙNG một lượt làm bài —
                       không chọn part nào đã nghĩa là làm cả đề. Vẫn giữ cả hai
                       vì chúng trả lời hai câu khác nhau: một cái để tích hết
@@ -339,11 +370,15 @@ export default function TestDetailPage() {
                   {available.map((part) => (
                     <label
                       key={part.part}
-                      className="flex cursor-pointer items-center gap-2.5 rounded px-2 py-1.5 hover:bg-recess"
+                      className={cx(
+                        "flex items-center gap-2.5 rounded px-2 py-1.5",
+                        !planMock && "cursor-pointer hover:bg-recess",
+                      )}
                     >
                       <input
                         type="checkbox"
-                        checked={chosen.has(part.part)}
+                        checked={chosenView.has(part.part)}
+                        disabled={planMock}
                         onChange={() => toggle(part.part)}
                         className="h-4 w-4 rounded border-rule-strong accent-action"
                       />
@@ -364,6 +399,11 @@ export default function TestDetailPage() {
                     Toàn bộ <span className="font-data tabular-nums">{available.length}</span> phần
                     có nội dung — <span className="font-data tabular-nums">{selectedCount}</span>{" "}
                     câu
+                    {planMock && (
+                      <span className="ml-2 text-ink-faint">
+                        (thi thử theo kế hoạch: không chọn từng phần được)
+                      </span>
+                    )}
                   </>
                 ) : (
                   <>

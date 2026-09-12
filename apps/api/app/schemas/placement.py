@@ -36,6 +36,13 @@ class PlacementGate(BaseModel):
 
     can_start: bool
     next_available_at: datetime | None = None
+    # Cooldown 7 ngày đã hết chưa — TÁCH khỏi `can_start` vì từ bản "retest theo
+    # kế hoạch" một lượt đo lại còn cần một ô `mini_test` còn mở của kế hoạch
+    # hiện hành. `can_start = cooldown_ok AND checkin_scheduled` (lượt đầu thì
+    # luôn scheduled). UI dùng cặp này để phân biệt "còn chờ 7 ngày" với "chưa
+    # có kế hoạch / đã đo hết ô hẹn — hãy tạo lại kế hoạch".
+    cooldown_ok: bool = True
+    checkin_scheduled: bool = True
     # Lượt đang dở (nếu có) — mở lại nó thay vì tạo lượt mới.
     in_progress_attempt_id: str | None = None
     latest_attempt_id: str | None = None

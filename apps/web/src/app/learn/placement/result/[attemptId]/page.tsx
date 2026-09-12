@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ROUTES, type PlacementResultPublic } from "@toeic-pilot/shared";
+import { API_ROUTES, type PlacementResultPublic, type StudyPlanPublic } from "@toeic-pilot/shared";
 import { CheckCircle2, TrendingDown, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -31,6 +31,12 @@ export default function PlacementResultPage() {
   const { token } = useRequireSession();
   const [result, setResult] = useState<PlacementResultPublic | null>(null);
   const [failed, setFailed] = useState(false);
+  // Kế hoạch hiện hành, nếu có — chỉ để đổi NHÃN nút. Cùng đường dẫn, hai
+  // hành động khác nhau trong đầu người học: bấm "Tạo" lần hai khi kế hoạch
+  // đã dựng từ chính bài này là đọc nhầm lời hứa. Đếm đúng một trường hợp:
+  // plan dựng từ LƯỢT này; plan cũ từ lượt trước thì vẫn là "Tạo" (bấm vào
+  // là sinh lại từ kết quả mới — đường đó `?from=` đã lo).
+  const [plan, setPlan] = useState<StudyPlanPublic | null>(null);
 
   useEffect(() => {
     if (!token || !params.attemptId) return;
@@ -40,6 +46,9 @@ export default function PlacementResultPage() {
     })
       .then(setResult)
       .catch(() => setFailed(true));
+    apiFetch<StudyPlanPublic | null>(API_ROUTES.studyPlan, { token })
+      .then(setPlan)
+      .catch(() => setPlan(null));
   }, [token, params.attemptId]);
 
   if (failed) {
@@ -151,7 +160,11 @@ export default function PlacementResultPage() {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3 border-t border-rule pt-5">
-        <ButtonLink href={`/learn/plan?from=${result.attempt_id}`}>Tạo kế hoạch học</ButtonLink>
+        <ButtonLink href={`/learn/plan?from=${result.attempt_id}`}>
+          {plan?.placement_attempt_id === result.attempt_id
+            ? "Xem kế hoạch học"
+            : "Tạo kế hoạch học"}
+        </ButtonLink>
         {/* Xem lại từng câu dùng lại màn làm bài của đề thi thử: GET
             /attempts/{id} trả đáp án đã chấm cho mọi đề đã nộp, không riêng đề
             200 câu — chỉ bảng điểm quy đổi mới không áp dụng cho đề 84 câu. */}

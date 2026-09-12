@@ -52,7 +52,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `docs/SPEC-EXAM-DIFFICULTY.md` | Vì sao đề tự sinh dễ hơn đề thật. §0: `difficulty` là hằng số và **đừng để LLM điền nó**. §1: mix giao dạng câu, mô hình vẫn chọn thể hiện dễ nhất trong dạng |
 | `docs/toeic_ai_question_generation_guidelines.md` | Đặc tả cho agent sinh đề, viết từ góc người ra đề chứ không từ mã. §10 dựng năm trục độ khó **D1–D5** — `SPEC-EXAM-DIFFICULTY` §10 đối chiếu từng trục với số đo thật. §11 xếp hạng đáp án nhiễu, §27–28 là luật cấp **cụm**, §34–35 là kiến trúc nhiều chặng |
 | `docs/toeic_question_label_taxonomy.md` | Bảng nhãn, **duy trì bằng tay** và là nguồn sự thật; `labels.py` được *sinh ra* từ nó |
-| `docs/SYSTEM-OVERVIEW.md` · `docs/MEDIA-PIPELINE.md` · `docs/EXAM-GRAPH.md` | Mô tả **hành vi hiện tại**, không phải quyết định |
+| `docs/SYSTEM-OVERVIEW.md` · `docs/MEDIA-PIPELINE.md` · `docs/EXAM-GRAPH.md` · `docs/STUDY-PLAN-CALENDAR.md` | Mô tả **hành vi hiện tại**, không phải quyết định — riêng lịch kế hoạch học có §5 "sửa là hỏng im lặng" |
 | `docs/REFACTOR-LONG-FILES.md` | Tách tệp quá dài. §0: dài không tự nó là lỗi |
 | `docs/USER-ROAD.md` · `docs/SPEC-*.md` | Level/badge/XP · các mặc định dựng để sửa |
 | `docs/SPEC-GRAMMAR.md` | Module ngữ pháp — **G1–G5 + P1 đã dựng**. §2: bài tập là bài học, không rút theo nhãn. §4: tiến độ là bảng ghi, không suy ra. §3: vì sao lý thuyết Part 1–7 tách ra |

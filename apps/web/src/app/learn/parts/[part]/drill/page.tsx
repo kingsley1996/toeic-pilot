@@ -3,8 +3,8 @@
 import { API_ROUTES, type PartSessionDetail, type PartSummary } from "@toeic-pilot/shared";
 import { History, Lock } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { LoginModal } from "@/components/login-modal";
@@ -24,12 +24,34 @@ import { getPartMeta } from "@/lib/parts";
 // 5..135 phút, mỗi bước 5 — 135 là trần của đề thi TOEIC cả hai kỹ năng.
 const MINUTES = Array.from({ length: 27 }, (_, i) => (i + 1) * 5);
 
+/* `?labels=` từ mục kế hoạch ("Luyện Part 7 — Câu hỏi suy luận") mở màn hình
+   này với đúng dạng câu đã chọn sẵn — lời khuyên chỉ tới tay người học khi nó
+   còn lại MỘT cú bấm. useSearchParams đòi Suspense, khuôn như /learn/plan. */
 export default function PartDrillSetupPage() {
+  return (
+    <Suspense
+      fallback={
+        <Page className="max-w-3xl">
+          <SkeletonList rows={3} />
+        </Page>
+      }
+    >
+      <WithPreselectedLabels />
+    </Suspense>
+  );
+}
+
+function WithPreselectedLabels() {
+  const search = useSearchParams();
+  return <DrillSetup initialLabels={(search.get("labels") ?? "").split(",").filter(Boolean)} />;
+}
+
+function DrillSetup({ initialLabels }: { initialLabels: string[] }) {
   const meta = getPartMeta(String(useParams().part));
   const router = useRouter();
   const { status, token } = useSession();
   const [summary, setSummary] = useState<PartSummary | null>(null);
-  const [chosen, setChosen] = useState<Set<string>>(new Set());
+  const [chosen, setChosen] = useState<Set<string>>(new Set(initialLabels));
   const [minutes, setMinutes] = useState<number | null>(null);
   const [gated, setGated] = useState(false);
   // Hộp đăng nhập cho khách gõ thẳng URL — đóng được để quay về hub.

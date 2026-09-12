@@ -117,24 +117,38 @@ export default function PlacementSetupPage() {
 
       {gate && !inProgress && !gate.can_start && (
         <div className="mt-6">
-          <EmptyState
-            icon={FileText}
-            title="Bài test đầu vào làm mỗi tuần một lần"
-            description={
-              gate.next_available_at
-                ? `Bạn có thể làm lại từ ${new Date(gate.next_available_at).toLocaleDateString("vi-VN")}.`
-                : "Hãy quay lại sau."
-            }
-            action={
-              gate.latest_attempt_id ? (
-                <ButtonLink href={`/learn/placement/result/${gate.latest_attempt_id}`}>
-                  Xem kết quả gần nhất
-                </ButtonLink>
-              ) : (
-                <ButtonLink href="/dashboard">Về trang học</ButtonLink>
-              )
-            }
-          />
+          {/* Hai cửa, hai câu, THỨ TỰ là cooldown trước: hết 7 ngày mà thiếu ô
+              hẹn mới là vấn đề kế hoạch; đang còn 7 ngày thì bảo "tạo kế
+              hoạch" là đẩy người học đi làm việc rồi vẫn bị chặn ở lượt bấm. */}
+          {!gate.cooldown_ok ? (
+            <EmptyState
+              icon={FileText}
+              title="Bài test đầu vào làm mỗi tuần một lần"
+              description={
+                gate.next_available_at
+                  ? `Bạn có thể làm lại từ ${new Date(gate.next_available_at).toLocaleDateString(
+                      "vi-VN",
+                    )}.`
+                  : "Hãy quay lại sau."
+              }
+              action={
+                gate.latest_attempt_id ? (
+                  <ButtonLink href={`/learn/placement/result/${gate.latest_attempt_id}`}>
+                    Xem kết quả gần nhất
+                  </ButtonLink>
+                ) : (
+                  <ButtonLink href="/dashboard">Về trang học</ButtonLink>
+                )
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={FileText}
+              title="Đo lại theo lịch của kế hoạch học"
+              description="Từ lần thứ hai, bài test đầu vào là một nhịp đo của kế hoạch — cần một ô “Kiểm tra lại” còn mở. Kế hoạch nước rút (≤14 ngày tới thi) hoặc đã đo đủ mọi ô thì không còn chỗ hẹn nào."
+              action={<ButtonLink href="/learn/plan">Tới kế hoạch học</ButtonLink>}
+            />
+          )}
         </div>
       )}
 

@@ -136,6 +136,60 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       ứng viên, fallback rule khi hỏng/tắt) + màn admin so sánh
       `/admin/planner-compare` (chạy V1/V2 cùng input, lưu `planner_eval`
       069, tổng hợp cost/trễ từ sổ `ai_interaction`) — `SPEC-PLACEMENT.md`.
+      **Lịch theo ngày (2026-09-12, migration 082):** ngày suy lúc đọc — mục
+      chưa xong: `today (timezone profile) + hạng // nhịp` (nhịp =
+      `minutes_per_day` trần 3 — cột có từ lâu, chỗ đọc đầu tiên); mục đã xong:
+      `completed_on` từ NGÀY THẬT của bản ghi học, nên tick đứng đúng ô hôm
+      việc xảy ra. Bỏ một hôm → lịch trôi, học bù → kéo sớm, không “quá hạn”
+      giả. Date thi còn >14 và ≤90 ngày: `write_plan` nối nhịp nền xen kẽ
+      `vocab_review`/`dictation` (part 0, không XP — Daily Tasks vẫn là giọng
+      “hôm nay” duy nhất) cho kín lịch tới ngày thi; hai tuần cuối giữ danh
+      sách ngắn của §5. UI là lưới tháng TỰ VẼ bằng Tailwind — `react-day-picker`
+      đã thử và bỏ: nó là date picker (ô vuông, số căn giữa), nhét danh sách
+      nhiệm vụ vào là đánh nhau với style của lib ở mọi dòng CSS; tự vẽ ít code
+      hơn và kiểm soát được mật độ chữ trong ô. Dropdown tháng/năm + mũi tên,
+      mọi mục nằm TRONG ô, bấm ô mở chi tiết ngày — không còn danh sách rời.
+      Màn kế hoạch sửa
+      được mục tiêu/ngày thi tại chỗ (PATCH profile + `generate {force}`).
+      State “chưa có kế hoạch” tách đôi: đã test → nút “Tạo kế hoạch học”
+      (trước đây kẹt vĩnh viễn nếu rời trang kết quả quên bấm), chưa test →
+      CTA như cũ. Sửa bug mục grammar dẫn lesson id vào route topic.
+      **Planner đối chiếu spec (2026-09-12, mig 084+085):** lịch chuyển từ "hạng //
+      nhịp" sang ĐÓNG GÓI THEO PHÚT lúc đọc — `pack_days` giữ Σ phút/ngày ≤
+      `minutes_per_day` và chỉ `study_days_per_week` ngày học/tuần (cột profile
+      mới; ngày nghỉ là ngày nghỉ, không phải bỏ hôm). Skill profile 5 mức +
+      confidence theo băng mẫu (§5–6), priority tất định yếu×tin cậy×sức nặng
+      part×cửa-sửa với NHÃN chứ không chỉ part, top 5 + MỘT suất duy trì
+      (§11–13, 22–23). Header §34: ước lượng +dải+CEFR, gap, feasibility ba
+      bậc, top focus, `why` bằng template từ số (không LLM). **Vòng 2 cùng
+      ngày, sau người học thử bản đầu:** hết cảnh "những ngày sau toàn ôn từ +
+      chép" — `_weekly_schedule` xoay vòng drill-theo-priority qua các tuần,
+      nền mang NHẬN CHỦ ĐỀ (`Ôn từ vựng — Travel`, link thẳng board; catalogue
+      trống mới rơi về nhãn chung), packer cấm trùng kind một ngày; mục kiểm
+      tra thành hàng đợi riêng — `mini_test` retake neo đầu tuần, `mock_test`
+      đề full trước ngày thi 7 ngày, cả hai khép bằng BÀI NỘP (API 409 với
+      tick); lịch hết trôi theo cú tick — `starts_at` neo ngày sinh, "Dời
+      lịch" (POST /repack) là đường duy nhất dịch chuyển, hiện kèm nhắc khi
+      có mục quá hạn; `link` do generator dựng (drill `?labels=` mở đúng dạng
+      câu, drill page nhận preselect), block "Theo dạng câu" trên màn kế
+      hoạch. Chưa: weekly evaluation, UI versions, auto-replan — xem
+      `STUDY-PLAN-CALENDAR.md` §6.
+      **Retest theo kế hoạch (2026-09-12, chốt của soạn giả):** từ phán quyết
+      thứ hai, làm lại test đầu vào cần CẢ HAI cửa — cooldown 7 ngày của gate
+      VÀ một ô `mini_test` còn mở của kế hoạch hiện hành (`checkin_scheduled`
+      mới trên `PlacementGate`; `/placement/start` 409 với hai thông điệp
+      tách theo cửa). Chưa có kế hoạch / nước rút ≤14 ngày / đã đo hết ô =
+      không có lượt đo lại; màn placement nói đúng từng nguyên nhân. 1186
+      pytest / 26 bài study plan / 14 bài placement.
+      **Sửa 3 lỗi thi thử (2026-09-12, sau người học bắt):** pool mock chỉ lọc
+      `test.status` mà quên collection — select hiện đề mồ côi/collection
+      archived (5/7 đề dev không vào được) và CTA dẫn vào tường 404;
+      `mock_pool()` giờ inner-join collection published, MỘT bộ lọc cho rút
+      ngẫu nhiên + `mock_options` + guard PATCH `{test_id}`. Link thi thử mang
+      `?plan=mock`: màn đề khóa "Luyện tập", tick sẵn toàn bộ part không bỏ
+      được. Note cooldown trên lịch chỉ hiện khi cửa mở MUỘN HƠN ô hẹn. Nút
+      màn kết quả đọc "Xem kế hoạch học" khi plan dựng từ chính lượt đó.
+      1187 pytest.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở

@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -47,6 +47,10 @@ class UserProfile(Base, TimestampMixin):
             name="ck_user_profile_minutes_per_day",
         ),
         CheckConstraint(
+            "study_days_per_week IS NULL OR study_days_per_week BETWEEN 1 AND 7",
+            name="ck_user_profile_study_days_per_week",
+        ),
+        CheckConstraint(
             "daily_new_limit IS NULL OR daily_new_limit BETWEEN 1 AND 200",
             name="ck_user_profile_daily_new_limit",
         ),
@@ -82,6 +86,15 @@ class UserProfile(Base, TimestampMixin):
     target_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
     exam_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     minutes_per_day: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # §2 SPEC-STUDY-PLANNER: "study_days_per_week". NULL = 7 — ai chưa từng
+    # chọn thì được đúng lịch cũ (mọi ngày đều học), không bị phạt vì thiếu
+    # một ô nhập mới.
+    study_days_per_week: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    """Số buổi học MỘT TUẦN (1–7). Cùng logic với `minutes_per_day`: đầu vào
+    của planner, không phải trạng thái. Khác: `minutes_per_day` quyết định buổi
+    dày bao nhiêu, cột này quyết định mục ĐỨNG ở ngày nào — lịch không trải mục
+    vào ngày nghỉ, nên ai chọn 5 ngày/tuần không bị đếm "bỏ hôm" cuối tuần.
+    """
 
     # --- Session preferences.
     #

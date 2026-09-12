@@ -58,6 +58,7 @@ class UserProfilePublic(BaseModel):
     target_score: int | None
     exam_date: date | None
     minutes_per_day: int | None
+    study_days_per_week: int | None
     daily_new_limit: int | None
     preferred_accent: str | None
     # NULL nghĩa là "chưa chọn", và frontend rơi về con mặc định của nó. Không
@@ -99,6 +100,7 @@ class UserProfileUpdate(BaseModel):
     target_score: TargetScore | None = None
     exam_date: date | None = None
     minutes_per_day: int | None = Field(default=None, ge=5, le=480)
+    study_days_per_week: int | None = Field(default=None, ge=1, le=7)
     daily_new_limit: int | None = Field(default=None, ge=1, le=200)
     preferred_accent: str | None = Field(
         default=None, pattern="^(" + "|".join(AUDIO_ACCENTS) + ")$"

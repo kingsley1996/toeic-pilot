@@ -41,6 +41,7 @@ def profile_public(profile: UserProfile) -> UserProfilePublic:
         target_score=profile.target_score,
         exam_date=profile.exam_date,
         minutes_per_day=profile.minutes_per_day,
+        study_days_per_week=profile.study_days_per_week,
         daily_new_limit=profile.daily_new_limit,
         preferred_accent=profile.preferred_accent,
         # Cột là `str | None` còn schema là `PetId | None`: giá trị đã qua cổng
