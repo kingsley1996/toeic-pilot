@@ -132,10 +132,17 @@ export default function GrammarLessonPage() {
 
   function markComplete() {
     if (!token || !shown) return;
+    const previous = shown;
     // Một hàng theo PK (user, lesson) — bấm đúp vẫn là một lần hoàn thành, nên
-    // client lạc quan bật cờ ngay khi gọi, không chờ đọc lại.
-    void apiFetch(API_ROUTES.grammarLessonComplete(shown.id), { method: "POST", token }).catch(() =>
-      setError("Không đánh dấu được — thử lại."),
+    // client lạc quan bật cờ ngay khi gọi, không chờ đọc lại. Rớt thì trả lại
+    // đúng cái vừa thay (lesson + cache + cột bài học), không để UI nói dối.
+    void apiFetch(API_ROUTES.grammarLessonComplete(shown.id), { method: "POST", token }).catch(
+      () => {
+        lessonCache.set(previous.id, previous);
+        setLesson(previous);
+        flipInTopic(previous.id, false);
+        setError("Không đánh dấu được — thử lại.");
+      },
     );
     const updated = { ...shown, completed: true };
     lessonCache.set(shown.id, updated);
@@ -145,10 +152,16 @@ export default function GrammarLessonPage() {
 
   function unmarkComplete() {
     if (!token || !shown) return;
+    const previous = shown;
     void apiFetch(API_ROUTES.grammarLessonComplete(shown.id), {
       method: "DELETE",
       token,
-    }).catch(() => setError("Không bỏ được dấu — thử lại."));
+    }).catch(() => {
+      lessonCache.set(previous.id, previous);
+      setLesson(previous);
+      flipInTopic(previous.id, true);
+      setError("Không bỏ được dấu — thử lại.");
+    });
     const updated = { ...shown, completed: false };
     lessonCache.set(shown.id, updated);
     setLesson(updated);
