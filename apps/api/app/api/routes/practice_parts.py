@@ -90,20 +90,29 @@ def _label_row(code: str, count: int, grammar_slugs: dict[str, str]) -> PartLabe
     )
 
 
+def _label_count_rows(db: Session, parts: list[int]) -> list[tuple[int, str, int]]:
+    """Đếm nhãn theo (part, code) trong MỘT query — `list_parts` gọi một lần
+    cho cả 7 part thay vì 7 GROUP BY, còn `_label_counts` dùng lại cho 1 part."""
+    return [
+        (part, code, count)
+        for part, code, count in db.execute(
+            select(
+                Question.part,
+                QuestionLabel.code,
+                func.count(func.distinct(QuestionLabel.question_id)),
+            )
+            .join(Question, Question.id == QuestionLabel.question_id)
+            .where(Question.part.in_(parts), *_open_filters())
+            .group_by(Question.part, QuestionLabel.code)
+            .order_by(func.count(func.distinct(QuestionLabel.question_id)).desc())
+        ).all()
+    ]
+
+
 def _label_counts(db: Session, part: int) -> list[PartLabelCount]:
     """Nhãn của một part, đếm từ câu published — cùng bộ lọc với danh sách câu."""
-    rows = db.execute(
-        select(
-            QuestionLabel.code,
-            func.count(func.distinct(QuestionLabel.question_id)),
-        )
-        .join(Question, Question.id == QuestionLabel.question_id)
-        .where(Question.part == part, *_open_filters())
-        .group_by(QuestionLabel.code)
-        .order_by(func.count(func.distinct(QuestionLabel.question_id)).desc())
-    ).all()
     slugs = _grammar_slugs(db)
-    return [_label_row(code, count, slugs) for code, count in rows]
+    return [_label_row(code, count, slugs) for _, code, count in _label_count_rows(db, [part])]
 
 
 def _question_labels(db: Session, question_id: uuid.UUID) -> list[PartLabelCount]:
@@ -127,11 +136,15 @@ def list_parts(db: Session = Depends(get_db)) -> list[PartSummary]:
             .group_by(Question.part)
         ).all()
     }
+    slugs = _grammar_slugs(db)
+    by_part: dict[int, list[PartLabelCount]] = {}
+    for part, code, n in _label_count_rows(db, list(range(1, 8))):
+        by_part.setdefault(part, []).append(_label_row(code, n, slugs))
     return [
         PartSummary(
             part=part,
             question_count=counts.get(part, 0),
-            labels=_label_counts(db, part),
+            labels=by_part.get(part, []),
         )
         for part in range(1, 8)
     ]
