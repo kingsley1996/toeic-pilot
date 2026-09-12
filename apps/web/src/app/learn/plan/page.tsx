@@ -12,7 +12,7 @@ import {
 import { Calendar, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { PlanCalendar, isCorePlanItem } from "@/components/plan-calendar";
 import {
@@ -865,26 +865,28 @@ function ProgressPanel({
   versions: PlanVersionPublic[];
   busy: boolean;
 }) {
-  const start = new Date(`${plan.starts_at}T12:00:00`);
-  const weeks = new Map<number, { due: number; done: number; minutes: number }>();
-  for (const item of plan.items) {
-    if (!item.day || !isCorePlanItem(item)) continue;
-    const idx = Math.max(
-      0,
-      Math.floor((new Date(`${item.day}T12:00:00`).getTime() - start.getTime()) / 604_800_000),
-    );
-    const bucket = weeks.get(idx) ?? { due: 0, done: 0, minutes: 0 };
-    bucket.due += 1;
-    if (item.done) {
-      bucket.done += 1;
-      bucket.minutes += item.est_minutes ?? 0;
+  const rows = useMemo(() => {
+    const start = new Date(`${plan.starts_at}T12:00:00`);
+    const weeks = new Map<number, { due: number; done: number; minutes: number }>();
+    for (const item of plan.items) {
+      if (!item.day || !isCorePlanItem(item)) continue;
+      const idx = Math.max(
+        0,
+        Math.floor((new Date(`${item.day}T12:00:00`).getTime() - start.getTime()) / 604_800_000),
+      );
+      const bucket = weeks.get(idx) ?? { due: 0, done: 0, minutes: 0 };
+      bucket.due += 1;
+      if (item.done) {
+        bucket.done += 1;
+        bucket.minutes += item.est_minutes ?? 0;
+      }
+      weeks.set(idx, bucket);
     }
-    weeks.set(idx, bucket);
-  }
-  const rows = [...weeks.entries()]
-    .filter(([, w]) => w.due > 0)
-    .sort((a, b) => a[0] - b[0])
-    .slice(0, 10);
+    return [...weeks.entries()]
+      .filter(([, w]) => w.due > 0)
+      .sort((a, b) => a[0] - b[0])
+      .slice(0, 10);
+  }, [plan]);
   // Phút THẬT (`elapsed_seconds` của các lượt nộp) từ /evaluation — phút ước
   // lượng của mục chỉ để đếm việc, không phải bằng chứng ngồi bàn.
   const real = new Map((evaluation?.weeks ?? []).map((w) => [w.index, w]));
