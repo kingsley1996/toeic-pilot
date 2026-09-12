@@ -160,9 +160,10 @@ def _question_payloads(
 ) -> dict[uuid.UUID, PartDrillQuestion]:
     """Serialize một loạt câu: audio/ảnh/passage/nhãn, batch hết, không N+1.
 
-    Passage chỉ gắn vào câu ĐẦU của mỗi set trong danh sách — client nhóm lại
-    theo `set_id`. Luật này lấy từ `attempt.py`: lặp đoạn văn trên ba câu là ba
-    lần cùng một payload.
+    Passage chỉ gắn vào câu ĐẦU của mỗi set trong danh sách — lặp đoạn văn
+    trên ba câu là ba lần cùng một payload — NHƯNG `set_id` phải có trên MỌI
+    câu: client tra `passageBySet` theo đúng cái khoá đó, thiếu nó thì câu thứ
+    hai của một bài đọc hiện ra không ngữ liệu (bug drill Part 7, 2026-09-12).
     """
     set_ids = {q.set_id for q in questions if q.set_id is not None}
     audio_ids = {q.audio_asset_id for q in questions if q.audio_asset_id is not None}
@@ -251,7 +252,7 @@ def _question_payloads(
             image_url=(
                 image_driver.public_url(question_image.storage_key) if question_image else None
             ),
-            set_id=str(stimulus.id) if first_of_set and stimulus is not None else None,
+            set_id=str(stimulus.id) if stimulus is not None else None,
             passages=passages,
             options=[
                 OptionPublic(id=str(o.id), label=o.label, content=o.content, content_vi=None)

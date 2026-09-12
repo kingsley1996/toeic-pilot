@@ -236,6 +236,10 @@ def test_passage_travels_once_per_session_set(
 
     sess = create_session(client, auth, 7)
     assert sum(1 for i in sess["items"] if i["question"]["passages"]) == 1
+    # Moi cau PHAI biet minh thuoc set nao: client tra passage theo `set_id`,
+    # thieu no la cau thu hai cua bai doc hien ra khong ngu lieu.
+    sids = {i["question"]["set_id"] for i in sess["items"]}
+    assert None not in sids and len(sids) == 1
 
 
 def test_session_takes_whole_bank_and_timer_expires(
