@@ -41,6 +41,11 @@ export const metadata: Metadata = {
   description: "Học tiếng Anh mỗi ngày và luyện thi TOEIC",
 };
 
+/* Nối trước tới origin API: fetch đầu tiên của mỗi lượt tải trang đỡ một vòng
+   bắt tay TCP+TLS xuyên region. Env build-time nên tính ở module scope, và
+   localhost ở dev thì trình duyệt bỏ qua. */
+const API_ORIGIN = new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").origin;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
@@ -50,6 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             ra rộng rồi co lại — một cú nhảy bố cục ở mỗi lần tải. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
+        <link rel="preconnect" href={API_ORIGIN} />
       </head>
       <body className={`${display.variable} ${body.variable} ${data.variable}`}>
         {/* Provider bọc cả shell lẫn các trang: header đọc đúng phiên mà các

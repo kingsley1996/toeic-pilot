@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@toeic-pilot/shared"],
+  // Byte header `X-Powered-By` không nói gì với người học, chỉ nói với scanner.
+  poweredByHeader: false,
   async headers() {
     return [
       {
