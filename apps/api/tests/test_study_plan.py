@@ -198,6 +198,16 @@ def test_generate_creates_current_plan_and_progress_solves_it(
     assert current_count == 1
 
 
+def test_generate_without_body_is_idempotent(client: TestClient, db_session: Session, auth) -> None:
+    """POST khong gui body hai lan tra cung plan — bam dup khong de version."""
+    me = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    build_world(db_session, me)
+
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner")).json()
+    plan2 = client.post("/api/v1/study-plan/generate", headers=auth("learner")).json()
+    assert plan2["id"] == plan["id"]
+
+
 def test_older_result_click_cannot_replace_newer_plan(
     client: TestClient, db_session: Session, auth
 ) -> None:
@@ -282,6 +292,54 @@ def test_progress_reflects_real_completions(client: TestClient, db_session: Sess
     # cùng `local_today(now, tz)` với `today` của response nên luôn bằng hôm
     # nay khi vừa học xong — và không trôi theo `today` khi ngày kế đến.
     assert done_item["completed_on"] == again["today"]
+
+
+def test_grammar_done_before_new_version_does_not_carry_over(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """Hoc bai ngu phap o plan cu khong tick xanh plan moi sinh sau no."""
+    from app.models import GrammarLessonCompletion
+
+    me = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    build_world(db_session, me)
+    weak_questions = db_session.scalars(select(Question).where(Question.part == 5)).all()
+    for weak_question in weak_questions:
+        db_session.add(
+            QuestionLabel(question_id=weak_question.id, facet="grammar", code="GRAMMAR_TENSE")
+        )
+    topic = GrammarTopic(
+        code="GRAMMAR_TENSE",
+        slug=f"thi-{uuid.uuid4().hex[:4]}",
+        title="Thì",
+        status="published",
+        position=1,
+    )
+    db_session.add(topic)
+    db_session.flush()
+    lesson = GrammarLesson(
+        topic_id=topic.id,
+        slug=f"thi-{uuid.uuid4().hex[:4]}",
+        title="Thì 1",
+        kind="theory",
+        body="Nội dung",
+        status="published",
+        position=1,
+    )
+    db_session.add(lesson)
+    db_session.commit()
+
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    lesson_item = next(i for i in plan["items"] if i["kind"] == "grammar_lesson")
+    db_session.add(GrammarLessonCompletion(user_id=me, lesson_id=uuid.UUID(lesson_item["ref_id"])))
+    db_session.commit()
+    assert client.get("/api/v1/study-plan", headers=auth("learner")).json()["done_count"] == 1
+
+    plan2 = client.post(
+        "/api/v1/study-plan/generate", headers=auth("learner"), json={"force": True}
+    ).json()
+    assert plan2["id"] != plan["id"]
+    lesson_item2 = next(i for i in plan2["items"] if i["kind"] == "grammar_lesson")
+    assert lesson_item2["done"] is False
 
 
 def test_exam_date_shrinks_the_budget(client: TestClient, db_session: Session, auth) -> None:

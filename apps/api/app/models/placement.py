@@ -6,7 +6,7 @@ cậy) và v2 (IRT) cho cùng một lượt làm sẽ khác nhau, nên phán quy
 """
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, ForeignKey, Index, SmallInteger, String, func
 from sqlalchemy.orm import Mapped, mapped_column
@@ -50,5 +50,8 @@ class PlacementResult(Base):
     target_score: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        default=lambda: datetime.now(UTC),
     )

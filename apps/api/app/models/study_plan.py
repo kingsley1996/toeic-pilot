@@ -7,7 +7,7 @@ SPEC-GRAMMAR — cột tick trên kế hoạch là thứ lệch khỏi thực t�
 """
 
 import uuid
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 
 from sqlalchemy import (
     JSON,
@@ -73,7 +73,10 @@ class StudyPlan(Base):
     version: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1)
     reason: Mapped[str | None] = mapped_column(String(120), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        default=lambda: datetime.now(UTC),
     )
 
 

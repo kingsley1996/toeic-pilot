@@ -130,6 +130,7 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
             select(GrammarLessonCompletion.lesson_id, GrammarLessonCompletion.created_at).where(
                 GrammarLessonCompletion.user_id == user_id,
                 GrammarLessonCompletion.revoked_at.is_(None),
+                GrammarLessonCompletion.created_at >= plan.created_at,
             )
         ).all()
     }
@@ -458,7 +459,7 @@ def generate(
         same_or_older = source_attempt is not None and (
             source_attempt.id == attempt.id or attempt.started_at <= source_attempt.started_at
         )
-        same_source = body is not None and current.source == body.source
+        same_source = body is None or current.source == body.source
         forced = body is not None and body.force
         if same_or_older and same_source and not forced:
             return _plan_public(db, user.id, current)
