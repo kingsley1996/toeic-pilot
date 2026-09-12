@@ -65,6 +65,7 @@ def test_a_disabled_rule_is_not_reseeded(db_session: Session) -> None:
     assert rule is not None
     rule.enabled = False
     db_session.commit()
+    db_session.info.clear()  # memo cau hinh song theo request, test dung chung Session
 
     assert ruby.amount_for(db_session, "daily_gift") == 0
     assert db_session.get(RubyRule, "daily_gift").enabled is False  # type: ignore[union-attr]
@@ -147,6 +148,7 @@ def test_a_disabled_source_pays_nothing_and_raises_nothing(db_session: Session) 
     assert rule is not None
     rule.enabled = False
     db_session.commit()
+    db_session.info.clear()  # memo cau hinh song theo request, test dung chung Session
 
     assert (
         ruby.earn(db_session, user_id=user.id, source_type="daily_gift", source_id=uuid.uuid4())

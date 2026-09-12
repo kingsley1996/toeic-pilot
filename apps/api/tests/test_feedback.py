@@ -203,8 +203,10 @@ def test_the_reward_endpoint_reads_the_row_and_goes_quiet_when_disabled(
 
     reward_rule.amount = 50
     db_session.commit()
+    db_session.info.clear()  # memo cau hinh song theo request, test dung chung Session
     assert client.get("/api/v1/feedback/reward", headers=headers).json()["amount"] == 50
 
     reward_rule.enabled = False
     db_session.commit()
+    db_session.info.clear()  # nhu tren
     assert client.get("/api/v1/feedback/reward", headers=headers).json()["amount"] == 0

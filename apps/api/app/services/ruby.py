@@ -66,7 +66,16 @@ def rules(db: Session, *, include_disabled: bool = False) -> list[RubyRule]:
     **Bảng rỗng nghĩa là "chưa từng cấu hình", không phải "cố ý để trống"** —
     cùng tính chất với `pet_species` và `frame_tier`, và cùng hệ quả: xoá hết
     thì lần đọc sau gieo lại đủ bảy. Muốn bỏ một nguồn thì TẮT nó.
+
+    Memo theo request (`db.info`): một lượt nộp gọi `earn` nhiều lần, mỗi lần
+    đọc lại cả bảng là thừa. Session của prod sống đúng một request nên không
+    bao giờ stale; test dùng chung một Session cho nhiều request (conftest)
+    nên test nào sửa cấu hình giữa chừng phải tự xoá `db.info`.
     """
+    key = ("ruby_rules", include_disabled)
+    cached = db.info.get(key)
+    if cached is not None:
+        return cached
     rows = _ordered(db)
     # Gieo theo hàng CÒN THIẾU, không theo "bảng rỗng". Migration `074` chèn
     # đúng một hàng vào bảng này, và điều kiện cũ đọc bảng một-hàng-ấy là "đã
@@ -91,7 +100,9 @@ def rules(db: Session, *, include_disabled: bool = False) -> list[RubyRule]:
         else:
             db.commit()
         rows = _ordered(db)
-    return rows if include_disabled else [row for row in rows if row.enabled]
+    out = rows if include_disabled else [row for row in rows if row.enabled]
+    db.info[key] = out
+    return out
 
 
 def _ordered(db: Session) -> list[RubyRule]:

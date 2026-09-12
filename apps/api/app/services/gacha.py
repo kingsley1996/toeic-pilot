@@ -43,7 +43,12 @@ def settings_row(db: Session) -> EggSetting:
 
     Cùng khuôn `progression_config.settings_row`, kể cả hệ quả: xoá hàng đi không
     phải cách tắt gacha — lần đọc sau gieo lại. Muốn đóng gacha thì tắt hết loài.
+
+    Memo theo request (`db.info`), cùng lý do `ruby.rules`.
     """
+    cached = db.info.get("egg_setting")
+    if cached is not None:
+        return cached
     row = db.get(EggSetting, 1)
     if row is None:
         row = EggSetting(id=1, **EGG_DEFAULTS)
@@ -59,6 +64,7 @@ def settings_row(db: Session) -> EggSetting:
             assert row is not None
         else:
             db.refresh(row)
+    db.info["egg_setting"] = row
     return row
 
 

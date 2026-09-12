@@ -123,6 +123,9 @@ def settings_row(db: Session) -> EncounterSetting:
     gieo, và người thua vỡ khoá chính — một lượt học hỏng vì một cuộc đua trên
     bảng cấu hình.
     """
+    cached = db.info.get("encounter_setting")
+    if cached is not None:
+        return cached
     row = db.get(EncounterSetting, 1)
     if row is not None:
         return row
@@ -135,6 +138,7 @@ def settings_row(db: Session) -> EncounterSetting:
         db.commit()
     found = db.get(EncounterSetting, 1)
     assert found is not None
+    db.info["encounter_setting"] = found
     return found
 
 

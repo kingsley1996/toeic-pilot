@@ -34,13 +34,21 @@ from app.services.leveling import curve_thresholds
 
 
 def settings_row(db: Session) -> ProgressionSetting:
-    """Hàng cấu hình duy nhất, tạo từ bộ mặc định nếu chưa có."""
+    """Hàng cấu hình duy nhất, tạo từ bộ mặc định nếu chưa có.
+
+    Memo theo request (`db.info`), cùng lý do `ruby.rules`: một lượt học gọi
+    `xp_for` nhiều lần. Caveat test dùng chung Session xem docstring bên đó.
+    """
+    cached = db.info.get("progression_settings")
+    if cached is not None:
+        return cached
     row = db.get(ProgressionSetting, 1)
     if row is None:
         row = ProgressionSetting(id=1, **PROGRESSION_DEFAULTS)
         db.add(row)
         db.commit()
         db.refresh(row)
+    db.info["progression_settings"] = row
     return row
 
 
