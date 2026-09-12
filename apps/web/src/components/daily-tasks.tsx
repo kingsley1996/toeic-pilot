@@ -263,8 +263,8 @@ export function DailyTasksPanel({ token }: { token: string | null }) {
           câu này nói đúng chuyện gì dừng và chuyện gì không. */}
       {capped && (
         <p className="mt-4 border-t border-rule pt-3 text-small text-ink-muted">
-          Hôm nay đã đạt tối đa {daily.daily_cap} XP. Tiến độ học vẫn được ghi bình thường, chỉ có
-          điểm là dừng tới ngày mai.
+          Bạn đã đạt tối đa {daily.daily_cap} XP hôm nay. Việc học vẫn được ghi nhận bình thường —
+          chỉ XP sẽ chờ đến ngày mai để tiếp tục.
         </p>
       )}
     </Panel>

@@ -67,7 +67,7 @@ const CONTENT_LINKS: NavItem[] = [
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
   { href: "/learn/grammar", label: "Ngữ pháp", Icon: GraduationCap },
   { href: "/learn/parts", label: "Luyện theo part", Icon: Dumbbell },
-  { href: "/learn/tests", label: "Luyện thi", Icon: FileText },
+  { href: "/learn/tests", label: "Luyện giải đề", Icon: FileText },
 ];
 
 /*
