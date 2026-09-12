@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Be_Vietnam_Pro, IBM_Plex_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/app-shell";
+import { SessionUnreachable } from "@/components/session-unreachable";
 import { SessionProvider } from "@/lib/session";
 import { ToastProvider } from "@/lib/toast";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               của một người cụ thể, và ngoài AppShell vì hộp chứa là lớp phủ
               `fixed` — nó phải sống sót qua cả ba khung, kể cả nhánh trần của
               khu quản trị và màn làm bài. */}
+          <SessionUnreachable />
           <ToastProvider>
             <AppShell>{children}</AppShell>
           </ToastProvider>

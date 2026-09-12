@@ -39,6 +39,12 @@ type Session = {
    */
   refresh: () => void;
   logout: () => void;
+  /**
+   * Đọc `/auth/me` hỏng sau mọi lần thử lại. `status` vẫn là `loading` (union
+   * ba trạng thái không đổi) — cờ này để khung hiện dải "mất kết nối" kèm nút
+   * thử lại thay vì treo khung xám vĩnh viễn.
+   */
+  failed: boolean;
 };
 
 const SessionContext = createContext<Session | null>(null);
@@ -65,10 +71,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const token = useSyncExternalStore(subscribeToToken, getAccessToken, serverSnapshot);
   const [user, setUser] = useState<UserPublic | null>(null);
   const [rejected, setRejected] = useState(false);
+  const [failed, setFailed] = useState(false);
   // Bộ đếm chứ không phải cờ boolean: hai lần lưu liên tiếp phải chạy hai lượt
   // đọc, còn cờ bật-tắt sẽ nuốt mất lượt thứ hai.
   const [reloadKey, setReloadKey] = useState(0);
-  const refresh = useCallback(() => setReloadKey((key) => key + 1), []);
+  // Đọc lại ĐỒNG THỜI là "đã thấy dải lỗi thì tắt nó đi": nút Thử lại không
+  // thể vừa chạy vừa hiện.
+  const refresh = useCallback(() => {
+    setFailed(false);
+    setReloadKey((key) => key + 1);
+  }, []);
   /* Đếm số lần thử lại của lượt đọc bên dưới. Ref chứ không phải state: nó điều
      khiển vòng thử lại chứ không vẽ ra gì, và đặt vào state thì mỗi lần tăng là
      một lần dựng lại cả cây. */
@@ -82,6 +94,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       .then((me) => {
         if (cancelled) return;
         tries.current = 0;
+        setFailed(false);
         setUser(me);
       })
       .catch((error: unknown) => {
@@ -99,6 +112,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
           clearAccessToken();
           setRejected(true);
+          setFailed(false);
           return;
         }
         /*
@@ -108,7 +122,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
          * lại vài lần rồi thôi: hỏng dai thì đó là chuyện của mạng, và thử mãi
          * chỉ đổi một chỗ treo lấy một vòng lặp.
          */
-        if (tries.current >= 2) return;
+        if (tries.current >= 2) {
+          if (!cancelled) setFailed(true);
+          return;
+        }
         tries.current += 1;
         again = window.setTimeout(refresh, 700 * tries.current);
       });
@@ -138,6 +155,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
     clearAccessToken();
     setUser(null);
+    setFailed(false);
     router.push("/");
   }, [router, token]);
 
@@ -159,8 +177,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       canPublish: user?.role === "admin",
       refresh,
       logout,
+      failed,
     }),
-    [status, user, token, refresh, logout],
+    [status, user, token, refresh, logout, failed],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

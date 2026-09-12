@@ -1,5 +1,9 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+/* Một request treo thì UI treo theo — `SessionProvider` kẹt `loading` vĩnh
+   viễn là ca đã xảy ra. Không ai chờ một lượt đọc quá chừng này. */
+const API_TIMEOUT_MS = 30_000;
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -39,9 +43,10 @@ export async function apiFetch<T>(
   path: string,
   options: RequestInit & { token?: string } = {},
 ): Promise<T> {
-  const { token, headers, ...rest } = options;
+  const { token, headers, signal, ...rest } = options;
   const response = await fetch(`${API_BASE}${path}`, {
     ...rest,
+    signal: signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
