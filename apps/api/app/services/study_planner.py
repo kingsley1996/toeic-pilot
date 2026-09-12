@@ -95,7 +95,12 @@ _FILLER_MIN_DAYS = 14
 # Không lập kế hoạch quá ba tháng — ai đổi ngày thi thì "Sinh lại" theo đầu
 # vào mới; lịch trải tới 6 tháng là lời hứa quá tầm với.
 _FILLER_MAX_DAYS = 90
-_MAX_PLAN_ITEMS = 120
+# 120 từng đủ khi nhịp nền only ~5 mục/tuần; từ khi `days_per_week` là giao
+# kèo và filler ĐẾM THEO NGÀY (tới 14/tuần cho lịch 7 ngày), worst case
+# horizon 90 ngày cần ~130-150 hàng. Cắt vẫn theo thứ tự tuần — tuần nào
+# không kịp vào mũ thì đúng là lịch kết thúc sớm, chưa bao giờ cắt mất
+# buffer sát ngày thi.
+_MAX_PLAN_ITEMS = 150
 # Mock đứng trước ngày thi một khoảng để còn sửa gì đó sau nó; retake đầu
 # không rơi vào tuần đầu vì tuần ấy còn đang học lời khuyên đầu tiên.
 _MOCK_BUFFER_DAYS = 7
@@ -625,30 +630,27 @@ def _weekly_schedule(
                     link=f"/learn/dictation/topics/{dt_id}",
                 )
             )
-        # Nền lấp tuần: generator cũ xoay đúng 5 mục/tuần trong khi packer
-        # NHỒI được 2 mục 15' chung một buổi — hàng đợi cạn từ tuần 5, và
-        # người có ngày thi xa thấy lịch trắng hẳn trước kỳ thi. Lấp tới
-        # ~90% ngân sách tuần bằng nhịp nền (vocab/dict xen kẽ, mỗi tuần tối
-        # đa 4 — kín lịch chứ không biến mọi ngày thành ôn từ vựng).
-        week_minutes = (
-            (
-                min(drills_per_week, len(drill_pool)) * EST_MINUTES["part_drill"]
-                if not final_window
-                else 0
-            )
-            + (EST_MINUTES["grammar_lesson"] if (not final_window and w < len(lessons)) else 0)
-            + (15 if topics else 0)
-            + (15 if dtops else 0)
+        # `days_per_week` là GIAO KÈO: chọn 7 ngày thì lịch không được trống
+        # ngày nào trong horizon. Hàng đợi lời khuyên (3 drill + 1 bài + 2 nền
+        # 15' ghép một buổi + mini CHIẾM một ngày riêng) thường thiếu 1-2 ngày/tuần;
+        # lấp ĐÚNG SỐ NGÀY còn trống bằng nhịp nền ghép đôi 15', cap 8 để
+        # không biến cả tuần thành board từ vựng khi pool lời khuyên rỗng.
+        n_30 = (
+            0
+            if final_window
+            else min(drills_per_week, len(drill_pool)) + (1 if w < len(lessons) else 0)
         )
-        weekly_budget = days_per_week * (
-            (profile.minutes_per_day if profile else None) or DEFAULT_MINUTES_PER_DAY
-        )
-        gap_fill = int((weekly_budget * 9 // 10 - week_minutes) // 15)
-        if gap_fill > 0 and w >= weeks:
-            gap_fill = min(gap_fill, 4)  # tuần buffer: NỀN thôi, đừng dày
-        elif gap_fill > 0:
-            gap_fill = min(gap_fill, 2)
-        out.extend(_filler_items(gap_fill))
+        n_15 = (1 if topics else 0) + (1 if dtops else 0)
+        mini_day = 1 if w < weeks else 0
+        free_days = max(0, days_per_week - n_30 - (1 if n_15 else 0) - mini_day)
+        # 14 = kịch bản xấu nhất (7 ngày toàn nền 15' ghép đôi). Lời khuyên
+        # càng mỏng — pool kỹ năng nhỏ, catalogue chủ đề trống, tuần nước rút
+        # không kỹ năng mới — nhịp nền càng phải gánh đủ, vì giao kèo "N ngày
+        # một tuần" nằm ở SỐ NGÀY có việc, không ở tỉ lệ loại nội dung.
+        gap_fill = min(free_days * 2, 14)
+        if not topics and not dtops:
+            gap_fill = min(gap_fill + 2, 14)  # catalogue trống: nhịp nền chung
+        out.extend(_filler_items(gap_fill) if gap_fill else [])
         # Mini CUỐI block tuần: packer neo nó đầu tuần SAU (đo kết thúc tuần
         # học, không phải mở màn tuần); thứ tự position cũng nói vậy — tuần
         # đọc từ trái sang phải là học… học, đo. Tuần buffer cuối KHÔNG có ô
@@ -659,7 +661,7 @@ def _weekly_schedule(
             break
     if maintenance is not None:
         out.append(maintenance)
-    return out
+    return out[:_MAX_PLAN_ITEMS]
 
 
 def write_plan(
@@ -941,6 +943,9 @@ def pack_days(
     natural_last = max(1, -(-total_min // daily_minutes) - 1)
     cursor = 0
     cum = 0
+    # SÀN-trần của lịch: không mục học nào được hẹn SAU ngày thi. Hàng đợi
+    # thừa (patience của 15' ghép đôi) thì ở lại `day=None` — lịch ĐẦY, không
+    # phải lịch cắt bớt; đó cũng là lý do `days` của API cho phép None.
     for position, minutes, kind in needs:
         cursor = max(cursor, (cum // daily_minutes) * span // natural_last)
         cum += minutes
@@ -958,7 +963,13 @@ def pack_days(
                 cursor += 1
                 continue
             break
-        out[position] = _study_date(cursor, today, days_per_week)
+        placed = _study_date(cursor, today, days_per_week)
+        # Kiểm tra SAU khi dò ngày (kind đụng độ có thể đẩy cursor tới đúng
+        # ngày thi): hàng đợi thừa thì ở lại `day=None` — lịch ĐẦY, không hẹn
+        # sau ngày thi.
+        if exam_date is not None and placed >= exam_date:
+            break
+        out[position] = placed
         used[cursor] = used.get(cursor, 0) + minutes
         kinds_on_day.setdefault(cursor, set()).add(kind)
     return out

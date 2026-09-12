@@ -523,7 +523,7 @@ def test_far_exam_has_a_planning_horizon(client: TestClient, db_session: Session
     profile.exam_date = date.today() + timedelta(days=400)
     db_session.commit()
     plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
-    assert len(plan["items"]) <= 120
+    assert len(plan["items"]) <= 150
 
 
 def test_days_are_derived_at_read_time_not_stored(
@@ -998,7 +998,8 @@ def test_topics_rotation_labels_vocabulary_by_subject(
     assert any(i["link"] == "/learn/vocabulary/travel" for i in vocab)
     from collections import Counter
 
-    vocab_per_day = Counter(i["day"] for i in vocab)
+    # `day=None` = mục tràn hàng đợi, KHÔNG phải "hai board cùng một ngày".
+    vocab_per_day = Counter(i["day"] for i in vocab if i["day"])
     assert all(v <= 1 for v in vocab_per_day.values()), "không hai board từ vựng cùng một ngày"
 
 
@@ -1351,3 +1352,27 @@ def test_evaluation_weeks_are_real_minutes_and_mocks_join_the_series(
     assert wk["attempts"] == 2
     kinds = [(r["kind"], r["total_scaled"]) for r in ev["retakes"]]
     assert ("mini", 90) in kinds and ("mock", 610) in kinds
+
+
+def test_seven_study_days_means_no_blank_day(client: TestClient, db_session: Session, auth) -> None:
+    """`study_days_per_week=7` là GIAO KÈO với người học: không có ngày trống.
+
+    Hàng đợi lời khuyên (3 drill + 1 bài ngữ pháp + cặp 15' + mini riêng một
+    ngày) từng thiếu 1-2 ngày/tuần và cap filler cũ khóa chết ở 2 — lịch 7
+    ngày vẫn thủng. Công thức lấp giờ ĐẾM NGÀY còn trống mà lấp.
+    """
+    _me, profile = _learner_with_profile(client, auth, db_session)
+    profile.study_days_per_week = 7
+    profile.exam_date = date.today() + timedelta(days=40)
+    db_session.commit()
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    start = date.fromisoformat(plan["starts_at"])
+    exam = date.fromisoformat(plan["exam_date"])
+    days = {i["day"] for i in plan["items"] if i["day"]}
+    horizon = min((exam - start).days, 90)
+    blanks = [
+        (start + timedelta(days=k)).isoformat()
+        for k in range(horizon)
+        if (start + timedelta(days=k)).isoformat() not in days
+    ]
+    assert not blanks, f"7 ngày/tuần mà lịch vẫn trống: {blanks[:5]}"

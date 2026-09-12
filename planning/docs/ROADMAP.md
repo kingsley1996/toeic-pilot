@@ -221,7 +221,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       review/chép/ngữ pháp; UI "Tuần & tiến bộ" hiện `N′ thật` và
       "+/−N′ so với tuần trước". Autofill của Chrome từng ghi nhầm target=100
       qua ô number cùng tên — mọi ô số hồ sơ nay có `autoComplete="off"`.
-      1192 pytest / 32 study plan.
+            **Sửa "7 ngày mà lịch vẫn trống" (2026-09-12):** `study_days_per_week`
+      là GIAO KÈO SỐ NGÀY — filler nay đếm ngày trống của tuần mà lấp (ghép
+      đôi 15', cap 14/tuần), mũ mục 120→150 cắt theo thứ tự tuần, và
+      `pack_days` không bao giờ hẹn mục học sau ngày thi (thừa → `day=None`).
+      Test mới ghim "7 ngày = không ngày trống". 1193 pytest / 33 study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở
