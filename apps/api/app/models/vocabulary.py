@@ -260,6 +260,8 @@ class VocabularyReviewLog(Base):
         # ngưỡng đã-thuộc (xem `srs.review`).
         CheckConstraint("grade BETWEEN 0 AND 6", name="ck_vocabulary_review_log_grade"),
         Index("ix_vocabulary_review_log_user_entry", "user_id", "entry_id"),
+        # Streak/profile loc (nguoi, ngay): thieu no la quet toan log user.
+        Index("ix_vocabulary_review_log_user_reviewed", "user_id", "reviewed_at"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)

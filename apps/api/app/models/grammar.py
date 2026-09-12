@@ -143,6 +143,9 @@ class GrammarLessonCompletion(Base):
 
     __tablename__ = "grammar_lesson_completion"
 
+    # Streak/daily dem theo (nguoi, ngay).
+    __table_args__ = (Index("ix_grammar_completion_user_created", "user_id", "created_at"),)
+
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
     )
@@ -169,7 +172,11 @@ class GrammarAttempt(Base):
     """
 
     __tablename__ = "grammar_attempt"
-    __table_args__ = (Index("ix_grammar_attempt_user_question", "user_id", "question_id"),)
+    # Streak loc (nguoi, ngay).
+    __table_args__ = (
+        Index("ix_grammar_attempt_user_question", "user_id", "question_id"),
+        Index("ix_grammar_attempt_user_created", "user_id", "created_at"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(

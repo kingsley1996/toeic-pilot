@@ -8,6 +8,7 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     SmallInteger,
@@ -97,6 +98,8 @@ class DictationAttempt(Base):
     __tablename__ = "dictation_attempt"
     __table_args__ = (
         CheckConstraint("accuracy BETWEEN 0 AND 100", name="ck_dictation_attempt_accuracy"),
+        # Streak/profile loc (nguoi, ngay): thieu no la quet toan lich su user.
+        Index("ix_dictation_attempt_user_created", "user_id", "created_at"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
