@@ -239,8 +239,12 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       không nhãn giữ luật part — đúng nghĩa của nó. Tiếp ngay: đồng hồ khép
       drill là lúc TRẢ LỜI (`part_session_item.answered_at >= plan.created_at`),
       không phải lúc MỞ phiên — bản đầu chặn theo `created_at` làm mất quyền
-      "mở hôm qua, học hôm nay" của chính người báo bug. 1195 pytest / 36
-      study plan.
+      "mở hôm qua, học hôm nay" của chính người báo bug. Rồi nốt tầng cuối:
+      MỘT buổi khép MỘT ô — derivation cũ trả timestamp toàn cục per
+      (part, code) nên một cú trả lời tick luôn cả ba ô "tìm thông tin" của
+      ba tuần (lịch xoay vòng lặp nhãn); sequence-join mới: mỗi PHIÊN là một
+      sự kiện, ô thứ k theo ngày hẹn do buổi thứ k khép, tick tay không tiêu
+      thụ buổi. Live: 12/9 ✓, 20/9 và 28/9 mở. 1195 pytest / 36 study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở

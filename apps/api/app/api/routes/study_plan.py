@@ -140,22 +140,6 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
     # của phiên sớm nhất: phiên mở trước, trả lời sau thì ngày học là ngày trả
     # lời. `min()` trong SQL: Postgres trả tz-aware, SQLite naive — cả hai được
     # chuẩn hoá ở `_local_day` dưới.
-    done_parts: dict[int, datetime] = {
-        int(part): when
-        for part, when in db.execute(
-            select(PartSession.part, func.min(PartSessionItem.answered_at))
-            .join(PartSessionItem, PartSessionItem.session_id == PartSession.id)
-            .where(
-                PartSession.user_id == user_id,
-                # Đồng hồ là lúc TRẢ LỜI, không phải lúc MỞ phiên: mở bài luyện
-                # từ hôm qua rồi trả lời hôm nay là việc HỌC THẬT hôm nay — chặn
-                # theo `created_at` từng làm đúng cú trả lời rơi khỏi lịch.
-                PartSessionItem.answered_at.is_not(None),
-                PartSessionItem.answered_at >= plan.created_at,
-            )
-            .group_by(PartSession.part)
-        ).all()
-    }
     # Đường tới bài học ngữ pháp là `topic/lesson`; kế hoạch chỉ lưu lesson id.
     # Nối thiếu bước này là mọi mục grammar trên plan dẫn vào "Không tải được
     # chủ đề này" — đã xảy ra thật, xem ROADMAP.
@@ -211,6 +195,7 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
             .where(PracticeTest.id.in_(mock_refs))
         ).all():
             test_paths[test_id] = (test_slug, coll_slug)
+
     # Ngày của một mục KHÔNG lưu ở đâu cả — suy lúc đọc bằng `pack_days` trên
     # TOÀN BỘ vị trí (đã xong hay chưa đều chiếm chỗ), neo vào `starts_at` của
     # kế hoạch chứ không vào "hôm nay": tick một mục không được dịch chuyển
@@ -218,37 +203,53 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
     # task", và họ đúng: lịch là lời hẹn đọc được, không phải khối nhảy. Bỏ
     # vài hôm thật thì mục quá hạn nằm lại quá khứ — nói thật, và có đường
     # tường minh "Dời lịch" (POST /repack) để xếp lại từ hôm nay.
-    # Drill có nhãn khép bằng phiên có câu ĐÚNG NHÃN (mig 087) — bug cũ: một
-    # câu Part 7 bất kỳ tick xong MỌI mục Part 7. (part, code) → ngày nộp SỚM
-    # NHẤT có câu mang code đó.
-    code_when = {
-        (part, code): when
-        for part, code, when in db.execute(
-            select(Question.part, QuestionLabel.code, func.min(PartSessionItem.answered_at))
-            .join(PartSessionItem, PartSessionItem.question_id == Question.id)
-            .join(PartSession, PartSession.id == PartSessionItem.session_id)
-            .join(QuestionLabel, QuestionLabel.question_id == Question.id)
-            .where(
-                PartSession.user_id == user_id,
-                # Cùng đồng hồ với `done_parts`: câu được TRẢ LỜI từ khi kế
-                # hoạch sinh. Bài đầu vào không nằm ở bảng này nên không thể
-                # tự khép drill; còn phiên mở trước - trả lời sau thì VẪN tính.
-                PartSessionItem.answered_at.is_not(None),
-                PartSessionItem.answered_at >= plan.created_at,
-            )
-            .group_by(Question.part, QuestionLabel.code)
-        ).all()
-    }
+    # Drill khép theo BUỔI, không theo timestamp toàn cục. Mỗi phiên có câu
+    # trả lời (đúng nhãn nếu mục mang `filter_codes`, không thì cùng part —
+    # mig 087) là MỘT sự kiện; ô thứ k của cùng nhãn trên lịch do buổi thứ k
+    # khép. Một buổi "tìm thông tin" hôm nay chỉ được khép MỘT ô tìm thông
+    # tin — khép hết ba ô của ba tuần là bịa hai buổi chưa ai học. Đồng hồ
+    # là lúc TRẢ LỜI (mở phiên trước, trả lời sau vẫn tính); bài đầu vào
+    # không thuộc bảng này nên không tự khép được drill.
+    def _as_utc_local(when: datetime) -> datetime:
+        return when if when.tzinfo else when.replace(tzinfo=UTC)
 
-    def _drill_when(item: StudyPlanItem) -> datetime | None:
-        if item.filter_codes:
-            hits = [
-                code_when[(item.part, code)]
-                for code in item.filter_codes
-                if (item.part, code) in code_when
-            ]
-            return min(hits) if hits else None
-        return done_parts.get(item.part)
+    code_sessions: dict[tuple[int, str], list[datetime]] = {}
+    for ev_part, ev_code, ev_when in db.execute(
+        select(
+            Question.part,
+            QuestionLabel.code,
+            func.min(PartSessionItem.answered_at),
+        )
+        .join(PartSessionItem, PartSessionItem.question_id == Question.id)
+        .join(PartSession, PartSession.id == PartSessionItem.session_id)
+        .join(QuestionLabel, QuestionLabel.question_id == Question.id)
+        .where(
+            PartSession.user_id == user_id,
+            PartSessionItem.answered_at.is_not(None),
+            PartSessionItem.answered_at >= plan.created_at,
+        )
+        .group_by(Question.part, QuestionLabel.code, PartSessionItem.session_id)
+    ).all():
+        code_sessions.setdefault((int(ev_part), str(ev_code)), []).append(_as_utc_local(ev_when))
+    part_sessions: dict[int, list[datetime]] = {}
+    for part, first_answer in db.execute(
+        select(
+            PartSession.part,
+            func.min(PartSessionItem.answered_at),
+        )
+        .join(PartSessionItem, PartSessionItem.session_id == PartSession.id)
+        .where(
+            PartSession.user_id == user_id,
+            PartSessionItem.answered_at.is_not(None),
+            PartSessionItem.answered_at >= plan.created_at,
+        )
+        .group_by(PartSession.part, PartSessionItem.session_id)
+    ).all():
+        part_sessions.setdefault(int(part), []).append(_as_utc_local(first_answer))
+    for _evs in code_sessions.values():
+        _evs.sort()
+    for _evs in part_sessions.values():
+        _evs.sort()
 
     profile = db.get(UserProfile, user_id)
     tz = profile.timezone if profile else "UTC"
@@ -264,9 +265,7 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
         when: datetime | None = (
             done_lessons.get(item.ref_id)
             if item.kind == "grammar_lesson"
-            else _drill_when(item)
-            if item.kind == "part_drill"
-            else None
+            else None  # part_drill: post-pass sequence-join dưới đây
         )
         if item.kind == "mini_test":
             mini_seen += 1
@@ -318,6 +317,27 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
     days = pack_days(queue, tests, anchor, daily, per_week, plan.exam_date)
     for pub in public_items:
         pub.day = days.get(pub.position)
+
+    # Sequence-join drill: ô thứ k (theo ngày hẹn, rồi position) của mỗi bộ
+    # nhãn do BUỔI thứ k khép. `day=None` (lịch đầy) xếp cuối — không tranh
+    # bằng chứng của ô có hẹn. Mục đã tick tay không tiêu thụ buổi nào.
+    seq: dict[tuple[int, tuple[str, ...]], int] = {}
+    drills = sorted(
+        (pub for pub in public_items if pub.kind == "part_drill" and not pub.done),
+        key=lambda pub: (pub.day.isoformat() if pub.day else "9999-12-31", pub.position),
+    )
+    for pub in drills:
+        key = (pub.part, tuple(pub.filter_codes or ()))
+        events: list[datetime] = []
+        for code in pub.filter_codes or ():
+            events.extend(code_sessions.get((pub.part, code), []))
+        if not events and not pub.filter_codes:
+            events = part_sessions.get(pub.part, [])
+        i = seq.get(key, 0)
+        seq[key] = i + 1
+        if i < len(events):
+            pub.done = True
+            pub.completed_on = _local_day(events[i], tz)
     mock_options: list[PlanMockOption] = []
     if any(i.kind == "mock_test" for i in items):
         mock_options = [PlanMockOption(id=str(r[0]), title=r[3][:80]) for r in mock_pool(db)]
