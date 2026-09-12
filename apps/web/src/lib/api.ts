@@ -44,6 +44,33 @@ export async function apiFetch<T>(
   options: RequestInit & { token?: string } = {},
 ): Promise<T> {
   const { token, headers, signal, ...rest } = options;
+  const method = (rest.method ?? "GET").toUpperCase();
+  // GET đang bay mà component khác hỏi cùng URL + token thì đi ké — dashboard
+  // và tour đọc `/me`/profile cùng lúc là ca gặp mỗi ngày. Chỉ GET không
+  // signal riêng: POST trùng là ghi trùng, còn signal của người gọi phải huỷ
+  // độc lập chứ không chờ ké.
+  if (method === "GET" && !signal) {
+    const key = `${path} ${token ?? ""}`;
+    const flying = inflight.get(key);
+    if (flying) return flying as Promise<T>;
+    const done = request<T>(path, token, headers, rest, undefined).finally(() => {
+      if (inflight.get(key) === done) inflight.delete(key);
+    });
+    inflight.set(key, done);
+    return done;
+  }
+  return request<T>(path, token, headers, rest, signal ?? undefined);
+}
+
+const inflight = new Map<string, Promise<unknown>>();
+
+async function request<T>(
+  path: string,
+  token: string | undefined,
+  headers: HeadersInit | undefined,
+  rest: Omit<RequestInit, "headers" | "signal">,
+  signal: AbortSignal | undefined,
+): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...rest,
     signal: signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
