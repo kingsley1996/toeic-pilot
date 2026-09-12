@@ -263,6 +263,18 @@ def weak_items(db: Session, attempt: Attempt) -> list[tuple[str, int, int]]:
     ]
 
 
+def _first_lessons(db: Session, topic_ids: list[uuid.UUID]) -> dict[uuid.UUID, GrammarLesson]:
+    """Bai published DAU (position nho nhat) cua moi chu de, mot query IN."""
+    out: dict[uuid.UUID, GrammarLesson] = {}
+    for lesson in db.scalars(
+        select(GrammarLesson)
+        .where(GrammarLesson.topic_id.in_(topic_ids), GrammarLesson.status == "published")
+        .order_by(GrammarLesson.topic_id, GrammarLesson.position)
+    ).all():
+        out.setdefault(lesson.topic_id, lesson)
+    return out
+
+
 def budget_for(today: date, exam_date: date | None) -> int:
     """Số mục LÕI tối đa — tên công khai vì planner LLM dùng chung phép này."""
     if exam_date is None:
@@ -776,24 +788,30 @@ def generate_plan(
     stats = [s for s in _skill_stats(db, attempt) if s.priority > 0]
     weak = [s for s in stats if s.status in ("weak", "developing")][:_TOP_PRIORITIES]
     lessons: list[DraftItem] = []
-    drill_pool: list[SkillStat] = []
-    for s in weak:
-        if not s.code.startswith("GRAMMAR_"):
-            drill_pool.append(s)
-            continue
-        topic = db.scalar(
-            select(GrammarTopic).where(
-                GrammarTopic.code == s.code, GrammarTopic.status == "published"
-            )
-        )
+    drill_pool: list[SkillStat] = [s for s in weak if not s.code.startswith("GRAMMAR_")]
+    # Hai query IN thay cho 2N query trong vong lap: chu de theo ma, roi bai
+    # DAU (position nho nhat) cua moi chu de — chon o Python cho khoi
+    # DISTINCT ON (chi Postgres) hay subquery phuc tap.
+    grammar_stats = [s for s in weak if s.code.startswith("GRAMMAR_")]
+    topics = (
+        {
+            t.code: t
+            for t in db.scalars(
+                select(GrammarTopic).where(
+                    GrammarTopic.code.in_([s.code for s in grammar_stats]),
+                    GrammarTopic.status == "published",
+                )
+            ).all()
+        }
+        if grammar_stats
+        else {}
+    )
+    first_lesson = _first_lessons(db, [t.id for t in topics.values()]) if topics else {}
+    for s in grammar_stats:
+        topic = topics.get(s.code)
         if topic is None:
             continue  # N4: không có chủ đề thì không có mục
-        lesson = db.scalar(
-            select(GrammarLesson)
-            .where(GrammarLesson.topic_id == topic.id, GrammarLesson.status == "published")
-            .order_by(GrammarLesson.position)
-            .limit(1)
-        )
+        lesson = first_lesson.get(topic.id)
         if lesson is None:
             continue
         lessons.append(
