@@ -162,6 +162,7 @@ export default function PlacementSetupPage() {
               value={selfScore}
               onChange={(e) => setSelfScore(e.target.value)}
               type="number"
+              autoComplete="off"
               min={10}
               max={990}
               placeholder="Điểm TOEIC hiện tại"
@@ -171,6 +172,7 @@ export default function PlacementSetupPage() {
               value={targetScore}
               onChange={(e) => setTargetScore(e.target.value)}
               type="number"
+              autoComplete="off"
               min={10}
               max={990}
               placeholder="Điểm mục tiêu"

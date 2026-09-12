@@ -682,6 +682,7 @@ function CreatePlanModal({
           <Field label="Điểm mục tiêu" hint="10–990, bước 5.">
             <Input
               type="number"
+              autoComplete="off"
               min={10}
               max={990}
               step={5}
@@ -693,11 +694,19 @@ function CreatePlanModal({
             <Input type="date" value={fields.exam} onChange={set("exam")} />
           </Field>
           <Field label="Buổi học mỗi tuần" hint="1–7.">
-            <Input type="number" min={1} max={7} value={fields.days} onChange={set("days")} />
+            <Input
+              type="number"
+              autoComplete="off"
+              min={1}
+              max={7}
+              value={fields.days}
+              onChange={set("days")}
+            />
           </Field>
           <Field label="Phút mỗi buổi" hint="5–480.">
             <Input
               type="number"
+              autoComplete="off"
               min={5}
               max={480}
               step={5}
@@ -783,6 +792,7 @@ function TargetForm({
       <Field label="Điểm mục tiêu" hint="10–990, bước 5.">
         <Input
           type="number"
+          autoComplete="off"
           min={10}
           max={990}
           step={5}
@@ -797,6 +807,7 @@ function TargetForm({
       <Field label="Phút mỗi ngày" hint="5–480. Mặc định 30′.">
         <Input
           type="number"
+          autoComplete="off"
           min={5}
           max={480}
           step={5}
@@ -808,6 +819,7 @@ function TargetForm({
       <Field label="Ngày học mỗi tuần" hint="1–7. Mặc định 7.">
         <Input
           type="number"
+          autoComplete="off"
           min={1}
           max={7}
           value={days}

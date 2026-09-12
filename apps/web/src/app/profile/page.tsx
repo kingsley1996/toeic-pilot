@@ -810,6 +810,7 @@ export default function ProfilePage() {
               <Input
                 name="target_score"
                 type="number"
+                autoComplete="off"
                 min={10}
                 max={990}
                 step={5}
@@ -825,6 +826,7 @@ export default function ProfilePage() {
               <Input
                 name="minutes_per_day"
                 type="number"
+                autoComplete="off"
                 min={5}
                 max={480}
                 defaultValue={profile.minutes_per_day ?? ""}
