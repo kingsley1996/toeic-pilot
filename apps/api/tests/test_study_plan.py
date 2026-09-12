@@ -26,6 +26,7 @@ from app.models import (
     QuestionLabel,
     QuestionOption,
     StudyPlan,
+    StudyPlanItem,
     UserProfile,
 )
 
@@ -1392,3 +1393,61 @@ def test_pack_days_test_anchors_never_landed_after_exam() -> None:
     days = pack_days([], [(1, 75, "mini_test"), (2, 125, "mock_test")], today, 30, 7, exam)
     assert days[1] < exam and days[2] < exam, [str(v) for v in days.values()]
     assert days[1] != days[2]
+
+
+def test_part7_drill_closes_only_for_its_own_label(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """Bug người học bắt: MỘT câu cùng part bất kỳ tick xong MỌI drill của part.
+
+    Drill mang nhãn khép bằng phiên có câu ĐÚNG NHÃN (`filter_codes`, mig
+    087). build_world cho ba câu part 5 SAI — gắn nhãn QUESTION_FIND_INFO
+    cho chúng; part 1 đúng không nhãn là "cùng part khác" của phần nghe."""
+    me = uuid.UUID(client.get("/api/v1/auth/me", headers=auth("learner")).json()["id"])
+    build_world(db_session, me)
+    profile = db_session.get(UserProfile, me)
+    profile.target_score = 700
+    profile.exam_date = date.today() + timedelta(days=40)
+    p5_wrong = db_session.scalars(select(Question).where(Question.part == 5)).all()
+    for q in p5_wrong:
+        db_session.add(
+            QuestionLabel(question_id=q.id, facet="question_type", code="PART_5_VOCABULARY")
+        )
+    db_session.commit()
+
+    from app.models import PartSession, PartSessionItem
+
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    drill = next(i for i in plan["items"] if i["kind"] == "part_drill" and i["part"] == 5)
+    row = db_session.get(StudyPlanItem, (uuid.UUID(plan["id"]), drill["position"]))
+    assert row is not None and row.filter_codes == ["PART_5_VOCABULARY"]
+    p1_qs = db_session.scalars(select(Question).where(Question.part == 1)).all()
+
+    def _session(part: int, answered: list[Question]) -> None:
+        now = datetime.now(UTC)
+        sess = PartSession(user_id=me, part=part, labels=[], created_at=now)
+        db_session.add(sess)
+        db_session.flush()
+        for i, q in enumerate(answered, start=1):
+            db_session.add(
+                PartSessionItem(
+                    session_id=sess.id,
+                    question_id=q.id,
+                    position=i,
+                    answered_at=now,
+                    is_correct=False,
+                )
+            )
+        db_session.commit()
+
+    # Phiên chỉ chạm các câu KHÔNG mang nhãn của đúng part 5? Không có — p5
+    # đều mang nhãn. Dùng part 1: mục drill part 5 không được khép bởi nó.
+    _session(1, list(p1_qs)[:2])
+    mid = client.get("/api/v1/study-plan", headers=auth("learner")).json()
+    still = next(i for i in mid["items"] if i["position"] == drill["position"])
+    assert still["done"] is False, "phiên không cùng nhãn không được khép drill"
+
+    _session(5, [p5_wrong[0]])
+    end = client.get("/api/v1/study-plan", headers=auth("learner")).json()
+    closed = next(i for i in end["items"] if i["position"] == drill["position"])
+    assert closed["done"] is True and closed["completed_on"] == end["today"]

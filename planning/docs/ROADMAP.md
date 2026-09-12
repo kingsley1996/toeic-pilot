@@ -229,7 +229,15 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       đuôi: neo mini/mock va chạm nhảy `k += 1` QUA cả ngày thi (trần chỉ đặt
       cho hàng đợi học) — resolver mới tím ngày trống gần nhất, tràn exam thì
       LÙI, hết chỗ thì `day=None`; unit test `pack_days` ghim trực tiếp.
-      1194 pytest / 34 study plan.
+      **Sửa bug nghiêm trọng (2026-09-12):** một câu "tìm thông tin" Part 7
+      khép MỌI mục Part 7 — derivation chỉ so `part`, còn nhãn drill chỉ nằm
+      trong chuỗi link. mig 087 thêm `study_plan_item.filter_codes` (JSONB —
+      variant SQLite cho test, bài học `audio_script`), generator ghi `[code]`
+      cho drill có nhãn, `_plan_public` khớp `(part, code)` trên
+      `part_session_item` với CÙNG cửa thời gian "phiên sau khi plan sinh"
+      (thiếu cửa này là bài đầu vào tự khép sẵn mọi drill). Mục "đều tay"
+      không nhãn giữ luật part — đúng nghĩa của nó. 1195 pytest / 36 study
+      plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở

@@ -26,6 +26,7 @@ class StudyPlanItemPublic(BaseModel):
     # ĐÍCH ĐẾN do generator dựng (mig 085): drill kèm `?labels=`, board từ
     # vựng theo chủ đề, đề thi thử. None = hàng cũ — UI fallback bảng của nó.
     link: str | None = None
+    filter_codes: list[str] | None = None
     # Nhãn đường ống §15 — chỉ để hiển thị/nhóm, không phải hàng đợi.
     phase: PlanPhase | None = None
     # Phút ước lượng của một buổi (§17–21). Đây là con số PACKER dùng để chia

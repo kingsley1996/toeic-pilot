@@ -10,6 +10,7 @@ import uuid
 from datetime import date, datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     Date,
@@ -22,6 +23,7 @@ from sqlalchemy import (
     func,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -123,3 +125,9 @@ class StudyPlanItem(Base):
     # Tick tay: người học khẳng định xong. NULL = chưa tự tick. Không ghi đè
     # lên bản ghi học — `routes/study_plan.py` gộp hai nguồn khi đọc.
     done_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Bộ nhãn DRILL khép theo (mig 087): phiên phải có câu ĐÚNG NHÃN, không
+    # phải "bất kỳ câu nào cùng part". NULL = mục chung theo part (ý "đều
+    # tay") hoặc hàng cũ.
+    filter_codes: Mapped[list[str] | None] = mapped_column(
+        JSON().with_variant(JSONB(), "postgresql"), nullable=True
+    )

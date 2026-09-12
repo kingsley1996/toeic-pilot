@@ -22,7 +22,7 @@ có test giữ, không phải một bảng admin.
 import math
 import random
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy import func, select, update
@@ -122,6 +122,9 @@ class DraftItem:
     # Đích đến do generator dựng (mig 085). None = mục chung loại, UI tự nối
     # theo kind (bảng fallback vẫn sống cho hàng cũ).
     link: str | None = None
+    # Nhãn drill phải KHỚP MỚI XONG (mig 087) — cùng nguồn với `?labels=`
+    # trong link, nhưng nằm ở cột để derivation JOIN được bằng SQL.
+    codes: list[str] = field(default_factory=list)
 
 
 def _drill_link(part: int, code: str | None) -> str:
@@ -598,6 +601,7 @@ def _weekly_schedule(
                         ),
                         phase="weakness",
                         link=_drill_link(s.part, s.code or None),
+                        codes=[s.code] if s.code else [],
                     )
                 )
             if w < len(lessons):
@@ -739,6 +743,7 @@ def write_plan(
                 reason=item.reason,
                 phase=item.phase,
                 link=item.link,
+                filter_codes=item.codes or None,
             )
         )
     db.commit()
@@ -837,6 +842,7 @@ def generate_plan(
                 reason=(f"'{best.label_vi}' đúng {best.correct}/{best.total} — tập nhẹ giữ tay"),
                 phase="integrated",
                 link=_drill_link(best.part, best.code),
+                codes=[best.code] if best.code else [],
             )
 
     if exam_date is not None and days_left is not None and days_left > _FILLER_MIN_DAYS:
@@ -864,6 +870,7 @@ def _flat_drills(drill_pool: list[SkillStat], maintenance: DraftItem | None) -> 
             part=s.part,
             ref_id=None,
             label=f"Luyện Part {s.part}{f' — {s.label_vi}' if s.code else ''}",
+            codes=[s.code] if s.code else [],
             reason=f"Yếu dạng này — đúng {s.correct}/{s.total} câu ở test đầu vào",
             phase="weakness",
             link=_drill_link(s.part, s.code or None),

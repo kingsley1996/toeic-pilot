@@ -33,6 +33,7 @@ from app.models import (
     PartSessionItem,
     PlacementResult,
     PracticeTest,
+    Question,
     QuestionLabel,
     StudyPlan,
     StudyPlanItem,
@@ -214,6 +215,40 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
     # task", và họ đúng: lịch là lời hẹn đọc được, không phải khối nhảy. Bỏ
     # vài hôm thật thì mục quá hạn nằm lại quá khứ — nói thật, và có đường
     # tường minh "Dời lịch" (POST /repack) để xếp lại từ hôm nay.
+    # Drill có nhãn khép bằng phiên có câu ĐÚNG NHÃN (mig 087) — bug cũ: một
+    # câu Part 7 bất kỳ tick xong MỌI mục Part 7. (part, code) → ngày nộp SỚM
+    # NHẤT có câu mang code đó.
+    code_when = {
+        (part, code): when
+        for part, code, when in db.execute(
+            select(
+                Question.part, QuestionLabel.code, func.min(PartSessionItem.answered_at)
+            )
+            .join(PartSessionItem, PartSessionItem.question_id == Question.id)
+            .join(PartSession, PartSession.id == PartSessionItem.session_id)
+            .join(QuestionLabel, QuestionLabel.question_id == Question.id)
+            .where(
+                PartSession.user_id == user_id,
+                # CÙNG nguồn thời gian với `done_parts`: chỉ phiên sinh sau kế
+                # hoạch. Không có dòng này, chính bài đầu vào (mọi câu đều có
+                # nhãn) khép sẵn mọi drill — "chưa học gì đã xong hết".
+                PartSession.created_at >= plan.created_at,
+                PartSessionItem.answered_at.is_not(None),
+            )
+            .group_by(Question.part, QuestionLabel.code)
+        ).all()
+    }
+
+    def _drill_when(item: StudyPlanItem) -> datetime | None:
+        if item.filter_codes:
+            hits = [
+                code_when[(item.part, code)]
+                for code in item.filter_codes
+                if (item.part, code) in code_when
+            ]
+            return min(hits) if hits else None
+        return done_parts.get(item.part)
+
     profile = db.get(UserProfile, user_id)
     tz = profile.timezone if profile else "UTC"
     today = local_today(datetime.now(UTC), tz)
@@ -228,7 +263,7 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
         when: datetime | None = (
             done_lessons.get(item.ref_id)
             if item.kind == "grammar_lesson"
-            else done_parts.get(item.part)
+            else _drill_when(item)
             if item.kind == "part_drill"
             else None
         )
@@ -272,6 +307,7 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
                 test_slug=slug_info[0] if slug_info else None,
                 collection_slug=slug_info[1] if slug_info else None,
                 link=item.link,
+                filter_codes=item.filter_codes,
                 done=done,
                 manual_done=manual,
                 day=None,
