@@ -6,6 +6,8 @@ import {
   type StudyPlanItemPublic,
   type StudyPlanPublic,
   type UserProfilePublic,
+  type PlanEvaluationPublic,
+  type PlanVersionPublic,
 } from "@toeic-pilot/shared";
 import { Calendar, Pencil } from "lucide-react";
 import Link from "next/link";
@@ -70,10 +72,22 @@ function PlanView() {
   // null = không mở. `attemptId` là lượt placement sẽ được dựng plan khi form
   // hợp lệ — đường `?from=` mang nó tới, đường hero lấy từ gate.
   const [modal, setModal] = useState<{ attemptId: string | null } | null>(null);
+  const [evaluation, setEvaluation] = useState<PlanEvaluationPublic | null>(null);
+  const [versions, setVersions] = useState<PlanVersionPublic[]>([]);
 
   // Mục tiêu/ngày thi SỬA được ngay trên màn này — nhưng nguồn sự thật vẫn là
   // `user_profile` (SPEC-PLACEMENT: một nguồn cho cả form placement lẫn profile),
   // nên đây chỉ là một cửa nữa ghi vào ô đó, không phải cột thứ hai.
+  useEffect(() => {
+    if (!token || !plan) return;
+    apiFetch<PlanEvaluationPublic>(API_ROUTES.studyPlanEvaluation, { token })
+      .then(setEvaluation)
+      .catch(() => setEvaluation(null));
+    apiFetch<PlanVersionPublic[]>(API_ROUTES.studyPlanVersions, { token })
+      .then(setVersions)
+      .catch(() => setVersions([]));
+  }, [token, plan?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!token) return;
     apiFetch<UserProfilePublic>(API_ROUTES.profile, { token })
@@ -522,6 +536,8 @@ function PlanView() {
         )}
       </Panel>
 
+      <ProgressPanel plan={plan} evaluation={evaluation} versions={versions} busy={busy} />
+
       <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-rule pt-5">
         <Link
           href="/dashboard"
@@ -819,5 +835,141 @@ function TargetForm({
         </Button>
       </div>
     </form>
+  );
+}
+
+/** §31 bản gọn: tuần từ lịch ĐANG HIỂN THỊ (group ngay client trên
+ * `plan.items` — ngày đã pack sẵn ở payload, tính lại phía server là thêm
+ * một nguồn có thể lệch với cái người học đang nhìn). Series + trend đến từ
+ * `/evaluation` — cái đó cần câu truy vấn, không suy ra từ lịch được. */
+function ProgressPanel({
+  plan,
+  evaluation,
+  versions,
+  busy,
+}: {
+  plan: StudyPlanPublic;
+  evaluation: PlanEvaluationPublic | null;
+  versions: PlanVersionPublic[];
+  busy: boolean;
+}) {
+  const start = new Date(`${plan.starts_at}T12:00:00`);
+  const weeks = new Map<number, { due: number; done: number; minutes: number }>();
+  for (const item of plan.items) {
+    if (!item.day || !isCorePlanItem(item)) continue;
+    const idx = Math.max(
+      0,
+      Math.floor((new Date(`${item.day}T12:00:00`).getTime() - start.getTime()) / 604_800_000),
+    );
+    const bucket = weeks.get(idx) ?? { due: 0, done: 0, minutes: 0 };
+    bucket.due += 1;
+    if (item.done) {
+      bucket.done += 1;
+      bucket.minutes += item.est_minutes ?? 0;
+    }
+    weeks.set(idx, bucket);
+  }
+  const rows = [...weeks.entries()]
+    .filter(([, w]) => w.due > 0)
+    .sort((a, b) => a[0] - b[0])
+    .slice(0, 10);
+  const series = evaluation?.retakes ?? [];
+  const stale = evaluation?.new_diagnostic && !busy;
+
+  return (
+    <Panel className="mt-4 p-4">
+      <p className="text-label font-semibold uppercase text-ink-faint">Tuần &amp; tiến bộ</p>
+      {series.length > 0 && (
+        <p className="mt-2 flex flex-wrap items-center gap-1.5 font-data text-body tabular-nums">
+          {series.map((r, i) => (
+            <span key={r.attempt_id} className="inline-flex items-center gap-1.5">
+              {i > 0 && (
+                <span className="text-ink-faint" aria-hidden>
+                  →
+                </span>
+              )}
+              <span
+                className={cx(
+                  "font-semibold",
+                  i === series.length - 1 ? "text-ink" : "text-ink-muted",
+                )}
+              >
+                {r.total_scaled}
+              </span>
+            </span>
+          ))}
+          <span className="text-small font-normal text-ink-faint">
+            điểm đo lại qua các bài kiểm tra trên lịch
+          </span>
+        </p>
+      )}
+      {evaluation?.trend.length ? (
+        <ul className="mt-2 space-y-1 text-small">
+          {evaluation.trend.slice(0, 5).map((t) => (
+            <li key={t.code} className="flex flex-wrap items-baseline gap-x-2">
+              <span className="text-ink">{t.label}</span>
+              <span className="font-data tabular-nums text-ink-faint">
+                {t.baseline_total > 0
+                  ? `${Math.round((t.baseline_correct / t.baseline_total) * 100)}%`
+                  : "—"}
+                {" → "}
+                {t.recent_total > 0
+                  ? `${Math.round((t.recent_correct / t.recent_total) * 100)}%`
+                  : "chưa đo lại"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {rows.length > 0 && (
+        <ul className="mt-3 grid grid-cols-2 gap-1.5 text-small sm:grid-cols-5">
+          {rows.map(([idx, w]) => (
+            <li
+              key={idx}
+              className={cx(
+                "rounded border border-rule px-2 py-1.5",
+                w.done === w.due ? "border-ok/40 bg-ok-tint" : "bg-recess",
+              )}
+            >
+              <p className="text-label font-semibold uppercase text-ink-faint">Tuần {idx + 1}</p>
+              <p className="font-data tabular-nums text-ink">
+                {w.done}/{w.due}
+                {w.minutes > 0 && (
+                  <span className="ml-1 text-label font-normal text-ink-faint">
+                    ~{w.minutes}&apos;
+                  </span>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+      {stale && (
+        <p className="mt-3 text-small text-warn">
+          Bạn đã có bài đo mới — kế hoạch hiện hành vẫn đang bám số cũ. Quay lại trang này khi sẵn
+          sàng và bấm “Sinh lại” để dựng phiên bản mới từ kết quả mới nhất.
+        </p>
+      )}
+      {versions.length > 1 && (
+        <details className="mt-3">
+          <summary className="cursor-pointer text-small font-semibold text-ink-muted hover:text-ink">
+            Phiên bản kế hoạch ({versions.length})
+          </summary>
+          <ul className="mt-2 space-y-1 text-small">
+            {versions.map((v) => (
+              <li key={v.id} className="flex flex-wrap items-baseline gap-x-2">
+                <span className="font-data font-semibold tabular-nums text-ink">v{v.version}</span>
+                <span className="text-ink-muted">{v.reason ?? "Không rõ từ trước"}</span>
+                <span className="text-ink-faint">
+                  {new Date(v.created_at).toLocaleDateString("vi-VN")}
+                </span>
+                {v.is_current && <Tag tone="neutral">hiện hành</Tag>}
+                <span className="text-ink-faint">· {v.item_count} mục</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </Panel>
   );
 }

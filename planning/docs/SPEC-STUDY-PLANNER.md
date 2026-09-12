@@ -3,9 +3,14 @@
 **Status:** V1 ĐÃ DỰNG một phần đáng kể — pipeline tất định §5–§13, §16–§23,
 §26–§27, §34–§35 sống trong `app/services/study_planner.py`; calendar
 `STUDY-PLAN-CALENDAR.md` là mô tả hành vi HIỆN TẠI (tệp này chỉ là phạm vi
-mong muốn). Chưa có: weekly evaluation (§31), UI plan versions (§29),
-auto-replan (§32), LLM responsibilities (§24 — planner V2 tồn tại nhưng sau
-flag). Trạng thái công việc: `ROADMAP.md`.  
+mong muốn). ĐÃ có thêm V2/V3 bản tối giản (2026-09-12):
+§29 versions (`version`+`reason` trên `study_plan`, `/study-plan/versions`,
+UI "Phiên bản kế hoạch"), §31 evaluation (`/study-plan/evaluation`: chuỗi
+đo lại + trend nhãn baseline→recent + cờ `new_diagnostic`), §32 re-plan: phân tích một lượt đo lại khi ĐÃ có kế hoạch → phiên bản mới
+TỰ MỌC (`reason` "Đo lại bằng bài kiểm tra đầu vào", idempotent theo lượt);
+tạo kế hoạch LẦN ĐẦU vẫn phải là cú bấm có chủ ý.
+Chưa có: auto-replan thật sự (agent chạy nền — spec cấm trước khi V2 bền),
+LLM responsibilities (§24 — planner V2 vẫn sau flag). Trạng thái công việc: `ROADMAP.md`.  
 **Scope:** TOEIC Pilot MVP  
 **Goal:** Generate an adaptive study plan from `target score + exam date + available study time + 84-question diagnostic result`.
 

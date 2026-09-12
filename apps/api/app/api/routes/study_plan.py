@@ -25,12 +25,14 @@ from app.api.deps import get_current_user, get_gateway
 from app.core.database import get_db
 from app.models import (
     Attempt,
+    AttemptItem,
     GrammarLesson,
     GrammarLessonCompletion,
     PartSession,
     PartSessionItem,
     PlacementResult,
     PracticeTest,
+    QuestionLabel,
     StudyPlan,
     StudyPlanItem,
     TestCollection,
@@ -39,11 +41,15 @@ from app.models import (
 )
 from app.schemas.study_plan import (
     PlanEstimate,
+    PlanEvaluationPublic,
     PlanFeasibility,
     PlanFocus,
     PlanItemKind,
     PlanMockOption,
     PlanPhase,
+    PlanRetake,
+    PlanTrendRow,
+    PlanVersionPublic,
     StudyPlanItemPublic,
     StudyPlanPublic,
 )
@@ -329,6 +335,8 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
         ),
         why=insights.why if insights else None,
         mock_options=mock_options,
+        version=plan.version,
+        reason=plan.reason,
     )
 
 
@@ -394,14 +402,28 @@ def generate(
         forced = body is not None and body.force
         if same_or_older and same_source and not forced:
             return _plan_public(db, user.id, current)
+    # §32: lý do của PHIÊN BẢN MỚI suy từ đúng hai hàng đang so — lượt đo khác,
+    # hay đầu vào profile đổi. Cầm sẵn từ server để UI (và lịch sử) đọc được
+    # "v3 mọc từ đâu" mà không phải đoán lại.
+    profile = db.get(UserProfile, user.id)
+    if current is None:
+        reason = "Kế hoạch ban đầu"
+    elif current.placement_attempt_id != attempt.id:
+        reason = "Đo lại bằng bài kiểm tra đầu vào"
+    elif current.target_score != (
+        profile.target_score if profile else None
+    ) or current.exam_date != (profile.exam_date if profile else None):
+        reason = "Mục tiêu / ngày thi thay đổi"
+    else:
+        reason = "Sinh lại lịch theo thời gian học hiện tại"
     if body is not None and body.source == "llm":
         try:
-            plan = _generate_llm(db, user.id, attempt)
+            plan = _generate_llm(db, user.id, attempt, reason=reason)
         except Exception:  # noqa: BLE001 — mọi hỏng hóc của đường LLM rơi về rule
-            plan = generate_plan(db, user.id, attempt)
+            plan = generate_plan(db, user.id, attempt, reason=reason)
         return _plan_public(db, user.id, plan)
     try:
-        plan = generate_plan(db, user.id, attempt)
+        plan = generate_plan(db, user.id, attempt, reason=reason)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
     return _plan_public(db, user.id, plan)
@@ -422,6 +444,152 @@ def repack(
     plan.starts_at = local_today(datetime.now(UTC), profile.timezone if profile else "UTC")
     db.commit()
     return _plan_public(db, user.id, plan)
+
+
+@router.get("/versions", response_model=list[PlanVersionPublic])
+def versions(
+    db: Session = Depends(get_db), user: User = Depends(get_current_user)
+) -> list[PlanVersionPublic]:
+    """Lịch sử phiên bản kế hoạch (§29): bản cũ không bao giờ bị ghi đè, chỉ
+    bị hạ `is_current`. `done_count` ở đây ĐẾM TICK TAY — các nguồn xong khác
+    (bài nộp, bản ghi học) chỉ được suy cho kế hoạch HIỆN HÀNH lúc đọc; dựng
+    lại chúng cho từng bản cũ là chạy lại cả `_plan_public` N lần để đổi lấy
+    một dòng phụ trong UI."""
+    plans = list(
+        db.scalars(
+            select(StudyPlan)
+            .where(StudyPlan.user_id == user.id)
+            .order_by(StudyPlan.version.desc(), StudyPlan.created_at.desc())
+        )
+    )
+    if not plans:
+        return []
+    counts: dict[uuid.UUID, tuple[int, int]] = {
+        pid: (int(total), int(ticked or 0))
+        for pid, total, ticked in db.execute(
+            select(
+                StudyPlanItem.plan_id,
+                func.count(),
+                # `func.count(cột)` = đếm hàng KHÔNG NULL — SUM(boolean) không
+                # tồn tại ở Postgres và chỉ chạy được trên SQLite của test.
+                func.count(StudyPlanItem.done_at),
+            )
+            .where(StudyPlanItem.plan_id.in_([p.id for p in plans]))
+            .group_by(StudyPlanItem.plan_id)
+        ).all()
+    }
+    out: list[PlanVersionPublic] = []
+    for plan in plans:
+        total, ticked = counts.get(plan.id, (0, 0))
+        out.append(
+            PlanVersionPublic(
+                id=str(plan.id),
+                version=plan.version,
+                reason=plan.reason,
+                created_at=plan.created_at,
+                is_current=plan.is_current,
+                target_score=plan.target_score,
+                exam_date=plan.exam_date,
+                item_count=total,
+                done_count=int(ticked or 0),
+            )
+        )
+    return out
+
+
+@router.get("/evaluation", response_model=PlanEvaluationPublic)
+def evaluation(
+    db: Session = Depends(get_db), user: User = Depends(get_current_user)
+) -> PlanEvaluationPublic:
+    """§30–§31: đánh giá tiến bộ của kế hoạch hiện hành bằng SỰ KIỆN đã có,
+    không bảng event riêng — attempt đã là học-kiện rồi, thêm một kho thứ hai
+    là thêm một cách lệch nhau.
+
+    - `retakes`: mọi phán quyết placement đã chốt, theo thời gian. Đây là
+      chuỗi "đo lại" mà ô `mini_test` trên lịch tạo ra.
+    - `trend`: từng kỹ năng top-priority — đúng/bao_nhiêu ở BÀI ĐẦU VÀO của
+      kế hoạch này, và ở MỌI bài đã nộp sau đó (drill là câu thật có nhãn,
+      nên độ chính xác theo nhãn tính được trên toàn bộ, không chỉ retake).
+    - `new_diagnostic`: có phán quyết mới hơn ca mọc ra kế hoạch → lời khuyên
+      hiện hành đang bám số cũ; UI nhắc dựng phiên bản mới (không tự làm:
+      "re-plan tự động" viết lại lịch sau lưng người học là thứ spec cấm ở
+      §38 cho tới khi V2 chạy bền).
+    """
+    plan = _current_plan(db, user.id)
+    if plan is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chưa có kế hoạch học")
+    results = list(
+        db.scalars(
+            select(PlacementResult)
+            .where(
+                PlacementResult.user_id == user.id,
+                PlacementResult.estimator_version != "pending",
+            )
+            .order_by(PlacementResult.created_at)
+        )
+    )
+    retakes = [
+        PlanRetake(
+            attempt_id=str(r.attempt_id),
+            created_at=r.created_at,
+            total_scaled=r.listening_scaled + r.reading_scaled,
+            cefr=r.cefr_overall,
+        )
+        for r in results
+    ]
+    new_diagnostic = any(
+        r.attempt_id != plan.placement_attempt_id
+        and (r.created_at if r.created_at.tzinfo else r.created_at.replace(tzinfo=UTC))
+        >= (plan.created_at if plan.created_at.tzinfo else plan.created_at.replace(tzinfo=UTC))
+        for r in results
+    )
+
+    def _label_stats(attempt_ids: list[uuid.UUID]) -> dict[str, list[int]]:
+        if not attempt_ids:
+            return {}
+        agg: dict[str, list[int]] = {}
+        for code, is_correct in db.execute(
+            select(QuestionLabel.code, AttemptItem.is_correct)
+            .join(AttemptItem, AttemptItem.question_id == QuestionLabel.question_id)
+            .where(AttemptItem.attempt_id.in_(attempt_ids))
+        ).all():
+            bucket = agg.setdefault(code, [0, 0])
+            bucket[1] += 1
+            bucket[0] += 1 if is_correct else 0
+        return agg
+
+    baseline = _label_stats([plan.placement_attempt_id])
+    recent_ids = list(
+        db.scalars(
+            select(Attempt.id).where(
+                Attempt.user_id == user.id,
+                Attempt.status == "submitted",
+                Attempt.submitted_at.is_not(None),
+                Attempt.submitted_at >= plan.created_at,
+                Attempt.id != plan.placement_attempt_id,
+            )
+        )
+    )
+    recent = _label_stats(recent_ids)
+
+    profile = db.get(UserProfile, user.id)
+    today = local_today(datetime.now(UTC), profile.timezone if profile else "UTC")
+    insights = plan_insights(db, plan, profile, today)
+    trend: list[PlanTrendRow] = []
+    for s in insights.top_focus if insights else []:
+        b = baseline.get(s.code, [0, 0])
+        r = recent.get(s.code, [0, 0])
+        trend.append(
+            PlanTrendRow(
+                code=s.code,
+                label=s.label_vi,
+                baseline_correct=b[0],
+                baseline_total=b[1],
+                recent_correct=r[0],
+                recent_total=r[1],
+            )
+        )
+    return PlanEvaluationPublic(retakes=retakes, trend=trend, new_diagnostic=new_diagnostic)
 
 
 @router.patch("/items/{position}", response_model=StudyPlanPublic)
@@ -497,7 +665,9 @@ def _retarget_mock(
     item.link = mock_link(row[2], row[1])
 
 
-def _generate_llm(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPlan:
+def _generate_llm(
+    db: Session, user_id: uuid.UUID, attempt: Attempt, *, reason: str | None = None
+) -> StudyPlan:
     """Planner V2: LLM chọn từ danh sách ứng viên. Hỏng ở bất kỳ bước nào →
     ném ra để nơi gọi rơi về V1."""
     from datetime import UTC, datetime
@@ -527,4 +697,4 @@ def _generate_llm(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
     )
     if picks is None:
         raise ValueError("LLM không trả được lựa chọn hợp lệ")
-    return write_plan(db, user_id, attempt, picks, source="llm")
+    return write_plan(db, user_id, attempt, picks, source="llm", reason=reason)

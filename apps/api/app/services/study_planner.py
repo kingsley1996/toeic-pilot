@@ -25,7 +25,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -670,6 +670,7 @@ def write_plan(
     *,
     source: str = "rule",
     with_cadence: bool = True,
+    reason: str | None = None,
 ) -> StudyPlan:
     """Ghi danh sách mục thành kế hoạch hiện hành — phần dùng chung của cả hai
     planner. Hạ kế hoạch cũ trong cùng giao dịch: hai kế hoạch hiện hành không
@@ -716,6 +717,11 @@ def write_plan(
         # "Dời lịch" (POST /repack) là cách tường minh duy nhất để đổi móc neo.
         starts_at=today,
         is_current=True,
+        version=(
+            db.scalar(select(func.max(StudyPlan.version)).where(StudyPlan.user_id == user_id)) or 0
+        )
+        + 1,
+        reason=reason,
     )
     db.add(plan)
     db.flush()
@@ -738,7 +744,9 @@ def write_plan(
     return plan
 
 
-def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPlan:
+def generate_plan(
+    db: Session, user_id: uuid.UUID, attempt: Attempt, *, reason: str | None = None
+) -> StudyPlan:
     """Sinh kế hoạch hiện hành mới từ một lượt placement ĐÃ phân tích.
 
     Đường ống §26–§27 bản rule: skill profile (§5) → priority (§11) → hai
@@ -837,12 +845,14 @@ def generate_plan(db: Session, user_id: uuid.UUID, attempt: Attempt) -> StudyPla
         # Mock đứng CUỐI hàng đợi: packer neo nó tuần trước ngày thi dù vị trí
         # nào, nhưng cuối vẫn là cuối — "nước rút" đọc đúng từ danh sách.
         items = items + ([mock] if mock else [])
-        return write_plan(db, user_id, attempt, items, source="rule", with_cadence=False)
+        return write_plan(
+            db, user_id, attempt, items, source="rule", with_cadence=False, reason=reason
+        )
 
     # Danh sách phẳng: ≤14 ngày hoặc chưa có ngày thi — ngân sách ngắn của §5.
     budget = budget_for(today, exam_date)
     items = (lessons + _flat_drills(drill_pool, maintenance))[:budget]
-    return write_plan(db, user_id, attempt, items, source="rule", with_cadence=False)
+    return write_plan(db, user_id, attempt, items, source="rule", with_cadence=False, reason=reason)
 
 
 def _flat_drills(drill_pool: list[SkillStat], maintenance: DraftItem | None) -> list[DraftItem]:

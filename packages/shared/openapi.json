@@ -9637,6 +9637,35 @@
         "title": "PlanEstimate",
         "type": "object"
       },
+      "PlanEvaluationPublic": {
+        "properties": {
+          "new_diagnostic": {
+            "default": false,
+            "title": "New Diagnostic",
+            "type": "boolean"
+          },
+          "retakes": {
+            "items": {
+              "$ref": "#/components/schemas/PlanRetake"
+            },
+            "title": "Retakes",
+            "type": "array"
+          },
+          "trend": {
+            "items": {
+              "$ref": "#/components/schemas/PlanTrendRow"
+            },
+            "title": "Trend",
+            "type": "array"
+          }
+        },
+        "required": [
+          "retakes",
+          "trend"
+        ],
+        "title": "PlanEvaluationPublic",
+        "type": "object"
+      },
       "PlanFocus": {
         "description": "Một kỹ năng trong top priority — nhãn + bằng chứng thô, không điểm\npriority: người học đọc \"đúng 2/6\" chứ không đọc \"0.21\". `code`+`part` để\nchip bấm thẳng vào drill đã lọc đúng dạng câu.",
         "properties": {
@@ -9688,6 +9717,152 @@
           "title"
         ],
         "title": "PlanMockOption",
+        "type": "object"
+      },
+      "PlanRetake": {
+        "description": "Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian.",
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cefr": {
+            "title": "Cefr",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "total_scaled": {
+            "title": "Total Scaled",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "created_at",
+          "total_scaled",
+          "cefr"
+        ],
+        "title": "PlanRetake",
+        "type": "object"
+      },
+      "PlanTrendRow": {
+        "description": "§31: cùng một kỹ năng, hai lần đo — bài đầu vào và bài mới nhất.",
+        "properties": {
+          "baseline_correct": {
+            "title": "Baseline Correct",
+            "type": "integer"
+          },
+          "baseline_total": {
+            "title": "Baseline Total",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "recent_correct": {
+            "title": "Recent Correct",
+            "type": "integer"
+          },
+          "recent_total": {
+            "title": "Recent Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "label",
+          "baseline_correct",
+          "baseline_total",
+          "recent_correct",
+          "recent_total"
+        ],
+        "title": "PlanTrendRow",
+        "type": "object"
+      },
+      "PlanVersionPublic": {
+        "description": "Một phiên bản kế hoạch trong lịch sử (§29).",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "done_count": {
+            "title": "Done Count",
+            "type": "integer"
+          },
+          "exam_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Date"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_current": {
+            "title": "Is Current",
+            "type": "boolean"
+          },
+          "item_count": {
+            "title": "Item Count",
+            "type": "integer"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "target_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Score"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "reason",
+          "created_at",
+          "is_current",
+          "target_score",
+          "exam_date",
+          "item_count",
+          "done_count"
+        ],
+        "title": "PlanVersionPublic",
         "type": "object"
       },
       "ProgressionConfigAdmin": {
@@ -11937,6 +12112,17 @@
             "title": "Placement Attempt Id",
             "type": "string"
           },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
           "source": {
             "title": "Source",
             "type": "string"
@@ -11973,6 +12159,11 @@
             },
             "title": "Top Focus",
             "type": "array"
+          },
+          "version": {
+            "default": 1,
+            "title": "Version",
+            "type": "integer"
           },
           "weeks_left": {
             "anyOf": [
@@ -25984,6 +26175,33 @@
         ]
       }
     },
+    "/api/v1/study-plan/evaluation": {
+      "get": {
+        "description": "§30–§31: đánh giá tiến bộ của kế hoạch hiện hành bằng SỰ KIỆN đã có,\nkhông bảng event riêng — attempt đã là học-kiện rồi, thêm một kho thứ hai\nlà thêm một cách lệch nhau.\n\n- `retakes`: mọi phán quyết placement đã chốt, theo thời gian. Đây là\n  chuỗi \"đo lại\" mà ô `mini_test` trên lịch tạo ra.\n- `trend`: từng kỹ năng top-priority — đúng/bao_nhiêu ở BÀI ĐẦU VÀO của\n  kế hoạch này, và ở MỌI bài đã nộp sau đó (drill là câu thật có nhãn,\n  nên độ chính xác theo nhãn tính được trên toàn bộ, không chỉ retake).\n- `new_diagnostic`: có phán quyết mới hơn ca mọc ra kế hoạch → lời khuyên\n  hiện hành đang bám số cũ; UI nhắc dựng phiên bản mới (không tự làm:\n  \"re-plan tự động\" viết lại lịch sau lưng người học là thứ spec cấm ở\n  §38 cho tới khi V2 chạy bền).",
+        "operationId": "evaluation_api_v1_study_plan_evaluation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanEvaluationPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Evaluation",
+        "tags": [
+          "study-plan"
+        ]
+      }
+    },
     "/api/v1/study-plan/generate": {
       "post": {
         "description": "Sinh kế hoạch từ lượt placement chỉ định, hoặc lượt phân tích gần nhất.\n\nKHÔNG sinh lại mù quáng: trùng lượt với kế hoạch hiện hành → trả lại kế\nhoạch cũ; lượt chỉ định CŨ hơn → cũng trả lại kế hoạch cũ. Bấm \"Tạo kế\nhoạch\" từ một kết quả cũ không được phép thay kế hoạch sinh từ kết quả\nmới hơn — đúng một lời khuyên cho một thời điểm, không viết lại sau lưng.\n`force=True` là lối thoát khi đầu vào profile đổi (ngày thi, phút/ngày):\nlịch được trải lại từ cùng một kết quả.",
@@ -26118,6 +26336,37 @@
           }
         ],
         "summary": "Repack",
+        "tags": [
+          "study-plan"
+        ]
+      }
+    },
+    "/api/v1/study-plan/versions": {
+      "get": {
+        "description": "Lịch sử phiên bản kế hoạch (§29): bản cũ không bao giờ bị ghi đè, chỉ\nbị hạ `is_current`. `done_count` ở đây ĐẾM TICK TAY — các nguồn xong khác\n(bài nộp, bản ghi học) chỉ được suy cho kế hoạch HIỆN HÀNH lúc đọc; dựng\nlại chúng cho từng bản cũ là chạy lại cả `_plan_public` N lần để đổi lấy\nmột dòng phụ trong UI.",
+        "operationId": "versions_api_v1_study_plan_versions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlanVersionPublic"
+                  },
+                  "title": "Response Versions Api V1 Study Plan Versions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Versions",
         "tags": [
           "study-plan"
         ]

@@ -114,6 +114,53 @@ class StudyPlanPublic(BaseModel):
     feasibility: PlanFeasibility | None = None
     top_focus: list[PlanFocus] = []
     why: str | None = None
+    # §29: phiên bản + lý do — kế hoạch cũ không bị ghi đè, nó là một hàng
+    # `is_current=False` mà /study-plan/versions đọc lại được.
+    version: int = 1
+    reason: str | None = None
     # Rỗng khi kế hoạch không có mục thi thử — UI chỉ vẽ select khi có cả ô
     # lẫn danh sách.
     mock_options: list[PlanMockOption] = []
+
+
+class PlanVersionPublic(BaseModel):
+    """Một phiên bản kế hoạch trong lịch sử (§29)."""
+
+    id: str
+    version: int
+    reason: str | None
+    created_at: datetime
+    is_current: bool
+    target_score: int | None
+    exam_date: date | None
+    item_count: int
+    done_count: int
+
+
+class PlanRetake(BaseModel):
+    """Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian."""
+
+    attempt_id: str
+    created_at: datetime
+    total_scaled: int
+    cefr: str
+
+
+class PlanTrendRow(BaseModel):
+    """§31: cùng một kỹ năng, hai lần đo — bài đầu vào và bài mới nhất."""
+
+    code: str
+    label: str
+    baseline_correct: int
+    baseline_total: int
+    recent_correct: int
+    recent_total: int
+
+
+class PlanEvaluationPublic(BaseModel):
+    retakes: list[PlanRetake]
+    trend: list[PlanTrendRow]
+    # Một phán quyết MỚI HƠN ca chốt hiện hành đã tồn tại (bấm "Đo lại" theo
+    # lịch xong rồi) → UI nhắc dựng phiên bản mới, vì lời khuyên hiện hành
+    # đang bám số cũ.
+    new_diagnostic: bool = False

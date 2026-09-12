@@ -202,6 +202,8 @@ export type AdminUserPage = components["schemas"]["Page_AdminUserPublic_"];
 export type PlacementGate = components["schemas"]["PlacementGate"];
 export type PlacementResultPublic = components["schemas"]["PlacementResultPublic"];
 export type StudyPlanPublic = components["schemas"]["StudyPlanPublic"];
+export type PlanEvaluationPublic = components["schemas"]["PlanEvaluationPublic"];
+export type PlanVersionPublic = components["schemas"]["PlanVersionPublic"];
 export type StudyPlanItemPublic = components["schemas"]["StudyPlanItemPublic"];
 export type SystemStatus = components["schemas"]["SystemStatus"];
 export type UptimeReport = components["schemas"]["UptimeReport"];
@@ -307,6 +309,8 @@ export const API_ROUTES = {
   studyPlanGenerate: "/api/v1/study-plan/generate",
   studyPlanItemTick: (position: number) => `/api/v1/study-plan/items/${position}`,
   studyPlanRepack: "/api/v1/study-plan/repack",
+  studyPlanEvaluation: "/api/v1/study-plan/evaluation",
+  studyPlanVersions: "/api/v1/study-plan/versions",
   adminUsers: "/api/v1/admin/users",
   adminUserStats: "/api/v1/admin/users/stats",
   adminUser: (id: string) => `/api/v1/admin/users/${id}`,

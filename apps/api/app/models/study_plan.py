@@ -65,7 +65,11 @@ class StudyPlan(Base):
     # NULL = hàng trước 085, đọc fallback về `created_at`.
     starts_at: Mapped[date | None] = mapped_column(Date, nullable=True)
     is_current: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # §29: mỗi lần sinh là MỘT PHIÊN BẢN, kế hoạch cũ không bị ghi đè — nó
+    # nằm lại với `is_current=False` và số phiên tăng dần theo người học.
+    # `reason` do route generate suy từ diff thật (lượt đo / đầu vào đổi).
+    version: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1)
+    reason: Mapped[str | None] = mapped_column(String(120), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

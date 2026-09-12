@@ -172,12 +172,38 @@ nghiêm ở `/admin/planner-compare`.
 Đã thử `react-day-picker` và **bỏ**: nó là date picker; ép làm lịch sự kiện là
 đánh nhau với style của nó ở mọi dòng CSS.
 
+## 4b. Phiên bản & đánh giá (V2/V3, 2026-09-12)
+
+Mỗi lần `/generate` TẠO BẢN MỚI là một hàng `study_plan` với `version` =
+max+1 của người đó và `reason` SUY TỪ DIFF THẬT (lượt placement khác →
+"Đo lại…"; target/exam khác snapshot → "Mục tiêu / ngày thi thay đổi"; còn
+lại force → "Sinh lại lịch…"). Bản cũ không bị xoá bao giờ — `is_current`
+False và `/study-plan/versions` đọc lại cả lịch sử; đó là lý do "preserve
+completed work" của §32 không cần copy mục đã xong sang bản mới: lịch sử
+nằm ở CHÍNH các phiên bản.
+
+`/study-plan/evaluation` trả ba thứ, tất cả từ sự kiện ĐÃ CÓ (không bảng
+event riêng — attempt đã là học-kiện): chuỗi phán quyết theo thời gian,
+trend đúng/tổng theo nhãn câu (baseline = bài gốc của plan; recent = MỌI
+bài nộp sau `plan.created_at`, drill câu thật có nhãn đếm được), và
+`new_diagnostic` — có phán quyết mới hơn ca mọc plan.
+
+**Đo lại → plan tính lại NGAY khi phân tích** (2026-09-12, chốt của soạn giả):
+`POST /placement/attempts/{id}/analyze` — nếu người đó ĐÃ có kế hoạch hiện
+hành mọc từ lượt KHÁC — dựng luôn phiên bản mới (`reason` "Đo lại bằng bài
+kiểm tra đầu vào"). Đây là nhánh tất định của §32 (sự kiện + hàm thuần), không
+phải agent nền mà §38 cấm; `generate_plan` hỏng thì nuốt im lặng vì phán quyết
+đã chốt không được mất vì cái lịch. Tạo kế hoạch lần đầu VẪN là cú bấm. Cờ
+`new_diagnostic` còn để nhắc đường nộp bài mà chưa ai mở phân tích.
+
 ## 5. Chỗ nào sửa là hỏng im lặng
 
 | Nếu bạn… | Thì… | Ghim ở |
 |---|---|---|
 | Lưu ngày từng mục vào DB | ngày thành xác chết khi đổi quỹ thời gian; `starts_at` là móc neo DUY NHẤT được phép | `test_days_are_derived_at_read_time_not_stored` |
 | Cho lịch trôi theo từng cú tick | "dồn task" — chính cái bị người học bác; tick xong mọi ô sau nhảy lùi | `test_manual_tick_does_not_slide_the_calendar` |
+| Bỏ guard `current.placement_attempt_id != attempt.id` trong analyze | mỗi lần tải lại trang kết quả đo nở thêm một phiên bản | `test_retake_analyze_creates_new_plan_version` |
+| `SUM(done_at IS NOT NULL)` ở versions | chạy trên SQLite của test, NỔ 500 trên Postgres | `func.count(cột)` đếm NOT NULL, hoặc test bằng Postgres |
 | Bỏ luật một-ngày-một-kind khỏi packer | hai board từ vựng chung một ô ngày khi tuần nước rút xếp hai nền cạnh nhau | `test_topics_rotation_labels_vocabulary_by_subject` |
 | Dùng `datetime.now(UTC).date()` làm "hôm nay" | người học tối thấy lịch lệch một cột | `local_today(..., profile.timezone)` |
 | Cho tick tay đè derived / tick bài kiểm tra | un-tick xoá sự kiện đã học; tick=test thành "đã đo" giả | cột `manual` riêng · API 409 |

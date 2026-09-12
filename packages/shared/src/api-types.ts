@@ -4449,6 +4449,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/study-plan/evaluation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Evaluation
+         * @description §30–§31: đánh giá tiến bộ của kế hoạch hiện hành bằng SỰ KIỆN đã có,
+         *     không bảng event riêng — attempt đã là học-kiện rồi, thêm một kho thứ hai
+         *     là thêm một cách lệch nhau.
+         *
+         *     - `retakes`: mọi phán quyết placement đã chốt, theo thời gian. Đây là
+         *       chuỗi "đo lại" mà ô `mini_test` trên lịch tạo ra.
+         *     - `trend`: từng kỹ năng top-priority — đúng/bao_nhiêu ở BÀI ĐẦU VÀO của
+         *       kế hoạch này, và ở MỌI bài đã nộp sau đó (drill là câu thật có nhãn,
+         *       nên độ chính xác theo nhãn tính được trên toàn bộ, không chỉ retake).
+         *     - `new_diagnostic`: có phán quyết mới hơn ca mọc ra kế hoạch → lời khuyên
+         *       hiện hành đang bám số cũ; UI nhắc dựng phiên bản mới (không tự làm:
+         *       "re-plan tự động" viết lại lịch sau lưng người học là thứ spec cấm ở
+         *       §38 cho tới khi V2 chạy bền).
+         */
+        get: operations["evaluation_api_v1_study_plan_evaluation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/study-plan/generate": {
         parameters: {
             query?: never;
@@ -4518,6 +4550,30 @@ export interface paths {
          *     khác biệt với cái lịch nhảy theo từng cú tick vừa bị người học bác.
          */
         post: operations["repack_api_v1_study_plan_repack_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/study-plan/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Versions
+         * @description Lịch sử phiên bản kế hoạch (§29): bản cũ không bao giờ bị ghi đè, chỉ
+         *     bị hạ `is_current`. `done_count` ở đây ĐẾM TICK TAY — các nguồn xong khác
+         *     (bài nộp, bản ghi học) chỉ được suy cho kế hoạch HIỆN HÀNH lúc đọc; dựng
+         *     lại chúng cho từng bản cũ là chạy lại cả `_plan_public` N lần để đổi lấy
+         *     một dòng phụ trong UI.
+         */
+        get: operations["versions_api_v1_study_plan_versions_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -8606,6 +8662,18 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** PlanEvaluationPublic */
+        PlanEvaluationPublic: {
+            /**
+             * New Diagnostic
+             * @default false
+             */
+            new_diagnostic: boolean;
+            /** Retakes */
+            retakes: components["schemas"]["PlanRetake"][];
+            /** Trend */
+            trend: components["schemas"]["PlanTrendRow"][];
+        };
         /**
          * PlanFocus
          * @description Một kỹ năng trong top priority — nhãn + bằng chứng thô, không điểm
@@ -8634,6 +8702,68 @@ export interface components {
             id: string;
             /** Title */
             title: string;
+        };
+        /**
+         * PlanRetake
+         * @description Một phán quyết placement đã chốt — chuỗi điểm đo lại theo thời gian.
+         */
+        PlanRetake: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Cefr */
+            cefr: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Total Scaled */
+            total_scaled: number;
+        };
+        /**
+         * PlanTrendRow
+         * @description §31: cùng một kỹ năng, hai lần đo — bài đầu vào và bài mới nhất.
+         */
+        PlanTrendRow: {
+            /** Baseline Correct */
+            baseline_correct: number;
+            /** Baseline Total */
+            baseline_total: number;
+            /** Code */
+            code: string;
+            /** Label */
+            label: string;
+            /** Recent Correct */
+            recent_correct: number;
+            /** Recent Total */
+            recent_total: number;
+        };
+        /**
+         * PlanVersionPublic
+         * @description Một phiên bản kế hoạch trong lịch sử (§29).
+         */
+        PlanVersionPublic: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Done Count */
+            done_count: number;
+            /** Exam Date */
+            exam_date: string | null;
+            /** Id */
+            id: string;
+            /** Is Current */
+            is_current: boolean;
+            /** Item Count */
+            item_count: number;
+            /** Reason */
+            reason: string | null;
+            /** Target Score */
+            target_score: number | null;
+            /** Version */
+            version: number;
         };
         /**
          * ProgressionConfigAdmin
@@ -9449,6 +9579,8 @@ export interface components {
             mock_options: components["schemas"]["PlanMockOption"][];
             /** Placement Attempt Id */
             placement_attempt_id: string;
+            /** Reason */
+            reason?: string | null;
             /** Source */
             source: string;
             /**
@@ -9470,6 +9602,11 @@ export interface components {
              * @default []
              */
             top_focus: components["schemas"]["PlanFocus"][];
+            /**
+             * Version
+             * @default 1
+             */
+            version: number;
             /** Weeks Left */
             weeks_left?: number | null;
             /** Why */
@@ -17638,6 +17775,26 @@ export interface operations {
             };
         };
     };
+    evaluation_api_v1_study_plan_evaluation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanEvaluationPublic"];
+                };
+            };
+        };
+    };
     generate_api_v1_study_plan_generate_post: {
         parameters: {
             query?: never;
@@ -17722,6 +17879,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudyPlanPublic"];
+                };
+            };
+        };
+    };
+    versions_api_v1_study_plan_versions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanVersionPublic"][];
                 };
             };
         };

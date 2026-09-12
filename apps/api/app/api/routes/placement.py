@@ -36,6 +36,7 @@ from app.schemas.placement import (
 from app.schemas.practice import AttemptStart
 from app.services import attempt_skills
 from app.services.placement import analyze
+from app.services.study_planner import generate_plan
 
 router = APIRouter(prefix="/placement", tags=["placement"])
 
@@ -333,6 +334,19 @@ def analyze_attempt(
             detail="Bài này không có câu trả lời nào nên không xếp được trình độ.",
         )
     row = analyze(db, attempt)
+
+    # §32, nhánh tất định: phán quyết MỚI là trigger re-plan — nhưng chỉ khi
+    # ĐÃ có kế hoạch (đo lại mà bắt người chưa có plan phải đi tạo là nhầm
+    # việc) và kế hoạch ấy mọc từ lượt KHÁC. Không tự động tạo plan lần đầu;
+    # cái đó vẫn là một cú bấm có chủ ý của người học.
+    current = db.scalar(
+        select(StudyPlan).where(StudyPlan.user_id == user.id, StudyPlan.is_current.is_(True))
+    )
+    if current is not None and current.placement_attempt_id != attempt.id:
+        try:
+            generate_plan(db, user.id, attempt, reason="Đo lại bằng bài kiểm tra đầu vào")
+        except Exception:  # noqa: BLE001 — phán quyết đã chốt; plan hỏng
+            pass  # không được ăn mất kết quả của người vừa làm bài
 
     skills = attempt_skills.skill_breakdown(db, attempt)
     ranked = [s for s in skills if s.count >= MIN_SKILL_SAMPLE]

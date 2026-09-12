@@ -204,6 +204,18 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       (`planItemDate` bỏ nhảy theo `completed_on` — bug "dồn task về hôm
       nay"). Scripts: `dev_reprovision_placement.py` (dev-only, chấm phán
       quyết target cho account bất kỳ). 1188 pytest / 27 bài study plan.
+      **V2+V3 tối giản (2026-09-12):** §29 versions — mig 086 thêm
+      `study_plan.version`+`reason` (backfill theo created_at, drop `note`
+      chưa ai ghi), mỗi lần sinh là một hàng mới KHÔNG ghi đè lịch sử,
+      `GET /study-plan/versions`; reason do route suy từ diff lượt/đầu vào.
+      §31 evaluation — `GET /study-plan/evaluation`: chuỗi phán quyết, trend
+      theo nhãn baseline→recent (drill câu thật có nhãn), cờ `new_diagnostic`
+      khi có bài đo mới hơn ca mọc plan. §32: đo lại → analyze TỰ dựng
+      phiên bản mới khi đã có plan (idempotent theo lượt, hỏng thì nuốt để
+      không ăn mất kết quả); tạo plan lần đầu vẫn là cú bấm; cờ `new_diagnostic`
+      nhắc đường nộp-chưa-phân-tích. UI "Tuần & tiến bộ":
+      tuần group client từ chính ngày đã pack (một nguồn với lịch hiển thị),
+      series điểm, trend, danh sách phiên bản. 1191 pytest / 31 study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở

@@ -1093,3 +1093,202 @@ def test_mock_test_target_is_a_choice_until_submitted(
         headers=auth("learner"),
     )
     assert locked.status_code == 409
+
+
+def _second_verdict(db_session: Session, me: uuid.UUID, attempt_id: uuid.UUID) -> None:
+    """Phán quyết placement thứ hai — hàng thật qua đường DB, như cách
+    `analyze` để lại sau một lượt đo lại."""
+    base = db_session.get(PlacementResult, attempt_id)
+    assert base is not None
+    attempt = Attempt(
+        user_id=me,
+        test_id=db_session.get(Attempt, attempt_id).test_id,
+        scope="full",
+        review_mode="exam",
+        status="submitted",
+        started_at=datetime.now(UTC),
+        submitted_at=datetime.now(UTC),
+        elapsed_seconds=900,
+    )
+    db_session.add(attempt)
+    db_session.flush()
+    db_session.add(
+        PlacementResult(
+            attempt_id=attempt.id,
+            user_id=me,
+            estimator_version="v1",
+            listening_raw=30,
+            reading_raw=25,
+            listening_scaled=350,
+            reading_scaled=250,
+            listening_low=320,
+            listening_high=380,
+            reading_low=220,
+            reading_high=280,
+            cefr_listening="B1",
+            cefr_reading="A2",
+            cefr_overall="A2",
+        )
+    )
+    db_session.commit()
+
+
+def test_plan_versions_record_reason_and_keep_history(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """§29+§32: mỗi lần sinh là một PHIÊN BẢN có LÝ DO, bản cũ nằm lại."""
+    me, profile = _learner_with_profile(client, auth, db_session)
+    profile.target_score = 700
+    profile.exam_date = date.today() + timedelta(days=40)
+    db_session.commit()
+
+    v1 = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    assert v1["version"] == 1 and v1["reason"] == "Kế hoạch ban đầu"
+    tick = next(i for i in v1["items"] if i["kind"] == "vocab_review")
+    client.patch(
+        f"/api/v1/study-plan/items/{tick['position']}", headers=auth("learner"), json={"done": True}
+    )
+
+    profile.target_score = 800
+    db_session.commit()
+    v2 = client.post(
+        "/api/v1/study-plan/generate", headers=auth("learner"), json={"force": True}
+    ).json()
+    assert v2["version"] == 2
+    assert v2["reason"] == "Mục tiêu / ngày thi thay đổi", "reason phải đọc được diff THẬT"
+    assert v2["id"] != v1["id"]
+
+    att = uuid.UUID(v2["placement_attempt_id"])
+    _second_verdict(db_session, me, att)
+    new_att = db_session.scalar(
+        select(PlacementResult).where(
+            PlacementResult.user_id == me, PlacementResult.attempt_id != att
+        )
+    )
+    assert new_att is not None
+    v3 = client.post(
+        "/api/v1/study-plan/generate",
+        headers=auth("learner"),
+        json={"attempt_id": str(new_att.attempt_id)},
+    ).json()
+    assert v3["version"] == 3 and v3["reason"] == "Đo lại bằng bài kiểm tra đầu vào"
+
+    versions = client.get("/api/v1/study-plan/versions", headers=auth("learner")).json()
+    assert [v["version"] for v in versions] == [3, 2, 1]
+    assert versions[0]["is_current"] and not versions[2]["is_current"]
+    assert versions[2]["item_count"] > 0
+    assert versions[2]["done_count"] == 1, "tick tay của bản cũ phải còn đó"
+
+
+def test_evaluation_exposes_series_trend_and_new_diagnostic(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """§30–§31: chuỗi đo + trend theo nhãn + cờ "có số mới, lịch đang cũ"."""
+    me, profile = _learner_with_profile(client, auth, db_session)
+    profile.target_score = 700
+    profile.exam_date = date.today() + timedelta(days=40)
+    db_session.commit()
+    wrong = db_session.scalars(
+        select(AttemptItem.question_id).where(AttemptItem.is_correct.is_(False))
+    ).all()
+    for qid in wrong:
+        db_session.add(QuestionLabel(question_id=qid, facet="grammar", code="GRAMMAR_TENSE"))
+    db_session.commit()
+
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    ev = client.get("/api/v1/study-plan/evaluation", headers=auth("learner")).json()
+    assert len(ev["retakes"]) == 1 and ev["retakes"][0]["total_scaled"] == 90
+    assert ev["new_diagnostic"] is False
+    assert [t["code"] for t in ev["trend"]] == [f["code"] for f in plan["top_focus"]]
+    tense = next(t for t in ev["trend"] if t["code"] == "GRAMMAR_TENSE")
+    assert tense["baseline_total"] >= 3 and tense["recent_total"] == 0
+
+    att = uuid.UUID(plan["placement_attempt_id"])
+    _second_verdict(db_session, me, att)
+    second = db_session.scalar(
+        select(PlacementResult).where(
+            PlacementResult.user_id == me, PlacementResult.attempt_id != att
+        )
+    )
+    assert second is not None
+    # Nộp MỘT câu đúng trên đúng cái nhãn đó — đường "recent" phải đếm được
+    # bằng chứng từ bài nộp mới, không chỉ từ bài đầu vào.
+    first_wrong = wrong[0]
+    db_session.add(
+        AttemptItem(
+            attempt_id=second.attempt_id,
+            question_id=first_wrong,
+            position=1,
+            selected_option_id=None,
+            is_correct=True,
+        )
+    )
+    db_session.commit()
+
+    again = client.get("/api/v1/study-plan/evaluation", headers=auth("learner")).json()
+    assert again["new_diagnostic"] is True, "có phán quyết mới hơn ca mọc plan"
+    tense2 = next(t for t in again["trend"] if t["code"] == "GRAMMAR_TENSE")
+    assert tense2["recent_total"] >= 1 and tense2["recent_correct"] >= 1
+
+
+def test_retake_analyze_creates_new_plan_version(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """§32 tất định: đo lại xong → kế hoạch MỚI từ số mới, ngay khi phân tích.
+
+    Ca cũ không bị sửa — nó thành phiên bản trước. Phân tích lại cùng một
+    lượt KHÔNG được nở thêm phiên bản thứ ba."""
+    me, profile = _learner_with_profile(client, auth, db_session)
+    profile.target_score = 700
+    profile.exam_date = date.today() + timedelta(days=40)
+    db_session.commit()
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    assert plan["version"] == 1
+    base = db_session.get(Attempt, uuid.UUID(plan["placement_attempt_id"]))
+    assert base is not None
+    base.test.is_placement = True  # route analyze đòi đúng loại đề
+    db_session.commit()
+
+    retake = Attempt(
+        user_id=me,
+        test_id=base.test_id,
+        scope="full",
+        review_mode="exam",
+        status="submitted",
+        started_at=datetime.now(UTC),
+        submitted_at=datetime.now(UTC),
+        elapsed_seconds=900,
+    )
+    db_session.add(retake)
+    db_session.flush()
+    first_option = {
+        q.id: sorted(q.options, key=lambda o: o.label)[0].id
+        for q in db_session.scalars(
+            select(Question).where(Question.id.in_([it.question_id for it in base.items]))
+        )
+    }
+    for it in base.items:
+        db_session.add(
+            AttemptItem(
+                attempt_id=retake.id,
+                question_id=it.question_id,
+                position=it.position,
+                selected_option_id=it.selected_option_id or first_option[it.question_id],
+                is_correct=True,  # "làm tốt hơn" — kéo priority engine tính lại
+            )
+        )
+    db_session.commit()
+
+    r = client.post(f"/api/v1/placement/attempts/{retake.id}/analyze", headers=auth("learner"))
+    assert r.status_code == 200
+    again = client.get("/api/v1/study-plan", headers=auth("learner")).json()
+    assert again["version"] == 2
+    assert again["placement_attempt_id"] == str(retake.id)
+    assert again["reason"] == "Đo lại bằng bài kiểm tra đầu vào"
+    assert again["estimate"]["total"] > plan["estimate"]["total"], "plan mới phải bám số MỚI"
+
+    client.post(f"/api/v1/placement/attempts/{retake.id}/analyze", headers=auth("learner"))
+    third = client.get("/api/v1/study-plan", headers=auth("learner")).json()
+    assert third["version"] == 2, "analyze lại cùng lượt không nở phiên bản"
+    versions = client.get("/api/v1/study-plan/versions", headers=auth("learner")).json()
+    assert [v["version"] for v in versions] == [2, 1]
