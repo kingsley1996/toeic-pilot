@@ -190,6 +190,20 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       được. Note cooldown trên lịch chỉ hiện khi cửa mở MUỘN HƠN ô hẹn. Nút
       màn kết quả đọc "Xem kế hoạch học" khi plan dựng từ chính lượt đó.
       1187 pytest.
+      **Vòng UI + lịch 2026-09-12 (người học review từng màn):** card gộp "Bạn
+      đang ở đâu" — hai con số HERO (ước lượng/mục tiêu `text-hero`), dạng câu +
+      giải thích sau "Xem chi tiết", sửa mục tiêu = icon bút. Tạo kế hoạch khi
+      hồ sơ thiếu target/ngày thi PHẢI qua modal 4 ô điền sẵn (600 · thi sau 3
+      tháng · 6 buổi · 30′), cả đường `?from=`; `patchTargets` một nguồn ghi
+      profile. `why` viết lại thành template có cấu trúc (dòng badge + số đậm,
+      client dựng từ field — không parse văn bản). Lịch HẾT trắng trước ngày
+      thi: tuần buffer vẫn có nền nước rút, filler lấp ~90% ngân sách tuần, và
+      `pack_days` TRẢI ĐỀU hàng đợi theo horizon khi cung thiếu. Ô lịch: ngày
+      xong hết nền xanh, ngày đo nền cam + ClipboardCheck, ngày thi khung
+      action + panel động viên; tick mục tương lai đứng nguyên ô hẹn
+      (`planItemDate` bỏ nhảy theo `completed_on` — bug "dồn task về hôm
+      nay"). Scripts: `dev_reprovision_placement.py` (dev-only, chấm phán
+      quyết target cho account bất kỳ). 1188 pytest / 27 bài study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở

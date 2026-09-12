@@ -360,34 +360,50 @@ def _why(
 ) -> str:
     """§35 — giải thích bằng template từ số đã truy vấn. KHÔNG LLM: văn đều
     cho mọi người đọc thì không cần ai sáng tác, và một câu bịa số ở đây là
-    kế hoạch mất uy tín nhanh hơn mọi tiết kiệm prompt nào."""
-    parts = [
-        f"Test đầu vào ước lượng bạn ở khoảng {total} điểm "
-        f"(Nghe {raw.listening_scaled} · Đọc {raw.reading_scaled}, {raw.cefr_overall})."
-    ]
-    if target is not None and gap is not None and weeks_left:
-        direction = "cách mục tiêu" if gap > 0 else "đã chạm mục tiêu"
-        parts.append(
-            f"Mục tiêu {target}, {direction} {abs(gap)} điểm, còn {weeks_left} tuần "
-            f"với ~{weekly} phút học mỗi tuần."
-        )
-    elif profile is not None and profile.exam_date is None:
-        parts.append(
+    kế hoạch mất uy tín nhanh hơn mọi tiết kiệm prompt nào.
+
+    Format chốt 2026-09-12: một dòng số trần trước, giải thích sau. Nhiều
+    dòng là chủ ý — UI in bằng `whitespace-pre-line`."""
+    head = f"{total} → {target} điểm" if target is not None else f"{total} điểm ước lượng"
+    bits = [head]
+    if weeks_left:
+        bits.append(f"{weeks_left} tuần")
+    bits.append(f"{weekly} phút/tuần")
+    blocks = [" · ".join(bits)]
+
+    sentence = (
+        f"Bài test đầu vào ước lượng bạn đang ở mức {total} điểm "
+        f"(Nghe {raw.listening_scaled} · Đọc {raw.reading_scaled}, {raw.cefr_overall})"
+    )
+    if gap is not None and gap > 0 and target is not None:
+        sentence += f", còn cách mục tiêu {target} điểm khoảng {gap} điểm."
+    elif gap is not None and target is not None:
+        sentence += f", đã chạm mục tiêu {target} điểm."
+    else:
+        sentence += "."
+    blocks.append(sentence)
+    if weeks_left is None and profile is not None and profile.exam_date is None:
+        blocks.append(
             "Chưa có ngày thi nên kế hoạch chưa biết co giãn thế nào — nhập ngày thi để nó tính."
         )
+
     if focus:
-        listed = "; ".join(f"{s.label_vi} (đúng {s.correct}/{s.total})" for s in focus)
-        parts.append(
-            f"Kỹ năng priority cao nhất theo độ yếu × độ tin cậy mẫu × sức nặng phần: {listed}."
+        blocks.append(
+            "Kế hoạch ưu tiên những kỹ năng yếu nhất:\n"
+            + " → ".join(s.label_vi for s in focus)
+            + "."
         )
-        parts.append("Kỹ năng đã mạnh chỉ nhận một suất duy trì, không ăn ngân sách luyện.")
+        blocks.append(
+            "Các kỹ năng đã mạnh chỉ được bố trí một phần nhỏ để duy trì, "
+            "không chiếm ngân sách luyện tập chính."
+        )
     else:
-        parts.append(
+        blocks.append(
             "Chưa có kỹ năng nào đủ mẫu (≥3 câu) để kết luận — kế hoạch bám part "
             "yếu và nhịp kiểm tra."
         )
-    parts.append("Con số là ước lượng, không phải điểm chính thức và không hứa kết quả.")
-    return " ".join(parts)
+    blocks.append("Điểm số là ước lượng từ bài test đầu vào, không phải điểm chính thức.")
+    return "\n\n".join(blocks)
 
 
 def _filler_items(need: int) -> list[DraftItem]:
@@ -553,11 +569,15 @@ def _weekly_schedule(
     """
     horizon = min(days_left, _FILLER_MAX_DAYS)
     weeks = max(0, (horizon - _MOCK_BUFFER_DAYS) // _RETAKE_COOLDOWN_DAYS)
+    # Tuần CHẴN ô đo (buffer trước ngày thi), nhưng lịch không được trắng tới
+    # tận hôm thi: phần tuần lẻ vẫn phải có nền nước rút. `final_window` bên
+    # dưới đã tự chặn kỹ năng mới ở đúng vùng đó.
+    total_weeks = max(weeks, -(-horizon // _RETAKE_COOLDOWN_DAYS))
     days_per_week = (profile.study_days_per_week if profile else None) or DEFAULT_DAYS_PER_WEEK
     drills_per_week = 3 if days_per_week >= 6 else 2 if days_per_week >= 4 else 1
     topics, dtops = _background_pools(db)
     out: list[DraftItem] = []
-    for w in range(weeks):
+    for w in range(total_weeks):
         final_window = days_left - (w + 1) * 7 <= _FILLER_MIN_DAYS
         if not final_window:  # nước rút: không kỹ năng MỚI, chỉ còn đo + nền (§16)
             for i in range(min(drills_per_week, len(drill_pool))):
@@ -605,10 +625,36 @@ def _weekly_schedule(
                     link=f"/learn/dictation/topics/{dt_id}",
                 )
             )
+        # Nền lấp tuần: generator cũ xoay đúng 5 mục/tuần trong khi packer
+        # NHỒI được 2 mục 15' chung một buổi — hàng đợi cạn từ tuần 5, và
+        # người có ngày thi xa thấy lịch trắng hẳn trước kỳ thi. Lấp tới
+        # ~90% ngân sách tuần bằng nhịp nền (vocab/dict xen kẽ, mỗi tuần tối
+        # đa 4 — kín lịch chứ không biến mọi ngày thành ôn từ vựng).
+        week_minutes = (
+            (
+                min(drills_per_week, len(drill_pool)) * EST_MINUTES["part_drill"]
+                if not final_window
+                else 0
+            )
+            + (EST_MINUTES["grammar_lesson"] if (not final_window and w < len(lessons)) else 0)
+            + (15 if topics else 0)
+            + (15 if dtops else 0)
+        )
+        weekly_budget = days_per_week * (
+            (profile.minutes_per_day if profile else None) or DEFAULT_MINUTES_PER_DAY
+        )
+        gap_fill = int((weekly_budget * 9 // 10 - week_minutes) // 15)
+        if gap_fill > 0 and w >= weeks:
+            gap_fill = min(gap_fill, 4)  # tuần buffer: NỀN thôi, đừng dày
+        elif gap_fill > 0:
+            gap_fill = min(gap_fill, 2)
+        out.extend(_filler_items(gap_fill))
         # Mini CUỐI block tuần: packer neo nó đầu tuần SAU (đo kết thúc tuần
         # học, không phải mở màn tuần); thứ tự position cũng nói vậy — tuần
-        # đọc từ trái sang phải là học… học, đo.
-        out.append(_mini_item(w + 1))
+        # đọc từ trái sang phải là học… học, đo. Tuần buffer cuối KHÔNG có ô
+        # đo — đo sát ngày thi không còn chỗ nào để sửa gì sau đó.
+        if w < weeks:
+            out.append(_mini_item(w + 1))
         if len(out) >= _MAX_PLAN_ITEMS - 6:
             break
     if maintenance is not None:
@@ -872,8 +918,22 @@ def pack_days(
         used[k] = daily_minutes
         out[position] = _study_date(k, today, days_per_week)
 
+    # Có ngày thi là hàng đợi HỌC PHẢI TRẢI ĐỀU tới gần đích, không được
+    # tham lam nhồi hết vào đầu lịch — đó là cái tạo "tuần trống trước kỳ thi"
+    # mà người thi xa gặp. Item thứ i không đứng trước ngày học tỷ lệ i/n;
+    # cung thừa thành ngày nghỉ đều tay, cung thiếu không dồn lỗ về cuối.
+    horizon = min((exam_date - today).days, _FILLER_MAX_DAYS) if exam_date else 0
+    span = max(0, horizon - 1)
+    # Nhịp tự nhiên của hàng đợi là tổng phút / ngân sách ngày; chỉ KÉO GIÃN
+    # khi nó kết thúc sớm hơn đích — cung đủ thì pack greedy như cũ (nhét
+    # nhiều mục 15' vào một ngày 90' vẫn đúng), cung thiếu thì giãn đều.
+    total_min = sum(m for _p, m, _k in needs)
+    natural_last = max(1, -(-total_min // daily_minutes) - 1)
     cursor = 0
+    cum = 0
     for position, minutes, kind in needs:
+        cursor = max(cursor, (cum // daily_minutes) * span // natural_last)
+        cum += minutes
         while True:
             if cursor in blocked:
                 cursor += 1

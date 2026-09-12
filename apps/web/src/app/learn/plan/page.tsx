@@ -10,7 +10,7 @@ import {
 import { Calendar, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { PlanCalendar, isCorePlanItem } from "@/components/plan-calendar";
 import {
@@ -66,6 +66,10 @@ function PlanView() {
   const [error, setError] = useState<string | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  // null = không mở. `attemptId` là lượt placement sẽ được dựng plan khi form
+  // hợp lệ — đường `?from=` mang nó tới, đường hero lấy từ gate.
+  const [modal, setModal] = useState<{ attemptId: string | null } | null>(null);
 
   // Mục tiêu/ngày thi SỬA được ngay trên màn này — nhưng nguồn sự thật vẫn là
   // `user_profile` (SPEC-PLACEMENT: một nguồn cho cả form placement lẫn profile),
@@ -74,7 +78,15 @@ function PlanView() {
     if (!token) return;
     apiFetch<UserProfilePublic>(API_ROUTES.profile, { token })
       .then(setProfile)
-      .catch(() => setProfile(null));
+      .catch(() => setProfile(null))
+      .finally(() => setProfileLoaded(true));
+  }, [token]);
+
+  const fetchGate = useCallback(() => {
+    if (!token) return;
+    apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
+      .then(setGate)
+      .catch(() => setGate(null));
   }, [token]);
 
   const generate = useCallback(
@@ -112,9 +124,7 @@ function PlanView() {
           // Chưa có kế hoạch ≠ chưa làm test đầu vào. Hai đường đó phải khác
           // nhau trên màn hình — người đã làm test mà quên bấm "Tạo kế hoạch"
           // ở trang kết quả không thể quay lại bằng CTA "Làm bài test".
-          apiFetch<PlacementGate>(API_ROUTES.placementGate, { token })
-            .then(setGate)
-            .catch(() => setGate(null));
+          fetchGate();
         } else {
           setPlan(p);
           // Gate placement theo chân plan: mục "Kiểm tra lại" phải nói được
@@ -129,7 +139,33 @@ function PlanView() {
         }
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : "Không tải được kế hoạch."));
-  }, [token]);
+  }, [token, fetchGate]);
+
+  // "Tạo kế hoạch" không được im lặng dựng lịch từ hồ sơ thiếu: chưa có
+  // target/ngày thi thì MỞ MODAL với giá trị điền sẵn trước. `autoStarted`
+  // giữ hiệu ứng `?from=` không bấm hai lần khi profile vừa load xong.
+  const autoStarted = useRef(false);
+  function startCreate(attemptId: string | null) {
+    if (!profile?.target_score || !profile?.exam_date) {
+      setNone(true);
+      fetchGate();
+      setModal({ attemptId });
+      return;
+    }
+    void generate(attemptId);
+  }
+
+  async function createWithTargets(fields: TargetFields) {
+    try {
+      await patchTargets(fields);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Không lưu được.");
+      return;
+    }
+    const attemptId = modal?.attemptId ?? gate?.latest_attempt_id ?? null;
+    setModal(null);
+    await generate(attemptId);
+  }
 
   useEffect(() => {
     if (!token) return;
@@ -138,18 +174,29 @@ function PlanView() {
         load();
         return;
       }
+      if (!profileLoaded) return;
       // Kiểm kế hoạch hiện có TRƯỚC khi gọi generate: nút "Tạo kế hoạch học"
       // bấm lại từ cùng một kết quả thì chỉ GET xem lại — POST chỉ chạy khi
       // chưa có kế hoạch hoặc `from` là lượt placement khác (mới hơn).
       apiFetch<StudyPlanPublic | null>(API_ROUTES.studyPlan, { token })
         .then((p) => {
-          if (p && p.placement_attempt_id === from) setPlan(p);
-          else void generate(from);
+          if (p && p.placement_attempt_id === from) {
+            setPlan(p);
+          } else if (!autoStarted.current) {
+            autoStarted.current = true;
+            startCreate(from);
+          }
         })
-        .catch(() => void generate(from));
+        .catch(() => {
+          if (!autoStarted.current) {
+            autoStarted.current = true;
+            startCreate(from);
+          }
+        });
     }, 0);
     return () => window.clearTimeout(t);
-  }, [from, generate, load, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [from, load, token, profileLoaded, profile]);
 
   async function tickItem(item: StudyPlanItemPublic, done: boolean) {
     if (!token) return;
@@ -169,29 +216,29 @@ function PlanView() {
     }
   }
 
-  async function saveTargets(fields: {
-    target: string;
-    exam: string;
-    minutes: string;
-    days: string;
-  }) {
+  async function patchTargets(fields: TargetFields) {
+    if (!token) return;
+    // Gửi rõ cả key để trống = NULL: PATCH phân biệt "xoá" với "bỏ qua",
+    // và một `field or existing` sẽ biến "xoá ngày thi" thành no-op im lặng.
+    const updated = await apiFetch<UserProfilePublic>(API_ROUTES.profile, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify({
+        target_score: fields.target === "" ? null : Number(fields.target),
+        exam_date: fields.exam === "" ? null : fields.exam,
+        minutes_per_day: fields.minutes === "" ? null : Number(fields.minutes),
+        study_days_per_week: fields.days === "" ? null : Number(fields.days),
+      }),
+    });
+    setProfile(updated);
+  }
+
+  async function saveTargets(fields: TargetFields) {
     if (!token) return;
     setBusy(true);
     setError(null);
     try {
-      // Gửi rõ cả key để trống = NULL: PATCH phân biệt "xoá" với "bỏ qua",
-      // và một `field or existing` sẽ biến "xoá ngày thi" thành no-op im lặng.
-      const updated = await apiFetch<UserProfilePublic>(API_ROUTES.profile, {
-        method: "PATCH",
-        token,
-        body: JSON.stringify({
-          target_score: fields.target === "" ? null : Number(fields.target),
-          exam_date: fields.exam === "" ? null : fields.exam,
-          minutes_per_day: fields.minutes === "" ? null : Number(fields.minutes),
-          study_days_per_week: fields.days === "" ? null : Number(fields.days),
-        }),
-      });
-      setProfile(updated);
+      await patchTargets(fields);
       // Ngày thi/quỹ thời gian đổi là lịch đổi (packing theo phút, nhịp theo
       // tuần) — sinh lại force để phần đã qua không còn là danh sách cũ dán
       // trên lịch mới.
@@ -273,7 +320,7 @@ function PlanView() {
         />
         <div className="mt-6 flex flex-wrap gap-3">
           {donePlacement && !resuming && (
-            <Button disabled={busy} onClick={() => void generate(gate?.latest_attempt_id ?? null)}>
+            <Button disabled={busy} onClick={() => startCreate(gate?.latest_attempt_id ?? null)}>
               {busy ? "Đang dựng…" : "Tạo kế hoạch học"}
             </Button>
           )}
@@ -285,10 +332,18 @@ function PlanView() {
         {donePlacement && !resuming && (
           <div className="mt-5">
             <Alert tone="info">
-              Mục tiêu và ngày thi lấy từ hồ sơ của bạn. Chưa nhập thì kế hoạch vẫn dựng được — chỉ
-              là nó chưa biết bạn có bao nhiêu ngày.
+              Chưa có mục tiêu và ngày thi trong hồ sơ — bấm “Tạo kế hoạch học” sẽ mở hộp thông tin
+              với giá trị điền sẵn.
             </Alert>
           </div>
+        )}
+        {modal && (
+          <CreatePlanModal
+            profile={profile}
+            busy={busy}
+            onSubmit={createWithTargets}
+            onClose={() => setModal(null)}
+          />
         )}
       </Page>
     );
@@ -434,7 +489,7 @@ function PlanView() {
             </div>
           </Panel>
         )}
-        {detailsOpen && plan.why && <p className="mt-3 text-small text-ink-muted">{plan.why}</p>}
+        {detailsOpen && <PlanWhy plan={plan} target={profile?.target_score ?? plan.target_score} />}
         <TargetForm
           open={editing}
           onClose={() => setEditing(false)}
@@ -479,15 +534,185 @@ function PlanView() {
   );
 }
 
+type TargetFields = { target: string; exam: string; minutes: string; days: string };
+
+/**
+ * Khối "vì sao" trong Xem chi tiết. CẤU TRÚC, không phải chuỗi: cùng số đó
+ * server trả trong `why` cho API/test, còn màn hình thì quyền in đậm con số
+ * và badge hóa dòng đầu — parse lại văn bản để tô đậm là hai nguồn chữ trôi
+ * nhau, còn dựng từ field thì chỉ có một nguồn số.
+ */
+function PlanWhy({ plan, target }: { plan: StudyPlanPublic; target: number | null }) {
+  if (!plan.estimate) {
+    return plan.why ? (
+      <p className="mt-3 text-small whitespace-pre-line text-ink-muted">{plan.why}</p>
+    ) : null;
+  }
+  const est = plan.estimate;
+  const weekly = plan.minutes_per_day * plan.study_days_per_week;
+  const num = (children: ReactNode) => (
+    <span className="font-data font-semibold tabular-nums text-ink">{children}</span>
+  );
+  const chip = "rounded border border-rule bg-recess px-2.5 py-1 text-small";
+  return (
+    <div className="mt-3 space-y-3 text-small text-ink-muted">
+      <div className="flex flex-wrap gap-2">
+        <span className={chip}>
+          {num(est.total)}
+          {target != null ? (
+            <>
+              {" → "}
+              {num(target)} điểm
+            </>
+          ) : (
+            " điểm ước lượng"
+          )}
+        </span>
+        {plan.weeks_left != null && <span className={chip}>{num(plan.weeks_left)} tuần</span>}
+        <span className={chip}>{num(weekly)} phút/tuần</span>
+        {plan.feasibility && <FeasibilityTag value={plan.feasibility} />}
+      </div>
+      <p>
+        Bài test đầu vào ước lượng bạn đang ở mức {num(`${est.total} điểm`)} (Nghe{" "}
+        {num(est.listening)} · Đọc {num(est.reading)},{" "}
+        <span className="font-semibold text-ink">{est.cefr}</span>)
+        {target != null && plan.gap != null && plan.gap > 0 ? (
+          <>
+            , còn cách mục tiêu {num(`${target} điểm`)} khoảng {num(plan.gap)} điểm.
+          </>
+        ) : target != null ? (
+          <>, đã chạm mục tiêu {num(`${target} điểm`)}.</>
+        ) : (
+          "."
+        )}
+      </p>
+      {plan.top_focus.length > 0 && (
+        <p>
+          Kế hoạch ưu tiên những kỹ năng yếu nhất:{" "}
+          {plan.top_focus.map((f, i) => (
+            <span key={f.code}>
+              {i > 0 && (
+                <span aria-hidden className="text-ink-faint">
+                  {" → "}
+                </span>
+              )}
+              <span className="font-semibold text-ink">{f.label}</span>
+            </span>
+          ))}
+          .
+        </p>
+      )}
+      {plan.top_focus.length > 0 && (
+        <p>
+          Các kỹ năng đã mạnh chỉ được bố trí một phần nhỏ để duy trì, không chiếm ngân sách luyện
+          tập chính.
+        </p>
+      )}
+      <p>Điểm số là ước lượng từ bài test đầu vào, không phải điểm chính thức.</p>
+    </div>
+  );
+}
+
+/** Mặc định ngày thi = hôm nay + 3 tháng, tính theo lịch máy người dùng —
+ * kế hoạch dựng từ hôm nay thì mốc "3 tháng" phải là 3 tháng của họ. */
+function examDefault(): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 3);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function CreatePlanModal({
+  profile,
+  busy,
+  onSubmit,
+  onClose,
+}: {
+  profile: UserProfilePublic | null;
+  busy: boolean;
+  onSubmit: (fields: TargetFields) => Promise<void> | void;
+  onClose: () => void;
+}) {
+  const [fields, setFields] = useState<TargetFields>({
+    target: String(profile?.target_score ?? 600),
+    exam: profile?.exam_date ?? examDefault(),
+    days: String(profile?.study_days_per_week ?? 6),
+    minutes: String(profile?.minutes_per_day ?? 30),
+  });
+  const set = (key: keyof TargetFields) => (event: React.ChangeEvent<HTMLInputElement>) =>
+    setFields({ ...fields, [key]: event.target.value });
+  return (
+    <div
+      role="presentation"
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+    >
+      <form
+        role="dialog"
+        aria-modal="true"
+        aria-label="Thông tin dựng kế hoạch học"
+        onClick={(event) => event.stopPropagation()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          void onSubmit(fields);
+        }}
+        className="w-full max-w-md rounded border border-rule bg-panel p-5"
+      >
+        <p className="text-label font-semibold uppercase text-ink-faint">Tạo kế hoạch học</p>
+        <p className="mt-1 text-small text-ink-muted">
+          Kế hoạch cần bốn con số này. Đã điền sẵn giá trị thường dùng — sửa nếu bạn muốn.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="Điểm mục tiêu" hint="10–990, bước 5.">
+            <Input
+              type="number"
+              min={10}
+              max={990}
+              step={5}
+              value={fields.target}
+              onChange={set("target")}
+            />
+          </Field>
+          <Field label="Ngày thi dự kiến">
+            <Input type="date" value={fields.exam} onChange={set("exam")} />
+          </Field>
+          <Field label="Buổi học mỗi tuần" hint="1–7.">
+            <Input type="number" min={1} max={7} value={fields.days} onChange={set("days")} />
+          </Field>
+          <Field label="Phút mỗi buổi" hint="5–480.">
+            <Input
+              type="number"
+              min={5}
+              max={480}
+              step={5}
+              value={fields.minutes}
+              onChange={set("minutes")}
+            />
+          </Field>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <Button type="button" variant="secondary" size="sm" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button type="submit" size="sm" disabled={busy}>
+            {busy ? "Đang dựng…" : "Dựng kế hoạch"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 /** §10: ba nhãn feasibility, không lời hứa nào. Màu theo tone đã có, chữ
  * Việt để "FEASIBLE" không lọt vào mặt người học như một HTTP code. */
 function FeasibilityTag({ value }: { value: "FEASIBLE" | "CHALLENGING" | "HIGH_RISK" }) {
   const [tone, label] =
     value === "FEASIBLE"
-      ? (["ok", "Khả thi với nhịp này"] as const)
+      ? (["ok", "Khả thi với lịch hiện tại"] as const)
       : value === "CHALLENGING"
-        ? (["warn", "Hơi sát — cần đều đặn"] as const)
-        : (["alert", "Rủi ro cao so với lịch hiện tại"] as const);
+        ? (["warn", "Khá sát — cần học đều"] as const)
+        : (["alert", "Khó đạt với lịch hiện tại"] as const);
+
   return <Tag tone={tone}>{label}</Tag>;
 }
 

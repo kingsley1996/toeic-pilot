@@ -498,6 +498,26 @@ def test_two_weeks_before_the_exam_stays_short(
     assert {i["kind"] for i in plan["items"]} <= {"grammar_lesson", "part_drill"}
 
 
+def test_week_buffer_before_exam_still_has_content(
+    client: TestClient, db_session: Session, auth
+) -> None:
+    """Ô đo dừng ở thi-7, nhưng những ngày cuối không được trắng lịch.
+
+    Tuần buffer (giữa lần đo cuối/mock và ngày thi) từng không nhận mục nào —
+    đề thi càng xa thì càng thấy rõ khoảng trống ngay trước kỳ thi. Chủ ý cũ
+    chỉ là KHÔNG KỸ NĂNG MỚI sát ngày thi, không phải nghỉ luôn."""
+    _me, profile = _learner_with_profile(client, auth, db_session)
+    exam = date.today() + timedelta(days=60)
+    profile.exam_date = exam
+    db_session.commit()
+    plan = client.post("/api/v1/study-plan/generate", headers=auth("learner"), json={}).json()
+    days = sorted(i["day"] for i in plan["items"] if i["day"])
+    assert days, "plan rỗng"
+    assert days[-1] <= exam.isoformat(), "không có mục nào hẹn sau ngày thi"
+    tail_floor = (exam - timedelta(days=6)).isoformat()
+    assert any(d > tail_floor for d in days), "sáu ngày cuối trước kỳ thi bị bỏ trống"
+
+
 def test_far_exam_has_a_planning_horizon(client: TestClient, db_session: Session, auth) -> None:
     _me, profile = _learner_with_profile(client, auth, db_session)
     profile.exam_date = date.today() + timedelta(days=400)
@@ -885,6 +905,9 @@ def test_plan_header_shows_estimate_gap_feasibility(
     assert plan["feasibility"] == "HIGH_RISK", "+610 điểm/6 tuần là không nổi"
     assert plan["top_focus"], "build_world có 3 câu grammar sai — phải có priority"
     assert "90" in (plan["why"] or "")
+    first = (plan["why"] or "").splitlines()[0]
+    assert first == "90 → 700 điểm · 6 tuần · 210 phút/tuần"
+    assert "Kế hoạch ưu tiên những kỹ năng yếu nhất:" in plan["why"]
 
     profile.target_score = None
     db_session.commit()
@@ -970,7 +993,8 @@ def test_topics_rotation_labels_vocabulary_by_subject(
     assert len(vocab) >= 2
     # Hai catalogue quay trên bốn tuần thì nhãn LẶP LÀ ĐÚNG (Travel tuần 1 và
     # 3); cái phải cấm được là lặp TRONG MỘT NGÀY và một chuỗi vô hồn.
-    assert {i["label"] for i in vocab} == {"Ôn từ vựng — Travel", "Ôn từ vựng — Office"}
+    named = [i for i in vocab if i["label"].startswith("Ôn từ vựng — ")]
+    assert {i["label"] for i in named} == {"Ôn từ vựng — Travel", "Ôn từ vựng — Office"}
     assert any(i["link"] == "/learn/vocabulary/travel" for i in vocab)
     from collections import Counter
 

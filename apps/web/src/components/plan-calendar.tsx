@@ -5,7 +5,7 @@ import {
   type StudyPlanItemPublic,
   type StudyPlanPublic,
 } from "@toeic-pilot/shared";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ClipboardCheck, Flag } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { ButtonLink, cx } from "@/components/ui";
@@ -22,7 +22,7 @@ import { ButtonLink, cx } from "@/components/ui";
  * Ngày của mỗi mục KHÔNG nằm trong database: API đóng gói hàng đợi theo phút
  * trên lịch neo `starts_at` (mỗi ngày ≤ phút/ngày, mỗi tuần ≤ số ngày học —
  * phần còn lại của tuần là nghỉ). Tick một mục KHÔNG dịch các mục khác: ngày
- * hẹn là lời hẹn đọc được. Mục đã xong hiển thị ở ngày THẬT (`completed_on`)
+ * hẹn là lời hẹn đọc được. Mục đã xong đứng nguyên ở ô hẹn, mang ✓
  * của bản ghi học — cái ✓ đứng đúng chỗ việc xảy ra, còn ô hẹn thì trống.
  *
  * "Hôm nay" lấy từ máy chủ (`plan.today`), không `new Date()`: múi máy khác
@@ -96,9 +96,11 @@ function cooldownOpensAfter(item: StudyPlanItemPublic, gate?: PlacementGate | nu
   return opens > item.day;
 }
 
-/** Ô lịch của một mục: đã xong thì là ngày xong THẬT, chưa thì là ngày hẹn. */
+/** Ô lịch của một mục: LUÔN là ngày hẹn. Tick hôm nay cho mục hẹn tuần sau
+ * phải để lại ✓ ở đúng ô tuần sau — đổi ô theo ngày xong thật là cái "dồn
+ * task" người học đã bác, kể cả khi nó chỉ là hiển thị. */
 export function planItemDate(item: StudyPlanItemPublic): string | null {
-  return item.done ? (item.completed_on ?? null) : (item.day ?? null);
+  return item.day ?? null;
 }
 
 const iso = (y: number, m: number, d: number): string =>
@@ -258,6 +260,7 @@ export function PlanCalendar({
         <DayDetail
           day={openDay}
           items={byDay.get(openDay) ?? []}
+          isExam={openDay === plan.exam_date}
           onTick={onTick}
           onPickMock={onPickMock}
           placementGate={placementGate}
@@ -301,6 +304,7 @@ function DayCell({
 }) {
   const doneCount = items.filter((i) => i.done).length;
   const allDone = items.length > 0 && doneCount === items.length;
+  const hasTest = items.some(isPlanTestItem);
   const shown = items.slice(0, CHIPS_PER_CELL);
   return (
     <button
@@ -315,10 +319,19 @@ function DayCell({
         "flex flex-col rounded border border-rule p-1 text-left",
         "min-h-12 align-top transition-none hover:bg-recess",
         "sm:min-h-24 sm:p-1.5",
-        // Ngày nghỉ không mục nào: nền recess thay vì panel — ô trống kiểu
-        // panel đọc là "quên chưa xếp", ô recess đọc là "nghỉ". Có mục (kể cả
-        // đã xong) thì mục thắng: nghỉ là suy diễn, sự thật là dữ liệu.
-        items.length === 0 && isRest ? "bg-recess" : "bg-panel",
+        // Ưu tiên nền một mạch if/else — hai class `bg-*` cùng đánh thì thứ tự
+        // trong CSS mới thắng, còn ở đây thứ tự NGỮ NGHĨA phải cố định:
+        // Thi > đã xong hết > ngày đo > nghỉ > panel. Ngày nghỉ không mục nào
+        // mới là recess: ô trống kiểu panel đọc là "quên chưa xếp".
+        isExam
+          ? "border-rule-strong bg-action-tint"
+          : allDone
+            ? "border-ok/40 bg-ok-tint"
+            : hasTest
+              ? "bg-warn-tint"
+              : items.length === 0 && isRest
+                ? "bg-recess"
+                : "bg-panel",
         isToday && "border-warn",
         open && "border-rule-strong bg-recess",
       )}
@@ -333,9 +346,16 @@ function DayCell({
           {Number(day.slice(8, 10))}
         </span>
         {isExam ? (
-          <span className="text-label font-semibold text-action-ink">Thi</span>
+          <span className="inline-flex items-center gap-0.5 text-label font-semibold text-action-ink">
+            <Flag size={10} aria-hidden />
+            Thi
+          </span>
+        ) : allDone ? (
+          <span className={cx("text-label font-semibold text-ok", hasTest && "mr-0.5")} aria-hidden>
+            ✓
+          </span>
         ) : (
-          allDone && <span className="text-label font-semibold text-ok">✓</span>
+          hasTest && <ClipboardCheck size={12} className="text-warn" aria-hidden />
         )}
       </span>
       {/*
@@ -386,6 +406,7 @@ function DayCell({
 function DayDetail({
   day,
   items,
+  isExam,
   onTick,
   onPickMock,
   placementGate,
@@ -393,11 +414,32 @@ function DayDetail({
 }: {
   day: string;
   items: StudyPlanItemPublic[];
+  isExam: boolean;
   onTick: (item: StudyPlanItemPublic, done: boolean) => void;
   onPickMock: (item: StudyPlanItemPublic, testId: string) => void;
   placementGate?: PlacementGate | null;
   mockOptions: StudyPlanPublic["mock_options"];
 }) {
+  if (isExam) {
+    return (
+      <div className="mt-3 rounded border border-rule-strong bg-action-tint p-4">
+        <p className="flex items-center gap-1.5 text-label font-semibold uppercase text-action-ink">
+          <Flag size={12} aria-hidden />
+          Ngày thi
+        </p>
+        <p className="mt-1.5 text-small text-ink-muted">
+          {new Date(`${day}T12:00:00`).toLocaleDateString("vi-VN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          })}{" "}
+          — ngày đích của lộ trình. Không còn việc nào để tick hôm nay. Những gì cần luyện đã ở
+          phía sau; giờ là lúc bước vào phòng thi, giữ bình tĩnh, đọc kỹ từng câu và hoàn thành đến
+          câu cuối.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="mt-3 rounded border border-rule bg-recess p-3">
       <p className="text-label font-semibold uppercase text-ink-faint">
