@@ -147,8 +147,11 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
             .join(PartSessionItem, PartSessionItem.session_id == PartSession.id)
             .where(
                 PartSession.user_id == user_id,
-                PartSession.created_at >= plan.created_at,
+                # Đồng hồ là lúc TRẢ LỜI, không phải lúc MỞ phiên: mở bài luyện
+                # từ hôm qua rồi trả lời hôm nay là việc HỌC THẬT hôm nay — chặn
+                # theo `created_at` từng làm đúng cú trả lời rơi khỏi lịch.
                 PartSessionItem.answered_at.is_not(None),
+                PartSessionItem.answered_at >= plan.created_at,
             )
             .group_by(PartSession.part)
         ).all()
@@ -221,19 +224,17 @@ def _plan_public(db: Session, user_id: uuid.UUID, plan: StudyPlan) -> StudyPlanP
     code_when = {
         (part, code): when
         for part, code, when in db.execute(
-            select(
-                Question.part, QuestionLabel.code, func.min(PartSessionItem.answered_at)
-            )
+            select(Question.part, QuestionLabel.code, func.min(PartSessionItem.answered_at))
             .join(PartSessionItem, PartSessionItem.question_id == Question.id)
             .join(PartSession, PartSession.id == PartSessionItem.session_id)
             .join(QuestionLabel, QuestionLabel.question_id == Question.id)
             .where(
                 PartSession.user_id == user_id,
-                # CÙNG nguồn thời gian với `done_parts`: chỉ phiên sinh sau kế
-                # hoạch. Không có dòng này, chính bài đầu vào (mọi câu đều có
-                # nhãn) khép sẵn mọi drill — "chưa học gì đã xong hết".
-                PartSession.created_at >= plan.created_at,
+                # Cùng đồng hồ với `done_parts`: câu được TRẢ LỜI từ khi kế
+                # hoạch sinh. Bài đầu vào không nằm ở bảng này nên không thể
+                # tự khép drill; còn phiên mở trước - trả lời sau thì VẪN tính.
                 PartSessionItem.answered_at.is_not(None),
+                PartSessionItem.answered_at >= plan.created_at,
             )
             .group_by(Question.part, QuestionLabel.code)
         ).all()

@@ -1423,9 +1423,12 @@ def test_part7_drill_closes_only_for_its_own_label(
     assert row is not None and row.filter_codes == ["PART_5_VOCABULARY"]
     p1_qs = db_session.scalars(select(Question).where(Question.part == 1)).all()
 
-    def _session(part: int, answered: list[Question]) -> None:
+    def _session(
+        part: int, answered: list[Question], *, opened_before_plan: bool = False
+    ) -> None:
         now = datetime.now(UTC)
-        sess = PartSession(user_id=me, part=part, labels=[], created_at=now)
+        opened = now - timedelta(days=2) if opened_before_plan else now
+        sess = PartSession(user_id=me, part=part, labels=[], created_at=opened)
         db_session.add(sess)
         db_session.flush()
         for i, q in enumerate(answered, start=1):

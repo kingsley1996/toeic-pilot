@@ -236,8 +236,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       cho drill có nhãn, `_plan_public` khớp `(part, code)` trên
       `part_session_item` với CÙNG cửa thời gian "phiên sau khi plan sinh"
       (thiếu cửa này là bài đầu vào tự khép sẵn mọi drill). Mục "đều tay"
-      không nhãn giữ luật part — đúng nghĩa của nó. 1195 pytest / 36 study
-      plan.
+      không nhãn giữ luật part — đúng nghĩa của nó. Tiếp ngay: đồng hồ khép
+      drill là lúc TRẢ LỜI (`part_session_item.answered_at >= plan.created_at`),
+      không phải lúc MỞ phiên — bản đầu chặn theo `created_at` làm mất quyền
+      "mở hôm qua, học hôm nay" của chính người báo bug. 1195 pytest / 36
+      study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở
