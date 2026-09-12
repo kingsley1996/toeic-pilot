@@ -433,9 +433,9 @@ function DayDetail({
             day: "numeric",
             month: "long",
           })}{" "}
-          — ngày đích của lộ trình. Không còn việc nào để tick hôm nay. Những gì cần luyện đã ở
-          phía sau; giờ là lúc bước vào phòng thi, giữ bình tĩnh, đọc kỹ từng câu và hoàn thành đến
-          câu cuối.
+          — ngày đích của lộ trình. Không còn việc nào để tick hôm nay. Những gì cần luyện đã ở phía
+          sau; giờ là lúc bước vào phòng thi, giữ bình tĩnh, đọc kỹ từng câu và hoàn thành đến câu
+          cuối.
         </p>
       </div>
     );

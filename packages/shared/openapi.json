@@ -11957,6 +11957,20 @@
             "title": "Est Minutes",
             "type": "integer"
           },
+          "filter_codes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filter Codes"
+          },
           "kind": {
             "enum": [
               "grammar_lesson",

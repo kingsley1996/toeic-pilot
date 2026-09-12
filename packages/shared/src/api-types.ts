@@ -9561,6 +9561,8 @@ export interface components {
              * @default 30
              */
             est_minutes: number;
+            /** Filter Codes */
+            filter_codes?: string[] | null;
             /**
              * Kind
              * @enum {string}
