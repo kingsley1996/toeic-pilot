@@ -921,8 +921,25 @@ def pack_days(
                 else mini_i * 7
             )
             k = (max(1, target // 7) + 1) * days_per_week - 1  # ngày học CUỐI của tuần đó
-        while k in blocked or used.get(k):
-            k += 1
+        # Neo va chạm: tìm ngày trống gần nhất, nếu tràn qua NGÀY THI (trần
+        # tuyệt đối của mọi ô lịch) thì LÙI về trước:
+        # tuyệt đối cho mọi ô lịch — "mini bị đẩy sang sau kỳ thi" là đúng
+        # cái bug người học bắt được. Không còn chỗ trước ngày thi thì mục
+        # ở lại `day=None` (hiếm: chỉ lịch thi nhồi neo trong vài ngày).
+        probe = k
+        while probe in blocked or used.get(probe):
+            probe += 1
+        if exam_date is not None:
+            while (
+                probe in blocked
+                or used.get(probe)
+                or _study_date(probe, today, days_per_week) >= exam_date
+            ) and probe > 0:
+                probe -= 1
+        if not (probe in blocked or used.get(probe)) and (
+            exam_date is None or _study_date(probe, today, days_per_week) < exam_date
+        ):
+            k = probe
         blocked.add(k)
         # Ngày của bài kiểm tra là NGÀY ĐỘC QUYỀN: đánh dấu đầy ngân sách để
         # không mục học nào được nhét chung — 75' của retake không có nghĩa

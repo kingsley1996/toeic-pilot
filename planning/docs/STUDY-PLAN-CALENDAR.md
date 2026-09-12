@@ -218,6 +218,7 @@ phải agent nền mà §38 cấm; `generate_plan` hỏng thì nuốt im lặng 
 | Đọc target từ snapshot plan làm header | xoá mục tiêu rồi vẫn "cách mục tiêu 610 điểm" | `plan_insights` đọc profile sống |
 | Cho `filler_per_week` theo BUỔI thay vì phút | lệch packing mỗi loại profile | `_week_cadence` tính theo phút |
 | `study_days_per_week` không phải giao kèo số NGÀY (filler cap theo phút) | chọn 7 ngày/tuần vẫn trống 2 ngày mỗi tuần | `_weekly_schedule` ĐẾM NGÀY trống rồi lấp bằng nền ghép đôi 15' (cap 14/tuần), `_MAX_PLAN_ITEMS` 120→150; test 7-ngày-không-trống |
+| `while k += 1` của neo mini/mock không có trần ngày thi | lịch thi ngắn + neo đụng nhau → "2 ngày học SAU ngày thi" (hàng đợi học bị chặn rồi, bài kiểm tra thì không) | resolver trong `pack_days`: ngày trống gần nhất, tràn qua exam thì LÙI; hết chỗ → `day=None` |
 | Cho mục học xếp SAU ngày thi khi hàng đợi thừa | "tuần trống" quay lại thành "hẹn sau ngày thi" | `pack_days` dừng khi ngày kế `>= exam_date`, phần thừa ở lại `day=None` — và `day=None` không được tính là "hai mục cùng ngày" |
 | Bỏ nhịp sàn kéo giãn trong `pack_days` | đề thi xa: lịch trắng hẳn trước kỳ thi (hàng đợi cạn từ tuần 5) | `test_week_buffer_before_exam_still_has_content` |
 | Bỏ filler lấp tuần / cho mini rơi vào tuần buffer | tuần cuối trống hoặc đo sát ngày thi không còn chỗ sửa | cùng test trên + `total_weeks` vs `weeks` |

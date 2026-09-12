@@ -1376,3 +1376,19 @@ def test_seven_study_days_means_no_blank_day(client: TestClient, db_session: Ses
         if (start + timedelta(days=k)).isoformat() not in days
     ]
     assert not blanks, f"7 ngày/tuần mà lịch vẫn trống: {blanks[:5]}"
+
+
+def test_pack_days_test_anchors_never_landed_after_exam() -> None:
+    """Neo mini/mock va chạm phải LÙI về trước ngày thi, không nhảy qua.
+
+    Bug thật: hàng đợi học đã bị chặn ở `>= exam`, nhưng `while ... k += 1`
+    của hai bài kiểm tra không có trần — lịch thi ngắn + neo đụng nhau là
+    mini/mock đáp SAU kỳ thi ("2 ngày học phía sau ngày thi")."""
+    from app.services.study_planner import pack_days
+
+    today = date(2026, 3, 2)
+    exam = date(2026, 3, 10)
+    # Hai neo cùng nhắm ngày 7/3 (>= exam): mini (1*7) và mock tuần cuối.
+    days = pack_days([], [(1, 75, "mini_test"), (2, 125, "mock_test")], today, 30, 7, exam)
+    assert days[1] < exam and days[2] < exam, [str(v) for v in days.values()]
+    assert days[1] != days[2]

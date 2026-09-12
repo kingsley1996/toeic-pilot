@@ -225,7 +225,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       là GIAO KÈO SỐ NGÀY — filler nay đếm ngày trống của tuần mà lấp (ghép
       đôi 15', cap 14/tuần), mũ mục 120→150 cắt theo thứ tự tuần, và
       `pack_days` không bao giờ hẹn mục học sau ngày thi (thừa → `day=None`).
-      Test mới ghim "7 ngày = không ngày trống". 1193 pytest / 33 study plan.
+      Test mới ghim "7 ngày = không ngày trống". Tiếp đó người học bắt nốt
+      đuôi: neo mini/mock va chạm nhảy `k += 1` QUA cả ngày thi (trần chỉ đặt
+      cho hàng đợi học) — resolver mới tím ngày trống gần nhất, tràn exam thì
+      LÙI, hết chỗ thì `day=None`; unit test `pack_days` ghim trực tiếp.
+      1194 pytest / 34 study plan.
       **Review 2026-09-07 (§9 của spec):** màn kết quả nay hiện DẢI tổng chứ
       không một con số; migration 070 thêm `listening_scaled`/`reading_scaled`
       vì trung điểm dải lệch điểm quy đổi thật tới 22 điểm/section; lượt bỏ dở
