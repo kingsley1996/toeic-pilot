@@ -44,6 +44,7 @@ from app.api.routes import (
     ruby,
     study_plan,
 )
+from app.core.cache import CacheControlMiddleware
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.logging import RequestContextMiddleware, configure_logging
@@ -78,6 +79,7 @@ app = FastAPI(
 )
 
 app.add_middleware(RequestContextMiddleware)
+app.add_middleware(CacheControlMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
