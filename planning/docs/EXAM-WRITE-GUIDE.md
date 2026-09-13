@@ -284,6 +284,21 @@ sửa bằng cách nâng echo của nhiễu (nhại thêm từ thoại) hoặc h
    xăng từng lọt vì bảng không có chúng. Gặp cảnh mới lọt: thêm một mục từ khóa
    (viết theo cách bối cảnh vẫn được viết, để substring bắt được) + một test
    theo mẫu `test_part1_avoid_catches_barber_and_gas_station`.
+10. **Đường chân trời của hai cột biểu đồ (hỏng im lặng, đo ở hard-review).**
+    Câu "which quarter scored above four?" chỉ đúng khi ĐÚNG MỘT cột vượt mốc.
+    Dữ liệu 4.1 và 4.6 cùng >4 là hai đáp án đúng — `check` chỉ đối chiếu lựa
+    chọn với TRỤC, không đọc giá trị. Viết xong câu hỏi hình, tự đếm số ô đạt
+    điều kiện trong tệp `graphics/`.
+11. **Đáp án đúng tự mâu thuẫn số học với nguyên văn.** "The lead carriage
+    holds fewer seats than the party size" trong khi chính thoại ghi "seats
+    eight" và nhóm năm người — đáp án sai ngay trên mặt giấy, không cổng nào
+    đo được. Trích dẫn số vào lựa chọn thì kiểm phép so sánh bằng mắt một lần.
+12. **Sửa leak để lại lựa chọn rác.** Vá rò rỉ bằng cách thay một cụm từ hay
+    biến lựa chọn thành vô nghĩa ("To set the seat on the new vendor"). Sau
+    mọi lần sửa leak/SI, đọc lại cả bốn lựa chọn như người chưa biết lịch sử.
+13. **Hai câu cùng kiểm một gốc từ trong Part 1.** p1-03 "stacked" và p1-06
+    "stacking" cùng một hành động mô tả — checker so chuỗi thô không stem nên
+    không bao giờ kêu. Đổi từ mô tả ở một câu (arranging), giữ nguyên ảnh.
 
 ## 6. Khối lượng và nhịp thực tế (để ước lượng)
 
