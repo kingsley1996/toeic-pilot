@@ -1531,6 +1531,34 @@ def test_a_multi_passage_set_must_actually_have_its_passages(tmp_path):
     assert any("cần 2 ngữ liệu" in problem for problem in problems)
 
 
+def test_part_7_volume_floor_scales_with_question_count(tmp_path):
+    """Sàn độ dài Part 7 buộc theo SỐ CÂU, không phải tripwire 25/50 cũ.
+
+    Đo được: tp-form-14 đi qua sàn cũ với 70 từ cho 3 câu (biên 2,8 lần) và
+    "ngắn, cụt" chỉ lộ khi người học đọc. 50 từ cho 2 câu giờ phải bị CỜ;
+    cùng cụm dệt dày lên trên 90 từ thì cờ phải tắt.
+    """
+    plan = bp.build_part7("tp-test", "Test", seed=3)
+    slot = next(s for s in plan.parts[0].slots if len(s.passages) > 1 and not any(s.passages))
+    slot.question_types = slot.question_types[:2]
+    slot.hard = 0
+    plan.parts[0].slots = [slot]
+
+    def volume_flags(text: str) -> list[str]:
+        writer.save_slot(tmp_path, slot, text)
+        return [
+            f
+            for r in checker.check_blueprint(plan, tmp_path, only=7)
+            for f in r.flags
+            if "ngắn bất thường" in f
+        ]
+
+    sentence = "Clause {n} clarifies shipping windows and payment terms."
+    filler = "\n".join(sentence.format(n=n) for n in range(14))
+    assert volume_flags(PART7_TWO) != []
+    assert volume_flags(PART7_TWO.replace("Sincerely,", filler + "\n\nSincerely,")) == []
+
+
 def test_part_7_special_forms_must_point_at_something_real(tmp_path):
     """Ba dạng câu của Part 7 hỏng theo cùng một kiểu: câu đọc trôi chảy, có
     đúng một đáp án, và thứ nó trỏ tới KHÔNG có trong ngữ liệu. Người học đi tìm

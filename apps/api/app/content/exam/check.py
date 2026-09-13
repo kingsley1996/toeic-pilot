@@ -1163,14 +1163,19 @@ def _check_set(
     shared_flags: list[str] = []
     if part in (3, 4, 6, 7):
         # Ngữ liệu quá NGẮN thì cụm không đủ chỗ giấu vế thứ hai của đáp án.
-        # Sàn = dưới min TOÀN HỌ (6 đề: P3 min≈31, P4 min≈32, P6 min≈81, P7
-        # min≈27/55 theo số văn bản) — một tripwire hồi quy: im lặng với mọi đề
-        # đã chấp nhận, chỉ nổ khi ngữ liệu ngắn hơn bất cứ thứ gì từng đạt.
+        # P3/P4/P6: sàn tripwire dưới min toàn họ (P3 min≈31, P4 min≈32,
+        # P6 min≈81). Part 7 đi luật riêng ở dưới.
         # CỜ chứ không chặn: ngắn là thiếu chỗ giấu đáp án, không phải sai — và
         # đề đang viết dở cũng ngắn một cách chính đáng.
         floor: int | None = {3: 30, 4: 30, 6: 80}.get(part)
         if part == 7:
-            floor = {1: 25, 2: 50}.get(text_passages or 0, 80)
+            # Part 7: sàn buộc theo SỐ CÂU, đơn vị là TỪ NỘI DUNG như chính phép
+            # đo (không phải từ thô — tỉ lệ ~0,65). Tripwire cũ (25/50 từ thô)
+            # là lỗ hỏng im lặng của tp-form-14: 70 từ thô cho 3 câu ăn nó với
+            # biên 2,8 lần và "ngắn, cụt" chỉ lộ khi người học đọc. Ngưỡng đo
+            # trên cả họ: cụm hỏng ≤18 từ nội dung/câu, cụm lành ≥22 — 20 cắt
+            # giữa hai đám, sàn 60 cho cụm 2–3 câu. CỜ, không chặn.
+            floor = max(60, 20 * len(questions))
         words = len(_content_words(script))
         if floor is not None and words < floor:
             shared_flags.append(
