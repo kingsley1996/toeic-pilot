@@ -1,0 +1,8 @@
+kind: form
+Coastal Line Booking CL-84412
+Passenger: Vu Thi Mai
+Carriage: 1
+Route: Pier Junction to Quarries
+Date: Saturday 6 December
+Seat: 12A and 14A
+Payment: counter print

@@ -1,0 +1,32 @@
+[SCRIPT]
+voice: ca_male_1
+Let's look at where the Northdale account stands. They signed the renewal at the beginning of the month, but only for a single year, which tells me they are still comparing us with the discounters. The proposal deadline for their warehouse expansion is the twentieth, and I want two draft quotes ready by then — one for the full product line, one for maintenance only. Nguyen's team handled the upsell last spring better than anyone here, so her group will lead this account again. Expect their final decision by the end of next month.
+
+[QUESTION]
+Who most likely is the speaker?
+(A) A technician from the warehouse
+(B) A customer touring the warehouse expansion
+(C) A team leader addressing sales colleagues
+(D) A consultant outside the product team
+Answer: C
+Explanation: Người nói giao việc ("I want two draft quotes"), bình luận về khách hàng bằng ngôi "us", và sắp xếp ai dẫn dắt tài khoản — đó là trưởng nhóm bán hàng đang họp. | (A) "A technician from the warehouse" — người nói bàn chuyện báo giá, không sửa thiết bị. | (B) "A customer touring the warehouse expansion" — ngược lại, khách hàng được bàn tới là Northdale, còn người nói thuộc bên cung cấp. | (C) "A team leader addressing sales colleagues" — đúng vai người phân công và bình luận nội bộ. | (D) "A consultant outside the product team" — anh nói "anyone here" như người trong công ty.
+
+Source: original
+[QUESTION]
+What did Northdale agree to at the beginning of the month?
+(A) A warehouse expansion
+(B) A two-team quote request
+(C) A spring upsell plan
+(D) A one-year renewal
+Answer: D
+Explanation: "They signed the renewal at the beginning of the month, but only for a single year" — hợp đồng gia hạn chỉ một năm. | (A) "A warehouse expansion" — mới là dự án bên khách đang tính, hạn nộp đề xuất ngày hai mươi. | (B) "A two-team quote request" — bản thân người nói muốn hai bản nháp báo giá. | (C) "A spring upsell plan" — vụ bán thêm mùa xuân do nhóm khác làm. | (D) "A one-year renewal" — đúng cam kết đã ký hồi đầu tháng.
+Source: original
+[QUESTION]
+What does the speaker suggest about the discounters?
+(A) They may be winning Northdale with cheaper prices
+(B) They just lost a large warehouse contract
+(C) They copied the firm's maintenance package
+(D) They are comparing quotes internally this week
+Answer: A
+Explanation: Người nói cho rằng việc khách chỉ gia hạn một năm "tells me they are still comparing us with the discounters" — đối thủ giá rẻ vẫn đang là lựa chọn của khách. | (A) "They may be winning Northdale with cheaper prices" — suy ra từ "still comparing us" với gói một năm ngắn hạn. | (B) "lost a large warehouse contract" — kho của Northdale chưa đấu thầu xong. | (C) "They copied the firm's maintenance package" — không chuyện sao chép gói nào được nhắc. | (D) "comparing quotes internally" — người so sánh là Northdale với nhóm bán hàng.
+Source: original

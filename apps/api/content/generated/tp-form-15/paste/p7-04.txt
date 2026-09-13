@@ -1,0 +1,45 @@
+[PASSAGE]
+Group chat — room booking for Friday's design review
+
+Minh (Wednesday 9:02): The Riverside room is out for us Friday — the marketing team renewed theirs yearly and the schedule only clears at 17:00. I asked Facilities for the other two options on our floor.
+Lan (Wednesday 9:08): The Bamboo room seats eight and has the big whiteboard wall, but its projector was pulled for repairs last week and Facilities quotes "back after the holiday." Sixteen people are coming, so eight seats does not work anyway.
+Minh (Wednesday 9:10): That leaves Cyclamen for twelve, or the Annexe across the yard for twenty with two projector lamps in stock. Annexe needs an access card upgrade, and the card office stops issuing them at fifteen on Fridays.
+Duc (Wednesday 9:21): My two guests arrive by taxi at half past two. Whatever we pick, nothing that asks us to cross the yard with prototypes in hand — rain is forecast after 14:00.
+Minh (Wednesday 9:24): Then Cyclamen, twelve seats, same floor. I'll confirm before the card office deadline even though we no longer need the card.
+
+[QUESTION]
+What are the participants working out?
+(A) Which meeting room to hold Friday's review in
+(B) When the projector comes back from repairs
+(C) How to upgrade access cards for the Annexe
+(D) Whether to move the review to after 17:00
+Answer: A
+Explanation: Cả chuỗi tin nhắn loại dần Riverside, Bamboo, Annexe rồi chốt Cyclamen — việc đang giải quyết là chọn phòng cho buổi rà soát thứ Sáu. | (A) "Which meeting room to hold Friday's review in" — đúng trục chọn phòng của cả nhóm. | (B) "When the projector comes back" — lịch máy chiếu chỉ là chi tiết loại Bamboo. | (C) "How to upgrade access cards" — thẻ ra vào là rào cản của một phương án đã bỏ. | (D) "move the review to after 17:00" — 17:00 là giờ phòng Riverside trống, không ai đề nghị dời lịch.
+Source: original
+[QUESTION]
+Why is the Bamboo room unsuitable?
+(A) Its whiteboard wall is too small
+(B) Its capacity falls short of the guest list
+(C) Its projector lamps are out of stock
+(D) Its schedule clears only at 17:00
+Answer: B
+Explanation: Lan nói Bamboo "seats eight" trong khi "Sixteen people are coming, so eight seats does not work anyway" — sức chứa không đủ. | (A) "whiteboard wall is too small" — ngược lại, phòng đó có tường bảng lớn. | (B) "capacity falls short of the guest list" — đúng lý do tám chỗ không chứa nổi mười sáu người. | (C) "projector lamps are out of stock" — hết đèn chiếu là chuyện của Annexe có sẵn, còn Bamboo mất máy chiếu đi sửa. | (D) "clears only at 17:00" — đó là Riverside.
+Source: original
+[QUESTION]
+What does Minh mean when he writes "I'll confirm before the card office deadline even though we no longer need the card"?
+(A) The Annexe will be held for them as a fallback
+(B) The access card upgrade is still required for Friday
+(C) The Cyclamen booking is not secure until confirmed
+(D) Facilities needs another option on the floor
+Answer: C
+Explanation: Chi tiết mấu chốt là chữ "confirm" đứng trước hạn của card office — dù tấm thẻ không còn cần, chỗ Cyclamen vẫn phải được bấm giữ trước khi mọi người rời quầy. | (A) "the Annexe will be held" — không ai đề nghị giữ phương án đã loại. | (B) "card upgrade is still required" — chính anh nói không còn cần thẻ. | (C) "The Cyclamen booking is not secure until confirmed" — đúng lý do Minh vẫn chốt trước hạn. | (D) "another option on the floor" — danh sách đã dừng ở Cyclamen.
+Source: original
+[QUESTION]
+What can be inferred about Duc's concern?
+(A) He wants the review moved to another week
+(B) He expects the marketing team to attend
+(C) His guests cannot use access cards
+(D) He would rather not walk outside with equipment
+Answer: D
+Explanation: Duc dặn "nothing that asks us to cross the yard with prototypes in hand" ngay sau khi nhắc mưa sau 14:00 — anh không muốn băng sân ngoài trời mang theo máy mẫu. | (A) "moved to another week" — anh chỉ ràng buộc phòng, không dời lịch. | (B) "the marketing team to attend" — đội marketing chỉ được nêu là người thuê phòng Riverside. | (C) "cannot use access cards" — thẻ là chuyện người lớn, không bị cấm với khách. | (D) "would rather not walk outside with equipment" — đúng nỗi ngại băng sân lúc trời mưa.
+Source: original

@@ -1,0 +1,45 @@
+[PASSAGE]
+Career Bridge Fair returns to the West Exhibition Hall
+
+After two sold-out editions, the Career Bridge Fair returns next Wednesday to the West Exhibition Hall with eighty-one employers, the largest turnout since the fair began. [1] Registration opens at eight-thirty and the doors take walk-ins, though last year's arrival of six hundred people between nine and ten meant the noon coffee stations ran dry. [2]
+
+This year's additions include a trades pavilion at the east end of the hall — plumbing, electrical and welding employers sharing a live demo ring — and, for the first time, a fifteen-minute "salary conversation" clinic where volunteers from two accounting firms review an offer letter with you on the spot. [3] Organisers stress that clinic slots are walk-up only and will close once forty conversations are booked.
+
+Students without a printed CV can use the copy desk near the information booth for a small fee, or have one checked aloud by a career adviser in the quiet room behind hall control. [4] The fair closes at four; the evening bus loop on Circular 3 doubles its trips from four-fifteen.
+
+[QUESTION]
+What is the main purpose of the article?
+(A) To preview what visitors will find at the fair
+(B) To report on the fair's first edition
+(C) To explain why coffee stations sold out
+(D) To announce the venue move to West Hall
+Answer: A
+Explanation: Bài báo liệt kê số nhà tuyển dụng, khu trades mới, phòng tư vấn lương và các tiện ích — mục đích là giới thiệu trước những gì người đi hội chợ sẽ gặp. | (A) "To preview what visitors will find at the fair" — đúng tính chất giới thiệu trước của toàn bài. | (B) "To report on the fair's first edition" — hội chợ đã qua hai mùa, bài này về mùa thứ ba. | (C) "To explain why coffee stations sold out" — chuyện cà phê chỉ là lời khuyên đến sớm. | (D) "To announce the venue move to West Hall" — West Hall không phải điểm dời đến.
+Source: original
+[QUESTION]
+What is true about the salary conversation clinic?
+(A) Its slots are reserved by email
+(B) It closes after forty booked talks
+(C) It is run by West Hall staff
+(D) It reviews offers for students only
+Answer: B
+Explanation: "clinic slots are walk-up only and will close once forty conversations are booked" — phòng đóng khi đủ bốn mươi lượt. | (A) "reserved by email" — ngược lại, clinhk chỉ nhận walk-up. | (B) "It closes after forty booked talks" — đúng con số organiser nêu. | (C) "run by West Hall staff" — tình nguyện viên đến từ hai hãng kế toán. | (D) "It reviews offers for students only" — bài không giới hạn độ tuổi cho phòng này.
+Source: original
+[QUESTION]
+What can be inferred about arrival time at the fair?
+(A) The copy desk opens at eight-thirty
+(B) Walk-ins are turned away at ten
+(C) Latecomers may find services crowded
+(D) The bus loop stops at four-fifteen
+Answer: C
+Explanation: Năm ngoái sáu trăm người vào khoảng chín đến mười khiến trạm cà phê cạn giữa trưa — đến muộn đồng nghĩa xếp hàng và hết dịch vụ sớm. | (A) "The copy desk opens at eight-thirty" — giờ tám rưỡi là của registration, không phải bàn photocopy. | (B) "Walk-ins are turned away at ten" — walk-in không bị từ chối, chỉ đông. | (C) "Latecomers may find services crowded" — đúng bài học từ con số sáu trăm người. | (D) "The bus loop stops at four-fifteen" — ngược lại, xe tăng chuyến sau giờ đó.
+Source: original
+[QUESTION]
+Where should the sentence "Organisers credit the fair's growth to employer repeat bookings, which open in March." be placed?
+(A) [4]
+(B) [2]
+(C) [3]
+(D) [1]
+Answer: D
+Explanation: Câu chèn giải thích vì sao số nhà tuyển dụng đạt kỷ lục — nó nối "the largest turnout since the fair began" (trước [1]) với chuỗi thông tin vận hành (sau [1]). | (A) "[4]" — cuối bài dành cho tiện ích and xe buýt. | (B) "[2]" — quanh đó là chuyện cà phê cạn, không ăn nhập với lịch đặt chỗ. | (C) "[3]" — đoạn trades pavilion nói về khu mới, không về tăng trưởng. | (D) "[1]" — đúng khe sau câu kỷ lục và trước phần giờ mở cửa.
+Source: original

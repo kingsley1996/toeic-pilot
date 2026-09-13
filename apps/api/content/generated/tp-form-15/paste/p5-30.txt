@@ -1,0 +1,9 @@
+[QUESTION]
+By the time the audit closed, both firms ------- the renewal contract.
+(A) had signed
+(B) have signed
+(C) sign
+(D) will sign
+Answer: A
+Explanation: "By the time + quá khứ" làm chuẩn, hành động hoàn tất trước chuẩn cần quá khứ hoàn thành. | (A) "had signed" — đúng thì quá khứ hoàn thành. | (C) "sign" — hiện tại đơn lạc mốc thời gian. | (B) "have signed" — hiện tại hoàn thành không dùng khi mốc đã đóng ở quá khứ. | (D) "will sign" — tương lai, ngược logic với "closed".
+Source: original

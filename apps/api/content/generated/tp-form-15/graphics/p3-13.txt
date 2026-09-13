@@ -1,0 +1,6 @@
+kind: schedule
+Welcome Desk Cover Rerun This Week
+Staff | Mon 9-11 | Mon 14-16 | Tue 9-11 | Tue 14-16
+Hieu | Stockroom | | | Desk relief
+Nga | | Tour group | Inventory | Audit
+Tuan | Desk relief | | Stockroom | Supplier call

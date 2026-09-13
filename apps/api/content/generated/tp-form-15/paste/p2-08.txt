@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Where will the safety refresher course be held?
+voice: ca_male_1
+(A) Next Wednesday morning.
+(B) Only for warehouse staff.
+(C) In the basement training room.
+Answer: C
+Explanation: "Where" hỏi địa điểm tổ chức lớp an toàn. | (A) "Next Wednesday morning" — trả lời "when". | (B) "Only for warehouse staff" — trả lời "who". | (C) "In the basement training room" — đúng loại thông tin địa điểm.
+Source: original

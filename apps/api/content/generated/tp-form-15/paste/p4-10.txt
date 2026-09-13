@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_male_1
+Before questions, the sales picture in one slide. The first period on the chart, sixty-one thousand dollars, was our softest stretch of the year — the roofing line only. Summer lifted us to ninety-four thousand after the retailer program launched, autumn steadied at one hundred and one, and the fourth closed at one hundred seventeen thousand, the best four months of Halstead Tools' history. The stadium contract, which everyone keeps asking about, sits in that last bar. Next quarter we aim to beat it without the stadium order repeating.
+
+[QUESTION]
+What is the speaker doing?
+(A) Explaining a new retailer program
+(B) Negotiating a stadium contract
+(C) Summarizing the year's quarterly results
+(D) Announcing next year's budget targets
+Answer: C
+Explanation: Người nói đọc lần lượt bốn cột doanh số trên biểu đồ rồi mới nhắc mục tiêu quý tới — trọng tâm là tóm tắt kết quả theo quý. | (A) "Explaining a new retailer program" — chương trình chỉ được nêu như lý do tăng của cột hai. | (B) "Negotiating a stadium contract" — hợp đồng sân vận động đã ký xong, nằm gọn trong cột cuối. | (C) "Summarizing the year's quarterly results" — đúng việc đọc bốn cột doanh số trên biểu đồ. | (D) "next year's budget targets" — mục tiêu được nhắc một câu, không phải nội dung chính.
+Source: original
+[QUESTION]
+Look at the graphic. Which period earned the year's lowest figure?
+(A) Q4
+(B) Q3
+(C) Q2
+(D) Q1
+Answer: D
+Explanation: Thoại gọi ngay cột đầu là "our softest stretch of the year"; đối chiếu biểu đồ, cột thấp nhất tương ứng mục một. | (A) "Q4" — cột cuối là một trăm mười bảy nghìn, mức cao nhất lịch sử. | (B) "Q3" — cột ba ổn định ở một trăm lẻ một nghìn. | (C) "Q2" — cột hai bật lên sau chương trình bán lẻ mùa hè. | (D) "Q1" — đúng cột thấp nhất được nêu ngay đầu bài.
+Source: original
+[QUESTION]
+What does the speaker expect next quarter?
+(A) A figure higher than the record four months
+(B) A return to roofing-line-only sales
+(C) A renegotiation of retailer terms
+(D) A pause on stadium spending
+Answer: A
+Explanation: "Next quarter we aim to beat it without the stadium order repeating" — mục tiêu là vượt cột kỷ lục dù không có hợp đồng sân vận động. | (A) "A figure higher than the record four months" — đúng ý beat it với mốc kỷ lục vừa nêu. | (B) "roofing-line-only sales" — dòng mái chỉ là chuyện của cột thấp nhất đã qua. | (C) "A renegotiation of retailer terms" — chương trình bán lẻ không được bàn sửa đổi. | (D) "pause on stadium spending" — hợp đồng sân là doanh thu, không phải chi tiêu.
+Source: original

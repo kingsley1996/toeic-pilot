@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_female_1
+Which yoga class did you end up signing up for?
+voice: au_male_1
+(A) It was easy once I practiced.
+(B) The instructor is from Bali.
+(C) The early Saturday session.
+Answer: C
+Explanation: "Which" hỏi lớp yoga cụ thể đã đăng ký. | (A) "easy once I practiced" — trả lời "how". | (B) "from Bali" — trả lời "where" về huấn luyện viên. | (C) "The early Saturday session" — chỉ đúng lớp được chọn.
+Source: original

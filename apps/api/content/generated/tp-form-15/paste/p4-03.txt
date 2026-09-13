@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_female_1
+Autumn at Bodyworks Fitness. Join as a full member before Sunday and your first month is free, plus two sessions with a personal trainer of your choice. Members take unlimited evening classes — yoga at half past six and pool fitness at half past seven, every weeknight — and each new member gets a body scan during week one. To claim the offer, show this advertisement at the front desk. A short health form takes five minutes to complete. And under twenty-five? You get a further ten percent off monthly fees at any of our four city locations.
+
+[QUESTION]
+What is the advertisement mainly promoting?
+(A) A seasonal swimming contest
+(B) An autumn membership offer
+(C) A personal trainer course
+(D) A health screening clinic
+Answer: B
+Explanation: Tin mở bằng "Autumn at Bodyworks" và bốn câu sau đều là quyền lợi khi gia nhập trước Chủ nhật — trọng tâm là ưu đãi hội viên theo mùa. | (A) "A seasonal swimming contest" — pool fitness là lớp hằng tuần, không giải đấu nào. | (B) "An autumn membership offer" — đúng ưu đãi gia nhập mở đầu và kết thúc bằng hạn Chủ nhật. | (C) "A personal trainer course" — hai buổi với huấn luyện viên chỉ là quà kèm khi vào. | (D) "A health screening clinic" — body scan là quyền lợi tuần một, không phải phòng khám.
+Source: original
+[QUESTION]
+What activity happens at half past seven?
+(A) A yoga session
+(B) A body scan
+(C) A pool fitness class
+(D) A trainer session
+Answer: C
+Explanation: Lời quảng cáo nêu "pool fitness at half past seven" — lớp dưới nước lúc bảy giờ rưỡi. | (A) "A yoga session" — yoga diễn ra lúc half past six. | (B) "A body scan" — buổi đo diễn ra trong tuần đầu, không có giờ cố định. | (C) "A pool fitness class" — đúng lớp ghi khung bảy giờ rưỡi. | (D) "A trainer session" — buổi với trainer là quà kèm, không có lịch tối.
+Source: original
+[QUESTION]
+What are listeners asked to do to claim the offer?
+(A) Attend a yoga class first
+(B) Pay the fee for month one
+(C) Register online this week
+(D) Present the advertisement at the desk
+Answer: D
+Explanation: Chỉ dẫn nhận ưu đãi gồm "show this advertisement at the front desk" — xuất trình quảng cáo tại quầy. | (A) "Attend a yoga class first" — lớp tối là quyền lợi sau khi đã vào làm hội viên. | (B) "Pay the fee for month one" — ngược lại, tháng đầu được miễn. | (C) "Register online" — việc nhận ưu đãi diễn ra tại front desk, không phải online. | (D) "Present the advertisement at the desk" — đúng việc được yêu cầu tại quầy lễ tân.
+Source: original

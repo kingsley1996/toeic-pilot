@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_female_1
+Welcome to the Bat Trang ceramics plant. A quick word about today's route. We start in the drying hall on the left, then watch the glazing line at ten, and the kiln firing at a quarter past eleven — that one is loud, so collect the ear protection hanging at the exit of hall two. Lunch is at twelve thirty in the staff canteen across the yard. One request as we pass the quality lab around two: the team there is packing export samples, so no photographs at that stop. If anyone wants the hand-painted seconds from the reject shelf, the shop opens right after the tour ends, and they go quickly.
+
+[QUESTION]
+Where does this talk most probably take place?
+(A) On a tour bus leaving the yard
+(B) In a university art department
+(C) At the start of a ceramics tour
+(D) At a shop opening ceremony
+Answer: C
+Explanation: Người nói mở đầu "Welcome to the Bat Trang ceramics plant" rồi mô tả lộ trình tham quan từng xưởng theo giờ — đây là buổi thăm nhà máy. | (A) "On a tour bus" — đoàn đang đứng trong sân nhà máy, điểm đầu ở bên trái. | (B) "In a university art department" — đây là xưởng sản xuất có lò nung và phòng kiểm chất lượng. | (C) "At the start of a ceramics tour" — đúng lúc phổ biến lịch trình ngay sau lời chào vào xưởng. | (D) "At a shop opening ceremony" — cửa hàng chỉ được nhắc mở cửa sau chuyến tham quan.
+Source: original
+[QUESTION]
+What can visitors buy after the tour?
+(A) Vouchers for the staff canteen
+(B) Sets of export sample plates
+(C) Boxes of spare ear protection
+(D) Hand-painted seconds from the reject shelf
+Answer: D
+Explanation: "the hand-painted seconds from the reject shelf" — hàng loại do lỗi nhẹ được bán ở cửa hàng ngay khi tour kết thúc. | (A) "Vouchers for the staff canteen" — bữa trưa có lịch riêng, không phải thứ mua ở cửa hàng. | (B) "Sets of export sample plates" — mẫu xuất khẩu chỉ đang được đóng gói, không bày bán. | (C) "Boxes of spare ear protection" — đồ bảo vệ tai ở lối ra hall hai để mượn, không bán. | (D) "Hand-painted seconds from the reject shelf" — đúng tên lô hàng loại trên kệ từ chối.
+Source: original
+[QUESTION]
+Why does the speaker mention the quality lab stop?
+(A) Cameras must stay away from one part of the route
+(B) Visitors will inspect export samples there
+(C) The lab is closed to tours all week
+(D) Photographs of the lab will be shared later
+Answer: A
+Explanation: Đoạn nói về phòng kiểm chất lượng kèm yêu cầu "no photographs at that stop" — nhắc để người tham quan cất máy ảnh ở chặng đó. | (A) "Cameras must stay away from one part of the route" — đúng yêu cầu không chụp ảnh ở chặng qua phòng lab. | (B) "inspect export samples" — du khách chỉ đi ngang lúc lab đang đóng gói. | (C) "closed to tours all week" — lab vẫn nằm trong lộ trình, chỉ cấm chụp. | (D) "will be shared later" — không lời hứa chia sẻ ảnh nào được nêu.
+Source: original

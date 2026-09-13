@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for meeting us here. After Sunday's flood, the board wants the roof membrane replaced before the next rainy month, not patched again.
+voice: au_male_1
+The last patch was my request — it was cheaper and the insurance file stayed open. But water reached your stockroom, so I won't argue. Full replacement means closing the loading bay for nine days.
+voice: uk_female_1
+Nine is too many. If your crew works the weekend shifts, can you finish in five, and we pay the difference?
+voice: au_male_1
+Five is possible only if we strip the north edge first. Send me the bay schedule and I'll block out the delivery trucks.
+
+[QUESTION]
+What are the speakers discussing?
+(A) Whether the stockroom flood was reported
+(B) Why the crew patched the roof early
+(C) How fast the roof replacement can proceed
+(D) Which crew will strip the membrane first
+Answer: C
+Explanation: Bài bàn chốt giữa lịch thay mái "before the next rainy month" và con số chín ngày rút còn năm — trục đối thoại là tiến độ thay mái. | (A) "Whether the stockroom flood was reported" — chuyện ngập đã xong, hai bên đang bàn sửa. | (B) "Why the crew patched the roof early" — miếng vá đã xong, không còn gì để bàn lý do. | (C) "How fast the roof replacement can proceed" — đúng chủ đề chín ngày hay năm ngày. | (D) "Which crew will strip the membrane first" — hai bên bàn tiến độ, không chọn người.
+Source: original
+[QUESTION]
+Why did the owner choose the cheaper patch last time?
+(A) The board refused to pay the difference
+(B) The stockroom had not been damaged yet
+(C) The loading bay had to stay in service
+(D) He wanted the insurance file to stay open
+Answer: D
+Explanation: Anh thừa nhận "it was cheaper and the insurance file stayed open" — hồ sơ bảo hiểm mở là lợi ích của miếng vá rẻ. | (A) "board refused to pay" — ngược lại, ban quản lý đang đề nghị trả thêm. | (B) "had not been damaged yet" — kho chưa ngập lúc đó, nhưng không phải lý do anh nói. | (C) "loading bay had to stay in service" — chuyện đóng cửa khoang chỉ được nêu cho phương án mới. | (D) "He wanted the insurance file to stay open" — đúng động cơ anh nêu.
+Source: original
+[QUESTION]
+What can be inferred about the five-day plan?
+(A) The north edge work is tied to the weekend arrangement
+(B) The nine-day closing will be approved as is
+(C) The loading bay will stay open for deliveries
+(D) The rainy month will delay the patch work
+Answer: A
+Explanation: Cô gắn năm ngày với "your crew works the weekend shifts", anh gắn năm ngày với "strip the north edge first" — ghép hai câu mới thấy việc mép bắc và lịch cuối tuần cùng là điều kiện của kế hoạch. | (A) "The north edge work is tied to the weekend arrangement" — đúng điều kiện ghép từ hai lượt nói. | (B) "The nine-day closing will be approved as is" — chín ngày bị từ chối ngay tại chỗ. | (C) "bay will stay open" — ngược hẳn, kế hoạch nào cũng đóng khoang. | (D) "rainy month will delay" — mùa mưa là deadline, không phải trở ngại mới.
+Source: original

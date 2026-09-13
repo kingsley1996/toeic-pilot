@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why was the quarterly figure revised downward?
+voice: au_male_1
+(A) It is in the shared finance folder.
+(B) Because two contracts slipped to next quarter.
+(C) Around mid-June, I think.
+Answer: B
+Explanation: "Why" cần một lý do cho việc hạ con số quý. | (A) "in the shared finance folder" — trả lời "where". | (B) "Because two contracts slipped to next quarter" — đưa đúng lý do bị trừ. | (C) "Around mid-June" — trả lời "when".
+Source: original

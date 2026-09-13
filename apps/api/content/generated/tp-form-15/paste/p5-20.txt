@@ -1,0 +1,9 @@
+[QUESTION]
+Premium gym lockers ------- at the front desk after identity verification.
+(A) rent
+(B) renting
+(C) are rented
+(D) rents
+Answer: C
+Explanation: Tủ đồ được cho thuê tại quầy — cần bị động hiện tại đơn. | (C) "are rented" — đúng thể bị động với chủ từ số nhiều "lockers". | (A) "rent" — chủ động ngụ ý tủ tự đi thuê thứ khác. | (B) "renting" — thiếu trợ động từ "are" thì không thành bị động. | (D) "rents" — chủ động chia ngôi, sai tương tự.
+Source: original

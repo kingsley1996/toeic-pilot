@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Did you get a chance to rebook the cancelled flight?
+voice: ca_male_1
+(A) It lands at gate fourteen.
+(B) Yes, I'm on the morning service now.
+(C) The airport shops are open all night.
+Answer: B
+Explanation: yes/no: đã đặt lại chuyến bay bị hủy chưa. | (B) "Yes, I'm on the morning service now" — xác nhận đã đổi xong. | (A) "lands at gate fourteen" — trả lời "where". | (C) "The airport shops are open all night" — trả lời chuyện giờ giấc ở sân bay, không nói đã đổi vé chưa.
+Source: original

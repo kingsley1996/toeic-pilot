@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) The swimmers are resting on the pool steps while the coach talks.
+(B) A coach is swimming alongside the three swimmers.
+(C) The swimmers are competing in a backstroke race.
+(D) The coach is timing swimmers who swim in their lanes.
+Answer: D
+Explanation: Trong ảnh, ba người bơi theo làn trong bể bơi trong khi một huấn luyện viên đứng bên thành bể cầm đồng hồ bấm. | (A) "resting on the pool steps" — các VĐV vẫn đang bơi trong làn nước. | (B) "swimming alongside" — huấn luyện viên đứng trên bờ, không xuống nước. | (C) "backstroke race" — cả ba đang bơi sấp trong làn, không ai bơi ngửa. | (D) "timing swimmers who swim in their lanes" — đúng hành động bấm giờ và ba người bơi theo làn.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How long can I keep the rental car this time?
+voice: uk_female_1
+(A) Up to five days, same as before.
+(B) Yes, insurance is included.
+(C) The station is open till nine.
+Answer: A
+Explanation: "How long" hỏi thời hạn giữ xe thuê. | (A) "Up to five days" — đúng khoảng thời gian được hỏi. | (B) "insurance is included" — yes/no lạc câu hỏi. | (C) "open till nine" — trả lời "when".
+Source: original

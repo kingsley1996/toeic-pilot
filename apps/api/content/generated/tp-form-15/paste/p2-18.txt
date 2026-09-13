@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Can I renew my library card at the self-service desk?
+voice: us_female_1
+(A) Yes, it takes under a minute there.
+(B) No, the shelves are on level three.
+(C) The reading room closes at eight.
+Answer: A
+Explanation: yes/no: gia hạn thẻ thư viện ở quầy tự phục vụ được không. | (A) "Yes, it takes under a minute there" — xác nhận được và nêu tốc độ. | (C) "closes at eight" — trả lời "when". | (B) "shelves are on level three" — trả lời "where" cho việc khác.
+Source: original

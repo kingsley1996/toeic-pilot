@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The vendor is arranging bunches of vegetables on the stall top.
+(B) The vendor is handing change to a customer at the stall.
+(C) The vendor is carrying baskets of vegetables to his truck.
+(D) The vendor is washing the vegetables in a large tub.
+Answer: A
+Explanation: Trong ảnh, một người bán đang xếp rau củ lên sạp ngoài chợ, các giỏ tre đặt thành hàng dưới đất. | (A) "arranging bunches of vegetables on the stall top" — đúng việc người bán đang làm ở sạp. | (B) "handing change to a customer" — không có khách nào ở sạp. | (C) "carrying baskets to his truck" — giỏ tre để nguyên dưới đất, không có xe tải. | (D) "washing the vegetables" — không có chậu nước rửa nào trong ảnh.
+Source: original

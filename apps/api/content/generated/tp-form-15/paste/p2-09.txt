@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_male_1
+Could you move the tenant meeting to the eleventh floor?
+voice: au_female_1
+(A) Sure, I'll rebook the boardroom there.
+(B) Yes, the lease renews next month.
+(C) It was scheduled for eleven anyway.
+Answer: A
+Explanation: Câu yêu cầu dời cuộc họp tầng khác, cần lời đáp nhận hoặc từ chối. | (A) "Sure, I'll rebook the boardroom there" — nhận lời và nêu việc sẽ làm. | (B) "the lease renews next month" — lạc sang chuyện hợp đồng thuê. | (C) "scheduled for eleven anyway" — chơi chữ số mười mốt (tầng / giờ).
+Source: original

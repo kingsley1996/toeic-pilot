@@ -1,0 +1,9 @@
+[QUESTION]
+By last summer the chain ------- its fourth downtown outlet.
+(A) opens
+(B) had opened
+(C) will open
+(D) has opened
+Answer: B
+Explanation: "By last summer" là mốc quá khứ làm chuẩn, hành động hoàn tất trước nó cần quá khứ hoàn thành. | (B) "had opened" — đúng thì quá khứ hoàn thành với "by + quá khứ". | (A) "opens" — hiện tại đơn lạc nhịp với mốc quá khứ. | (D) "has opened" — hiện tại hoàn thành không dùng sau mốc quá khứ đã đóng. | (C) "will open" — tương lai, ngược hẳn mốc thời gian.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_female_1
+What time can I check in at the Harbour View Hotel?
+voice: uk_male_1
+(A) The hotel is near the ferry terminal.
+(B) It includes breakfast, sir.
+(C) From three in the afternoon.
+Answer: C
+Explanation: "What time" hỏi giờ nhận phòng. | (A) "near the ferry terminal" — trả lời "where". | (B) "includes breakfast" — trả lời "what". | (C) "From three in the afternoon" — đúng mốc giờ.
+Source: original

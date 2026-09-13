@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Has the catering truck arrived for the office lunch?
+voice: uk_male_1
+(A) It was ordered from Green Fork.
+(B) No, there was a delay on the bridge.
+(C) The lunch starts at half past twelve.
+Answer: B
+Explanation: yes/no: xe giao đồ ăn đã tới chưa. | (A) "ordered from Green Fork" — trả lời "from where". | (B) "No, there was a delay on the bridge" — trả lời kèm lý do. | (C) "starts at half past twelve" — trả lời "when".
+Source: original

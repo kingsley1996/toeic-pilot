@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: us_female_1
+The email says the cybersecurity course is mandatory for everyone in finance. I don't see the point — we have never had a breach.
+voice: ca_male_1
+Fair question. The phishing attempt last spring came through an inbox in our own department, and the audit report that followed set this rule for every account.
+voice: us_female_1
+So it was us after all. When does the course run?
+voice: ca_male_1
+Two sessions, Saturday morning and Wednesday evening. I'm taking Wednesday; sign-up closes Friday, so book your seat now.
+
+[QUESTION]
+Who most probably is the woman?
+(A) A security officer handling the phishing attempt
+(B) The bank investigator from last spring
+(C) An auditor who wrote the audit report
+(D) An employee in the finance department
+Answer: D
+Explanation: Cô nhận email khóa học bắt buộc "for everyone in finance" và hỏi "we have never had a breach" — cô là nhân viên phòng tài chính bị áp luật mới. | (A) "A security officer handling the phishing attempt" — vụ phishing được kể ở ngôi quá khứ, cô không xử lý nó. | (B) "The bank investigator from last spring" — không có điều tra viên ngân hàng nào trong hội thoại. | (C) "An auditor who wrote the audit report" — bản audit đã xong từ sau vụ phishing, không phải cô viết. | (D) "An employee in the finance department" — đúng phòng ban mà email nêu áp dụng bắt buộc.
+Source: original
+[QUESTION]
+What does the man mean when he says "Fair question"?
+(A) Her question about the breach history is reasonable
+(B) He has booked the Wednesday evening slot already
+(C) The audit report arrived after sign-up closed
+(D) The phishing attempt is still being investigated
+Answer: A
+Explanation: "Fair question" đứng ngay sau câu "we have never had a breach", rồi anh liệt kê đúng nguyên nhân lịch sử — anh thừa nhận câu hỏi của cô có cơ sở. | (A) "Her question about the breach history is reasonable" — đúng sắc thái của "Fair question". | (B) "He has booked the Wednesday evening slot already" — chuyện chọn ca không nằm trong câu "Fair question". | (C) "arrived after sign-up closed" — báo cáo đã có từ sau vụ phishing. | (D) "still being investigated" — vụ việc đã khép lại bằng bản audit.
+Source: original
+[QUESTION]
+What will the woman probably do next?
+(A) Report the phishing incident to the bank
+(B) Book one of the two course sessions
+(C) Ask the audit office to change the rule
+(D) Wait until Friday to decide her seat
+Answer: B
+Explanation: Anh giục "book your seat now" vì "sign-up closes Friday" — việc kế tiếp của cô là đăng ký một trong hai buổi học. | (A) "Report the phishing incident to the bank" — vụ phishing đã được báo cáo từ mùa xuân. | (B) "Book one of the two course sessions" — đúng lời giục chốt suất trước hạn thứ Sáu. | (C) "Ask the audit office to change the rule" — không ai đề nghị đổi luật. | (D) "Wait until Friday to decide her seat" — ngược chỉ dẫn, hạn đóng ngay thứ Sáu.
+Source: original

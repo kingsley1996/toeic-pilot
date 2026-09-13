@@ -1,0 +1,9 @@
+[QUESTION]
+The pavilion ------- hosted the food demo last spring is now a gallery.
+(A) what
+(B) which
+(C) whose
+(D) where
+Answer: B
+Explanation: Mệnh đề quan hệ chủ từ thay cho "pavilion" (vật) làm chủ của "hosted". | (B) "which" — đại từ quan hệ chỉ vật giữ vai trò chủ từ. | (A) "what" — không có antecedent nên không nối được. | (D) "where" — trạng ngữ nơi chốn, không làm chủ từ của "hosted". | (C) "whose" — sở hữu, cần danh từ đi kèm ngay sau.
+Source: original

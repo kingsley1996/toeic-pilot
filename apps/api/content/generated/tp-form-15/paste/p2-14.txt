@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_male_1
+Is there a table by the window for four tonight?
+voice: us_female_1
+(A) The menu lists vegan options too.
+(B) We'll be there around seven, thanks.
+(C) Yes, but only if you book by six.
+Answer: C
+Explanation: yes/no: bàn gần cửa sổ cho bốn người tối nay còn không. | (C) "Yes, but only if you book by six" — trả lời trực tiếp kèm điều kiện. | (A) "vegan options" — lạc sang thực đơn. | (B) "We'll be there around seven" — câu này là lời của người đi ăn, không phải của nhà hàng trả lời.
+Source: original

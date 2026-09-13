@@ -1,0 +1,27 @@
+[PASSAGE]
+Spotless Monthly — office cleaning that keeps its calendar
+
+Spotless Monthly sends the same two-person crew to your office on a fixed weekly slot, and the invoice arrives monthly with the four visits itemised. Deep tasks — grout lines, high dusting, fridge clear-outs — rotate automatically: every second visit covers the pantry, every fourth visit the meeting rooms.
+
+New clients choose one of three entry packages: Startup for one workroom, Studio for up to three rooms, or Floor for open plans to four hundred square metres. Supplies and disposal fees sit inside every package price, so no invoice has ever carried an add-on. Evening and weekend slots can be requested, though the fixed-slot promise only holds for weekday daytime calendars.
+
+Crews change only when you do. Spotless keeps named staff on named buildings; if a cleaner leaves the rota, clients receive a two-week notice with the replacement's photo, not a locked door on Monday morning.
+
+[QUESTION]
+What can be inferred about Spotless invoices?
+(A) They rise when deep tasks appear
+(B) They arrive the day after every visit
+(C) They list each cleaner's hours separately
+(D) They never contain charges beyond the package
+Answer: D
+Explanation: "Supplies and disposal fees sit inside every package price, so no invoice has ever carried an add-on" — hóa đơn không bao giờ có khoản ngoài gói. | (A) "rise when deep tasks appear" — việc sâu xoay vòng định kỳ, không tính thêm tiền. | (B) "arrive the day after every visit" — hóa đơn về hằng tháng, bốn lượt gộp một kỳ. | (C) "each cleaner's hours" — chỉ có bốn visit được itemised, không có giờ công. | (D) "never contain charges beyond the package" — đúng kết luận của câu add-on.
+Source: original
+[QUESTION]
+How often is the pantry covered in the rotation?
+(A) On every second visit
+(B) On every fourth visit
+(C) Once at the start of service
+(D) At each fridge clear-out
+Answer: A
+Explanation: Quay vòng deep tasks nêu "every second visit covers the pantry" — hai tuần một lần vì lượt cleaning diễn ra hằng tuần. | (A) "every second visit" — đúng chu kỳ của khu pantry. | (B) "every fourth visit" — đó là tần suất phòng họp. | (C) "Once at the start" — lịch xoay không dừng ở lượt đầu. | (D) "each fridge clear-out" — vệ sinh tủ lạnh là một việc sâu trong cùng nhóm.
+Source: original

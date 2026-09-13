@@ -1,0 +1,9 @@
+[QUESTION]
+The crew repacked every damaged carton and sealed ------- with fresh tape.
+(A) they
+(B) them
+(C) their
+(D) theirs
+Answer: B
+Explanation: Tân ngữ trực tiếp của "sealed" chỉ các thùng hàng, cần đại từ tân ngữ số nhiều. | (B) "them" — đúng vị trí tân ngữ. | (A) "they" — chủ từ, không làm tân ngữ. | (C) "their" — tính từ sở hữu, phải kèm danh từ sau nó. | (D) "theirs" — sở hữu tuyệt đối, không nối được với "sealed".
+Source: original

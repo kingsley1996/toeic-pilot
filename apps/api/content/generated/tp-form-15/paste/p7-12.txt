@@ -1,0 +1,59 @@
+[PASSAGE]
+Email — booking place at the Coastal Data Meet
+
+Dear Registrar,
+
+I would like to confirm two places for the Coastal Data Meet on 14 November at the Marine Institute. Our finance office needs a formal invoice before it releases payment, so please send one addressed to Halcyon Analytics rather than to my personal address.
+
+Our second attendee changes often, so please check the terms: the registration fee is refundable up to seven days before the event, after which a substitute name may be transferred instead. Also, is the Saturday field trip included in the day rate or charged separately? I ask because last year's quarterly survey you shared with members in December put the field trip below every hall session.
+
+We travel by coach, arriving at eight, and would like the two seats near the rear exit.
+
+Kind regards,
+B. Lang
+
+[QUESTION]
+Why does Ms. Lang ask for the invoice to be addressed to Halcyon Analytics?
+(A) The registration fee was refunded to the company
+(B) The event invoice is needed before payment is released
+(C) The finance office audits all travel expenses
+(D) Her personal address is outside the city
+Answer: B
+Explanation: Email nói rõ "Our finance office needs a formal invoice before it releases payment" — hóa đơn là điều kiện giải ngân. | (A) "was refunded" — việc hoàn phí chỉ là điều khoản được hỏi. | (B) "needed before payment is released" — đúng lý do được nêu. | (C) "The finance office audits all travel expenses" — việc audit chi phí đi lại không được nhắc. | (D) "Her personal address is outside the city" — lý do địa chỉ cá nhân không được nêu.
+Source: original
+[QUESTION]
+What does Ms. Lang ask about the field trip?
+(A) Whether coach transport is included
+(B) Whether seats are near the rear exit
+(C) Whether it falls under the day rate
+(D) Whether the survey covers it
+Answer: C
+Explanation: Cô hỏi trực tiếp: "is the Saturday field trip included in the day rate or charged separately". | (A) "coach transport" — xe chuyến là thông tin cô cung cấp, không phải câu hỏi. | (B) "Whether seats are near the rear exit" — chỗ ngồi là đề nghị riêng, không phải câu hỏi về field trip. | (C) "falls under the day rate" — đúng điều cô cần xác nhận. | (D) "survey covers it" — khảo sát được nhắc như dẫn chứng, không được hỏi.
+Source: original
+[QUESTION]
+What can be inferred about last year's field trip?
+(A) It was moved to another day
+(B) Its seats sold out before December
+(C) It was cancelled after the survey
+(D) Its satisfaction score stayed below every hall session
+Answer: D
+Explanation: So tài liệu thứ nhất ("put the field trip below every hall session") với biểu đồ — cột thấp nhất là "Q2 | 3.2", dưới cả "Q3 | 3.6" — hoạt động ngoài trời xếp sau mọi phiên trong hội trường. | (A) "moved to another day" — việc dời lịch không được nêu. | (B) "sold out" — email không nhắc chuyện bán hết. | (C) "was cancelled" — khảo sát chỉ chấm điểm, không hủy gì. | (D) "stayed below every hall session" — đúng điểm chung của email và biểu đồ.
+Source: original
+[QUESTION]
+According to the graphic, which quarter scored above four?
+(A) Q4
+(B) Q2
+(C) Q3
+(D) Q1
+Answer: A
+Explanation: Trên biểu đồ, chỉ "Q4 | 4.6" là vượt mốc bốn; các cột còn lại nằm dưới. | (A) "Q4" — đúng cột trên bốn điểm. | (B) "Q2" — cột thấp nhất cả biểu đồ. | (C) "Q3" — 3.6, dưới mốc bốn. | (D) "Q1" — cột đầu chỉ đạt 3.9, dưới mốc bốn.
+Source: original
+[QUESTION]
+The word "refundable" is closest in meaning to
+(A) payable
+(B) returnable
+(C) transferable
+(D) rechargeable
+Answer: B
+Explanation: "the registration fee is refundable up to seven days before the event" — phí có thể được hoàn lại, gần nhất với returnable. | (A) "payable" — phải trả, trái với nghĩa được hoàn. | (B) "returnable" — có thể trả lại, đúng nghĩa refundable. | (C) "transferable" — được chuyển tên, điều khoản chỉ áp dụng sau hạn bảy ngày. | (D) "rechargeable" — nạp lại, không dùng cho phí.
+Source: original

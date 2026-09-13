@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, and welcome to Kettleman Services. My name is Duong, and I've run customer support here for six years, which means I have watched every mistake you are about to make — twice. Today is lighter than you fear. This morning, payroll and IT collect your details; after lunch you shadow a senior agent for two hours; and your first solo calls are not until Thursday. One promise: nobody here expects you to know the product catalogue by heart. The searchable manual on your laptop knows it for you — your task this week is simply to learn where everything lives.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To review last year's service results
+(B) To settle new employees into their first week
+(C) To introduce a new support manager
+(D) To explain payroll deduction rules
+Answer: B
+Explanation: Lời chào mở đầu "welcome to Kettleman" cùng lịch ba ngày nhẹ nhàng và lời hứa "nobody here expects you to know the product catalogue by heart" — bài nói trấn an nhân viên mới. | (A) "review last year's service results" — không có số liệu năm nào trong bài. | (B) "To settle new employees into their first week" — đúng tinh thần trấn an và lịch tuần đầu đã nêu. | (C) "introduce a new support manager" — Duong tự giới thiệu mình, người cũ của chức vụ. | (D) "payroll deduction rules" — bảng lương chỉ xuất hiện như một điểm thu thập thông tin.
+Source: original
+[QUESTION]
+When will trainees handle calls without a senior agent?
+(A) After two hours today
+(B) Tomorrow morning
+(C) On Thursday
+(D) This afternoon
+Answer: C
+Explanation: "your first solo calls are not until Thursday" — ca gọi độc lập đầu tiên vào thứ Năm. | (A) "After two hours today" — hai giờ nay là thời lượng đi shadow, chưa phải tự gọi. | (B) "Tomorrow morning" — sáng mai dành cho payroll và IT. | (C) "On Thursday" — đúng mốc ngày cho những cuộc gọi đầu tiên một mình. | (D) "This afternoon" — chiều nay vẫn còn kèm người cũ.
+Source: original
+[QUESTION]
+What does the speaker suggest about the product catalogue?
+(A) It was rewritten during the past year
+(B) It will be tested in Thursday's first calls
+(C) A printed copy sits on every desk
+(D) Knowing every item by memory is not part of the job
+Answer: D
+Explanation: "nobody here expects you to know the product catalogue by heart... your task this week is simply to learn where everything lives" — bổn phận là tra cứu, không phải học thuộc. | (A) "rewritten during the past year" — nguồn gốc danh mục không được bàn tới. | (B) "tested in Thursday's first calls" — không bài kiểm tra nào được nhắc. | (C) "printed copy" — bản mà anh nói là searchable manual trên laptop, không phải giấy. | (D) "Knowing every item by memory is not part of the job" — đúng điều Duong khẳng định về danh mục sản phẩm.
+Source: original

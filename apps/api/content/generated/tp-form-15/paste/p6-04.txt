@@ -1,0 +1,47 @@
+[PASSAGE]
+Paper Trail Bookshop Opens Its Riverside Branch
+
+Paper Trail, the family-owned chain with two shops on the north side of the city, opened its ------- (1) location last Saturday at Riverside Arcade, drawing a queue of readers before the doors even unlocked at ten.
+
+The move follows years of requests from customers across the river. "We kept hearing that the trip to us was too far," said owner Mei Lam, "so expansion came rather more ------- (2) than we had planned."
+
+The new floor, open seven days a week, ------- (3) nearly four thousand titles, plus a children's corner and a counter serving coffee from a local roaster. Staff hours were extended to cover the late-evening regulars who study at the back tables.
+
+------- (4) The chain has scheduled quarterly author nights and a Thursday reading series for next year, and both original shops will keep their own events as before. Readers on either bank of the river now have the same reason to visit.
+
+[QUESTION]
+Blank (1)
+(A) foremost
+(B) triple
+(C) thirds
+(D) third
+Answer: D
+Explanation: Chuỗi có hai cửa hàng và vừa mở thêm một — đây là cửa hàng thứ ba. | (A) "foremost" — hàng đầu, không chỉ thứ tự mở. | (B) "triple" — gấp ba, không đứng trước "location" theo nghĩa này. | (C) "thirds" — phân số số nhiều, sai cấu trúc. | (D) "third" — số thứ tự ba, đúng vị trí cửa hàng mới.
+Source: original
+[QUESTION]
+Blank (2)
+(A) sooner
+(B) soonest
+(C) more soon
+(D) most soon
+Answer: A
+Explanation: Ngay sau chỗ trống là "than" báo hiệu so sánh hơn với tính từ một âm tiết soon. | (A) "sooner" — dạng so sánh hơn đúng của soon. | (B) "soonest" — so sánh nhất, không có "than". | (C) "more soon" — tính từ một âm tiết không thêm more. | (D) "most soon" — cùng lỗi hình thái.
+Source: original
+[QUESTION]
+Blank (3)
+(A) hold
+(B) holds
+(C) holding
+(D) are holding
+Answer: B
+Explanation: Chủ từ "The new floor" số ít, mô tả sự thật hiện tại nên cần động từ hiện tại đơn số ít. | (A) "hold" — hình thức số nhiều, không hợp chủ từ. | (B) "holds" — hiện tại đơn số ít, đúng hòa hợp chủ-vị. | (C) "holding" — thiếu trợ động từ to be. | (D) "are holding" — số nhiều và thì tiếp diễn không hợp sự cố định.
+Source: original
+[QUESTION]
+Blank (4)
+(A) Rent at Riverside Arcade has stayed flat for years.
+(B) The coffee counter uses beans from a city roaster.
+(C) Events are central to the plan for the new shop.
+(D) The first Paper Trail shop remains open as usual.
+Answer: C
+Explanation: Câu sau liệt kê đêm tác giả hằng quý và chuỗi đọc sách thứ Năm — những sự kiện, nên câu chèn phải nêu vai trò sự kiện trong kế hoạch. | (A) "Rent at Riverside Arcade has stayed flat." — nói giá thuê, lạc chủ đề. | (B) "The coffee counter uses beans from a city roaster." — lặp chi tiết cà phê đoạn trước, không dẫn sang sự kiện. | (C) "Events are central to the plan for the new shop." — luận điểm mà author nights và reading series triển khai. | (D) "The first Paper Trail shop remains open as usual." — nói cửa hàng cũ.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon, this is Riverside Dental Clinic calling for Mr. Tuan. We'd like to confirm your follow-up appointment on Friday at quarter past four. Dr. Iyer will review the X-rays taken last month, which should take about twenty minutes. Please arrive ten minutes early, as the front desk needs to update your insurance paperwork before the doctor can start. If Friday no longer suits you, call us before five tomorrow and we will move it to Monday morning. Thank you.
+
+[QUESTION]
+Why is the clinic calling Mr. Tuan?
+(A) To cancel the Friday paperwork review
+(B) To request payment for last month's visit
+(C) To introduce a new insurance form
+(D) To confirm a follow-up appointment
+Answer: D
+Explanation: Tin nhắn mở đầu bằng "We'd like to confirm your follow-up appointment" — mục đích cuộc gọi là xác nhận lịch tái khám. | (A) "To cancel the Friday paperwork review" — ngược lại, cuộc gọi để xác nhận lịch chứ không hủy. | (B) "To request payment" — tin nhắn nhắc giấy tờ bảo hiểm, không đòi tiền. | (C) "To introduce a new insurance form" — giấy tờ bảo hiểm chỉ được cập nhật tại quầy trước ca khám. | (D) "To confirm a follow-up appointment" — đúng mục đích nêu ở câu mở đầu.
+Source: original
+[QUESTION]
+How long is the review expected to take?
+(A) About twenty minutes
+(B) Ten minutes
+(C) A quarter past four
+(D) One hour
+Answer: A
+Explanation: Bác sĩ đọc lại phim X-quang "which should take about twenty minutes" — hai mươi phút cho phần chuyên môn. | (A) "About twenty minutes" — đúng khoảng thời lượng được nêu. | (B) "Ten minutes" — đó là thời lượng đến sớm trước giờ hẹn, không phải ca khám. | (C) "A quarter past four" — là giờ hẹn, không phải độ dài. | (D) "One hour" — không có con số một giờ trong tin nhắn.
+Source: original
+[QUESTION]
+What will Mr. Tuan do if Friday no longer works for him?
+(A) Visit the front desk this morning
+(B) Phone the clinic before five the next day
+(C) Ask Dr. Iyer to move the X-ray review
+(D) Book the Monday slot online
+Answer: B
+Explanation: Tin nhắn dặn "call us before five tomorrow" nếu ngày hẹn không tiện — tức gọi trước năm giờ chiều hôm sau để đổi lịch. | (A) "Visit the front desk" — quầy lễ tân chỉ làm giấy tờ hôm tái khám. | (B) "Phone the clinic before five the next day" — đúng chỉ dẫn "call us before five tomorrow". | (C) "Ask Dr. Iyer" — việc đổi lịch qua điện thoại, không qua bác sĩ. | (D) "Book the Monday slot online" — tin nhắn yêu cầu gọi điện, không nhắc đặt trên mạng.
+Source: original

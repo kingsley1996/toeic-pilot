@@ -1,0 +1,9 @@
+[QUESTION]
+The nursery sells only the saplings ------- roots have fully filled the pot.
+(A) which
+(B) which are
+(C) that
+(D) whose
+Answer: D
+Explanation: Quan hệ sở hữu với "roots" — gốc của cây đã lấp chậu, cần đại từ sở hữu. | (D) "whose" — chủ sở hữu của "roots", đúng cấu trúc. | (A) "which" — không diễn đạt sở hữu. | (B) "which are" — tạo mệnh đề thừa động từ, phá cú pháp. | (C) "that" — cũng không phải sở hữu, để "roots" lơ lửng vô nghĩa.
+Source: original

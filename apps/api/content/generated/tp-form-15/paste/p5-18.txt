@@ -1,0 +1,9 @@
+[QUESTION]
+Since the renovation finished, the reading room ------- twice its former size.
+(A) has been
+(B) had been
+(C) was
+(D) will be
+Answer: A
+Explanation: "Since + mệnh đề quá khứ" kéo hiện tại hoàn thành cho vế chính. | (A) "has been" — hiện tại hoàn thành, đúng cặp với "since". | (B) "had been" — quá khứ hoàn thành, không có mốc quá khứ làm chuẩn. | (C) "was" — quá khứ đơn cắt đứt quan hệ với hiện tại mà "since" đòi. | (D) "will be" — tương lai, không hợp với trạng từ "since".
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Electricity will resume in the district ------- the crews finish repairing the main line.
+(A) despite
+(B) once
+(C) whereas
+(D) whose
+Answer: B
+Explanation: Điện có trở lại khi và chỉ khi tổ sửa xong đường dây — cần liên từ chỉ thời điểm điều kiện. | (B) "once" — "một khi", nối đúng hai mệnh đề. | (A) "despite" — giới từ, phải kèm danh từ chứ không kèm mệnh đề. | (C) "whereas" — so sánh đối chiếu, phá logic thời gian. | (D) "whose" — đại từ quan hệ sở hữu, không nối mệnh đề kiểu này.
+Source: original

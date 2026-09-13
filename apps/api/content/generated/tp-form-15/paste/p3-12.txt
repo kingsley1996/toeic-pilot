@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: uk_female_1
+The housing cooperative needs one of the four sites for the shared storeroom — Northgate, Dockside, Airport Park, or Riverside.
+voice: us_male_1
+Airport Park is in good condition and its storage yard fits trailers, but its rent is the highest in the group.
+voice: uk_female_1
+Two sites rent cheap, two have room for trailers outside, and two are in good shape overall. Only one sits right off the expressway.
+voice: us_male_1
+That is Dockside — which is why I lean there, even though its floor leaks in storms.
+voice: uk_female_1
+Agreed, as long as the repair bill stays with the owner.
+
+[QUESTION]
+What are the speakers doing?
+(A) Choosing between the four candidate sites for the yard
+(B) Touring the expressway near Dockside
+(C) Comparing the rent of Northgate and Riverside
+(D) Fixing the leaking floor of a yard
+Answer: A
+Explanation: Hội thoại cân nhắc bốn địa điểm theo bốn tiêu chí rồi chốt nghiêng về Dockside — hai bên đang chọn kho chung. | (A) "Choosing between the four candidate sites for the yard" — đúng việc so bốn sites để chốt chỗ. | (B) "Touring the expressway" — cao tốc chỉ là lợi thế của một địa điểm. | (C) "Comparing the rent of Northgate and Riverside" — tiền thuê được đếm theo nhóm, không so cặp. | (D) "Fixing the leaking floor" — sàn rỉ mới là lý do do dự, không phải việc đang làm.
+Source: original
+[QUESTION]
+Where does this conversation probably take place?
+(A) On the expressway toll plaza
+(B) At the cooperative's meeting table
+(C) Inside the Airport Park yard
+(D) Near the leaking storeroom floor
+Answer: B
+Explanation: Hai người phát biểu nhân danh "the housing cooperative" và chốt phương án chung — họ đang ngồi trong cuộc họp của hợp tác xã. | (A) "toll plaza" — trạm thu phí không xuất hiện. | (B) "At the cooperative's meeting table" — đúng ngữ cảnh hai thành viên biểu quyết. | (C) "Inside the Airport Park yard" — kho sân bay chỉ được nhắc tên để so đo. | (D) "the leaking storeroom floor" — sàn rỉ là của Dockside, nơi chưa ai đến.
+Source: original
+[QUESTION]
+Look at the graphic. Which requirement was met by exactly one candidate site?
+(A) Good condition
+(B) Storage yard
+(C) Fast road access
+(D) Low rent
+Answer: C
+Explanation: Thoại đếm "Only one sits right off the expressway" — đối chiếu phiếu chấm, cột gần cao tốc chỉ sáng đúng một ô. | (A) "Good condition" — cột này có hai địa điểm đạt. | (B) "Storage yard" — hai điểm có sân để rơ-moóc. | (C) "Fast road access" — đúng cột duy nhất chỉ một ô được đánh dấu. | (D) "Low rent" — "Two sites rent cheap", tức hai ô.
+Source: original

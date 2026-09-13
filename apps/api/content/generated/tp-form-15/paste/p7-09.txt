@@ -1,0 +1,36 @@
+[PASSAGE]
+Subject: Your health cover — three steps before the 20th
+
+Dear staff, open enrolment for the 2026 clinic plan runs until Friday the 20th. After that date the plan locks and changes wait until January, except for life events like a marriage or a new baby, which reopen a thirty-day window for whoever they happen to.
+
+Three steps: first, log into the portal with your badge number, not your email address, and open the "2026 compare" tab where the dental ceiling and the out-of-country excess are shown side by side with this year's. Second, pick one of the four tiers — Bronze covers GP visits only, Silver adds specialists, Gold adds dental, and Platinum carries the out-of-country excess to zero. Third, tick the box naming your dependants; unticked means single cover, and the system will not chase you for a decision.
+
+If the portal shows the message "no tier on file" after the 20th, you defaulted to Bronze silently — the old plan does not roll forward this year. The benefits desk sits in Room 4 and answers the same questions all week, 9 to 5, but the queue is longest on Thursday, the day before the deadline.
+
+[QUESTION]
+What must staff do in the third step of enrolment?
+(A) Upload a marriage or birth certificate
+(B) Confirm whether anyone depends on their cover
+(C) Choose the tier with zero excess
+(D) Book a visit to the benefits desk in Room 4
+Answer: B
+Explanation: Bước ba là "tick the box naming your dependants" — xác nhận có người phụ thuộc hay không, với mặc định đơn nếu bỏ trống. | (A) "Upload a marriage or birth certificate" — giấy tờ đời tư chỉ mở cửa sổ đổi sau hạn, không là bước nào. | (B) "Confirm whether anyone depends on their cover" — đúng việc tick dependants ở bước ba. | (C) "zero excess" — chọn bậc nằm ở bước hai. | (D) "Book a visit to the benefits desk in Room 4" — bàn phúc lợi là nơi để hỏi, không phải bước bắt buộc.
+Source: original
+[QUESTION]
+Which of the following is NOT true of the 2026 plan?
+(A) A missed deadline ends in Bronze cover
+(B) Life events reopen enrolment for a month
+(C) Silver tier includes dental treatment
+(D) The portal login uses the badge number
+Answer: C
+Explanation: Bậc Silver được định nghĩa "adds specialists" — nha khoa thuộc Gold, nên phát biểu gộp nha vào Silver là sai. | (A) "ends in Bronze" — đúng với thông báo no tier on file. | (B) "Life events reopen enrolment for a month" — đúng cửa sổ thirty-day của sự kiện đời tư. | (C) "Silver tier includes dental treatment" — sai, dental xuất hiện từ bậc Gold. | (D) "The portal login uses the badge number" — đúng chỉ dẫn đăng nhập ở bước một.
+Source: original
+[QUESTION]
+Why does the writer mention Thursday at the benefits desk?
+(A) The desk closes early on Thursdays
+(B) Thursday is when the portal resets
+(C) The dental ceiling updates on Thursdays
+(D) Most people leave decisions to the last week
+Answer: D
+Explanation: "the queue is longest on Thursday, the day before the deadline" — nhắc ngày đông nhất để khuyên tới sớm. | (A) "closes early" — giờ mở cửa giống nhau cả tuần. | (B) "portal resets" — không lịch reset nào được nêu. | (C) "ceiling updates" — trần nha khoa hiển thị thường trực trong tab compare. | (D) "Most people leave decisions to the last week" — đúng ngụ ý từ cảnh xếp hàng trước hạn.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The weather desk posted its alerts, and the traffic team updated ------- own board.
+(A) their
+(B) they
+(C) theirs
+(D) them
+Answer: A
+Explanation: Đứng trước danh từ "own board" cần tính từ sở hữu. | (A) "their" — sở hữu kèm danh từ, đúng vị trí. | (B) "they" — chủ từ, không đứng trước danh từ. | (C) "theirs" — sở hữu tuyệt đối, không đi kèm danh từ phía sau. | (D) "them" — tân ngữ, không làm chức năng sở hữu.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_female_1
+Did the movers leave the storage unit keys with you?
+voice: ca_male_1
+(A) They arrived an hour late.
+(B) Yes, plus a list of the unit numbers.
+(C) The unit is ten by twelve feet.
+Answer: B
+Explanation: yes/no: thợ chuyển nhà có đưa chìa kho lưu trữ cho người nghe không. | (A) "arrived an hour late" — kể chuyện giờ giấc. | (B) "Yes, plus a list of the unit numbers" — xác nhận có đưa kèm giấy ghi số kho. | (C) "ten by twelve feet" — trả lời "how big".
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The curator approved each ------- before it entered the main exhibition hall.
+(A) artist
+(B) artifact
+(C) articulate
+(D) artificial
+Answer: B
+Explanation: Giám tuyển duyệt từng hiện vật trước khi vào phòng triển lãm, cần danh từ chỉ vật. | (B) "artifact" — hiện vật, đúng đối tượng được duyệt. | (A) "artist" — người thì curator gặp chứ không "approve before it entered the hall". | (D) "artificial" — tính từ, không đứng sau "each". | (C) "articulate" — động từ hoặc tính từ nói năng mạch lạc, sai nghĩa.
+Source: original

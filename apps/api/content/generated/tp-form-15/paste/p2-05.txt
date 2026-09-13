@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Is the copy room back in service?
+voice: us_male_1
+(A) The new printer is on the second floor.
+(B) There are two copy rooms in the office.
+(C) Not yet — the technician arrives at noon.
+Answer: C
+Explanation: Câu hỏi yes/no về việc phòng photocopy đã hoạt động lại chưa. | (A) "The new printer is on the second floor" — giới thiệu máy khác, không trả lời câu hỏi. | (B) "There are two copy rooms in the office" — giới thiệu số phòng, không nói phòng này đã chạy lại chưa. | (C) "Not yet — the technician arrives at noon" — trả lời trực tiếp chưa và khi nào xong.
+Source: original

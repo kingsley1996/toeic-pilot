@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+When does the vendor briefing start on Tuesday?
+voice: ca_male_1
+(A) On the second floor.
+(B) With the procurement team.
+(C) Right after the lunch break.
+Answer: C
+Explanation: Câu hỏi "when" cần một mốc thời gian. | (A) "On the second floor" — trả lời cho "where", không khớp. | (B) "With the procurement team" — trả lời cho "with whom". | (C) "Right after the lunch break" — đúng loại thông tin thời gian được hỏi.
+Source: original

@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+The anniversary dinner is booked in the Grand Ballroom. The band goes on the stage at the far end, and the long dinner tables fill the middle of the room.
+voice: au_male_1
+Where should the catering team set up the dessert station?
+voice: us_female_1
+Against the wall to the right of the entrance — guests walk past the tables to reach it, and nobody queues at the door.
+voice: au_male_1
+So the volunteer pickup table stays nearest the door itself?
+voice: us_female_1
+Yes — the red-jacketed volunteers start greeting there an hour before dinner.
+
+[QUESTION]
+What are the speakers arranging?
+(A) When the volunteers start greeting
+(B) Where each area of the ballroom is set up
+(C) How much the catering team charges
+(D) Which band plays at dinner
+Answer: B
+Explanation: Cả hội thoại phân chỗ: sân khấu cho ban nhạc, bàn tiệc giữa phòng, quầy tráng miệng cạnh cửa — hai người đang bố trí mặt bằng. | (A) "When the volunteers start greeting" — giờ greeting chỉ được nhắc ở câu cuối, không phải chủ đề. | (B) "Where each area of the ballroom is set up" — đúng việc chốt vị trí từng khu. | (C) "How much the catering team charges" — chi phí không được hỏi tới. | (D) "Which band plays at dinner" — ban nhạc đã chốt, chỉ còn chỗ đứng.
+Source: original
+[QUESTION]
+Where does the dessert station go?
+(A) Behind the long dinner tables
+(B) On the stage at the far end
+(C) Against the wall right of the entrance
+(D) Nearest the door itself
+Answer: C
+Explanation: "Against the wall to the right of the entrance" là chỉ dẫn nguyên văn cho quầy tráng miệng, để khách đi qua bàn tiệc mới tới. | (A) "Behind the long dinner tables" — bàn tiệc ở giữa phòng, không được nêu là chặn quầy. | (B) "On the stage at the far end" — sân khấu dành cho ban nhạc. | (C) "Against the wall right of the entrance" — đúng vị trí cô nêu cho catering. | (D) "Nearest the door itself" — đó là chỗ bàn tiếp nhận quà của tình nguyện viên.
+Source: original
+[QUESTION]
+Look at the graphic. Which area sits right of the entrance?
+(A) Main Stage
+(B) Guest Tables
+(C) Registration Desk
+(D) Cake Counter
+Answer: D
+Explanation: Thoại đặt quầy tráng miệng "against the wall to the right of the entrance"; đối chiếu mặt bằng, ô bên phải lối vào mang tên quầy bánh. | (A) "Main Stage" — sân khấu ở cuối phòng theo lời mở đầu. | (B) "Guest Tables" — bàn khách nằm giữa phòng. | (C) "Registration Desk" — bàn đăng ký sát cửa chứ không lệch phải. | (D) "Cake Counter" — đúng ô mặt bằng ngay phải lối vào.
+Source: original

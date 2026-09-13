@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+With Khanh away, Vy from head office will sit at the welcome desk for one block this week — find me the block when none of Hieu, Nga, and Tuan is already booked.
+voice: ca_male_1
+Monday morning, Hieu is in the stockroom and Tuan answers the desk. Monday afternoon belongs to Nga's tour group.
+voice: us_female_1
+And Tuesday before noon?
+voice: ca_male_1
+Nga counts inventory while Tuan makes his stockroom run — Hieu is the only clear one. Then every late-afternoon duty on Tuesday lands at once: Hieu's desk relief, Tuan's supplier call, and Nga's audit.
+voice: us_female_1
+So that block is out. Offer Vy the Tuesday morning slot after all.
+
+[QUESTION]
+Who most probably is the woman?
+(A) The tour group's regular guide
+(B) Vy's assistant from head office
+(C) The stockroom manager on Monday
+(D) The colleague assigning the cover schedule
+Answer: D
+Explanation: Cô ra đề bài "find me the block" rồi chốt phương án cho Vy — người đang phân lịch trực thay người nghỉ. | (A) "The tour group's regular guide" — nhóm tham quan thuộc ca của Nga. | (B) "Vy's assistant from head office" — Văn phòng tổng cục chỉ có Vy, không có trợ lý kèm. | (C) "The stockroom manager on Monday" — kho là việc của Hieu và Tuan. | (D) "The colleague assigning the cover schedule" — đúng vai giao việc và chốt lịch.
+Source: original
+[QUESTION]
+What is Vy planning to do?
+(A) Work the welcome desk for one block
+(B) Run the supplier call instead of Tuan
+(C) Audit the inventory counts on Tuesday
+(D) Cover the tour group on Monday
+Answer: A
+Explanation: "Vy from head office will sit at the welcome desk for one block" — nữ chính đến từ tổng cục chỉ dự kiến ngồi bàn đón khách một ca. | (A) "Work the welcome desk for one block" — đúng kế hoạch được nêu ở câu mở đầu. | (B) "Run the supplier call" — chuyến nhà cung cấp là lịch của Tuan. | (C) "Audit the inventory counts" — kiểm kê và kiểm toán là việc của Nga. | (D) "Cover the tour group" — nhóm tham quan do Nga dẫn, không phải phần Vy.
+Source: original
+[QUESTION]
+Look at the graphic. Which block has every one of the three staff already booked?
+(A) Mon 14-16
+(B) Tue 14-16
+(C) Tue 9-11
+(D) Mon 9-11
+Answer: B
+Explanation: Thoại liệt kê ba việc cùng rơi vào chiều thứ Ba: desk relief, supplier call và audit — trên lưới trực, đúng cột đó kín cả ba hàng. | (A) "Mon 14-16" — chiều thứ Hai mới có một người bị lấp. | (B) "Tue 14-16" — đúng cột kín cả ba nhân viên. | (C) "Tue 9-11" — sáng thứ Ba vẫn còn Hieu trống. | (D) "Mon 9-11" — sáng thứ Hai Nga chưa có việc gì.
+Source: original

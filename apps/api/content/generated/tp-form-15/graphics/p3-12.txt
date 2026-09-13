@@ -1,0 +1,7 @@
+kind: survey
+Warehouse Candidate Sites Review
+Site | Low rent | Fast road access | Storage yard | Good condition
+Northgate | Yes | | Yes |
+Dockside | | Yes | |
+Airport Park | | | Yes | Yes
+Riverside | Yes | | | Yes

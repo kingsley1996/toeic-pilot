@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Would you mind bringing the loan paperwork to the branch on Friday?
+voice: us_female_1
+(A) Of course, I'll bring the signed copies.
+(B) No, it was approved last week.
+(C) Friday, or Saturday morning is fine too.
+Answer: A
+Explanation: Câu nhờ mang hồ sơ vay — lời đáp nhận lời lịch sự là chuẩn. | (A) "Of course, I'll bring the signed copies" — nhận lời và nêu việc cụ thể. | (B) "approved last week" — trả lời chuyện kết quả hồ sơ. | (C) "or Saturday morning is fine too" — đổi lịch, không trả lời việc mang giấy tờ.
+Source: original

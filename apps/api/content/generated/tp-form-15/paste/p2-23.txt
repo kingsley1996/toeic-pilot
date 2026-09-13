@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_male_1
+When will the water supply be restored after the pipe burst?
+voice: uk_female_1
+(A) The plumber billed us separately.
+(B) Some residents already have it back.
+(C) Sometime after midnight, they say.
+Answer: C
+Explanation: "When" hỏi thời điểm nước được cấp trở lại. | (A) "billed us separately" — trả lời "who pays". | (B) "already have it back" — nói về một nhóm người, không phải mốc giờ chung. | (C) "Sometime after midnight" — đúng mốc thời gian dự kiến.
+Source: original

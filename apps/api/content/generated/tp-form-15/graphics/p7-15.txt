@@ -1,0 +1,7 @@
+kind: table
+Spreadsheet Suite Fees
+Plan | Fee
+SheetOne | 90 dollars (10-user)
+Ledger Pro | 140 dollars (30-user)
+CalcBase | 60 dollars (10-user)
+Current free tool | 0 dollars

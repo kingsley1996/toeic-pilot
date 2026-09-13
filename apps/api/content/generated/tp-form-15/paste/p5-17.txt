@@ -1,0 +1,9 @@
+[QUESTION]
+The gearbox damage proved more ------- than the first estimate suggested.
+(A) extent
+(B) extend
+(C) extension
+(D) extensive
+Answer: D
+Explanation: "more ------- than" so sánh tính chất của damage, cần tính từ. | (D) "extensive" — nặng nề trên diện rộng, mô tả đúng hư hỏng. | (A) "extent" — danh từ mức độ, không vào được cấu trúc "more... than" này. | (B) "extend" — động từ, sai từ loại. | (C) "extension" — danh từ chỉ sự kéo dài, không mô tả thiệt hại.
+Source: original

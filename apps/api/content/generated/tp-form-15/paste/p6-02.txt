@@ -1,0 +1,47 @@
+[PASSAGE]
+Notice: TimeGate Replaces Paper Timesheets From October 1
+
+From October 1, all staff will clock in and out using TimeGate, the new attendance system ------- (1) replaces the paper sheets currently kept on the third floor. The change follows a company-wide review of how working hours are recorded each week.
+
+Managers found the old process slow and ------- (2) to audit at the end of each pay period, with missing signatures a frequent complaint from the payroll office.
+
+------- (3) Each employee will receive a six-digit personal code by email during the first week of October, along with a two-page guide. No personal devices are required, since shared tablets are already mounted at both staff entrances.
+
+The help desk will answer transition questions daily ------- (4) the changeover period ends on October 31. After that date, enquiries move to your direct supervisor as usual.
+
+[QUESTION]
+Blank (1)
+(A) who
+(B) where
+(C) what
+(D) which
+Answer: D
+Explanation: Mệnh đề quan hệ bổ nghĩa cho "the new attendance system" — một vật, giữ vai trò chủ từ. | (A) "who" — dành cho người. | (B) "where" — trạng ngữ nơi chốn, không làm chủ từ. | (C) "what" — không có danh từ được thay thế phía trước. | (D) "which" — đại từ quan hệ chỉ vật làm chủ từ, đúng chỗ trống.
+Source: original
+[QUESTION]
+Blank (2)
+(A) unreliable
+(B) unrelenting
+(C) unresolved
+(D) unrelated
+Answer: A
+Explanation: Quy trình cũ bị đánh giá chậm và khó tin cậy khi kiểm toán — cần tính từ chỉ sự thiếu ổn định. | (A) "unreliable" — không đáng tin, đúng lời phàn nàn về giấy tờ thiếu chữ ký. | (B) "unrelenting" — không dứt, mô tả cường độ. | (C) "unresolved" — chưa được giải quyết, không mô tả tính quy trình. | (D) "unrelated" — không liên quan, lạc nghĩa.
+Source: original
+[QUESTION]
+Blank (3)
+(A) The tablets were ordered last spring.
+(B) Getting started is deliberately simple.
+(C) Payroll errors cost the firm dearly.
+(D) Supervisors keep their own records.
+Answer: B
+Explanation: Hai câu sau nói về mã sáu chữ số gửi qua email và máy tính bảng gắn sẵn — cùng minh họa việc bắt đầu dùng hệ thống rất dễ. | (A) "The tablets were ordered last spring." — nói nguồn gốc thiết bị, không dẫn vào code. | (B) "Getting started is deliberately simple." — chủ đề mà mã emailed và tablet gắn sẵn minh họa. | (C) "Payroll errors cost the firm dearly." — nói thiệt hại, không liên quan bước bắt đầu. | (D) "Supervisors keep their own records." — ngược hướng với bỏ giấy tờ.
+Source: original
+[QUESTION]
+Blank (4)
+(A) although
+(B) since
+(C) until
+(D) whereas
+Answer: C
+Explanation: Desk hỗ trợ trả lời hàng ngày cho tới khi giai đoạn chuyển đổi kết thúc ngày 31/10, rồi mới đổi người phụ trách. | (A) "although" — nhượng bộ, phá logic. | (B) "since" — "từ khi", ngược chiều thời gian của vế chính. | (C) "until" — "cho đến khi", khớp mốc 31/10. | (D) "whereas" — đối chiếu hai vế, không chỉ thời gian.
+Source: original

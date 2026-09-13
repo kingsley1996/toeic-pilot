@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How much will the transmission repair cost in total?
+voice: ca_male_1
+(A) The garage is on Elm Street.
+(B) It'll take about two days.
+(C) Around six hundred, parts included.
+Answer: C
+Explanation: "How much" hỏi tổng chi phí sửa hộp số. | (A) "on Elm Street" — trả lời "where". | (B) "about two days" — trả lời "how long". | (C) "Around six hundred, parts included" — đúng con số chi phí.
+Source: original

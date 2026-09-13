@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+What did the museum give visitors who joined the night tour?
+voice: uk_male_1
+(A) It was quite educational.
+(B) Tickets for the following weekend.
+(C) We met at the main entrance.
+Answer: B
+Explanation: "What" hỏi phần quà tặng người đi tham quan buổi tối. | (B) "Tickets for the following weekend" — đúng danh vật được phát. | (A) "quite educational" — trả lời "how was it". | (C) "met at the main entrance" — trả lời "where".
+Source: original

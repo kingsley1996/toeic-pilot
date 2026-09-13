@@ -1,0 +1,9 @@
+[QUESTION]
+All ------- must arrive at the career fair before eight o'clock.
+(A) applicable
+(B) applications
+(C) applied
+(D) applicants
+Answer: D
+Explanation: Chỗ trống là chủ từ chỉ người phải đến trước tám giờ, nên cần danh từ số nhiều chỉ người. | (A) "applicable" — là tính từ, không phải danh từ. | (B) "applications" — đơn xin việc không tự đến hội chợ được. | (C) "applied" — là động từ chia hoặc quá khứ phân từ, không đứng làm chủ từ chỉ người. | (D) "applicants" — là danh từ chỉ người, hợp với động từ "must arrive".
+Source: original

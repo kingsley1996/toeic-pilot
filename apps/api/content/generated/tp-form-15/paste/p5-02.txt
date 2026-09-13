@@ -1,0 +1,9 @@
+[QUESTION]
+The board vote was postponed ------- two weeks at the chairman's request.
+(A) for
+(B) during
+(C) since
+(D) while
+Answer: A
+Explanation: "Postpone for + khoảng thời gian" là cặp cố định chỉ độ dài bị hoãn. | (A) "for" — đúng cặp "postponed for two weeks". | (B) "during" — đi với mốc thời gian có tên, không đi với "two weeks". | (C) "since" — cần một thời điểm bắt đầu, không dùng với khoảng thời gian trung lập. | (D) "while" — cần một mệnh đề theo sau, ở đây chỉ có cụm danh từ.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The farmer is spraying pesticide over the rows of pots.
+(B) The farmer is watering the plants inside the greenhouse.
+(C) The farmer is carrying a crate of vegetables indoors.
+(D) The farmer is trimming leaves beside rows of potted plants.
+Answer: D
+Explanation: Trong ảnh, một nông dân đội mũ rộng vành đứng tỉa lá trong nhà kính, hai hàng chậu cây kéo dài phía sau. | (A) "spraying pesticide" — anh cầm dụng cụ tỉa chứ không bình phun thuốc. | (B) "watering the plants" — anh đang tỉa lá, không phải tưới nước. | (C) "carrying a crate of vegetables" — không có thùng rau nào trong khung hình. | (D) "trimming leaves beside rows of potted plants" — đúng hành động và hàng chậu cây phía sau.
+Source: original

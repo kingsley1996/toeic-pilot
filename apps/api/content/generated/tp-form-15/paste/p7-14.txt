@@ -1,0 +1,63 @@
+[PASSAGE]
+Member letter — the Winter Heritage run returns
+
+Dear passenger, the Coastal Line's heritage steam excursion runs again on Saturday 6 December, hauling two carriages between Pier Junction and the quarries. Members may reserve by phone or at the counter; general sale opens only for seats the club leaves over.
+
+Two changes from last year, both after passenger feedback. First, the carriage walk-through guide now speaks from the start of the run instead of the midpoint, so the bridge crossing is narrated as it happens. Second, the quiet carriage has moved from the rear to the lead position, which the catering cart cannot pass through — refreshments stay in carriage two all day, at counter prices.
+
+Group bookings of ten travel free for the conductor, and school parties are welcome on the early departure, never the afternoon one, which turns around at the quarries before the museum stop.
+
+[PASSAGE]
+Confirmation email — Coastal Line booking CL-84412
+
+Dear Ms. Vu, your phone booking is confirmed below. The quiet-carriage seat you requested exists only in the lead carriage, and that carriage seats eight in two facing rows of four — so your party of five has been split across two adjacent rows, which keeps everyone in the same compartment.
+
+Tickets print at any staffed counter before nine on the day. The 09:40 departure sells out ahead of the 14:00 one every December; if your plans change, transfers are free until the Monday before, after which the fare is half-protected: the seat releases but the booking fee does not return.
+
+We have logged your request for a table at the quarry cafe; it is held for twenty minutes past arrival, then released to the general list.
+
+[QUESTION]
+Why was the member's party of five seated apart?
+(A) The afternoon departure was already sold out
+(B) School parties occupy the early train in December
+(C) The catering cart blocks rows in carriage two
+(D) No single row in the lead carriage seats all five
+Answer: D
+Explanation: Email giải thích toa dẫn đầu xếp "two facing rows of four" nên nhóm năm "has been split across two adjacent rows" — không hàng nào chứa trọn năm người. | (A) "The afternoon departure was already sold out" — chính chuyến 09:40 mới cháy vé sớm. | (B) "School parties occupy the early train in December" — nhóm của cô đã được xác nhận chỗ từ tối qua. | (C) "catering cart blocks rows" — xe đồ uống không đi qua toa một, nhưng không liên quan chỗ ngồi. | (D) "No single row in the lead carriage seats all five" — đúng lý do nhóm năm phải chia hai hàng.
+Source: original
+[QUESTION]
+Which of the following is NOT true of the heritage run?
+(A) The booking fee comes back after the Monday limit
+(B) The quiet carriage sits at the front of the train
+(C) Transfers cost nothing up to the preceding Monday
+(D) The guide now speaks from the start of the trip
+Answer: A
+Explanation: Email ghi rõ sau hạn thứ Hai "the fare is half-protected: the seat releases but the booking fee does not return" — khoản phí giữ chỗ mất, không hoàn. | (A) "the booking fee comes back" — ngược nguyên văn câu half-protected. | (B) "The quiet carriage sits at the front of the train" — đúng thay đổi thứ hai của thư mời. | (C) "Transfers cost nothing up to the preceding Monday" — đúng hạn đổi miễn phí. | (D) "speaks from the start" — đúng thay đổi thứ nhất của thư mời.
+Source: original
+[QUESTION]
+The phrase "half-protected" describes a refund that covers
+(A) the fee but not the seat
+(B) the ticket but not the fee
+(C) half of the ticket price
+(D) the whole booking before Monday
+Answer: B
+Explanation: "the seat releases but the booking fee does not return" — phần vé được gỡ khỏi lịch đổi, phần phí thì mất; đó là vế được bảo vệ. | (A) "the fee but not the seat" — đảo ngược hai vế. | (B) "the ticket but not the fee" — đúng nghĩa half-protected trong email. | (C) "half of the ticket price" — không có con số nửa giá nào trong email. | (D) "whole booking" — chế độ toàn phần chỉ trước thứ Hai.
+Source: original
+[QUESTION]
+According to the booking form, which carriage do Ms. Vu's tickets carry?
+(A) Carriage 3, the old set
+(B) Carriage 2, with catering
+(C) Carriage 1, the lead
+(D) Left blank on the form
+Answer: C
+Explanation: Phiếu đặt vé ghi "Carriage: 1" — đúng toa dẫn đầu mà email giải thích là toa quiet. | (A) "Carriage 3, the old set" — tàu chỉ kéo hai toa khách. | (B) "Carriage 2, with catering" — toa hai là nơi quầy đồ uống ngồi. | (C) "Carriage 1, the lead" — ô carriage trên phiếu ghi số một. | (D) "Left blank on the form" — phiếu đã điền rõ số toa.
+Source: original
+[QUESTION]
+What can be inferred about arriving late to the quarry cafe?
+(A) The table turns into a general seat immediately
+(B) The conductor keeps the booking for the table
+(C) The cafe only serves afternoon-run passengers
+(D) The group loses the hold after a fixed grace period
+Answer: D
+Explanation: Nối email với thư mời: bàn "held for twenty minutes past arrival, then released to the general list", trong khi chuyến chiều quay đầu trước điểm bảo tàng — đến sau hai mươi phút thì mất bàn vào danh sách thường. | (A) "general seat immediately" — vẫn có hai mươi phút ân hạn. | (B) "conductor keeps the booking" — trưởng tàu được nêu là đi miễn phí, không giữ bàn. | (C) "The cafe only serves afternoon-run passengers" — quán phục vụ cả hai chuyến. | (D) "The group loses the hold after a fixed grace period" — đúng hai mươi phút ân hạn của email.
+Source: original

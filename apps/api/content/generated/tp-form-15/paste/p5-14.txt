@@ -1,0 +1,9 @@
+[QUESTION]
+The rooftop terrace stays open ------- the autumn weather remains mild.
+(A) provided
+(B) whereas
+(C) unless
+(D) although
+Answer: A
+Explanation: Sân thượng mở với điều kiện thời tiết ấm, cần liên từ chỉ điều kiện. | (A) "provided" — "với điều kiện là", đúng quan hệ điều kiện. | (D) "although" — nhượng bộ, làm câu ngược logic. | (B) "whereas" — so sánh ngược, không nối được điều kiện. | (C) "unless" — "trừ khi", đổi nghĩa thành đóng khi ấm.
+Source: original

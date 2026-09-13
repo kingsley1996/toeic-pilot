@@ -1,0 +1,63 @@
+[PASSAGE]
+Internal note — the spreadsheet tool decision
+
+As of January, the current free spreadsheet tool stops syncing with the archive server, which every finance report depends on. Finance has asked each department to send one delegate to the Friday walkthrough, where three paid suites — Ledger Pro, SheetOne and CalcBase — will be compared on live data rather than sales slides.
+
+Two things the walkthrough will NOT do: decide the licence count, which stays with the department heads until the budget round in March, and publish pricing, since the suites quote different rates for ten-user and thirty-user bundles. Bring the question of file ownership to the session, though — export terms are where these tools differ most and where last year's migration burned us.
+
+[PASSAGE]
+Email from a delegate — reply to all finance staff
+
+Hi everyone,
+
+The walkthrough was useful, and I came away with three takeaways. SheetOne is the only suite whose formula language our archive macros survive unchanged in; both other tools rewrite them at import and lose the audit trail.
+
+CalcBase has the lowest headline fee but charges per export beyond a monthly ceiling, and the archive pulls exports twice a week without fail — that ceiling is gone by the second Thursday. Ledger Pro reads our server directly and includes unlimited exports in the bundle shown on the table.
+
+Licence count and the March decision are still department-head territory, as the note said; the delegate group can only recommend.
+
+[QUESTION]
+What is the main purpose of the internal note?
+(A) To invite staff to a comparison session
+(B) To cancel the free spreadsheet tool
+(C) To report on last year’s migration
+(D) To publish prices of three suites
+Answer: A
+Explanation: Thông báo yêu cầu mỗi phòng ban cử một người tới buổi walkthrough thứ Sáu để so ba bộ trả phí — mời dự là trục chính. | (A) "To invite staff to a comparison session" — đúng lời mời cử delegate. | (B) "To cancel the free spreadsheet tool" — công cụ free ngừng đồng bộ chứ không bị ai hủy. | (C) "To report on last year's migration" — cuộc di dời năm ngoái chỉ được nhắc như bài học, không phải mục đích. | (D) "publish prices" — thông báo nói rõ không công bố giá.
+Source: original
+[QUESTION]
+According to the email, what happens to audit trails in CalcBase and Ledger Pro?
+(A) Exports carry the full trail automatically
+(B) Macros rewrite and lose the trail at import
+(C) The suites hide trails behind the fee ceiling
+(D) Live data replaces archived trails
+Answer: B
+Explanation: Delegate ghi "both other tools rewrite them at import and lose the audit trail" — trừ SheetOne, hai suite còn lại phá dấu vết kiểm toán khi nhập macro. | (A) "carry the full trail automatically" — SheetOne mới giữ nguyên, còn lại thì mất. | (B) "rewrite and lose the trail at import" — đúng nguyên văn câu both tools. | (C) "The suites hide trails behind the fee ceiling" — trần export là chuyện của CalcBase, không giấu audit trail. | (D) "Live data replaces archived trails" — dữ liệu live chỉ là cách so tài của buổi walkthrough.
+Source: original
+[QUESTION]
+What is suggested about the monthly export ceiling of CalcBase?
+(A) It is included in the thirty-user bundle
+(B) It resets at every second Thursday
+(C) It is too low for the archive's needs
+(D) It blocks live syncing with the server
+Answer: C
+Explanation: So hai tài liệu: internal note nêu mục tiêu "compared on live data rather than sales slides", còn email ghi "the archive pulls exports twice a week without fail" — chính nhịp xuất đều đặn đó chạm trần export hằng tháng của gói rẻ. | (A) "It is included in the thirty-user bundle" — không bundle nào đi kèm trần export. | (B) "It resets at every second Thursday" — trần cạn vào khoảng đó, không phải reset. | (C) "too low for the archive's needs" — đúng kết luận từ hai lần export mỗi tuần. | (D) "blocks live syncing" — việc đồng bộ là chuyện của server lưu trữ.
+Source: original
+[QUESTION]
+What question did the note ask delegates to bring to the session?
+(A) Whether archive macros can be rewritten
+(B) Whether the tool is free for the first year
+(C) Who owns the archive macros
+(D) What the export terms are for each suite
+Answer: D
+Explanation: Thông báo dặn thẳng: "Bring the question of file ownership to the session" và giải thích export terms là chỗ khác biệt lớn nhất. | (A) "Whether archive macros can be rewritten" — macro là phát hiện của delegate, không phải câu được giao. | (B) "Whether the tool is free for the first year" — không gói miễn phí nào được nhắc. | (C) "Who owns the archive macros" — việc macro do chính phát hiện của delegate trả lời. | (D) "What the export terms are for each suite" — đúng chủ đề file ownership mà note yêu cầu mang tới.
+Source: original
+[QUESTION]
+Which of the following is NOT true of the walkthrough?
+(A) It settled the licence count for finance
+(B) It left pricing unpublished on purpose
+(C) It compared the suites on live data
+(D) Its delegates can only recommend the choice
+Answer: A
+Explanation: Thông báo ghi rõ buổi walkthrough will NOT "decide the licence count, which stays with the department heads" — phương án nói nó đã chốt số lượng licence là sai. | (A) "It settled the licence count for finance" — ngược hẳn, đó là việc NOT làm. | | (B) "pricing unpublished" — đúng lý do các gói báo giá khác nhau. | (C) "on live data" — đúng tinh thần "compared on live data rather than sales slides". | (D) "delegates can only recommend" — đúng câu cuối của email.
+Source: original

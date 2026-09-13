@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+A few changes at Riverside Plaza before the holiday weekend. The shoe repair counter has moved from the front entrance to the spot beside the old ticket office, sharing the ground level with the caterer's pickup desk. The bank that used to greet visitors downstairs has climbed to the middle floor of the four listed in the directory, and the jeweller, previously one floor up, has gone all the way to the top. The cinema has stayed put. Fountain two is off for nozzle cleaning, so mind the wet sign near the food court, and do sit down at the new bench by the atrium.
+
+[QUESTION]
+Who most likely is the speaker?
+(A) A repair counter customer
+(B) A bank branch manager
+(C) A cinema usher
+(D) A mall operations assistant
+Answer: D
+Explanation: Người nói liệt kê thay đổi của nhiều gian hàng trong trung tâm và nhắc cả biển sàn ướt, ghế mới — giọng bộ phận vận hành trung tâm thương mại. | (A) "A repair counter customer" — người nói mô tả chỗ mới của quầy sửa giày, không phải khách. | (B) "A bank branch manager" — ngân hàng được nhắc bằng ngôi thứ ba như mọi gian khác. | (C) "A cinema usher" — rạp chiếu phim chỉ được nêu là không đổi chỗ. | (D) "A mall operations assistant" — đúng vai nắm lịch thay đổi của toàn plaza.
+Source: original
+[QUESTION]
+Look at the graphic. Which business moved to the top floor?
+(A) Aurum Jewellers
+(B) Green Fork Catering
+(C) Metro Bank
+(D) Shoe Revive
+Answer: A
+Explanation: Thoại cho quan hệ: thợ kim hoàn trước ở tầng trên một nay "gone all the way to the top" của bốn tầng trong danh mục; trên bảng, tầng cao nhất ghi tên tiệm trang sức. | (A) "Aurum Jewellers" — đúng mục ở tầng cao nhất của danh mục bốn tầng. | (B) "Green Fork Catering" — quầy nhận đồ của hãng nằm cùng tầng trệt với quầy sửa giày. | (C) "Metro Bank" — ngân hàng chỉ leo lên tầng giữa danh mục. | (D) "Shoe Revive" — quầy sửa giày chuyển nhưng vẫn ở tầng trệt.
+Source: original
+[QUESTION]
+What warning accompanies the food court?
+(A) A closed emergency exit
+(B) A wet floor sign from nozzle cleaning
+(C) A queue for the ticket office
+(D) A reservation-only bench
+Answer: B
+Explanation: "Fountain two is off for nozzle cleaning, so mind the wet sign near the food court" — biển ướt cạnh khu ăn uống do tắt vòi phun. | (A) "closed emergency exit" — không cửa thoát hiểm nào bị nhắc. | (B) "A wet floor sign from nozzle cleaning" — đúng lý do và vị trí của biển báo. | (C) "queue for the ticket office" — phòng vé cũ chỉ là mốc địa điểm của quầy sửa giày. | (D) "reservation-only bench" — ghế mới cạnh atrium mời người ngồi, không cần đặt.
+Source: original

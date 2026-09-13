@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_male_1
+How long does the claim assessment usually take?
+voice: au_female_1
+(A) It was fully covered, luckily.
+(B) Only a few working days.
+(C) At the insurer's downtown office.
+Answer: B
+Explanation: "How long" hỏi độ dài quy trình thẩm định bồi thường. | (A) "fully covered" — trả lời kết quả, không phải thời gian. | (B) "Only a few working days" — đúng khoảng thời gian. | (C) "downtown office" — trả lời "where".
+Source: original

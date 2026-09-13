@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: us_female_1
+The radiators in flat nine have been cold since Tuesday. Maintenance came once, said the boiler needs a part, and left.
+voice: uk_male_1
+The part shipped late — the supplier confirmed Wednesday. Since the weather turns Friday, we will bring two portable heaters tonight, and the technician returns tomorrow at eight.
+voice: us_female_1
+Tomorrow is my exam week; I cannot host a visit before noon. Can he come between one and three instead?
+voice: uk_male_1
+One to three is fine, I will note it. And if the part slips again, flat nine moves to the hotel on King Street at our cost — that clause exists for this exact week.
+
+[QUESTION]
+What are the speakers settling?
+(A) The cost of two portable heaters
+(B) Whether exam week affects the tenant
+(C) Which hotel on King Street they use
+(D) The schedule for fixing the heating in flat nine
+Answer: D
+Explanation: Cả hội thoại xoay lịch: kỹ thuật "returns tomorrow at eight", cô đổi sang "between one and three" — hai bên chốt giờ sửa hệ thống sưởi. | (A) "The cost of two portable heaters" — máy sưởi là phương án tạm, chi phí không được bàn. | (B) "Whether exam week affects the tenant" — tuần thi chỉ là lý do đổi giờ. | (C) "Which hotel on King Street" — khách sạn chỉ là điều khoản dự phòng. | (D) "The schedule for fixing the heating in flat nine" — đúng việc đang được thống nhất.
+Source: original
+[QUESTION]
+What did the first maintenance visit produce?
+(A) The finding that the boiler needs a part
+(B) An order for portable heaters
+(C) A promise to return the next morning
+(D) A note about the hotel clause
+Answer: A
+Explanation: "Maintenance came once, said the boiler needs a part, and left" — kết quả duy nhất của lượt đầu là kết luận thiếu phụ tùng. | (A) "The finding that the boiler needs a part" — đúng điều thợ đã ghi nhận rồi rời đi. | (B) "An order for portable heaters" — máy sưởi được quyết tối nay, sau khi phụ tùng trễ. | (C) "A promise to return the next morning" — lời hẹn quay lại thuộc lượt trao đổi này, không phải lượt trước. | (D) "A note about the hotel clause" — điều khoản khách sạn do bên cho thuê nêu hôm nay.
+Source: original
+[QUESTION]
+What does the man mean when he mentions the hotel?
+(A) The technician stays nearby until Friday
+(B) A backup stay is arranged if the repair slips again
+(C) The exam week justifies a late fee
+(D) The company rents rooms from the hotel
+Answer: B
+Explanation: Câu điều kiện "if the part slips again, flat nine moves to the hotel on King Street at our cost" — khách sạn là phương án dự phòng khi phụ tùng trễ tiếp. | (A) "stays nearby until Friday" — không ai ở nhờ gần đó chờ thứ Sáu. | (B) "A backup stay is arranged if the repair slips again" — đúng vai trò dự phòng của điều khoản. | (C) "justifies a late fee" — phí tổn thuộc phía cho thuê, không phải phí phạt. | (D) "rents rooms from the hotel" — công ty trả chi phí lưu trú, không thuê dài phòng.
+Source: original

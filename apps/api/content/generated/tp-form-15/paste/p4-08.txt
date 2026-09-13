@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Forest and Form is fifteen, and the whole showroom knows it. This sale runs from Friday to the following Sunday: every sofa, dining set and bed frame — even this autumn's arrivals — drops at least twenty percent, and the clearance wall goes nearly half price. Six stores across the region join the sale, opening an hour earlier each morning of the event. A piece of advice for big purchases: measure your room first and bring the numbers to the design desk, where our staff check that the table you love will clear your doorway before you reach the checkout. Orders over two million dong ship free within the city, and assembled.
+
+[QUESTION]
+What event is the announcement promoting?
+(A) A sale running four days across six stores
+(B) The launch of a design service
+(C) A new flagship showroom opening
+(D) A free delivery week for furniture
+Answer: A
+Explanation: Tin mở đầu "Forest and Form is fifteen" rồi trải lịch giảm giá bốn ngày ở sáu cửa hàng — đó là sale kỷ niệm. | (A) "A sale running four days across six stores" — đúng sự kiện mười lăm tuổi với thời lượng và phạm vi đã nêu. | (B) "launch of a design service" — quầy thiết kế đã có, chỉ được nhắc để đo cửa phòng. | (C) "flagship showroom opening" — cửa hàng mới không được nhắc; đây là chuỗi cũ ăn mừng. | (D) "free delivery week" — giao hàng miễn phí là điều kiện kèm theo đơn lớn, không phải chủ tin.
+Source: original
+[QUESTION]
+How large are the discounts on the clearance wall?
+(A) At least twenty percent
+(B) Nearly fifty percent
+(C) Ten percent
+(D) The clearance items are free
+Answer: B
+Explanation: "the clearance wall goes nearly half price" — tường xả kho giảm gần một nửa giá. | (A) "At least twenty percent" — đó là mức giảm của đồ mới, không phải kệ xả. | (B) "Nearly fifty percent" — đúng nghĩa nearly half price. | (C) "Ten percent" — con số này không xuất hiện trong tin. | (D) "are free" — xả còn nghĩa là bán, chỉ rẻ hơn thôi.
+Source: original
+[QUESTION]
+What are shoppers planning a large purchase advised to do?
+(A) Ask checkout staff to check the doorway
+(B) Arrive an hour before the stores open
+(C) Measure the room and bring the numbers to the design desk
+(D) Order online and have it assembled
+Answer: C
+Explanation: Lời khuyên nguyên văn: "measure your room first and bring the numbers to the design desk" — đo trước để khỏi chọn sai. | (A) "checkout staff" — việc đo đạc là của quầy thiết kế, không phải quầy thu ngân. | (B) "Arrive an hour before the stores open" — các cửa hàng mở sớm hơn một giờ, không phải khách đến trước giờ mở. | (C) "Measure the room and bring the numbers to the design desk" — đúng hai việc người nói khuyên làm. | (D) "order online" — đơn online không được nhắc tới trong tin.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_male_1
+A note for residents of Building D. The main elevator will be out of service from eight Saturday morning until noon Sunday for safety cable replacement. Maintenance crews need the full period, so we cannot shorten it. The service elevator on the east side stays available for moving furniture, but deliveries are best arranged on weekday mornings, when residents are not competing for it. One related change: the second-floor gym closes early on Friday at six for its annual inspection, and reopens Saturday at nine. We apologize for the disruption.
+
+[QUESTION]
+Who most likely is the speaker?
+(A) The gym's front desk staff
+(B) A maintenance crew supervisor
+(C) A resident moving large furniture
+(D) The building's management office
+Answer: D
+Explanation: Thông báo nhân danh toàn tòa nhà, xin lỗi vì sự bất tiện và dặn cư dân — giọng của ban quản lý. | (A) "The gym's front desk staff" — phòng gym chỉ được nhắc như một thay đổi liên quan. | (B) "A maintenance crew supervisor" — tổ bảo trì được nhắc ở ngôi thứ ba, không phải người nói. | (C) "A resident moving large furniture" — ngược lại, người nói dặn cư dân chuyện đồ đạc. | (D) "The building's management office" — đúng vai phát thông báo cho cư dân.
+Source: original
+[QUESTION]
+What does the speaker mean when he says "we cannot shorten it"?
+(A) The elevator work must keep its full schedule
+(B) The replacement cables arrived too late
+(C) Residents must move furniture themselves
+(D) The service elevator needs repair too
+Answer: A
+Explanation: Câu nói bám ngay trước là "Maintenance crews need the full period" — không rút ngắn nghĩa là đóng băng đúng lịch đã định. | (A) "The elevator work must keep its full schedule" — đúng ý: tổ bảo trì cần trọn khoảng thời gian. | (B) "cables arrived too late" — không có chi tiết giao hàng chậm. | (C) "move furniture themselves" — thang máy phụ vẫn phục vụ chuyển đồ. | (D) "needs repair too" — thang phụ được nêu là vẫn chạy tốt.
+Source: original
+[QUESTION]
+What will happen on Friday after six o'clock?
+(A) The main elevator will return to service
+(B) The second-floor gym will be closed
+(C) Deliveries will stop at Building D
+(D) All deliveries will be rejected
+Answer: B
+Explanation: "The second-floor gym closes early on Friday at six for its annual inspection" — sau sáu giờ thứ Sáu, phòng gym đóng cửa. | (A) "elevator will return to service" — thang máy trở lại vào trưa Chủ nhật. | (B) "The second-floor gym will be closed" — đúng lịch đóng sớm đã nêu. | (C) "Deliveries will stop" — việc giao nhận chỉ được khuyên dời sang ngày thường buổi sáng. | (D) "All deliveries will be rejected" — việc giao nhận chỉ được dời sang buổi sáng ngày thường, không bị cấm.
+Source: original

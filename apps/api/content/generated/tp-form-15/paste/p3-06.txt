@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: au_female_1
+Hello. I'd like to open a joint account with my wife — what would that cost us each month?
+voice: us_male_1
+The joint bundle is eight dollars monthly, and it includes two free transfers a week. What is your occupation? Business customers pay a different fee schedule.
+voice: au_female_1
+We run a small bakery. Does that change what we would pay?
+voice: us_male_1
+Only the rate — twelve instead of eight. And please bring the bakery's registration certificate to your first visit, otherwise the branch cannot complete the paperwork.
+
+[QUESTION]
+How much would the couple pay each month?
+(A) Eight dollars plus two transfers
+(B) No monthly fee for new accounts
+(C) Twelve dollars at the business rate
+(D) Twenty-four dollars for two people
+Answer: C
+Explanation: Ngân hàng báo "Only the rate — twelve instead of eight" khi biết khách chạy tiệm bánh — mức doanh nghiệp là mười hai. | (A) "Eight dollars plus two transfers" — tám đô là mức phổ thông trước khi biết nghề của khách. | (B) "No monthly fee for new accounts" — mọi gói đều nêu phí tháng. | (C) "Twelve dollars at the business rate" — đúng mức áp cho khách doanh nghiệp. | (D) "Twenty-four dollars for two people" — phí tính theo tài khoản, không nhân theo người.
+Source: original
+[QUESTION]
+What does the man ask the woman to bring?
+(A) The fee schedule for business customers
+(B) The branch manager's approval
+(C) Her previous bank statements
+(D) The certificate the bank asks the bakery for
+Answer: D
+Explanation: Lời dặn cuối "please bring the bakery's registration certificate to your first visit" — giấy chứng nhận đăng ký của tiệm bánh. | (A) "The fee schedule for business customers" — biểu phí đã được giải thích xong, không ai phải mang nó tới. | (B) "The branch manager's approval" — chi nhánh chỉ bị nêu là nơi không xử lý được nếu thiếu giấy. | (C) "Her previous bank statements" — sao kê cũ không được hỏi. | (D) "The certificate the bank asks the bakery for" — đúng giấy tờ anh nhắc tới ở lời dặn cuối.
+Source: original
+[QUESTION]
+What does the man mean when he says "otherwise the branch cannot complete the paperwork"?
+(A) The certificate is required for the account to be finished
+(B) The fee rises if the certificate is late
+(C) The paperwork takes two weeks to process
+(D) The branch closes during the transfer window
+Answer: A
+Explanation: Câu "otherwise" đi kèm ngay sau lời dặn mang giấy — thiếu chứng nhận thì chi nhánh không làm xong hồ sơ. | (A) "The certificate is required for the account to be finished" — đúng điều kiện tiên quyết anh nêu. | (B) "The fee rises if the certificate is late" — phí đã chốt ở trên, không thay đổi. | (C) "takes two weeks to process" — độ dài xử lý không được nói. | (D) "closes during the transfer window" — không giờ đóng cửa nào được nêu.
+Source: original

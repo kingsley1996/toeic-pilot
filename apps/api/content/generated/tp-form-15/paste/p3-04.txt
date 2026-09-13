@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: uk_male_1
+Thanks for coming in. Your portfolio on booking flows is exactly what our scheduling app lacks. May I ask what made you leave the transit project?
+voice: ca_female_1
+The pace, mostly. Releases slipped by a quarter and the design reviews stalled. I want to ship features people use within weeks, not years.
+voice: uk_male_1
+Good answer. One concern: this role pairs tightly with support, and last year we cut developer time for ticket triage in half. Would you be comfortable owning some of that?
+voice: ca_female_1
+That is welcome news, honestly. Fixing common tickets taught me more about the product than any sprint did.
+
+[QUESTION]
+Who most probably is the man?
+(A) A hiring manager for the scheduling app
+(B) A support agent who triages tickets
+(C) The support lead who cut developer time
+(D) The head of the transit project's design team
+Answer: A
+Explanation: Anh mở đầu "Thanks for coming in" rồi hỏi lý do nghỉ việc và nêu lo ngại của "this role" — đang phỏng vấn cho ứng dụng đặt lịch. | (A) "A hiring manager for the scheduling app" — đúng vai người phỏng vấn cho ứng dụng đặt lịch. | (B) "A support agent who triages tickets" — anh mô tả vai trò phải ghép với bộ phận hỗ trợ, không phải đang làm hỗ trợ. | (C) "The support lead who cut developer time" — việc cắt thời gian xử lý vé là chuyện năm ngoái của công ty. | (D) "The head of the transit project's design team" — dự án giao thông công cộng là nơi cô vừa rời đi.
+Source: original
+[QUESTION]
+What does the woman suggest about her previous employer?
+(A) Design reviews taught her most of the product
+(B) Slow releases drove her decision to leave
+(C) Ticket triage took weeks each quarter
+(D) The transit app shipped without features
+Answer: B
+Explanation: Cô nêu "The pace, mostly. Releases slipped by a quarter and the design reviews stalled" — tốc độ ì ạch là lý do ra đi. | (A) "taught her most of the product" — điều cô nói là việc sửa vé ở vai cũ dạy cô nhiều nhất, không phải các buổi review. | (B) "Slow releases drove her decision to leave" — đúng ngụ ý từ "The pace, mostly". | (C) "Ticket triage took weeks each quarter" — tuần là nhịp cô mong muốn, không phải quy trình vé. | (D) "shipped without features" — cô muốn tính năng được dùng thật, không chê sản phẩm trống.
+Source: original
+[QUESTION]
+What does the man ask at the end of the conversation?
+(A) Share her portfolio on booking flows
+(B) Explain why she left the transit project
+(C) Whether she accepts owning some ticket work
+(D) Which sprint she joined at the transit firm
+Answer: C
+Explanation: Câu cuối của anh là "Would you be comfortable owning some of that" — hỏi cô có nhận phần việc xử lý vé của bộ phận hỗ trợ không. | (A) "Share her portfolio on booking flows" — portfolio anh đã xem xong từ đầu. | (B) "Explain why she left" — câu hỏi đó nằm ở đầu buổi, không phải cuối. | (C) "Whether she accepts owning some ticket work" — đúng câu "would you be comfortable" cuối lượt. | (D) "Which sprint she joined at the transit firm" — không câu hỏi nào về lịch sprint cũ.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Of the two loan offers, the credit union's rate is considerably -------.
+(A) lowest
+(B) more low
+(C) lower
+(D) most low
+Answer: C
+Explanation: "Of the two" giới hạn hai đối tượng — so sánh hơn, không phải so sánh nhất. | (C) "lower" — đúng dạng so sánh hơn của "low". | (A) "lowest" — so sánh nhất, cần từ ba đối tượng. | (B) "more low" — tính từ một âm tiết không thêm "more". | (D) "most low" — cùng lỗi so sánh nhất và không tự nhiên.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Which platform does the eight fifteen to Bristol leave from?
+voice: ca_male_1
+(A) I bought it online yesterday.
+(B) Platform two, right of the kiosk.
+(C) Yes, eight fifteen again.
+Answer: B
+Explanation: "Which platform" hỏi số sân ga. | (A) "bought it online" — trả lời "how" mua vé. | (B) "Platform two, right of the kiosk" — đúng sân ga và vị trí. | (C) "Yes, eight fifteen again" — xác nhận giờ, không chỉ sân ga.
+Source: original

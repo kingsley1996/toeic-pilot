@@ -1,0 +1,6 @@
+kind: chart
+Halstead Tools Quarterly Sales
+Q1 | 61000 dollars
+Q2 | 94000 dollars
+Q3 | 101000 dollars
+Q4 | 117000 dollars

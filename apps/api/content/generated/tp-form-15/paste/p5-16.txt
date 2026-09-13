@@ -1,0 +1,9 @@
+[QUESTION]
+The catering manager double-checked that the lunch order was -------.
+(A) accuracy
+(B) accurately
+(C) accurate
+(D) accredited
+Answer: C
+Explanation: Sau "was" ở đây là vị ngữ tính từ mô tả đơn hàng. | (C) "accurate" — chính xác, mô tả đúng đơn hàng. | (A) "accuracy" — danh từ, không làm vị ngữ sau "was" trong nghĩa này. | (B) "accurately" — trạng từ, không bổ nghĩa cho "was + tính từ" ở chỗ trống. | (D) "accredited" — được công nhận, lạc nghĩa với việc kiểm đơn.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) A man is posting notes on a board while people sit around a table.
+(B) A man is moving the chairs into a storage room.
+(C) The staff are signing attendance sheets at the back table.
+(D) The people around the table are having a heated argument.
+Answer: A
+Explanation: Trong ảnh, bốn người ngồi quanh bàn trong phòng họp trong khi một người đứng dán giấy lên bảng ghi chú. | (A) "posting notes on a board while people sit around a table" — đúng cả hành động dán giấy lẫn nhóm người quanh bàn. | (B) "moving the chairs into a storage room" — mọi người vẫn ngồi tại chỗ quanh bàn. | (C) "signing attendance sheets" — không ai ký giấy tờ; người đứng đang dán thông báo. | (D) "having a heated argument" — không khí họp bình thường, không có tranh cãi.
+Source: original

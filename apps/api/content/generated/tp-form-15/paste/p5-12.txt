@@ -1,0 +1,9 @@
+[QUESTION]
+------- at the kiosk by the night auditor, the couple took seats near the luggage room.
+(A) Registering
+(B) Register
+(C) Checked in
+(D) Registers
+Answer: C
+Explanation: Có tác nhân "by the night auditor" — khách được làm thủ tục, cần rút gọn bị động bằng quá khứ phân từ. | (C) "Checked in" — tương đương "Because they were checked in", khớp tác nhân. | (A) "Registering" — chủ động, mâu thuẫn với "by the night auditor". | (B) "Register" — nguyên thể không mở đầu được mệnh đề rút gọn. | (D) "Registers" — động từ chia ngôi, phá cấu trúc.
+Source: original

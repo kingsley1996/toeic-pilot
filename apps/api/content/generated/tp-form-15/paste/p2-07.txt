@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_female_1
+How did the support team resolve the billing complaint?
+voice: uk_male_1
+(A) The complaint arrived on Monday.
+(B) They issued a credit within a day.
+(C) It was the same invoice number again.
+Answer: B
+Explanation: "How" hỏi cách đội hỗ trợ đã xử lý khiếu nại hóa đơn. | (A) "arrived on Monday" — trả lời "when". | (B) "They issued a credit within a day" — mô tả đúng cách giải quyết. | (C) "the same invoice number again" — chi tiết nhận dạng, không phải cách xử lý.
+Source: original

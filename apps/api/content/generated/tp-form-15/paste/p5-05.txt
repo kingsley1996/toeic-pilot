@@ -1,0 +1,9 @@
+[QUESTION]
+The conference printer malfunctioned ------- throughout the audit week.
+(A) repeat
+(B) repetitive
+(C) repeater
+(D) repeatedly
+Answer: D
+Explanation: Chỗ trống bổ nghĩa cho động từ "malfunctioned", cần một trạng từ. | (D) "repeatedly" — là trạng từ, mô tả sự cố hỏng lặp đi lặp lại. | (A) "repeat" — là động từ hoặc danh từ, không đứng sau động từ chính như vậy. | (B) "repetitive" — là tính từ, chỉ bổ nghĩa cho danh từ. | (C) "repeater" — là danh từ chỉ thiết bị hoặc người, không bổ nghĩa động từ.
+Source: original

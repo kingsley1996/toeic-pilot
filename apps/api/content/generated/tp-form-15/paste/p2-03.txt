@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+What time is the replacement part scheduled to arrive?
+voice: uk_female_1
+(A) First thing Thursday morning.
+(B) By courier, like always.
+(C) The supplier already confirmed it.
+Answer: A
+Explanation: "What time" hỏi giờ cụ thể của việc giao linh kiện. | (A) "First thing Thursday morning" — đúng mốc giờ được hỏi. | (B) "By courier" — trả lời cho "how", không phải giờ. | (C) "already confirmed it" — xác nhận có, nhưng không cho biết thời gian nào.
+Source: original

@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: us_male_1
+Team, two weeks to the launch. The payment module passes every test case, but the offline sync feature is still throwing errors on old tablets.
+voice: uk_female_1
+That is my lane — the tablet emulator hides them. I will pair with Bao tonight and patch the sync layer before Friday.
+voice: au_male_1
+You have run this project for nine months — if you say Friday, marketing starts the preview campaign Monday as planned. I just need the screenshots.
+voice: us_male_1
+Good. I will draft the go-ahead email tonight, and whoever reviews it should flag the wording against the contract terms before nine tomorrow.
+
+[QUESTION]
+What are the speakers reviewing?
+(A) Why the emulator hides contract terms
+(B) How the screenshots passed testing
+(C) Whether the payment and sync modules ship on schedule
+(D) Whether Bao will join the patch tonight
+Answer: C
+Explanation: Bài mở bằng "two weeks to the launch" rồi đi qua module thanh toán đạt và module đồng bộ còn lỗi — cả nhóm rà khả năng về đích. | (A) "Why the emulator hides contract terms" — emulator giấu lỗi trên máy tính bảng, không giấu điều khoản. | (B) "How the screenshots passed testing" — ảnh chụp chỉ là đầu việc của marketing. | (C) "Whether the payment and sync modules ship on schedule" — đúng hai module được đem ra đối chiếu. | (D) "Whether Bao will join the patch" — việc bắt cặp với Bảo đã chốt, không còn để bàn.
+Source: original
+[QUESTION]
+Who most probably is the first man?
+(A) The marketing lead waiting on screenshots
+(B) The contractor hired last Friday
+(C) The tester who found the sync errors
+(D) The manager running the nine-month project
+Answer: D
+Explanation: Anh ấy phát lệnh lịch trình và người khác đáp "You have run this project for nine months" — anh là quản lý dự án. | (A) "waiting on screenshots" — đó là phần việc của người thứ ba, không phải anh. | (B) "The contractor hired last Friday" — không hợp đồng ngắn hạn nào được nhắc. | (C) "The tester who found the sync errors" — lỗi được cô phụ trách kỹ thuật chỉ ra qua máy giả lập. | (D) "The manager running the nine-month project" — đúng vai được nêu ở lượt của đồng nghiệp.
+Source: original
+[QUESTION]
+What must happen before nine tomorrow?
+(A) Someone checks the email wording against the contract
+(B) The tablet emulator gets updated tonight
+(C) The sync layer patch ships with Monday's release
+(D) Marketing starts the preview campaign
+Answer: A
+Explanation: "I will draft the go-ahead email tonight" và "whoever reviews it should flag the wording against the contract terms before nine tomorrow" — bản nháp phải được đối chiếu điều khoản trước chín giờ. | (A) "Someone checks the email wording against the contract" — đúng đầu việc kèm mốc chín giờ. | (B) "The tablet emulator gets updated" — việc giả lập thuộc tối nay của cô kỹ thuật. | (C) "ships with Monday's release" — bản vá phải xong trước thứ Sáu. | (D) "Marketing starts the preview campaign" — chiến dịch nhắm tới thứ Hai.
+Source: original

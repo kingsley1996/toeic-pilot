@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: uk_female_1
+The listing said ninety square meters, but this floor plan looks smaller than our old unit.
+voice: ca_male_1
+The carpet hides it — measure from column to column. North-facing windows, and the landlord includes the partition walls if you take the second floor.
+voice: uk_female_1
+Second floor means the freight lift again. If we sign before month-end, can you guarantee the lift is serviced beforehand?
+voice: ca_male_1
+I can put that in the offer letter, plus the storage cage on level one — most tenants fight for that slot.
+
+[QUESTION]
+Where does this conversation probably take place?
+(A) On the floor shown in the listing
+(B) In the landlord's warehouse
+(C) Beside the north-facing window
+(D) In the agent's carpet showroom
+Answer: A
+Explanation: Hai người đang đứng trong chính mặt bằng: "this floor plan looks smaller" và "measure from column to column" — họ khảo sát tầng đang rao. | (A) "On the floor shown in the listing" — đúng chỗ họ đang đo đạc từng cột. | (B) "In the landlord's warehouse" — nhà kho lưu trữ chỉ được nêu như một lợi ích kèm theo. | (C) "Beside the north-facing window" — cửa sổ hướng bắc là chi tiết của mặt bằng, không phải nơi nói chuyện. | (D) "carpet showroom" — tấm thảm chỉ được nhắc là thứ che diện tích.
+Source: original
+[QUESTION]
+What does the man suggest about the storage cage?
+(A) It sits on level two of the building
+(B) It is usually hard to secure
+(C) It measures ninety square meters
+(D) It keeps the tenants' goods dry
+Answer: B
+Explanation: "most tenants fight for that slot" — chỗ để đồ ở tầng một luôn bị giành, nghĩa là khó giữ nếu không chốt sớm. | (A) "sits on level two" — ngược lại, lồng để đồ nằm ở level one. | (B) "It is usually hard to secure" — đúng ngụ ý của việc người thuê phải tranh nhau. | (C) "measures ninety square meters" — con số đó là của căn hộ mẫu trong tin rao. | (D) "It keeps the tenants' goods dry" — chất lượng lồng kho không được bàn tới.
+Source: original
+[QUESTION]
+What does the woman want guaranteed in writing?
+(A) A discount on the second floor rent
+(B) The partition walls included free
+(C) The freight lift serviced before month-end
+(D) A longer lease from the same date
+Answer: C
+Explanation: Điều kiện cô đặt ra: "If we sign before month-end, can you guarantee the lift is serviced beforehand" — bảo trì thang hàng trước khi ký. | (A) "A discount on the second floor rent" — giá thuê không được mặc cả trong hội thoại. | (B) "The partition walls included free" — vách ngăn do chủ nhà kèm theo, không phải điều kiện cô nêu. | (C) "The freight lift serviced before month-end" — đúng thứ cô muốn đưa vào cam kết. | (D) "A longer lease" — độ dài hợp đồng không được bàn.
+Source: original

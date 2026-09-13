@@ -1,0 +1,47 @@
+[PASSAGE]
+RE: Your Questions About Office Equipment Care
+
+Dear Mr. Ha, thank you for asking how our maintenance plans work. Every first visit begins with a ------- (1) of the printers, coolers and coffee machines in your office, so that no unit is overlooked in the service schedule we send back within two working days.
+
+All technicians carry insurance certificates, and every spare part we fit is covered by a twelve-month warranty. A short report is emailed to your office manager ------- (2) completed visit, listing what was checked and what we recommend next.
+
+Pricing depends on the floor area and the number of units ------- (3) service. Annual contracts include two emergency call-outs each quarter at no extra charge, and older machines can be swapped while repaired.
+
+------- (4) For example, one client with forty workstations halved its printer jams within two quarters of joining. If a worked example would help your decision, ask us and we will send the full case study.
+
+[QUESTION]
+Blank (1)
+(A) surface
+(B) surrender
+(C) survive
+(D) survey
+Answer: D
+Explanation: Thăm đầu tiên bắt đầu bằng việc khảo sát toàn bộ thiết bị — cần danh từ chỉ cuộc kiểm tra tổng quát. | (A) "surface" — bề mặt, không phải bước kiểm tra. | (B) "surrender" — đầu hàng, lạc nghĩa. | (C) "survive" — động từ sống sót, sai từ loại và nghĩa. | (D) "survey" — cuộc khảo sát, đúng việc kỹ thuật viên làm với thiết bị.
+Source: original
+[QUESTION]
+Blank (2)
+(A) after each
+(B) while
+(C) during
+(D) throughout
+Answer: A
+Explanation: Báo cáo được gửi khi một lượt làm việc đã kết thúc — cần giới từ chỉ thời điểm sau. | (A) "after each" — nghĩa sau mỗi lượt, đúng tuần tự công việc. | (B) "while" — đi với mệnh đề, không đi với cụm danh từ. | (C) "during" — trong suốt lúc đang làm, báo cáo chưa có nội dung. | (D) "throughout" — xuyên suốt, cùng lỗi với during.
+Source: original
+[QUESTION]
+Blank (3)
+(A) at
+(B) in
+(C) on
+(D) to
+Answer: B
+Explanation: "Units in service" — các thiết bị đang được dùng — là cụm cố định deciding giá gói. | (A) "at" — chỉ vị trí, không tạo cụm với service nghĩa này. | (B) "in" — đúng cụm "in service". | (C) "on" — "on duty" mới đúng cặp, không phải "on service". | (D) "to" — giới từ chuyển động, sai hoàn toàn.
+Source: original
+[QUESTION]
+Blank (4)
+(A) Our technicians carry common parts in the van.
+(B) The first contract always lasts twelve months.
+(C) Regular care tends to cut breakdowns fast.
+(D) Some clients prefer monthly rather than annual billing.
+Answer: C
+Explanation: Câu sau nêu ví dụ một khách hàng giảm một nửa số lần kẹt máy sau hai quý — minh họa cho luận điểm bảo trì định kỳ giảm hỏng hóc nhanh. | (A) "Our technicians carry common parts in the van." — nói hậu cần của kỹ thuật viên, không phải kết quả. | (B) "The first contract always lasts twelve months." — nói thời hạn hợp đồng. | (C) "Regular care tends to cut breakdowns fast." — luận điểm mà ví dụ bốn mươi bàn in chứng minh. | (D) "Some clients prefer monthly rather than annual billing." — nói cách thanh toán.
+Source: original

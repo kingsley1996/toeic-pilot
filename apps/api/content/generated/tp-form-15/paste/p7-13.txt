@@ -1,0 +1,64 @@
+[PASSAGE]
+Membership application — Tidepool Athletic Club (form, completed)
+
+Name: Pham Duc Anh. Home club: Riverside. Membership tier requested: Platinum. Start date: 1 September. Preferred training block: weekday mornings. Emergency contact: Pham Mai, same address. Payment method: direct debit, monthly. The applicant has read the pool rules and the guest policy, and has signed at the marked line.
+
+[PASSAGE]
+Tidepool tier list (posted at both reception desks)
+
+Silver — 29 units a month: gym floor only, no classes, no guests. Gold — 45 units a month: gym floor plus two group classes a week and one guest visit a month. Platinum — 70 units a month: unlimited classes, three guest visits a month, towel service, and locker 14 held by name. Pool lanes are open to Gold and Platinum only; Silver members may add lane access for nine units a month.
+
+[PASSAGE]
+Confirmation email — Tidepool Athletic Club
+
+Dear Mr. Pham, your Platinum membership starts on 1 September as requested. Your morning block (07:00 to 09:00) is booked for lap lanes three and four, and locker 14 now carries your name tag. The towel service starts the same day; the first towel exchange fee is waived, then two units per exchange applies as printed on the tier list your application referenced.
+
+Two notes. The instructor-led aquaerobics waits until October, when the second lifeguard shifts; for September your lane booking is the water's only morning offering. Guest visits: your three monthly visits do not roll into October — unused visits expire at midnight on the last day of each month.
+
+Reception, Tidepool
+
+[QUESTION]
+What service does the confirmation email book for Mr. Pham?
+(A) A weekly towel fee of two units
+(B) Weekend pool time on lanes one and two
+(C) Lap lanes three and four, mornings
+(D) A Silver membership at Riverside
+Answer: C
+Explanation: Email xác nhận "morning block (07:00 to 09:00) is booked for lap lanes three and four". | (A) "A weekly towel fee of two units" — hai đơn vị là phí mỗi lần đổi khăn, không phải một khoản tuần. | (B) "Weekend pool time on lanes one and two" — email đặt lanes ba và bốn cho block ngày thường. | (C) "Lap lanes three and four, mornings" — đúng phần đặt sân bơi. | (D) "A Silver membership at Riverside" — Riverside là quê quán, còn bậc xin là Platinum.
+Source: original
+[QUESTION]
+Which of the following is NOT true of Platinum tier?
+(A) It includes three guest visits each month
+(B) It grants unlimited group classes
+(C) It costs seventy units a month
+(D) It allows lane access for nine units
+Answer: D
+Explanation: Chín đơn vị là khoản phụ phí lane access của bậc Silver trong bảng giá, không phải quyền lợi Platinum. | (A) "three guest visits each month" — đúng bảng bậc Platinum. | (B) "unlimited group classes" — đúng mục unlimited classes. | (C) "seventy units a month" — đúng giá Platinum. | (D) "lane access for nine units" — đó là lựa chọn thêm của Silver.
+Source: original
+[QUESTION]
+What does the email state about the first towel exchange?
+(A) It is provided at no charge
+(B) It requires a separate form
+(C) It happens only at Riverside
+(D) It includes locker fourteen
+Answer: A
+Explanation: "the first towel exchange fee is waived" — lần đổi khăn đầu tiên miễn phí. | (A) "provided at no charge" — đúng nghĩa waived. | (B) "separate form" — không biểu mẫu nào được nhắc. | (C) "only at Riverside" — Riverside là câu lạc bộ quê trong đơn đăng ký. | (D) "locker fourteen" — tủ 14 được gắn tên trong email xác nhận, không phải phần khăn.
+Source: original
+[QUESTION]
+Reading the application and the confirmation together, what limits Mr. Pham's September mornings in the water?
+(A) His morning block clashes with the 07:00 to 09:00 lane booking
+(B) The aquaerobics class waits until October, leaving the lane booking alone standing
+(C) Pool lanes are closed to Gold and Platinum members in September
+(D) His Platinum start date comes after the lane booking begins
+Answer: B
+Explanation: Đơn đăng ký chọn "weekday mornings" và email xếp anh vào lane lúc 07:00-09:00 trong khi "aquaerobics waits until October" — suốt tháng Chín lựa chọn dưới nước duy nhất là hai lane của anh. | (A) "His morning block clashes with the 07:00 to 09:00 lane booking" — ngược lại, block chính là giờ lane. | (B) "The aquaerobics class waits until October, leaving the lane booking alone standing" — đúng ràng buộc tháng Chín của email. | (C) "closed to Gold and Platinum" — ngược bảng giá: chỉ Silver mới bị loại. | (D) "start date comes after" — cả hai cùng bắt đầu 1 September.
+Source: original
+[QUESTION]
+The word "waived" is closest in meaning to
+(A) postponed
+(B) reimbursed
+(C) cancelled
+(D) doubled
+Answer: C
+Explanation: "the first towel exchange fee is waived" — phí được bỏ hẳn cho lần đầu, gần nhất với cancelled. | (A) "postponed" — dời lại chứ không phải xóa bỏ. | (B) "reimbursed" — hoàn tiền đã trả, khác với miễn ngay từ đầu. | (C) "cancelled" — gần nhất với việc xóa phí. | (D) "doubled" — trái ngược hoàn toàn.
+Source: original

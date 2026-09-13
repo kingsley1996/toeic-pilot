@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: us_female_1
+Can you cover my Thursday night shift? My sister lands at ten and nobody can watch the kids.
+voice: uk_male_1
+Thursday is the inventory count for me — we are three short already. But I will take the night if Nguyen can have Friday off; he wanted the holiday weekend.
+voice: us_female_1
+I will ask him at lunch. If he agrees, I will email the roster to the supervisor before four.
+voice: uk_male_1
+And copy me, so the count sheet matches the posted shift board.
+
+[QUESTION]
+Why does the woman need a swap?
+(A) The inventory count is short-staffed Thursday
+(B) Her sister lands on Thursday night
+(C) The supervisor moved the night shift
+(D) Nguyen asked for Friday off already
+Answer: B
+Explanation: Cô nói thẳng "My sister lands at ten and nobody can watch the kids" — chuyến bay của chị gái tối thứ Năm là lý do đổi ca. | (A) "The inventory count is short-staffed Thursday" — đó là vướng mắc của người đàn ông, không phải lý do của cô. | (B) "Her sister lands on Thursday night" — đúng sự kiện mở đầu lời nhờ vả. | (C) "The supervisor moved the night shift" — quản lý không đổi ca của ai cả. | (D) "Nguyen asked for Friday off already" — Nguyễn chỉ được nhắc qua ý định nghỉ lễ.
+Source: original
+[QUESTION]
+What does the man suggest about the inventory count?
+(A) The count sheet will match the shift board
+(B) Nguyen wants the holiday weekend off
+(C) The count leaves him no room that night
+(D) The supervisor posted the shift board
+Answer: C
+Explanation: "Thursday is the inventory count for me — we are three short already" — kiểm kho thiếu người, nên đêm đó anh không rảnh được. | (A) "The count sheet will match the shift board" — đó là mong ước của anh ở câu cuối, không phải ngụ ý về ca đêm. | (B) "Nguyen wants the holiday weekend off" — đúng sự thật nhưng không phải về việc kiểm kho. | (C) "The count leaves him no room that night" — đúng điều anh ngụ ý khi từ chối. | (D) "The supervisor posted the shift board" — lịch ca dán sẵn chỉ được nhắc ở câu cuối.
+Source: original
+[QUESTION]
+What will happen if Nguyen agrees?
+(A) The inventory count will be cancelled
+(B) The Thursday shift will be dropped
+(C) The holiday delivery will be posted on the board
+(D) The supervisor learns of it before four
+Answer: D
+Explanation: Điều kiện "If he agrees, I will email the roster to the supervisor before four" — cái gật đầu của Nguyễn kích hoạt việc báo cho quản lý trước bốn giờ. | (A) "count will be cancelled" — việc kiểm kho vẫn giữ, chỉ đổi người trực ca. | (B) "shift will be dropped" — ca thứ Năm không bị bỏ, chỉ đổi người làm. | (C) "holiday delivery will be posted on the board" — lịch nghỉ lễ không được cập nhật bằng bảng. | (D) "The supervisor learns of it before four" — đúng hệ quả: bảng ca được gửi trước bốn giờ.
+Source: original

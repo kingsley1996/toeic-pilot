@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_male_1
+Attention passengers on Flight 214 to Da Nang. Your boarding gate has changed from B12 to C4. Gate C4 sits in the new international concourse, reached through security check three, which most of you have not used before. Boarding still begins at quarter past nine, with departure on schedule at ten. The walk from the main hall takes about ten minutes, and the moving walkways beyond the duty-free shop will shorten it. Please do not wait at your original gate — the transfer desk staff there cannot hold the aircraft. We regret the change.
+
+[QUESTION]
+What does the speaker imply about security check three?
+(A) Few passengers in this group have used it before
+(B) It closes shortly before boarding begins
+(C) It is crowded during the morning rush
+(D) It requires an extra document check
+Answer: A
+Explanation: Người nói cho biết phần lớn hành khách trong nhóm này chưa từng sử dụng security check three, nên có thể suy ra chỉ một số ít đã từng đi qua khu kiểm tra này. | (A) "Few passengers in this group have used it before" — đúng với thông tin "most of you have not used before". | (B) "It closes shortly before boarding begins" — không có giờ đóng cửa nào được nêu. | (C) "It is crowded during the morning rush" — thông báo không nói khu kiểm tra này đông hay vắng. | (D) "It requires an extra document check" — không có yêu cầu kiểm tra giấy tờ bổ sung nào được đề cập.
+Source: original
+[QUESTION]
+At what time does boarding begin?
+(A) Ten o'clock
+(B) Quarter past nine
+(C) Quarter past ten
+(D) Nine o'clock
+Answer: B
+Explanation: Người nói cho biết boarding bắt đầu lúc "quarter past nine", tức 9 giờ 15. | (A) "Ten o'clock" — đó là giờ máy bay khởi hành, không phải giờ boarding. | (B) "Quarter past nine" — đúng thời điểm boarding bắt đầu. | (C) "Quarter past ten" — không được nêu trong thông báo. | (D) "Nine o'clock" — boarding bắt đầu 15 phút sau 9 giờ, không phải đúng 9 giờ.
+Source: original
+[QUESTION]
+What will happen at ten o'clock?
+(A) The transfer desk will open
+(B) The duty-free shop will close
+(C) The aircraft will leave for Da Nang
+(D) Security check three will reopen
+Answer: C
+Explanation: Thông báo cho biết chuyến bay sẽ khởi hành đúng lịch vào lúc 10 giờ. | (A) "The transfer desk will open" — quầy này đã có nhân viên tại cổng cũ, không nói sẽ mở lúc 10 giờ. | (B) "The duty-free shop will close" — cửa hàng chỉ được nhắc như một mốc trên đường đi, không có giờ đóng cửa được nêu. | (C) "The aircraft will leave for Da Nang" — đúng với thông tin "departure on schedule at ten". | (D) "Security check three will reopen" — không có thông tin cho thấy khu kiểm tra này đóng rồi mở lại.
+Source: original

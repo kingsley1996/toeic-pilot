@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why was my online order for the jacket cancelled?
+voice: au_female_1
+(A) The item went out of stock overnight.
+(B) It came in medium and large.
+(C) You paid with a company card.
+Answer: A
+Explanation: "Why" hỏi lý do đơn hàng bị hủy. | (A) "The item went out of stock overnight" — đúng lý do hệ thống hủy. | (B) "came in medium and large" — trả lời "which size". | (C) "paid with a company card" — nêu cách thanh toán, không phải lý do.
+Source: original

@@ -1,0 +1,7 @@
+kind: table
+Riverside Plaza Store Directory
+Store | Location
+Shoe Revive | Ground floor
+Green Fork Catering | Ground floor
+Metro Bank | Second floor
+Aurum Jewellers | Third floor

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who is handling the social media schedule this month?
+voice: us_female_1
+(A) Priya from the design studio.
+(B) It went really well, thanks.
+(C) Every Thursday at nine.
+Answer: A
+Explanation: "Who" hỏi người phụ trách lịch đăng bài. | (A) "Priya from the design studio" — đúng tên người được giao việc. | (B) "It went really well" — đánh giá kết quả, không chỉ người. | (C) "Every Thursday at nine" — trả lời "when".
+Source: original

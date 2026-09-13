@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) The dentist is examining a patient's teeth.
+(B) The dentist is sterilizing tools in the back cabinet.
+(C) The dentist is writing notes beside an empty dental chair.
+(D) The dentist is seating a patient in the dental chair.
+Answer: C
+Explanation: Trong ảnh, một bác sĩ nha khoa ngồi ghi hồ sơ bên ghế khám trong phòng khám trống; không có bệnh nhân nào trong phòng. | (A) "examining a patient's teeth" — phòng khám trống, không có bệnh nhân để khám. | (B) "sterilizing tools" — anh chỉ đang viết, không xử lý dụng cụ. | (C) "writing notes beside an empty dental chair" — đúng hành động ghi hồ sơ và chiếc ghế trống. | (D) "seating a patient" — không có bệnh nhân nào được mời ngồi.
+Source: original

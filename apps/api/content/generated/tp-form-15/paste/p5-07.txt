@@ -1,0 +1,9 @@
+[QUESTION]
+Live chat support is ------- around the clock for premium members.
+(A) availability
+(B) available
+(C) avail
+(D) availably
+Answer: B
+Explanation: Đứng sau "is" làm vị ngữ chỉ tính chất, cần một tính từ. | (B) "available" — là tính từ, đúng cấu trúc "is available". | (A) "availability" — là danh từ, không mô tả được trạng thái của dịch vụ sau "is" ở đây. | (D) "availably" — trạng từ, không làm vị ngữ tính từ. | (C) "avail" — là động từ, cần thể bị động mới hợp nghĩa.
+Source: original

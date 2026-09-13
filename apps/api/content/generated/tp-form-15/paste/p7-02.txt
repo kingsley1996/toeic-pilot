@@ -1,0 +1,36 @@
+[PASSAGE]
+Warehouse Coordinator — Meridian Supply, District 7
+
+Meridian Supply runs a 4,000-square-metre parts warehouse serving 120 clinics across the southern region. We are adding a coordinator to schedule inbound and outbound loads between five in the morning and seven in the evening.
+
+Duties: build daily pick lists, verify incoming shipments against supplier notes, and run the Friday stock count with one assistant. Forklift certification is provided after hiring at company cost; applicants must already hold a category B licence and be comfortable with weekend rotation — roughly one Saturday in five.
+
+Pay starts at 13.4 million dong a month plus a phone allowance; the allowance doubles for staff who also cover the Saturday rotation. Shortlisted candidates will be asked to lift a few crates during the interview; the physical check is deliberately short, and work boots are provided on the day.
+
+[QUESTION]
+What does the advertisement require applicants to have already?
+(A) A forklift certificate
+(B) A category B licence
+(C) Work boots of their own
+(D) Friday overtime experience
+Answer: B
+Explanation: Tin nêu "applicants must already hold a category B licence" — bằng lái B là điều kiện có sẵn, trong khi chứng chỉ nâng được công ty lo sau khi tuyển. | (A) "A forklift certificate" — chứng chỉ được đào tạo sau tuyển dụng, trả phí công ty. | (B) "A category B licence" — đúng thứ duy nhất bắt buộc có trước. | (C) "Work boots of their own" — giày được phát tại buổi phỏng vấn. | (D) "Friday overtime experience" — kiểm kho thứ Sáu là nhiệm vụ, không phải tiêu chí kinh nghiệm.
+Source: original
+[QUESTION]
+Which of the following is NOT true about the job?
+(A) Monthly pay begins above thirteen million dong
+(B) The Friday count is run with an assistant
+(C) Forklift certification must be paid for by the hire
+(D) Weekend work follows a one-in-five rotation
+Answer: C
+Explanation: Tin ghi rõ chứng chỉ nâng hàng "is provided after hiring at company cost" — trả lời phương án đòi người được thuê tự chi trả là sai sự thật của tin. | (A) "begins above thirteen million dong" — mức khởi điểm 13,4 triệu đúng như tin nêu. | (B) "run with an assistant" — đúng nguyên văn "with one assistant". | (C) "must be paid for by the hire" — sai, chi phí chứng chỉ do công ty chịu. | (D) "a one-in-five rotation" — đúng lịch "one Saturday in five".
+Source: original
+[QUESTION]
+What can be inferred about coordinators on the Saturday rotation?
+(A) They skip the Friday stock count
+(B) They certify forklift before hiring
+(C) They are exempt from the physical check
+(D) Their phone allowance is the larger one
+Answer: D
+Explanation: Ghép hai câu cuối: khoản phụ cấp điện thoại "starts" theo lương tháng và "doubles for staff who also cover the Saturday rotation" — ai trực thứ Bảy nhận mức gấp đôi. | (A) "skip the Friday stock count" — việc kiểm kho không được miễn cho ai. | (B) "certify forklift before hiring" — chứng chỉ do công ty lo sau tuyển dụng. | (C) "exempt from the physical check" — phần kiểm tra thể lực áp cho mọi ứng viên vòng loại. | (D) "Their phone allowance is the larger one" — đúng hệ quả của câu phụ cấp nhân đôi.
+Source: original

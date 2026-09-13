@@ -1,0 +1,49 @@
+[PASSAGE]
+Subject: Re: order 4471 — your invoice question
+
+Dear Mrs. Ha, thanks for writing on Monday about the missing paperwork on your 18 May order of twelve garden stools. The dispatch log shows all twelve left the depot the same morning, so nothing about the furniture itself went astray [1]. The single page that slipped out of the envelope was the invoice.
+
+I have reissued that page under a fresh barcode, and it travels with tomorrow's seed delivery — a consignment you did not order, approved on the third by your account manager as a swap for the frost-damaged trays from last season [2].
+
+Terms are unchanged: the thirty-day payment window opens on the delivery date, never the order date, and the late-fee schedule printed on page two of the reissue was written for corporate accounts [3]. You will also receive a call from our bookkeeper's landline before five on Thursday [4].
+
+If anything still looks wrong, reply to this subject line — messages carrying it jump the queue at Accounts.
+
+— Tran, Accounts, Verdant Nursery
+
+[QUESTION]
+Why did Tran write the email?
+(A) To correct the record on a shipment's paperwork
+(B) To cancel an order of twelve garden stools
+(C) To bill for a delivery the customer refused
+(D) To dispute the account manager's decision
+Answer: A
+Explanation: Email mở bằng việc trả lời "your 18 May order" và chốt lại trang giấy thất lạc — mục đích là đính chính hồ sơ của đơn hàng. | (A) "To correct the record on a shipment's paperwork" — đúng việc hóa đơn bị thiếu được cấp lại. | (B) "To cancel an order" — đơn hàng đã giao đủ mười hai ghế. | (C) "To bill for a delivery the customer refused" — lô hạt giống chỉ được nêu như thông tin kèm theo. | (D) "To dispute the account manager's decision" — người viết xác nhận lệnh đổi, không phản đối.
+Source: original
+[QUESTION]
+What did the account manager approve on the third?
+(A) A courier upgrade for the invoice
+(B) A swap for frost-damaged trays
+(C) An extension of the payment window
+(D) A second dispatch of garden stools
+Answer: B
+Explanation: "approved on the third by your account manager as a swap for the frost-damaged trays from last season" — lệnh đổi hàng do quản lý tài khoản ký. | (A) "A courier upgrade" — không có dịch vụ chuyển phát nào được bàn. | (B) "A swap for frost-damaged trays" — đúng nội dung được phê duyệt. | (C) "An extension of the payment window" — hạn ba mươi ngày giữ nguyên. | (D) "A second dispatch of garden stools" — mười hai ghế đã đi đủ một lần.
+Source: original
+[QUESTION]
+What can be inferred about the late-fee schedule?
+(A) It applies to customers like Mrs. Ha
+(B) It opens thirty days after each order
+(C) It does not reach her account type
+(D) It was printed by mistake on page one
+Answer: C
+Explanation: "the late-fee schedule printed on page two of the reissue was written for corporate accounts" trong khi bà Ha là khách hàng cá nhân của vườn ươm — bản phụ phí không chạm tài khoản của bà. | (A) "applies to customers like Mrs. Ha" — ngược hẳn ghi chú về tài khoản doanh nghiệp. | (B) "thirty days after each order" — cửa sổ ba mươi ngày tính từ ngày giao. | (C) "does not reach her account type" — đúng hệ quả của dòng dành cho corporate. | (D) "printed by mistake on page one" — bản in nằm đúng trang hai như mô tả.
+Source: original
+[QUESTION]
+Where should the sentence "The gap, in other words, was only in the paperwork." be placed?
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: A
+Explanation: Câu chèn tóm lại ý "nothing about the furniture itself went astray" và dọn đường cho câu ngay sau nó nêu đích danh tờ giấyMissing — "The single page that slipped out of the envelope was the invoice". | (A) "[1]" — đúng khe giữa khẳng định hàng không thiếu và câu chỉ ra trang giấy thiếu. | (B) "[2]" — sang đoạn hóa đơn cấp lại, tóm tắt gap thành thừa. | (C) "[3]" — giữa đoạn điều khoản thanh toán thì vô nghĩa. | (D) "[4]" — trước lịch gọi điện, không còn chỗ cho tóm tắt này.
+Source: original

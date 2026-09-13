@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) The crates are being loaded onto a truck at the dock.
+(B) The containers are stacked in tall rows at a harbour.
+(C) A crane is lifting one container over the water.
+(D) The ships are anchored in a calm harbour at sunset.
+Answer: B
+Explanation: Trong ảnh, các container nhiều màu xếp thành khối cao ở bến cảng, mặt nước phẳng lặng phía sau; không có người, xe tải hay cần cẩu đang hoạt động. | (A) "loaded onto a truck" — không có xe tải nào đang được xếp hàng. | (B) "stacked in tall rows at a harbour" — đúng khối container dọc bến cảng. | (C) "lifting one container" — cần cẩu đứng im, không nâng hạ gì cả. | (D) "ships are anchored" — trong khung hình không có con tàu nào.
+Source: original

@@ -1,0 +1,4 @@
+kind: map
+Grand Ballroom Setup Plan
+Main Stage: far end of room | Guest Tables: middle of room
+Registration Desk: nearest the door | Cake Counter: right of the entrance

@@ -1,0 +1,37 @@
+[SCRIPT]
+voice: au_female_1
+Two tickets for the Spring Hope charity concert at the civic hall next Friday, please.
+voice: us_male_1
+You are just in time — the forty-dollar bundle ends at midnight and gives ten to the food bank. Shall I put it on your card?
+voice: au_female_1
+Yes, and I would rather collect at the door than carry paper tonight.
+voice: us_male_1
+Of course. You will get a booking text in a minute; show it at the food-bank desk by the main doors. Volunteers will be in yellow.
+
+[QUESTION]
+Where does this conversation probably take place?
+(A) At a coffee bar near the hall
+(B) At the main doors' courier desk
+(C) At the food bank's donation table
+(D) At a concert ticket counter
+Answer: D
+Explanation: Cô mở đầu bằng việc mua hai vé và anh hỏi "Shall I put it on your card" — hai người đang ở quầy vé. | (A) "At a coffee bar" — đồ uống không xuất hiện trong hội thoại. | (B) "courier desk" — việc nhận vé tại cửa chỉ được nêu là lựa chọn tương lai. | (C) "donation table" — bàn quyên góp mới là điểm hẹn sau này trong tối diễn. | (D) "At a concert ticket counter" — đúng nơi diễn ra việc mua vé.
+Source: original
+[QUESTION]
+What is true about the forty-dollar bundle?
+(A) Ten dollars of it goes to charity
+(B) It ends two hours before the doors open
+(C) It seats the pair in the front row
+(D) It lasts until next Friday night
+Answer: A
+Explanation: Anh bán vé nói rõ "the forty-dollar bundle ends at midnight and gives ten to the food bank" — mười đô trong gói về quỹ thực phẩm. | (A) "Ten dollars of it goes to charity" — đúng con số được nêu kèm tên gói. | (B) "ends two hours before the doors" — gói kết thúc lúc nửa đêm, không liên quan giờ mở cửa. | (C) "in the front row" — hạng ghế không được bàn tới. | (D) "until next Friday night" — hạn gói là nửa đêm, còn buổi diễn mới rơi vào thứ Sáu.
+Source: original
+[QUESTION]
+What will the woman do at the venue?
+(A) Hand over cash to the food-bank volunteers
+(B) Show a booking text at the desk
+(C) Call the hall to confirm the seats
+(D) Buy a second pair of tickets
+Answer: B
+Explanation: Anh dặn "show it at the food-bank desk by the main doors" — tối diễn cô xuất trình tin nhắn đặt chỗ ở bàn. | (A) "Hand over cash to the food-bank volunteers" — phần quyên đã nằm trong gói bốn mươi đô. | (B) "Show a booking text at the desk" — đúng chỉ dẫn cuối của người bán. | (C) "Call the hall to confirm" — việc xác nhận diễn ra bằng tin nhắn, không bằng gọi điện. | (D) "a second pair of tickets" — chỉ có một cặp vé được mua.
+Source: original

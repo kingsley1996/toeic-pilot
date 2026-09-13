@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Have the interview slots for the sales role been confirmed?
+voice: us_male_1
+(A) He's in the small conference room.
+(B) Yes, the list goes out tonight.
+(C) The job was posted last week.
+Answer: B
+Explanation: Câu hỏi yes/no dạng bị động hỏi các suất phỏng vấn đã được chốt chưa. | (A) "He's in the small conference room" — nói về một người, không trả lời việc chốt lịch. | (B) "Yes, the list goes out tonight" — xác nhận đã chốt và danh sách sẽ gửi tối nay. | (C) "The job was posted last week" — kể chuyện đăng tin, không nói các suất đã chốt chưa.
+Source: original

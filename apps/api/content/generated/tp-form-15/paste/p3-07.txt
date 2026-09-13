@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+The expo booth is confirmed for hall three, row F. We need the brochure rack by the entrance, and the screen opposite the counter.
+voice: ca_male_1
+The rack ships free with the banner order — but the banner design is not signed off yet. Who owns that?
+voice: au_female_1
+I do, and the print shop closes submissions at noon Thursday. I will have it to them by Wednesday evening if the photos arrive tonight.
+voice: ca_male_1
+The photos are in the shared folder already. I can stand the booth myself Friday morning, but on Saturday the product demo runs from ten till one.
+voice: us_female_1
+So Lan, you and I take ten and eleven on Saturday, and I will close Sunday alone.
+
+[QUESTION]
+What can be inferred about the banner?
+(A) It ships free with the brochure rack
+(B) The design approval may not arrive before noon on Thursday
+(C) It runs from ten till one on Friday
+(D) It stands in hall three row F
+Answer: B
+Explanation: Ghép hai chi tiết: "the banner design is not signed off yet" của anh và "the print shop closes submissions at noon Thursday" của Lan — thiết kế chưa chốt nên có nguy cơ lỡ hạn. | (A) "ships free with the brochure rack" — đúng cho giá kệ, không phải cho tấm băng rôn. | (B) "The design approval may not arrive before noon on Thursday" — đúng rủi ro từ hai câu ghép lại. | (C) "runs from ten till one" — đó là lịch demo sản phẩm. | (D) "stands in hall three row F" — vị trí đó là của gian hàng.
+Source: original
+[QUESTION]
+Where are the exhibition photos right now?
+(A) On the printer at the shop
+(B) In Lan's email attachment
+(C) In the shared folder on the drive
+(D) On the counter by the rack
+Answer: C
+Explanation: Anh xác nhận ngay "The photos are in the shared folder already" — ảnh đã nằm trong thư mục chung trên ổ đĩa. | (A) "On the printer at the shop" — xưởng in chỉ nhận thiết kế đã duyệt, chưa có bản in. | (B) "In Lan's email attachment" — không ai đính kèm email nào trong hội thoại. | (C) "In the shared folder on the drive" — đúng nơi anh vừa chỉ ra. | (D) "On the counter by the rack" — mặt bàn chỉ là chỗ đặt màn hình ở gian hàng.
+Source: original
+[QUESTION]
+Who covers the Sunday shift?
+(A) All three, as a group
+(B) Lan and the photographer
+(C) The man, till one
+(D) The first woman, alone
+Answer: D
+Explanation: Người phụ nữ mở đầu chốt: "I will close Sunday alone" — cô trực chủ nhật một mình. | (A) "All three, as a group" — không ai đề cập ca nhóm. | (B) "Lan and the photographer" — cặp đó nhận hai suất mười và mười một thứ Bảy. | (C) "The man, till one" — một giờ là lúc kết thúc demo thứ Bảy. | (D) "The first woman, alone" — đúng người và đúng cam kết cuối hội thoại.
+Source: original

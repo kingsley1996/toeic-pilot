@@ -1,0 +1,9 @@
+[QUESTION]
+Passengers holding a connecting ------- may rebook at no extra charge.
+(A) itinerary
+(B) initiate
+(C) initial
+(D) issue
+Answer: A
+Explanation: Người có hành trình nối chuyến được đổi vé miễn phí, cần danh từ chỉ lịch trình bay. | (A) "itinerary" — là hành trình gồm nhiều chặng, hợp với "connecting". | (B) "initiate" — là động từ hoặc danh từ chỉ người mới được kết nạp. | (C) "initial" — chữ cái đầu hoặc tính từ "ban đầu", không phải lịch trình. | (D) "issue" — phát hành/vấn đề, không nối được với "connecting".
+Source: original

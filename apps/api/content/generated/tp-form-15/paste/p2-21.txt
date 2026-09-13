@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Whom should I ask about updating my medical records?
+voice: us_male_1
+(A) The receptionist handles those forms.
+(B) Ask any time during clinic hours.
+(C) It's at the back of the waiting room.
+Answer: A
+Explanation: "Whom" hỏi người phụ trách hồ sơ bệnh án. | (A) "The receptionist handles those forms" — chỉ đúng người. | (B) "any time during clinic hours" — trả lời "when". | (C) "at the back of the waiting room" — trả lời "where".
+Source: original

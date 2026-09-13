@@ -1,0 +1,47 @@
+[PASSAGE]
+LedgerLite Helps Small Shops Track Spending
+
+Dear shop owner, keeping track of what leaves your till each week is the difference between a plan and a guess. Many owners tell us their records live in a notebook that can be lost, damaged, or misread in a hurry. LedgerLite was designed for exactly this situation, and this letter shows how the switch works in practice.
+
+If your shop still records expenses ------- (1) a paper notebook, moving to the app is faster than expected. Every receipt photographed becomes a searchable entry, and the LedgerLite support team has ------- (2) thousands of independent retailers since 2019.
+
+------- (3) most budgeting tools are built for large companies, LedgerLite suits shops with fewer than five staff. Monthly summaries export directly to your accountant, and bank connections are read-only for safety.
+
+------- (4) A recent survey of beta users found that most recovered the subscription fee within a single month, simply by spotting forgotten standing charges. Start the thirty-day free trial this week and see exactly where the money goes.
+
+[QUESTION]
+Blank (1)
+(A) onto
+(B) on
+(C) at
+(D) in
+Answer: D
+Explanation: "records expenses in a paper notebook" — ghi chép trong một cuốn sổ, giới từ chỉ phương tiện chứa. | (A) "onto" — chuyển động lên bề mặt, sai nghĩa. | (B) "on" — dùng cho bề mặt, không dùng cho vật chứa. | (C) "at" — chỉ địa điểm, không hợp với sổ. | (D) "in" — đúng cụm "in a notebook".
+Source: original
+[QUESTION]
+Blank (2)
+(A) assisted
+(B) resisted
+(C) persisted
+(D) consisted
+Answer: A
+Explanation: Đội hỗ trợ đã giúp đỡ hàng nghìn nhà bán lẻ, nên chỗ trống cần động từ nghĩa "giúp". | (A) "assisted" — đúng nghĩa hỗ trợ khách hàng. | (B) "resisted" — chống lại, ngược nghĩa. | (C) "persisted" — bền bỉ, không mang tân ngữ chỉ người. | (D) "consisted" — gồm có, phải đi với "of".
+Source: original
+[QUESTION]
+Blank (3)
+(A) Whenever
+(B) Although
+(C) Unless
+(D) Whether
+Answer: B
+Explanation: Vế sau nêu điểm ngược lại với phần lớn công cụ tài chính, nên cần liên từ nhượng bộ ở đầu câu. | (A) "Whenever" — thời gian lặp lại, câu không có nghĩa đó. | (B) "Although" — "mặc dù", đúng tương phản. | (C) "Unless" — điều kiện phủ định, làm câu vô nghĩa. | (D) "Whether" — "liệu", chỉ mở nghi vấn gián tiếp, không dẫn được mệnh đề này.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The subscription price changes every spring.
+(B) Most users pay by annual card at signup.
+(C) The app tends to pay for itself quickly.
+(D) Support answers messages within one business day.
+Answer: C
+Explanation: Câu sau chỗ trống dẫn chứng người dùng thu hồi phí thuê bao trong một tháng, nên câu chèn phải nêu việc hoàn vốn nhanh. | (A) "The subscription price changes every spring." — không liên quan phí thu hồi. | (B) "Most users pay by annual card at signup." — nói cách thanh toán. | (C) "The app tends to pay for itself quickly." — chủ đề mà con số một tháng minh họa. | (D) "Support answers messages within one business day." — nói tốc độ hỗ trợ.
+Source: original
