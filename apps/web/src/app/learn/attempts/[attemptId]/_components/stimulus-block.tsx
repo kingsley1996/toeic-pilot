@@ -158,7 +158,7 @@ export function StimulusBlock({
             </p>
           )}
           {passage.text && (
-            <p className="whitespace-pre-wrap text-small leading-relaxed">{passage.text}</p>
+            <p className="whitespace-pre-wrap text-body leading-relaxed">{passage.text}</p>
           )}
           {passage.image_url && (
             <>
