@@ -103,7 +103,12 @@ export default function PlacementAdminPage() {
         : API_ROUTES.adminTestPublish(row.slug);
     setBusy(row.slug);
     try {
-      await apiFetch(path, { method: "POST", token });
+      // Route archive cần `{archived}` — publish thì không; thiếu body là 422.
+      await apiFetch(path, {
+        method: "POST",
+        token,
+        body: row.status === "published" ? JSON.stringify({ archived: true }) : undefined,
+      });
       apply(await fetchRows());
     } catch (failure) {
       setError(failure instanceof ApiError ? failure.message : "Không đổi được trạng thái.");
