@@ -28,6 +28,7 @@ from app.content.exam_cli.authoring import (
     cmd_prune,
     cmd_write,
 )
+from app.content.exam_cli.compare import cmd_compare
 from app.content.exam_cli.label import cmd_label
 from app.content.exam_cli.load import cmd_interact, cmd_load
 from app.content.exam_cli.media import cmd_attach_images, cmd_graphic, cmd_media, cmd_photo
@@ -46,6 +47,7 @@ __all__ = [
     "cmd_attach_images",
     "cmd_balance",
     "cmd_check",
+    "cmd_compare",
     "cmd_prompt",
     "cmd_graphic",
     "cmd_interact",
@@ -181,6 +183,15 @@ def main(argv: list[str] | None = None) -> int:
         help="provider/model (vd `bai/gpt-5.6-sol`). Xem known_models() hoặc wizard interact",
     )
     check_cmd.set_defaults(func=cmd_check)
+
+    compare_cmd = sub.add_parser("compare", help="so đề mới với họ đề cũ (trùng lặp)")
+    compare_cmd.add_argument("--slug", required=True, help="đề mới cần so")
+    compare_cmd.add_argument(
+        "--against",
+        default=None,
+        help="danh sách đề cũ cách nhau bằng dấu phẩy; bỏ trống thì so với mọi thư mục còn lại",
+    )
+    compare_cmd.set_defaults(func=cmd_compare)
 
     prune_cmd = sub.add_parser("prune", help="xoá tệp dán của những ô không đạt")
     prune_cmd.add_argument("--slug", required=True)

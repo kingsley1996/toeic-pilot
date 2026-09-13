@@ -1,0 +1,9 @@
+[QUESTION]
+The survey results showed high ------- with the new lunch menu at the canteen.
+(A) satisfy
+(B) satisfaction
+(C) satisfactory
+(D) satisfied
+Answer: B
+Explanation: Sau tính từ "high" cần một danh từ làm tân ngữ cho động từ "showed", chỉ mức độ hài lòng được ghi nhận. | (A) "satisfy" — là động từ, không đứng sau tính từ làm tân ngữ. | (B) "satisfaction" — là danh từ, tạo thành "high satisfaction" đúng ngữ pháp. | (C) "satisfactory" — là tính từ, hai tính từ không đứng liền nhau ở vị trí này. | (D) "satisfied" — là tính từ hoặc phân từ, không giữ được chức năng danh từ.
+Source: original

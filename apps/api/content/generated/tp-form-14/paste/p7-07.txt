@@ -1,0 +1,25 @@
+[PASSAGE]
+Notice: Scheduled Water Cut on Sunday
+
+The management board informs residents that water supply will be cut on Sunday from 8 a.m. to 5 p.m. for pipeline maintenance. Please store enough water for cooking and bathing during that time.
+
+The pumps on the rooftop will also be cleaned, so water may run weak for one hour after supply returns. For urgent needs, contact the management office at extension 102. The rooftop pumps serve floors ten to fifteen only. Residents above floor fifteen use a separate tank on the north side. Bottled water stations open in the lobby during the cut. Elevator service continues normally throughout Sunday. Report leaks to extension 102 immediately.
+
+[QUESTION]
+What is the notice about?
+(A) A pipeline repair meeting
+(B) A scheduled water cut
+(C) A management fee increase
+(D) A power outage plan
+Answer: B
+Explanation: Ban quản lý thông báo nguồn nước sẽ bị cắt vào Chủ nhật từ 8 giờ sáng đến 5 giờ chiều để bảo trì đường ống. | (A) "A pipeline repair meeting" — bài không đề cập đến bất kỳ cuộc họp nào. | (B) "A scheduled water cut" — đúng nội dung chính của thông báo. | (C) "A management fee increase" — không có thông tin về việc tăng phí quản lý. | (D) "A power outage plan" — thông báo nói về nước, không phải điện.
+Source: original
+[QUESTION]
+What should residents do?
+(A) Pay the water bill early
+(B) Call the plumber on Sunday
+(C) Store enough water for the outage
+(D) Leave the building on Sunday
+Answer: C
+Explanation: Ban quản lý yêu cầu cư dân trữ đủ nước để nấu ăn và tắm trong thời gian nguồn nước bị cắt. | (A) "Pay the water bill early" — việc thanh toán tiền nước không được nhắc đến. | (B) "Call the plumber on Sunday" — cư dân không được yêu cầu gọi thợ sửa ống nước. | (C) "Store enough water for the outage" — đúng với hướng dẫn trong thông báo. | (D) "Leave the building on Sunday" — không có yêu cầu rời khỏi tòa nhà.
+Source: original

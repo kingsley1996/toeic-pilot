@@ -212,6 +212,132 @@ def test_the_form_level_gate_catches_answer_position_bias(tmp_path):
     assert "(A)" in problems[0] and "100%" in problems[0]
 
 
+def _vocab_slot(tmp_path: Path, plan, index: int, correct: str) -> None:
+    """Một ô P5 với đáp án đúng cho trước (4 lựa chọn đơn từ)."""
+    from app.content.exam import writer
+
+    slot = plan.parts[0].slots[index]
+    writer.save_slot(
+        tmp_path,
+        slot,
+        "[QUESTION]\n"
+        "The board voted to ------- the launch.\n"
+        f"(A) {correct}\n(B) cancel\n(C) advance\n(D) commence\n"
+        "Answer: A\n"
+        "Explanation: lorem ipsum.\n"
+        "Source: original\n",
+    )
+
+
+def test_tested_vocabulary_quota_blocks_an_all_common_test(tmp_path):
+    """Cả đề kiểm tra toàn từ phổ thông thì câu vocab không đo được vốn từ.
+
+    Đo trên đề thật: tp-form-14 bản đầu chỉ có 3 từ hiếm (evaluation,
+    celebrate, loyal...) — mỗi câu lẻ loi đều hợp lệ, chỉ tầng đề mới thấy.
+    """
+    from app.content.exam import check as gate
+
+    plan = _plan(tmp_path, count=8)
+    for index in range(8):
+        _vocab_slot(tmp_path, plan, index, "delay")
+    problems = gate.check_tested_vocabulary(tmp_path, plan)
+    assert len(problems) == 1
+    assert "0 câu" in problems[0] and "≥5" in problems[0]
+
+
+def test_tested_vocabulary_quota_passes_with_enough_rare_words(tmp_path):
+    """Đủ từ hiếm (postpone, commemorate...) thì qua — ngưỡng đo trên họ đề."""
+    from app.content.exam import check as gate
+
+    plan = _plan(tmp_path, count=8)
+    words = ["postpone", "commemorate", "inconvenienced", "rollout", "renovate"]
+    words += ["delay", "cancel", "start"]
+    for index, word in enumerate(words):
+        _vocab_slot(tmp_path, plan, index, word)
+    assert gate.check_tested_vocabulary(tmp_path, plan) == []
+
+
+def test_tested_vocabulary_quota_stays_silent_on_partial_tests(tmp_path):
+    """Đề dở (thiếu tệp) thì im lặng: thiếu tệp đã có cổng từng-ô chặn."""
+    from app.content.exam import check as gate
+
+    plan = _plan(tmp_path, count=8)
+    _vocab_slot(tmp_path, plan, 0, "postpone")
+    assert gate.check_tested_vocabulary(tmp_path, plan) == []
+
+
+def test_a_stub_script_gets_a_volume_flag_not_a_block(tmp_path):
+    """Ngữ liệu quá ngắn thì cụm không đủ chỗ giấu vế thứ hai của đáp án.
+
+    Sàn là tripwire dưới min toàn họ (P3 min≈31) — PART3_GOOD (~15 từ) nằm sâu
+    dưới sàn 30. CỜ chứ không chặn: đề đang viết dở cũng ngắn một cách chính đáng.
+    """
+    plan = _part3_plan(tmp_path)  # đã save PART3_GOOD
+    reports = checker.check_blueprint(plan, tmp_path)
+    assert not any(r.blocked for r in reports)
+    assert any("ngắn bất thường" in flag for r in reports for flag in r.flags)
+
+
+def test_a_full_length_script_has_no_volume_flag(tmp_path):
+    """Thoại đủ dài (≥ sàn) thì không có cờ — chứng minh cờ đo độ dài, không
+    phải cứ Part 3 là gắn."""
+    plan = _part3_plan(tmp_path)
+    slot = plan.parts[0].slots[0]
+    long_script = PART3_GOOD.replace(
+        "That works. I'll book Room B for ten o'clock.",
+        "That works. I'll book Room B for ten o'clock and send the updated "
+        "invitation to every candidate tonight because her flight arrives late "
+        "on Wednesday evening.\n"
+        "voice: au_male_1\n"
+        "Should I also reserve the projector for the presentations after lunch?\n"
+        "voice: au_female_1\n"
+        "Good idea. The equipment room closes at five, so fetch it before four.",
+        1,
+    )
+    writer.save_slot(tmp_path, slot, long_script)
+    reports = checker.check_blueprint(plan, tmp_path)
+    assert not any("ngắn bất thường" in flag for r in reports for flag in r.flags)
+
+
+def _compare_paste(root: Path, slug: str, name: str, stem: str) -> None:
+    """Một tệp dán tối thiểu cho lệnh compare (không cần blueprint)."""
+    directory = root / slug / "paste"
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / f"{name}.txt").write_text(
+        "[QUESTION]\n"
+        f"{stem}\n"
+        "(A) delay it\n(B) cancel it\n(C) fix it\n(D) plan it\n"
+        "Answer: A\nSource: original\n"
+    )
+
+
+def test_compare_blocks_exact_duplicates(tmp_path, monkeypatch):
+    """Trùng khít một câu giữa hai đề là đề bị lộ — chặn publish."""
+    import argparse
+
+    from app.content.exam_cli import compare
+
+    _compare_paste(tmp_path, "new", "p5-01", "The board voted to postpone the launch.")
+    _compare_paste(tmp_path, "old", "p5-03", "The board voted to postpone the launch.")
+    monkeypatch.setattr(compare, "DEFAULT_ROOT", tmp_path)
+    args = argparse.Namespace(slug="new", against="old")
+    assert compare.cmd_compare(args) == 1
+
+
+def test_compare_passes_distinct_content(tmp_path, monkeypatch, capsys):
+    """Khác nhau thì qua (exit 0), kể cả khi stem chung khuôn TOEIC."""
+    import argparse
+
+    from app.content.exam_cli import compare
+
+    _compare_paste(tmp_path, "new", "p5-01", "The board voted to postpone the launch.")
+    _compare_paste(tmp_path, "old", "p5-03", "The members agreed to delay the party.")
+    monkeypatch.setattr(compare, "DEFAULT_ROOT", tmp_path)
+    args = argparse.Namespace(slug="new", against="old")
+    assert compare.cmd_compare(args) == 0
+    assert "không trùng khít" in capsys.readouterr().out
+
+
 def test_balancing_spreads_the_key_and_is_safe_to_repeat(tmp_path):
     """Hoán vị là phép biến đổi ĐỊNH DẠNG: cùng bốn phương án, cùng phương án đúng.
 
@@ -496,6 +622,30 @@ def test_part1_avoid_is_a_sliding_window_not_all_history(tmp_path: Path, monkeyp
     monkeypatch.setattr(plan, "PART1_AVOID_WINDOW", 3)
     avoid_wide, _ = plan._part1_avoid_and_lean("tp-brand-new", seed=7)
     assert "công trường" in avoid_wide
+
+
+def test_part1_avoid_catches_barber_and_gas_station(tmp_path: Path, monkeypatch):
+    """Hai motif từng lọt lưới ở tp-form-14: tiệm cắt tóc (trùng tp-form-08),
+    trạm xăng (trùng tp-test-09). Bảng thiếu từ khóa của chúng nên cơ chế avoid
+    mù hoàn toàn — test này ghim từ khóa mới vào đúng hai cảnh đã lọt.
+    """
+    from app.content.exam_cli import plan
+
+    def _write(root: Path, slug: str, context: str) -> None:
+        form = bp.build_part1(slug, slug, seed=1)
+        for slot in form.parts[0].slots:
+            slot.context = context
+        (root / slug).mkdir(parents=True)
+        bp.save(form, root / slug / "blueprint.json")
+
+    history = tmp_path / "history"
+    _write(history, "tp-old-barber", "một người thợ đang tỉa tóc cho khách trên ghế xoay")
+    _write(history, "tp-old-gas", "tại trạm xăng về đêm, các vòi bơm treo trên thân trụ bơm")
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", history)
+
+    avoid, _ = plan._part1_avoid_and_lean("tp-new", seed=7)
+    assert "tiệm cắt tóc" in avoid
+    assert "trạm xăng" in avoid
 
 
 def test_the_voice_line_is_given_verbatim_not_described():

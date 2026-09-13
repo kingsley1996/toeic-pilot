@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) Workers are repainting the lines on the field.
+(B) The workers are mowing the grass along the track.
+(C) The team is playing a match on the field.
+(D) The players are sitting on the bench.
+Answer: A
+Explanation: Trong ảnh chụp sân vận động buổi sáng, một đội bóng đang chạy khởi động vòng quanh sân, còn hai nhân viên bảo trì ở đường biên đang kẻ lại vạch vôi đã mờ. | (A) "repainting the lines on the field" — đúng việc hai nhân viên đang làm ở đường biên. | (B) "mowing the grass" — hai nhân viên đang kẻ vạch vôi chứ không cắt cỏ. | (C) "playing a match" — đội bóng chỉ đang chạy khởi động, không có trận đấu nào diễn ra. | (D) "sitting on the bench" — các cầu thủ đang chạy trên sân, không ai ngồi ghế.
+Source: original

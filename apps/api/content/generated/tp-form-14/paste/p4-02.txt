@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Are you tired of cleaning the office yourself? Sparkle Clean offers hourly office cleaning across the city. Our trained staff bring all supplies, so you provide nothing. We clean evenings and weekends to avoid disturbing your work. Call 555-0134 today for a free quote, and get twenty percent off your first month. We serve homes as well as offices of any size. Weekend slots fill quickly during spring. Mention this ad for a free window check.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To sell cleaning supplies
+(B) To hire evening security guards
+(C) To advertise an office cleaning service
+(D) To rent office space downtown
+Answer: C
+Explanation: Toàn bộ thông điệp giới thiệu dịch vụ dọn văn phòng theo giờ của Sparkle Clean — mục đích là quảng cáo dịch vụ ấy. | (A) "To sell cleaning supplies" — ngược lại, công ty tự mang đồ nghề nên khách không cần mua. | (B) "To hire evening security guards" — buổi tối chỉ là giờ làm việc của đội dọn, không tuyển bảo vệ. | (C) "To advertise an office cleaning service" — đúng nội dung toàn bộ thông điệp. | (D) "To rent office space downtown" — cho thuê văn phòng không được nhắc đến.
+Source: original
+[QUESTION]
+When does the company clean?
+(A) For twenty hours each week
+(B) During office hours
+(C) In the first month
+(D) On evenings and weekends
+Answer: D
+Explanation: Người nói khẳng định "We clean evenings and weekends to avoid disturbing your work" — giờ dọn là buổi tối và cuối tuần. | (A) "For twenty hours each week" — hai mươi là phần trăm giảm giá chứ không phải số giờ. | (B) "During office hours" — ngược lại, họ dọn ngoài giờ để khỏi làm phiền công việc. | (C) "In the first month" — tháng đầu chỉ là thời hạn giảm giá chứ không phải khung giờ dọn duy nhất. | (D) "On evenings and weekends" — đúng khung giờ anh nêu.
+Source: original
+[QUESTION]
+What should listeners do?
+(A) Phone today for a quote
+(B) Visit the office today
+(C) Bring their own supplies
+(D) Pay for the first month now
+Answer: A
+Explanation: Người nói chốt bằng "Call 555-0134 today for a free quote" — việc cần làm là gọi lấy báo giá miễn phí. | (A) "Phone today for a quote" — đúng lời kêu gọi của anh. | (B) "Visit the office today" — "today" đi với cuộc gọi chứ không phải chuyến thăm. | (C) "Bring their own supplies" — ngược lại, nhân viên công ty tự mang đồ nghề. | (D) "Pay for the first month now" — tháng đầu được giảm giá chứ không phải trả ngay.
+Source: original

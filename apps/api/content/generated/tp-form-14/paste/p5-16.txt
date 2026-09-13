@@ -1,0 +1,9 @@
+[QUESTION]
+Graduates ------- in attending the job fair should bring copies of their résumés.
+(A) interest
+(B) interesting
+(C) interested
+(D) to interest
+Answer: C
+Explanation: Vị trí trống cần một quá khứ phân từ rút gọn mệnh đề quan hệ, diễn tả trạng thái của sinh viên muốn dự hội chợ. | (A) "interest" — là danh từ hoặc động từ nguyên thể, không rút gọn được mệnh đề. | (B) "interesting" — là hiện tại phân từ chỉ tính chất gây hứng thú, sai nghĩa vì sinh viên là người cảm thấy quan tâm. | (C) "interested" — là quá khứ phân từ, tương đương "who are interested", đúng cấu trúc rút gọn. | (D) "to interest" — là động từ nguyên thể có "to", không tạo thành cụm phân từ rút gọn.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When will the new shipment reach the warehouse?
+voice: us_female_1
+(A) The warehouse is fully stocked.
+(B) Shipments arrive every Friday.
+(C) It should arrive late tonight.
+Answer: C
+Explanation: Câu hỏi là "When will the new shipment reach the warehouse?", hỏi THỜI ĐIỂM hàng mới về kho. | (A) "The warehouse is fully stocked." — dùng lại từ "warehouse" nhưng nói về tình trạng tồn kho. | (B) "Shipments arrive every Friday." — dùng lại từ "shipments" nhưng nói lịch chung chứ không nói chuyến này. | (C) "It should arrive late tonight." — cho biết thời điểm hàng đến, đúng thứ được hỏi.
+Source: original

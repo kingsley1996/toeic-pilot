@@ -1,0 +1,9 @@
+[QUESTION]
+Under the new policy, travel expense reports must be submitted ------- the end of each month.
+(A) until
+(B) by
+(C) during
+(D) over
+Answer: B
+Explanation: Hành động nộp báo cáo là một điểm thời gian trước hạn chót cuối tháng, nên cần giới từ chỉ hạn hoàn thành. | (A) "until" — diễn tả hành động kéo dài liên tục đến một mốc, không hợp với hành động nộp một lần. | (B) "by" — tạo thành "by the end of each month", nghĩa là chậm nhất cuối tháng, đúng ngữ cảnh. | (C) "during" — đi với khoảng thời gian, không đi với điểm "the end". | (D) "over" — không tạo thành cụm giới từ phù hợp với "the end" ở đây.
+Source: original

@@ -212,6 +212,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     spread = [
         *checker.check_answer_spread(workdir_for(args.slug), plan),
         *checker.check_yes_no_spread(workdir_for(args.slug), plan),
+        *checker.check_tested_vocabulary(workdir_for(args.slug), plan),
     ]
     for problem in spread:
         print(f"  ✗ CẢ ĐỀ: {problem}")

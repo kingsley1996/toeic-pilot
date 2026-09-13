@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Do you want to make café-style drinks at home? Saigon Barista School opens weekend bartending courses for beginners. You will practice with real espresso machines and learn milk-frothing skills. Classes run every Saturday and Sunday morning, with only ten seats per class. Register online before Thursday to keep the early-bird price of eight hundred thousand dong. Graduates receive a certificate recognized citywide. Aprons and manuals are provided on day one. Evening batches open next month.
+
+[QUESTION]
+What is the message about?
+(A) Milk delivery services
+(B) Espresso machine repairs
+(C) A new café opening
+(D) Weekend bartending courses
+Answer: D
+Explanation: Toàn bộ thông điệp giới thiệu các khóa học pha chế cuối tuần dành cho người mới của Saigon Barista School. | (A) "Milk delivery services" — kỹ năng tạo bọt sữa là một phần của khóa học, không phải dịch vụ giao sữa. | (B) "Espresso machine repairs" — máy pha espresso chỉ được dùng để thực hành, không có dịch vụ sửa chữa. | (C) "A new café opening" — không có thông tin về việc mở quán cà phê mới. | (D) "Weekend bartending courses" — đúng chủ đề chính của thông điệp.
+Source: original
+[QUESTION]
+How many seats are in each class?
+(A) Ten seats
+(B) Eight hundred seats
+(C) Ten morning sessions
+(D) Two weekend classes
+Answer: A
+Explanation: Người nói cho biết mỗi lớp chỉ có mười chỗ. | (A) "Ten seats" — đúng với thông tin "only ten seats per class". | (B) "Eight hundred seats" — tám trăm nghìn là mức giá ưu đãi, không phải số chỗ. | (C) "Ten morning sessions" — mười là số chỗ mỗi lớp, không phải số buổi học. | (D) "Two weekend classes" — thứ Bảy và Chủ nhật là thời gian tổ chức lớp, không cho biết mỗi lớp có hai buổi.
+Source: original
+[QUESTION]
+What should beginners do before Thursday?
+(A) Attend a Saturday morning class
+(B) Register online for a weekend course
+(C) Practice using an espresso machine
+(D) Bring milk-frothing equipment
+Answer: B
+Explanation: Người mới phải đăng ký trực tuyến trước thứ Năm để giữ giá ưu đãi, mà khóa học diễn ra cuối tuần — ghép hai chỗ mới ra việc cần làm. | (A) "Attend a Saturday morning class" — lớp học diễn ra vào thứ Bảy và Chủ nhật, nhưng đây không phải việc cần làm trước thứ Năm. | (B) "Register online for a weekend course" — đúng hành động và đối tượng khóa học. | (C) "Practice using an espresso machine" — đây là hoạt động trong khóa học, không phải việc cần làm trước khi đăng ký. | (D) "Bring milk-frothing equipment" — người học sẽ được thực hành với thiết bị của trường, và không có yêu cầu mang thiết bị riêng.
+Source: original

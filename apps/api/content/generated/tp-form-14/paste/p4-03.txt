@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Let's start our weekly customer care meeting. Complaints rose twelve percent last month, mostly about late deliveries. From Monday, every complaint must get a reply within one working day. Hoa will handle delivery cases, and I will review the difficult ones each Friday. Our goal is to cut complaints by half before Tet. New hires will shadow Hoa for two weeks. A short survey follows each resolved case. Results go on the board every Monday.
+
+[QUESTION]
+Who is most likely speaking?
+(A) A delivery supervisor
+(B) A customer care manager
+(C) A customer service representative
+(D) A delivery driver
+Answer: B
+Explanation: Người nói chủ trì cuộc họp chăm sóc khách hàng, đưa ra quy định xử lý khiếu nại, phân công Hoa và tự xem xét các trường hợp khó. Những trách nhiệm này cho thấy cô nhiều khả năng là quản lý chăm sóc khách hàng. | (A) "A delivery supervisor" — người nói tập trung vào xử lý khiếu nại hơn là quản lý hoạt động giao hàng. | (B) "A customer care manager" — phù hợp với vai trò chủ trì, phân công và đặt mục tiêu cho nhóm. | (C) "A customer service representative" — một nhân viên thông thường khó có vai trò đặt quy định và phân công công việc cho đồng nghiệp. | (D) "A delivery driver" — người nói đang quản lý việc xử lý khiếu nại chứ không trực tiếp giao hàng.
+Source: original
+[QUESTION]
+Who will handle delivery complaints?
+(A) The main speaker
+(B) Friday reviewer
+(C) Hoa
+(D) Meeting host
+Answer: C
+Explanation: Người nói nói rõ "Hoa will handle delivery cases", nên Hoa sẽ phụ trách các khiếu nại liên quan đến giao hàng. | (A) "The main speaker" — người nói chỉ trực tiếp xem xét các trường hợp khó. | (B) "Friday reviewer" — người xem xét các ca khó vào thứ Sáu là chính người nói. | (C) "Hoa" — đúng người được phân công xử lý các trường hợp giao hàng. | (D) "Meeting host" — người chủ trì cuộc họp không được xác định là người xử lý khiếu nại.
+Source: original
+[QUESTION]
+What can be inferred about the team's current performance?
+(A) It is preparing to expand its delivery service.
+(B) It has stopped receiving delivery complaints.
+(C) It has enough staff to handle every case immediately.
+(D) It needs to improve its response to complaints.
+Answer: D
+Explanation: Khiếu nại đã tăng 12%, chủ yếu do giao hàng trễ, nên nhóm cần cải thiện cách xử lý và phản hồi khiếu nại. Quy định phải trả lời trong một ngày làm việc và mục tiêu giảm một nửa số khiếu nại cho thấy nhóm đang cần nâng cao hiệu quả. | (A) "It is preparing to expand its delivery service" — mục tiêu của nhóm là giảm khiếu nại, không phải mở rộng dịch vụ giao hàng. | (B) "It has stopped receiving delivery complaints" — ngược lại, khiếu nại giao hàng là vấn đề chính hiện tại. | (C) "It has enough staff to handle every case immediately" — không có thông tin cho thấy nhóm có đủ nhân lực. | (D) "It needs to improve its response to complaints" — phù hợp với việc khiếu nại tăng và quy định mới về thời gian phản hồi.
+Source: original

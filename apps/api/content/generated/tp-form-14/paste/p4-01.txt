@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone, and welcome to the Marou Chocolate Factory. I'm Hoa, your guide for today's tour. We'll start in the roasting room, where cacao beans are heated to bring out their flavor. Next, we'll watch the grinding machines turn the beans into a smooth paste. Photography is allowed everywhere except the packaging area. At the end of the tour, you'll taste three chocolate samples in our shop, which opens until six. The shop also sells gift boxes for the holidays. Our factory opened twenty years ago near the river. Guided tours run twice daily except Mondays.
+
+[QUESTION]
+Who is the speaker?
+(A) A cacao roasting worker
+(B) A chocolate shop owner
+(C) A grinding machine operator
+(D) A factory tour guide
+Answer: D
+Explanation: Người nói tự giới thiệu "I'm Hoa, your guide for today's tour", cho biết cô là hướng dẫn viên của chuyến tham quan nhà máy. | (A) "A cacao roasting worker" — cô giới thiệu về phòng rang nhưng không phải công nhân rang cacao. | (B) "A chocolate shop owner" — cô đang dẫn tour nhà máy, không phải chủ cửa hàng. | (C) "A grinding machine operator" — cô chỉ cho khách xem máy nghiền chứ không nói mình vận hành máy. | (D) "A factory tour guide" — đúng với vai trò cô tự giới thiệu.
+Source: original
+[QUESTION]
+Where is photography forbidden?
+(A) In the packaging area
+(B) In the roasting room
+(C) In the grinding hall
+(D) In the tasting shop
+Answer: A
+Explanation: Người nói cho phép chụp ảnh ở mọi nơi ngoại trừ khu đóng gói. | (A) "In the packaging area" — đúng khu vực duy nhất bị cấm chụp ảnh. | (B) "In the roasting room" — đây là điểm dừng đầu tiên của tour và không có lệnh cấm chụp ảnh. | (C) "In the grinding hall" — đoàn sẽ xem máy nghiền ở khu vực này và không có thông báo cấm chụp. | (D) "In the tasting shop" — cửa hàng thử chocolate không nằm trong ngoại lệ được nêu.
+Source: original
+[QUESTION]
+What can be inferred about the tour?
+(A) Visitors will spend most of the tour shopping.
+(B) Visitors will learn about production before tasting chocolate.
+(C) Visitors can photograph every part of the factory.
+(D) Visitors will operate the chocolate-making machines.
+Answer: B
+Explanation: Trình tự tour bắt đầu với phòng rang, tiếp theo là xem máy nghiền, rồi cuối tour khách mới nếm ba mẫu chocolate. Vì vậy, khách sẽ tìm hiểu về quy trình sản xuất trước khi nếm chocolate. | (A) "Visitors will spend most of the tour shopping." — cửa hàng chỉ xuất hiện ở cuối tour và chủ yếu là nơi nếm chocolate. | (B) "Visitors will learn about production before tasting chocolate." — đúng với trình tự các hoạt động được mô tả. | (C) "Visitors can photograph every part of the factory." — khu đóng gói là ngoại lệ không được chụp ảnh. | (D) "Visitors will operate the chocolate-making machines." — khách chỉ xem máy nghiền hoạt động, không được nói là sẽ vận hành máy.
+Source: original

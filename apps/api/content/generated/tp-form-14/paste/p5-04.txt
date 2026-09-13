@@ -1,0 +1,9 @@
+[QUESTION]
+The new office tower ------- last month in a ceremony attended by city officials.
+(A) inaugurated
+(B) has inaugurated
+(C) was inaugurated
+(D) inaugurating
+Answer: C
+Explanation: Chủ ngữ "The new office tower" là vật nhận hành động khánh thành, nên câu phải ở dạng bị động quá khứ với mốc "last month". | (A) "inaugurated" — là chủ động, khiến tòa nhà tự khánh thành chính nó. | (B) "has inaugurated" — vừa là chủ động vừa là hiện tại hoàn thành, sai cả nghĩa lẫn thì. | (C) "was inaugurated" — là bị động quá khứ đơn, khớp chủ ngữ và mốc thời gian. | (D) "inaugurating" — là hiện tại phân từ, không đứng một mình làm động từ chính.
+Source: original

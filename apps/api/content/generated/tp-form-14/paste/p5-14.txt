@@ -1,0 +1,9 @@
+[QUESTION]
+We sincerely apologize: your invoice for last month ------- incorrectly due to a system error.
+(A) was calculated
+(B) calculates
+(C) has calculated
+(D) calculating
+Answer: A
+Explanation: Chủ ngữ "your invoice" là vật nhận hành động tính toán, và sự việc đã xảy ra trong tháng trước, nên cần bị động quá khứ đơn. | (A) "was calculated" — là bị động quá khứ đơn, khớp chủ ngữ và mốc "last month". | (B) "calculates" — là chủ động hiện tại đơn, khiến hóa đơn tự tính chính nó. | (C) "has calculated" — vừa là chủ động vừa là hiện tại hoàn thành, sai cả nghĩa lẫn thì. | (D) "calculating" — là hiện tại phân từ, không đứng một mình làm động từ chính.
+Source: original

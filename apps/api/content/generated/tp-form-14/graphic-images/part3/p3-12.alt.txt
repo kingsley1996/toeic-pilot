@@ -1,0 +1,1 @@
+Resident Satisfaction by Apartment Complex. Phiếu khảo sát. Complex: Riverside, Location: 5 stars, Security: 4 stars, Price: 3 stars, Facilities: 5 stars. Complex: Garden View, Location: 4 stars, Security: 4 stars, Price: 2 stars, Facilities: 4 stars. Complex: City Center, Location: 5 stars, Security: 3 stars, Price: 4 stars, Facilities: 4 stars.

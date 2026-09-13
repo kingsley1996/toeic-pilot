@@ -1,0 +1,9 @@
+[QUESTION]
+The delivery team ------- overtime last weekend to make up for the delay caused by the storm.
+(A) worked
+(B) work
+(C) working
+(D) works
+Answer: A
+Explanation: Cụm "last weekend" cho biết hành động đã xảy ra trong quá khứ, nên động từ phải ở thì quá khứ đơn. | (A) "worked" — là quá khứ đơn, khớp với "last weekend". | (B) "work" — là hiện tại đơn, không hợp với mốc thời gian quá khứ. | (C) "working" — là hiện tại phân từ, không đứng một mình làm động từ chính. | (D) "works" — là hiện tại đơn ngôi thứ ba số ít, vừa sai thì vừa sai ngôi.
+Source: original

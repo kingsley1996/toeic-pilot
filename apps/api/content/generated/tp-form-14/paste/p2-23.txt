@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Could you call me a taxi? It's pouring outside.
+voice: au_male_1
+(A) Taxis are hard to find at noon.
+(B) Right away, I'll book one now.
+(C) It rains a lot this month.
+Answer: B
+Explanation: Câu hỏi là "Could you call me a taxi? It's pouring outside.", nhờ gọi taxi vì trời mưa lớn. | (A) "Taxis are hard to find at noon." — dùng lại từ "taxis" nhưng nói về buổi trưa chung. | (B) "Right away, I'll book one now." — nhận lời và cho biết sẽ đặt xe ngay. | (C) "It rains a lot this month." — dùng lại chủ đề mưa nhưng nói về cả tháng.
+Source: original

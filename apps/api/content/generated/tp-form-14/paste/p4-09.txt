@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Attention, shoppers. This is Maria from customer service. Our summer sale starts today with four themed counters on the ground floor. The fiction counter offers buy-one-get-one-free novels. At the children's counter, weekend storytelling begins at ten. Please note the counter in the upper right corner will close at eight this evening, while the other three stay open until nine. Thank you for shopping with us. Gift wrapping is free at every counter this weekend. Members earn double points on sale items.
+
+[QUESTION]
+Where is this announcement being made?
+(A) At a children's library
+(B) At a weekend market
+(C) In a stationery shop
+(D) In a bookstore
+Answer: D
+Explanation: Người nói xưng nhân viên phục vụ khách hàng, giới thiệu bốn quầy sách giảm giá theo chủ đề — thông báo phát trong nhà sách. | (A) "At a children's library" — quầy thiếu nhi chỉ là một góc chứ không phải thư viện. | (B) "At a weekend market" — kể chuyện cuối tuần chỉ là một hoạt động trong nhà sách chứ không phải chợ. | (C) "In a stationery shop" — văn phòng phẩm chỉ là một trong bốn quầy chứ không phải cả cửa hàng. | (D) "In a bookstore" — phù hợp với bốn quầy sách được giới thiệu.
+Source: original
+[QUESTION]
+Look at the graphic. Which counter will close at eight this evening?
+(A) Counter 2
+(B) Counter 3
+(C) Counter 4
+(D) Counter 1
+Answer: A
+Explanation: Người nói báo quầy ở góc trên bên phải đóng cửa lúc tám giờ tối, và trên sơ đồ quầy nằm ở góc ấy là Counter 2. | (A) "Counter 2" — đúng vì đây là quầy ở góc trên bên phải. | (B) "Counter 3" — nằm ở góc dưới bên trái trên sơ đồ. | (C) "Counter 4" — nằm ở góc dưới bên phải trên sơ đồ. | (D) "Counter 1" — nằm ở góc trên bên trái trên sơ đồ.
+Source: original
+[QUESTION]
+What will happen at the children's counter this weekend?
+(A) A sale of used books
+(B) A storytelling session
+(C) Free novels for shoppers
+(D) A puppet show at ten
+Answer: B
+Explanation: Người nói giới thiệu "weekend storytelling begins at ten" tại quầy thiếu nhi — hoạt động cuối tuần ở đó là kể chuyện. | (A) "A sale of used books" — giảm giá sách không được nhắc, quầy tiểu thuyết bán sách mới mua một tặng một. | (B) "A storytelling session" — đúng hoạt động cô thông báo. | (C) "Free novels for shoppers" — tiểu thuyết mua một tặng một nằm ở quầy viễn tưởng chứ không phải quầy thiếu nhi. | (D) "A puppet show at ten" — mười giờ là giờ kể chuyện chứ không phải múa rối.
+Source: original

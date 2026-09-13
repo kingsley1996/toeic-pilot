@@ -1161,6 +1161,23 @@ def _check_set(
     # Cờ của CẢ CỤM, nhân ra mọi báo cáo giống như `shared` — cùng lý do: đơn vị
     # đọc là từng câu, còn thứ sai là quan hệ giữa ba câu.
     shared_flags: list[str] = []
+    if part in (3, 4, 6, 7):
+        # Ngữ liệu quá NGẮN thì cụm không đủ chỗ giấu vế thứ hai của đáp án.
+        # Sàn = dưới min TOÀN HỌ (6 đề: P3 min≈31, P4 min≈32, P6 min≈81, P7
+        # min≈27/55 theo số văn bản) — một tripwire hồi quy: im lặng với mọi đề
+        # đã chấp nhận, chỉ nổ khi ngữ liệu ngắn hơn bất cứ thứ gì từng đạt.
+        # CỜ chứ không chặn: ngắn là thiếu chỗ giấu đáp án, không phải sai — và
+        # đề đang viết dở cũng ngắn một cách chính đáng.
+        floor: int | None = {3: 30, 4: 30, 6: 80}.get(part)
+        if part == 7:
+            floor = {1: 25, 2: 50}.get(text_passages or 0, 80)
+        words = len(_content_words(script))
+        if floor is not None and words < floor:
+            shared_flags.append(
+                f"ngữ liệu ngắn bất thường ({words} từ nội dung, sàn {floor}) — "
+                "cụm ngắn không đủ chỗ giấu vế thứ hai của đáp án, kiểm tra xem "
+                "thoại/văn bản có bị cụt không"
+            )
     # Ngữ liệu để đối chiếu trích dẫn: CHÍNH khối dán, trừ các dòng giải thích.
     # Dùng cả khối thay vì ghép script + passage vì `parse_group` không trả ngữ
     # liệu ra ngoài, và cả khối lại đúng hơn — nó phủ mọi part, kể cả Part 2 nơi
@@ -1689,3 +1706,72 @@ def check_answer_spread(reports_dir: Path, blueprint: Blueprint) -> list[str]:
                 f"— chọn bừa cũng đúng chừng đó. Chạy `balance` trước khi nạp."
             )
     return problems
+
+
+# Từ vựng bị kiểm tra TRỰC TIẾP phải có vài từ ngoài danh sách phổ biến — đo
+# trên 6 đề: đáp án đúng của câu P5-đơn-từ và từ hỏi nghĩa của câu VIC mà toàn
+# là từ ai cũng biết (evaluation, celebrate, launch, slot...) thì câu vocab
+# không đo được vốn từ. Đếm ở tầng đề vì một câu dễ lẻ loi không nói gì, còn cả
+# đề không có từ khó nào thì cấu trúc đã sai.
+TESTED_VOCAB_MIN = 5
+
+_FREQUENT_WORDS: set[str] | None = None
+
+
+def _frequent_words() -> set[str]:
+    """10k từ phổ biến (vendored, một từ một dòng, bỏ dòng `#`)."""
+    global _FREQUENT_WORDS
+    if _FREQUENT_WORDS is None:
+        path = Path(__file__).with_name("frequent_words.txt")
+        _FREQUENT_WORDS = {
+            line.strip()
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.startswith("#")
+        }
+    return _FREQUENT_WORDS
+
+
+def check_tested_vocabulary(reports_dir: Path, blueprint: Blueprint) -> list[str]:
+    """Quota từ hiếm trong số từ bị kiểm tra trực tiếp (P5 + VIC Part 7).
+
+    Đếm CÂU, không đếm từ: đáp án đúng P5 có BẤT KỲ từ nội dung nào ngoài danh
+    sách (thế là đủ — đáp án ngữ pháp như "worked" toàn từ phổ biến nên tự rớt),
+    và từ hỏi nghĩa của câu VIC ngoài danh sách. Đề dở (thiếu tệp) thì im lặng:
+    thiếu tệp đã có cổng từng-ô chặn, ở đây báo thêm chỉ nhân đôi một lỗi.
+    """
+    from app.content.exam.writer import paste_path
+
+    frequent = _frequent_words()
+    rare: list[str] = []
+    for part in blueprint.parts:
+        for slot in part.slots:
+            path = paste_path(reports_dir, slot)
+            if not path.exists():
+                return []
+            text = path.read_text()
+            if part.part == 5:
+                question, _ = parse_one(text, 5)
+                if question is None:
+                    continue
+                gold = next((option_text(o) for o in question.options if o.is_correct), "")
+                if any(word not in frequent for word in _content_words(gold)):
+                    rare.append(f"{slot.id}: {gold.strip()[:48]}")
+            elif part.part == 7:
+                questions, _, _ = parse_group(text, 7)
+                for question in questions:
+                    stem = question.prompt_text or ""
+                    found = _VOCAB_RE.search(stem)
+                    if found is None or "closest in meaning" not in stem.lower():
+                        continue
+                    target = found.group(1).strip().lower()
+                    if target and target not in frequent:
+                        rare.append(f"{slot.id}: {target}")
+    if len(rare) >= TESTED_VOCAB_MIN:
+        return []
+    return [
+        f"từ vựng bị kiểm tra quá dễ: chỉ {len(rare)} câu kiểm tra từ hiếm "
+        f"(cần ≥{TESTED_VOCAB_MIN}) — đáp án đúng P5 và từ hỏi nghĩa VIC toàn "
+        f"từ phổ thông thì câu vocab không đo được vốn từ. "
+        f"Nâng vài từ lên band B2+ (vd commemorate, postpone, rollout): "
+        f"{'; '.join(rare) if rare else 'không câu nào'}"
+    ]

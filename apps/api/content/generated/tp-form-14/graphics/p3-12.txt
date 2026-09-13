@@ -1,0 +1,6 @@
+kind: survey
+Resident Satisfaction by Apartment Complex
+Complex | Location | Security | Price | Facilities
+Riverside | 5 stars | 4 stars | 3 stars | 5 stars
+Garden View | 4 stars | 4 stars | 2 stars | 4 stars
+City Center | 5 stars | 3 stars | 4 stars | 4 stars

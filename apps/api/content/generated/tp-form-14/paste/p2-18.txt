@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Could you wait ten more minutes? The meeting isn't over yet.
+voice: uk_female_1
+(A) Drivers usually wait outside.
+(B) The meeting ends at five.
+(C) No problem, take your time.
+Answer: C
+Explanation: Câu hỏi là "Could you wait ten more minutes? The meeting isn't over yet?", nhờ tài xế chờ thêm vì họp chưa xong. | (A) "Drivers usually wait outside." — dùng lại bối cảnh chờ nhưng nói thói quen chung của tài xế. | (B) "The meeting ends at five." — dùng lại từ "meeting" nhưng nêu giờ kết thúc chung. | (C) "No problem, take your time." — đồng ý chờ, đúng phản ứng với lời nhờ.
+Source: original

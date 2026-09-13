@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The benches are placed in front of the large glass tank.
+(B) The posters are lying on the floor.
+(C) The fish are swimming inside a river.
+(D) The blue light is coming from the windows.
+Answer: A
+Explanation: Trong gian thủy cung vắng người, dãy ghế dài kê ngay trước tấm kính lớn đầy cá đang bơi, tấm áp phích dán trên tường bên cạnh, ánh đèn xanh từ mặt nước hắt lên trần. | (A) "The benches are placed in front of the large glass tank." — đúng vị trí của dãy ghế. | (B) "The posters are lying on the floor." — ngược lại, áp phích dán trên tường chứ không nằm dưới sàn. | (C) "The fish are swimming inside a river." — cá bơi trong bể kính chứ không phải sông ngoài tự nhiên. | (D) "The blue light is coming from the windows." — ánh xanh hắt từ mặt nước chứ không từ cửa sổ nào.
+Source: original

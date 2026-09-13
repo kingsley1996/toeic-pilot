@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Forty delegates land at nine, and the keynote starts at ten thirty. We need them at the convention center by ten.
+voice: au_male_1
+Two buses are ready, each holds twenty-five. Traffic to the center takes about twenty minutes.
+voice: us_female_1
+Then one bus is enough, but send both in case of delays.
+voice: au_male_1
+I'll tell the drivers to wait at the arrival gate from eight thirty.
+voice: us_female_1
+Terrific. I will telephone the venue about parking for two buses.
+voice: au_male_1
+Copy that. I will brief both drivers over coffee now.
+
+[QUESTION]
+What does the woman mean when she says "send both in case of delays"?
+(A) Sixty delegates are arriving
+(B) One of the buses has broken down
+(C) She wants a backup in case of delays
+(D) The keynote has been moved earlier
+Answer: C
+Explanation: Lời "send both in case of delays" đi ngay sau câu "one bus is enough" của chính cô — ghép hai chỗ mới thấy cô điều xe thứ hai để dự phòng kẹt xe. | (A) "Sixty delegates are arriving" — chỉ có bốn mươi đại biểu, mỗi xe chở hai mươi lăm người. | (B) "One of the buses has broken down" — ngược lại, cả hai xe đều sẵn sàng. | (C) "She wants a backup in case of delays" — đúng lý do cô nêu. | (D) "The keynote has been moved earlier" — giờ diễn thuyết chính không hề thay đổi.
+Source: original
+[QUESTION]
+How long does the trip to the convention center take?
+(A) About one hour
+(B) About ten minutes
+(C) About forty minutes
+(D) About twenty minutes
+Answer: D
+Explanation: Người đàn ông nói "Traffic to the center takes about twenty minutes" khi báo hai xe đã sẵn sàng. | (A) "About one hour" — không có con số một giờ nào được nhắc. | (B) "About ten minutes" — không có con số mười phút nào trong hội thoại. | (C) "About forty minutes" — bốn mươi là số đại biểu chứ không phải số phút. | (D) "About twenty minutes" — đúng thời gian anh nêu.
+Source: original
+[QUESTION]
+What will the drivers do before nine o'clock?
+(A) Wait at the arrival gate for forty delegates
+(B) Pick up the keynote speaker
+(C) Refuel the buses before leaving
+(D) Call the delegates on arrival
+Answer: A
+Explanation: Tài xế phải chờ ở cửa đến từ tám giờ ba mươi để đón đoàn bốn mươi đại biểu hạ cánh lúc chín giờ — ghép giờ chờ ở lượt cuối với giờ hạ cánh ở lượt đầu mới ra việc của họ. | (A) "Wait at the arrival gate for forty delegates" — đúng chỉ đạo đón đoàn của anh. | (B) "Pick up the keynote speaker" — diễn giả chính không được nhắc là cần xe riêng. | (C) "Refuel the buses before leaving" — đổ xăng không hề được đề cập. | (D) "Call the delegates on arrival" — không có việc gọi điện nào được giao.
+Source: original

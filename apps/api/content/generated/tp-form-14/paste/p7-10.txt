@@ -1,0 +1,50 @@
+[PASSAGE]
+Subject: Moving Quote for Your 30-Person Office
+To: Ms. Van
+From: SpeedMove Co.
+
+Dear Ms. Van,
+
+Thank you for asking about our full-package service for your thirty-person office. [1] The package costs 18,000,000 dong and covers packing, transport, and unpacking. [2]
+
+Our team can complete the move in one day. [3] We will bring extra boxes free of charge for fragile items. Packing starts at seven sharp with a crew of six. The truck parks in the back alley overnight. The crew chief signs the inventory at both ends. Our hotline answers questions all weekend. Please confirm the moving date of July 12 so we can reserve the truck. [4]
+
+Best regards,
+Quoc Anh
+
+[QUESTION]
+What is the email about?
+(A) A moving quote for an office
+(B) A cleaning service advertisement
+(C) An office sale notice
+(D) A staff party invitation
+Answer: A
+Explanation: Email báo giá trọn gói 18 triệu cho văn phòng ba mươi người kèm đóng gói và vận chuyển — nội dung là báo giá chuyển văn phòng. | (A) "A moving quote for an office" — đúng nội dung email. | (B) "A cleaning service advertisement" — dọn dẹp không được nhắc đến. | (C) "An office sale notice" — thanh lý văn phòng không xuất hiện trong email. | (D) "A staff party invitation" — tiệc nhân viên không liên quan đến báo giá.
+Source: original
+[QUESTION]
+How much is the full package?
+(A) 15,000,000 dong
+(B) 18,000,000 dong
+(C) 8,000,000 dong
+(D) 28,000,000 dong
+Answer: B
+Explanation: Email ghi rõ "The package costs 18,000,000 dong and covers packing, transport, and unpacking". | (A) "15,000,000 dong" — không có con số này trong email. | (B) "18,000,000 dong" — đúng mức giá được nêu. | (C) "8,000,000 dong" — không có con số này trong email. | (D) "28,000,000 dong" — không có con số này trong email.
+Source: original
+[QUESTION]
+Why is the package suitable?
+(A) It requires two working days
+(B) It moves only small offices
+(C) It covers packing and a one-day move
+(D) It excludes packing materials
+Answer: C
+Explanation: Gói trọn gói đã gồm đóng gói, vận chuyển, dọn ra mà đội làm xong trong một ngày — ghép hai chỗ mới thấy trọn lý do gói này hợp. | (A) "It requires two working days" — ngược lại, đội hoàn thành trong một ngày. | (B) "It moves only small offices" — ngược lại, gói phục vụ văn phòng ba mươi người. | (C) "It covers packing and a one-day move" — đúng hai ưu điểm email nêu. | (D) "It excludes packing materials" — ngược lại, thùng đựng đồ dễ vỡ được mang theo miễn phí.
+Source: original
+[QUESTION]
+The sentence "The company will bring extra boxes free of charge." best fits in space
+(A) [1]
+(B) [2]
+(C) [4]
+(D) [3]
+Answer: D
+Explanation: Câu mang thùng miễn phí phải đứng ngay sau câu đội hoàn thành việc chuyển trong một ngày, trước khi email chuyển sang chốt ngày — tức vị trí [3]. | (A) "[1]" — đầu email chưa giới thiệu gói dịch vụ nên câu này đến quá sớm. | (B) "[2]" — chỗ này đang nói giá gói, câu về thùng miễn phí chen vào bị lạc chủ đề. | (C) "[4]" — cuối email đang chốt ngày và giữ xe, câu này không còn liên quan. | (D) "[3]" — đúng vì đứng ngay sau cam kết chuyển trong một ngày.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The year-end stock count ------- ahead of schedule thanks to the new barcode system.
+(A) finishes
+(B) finish
+(C) finishing
+(D) finished
+Answer: D
+Explanation: Việc kiểm kê đã hoàn thành trước tiến độ, tức hành động xảy ra trong quá khứ, nên động từ phải ở thì quá khứ đơn. | (A) "finishes" — là hiện tại đơn ngôi thứ ba số ít, không hợp với sự việc đã xong. | (B) "finish" — là hiện tại đơn, sai thì so với ngữ cảnh. | (C) "finishing" — là hiện tại phân từ, không đứng một mình làm động từ chính. | (D) "finished" — là quá khứ đơn, khớp với nghĩa hoàn thành trước tiến độ.
+Source: original

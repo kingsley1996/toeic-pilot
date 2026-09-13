@@ -1,0 +1,29 @@
+[PASSAGE]
+Subject: Refund for the June 5 Play
+To: Ticket Holders
+From: City Theater Box Office
+
+Dear customers,
+
+The June 5 performance of "The Storm" was cancelled because the lead actor fell ill. Full refunds will be sent to your accounts within seven days.
+
+Please keep your e-tickets until the refund arrives. Our next performance is scheduled for June 20, and current ticket holders will receive priority booking. The June 20 show features the same cast with two new songs. Ticket holders may exchange seats free of charge. A shuttle bus leaves the square at six thirty. Programs are half price for students with ID.
+
+[QUESTION]
+Why did the office write?
+(A) To invite critics to a rehearsal
+(B) To sell tickets for a new play
+(C) To announce a refund for a canceled show
+(D) To change the show schedule
+Answer: C
+Explanation: Phòng vé báo suất diễn mùng 5 tháng Sáu bị hủy và tiền vé sẽ hoàn trong bảy ngày — mục đích là thông báo hoàn tiền. | (A) "To invite critics to a rehearsal" — mời nhà phê bình không được nhắc đến. | (B) "To sell tickets for a new play" — ngược lại, email báo hủy suất chứ không bán vé mới. | (C) "To announce a refund for a canceled show" — đúng nội dung email. | (D) "To change the show schedule" — suất 20 tháng Sáu đã có sẵn, không phải đổi lịch.
+Source: original
+[QUESTION]
+The word "cancelled" is closest in meaning to
+(A) called up
+(B) called on
+(C) called out
+(D) called off
+Answer: D
+Explanation: 'The June 5 performance was cancelled' nói về suất diễn bị hủy vì diễn viên chính đổ bệnh. | (A) "called up" — nghĩa là gọi điện hoặc triệu tập, không phù hợp. | (B) "called on" — nghĩa là ghé thăm hoặc yêu cầu, không phù hợp. | (C) "called out" — nghĩa là gọi to hoặc chỉ trích, không liên quan đến hủy suất. | (D) "called off" — gần nghĩa nhất với hủy bỏ.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Hello, this is Tan from FastShip Delivery. We tried to deliver your parcel twice, but nobody answered the door. The parcel needs a direct signature, so we cannot leave it outside. Please call 555-0192 to arrange redelivery before Friday. Our office at 12 Le Loi Street is open until seven for pickups. The office also handles returns free of charge. Heavy parcels need two staff to lift. A tracking number is printed on every receipt.
+
+[QUESTION]
+What is the purpose of the call?
+(A) To arrange redelivery of a parcel
+(B) To confirm a door installation
+(C) To apologize for a late parcel
+(D) To update office opening hours
+Answer: A
+Explanation: Người gọi báo giao hai lần không gặp rồi hẹn giao lại trước thứ Sáu — mục đích là sắp xếp giao lại kiện hàng. | (A) "To arrange redelivery of a parcel" — đúng nội dung cuộc gọi. | (B) "To confirm a door installation" — cửa chỉ được nhắc vì không ai ra mở chứ không lắp đặt gì. | (C) "To apologize for a late parcel" — không có lời xin lỗi nào trong cuộc gọi. | (D) "To update office opening hours" — giờ mở cửa chỉ là thông tin thêm cho người đến lấy hàng.
+Source: original
+[QUESTION]
+Why can't the parcel be left outside?
+(A) Nobody paid the fee
+(B) It needs a direct signature
+(C) The office is closed
+(D) Friday has already passed
+Answer: B
+Explanation: Người gọi nói rõ "The parcel needs a direct signature, so we cannot leave it outside" — lý do là kiện cần ký nhận trực tiếp. | (A) "Nobody paid the fee" — phí giao hàng không hề được nhắc đến. | (B) "It needs a direct signature" — đúng nguyên nhân anh nêu. | (C) "The office is closed" — ngược lại, văn phòng mở đến bảy giờ để nhận hàng. | (D) "Friday has already passed" — thứ Sáu là hạn chót hẹn giao lại trong tương lai.
+Source: original
+[QUESTION]
+What should the listener do about the delivery?
+(A) Call after Friday evening
+(B) Leave a note on the door
+(C) Call 555-0192 for a new delivery time
+(D) Pay an extra delivery fee
+Answer: C
+Explanation: Người gọi cho số điện thoại để hẹn giao lại trước thứ Sáu, và kiện hàng là của hãng FastShip giao hai lần không gặp — ghép hai chỗ mới ra việc cần làm là gọi số ấy lấy giờ giao mới. | (A) "Call after Friday evening" — ngược lại, phải gọi trước thứ Sáu. | (B) "Leave a note on the door" — ngược lại, kiện cần ký trực tiếp nên giấy nhắn không có tác dụng. | (C) "Call 555-0192 for a new delivery time" — đúng chỉ dẫn của anh. | (D) "Pay an extra delivery fee" — không có khoản phí thêm nào được nhắc.
+Source: original

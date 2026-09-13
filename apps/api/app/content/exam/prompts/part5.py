@@ -36,12 +36,21 @@ def prompt_for(slot: QuestionSlot) -> str:
     if not slot.grammar:
         # Câu TỪ VỰNG là chỗ lỗi "hai đáp án cùng đúng" xảy ra nhiều nhất, vì
         # cách viết dễ nhất là lấy bốn từ gần nghĩa. Nói thẳng đường đi đúng thay
-        # vì chỉ cấm đường sai: bốn từ cùng đăng ký ngôn ngữ nhưng KHÁC trường
+        # vì chỉ cấm đường sai: bốn từ cùng đăng ký ngôn ngữ nhưng KHÁC TRƯỜNG
         # nghĩa, và chỉ một từ hợp với danh từ/động từ đứng cạnh chỗ trống.
         lines.append(
             "- Bốn lựa chọn phải là bốn từ KHÁC TRƯỜNG NGHĨA, không phải bốn từ gần nghĩa. "
             "Ba từ sai phải sai vì không đi được với từ đứng cạnh chỗ trống, "
             "không phải vì 'kém tự nhiên hơn'."
+        )
+        # Đo trên 6 đề: từ ĐÚNG của câu vocab toàn là từ phổ thông (evaluation,
+        # celebrate, loyal, accommodate) — người học không cần học vẫn đúng, nên
+        # câu vocab không đo được vốn từ. Đòi band B2 trở lên ngay ở prompt thay
+        # vì vá từng câu sau khi viết.
+        lines.append(
+            "- Từ ĐÚNG phải là từ thương mại/học thuật ÍT GẶP (trình độ B2 trở lên). "
+            "Vd đạt: commemorate, postpone, inconvenienced. "
+            "Vd chưa đạt: evaluation, celebrate, loyal, accommodate."
         )
     else:
         lines.append(

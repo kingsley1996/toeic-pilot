@@ -424,6 +424,11 @@ PART1_MOTIF_KEYWORDS: dict[str, tuple[str, ...]] = {
     "bãi đỗ xe": ("bãi đỗ xe", "chỗ đỗ", "xe đậu", "làn đỗ"),
     "xây dựng / sửa toà nhà": ("lau cửa", "sơn", "quét vôi", "thang dài", "mặt tiền"),
     "giao hàng / vận chuyển": ("giao hàng", "thùng các-tông", "vận chuyển", "chất lên xe"),
+    # Hai motif từng lọt lưới ở tp-form-14 (2026-09): tiệm cắt tóc trùng
+    # tp-form-08, trạm xăng trùng tp-test-09 — bảng không có từ khóa của chúng
+    # nên cơ chế avoid mù hoàn toàn. "cắt tóc" bắt luôn "tiệm cắt tóc" (substring).
+    "tiệm cắt tóc": ("cắt tóc", "tỉa tóc", "tông đơ", "ghế cắt tóc"),
+    "trạm xăng": ("trạm xăng", "cây xăng", "vòi bơm", "trụ bơm", "đổ xăng", "đổ dầu"),
 }
 
 

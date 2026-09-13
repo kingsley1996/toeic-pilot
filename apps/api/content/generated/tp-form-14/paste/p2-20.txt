@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How can I get a VAT invoice for my online order?
+voice: us_female_1
+(A) Online orders ship in two days.
+(B) Download it from your account page.
+(C) Invoices are printed in blue.
+Answer: B
+Explanation: Câu hỏi là "How can I get a VAT invoice for my online order?", hỏi CÁCH lấy hóa đơn đỏ cho đơn online. | (A) "Online orders ship in two days." — dùng lại "online orders" nhưng nói về thời gian giao hàng. | (B) "Download it from your account page." — chỉ thẳng cách lấy hóa đơn, đúng thứ được hỏi. | (C) "Invoices are printed in blue." — dùng lại từ "invoices" nhưng nói về màu giấy in.
+Source: original

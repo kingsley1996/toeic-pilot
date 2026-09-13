@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: ca_male_1
+What are the opening hours of the shared gym in our tower?
+voice: uk_female_1
+Six to ten on weekdays, and eight to eight on weekends.
+voice: ca_male_1
+Is there a trainer available in the evenings?
+voice: uk_female_1
+A trainer is there from six to eight on weekdays. Weekends are self-service only.
+voice: ca_male_1
+I usually work late, so weekends suit me better.
+voice: uk_female_1
+Absolutely. I will post the holiday schedule on the board.
+voice: ca_male_1
+Much appreciated. I will bring my own towel and bottle.
+
+[QUESTION]
+What are the speakers discussing?
+(A) Weekend self-service rules
+(B) New gym equipment rules
+(C) The tower's security rules
+(D) The shared gym's opening hours
+Answer: D
+Explanation: Người đàn ông hỏi giờ mở cửa phòng gym chung và người phụ nữ trả lời chi tiết ngày thường lẫn cuối tuần — trọng tâm là giờ phòng gym. | (A) "Weekend self-service rules" — tự phục vụ cuối tuần chỉ là một chi tiết về huấn luyện viên, không phải chủ đề. | (B) "New gym equipment rules" — nội quy thiết bị mới không được nhắc đến. | (C) "The tower's security rules" — an ninh tòa nhà không được nhắc đến. | (D) "The shared gym's opening hours" — đúng việc hai người đang bàn.
+Source: original
+[QUESTION]
+When is a trainer available?
+(A) On weekday evenings from six to eight
+(B) On weekday mornings at six
+(C) On weekends from eight to eight
+(D) Only upon special request
+Answer: A
+Explanation: Người phụ nữ nói "A trainer is there from six to eight on weekdays" khi được hỏi về huấn luyện viên buổi tối. | (A) "On weekday evenings from six to eight" — đúng khung giờ cô nêu. | (B) "On weekday mornings at six" — buổi sáng không được nhắc đến. | (C) "On weekends from eight to eight" — đó là giờ mở cửa phòng gym, còn cuối tuần không có huấn luyện viên. | (D) "Only upon special request" — không có thủ tục yêu cầu riêng nào được nhắc.
+Source: original
+[QUESTION]
+What does the man imply?
+(A) He wants evening hours extended
+(B) He will mostly use the gym on weekends
+(C) He needs a personal trainer
+(D) He lives in another residential tower
+Answer: B
+Explanation: Người đàn ông nói thường làm về muộn nên cuối tuần hợp với anh hơn — ngụ ý anh sẽ tập chủ yếu vào cuối tuần. | (A) "He wants evening hours extended" — anh không hề đề nghị kéo dài giờ mở cửa. | (B) "He will mostly use the gym on weekends" — đúng với lời kết của anh. | (C) "He needs a personal trainer" — anh chỉ hỏi huấn luyện viên trực chứ không cần huấn luyện riêng. | (D) "He lives in another residential tower" — ngược lại, anh hỏi về phòng gym "in our tower".
+Source: original

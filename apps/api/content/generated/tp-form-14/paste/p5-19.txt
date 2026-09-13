@@ -1,0 +1,9 @@
+[QUESTION]
+We would like to thank our partners, ------- sponsored this year's charity run.
+(A) whom
+(B) who
+(C) which
+(D) whose
+Answer: B
+Explanation: Mệnh đề sau dấu phẩy cần một đại từ quan hệ làm chủ ngữ cho động từ "sponsored", thay cho "our partners" là người. | (A) "whom" — là đại từ quan hệ chỉ người ở vị trí tân ngữ, không làm chủ ngữ được. | (B) "who" — là đại từ quan hệ chỉ người ở vị trí chủ ngữ, đúng chức năng. | (C) "which" — chỉ vật hoặc sự việc, không thay cho "partners" là người. | (D) "whose" — là đại từ sở hữu, cần một danh từ đi sau mới dùng được.
+Source: original

@@ -1,0 +1,7 @@
+kind: table
+Standard Flyer Printing Price List
+Quantity | Unit Price
+100 copies | 800 dong
+500 copies | 600 dong
+1000 copies | 450 dong
+5000 copies | 300 dong

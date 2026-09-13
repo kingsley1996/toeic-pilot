@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why did our electricity bill double this month?
+voice: uk_female_1
+(A) The air conditioners ran all summer.
+(B) The meter is read every month.
+(C) The bill is printed on recycled paper.
+Answer: A
+Explanation: Câu hỏi là "Why did our electricity bill double this month?", hỏi LÝ DO hóa đơn tăng gấp đôi. | (A) "The air conditioners ran all summer." — đưa thẳng nguyên nhân tiêu thụ điện tăng. | (B) "The meter is read every month." — dùng lại bối cảnh hóa đơn nhưng nói về việc ghi số điện. | (C) "The bill is printed on recycled paper." — dùng lại từ "bill" nhưng nói về giấy in.
+Source: original

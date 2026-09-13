@@ -1,0 +1,9 @@
+[QUESTION]
+The appointment of the new sales manager ------- yesterday by the board of directors.
+(A) was announced
+(B) announced
+(C) has announced
+(D) announcing
+Answer: A
+Explanation: Chủ ngữ "The appointment" là vật nhận hành động công bố, và sự việc xảy ra hôm qua, nên cần bị động quá khứ đơn. | (A) "was announced" — là bị động quá khứ đơn, khớp chủ ngữ và mốc "yesterday". | (B) "announced" — là chủ động, khiến quyết định bổ nhiệm tự công bố chính nó. | (C) "has announced" — vừa là chủ động vừa là hiện tại hoàn thành, sai cả nghĩa lẫn thì. | (D) "announcing" — là hiện tại phân từ, không đứng một mình làm động từ chính.
+Source: original

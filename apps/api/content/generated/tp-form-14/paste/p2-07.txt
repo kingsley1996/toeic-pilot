@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Who is picking up our partners at the airport tomorrow morning?
+voice: ca_male_1
+(A) Mr. Collins volunteered to go.
+(B) Their flight lands at eight.
+(C) The airport is twenty minutes away.
+Answer: A
+Explanation: Câu hỏi là "Who is picking up our partners at the airport tomorrow morning?", hỏi AI là người đi đón. | (A) "Mr. Collins volunteered to go." — chỉ thẳng người nhận đi đón, đúng thứ được hỏi. | (B) "Their flight lands at eight." — nêu giờ hạ cánh chứ không nói ai đi đón. | (C) "The airport is twenty minutes away." — dùng lại từ "airport" nhưng nói về khoảng cách.
+Source: original

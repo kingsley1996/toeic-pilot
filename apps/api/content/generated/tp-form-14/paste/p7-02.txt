@@ -1,0 +1,34 @@
+[PASSAGE]
+MediBook: Doctor Appointments Without the Phone Queue
+
+The MediBook app lets patients reserve slots at nearly five hundred clinics across the country. Instead of calling during office hours, office workers can book during their lunch break in under a minute.
+
+The app also sends reminders the day before each visit, so missed appointments have dropped sharply since its rollout last year. Downloading MediBook is free, though some clinics charge a small booking fee. Video visits with specialists begin next spring. Prescriptions can be renewed inside the app without extra fees. A family profile covers up to five members.
+
+[QUESTION]
+About how many clinics can patients book through MediBook?
+(A) About fifty clinics
+(B) Nearly five hundred
+(C) About fifteen clinics
+(D) About five clinics
+Answer: B
+Explanation: Bài viết cho biết MediBook cho phép bệnh nhân đặt lịch tại gần 500 phòng khám trên cả nước. | (A) "About fifty clinics" — thấp hơn rất nhiều so với số lượng được đề cập. | (B) "Nearly five hundred" — đúng với số lượng ước tính được nêu trong bài. | (C) "About fifteen clinics" — không phù hợp với thông tin trong bài. | (D) "About five clinics" — bài viết nói gần 500 phòng khám, không phải 5.
+Source: original
+[QUESTION]
+Why is MediBook convenient for office workers?
+(A) They get paper reminders by mail
+(B) They can call clinics directly
+(C) They can reserve slots and receive reminders
+(D) They must visit clinics in person
+Answer: C
+Explanation: MediBook cho phép nhân viên văn phòng đặt lịch trong giờ nghỉ trưa mà không cần gọi điện trong giờ làm việc, đồng thời ứng dụng còn gửi lời nhắc trước ngày khám. | (A) "They get paper reminders by mail" — bài chỉ nói ứng dụng gửi lời nhắc, không đề cập thư giấy. | (B) "They can call clinics directly" — ngược lại, ứng dụng giúp họ đặt lịch mà không cần gọi điện. | (C) "They can reserve slots and receive reminders" — đúng với hai tiện ích được bài viết nêu. | (D) "They must visit clinics in person" — việc đặt lịch được thực hiện qua ứng dụng.
+Source: original
+[QUESTION]
+The word "rollout" is closest in meaning to
+(A) review
+(B) postponement
+(C) cancellation
+(D) introduction
+Answer: D
+Explanation: Trong cụm "since its rollout last year", "rollout" chỉ đợt ứng dụng được tung ra và đưa vào sử dụng năm ngoái. | (A) "review" — nghĩa là đánh giá, không phù hợp với ngữ cảnh. | (B) "postponement" — nghĩa là trì hoãn, không phù hợp với ngữ cảnh. | (C) "cancellation" — nghĩa là hủy bỏ, trái với ngữ cảnh ứng dụng được triển khai. | (D) "introduction" — gần nghĩa nhất với việc một sản phẩm được giới thiệu ra thị trường.
+Source: original

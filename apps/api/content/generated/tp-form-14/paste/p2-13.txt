@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Do you still have the new model in size forty-two?
+voice: ca_male_1
+(A) Let me check the stockroom for you.
+(B) Size forty is on sale this week.
+(C) The new model comes in six colors.
+Answer: A
+Explanation: Câu hỏi là "Do you still have the new model in size forty-two?", hỏi còn hàng cỡ 42 của mẫu mới không. | (A) "Let me check the stockroom for you." — đi kiểm tra kho, đúng phản ứng với câu hỏi còn hàng. | (B) "Size forty is on sale this week." — dùng lại chủ đề cỡ giày nhưng nói về cỡ 40 đang giảm giá. | (C) "The new model comes in six colors." — dùng lại "new model" nhưng nói về màu sắc.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Have you sent the weekly report to Ms. Baker yet?
+voice: ca_male_1
+(A) Yes, I emailed it this morning.
+(B) The report covers last week's sales.
+(C) Ms. Baker works on the third floor.
+Answer: A
+Explanation: Câu hỏi là "Have you sent the weekly report to Ms. Baker yet?", hỏi có hay không đã gửi báo cáo tuần. | (A) "Yes, I emailed it this morning." — trả lời trực tiếp đã gửi vào sáng nay. | (B) "The report covers last week's sales." — nêu nội dung báo cáo chứ không nói đã gửi hay chưa. | (C) "Ms. Baker works on the third floor." — dùng lại tên nhưng nói về nơi làm việc của cô ấy.
+Source: original

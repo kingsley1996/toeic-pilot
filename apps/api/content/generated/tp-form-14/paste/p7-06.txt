@@ -1,0 +1,39 @@
+[PASSAGE]
+Lan: Our boss turns forty next Friday. Let's chip in for a lantern painting. Budget is 1,500,000 dong total.
+
+Phuong: Great idea. I know a gallery on Hang Trong Street. Shall we collect the money by Wednesday?
+
+Duc: Agreed. I'll order today so it arrives on time.
+
+Phuong: The gallery wraps gifts for free, by the way.
+
+Lan: Lovely. I will send everyone the payment link tonight.
+
+Duc: Great. The painting should arrive before Thursday.
+
+Lan: Perfect. Let's sign the card together on Friday.
+
+Phuong: Agreed. I will bring red envelopes too.
+
+Duc: Thanks, all. This boss deserves the best celebration.
+
+Lan: Forty is a big milestone after all.
+
+[QUESTION]
+How much is the gift budget?
+(A) 2,000,000 dong
+(B) 1,000,000 dong
+(C) 500,000 dong
+(D) 1,500,000 dong
+Answer: D
+Explanation: Lan cho biết ngân sách cho món quà là 1,500,000 đồng. | (A) "2,000,000 dong" — không được đề cập. | (B) "1,000,000 dong" — không được đề cập. | (C) "500,000 dong" — không được đề cập. | (D) "1,500,000 dong" — đúng với mức ngân sách được nêu trực tiếp.
+Source: original
+[QUESTION]
+What does Duc mean when he writes "I'll order today"?
+(A) He will order the gallery painting today
+(B) He wants a different gift
+(C) He cannot share the cost
+(D) Lan should place the order
+Answer: A
+Explanation: Lời "I'll order today" nhắm đến bức tranh đèn lồng ở gallery mà Phương giới thiệu, lại đi ngay sau hạn góp tiền thứ Tư — ghép ba chỗ mới thấy Đức nhận đặt chính bức tranh ấy ngay hôm nay. | (A) "He will order the gallery painting today" — đúng việc anh nhận làm. | (B) "He wants a different gift" — ngược lại, Đức đồng ý với ý tưởng mua tranh đèn lồng. | (C) "He cannot share the cost" — không có thông tin cho thấy Đức từ chối góp tiền. | (D) "Lan should place the order" — ngược lại, Đức nói chính anh sẽ đặt hàng.
+Source: original

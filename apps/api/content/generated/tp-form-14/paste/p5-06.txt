@@ -1,0 +1,9 @@
+[QUESTION]
+The invitation contains the meeting schedule ------- the voting procedures for the afternoon session.
+(A) and
+(B) because
+(C) although
+(D) unless
+Answer: A
+Explanation: Hai thành phần "the meeting schedule" và "the voting procedures" là hai nội dung song song cùng nằm trong thư mời, nên cần liên từ đẳng lập nối chúng lại. | (A) "and" — nối hai cụm danh từ song song đúng chức năng. | (B) "because" — chỉ nguyên nhân, trong khi lịch họp không phải nguyên nhân của thủ tục bỏ phiếu. | (C) "although" — chỉ sự nhượng bộ, không có quan hệ đối lập nào giữa hai nội dung. | (D) "unless" — chỉ điều kiện, không phù hợp với việc liệt kê nội dung thư mời.
+Source: original

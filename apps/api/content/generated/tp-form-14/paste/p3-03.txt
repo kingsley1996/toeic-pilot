@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: au_male_1
+Is there still a parking space free in the basement for my motorbike?
+voice: us_female_1
+The basement is full, but there's one spot left in the outdoor lot behind the building.
+voice: au_male_1
+Is it covered? The rainy season is coming.
+voice: us_female_1
+Half of it has a roof. And it's fifty thousand cheaper per month than the basement.
+voice: au_male_1
+I'll take it. Can I register the plate number with you now?
+voice: us_female_1
+Great. The guard at the booth will record it this afternoon.
+voice: au_male_1
+Perfect. I'll park there starting this evening.
+
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Repairing the basement
+(B) Renting a parking space
+(C) Buying a motorbike
+(D) Building a new roof
+Answer: B
+Explanation: Người đàn ông đang tìm chỗ đỗ xe cho xe máy, còn người phụ nữ giới thiệu một chỗ trống ở bãi ngoài trời và giải thích về mái che cũng như giá thuê. | (A) "Repairing the basement" — tầng hầm chỉ được nhắc là đã kín chỗ, không có việc sửa chữa. | (B) "Renting a parking space" — đúng với chủ đề chính của cuộc hội thoại. | (C) "Buying a motorbike" — xe máy chỉ được nhắc để xác định loại phương tiện cần chỗ đỗ, không có việc mua xe. | (D) "Building a new roof" — mái che hiện có được nhắc đến, nhưng không ai bàn về việc xây mái mới.
+Source: original
+[QUESTION]
+What does the woman say about the outdoor lot?
+(A) It costs more than the basement
+(B) It is fully booked
+(C) Half of it is under a roof
+(D) It closes during the rainy season
+Answer: C
+Explanation: Khi người đàn ông hỏi chỗ đỗ ngoài trời có được che không, người phụ nữ trả lời "Half of it has a roof." | (A) "It costs more than the basement" — ngược lại, chỗ ngoài trời rẻ hơn năm mươi nghìn mỗi tháng. | (B) "It is fully booked" — ngược lại, bãi ngoài trời còn một chỗ trống. | (C) "Half of it is under a roof" — diễn đạt lại chính xác thông tin cô cung cấp. | (D) "It closes during the rainy season" — mùa mưa chỉ được nhắc đến như lý do người đàn ông quan tâm đến mái che, không có thông tin bãi sẽ đóng cửa.
+Source: original
+[QUESTION]
+What does the man mean when he says "I'll take it"?
+(A) He will check the basement again
+(B) He will look for a basement space
+(C) He will wait for the rainy season
+(D) He will rent the outdoor spot and register the plate
+Answer: D
+Explanation: Lời "I'll take it" đi ngay sau khi cô báo bãi ngoài còn một chỗ trống rẻ hơn tầng hầm, rồi anh hỏi đăng ký biển số ngay — ghép hai chỗ mới thấy anh chốt thuê chỗ ngoài trời và làm thủ tục. | (A) "He will check the basement again" — tầng hầm kín chỗ, không còn gì để xem lại. | (B) "He will look for a basement space" — ngược lại, tầng hầm đã kín chỗ nên anh bỏ qua. | (C) "He will wait for the rainy season" — ngược lại, anh thuê ngay để kịp mùa mưa. | (D) "He will rent the outdoor spot and register the plate" — đúng ý định anh thể hiện.
+Source: original

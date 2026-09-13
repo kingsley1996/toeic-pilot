@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Would you like to pay in cash or by bank transfer?
+voice: uk_female_1
+(A) The transfer fee is quite small.
+(B) By bank transfer, please.
+(C) Cash is accepted at the counter.
+Answer: B
+Explanation: Câu hỏi là "Would you like to pay in cash or by bank transfer?", đưa hai lựa chọn thanh toán để khách chọn một. | (A) "The transfer fee is quite small." — nói về phí chuyển khoản chứ không chọn cách nào. | (B) "By bank transfer, please." — chọn hẳn một trong hai cách được đưa ra. | (C) "Cash is accepted at the counter." — chỉ nêu quầy nhận tiền mặt chứ không trả lời chọn cách nào.
+Source: original

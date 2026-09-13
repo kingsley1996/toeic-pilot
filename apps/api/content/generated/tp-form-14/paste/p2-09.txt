@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+How do we order extra lunch boxes for tomorrow's visitors?
+voice: ca_male_1
+(A) The visitors arrive at ten.
+(B) Lunch is served at noon.
+(C) Call the caterer before five today.
+Answer: C
+Explanation: Câu hỏi là "How do we order extra lunch boxes for tomorrow's visitors?", hỏi CÁCH đặt thêm suất ăn. | (A) "The visitors arrive at ten." — nêu giờ khách đến chứ không nói cách đặt. | (B) "Lunch is served at noon." — dùng lại từ "lunch" nhưng nói về giờ phục vụ. | (C) "Call the caterer before five today." — chỉ thẳng cách đặt, đúng thứ được hỏi.
+Source: original

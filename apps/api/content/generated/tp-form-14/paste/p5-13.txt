@@ -1,0 +1,9 @@
+[QUESTION]
+The meeting minutes noted that the elevator repairs would begin ------- Monday morning.
+(A) in
+(B) for
+(C) at
+(D) on
+Answer: D
+Explanation: Vị trí trống đứng trước một buổi cụ thể trong tuần, nên cần giới từ dùng với ngày và buổi. | (A) "in" — đi với tháng, năm hoặc buổi trong ngày nói chung, không đi với "Monday morning". | (B) "for" — chỉ mục đích hoặc khoảng thời gian, không chỉ thời điểm bắt đầu. | (C) "at" — đi với giờ giấc cụ thể, không đi với buổi trong ngày. | (D) "on" — đi đúng với ngày và buổi cụ thể như "on Monday morning".
+Source: original

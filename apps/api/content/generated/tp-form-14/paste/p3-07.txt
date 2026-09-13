@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Before my maternity leave starts next month, let's go over the monthly reports.
+voice: ca_male_1
+I've handled payroll, but the tax filings are new to me.
+voice: uk_female_1
+The filings are due on the tenth. I'll walk you through last quarter's file this Friday.
+voice: ca_male_1
+Thanks. Should I also take over the supplier payments?
+voice: uk_female_1
+Yes, the list is in the blue folder, and anything above fifty million needs the director's signature.
+voice: ca_male_1
+Understood. I will study the blue folder over the weekend.
+voice: uk_female_1
+Splendid. My phone stays on for urgent questions.
+
+[QUESTION]
+Who is the woman?
+(A) A newly hired payroll intern
+(B) An accountant going on maternity leave
+(C) The company finance director
+(D) A tax officer on duty
+Answer: B
+Explanation: Người phụ nữ bàn giao báo cáo trước kỳ nghỉ thai sản vào tháng sau — cô là kế toán sắp nghỉ sinh. | (A) "A newly hired payroll intern" — ngược lại, cô là người bàn giao cho người khác. | (B) "An accountant going on maternity leave" — đúng với lời mở đầu của cô. | (C) "The company finance director" — giám đốc chỉ được nhắc là người ký duyệt, không phải cô. | (D) "A tax officer on duty" — cô làm kế toán công ty chứ không phải cán bộ thuế.
+Source: original
+[QUESTION]
+What can be inferred about the man?
+(A) He has already submitted the recent tax documents
+(B) He refuses to handle supplier payments
+(C) He is familiar with payroll but not tax filings
+(D) He will take time off next month
+Answer: C
+Explanation: Người đàn ông nói đã làm bảng lương nhưng tờ khai thuế còn mới với anh — ghép hai chỗ mới thấy anh quen một việc và lạ một việc. | (A) "He has already submitted the recent tax documents" — ngược lại, cô sẽ hướng dẫn anh xem hồ sơ quý trước vào thứ Sáu. | (B) "He refuses to handle supplier payments" — ngược lại, chính anh chủ động hỏi có nên nhận thêm việc này. | (C) "He is familiar with payroll but not tax filings" — đúng với lời tự nhận của anh. | (D) "He will take time off next month" — kỳ nghỉ tháng sau là của người phụ nữ.
+Source: original
+[QUESTION]
+What will the speakers do this Friday?
+(A) Pay the suppliers
+(B) Submit the monthly reports
+(C) Meet the director
+(D) Review last quarter's tax file
+Answer: D
+Explanation: Người phụ nữ hẹn "I'll walk you through last quarter's file this Friday" — hai người sẽ cùng xem hồ sơ thuế quý trước. | (A) "Pay the suppliers" — thanh toán nhà cung cấp là việc anh tiếp quản chung, không hẹn thứ Sáu. | (B) "Submit the monthly reports" — hạn nộp tờ khai là ngày mùng mười, không phải thứ Sáu này. | (C) "Meet the director" — giám đốc chỉ được nhắc về thẩm quyền ký, không có cuộc gặp nào. | (D) "Review last quarter's tax file" — đúng việc đã hẹn thứ Sáu.
+Source: original

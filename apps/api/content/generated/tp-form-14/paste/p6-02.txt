@@ -1,0 +1,53 @@
+[PASSAGE]
+Subject: Change of Wedding Venue — Booking #W-2147
+To: Ms. Phuong
+From: Riverside Conference Center
+
+Dear Ms. Phuong,
+
+Thank you for choosing our center for your wedding reception on June 14. The center sits beside a quiet lake outside the old town. We are writing to ------- (1) that your event has been moved to a larger hall on the same floor.
+
+The new hall can seat up to two hundred guests and is available ------- (2) six o'clock onward. Our event team, ------- (3) has organized more than fifty weddings, will contact you this week to walk through the new layout. Guests can stroll in the garden before the ceremony. Fireworks light up the sky at midnight.
+
+------- (4) The original deposit and menu choices remain unchanged. We apologize for any inconvenience and look forward to hosting your celebration.
+
+Best regards,
+Daniel Ho
+Events Coordinator
+
+[QUESTION]
+Blank (1)
+(A) consider
+(B) confuse
+(C) contain
+(D) confirm
+Answer: D
+Explanation: Câu "We are writing to ------- (1) that your event has been moved" cần động từ mang nghĩa xác nhận việc đổi sảnh. | (A) "consider" — nghĩa là cân nhắc, trong khi việc đổi sảnh đã được quyết định. | (B) "confuse" — nghĩa là làm rối, trái với ý thông báo rõ ràng. | (C) "contain" — nghĩa là chứa đựng, không đi với mệnh đề "that" ở đây. | (D) "confirm" — nghĩa là xác nhận, khớp đúng mục đích của email.
+Source: original
+[QUESTION]
+Blank (2)
+(A) from
+(B) since
+(C) for
+(D) at
+Answer: A
+Explanation: Câu "is available ------- (2) six o'clock onward" cần giới từ mở đầu khoảng thời gian bắt đầu từ sáu giờ. | (A) "from" — tạo thành "from six o'clock onward", đúng cụm chỉ khoảng thời gian. | (B) "since" — đi với hiện tại hoàn thành, không đi với "is available". | (C) "for" — chỉ khoảng thời gian kéo dài, không kết hợp với "onward". | (D) "at" — chỉ một điểm giờ cố định, không đi với "onward".
+Source: original
+[QUESTION]
+Blank (3)
+(A) whom
+(B) who
+(C) which
+(D) whose
+Answer: B
+Explanation: Mệnh đề sau dấu phẩy cần đại từ quan hệ làm chủ ngữ cho "has organized", thay cho "Our event team" là người. | (A) "whom" — chỉ người ở vị trí tân ngữ, không làm chủ ngữ được. | (B) "who" — chỉ người ở vị trí chủ ngữ, đúng chức năng. | (C) "which" — chỉ vật, không thay cho đội ngũ tổ chức sự kiện. | (D) "whose" — là sở hữu, cần danh từ đi sau mới dùng được.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The center hosts conferences every weekend.
+(B) Our parking lot fits three hundred cars.
+(C) Only the venue has changed; all other arrangements stay the same.
+(D) The head chef trained in France.
+Answer: C
+Explanation: Câu sau chỗ trống nói tiền cọc và thực đơn giữ nguyên, nên câu điền phải khẳng định chỉ địa điểm thay đổi. | (A) "The center hosts conferences every weekend." — nói về hội nghị thường kỳ, không liên quan đến tiền cọc và thực đơn. | (B) "Our parking lot fits three hundred cars." — nói về bãi đỗ xe, không tạo liên kết với câu sau. | (C) "Only the venue has changed; all other arrangements stay the same." — dẫn đúng vào việc tiền cọc và thực đơn không đổi. | (D) "The head chef trained in France." — nói về bếp trưởng, không liên quan đến việc giữ nguyên thỏa thuận.
+Source: original

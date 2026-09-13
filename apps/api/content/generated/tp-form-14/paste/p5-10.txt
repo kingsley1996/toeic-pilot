@@ -1,0 +1,9 @@
+[QUESTION]
+The instructions explain how to operate the new photocopier -------.
+(A) properly
+(B) proper
+(C) property
+(D) properness
+Answer: A
+Explanation: Vị trí trống cuối câu bổ nghĩa cho động từ "operate", nên cần một trạng từ chỉ cách thức vận hành. | (A) "properly" — là trạng từ, bổ nghĩa đúng cho "operate". | (B) "proper" — là tính từ, không bổ nghĩa được cho động từ. | (C) "property" — là danh từ chỉ tài sản, không giữ được chức năng trạng từ. | (D) "properness" — là danh từ trừu tượng, không phù hợp ở vị trí này.
+Source: original

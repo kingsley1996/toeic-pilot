@@ -1,0 +1,4 @@
+kind: map
+Bookstore Ground Floor Sale Counters
+Counter 1: Fiction | Counter 2: Children
+Counter 3: Stationery | Counter 4: Bestsellers

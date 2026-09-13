@@ -1,0 +1,9 @@
+[QUESTION]
+All timesheets must be submitted ------- by the fifth of each month.
+(A) prompt
+(B) prompting
+(C) promptness
+(D) promptly
+Answer: D
+Explanation: Vị trí trống bổ nghĩa cho động từ bị động "be submitted", nên cần một trạng từ chỉ cách thức nộp đúng hạn. | (A) "prompt" — là tính từ, không bổ nghĩa được cho động từ. | (B) "prompting" — là hiện tại phân từ, không phù hợp ở vị trí này. | (C) "promptness" — là danh từ, không giữ được chức năng trạng từ. | (D) "promptly" — là trạng từ, bổ nghĩa đúng cho "be submitted".
+Source: original

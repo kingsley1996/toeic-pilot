@@ -1,0 +1,45 @@
+[PASSAGE]
+AirPure Pro Review: Clean Air for Large Bedrooms
+
+[1] The AirPure Pro cleans large rooms up to 60 square meters with a HEPA filter that traps dust and pollen. [2]
+
+Night mode produces little noise. [3] At 25 decibels, it runs quieter than a whisper, so light sleepers will barely notice it.
+
+The purifier costs 3,200,000 dong and comes with a two-year warranty. [4] Replacement filters are sold at all major electronics stores. Every box includes a remote control and a spare pre-filter. Delivery riders call thirty minutes before arrival. Installation videos sit on the support page. Old units can be traded in for store credit.
+
+[QUESTION]
+What filter does the purifier use?
+(A) A HEPA filter
+(B) A carbon filter
+(C) A foam filter
+(D) A paper filter
+Answer: A
+Explanation: Bài đánh giá cho biết máy dùng "a HEPA filter that traps dust and pollen" để lọc bụi và phấn hoa. | (A) "A HEPA filter" — đúng loại màng lọc được nêu. | (B) "A carbon filter" — màng lọc than hoạt tính không được nhắc đến. | (C) "A foam filter" — màng lọc bọt không xuất hiện trong bài. | (D) "A paper filter" — màng lọc giấy không hề được đề cập.
+Source: original
+[QUESTION]
+Why does the reviewer recommend the Pro for bedrooms?
+(A) It cools the room like a fan
+(B) It cleans large rooms with little noise
+(C) It plays soft music at night
+(D) It works without electricity
+Answer: B
+Explanation: Máy lọc được phòng lớn đến sáu mươi mét vuông mà chế độ đêm chỉ gây tiếng động nhỏ — ghép hai chỗ mới thấy lý do hợp phòng ngủ. | (A) "It cools the room like a fan" — làm mát không phải chức năng của máy lọc. | (B) "It cleans large rooms with little noise" — đúng hai ưu điểm bài viết nêu. | (C) "It plays soft music at night" — phát nhạc không được nhắc đến. | (D) "It works without electricity" — ngược lại, máy vẫn cần cắm điện để chạy.
+Source: original
+[QUESTION]
+Which is NOT true about the AirPure Pro?
+(A) It has a two-year warranty
+(B) It costs 3,200,000 dong
+(C) It covers only small rooms
+(D) Its filters are easy to find
+Answer: C
+Explanation: Bài viết khẳng định máy lọc được phòng lớn đến sáu mươi mét vuông, nên nói nó chỉ lọc phòng nhỏ là sai. | (A) "It has a two-year warranty" — đúng theo bảo hành được nêu. | (B) "It costs 3,200,000 dong" — đúng theo giá được nêu. | (C) "It covers only small rooms" — sai vì máy lọc được phòng lớn. | (D) "Its filters are easy to find" — đúng vì màng thay thế bán ở mọi cửa hàng điện máy lớn.
+Source: original
+[QUESTION]
+The sentence "This makes it ideal for allergy sufferers." best fits in space
+(A) [1]
+(B) [4]
+(C) [3]
+(D) [2]
+Answer: D
+Explanation: Câu về người bị dị ứng phải đứng ngay sau câu màng HEPA giữ bụi và phấn hoa, trước khi bài chuyển sang độ ồn — tức vị trí [2]. | (A) "[1]" — đầu bài chưa giới thiệu màng lọc nên câu này đến quá sớm. | (B) "[4]" — cuối bài đang nói giá và bảo hành, câu về dị ứng không còn liên quan. | (C) "[3]" — chỗ này đang nói độ ồn chế độ đêm, câu về dị ứng chen vào bị lạc chủ đề. | (D) "[2]" — đúng vì đứng ngay sau chi tiết lọc bụi và phấn hoa.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The board voted to ------- the product launch until next quarter.
+(A) commence
+(B) cancel
+(C) advance
+(D) postpone
+Answer: D
+Explanation: Hội đồng bỏ phiếu dời ra mắt sản phẩm sang quý sau, nên cần động từ mang nghĩa hoãn lại. | (A) "commence" — nghĩa là bắt đầu, trong khi sản phẩm đã lên lịch ra mắt từ trước. | (B) "cancel" — nghĩa là hủy bỏ hẳn, trái với việc chỉ dời sang quý sau. | (C) "advance" — nghĩa là đẩy sớm lên, ngược với hoãn lại. | (D) "postpone" — nghĩa là hoãn lại, khớp với "until next quarter".
+Source: original

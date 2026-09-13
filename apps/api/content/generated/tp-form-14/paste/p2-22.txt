@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+I've locked the stockroom, so we're all set to leave.
+voice: uk_female_1
+(A) Great, let's head out then.
+(B) The stockroom is on the ground floor.
+(C) Keys are kept at reception.
+Answer: A
+Explanation: Câu nói là "I've locked the stockroom, so we're all set to leave.", báo đã khóa kho và sẵn sàng ra về. | (A) "Great, let's head out then." — đồng tình ra về, đúng phản ứng với tin vừa nghe. | (B) "The stockroom is on the ground floor." — dùng lại từ "stockroom" nhưng nói về vị trí. | (C) "Keys are kept at reception." — dùng lại bối cảnh khóa cửa nhưng nói về nơi giữ chìa.
+Source: original

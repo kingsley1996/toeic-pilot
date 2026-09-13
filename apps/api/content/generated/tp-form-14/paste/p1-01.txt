@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) The man is playing a trumpet on the sidewalk.
+(B) The open case is filled with coins.
+(C) A crowd is entering the theater behind him.
+(D) The man is playing the saxophone on the sidewalk.
+Answer: D
+Explanation: Trong ảnh, một người đàn ông đứng trên vỉa hè lát đá trước cửa nhà hát cũ, đang thổi kèn saxophone; cạnh chân anh ta là hộp đàn mở đựng đầy tiền giấy, phía sau là hàng người xếp hàng chờ vào cửa. | (A) "playing a trumpet" — nhạc cụ anh ta cầm là kèn saxophone cong, không phải trumpet. | (B) "filled with coins" — trong hộp đàn là tiền giấy chứ không phải tiền xu. | (C) "entering the theater" — đám đông phía sau đang xếp hàng chờ, chưa ai bước vào cửa. | (D) "playing the saxophone on the sidewalk" — đúng hành động và vị trí của người đàn ông.
+Source: original

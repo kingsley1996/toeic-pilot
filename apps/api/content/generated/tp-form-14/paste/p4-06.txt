@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Dear moviegoers, our online booking system will be down for maintenance from midnight to six a.m. During that time, tickets can only be bought at the counter. The midnight horror show is already sold out, so please choose an earlier screening. Members who booked online will receive refund codes by email. We apologize for the trouble and thank you for your patience. Members earn double points on tickets bought at the counter. The new action film premieres next Friday. Refunds process within three days.
+
+[QUESTION]
+What does the speaker imply about the midnight show?
+(A) It was canceled for maintenance
+(B) It starts at six a.m.
+(C) The midnight show is already full
+(D) It offers member discounts
+Answer: C
+Explanation: Suất nửa đêm đã cháy vé trong khi hệ thống đặt vé cũng ngừng từ nửa đêm đến sáu giờ sáng — ghép hai chỗ mới thấy suất chiếu ấy không còn chỗ nào. | (A) "It was canceled for maintenance" — ngược lại, suất chiếu vẫn diễn ra bình thường. | (B) "It starts at six a.m." — sáu giờ sáng là lúc hệ thống hoạt động lại chứ không phải giờ chiếu. | (C) "The midnight show is already full" — đúng tình trạng cháy vé được thông báo. | (D) "It offers member discounts" — hội viên chỉ được nhận mã hoàn tiền chứ không được giảm giá suất này.
+Source: original
+[QUESTION]
+How can tickets be bought during maintenance?
+(A) From other moviegoers
+(B) On the online booking system
+(C) By email request
+(D) At the counter only
+Answer: D
+Explanation: Người nói khẳng định "tickets can only be bought at the counter" trong thời gian bảo trì hệ thống. | (A) "From other moviegoers" — mua lại vé của người khác không được nhắc đến. | (B) "On the online booking system" — ngược lại, chính hệ thống đặt vé online đang ngừng hoạt động. | (C) "By email request" — email chỉ dùng để gửi mã hoàn tiền chứ không bán vé. | (D) "At the counter only" — đúng kênh duy nhất anh nêu.
+Source: original
+[QUESTION]
+What will online bookers receive?
+(A) Refund codes by email
+(B) Midnight horror tickets
+(C) A longer maintenance notice
+(D) Priority counter service
+Answer: A
+Explanation: Người nói hứa "Members who booked online will receive refund codes by email" — người đặt online được nhận mã hoàn tiền qua email. | (A) "Refund codes by email" — đúng thứ anh hứa gửi. | (B) "Midnight horror tickets" — ngược lại, suất nửa đêm đã cháy vé nên không thể tặng. | (C) "A longer maintenance notice" — thông báo bảo trì không hề được kéo dài thêm. | (D) "Priority counter service" — quầy chỉ bán vé bình thường chứ không có làn ưu tiên.
+Source: original

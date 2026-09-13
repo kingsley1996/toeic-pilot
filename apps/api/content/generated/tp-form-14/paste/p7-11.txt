@@ -1,0 +1,57 @@
+[PASSAGE]
+Subject: Quote for 800 Flyers
+To: Binh Minh Print Shop
+From: Hoa Sen Travel
+
+Dear Sir or Madam,
+
+We need 800 flyers by Friday for our autumn tour program. Please quote your best price, including delivery to 22 Bui Vien Street. Do you offer a bulk discount for large orders? Design help is free for orders above two thousand. Rush jobs add fifteen percent and ship overnight. Samples arrive within three working days.
+
+Thank you,
+Ngoc Anh
+
+[QUESTION]
+What is the email about?
+(A) A price quote for flyer printing
+(B) A flyer design contest
+(C) A paper supplier notice
+(D) A delivery complaint
+Answer: A
+Explanation: Công ty du lịch hỏi giá in tám trăm tờ rơi kèm giao hàng — nội dung là hỏi báo giá in tờ rơi. | (A) "A price quote for flyer printing" — đúng nội dung email. | (B) "A flyer design contest" — thi thiết kế không được nhắc đến. | (C) "A paper supplier notice" — nhà cung cấp giấy không xuất hiện trong email. | (D) "A delivery complaint" — khiếu nại giao hàng không liên quan đến hỏi giá.
+Source: original
+[QUESTION]
+Which printing option is cheapest per unit?
+(A) One hundred copies
+(B) Five thousand copies
+(C) One thousand copies
+(D) Five hundred copies
+Answer: B
+Explanation: Bảng giá cho thấy đơn giá giảm dần theo số lượng, và mức năm nghìn bản có đơn giá thấp nhất. | (A) "One hundred copies" — ngược lại, mức ít nhất có đơn giá cao nhất. | (B) "Five thousand copies" — đúng vì đây là mức số lượng lớn nhất với đơn giá rẻ nhất. | (C) "One thousand copies" — đơn giá mức này vẫn cao hơn mức năm nghìn. | (D) "Five hundred copies" — đơn giá mức này vẫn cao hơn mức năm nghìn.
+Source: original
+[QUESTION]
+What should the customer choose for 800 flyers?
+(A) Wait for a holiday discount
+(B) Order five hundred twice
+(C) Order one thousand at the lower unit price
+(D) Print only one hundred
+Answer: C
+Explanation: Khách cần tám trăm tờ trước thứ Sáu trong khi bảng giá không có mức tám trăm — ghép email với bảng giá mới thấy phải đặt vọt lên một nghìn để đủ số lượng với đơn giá rẻ hơn. | (A) "Wait for a holiday discount" — chờ giảm giá lễ không kịp hạn thứ Sáu. | (B) "Order five hundred twice" — ngược lại, đặt hai lần tốn kém hơn mà vẫn thiếu ba trăm tờ. | (C) "Order one thousand at the lower unit price" — đúng lựa chọn tối ưu từ hai tài liệu. "We need 800 flyers by Friday" nằm ở email, còn "1000 copies | 450 dong" nằm ở bảng giá. | (D) "Print only one hundred" — một trăm tờ không đủ tám trăm tờ cần dùng.
+Source: original
+[QUESTION]
+When does the customer need the flyers?
+(A) Before June ends
+(B) By next Monday
+(C) In two weeks
+(D) By Friday
+Answer: D
+Explanation: Email ghi rõ "We need 800 flyers by Friday for our autumn tour program" — hạn nhận là thứ Sáu. | (A) "Before June ends" — tháng Sáu không hề được đề cập. | (B) "By next Monday" — thứ Hai tuần sau không xuất hiện trong email. | (C) "In two weeks" — hai tuần không được nhắc đến. | (D) "By Friday" — đúng thời hạn được nêu.
+Source: original
+[QUESTION]
+The word "bulk" is closest in meaning to
+(A) large quantity
+(B) small sample
+(C) new design
+(D) quick delivery
+Answer: A
+Explanation: "Do you offer a bulk discount for large orders?" hỏi về chiết khấu cho đơn hàng số lượng lớn. | (A) "large quantity" — gần nghĩa nhất với số lượng lớn. | (B) "small sample" — nghĩa là mẫu nhỏ, trái hẳn ngữ cảnh. | (C) "new design" — nghĩa là mẫu mới, không liên quan đến số lượng. | (D) "quick delivery" — nghĩa là giao nhanh, không phù hợp.
+Source: original

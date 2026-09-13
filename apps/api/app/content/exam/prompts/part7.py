@@ -71,6 +71,16 @@ def prompt_for_part7(slot: QuestionSlot) -> str:
         f"(≈{budget // max(text_slots, 1)} từ mỗi khối). Ngắn hơn nhiều là cụm "
         f"không đủ chỗ giấu vế thứ hai của đáp án."
     )
+    # Từ hỏi nghĩa mà quá phổ thông thì câu vocab không đo được vốn từ — đo trên
+    # 6 đề: launch, slot, record toàn là từ ai cũng biết. Đòi band ngay ở prompt;
+    # cổng quota (`check_tested_vocabulary`) đếm lại ở lượt kiểm.
+    vic = (
+        "\n- Câu hỏi từ vựng (VOCABULARY_IN_CONTEXT): từ được hỏi phải là từ "
+        "thương mại/học thuật ÍT GẶP (B2 trở lên). Vd đạt: rollout, finalize. "
+        "Vd chưa đạt: launch, slot, record."
+        if any(code.endswith("VOCABULARY_IN_CONTEXT") for code in slot.question_types)
+        else ""
+    )
     listed = "\n".join(docs)
     return (
         f"Viết một cụm Part 7.\n"
@@ -81,6 +91,6 @@ def prompt_for_part7(slot: QuestionSlot) -> str:
         # [GRAPHIC]") — hai con số mâu thuẫn trong cùng một prompt, và `p7-15` đã
         # làm theo con số đầu: một khối [PASSAGE] duy nhất, không có [GRAPHIC].
         f"- ĐÚNG {text_slots} khối [PASSAGE]. Cụm có {len(slot.passages)} ngữ liệu:\n{listed}\n"
-        f"- {len(slot.question_types)} câu hỏi, theo đúng thứ tự này:\n{kinds}"
+        f"- {len(slot.question_types)} câu hỏi, theo đúng thứ tự này:\n{kinds}{vic}"
         f"{budget_line}{multi}{note}" + hard_note(slot, "tài liệu") + BLOCK_TAIL
     )

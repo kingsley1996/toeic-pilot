@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+I bought this jacket online, but the medium is too tight. Can I exchange it for a large?
+voice: au_male_1
+Do you have the order number? Exchanges need the original receipt or the confirmation email.
+voice: us_female_1
+I have the email right here. Do you have the large in navy?
+voice: au_male_1
+Let me check. Yes, one left on the second shelf. I'll bring it to the fitting room.
+voice: us_female_1
+Lovely. I will try it on right away near the mirrors.
+voice: au_male_1
+Take your time. I will wrap it afterwards.
+
+[QUESTION]
+Why does the woman want to exchange the jacket?
+(A) The medium size is too tight
+(B) The navy color is out of stock
+(C) The email receipt shows the wrong color
+(D) The large jacket costs more online
+Answer: A
+Explanation: Người phụ nữ cho biết áo cỡ medium quá chật và muốn đổi sang cỡ large, nên lý do đổi áo là vì kích cỡ không vừa. | (A) "The medium size is too tight" — đúng với lý do cô nêu trực tiếp. | (B) "The navy color is out of stock" — ngược lại, cửa hàng còn một chiếc cỡ large màu navy. | (C) "The email receipt shows the wrong color" — không có thông tin nào cho thấy email xác nhận ghi sai màu. | (D) "The large jacket costs more online" — không có thông tin về chênh lệch giá.
+Source: original
+[QUESTION]
+What does the man say the woman needs for an exchange?
+(A) Her photo ID card
+(B) An original receipt or confirmation email
+(C) The original box and packaging
+(D) A printed copy of the email
+Answer: B
+Explanation: Người đàn ông cho biết việc đổi hàng cần hóa đơn gốc hoặc email xác nhận. | (A) "Her photo ID card" — không có giấy tờ tùy thân nào được yêu cầu. | (B) "An original receipt or confirmation email" — đúng yêu cầu anh nêu trước khi xử lý việc đổi áo. | (C) "The original box and packaging" — bao bì gốc không được nhắc đến. | (D) "A printed copy of the email" — cô đã có email trên tay và không được yêu cầu in ra.
+Source: original
+[QUESTION]
+What can be inferred about the store?
+(A) Its fitting rooms are closed for cleaning.
+(B) It sells jackets only through its website.
+(C) It can handle exchanges for online orders in person.
+(D) It charges a fee for size exchanges.
+Answer: C
+Explanation: Người phụ nữ mua áo online nhưng đang trực tiếp làm thủ tục đổi áo tại cửa hàng, và nhân viên còn kiểm tra hàng rồi mang áo vào phòng thử. Vì vậy có thể suy ra cửa hàng có thể xử lý việc đổi hàng online trực tiếp tại cửa hàng. | (A) "Its fitting rooms are closed for cleaning." — ngược lại, nhân viên sẽ mang áo vào phòng thử. | (B) "It sells jackets only through its website." — không thể suy ra điều này; cửa hàng đang trực tiếp hỗ trợ khách hàng. | (C) "It can handle exchanges for online orders in person." — phù hợp với diễn biến của cuộc hội thoại. | (D) "It charges a fee for size exchanges." — không có khoản phí đổi hàng nào được đề cập.
+Source: original

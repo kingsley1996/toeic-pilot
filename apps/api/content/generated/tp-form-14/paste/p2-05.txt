@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Should we meet online or in person tomorrow?
+voice: ca_male_1
+(A) The meeting starts at nine.
+(B) In person, so we can tour the warehouse.
+(C) Online meetings save travel time.
+Answer: B
+Explanation: Câu hỏi là "Should we meet online or in person tomorrow?", đưa hai hình thức họp để chọn một. | (A) "The meeting starts at nine." — nêu giờ họp chứ không chọn hình thức nào. | (B) "In person, so we can tour the warehouse." — chọn hẳn họp trực tiếp kèm lý do. | (C) "Online meetings save travel time." — chỉ nêu ưu điểm của họp trực tuyến chứ không đưa ra lựa chọn.
+Source: original

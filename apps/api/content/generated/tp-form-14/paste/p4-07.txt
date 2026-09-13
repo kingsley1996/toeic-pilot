@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, this is Nhu from Bright Smile Dental. I'm calling to remind you of your checkup this Thursday at three. Please bring your insurance card, as we need to update your file. If you need to reschedule, call us back before Wednesday noon. Please arrive fifteen minutes early to fill in the new patient form. Parking is free behind the clinic for two hours. Bring previous X-rays if available. Children under twelve need a guardian present.
+
+[QUESTION]
+What is the purpose of the call?
+(A) To sell a new insurance plan
+(B) To remind the patient of a dental checkup
+(C) To confirm a Wednesday meeting
+(D) To update the clinic's website
+Answer: B
+Explanation: Người gọi cho biết cô đang gọi để nhắc bệnh nhân về lịch tái khám vào thứ Năm lúc ba giờ. | (A) "To sell a new insurance plan" — thẻ bảo hiểm chỉ cần được mang theo để cập nhật hồ sơ, không có việc bán bảo hiểm. | (B) "To remind the patient of a dental checkup" — đúng mục đích được nêu ngay đầu cuộc gọi. | (C) "To confirm a Wednesday meeting" — thứ Tư là thời hạn để gọi lại nếu muốn đổi lịch, không phải ngày hẹn. | (D) "To update the clinic's website" — người gọi muốn cập nhật hồ sơ bệnh nhân, không phải trang web của phòng khám.
+Source: original
+[QUESTION]
+What can be inferred about the patient's appointment?
+(A) It replaces the Thursday checkup
+(B) It will take place on Wednesday
+(C) They need to bring a card and arrive early
+(D) It lasts fifteen minutes
+Answer: C
+Explanation: Bệnh nhân được yêu cầu mang thẻ bảo hiểm và đến sớm mười lăm phút để hoàn thành mẫu bệnh nhân mới. Vì vậy, người bệnh cần chuẩn bị cả giấy tờ cần thiết và thời gian đến sớm trước buổi hẹn. | (A) "It replaces the Thursday checkup" — không có thông tin nào cho thấy lịch khám thứ Năm bị thay thế. | (B) "It will take place on Wednesday" — lịch khám là thứ Năm lúc ba giờ; thứ Tư chỉ là hạn đổi lịch. | (C) "They need to bring a card and arrive early" — đúng với hai yêu cầu được nêu trong cuộc gọi. | (D) "It lasts fifteen minutes" — mười lăm phút là thời gian cần đến sớm, không phải thời lượng buổi khám.
+Source: original
+[QUESTION]
+What should the patient do if rescheduling?
+(A) Visit on Thursday at three
+(B) Come fifteen minutes early
+(C) Bring the old patient form
+(D) Call back before Wednesday noon
+Answer: D
+Explanation: Người gọi dặn bệnh nhân gọi lại trước trưa thứ Tư nếu cần đổi lịch hẹn. | (A) "Visit on Thursday at three" — đây là lịch hẹn hiện tại, không phải hành động cần thực hiện để đổi lịch. | (B) "Come fifteen minutes early" — đây là yêu cầu đối với buổi hẹn, không phải thủ tục đổi lịch. | (C) "Bring the old patient form" — người bệnh được yêu cầu điền mẫu bệnh nhân mới, không phải mang mẫu cũ. | (D) "Call back before Wednesday noon" — đúng hướng dẫn dành cho trường hợp muốn đổi lịch.
+Source: original

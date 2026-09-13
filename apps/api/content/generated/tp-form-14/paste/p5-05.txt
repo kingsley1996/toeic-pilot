@@ -1,0 +1,9 @@
+[QUESTION]
+All annual leave ------- must be submitted to the accounting department at least two weeks in advance.
+(A) request
+(B) requested
+(C) requesting
+(D) requests
+Answer: D
+Explanation: Vị trí trống cần một danh từ số nhiều làm chủ ngữ cho động từ "must be submitted", vì quy định áp cho mọi đơn xin nghỉ. | (A) "request" — là danh từ số ít hoặc động từ, không hợp với động từ số nhiều phía sau. | (B) "requested" — là quá khứ phân từ, không giữ được chức năng danh từ ở đây. | (C) "requesting" — là hiện tại phân từ, không đứng một mình làm chủ ngữ số nhiều. | (D) "requests" — là danh từ số nhiều, làm chủ ngữ đúng cho "must be submitted".
+Source: original

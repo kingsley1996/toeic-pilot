@@ -1,0 +1,49 @@
+[PASSAGE]
+To: All Staff
+From: Building Safety Office
+Subject: Fire Drill on Friday
+
+Please note that a fire drill ------- (1) place on Friday at ten o'clock. Participation is required for everyone in the building.
+
+When the alarm sounds, please leave all belongings behind and walk ------- (2) to the assembly point in the front yard. Do not run, and do not stop to use the restrooms. Wardens wear bright vests and carry loudspeakers.
+
+------- (3) Elevators must not be used during the drill. Floor wardens in red vests will guide each department and take attendance at the assembly point. Visitors should join the nearest department group.
+
+Employees ------- (4) require assistance should inform their floor warden in advance. Pets are not allowed inside stairwells. Thank you for helping us keep the building safe.
+
+[QUESTION]
+Blank (1)
+(A) takes
+(B) taking
+(C) taken
+(D) will take
+Answer: D
+Explanation: Cụm "on Friday at ten o'clock" chỉ một sự kiện sẽ diễn ra trong tương lai, nên cần thì tương lai đơn. | (A) "takes" — là hiện tại đơn, diễn tả thói quen chứ không phải sự kiện đã lên lịch. | (B) "taking" — là hiện tại phân từ, không phù hợp ở vị trí này. | (C) "taken" — là quá khứ phân từ, không đứng một mình làm động từ chính. | (D) "will take" — tạo thành "will take place", đúng cấu trúc chỉ sự kiện tương lai.
+Source: original
+[QUESTION]
+Blank (2)
+(A) calmly
+(B) calm
+(C) calming
+(D) calmed
+Answer: A
+Explanation: Vị trí trống bổ nghĩa cho động từ "walk", nên cần trạng từ chỉ cách di chuyển bình tĩnh. | (A) "calmly" — là trạng từ, bổ nghĩa đúng cho "walk". | (B) "calm" — là tính từ, không bổ nghĩa được cho động từ. | (C) "calming" — là hiện tại phân từ mang nghĩa gây bình tĩnh, sai nghĩa ở đây. | (D) "calmed" — là quá khứ phân từ, không giữ được chức năng trạng từ.
+Source: original
+[QUESTION]
+Blank (3)
+(A) The drill will last about thirty minutes.
+(B) Please use the stairwells on both sides of the building.
+(C) Lunch will be served after the drill.
+(D) The safety office is on the ground floor.
+Answer: B
+Explanation: Câu sau chỗ trống cấm dùng thang máy trong buổi diễn tập, nên câu điền phải hướng dẫn dùng cầu thang bộ. | (A) "The drill will last about thirty minutes." — nói về thời lượng, không dẫn đến lệnh cấm thang máy. | (B) "Please use the stairwells on both sides of the building." — chỉ đúng lối đi thay thế cho thang máy bị cấm. | (C) "Lunch will be served after the drill." — nói về bữa trưa, không liên quan đến thang máy. | (D) "The safety office is on the ground floor." — nói về vị trí văn phòng, không tạo liên kết với câu sau.
+Source: original
+[QUESTION]
+Blank (4)
+(A) which
+(B) whom
+(C) who
+(D) whose
+Answer: C
+Explanation: Mệnh đề quan hệ cần đại từ làm chủ ngữ cho "require", thay cho "Employees" là người. | (A) "which" — chỉ vật, không thay cho nhân viên. | (B) "whom" — chỉ người ở vị trí tân ngữ, không làm chủ ngữ được. | (C) "who" — chỉ người ở vị trí chủ ngữ, đúng chức năng. | (D) "whose" — là sở hữu, cần danh từ đi sau mới dùng được.
+Source: original

@@ -1,0 +1,6 @@
+kind: chart
+Quarterly Book Sales, thousand copies
+Q1 | 120
+Q2 | 180
+Q3 | 250
+Q4 | 310

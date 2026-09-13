@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Is there still room in the Friday evening dance class?
+voice: ca_male_1
+(A) Yes, two spots just opened up.
+(B) Dance classes run for an hour.
+(C) Friday classes are the most popular.
+Answer: A
+Explanation: Câu hỏi là "Is there still room in the Friday evening dance class?", hỏi lớp nhảy tối thứ Sáu còn chỗ không. | (A) "Yes, two spots just opened up." — trả lời còn hai chỗ trống, đúng thứ được hỏi. | (B) "Dance classes run for an hour." — dùng lại "dance classes" nhưng nói về thời lượng buổi học. | (C) "Friday classes are the most popular." — dùng lại "Friday classes" nhưng nói về mức độ phổ biến.
+Source: original

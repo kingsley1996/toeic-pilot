@@ -1,0 +1,35 @@
+[SCRIPT]
+voice: uk_female_1
+Quang, as my assistant, can you check the duty roster? I need Lan, Minh, and Hung at the welcome desk together for the opening ceremony, sometime between two and four.
+voice: ca_male_1
+Let me think. Lan is on desk duty from nine to eleven and does inventory until one, but she's free after that. Minh has a supplier call late in the morning and event-setup duty after four. Hung only has orientation first thing in the morning, so he's clear the rest of the day.
+voice: uk_female_1
+Perfect. I'll put all three down for the ceremony.
+
+[QUESTION]
+Who is the man?
+(A) One of the catering staff
+(B) A job fair applicant
+(C) A security guard for the event
+(D) The woman's assistant
+Answer: D
+Explanation: Người phụ nữ mở đầu bằng "Quang, as my assistant" rồi nhờ anh kiểm tra lịch trực — anh là trợ lý của cô. | (A) "One of the catering staff" — ngược lại, Lan, Minh và Hung mới là ba nhân viên lễ tân được bàn đến. | (B) "A job fair applicant" — anh đang xếp lịch cho người khác chứ không phải ứng viên. | (C) "A security guard for the event" — bảo vệ không liên quan đến hội thoại. | (D) "The woman's assistant" — đúng với lời giới thiệu của cô.
+Source: original
+[QUESTION]
+What will the three staff members do at the ceremony?
+(A) Staff the welcome desk
+(B) Give morning tours of the fair
+(C) Serve lunch at the ceremony
+(D) Clean the welcome desk area
+Answer: A
+Explanation: Người phụ nữ cần cả ba người "at the welcome desk together for the opening ceremony" — nhiệm vụ của họ là trực quầy đón khách. | (A) "Staff the welcome desk" — đúng việc cô giao cho ba người. | (B) "Give morning tours of the fair" — dẫn tham quan không được nhắc đến. | (C) "Serve lunch at the ceremony" — phục vụ bữa trưa không xuất hiện trong hội thoại. | (D) "Clean the welcome desk area" — dọn quầy không phải việc của họ.
+Source: original
+[QUESTION]
+Look at the graphic. When can Lan, Minh, and Hung all attend the ceremony?
+(A) 9-11
+(B) 14-16
+(C) 11-13
+(D) 16-18
+Answer: B
+Explanation: Hội thoại cho biết cả ba người đều rảnh trong khoảng hai đến bốn giờ chiều, và trên lịch trực khung duy nhất cả ba cùng trống là 14-16. | (A) "9-11" — khung này Lan trực quầy còn Hung học định hướng. | (B) "14-16" — đúng vì đây là khung duy nhất cả ba cùng trống. | (C) "11-13" — khung này Lan kiểm kê còn Minh gọi cho nhà cung cấp. | (D) "16-18" — khung này Minh phải dựng sự kiện.
+Source: original

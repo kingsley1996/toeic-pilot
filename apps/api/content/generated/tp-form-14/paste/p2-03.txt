@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+When will the meeting room on the third floor be free?
+voice: au_male_1
+(A) It seats about twenty people.
+(B) Room 301 is the largest one.
+(C) After the budget review ends.
+Answer: C
+Explanation: Câu hỏi là "When will the meeting room on the third floor be free?", hỏi THỜI ĐIỂM phòng họp trống. | (A) "It seats about twenty people." — nêu sức chứa chứ không nói thời điểm. | (B) "Room 301 is the largest one." — dùng lại chủ đề phòng họp nhưng nói về kích thước. | (C) "After the budget review ends." — cho biết phòng trống sau buổi duyệt ngân sách, đúng thứ được hỏi.
+Source: original

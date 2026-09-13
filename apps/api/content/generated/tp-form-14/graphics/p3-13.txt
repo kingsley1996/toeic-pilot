@@ -1,0 +1,6 @@
+kind: schedule
+Reception Desk Shifts During the Job Fair Week
+Staff | 9-11 | 11-13 | 14-16 | 16-18
+Lan | Desk duty | Inventory | |
+Minh | | Supplier call | | Event setup
+Hung | Orientation | | |

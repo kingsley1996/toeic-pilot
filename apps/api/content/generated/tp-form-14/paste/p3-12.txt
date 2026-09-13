@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Did you see the resident satisfaction survey for the three complexes near the office?
+voice: au_male_1
+Yes. Riverside got top marks for its surroundings, but Garden View's weakest point got just two stars.
+voice: us_female_1
+Two stars? Then Garden View is out. What about City Center?
+voice: au_male_1
+Its security rating was only three stars, lower than the other two.
+voice: us_female_1
+Let's visit Riverside this Saturday, then.
+voice: au_male_1
+Great. I will fetch the car right after lunch.
+voice: us_female_1
+Perfect. I will pack water and sunscreen for the trip.
+
+[QUESTION]
+What are the speakers doing?
+(A) Comparing apartment complexes
+(B) Signing a Saturday lease
+(C) Reporting a security problem
+(D) Calling the Riverside manager
+Answer: A
+Explanation: Hai người đối chiếu kết quả khảo sát của ba khu căn hộ rồi loại dần từng nơi — việc họ làm là so sánh các khu căn hộ. | (A) "Comparing apartment complexes" — đúng với toàn bộ diễn biến hội thoại. | (B) "Signing a Saturday lease" — họ mới hẹn đi xem thứ Bảy chứ chưa ký hợp đồng nào. | (C) "Reporting a security problem" — điểm an ninh thấp của City Center chỉ là thông tin so sánh, không ai báo sự cố. | (D) "Calling the Riverside manager" — không có cuộc gọi nào cho quản lý trong hội thoại.
+Source: original
+[QUESTION]
+Where will the speakers go on Saturday?
+(A) To Garden View
+(B) To Riverside
+(C) To City Center
+(D) To the management office
+Answer: B
+Explanation: Người phụ nữ chốt bằng "Let's visit Riverside this Saturday" sau khi loại Garden View và chê City Center. | (A) "To Garden View" — ngược lại, nơi này đã bị loại vì điểm thấp. | (B) "To Riverside" — đúng nơi hai người hẹn đến xem. | (C) "To City Center" — nơi này bị chê an ninh chỉ ba sao nên không được chọn. | (D) "To the management office" — văn phòng quản lý không được nhắc đến.
+Source: original
+[QUESTION]
+Look at the graphic. For which aspect did Garden View receive its lowest rating?
+(A) Location
+(B) Security
+(C) Price
+(D) Facilities
+Answer: C
+Explanation: Người đàn ông nói điểm yếu nhất của Garden View chỉ được hai sao, và trên phiếu khảo sát mục hai sao duy nhất của Garden View là Price. | (A) "Location" — Garden View được bốn sao ở mục này. | (B) "Security" — Garden View được bốn sao ở mục này. | (C) "Price" — đúng vì đây là mục hai sao duy nhất của Garden View. | (D) "Facilities" — Garden View được bốn sao ở mục này.
+Source: original

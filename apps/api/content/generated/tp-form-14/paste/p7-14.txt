@@ -1,0 +1,66 @@
+[PASSAGE]
+Subject: Proposal to Reprint "The River Market"
+To: An Tran, Author
+From: Mekong Books
+
+Dear Ms. Tran,
+
+Q4 sales hit a record, and our warehouse stock runs low. We propose a reprint of ten thousand copies with a new cover. Translation rights sold in three countries last spring. The audiobook topped charts for six weeks. Royalty statements arrive each quarter by mail.
+
+Please review the attached contract. We would love to keep working with you.
+
+[PASSAGE]
+Dear Ms. Tran,
+
+We are pleased to invite you to the signing ceremony for the reprint contract at our Hanoi office on July 5. The reprint adds two new chapters about riverside life. A launch party follows the ceremony downtown. Journalists may request interviews afterwards. The cover photo shoot takes place next Monday. Wine and snacks follow the signing.
+
+Please send a portrait photo for the cover before June 25.
+
+Best regards,
+Mekong Books
+
+[QUESTION]
+What can be inferred about the reprint?
+(A) It closes the bookstore
+(B) It rejects the old manuscript
+(C) It hires a new editor
+(D) Strong sales have emptied the warehouse
+Answer: D
+Explanation: Quý bốn bán kỷ lục mà kho sắp hết hàng — ghép hai câu trong email mới thấy đợt tái bản xuất phát từ hàng bán chạy. | (A) "It closes the bookstore" — đóng cửa hàng sách không xuất hiện trong email. | (B) "It rejects the old manuscript" — ngược lại, họ muốn tiếp tục hợp tác với tác giả. | (C) "It hires a new editor" — tuyển biên tập viên không được nhắc đến. | (D) "Strong sales have emptied the warehouse" — đúng tình hình nhà xuất bản nêu.
+Source: original
+[QUESTION]
+Which is NOT true?
+(A) Q2 sales beat Q3
+(B) Q4 had the highest sales
+(C) The author will visit the office
+(D) The reprint adds two chapters
+Answer: A
+Explanation: Biểu đồ cho thấy quý hai bán 180 nghìn bản còn quý ba bán 250 nghìn, nên nói quý hai hơn quý ba là sai. | (A) "Q2 sales beat Q3" — sai vì 180 nghìn thấp hơn 250 nghìn. | (B) "Q4 had the highest sales" — đúng vì quý bốn đạt 310 nghìn, cao nhất. | (C) "The author will visit the office" — đúng vì tác giả được mời đến lễ ký tại văn phòng Hà Nội. | (D) "The reprint adds two chapters" — đúng theo thư mời ký hợp đồng.
+Source: original
+[QUESTION]
+The word "record" is closest in meaning to
+(A) music album
+(B) best result
+(C) written note
+(D) sports event
+Answer: B
+Explanation: "Q4 sales hit a record" nói về doanh số quý bốn đạt mức cao nhất từ trước đến nay. | (A) "music album" — nghĩa là đĩa nhạc, không phù hợp. | (B) "best result" — gần nghĩa nhất với kỷ lục doanh số. | (C) "written note" — nghĩa là ghi chép, không liên quan đến doanh số. | (D) "sports event" — nghĩa là sự kiện thể thao, không phù hợp.
+Source: original
+[QUESTION]
+What must the author do?
+(A) Visit the warehouse
+(B) Send a portrait photo
+(C) Sign the reprint contract
+(D) Pay a reprint fee
+Answer: C
+Explanation: Thư mời đích danh tác giả đến lễ ký hợp đồng tái bản tại văn phòng Hà Nội — việc phải làm là ký hợp đồng. | (A) "Visit the warehouse" — thăm kho không được nhắc đến. | (B) "Send a portrait photo" — gửi ảnh chân dung chỉ là việc chuẩn bị thêm cho bìa sách. | (C) "Sign the reprint contract" — đúng việc được mời đến làm. | (D) "Pay a reprint fee" — trả phí tái bản không xuất hiện trong thư.
+Source: original
+[QUESTION]
+What can be inferred about the reprint plan?
+(A) It delays the release
+(B) It cancels the old edition
+(C) It lowers the book price
+(D) It follows record sales with new chapters
+Answer: D
+Explanation: Đợt tái bản ra đời sau quý bán kỷ lục mà còn thêm hai chương mới về đời sống ven sông — ghép email với thư mời mới thấy trọn kế hoạch. "Q4 sales hit a record" nằm ở email, còn "adds two new chapters about riverside life" nằm ở thư mời. | (A) "It delays the release" — hoãn phát hành trái hẳn với việc xúc tiến tái bản. | (B) "It cancels the old edition" — hủy bản cũ không được nhắc đến. | (C) "It lowers the book price" — giảm giá sách không xuất hiện trong thư. | (D) "It follows record sales with new chapters" — đúng kế hoạch tái bản.
+Source: original

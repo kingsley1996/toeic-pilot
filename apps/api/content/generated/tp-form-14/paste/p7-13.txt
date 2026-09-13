@@ -1,0 +1,66 @@
+[PASSAGE]
+Subject: Invitation to the Annual Job Fair
+To: All Graduating Students
+From: Career Center
+
+Dear students,
+
+Our annual job fair will take place on June 15 at the city convention center. More than forty employers will meet applicants from nine in the morning.
+
+Please register online before June 10. Each registered applicant will receive an interview slot by email. Parking attendants guide buses to the north lot. Lunch boxes go to registered guests at noon. Employers receive name tags at the welcome desk. A shuttle runs every twenty minutes from the station.
+
+[PASSAGE]
+To: Career Center
+From: Minh Anh
+
+Dear Sir or Madam,
+
+I have registered for the job fair. Could you tell me when my interview is? I am free all day. I study marketing and graduate this June. My student ID is 2024081. Thank you for organizing such a useful event.
+
+Thank you.
+
+[QUESTION]
+What can be inferred about the event?
+(A) It is held online this year
+(B) It lasts for three full days
+(C) Employers meet registered applicants
+(D) It charges an entrance fee
+Answer: C
+Explanation: Thư mời cho biết hơn 40 nhà tuyển dụng sẽ gặp các ứng viên, trong khi email của Minh Anh xác nhận cô đã đăng ký tham dự. Từ hai thông tin này có thể suy ra các nhà tuyển dụng sẽ gặp những ứng viên đã đăng ký. "forty employers will meet applicants" nằm ở thư mời, còn "I have registered for the job fair" nằm ở email ứng viên. | (A) "It is held online this year" — ngược lại, sự kiện diễn ra tại trung tâm hội nghị thành phố. | (B) "It lasts for three full days" — bài chỉ nêu ngày 15 tháng 6, không nói sự kiện kéo dài ba ngày. | (C) "Employers meet registered applicants" — phù hợp với thông tin từ cả hai đoạn. | (D) "It charges an entrance fee" — không có thông tin về phí vào cửa.
+Source: original
+[QUESTION]
+Where will the fair take place?
+(A) At the company office
+(B) At the riverside park
+(C) At the main library
+(D) At the city convention center
+Answer: D
+Explanation: Thư mời cho biết ngày hội việc làm sẽ diễn ra tại "the city convention center". | (A) "At the company office" — không được đề cập. | (B) "At the riverside park" — không được đề cập. | (C) "At the main library" — không được đề cập. | (D) "At the city convention center" — đúng địa điểm được nêu trong thư mời.
+Source: original
+[QUESTION]
+According to the schedule, when is Thu Trang's interview?
+(A) In the afternoon
+(B) In the morning
+(C) At midday
+(D) In the evening
+Answer: A
+Explanation: Trong lịch phỏng vấn, Thu Trang được đánh dấu ở cột "Afternoon". | (A) "In the afternoon" — đúng với lịch. | (B) "In the morning" — đây là khung giờ của Minh Anh. | (C) "At midday" — đây là khung giờ của Quang Huy. | (D) "In the evening" — không có ứng viên nào được xếp vào buổi tối.
+Source: original
+[QUESTION]
+Which is NOT true?
+(A) It takes place on June 15
+(B) An interview is set for the evening
+(C) Candidates must register first
+(D) More than forty employers will attend
+Answer: B
+Explanation: Lịch phỏng vấn không có bất kỳ cuộc hẹn nào vào buổi tối, nên B là thông tin không đúng. | (A) "It takes place on June 15" — đúng theo thư mời. | (B) "An interview is set for the evening" — sai vì lịch chỉ có các khung sáng, giữa trưa và chiều. | (C) "Candidates must register first" — đúng vì ứng viên được yêu cầu đăng ký trực tuyến trước ngày 10 tháng 6. | (D) "More than forty employers will attend" — đúng với thông tin trong thư mời.
+Source: original
+[QUESTION]
+The word "slot" in paragraph 2 is closest in meaning to
+(A) conference room
+(B) entrance fee
+(C) scheduled time
+(D) application form
+Answer: C
+Explanation: Trong cụm "interview slot", "slot" chỉ một khoảng thời gian cụ thể được sắp xếp cho buổi phỏng vấn của ứng viên. | (A) "conference room" — nghĩa là phòng họp, trong khi "slot" nói về thời gian. | (B) "entrance fee" — nghĩa là phí vào cửa, không phù hợp với ngữ cảnh. | (C) "scheduled time" — gần nghĩa nhất với một khung giờ được xếp trước cho cuộc phỏng vấn. | (D) "application form" — nghĩa là đơn đăng ký, không liên quan đến lịch phỏng vấn.
+Source: original

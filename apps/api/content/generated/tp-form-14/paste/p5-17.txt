@@ -1,0 +1,9 @@
+[QUESTION]
+The company enforces a ------- dress code from Monday to Thursday.
+(A) formally
+(B) formation
+(C) formality
+(D) formal
+Answer: D
+Explanation: Vị trí trống đứng trước cụm danh từ "dress code", nên cần một tính từ bổ nghĩa cho nó. | (A) "formally" — là trạng từ, không đứng trước danh từ để bổ nghĩa. | (B) "formation" — là danh từ chỉ sự hình thành, vừa sai từ loại vừa sai nghĩa. | (C) "formality" — là danh từ, không giữ được chức năng tính từ ở đây. | (D) "formal" — là tính từ, tạo thành "formal dress code" đúng ngữ pháp.
+Source: original

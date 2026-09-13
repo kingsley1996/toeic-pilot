@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Which bookstore nearby still sells Da Lat tourist maps?
+voice: ca_male_1
+(A) Bookstores open at nine.
+(B) The one across from the train station.
+(C) Maps are displayed upstairs.
+Answer: B
+Explanation: Câu hỏi là "Which bookstore nearby still sells Da Lat tourist maps?", hỏi NHÀ SÁCH NÀO còn bán bản đồ. | (A) "Bookstores open at nine." — dùng lại từ "bookstores" nhưng nói về giờ mở cửa. | (B) "The one across from the train station." — chỉ thẳng nhà sách còn bán, đúng thứ được hỏi. | (C) "Maps are displayed upstairs." — dùng lại từ "maps" nhưng nói về nơi trưng bày.
+Source: original

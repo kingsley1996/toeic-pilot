@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Let's review last month's reservations across our four branches. Downtown stayed steady, but one location passed three hundred bookings, our best result ever. The riverside branch dropped slightly after the road works began nearby. Airport traffic was slow all month. I'll send the full breakdown by email, and we'll discuss staffing for the busiest location on Friday. The full report will be ready next Monday. Branch managers should send staffing notes before Thursday.
+
+[QUESTION]
+What is the purpose of the meeting?
+(A) To fix the slow airport traffic
+(B) To discuss staffing on Friday
+(C) To review last month's reservations
+(D) To choose a new location
+Answer: C
+Explanation: Người nói mở đầu bằng "Let's review last month's reservations across our four branches" — mục đích cuộc họp là duyệt số đặt bàn tháng qua. | (A) "To fix the slow airport traffic" — lượng khách sân bay chậm chỉ là một chi tiết trong báo cáo chứ không phải việc cần sửa. | (B) "To discuss staffing on Friday" — bàn nhân sự là việc của thứ Sáu sau khi có số liệu chứ không phải mục đích hôm nay. | (C) "To review last month's reservations" — đúng việc ông nêu đầu buổi họp. | (D) "To choose a new location" — chọn địa điểm mới không hề được bàn đến.
+Source: original
+[QUESTION]
+Look at the graphic. Which restaurant had the most bookings?
+(A) Downtown
+(B) Riverside
+(C) Airport
+(D) Mall Branch
+Answer: D
+Explanation: Người nói cho biết một chi nhánh vượt ba trăm lượt đặt bàn, và trên biểu đồ mục vượt ba trăm duy nhất là Mall Branch. | (A) "Downtown" — theo biểu đồ chỉ đạt hai trăm tám mươi lăm lượt. | (B) "Riverside" — theo biểu đồ chỉ đạt hai trăm bốn mươi lượt. | (C) "Airport" — theo biểu đồ chỉ đạt một trăm bảy mươi lăm lượt. | (D) "Mall Branch" — đúng vì đây là mục ba trăm mười lượt trên biểu đồ.
+Source: original
+[QUESTION]
+What will the speaker do next?
+(A) Email the full breakdown to the team
+(B) Visit the busiest branch
+(C) Cut staff at the slow branch
+(D) Close the riverside branch
+Answer: A
+Explanation: Người nói chốt bằng "I'll send the full breakdown by email" trước khi bàn nhân sự vào thứ Sáu — việc tiếp theo là gửi số liệu chi tiết. | (A) "Email the full breakdown to the team" — đúng việc ông hứa làm. | (B) "Visit the busiest branch" — ông chỉ bàn nhân sự cho chi nhánh đông chứ không đến thăm. | (C) "Cut staff at the slow branch" — cắt nhân sự không hề được đề xuất. | (D) "Close the riverside branch" — đóng cửa chi nhánh không xuất hiện trong buổi họp.
+Source: original

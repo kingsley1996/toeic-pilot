@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where should our clients park when they visit the office?
+voice: us_female_1
+(A) In the underground garage on level B1.
+(B) The garage opens at seven a.m.
+(C) Clients usually arrive by taxi.
+Answer: A
+Explanation: Câu hỏi là "Where should our clients park when they visit the office?", hỏi ĐỊA ĐIỂM đỗ xe cho khách. | (A) "In the underground garage on level B1." — chỉ thẳng nơi đỗ xe, đúng thứ được hỏi. | (B) "The garage opens at seven a.m." — dùng lại từ "garage" nhưng nói về giờ mở cửa. | (C) "Clients usually arrive by taxi." — dùng lại từ "clients" nhưng nói cách họ đến chứ không nói chỗ đỗ xe.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+I need twenty more orchid pots for a wedding order this Saturday.
+voice: au_male_1
+White or purple? The purple ones just arrived from Da Lat.
+voice: us_female_1
+Ten of each. Can you deliver by Friday morning?
+voice: au_male_1
+Our truck passes your street every Friday at seven. I'll load them Thursday night.
+voice: us_female_1
+Marvellous. I will leave the side gate unlocked on Friday.
+voice: au_male_1
+Much obliged. I will ring the bell twice upon arrival.
+
+[QUESTION]
+Where does the woman most likely work?
+(A) On an orchid farm in Da Lat
+(B) At a wedding hall
+(C) At a flower shop
+(D) At the Da Lat flower market
+Answer: C
+Explanation: Người phụ nữ đặt thêm chậu lan cho đơn hàng đám cưới — công việc của chủ tiệm hoa. | (A) "On an orchid farm in Da Lat" — ngược lại, Đà Lạt là nơi hàng của cô được nhập về. | (B) "At a wedding hall" — cô phục vụ đám cưới chứ không sở hữu sảnh cưới. | (C) "At a flower shop" — phù hợp với việc cô đặt hoa theo đơn. | (D) "At the Da Lat flower market" — cô là bên mua hàng từ Đà Lạt chứ không bán ở chợ đó.
+Source: original
+[QUESTION]
+What does the man say about the purple orchids?
+(A) They cost extra for Saturday delivery
+(B) They cost more than the white ones
+(C) Only white ones are left in stock
+(D) They just arrived from Da Lat
+Answer: D
+Explanation: Người đàn ông nói "The purple ones just arrived from Da Lat" khi hỏi cô chọn màu nào. | (A) "They cost extra for Saturday delivery" — không có phụ phí giao hàng nào được nhắc. | (B) "They cost more than the white ones" — giá cả hai màu không được so sánh. | (C) "Only white ones are left in stock" — ngược lại, cô đặt mười chậu mỗi màu và anh nhận giao đủ. | (D) "They just arrived from Da Lat" — đúng thông tin anh cung cấp.
+Source: original
+[QUESTION]
+What will the man do Thursday night?
+(A) Load the orchids onto the truck
+(B) Drive to Da Lat
+(C) Call the wedding planner
+(D) Water the orchids on Friday morning
+Answer: A
+Explanation: Người đàn ông chốt bằng "I'll load them Thursday night" để kịp chuyến xe sáng thứ Sáu. | (A) "Load the orchids onto the truck" — đúng việc anh hứa làm tối thứ Năm. | (B) "Drive to Da Lat" — Đà Lạt là nơi hàng đã về, không ai lái xe đến đó. | (C) "Call the wedding planner" — người lập kế hoạch cưới không xuất hiện trong hội thoại. | (D) "Water the orchids on Friday morning" — sáng thứ Sáu xe đã chạy giao hàng, không ai tưới cây lúc đó.
+Source: original

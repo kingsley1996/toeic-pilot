@@ -1,0 +1,44 @@
+[PASSAGE]
+Volunteer Blood Drive — Registration Form
+
+[1] Full name: ____________________
+
+Blood type: ____________________ [2]
+
+Preferred date: June 20 [3]
+
+Location: District Cultural Center, 8 a.m. to 11 a.m.
+
+Contact phone: ____________________ [4]
+
+Donors must be at least eighteen years old. Thank you for saving lives.
+
+Note: Bring an ID card for verification. Walk-in donors are welcome until half past ten. Juice and biscuits follow every donation. Minors need a signed parental form.
+
+[QUESTION]
+Where will the blood drive take place?
+(A) At the company office
+(B) At the city hospital
+(C) At a mobile blood van
+(D) At the district cultural center
+Answer: D
+Explanation: Phiếu ghi rõ "Location: District Cultural Center, 8 a.m. to 11 a.m." — địa điểm là trung tâm văn hóa quận. | (A) "At the company office" — văn phòng công ty không liên quan đến phiếu này. | (B) "At the city hospital" — bệnh viện thành phố không xuất hiện trong phiếu. | (C) "At a mobile blood van" — xe hiến máu lưu động không được nhắc đến. | (D) "At the district cultural center" — đúng địa điểm được nêu.
+Source: original
+[QUESTION]
+The sentence "A free health check is included for every donor." best fits in space
+(A) [2]
+(B) [1]
+(C) [3]
+(D) [4]
+Answer: A
+Explanation: Câu khám sức khỏe miễn phí phải đứng ngay sau mục nhóm máu, trước khi phiếu chuyển sang ngày giờ — tức vị trí [2]. | (A) "[2]" — đúng vì đứng ngay sau mục nhóm máu. | (B) "[1]" — đầu phiếu chưa có thông tin y tế nào nên câu này đến quá sớm. | (C) "[3]" — chỗ này đang nói ngày hiến máu, câu về khám sức khỏe chen vào bị lạc chủ đề. | (D) "[4]" — cuối phiếu đang nói số điện thoại liên lạc, câu này không còn liên quan.
+Source: original
+[QUESTION]
+Which is NOT true about the event?
+(A) It takes place on June 20
+(B) Donors receive cash payments
+(C) The minimum age is eighteen
+(D) Registration requires a phone number
+Answer: B
+Explanation: Phiếu chỉ cảm ơn người hiến máu cứu người chứ không hứa trả tiền mặt, nên nói hiến máu được trả tiền là sai. | (A) "It takes place on June 20" — đúng theo ngày ghi trong phiếu. | (B) "Donors receive cash payments" — sai vì không có khoản tiền nào được hứa. | (C) "The minimum age is eighteen" — đúng vì người hiến phải đủ mười tám tuổi. | (D) "Registration requires a phone number" — đúng vì phiếu có mục số điện thoại liên lạc.
+Source: original

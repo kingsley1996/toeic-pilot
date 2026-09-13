@@ -1,0 +1,9 @@
+[QUESTION]
+The lease ------- for the printers at the southern branch will expire in December.
+(A) agreement
+(B) agreeable
+(C) agree
+(D) agreed
+Answer: A
+Explanation: Vị trí trống là chủ ngữ của động từ "will expire", nên cần một danh từ chỉ văn bản hợp đồng thuê. | (A) "agreement" — là danh từ, tạo thành "lease agreement" đúng nghĩa hợp đồng thuê. | (B) "agreeable" — là tính từ, không giữ được chức năng danh từ. | (C) "agree" — là động từ, không làm chủ ngữ được. | (D) "agreed" — là quá khứ đơn hoặc phân từ, không đứng một mình làm chủ ngữ.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Could you check the projector before the presentation starts?
+voice: us_female_1
+(A) The presentation is about new products.
+(B) The meeting room is on the second floor.
+(C) Of course, I'll test it right away.
+Answer: C
+Explanation: Câu hỏi là "Could you check the projector before the presentation starts?", nhờ kiểm tra máy chiếu. | (A) "The presentation is about new products." — nói về nội dung thuyết trình chứ không nhận lời nhờ. | (B) "The meeting room is on the second floor." — dùng lại bối cảnh phòng họp nhưng nói về vị trí. | (C) "Of course, I'll test it right away." — nhận lời và cho biết sẽ kiểm tra ngay.
+Source: original

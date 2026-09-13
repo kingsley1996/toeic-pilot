@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Who keeps the key to the document archive in the basement?
+voice: au_male_1
+(A) The basement is quite damp.
+(B) Ms. Reed has the only copy.
+(C) The archive holds ten years of files.
+Answer: B
+Explanation: Câu hỏi là "Who keeps the key to the document archive in the basement?", hỏi AI giữ chìa khóa kho tài liệu. | (A) "The basement is quite damp." — dùng lại từ "basement" nhưng nói về tình trạng ẩm thấp. | (B) "Ms. Reed has the only copy." — chỉ thẳng người giữ bản chìa khóa duy nhất. | (C) "The archive holds ten years of files." — dùng lại từ "archive" nhưng nói về nội dung lưu trữ.
+Source: original

@@ -1,0 +1,39 @@
+[SCRIPT]
+voice: us_female_1
+Welcome aboard, Nam. I'm Linh, your shift leader. Before you touch any machine, you must complete the safety training.
+voice: ca_male_1
+I did a similar training at my old factory. Do I really have to start from the beginning?
+voice: us_female_1
+Yes, our presses are a different model, and the certificate is mandatory. The next session runs Thursday and Friday morning.
+voice: ca_male_1
+I'm free both days. Should I bring anything?
+voice: us_female_1
+Just your ID badge. And wear the steel-toe boots. The warehouse floor is no place for sneakers.
+
+[QUESTION]
+Who is the woman?
+(A) The factory nurse
+(B) A machine vendor
+(C) A job applicant
+(D) The man's shift leader
+Answer: D
+Explanation: Người phụ nữ tự giới thiệu "I'm Linh, your shift leader" và hướng dẫn Nam về khóa đào tạo an toàn trước khi anh được phép làm việc với máy móc. | (A) "The factory nurse" — không có thông tin nào cho thấy cô làm công việc y tế. | (B) "A machine vendor" — cô không bán hoặc giới thiệu máy móc trong hội thoại. | (C) "A job applicant" — cô là người hướng dẫn Nam chứ không phải ứng viên xin việc. | (D) "The man's shift leader" — đúng với lời tự giới thiệu của cô.
+Source: original
+[QUESTION]
+What can be inferred about the man?
+(A) He must repeat safety training despite past experience.
+(B) He has never worked in a factory before.
+(C) He will start operating machines tomorrow.
+(D) He refuses to wear protective boots.
+Answer: A
+Explanation: Người đàn ông cho biết anh từng hoàn thành khóa đào tạo tương tự ở nhà máy cũ, nhưng người phụ nữ nói rằng anh vẫn phải hoàn thành khóa đào tạo tại đây vì máy móc khác model và chứng chỉ là bắt buộc. | (A) "He must repeat safety training despite past experience." — đúng vì kinh nghiệm và khóa đào tạo trước đây không thay thế được chứng chỉ bắt buộc tại nhà máy mới. | (B) "He has never worked in a factory before." — trái với việc anh nói đã từng làm việc và được đào tạo ở nhà máy cũ. | (C) "He will start operating machines tomorrow." — anh phải hoàn thành khóa đào tạo trước khi được phép chạm vào máy, và lịch học tiếp theo là thứ Năm và thứ Sáu. | (D) "He refuses to wear protective boots." — anh không hề từ chối; người phụ nữ chỉ yêu cầu anh mang giày bảo hộ.
+Source: original
+[QUESTION]
+What does the woman ask the man to bring?
+(A) His old certificate
+(B) His ID badge
+(C) A pair of sneakers
+(D) A training manual
+Answer: B
+Explanation: Khi Nam hỏi có cần mang theo gì không, người phụ nữ trả lời "Just your ID badge" và yêu cầu anh đeo giày bảo hộ. | (A) "His old certificate" — chứng chỉ cũ không được yêu cầu mang theo. | (B) "His ID badge" — đúng thứ cô yêu cầu anh mang theo. | (C) "A pair of sneakers" — ngược lại, cô nói rằng sàn kho không phù hợp để đi giày thể thao. | (D) "A training manual" — không có tài liệu đào tạo nào được yêu cầu mang theo.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The new account manager introduced ------- at yesterday's client dinner.
+(A) his
+(B) him
+(C) himself
+(D) he
+Answer: C
+Explanation: Tân ngữ của động từ "introduced" chính là chủ ngữ "The new account manager", nên cần một đại từ phản thân. | (A) "his" — là tính từ sở hữu, cần một danh từ đi sau mới dùng được. | (B) "him" — là đại từ tân ngữ chỉ người khác, khiến câu thành giới thiệu một người đàn ông khác. | (C) "himself" — là đại từ phản thân, đúng khi chủ ngữ và tân ngữ là một người. | (D) "he" — là đại từ chủ ngữ, không đứng ở vị trí tân ngữ.
+Source: original

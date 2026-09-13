@@ -1,0 +1,51 @@
+[PASSAGE]
+Subject: Delivery Schedule for Your Refrigerator — Order #A-8821
+To: Mr. Lam
+From: GreenHome Appliance Store
+
+Dear Mr. Lam,
+
+Your refrigerator ------- (1) inspected this morning and is ready for delivery. GreenHome has served the district for over a decade. Our driver will call you thirty minutes before ------- (2). Our showroom displays fifty models downtown. Drivers wear uniforms and shoe covers inside homes. Delivery is free within the city.
+
+------- (3) Please clear a path at least one meter wide from your front door to the kitchen. Old appliances can be recycled for a small fee. Technicians test every unit before packing.
+
+If the new time does not suit you, please reply to this email ------- (4). We will reschedule the delivery at no extra charge. Weekend slots fill quickly during summer.
+
+Thank you for shopping with GreenHome.
+
+[QUESTION]
+Blank (1)
+(A) is
+(B) does
+(C) has
+(D) was
+Answer: D
+Explanation: Chiếc tủ lạnh đã được kiểm tra vào sáng nay, tức sự việc xảy ra trong quá khứ, nên cần bị động quá khứ đơn. | (A) "is" — tạo thành hiện tại đơn, không hợp với mốc "this morning" đã qua. | (B) "does" — là trợ động từ hiện tại đơn, không tạo thành bị động. | (C) "has" — cần quá khứ phân từ đi sau, trong khi "inspected" đứng đây lại thiếu "been". | (D) "was" — tạo thành "was inspected", đúng bị động quá khứ đơn.
+Source: original
+[QUESTION]
+Blank (2)
+(A) arrival
+(B) rival
+(C) survival
+(D) approval
+Answer: A
+Explanation: Tài xế sẽ gọi trước khi đến nơi ba mươi phút, nên cần danh từ chỉ sự đến. | (A) "arrival" — nghĩa là sự đến nơi, khớp đúng ngữ cảnh giao hàng. | (B) "rival" — nghĩa là đối thủ, không liên quan đến lịch giao hàng. | (C) "survival" — nghĩa là sự sống sót, không phù hợp ở đây. | (D) "approval" — nghĩa là sự chấp thuận, không phải thứ tài xế gọi báo trước.
+Source: original
+[QUESTION]
+Blank (3)
+(A) Our store also sells washing machines and dryers.
+(B) The refrigerator is heavy and needs two people to carry it.
+(C) The standard warranty lasts for two full years.
+(D) We accept payment by credit card or bank transfer.
+Answer: B
+Explanation: Câu sau chỗ trống yêu cầu dọn lối đi rộng ít nhất một mét từ cửa vào bếp, nên câu điền phải giải thích vì sao cần lối đi rộng. | (A) "Our store also sells washing machines and dryers." — nói về mặt hàng khác, không liên quan đến lối đi. | (B) "The refrigerator is heavy and needs two people to carry it." — nêu đúng lý do cần lối đi rộng cho hai người khiêng. | (C) "The standard warranty lasts for two full years." — nói về bảo hành, không tạo liên kết với câu sau. | (D) "We accept payment by credit card or bank transfer." — nói về thanh toán, không liên quan đến việc dọn đường.
+Source: original
+[QUESTION]
+Blank (4)
+(A) during
+(B) until
+(C) by
+(D) over
+Answer: C
+Explanation: Câu yêu cầu trả lời email trước hạn chót thứ Sáu nếu giờ giao mới không phù hợp, nên cần giới từ chỉ hạn hoàn thành. | (A) "during" — đi với khoảng thời gian, không đi với một ngày cụ thể. | (B) "until" — diễn tả hành động kéo dài liên tục, không hợp với việc trả lời một lần. | (C) "by" — tạo thành "by Friday", nghĩa là chậm nhất thứ Sáu, đúng ngữ cảnh. | (D) "over" — không tạo thành cụm giới từ phù hợp với "Friday" ở đây.
+Source: original

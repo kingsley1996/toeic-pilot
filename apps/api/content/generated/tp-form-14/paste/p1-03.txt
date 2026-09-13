@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) The rackets are leaning against the fence.
+(B) The net is hanging across the center of the court.
+(C) The balls are piled inside a basket.
+(D) The bench is standing at the far end of the court.
+Answer: B
+Explanation: Trên sân tennis ngoài trời, tấm lưới căng ngang giữa sân, hai cây vợt bỏ quên trên chiếc ghế dài đặt cạnh sân, và mấy quả bóng nằm rải rác quanh vạch giao bóng. | (A) "leaning against the fence" — hai cây vợt nằm trên ghế dài chứ không dựng vào hàng rào. | (B) "hanging across the center of the court" — đúng vị trí của tấm lưới. | (C) "piled inside a basket" — các quả bóng nằm rải rác quanh vạch giao bóng, không gom trong giỏ nào. | (D) "at the far end of the court" — chiếc ghế dài đặt ở cạnh sân chứ không ở cuối sân.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The IT department gave Ms. Tran full access to the system, but ------- rarely uses the advanced features.
+(A) her
+(B) she
+(C) hers
+(D) herself
+Answer: B
+Explanation: Vị trí trống là chủ ngữ của động từ "uses", nên cần một đại từ nhân xưng ở dạng chủ ngữ. | (A) "her" — là đại từ tân ngữ, không làm chủ ngữ được. | (B) "she" — là đại từ chủ ngữ, đúng chức năng trong mệnh đề. | (C) "hers" — là đại từ sở hữu, đứng thay cho cụm danh từ chứ không làm chủ ngữ ở đây. | (D) "herself" — là đại từ phản thân, cần một chủ ngữ khác đi trước mới dùng được.
+Source: original

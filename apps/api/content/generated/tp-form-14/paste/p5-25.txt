@@ -1,0 +1,9 @@
+[QUESTION]
+Passengers ------- flights were canceled will receive a full refund.
+(A) who
+(B) which
+(C) whom
+(D) whose
+Answer: D
+Explanation: Vị trí trống cần một đại từ quan hệ sở hữu nối "flights" với "Passengers", diễn tả chuyến bay của hành khách bị hủy. | (A) "who" — là đại từ chủ ngữ, không nối được danh từ "flights" phía sau. | (B) "which" — chỉ vật hoặc sự việc, không thay cho "Passengers" là người. | (C) "whom" — là đại từ tân ngữ, không đứng trước danh từ để chỉ sở hữu. | (D) "whose" — là đại từ sở hữu, tạo thành "whose flights were canceled" đúng cấu trúc.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why does the second-floor printer always jam on Monday mornings?
+voice: uk_female_1
+(A) The printer was bought last year.
+(B) Everyone prints their weekly schedules then.
+(C) Paper is stored in the cabinet.
+Answer: B
+Explanation: Câu hỏi là "Why does the second-floor printer always jam on Monday mornings?", hỏi LÝ DO máy in kẹt giấy vào sáng thứ Hai. | (A) "The printer was bought last year." — dùng lại từ "printer" nhưng nói về thời điểm mua máy. | (B) "Everyone prints their weekly schedules then." — đưa thẳng nguyên nhân quá tải vào thời điểm đó. | (C) "Paper is stored in the cabinet." — dùng lại bối cảnh giấy in nhưng nói về nơi cất giữ.
+Source: original

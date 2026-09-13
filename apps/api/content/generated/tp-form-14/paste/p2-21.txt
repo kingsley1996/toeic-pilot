@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The undersea cable is damaged, so the office Internet is very slow.
+voice: ca_male_1
+(A) Internet speed is usually fine.
+(B) The cable connects three countries.
+(C) That explains why my emails won't send.
+Answer: C
+Explanation: Câu nói là "The undersea cable is damaged, so the office Internet is very slow.", báo tin cáp biển hỏng khiến mạng chậm. | (A) "Internet speed is usually fine." — dùng lại từ "Internet speed" nhưng nói tình trạng thường ngày. | (B) "The cable connects three countries." — dùng lại từ "cable" nhưng nói về tuyến cáp chung. | (C) "That explains why my emails won't send." — liên hệ đúng tin vừa nghe với sự cố của mình.
+Source: original

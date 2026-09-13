@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The office network will be down for maintenance tonight.
+voice: us_female_1
+(A) The network covers the whole building.
+(B) All right, I'll save my files early.
+(C) Maintenance is scheduled monthly.
+Answer: B
+Explanation: Câu nói là "The office network will be down for maintenance tonight?", báo tin mạng nội bộ bảo trì tối nay. | (A) "The network covers the whole building." — dùng lại từ "network" nhưng nói về phạm vi phủ sóng. | (B) "All right, I'll save my files early." — phản ứng đúng với tin mạng sẽ gián đoạn. | (C) "Maintenance is scheduled monthly." — dùng lại từ "maintenance" nhưng nói về tần suất chung.
+Source: original

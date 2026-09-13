@@ -1,0 +1,47 @@
+[PASSAGE]
+Green Bowl Serves Vegetarian Food Worth the Trip
+
+The vegetarian restaurant Green Bowl on Tran Hung Dao Street has become a lunch favorite for office workers in the district. Its small dining room seats only thirty guests, so the atmosphere stays quiet even at noon.
+
+The menu changes with the seasons, offering a wide ------- (1) of mushroom dishes. The restaurant opened in March and has ------- (2) served more than ten thousand customers.
+
+------- (3) the prices are higher than average, portions are generous and the ingredients arrive fresh every morning. Critics praise the pumpkin soup and the grilled tofu platter in particular.
+
+------- (4) They compost all kitchen waste and donate leftover food daily. Overall, Green Bowl proves that a meat-free lunch can satisfy even the most skeptical diners.
+
+[QUESTION]
+Blank (1)
+(A) vary
+(B) variously
+(C) various
+(D) variety
+Answer: D
+Explanation: Câu "offering a wide ------- (1) of mushroom dishes" cần một danh từ sau tính từ "wide" để đi với "of". | (A) "vary" — là động từ, không đứng sau tính từ làm tân ngữ. | (B) "variously" — là trạng từ, không phù hợp. | (C) "various" — là tính từ, hai tính từ không đứng liền nhau ở đây. | (D) "variety" — là danh từ, tạo thành "a wide variety of" đúng cụm cố định.
+Source: original
+[QUESTION]
+Blank (2)
+(A) already
+(B) yet
+(C) still
+(D) ever
+Answer: A
+Explanation: Câu "has ------- (2) served more than ten thousand customers" là hiện tại hoàn thành khẳng định, cần trạng từ chỉ sự việc đã xảy ra. | (A) "already" — dùng đúng trong câu khẳng định hiện tại hoàn thành. | (B) "yet" — chỉ dùng trong câu phủ định hoặc nghi vấn. | (C) "still" — diễn tả sự việc tiếp diễn, không hợp với "served" đã hoàn tất. | (D) "ever" — thường dùng trong câu hỏi, không dùng trong câu khẳng định này.
+Source: original
+[QUESTION]
+Blank (3)
+(A) Because
+(B) Although
+(C) Unless
+(D) Until
+Answer: B
+Explanation: Câu trước chê giá cao hơn trung bình, câu sau khen suất ăn đầy đặn — hai ý tương phản nên cần liên từ nhượng bộ. | (A) "Because" — chỉ nguyên nhân, trong khi khẩu phần đầy không phải kết quả của giá cao. | (B) "Although" — diễn tả đúng sự tương phản giữa giá cao và suất ăn đầy. | (C) "Unless" — chỉ điều kiện, không phù hợp với quan hệ hai câu. | (D) "Until" — chỉ thời gian, không liên kết được hai ý này.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The owners opened a second branch last year.
+(B) The dessert menu features imported chocolate.
+(C) Sustainability is central to how the kitchen operates.
+(D) Parking is available behind the building.
+Answer: C
+Explanation: Câu sau chỗ trống nói nhà hàng ủ phân rác bếp và tặng đồ ăn thừa mỗi ngày, nên câu điền phải giới thiệu chủ đề sống xanh. | (A) "The owners opened a second branch last year." — nói về chi nhánh mới, không dẫn đến việc ủ phân và tặng đồ ăn. | (B) "The dessert menu features imported chocolate." — nói về món tráng miệng, không liên quan đến rác thải và đồ thừa. | (C) "Sustainability is central to how the kitchen operates." — nêu đúng chủ đề bền vững mà hai việc sau minh họa. | (D) "Parking is available behind the building." — nói về chỗ đỗ xe, không tạo liên kết với câu sau.
+Source: original

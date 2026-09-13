@@ -1,0 +1,9 @@
+[QUESTION]
+The position requires both field experience ------- strong communication skills.
+(A) but
+(B) or
+(C) and
+(D) nor
+Answer: C
+Explanation: Cấu trúc "both ... ------- ..." đòi liên từ đi cặp cố định, vì vị trí yêu cầu cả hai điều kiện cùng lúc. | (A) "but" — chỉ sự đối lập, không có quan hệ tương phản nào giữa hai yêu cầu. | (B) "or" — biến yêu cầu thành lựa chọn một trong hai, trái với "both". | (C) "and" — tạo thành "both ... and ..." đúng cấu trúc song hành. | (D) "nor" — chỉ đi với "neither", không đi với "both".
+Source: original

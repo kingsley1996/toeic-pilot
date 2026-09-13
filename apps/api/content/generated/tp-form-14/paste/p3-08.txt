@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: au_male_1
+As seasonal staff, you must count the returned goods before your shift ends.
+voice: us_female_1
+Should I count the damaged ones separately?
+voice: au_male_1
+Yes, put damaged items in the red bins and record the numbers on this form.
+voice: us_female_1
+Got it. Where do I leave the form when I'm done?
+voice: au_male_1
+Drop it in the tray by my office door.
+voice: us_female_1
+Crystal clear. I will fetch a pen from the drawer first.
+voice: au_male_1
+Excellent. Knock loudly if the office is locked.
+
+[QUESTION]
+What are the speakers discussing?
+(A) End-of-shift counting procedures
+(B) Weekend shift schedules
+(C) Seasonal staff hiring
+(D) Shift bonus payments
+Answer: A
+Explanation: Người quản lý dặn nhân viên thời vụ kiểm hàng trả lại trước khi hết ca, phân loại hàng hỏng và ghi phiếu — trọng tâm là quy trình kiểm hàng cuối ca. | (A) "End-of-shift counting procedures" — đúng việc hai người đang bàn. | (B) "Weekend shift schedules" — lịch ca cuối tuần không được nhắc đến. | (C) "Seasonal staff hiring" — cô đã là nhân viên thời vụ, không bàn tuyển thêm. | (D) "Shift bonus payments" — thưởng ca không xuất hiện trong hội thoại.
+Source: original
+[QUESTION]
+Where should damaged items go?
+(A) On the shelves by the office
+(B) In the red bins
+(C) In the bins under the counter
+(D) By the manager's office door
+Answer: B
+Explanation: Người quản lý dặn "put damaged items in the red bins" khi được hỏi có đếm riêng hàng hỏng không. | (A) "On the shelves by the office" — kệ gần văn phòng không được nhắc đến. | (B) "In the red bins" — đúng nơi anh chỉ định cho hàng hỏng. | (C) "In the bins under the counter" — thùng dưới quầy không tồn tại trong hội thoại. | (D) "By the manager's office door" — cạnh cửa văn phòng là nơi để phiếu đã ghi, không phải hàng hỏng.
+Source: original
+[QUESTION]
+What will the woman do at the end of her shift?
+(A) Take the form home after work
+(B) Leave it on the office desk
+(C) Count the returned goods and complete the form
+(D) Drop it in the red bins by the door
+Answer: C
+Explanation: Cô phải kiểm hàng trả lại trước khi hết ca rồi ghi số liệu vào phiếu và để phiếu vào khay — ghép ba chỗ mới ra toàn bộ việc cuối ca của cô. | (A) "Take the form home after work" — ngược lại, phiếu phải để lại văn phòng. | (B) "Leave it on the office desk" — phiếu phải để vào khay cạnh cửa chứ không để trên bàn. | (C) "Count the returned goods and complete the form" — đúng hai việc anh giao từ đầu đến cuối hội thoại. | (D) "Drop it in the red bins by the door" — thùng đỏ đựng hàng hỏng chứ không đựng phiếu.
+Source: original

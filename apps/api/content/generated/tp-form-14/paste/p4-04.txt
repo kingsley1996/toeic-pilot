@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Attention, members of the Riverside Sports Center. The lunchtime dance class is moving from Room A to the rooftop studio starting tomorrow. The rooftop has a new wooden floor, but there is no shade after noon. Please bring drinking water, as the vending machine up there is broken. Friday's class will run thirty minutes longer to make up for today's short session. Beginners may join a trial lesson next Monday. Towels are sold at the front desk. The studio closes during public holidays.
+
+[QUESTION]
+Where is this announcement being made?
+(A) At a sports center
+(B) In a classroom
+(C) On a rooftop
+(D) At a water park
+Answer: A
+Explanation: Người nói mở đầu bằng "Attention, members of the Riverside Sports Center" — thông báo phát tại trung tâm thể thao. | (A) "At a sports center" — đúng địa điểm anh nêu tên. | (B) "In a classroom" — lớp học khiêu vũ là đối tượng của thông báo chứ không phải nơi phát loa. | (C) "On a rooftop" — sân thượng là nơi lớp chuyển đến từ ngày mai chứ không phải hôm nay. | (D) "At a water park" — nước uống chỉ là thứ được dặn mang theo chứ không phải công viên nước.
+Source: original
+[QUESTION]
+What does the speaker mean when he says "there is no shade after noon"?
+(A) The class will move back indoors
+(B) Members should bring hats for the sunny rooftop
+(C) Water is sold on the rooftop
+(D) Noon classes are canceled
+Answer: B
+Explanation: Lời "no shade" đi ngay sau câu sân thượng lát sàn gỗ mới — ghép hai chỗ mới thấy lớp trưa mai sẽ tập dưới nắng gắt không mái che. | (A) "The class will move back indoors" — ngược lại, lớp vẫn chuyển lên sân thượng như đã báo. | (B) "Members should bring hats for the sunny rooftop" — đúng điều hội viên cần chuẩn bị khi tập ngoài nắng. | (C) "Water is sold on the rooftop" — ngược lại, máy bán nước trên đó đã hỏng nên mới phải mang theo. | (D) "Noon classes are canceled" — không có lớp nào bị hủy, lớp thứ Sáu còn học dài hơn.
+Source: original
+[QUESTION]
+What will happen on Friday?
+(A) The vending machine will be fixed
+(B) A new class will open
+(C) The class will run thirty minutes longer
+(D) The rooftop will get new shade
+Answer: C
+Explanation: Người nói chốt bằng "Friday's class will run thirty minutes longer to make up for today's short session" — lớp thứ Sáu học dài hơn để bù buổi ngắn hôm nay. | (A) "The vending machine will be fixed" — máy bán nước hỏng được nhắc để dặn mang nước chứ không hẹn sửa. | (B) "A new class will open" — không có lớp mới nào được mở thêm. | (C) "The class will run thirty minutes longer" — đúng thông báo của anh. | (D) "The rooftop will get new shade" — mái che không hề được lên kế hoạch lắp thêm.
+Source: original

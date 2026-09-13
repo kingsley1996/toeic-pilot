@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When will we hear back about the second interview round?
+voice: us_female_1
+(A) Early next week, I believe.
+(B) The first round went very well.
+(C) Interviews are held in Room 305.
+Answer: A
+Explanation: Câu hỏi là "When will we hear back about the second interview round?", hỏi THỜI ĐIỂM có kết quả vòng hai. | (A) "Early next week, I believe." — cho biết thời điểm có kết quả, đúng thứ được hỏi. | (B) "The first round went very well." — dùng lại chủ đề phỏng vấn nhưng nói về vòng một. | (C) "Interviews are held in Room 305." — dùng lại từ "interviews" nhưng nói về địa điểm.
+Source: original

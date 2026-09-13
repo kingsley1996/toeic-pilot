@@ -1,0 +1,9 @@
+[QUESTION]
+The logistics team rated the carrier's delivery service ------- after two delayed shipments.
+(A) poor
+(B) poorly
+(C) poorness
+(D) poorest
+Answer: B
+Explanation: Vị trí trống bổ nghĩa cho động từ "rated", nên cần một trạng từ chỉ mức độ đánh giá thấp. | (A) "poor" — là tính từ, không bổ nghĩa được cho động từ. | (B) "poorly" — là trạng từ, bổ nghĩa đúng cho "rated". | (C) "poorness" — là danh từ, không giữ được chức năng trạng từ. | (D) "poorest" — là so sánh nhất, không đứng một mình sau động từ mà thiếu nhóm so sánh.
+Source: original

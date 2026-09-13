@@ -1,0 +1,60 @@
+[PASSAGE]
+Notice: New Night Market Hours from July
+
+The management board announces new opening hours for the night market. From July 1, the market opens at 5 p.m. and closes at 11 p.m. daily.
+
+All vendors must park in the east lot behind the food stalls. The main gate closes thirty minutes after closing time. The stall fee stays the same. Stall maps hang at both entrances from Monday. Lost items go to the office behind gate two. Fire lanes must stay clear after dark. Music stops at ten thirty sharp. Security patrols the aisles until midnight. New vendors apply at the east office.
+
+[PASSAGE]
+To: Night Market Board
+From: Thanh, Food Stall 12
+
+Dear Board,
+
+I read the new hours notice. Is the stall fee higher this year? Also, can I keep my corner spot near the main gate? My cousin shares the next stall and splits power costs. We close early on rainy evenings. Thank you for reading my long message.
+
+[QUESTION]
+What is the notice about?
+(A) New parking rules for vendors
+(B) The night market's opening hours
+(C) A weekend food festival
+(D) A change in stall fees
+Answer: B
+Explanation: Ban quản lý thông báo giờ mở cửa mới của chợ đêm từ tháng Bảy — nội dung chính là giờ hoạt động mới. | (A) "New parking rules for vendors" — chỗ đỗ xe chỉ là một chi tiết trong thông báo chứ không phải chủ đề. | (B) "The night market's opening hours" — đúng nội dung thông báo. | (C) "A weekend food festival" — lễ hội ẩm thực cuối tuần không được nhắc đến. | (D) "A change in stall fees" — ngược lại, phí giữ chỗ được giữ nguyên.
+Source: original
+[QUESTION]
+Where should vendors park?
+(A) On the main street
+(B) In the west lot
+(C) In the east lot
+(D) At the north gate
+Answer: C
+Explanation: Thông báo yêu cầu "All vendors must park in the east lot behind the food stalls" — nơi đỗ xe là bãi phía đông. | (A) "On the main street" — đường chính không xuất hiện trong thông báo. | (B) "In the west lot" — bãi phía tây không được nhắc đến. | (C) "In the east lot" — đúng địa điểm được chỉ định. | (D) "At the north gate" — cổng phía bắc không xuất hiện trong thông báo.
+Source: original
+[QUESTION]
+What can be inferred about the vendor?
+(A) They own a food stall
+(B) They will leave the market
+(C) They never read the notice
+(D) They accept the hours, not the fee
+Answer: D
+Explanation: Tiểu thương hỏi phí năm nay có cao hơn không trong khi vẫn hỏi giữ chỗ quầy góc — ghép email với thông báo giờ mới mới thấy họ chấp nhận giờ giấc nhưng còn lăn tăn về phí. "the market opens at 5 p.m. and closes at 11 p.m." nằm ở thông báo, còn "Is the stall fee higher this year?" nằm ở email. | (A) "They own a food stall" — họ thuê quầy số mười hai chứ không sở hữu chợ. | (B) "They will leave the market" — ngược lại, họ còn xin giữ chỗ quầy góc. | (C) "They never read the notice" — ngược lại, email mở đầu bằng việc đã đọc thông báo giờ mới. | (D) "They accept the hours, not the fee" — đúng thái độ của tiểu thương.
+Source: original
+[QUESTION]
+Which is NOT true?
+(A) The market opens at noon
+(B) Vendors park in the east lot
+(C) The stall fee stays the same
+(D) The market closes at eleven p.m.
+Answer: A
+Explanation: Thông báo ghi chợ mở cửa lúc năm giờ chiều, nên nói chợ mở buổi trưa là sai. | (A) "The market opens at noon" — sai vì giờ mở cửa là năm giờ chiều. | (B) "Vendors park in the east lot" — đúng theo quy định đỗ xe được nêu. | (C) "The stall fee stays the same" — đúng vì phí giữ chỗ không đổi. | (D) "The market closes at eleven p.m." — đúng theo giờ đóng cửa được nêu.
+Source: original
+[QUESTION]
+What can be inferred from the vendor's email?
+(A) They are first-time vendors
+(B) They have sold at the market before
+(C) They run a food stall
+(D) They asked about parking rules
+Answer: B
+Explanation: Tiểu thương hỏi phí năm nay có cao hơn và xin giữ chỗ quầy cũ — ngụ ý họ đã bán ở chợ từ trước. | (A) "They are first-time vendors" — ngược lại, người bán mới không thể xin giữ chỗ cũ. | (B) "They have sold at the market before" — đúng với việc hỏi phí năm nay và xin giữ chỗ cũ. | (C) "They run a food stall" — quầy số mười hai bán đồ ăn nhưng họ thuê chỗ chứ không sở hữu chợ. | (D) "They asked about parking rules" — quy định đỗ xe nằm trong thông báo chứ không phải câu hỏi của họ.
+Source: original

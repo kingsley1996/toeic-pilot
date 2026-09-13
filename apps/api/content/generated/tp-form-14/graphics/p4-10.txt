@@ -1,0 +1,6 @@
+kind: chart
+Restaurant Reservations Last Month
+Downtown | 285
+Riverside | 240
+Mall Branch | 310
+Airport | 175

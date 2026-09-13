@@ -1,0 +1,9 @@
+[QUESTION]
+The internal newsletter praised the new branch for its ------- customer service.
+(A) exception
+(B) except
+(C) exceptionally
+(D) exceptional
+Answer: D
+Explanation: Vị trí trống đứng trước cụm danh từ "customer service", nên cần một tính từ bổ nghĩa cho nó. | (A) "exception" — là danh từ, không bổ nghĩa được cho cụm danh từ phía sau. | (B) "except" — là giới từ/liên từ, không giữ được chức năng tính từ ở đây. | (C) "exceptionally" — là trạng từ, chỉ bổ nghĩa cho động từ hoặc tính từ chứ không đứng trước danh từ. | (D) "exceptional" — là tính từ, tạo thành cụm "exceptional customer service" đúng ngữ pháp.
+Source: original

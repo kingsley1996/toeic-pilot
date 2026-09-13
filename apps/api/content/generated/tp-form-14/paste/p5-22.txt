@@ -1,0 +1,9 @@
+[QUESTION]
+Reservations for the new video-conference room can be made ------- the company intranet.
+(A) through
+(B) across
+(C) beyond
+(D) against
+Answer: A
+Explanation: Việc đặt phòng được thực hiện bằng phương tiện là mạng nội bộ công ty, nên cần giới từ chỉ phương thức. | (A) "through" — tạo thành "through the company intranet", nghĩa là thông qua mạng nội bộ, đúng ngữ cảnh. | (B) "across" — diễn tả chuyển động ngang qua bề mặt, không hợp với việc đặt phòng qua hệ thống. | (C) "beyond" — nghĩa là vượt ra ngoài, không phù hợp với phương thức đặt chỗ. | (D) "against" — nghĩa là chống lại hoặc dựa vào, không tạo nghĩa hợp lý ở đây.
+Source: original

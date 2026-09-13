@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+For the new office opening party, the caterer suggests either a buffet or a set menu.
+voice: ca_male_1
+A buffet is easier for a hundred guests. Can they do a vegetarian corner?
+voice: uk_female_1
+Yes, and they'll confirm the final menu by Wednesday.
+voice: ca_male_1
+Great. I'll send the guest list tomorrow so they know the exact number.
+voice: uk_female_1
+Brilliant. I will telephone the caterer this afternoon to lock the date.
+voice: ca_male_1
+Fantastic. I will mail the invitations once the menu is set.
+
+[QUESTION]
+What are the speakers discussing?
+(A) A company dinner for one hundred guests
+(B) A new office layout
+(C) A vegetarian cooking class
+(D) Catering options for an opening party
+Answer: D
+Explanation: Hai người đang trao đổi về các lựa chọn phục vụ ăn uống cho tiệc khai trương văn phòng mới, bao gồm buffet, thực đơn cố định và món chay. | (A) "A company dinner for one hundred guests" — có một trăm khách nhưng sự kiện là tiệc khai trương, không phải bữa tối công ty. | (B) "A new office layout" — không có thông tin nào về cách bố trí văn phòng. | (C) "A vegetarian cooking class" — món chay chỉ là một phần của thực đơn, không phải lớp học nấu ăn. | (D) "Catering options for an opening party" — đúng trọng tâm cuộc hội thoại.
+Source: original
+[QUESTION]
+What will happen by Wednesday?
+(A) The caterer will confirm the final menu.
+(B) The vegetarian dishes will be served.
+(C) The office will open to employees.
+(D) The party will be moved to another location.
+Answer: A
+Explanation: Người phụ nữ cho biết bên phục vụ sẽ xác nhận thực đơn cuối cùng trước hoặc vào thứ Tư. | (A) "The caterer will confirm the final menu" — đúng với thông tin được nêu trong hội thoại. | (B) "The vegetarian dishes will be served" — góc chay mới được đề xuất chứ chưa chốt phục vụ. | (C) "The office will open to employees" — việc văn phòng mở cửa không được đề cập. | (D) "The party will be moved to another location" — không có thông tin về việc thay đổi địa điểm.
+Source: original
+[QUESTION]
+What will the man do tomorrow?
+(A) Pay the caterer
+(B) Send the guest list
+(C) Taste the buffet dishes
+(D) Visit the new office
+Answer: B
+Explanation: Người đàn ông nói "I'll send the guest list tomorrow" để bên phục vụ biết chính xác số lượng khách. | (A) "Pay the caterer" — việc thanh toán không được đề cập. | (B) "Send the guest list" — đúng hành động anh dự định thực hiện vào ngày mai. | (C) "Taste the buffet dishes" — nếm món buffet không hề được nhắc đến. | (D) "Visit the new office" — không có kế hoạch đến văn phòng mới.
+Source: original

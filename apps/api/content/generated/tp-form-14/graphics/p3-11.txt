@@ -1,0 +1,7 @@
+kind: table
+Anniversary Event Photography Packages
+Package | Fee
+Basic | 120 dollars
+Standard | 250 dollars
+Premium | 400 dollars
+Deluxe | 650 dollars

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Where is the tax refund counter in the shopping mall?
+voice: au_male_1
+(A) Refunds take about two weeks.
+(B) The mall closes at ten p.m.
+(C) Next to the currency exchange booth.
+Answer: C
+Explanation: Câu hỏi là "Where is the tax refund counter in the shopping mall?", hỏi VỊ TRÍ quầy hoàn thuế. | (A) "Refunds take about two weeks." — dùng lại từ "refunds" nhưng nói về thời gian xử lý. | (B) "The mall closes at ten p.m." — dùng lại từ "mall" nhưng nói về giờ đóng cửa. | (C) "Next to the currency exchange booth." — chỉ thẳng vị trí quầy, đúng thứ được hỏi.
+Source: original

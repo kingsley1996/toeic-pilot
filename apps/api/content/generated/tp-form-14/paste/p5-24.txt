@@ -1,0 +1,9 @@
+[QUESTION]
+The department held a small ceremony to ------- the retirement of its longest-serving employee.
+(A) participate
+(B) congratulate
+(C) commemorate
+(D) hesitate
+Answer: C
+Explanation: Buổi lễ được tổ chức nhằm tôn vinh việc nghỉ hưu của nhân viên lâu năm nhất, nên cần động từ mang nghĩa kỷ niệm trang trọng. | (A) "participate" — nghĩa là tham gia, thường đi với "in", không hợp ngữ cảnh. | (B) "congratulate" — cần một tân ngữ chỉ người được chúc mừng, không đi với "the retirement". | (C) "commemorate" — nghĩa là kỷ niệm, tưởng nhớ một sự kiện trọng đại, khớp đúng mục đích buổi lễ. | (D) "hesitate" — nghĩa là do dự, trái hẳn với không khí buổi lễ.
+Source: original

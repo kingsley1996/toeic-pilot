@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Our company's tenth anniversary party is next month, and we need a photographer for the evening.
+voice: ca_male_1
+Congratulations! My event packages start at one hundred twenty dollars for two hours of basic coverage.
+voice: uk_female_1
+We're expecting two hundred guests. How many hours do we need for the speeches and the dinner?
+voice: ca_male_1
+The four-hundred-dollar package covers six hours, including the speeches, the dinner, and a photo booth.
+voice: us_female_1
+That sounds right. Does it include printed photos for the guests?
+voice: ca_male_1
+Prints are included only in the deluxe package. The four-hundred-dollar one gives you six hours with all digital files.
+voice: uk_female_1
+Digital files are enough. Let's book the four-hundred-dollar package for the evening of the twentieth.
+
+[QUESTION]
+What are the speakers discussing?
+(A) Booking a wedding photographer
+(B) Choosing a photography package
+(C) Printing booth photos for guests
+(D) Ordering printed invitations
+Answer: B
+Explanation: Hai nhà tổ chức cùng thợ chụp ảnh bàn các gói chụp cho tiệc kỷ niệm mười năm — trọng tâm là chọn gói chụp ảnh. | (A) "Booking a wedding photographer" — đây là tiệc kỷ niệm công ty chứ không phải đám cưới. | (B) "Choosing a photography package" — đúng việc ba người đang chốt. | (C) "Printing booth photos for guests" — ảnh in chỉ có trong gói cao cấp mà họ đã bỏ qua để lấy file số. | (D) "Ordering printed invitations" — thiệp mời in không xuất hiện trong hội thoại.
+Source: original
+[QUESTION]
+How many guests are expected at the party?
+(A) Three hundred
+(B) One hundred
+(C) Two hundred
+(D) Fifty
+Answer: C
+Explanation: Người phụ nữ thứ hai nói "We're expecting two hundred guests" khi hỏi cần bao nhiêu giờ chụp. | (A) "Three hundred" — không có con số ba trăm nào được nhắc. | (B) "One hundred" — không có con số một trăm nào trong hội thoại. | (C) "Two hundred" — đúng con số cô nêu. | (D) "Fifty" — không có con số năm mươi nào xuất hiện.
+Source: original
+[QUESTION]
+Look at the graphic. Which package includes six hours of coverage?
+(A) Basic
+(B) Standard
+(C) Deluxe
+(D) Premium
+Answer: D
+Explanation: Người thợ nói gói bốn trăm đô bao trọn sáu giờ chụp, và trên bảng giá mục có phí 400 dollars là Premium. | (A) "Basic" — theo bảng giá chỉ có phí 120 dollars cho hai giờ cơ bản. | (B) "Standard" — có phí 250 dollars, không khớp mức bốn trăm được nêu. | (C) "Deluxe" — có phí 650 dollars, cao hơn mức được nêu. | (D) "Premium" — đúng vì đây là mục 400 dollars trên bảng giá.
+Source: original

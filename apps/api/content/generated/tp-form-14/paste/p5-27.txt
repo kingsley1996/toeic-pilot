@@ -1,0 +1,9 @@
+[QUESTION]
+The newly posted signs give ------- directions to the nearest emergency exits.
+(A) clarity
+(B) clear
+(C) clearly
+(D) clarify
+Answer: B
+Explanation: Vị trí trống đứng trước danh từ "directions", nên cần một tính từ bổ nghĩa cho nó. | (A) "clarity" — là danh từ, không bổ nghĩa được cho danh từ phía sau. | (B) "clear" — là tính từ, tạo thành "clear directions" đúng ngữ pháp. | (C) "clearly" — là trạng từ, không đứng trước danh từ để bổ nghĩa. | (D) "clarify" — là động từ, không giữ được chức năng tính từ ở đây.
+Source: original

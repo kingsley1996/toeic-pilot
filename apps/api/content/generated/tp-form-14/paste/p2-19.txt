@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How do I sign up for the supermarket's discount newsletter?
+voice: au_male_1
+(A) Fill in this form at the service desk.
+(B) Discounts apply to fresh food.
+(C) The newsletter comes out weekly.
+Answer: A
+Explanation: Câu hỏi là "How do I sign up for the supermarket's discount newsletter?", hỏi CÁCH đăng ký bản tin. | (A) "Fill in this form at the service desk." — chỉ thẳng cách đăng ký, đúng thứ được hỏi. | (B) "Discounts apply to fresh food." — dùng lại từ "discounts" nhưng nói về phạm vi giảm giá. | (C) "The newsletter comes out weekly." — dùng lại từ "newsletter" nhưng nói về tần suất phát hành.
+Source: original

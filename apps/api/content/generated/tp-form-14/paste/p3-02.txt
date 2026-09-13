@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: au_male_1
+My wife and I like the river view, but the management fee seems high.
+voice: uk_female_1
+The fee covers the gym, the pool, and twenty-four-hour security. And the riverside park opens next spring.
+voice: au_male_1
+That's good to know. Can we see the fee breakdown in writing?
+voice: uk_female_1
+Of course. I'll email it tonight, and we can tour the model unit on Sunday.
+voice: au_male_1
+Thank you. We will discuss it tonight and telephone you tomorrow morning.
+voice: uk_female_1
+Splendid. My card is inside the brochure on the table.
+
+[QUESTION]
+What are the speakers most likely discussing?
+(A) A furniture purchase
+(B) A riverside park
+(C) A residential property
+(D) A gym membership
+Answer: C
+Explanation: Hai người đang trao đổi về phí quản lý, các tiện ích của tòa nhà và việc tham quan căn hộ mẫu, cho thấy họ đang tìm hiểu một bất động sản để ở. | (A) "A furniture purchase" — không có đồ nội thất nào được đề cập. | (B) "A riverside park" — công viên chỉ được nhắc đến như một tiện ích sẽ mở vào mùa xuân năm sau. | (C) "A residential property" — đúng với việc họ bàn về phí quản lý, tiện ích và căn hộ mẫu. | (D) "A gym membership" — phòng gym chỉ là một trong các tiện ích được phí quản lý bao gồm.
+Source: original
+[QUESTION]
+What does the woman imply about the fee?
+(A) It will increase next spring.
+(B) It only covers security services.
+(C) It is negotiable for weekend buyers.
+(D) It covers several shared facilities.
+Answer: D
+Explanation: Người phụ nữ cho biết phí quản lý bao gồm phòng gym, hồ bơi và dịch vụ an ninh hai mươi tư giờ, cho thấy khoản phí này bao gồm nhiều tiện ích chung. | (A) "It will increase next spring." — mùa xuân sang năm chỉ là thời điểm công viên mở cửa; không có thông tin về việc tăng phí. | (B) "It only covers security services." — không đúng vì phí còn bao gồm phòng gym và hồ bơi. | (C) "It is negotiable for weekend buyers." — không có thông tin về việc thương lượng mức phí. | (D) "It covers several shared facilities." — đúng với các tiện ích cô liệt kê.
+Source: original
+[QUESTION]
+What does the woman say she will do tonight?
+(A) Email the fee breakdown
+(B) Lower the management fee
+(C) Meet the man's wife
+(D) Open the park early
+Answer: A
+Explanation: Người phụ nữ nói "I'll email it tonight" sau khi người đàn ông hỏi về bảng chi tiết phí bằng văn bản. | (A) "Email the fee breakdown" — đúng hành động cô sẽ thực hiện tối nay. | (B) "Lower the management fee" — cô chỉ giải thích khoản phí bao gồm những tiện ích nào, không đề nghị giảm giá. | (C) "Meet the man's wife" — người vợ chỉ được nhắc đến, không có kế hoạch gặp mặt. | (D) "Open the park early" — công viên dự kiến mở vào mùa xuân năm sau và không có ai đề nghị mở sớm.
+Source: original

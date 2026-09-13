@@ -1,0 +1,6 @@
+kind: schedule
+Interview Schedule — Annual Job Fair
+Candidate | Morning | Midday | Afternoon | Evening
+Minh Anh | Interview | | |
+Quang Huy | | Interview | |
+Thu Trang | | | Interview |

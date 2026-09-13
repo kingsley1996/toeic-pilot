@@ -1,0 +1,9 @@
+[QUESTION]
+Of the two health insurance plans, the comprehensive package is ------- expensive but covers dental care.
+(A) most
+(B) more
+(C) much
+(D) many
+Answer: B
+Explanation: Câu so sánh hai gói bảo hiểm với nhau, nên cần dạng so sánh hơn của tính từ. | (A) "most" — là so sánh nhất, chỉ dùng khi so từ ba đối tượng trở lên. | (B) "more" — tạo thành "more expensive", đúng dạng so sánh hơn khi so hai đối tượng. | (C) "much" — không đứng trước tính từ so sánh ở đây để tạo nghĩa so sánh. | (D) "many" — đi với danh từ đếm được số nhiều, không bổ nghĩa cho tính từ.
+Source: original

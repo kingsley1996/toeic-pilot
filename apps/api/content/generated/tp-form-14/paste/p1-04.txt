@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) The price board is hanging above the door.
+(B) The buckets are filled with empty bottles.
+(C) The woman is arranging a bouquet of red roses.
+(D) A customer is choosing flowers from the buckets.
+Answer: C
+Explanation: Trong tiệm hoa nhỏ, một người phụ nữ đang bó bó hồng đỏ, quanh cô là những xô nước cắm đầy hoa cúc và hoa ly, phía sau là tấm bảng đen ghi giá bằng phấn. | (A) "The price board is hanging above the door." — bảng giá dựng phía sau lưng cô chứ không treo trên cửa. | (B) "The buckets are filled with empty bottles." — ngược lại, các xô cắm đầy hoa chứ không đựng chai rỗng. | (C) "The woman is arranging a bouquet of red roses." — đúng hành động của người phụ nữ. | (D) "A customer is choosing flowers from the buckets." — trong ảnh chỉ có một người là cô bán hoa, không có khách nào chọn hoa.
+Source: original

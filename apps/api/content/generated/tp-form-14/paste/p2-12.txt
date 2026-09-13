@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+This afternoon's meeting has been moved to Room 204, hasn't it?
+voice: us_female_1
+(A) Room 204 has a large screen.
+(B) The meeting is about staff training.
+(C) Yes, I saw the notice this morning.
+Answer: C
+Explanation: Câu hỏi là "This afternoon's meeting has been moved to Room 204, hasn't it?", cần xác nhận việc dời phòng họp. | (A) "Room 204 has a large screen." — dùng lại "Room 204" nhưng nói về trang thiết bị. | (B) "The meeting is about staff training." — dùng lại từ "meeting" nhưng nói về nội dung. | (C) "Yes, I saw the notice this morning." — xác nhận đúng thông tin dời phòng.
+Source: original

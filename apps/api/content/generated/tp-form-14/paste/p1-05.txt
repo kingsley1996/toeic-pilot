@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) The customers are sitting on benches in the lobby.
+(B) The clerks are sorting letters into mailbags.
+(C) The parcels are stacked outside the entrance.
+(D) A long line of customers is waiting for their turn.
+Answer: D
+Explanation: Trong sảnh bưu điện giờ cao điểm, một hàng dài khách đang đứng xếp hàng chờ đến lượt, trong khi hai nhân viên sau quầy kính đang cân bưu kiện và dán tem cho những thùng hàng đã chất sẵn trên mặt quầy. | (A) "sitting on benches" — khách đang đứng xếp hàng, không ai ngồi ghế. | (B) "sorting letters into mailbags" — nhân viên đang cân bưu kiện và dán tem chứ không phân loại thư vào bao tải. | (C) "stacked outside the entrance" — các thùng hàng chất trên mặt quầy bên trong chứ không ngoài cửa. | (D) "waiting for their turn" — đúng cảnh hàng dài khách đang chờ.
+Source: original

@@ -1,0 +1,59 @@
+[PASSAGE]
+Minh: The electricity and water bill came to 850,000 dong this month. Let's split it before Friday.
+
+Tuan: Wow, that's higher than last month. Did you run the air conditioner a lot?
+
+Minh: Guilty. My room faces the afternoon sun. How about I pay 500,000 and you pay 350,000?
+
+Tuan: Fine, but next month we track the meter. I'll pay you in cash tonight.
+
+Minh: Also, the plumber fixed the bathroom sink yesterday.
+
+Tuan: Nice. Did he charge extra for Sunday work?
+
+Minh: No, it was covered by the building fund.
+
+Tuan: Good to know. See you at home around seven.
+
+Minh: By the way, the internet bill also arrived this morning.
+
+Tuan: Fine by me. Just keep the noise down after ten.
+
+Minh: The landlord will repaint the hallway next week.
+
+[QUESTION]
+What are the friends discussing?
+(A) Splitting a utility bill
+(B) Planning a weekend trip
+(C) Buying an air conditioner
+(D) Finding a new roommate
+Answer: A
+Explanation: Minh cho biết hóa đơn điện nước tháng này là 850,000 đồng và hai người đang bàn cách chia khoản tiền đó. | (A) "Splitting a utility bill" — đúng với nội dung chính của cuộc trò chuyện. | (B) "Planning a weekend trip" — không có chuyến đi nào được nhắc đến. | (C) "Buying an air conditioner" — điều hòa chỉ được nhắc đến khi nói về mức sử dụng điện, không phải để mua mới. | (D) "Finding a new roommate" — không có thông tin về việc tìm người ở cùng mới.
+Source: original
+[QUESTION]
+Who used more air conditioning?
+(A) Tuan
+(B) Minh
+(C) Both equally
+(D) The landlord
+Answer: B
+Explanation: Khi Tuấn hỏi Minh có sử dụng điều hòa nhiều không, Minh thừa nhận "Guilty" và giải thích rằng phòng mình hướng về phía nắng buổi chiều. | (A) "Tuan" — không có thông tin cho thấy Tuấn là người sử dụng điều hòa nhiều hơn. | (B) "Minh" — đúng vì Minh trực tiếp thừa nhận mình đã dùng điều hòa nhiều. | (C) "Both equally" — cuộc trò chuyện không cho thấy hai người sử dụng điều hòa như nhau. | (D) "The landlord" — chủ nhà không được đề cập.
+Source: original
+[QUESTION]
+What does Tuan mean when he writes "we track the meter"?
+(A) He refuses to pay this month
+(B) He will buy a new meter
+(C) They will monitor their electricity usage
+(D) Minh must pay the whole bill
+Answer: C
+Explanation: Sau khi đồng ý với cách chia tiền tháng này, Tuấn nói rằng tháng sau họ sẽ theo dõi công tơ để biết mức sử dụng điện và có cơ sở chia tiền hợp lý hơn. | (A) "He refuses to pay this month" — ngược lại, Tuấn nói anh sẽ trả tiền mặt tối nay. | (B) "He will buy a new meter" — không có thông tin về việc mua công tơ mới. | (C) "They will monitor their electricity usage" — đúng với ý của "track the meter". | (D) "Minh must pay the whole bill" — hai người vẫn đang chia hóa đơn.
+Source: original
+[QUESTION]
+What will the friends probably do differently next month?
+(A) Stop living together next month
+(B) Split the bill equally regardless of usage
+(C) Ask the landlord to calculate the bill
+(D) Track the meter when dividing the bill
+Answer: D
+Explanation: Tuấn đề nghị theo dõi công tơ vào tháng sau, cho thấy hai người sẽ kiểm tra mức sử dụng khi tính phần tiền mỗi người. | (A) "Stop living together next month" — không có dấu hiệu họ sẽ dọn ra ở riêng. | (B) "Split the bill equally regardless of usage" — ngược lại, việc theo dõi công tơ cho thấy họ muốn có thêm căn cứ về mức sử dụng. | (C) "Ask the landlord to calculate the bill" — chủ nhà không được nhắc đến. | (D) "Track the meter when dividing the bill" — phù hợp với kế hoạch của Tuấn cho tháng sau.
+Source: original
