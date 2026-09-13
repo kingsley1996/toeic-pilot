@@ -20,10 +20,10 @@ Explanation: Thư mở bằng mốc mười năm với khách quen và "this let
 Source: original
 [QUESTION]
 The word "redeemable" is closest in meaning to
-(A) exchangeable
-(B) refundable
+(A) refundable
+(B) exchangeable
 (C) transferable
 (D) countable
-Answer: A
-Explanation: "a voucher code for ten free drinks, redeemable any weekday" — mã có thể đổi thành đồ uống, gần nhất với exchangeable. | (A) "exchangeable" — đúng nghĩa đem mã đi đổi lấy đồ. | (B) "refundable" — hoàn tiền, voucher không hoàn tiền. | (C) "transferable" — chuyển nhượng cho người khác, không phải việc xuất trình mã. | (D) "countable" — đếm được, lạc nghĩa.
+Answer: B
+Explanation: "a voucher code for ten free drinks, redeemable any weekday" — mã có thể đổi thành đồ uống, gần nhất với exchangeable. | (A) "refundable" — hoàn tiền, voucher không hoàn tiền. | (B) "exchangeable" — đúng nghĩa đem mã đi đổi lấy đồ. | (C) "transferable" — chuyển nhượng cho người khác, không phải việc xuất trình mã. | (D) "countable" — đếm được, lạc nghĩa.
 Source: original

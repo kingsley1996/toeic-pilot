@@ -40,10 +40,10 @@ Explanation: "the late-fee schedule printed on page two of the reissue was writt
 Source: original
 [QUESTION]
 Where should the sentence "The gap, in other words, was only in the paperwork." be placed?
-(A) [1]
+(A) [4]
 (B) [2]
 (C) [3]
-(D) [4]
-Answer: A
-Explanation: Câu chèn tóm lại ý "nothing about the furniture itself went astray" và dọn đường cho câu ngay sau nó nêu đích danh tờ giấyMissing — "The single page that slipped out of the envelope was the invoice". | (A) "[1]" — đúng khe giữa khẳng định hàng không thiếu và câu chỉ ra trang giấy thiếu. | (B) "[2]" — sang đoạn hóa đơn cấp lại, tóm tắt gap thành thừa. | (C) "[3]" — giữa đoạn điều khoản thanh toán thì vô nghĩa. | (D) "[4]" — trước lịch gọi điện, không còn chỗ cho tóm tắt này.
+(D) [1]
+Answer: D
+Explanation: Câu chèn tóm lại ý "nothing about the furniture itself went astray" và dọn đường cho câu ngay sau nó nêu đích danh tờ giấyMissing — "The single page that slipped out of the envelope was the invoice". | (A) "[4]" — trước lịch gọi điện, không còn chỗ cho tóm tắt này. | (B) "[2]" — sang đoạn hóa đơn cấp lại, tóm tắt gap thành thừa. | (C) "[3]" — giữa đoạn điều khoản thanh toán thì vô nghĩa. | (D) "[1]" — đúng khe giữa khẳng định hàng không thiếu và câu chỉ ra trang giấy thiếu.
 Source: original

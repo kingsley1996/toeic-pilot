@@ -3,7 +3,7 @@ Notice: New Night Market Hours from July
 
 The management board announces new opening hours for the night market. From July 1, the market opens at 5 p.m. and closes at 11 p.m. daily.
 
-All vendors must park in the east lot behind the food stalls. The main gate closes thirty minutes after closing time. The stall fee stays the same. Stall maps hang at both entrances from Monday. Lost items go to the office behind gate two. Fire lanes must stay clear after dark. Music stops at ten thirty sharp. Security patrols the aisles until midnight. New vendors apply at the east office.
+All vendors must park in the east lot behind the food stalls. The main gate closes thirty minutes after closing time. The stall fee stays the same. Stall maps hang at both entrances from Monday. Lost items go to the office behind gate two. Fire lanes must stay clear after dark. Music stops at ten thirty sharp. Security patrols the aisles until midnight, and a first-aid point now sits beside gate one. Two extra rubbish bins will stand at the end of each aisle before the new hours begin. Bicycle racks open along the river side from the same week. New vendors apply at the east office.
 
 [PASSAGE]
 To: Night Market Board
@@ -11,7 +11,7 @@ From: Thanh, Food Stall 12
 
 Dear Board,
 
-I read the new hours notice. Is the stall fee higher this year? Also, can I keep my corner spot near the main gate? My cousin shares the next stall and splits power costs. We close early on rainy evenings. Thank you for reading my long message.
+I read the new hours notice. Is the stall fee higher this year? Also, can I keep my corner spot near the main gate? My cousin shares the next stall and splits power costs with me. We close early on rainy evenings, so I would also like the rubbish collected every night instead of only twice a week. The awning above my counter leaks when the wind blows in off the river, and a repair before the busy season would help the whole row.
 
 [QUESTION]
 What is the notice about?
@@ -33,12 +33,12 @@ Explanation: Thông báo yêu cầu "All vendors must park in the east lot behin
 Source: original
 [QUESTION]
 What can be inferred about the vendor?
-(A) They own a food stall
+(A) They want a bigger stall
 (B) They will leave the market
 (C) They never read the notice
 (D) They accept the hours, not the fee
 Answer: D
-Explanation: Tiểu thương hỏi phí năm nay có cao hơn không trong khi vẫn hỏi giữ chỗ quầy góc — ghép email với thông báo giờ mới mới thấy họ chấp nhận giờ giấc nhưng còn lăn tăn về phí. "the market opens at 5 p.m. and closes at 11 p.m." nằm ở thông báo, còn "Is the stall fee higher this year?" nằm ở email. | (A) "They own a food stall" — họ thuê quầy số mười hai chứ không sở hữu chợ. | (B) "They will leave the market" — ngược lại, họ còn xin giữ chỗ quầy góc. | (C) "They never read the notice" — ngược lại, email mở đầu bằng việc đã đọc thông báo giờ mới. | (D) "They accept the hours, not the fee" — đúng thái độ của tiểu thương.
+Explanation: Tiểu thương hỏi phí năm nay có cao hơn không trong khi vẫn hỏi giữ chỗ quầy góc — ghép email với thông báo giờ mới mới thấy họ chấp nhận giờ giấc nhưng còn lăn tăn về phí. "the market opens at 5 p.m. and closes at 11 p.m." nằm ở thông báo, còn "Is the stall fee higher this year?" nằm ở email. | (A) "They want a bigger stall" — email xin giữ chỗ góc hiện có, không xin quầy lớn hơn. | (B) "They will leave the market" — ngược lại, họ còn xin giữ chỗ quầy góc. | (C) "They never read the notice" — ngược lại, email mở đầu bằng việc đã đọc thông báo giờ mới. | (D) "They accept the hours, not the fee" — đúng thái độ của tiểu thương.
 Source: original
 [QUESTION]
 Which is NOT true?
@@ -53,8 +53,8 @@ Source: original
 What can be inferred from the vendor's email?
 (A) They are first-time vendors
 (B) They have sold at the market before
-(C) They run a food stall
+(C) They share a stall with their cousin
 (D) They asked about parking rules
 Answer: B
-Explanation: Tiểu thương hỏi phí năm nay có cao hơn và xin giữ chỗ quầy cũ — ngụ ý họ đã bán ở chợ từ trước. | (A) "They are first-time vendors" — ngược lại, người bán mới không thể xin giữ chỗ cũ. | (B) "They have sold at the market before" — đúng với việc hỏi phí năm nay và xin giữ chỗ cũ. | (C) "They run a food stall" — quầy số mười hai bán đồ ăn nhưng họ thuê chỗ chứ không sở hữu chợ. | (D) "They asked about parking rules" — quy định đỗ xe nằm trong thông báo chứ không phải câu hỏi của họ.
+Explanation: Tiểu thương hỏi phí năm nay có cao hơn và xin giữ chỗ quầy cũ — ngụ ý họ đã bán ở chợ từ trước. | (A) "They are first-time vendors" — ngược lại, người bán mới không thể xin giữ chỗ cũ. | (B) "They have sold at the market before" — đúng với việc hỏi phí năm nay và xin giữ chỗ cũ. | (C) "They share a stall with their cousin" — người anh họ ở quầy bên cạnh, hai người chỉ chia tiền điện. | (D) "They asked about parking rules" — quy định đỗ xe nằm trong thông báo chứ không phải câu hỏi của họ.
 Source: original

@@ -5,14 +5,14 @@ From: Mekong Books
 
 Dear Ms. Tran,
 
-Q4 sales hit a record, and our warehouse stock runs low. We propose a reprint of ten thousand copies with a new cover. Translation rights sold in three countries last spring. The audiobook topped charts for six weeks. Royalty statements arrive each quarter by mail.
+Q4 sales hit a record, and our warehouse stock runs low. We propose a reprint of ten thousand copies with a new cover. Translation rights sold in three countries last spring. The audiobook topped charts for six weeks. Royalty statements arrive each quarter by mail. The new edition would keep the original illustrations and the same price on the back cover, printed this time on lighter uncoated paper. Reader letters asking for a sequel reach the office every week, and two school reading programmes have added the book to their summer lists.
 
 Please review the attached contract. We would love to keep working with you.
 
 [PASSAGE]
 Dear Ms. Tran,
 
-We are pleased to invite you to the signing ceremony for the reprint contract at our Hanoi office on July 5. The reprint adds two new chapters about riverside life. A launch party follows the ceremony downtown. Journalists may request interviews afterwards. The cover photo shoot takes place next Monday. Wine and snacks follow the signing.
+We are pleased to invite you to the signing ceremony for the reprint contract at our Hanoi office on July 5. The reprint adds two new chapters about riverside life. A launch party follows the ceremony downtown. Journalists may request interviews afterwards. The cover photo shoot takes place next Monday. Wine and snacks follow the signing. Ms. Tran will say a few words about the book's origins before guests sign copies at the long table. Sixty seats in the reading room are held for readers, and the ceremony is open to the public from four o'clock. Photographers from two newspapers will attend, so the front room stays closed to visitors for the first half hour.
 
 Please send a portrait photo for the cover before June 25.
 
@@ -47,13 +47,13 @@ Answer: B
 Explanation: "Q4 sales hit a record" nói về doanh số quý bốn đạt mức cao nhất từ trước đến nay. | (A) "music album" — nghĩa là đĩa nhạc, không phù hợp. | (B) "best result" — gần nghĩa nhất với kỷ lục doanh số. | (C) "written note" — nghĩa là ghi chép, không liên quan đến doanh số. | (D) "sports event" — nghĩa là sự kiện thể thao, không phù hợp.
 Source: original
 [QUESTION]
-What must the author do?
-(A) Visit the warehouse
-(B) Send a portrait photo
-(C) Sign the reprint contract
-(D) Pay a reprint fee
+What is the ceremony on July 5 for?
+(A) Launching the audiobook
+(B) Choosing the cover photo
+(C) Signing the reprint contract
+(D) Meeting the translators
 Answer: C
-Explanation: Thư mời đích danh tác giả đến lễ ký hợp đồng tái bản tại văn phòng Hà Nội — việc phải làm là ký hợp đồng. | (A) "Visit the warehouse" — thăm kho không được nhắc đến. | (B) "Send a portrait photo" — gửi ảnh chân dung chỉ là việc chuẩn bị thêm cho bìa sách. | (C) "Sign the reprint contract" — đúng việc được mời đến làm. | (D) "Pay a reprint fee" — trả phí tái bản không xuất hiện trong thư.
+Explanation: Thư mời cho biết buổi lễ tại văn phòng Hà Nội là "the signing ceremony for the reprint contract" — mục đích của ngày 5 tháng Bảy là ký hợp đồng tái bản. | (A) "Launching the audiobook" — audiobook chỉ được nhắc như tin doanh thu trong email đề nghị. | (B) "Choosing the cover photo" — việc chụp ảnh bìa diễn ra trước đó vào thứ Hai, không phải tại buổi lễ. | (C) "Signing the reprint contract" — đúng mục đích được nêu trong thư mời. | (D) "Meeting the translators" — bản dịch chỉ xuất hiện qua tin bán quyền dịch, không có cuộc gặp nào được hẹn.
 Source: original
 [QUESTION]
 What can be inferred about the reprint plan?

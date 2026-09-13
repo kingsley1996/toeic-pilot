@@ -1,6 +1,8 @@
 [PASSAGE]
 Volunteer Blood Drive — Registration Form
 
+Please print this form, complete every line in block letters, and hand it to the nurse at the welcome desk. Staff cannot start your check-in without it.
+
 [1] Full name: ____________________
 
 Blood type: ____________________ [2]
@@ -13,7 +15,7 @@ Contact phone: ____________________ [4]
 
 Donors must be at least eighteen years old. Thank you for saving lives.
 
-Note: Bring an ID card for verification. Walk-in donors are welcome until half past ten. Juice and biscuits follow every donation. Minors need a signed parental form.
+Note: Bring an ID card for verification. Walk-in donors are welcome until half past ten. Juice and biscuits follow every donation. Minors need a signed parental form. The visit takes about forty minutes in total, and staff walk you through each step at the welcome desk. Please eat a normal meal beforehand and drink an extra glass of water that morning. The centre holds the drive twice a year, in June and December, and every unit goes to a hospital laboratory the same afternoon.
 
 [QUESTION]
 Where will the blood drive take place?

@@ -1,9 +1,9 @@
 [PASSAGE]
 MediBook: Doctor Appointments Without the Phone Queue
 
-The MediBook app lets patients reserve slots at nearly five hundred clinics across the country. Instead of calling during office hours, office workers can book during their lunch break in under a minute.
+The MediBook app lets patients reserve slots at nearly five hundred clinics across the country. Instead of calling during office hours, office workers can book during their lunch break in under a minute. Patients choose a specialty first, then pick an evening or weekend time that fits around their meeting calendar, and the confirmation appears on screen at once.
 
-The app also sends reminders the day before each visit, so missed appointments have dropped sharply since its rollout last year. Downloading MediBook is free, though some clinics charge a small booking fee. Video visits with specialists begin next spring. Prescriptions can be renewed inside the app without extra fees. A family profile covers up to five members.
+The app also sends reminders the day before each visit, so missed appointments have dropped sharply since its rollout last year. Downloading MediBook is free, though some clinics charge a small booking fee. Video visits with specialists begin next spring. Prescriptions can be renewed inside the app without extra fees. A family profile covers up to five members. A short medical profile is filled in once and reused at every partner clinic, and ratings left by earlier patients sit next to each booking page.
 
 [QUESTION]
 About how many clinics can patients book through MediBook?
