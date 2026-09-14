@@ -18,6 +18,24 @@ from app.content.exam_cli.paths import DEFAULT_ROOT
 
 NEAR_DUP = 0.8
 
+_FREQUENT_RANK: dict[str, int] | None = None
+
+
+def _frequent_rank() -> dict[str, int]:
+    """Từ → thứ hạng trong `frequent_words.txt` (hạng 0 = phổ biến nhất)."""
+    global _FREQUENT_RANK
+    if _FREQUENT_RANK is None:
+        path = Path(checker.__file__).with_name("frequent_words.txt")
+        _FREQUENT_RANK = {}
+        order = 0
+        for line in path.read_text(encoding="utf-8").splitlines():
+            word = line.strip()
+            if not word or word.startswith("#"):
+                continue
+            _FREQUENT_RANK.setdefault(word, order)
+            order += 1
+    return _FREQUENT_RANK
+
 
 def _norm(text: str) -> str:
     text = text.lower()
@@ -113,7 +131,10 @@ def cmd_compare(args: argparse.Namespace) -> int:
                     near.add(f"{key} ~ {other}/{okey} ({score:.2f})")
         print(f"so với {other}: {len(old_questions)} câu, max-sim {top:.2f} ({top_pair})")
     # Thể tích + band từ của đề mới đặt cạnh họ đề (tham khảo, không chặn).
+    # Band quy about cùng thước `_content_words` (từ nội dung, bỏ function words)
+    # như con số ETS ghi ở dưới — đo bằng đơn vị khác là so lệch vô nghĩa.
     frequent = checker._frequent_words()
+    rank = _frequent_rank()
     for slug in [args.slug, *others]:
         root = DEFAULT_ROOT / slug
         if not (root / "paste").is_dir():
@@ -124,8 +145,17 @@ def cmd_compare(args: argparse.Namespace) -> int:
         if not words:
             continue
         out10k = sum(1 for w in words if w not in frequent) / len(words)
+        k1 = sum(1 for w in words if rank.get(w, 9e9) < 1000) / len(words)
+        k3 = sum(1 for w in words if rank.get(w, 9e9) < 3000) / len(words)
         avglen = sum(len(w) for w in words) / len(words)
-        print(f"  {slug}: {len(words)} từ nội dung, dài TB {avglen:.1f}, ngoài-10k {out10k:.1%}")
+        print(
+            f"  {slug}: {len(words)} từ nội dung, dài TB {avglen:.1f}, "
+            f"≤1k {k1:.1%}, ≤3k {k3:.1%}, ngoài-10k {out10k:.1%}"
+        )
+    # Dòng neo: ETS TOEIC LR Sample Test chính thức (34 tr, 2 546 từ nội dung)
+    # đo bằng ĐÚNG thước này ngày 2026-09-14 — phương pháp và cảnh báo ở
+    # SPEC-EXAM-DIFFICULTY §11.
+    print("  (ETS sample đo cùng thước: ≤1k 53%, ≤3k 80%, ngoài-10k 7%)")
     if near:
         print(f"gần-đúng (≥{NEAR_DUP}, cần người nhìn):")
         for line in sorted(near)[:20]:

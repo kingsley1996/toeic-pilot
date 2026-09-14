@@ -796,3 +796,58 @@ prompt đòi ảnh giàu chi tiết, nhưng không gì kiểm tấm ảnh vẽ r
 một câu KHÁC câu chứa nó. Đo được tất định bằng đúng cơ chế `check_cross_passage`
 — trích dẫn nguyên văn, biên giới câu biết chính xác.
 
+
+## 12. Band tần suất từ, đo trên ngữ liệu ETS thật (2026-09-14)
+
+Từ trước tới dòng này, mọi câu "dễ hơn đề thật" trong tệp này dựa vào **dạng câu
+và tốc độ đọc**; trục tần suất từ chưa từng được đo, và khi đo thật thì cả một
+bảng "ETS ~95% ở 3k" lan truyền trong tài liệu nội bộ hóa ra là trí nhớ — số đo
+gia đình BNC/COCA theo **word-family**, không so được với thước của ta.
+
+**Ngữ liệu:** `toeic-listening-reading-sample-test.pdf` — TOEIC LR Sample Test
+chính thức của ETS (trang bản quyền "registered trademarks of Educational
+Testing Service"), 34 trang. Không phải đề 2024-full — ETS không phát free; ai
+đưa số "ETS full test" mà không kèm tệp thì đối chiếu lại với §12 này.
+
+**Hai bẫy đo, cả hai đều giết số theo chiều khó thấy:**
+
+1. `pypdf` ekstrak PDF hai cột **rối thứ tự và cắt chữ giữa dòng** — sinh ra
+   `wha`, `usiness`, `vertise ment` ở thùng >10k, và bảng lệch hẳn (6.8% so với
+   2.9% đuôi hiếm). Phải dùng PyMuPDF (`fitz`, theo block đọc đúng).
+2. Hai thang cho số khác nhau một cách hợp pháp: token thô (gồm function words —
+   chúng chiếm phần lớn ≤1k của MỌI văn bản) và **từ nội dung**
+   (`_content_words`, cùng thước với cổng vocab). So hai ngữ liệu thì phải công
+   khai thước; `compare` in theo thước của chính nó.
+
+**Số đo, thang `_content_words` (cái `compare` in ra):**
+
+| Ngữ liệu | ≤1k | ≤3k | ngoài-10k |
+|---|---|---|---|
+| **ETS sample (2 546 từ)** | **53.1%** | **79.6%** | **6.8%** |
+| tp-test-09 (best) | 50.8 | 75.9 | 7.3 |
+| tp-form-06/07/08/12 | 44.8–47.8 | 71.5–73.7 | 8.1–9.0 |
+| tp-form-14 / 15 (worst) | 44.4 / 41.0 | 69.8 / **66.7** | 10.1 / **10.9** |
+
+Thang token thô (toàn bộ running words, hai cột đã sửa): ETS ≤1k 75.5 / ≤3k
+89.4 / >10k 2.9 — các đề ta ≤1k 61–68 / ≤3k 80–86 / >10k 4.4–6.7.
+
+**Kết luận.**
+
+1. **Cả họ đề mỏng hơn ETS ở đầu phổ** — ≤3k thấp hơn 4–13 điểm, nghĩa là đặc
+   hơn ở đuôi — chiều NGƯỢC với chẩn đoán "đề sinh dễ hơn đề thật" ở §0–§9. Dễ
+   ở dạng câu, khó ở từ: hai lỗi đối nhau và từng cái một không sửa được cái kia.
+2. Nghịch lý cùng nguyên nhân: form-15 — đề dài chuẩn ETS nhất, viết tay — là đề
+   **đặc từ nhất họ** (≤3k 66.7, ngoài-10k 10.9). Người viết tay tra từ "đắt"
+   hơn mô hình, theo nghĩa đen.
+3. Đuôi >10k của ETS là `discontinued / instructed / deadlines / comprehension`
+   — cùng chủng loại danh-động từ công sở của ta; khác nhau ở MẬT ĐỘ, không ở
+   loại từ. Kết luận này đứng vững cả khi trừ sai lệch của google-10000 (thiếu
+   số nhiều và phrase dẫn xuất — thổi phồng đuôi của CẢ hai bên, xấp xỉ bằng
+   nhau nên so cặp vẫn dùng được).
+4. `compare` giờ in ≤1k/≤3k mỗi lần chạy, kèm dòng neo ETS. Chưa có CỜ trong
+   `check`: muốn cổng trước hết phải có đích — đề xuất đích "≤3k ≥ 75% và
+   ngoài-10k ≤ 8%" là đường chỉ qua giữa ETS và đứa gần nhất, cần thêm vài đề
+   thật đo được rồi mới đáng chặn.
+
+Không có nguồn ETS thứ hai nào được đo: bản scan cộng đồng trong Downloads là
+ảnh không layer chữ, và nó cũng không phải tệp chính thức.
