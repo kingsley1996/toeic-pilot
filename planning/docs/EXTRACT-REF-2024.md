@@ -95,9 +95,3 @@ uv run python scripts/audit_ref_questions.py content/generated/tp-2024-XX/paste 
 Mở mắt 2-3 tệp/set ngẫu nhiên mỗi part — `compare` xanh không nghĩa là hội
 thoại không bị cắt giữa câu (nó chỉ đọc stem+options+material).
 
-**Manifest không được nhận dòng của `tp-2024-*`.** `import_media` append mỗi
-asset nó gắn vào `content/manifest/audio_assets.jsonl` — kể cả bản auto-synth
-edge-tts từ lúc load — và mỗi dòng chứa NGUYÊN VĂN lời thoại sách. Đó là nội
-dung có bản quyền vào git, và là mồi cho `push_media` đối chiếu. Commit trước
-khi nạp media thì chạy `git checkout -- content/manifest/`; DB đã có asset,
-manifest không cần chúng.
