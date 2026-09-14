@@ -4,6 +4,7 @@ import {
   API_ROUTES,
   type CollectionAdmin,
   type QuestionAdmin,
+  type PassageEdit,
   type SetAdmin,
   type TurnDraft,
   type VoiceOption,
@@ -294,6 +295,20 @@ export function useTestEditor() {
       },
     );
 
+  const saveSetPassages = (setId: string, passages: PassageEdit[]) =>
+    run(
+      () =>
+        apiFetch<SetAdmin>(API_ROUTES.adminQuestionSet(setId), {
+          method: "PATCH",
+          token: token ?? undefined,
+          body: JSON.stringify({ passages }),
+        }),
+      () => {
+        setNotice("Đã lưu ngữ liệu. Cụm và các câu của nó quay về nháp.");
+        if (token) refresh(token);
+      },
+    );
+
   const saveQuestionScript = (questionId: string, script: TurnDraft[]) =>
     run(
       () =>
@@ -523,6 +538,7 @@ export function useTestEditor() {
     requestAudio,
     saveQuestion,
     saveQuestionScript,
+    saveSetPassages,
     saveSetScript,
     setAccent,
     setConfirmDelete,

@@ -1080,6 +1080,135 @@ def test_an_unknown_voice_is_refused_at_the_form_not_at_synthesis(
     assert "us_female_1" in refused.json()["detail"]
 
 
+def _commit_part6(client: TestClient, headers: dict[str, str], slug: str) -> dict[str, object]:
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": slug, "title": slug, "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts/6/parse",
+        json={
+            "raw_text": """[PASSAGE] Đơn đặt hàng
+Thank you for choosing Lam Vien Stationery. A few items will arrive late.
+---(131)--- We expect the rest next week.
+
+[QUESTION]
+(131)
+(A) However
+(B) Therefore
+(C) Moreover
+(D) Otherwise
+answer: A
+source: original
+explanation: Trạng từ nối phù hợp với nghĩa câu.
+"""
+        },
+        headers=headers,
+    ).json()
+    assert parsed["error_count"] == 0
+    committed = client.post(
+        f"/api/v1/admin/tests/{slug}/parts",
+        json={"part": 6, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    assert committed.status_code == 201
+    (stimulus,) = client.get(f"/api/v1/admin/tests/{slug}/sets", headers=headers).json()
+    assert isinstance(stimulus, dict)
+    return stimulus
+
+
+def test_editing_a_set_passage_saves_text_and_sends_its_questions_back_to_draft(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Sửa ngữ liệu phải ghi được chữ mới, xoá được ô bằng chuỗi rỗng.
+
+    Cùng đường `_demote` như sửa lời thoại — đoạn văn cũ không còn gì để đối
+    chiếu nên hạ nháp ở đây còn quan trọng hơn. Ô trống gửi về là None chứ
+    không phải "", cùng quy ước `content_vi` đang theo.
+    """
+    headers = auth("admin")
+    _commit_one_reading_part(client, headers, "passage-edit-test")
+    (stimulus,) = client.get("/api/v1/admin/tests/passage-edit-test/sets", headers=headers).json()
+    (question,) = client.get(
+        "/api/v1/admin/tests/passage-edit-test/questions", headers=headers
+    ).json()
+
+    published = client.post(f"/api/v1/admin/questions/{question['id']}/publish", headers=headers)
+    assert published.status_code == 200
+
+    edited = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 1, "text": "The lobby will be closed from Thursday."}]},
+        headers=headers,
+    )
+    assert edited.status_code == 200
+    body = edited.json()
+    assert body["status"] == "draft"
+    assert body["passages"][0]["text"] == "The lobby will be closed from Thursday."
+
+    cleared = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 1, "text": "   "}]},
+        headers=headers,
+    )
+    assert cleared.json()["passages"][0]["text"] is None
+
+    dup = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 1, "text": "a"}, {"slot": 1, "text": "b"}]},
+        headers=headers,
+    )
+    assert dup.status_code == 400
+
+    (after,) = client.get("/api/v1/admin/tests/passage-edit-test/questions", headers=headers).json()
+    assert after["status"] == "draft"
+
+
+def test_a_listening_set_refuses_passage_text(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Part 3/4 treo ngữ liệu ở bản thu và hình dùng chung.
+
+    Ghi chữ vào đó sẽ tạo ra một đoạn văn không ai đọc — cùng kiểu lỗi "lời
+    thoại thứ hai" mà `PATCH /questions/{id}` chặn ở chiều ngược lại.
+    """
+    headers = auth("admin")
+    stimulus = _commit_part3(client, headers, "passage-owner-test")
+
+    refused = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 1, "text": "Hello."}]},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert "ngữ liệu" in refused.json()["detail"]
+
+
+def test_a_part_6_set_takes_only_slot_one(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Part 6 là một đoạn văn duy nhất — ô 2/3 là cụm không tồn tại trong đề thật."""
+    headers = auth("admin")
+    stimulus = _commit_part6(client, headers, "passage-six-test")
+
+    refused = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 2, "text": "Second text."}]},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+    assert "ô 1" in refused.json()["detail"]
+
+    edited = client.patch(
+        f"/api/v1/admin/question-sets/{stimulus['id']}",
+        json={"passages": [{"slot": 1, "text": "Thank you for choosing us. ---(131)--- Bye."}]},
+        headers=headers,
+    )
+    assert edited.status_code == 200
+    assert edited.json()["passages"][0]["text"] == "Thank you for choosing us. ---(131)--- Bye."
+
+
 def test_a_listening_set_takes_one_graphic_and_only_slot_one(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:

@@ -476,7 +476,7 @@ def edit_set(
     db: Session = Depends(get_db),
     _: User = Depends(can_edit),
 ) -> SetAdmin:
-    """Sửa một cụm đã dán: tên cụm và lời thoại.
+    """Sửa một cụm đã dán: tên cụm, lời thoại, và văn bản ngữ liệu (Part 6/7).
 
     Lời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói
     Part 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và
@@ -504,6 +504,32 @@ def edit_set(
         stimulus.audio_script = _script_or_400(body.audio_script or [])
     if "title" in changes:
         stimulus.title = body.title
+    edits = body.passages if "passages" in changes else None
+    if edits is not None:
+        # Văn bản chỉ tồn tại ở Part 6/7. Part 3/4 treo ngữ liệu ở bản thu và
+        # hình dùng chung, nên ghi chữ vào đó sẽ tạo ra một đoạn văn không ai
+        # đọc — cùng kiểu lỗi "lời thoại thứ hai" mà nhánh trên chặn.
+        if stimulus.part not in (6, 7):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Part {stimulus.part} không có ngữ liệu văn bản",
+            )
+        seen: set[int] = set()
+        for item in body.passages or []:
+            if item.slot in seen:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Ô {item.slot} gửi hai lần trong một lượt",
+                )
+            seen.add(item.slot)
+            if stimulus.part == 6 and item.slot != 1:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Part 6 chỉ có một đoạn văn (ô 1)",
+                )
+            # Ô trống là None chứ không phải "": cùng quy ước `content_vi` đang
+            # theo, và `_passages` giữ ô có ảnh mà không có chữ.
+            setattr(stimulus, _PASSAGE_TEXT_COLUMNS[item.slot], (item.text or "").strip() or None)
 
     # Hạ cả cụm LẪN các câu thuộc nó về nháp. Sửa lời thoại là sửa thứ người học
     # đang nghe, và người duyệt lần trước đã duyệt một bài nói khác — trong khi

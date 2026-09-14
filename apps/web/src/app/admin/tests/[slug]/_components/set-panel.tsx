@@ -1,8 +1,15 @@
 "use client";
 
-import { type SetAdmin, type TurnDraft, type VoiceOption } from "@toeic-pilot/shared";
+import {
+  type PassageEdit,
+  type SetAdmin,
+  type TurnDraft,
+  type VoiceOption,
+} from "@toeic-pilot/shared";
+import { Pencil } from "lucide-react";
+import { useState } from "react";
 
-import { Panel, PublishTag, cx } from "@/components/ui";
+import { Button, FieldError, Panel, PublishTag, Textarea, cx } from "@/components/ui";
 import { AudioPanel } from "./audio-panel";
 import { ImageUpload } from "./image-upload";
 
@@ -16,6 +23,7 @@ export function SetPanel({
   blocked,
   onUploadAudio,
   onSaveScript,
+  onSavePassages,
   voices,
   allowImages,
 }: {
@@ -26,6 +34,7 @@ export function SetPanel({
   blocked: string | null;
   onUploadAudio: (file: File) => void;
   onSaveScript: (script: TurnDraft[]) => Promise<string | null>;
+  onSavePassages: (passages: PassageEdit[]) => Promise<string | null>;
   voices: VoiceOption[];
   allowImages: boolean;
 }) {
@@ -37,6 +46,25 @@ export function SetPanel({
   // tả sai format và mời người soạn gõ vào chỗ đề thật để trống.
   const graphic = stimulus.part === 3 || stimulus.part === 4;
   const slots = allowImages ? stimulus.passages : stimulus.passages.slice(0, 1);
+  // Văn bản chỉ tồn tại ở Part 6 (ô 1) và Part 7. Part 3/4 treo ngữ liệu ở bản
+  // thu và hình dùng chung — hiện ô sửa ở đó là mời người soạn gõ vào chỗ đề
+  // thật để trống, cùng lý do ô văn bản không hiện.
+  const editable = (slot: number) => stimulus.part === 7 || (stimulus.part === 6 && slot === 1);
+  // Ô đang sửa, `null` nghĩa là không sửa — cùng quy ước AudioPanel dùng: một
+  // cờ boolean riêng cạnh bản nháp sẽ có hai nguồn sự thật cho cùng một câu
+  // hỏi, và chúng lệch nhau được. Sửa từng ô một thay vì cả ba: lưu một ô
+  // không bắt người ta soát lại hai ô còn lại.
+  const [draft, setDraft] = useState<{ slot: number; text: string } | null>(null);
+  const [refusal, setRefusal] = useState<string | null>(null);
+
+  async function save() {
+    if (!draft) return;
+    // Đóng CHỈ khi server đã nhận — cùng luật ô sửa lời thoại: lời từ chối vô
+    // dụng nếu ô nhập đã biến mất cùng nội dung người ta vừa gõ.
+    const problem = await onSavePassages([{ slot: draft.slot, text: draft.text }]);
+    setRefusal(problem);
+    if (problem === null) setDraft(null);
+  }
 
   return (
     <Panel className="p-4">
@@ -61,12 +89,59 @@ export function SetPanel({
       <div className={cx("mt-3 space-y-3", stimulus.part <= 2 && "hidden")}>
         {slots.map((passage) => (
           <div key={passage.slot} className="rounded border border-rule p-3">
-            <p className="text-label font-semibold uppercase text-ink-muted">
-              {graphic ? "Hình đi kèm" : `Ngữ liệu ${passage.slot}`}
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-label font-semibold uppercase text-ink-muted">
+                {graphic ? "Hình đi kèm" : `Ngữ liệu ${passage.slot}`}
+              </p>
+              {editable(passage.slot) && draft?.slot !== passage.slot && (
+                <Button
+                  size="sm"
+                  variant="quiet"
+                  onClick={() => {
+                    setRefusal(null);
+                    setDraft({ slot: passage.slot, text: passage.text ?? "" });
+                  }}
+                >
+                  <Pencil size={14} strokeWidth={1.75} aria-hidden />
+                  Sửa
+                </Button>
+              )}
+            </div>
 
             {!graphic &&
-              (passage.text ? (
+              (draft?.slot === passage.slot ? (
+                <div className="mt-2 space-y-2">
+                  <Textarea
+                    rows={8}
+                    value={draft.text}
+                    aria-label={`Văn bản ngữ liệu ${passage.slot}`}
+                    onChange={(event) => setDraft({ ...draft, text: event.target.value })}
+                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button size="sm" onClick={() => void save()} disabled={busy}>
+                      Lưu ngữ liệu
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="quiet"
+                      onClick={() => {
+                        setRefusal(null);
+                        setDraft(null);
+                      }}
+                      disabled={busy}
+                    >
+                      Huỷ
+                    </Button>
+                  </div>
+                  {refusal ? (
+                    <FieldError>{refusal}</FieldError>
+                  ) : (
+                    <p className="text-small text-ink-faint">
+                      Bỏ trống để xoá ô này. Lưu xong, cụm và các câu của nó quay về nháp.
+                    </p>
+                  )}
+                </div>
+              ) : passage.text ? (
                 <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-small text-ink-muted">
                   {passage.text}
                 </p>

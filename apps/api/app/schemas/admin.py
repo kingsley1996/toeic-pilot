@@ -768,16 +768,27 @@ class ArchiveRequest(BaseModel):
     archived: bool
 
 
+class PassageEdit(BaseModel):
+    """Một ô ngữ liệu cần ghi. Ô trống gửi `text` rỗng hoặc null để xoá."""
+
+    slot: int = Field(ge=1, le=3)
+    text: str | None = None
+
+
 class SetEdit(BaseModel):
-    """Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.
+    """Sửa một cụm sau khi dán — tên cụm, lời thoại, và văn bản ngữ liệu.
 
     Lời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán
     lại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint
     này, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.
+
+    Văn bản ngữ liệu (Part 6/7) cùng lý do: sai một chữ trong đoạn Part 7 mà
+    phải dán lại cả cụm thì mất số câu đã cấp.
     """
 
     title: str | None = None
     audio_script: list[TurnDraft] | None = None
+    passages: list[PassageEdit] | None = None
 
 
 class PassageImageAssign(BaseModel):

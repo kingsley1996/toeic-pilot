@@ -1765,7 +1765,7 @@ export interface paths {
         head?: never;
         /**
          * Edit Set
-         * @description Sửa một cụm đã dán: tên cụm và lời thoại.
+         * @description Sửa một cụm đã dán: tên cụm, lời thoại, và văn bản ngữ liệu (Part 6/7).
          *
          *     Lời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói
          *     Part 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và
@@ -8217,6 +8217,16 @@ export interface components {
             text: string | null;
         };
         /**
+         * PassageEdit
+         * @description Một ô ngữ liệu cần ghi. Ô trống gửi `text` rỗng hoặc null để xoá.
+         */
+        PassageEdit: {
+            /** Slot */
+            slot: number;
+            /** Text */
+            text?: string | null;
+        };
+        /**
          * PassageImageAssign
          * @description Gắn hoặc gỡ ảnh cho MỘT ô ngữ liệu.
          *
@@ -9470,15 +9480,20 @@ export interface components {
         };
         /**
          * SetEdit
-         * @description Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.
+         * @description Sửa một cụm sau khi dán — tên cụm, lời thoại, và văn bản ngữ liệu.
          *
          *     Lời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán
          *     lại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint
          *     này, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.
+         *
+         *     Văn bản ngữ liệu (Part 6/7) cùng lý do: sai một chữ trong đoạn Part 7 mà
+         *     phải dán lại cả cụm thì mất số câu đã cấp.
          */
         SetEdit: {
             /** Audio Script */
             audio_script?: components["schemas"]["TurnDraft"][] | null;
+            /** Passages */
+            passages?: components["schemas"]["PassageEdit"][] | null;
             /** Title */
             title?: string | null;
         };

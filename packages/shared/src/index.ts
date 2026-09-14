@@ -155,6 +155,7 @@ export type TurnDraft = components["schemas"]["TurnDraft"];
 export type VoiceOption = components["schemas"]["VoiceOption"];
 export type AudioRequestAck = components["schemas"]["AudioRequestAck"];
 export type PassageAdmin = components["schemas"]["PassageAdmin"];
+export type PassageEdit = components["schemas"]["PassageEdit"];
 export type TestPartSummary = components["schemas"]["TestPartSummary"];
 export type QuestionAdmin = components["schemas"]["QuestionAdmin"];
 export type TestPartParseResponse = components["schemas"]["TestPartParseResponse"];

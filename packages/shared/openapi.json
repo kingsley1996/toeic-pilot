@@ -8383,6 +8383,33 @@
         "title": "PassageAdmin",
         "type": "object"
       },
+      "PassageEdit": {
+        "description": "Một ô ngữ liệu cần ghi. Ô trống gửi `text` rỗng hoặc null để xoá.",
+        "properties": {
+          "slot": {
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Slot",
+            "type": "integer"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "title": "PassageEdit",
+        "type": "object"
+      },
       "PassageImageAssign": {
         "description": "Gắn hoặc gỡ ảnh cho MỘT ô ngữ liệu.\n\n`slot` là 1..3, khớp với `passage`/`passage_2`/`passage_3`. `image_id` null\nnghĩa là gỡ ảnh ra.",
         "properties": {
@@ -11704,7 +11731,7 @@
         "type": "object"
       },
       "SetEdit": {
-        "description": "Sửa một cụm sau khi dán — hiện là tên cụm và lời thoại.\n\nLời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán\nlại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint\nnày, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.",
+        "description": "Sửa một cụm sau khi dán — tên cụm, lời thoại, và văn bản ngữ liệu.\n\nLời thoại phải sửa được, nếu không sai một chữ là phải xoá cả cụm rồi dán\nlại. Nó cũng là thứ *duy nhất* bản thu tương ứng, nên trước khi có endpoint\nnày, cảnh báo `audio_may_be_stale` của Part 3/4 không có gì kích hoạt được.\n\nVăn bản ngữ liệu (Part 6/7) cùng lý do: sai một chữ trong đoạn Part 7 mà\nphải dán lại cả cụm thì mất số câu đã cấp.",
         "properties": {
           "audio_script": {
             "anyOf": [
@@ -11719,6 +11746,20 @@
               }
             ],
             "title": "Audio Script"
+          },
+          "passages": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PassageEdit"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passages"
           },
           "title": {
             "anyOf": [
@@ -19855,7 +19896,7 @@
     },
     "/api/v1/admin/question-sets/{set_id}": {
       "patch": {
-        "description": "Sửa một cụm đã dán: tên cụm và lời thoại.\n\nLời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói\nPart 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và\nbản thu đã gắn.\n\nNó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản\nthu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại\ncòn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`\nvà cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.",
+        "description": "Sửa một cụm đã dán: tên cụm, lời thoại, và văn bản ngữ liệu (Part 6/7).\n\nLời thoại phải sửa được. Không có endpoint này thì sai một chữ trong bài nói\nPart 3 chỉ còn cách xoá cả cụm rồi dán lại — kéo theo mất số câu đã cấp và\nbản thu đã gắn.\n\nNó cũng là thứ làm cảnh báo `audio_may_be_stale` chạy được ở Part 3/4. Bản\nthu ứng với LỜI THOẠI, không ứng với chữ trên từng câu; chừng nào lời thoại\ncòn bất biến thì `updated_at` của cụm không bao giờ vượt `audio_attached_at`\nvà cảnh báo im lặng vĩnh viễn — đúng, nhưng vô dụng.",
         "operationId": "edit_set_api_v1_admin_question_sets__set_id__patch",
         "parameters": [
           {

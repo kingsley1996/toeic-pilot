@@ -210,6 +210,7 @@ export default function AdminTestPage() {
     requestAudio,
     saveQuestion,
     saveQuestionScript,
+    saveSetPassages,
     saveSetScript,
     setAccent,
     setConfirmDelete,
@@ -602,6 +603,7 @@ export default function AdminTestPage() {
                     allowImages={part === 7}
                     onUploadAudio={(file) => void uploadSetAudio(stimulus.id, file)}
                     onSaveScript={(script) => saveSetScript(stimulus.id, script)}
+                    onSavePassages={(passages) => saveSetPassages(stimulus.id, passages)}
                     voices={voices}
                   />
                 ))}
