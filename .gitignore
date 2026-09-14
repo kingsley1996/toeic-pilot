@@ -52,6 +52,8 @@ apps/api/content/generated/*/images/
 # chạy lại `check --verify` — chỉ gọi phần thiếu). Không giữ trong git.
 apps/api/content/generated/*/verify/
 
+apps/api/content/generated/tp-2024-*/
+
 # `photos/` TỪNG nằm ở đây, và lý do ấy đã hết hiệu lực (2026-09-05).
 #
 # Nó bị bỏ qua vì được coi là phụ phẩm của lệnh `photo` — tái sinh được. Nhưng
