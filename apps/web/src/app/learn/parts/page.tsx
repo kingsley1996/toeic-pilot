@@ -26,9 +26,11 @@ export default function PartsHubPage() {
   const { status } = useSession();
   const [parts, setParts] = useState<PartSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Part khách vừa bấm — quyết định hộp đăng nhập có mở hay không, cùng khuôn
-  // `gated` của trang bộ đề.
-  const [gated, setGated] = useState<number | null>(null);
+  // Đích khách vừa bấm — quyết định hộp đăng nhập có mở hay không, cùng khuôn
+  // `gated` của trang bộ đề. Giữ CẢ ĐƯỜNG DẪN chứ không chỉ số part: hai nút
+  // trên một hàng đi hai chỗ khác nhau, nên đăng nhập xong phải trả người ta về
+  // đúng chỗ họ bấm, không phải về trang chiến thuật.
+  const [gated, setGated] = useState<string | null>(null);
 
   useEffect(() => {
     apiFetch<PartSummary[]>(API_ROUTES.practiceParts)
@@ -39,9 +41,8 @@ export default function PartsHubPage() {
   // Chặn ở lần bấm như nút "Xem chi tiết" của khu luyện thi: vẫn là `Link`
   // thật, giữ được chuột giữa và menu chuột phải; phiên còn `loading` thì cứ
   // đi, trang đích tự chặn.
-  function gatedHref(part: number): string {
-    if (status !== "anonymous") return `/learn/parts/${part}`;
-    return "#";
+  function gatedHref(target: string): string {
+    return status === "anonymous" ? "#" : target;
   }
 
   return (
@@ -91,11 +92,11 @@ export default function PartsHubPage() {
                 </span>
                 <span className="flex gap-2 max-sm:[&>a]:flex-1">
                   <Link
-                    href={gatedHref(m.part)}
+                    href={gatedHref(`/learn/parts/${m.part}`)}
                     onClick={(e) => {
                       if (status === "anonymous") {
                         e.preventDefault();
-                        setGated(m.part);
+                        setGated(`/learn/parts/${m.part}`);
                       }
                     }}
                     className="inline-flex items-center justify-center gap-1.5 rounded border border-rule-strong px-3 py-1.5 text-small font-semibold hover:bg-recess"
@@ -104,11 +105,11 @@ export default function PartsHubPage() {
                     Chiến thuật
                   </Link>
                   <Link
-                    href={gatedHref(m.part)}
+                    href={gatedHref(`/learn/parts/${m.part}/drill`)}
                     onClick={(e) => {
                       if (status === "anonymous") {
                         e.preventDefault();
-                        setGated(m.part);
+                        setGated(`/learn/parts/${m.part}/drill`);
                       }
                     }}
                     className="inline-flex items-center justify-center gap-1.5 rounded border border-action bg-action px-3 py-1.5 text-small font-semibold text-on-action hover:bg-action-hover"
@@ -139,8 +140,8 @@ export default function PartsHubPage() {
         <LoginModal
           open
           onClose={() => setGated(null)}
-          onSuccess={() => router.push(`/learn/parts/${gated}`)}
-          next={`/learn/parts/${gated}`}
+          onSuccess={() => router.push(gated)}
+          next={gated}
           title="Đăng nhập để luyện"
           description={
             <>
