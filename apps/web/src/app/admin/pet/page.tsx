@@ -142,7 +142,7 @@ export default function PetSpeciesAdminPage() {
       <PageHeader
         eyebrow="Petland"
         title="Species"
-        description="Every number here is a row, not a constant. Tile indexes point into public/pet/creatures.png."
+        description="Every number here is a row, not a constant. A tile index points into the sheet named on that row — creatures, dinos, or myth."
       />
 
       {error && (
@@ -335,7 +335,12 @@ function SpeciesModal({
   onClose: () => void;
 }) {
   return (
-    <Modal open onClose={onClose} title={row.label} description={`Mã: ${row.code}`}>
+    <Modal
+      open
+      onClose={onClose}
+      title={row.label}
+      description={`Mã: ${row.code} · ô ${row.tile} (tấm ${row.sheet})`}
+    >
       <div className="flex items-start gap-5">
         <Creature tile={row.tile} sheet={row.sheet} size={96} tier={row.tier} />
         <div className="grid flex-1 gap-3 sm:grid-cols-2">
@@ -666,8 +671,11 @@ function TilePicker({
   const art = creatureSheet(sheet);
   return (
     <div>
+      {/* Số ô in thẳng ra: lưới cho biết con nào, còn khi báo lỗi hay ghi vào tài
+          liệu thì người vận hành cần một con số đọc to được. */}
       <p className="text-label font-semibold uppercase tracking-wide text-ink-faint">
-        Chọn ô — tấm {sheet}, {art.tiles} ô
+        Chọn ô — tấm {sheet}, {art.tiles} ô · đang chọn ô{" "}
+        <span className="font-data tabular-nums text-ink">{tile}</span>
       </p>
       {/* Cao tối đa rồi cuộn: `creatures.png` có 180 ô, và một lưới 180 ô đẩy
           hai nút ở chân hộp thoại ra ngoài màn hình. */}

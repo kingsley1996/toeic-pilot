@@ -3,6 +3,7 @@
 import { API_ROUTES } from "@toeic-pilot/shared";
 import { useEffect, useRef, useState } from "react";
 
+import { TIER_LABEL, TIER_TONE, tileStyle } from "@/components/petland-creature";
 import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland-map";
 
 /**
@@ -11,49 +12,50 @@ import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland-m
  *
  * Nó KHÔNG nhập gì từ lớp trò chơi. Trang giới thiệu tải trước khi có ai đăng
  * nhập, nên kéo theo `petland-render` (và qua đó là Pixi) hay cảnh chơi là trả
- * giá bundle cho thứ hầu hết khách chưa dùng tới. Cái giá là hình học tấm ghép
- * chép lại ở dưới — hai bảng nhỏ, và cả hai chỉ đổi khi bộ art đổi.
+ * giá bundle cho thứ hầu hết khách chưa dùng tới. `petland-creature` thì nhập
+ * được: nó không biết Pixi, và `tileStyle` của nó là số học cắt ô theo TẤM —
+ * giữ một bảng hình học chép tay ở đây là giữ một nguồn sự thật thứ hai cho đúng
+ * cái phép cắt đó.
  */
 
-/* Hình học của `public/pet/creatures.png`, chép từ `petland-sprite.ts`: 160×288
-   pixel, ô 16px, 10 cột. Đây là bản sao thứ hai và nó chỉ an toàn vì tấm ghép là
-   một tệp tĩnh — đổi tấm ghép thì phải sửa cả hai chỗ. */
-const SHEET_W = 160;
-const SHEET_H = 288;
-const CELL = 16;
-const COLS = 10;
-
 /*
- * Sáu con, mỗi bậc một con, chép chỉ số ô từ `DEFAULT_PET_SPECIES` bên API.
+ * Sáu con, mỗi bậc một con, chép (tile, sheet, label, tier) từ `pet_species` —
+ * màn `/admin/pet` là nơi sửa các giá trị đó.
  *
  * Viết cứng ở đây là cố ý: không có endpoint công khai nào liệt kê loài (cả họ
  * `/pet/*` đều cần đăng nhập), và đây là một lựa chọn MINH HOẠ chứ không phải
  * một con số thống kê — trang này chỉ cấm đoán số liệu, không cấm chọn ảnh.
  *
- * Màu bậc lấy theo `TIER_TONE` ở `petland-creature.tsx`.
+ * `sheet` vắng mặt = tấm `creatures`; nó bắt buộc phải có với những loài vẽ trên
+ * `myth.png`/`dinos.png`, vì không có nó thì ô 27 bị cắt từ tấm 180 ô và ra một
+ * con khác. Nhãn bậc và màu lấy từ `TIER_LABEL`/`TIER_TONE` chứ không viết tay:
+ * tự chép hai bảng đó ở đây là cách chắc chắn nhất để lưới sáu con lệch màu so
+ * với đúng con thú ấy trong tủ sưu tập.
  */
-const SHOWCASE = [
-  { tile: 150, name: "Vịt", tier: "Thường", tone: "text-ink-muted" },
-  { tile: 169, name: "Mèo", tier: "Ít gặp", tone: "text-ok" },
-  { tile: 117, name: "Cú", tier: "Hiếm", tone: "text-action-ink" },
-  { tile: 157, name: "Hổ", tier: "Sử thi", tone: "text-alert" },
-  { tile: 33, name: "Rồng lửa", tier: "Huyền thoại", tone: "text-myth" },
-  { tile: 48, name: "Thần Bão", tier: "Thần", tone: "text-warn" },
+const SHOWCASE: { tile: number; sheet?: string; name: string; tier: string }[] = [
+  { tile: 169, name: "Chó", tier: "common" },
+  { tile: 175, name: "Sóc", tier: "uncommon" },
+  { tile: 178, name: "Gấu mèo", tier: "rare" },
+  { tile: 159, name: "Hươu cao cổ", tier: "epic" },
+  { tile: 27, sheet: "myth", name: "Hoả Hồ Ly", tier: "legendary" },
+  { tile: 18, sheet: "myth", name: "Kỳ lân X", tier: "god" },
 ];
 
-export function Creature({ tile, size }: { tile: number; size: number }) {
-  const scale = size / CELL;
+export function Creature({
+  tile,
+  size,
+  sheet,
+}: {
+  tile: number;
+  size: number;
+  /** Tấm ghép chứa ô. Vắng mặt = `creatures`, nên mọi chỗ gọi cũ vẫn đúng. */
+  sheet?: string;
+}) {
   return (
     <span
       aria-hidden
       className="block [image-rendering:pixelated]"
-      style={{
-        width: size,
-        height: size,
-        backgroundImage: "url(/pet/creatures.png)",
-        backgroundSize: `${SHEET_W * scale}px ${SHEET_H * scale}px`,
-        backgroundPosition: `-${(tile % COLS) * size}px -${Math.floor(tile / COLS) * size}px`,
-      }}
+      style={{ width: size, height: size, ...tileStyle(tile, size, sheet) }}
     />
   );
 }
@@ -191,7 +193,7 @@ export function PetlandMap({ className }: { className?: string }) {
 export function PetlandCreature({ name, size = 64 }: { name: string; size?: number }) {
   const found = SHOWCASE.find((c) => c.name === name);
   if (!found) return null;
-  return <Creature tile={found.tile} size={size} />;
+  return <Creature tile={found.tile} sheet={found.sheet} size={size} />;
 }
 
 export function PetlandSpecies() {
@@ -199,10 +201,10 @@ export function PetlandSpecies() {
     <ul className="grid grid-cols-3 gap-x-4 gap-y-7 sm:grid-cols-6">
       {SHOWCASE.map((c) => (
         <li key={c.name} className="flex flex-col items-center gap-2 text-center">
-          <Creature tile={c.tile} size={64} />
+          <Creature tile={c.tile} sheet={c.sheet} size={64} />
           <span className="text-small font-semibold leading-none">{c.name}</span>
-          <span className={`font-data text-label uppercase tracking-wider ${c.tone}`}>
-            {c.tier}
+          <span className={`font-data font-bold text-label uppercase tracking-wider ${TIER_TONE[c.tier]}`}>
+            {TIER_LABEL[c.tier]}
           </span>
         </li>
       ))}

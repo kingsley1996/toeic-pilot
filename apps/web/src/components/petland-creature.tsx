@@ -32,7 +32,7 @@ import { cx } from "@/components/ui";
  * chia hết cho 16 vẫn đúng khung, chỉ là pixel bị nội suy — nên hãy dùng bội số
  * của 16 khi có thể (16, 32, 48).
  */
-function tileStyle(tile: number, size: number, sheet?: string) {
+export function tileStyle(tile: number, size: number, sheet?: string) {
   const scale = size / TILE;
   // Đường dẫn ảnh và số cột ĐỀU hỏi `petland-sprite.ts`. Trước đây tệp này giữ
   // bản sao của cả hai, và bản sao số cột là thứ đã cắt nhầm ô một lần rồi.
