@@ -203,7 +203,9 @@ export function PetlandSpecies() {
         <li key={c.name} className="flex flex-col items-center gap-2 text-center">
           <Creature tile={c.tile} sheet={c.sheet} size={64} />
           <span className="text-small font-semibold leading-none">{c.name}</span>
-          <span className={`font-data font-bold text-label uppercase tracking-wider ${TIER_TONE[c.tier]}`}>
+          <span
+            className={`font-data font-bold text-label uppercase tracking-wider ${TIER_TONE[c.tier]}`}
+          >
             {TIER_LABEL[c.tier]}
           </span>
         </li>
