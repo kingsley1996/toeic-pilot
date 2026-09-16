@@ -6,7 +6,7 @@ import {
   type VocabularyCollectionDetail,
   type VocabularyCollectionItemPublic,
 } from "@toeic-pilot/shared";
-import { BookOpen, Library, RotateCcw } from "lucide-react";
+import { BookOpen, ChevronRight, Library, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,8 @@ import {
   Tag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { type SceneBadge, SCENES } from "@/content/scenes";
+import { SCENE_BADGES } from "@/components/scene-card";
+import { SCENES, type SceneBadge } from "@/content/scenes";
 import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
 
@@ -36,16 +37,6 @@ import { useSession } from "@/lib/session";
  * liệu cũ không mất dấu khi cây phân cấp ra đời.
  */
 const TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
-
-/**
- * Chữ của `SceneBadge`. "Thử nghiệm" là tone `warn` chứ không phải trung tính:
- * nó nói cảnh này chưa qua mắt người duyệt, tức có thể còn lỗi — không phải
- * trang trí cho vui.
- */
-const SCENE_BADGES: Record<SceneBadge, { label: string; tone: "action" | "warn" }> = {
-  new: { label: "Mới", tone: "action" },
-  beta: { label: "Thử nghiệm", tone: "warn" },
-};
 
 function BookCard({
   item,
@@ -203,59 +194,51 @@ function VocabularyLanding() {
       )}
 
       {/*
-       * "Visual Word" là một CÁCH gặp từ khác, không phải module thứ sáu: cùng
-       * kho từ, cùng hàng đợi SM-2 (SPEC-VISUAL-VOCAB-3D). Danh sách lấy thẳng
-       * từ `content/scenes` — cảnh là code trong repo nên khối này không có gì
-       * để mà loading/error.
+       * "Visual Word" giờ chỉ là một lối vào gọn sang hub `/learn/scenes`
+       * (cảnh đã có mục nav riêng + card ảnh ở hub). Grid 4 card ở đây từng
+       * trùng 100% với hub — trùng là dư, sửa một quên một.
        */}
-      <section className="mt-12">
-        <h2 className="text-heading text-ink">Visual Word</h2>
-        <p className="mt-1 text-small text-ink-muted">
-          Học từ vựng ngay trong một không gian 3D sinh động. Xoay để khám phá khung cảnh, chạm vào
-          các đồ vật để tìm từ mới và nghe cách phát âm ngay tại chỗ. Sau khi học, từ vựng vẫn được
-          đưa về hàng đợi ôn tập quen thuộc để bạn tiếp tục ghi nhớ lâu dài.
-        </p>
-        {/* Cùng nhịp lưới với card CUỐN SÁCH: hai loại card đứng kế nhau mà
-            lệch bề rộng thì trang trông như hai bảng không họ hàng. */}
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {SCENES.map((scene) => (
-            <PanelLink
-              key={scene.id}
-              href={`/learn/scenes/${scene.id}`}
-              className="group flex flex-col overflow-hidden p-0"
-            >
-              {/* Ảnh là ảnh CHỤP thật của cảnh (canvas 3D), không phải hình minh hoạ
-                  vẽ tay — vẽ tay thì nó sẽ nói dối về cách cảnh trông ra sao.
-                  Regenerate: SCENE_PREVIEWS=1 pnpm exec playwright test
-                  e2e/scene-previews.spec.ts. `<img>` thường vì đây là tệp tĩnh
-                  trong `public/` (cùng lý do với brand.tsx). */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/scenes/${scene.id}.png`}
-                alt=""
+      <section className="mt-12" aria-label="Học từ vựng bằng cảnh 3D">
+        <PanelLink
+          href="/learn/scenes"
+          className="group flex items-center gap-4 overflow-hidden p-4"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`/scenes/${SCENES[SCENES.length - 2]!.id}.png`}
+            alt=""
+            aria-hidden
+            width={1980}
+            height={892}
+            className="hidden w-36 shrink-0 rounded border border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105 sm:block"
+          />
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-2 text-body font-semibold leading-snug">
+              Học từ vựng qua bối cảnh 3D
+              <ChevronRight
+                size={16}
+                strokeWidth={2}
                 aria-hidden
-                width={1980}
-                height={892}
-                className="aspect-[3/2] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
+                className="shrink-0 text-ink-faint transition-transform duration-300 group-hover:translate-x-0.5"
               />
-              <div className="flex flex-1 flex-col p-3">
-                <span className="flex flex-wrap items-center gap-1.5">
-                  <span aria-hidden className="h-1 w-8 rounded bg-action" />
-                  {(scene.badges ?? []).map((badge) => (
-                    <Tag key={badge} tone={SCENE_BADGES[badge].tone}>
-                      {SCENE_BADGES[badge].label}
-                    </Tag>
-                  ))}
-                </span>
-                <h3 className="mt-2.5 text-body font-semibold leading-snug">{scene.title}</h3>
-                <p className="mt-1 line-clamp-2 text-small text-ink-muted">{scene.description}</p>
-                <p className="mt-auto pt-2.5 font-data text-small tabular-nums text-ink-faint">
-                  {scene.objects.length} từ
-                </p>
-              </div>
-            </PanelLink>
-          ))}
-        </div>
+            </span>
+            <span className="mt-1 block text-small text-ink-muted">
+              Khám phá bối cảnh, chạm vào đồ vật, nghe phát âm và ghi nhớ từ trong ngữ cảnh.
+            </span>
+            <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
+              {(Object.keys(SCENE_BADGES) as SceneBadge[])
+                .filter((badge) => SCENES.some((s) => s.badges?.includes(badge)))
+                .map((badge) => (
+                  <Tag key={badge} tone={SCENE_BADGES[badge].tone}>
+                    {SCENE_BADGES[badge].label}
+                  </Tag>
+                ))}
+              <span className="font-data text-small tabular-nums text-ink-faint">
+                {SCENES.length} cảnh · {SCENES.reduce((n, s) => n + s.objects.length, 0)} từ
+              </span>
+            </span>
+          </span>
+        </PanelLink>
       </section>
 
       {/* Lối vào danh sách từ, ẩn với khách vãng lai vì trang đích đã chặn —
