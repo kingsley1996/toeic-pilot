@@ -12,12 +12,7 @@ export type {
   Patrol,
 } from "@/content/scenes/types";
 
-export const SCENES: SceneDef[] = [
-  warehouseScene,
-  urbanScene,
-  constructionScene,
-  residenceScene,
-];
+export const SCENES: SceneDef[] = [warehouseScene, urbanScene, constructionScene, residenceScene];
 
 export function getScene(id: string): SceneDef | undefined {
   return SCENES.find((scene) => scene.id === id);
