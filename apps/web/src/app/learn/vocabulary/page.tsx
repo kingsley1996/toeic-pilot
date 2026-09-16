@@ -211,8 +211,9 @@ function VocabularyLanding() {
       <section className="mt-12">
         <h2 className="text-heading text-ink">Visual Word</h2>
         <p className="mt-1 text-small text-ink-muted">
-          Gặp từ trong một cảnh 3D: xoay cảnh, chạm vào vật, nghe phát âm. Điểm quay về đúng hàng
-          đợi ôn quen thuộc.
+          Học từ vựng ngay trong một không gian 3D sinh động. Xoay để khám phá khung cảnh, chạm vào
+          các đồ vật để tìm từ mới và nghe cách phát âm ngay tại chỗ. Sau khi học, từ vựng vẫn được
+          đưa về hàng đợi ôn tập quen thuộc để bạn tiếp tục ghi nhớ lâu dài.
         </p>
         {/* Cùng nhịp lưới với card CUỐN SÁCH: hai loại card đứng kế nhau mà
             lệch bề rộng thì trang trông như hai bảng không họ hàng. */}
