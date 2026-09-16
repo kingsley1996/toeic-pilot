@@ -376,6 +376,10 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       mái/cửa/ban công là object khớp toạ độ. Người đẩy máy cắt dùng `Person`
       tự quẫy chân theo chuyển động (không prop). Còn: mắt người duyệt, sync
       prod, test + preview + commit (giữ lệ chưa test tới khi chốt).
+- [ ] **Scene 3D vào DB (kế hoạch, chưa làm)** — `planning/docs/PLAN-SCENE-DATABASE.md`:
+      DB giữ key + số (override), file TS giữ hình + làm default (mẫu `petland_map`);
+      từ vựng tham chiếu bằng (headword, pos) như hiện tại, không FK entry.
+      Kích hoạt khi ~10 cảnh hoặc người sửa không còn là dev.
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ
