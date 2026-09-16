@@ -13,7 +13,7 @@ export default function ScenesIndex() {
     <Page>
       <PageHeader
         title="Visual Toeic Vocabulary"
-
+        eyebrow="Từ vựng"
         description="Học từ vựng trong một bối cảnh 3D trực quan: xoay cảnh để khám phá, chạm vào đồ vật để tìm từ, nghe phát âm và ghi nhớ ngay trong ngữ cảnh. Sau đó, từ vựng tự động quay về hàng đợi SM-2 quen thuộc để ôn tập đúng lúc."
       />
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
