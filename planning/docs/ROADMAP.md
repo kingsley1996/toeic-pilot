@@ -369,6 +369,13 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       thái prod: hai lần áp ra cùng con số; dump chỉ chạm 12 bảng nội dung,
       không đụng lịch sử học. Audio 16 clip đẩy trước theo keys, curl 200.
       (`SYNC-TEST-TO-PRODUCTION.md`), commit.
+- [ ] **Visual Vocab 3D — cảnh 4 "Nhà ngoại ô và vườn"** (`residential-yard-01`,
+      23 từ theo `planning/scenes/residential-house-garden-3d-scene-spec.md`):
+      22 từ mới qua pipeline (paste → 176 clip → push → publish) + `balcony`
+      nối từ `housing` (tiền lệ billboard). Nhà chia đôi: thân tường decor,
+      mái/cửa/ban công là object khớp toạ độ. Người đẩy máy cắt dùng `Person`
+      tự quẫy chân theo chuyển động (không prop). Còn: mắt người duyệt, sync
+      prod, test + preview + commit (giữ lệ chưa test tới khi chốt).
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ

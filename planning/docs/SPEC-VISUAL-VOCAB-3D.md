@@ -164,3 +164,15 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
 8. **`push_media --prefix audio` verify cả 11k file rồi mới đẩy.** Treo quá
    timeout mà không in một dòng (stdout nằm trong buffer). Đẩy theo keys của
    topic (lọc từ DB, gọi `push()` trực tiếp): 112 keys xong trong vài phút.
+9. **Dấu xoay không có trực giác — tính hai đầu bằng ma trận.** `rotation.z = −0.5`
+   làm cán xẻng chổng RA NGOÀI thay vì chúi vào hố: +Y → (−sinθ, cosθ), nên
+   "âm là vào" là đoán ngược. Mọi chi tiết nghiêng phải viết ra hai đầu mút số
+   rồi mới đặt mesh (lần thứ hai dính họ này sau thang construction).
+10. **Camera nhìn theo nhãn, không theo đất.** `CameraRig` nhìn `pos.y + 0.9`
+    nên bấm nhãn trên mái (8–10 m) là zoom trượt khỏi vật — vật nào cũng "sai
+    vị trí". `flyTo` nhìn `hotspotY − 0.5` (sàn 0.9 cho nhãn thấp): đúng cho cả
+    ba cảnh cũ, billboard urban trước đây cũng trượt mà không ai kêu.
+11. **Rào phải bọc lô đất, và hông phải tránh nhà hàng xóm.** Vẽ một hàng cho
+    đẹp là rào đâm xuyên tường nhà bên (hai lần: urban chưa dính vì đường phố,
+    residence dính cả hai hông). Vẽ rào theo footprint số, chừa cổng đúng chỗ
+    lối đi — cổng không ở trên lối đi là rào chặn đường vào nhà mình.
