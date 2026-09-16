@@ -135,3 +135,32 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
     `*Ref`, đọc/ghi chỉ trong `useFrame`) + e2e visual-vocab + regen preview
     (`SCENE_PREVIEWS=1`) + MẮT XEM ẢNH preview. Snapshot với nhãn chuyển động có thể flake
     một lần: chạy lại 2–3 lần trước khi kết luận.
+
+## 8. Bài học cảnh 3 (construction-03, 2026-09)
+
+1. **`Box` lấy gốc chân, không lấy tâm.** Chuyển toạ độ tĩnh vào nhóm chuyển động
+   (xe con cần cẩu) phải trừ gốc nhóm khỏi ĐÁY — trừ nhầm tâm là cả chùm cáp/móc
+   lơ lửng xuyên qua cần, vẫn ra hình nên hỏng im lặng. `TiltBox` (mesh trần) thì
+   ngược lại: `position` của nó là tâm.
+2. **Dấu nghiêng phải tính, không đoán.** `rotation.x` dương ngả đỉnh về +Z (ra
+   ngoài); tựa vào khung ở −Z phải là âm. Cùng họ với bẫy lật dọc §7.2: thang
+   "trông vẫn là thang" nên sai dấu không ai thấy cho tới khi đặt cạnh khung.
+3. **Vật nằm trong footprint hàng xóm là bấm nhầm hàng xóm.** Thang đứng x = 5.9,
+   lọt giữa cột biên giàn (5.8) và ván (5.7..10.3) — raycast ăn mesh scaffold.
+   Kiểm footprint bằng số trước khi đặt; vật tựa khung thuộc về MẶT NGOÀI khung.
+4. **Mũi tên nằm trên vật, không xuyên qua.** Gỡ `topY` để "lấy mũi tên" là sai
+   hướng: thiếu nó, sợi vẽ từ nhãn xuống đất và xuyên qua thân vật (warehouse
+   vẫn thế). Đúng là `topY` thật + nhãn nổi lên trên (mẫu crosswalk urban §7.5).
+5. **Animation trong shape phải đọc mode từ context.** Registry
+   `Record<ShapeKey, FC>` không mang prop — đổi nó là đụng mọi shape. Thêm
+   `SceneMotionContext` ở file shapes gốc (khỏi import vòng), `SceneObject`
+   cung cấp đúng cờ `animated` của `Mover`: recall/chọn/reduced-motion đứng yên
+   mà shape không tự bịa cờ riêng.
+6. **Đổi tên từ = từ mới.** Sửa headword làm audio cũ lệch hash im lặng
+   (`frontend.md`); scene muốn chữ khác thì nhập entry mới + audio mới, từ cũ ở
+   lại published không hotspot (tiền lệ `underpass`). `concrete` → `concrete mixer`.
+7. **Texture phải deterministic.** Không `Math.random` trong canvas nền — hai lần
+   load ra hai ảnh khác nhau thì preview flake mà không có gì sai.
+8. **`push_media --prefix audio` verify cả 11k file rồi mới đẩy.** Treo quá
+   timeout mà không in một dòng (stdout nằm trong buffer). Đẩy theo keys của
+   topic (lọc từ DB, gọi `push()` trực tiếp): 112 keys xong trong vài phút.

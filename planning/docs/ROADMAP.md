@@ -353,6 +353,22 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       trong `scene-previews.spec.ts` (element-screenshot dính cả nhãn DOM). (`vocabulary.spec.ts` vẫn skip
       cứng chờ seed, `vocabulary-learn` skip vì dev chưa có cuốn nào ≥ 8 từ).
       Còn: mắt người duyệt cảnh mới.
+- [ ] **Visual Vocab 3D — cảnh 3 "Công trường xây dựng"** (`construction-03`, 14 từ,
+      topic mới `construction`): 14 từ qua đường ống import (paste →
+      `backfill_audio` 112 clip → push → publish, 14/14 trên dev).
+      `push_media --prefix audio` verify cả 11k file nên treo quá timeout — lần sau
+      đẩy theo keys của topic (script inline trong phiên), lượt chạy dở vẫn đẩy
+      gần hết qua provider nên lần hai chỉ còn 4 file. 14 shape primitives +
+      `ConstructionEnvironment` (MỘT canvas: đất, sân móng, sỏi, vệt bánh),
+      `contractor` tái dùng `Person` (áo + mũ + phiếu), xe ủi patrol làn nam,
+      máy xúc tạo dáng múc. Nhãn contractor đè nhãn foundation ở góc nhìn đầu —
+      đã lùi về tây. e2e visual-vocab **6/6 xanh**, preview `construction-03.png`
+      đã mắt xem. Còn: mắt người duyệt cảnh mới (test + preview + commit cũng chờ chốt).
+      **Đã lên production (2026-09-17): 793 → 809 từ, 28 → 29 chủ đề,
+      topic `construction` 16/16 published.** Diễn tập trên scratch chép trạng
+      thái prod: hai lần áp ra cùng con số; dump chỉ chạm 12 bảng nội dung,
+      không đụng lịch sử học. Audio 16 clip đẩy trước theo keys, curl 200.
+      (`SYNC-TEST-TO-PRODUCTION.md`), commit.
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ
