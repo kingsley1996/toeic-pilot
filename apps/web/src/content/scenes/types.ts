@@ -50,7 +50,32 @@ export type ShapeKey =
   | "worker"
   | "ladder"
   | "barrier"
-  | "weld";
+  | "weld"
+  // nhà ngoại ô + vườn (topic `residential`)
+  | "roof"
+  | "tile"
+  | "chimney"
+  | "eaves"
+  | "gutter"
+  | "vent"
+  | "weathervane"
+  | "balcony"
+  | "bay-window"
+  | "deck"
+  | "porch"
+  | "doorway"
+  | "pane"
+  | "trim"
+  | "mailbox"
+  | "mower"
+  | "weed"
+  | "shovel"
+  | "flowerpot"
+  | "shrub"
+  | "hedge"
+  | "fence"
+  | "driveway"
+  | "yard";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -73,6 +98,12 @@ export interface SceneObjectDef {
   headword: string;
   partOfSpeech: string;
   position: [number, number, number];
+  /**
+   * Điểm camera bay tới khi chọn (mặc định = `position`). Dành cho vật TRẢI
+   * DÀI mà nhãn đứng ở đầu (diềm/máng xối): bay tới đầu thì thấy đầu, bay tới
+   * giữa mới thấy cả vật.
+   */
+  focus?: [number, number, number];
   /**
    * Xe chạy: `position` là TRUNG ĐIỂM của tuyến, không phải chỗ nó đỗ. Camera
    * vẫn bay tới `position` nên `range` phải đủ ngắn để vật được chọn vẫn nằm
@@ -109,7 +140,7 @@ export interface SceneDef {
   /** Màu nền canvas — 3D không ăn token CSS, đây là bảng màu riêng (`§2.2`). */
   sky: string;
   /** Nền cảnh: mặt đất + những thứ bối cảnh. Mỗi cảnh một bộ, không dùng lẫn. */
-  environment: "warehouse-lot" | "urban-intersection" | "construction-site";
+  environment: "warehouse-lot" | "urban-intersection" | "construction-site" | "residential-yard";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

@@ -26,6 +26,7 @@ import {
   CONSTRUCTION_SHAPES,
   ConstructionEnvironment,
 } from "@/components/scene-shapes-construction";
+import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scene-shapes-residence";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -43,6 +44,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...WAREHOUSE_SHAPES,
   ...URBAN_SHAPES,
   ...CONSTRUCTION_SHAPES,
+  ...RESIDENCE_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -68,7 +70,13 @@ const HOME_LOOK: [number, number, number] = [0, 0.8, 0];
 /** `useThree(s => s.controls)` chỉ được khai hình dạng ở đây — không export đi đâu khác. */
 type ControlsLike = { target: THREE.Vector3; update: () => void };
 
-export type FlyTarget = { pos: [number, number, number]; dist: number; seq: number } | null;
+export type FlyTarget = {
+  pos: [number, number, number];
+  dist: number;
+  seq: number;
+  /** Cao độ nhìn — theo nhãn chứ không theo đất (nhãn trên mái cao 8–10 m). */
+  lookY: number;
+} | null;
 
 function Ring({ radius, status }: { radius: number; status: ObjectStatus }) {
   if (status === "idle") return null;
@@ -340,7 +348,7 @@ function CameraRig({
         before.current = { pos: camera.position.clone(), look: controls.target.clone() };
         touched.current = false;
       }
-      const look = new THREE.Vector3(focus.pos[0], focus.pos[1] + 0.9, focus.pos[2]);
+      const look = new THREE.Vector3(focus.pos[0], focus.lookY, focus.pos[2]);
       const dir = camera.position.clone().sub(look);
       dir.y = Math.max(dir.y, focus.dist * 0.4);
       dir.normalize().multiplyScalar(focus.dist);
@@ -439,7 +447,9 @@ function SceneCanvas({
         shadow-camera-top={16}
         shadow-camera-bottom={-16}
       />
-      {scene.environment === "construction-site" ? (
+      {scene.environment === "residential-yard" ? (
+        <ResidenceEnvironment />
+      ) : scene.environment === "construction-site" ? (
         <ConstructionEnvironment />
       ) : scene.environment === "urban-intersection" ? (
         <>
@@ -579,7 +589,15 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
 
   function flyTo(def: SceneObjectDef) {
     flySeq.current += 1;
-    setFocus({ pos: def.position, dist: def.focusDistance, seq: flySeq.current });
+    // Nhìn vào NHÃN vừa bấm (trừ 0.5 m cho cân khung), không nhìn gốc đất:
+    // nhãn mái cao 8–10 m mà nhìn y 0.9 là zoom trượt khỏi vật.
+    const lookY = def.position[1] + Math.max(0.9, def.hotspotY - 0.5);
+    setFocus({
+      pos: def.focus ?? def.position,
+      dist: def.focusDistance,
+      seq: flySeq.current,
+      lookY,
+    });
   }
 
   function closeSheet() {
