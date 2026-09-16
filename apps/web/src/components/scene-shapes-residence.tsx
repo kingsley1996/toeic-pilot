@@ -195,13 +195,13 @@ function Eaves() {
 }
 
 function Gutter() {
-  // Máng xối chữ U dọc diềm, gốc nhóm ở GIỮA (label đứng giữa, thân trải đều
-  // hai đầu che hết mặt nhà: world −11.2..−0.8).
+  // Máng xối chữ U dọc diềm, gốc nhóm lệch đông giữa (thân trải đều hai đầu
+  // che hết mặt nhà: world −11.2..−0.8).
   return (
     <group>
-      <Box size={[10.4, 0.08, 0.3]} at={[0, 5.15, 0]} color={PALETTE.steel} />
-      <Box size={[10.4, 0.25, 0.06]} at={[0, 5.25, 0.15]} color={PALETTE.steel} />
-      <mesh position={[-4.9, 2.55, 0.1]} castShadow>
+      <Box size={[10.4, 0.08, 0.3]} at={[-1.0, 5.15, 0]} color={PALETTE.steel} />
+      <Box size={[10.4, 0.25, 0.06]} at={[-1.0, 5.25, 0.15]} color={PALETTE.steel} />
+      <mesh position={[-5.9, 2.55, 0.1]} castShadow>
         <cylinderGeometry args={[0.07, 0.07, 5.1, 8]} />
         {paint(PALETTE.steelDark)}
       </mesh>
