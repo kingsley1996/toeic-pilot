@@ -14,8 +14,18 @@ import { Suspense, useEffect, useMemo, useRef, useState, type FC, type ReactNode
 import * as THREE from "three";
 
 import { AccentRow } from "@/components/audio-button";
-import { Cone, Signboard, WAREHOUSE_SHAPES, Worker } from "@/components/scene-shapes";
+import {
+  Cone,
+  SceneMotionContext,
+  Signboard,
+  WAREHOUSE_SHAPES,
+  Worker,
+} from "@/components/scene-shapes";
 import { Car, URBAN_SHAPES, UrbanEnvironment } from "@/components/scene-shapes-urban";
+import {
+  CONSTRUCTION_SHAPES,
+  ConstructionEnvironment,
+} from "@/components/scene-shapes-construction";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -29,7 +39,11 @@ import { useToast } from "@/lib/toast";
  */
 
 /** Hai bảng shape ghép lại. Thiếu key nào là `tsc` kêu ngay ở đây. */
-const SHAPES: Record<ShapeKey, FC> = { ...WAREHOUSE_SHAPES, ...URBAN_SHAPES };
+const SHAPES: Record<ShapeKey, FC> = {
+  ...WAREHOUSE_SHAPES,
+  ...URBAN_SHAPES,
+  ...CONSTRUCTION_SHAPES,
+};
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
   `${o.headword}|${o.partOfSpeech}`;
@@ -197,7 +211,9 @@ function SceneObject({
         }}
         onPointerOut={() => setHovered(false)}
       >
-        <Shape />
+        <SceneMotionContext.Provider value={animated}>
+          <Shape />
+        </SceneMotionContext.Provider>
         <Ring radius={def.ringRadius} status={status} />
         {/* Sợi nối nhãn xuống vật — nhãn treo cao (crosswalk 2.6 m) thì mắt
             không tự biết chữ thuộc về vật nào. Nét đứt màu chu sa cho khỏi lẫn
@@ -423,7 +439,9 @@ function SceneCanvas({
         shadow-camera-top={16}
         shadow-camera-bottom={-16}
       />
-      {scene.environment === "urban-intersection" ? (
+      {scene.environment === "construction-site" ? (
+        <ConstructionEnvironment />
+      ) : scene.environment === "urban-intersection" ? (
         <>
           <UrbanEnvironment />
           {/* Xe chạy nền: `car` không có trong bảng 15 từ của spec, nên nó là

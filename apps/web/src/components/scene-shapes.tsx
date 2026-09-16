@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { createContext, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -48,6 +48,16 @@ export const PALETTE = {
 export function paint(color: string) {
   return <meshStandardMaterial color={color} flatShading />;
 }
+
+/**
+ * Shape có biết cảnh đang cho chuyển động không. `SceneObject` trong viewer
+ * cung cấp đúng cờ `animated` mà `Mover` dùng — shape đọc để tự tắt animation
+ * nội bộ trong recall/reduced-motion mà không cần khoan prop qua registry
+ * (`Record<ShapeKey, FC>` không mang prop, đổi nó là đụng mọi shape).
+ * Mặc định `true`: shape nào cũng render trong `SceneObject` nên provider
+ * luôn có mặt; thiếu thì animation chạy như cũ chứ không chết im.
+ */
+export const SceneMotionContext = createContext(true);
 
 export function Box({
   size,
