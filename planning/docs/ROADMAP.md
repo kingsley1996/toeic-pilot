@@ -279,6 +279,80 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 - [ ] **Ngữ pháp: bài practice cho các chủ đề taxonomy** — lý thuyết đủ 18/18;
       mới có "Luyện tập 1" (Danh từ). Gắn câu từ kho theo nhãn qua admin, mỗi
       chủ đề một bài là đủ dùng (`SPEC-GRAMMAR.md` §2)
+- [ ] **Visual Vocab 3D — MVP**: một cảnh 3D tương tác cho từ vựng,
+      R3F + shape dựng bằng primitives (không GLB, không agent), scene là file TS trong
+      repo, chấm điểm đi thẳng `/vocabulary/{id}/review` — backend không đổi.
+      **MVP đã dựng (2026-09-15): cảnh "Trong nhà kho" 8 từ (`logistics`),
+      explore + recall, `e2e/visual-vocab.spec.ts` 2/2 xanh.**
+      **2026-09-16: ba mặt phẳng trùng khít làm nóc warehouse/courier và mép cửa
+      cuốn nhấp nháy (z-fighting) — mỗi chỗ sửa bằng một số. Thêm `patrol` (xe
+      chạy qua lại quanh neo, mũi quay theo vận tốc — giữ `rotationY` cũ là xe
+      chạy lùi; đứng khi được chọn và trong recall), biển hiệu `Signboard` dán
+      mặt vẽ bằng canvas 2D (logo + tên + slogan — `drei/Text` tải font từ CDN
+      nên không dùng),
+      `prefers-reduced-motion` tắt xe chạy, nút toàn màn hình (Fullscreen API
+      trên chính khung cảnh). Thẻ từ nay là góc TRÁI DƯỚI của cảnh chứ không nằm
+      dưới canvas, và mọi lớp phủ của cảnh phải `z-30` vì hotspot là `Html` với
+      `zIndexRange` tới 20 — thấp hơn là dot vẽ đè lên bảng thông tin. e2e 3/3.** Còn: mắt
+      người duyệt hình (screenshot ở tay dev), commit.
+      `SPEC-VISUAL-VOCAB-3D.md`
+- [ ] **Visual Vocab 3D — cảnh 2 "Ngã tư thành phố"** (`urban-02`, 15 từ, topic
+      mới `urban-traffic`): 14 từ tạo qua đường ống import (paste → `backfill_audio`
+      112 clip → `push_media` → publish), `billboard` đã có sẵn ở `marketing` nên
+      chỉ nối thêm vào topic — không nhập tay lại. Spec gốc mô tả `.glb` + hotspot
+      hình cầu + `shadow-md`; dựng bằng primitives và pill/ring như cảnh 1. Toạ độ
+      trong bảng §3 của spec **đặt đèn tín hiệu, biển quảng cáo, cột đèn ngay giữa
+      lòng đường** — đã tính lại từ `ARMS` (hai đường chéo ±45°), giữ nguyên những
+      chỗ đã đúng. Nền cảnh vẽ bằng MỘT canvas texture: thêm lớp phủ song song nào
+      là thêm một cặp mặt dễ z-fighting đúng chỗ người học áp sát mặt đường.
+      `SceneDef` có thêm `environment` và `home` theo cảnh.
+      **Đã lên production (2026-09-16): 779 → 793 từ, 27 → 28 chủ đề, 8 users và
+      639 lượt ôn không đổi.** Diễn tập bắt được một lỗ thật của
+      `dump_learning_content.py`: nó không kết xuất `image_asset` trong khi
+      `vocabulary_collection_item.image_id` là khoá ngoại — lượt nạp nổ giữa
+      transaction. Đã sửa script và `SYNC-TEST-TO-PRODUCTION.md` §5b (danh sách
+      bảng cho bước diễn tập cũng thiếu `image_asset`).
+      **Section "Visual Word" ở `/learn/vocabulary`: card kèm ảnh chụp thật của
+      cảnh**, regenerate bằng `SCENE_PREVIEWS=1 pnpm exec playwright test
+      e2e/scene-previews.spec.ts` (chụp riêng `<canvas>` nên không lẫn nhãn DOM).
+      Hai thứ học được khi test cảnh 2: (1) prop `pointerEvents` của drei `Html`
+      **chỉ có hiệu lực ở chế độ `transform`** — truyền vào chế độ thường là nó bị
+      bỏ qua im lặng, muốn nhãn không nuốt nhau phải sửa bằng bố cục; (2) ở góc
+      nhìn đầu, nhãn `consignment` đè lên giữa nhãn `forklift` và ăn mất cú bấm —
+      đã dịch object, và test mới "mọi hotspot đều bấm được" giữ bất biến đó cho
+      cả hai cảnh. e2e visual-vocab **5/5 xanh**
+      Vẽ lại urban theo yêu cầu: bỏ `underpass` hẳn (object + shape + key —
+      từ trong DB giữ nguyên, chỉ mất hotspot); hai đường thẳng cắt nhau ở
+      gốc (đại lộ dọc X giữ đoạn cong đầu tây, đường phụ dọc Z); cầu vượt
+      nửa trái ngang đại lộ; ba đèn một hàng mép bắc; signal/biển kề đảo
+      góc gần tâm; người đi trên vạch, người đứng vỉa hè mặt về vạch.
+      Đường thẳng trước đây thiếu vạch giữa một bên — đã vẽ bù.
+      Đợt 2 theo yêu cầu: bỏ `cross` (pedestrian đi qua đường thay),
+      vạch zebra thanh xuôi-xe/người cắt ngang, xe nền nhường người
+      (đứng chờ ngoài vạch, vào trong rồi thì đi tiếp cho khuất), mũi tên
+      nối nhãn xuống vật (chỉ explore), bỏ 4 đảo góc. Nhãn crosswalk treo
+      cao 2.6 m vì thân người đi qua che mất cú bấm — test bắt được.
+      Đợt 3 theo yêu cầu: ghế + biển lộn ra ngoài, đèn khỏi nóc cầu, mũi tên
+      nét đứt chu sa dừng ở mặt vật (`topY`), `curve` thành dải cua thật ôm
+      đúng bezier của texture + 1 biển chevron.
+      Đợt 4 theo yêu cầu (mắt thấy trên preview): canvas lật dọc nên vạch sơn
+      cong ở world +z còn dải cua ở -z — lật dải sang +z mới khớp (đúng spec
+      foreground); nhãn billboard lên 6.8 m khỏi mặt bảng; lane thành dải tối
+      + nét đứt trắng giữa (bỏ vạch mép trắng trùng texture); vỉa hè một màu.
+      Đợt 5: mặt đường texture tối đều cả ngã tư (`tire`) — lane gọn về hai
+      vạch mép (dải/dashes trùng texture nên bỏ); ribbon cùng màu đường, bỏ
+      viền trắng trùng, T0 lùi khỏi mép đất, chevron sát mép ngoài 1 m.
+      Đợt 6 (root cause thật): `lineWidth` canvas tính bằng user-unit (mét),
+      code nhân thừa `PX_PER_M` nên mọi vạch nở 64 lần phủ kín canvas (hỏng im
+      lặng). Sửa về mét + restart container web (HMR giữ `useMemo` cũ nên
+      render và preview đều lag sau code — mọi lần "verify bằng mắt" trước đó
+      đều nhìn nhầm bản cũ). Sau restart: hai đường tối đều, vỉa hè sáng rõ,
+      e2e 5/5. Người dùng phải hard-refresh tab đang mở.
+      Badge từ vựng to hơn (13px→15px, e2e chồng nhãn vẫn xanh). Bài học dựng
+      cảnh ghi vào `SPEC-VISUAL-VOCAB-3D.md` §7 (11 điểm); sửa luôn comment sai
+      trong `scene-previews.spec.ts` (element-screenshot dính cả nhãn DOM). (`vocabulary.spec.ts` vẫn skip
+      cứng chờ seed, `vocabulary-learn` skip vì dev chưa có cuốn nào ≥ 8 từ).
+      Còn: mắt người duyệt cảnh mới.
 - [ ] `streak_bonus` — nguồn XP duy nhất của `USER-ROAD.md` §2.3 chưa dựng
 - [ ] Đăng nhập Apple — cần tài khoản Apple Developer và domain HTTPS
 - [ ] Gỡ liên kết nhà cung cấp + đặt mật khẩu lần đầu, trong trang hồ sơ

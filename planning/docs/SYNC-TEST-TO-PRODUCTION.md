@@ -128,6 +128,13 @@ docker run --rm -i postgres:17 psql "$SUPABASE_URL" -v ON_ERROR_STOP=1 -q < /tmp
 
 Mọi hàng đi bằng `ON CONFLICT ... DO UPDATE`, nên chạy lại không tốn gì.
 
+**`image_asset` phải đi kèm, và nó nằm trong danh sách từ 2026-09-16.** Hai mục
+của cây từ vựng được gắn ảnh sau lần đồng bộ trước; `vocabulary_collection_item.image_id`
+là khoá ngoại thật, nên bản kết xuất không có ảnh nổ ngay ở câu lệnh đó —
+`ON_ERROR_STOP` dừng cả giao dịch, may là không nạp nửa vời. Ảnh sống một mình
+trên Cloudinary nên chỉ cần chép hàng metadata là đích xem được; khác audio, vốn
+phải `push_media` trước vì key mang nội dung.
+
 **Vì sao phải UPDATE chứ không chỉ INSERT phần mới.** `source_hash` gồm cả
 `engine_version`, nên một lượt `backfill_audio --force` tạo hàng `audio_asset`
 MỚI và trỏ `vocabulary_audio` sang id mới. Chỉ chèn phần mới thì đích giữ nguyên
@@ -150,7 +157,7 @@ vậy tuyệt đối không xoá-rồi-nạp-lại.
 docker compose -f docker/docker-compose.yml exec -T postgres pg_dump -U toeic -d toeic --schema-only > /tmp/schema.sql
 # 2. chép TRẠNG THÁI HIỆN TẠI của production vào scratch (chỉ đọc production)
 docker run --rm -i postgres:17 pg_dump "$SUPABASE_URL" --data-only --no-owner --no-privileges \
-  -t users -t audio_asset -t vocabulary_collection -t vocabulary_collection_item \
+  -t users -t image_asset -t audio_asset -t vocabulary_collection -t vocabulary_collection_item \
   -t topic -t vocabulary_entry -t vocabulary_topic -t vocabulary_audio \
   -t dictation_topic -t dictation_section -t dictation_story -t dictation_item > /tmp/prod_state.sql
 # 3. áp learning.sql lên bản sao đó và đếm lại
