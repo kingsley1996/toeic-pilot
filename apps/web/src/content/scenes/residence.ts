@@ -13,15 +13,17 @@ import type { SceneDef } from "@/content/scenes/types";
 export const residenceScene: SceneDef = {
   id: "residential-yard-01",
   title: "Nhà ngoại ô và vườn",
-  description: "Ngôi nhà hai tầng giữa vườn — mái ngói, ban công, người cắt cỏ.",
+  description:
+    "Ngôi nhà hai tầng giữa khu vườn xanh — mái ngói, ban công rộng và người đang cắt cỏ quanh sân.",
   topicSlug: "residential",
   sky: "#dce9f2",
   environment: "residential-yard",
   badges: ["new", "beta"],
   // Nhìn CHÍNH NAM hơi từ trên: mặt nhà trải ngang, nhãn mái xếp tầng trên
   // nhãn tường theo cao độ — góc chéo đông-nam dồn cả hai lớp thành một đống
-  // (e2e "mọi hotspot đều bấm được" bắt được, 8 cái kẹt).
-  home: { pos: [2, 13, 22], look: [-3, 2, -3] },
+  // (e2e "mọi hotspot đều bấm được" bắt được, 8 cái kẹt). Lùi ra 32 m: hàng
+  // mặt nhà cần ~100px/khe mà ở 28 m chỉ có ~70px.
+  home: { pos: [3, 14.5, 26], look: [-3, 2, -3] },
   objects: [
     {
       id: "obj-roof",
@@ -29,9 +31,10 @@ export const residenceScene: SceneDef = {
       headword: "roof",
       partOfSpeech: "noun",
       // Giữa nóc (shape đối xứng quanh gốc — dời def là dời cả mái lệch tường).
+      // Nhãn ôm sống nóc (không mũi tên) cho khỏi chen chimney/weathervane.
       position: [-6, 0, -8],
       focusDistance: 13,
-      hotspotY: 8.6,
+      hotspotY: 8,
       topY: 7.7,
       ringRadius: 6,
     },
@@ -40,8 +43,8 @@ export const residenceScene: SceneDef = {
       shape: "tile",
       headword: "tile",
       partOfSpeech: "noun",
-      // Lùi về góc tây-bắc cho khỏi chen nhãn deck/hedge.
-      position: [-15, 0, -4],
+      // Ngói dự trữ sau nhà phía đông (cạnh nào ở tây cũng chen nhãn khác).
+      position: [9, 0, -11],
       focusDistance: 4,
       hotspotY: 2,
       topY: 0.9,
@@ -79,12 +82,12 @@ export const residenceScene: SceneDef = {
       shape: "gutter",
       headword: "gutter",
       partOfSpeech: "noun",
-      // Nhãn giữa máng (né cả pane lẫn porch): thân trải dài hai đầu.
-      // Bay tới đúng chỗ nhãn đứng.
-      position: [-6, 0, -3.8],
-      focus: [-6, 5.3, -3.8],
+      // Nhãn lên cao cho khỏi chen balcony (mũi tên dài trong không khí,
+      // đè lên canvas chứ không nuốt click vì raycast tắt).
+      position: [-5, 0, -3.8],
+      focus: [-5, 5.5, -3.8],
       focusDistance: 8,
-      hotspotY: 6.3,
+      hotspotY: 7.2,
       topY: 5.4,
       ringRadius: 4.5,
     },
@@ -117,9 +120,9 @@ export const residenceScene: SceneDef = {
       shape: "balcony",
       headword: "balcony",
       partOfSpeech: "noun",
-      // Đua ra mặt trước tầng trên (sàn y 2.7). Nhãn đầu tây, ngay trên bay-window:
-      // xếp CỘT DỌC an toàn hơn đường chéo (nhãn rộng gấp ba cao).
-      position: [-7.8, 0, -4],
+      // Đua ra mặt trước tầng trên (sàn y 2.7). Nhãn vào giữa sàn cho khỏi
+      // chen pane (vòng sáng + focus vẫn trúng sàn).
+      position: [-7.6, 0, -4],
       focusDistance: 6,
       hotspotY: 4.8,
       topY: 3.9,
@@ -131,8 +134,8 @@ export const residenceScene: SceneDef = {
       headword: "bay window",
       partOfSpeech: "noun",
       // Lưng áp tường (mặt tường ở world z = −4.5), kính chìa ra −3.4.
-      // Nhãn ôm nắp đầu đông (không mũi tên): đầu tây chen deck, trên chen balcony.
-      position: [-8, 0, -4.05],
+      // Nhãn ôm nắp (không mũi tên), né deck/balcony hai bên.
+      position: [-8.5, 0, -4.05],
       focusDistance: 5,
       hotspotY: 2.9,
       topY: 2.65,
@@ -156,9 +159,11 @@ export const residenceScene: SceneDef = {
       shape: "porch",
       headword: "porch",
       partOfSpeech: "noun",
-      position: [-1.6, 0, -2.8],
+      // Treo cao giữa hiên (mũi tên dài trong không khí): nhãn thấp chen
+      // doorway, nhãn đông chen gutter, nhãn tây chen balcony.
+      position: [-4.0, 0, -2.8],
       focusDistance: 5.5,
-      hotspotY: 4.6,
+      hotspotY: 5.2,
       topY: 3.3,
       ringRadius: 2.5,
     },
@@ -168,8 +173,8 @@ export const residenceScene: SceneDef = {
       headword: "doorway",
       partOfSpeech: "noun",
       // Dưới mái hiên (mái ở y 3.2) nên nhãn ôm cửa, không vẽ mũi tên.
-      // Dạt đông cho khỏi chen porch (cửa rộng, nhãn đâu cũng là cửa).
-      position: [-2.7, 0, -4.4],
+      // Lố 0.4 m khỏi mép đông cho khỏi chen porch (nhìn không ra).
+      position: [-2.2, 0, -4.4],
       focusDistance: 4,
       hotspotY: 2.9,
       topY: 2.45,
@@ -181,9 +186,11 @@ export const residenceScene: SceneDef = {
       headword: "pane",
       partOfSpeech: "noun",
       // Cửa sổ tầng trên phía tây, ngay trên cửa sổ lồi.
-      position: [-9.2, 0, -4.3],
+      // Nhãn lố khỏi mép kính cho khỏi chen balcony (margin 2px cũng flip
+      // theo từng lần chạy — probe `zz-probe` đo thật, không đoán).
+      position: [-11.1, 0, -4.3],
       focusDistance: 5,
-      hotspotY: 6,
+      hotspotY: 5.3,
       topY: 5.1,
       ringRadius: 1.5,
     },
@@ -262,7 +269,9 @@ export const residenceScene: SceneDef = {
       shape: "shrub",
       headword: "shrub",
       partOfSpeech: "noun",
-      position: [-10, 0, -3.8],
+      // Nhãn ra trước bụi (nam 1.8 m) cho khỏi chen bay-window — chỉ nhãn chạm
+      // nhau mới tính, nhãn đè lên thân vật khác không sao.
+      position: [-10.5, 0, -2.0],
       focusDistance: 4,
       hotspotY: 1.6,
       ringRadius: 1.8,

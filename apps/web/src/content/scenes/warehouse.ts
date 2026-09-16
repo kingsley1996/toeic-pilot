@@ -3,11 +3,12 @@ import type { SceneDef } from "@/content/scenes/types";
 export const warehouseScene: SceneDef = {
   id: "warehouse-01",
   title: "Trong nhà kho",
-  description: "Kho hàng, bến dỡ hàng và đường ra — nơi logistics TOEIC sống.",
+  description:
+    "Kho hàng, khu vực bốc dỡ và lối xuất hàng — một bối cảnh logistics quen thuộc trong TOEIC.",
   topicSlug: "logistics",
   sky: "#e9edf0",
   environment: "warehouse-lot",
-  badges: ["new"],
+  badges: ["new", "beta"],
   objects: [
     {
       id: "obj-warehouse",

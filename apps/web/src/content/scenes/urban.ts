@@ -8,7 +8,8 @@ import type { SceneDef } from "@/content/scenes/types";
 export const urbanScene: SceneDef = {
   id: "urban-02",
   title: "Ngã tư thành phố",
-  description: "Ngã tư cắt nhau ở giữa — cầu vượt nửa trái, đèn thành hàng, người đi trên vạch.",
+  description:
+    "Ngã tư giao nhau — cầu vượt bên trái, đèn giao thông, biển báo, vỉa hè và người đi bộ qua vạch.",
   topicSlug: "urban-traffic",
   sky: "#dfe7ef",
   environment: "urban-intersection",

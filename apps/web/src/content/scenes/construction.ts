@@ -13,7 +13,8 @@ import type { SceneDef } from "@/content/scenes/types";
 export const constructionScene: SceneDef = {
   id: "construction-03",
   title: "Công trường xây dựng",
-  description: "Đất trống đang thi công — cần cẩu, khung nhà đang xây, xe ủi chạy làn nam.",
+  description:
+    "Khu đất đang thi công — cần cẩu đang nâng vật liệu, khung nhà dần hoàn thiện và xe ủi đang di chuyển giữa công trường.",
   topicSlug: "construction",
   sky: "#e6e2d4",
   environment: "construction-site",
