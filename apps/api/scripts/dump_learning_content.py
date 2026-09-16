@@ -65,10 +65,21 @@ select * from audio_asset where id in (
 )
 """
 
+# Ảnh của cây từ vựng phải đi cùng: `vocabulary_collection_item.image_id` là khoá
+# ngoại thật, và hàng `image_asset` chỉ là metadata trỏ lên Cloudinary — đích
+# chưa có nó thì cả lượt nạp nổ giữa chừng. Diễn tập 2026-09-16 bắt được đúng
+# chỗ này: từ lần đồng bộ 2026-09-02, hai mục trong cây đã được gắn ảnh.
+IMAGE_SCOPE = """
+select * from image_asset where id in (
+    select image_id from vocabulary_collection_item where image_id is not null
+)
+"""
+
 # Thứ tự theo chiều phụ thuộc khoá ngoại. Đổi thứ tự là đổi thành một lượt nạp
 # nổ giữa chừng.
 TABLES: list[tuple[str, str, tuple[str, ...]]] = [
     ("audio_asset", AUDIO_SCOPE, ("id",)),
+    ("image_asset", IMAGE_SCOPE, ("id",)),
     ("vocabulary_collection", "select * from vocabulary_collection", ("id",)),
     ("vocabulary_collection_item", "select * from vocabulary_collection_item", ("id",)),
     ("topic", "select * from topic", ("id",)),

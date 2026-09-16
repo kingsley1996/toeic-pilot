@@ -1,0 +1,14 @@
+overpass | noun | /ˈoʊvərpæs/ | a bridge carrying one road or path above another | cầu vượt | Shoppers use the overpass to reach the mall without crossing the avenue. | Người mua sắm đi qua cầu vượt để tới trung tâm thương mại mà không phải cắt ngang đại lộ.
+underpass | noun | /ˈʌndərpæs/ | a passage built beneath a road or railway | hầm chui | The stairway at the far corner leads down to an underpass. | Cầu thang ở góc xa dẫn xuống một hầm chui.
+intersection | noun | /ˌɪntərˈsekʃn/ | a place where two or more roads meet | ngã tư | Deliveries are banned at this intersection between seven and nine a.m. | Việc giao hàng bị cấm tại ngã tư này từ bảy đến chín giờ sáng.
+crosswalk | noun | /ˈkrɔːswɔːk/ | a marked part of a road where people may cross | vạch qua đường | Drivers must stop for anyone waiting at the crosswalk. | Người lái xe phải dừng lại cho bất kỳ ai đang chờ ở vạch qua đường.
+sidewalk | noun | /ˈsaɪdwɔːk/ | a paved path beside a street for people walking | vỉa hè | A café table blocks half of the sidewalk near the station. | Một bàn cà phê chiếm nửa vỉa hè gần nhà ga.
+pavement | noun | /ˈpeɪvmənt/ | the hard ground beside a road that people walk on | lề đường | She waited on the pavement until the signal changed. | Cô ấy đứng chờ trên lề đường cho tới khi đèn đổi màu.
+curb | noun | /kɜːrb/ | the raised edge of a road beside the pavement | mép vỉa hè | The courier parked too close to the curb and got a ticket. | Người giao hàng đỗ quá sát mép vỉa hè và bị phạt.
+curve | noun | /kɜːrv/ | a bend in a road | khúc quanh | Trucks slow down on the curve before the depot gate. | Xe tải giảm tốc ở khúc quanh trước cổng trạm tập kết.
+lane | noun | /leɪn/ | one of the marked strips of a road for a line of vehicles | làn đường | Buses keep the right lane during the morning rush. | Xe buýt chạy làn bên phải trong giờ cao điểm buổi sáng.
+signal | noun | /ˈsɪɡnəl/ | a device of coloured lights that controls traffic | tín hiệu giao thông | The signal at the intersection has been out of order since Monday. | Tín hiệu giao thông ở ngã tư bị hỏng từ thứ Hai.
+road sign | noun | /ˈroʊd saɪn/ | a sign that guides or warns people on the road | biển báo đường bộ | A road sign warns that the lane ends in two hundred metres. | Một biển báo đường bộ cảnh báo làn đường sẽ kết thúc trong hai trăm mét.
+lamppost | noun | /ˈlæmpoʊst/ | a tall post carrying a light above a street | cột đèn | The meeting point is the lamppost outside the gallery. | Điểm hẹn là cột đèn bên ngoài phòng tranh.
+pedestrian | noun | /pəˈdestriən/ | a person walking in a street rather than driving | người đi bộ | The plaza is closed to all traffic except pedestrians. | Quảng trường cấm mọi phương tiện, chỉ dành cho người đi bộ.
+cross | verb | /krɔːs/ | to go from one side of a road to the other | băng qua | Please cross at the corner instead of jaywalking. | Vui lòng băng qua ở góc đường thay vì băng sai quy định.
