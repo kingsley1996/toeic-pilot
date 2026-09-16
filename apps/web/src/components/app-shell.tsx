@@ -63,7 +63,9 @@ const PetLand = dynamic(() => import("@/components/petland").then((m) => m.PetLa
  * tới một trang khách xem được thật.
  */
 const CONTENT_LINKS: NavItem[] = [
-  { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen },
+  // `covers`: cảnh 3D là một CÁCH học từ vựng, không phải một kho mới —
+  // mục riêng sẽ hứa một nơi chốn cho một tính năng chỉ phụ thuộc từ vựng.
+  { href: "/learn/vocabulary", label: "Từ vựng", Icon: BookOpen, covers: ["/learn/scenes"] },
   { href: "/learn/dictation", label: "Dictation", Icon: Headphones },
   { href: "/learn/grammar", label: "Ngữ pháp", Icon: GraduationCap },
   { href: "/learn/parts", label: "Luyện theo part", Icon: Dumbbell },

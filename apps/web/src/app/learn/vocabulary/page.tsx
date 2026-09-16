@@ -5,7 +5,6 @@ import {
   type TopicPublic,
   type VocabularyCollectionDetail,
   type VocabularyCollectionItemPublic,
-  type VocabularyProgress,
 } from "@toeic-pilot/shared";
 import { BookOpen, Library, RotateCcw } from "lucide-react";
 import Link from "next/link";
@@ -15,13 +14,14 @@ import {
   Alert,
   ButtonLink,
   EmptyState,
-  Meter,
   Page,
   PageHeader,
   PanelLink,
   Skeleton,
+  Tag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { type SceneBadge, SCENES } from "@/content/scenes";
 import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";
 
@@ -36,6 +36,16 @@ import { useSession } from "@/lib/session";
  * liệu cũ không mất dấu khi cây phân cấp ra đời.
  */
 const TONES = ["bg-accent-us", "bg-accent-uk", "bg-accent-au", "bg-accent-ca"] as const;
+
+/**
+ * Chữ của `SceneBadge`. "Thử nghiệm" là tone `warn` chứ không phải trung tính:
+ * nó nói cảnh này chưa qua mắt người duyệt, tức có thể còn lỗi — không phải
+ * trang trí cho vui.
+ */
+const SCENE_BADGES: Record<SceneBadge, { label: string; tone: "action" | "warn" }> = {
+  new: { label: "Mới", tone: "action" },
+  beta: { label: "Thử nghiệm", tone: "warn" },
+};
 
 function BookCard({
   item,
@@ -88,46 +98,6 @@ function BookCard({
   );
 }
 
-function UnfiledTopicCard({
-  topic,
-  index,
-  progress,
-}: {
-  topic: TopicPublic;
-  index: number;
-  progress: VocabularyProgress | null;
-}) {
-  const tone = TONES[index % TONES.length]!;
-  return (
-    <PanelLink href={`/learn/vocabulary/${topic.slug}`} className="flex flex-col p-6">
-      <span aria-hidden className={`h-1 w-10 rounded ${tone}`} />
-      <h3 className="mt-4 text-subtitle">{topic.name}</h3>
-      {topic.description && <p className="mt-1.5 text-small text-ink-muted">{topic.description}</p>}
-      <p className="mt-3 font-data text-small tabular-nums text-ink-faint">
-        {topic.entry_count} từ
-      </p>
-      {progress && progress.total > 0 && (
-        <div className="mt-4">
-          <Meter
-            value={progress.mastered}
-            max={progress.total}
-            ticks={Math.min(progress.total, 8)}
-          />
-          <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-small text-ink-muted">
-            <span>{progress.mastered} đã thuộc</span>
-            {progress.due > 0 && (
-              <span className="text-ink">
-                <RotateCcw size={12} strokeWidth={2} aria-hidden className="mr-1 inline" />
-                {progress.due} cần ôn
-              </span>
-            )}
-          </p>
-        </div>
-      )}
-    </PanelLink>
-  );
-}
-
 function VocabularyLanding() {
   const { status, token } = useSession();
   const due = useDueCount();
@@ -136,12 +106,6 @@ function VocabularyLanding() {
   const [collections, setCollections] = useState<VocabularyCollectionDetail[] | null>(null);
   const [topics, setTopics] = useState<TopicPublic[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Tiến độ chỉ xin cho chủ đề CHƯA XẾP (đăng nhập mới có), map đóng dấu token để
-  // đăng nhập/đăng xuất đổi đúng thứ hiện ra mà không cần xoá state trong effect.
-  const [progressByTopic, setProgressByTopic] = useState<{
-    token: string;
-    data: Record<string, VocabularyProgress | null>;
-  }>({ token: "", data: {} });
 
   useEffect(() => {
     // MỘT request cho tất cả cuốn kèm items — endpoint `/details` gộp ở server.
@@ -160,34 +124,6 @@ function VocabularyLanding() {
     // mount), không phụ thuộc lại thì lượt fetch đầu đi không token và con số
     // học của người đã đăng nhập kẹt ở 0 mãi.
   }, [token]);
-
-  const unfiled = (topics ?? []).filter((topic) => topic.collection_item_id === null);
-
-  useEffect(() => {
-    if (!token || unfiled.length === 0) return;
-    let stale = false;
-    Promise.all(
-      unfiled.map((topic) =>
-        apiFetch<VocabularyProgress>(
-          `${API_ROUTES.vocabularyProgress}?topic=${encodeURIComponent(topic.slug)}`,
-          { token },
-        ).catch(() => null),
-      ),
-    ).then((rows) => {
-      if (stale) return;
-      setProgressByTopic({
-        token,
-        data: Object.fromEntries(unfiled.map((topic, index) => [topic.slug, rows[index] ?? null])),
-      });
-    });
-    return () => {
-      stale = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, topics]);
-
-  const progressFor = (slug: string) =>
-    progressByTopic.token === token ? progressByTopic.data[slug] : null;
 
   return (
     <Page>
@@ -266,24 +202,60 @@ function VocabularyLanding() {
         />
       )}
 
-      {unfiled.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-heading text-ink">Chủ đề khác</h2>
-          <p className="mt-1 text-small text-ink-muted">
-            Các chủ đề chưa được xếp vào tuyển tập nào.
-          </p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {unfiled.map((topic, index) => (
-              <UnfiledTopicCard
-                key={topic.id}
-                topic={topic}
-                index={index}
-                progress={token ? progressFor(topic.slug) : null}
+      {/*
+       * "Visual Word" là một CÁCH gặp từ khác, không phải module thứ sáu: cùng
+       * kho từ, cùng hàng đợi SM-2 (SPEC-VISUAL-VOCAB-3D). Danh sách lấy thẳng
+       * từ `content/scenes` — cảnh là code trong repo nên khối này không có gì
+       * để mà loading/error.
+       */}
+      <section className="mt-12">
+        <h2 className="text-heading text-ink">Visual Word</h2>
+        <p className="mt-1 text-small text-ink-muted">
+          Gặp từ trong một cảnh 3D: xoay cảnh, chạm vào vật, nghe phát âm. Điểm quay về đúng hàng
+          đợi ôn quen thuộc.
+        </p>
+        {/* Cùng nhịp lưới với card CUỐN SÁCH: hai loại card đứng kế nhau mà
+            lệch bề rộng thì trang trông như hai bảng không họ hàng. */}
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          {SCENES.map((scene) => (
+            <PanelLink
+              key={scene.id}
+              href={`/learn/scenes/${scene.id}`}
+              className="group flex flex-col overflow-hidden p-0"
+            >
+              {/* Ảnh là ảnh CHỤP thật của cảnh (canvas 3D), không phải hình minh hoạ
+                  vẽ tay — vẽ tay thì nó sẽ nói dối về cách cảnh trông ra sao.
+                  Regenerate: SCENE_PREVIEWS=1 pnpm exec playwright test
+                  e2e/scene-previews.spec.ts. `<img>` thường vì đây là tệp tĩnh
+                  trong `public/` (cùng lý do với brand.tsx). */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/scenes/${scene.id}.png`}
+                alt=""
+                aria-hidden
+                width={1980}
+                height={892}
+                className="aspect-[3/2] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
               />
-            ))}
-          </div>
-        </section>
-      )}
+              <div className="flex flex-1 flex-col p-3">
+                <span className="flex flex-wrap items-center gap-1.5">
+                  <span aria-hidden className="h-1 w-8 rounded bg-action" />
+                  {(scene.badges ?? []).map((badge) => (
+                    <Tag key={badge} tone={SCENE_BADGES[badge].tone}>
+                      {SCENE_BADGES[badge].label}
+                    </Tag>
+                  ))}
+                </span>
+                <h3 className="mt-2.5 text-body font-semibold leading-snug">{scene.title}</h3>
+                <p className="mt-1 line-clamp-2 text-small text-ink-muted">{scene.description}</p>
+                <p className="mt-auto pt-2.5 font-data text-small tabular-nums text-ink-faint">
+                  {scene.objects.length} từ
+                </p>
+              </div>
+            </PanelLink>
+          ))}
+        </div>
+      </section>
 
       {/* Lối vào danh sách từ, ẩn với khách vãng lai vì trang đích đã chặn —
           bày ra một nút dẫn thẳng tới cổng đăng nhập là mời người ta bấm vào

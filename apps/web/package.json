@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.9",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
     "@remotion/player": "^4.0.519",
     "@toeic-pilot/shared": "workspace:*",
     "@xyflow/react": "^12.11.5",
@@ -21,13 +23,15 @@
     "pixi.js": "8.14.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "remotion": "^4.0.519"
+    "remotion": "^4.0.519",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "postcss": "^8",
