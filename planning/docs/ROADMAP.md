@@ -374,8 +374,9 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       22 từ mới qua pipeline (paste → 176 clip → push → publish) + `balcony`
       nối từ `housing` (tiền lệ billboard). Nhà chia đôi: thân tường decor,
       mái/cửa/ban công là object khớp toạ độ. Người đẩy máy cắt dùng `Person`
-      tự quẫy chân theo chuyển động (không prop). Còn: mắt người duyệt, sync
-      prod, test + preview + commit (giữ lệ chưa test tới khi chốt).
+      tự quẫy chân theo chuyển động (không prop). Đã lên production: 809 → 831 từ, 29 → 30 chủ đề,
+      topic `residential` 25/25 published (22 mới + balcony/fence/driveway nối).
+      Diễn tập idempotent, clip `weathervane` curl 200.
 - [ ] **Scene 3D vào DB (kế hoạch, chưa làm)** — `planning/docs/PLAN-SCENE-DATABASE.md`:
       DB giữ key + số (override), file TS giữ hình + làm default (mẫu `petland_map`);
       từ vựng tham chiếu bằng (headword, pos) như hiện tại, không FK entry.
