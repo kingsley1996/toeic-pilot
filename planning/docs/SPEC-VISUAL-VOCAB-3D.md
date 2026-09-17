@@ -202,3 +202,10 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
 7. **Riêng từ vựng `billboard` (urban) không hiện giới thiệu.** Object đó không
    truyền `onPick` nên vẫn mở thẻ từ + chấm recall — chặn sự kiện ở đó là kẹt
    cả lượt quiz.
+8. **Nhóm NPC đi chung thì gán cùng `patrol`.** Cùng axis/range/speed là cùng
+   pha (`Mover` khởi động đồng bộ) nên đội hình giữ nguyên khi đi (museum:
+   guide + 3 khách). Có `patrol` thì `rotationY` của def vô nghĩa — đừng đặt
+   cho đỡ lừa người sau.
+9. **Mọi object đều có mũi tên, và đừng để biên đúng 0.8.** Quy tắc vẽ là
+   `hotspotY − topY ≥ 0.8` — để đúng 0.8 như `5.8 − 5` là float thành
+   0.7999… và mất mũi tên im lặng. Luôn cộng dư 0.05 (museum dính 4 cái).

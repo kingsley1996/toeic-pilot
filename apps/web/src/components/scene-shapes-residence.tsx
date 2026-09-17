@@ -683,10 +683,9 @@ export function ResidenceEnvironment({
         </group>
       ))}
       <Cone at={[-8, 0, 8.8]} />
-      {/* billboard ven đường phía đông-nam, ngoài rào (mặt ra đường/camera):
-          lệch đông khỏi trục nhìn chính nên không che nhà. Thu 0.72 như
-          `Billboard` của urban cho hợp cỡ khu dân cư. */}
-      <group position={[12, 0, 11]} rotation={[0, -0.5, 0]} scale={0.72}>
+      {/* billboard ở lề đường phía nam, ngoài rào (cùng phía với hộp thư),
+          mặt xoay ra camera, thu 0.45 — nền sau là thảm cỏ nên không đè nhà */}
+      <group position={[8, 0, 10.5]} rotation={[0, -0.31, 0]} scale={0.45}>
         <Signboard at={[0, 0, 0]} onPick={onBrandPick} />
       </group>
     </group>

@@ -75,7 +75,36 @@ export type ShapeKey =
   | "hedge"
   | "fence"
   | "driveway"
-  | "yard";
+  | "yard"
+  // phòng trưng bày bảo tàng (topic `museum`)
+  | "museum"
+  | "exhibit"
+  | "guide"
+  | "visitor"
+  | "curator"
+  | "painting"
+  | "sculpture"
+  | "pedestal"
+  | "display-case"
+  | "artifact"
+  | "placard"
+  | "stanchion"
+  | "audio-guide"
+  | "brochure"
+  | "ticket"
+  | "guard"
+  | "gallery-wall"
+  | "spotlight"
+  | "bench"
+  | "turnstile"
+  | "kiosk"
+  | "donation-box"
+  | "cloakroom"
+  | "souvenir"
+  | "restoration"
+  | "archway"
+  | "exit"
+  | "mural";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -140,7 +169,12 @@ export interface SceneDef {
   /** Màu nền canvas — 3D không ăn token CSS, đây là bảng màu riêng (`§2.2`). */
   sky: string;
   /** Nền cảnh: mặt đất + những thứ bối cảnh. Mỗi cảnh một bộ, không dùng lẫn. */
-  environment: "warehouse-lot" | "urban-intersection" | "construction-site" | "residential-yard";
+  environment:
+    | "warehouse-lot"
+    | "urban-intersection"
+    | "construction-site"
+    | "residential-yard"
+    | "museum-hall";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

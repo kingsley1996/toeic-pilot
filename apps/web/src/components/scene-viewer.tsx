@@ -10,6 +10,7 @@ import { OrbitControls, Html, Line } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ArrowLeft, Check, Eye, Maximize2, Minimize2, RotateCcw, Target, X } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState, type FC, type ReactNode } from "react";
 import * as THREE from "three";
 
@@ -27,6 +28,7 @@ import {
   ConstructionEnvironment,
 } from "@/components/scene-shapes-construction";
 import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scene-shapes-residence";
+import { MUSEUM_SHAPES, MuseumEnvironment } from "@/components/scene-shapes-museum";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -45,6 +47,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...URBAN_SHAPES,
   ...CONSTRUCTION_SHAPES,
   ...RESIDENCE_SHAPES,
+  ...MUSEUM_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -452,6 +455,8 @@ function SceneCanvas({
       />
       {scene.environment === "residential-yard" ? (
         <ResidenceEnvironment onBrandPick={onBrandPick} />
+      ) : scene.environment === "museum-hall" ? (
+        <MuseumEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (
         <ConstructionEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "urban-intersection" ? (
@@ -546,6 +551,11 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   const [flash, setFlash] = useState<{ id: string; kind: "right" | "wrong" } | null>(null);
   const [homeSeq, setHomeSeq] = useState(0);
   const [recall, setRecall] = useState<{ queue: SceneObjectDef[]; index: number } | null>(null);
+  // `?preview=all`: hiện ĐỦ shape để xem bố cục khi từ vựng chưa publish
+  // (cảnh mới) — production không có param nên hành vi cũ giữ nguyên. Recall
+  // vẫn chỉ hỏi từ resolve được (`answerable`).
+  const searchParams = useSearchParams();
+  const previewAll = searchParams.get("preview") === "all";
   // Xe chạy và linh vật đi tuần là trang trí, nên `prefers-reduced-motion` tắt
   // được nó — cùng luật với CSS ở `globals.css`. Đo một lần lúc mount: `SceneViewer`
   // là `ssr: false` nên `window` có ở đây, và đổi cài đặt giữa phiên thì chưa cần biết.
@@ -578,6 +588,12 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   // Chỉ những object resolve được mới vào cảnh — từ hỏng hiện bằng banner,
   // không âm thầm ẩn hotspot (§2.3).
   const objects = useMemo(() => {
+    if (previewAll) return scene.objects;
+    if (!summaries) return [];
+    return scene.objects.filter((o) => summaries.has(entryKey(o)));
+  }, [previewAll, summaries, scene.objects]);
+  /** Từ hỏi được ở recall — luôn chỉ gồm object resolve được, kể cả preview. */
+  const answerable = useMemo(() => {
     if (!summaries) return [];
     return scene.objects.filter((o) => summaries.has(entryKey(o)));
   }, [summaries, scene.objects]);
@@ -634,7 +650,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   function startRecall() {
     setMode("recall");
     closeSheet();
-    setRecall({ queue: shuffle(objects), index: 0 });
+    setRecall({ queue: shuffle(answerable), index: 0 });
   }
 
   function exitRecall() {
@@ -664,17 +680,21 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
     if (!def) return;
 
     if (mode === "explore") {
+      const id = entryIdOf(def);
+      if (!id) {
+        // Preview khi từ chưa publish: bay tới cho xem bố cục, báo rõ không thẻ.
+        flyTo(def);
+        toast.show({ title: `Từ "${def.headword}" chưa có trong kho`, tone: "alert" });
+        return;
+      }
       setSelectedId(objectId);
       setDetail(null);
       setBrandOpen(false);
       flyTo(def);
-      const id = entryIdOf(def);
-      if (id) {
-        try {
-          setDetail(await apiFetch<VocabularyDetail>(API_ROUTES.vocabularyDetail(id), { token }));
-        } catch {
-          toast.show({ title: "Không tải được mục từ", tone: "alert" });
-        }
+      try {
+        setDetail(await apiFetch<VocabularyDetail>(API_ROUTES.vocabularyDetail(id), { token }));
+      } catch {
+        toast.show({ title: "Không tải được mục từ", tone: "alert" });
       }
       return;
     }
@@ -786,7 +806,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
             size="sm"
             aria-pressed={mode === "recall"}
             onClick={startRecall}
-            disabled={!summaries || objects.length === 0}
+            disabled={!summaries || answerable.length === 0}
           >
             <Target size={14} strokeWidth={2} aria-hidden />
             Recall
@@ -932,7 +952,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
             })}
           </ul>
         </details>
-        {recallDone && <RecallSummary objects={objects} onExit={exitRecall} />}
+        {recallDone && <RecallSummary objects={answerable} onExit={exitRecall} />}
       </div>
     </div>
   );
