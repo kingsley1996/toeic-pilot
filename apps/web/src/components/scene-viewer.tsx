@@ -608,7 +608,12 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   const [resolveError, setResolveError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("explore");
   /** Tắt nhãn toàn cảnh (xem 3D thuần) — chung mọi scene, nhớ theo phiên. */
-  const [labelsOn, setLabelsOn] = useState(true);
+  const searchParams = useSearchParams();
+  // `?plain=1`: dựng ảnh thumbnail không nhãn — tắt nhãn ngay từ đầu để
+  // preview spec không chụp dính pill DOM đè lên canvas. Production không có
+  // param nên mặc định nhãn vẫn bật; nút Ẩn/Hiện nhãn vẫn bật lại được.
+  const plain = searchParams.get("plain") === "1";
+  const [labelsOn, setLabelsOn] = useState(() => !plain);
   const labelMode = !labelsOn ? "off" : mode === "explore" ? "pill" : "dot";
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<VocabularyDetail | null>(null);
@@ -622,7 +627,6 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   // `?preview=all`: hiện ĐỦ shape để xem bố cục khi từ vựng chưa publish
   // (cảnh mới) — production không có param nên hành vi cũ giữ nguyên. Recall
   // vẫn chỉ hỏi từ resolve được (`answerable`).
-  const searchParams = useSearchParams();
   const previewAll = searchParams.get("preview") === "all";
   // Xe chạy và linh vật đi tuần là trang trí, nên `prefers-reduced-motion` tắt
   // được nó — cùng luật với CSS ở `globals.css`. Đo một lần lúc mount: `SceneViewer`
@@ -1015,25 +1019,28 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
         {/* §8.3 spec gốc: bản đọc được cho trình đọc màn hình — dựng từ chính
             scene file. Nằm trong khung cảnh để người học khỏi phải rời mắt khỏi
             vật vừa chạm mà đọc; vẫn là DOM thường nên không mất vì WebGL hỏng. */}
-        <details className="absolute right-3 top-3 z-30 max-h-[calc(100%-1.5rem)] w-[min(17rem,calc(100%-1.5rem))] overflow-y-auto rounded border border-rule bg-panel/95 text-small">
-          <summary className="cursor-pointer px-3 py-2 font-semibold text-ink-muted hover:text-ink">
-            Danh sách từ trong cảnh
-          </summary>
-          <ul className="space-y-1.5 border-t border-rule px-3 py-2">
-            {scene.objects.map((o) => {
-              const s = summaries?.get(entryKey(o));
-              return (
-                <li key={o.id}>
-                  <span className="font-semibold">{o.headword}</span>
-                  {s?.phonetic && (
-                    <span className="ml-1.5 font-data text-ink-faint">{s.phonetic}</span>
-                  )}
-                  {s && <span className="ml-1.5 text-ink-muted">— {s.meaning_vi}</span>}
-                </li>
-              );
-            })}
-          </ul>
-        </details>
+        {/* plain (`?plain=1` dựng thumbnail): ẩn hẳn để ảnh là 3D thuần. */}
+        {!plain && (
+          <details className="absolute right-3 top-3 z-30 max-h-[calc(100%-1.5rem)] w-[min(17rem,calc(100%-1.5rem))] overflow-y-auto rounded border border-rule bg-panel/95 text-small">
+            <summary className="cursor-pointer px-3 py-2 font-semibold text-ink-muted hover:text-ink">
+              Danh sách từ trong cảnh
+            </summary>
+            <ul className="space-y-1.5 border-t border-rule px-3 py-2">
+              {scene.objects.map((o) => {
+                const s = summaries?.get(entryKey(o));
+                return (
+                  <li key={o.id}>
+                    <span className="font-semibold">{o.headword}</span>
+                    {s?.phonetic && (
+                      <span className="ml-1.5 font-data text-ink-faint">{s.phonetic}</span>
+                    )}
+                    {s && <span className="ml-1.5 text-ink-muted">— {s.meaning_vi}</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
+        )}
         {recallDone && <RecallSummary objects={answerable} onExit={exitRecall} />}
       </div>
     </div>

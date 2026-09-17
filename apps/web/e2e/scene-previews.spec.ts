@@ -15,8 +15,10 @@ test.use({ deviceScaleFactor: 2, viewport: { width: 1280, height: 860 } });
  *   SCENE_PREVIEWS=1 pnpm exec playwright test e2e/scene-previews.spec.ts
  *
  * `locator("canvas").screenshot()` crop khung hình TẠI hộp canvas — mọi lớp phủ DOM
- * đè lên hộp đó (nhãn từ, panel) VẪN lọt vào ảnh. Muốn hình 3D thuần thì phải ẩn
- * nhãn trước, hiện tại chưa cần nên cứ để.
+ * đè lên hộp đó (nhãn từ, panel) VẪN lọt vào ảnh. Thumbnail dựng bằng `?plain=1`
+ * (tắt nhãn ngay từ đầu) nên hình là 3D thuần, không chữ.
+ * Ở chế độ plain không còn `[data-object-id]` để chờ — chờ response từ vựng
+ * (3D chỉ dựng sau khi resolve xong) rồi ngủ thêm cho three vẽ đủ khung hình.
  * `reducedMotion: reduce` dựng cảnh đứng yên tại neo: không có ảnh nào chụp
  * được lúc chiếc xe đang ở giữa tuyến, và hai lần chạy ra hai ảnh khác nhau thì
  * không ai biết bản nào là đúng.
@@ -42,9 +44,14 @@ test("render ảnh xem trước cho từng cảnh", async ({ page, request }) =>
   await skipTour(page);
 
   for (const scene of SCENES) {
-    await page.goto(`/learn/scenes/${scene.id}`);
-    // Chờ resolve xong: có nhãn nghĩa là cả 3D lẫn từ vựng đã vào đủ.
-    await expect(page.locator("[data-object-id]").first()).toBeVisible({ timeout: 30_000 });
+    await page.goto(`/learn/scenes/${scene.id}?plain=1`);
+    await page.waitForResponse((r) => r.url().includes("/api/v1/vocabulary") && r.ok(), {
+      timeout: 30_000,
+    });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 30_000 });
+    // Nút góp ý fixed ở mép phải đè lên hộp canvas — ẩn nó sau mỗi `goto`
+    // (`addStyleTag` không sống qua chuyển trang), production giữ nguyên.
+    await page.addStyleTag({ content: '[aria-label="Gửi góp ý"]{display:none !important}' });
     await page.waitForTimeout(2500);
     const file = join(OUT, `${scene.id}.png`);
     mkdirSync(dirname(file), { recursive: true });
