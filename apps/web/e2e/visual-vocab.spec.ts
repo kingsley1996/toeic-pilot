@@ -21,8 +21,8 @@ import { skipTour } from "./support";
 
 const API_BASE = "http://localhost:8000";
 
-// Scene hiện tại có 8 object — ít nhất từng đó từ published trong topic.
-const MIN_ENTRIES = 8;
+// Scene kho hiện tại có 14 object — ít nhất từng đó từ published trong topic.
+const MIN_ENTRIES = 14;
 
 async function signUp(page: Page): Promise<void> {
   await page.goto("/register");

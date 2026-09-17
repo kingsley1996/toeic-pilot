@@ -34,6 +34,8 @@ export const PALETTE = {
   board: "#8a5a33",
   cone: "#e2601a",
   skin: "#c08a58",
+  /** Mái kho phụ — đỏ gạch để khác mái chính (xanh đá), nhìn là biết hai nhà. */
+  roofRed: "#a8502f",
   // đô thị: sơn kẻ đường, bê tông vỉa hè, kính, đèn
   marking: "#eef1f3",
   stone: "#b0b9c1",
@@ -86,7 +88,7 @@ export function Wheel({ at, r = 0.28 }: { at: [number, number, number]; r?: numb
   );
 }
 
-function Warehouse({ depot = false }: { depot?: boolean }) {
+export function Warehouse({ depot = false, roof }: { depot?: boolean; roof?: string }) {
   const w = depot ? 3.4 : 7.4;
   const h = depot ? 2.1 : 3.3;
   const d = depot ? 2.8 : 5.2;
@@ -96,7 +98,7 @@ function Warehouse({ depot = false }: { depot?: boolean }) {
       {/* dải viền mái — hai mảng tường phẳng cùng màu sẽ đọc thành khối giấy.
           Mũ 0.37 thay vì 0.35: mặt trên của nó phải cao hơn nóc tường một chút,
           hai mặt phẳng trùng khít thì depth-buffer đấu nhau và nóc nhấp nháy. */}
-      <Box size={[w + 0.15, 0.37, d + 0.15]} at={[0, h - 0.35, 0]} color={PALETTE.wallTrim} />
+      <Box size={[w + 0.15, 0.37, d + 0.15]} at={[0, h - 0.35, 0]} color={roof ?? PALETTE.wallTrim} />
       {/* cửa lớn hướng +Z */}
       <Box size={[w * 0.28, h * 0.62, 0.12]} at={[-w * 0.2, 0, d / 2]} color={PALETTE.doorBlue} />
       <Box size={[w * 0.16, h * 0.5, 0.12]} at={[w * 0.16, 0, d / 2]} color={PALETTE.steelDark} />
@@ -198,7 +200,223 @@ function ConsignmentCrate() {
   );
 }
 
-/** Phiếu kiểm kê kẹp trên bảng — `Clipboard` và nhân viên cùng dùng một hình. */
+/** Chồng hàng `cargo`: khác thùng lẻ `consignment-crate` ở chỗ cao hai tầng
+ *  + một kiện nhỏ trên cùng — đọc ra "hàng chuyên chở" chứ không phải một lô. */
+function CargoStack() {
+  return (
+    <group>
+      <PalletDeck />
+      {[
+        [-0.5, 0.2],
+        [0.5, 0.2],
+        [-0.5, 1.0],
+        [0.5, 1.0],
+      ].map(([x, y], i) => (
+        <Box key={i} size={[0.95, 0.8, 0.8]} at={[x, y, 0]} color={PALETTE.cardbox} />
+      ))}
+      {/* đai ngang tầng dưới + nhãn giấy tầng trên */}
+      <Box size={[1.98, 0.08, 0.83]} at={[0, 0.55, 0]} color={PALETTE.woodDark} />
+      <Box size={[0.45, 0.3, 0.02]} at={[0.5, 1.35, 0.41]} color={PALETTE.paper} />
+      <Box size={[0.7, 0.5, 0.6]} at={[-0.1, 1.8, 0]} color={PALETTE.wood} />
+    </group>
+  );
+}
+
+/** Xe tải `freight` — mũi +X: cabin cam + thùng trắng gân xanh, khác xe
+ *  `courier-van` nhỏ trắng-xanh ở cabin thấp và thùng dài gấp rưỡi. Đỗ trên
+ *  đường là cố ý (xe đỗ lề), còn container cũ nửa nằm nửa ngoài đường nên
+ *  đọc như đặt nhầm — vì thế không dùng container cho từ này. */
+function FreightTruck() {
+  return (
+    <group>
+      <Box size={[4.4, 0.3, 1.1]} at={[-0.1, 0.55, 0]} color={PALETTE.steelDark} />
+      {/* thùng hàng + gân + cửa hậu −X. Gân thấp hơn nóc 0.03: cao bằng
+          nhau là hai mặt trùng khít, nóc nhấp nháy (cùng họ với dải viền
+          mái `Warehouse`). */}
+      <Box size={[3.0, 2.0, 2.0]} at={[-0.9, 0.85, 0]} color={PALETTE.paper} />
+      {[-1.9, -1.3, -0.7, -0.1, 0.5].map((x) => (
+        <Box key={x} size={[0.1, 1.94, 2.06]} at={[x, 0.88, 0]} color={PALETTE.brandBlue} />
+      ))}
+      <Box size={[0.08, 1.8, 0.9]} at={[-2.42, 0.95, -0.48]} color={PALETTE.steelDark} />
+      <Box size={[0.08, 1.8, 0.9]} at={[-2.42, 0.95, 0.48]} color={PALETTE.steelDark} />
+      {/* cabin: thân thấp + nóc lồi 0.02 mỗi mặt + kính trước lồi 0.03 —
+          song song mà cách nhau có 0.01 thì nhìn xiên vẫn nhấp nháy */}
+      <Box size={[1.2, 1.1, 1.9]} at={[1.7, 0.7, 0]} color={PALETTE.doorOrange} />
+      <Box size={[1.0, 0.7, 1.94]} at={[1.7, 1.5, 0]} color={PALETTE.doorOrange} />
+      <Box size={[0.1, 0.6, 1.7]} at={[2.28, 1.5, 0]} color={PALETTE.glass} />
+      {[1.7, -0.5, -1.6].flatMap((x) =>
+        [0.95, -0.95].map((z) => <Wheel key={`${x}:${z}`} at={[x, 0.4, z]} r={0.4} />),
+      )}
+    </group>
+  );
+}
+
+/** Kệ công nghiệp cho động từ `store` — trụ xanh + dầm cam + kiện trên
+ *  pallet từng tầng, khác hẳn kệ gỗ gia đình ở khung sắt màu và hàng hoá
+ *  xếp theo pallet. Cao 2.8 m. */
+function StorageRack() {
+  return (
+    <group>
+      {[
+        [-1.26, -0.5],
+        [1.26, -0.5],
+        [-1.26, 0.5],
+        [1.26, 0.5],
+      ].map(([x, z]) => (
+        <Box key={`${x}:${z}`} size={[0.12, 2.8, 0.12]} at={[x, 0, z]} color={PALETTE.brandBlue} />
+      ))}
+      {/* dầm cam hai tầng, trước + sau */}
+      {[1.0, 2.0].map((y) =>
+        [-0.5, 0.5].map((z) => (
+          <Box key={`${y}:${z}`} size={[2.6, 0.14, 0.1]} at={[0, y, z]} color={PALETTE.doorOrange} />
+        )),
+      )}
+      {/* tầng trệt: hai thùng đặt thẳng nền */}
+      <Box size={[0.9, 0.7, 0.8]} at={[-0.6, 0, 0]} color={PALETTE.cardbox} />
+      <Box size={[0.9, 0.7, 0.8]} at={[0.6, 0, 0]} color={PALETTE.cardbox} />
+      {/* hai tầng trên: pallet + kiện */}
+      {[1.07, 2.07].map((y, i) => (
+        <group key={y}>
+          <Box size={[2.4, 0.08, 0.9]} at={[0, y, 0]} color={PALETTE.woodDark} />
+          <Box
+            size={[0.95, 0.62, 0.8]}
+            at={[-0.6, y + 0.08, 0]}
+            color={i === 0 ? PALETTE.cardbox : PALETTE.wood}
+          />
+          <Box
+            size={[0.95, 0.62, 0.8]}
+            at={[0.6, y + 0.08, 0]}
+            color={i === 0 ? PALETTE.wood : PALETTE.cardbox}
+          />
+        </group>
+      ))}
+      {/* nhãn giấy tầng trệt */}
+      <Box size={[0.4, 0.28, 0.02]} at={[-0.6, 0.35, 0.41]} color={PALETTE.paper} />
+    </group>
+  );
+}
+
+/** Phiếu giao hàng khổ lớn dán trên kiện — `dispatch note` là tờ giấy đi
+ *  cùng hàng, nên giấy phải là nhân vật chính (bản bàn kiểm tra trước để
+ *  giấy lọt thỏm giữa đồ đạc, nhìn ra cái bàn). Vẽ bằng canvas offline như
+ *  mặt biển `Signboard`, không tải font mạng. */
+function useDispatchSlip() {
+  return useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 192;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = PALETTE.paper;
+    ctx.fillRect(0, 0, 256, 192);
+    ctx.strokeStyle = PALETTE.concreteDark;
+    ctx.lineWidth = 6;
+    ctx.strokeRect(3, 3, 250, 186);
+    // đầu phiếu + 3 dòng chữ (vạch như `ClipboardSheet`)
+    ctx.fillStyle = PALETTE.concreteDark;
+    ctx.fillRect(20, 20, 150, 18);
+    ctx.fillStyle = PALETTE.steel;
+    for (const y of [60, 86, 112]) ctx.fillRect(20, y, 216, 10);
+    // con dấu đỏ góc dưới
+    ctx.strokeStyle = PALETTE.lampRed;
+    ctx.lineWidth = 5;
+    ctx.strokeRect(168, 128, 68, 44);
+    ctx.fillStyle = PALETTE.lampRed;
+    ctx.fillRect(178, 142, 48, 8);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return tex;
+  }, []);
+}
+
+function DispatchCrates() {
+  const slip = useDispatchSlip();
+  return (
+    <group>
+      <PalletDeck />
+      <Box size={[0.9, 0.7, 0.75]} at={[-0.5, 0.2, 0]} color={PALETTE.cardbox} />
+      <Box size={[0.9, 0.7, 0.75]} at={[0.5, 0.2, 0]} color={PALETTE.cardbox} />
+      <Box size={[0.7, 0.45, 0.6]} at={[0.4, 0.9, 0]} color={PALETTE.wood} />
+      {slip && (
+        <mesh position={[-0.5, 0.55, 0.39]}>
+          <planeGeometry args={[0.6, 0.45]} />
+          <meshBasicMaterial map={slip} toneMapped={false} />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
+/** Tem `FRAGILE` vẽ bằng canvas offline: chữ đỏ + pictogram ly nứt (vẽ
+ *  bằng nét 2D, không tải ảnh mạng). Không có chữ thì đai đỏ chỉ là "thùng
+ *  đẹp", người học không đọc ra dễ vỡ. */
+function useFragileMark() {
+  return useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 192;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = PALETTE.paper;
+    ctx.fillRect(0, 0, 256, 192);
+    ctx.strokeStyle = PALETTE.lampRed;
+    ctx.lineWidth = 12;
+    ctx.strokeRect(6, 6, 244, 180);
+    ctx.fillStyle = PALETTE.lampRed;
+    ctx.font = "700 44px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("FRAGILE", 128, 56);
+    // ly rượu: bầu (cung) + cuống + đế, nét xám
+    ctx.strokeStyle = PALETTE.steelDark;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(128, 108, 26, Math.PI, 0);
+    ctx.moveTo(102, 108);
+    ctx.lineTo(102, 96);
+    ctx.moveTo(154, 108);
+    ctx.lineTo(154, 96);
+    ctx.moveTo(128, 134);
+    ctx.lineTo(128, 162);
+    ctx.moveTo(106, 162);
+    ctx.lineTo(150, 162);
+    ctx.stroke();
+    // vết nứt đỏ chéo qua bầu ly
+    ctx.strokeStyle = PALETTE.lampRed;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(112, 88);
+    ctx.lineTo(122, 102);
+    ctx.lineTo(116, 112);
+    ctx.lineTo(128, 124);
+    ctx.stroke();
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return tex;
+  }, []);
+}
+
+/** Thùng `fragile` — một kiện trên pallet thấp, đai đỏ + tem chữ/biểu tượng
+ *  mặt +Z để khác hẳn thùng `consignment` (đai gỗ + nhãn nhỏ). */
+function FragileBox() {
+  const mark = useFragileMark();
+  return (
+    <group>
+      <PalletDeck />
+      <Box size={[0.9, 0.7, 0.75]} at={[0, 0.2, 0]} color={PALETTE.cardbox} />
+      {/* đai đỏ chữ thập */}
+      <Box size={[0.92, 0.12, 0.77]} at={[0, 0.5, 0]} color={PALETTE.lampRed} />
+      <Box size={[0.12, 0.72, 0.77]} at={[0, 0.2, 0]} color={PALETTE.lampRed} />
+      {mark && (
+        <mesh position={[-0.25, 0.52, 0.39]}>
+          <planeGeometry args={[0.36, 0.27]} />
+          <meshBasicMaterial map={mark} toneMapped={false} />
+        </mesh>
+      )}
+    </group>
+  );
+}
 export function ClipboardSheet({
   at,
   rotation,
@@ -464,4 +682,10 @@ export const WAREHOUSE_SHAPES = {
   pallet: () => <PalletDeck />,
   "consignment-crate": ConsignmentCrate,
   clipboard: Clipboard,
+  "warehouse-manager": Worker,
+  "cargo-stack": CargoStack,
+  "freight-truck": FreightTruck,
+  "storage-rack": StorageRack,
+  "dispatch-note": DispatchCrates,
+  "fragile-box": FragileBox,
 };

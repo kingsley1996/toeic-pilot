@@ -27,10 +27,11 @@ import * as THREE from "three";
 import { AccentRow } from "@/components/audio-button";
 import {
   Cone,
+  PALETTE,
   SceneMotionContext,
   Signboard,
   WAREHOUSE_SHAPES,
-  Worker,
+  Warehouse,
 } from "@/components/scene-shapes";
 import { Car, URBAN_SHAPES, UrbanEnvironment } from "@/components/scene-shapes-urban";
 import {
@@ -50,6 +51,11 @@ import { useToast } from "@/lib/toast";
  * `CameraRig` — rig giữ mutation trực tiếp trên camera/controls, nên nó không
  * được phép có bạn cùng tầng.
  */
+
+/** Kho phụ mái đỏ giữa bên kia đường — decor thuần, không gắn từ vựng.
+ *  Cỡ `depot` chứ không full-size: nhà to ở giữa tiền cảnh nuốt luôn xe
+ *  tải + kiện fragile phía sau nó (đã thử, xem preview là rõ). */
+const AnnexWarehouse: FC = () => <Warehouse depot roof={PALETTE.roofRed} />;
 
 /** Hai bảng shape ghép lại. Thiếu key nào là `tsc` kêu ngay ở đây. */
 const SHAPES: Record<ShapeKey, FC> = {
@@ -533,6 +539,13 @@ function SceneCanvas({
       ) : (
         <>
           <Ground />
+          {/* Kho phụ giữa bên kia đường cho đỡ trống — decor, không nhãn
+              không từ vựng. Cửa xoay π để quay ra đường (−Z). Chân đế
+              x −0.7..2.7, z 8.6..11.4: cách `fragile` 6 m, kiện dispatch
+              7 m, cọc tiêu (4.4, 6.4) 1.7 m, khỏi làn xe. */}
+          <group position={[1, 0, 10]} rotation={[0, Math.PI, 0]}>
+            <AnnexWarehouse />
+          </group>
           <Cone at={[1.6, 0, -2.2]} />
           <Cone at={[4.4, 0, 6.4]} />
           {/* Biển đứng SAU dãy kho (z = -12), nóc 8.8 m nên không vật nào che
@@ -541,15 +554,9 @@ function SceneCanvas({
           <Suspense fallback={null}>
             <Signboard at={[-6, 0, -12]} rotationY={0.53} onPick={onBrandPick} />
           </Suspense>
-          {/* Tổ kho: cùng `Mover` như xe courier nên đi chung một nhịp. Tuyến
-              của nó nằm trước cửa kho, tránh mọi lối xe. */}
-          <Mover
-            at={[-4.6, 0, -1.6]}
-            patrol={{ axis: "x", range: 1.6, speed: 0.45 }}
-            animated={walking}
-          >
-            <Worker />
-          </Mover>
+          {/* Quản lý kho giờ là object có nhãn (`warehouse-manager` đi tuần
+              trước cửa kho) nên không còn công nhân decor ở đây — hai người
+              đi trùng tuyến là rối mắt, không thêm tin. */}
         </>
       )}
       {objects.map((def) => (

@@ -22,6 +22,12 @@ export type ShapeKey =
   | "pallet"
   | "consignment-crate"
   | "clipboard"
+  | "warehouse-manager"
+  | "cargo-stack"
+  | "freight-truck"
+  | "storage-rack"
+  | "dispatch-note"
+  | "fragile-box"
   // ngã tư đô thị (`urban_intersection_3d_scene_spec.md` §3)
   | "overpass"
   | "intersection"
