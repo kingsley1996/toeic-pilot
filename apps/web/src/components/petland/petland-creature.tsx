@@ -1,7 +1,7 @@
 "use client";
 
-import { TILE } from "@/components/petland-map";
-import { creatureSheet } from "@/components/petland-sprite";
+import { TILE } from "@/components/petland/petland-map";
+import { creatureSheet } from "@/components/petland/petland-sprite";
 import { PixelIcon } from "@/components/pixel-icon";
 import { cx } from "@/components/ui";
 

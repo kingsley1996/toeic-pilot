@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Pencil, PawPrint } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Creature } from "@/components/petland-creature";
+import { Creature } from "@/components/petland/petland-creature";
 import { Alert, Button, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useRequireSession } from "@/lib/session";

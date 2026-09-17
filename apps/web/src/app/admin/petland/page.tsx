@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 
-import { reduce } from "@/components/petland-history";
-import { PALETTE, allCells, type PaletteCell } from "@/components/petland-palette";
+import { reduce } from "@/components/petland/petland-history";
+import { PALETTE, allCells, type PaletteCell } from "@/components/petland/petland-palette";
 
 import { Alert, Button, Field, Input, Page, PageHeader, Panel, Select, cx } from "@/components/ui";
 import {
@@ -27,7 +27,7 @@ import {
   type Cell,
   type MapData,
   type SheetId,
-} from "@/components/petland-map";
+} from "@/components/petland/petland-map";
 import { API_ROUTES } from "@toeic-pilot/shared";
 
 import { ApiError, apiFetch } from "@/lib/api";

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
-import { Box, Cone, PALETTE, Person, Signboard, paint } from "@/components/scene-shapes";
-import { Car, Tree } from "@/components/scene-shapes-urban";
+import { Box, Cone, PALETTE, Person, Signboard, paint } from "@/components/scenes/scene-shapes";
+import { Car, Tree } from "@/components/scenes/scene-shapes-urban";
 
 /**
  * Nhà ở ngoại ô + vườn (`planning/scenes/residential-house-garden-3d-scene-spec.md`).

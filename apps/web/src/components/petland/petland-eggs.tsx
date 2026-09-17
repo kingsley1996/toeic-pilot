@@ -15,7 +15,7 @@ import {
   TIER_LABEL,
   TIER_RANK,
   TIER_TONE,
-} from "@/components/petland-creature";
+} from "@/components/petland/petland-creature";
 import { PixelIcon } from "@/components/pixel-icon";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";

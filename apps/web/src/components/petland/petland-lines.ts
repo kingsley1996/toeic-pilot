@@ -19,7 +19,7 @@
  * Tiếng Việt vì đây là phần người học nhìn thấy.
  */
 
-import { type PetCondition } from "@/components/petland-pet";
+import { type PetCondition } from "@/components/petland/petland-pet";
 
 const LINES: Record<PetCondition, readonly string[]> = {
   sick: [

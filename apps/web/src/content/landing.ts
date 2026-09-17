@@ -318,7 +318,7 @@ export const EXAM_DURATION = 360;
 /*
  * HAI CHỖ CỐ Ý KHÔNG NẰM Ở ĐÂY:
  *
- * 1. Tên loài và bậc hiếm trong `components/petland-preview.tsx` — chúng soi
+ * 1. Tên loài và bậc hiếm trong `components/petland/petland-preview.tsx` — chúng soi
  *    chiếu `DEFAULT_PET_SPECIES` bên API. Đổi ở một phía là hai phía lệch nhau,
  *    và người học sẽ thấy hai cái tên cho cùng một con thú.
  *

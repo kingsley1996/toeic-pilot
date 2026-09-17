@@ -21,7 +21,7 @@ import {
   Tag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
-import { SCENE_BADGES } from "@/components/scene-card";
+import { SCENE_BADGES } from "@/components/scenes/scene-card";
 import { SCENES, type SceneBadge } from "@/content/scenes";
 import { useDueCount } from "@/lib/due-count";
 import { useSession } from "@/lib/session";

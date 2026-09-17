@@ -1,6 +1,6 @@
 import { API_ROUTES, type PetlandMapPublic } from "@toeic-pilot/shared";
 
-import { parseMap, type MapData } from "@/components/petland-map";
+import { parseMap, type MapData } from "@/components/petland/petland-map";
 import { apiFetch } from "@/lib/api";
 
 /**

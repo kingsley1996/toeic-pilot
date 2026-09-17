@@ -3,8 +3,8 @@
 import { API_ROUTES } from "@toeic-pilot/shared";
 import { useEffect, useRef, useState } from "react";
 
-import { TIER_LABEL, TIER_TONE, tileStyle } from "@/components/petland-creature";
-import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland-map";
+import { TIER_LABEL, TIER_TONE, tileStyle } from "@/components/petland/petland-creature";
+import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland/petland-map";
 
 /**
  * Petland trên trang giới thiệu: bản đồ thật và vài con thú, cả hai vẽ ra từ

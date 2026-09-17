@@ -9,18 +9,24 @@ import {
 import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { clamp, defaultPlace, readPlace, writePlace, type Place } from "@/components/petland-place";
-import { tileForGuest, type RoleMap } from "@/components/petland-bestiary";
-import { speechFor } from "@/components/petland-speech";
-import { CollectionScreen } from "@/components/petland-collection";
-import { petLine } from "@/components/petland-lines";
-import { QuestCard } from "@/components/petland-quest";
-import { GuestList } from "@/components/petland-quest-list";
-import { TIER_RANK, tierGlow } from "@/components/petland-creature";
-import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland-clock";
-import { EGG_PANEL_W, EggScreen } from "@/components/petland-eggs";
-import { PetlandMusicToggle } from "@/components/petland-music-toggle";
-import { PetHud, PixelBits, type Bit } from "@/components/petland-ui";
+import {
+  clamp,
+  defaultPlace,
+  readPlace,
+  writePlace,
+  type Place,
+} from "@/components/petland/petland-place";
+import { tileForGuest, type RoleMap } from "@/components/petland/petland-bestiary";
+import { speechFor } from "@/components/petland/petland-speech";
+import { CollectionScreen } from "@/components/petland/petland-collection";
+import { petLine } from "@/components/petland/petland-lines";
+import { QuestCard } from "@/components/petland/petland-quest";
+import { GuestList } from "@/components/petland/petland-quest-list";
+import { TIER_RANK, tierGlow } from "@/components/petland/petland-creature";
+import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland/petland-clock";
+import { EGG_PANEL_W, EggScreen } from "@/components/petland/petland-eggs";
+import { PetlandMusicToggle } from "@/components/petland/petland-music-toggle";
+import { PetHud, PixelBits, type Bit } from "@/components/petland/petland-ui";
 import { subscribeToCheer } from "@/lib/pet-cheer";
 import { subscribeToPetOpen } from "@/lib/pet-open";
 import { lastPet, publishPet } from "@/lib/pet-state";
@@ -39,7 +45,7 @@ import {
   type PetNeeds,
   type PetTrick,
   type Steer,
-} from "@/components/petland-pet";
+} from "@/components/petland/petland-pet";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
@@ -54,9 +60,9 @@ import {
   TILE,
   type MapData,
   type Tile,
-} from "@/components/petland-map";
+} from "@/components/petland/petland-map";
 import { loadPetlandMap } from "@/lib/petland-map-source";
-import type { PetView, Stage } from "@/components/petland-render";
+import type { PetView, Stage } from "@/components/petland/petland-render";
 
 /**
  * Góc thú cưng: một khung nhìn nhỏ nhìn vào bản đồ ô, ở góc dưới bên trái.
@@ -855,7 +861,7 @@ function PetPanel({
       })
       .catch(() => {});
 
-    void Promise.all([loadPetlandMap(), petLoad, import("@/components/petland-render")])
+    void Promise.all([loadPetlandMap(), petLoad, import("@/components/petland/petland-render")])
       .then(async ([loaded, pet, render]) => {
         const parsed = loaded?.map ?? null;
         // Chưa mở trứng thì KHÔNG dựng sân khấu: không có con nào để vẽ, và một

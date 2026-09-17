@@ -16,7 +16,7 @@ import dynamic from "next/dynamic";
 
 import { type NavItem } from "@/components/nav";
 import { FeedbackDock } from "@/components/feedback-dock";
-import { PetlandCard } from "@/components/petland-card";
+import { PetlandCard } from "@/components/petland/petland-card";
 import { SidebarShell, TopBarShell } from "@/components/shell";
 import { SiteFooter } from "@/components/site-footer";
 import { useDueCount } from "@/lib/due-count";
@@ -28,7 +28,7 @@ import { useSession } from "@/lib/session";
  * dựng ra `null`. Tải lười nó ra khỏi bundle của MỌI trang có sidebar: thẻ nhỏ
  * ở sidebar (`PetlandCard`) vẫn nhập tĩnh vì nó hiện luôn.
  */
-const PetLand = dynamic(() => import("@/components/petland").then((m) => m.PetLand), {
+const PetLand = dynamic(() => import("@/components/petland/petland").then((m) => m.PetLand), {
   ssr: false,
 });
 

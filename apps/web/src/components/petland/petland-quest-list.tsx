@@ -4,9 +4,9 @@ import type { EncounterPublic } from "@toeic-pilot/shared";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { tileForGuest } from "@/components/petland-bestiary";
-import { clock, secondsLeft } from "@/components/petland-countdown";
-import { Creature } from "@/components/petland-creature";
+import { tileForGuest } from "@/components/petland/petland-bestiary";
+import { clock, secondsLeft } from "@/components/petland/petland-countdown";
+import { Creature } from "@/components/petland/petland-creature";
 import { cx } from "@/components/ui";
 
 /**

@@ -20,7 +20,7 @@ import {
   TextureSource,
 } from "pixi.js";
 
-import { MAP_LIVING } from "@/components/petland-bestiary";
+import { MAP_LIVING } from "@/components/petland/petland-bestiary";
 import {
   SHEET_COLS,
   TILE,
@@ -28,12 +28,12 @@ import {
   type MapData,
   type SheetId,
   type Tile,
-} from "@/components/petland-map";
+} from "@/components/petland/petland-map";
 import {
   CREATURE_SHEETS,
   DEFAULT_CREATURE_SHEET,
   creatureSheet,
-} from "@/components/petland-sprite";
+} from "@/components/petland/petland-sprite";
 import type { CreatureSheetId } from "@toeic-pilot/shared";
 
 const SHEET_URL: Record<SheetId, string> = {

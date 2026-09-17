@@ -9,7 +9,7 @@ import {
 import { Lightbulb, Volume2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { clock, secondsLeft } from "@/components/petland-countdown";
+import { clock, secondsLeft } from "@/components/petland/petland-countdown";
 import { Button, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 import { cheer } from "@/lib/pet-cheer";

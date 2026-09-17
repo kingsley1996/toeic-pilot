@@ -33,10 +33,16 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { isWalkable, TILE, wanderStep, type MapData, type Tile } from "@/components/petland-map";
-import { conditionOf } from "@/components/petland-pet";
-import { Creature, usePetlandMapCanvas } from "@/components/petland-preview";
-import { PetHud } from "@/components/petland-ui";
+import {
+  isWalkable,
+  TILE,
+  wanderStep,
+  type MapData,
+  type Tile,
+} from "@/components/petland/petland-map";
+import { conditionOf } from "@/components/petland/petland-pet";
+import { Creature, usePetlandMapCanvas } from "@/components/petland/petland-preview";
+import { PetHud } from "@/components/petland/petland-ui";
 import { PixelIcon } from "@/components/pixel-icon";
 import { cx } from "@/components/ui";
 import { landing } from "@/content/landing";

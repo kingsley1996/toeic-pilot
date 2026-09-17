@@ -7,7 +7,7 @@ import {
   type PetAction,
   type PetCondition,
   type PetNeeds,
-} from "@/components/petland-pet";
+} from "@/components/petland/petland-pet";
 import { cx } from "@/components/ui";
 
 /*

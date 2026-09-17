@@ -4,7 +4,7 @@ import { API_ROUTES, type PetOwnedPublic, type PetPublic } from "@toeic-pilot/sh
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { byRarity, Creature, TIER_LABEL, TIER_TONE } from "@/components/petland-creature";
+import { byRarity, Creature, TIER_LABEL, TIER_TONE } from "@/components/petland/petland-creature";
 import { cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";
 

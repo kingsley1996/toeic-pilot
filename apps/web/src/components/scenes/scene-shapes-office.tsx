@@ -1,7 +1,7 @@
 import { Suspense, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-import { Box, PALETTE, Person, paint, useSignFace } from "@/components/scene-shapes";
+import { Box, PALETTE, Person, paint, useSignFace } from "@/components/scenes/scene-shapes";
 
 /**
  * Văn phòng mở — cùng khuôn `scene-shapes-construction.tsx`: shape là group

@@ -1,4 +1,4 @@
-import { SHEET_COLS, type Cell, type SheetId } from "@/components/petland-map";
+import { SHEET_COLS, type Cell, type SheetId } from "@/components/petland/petland-map";
 
 /**
  * Bảng chọn ô, xếp theo VIỆC người vẽ đang làm chứ không theo thứ tự tệp.

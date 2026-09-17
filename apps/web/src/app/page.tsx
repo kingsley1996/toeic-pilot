@@ -37,11 +37,14 @@ import { useSession } from "@/lib/session";
 const MockPlayer = dynamic(() => import("@/components/mock-player").then((m) => m.MockPlayer), {
   ssr: false,
 });
-const PetlandDemo = dynamic(() => import("@/components/petland-demo").then((m) => m.PetlandDemo), {
-  ssr: false,
-});
+const PetlandDemo = dynamic(
+  () => import("@/components/petland/petland-demo").then((m) => m.PetlandDemo),
+  {
+    ssr: false,
+  },
+);
 const PetlandSpecies = dynamic(
-  () => import("@/components/petland-preview").then((m) => m.PetlandSpecies),
+  () => import("@/components/petland/petland-preview").then((m) => m.PetlandSpecies),
   { ssr: false },
 );
 /*

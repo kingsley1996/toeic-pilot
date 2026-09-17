@@ -15,10 +15,13 @@ import { useRequireSession } from "@/lib/session";
  * Chunk `three` (~150KB gzip) vì thế nằm riêng ở route này, không vào bundle
  * của bất kỳ trang nào khác (`SPEC-VISUAL-VOCAB-3D` §6).
  */
-const SceneViewer = dynamic(() => import("@/components/scene-viewer").then((m) => m.SceneViewer), {
-  ssr: false,
-  loading: () => <Skeleton className="h-[52vh] w-full" />,
-});
+const SceneViewer = dynamic(
+  () => import("@/components/scenes/scene-viewer").then((m) => m.SceneViewer),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[52vh] w-full" />,
+  },
+);
 
 export default function ScenePage() {
   const { sceneId } = useParams<{ sceneId: string }>();

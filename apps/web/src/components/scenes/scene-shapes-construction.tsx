@@ -11,7 +11,7 @@ import {
   Signboard,
   Wheel,
   paint,
-} from "@/components/scene-shapes";
+} from "@/components/scenes/scene-shapes";
 
 /**
  * Công trường xây dựng — cùng khuôn `scene-shapes-urban.tsx`: shape là group

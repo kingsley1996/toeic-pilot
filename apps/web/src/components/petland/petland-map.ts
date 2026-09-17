@@ -15,7 +15,7 @@
  */
 
 /** Cỡ ô nguồn. Xem lý do nó sống ở `petland-sprite.ts` thay vì ở đây. */
-export { TILE } from "@/components/petland-sprite";
+export { TILE } from "@/components/petland/petland-sprite";
 
 /** Tấm ghép ô nào. Xem `public/pet/CREDITS.md`. */
 export type SheetId = "town" | "farm" | "water" | "stone";

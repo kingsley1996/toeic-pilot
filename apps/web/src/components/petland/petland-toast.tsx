@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 
-import { conditionLines, lineFrom } from "@/components/petland-lines";
-import { type PetCondition } from "@/components/petland-pet";
+import { conditionLines, lineFrom } from "@/components/petland/petland-lines";
+import { type PetCondition } from "@/components/petland/petland-pet";
 import { cx } from "@/components/ui";
 import { subscribeToPetNotices, type PetNotice } from "@/lib/pet-notice";
 import { getSidebarState, serverSidebarState, subscribeToSidebar } from "@/lib/sidebar";

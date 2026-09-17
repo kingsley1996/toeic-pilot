@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
-import { Box, PALETTE, Person, Signboard, paint } from "@/components/scene-shapes";
+import { Box, PALETTE, Person, Signboard, paint } from "@/components/scenes/scene-shapes";
 
 /**
  * Phòng trưng bày bảo tàng (`planning/scenes/museum-3d-scene-spec.md`).

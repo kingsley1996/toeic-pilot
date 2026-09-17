@@ -32,15 +32,15 @@ import {
   Signboard,
   WAREHOUSE_SHAPES,
   Warehouse,
-} from "@/components/scene-shapes";
-import { Car, URBAN_SHAPES, UrbanEnvironment } from "@/components/scene-shapes-urban";
+} from "@/components/scenes/scene-shapes";
+import { Car, URBAN_SHAPES, UrbanEnvironment } from "@/components/scenes/scene-shapes-urban";
 import {
   CONSTRUCTION_SHAPES,
   ConstructionEnvironment,
-} from "@/components/scene-shapes-construction";
-import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scene-shapes-residence";
-import { MUSEUM_SHAPES, MuseumEnvironment } from "@/components/scene-shapes-museum";
-import { OFFICE_SHAPES, OfficeEnvironment } from "@/components/scene-shapes-office";
+} from "@/components/scenes/scene-shapes-construction";
+import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scenes/scene-shapes-residence";
+import { MUSEUM_SHAPES, MuseumEnvironment } from "@/components/scenes/scene-shapes-museum";
+import { OFFICE_SHAPES, OfficeEnvironment } from "@/components/scenes/scene-shapes-office";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";

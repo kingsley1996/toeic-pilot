@@ -8,8 +8,8 @@ import {
 } from "@toeic-pilot/shared";
 import { useEffect, useState } from "react";
 
-import { Creature, TIER_LABEL, byCommonness } from "@/components/petland-creature";
-import { CREATURE_SHEETS, creatureSheet } from "@/components/petland-sprite";
+import { Creature, TIER_LABEL, byCommonness } from "@/components/petland/petland-creature";
+import { CREATURE_SHEETS, creatureSheet } from "@/components/petland/petland-sprite";
 import { Modal } from "@/components/modal";
 import { Alert, Button, Input, Page, PageHeader, Panel, Select, Tag, cx } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api";

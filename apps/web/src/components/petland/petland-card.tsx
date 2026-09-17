@@ -3,9 +3,9 @@
 import { API_ROUTES, type PetPublic } from "@toeic-pilot/shared";
 import { useCallback, useEffect, useState } from "react";
 
-import { PetIdle, TIER_RANK } from "@/components/petland-creature";
-import { CONDITION_LABEL, conditionOf } from "@/components/petland-pet";
-import { PetlandToast } from "@/components/petland-toast";
+import { PetIdle, TIER_RANK } from "@/components/petland/petland-creature";
+import { CONDITION_LABEL, conditionOf } from "@/components/petland/petland-pet";
+import { PetlandToast } from "@/components/petland/petland-toast";
 import { PixelIcon, type PixelIconName } from "@/components/pixel-icon";
 import { Skeleton, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";

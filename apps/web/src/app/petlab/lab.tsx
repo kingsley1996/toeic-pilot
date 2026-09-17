@@ -8,9 +8,9 @@ import {
   parseMap,
   type MapData,
   type Tile,
-} from "@/components/petland-map";
-import { STEP_SECONDS } from "@/components/petland-pet";
-import { createStage, type Stage } from "@/components/petland-render";
+} from "@/components/petland/petland-map";
+import { STEP_SECONDS } from "@/components/petland/petland-pet";
+import { createStage, type Stage } from "@/components/petland/petland-render";
 
 export default function Lab() {
   const host = useRef<HTMLDivElement | null>(null);

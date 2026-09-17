@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 import * as THREE from "three";
 
-import { Box, PALETTE, Person, Signboard, Wheel, paint } from "@/components/scene-shapes";
+import { Box, PALETTE, Person, Signboard, Wheel, paint } from "@/components/scenes/scene-shapes";
 
 /**
  * Urban intersection scene

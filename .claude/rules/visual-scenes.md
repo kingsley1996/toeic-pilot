@@ -1,7 +1,7 @@
 ---
 paths:
   - "apps/web/src/content/scenes/**"
-  - "apps/web/src/components/scene-*.tsx"
+  - "apps/web/src/components/scenes/**"
   - "planning/scenes/**"
 ---
 

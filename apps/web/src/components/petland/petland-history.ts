@@ -1,4 +1,4 @@
-import type { MapData } from "@/components/petland-map";
+import type { MapData } from "@/components/petland/petland-map";
 
 /**
  * Lịch sử sửa, kiểu quá khứ · hiện tại · tương lai.

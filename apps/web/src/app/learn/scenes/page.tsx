@@ -1,5 +1,5 @@
 import { Page, PageHeader } from "@/components/ui";
-import { SceneCard } from "@/components/scene-card";
+import { SceneCard } from "@/components/scenes/scene-card";
 import { SCENES } from "@/content/scenes";
 
 /*
