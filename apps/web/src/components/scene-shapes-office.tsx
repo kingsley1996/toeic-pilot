@@ -64,7 +64,7 @@ function DeskBase({ w = 1.6, monitor = true }: { w?: number; monitor?: boolean }
           <Box size={[0.7, 0.45, 0.05]} at={[0, 1.0, -0.15]} color={PALETTE.steelDark} />
           {/* mặt sáng lồi 0.025 trước thân — 0.005 là depth đấu nhau ở xa,
               màn hình "chết" như đã thấy trên preview */}
-          <mesh position={[0, 1.0, -0.10]}>
+          <mesh position={[0, 1.0, -0.1]}>
             <planeGeometry args={[0.62, 0.37]} />
             <meshBasicMaterial color="#bfe3ef" toneMapped={false} />
           </mesh>
@@ -105,7 +105,12 @@ function ReviseSet() {
       <DeskBase monitor={false} />
       <Box size={[0.5, 0.02, 0.65]} at={[0.1, 0.8, 0]} color={PALETTE.paper} />
       {[0.12, 0.0, -0.12].map((dz) => (
-        <Box key={dz} size={[0.3, 0.005, 0.03]} at={[0.05, 0.822, dz]} color={PALETTE.concreteDark} />
+        <Box
+          key={dz}
+          size={[0.3, 0.005, 0.03]}
+          at={[0.05, 0.822, dz]}
+          color={PALETTE.concreteDark}
+        />
       ))}
       {/* 2 vạch sửa đỏ đè lên dòng chữ */}
       {[0.06, -0.06].map((dz) => (
@@ -487,7 +492,12 @@ function PunctualClock() {
         [0, -0.34],
         [-0.34, 0],
       ].map(([x, y], i) => (
-        <Box key={i} size={[0.05, 0.09, 0.02]} at={[x, 2.7 + y - 0.045, 0.075]} color={PALETTE.steelDark} />
+        <Box
+          key={i}
+          size={[0.05, 0.09, 0.02]}
+          at={[x, 2.7 + y - 0.045, 0.075]}
+          color={PALETTE.steelDark}
+        />
       ))}
       <group position={[0, 2.7, 0.09]} rotation={[0, 0, (-2 * Math.PI) / 3]}>
         <Box size={[0.05, 0.24, 0.015]} at={[0, 0.1, 0]} color={PALETTE.tire} />
@@ -718,7 +728,8 @@ function PersonnelTeam() {
   );
 }
 
-export const OFFICE_SHAPES = {  supervisor: () => <Person coat={PALETTE.wallTrim} clipboard />,
+export const OFFICE_SHAPES = {
+  supervisor: () => <Person coat={PALETTE.wallTrim} clipboard />,
   intern: () => (
     <group>
       <Person coat={PALETTE.doorOrange} />
@@ -846,7 +857,11 @@ function GlassFacade() {
     <group position={[0, 0, 8]}>
       {/* panel hẹp hơn khoảng trụ 0.2 (hở 0.1 mỗi bên) — khít vào trụ là đấu depth */}
       {[...panelsWest, ...panelsEast].map(([x0, x1]) => (
-        <GlassPane key={`${x0}:${x1}`} size={[x1 - x0 - 0.2, 2.4, 0.05]} at={[(x0 + x1) / 2, 0.05, 0]} />
+        <GlassPane
+          key={`${x0}:${x1}`}
+          size={[x1 - x0 - 0.2, 2.4, 0.05]}
+          at={[(x0 + x1) / 2, 0.05, 0]}
+        />
       ))}
       {[-13, -9, -5, -1, 1, 5, 9, 13].map((x) => (
         <Box key={x} size={[0.15, 2.5, 0.15]} at={[x, 0, 0]} color={PALETTE.steelDark} />
