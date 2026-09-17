@@ -212,3 +212,31 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
 10. **Ảnh chụp trắng trơn mà pill vẫn đủ không phải code hỏng.** Đó là chụp
     trúng lúc HMR đang reload (dev) — chờ yên, chạy lại, đừng sửa code theo
     (museum suýt revert oan cả loạt sửa đúng).
+
+## 10. Bài học cảnh 5 (office-01, 2026-09) — indoor đầu tiên, 21 từ
+
+1. **Cảnh indoor cần home camera riêng.** Home mặc định của kho nén cả
+   tường bắc (cách 27 m) thành một chùm pill — đứng càng xa, đồ xa càng
+   dồn vào nhau. Tiến camera vào + nhìn chếch để nhãn tường tách ra
+   (`home` trong scene file).
+2. **Script projection phải map vào rect canvas thật, không phải viewport.**
+   Trang scene có sidebar nên canvas chỉ ~990 px lệch trái — model tính
+   trên 1280 full cho số đẹp mà thực tế chùm hết. Calib bằng probe tạm
+   (`page.evaluate` đọc `getBoundingClientRect` của canvas + pills, xoá
+   sau khi dùng): model khớp từng pixel mới tin để dời đồ.
+3. **Một bức tường chứa tối đa 3–4 nhãn.** 8 món dọc tường bắc là vô vọng
+   dù tính kỹ đến đâu — phải cho bớt xuống đất: lịch hẹn lên giá chữ A
+   đứng riêng, tủ/kệ/huy hiệu rời tường ra giữa phòng.
+4. **Cylinder mặc định trục Y.** Mặt đồng hồ, mặt bàn tròn muốn quay về
+   camera phải xoay X π/2 — quên là đồng hồ "úp mặt" mà vẫn ra hình.
+5. **Kính decor: một `GlassPane` chung + tắt raycast.** Kính trước vật có
+   nhãn mà nuốt click là hỏng im lặng (cùng luật mũi tên nhãn). Khung bao
+   phải GIAO nhau với kính (lút vào), chạm khít mặt là flicker như mọi
+   Box khác. Trong suốt giữ một mức (0.28) cho mọi kính trong cảnh.
+6. **Hai mặt song song cách nhau dưới 0.02 là flicker ở xa.** Mặt bảng
+   trắng (0.01), giấy memo (0.0025), chi tiết thẻ (0.0025) đều dính —
+   gần thì đẹp, ra xa mới nháy nên mắt thường lúc dựng không thấy, chỉ
+   preview mới thấy. Mọi lớp phủ mặt nổi tối thiểu 0.02.
+7. **Kể chuyện bằng luồng đi của khách:** quẹt máy + lấy thẻ ở cửa kính
+   rồi mới vào gặp lễ tân — badge đặt cạnh quầy theo quán tính là cùng
+   tia nhìn với payroll, đặt ở cửa thì vừa đúng đời vừa tách nhãn.

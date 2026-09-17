@@ -40,6 +40,7 @@ import {
 } from "@/components/scene-shapes-construction";
 import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scene-shapes-residence";
 import { MUSEUM_SHAPES, MuseumEnvironment } from "@/components/scene-shapes-museum";
+import { OFFICE_SHAPES, OfficeEnvironment } from "@/components/scene-shapes-office";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -64,6 +65,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...CONSTRUCTION_SHAPES,
   ...RESIDENCE_SHAPES,
   ...MUSEUM_SHAPES,
+  ...OFFICE_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -515,6 +517,8 @@ function SceneCanvas({
       />
       {scene.environment === "residential-yard" ? (
         <ResidenceEnvironment onBrandPick={onBrandPick} />
+      ) : scene.environment === "office-floor" ? (
+        <OfficeEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "museum-hall" ? (
         <MuseumEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (

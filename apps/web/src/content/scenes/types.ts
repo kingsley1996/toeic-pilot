@@ -110,7 +110,29 @@ export type ShapeKey =
   | "restoration"
   | "archway"
   | "exit"
-  | "mural";
+  | "mural"
+  // văn phòng mở (topic `office`)
+  | "supervisor"
+  | "intern"
+  | "candidate"
+  | "interview"
+  | "personnel-team"
+  | "collaborate"
+  | "reception-desk"
+  | "directory-board"
+  | "badge-stand"
+  | "appointment-calendar"
+  | "punctual-clock"
+  | "office-cabinet"
+  | "stationery-shelf"
+  | "extension-phone"
+  | "payroll-set"
+  | "shift-board"
+  | "memo-board"
+  | "attendance-recorder"
+  | "revise-set"
+  | "evaluation-board"
+  | "notify-speaker";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -186,7 +208,8 @@ export interface SceneDef {
     | "urban-intersection"
     | "construction-site"
     | "residential-yard"
-    | "museum-hall";
+    | "museum-hall"
+    | "office-floor";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.
