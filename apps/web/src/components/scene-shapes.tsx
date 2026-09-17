@@ -98,7 +98,11 @@ export function Warehouse({ depot = false, roof }: { depot?: boolean; roof?: str
       {/* dải viền mái — hai mảng tường phẳng cùng màu sẽ đọc thành khối giấy.
           Mũ 0.37 thay vì 0.35: mặt trên của nó phải cao hơn nóc tường một chút,
           hai mặt phẳng trùng khít thì depth-buffer đấu nhau và nóc nhấp nháy. */}
-      <Box size={[w + 0.15, 0.37, d + 0.15]} at={[0, h - 0.35, 0]} color={roof ?? PALETTE.wallTrim} />
+      <Box
+        size={[w + 0.15, 0.37, d + 0.15]}
+        at={[0, h - 0.35, 0]}
+        color={roof ?? PALETTE.wallTrim}
+      />
       {/* cửa lớn hướng +Z */}
       <Box size={[w * 0.28, h * 0.62, 0.12]} at={[-w * 0.2, 0, d / 2]} color={PALETTE.doorBlue} />
       <Box size={[w * 0.16, h * 0.5, 0.12]} at={[w * 0.16, 0, d / 2]} color={PALETTE.steelDark} />
@@ -268,7 +272,12 @@ function StorageRack() {
       {/* dầm cam hai tầng, trước + sau */}
       {[1.0, 2.0].map((y) =>
         [-0.5, 0.5].map((z) => (
-          <Box key={`${y}:${z}`} size={[2.6, 0.14, 0.1]} at={[0, y, z]} color={PALETTE.doorOrange} />
+          <Box
+            key={`${y}:${z}`}
+            size={[2.6, 0.14, 0.1]}
+            at={[0, y, z]}
+            color={PALETTE.doorOrange}
+          />
         )),
       )}
       {/* tầng trệt: hai thùng đặt thẳng nền */}
