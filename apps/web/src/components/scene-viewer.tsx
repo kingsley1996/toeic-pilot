@@ -413,6 +413,7 @@ function SceneCanvas({
   walking,
   homeSeq,
   onPick,
+  onBrandPick,
   focus,
 }: {
   scene: SceneDef;
@@ -422,6 +423,8 @@ function SceneCanvas({
   walking: boolean;
   homeSeq: number;
   onPick: (id: string) => void;
+  /** Bấm biển thương hiệu (decor, không phải từ vựng) — viewer mở bảng giới thiệu. */
+  onBrandPick: (faceCenter: [number, number, number]) => void;
   focus: FlyTarget;
 }) {
   const cancelRef = useRef(false);
@@ -448,9 +451,9 @@ function SceneCanvas({
         shadow-camera-bottom={-16}
       />
       {scene.environment === "residential-yard" ? (
-        <ResidenceEnvironment />
+        <ResidenceEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (
-        <ConstructionEnvironment />
+        <ConstructionEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "urban-intersection" ? (
         <>
           <UrbanEnvironment />
@@ -477,7 +480,7 @@ function SceneCanvas({
               được; `home` phải lùi đủ xa mới thấy hết. yaw 0.53 = phương từ
               biển tới camera. */}
           <Suspense fallback={null}>
-            <Signboard at={[-6, 0, -12]} rotationY={0.53} />
+            <Signboard at={[-6, 0, -12]} rotationY={0.53} onPick={onBrandPick} />
           </Suspense>
           {/* Tổ kho: cùng `Mover` như xe courier nên đi chung một nhịp. Tuyến
               của nó nằm trước cửa kho, tránh mọi lối xe. */}
@@ -536,6 +539,9 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   const [mode, setMode] = useState<Mode>("explore");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<VocabularyDetail | null>(null);
+  /** Bảng giới thiệu TOEIC Pilot (bấm biển decor) — chung Panel với thẻ từ,
+      loại trừ lẫn nhau. */
+  const [brandOpen, setBrandOpen] = useState(false);
   const [focus, setFocus] = useState<FlyTarget>(null);
   const [flash, setFlash] = useState<{ id: string; kind: "right" | "wrong" } | null>(null);
   const [homeSeq, setHomeSeq] = useState(0);
@@ -603,8 +609,26 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   function closeSheet() {
     setSelectedId(null);
     setDetail(null);
+    setBrandOpen(false);
     // `focus = null` là tín hiệu cho `CameraRig` bay về pose trước lúc bấm.
     setFocus(null);
+  }
+
+  /** Bấm biển thương hiệu: mở bảng giới thiệu + bay tới như từ vựng. Chỉ ở
+      explore — recall mà mở là che câu hỏi đang chấm. */
+  function onBrandPick(center: [number, number, number]) {
+    if (mode !== "explore") return;
+    setSelectedId(null);
+    setDetail(null);
+    setBrandOpen(true);
+    // Cùng nhịp `flyTo`: nhìn vào tâm mặt biển, Đóng thì `CameraRig` bay về.
+    flySeq.current += 1;
+    setFocus({
+      pos: [center[0], 0, center[2]],
+      dist: 9,
+      seq: flySeq.current,
+      lookY: center[1],
+    });
   }
 
   function startRecall() {
@@ -642,6 +666,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
     if (mode === "explore") {
       setSelectedId(objectId);
       setDetail(null);
+      setBrandOpen(false);
       flyTo(def);
       const id = entryIdOf(def);
       if (id) {
@@ -815,6 +840,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
           walking={!reducedMotion && mode === "explore"}
           homeSeq={homeSeq}
           onPick={onPick}
+          onBrandPick={onBrandPick}
           focus={focus}
         />
         {mode === "recall" && recall && recallTarget && (
@@ -828,6 +854,19 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
               </span>
             </p>
           </div>
+        )}
+        {mode === "explore" && brandOpen && !selectedDef && (
+          <Panel className="absolute bottom-3 left-3 z-30 max-h-[calc(100%-1.5rem)] w-[min(24rem,calc(100%-1.5rem))] overflow-y-auto p-4">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-subtitle">TOEIC Pilot</h2>
+              <p className="text-body">Nền tảng học và luyện thi TOEIC đơn giản và hiệu quả.</p>
+              <div className="mt-1 flex gap-2">
+                <Button size="sm" variant="secondary" onClick={closeSheet}>
+                  Đóng
+                </Button>
+              </div>
+            </div>
+          </Panel>
         )}
         {mode === "explore" && selectedDef && (
           <Panel className="absolute bottom-3 left-3 z-30 max-h-[calc(100%-1.5rem)] w-[min(24rem,calc(100%-1.5rem))] overflow-y-auto p-4">

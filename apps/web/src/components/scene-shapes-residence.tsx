@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
-import { Box, Cone, PALETTE, Person, paint } from "@/components/scene-shapes";
+import { Box, Cone, PALETTE, Person, Signboard, paint } from "@/components/scene-shapes";
 import { Car, Tree } from "@/components/scene-shapes-urban";
 
 /**
@@ -86,10 +86,10 @@ function useYardPlan() {
     ctx.fillRect(7, -3.5, 2.5, 2.5);
     ctx.fillRect(7, 0, 2.5, 2.5);
 
-    // Vệt đất dưới hố đào của cậu bé (khớp def shovel).
+    // Vệt đất dưới hố đào của cậu bé (khớp def shovel, nằm gọn trên thảm yard).
     ctx.fillStyle = RES.soil;
     ctx.beginPath();
-    ctx.ellipse(8.5, 4.5, 1.5, 1.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(7.7, 4.5, 1.1, 1.2, 0, 0, Math.PI * 2);
     ctx.fill();
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -635,7 +635,11 @@ function NeighborHouse({
   );
 }
 
-export function ResidenceEnvironment() {
+export function ResidenceEnvironment({
+  onBrandPick,
+}: {
+  onBrandPick?: (faceCenter: [number, number, number]) => void;
+}) {
   const plan = useYardPlan();
   return (
     <group>
@@ -679,6 +683,12 @@ export function ResidenceEnvironment() {
         </group>
       ))}
       <Cone at={[-8, 0, 8.8]} />
+      {/* billboard ven đường phía đông-nam, ngoài rào (mặt ra đường/camera):
+          lệch đông khỏi trục nhìn chính nên không che nhà. Thu 0.72 như
+          `Billboard` của urban cho hợp cỡ khu dân cư. */}
+      <group position={[12, 0, 11]} rotation={[0, -0.5, 0]} scale={0.72}>
+        <Signboard at={[0, 0, 0]} onPick={onBrandPick} />
+      </group>
     </group>
   );
 }

@@ -176,3 +176,29 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
     đẹp là rào đâm xuyên tường nhà bên (hai lần: urban chưa dính vì đường phố,
     residence dính cả hai hông). Vẽ rào theo footprint số, chừa cổng đúng chỗ
     lối đi — cổng không ở trên lối đi là rào chặn đường vào nhà mình.
+
+## 9. Bài học cảnh 4 (residence + biển thương hiệu, 2026-09)
+
+1. **Thảm trải (yard/pavement) nằm trong rào.** Tâm + nửa kích thước + viền
+   phải nhỏ hơn footprint rào — vẽ theo quán tính là rào chạy giữa thảm, nửa
+   ngoài rào. Vật đứng trên thảm (mower/weed/shovel) và vệt đất canvas phải
+   dời theo, không thì nửa chìm dưới thảm.
+
+2. **Mọi cảnh mới đều có biển thương hiệu.** `Signboard` dùng lại, không vẽ
+   biển mới: mặt biển là canvas offline (không tải font mạng — drei `Text`
+   là chờ mạng để hiện chữ).
+3. **Decor, đứng SAU vật có nhãn.** Biển trước vật là che trục nhìn chính từ
+   home camera (construction từng đặt trước rào nam, che móng). Đặt sau lưng
+   toàn bộ object (construction: z = −14 sau ladder −9.5) hoặc ngoài rào ven
+   đường lệch khỏi trục nhìn (residence đông-nam).
+4. **Trong mép đất, ngoài footprint hàng xóm.** Panel 9.6 m: tâm ± 4.8 phải
+   trong span 36 m, không đâm rào/nhà/vật có nhãn — kiểm bằng số như §7.4.
+5. **Cỡ hợp bối cảnh.** Khu dân cư thu `scale={0.72}` (như `Billboard` urban);
+   công trường/công nghiệp để nguyên.
+6. **Bấm biển = Panel giới thiệu + bay camera, không phải popup.** Truyền
+   `onPick` vào `Signboard`, viewer mở Panel chung với thẻ từ (loại trừ lẫn
+   nhau) và `setFocus` vào tâm mặt biển (lấy qua `matrixWorld` lúc bấm nên
+   đúng cả khi biển trong group scale). Chỉ ở explore — recall mở là che câu hỏi.
+7. **Riêng từ vựng `billboard` (urban) không hiện giới thiệu.** Object đó không
+   truyền `onPick` nên vẫn mở thẻ từ + chấm recall — chặn sự kiện ở đó là kẹt
+   cả lượt quiz.

@@ -1,4 +1,4 @@
-import { createContext, useMemo, useRef } from "react";
+import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -396,13 +396,46 @@ export function useSignFace() {
 export function Signboard({
   at,
   rotationY = 0,
+  onPick,
 }: {
   at: [number, number, number];
   rotationY?: number;
+  /** Bấm biển gọi ra ngoài (viewer mở bảng giới thiệu). Không truyền thì biển
+      là vật tĩnh — `billboard` ở urban không truyền nên vẫn mở thẻ từ vựng. */
+  onPick?: (faceCenter: [number, number, number]) => void;
 }) {
   const face = useSignFace();
+  const ref = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    if (!hovered || !onPick) return;
+    document.body.style.cursor = "pointer";
+    return () => {
+      document.body.style.cursor = "";
+    };
+  }, [hovered, onPick]);
+
   return (
-    <group position={at} rotation={[0, rotationY, 0]}>
+    <group
+      ref={ref}
+      position={at}
+      rotation={[0, rotationY, 0]}
+      onClick={(e) => {
+        if (!onPick || !ref.current) return;
+        e.stopPropagation();
+        // Tâm mặt biển ra world để viewer bay tới — qua `matrixWorld` nên đúng
+        // cả khi biển nằm trong group lồng/scale (residence thu 0.72).
+        const v = new THREE.Vector3(0, 6.5, 0).applyMatrix4(ref.current.matrixWorld);
+        onPick([v.x, v.y, v.z]);
+      }}
+      onPointerOver={(e) => {
+        if (!onPick) return;
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={() => setHovered(false)}
+    >
       {[-3.4, 3.4].map((x) => (
         <Box key={x} size={[0.34, 4.2, 0.34]} at={[x, 0, 0]} color={PALETTE.steelDark} />
       ))}

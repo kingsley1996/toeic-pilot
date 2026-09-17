@@ -8,6 +8,7 @@ import {
   PALETTE,
   Person,
   SceneMotionContext,
+  Signboard,
   Wheel,
   paint,
 } from "@/components/scene-shapes";
@@ -429,7 +430,11 @@ export const CONSTRUCTION_SHAPES = {
  * Bối cảnh công trường: đất + sân + vệt bánh (một canvas), hàng rào mượn đúng
  * shape `barrier` có nhãn, cọc tiêu mượn `Cone` của kho.
  */
-export function ConstructionEnvironment() {
+export function ConstructionEnvironment({
+  onBrandPick,
+}: {
+  onBrandPick?: (faceCenter: [number, number, number]) => void;
+}) {
   const plan = useSitePlan();
   return (
     <group>
@@ -451,6 +456,9 @@ export function ConstructionEnvironment() {
           <Barrier />
         </group>
       ))}
+      {/* biển dự án đứng SAU toàn bộ vật có nhãn (sau móng/giàn giáo, z = −14),
+          mặt xoay về camera đông-nam — đúng quy ước `Signboard` của kho. */}
+      <Signboard at={[0, 0, -14]} rotationY={0.4} onPick={onBrandPick} />
       <Cone at={[-6, 0, 10.5]} />
       <Cone at={[6, 0, 10.5]} />
       <Cone at={[8, 0, 1.5]} />

@@ -16,6 +16,7 @@ và tự nạp khi đọc tệp khớp `paths:`:
 |---|---|
 | `api-backend.md` | `apps/api/app/**/*.py` — cấu hình, auth, database, luật miền, phân trang |
 | `frontend.md` | `apps/web/**` — design system, ba trạng thái session, shell, bẫy `tsc` |
+| `visual-scenes.md` | `content/scenes/**`, `scene-*.tsx`, `planning/scenes/**` — tạo/sửa cảnh 3D: đọc `SPEC-VISUAL-VOCAB-3D` §7–§9 trước |
 | `learning-domain.md` | services + route học — bất biến từ vựng và dictation |
 | `content-pipeline.md` | `apps/api/app/content/**` — audio, ảnh, nhãn, sinh đề, và lệnh của chúng |
 | `testing.md` | `apps/api/tests/**`, `apps/web/e2e/**` |

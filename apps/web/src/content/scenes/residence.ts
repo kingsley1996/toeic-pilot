@@ -236,9 +236,8 @@ export const residenceScene: SceneDef = {
       shape: "weed",
       headword: "weed",
       partOfSpeech: "noun",
-      // Mép làn máy cắt, né nhãn fence (máy không bao giờ chạy tới đây nên
-      // thân máy cũng không che được).
-      position: [-3.5, 0.06, 7.0],
+      // Đầu tây làn máy cắt, nằm trên thảm yard, né nhãn fence.
+      position: [-1.5, 0.06, 7.0],
       focusDistance: 3.5,
       hotspotY: 1,
       ringRadius: 1.2,
@@ -248,8 +247,8 @@ export const residenceScene: SceneDef = {
       shape: "shovel",
       headword: "shovel",
       partOfSpeech: "noun",
-      // Trong rào (cách rào đông 2 m, rào nam 3.5 m), né làn máy cắt.
-      position: [8.5, 0, 4.5],
+      // Trong rào (cách rào đông 4 m, rào nam 3.5 m), né làn máy cắt.
+      position: [6.5, 0, 4.5],
       focusDistance: 4,
       hotspotY: 1.8,
       ringRadius: 1.5,
@@ -316,8 +315,9 @@ export const residenceScene: SceneDef = {
       shape: "yard",
       headword: "yard",
       partOfSpeech: "noun",
-      // Góc đông-nam thảm cỏ — giữa thảm là làn máy cắt quét qua.
-      position: [7, 0, 7.5],
+      // Thảm cỏ nằm TRONG rào (viền đá cách rào nam 0.4 m, rào đông 1.3 m) —
+      // giữa thảm là làn máy cắt quét qua.
+      position: [3, 0, 5.2],
       focusDistance: 9,
       hotspotY: 1.4,
       ringRadius: 6,
