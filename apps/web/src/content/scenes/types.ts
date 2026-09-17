@@ -112,11 +112,17 @@ export type ShapeKey =
  * Một trục cộng một góc xoay là đủ cho cả hai cảnh — mọi tuyến ở đây đều thẳng.
  */
 export interface Patrol {
-  axis: "x" | "z";
+  /** Tuyến thẳng song song với trục này. Không dùng khi có `rect`. */
+  axis?: "x" | "z";
   /** Xoay tuyến trong mặt phẳng nền — đại lộ của cảnh ngã tư chạy chéo, không
    *  chạy theo trục. Mặc định 0: tuyến song song với `axis`. */
   yaw?: number;
-  range: number;
+  /** Vòng chữ nhật quanh `position`: nửa rộng [x, z], đi thuận chiều kim đồng
+   *  hồ (nhìn từ trên). Cùng `rect` + `speed` là cùng pha nên nhóm đi chung
+   *  giữ nguyên đội hình (tour museum) — `Mover` khởi động đồng bộ. */
+  rect?: [number, number];
+  /** Nửa quãng đường tuyến thẳng (mét). Không dùng khi có `rect`. */
+  range?: number;
   speed: number;
 }
 

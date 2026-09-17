@@ -39,13 +39,20 @@ const MUS = {
   gold: "#d9a92e",
 } as const;
 
-/** Kính tủ trưng bày: trong suốt để thấy hiện vật bên trong. */
+/** Kính tủ trưng bày: trong suốt để thấy hiện vật bên trong (`depthWrite
+    false` cho sort đúng trước vật đục sau kính). */
 function GlassBox({ size, at }: { size: [number, number, number]; at: [number, number, number] }) {
   const [w, h, d] = size;
   return (
     <mesh position={[at[0], at[1] + h / 2, at[2]]} castShadow>
       <boxGeometry args={[w, h, d]} />
-      <meshStandardMaterial color={MUS.glass} transparent opacity={0.25} roughness={0.1} />
+      <meshStandardMaterial
+        color={MUS.glass}
+        transparent
+        opacity={0.25}
+        roughness={0.1}
+        depthWrite={false}
+      />
     </mesh>
   );
 }
@@ -86,31 +93,63 @@ function GalleryWall() {
 }
 
 function Painting() {
-  // Khung vàng + toan phong cảnh (hai mảng màu gợi núi/trời).
+  // Khung vàng + toan phong cảnh. Các lớp cách nhau ≥0.04 m — chồng khít
+  // là nhấp nháy z-fighting ở góc xiên (đã dính ở 0.02).
   return (
     <group>
       <Box size={[2.4, 2.0, 0.12]} at={[0, 2.0, 0]} color={MUS.frame} />
-      <Box size={[2.0, 1.6, 0.14]} at={[0, 2.0, 0]} color={MUS.canvas} />
-      <Box size={[2.0, 0.6, 0.15]} at={[0, 1.55, 0]} color={PALETTE.leaf} />
+      <Box size={[2.0, 1.6, 0.08]} at={[0, 2.0, 0.07]} color={MUS.canvas} />
+      <Box size={[2.0, 0.6, 0.06]} at={[0, 1.55, 0.12]} color={PALETTE.leaf} />
     </group>
   );
 }
 
 function Mural() {
-  // Bích họa phong cảnh: trời + mặt trời + dãy núi + sông (đợt trước là ba
-  // dải ngang nên vẽ lại cho khác hẳn).
+  // Bích họa phong cảnh vẽ bằng MỘT mặt canvas (trời/mặt trời/núi/sông) —
+  // nhiều hộp chồng nhau là nhấp nháy z-fighting không sửa dứt được.
+  const face = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#9db3a8";
+    ctx.fillRect(0, 0, 512, 160);
+    ctx.fillStyle = "#d9a92e";
+    ctx.beginPath();
+    ctx.arc(370, 70, 42, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#40566b";
+    ctx.beginPath();
+    ctx.moveTo(0, 170);
+    ctx.lineTo(130, 60);
+    ctx.lineTo(260, 170);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5c422a";
+    ctx.beginPath();
+    ctx.moveTo(180, 170);
+    ctx.lineTo(300, 90);
+    ctx.lineTo(420, 170);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5f8a52";
+    ctx.fillRect(0, 170, 512, 40);
+    ctx.fillStyle = "#9fc0d2";
+    ctx.fillRect(0, 210, 512, 46);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }, []);
   return (
     <group>
-      <Box size={[6, 3, 0.1]} at={[0, 1.2, 0]} color={MUS.wallDark} />
-      <Box size={[5.7, 1.7, 0.12]} at={[0, 2.45, 0]} color={MUS.canvas} />
-      <mesh position={[1.6, 3.1, 0.07]}>
-        <circleGeometry args={[0.55, 20]} />
-        <meshBasicMaterial color={MUS.gold} toneMapped={false} />
-      </mesh>
-      <Box size={[2.2, 1.0, 0.12]} at={[-1.6, 1.7, 0]} color={PALETTE.doorBlue} />
-      <Box size={[1.6, 1.5, 0.12]} at={[-0.2, 1.95, 0]} color={MUS.woodDark} />
-      <Box size={[2.0, 0.8, 0.12]} at={[1.8, 1.6, 0]} color={PALETTE.leaf} />
-      <Box size={[5.7, 0.35, 0.12]} at={[0, 1.35, 0]} color={PALETTE.glass} />
+      <Box size={[6, 3, 0.08]} at={[0, 1.2, 0]} color={MUS.wallDark} />
+      {face && (
+        <mesh position={[0, 2.7, 0.09]}>
+          <planeGeometry args={[5.7, 2.7]} />
+          <meshStandardMaterial map={face} roughness={0.9} />
+        </mesh>
+      )}
     </group>
   );
 }
@@ -120,7 +159,7 @@ function Placard() {
   return (
     <group>
       <Box size={[0.8, 0.6, 0.06]} at={[0, 1.5, 0]} color={MUS.woodDark} />
-      <Box size={[0.66, 0.46, 0.07]} at={[0, 1.5, 0]} color={MUS.paper} />
+      <Box size={[0.66, 0.46, 0.04]} at={[0, 1.5, 0.03]} color={MUS.paper} />
     </group>
   );
 }
@@ -173,7 +212,7 @@ function ExitDoor() {
       <Box size={[1.1, 0.08, 0.06]} at={[0, 1.1, 0.1]} color={PALETTE.steelDark} />
       <Box size={[1.0, 0.35, 0.08]} at={[0, 2.95, 0.02]} color={PALETTE.steelDark} />
       {sign && (
-        <mesh position={[0, 2.95, 0.07]}>
+        <mesh position={[0, 2.95, 0.09]}>
           <planeGeometry args={[0.9, 0.3]} />
           <meshBasicMaterial map={sign} toneMapped={false} />
         </mesh>
@@ -194,29 +233,52 @@ function Spotlight() {
       </mesh>
       <mesh position={[0, 3.1, 0.75]} castShadow={false}>
         <coneGeometry args={[0.85, 2.2, 12, 1, true]} />
-        <meshBasicMaterial color="#ffe9b8" transparent opacity={0.14} side={2} />
+        <meshBasicMaterial color="#ffe9b8" transparent opacity={0.14} side={2} depthWrite={false} />
       </mesh>
     </group>
   );
 }
 
 function RestorationEasel() {
-  // Giá vẽ phục chế: 2 chân + toan nghiêng đang sửa.
+  // Góc phục chế đọc được ngay: bạt lót + giá vẽ với tranh NỬA SẠCH (trái
+  // ố bẩn, phải lộ hình) + bàn dụng cụ (lọ màu, cọ) bên cạnh.
   return (
     <group rotation={[0, Math.PI, 0]}>
+      <Box size={[2.6, 0.04, 1.8]} at={[0.3, 0, 0.3]} color={MUS.wallDark} />
       {[-0.45, 0.45].map((x) => (
-        <mesh key={x} position={[x, 0.9, 0]} rotation={[0.12, 0, x > 0 ? -0.08 : 0.08]} castShadow>
-          <boxGeometry args={[0.09, 1.9, 0.09]} />
+        <mesh key={x} position={[x, 0.95, 0]} rotation={[0.12, 0, x > 0 ? -0.08 : 0.08]} castShadow>
+          <boxGeometry args={[0.09, 2.0, 0.09]} />
           {paint(MUS.wood)}
         </mesh>
       ))}
-      <mesh position={[0, 1.25, 0.12]} rotation={[0.12, 0, 0]} castShadow>
-        <boxGeometry args={[1.25, 1.5, 0.07]} />
+      {/* toan: nền ố + nửa phải đã phục chế lộ trời/cây */}
+      <mesh position={[0, 1.3, 0.12]} rotation={[0.12, 0, 0]} castShadow>
+        <boxGeometry args={[1.3, 1.6, 0.07]} />
+        {paint(MUS.floorDark)}
+      </mesh>
+      <mesh position={[0.33, 1.35, 0.17]} rotation={[0.12, 0, 0]}>
+        <boxGeometry args={[0.6, 1.4, 0.02]} />
         {paint(MUS.canvas)}
       </mesh>
-      <mesh position={[-0.3, 1.0, 0.2]} rotation={[0.12, 0, 0]}>
-        <boxGeometry args={[0.5, 0.5, 0.08]} />
-        <meshStandardMaterial color={PALETTE.leaf} roughness={0.9} />
+      <mesh position={[0.33, 1.05, 0.19]} rotation={[0.12, 0, 0]}>
+        <boxGeometry args={[0.6, 0.45, 0.02]} />
+        {paint(PALETTE.leaf)}
+      </mesh>
+      {/* bàn dụng cụ + lọ màu + cọ */}
+      <Box size={[0.8, 0.72, 0.6]} at={[1.25, 0, 0.2]} color={MUS.woodDark} />
+      {[
+        [1.1, MUS.carpet],
+        [1.3, MUS.gold],
+        [1.5, PALETTE.doorBlue],
+      ].map(([x, c]) => (
+        <mesh key={x as number} position={[x as number, 0.8, 0.2]} castShadow>
+          <cylinderGeometry args={[0.07, 0.07, 0.16, 10]} />
+          {paint(c as string)}
+        </mesh>
+      ))}
+      <mesh position={[1.3, 0.76, 0.45]} rotation={[0, 0, 1.2]} castShadow>
+        <boxGeometry args={[0.5, 0.03, 0.03]} />
+        {paint(MUS.wood)}
       </mesh>
     </group>
   );
@@ -299,11 +361,10 @@ function DisplayCase() {
 }
 
 function Artifact() {
-  // Bình gốm TRONG tủ (gốc nhóm trên mặt đế y = 0.9, lót nhung dày 0.12 —
-  // shape mang cao độ, def y = 0.9). Def lệch đông cho khỏi đè nhãn tủ nên
-  // thân lùi tây đúng 1.3 m, bình world vẫn giữa tủ.
+  // Bình gốm TRONG tủ tây (gốc nhóm trên mặt đế y = 0.9, lót nhung dày
+  // 0.12 — shape mang cao độ, def y = 0.9).
   return (
-    <group position={[-1.3, 0, 0]}>
+    <group>
       <Box size={[0.5, 0.08, 0.5]} at={[0, 0.12, 0]} color={MUS.velvet} />
       <mesh position={[0, 0.44, 0]} castShadow>
         <sphereGeometry args={[0.28, 14, 12]} />
@@ -403,7 +464,7 @@ function Kiosk() {
       <Box size={[0.5, 1.1, 0.4]} at={[0, 0, 0]} color={MUS.dark} />
       <group position={[0, 1.35, 0.1]} rotation={[-0.25, 0, 0]}>
         <Box size={[0.9, 0.7, 0.08]} at={[0, 0, 0]} color={MUS.dark} />
-        <mesh position={[0, 0, 0.05]}>
+        <mesh position={[0, 0, 0.06]}>
           <planeGeometry args={[0.76, 0.56]} />
           <meshBasicMaterial color={MUS.screen} toneMapped={false} />
         </mesh>
@@ -500,8 +561,8 @@ function ExhibitPanel() {
         <Box key={x} size={[0.09, 1.5, 0.09]} at={[x, 0, -0.12]} color={MUS.woodDark} />
       ))}
       <Box size={[1.9, 1.35, 0.08]} at={[0, 1.55, 0]} color={MUS.wallDark} />
-      <Box size={[1.7, 0.4, 0.09]} at={[0, 1.95, 0]} color={MUS.carpet} />
-      <Box size={[1.7, 0.6, 0.09]} at={[0, 1.35, 0]} color={MUS.paper} />
+      <Box size={[1.7, 0.4, 0.04]} at={[0, 1.95, 0.04]} color={MUS.carpet} />
+      <Box size={[1.7, 0.6, 0.04]} at={[0, 1.35, 0.04]} color={MUS.paper} />
     </group>
   );
 }
@@ -557,13 +618,15 @@ export function MuseumEnvironment({
       {[-14, 14].map((x) => (
         <Box key={x} size={[0.4, 5, 20]} at={[x, 0, -2]} color={MUS.wall} />
       ))}
-      {/* tủ kính thứ hai (decor — tủ có nhãn ở tây) */}
-      <group position={[6, 0, -1]}>
+      {/* tủ tây (decor, không nhãn — nhãn `artifact` nằm trong, nhãn
+          `display case` ở tủ đông) */}
+      <group position={[-6, 0, -1]}>
         <DisplayCase />
       </group>
-      {/* biển thương hiệu ở góc ngoài đông-nam gần cổng (nam đầu tường đông
-          nên không xuyên tường), mặt xoay ra camera */}
-      <group position={[15.8, 0, 10.5]} rotation={[0, -0.35, 0]} scale={0.45}>
+      {/* biển chào ở lề đường phía nam, ĐÔNG cổng (cách mép bậc 1.3 m,
+          ngoài rào, nền sau là cỏ) — mặt quay ra đường (khách đi tới),
+          không quay vào camera */}
+      <group position={[5, 0, 14]} rotation={[0, 0, 0]} scale={0.35}>
         <Signboard at={[0, 0, 0]} onPick={onBrandPick} />
       </group>
     </group>

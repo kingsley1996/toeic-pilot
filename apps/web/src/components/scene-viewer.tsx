@@ -8,7 +8,17 @@ import {
 } from "@toeic-pilot/shared";
 import { OrbitControls, Html, Line } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ArrowLeft, Check, Eye, Maximize2, Minimize2, RotateCcw, Target, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Eye,
+  EyeOff,
+  Maximize2,
+  Minimize2,
+  RotateCcw,
+  Target,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState, type FC, type ReactNode } from "react";
@@ -140,31 +150,75 @@ function Mover({
     if (!g || !patrol) return;
     const c = clock.current;
     const rate = 1 - Math.exp(-4 * dt);
+    const yaw = patrol.yaw ?? 0;
+    if (patrol.rect) {
+      // Vòng chữ nhật quanh `at`, thuận chiều kim đồng hồ nhìn từ trên
+      // (cạnh nam → đông → bắc → tây). `phase` là mét đã đi nên cùng
+      // rect + speed là cùng pha tuyệt đối.
+      if (animated) c.phase += dt * patrol.speed;
+      c.home += ((animated ? 1 : 0) - c.home) * rate;
+      const [hx, hz] = patrol.rect;
+      const ex = 2 * hx;
+      const ez = 2 * hz;
+      const per = 2 * ex + 2 * ez;
+      const d = ((c.phase % per) + per) % per;
+      let lx = 0;
+      let lz = 0;
+      let dirX = 1;
+      let dirZ = 0;
+      if (d < ex) {
+        lx = -hx + d;
+        lz = hz;
+      } else if (d < ex + ez) {
+        lx = hx;
+        lz = hz - (d - ex);
+        dirX = 0;
+        dirZ = -1;
+      } else if (d < 2 * ex + ez) {
+        lx = hx - (d - ex - ez);
+        lz = -hz;
+        dirX = -1;
+        dirZ = 0;
+      } else {
+        lx = -hx;
+        lz = -hz + (d - 2 * ex - ez);
+        dirX = 0;
+        dirZ = 1;
+      }
+      const cy = Math.cos(yaw);
+      const sy = Math.sin(yaw);
+      const [x, y, z] = at;
+      g.position.set(x + (lx * cy + lz * sy) * c.home, y, z + (-lx * sy + lz * cy) * c.home);
+      // Mũi +X xoay tới hướng đi: +X → (cosθ, −sinθ) nên θ = atan2(−dz, dx).
+      g.rotation.y = yaw + Math.atan2(-dirZ, dirX);
+      return;
+    }
+    const axis = patrol.axis ?? "x";
+    const range = patrol.range ?? 0;
     const dir0 = shuttle(c.phase)[1];
     let held = false;
     if (gate && watchRef) {
-      const own = (patrol.axis === "x" ? g.position.x : g.position.z) - gate.at;
+      const own = (axis === "x" ? g.position.x : g.position.z) - gate.at;
       const near = Math.abs(own) < gate.half;
       const before = dir0 > 0 ? own < -0.5 : own > 0.5;
       held = near && before && Math.abs(watchRef.current) < gate.pedHalf;
     }
-    if (animated && !held) {
-      c.phase += (dt * patrol.speed) / patrol.range;
+    if (animated && !held && range > 0) {
+      c.phase += (dt * patrol.speed) / range;
       c.t += dt;
     }
     c.home += ((animated ? 1 : 0) - c.home) * rate;
     const [u, dir] = shuttle(c.phase);
-    const off = u * patrol.range * c.home;
+    const off = u * range * c.home;
     if (reportRef) reportRef.current = off;
     // `yaw` xoay tuyến trong mặt phẳng nền — đường urban chạy chéo nên thiếu
     // nó là xe đi cắt qua vỉa hè. Cùng quy ước với `armPoint`: xoay vector
     // trục bằng rotationY(yaw).
-    const yaw = patrol.yaw ?? 0;
-    const dx = patrol.axis === "x" ? Math.cos(yaw) : Math.sin(yaw);
-    const dz = patrol.axis === "x" ? -Math.sin(yaw) : Math.cos(yaw);
+    const dx = axis === "x" ? Math.cos(yaw) : Math.sin(yaw);
+    const dz = axis === "x" ? -Math.sin(yaw) : Math.cos(yaw);
     const [x, y, z] = at;
     g.position.set(x + off * dx, y, z + off * dz);
-    const base = patrol.axis === "x" ? 0 : -Math.PI / 2;
+    const base = axis === "x" ? 0 : -Math.PI / 2;
     g.rotation.y = yaw + base + (dir > 0 ? 0 : Math.PI);
   });
 
@@ -185,7 +239,7 @@ function SceneObject({
 }: {
   def: SceneObjectDef;
   status: ObjectStatus;
-  labelMode: "pill" | "dot";
+  labelMode: "pill" | "dot" | "off";
   animated: boolean;
   /** Người đi bộ báo độ lệch để xe nền nhường đường (chỉ urban). */
   reportRef?: { current: number };
@@ -255,7 +309,7 @@ function SceneObject({
             </mesh>
           </group>
         )}
-        {labelMode === "pill" ? (
+        {labelMode === "off" ? null : labelMode === "pill" ? (
           // `pointerEvents` của drei CHỈ có hiệu lực ở chế độ `transform`: truyền
           // vào đây thì nó bị bỏ qua im lặng. Chống nhãn đè nhãn bằng bố cục
           // (vị trí + `hotspotY` trong scene file), không bằng prop.
@@ -422,7 +476,7 @@ function SceneCanvas({
   scene: SceneDef;
   objects: SceneObjectDef[];
   statusOf: (id: string) => ObjectStatus;
-  labelMode: "pill" | "dot";
+  labelMode: "pill" | "dot" | "off";
   walking: boolean;
   homeSeq: number;
   onPick: (id: string) => void;
@@ -542,6 +596,9 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
   const [summaries, setSummaries] = useState<Map<string, VocabularySummary> | null>(null);
   const [resolveError, setResolveError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("explore");
+  /** Tắt nhãn toàn cảnh (xem 3D thuần) — chung mọi scene, nhớ theo phiên. */
+  const [labelsOn, setLabelsOn] = useState(true);
+  const labelMode = !labelsOn ? "off" : mode === "explore" ? "pill" : "dot";
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<VocabularyDetail | null>(null);
   /** Bảng giới thiệu TOEIC Pilot (bấm biển decor) — chung Panel với thẻ từ,
@@ -811,6 +868,20 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
             <Target size={14} strokeWidth={2} aria-hidden />
             Recall
           </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            aria-pressed={labelsOn}
+            aria-label={labelsOn ? "Ẩn nhãn" : "Hiện nhãn"}
+            title={labelsOn ? "Ẩn nhãn" : "Hiện nhãn"}
+            onClick={() => setLabelsOn((v) => !v)}
+          >
+            {labelsOn ? (
+              <Eye size={14} strokeWidth={2} aria-hidden />
+            ) : (
+              <EyeOff size={14} strokeWidth={2} aria-hidden />
+            )}
+          </Button>
         </span>
         <Button
           variant="secondary"
@@ -856,7 +927,7 @@ export function SceneViewer({ scene, token }: { scene: SceneDef; token: string }
           scene={scene}
           objects={objects}
           statusOf={statusOf}
-          labelMode={mode === "explore" ? "pill" : "dot"}
+          labelMode={labelMode}
           walking={!reducedMotion && mode === "explore"}
           homeSeq={homeSeq}
           onPick={onPick}

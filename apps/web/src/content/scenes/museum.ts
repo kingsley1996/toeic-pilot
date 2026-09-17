@@ -178,7 +178,8 @@ export const museumScene: SceneDef = {
       shape: "display-case",
       headword: "display case",
       partOfSpeech: "noun",
-      position: [-6, 0, -1],
+      // Tủ phía đông (tủ tây dành riêng cho artifact).
+      position: [6, 0, -1],
       focusDistance: 4.5,
       hotspotY: 3.3,
       topY: 2.4,
@@ -189,12 +190,11 @@ export const museumScene: SceneDef = {
       shape: "artifact",
       headword: "artifact",
       partOfSpeech: "noun",
-      // Bình gốm TRONG tủ (gốc nhóm trên mặt đế y = 0.9); def lệch đông cho
-      // khỏi đè nhãn tủ (thân lùi tây trong shape), zoom vào bình qua `focus`.
-      position: [-4.7, 0.9, -1],
-      focus: [-6, 0.9, -1],
+      // Bình gốm TRONG tủ tây (gốc nhóm trên mặt đế y = 0.9); phía này chỉ
+      // còn một nhãn nên def về cùng trục tủ.
+      position: [-6, 0.9, -1],
       focusDistance: 4.5,
-      hotspotY: 3.8,
+      hotspotY: 2.2,
       topY: 0.85,
       ringRadius: 1.4,
     },
@@ -203,10 +203,11 @@ export const museumScene: SceneDef = {
       shape: "guide",
       headword: "tour guide",
       partOfSpeech: "noun",
-      // Đi tuần cùng nhịp với cả nhóm khách (cùng patrol là cùng pha —
-      // `Mover` khởi động đồng bộ). Có patrol thì `rotationY` vô nghĩa.
-      position: [-2.4, 0, -2.2],
-      patrol: { axis: "x", range: 2, speed: 0.5 },
+      // Đi vòng chữ nhật cùng nhịp với cả nhóm khách (cùng rect + speed là
+      // cùng pha — `Mover` khởi động đồng bộ). Có patrol thì `rotationY`
+      // vô nghĩa. Vòng này né tủ kính (đông) và dây bệ (bắc).
+      position: [-2.0, 0, -1.2],
+      patrol: { rect: [1.2, 1.2], speed: 0.5 },
       focusDistance: 4,
       hotspotY: 2.6,
       topY: 1.75,
@@ -217,9 +218,9 @@ export const museumScene: SceneDef = {
       shape: "visitor",
       headword: "visitor",
       partOfSpeech: "noun",
-      // Đầu tây vòng cung khán giả, đi cùng nhịp guide.
-      position: [-3.7, 0, 0.6],
-      patrol: { axis: "x", range: 2, speed: 0.5 },
+      // Đầu tây vòng khán giả, đi vòng cùng nhịp guide.
+      position: [-3.3, 0, 0.6],
+      patrol: { rect: [1.2, 1.2], speed: 0.5 },
       focusDistance: 5,
       hotspotY: 2.6,
       topY: 1.75,
@@ -230,9 +231,9 @@ export const museumScene: SceneDef = {
       shape: "audio-guide",
       headword: "audio guide",
       partOfSpeech: "noun",
-      // Đầu đông vòng cung, đi cùng nhịp guide.
-      position: [-0.6, 0, 1.6],
-      patrol: { axis: "x", range: 2, speed: 0.5 },
+      // Đầu đông vòng khán giả, đi vòng cùng nhịp guide.
+      position: [-0.4, 0, 1.6],
+      patrol: { rect: [1.2, 1.2], speed: 0.5 },
       focusDistance: 4,
       hotspotY: 2.7,
       topY: 1.8,
@@ -243,9 +244,9 @@ export const museumScene: SceneDef = {
       shape: "brochure",
       headword: "pamphlet",
       partOfSpeech: "noun",
-      // Ngoài vòng cung phía đông-nam, đi cùng nhịp guide.
-      position: [1.2, 0, 2.2],
-      patrol: { axis: "x", range: 2, speed: 0.5 },
+      // Ngoài vòng khán giả phía đông-nam, đi vòng cùng nhịp guide.
+      position: [1.4, 0, 2.2],
+      patrol: { rect: [1.2, 1.2], speed: 0.5 },
       focusDistance: 4,
       hotspotY: 2.6,
       topY: 1.75,
