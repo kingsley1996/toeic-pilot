@@ -184,8 +184,10 @@ export default function ListeningLessonPage() {
                 <ol className="max-h-72 space-y-1 overflow-y-auto p-2 lg:max-h-[430px]">
                   {segments.map((segment, index) => {
                     const done = doneIds.has(segment.id);
-                    const selected = index === activeIndex;
-                    const following = segment.id === followId;
+                    // MỘT trạng thái duy nhất: câu hiện tại (đang làm HOẶC video
+                    // đang phát tới) — viền cam. Không tint xanh lá cho câu xong,
+                    // chỉ giữ icon tích để biết tiến độ.
+                    const current = index === activeIndex || segment.id === followId;
                     return (
                       <li key={segment.id}>
                         <button
@@ -195,15 +197,13 @@ export default function ListeningLessonPage() {
                           }}
                           type="button"
                           onClick={() => goTo(index)}
-                          aria-current={following ? "true" : undefined}
+                          aria-current={current ? "true" : undefined}
                           title={`Câu ${index + 1} · ${done ? "đã đúng" : "chưa đúng"}`}
                           className={cx(
                             "flex w-full items-baseline gap-2 rounded border px-3 py-2 text-left text-body transition-colors",
-                            selected
+                            current
                               ? "border-action bg-action-tint text-action-ink"
-                              : following
-                                ? "border-rule-strong bg-recess"
-                                : "border-transparent hover:bg-recess",
+                              : "border-transparent hover:bg-recess",
                           )}
                         >
                           <span className="shrink-0 font-data text-small text-ink-faint">
@@ -220,7 +220,7 @@ export default function ListeningLessonPage() {
                               size={15}
                               strokeWidth={2.5}
                               aria-hidden
-                              className="shrink-0 text-ok"
+                              className="shrink-0"
                             />
                           )}
                         </button>
