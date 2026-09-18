@@ -290,7 +290,7 @@ export default function ListeningLessonPage() {
                                 : "border-transparent hover:bg-recess",
                           )}
                         >
-                          <span className="shrink-0 font-data text-small text-ink-faint">
+                          <span className="shrink-0 rounded bg-recess px-1.5 py-0.5 font-data text-small font-bold text-ink">
                             #{index + 1}
                           </span>
                           <span className="shrink-0 font-data text-small text-ink-faint">
