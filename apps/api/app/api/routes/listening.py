@@ -100,6 +100,10 @@ def _get_owned_content(db: Session, user_id: uuid.UUID, content_id: uuid.UUID) -
 @router.post(
     "/listening/captions",
     response_model=ListeningCaptionsPublic,
+    # fail_open=True NGƯỢC với assistant-chat: ở đó Redis là thứ duy nhất đứng
+    # giữa tài khoản và hoá đơn nên hỏng là chặn. Ở đây mỗi lượt chỉ là một
+    # GET ra YouTube (không tốn tiền) — Redis chết mà chặn là tắt luôn tính
+    # năng vì một phụ thuộc mềm. Hạn mức vẫn chặn loop khi Redis sống.
     dependencies=[Depends(rate_limit("listening-captions", CAPTIONS_QUOTA, fail_open=True))],
 )
 def fetch_listening_captions(

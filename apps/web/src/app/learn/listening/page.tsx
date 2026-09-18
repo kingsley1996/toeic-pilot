@@ -52,11 +52,13 @@ Today we're going to discuss the new schedule.
 type Step = { name: "url" } | { name: "detail"; videoId: string; url: string };
 
 /** Tên video qua oEmbed (không cần API key). Hỏng thì user gõ tay — không bao
- * giờ chặn tạo bài vì không lấy được tiêu đề. */
+ * giờ chặn tạo bài vì không lấy được tiêu đề. Timeout riêng vì đây là fetch
+ * thô ngoài apiFetch (không có timeout 30s của nó). */
 async function fetchOEmbedTitle(canonicalUrl: string): Promise<string | null> {
   try {
     const res = await fetch(
       `https://www.youtube.com/oembed?url=${encodeURIComponent(canonicalUrl)}&format=json`,
+      { signal: AbortSignal.timeout(8000) },
     );
     if (!res.ok) return null;
     const data = (await res.json()) as { title?: unknown };
