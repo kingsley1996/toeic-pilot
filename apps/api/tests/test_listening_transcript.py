@@ -191,3 +191,30 @@ def test_count_complete() -> None:
     ]
     assert count_complete(segs) == (2, 3)
     assert count_complete([]) == (0, 0)
+
+
+def test_passes_quality_rejects_salad_keeps_others() -> None:
+    from app.services.listening_transcript import passes_quality
+
+    salad = [
+        _seg("11.96", "19.68", "courts power group is an energy company based in the"),
+        _seg("15.92", "25.84", "UK Marcus the managing director wants to discuss"),
+        _seg("22.68", "28.52", "is meeting Meer the finance director"),
+    ]
+    ok, reason = passes_quality(salad)
+    assert ok is False
+    assert "overlapping" in reason
+
+    lyrics = [
+        _seg("0", "2.4", "Never gonna give you up"),
+        _seg("2.4", "4.4", "Never gonna let you down"),
+    ]
+    assert passes_quality(lyrics) == (True, "")
+
+    punctuated_overlap = [
+        _seg("0.3", "4.7", "Hello. Excuse me."),
+        _seg("2.5", "7.4", "Hello. How can I help you?"),
+    ]
+    assert passes_quality(punctuated_overlap) == (True, "")
+
+    assert passes_quality([]) == (False, "no segments")

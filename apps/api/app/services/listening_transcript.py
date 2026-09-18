@@ -305,9 +305,27 @@ def _ends_sentence(text: str) -> bool:
 def count_complete(segments: list[ParsedSegment]) -> tuple[int, int]:
     """(số câu trọn, tổng số câu). Câu trọn = hết bằng dấu câu, hoặc ngắn dưới
     6 giây (lyric một dòng, interjection — ngắn thì nghe-chép được nguyên câu
-    dù không có dấu câu). Seed script dùng tỉ lệ này làm cổng chất lượng."""
+    dù không có dấu câu). Giữ lại cho test/nghiên cứu; cổng seed dùng
+    `passes_quality` dưới (khắt khe đúng chỗ hơn)."""
     complete = sum(1 for seg in segments if _ends_sentence(seg.text) or (seg.end - seg.start) < 6)
     return complete, len(segments)
+
+
+def passes_quality(segments: list[ParsedSegment]) -> tuple[bool, str]:
+    """Bài có đủ chất làm lesson không? Loại đúng một kiểu: transcript ASR
+    word-salad — vừa chồng mốc dày đặc (replay câu nào cũng lọt tiếng câu bên)
+    vừa không dấu câu (không chia được). Hai vế phải đi CÙNG nhau:
+    - clothes/manual: chồng nhưng toàn câu hoàn chỉnh -> GIỮ;
+    - lyric: không dấu câu nhưng mốc sạch -> GIỮ.
+    Chỉ word-salad mới rớt cả hai (meetings: chồng 27/28 + trọn 1/28)."""
+    total = len(segments)
+    if total == 0:
+        return False, "no segments"
+    overlapping = sum(1 for prev, cur in zip(segments, segments[1:]) if cur.start < prev.end)
+    punctuated = sum(1 for seg in segments if _ends_sentence(seg.text))
+    if overlapping / total > 0.5 and punctuated / total < 0.5:
+        return False, f"only {punctuated}/{total} punctuated with {overlapping}/{total} overlapping"
+    return True, ""
 
 
 def _words(text: str) -> list[str]:

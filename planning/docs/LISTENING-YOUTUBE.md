@@ -173,9 +173,15 @@ Loạt đầu 5 video sub tay: meetings-easy-English, 2 TED công sở, 2 Rick A
 
 Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút. Seed script
 bỏ video span > 300s; endpoint create chỉ warning mềm (excerpt ngắn của video
-dài vẫn học tốt). Chia câu: cue ngắn không dấu câu thì ghép xuôi, câu sau mở
-bằng chữ thường mà câu trước chưa kết thúc thì ghép (trần 12s), câu cuối vỡ thì
-ghép ngược — TED 402 cue rời thành ~27 câu thật. Marker người nói `>>` của
+dài vẫn học tốt). Chia câu (`merge_fragments`, chạy ở cả 3 đường paste/captions/
+seed): cue ngắn không dấu câu ghép xuôi; câu sau mở bằng chữ thường mà câu
+trước chưa kết thúc thì ghép; câu trước kết thúc bằng từ treo (how to, tell
+me...) thì ghép; câu sau ngắn (<=3 từ, kiểu "Step by Step.") mà câu trước chưa
+kết thúc thì ghép — tất cả chặn trần 12s, câu cuối vỡ ghép ngược (TED 402 cue
+rời thành ~27 câu thật). Cổng chất lượng seed (`passes_quality`): loại khi vừa
+chồng mốc dày (>50%) vừa thiếu dấu câu (<50%) — đúng chất ASR word-salad
+(meetings 27/28 chồng + 1/28 trọn); lyric không dấu nhưng mốc sạch và sub thủ
+công chồng mốc đều qua. Marker người nói `>>` của
 TTML strip lúc fetch (đáp án + mặt hiển thị sạch). Card thư viện có badge nền
 tảng (YouTube, góc trái thumbnail; nguồn khác tính sau). Excerpt theo video
 (`max_seconds` trong seed list, chỉ giữ câu nằm trọn) — hiện không dùng vì

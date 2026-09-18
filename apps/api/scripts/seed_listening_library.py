@@ -26,9 +26,9 @@ from app.models import ListeningContent, ListeningSegment, User
 from app.services import dictation as dictation_grader
 from app.services.listening_source import SourceError, resolve_source
 from app.services.listening_transcript import (
-    count_complete,
     is_speakable,
     merge_fragments,
+    passes_quality,
     validate_transcript,
 )
 from app.services.listening_youtube_captions import (
@@ -110,11 +110,10 @@ def seed_one(
     # Cùng pipeline với endpoint create (filter-rồi-merge) để bài thư viện và
     # bài user tự tạo chia câu giống nhau.
     merged = merge_fragments(speakable)
-    # Cổng chất lượng: dưới ngưỡng là transcript ASR word-salad (mistranscribe
-    # + ngắt bừa) — chia câu kiểu gì cũng không cứu được, bỏ video chứ không ráng.
-    complete, total = count_complete(merged)
-    if complete < total * 0.6:
-        return f"SKIP {url}: chỉ {complete}/{total} câu trọn — transcript kém"
+    # Cổng chất lượng: word-salad thì bỏ video chứ không ráng (xem passes_quality).
+    ok, quality_reason = passes_quality(merged)
+    if not ok:
+        return f"SKIP {url}: transcript kém ({quality_reason})"
     # Tiêu chí thư viện: video dưới 5 phút, ưu tiên 1–3 phút. Đo bằng span
     # transcript (max end) — cùng thước với warning ở endpoint create.
     span = max(s.end for s in speakable)
