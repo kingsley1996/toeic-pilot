@@ -94,6 +94,10 @@ export default function ListeningLessonPage() {
   function goTo(index: number) {
     segStartedAt.current = nowMs();
     setActiveIndex(index);
+    // Highlight đi theo ngay, khỏi chờ tick (tick tới xác nhận lại giá trị
+    // này nên không sợ lệch).
+    const target = segments[index];
+    if (target) setFollowId(target.id);
   }
 
   /* Video tới đâu thì list theo tới đó: tìm câu chứa mốc giờ, highlight + cuộn
@@ -184,10 +188,10 @@ export default function ListeningLessonPage() {
                 <ol className="max-h-72 space-y-1 overflow-y-auto p-2 lg:max-h-[430px]">
                   {segments.map((segment, index) => {
                     const done = doneIds.has(segment.id);
-                    // MỘT trạng thái duy nhất: câu hiện tại (đang làm HOẶC video
-                    // đang phát tới) — viền cam. Không tint xanh lá cho câu xong,
-                    // chỉ giữ icon tích để biết tiến độ.
-                    const current = index === activeIndex || segment.id === followId;
+                    // MỘT highlight duy nhất: video đang phát tới đâu thì sáng
+                    // tới đó; chưa phát gì thì sáng câu đang làm. Hai viền cam
+                    // cùng lúc (bài tập một nơi, video một nơi) đọc thành lỗi.
+                    const current = segment.id === (followId ?? segments[activeIndex]?.id);
                     return (
                       <li key={segment.id}>
                         <button

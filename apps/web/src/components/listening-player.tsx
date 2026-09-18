@@ -199,10 +199,20 @@ export function ListeningPlayerView({
    * Và LUÔN dừng cuối câu: chốt dừng là mốc stops CHỨA vị trí đang phát. Chốt
    * chỉ đặt ở HAI chỗ có chủ ý — lúc bấm play/replay (đọc đồng bộ trong
    * handler) và lúc phát hiện NHẢY giờ (tua/seek/đơ mạng). Còn lệnh pause thì
-   * có thêm điều kiện BẮT BUỘC: tick trước đã ở gần chốt (phát LIÊN TỤC tới
-   * nơi). Thiếu nó là đọc stale sau seek (vẫn giờ cũ) chạm đúng công thức
-   * pause → pause oan, bấm bao nhiêu lần cũng thế — mọi ca "tua rồi play là
-   * pause" đều từ đây mà ra, vì đọc stale trông Y HỆT đọc thật. */
+   * có thêm HAI điều kiện BẮT BUỘC: đang phát THẬT (status YouTube xác nhận,
+   * không phải suy từ giờ) và tick trước đã ở gần chốt (phát LIÊN TỤC tới
+   * nơi). Thiếu vế đầu là bấm play thẳng trên video (bypass toggle — chỗ duy
+   * nhất chốt trước đây) bị poll giết bằng chốt stale trong nửa giây, bấm bao
+   * nhiêu lần cũng thế. Thiếu vế sau là đọc stale sau seek cũng bắn. */
+  // Trạng thái phát cho poll đọc (effect chạy một lần nên không đọc state trực
+  // tiếp được — state trong closure interval là ảnh cũ vĩnh viễn).
+  const statusRef = useRef(status);
+  useEffect(() => {
+    statusRef.current = status;
+  });
+  // Lượt phát mới tính từ MỌI nguồn (nút mình, bấm thẳng vào video, autoplay
+  // của YouTube): chốt lại theo vị trí lúc bắt đầu phát.
+  const wasPlayingRef = useRef(false);
   useEffect(() => {
     const timer = window.setInterval(() => {
       const player = playerRef.current;
@@ -217,8 +227,11 @@ export function ListeningPlayerView({
         setNow(current);
         onTimeUpdateRef.current?.(current);
       }
+      const playing = statusRef.current === "playing";
+      if (playing && !wasPlayingRef.current) latchStop(current);
+      wasPlayingRef.current = playing;
       const stop = stopRef.current;
-      if (stop != null && current >= stop - SEEK_EPS && previous >= stop - APPROACH) {
+      if (playing && stop != null && current >= stop - SEEK_EPS && previous >= stop - APPROACH) {
         player.pause();
         setNow(stop);
         onTimeUpdateRef.current?.(current);
