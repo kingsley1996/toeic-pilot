@@ -79,6 +79,7 @@ export function DictationExercise({
   nextLabel = "Câu tiếp theo",
   footer,
   submitAnswer,
+  advanceOnEnter = true,
 }: {
   item: ExerciseItem;
   /** Gọi sau mỗi lượt chấm, để trang cha làm mới tiến độ. */
@@ -90,6 +91,9 @@ export function DictationExercise({
   /** Ghi lượt làm về server. Mặc định là endpoint dictation cũ (kèm thưởng
    * pet); Listening Lab truyền hàm riêng trỏ về attempts của segment. */
   submitAnswer?: (text: string) => Promise<unknown>;
+  /** Enter khi đã đúng thì đi tiếp (mặc định, giữ flow cũ). Tắt ở Lab: đáp án
+   * đúng là ở yên ngắm trạng thái đó — đi tiếp chỉ bằng nút bấm rõ ràng. */
+  advanceOnEnter?: boolean;
 }) {
   const [typed, setTyped] = useState("");
   // `checkedText` ghi lại văn bản đã được chấm, để khi người học sửa tiếp thì
@@ -182,9 +186,7 @@ export function DictationExercise({
       save
         .then((saved) => {
           // Phần thưởng lấy từ phản hồi của MÁY CHỦ, không tính lại ở đây.
-          notifyStudyReward(
-            (saved as { pet?: { xp: number; mood: string } | null } | null)?.pet,
-          );
+          notifyStudyReward((saved as { pet?: { xp: number; mood: string } | null } | null)?.pet);
           onGraded?.();
         })
         .catch(() => setError("Đã chấm xong, nhưng không lưu được lượt làm này."));
@@ -195,9 +197,10 @@ export function DictationExercise({
   /**
    * Enter làm việc tiếp theo, dù việc đó là gì.
    *
-   * Chưa đúng thì Enter là "kiểm tra"; đúng rồi thì Enter là "câu tiếp theo".
-   * Cả bài dictation chạy được bằng bàn phím mà không rời tay khỏi chỗ gõ — mà
-   * gõ chính là việc duy nhất người học đang làm ở đây.
+   * Chưa đúng thì Enter là "kiểm tra"; đúng rồi thì Enter là "câu tiếp theo"
+   * (trừ khi `advanceOnEnter` tắt — lúc đó Enter luôn là "kiểm tra lại", và đi
+   * tiếp chỉ bằng nút). Cả bài dictation chạy được bằng bàn phím mà không rời
+   * tay khỏi chỗ gõ — mà gõ chính là việc duy nhất người học đang làm ở đây.
    *
    * Shift+Enter vẫn xuống dòng. Một câu dictation không cần xuống dòng, nhưng
    * cướp hẳn một phím quen thuộc mà không chừa đường lui là thứ chỉ đúng cho tới
@@ -209,7 +212,7 @@ export function DictationExercise({
     // Giữ phím không phải là bấm nhiều lần.
     if (event.repeat) return;
 
-    if (result?.is_complete && onNext) {
+    if (advanceOnEnter && result?.is_complete && onNext) {
       if (canAdvance.current) onNext();
       return;
     }
@@ -238,7 +241,8 @@ export function DictationExercise({
         {/* Controls gốc của trình duyệt cho sẵn tua và phát lại, và không đòi
             CORS trên nguồn media. Nguồn ngoài (YouTube) thì trang cha đưa
             player riêng qua `media`. */}
-        {item.media ?? (item.audio_url ? <audio controls src={item.audio_url} className="w-full" /> : null)}
+        {item.media ??
+          (item.audio_url ? <audio controls src={item.audio_url} className="w-full" /> : null)}
 
         {/* Mở được NGAY, không chờ chấm: người luyện tự quyết khi nào nhìn —
             cùng lựa chọn đã áp cho chế độ Luyện tập ở màn làm bài. Đổi lại, câu

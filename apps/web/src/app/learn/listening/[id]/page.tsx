@@ -294,6 +294,7 @@ export default function ListeningLessonPage() {
               submitAnswer={(text) => submitSegment(active.id, text)}
               onNext={next ? () => goTo(activeIndex + 1) : undefined}
               nextLabel="Câu tiếp theo"
+              advanceOnEnter={false}
             />
           )}
         </>
