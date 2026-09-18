@@ -6,14 +6,18 @@
  * tag theo đúng mẹo singleton của `components/turnstile.tsx`.
  */
 
-/** Đúng 5 phương thức SPEC §10. UI chỉ biết interface này, không biết nguồn là
- * YouTube hay gì khác. `destroy` thêm cho vòng đời component (gỡ player khi
- * unmount) — không phải hành vi playback. */
+/** Interface SPEC §10 (5 phương thức playback) cộng hai thứ vòng đời/hiển thị
+ * mà UI thật sự cần: `destroy` (gỡ player khi unmount) và `getDuration`
+ * (đồng hồ cần mẫu số thật). UI chỉ biết interface này, không biết nguồn là
+ * YouTube hay gì khác. */
 export interface ListeningPlayer {
   play(): void;
   pause(): void;
   seek(seconds: number): void;
   getCurrentTime(): number;
+  /** Tổng thời lượng video (giây), 0 khi chưa biết — đồng hồ hiển thị cần mẫu
+   * số thật thay vì cuối câu đang làm (tua đi nơi khác là tử lớn hơn mẫu). */
+  getDuration(): number;
   setPlaybackRate(rate: number): void;
   destroy(): void;
 }
@@ -34,6 +38,7 @@ type YouTubePlayerInstance = {
   pauseVideo(): void;
   seekTo(seconds: number, allowSeekAhead: boolean): void;
   getCurrentTime(): number;
+  getDuration(): number;
   setPlaybackRate(rate: number): void;
   loadVideoById(videoId: string): void;
   destroy(): void;
@@ -245,6 +250,7 @@ function tryBuild(
     pause: () => run(() => instance?.pauseVideo()),
     seek: (seconds) => run(() => instance?.seekTo(seconds, true)),
     getCurrentTime: () => instance?.getCurrentTime() ?? 0,
+    getDuration: () => instance?.getDuration() ?? 0,
     setPlaybackRate: (rate) => run(() => instance?.setPlaybackRate(rate)),
     destroy: () => {
       destroyed = true;

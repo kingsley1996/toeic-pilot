@@ -33,6 +33,11 @@ function MaskedText({ text }: { text: string }) {
   );
 }
 
+/** Rộng hơn bước tick (500ms) một chút: dừng lố qua mốc bắt đầu câu sau vài
+ * chục ms vẫn tính là "đang ở mốc", highlight không chớp sang câu sau rồi về
+ * trong lúc user chưa thao tác gì. */
+const FOLLOW_EPS = 0.6;
+
 /** Mili-giây hiện tại. Bọc ngoài component như `timeAgo` ở admin/users: rule
  * purity cấm gọi `Date.now()` trong render (kể cả trong hàm lồng), còn helper
  * ngoài này chỉ được gọi từ handler bấm/nộp — đúng chỗ thời gian sinh ra. */
@@ -102,12 +107,26 @@ export default function ListeningLessonPage() {
 
   /* Video tới đâu thì list theo tới đó: tìm câu chứa mốc giờ, highlight + cuộn
    * tới. Ngoài khoảng (đầu video, hết video) thì giữ highlight cũ — mất dấu còn
-   * tệ hơn đứng yên. */
+   * tệ hơn đứng yên. Dính biên: dừng NGAY mốc bắt đầu câu sau (vừa pause cuối
+   * câu trước) thì ở yên câu trước — không thì highlight tự nhảy sang câu mới
+   * dù user chưa thao tác gì. */
   function handleTime(playedSeconds: number) {
-    const found = segments.find(
+    const index = segments.findIndex(
       (segment) => playedSeconds >= segment.start && playedSeconds < segment.end,
     );
-    if (found) setFollowId((current) => (current === found.id ? current : found.id));
+    if (index === -1) return;
+    setFollowId((current) => {
+      const id = segments[index]!.id;
+      if (current === id) return current;
+      if (
+        index > 0 &&
+        playedSeconds - segments[index]!.start < FOLLOW_EPS &&
+        current === segments[index - 1]!.id
+      ) {
+        return current;
+      }
+      return id;
+    });
   }
 
   /** Ghi lượt làm về attempts của segment — cũng là chỗ duy nhất đánh dấu câu
@@ -172,6 +191,7 @@ export default function ListeningLessonPage() {
                     start={active.start}
                     end={active.end}
                     stops={segments.map((segment) => segment.end)}
+                    startLabel={activeIndex === 0 ? "Bắt đầu" : "Tiếp tục"}
                     onTimeUpdate={handleTime}
                   />
                 ) : (

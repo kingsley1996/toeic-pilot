@@ -46,6 +46,7 @@ export function ListeningPlayerView({
   start,
   end,
   stops,
+  startLabel,
   onError,
   onTimeUpdate,
   replaySignal,
@@ -54,9 +55,11 @@ export function ListeningPlayerView({
   start: number;
   end: number;
   /** Mốc cuối mọi câu, tăng dần — chốt dừng bám vào đây chứ không bám `end`
-   * của câu đang làm: tua sang câu khác rồi bấm play mà vẫn chốt `end` cũ là
+   * của câu đang làm: tua sang câu khác rồi bấm play mà chốt `end` cũ là
    * pause ngay tức thì, bấm bao nhiêu lần cũng thế (đúng bug vừa sửa). */
   stops: number[];
+  /** Chữ nút phát khi đang dừng: "Bắt đầu" ở câu đầu, "Tiếp tục" ở câu sau. */
+  startLabel: string;
   onError?: (code: PlayerErrorCode) => void;
   /** Bắn giờ phát khi video đang chạy (500ms/lần) — trang cha dùng để
    * highlight + cuộn list Transcript theo. Không dùng để chấm hay lưu. */
@@ -86,6 +89,9 @@ export function ListeningPlayerView({
   const [status, setStatus] = useState<PlayerStatus>("loading");
   const [failed, setFailed] = useState<PlayerErrorCode | null>(null);
   const [rate, setRate] = useState<number>(1);
+  // Tổng thời lượng video để làm mẫu số đồng hồ — có sau khi metadata về, nên
+  // nhớ riêng thay vì đọc mỗi render (chưa có là 0 suốt).
+  const [duration, setDuration] = useState(0);
 
   /* Đồng hồ hiển thị: reset khi đổi segment — pattern "điều chỉnh state trong
    * render" của React docs cho đúng case này (không phải effect). */
@@ -217,6 +223,8 @@ export function ListeningPlayerView({
     const timer = window.setInterval(() => {
       const player = playerRef.current;
       if (!player) return;
+      const total = player.getDuration();
+      if (total > 0) setDuration((prev) => (prev === total ? prev : total));
       const current = player.getCurrentTime();
       const previous = lastTickRef.current;
       if (current !== previous) {
@@ -249,17 +257,30 @@ export function ListeningPlayerView({
       player.pause();
       return;
     }
-    // Bấm play là một lượt phát mới: chốt ngay trong handler (đọc đồng bộ, một
-    // lần duy nhất) để nghe hết CÂU CHỨA vị trí hiện tại. Không chốt ở đây mà
-    // để poll tự chốt thì đọc stale vài tick đầu là đủ để pause oan.
-    latchStop(player.getCurrentTime());
-    player.play();
+    playActive();
+  };
+
+  /* Nút play là "phát CÂU ĐANG LÀM": đứng trong câu thì resume chỗ dừng; đứng
+   * ngoài (vừa tua đi nơi khác) thì phát lại đúng câu đó từ đầu — video, list
+   * và bài tập gặp nhau lại ở một chỗ, chứ không mỗi thứ một nơi. */
+  const playActive = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    const current = player.getCurrentTime();
+    if (current >= start && current < end) {
+      latchStop(current);
+      player.play();
+    } else {
+      replay();
+    }
   };
 
   const changeRate = (next: number) => {
     setRate(next);
     playerRef.current?.setPlaybackRate(next);
   };
+
+  const running = status === "playing" || status === "buffering";
 
   return (
     <div className="space-y-3">
@@ -284,28 +305,23 @@ export function ListeningPlayerView({
         </Alert>
       ) : (
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" onClick={replay} disabled={status === "loading"}>
-            <RotateCcw size={14} strokeWidth={2} aria-hidden />
-            Nghe lại
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={toggle}
-            disabled={status === "loading"}
-            aria-label={status === "playing" || status === "buffering" ? "Tạm dừng" : "Phát"}
-          >
-            {status === "playing" || status === "buffering" ? (
+          <Button size="sm" onClick={toggle} disabled={status === "loading"}>
+            {running ? (
               <Pause size={14} strokeWidth={2} aria-hidden />
             ) : (
               <Play size={14} strokeWidth={2} aria-hidden />
             )}
+            {running ? "Tạm dừng" : startLabel}
+          </Button>
+          <Button size="sm" variant="secondary" onClick={replay} disabled={status === "loading"}>
+            <RotateCcw size={14} strokeWidth={2} aria-hidden />
+            Nghe lại
           </Button>
           <span
             className="font-data text-small text-ink-muted"
-            aria-label={`Đang ở ${formatTime(now)} trên đoạn tới ${formatTime(end)}`}
+            aria-label={`Đang ở ${formatTime(now)} trên tổng ${formatTime(duration)}`}
           >
-            {formatTime(now)} / {formatTime(end)}
+            {formatTime(now)} / {duration > 0 ? formatTime(duration) : "–:––"}
           </span>
           {status === "buffering" && (
             <span className="text-small text-ink-faint">Đang tải video…</span>
