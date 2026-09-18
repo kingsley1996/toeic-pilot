@@ -171,8 +171,9 @@ Seed offline (cấm CI, IP local sạch mới qua được tường bot):
 Loạt đầu 5 video sub tay: meetings-easy-English, 2 TED công sở, 2 Rick Astley
 (vui). Thêm video = thêm dòng vào `VIDEOS`, chạy lại (trùng public thì bỏ qua).
 
-Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút. Seed script
-bỏ video span > 300s; endpoint create chỉ warning mềm (excerpt ngắn của video
+Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút, KHÔNG phụ đề
+cháy trong hình (chữ hiện sẵn là lộ đáp án — soi frame ở 25/50/75% trước khi
+nhận; title card/logo tĩnh thì được). Seed script bỏ video span > 300s; endpoint create chỉ warning mềm (excerpt ngắn của video
 dài vẫn học tốt). Chia câu (`merge_fragments`, chạy ở cả 3 đường paste/captions/
 seed): cue ngắn không dấu câu ghép xuôi; câu sau mở bằng chữ thường mà câu
 trước chưa kết thúc thì ghép; câu trước kết thúc bằng từ treo (how to, tell

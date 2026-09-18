@@ -36,22 +36,26 @@ from app.services.listening_youtube_captions import (
     fetch_youtube_captions,
 )
 
-# Loạt 10: tiếng Anh rõ + sub tay, toàn dưới 5 phút. ĐÃ LOẠI, đừng thêm lại:
+# Loạt 10: tiếng Anh rõ + sub tay, toàn dưới 5 phút, KHÔNG phụ đề cháy trong
+# hình (đã soi frame từng video — chữ hiện sẵn là lộ đáp án, mask vô nghĩa).
+# ĐÃ LOẠI, đừng thêm lại:
 # - TL61VKkme14/HrCbXNRP7eg/eHJnEHyyN1Y (dài quá 5 phút), Wb6Oc1_SdJw (ASR
 #   word-salad, 3.6% câu trọn), xowuC3keDcA (trùng chủ đề shopping),
 #   bgfdqVmVjfk (ASR kém, 24/42), IWMMkp35d6Y (ASR kém, 1/6),
-#   oE2IZvpOlGk + Qo6VHK5n_LU + viE3Xez8IQ0 (region-block).
+#   oE2IZvpOlGk + Qo6VHK5n_LU + viE3Xez8IQ0 (region-block),
+#   wyqfYJX23lg + r3ga_G-nMbk + dqdUoM4gVrM + bq6GBbh3uhU (CHÁY phụ đề thoại),
+#   UNP03fDSj1U (ASR salad như meetings).
 VIDEOS: list[tuple[str, str | None, int | None]] = [
     ("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, None),
     ("https://www.youtube.com/watch?v=yPYZpwSpKmA", None, None),
-    ("https://www.youtube.com/watch?v=wyqfYJX23lg", None, None),
-    ("https://www.youtube.com/watch?v=r3ga_G-nMbk", None, None),
     ("https://www.youtube.com/watch?v=s8YxQkCCwAc", None, None),
     ("https://www.youtube.com/watch?v=CqgmozFr_GM", None, None),
     ("https://www.youtube.com/watch?v=JAyuHIthHco", None, None),
-    ("https://www.youtube.com/watch?v=dqdUoM4gVrM", None, None),
     ("https://www.youtube.com/watch?v=bVRIpmjTSxM", None, None),
-    ("https://www.youtube.com/watch?v=bq6GBbh3uhU", None, None),
+    ("https://www.youtube.com/watch?v=w0YQwglgtTM", None, None),
+    ("https://www.youtube.com/watch?v=NHopJHSlVo4", None, None),
+    ("https://www.youtube.com/watch?v=NiKtZgImdlY", None, None),
+    ("https://www.youtube.com/watch?v=1aA1WGON49E", None, None),
 ]
 
 LIBRARY_EMAIL = "library@toeic-pilot.local"
