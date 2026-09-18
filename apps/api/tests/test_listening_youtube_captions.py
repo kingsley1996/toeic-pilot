@@ -64,6 +64,15 @@ def test_parse_xml_unescapes_and_keeps_times() -> None:
     assert segs[0].end == Decimal("15.18")
 
 
+def test_parse_xml_strips_speaker_markers() -> None:
+    xml = (
+        '<?xml version="1.0" encoding="utf-8" ?><transcript>'
+        '<text start="1.0" dur="2.0">&gt;&gt; Hello. How can I help you?</text>'
+        "</transcript>"
+    )
+    assert parse_caption_payload(xml)[0].text == "Hello. How can I help you?"
+
+
 def test_parse_json3_skips_newline_only_events() -> None:
     segs = parse_caption_payload(_JSON3)
     assert [s.text for s in segs] == ["Hello everyone.", "Today we're going."]

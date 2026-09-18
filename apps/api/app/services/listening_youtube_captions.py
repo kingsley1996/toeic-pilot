@@ -164,7 +164,9 @@ def _pick_track(tracks: list[dict[str, Any]]) -> dict[str, Any]:
 
 def _clean(text: str) -> str:
     stripped = _WS.sub(" ", html.unescape(re.sub(r"<[^>]*>", "", text))).strip()
-    return stripped
+    # Dấu ">>" đầu dòng là marker người nói của TTML (">> Hello.") — để lại thì
+    # mặt hiển thị lẫn đáp án đều dính nhiễu.
+    return re.sub(r"(^|\s)>>+\s?", r"\1", stripped).strip()
 
 
 def parse_caption_payload(raw: str) -> list[ParsedSegment]:
