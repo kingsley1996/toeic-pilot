@@ -175,8 +175,11 @@ Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút. Seed
 bỏ video span > 300s; endpoint create chỉ warning mềm (excerpt ngắn của video
 dài vẫn học tốt). Chia câu: cue ngắn không dấu câu thì ghép xuôi, câu sau mở
 bằng chữ thường mà câu trước chưa kết thúc thì ghép (trần 12s), câu cuối vỡ thì
-ghép ngược — TED 402 cue rời thành ~27 câu thật. Card thư viện có badge nền
-tảng (YouTube, góc trái thumbnail; nguồn khác tính sau).
+ghép ngược — TED 402 cue rời thành ~27 câu thật. Marker người nói `>>` của
+TTML strip lúc fetch (đáp án + mặt hiển thị sạch). Card thư viện có badge nền
+tảng (YouTube, góc trái thumbnail; nguồn khác tính sau). Excerpt theo video
+(`max_seconds` trong seed list, chỉ giữ câu nằm trọn) — hiện không dùng vì
+loạt 10 toàn video ngắn đạt chuẩn.
 
 Lên prod: `alembic upgrade head` trước (dev từng phải `stamp 089` vì bảng dựng
 bằng `create_all` — prod đi migration chuẩn thì không), rồi chạy seed với

@@ -184,11 +184,146 @@ MIN_FRAGMENT_SECONDS = Decimal("3")
 # Câu ghép dài tối đa: dictation đo từng câu, quá dài là bài đọc chứ không phải
 # bài nghe — chặn để hai câu dài thiếu dấu câu không dính thành một.
 MAX_MERGED_SECONDS = Decimal("12")
+# Câu sau ngắn chừng này mà câu trước chưa kết thúc thì gần như chắc là mảnh
+# còn lại của cùng một câu ("Step by Step.", "Clothing Store.").
+MAX_SHORT_NEXT_WORDS = 3
 _SENTENCE_END = re.compile(r"[.!?…][\"'”’)>\]}♪♫\s]*$")
+
+# Từ mà đứng cuối câu thì câu CHƯA XONG: mạo từ, giới từ, liên từ, trợ động từ,
+# đại từ, từ hỏi, lượng từ ("how to" + "Let's go", "tell me" + "about it").
+# Cố ý thiếu những từ hai mặt ("there", "so", "no", "more" — "See you there"
+# hoàn chỉnh nhưng "I need some" thì dở): thà sót một mảnh còn hơn dính hai câu
+# trọn thành một. Riêng "there/here is|are" thì luôn dở ("there is" + "a pen").
+_DANGLING_WORDS = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "to",
+        "of",
+        "in",
+        "on",
+        "for",
+        "with",
+        "about",
+        "into",
+        "over",
+        "after",
+        "at",
+        "by",
+        "from",
+        "than",
+        "as",
+        "like",
+        "up",
+        "out",
+        "off",
+        "down",
+        "away",
+        "back",
+        "and",
+        "or",
+        "but",
+        "that",
+        "if",
+        "because",
+        "although",
+        "while",
+        "when",
+        "how",
+        "what",
+        "which",
+        "who",
+        "whom",
+        "whose",
+        "am",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "have",
+        "has",
+        "had",
+        "do",
+        "does",
+        "did",
+        "will",
+        "would",
+        "can",
+        "could",
+        "shall",
+        "should",
+        "may",
+        "might",
+        "must",
+        "i",
+        "you",
+        "he",
+        "she",
+        "it",
+        "we",
+        "they",
+        "me",
+        "him",
+        "us",
+        "them",
+        "my",
+        "your",
+        "his",
+        "her",
+        "our",
+        "their",
+        "its",
+        "this",
+        "these",
+        "those",
+        "some",
+        "any",
+        "just",
+        "very",
+    }
+)
+_DANGLING_BIGRAMS = frozenset(
+    {
+        ("there", "is"),
+        ("there", "are"),
+        ("there", "was"),
+        ("there", "were"),
+        ("here", "is"),
+        ("here", "are"),
+    }
+)
 
 
 def _ends_sentence(text: str) -> bool:
     return bool(_SENTENCE_END.search(text.strip()))
+
+
+def count_complete(segments: list[ParsedSegment]) -> tuple[int, int]:
+    """(số câu trọn, tổng số câu). Câu trọn = hết bằng dấu câu, hoặc ngắn dưới
+    6 giây (lyric một dòng, interjection — ngắn thì nghe-chép được nguyên câu
+    dù không có dấu câu). Seed script dùng tỉ lệ này làm cổng chất lượng."""
+    complete = sum(1 for seg in segments if _ends_sentence(seg.text) or (seg.end - seg.start) < 6)
+    return complete, len(segments)
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[A-Za-z']+", text.lower())
+
+
+def _is_dangling(text: str) -> bool:
+    """Câu kết thúc bằng từ treo (chưa thể hết ý): "how to", "tell me", "there
+    is". Từ hai mặt ("there", "so") không có trong danh sách — thà sót mảnh còn
+    hơn dính hai câu trọn (xem chú thích ở `_DANGLING_WORDS`)."""
+    words = _words(text)
+    if not words:
+        return False
+    if words[-1] in _DANGLING_WORDS:
+        return True
+    return len(words) >= 2 and (words[-2], words[-1]) in _DANGLING_BIGRAMS
 
 
 def _first_word_char(text: str) -> str:
@@ -204,19 +339,25 @@ def _is_fragment(text: str, duration: Decimal) -> bool:
 
 
 def _continues(prev: ParsedSegment, current: ParsedSegment) -> bool:
-    """Câu sau có phải đoạn nối của câu trước? Hai dấu hiệu, cái nào cũng đủ:
-    (1) câu trước là mảnh vỡ; (2) câu sau mở bằng chữ thường trong khi câu
-    trước chưa kết thúc ("...real c" + "in easy English...") — captioner ngắt
-    giữa chừng. Cả hai đều chặn độ dài để không dính cả đoạn văn thành một."""
+    """Câu sau có phải đoạn nối của câu trước? Ba dấu hiệu, cái nào cũng đủ —
+    nhưng TẤT CẢ đều đòi câu trước chưa kết thúc bằng dấu câu (dấu câu là rào
+    cứng: "I'm Georgie." + "And I'm Beth." không bao giờ dính):
+    (1) câu trước là mảnh vỡ ngắn; (2) câu sau mở bằng chữ thường (captioner
+    ngắt giữa chừng); (3) câu trước kết thúc bằng từ treo ("how to"); (4) câu
+    sau ngắn cũn (<=3 từ, kiểu "Step by Step.", "Clothing Store."). (3)(4) thêm
+    sau khi thấy ASR viết hoa mọi đầu cue — trường hợp (2) không bắt được."""
+    if current.end - prev.start >= MAX_MERGED_SECONDS:
+        return False
+    if _ends_sentence(prev.text):
+        return False
     if _is_fragment(prev.text, prev.end - prev.start):
         return True
     first = _first_word_char(current.text)
-    return (
-        bool(first)
-        and first.islower()
-        and not _ends_sentence(prev.text)
-        and current.end - prev.start < MAX_MERGED_SECONDS
-    )
+    if first and first.islower():
+        return True
+    if _is_dangling(prev.text):
+        return True
+    return len(_words(current.text)) <= MAX_SHORT_NEXT_WORDS
 
 
 def merge_fragments(segments: list[ParsedSegment]) -> list[ParsedSegment]:

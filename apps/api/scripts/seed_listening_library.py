@@ -26,6 +26,7 @@ from app.models import ListeningContent, ListeningSegment, User
 from app.services import dictation as dictation_grader
 from app.services.listening_source import SourceError, resolve_source
 from app.services.listening_transcript import (
+    count_complete,
     is_speakable,
     merge_fragments,
     validate_transcript,
@@ -35,15 +36,22 @@ from app.services.listening_youtube_captions import (
     fetch_youtube_captions,
 )
 
-# Loạt đầu: tiếng Anh rõ + phụ đề tay đã thử thật. Thêm video = thêm dòng, rồi
-# chạy lại (trùng thì bỏ qua, không đẻ đôi). Cột 3 là excerpt (giây): video dài
-# mà hay thì lấy đoạn đầu thay vì bỏ — mở đầu thường rõ ràng + tự trọn ý nhất.
+# Loạt 10: tiếng Anh rõ + sub tay, toàn dưới 5 phút. ĐÃ LOẠI, đừng thêm lại:
+# - TL61VKkme14/HrCbXNRP7eg/eHJnEHyyN1Y (dài quá 5 phút), Wb6Oc1_SdJw (ASR
+#   word-salad, 3.6% câu trọn), xowuC3keDcA (trùng chủ đề shopping),
+#   bgfdqVmVjfk (ASR kém, 24/42), IWMMkp35d6Y (ASR kém, 1/6),
+#   oE2IZvpOlGk + Qo6VHK5n_LU + viE3Xez8IQ0 (region-block).
 VIDEOS: list[tuple[str, str | None, int | None]] = [
-    ("https://www.youtube.com/watch?v=TL61VKkme14", None, 180),
-    ("https://www.youtube.com/watch?v=HrCbXNRP7eg", None, 180),
-    ("https://www.youtube.com/watch?v=eHJnEHyyN1Y", None, 180),
     ("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, None),
     ("https://www.youtube.com/watch?v=yPYZpwSpKmA", None, None),
+    ("https://www.youtube.com/watch?v=wyqfYJX23lg", None, None),
+    ("https://www.youtube.com/watch?v=r3ga_G-nMbk", None, None),
+    ("https://www.youtube.com/watch?v=s8YxQkCCwAc", None, None),
+    ("https://www.youtube.com/watch?v=CqgmozFr_GM", None, None),
+    ("https://www.youtube.com/watch?v=JAyuHIthHco", None, None),
+    ("https://www.youtube.com/watch?v=dqdUoM4gVrM", None, None),
+    ("https://www.youtube.com/watch?v=bVRIpmjTSxM", None, None),
+    ("https://www.youtube.com/watch?v=bq6GBbh3uhU", None, None),
 ]
 
 LIBRARY_EMAIL = "library@toeic-pilot.local"
@@ -102,6 +110,11 @@ def seed_one(
     # Cùng pipeline với endpoint create (filter-rồi-merge) để bài thư viện và
     # bài user tự tạo chia câu giống nhau.
     merged = merge_fragments(speakable)
+    # Cổng chất lượng: dưới ngưỡng là transcript ASR word-salad (mistranscribe
+    # + ngắt bừa) — chia câu kiểu gì cũng không cứu được, bỏ video chứ không ráng.
+    complete, total = count_complete(merged)
+    if complete < total * 0.6:
+        return f"SKIP {url}: chỉ {complete}/{total} câu trọn — transcript kém"
     # Tiêu chí thư viện: video dưới 5 phút, ưu tiên 1–3 phút. Đo bằng span
     # transcript (max end) — cùng thước với warning ở endpoint create.
     span = max(s.end for s in speakable)

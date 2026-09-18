@@ -179,3 +179,15 @@ def test_merge_continuation_mid_word_cut() -> None:
     assert out[0].text.startswith("Hello and welcome")
     assert out[0].text.endswith("to help you learn.")
     assert out[1].text == "And I'm Beth."
+
+
+def test_count_complete() -> None:
+    from app.services.listening_transcript import count_complete
+
+    segs = [
+        _seg("0", "2", "Hello."),
+        _seg("2", "4", "Never gonna give you up"),
+        _seg("4", "14", "a ten second blob without punctuation at all"),
+    ]
+    assert count_complete(segs) == (2, 3)
+    assert count_complete([]) == (0, 0)
