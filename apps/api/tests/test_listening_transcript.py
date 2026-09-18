@@ -59,10 +59,7 @@ def test_end_before_start_is_error() -> None:
 
 
 def test_unsorted_is_error() -> None:
-    raw = (
-        "1\n00:00:10,000 --> 00:00:12,000\nSecond.\n\n"
-        "2\n00:00:01,000 --> 00:00:03,000\nFirst.\n"
-    )
+    raw = "1\n00:00:10,000 --> 00:00:12,000\nSecond.\n\n2\n00:00:01,000 --> 00:00:03,000\nFirst.\n"
     result = validate_transcript(parse_srt_vtt(raw))
     assert result.valid is False
     assert result.errors == ["Segment 2 starts before segment 1"]

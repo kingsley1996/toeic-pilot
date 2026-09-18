@@ -33,9 +33,20 @@ _NOTES = re.compile(r"[♪♫]+")
 # chữ nào ("[♪♪♪]").
 _SOUND_WORDS = frozenset(
     {
-        "music", "playing", "applause", "laughter", "cheering", "cheers",
-        "coughing", "silence", "silent", "inaudible", "unintelligible",
-        "mumbling", "sighing", "noise",
+        "music",
+        "playing",
+        "applause",
+        "laughter",
+        "cheering",
+        "cheers",
+        "coughing",
+        "silence",
+        "silent",
+        "inaudible",
+        "unintelligible",
+        "mumbling",
+        "sighing",
+        "noise",
     }
 )
 

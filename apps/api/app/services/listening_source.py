@@ -124,9 +124,7 @@ def _pick_tiktok(path_parts: list[str]) -> str | None:
     return candidate if _TIKTOK_ID.match(candidate) else None
 
 
-def _resolve_tiktok_short(
-    candidate: str, transport: RedirectTransport | None
-) -> ListeningSource:
+def _resolve_tiktok_short(candidate: str, transport: RedirectTransport | None) -> ListeningSource:
     """Link rút gọn vm/vt → theo redirect → parse như link đầy đủ. Đích đến
     KHÔNG phải TikTok (link chết hay bị tráo) thì INVALID, không phải
     UNSUPPORTED — vấn đề nằm ở link này, không phải ở loại nguồn."""

@@ -76,9 +76,7 @@ class ListeningContent(Base, TimestampMixin):
     duration_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     # Slice paste-transcript tạo xong là `ready` ngay trong cùng transaction;
     # `pending`/`failed` dành cho đường STT bất đồng bộ (Upload) sau này.
-    transcript_status: Mapped[str] = mapped_column(
-        String(16), nullable=False, default="ready"
-    )
+    transcript_status: Mapped[str] = mapped_column(String(16), nullable=False, default="ready")
 
     segments: Mapped[list["ListeningSegment"]] = relationship(
         back_populates="content",

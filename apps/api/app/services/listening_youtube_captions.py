@@ -75,9 +75,7 @@ class HttpxYoutubeTransport:
     def get_text(self, url: str, headers: dict[str, str]) -> str:
         _assert_caption_url(url)
         try:
-            response = httpx.get(
-                url, headers=headers, timeout=_TIMEOUT, follow_redirects=False
-            )
+            response = httpx.get(url, headers=headers, timeout=_TIMEOUT, follow_redirects=False)
         except httpx.HTTPError as exc:
             raise CaptionError(CAPTIONS_FETCH_FAILED) from exc
         if response.status_code >= 400 or not response.text.strip():

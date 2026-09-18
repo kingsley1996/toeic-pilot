@@ -49,9 +49,7 @@ def _create(client: TestClient, headers: dict[str, str], raw: str = _SRT) -> dic
     return res.json()
 
 
-def test_create_youtube_content_with_segments(
-    client: TestClient, db_session: Session
-) -> None:
+def test_create_youtube_content_with_segments(client: TestClient, db_session: Session) -> None:
     headers = _headers_for(db_session, "creator@example.com")
     body = _create(client, headers)
     assert body["status"] == "ready"
@@ -70,9 +68,7 @@ def test_create_youtube_content_with_segments(
     assert data["segments"][0]["start"] == 12.42
 
 
-def test_invalid_transcript_creates_nothing(
-    client: TestClient, db_session: Session
-) -> None:
+def test_invalid_transcript_creates_nothing(client: TestClient, db_session: Session) -> None:
     res = client.post(
         "/api/v1/listening/contents",
         headers=_headers_for(db_session, "creator@example.com"),
@@ -129,9 +125,7 @@ def test_source_label_must_match_url(client: TestClient, db_session: Session) ->
     assert res.json()["detail"]["code"] == "SOURCE_TYPE_MISMATCH"
 
 
-def test_submit_correct_and_wrong_answers(
-    client: TestClient, db_session: Session
-) -> None:
+def test_submit_correct_and_wrong_answers(client: TestClient, db_session: Session) -> None:
     headers = _headers_for(db_session, "learner@example.com")
     body = _create(client, headers)
     detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
@@ -160,9 +154,7 @@ def test_submit_correct_and_wrong_answers(
     assert listing[0]["completed_count"] == 1
 
 
-def test_cross_user_and_cross_content_are_404(
-    client: TestClient, db_session: Session
-) -> None:
+def test_cross_user_and_cross_content_are_404(client: TestClient, db_session: Session) -> None:
     mine_headers = _headers_for(db_session, "mine@example.com")
     other_headers = _headers_for(db_session, "other@example.com")
     stranger_headers = _headers_for(db_session, "stranger@example.com")
@@ -175,10 +167,9 @@ def test_cross_user_and_cross_content_are_404(
     )
     assert client.get("/api/v1/listening/contents", headers=stranger_headers).json() == []
 
-    foreign_segment = (
-        client.get(f"/api/v1/listening/contents/{other['id']}", headers=other_headers)
-        .json()["segments"][0]["id"]
-    )
+    foreign_segment = client.get(
+        f"/api/v1/listening/contents/{other['id']}", headers=other_headers
+    ).json()["segments"][0]["id"]
     res = client.post(
         f"/api/v1/listening/contents/{mine['id']}/attempts",
         headers=mine_headers,
@@ -255,9 +246,7 @@ Hello everyone.
 """
 
 
-def test_create_all_music_transcript_is_rejected(
-    client: TestClient, db_session: Session
-) -> None:
+def test_create_all_music_transcript_is_rejected(client: TestClient, db_session: Session) -> None:
     headers = _headers_for(db_session, "nomusic@example.com")
     res = client.post(
         "/api/v1/listening/contents",
@@ -360,9 +349,7 @@ def test_captions_filters_nonspeakable_segments(
     assert "♪" not in body["raw"]
 
 
-def test_detail_reports_completed_segment_ids(
-    client: TestClient, db_session: Session
-) -> None:
+def test_detail_reports_completed_segment_ids(client: TestClient, db_session: Session) -> None:
     headers = _headers_for(db_session, "progress@example.com")
     body = _create(client, headers)
     detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()

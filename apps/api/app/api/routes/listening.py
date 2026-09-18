@@ -192,9 +192,7 @@ def create_listening_content(
     dropped = len(parsed) - len(speakable)
     warnings = list(validation.warnings)
     if dropped:
-        warnings.append(
-            f"Skipped {dropped} non-dialogue line(s) (music/background noise)"
-        )
+        warnings.append(f"Skipped {dropped} non-dialogue line(s) (music/background noise)")
 
     content = ListeningContent(
         user_id=current_user.id,
