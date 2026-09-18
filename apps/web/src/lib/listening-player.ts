@@ -105,6 +105,11 @@ function loadScript(): Promise<void> {
   return scriptLoad;
 }
 
+/* Seek của YouTube không tới ngay tick sau — cho phép lệch một chút khi nhận
+ * biết "đã tới segment", chứ không là seek đáp xuống 18.59 cho start=18.64 thì
+ * chờ tới hết giờ cũng không phát. */
+const SEEK_EPS = 0.2;
+
 /**
  * Phát lại một segment: nhảy tới `start`, chạy, dừng ở `end`. Trả về hàm huỷ —
  * component gọi khi đổi segment/unmount, không thì interval chạy mãi sau lưng.
@@ -122,6 +127,10 @@ export function replaySegment(
   player.play();
   const timer = window.setInterval(() => {
     const current = player.getCurrentTime();
+    // Seek là bất đồng bộ: đổi từ câu sau về câu trước thì vài tick đầu vẫn
+    // đọc giờ CŨ (>= end) — dừng ngay là câu mới không bao giờ phát. Chờ tới
+    // khi giờ phát chạm segment mới bắt đầu tính giờ dừng.
+    if (current < start - SEEK_EPS) return;
     onTick?.(current);
     if (current >= end) {
       window.clearInterval(timer);

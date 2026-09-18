@@ -146,8 +146,11 @@ export default function ListeningLessonPage() {
 
           {active && content.external_id && (
             <div className="mb-4">
+              {/* KHÔNG `key` theo câu: remount là dựng lại iframe (video chớp +
+                  load lại, cảm giác như reload trang). Một player sống suốt bài,
+                  đổi câu chỉ seek — effect tự-phát-lại trong
+                  `ListeningPlayerView` lo phần còn lại. */}
               <ListeningPlayerView
-                key={active.id}
                 videoId={content.external_id}
                 start={active.start}
                 end={active.end}
