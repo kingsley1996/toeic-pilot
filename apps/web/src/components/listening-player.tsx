@@ -22,6 +22,11 @@ const RATES = [0.75, 1, 1.25] as const;
  * trên bước tick thường (0.5s, kể cả 1.25x) để rung nhỏ không chốt đi chốt lại. */
 const JUMP_TOL = 1.5;
 
+/* Pause chỉ khi tick trước đã ở gần chốt này: bằng chứng phát LIÊN TỤC tới
+ * nơi. Rộng hơn JUMP_TOL một bậc để tick thưa (tab nền) không làm mất pause
+ * thật — mất một lần pause thật rẻ hơn một lần pause oan rất nhiều. */
+const APPROACH = 3;
+
 const ERROR_MESSAGE: Record<PlayerErrorCode, string> = {
   VIDEO_NOT_EMBEDDABLE:
     "Video này tắt chế độ nhúng nên không phát trong bài học được. Transcript vẫn dùng được — bấm nút bên dưới để nghe trên YouTube.",
@@ -192,24 +197,28 @@ export function ListeningPlayerView({
    * đứng yên là im lặng hoàn toàn.
    *
    * Và LUÔN dừng cuối câu: chốt dừng là mốc stops CHỨA vị trí đang phát. Chốt
-   * chỉ đặt ở HAI chỗ có chủ ý — lúc bấm play (đọc đồng bộ trong handler, dưới)
-   * và lúc phát hiện NHẢY giờ (tua/seek/đơ mạng). Tuyệt đối không chốt lại theo
-   * giờ trôi: đọc stale sau seek (vẫn giờ cũ vài tick) mà chốt lại là pause
-   * ngay — đúng bug "tua rồi play là pause liên tục", và mọi guard vá thêm chỉ
-   * đẻ race mới. */
+   * chỉ đặt ở HAI chỗ có chủ ý — lúc bấm play/replay (đọc đồng bộ trong
+   * handler) và lúc phát hiện NHẢY giờ (tua/seek/đơ mạng). Còn lệnh pause thì
+   * có thêm điều kiện BẮT BUỘC: tick trước đã ở gần chốt (phát LIÊN TỤC tới
+   * nơi). Thiếu nó là đọc stale sau seek (vẫn giờ cũ) chạm đúng công thức
+   * pause → pause oan, bấm bao nhiêu lần cũng thế — mọi ca "tua rồi play là
+   * pause" đều từ đây mà ra, vì đọc stale trông Y HỆT đọc thật. */
   useEffect(() => {
     const timer = window.setInterval(() => {
       const player = playerRef.current;
       if (!player) return;
       const current = player.getCurrentTime();
-      if (current !== lastTickRef.current) {
-        if (Math.abs(current - lastTickRef.current) > JUMP_TOL) latchStop(current);
+      const previous = lastTickRef.current;
+      if (current !== previous) {
+        // Nhảy giờ: chốt cũ vô nghĩa, chốt lại theo vị trí MỚI — và tuyệt đối
+        // không pause ở tick này.
+        if (Math.abs(current - previous) > JUMP_TOL) latchStop(current);
         lastTickRef.current = current;
         setNow(current);
         onTimeUpdateRef.current?.(current);
       }
       const stop = stopRef.current;
-      if (stop != null && current >= stop - SEEK_EPS) {
+      if (stop != null && current >= stop - SEEK_EPS && previous >= stop - APPROACH) {
         player.pause();
         setNow(stop);
         onTimeUpdateRef.current?.(current);
