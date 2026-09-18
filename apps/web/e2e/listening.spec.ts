@@ -56,7 +56,7 @@ test("lab youtube: link hỏng báo ngay, phụ đề hỏng không tạo bài, 
   });
   await register(page);
 
-  await page.goto("/learn/listening");
+  await page.goto("/learn/listening?create=1");
   const urlBox = page.getByPlaceholder("https://www.youtube.com/watch?v=…");
 
   await urlBox.fill("chữ này không phải link");
@@ -76,7 +76,7 @@ test("lab youtube: link hỏng báo ngay, phụ đề hỏng không tạo bài, 
   await page.getByPlaceholder(/Hello everyone/).fill("đây không phải srt");
   await page.getByRole("button", { name: "Tạo bài học" }).click();
   await expect(page.getByText("Transcript is empty")).toBeVisible();
-  await expect(page).toHaveURL("/learn/listening");
+  await expect(page).toHaveURL(/\/learn\/listening(\?create=1)?$/);
 
   // Kịch bản đúng: đổi link (oEmbed lần này trả tên), chép mẫu, tạo bài, học.
   await page.getByRole("button", { name: "Đổi link khác" }).click();
@@ -112,7 +112,7 @@ test("lab youtube: link hỏng báo ngay, phụ đề hỏng không tạo bài, 
   await box2.press("Enter");
   await expect(page.getByText("Chưa đúng — đối chiếu")).toBeVisible();
 
-  // Lịch sử được lưu: về hub thấy 1/2.
-  await page.goto("/learn/listening");
-  await expect(page.getByText("1/2 câu đã đúng")).toBeVisible();
+  // Lịch sử được lưu: eyebrow trang học hiện 1/2 (hub đã ẩn mục "Bài đã tạo"
+  // nên không đọc ở đó nữa).
+  await expect(page.getByText("YouTube · 1/2 câu đã đúng")).toBeVisible();
 });

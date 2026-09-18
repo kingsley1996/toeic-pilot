@@ -6,10 +6,10 @@ import {
   type ListeningContentCreated,
   type ListeningContentSummary,
 } from "@toeic-pilot/shared";
-import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Plus, Video } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 import { GuestNotice } from "@/components/guest-notice";
 import {
@@ -18,6 +18,7 @@ import {
   EmptyState,
   FieldError,
   Input,
+  Meter,
   Page,
   PageHeader,
   Panel,
@@ -51,6 +52,20 @@ Today we're going to discuss the new schedule.
 
 type Step = { name: "url" } | { name: "detail"; videoId: string; url: string };
 
+/* TẠM ẨN luồng tự tạo (paste URL + bài đã tạo) để hub chỉ còn thư viện biên
+ * soạn — code giữ nguyên, bật lại bằng hằng này. `?create=1` là lối thoát cho
+ * dev/e2e khi cờ đang tắt. */
+const SHOW_CREATE = false;
+
+/** Thumbnail card thư viện. YouTube có ảnh public theo ID; nguồn khác (sau
+ * này) thì ô giữ chỗ — không đoán URL ảnh. */
+function thumbnailFor(content: ListeningContentSummary): string | null {
+  if (content.source_type === "youtube" && content.external_id) {
+    return `https://i.ytimg.com/vi/${content.external_id}/hqdefault.jpg`;
+  }
+  return null;
+}
+
 /** Tên video qua oEmbed (không cần API key). Hỏng thì user gõ tay — không bao
  * giờ chặn tạo bài vì không lấy được tiêu đề. Timeout riêng vì đây là fetch
  * thô ngoài apiFetch (không có timeout 30s của nó). */
@@ -69,7 +84,27 @@ async function fetchOEmbedTitle(canonicalUrl: string): Promise<string | null> {
 }
 
 export default function ListeningLabPage() {
+  // `useSearchParams` đòi Suspense bao ngoài (Next không dựng trang dùng nó mà
+  // thiếu) — bọc ở đây để file page vẫn là một khối duy nhất.
+  return (
+    <Suspense
+      fallback={
+        <Page className="max-w-3xl">
+          <SkeletonList rows={3} />
+        </Page>
+      }
+    >
+      <ListeningLabContent />
+    </Suspense>
+  );
+}
+
+function ListeningLabContent() {
   const { token } = useRequireSession();
+  // Hook đứng riêng, KHÔNG gộp vào `SHOW_CREATE || ...` — short-circuit là gọi
+  // có điều kiện, sai luật hooks.
+  const params = useSearchParams();
+  const showCreate = SHOW_CREATE || params.get("create") === "1";
   const router = useRouter();
   const [step, setStep] = useState<Step>({ name: "url" });
   const [url, setUrl] = useState("");
@@ -221,183 +256,193 @@ export default function ListeningLabPage() {
       <PageHeader
         eyebrow="Listening Lab"
         title="Học từ video thật"
-        description="Dán link YouTube — hệ thống lấy phụ đề có timestamp nếu video có sẵn, rồi chép chính tả từng câu."
+        description={
+          showCreate
+            ? "Dán link YouTube — hệ thống lấy phụ đề có timestamp nếu video có sẵn, rồi chép chính tả từng câu."
+            : "Chọn một bài trong thư viện rồi chép chính tả từng câu."
+        }
       />
 
       <GuestNotice className="mb-4" />
 
-      {/* Ba tab theo SPEC §4.1 — hai tab chưa tới lượt thì disabled công khai,
-          không phải ẩn: user biết lộ trình mà không bấm vào chỗ vỡ. */}
-      <div className="mb-4 flex gap-2" role="group" aria-label="Nguồn bài học">
-        <Button size="sm" aria-pressed>
-          YouTube
-        </Button>
-        <Button size="sm" variant="secondary" disabled title="Bản sau mới có">
-          TikTok · sắp có
-        </Button>
-        <Button size="sm" variant="secondary" disabled title="Bản sau mới có">
-          Tải lên · sắp có
-        </Button>
-      </div>
+      {showCreate && (
+        <>
+          {/* Ba tab theo SPEC §4.1 — hai tab chưa tới lượt thì disabled công khai,
+              không phải ẩn: user biết lộ trình mà không bấm vào chỗ vỡ. */}
+          <div className="mb-4 flex gap-2" role="group" aria-label="Nguồn bài học">
+            <Button size="sm" aria-pressed>
+              YouTube
+            </Button>
+            <Button size="sm" variant="secondary" disabled title="Bản sau mới có">
+              TikTok · sắp có
+            </Button>
+            <Button size="sm" variant="secondary" disabled title="Bản sau mới có">
+              Tải lên · sắp có
+            </Button>
+          </div>
 
-      {step.name === "url" ? (
-        <Panel className="space-y-3 p-5">
-          <label className="block">
-            <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
-              Link video YouTube
-            </span>
-            <Input
-              value={url}
-              onChange={(event) => setUrl(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") goDetail();
-              }}
-              placeholder="https://www.youtube.com/watch?v=…"
-              inputMode="url"
-              aria-invalid={urlError !== null}
-            />
-          </label>
-          {urlError && <FieldError>{urlError}</FieldError>}
-          <Button onClick={goDetail}>
-            Tiếp tục
-            <ArrowRight size={16} strokeWidth={2} aria-hidden />
-          </Button>
-        </Panel>
-      ) : (
-        <div className="space-y-4">
-          <Button variant="secondary" size="sm" onClick={() => setStep({ name: "url" })}>
-            <ArrowLeft size={14} strokeWidth={2} aria-hidden />
-            Đổi link khác
-          </Button>
-
-          <Panel className="flex gap-4 p-5">
-            {/* Ảnh thumbnail ngoài không qua next/image được nếu chưa mở
-                remotePatterns cho YouTube; ảnh trang trí, có link text cạnh bên. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://i.ytimg.com/vi/${step.videoId}/hqdefault.jpg`}
-              alt=""
-              width={160}
-              height={90}
-              className="h-[90px] w-40 shrink-0 rounded border border-rule object-cover"
-            />
-            <div className="min-w-0">
-              <p className="font-semibold">YouTube</p>
-              <a
-                href={step.url}
-                target="_blank"
-                rel="noreferrer"
-                className="break-all text-small text-action-ink underline"
-              >
-                {step.url}
-              </a>
-            </div>
-          </Panel>
-
-          <Panel className="space-y-3 p-5">
-            <label className="block">
-              <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
-                Tên bài học
-              </span>
-              <Input
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                placeholder="VD: Business Meeting — New Schedule"
-                maxLength={512}
-              />
-            </label>
-
-            <div>
-              <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
-                Phụ đề có timestamp
-              </span>
-              <div className="mb-2 flex flex-wrap items-center gap-2">
-                <Select
-                  value={format}
-                  onChange={(event) => setFormat(event.target.value as "srt" | "vtt")}
-                  aria-label="Định dạng phụ đề"
-                >
-                  <option value="srt">SRT</option>
-                  <option value="vtt">VTT</option>
-                </Select>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={captionStatus === "loading" || !token}
-                  onClick={() => {
-                    if (step.name !== "detail" || !token) return;
-                    fetchCaptions(step.url, token);
+          {step.name === "url" ? (
+            <Panel className="space-y-3 p-5">
+              <label className="block">
+                <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
+                  Link video YouTube
+                </span>
+                <Input
+                  value={url}
+                  onChange={(event) => setUrl(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") goDetail();
                   }}
-                >
-                  Lấy phụ đề YouTube
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    setFormat("srt");
-                    setTranscript(SAMPLE_SRT);
-                  }}
-                >
-                  <Plus size={14} strokeWidth={2} aria-hidden />
-                  Chép mẫu thử
-                </Button>
-              </div>
-              {captionStatus === "loading" && (
-                <p className="mb-2 text-small text-ink-muted">Đang lấy phụ đề từ YouTube…</p>
-              )}
-              {captionNote && captionStatus === "ok" && (
-                <p className="mb-2 text-small text-ink-muted">{captionNote}</p>
-              )}
-              {captionNote && captionStatus === "fail" && <FieldError>{captionNote}</FieldError>}
-              <Textarea
-                value={transcript}
-                onChange={(event) => setTranscript(event.target.value)}
-                rows={8}
-                placeholder={"1\n00:00:00,000 --> 00:00:03,500\nHello everyone…"}
-                className="font-data"
-              />
-              <p className="mt-1.5 text-small text-ink-faint">
-                Ưu tiên phụ đề có trên YouTube. Không có thì dán SRT/VTT (cần giờ bắt đầu và giờ kết
-                thúc từng câu).
-              </p>
-            </div>
-
-            {submitError && (
-              <Alert tone="alert">
-                <ul className="list-disc space-y-0.5 pl-5">
-                  {submitError.map((line, index) => (
-                    <li key={index}>{line}</li>
-                  ))}
-                </ul>
-              </Alert>
-            )}
-
-            {created ? (
-              <Alert tone="warn">
-                <p className="font-semibold">Đã tạo bài, nhưng phụ đề có chỗ chồng giờ:</p>
-                <ul className="mt-1 list-disc pl-5">
-                  {created.warnings.map((line, index) => (
-                    <li key={index}>{line}</li>
-                  ))}
-                </ul>
-                <Link
-                  href={`/learn/listening/${created.id}`}
-                  className="mt-2 inline-block font-semibold text-action-ink underline"
-                >
-                  Vào học luôn
-                </Link>
-              </Alert>
-            ) : (
-              <Button
-                onClick={() => void create()}
-                disabled={busy || !transcript.trim() || captionStatus === "loading"}
-              >
-                {busy ? "Đang tạo…" : "Tạo bài học"}
+                  placeholder="https://www.youtube.com/watch?v=…"
+                  inputMode="url"
+                  aria-invalid={urlError !== null}
+                />
+              </label>
+              {urlError && <FieldError>{urlError}</FieldError>}
+              <Button onClick={goDetail}>
+                Tiếp tục
+                <ArrowRight size={16} strokeWidth={2} aria-hidden />
               </Button>
-            )}
-          </Panel>
-        </div>
+            </Panel>
+          ) : (
+            <div className="space-y-4">
+              <Button variant="secondary" size="sm" onClick={() => setStep({ name: "url" })}>
+                <ArrowLeft size={14} strokeWidth={2} aria-hidden />
+                Đổi link khác
+              </Button>
+
+              <Panel className="flex gap-4 p-5">
+                {/* Ảnh thumbnail ngoài không qua next/image được nếu chưa mở
+                remotePatterns cho YouTube; ảnh trang trí, có link text cạnh bên. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://i.ytimg.com/vi/${step.videoId}/hqdefault.jpg`}
+                  alt=""
+                  width={160}
+                  height={90}
+                  className="h-[90px] w-40 shrink-0 rounded border border-rule object-cover"
+                />
+                <div className="min-w-0">
+                  <p className="font-semibold">YouTube</p>
+                  <a
+                    href={step.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="break-all text-small text-action-ink underline"
+                  >
+                    {step.url}
+                  </a>
+                </div>
+              </Panel>
+
+              <Panel className="space-y-3 p-5">
+                <label className="block">
+                  <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
+                    Tên bài học
+                  </span>
+                  <Input
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                    placeholder="VD: Business Meeting — New Schedule"
+                    maxLength={512}
+                  />
+                </label>
+
+                <div>
+                  <span className="mb-1.5 block text-label font-semibold uppercase text-ink-muted">
+                    Phụ đề có timestamp
+                  </span>
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <Select
+                      value={format}
+                      onChange={(event) => setFormat(event.target.value as "srt" | "vtt")}
+                      aria-label="Định dạng phụ đề"
+                    >
+                      <option value="srt">SRT</option>
+                      <option value="vtt">VTT</option>
+                    </Select>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={captionStatus === "loading" || !token}
+                      onClick={() => {
+                        if (step.name !== "detail" || !token) return;
+                        fetchCaptions(step.url, token);
+                      }}
+                    >
+                      Lấy phụ đề YouTube
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => {
+                        setFormat("srt");
+                        setTranscript(SAMPLE_SRT);
+                      }}
+                    >
+                      <Plus size={14} strokeWidth={2} aria-hidden />
+                      Chép mẫu thử
+                    </Button>
+                  </div>
+                  {captionStatus === "loading" && (
+                    <p className="mb-2 text-small text-ink-muted">Đang lấy phụ đề từ YouTube…</p>
+                  )}
+                  {captionNote && captionStatus === "ok" && (
+                    <p className="mb-2 text-small text-ink-muted">{captionNote}</p>
+                  )}
+                  {captionNote && captionStatus === "fail" && (
+                    <FieldError>{captionNote}</FieldError>
+                  )}
+                  <Textarea
+                    value={transcript}
+                    onChange={(event) => setTranscript(event.target.value)}
+                    rows={8}
+                    placeholder={"1\n00:00:00,000 --> 00:00:03,500\nHello everyone…"}
+                    className="font-data"
+                  />
+                  <p className="mt-1.5 text-small text-ink-faint">
+                    Ưu tiên phụ đề có trên YouTube. Không có thì dán SRT/VTT (cần giờ bắt đầu và giờ
+                    kết thúc từng câu).
+                  </p>
+                </div>
+
+                {submitError && (
+                  <Alert tone="alert">
+                    <ul className="list-disc space-y-0.5 pl-5">
+                      {submitError.map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                  </Alert>
+                )}
+
+                {created ? (
+                  <Alert tone="warn">
+                    <p className="font-semibold">Đã tạo bài, nhưng phụ đề có chỗ chồng giờ:</p>
+                    <ul className="mt-1 list-disc pl-5">
+                      {created.warnings.map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                    <Link
+                      href={`/learn/listening/${created.id}`}
+                      className="mt-2 inline-block font-semibold text-action-ink underline"
+                    >
+                      Vào học luôn
+                    </Link>
+                  </Alert>
+                ) : (
+                  <Button
+                    onClick={() => void create()}
+                    disabled={busy || !transcript.trim() || captionStatus === "loading"}
+                  >
+                    {busy ? "Đang tạo…" : "Tạo bài học"}
+                  </Button>
+                )}
+              </Panel>
+            </div>
+          )}
+        </>
       )}
 
       <h2 className="mb-2 mt-8 text-subtitle">Thư viện bài có sẵn</h2>
@@ -406,52 +451,86 @@ export default function ListeningLabPage() {
       ) : library.length === 0 ? (
         <EmptyState
           title="Thư viện đang biên soạn"
-          description="Đội ngũ đang chọn video và lời thoại. Quay lại sau nhé — hoặc dán link làm bài riêng ở trên."
+          description="Đội ngũ đang chọn video và lời thoại. Quay lại sau nhé."
         />
       ) : (
-        <div className="space-y-2">
-          {library.map((content) => (
-            <PanelLink
-              key={content.id}
-              href={`/learn/listening/${content.id}`}
-              className="flex items-center gap-3"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-semibold">{content.title}</span>
-                <span className="mt-0.5 block text-small text-ink-muted">
-                  {content.completed_count}/{content.segment_count} câu đã đúng
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {library.map((content) => {
+            const thumb = thumbnailFor(content);
+            return (
+              <PanelLink
+                key={content.id}
+                href={`/learn/listening/${content.id}`}
+                className="group flex flex-col overflow-hidden p-0"
+              >
+                {thumb ? (
+                  /* Ảnh public của YouTube theo ID, không qua next/image được
+                     nếu chưa mở remotePatterns (cùng lý do thumbnail ở bước
+                     dán link). */
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={thumb}
+                    alt=""
+                    aria-hidden
+                    width={480}
+                    height={360}
+                    loading="lazy"
+                    className="aspect-video w-full border-b border-rule object-cover"
+                  />
+                ) : (
+                  <span
+                    aria-hidden
+                    className="grid aspect-video w-full place-items-center border-b border-rule bg-recess text-ink-faint"
+                  >
+                    <Video size={28} strokeWidth={1.5} />
+                  </span>
+                )}
+                <span className="flex flex-1 flex-col p-3">
+                  <span className="line-clamp-2 min-h-10 font-semibold leading-snug">
+                    {content.title}
+                  </span>
+                  <span className="mt-2">
+                    <Meter value={content.completed_count} max={content.segment_count} />
+                  </span>
+                  <span className="mt-1.5 font-data text-small text-ink-faint">
+                    {content.completed_count}/{content.segment_count} câu đã đúng
+                  </span>
                 </span>
-              </span>
-            </PanelLink>
-          ))}
+              </PanelLink>
+            );
+          })}
         </div>
       )}
 
-      <h2 className="mb-2 mt-8 text-subtitle">Bài đã tạo</h2>
-      {mine === null ? (
-        <SkeletonList rows={2} />
-      ) : mine.length === 0 ? (
-        <EmptyState
-          title="Chưa có bài nào"
-          description="Bài bạn tạo từ link YouTube sẽ nằm ở đây, kèm tiến độ từng bài."
-        />
-      ) : (
-        <div className="space-y-2">
-          {mine.map((content) => (
-            <PanelLink
-              key={content.id}
-              href={`/learn/listening/${content.id}`}
-              className="flex items-center gap-3"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-semibold">{content.title}</span>
-                <span className="mt-0.5 block text-small text-ink-muted">
-                  {content.completed_count}/{content.segment_count} câu đã đúng
-                </span>
-              </span>
-            </PanelLink>
-          ))}
-        </div>
+      {showCreate && (
+        <>
+          <h2 className="mb-2 mt-8 text-subtitle">Bài đã tạo</h2>
+          {mine === null ? (
+            <SkeletonList rows={2} />
+          ) : mine.length === 0 ? (
+            <EmptyState
+              title="Chưa có bài nào"
+              description="Bài bạn tạo từ link YouTube sẽ nằm ở đây, kèm tiến độ từng bài."
+            />
+          ) : (
+            <div className="space-y-2">
+              {mine.map((content) => (
+                <PanelLink
+                  key={content.id}
+                  href={`/learn/listening/${content.id}`}
+                  className="flex items-center gap-3"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold">{content.title}</span>
+                    <span className="mt-0.5 block text-small text-ink-muted">
+                      {content.completed_count}/{content.segment_count} câu đã đúng
+                    </span>
+                  </span>
+                </PanelLink>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </Page>
   );
