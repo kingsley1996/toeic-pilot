@@ -125,3 +125,44 @@ pnpm --filter @toeic-pilot/web exec playwright test e2e/listening.spec.ts e2e/di
 Playback thật (seek/pause đúng mốc, tua, F5) không assert được ổn định trong CI
 (CI không có loa/mạng ổn định cho iframe) — kiểm tay bằng probe Playwright trỏ
 dev stack khi sửa player, theo mẫu các `check*.mjs` đã xoá.
+
+## 5. Bot-wall trên prod (IP datacenter bị chặn)
+
+Triệu chứng: cùng video local lấy phụ đề được, prod trả
+`{"detail":{"code":"VIDEO_UNAVAILABLE"}}`. Đọc log Render:
+`youtube playability LOGIN_REQUIRED for <id>: Sign in to confirm you're not a bot`
+(= tường bot theo IP egress, không phải region/video hỏng — video vẫn public,
+oEmbed vẫn ra). Trình duyệt gọi thẳng InnerTube cũng chết (403/CORS) nên không
+có đường vòng qua client.
+
+- **(a) Chấp nhận + dán tay (mặc định hiện tại, đề xuất giữ).** Auto-fetch là
+  best-effort có nút thử lại; dán tay luôn chạy, không đụng YouTube. Đúng triết
+  lý SPEC: transcript là dữ liệu user đưa, server chỉ tiện tay lấy hộ.
+- **(b) Cache phụ đề theo `video_id` (TTL đề xuất 30 ngày).** Video nào lấy được
+  1 lần thì user sau khỏi gọi YouTube. Cần gật về SPEC §3 trước (lưu nội dung
+  YouTube trên server mình, dù chỉ là chữ).
+- **(c) Google OAuth per-user.** Request mang danh user thật → hết tường bot,
+  mở luôn video giới hạn tuổi. Giá: project + consent `youtube.readonly`
+  (sensitive → chờ verification Google vài ngày–vài tuần, giới hạn ~100 user
+  trước đó), bảng `google_credentials` (refresh token mã hóa đảo ngược — repo
+  hiện chỉ hash một chiều), routes OAuth, job refresh, UI kết nối/ngắt, tuân thủ
+  Google API User Data Policy. Công 2–4 ngày + chờ duyệt. Thứ tự nếu đi: OAuth
+  trước, verification song song, captions chuyển connected-first; dán tay giữ
+  nguyên làm đường cuối. KHÔNG làm: dán cookie/token thủ công.
+
+## 6. Thư viện bài có sẵn (đề xuất, chưa làm)
+
+Ý tưởng: lấy phụ đề trước ở local (IP sạch) cho một loạt video chọn sẵn, lưu
+thành bài public — user mở học ngay, khỏi paste/fetch. Khả thi, nhưng là scope
+mới (SPEC ghi "public content library" out-of-scope MVP) + dính câu hỏi bản
+quyền ở §5(b) (lưu full transcript lên server). Nếu gật:
+
+- Migration: `listening_content.is_public` (mặc định false) + endpoint list bài
+  public (theo tinh thần ADR-015: đọc public được như cây dictation, nộp bài
+  vẫn cần login).
+- Seed script offline (chạy tay ở local, cấm CI — cùng họ với marker
+  `external`): nhận list `(url, title)` → resolve → fetch captions → validate +
+  `is_speakable` → tạo dưới chủ sở hữu thư viện. Video đã thử thật: Rick Astley
+  ×2 (48–61 câu), Kiki trailer (16 câu).
+- Vận hành: video bị xoá/gỡ là bài thối — cần job kiểm tra định kỳ (phase sau;
+  trước mắt kiểm tay). Ghi nguồn + gỡ theo yêu cầu nếu chủ video khiếu nại.
