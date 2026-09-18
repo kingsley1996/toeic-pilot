@@ -135,6 +135,44 @@ def test_unplayable_video_is_unavailable() -> None:
     assert exc.value.code == VIDEO_UNAVAILABLE
 
 
+def test_blocked_first_client_falls_through_to_second() -> None:
+    """Android bị tường bot (LOGIN_REQUIRED) không kết luận vội: client web sau
+    đó vẫn có thể ra track — đúng ca prod IP datacenter."""
+
+    players = [
+        {"playabilityStatus": {"status": "LOGIN_REQUIRED", "reason": "Sign in"}},
+        {
+            "playabilityStatus": {"status": "OK"},
+            "captions": {
+                "playerCaptionsTracklistRenderer": {
+                    "captionTracks": [
+                        {
+                            "baseUrl": "https://www.youtube.com/api/timedtext?lang=en",
+                            "languageCode": "en",
+                        }
+                    ]
+                }
+            },
+        },
+    ]
+
+    class _SeqTransport(_FakeTransport):
+        def __init__(self) -> None:
+            super().__init__(players[0], _XML)
+            self.calls = 0
+
+        def post_json(
+            self, url: str, payload: dict[str, object], headers: dict[str, str]
+        ) -> object:
+            player = players[min(self.calls, len(players) - 1)]
+            self.calls += 1
+            return player
+
+    result = fetch_youtube_captions("dQw4w9WgXcQ", transport=_SeqTransport())
+    assert result.language == "en"
+    assert len(result.segments) == 2
+
+
 def test_missing_tracks_is_captions_unavailable() -> None:
     player = {"playabilityStatus": {"status": "OK"}, "captions": {}}
     with pytest.raises(CaptionError) as exc:

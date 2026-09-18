@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html
 import json
+import logging
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
@@ -21,6 +22,8 @@ from urllib.parse import urlparse
 import httpx
 
 from app.services.listening_transcript import ParsedSegment, parse_srt_vtt, segments_to_vtt
+
+logger = logging.getLogger(__name__)
 
 CAPTIONS_UNAVAILABLE = "CAPTIONS_UNAVAILABLE"
 CAPTIONS_FETCH_FAILED = "CAPTIONS_FETCH_FAILED"
@@ -115,12 +118,29 @@ def _player_headers() -> dict[str, str]:
     }
 
 
-def _caption_tracks(player: Any) -> list[dict[str, Any]]:
+def _playability(player: Any) -> tuple[str | None, str | None]:
+    """(status, reason) của InnerTube. `reason` là thứ duy nhất phân biệt được
+    region-block/bot-wall/video-xoá — vứt nó là mọi ca prod-khác-local đều mù."""
+    status_block = player.get("playabilityStatus") if isinstance(player, dict) else None
+    if not isinstance(status_block, dict):
+        return None, None
+    status = status_block.get("status")
+    reason = status_block.get("reason")
+    return (
+        status if isinstance(status, str) else None,
+        reason if isinstance(reason, str) else None,
+    )
+
+
+def _caption_tracks(player: Any, video_id: str) -> list[dict[str, Any]]:
     if not isinstance(player, dict):
         return []
-    status = (player.get("playabilityStatus") or {}).get("status")
+    status, reason = _playability(player)
     if status and status != "OK":
-        raise CaptionError(VIDEO_UNAVAILABLE)
+        # Không raise ở đây: client android bị tường bot (LOGIN_REQUIRED) không
+        # có nghĩa client web cũng thế — để caller thử hết rồi mới kết luận.
+        logger.warning("youtube playability %s for %s: %s", status, video_id, (reason or "")[:160])
+        return []
     renderer = (player.get("captions") or {}).get("playerCaptionsTracklistRenderer") or {}
     tracks = renderer.get("captionTracks") or []
     return [t for t in tracks if isinstance(t, dict) and t.get("baseUrl")]
@@ -248,12 +268,27 @@ def fetch_youtube_captions(
     transport: YoutubeTransport | None = None,
 ) -> YoutubeCaptions:
     client = transport or HttpxYoutubeTransport()
-    player = client.post_json(_PLAYER_URL, _android_payload(video_id), _player_headers())
-    tracks = _caption_tracks(player)
+    blocked: list[str] = []
+    player: Any = None
+    tracks: list[dict[str, Any]] = []
+    for name, payload, headers in (
+        ("android", _android_payload(video_id), _player_headers()),
+        ("web", _web_payload(video_id), _web_headers()),
+    ):
+        player = client.post_json(_PLAYER_URL, payload, headers)
+        status, _ = _playability(player)
+        if status and status != "OK":
+            blocked.append(f"{name}={status}")
+        tracks = _caption_tracks(player, video_id)
+        if tracks:
+            break
     if not tracks:
-        player = client.post_json(_PLAYER_URL, _web_payload(video_id), _web_headers())
-        tracks = _caption_tracks(player)
-    if not tracks:
+        # Cả hai client đều không ra track: video bị chặn/xoá (blocked có tên)
+        # hay thật sự không có phụ đề (blocked rỗng) — hai mã khác nhau để UI
+        # nói đúng câu.
+        if blocked:
+            logger.warning("youtube blocked %s for %s", ",".join(blocked), video_id)
+            raise CaptionError(VIDEO_UNAVAILABLE)
         raise CaptionError(CAPTIONS_UNAVAILABLE)
     track = _pick_track(tracks)
     caption_url = str(track["baseUrl"])
