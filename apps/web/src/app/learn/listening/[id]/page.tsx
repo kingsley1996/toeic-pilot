@@ -33,10 +33,10 @@ function MaskedText({ text }: { text: string }) {
   );
 }
 
-/** Rộng hơn bước tick (500ms) một chút: dừng lố qua mốc bắt đầu câu sau vài
- * chục ms vẫn tính là "đang ở mốc", highlight không chớp sang câu sau rồi về
- * trong lúc user chưa thao tác gì. */
-const FOLLOW_EPS = 0.6;
+/** Ngưỡng dính biên cho follow tự động: vào sâu quá chừng này mới tính là sang
+ * câu (tick 500ms luôn bắt được, còn dừng lố qua mốc vài chục ms thì ở yên).
+ * Nhỏ hơn nữa là câu ngắn bị nhảy cóc (tick bước qua luôn cả câu). */
+const BOUNDARY_EPS = 0.3;
 
 /** Mili-giây hiện tại. Bọc ngoài component như `timeAgo` ở admin/users: rule
  * purity cấm gọi `Date.now()` trong render (kể cả trong hàm lồng), còn helper
@@ -55,12 +55,13 @@ export default function ListeningLessonPage() {
   // Đếm lượt phát-lại-cùng-câu (bấm lại dòng đang chọn, nút Tiếp tục ở câu
   // cuối): start/end không đổi nên player chỉ nghe được qua tín hiệu này.
   const [replaySeq, setReplaySeq] = useState(0);
-  /* Câu video ĐANG phát tới — highlight + cuộn theo, ĐỘC LẬP với câu đang làm.
-   * Cố ý không gộp: video chạy xuyên câu mà lôi cả bài tập theo thì chữ đang gõ
-   * dở mất theo; bấm vào dòng nào thì bài tập mới nhảy theo (goTo dưới). */
-  const [followId, setFollowId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const rowRefs = useRef(new Map<string, HTMLButtonElement>());
+  const rowRefs = useRef(new Map<number, HTMLButtonElement>());
+  // Hai ref cho follow tự động (handleTime dưới): mốc tick trước để phân biệt
+  // tua-nhảy vs trôi-tới, và cửa sổ settle sau mỗi lần bấm đi. Đứng đây cùng
+  // các ref khác — dưới early-return là sai luật hooks.
+  const lastHandledRef = useRef(-1);
+  const settleUntilRef = useRef(0);
   // Mốc tính thời gian làm từng câu — chỉ ghi trong handler chuyển câu và đọc
   // trong handler nộp bài. Không khởi tạo ở render (`Date.now()` là hàm impure)
   // và không đặt trong effect (setState đồng bộ trong effect cho thứ tính được
@@ -85,12 +86,11 @@ export default function ListeningLessonPage() {
     if (token) void load(token);
   }, [token, load]);
 
-  /* Cuộn list tới câu video đang phát. Trước early-return bên dưới: hook sau
-   * `return` có điều kiện là lỗi luật lẫn lỗi React. */
+  /* Cuộn list tới câu đang làm. Trước early-return bên dưới: hook sau `return`
+   * có điều kiện là lỗi luật lẫn lỗi React. */
   useEffect(() => {
-    if (!followId) return;
-    rowRefs.current.get(followId)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, [followId]);
+    rowRefs.current.get(activeIndex)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [activeIndex]);
 
   if (!token || (!content && !error)) {
     return (
@@ -106,6 +106,9 @@ export default function ListeningLessonPage() {
 
   function goTo(index: number) {
     segStartedAt.current = nowMs();
+    // Mở cửa sổ settle: seek sắp bay, tick stale đọc giờ cũ trong lúc đó mà
+    // tính là follow là lôi bài tập đi lung tung (xem handleTime).
+    settleUntilRef.current = nowMs() + 1200;
     if (index === activeIndex) {
       // Bấm lại đúng dòng đang chọn: start/end không đổi nên effect tự-phát
       // trong player không thấy gì — tín hiệu đếm riêng cho ca này.
@@ -113,44 +116,40 @@ export default function ListeningLessonPage() {
       return;
     }
     setActiveIndex(index);
-    // Highlight đi theo ngay, khỏi chờ tick (tick tới xác nhận lại giá trị
-    // này nên không sợ lệch).
-    const target = segments[index];
-    if (target) setFollowId(target.id);
   }
 
-  /* Nút "Tiếp tục" bấm ngay cuối câu đang làm: cả ba (video, list, bài tập)
-   * cùng tiến sang câu kế — autoplay effect trong player (start/end đổi) phát
-   * luôn câu mới. Câu cuối thì phát lại câu đó. Bài tập đổi theo vì user CHỦ
-   * ĐỘNG tiến (khác với follow tự chạy khi xem — cái đó không được đụng tới
-   * chữ đang gõ). */
+  /* Nút "Tiếp tục" bấm ngay cuối câu đang làm: tiến sang câu kế — autoplay
+   * effect trong player (start/end đổi) phát luôn câu mới. Câu cuối thì phát
+   * lại câu đó. Cùng đường với follow tự động dưới: mọi ca đổi câu đều qua
+   * goTo, không có đường tắt. */
   function advance() {
     if (activeIndex + 1 < segments.length) goTo(activeIndex + 1);
     else setReplaySeq((n) => n + 1);
   }
 
-  /* Video tới đâu thì list theo tới đó: tìm câu chứa mốc giờ, highlight + cuộn
-   * tới. Ngoài khoảng (đầu video, hết video) thì giữ highlight cũ — mất dấu còn
-   * tệ hơn đứng yên. Dính biên: dừng NGAY mốc bắt đầu câu sau (vừa pause cuối
-   * câu trước) thì ở yên câu trước — không thì highlight tự nhảy sang câu mới
-   * dù user chưa thao tác gì. */
+  /* Video tới đâu thì CẢ BÀI theo tới đó (list highlight + bài tập + cuộn):
+   * một state duy nhất, không có chuyện list một nơi bài tập một nẻo. Tìm câu
+   * chứa mốc giờ; ngoài khoảng (đầu video, hết video) thì đứng yên.
+   *
+   * Dính biên: TRÔI tới ngay mốc bắt đầu câu sau (vừa pause cuối câu trước)
+   * thì ở yên câu trước — không thì vừa dừng đã tự nhảy sang câu mới dù user
+   * chưa thao tác gì. Nhưng TUA tới (nhảy giờ) thì đi ngay kể cả trúng biên:
+   * đó là chủ ý của user, không phải trôi tự nhiên. Hai ca phân biệt bằng độ
+   * nhảy so với tick trước.
+   *
+   * Đánh đổi có chủ ý: chữ đang gõ dở mất theo khi video tự chạy qua câu —
+   * nhưng video chỉ qua câu khi user bấm phát/xem (hành động đi tiếp), còn bài
+   * đã nộp thì server giữ, không mất gì thật. */
   function handleTime(playedSeconds: number) {
+    const previous = lastHandledRef.current;
+    lastHandledRef.current = playedSeconds;
     const index = segments.findIndex(
       (segment) => playedSeconds >= segment.start && playedSeconds < segment.end,
     );
-    if (index === -1) return;
-    setFollowId((current) => {
-      const id = segments[index]!.id;
-      if (current === id) return current;
-      if (
-        index > 0 &&
-        playedSeconds - segments[index]!.start < FOLLOW_EPS &&
-        current === segments[index - 1]!.id
-      ) {
-        return current;
-      }
-      return id;
-    });
+    if (index === -1 || index === activeIndex) return;
+    const jumped = Math.abs(playedSeconds - previous) > 1.5;
+    if (!jumped && playedSeconds - segments[index]!.start < BOUNDARY_EPS) return;
+    goTo(index);
   }
 
   /** Ghi lượt làm về attempts của segment — cũng là chỗ duy nhất đánh dấu câu
@@ -252,16 +251,15 @@ export default function ListeningLessonPage() {
                 <ol className="max-h-72 space-y-1 overflow-y-auto p-2 lg:max-h-[430px]">
                   {segments.map((segment, index) => {
                     const done = doneIds.has(segment.id);
-                    // MỘT highlight duy nhất: video đang phát tới đâu thì sáng
-                    // tới đó; chưa phát gì thì sáng câu đang làm. Hai viền cam
-                    // cùng lúc (bài tập một nơi, video một nơi) đọc thành lỗi.
-                    const current = segment.id === (followId ?? segments[activeIndex]?.id);
+                    // MỘT trạng thái hiện tại duy nhất: chính là câu đang làm
+                    // (= câu video đang phát tới, vì bài tập bám playback).
+                    const current = index === activeIndex;
                     return (
                       <li key={segment.id}>
                         <button
                           ref={(node) => {
-                            if (node) rowRefs.current.set(segment.id, node);
-                            else rowRefs.current.delete(segment.id);
+                            if (node) rowRefs.current.set(index, node);
+                            else rowRefs.current.delete(index);
                           }}
                           type="button"
                           onClick={() => goTo(index)}

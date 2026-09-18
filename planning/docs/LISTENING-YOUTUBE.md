@@ -53,8 +53,10 @@ Luật hành vi (đã chốt với user, đừng đổi lén):
 - Bấm play: trong câu → resume; đứng cuối câu → TIẾN sang câu kế (cả ba cùng
   đi); tua đi xa → resume đúng chỗ, không lôi bài tập theo.
 - Tua không bao giờ tự phát. Đáp đúng thì ở yên — đi tiếp chỉ bằng nút.
-- Highlight MỘT dòng duy nhất: video tới đâu sáng tới đó, chưa phát thì sáng
-  câu đang làm; dính biên 0.6s (dừng ngay mốc thì ở yên câu trước).
+- MỘT state hiện tại duy nhất: video tới đâu thì cả bài (list + bài tập +
+  cuộn) theo tới đó. Dính biên 0.3s (dừng ngay mốc thì ở yên); tua-nhảy thì đi
+  ngay. Chữ gõ dở mất theo khi qua câu — chấp nhận vì qua câu luôn là hành
+  động của user.
 - Chưa đúng che `*` dài bằng từ; đúng mở chữ + viền xanh; F5 giữ nguyên
   (seed từ `completed_segment_ids`).
 
@@ -105,6 +107,12 @@ Luật hành vi (đã chốt với user, đừng đổi lén):
     test đỏ (đã push 1 commit lỗi kiểu này). Chạy test trần, commit lệnh riêng.
 17. **`@toeic-pilot/shared` resolve qua `dist/`**: regen `api-types` xong phải
     `pnpm --filter @toeic-pilot/shared build`, không tsc báo thiếu field oan.
+18. **Bấm play thẳng trên video bypass mọi chốt của mình**: poll giết phát lại
+    bằng chốt stale trong nửa giây — chốt lại ở MỌI lượt phát mới (phát hiện
+    qua chuyển paused→playing), pause đòi status YouTube xác nhận.
+19. **Bài tập/list/video ba nơi ba ngả**: gộp thành MỘT state (video tới đâu cả
+    bài theo tới đó). Cửa sổ settle 1200ms sau mỗi lần bấm đi để tick stale
+    trong lúc seek bay không lôi bài tập đi lung tung.
 
 ## 4. Verify slice này
 
