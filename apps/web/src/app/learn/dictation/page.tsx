@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ROUTES, type DictationPage, type DictationTopicPublic } from "@toeic-pilot/shared";
-import { BookOpen, Headphones, Shuffle, Video } from "lucide-react";
+import { BookOpen, FlaskConical, Headphones, Shuffle, Sparkles, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -12,6 +12,7 @@ import {
   PageHeader,
   PanelLink,
   SkeletonList,
+  StatusTag,
 } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { GuestNotice } from "@/components/guest-notice";
@@ -84,7 +85,15 @@ export default function DictationTopicsPage() {
       <PanelLink href="/learn/listening" className="mb-3 flex items-center gap-4">
         <Video size={16} strokeWidth={1.75} className="shrink-0 text-ink-muted" aria-hidden />
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold">Listening Lab — học từ video YouTube</span>
+          <span className="flex flex-wrap items-center gap-1.5 font-semibold">
+            Listening Lab — học từ video YouTube
+            <StatusTag tone="action" icon={Sparkles}>
+              mới
+            </StatusTag>
+            <StatusTag tone="warn" icon={FlaskConical}>
+              thử nghiệm
+            </StatusTag>
+          </span>
           <span className="mt-0.5 block text-small text-ink-muted">
             Dán link video của bạn, chép chính tả từng câu. Cần đăng nhập.
           </span>
