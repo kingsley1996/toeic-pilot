@@ -46,7 +46,7 @@ export function ListeningPlayerView({
   end: number;
   onError?: (code: PlayerErrorCode) => void;
 }) {
-  const frameRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<ListeningPlayer | null>(null);
   const cancelReplayRef = useRef<(() => void) | null>(null);
   const mountedRef = useRef(false);
@@ -71,13 +71,27 @@ export function ListeningPlayerView({
     setNow(start);
   }
 
-  /* Một video một player: đổi `videoId` là sang bài khác thì dựng lại iframe —
-   * rẻ (trang bài học cũng remount theo), khỏi giữ đường `loadVideo` riêng. */
+  /* Iframe do effect tự tạo và tự dọn, React chỉ giữ khung bọc rỗng.
+   *
+   * Bài học đắt giá ở đây: iframe do React render rồi đưa cho `YT.Player` thì
+   * API thay node ngay dưới chân React (nâng cấp = thay thế). Remount sau đó
+   * (StrictMode dev, đổi video) dựng player trên node đã rời DOM: request embed
+   * vẫn đi, onReady có khi vẫn bắn, nhưng iframe nằm ngoài document — mắt thấy
+   * là khung rỗng, nút treo `loading`, không một lỗi nào. Ai sở hữu node thì
+   * người đó dọn: effect tạo thì cleanup `frame.remove()`, React không mó vào
+   * trong khung này bao giờ. */
   useEffect(() => {
-    const el = frameRef.current;
-    if (!el) return;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const frame = document.createElement("iframe");
+    frame.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
+    frame.title = "Video bài học";
+    frame.allow = "accelerometer; autoplay; encrypted-media; picture-in-picture";
+    frame.allowFullscreen = true;
+    frame.className = "h-full w-full";
+    wrap.append(frame);
     let alive = true;
-    createYouTubePlayer(el, videoId, {
+    createYouTubePlayer(frame, videoId, {
       onStatus: (next) => {
         if (alive) setStatus(next);
       },
@@ -102,6 +116,7 @@ export function ListeningPlayerView({
       cancelReplayRef.current?.();
       playerRef.current?.destroy();
       playerRef.current = null;
+      frame.remove();
     };
   }, [videoId]);
 
@@ -135,9 +150,12 @@ export function ListeningPlayerView({
 
   return (
     <div className="space-y-3">
-      <div className="overflow-hidden rounded border border-rule bg-recess">
-        <div ref={frameRef} className="aspect-video w-full" />
-      </div>
+      {/* Khung bọc RỖNG có chủ ý — iframe bên trong do effect quản (xem trên).
+          Tỉ lệ 16:9 nằm ở khung này, iframe chỉ `h-full w-full` theo. */}
+      <div
+        ref={wrapRef}
+        className="aspect-video w-full overflow-hidden rounded border border-rule bg-recess"
+      />
 
       {failed ? (
         <Alert tone="warn">

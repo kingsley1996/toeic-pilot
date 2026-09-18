@@ -44,6 +44,11 @@ type YouTubeNamespace = {
     el: HTMLElement,
     options: {
       videoId: string;
+      /* BẮT BUỘC dù div đã có cỡ CSS: thiếu là API vẫn bắn onReady nhưng không
+       * đẻ iframe (đã bắt tận tay — nút Nghe lại treo `loading` vĩnh viễn mà
+       * không một lỗi nào). '100%' để khung `aspect-video` quyết cỡ thật. */
+      height: string;
+      width: string;
       playerVars: Record<string, unknown>;
       events: {
         onReady: () => void;
@@ -128,7 +133,7 @@ export function replaySegment(
 }
 
 export async function createYouTubePlayer(
-  el: HTMLElement,
+  frame: HTMLIFrameElement,
   videoId: string,
   events: PlayerEvents,
 ): Promise<ListeningPlayer> {
@@ -148,8 +153,14 @@ export async function createYouTubePlayer(
     else queue.push(fn);
   };
 
-  instance = new namespace.Player(el, {
+  /* `frame` phải là node React không quản (effect tự `createElement`/`remove`).
+   * Đưa node do React render cho API là mất nó sau remount: API thay node ngay
+   * dưới chân React, lần dựng sau xài node đã rời DOM — request embed vẫn đi
+   * mà iframe nằm ngoài document. Chi tiết ở component gọi hàm này. */
+  instance = new namespace.Player(frame, {
     videoId,
+    height: "100%",
+    width: "100%",
     playerVars: { enablejsapi: 1, rel: 0 },
     events: {
       onReady: () => {
