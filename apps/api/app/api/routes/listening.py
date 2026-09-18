@@ -1,8 +1,10 @@
-"""Endpoint Listening Lab: bài nghe user tự tạo từ URL YouTube.
+"""Endpoint Listening Lab: bài nghe user tự tạo từ URL (+ thư viện có sẵn).
 
-Ownership là biên an ninh ở mọi endpoint: bài của user này không bao giờ hiện
-hay chấm cho user khác — thiếu test là thiếu cả tính năng (mọi route dưới đây
-đều có case 404-chéo trong `tests/test_listening_api.py`).
+Ownership là biên an ninh ở mọi endpoint RIÊNG TƯ: bài của user này không bao
+giờ hiện hay chấm cho user khác — thiếu test là thiếu cả tính năng (mọi route
+dưới đây đều có case 404-chéo trong `tests/test_listening_api.py`). Ngoại lệ
+DUY NHẤT: bài `is_public` của thư viện — đọc công khai (kể cả khách, tiến độ
+chỉ hiện khi đăng nhập), nộp bài vẫn cần tài khoản.
 
 Không `reward_study`/XP ở slice này: cổng thưởng của dictation cũ gắn với
 `is_complete` của NÓ, móc chung vào đây là trả thưởng hai lần cho một định
@@ -16,7 +18,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 from app.core.database import get_db
 from app.core.rate_limit import Quota, rate_limit
 from app.models import (
@@ -84,17 +86,70 @@ def _to_public(
     )
 
 
-def _get_owned_content(db: Session, user_id: uuid.UUID, content_id: uuid.UUID) -> ListeningContent:
-    """Bài của chính user, kèm segments. 404 cho cả "không có" lẫn "của người
-    khác" — phân biệt hai case là lộ bài người khác tồn tại."""
-    content = db.scalars(
-        select(ListeningContent)
-        .where(ListeningContent.id == content_id, ListeningContent.user_id == user_id)
-        .options(selectinload(ListeningContent.segments))
-    ).first()
+def _get_visible_content(db: Session, user: User | None, content_id: uuid.UUID) -> ListeningContent:
+    """Bài user được PHÉP đọc: của mình, hoặc public của thư viện. Bài riêng
+    của người khác thì 404 như không tồn tại — cùng luật với hàm trên, chỉ nới
+    thêm đúng một cửa public."""
+    query = select(ListeningContent).options(selectinload(ListeningContent.segments))
+    if user is None:
+        query = query.where(ListeningContent.id == content_id, ListeningContent.is_public.is_(True))
+    else:
+        query = query.where(
+            ListeningContent.id == content_id,
+            (ListeningContent.user_id == user.id) | (ListeningContent.is_public.is_(True)),
+        )
+    content = db.scalars(query).first()
     if content is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Content not found")
     return content
+
+
+def _summarize(
+    db: Session,
+    contents: list[ListeningContent],
+    user_id: uuid.UUID | None,
+) -> list[ListeningContentSummary]:
+    """Gói list content thành summary kèm đếm câu + câu đã đúng. `user_id`
+    None (khách) thì tiến độ 0 hết — nội dung không phải thứ tài khoản mở khoá
+    (cùng luật ADR-015 của cây dictation)."""
+    if not contents:
+        return []
+    content_ids = [c.id for c in contents]
+    counts: dict[uuid.UUID, int] = {}
+    for content_id, total in db.execute(
+        select(ListeningSegment.content_id, func.count())
+        .where(ListeningSegment.content_id.in_(content_ids))
+        .group_by(ListeningSegment.content_id)
+    ).all():
+        counts[content_id] = total
+    completed: dict[uuid.UUID, int] = {}
+    if user_id is not None:
+        for content_id, total in db.execute(
+            select(
+                ListeningSegment.content_id,
+                func.count(func.distinct(ListeningAttempt.segment_id)),
+            )
+            .join(ListeningAttempt, ListeningAttempt.segment_id == ListeningSegment.id)
+            .where(
+                ListeningSegment.content_id.in_(content_ids),
+                ListeningAttempt.user_id == user_id,
+                ListeningAttempt.is_complete.is_(True),
+            )
+            .group_by(ListeningSegment.content_id)
+        ).all():
+            completed[content_id] = total
+    return [
+        ListeningContentSummary(
+            id=str(c.id),
+            title=c.title,
+            source_type=c.source_type,
+            external_id=c.external_id,
+            segment_count=counts.get(c.id, 0),
+            completed_count=completed.get(c.id, 0),
+            created_at=c.created_at,
+        )
+        for c in contents
+    ]
 
 
 @router.post(
@@ -224,6 +279,22 @@ def create_listening_content(
     )
 
 
+@router.get("/listening/library", response_model=list[ListeningContentSummary])
+def list_listening_library(
+    db: Session = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
+) -> list[ListeningContentSummary]:
+    """Thư viện bài có sẵn của đội biên soạn — đọc công khai (kể cả khách,
+    theo tinh thần ADR-015), tiến độ chỉ hiện khi đăng nhập. Nộp bài vẫn cần
+    tài khoản (endpoint attempts giữ `get_current_user`)."""
+    contents = db.scalars(
+        select(ListeningContent)
+        .where(ListeningContent.is_public.is_(True))
+        .order_by(ListeningContent.created_at.desc())
+    ).all()
+    return _summarize(db, list(contents), user.id if user else None)
+
+
 @router.get("/listening/contents", response_model=list[ListeningContentSummary])
 def list_listening_contents(
     db: Session = Depends(get_db),
@@ -234,53 +305,18 @@ def list_listening_contents(
         .where(ListeningContent.user_id == current_user.id)
         .order_by(ListeningContent.created_at.desc())
     ).all()
-    if not contents:
-        return []
-
-    content_ids = [c.id for c in contents]
-    counts: dict[uuid.UUID, int] = {}
-    for content_id, total in db.execute(
-        select(ListeningSegment.content_id, func.count())
-        .where(ListeningSegment.content_id.in_(content_ids))
-        .group_by(ListeningSegment.content_id)
-    ).all():
-        counts[content_id] = total
-    completed: dict[uuid.UUID, int] = {}
-    for content_id, total in db.execute(
-        select(
-            ListeningSegment.content_id,
-            func.count(func.distinct(ListeningAttempt.segment_id)),
-        )
-        .join(ListeningAttempt, ListeningAttempt.segment_id == ListeningSegment.id)
-        .where(
-            ListeningSegment.content_id.in_(content_ids),
-            ListeningAttempt.user_id == current_user.id,
-            ListeningAttempt.is_complete.is_(True),
-        )
-        .group_by(ListeningSegment.content_id)
-    ).all():
-        completed[content_id] = total
-    return [
-        ListeningContentSummary(
-            id=str(c.id),
-            title=c.title,
-            source_type=c.source_type,
-            external_id=c.external_id,
-            segment_count=counts.get(c.id, 0),
-            completed_count=completed.get(c.id, 0),
-            created_at=c.created_at,
-        )
-        for c in contents
-    ]
+    return _summarize(db, list(contents), current_user.id)
 
 
 @router.get("/listening/contents/{content_id}", response_model=ListeningContentPublic)
 def get_listening_content(
     content_id: uuid.UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    user: User | None = Depends(get_optional_user),
 ) -> ListeningContentPublic:
-    content = _get_owned_content(db, current_user.id, content_id)
+    content = _get_visible_content(db, user, content_id)
+    if user is None:
+        return _to_public(content, [])
     completed = [
         str(segment_id)
         for segment_id in db.scalars(
@@ -288,7 +324,7 @@ def get_listening_content(
             .join(ListeningSegment, ListeningSegment.id == ListeningAttempt.segment_id)
             .where(
                 ListeningSegment.content_id == content.id,
-                ListeningAttempt.user_id == current_user.id,
+                ListeningAttempt.user_id == user.id,
                 ListeningAttempt.is_complete.is_(True),
             )
             .distinct()
@@ -304,7 +340,7 @@ def submit_listening_attempt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ListeningAttemptResult:
-    content = _get_owned_content(db, current_user.id, content_id)
+    content = _get_visible_content(db, current_user, content_id)
     segment = next((s for s in content.segments if s.id == body.segment_id), None)
     if segment is None:
         # Segment không thuộc bài này (kể cả segment của bài KHÁC của cùng user)

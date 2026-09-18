@@ -150,19 +150,20 @@ có đường vòng qua client.
   trước, verification song song, captions chuyển connected-first; dán tay giữ
   nguyên làm đường cuối. KHÔNG làm: dán cookie/token thủ công.
 
-## 6. Thư viện bài có sẵn (đề xuất, chưa làm)
+## 6. Thư viện bài có sẵn (ĐÃ LÀM — user gật scope + bản quyền 2026-09-18)
 
-Ý tưởng: lấy phụ đề trước ở local (IP sạch) cho một loạt video chọn sẵn, lưu
-thành bài public — user mở học ngay, khỏi paste/fetch. Khả thi, nhưng là scope
-mới (SPEC ghi "public content library" out-of-scope MVP) + dính câu hỏi bản
-quyền ở §5(b) (lưu full transcript lên server). Nếu gật:
+Bài public (`listening_content.is_public`, migration 090) đọc được kể cả khách
+(`get_optional_user`, tiến độ chỉ hiện khi login — cùng luật ADR-015); nộp bài
+vẫn cần tài khoản; bài riêng của người khác vẫn 404. Endpoint
+`GET /listening/library` + hub section "Thư viện bài có sẵn" + link "Nguồn
+video gốc" mỗi trang học (ghi nguồn + gỡ khi bị khiếu nại).
 
-- Migration: `listening_content.is_public` (mặc định false) + endpoint list bài
-  public (theo tinh thần ADR-015: đọc public được như cây dictation, nộp bài
-  vẫn cần login).
-- Seed script offline (chạy tay ở local, cấm CI — cùng họ với marker
-  `external`): nhận list `(url, title)` → resolve → fetch captions → validate +
-  `is_speakable` → tạo dưới chủ sở hữu thư viện. Video đã thử thật: Rick Astley
-  ×2 (48–61 câu), Kiki trailer (16 câu).
-- Vận hành: video bị xoá/gỡ là bài thối — cần job kiểm tra định kỳ (phase sau;
-  trước mắt kiểm tay). Ghi nguồn + gỡ theo yêu cầu nếu chủ video khiếu nại.
+Seed offline (cấm CI, IP local sạch mới qua được tường bot):
+`uv run python scripts/seed_listening_library.py [--apply]` (dry-run mặc định).
+Loạt đầu 5 video sub tay: meetings-easy-English, 2 TED công sở, 2 Rick Astley
+(vui). Thêm video = thêm dòng vào `VIDEOS`, chạy lại (trùng public thì bỏ qua).
+
+Lên prod: `alembic upgrade head` trước (dev từng phải `stamp 089` vì bảng dựng
+bằng `create_all` — prod đi migration chuẩn thì không), rồi chạy seed với
+`DATABASE_URL` của prod. Vận hành: video bị xoá/gỡ là bài thối — cần job kiểm
+tra định kỳ (phase sau; trước mắt kiểm tay).

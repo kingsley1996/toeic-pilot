@@ -90,12 +90,16 @@ export default function ListeningLabPage() {
   const [created, setCreated] = useState<ListeningContentCreated | null>(null);
   const [busy, setBusy] = useState(false);
   const [mine, setMine] = useState<ListeningContentSummary[] | null>(null);
+  const [library, setLibrary] = useState<ListeningContentSummary[] | null>(null);
 
   useEffect(() => {
     if (!token) return;
     apiFetch<ListeningContentSummary[]>(API_ROUTES.listeningContents, { token })
       .then(setMine)
       .catch(() => setMine([]));
+    apiFetch<ListeningContentSummary[]>(API_ROUTES.listeningLibrary, { token })
+      .then(setLibrary)
+      .catch(() => setLibrary([]));
   }, [token]);
 
   // Có video mới thì thử lấy tên qua oEmbed. Chỉ điền khi ô vẫn trống — dùng
@@ -393,6 +397,33 @@ export default function ListeningLabPage() {
               </Button>
             )}
           </Panel>
+        </div>
+      )}
+
+      <h2 className="mb-2 mt-8 text-subtitle">Thư viện bài có sẵn</h2>
+      {library === null ? (
+        <SkeletonList rows={2} />
+      ) : library.length === 0 ? (
+        <EmptyState
+          title="Thư viện đang biên soạn"
+          description="Đội ngũ đang chọn video và lời thoại. Quay lại sau nhé — hoặc dán link làm bài riêng ở trên."
+        />
+      ) : (
+        <div className="space-y-2">
+          {library.map((content) => (
+            <PanelLink
+              key={content.id}
+              href={`/learn/listening/${content.id}`}
+              className="flex items-center gap-3"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold">{content.title}</span>
+                <span className="mt-0.5 block text-small text-ink-muted">
+                  {content.completed_count}/{content.segment_count} câu đã đúng
+                </span>
+              </span>
+            </PanelLink>
+          ))}
         </div>
       )}
 

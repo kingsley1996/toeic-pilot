@@ -429,6 +429,7 @@ export const API_ROUTES = {
   // Listening Lab: bài user tự tạo nên id là UUID do server cấp, không sợ clash
   // với route động nào — lồng `/contents/${id}/attempts` an toàn.
   listeningContents: "/api/v1/listening/contents",
+  listeningLibrary: "/api/v1/listening/library",
   listeningCaptions: "/api/v1/listening/captions",
   listeningContent: (id: string) => `/api/v1/listening/contents/${id}`,
   listeningAttempts: (id: string) => `/api/v1/listening/contents/${id}/attempts`,

@@ -77,6 +77,12 @@ class ListeningContent(Base, TimestampMixin):
     # Slice paste-transcript tạo xong là `ready` ngay trong cùng transaction;
     # `pending`/`failed` dành cho đường STT bất đồng bộ (Upload) sau này.
     transcript_status: Mapped[str] = mapped_column(String(16), nullable=False, default="ready")
+    # Bài của đội biên soạn, mọi user đọc được (thư viện có sẵn). Mặc định
+    # false: bài user tự tạo là riêng tư, công khai là hành động chủ ý (hiện
+    # tại chỉ seed script làm việc đó).
+    is_public: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False, index=True
+    )
 
     segments: Mapped[list["ListeningSegment"]] = relationship(
         back_populates="content",

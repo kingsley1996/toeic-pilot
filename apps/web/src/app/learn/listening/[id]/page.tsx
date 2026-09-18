@@ -186,10 +186,22 @@ export default function ListeningLessonPage() {
       {content && (
         <>
           <PageHeader
-            eyebrow={`YouTube · ${doneIds.size}/${segments.length} câu đã đúng`}
+            eyebrow={`${content.source_type === "tiktok" ? "TikTok" : "YouTube"} · ${doneIds.size}/${segments.length} câu đã đúng`}
             title={content.title}
             description="Nghe lại từng câu rồi gõ những gì bạn nghe được."
           />
+          {/* Ghi nguồn: lời thoại thuộc về video gốc — học ở đây, xem gốc ở đây. */}
+          <p className="mb-4 text-small text-ink-muted">
+            Nguồn video gốc:{" "}
+            <a
+              href={content.source_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-action-ink underline"
+            >
+              {content.source_type === "tiktok" ? "TikTok" : "YouTube"} ↗
+            </a>
+          </p>
 
           <GuestNotice className="mb-4" />
 

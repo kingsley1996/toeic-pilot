@@ -371,3 +371,62 @@ def test_detail_reports_completed_segment_ids(client: TestClient, db_session: Se
 
     again = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
     assert again["completed_segment_ids"] == [first]
+
+
+def _make_public(
+    client: TestClient, db_session: Session, email: str = "librarian@example.com"
+) -> dict:
+    """Bài public của thư viện: tạo thường rồi bật cờ (chỉ seed script làm)."""
+    import uuid as _uuid
+
+    from app.models import ListeningContent as _LC
+
+    headers = _headers_for(db_session, email)
+    body = _create(client, headers)
+    row = db_session.get(_LC, _uuid.UUID(body["id"]))
+    assert row is not None
+    row.is_public = True
+    db_session.commit()
+    return body
+
+
+def test_library_lists_public_for_guest_and_hides_private(
+    client: TestClient, db_session: Session
+) -> None:
+    public = _make_public(client, db_session)
+    mine_headers = _headers_for(db_session, "private-owner@example.com")
+    mine = _create(client, mine_headers)
+
+    guest_list = client.get("/api/v1/listening/library").json()
+    assert [c["id"] for c in guest_list] == [public["id"]]
+    assert guest_list[0]["completed_count"] == 0
+
+    # Bài riêng không lọt ra thư viện, khách cũng không đọc được.
+    assert client.get(f"/api/v1/listening/contents/{mine['id']}").status_code == 404
+    assert (
+        client.get(f"/api/v1/listening/contents/{mine['id']}", headers=mine_headers).status_code
+        == 200
+    )
+
+
+def test_public_detail_readable_and_attemptable_by_other_user(
+    client: TestClient, db_session: Session
+) -> None:
+    public = _make_public(client, db_session)
+    learner = _headers_for(db_session, "library-learner@example.com")
+
+    detail = client.get(f"/api/v1/listening/contents/{public['id']}", headers=learner).json()
+    assert detail["completed_segment_ids"] == []
+    assert len(detail["segments"]) == 2
+
+    first = detail["segments"][0]
+    attempt = client.post(
+        f"/api/v1/listening/contents/{public['id']}/attempts",
+        headers=learner,
+        json={"segment_id": first["id"], "answer": first["text"]},
+    )
+    assert attempt.status_code == 200, attempt.text
+    assert attempt.json()["is_correct"] is True
+
+    library = client.get("/api/v1/listening/library", headers=learner).json()
+    assert library[0]["completed_count"] == 1
