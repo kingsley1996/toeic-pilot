@@ -22,6 +22,11 @@ const RATES = [0.75, 1, 1.25] as const;
  * trên bước tick thường (0.5s, kể cả 1.25x) để rung nhỏ không chốt đi chốt lại. */
 const JUMP_TOL = 1.5;
 
+/* Đứng trong cửa sổ này quanh cuối câu thì nút play hiểu là "nghe tiếp câu
+ * sau" (tiến), chứ không phải resume: lố qua mốc vài trăm ms do tick thưa vẫn
+ * tính là vừa xong câu. Ngoài cửa sổ (tua đi xa) thì resume đúng chỗ dừng. */
+const ADVANCE_GRACE = 1.0;
+
 /* Pause chỉ khi tick trước đã ở gần chốt này: bằng chứng phát LIÊN TỤC tới
  * nơi. Rộng hơn JUMP_TOL một bậc để tick thưa (tab nền) không làm mất pause
  * thật — mất một lần pause thật rẻ hơn một lần pause oan rất nhiều. */
@@ -47,6 +52,7 @@ export function ListeningPlayerView({
   end,
   stops,
   startLabel,
+  onAdvance,
   onError,
   onTimeUpdate,
   replaySignal,
@@ -60,6 +66,10 @@ export function ListeningPlayerView({
   stops: number[];
   /** Chữ nút phát khi đang dừng: "Bắt đầu" ở câu đầu, "Tiếp tục" ở câu sau. */
   startLabel: string;
+  /** Bấm play đúng lúc vừa xong câu đang làm thì tiến sang câu kế (trang cha
+   * lo: đổi bài tập + seek + phát). Không có là nút "Tiếp tục" bấm ra "Nghe
+   * lại" — nói dối trắng trợn. */
+  onAdvance: () => void;
   onError?: (code: PlayerErrorCode) => void;
   /** Bắn giờ phát khi video đang chạy (500ms/lần) — trang cha dùng để
    * highlight + cuộn list Transcript theo. Không dùng để chấm hay lưu. */
@@ -260,19 +270,22 @@ export function ListeningPlayerView({
     playActive();
   };
 
-  /* Nút play là "phát CÂU ĐANG LÀM": đứng trong câu thì resume chỗ dừng; đứng
-   * ngoài (vừa tua đi nơi khác) thì phát lại đúng câu đó từ đầu — video, list
-   * và bài tập gặp nhau lại ở một chỗ, chứ không mỗi thứ một nơi. */
+  /* Nút play khi dừng có HAI nghĩa, chia theo vị trí đang đứng:
+   * - Ngay cuối câu đang làm (vừa pause hết câu): TIẾN sang câu kế — cả ba
+   *   (video, list, bài tập) cùng đi, đúng tên nút "Tiếp tục". Phát lại câu cũ
+   *   ở đây là nói dối trắng trợn.
+   * - Còn lại (giữa câu, tua đi nơi khác): resume đúng chỗ dừng + chốt lại —
+   *   không lôi bài tập đi theo, chữ đang gõ dở được yên. */
   const playActive = () => {
     const player = playerRef.current;
     if (!player) return;
     const current = player.getCurrentTime();
-    if (current >= start && current < end) {
-      latchStop(current);
-      player.play();
-    } else {
-      replay();
+    if (current >= end - SEEK_EPS && current < end + ADVANCE_GRACE) {
+      onAdvance();
+      return;
     }
+    latchStop(current);
+    player.play();
   };
 
   const changeRate = (next: number) => {

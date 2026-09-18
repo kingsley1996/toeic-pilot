@@ -52,6 +52,9 @@ export default function ListeningLessonPage() {
   const [content, setContent] = useState<ListeningContentPublic | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [doneIds, setDoneIds] = useState<Set<string>>(new Set());
+  // Đếm lượt phát-lại-cùng-câu (bấm lại dòng đang chọn, nút Tiếp tục ở câu
+  // cuối): start/end không đổi nên player chỉ nghe được qua tín hiệu này.
+  const [replaySeq, setReplaySeq] = useState(0);
   /* Câu video ĐANG phát tới — highlight + cuộn theo, ĐỘC LẬP với câu đang làm.
    * Cố ý không gộp: video chạy xuyên câu mà lôi cả bài tập theo thì chữ đang gõ
    * dở mất theo; bấm vào dòng nào thì bài tập mới nhảy theo (goTo dưới). */
@@ -98,11 +101,27 @@ export default function ListeningLessonPage() {
 
   function goTo(index: number) {
     segStartedAt.current = nowMs();
+    if (index === activeIndex) {
+      // Bấm lại đúng dòng đang chọn: start/end không đổi nên effect tự-phát
+      // trong player không thấy gì — tín hiệu đếm riêng cho ca này.
+      setReplaySeq((n) => n + 1);
+      return;
+    }
     setActiveIndex(index);
     // Highlight đi theo ngay, khỏi chờ tick (tick tới xác nhận lại giá trị
     // này nên không sợ lệch).
     const target = segments[index];
     if (target) setFollowId(target.id);
+  }
+
+  /* Nút "Tiếp tục" bấm ngay cuối câu đang làm: cả ba (video, list, bài tập)
+   * cùng tiến sang câu kế — autoplay effect trong player (start/end đổi) phát
+   * luôn câu mới. Câu cuối thì phát lại câu đó. Bài tập đổi theo vì user CHỦ
+   * ĐỘNG tiến (khác với follow tự chạy khi xem — cái đó không được đụng tới
+   * chữ đang gõ). */
+  function advance() {
+    if (activeIndex + 1 < segments.length) goTo(activeIndex + 1);
+    else setReplaySeq((n) => n + 1);
   }
 
   /* Video tới đâu thì list theo tới đó: tìm câu chứa mốc giờ, highlight + cuộn
@@ -191,7 +210,15 @@ export default function ListeningLessonPage() {
                     start={active.start}
                     end={active.end}
                     stops={segments.map((segment) => segment.end)}
-                    startLabel={activeIndex === 0 ? "Bắt đầu" : "Tiếp tục"}
+                    startLabel={
+                      activeIndex === 0
+                        ? "Bắt đầu"
+                        : activeIndex + 1 < segments.length
+                          ? "Tiếp tục"
+                          : "Nghe lại"
+                    }
+                    onAdvance={advance}
+                    replaySignal={replaySeq}
                     onTimeUpdate={handleTime}
                   />
                 ) : (
