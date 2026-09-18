@@ -176,6 +176,76 @@ def is_speakable(text: str) -> bool:
     return any(char.isalnum() for char in cleaned)
 
 
+# Phụ đề tự động ngắt câu theo nhịp thở chứ không theo ngữ nghĩa ("Today we're
+# going" / "to discuss the new" / "schedule.") — cue nào KHÔNG kết thúc bằng
+# dấu câu mà ngắn hơn ngưỡng này thì coi là mảnh vỡ, ghép vào câu sau. Dài hơn
+# thì giữ nguyên kể cả thiếu dấu câu (blob ASR 20s mà ghép tiếp chỉ tệ hơn).
+MIN_FRAGMENT_SECONDS = Decimal("3")
+# Câu ghép dài tối đa: dictation đo từng câu, quá dài là bài đọc chứ không phải
+# bài nghe — chặn để hai câu dài thiếu dấu câu không dính thành một.
+MAX_MERGED_SECONDS = Decimal("12")
+_SENTENCE_END = re.compile(r"[.!?…][\"'”’)>\]}♪♫\s]*$")
+
+
+def _ends_sentence(text: str) -> bool:
+    return bool(_SENTENCE_END.search(text.strip()))
+
+
+def _first_word_char(text: str) -> str:
+    for char in text:
+        if char.isalnum():
+            return char
+    return ""
+
+
+def _is_fragment(text: str, duration: Decimal) -> bool:
+    stripped = text.strip()
+    return bool(stripped) and duration < MIN_FRAGMENT_SECONDS and not _ends_sentence(stripped)
+
+
+def _continues(prev: ParsedSegment, current: ParsedSegment) -> bool:
+    """Câu sau có phải đoạn nối của câu trước? Hai dấu hiệu, cái nào cũng đủ:
+    (1) câu trước là mảnh vỡ; (2) câu sau mở bằng chữ thường trong khi câu
+    trước chưa kết thúc ("...real c" + "in easy English...") — captioner ngắt
+    giữa chừng. Cả hai đều chặn độ dài để không dính cả đoạn văn thành một."""
+    if _is_fragment(prev.text, prev.end - prev.start):
+        return True
+    first = _first_word_char(current.text)
+    return (
+        bool(first)
+        and first.islower()
+        and not _ends_sentence(prev.text)
+        and current.end - prev.start < MAX_MERGED_SECONDS
+    )
+
+
+def merge_fragments(segments: list[ParsedSegment]) -> list[ParsedSegment]:
+    """Ghép mảnh vỡ vào câu sau (câu cuối vỡ thì ghép ngược vào câu trước).
+    Thứ tự + mốc giữ nguyên ý nghĩa (start=min, end=max) nên transcript đã
+    valid thì merge xong vẫn valid — validate lại chỉ để lấy warnings đúng số
+    thứ tự mới."""
+    if not segments:
+        return []
+    merged: list[ParsedSegment] = []
+    for seg in segments:
+        if merged and _continues(merged[-1], seg):
+            prev = merged.pop()
+            merged.append(
+                ParsedSegment(start=prev.start, end=seg.end, text=f"{prev.text} {seg.text}")
+            )
+        else:
+            merged.append(seg)
+    if len(merged) > 1:
+        last_duration = merged[-1].end - merged[-1].start
+        if _is_fragment(merged[-1].text, last_duration):
+            last = merged.pop()
+            prev = merged.pop()
+            merged.append(
+                ParsedSegment(start=prev.start, end=last.end, text=f"{prev.text} {last.text}")
+            )
+    return merged
+
+
 def _stamp(value: Decimal) -> str:
     ms = int((value * 1000).to_integral_value())
     hours, rem = divmod(ms, 3_600_000)

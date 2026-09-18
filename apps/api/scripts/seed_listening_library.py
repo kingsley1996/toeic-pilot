@@ -17,29 +17,33 @@ from __future__ import annotations
 
 import argparse
 import secrets
-import sys
-import uuid
+
+from sqlalchemy import select
 
 from app.core.database import SessionLocal
 from app.core.security import get_password_hash
 from app.models import ListeningContent, ListeningSegment, User
 from app.services import dictation as dictation_grader
 from app.services.listening_source import SourceError, resolve_source
-from app.services.listening_transcript import is_speakable, validate_transcript
+from app.services.listening_transcript import (
+    is_speakable,
+    merge_fragments,
+    validate_transcript,
+)
 from app.services.listening_youtube_captions import (
     CaptionError,
     fetch_youtube_captions,
 )
-from sqlalchemy import select
 
 # Loạt đầu: tiếng Anh rõ + phụ đề tay đã thử thật. Thêm video = thêm dòng, rồi
-# chạy lại (trùng thì bỏ qua, không đẻ đôi).
-VIDEOS: list[tuple[str, str | None]] = [
-    ("https://www.youtube.com/watch?v=TL61VKkme14", None),
-    ("https://www.youtube.com/watch?v=HrCbXNRP7eg", None),
-    ("https://www.youtube.com/watch?v=eHJnEHyyN1Y", None),
-    ("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None),
-    ("https://www.youtube.com/watch?v=yPYZpwSpKmA", None),
+# chạy lại (trùng thì bỏ qua, không đẻ đôi). Cột 3 là excerpt (giây): video dài
+# mà hay thì lấy đoạn đầu thay vì bỏ — mở đầu thường rõ ràng + tự trọn ý nhất.
+VIDEOS: list[tuple[str, str | None, int | None]] = [
+    ("https://www.youtube.com/watch?v=TL61VKkme14", None, 180),
+    ("https://www.youtube.com/watch?v=HrCbXNRP7eg", None, 180),
+    ("https://www.youtube.com/watch?v=eHJnEHyyN1Y", None, 180),
+    ("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, None),
+    ("https://www.youtube.com/watch?v=yPYZpwSpKmA", None, None),
 ]
 
 LIBRARY_EMAIL = "library@toeic-pilot.local"
@@ -61,7 +65,9 @@ def get_owner(db, email: str) -> User:
     return owner
 
 
-def seed_one(db, url: str, title_override: str | None, owner_email: str) -> str:
+def seed_one(
+    db, url: str, title_override: str | None, owner_email: str, max_seconds: int | None = None
+) -> str:
     try:
         source = resolve_source(url)
     except SourceError as exc:
@@ -87,6 +93,20 @@ def seed_one(db, url: str, title_override: str | None, owner_email: str) -> str:
     speakable = [s for s in captions.segments if is_speakable(s.text)]
     if not speakable:
         return f"SKIP {url}: không có câu thoại nào"
+    if max_seconds is not None:
+        # Excerpt: chỉ giữ câu nằm TRỌN trong đoạn đầu — câu dở dang ở mốc cắt
+        # mà giữ là bài hỏng (nghe nửa chừng), bỏ còn hơn.
+        speakable = [s for s in speakable if s.end <= max_seconds]
+        if not speakable:
+            return f"SKIP {url}: excerpt {max_seconds}s không còn câu nào"
+    # Cùng pipeline với endpoint create (filter-rồi-merge) để bài thư viện và
+    # bài user tự tạo chia câu giống nhau.
+    merged = merge_fragments(speakable)
+    # Tiêu chí thư viện: video dưới 5 phút, ưu tiên 1–3 phút. Đo bằng span
+    # transcript (max end) — cùng thước với warning ở endpoint create.
+    span = max(s.end for s in speakable)
+    if span > 300:
+        return f"SKIP {url}: dài {float(span) / 60:.1f} phút, quá 5 phút"
     owner = get_owner(db, owner_email)
     content = ListeningContent(
         user_id=owner.id,
@@ -104,14 +124,14 @@ def seed_one(db, url: str, title_override: str | None, owner_email: str) -> str:
                 text=seg.text,
                 normalized_text=" ".join(dictation_grader.normalise(seg.text)),
             )
-            for index, seg in enumerate(speakable)
+            for index, seg in enumerate(merged)
         ],
     )
     db.add(content)
     db.commit()
-    dropped = len(captions.segments) - len(speakable)
-    extra = f" (bỏ {dropped} dòng nhạc/nền)" if dropped else ""
-    return f"OK {content.title} — {len(speakable)} câu{extra}"
+    dropped = len(captions.segments) - len(merged)
+    extra = f" (gộp/bỏ {dropped} dòng)" if dropped else ""
+    return f"OK {content.title} — {len(merged)} câu{extra}"
 
 
 def main() -> int:
@@ -128,8 +148,8 @@ def main() -> int:
 
     db = SessionLocal()
     try:
-        for url, title in VIDEOS:
-            print(seed_one(db, url, title, args.owner_email), flush=True)
+        for url, title, excerpt in VIDEOS:
+            print(seed_one(db, url, title, args.owner_email, excerpt), flush=True)
     finally:
         db.close()
     return 0

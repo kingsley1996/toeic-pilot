@@ -430,3 +430,64 @@ def test_public_detail_readable_and_attemptable_by_other_user(
 
     library = client.get("/api/v1/listening/library", headers=learner).json()
     assert library[0]["completed_count"] == 1
+
+
+_FRAGMENT_SRT = """1
+00:00:01,000 --> 00:00:02,000
+Today we're going
+
+2
+00:00:02,000 --> 00:00:04,000
+to discuss the new schedule.
+
+3
+00:00:05,000 --> 00:00:09,000
+Hello everyone.
+"""
+
+
+def test_create_merges_short_fragments(client: TestClient, db_session: Session) -> None:
+    headers = _headers_for(db_session, "fragments@example.com")
+    res = client.post(
+        "/api/v1/listening/contents",
+        headers=headers,
+        json={
+            "source": {"type": "youtube", "url": _URL},
+            "title": "Fragments",
+            "transcript": {"format": "srt", "raw": _FRAGMENT_SRT},
+        },
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["segment_count"] == 2
+    assert any("Merged 1" in line for line in body["warnings"])
+
+    detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
+    assert [s["text"] for s in detail["segments"]] == [
+        "Today we're going to discuss the new schedule.",
+        "Hello everyone.",
+    ]
+    assert [s["index"] for s in detail["segments"]] == [0, 1]
+
+
+def test_create_warns_when_transcript_spans_over_five_minutes(
+    client: TestClient, db_session: Session
+) -> None:
+    headers = _headers_for(db_session, "longvideo@example.com")
+    raw = (
+        "1\n00:00:01,000 --> 00:00:02,000\nHello there.\n\n"
+        "2\n00:06:01,000 --> 00:06:03,000\nGeneral Kenobi.\n"
+    )
+    res = client.post(
+        "/api/v1/listening/contents",
+        headers=headers,
+        json={
+            "source": {"type": "youtube", "url": _URL},
+            "title": "Long",
+            "transcript": {"format": "srt", "raw": raw},
+        },
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["segment_count"] == 2
+    assert any("over 5 minutes" in line for line in body["warnings"])

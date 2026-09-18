@@ -171,6 +171,13 @@ Seed offline (cấm CI, IP local sạch mới qua được tường bot):
 Loạt đầu 5 video sub tay: meetings-easy-English, 2 TED công sở, 2 Rick Astley
 (vui). Thêm video = thêm dòng vào `VIDEOS`, chạy lại (trùng public thì bỏ qua).
 
+Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút. Seed script
+bỏ video span > 300s; endpoint create chỉ warning mềm (excerpt ngắn của video
+dài vẫn học tốt). Chia câu: cue ngắn không dấu câu thì ghép xuôi, câu sau mở
+bằng chữ thường mà câu trước chưa kết thúc thì ghép (trần 12s), câu cuối vỡ thì
+ghép ngược — TED 402 cue rời thành ~27 câu thật. Card thư viện có badge nền
+tảng (YouTube, góc trái thumbnail; nguồn khác tính sau).
+
 Lên prod: `alembic upgrade head` trước (dev từng phải `stamp 089` vì bảng dựng
 bằng `create_all` — prod đi migration chuẩn thì không), rồi chạy seed với
 `DATABASE_URL` của prod. Vận hành: video bị xoá/gỡ là bài thối — cần job kiểm

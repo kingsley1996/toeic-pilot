@@ -66,6 +66,21 @@ function thumbnailFor(content: ListeningContentSummary): string | null {
   return null;
 }
 
+/** Badge nền tảng góc thumbnail — chữ + glyph tự vẽ vì lucide bản này bỏ icon
+ * brand. Sau này thêm TikTok thì thêm nhánh ở đây, một chỗ duy nhất. */
+function PlatformBadge({ source }: { source: string }) {
+  if (source !== "youtube") return null;
+  return (
+    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-label font-semibold text-white">
+      <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
+        <rect x="2" y="5" width="20" height="14" rx="4" fill="#FF0000" />
+        <path d="M10 9.5v5l4.5-2.5z" fill="#fff" />
+      </svg>
+      YouTube
+    </span>
+  );
+}
+
 /** Tên video qua oEmbed (không cần API key). Hỏng thì user gõ tay — không bao
  * giờ chặn tạo bài vì không lấy được tiêu đề. Timeout riêng vì đây là fetch
  * thô ngoài apiFetch (không có timeout 30s của nó). */
@@ -463,28 +478,31 @@ function ListeningLabContent() {
                 href={`/learn/listening/${content.id}`}
                 className="group flex flex-col overflow-hidden p-0"
               >
-                {thumb ? (
-                  /* Ảnh public của YouTube theo ID, không qua next/image được
-                     nếu chưa mở remotePatterns (cùng lý do thumbnail ở bước
-                     dán link). */
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={thumb}
-                    alt=""
-                    aria-hidden
-                    width={480}
-                    height={360}
-                    loading="lazy"
-                    className="aspect-video w-full border-b border-rule object-cover"
-                  />
-                ) : (
-                  <span
-                    aria-hidden
-                    className="grid aspect-video w-full place-items-center border-b border-rule bg-recess text-ink-faint"
-                  >
-                    <Video size={28} strokeWidth={1.5} />
-                  </span>
-                )}
+                <span className="relative block">
+                  {thumb ? (
+                    /* Ảnh public của YouTube theo ID, không qua next/image được
+                       nếu chưa mở remotePatterns (cùng lý do thumbnail ở bước
+                       dán link). */
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={thumb}
+                      alt=""
+                      aria-hidden
+                      width={480}
+                      height={360}
+                      loading="lazy"
+                      className="aspect-video w-full border-b border-rule object-cover"
+                    />
+                  ) : (
+                    <span
+                      aria-hidden
+                      className="grid aspect-video w-full place-items-center border-b border-rule bg-recess text-ink-faint"
+                    >
+                      <Video size={28} strokeWidth={1.5} />
+                    </span>
+                  )}
+                  <PlatformBadge source={content.source_type} />
+                </span>
                 <span className="flex flex-1 flex-col p-3">
                   <span className="line-clamp-2 min-h-10 font-semibold leading-snug">
                     {content.title}

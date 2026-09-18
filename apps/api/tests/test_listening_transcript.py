@@ -5,7 +5,9 @@ from decimal import Decimal
 import pytest
 
 from app.services.listening_transcript import (
+    ParsedSegment,
     is_speakable,
+    merge_fragments,
     parse_srt_vtt,
     validate_transcript,
 )
@@ -109,3 +111,71 @@ def test_end_after_duration_is_error_only_when_duration_known() -> None:
 )
 def test_is_speakable(text: str, expected: bool) -> None:
     assert is_speakable(text) is expected
+
+
+def _seg(start: str, end: str, text: str) -> ParsedSegment:
+    return ParsedSegment(start=Decimal(start), end=Decimal(end), text=text)
+
+
+def test_merge_fragments_forward() -> None:
+    out = merge_fragments(
+        [
+            _seg("1", "2", "Today we're going"),
+            _seg("2", "4", "to discuss the new schedule."),
+            _seg("5", "9", "Hello everyone."),
+        ]
+    )
+    assert [(s.start, s.end, s.text) for s in out] == [
+        (Decimal("1"), Decimal("4"), "Today we're going to discuss the new schedule."),
+        (Decimal("5"), Decimal("9"), "Hello everyone."),
+    ]
+
+
+def test_merge_keeps_terminated_and_long_lines() -> None:
+    out = merge_fragments(
+        [
+            _seg("1", "2", "Hello."),
+            _seg("3", "23", "a twenty second blob without punctuation at all"),
+            _seg("24", "25", "Bye."),
+        ]
+    )
+    assert [s.text for s in out] == [
+        "Hello.",
+        "a twenty second blob without punctuation at all",
+        "Bye.",
+    ]
+
+
+def test_merge_trailing_fragment_backwards() -> None:
+    out = merge_fragments(
+        [
+            _seg("1", "5", "Hello everyone."),
+            _seg("6", "7", "and welcome"),
+        ]
+    )
+    assert [(s.start, s.end, s.text) for s in out] == [
+        (Decimal("1"), Decimal("7"), "Hello everyone. and welcome"),
+    ]
+
+
+def test_merge_empty() -> None:
+    assert merge_fragments([]) == []
+
+
+def test_merge_continuation_mid_word_cut() -> None:
+    # Captioner ngắt giữa chừng ("real c" + "in easy..."): câu sau mở bằng chữ
+    # thường trong khi câu trước chưa kết thúc -> ghép dù câu trước đã dài.
+    out = merge_fragments(
+        [
+            _seg("0", "6.1", "Hello and welcome to Real Easy English we have real c"),
+            _seg("6.1", "8.3", "in easy English to help you learn."),
+            _seg("9.4", "11.0", "And I'm Beth."),
+        ]
+    )
+    assert [(s.start, s.end) for s in out] == [
+        (Decimal("0"), Decimal("8.3")),
+        (Decimal("9.4"), Decimal("11.0")),
+    ]
+    assert out[0].text.startswith("Hello and welcome")
+    assert out[0].text.endswith("to help you learn.")
+    assert out[1].text == "And I'm Beth."

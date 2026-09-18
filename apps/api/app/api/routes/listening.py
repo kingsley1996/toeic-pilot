@@ -44,6 +44,7 @@ from app.services.listening_source import SourceError, resolve_source
 from app.services.listening_transcript import (
     TranscriptValidation,
     is_speakable,
+    merge_fragments,
     parse_srt_vtt,
     segments_to_vtt,
     validate_transcript,
@@ -58,6 +59,11 @@ router = APIRouter(tags=["learning"])
 
 # Gọi YouTube InnerTube mỗi lần; trần chống loop, không phải hoá đơn.
 CAPTIONS_QUOTA = Quota(limit=30, window_seconds=60 * 10)
+
+# Tiêu chí chọn video cho lesson: dưới 5 phút, ưu tiên 1–3 phút. Đo bằng span
+# transcript (max end) chứ không phải duration video — excerpt ngắn của video
+# dài vẫn đạt, đúng thứ cần khuyến khích.
+MAX_TRANSCRIPT_SPAN_SECONDS = 300
 
 
 def _to_public(
@@ -184,9 +190,10 @@ def fetch_listening_captions(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail={"code": exc.code}
         ) from exc
     kind: Literal["manual", "asr"] = "asr" if captions.kind == "asr" else "manual"
-    # Dòng nhạc/nền ([Music], [♪♪♪]) không phải câu thoại — loại ở đây để con
-    # số báo về form khớp đúng số câu tạo được ở endpoint dưới.
-    kept = [seg for seg in captions.segments if is_speakable(seg.text)]
+    # Dòng nhạc/nền ([Music], [♪♪♪]) không phải câu thoại + mảnh vỡ quá ngắn
+    # thì ghép lại — form hiện đúng thứ endpoint dưới sẽ tạo (cùng thứ tự
+    # filter-rồi-merge, cùng hàm).
+    kept = merge_fragments([seg for seg in captions.segments if is_speakable(seg.text)])
     if not kept:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -236,18 +243,32 @@ def create_listening_content(
         )
 
     # Mỗi segment là một bài dictation — dòng không lời ([Music], [♪♪♪]) thành
-    # bài là vô nghĩa nên loại từ đầu, đánh lại index liên tục. Hết sạch thì
-    # không cho tạo: bài không câu thoại mà vẫn lưu là đúng issue đang sửa.
+    # bài là vô nghĩa nên loại từ đầu, rồi ghép mảnh vỡ quá ngắn vào câu sau
+    # ("Today we're going" + "to discuss..." — auto-caption ngắt theo nhịp thở
+    # chứ không theo ngữ nghĩa). Đánh lại index liên tục. Hết sạch thì không
+    # cho tạo: bài không câu thoại mà vẫn lưu là đúng issue đang sửa.
     speakable = [seg for seg in parsed if is_speakable(seg.text)]
     if not speakable:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"code": "INVALID_TRANSCRIPT", "errors": ["Transcript has no speakable lines"]},
         )
+    merged = merge_fragments(speakable)
     dropped = len(parsed) - len(speakable)
-    warnings = list(validation.warnings)
+    revalidation = validate_transcript(merged)
+    warnings = list(revalidation.warnings)
     if dropped:
         warnings.append(f"Skipped {dropped} non-dialogue line(s) (music/background noise)")
+    if len(merged) < len(speakable):
+        warnings.append(
+            f"Merged {len(speakable) - len(merged)} short fragment(s) into full sentences"
+        )
+    span = max(seg.end for seg in merged)
+    if span > MAX_TRANSCRIPT_SPAN_SECONDS:
+        # Bài nghe chép đo từng câu — video/transcript quá 5 phút là học lan
+        # man, không phải khó hơn. Chặn mềm (warning) chứ không chặn cứng:
+        # excerpt ngắn của video dài vẫn học tốt.
+        warnings.append("Transcript spans over 5 minutes — shorter videos (1–3 minutes) work best")
 
     content = ListeningContent(
         user_id=current_user.id,
@@ -264,7 +285,7 @@ def create_listening_content(
                 text=seg.text,
                 normalized_text=" ".join(dictation_grader.normalise(seg.text)),
             )
-            for index, seg in enumerate(speakable)
+            for index, seg in enumerate(merged)
         ],
     )
     db.add(content)
@@ -274,7 +295,7 @@ def create_listening_content(
     return ListeningContentCreated(
         id=str(content.id),
         status=content.transcript_status,
-        segment_count=len(speakable),
+        segment_count=len(merged),
         warnings=warnings,
     )
 
