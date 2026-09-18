@@ -6859,6 +6859,389 @@
         "title": "LevelTierUpdate",
         "type": "object"
       },
+      "ListeningAttemptResult": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "diff": {
+            "items": {
+              "$ref": "#/components/schemas/WordDiff"
+            },
+            "title": "Diff",
+            "type": "array"
+          },
+          "expected_text": {
+            "title": "Expected Text",
+            "type": "string"
+          },
+          "is_correct": {
+            "title": "Is Correct",
+            "type": "boolean"
+          },
+          "similarity": {
+            "title": "Similarity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "is_correct",
+          "similarity",
+          "expected_text",
+          "diff"
+        ],
+        "title": "ListeningAttemptResult",
+        "type": "object"
+      },
+      "ListeningAttemptSubmit": {
+        "properties": {
+          "answer": {
+            "default": "",
+            "title": "Answer",
+            "type": "string"
+          },
+          "segment_id": {
+            "format": "uuid",
+            "title": "Segment Id",
+            "type": "string"
+          },
+          "time_spent_seconds": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Spent Seconds"
+          }
+        },
+        "required": [
+          "segment_id"
+        ],
+        "title": "ListeningAttemptSubmit",
+        "type": "object"
+      },
+      "ListeningCaptionsPublic": {
+        "properties": {
+          "format": {
+            "const": "vtt",
+            "default": "vtt",
+            "title": "Format",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "manual",
+              "asr"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "raw": {
+            "title": "Raw",
+            "type": "string"
+          },
+          "segment_count": {
+            "title": "Segment Count",
+            "type": "integer"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "language",
+          "kind",
+          "raw",
+          "segment_count"
+        ],
+        "title": "ListeningCaptionsPublic",
+        "type": "object"
+      },
+      "ListeningCaptionsRequest": {
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "ListeningCaptionsRequest",
+        "type": "object"
+      },
+      "ListeningContentCreate": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/ListeningSourceIn"
+          },
+          "title": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "transcript": {
+            "$ref": "#/components/schemas/ListeningTranscriptIn"
+          }
+        },
+        "required": [
+          "source",
+          "title",
+          "transcript"
+        ],
+        "title": "ListeningContentCreate",
+        "type": "object"
+      },
+      "ListeningContentCreated": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "segment_count": {
+            "title": "Segment Count",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "segment_count"
+        ],
+        "title": "ListeningContentCreated",
+        "type": "object"
+      },
+      "ListeningContentPublic": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/ListeningSegmentPublic"
+            },
+            "title": "Segments",
+            "type": "array"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "transcript_status": {
+            "title": "Transcript Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source_type",
+          "source_url",
+          "external_id",
+          "title",
+          "duration_seconds",
+          "transcript_status",
+          "segments",
+          "created_at"
+        ],
+        "title": "ListeningContentPublic",
+        "type": "object"
+      },
+      "ListeningContentSummary": {
+        "properties": {
+          "completed_count": {
+            "title": "Completed Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "segment_count": {
+            "title": "Segment Count",
+            "type": "integer"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "source_type",
+          "external_id",
+          "segment_count",
+          "completed_count",
+          "created_at"
+        ],
+        "title": "ListeningContentSummary",
+        "type": "object"
+      },
+      "ListeningSegmentPublic": {
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "start": {
+            "title": "Start",
+            "type": "number"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "index",
+          "start",
+          "end",
+          "text"
+        ],
+        "title": "ListeningSegmentPublic",
+        "type": "object"
+      },
+      "ListeningSourceIn": {
+        "properties": {
+          "type": {
+            "enum": [
+              "youtube",
+              "tiktok",
+              "upload"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "url"
+        ],
+        "title": "ListeningSourceIn",
+        "type": "object"
+      },
+      "ListeningTranscriptIn": {
+        "properties": {
+          "format": {
+            "enum": [
+              "srt",
+              "vtt"
+            ],
+            "title": "Format",
+            "type": "string"
+          },
+          "raw": {
+            "title": "Raw",
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "raw"
+        ],
+        "title": "ListeningTranscriptIn",
+        "type": "object"
+      },
       "LlmStats": {
         "properties": {
           "avg_completion_tokens": {
@@ -24934,6 +25317,232 @@
           }
         ],
         "summary": "Get Grammar Topic",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/listening/captions": {
+      "post": {
+        "operationId": "fetch_listening_captions_api_v1_listening_captions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListeningCaptionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningCaptionsPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Fetch Listening Captions",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/listening/contents": {
+      "get": {
+        "operationId": "list_listening_contents_api_v1_listening_contents_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ListeningContentSummary"
+                  },
+                  "title": "Response List Listening Contents Api V1 Listening Contents Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Listening Contents",
+        "tags": [
+          "learning"
+        ]
+      },
+      "post": {
+        "operationId": "create_listening_content_api_v1_listening_contents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListeningContentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningContentCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Listening Content",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/listening/contents/{content_id}": {
+      "get": {
+        "operationId": "get_listening_content_api_v1_listening_contents__content_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Content Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningContentPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Listening Content",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/listening/contents/{content_id}/attempts": {
+      "post": {
+        "operationId": "submit_listening_attempt_api_v1_listening_contents__content_id__attempts_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Content Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListeningAttemptSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningAttemptResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Listening Attempt",
         "tags": [
           "learning"
         ]

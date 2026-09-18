@@ -33,6 +33,7 @@ from app.api.routes import (
     learning_dictation,
     learning_grammar,
     learning_vocabulary,
+    listening,
     media,
     oauth,
     pet,
@@ -94,6 +95,7 @@ app.include_router(oauth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
 app.include_router(learning_vocabulary.router, prefix="/api/v1")
 app.include_router(learning_dictation.router, prefix="/api/v1")
+app.include_router(listening.router, prefix="/api/v1")
 app.include_router(learning_grammar.router, prefix="/api/v1")
 app.include_router(practice.router, prefix="/api/v1")
 app.include_router(practice_parts.router, prefix="/api/v1")

@@ -30,6 +30,7 @@ from app.models.identity import IDENTITY_PROVIDERS, UserIdentity
 from app.models.image import ImageAsset
 from app.models.knowledge import KnowledgeChunk
 from app.models.labels import QuestionLabel, QuestionSetLabel
+from app.models.listening import ListeningAttempt, ListeningContent, ListeningSegment
 from app.models.part_practice import PartSession, PartSessionItem, PartTactics
 from app.models.pet import (
     Creature,
@@ -130,6 +131,9 @@ __all__ = [
     "GrammarTopic",
     "ImageAsset",
     "KnowledgeChunk",
+    "ListeningAttempt",
+    "ListeningContent",
+    "ListeningSegment",
     "PartSession",
     "PlacementResult",
     "PlannerEval",

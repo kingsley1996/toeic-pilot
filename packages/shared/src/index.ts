@@ -29,6 +29,15 @@ export type DictationStoryDetail = components["schemas"]["DictationStoryDetail"]
 export type DictationStorySummary = components["schemas"]["DictationStorySummary"];
 export type StoryItem = components["schemas"]["StoryItem"];
 export type StoryProgress = components["schemas"]["StoryProgress"];
+export type ListeningContentCreate = components["schemas"]["ListeningContentCreate"];
+export type ListeningContentCreated = components["schemas"]["ListeningContentCreated"];
+export type ListeningContentPublic = components["schemas"]["ListeningContentPublic"];
+export type ListeningContentSummary = components["schemas"]["ListeningContentSummary"];
+export type ListeningCaptionsPublic = components["schemas"]["ListeningCaptionsPublic"];
+export type ListeningCaptionsRequest = components["schemas"]["ListeningCaptionsRequest"];
+export type ListeningSegmentPublic = components["schemas"]["ListeningSegmentPublic"];
+export type ListeningAttemptSubmit = components["schemas"]["ListeningAttemptSubmit"];
+export type ListeningAttemptResult = components["schemas"]["ListeningAttemptResult"];
 export type DictationTopicAdmin = components["schemas"]["DictationTopicAdmin"];
 export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin"];
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
@@ -416,6 +425,13 @@ export const API_ROUTES = {
   dictationTopic: (id: string) => `/api/v1/dictation-topics/${id}`,
   dictationSection: (id: string) => `/api/v1/dictation-sections/${id}`,
   dictationStory: (id: string) => `/api/v1/dictation-stories/${id}`,
+
+  // Listening Lab: bài user tự tạo nên id là UUID do server cấp, không sợ clash
+  // với route động nào — lồng `/contents/${id}/attempts` an toàn.
+  listeningContents: "/api/v1/listening/contents",
+  listeningCaptions: "/api/v1/listening/captions",
+  listeningContent: (id: string) => `/api/v1/listening/contents/${id}`,
+  listeningAttempts: (id: string) => `/api/v1/listening/contents/${id}/attempts`,
 
   // Ngữ pháp (SPEC-GRAMMAR G2). Gạch nối cùng luật với cây dictation.
   grammarTopics: "/api/v1/grammar-topics",

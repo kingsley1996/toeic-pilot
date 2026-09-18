@@ -3595,6 +3595,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/listening/captions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fetch Listening Captions */
+        post: operations["fetch_listening_captions_api_v1_listening_captions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/listening/contents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Listening Contents */
+        get: operations["list_listening_contents_api_v1_listening_contents_get"];
+        put?: never;
+        /** Create Listening Content */
+        post: operations["create_listening_content_api_v1_listening_contents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/listening/contents/{content_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Listening Content */
+        get: operations["get_listening_content_api_v1_listening_contents__content_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/listening/contents/{content_id}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Listening Attempt */
+        post: operations["submit_listening_attempt_api_v1_listening_contents__content_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pet": {
         parameters: {
             query?: never;
@@ -7682,6 +7751,159 @@ export interface components {
         LevelTierUpdate: {
             /** Tiers */
             tiers: components["schemas"]["LevelTierAdmin"][];
+        };
+        /** ListeningAttemptResult */
+        ListeningAttemptResult: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Diff */
+            diff: components["schemas"]["WordDiff"][];
+            /** Expected Text */
+            expected_text: string;
+            /** Is Correct */
+            is_correct: boolean;
+            /** Similarity */
+            similarity: string;
+        };
+        /** ListeningAttemptSubmit */
+        ListeningAttemptSubmit: {
+            /**
+             * Answer
+             * @default
+             */
+            answer: string;
+            /**
+             * Segment Id
+             * Format: uuid
+             */
+            segment_id: string;
+            /** Time Spent Seconds */
+            time_spent_seconds?: number | null;
+        };
+        /** ListeningCaptionsPublic */
+        ListeningCaptionsPublic: {
+            /**
+             * Format
+             * @default vtt
+             * @constant
+             */
+            format: "vtt";
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "manual" | "asr";
+            /** Language */
+            language: string;
+            /** Raw */
+            raw: string;
+            /** Segment Count */
+            segment_count: number;
+            /** Title */
+            title?: string | null;
+        };
+        /** ListeningCaptionsRequest */
+        ListeningCaptionsRequest: {
+            /** Url */
+            url: string;
+        };
+        /** ListeningContentCreate */
+        ListeningContentCreate: {
+            source: components["schemas"]["ListeningSourceIn"];
+            /** Title */
+            title: string;
+            transcript: components["schemas"]["ListeningTranscriptIn"];
+        };
+        /** ListeningContentCreated */
+        ListeningContentCreated: {
+            /** Id */
+            id: string;
+            /** Segment Count */
+            segment_count: number;
+            /** Status */
+            status: string;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** ListeningContentPublic */
+        ListeningContentPublic: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Duration Seconds */
+            duration_seconds: number | null;
+            /** External Id */
+            external_id: string | null;
+            /** Id */
+            id: string;
+            /** Segments */
+            segments: components["schemas"]["ListeningSegmentPublic"][];
+            /** Source Type */
+            source_type: string;
+            /** Source Url */
+            source_url: string;
+            /** Title */
+            title: string;
+            /** Transcript Status */
+            transcript_status: string;
+        };
+        /** ListeningContentSummary */
+        ListeningContentSummary: {
+            /** Completed Count */
+            completed_count: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** External Id */
+            external_id: string | null;
+            /** Id */
+            id: string;
+            /** Segment Count */
+            segment_count: number;
+            /** Source Type */
+            source_type: string;
+            /** Title */
+            title: string;
+        };
+        /** ListeningSegmentPublic */
+        ListeningSegmentPublic: {
+            /** End */
+            end: number;
+            /** Id */
+            id: string;
+            /** Index */
+            index: number;
+            /** Start */
+            start: number;
+            /** Text */
+            text: string;
+        };
+        /** ListeningSourceIn */
+        ListeningSourceIn: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "youtube" | "tiktok" | "upload";
+            /** Url */
+            url: string;
+        };
+        /** ListeningTranscriptIn */
+        ListeningTranscriptIn: {
+            /**
+             * Format
+             * @enum {string}
+             */
+            format: "srt" | "vtt";
+            /** Raw */
+            raw: string;
         };
         /** LlmStats */
         LlmStats: {
@@ -16897,6 +17119,158 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GrammarTopicDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fetch_listening_captions_api_v1_listening_captions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListeningCaptionsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningCaptionsPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_listening_contents_api_v1_listening_contents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentSummary"][];
+                };
+            };
+        };
+    };
+    create_listening_content_api_v1_listening_contents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListeningContentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_listening_content_api_v1_listening_contents__content_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                content_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_listening_attempt_api_v1_listening_contents__content_id__attempts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                content_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListeningAttemptSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningAttemptResult"];
                 };
             };
             /** @description Validation Error */

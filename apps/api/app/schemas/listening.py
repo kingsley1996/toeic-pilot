@@ -1,0 +1,101 @@
+"""Request/response cho Listening Lab (slice paste-YouTube-URL).
+
+Tách khỏi `schemas/learning.py`: cây dictation cũ và lab của user là hai miền
+riêng (nội dung biên soạn vs nội dung user tự tạo), trộn chung là ép người đọc
+sau phân biệt bằng tên class.
+"""
+
+import uuid
+from datetime import datetime
+from typing import Literal
+
+from pydantic import BaseModel, Field
+
+from app.schemas.learning import WordDiff
+
+
+class ListeningSourceIn(BaseModel):
+    # Slice này chỉ nhận "youtube" — TikTok/Upload gửi lên nhận UNSUPPORTED từ
+    # resolver, chứ không phải 422 của schema: user cần biết link họ đúng mà
+    # tính năng chưa có.
+    type: Literal["youtube", "tiktok", "upload"]
+    url: str
+
+
+class ListeningTranscriptIn(BaseModel):
+    # Một parser xử cả hai (VTT là SRT thêm header + dấu chấm) — giữ trường này
+    # để UI nói rõ đang gửi gì và log sau này biết sub nguồn nào hay hỏng.
+    format: Literal["srt", "vtt"]
+    raw: str
+
+
+class ListeningCaptionsRequest(BaseModel):
+    url: str
+
+
+class ListeningCaptionsPublic(BaseModel):
+    language: str
+    kind: Literal["manual", "asr"]
+    format: Literal["vtt"] = "vtt"
+    raw: str
+    segment_count: int
+    title: str | None = None
+
+
+class ListeningContentCreate(BaseModel):
+    source: ListeningSourceIn
+    title: str = Field(min_length=1, max_length=512)
+    transcript: ListeningTranscriptIn
+
+
+class ListeningSegmentPublic(BaseModel):
+    id: str
+    index: int
+    start: float
+    end: float
+    text: str
+
+
+class ListeningContentPublic(BaseModel):
+    id: str
+    source_type: str
+    source_url: str
+    external_id: str | None
+    title: str
+    duration_seconds: int | None
+    transcript_status: str
+    segments: list[ListeningSegmentPublic]
+    created_at: datetime
+
+
+class ListeningContentCreated(BaseModel):
+    id: str
+    status: str
+    segment_count: int
+    warnings: list[str] = []
+
+
+class ListeningContentSummary(BaseModel):
+    id: str
+    title: str
+    source_type: str
+    external_id: str | None
+    segment_count: int
+    completed_count: int
+    created_at: datetime
+
+
+class ListeningAttemptSubmit(BaseModel):
+    segment_id: uuid.UUID
+    answer: str = ""
+    time_spent_seconds: int | None = Field(default=None, ge=0)
+
+
+class ListeningAttemptResult(BaseModel):
+    attempt_id: str
+    is_correct: bool
+    # `accuracy` của bộ chấm dictation (matched/expected*100) — đóng vai
+    # `similarity` của SPEC, không đẻ khái niệm mới cho cùng một con số.
+    similarity: str
+    expected_text: str
+    diff: list[WordDiff]

@@ -43,10 +43,12 @@ Hỗ trợ:
 
 ### Transcript
 
-MVP hỗ trợ 2 cách:
+MVP hỗ trợ 3 cách:
 
-1. User nhập/paste transcript.
-2. User upload media → backend dùng STT để tạo transcript.
+1. Backend tự lấy phụ đề public của YouTube (track mà player embed đã dùng).
+   Không có phụ đề thì user dán tay. Không tải video.
+2. User nhập/paste transcript.
+3. User upload media → backend dùng STT để tạo transcript.
 
 Transcript phải có timestamp:
 
@@ -111,7 +113,8 @@ Không làm trong MVP:
 - download YouTube video;
 - download TikTok video;
 - re-host YouTube/TikTok content;
-- tự động crawl arbitrary TikTok/YouTube transcript nếu không có API/quyền phù hợp;
+- tự động crawl arbitrary TikTok/YouTube **media** hoặc transcript từ URL không thuộc host đã whitelist;
+- gọi YouTube Data API `captions.download` (chỉ chủ video mới được) — lab lấy track public qua InnerTube/timedtext, cùng nguồn player;
 - pronunciation scoring;
 - speech recording;
 - shadowing;
