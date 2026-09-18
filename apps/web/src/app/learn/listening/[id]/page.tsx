@@ -55,6 +55,9 @@ export default function ListeningLessonPage() {
   // Đếm lượt phát-lại-cùng-câu (bấm lại dòng đang chọn, nút Tiếp tục ở câu
   // cuối): start/end không đổi nên player chỉ nghe được qua tín hiệu này.
   const [replaySeq, setReplaySeq] = useState(0);
+  // Đếm lượt follow tự động đổi câu (video chạy/tua sang câu khác): player
+  // phân biệt với bấm tay để KHÔNG seek/play theo (giữ nguyên trạng thái).
+  const [followSeq, setFollowSeq] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const rowRefs = useRef(new Map<number, HTMLButtonElement>());
   // Hai ref cho follow tự động (handleTime dưới): mốc tick trước để phân biệt
@@ -118,10 +121,19 @@ export default function ListeningLessonPage() {
     setActiveIndex(index);
   }
 
-  /* Nút "Tiếp tục" bấm ngay cuối câu đang làm: tiến sang câu kế — autoplay
-   * effect trong player (start/end đổi) phát luôn câu mới. Câu cuối thì phát
-   * lại câu đó. Cùng đường với follow tự động dưới: mọi ca đổi câu đều qua
-   * goTo, không có đường tắt. */
+  /* Follow tự động (video chạy/tua sang câu khác): đổi bài tập theo NHƯNG
+   * không seek không phát — bump followSeq để player biết mà bỏ qua autoplay
+   * (xem followSignal). Bấm tay (goTo trên) thì vẫn autoplay như cũ. */
+  function followTo(index: number) {
+    segStartedAt.current = nowMs();
+    setActiveIndex(index);
+    setFollowSeq((n) => n + 1);
+  }
+
+  /* Nút "Tiếp tục" bấm ngay cuối câu đang làm: cả ba (video, list, bài tập)
+   * cùng tiến sang câu kế — autoplay effect trong player (start/end đổi) phát
+   * luôn câu mới. Câu cuối thì phát lại câu đó. Cùng đường với follow-advance
+   * dưới: mọi ca đổi câu đều qua goTo/followTo, không có đường tắt. */
   function advance() {
     if (activeIndex + 1 < segments.length) goTo(activeIndex + 1);
     else setReplaySeq((n) => n + 1);
@@ -141,6 +153,9 @@ export default function ListeningLessonPage() {
    * nhưng video chỉ qua câu khi user bấm phát/xem (hành động đi tiếp), còn bài
    * đã nộp thì server giữ, không mất gì thật. */
   function handleTime(playedSeconds: number) {
+    // Trong cửa sổ settle sau bấm đi: seek đang bay, tick đọc giờ CŨ — tính là
+    // follow là lôi bài tập đi lung tung.
+    if (nowMs() < settleUntilRef.current) return;
     const previous = lastHandledRef.current;
     lastHandledRef.current = playedSeconds;
     const index = segments.findIndex(
@@ -149,7 +164,7 @@ export default function ListeningLessonPage() {
     if (index === -1 || index === activeIndex) return;
     const jumped = Math.abs(playedSeconds - previous) > 1.5;
     if (!jumped && playedSeconds - segments[index]!.start < BOUNDARY_EPS) return;
-    goTo(index);
+    followTo(index);
   }
 
   /** Ghi lượt làm về attempts của segment — cũng là chỗ duy nhất đánh dấu câu
@@ -235,6 +250,7 @@ export default function ListeningLessonPage() {
                     }
                     onAdvance={advance}
                     replaySignal={replaySeq}
+                    followSignal={followSeq}
                     onTimeUpdate={handleTime}
                   />
                 ) : (

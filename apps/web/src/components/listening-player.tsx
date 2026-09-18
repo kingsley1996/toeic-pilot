@@ -56,6 +56,7 @@ export function ListeningPlayerView({
   onError,
   onTimeUpdate,
   replaySignal,
+  followSignal,
 }: {
   videoId: string;
   start: number;
@@ -77,6 +78,11 @@ export function ListeningPlayerView({
   /** Tăng số là phát lại câu hiện tại (bấm lại vào dòng đang chọn). Đổi câu
    * đã tự phát qua start/end nên tín hiệu này chỉ cho bấm-trùng. */
   replaySignal?: number;
+  /** Câu đổi do follow tự động (tua tới/video chạy sang): đồng bộ chốt theo,
+   * KHÔNG seek, KHÔNG play/pause — giữ nguyên trạng thái phát. Không có đường
+   * này là follow-advance rơi vào effect tự-phát bên dưới: tua tới câu khác
+   * đang dừng mà nó seek về đầu câu rồi tự phát (giật + sai yêu cầu). */
+  followSignal?: number;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<ListeningPlayer | null>(null);
@@ -187,15 +193,40 @@ export function ListeningPlayerView({
     });
   }, [start, end, failed]);
 
+  /* Follow tự động đổi câu: đồng bộ chốt dừng + dẹp replay dở, giữ nguyên
+   * play/pause + vị trí. KHAI BÁO TRƯỚC effect tự-phát dưới (effect chạy theo
+   * thứ tự khai báo) để cờ silent tới nơi trước khi effect kia đọc. Bỏ qua khi
+   * start/end không đổi theo (tín hiệu lạ): không treo cờ oan cho lần đổi sau. */
+  const silentRef = useRef(false);
+  const lastFollowRef = useRef(followSignal);
+  const prevSegRef = useRef({ start, end });
+  useEffect(() => {
+    const signalChanged = lastFollowRef.current !== followSignal;
+    lastFollowRef.current = followSignal;
+    const segChanged = prevSegRef.current.start !== start || prevSegRef.current.end !== end;
+    prevSegRef.current = { start, end };
+    if (!signalChanged || !segChanged) return;
+    silentRef.current = true;
+    stopRef.current = end;
+    cancelReplayRef.current?.();
+  }, [followSignal, start, end]);
+
   /* Đổi segment thì tự phát lại; lần đầu (mount) thì không — chưa có tương tác,
    * trình duyệt sẽ chặn tiếng. `mountedRef` chỉ ghi trong effect nên không vi
-   * phạm luật render thuần. */
+   * phạm luật render thuần.
+   *
+   * Ngoại lệ: đổi do follow tự động (cờ silent ở trên) thì BỎ QUA — follow đã
+   * đồng bộ chốt, replay ở đây là seek về đầu câu + phát (đúng thứ user cấm:
+   * tua tới đang dừng mà tự phát). Đọc + xoá cờ trong cùng effect để cờ lạ
+   * không rò sang lần đổi sau. */
   useEffect(() => {
     if (!mountedRef.current) {
       mountedRef.current = true;
       return;
     }
-    replay();
+    const silent = silentRef.current;
+    silentRef.current = false;
+    if (!silent) replay();
   }, [replay]);
 
   /* Bấm lại đúng dòng đang chọn: start/end không đổi nên effect trên không
