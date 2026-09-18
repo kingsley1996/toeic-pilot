@@ -6,8 +6,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createYouTubePlayer,
   defaultFrameFactory,
+  formatTime,
   PlayerFailed,
   replaySegment,
+  SEEK_EPS,
   type ListeningPlayer,
   type PlayerErrorCode,
   type PlayerStatus,
@@ -16,19 +18,16 @@ import { Alert, Button, cx } from "@/components/ui";
 
 const RATES = [0.75, 1, 1.25] as const;
 
+/* Nhảy giờ (tua/seek/đơ mạng rồi vọt) thì chốt cũ vô nghĩa — chốt lại. Ngưỡng
+ * trên bước tick thường (0.5s, kể cả 1.25x) để rung nhỏ không chốt đi chốt lại. */
+const JUMP_TOL = 1.5;
+
 const ERROR_MESSAGE: Record<PlayerErrorCode, string> = {
   VIDEO_NOT_EMBEDDABLE:
     "Video này tắt chế độ nhúng nên không phát trong bài học được. Transcript vẫn dùng được — bấm nút bên dưới để nghe trên YouTube.",
   VIDEO_UNAVAILABLE: "Không mở được video này (đã xoá hoặc để riêng tư). Thử một URL khác.",
   PLAYER_ERROR: "Trình phát gặp sự cố. Tải lại trang rồi thử lại.",
 };
-
-function formatTime(totalSeconds: number): string {
-  const total = Math.max(0, Math.floor(totalSeconds));
-  const minutes = Math.floor(total / 60);
-  const seconds = total % 60;
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
 
 /**
  * Khung phát lại một segment của bài Listening Lab.
@@ -41,12 +40,25 @@ export function ListeningPlayerView({
   videoId,
   start,
   end,
+  stops,
   onError,
+  onTimeUpdate,
+  replaySignal,
 }: {
   videoId: string;
   start: number;
   end: number;
+  /** Mốc cuối mọi câu, tăng dần — chốt dừng bám vào đây chứ không bám `end`
+   * của câu đang làm: tua sang câu khác rồi bấm play mà vẫn chốt `end` cũ là
+   * pause ngay tức thì, bấm bao nhiêu lần cũng thế (đúng bug vừa sửa). */
+  stops: number[];
   onError?: (code: PlayerErrorCode) => void;
+  /** Bắn giờ phát khi video đang chạy (500ms/lần) — trang cha dùng để
+   * highlight + cuộn list Transcript theo. Không dùng để chấm hay lưu. */
+  onTimeUpdate?: (seconds: number) => void;
+  /** Tăng số là phát lại câu hiện tại (bấm lại vào dòng đang chọn). Đổi câu
+   * đã tự phát qua start/end nên tín hiệu này chỉ cho bấm-trùng. */
+  replaySignal?: number;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<ListeningPlayer | null>(null);
@@ -58,6 +70,12 @@ export function ListeningPlayerView({
   const onErrorRef = useRef(onError);
   useEffect(() => {
     onErrorRef.current = onError;
+  });
+  /* Parent truyền inline là đổi mỗi render — giữ qua ref để effect poll dưới
+   * không phải dựng lại theo, cùng mẹo với onErrorRef. */
+  const onTimeUpdateRef = useRef(onTimeUpdate);
+  useEffect(() => {
+    onTimeUpdateRef.current = onTimeUpdate;
   });
 
   const [status, setStatus] = useState<PlayerStatus>("loading");
@@ -126,11 +144,26 @@ export function ListeningPlayerView({
     };
   }, [videoId]);
 
+  const lastTickRef = useRef(-1);
+  const stopsRef = useRef(stops);
+  useEffect(() => {
+    stopsRef.current = stops;
+  });
+  const stopRef = useRef<number | null>(null);
+  const latchStop = useCallback((current: number) => {
+    stopRef.current = stopsRef.current.find((stop) => stop > current + SEEK_EPS) ?? null;
+  }, []);
+
   const replay = useCallback(() => {
     const player = playerRef.current;
     if (!player || failed) return;
     cancelReplayRef.current?.();
-    cancelReplayRef.current = replaySegment(player, start, end, setNow);
+    // Chốt đúng cuối câu sắp phát — poll khỏi phải đoán qua nhảy giờ.
+    stopRef.current = end;
+    cancelReplayRef.current = replaySegment(player, start, end, (current) => {
+      setNow(current);
+      onTimeUpdateRef.current?.(current);
+    });
   }, [start, end, failed]);
 
   /* Đổi segment thì tự phát lại; lần đầu (mount) thì không — chưa có tương tác,
@@ -144,9 +177,59 @@ export function ListeningPlayerView({
     replay();
   }, [replay]);
 
+  /* Bấm lại đúng dòng đang chọn: start/end không đổi nên effect trên không
+   * thấy gì — tín hiệu đếm riêng cho ca này. Khởi bằng giá trị prop nên lần
+   * đầu luôn bằng nhau (không phát lén lúc mount). */
+  const lastSignalRef = useRef(replaySignal);
+  useEffect(() => {
+    if (lastSignalRef.current === replaySignal) return;
+    lastSignalRef.current = replaySignal;
+    replay();
+  }, [replaySignal, replay]);
+
+  /* Bám giờ phát mọi lúc — kể cả tua tay lúc đang dừng, vì YouTube không bắn
+   * event seek khi paused nên chỉ còn cách hỏi. Chỉ render khi giờ đổi nên lúc
+   * đứng yên là im lặng hoàn toàn.
+   *
+   * Và LUÔN dừng cuối câu: chốt dừng là mốc stops CHỨA vị trí đang phát. Chốt
+   * chỉ đặt ở HAI chỗ có chủ ý — lúc bấm play (đọc đồng bộ trong handler, dưới)
+   * và lúc phát hiện NHẢY giờ (tua/seek/đơ mạng). Tuyệt đối không chốt lại theo
+   * giờ trôi: đọc stale sau seek (vẫn giờ cũ vài tick) mà chốt lại là pause
+   * ngay — đúng bug "tua rồi play là pause liên tục", và mọi guard vá thêm chỉ
+   * đẻ race mới. */
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const player = playerRef.current;
+      if (!player) return;
+      const current = player.getCurrentTime();
+      if (current !== lastTickRef.current) {
+        if (Math.abs(current - lastTickRef.current) > JUMP_TOL) latchStop(current);
+        lastTickRef.current = current;
+        setNow(current);
+        onTimeUpdateRef.current?.(current);
+      }
+      const stop = stopRef.current;
+      if (stop != null && current >= stop - SEEK_EPS) {
+        player.pause();
+        setNow(stop);
+        onTimeUpdateRef.current?.(current);
+      }
+    }, 500);
+    return () => window.clearInterval(timer);
+  }, [latchStop]);
+
   const toggle = () => {
-    if (status === "playing") playerRef.current?.pause();
-    else playerRef.current?.play();
+    const player = playerRef.current;
+    if (!player) return;
+    if (status === "playing") {
+      player.pause();
+      return;
+    }
+    // Bấm play là một lượt phát mới: chốt ngay trong handler (đọc đồng bộ, một
+    // lần duy nhất) để nghe hết CÂU CHỨA vị trí hiện tại. Không chốt ở đây mà
+    // để poll tự chốt thì đọc stale vài tick đầu là đủ để pause oan.
+    latchStop(player.getCurrentTime());
+    player.play();
   };
 
   const changeRate = (next: number) => {

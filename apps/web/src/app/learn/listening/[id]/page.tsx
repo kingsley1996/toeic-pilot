@@ -15,7 +15,23 @@ import { GuestNotice } from "@/components/guest-notice";
 import { ListeningPlayerView } from "@/components/listening-player";
 import { Alert, EmptyState, Page, PageHeader, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
+import { formatTime } from "@/lib/listening-player";
 import { useRequireSession } from "@/lib/session";
+
+/** Một từ che thành `*` dài bằng đúng từ đó — cùng chuẩn `maskUnreached` của
+ * dictation (nhìn độ dài đoán từ là một phần cuộc chơi, không phải lộ đáp án).
+ * Chưa đúng thì không có diff để mask, nên mask thẳng từ transcript thô. */
+function MaskedText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/\s+/).map((word, index) => (
+        <span key={index} className="font-data text-ink-faint">
+          {"*".repeat(word.length)}{" "}
+        </span>
+      ))}
+    </>
+  );
+}
 
 /** Mili-giây hiện tại. Bọc ngoài component như `timeAgo` ở admin/users: rule
  * purity cấm gọi `Date.now()` trong render (kể cả trong hàm lồng), còn helper
@@ -31,7 +47,12 @@ export default function ListeningLessonPage() {
   const [content, setContent] = useState<ListeningContentPublic | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [doneIds, setDoneIds] = useState<Set<string>>(new Set());
+  /* Câu video ĐANG phát tới — highlight + cuộn theo, ĐỘC LẬP với câu đang làm.
+   * Cố ý không gộp: video chạy xuyên câu mà lôi cả bài tập theo thì chữ đang gõ
+   * dở mất theo; bấm vào dòng nào thì bài tập mới nhảy theo (goTo dưới). */
+  const [followId, setFollowId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const rowRefs = useRef(new Map<string, HTMLButtonElement>());
   // Mốc tính thời gian làm từng câu — chỉ ghi trong handler chuyển câu và đọc
   // trong handler nộp bài. Không khởi tạo ở render (`Date.now()` là hàm impure)
   // và không đặt trong effect (setState đồng bộ trong effect cho thứ tính được
@@ -51,6 +72,13 @@ export default function ListeningLessonPage() {
     if (token) void load(token);
   }, [token, load]);
 
+  /* Cuộn list tới câu video đang phát. Trước early-return bên dưới: hook sau
+   * `return` có điều kiện là lỗi luật lẫn lỗi React. */
+  useEffect(() => {
+    if (!followId) return;
+    rowRefs.current.get(followId)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [followId]);
+
   if (!token || (!content && !error)) {
     return (
       <Page className="max-w-3xl">
@@ -66,6 +94,16 @@ export default function ListeningLessonPage() {
   function goTo(index: number) {
     segStartedAt.current = nowMs();
     setActiveIndex(index);
+  }
+
+  /* Video tới đâu thì list theo tới đó: tìm câu chứa mốc giờ, highlight + cuộn
+   * tới. Ngoài khoảng (đầu video, hết video) thì giữ highlight cũ — mất dấu còn
+   * tệ hơn đứng yên. */
+  function handleTime(playedSeconds: number) {
+    const found = segments.find(
+      (segment) => playedSeconds >= segment.start && playedSeconds < segment.end,
+    );
+    if (found) setFollowId((current) => (current === found.id ? current : found.id));
   }
 
   /** Ghi lượt làm về attempts của segment — cũng là chỗ duy nhất đánh dấu câu
@@ -115,52 +153,82 @@ export default function ListeningLessonPage() {
             />
           )}
 
-          {segments.length > 0 && (
-            <div className="mb-4 flex flex-wrap gap-1.5">
-              {segments.map((segment, index) => {
-                const done = doneIds.has(segment.id);
-                const current = index === activeIndex;
-                return (
-                  <button
-                    key={segment.id}
-                    type="button"
-                    onClick={() => goTo(index)}
-                    aria-current={current ? "true" : undefined}
-                    title={`Câu ${index + 1} · ${done ? "đã đúng" : "chưa đúng"}`}
-                    className={cx(
-                      "inline-flex h-8 items-center gap-1 rounded border px-2 font-data text-small transition-colors",
-                      current
-                        ? "border-action bg-action-tint text-action-ink"
-                        : done
-                          ? "border-rule bg-ok-tint text-ok"
-                          : "border-rule-strong text-ink-muted hover:bg-recess",
-                    )}
-                  >
-                    {done && <CircleCheck size={13} strokeWidth={2.5} aria-hidden />}
-                    {index + 1}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          {segments.length > 0 && active && (
+            /* Video trái, transcript phải (mobile xếp chồng, video trước) —
+               list có chiều cao riêng để follow có chỗ cuộn tới. */
+            <div className="mb-4 grid items-start gap-4 lg:grid-cols-5">
+              <div className="lg:col-span-3">
+                {content.external_id ? (
+                  /* KHÔNG `key` theo câu: remount là dựng lại iframe (video
+                      chớp + load lại, cảm giác như reload trang). Một player
+                      sống suốt bài, đổi câu chỉ seek — effect tự-phát-lại
+                      trong `ListeningPlayerView` lo phần còn lại. */
+                  <ListeningPlayerView
+                    videoId={content.external_id}
+                    start={active.start}
+                    end={active.end}
+                    stops={segments.map((segment) => segment.end)}
+                    onTimeUpdate={handleTime}
+                  />
+                ) : (
+                  <Alert tone="warn">Bài này thiếu ID video nên không phát được.</Alert>
+                )}
+              </div>
 
-          {active && content.external_id && (
-            <div className="mb-4">
-              {/* KHÔNG `key` theo câu: remount là dựng lại iframe (video chớp +
-                  load lại, cảm giác như reload trang). Một player sống suốt bài,
-                  đổi câu chỉ seek — effect tự-phát-lại trong
-                  `ListeningPlayerView` lo phần còn lại. */}
-              <ListeningPlayerView
-                videoId={content.external_id}
-                start={active.start}
-                end={active.end}
-              />
-            </div>
-          )}
-
-          {active && !content.external_id && (
-            <div className="mb-4">
-              <Alert tone="warn">Bài này thiếu ID video nên không phát được.</Alert>
+              <section aria-label="Transcript" className="rounded border border-rule lg:col-span-2">
+                <h2 className="border-b border-rule px-4 py-2 text-label font-semibold uppercase text-ink-muted">
+                  Transcript · {segments.length} câu
+                </h2>
+                {/* List cuộn độc lập để follow (effect trên) có chỗ mà cuộn tới —
+                    tràn trang thì `nearest` thành vô nghĩa. */}
+                <ol className="max-h-72 space-y-1 overflow-y-auto p-2 lg:max-h-[430px]">
+                  {segments.map((segment, index) => {
+                    const done = doneIds.has(segment.id);
+                    const selected = index === activeIndex;
+                    const following = segment.id === followId;
+                    return (
+                      <li key={segment.id}>
+                        <button
+                          ref={(node) => {
+                            if (node) rowRefs.current.set(segment.id, node);
+                            else rowRefs.current.delete(segment.id);
+                          }}
+                          type="button"
+                          onClick={() => goTo(index)}
+                          aria-current={following ? "true" : undefined}
+                          title={`Câu ${index + 1} · ${done ? "đã đúng" : "chưa đúng"}`}
+                          className={cx(
+                            "flex w-full items-baseline gap-2 rounded border px-3 py-2 text-left text-body transition-colors",
+                            selected
+                              ? "border-action bg-action-tint text-action-ink"
+                              : following
+                                ? "border-rule-strong bg-recess"
+                                : "border-transparent hover:bg-recess",
+                          )}
+                        >
+                          <span className="shrink-0 font-data text-small text-ink-faint">
+                            #{index + 1}
+                          </span>
+                          <span className="shrink-0 font-data text-small text-ink-faint">
+                            {formatTime(segment.start)}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            {done ? segment.text : <MaskedText text={segment.text} />}
+                          </span>
+                          {done && (
+                            <CircleCheck
+                              size={15}
+                              strokeWidth={2.5}
+                              aria-hidden
+                              className="shrink-0 text-ok"
+                            />
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
             </div>
           )}
 

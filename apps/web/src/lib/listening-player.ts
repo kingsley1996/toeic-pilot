@@ -107,8 +107,17 @@ function loadScript(): Promise<void> {
 
 /* Seek của YouTube không tới ngay tick sau — cho phép lệch một chút khi nhận
  * biết "đã tới segment", chứ không là seek đáp xuống 18.59 cho start=18.64 thì
- * chờ tới hết giờ cũng không phát. */
-const SEEK_EPS = 0.2;
+ * chờ tới hết giờ cũng không phát. Component cũng dùng để nhận biết "ngoài câu"
+ * khi bấm play. */
+export const SEEK_EPS = 0.2;
+
+/** Giây → `m:ss` cho đồng hồ và mốc câu trong list Transcript. */
+export function formatTime(totalSeconds: number): string {
+  const total = Math.max(0, Math.floor(totalSeconds));
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
 
 /**
  * Phát lại một segment: nhảy tới `start`, chạy, dừng ở `end`. Trả về hàm huỷ —

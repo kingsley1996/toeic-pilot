@@ -91,15 +91,20 @@ test("lab youtube: link hỏng báo ngay, phụ đề hỏng không tạo bài, 
   await page.getByRole("button", { name: "Tạo bài học" }).click();
   await expect(page).toHaveURL(/\/learn\/listening\/[0-9a-f-]+$/);
 
-  // Hai câu mẫu có mặt, ô chép hiện ra.
+  // Hai câu mẫu có mặt, ô chép hiện ra. Chưa câu nào lộ lời: tên nút chỉ có
+  // sao che, chữ thật tìm trong list không thấy.
   await expect(page.getByTitle("Câu 1 · chưa đúng")).toBeVisible();
   await expect(page.getByPlaceholder("Gõ lại những gì bạn nghe được…")).toBeVisible();
+  const answer = "Hello everyone, welcome back.";
+  await expect(page.getByRole("button", { name: answer })).toHaveCount(0);
 
-  // Gõ đúng nguyên văn câu 1 → đúng trọn, nút sang câu sau hiện ra.
+  // Gõ đúng nguyên văn câu 1 → đúng trọn, dòng transcript mở ra, nút sang câu
+  // sau hiện ra.
   const box = page.getByPlaceholder("Gõ lại những gì bạn nghe được…");
-  await box.fill("Hello everyone, welcome back.");
+  await box.fill(answer);
   await box.press("Enter");
   await expect(page.getByText("Đúng rồi — bạn đã nghe ra cả câu.")).toBeVisible();
+  await expect(page.getByRole("button", { name: answer })).toHaveCount(1);
 
   await page.getByRole("button", { name: "Câu tiếp theo" }).click();
   const box2 = page.getByPlaceholder("Gõ lại những gì bạn nghe được…");
