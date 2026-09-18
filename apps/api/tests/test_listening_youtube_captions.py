@@ -34,6 +34,25 @@ _VTT = """WEBVTT
 First line.
 """
 
+# Timedtext v3 (thứ InnerTube trả cho video thật, VD dQw4w9WgXcQ): thẻ `<p>`,
+# timestamp MILI-GIÂY. Parser cũ chỉ biết `<text>` giây nên trả rỗng.
+_XML_V3 = """<?xml version="1.0" encoding="utf-8" ?><timedtext format="3">
+<body>
+<p t="1360" d="1680">[\u266a\u266a\u266a]</p>
+<p t="18640" d="3240">\u266a We&#39;re no strangers to love \u266a</p>
+</body>
+</timedtext>
+"""
+
+
+def test_parse_xml_v3_uses_milliseconds() -> None:
+    segs = parse_caption_payload(_XML_V3)
+    assert [(s.start, s.end) for s in segs] == [
+        (Decimal("1.36"), Decimal("3.04")),
+        (Decimal("18.64"), Decimal("21.88")),
+    ]
+    assert segs[1].text == "♪ We're no strangers to love ♪"
+
 
 def test_parse_xml_unescapes_and_keeps_times() -> None:
     segs = parse_caption_payload(_XML)

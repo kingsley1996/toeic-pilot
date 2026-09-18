@@ -161,18 +161,25 @@ def parse_caption_payload(raw: str) -> list[ParsedSegment]:
 
 
 def _parse_xml(raw: str) -> list[ParsedSegment]:
+    """Timedtext XML có hai hình: srv1 (`<text start="12.42" dur="2.76">`, GIÂY)
+    và v3 (`<p t="1360" d="1680">`, MILI-GIÂY). Nhầm tỉ lệ là bài học seek tới
+    phút 22 của video 3 phút rưỡi — hỏng im lặng, nên đơn vị suy từ TÊN attr
+    (chuẩn timedtext), không đoán theo độ lớn số."""
     try:
         root = ET.fromstring(raw)
     except ET.ParseError:
         return []
     segments: list[ParsedSegment] = []
-    for node in root.iter("text"):
-        start_raw = node.attrib.get("start")
+    for node in list(root.iter("text")) + list(root.iter("p")):
+        if node.tag == "p":
+            start_raw, dur_raw, scale = node.attrib.get("t"), node.attrib.get("d"), Decimal(1000)
+        else:
+            start_raw, dur_raw, scale = node.attrib.get("start"), node.attrib.get("dur"), Decimal(1)
         if start_raw is None:
             continue
         try:
-            start = Decimal(start_raw)
-            dur = Decimal(node.attrib.get("dur") or "0")
+            start = Decimal(start_raw) / scale
+            dur = Decimal(dur_raw or "0") / scale
         except (InvalidOperation, ValueError):
             continue
         body = _clean("".join(node.itertext()))

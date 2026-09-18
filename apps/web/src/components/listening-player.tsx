@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   createYouTubePlayer,
+  defaultFrameFactory,
+  PlayerFailed,
   replaySegment,
   type ListeningPlayer,
   type PlayerErrorCode,
@@ -83,15 +85,14 @@ export function ListeningPlayerView({
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const frame = document.createElement("iframe");
-    frame.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
-    frame.title = "Video bài học";
-    frame.allow = "accelerometer; autoplay; encrypted-media; picture-in-picture";
-    frame.allowFullscreen = true;
-    frame.className = "h-full w-full";
-    wrap.append(frame);
+    const makeFrame = () => {
+      const frame = defaultFrameFactory(videoId)();
+      wrap.append(frame);
+      return frame;
+    };
     let alive = true;
-    createYouTubePlayer(frame, videoId, {
+    let frame: HTMLIFrameElement | null = null;
+    createYouTubePlayer(makeFrame, videoId, {
       onStatus: (next) => {
         if (alive) setStatus(next);
       },
@@ -101,22 +102,27 @@ export function ListeningPlayerView({
         onErrorRef.current?.(code);
       },
     })
-      .then((player) => {
+      .then(({ player, frame: builtFrame }) => {
         if (!alive) {
           player.destroy();
+          builtFrame.remove();
           return;
         }
+        frame = builtFrame;
         playerRef.current = player;
       })
-      .catch(() => {
-        if (alive) setFailed("PLAYER_ERROR");
+      .catch((err: unknown) => {
+        if (!alive) return;
+        // Lỗi player thật đã hiện alert đúng mã qua onError — ở đây chỉ còn
+        // timeout/dud (hết 2 lượt thử), mới hiện alert chung.
+        if (!(err instanceof PlayerFailed)) setFailed("PLAYER_ERROR");
       });
     return () => {
       alive = false;
       cancelReplayRef.current?.();
       playerRef.current?.destroy();
       playerRef.current = null;
-      frame.remove();
+      frame?.remove();
     };
   }, [videoId]);
 
