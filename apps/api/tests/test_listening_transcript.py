@@ -2,7 +2,10 @@
 
 from decimal import Decimal
 
+import pytest
+
 from app.services.listening_transcript import (
+    is_speakable,
     parse_srt_vtt,
     validate_transcript,
 )
@@ -86,3 +89,26 @@ def test_end_after_duration_is_error_only_when_duration_known() -> None:
     result = validate_transcript(segments, duration_seconds=Decimal("20"))
     assert result.valid is False
     assert result.errors == ["Segment 2 ends after the video duration"]
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Hello everyone.", True),
+        ("♪ We're no strangers to love ♪", True),
+        ("[Music] hello?", True),
+        ("Call me at 5.", True),
+        ("[♪♪♪]", False),
+        ("[Music]", False),
+        ("[music playing]", False),
+        ("[Applause]", False),
+        ("(laughter)", False),
+        ("...", False),
+        ("", False),
+        ("   ", False),
+        # Thà giữ nhầm còn hơn bỏ sót: ngoặc có chữ ngoài danh sách là giữ.
+        ("[man laughing]", True),
+    ],
+)
+def test_is_speakable(text: str, expected: bool) -> None:
+    assert is_speakable(text) is expected

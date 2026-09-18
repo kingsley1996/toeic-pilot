@@ -21,6 +21,23 @@ _TIMESTAMP = re.compile(
 _CUE_NUMBER = re.compile(r"^\d+$")
 _TAG = re.compile(r"<[^>]*>")
 _WS = re.compile(r"\s+")
+# Nhóm ngoặc `[...]`/`(...)` — phụ đề thật ghi tiếng động trong đó.
+_BRACKETED = re.compile(r"[\(\[][^\n\)\]]*[\)\]]")
+# Nốt nhạc lẻ (♪, ♫).
+_NOTES = re.compile(r"[♪♫]+")
+# Nốt nhạc đứng lẻ (♪, ♫): lyric giữ lại chữ, còn trơ mỗi nốt thì không lời.
+_NOTES = re.compile(r"[♪♫]+")
+# Tên tiếng động quen thuộc (so khớp từng từ, chữ thường). Nguyên tắc: THÀ GIỮ
+# NHẦM còn hơn bỏ sót — "[man laughing]" giữ (có thể là lời dẫn), chỉ bỏ khi
+# MỌI từ trong ngoặc đều là tiếng động ("[music playing]") hoặc ngoặc không có
+# chữ nào ("[♪♪♪]").
+_SOUND_WORDS = frozenset(
+    {
+        "music", "playing", "applause", "laughter", "cheering", "cheers",
+        "coughing", "silence", "silent", "inaudible", "unintelligible",
+        "mumbling", "sighing", "noise",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -123,6 +140,29 @@ def validate_transcript(
                 errors.append(f"Segment {index} ends after the video duration")
 
     return TranscriptValidation(valid=not errors, errors=errors, warnings=warnings)
+
+
+def _is_sound_bracket(content: str) -> bool:
+    """Nội dung trong `[...]`/`(...)` có phải tiếng động không lời? Chỉ đúng khi
+    KHÔNG CÓ chữ nào ngoài danh sách (`[♪♪♪]`, `[Music]`, `[music playing]`);
+    `[man laughing]` là False có chủ ý — thà giữ nhầm một dòng còn hơn bỏ sót
+    một câu thoại."""
+    words = re.findall(r"[A-Za-z]+", content.lower())
+    if not words:
+        return True
+    return all(word in _SOUND_WORDS for word in words)
+
+
+def is_speakable(text: str) -> bool:
+    """Dòng này có lời để chép không? Bóc nốt nhạc + nhóm ngoặc tiếng động rồi
+    còn chữ/số nào không. Lyric giữ nguyên (`♪ ... ♪` còn chữ là còn giữ) —
+    chỉ loại dòng trơ nhạc/nền mà thành bài dictation thì vô nghĩa."""
+    cleaned = _NOTES.sub(" ", _TAG.sub(" ", text or ""))
+    cleaned = _BRACKETED.sub(
+        lambda match: " " if _is_sound_bracket(match.group(0)[1:-1]) else match.group(0),
+        cleaned,
+    )
+    return any(char.isalnum() for char in cleaned)
 
 
 def _stamp(value: Decimal) -> str:

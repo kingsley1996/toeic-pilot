@@ -217,3 +217,131 @@ def test_captions_endpoint_maps_source_errors(client: TestClient, db_session: Se
     )
     assert res.status_code == 422
     assert res.json()["detail"]["code"] == "UNSUPPORTED_SOURCE"
+
+
+_MUSIC_SRT = """1
+00:00:01,000 --> 00:00:03,000
+[♪♪♪]
+
+2
+00:00:03,000 --> 00:00:05,000
+[Music]
+"""
+
+_MIXED_SRT = """1
+00:00:01,000 --> 00:00:03,000
+[♪♪♪]
+
+2
+00:00:03,000 --> 00:00:06,000
+Hello everyone.
+
+3
+00:00:06,000 --> 00:00:08,000
+[Applause]
+"""
+
+
+def test_create_all_music_transcript_is_rejected(
+    client: TestClient, db_session: Session
+) -> None:
+    headers = _headers_for(db_session, "nomusic@example.com")
+    res = client.post(
+        "/api/v1/listening/contents",
+        headers=headers,
+        json={
+            "source": {"type": "youtube", "url": _URL},
+            "title": "Music only",
+            "transcript": {"format": "srt", "raw": _MUSIC_SRT},
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["errors"] == ["Transcript has no speakable lines"]
+    assert db_session.query(ListeningContent).count() == 0
+
+
+def test_create_drops_nonspeakable_segments_and_warns(
+    client: TestClient, db_session: Session
+) -> None:
+    headers = _headers_for(db_session, "mixed@example.com")
+    res = client.post(
+        "/api/v1/listening/contents",
+        headers=headers,
+        json={
+            "source": {"type": "youtube", "url": _URL},
+            "title": "Mixed",
+            "transcript": {"format": "srt", "raw": _MIXED_SRT},
+        },
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["segment_count"] == 1
+    assert any("Skipped 2" in line for line in body["warnings"])
+
+    detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
+    assert [s["text"] for s in detail["segments"]] == ["Hello everyone."]
+    assert [s["index"] for s in detail["segments"]] == [0]
+
+
+def test_captions_all_music_is_unavailable(
+    client: TestClient, db_session: Session, monkeypatch
+) -> None:
+    from decimal import Decimal
+
+    from app.services.listening_transcript import ParsedSegment
+    from app.services.listening_youtube_captions import YoutubeCaptions
+
+    def fake(video_id: str, transport: object | None = None) -> YoutubeCaptions:
+        del video_id, transport
+        return YoutubeCaptions(
+            language="en",
+            kind="manual",
+            raw_vtt="WEBVTT",
+            segments=[
+                ParsedSegment(start=Decimal("0"), end=Decimal("1"), text="[Music]"),
+            ],
+            title=None,
+        )
+
+    monkeypatch.setattr("app.api.routes.listening.fetch_youtube_captions", fake)
+    res = client.post(
+        "/api/v1/listening/captions",
+        headers=_headers_for(db_session, "capmusic@example.com"),
+        json={"url": _URL},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "CAPTIONS_UNAVAILABLE"
+
+
+def test_captions_filters_nonspeakable_segments(
+    client: TestClient, db_session: Session, monkeypatch
+) -> None:
+    from decimal import Decimal
+
+    from app.services.listening_transcript import ParsedSegment
+    from app.services.listening_youtube_captions import YoutubeCaptions
+
+    def fake(video_id: str, transport: object | None = None) -> YoutubeCaptions:
+        del video_id, transport
+        return YoutubeCaptions(
+            language="en",
+            kind="manual",
+            raw_vtt="WEBVTT",
+            segments=[
+                ParsedSegment(start=Decimal("0"), end=Decimal("1"), text="[♪♪♪]"),
+                ParsedSegment(start=Decimal("1"), end=Decimal("2"), text="Hi."),
+            ],
+            title=None,
+        )
+
+    monkeypatch.setattr("app.api.routes.listening.fetch_youtube_captions", fake)
+    res = client.post(
+        "/api/v1/listening/captions",
+        headers=_headers_for(db_session, "capmixed@example.com"),
+        json={"url": _URL},
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["segment_count"] == 1
+    assert "Hi." in body["raw"]
+    assert "♪" not in body["raw"]
