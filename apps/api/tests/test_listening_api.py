@@ -87,20 +87,32 @@ def test_invalid_transcript_creates_nothing(
     assert db_session.query(ListeningContent).count() == 0
 
 
-def test_tiktok_url_rejected_with_unsupported(
+def test_tiktok_url_with_pasted_transcript_creates_content(
     client: TestClient, db_session: Session
 ) -> None:
+    # Phase 1 TikTok: resolve mở cổng, transcript dán tay — player + captions
+    # tự động tới ở phase sau, nhưng dữ liệu đã đi trọn vòng.
+    video_id = "7345678901234567890"
+    headers = _headers_for(db_session, "tiktok-creator@example.com")
     res = client.post(
         "/api/v1/listening/contents",
-        headers=_headers_for(db_session, "creator@example.com"),
+        headers=headers,
         json={
-            "source": {"type": "tiktok", "url": "https://www.tiktok.com/@u/video/1"},
+            "source": {"type": "tiktok", "url": f"https://www.tiktok.com/@u/video/{video_id}"},
             "title": "TikTok",
             "transcript": {"format": "srt", "raw": _SRT},
         },
     )
-    assert res.status_code == 422
-    assert res.json()["detail"]["code"] == "UNSUPPORTED_SOURCE"
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["segment_count"] == 2
+
+    detail = client.get(
+        f"/api/v1/listening/contents/{body['id']}",
+        headers=headers,
+    ).json()
+    assert detail["source_type"] == "tiktok"
+    assert detail["external_id"] == video_id
 
 
 def test_source_label_must_match_url(client: TestClient, db_session: Session) -> None:
@@ -210,10 +222,11 @@ def test_captions_endpoint_uses_resolved_id(client: TestClient, db_session: Sess
 
 def test_captions_endpoint_maps_source_errors(client: TestClient, db_session: Session):
     headers = _headers_for(db_session, "captions-bad@example.com")
+    # ID hợp lệ để qua được resolve — chặn ở cổng captions (mở ở Phase 2).
     res = client.post(
         "/api/v1/listening/captions",
         headers=headers,
-        json={"url": "https://www.tiktok.com/@u/video/1"},
+        json={"url": "https://www.tiktok.com/@u/video/7345678901234567890"},
     )
     assert res.status_code == 422
     assert res.json()["detail"]["code"] == "UNSUPPORTED_SOURCE"

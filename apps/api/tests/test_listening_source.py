@@ -58,8 +58,6 @@ def test_malformed_youtube_is_invalid_not_unsupported(url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "https://www.tiktok.com/@user/video/7345678901234567890",
-        "https://vm.tiktok.com/ZM123abc/",
         "https://vimeo.com/123456789",
         "https://example.com/video.mp4",
     ],
@@ -68,3 +66,77 @@ def test_non_youtube_is_unsupported(url: str) -> None:
     with pytest.raises(SourceError) as exc_info:
         resolve_source(url)
     assert exc_info.value.code == UNSUPPORTED_SOURCE
+
+
+_TIKTOK_ID = "7345678901234567890"
+
+
+@pytest.mark.parametrize(
+    ("url", "canonical"),
+    [
+        (
+            f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}",
+            f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}",
+        ),
+        (
+            f"https://tiktok.com/@user/video/{_TIKTOK_ID}?is_from_webapp=1",
+            f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}",
+        ),
+        (
+            f"https://www.tiktok.com/embed/v2/{_TIKTOK_ID}",
+            f"https://www.tiktok.com/embed/v2/{_TIKTOK_ID}",
+        ),
+        (
+            f"https://www.tiktok.com/embed/{_TIKTOK_ID}",
+            f"https://www.tiktok.com/embed/{_TIKTOK_ID}",
+        ),
+        (
+            f"www.tiktok.com/@user/video/{_TIKTOK_ID}",
+            f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}",
+        ),
+    ],
+)
+def test_tiktok_shapes_resolve_to_canonical(url: str, canonical: str) -> None:
+    source = resolve_source(url)
+    assert source.type == "tiktok"
+    assert source.external_id == _TIKTOK_ID
+    assert source.url == canonical
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://www.tiktok.com/@user",
+        "https://www.tiktok.com/@user/video/short",
+        "https://www.tiktok.com/@user/video/",
+        "https://www.tiktok.com/embed",
+        "",
+    ],
+)
+def test_malformed_tiktok_is_invalid(url: str) -> None:
+    with pytest.raises(SourceError) as exc_info:
+        resolve_source(url)
+    assert exc_info.value.code == INVALID_URL
+
+
+class FakeRedirectTransport:
+    """Giả redirect của link rút gọn: chỉ ánh xạ đúng 1 mã thử, còn lại coi
+    như link chết (redirect ra ngoài TikTok)."""
+
+    def final_url(self, url: str) -> str:
+        if "ZM123abc" in url:
+            return f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}"
+        return "https://example.com/gone"
+
+
+def test_tiktok_short_link_resolves() -> None:
+    source = resolve_source("https://vm.tiktok.com/ZM123abc/", FakeRedirectTransport())
+    assert source.type == "tiktok"
+    assert source.external_id == _TIKTOK_ID
+    assert source.url == f"https://www.tiktok.com/@user/video/{_TIKTOK_ID}"
+
+
+def test_tiktok_short_link_off_tiktok_is_invalid() -> None:
+    with pytest.raises(SourceError) as exc_info:
+        resolve_source("https://vm.tiktok.com/DEADCODE/", FakeRedirectTransport())
+    assert exc_info.value.code == INVALID_URL
