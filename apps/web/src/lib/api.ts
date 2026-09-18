@@ -8,6 +8,10 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
+    /* Body lỗi có cấu trúc của backend (`{"code": ...}`) — chỗ cũ chỉ đọc
+     * `message` nên thêm trường này không vỡ ai; chỗ cần đọc mã (Listening
+     * Lab) thì đọc ở đây thay vì đoán qua chuỗi. */
+    public detail?: unknown,
   ) {
     super(message);
     this.name = "ApiError";
@@ -28,15 +32,24 @@ function issueText(issue: ValidationIssue): string {
   return field ? `${field}: ${issue.msg}` : issue.msg;
 }
 
-async function parseError(response: Response): Promise<string> {
+async function parseError(response: Response): Promise<{ message: string; detail?: unknown }> {
   try {
-    const data = (await response.json()) as { detail?: string | ValidationIssue[] };
-    if (typeof data.detail === "string") return data.detail;
-    if (Array.isArray(data.detail)) return data.detail.map(issueText).join(" · ");
+    const data = (await response.json()) as { detail?: unknown };
+    if (typeof data.detail === "string") return { message: data.detail };
+    if (Array.isArray(data.detail)) {
+      return { message: (data.detail as ValidationIssue[]).map(issueText).join(" · ") };
+    }
+    if (data.detail && typeof data.detail === "object") {
+      const code = (data.detail as { code?: unknown }).code;
+      return {
+        message: typeof code === "string" ? code : response.statusText || "Request failed",
+        detail: data.detail,
+      };
+    }
   } catch {
     /* ignore */
   }
-  return response.statusText || "Request failed";
+  return { message: response.statusText || "Request failed" };
 }
 
 export async function apiFetch<T>(
@@ -82,7 +95,8 @@ async function request<T>(
   });
 
   if (!response.ok) {
-    throw new ApiError(await parseError(response), response.status);
+    const parsed = await parseError(response);
+    throw new ApiError(parsed.message, response.status, parsed.detail);
   }
 
   if (response.status === 204) {

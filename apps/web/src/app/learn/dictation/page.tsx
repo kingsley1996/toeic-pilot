@@ -1,7 +1,7 @@
 "use client";
 
 import { API_ROUTES, type DictationPage, type DictationTopicPublic } from "@toeic-pilot/shared";
-import { BookOpen, Headphones, Shuffle } from "lucide-react";
+import { BookOpen, Headphones, Shuffle, Video } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -74,6 +74,19 @@ export default function DictationTopicsPage() {
           <span className="block font-semibold">Nghe ngẫu nhiên</span>
           <span className="mt-0.5 block text-small text-ink-muted">
             Một câu bất kỳ trong toàn bộ nội dung, để quen tai.
+          </span>
+        </span>
+      </PanelLink>
+
+      {/* Cùng là chép chính tả nhưng nguồn là video của chính user (cần đăng
+          nhập để lưu bài) — lối đi ngang như "Nghe ngẫu nhiên", không phải một
+          chủ đề trong cây biên soạn. */}
+      <PanelLink href="/learn/listening" className="mb-3 flex items-center gap-4">
+        <Video size={16} strokeWidth={1.75} className="shrink-0 text-ink-muted" aria-hidden />
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold">Listening Lab — học từ video YouTube</span>
+          <span className="mt-0.5 block text-small text-ink-muted">
+            Dán link video của bạn, chép chính tả từng câu. Cần đăng nhập.
           </span>
         </span>
       </PanelLink>

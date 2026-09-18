@@ -51,7 +51,11 @@ export type ExerciseItem = {
   transcript: string;
   /** Câu chưa dịch vẫn học được — khối lời thoại chỉ hiện tiếng Anh. */
   transcript_vi?: string | null;
-  audio_url: string;
+  /** Vắng khi nguồn phát không phải file audio (VD: segment YouTube) — lúc đó
+   * `media` lo phần nghe, hoặc trang cha đặt player riêng bên ngoài. */
+  audio_url?: string;
+  /** Khung nghe thay cho `<audio>` mặc định (VD: player YouTube của Lab). */
+  media?: React.ReactNode;
   word_count: number;
 };
 
@@ -74,6 +78,7 @@ export function DictationExercise({
   onNext,
   nextLabel = "Câu tiếp theo",
   footer,
+  submitAnswer,
 }: {
   item: ExerciseItem;
   /** Gọi sau mỗi lượt chấm, để trang cha làm mới tiến độ. */
@@ -82,6 +87,9 @@ export function DictationExercise({
   onNext?: () => void;
   nextLabel?: string;
   footer?: React.ReactNode;
+  /** Ghi lượt làm về server. Mặc định là endpoint dictation cũ (kèm thưởng
+   * pet); Listening Lab truyền hàm riêng trỏ về attempts của segment. */
+  submitAnswer?: (text: string) => Promise<unknown>;
 }) {
   const [typed, setTyped] = useState("");
   // `checkedText` ghi lại văn bản đã được chấm, để khi người học sửa tiếp thì
@@ -161,14 +169,22 @@ export function DictationExercise({
     if (token) {
       // Server chấm lại từ `submitted_text`; kết quả của server mới là bản được
       // lưu, nên bản ghi không phụ thuộc vào bất cứ điều gì trình duyệt khai báo.
-      apiFetch<{ pet?: { xp: number; mood: string } | null }>(API_ROUTES.submitDictation(item.id), {
-        method: "POST",
-        token,
-        body: JSON.stringify({ submitted_text: typed }),
-      })
+      const save = submitAnswer
+        ? submitAnswer(typed)
+        : apiFetch<{ pet?: { xp: number; mood: string } | null }>(
+            API_ROUTES.submitDictation(item.id),
+            {
+              method: "POST",
+              token,
+              body: JSON.stringify({ submitted_text: typed }),
+            },
+          );
+      save
         .then((saved) => {
           // Phần thưởng lấy từ phản hồi của MÁY CHỦ, không tính lại ở đây.
-          notifyStudyReward(saved.pet);
+          notifyStudyReward(
+            (saved as { pet?: { xp: number; mood: string } | null } | null)?.pet,
+          );
           onGraded?.();
         })
         .catch(() => setError("Đã chấm xong, nhưng không lưu được lượt làm này."));
@@ -220,8 +236,9 @@ export function DictationExercise({
 
       <Panel className="p-5">
         {/* Controls gốc của trình duyệt cho sẵn tua và phát lại, và không đòi
-            CORS trên nguồn media. */}
-        <audio controls src={item.audio_url} className="w-full" />
+            CORS trên nguồn media. Nguồn ngoài (YouTube) thì trang cha đưa
+            player riêng qua `media`. */}
+        {item.media ?? (item.audio_url ? <audio controls src={item.audio_url} className="w-full" /> : null)}
 
         {/* Mở được NGAY, không chờ chấm: người luyện tự quyết khi nào nhìn —
             cùng lựa chọn đã áp cho chế độ Luyện tập ở màn làm bài. Đổi lại, câu
