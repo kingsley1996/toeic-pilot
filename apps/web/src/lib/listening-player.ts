@@ -18,7 +18,7 @@ export interface ListeningPlayer {
   destroy(): void;
 }
 
-export type PlayerStatus = "loading" | "ready" | "playing" | "paused" | "ended";
+export type PlayerStatus = "loading" | "ready" | "playing" | "paused" | "ended" | "buffering";
 
 export type PlayerErrorCode = "VIDEO_NOT_EMBEDDABLE" | "VIDEO_UNAVAILABLE" | "PLAYER_ERROR";
 
@@ -69,7 +69,7 @@ declare global {
 const SCRIPT_SRC = "https://www.youtube.com/iframe_api";
 
 /* Trạng thái số của IFrame API — magic number gom một chỗ để dưới không rải rác. */
-const YT_STATE = { ENDED: 0, PLAYING: 1, PAUSED: 2, CUED: 5 } as const;
+const YT_STATE = { ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 } as const;
 
 /* Mã lỗi onError của IFrame API: 101/150 là chủ video tắt embed, 100/105 là
  * video không tồn tại/riêng tư. Hai nhóm này UI phải nói hai câu khác nhau. */
@@ -283,7 +283,10 @@ function tryBuild(
         videoId,
         height: "100%",
         width: "100%",
-        playerVars: { enablejsapi: 1, rel: 0 },
+        // vq small (240p): lab này nghe là chính, hình chỉ để biết ngữ cảnh —
+        // file nhẹ tải nhanh, đỡ đứng hình chờ mạng. Âm thanh là luồng riêng
+        // nên không bị giảm theo.
+        playerVars: { enablejsapi: 1, rel: 0, vq: "small" },
         events: {
           onReady: () => {
             if (destroyed) return;
@@ -302,6 +305,7 @@ function tryBuild(
             if (event.data === YT_STATE.PLAYING) events.onStatus?.("playing");
             else if (event.data === YT_STATE.PAUSED) events.onStatus?.("paused");
             else if (event.data === YT_STATE.ENDED) events.onStatus?.("ended");
+            else if (event.data === YT_STATE.BUFFERING) events.onStatus?.("buffering");
             else if (event.data === YT_STATE.CUED) events.onStatus?.("ready");
           },
         },

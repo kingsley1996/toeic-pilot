@@ -221,7 +221,9 @@ export function ListeningPlayerView({
   const toggle = () => {
     const player = playerRef.current;
     if (!player) return;
-    if (status === "playing") {
+    // Đang tải dở (buffering) cũng coi như đang phát để bấm là dừng — kẹt tải
+    // mà nút không ăn thì user chỉ còn nước F5.
+    if (status === "playing" || status === "buffering") {
       player.pause();
       return;
     }
@@ -269,9 +271,9 @@ export function ListeningPlayerView({
             variant="secondary"
             onClick={toggle}
             disabled={status === "loading"}
-            aria-label={status === "playing" ? "Tạm dừng" : "Phát"}
+            aria-label={status === "playing" || status === "buffering" ? "Tạm dừng" : "Phát"}
           >
-            {status === "playing" ? (
+            {status === "playing" || status === "buffering" ? (
               <Pause size={14} strokeWidth={2} aria-hidden />
             ) : (
               <Play size={14} strokeWidth={2} aria-hidden />
@@ -283,6 +285,9 @@ export function ListeningPlayerView({
           >
             {formatTime(now)} / {formatTime(end)}
           </span>
+          {status === "buffering" && (
+            <span className="text-small text-ink-faint">Đang tải video…</span>
+          )}
           <span className="ml-auto flex gap-1" role="group" aria-label="Tốc độ phát">
             {RATES.map((value) => (
               <Button
