@@ -65,6 +65,11 @@ class ListeningContentPublic(BaseModel):
     duration_seconds: int | None
     transcript_status: str
     segments: list[ListeningSegmentPublic]
+    # Segment đã gõ đúng trọn (≥1 attempt is_complete của chính user) — list
+    # riêng để trang học seeding highlight/reveal sau F5 mà không cần endpoint
+    # progress mới. Tính lúc đọc (rẻ: 1 query distinct), không lưu riêng vì
+    # derive được từ attempts và lưu là lệch đi theo thời gian.
+    completed_segment_ids: list[str] = []
     created_at: datetime
 
 

@@ -58,7 +58,9 @@ router = APIRouter(tags=["learning"])
 CAPTIONS_QUOTA = Quota(limit=30, window_seconds=60 * 10)
 
 
-def _to_public(content: ListeningContent) -> ListeningContentPublic:
+def _to_public(
+    content: ListeningContent, completed_segment_ids: list[str] | None = None
+) -> ListeningContentPublic:
     return ListeningContentPublic(
         id=str(content.id),
         source_type=content.source_type,
@@ -77,6 +79,7 @@ def _to_public(content: ListeningContent) -> ListeningContentPublic:
             )
             for seg in content.segments
         ],
+        completed_segment_ids=completed_segment_ids or [],
         created_at=content.created_at,
     )
 
@@ -275,7 +278,21 @@ def get_listening_content(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ListeningContentPublic:
-    return _to_public(_get_owned_content(db, current_user.id, content_id))
+    content = _get_owned_content(db, current_user.id, content_id)
+    completed = [
+        str(segment_id)
+        for segment_id in db.scalars(
+            select(ListeningAttempt.segment_id)
+            .join(ListeningSegment, ListeningSegment.id == ListeningAttempt.segment_id)
+            .where(
+                ListeningSegment.content_id == content.id,
+                ListeningAttempt.user_id == current_user.id,
+                ListeningAttempt.is_complete.is_(True),
+            )
+            .distinct()
+        ).all()
+    ]
+    return _to_public(content, completed)
 
 
 @router.post("/listening/contents/{content_id}/attempts", response_model=ListeningAttemptResult)

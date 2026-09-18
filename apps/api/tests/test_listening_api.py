@@ -345,3 +345,29 @@ def test_captions_filters_nonspeakable_segments(
     assert body["segment_count"] == 1
     assert "Hi." in body["raw"]
     assert "♪" not in body["raw"]
+
+
+def test_detail_reports_completed_segment_ids(
+    client: TestClient, db_session: Session
+) -> None:
+    headers = _headers_for(db_session, "progress@example.com")
+    body = _create(client, headers)
+    detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
+    assert detail["completed_segment_ids"] == []
+
+    first = detail["segments"][0]["id"]
+    client.post(
+        f"/api/v1/listening/contents/{body['id']}/attempts",
+        headers=headers,
+        json={"segment_id": first, "answer": "Hello everyone."},
+    )
+    # Trả lời sai không đánh dấu — chỉ is_complete mới vào danh sách.
+    second = detail["segments"][1]["id"]
+    client.post(
+        f"/api/v1/listening/contents/{body['id']}/attempts",
+        headers=headers,
+        json={"segment_id": second, "answer": "nonsense words here"},
+    )
+
+    again = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
+    assert again["completed_segment_ids"] == [first]

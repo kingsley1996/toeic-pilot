@@ -71,7 +71,12 @@ export default function ListeningLessonPage() {
   const load = useCallback(
     (t: string) =>
       apiFetch<ListeningContentPublic>(API_ROUTES.listeningContent(contentId), { token: t })
-        .then(setContent)
+        .then((data) => {
+          setContent(data);
+          // Seeding tiến độ từ server để F5 không mất câu đã đúng — lượt nộp
+          // trong phiên thì submitSegment cập nhật tiếp vào set này.
+          setDoneIds(new Set(data.completed_segment_ids));
+        })
         .catch(() => setError("Không tải được bài này. Nó có thể đã bị xoá.")),
     [contentId],
   );
@@ -254,7 +259,9 @@ export default function ListeningLessonPage() {
                             "flex w-full items-baseline gap-2 rounded border px-3 py-2 text-left text-body transition-colors",
                             current
                               ? "border-action bg-action-tint text-action-ink"
-                              : "border-transparent hover:bg-recess",
+                              : done
+                                ? "border-ok"
+                                : "border-transparent hover:bg-recess",
                           )}
                         >
                           <span className="shrink-0 font-data text-small text-ink-faint">

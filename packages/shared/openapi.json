@@ -7044,6 +7044,14 @@
       },
       "ListeningContentPublic": {
         "properties": {
+          "completed_segment_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Completed Segment Ids",
+            "type": "array"
+          },
           "created_at": {
             "format": "date-time",
             "title": "Created At",

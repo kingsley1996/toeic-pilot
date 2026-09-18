@@ -7831,6 +7831,11 @@ export interface components {
         /** ListeningContentPublic */
         ListeningContentPublic: {
             /**
+             * Completed Segment Ids
+             * @default []
+             */
+            completed_segment_ids: string[];
+            /**
              * Created At
              * Format: date-time
              */
