@@ -12,7 +12,7 @@ from collections import defaultdict
 from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select, union_all
+from sqlalchemy import func, literal, select, union_all
 from sqlalchemy.orm import Session
 
 from app.models.dictation import DictationAttempt
@@ -165,109 +165,93 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
     # từ đã publish. Đếm cả từ draft sẽ cho ra một tổng mà học viên không bao giờ
     # nhìn thấy trong danh sách.
     #
-    # Cả ba con số đếm trong SQL. Kéo toàn bộ id từ đã publish và toàn bộ review
-    # state về Python là hai phép quét PHÁT TRIỂN VÔ HẠN — kho từ tăng mỗi sprint
-    # và review state tăng theo từng người, còn trang hồ sơ mở mỗi ngày.
+    # Đếm trong SQL, không kéo id về Python: kho từ tăng mỗi sprint còn review
+    # state tăng theo từng người, hai phép quét vô hạn cho một trang mở mỗi ngày.
+    #
+    # Sáu con số là MỘT round-trip (`UNION ALL` sáu nhánh đếm): production mỗi
+    # truy vấn là một lần đi về Tokyo, và endpoint này mở cùng dashboard — sáu
+    # lần đi về gộp thành một là bớt gần nửa giây ở đúng chỗ người ta nhìn.
+    # Mỗi nhánh giữ nguyên điều kiện cũ, chỉ khác là đi chung một chuyến.
     published = VocabularyEntry.status == PUBLISHED
-    vocabulary_total = int(
-        db.scalar(select(func.count()).select_from(VocabularyEntry).where(published)) or 0
-    )
-
     has_mastered = VocabularyReviewState.interval_days >= MASTERED_INTERVAL_DAYS
-    mastered = int(
-        db.scalar(
-            select(func.count())
+    counts: dict[str, int] = {}
+    for key, total in db.execute(
+        union_all(
+            select(literal("vocabulary_total"), func.count())
+            .select_from(VocabularyEntry)
+            .where(published),
+            select(literal("mastered"), func.count())
             .select_from(VocabularyReviewState)
             .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
-            .where(
-                VocabularyReviewState.user_id == user_id,
-                published,
-                has_mastered,
-            )
-        )
-        or 0
-    )
-    # So sánh hạn trong SQL chứ không trong Python, cùng lý do đã ghi ở
-    # `vocabulary_progress`: hai bên trả về datetime khác kiểu tz nhau.
-    due = int(
-        db.scalar(
-            select(func.count())
+            .where(VocabularyReviewState.user_id == user_id, published, has_mastered),
+            # So sánh hạn trong SQL chứ không trong Python, cùng lý do đã
+            # ghi ở `vocabulary_progress`: hai bên trả datetime khác kiểu tz.
+            select(literal("due"), func.count())
             .select_from(VocabularyReviewState)
             .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
             .where(
                 VocabularyReviewState.user_id == user_id,
                 published,
                 VocabularyReviewState.due_at <= now,
-            )
-        )
-        or 0
-    )
-
-    reviews_total = (
-        db.query(VocabularyReviewLog).filter(VocabularyReviewLog.user_id == user_id).count()
-    )
-    dictation_attempts = (
-        db.query(DictationAttempt).filter(DictationAttempt.user_id == user_id).count()
-    )
-    # Đếm CÂU đã xong, không đếm lượt nộp: nộp đúng một câu ba lần vẫn là một câu.
-    # Cùng định nghĩa với tiến độ dictation, nên hai nơi không thể nói khác nhau —
-    # và `COUNT(DISTINCT)` cho ra đúng tập đó mà không kéo mọi item_id về Python.
-    dictation_completed = int(
-        db.scalar(
-            select(func.count(func.distinct(DictationAttempt.item_id))).where(
+            ),
+            select(literal("reviews_total"), func.count())
+            .select_from(VocabularyReviewLog)
+            .where(VocabularyReviewLog.user_id == user_id),
+            select(literal("dictation_attempts"), func.count())
+            .select_from(DictationAttempt)
+            .where(DictationAttempt.user_id == user_id),
+            # Đếm CÂU đã xong, không đếm lượt nộp: nộp đúng một câu ba lần
+            # vẫn là một câu — cùng định nghĩa với tiến độ dictation.
+            select(
+                literal("dictation_completed"),
+                func.count(func.distinct(DictationAttempt.item_id)),
+            ).where(
                 DictationAttempt.user_id == user_id,
                 DictationAttempt.is_complete.is_(True),
-            )
+            ),
         )
-        or 0
-    )
+    ).all():
+        counts[key] = int(total or 0)
+    vocabulary_total = int(counts.get("vocabulary_total") or 0)
+    mastered = int(counts.get("mastered") or 0)
+    due = int(counts.get("due") or 0)
+    reviews_total = int(counts.get("reviews_total") or 0)
+    dictation_attempts = int(counts.get("dictation_attempts") or 0)
+    dictation_completed = int(counts.get("dictation_completed") or 0)
 
-    review_days = _local_days(
-        list(
-            db.scalars(
-                select(VocabularyReviewLog.reviewed_at).where(
-                    VocabularyReviewLog.user_id == user_id,
-                    VocabularyReviewLog.reviewed_at >= since,
-                )
-            ).all()
-        ),
-        zone,
-    )
-    dictation_days = _local_days(
-        list(
-            db.scalars(
-                select(DictationAttempt.created_at).where(
-                    DictationAttempt.user_id == user_id,
-                    DictationAttempt.created_at >= since,
-                )
-            ).all()
-        ),
-        zone,
-    )
     # Lượt làm câu ngữ pháp VÀ ngày bấm hoàn thành bài đều là "đã học". Hàng
     # completion không còn xoá được ("bỏ hoàn thành" chỉ đánh dấu `revoked_at`),
     # nên `created_at` của nó là bằng chứng vĩnh viễn và đủ điều kiện nuôi chuỗi
     # — đóng được daily task thì cũng phải giữ được streak, hai định nghĩa "đã
     # học" lệch nhau là cái bẫy `ruby_daily` đã ghi.
-    grammar_days = _local_days(
-        list(
-            db.scalars(
-                select(GrammarAttempt.created_at).where(
-                    GrammarAttempt.user_id == user_id,
-                    GrammarAttempt.created_at >= since,
-                )
-            ).all()
+    #
+    # Bốn nguồn timestamp cũng đi chung MỘT chuyến, nhãn nguồn để Python nhóm
+    # lại cho calendar — cùng điều kiện từng nguồn như bốn truy vấn cũ.
+    by_source: dict[str, list[datetime]] = defaultdict(list)
+    for source, stamp in db.execute(
+        union_all(
+            select(literal("review"), VocabularyReviewLog.reviewed_at).where(
+                VocabularyReviewLog.user_id == user_id,
+                VocabularyReviewLog.reviewed_at >= since,
+            ),
+            select(literal("dictation"), DictationAttempt.created_at).where(
+                DictationAttempt.user_id == user_id,
+                DictationAttempt.created_at >= since,
+            ),
+            select(literal("grammar"), GrammarAttempt.created_at).where(
+                GrammarAttempt.user_id == user_id,
+                GrammarAttempt.created_at >= since,
+            ),
+            select(literal("completion"), GrammarLessonCompletion.created_at).where(
+                GrammarLessonCompletion.user_id == user_id,
+                GrammarLessonCompletion.created_at >= since,
+            ),
         )
-        + list(
-            db.scalars(
-                select(GrammarLessonCompletion.created_at).where(
-                    GrammarLessonCompletion.user_id == user_id,
-                    GrammarLessonCompletion.created_at >= since,
-                )
-            ).all()
-        ),
-        zone,
-    )
+    ).all():
+        by_source[source].append(stamp)
+    review_days = _local_days(by_source["review"], zone)
+    dictation_days = _local_days(by_source["dictation"], zone)
+    grammar_days = _local_days(by_source["grammar"] + by_source["completion"], zone)
 
     active = set(review_days) | set(dictation_days) | set(grammar_days)
     current_streak, longest_streak = compute_streaks(active, today)
