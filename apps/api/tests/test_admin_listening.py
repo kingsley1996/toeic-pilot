@@ -7,6 +7,7 @@ khẳng định cho chuyện đó.
 
 import uuid
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -307,6 +308,140 @@ def test_edit_rejects_bad_timing(client: TestClient, db_session: Session) -> Non
     assert ghost.status_code == 404
     empty = client.put(f"/api/v1/admin/listening/contents/{public['id']}", headers=admin, json={})
     assert empty.status_code == 422
+
+
+def _set_media(db_session: Session, content_id: str, key: str) -> None:
+    import uuid as _uuid
+
+    from app.models import ListeningContent as _LC
+
+    row = db_session.get(_LC, _uuid.UUID(content_id))
+    assert row is not None
+    row.media_storage_key = key
+    db_session.commit()
+
+
+def test_delete_removes_media_file(
+    client: TestClient, db_session: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import app.api.routes.admin_listening as _admin
+
+    public = _make_public(client, db_session)
+    _set_media(db_session, public["id"], "listening/gone.mp4")
+
+    deleted: list[str] = []
+
+    class _FakeDriver:
+        def delete(self, key: str) -> None:
+            deleted.append(key)
+
+    monkeypatch.setattr(_admin, "get_driver", lambda kind: _FakeDriver())
+    admin = _headers_for(db_session, "media-del@example.com", "admin")
+    assert (
+        client.delete(f"/api/v1/admin/listening/contents/{public['id']}", headers=admin).status_code
+        == 204
+    )
+    assert deleted == ["listening/gone.mp4"]
+
+
+def test_delete_without_media_touches_no_driver(
+    client: TestClient, db_session: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import app.api.routes.admin_listening as _admin
+
+    public = _make_public(client, db_session)
+
+    def _boom(kind: str) -> None:
+        raise AssertionError("không có file thì không gọi driver")
+
+    monkeypatch.setattr(_admin, "get_driver", _boom)
+    admin = _headers_for(db_session, "media-del2@example.com", "admin")
+    assert (
+        client.delete(f"/api/v1/admin/listening/contents/{public['id']}", headers=admin).status_code
+        == 204
+    )
+
+
+def test_delete_survives_storage_failure(
+    client: TestClient, db_session: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import uuid as _uuid
+
+    from app.core.storage import StorageError
+    from app.models import ListeningContent as _LC
+
+    public = _make_public(client, db_session)
+    _set_media(db_session, public["id"], "listening/stuck.mp4")
+
+    class _BrokenDriver:
+        def delete(self, key: str) -> None:
+            raise StorageError("kho hỏng")
+
+    import app.api.routes.admin_listening as _admin
+
+    monkeypatch.setattr(_admin, "get_driver", lambda kind: _BrokenDriver())
+    admin = _headers_for(db_session, "media-del3@example.com", "admin")
+    # Bài đã xoá xong thì vẫn 204 — kho hỏng chỉ log, không 500.
+    assert (
+        client.delete(f"/api/v1/admin/listening/contents/{public['id']}", headers=admin).status_code
+        == 204
+    )
+    assert db_session.get(_LC, _uuid.UUID(public["id"])) is None
+
+
+def _private_ids(client: TestClient, headers: dict[str, str]) -> list[str]:
+    body = client.get("/api/v1/admin/listening/contents?is_public=false", headers=headers).json()
+    return [c["id"] for c in body["items"]]
+
+
+def test_private_list_shows_only_own(client: TestClient, db_session: Session) -> None:
+    admin_a = _headers_for(db_session, "priva@example.com", "admin")
+    mine = _create_private(client, admin_a)
+    other = _create_private(client, _headers_for(db_session, "privb@example.com"))
+    public = _make_public(client, db_session)
+
+    assert _private_ids(client, admin_a) == [mine["id"]]
+    assert other["id"] not in _private_ids(client, admin_a)
+    assert public["id"] not in _private_ids(client, admin_a)
+    # Bài nháp của editor cũng thấy được ở đây (riêng của chính mình).
+    editor = _headers_for(db_session, "prive@example.com", "editor")
+    draft = _create_private(client, editor)
+    assert _private_ids(client, editor) == [draft["id"]]
+    # Learner không vào được endpoint admin nào.
+    assert (
+        client.get(
+            "/api/v1/admin/listening/contents?is_public=false",
+            headers=_headers_for(db_session, "privc@example.com"),
+        ).status_code
+        == 403
+    )
+
+
+def test_unpublish_then_republish_roundtrip(client: TestClient, db_session: Session) -> None:
+    admin_headers = _headers_for(db_session, "selfpub@example.com", "admin")
+    mine = _create_private(client, admin_headers)
+    url = f"/api/v1/admin/listening/contents/{mine['id']}"
+    assert client.patch(url, headers=admin_headers, json={"is_public": True}).status_code == 200
+    assert _private_ids(client, admin_headers) == []
+    assert client.patch(url, headers=admin_headers, json={"is_public": False}).status_code == 200
+    assert _private_ids(client, admin_headers) == [mine["id"]]
+    repub = client.patch(url, headers=admin_headers, json={"is_public": True})
+    assert repub.status_code == 200
+    assert repub.json()["is_public"] is True
+    assert _private_ids(client, admin_headers) == []
+
+
+def test_editor_cannot_republish_own_draft(client: TestClient, db_session: Session) -> None:
+    editor = _headers_for(db_session, "prived@example.com", "editor")
+    draft = _create_private(client, editor)
+    assert (
+        client.patch(
+            f"/api/v1/admin/listening/contents/{draft['id']}",
+            headers=editor,
+            json={"is_public": True},
+        ).status_code
+        == 403
+    )
 
 
 def test_admin_cannot_see_private_content(client: TestClient, db_session: Session) -> None:

@@ -12945,6 +12945,7 @@ export interface operations {
             query?: {
                 limit?: number;
                 offset?: number;
+                is_public?: boolean;
             };
             header?: never;
             path?: never;

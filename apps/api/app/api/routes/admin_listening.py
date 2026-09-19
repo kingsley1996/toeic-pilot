@@ -9,6 +9,7 @@ Vai trò theo `admin_dictation.py`: xem/sửa nháp là editor+, riêng phát h�
 xoá là admin — không ai tự duyệt bài của mình.
 """
 
+import logging
 import uuid
 from decimal import Decimal
 
@@ -18,6 +19,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import require_role
 from app.core.database import get_db
+from app.core.storage import StorageError, get_driver
 from app.models import (
     ListeningAttempt,
     ListeningContent,
@@ -34,6 +36,8 @@ from app.services import dictation as dictation_grader
 from app.services.listening_transcript import is_speakable
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+logger = logging.getLogger(__name__)
 
 can_edit = require_role("editor", "admin")
 can_publish = require_role("admin")
@@ -76,10 +80,19 @@ def _get_public_content(db: Session, content_id: uuid.UUID) -> ListeningContent:
 def list_listening_admin(
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
+    # Mặc định thư viện public; `is_public=false` trả bài RIÊNG của chính mình
+    # (bài đã gỡ + nháp) để xuất bản lại — bài riêng của người khác không bao
+    # giờ lọt vào dù ở chế độ nào.
+    is_public: bool = Query(default=True),
     db: Session = Depends(get_db),
-    _: User = Depends(can_edit),
+    user: User = Depends(can_edit),
 ) -> Page[ListeningContentAdmin]:
-    base = select(ListeningContent).where(ListeningContent.is_public.is_(True))
+    if is_public:
+        base = select(ListeningContent).where(ListeningContent.is_public.is_(True))
+    else:
+        base = select(ListeningContent).where(
+            ListeningContent.user_id == user.id, ListeningContent.is_public.is_(False)
+        )
     page_items = list(
         db.scalars(
             base.options(selectinload(ListeningContent.segments))
@@ -327,5 +340,13 @@ def delete_listening_content(
                 status_code=status.HTTP_409_CONFLICT,
                 detail={"code": "HAS_ATTEMPTS"},
             )
+    media_key = content.media_storage_key
     db.delete(content)
     db.commit()
+    # File tự host đi theo bài, không để lại mồ côi tính tiền kho. Xoá DB trước
+    # rồi dọn file sau: kho hỏng thì log chứ không 500 một bài đã xoá xong.
+    if media_key:
+        try:
+            get_driver("video").delete(media_key)
+        except StorageError:
+            logger.warning("không xoá được file %s của bài %s", media_key, content_id)

@@ -100,6 +100,9 @@ export default function AdminListeningPage() {
     .filter((n) => Number.isFinite(n))
     .sort((a, b) => a - b);
 
+  // Bài riêng của chính mình (đã gỡ + nháp) — để xuất bản lại.
+  const [privates, setPrivates] = useState<ListeningAdminPage["items"]>([]);
+
   const refresh = useCallback(
     (t: string, at = offset) => {
       apiFetch<ListeningAdminPage>(`${API_ROUTES.adminListeningContents}?offset=${at}`, {
@@ -110,6 +113,11 @@ export default function AdminListeningPage() {
           setTotal(page.total);
         })
         .catch(() => setError("Không tải được thư viện."));
+      apiFetch<ListeningAdminPage>(`${API_ROUTES.adminListeningContents}?is_public=false`, {
+        token: t,
+      })
+        .then((page) => setPrivates(page.items))
+        .catch(() => setPrivates([]));
     },
     [offset],
   );
@@ -355,6 +363,24 @@ export default function AdminListeningPage() {
       }
     } finally {
       setEditBusy(false);
+    }
+  }
+
+  /** Xuất bản lại bài riêng của chính mình (bài đã gỡ hoặc nháp). */
+  async function republish(id: string) {
+    if (!token) return;
+    setError(null);
+    setNotice(null);
+    try {
+      await apiFetch(API_ROUTES.adminListeningContent(id), {
+        method: "PATCH",
+        token,
+        body: JSON.stringify({ is_public: true }),
+      });
+      setNotice("Đã xuất bản lại vào thư viện.");
+      refresh(token);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Không xuất bản được.");
     }
   }
 
@@ -724,6 +750,41 @@ export default function AdminListeningPage() {
       <div className="mt-4">
         <Pager total={total} limit={PAGE_SIZE} offset={offset} onOffset={setOffset} />
       </div>
+
+      <h2 className="mb-2 mt-8 text-subtitle">Bài riêng của bạn ({privates.length})</h2>
+      <p className="mb-2 text-small text-ink-muted">
+        Bài bạn tạo chưa lên thư viện và bài đã gỡ — chỉ bạn thấy. Bài của người khác không bao giờ
+        hiện ở đây.
+      </p>
+      {privates.length === 0 ? (
+        <EmptyState
+          title="Không có bài riêng nào"
+          description="Tạo bài mới ở trên hoặc gỡ một bài public xuống."
+        />
+      ) : (
+        <div className="space-y-2">
+          {privates.map((content) => (
+            <Panel key={content.id} className="flex flex-wrap items-center gap-3 p-4">
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold">{content.title}</span>
+                <span className="mt-0.5 block font-data text-small text-ink-muted">
+                  {content.segment_count} câu · {content.attempt_count} lượt học
+                </span>
+              </span>
+              <ButtonLink href={`/learn/listening/${content.id}`} variant="secondary" size="sm">
+                Mở
+              </ButtonLink>
+              {canPublish ? (
+                <Button size="sm" onClick={() => void republish(content.id)}>
+                  Xuất bản lại
+                </Button>
+              ) : (
+                <span className="text-small text-ink-muted">Bản riêng — chỉ bạn thấy</span>
+              )}
+            </Panel>
+          ))}
+        </div>
+      )}
     </Page>
   );
 }

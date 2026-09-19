@@ -18804,6 +18804,16 @@
               "title": "Offset",
               "type": "integer"
             }
+          },
+          {
+            "in": "query",
+            "name": "is_public",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Is Public",
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
