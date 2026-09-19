@@ -334,6 +334,13 @@ export default function ListeningLessonPage() {
                           </span>
                           <span className="min-w-0 flex-1">
                             {done ? segment.text : <MaskedText text={segment.text} />}
+                            {/* Bản dịch chỉ lộ khi đã đúng — hiện sớm là gợi ý
+                                đáp án, cùng lý do transcript bị mask. */}
+                            {done && segment.text_vi && (
+                              <span className="mt-0.5 block text-small italic text-ink-muted">
+                                {segment.text_vi}
+                              </span>
+                            )}
                           </span>
                           {done && (
                             <CircleCheck
@@ -358,6 +365,7 @@ export default function ListeningLessonPage() {
               item={{
                 id: active.id,
                 transcript: active.text,
+                transcript_vi: active.text_vi,
                 word_count: active.text.split(/\s+/).length,
               }}
               submitAnswer={(text) => submitSegment(active.id, text)}

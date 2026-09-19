@@ -103,6 +103,7 @@ def _to_public(
                 start=float(seg.start_seconds),
                 end=float(seg.end_seconds),
                 text=seg.text,
+                text_vi=seg.text_vi,
             )
             for seg in content.segments
         ],

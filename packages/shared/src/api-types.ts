@@ -7997,6 +7997,8 @@ export interface components {
             start: number;
             /** Text */
             text: string;
+            /** Text Vi */
+            text_vi?: string | null;
         };
         /** ListeningSegmentUpdate */
         ListeningSegmentUpdate: {
@@ -8008,6 +8010,8 @@ export interface components {
             start?: number | null;
             /** Text */
             text?: string | null;
+            /** Text Vi */
+            text_vi?: string | null;
         };
         /** ListeningSourceIn */
         ListeningSourceIn: {

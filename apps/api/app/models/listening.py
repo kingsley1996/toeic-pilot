@@ -110,6 +110,9 @@ class ListeningSegment(Base):
     start_seconds: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     end_seconds: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     text: Mapped[str] = mapped_column(Text, nullable=False)
+    # Bản dịch tiếng Việt của câu — cùng tiền lệ `DictationItem.transcript_vi`.
+    # NULL là chưa dịch, học được như cũ.
+    text_vi: Mapped[str | None] = mapped_column(Text, nullable=True, default=None)
     # Dạng đã chuẩn hoá (`services.dictation.normalise` nối lại) — để dành
     # chấm lại/tìm kiếm mà không phụ thuộc bộ chấm hiện tại.
     normalized_text: Mapped[str] = mapped_column(Text, nullable=False)

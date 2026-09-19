@@ -291,6 +291,7 @@ def update_listening_content(
                         start_seconds=Decimal(str(upd.start)),
                         end_seconds=Decimal(str(upd.end)),
                         text=text,
+                        text_vi=upd.text_vi.strip() or None if upd.text_vi is not None else None,
                         normalized_text=" ".join(dictation_grader.normalise(text)),
                     )
                 )
@@ -300,6 +301,9 @@ def update_listening_content(
                 if upd.text is not None:
                     seg.text = upd.text.strip()
                     seg.normalized_text = " ".join(dictation_grader.normalise(seg.text))
+                # Vắng là giữ bản dịch cũ; rỗng là xoá — cùng quy ước dictation.
+                if upd.text_vi is not None:
+                    seg.text_vi = upd.text_vi.strip() or None
                 if upd.start is not None:
                     seg.start_seconds = Decimal(str(upd.start))
                 if upd.end is not None:

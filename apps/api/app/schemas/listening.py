@@ -54,6 +54,8 @@ class ListeningSegmentPublic(BaseModel):
     start: float
     end: float
     text: str
+    # NULL là chưa dịch — UI chỉ hiện khối dịch khi có.
+    text_vi: str | None = None
 
 
 class ListeningContentPublic(BaseModel):
@@ -121,8 +123,11 @@ class ListeningSegmentUpdate(BaseModel):
     # PUT admin là full-replace theo thứ tự list: có id = giữ + sửa câu cũ
     # (field nào vắng thì giữ nguyên), vắng id = thêm câu mới, câu cũ vắng mặt
     # trong list = xoá. UI luôn gửi toàn bộ transcript nên một list nói hết.
+    # `text_vi`: vắng = giữ, chuỗi rỗng = xoá bản dịch, có chữ = ghi đè —
+    # cùng quy ước `transcript_vi` của admin dictation.
     id: uuid.UUID | None = None
     text: str | None = None
+    text_vi: str | None = None
     start: float | None = None
     end: float | None = None
 

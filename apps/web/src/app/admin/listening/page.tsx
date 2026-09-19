@@ -71,7 +71,7 @@ export default function AdminListeningPage() {
   const [forceId, setForceId] = useState<string | null>(null);
   // Sửa thủ công khi transcript lệch video: video + transcript cạnh nhau để
   // vừa nghe vừa sửa. `id` null = câu mới (backend chèn), câu vắng mặt = xoá.
-  type EditRow = { key: string; id: string | null; start: string; end: string; text: string };
+  type EditRow = { key: string; id: string | null; start: string; end: string; text: string; text_vi: string };
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editSegs, setEditSegs] = useState<EditRow[]>([]);
@@ -248,6 +248,7 @@ export default function AdminListeningPage() {
           start: String(seg.start),
           end: String(seg.end),
           text: seg.text,
+          text_vi: seg.text_vi ?? "",
         })),
       );
       const first = detail.segments[0];
@@ -277,6 +278,7 @@ export default function AdminListeningPage() {
         start: String(start),
         end: String(start + 2),
         text: "",
+        text_vi: "",
       },
     ]);
   }
@@ -332,8 +334,8 @@ export default function AdminListeningPage() {
       }
       segments.push(
         seg.id === null
-          ? { text: seg.text.trim(), start, end }
-          : { id: seg.id, text: seg.text.trim(), start, end },
+          ? { text: seg.text.trim(), text_vi: seg.text_vi.trim(), start, end }
+          : { id: seg.id, text: seg.text.trim(), text_vi: seg.text_vi.trim(), start, end },
       );
     }
     setEditBusy(true);
@@ -630,6 +632,21 @@ export default function AdminListeningPage() {
                       )
                     }
                     aria-label={`Câu ${i + 1} nội dung`}
+                    className="min-w-0 flex-1"
+                  />
+                  {/* Ô dịch luôn gửi kèm (kể cả rỗng = xoá): giá trị khởi tạo từ
+                      server nên hàng không đụng tới gửi về đúng cái cũ. */}
+                  <Input
+                    value={seg.text_vi}
+                    onChange={(event) =>
+                      setEditSegs((rows) =>
+                        rows.map((r) =>
+                          r.key === seg.key ? { ...r, text_vi: event.target.value } : r,
+                        ),
+                      )
+                    }
+                    aria-label={`Câu ${i + 1} bản dịch tiếng Việt`}
+                    placeholder="Bản dịch tiếng Việt (trống = chưa dịch)"
                     className="min-w-0 flex-1"
                   />
                   <Button
