@@ -38,6 +38,7 @@ export type ListeningCaptionsRequest = components["schemas"]["ListeningCaptionsR
 export type ListeningSegmentPublic = components["schemas"]["ListeningSegmentPublic"];
 export type ListeningAttemptSubmit = components["schemas"]["ListeningAttemptSubmit"];
 export type ListeningAttemptResult = components["schemas"]["ListeningAttemptResult"];
+export type ListeningContentAdmin = components["schemas"]["ListeningContentAdmin"];
 export type DictationTopicAdmin = components["schemas"]["DictationTopicAdmin"];
 export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin"];
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
@@ -146,6 +147,7 @@ export type ReviewDueCount = components["schemas"]["ReviewDueCount"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
 export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"];
 export type DictationAdminPage = components["schemas"]["Page_DictationAdmin_"];
+export type ListeningAdminPage = components["schemas"]["Page_ListeningContentAdmin_"];
 export type DictationStoryAdminPage = components["schemas"]["Page_DictationStoryAdmin_"];
 export type DictationSectionAdminPage = components["schemas"]["Page_DictationSectionAdmin_"];
 export type GrammarTopicAdminPage = components["schemas"]["Page_GrammarTopicAdmin_"];
@@ -480,6 +482,9 @@ export const API_ROUTES = {
   adminDictationSectionPublish: (id: string) => `/api/v1/admin/dictation/sections/${id}/publish`,
   adminDictationStories: "/api/v1/admin/dictation/stories",
   adminDictationStoryPublish: (id: string) => `/api/v1/admin/dictation/stories/${id}/publish`,
+  // Thư viện Listening Lab: chỉ bài public; bài riêng của user không lọt vào.
+  adminListeningContents: "/api/v1/admin/listening/contents",
+  adminListeningContent: (id: string) => `/api/v1/admin/listening/contents/${id}`,
   // Soạn đề thi (ADR-007). `parse` không ghi gì; `parts` mới là đường ghi.
   adminTestCollections: "/api/v1/admin/test-collections",
   adminTestCollectionPublish: (slug: string) => `/api/v1/admin/test-collections/${slug}/publish`,

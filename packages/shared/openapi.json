@@ -6988,6 +6988,73 @@
         "title": "ListeningCaptionsRequest",
         "type": "object"
       },
+      "ListeningContentAdmin": {
+        "description": "Hàng thư viện cho màn admin: chỉ bài PUBLIC (bài riêng của user không\nbao giờ lọt vào đây — xem route). completed_count vô nghĩa ở góc nhìn\ntoàn cục nên thay bằng attempt_count (tổng lượt học mọi user).",
+        "properties": {
+          "attempt_count": {
+            "title": "Attempt Count",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_public": {
+            "title": "Is Public",
+            "type": "boolean"
+          },
+          "owner_email": {
+            "title": "Owner Email",
+            "type": "string"
+          },
+          "segment_count": {
+            "title": "Segment Count",
+            "type": "integer"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "source_type",
+          "source_url",
+          "external_id",
+          "segment_count",
+          "attempt_count",
+          "owner_email",
+          "is_public",
+          "created_at"
+        ],
+        "title": "ListeningContentAdmin",
+        "type": "object"
+      },
       "ListeningContentCreate": {
         "properties": {
           "source": {
@@ -7172,6 +7239,39 @@
         "title": "ListeningContentSummary",
         "type": "object"
       },
+      "ListeningContentUpdate": {
+        "properties": {
+          "segments": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ListeningSegmentUpdate"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Segments"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "ListeningContentUpdate",
+        "type": "object"
+      },
       "ListeningSegmentPublic": {
         "properties": {
           "end": {
@@ -7203,6 +7303,57 @@
           "text"
         ],
         "title": "ListeningSegmentPublic",
+        "type": "object"
+      },
+      "ListeningSegmentUpdate": {
+        "properties": {
+          "end": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "title": "ListeningSegmentUpdate",
         "type": "object"
       },
       "ListeningSourceIn": {
@@ -7248,6 +7399,19 @@
           "raw"
         ],
         "title": "ListeningTranscriptIn",
+        "type": "object"
+      },
+      "ListeningVisibilityUpdate": {
+        "properties": {
+          "is_public": {
+            "title": "Is Public",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "is_public"
+        ],
+        "title": "ListeningVisibilityUpdate",
         "type": "object"
       },
       "LlmStats": {
@@ -7968,6 +8132,37 @@
           "offset"
         ],
         "title": "Page[GrammarTopicAdmin]",
+        "type": "object"
+      },
+      "Page_ListeningContentAdmin_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ListeningContentAdmin"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[ListeningContentAdmin]",
         "type": "object"
       },
       "Page_QuestionLabelRow_": {
@@ -18567,6 +18762,241 @@
         ]
       }
     },
+    "/api/v1/admin/listening/contents": {
+      "get": {
+        "operationId": "list_listening_admin_api_v1_admin_listening_contents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ListeningContentAdmin_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Listening Admin",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/listening/contents/{content_id}": {
+      "delete": {
+        "operationId": "delete_listening_content_api_v1_admin_listening_contents__content_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Content Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Listening Content",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "operationId": "set_listening_visibility_api_v1_admin_listening_contents__content_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Content Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListeningVisibilityUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningContentAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Listening Visibility",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "description": "Sửa thủ công bài public: tên + toàn bộ transcript khi lệch video. Chỉ\nadmin (sửa nội dung live ảnh hưởng người học, như xoá). `segments` là\nfull-replace theo thứ tự list (xem `ListeningSegmentUpdate`). Đã có người\nhọc thì 409 + ?force=: câu giữ lại thì giữ lịch sử, câu bị xoá thì lịch sử\ncủa nó đi theo — cùng luật \"không mất dữ liệu trong im lặng\" với endpoint\nxoá bên dưới.",
+        "operationId": "update_listening_content_api_v1_admin_listening_contents__content_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Content Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListeningContentUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningContentAdmin"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Listening Content",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/media/audio/confirm": {
       "post": {
         "operationId": "audio_confirm_api_v1_admin_media_audio_confirm_post",
@@ -25551,6 +25981,37 @@
           }
         ],
         "summary": "Submit Listening Attempt",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/listening/library": {
+      "get": {
+        "description": "Thư viện bài có sẵn của đội biên soạn — đọc công khai (kể cả khách,\ntheo tinh thần ADR-015), tiến độ chỉ hiện khi đăng nhập. Nộp bài vẫn cần\ntài khoản (endpoint attempts giữ `get_current_user`).",
+        "operationId": "list_listening_library_api_v1_listening_library_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ListeningContentSummary"
+                  },
+                  "title": "Response List Listening Library Api V1 Listening Library Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Listening Library",
         "tags": [
           "learning"
         ]

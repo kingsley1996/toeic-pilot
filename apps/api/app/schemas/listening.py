@@ -90,6 +90,42 @@ class ListeningContentSummary(BaseModel):
     created_at: datetime
 
 
+class ListeningContentAdmin(BaseModel):
+    """Hàng thư viện cho màn admin: chỉ bài PUBLIC (bài riêng của user không
+    bao giờ lọt vào đây — xem route). completed_count vô nghĩa ở góc nhìn
+    toàn cục nên thay bằng attempt_count (tổng lượt học mọi user)."""
+
+    id: str
+    title: str
+    source_type: str
+    source_url: str
+    external_id: str | None
+    segment_count: int
+    attempt_count: int
+    owner_email: str
+    is_public: bool
+    created_at: datetime
+
+
+class ListeningVisibilityUpdate(BaseModel):
+    is_public: bool
+
+
+class ListeningSegmentUpdate(BaseModel):
+    # PUT admin là full-replace theo thứ tự list: có id = giữ + sửa câu cũ
+    # (field nào vắng thì giữ nguyên), vắng id = thêm câu mới, câu cũ vắng mặt
+    # trong list = xoá. UI luôn gửi toàn bộ transcript nên một list nói hết.
+    id: uuid.UUID | None = None
+    text: str | None = None
+    start: float | None = None
+    end: float | None = None
+
+
+class ListeningContentUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=512)
+    segments: list[ListeningSegmentUpdate] | None = None
+
+
 class ListeningAttemptSubmit(BaseModel):
     segment_id: uuid.UUID
     answer: str = ""

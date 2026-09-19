@@ -22,6 +22,7 @@ import {
   HeartPulse,
   Palette,
   PawPrint,
+  Podcast,
   Squirrel,
   Sparkles,
   SquarePen,
@@ -77,6 +78,14 @@ const ADMIN_LINKS: AdminNavItem[] = [
     Icon: Headphones,
     group: "Content",
     children: [{ href: "/admin/dictation/tree", label: "Topics & lessons", Icon: FolderTree }],
+  },
+  // Thư viện Listening Lab là kho nội dung như Dictation — một mục riêng, còn
+  // trang `/learn/listening` của user thì không chui vào sidebar admin.
+  {
+    href: "/admin/listening",
+    label: "Listening Lab",
+    Icon: Podcast,
+    group: "Content",
   },
   {
     href: "/admin/tests",

@@ -1067,6 +1067,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/listening/contents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Listening Admin */
+        get: operations["list_listening_admin_api_v1_admin_listening_contents_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/listening/contents/{content_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Listening Content
+         * @description Sửa thủ công bài public: tên + toàn bộ transcript khi lệch video. Chỉ
+         *     admin (sửa nội dung live ảnh hưởng người học, như xoá). `segments` là
+         *     full-replace theo thứ tự list (xem `ListeningSegmentUpdate`). Đã có người
+         *     học thì 409 + ?force=: câu giữ lại thì giữ lịch sử, câu bị xoá thì lịch sử
+         *     của nó đi theo — cùng luật "không mất dữ liệu trong im lặng" với endpoint
+         *     xoá bên dưới.
+         */
+        put: operations["update_listening_content_api_v1_admin_listening_contents__content_id__put"];
+        post?: never;
+        /** Delete Listening Content */
+        delete: operations["delete_listening_content_api_v1_admin_listening_contents__content_id__delete"];
+        options?: never;
+        head?: never;
+        /** Set Listening Visibility */
+        patch: operations["set_listening_visibility_api_v1_admin_listening_contents__content_id__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/media/audio/confirm": {
         parameters: {
             query?: never;
@@ -3658,6 +3702,28 @@ export interface paths {
         put?: never;
         /** Submit Listening Attempt */
         post: operations["submit_listening_attempt_api_v1_listening_contents__content_id__attempts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/listening/library": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Listening Library
+         * @description Thư viện bài có sẵn của đội biên soạn — đọc công khai (kể cả khách,
+         *     theo tinh thần ADR-015), tiến độ chỉ hiện khi đăng nhập. Nộp bài vẫn cần
+         *     tài khoản (endpoint attempts giữ `get_current_user`).
+         */
+        get: operations["list_listening_library_api_v1_listening_library_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -7807,6 +7873,37 @@ export interface components {
             /** Url */
             url: string;
         };
+        /**
+         * ListeningContentAdmin
+         * @description Hàng thư viện cho màn admin: chỉ bài PUBLIC (bài riêng của user không
+         *     bao giờ lọt vào đây — xem route). completed_count vô nghĩa ở góc nhìn
+         *     toàn cục nên thay bằng attempt_count (tổng lượt học mọi user).
+         */
+        ListeningContentAdmin: {
+            /** Attempt Count */
+            attempt_count: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** External Id */
+            external_id: string | null;
+            /** Id */
+            id: string;
+            /** Is Public */
+            is_public: boolean;
+            /** Owner Email */
+            owner_email: string;
+            /** Segment Count */
+            segment_count: number;
+            /** Source Type */
+            source_type: string;
+            /** Source Url */
+            source_url: string;
+            /** Title */
+            title: string;
+        };
         /** ListeningContentCreate */
         ListeningContentCreate: {
             source: components["schemas"]["ListeningSourceIn"];
@@ -7877,6 +7974,13 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** ListeningContentUpdate */
+        ListeningContentUpdate: {
+            /** Segments */
+            segments?: components["schemas"]["ListeningSegmentUpdate"][] | null;
+            /** Title */
+            title?: string | null;
+        };
         /** ListeningSegmentPublic */
         ListeningSegmentPublic: {
             /** End */
@@ -7889,6 +7993,17 @@ export interface components {
             start: number;
             /** Text */
             text: string;
+        };
+        /** ListeningSegmentUpdate */
+        ListeningSegmentUpdate: {
+            /** End */
+            end?: number | null;
+            /** Id */
+            id?: string | null;
+            /** Start */
+            start?: number | null;
+            /** Text */
+            text?: string | null;
         };
         /** ListeningSourceIn */
         ListeningSourceIn: {
@@ -7909,6 +8024,11 @@ export interface components {
             format: "srt" | "vtt";
             /** Raw */
             raw: string;
+        };
+        /** ListeningVisibilityUpdate */
+        ListeningVisibilityUpdate: {
+            /** Is Public */
+            is_public: boolean;
         };
         /** LlmStats */
         LlmStats: {
@@ -8154,6 +8274,17 @@ export interface components {
         Page_GrammarTopicAdmin_: {
             /** Items */
             items: components["schemas"]["GrammarTopicAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[ListeningContentAdmin] */
+        Page_ListeningContentAdmin_: {
+            /** Items */
+            items: components["schemas"]["ListeningContentAdmin"][];
             /** Limit */
             limit: number;
             /** Offset */
@@ -12805,6 +12936,141 @@ export interface operations {
             };
         };
     };
+    list_listening_admin_api_v1_admin_listening_contents_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_ListeningContentAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_listening_content_api_v1_admin_listening_contents__content_id__put: {
+        parameters: {
+            query?: {
+                force?: boolean;
+            };
+            header?: never;
+            path: {
+                content_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListeningContentUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_listening_content_api_v1_admin_listening_contents__content_id__delete: {
+        parameters: {
+            query?: {
+                force?: boolean;
+            };
+            header?: never;
+            path: {
+                content_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_listening_visibility_api_v1_admin_listening_contents__content_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                content_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListeningVisibilityUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     audio_confirm_api_v1_admin_media_audio_confirm_post: {
         parameters: {
             query?: never;
@@ -17285,6 +17551,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_listening_library_api_v1_listening_library_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeningContentSummary"][];
                 };
             };
         };

@@ -13,6 +13,7 @@ from app.api.routes import (
     admin_dictation,
     admin_feedback,
     admin_grammar,
+    admin_listening,
     admin_parts,
     admin_pet,
     admin_planner,
@@ -112,6 +113,7 @@ app.include_router(admin_feedback.router, prefix="/api/v1")
 app.include_router(admin_vocabulary.router, prefix="/api/v1")
 app.include_router(admin_dictation.router, prefix="/api/v1")
 app.include_router(admin_grammar.router, prefix="/api/v1")
+app.include_router(admin_listening.router, prefix="/api/v1")
 app.include_router(admin_parts.router, prefix="/api/v1")
 app.include_router(admin_tests.router, prefix="/api/v1")
 app.include_router(admin_questions.router, prefix="/api/v1")
