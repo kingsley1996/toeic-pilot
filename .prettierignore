@@ -27,3 +27,8 @@ apps/api/content/generated/**
 # dòng này thì mỗi lần xuất bản đồ là một lần CI đỏ vì khoảng trắng, và người
 # thiết kế phải chạy `prettier --write` sau mỗi lần kéo thả.
 apps/web/public/pet/map.json
+
+# Bản dịch segment video: do script backfill ghi ra bằng `json.dump`, không ai
+# gõ tay. Cùng lý do như hai khối trên: format của Prettier và của Python không
+# bao giờ khớp, nên mỗi lần thêm bản dịch là một lần CI đỏ vì khoảng trắng.
+apps/api/scripts/data/listening_segment_vi.json
