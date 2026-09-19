@@ -13,6 +13,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DictationExercise } from "@/components/dictation-exercise";
 import { GuestNotice } from "@/components/guest-notice";
 import { ListeningPlayerView } from "@/components/listening-player";
+import { TiktokPlayerView } from "@/components/tiktok-player";
+import { VideoPlayerView } from "@/components/video-player";
 import { Alert, EmptyState, Page, PageHeader, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { formatTime } from "@/lib/listening-player";
@@ -231,13 +233,12 @@ export default function ListeningLessonPage() {
                list có chiều cao riêng để follow có chỗ cuộn tới. */
             <div className="mb-4 grid items-start gap-4 lg:grid-cols-5">
               <div className="lg:col-span-3">
-                {content.external_id ? (
-                  /* KHÔNG `key` theo câu: remount là dựng lại iframe (video
-                      chớp + load lại, cảm giác như reload trang). Một player
-                      sống suốt bài, đổi câu chỉ seek — effect tự-phát-lại
-                      trong `ListeningPlayerView` lo phần còn lại. */
-                  <ListeningPlayerView
-                    videoId={content.external_id}
+                {content.media_url ? (
+                  /* File tự host: replay + follow từng câu như YouTube. */
+                  <VideoPlayerView
+                    videoUrl={content.media_url}
+                    sourceUrl={content.source_url}
+                    title={content.title}
                     start={active.start}
                     end={active.end}
                     stops={segments.map((segment) => segment.end)}
@@ -253,6 +254,41 @@ export default function ListeningLessonPage() {
                     followSignal={followSeq}
                     onTimeUpdate={handleTime}
                   />
+                ) : content.external_id ? (
+                  content.source_type === "tiktok" ? (
+                    <>
+                      <TiktokPlayerView
+                        videoId={content.external_id}
+                        sourceUrl={content.source_url}
+                      />
+                      <p className="mt-2 text-small text-ink-muted">
+                        TikTok chỉ phát toàn video — nghe từng câu riêng chưa hỗ trợ, xem toàn bài
+                        rồi gõ từng câu bên phải.
+                      </p>
+                    </>
+                  ) : (
+                    /* KHÔNG `key` theo câu: remount là dựng lại iframe (video
+                        chớp + load lại, cảm giác như reload trang). Một player
+                        sống suốt bài, đổi câu chỉ seek — effect tự-phát-lại
+                        trong `ListeningPlayerView` lo phần còn lại. */
+                    <ListeningPlayerView
+                      videoId={content.external_id}
+                      start={active.start}
+                      end={active.end}
+                      stops={segments.map((segment) => segment.end)}
+                      startLabel={
+                        activeIndex === 0
+                          ? "Bắt đầu"
+                          : activeIndex + 1 < segments.length
+                            ? "Tiếp tục"
+                            : "Nghe lại"
+                      }
+                      onAdvance={advance}
+                      replaySignal={replaySeq}
+                      followSignal={followSeq}
+                      onTimeUpdate={handleTime}
+                    />
+                  )
                 ) : (
                   <Alert tone="warn">Bài này thiếu ID video nên không phát được.</Alert>
                 )}

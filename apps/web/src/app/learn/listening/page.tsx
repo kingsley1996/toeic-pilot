@@ -33,7 +33,7 @@ import { useRequireSession } from "@/lib/session";
 
 const SOURCE_MESSAGE: Record<string, string> = {
   INVALID_URL: "Link chưa đúng — kiểm tra lại URL video YouTube.",
-  UNSUPPORTED_SOURCE: "Mới chỉ nhận link YouTube, TikTok hẹn bản sau.",
+  UNSUPPORTED_SOURCE: "Mới chỉ nhận link YouTube và TikTok.",
   SOURCE_TYPE_MISMATCH: "Link và nguồn đã chọn không khớp. Thử lại từ đầu.",
   EMPTY_TITLE: "Đặt tên cho bài học để dễ tìm lại.",
   CAPTIONS_UNAVAILABLE: "Video này không có phụ đề công khai. Dán SRT/VTT bên dưới.",
@@ -57,8 +57,8 @@ type Step = { name: "url" } | { name: "detail"; videoId: string; url: string };
  * dev/e2e khi cờ đang tắt. */
 const SHOW_CREATE = false;
 
-/** Thumbnail card thư viện. YouTube có ảnh public theo ID; nguồn khác (sau
- * này) thì ô giữ chỗ — không đoán URL ảnh. */
+/** Thumbnail card thư viện. YouTube có ảnh public theo ID; TikTok lấy qua
+ * oEmbed (CORS mở) — hỏng thì ô giữ chỗ, không đoán URL ảnh. */
 function thumbnailFor(content: ListeningContentSummary): string | null {
   if (content.source_type === "youtube" && content.external_id) {
     return `https://i.ytimg.com/vi/${content.external_id}/hqdefault.jpg`;
@@ -66,9 +66,75 @@ function thumbnailFor(content: ListeningContentSummary): string | null {
   return null;
 }
 
+/** Ảnh TikTok qua oEmbed theo URL gốc (summary giờ có `source_url`). Cache
+ * module-level để lật trang không fetch lại; hỏng là ô giữ chỗ, không chặn. */
+const tiktokThumbCache = new Map<string, string | null>();
+
+function TiktokThumb({ url }: { url: string }) {
+  const [thumb, setThumb] = useState<string | null>(tiktokThumbCache.get(url) ?? null);
+  const [done, setDone] = useState(tiktokThumbCache.has(url));
+  useEffect(() => {
+    if (tiktokThumbCache.has(url)) return;
+    let alive = true;
+    fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`, {
+      signal: AbortSignal.timeout(8000),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: unknown) => {
+        const next =
+          typeof (data as { thumbnail_url?: unknown } | null)?.thumbnail_url === "string"
+            ? ((data as { thumbnail_url: string }).thumbnail_url as string)
+            : null;
+        tiktokThumbCache.set(url, next);
+        if (alive) {
+          setThumb(next);
+          setDone(true);
+        }
+      })
+      .catch(() => {
+        tiktokThumbCache.set(url, null);
+        if (alive) setDone(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [url]);
+  if (!done || !thumb) {
+    return (
+      <span
+        aria-hidden
+        className="grid aspect-video w-full place-items-center border-b border-rule bg-recess text-ink-faint"
+      >
+        <Video size={28} strokeWidth={1.5} />
+      </span>
+    );
+  }
+  return (
+    // Ảnh TikTok ngoài không qua next/image được nếu chưa mở remotePatterns
+    // cho TikTok CDN (cùng lý do thumbnail YouTube).
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={thumb}
+      alt=""
+      aria-hidden
+      width={480}
+      height={360}
+      loading="lazy"
+      className="aspect-video w-full border-b border-rule object-cover"
+    />
+  );
+}
+
 /** Badge nền tảng góc thumbnail — chữ + glyph tự vẽ vì lucide bản này bỏ icon
- * brand. Sau này thêm TikTok thì thêm nhánh ở đây, một chỗ duy nhất. */
+ * brand. TikTok chỉ chữ (không vẽ lại logo họ). */
 function PlatformBadge({ source }: { source: string }) {
+  if (source === "tiktok") {
+    return (
+      <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-label font-semibold text-white">
+        TikTok
+      </span>
+    );
+  }
   if (source !== "youtube") return null;
   return (
     <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-label font-semibold text-white">
@@ -141,6 +207,12 @@ function ListeningLabContent() {
   const [busy, setBusy] = useState(false);
   const [mine, setMine] = useState<ListeningContentSummary[] | null>(null);
   const [library, setLibrary] = useState<ListeningContentSummary[] | null>(null);
+  const [libTab, setLibTab] = useState<"youtube" | "tiktok">("youtube");
+  const [libQuery, setLibQuery] = useState("");
+  // Lọc client-side: thư viện cỡ chục bài, không cần endpoint search.
+  const visibleLibrary = (library ?? [])
+    .filter((content) => content.source_type === libTab)
+    .filter((content) => content.title.toLowerCase().includes(libQuery.trim().toLowerCase()));
 
   useEffect(() => {
     if (!token) return;
@@ -461,6 +533,31 @@ function ListeningLabContent() {
       )}
 
       <h2 className="mb-2 mt-8 text-subtitle">Thư viện bài có sẵn</h2>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <div className="flex gap-2" role="group" aria-label="Nguồn bài học">
+          {(["youtube", "tiktok"] as const).map((tab) => {
+            const count = (library ?? []).filter((c) => c.source_type === tab).length;
+            return (
+              <Button
+                key={tab}
+                size="sm"
+                variant={libTab === tab ? "primary" : "secondary"}
+                aria-pressed={libTab === tab}
+                onClick={() => setLibTab(tab)}
+              >
+                {tab === "youtube" ? "YouTube" : "TikTok"} · {count}
+              </Button>
+            );
+          })}
+        </div>
+        <Input
+          value={libQuery}
+          onChange={(event) => setLibQuery(event.target.value)}
+          placeholder="Tìm theo tên bài…"
+          aria-label="Tìm bài trong thư viện"
+          className="min-w-40 max-w-64 flex-1"
+        />
+      </div>
       {library === null ? (
         <SkeletonList rows={2} />
       ) : library.length === 0 ? (
@@ -468,9 +565,18 @@ function ListeningLabContent() {
           title="Thư viện đang biên soạn"
           description="Đội ngũ đang chọn video và lời thoại. Quay lại sau nhé."
         />
+      ) : visibleLibrary.length === 0 ? (
+        <EmptyState
+          title="Không tìm thấy bài nào"
+          description={
+            libQuery.trim()
+              ? `Không có bài ${libTab === "youtube" ? "YouTube" : "TikTok"} nào khớp "${libQuery.trim()}".`
+              : "Tab này chưa có bài nào."
+          }
+        />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {library.map((content) => {
+          {visibleLibrary.map((content) => {
             const thumb = thumbnailFor(content);
             return (
               <PanelLink
@@ -493,6 +599,8 @@ function ListeningLabContent() {
                       loading="lazy"
                       className="aspect-video w-full border-b border-rule object-cover"
                     />
+                  ) : content.source_type === "tiktok" ? (
+                    <TiktokThumb url={content.source_url} />
                   ) : (
                     <span
                       aria-hidden

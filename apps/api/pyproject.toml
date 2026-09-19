@@ -27,6 +27,12 @@ dependencies = [
     # `tests/test_content_isolation.py` canh. Ký presigned URL là tính toán
     # thuần cục bộ — không có lượt đi mạng nào ở bước phát vé.
     "boto3>=1.35.0",
+    # Lấy phụ đề auto TikTok cho Listening Lab (`services/listening_tiktok_captions`):
+    # TikTok không có API caption public như YouTube InnerTube nên đi qua yt-dlp
+    # (info-only, không tải media). curl-cffi để impersonate Chrome, không là
+    # TikTok chặn "Unexpected response from webpage request".
+    "yt-dlp>=2025.1.0",
+    "curl-cffi>=0.10.0",
 ]
 
 [project.optional-dependencies]
@@ -110,3 +116,9 @@ ignore_missing_imports = true
 module = ["mutagen.*", "PIL.*"]
 ignore_missing_imports = true
 follow_imports = "skip"
+
+# yt-dlp không ship type stubs (cũng không có types-yt-dlp): bỏ qua ở biên
+# import, logic bên trong vẫn check strict như thường.
+[[tool.mypy.overrides]]
+module = "yt_dlp.*"
+ignore_missing_imports = true

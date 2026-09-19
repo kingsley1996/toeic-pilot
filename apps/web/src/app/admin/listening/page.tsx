@@ -11,6 +11,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DestructiveButton } from "@/components/destructive-button";
 import { GuestNotice } from "@/components/guest-notice";
 import { ListeningPlayerView } from "@/components/listening-player";
+import { TiktokPlayerView } from "@/components/tiktok-player";
+import { VideoPlayerView } from "@/components/video-player";
 import {
   Alert,
   Button,
@@ -77,6 +79,7 @@ export default function AdminListeningPage() {
     source_type: string;
     source_url: string;
     external_id: string | null;
+    media_url: string | null;
   } | null>(null);
   // Câu đang nghe thử trong player (đổi là seek + phát, theo `ListeningPlayerView`).
   const [preview, setPreview] = useState({ start: 0, end: 0 });
@@ -137,7 +140,8 @@ export default function AdminListeningPage() {
     else setError(null);
   }
 
-  /** Lấy phụ đề tự động (hiện chỉ YouTube; TikTok báo rõ để dán tay). */
+  /** Lấy phụ đề tự động (YouTube + TikTok; TikTok chậm hơn và không phải
+   * video nào cũng có sub — thiếu thì dán tay vào ô dưới). */
   async function fetchCaptions() {
     if (!token || !source) return;
     setCaptionNote(null);
@@ -227,6 +231,7 @@ export default function AdminListeningPage() {
         source_type: detail.source_type,
         source_url: detail.source_url,
         external_id: detail.external_id,
+        media_url: detail.media_url ?? null,
       });
       setEditSegs(
         detail.segments.map((seg) => ({
@@ -500,7 +505,27 @@ export default function AdminListeningPage() {
           <div className="grid items-start gap-4 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <div className="sticky top-0 z-10 bg-panel pb-1">
-                {editSource?.source_type === "youtube" && editSource.external_id ? (
+                {editSource?.media_url ? (
+                  <VideoPlayerView
+                    videoUrl={editSource.media_url}
+                    sourceUrl={editSource.source_url}
+                    title={editTitle}
+                    start={preview.start}
+                    end={preview.end}
+                    stops={previewStops}
+                    startLabel="Nghe"
+                    onAdvance={() => {}}
+                    onTimeUpdate={handleTime}
+                    replaySignal={replaySeq}
+                  />
+                ) : editSource?.source_type === "tiktok" && editSource.external_id ? (
+                  /* TikTok embed không seek/báo giờ được — chỉ mở để đối chiếu
+                    toàn video khi sửa, không có Nghe-từng-câu như YouTube. */
+                  <TiktokPlayerView
+                    videoId={editSource.external_id}
+                    sourceUrl={editSource.source_url}
+                  />
+                ) : editSource?.source_type === "youtube" && editSource.external_id ? (
                   <ListeningPlayerView
                     videoId={editSource.external_id}
                     start={preview.start}
@@ -514,7 +539,7 @@ export default function AdminListeningPage() {
                 ) : (
                   editSource && (
                     <p className="text-small text-ink-muted">
-                      Nguồn video gốc (TikTok không nhúng được):{" "}
+                      Nguồn video gốc:{" "}
                       <a
                         href={editSource.source_url}
                         target="_blank"

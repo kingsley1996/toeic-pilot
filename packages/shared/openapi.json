@@ -7150,6 +7150,17 @@
             "title": "Id",
             "type": "string"
           },
+          "media_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Url"
+          },
           "segments": {
             "items": {
               "$ref": "#/components/schemas/ListeningSegmentPublic"
@@ -7222,6 +7233,10 @@
             "title": "Source Type",
             "type": "string"
           },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
           "title": {
             "title": "Title",
             "type": "string"
@@ -7231,6 +7246,7 @@
           "id",
           "title",
           "source_type",
+          "source_url",
           "external_id",
           "segment_count",
           "completed_count",

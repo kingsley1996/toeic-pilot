@@ -31,6 +31,7 @@ from app.services.listening_transcript import (
     passes_quality,
     validate_transcript,
 )
+from app.services.listening_tiktok_captions import fetch_tiktok_captions
 from app.services.listening_youtube_captions import (
     CaptionError,
     fetch_youtube_captions,
@@ -56,6 +57,59 @@ VIDEOS: list[tuple[str, str | None, int | None]] = [
     ("https://www.youtube.com/watch?v=NHopJHSlVo4", None, None),
     ("https://www.youtube.com/watch?v=NiKtZgImdlY", None, None),
     ("https://www.youtube.com/watch?v=1aA1WGON49E", None, None),
+    # TikTok: sub auto eng-US qua yt-dlp (xem listening_tiktok_captions). Thumbnail
+    # đã soi: chỉ cháy chữ CHỦ ĐỀ ("from vs of", "picturesque" trên bảng) chứ
+    # không cháy lời thoại — ngang gợi ý ở tiêu đề, nhận cho thư viện thử.
+    (
+        "https://www.tiktok.com/@englishteacherclaire/video/7253146839854222619",
+        "Of vs from — English Teacher Claire",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@iamthatenglishteacher/video/7222796674282966314",
+        "Picturesque — Ms James (Grammar)",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@englishteacherclaire/video/7686577902040747286",
+        "Basic vs advanced idioms — English Teacher Claire",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@englishteacherclaire/video/7685726743226797334",
+        "Asking for a photo — English Teacher Claire",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@englishteacherclaire/video/7684383549750840598",
+        "Kitchen vocabulary — English Teacher Claire",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@englishteacherclaire/video/7682779913849457923",
+        "Ordering politely — English Teacher Claire",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@iamthatenglishteacher/video/7686854847089397022",
+        "Starting with Because — Ms James (Grammar)",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@iamthatenglishteacher/video/7686676227331001631",
+        "Why learn? — Ms James",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@iamthatenglishteacher/video/7686638187334192414",
+        "Apostrophes — Ms James (Grammar)",
+        None,
+    ),
+    (
+        "https://www.tiktok.com/@iamthatenglishteacher/video/7686332407477194014",
+        "See, saw, seen — Ms James (Grammar)",
+        None,
+    ),
 ]
 
 LIBRARY_EMAIL = "library@toeic-pilot.local"
@@ -84,8 +138,8 @@ def seed_one(
         source = resolve_source(url)
     except SourceError as exc:
         return f"SKIP {url}: resolve {exc.code}"
-    if source.type != "youtube":
-        return f"SKIP {url}: captions tự động mới có YouTube (TikTok ở Phase 2)"
+    if source.type not in ("youtube", "tiktok"):
+        return f"SKIP {url}: captions tự động mới có YouTube/TikTok"
     exists = db.scalars(
         select(ListeningContent.id).where(
             ListeningContent.source_type == source.type,
@@ -96,7 +150,10 @@ def seed_one(
     if exists is not None:
         return f"SKIP {url}: thư viện đã có bài {exists}"
     try:
-        captions = fetch_youtube_captions(source.external_id or "")
+        if source.type == "youtube":
+            captions = fetch_youtube_captions(source.external_id or "")
+        else:
+            captions = fetch_tiktok_captions(source.url)
     except CaptionError as exc:
         return f"SKIP {url}: captions {exc.code}"
     validation = validate_transcript(captions.segments)

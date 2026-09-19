@@ -7943,6 +7943,8 @@ export interface components {
             external_id: string | null;
             /** Id */
             id: string;
+            /** Media Url */
+            media_url?: string | null;
             /** Segments */
             segments: components["schemas"]["ListeningSegmentPublic"][];
             /** Source Type */
@@ -7971,6 +7973,8 @@ export interface components {
             segment_count: number;
             /** Source Type */
             source_type: string;
+            /** Source Url */
+            source_url: string;
             /** Title */
             title: string;
         };

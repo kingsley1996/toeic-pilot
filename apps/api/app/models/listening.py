@@ -83,6 +83,9 @@ class ListeningContent(Base, TimestampMixin):
     is_public: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false"), default=False, index=True
     )
+    # Key file mp4 tự host cho bài TikTok (embed/hotlink gốc đều bị chặn) —
+    # NULL là chưa ingest, UI dùng embed + link ngoài. Xem migration 091.
+    media_storage_key: Mapped[str | None] = mapped_column(Text, nullable=True, default=None)
 
     segments: Mapped[list["ListeningSegment"]] = relationship(
         back_populates="content",

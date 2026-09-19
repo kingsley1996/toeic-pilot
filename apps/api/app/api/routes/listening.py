@@ -11,6 +11,7 @@ Không `reward_study`/XP ở slice này: cổng thưởng của dictation cũ g�
 nghĩa "đúng" — cùng cái bẫy đã ghi ở `learning_dictation.submit_dictation`.
 """
 
+import logging
 import uuid
 from typing import Literal
 
@@ -21,6 +22,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import get_current_user, get_optional_user
 from app.core.database import get_db
 from app.core.rate_limit import Quota, rate_limit
+from app.core.storage import StorageError, get_driver
 from app.models import (
     ListeningAttempt,
     ListeningContent,
@@ -41,6 +43,7 @@ from app.schemas.listening import (
 )
 from app.services import dictation as dictation_grader
 from app.services.listening_source import SourceError, resolve_source
+from app.services.listening_tiktok_captions import TiktokCaptions, fetch_tiktok_captions
 from app.services.listening_transcript import (
     TranscriptValidation,
     is_speakable,
@@ -52,10 +55,13 @@ from app.services.listening_transcript import (
 from app.services.listening_youtube_captions import (
     CAPTIONS_UNAVAILABLE,
     CaptionError,
+    YoutubeCaptions,
     fetch_youtube_captions,
 )
 
 router = APIRouter(tags=["learning"])
+
+logger = logging.getLogger(__name__)
 
 # Gọi YouTube InnerTube mỗi lần; trần chống loop, không phải hoá đơn.
 CAPTIONS_QUOTA = Quota(limit=30, window_seconds=60 * 10)
@@ -66,6 +72,18 @@ CAPTIONS_QUOTA = Quota(limit=30, window_seconds=60 * 10)
 MAX_TRANSCRIPT_SPAN_SECONDS = 300
 
 
+def _media_url(content: ListeningContent) -> str | None:
+    # Driver video chưa cấu hình cho môi trường này (prod chưa có video S3)
+    # thì về None để UI dùng embed gốc — đọc bài không được 500 vì thiếu file.
+    if not content.media_storage_key:
+        return None
+    try:
+        return get_driver("video").public_url(content.media_storage_key)
+    except StorageError:
+        logger.warning("no video driver for listening content %s", content.id)
+        return None
+
+
 def _to_public(
     content: ListeningContent, completed_segment_ids: list[str] | None = None
 ) -> ListeningContentPublic:
@@ -74,6 +92,7 @@ def _to_public(
         source_type=content.source_type,
         source_url=content.source_url,
         external_id=content.external_id,
+        media_url=_media_url(content),
         title=content.title,
         duration_seconds=content.duration_seconds,
         transcript_status=content.transcript_status,
@@ -149,6 +168,7 @@ def _summarize(
             id=str(c.id),
             title=c.title,
             source_type=c.source_type,
+            source_url=c.source_url,
             external_id=c.external_id,
             segment_count=counts.get(c.id, 0),
             completed_count=completed.get(c.id, 0),
@@ -178,13 +198,20 @@ def fetch_listening_captions(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail={"code": exc.code}
         ) from exc
-    if source.type != "youtube":
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"code": "UNSUPPORTED_SOURCE"},
-        )
+    # YouTube đi InnerTube, TikTok đi yt-dlp (chậm hơn, ~10-30s vì JS
+    # challenge — hành động soạn bài của admin, quota chặn loop như cũ).
+    # `resolve_source` chỉ cho qua hai loại này nên nhánh else không tới được.
+    captions: YoutubeCaptions | TiktokCaptions
     try:
-        captions = fetch_youtube_captions(source.external_id)
+        if source.type == "youtube":
+            captions = fetch_youtube_captions(source.external_id)
+        elif source.type == "tiktok":
+            captions = fetch_tiktok_captions(source.url)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={"code": "UNSUPPORTED_SOURCE"},
+            )
     except CaptionError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail={"code": exc.code}

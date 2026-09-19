@@ -61,6 +61,9 @@ class ListeningContentPublic(BaseModel):
     source_type: str
     source_url: str
     external_id: str | None
+    # URL phát file tự host (bài TikTok đã ingest) — NULL thì UI dùng embed
+    # gốc + link ngoài như cũ.
+    media_url: str | None = None
     title: str
     duration_seconds: int | None
     transcript_status: str
@@ -84,6 +87,9 @@ class ListeningContentSummary(BaseModel):
     id: str
     title: str
     source_type: str
+    # URL gốc để UI nhúng/oEmbed (TikTok không dựng lại URL xem được từ ID
+    # như YouTube) — public như mọi field khác của thư viện.
+    source_url: str
     external_id: str | None
     segment_count: int
     completed_count: int

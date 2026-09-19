@@ -6,6 +6,7 @@ cho những gì ở đây cần kiểm.
 
 from decimal import Decimal
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -213,14 +214,43 @@ def test_captions_endpoint_uses_resolved_id(client: TestClient, db_session: Sess
 
 def test_captions_endpoint_maps_source_errors(client: TestClient, db_session: Session):
     headers = _headers_for(db_session, "captions-bad@example.com")
-    # ID hợp lệ để qua được resolve — chặn ở cổng captions (mở ở Phase 2).
+    # Host lạ (không phải YouTube/TikTok) — chặn ở cổng captions.
+    res = client.post(
+        "/api/v1/listening/captions",
+        headers=headers,
+        json={"url": "https://vimeo.com/123456789"},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "UNSUPPORTED_SOURCE"
+
+
+def test_captions_endpoint_supports_tiktok(
+    client: TestClient, db_session: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from app.services.listening_tiktok_captions import TiktokCaptions
+    from app.services.listening_transcript import parse_srt_vtt
+
+    vtt = "WEBVTT\n\n00:00:01.000 --> 00:00:03.000\nHello TikTok.\n"
+    segments = parse_srt_vtt(vtt)
+
+    def fake(url: str) -> TiktokCaptions:
+        assert url == "https://www.tiktok.com/@u/video/7345678901234567890"
+        return TiktokCaptions(
+            language="eng-US", kind="asr", raw_vtt=vtt, segments=segments, title="TT"
+        )
+
+    monkeypatch.setattr("app.api.routes.listening.fetch_tiktok_captions", fake)
+    headers = _headers_for(db_session, "captions-tt@example.com")
     res = client.post(
         "/api/v1/listening/captions",
         headers=headers,
         json={"url": "https://www.tiktok.com/@u/video/7345678901234567890"},
     )
-    assert res.status_code == 422
-    assert res.json()["detail"]["code"] == "UNSUPPORTED_SOURCE"
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["kind"] == "asr"
+    assert body["segment_count"] == 1
+    assert body["title"] == "TT"
 
 
 _MUSIC_SRT = """1
@@ -407,6 +437,26 @@ def test_library_lists_public_for_guest_and_hides_private(
         client.get(f"/api/v1/listening/contents/{mine['id']}", headers=mine_headers).status_code
         == 200
     )
+
+
+def test_detail_exposes_media_url_when_ingested(client: TestClient, db_session: Session) -> None:
+    import uuid as _uuid
+
+    from app.models import ListeningContent as _LC
+
+    public = _make_public(client, db_session, email="media-lib@example.com")
+    row = db_session.get(_LC, _uuid.UUID(public["id"]))
+    assert row is not None
+    row.media_storage_key = "listening/demo.mp4"
+    db_session.commit()
+
+    learner = _headers_for(db_session, "media-learner@example.com")
+    detail = client.get(f"/api/v1/listening/contents/{public['id']}", headers=learner).json()
+    assert detail["media_url"].endswith("/listening/demo.mp4")
+
+    plain = _make_public(client, db_session, email="media-lib2@example.com")
+    detail2 = client.get(f"/api/v1/listening/contents/{plain['id']}", headers=learner).json()
+    assert detail2["media_url"] is None
 
 
 def test_public_detail_readable_and_attemptable_by_other_user(
