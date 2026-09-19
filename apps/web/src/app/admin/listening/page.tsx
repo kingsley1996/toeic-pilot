@@ -71,7 +71,14 @@ export default function AdminListeningPage() {
   const [forceId, setForceId] = useState<string | null>(null);
   // Sửa thủ công khi transcript lệch video: video + transcript cạnh nhau để
   // vừa nghe vừa sửa. `id` null = câu mới (backend chèn), câu vắng mặt = xoá.
-  type EditRow = { key: string; id: string | null; start: string; end: string; text: string; text_vi: string };
+  type EditRow = {
+    key: string;
+    id: string | null;
+    start: string;
+    end: string;
+    text: string;
+    text_vi: string;
+  };
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editSegs, setEditSegs] = useState<EditRow[]>([]);
