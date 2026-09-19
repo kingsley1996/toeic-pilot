@@ -45,7 +45,8 @@ from app.services.listening_youtube_captions import (
 #   bgfdqVmVjfk (ASR kém, 24/42), IWMMkp35d6Y (ASR kém, 1/6),
 #   oE2IZvpOlGk + Qo6VHK5n_LU + viE3Xez8IQ0 (region-block),
 #   wyqfYJX23lg + r3ga_G-nMbk + dqdUoM4gVrM + bq6GBbh3uhU (CHÁY phụ đề thoại),
-#   UNP03fDSj1U (ASR salad như meetings).
+#   UNP03fDSj1U (ASR salad như meetings),
+#   Y6bbMQXQ180 (slide từ khoá cháy hình — FOCUS/IDEAS hiện sẵn, mask vô nghĩa).
 VIDEOS: list[tuple[str, str | None, int | None]] = [
     ("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, None),
     ("https://www.youtube.com/watch?v=yPYZpwSpKmA", None, None),
@@ -108,6 +109,34 @@ VIDEOS: list[tuple[str, str | None, int | None]] = [
     (
         "https://www.tiktok.com/@iamthatenglishteacher/video/7686332407477194014",
         "See, saw, seen — Ms James (Grammar)",
+        None,
+    ),
+    # Đợt TED 5 bài (2026-09-19): playlist "TED in 3 minutes" chính chủ, toàn
+    # sub tay, span 2–3.5 phút. Soi frame từng video: St. John loại vì slide từ
+    # khoá cháy hình, Matt Cutts loại vì ASR salad (xem ĐÃ LOẠI trên).
+    (
+        "https://www.youtube.com/watch?v=cHKs2aVxOmQ",
+        "How to deal with your insomnia - Matt Walker",
+        None,
+    ),
+    (
+        "https://www.youtube.com/watch?v=_H4C-08GkKo",
+        "How accurate is the weather forecast? - Mona Chalabi",
+        None,
+    ),
+    (
+        "https://www.youtube.com/watch?v=j-Mys_05D78",
+        "A simple 2-step plan for saving more money - Wendy De La Rosa",
+        None,
+    ),
+    (
+        "https://www.youtube.com/watch?v=eeVCz-9SUc8",
+        "The function and fashion of eyeglasses - Debbie Millman",
+        None,
+    ),
+    (
+        "https://www.youtube.com/watch?v=3NFTa9kTVRU",
+        "How your sense of smell helps you savor flavor - Jen Gunter",
         None,
     ),
 ]
