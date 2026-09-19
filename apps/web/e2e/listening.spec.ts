@@ -65,7 +65,9 @@ test("lab youtube: link hỏng báo ngay, phụ đề hỏng không tạo bài, 
 
   await urlBox.fill("https://www.tiktok.com/@u/video/123");
   await page.getByRole("button", { name: "Tiếp tục" }).click();
-  await expect(page.getByText("Mới chỉ nhận link YouTube, TikTok hẹn bản sau.")).toBeVisible();
+  await expect(
+    page.getByText("Mục này mới chỉ nhận link YouTube (bài TikTok có sẵn trong thư viện)."),
+  ).toBeVisible();
 
   // Kịch bản phụ đề hỏng: oEmbed hỏng nên tên phải gõ tay; phụ đề rác thì
   // backend từ chối đúng dòng lỗi và không tạo bài (vẫn ở nguyên trang).

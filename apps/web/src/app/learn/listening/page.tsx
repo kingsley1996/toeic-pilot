@@ -33,7 +33,7 @@ import { useRequireSession } from "@/lib/session";
 
 const SOURCE_MESSAGE: Record<string, string> = {
   INVALID_URL: "Link chưa đúng — kiểm tra lại URL video YouTube.",
-  UNSUPPORTED_SOURCE: "Mới chỉ nhận link YouTube và TikTok.",
+  UNSUPPORTED_SOURCE: "Mục này mới chỉ nhận link YouTube (bài TikTok có sẵn trong thư viện).",
   SOURCE_TYPE_MISMATCH: "Link và nguồn đã chọn không khớp. Thử lại từ đầu.",
   EMPTY_TITLE: "Đặt tên cho bài học để dễ tìm lại.",
   CAPTIONS_UNAVAILABLE: "Video này không có phụ đề công khai. Dán SRT/VTT bên dưới.",
