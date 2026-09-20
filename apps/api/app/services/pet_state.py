@@ -174,6 +174,21 @@ def current_needs(pet: PetOwned, at: datetime) -> needs_service.Needs:
     )
 
 
+def current_weight(pet: PetOwned, base: int | None, fullness: Decimal, at: datetime) -> int | None:
+    """Cân bây giờ của con này. `None` khi loài chưa có cân chuẩn.
+
+    Cùng khuôn `current_needs`: ảnh chụp (`weight_grams`) tại mốc (`weight_at`),
+    suy ra lúc đọc. Mốc vắng (chưa ăn lần nào) thì neo ở hiện tại — chưa trôi
+    giây nào nên chưa tụt gì, và giá trị ra là cân chuẩn.
+    """
+    if base is None:
+        return None
+    anchor = _aware(pet.weight_at) if pet.weight_at is not None else at
+    return needs_service.settle_weight(
+        pet.weight_grams, base, fullness, (at - anchor).total_seconds()
+    )
+
+
 def award_xp(
     db: Session,
     pet: PetOwned,

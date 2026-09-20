@@ -67,6 +67,16 @@ còn lại — cả năm cùng mất giá.
 """
 MAX_PER_KIND = 2
 
+"""Nhịp rút ngắn khi người học ĐANG NHÌN bảng (`?watching=1`).
+
+NPC 20→5 phút, intruder 60→15 phút. Chơi với người đang xem chứ không phát cho
+người vắng mặt: nhịp hẹn chỉ dời khi có một cuộc thật sự sinh ra (xem `sync`),
+nên hỏi dày không gọi khách ra nhanh hơn — giữ bảng mở (= đang chú ý) là cách
+duy nhất hưởng nhịp nhanh, và đó đúng là hành vi muốn thưởng. Đóng bảng lại thì
+lần hẹn kế tiếp trở về nhịp thường.
+"""
+EAGER_DIVISOR = 4
+
 """Nhiệm vụ hồi phục sống cả ngày, khác hẳn mười phút của một vị khách.
 
 Đồng hồ ngắn của NPC là thứ biến một lời mời thành một khoảnh khắc (ADR-012 §1).
@@ -220,6 +230,7 @@ def sync(
     sick: bool = False,
     now: datetime | None = None,
     rng: random.Random | None = None,
+    eager: bool = False,
 ) -> list[Encounter]:
     """Dọn cuộc đã hết hạn, sinh thêm nếu tới giờ và còn chỗ. Trả MỌI cuộc đang chờ.
 
@@ -230,10 +241,17 @@ def sync(
     cùng lý do `srs.review` nhận `now`: một luật sinh phụ thuộc đồng hồ và may
     rủi thì không bài kiểm nào nói được gì về nó — mà đây lại đúng là chỗ duy
     nhất có thể phá ràng buộc "không bỏ lỡ được thứ chưa từng có".
+
+    `eager` rút ngắn mọi nhịp hẹn (`EAGER_DIVISOR`): frontend gửi khi bảng đang
+    mở. Không phải một nhịp thứ hai để nhớ — cùng một `sync`, chỉ khác hệ số.
     """
     at = now or datetime.now(UTC)
     picker = rng or random.SystemRandom()
     config = settings_row(db)
+
+    def gap(kind: str) -> int:
+        full = _gap_for(config, kind)
+        return max(60, full // EAGER_DIVISOR) if eager else full
 
     # 1. Hết hạn trước khi sinh.
     #
@@ -264,9 +282,9 @@ def sync(
     #    nên bị NPC nhảy vào mặt ở giây thứ nhất, trước cả khi họ hiểu cái bảng
     #    này là gì.
     if pet.next_npc_at is None:
-        pet.next_npc_at = _schedule(picker, at, config.npc_gap_seconds)
+        pet.next_npc_at = _schedule(picker, at, gap("npc"))
     if pet.next_intruder_at is None:
-        pet.next_intruder_at = _schedule(picker, at, config.intruder_gap_seconds)
+        pet.next_intruder_at = _schedule(picker, at, gap("intruder"))
     if pet.next_npc_at is None or pet.next_intruder_at is None:
         return alive
 
@@ -308,16 +326,16 @@ def sync(
             #
             # Nhưng cũng không sinh ngay lúc có chỗ: như thế thì hết hạn một
             # cuộc lại là cách gọi cuộc mới tới nhanh hơn.
-            _remember(pet, kind, at + timedelta(seconds=max(60, _gap_for(config, kind) // 4)))
+            _remember(pet, kind, at + timedelta(seconds=max(60, gap(kind) // 4)))
             continue
         made = _spawn(db, user_id=user_id, kind=kind, at=at, config=config, rng=picker)
         if made is None:
             # Không có nội dung để giao. Lùi một nhịp ngắn rồi thử lại, chứ không
             # thử lại ở mọi lần đọc: kho rỗng thì mỗi lần mở bảng sẽ là một lượt
             # quét vô ích.
-            _remember(pet, kind, at + timedelta(seconds=max(60, _gap_for(config, kind) // 4)))
+            _remember(pet, kind, at + timedelta(seconds=max(60, gap(kind) // 4)))
             continue
-        _remember(pet, kind, _schedule(picker, at, _gap_for(config, kind)))
+        _remember(pet, kind, _schedule(picker, at, gap(kind)))
         alive.append(made)
     return alive
 

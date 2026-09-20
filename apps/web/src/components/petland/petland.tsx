@@ -6,7 +6,7 @@ import {
   type EncounterPublic,
   type PetPublic,
 } from "@toeic-pilot/shared";
-import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, X } from "lucide-react";
+import { Gem, GripHorizontal, LayoutGrid, Maximize2, Minimize2, User, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -22,6 +22,7 @@ import { CollectionScreen } from "@/components/petland/petland-collection";
 import { petLine } from "@/components/petland/petland-lines";
 import { QuestCard } from "@/components/petland/petland-quest";
 import { GuestList } from "@/components/petland/petland-quest-list";
+import { PetProfileScreen } from "@/components/petland/petland-profile";
 import { TIER_RANK, tierGlow } from "@/components/petland/petland-creature";
 import { PHASE_LABEL, worldClockLabel, worldTime } from "@/components/petland/petland-clock";
 import { EGG_PANEL_W, EggScreen } from "@/components/petland/petland-eggs";
@@ -391,6 +392,7 @@ function PetPanel({
     | null
     | { kind: "eggs" }
     | { kind: "collection" }
+    | { kind: "profile" }
     | { kind: "list"; of: "npc" | "intruder" }
     | { kind: "quest" }
   >(null);
@@ -1360,6 +1362,10 @@ function PetPanel({
    * Mỗi phút chứ không mỗi vài giây: nhịp sinh là hai mươi phút, nên hỏi dày
    * hơn chỉ tốn request mà không đổi được gì. Và mỗi lần hỏi là một lần MÁY CHỦ
    * có cơ hội sinh ra khách — đó là chủ ý (ADR-012 §1), không phải tác dụng phụ.
+   *
+   * `?watching=1` vì bảng đang mở nghĩa là người học ĐANG NHÌN: nhịp hẹn rút
+   * còn một phần tư (NPC ~5 phút, intruder ~15 phút). Đóng bảng lại thì lần hẹn
+   * kế tiếp trở về nhịp thường.
    */
   useEffect(() => {
     if (!token) return;
@@ -1374,7 +1380,7 @@ function PetPanel({
        * thứ chưa từng có" mà cả cơ chế được dựng để không thể xảy ra.
        */
       if (document.hidden) return;
-      apiFetch<EncounterPublic[]>(API_ROUTES.petEncounters, { token })
+      apiFetch<EncounterPublic[]>(`${API_ROUTES.petEncounters}?watching=1`, { token })
         .then((rows) => {
           if (alive) setMeetings(rows);
         })
@@ -1883,6 +1889,22 @@ function PetPanel({
           >
             <LayoutGrid size={13} strokeWidth={2} aria-hidden />
           </button>
+          {/* Hồ sơ con ĐANG NUÔI: tên riêng, cân nặng, tuổi, nút khoe. Đứng
+              cạnh trứng/bộ sưu tập vì cùng là chuyện "của con thú", không phải
+              chuyện chăm nó mỗi ngày. */}
+          <button
+            type="button"
+            aria-label={panel?.kind === "profile" ? "Đóng hồ sơ" : "Hồ sơ thú cưng"}
+            title="Hồ sơ"
+            aria-expanded={panel?.kind === "profile"}
+            onClick={() => setPanel(panel?.kind === "profile" ? null : { kind: "profile" })}
+            className={cx(
+              "grid h-6 w-6 place-items-center rounded transition-colors hover:bg-recess hover:text-ink",
+              panel?.kind === "profile" ? "text-action" : "text-ink-faint",
+            )}
+          >
+            <User size={13} strokeWidth={2} aria-hidden />
+          </button>
           <button
             type="button"
             aria-label={full ? "Thu nhỏ khung nhìn" : "Xem toàn bản đồ"}
@@ -2104,6 +2126,17 @@ function PetPanel({
               };
               // Bỏ dở tư thế đang diễn: con vừa cất đi mới là con đang nhai.
               actionFx.current = null;
+            }}
+            onClose={() => setPanel(null)}
+          />
+        )}
+        {shown?.kind === "profile" && pet && (
+          <PetProfileScreen
+            token={token}
+            pet={pet}
+            onChanged={(updated) => {
+              setPet(updated);
+              setNeeds(updated.needs);
             }}
             onClose={() => setPanel(null)}
           />

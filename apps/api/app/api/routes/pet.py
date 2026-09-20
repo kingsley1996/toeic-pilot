@@ -10,7 +10,7 @@ import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -38,6 +38,7 @@ from app.schemas.pet import (
     PetActionRequest,
     PetMove,
     PetNeeds,
+    PetNickname,
     PetOwnedPublic,
     PetPublic,
     PetSwitch,
@@ -49,6 +50,7 @@ from app.services.pet_species import all_species, row_for
 from app.services.pet_state import award_xp as _award
 from app.services.pet_state import current_needs as _current_needs
 from app.services.pet_state import current_pet, ensure_state, is_asleep, own_pet
+from app.services.pet_state import current_weight as _current_weight
 from app.services.pet_state import now as _now
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_CORRECT, grade_for, judge
@@ -89,6 +91,7 @@ def _as_public(
     """
     progress = needs_service.level_progress(pet.xp)
     row = row_for(db, pet.species)
+    base = row.weight_grams if row is not None else None
     return PetPublic(
         species=pet.species,
         label=row.label if row is not None else pet.species,
@@ -97,6 +100,7 @@ def _as_public(
         tier=row.tier if row is not None else "common",  # type: ignore[arg-type]
         lines=row.lines if row is not None else None,
         nickname=pet.nickname,
+        weight_grams=_current_weight(pet, base, now.fullness, at),
         # Mốc cao nhất, không phải level vừa tính: chỉnh đường cong XP về sau
         # không được lấy mất level của con thú đã đạt tới nó.
         level=max(progress.level, pet.level_reached),
@@ -230,6 +234,18 @@ def act(
     pet.energy = after.energy
     pet.mood = after.mood
     pet.needs_at = at
+
+    if body.action == "feed":
+        # Chốt sổ cân tới hiện tại TRƯỚC rồi mới cộng — cùng thứ tự "trừ dần
+        # trước, cộng sau" của nhu cầu ngay trên. Bỏ đói cả tuần rồi cho ăn một
+        # lần không thể xoá cả tuần tụt cân.
+        row = row_for(db, pet.species)
+        base = row.weight_grams if row is not None else None
+        if base is not None:
+            pet.weight_grams = needs_service.feed_weight(
+                _current_weight(pet, base, now.fullness, at) or base, base
+            )
+            pet.weight_at = at
 
     # Trao XP sau khi nhu cầu đã ghi — xem docstring của `_award`.
     # XP đọc trên nhu cầu TRƯỚC hành động: chọc một con đã vui sẵn thì thôi
@@ -388,6 +404,26 @@ def switch_pet(
     # Con vừa chọn mang chỉ số CỦA CHÍNH NÓ ra — kể cả chỗ nó đang đứng và mốc
     # đói của nó, nên một con bị bỏ quên ba ngày sẽ đói đúng ba ngày.
     pet = own_pet(db, current_user.id, body.species)
+    return _as_public(db, pet, _current_needs(pet, at), at)
+
+
+@router.patch("/nickname", response_model=PetPublic)
+def rename_pet(
+    body: PetNickname,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> PetPublic:
+    """Đặt tên riêng cho con ĐANG NUÔI.
+
+    Tên rỗng (hoặc `null`) là gỡ tên chứ không phải lỗi: giao diện rơi về tên
+    loài, cùng quy ước "null là chưa có" mà cột này mang từ đầu. Tên sống trên
+    từng con — đổi con khác rồi quay lại thì tên cũ vẫn ở đó.
+    """
+    state = ensure_state(db, current_user.id)
+    pet = _require_pet(own_pet(db, current_user.id, state.species) if state.species else None)
+    pet.nickname = (body.nickname or "").strip() or None
+    db.commit()
+    at = _now()
     return _as_public(db, pet, _current_needs(pet, at), at)
 
 
@@ -598,6 +634,7 @@ def _encounter_public(db: Session, row: Encounter) -> EncounterPublic:
 
 @router.get("/encounters", response_model=list[EncounterPublic])
 def read_encounters(
+    watching: bool = Query(default=False),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[EncounterPublic]:
@@ -620,8 +657,13 @@ def read_encounters(
         # khách đứng chờ trên bản đồ rỗng chỉ làm màn hình tặng trứng rối thêm.
         return []
     # Ốm thì gọi người tới ngay thay vì đợi hết nhịp — xem `encounters.sync`.
+    # `watching` là bảng đang mở (= người học đang nhìn): nhịp hẹn rút ngắn
+    # (`EAGER_DIVISOR`). Hỏi dày không gọi khách nhanh hơn — giờ hẹn chỉ dời khi
+    # có một cuộc thật sự sinh ra — nên đây thưởng sự chú ý chứ không mở đường F5.
     sick = needs_service.is_sick(_current_needs(pet, at))
-    rows = encounters.sync(db, user_id=current_user.id, pet=state, sick=sick, now=at)
+    rows = encounters.sync(
+        db, user_id=current_user.id, pet=state, sick=sick, now=at, eager=watching
+    )
     db.commit()
     # Mảng trần, không bọc `Page[T]`: số cuộc bị chặn cứng bởi miền
     # (`MAX_PER_KIND` mỗi loại, hai loại), nên đây là nhóm (A) của

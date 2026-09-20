@@ -190,6 +190,14 @@ class PetSpecies(Base):
     luôn khớp với bảng cấu hình dù bảng có thay đổi thế nào (ADR-010 §6.4).
     """
 
+    weight_grams: Mapped[int | None] = mapped_column(Integer, nullable=True, default=None)
+    """Cân nặng để khoe trên thẻ profile, tính bằng gam.
+
+    Số liệu VUI (cùng dải 0,4–20 kg cho mọi loài), không phải dữ liệu khoa học
+    — cùng họ với `label` tiếng Việt: thứ học viên nhìn thấy. NULL là chưa điền
+    (loài admin tự thêm), giao diện in "?" chứ không đoán.
+    """
+
     position: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="0")
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
     """Tắt thay vì xoá.
@@ -676,6 +684,89 @@ DEFAULT_PET_SPECIES: tuple[dict[str, object], ...] = (
 )
 
 
+"""Cân nặng mặc định từng loài, tính bằng gam — nguồn duy nhất.
+
+Điền cho hàng cũ ở `pet_species.all_species` (những hàng `weight_grams IS
+NULL`), và làm gợi ý cho loài admin tự thêm. Số VUI chứ không phải số đo thật,
+và cố ý GOM TRONG MỘT DẢI HẸP (0,4–20 kg): voi vẫn nặng nhất, tiên vẫn nhẹ
+nhất, nhưng không con nào gấp con nào hàng nghìn lần — thẻ profile nào đọc lên
+cũng cùng một cỡ.
+"""
+SPECIES_WEIGHT_GRAMS: dict[str, int] = {
+    "duck": 1200,
+    "squirrel": 800,
+    "frog": 450,
+    "rabbit": 1500,
+    "sheep": 8000,
+    "goat": 7000,
+    "hedgehog": 800,
+    "parrot": 700,
+    "crab": 900,
+    "cat": 2500,
+    "monkey": 3000,
+    "turtle": 1200,
+    "otter": 3200,
+    "skunk": 2800,
+    "bat": 400,
+    "lizard": 500,
+    "camel": 12000,
+    "bear_cub": 4000,
+    "snake": 1800,
+    "owl": 1600,
+    "deer": 7500,
+    "raccoon": 3500,
+    "eagle": 4000,
+    "zebra": 12000,
+    "boar": 11000,
+    "polar_bear": 13000,
+    "ostrich": 8000,
+    "tiger": 11000,
+    "bear": 13000,
+    "giraffe": 14000,
+    "lion": 11000,
+    "elephant": 18000,
+    "gorilla": 9000,
+    "rhino": 15000,
+    "unicorn": 9000,
+    "pegasus": 8500,
+    "dragon_fire": 16000,
+    "dragon_ice": 15500,
+    "fairy": 400,
+    "djinn": 7000,
+    "spirit_fire": 6000,
+    "spirit_water": 7000,
+    "spirit_stone": 8000,
+    "spirit_storm": 6500,
+    "seraph": 5500,
+    # Tấm dinos + myth: cùng một nguồn, thêm khi thư viện có thêm loài.
+    "brachiosaurus": 20000,
+    "oviraptor": 600,
+    "parasaurolophus": 15000,
+    "pterodactyl": 500,
+    "pterodactyl-x": 500,
+    "stegosaurus": 16000,
+    "t-rex": 17000,
+    "triceratops": 16500,
+    "triceratops-cam": 16500,
+    "velociraptor": 600,
+    "dark-pegasus": 8500,
+    "dragon-green": 16000,
+    "fire-horse": 9000,
+    "fox-spirit": 3500,
+    "frost-dragon": 15500,
+    "god-lion": 11000,
+    "golden-griffin": 8000,
+    "griffin": 8000,
+    "ice-phoenix": 900,
+    "inferno-dragon": 16500,
+    "phoenix": 900,
+    "shadow-dragon": 15500,
+    "unicorn-x": 9000,
+    "white-tiger": 9000,
+    "wolf": 6000,
+}
+
+
 # --- gacha (ADR-010 lát 8) --------------------------------------------------
 #
 # Hạng được coi là HIẾM khi tính bộ đếm an ủi. Ngẫu nhiên thuần cho ra những
@@ -851,6 +942,15 @@ class PetOwned(Base):
 
     Vì mỗi con có mốc riêng, một con bị bỏ quên ba ngày sẽ đói đúng ba ngày khi
     được ngó lại — chứ không thừa hưởng cái mốc vừa mới của con đang được chăm.
+    """
+
+    weight_grams: Mapped[int | None] = mapped_column(Integer, nullable=True, default=None)
+    weight_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    """Cân nặng RIÊNG của con này, cùng khuôn `needs_at`: ảnh chụp tại mốc,
+    giá trị bây giờ suy ra lúc đọc (`services.pet.settle_weight`).
+
+    Cho ăn thì tăng, đói thì tụt, kẹp 0,5–2 lần cân chuẩn của loài. NULL là chưa
+    ăn lần nào kể từ khi có cột — hiển thị bằng cân chuẩn, không phải số không.
     """
 
     def __repr__(self) -> str:

@@ -227,6 +227,7 @@ def promote_creature(
                 if body.drop_weight is not None
                 else CreaturePromote.TIER_WEIGHTS[body.tier]
             ),
+            weight_grams=body.weight_grams,
             position=body.position,
         )
     )

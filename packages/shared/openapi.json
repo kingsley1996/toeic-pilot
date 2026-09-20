@@ -2462,6 +2462,18 @@
             ],
             "title": "Tier",
             "type": "string"
+          },
+          "weight_grams": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Grams"
           }
         },
         "required": [
@@ -9235,6 +9247,25 @@
         "title": "PetNeeds",
         "type": "object"
       },
+      "PetNickname": {
+        "description": "Đặt tên riêng cho con ĐANG NUÔI.\n\n`None` hoặc chuỗi rỗng = gỡ tên, giao diện rơi về tên loài. Tên sống trên\ntừng con (`pet_owned`), không phải trên góc: mỗi con là một sinh vật riêng.",
+        "properties": {
+          "nickname": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nickname"
+          }
+        },
+        "title": "PetNickname",
+        "type": "object"
+      },
       "PetOwnedPublic": {
         "properties": {
           "code": {
@@ -9385,6 +9416,17 @@
             "title": "Tile Y",
             "type": "integer"
           },
+          "weight_grams": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Grams"
+          },
           "xp": {
             "title": "Xp",
             "type": "integer"
@@ -9502,6 +9544,18 @@
             "minimum": 0.0,
             "title": "Tile",
             "type": "integer"
+          },
+          "weight_grams": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Grams"
           }
         },
         "required": [
@@ -9625,6 +9679,18 @@
               }
             ],
             "title": "Tile"
+          },
+          "weight_grams": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Grams"
           }
         },
         "title": "PetSpeciesEdit",
@@ -9695,6 +9761,17 @@
             "minimum": 0.0,
             "title": "Tile",
             "type": "integer"
+          },
+          "weight_grams": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Grams"
           }
         },
         "required": [
@@ -26303,6 +26380,18 @@
       "get": {
         "description": "Cuộc chạm mặt đang chờ, hoặc `null`.\n\n**Lần đọc này CÓ GHI**, và đó là ngoại lệ có chủ ý — cùng hình dạng với\n`GET /daily-tasks`, và cùng lý do: sinh ra lúc đọc là thứ bảo đảm không ai\nbỏ lỡ được một cuộc chạm mặt sinh ra trong lúc họ đang ngủ (ADR-012 §1).\nKhông có đường nào khác để giữ tính chất ấy mà không dựng một job nền, mà\nmột job nền thì lại sinh ra đúng cái nó phải tránh.\n\nAn toàn vì nhịp sinh được **hẹn trước**: gọi lại mười lần trong một giây\nkhông tạo ra mười cuộc, vì giờ hẹn chỉ dời khi có một cuộc thật sự sinh ra.",
         "operationId": "read_encounters_api_v1_pet_encounters_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "watching",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Watching",
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -26317,6 +26406,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "security": [
@@ -26433,6 +26532,53 @@
           }
         ],
         "summary": "Take Hint",
+        "tags": [
+          "pet"
+        ]
+      }
+    },
+    "/api/v1/pet/nickname": {
+      "patch": {
+        "description": "Đặt tên riêng cho con ĐANG NUÔI.\n\nTên rỗng (hoặc `null`) là gỡ tên chứ không phải lỗi: giao diện rơi về tên\nloài, cùng quy ước \"null là chưa có\" mà cột này mang từ đầu. Tên sống trên\ntừng con — đổi con khác rồi quay lại thì tên cũ vẫn ở đó.",
+        "operationId": "rename_pet_api_v1_pet_nickname_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetNickname"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Rename Pet",
         "tags": [
           "pet"
         ]

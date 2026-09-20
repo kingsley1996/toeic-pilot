@@ -292,6 +292,10 @@ export const API_ROUTES = {
   // trường của chính con thú, và nó trả về nguyên trạng thái mới như mọi đường
   // ghi khác ở góc này.
   petSwitch: "/api/v1/pet",
+  // Đặt tên riêng cho con đang nuôi. Đường riêng vì nó KHÔNG đổi con nào đang
+  // nuôi — gộp vào `PATCH /pet` thì một thân yêu cầu vừa đổi con vừa đổi tên, và
+  // tên sẽ rơi nhầm sang con mới.
+  petNickname: "/api/v1/pet/nickname",
   adminPetEggs: "/api/v1/admin/pet/eggs",
   adminPetEncounters: "/api/v1/admin/pet/encounters",
   adminPetEncounterSpawn: "/api/v1/admin/pet/encounters/spawn",

@@ -546,3 +546,67 @@ def test_the_pet_level_never_drops(client: TestClient, db_session: Session) -> N
     db_session.commit()
 
     assert client.get("/api/v1/pet", headers=headers).json()["level"] == 7
+
+
+def test_renaming_sticks_and_clearing_falls_back_to_the_species(
+    client: TestClient, db_session: Session
+) -> None:
+    """Tên riêng sống trên TỪNG CON, và gỡ tên thì rơi về tên loài.
+
+    Rỗng là gỡ chứ không phải lỗi: bắt người dùng đoán "muốn về tên cũ thì gửi
+    gì" là một câu đố không ai hỏi.
+    """
+    headers = auth_headers(client, "named@example.com")
+    adopt(client, headers)
+    pet = hatched_pet(db_session, "named@example.com")
+
+    renamed = client.patch("/api/v1/pet/nickname", json={"nickname": "  Mít  "}, headers=headers)
+    assert renamed.status_code == 200
+    assert renamed.json()["nickname"] == "Mít"
+
+    cleared = client.patch("/api/v1/pet/nickname", json={"nickname": "   "}, headers=headers)
+    assert cleared.status_code == 200
+    assert cleared.json()["nickname"] is None
+    assert db_session.get(PetOwned, (pet.user_id, pet.species)).nickname is None
+
+
+def test_a_too_long_nickname_is_refused(client: TestClient) -> None:
+    headers = auth_headers(client, "longname@example.com")
+    adopt(client, headers)
+    res = client.patch("/api/v1/pet/nickname", json={"nickname": "x" * 41}, headers=headers)
+    assert res.status_code == 422
+
+
+def test_reading_carries_the_species_weight(client: TestClient) -> None:
+    """Cân nặng đi kèm con thú đang nuôi, tra từ bảng loài lúc đọc.
+
+    Bảng loài là dữ liệu admin sửa được, nên con số phải tra lúc đọc như
+    `label`/`tier` — một bảng tra phía frontend sẽ trôi khỏi nó.
+    """
+    headers = auth_headers(client, "heavy@example.com")
+    adopt(client, headers)
+    body = client.get("/api/v1/pet", headers=headers).json()
+    assert isinstance(body["weight_grams"], int) and body["weight_grams"] > 0
+
+
+def test_feeding_fattens_and_hunger_thins(client: TestClient, db_session: Session) -> None:
+    """Cho ăn thì cân tăng ngay; bỏ đói thì lần đọc sau cân tụt.
+
+    Thứ tự chốt sổ: đói cả tuần rồi ăn một lần không xoá được cả tuần tụt.
+    """
+    headers = auth_headers(client, "scale@example.com")
+    adopt(client, headers)
+    pet = hatched_pet(db_session, "scale@example.com")
+    before = client.get("/api/v1/pet", headers=headers).json()["weight_grams"]
+    assert isinstance(before, int) and before > 0
+
+    after = client.post("/api/v1/pet/actions", json={"action": "feed"}, headers=headers).json()
+    assert after["weight_grams"] > before
+
+    # Một tuần không ăn: đói rạc thì cân tụt khỏi đỉnh vừa đạt.
+    db_session.refresh(pet)
+    pet.needs_at = datetime.now(UTC) - timedelta(days=7)
+    pet.fullness = Decimal("0.0")
+    db_session.commit()
+    starved = client.get("/api/v1/pet", headers=headers).json()["weight_grams"]
+    assert starved < after["weight_grams"]

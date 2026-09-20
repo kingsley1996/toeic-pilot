@@ -502,3 +502,67 @@ def level_progress(xp: int) -> LevelProgress:
     base = PET_LEVEL_XP[level - 1]
     nxt = PET_LEVEL_XP[level]
     return LevelProgress(level=level, into_level=xp - base, for_next=nxt - base)
+
+
+# --- cân nặng động -----------------------------------------------------------
+#
+# Cho ăn thì mập lên, đói thì gầy đi — cùng khuôn `needs_at`: cột giữ ảnh chụp
+# tại mốc (`pet_owned.weight_grams` + `weight_at`), giá trị bây giờ suy ra lúc
+# đọc. Số thuần, không session, không HTTP, cùng lý do với số học nhu cầu ở đầu
+# tệp.
+
+"""Mỗi lần cho ăn tăng 1% cân chuẩn, tối thiểu 10 gam.
+
+Theo PHẦN TRĂM chứ không theo gam cố định: +50 gam với voi là không khí, với
+tiên là gấp đôi. Sàn 10 gam để loài nhẹ nhất ăn một lần cũng thấy cân nhích —
+một con số đứng yên sau hành động đọc ra là nút hỏng.
+"""
+WEIGHT_GAIN_FRACTION = 0.01
+WEIGHT_GAIN_MIN_GRAMS = 10
+
+"""Đói hoàn toàn thì tụt 5% cân chuẩn mỗi ngày, tỉ lệ theo độ đói.
+
+Nhân với `(1 - fullness)`: no thì đứng yên, đói một nửa thì tụt một nửa tốc
+độ. Xấp xỉ có chủ ý — độ no trôi liên tục trong quãng elapsed, còn ở đây lấy
+mức no HIỆN TẠI áp cho cả quãng, cùng họ xấp xỉ với việc `decay` dùng một mốc
+duy nhất. Đủ cho nhịp ngày, không đủ cho vật lý học.
+"""
+WEIGHT_DRAIN_PER_DAY_FRACTION = 0.05
+
+"""Sàn và trần theo cân chuẩn của loài.
+
+Không cho về 0 (bỏ đói một tuần không thể làm con voi thành con số không) và
+không cho phình vô hạn (ăn mãi thì dừng ở gấp đôi — no kịch đã bị từ chối ở
+0,95 nên đường tới trần vẫn dài).
+"""
+WEIGHT_MIN_FRACTION = 0.5
+WEIGHT_MAX_FRACTION = 2.0
+
+_SECONDS_PER_DAY = 86_400.0
+
+
+def settle_weight(
+    anchored: int | None, base: int, fullness: Decimal, elapsed_seconds: float
+) -> int:
+    """Cân bây giờ từ ảnh chụp, cân chuẩn, độ no hiện tại và thời gian đã trôi.
+
+    `None` là chưa ăn lần nào — bằng cân chuẩn, không phải số không. No hoàn
+    toàn (`fullness = 1`) thì đứng yên bất kể bao lâu.
+    """
+    start = base if anchored is None else anchored
+    drain = base * float(WEIGHT_DRAIN_PER_DAY_FRACTION) * (1.0 - float(fullness))
+    drained = start - drain * max(0.0, elapsed_seconds) / _SECONDS_PER_DAY
+    floor = int(base * float(WEIGHT_MIN_FRACTION))
+    return max(floor, int(drained))
+
+
+def feed_weight(current: int, base: int) -> int:
+    """Cân sau một lần cho ăn: chốt sổ tới hiện tại TRƯỚC rồi mới cộng.
+
+    `current` phải là giá trị `settle_weight` vừa tính, không phải ảnh chụp
+    trong cột — cộng lên ảnh cũ thì phần tụt của cả quãng vừa rồi biến mất, và
+    đói bao lâu cũng vô nghĩa miễn cuối cùng có ăn.
+    """
+    gain = max(WEIGHT_GAIN_MIN_GRAMS, int(round(base * float(WEIGHT_GAIN_FRACTION))))
+    cap = int(base * float(WEIGHT_MAX_FRACTION))
+    return min(cap, current + gain)

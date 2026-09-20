@@ -344,3 +344,41 @@ def test_the_curve_only_ever_climbs() -> None:
 
 def test_walking_is_worth_the_most_because_it_costs_the_most() -> None:
     assert XP_PER_ACTION["walk"] > XP_PER_ACTION["feed"] > XP_PER_ACTION["poke"]
+
+
+def test_an_unfed_pet_weighs_exactly_the_breed_standard() -> None:
+    """Chưa ăn lần nào thì neo ở cân chuẩn — NULL không phải số không.
+
+    Neo chứ không miễn tụt: bỏ đói mười ngày thì vẫn tụt từ mốc chuẩn đó.
+    """
+    from app.services.pet import settle_weight
+
+    assert settle_weight(None, 2500, Decimal("0"), 10 * DAY) == 1250
+    assert settle_weight(None, 2500, Decimal("1"), 10 * DAY) == 2500
+
+
+def test_a_full_pet_holds_its_weight_no_matter_how_long() -> None:
+    from app.services.pet import settle_weight
+
+    assert settle_weight(2600, 2500, Decimal("1"), 30 * DAY) == 2600
+
+
+def test_a_starving_pet_loses_five_percent_of_standard_per_day() -> None:
+    from app.services.pet import settle_weight
+
+    assert settle_weight(2500, 2500, Decimal("0"), DAY) == 2500 - 125
+    assert settle_weight(2500, 2500, Decimal("0.5"), DAY) == 2437
+
+
+def test_hunger_can_never_starve_a_pet_below_half_standard() -> None:
+    from app.services.pet import settle_weight
+
+    assert settle_weight(2500, 2500, Decimal("0"), 100 * DAY) == 1250
+
+
+def test_feeding_adds_one_percent_with_a_ten_gram_floor() -> None:
+    from app.services.pet import feed_weight
+
+    assert feed_weight(2500, 2500) == 2525
+    assert feed_weight(400, 400) == 410
+    assert feed_weight(5000, 2500) == 5000, "trần gấp đôi cân chuẩn"

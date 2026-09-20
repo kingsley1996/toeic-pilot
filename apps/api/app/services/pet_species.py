@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models.pet import DEFAULT_PET_SPECIES, PetSpecies
+from app.models.pet import DEFAULT_PET_SPECIES, SPECIES_WEIGHT_GRAMS, PetSpecies
 
 
 def all_species(db: Session, *, include_disabled: bool = False) -> list[PetSpecies]:
@@ -38,6 +38,13 @@ def all_species(db: Session, *, include_disabled: bool = False) -> list[PetSpeci
             # `current_pet` gọi nó ở mỗi lần mở bảng.
             db.rollback()
         rows = list(db.scalars(select(PetSpecies).order_by(*order)))
+    # Điền cân nặng cho hàng cũ (có từ trước migration 093): một lần duy nhất
+    # cho mỗi hàng, xong là thôi — lần đọc sau không còn hàng NULL nào để chạm.
+    missing = [row for row in rows if row.weight_grams is None and row.code in SPECIES_WEIGHT_GRAMS]
+    if missing:
+        for row in missing:
+            row.weight_grams = SPECIES_WEIGHT_GRAMS[row.code]
+        db.commit()
     return rows if include_disabled else [row for row in rows if row.enabled]
 
 

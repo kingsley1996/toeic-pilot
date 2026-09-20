@@ -11,6 +11,10 @@ Mỗi video: resolve → fetch captions → validate → lọc dòng không lờ
 endpoint create) → bỏ qua nếu trùng (source_type, external_id) đã có → tạo bài
 `is_public` dưới chủ sở hữu thư viện. Video nào hỏng in lý do rồi đi tiếp,
 không dừng cả loạt.
+
+CẢNH BÁO khi trỏ prod: script chỉ THÊM, không đồng bộ xoá — bài nào đã gỡ public
+thủ công trên prod (5 bài Ms James, 2026-09-19) mà còn trong list dưới thì chạy
+lại sẽ seed chúng về. Muốn seed đúng 5 bài TED thì lọc list trước khi chạy.
 """
 
 from __future__ import annotations

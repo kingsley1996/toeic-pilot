@@ -82,6 +82,10 @@ class PetPublic(BaseModel):
     """Bộ lời thoại riêng của loài — gửi kèm cùng lý do `tier`: bảng loài là dữ
     liệu admin sửa được, và con thú huyền thoại cần nói câu của chính nó."""
     nickname: str | None
+    weight_grams: int | None = None
+    """Cân HIỆN TẠI của con này, tính bằng gam — cho ăn thì tăng, đói thì tụt
+    (kẹp 0,5–2 lần cân chuẩn của loài). Suy ra lúc đọc như nhu cầu, không phải
+    ảnh chụp trong cột. `None` là loài chưa có cân chuẩn; giao diện in "?"."""
     level: int
     """Level ĐANG hiển thị: đã áp mốc cao nhất từng đạt, nên nó không bao giờ tụt."""
     xp: int
@@ -140,6 +144,16 @@ class PetSwitch(BaseModel):
     species: str = Field(min_length=1, max_length=32)
 
 
+class PetNickname(BaseModel):
+    """Đặt tên riêng cho con ĐANG NUÔI.
+
+    `None` hoặc chuỗi rỗng = gỡ tên, giao diện rơi về tên loài. Tên sống trên
+    từng con (`pet_owned`), không phải trên góc: mỗi con là một sinh vật riêng.
+    """
+
+    nickname: str | None = Field(default=None, max_length=40)
+
+
 class PetSpeciesPublic(BaseModel):
     """Một loài, như học viên và màn quản trị nhìn thấy.
 
@@ -167,6 +181,8 @@ class PetSpeciesPublic(BaseModel):
     enabled: bool
     lines: list[str] | None = None
     """Bộ lời thoại riêng, chỉ hiển thị từ hạng huyền thoại trở lên."""
+    weight_grams: int | None = None
+    """Cân nặng để khoe trên thẻ profile, tính bằng gam."""
 
 
 class PetSpeciesEdit(BaseModel):
@@ -184,6 +200,7 @@ class PetSpeciesEdit(BaseModel):
     drop_weight: int | None = Field(default=None, ge=0, le=1000)
     position: int | None = None
     enabled: bool | None = None
+    weight_grams: int | None = Field(default=None, ge=0)
     lines: list[str] | None = Field(default=None, min_length=0, max_length=12)
     """`None` = đừng đụng tới (exclude_unset); danh sách = thay cả bộ; danh sách
     rỗng = xoá sạch (máy chủ chuẩn hoá thành NULL)."""
@@ -196,6 +213,7 @@ class PetSpeciesCreate(BaseModel):
     tile: int = Field(ge=0)
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
     drop_weight: int = Field(default=10, ge=0, le=1000)
+    weight_grams: int | None = Field(default=None, ge=0)
     position: int = 0
 
     @model_validator(mode="after")
@@ -262,6 +280,7 @@ class CreaturePromote(BaseModel):
     label: str | None = Field(default=None, min_length=1, max_length=64)
     tier: Literal["common", "uncommon", "rare", "epic", "legendary", "god"] = "common"
     drop_weight: int | None = Field(default=None, ge=0, le=1000)
+    weight_grams: int | None = Field(default=None, ge=0)
     position: int = 0
 
     TIER_WEIGHTS: ClassVar[dict[str, int]] = {

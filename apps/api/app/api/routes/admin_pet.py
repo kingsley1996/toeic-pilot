@@ -43,6 +43,7 @@ def _public(row: PetSpecies) -> PetSpeciesPublic:
         position=row.position,
         enabled=row.enabled,
         lines=row.lines,
+        weight_grams=row.weight_grams,
     )
 
 

@@ -121,6 +121,30 @@ def test_nothing_spawns_before_the_appointment_and_one_does_after(db_session: Se
     assert len(late) == 1 and late[0].state == "waiting"
 
 
+def test_watching_shortens_the_appointment_but_polling_does_not_farm(
+    db_session: Session,
+) -> None:
+    """Bảng đang mở thì NPC hẹn ~5 phút thay vì ~20.
+
+    Hỏi mười lần trong một giây không gọi ra mười cuộc: giờ hẹn chỉ dời khi có
+    một cuộc thật sự sinh ra — cùng ràng buộc bài `test_reading_ten_times...`
+    giữ, chỉ khác nhịp hẹn.
+    """
+    user = _learner(db_session)
+    pet = _pet(db_session, user)
+    _npc_only(db_session)
+    _words(db_session)
+    encounters.sync(db_session, user_id=user.id, pet=pet, now=T0, eager=True)
+
+    assert pet.next_npc_at is not None
+    wait = (pet.next_npc_at.replace(tzinfo=UTC) - T0).total_seconds()
+    assert wait <= 5 * 60 * 1.4
+
+    for _ in range(10):
+        assert encounters.sync(db_session, user_id=user.id, pet=pet, now=T0, eager=True) == []
+    assert pet.next_npc_at.replace(tzinfo=UTC) - T0 == timedelta(seconds=wait)
+
+
 class _PickDictation(random.Random):
     """`rng` luôn bốc ra dạng chép chính tả, để luật "chỉ giao từ vựng" đo được thật.
 

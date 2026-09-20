@@ -415,6 +415,29 @@ function SpeciesModal({
               }}
             />
           </label>
+          <label className="flex items-center gap-2 text-small text-ink-muted">
+            {/* Cân nặng để khoe trên thẻ profile (gam). Số vui cùng dải hẹp,
+                không phải số đo thật — để trống là "?" ở phía học viên. */}
+            Cân nặng (g)
+            <Input
+              type="number"
+              min={0}
+              defaultValue={row.weight_grams ?? ""}
+              placeholder="?"
+              aria-label={`Weight in grams for ${row.code}`}
+              className="w-20"
+              onBlur={(event) => {
+                const raw = event.target.value.trim();
+                const next = raw === "" ? null : Number(raw);
+                if (
+                  (next === null || (Number.isInteger(next) && next >= 0)) &&
+                  next !== row.weight_grams
+                ) {
+                  onPatch(row.code, { weight_grams: next });
+                }
+              }}
+            />
+          </label>
         </div>
       </div>
 

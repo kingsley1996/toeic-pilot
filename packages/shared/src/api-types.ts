@@ -3997,6 +3997,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pet/nickname": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Rename Pet
+         * @description Đặt tên riêng cho con ĐANG NUÔI.
+         *
+         *     Tên rỗng (hoặc `null`) là gỡ tên chứ không phải lỗi: giao diện rơi về tên
+         *     loài, cùng quy ước "null là chưa có" mà cột này mang từ đầu. Tên sống trên
+         *     từng con — đổi con khác rồi quay lại thì tên cũ vẫn ở đó.
+         */
+        patch: operations["rename_pet_api_v1_pet_nickname_patch"];
+        trace?: never;
+    };
     "/api/v1/pet/position": {
         parameters: {
             query?: never;
@@ -6195,6 +6219,8 @@ export interface components {
              * @enum {string}
              */
             tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
+            /** Weight Grams */
+            weight_grams?: number | null;
         };
         /**
          * CreaturePublic
@@ -8682,6 +8708,17 @@ export interface components {
             /** Mood */
             mood: number;
         };
+        /**
+         * PetNickname
+         * @description Đặt tên riêng cho con ĐANG NUÔI.
+         *
+         *     `None` hoặc chuỗi rỗng = gỡ tên, giao diện rơi về tên loài. Tên sống trên
+         *     từng con (`pet_owned`), không phải trên góc: mỗi con là một sinh vật riêng.
+         */
+        PetNickname: {
+            /** Nickname */
+            nickname?: string | null;
+        };
         /** PetOwnedPublic */
         PetOwnedPublic: {
             /** Code */
@@ -8747,6 +8784,8 @@ export interface components {
             tile_x: number;
             /** Tile Y */
             tile_y: number;
+            /** Weight Grams */
+            weight_grams?: number | null;
             /** Xp */
             xp: number;
             /** Xp For Next */
@@ -8808,6 +8847,8 @@ export interface components {
             tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
             /** Tile */
             tile: number;
+            /** Weight Grams */
+            weight_grams?: number | null;
         };
         /**
          * PetSpeciesEdit
@@ -8834,6 +8875,8 @@ export interface components {
             tier?: ("common" | "uncommon" | "rare" | "epic" | "legendary" | "god") | null;
             /** Tile */
             tile?: number | null;
+            /** Weight Grams */
+            weight_grams?: number | null;
         };
         /**
          * PetSpeciesPublic
@@ -8870,6 +8913,8 @@ export interface components {
             tier: "common" | "uncommon" | "rare" | "epic" | "legendary" | "god";
             /** Tile */
             tile: number;
+            /** Weight Grams */
+            weight_grams?: number | null;
         };
         /**
          * PetSwitch
@@ -17759,7 +17804,9 @@ export interface operations {
     };
     read_encounters_api_v1_pet_encounters_get: {
         parameters: {
-            query?: never;
+            query?: {
+                watching?: boolean;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -17773,6 +17820,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EncounterPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -17830,6 +17886,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EncounterHint"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rename_pet_api_v1_pet_nickname_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetNickname"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetPublic"];
                 };
             };
             /** @description Validation Error */
