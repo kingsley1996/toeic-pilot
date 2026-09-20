@@ -764,6 +764,18 @@ SPECIES_WEIGHT_GRAMS: dict[str, int] = {
     "unicorn-x": 9000,
     "white-tiger": 9000,
     "wolf": 6000,
+    # Loài admin tự thêm trên prod (không có trong bộ gieo mặc định): cùng dải.
+    "ankylosaurus": 16000,
+    "black-tortoise": 14000,
+    "dogfire": 5000,
+    "dragonmyth": 16000,
+    "fox": 4500,
+    "goat-king": 8000,
+    "ky-lan-bang": 9000,
+    "mermaid": 3000,
+    "pegasus-01": 8500,
+    "thien-ho": 5000,
+    "wyvern-bang": 15000,
 }
 
 
