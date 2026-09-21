@@ -23,7 +23,7 @@ from __future__ import annotations
 import logging
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from sqlalchemy import delete, select
@@ -66,6 +66,9 @@ def parse_kb_file(path: Path) -> dict[str, str]:
         raise ValueError(f"{path.name}: thiếu ref trong frontmatter")
     meta.setdefault("title", path.stem)
     meta.setdefault("keywords", "")
+    # Metadata guides §5.1 — rỗng nghĩa là "chưa khai", xem `sync_knowledge`.
+    for key in ("source", "doc_type", "topic", "language", "content_version"):
+        meta.setdefault(key, "")
     meta["content"] = text[match.end() :].strip()
     return meta
 
@@ -75,6 +78,12 @@ class Synced:
     updated: list[str]
     created: list[str]
     removed: list[str]
+    # File thiếu metadata — giữ giá trị cũ (hoặc NULL với hàng mới), không fail.
+    # Người viết bổ sung vào frontmatter rồi sync lại là xong.
+    warnings: list[str] = field(default_factory=list)
+
+
+_META_KEYS = ("source", "doc_type", "topic", "language", "content_version")
 
 
 def sync_knowledge(db: Session, directory: Path) -> Synced:
@@ -90,21 +99,34 @@ def sync_knowledge(db: Session, directory: Path) -> Synced:
     synced = Synced(updated=[], created=[], removed=[])
 
     for ref, meta in files.items():
+        missing = sorted(key for key in _META_KEYS if not meta[key])
+        if missing:
+            synced.warnings.append(f"{ref}: chưa khai {', '.join(missing)}")
         row = existing.get(ref)
         if row is None:
-            db.add(
-                KnowledgeChunk(
-                    ref=ref, title=meta["title"], keywords=meta["keywords"], content=meta["content"]
-                )
+            chunk = KnowledgeChunk(
+                ref=ref, title=meta["title"], keywords=meta["keywords"], content=meta["content"]
             )
+            for key in _META_KEYS:
+                setattr(chunk, key, meta[key] or None)
+            db.add(chunk)
             synced.created.append(ref)
-        elif (row.title, row.keywords, row.content) != (
+            continue
+        # Chuỗi rỗng trong file nghĩa là "chưa khai" — giữ giá trị cũ chứ không
+        # ghi đè bằng rỗng. Muốn đổi một trường thì ghi giá trị mới vào file.
+        fresh = {key: meta[key] or getattr(row, key) for key in _META_KEYS}
+        if (row.title, row.keywords, row.content) != (
             meta["title"],
             meta["keywords"],
             meta["content"],
         ):
             row.title, row.keywords, row.content = meta["title"], meta["keywords"], meta["content"]
             synced.updated.append(ref)
+        for key, value in fresh.items():
+            if getattr(row, key) != value:
+                setattr(row, key, value)
+                if ref not in synced.updated:
+                    synced.updated.append(ref)
 
     for ref in set(existing) - set(files):
         db.execute(delete(KnowledgeChunk).where(KnowledgeChunk.ref == ref))

@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
+from time import perf_counter
 from typing import Any
 
 from sqlalchemy import func, select
@@ -243,12 +244,18 @@ def _execute(db: Session, user: User, call: ToolCall) -> str:
         return json.dumps({"error": str(exc)[:500]}, ensure_ascii=False)
 
 
-def _knowledge_section(db: Session, query: str) -> str:
+def _knowledge_section(db: Session, query: str) -> tuple[str, list[tuple[float, KnowledgeChunk]]]:
+    """Trả về văn bản ngữ cảnh KÈM các chunk đã lấy — người gọi ghi telemetry.
+
+    Tách hai việc vì nơi duy nhất cần refs/scores là log theo `request_id`
+    (§5.3: phân biệt retriever hỏng hay LLM bỏ evidence); bản thân prompt chỉ
+    cần văn bản.
+    """
     chunks: list[tuple[float, KnowledgeChunk]] = search_knowledge(db, query)
     if not chunks:
-        return "(không có mục tài liệu nào khớp câu hỏi)"
+        return "(không có mục tài liệu nào khớp câu hỏi)", []
     blocks = [f"[{chunk.ref}] {chunk.title}\n{chunk.content}" for _, chunk in chunks]
-    return "\n\n".join(blocks)
+    return "\n\n".join(blocks), chunks
 
 
 def ask(
@@ -267,7 +274,22 @@ def ask(
     conversation = _find(session, user)
 
     prompt = load("assistant_chat")
-    context = f"{SITE_GUIDE}\n\nTÀI LIỆU TRANG:\n{_knowledge_section(session, text)}"
+    started = perf_counter()
+    section, chunks = _knowledge_section(session, text)
+    retrieval_ms = int((perf_counter() - started) * 1000)
+    # Dấu vết retrieval theo `request_id` — ghép với hàng `ai_interaction` cùng
+    # id là trả lời được "retriever hỏng hay LLM bỏ evidence" (§5.3) mà không
+    # reproduce request. Cột DB cho ba số này thuộc P2; log là đủ để chẩn đoán.
+    logger.info(
+        "kb_retrieval",
+        extra={
+            "request_id": request_id,
+            "refs": [chunk.ref for _, chunk in chunks],
+            "scores": [round(score, 4) for score, _ in chunks],
+            "retrieval_ms": retrieval_ms,
+        },
+    )
+    context = f"{SITE_GUIDE}\n\nTÀI LIỆU TRANG:\n{section}"
     system = prompt.render(context=context)
 
     # Lịch sử đi vào các tin nhắn user/assistant, KHÔNG bao giờ vào `system` —

@@ -32,6 +32,16 @@ class KnowledgeChunk(Base):
     # tra lexical, vì title với content hiếm khi nhắc đúng từ người dùng dùng.
     keywords: Mapped[str] = mapped_column(Text, nullable=False, server_default="")
     content: Mapped[str] = mapped_column(Text, nullable=False)
+    # Metadata theo guides §5.1 — đọc từ frontmatter file markdown, xem
+    # `services/knowledge.py::sync_knowledge`. Nullable toàn bộ: hàng cũ giữ
+    # NULL nghĩa là "chưa khai", và thiếu key trong file thì giữ giá trị cũ
+    # chứ không ghi đè bằng rỗng. Không enum ở đây: thêm một loại tài liệu mới
+    # không được phép thành một migration.
+    source: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    doc_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    topic: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    language: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    content_version: Mapped[str | None] = mapped_column(String(16), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

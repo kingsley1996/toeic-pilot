@@ -48,6 +48,8 @@ def main() -> int:
             "· xoá:",
             result.removed,
         )
+        for warning in result.warnings:
+            print("[dry-run] thiếu metadata:", warning)
         return 0
 
     session = SessionLocal()
@@ -59,6 +61,8 @@ def main() -> int:
     print(f"tạo mới: {result.created}")
     print(f"cập nhật: {result.updated}")
     print(f"xoá: {result.removed}")
+    for warning in result.warnings:
+        print(f"thiếu metadata: {warning}")
     return 0
 
 

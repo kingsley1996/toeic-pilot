@@ -106,8 +106,17 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Lớp AI
 
-- [ ] **Eval harness** — chưa có. `AI-ENGINEERING-PLAN` §7e nói phải làm *cùng lúc* với
-      tính năng; bốn tính năng AI đã ship trước nó, nên đây là nợ có thật
+- [x] ~~**Eval harness**~~ — **Xong lát offline (2026-09-21).** `app/content/eval_ai.py`:
+      4 suite L1/L2 (coach 10 / shape 7 / retrieval 16 / planner 6), baseline 39/39,
+      chặn theo `eval/thresholds.json` (`--fail-under`), CI job `api` chạy sau pytest.
+      Judge live (`--judge`, khác model sinh) + runbook KPI enrich B3/B4/B6 ở
+      `eval/baseline.md`. Còn: judge lần đầu, viết lại §9b, prompt caching
+- [x] ~~**RAG đo được (P1)**~~ — **Xong (2026-09-21).** `knowledge_chunk` thêm 5 cột
+      metadata nullable (migration 095) + sync từ frontmatter (16/16 mục đủ, 0 warning);
+      suite retrieval in Recall/MRR; mỗi lượt assistant ghi log `kb_retrieval`
+      (refs+scores+ms theo `request_id`) để phân biệt retriever hỏng hay LLM bỏ
+      evidence. So lexical vs vector: 1.00/1.00/2ms vs 1.00/0.94/~3s → giữ nguyên,
+      xem lại theo ADR-016. Còn: cột DB cho telemetry (P2), viết lại §9b
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
 - [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17

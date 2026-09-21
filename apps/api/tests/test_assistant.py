@@ -80,6 +80,35 @@ def test_LICH_SU_luot_truoc_di_vao_messages_USER_khong_vao_system(db_session, fa
     assert user_texts[-1] == "câu thứ hai"
 
 
+def test_kb_retrieval_ghi_refs_theo_request_id(db_session, fake_redis, caplog) -> None:
+    """Dấu vết để phân biệt retriever hỏng hay LLM bỏ evidence (§5.3).
+
+    Ghép `request_id` của log này với hàng `ai_interaction` cùng id là trả lời
+    được mà không reproduce request.
+    """
+    from app.models.knowledge import KnowledgeChunk
+
+    db_session.add(
+        KnowledgeChunk(
+            ref="ruby",
+            title="Ruby",
+            keywords="ruby, ví, kiếm ruby",
+            content="Ruby kiếm từ việc học, tiêu trong gacha.",
+        )
+    )
+    db_session.commit()
+    user = a_user(db_session)
+    gw = build_gateway(db_session, fake_redis, FakeProvider(reply="ok"))
+
+    with caplog.at_level("INFO", logger="app.services.assistant"):
+        ask(db_session, gw, user=user, question="ruby kiếm ở đâu", request_id="req-1")
+
+    rec = next(r for r in caplog.records if r.message == "kb_retrieval")
+    assert rec.request_id == "req-1"
+    assert "ruby" in rec.refs
+    assert isinstance(rec.retrieval_ms, int)
+
+
 def test_ask_MOT_NGUOI_MOT_CUOC(db_session, fake_redis) -> None:
     user = a_user(db_session)
     gw = build_gateway(db_session, fake_redis, FakeProvider())

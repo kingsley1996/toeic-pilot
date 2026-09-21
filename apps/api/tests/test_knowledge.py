@@ -157,3 +157,44 @@ def test_PARSE_file_hong_thi_BAO_RO_FILE_NAO(tmp_path) -> None:
     broken.write_text("---\ntitle: X\n---\n\nthân\n", encoding="utf-8")
     with pytest.raises(ValueError, match="khong-ref.md"):
         parse_kb_file(broken)
+
+
+def _write_full(path, ref: str, *, topic: str | None = None, version: str | None = "1") -> None:
+    meta = f"---\nref: {ref}\ntitle: {ref}\nkeywords: {ref}\n"
+    meta += "source: content/kb/x.md\ndoc_type: guide\n"
+    if topic is not None:
+        meta += f"topic: {topic}\n"
+    meta += "language: vi\n"
+    if version is not None:
+        meta += f"content_version: {version}\n"
+    (path / f"{ref}.md").write_text(meta + f"---\n\nthân {ref}\n", encoding="utf-8")
+
+
+def test_SYNC_ghi_metadata_tu_frontmatter(db_session: Session, tmp_path) -> None:
+    _write_full(tmp_path, "a-doc", topic="scoring")
+    result = sync_knowledge(db_session, tmp_path)
+    db_session.commit()
+    assert result.warnings == []
+    chunk = db_session.scalar(select(KnowledgeChunk).where(KnowledgeChunk.ref == "a-doc"))
+    assert (chunk.source, chunk.doc_type, chunk.topic, chunk.language, chunk.content_version) == (
+        "content/kb/x.md",
+        "guide",
+        "scoring",
+        "vi",
+        "1",
+    )
+
+
+def test_SYNC_thieu_metadata_thi_GIU_CU_va_CANH_BAO(db_session: Session, tmp_path) -> None:
+    """File thiếu key thì giữ giá trị cũ, không ghi đè bằng rỗng — và nói ra."""
+    _write_full(tmp_path, "a-doc", topic="scoring", version="2")
+    sync_knowledge(db_session, tmp_path)
+    db_session.commit()
+
+    _write_full(tmp_path, "a-doc", topic=None, version=None)
+    result = sync_knowledge(db_session, tmp_path)
+    db_session.commit()
+    assert result.updated == []
+    assert any("a-doc" in w and "topic" in w for w in result.warnings)
+    chunk = db_session.scalar(select(KnowledgeChunk).where(KnowledgeChunk.ref == "a-doc"))
+    assert (chunk.topic, chunk.content_version) == ("scoring", "2")
