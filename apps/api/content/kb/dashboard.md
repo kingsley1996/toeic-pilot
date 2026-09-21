@@ -1,11 +1,16 @@
 ---
 ref: dashboard
 title: Trang chủ và việc hôm nay
-keywords: trang chủ, dashboard, việc hôm nay, daily task, nhiệm vụ, hôm nay
+keywords: trang chủ, dashboard, việc hôm nay, daily task, nhiệm vụ, hôm nay, kế hoạch, test đầu vào, placement
+source: content/kb/dashboard.md
+doc_type: guide
+topic: dashboard
+language: vi
+content_version: 2
 ---
 
-Trang chủ `/dashboard` mở lên là biết ngay làm gì: ba việc hôm nay luôn đúng ba dòng, luôn cùng thứ tự — học từ vựng mới, ôn từ đến hạn, nghe chép. Mỗi việc có thanh tiến độ theo số lượng đã làm, và khi đủ mục tiêu sẽ hiện dấu hoàn thành kèm phần thưởng XP.
+Trang chủ `/dashboard` mở lên là biết ngay hôm nay làm gì. Trên cùng là ba việc mỗi ngày — học từ vựng mới, ôn từ đến hạn, nghe chép — mỗi việc có thanh tiến độ và khi đủ mục tiêu sẽ hiện dấu hoàn thành kèm thưởng XP lẫn ruby. Ba việc suy ra từ hoạt động thật trong ngày: học ở trang nào thì việc đó tự cập nhật, không cần bấm nhận ở đâu.
 
-Ba việc này suy ra từ hoạt động thật của bạn trong ngày, nên làm gì cũng được ghi nhận: làm việc trên từng trang (từ vựng, ôn tập, dictation) thì việc hôm nay tự cập nhật, không cần bấm "nhận thưởng".
+Xuống dưới là các khối tiến độ: từ vựng (đã thuộc / đang học / tổng số), lịch hoạt động 365 ngày, tổng XP và level. Lượt làm bài dở dang nằm riêng một khu để quay lại làm tiếp, không lẫn với lượt đã nộp.
 
-Xuống dưới là khối tiến độ từ vựng (đã thuộc / đang học / tổng số), lịch hoạt động 365 ngày, tổng XP và level. Đăng nhập là thấy; chưa làm gì trong ngày thì các việc hiện ở mức 0 — đó là trạng thái bình thường, không phải lỗi.
+Người chưa làm test đầu vào sẽ thấy lời mời làm bài placement ngay trên dashboard — đó là cửa vào duy nhất của kế hoạch học cá nhân: chưa biết trình độ hiện tại thì chưa có gì để lên kế hoạch. Lần đầu vào trang còn có tour 4 bước chỉ các khu chính; xem một lần là thôi, không chào lại.
