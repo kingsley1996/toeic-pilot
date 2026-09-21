@@ -12,7 +12,7 @@ lại được đối xử khác hẳn nhau.
 
 |  | Sổ **runtime** | Sổ **sinh đề** |
 |---|---|---|
-| Ở đâu | `app/services/llm/prompts/` (4 tệp) | `app/content/exam/prompts/` (11 tệp) |
+| Ở đâu | `app/services/llm/prompts/` (5 tệp) | `app/content/exam/prompts/` (11 tệp) |
 | Chạy lúc nào | trong một **request** của người học | trên máy soạn nội dung |
 | Định dạng | `.md` | `.md` |
 | Có phiên bản | ✅ `tên@hash12` | ✅ `tên@hash12` |
@@ -45,7 +45,7 @@ là mô-đun riêng.
 
 ## 1. Runtime — trả lời người học trong request
 
-Bốn tệp, `app/services/llm/prompts/`. Mỗi tệp gắn với một `FEATURE`, và feature
+Năm tệp, `app/services/llm/prompts/`. Mỗi tệp gắn với một `FEATURE`, và feature
 là khoá tra bảng giá và bảng cấu hình model (`ai_feature_config`).
 
 | Prompt | Dòng | `FEATURE` | Gọi từ | Việc |
@@ -54,6 +54,7 @@ là khoá tra bảng giá và bảng cấu hình model (`ai_feature_config`).
 | `coach_chat.md` | 17 | `coach_chat` | `services/chat.py` | Hỏi tiếp về câu vừa được giải thích |
 | `assistant_chat.md` | 25 | `assistant_chat` | `services/assistant.py` | Trợ lý toàn trang, có gọi công cụ |
 | `label_facet.md` | 14 | `enrich_label` | `content/enrich_skills.py` | Gán một facet nhãn cho một câu |
+| `judge_coach.md` | 24 | `eval_judge` | `content/eval_ai.py` | Chấm lại reply coach, so với kỳ vọng case |
 
 `label_facet.md` là ngoại lệ đáng chú ý: nó **nằm trong họ runtime nhưng chỉ chạy
 offline**. Nó ở đây vì nó cần đúng thứ họ runtime có — truy được bản nào gán
@@ -150,6 +151,7 @@ visible" ở mục liệt kê thứ-không-được-có là phủ định hai l�
 | Mục đích | Số prompt | Dạng | Có phiên bản |
 |---|---|---|---|
 | Runtime, trả lời người học | 4 | `.md` | ✅ |
+| Runtime, giám khảo eval | 1 | `.md` | ✅ |
 | Sinh đề | 7 | `.md` | ✅ |
 | Dựng blueprint | 3 | `.md` | ✅ |
 | Kiểm đề, phần critic | 1 | `.md` | ✅ |
@@ -157,7 +159,7 @@ visible" ở mục liệt kê thứ-không-được-có là phủ định hai l�
 | Kiểm đề, verify/ambiguity | 11 | Python | ❌ |
 | Sinh ảnh | 2 khối + 1 bộ dựng | Python | ❌ (không gửi LLM) |
 
-**15 trên 30 prompt có phiên bản**, và phần còn lại ở lại dạng Python vì lý do
+**16 trên 31 prompt có phiên bản**, và phần còn lại ở lại dạng Python vì lý do
 riêng chứ không vì bỏ sót: luật hình là template hai tầng, `check_prompts` đã là
 mô-đun riêng với prompt ngắn, và prompt vẽ ảnh không đi qua LLM.
 

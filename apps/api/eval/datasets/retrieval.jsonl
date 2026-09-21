@@ -1,0 +1,19 @@
+{"id": "r-scoring", "query": "quy đổi điểm thi", "relevant_refs": ["tests-scoring"]}
+{"id": "r-review", "query": "từ đến hạn ôn tập", "relevant_refs": ["vocabulary-review"]}
+{"id": "r-ruby", "query": "kiếm ruby ở đâu", "relevant_refs": ["ruby"]}
+{"id": "r-coach", "query": "trợ giảng giải thích câu sai", "relevant_refs": ["coach"]}
+{"id": "r-dictation", "query": "nghe chép chấm thế nào", "relevant_refs": ["dictation"]}
+{"id": "r-badges", "query": "huy hiệu thành tích", "relevant_refs": ["badges"]}
+{"id": "r-login", "query": "quên mật khẩu đăng nhập", "relevant_refs": ["login"]}
+{"id": "r-tests", "query": "luyện đề nộp bài", "relevant_refs": ["tests"]}
+{"id": "r-profile", "query": "mục tiêu ngày thi của tôi", "relevant_refs": ["profile"]}
+{"id": "r-history", "query": "xem lại lượt làm cũ", "relevant_refs": ["attempts-history"]}
+{"id": "r-petland", "query": "cho thú cưng ăn", "relevant_refs": ["petland"]}
+{"id": "r-xp", "query": "trần xp mỗi ngày", "relevant_refs": ["xp-level"]}
+{"id": "r-vocab", "query": "học từ vựng flashcard", "relevant_refs": ["vocabulary-topic"]}
+{"id": "r-dashboard", "query": "việc hôm nay", "relevant_refs": ["dashboard"]}
+{"id": "r-assistant", "query": "trợ lý ai dùng thế nào", "relevant_refs": ["assistant"]}
+{"id": "r-pricing", "query": "điểm ước lượng bản quyền", "relevant_refs": ["pricing-note"]}
+{"id": "r-placement", "query": "test đầu vào ở đâu", "relevant_refs": ["placement"]}
+{"id": "r-plan", "query": "kế hoạch học ở đâu", "relevant_refs": ["study-plan"]}
+{"id": "r-grammar", "query": "học ngữ pháp", "relevant_refs": ["grammar"]}

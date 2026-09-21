@@ -66,6 +66,10 @@ apps/api/content/generated/tp-2024-*/
 # sai. Chúng là ngữ liệu mà mọi lời giải Part 1 dựa vào, nên mất chúng nghĩa là
 # lần backfill sau viết lại những lời giải sai, và không có gì báo.
 
+# Báo cáo eval AI (`--report`, tái tạo bằng một lệnh chạy). Số ghim vào
+# `eval/baseline.md`, không giữ file report trong git.
+apps/api/eval/reports/
+
 # Logs
 *.log
 

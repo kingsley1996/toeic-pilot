@@ -28,6 +28,10 @@ apps/api/content/generated/**
 # thiết kế phải chạy `prettier --write` sau mỗi lần kéo thả.
 apps/web/public/pet/map.json
 
+# Case eval AI: do `json.dump` ghi ra từng dòng, không ai gõ tay. Cùng lý do
+# như ba khối trên: format của Prettier và của Python không bao giờ khớp.
+apps/api/eval/datasets/*.jsonl
+
 # Bản dịch segment video: do script backfill ghi ra bằng `json.dump`, không ai
 # gõ tay. Cùng lý do như hai khối trên: format của Prettier và của Python không
 # bao giờ khớp, nên mỗi lần thêm bản dịch là một lần CI đỏ vì khoảng trắng.

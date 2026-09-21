@@ -72,6 +72,11 @@ jobs:
         # Postgres is a service here, so the integration-marked concurrency tests
         # run for real rather than skipping.
         run: uv run pytest -v
+      - name: AI eval (offline)
+        # L1+L2 tất định, không mạng/khoá. Chặn theo eval/thresholds.json: đổi
+        # prompt mà chất lượng tụt dưới ngưỡng thì không merge (guides §8 L4).
+        # L3 (judge live, tốn tiền) chạy tay khi đổi prompt sinh, xem eval/baseline.md.
+        run: uv run python -m app.content.eval_ai --suite all --fail-under
 
       - name: Embed the knowledge base into Pinecone
         # Chạy `embed_kb` mỗi lần main thay đổi: knowledge_chunk trên Pinecone phải
