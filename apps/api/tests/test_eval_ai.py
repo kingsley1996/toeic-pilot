@@ -14,11 +14,11 @@ from app.content.eval_ai import (
     diff_against,
     eval_planner,
     eval_retrieval,
-    eval_shape,
     load_cases,
     main,
 )
 from app.content.eval_suites.coach import eval_coach, judge_coach
+from app.content.eval_suites.shape import eval_shape
 from app.core.ai_budget import Budget
 from app.core.database import Base
 from app.services.llm.fake import FakeProvider
