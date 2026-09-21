@@ -54,7 +54,7 @@ là khoá tra bảng giá và bảng cấu hình model (`ai_feature_config`).
 | `coach_chat.md` | 17 | `coach_chat` | `services/chat.py` | Hỏi tiếp về câu vừa được giải thích |
 | `assistant_chat.md` | 25 | `assistant_chat` | `services/assistant.py` | Trợ lý toàn trang, có gọi công cụ |
 | `label_facet.md` | 14 | `enrich_label` | `content/enrich_skills.py` | Gán một facet nhãn cho một câu |
-| `judge_coach.md` | 24 | `eval_judge` | `content/eval_ai.py` | Chấm lại reply coach, so với kỳ vọng case |
+| `judge_coach.md` | 24 | `eval_judge` | `content/eval_suites/coach.py` | Chấm lại reply coach, so với kỳ vọng case |
 
 `label_facet.md` là ngoại lệ đáng chú ý: nó **nằm trong họ runtime nhưng chỉ chạy
 offline**. Nó ở đây vì nó cần đúng thứ họ runtime có — truy được bản nào gán

@@ -12,14 +12,13 @@ from app.content.eval_ai import (
     SuiteReport,
     _mean_or_none,
     diff_against,
-    eval_coach,
     eval_planner,
     eval_retrieval,
     eval_shape,
-    judge_coach,
     load_cases,
     main,
 )
+from app.content.eval_suites.coach import eval_coach, judge_coach
 from app.core.ai_budget import Budget
 from app.core.database import Base
 from app.services.llm.fake import FakeProvider
@@ -240,7 +239,7 @@ def test_JUDGE_khong_json_thi_BAO() -> None:
 
 
 def test_PARSE_JUDGE_khong_json_thi_NONE() -> None:
-    from app.content.eval_ai import _parse_judge
+    from app.content.eval_suites.coach import _parse_judge
 
     verdict, _ = _parse_judge("không rõ")
     assert verdict is None
@@ -348,3 +347,120 @@ def test_BASELINE_case_moi_rot_thi_chan() -> None:
 def test_BASELINE_thieu_file_thi_BAO_dung(tmp_path: Path, capsys) -> None:
     assert main(["--suite", "coach", "--baseline", str(tmp_path / "khong-co.json")]) == 2
     assert "eval hỏng" in capsys.readouterr().err
+
+
+def test_CODES_ma_hoa_dung_loai_loi() -> None:
+    coach = eval_coach(
+        [
+            {
+                "id": "sai-chu-cai",
+                "question": {
+                    "part": 5,
+                    "prompt_text": "Q?",
+                    "options": [
+                        {"label": "A", "content": "x"},
+                        {"label": "B", "content": "y"},
+                    ],
+                    "correct": "B",
+                },
+                "labels": {},
+                "chosen": "A",
+                "expect_pass": True,
+                "reply": {
+                    "chan_doan": "Bạn nhầm chủ động với bị động ở câu này.",
+                    "vi_sao_ban_chon_sai": "Phương án A chủ động nên nghĩa vô lý.",
+                    "vi_sao_dap_an_dung": "Đáp án đúng là C vì hợp nghĩa nhất.",
+                    "quy_tac": "Đọc kỹ đề trước khi chọn đáp án.",
+                    "bay_tuong_tu": "Câu khó thì đọc lại đề rồi mới chốt.",
+                },
+            }
+        ]
+    )
+    assert coach.failures[0].code == "wrong_correct_answer"
+    assert coach.failures[0].kind == "system"
+
+    shape = eval_shape(
+        [
+            {
+                "id": "trong",
+                "labels": ["A"],
+                "text": "  ",
+                "expect_pass": False,
+                "expect_problem": "rỗng",
+            }
+        ]
+    )
+    assert shape.failures == []
+    shape = eval_shape([{"id": "trong", "labels": ["A"], "text": "  ", "expect_pass": True}])
+    assert shape.failures[0].code == "empty_output"
+
+
+def test_JUDGE_confusion_va_dem_thu_lai() -> None:
+    from app.services.llm.base import LLMError
+
+    calls = [0]
+
+    def flaky(request):
+        calls[0] += 1
+        if calls[0] == 1:
+            raise LLMError("502 quá tải")
+        ok = "AAA" in request.system
+        return '{"dat": true, "ly_do": "đạt"}' if ok else '{"dat": false, "ly_do": "sai"}'
+
+    from app.services.llm.fake import FakeProvider as Fake
+
+    provider = Fake(reply=flaky)
+    cases = [_judge_case(True), _judge_case(False)]
+    cases[0]["question"]["prompt_text"] = "AAA"
+    report = judge_coach(cases, _judge_gateway_with(provider))
+    assert (report.passed, report.total) == (2, 2)
+    assert report.metrics["agreement"] == 1.0
+    assert report.metrics["judge_precision"] == 1.0
+    assert "TP1" in report.summary and "TN1" in report.summary
+    assert "thử lại 1 lượt" in report.summary
+
+
+def test_RETRIEVAL_vector_thieu_keys_thi_BAO_TO(tmp_path: Path) -> None:
+    (tmp_path / "a.md").write_text(
+        "---\nref: diem\ntitle: Điểm thi\nkeywords: điểm\n---\n\nCó điểm.\n",
+        encoding="utf-8",
+    )
+    try:
+        eval_retrieval(
+            [{"id": "q", "query": "điểm", "relevant_refs": ["diem"]}], tmp_path, "vector"
+        )
+    except EvalError as exc:
+        assert "vector" in str(exc)
+    else:
+        raise AssertionError("phải ném EvalError khi thiếu keys")
+
+
+def test_MANIFEST_ghim_va_phat_hien_lech(tmp_path: Path) -> None:
+    from app.content.eval_ai import _manifest_status, write_manifest
+
+    (tmp_path / "coach_explain.jsonl").write_text('{"id": "x"}\n', encoding="utf-8")
+    for name in ("explanation_shape", "retrieval", "planner"):
+        (tmp_path / f"{name}.jsonl").write_text("", encoding="utf-8")
+    target = write_manifest(tmp_path)
+    assert target.name == "manifest.json"
+    version, match = _manifest_status(tmp_path)
+    assert match is True and version != "none"
+    (tmp_path / "coach_explain.jsonl").write_text('{"id": "y"}\n', encoding="utf-8")
+    _, match = _manifest_status(tmp_path)
+    assert match is False
+
+
+def test_REPORT_json_co_kind_code_metadata(tmp_path: Path, capsys) -> None:
+    import json
+
+    out = tmp_path / "r.json"
+    assert main(["--suite", "shape", "--report", str(out)]) == 0
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["run"]["git_sha"]
+    assert set(data["datasets"]["hashes"]) == {
+        "coach_explain",
+        "explanation_shape",
+        "retrieval",
+        "planner",
+    }
+    assert data["suites"][0]["metrics"] == {}
