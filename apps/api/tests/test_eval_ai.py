@@ -9,6 +9,9 @@ from sqlalchemy.orm import Session
 from app.content.eval_ai import (
     CaseFailure,
     EvalError,
+    SuiteReport,
+    _mean_or_none,
+    diff_against,
     eval_coach,
     eval_planner,
     eval_retrieval,
@@ -132,6 +135,7 @@ def test_LOAD_case_thieu_khoa_thi_BAO_dong(tmp_path: Path) -> None:
 
 def test_CASE_FAILURE_la_dataclass() -> None:
     assert CaseFailure(id="x", detail="y").detail == "y"
+    assert CaseFailure(id="x", detail="y").kind == "system"
 
 
 def _plan_case(**over: object) -> dict:
@@ -227,6 +231,120 @@ def test_JUDGE_bat_dong_thi_BAO() -> None:
 
 
 def test_JUDGE_khong_json_thi_BAO() -> None:
+    # Fake chặn non-JSON ngay ở provider (có schema) nên thành lỗi gọi —
+    # hạ tầng, không phải judge chấm sai.
     gw = _judge_gateway("không rõ")
     report = judge_coach([_judge_case(True)], gw)
     assert report.passed == 0 and "JSON" in report.failures[0].detail
+    assert report.failures[0].kind == "infrastructure"
+
+
+def test_PARSE_JUDGE_khong_json_thi_NONE() -> None:
+    from app.content.eval_ai import _parse_judge
+
+    verdict, _ = _parse_judge("không rõ")
+    assert verdict is None
+    verdict, _ = _parse_judge('{"dat": "yes"}')
+    assert verdict is None
+
+
+def test_COACH_case_hong_thi_kind_dataset() -> None:
+    report = eval_coach([{"id": "thieu", "reply": {}}])
+    assert report.failures[0].kind == "dataset"
+
+
+def test_RETRIEVAL_doi_nhieu_ref_hon_limit_thi_case_hong(tmp_path: Path) -> None:
+    (tmp_path / "a.md").write_text(
+        "---\nref: diem\ntitle: Điểm thi\nkeywords: điểm\n---\n\nCó điểm.\n",
+        encoding="utf-8",
+    )
+    report = eval_retrieval(
+        [{"id": "q", "query": "điểm", "relevant_refs": ["a", "b", "c", "d", "e"]}],
+        tmp_path,
+    )
+    assert report.passed == 0
+    assert report.failures[0].kind == "dataset"
+    assert "top-4" in report.failures[0].detail
+
+
+def test_MEAN_khong_so_lieu_thi_NA_chu_khong_100() -> None:
+    assert _mean_or_none([]) is None
+    assert _mean_or_none([1.0, 0.5]) == 0.75
+
+
+def test_NOREDIS_cham_vao_thi_LO() -> None:
+    from app.content.eval_ai import _NoRedis
+
+    try:
+        _NoRedis().incrby("x", 1)
+    except Exception as exc:  # noqa: BLE001 — test cố ý chạm
+        assert "offline" in str(exc)
+    else:
+        raise AssertionError("phải ném lỗi")
+
+
+def test_JUDGE_schema_khai_day_du_kieu_va_cam_field_la() -> None:
+    from app.services.llm.fake import FakeProvider as Fake
+
+    provider = Fake(reply='{"dat": true, "ly_do": "đạt"}')
+    assert judge_coach([_judge_case(True)], _judge_gateway_with(provider)).passed == 1
+    seen_schema = provider.seen[0][0].schema
+    assert seen_schema is not None
+    assert seen_schema["properties"] == {"dat": {"type": "boolean"}, "ly_do": {"type": "string"}}
+    assert seen_schema["additionalProperties"] is False
+
+
+def _judge_gateway_with(provider) -> Gateway:
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.tables["ai_interaction"].create(engine)
+    return Gateway(
+        providers={"fake": provider},
+        routes={Tier.CHEAP: ("fake", "fake-1"), Tier.STRONG: ("fake", "fake-1")},
+        budget=Budget(limit_micro=1_000_000_000),
+        redis_client=redis.Redis(),
+        session_factory=lambda: Session(engine),
+    )
+
+
+def test_BASELINE_case_moi_rot_thi_chan() -> None:
+    baseline = {
+        "suites": [
+            {"name": "coach", "passed": 10, "total": 10, "failures": [], "metrics": {}},
+            {
+                "name": "retrieval",
+                "passed": 16,
+                "total": 16,
+                "failures": [],
+                "metrics": {"recall": 1.0, "mrr": 0.92},
+            },
+        ]
+    }
+    current = [
+        SuiteReport(
+            name="coach", passed=9, total=10, failures=[CaseFailure("c1", "sai", "system")]
+        ),
+        SuiteReport(
+            name="retrieval",
+            passed=16,
+            total=16,
+            metrics={"recall": 1.0, "mrr": 0.85},
+        ),
+    ]
+    lines, has_new = diff_against(baseline, current)
+    assert has_new is True
+    assert any("MỚI RỚT: c1" in line for line in lines)
+    assert any("mrr 0.92→0.85" in line for line in lines)
+
+    same, has_new = diff_against(
+        baseline,
+        [
+            SuiteReport(name="coach", passed=10, total=10),
+            SuiteReport(name="retrieval", passed=16, total=16),
+        ],
+    )
+    assert has_new is False
+
+
+def test_BASELINE_thieu_file_thi_BAO_dung(tmp_path: Path, capsys) -> None:
+    assert main(["--suite", "coach", "--baseline", str(tmp_path / "khong-co.json")]) == 2
+    assert "eval hỏng" in capsys.readouterr().err

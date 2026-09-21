@@ -15,11 +15,15 @@ L3 (giám khảo LLM) thuộc lát sau — flag `--judge` ở đây mới chỉ 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import subprocess
 import sys
+import uuid
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, cast
 
 import redis
 from sqlalchemy import create_engine
@@ -53,10 +57,16 @@ class EvalError(RuntimeError):
     """Case hay cấu hình hỏng — lỗi của người viết eval, không phải của hệ thống."""
 
 
+# Case hỏng vì dataset viết sai KHÁC system hỏng vì sản phẩm sai. Gộp hai thứ
+# thì một case viết hỏng trông như regression của model (§2.3).
+FailureKind = Literal["dataset", "system", "judge", "infrastructure"]
+
+
 @dataclass(slots=True)
 class CaseFailure:
     id: str
     detail: str
+    kind: FailureKind = "system"
 
 
 @dataclass(slots=True)
@@ -68,6 +78,8 @@ class SuiteReport:
     version: str = ""
     # Dòng tóm tắt metric riêng của suite (vd recall/MRR) — in kèm, không chặn.
     summary: str = ""
+    # Số máy đọc được, để so baseline (§4): {"recall": 1.0, "mrr": 0.92}.
+    metrics: dict[str, float] = field(default_factory=dict)
 
 
 def load_cases(path: Path, required: set[str]) -> list[dict[str, Any]]:
@@ -167,7 +179,7 @@ def eval_coach(cases: list[dict[str, Any]]) -> SuiteReport:
         try:
             ctx = _coach_context(case)
         except EvalError as exc:
-            report.failures.append(CaseFailure(cid, str(exc)))
+            report.failures.append(CaseFailure(cid, str(exc), "dataset"))
             continue
         reply = case.get("reply")
         text = json.dumps(reply, ensure_ascii=False) if isinstance(reply, dict) else str(reply)
@@ -192,7 +204,7 @@ def eval_shape(cases: list[dict[str, Any]]) -> SuiteReport:
         report.total += 1
         raw_labels = case.get("labels", [])
         if not isinstance(raw_labels, list):
-            report.failures.append(CaseFailure(cid, "labels phải là mảng"))
+            report.failures.append(CaseFailure(cid, "labels phải là mảng", "dataset"))
             continue
         problem = check_shape(str(case.get("text", "")), [str(x) for x in raw_labels])
         subs = [str(case["expect_problem"])] if case.get("expect_problem") else []
@@ -211,8 +223,28 @@ def _offline_embed(text: str) -> list[float]:
     raise EmbeddingUnavailable("eval offline — chỉ đo lexical")
 
 
-def _mean(xs: list[float]) -> float:
-    return sum(xs) / len(xs) if xs else 1.0
+class _NoRedis:
+    """Redis giả cho eval offline — chạm vào là lỗi TO, không phải treo.
+
+    `llm_select` không truyền user_id nên budget không bao giờ chạm Redis ở
+    suite planner. Dùng client thật ở đây sẽ lặng lẽ KẾT NỐI được ở máy có
+    Redis chạy (như CI) và hỏng ở máy không có — đúng loại test chập chờn theo
+    môi trường (§11).
+    """
+
+    def __getattr__(self, name: str) -> Any:
+        raise EvalError(f"eval offline gọi Redis.{name} — đường này phải chạy không Redis")
+
+
+def _mean_or_none(xs: list[float]) -> float | None:
+    """Trung bình, hoặc None khi không có quan sát nào — không có số liệu
+    KHÁC đạt điểm tuyệt đối (§2.2)."""
+    return sum(xs) / len(xs) if xs else None
+
+
+# Top-K của suite retrieval — case đòi nhiều ref hơn số này là case viết hỏng
+# (§2.1), không phải retriever hỏng. Đổi số này thì đổi cả dataset.
+RETRIEVAL_LIMIT = 4
 
 
 def eval_retrieval(cases: list[dict[str, Any]], kb_dir: Path) -> SuiteReport:
@@ -240,13 +272,24 @@ def eval_retrieval(cases: list[dict[str, Any]], kb_dir: Path) -> SuiteReport:
             for case in cases:
                 cid = str(case.get("id", "?"))
                 report.total += 1
-                rows = search_knowledge(session, str(case.get("query", "")), limit=4)
+                rows = search_knowledge(session, str(case.get("query", "")), limit=RETRIEVAL_LIMIT)
                 got = [chunk.ref for _, chunk in rows]
                 raw_want = case.get("relevant_refs", [])
                 if not isinstance(raw_want, list) or not raw_want:
-                    report.failures.append(CaseFailure(cid, "relevant_refs phải là mảng"))
+                    report.failures.append(
+                        CaseFailure(cid, "relevant_refs phải là mảng", "dataset")
+                    )
                     continue
                 want = [str(r) for r in raw_want]
+                if len(want) > RETRIEVAL_LIMIT:
+                    report.failures.append(
+                        CaseFailure(
+                            cid,
+                            f"đòi {len(want)} ref trong top-{RETRIEVAL_LIMIT} — case viết hỏng",
+                            "dataset",
+                        )
+                    )
+                    continue
                 ranks = [got.index(r) for r in want if r in got]
                 recalls.append(len(ranks) / len(want))
                 rrs.append(1 / (min(ranks) + 1) if ranks else 0.0)
@@ -255,7 +298,13 @@ def eval_retrieval(cases: list[dict[str, Any]], kb_dir: Path) -> SuiteReport:
                     report.passed += 1
                 else:
                     report.failures.append(CaseFailure(cid, f"thiếu {missing}, top-4 là {got}"))
-            report.summary = f"recall {_mean(recalls):.2f} · MRR {_mean(rrs):.2f}"
+            recall = _mean_or_none(recalls)
+            mrr = _mean_or_none(rrs)
+            if recall is None or mrr is None:
+                report.summary = "recall n/a · MRR n/a"
+            else:
+                report.summary = f"recall {recall:.2f} · MRR {mrr:.2f}"
+                report.metrics = {"recall": recall, "mrr": mrr}
     finally:
         embeddings.embed_query = previous
         engine.dispose()
@@ -291,16 +340,16 @@ def _planner_case(cid: str, case: dict[str, Any]) -> CaseFailure | None:
     """Chạy `llm_select` thật với FakeProvider — đo lớp CHỌN, không đo model."""
     raw_weak = case.get("weak", [])
     if not isinstance(raw_weak, list):
-        return CaseFailure(cid, "weak phải là mảng")
+        return CaseFailure(cid, "weak phải là mảng", "dataset")
     weak: list[tuple[str, int, int]] = []
     for entry in raw_weak:
         if not isinstance(entry, list) or len(entry) != 3:
-            return CaseFailure(cid, f"weak entry hỏng: {entry!r}")
+            return CaseFailure(cid, f"weak entry hỏng: {entry!r}", "dataset")
         code, correct, total = entry
         weak.append((str(code), int(correct), int(total)))
     budget = case.get("budget")
     if not isinstance(budget, int) or isinstance(budget, bool):
-        return CaseFailure(cid, "budget phải là số nguyên")
+        return CaseFailure(cid, "budget phải là số nguyên", "dataset")
 
     from app.core.database import Base
 
@@ -313,7 +362,7 @@ def _planner_case(cid: str, case: dict[str, Any]) -> CaseFailure | None:
                 _seed_planner(session, case.get("seed_topics", []))
                 session.commit()
             except EvalError as exc:
-                return CaseFailure(cid, str(exc))
+                return CaseFailure(cid, str(exc), "dataset")
             reply = case.get("reply")
             if isinstance(reply, dict):
                 text = json.dumps(reply, ensure_ascii=False)
@@ -325,9 +374,8 @@ def _planner_case(cid: str, case: dict[str, Any]) -> CaseFailure | None:
                 # fake-1 có giá 0 trong bảng giá — đúng model cho eval offline.
                 routes={Tier.CHEAP: ("fake", "fake-1"), Tier.STRONG: ("fake", "fake-1")},
                 budget=Budget(limit_micro=1_000_000_000),
-                # Không kết nối đi đâu: `llm_select` không truyền user_id nên
-                # budget không bao giờ chạm Redis ở suite này.
-                redis_client=redis.Redis(),
+                # Ép offline: chạm Redis là lỗi ngay, không kết nối lặng lẽ.
+                redis_client=cast(redis.Redis, _NoRedis()),
                 session_factory=lambda: Session(engine),
             )
             items = llm_select(
@@ -352,11 +400,11 @@ def _planner_case(cid: str, case: dict[str, Any]) -> CaseFailure | None:
                     return CaseFailure(cid, f"ref treo ở {item.label}")
             raw_expected = case.get("expected", [])
             if not isinstance(raw_expected, list):
-                return CaseFailure(cid, "expected phải là mảng")
+                return CaseFailure(cid, "expected phải là mảng", "dataset")
             want: list[tuple[str, int, str]] = []
             for exp in raw_expected:
                 if not isinstance(exp, dict):
-                    return CaseFailure(cid, f"expected entry hỏng: {exp!r}")
+                    return CaseFailure(cid, f"expected entry hỏng: {exp!r}", "dataset")
                 want.append((str(exp.get("kind")), int(exp.get("part", 0)), str(exp.get("label"))))
             got = [(item.kind, item.part, item.label) for item in items]
             if got != want:
@@ -412,14 +460,22 @@ def judge_coach(cases: list[dict[str, Any]], gateway: Gateway) -> SuiteReport:
     """
     prompt = load("judge_coach")
     report = SuiteReport(name="judge-coach", version=prompt.version)
-    schema: dict[str, object] = {"type": "object", "required": ["dat", "ly_do"]}
+    # Schema khai đầy đủ kiểu + cấm field lạ — model trả thừa/thiếu là hỏng
+    # validation, không phải hỏng lặng lẽ (§3). Parser bên dưới vẫn giữ làm
+    # lớp phòng thủ thứ hai cho provider không tôn trọng schema.
+    schema: dict[str, object] = {
+        "type": "object",
+        "properties": {"dat": {"type": "boolean"}, "ly_do": {"type": "string"}},
+        "required": ["dat", "ly_do"],
+        "additionalProperties": False,
+    }
     for case in cases:
         cid = str(case.get("id", "?"))
         report.total += 1
         try:
             ctx = _coach_context(case)
         except EvalError as exc:
-            report.failures.append(CaseFailure(cid, str(exc)))
+            report.failures.append(CaseFailure(cid, str(exc), "dataset"))
             continue
         reply = case.get("reply")
         if isinstance(reply, dict):
@@ -444,13 +500,17 @@ def judge_coach(cases: list[dict[str, Any]], gateway: Gateway) -> SuiteReport:
                 )
             )
         except Exception as exc:  # noqa: BLE001 — một case judge hỏng không giết cả lượt
-            report.failures.append(CaseFailure(cid, f"judge gọi hỏng: {exc}"))
+            # Lỗi gọi (timeout, 503, quota, key) là hạ tầng, KHÁC judge chấm sai
+            # (§12): sập provider không được đọc thành regression chất lượng.
+            report.failures.append(CaseFailure(cid, f"judge gọi hỏng: {exc}", "infrastructure"))
             continue
         verdict, note = _parse_judge(result.text)
         if verdict is None:
-            report.failures.append(CaseFailure(cid, note))
+            report.failures.append(CaseFailure(cid, note, "judge"))
         elif verdict != bool(case.get("expect_pass", True)):
-            report.failures.append(CaseFailure(cid, f"judge bất đồng (verdict={verdict}): {note}"))
+            report.failures.append(
+                CaseFailure(cid, f"judge bất đồng (verdict={verdict}): {note}", "judge")
+            )
         else:
             report.passed += 1
     return report
@@ -490,6 +550,123 @@ def load_thresholds(path: Path) -> dict[str, float]:
     return out
 
 
+def _git_sha() -> str:
+    """SHA ngắn của HEAD — fail-soft vì eval phải chạy được cả ngoài git."""
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=True,
+        )
+    except Exception:  # noqa: BLE001 — mọi lý do đều thành "unknown"
+        return "unknown"
+    return out.stdout.strip() or "unknown"
+
+
+def _dataset_hashes(datasets: Path) -> dict[str, str]:
+    """SHA256 từng tệp dataset — report nào cũng truy được nó chấm cái gì."""
+    hashes: dict[str, str] = {}
+    for name in ("coach_explain", "explanation_shape", "retrieval", "planner"):
+        path = datasets / f"{name}.jsonl"
+        try:
+            hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+        except OSError:
+            hashes[name] = "missing"
+    return hashes
+
+
+def _report_json(
+    reports: list[SuiteReport],
+    *,
+    against: str | None,
+    suite_arg: str,
+    floors: dict[str, float],
+) -> dict[str, Any]:
+    """Report reproducible (§5): đọc report này là biết đã chấm cái gì,
+    bằng gì, trên mã nào — không cần hỏi người chạy."""
+    return {
+        "run": {
+            "id": uuid.uuid4().hex[:12],
+            "at": datetime.now(UTC).isoformat(),
+            "git_sha": _git_sha(),
+            "suite_arg": suite_arg,
+            "against": against,
+            "thresholds": floors,
+        },
+        "datasets": _dataset_hashes(DATASETS),
+        "suites": [
+            {
+                "name": r.name,
+                "version": r.version,
+                "summary": r.summary,
+                "metrics": r.metrics,
+                "passed": r.passed,
+                "total": r.total,
+                "failures": [{"id": f.id, "kind": f.kind, "detail": f.detail} for f in r.failures],
+            }
+            for r in reports
+        ],
+    }
+
+
+def diff_against(baseline: dict[str, Any], reports: list[SuiteReport]) -> tuple[list[str], bool]:
+    """So lượt chạy hiện tại với một report baseline (§4).
+
+    Trả về (các dòng in, có_case_mới_rớt). Case rớt MỚI là regression và chặn;
+    case đã hết rớt chỉ là tin tốt để đọc. Delta metric chỉ là số so sánh —
+    chặn tuyệt đối vẫn do ngưỡng (--fail-under) quyết.
+    """
+    raw_suites = baseline.get("suites", [])
+    old: dict[str, dict[str, Any]] = (
+        {s["name"]: s for s in raw_suites} if isinstance(raw_suites, list) else {}
+    )
+    lines: list[str] = []
+    new_failures = False
+    for report in reports:
+        prev = old.get(report.name)
+        if not isinstance(prev, dict):
+            lines.append(f"[{report.name}] chưa có baseline — bỏ qua so sánh")
+            continue
+        old_ids = {f["id"] for f in prev.get("failures", []) if isinstance(f, dict)}
+        new_ids = {f.id for f in report.failures}
+        fresh = sorted(new_ids - old_ids)
+        fixed = sorted(old_ids - new_ids)
+        if fresh:
+            new_failures = True
+        old_total = int(prev.get("total", 0) or 0)
+        old_passed = int(prev.get("passed", 0) or 0)
+        line = f"[{report.name}] {old_passed}/{old_total} → {report.passed}/{report.total}"
+        old_metrics = prev.get("metrics", {})
+        if isinstance(old_metrics, dict) and old_metrics and report.metrics:
+            deltas = " · ".join(
+                f"{k} {float(old_metrics.get(k, 0.0)):.2f}→{v:.2f}"
+                for k, v in sorted(report.metrics.items())
+            )
+            line += f" · {deltas}"
+        if not fresh and not fixed:
+            line += " (không đổi)"
+        lines.append(line)
+        for cid in fresh:
+            lines.append(f"  MỚI RỚT: {cid}")
+        for cid in fixed:
+            lines.append(f"  đã hết rớt: {cid}")
+    return lines, new_failures
+
+
+def load_baseline(path: Path) -> dict[str, Any]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        raise EvalError(f"không đọc được baseline {path}: {exc}") from exc
+    except ValueError as exc:
+        raise EvalError(f"baseline {path} không phải JSON ({exc})") from exc
+    if not isinstance(data, dict) or "suites" not in data:
+        raise EvalError(f"baseline {path} thiếu 'suites'")
+    return data
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Bộ eval AI offline (L1+L2, không mạng)")
     parser.add_argument("--suite", choices=[*SUITES, "all"], default="all")
@@ -497,6 +674,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--kb-dir", type=Path, default=KB_DIR)
     parser.add_argument("--against", default=None, help="nhãn lần chạy, vd prompt version")
     parser.add_argument("--report", type=Path, default=None, help="ghi tóm tắt JSON")
+    parser.add_argument(
+        "--baseline",
+        type=Path,
+        default=None,
+        help="report baseline để so hồi quy: case MỚI RỚT là chặn (§4)",
+    )
     parser.add_argument(
         "--fail-under",
         action="store_true",
@@ -532,7 +715,7 @@ def main(argv: list[str] | None = None) -> int:
         report = judge_coach(cases, gateway)
         print(f"[judge-coach [{report.version}]] {report.passed}/{report.total} đồng ý")
         for failure in report.failures:
-            print(f"  bất đồng {failure.id} — {failure.detail}")
+            print(f"  bất đồng [{failure.kind}] {failure.id} — {failure.detail}")
         return 1 if report.failures else 0
 
     names = list(SUITES) if args.suite == "all" else [args.suite]
@@ -550,8 +733,9 @@ def main(argv: list[str] | None = None) -> int:
         extra = f" · {report.summary}" if report.summary else ""
         print(f"[{report.name}{at}] {report.passed}/{report.total} đạt{extra}")
         for failure in report.failures:
-            print(f"  rớt {failure.id} — {failure.detail}")
+            print(f"  rớt [{failure.kind}] {failure.id} — {failure.detail}")
             failed += 1
+    floors: dict[str, float] = {}
     if args.fail_under:
         try:
             floors = load_thresholds(EVAL_DIR / "thresholds.json")
@@ -569,24 +753,24 @@ def main(argv: list[str] | None = None) -> int:
         if thin:
             print(f"TỤT NGƯỠNG: {', '.join(thin)}", file=sys.stderr)
             return 1
+    if args.baseline is not None:
+        try:
+            baseline = load_baseline(args.baseline)
+        except EvalError as exc:
+            print(f"eval hỏng: {exc}", file=sys.stderr)
+            return 2
+        lines, has_new = diff_against(baseline, reports)
+        print(f"so với baseline {args.baseline}:")
+        for line in lines:
+            print(f"  {line}")
+        if has_new:
+            print("HỒI QUY: có case mới rớt so với baseline", file=sys.stderr)
+            return 1
     if args.report is not None:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(
             json.dumps(
-                {
-                    "against": args.against,
-                    "suites": [
-                        {
-                            "name": r.name,
-                            "version": r.version,
-                            "summary": r.summary,
-                            "passed": r.passed,
-                            "total": r.total,
-                            "failures": [{"id": f.id, "detail": f.detail} for f in r.failures],
-                        }
-                        for r in reports
-                    ],
-                },
+                _report_json(reports, against=args.against, suite_arg=args.suite, floors=floors),
                 ensure_ascii=False,
                 indent=2,
             ),

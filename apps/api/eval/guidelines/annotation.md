@@ -11,6 +11,36 @@ case phải ra cùng một kết quả, và máy chấm thay người cũng vậ
   prompt biết sửa chỗ nào thay vì viết lại mù.
 - Sửa dataset để hệ thống đang sai thành đạt là gian lận. Dataset chỉ đổi khi câu
   hỏi/ngữ liệu thật đổi, hoặc khi chính luật chấm đổi (và lúc đó ghi lý do vào PR).
+- Mọi case rớt mang một **kind**: `dataset` (case/cấu hình viết sai — không phải
+  lỗi sản phẩm), `system` (sản phẩm hành xử sai), `judge` (giám khảo chấm sai),
+  `infrastructure` (gọi hỏng: timeout, 503, quota, key). Sập provider không được
+  đọc thành regression chất lượng.
+
+## 5. Hồi quy — `--report` và `--baseline`
+
+Luồng đúng khi đổi prompt/model/retrieval:
+
+```bash
+uv run python -m app.content.eval_ai --suite all --report eval/reports/base.json
+# ... đổi code ...
+uv run python -m app.content.eval_ai --suite all --baseline eval/reports/base.json
+```
+
+- Case **MỚI RỚT** so với baseline là chặn (exit 1), kể cả khi ngưỡng tuyệt đối
+  vẫn qua — ngưỡng bắt "đang tệ", baseline bắt "vừa tệ đi".
+- Case **đã hết rớt** chỉ là tin tốt để đọc, không phải lý do merge.
+- Delta metric (recall/MRR) là số so sánh; chặn tuyệt đối do `--fail-under` quyết.
+- Report JSON mang đủ để tái hiện: run id, giờ UTC, git SHA, hash từng dataset,
+  prompt version, ngưỡng, args. Đọc report là biết đã chấm cái gì mà không cần
+  hỏi người chạy.
+
+## 6. Judge — schema strict, bất đồng là hiệu chuẩn
+
+- Schema gọi judge khai đủ kiểu từng trường + cấm field lạ; parser JSON giữ làm
+  lớp phòng thủ thứ hai cho provider không tôn trọng schema.
+- Judge phải khác model sinh — trùng thì runner từ chối trước khi tốn một xu.
+- Bất đồng với cổng tất định là tín hiệu HIỆU CHUẨN (judge sai hay case sai),
+  không phải tín hiệu bỏ qua. Lỗi gọi (timeout/503/quota) là hạ tầng, kind riêng.
 
 ## 1. Suite `coach` — lời giải thích câu làm sai
 
@@ -49,12 +79,15 @@ Chạy lexical trên chính `content/kb/*.md` trong SQLite memory — không m�
 không khoá, deterministic.
 
 - Case đạt khi **mọi ref trong `relevant_refs` nằm trong top-4**.
+- `relevant_refs` dài hơn top-4 là case viết hỏng (kind `dataset`), không phải
+  retriever hỏng — đòi 5 ref trong top-4 thì không bao giờ đạt được.
 - Query viết như người học gõ thật (ngắn, thiếu dấu cũng được), không nhồi từ
   khóa trong title vào query để "giúp" retriever.
 - Query tự nhiên mà rớt là tín hiệu thật (thiếu từ khóa, thiếu mục tài liệu) —
   sửa tài liệu hoặc từ khóa, không sửa query cho dễ.
 - Metrics: Recall@4 là cổng (mọi ref phải trong top-4); MRR trung bình in kèm để
-  so cấu hình retrieval với nhau, không chặn.
+  so cấu hình retrieval với nhau, không chặn. Không có quan sát nào thì in `n/a`
+  — không có số liệu KHÁC đạt tuyệt đối.
 - Quy lỗi production (§5.3): mỗi lượt assistant ghi log `kb_retrieval` theo
   `request_id` (refs + scores + ms). Ghép với hàng `ai_interaction` cùng id:
   ref đúng mà trả lời sai là LLM bỏ evidence; ref sai ngay từ đầu là retriever hỏng.

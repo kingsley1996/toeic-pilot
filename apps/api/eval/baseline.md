@@ -17,6 +17,14 @@ uv run python -m app.content.eval_ai --suite all --fail-under
 (thêm case) thì chạy lại baseline ở đây trước để lấy số mới — số trong bảng này
 là trần đã đo, không phải mục tiêu phấn đấu.
 
+Luồng hồi quy khi đổi code (case MỚI RỚT là chặn, kể cả ngưỡng vẫn qua):
+
+```bash
+uv run python -m app.content.eval_ai --suite all --report eval/reports/base.json
+# ... đổi prompt/model/retrieval ...
+uv run python -m app.content.eval_ai --suite all --baseline eval/reports/base.json
+```
+
 Chi phí lượt chạy offline: 0 (FakeProvider + SQLite memory, không gọi model).
 
 ## So sánh lexical vs vector (ADR-016, đo 2026-09-21)
