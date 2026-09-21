@@ -10,14 +10,13 @@ from app.content.eval_ai import (
     CaseFailure,
     EvalError,
     SuiteReport,
-    _mean_or_none,
     diff_against,
     eval_planner,
-    eval_retrieval,
     load_cases,
     main,
 )
 from app.content.eval_suites.coach import eval_coach, judge_coach
+from app.content.eval_suites.retrieval import _mean_or_none, eval_retrieval
 from app.content.eval_suites.shape import eval_shape
 from app.core.ai_budget import Budget
 from app.core.database import Base
@@ -272,7 +271,7 @@ def test_MEAN_khong_so_lieu_thi_NA_chu_khong_100() -> None:
 
 
 def test_NOREDIS_cham_vao_thi_LO() -> None:
-    from app.content.eval_ai import _NoRedis
+    from app.content.eval_suites.retrieval import _NoRedis
 
     try:
         _NoRedis().incrby("x", 1)
