@@ -155,6 +155,24 @@ Bốn job, tất cả bắt buộc:
 
 Branch protection **chưa bật**; CI xanh mà không ai bắt buộc thì chỉ là gợi ý.
 
+**Trước mọi commit + push, chạy đủ cổng CI ở local, xanh hết mới đẩy.**
+Lệnh nào đỏ thì sửa ở local, không bao giờ "đẩy lên cho CI kiểm hộ":
+
+```bash
+cd apps/api
+uv run ruff check app tests && uv run ruff format --check app tests
+uv run mypy && uv run pytest -m "not integration"
+cd ../..
+pnpm exec prettier --check .          # toàn repo, không chỉ tệp vừa sửa
+pnpm gen:api-types && git diff --exit-code -- packages/shared
+pnpm --filter @toeic-pilot/web exec tsc --noEmit
+pnpm --filter @toeic-pilot/web lint   # = eslint; xem bẫy build ở dưới
+```
+
+`pnpm build` trên host khi container `web` đang chạy sẽ trộn `.next` (bẫy đã
+ghi ở §Lệnh) — nên build web ở local chỉ chạy khi đã `docker compose stop web`,
+không thì để job `web` của CI gánh phần đó và đọc kết quả trước khi merge.
+
 ## Bẫy chung
 
 - **`.dockerignore` là chịu lực.** Thiếu nó, `COPY apps/api ./` ghi đè virtualenv Linux của

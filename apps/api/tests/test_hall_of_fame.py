@@ -112,7 +112,9 @@ def test_avatar_url_follows_the_profile_key(client: TestClient, db_session: Sess
     db_session.commit()
     _user(db_session, "plain@example.com", xp=5, name="Trơn")
 
-    entries = {e["display_name"]: e for e in client.get("/api/v1/hall-of-fame/users").json()["entries"]}
+    entries = {
+        e["display_name"]: e for e in client.get("/api/v1/hall-of-fame/users").json()["entries"]
+    }
     assert entries["Mặt"]["avatar_url"] is not None
     assert "avatar/abc123.jpg" in entries["Mặt"]["avatar_url"]
     assert entries["Trơn"]["avatar_url"] is None
