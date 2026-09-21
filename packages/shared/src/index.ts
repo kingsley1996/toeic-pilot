@@ -84,6 +84,10 @@ export type FeedbackCreate = components["schemas"]["FeedbackCreate"];
 export type FeedbackType = components["schemas"]["FeedbackCreate"]["type"];
 export type FeedbackStatus = components["schemas"]["FeedbackPublic"]["status"];
 export type PetPublic = components["schemas"]["PetPublic"];
+export type HallUserEntry = components["schemas"]["HallUserEntry"];
+export type HallPetEntry = components["schemas"]["HallPetEntry"];
+export type HallUserBoard = components["schemas"]["HallUserBoard"];
+export type HallPetBoard = components["schemas"]["HallPetBoard"];
 export type PetMove = components["schemas"]["PetMove"];
 export type PetSpeciesPublic = components["schemas"]["PetSpeciesPublic"];
 /**
@@ -286,6 +290,9 @@ export const API_ROUTES = {
   // đọc là thứ bảo đảm không ai bỏ lỡ được cuộc nào sinh ra trong lúc họ ngủ
   // (ADR-012 §1). Cùng hình dạng với `GET /daily-tasks`.
   petEncounters: "/api/v1/pet/encounters",
+  // Sảnh danh vọng: đọc công khai, đăng nhập thì kèm highlight dòng của mình.
+  hallUsers: "/api/v1/hall-of-fame/users",
+  hallPets: "/api/v1/hall-of-fame/pets",
   petEncounterAnswer: (id: string) => `/api/v1/pet/encounters/${id}/answer`,
   petEncounterHint: (id: string) => `/api/v1/pet/encounters/${id}/hint`,
   // Đổi con đang nuôi. `PATCH /pet` chứ không phải một đường riêng: nó sửa một

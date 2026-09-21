@@ -3639,6 +3639,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hall-of-fame/pets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Pet Board
+         * @description Top N thú ĐANG NUÔI theo (level, xp). Chưa mở trứng thì `my_rank` null.
+         */
+        get: operations["read_pet_board_api_v1_hall_of_fame_pets_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hall-of-fame/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read User Board
+         * @description Top N học viên theo tổng XP. Khách đọc được, `my_rank` null.
+         */
+        get: operations["read_user_board_api_v1_hall_of_fame_users_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/listening/captions": {
         parameters: {
             query?: never;
@@ -7679,6 +7719,62 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HallPetBoard */
+        HallPetBoard: {
+            /** Entries */
+            entries: components["schemas"]["HallPetEntry"][];
+            /** My Rank */
+            my_rank: number | null;
+            /** Total */
+            total: number;
+        };
+        /** HallPetEntry */
+        HallPetEntry: {
+            /** Display Name */
+            display_name: string;
+            /** Is Me */
+            is_me: boolean;
+            /** Level */
+            level: number;
+            /** Nickname */
+            nickname: string | null;
+            /** Rank */
+            rank: number;
+            /** Sheet */
+            sheet: string;
+            /** Species */
+            species: string;
+            /** Tier */
+            tier: string;
+            /** Tile */
+            tile: number;
+            /** Xp */
+            xp: number;
+        };
+        /** HallUserBoard */
+        HallUserBoard: {
+            /** Entries */
+            entries: components["schemas"]["HallUserEntry"][];
+            /** My Rank */
+            my_rank: number | null;
+            /** Total */
+            total: number;
+        };
+        /** HallUserEntry */
+        HallUserEntry: {
+            /** Avatar Url */
+            avatar_url: string | null;
+            /** Display Name */
+            display_name: string;
+            /** Is Me */
+            is_me: boolean;
+            /** Level */
+            level: number;
+            /** Rank */
+            rank: number;
+            /** Xp Total */
+            xp_total: number;
         };
         /** ImageAssetPublic */
         ImageAssetPublic: {
@@ -17444,6 +17540,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GrammarTopicDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_pet_board_api_v1_hall_of_fame_pets_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HallPetBoard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_user_board_api_v1_hall_of_fame_users_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HallUserBoard"];
                 };
             };
             /** @description Validation Error */

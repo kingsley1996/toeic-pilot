@@ -526,6 +526,17 @@ export default function TodayPage() {
               </ButtonLink>
             </div>
           )}
+          {/* Xem mình đứng đâu giữa mọi người: một dòng chữ, không thêm panel —
+              dashboard đã đủ số, và đây là đường đi ngắm chứ không phải việc
+              phải làm. */}
+          <div className="mt-5 border-t border-rule pt-4 text-center">
+            <Link
+              href="/hall-of-fame"
+              className="text-small font-semibold text-ink-muted hover:text-ink"
+            >
+              Xem sảnh danh vọng →
+            </Link>
+          </div>
         </Panel>
 
         <Panel className="flex flex-col p-5 sm:p-6">

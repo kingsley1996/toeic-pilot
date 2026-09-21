@@ -589,6 +589,12 @@ export default function ProfilePage() {
                 Huy hiệu
               </Link>
               <Link
+                href="/hall-of-fame"
+                className="text-small font-semibold text-ink-muted hover:text-ink"
+              >
+                Sảnh danh vọng
+              </Link>
+              <Link
                 href="/learn/attempts"
                 className="text-small font-semibold text-ink-muted hover:text-ink"
               >

@@ -6492,6 +6492,182 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HallPetBoard": {
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/HallPetEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "my_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "My Rank"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entries",
+          "my_rank",
+          "total"
+        ],
+        "title": "HallPetBoard",
+        "type": "object"
+      },
+      "HallPetEntry": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "is_me": {
+            "title": "Is Me",
+            "type": "boolean"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "nickname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nickname"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "sheet": {
+            "title": "Sheet",
+            "type": "string"
+          },
+          "species": {
+            "title": "Species",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "tile": {
+            "title": "Tile",
+            "type": "integer"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "display_name",
+          "level",
+          "xp",
+          "species",
+          "nickname",
+          "tier",
+          "tile",
+          "sheet",
+          "is_me"
+        ],
+        "title": "HallPetEntry",
+        "type": "object"
+      },
+      "HallUserBoard": {
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/HallUserEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "my_rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "My Rank"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entries",
+          "my_rank",
+          "total"
+        ],
+        "title": "HallUserBoard",
+        "type": "object"
+      },
+      "HallUserEntry": {
+        "properties": {
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "is_me": {
+            "title": "Is Me",
+            "type": "boolean"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "xp_total": {
+            "title": "Xp Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "display_name",
+          "avatar_url",
+          "level",
+          "xp_total",
+          "is_me"
+        ],
+        "title": "HallUserEntry",
+        "type": "object"
+      },
       "ImageAssetPublic": {
         "properties": {
           "alt_text": {
@@ -25882,6 +26058,108 @@
         "summary": "Get Grammar Topic",
         "tags": [
           "learning"
+        ]
+      }
+    },
+    "/api/v1/hall-of-fame/pets": {
+      "get": {
+        "description": "Top N thú ĐANG NUÔI theo (level, xp). Chưa mở trứng thì `my_rank` null.",
+        "operationId": "read_pet_board_api_v1_hall_of_fame_pets_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HallPetBoard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read Pet Board",
+        "tags": [
+          "hall"
+        ]
+      }
+    },
+    "/api/v1/hall-of-fame/users": {
+      "get": {
+        "description": "Top N học viên theo tổng XP. Khách đọc được, `my_rank` null.",
+        "operationId": "read_user_board_api_v1_hall_of_fame_users_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HallUserBoard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read User Board",
+        "tags": [
+          "hall"
         ]
       }
     },

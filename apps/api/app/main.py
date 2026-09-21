@@ -30,6 +30,7 @@ from app.api.routes import (
     auth,
     coach,
     feedback,
+    hall_of_fame,
     health,
     learning_dictation,
     learning_grammar,
@@ -91,6 +92,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(hall_of_fame.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(oauth.router, prefix="/api/v1")
 app.include_router(profile.router, prefix="/api/v1")
