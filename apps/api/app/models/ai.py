@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -14,11 +15,15 @@ from sqlalchemy import (
     Uuid,
     func,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
 
 __all__ = ["AI_INTERACTION_STATUSES", "AiInteraction"]
+
+# JSONB ở Postgres, JSON ở SQLite của bộ test — cùng khuôn `coach._JSON`.
+_JSON = JSON().with_variant(JSONB(), "postgresql")
 
 # `error` là một kết quả, không phải một sự vắng mặt. Chỉ ghi lượt gọi thành
 # công thì tỉ lệ hỏng của nhà cung cấp là bằng không trong mọi báo cáo, và cái
@@ -101,6 +106,22 @@ class AiInteraction(Base):
     # trong log không truy được về nguyên nhân, và cổng hồi quy của bộ eval
     # không có gì để so "tụt kể từ bản nào".
     prompt_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    # Telemetry retrieval/agent (P2, guides §11) — nullable hết: hàng cũ giữ
+    # NULL là "chưa đo". `workflow` tách khỏi `feature`: cùng một tính năng có
+    # thể chạy nhiều workflow (trả lời trực tiếp vs vòng tool), và câu hỏi
+    # "vòng tool tốn hơn bao nhiêu" chỉ trả lời được khi tách hai chiều này.
+    workflow: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    # Ref tài liệu đã lấy + thời gian lấy (ms). Ghép với log `kb_retrieval`
+    # cùng `request_id` là phân biệt được retriever hỏng hay LLM bỏ evidence.
+    retrieved_refs: Mapped[list[str] | None] = mapped_column(_JSON, nullable=True)
+    retrieval_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Chưa có reranker — cột tồn tại để ngày có thì đo được ngay, không phải
+    # migration lúc đó (§5.4: chỉ bật khi đo được lợi).
+    reranker_used: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Số bước agent (vòng tool). Đường một lượt gọi để NULL, không phải 1 —
+    # NULL là "không áp dụng", 1 là "một bước", gộp lại thì trung bình sai.
+    step_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     # Số tool model đã gọi trong lượt này. Nhồi sẵn ngữ cảnh và để model tự tra
     # là hai chi phí rất khác nhau, và không đếm thì không phân biệt được.

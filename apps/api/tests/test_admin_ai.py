@@ -154,6 +154,40 @@ def test_mat_cua_SET_khong_ghi_duoc_vao_cau(
     assert "thuộc về set" in response.json()["detail"]
 
 
+def test_thong_ke_co_trung_vi_retrieval_va_trung_binh_steps(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Hai số trả lời "RAG có chậm không" và "vòng tool có sâu không"."""
+    from app.models.ai import AiInteraction
+
+    db_session.add_all(
+        [
+            AiInteraction(
+                feature="assistant_chat",
+                provider="fake",
+                model="fake-1",
+                status="ok",
+                retrieval_ms=10,
+                step_count=1,
+            ),
+            AiInteraction(
+                feature="assistant_chat",
+                provider="fake",
+                model="fake-1",
+                status="ok",
+                retrieval_ms=30,
+                step_count=3,
+            ),
+            AiInteraction(feature="coach_explain", provider="fake", model="fake-1", status="ok"),
+        ]
+    )
+    db_session.commit()
+
+    stats = client.get("/api/v1/admin/ai/stats", headers=auth("admin")).json()
+    assert stats["retrieval_p50_ms"] == 30
+    assert stats["steps_avg"] == 2.0
+
+
 def test_thong_ke_tinh_do_dung_theo_TUNG_MAT(
     client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
 ) -> None:

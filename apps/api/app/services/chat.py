@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
+from time import perf_counter
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -87,7 +88,9 @@ def ask(
     text = text[:MAX_QUESTION_CHARS]
 
     anchor = Anchor(attempt_id=conversation.attempt_id, question_id=conversation.question_id)
+    started = perf_counter()
     snippets = retriever.fetch(query=text, anchor=anchor)
+    retrieval_ms = int((perf_counter() - started) * 1000)
     context = "\n\n".join(f"[{s.source}:{s.ref}]\n{s.text}" for s in snippets) or "(không có)"
 
     prompt = load("coach_chat")
@@ -109,6 +112,10 @@ def ask(
         user_id=conversation.user_id,
         prompt_version=prompt.version,
         request_id=request_id,
+        workflow="coach_qa",
+        retrieved_refs=[s.ref for s in snippets],
+        retrieval_ms=retrieval_ms,
+        step_count=1,
     )
 
     asked, answered = save_turn(session, conversation.id, text, result.text.strip())

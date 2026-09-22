@@ -117,6 +117,14 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       (refs+scores+ms theo `request_id`) để phân biệt retriever hỏng hay LLM bỏ
       evidence. So lexical vs vector: 1.00/1.00/2ms vs 1.00/0.94/~3s → giữ nguyên,
       xem lại theo ADR-016. Còn: cột DB cho telemetry (P2), viết lại §9b
+- [x] ~~**Telemetry AI vào sổ cái (P2)**~~ — **Xong (2026-09-21).** Migration 096:
+      `workflow`, `retrieved_refs`, `retrieval_ms`, `reranker_used`, `step_count`
+      (nullable hết); `gateway.run` nhận và ghi cả 5 vào sổ + transcript;
+      assistant truyền refs/ms/số vòng tool, coach_chat truyền refs/ms;
+      `/admin/ai/stats` thêm `retrieval_p50_ms` + `steps_avg` (contract regen).
+      Còn (cần traffic/thời gian, không làm trong một lát): thí nghiệm CHEAP vs
+      STRONG 1 tuần (luật: leo thang >15% hoặc L2 rớt thì giữ STRONG), prompt
+      caching (adapter chưa có `cache_control` — việc riêng), viết lại §9b
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
 - [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17

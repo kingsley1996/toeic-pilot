@@ -279,7 +279,7 @@ def ask(
     retrieval_ms = int((perf_counter() - started) * 1000)
     # Dấu vết retrieval theo `request_id` — ghép với hàng `ai_interaction` cùng
     # id là trả lời được "retriever hỏng hay LLM bỏ evidence" (§5.3) mà không
-    # reproduce request. Cột DB cho ba số này thuộc P2; log là đủ để chẩn đoán.
+    # reproduce request. Ba số này cũng đi vào sổ cái qua `gateway.run` bên dưới.
     logger.info(
         "kb_retrieval",
         extra={
@@ -308,6 +308,7 @@ def ask(
     ]
 
     result = LLMResult(text="", usage=Usage(), model="", provider="")
+    tool_calls = 0
     for _ in range(MAX_TOOL_ROUNDS):
         result = gateway.run(
             LLMRequest(
@@ -322,9 +323,16 @@ def ask(
             user_id=user.id,
             prompt_version=prompt.version,
             request_id=request_id,
+            workflow="assistant",
+            retrieved_refs=[chunk.ref for _, chunk in chunks],
+            retrieval_ms=retrieval_ms,
+            # Số lượt gọi công cụ TÍNH ĐẾN LƯỢT NÀY — vòng sau gọi nữa thì hàng
+            # sau ghi số lớn hơn; đọc theo thời gian là thấy vòng tool sâu dần.
+            step_count=tool_calls + 1,
         )
         if not result.tool_calls:
             break
+        tool_calls += len(result.tool_calls)
 
         messages.append(
             {

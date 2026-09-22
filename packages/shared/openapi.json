@@ -7773,6 +7773,14 @@
             "title": "Refused Calls",
             "type": "integer"
           },
+          "retrieval_p50_ms": {
+            "title": "Retrieval P50 Ms",
+            "type": "integer"
+          },
+          "steps_avg": {
+            "title": "Steps Avg",
+            "type": "number"
+          },
           "total_calls": {
             "title": "Total Calls",
             "type": "integer"
@@ -7789,6 +7797,8 @@
           "cached_tokens",
           "latency_p50_ms",
           "latency_p95_ms",
+          "retrieval_p50_ms",
+          "steps_avg",
           "by_feature",
           "by_model",
           "facets",

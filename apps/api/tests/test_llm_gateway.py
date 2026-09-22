@@ -63,6 +63,32 @@ def test_mot_luot_goi_thanh_cong_de_lai_mot_hang_so_cai(db_session, fake_redis):
     assert row.prompt_tokens == 100 and row.completion_tokens == 20
 
 
+def test_telemetry_retrieval_vao_so_cai(db_session, fake_redis):
+    """Hàng ghi cả dấu vết retrieval/agent — ghép `request_id` với log là đủ
+    truy path mà không reproduce request (guides §11, §12)."""
+    user = a_user(db_session)
+    gw = build(db_session, fake_redis)
+
+    gw.run(
+        REQ,
+        feature="assistant_chat",
+        tier=Tier.CHEAP,
+        user_id=user.id,
+        request_id="req-9",
+        workflow="assistant",
+        retrieved_refs=["ruby", "dashboard"],
+        retrieval_ms=12,
+        step_count=2,
+    )
+
+    (row,) = rows(db_session)
+    assert row.workflow == "assistant"
+    assert list(row.retrieved_refs or []) == ["ruby", "dashboard"]
+    assert row.retrieval_ms == 12
+    assert row.step_count == 2
+    assert row.reranker_used is False
+
+
 def test_nha_cung_cap_hong_van_ghi_mot_hang_status_error(db_session, fake_redis):
     """`error` là một kết quả, không phải một sự vắng mặt.
 

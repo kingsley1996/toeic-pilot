@@ -8207,6 +8207,10 @@ export interface components {
             questions_total: number;
             /** Refused Calls */
             refused_calls: number;
+            /** Retrieval P50 Ms */
+            retrieval_p50_ms: number;
+            /** Steps Avg */
+            steps_avg: number;
             /** Total Calls */
             total_calls: number;
         };

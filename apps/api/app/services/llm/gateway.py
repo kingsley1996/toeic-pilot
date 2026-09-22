@@ -106,6 +106,11 @@ class Gateway:
         user_id: uuid.UUID | None = None,
         prompt_version: str | None = None,
         request_id: str | None = None,
+        workflow: str | None = None,
+        retrieved_refs: list[str] | None = None,
+        retrieval_ms: int | None = None,
+        reranker_used: bool = False,
+        step_count: int | None = None,
     ) -> LLMResult:
         route = route_for(tier, dict(self.routes))
         override = self.resolve_feature(feature) if self.resolve_feature else None
@@ -126,6 +131,11 @@ class Gateway:
                     user_id=user_id,
                     prompt_version=prompt_version,
                     request_id=request_id,
+                    workflow=workflow,
+                    retrieved_refs=retrieved_refs,
+                    retrieval_ms=retrieval_ms,
+                    reranker_used=reranker_used,
+                    step_count=step_count,
                 )
                 raise FeatureDisabled(f"Tính năng {feature} đang tắt")
             route = Route(tier=tier, provider=provider_name, model=model)
@@ -148,6 +158,11 @@ class Gateway:
                     user_id=user_id,
                     prompt_version=prompt_version,
                     request_id=request_id,
+                    workflow=workflow,
+                    retrieved_refs=retrieved_refs,
+                    retrieval_ms=retrieval_ms,
+                    reranker_used=reranker_used,
+                    step_count=step_count,
                 )
                 raise
 
@@ -178,6 +193,11 @@ class Gateway:
                 prompt_version=prompt_version,
                 request_id=request_id,
                 request=request,
+                workflow=workflow,
+                retrieved_refs=retrieved_refs,
+                retrieval_ms=retrieval_ms,
+                reranker_used=reranker_used,
+                step_count=step_count,
             )
             raise
 
@@ -196,6 +216,11 @@ class Gateway:
             request_id=request_id,
             request=request,
             response=result.text,
+            workflow=workflow,
+            retrieved_refs=retrieved_refs,
+            retrieval_ms=retrieval_ms,
+            reranker_used=reranker_used,
+            step_count=step_count,
         )
         if user_id is not None:
             self.budget.charge(self.redis_client, str(user_id), micro_usd(cost))
@@ -252,6 +277,10 @@ class Gateway:
         error: str | None,
         request: LLMRequest | None,
         response: str | None,
+        workflow: str | None = None,
+        retrieved_refs: list[str] | None = None,
+        retrieval_ms: int | None = None,
+        step_count: int | None = None,
     ) -> None:
         """Ghi TOÀN VĂN một lượt gọi vào tệp JSONL, nếu `llm_transcript_log` bật.
 
@@ -279,6 +308,10 @@ class Gateway:
                 "completion_tokens": usage.completion,
                 "cost_usd": float(cost),
                 "error": error,
+                "workflow": workflow,
+                "retrieved_refs": retrieved_refs,
+                "retrieval_ms": retrieval_ms,
+                "step_count": step_count,
                 "request": None
                 if request is None
                 else {
@@ -312,6 +345,11 @@ class Gateway:
         retries: int = 0,
         request: LLMRequest | None = None,
         response: str | None = None,
+        workflow: str | None = None,
+        retrieved_refs: list[str] | None = None,
+        retrieval_ms: int | None = None,
+        reranker_used: bool = False,
+        step_count: int | None = None,
     ) -> None:
         provider = getattr(route, "provider", "?")
         model = getattr(route, "model", "?")
@@ -327,6 +365,10 @@ class Gateway:
             error=error,
             request=request,
             response=response,
+            workflow=workflow,
+            retrieved_refs=retrieved_refs,
+            retrieval_ms=retrieval_ms,
+            step_count=step_count,
         )
         session = self.session_factory()
         try:
@@ -346,6 +388,11 @@ class Gateway:
                     prompt_version=prompt_version,
                     retries=retries,
                     request_id=request_id,
+                    workflow=workflow,
+                    retrieved_refs=retrieved_refs,
+                    retrieval_ms=retrieval_ms,
+                    reranker_used=reranker_used,
+                    step_count=step_count,
                 )
             )
             session.commit()

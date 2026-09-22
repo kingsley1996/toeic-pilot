@@ -61,6 +61,11 @@ class LlmStats:
     cached_tokens: int = 0
     latency_p50_ms: int = 0
     latency_p95_ms: int = 0
+    # Trung vị thời gian retrieval (chỉ hàng có đo) và trung bình số bước
+    # agent — hai số trả lời "RAG có chậm không" và "vòng tool có sâu không"
+    # mà không cần đọc từng hàng.
+    retrieval_p50_ms: int = 0
+    steps_avg: float = 0.0
     by_feature: list[Row] = field(default_factory=list)
     by_model: list[Row] = field(default_factory=list)
     facets: list[FacetAccuracy] = field(default_factory=list)
@@ -88,7 +93,13 @@ def _rows(session: Session, column: InstrumentedAttribute[str]) -> list[Row]:
     ]
 
 
-def _percentile(session: Session, fraction: float) -> int:
+def _percentile(
+    session: Session,
+    column: InstrumentedAttribute[int | None],
+    fraction: float,
+    *,
+    where_not_null: bool = False,
+) -> int:
     """Trung vị và đuôi, bằng XẾP HẠNG GẦN NHẤT chứ không nội suy.
 
     Không dùng `avg`: một lượt gọi 60 giây kẹt hàng đợi kéo trung bình lên và
@@ -99,19 +110,17 @@ def _percentile(session: Session, fraction: float) -> int:
     xanh ở production và nổ ở test, tức là nó chỉ được kiểm ở đúng nơi không cần
     kiểm. `ORDER BY ... LIMIT 1 OFFSET k` chạy trên cả hai và rẻ khi có index.
     """
-    total = int(
-        session.scalar(select(func.count(AiInteraction.id)).where(AiInteraction.status == "ok"))
-        or 0
-    )
+    conds = [AiInteraction.status == "ok"]
+    if where_not_null:
+        # Cột telemetry nullable: NULL là "không áp dụng", không phải 0 — đếm
+        # nó vào là kéo trung vị xuống đất.
+        conds.append(column.is_not(None))
+    total = int(session.scalar(select(func.count(AiInteraction.id)).where(*conds)) or 0)
     if total == 0:
         return 0
     index = min(int(total * fraction), total - 1)
     value = session.scalar(
-        select(AiInteraction.latency_ms)
-        .where(AiInteraction.status == "ok")
-        .order_by(AiInteraction.latency_ms.asc())
-        .limit(1)
-        .offset(index)
+        select(column).where(*conds).order_by(column.asc()).limit(1).offset(index)
     )
     return int(value or 0)
 
@@ -204,8 +213,19 @@ def collect(session: Session, *, window_days: int = 30) -> LlmStats:
     stats.completion_tokens = int(sums[2])
     stats.cached_tokens = int(sums[3])
 
-    stats.latency_p50_ms = _percentile(session, 0.5)
-    stats.latency_p95_ms = _percentile(session, 0.95)
+    stats.latency_p50_ms = _percentile(session, AiInteraction.latency_ms, 0.5)
+    stats.latency_p95_ms = _percentile(session, AiInteraction.latency_ms, 0.95)
+    stats.retrieval_p50_ms = _percentile(
+        session, AiInteraction.retrieval_ms, 0.5, where_not_null=True
+    )
+    stats.steps_avg = float(
+        session.scalar(
+            select(func.coalesce(func.avg(AiInteraction.step_count), 0)).where(
+                AiInteraction.step_count.is_not(None)
+            )
+        )
+        or 0
+    )
     stats.by_feature = _rows(session, AiInteraction.feature)
     stats.by_model = _rows(session, AiInteraction.model)
     stats.facets, stats.distribution = _facet_stats(session)

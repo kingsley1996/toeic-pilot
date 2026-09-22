@@ -109,6 +109,33 @@ def test_kb_retrieval_ghi_refs_theo_request_id(db_session, fake_redis, caplog) -
     assert isinstance(rec.retrieval_ms, int)
 
 
+def test_ask_ghi_telemetry_vao_so_cai(db_session, fake_redis) -> None:
+    """assistant_chat là đường đầu tiên ghi đủ workflow + retrieval + steps."""
+    from app.models.ai import AiInteraction
+    from app.models.knowledge import KnowledgeChunk
+
+    db_session.add(
+        KnowledgeChunk(
+            ref="ruby",
+            title="Ruby",
+            keywords="ruby, ví, kiếm ruby",
+            content="Ruby kiếm từ việc học, tiêu trong gacha.",
+        )
+    )
+    db_session.commit()
+    user = a_user(db_session)
+    gw = build_gateway(db_session, fake_redis, FakeProvider(reply="ok"))
+
+    ask(db_session, gw, user=user, question="ruby kiếm ở đâu", request_id="req-2")
+
+    row = db_session.query(AiInteraction).filter_by(feature="assistant_chat").one()
+    assert row.workflow == "assistant"
+    assert list(row.retrieved_refs or []) == ["ruby"]
+    assert isinstance(row.retrieval_ms, int)
+    assert row.step_count == 1
+    assert row.request_id == "req-2"
+
+
 def test_ask_MOT_NGUOI_MOT_CUOC(db_session, fake_redis) -> None:
     user = a_user(db_session)
     gw = build_gateway(db_session, fake_redis, FakeProvider())

@@ -116,6 +116,8 @@ class LlmStatsPublic(BaseModel):
     cached_tokens: int
     latency_p50_ms: int
     latency_p95_ms: int
+    retrieval_p50_ms: int
+    steps_avg: float
     by_feature: list[UsageRow]
     by_model: list[UsageRow]
     # KPI độ đúng theo TỪNG MẶT. Một con số gộp cho cả sáu mặt che mất chuyện
