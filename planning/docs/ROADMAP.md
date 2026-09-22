@@ -135,6 +135,12 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       parse tay, không thêm dependency); `judge_coach` là prompt đầu tiên dùng;
       PR template `.github/pull_request_template.md` (mục AI riêng); luật testing
       bắt chạy `eval_ai` + dán metrics khi sửa đường AI
+- [x] ~~**P5 sinh đề thành reference**~~ — **Xong (2026-09-22).** Suite `exam`:
+      10 golden slots replay cổng kiểm thật (`check_blueprint` tầng miễn phí),
+      không gọi model; dựng dataset bắt được đáp án nguyên văn, thiếu cầu nối,
+      rò đáp án chéo — toàn lỗi người viết mắc. Hiệu chuẩn critic lần đầu
+      (gemma3-local: 1 dùng được / 1 lẫn nhiễu / 1 sai hành động → critic là cố
+      vấn, cổng vẫn là check). Doc `eval/guidelines/adding-ai-feature.md`.
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
 - [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17

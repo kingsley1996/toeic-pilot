@@ -31,6 +31,7 @@ from app.content.eval_core import (
     write_manifest,
 )
 from app.content.eval_suites.coach import eval_coach, judge_coach
+from app.content.eval_suites.exam import eval_exam
 from app.content.eval_suites.planner import eval_planner
 from app.content.eval_suites.retrieval import eval_retrieval
 from app.content.eval_suites.shape import eval_shape
@@ -40,7 +41,7 @@ EVAL_DIR = _API_DIR / "eval"
 DATASETS = EVAL_DIR / "datasets"
 KB_DIR = _API_DIR / "content" / "kb"
 
-SUITES = ("coach", "shape", "retrieval", "planner")
+SUITES = ("coach", "shape", "retrieval", "planner", "exam")
 
 
 def run_suite(
@@ -58,6 +59,9 @@ def run_suite(
     if name == "planner":
         cases = load_cases(datasets / "planner.jsonl", {"id", "weak", "budget"})
         return eval_planner(cases)
+    if name == "exam":
+        cases = load_cases(datasets / "exam_slots.jsonl", {"id", "part", "paste", "expect_blocked"})
+        return eval_exam(cases)
     raise EvalError(f"không có suite {name!r} (có: {', '.join(SUITES)})")
 
 

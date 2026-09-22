@@ -67,6 +67,23 @@ uv run python -m app.content.eval_ai --suite retrieval --retrieval-mode vector
 `--write-manifest`; report nào lệch manifest thì in cảnh báo (không chặn — dataset
 đang sửa dở mà chặn CI thì không ai dám thêm case).
 
+## 8. Suite `exam` — replay cổng kiểm sinh đề
+
+Mỗi case là một paste golden + kỳ vọng chặn/không + các vấn đề phải thấy:
+
+- Khung (blueprint slot) do runner dựng và KHỚP với paste: đủ số câu
+  (`len(slot.question_types)`), đủ số ngữ liệu, không hàm ý, không hình, seed
+  ghim trong case. Khớp khung là dựng sân, không phải chấm hộ — cùng việc
+  pipeline làm khi giao ô cho người viết.
+- Paste phải THẬT theo nghĩa sản phẩm: đáp án đúng paraphrase (không nguyên văn
+  nhất), nhiễu nhại-bẻ (tối đa một nhiễu không nhắc gì), cụm nhiều tài liệu phải
+  có câu bắc cầu dẫn chứng cả hai bên trong Explanation, đáp án các câu không
+  gọi tên lẫn nhau. Cổng bắt đúng những lỗi này — viết paste ẩu để cho qua là
+  đảo ngược ý nghĩa suite.
+- Chạy đúng `check_blueprint` tầng miễn phí (`gateway=None`) mà lệnh `check` và
+  node `check` dùng — không bản kiểm riêng, không mock parser.
+- Version của suite là hash `check.py`: đổi luật kiểm thì version đổi theo.
+
 ## 1. Suite `coach` — lời giải thích câu làm sai
 
 Chạy `parse_output` rồi `check_output` (năm khẳng định, `services/coach.py`).

@@ -394,6 +394,36 @@ def test_BASELINE_thieu_file_thi_BAO_dung(tmp_path: Path, capsys) -> None:
     assert "eval hỏng" in capsys.readouterr().err
 
 
+def test_EXAM_paste_sach_thi_qua() -> None:
+    from app.content.eval_suites.exam import eval_exam
+
+    cases = [
+        {
+            "id": "p5",
+            "part": 5,
+            "paste": (
+                "[QUESTION]\nShe has worked here ------- 2019.\n"
+                "(A) since\n(B) for\n(C) from\n(D) at\n"
+                "Answer: A\nSource: original\n"
+            ),
+            "expect_blocked": False,
+        }
+    ]
+    report = eval_exam(cases)
+    assert (report.passed, report.total) == (1, 1)
+    assert report.name == "exam" and report.version.startswith("exam_check@")
+
+
+def test_EXAM_slot_khong_khop_thi_case_hong() -> None:
+    from app.content.eval_suites.exam import eval_exam
+
+    report = eval_exam(
+        [{"id": "x", "part": 99, "paste": "[QUESTION]\nQ?\n", "expect_blocked": False}]
+    )
+    assert report.passed == 0
+    assert report.failures[0].kind == "dataset"
+
+
 def test_CODES_ma_hoa_dung_loai_loi() -> None:
     coach = eval_coach(
         [

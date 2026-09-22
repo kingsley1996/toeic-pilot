@@ -68,6 +68,21 @@ uv run python -m app.content.eval_ai --judge <provider/model> --gen-model <provi
 - Model chết phát hiện khi chạy (bảng giá còn ghi, API đã gỡ): `gemini-2.5-flash`,
   `openai/gpt-oss-20b:free` (OpenRouter), `qwen/qwen3.6-27b` (Groq). Dọn bảng giá
   là việc riêng, chưa làm ở đây.
+
+## Hiệu chuẩn critic sinh đề (lần đầu, judge `ollama/gemma3:latest` local)
+
+Cho critic đọc problems THẬT từ cổng kiểm + draft, chấm tay từng hint:
+
+| Case | Problems thật | Verdict người |
+|---|---|---|
+| p5-no-answer (thiếu `answer:`) | đúng hành động ("thêm answer:") + nhiễu ("thay until bằng by" trong khi đáp án đã đúng) | dùng được, lẫn nhiễu |
+| p2-four-options (thừa đáp án) | sai hành động (bảo sửa C thay vì bỏ D) — làm theo vẫn chặn | gây hiểu lầm |
+| p7-no-answer (thiếu `answer:`) | đúng và làm được ("thêm dòng answer:") | dùng được |
+
+Kết luận: critic là cố vấn, không phải cổng — cổng chặn vẫn là check tất định,
+`fix_hint` không bao giờ đổi được kết cục một mình. Muốn critic khá hơn thì đổi
+model mạnh hơn hoặc siết prompt (cấm đổi đáp án đúng), rồi chạy lại đúng thủ tục
+này. Không dùng gemma3-local là chuẩn cuối cho critic.
 - Hàng `ai_interaction` feature=`eval_judge` ghi model/prompt thật đã chấm
   (lấy từ kết quả trả về, không phải từ flag) — đó là nguồn đối chiếu khi
   judge và cổng tất định bất đồng.
