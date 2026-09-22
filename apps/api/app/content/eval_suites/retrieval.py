@@ -24,19 +24,6 @@ def _offline_embed(text: str) -> list[float]:
     raise EmbeddingUnavailable("eval offline — chỉ đo lexical")
 
 
-class _NoRedis:
-    """Redis giả cho eval offline — chạm vào là lỗi TO, không phải treo.
-
-    `llm_select` không truyền user_id nên budget không bao giờ chạm Redis ở
-    suite planner. Dùng client thật ở đây sẽ lặng lẽ KẾT NỐI được ở máy có
-    Redis chạy (như CI) và hỏng ở máy không có — đúng loại test chập chờn theo
-    môi trường (§11).
-    """
-
-    def __getattr__(self, name: str) -> Any:
-        raise EvalError(f"eval offline gọi Redis.{name} — đường này phải chạy không Redis")
-
-
 def _mean_or_none(xs: list[float]) -> float | None:
     """Trung bình, hoặc None khi không có quan sát nào — không có số liệu
     KHÁC đạt điểm tuyệt đối (§2.2)."""

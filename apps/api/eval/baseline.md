@@ -25,6 +25,13 @@ uv run python -m app.content.eval_ai --suite all --report eval/reports/base.json
 uv run python -m app.content.eval_ai --suite all --baseline eval/reports/base.json
 ```
 
+So hai mode retrieval khi đổi đường tìm kiếm (`lexical` là cổng CI;
+`vector` cần keys, đo đường production thật):
+
+```bash
+uv run python -m app.content.eval_ai --suite retrieval --retrieval-mode vector
+```
+
 Chi phí lượt chạy offline: 0 (FakeProvider + SQLite memory, không gọi model).
 
 ## So sánh lexical vs vector (ADR-016, đo 2026-09-21)

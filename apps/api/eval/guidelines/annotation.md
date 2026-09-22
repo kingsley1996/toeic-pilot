@@ -15,6 +15,14 @@ case phải ra cùng một kết quả, và máy chấm thay người cũng vậ
   lỗi sản phẩm), `system` (sản phẩm hành xử sai), `judge` (giám khảo chấm sai),
   `infrastructure` (gọi hỏng: timeout, 503, quota, key). Sập provider không được
   đọc thành regression chất lượng.
+- Kèm `code` máy đọc được để group-by về sau. Coach: `wrong_correct_answer`,
+  `missing_distractor_ref`, `wrong_language`, `wrong_grammar_point`,
+  `missing_field`, `invalid_output`, `bad_length`, `expectation_mismatch`.
+  Shape: `segment_count`, `letter_in_evidence`, `wrong_segment_order`,
+  `line_break`, `empty_output`. Retrieval: `missing_refs`, `too_many_refs`,
+  `invalid_dataset`. Planner: `wrong_selection`, `dangling_reference`,
+  `unexpected_none`, `unexpected_items`, `unexpected_call`. Judge:
+  `judge_disagree`, `judge_unparseable`, `provider_error`.
 
 ## 5. Hồi quy — `--report` và `--baseline`
 
@@ -24,6 +32,14 @@ Luồng đúng khi đổi prompt/model/retrieval:
 uv run python -m app.content.eval_ai --suite all --report eval/reports/base.json
 # ... đổi code ...
 uv run python -m app.content.eval_ai --suite all --baseline eval/reports/base.json
+```
+
+Đổi đường retrieval thì đo cả hai mode (mặc định `lexical` offline cho CI;
+`--retrieval-mode vector` đo đường production thật, cần keys — probe hỏng là
+dừng TO chứ không lặng lẽ đo lexical rồi báo là vector):
+
+```bash
+uv run python -m app.content.eval_ai --suite retrieval --retrieval-mode vector
 ```
 
 - Case **MỚI RỚT** so với baseline là chặn (exit 1), kể cả khi ngưỡng tuyệt đối
@@ -41,6 +57,15 @@ uv run python -m app.content.eval_ai --suite all --baseline eval/reports/base.js
 - Judge phải khác model sinh — trùng thì runner từ chối trước khi tốn một xu.
 - Bất đồng với cổng tất định là tín hiệu HIỆU CHUẨN (judge sai hay case sai),
   không phải tín hiệu bỏ qua. Lỗi gọi (timeout/503/quota) là hạ tầng, kind riêng.
+- Tóm tắt judge đọc ma trận TP/FP/FN/TN (judge so với kỳ vọng curated) +
+  precision/recall/F1 + số lượt thử lại. Chất lượng ổn mà thử lại tăng là tín
+  hiệu vận hành, không phải tín hiệu chất lượng — hai số tách nhau ngay ở tóm tắt.
+
+## 7. Manifest dataset
+
+`datasets/manifest.json` ghim hash từng tệp dataset. Sửa/thêm case xong thì chạy
+`--write-manifest`; report nào lệch manifest thì in cảnh báo (không chặn — dataset
+đang sửa dở mà chặn CI thì không ai dám thêm case).
 
 ## 1. Suite `coach` — lời giải thích câu làm sai
 
