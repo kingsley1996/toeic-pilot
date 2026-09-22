@@ -17,17 +17,24 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_role
+from app.core import eval_jobs
 from app.core.ai_jobs import ring
 from app.core.database import get_db
 from app.core.redis_client import get_redis
 from app.models.ai import AiInteraction
 from app.models.ai_config import AiFeatureConfig
+from app.models.eval_run import EvalRun
 from app.models.labels import QuestionLabel, QuestionSetLabel
 from app.models.practice import PracticeTest, PracticeTestQuestion, Question
 from app.models.user import User
 from app.schemas.ai import (
     AiFeatureRow,
     AiFeatureWrite,
+    EvalOverview,
+    EvalRunDetail,
+    EvalRunRequest,
+    EvalRunRow,
+    EvalSuiteInfo,
     FacetCatalog,
     KnownModel,
     LabelCatalogItem,
@@ -367,6 +374,145 @@ def set_feature(
 @router.get("/stats", response_model=LlmStatsPublic)
 def llm_stats(_: User = Depends(can_edit), db: Session = Depends(get_db)) -> LlmStatsPublic:
     return LlmStatsPublic.model_validate(collect(db), from_attributes=True)
+
+
+def _eval_dir() -> Path:
+    """Thư mục `eval/` cạnh `app/` — đọc file tĩnh bằng stdlib.
+
+    Cố ý KHÔNG import `eval_core`: module đó nằm dưới `app.content`, mà chuỗi
+    import của `app/main.py` cấm điều đó (PHASE2-AUDIO §A4.1,
+    `test_content_isolation`). Nguồn sự thật duy nhất ở đây là
+    `thresholds.json` — thêm suite là thêm dataset + một ngưỡng, UI tự thấy.
+    """
+    from app.core.config import _API_DIR
+
+    return _API_DIR / "eval"
+
+
+# Tên suite → tệp dataset. `tests/test_admin_eval.py` ghim tập key ở đây bằng
+# với `eval_core.SUITES` — lệch là test đỏ, không phải UI câm.
+_SUITE_FILES = {
+    "coach": "coach_explain.jsonl",
+    "shape": "explanation_shape.jsonl",
+    "retrieval": "retrieval.jsonl",
+    "planner": "planner.jsonl",
+    "exam": "exam_slots.jsonl",
+}
+
+
+def _dataset_cases(path: Path) -> int:
+    try:
+        return sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
+    except OSError:
+        return 0
+
+
+@router.get("/eval/overview", response_model=EvalOverview)
+def eval_overview(_: User = Depends(can_edit)) -> EvalOverview:
+    import hashlib
+    import json
+
+    directory = _eval_dir() / "datasets"
+    try:
+        floors = json.loads((_eval_dir() / "thresholds.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        floors = {}
+    try:
+        manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        manifest = {}
+    pinned = manifest.get("files", {}) if isinstance(manifest, dict) else {}
+    suites = [
+        EvalSuiteInfo(
+            name=name, threshold=float(floor), cases=_dataset_cases(directory / _SUITE_FILES[name])
+        )
+        for name, floor in floors.items()
+        if name in _SUITE_FILES and isinstance(floor, (int, float)) and not isinstance(floor, bool)
+    ]
+    current = {
+        filename.removesuffix(".jsonl"): hashlib.sha256(
+            (directory / filename).read_bytes()
+        ).hexdigest()[:12]
+        for filename in _SUITE_FILES.values()
+        if (directory / filename).is_file()
+    }
+    match = bool(pinned) and all(pinned.get(k) == v for k, v in current.items())
+    version = manifest.get("version", "none") if isinstance(manifest, dict) else "none"
+    return EvalOverview(suites=suites, manifest_version=str(version), manifest_match=match)
+
+
+def _eval_row(row: EvalRun) -> EvalRunRow:
+    return EvalRunRow(
+        id=row.id,
+        suite=row.suite,
+        status=row.status,
+        error=row.error,
+        created_at=row.created_at,
+        started_at=row.started_at,
+        finished_at=row.finished_at,
+    )
+
+
+@router.post("/eval/runs", response_model=EvalRunRow, status_code=status.HTTP_202_ACCEPTED)
+def eval_run_start(
+    body: EvalRunRequest,
+    editor: User = Depends(can_edit),
+    db: Session = Depends(get_db),
+    redis_client: redis.Redis = Depends(get_redis),
+) -> EvalRunRow:
+    """Xếp một lượt eval vào hàng đợi — worker eval chạy, API chỉ ghi nhận.
+
+    Judge tốn tiền thật nên đòi cả hai model và từ chối trùng model ngay ở đây,
+    trước khi tốn một xu hay một hàng đợi.
+    """
+    known = ("all", "judge", *_SUITE_FILES)
+    if body.suite not in known:
+        raise HTTPException(status_code=422, detail=f"suite lạ: {body.suite!r}")
+    if body.retrieval_mode not in ("lexical", "vector"):
+        raise HTTPException(status_code=422, detail="retrieval_mode chỉ có lexical/vector")
+    if body.suite == "judge":
+        if not body.judge_model or not body.gen_model:
+            raise HTTPException(status_code=400, detail="judge cần judge_model + gen_model")
+        if body.judge_model == body.gen_model:
+            raise HTTPException(
+                status_code=400,
+                detail="judge trùng model sinh — model chấm bài của chính nó thì thiên vị",
+            )
+    row = EvalRun(
+        suite=body.suite,
+        status="queued",
+        triggered_by=editor.id,
+        params={
+            "judge_model": body.judge_model,
+            "gen_model": body.gen_model,
+            "retrieval_mode": body.retrieval_mode,
+        },
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    eval_jobs.ring(redis_client)
+    return _eval_row(row)
+
+
+@router.get("/eval/runs", response_model=list[EvalRunRow])
+def eval_runs(
+    _: User = Depends(can_edit), db: Session = Depends(get_db), limit: int = 20
+) -> list[EvalRunRow]:
+    rows = db.scalars(
+        select(EvalRun).order_by(EvalRun.created_at.desc()).limit(min(limit, 50))
+    ).all()
+    return [_eval_row(row) for row in rows]
+
+
+@router.get("/eval/runs/{run_id}", response_model=EvalRunDetail)
+def eval_run_detail(
+    run_id: uuid.UUID, _: User = Depends(can_edit), db: Session = Depends(get_db)
+) -> EvalRunDetail:
+    row = db.get(EvalRun, run_id)
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="không có lượt chạy này")
+    return EvalRunDetail(**_eval_row(row).model_dump(), params=row.params, report=row.report)
 
 
 @router.get("/labels/catalog", response_model=list[FacetCatalog])

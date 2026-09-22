@@ -194,6 +194,10 @@ export type VocabularyAdmin = components["schemas"]["VocabularyAdmin"];
 export type DictationAdmin = components["schemas"]["DictationAdmin"];
 export type AudioSlotState = components["schemas"]["AudioSlotState"];
 export type LlmStats = components["schemas"]["LlmStatsPublic"];
+export type EvalOverview = components["schemas"]["EvalOverview"];
+export type EvalRunRequest = components["schemas"]["EvalRunRequest"];
+export type EvalRunRow = components["schemas"]["EvalRunRow"];
+export type EvalRunDetail = components["schemas"]["EvalRunDetail"];
 export type QuestionLabelRow = components["schemas"]["QuestionLabelRow"];
 export type FacetCatalog = components["schemas"]["FacetCatalog"];
 export type AiFeatureRow = components["schemas"]["AiFeatureRow"];
@@ -548,6 +552,10 @@ export const API_ROUTES = {
   // Tầng AI. `skillTagRequests` là một tiếng CHUÔNG — nó trả 202 và không hứa
   // nhãn đã có; API không gắn nhãn được (không import nổi `app.content`).
   adminAiStats: "/api/v1/admin/ai/stats",
+  // Eval AI — xem suite qua UI, chạy qua worker (202, xem hàng đợi).
+  adminAiEvalOverview: "/api/v1/admin/ai/eval/overview",
+  adminAiEvalRuns: "/api/v1/admin/ai/eval/runs",
+  adminAiEvalRun: (id: string) => `/api/v1/admin/ai/eval/runs/${id}`,
   // Coach — chỉ dùng được sau khi lượt làm bài đã nộp; máy chủ trả 409 nếu chưa.
   coachExplain: (attemptId: string, questionId: string) =>
     `/api/v1/attempts/${attemptId}/items/${questionId}/coach`,

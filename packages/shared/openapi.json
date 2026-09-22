@@ -4839,6 +4839,32 @@
         "title": "EvalItem",
         "type": "object"
       },
+      "EvalOverview": {
+        "properties": {
+          "manifest_match": {
+            "title": "Manifest Match",
+            "type": "boolean"
+          },
+          "manifest_version": {
+            "title": "Manifest Version",
+            "type": "string"
+          },
+          "suites": {
+            "items": {
+              "$ref": "#/components/schemas/EvalSuiteInfo"
+            },
+            "title": "Suites",
+            "type": "array"
+          }
+        },
+        "required": [
+          "suites",
+          "manifest_version",
+          "manifest_match"
+        ],
+        "title": "EvalOverview",
+        "type": "object"
+      },
       "EvalRow": {
         "properties": {
           "attempt_id": {
@@ -4951,6 +4977,236 @@
           "created_at"
         ],
         "title": "EvalRow",
+        "type": "object"
+      },
+      "EvalRunDetail": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Params"
+          },
+          "report": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "suite",
+          "status",
+          "error",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "params",
+          "report"
+        ],
+        "title": "EvalRunDetail",
+        "type": "object"
+      },
+      "EvalRunRequest": {
+        "properties": {
+          "gen_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "model đã sinh (phải khác judge)",
+            "title": "Gen Model"
+          },
+          "judge_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "\"provider/model\" cho judge",
+            "title": "Judge Model"
+          },
+          "retrieval_mode": {
+            "default": "lexical",
+            "description": "\"lexical\" offline hoặc \"vector\" live",
+            "title": "Retrieval Mode",
+            "type": "string"
+          },
+          "suite": {
+            "description": "\"all\" hoặc một suite, hoặc \"judge\" (tốn tiền thật)",
+            "title": "Suite",
+            "type": "string"
+          }
+        },
+        "required": [
+          "suite"
+        ],
+        "title": "EvalRunRequest",
+        "type": "object"
+      },
+      "EvalRunRow": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "suite": {
+            "title": "Suite",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "suite",
+          "status",
+          "error",
+          "created_at",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "EvalRunRow",
+        "type": "object"
+      },
+      "EvalSuiteInfo": {
+        "description": "Một suite trong `eval/datasets/` — đọc từ đĩa, không chạy gì.",
+        "properties": {
+          "cases": {
+            "title": "Cases",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "threshold",
+          "cases"
+        ],
+        "title": "EvalSuiteInfo",
         "type": "object"
       },
       "FacetAccuracy": {
@@ -15916,6 +16172,177 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/ai/eval/overview": {
+      "get": {
+        "operationId": "eval_overview_api_v1_admin_ai_eval_overview_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalOverview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Eval Overview",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/eval/runs": {
+      "get": {
+        "operationId": "eval_runs_api_v1_admin_ai_eval_runs_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EvalRunRow"
+                  },
+                  "title": "Response Eval Runs Api V1 Admin Ai Eval Runs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Eval Runs",
+        "tags": [
+          "admin-ai"
+        ]
+      },
+      "post": {
+        "description": "Xếp một lượt eval vào hàng đợi — worker eval chạy, API chỉ ghi nhận.\n\nJudge tốn tiền thật nên đòi cả hai model và từ chối trùng model ngay ở đây,\ntrước khi tốn một xu hay một hàng đợi.",
+        "operationId": "eval_run_start_api_v1_admin_ai_eval_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvalRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalRunRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Eval Run Start",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/ai/eval/runs/{run_id}": {
+      "get": {
+        "operationId": "eval_run_detail_api_v1_admin_ai_eval_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalRunDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Eval Run Detail",
+        "tags": [
+          "admin-ai"
+        ]
+      }
+    },
     "/api/v1/admin/ai/features": {
       "get": {
         "description": "Mảng trần: danh sách tính năng bị chặn trên bởi chính mã nguồn.\n\nNhóm (A) của luật phân trang ở `schemas/common.py` — bọc `Page` quanh bốn\nhàng cố định bắt giao diện xử lý một trường hợp không thể xảy ra.",

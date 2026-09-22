@@ -111,6 +111,12 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       chặn theo `eval/thresholds.json` (`--fail-under`), CI job `api` chạy sau pytest.
       Judge live (`--judge`, khác model sinh) + runbook KPI enrich B3/B4/B6 ở
       `eval/baseline.md`. Còn: judge lần đầu, viết lại §9b, prompt caching
+- [x] ~~**Eval qua giao diện**~~ — **Xong (2026-09-22).** `/admin/ai/eval`: bảng
+      suite (ngưỡng, số case, manifest), nút xếp lượt chạy, đọc báo cáo
+      (pass/fail + kind/code từng case), form judge (2 model, trùng thì 400).
+      API chỉ đọc file tĩnh + ghi hàng `eval_run` (migration 097) + rung chuông —
+      KHÔNG import `app.content` (A4.1, có test gác); worker riêng
+      (`eval-worker` trong compose, cùng ảnh worker TTS) mới là thứ chạy suite.
 - [x] ~~**RAG đo được (P1)**~~ — **Xong (2026-09-21).** `knowledge_chunk` thêm 5 cột
       metadata nullable (migration 095) + sync từ frontmatter (16/16 mục đủ, 0 warning);
       suite retrieval in Recall/MRR; mỗi lượt assistant ghi log `kb_retrieval`

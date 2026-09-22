@@ -4,6 +4,64 @@
  */
 
 export interface paths {
+    "/api/v1/admin/ai/eval/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Eval Overview */
+        get: operations["eval_overview_api_v1_admin_ai_eval_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/eval/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Eval Runs */
+        get: operations["eval_runs_api_v1_admin_ai_eval_runs_get"];
+        put?: never;
+        /**
+         * Eval Run Start
+         * @description Xếp một lượt eval vào hàng đợi — worker eval chạy, API chỉ ghi nhận.
+         *
+         *     Judge tốn tiền thật nên đòi cả hai model và từ chối trùng model ngay ở đây,
+         *     trước khi tốn một xu hay một hàng đợi.
+         */
+        post: operations["eval_run_start_api_v1_admin_ai_eval_runs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/eval/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Eval Run Detail */
+        get: operations["eval_run_detail_api_v1_admin_ai_eval_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/ai/features": {
         parameters: {
             query?: never;
@@ -7141,6 +7199,15 @@ export interface components {
             /** Reason */
             reason: string | null;
         };
+        /** EvalOverview */
+        EvalOverview: {
+            /** Manifest Match */
+            manifest_match: boolean;
+            /** Manifest Version */
+            manifest_version: string;
+            /** Suites */
+            suites: components["schemas"]["EvalSuiteInfo"][];
+        };
         /** EvalRow */
         EvalRow: {
             /** Attempt Id */
@@ -7169,6 +7236,96 @@ export interface components {
             v2_items: components["schemas"]["EvalItem"][] | null;
             /** Weak Count */
             weak_count: number;
+        };
+        /** EvalRunDetail */
+        EvalRunDetail: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Error */
+            error: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Params */
+            params: {
+                [key: string]: unknown;
+            } | null;
+            /** Report */
+            report: {
+                [key: string]: unknown;
+            } | null;
+            /** Started At */
+            started_at: string | null;
+            /** Status */
+            status: string;
+            /** Suite */
+            suite: string;
+        };
+        /** EvalRunRequest */
+        EvalRunRequest: {
+            /**
+             * Gen Model
+             * @description model đã sinh (phải khác judge)
+             */
+            gen_model?: string | null;
+            /**
+             * Judge Model
+             * @description "provider/model" cho judge
+             */
+            judge_model?: string | null;
+            /**
+             * Retrieval Mode
+             * @description "lexical" offline hoặc "vector" live
+             * @default lexical
+             */
+            retrieval_mode: string;
+            /**
+             * Suite
+             * @description "all" hoặc một suite, hoặc "judge" (tốn tiền thật)
+             */
+            suite: string;
+        };
+        /** EvalRunRow */
+        EvalRunRow: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Error */
+            error: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Started At */
+            started_at: string | null;
+            /** Status */
+            status: string;
+            /** Suite */
+            suite: string;
+        };
+        /**
+         * EvalSuiteInfo
+         * @description Một suite trong `eval/datasets/` — đọc từ đĩa, không chạy gì.
+         */
+        EvalSuiteInfo: {
+            /** Cases */
+            cases: number;
+            /** Name */
+            name: string;
+            /** Threshold */
+            threshold: number;
         };
         /** FacetAccuracy */
         FacetAccuracy: {
@@ -11173,6 +11330,121 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    eval_overview_api_v1_admin_ai_eval_overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalOverview"];
+                };
+            };
+        };
+    };
+    eval_runs_api_v1_admin_ai_eval_runs_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunRow"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    eval_run_start_api_v1_admin_ai_eval_runs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvalRunRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunRow"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    eval_run_detail_api_v1_admin_ai_eval_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_features_api_v1_admin_ai_features_get: {
         parameters: {
             query?: never;

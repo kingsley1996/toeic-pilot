@@ -17,6 +17,11 @@ from typing import Any, Literal
 
 from app.services.llm.prompts import load
 
+# Mọi suite eval, một chỗ duy nhất. Route admin đọc ở đây chứ không import
+# `eval_ai` — module đó kéo theo `eval_suites` tức `app.content`, mà chuỗi
+# import của `app/main.py` cấm điều đó (PHASE2-AUDIO §A4.1).
+SUITES = ("coach", "shape", "retrieval", "planner", "exam")
+
 # Case hỏng vì dataset viết sai KHÁC system hỏng vì sản phẩm sai. Gộp hai thứ
 # thì một case viết hỏng trông như regression của model (§2.3).
 FailureKind = Literal["dataset", "system", "judge", "infrastructure"]

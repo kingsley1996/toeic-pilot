@@ -174,6 +174,31 @@ services:
     command: ["uv", "run", "python", "-m", "app.content.skilltag_worker"]
     restart: unless-stopped
 
+  # Worker eval — cùng ẢNH (extra `content`), khác CMD, kênh riêng. Không ports,
+  # không healthcheck, không service nào depends_on nó: eval chạy chậm thì UI
+  # hiện "đang chạy", không có gì hỏng. Xem `app/content/eval_worker.py`.
+  eval-worker:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-toeic}:${POSTGRES_PASSWORD:-toeic}@postgres:5432/${POSTGRES_DB:-toeic}
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    volumes:
+      - ../apps/api/app:/app/apps/api/app
+      - ../apps/api/eval:/app/apps/api/eval
+      # Suite retrieval đọc `content/kb` lúc chạy — mount để worker thấy đúng
+      # cây file của host chứ không phải bản lúc dựng ảnh (worker chỉ đọc).
+      - ../apps/api/content:/app/apps/api/content
+    command: ["uv", "run", "python", "-m", "app.content.eval_worker"]
+    restart: unless-stopped
+
   web:
     build:
       context: ..

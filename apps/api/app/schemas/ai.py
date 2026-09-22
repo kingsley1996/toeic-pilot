@@ -5,6 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 from decimal import Decimal
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -24,6 +25,11 @@ __all__ = [
     "TestConnectionResult",
     "LabelWrite",
     "UsageRow",
+    "EvalSuiteInfo",
+    "EvalOverview",
+    "EvalRunRequest",
+    "EvalRunRow",
+    "EvalRunDetail",
 ]
 
 
@@ -133,6 +139,44 @@ class LlmStatsPublic(BaseModel):
 class KnownModel(BaseModel):
     provider: str
     model: str
+
+
+class EvalSuiteInfo(BaseModel):
+    """Một suite trong `eval/datasets/` — đọc từ đĩa, không chạy gì."""
+
+    name: str
+    threshold: float
+    cases: int
+
+
+class EvalOverview(BaseModel):
+    suites: list[EvalSuiteInfo]
+    manifest_version: str
+    manifest_match: bool
+
+
+class EvalRunRequest(BaseModel):
+    suite: str = Field(description='"all" hoặc một suite, hoặc "judge" (tốn tiền thật)')
+    judge_model: str | None = Field(default=None, description='"provider/model" cho judge')
+    gen_model: str | None = Field(default=None, description="model đã sinh (phải khác judge)")
+    retrieval_mode: str = Field(
+        default="lexical", description='"lexical" offline hoặc "vector" live'
+    )
+
+
+class EvalRunRow(BaseModel):
+    id: uuid.UUID
+    suite: str
+    status: str
+    error: str | None
+    created_at: datetime
+    started_at: datetime | None
+    finished_at: datetime | None
+
+
+class EvalRunDetail(EvalRunRow):
+    params: dict[str, Any] | None
+    report: dict[str, Any] | None
 
 
 class AiFeatureRow(BaseModel):

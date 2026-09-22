@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 from app.content.eval_core import (
+    SUITES,
     EvalError,
     SuiteReport,
     _manifest_status,
@@ -40,8 +41,6 @@ from app.core.config import _API_DIR
 EVAL_DIR = _API_DIR / "eval"
 DATASETS = EVAL_DIR / "datasets"
 KB_DIR = _API_DIR / "content" / "kb"
-
-SUITES = ("coach", "shape", "retrieval", "planner", "exam")
 
 
 def run_suite(

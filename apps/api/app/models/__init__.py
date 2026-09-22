@@ -12,6 +12,7 @@ from app.models.dictation import (
     DictationTopic,
 )
 from app.models.encounter import Encounter, EncounterSetting
+from app.models.eval_run import EVAL_RUN_STATUSES, EvalRun
 from app.models.feedback import (
     FEEDBACK_STATUSES,
     FEEDBACK_TYPES,
@@ -146,6 +147,8 @@ __all__ = [
     "EggSetting",
     "Encounter",
     "EncounterSetting",
+    "EVAL_RUN_STATUSES",
+    "EvalRun",
     "PetOwned",
     "PetSpecies",
     "FEEDBACK_STATUSES",
