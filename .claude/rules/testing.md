@@ -20,7 +20,7 @@ A short checklist before adding one:
 
 
 - Backend tests live in `apps/api/tests/`. `conftest.py` provides `db_session` (SQLite via `StaticPool` — required, or each connection gets a private empty database) and `client` (overrides `get_db`).
-- Tests needing PostgreSQL are marked `integration` and skip cleanly without it.
+- Sửa đường AI (`prompts/`, retrieval, planner, coach, assistant) thì chạy `uv run python -m app.content.eval_ai --suite <liên quan>` và dán tóm tắt metrics vào PR — không có số thì không biết mình sửa tốt lên hay tệ đi.- Tests needing PostgreSQL are marked `integration` and skip cleanly without it.
 - Tests calling a third-party service are marked `external` and are deselected by `addopts`. **CI must never run them.** Because an explicit `-m` on the command line replaces `addopts` entirely — including the documented `pytest -m "not integration"` — they also self-guard on `TOEIC_ALLOW_EXTERNAL_TTS=1`.
 - **A concurrency test that just fires N threads does not test concurrency here.** The first writer commits before the others reach the advisory pre-check, so the `IntegrityError` branch is never entered and the test passes even with the fix removed. `tests/test_concurrency.py` uses a `threading.Barrier` between the pre-check and the commit to force a genuine race.
 - **When fixing a bug, verify the new test fails without the fix** — `git stash push -- <file>` or `git show HEAD~1:<file>`, run, confirm red, restore. Editing the file by string replacement to "revert" it is easy to get silently wrong.

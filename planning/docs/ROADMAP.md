@@ -130,6 +130,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       `note_failure` rồi fallback — hết đếm đôi và che hàng thật ở trang compare);
       prompt assistant gắn ranh giới dữ liệu/không-lệnh; `tests/test_prompt_injection.py`
       (6 bài: lịch sử/tools/PII souvenirs); audit PII và `except → None` sạch
+- [x] ~~**P4 prompt lifecycle + DoD**~~ — **Xong (2026-09-21).** Frontmatter YAML
+      tùy chọn trong `.md` (version = hash body, sửa meta không đổi version;
+      parse tay, không thêm dependency); `judge_coach` là prompt đầu tiên dùng;
+      PR template `.github/pull_request_template.md` (mục AI riêng); luật testing
+      bắt chạy `eval_ai` + dán metrics khi sửa đường AI
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
 - [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17
