@@ -54,7 +54,20 @@ uv run python -m app.content.eval_ai --judge <provider/model> --gen-model <provi
 ```
 
 - Judge phải khác model sinh — trùng thì runner từ chối ngay.
-- Chuẩn đồng ý hiện tại: 10/10 case coach (đo lần đầu khi chạy live).
+- Chuẩn đồng ý (đo 2026-09-21/22, 10 case coach):
+
+| Judge | n | Đồng ý | TP/FP/FN/TN | Kết luận |
+|---|---|---|---|---|
+| `ollama/gemma3:latest` ($0) | 10 | 30% | 3/7/0/0 | LOẠI — pass hết, ảo giác cả input không phải JSON |
+| `groq/openai/gpt-oss-120b` (~$0.01) | 10 | 70% | 3/3/0/4 | Giữ tạm — không FN lần nào; 3 FP đều là nương tay |
+| `google/gemini-3.6-flash` | 4 (kẹt quota free) | 75% | 1/1/0/2 | Chưa đủ n — chạy lại khi quota hồi |
+
+- Câu hỏi hiệu chuẩn mở: `coach-missing-chosen` được cả 3 judge cho qua —
+  hoặc assert-2 của ta nghiêm hơn mọi judge, hoặc mọi judge đều nương tay.
+  Chưa kết luận, không hạ assert vì một mẫu duy nhất.
+- Model chết phát hiện khi chạy (bảng giá còn ghi, API đã gỡ): `gemini-2.5-flash`,
+  `openai/gpt-oss-20b:free` (OpenRouter), `qwen/qwen3.6-27b` (Groq). Dọn bảng giá
+  là việc riêng, chưa làm ở đây.
 - Hàng `ai_interaction` feature=`eval_judge` ghi model/prompt thật đã chấm
   (lấy từ kết quả trả về, không phải từ flag) — đó là nguồn đối chiếu khi
   judge và cổng tất định bất đồng.
