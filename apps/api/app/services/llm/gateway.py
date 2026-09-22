@@ -264,6 +264,43 @@ class Gateway:
         finally:
             session.close()
 
+    def note_failure(
+        self,
+        *,
+        feature: str,
+        error: str,
+        prompt_version: str | None = None,
+        request_id: str | None = None,
+    ) -> None:
+        """Ghi một lượt LLM hỏng Ở TẦNG GỌI — model đã trả, nhưng parse/schema
+        ở nơi gọi không qua được.
+
+        Phiên riêng như `note_cache_hit`, vì tiền/lượt gọi đã xảy ra mà ghi
+        chung phiên request thì rollback ở bước sau xoá luôn dấu vết. Provider
+        và model là `"?"`: tầng gọi không biết route đã dùng (resolve theo
+        feature có thể đã ghi đè), và đoán tên vào sổ là bịa số liệu — cùng lý
+        do `_record` dùng `"?"` khi chưa dựng adapter.
+        """
+        session = self.session_factory()
+        try:
+            session.add(
+                AiInteraction(
+                    user_id=None,
+                    feature=feature,
+                    provider="?",
+                    model="?",
+                    cost_usd=Decimal(0),
+                    latency_ms=0,
+                    status="error",
+                    error=error[:2000],
+                    prompt_version=prompt_version,
+                    request_id=request_id,
+                )
+            )
+            session.commit()
+        finally:
+            session.close()
+
     def _transcript(
         self,
         *,

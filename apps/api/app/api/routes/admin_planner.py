@@ -216,12 +216,13 @@ def run_compare(
     latency = int((datetime.now(UTC) - started).total_seconds() * 1000)
 
     # Model/cost lấy từ sổ gọi — nơi duy nhất ghi được chúng, và lượt gọi vừa
-    # rồi là lượt mới nhất của tính năng này.
+    # rồi là lượt mới nhất của tính năng này. Bỏ hàng `provider = "?"`: đó là
+    # hàng `note_failure` của tầng parse (không biết route), không phải lượt gọi.
     from app.models import AiInteraction
 
     last_call = db.scalar(
         select(AiInteraction)
-        .where(AiInteraction.feature == FEATURE)
+        .where(AiInteraction.feature == FEATURE, AiInteraction.provider != "?")
         .order_by(AiInteraction.created_at.desc())
         .limit(1)
     )

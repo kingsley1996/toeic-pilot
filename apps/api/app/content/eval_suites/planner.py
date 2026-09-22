@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from app.content.eval_core import CaseFailure, EvalError, SuiteReport, _prompt_version
 from app.core.ai_budget import Budget
 from app.models.grammar import GrammarLesson, GrammarTopic
+from app.services.llm.base import LLMError
 from app.services.llm.fake import FakeProvider
 from app.services.llm.gateway import Gateway
 from app.services.llm.router import Tier
@@ -85,15 +86,20 @@ def _planner_case(cid: str, case: dict[str, Any]) -> CaseFailure | None:
                 redis_client=cast(redis.Redis, _NoRedis()),
                 session_factory=lambda: Session(engine),
             )
-            items = llm_select(
-                gateway,
-                session,
-                weak=weak,
-                budget=budget,
-                target_score=None,
-                exam_date=None,
-                raw_summary="eval",
-            )
+            try:
+                items = llm_select(
+                    gateway,
+                    session,
+                    weak=weak,
+                    budget=budget,
+                    target_score=None,
+                    exam_date=None,
+                    raw_summary="eval",
+                )
+            except LLMError:
+                # Lỗi gọi ở suite là None (đường fallback đã ghi sổ) — suite đo
+                # lớp CHỌN, không đo provider.
+                items = None
             if case.get("expect_no_call") and fake.seen:
                 return CaseFailure(
                     cid, f"gọi model thừa ({len(fake.seen)} lượt)", "system", "unexpected_call"

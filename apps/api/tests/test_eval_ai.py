@@ -168,6 +168,58 @@ def test_PLANNER_thieu_ung_vien_thi_KHONG_goi_model() -> None:
     assert eval_planner([case]).passed == 1
 
 
+def test_PLANNER_hong_thi_ghi_hang_error_chu_khong_im_lang() -> None:
+    """`except` hẹp + ghi sổ: fallback V1 vẫn chạy, nhưng lỗi đếm được."""
+    import redis
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import Session
+
+    from app.core.ai_budget import Budget
+    from app.core.database import Base
+    from app.models.ai import AiInteraction
+    from app.models.grammar import GrammarLesson, GrammarTopic
+    from app.services.llm.fake import FakeProvider
+    from app.services.llm.gateway import Gateway
+    from app.services.llm.router import Tier
+    from app.services.planner_llm import llm_select
+
+    engine = create_engine("sqlite:///:memory:")
+    for name in ("grammar_topic", "grammar_lesson", "ai_interaction"):
+        Base.metadata.tables[name].create(engine)
+    with Session(engine) as session:
+        for code in ("GRAMMAR_VOICE", "GRAMMAR_TENSE"):
+            topic = GrammarTopic(
+                code=code, slug=f"eval-{code.lower()}", title=code, status="published"
+            )
+            session.add(topic)
+            session.flush()
+            session.add(
+                GrammarLesson(
+                    topic_id=topic.id, slug=f"eval-{code.lower()}-1", title=code, status="published"
+                )
+            )
+        session.commit()
+        gateway = Gateway(
+            providers={"fake": FakeProvider(reply='{"wrong": 1}')},
+            routes={Tier.CHEAP: ("fake", "fake-1"), Tier.STRONG: ("fake", "fake-1")},
+            budget=Budget(limit_micro=1_000_000_000),
+            redis_client=redis.Redis(),
+            session_factory=lambda: Session(engine),
+        )
+        items = llm_select(
+            gateway,
+            session,
+            weak=[("GRAMMAR_VOICE", 1, 4), ("GRAMMAR_TENSE", 0, 3)],
+            budget=4,
+            target_score=None,
+            exam_date=None,
+            raw_summary="eval",
+        )
+        assert items is None
+        row = session.query(AiInteraction).filter_by(feature="study_plan", status="error").one()
+        assert row.error and "KeyError" in row.error
+
+
 def test_PLANNER_chu_de_draft_thi_KHONG_thanh_ung_vien() -> None:
     case = _plan_case(
         seed_topics=[{"code": "GRAMMAR_VOICE", "title": "Thể bị động", "status": "draft"}],

@@ -125,6 +125,11 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       Còn (cần traffic/thời gian, không làm trong một lát): thí nghiệm CHEAP vs
       STRONG 1 tuần (luật: leo thang >15% hoặc L2 rớt thì giữ STRONG), prompt
       caching (adapter chưa có `cache_control` — việc riêng), viết lại §9b
+- [x] ~~**P3 reliability + safety**~~ — **Xong (2026-09-21).** `llm_select` thu hẹp
+      `except` (LLMError ném tiếp về V1; chỉ ValueError/KeyError/TypeError ghi
+      `note_failure` rồi fallback — hết đếm đôi và che hàng thật ở trang compare);
+      prompt assistant gắn ranh giới dữ liệu/không-lệnh; `tests/test_prompt_injection.py`
+      (6 bài: lịch sử/tools/PII souvenirs); audit PII và `except → None` sạch
 - [ ] Viết lại `AI-ENGINEERING-PLAN` §9b — ngưỡng ở đó hiệu chỉnh cho bộ 8 nhãn, bảng thật
       có **72 mã**, nên "nhãn nhỏ nhất ≥5%" sẽ báo động mọi thứ
 - [ ] Gắn nhãn nốt: **838/855** câu đã có — còn 17

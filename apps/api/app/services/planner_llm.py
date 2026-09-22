@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 
 from app.models import GrammarLesson, GrammarTopic
 from app.services.labels import Label
-from app.services.llm.base import LLMRequest
+from app.services.llm.base import LLMError, LLMRequest
 from app.services.llm.gateway import Gateway
 from app.services.llm.prompts import load
 from app.services.llm.router import Tier
@@ -165,7 +165,20 @@ def llm_select(
             prompt_version=PROMPT.version,
         )
         picks = json.loads(result.text)["items"]
-    except Exception:
+    except LLMError:
+        # Lỗi gọi đã có một hàng trong sổ do gateway ghi (đúng provider/model)
+        # — ghi thêm hàng nữa là đếm đôi một sự kiện và che mất hàng thật ở
+        # trang compare. Ném tiếp để nơi gọi rơi về V1 như cũ.
+        raise
+    except (ValueError, KeyError, TypeError) as exc:
+        # Model trả 200 nhưng parse/schema không qua được: gateway đã ghi "ok"
+        # cho lượt GỌI, còn đây là lượt DÙNG hỏng — hai sự kiện khác nhau, hai
+        # hàng khác nhau. Nơi gọi vẫn rơi về V1, nhưng lỗi đếm được.
+        gateway.note_failure(
+            feature=FEATURE,
+            error=f"{type(exc).__name__}: {exc}",
+            prompt_version=PROMPT.version,
+        )
         return None
 
     by_id = {c.id: c for c in candidates}
