@@ -497,10 +497,14 @@ export function Person({
   coat = PALETTE.doorBlue,
   hat,
   clipboard = false,
+  hair,
 }: {
   coat?: string;
   hat?: string;
   clipboard?: boolean;
+  /** Màu tóc (opt-in: cảnh cũ không truyền thì đầu trọc như cũ, khỏi regen
+      preview cả khu). Hai khối: mái trên + gáy sau, chừa mặt (+X). */
+  hair?: string;
 }) {
   const body = useRef<THREE.Group>(null);
   const legBack = useRef<THREE.Group>(null);
@@ -565,6 +569,16 @@ export function Person({
           thành nhìn sang bên. Có phiếu thì mắt nhìn xuống phiếu. */}
       <group position={[0.06, 1.44, 0]} rotation={[0, 0, clipboard ? -0.7 : -0.08]}>
         <Box size={[0.28, 0.28, 0.28]} at={[0, 0, 0]} color={PALETTE.skin} />
+        {hair && (
+          <>
+            {/* mái NGỒI TRÊN đỉnh đầu (0.28): đáy lút 0.005, mép trước chừa
+                mắt. Đặt thấp hơn là chìm hẳn trong hộp đầu — nhìn từ trên
+                chỉ thấy da mà vẫn ra hình. Đội mũ thì mũ che, khỏi vẽ mái. */}
+            {!hat && <Box size={[0.28, 0.1, 0.3]} at={[-0.01, 0.275, 0]} color={hair} />}
+            {/* gáy: lút 0.03 vào sau đầu */}
+            <Box size={[0.06, 0.24, 0.28]} at={[-0.14, 0, 0]} color={hair} />
+          </>
+        )}
         {[-0.07, 0.07].map((z) => (
           <Box key={z} size={[0.05, 0.06, 0.06]} at={[0.13, 0.15, z]} color={PALETTE.tire} />
         ))}

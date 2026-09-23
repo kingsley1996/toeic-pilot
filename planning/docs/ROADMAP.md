@@ -415,7 +415,57 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       mái/cửa/ban công là object khớp toạ độ. Người đẩy máy cắt dùng `Person`
       tự quẫy chân theo chuyển động (không prop). Đã lên production: 809 → 831 từ, 29 → 30 chủ đề,
       topic `residential` 25/25 published (22 mới + balcony/fence/driveway nối).
-      Diễn tập idempotent, clip `weathervane` curl 200.
+       Diễn tập idempotent, clip `weathervane` curl 200.
+- [ ] **Visual Vocab 3D — kế tiếp (ưu tiên TOEIC, chốt 2026-09-23)** — 8 cảnh đã dựng
+      (`warehouse`, `urban`, `construction`, `residence`, `museum`, `office`, `park`,
+      `restaurant`); các ổ từ nặng nhất của TOEIC còn thiếu đều thuộc di chuyển /
+      lưu trú / họp / mua sắm / tài chính. Thứ tự: `airport-01` → `hotel-01` →
+      `conference-01` → `retail-01` → `bank-01` (dự bị). Mỗi cảnh từ mới qua pipeline
+      (paste → `backfill_audio` → push theo keys → publish), không nhập tay; shape
+      reuse `Person` / `Signboard` / `GlassPane` / `stanchion` sẵn có.
+- [ ] **Visual Vocab 3D — cảnh 9 "Sảnh sân bay / Cửa khởi hành"** (`airport-01`,
+      ~18-20 từ, topic mới `airport`): check-in counter, conveyor belt, luggage,
+      carry-on, boarding pass, departure board, security checkpoint, gate, aisle seat,
+      customs, passport control, itinerary, delay, announcement, departure lounge,
+      ticket agent, overhead bin, runway, flight attendant.
+      **Đã dựng xong trên dev (2026-09-23): topic `airport` 23 từ (13 nhập mới qua
+      pipeline + 10 nối từ travel/park/business), 104 clip audio đẩy theo keys,
+      curl 200, 23/23 published.** Sảnh indoor 32 m: check-in tây → bảng tin
+      giữa-nam → sảnh chờ giữa → an ninh/hải quan đông → cửa + đường băng bắc
+      (nhìn qua tường bắc thấp) + khoang mẫu đông-bắc. e2e visual-vocab **12/12
+      xanh**, preview `airport-01.png` đã mắt xem (audit số toàn bộ 23 object:
+      footprint, nhãn, mũi tên, mặt chữ, hướng nhân viên).
+      **Đợt 2 (2026-09-23, theo yêu cầu): quầy thêm 2 nhân viên trực trong shape
+      (decor không nhãn); attendant đẩy xe patrol làn giữa sảnh + 2 khách decor
+      đi sinus 2 làn ngược pha (tự quay mặt theo hướng, đóng băng khi
+      reduced-motion để preview deterministic); lounge có phòng kính riêng
+      (3 vách U mở đông + trụ + đà, không trần — mẫu office).** e2e hotspot
+      airport **3/3 xanh** (probe rect: attendant lùi làn z 1.5 lấy biên khỏi
+      pill lounge), preview regen + mắt xem.
+      **Đợt 3 (2026-09-23): sắp lại luồng đúng sân bay thật (check-in →
+      hải quan → soi chiếu → hộ chiếu → phòng chờ → podium sát cửa, giãn
+      airside sang nửa đông); itinerary/quầy INFO làm lại (bỏ trụ tròn +
+      biển xanh); loa cột kèn + vòng sóng trước miệng; vé boarding-pass tấm
+      lớn chữ + barcode 3D; máy bay chi tiết (cửa sổ rời, động cơ, kính lái,
+      càng có chân); runway bật lại raycast thân băng + nhấc pill; 6 khách
+      ngồi lounge/layover; tóc NPC (prop `hair` opt-in của `Person`).
+      e2e hotspot airport xanh.** Còn: mắt người duyệt cảnh mới + commit +
+      sync production (diễn tập scratch như các cảnh trước).
+- [ ] **Visual Vocab 3D — cảnh 10 "Sảnh khách sạn"** (`hotel-01`, ~16-18 từ, topic
+      mới `hotel`): lobby, front desk, reservation, check-in, check-out, key card,
+      elevator, luggage cart, bellhop, concierge, suite, vacancy, amenity,
+      housekeeping, wake-up call, invoice.
+- [ ] **Visual Vocab 3D — cảnh 11 "Phòng họp"** (`conference-01`, ~14-16 từ, topic
+      mới `conference`): conference room, agenda, minutes, projector, whiteboard,
+      podium, microphone, attendee, chairman, proposal, handout, presentation,
+      flipchart, videoconference.
+- [ ] **Visual Vocab 3D — cảnh 12 "Cửa hàng"** (`retail-01`, ~18 từ, topic mới
+      `retail`): cashier, checkout counter, shopping cart, aisle, shelf, price tag,
+      barcode, receipt, refund, discount, fitting room, inventory, out of stock,
+      sale sign, customer, clerk.
+- [ ] **Visual Vocab 3D — cảnh 13 "Ngân hàng"** (`bank-01` dự bị, ~12 từ, topic mới
+      `bank`): teller, counter, ATM, vault, queue, deposit slip, withdrawal, loan,
+      interest rate, balance, statement, overdraft.
 - [ ] **Scene 3D vào DB (kế hoạch, chưa làm)** — `planning/docs/PLAN-SCENE-DATABASE.md`:
       DB giữ key + số (override), file TS giữ hình + làm default (mẫu `petland_map`);
       từ vựng tham chiếu bằng (headword, pos) như hiện tại, không FK entry.

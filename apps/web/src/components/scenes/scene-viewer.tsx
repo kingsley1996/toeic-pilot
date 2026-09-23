@@ -46,6 +46,7 @@ import {
   RESTAURANT_SHAPES,
   RestaurantEnvironment,
 } from "@/components/scenes/scene-shapes-restaurant";
+import { AIRPORT_SHAPES, AirportEnvironment } from "@/components/scenes/scene-shapes-airport";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -73,6 +74,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...OFFICE_SHAPES,
   ...PARK_SHAPES,
   ...RESTAURANT_SHAPES,
+  ...AIRPORT_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -530,6 +532,8 @@ function SceneCanvas({
         <ParkEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "restaurant-hall" ? (
         <RestaurantEnvironment onBrandPick={onBrandPick} />
+      ) : scene.environment === "airport-terminal" ? (
+        <AirportEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "museum-hall" ? (
         <MuseumEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (

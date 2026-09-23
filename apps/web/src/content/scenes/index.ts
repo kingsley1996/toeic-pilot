@@ -1,4 +1,5 @@
 import { constructionScene } from "@/content/scenes/construction";
+import { airportScene } from "@/content/scenes/airport";
 import { museumScene } from "@/content/scenes/museum";
 import { officeScene } from "@/content/scenes/office";
 import { parkScene } from "@/content/scenes/park";
@@ -25,6 +26,7 @@ export const SCENES: SceneDef[] = [
   officeScene,
   parkScene,
   restaurantScene,
+  airportScene,
 ];
 
 export function getScene(id: string): SceneDef | undefined {

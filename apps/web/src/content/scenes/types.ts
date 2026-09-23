@@ -175,7 +175,31 @@ export type ShapeKey =
   | "attendance-recorder"
   | "revise-set"
   | "evaluation-board"
-  | "notify-speaker";
+  | "notify-speaker"
+  // sảnh sân bay (topic `airport`)
+  | "checkin-counter"
+  | "ticket-agent"
+  | "conveyor-belt"
+  | "luggage-cart"
+  | "carry-on"
+  | "departure-board"
+  | "departure-screen"
+  | "delay-screen"
+  | "cancel-screen"
+  | "announce-pole"
+  | "departure-lounge"
+  | "layover-corner"
+  | "info-desk"
+  | "boarding-podium"
+  | "security-frame"
+  | "passport-booth"
+  | "passport-stand"
+  | "customs-counter"
+  | "gate-door"
+  | "runway-strip"
+  | "overhead-bin"
+  | "aisle-seat"
+  | "flight-attendant";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -254,7 +278,8 @@ export interface SceneDef {
     | "museum-hall"
     | "office-floor"
     | "park-grounds"
-    | "restaurant-hall";
+    | "restaurant-hall"
+    | "airport-terminal";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.
