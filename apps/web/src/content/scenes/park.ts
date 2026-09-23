@@ -201,11 +201,12 @@ export const parkScene: SceneDef = {
       shape: "hammock",
       headword: "hammock",
       partOfSpeech: "noun",
-      // Dọc biên tây giữa hai cụm cây decor.
+      // Dọc biên tây giữa hai cụm cây decor. Đỉnh thật là bóng cọc
+      // (1.56) nên topY 1.6 (2.4 − 1.6 = 0.8 đúng boong là mất mũi tên).
       position: [-12.5, 0, 1],
       focusDistance: 6,
-      hotspotY: 2.4,
-      topY: 1.5,
+      hotspotY: 2.5,
+      topY: 1.6,
       ringRadius: 2.6,
     },
     {
@@ -240,10 +241,12 @@ export const parkScene: SceneDef = {
       headword: "picnic",
       partOfSpeech: "noun",
       // Giữa thảm lawn (vệt đất canvas khớp điểm này), người dọn đứng cạnh.
+      // Mũi tên xuống giỏ đồ giữa thảm (đỉnh giỏ 0.41) — đầu người đứng
+      // lệch tâm nên không xuyên.
       position: [-5, 0, 7.5],
       focusDistance: 5,
       hotspotY: 2.2,
-      topY: 1.3,
+      topY: 0.5,
       ringRadius: 2,
     },
     {
@@ -264,10 +267,11 @@ export const parkScene: SceneDef = {
       headword: "seesaw",
       partOfSpeech: "noun",
       // Tây xích đu, ván dài X, né làn người bán bóng (x 2.5) 1.4 m.
+      // Đỉnh thật là tay cầm (1.65) nên nhãn lên 2.5.
       position: [5.5, 0, 9],
       focusDistance: 5,
-      hotspotY: 2.0,
-      topY: 1.1,
+      hotspotY: 2.5,
+      topY: 1.65,
       ringRadius: 2,
     },
     {
@@ -288,10 +292,11 @@ export const parkScene: SceneDef = {
       headword: "kite",
       partOfSpeech: "noun",
       // Diều bay phía đông, dây thẳng xuống cuộn dây dưới đất.
+      // Đỉnh thật 5.75 (chóp diều) nên topY 5.8, nhãn lên 6.65.
       position: [12, 0, -1],
       focusDistance: 8,
-      hotspotY: 6.3,
-      topY: 5.35,
+      hotspotY: 6.65,
+      topY: 5.8,
       ringRadius: 1.5,
     },
     {

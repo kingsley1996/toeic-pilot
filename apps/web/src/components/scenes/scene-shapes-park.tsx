@@ -135,7 +135,8 @@ function Fountain() {
         <cylinderGeometry args={[0.9, 0.7, 0.18, 12]} />
         {paint(PK.stone)}
       </mesh>
-      <mesh position={[0, 2.5, 0]} castShadow>
+      {/* cột trên CHẠM đĩa (đĩa đỉnh 1.94): đáy 1.9 lút vào đĩa */}
+      <mesh position={[0, 2.35, 0]} castShadow>
         <cylinderGeometry args={[0.12, 0.16, 0.9, 8]} />
         {paint(PK.stoneDark)}
       </mesh>
@@ -271,11 +272,12 @@ function Gazebo() {
           />
         );
       })}
-      <mesh position={[0, 3.6, 0]} castShadow>
+      {/* mái NGỒI trên đầu cột (đỉnh cột 2.7): đáy mái 2.7 */}
+      <mesh position={[0, 3.5, 0]} castShadow>
         <coneGeometry args={[2.7, 1.6, 6]} />
         {paint(PK.gateGreen)}
       </mesh>
-      <mesh position={[0, 4.5, 0]}>
+      <mesh position={[0, 4.32, 0]}>
         <sphereGeometry args={[0.12, 8, 6]} />
         {paint(PK.woodDark)}
       </mesh>
@@ -354,7 +356,8 @@ function Seesaw() {
       <Box size={[3.2, 0.14, 0.4]} at={[0, 0.95, 0]} color={PK.wood} />
       {[-1.3, 1.3].map((x) => (
         <group key={x}>
-          <Box size={[0.4, 0.08, 0.35]} at={[x, 1.02, 0]} color={PK.woodDark} />
+          {/* ghế NGỒI trên ván (đỉnh ván 1.09), không chìm trong ván */}
+          <Box size={[0.4, 0.08, 0.35]} at={[x, 1.09, 0]} color={PK.woodDark} />
           <mesh position={[x, 1.35, 0]} castShadow>
             <cylinderGeometry args={[0.03, 0.03, 0.5, 6]} />
             {paint(PK.stoneDark)}
@@ -492,11 +495,16 @@ function Gate() {
         </mesh>
       )}
       <Box size={[3.4, 1.05, 0.08]} at={[0, 2.2, 0.2]} color={PK.gateGreen} />
-      {/* hai cánh cổng mở vào trong (yaw đối xứng) */}
-      <group position={[-2.2, 0, 0]} rotation={[0, 0.6, 0]}>
+      {/* bảng TREO vào xà bằng 2 thanh (đỉnh bảng 2.725, đáy xà 3.1) —
+          không thanh là bảng lơ lửng giữa hai trụ */}
+      {[-1.2, 1.2].map((x) => (
+        <Box key={x} size={[0.06, 0.4, 0.06]} at={[x, 2.7, 0.2]} color={PK.stoneDark} />
+      ))}
+      {/* hai cánh cổng mở vào trong (gốc khít trụ, yaw đối xứng) */}
+      <group position={[-2.15, 0, 0]} rotation={[0, 0.6, 0]}>
         <Box size={[2.0, 1.4, 0.08]} at={[-1.0, 0.2, 0]} color={PK.stoneDark} />
       </group>
-      <group position={[2.2, 0, 0]} rotation={[0, -0.6, 0]}>
+      <group position={[2.15, 0, 0]} rotation={[0, -0.6, 0]}>
         <Box size={[2.0, 1.4, 0.08]} at={[1.0, 0.2, 0]} color={PK.stoneDark} />
       </group>
     </group>
@@ -569,7 +577,8 @@ function Lantern() {
   return (
     <group>
       <Box size={[0.6, 0.25, 0.6]} at={[0, 0, 0]} color={PK.stoneDark} />
-      <mesh position={[0, 0.65, 0]} castShadow>
+      {/* thân TIẾP đế (đỉnh đế 0.25), không lơ lửng */}
+      <mesh position={[0, 0.55, 0]} castShadow>
         <cylinderGeometry args={[0.18, 0.22, 0.6, 6]} />
         {paint(PK.stone)}
       </mesh>
@@ -601,6 +610,12 @@ function SeatedPerson({ coat, pants = PALETTE.steelDark }: { coat: string; pants
       <Box size={[0.34, 0.22, 0.4]} at={[0, 0.05, 0]} color={pants} />
       <Box size={[0.34, 0.55, 0.4]} at={[0, 0.27, 0]} color={coat} />
       <Box size={[0.26, 0.26, 0.26]} at={[0.02, 0.82, 0]} color={PALETTE.skin} />
+      {/* mắt nhìn +X + tóc đỉnh/gáy (đầu trơn là mặt đơ — đã dính) */}
+      {[-0.07, 0.07].map((z) => (
+        <Box key={z} size={[0.05, 0.06, 0.06]} at={[0.14, 0.85, z]} color={PALETTE.tire} />
+      ))}
+      <Box size={[0.3, 0.08, 0.3]} at={[0.02, 1.08, 0]} color={PALETTE.tire} />
+      <Box size={[0.1, 0.3, 0.28]} at={[-0.14, 0.9, 0]} color={PALETTE.tire} />
     </group>
   );
 }
@@ -609,14 +624,16 @@ function SeatedPerson({ coat, pants = PALETTE.steelDark }: { coat: string; pants
 function Picnic() {
   return (
     <group>
-      <Box size={[2.4, 0.06, 1.8]} at={[0, 0.02, 0]} color={PK.blanketRed} />
-      <Box size={[2.4, 0.06, 0.3]} at={[0, 0.04, 0.4]} color={PK.petalWhite} />
-      <Box size={[0.5, 0.35, 0.35]} at={[-0.5, 0.08, -0.2]} color={PK.wood} />
-      <mesh position={[-0.5, 0.35, -0.2]} rotation={[0, 0, Math.PI / 2]} castShadow>
+      {/* thảm TIẾP cỏ (không lơ lửng 0.02); đồ trên thảm tiếp mặt thảm 0.06 */}
+      <Box size={[2.4, 0.06, 1.8]} at={[0, 0, 0]} color={PK.blanketRed} />
+      <Box size={[2.4, 0.06, 0.3]} at={[0, 0.02, 0.4]} color={PK.petalWhite} />
+      <Box size={[0.5, 0.35, 0.35]} at={[-0.5, 0.06, -0.2]} color={PK.wood} />
+      {/* quai nửa TRÊN đứng (arc π mặc định đã là nửa trên) */}
+      <mesh position={[-0.5, 0.35, -0.2]} castShadow>
         <torusGeometry args={[0.18, 0.035, 6, 12, Math.PI]} />
         {paint(PK.woodDark)}
       </mesh>
-      <mesh position={[0.4, 0.14, 0.2]} castShadow>
+      <mesh position={[0.4, 0.085, 0.2]} castShadow>
         <cylinderGeometry args={[0.22, 0.22, 0.05, 12]} />
         {paint(PK.petalWhite)}
       </mesh>
@@ -630,12 +647,15 @@ function Picnic() {
       </mesh>
       <group position={[1.9, 0, 0.9]} rotation={[0, -Math.PI / 2, 0]}>
         <Person coat={PK.balloonGreen} />
+        {/* tóc người dọn (mũi +X nên gáy −X) — không tóc là hói từ xa */}
+        <Box size={[0.14, 0.9, 0.4]} at={[-0.18, 1.0, 0]} color={PALETTE.tire} />
+        <Box size={[0.44, 0.14, 0.44]} at={[0.06, 1.66, 0]} color={PALETTE.tire} />
       </group>
-      {/* hai người ngồi quây quanh đồ ăn, mặt vào giữa thảm */}
-      <group position={[0.75, 0.05, -0.55]} rotation={[0, Math.PI, 0]}>
+      {/* hai người ngồi quây quanh đồ ăn, mặt vào giữa thảm (mông tiếp thảm) */}
+      <group position={[0.75, 0, -0.55]} rotation={[0, Math.PI, 0]}>
         <SeatedPerson coat={PK.balloonBlue} />
       </group>
-      <group position={[-1.0, 0.05, 0.6]}>
+      <group position={[-1.0, 0, 0.6]}>
         <SeatedPerson coat={PK.petalYellow} pants={PK.woodDark} />
       </group>
     </group>
@@ -647,18 +667,19 @@ function Sundial() {
   return (
     <group>
       <Box size={[0.7, 0.5, 0.7]} at={[0, 0, 0]} color={PK.stoneDark} />
-      <mesh position={[0, 0.62, 0]} castShadow>
+      {/* đĩa TIẾP đế (đỉnh đế 0.5); vạch giờ tiếp mặt đĩa 0.6 */}
+      <mesh position={[0, 0.55, 0]} castShadow>
         <cylinderGeometry args={[0.55, 0.55, 0.1, 16]} />
         {paint(PK.stone)}
       </mesh>
-      {/* kim: đáy ở đĩa (y 0.67), cao 0.7, nghiêng 0.2 rad về +X —
-          đỉnh ở x = sin(0.2)·0.7 ≈ 0.14, y = 0.67 + cos(0.2)·0.7 ≈ 1.36 */}
-      <mesh position={[0.07, 1.0, 0]} rotation={[0, 0, -0.2]} castShadow>
+      {/* kim: đáy ở đĩa (y 0.6), cao 0.7, nghiêng 0.2 rad về +X —
+          đỉnh ở x ≈ 0.07 + sin(0.2)·0.35 ≈ 0.14, y ≈ 0.95 + cos(0.2)·0.35 ≈ 1.29 */}
+      <mesh position={[0.07, 0.95, 0]} rotation={[0, 0, -0.2]} castShadow>
         <boxGeometry args={[0.06, 0.7, 0.3]} />
         {paint(PK.stoneDark)}
       </mesh>
       {[-0.35, 0.35].map((x) => (
-        <Box key={x} size={[0.05, 0.02, 0.9]} at={[x, 0.68, 0]} color={PK.stoneDark} />
+        <Box key={x} size={[0.05, 0.02, 0.9]} at={[x, 0.6, 0]} color={PK.stoneDark} />
       ))}
     </group>
   );
@@ -668,11 +689,12 @@ function Sundial() {
 function Birdbath() {
   return (
     <group>
-      <mesh position={[0, 0.45, 0]} castShadow>
+      {/* chân TIẾP đất; chậu TIẾP chân (đỉnh chân 0.8) */}
+      <mesh position={[0, 0.4, 0]} castShadow>
         <cylinderGeometry args={[0.14, 0.2, 0.8, 8]} />
         {paint(PK.stone)}
       </mesh>
-      <mesh position={[0, 0.95, 0]} castShadow>
+      <mesh position={[0, 0.925, 0]} castShadow>
         <cylinderGeometry args={[0.55, 0.4, 0.25, 12]} />
         {paint(PK.stone)}
       </mesh>
@@ -680,10 +702,10 @@ function Birdbath() {
         <cylinderGeometry args={[0.45, 0.45, 0.04, 12]} />
         <meshStandardMaterial color={PK.water} transparent opacity={0.85} flatShading />
       </mesh>
-      {/* chim: thân sphere + đầu sphere + mỏ cone hướng +X */}
+      {/* chim ĐỨNG trong chậu (mặt nước 1.08), không lơ lửng trên */}
       {[
-        [0.15, 1.25, 0.1],
-        [-0.2, 1.22, -0.15],
+        [0.15, 1.17, 0.1],
+        [-0.2, 1.14, -0.15],
       ].map(([x, y, z], i) => (
         <group key={i} position={[x, y, z]}>
           <mesh castShadow>
@@ -796,11 +818,13 @@ export function ParkEnvironment({
           <ParkFence />
         </group>
       ))}
-      {/* cây decor rải quanh, né cụm object (tính theo def park.ts) */}
+      {/* cây decor rải quanh, né cụm object (tính theo def park.ts).
+          Cây [-7, -12] cũ đâm thân qua vành đá hồ (vành tới x −7.2) nên dời
+          ra ngoài tầm vành + tán (4.2 + 0.9). */}
       {[
         [-13, -11],
         [-14, 6],
-        [-7, -12],
+        [-8, -12.5],
         [13, -11],
         [14, 2],
         [6, -12],
