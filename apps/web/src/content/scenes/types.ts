@@ -132,6 +132,28 @@ export type ShapeKey =
   | "sandbox"
   | "kite"
   | "hammock"
+  // nhà hàng (topic `restaurant`)
+  | "menu-board"
+  | "host-stand"
+  | "table-set"
+  | "reserve-table"
+  | "diner-set"
+  | "appetizer-plate"
+  | "dessert-plate"
+  | "beverage-set"
+  | "napkin-set"
+  | "utensil-set"
+  | "refill-pitcher"
+  | "garnish-plate"
+  | "buffet-counter"
+  | "grill-stove"
+  | "chef-figure"
+  | "ingredient-crate"
+  | "catering-cart"
+  | "waiter-figure"
+  | "takeout-bag"
+  | "gratuity-jar"
+  | "recipe-shelf"
   // văn phòng mở (topic `office`)
   | "supervisor"
   | "intern"
@@ -231,7 +253,8 @@ export interface SceneDef {
     | "residential-yard"
     | "museum-hall"
     | "office-floor"
-    | "park-grounds";
+    | "park-grounds"
+    | "restaurant-hall";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

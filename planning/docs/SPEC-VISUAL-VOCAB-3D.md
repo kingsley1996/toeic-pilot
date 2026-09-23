@@ -266,3 +266,31 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
    pointer-events-none) nhưng e2e đo bằng elementFromPoint nên vẫn rớt,
    mà rớt theo timing nên lúc xanh lúc đỏ rất khó chịu. Làn phải đi chỗ
    thoáng, cách pill tĩnh gần nhất ~1 m trở lên.
+7. **Khung cửa không được đứng trên trục nhìn chính.** Khung gỗ cao 2.6 m
+   ở lối vào che mất host + menu sau nó từ home camera (office thoát vì
+   nhìn xuyên facade kính). Lối vào chỉ cần trụ lùn + thảm đánh dấu.
+8. **Người ngồi phải đặt đúng ghế đã vẽ, không đặt giữa hai ghế.** Mông
+   ở mặt ghế, mặt vào tâm bàn — góc tính như ghế (mũi +X: θ = atan2(−dz,
+   dx)). Đặt lệch là ngồi lên không khí mà vẫn ra hình. Cùng họ: lưng ghế
+   ở local −Z nên ghế muốn nhìn vào tâm thì rotation = −a−π/2.
+
+## 12. Checklist số đo trước khi preview (nhà hàng, 2026-09)
+
+Toàn là lỗi "vẫn ra hình" — chỉ bắt bằng số, không bắt bằng mắt:
+
+1. **`Box` lấy gốc chân, mesh trần lấy tâm.** Viết `at` xong cộng ngay
+   thành đỉnh (đỉnh = đáy + cao) rồi mới so với tường/trần/kệ. Song cửa
+   đặt đáy 2.025 cao 1.75 là đỉnh 3.775, vượt tường 3.0.
+2. **Mọi vật trang trí phải có Y-max ≤ tường/trần.** Ống khói, song, mũ —
+   liệt kê đỉnh từng món cao trước khi chốt.
+3. **Đồ đặt TRÊN mặt: đáy lút 0.005, không đồng phẳng, không lơ lửng.**
+   Đáy = mặt là flicker (đĩa, sổ); lơ lửng 0.02 là bay (khay phủ, lọ, nắp).
+4. **Đồ trong khay/hộp: đỉnh phải qua miệng khay.** Dao nĩa nằm dưới miệng
+   là nhìn từ trên chỉ thấy khay trống.
+5. **Khay/túi trên tay: đặt đúng đầu tay đã xoay.** Đầu tay = gốc + L·(hướng
+   sau xoay) — tính ra số (khay bồi bàn lơ lửng 0.2 trên đầu tay).
+6. **Vật treo không trần phải có trụ đỡ.** Chụp hút mùi lơ lửng giữa nhà.
+7. **`Person` đã có 2 tay bên — gắn thêm tay là 4 tay.** Tay cầm/tay đẩy
+   thì viết thân riêng không tay bên (`PushingStaff`).
+8. **Torus arc π mặc định đã là nửa trên đứng.** Xoay π/2 là thành nửa bên
+   (quai túi takeout). Chỉ xoay khi đã vẽ hai đầu mút ra số.
