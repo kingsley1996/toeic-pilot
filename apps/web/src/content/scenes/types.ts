@@ -111,6 +111,27 @@ export type ShapeKey =
   | "archway"
   | "exit"
   | "mural"
+  // công viên (topic `park`) — bench/lamppost/hedge dùng lại shape có sẵn
+  | "fountain"
+  | "pond"
+  | "bridge"
+  | "gazebo"
+  | "statue"
+  | "swing"
+  | "picnic"
+  | "flowerbed"
+  | "lantern"
+  | "gate"
+  | "path"
+  | "lawn"
+  | "lake"
+  | "balloon"
+  | "sundial"
+  | "birdbath"
+  | "seesaw"
+  | "sandbox"
+  | "kite"
+  | "hammock"
   // văn phòng mở (topic `office`)
   | "supervisor"
   | "intern"
@@ -209,7 +230,8 @@ export interface SceneDef {
     | "construction-site"
     | "residential-yard"
     | "museum-hall"
-    | "office-floor";
+    | "office-floor"
+    | "park-grounds";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

@@ -240,3 +240,29 @@ Ba chế độ trên MỘT cảnh (đường dọc 1→3→4→6 của spec gố
 7. **Kể chuyện bằng luồng đi của khách:** quẹt máy + lấy thẻ ở cửa kính
    rồi mới vào gặp lễ tân — badge đặt cạnh quầy theo quán tính là cùng
    tia nhìn với payroll, đặt ở cửa thì vừa đúng đời vừa tách nhãn.
+
+## 11. Bài học cảnh 6 (park-01, 2026-09) — outdoor rộng, 23 từ
+
+1. **Torus sống trong mặt XY, không nằm trên đất.** Vành đá ao/hồ không xoay
+   X là dựng thành vòm che mất cầu — vẫn ra hình nên hỏng im lặng, mắt xem
+   preview mới thấy. Xoay `[-π/2, 0, 0]` rồi mới scale dẹt (theo Y sau xoay,
+   không phải Z).
+2. **Biển quay mặt về camera, không quay về hướng đặt.** Biển ở bắc mà
+   `rotationY={π}` là quay lưng vào nhà — preview đen thui. Mặt biển (plane
+   local +Z) để yaw 0 là nhìn về nam, đúng hướng home camera.
+3. **Đen chưa chắc hỏng.** Cột đèn park đen thui mà đúng y thiết kế gốc —
+   so ảnh preview urban cũ trước khi sửa (urban cũng đen). Có mẫu cũ để đối
+   chiếu thì đối chiếu, không đoán bằng mắt.
+4. **Regen preview làm lệch ảnh cảnh cũ vài trăm byte.** Chế độ plain vẫn
+   nhiễu render giữa các lần chạy (font/shadow/timing) — revert ảnh cũ,
+   chỉ giữ ảnh cảnh mới, không commit diff rác.
+5. **Neo recall của `rect` là TÂM vòng, không phải điểm trên vòng.**
+   Người bán bóng đi vòng quanh đài phun thì vào recall đứng giữa bể nước —
+   che đúng lúc quiz hỏi fountain. Muốn đi vòng mà neo đẹp thì tâm vòng
+   phải là chỗ trống (thảm museum), không thì đi tuyến thẳng.
+6. **Làn patrol phải né pill tĩnh với biên rộng.** Wrapper drei của vật
+   patrol phủ rộng hơn chấm tròn nhiều — đi giữa cụm nhãn là thỉnh thoảng
+   đè 4–5 hotspot cùng lúc. Click thật vẫn xuyên qua (pill patrol
+   pointer-events-none) nhưng e2e đo bằng elementFromPoint nên vẫn rớt,
+   mà rớt theo timing nên lúc xanh lúc đỏ rất khó chịu. Làn phải đi chỗ
+   thoáng, cách pill tĩnh gần nhất ~1 m trở lên.

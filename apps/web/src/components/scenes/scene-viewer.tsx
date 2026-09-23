@@ -41,6 +41,7 @@ import {
 import { RESIDENCE_SHAPES, ResidenceEnvironment } from "@/components/scenes/scene-shapes-residence";
 import { MUSEUM_SHAPES, MuseumEnvironment } from "@/components/scenes/scene-shapes-museum";
 import { OFFICE_SHAPES, OfficeEnvironment } from "@/components/scenes/scene-shapes-office";
+import { PARK_SHAPES, ParkEnvironment } from "@/components/scenes/scene-shapes-park";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -66,6 +67,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...RESIDENCE_SHAPES,
   ...MUSEUM_SHAPES,
   ...OFFICE_SHAPES,
+  ...PARK_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -519,6 +521,8 @@ function SceneCanvas({
         <ResidenceEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "office-floor" ? (
         <OfficeEnvironment onBrandPick={onBrandPick} />
+      ) : scene.environment === "park-grounds" ? (
+        <ParkEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "museum-hall" ? (
         <MuseumEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (
