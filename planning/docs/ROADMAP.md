@@ -451,6 +451,10 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       ngồi lounge/layover; tóc NPC (prop `hair` opt-in của `Person`).
       e2e hotspot airport xanh.** Còn: mắt người duyệt cảnh mới + commit +
       sync production (diễn tập scratch như các cảnh trước).
+      **Đã lên production (2026-09-23): diễn tập scratch chép trạng thái prod
+      (879/32/0) → áp 2 lần cùng ra 892 từ / 33 chủ đề / airport 23/23
+      (idempotent); áp thật khớp số; audio clip `check-in counter` curl 200.**
+      Web (Vercel) tự deploy theo push `4e3d693`.
 - [ ] **Visual Vocab 3D — cảnh 10 "Sảnh khách sạn"** (`hotel-01`, ~16-18 từ, topic
       mới `hotel`): lobby, front desk, reservation, check-in, check-out, key card,
       elevator, luggage cart, bellhop, concierge, suite, vacancy, amenity,
