@@ -1,0 +1,15 @@
+bed | noun | /bed/ | a large piece of furniture for sleeping on | giường | The bed was large and comfortable. | Giường rộng và thoải mái.
+pillow | noun | /ˈpɪloʊ/ | a soft cushion to rest your head on in bed | gối | Extra pillows are in the closet. | Gối dự phòng ở trong tủ quần áo.
+blanket | noun | /ˈblæŋkɪt/ | a thick cover that keeps you warm in bed | chăn | The blanket was folded at the foot of the bed. | Chăn được gấp ở cuối giường.
+towel | noun | /ˈtaʊəl/ | a piece of cloth for drying the body | khăn tắm | Clean towels are provided every day. | Khăn tắm sạch được cấp mỗi ngày.
+bathtub | noun | /ˈbæθtʌb/ | a large container to wash the whole body in | bồn tắm | The suite has a bathtub with a view. | Phòng suite có bồn tắm hướng ra cảnh đẹp.
+shower | noun | /ˈʃaʊər/ | a device that sprays water for washing the body | vòi hoa sen | The shower has strong water pressure. | Vòi hoa sen có áp lực nước mạnh.
+mirror | noun | /ˈmɪrər/ | a glass surface that shows your reflection | gương | There is a large mirror above the sink. | Có một tấm gương lớn phía trên bồn rửa.
+closet | noun | /ˈklɑːzɪt/ | a cupboard for storing clothes | tủ quần áo | Hang your jacket in the closet. | Treo áo khoác của bạn vào tủ quần áo.
+hanger | noun | /ˈhæŋər/ | a curved object for hanging clothes on | móc treo quần áo | The closet provides six hangers. | Tủ quần áo có sẵn sáu móc treo.
+safe | noun | /seɪf/ | a strong box for keeping valuables secure | két sắt | Put your passport in the room safe. | Cất hộ chiếu vào két sắt trong phòng.
+minibar | noun | /ˈmɪnibɑːr/ | a small fridge in a hotel room with drinks | tủ lạnh mini | Drinks from the minibar cost extra. | Đồ uống trong tủ lạnh mini tính thêm phí.
+kettle | noun | /ˈketl/ | a container for boiling water for tea or coffee | ấm đun nước | The kettle is next to the tea tray. | Ấm đun nước đặt cạnh khay trà.
+alarm clock | noun | /əˈlɑːrm klɑːk/ | a clock that rings to wake you up | đồng hồ báo thức | Set the alarm clock for six thirty. | Hẹn đồng hồ báo thức lúc sáu giờ ba mươi.
+television | noun | /ˈtelɪvɪʒn/ | a device for watching programmes and films | ti-vi | The television offers forty channels. | Ti-vi có bốn mươi kênh.
+air conditioner | noun | /er kənˈdɪʃənər/ | a machine that cools the air in a room | điều hòa | Please turn off the air conditioner when you leave. | Vui lòng tắt điều hòa khi bạn ra ngoài.

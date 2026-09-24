@@ -455,10 +455,39 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       (879/32/0) → áp 2 lần cùng ra 892 từ / 33 chủ đề / airport 23/23
       (idempotent); áp thật khớp số; audio clip `check-in counter` curl 200.**
       Web (Vercel) tự deploy theo push `4e3d693`.
-- [ ] **Visual Vocab 3D — cảnh 10 "Sảnh khách sạn"** (`hotel-01`, ~16-18 từ, topic
-      mới `hotel`): lobby, front desk, reservation, check-in, check-out, key card,
-      elevator, luggage cart, bellhop, concierge, suite, vacancy, amenity,
-      housekeeping, wake-up call, invoice.
+- [ ] **Visual Vocab 3D — cảnh 10 "Phòng khách sạn"** (`hotel-room-01`, 18 từ
+      toàn đồ cụ thể, topic `hotel`): bed, pillow, blanket, towel, bathtub, shower,
+      mirror, closet, hanger, safe, minibar, kettle, alarm clock, television,
+      air conditioner (15 nhập mới) + balcony, curtain, baggage (3 nối sẵn).
+      **Làm lại từ sảnh thất bại (từ trừu tượng khó hình dung): đã xóa sạch 14 từ
+      cũ khỏi dev + 112 clip khỏi Supabase/local/manifest, code về baseline.**
+      Đã dựng xong trên dev (2026-09-24): 18/18 published, audio 200. Phòng ngủ
+      + tắm kính + ban công. e2e hotspot **xanh 2/2** (probe: kettle/shower,
+      balcony/curtain, bed/pillow, minibar/safe, baggage/hanger; home nới 2 lần
+      cho tắm lọt khung), preview mắt xem.
+      **Đợt 2 (5 fix theo yêu cầu): cửa ban công thành vách kính trượt độc lập
+      (bản gắn tường vô hình); TV bỏ xoay cả object (tủ vuông + màn xoay trên
+      cổ trụ, topY theo đỉnh màn); gương cột ra giữa + gap 0.03; minibar lớn
+      (hốc mở + cửa mở + biển); bồn tắm rỗng giữa (vành + nước thấp); baggage
+      chân đứng cạnh tủ.** e2e xanh, preview regen + mắt xem cận từng object.
+      **Đợt 3: đục cửa mở tường bắc + vách kính khung nhôm mảnh nhìn xuyên ra
+      bàn cây lan can trắng; TV lớn đối diện giường (xoay π giữ trục).**
+      e2e xanh 2/2, preview regen + mắt xem.
+      **Đợt 4: đố biên gỗ ăn tường; TV về thẳng trục giường + 2 chân đỡ
+      (1 trụ giữa là cánh chìa ra lơ lửng); thêm rug + sofa tây-nam
+      (2 từ mới, topic 20 từ).** e2e xanh, preview regen + mắt xem cận.
+      **Đợt 5: sofa dài dọc tường trái; tủ vách ngăn dài 6 m tách khu giường.**
+      e2e xanh, preview regen + mắt xem.
+      **Đợt 6: TV thẳng tuyệt đối + 2 chân bè (màn xoay trên chân hẹp là
+      trượt/lơ lửng khi nhìn sau).** Mắt xem cận trước sau.
+      **Đợt 7: TV làm lại — màn ngồi trực tiếp lên tủ (không chân/khe thì
+      không có gì để lệch).** Mắt xem cận, e2e xanh, preview regen.
+      **Đợt 8: lan can thêm 2 tay hồi nối tường; rèm áp sát tường; biển +
+      điều hòa dời phải tách nhau.** Mắt xem cận, e2e xanh, preview regen.
+      **Đợt 9: gương cột ra giữa + mặt sáng (thử MeshReflectorMaterial ra đen
+      vì thiếu envMap — bỏ, gương low-poly chỉ cần mặt sáng).**
+      Mắt xem cận, preview regen.
+      Còn: mắt người duyệt cảnh mới + commit + sync production.
 - [ ] **Visual Vocab 3D — cảnh 11 "Phòng họp"** (`conference-01`, ~14-16 từ, topic
       mới `conference`): conference room, agenda, minutes, projector, whiteboard,
       podium, microphone, attendee, chairman, proposal, handout, presentation,

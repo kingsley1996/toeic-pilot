@@ -199,7 +199,27 @@ export type ShapeKey =
   | "runway-strip"
   | "overhead-bin"
   | "aisle-seat"
-  | "flight-attendant";
+  | "flight-attendant"
+  // phòng khách sạn (topic `hotel`)
+  | "bed-frame"
+  | "pillow-pair"
+  | "blanket-bench"
+  | "alarm-clock"
+  | "tv-set"
+  | "aircon-wall"
+  | "closet-wardrobe"
+  | "hanger-rack"
+  | "safe-box"
+  | "minibar-fridge"
+  | "kettle-tray"
+  | "towel-rack"
+  | "bathtub-tub"
+  | "shower-stall"
+  | "balcony-door"
+  | "curtain-pair"
+  | "baggage-rack"
+  | "rug-mat"
+  | "sofa-chair";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -279,7 +299,8 @@ export interface SceneDef {
     | "office-floor"
     | "park-grounds"
     | "restaurant-hall"
-    | "airport-terminal";
+    | "airport-terminal"
+    | "hotel-room";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.
