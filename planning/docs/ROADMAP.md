@@ -487,7 +487,10 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       **Đợt 9: gương cột ra giữa + mặt sáng (thử MeshReflectorMaterial ra đen
       vì thiếu envMap — bỏ, gương low-poly chỉ cần mặt sáng).**
       Mắt xem cận, preview regen.
-      Còn: mắt người duyệt cảnh mới + commit + sync production.
+      **Đã lên production (2026-09-24): diễn tập scratch chép trạng thái prod
+      (892/33) → áp 2 lần cùng ra 909 từ / 34 chủ đề / hotel 20/20
+      (idempotent); áp thật khớp số; audio clip `bathtub` curl 200.**
+      Web (Vercel) tự deploy theo push.
 - [ ] **Visual Vocab 3D — cảnh 11 "Phòng họp"** (`conference-01`, ~14-16 từ, topic
       mới `conference`): conference room, agenda, minutes, projector, whiteboard,
       podium, microphone, attendee, chairman, proposal, handout, presentation,
