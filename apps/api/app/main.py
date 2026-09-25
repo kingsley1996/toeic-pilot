@@ -29,6 +29,7 @@ from app.api.routes import (
     attempt,
     auth,
     coach,
+    dungeon,
     feedback,
     hall_of_fame,
     health,
@@ -104,6 +105,7 @@ app.include_router(practice.router, prefix="/api/v1")
 app.include_router(practice_parts.router, prefix="/api/v1")
 app.include_router(attempt.router, prefix="/api/v1")
 app.include_router(coach.router, prefix="/api/v1")
+app.include_router(dungeon.router, prefix="/api/v1")
 app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(pet.router, prefix="/api/v1")
 app.include_router(petland_map.router, prefix="/api/v1")

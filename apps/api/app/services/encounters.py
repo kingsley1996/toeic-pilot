@@ -266,7 +266,13 @@ def sync(
     waiting = list(
         db.scalars(
             select(Encounter)
-            .where(Encounter.user_id == user_id, Encounter.state == "waiting")
+            .where(
+                Encounter.user_id == user_id,
+                Encounter.state == "waiting",
+                # Battle trong tháp không qua làn này: không giờ hẹn, không trần,
+                # không hiện ở map chính — `services/dungeon.py` mở và dọn nó.
+                Encounter.kind != "dungeon",
+            )
             .order_by(Encounter.created_at, Encounter.id)
         )
     )

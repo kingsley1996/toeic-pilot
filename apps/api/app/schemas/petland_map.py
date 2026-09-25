@@ -15,10 +15,18 @@ SPAWN_X, SPAWN_Y = 3, 5
 
 MIN_SIDE, MAX_SIDE = 4, 64
 
+# Slug map chính. Client cũ và fallback bundled (`/pet/map.json`) trỏ vào đây.
+MAIN_SLUG = "main"
+
 
 class MapCell(BaseModel):
     sheet: str = Field(min_length=1, max_length=32)
     index: int = Field(ge=0, le=4095)
+
+
+class MapPortal(BaseModel):
+    x: int = Field(ge=0)
+    y: int = Field(ge=0)
 
 
 class PetlandMapBody(BaseModel):
@@ -27,6 +35,12 @@ class PetlandMapBody(BaseModel):
     ground: list[MapCell | None]
     objects: list[MapCell | None]
     solid: list[bool]
+    portal: MapPortal | None = None
+    """Ô cổng vào tháp dungeon. `null` khi map không có cổng.
+
+    Nằm trong dữ liệu map chứ không nằm bảng cấu hình riêng, vì cổng là một ô
+    trên map: dời map mà cổng ở lại toạ độ cũ là dựng một cánh cửa dẫn vào tường.
+    """
 
     @model_validator(mode="after")
     def _check(self) -> "PetlandMapBody":
@@ -49,8 +63,26 @@ class PetlandMapBody(BaseModel):
                 f"the spawn tile ({SPAWN_X}, {SPAWN_Y}) is blocking, "
                 "so every new pet would start stuck"
             )
+        if self.portal is not None:
+            if self.portal.x >= self.w or self.portal.y >= self.h:
+                raise ValueError(
+                    f"the portal ({self.portal.x}, {self.portal.y}) is outside "
+                    f"this {self.w}×{self.h} map"
+                )
+            if self.solid[self.portal.y * self.w + self.portal.x]:
+                raise ValueError("the portal tile is blocking, so nobody can step on it")
         return self
 
 
 class PetlandMapPublic(PetlandMapBody):
+    updated_at: datetime | None = None
+
+
+class PetlandMapSummary(BaseModel):
+    """Một dòng trong danh sách map của editor: đủ để chọn, không mang layers."""
+
+    slug: str
+    w: int
+    h: int
+    has_portal: bool = False
     updated_at: datetime | None = None

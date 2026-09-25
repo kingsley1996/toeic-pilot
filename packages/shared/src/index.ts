@@ -322,6 +322,13 @@ export const API_ROUTES = {
   rubyGift: "/api/v1/ruby/gift",
   petlandMap: "/api/v1/petland/map",
   adminPetlandMap: "/api/v1/admin/petland/map",
+  petlandMapNamed: (slug: string) => `/api/v1/petland/map/${slug}`,
+  adminPetlandMapNamed: (slug: string) => `/api/v1/admin/petland/map/${slug}`,
+  adminPetlandMaps: "/api/v1/admin/petland/maps",
+  // Tháp dungeon: leo tầng, đánh theo lượt bằng câu hỏi. Battle đi qua đúng
+  // đường encounter (answer/hint theo id), ở đây chỉ giữ trạng thái tháp.
+  dungeonState: "/api/v1/dungeon/state",
+  dungeonRetry: "/api/v1/dungeon/retry",
   petlandCreatures: "/api/v1/petland/creatures",
   adminPetlandCreatures: "/api/v1/admin/petland/creatures",
   adminPetlandCreature: (tile: number) => `/api/v1/admin/petland/creatures/${tile}`,

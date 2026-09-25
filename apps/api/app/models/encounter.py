@@ -29,12 +29,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
 
-ENCOUNTER_KINDS = ("npc", "intruder", "rescue")
-"""Hai loại chạm mặt, và chúng dùng CHUNG bộ máy.
+ENCOUNTER_KINDS = ("npc", "intruder", "rescue", "dungeon")
+"""Ba loại chạm mặt, và chúng dùng CHUNG bộ máy — cộng thêm `dungeon`.
 
 Kẻ xâm nhập chỉ khác NPC ở ba con số — nhiều bước hơn, thưởng lớn hơn, hiếm hơn
-— chứ không phải một cơ chế thứ hai. Và **không loại nào phạt người dùng khi bị
-bỏ qua** (ADR-012 §4): hết hạn thì biến mất, thế thôi.
+— chứ không phải một cơ chế thứ hai. `dungeon` là một kẻ xâm nhập mà số bước
+(= HP quái) và nhịp sinh do tháp quyết định: nó không qua `sync()` (không giờ
+hẹn, không trần, không hiện ở map chính) mà do `services/dungeon.py` mở thẳng.
+Và **không loại nào phạt người dùng khi bị bỏ qua** (ADR-012 §4): hết hạn thì
+biến mất, thế thôi — riêng battle trong tháp hết hạn thì mở lại cùng tầng.
 """
 
 TASK_KINDS = ("vocabulary", "dictation", "quiz")
@@ -63,7 +66,9 @@ class Encounter(Base):
 
     __tablename__ = "encounter"
     __table_args__ = (
-        CheckConstraint("kind IN ('npc', 'intruder', 'rescue')", name="ck_encounter_kind"),
+        CheckConstraint(
+            "kind IN ('npc', 'intruder', 'rescue', 'dungeon')", name="ck_encounter_kind"
+        ),
         CheckConstraint(
             "task_kind IN ('vocabulary', 'dictation', 'quiz')", name="ck_encounter_task"
         ),

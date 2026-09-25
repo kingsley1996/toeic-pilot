@@ -473,7 +473,7 @@ class EncounterPublic(BaseModel):
     """
 
     id: str
-    kind: Literal["npc", "intruder", "rescue"]
+    kind: Literal["npc", "intruder", "rescue", "dungeon"]
     steps_total: int
     steps_done: int
     reward_ruby: int
@@ -512,7 +512,7 @@ class EncounterAnswer(BaseModel):
 
 
 class DiffWord(BaseModel):
-    """Một từ trong bảng so sánh của bài chép chính tả.
+    """Một từ trong bảng so sánh của bài chép chính tả, để thẻ tô đúng/sai.
 
     Khai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một
     bản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất
@@ -521,6 +521,24 @@ class DiffWord(BaseModel):
 
     op: Literal["match", "missing", "extra"]
     word: str
+
+
+class DungeonView(BaseModel):
+    """Trạng thái tháp sau một lượt đánh, để màn hình vẽ thanh HP và tầng.
+
+    Nằm ở đây chứ không ở `schemas/dungeon.py`, vì `EncounterResult` cần nó mà
+    `DungeonState` lại cần `EncounterPublic` — tách ra là vòng import.
+    """
+
+    floor: int = Field(ge=1, le=100)
+    checkpoint: int = Field(ge=1)
+    pet_hp: int = Field(ge=0)
+    pet_max_hp: int = Field(ge=1)
+    status: str
+    """`fighting` | `dead` | `done`. DB giữ CHECK, schema giữ `str` cho gọn."""
+    monster_hp: int = Field(ge=0)
+    """HP quái còn lại = `steps_total - steps_done` của battle. 0 khi vừa xong tầng."""
+    monster_max_hp: int = Field(ge=1)
 
 
 class EncounterResult(BaseModel):
@@ -568,6 +586,13 @@ class EncounterResult(BaseModel):
     thẳng nó ra, còn suy "level mới là mấy" từ level cũ bên client là hai nguồn
     sự thật cho một con số máy chủ vừa ghi. Chỉ có ở đường XÓA cuộc — trao XP là
     việc của lúc hoàn thành, không phải của từng bước.
+    """
+
+    dungeon: DungeonView | None = None
+    """Trạng thái tháp sau lượt này, chỉ khác `null` với battle kind=`dungeon`.
+
+    Battle trong tháp phải trả HP/tầng cùng một response với kết quả chấm, nếu
+    không client phải gọi thêm một đường sau mỗi câu trả lời.
     """
 
 

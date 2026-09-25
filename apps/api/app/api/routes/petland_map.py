@@ -1,5 +1,5 @@
-"""Đọc và ghi nội dung góc thú cưng: bản đồ (migration 048) và phân vai ô sinh
-vật (migration 071).
+"""Đọc và ghi nội dung góc thú cưng: bản đồ (migration 048, 098) và phân vai ô
+sinh vật (migration 071).
 Trình vẽ trước đây tải tệp về rồi người sửa commit tay. Lý do cũ vẫn đúng — bản
 đồ là nội dung và nội dung thuộc về git — nhưng nó có trước khi có production,
 nơi sửa một ô cỏ phải đi qua một lần deploy.
@@ -12,6 +12,7 @@ lớp ghi đè, và giao diện nói rõ đang chạy bản nào, nên chuyện 
 Petland tải chúng trước khi làm bất cứ việc gì khác.
 """
 
+import re
 from typing import cast
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -28,12 +29,63 @@ from app.schemas.pet import (
     CreatureRoleLiteral,
     CreatureRoleMap,
 )
-from app.schemas.petland_map import PetlandMapBody, PetlandMapPublic
+from app.schemas.petland_map import (
+    MAIN_SLUG,
+    MapPortal,
+    PetlandMapBody,
+    PetlandMapPublic,
+    PetlandMapSummary,
+)
 from app.services import creature as creature_service
 
 router = APIRouter(tags=["petland"])
 
 can_edit_map = require_role("admin")
+
+SLUG_RE = re.compile(r"^[a-z0-9-]{1,32}$")
+"""Slug map: thường, ngắn, để được trong URL. `main` là map chính."""
+
+
+def _check_slug(slug: str) -> str:
+    if not SLUG_RE.match(slug):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Slug map chỉ gồm chữ thường, số và gạch ngang (tối đa 32 ký tự).",
+        )
+    return slug
+
+
+def _to_public(row: PetlandMap) -> PetlandMapPublic:
+    portal = None
+    if row.portal_x is not None and row.portal_y is not None:
+        portal = MapPortal(x=row.portal_x, y=row.portal_y)
+    return PetlandMapPublic(
+        w=row.w,
+        h=row.h,
+        ground=row.ground,  # type: ignore[arg-type]
+        objects=row.objects,  # type: ignore[arg-type]
+        solid=row.solid,  # type: ignore[arg-type]
+        portal=portal,
+        updated_at=row.updated_at,
+    )
+
+
+def _save_slug(db: Session, slug: str, body: PetlandMapBody, user: User) -> PetlandMap:
+    payload = body.model_dump(mode="json")
+    row = db.get(PetlandMap, slug)
+    if row is None:
+        row = PetlandMap(slug=slug)
+        db.add(row)
+    row.w, row.h = body.w, body.h
+    row.ground = payload["ground"]
+    row.objects = payload["objects"]
+    row.solid = payload["solid"]
+    row.portal_x = body.portal.x if body.portal is not None else None
+    row.portal_y = body.portal.y if body.portal is not None else None
+    row.updated_by = user.id
+    db.commit()
+    db.refresh(row)
+    return row
 
 
 @router.get(
@@ -42,19 +94,26 @@ can_edit_map = require_role("admin")
     responses={204: {"description": "Chưa ai sửa trên web; dùng bản đã commit."}},
 )
 def read_map(response: Response, db: Session = Depends(get_db)) -> PetlandMapPublic | Response:
-    row = db.execute(select(PetlandMap).where(PetlandMap.id == 1)).scalar_one_or_none()
+    row = db.get(PetlandMap, MAIN_SLUG)
     if row is None:
         # 204 chứ không 404: "chưa cấu hình" là trạng thái BÌNH THƯỜNG ở đây, và
         # 404 sẽ hiện lên như một lỗi trong console của mọi lần tải trang.
         return Response(status_code=status.HTTP_204_NO_CONTENT)
-    return PetlandMapPublic(
-        w=row.w,
-        h=row.h,
-        ground=row.ground,  # type: ignore[arg-type]
-        objects=row.objects,  # type: ignore[arg-type]
-        solid=row.solid,  # type: ignore[arg-type]
-        updated_at=row.updated_at,
-    )
+    return _to_public(row)
+
+
+@router.get(
+    "/petland/map/{slug}",
+    response_model=PetlandMapPublic,
+    responses={204: {"description": "Chưa ai sửa map này trên web; dùng bản đã commit."}},
+)
+def read_named_map(
+    slug: str, response: Response, db: Session = Depends(get_db)
+) -> PetlandMapPublic | Response:
+    row = db.get(PetlandMap, _check_slug(slug))
+    if row is None:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return _to_public(row)
 
 
 @router.put("/admin/petland/map", response_model=PetlandMapPublic)
@@ -63,26 +122,55 @@ def save_map(
     db: Session = Depends(get_db),
     user: User = Depends(can_edit_map),
 ) -> PetlandMapPublic:
-    payload = body.model_dump(mode="json")
-    row = db.execute(select(PetlandMap).where(PetlandMap.id == 1)).scalar_one_or_none()
+    return _to_public(_save_slug(db, MAIN_SLUG, body, user))
+
+
+@router.put("/admin/petland/map/{slug}", response_model=PetlandMapPublic)
+def save_named_map(
+    slug: str,
+    body: PetlandMapBody,
+    db: Session = Depends(get_db),
+    user: User = Depends(can_edit_map),
+) -> PetlandMapPublic:
+    return _to_public(_save_slug(db, _check_slug(slug), body, user))
+
+
+@router.get("/admin/petland/maps", response_model=list[PetlandMapSummary])
+def list_maps(
+    db: Session = Depends(get_db),
+    _user: User = Depends(can_edit_map),
+) -> list[PetlandMapSummary]:
+    rows = db.scalars(select(PetlandMap).order_by(PetlandMap.slug)).all()
+    return [
+        PetlandMapSummary(
+            slug=row.slug,
+            w=row.w,
+            h=row.h,
+            has_portal=row.portal_x is not None and row.portal_y is not None,
+            updated_at=row.updated_at,
+        )
+        for row in rows
+    ]
+
+
+@router.delete("/admin/petland/map/{slug}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_map(
+    slug: str,
+    db: Session = Depends(get_db),
+    _user: User = Depends(can_edit_map),
+) -> Response:
+    """Xoá một map đã lưu — trừ map chính (xoá nó là gỡ cả góc thú cưng)."""
+    name = _check_slug(slug)
+    if name == MAIN_SLUG:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Không xoá được map chính."
+        )
+    row = db.get(PetlandMap, name)
     if row is None:
-        row = PetlandMap(id=1)
-        db.add(row)
-    row.w, row.h = body.w, body.h
-    row.ground = payload["ground"]
-    row.objects = payload["objects"]
-    row.solid = payload["solid"]
-    row.updated_by = user.id
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không có map này.")
+    db.delete(row)
     db.commit()
-    db.refresh(row)
-    return PetlandMapPublic(
-        w=row.w,
-        h=row.h,
-        ground=row.ground,  # type: ignore[arg-type]
-        objects=row.objects,  # type: ignore[arg-type]
-        solid=row.solid,  # type: ignore[arg-type]
-        updated_at=row.updated_at,
-    )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 # --- phân vai ô sinh vật (migration 071) ------------------------------------

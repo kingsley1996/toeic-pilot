@@ -19,12 +19,13 @@ from app.api.routes.learning_dictation import record_dictation_attempt
 from app.api.routes.learning_vocabulary import _apply_review as apply_review
 from app.core.database import get_db
 from app.core.media import public_audio_url
-from app.models import Encounter, PetOwned, User
+from app.models import DungeonRun, Encounter, PetOwned, User
 from app.models.dictation import DictationItem
 from app.models.encounter import MAX_HINTS
 from app.models.vocabulary import VocabularyEntry
 from app.schemas.pet import (
     DiffWord,
+    DungeonView,
     EggBatchResult,
     EggChance,
     EggPublic,
@@ -43,6 +44,7 @@ from app.schemas.pet import (
     PetPublic,
     PetSwitch,
 )
+from app.services import dungeon as dungeon_service
 from app.services import encounters, gacha, ruby
 from app.services import pet as needs_service
 from app.services.dictation import normalise as dictation_words
@@ -714,6 +716,19 @@ def answer_encounter(
     # con thú — nên `None` ở đây là dữ liệu tự mâu thuẫn, không phải trạng thái.
     pet_row = _require_pet(found)
     profile = ensure_profile(db, current_user)
+    # Battle trong tháp: lượt này phải thuộc run đang đánh, nếu không nó là một
+    # encounter mồ côi (run chết/xoá battle) và trả lời nó là đánh vào khoảng trống.
+    is_dungeon = row.kind == "dungeon"
+    run = db.get(DungeonRun, current_user.id) if is_dungeon else None
+    if is_dungeon and (run is None or run.battle_id != row.id or run.status != "fighting"):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Trận này không còn trong tháp."
+        )
+    max_hp = 0
+    if is_dungeon:
+        assert run is not None
+        progress = needs_service.level_progress(pet_row.xp)
+        max_hp = dungeon_service.pet_max_hp(max(progress.level, pet_row.level_reached))
     correct = False
     diff: list[DiffWord] | None = None
     answer: str | None = None
@@ -783,9 +798,21 @@ def answer_encounter(
             # mấy cái nút chăm sóc — một đường trao XP thứ hai là chỗ trần ngày
             # đếm thiếu mà không ai thấy.
             level_before = pet_row.level_reached
-            _award(db, pet_row, current_user, needs_service.XP_PER_ENCOUNTER[row.kind], at)
+            # Thưởng XP theo tầng, không theo bảng chạm mặt thường: tầng càng sâu
+            # càng nhiều, và bảng kia không có chỗ cho một con số theo tầng.
+            if is_dungeon:
+                assert run is not None
+                xp_gain = dungeon_service.battle_xp(run.floor)
+            else:
+                xp_gain = needs_service.XP_PER_ENCOUNTER[row.kind]
+            _award(db, pet_row, current_user, xp_gain, at)
             if pet_row.level_reached > level_before:
                 new_level = pet_row.level_reached
+            if is_dungeon:
+                # Xong tầng: sang tầng, checkpoint, hồi máu (máy dungeon lo).
+                # Ruby đã chốt lúc mở battle và `reward()` vừa trả.
+                assert run is not None
+                dungeon_service.register_clear(db, run, pet_max_hp=max_hp)
         else:
             # Bước sau phải là một câu KHÁC. Ba bước cùng một từ thì bước hai và
             # ba chỉ là gõ lại đáp án vừa nhìn thấy, và cả đợt xâm nhập rút gọn
@@ -810,8 +837,27 @@ def answer_encounter(
             # không đề cũ còn nguyên trên màn cùng đáp án vừa lộ — gõ lại là có
             # ruby. Bước ấy sẽ hết hạn cùng cuộc.
             answer = None
+    if is_dungeon and not correct:
+        # Sai hoặc đầu hàng trong tháp: quái chém một nhát. Chết thì battle
+        # thành `expired` ngay trong `register_miss`, client đọc `status=dead`.
+        assert run is not None
+        dungeon_service.register_miss(db, run)
     db.commit()
     db.refresh(row)
+
+    dungeon_view: DungeonView | None = None
+    if is_dungeon:
+        assert run is not None
+        left, total = dungeon_service.current_monster_hp(row)
+        dungeon_view = DungeonView(
+            floor=run.floor,
+            checkpoint=run.checkpoint,
+            pet_hp=run.pet_hp,
+            pet_max_hp=max_hp,
+            status=run.status,
+            monster_hp=left,
+            monster_max_hp=total,
+        )
 
     return EncounterResult(
         correct=correct,
@@ -824,6 +870,7 @@ def answer_encounter(
         word_diff=diff,
         answer=answer,
         new_level=new_level,
+        dungeon=dungeon_view,
     )
 
 

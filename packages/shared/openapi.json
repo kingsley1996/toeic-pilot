@@ -4097,7 +4097,7 @@
         "type": "object"
       },
       "DiffWord": {
-        "description": "Một từ trong bảng so sánh của bài chép chính tả.\n\nKhai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một\nbản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất\nđúng hai cái tên mà giao diện đọc.",
+        "description": "Một từ trong bảng so sánh của bài chép chính tả, để thẻ tô đúng/sai.\n\nKhai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một\nbản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất\nđúng hai cái tên mà giao diện đọc.",
         "properties": {
           "op": {
             "enum": [
@@ -4118,6 +4118,118 @@
           "word"
         ],
         "title": "DiffWord",
+        "type": "object"
+      },
+      "DungeonState": {
+        "description": "`GET /dungeon/state`: run + battle đang đánh (nếu có).",
+        "properties": {
+          "battle": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EncounterPublic"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checkpoint": {
+            "minimum": 1.0,
+            "title": "Checkpoint",
+            "type": "integer"
+          },
+          "floor": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Floor",
+            "type": "integer"
+          },
+          "pet_hp": {
+            "minimum": 0.0,
+            "title": "Pet Hp",
+            "type": "integer"
+          },
+          "pet_max_hp": {
+            "minimum": 1.0,
+            "title": "Pet Max Hp",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "floor",
+          "checkpoint",
+          "pet_hp",
+          "pet_max_hp",
+          "status"
+        ],
+        "title": "DungeonState",
+        "type": "object"
+      },
+      "DungeonView": {
+        "description": "Trạng thái tháp sau một lượt đánh, để màn hình vẽ thanh HP và tầng.\n\nNằm ở đây chứ không ở `schemas/dungeon.py`, vì `EncounterResult` cần nó mà\n`DungeonState` lại cần `EncounterPublic` — tách ra là vòng import.",
+        "properties": {
+          "checkpoint": {
+            "minimum": 1.0,
+            "title": "Checkpoint",
+            "type": "integer"
+          },
+          "floor": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Floor",
+            "type": "integer"
+          },
+          "monster_hp": {
+            "minimum": 0.0,
+            "title": "Monster Hp",
+            "type": "integer"
+          },
+          "monster_max_hp": {
+            "minimum": 1.0,
+            "title": "Monster Max Hp",
+            "type": "integer"
+          },
+          "pet_hp": {
+            "minimum": 0.0,
+            "title": "Pet Hp",
+            "type": "integer"
+          },
+          "pet_max_hp": {
+            "minimum": 1.0,
+            "title": "Pet Max Hp",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "floor",
+          "checkpoint",
+          "pet_hp",
+          "pet_max_hp",
+          "status",
+          "monster_hp",
+          "monster_max_hp"
+        ],
+        "title": "DungeonView",
         "type": "object"
       },
       "EggBatchResult": {
@@ -4446,7 +4558,8 @@
             "enum": [
               "npc",
               "intruder",
-              "rescue"
+              "rescue",
+              "dungeon"
             ],
             "title": "Kind",
             "type": "string"
@@ -4503,6 +4616,16 @@
           "done": {
             "title": "Done",
             "type": "boolean"
+          },
+          "dungeon": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DungeonView"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "encounter": {
             "anyOf": [
@@ -8088,6 +8211,26 @@
         "title": "MapCell",
         "type": "object"
       },
+      "MapPortal": {
+        "properties": {
+          "x": {
+            "minimum": 0.0,
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "minimum": 0.0,
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "MapPortal",
+        "type": "object"
+      },
       "MediaAssign": {
         "description": "Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.",
         "properties": {
@@ -10280,6 +10423,16 @@
             "title": "Objects",
             "type": "array"
           },
+          "portal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MapPortal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "solid": {
             "items": {
               "type": "boolean"
@@ -10340,6 +10493,16 @@
             "title": "Objects",
             "type": "array"
           },
+          "portal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MapPortal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "solid": {
             "items": {
               "type": "boolean"
@@ -10374,6 +10537,47 @@
           "solid"
         ],
         "title": "PetlandMapPublic",
+        "type": "object"
+      },
+      "PetlandMapSummary": {
+        "description": "Một dòng trong danh sách map của editor: đủ để chọn, không mang layers.",
+        "properties": {
+          "h": {
+            "title": "H",
+            "type": "integer"
+          },
+          "has_portal": {
+            "default": false,
+            "title": "Has Portal",
+            "type": "boolean"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "w": {
+            "title": "W",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slug",
+          "w",
+          "h"
+        ],
+        "title": "PetlandMapSummary",
         "type": "object"
       },
       "PlacementBand": {
@@ -20710,6 +20914,132 @@
         ]
       }
     },
+    "/api/v1/admin/petland/map/{slug}": {
+      "delete": {
+        "description": "Xoá một map đã lưu — trừ map chính (xoá nó là gỡ cả góc thú cưng).",
+        "operationId": "delete_map_api_v1_admin_petland_map__slug__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Map",
+        "tags": [
+          "petland"
+        ]
+      },
+      "put": {
+        "operationId": "save_named_map_api_v1_admin_petland_map__slug__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetlandMapBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetlandMapPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Named Map",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
+    "/api/v1/admin/petland/maps": {
+      "get": {
+        "operationId": "list_maps_api_v1_admin_petland_maps_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PetlandMapSummary"
+                  },
+                  "title": "Response List Maps Api V1 Admin Petland Maps Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Maps",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
     "/api/v1/admin/planner-compare": {
       "get": {
         "description": "Các lượt placement đã phân tích gần nhất (để chọn chạy) + kết quả đã lưu\n+ tổng hợp sổ gọi model.",
@@ -26091,6 +26421,59 @@
         ]
       }
     },
+    "/api/v1/dungeon/retry": {
+      "post": {
+        "description": "Đánh lại từ checkpoint sau khi chết. Chỉ khi `dead`, còn sống mà xin\nvề checkpoint là một nút hồi máu miễn phí.",
+        "operationId": "retry_run_api_v1_dungeon_retry_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DungeonState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Retry Run",
+        "tags": [
+          "dungeon"
+        ]
+      }
+    },
+    "/api/v1/dungeon/state": {
+      "get": {
+        "operationId": "read_state_api_v1_dungeon_state_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DungeonState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read State",
+        "tags": [
+          "dungeon"
+        ]
+      }
+    },
     "/api/v1/feedback": {
       "post": {
         "description": "Gửi góp ý. Tạo LÀ bước xác nhận ảnh — không có bước thứ ba.\n\nAvatar tách `ticket` và `confirm` vì hồ sơ đã tồn tại sẵn và ảnh chỉ gắn\nvào. Ở đây hàng góp ý chưa có gì để gắn vào cho tới lúc gửi, nên gộp lại là\nđúng: một lần ghi, và ảnh không bao giờ trỏ tới một hàng chưa tồn tại.",
@@ -27387,6 +27770,51 @@
           }
         },
         "summary": "Read Map",
+        "tags": [
+          "petland"
+        ]
+      }
+    },
+    "/api/v1/petland/map/{slug}": {
+      "get": {
+        "operationId": "read_named_map_api_v1_petland_map__slug__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetlandMapPublic"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "204": {
+            "description": "Chưa ai sửa map này trên web; dùng bản đã commit."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Named Map",
         "tags": [
           "petland"
         ]

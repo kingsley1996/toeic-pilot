@@ -24,6 +24,7 @@ from sqlalchemy import (
     Numeric,
     SmallInteger,
     String,
+    Text,
     func,
     text,
 )
@@ -1015,26 +1016,61 @@ EGG_DEFAULTS: dict[str, int] = {
 
 
 class PetlandMap(Base):
-    """Bản đồ góc thú cưng, sửa được ở `/admin/petland` (migration 048).
+    """Bản đồ góc thú cưng, sửa được ở `/admin/petland` (migration 048, 098).
 
-    Đúng một hàng, `id = 1`. Không có hàng nghĩa là chưa ai sửa trên web và
-    `public/pet/map.json` đã commit đang là bản chạy — xem docstring migration.
+    Một hàng mỗi `slug` (`main` là map chính). Không có hàng nghĩa là chưa ai
+    sửa trên web và tệp đã commit đang là bản chạy — xem docstring migration 048.
+    `portal_x/portal_y` là ô cổng vào tháp dungeon, NULL khi map không có cổng.
     """
 
     __tablename__ = "petland_map"
-    __table_args__ = (CheckConstraint("id = 1", name="ck_petland_map_single_row"),)
 
-    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, default=1)
+    slug: Mapped[str] = mapped_column(Text, primary_key=True)
     w: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     h: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     ground: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
     objects: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
     solid: Mapped[list[object]] = mapped_column(_JSON_TYPE, nullable=False)
+    portal_x: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    portal_y: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     updated_by: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+
+
+class DungeonRun(Base):
+    """Cuộc leo tháp của một người, một hàng (migration 098).
+
+    Tầng đang đứng, checkpoint (mỗi 10 tầng), HP hiện tại của pet, và trận đang
+    đánh (`battle_id` trỏ vào `encounter` kind=`dungeon`). Không FK cho battle_id,
+    cùng lý do `target_id`: encounter hết hạn/bị dọn không được chặn run.
+    Mọi con số (HP quái, sát thương, hồi máu) nằm ở `services/dungeon.py`,
+    không nằm ở đây.
+    """
+
+    __tablename__ = "dungeon_run"
+    __table_args__ = (
+        CheckConstraint("floor >= 1 AND floor <= 100", name="ck_dungeon_run_floor"),
+        CheckConstraint(
+            "checkpoint >= 1 AND checkpoint <= floor", name="ck_dungeon_run_checkpoint"
+        ),
+        CheckConstraint("pet_hp >= 0", name="ck_dungeon_run_hp"),
+        CheckConstraint("status IN ('fighting', 'dead', 'done')", name="ck_dungeon_run_status"),
+    )
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    floor: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="1")
+    checkpoint: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="1")
+    pet_hp: Mapped[int] = mapped_column(SmallInteger, nullable=False, server_default="20")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, server_default="fighting")
+    battle_id: Mapped[uuid.UUID | None] = mapped_column(PGUUID(as_uuid=True), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
 

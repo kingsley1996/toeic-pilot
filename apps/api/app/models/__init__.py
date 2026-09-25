@@ -35,6 +35,7 @@ from app.models.listening import ListeningAttempt, ListeningContent, ListeningSe
 from app.models.part_practice import PartSession, PartSessionItem, PartTactics
 from app.models.pet import (
     Creature,
+    DungeonRun,
     EggSetting,
     PetlandMap,
     PetOwned,
@@ -157,6 +158,7 @@ __all__ = [
     "HealthSample",
     "PENDING_CAP",
     "Creature",
+    "DungeonRun",
     "PetlandMap",
     "PetState",
     "RubyEvent",

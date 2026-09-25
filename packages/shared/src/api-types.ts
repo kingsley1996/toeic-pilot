@@ -1562,6 +1562,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/petland/map/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Named Map */
+        put: operations["save_named_map_api_v1_admin_petland_map__slug__put"];
+        post?: never;
+        /**
+         * Delete Map
+         * @description Xoá một map đã lưu — trừ map chính (xoá nó là gỡ cả góc thú cưng).
+         */
+        delete: operations["delete_map_api_v1_admin_petland_map__slug__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/petland/maps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Maps */
+        get: operations["list_maps_api_v1_admin_petland_maps_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/planner-compare": {
         parameters: {
             query?: never;
@@ -3494,6 +3532,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dungeon/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Retry Run
+         * @description Đánh lại từ checkpoint sau khi chết. Chỉ khi `dead`, còn sống mà xin
+         *     về checkpoint là một nút hồi máu miễn phí.
+         */
+        post: operations["retry_run_api_v1_dungeon_retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dungeon/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read State */
+        get: operations["read_state_api_v1_dungeon_state_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/feedback": {
         parameters: {
             query?: never;
@@ -4183,6 +4259,23 @@ export interface paths {
         };
         /** Read Map */
         get: operations["read_map_api_v1_petland_map_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/petland/map/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Named Map */
+        get: operations["read_named_map_api_v1_petland_map__slug__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6860,7 +6953,7 @@ export interface components {
         };
         /**
          * DiffWord
-         * @description Một từ trong bảng so sánh của bài chép chính tả.
+         * @description Một từ trong bảng so sánh của bài chép chính tả, để thẻ tô đúng/sai.
          *
          *     Khai thành model chứ không để `dict[str, str]`: OpenAPI dịch dict thành một
          *     bản đồ khoá tự do, nên phía TypeScript nhận `{[k: string]: string}` và mất
@@ -6874,6 +6967,48 @@ export interface components {
             op: "match" | "missing" | "extra";
             /** Word */
             word: string;
+        };
+        /**
+         * DungeonState
+         * @description `GET /dungeon/state`: run + battle đang đánh (nếu có).
+         */
+        DungeonState: {
+            battle?: components["schemas"]["EncounterPublic"] | null;
+            /** Checkpoint */
+            checkpoint: number;
+            /** Floor */
+            floor: number;
+            /** Pet Hp */
+            pet_hp: number;
+            /** Pet Max Hp */
+            pet_max_hp: number;
+            /** Status */
+            status: string;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /**
+         * DungeonView
+         * @description Trạng thái tháp sau một lượt đánh, để màn hình vẽ thanh HP và tầng.
+         *
+         *     Nằm ở đây chứ không ở `schemas/dungeon.py`, vì `EncounterResult` cần nó mà
+         *     `DungeonState` lại cần `EncounterPublic` — tách ra là vòng import.
+         */
+        DungeonView: {
+            /** Checkpoint */
+            checkpoint: number;
+            /** Floor */
+            floor: number;
+            /** Monster Hp */
+            monster_hp: number;
+            /** Monster Max Hp */
+            monster_max_hp: number;
+            /** Pet Hp */
+            pet_hp: number;
+            /** Pet Max Hp */
+            pet_max_hp: number;
+            /** Status */
+            status: string;
         };
         /**
          * EggBatchResult
@@ -7070,7 +7205,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "npc" | "intruder" | "rescue";
+            kind: "npc" | "intruder" | "rescue" | "dungeon";
             /** Reward Ruby */
             reward_ruby: number;
             /** Steps Done */
@@ -7089,6 +7224,7 @@ export interface components {
             correct: boolean;
             /** Done */
             done: boolean;
+            dungeon?: components["schemas"]["DungeonView"] | null;
             encounter: components["schemas"]["EncounterPublic"] | null;
             /** New Level */
             new_level?: number | null;
@@ -8378,6 +8514,13 @@ export interface components {
             /** Sheet */
             sheet: string;
         };
+        /** MapPortal */
+        MapPortal: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
         /**
          * MediaAssign
          * @description Gắn hoặc gỡ một asset. `asset_id` null nghĩa là gỡ ra.
@@ -9193,6 +9336,7 @@ export interface components {
             h: number;
             /** Objects */
             objects: (components["schemas"]["MapCell"] | null)[];
+            portal?: components["schemas"]["MapPortal"] | null;
             /** Solid */
             solid: boolean[];
             /** W */
@@ -9206,8 +9350,28 @@ export interface components {
             h: number;
             /** Objects */
             objects: (components["schemas"]["MapCell"] | null)[];
+            portal?: components["schemas"]["MapPortal"] | null;
             /** Solid */
             solid: boolean[];
+            /** Updated At */
+            updated_at?: string | null;
+            /** W */
+            w: number;
+        };
+        /**
+         * PetlandMapSummary
+         * @description Một dòng trong danh sách map của editor: đủ để chọn, không mang layers.
+         */
+        PetlandMapSummary: {
+            /** H */
+            h: number;
+            /**
+             * Has Portal
+             * @default false
+             */
+            has_portal: boolean;
+            /** Slug */
+            slug: string;
             /** Updated At */
             updated_at?: string | null;
             /** W */
@@ -14155,6 +14319,90 @@ export interface operations {
             };
         };
     };
+    save_named_map_api_v1_admin_petland_map__slug__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetlandMapBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetlandMapPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_map_api_v1_admin_petland_map__slug__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_maps_api_v1_admin_petland_maps_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetlandMapSummary"][];
+                };
+            };
+        };
+    };
     compare_data_api_v1_admin_planner_compare_get: {
         parameters: {
             query?: {
@@ -17550,6 +17798,46 @@ export interface operations {
             };
         };
     };
+    retry_run_api_v1_dungeon_retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DungeonState"];
+                };
+            };
+        };
+    };
+    read_state_api_v1_dungeon_state_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DungeonState"];
+                };
+            };
+        };
+    };
     create_feedback_api_v1_feedback_post: {
         parameters: {
             query?: never;
@@ -18443,6 +18731,44 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    read_named_map_api_v1_petland_map__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetlandMapPublic"];
+                };
+            };
+            /** @description Chưa ai sửa map này trên web; dùng bản đã commit. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
