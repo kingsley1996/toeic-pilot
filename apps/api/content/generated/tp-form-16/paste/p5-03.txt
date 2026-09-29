@@ -1,0 +1,9 @@
+[QUESTION]
+The elevator maintenance will be carried out by a certified ------- next Monday.
+(A) technician
+(B) technique
+(C) technical
+(D) technically
+Answer: A
+Explanation: Sau mạo từ "a" và tính từ "certified" cần danh từ chỉ người. | (A) "technician" — danh từ chỉ người thợ kỹ thuật, đúng vị trí chủ ngữ bị động. | (B) "technique" — danh từ chỉ kỹ thuật, phương pháp, không phải người. | (C) "technical" — tính từ, sai từ loại sau mạo từ. | (D) "technically" — trạng từ, sai từ loại.
+Source: original

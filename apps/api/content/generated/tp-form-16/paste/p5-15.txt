@@ -1,0 +1,9 @@
+[QUESTION]
+Only ------- applicants with at least three years of experience will be shortlisted.
+(A) qualified
+(B) qualify
+(C) qualification
+(D) qualifying
+Answer: A
+Explanation: Sau trạng từ "only" cần tính từ (phân từ hai) bổ nghĩa cho danh từ "applicants". | (A) "qualified" — tính từ nghĩa đủ tiêu chuẩn, đúng vị trí. | (B) "qualify" — động từ nguyên thể, sai từ loại. | (C) "qualification" — danh từ, không bổ nghĩa trực tiếp cho danh từ khác. | (D) "qualifying" — phân từ hiện tại mang nghĩa đang đủ điều kiện, không hợp.
+Source: original

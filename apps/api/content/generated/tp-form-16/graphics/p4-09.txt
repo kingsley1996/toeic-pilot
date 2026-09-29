@@ -1,0 +1,7 @@
+kind: survey
+Customer Satisfaction Scores
+Time | Cleanliness | Staff | Price | Checkout
+Morning | 4.6 | 4.4 | 4.2 | 4.0
+Afternoon | 4.3 | 4.7 | 4.5 | 4.1
+Evening | 4.0 | 4.2 | 4.6 | 4.4
+Weekend | 4.5 | 4.1 | 4.0 | 4.7

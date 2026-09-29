@@ -1,0 +1,9 @@
+[QUESTION]
+When the fire alarm rang, the staff ------- the building within three minutes.
+(A) evacuates
+(B) evacuated
+(C) has evacuated
+(D) will evacuate
+Answer: B
+Explanation: Hành động xảy ra và kết thúc trong quá khứ theo mạch kể ("rang") cần quá khứ đơn. | (A) "evacuates" — hiện tại đơn số ít, sai thì. | (B) "evacuated" — quá khứ đơn song song với "rang", đúng thì. | (C) "has evacuated" — hiện tại hoàn thành, không hợp mạch kể quá khứ. | (D) "will evacuate" — tương lai, mâu thuẫn mốc đã qua.
+Source: original

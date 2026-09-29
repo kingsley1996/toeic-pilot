@@ -1,0 +1,9 @@
+[QUESTION]
+The board ------- the expansion plan since early morning and will vote after lunch.
+(A) discusses
+(B) will have discussed
+(C) discussed
+(D) has been discussing
+Answer: D
+Explanation: Hành động bắt đầu quá khứ, kéo dài tới hiện tại ("since early morning") cần hiện tại hoàn thành tiếp diễn. | (A) "discusses" — hiện tại đơn, không diễn tả kéo dài. | (B) "will have discussed" — tương lai hoàn thành, sai mốc thời gian. | (C) "discussed" — quá khứ đơn, cắt đứt liên hệ với hiện tại. | (D) "has been discussing" — hoàn thành tiếp diễn với "since", đúng cấu trúc.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+To avoid penalties, the shipment must clear customs before the ------- date stamped on the bill.
+(A) expiration
+(B) perseverance
+(C) coincidence
+(D) leniency
+Answer: A
+Explanation: Sau mạo từ "the" cần danh từ nghĩa "hết hạn" đi với ngày trên vận đơn. | (A) "expiration" — sự hết hạn, hợp với "date" trên chứng từ. | (B) "perseverance" — sự kiên trì, phẩm chất con người, không đi với ngày. | (C) "coincidence" — sự trùng hợp ngẫu nhiên, sai trường nghĩa. | (D) "leniency" — sự khoan dung, không phải mốc thời gian.
+Source: original

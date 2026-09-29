@@ -1,0 +1,63 @@
+[PASSAGE]
+From: Tran Van Son
+To: HR Department
+Subject: Leave Request March 3–5
+Date: March 1
+
+Dear HR,
+
+Hue trains are fully booked on March 1. I request leave from March 3 to March 5 to attend a family wedding in Hue. Ben will cover my shifts, and I will finish the February report before I leave. I have already briefed Clara on the open orders. Clara knows the safe password for the cash box. My phone stays on for emergencies during the trip. The wedding is on March 4 in the late afternoon. The February report is ninety percent done. Train tickets sell out fast for March 2. Please approve so I can book train tickets.
+
+Thank you,
+Son
+
+[PASSAGE]
+Leave Policy (summary)
+
+All leave requests need at least seven days' notice. Leave in March requires the manager's signature as well. Requests clashing with scheduled training move to the next free week. Shift swaps need a written request. Managers answer requests within two working days. Public holidays do not count as leave days. Lunch breaks stay unchanged during training weeks. Night shifts count as one and a half days. Paternity leave is ten working days. The HR portal logs every request automatically. Wedding leave needs an invitation copy. Overtime during March is paid at double rate. Unused leave days expire at the end of June.
+
+[QUESTION]
+Why might Son's request be rejected?
+(A) Ben cannot cover shifts
+(B) Weddings are not valid reasons
+(C) It was sent only two days ahead
+(D) March leave is forbidden
+Answer: C
+Explanation: Đơn ghi "Date: March 1" cho kỳ nghỉ "from March 3 to March 5" còn quy định ghi "All leave requests need at least seven days' notice". | (A) "Ben cannot cover shifts" — Ben đã nhận trực thay, không ai từ chối. | (B) "Weddings are not valid reasons" — quy định không cấm lý do cưới hỏi. | (C) "sent only two days ahead" — từ mùng một tới mùng ba chưa đủ bảy ngày. | (D) "March leave is forbidden" — nghỉ tháng Ba chỉ cần thêm chữ ký, không bị cấm.
+Source: original
+[QUESTION]
+How many days of leave does Son request?
+(A) Two
+(B) Seven
+(C) Five
+(D) Three
+Answer: D
+Explanation: Đơn xin nghỉ "from March 3 to March 5", ba ngày mùng ba tới mùng năm. | (A) "Two" — hai ngày thì thiếu một ngày trong đơn. | (B) "Seven" — bảy ngày là thời hạn báo trước, không phải số ngày nghỉ. | (C) "Five" — không con số năm nào trong đơn. | (D) "Three" — đúng ba ngày nghỉ trong đơn.
+Source: original
+[QUESTION]
+Which of the following is NOT stated in the policy?
+(A) Sick leave needs a doctor's note
+(B) March leave needs a signature
+(C) Unused days expire in June
+(D) Seven days' notice is needed
+Answer: A
+Explanation: Quy định nêu báo trước bảy ngày, chữ ký tháng Ba, hết hạn tháng Sáu — không giấy bác sĩ. | (A) "Sick leave needs a doctor's note" — không giấy bác sĩ nào được nhắc tới. | (B) "March leave needs a signature" — quy định đòi chữ ký quản lý cho nghỉ tháng Ba. | (C) "Unused days expire in June" — quy định ghi ngày phép thừa hết hạn cuối tháng Sáu. | (D) "Seven days' notice is needed" — quy định đòi báo trước ít nhất bảy ngày.
+Source: original
+[QUESTION]
+What can be inferred about Son's unused leave?
+(A) It converts to cash in July
+(B) It expires at the end of June
+(C) It carries over to next year
+(D) It needs Ben's approval
+Answer: B
+Explanation: Quy định "Unused leave days expire at the end of June". | (A) "It converts to cash in July" — không đổi ra tiền nào được nêu. | (B) "It expires at the end of June" — đúng điều suy ra về ngày phép thừa. | (C) "It carries over to next year" — ngược hẳn: hết hạn chứ không chuyển năm. | (D) "It needs Ben's approval" — Ben chỉ trực thay ca, không duyệt phép.
+Source: original
+[QUESTION]
+According to the schedule, when is Anna's Excel session?
+(A) Mon 3
+(B) Tue 4
+(C) Thu 6
+(D) Wed 5
+Answer: C
+Explanation: Lịch ghi hàng Anna chỉ có "Excel" ở cột "Thu 6". | (A) "Mon 3" — thứ Hai Anna trống lịch. | (B) "Tue 4" — thứ Ba là buổi của Clara. | (C) "Thu 6" — đúng buổi Excel của Anna sau kỳ nghỉ. | (D) "Wed 5" — thứ Tư là buổi của David.
+Source: original

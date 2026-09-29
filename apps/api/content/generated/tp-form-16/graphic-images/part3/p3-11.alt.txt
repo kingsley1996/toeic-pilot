@@ -1,0 +1,1 @@
+Workshop Feedback Scores. Phiếu khảo sát. Group: Engineers, Content: 4.8, Speaker: 4.5, Venue: 4.2, Meals: 3.9. Group: Designers, Content: 4.1, Speaker: 4.6, Venue: 4.7, Meals: 4.0. Group: Managers, Content: 4.4, Speaker: 4.3, Venue: 4.5, Meals: 4.6. Group: Students, Content: 3.8, Speaker: 4.0, Venue: 4.1, Meals: 4.4.

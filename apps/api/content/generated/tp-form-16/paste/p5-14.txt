@@ -1,0 +1,9 @@
+[QUESTION]
+The marketing campaign ------- by an external agency achieved record sales.
+(A) to run
+(B) running
+(C) runs
+(D) run
+Answer: D
+Explanation: Cụm rút gọn bị động bổ nghĩa cho "campaign" (chiến dịch được chạy) cần phân từ hai. | (A) "to run" — nguyên thể, không diễn tả bị động hoàn thành. | (B) "running" — phân từ hiện tại mang nghĩa chủ động, sai thể. | (C) "runs" — động từ chia thì, không tạo cụm bổ nghĩa. | (D) "run" — phân từ hai của "run", tạo cụm bị động rút gọn đúng.
+Source: original

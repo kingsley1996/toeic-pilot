@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Welcome to your first week. This copier handles everyday jobs, so let me show you the basics.
+voice: ca_male_1
+Thanks. I've never used one this big. Where do I put the paper?
+voice: us_female_1
+Plain paper goes in tray one. But never load the glossy flyers here, it jams almost every time.
+voice: ca_male_1
+Noted. Where should I copy the event flyers then? They're all glossy.
+voice: us_female_1
+Use the machine in room two hundred four. It was bought for glossy stock, and it's free after lunch.
+voice: ca_male_1
+I'll practice with the staff manual this afternoon, then try the flyers tomorrow.
+
+[QUESTION]
+Who most likely is the man?
+(A) A repair engineer
+(B) A new trainee
+(C) A paper supplier
+(D) A room manager
+Answer: B
+Explanation: Cô chào "Welcome to your first week" rồi hướng dẫn từ đầu. | (A) "A repair engineer" — không máy nào hỏng để sửa. | (B) "A new trainee" — đúng người mới, tuần đầu, chưa từng dùng máy. | (C) "A paper supplier" — nhà cung cấp giấy không xuất hiện. | (D) "A room manager" — phòng 204 chỉ là nơi đặt máy khác, không ai quản lý.
+Source: original
+[QUESTION]
+What can be inferred about the event flyers?
+(A) They jam the tray daily
+(B) They use plain paper only
+(C) Copy them in room 204 after lunch
+(D) They need no paper at all
+Answer: C
+Explanation: Tờ rơi bóng chỉ in được ở máy khác: "Use the machine in room two hundred four" và "it's free after lunch". | (A) "They jam the tray daily" — kẹt giấy là chuyện của máy này khi nạp giấy bóng, không phải của tờ rơi. | (B) "They use plain paper only" — tờ rơi toàn là giấy bóng. | (C) "Copy them in room 204 after lunch" — đúng chỗ và giờ in được, ghép hai câu cô nói. | (D) "They need no paper at all" — không giấy thì in bằng gì.
+Source: original
+[QUESTION]
+What will the man do this afternoon?
+(A) Order new paper
+(B) Call the supplier
+(C) Move the copier
+(D) Practice copying the manual
+Answer: D
+Explanation: Anh hẹn "I'll practice with the staff manual this afternoon". | (A) "Order new paper" — không ai đặt giấy. | (B) "Call the supplier" — không nhà cung cấp nào được gọi. | (C) "Move the copier" — không ai di chuyển máy. | (D) "Practice copying the manual" — đúng việc anh làm chiều nay.
+Source: original

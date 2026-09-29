@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for meeting me. As I understand, your building needs a management service starting next quarter.
+voice: ca_male_1
+Yes. We live at Riverside Towers, and our old contract ends in March. Our budget is about fifty-five dollars a month.
+voice: uk_female_1
+For about fifty-five dollars a month, you get weekly cleaning of common areas plus weekend security patrols.
+voice: ca_male_1
+That fits our budget well. Does it include garden care too?
+voice: uk_female_1
+Garden care comes with the higher plans. But I can add it for a small extra fee if you want.
+voice: ca_male_1
+Let's take the fifty-five-dollar plan for now. I'll present it to the residents' meeting tonight.
+
+[QUESTION]
+Why is the man meeting the agent?
+(A) To sell the Riverside unit
+(B) To complain about the monthly budget
+(C) To renew the March contract
+(D) To choose a management package
+Answer: D
+Explanation: Anh cần dịch vụ quản lý: "your building needs a management service starting next quarter". | (A) "To sell the Riverside unit" — anh ở đó chứ không bán. | (B) "To complain about the monthly budget" — ngân sách là điều kiện chọn, không phải khiếu nại. | (C) "To renew the March contract" — hợp đồng cũ hết hạn, anh tìm gói mới chứ không gia hạn. | (D) "To choose a management package" — đúng việc anh tới gặp môi giới.
+Source: original
+[QUESTION]
+Where is the man's apartment building?
+(A) At Riverside Towers
+(B) Near the garden gate
+(C) In the next quarter
+(D) At the residents' meeting
+Answer: A
+Explanation: Anh nói "We live at Riverside Towers". | (A) "At Riverside Towers" — đúng tòa nhà anh ở. | (B) "Near the garden gate" — vườn là dịch vụ thêm, không phải địa chỉ. | (C) "In the next quarter" — quý tới là thời điểm gói mới chạy, không phải nơi ở. | (D) "At the residents' meeting" — cuộc họp cư dân là nơi anh trình bày tối nay, không phải nhà anh.
+Source: original
+[QUESTION]
+Look at the graphic. Which package will the client choose?
+(A) Basic
+(B) Standard
+(C) Premium
+(D) Full Service
+Answer: B
+Explanation: Ngân sách "about fifty-five dollars a month", bảng ghi Standard giá $55. | (A) "Basic" — gói Basic chỉ $30, dưới ngân sách và thiếu tuần tra cuối tuần. | (B) "Standard" — đúng hàng có giá khớp ngân sách khách nêu. | (C) "Premium" — gói Premium $80, vượt ngân sách. | (D) "Full Service" — gói Full $110, vượt xa ngân sách.
+Source: original

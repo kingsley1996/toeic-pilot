@@ -1,0 +1,9 @@
+[QUESTION]
+The budget proposal ------- last week was approved without any amendments.
+(A) submits
+(B) submitting
+(C) submit
+(D) submitted
+Answer: D
+Explanation: Cụm rút gọn bị động bổ nghĩa cho "proposal" (đề xuất được nộp) cần phân từ hai. | (A) "submits" — động từ chia thì, sai dạng. | (B) "submitting" — phân từ hiện tại mang nghĩa chủ động, sai thể. | (C) "submit" — nguyên thể, không tạo cụm bổ nghĩa. | (D) "submitted" — phân từ hai tạo cụm bị động rút gọn, đúng với "last week".
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Did you bring an umbrella? It looks like rain.
+voice: ca_male_1
+(A) Rain is good for the plants.
+(B) It rained all day yesterday.
+(C) The forecast changed, it's clearing up now.
+Answer: C
+Explanation: Câu hỏi có mang ô không vì trời sắp mưa, nhưng dự báo đã đổi: "it's clearing up now". | (A) "The forecast changed, it's clearing up now." — trời quang thì câu hỏi mang ô hết ý nghĩa. | (B) "It rained all day yesterday." — chuyện hôm qua, không trả lời có mang ô không. | (C) "Rain is good for the plants." — nhận xét chung, không trả lời câu hỏi.
+Source: original

@@ -1,0 +1,1 @@
+Customer Satisfaction Scores. Phiếu khảo sát. Time: Morning, Cleanliness: 4.6, Staff: 4.4, Price: 4.2, Checkout: 4.0. Time: Afternoon, Cleanliness: 4.3, Staff: 4.7, Price: 4.5, Checkout: 4.1. Time: Evening, Cleanliness: 4.0, Staff: 4.2, Price: 4.6, Checkout: 4.4. Time: Weekend, Cleanliness: 4.5, Staff: 4.1, Price: 4.0, Checkout: 4.7.

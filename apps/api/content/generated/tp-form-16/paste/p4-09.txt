@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, shoppers and staff of GreenMart. I'm Dana, your store manager, with our yearly survey results. Thank you, over five thousand of you answered. Our evening shoppers gave one area a four point zero, the lowest score on the whole survey. Starting Monday, that area gets extra staff and a deep clean every night. On happier news, our weekend checkout speed earned a four point seven, the best in the city. Thank you all for shopping with us.
+
+[QUESTION]
+Where is the announcement made?
+(A) In the evening market
+(B) At the city branch
+(C) In a supermarket
+(D) At the checkout counter
+Answer: C
+Explanation: Quản lý chào "shoppers and staff of GreenMart" cùng kết quả khảo sát. | (A) "In the evening market" — buổi tối chỉ là một khung giờ trong bảng. | (B) "At the city branch" — chi nhánh nào cũng không được nêu tên. | (C) "In a supermarket" — đúng nơi phát thông báo. | (D) "At the checkout counter" — quầy thu ngân chỉ là một khía cạnh được chấm.
+Source: original
+[QUESTION]
+Look at the graphic. Which area will the manager improve first?
+(A) Checkout
+(B) Staff
+(C) Price
+(D) Cleanliness
+Answer: D
+Explanation: Nhóm evening cho Cleanliness 4.0, thấp nhất toàn bảng; quản lý nói nhóm evening cho một khía cạnh "a four point zero, the lowest score". | (A) "Checkout" — thu ngân được 4.4–4.7, là điểm cao. | (B) "Staff" — nhân viên được 4.2 ở nhóm evening, không phải thấp nhất. | (C) "Price" — giá được 4.6 ở nhóm evening. | (D) "Cleanliness" — đúng ô 4.0 thấp nhất hàng evening.
+Source: original
+[QUESTION]
+What does the manager praise?
+(A) The weekend checkout speed
+(B) The evening staff kindness
+(C) The survey result numbers
+(D) The morning staff uniforms
+Answer: A
+Explanation: Quản lý khen "our weekend checkout speed earned a four point seven, the best in the city". | (A) "The weekend checkout speed" — đúng thứ được khen với 4.7. | (B) "The evening staff kindness" — không ai khen nhân viên buổi tối. | (C) "The survey result numbers" — con số chỉ là cách đo, không phải thứ được khen. | (D) "The morning staff uniforms" — không đồng phục nào được nhắc tới.
+Source: original

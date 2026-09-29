@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How much is the express delivery to Hue?
+voice: ca_male_1
+(A) About fifteen boxes.
+(B) Twelve thousand dong per kilo.
+(C) For about two hours.
+Answer: B
+Explanation: Câu hỏi giá gửi nhanh đi Huế (How much + tiền), câu đúng đưa giá "Twelve thousand dong per kilo". | (A) "Twelve thousand dong per kilo." — đúng đơn vị tiền cho câu How much. | (B) "About fifteen boxes." — số đếm được, sai chiều thông tin. | (C) "For about two hours." — thời lượng, sai chiều thông tin.
+Source: original

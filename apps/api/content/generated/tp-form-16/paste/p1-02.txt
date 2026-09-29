@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) The technician is painting the booth wall.
+(B) The technicians are carrying a crate together.
+(C) A banner is lying on the floor.
+(D) One technician is hanging a banner from a ladder.
+Answer: D
+Explanation: Trong ảnh hai kỹ thuật viên đang dựng gian hàng: một người đứng trên thang treo băng rôn ngang khung trên, người kia đẩy thùng tài liệu dọc lối đi giữa các gian trống. | (A) "painting the booth wall" — trong ảnh không có sơn hay cọ: hành động không hề diễn ra. | (B) "carrying a crate together" — chỉ một người đẩy thùng, người kia ở trên thang: đúng vật, sai hành động. | (C) "lying on the floor" — băng rôn đang treo trên khung, dưới sàn không có gì ngoài thùng hàng: vật không ở trạng thái được nói. | (D) "hanging a banner from a ladder" — đúng việc người thợ trên thang đang làm.
+Source: original

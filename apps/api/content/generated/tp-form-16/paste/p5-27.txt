@@ -1,0 +1,9 @@
+[QUESTION]
+The warehouse ------- stores the imported fabrics lacks proper ventilation.
+(A) that
+(B) where
+(C) who
+(D) when
+Answer: A
+Explanation: Mệnh đề quan hệ xác định bổ nghĩa cho vật ("warehouse") làm chủ ngữ của "stores". | (A) "that" — đại từ quan hệ chỉ vật làm chủ ngữ, đúng cấu trúc. | (B) "where" — trạng từ nơi chốn, không làm chủ ngữ của "stores". | (C) "who" — chỉ người, không dùng cho nhà kho. | (D) "when" — chỉ thời gian, sai vai trò và sai nghĩa.
+Source: original

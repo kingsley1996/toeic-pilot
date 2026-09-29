@@ -1,0 +1,9 @@
+[QUESTION]
+Please handle the glass samples -------; they break at the slightest impact.
+(A) careful
+(B) care
+(C) carefully
+(D) careless
+Answer: C
+Explanation: Chỗ trống bổ nghĩa cho động từ mệnh lệnh "handle" nên cần trạng từ. | (A) "careful" — tính từ, không bổ nghĩa cho động từ. | (B) "care" — danh từ hoặc động từ, sai từ loại ở đây. | (C) "carefully" — trạng từ chỉ cách thức, đúng sau động từ. | (D) "careless" — tính từ nghĩa ngược, vừa sai loại vừa sai nghĩa.
+Source: original

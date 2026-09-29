@@ -1,0 +1,9 @@
+[QUESTION]
+------- the printer is under warranty, the repair will cost the company nothing.
+(A) Despite
+(B) Because
+(C) Unless
+(D) During
+Answer: B
+Explanation: Mệnh đề chỉ nguyên nhân đứng đầu câu cần liên từ phụ thuộc hợp nghĩa. | (A) "Despite" — sau nó phải là cụm danh từ, không phải mệnh đề. | (B) "Because" — chỉ nguyên nhân, hợp logic miễn phí sửa chữa. | (C) "Unless" — chỉ điều kiện phủ định, ngược nghĩa câu. | (D) "During" — sau nó phải là cụm danh từ, không phải mệnh đề.
+Source: original

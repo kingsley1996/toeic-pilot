@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+The morning meeting was moved to the afternoon, wasn't it?
+voice: ca_male_1
+(A) Yes, at ten in the morning.
+(B) Yes, it starts at two o'clock.
+(C) The meeting room is on the fifth floor.
+Answer: B
+Explanation: Câu hỏi xác nhận cuộc họp sáng đã dời sang buổi chiều, câu đúng cho giờ mới "it starts at two o'clock". | (A) "Yes, at ten in the morning." — mười giờ sáng không phải buổi chiều, trái với giờ đã dời. | (B) "Yes, it starts at two o'clock." — xác nhận đúng giờ họp mới. | (C) "The meeting room is on the fifth floor." — nói về phòng họp, không trả lời giờ giấc.
+Source: original

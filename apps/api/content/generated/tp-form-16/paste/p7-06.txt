@@ -1,0 +1,48 @@
+[PASSAGE]
+River City Film Blog
+
+Review: The Last Ferry Crosses Slowly, Lands Softly
+
+By Dana Kim
+
+Director Jonah Price's two-hour-ten-minute drama follows a retired captain forced to sell his boat. [1] The harbour photography is stunning, with dawn scenes that carry whole minutes without dialogue. [2] Lead actor Marco Ruiz gives a quiet, convincing performance as a man losing his livelihood. [3] Only the final twenty minutes disappoint, rushing a farewell the story had earned slowly. [4]
+
+In my opinion, the ferry scenes alone are worth the ticket. The director grew up in this harbour town. Tickets cost twelve dollars, and evening shows sold out through the weekend. A morning screening has been added on Sunday. Price previously directed two short documentaries about river life. The script took four years to finish, with three different endings. Teenagers under thirteen must come with an adult.
+
+[QUESTION]
+What is the main purpose of the review?
+(A) To compare ticket prices in the city
+(B) To introduce a film and give an opinion
+(C) To interview the lead actor
+(D) To advertise boat tours
+Answer: B
+Explanation: Bài có tên phim, đạo diễn, diễn viên và nhận xét ("stunning", "disappoint"). | (A) "To compare ticket prices in the city" — giá vé chỉ là một chi tiết cuối bài. | (B) "To introduce a film and give an opinion" — đúng mục đích bài điểm phim. | (C) "To interview the lead actor" — không cuộc phỏng vấn nào diễn ra. | (D) "To advertise boat tours" — thuyền là đề tài phim, không phải tour bán vé.
+Source: original
+[QUESTION]
+What can be inferred about the film after its first ninety minutes?
+(A) The captain buys a new boat
+(B) The dialogue never stops
+(C) The story becomes rushed at the end
+(D) The photography turns ugly
+Answer: C
+Explanation: Hai mươi phút cuối "disappoint, rushing a farewell the story had earned slowly". | (A) "The captain buys a new boat" — thuyền trưởng bị ép bán thuyền, không mua. | (B) "The dialogue never stops" — phim có phút dài không thoại. | (C) "The story becomes rushed at the end" — đúng điều suy ra về cuối phim. | (D) "The photography turns ugly" — quay phim được khen ngợi, không xấu đi.
+Source: original
+[QUESTION]
+Which of the following is NOT true about the film?
+(A) It runs for two hours ten minutes
+(B) Evening shows sold out
+(C) A Sunday morning show was added
+(D) It won three festival awards
+Answer: D
+Explanation: Bài nêu thời lượng, vé bán hết, suất chiếu thêm — không giải thưởng nào. | (A) "It runs for two hours ten minutes" — bài ghi rõ thời lượng. | (B) "Evening shows sold out" — bài nói vé tối bán hết cả cuối tuần. | (C) "A Sunday morning show was added" — bài báo thêm suất sáng Chủ nhật. | (D) "It won three festival awards" — không giải thưởng nào được nhắc tới.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"The producers confirmed a sequel set on the same river."
+(A) [4]
+(B) [2]
+(C) [3]
+(D) [1]
+Answer: A
+Explanation: Tin phần tiếp theo hợp đứng cuối sau mọi nhận xét, trước thông tin vé ("Tickets cost twelve dollars"). | (A) "[4]" — đúng chỗ kết sau khi đã đánh giá xong. | (B) "[2]" — giữa đoạn khen quay phim, chen tin hậu truyện làm đứt mạch. | (C) "[3]" — giữa đoạn khen diễn viên, không liên quan. | (D) "[1]" — đầu bài giới thiệu phim, chưa có gì để nối tiếp.
+Source: original

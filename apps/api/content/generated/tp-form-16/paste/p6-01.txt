@@ -1,0 +1,51 @@
+[PASSAGE]
+To: All Staff
+From: Finance Department
+Subject: New Expense App Goes Live
+Date: June 2
+
+Dear Colleagues,
+
+The company ------- (1) a new expense management app called ExpenseMate this month. With it, you can photograph receipts, submit claims ------- (2), and track approvals in real time. A short video guide is available on the intranet, and the finance team holds live demos every Friday morning.
+
+Please install the app and contact the help desk ------- (3) your account before June 10. Staff travelling abroad can use the app offline, with claims syncing once reconnected. Paper forms will no longer be accepted after that date. Expense reports over five million dong need a manager's code before sending. Managers approve requests within two working days of submission. Old paper forms will be shredded in July. Receipts older than sixty days cannot be reimbursed under the new policy. ------- (4)
+
+Best regards,
+Finance Department
+
+[QUESTION]
+Blank (1)
+(A) have launched
+(B) launch
+(C) has launched
+(D) launching
+Answer: C
+Explanation: Công ty tung app mới trong tháng ("this month") và app đã dùng được ("With it, you can"), cần hiện tại hoàn thành. | (A) "have launched" — chủ ngữ số ít "company" không đi với "have". | (B) "launch" — động từ nguyên thể thiếu trợ động từ cho chủ ngữ số ít. | (C) "has launched" — hiện tại hoàn thành với chủ ngữ số ít, đúng mốc "this month". | (D) "launching" — V-ing không làm vị ngữ chính ở đây.
+Source: original
+[QUESTION]
+Blank (2)
+(A) financially
+(B) dramatically
+(C) previously
+(D) electronically
+Answer: D
+Explanation: Nộp đơn và theo dõi online ("submit claims", "track approvals in real time"). | (A) "financially" — thuộc về tiền bạc, không phải cách nộp. | (B) "dramatically" — đáng kể, không nói cách thức. | (C) "previously" — trước đây, ngược với app mới. | (D) "electronically" — đúng cách nộp đơn qua app.
+Source: original
+[QUESTION]
+Blank (3)
+(A) to activate
+(B) activating
+(C) to activation
+(D) activation
+Answer: A
+Explanation: Liên hệ help desk để làm gì với tài khoản ("contact the help desk ... your account"). | (A) "to activate" — nguyên thể chỉ mục đích sau contact, đúng cấu trúc. | (B) "activating" — V-ing không đi sau contact theo nghĩa này. | (C) "to activation" — sau to phải là động từ, không phải danh từ. | (D) "activation" — danh từ trơ trụi, không tạo được cụm mục đích.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The cafeteria will serve noodles on Fridays.
+(B) Please direct any questions to the finance team before Friday.
+(C) Parking spaces are reserved for managers only.
+(D) The holiday party is planned for December.
+Answer: B
+Explanation: Cuối thư cần câu đóng liên quan tài chính ("Best regards, Finance Department"). | (A) "The cafeteria will serve noodles on Fridays." — căng tin không xuất hiện trong thư. | (B) "Please direct any questions to the finance team before Friday." — đúng câu kết nối tiếp mạch thư. | (C) "Parking spaces are reserved for managers only." — bãi đậu xe không được nhắc tới. | (D) "The holiday party is planned for December." — tiệc lễ không liên quan app chi phí.
+Source: original

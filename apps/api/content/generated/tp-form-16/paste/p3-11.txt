@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Let's review the workshop feedback before Friday's report. Overall scores look strong this year.
+voice: uk_female_1
+The engineers loved the sessions. They gave content a four point eight, our highest score ever.
+voice: ca_male_1
+But their overall average still dropped. Something in their column must have pulled it down badly.
+voice: us_female_1
+Exactly. For next year's budget, we'll fix the engineers' weakest point first, whatever the survey says it is.
+voice: uk_female_1
+Agreed. I'll draft the improvement plan tonight and send it to the venue team.
+voice: ca_male_1
+And I'll confirm the speaker list for the next workshop before we meet again.
+
+[QUESTION]
+Who most likely are the speakers?
+(A) Workshop organisers
+(B) The venue catering team
+(C) The Friday report writers
+(D) The surveyed engineers group
+Answer: A
+Explanation: Ba người bàn báo cáo hội thảo: "review the workshop feedback before Friday's report". | (A) "Workshop organisers" — đúng nhóm đọc đánh giá để viết báo cáo. | (B) "The venue catering team" — đội địa điểm chỉ nhận kế hoạch sửa, không họp. | (C) "The Friday report writers" — báo cáo là việc họ sắp viết, không phải tên nhóm. | (D) "The surveyed engineers group" — nhóm kỹ sư là đối tượng được hỏi, không phải người họp.
+Source: original
+[QUESTION]
+What did the engineers praise most?
+(A) The survey meals
+(B) The content
+(C) The venue
+(D) The Friday schedule
+Answer: B
+Explanation: Nhóm kỹ sư "gave content a four point eight, our highest score ever". | (A) "The survey meals" — bữa ăn là điểm thấp nhất của nhóm này, không phải thứ họ khen. | (B) "The content" — đúng thứ được 4.8 cao nhất lịch sử. | (C) "The venue" — địa điểm không được nhóm này cho điểm cao nhất. | (D) "The Friday schedule" — không lịch trình nào được chấm.
+Source: original
+[QUESTION]
+Look at the graphic. Which aspect will the team improve first?
+(A) Content
+(B) Speaker
+(C) Meals
+(D) Venue
+Answer: C
+Explanation: Nhóm quyết sửa điểm yếu nhất của nhóm kỹ sư, bảng cho thấy Meals 3.9 là thấp nhất hàng engineers. | (A) "Content" — nội dung được 4.8, là điểm mạnh chứ không phải điểm sửa. | (B) "Speaker" — diễn giả được 4.5, không phải thấp nhất. | (C) "Meals" — đúng ô thấp nhất hàng engineers trên bảng. | (D) "Venue" — địa điểm được 4.2, cao hơn bữa ăn.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Hello, this is Sunny Dental Clinic reminding Ms. Carter of her checkup next Tuesday at three. Please arrive fifteen minutes early so we can update your file. Bring your insurance card and any recent X-rays from other clinics. If you need to change the time, reply to this message before Sunday evening. Parking is free behind our building on Pine Street. We look forward to seeing you and keeping your smile healthy.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To remind of a dental checkup
+(B) To confirm the dentist vacation dates
+(C) To announce Sunday hours
+(D) To change Tuesday's time
+Answer: A
+Explanation: Phòng khám nhắc lịch: "reminding Ms. Carter of her checkup next Tuesday at three". | (A) "To remind of a dental checkup" — đúng mục đích lời nhắn. | (B) "To confirm the dentist vacation dates" — không kỳ nghỉ nào của nha sĩ được nêu. | (C) "To announce Sunday hours" — Chủ nhật chỉ là hạn trả lời tin nhắn. | (D) "To change Tuesday's time" — lịch thứ Ba giữ nguyên, chỉ nhắc tới.
+Source: original
+[QUESTION]
+What should the patient bring?
+(A) Cash behind the building
+(B) Her insurance card and recent X-rays
+(C) Other dental clinics' tools
+(D) Photos of Pine Street
+Answer: B
+Explanation: Dặn mang "your insurance card and any recent X-rays from other clinics". | (A) "Cash behind the building" — tiền mặt và vị trí không liên quan. | (B) "Her insurance card and recent X-rays" — đúng hai thứ được dặn mang. | (C) "Other dental clinics' tools" — dụng cụ của phòng khám khác không ai nhắc. | (D) "Photos of Pine Street" — đường Pine chỉ là chỗ đậu xe miễn phí.
+Source: original
+[QUESTION]
+What should the listener do?
+(A) Park behind the building
+(B) Reply before Sunday evening
+(C) Be there a quarter-hour early
+(D) Bring the whole family
+Answer: C
+Explanation: Dặn "Please arrive fifteen minutes early so we can update your file". | (A) "Park behind the building" — đậu xe ở đâu không phải việc phải làm. | (B) "Reply before Sunday evening" — trả lời tin nhắn chỉ khi muốn đổi giờ. | (C) "Be there a quarter-hour early" — đúng điều người nghe nên làm. | (D) "Bring the whole family" — không gia đình nào được mời theo.
+Source: original

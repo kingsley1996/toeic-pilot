@@ -1,0 +1,9 @@
+[QUESTION]
+The new software processes invoices ------- than the old system did.
+(A) as quickly
+(B) most quickly
+(C) more quicker
+(D) more quickly
+Answer: D
+Explanation: So sánh hơn giữa hai hệ thống với "than" cần trạng từ so sánh hơn. | (A) "as quickly" — thiếu "as" thứ hai, cấu trúc so sánh bằng dở dang. | (B) "most quickly" — so sánh nhất, không đi với "than" trong câu này. | (C) "more quicker" — so sánh kép, vừa sai ngữ pháp vừa thừa từ. | (D) "more quickly" — so sánh hơn của trạng từ dài, hợp với "than".
+Source: original

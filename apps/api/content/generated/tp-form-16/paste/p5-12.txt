@@ -1,0 +1,9 @@
+[QUESTION]
+Ms. Park, ------- oversees all overseas branches, will chair tomorrow's meeting.
+(A) whom
+(B) who
+(C) whose
+(D) which
+Answer: B
+Explanation: Mệnh đề quan hệ không xác định bổ nghĩa cho người, giữ chức chủ ngữ của "oversees". | (A) "whom" — chỉ tân ngữ, sai vì chỗ trống làm chủ ngữ. | (B) "who" — đại từ quan hệ chủ ngữ chỉ người, đúng sau dấu phẩy. | (C) "whose" — sở hữu, sau nó phải có danh từ. | (D) "which" — chỉ vật, không dùng cho người.
+Source: original

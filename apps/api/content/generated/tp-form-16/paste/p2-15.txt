@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Where is the reception desk in this building?
+voice: ca_male_1
+(A) Right beside the main entrance.
+(B) The receptionist is very helpful.
+(C) This building has ten floors.
+Answer: A
+Explanation: Câu hỏi quầy lễ tân ở sảnh nào, câu đúng chỉ chỗ "Right beside the main entrance". | (A) "Right beside the main entrance." — chỉ đúng vị trí quầy lễ tân. | (B) "The receptionist is very helpful." — khen nhân viên, không chỉ chỗ. | (C) "This building has ten floors." — nói về tòa nhà, không trả lời ở đâu.
+Source: original

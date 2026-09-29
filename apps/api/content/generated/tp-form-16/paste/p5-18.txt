@@ -1,0 +1,9 @@
+[QUESTION]
+The board praised the CEO's ------- to cut costs without laying off staff.
+(A) decide
+(B) decidedly
+(C) decisive
+(D) decision
+Answer: D
+Explanation: Sau tính từ sở hữu "CEO's" cần danh từ làm tân ngữ của "praised". | (A) "decide" — động từ, sai từ loại sau sở hữu. | (B) "decidedly" — trạng từ, sai từ loại. | (C) "decisive" — tính từ, không làm tân ngữ. | (D) "decision" — danh từ chỉ quyết định, đúng vị trí tân ngữ.
+Source: original

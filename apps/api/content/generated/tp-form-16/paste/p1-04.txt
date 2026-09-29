@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) The pharmacist is counting pills behind the counter.
+(B) The pharmacist is handing a bag across the counter.
+(C) Customers are waiting in a long line.
+(D) A cabinet is hanging on the wall.
+Answer: B
+Explanation: Trong ảnh nữ dược sĩ đang đưa túi thuốc qua quầy kính cho khách, phía sau là kệ thuốc cao xếp đầy hộp nhiều màu, góc phòng có tủ mát cạnh dãy ghế nhựa trống. | (A) "counting pills" — cô đang đưa túi thuốc chứ không đếm thuốc: đúng người, sai hành động. | (B) "handing a bag across the counter" — đúng việc dược sĩ đang làm. | (C) "waiting in a long line" — chỉ có một khách ở quầy, ghế chờ còn trống: số nhiều nói thành số ít. | (D) "hanging on the wall" — thuốc xếp trên kệ đứng chứ không có tủ treo tường: vật không hề có trong ảnh.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who is meeting the partners at the airport?
+voice: us_female_1
+(A) At the arrival gate.
+(B) The flight was delayed.
+(C) Ms. Tran from sales.
+Answer: C
+Explanation: Câu hỏi ai đón đối tác ở sân bay, câu đúng nêu tên "Ms. Tran from sales". | (A) "Ms. Tran from sales." — trả lời thẳng ai là người đón. | (B) "The flight was delayed." — nói chuyến bay, không cho biết ai đón. | (C) "At the arrival gate." — nói nơi gặp, không cho biết ai.
+Source: original

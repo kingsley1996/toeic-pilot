@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How far is the nearest post office from here?
+voice: au_male_1
+(A) The map at the front desk marks all of them.
+(B) It closes at five o'clock.
+(C) I mailed it yesterday.
+Answer: A
+Explanation: Câu hỏi bưu điện gần nhất cách đây bao xa, người đáp chỉ sang bản đồ: "The map at the front desk marks all of them". | (A) "The map at the front desk marks all of them." — chỉ đúng chỗ tra được, đúng kiểu chuyển hướng. | (B) "It closes at five o'clock." — trả lời giờ giấc cho câu hỏi khoảng cách. | (C) "I mailed it yesterday." — chuyện đã gửi thư, không cho biết bưu điện ở đâu.
+Source: original

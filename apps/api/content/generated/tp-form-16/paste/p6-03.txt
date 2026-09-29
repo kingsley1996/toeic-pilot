@@ -1,0 +1,45 @@
+[PASSAGE]
+Memo: Office Wi-Fi Upgrade — Action Required
+
+------- (1) the upgrade improves speed, every password expires on Sunday night. Please reconnect all ------- (2) devices on Monday morning using the steps below. The upgrade also blocks unknown devices automatically. Guests should use the VISITOR network with the daily code at reception. Printers and projectors reconnect by themselves after the change.
+
+Open settings, choose the CORP network, and enter the code from IT. ------- (3) The old password stops working at midnight on Sunday, so do this early.
+
+Staff working from home must install the new VPN profile first. Old devices saved under CORP-OLD will be removed. The upgrade finishes by six in the evening. Do not share the new code with visitors. Call extension 201 if the code does not arrive by Monday noon. The IT team ------- (4) a reminder with the new code on Friday afternoon.
+
+[QUESTION]
+Blank (1)
+(A) Because
+(B) Unless
+(C) Although
+(D) Despite
+Answer: C
+Explanation: Mệnh đề nhượng bộ: nâng cấp nhanh hơn NHƯNG mật khẩu vẫn hết hạn. | (A) "Because" — nguyên nhân thì mật khẩu đã không hết hạn. | (B) "Unless" — điều kiện phủ định, ngược nghĩa câu. | (C) "Although" — đúng liên từ nhượng bộ cho hai vế trái chiều. | (D) "Despite" — sau nó phải là cụm danh từ, không phải mệnh đề.
+Source: original
+[QUESTION]
+Blank (2)
+(A) noisily
+(B) loosely
+(C) rarely
+(D) securely
+Answer: D
+Explanation: Nối lại thiết bị theo các bước bảo mật ("using the steps below", mã từ IT). | (A) "noisily" — ồn ào, không liên quan mạng. | (B) "loosely" — lỏng lẻo, ngược với nâng cấp bảo mật. | (C) "rarely" — hiếm khi, không nói cách nối. | (D) "securely" — đúng cách nối lại thiết bị an toàn.
+Source: original
+[QUESTION]
+Blank (3)
+(A) The old password stops working at midnight on Sunday.
+(B) The gym opens at six every morning.
+(C) The canteen menu changes every week.
+(D) Birthdays are celebrated on Fridays.
+Answer: A
+Explanation: Đoạn hướng dẫn nối mạng CORP, câu đúng lặp mốc "midnight on Sunday" của chính đoạn. | (A) "The old password stops working at midnight on Sunday." — đúng câu nối tiếp mạch hướng dẫn. | (B) "The gym opens at six every morning." — phòng gym không xuất hiện trong memo. | (C) "The canteen menu changes every week." — căng tin không liên quan wifi. | (D) "Birthdays are celebrated on Fridays." — sinh nhật không dính dáng.
+Source: original
+[QUESTION]
+Blank (4)
+(A) sends
+(B) will send
+(C) has sent
+(D) sending
+Answer: B
+Explanation: Nhắc nhở gửi chiều thứ Sáu tới ("on Friday afternoon"), mốc tương lai. | (A) "sends" — hiện tại đơn, không hợp mốc tương lai. | (B) "will send" — tương lai đơn, đúng lịch gửi thứ Sáu. | (C) "has sent" — hoàn thành, nghĩa đã gửi rồi. | (D) "sending" — V-ing không làm vị ngữ chính.
+Source: original

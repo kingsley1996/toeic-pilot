@@ -1,0 +1,1 @@
+Lab Satisfaction Scores. Phiếu khảo sát. Trainee: Minh, Content: 4.5, Trainer: 4.2, Materials: 4.0, Schedule: 4.7. Trainee: An, Content: 4.8, Trainer: 4.6, Materials: 4.5, Schedule: 4.4. Trainee: Thu, Content: 4.3, Trainer: 4.7, Materials: 4.6, Schedule: 4.5.

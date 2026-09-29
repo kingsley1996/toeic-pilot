@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why did the electricity bill jump this month?
+voice: ca_male_1
+(A) We paid it on time.
+(B) The air conditioners ran all day.
+(C) The bill is on your desk.
+Answer: B
+Explanation: Câu hỏi vì sao hóa đơn điện tăng, câu đúng cho nguyên nhân "The air conditioners ran all day". | (A) "The air conditioners ran all day." — điều hòa chạy cả ngày giải thích tiền điện tăng. | (B) "We paid it on time." — nói việc đã trả, không giải thích vì sao tăng. | (C) "The bill is on your desk." — nói vị trí hóa đơn, không cho nguyên nhân.
+Source: original

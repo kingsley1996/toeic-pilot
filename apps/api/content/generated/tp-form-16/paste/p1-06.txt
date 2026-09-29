@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) Passengers are sitting inside the ferry cabin.
+(B) Both attendants are checking tickets at the gate.
+(C) The ferry is moving away from the pier.
+(D) One attendant is checking tickets at the gate.
+Answer: D
+Explanation: Trong ảnh bến phà buổi sáng: nữ nhân viên soát vé ở cổng lên xuống, nam nhân viên buộc dây thừng giữ phà sát cầu tàu, hàng hành khách kéo va li xếp hàng chờ trên cầu. | (A) "sitting inside the ferry cabin" — hành khách đang xếp hàng trên cầu tàu chứ chưa lên phà: đúng người, sai hành động. | (B) "Both attendants are checking" — chỉ một người soát vé, người kia buộc dây: số ít nói thành số nhiều. | (C) "moving away from the pier" — phà đang được buộc dây giữ sát cầu, không di chuyển: đúng vật, sai trạng thái. | (D) "checking tickets at the gate" — đúng việc nữ nhân viên đang làm.
+Source: original

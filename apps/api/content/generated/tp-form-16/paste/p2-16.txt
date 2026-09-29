@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+How soon will the meeting room air conditioner be fixed?
+voice: uk_female_1
+(A) Twice a week.
+(B) In about two hours.
+(C) Next Monday.
+Answer: B
+Explanation: Câu hỏi bao lâu nữa sửa xong điều hòa (How soon + khoảng tới khi xong), câu đúng "In about two hours". | (A) "In about two hours." — khoảng thời gian tới khi xong, đúng chiều How soon. | (B) "Twice a week." — tần suất, sai chiều thông tin. | (C) "Next Monday." — mốc ngày cụ thể, sai chiều thông tin.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Tom, a quick word about attendance. The badge system locks at nine fifteen every morning.
+voice: au_male_1
+I noticed that yesterday. My bus was late, and I couldn't tap in at all.
+voice: us_female_1
+I understand, but anything after that counts as late in your monthly record. Three lates mean a warning letter.
+voice: au_male_1
+That sounds strict. Is there any flexibility for the bus schedule?
+voice: us_female_1
+Take an earlier bus and aim to arrive ten minutes early. Set a daily alarm on your phone.
+voice: au_male_1
+I'll do that starting tomorrow. Thanks for explaining the rule.
+
+[QUESTION]
+Who most likely is the woman?
+(A) A bus driver
+(B) The badge system guard
+(C) The man's supervisor
+(D) A monthly record keeper
+Answer: C
+Explanation: Cô nhắc kỷ luật chấm công: "anything after that counts as late in your monthly record". | (A) "A bus driver" — tài xế xe buýt chỉ là lý do Tom đi muộn. | (B) "The badge system guard" — cô nói về hệ thống chấm công chứ không gác cổng. | (C) "The man's supervisor" — đúng người nhắc quy định và có quyền cảnh cáo. | (D) "A monthly record keeper" — bảng công chỉ là thứ cô viện dẫn, không phải chức của cô.
+Source: original
+[QUESTION]
+What does the woman mean when she says, "The badge system locks at nine fifteen"?
+(A) The system is being repaired
+(B) The office closes at nine fifteen
+(C) Badges must be returned daily
+(D) Arrivals after that count as late
+Answer: D
+Explanation: Câu nói trích nguyên văn "The badge system locks at nine fifteen" nghĩa là sau đó bị tính muộn. | (A) "The system is being repaired" — hệ thống khóa đúng luật, không hỏng. | (B) "The office closes at nine fifteen" — văn phòng vẫn mở, chỉ chốt chấm công. | (C) "Badges must be returned daily" — không ai thu thẻ, thẻ vẫn dùng hằng ngày. | (D) "Arrivals after that count as late" — đúng nghĩa hàm của câu nói.
+Source: original
+[QUESTION]
+What does the woman suggest?
+(A) Arriving ten minutes early
+(B) Starting work from home
+(C) Tapping in after fifteen
+(D) Taking a later bus
+Answer: A
+Explanation: Cô dặn "aim to arrive ten minutes early" và "Set a daily alarm on your phone". | (A) "Arriving ten minutes early" — đúng điều cô gợi ý. | (B) "Starting work from home" — không ai nhắc tới làm ở nhà. | (C) "Tapping in after fifteen" — quẹt sau chín giờ mười lăm là bị tính muộn, ngược gợi ý. | (D) "Taking a later bus" — xe muộn hơn là nguyên nhân bị muộn, không phải giải pháp.
+Source: original

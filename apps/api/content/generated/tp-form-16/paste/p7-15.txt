@@ -1,0 +1,68 @@
+[PASSAGE]
+From: Office Manager, Saigon Books
+To: Sales Team, An Phat Supplies
+Subject: Order 451 — Missing and Damaged Printers
+Date: May 6
+
+Hello,
+
+There is a discrepancy between order 451 and the delivery we received. We ordered ten P-200 printers but found only eight working units: two are damaged beyond use. Our autumn catalogue depends on these printers. The contract covers two hundred pages monthly. We need them for the tax season rush. We chose your firm for its fast warranty service. Please send two replacements by Friday, or we will cancel the remaining contract.
+
+Regards,
+Hong Nhung
+
+[PASSAGE]
+Delivery Note 451 — An Phat Supplies
+
+Order 451: ten P-200 printers shipped May 2. The depot loaded three trucks that morning. Quan has driven this route for five years. Rain started after the truck departed. The truck left the depot at six in the morning. Two cartons showed water damage on arrival. Received by: Hong Nhung. Driver: Quan.
+
+[PASSAGE]
+Invoice 451 — An Phat Supplies
+
+Ten P-200 printers at $120 each: total $1,200. Payment due May 20. Late payments add one percent interest per month. Cheques should arrive three days before due dates. The discount code is printed at the bottom. Prices include delivery but exclude installation. The bank details are on page two. Call the sales team with questions. A two percent discount applies if paid within ten days of delivery.
+
+[QUESTION]
+How many printers arrived in usable condition?
+(A) Ten
+(B) None
+(C) Two
+(D) Eight
+Answer: D
+Explanation: Email ghi "We ordered ten P-200 printers but found only eight working units" còn phiếu giao ghi "Two cartons showed water damage on arrival". | (A) "Ten" — là số đặt hàng, không phải số dùng được. | (B) "None" — trái với tám máy còn tốt đã nhận. | (C) "Two" — là số máy hỏng, không phải số dùng được. | (D) "Eight" — đúng tám máy còn tốt trong email.
+Source: original
+[QUESTION]
+Which of the following is NOT stated?
+(A) The driver apologized in person
+(B) The order number is 451
+(C) Payment is due May 20
+(D) Two cartons were water-damaged
+Answer: A
+Explanation: Phiếu giao ghi người nhận, người lái xe, hàng hỏng — không lời xin lỗi nào. | (A) "The driver apologized in person" — không lời xin lỗi nào được nhắc tới. | (B) "The order number is 451" — cả ba tài liệu đều ghi đơn 451. | (C) "Payment is due May 20" — hóa đơn ghi hạn trả 20 tháng Năm. | (D) "Two cartons were water-damaged" — phiếu giao ghi hai thùng ướt.
+Source: original
+[QUESTION]
+What can be inferred about early payment?
+(A) It is required by Friday
+(B) Paid by May 12, it saves money
+(C) It cancels the contract
+(D) It needs the driver's approval
+Answer: B
+Explanation: Hóa đơn "total $1,200" và "two percent discount applies if paid within ten days of delivery" (giao mùng 2): trả trước 12/5 được giảm 24 đô. | (A) "It is required by Friday" — thứ Sáu là hạn thay máy hỏng, không phải hạn trả tiền. | (B) "Paid by May 12, it saves money" — đúng điều suy ra: trả sớm được chiết khấu. | (C) "It cancels the contract" — hủy hợp đồng là điều kiện nếu không thay máy, không phải khi trả sớm. | (D) "It needs the driver's approval" — tài xế chỉ giao hàng, không duyệt thanh toán.
+Source: original
+[QUESTION]
+Who delivered the goods?
+(A) Hong Nhung
+(B) The sales team
+(C) Driver Quan
+(D) A courier company
+Answer: C
+Explanation: Phiếu giao ghi "Driver: Quan". | (A) "Hong Nhung" — Hồng Nhung là người nhận hàng. | (B) "The sales team" — đội bán hàng gửi hóa đơn, không lái xe. | (C) "Driver Quan" — đúng người giao ghi trên phiếu. | (D) "A courier company" — không công ty chuyển phát nào được nhắc tới.
+Source: original
+[QUESTION]
+In the e-mail, the word "discrepancy" is closest in meaning to
+(A) damage
+(B) delay
+(C) discount
+(D) difference
+Answer: D
+Explanation: Từ "discrepancy" trong câu "There is a discrepancy between order 451 and the delivery". | (A) "damage" — hư hỏng, sai nghĩa. | (B) "delay" — trễ hẹn, sai nghĩa. | (C) "discount" — chiết khấu, sai nghĩa. | (D) "difference" — đúng nghĩa chênh lệch.
+Source: original

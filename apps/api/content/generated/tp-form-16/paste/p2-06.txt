@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The printer on the third floor is out of order again.
+voice: uk_female_1
+(A) Then I'll use the one in the library.
+(B) It was installed last week.
+(C) The paper tray is on the third floor.
+Answer: A
+Explanation: Câu báo máy in tầng ba lại hỏng, câu đúng chuyển sang máy khác "I'll use the one in the library". | (A) "Then I'll use the one in the library." — giải pháp thay thế khi máy hỏng. | (B) "It was installed last week." — nói tuổi máy, không giải quyết việc in. | (C) "The paper tray is on the third floor." — nói vị trí khay giấy, không giúp in được.
+Source: original

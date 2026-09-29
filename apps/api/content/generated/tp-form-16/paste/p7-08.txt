@@ -1,0 +1,49 @@
+[PASSAGE]
+From: Pacific Air Customer Care
+To: Booked Passengers, Flight VN318
+Subject: Your Flight Is Delayed Tonight
+Date: June 14
+
+Dear Passenger,
+
+Flight VN318 to Singapore now departs at 9:50 P.M., three hours later than scheduled, because the incoming aircraft arrived late. Connecting flights are rebooked automatically and shown in the app. Passengers needing hotel rooms should visit the service desk on level three. [1] Please proceed to the new departure gate B12 on the second floor. [2] Meal vouchers are available at the transfer counter for this delay. [3] The airline offers free Wi-Fi vouchers for the wait. Boarding for families with small children starts ten minutes early. Only flights delayed over three hours qualify, so keep your boarding pass. [4]
+
+Free coffee is served near gate B12. Smoking areas are outside terminal exits only. Children under two fly free on this route. Thank you for your patience.
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To change the destination
+(B) To cancel all evening flights
+(C) To sell upgrade seats
+(D) To inform of a flight delay
+Answer: D
+Explanation: Thư báo chuyến VN318 "now departs at 9:50 P.M., three hours later than scheduled". | (A) "To change the destination" — điểm đến Singapore giữ nguyên. | (B) "To cancel all evening flights" — chuyến bay chỉ trễ, không hủy. | (C) "To sell upgrade seats" — không ghế nào được chào bán. | (D) "To inform of a flight delay" — đúng lý do gửi thư.
+Source: original
+[QUESTION]
+What is the new departure time?
+(A) 9:50 P.M.
+(B) 8:50 P.M.
+(C) 6:50 P.M.
+(D) 10:50 P.M.
+Answer: A
+Explanation: Giờ mới "now departs at 9:50 P.M.". | (A) "9:50 P.M." — đúng giờ khởi hành mới. | (B) "8:50 P.M." — không giờ nào như vậy trong thư. | (C) "6:50 P.M." — đó gần giờ gốc trước khi trễ ba tiếng. | (D) "10:50 P.M." — trễ hơn một tiếng so với giờ mới.
+Source: original
+[QUESTION]
+What can be inferred about the meal vouchers?
+(A) Every passenger gets one automatically
+(B) Only long-delayed flights qualify
+(C) They expired last month
+(D) They cover hotel rooms too
+Answer: B
+Explanation: Voucher chỉ cho chuyến trễ "Only flights delayed over three hours qualify". | (A) "Every passenger gets one automatically" — phải đủ điều kiện trễ ba tiếng. | (B) "Only long-delayed flights qualify" — đúng điều suy ra về voucher. | (C) "They expired last month" — không hạn nào hết hiệu lực. | (D) "They cover hotel rooms too" — voucher ăn, khách sạn phải ra quầy dịch vụ.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?
+"Please keep this e-mail for your records."
+(A) [1]
+(B) [2]
+(C) [4]
+(D) [3]
+Answer: C
+Explanation: Câu lưu mail hợp đứng cuối sau mọi thông tin ("keep your boarding pass"). | (A) "[1]" — đầu thư báo tin trễ, chưa có gì cần lưu. | (B) "[2]" — giữa đoạn cổng ra, chen câu lưu mail làm đứt mạch. | (C) "[4]" — đúng chỗ kết sau khi đã dặn đủ. | (D) "[3]" — giữa đoạn voucher, không liên quan lưu mail.
+Source: original

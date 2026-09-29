@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you order extra lunches for the visiting group?
+voice: au_male_1
+(A) Lunch discounts end today.
+(B) Lunch is served at noon.
+(C) Sure, how many more do we need?
+Answer: C
+Explanation: Câu hỏi đặt thêm suất ăn cho đoàn khách, câu đúng nhận lời và hỏi số lượng "how many more do we need". | (A) "Lunch discounts end today." — nói về giảm giá, không nhận đặt thêm. | (B) "Lunch is served at noon." — nói giờ ăn, không nhận đặt thêm. | (C) "Sure, how many more do we need." — đồng ý và hỏi tiếp số suất cần thêm.
+Source: original

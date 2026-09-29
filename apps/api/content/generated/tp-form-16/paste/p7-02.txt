@@ -1,0 +1,38 @@
+[PASSAGE]
+City Eats Weekly — App Review
+
+FastBite Promises Dinner in Thirty Minutes
+
+By Tom Alvarez
+
+The new delivery app FastBite guarantees an average delivery time of thirty minutes across the downtown area, and our three test orders arrived in twenty-four, twenty-nine, and thirty-one minutes. Unlike rivals stuffed with fast-food chains, FastBite lists a curated set of eighty local kitchens chosen by neighbourhood chefs. Prices match the restaurants' own menus, and the delivery fee is a flat one dollar fifty per order.
+
+Riders wear green jackets and carry insulated boxes. The app works on old phones without updates. These kitchens pass yearly hygiene checks. Suburban readers can join a waiting list. A loyalty point comes with every tenth order. Payment is painless, and live tracking actually works. Our only complaint: the service area still excludes the suburbs, so readers outside downtown must wait for expansion.
+
+[QUESTION]
+What is the average delivery time FastBite promises?
+(A) Twenty minutes
+(B) Thirty minutes
+(C) Forty-five minutes
+(D) One hour
+Answer: B
+Explanation: App cam kết "an average delivery time of thirty minutes". | (A) "Twenty minutes" — hai mươi là đơn thử nhanh nhất, không phải cam kết. | (B) "Thirty minutes" — đúng thời gian trung bình app hứa. | (C) "Forty-five minutes" — không con số nào như vậy trong bài. | (D) "One hour" — gấp đôi cam kết của app.
+Source: original
+[QUESTION]
+What can be inferred about FastBite's restaurants?
+(A) They are mostly fast-food chains
+(B) They charge higher prices online
+(C) They focus on local kitchens
+(D) They cook only foreign dishes
+Answer: C
+Explanation: App liệt kê "a curated set of eighty local kitchens" thay vì chuỗi thức ăn nhanh. | (A) "They are mostly fast-food chains" — ngược hẳn: app tránh chuỗi thức ăn nhanh. | (B) "They charge higher prices online" — giá khớp thực đơn quán, không cao hơn. | (C) "They focus on local kitchens" — đúng định vị quán địa phương của app. | (D) "They cook only foreign dishes" — bếp địa phương, không chỉ món ngoại.
+Source: original
+[QUESTION]
+In paragraph 2, the word "curated" is closest in meaning to
+(A) rated
+(B) cooked
+(C) delivered
+(D) selected
+Answer: D
+Explanation: Từ "curated" trong cụm "a curated set of eighty local kitchens chosen by neighbourhood chefs". | (A) "rated" — được chấm điểm, không phải được chọn lọc. | (B) "cooked" — được nấu, sai nghĩa. | (C) "delivered" — được giao, sai nghĩa. | (D) "selected" — đúng nghĩa được tuyển chọn.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Let's open the quarterly review. Total revenue is up eleven percent, well done everyone. The south is still under a hundred thousand, so it needs a marketing push next quarter. The good news: one branch finally passed one hundred thirty thousand, our best result in three years. That branch earns a team bonus and picks our holiday campaign theme. For November, I propose a home-delivery campaign across all four branches. We'll vote on the budget after lunch.
+
+[QUESTION]
+What is the purpose of the meeting?
+(A) To push the south branch
+(B) To review quarterly sales results
+(C) To vote on the budget
+(D) To pick a campaign theme
+Answer: B
+Explanation: Mở đầu "Let's open the quarterly review" với doanh số các chi nhánh. | (A) "To push the south branch" — đẩy chi nhánh phía nam chỉ là một việc trong họp. | (B) "To review quarterly sales results" — đúng mục đích cuộc họp. | (C) "To vote on the budget" — bỏ phiếu ngân sách để sau bữa trưa, không phải mục đích. | (D) "To pick a campaign theme" — chủ đề chiến dịch là phần thưởng, không phải lý do họp.
+Source: original
+[QUESTION]
+Look at the graphic. Which branch will receive the bonus?
+(A) North Branch
+(B) South Branch
+(C) East Branch
+(D) West Branch
+Answer: C
+Explanation: Chi nhánh "finally passed one hundred thirty thousand" là East 140 trên biểu đồ. | (A) "North Branch" — chi nhánh phía bắc chỉ 120, chưa qua mốc. | (B) "South Branch" — phía nam còn dưới một trăm nghìn. | (C) "East Branch" — đúng cột 140 vượt mốc một trăm ba. | (D) "West Branch" — phía tây chỉ 110.
+Source: original
+[QUESTION]
+What will the team do in November?
+(A) Vote after lunch
+(B) Close the south branch
+(C) Cut the team bonus
+(D) Launch a home-delivery campaign
+Answer: D
+Explanation: Tháng Mười một "I propose a home-delivery campaign across all four branches". | (A) "Vote after lunch" — bỏ phiếu ngân sách là việc khác, không phải việc nhóm làm. | (B) "Close the south branch" — phía nam được đẩy marketing, không bị đóng. | (C) "Cut the team bonus" — thưởng vẫn trao cho chi nhánh thắng. | (D) "Launch a home-delivery campaign" — đúng việc nhóm làm tháng Mười một.
+Source: original

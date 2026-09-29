@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Should we take the train or the bus to the airport?
+voice: ca_male_1
+(A) The train is faster at this hour.
+(B) The airport is very large.
+(C) I took the bus yesterday.
+Answer: A
+Explanation: Câu hỏi chọn tàu hay xe buýt ra sân bay, câu đúng so sánh "The train is faster at this hour". | (A) "The train is faster at this hour." — chọn tàu với lý do rõ ràng. | (B) "The airport is very large." — nói về sân bay, không chọn phương tiện. | (C) "I took the bus yesterday." — chuyện hôm qua, không trả lời nên đi gì.
+Source: original

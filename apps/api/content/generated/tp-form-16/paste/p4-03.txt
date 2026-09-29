@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good evening, passengers waiting in the departure lounge. This is an announcement for flight NH204 to Osaka. Due to a technical check, boarding will now take place at Gate 18 instead of Gate 12. Boarding passes will be reissued at the counter. Please bring your old pass and passport to counter five. Boarding starts at nine forty, and the flight still departs on time at ten thirty. We apologise for the change and thank you for your patience.
+
+[QUESTION]
+Where is the announcement made?
+(A) In an airport departure lounge
+(B) On flight NH204
+(C) At counter five
+(D) In the Osaka lounge
+Answer: A
+Explanation: Mở đầu "passengers waiting in the departure lounge" cho chuyến bay NH204. | (A) "In an airport departure lounge" — đúng nơi phát thông báo. | (B) "On flight NH204" — máy bay chưa lên, mọi người còn ở sảnh. | (C) "At counter five" — quầy năm là nơi đổi thẻ, không phải nơi phát loa. | (D) "In the Osaka lounge" — Osaka là điểm đến, không phải nơi đang đứng.
+Source: original
+[QUESTION]
+What does the speaker mean when he says, "Boarding passes will be reissued at the counter"?
+(A) Passengers must show passport at counter five
+(B) Old passes are no longer valid
+(C) The flight is cancelled
+(D) Boarding starts at the counter
+Answer: B
+Explanation: Câu trích "Boarding passes will be reissued at the counter" nghĩa là thẻ cũ hết hiệu lực. | (A) "Passengers must show passport at counter five" — mang hộ chiếu là việc khác, không phải nghĩa của câu trích. | (B) "Old passes are no longer valid" — đúng nghĩa hàm: cấp lại tức cũ không dùng được. | (C) "The flight is cancelled" — chuyến bay vẫn khởi hành đúng giờ. | (D) "Boarding starts at the counter" — quầy chỉ đổi thẻ, lên máy bay ở cổng 18.
+Source: original
+[QUESTION]
+What will passengers do next?
+(A) Apologise for the change
+(B) Wait at Gate 12
+(C) Go to Gate 18 for boarding
+(D) Sleep in the departure lounge
+Answer: C
+Explanation: Cổng đổi sang Gate 18: "boarding will now take place at Gate 18 instead of Gate 12". | (A) "Apologise for the change" — xin lỗi là việc của hãng, không phải của khách. | (B) "Wait at Gate 12" — cổng 12 đã bị thay. | (C) "Go to Gate 18 for boarding" — đúng việc khách làm tiếp theo. | (D) "Sleep in the departure lounge" — không ai bảo ngủ lại sảnh.
+Source: original

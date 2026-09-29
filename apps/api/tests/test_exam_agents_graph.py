@@ -285,3 +285,84 @@ def test_a_failed_call_does_not_kill_the_whole_run(
     # Lý do phải HIỆN RA, không chỉ nằm trong state — cùng lập luận với
     # `test_escalation_prints_why`.
     assert "hết hạn mức đầu ra" in capsys.readouterr().out
+
+
+def test_second_question_problems_are_not_hidden_by_a_clean_first(
+    workdir: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Node kiểm phải gộp CẢ BA báo cáo của ô, không chỉ lấy báo cáo đầu.
+
+    Gặp thật trên `tp-form-16`: `p3-01` được nhận trong khi câu 33 đỏ (2/3
+    nhiễu lạc đề) — node check lấy `next()` báo cáo đầu (câu 32 sạch) rồi
+    accept, lỗi riêng của câu 2/3 không bao giờ tới được critic. Cụm ba câu
+    nhân lỗi ra ba báo cáo để NGƯỜI đọc từng câu, còn máy phải gộp lại.
+    """
+
+    from app.content.exam import blueprint as bp
+
+    class _SlotP3(_Slot):
+        id = "p3-01"
+        question_type = ""
+        topic = "PART_3_COMPANY_EVENT_OR_PROJECT"
+        voices = ["us_female_1", "au_male_1"]
+        question_types = [
+            "PART_3_TOPIC_OR_PURPOSE",
+            "PART_3_CONVERSATION_DETAIL",
+            "PART_3_FUTURE_ACTION",
+        ]
+        hard = 0
+        implication_kind = 0
+
+    class _PartP3:
+        part = 3
+        slots = [_SlotP3()]
+
+    class _BlueprintP3(_Blueprint):
+        parts = [_PartP3()]
+
+    class SecondQuestionBad(FakeGateway):
+        def run(self, request: object, feature: str = "", tier: object = None) -> FakeResult:
+            if feature == "exam_write":
+                return FakeResult(
+                    "[SCRIPT]\n"
+                    "voice: us_female_1\n"
+                    "Hi Tom, the printer on the third floor is jammed again. "
+                    "Could you take a look after lunch?\n"
+                    "voice: au_male_1\n"
+                    "Sure. I will bring the toolbox and clear the paper tray. "
+                    "It should take ten minutes.\n"
+                    "voice: us_female_1\n"
+                    "Thanks. The client report must go out before three o'clock today.\n"
+                    "\n"
+                    "[QUESTION]\n"
+                    "Why is the woman talking to Tom?\n"
+                    "(A) To report a jammed printer\n"
+                    "(B) To cancel a lunch meeting\n"
+                    "(C) To order a new toolbox\n"
+                    "(D) To delay the client report\n"
+                    "Answer: A\nSource: original\n"
+                    "[QUESTION]\n"
+                    "What will Tom do after lunch?\n"
+                    "(A) Clear the paper tray\n"
+                    "(B) Water the office plants\n"
+                    "(C) Feed the neighbours cat\n"
+                    "(D) Book flight tickets\n"
+                    "Answer: A\nSource: original\n"
+                    "[QUESTION]\n"
+                    "When must the report go out?\n"
+                    "(A) Before three o'clock\n"
+                    "(B) After the toolbox arrives\n"
+                    "(C) During the lunch break\n"
+                    "(D) Before the jammed printer\n"
+                    "Answer: A\nSource: original\n"
+                )
+            return FakeResult("Nhại lời thoại trong đáp án nhiễu.")
+
+    monkeypatch.setattr(bp, "load", lambda path: _BlueprintP3())
+    graph = build(SecondQuestionBad(), tier=None, blueprint=_BlueprintP3(), workdir=workdir)
+    final = graph.invoke(
+        {"slot_id": "p3-01", "revision": 0, "outcome": "pending"},
+        config={"configurable": {"thread_id": "t5"}},
+    )
+    assert final["outcome"] == "escalated"
+    assert any("nhiễu" in line for line in final["log"])

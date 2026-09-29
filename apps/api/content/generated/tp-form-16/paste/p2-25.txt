@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who received the employee of the year award?
+voice: us_female_1
+(A) The award was cancelled.
+(B) They postponed the ceremony until next month.
+(C) Awards motivate everyone.
+Answer: B
+Explanation: Câu hỏi ai nhận giải nhân viên xuất sắc, nhưng lễ trao đã hoãn: "They postponed the ceremony until next month". | (A) "The award was cancelled." — trái với "postponed", lễ vẫn sẽ diễn ra tháng sau. | (B) "They postponed the ceremony until next month." — chưa trao thì câu hỏi ai nhận hết ý nghĩa. | (C) "Awards motivate everyone." — nhận xét chung, không trả lời ai nhận.
+Source: original

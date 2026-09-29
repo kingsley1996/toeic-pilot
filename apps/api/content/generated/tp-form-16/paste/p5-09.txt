@@ -1,0 +1,9 @@
+[QUESTION]
+The documents ------- on the manager's desk yesterday are still unsigned.
+(A) leave
+(B) leaving
+(C) left
+(D) leaves
+Answer: C
+Explanation: Cụm rút gọn mệnh đề quan hệ bị động bổ nghĩa cho "documents" cần phân từ hai. | (A) "leave" — động từ nguyên thể, không tạo được cụm bổ nghĩa. | (B) "leaving" — hiện tại phân từ mang nghĩa chủ động, sai thể. | (C) "left" — phân từ hai của "leave", tạo cụm bị động rút gọn đúng. | (D) "leaves" — động từ chia số ít, sai thì và sai dạng.
+Source: original

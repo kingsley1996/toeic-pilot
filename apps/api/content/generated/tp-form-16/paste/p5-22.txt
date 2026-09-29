@@ -1,0 +1,9 @@
+[QUESTION]
+A sudden power ------- halted the entire assembly line for two hours.
+(A) outlay
+(B) outrage
+(C) outset
+(D) outage
+Answer: D
+Explanation: Sau tính từ "sudden" và trước động từ "halted" cần danh từ chủ ngữ nghĩa mất điện. | (A) "outlay" — khoản chi phí, thuộc lĩnh vực tài chính. | (B) "outrage" — sự phẫn nộ, cảm xúc con người, sai nghĩa. | (C) "outset" — lúc khởi đầu, mốc thời gian chứ không phải sự cố. | (D) "outage" — sự mất điện, đúng nguyên nhân dừng dây chuyền.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, and welcome to Greenfield Foods. I'm Rick, your safety trainer for today. Before you enter the production floor, there are three rules to remember. First, helmets are required everywhere past the yellow gate. Second, forklifts have the right of way in Zone B, so stay inside the marked walkways. Third, notice the red line painted along the packing area. Only trained packers may step beyond it, because the sealing machines start without warning. Your supervisor will hand out cut-resistant gloves with your locker keys after this talk. Let's begin the tour.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To sell safety equipment
+(B) To cancel the factory tour
+(C) To introduce safety training for new workers
+(D) To enter the packing area
+Answer: C
+Explanation: Rick mở đầu "Good morning, and welcome to Greenfield Foods" với tư cách "your safety trainer", nêu ba quy định trước khi vào xưởng. | (A) "To sell safety equipment" — không món đồ nào được chào bán. | (B) "To cancel the factory tour" — chuyến tham quan ("Let's begin the tour") vẫn diễn ra. | (C) "To introduce safety training for new workers" — đúng mục đích bài nói với công nhân mới. | (D) "To enter the packing area" — khu đóng gói là nơi cấm, không phải việc diễn giả làm.
+Source: original
+[QUESTION]
+What must workers wear past the yellow gate?
+(A) Helmets and locker keys
+(B) Yellow boots for Zone B
+(C) Gloves and safety goggles
+(D) Helmets and cut-resistant gloves
+Answer: D
+Explanation: Mũ ở câu đầu "helmets are required everywhere past the yellow gate", găng ở câu cuối "will hand out cut-resistant gloves". | (A) "Helmets and locker keys" — chìa khóa tủ là đồ được phát kèm, không phải đồ bảo hộ phải đội. | (B) "Yellow boots for Zone B" — không ủng nào được nhắc tới. | (C) "Gloves and safety goggles" — không kính bảo hộ nào xuất hiện. | (D) "Helmets and cut-resistant gloves" — đúng hai món ghép từ hai chỗ trong bài.
+Source: original
+[QUESTION]
+Why does the speaker mention the red line?
+(A) To show where only trained packers may go
+(B) To mark the packing walkways
+(C) To start the sealing machines
+(D) To paint another red line
+Answer: A
+Explanation: Vạch đỏ là ranh giới "Only trained packers may step beyond it, because the sealing machines start without warning". | (A) "To show where only trained packers may go" — đúng chức năng của vạch: mốc khu vực hạn chế. | (B) "To mark the packing walkways" — lối đi được đánh dấu riêng, không phải vạch đỏ. | (C) "To start the sealing machines" — máy tự khởi động là lý do cấm, không phải việc vạch làm. | (D) "To paint another red line" — không vạch mới nào được vẽ.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Could you lend me your projector for this afternoon's presentation?
+voice: au_male_1
+(A) It costs fifty dollars.
+(B) Ask the IT desk on the third floor.
+(C) The presentation is cancelled.
+Answer: B
+Explanation: Câu hỏi mượn máy chiếu, máy của người đáp hỏng nên chỉ sang IT: "Ask the IT desk on the third floor". | (A) "It costs fifty dollars." — nói về giá tiền, không trả lời mượn đồ. | (B) "Ask the IT desk on the third floor." — chỉ đúng chỗ mượn được khi máy mình hỏng. | (C) "The presentation is cancelled." — trái với việc buổi thuyết trình vẫn diễn ra chiều nay.
+Source: original

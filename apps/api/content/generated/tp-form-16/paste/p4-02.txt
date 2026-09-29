@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Do you finish work at six with no time to study? City Language Centre opens evening English classes made for busy people. Lessons run every Tuesday and Thursday from seven to nine, right near the central bus station. Small groups of at most ten students, all materials included, and your first trial lesson is completely free. Our teachers have all worked abroad and know exactly what office workers need. Don't let another year pass without better English. Call 555-0147 today and book your free trial for this week.
+
+[QUESTION]
+What is the advertisement for?
+(A) A bus station opening
+(B) An evening English course
+(C) A job abroad programme
+(D) The included materials fee
+Answer: B
+Explanation: Quảng cáo "City Language Centre opens evening English classes made for busy people". | (A) "A bus station opening" — bến xe chỉ là mốc vị trí gần trường. | (B) "An evening English course" — đúng thứ được quảng cáo. | (C) "A job abroad programme" — giáo viên từng làm ở nước ngoài, không phải chương trình việc làm. | (D) "The included materials fee" — tài liệu miễn phí, không thu phí.
+Source: original
+[QUESTION]
+When do the classes meet?
+(A) Monday and Thursday mornings
+(B) Every Tuesday afternoon
+(C) Tuesday and Thursday evenings
+(D) At six daily
+Answer: C
+Explanation: Lịch học "every Tuesday and Thursday from seven to nine". | (A) "Monday and Thursday mornings" — sai cả ngày lẫn buổi. | (B) "Every Tuesday afternoon" — chiều thứ Ba không có lớp. | (C) "Tuesday and Thursday evenings" — đúng hai buổi tối trong quảng cáo. | (D) "At six daily" — sáu giờ là giờ tan làm trong câu mở đầu, không phải giờ học.
+Source: original
+[QUESTION]
+What should listeners do?
+(A) Visit the bus station
+(B) Buy the textbooks first
+(C) Apply for a teaching job
+(D) Call to book a free trial
+Answer: D
+Explanation: Quảng cáo giục "Call 555-0147 today and book your free trial for this week". | (A) "Visit the bus station" — bến xe không liên quan đăng ký. | (B) "Buy the textbooks first" — tài liệu đã gồm trong giá, không phải mua. | (C) "Apply for a teaching job" — không tuyển giáo viên. | (D) "Call to book a free trial" — đúng điều người nghe nên làm.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+By the time the auditors arrived, the finance team ------- the quarterly reports.
+(A) had finished
+(B) has finished
+(C) finishes
+(D) will finish
+Answer: A
+Explanation: Hành động hoàn thành trước một mốc quá khứ ("arrived") cần quá khứ hoàn thành. | (A) "had finished" — quá khứ hoàn thành, đúng thứ tự hai hành động quá khứ. | (B) "has finished" — hiện tại hoàn thành, không lùi về trước mốc quá khứ. | (C) "finishes" — hiện tại đơn, sai thì với mốc quá khứ. | (D) "will finish" — tương lai, mâu thuẫn với "arrived".
+Source: original

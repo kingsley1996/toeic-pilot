@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Thanks for coming, everyone. I'm Paul from finance, chairing today's budget review. Printing now costs us four thousand dollars a month, mostly colour copies nobody reads. My first proposal is to stop all colour printing completely. Hmm, design says they truly need some colour for client drafts. Fair enough, let's revise that: each department keeps fifty colour pages a week, tracked by code. Black-and-white stays unlimited. I'll send the new quota codes this afternoon, and we review the savings next month.
+
+[QUESTION]
+Who most likely is the speaker?
+(A) The design draft reviewer
+(B) A colour copies salesman
+(C) A finance manager chairing a meeting
+(D) A quota code sender
+Answer: C
+Explanation: Paul giới thiệu "I'm Paul from finance, chairing today's budget review". | (A) "The design draft reviewer" — phòng thiết kế chỉ góp ý, không chủ trì. | (B) "A colour copies salesman" — không ai bán máy in. | (C) "A finance manager chairing a meeting" — đúng người của tài chính đang chủ trì. | (D) "A quota code sender" — mã hạn mức là việc anh làm sau, không phải chức của anh.
+Source: original
+[QUESTION]
+How much does printing cost each month?
+(A) Four hundred dollars
+(B) Fourteen thousand dollars
+(C) Fifty dollars
+(D) Four thousand dollars
+Answer: D
+Explanation: Chi phí "Printing now costs us four thousand dollars a month". | (A) "Four hundred dollars" — thiếu một số không. | (B) "Fourteen thousand dollars" — gấp hơn ba lần con số thật. | (C) "Fifty dollars" — năm mươi là hạn mức trang màu mỗi tuần, không phải chi phí tháng. | (D) "Four thousand dollars" — đúng con số Paul nêu.
+Source: original
+[QUESTION]
+What will probably happen next?
+(A) Departments get weekly colour quotas
+(B) Colour printing ends completely
+(C) All printers are removed
+(D) The budget meeting is cancelled
+Answer: A
+Explanation: Đề xuất cấm in màu bị sửa thành "each department keeps fifty colour pages a week". | (A) "Departments get weekly colour quotas" — đúng hệ quả của bản đã sửa. | (B) "Colour printing ends completely" — đó là bản đề xuất đầu đã bị bác. | (C) "All printers are removed" — không máy nào bị dọn đi. | (D) "The budget meeting is cancelled" — cuộc họp vẫn tiếp diễn sang tháng sau.
+Source: original

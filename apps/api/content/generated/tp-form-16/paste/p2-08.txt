@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When will the new stock arrive at the warehouse?
+voice: us_female_1
+(A) The warehouse is full.
+(B) It arrives every month.
+(C) Didn't they say Thursday or Friday?
+Answer: C
+Explanation: Câu hỏi khi nào hàng về kho, câu đúng hỏi ngược "Didn't they say Thursday or Friday". | (A) "Didn't they say Thursday or Friday." — đáp bằng câu hỏi của mình, đúng kiểu gián tiếp. | (B) "It arrives every month." — tần suất chung, không cho ngày cụ thể. | (C) "The warehouse is full." — nói tình trạng kho, không cho thời gian.
+Source: original

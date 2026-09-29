@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The report deadline is late this afternoon, isn't it?
+voice: au_male_1
+(A) Reports must be printed.
+(B) No, it was rejected.
+(C) Yes, before five o'clock.
+Answer: C
+Explanation: Câu hỏi xác nhận hạn nộp báo cáo cuối chiều nay, câu đúng "Yes, before five o'clock". | (A) "Yes, before five o'clock." — xác nhận đúng hạn cuối chiều. | (B) "No, it was rejected." — phủ nhận việc không ai nói tới. | (C) "Reports must be printed." — nói cách nộp, không xác nhận hạn.
+Source: original

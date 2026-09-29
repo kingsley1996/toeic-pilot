@@ -1,0 +1,7 @@
+kind: table
+Building Management Packages
+Package | Monthly Fee
+Basic | $30
+Standard | $55
+Premium | $80
+Full Service | $110

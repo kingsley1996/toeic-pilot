@@ -1,0 +1,27 @@
+[PASSAGE]
+City Hall Bulletin Board
+
+Blood Donation Day — Give an Hour, Save a Life
+
+The Red Cross holds its spring blood drive this Saturday from 8 to 11 A.M. in the City Hall main lobby. All donors receive a free health check, and nurses record blood pressure and iron levels before every donation. First-time donors are welcome; bring an ID card, be at least eighteen, and eat breakfast beforehand.
+
+Each donor also gets a gift voucher and a donor card for priority booking next time. The drive supports the children's hospital downtown. Parking is free for donors behind City Hall. Bring a friend and both get extra gift tickets. Last spring the city collected 400 units. Let's beat that record!
+
+[QUESTION]
+What is the purpose of the notice?
+(A) To sell health insurance
+(B) To recruit blood donors
+(C) To close City Hall
+(D) To hire more nurses
+Answer: B
+Explanation: Bảng tin kêu gọi "Blood Donation Day" với giờ giấc, địa điểm, quà tặng. | (A) "To sell health insurance" — không bảo hiểm nào được bán. | (B) "To recruit blood donors" — đúng mục đích thông báo. | (C) "To close City Hall" — sảnh thành phố là nơi tổ chức, không bị đóng. | (D) "To hire more nurses" — y tá đã có sẵn để khám, không tuyển.
+Source: original
+[QUESTION]
+What can be inferred about first-time donors?
+(A) They must pay for the health check
+(B) They cannot receive gifts
+(C) They get screened before donating
+(D) They donate without any record
+Answer: C
+Explanation: Mọi người hiến đều được khám miễn phí ("receive a free health check") và ghi chỉ số ("record blood pressure") trước khi hiến. | (A) "They must pay for the health check" — khám miễn phí cho mọi người hiến. | (B) "They cannot receive gifts" — người hiến được voucher quà. | (C) "They get screened before donating" — đúng điều suy ra cho người mới. | (D) "They donate without any record" — y tá ghi chỉ số trước mỗi lần hiến.
+Source: original

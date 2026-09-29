@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Hello, I bought this coffee machine here last month, and it stopped working this morning. No water comes through at all.
+voice: ca_male_1
+I'm sorry to hear that. Do you still have the receipt? It's within the warranty period.
+voice: us_female_1
+Yes, here it is. I use it every day, so I'd like a replacement rather than a repair.
+voice: ca_male_1
+That's possible. The same model is in stock, and I'll add a free pack of filters for the trouble.
+voice: us_female_1
+That would be great. Do I need to bring the box too?
+voice: ca_male_1
+Just the machine and the receipt. I'll process the exchange at the service desk.
+
+[QUESTION]
+Why is the woman at the store?
+(A) To return a faulty machine
+(B) To buy coffee beans
+(C) To extend a warranty
+(D) To order spare parts
+Answer: A
+Explanation: Chị mang máy lỗi tới: "it stopped working this morning" và xin đổi. | (A) "To return a faulty machine" — đúng việc chị tới cửa hàng. | (B) "To buy coffee beans" — chị mua máy tháng trước, không mua hạt cà phê. | (C) "To extend a warranty" — máy còn bảo hành, chị không xin gia hạn. | (D) "To order spare parts" — chị xin đổi máy mới, không đặt linh kiện.
+Source: original
+[QUESTION]
+Who most likely is the man?
+(A) A delivery driver
+(B) A store service employee
+(C) A coffee farmer
+(D) A repair technician visiting
+Answer: B
+Explanation: Anh xử lý đổi trả ở quầy dịch vụ: "I'll process the exchange at the service desk". | (A) "A delivery driver" — không ai giao hàng trong thoại. | (B) "A store service employee" — đúng người nhận đổi trả của cửa hàng. | (C) "A coffee farmer" — nông dân không xuất hiện trong cửa hàng. | (D) "A repair technician visiting" — anh cho đổi mới chứ không sửa, và anh là người của cửa hàng.
+Source: original
+[QUESTION]
+What does the man suggest?
+(A) Repairing the machine in a week
+(B) Buying the display model
+(C) Exchanging it for the same model
+(D) Calling the service desk
+Answer: C
+Explanation: Anh hứa "The same model is in stock" kèm gói lọc miễn phí. | (A) "Repairing the machine in a week" — anh cho đổi ngay, không hẹn sửa. | (B) "Buying the display model" — anh đổi đúng mẫu cũ, không bán mẫu trưng bày. | (C) "Exchanging it for the same model" — đúng điều anh gợi ý. | (D) "Calling the service desk" — quầy dịch vụ là nơi anh đứng, không phải nơi gọi tới.
+Source: original

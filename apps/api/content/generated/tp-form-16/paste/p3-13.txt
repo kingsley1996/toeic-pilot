@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+We need someone to welcome school groups at the booth in the late morning. Who is free then?
+voice: au_male_1
+Let me check the roster. Marco is on booth duty all morning, and Priya has a meeting first thing.
+voice: uk_female_1
+What about Sam? He knows the schools well.
+voice: au_male_1
+Sam is in a meeting then. But Linh has nothing scheduled in the late morning.
+voice: uk_female_1
+Perfect, ask Linh to cover the welcome. And remind Marco his delivery run is at one.
+voice: au_male_1
+Will do. I'll print the updated roster for all four of us.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To change the welcome plan
+(B) To order new booth equipment
+(C) To arrange booth shifts for a fair
+(D) To remind Marco's team
+Answer: C
+Explanation: Hai người xếp lịch trực: "Who is free then" cho gian hàng hội chợ. | (A) "To change the welcome plan" — đón khách vẫn giữ, chỉ xếp người trực. | (B) "To order new booth equipment" — không thiết bị nào được đặt mua. | (C) "To arrange booth shifts for a fair" — đúng việc hai điều phối viên đang làm. | (D) "To remind Marco's team" — nhắc Marco chỉ là một câu trong cuộc bàn.
+Source: original
+[QUESTION]
+What will Marco do at one o'clock?
+(A) Welcome school groups
+(B) Print the roster
+(C) Attend a meeting
+(D) Handle a delivery run
+Answer: D
+Explanation: Lịch giao việc: "remind Marco his delivery run is at one". | (A) "Welcome school groups" — đón học sinh là việc của Linh. | (B) "Print the roster" — in lịch là việc chưa ai nhận. | (C) "Attend a meeting" — họp là việc của Priya và Sam. | (D) "Handle a delivery run" — đúng việc Marco làm lúc một giờ.
+Source: original
+[QUESTION]
+Look at the graphic. When is Linh free to welcome the guests?
+(A) 10-11
+(B) 9-10
+(C) 13-14
+(D) 14-15
+Answer: A
+Explanation: Linh trống buổi muộn, bảng ghi hàng Linh chỉ trống ô 10-11. | (A) "10-11" — đúng ô trống duy nhất của Linh trên bảng. | (B) "9-10" — giờ đó Linh trực gian hàng. | (C) "13-14" — giờ đó Linh họp. | (D) "14-15" — giờ đó Linh trực gian hàng.
+Source: original

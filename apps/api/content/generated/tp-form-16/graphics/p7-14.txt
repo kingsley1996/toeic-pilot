@@ -1,0 +1,7 @@
+kind: schedule
+March Training Sessions
+Trainer | Mon 3 | Tue 4 | Wed 5 | Thu 6
+Anna |  |  |  | Excel
+Ben | Safety |  |  | 
+Clara |  | Excel |  | 
+David |  |  | Safety |

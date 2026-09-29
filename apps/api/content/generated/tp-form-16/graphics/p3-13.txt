@@ -1,0 +1,7 @@
+kind: schedule
+Fair Booth Roster
+Name | 9-10 | 10-11 | 13-14 | 14-15
+Linh | Booth duty |  | Meeting | Booth duty
+Marco | Booth duty | Booth duty | Delivery | Booth duty
+Priya | Meeting | Booth duty | Booth duty | Delivery
+Sam | Booth duty | Meeting | Booth duty | Booth duty

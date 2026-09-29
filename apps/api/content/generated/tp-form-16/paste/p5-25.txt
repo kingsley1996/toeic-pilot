@@ -1,0 +1,9 @@
+[QUESTION]
+Employees may work from home ------- they attend all scheduled video meetings.
+(A) without
+(B) except
+(C) provided
+(D) during
+Answer: C
+Explanation: Mệnh đề điều kiện cho phép làm xa cần liên từ nghĩa "miễn là". | (A) "without" — sau nó là cụm danh từ, không phải mệnh đề. | (B) "except" — chỉ ngoại lệ, sau nó không phải mệnh đề đầy đủ. | (C) "provided" — rút gọn của "provided that", chỉ điều kiện cho phép. | (D) "during" — chỉ thời gian, sau nó phải là danh từ.
+Source: original

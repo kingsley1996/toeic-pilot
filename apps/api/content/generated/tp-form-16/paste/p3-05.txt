@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Hi, there's water leaking under my kitchen sink, and it's spreading across the floor. Can someone come today?
+voice: au_male_1
+I can fit you in tomorrow between nine and eleven. Is the leak fast or slow?
+voice: us_female_1
+Pretty fast. I've put a bucket under it, but it fills up every hour.
+voice: au_male_1
+Then first turn the small valve behind the sink clockwise. That stops the water until I arrive.
+voice: us_female_1
+I see the valve. Should I also switch off anything else?
+voice: au_male_1
+No, just that valve. And move the cleaning supplies away so I can reach the pipes.
+
+[QUESTION]
+Why is the woman calling?
+(A) To move tomorrow's appointment
+(B) To buy a new sink
+(C) To report a leaking pipe
+(D) To ask about a valve replacement
+Answer: C
+Explanation: Chị báo "water leaking under my kitchen sink" và xin thợ tới ngay. | (A) "To move tomorrow's appointment" — lịch hẹn ngày mai là thợ đưa ra, không phải điều chị gọi tới xin. | (B) "To buy a new sink" — chị xin sửa rò rỉ, không mua bồn mới. | (C) "To report a leaking pipe" — đúng sự cố chị báo. | (D) "To ask about a valve replacement" — van là thứ thợ dặn, không phải điều chị hỏi.
+Source: original
+[QUESTION]
+When will the plumber come?
+(A) Today before noon
+(B) Before nine o'clock
+(C) Tomorrow evening
+(D) Tomorrow morning
+Answer: D
+Explanation: Thợ hẹn "tomorrow between nine and eleven". | (A) "Today before noon" — hôm nay thợ kín lịch, chỉ hẹn ngày mai. | (B) "Before nine o'clock" — khung hẹn bắt đầu lúc chín giờ. | (C) "Tomorrow evening" — hẹn buổi sáng, không phải tối. | (D) "Tomorrow morning" — đúng khung chín tới mười một giờ sáng mai.
+Source: original
+[QUESTION]
+Why does the man mention the small valve?
+(A) To stop the water before he arrives
+(B) To show where the leak started
+(C) To add a valve replacement fee
+(D) To describe the cleaning supplies
+Answer: A
+Explanation: Thợ dặn khóa van để "stops the water until I arrive". | (A) "To stop the water before he arrives" — đúng công dụng của việc khóa van: chặn nước chờ thợ tới. | (B) "To show where the leak started" — chỗ rò đã rõ dưới bồn rửa, van không dùng để chỉ. | (C) "To add a valve replacement fee" — không phí nào được nhắc tới. | (D) "To describe the cleaning supplies" — dọn đồ chỉ để thợ với tới ống, không phải công dụng van.
+Source: original

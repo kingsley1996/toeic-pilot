@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When does the new branch open its doors?
+voice: uk_female_1
+(A) The opening was crowded.
+(B) It sells office supplies.
+(C) On the first of next month.
+Answer: C
+Explanation: Câu hỏi khi nào chi nhánh mới mở cửa, câu đúng cho mốc "On the first of next month". | (A) "On the first of next month." — trả lời thẳng thời điểm khai trương. | (B) "It sells office supplies." — nói mặt hàng, không cho thời gian. | (C) "The opening was crowded." — nói về lễ khai trương, không cho ngày.
+Source: original

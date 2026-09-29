@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Why has the server been so slow since morning?
+voice: au_male_1
+(A) It runs fast today.
+(B) Have you reported it to the technicians?
+(C) The server room is locked.
+Answer: B
+Explanation: Câu hỏi vì sao máy chủ chậm từ sáng, câu đúng hỏi ngược "Have you reported it to the technicians". | (A) "It runs fast today." — trái với "slow since morning" trong câu hỏi. | (B) "Have you reported it to the technicians." — đáp bằng câu hỏi của mình, đúng kiểu gián tiếp. | (C) "The server room is locked." — nói phòng máy, không giải thích vì sao chậm.
+Source: original

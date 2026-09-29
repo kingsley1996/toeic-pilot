@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Hi, this is Greg from HomeStyle Furniture with a message for Ms. Lane. Your three-seat sofa was scheduled for delivery this Thursday morning, but our truck broke down on the highway. Could we move it to Saturday between ten and twelve? Any time after nine works for our driver, though late morning is best. Please call back at 555-0118 once you've checked with your family. Sorry for the short notice, and thanks for your patience.
+
+[QUESTION]
+What is the purpose of the call?
+(A) To sell the display sofa
+(B) To reschedule a sofa delivery
+(C) To confirm Saturday morning
+(D) To fix the broken truck
+Answer: B
+Explanation: Greg báo dời giao sofa: "Could we move it to Saturday between ten and twelve". | (A) "To sell the display sofa" — sofa đã bán từ trước, cuộc gọi chỉ dời lịch giao. | (B) "To reschedule a sofa delivery" — đúng mục đích cuộc gọi. | (C) "To confirm Saturday morning" — thứ Bảy chỉ là đề xuất, chưa chốt. | (D) "To fix the broken truck" — xe hỏng là lý do dời, không phải việc gọi tới nhờ.
+Source: original
+[QUESTION]
+When was the delivery first scheduled?
+(A) Late Saturday morning
+(B) Saturday afternoon
+(C) This Thursday morning
+(D) After nine o'clock
+Answer: C
+Explanation: Lịch đầu "scheduled for delivery this Thursday morning". | (A) "Late Saturday morning" — sáng thứ Bảy là giờ đề xuất mới. | (B) "Saturday afternoon" — chiều thứ Bảy không được nhắc tới. | (C) "This Thursday morning" — đúng lịch giao ban đầu. | (D) "After nine o'clock" — sau chín giờ là khung giờ chung của tài xế, không phải lịch cũ.
+Source: original
+[QUESTION]
+What does the speaker ask the listener to do?
+(A) Cancel the order
+(B) Visit the store on Thursday
+(C) Pay the driver in cash
+(D) Call back to confirm a new time
+Answer: D
+Explanation: Greg nhờ "Please call back at 555-0118 once you've checked with your family". | (A) "Cancel the order" — không ai hủy đơn. | (B) "Visit the store on Thursday" — không ai hẹn tới cửa hàng. | (C) "Pay the driver in cash" — không chuyện tiền nong nào được nêu. | (D) "Call back to confirm a new time" — đúng điều Greg nhờ người nghe làm.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Each department must submit ------- own budget proposal by Friday afternoon.
+(A) it
+(B) its
+(C) itself
+(D) them
+Answer: B
+Explanation: Chỗ trống đứng trước danh từ "own budget proposal" nên cần tính từ sở hữu. | (A) "it" — đại từ nhân xưng, không bổ nghĩa cho danh từ. | (B) "its" — tính từ sở hữu của "each department", đúng vị trí. | (C) "itself" — đại từ phản thân, không đứng trước danh từ. | (D) "them" — đại từ tân ngữ số nhiều, sai cả từ loại và số.
+Source: original

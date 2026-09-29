@@ -1,0 +1,43 @@
+[PASSAGE]
+From: Human Resources
+To: All Employees
+Subject: Health Insurance Renewal 2026
+Date: March 1
+
+Dear Staff,
+
+Our group health insurance renews on March 31. This year the plan adds dental coverage at no extra cost, and premiums stay exactly the same as last year. Coverage for the current year ends on March 31, so nobody is insured during April without renewal.
+
+Spouses need separate forms before March 20. New hires get coverage from their first day. The plan covers work accidents abroad as well. To renew, complete the one-page form on the staff portal by March 25. Employees adding family members must attach birth certificates. Late applications cannot join until the July cycle, without exception.
+
+Questions? Visit Ms. Dung in room 204 or call extension 412.
+
+Human Resources
+
+[QUESTION]
+When does the current insurance year end?
+(A) On March 1
+(B) On March 25
+(C) On March 31
+(D) On July 1
+Answer: C
+Explanation: Bảo hiểm năm nay hết hạn "Coverage for the current year ends on March 31". | (A) "On March 1" — mùng một tháng Ba là ngày gửi thư, không phải ngày hết hạn. | (B) "On March 25" — hai mươi lăm là hạn nộp đơn gia hạn, không phải ngày hết bảo hiểm. | (C) "On March 31" — đúng ngày năm bảo hiểm hiện tại kết thúc. | (D) "On July 1" — tháng Bảy là chu kỳ cho đơn muộn, không phải ngày hết hạn.
+Source: original
+[QUESTION]
+Which of the following is NOT stated in the e-mail?
+(A) Dental coverage is newly added
+(B) Premiums remain unchanged
+(C) Family additions need certificates
+(D) Free gym membership is included
+Answer: D
+Explanation: Thư kể: thêm nha khoa, giữ nguyên phí, cần giấy khai sinh cho người thân — không chỗ ở miễn phí. | (A) "Dental coverage is newly added" — thư nói rõ năm nay thêm nha khoa. | (B) "Premiums remain unchanged" — thư nói phí giữ nguyên như năm ngoái. | (C) "Family additions need certificates" — thư đòi giấy khai sinh khi thêm người thân. | (D) "Free gym membership is included" — không phòng gym nào được nhắc tới.
+Source: original
+[QUESTION]
+What can be inferred about employees who miss the renewal deadline?
+(A) They wait until July for coverage
+(B) They pay a higher premium later
+(C) They keep coverage through April
+(D) They lose dental care forever
+Answer: A
+Explanation: Hết hạn 31/3 mà "Late applications cannot join until the July cycle". | (A) "They wait until July for coverage" — đúng: trễ hạn thì chờ tới chu kỳ tháng Bảy. | (B) "They pay a higher premium later" — phí giữ nguyên, không tăng. | (C) "They keep coverage through April" — thư nói rõ tháng Tư không bảo hiểm nếu không gia hạn. | (D) "They lose dental care forever" — chỉ chờ tới tháng Bảy, không mất vĩnh viễn.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, I'd like to book your rooftop restaurant for my father's seventieth birthday dinner next month.
+voice: ca_male_1
+Congratulations to him. How many guests are you expecting?
+voice: uk_female_1
+Twelve people, including two vegetarians. Is the rooftop available on Saturday evenings?
+voice: ca_male_1
+Yes, and we have a set menu for parties over ten. I'll send you the vegetarian options today.
+voice: uk_female_1
+Perfect. Do you need a deposit to hold the date?
+voice: ca_male_1
+Thirty percent by this Friday, plus the final guest list the day before the dinner.
+
+[QUESTION]
+Why is the woman calling?
+(A) To complain about Friday's deposit
+(B) To change Saturday's reservation
+(C) To ask about the set menu
+(D) To book a birthday dinner
+Answer: D
+Explanation: Chị đặt tiệc: "I'd like to book your rooftop restaurant for my father's seventieth birthday dinner". | (A) "To complain about Friday's deposit" — chị hỏi tiền cọc chứ không phàn nàn. | (B) "To change Saturday's reservation" — chưa có đặt chỗ nào để đổi. | (C) "To ask about the set menu" — thực đơn là việc phụ, cô hỏi sau khi đặt. | (D) "To book a birthday dinner" — đúng mục đích cuộc gọi: đặt tiệc sinh nhật.
+Source: original
+[QUESTION]
+What does the woman say about the guests?
+(A) Twelve diners, two vegetarians
+(B) Ten people, all vegetarians
+(C) Twelve guests and two children
+(D) Ten colleagues from the office
+Answer: A
+Explanation: Chị nói "Twelve people, including two vegetarians". | (A) "Twelve diners, two vegetarians" — đúng số khách và số người ăn chay chị nêu. | (B) "Ten people, all vegetarians" — mười người là mức áp thực đơn set, không phải số khách. | (C) "Twelve guests and two children" — không trẻ em nào được nhắc tới. | (D) "Ten colleagues from the office" — không đồng nghiệp nào đi ăn.
+Source: original
+[QUESTION]
+What will the woman do by Friday?
+(A) Visit the rooftop Saturday
+(B) Send the deposit
+(C) Choose the vegetarian options
+(D) Send the guest list today
+Answer: B
+Explanation: Nhà hàng đòi "Thirty percent by this Friday". | (A) "Visit the rooftop Saturday" — tới xem là việc không ai hẹn. | (B) "Send the deposit" — đúng việc chị phải làm trước thứ Sáu. | (C) "Choose the vegetarian options" — món chay nhà hàng gửi cho chị chọn, không phải việc chị gửi. | (D) "Send the guest list today" — danh sách chốt "the day before the dinner", không phải hôm nay.
+Source: original

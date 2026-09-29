@@ -1,0 +1,33 @@
+[PASSAGE]
+From: University Library
+To: Tran Minh Duc
+Subject: Overdue Books — Action Needed
+Date: May 12
+
+Dear Duc,
+
+Our records show three books due on May 10 are still with you: Modern Marketing, Data Basics, and Design Patterns. Overdue books incur a daily fee of five thousand dong per book, starting the day after the due date.
+
+The library opens at eight and closes at ten daily. New novels arrive on the first Monday monthly. Group study rooms can be booked for two hours. Please return them to the front desk this week. You may renew online unless another reader has reserved them. Unpaid fees block borrowing for the next semester.
+
+Thank you,
+Library Office
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To confirm new book arrivals
+(B) To remind of overdue books and fees
+(C) To invite Duc to an event
+(D) To close his library account
+Answer: B
+Explanation: Thư đòi ba cuốn quá hạn ("three books due on May 10 are still with you") kèm phí phạt. | (A) "To confirm new book arrivals" — sách mới chỉ là một câu trong thư, không phải lý do gửi. | (B) "To remind of overdue books and fees" — đúng mục đích thư. | (C) "To invite Duc to an event" — không sự kiện nào được mời. | (D) "To close his library account" — tài khoản chỉ bị chặn mượn nếu chưa trả phí.
+Source: original
+[QUESTION]
+In paragraph 2, the word "incur" is closest in meaning to
+(A) avoid
+(B) prevent
+(C) cause
+(D) share
+Answer: C
+Explanation: Từ "incur" trong câu "Overdue books incur a daily fee". | (A) "avoid" — tránh, ngược nghĩa. | (B) "prevent" — ngăn chặn, sai nghĩa. | (C) "cause" — đúng nghĩa phát sinh phí. | (D) "share" — chia sẻ, sai nghĩa.
+Source: original

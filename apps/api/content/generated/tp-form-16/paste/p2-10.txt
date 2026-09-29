@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Have you sent the quotation to the client yet?
+voice: uk_female_1
+(A) The quotation has twelve pages.
+(B) Yes, I emailed it this morning.
+(C) Their office is downtown.
+Answer: B
+Explanation: Câu hỏi đã gửi báo giá chưa, câu đúng xác nhận "Yes, I emailed it this morning". | (A) "Yes, I emailed it this morning." — xác nhận đã gửi đúng việc được hỏi. | (B) "The quotation has twelve pages." — nói số trang, không cho biết đã gửi chưa. | (C) "Their office is downtown." — nói vị trí khách, không liên quan việc gửi.
+Source: original

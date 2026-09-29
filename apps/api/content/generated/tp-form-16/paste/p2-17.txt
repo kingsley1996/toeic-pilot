@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Did you save the new contract in the shared folder?
+voice: uk_female_1
+(A) I need a new password.
+(B) The folder is almost full.
+(C) Yes, under Contracts 2026.
+Answer: C
+Explanation: Câu hỏi đã lưu hợp đồng mới vào thư mục chung chưa, câu đúng xác nhận chỗ lưu "Yes, under Contracts 2026". | (A) "Yes, under Contracts 2026." — xác nhận đã lưu và nói rõ chỗ lưu. | (B) "The folder is almost full." — nói dung lượng thư mục, không cho biết đã lưu chưa. | (C) "I need a new password." — nói về mật khẩu, không liên quan việc lưu.
+Source: original

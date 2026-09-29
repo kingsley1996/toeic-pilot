@@ -1,0 +1,1 @@
+Building Management Packages. Package: Basic, Monthly Fee: $30. Package: Standard, Monthly Fee: $55. Package: Premium, Monthly Fee: $80. Package: Full Service, Monthly Fee: $110.

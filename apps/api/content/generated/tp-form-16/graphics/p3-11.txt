@@ -1,0 +1,7 @@
+kind: survey
+Workshop Feedback Scores
+Group | Content | Speaker | Venue | Meals
+Engineers | 4.8 | 4.5 | 4.2 | 3.9
+Designers | 4.1 | 4.6 | 4.7 | 4.0
+Managers | 4.4 | 4.3 | 4.5 | 4.6
+Students | 3.8 | 4.0 | 4.1 | 4.4

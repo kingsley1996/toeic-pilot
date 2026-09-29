@@ -1,0 +1,45 @@
+[PASSAGE]
+Book Review: The Quiet Leader, by Daniel Mensah
+
+The business bestseller of the spring offers ------- (1) advice for first-time managers. Mensah argues that listening beats shouting, and readers will find ------- (2) useful in daily meetings. Each chapter ends with a checklist that readers can apply immediately. Mensah draws on twenty years of coaching executives in Asia and Europe.
+
+The author ------- (3) by Forbes last year as one of ten leadership thinkers to watch. His previous book sold over 200,000 copies worldwide. Critics praise the plain language and dislike only the repetitive final chapter. The review copy includes a free online workbook for book clubs. The book has twelve chapters and a short appendix. Doyle gives it four stars out of five. Doyle recommends it for anyone promoted in the last year. ------- (4)
+
+Reviewed by Karen Doyle
+
+[QUESTION]
+Blank (1)
+(A) bitter
+(B) fragile
+(C) practical
+(D) hollow
+Answer: C
+Explanation: Sách cho quản lý mới ("for first-time managers"), lời khuyên phải dùng được. | (A) "bitter" — đắng cay, tả cảm xúc. | (B) "fragile" — dễ vỡ, tả đồ vật. | (C) "practical" — thực tế, đúng lời khuyên cho người mới làm quản lý. | (D) "hollow" — rỗng tuếch, ngược với sách bán chạy.
+Source: original
+[QUESTION]
+Blank (2)
+(A) themselves
+(B) them
+(C) its
+(D) it
+Answer: D
+Explanation: Người đọc thấy sách hữu ích ("readers will find ... useful"), "it" là cuốn sách. | (A) "themselves" — phản thân chỉ độc giả, sai đối tượng thấy hữu ích. | (B) "them" — tân ngữ số nhiều, trong khi vật hữu ích là cuốn sách số ít. | (C) "its" — sở hữu, sau nó thiếu danh từ. | (D) "it" — đúng tân ngữ chỉ cuốn sách.
+Source: original
+[QUESTION]
+Blank (3)
+(A) was interviewed
+(B) interviewed
+(C) has interviewed
+(D) interviewing
+Answer: A
+Explanation: Tác giả được Forbes bình chọn ("by Forbes last year"), thể bị động. | (A) "was interviewed" — bị động quá khứ, đúng với "by Forbes". | (B) "interviewed" — chủ động, nghĩa thành tác giả đi phỏng vấn. | (C) "has interviewed" — chủ động hoàn thành, sai thể. | (D) "interviewing" — tiếp diễn, không hợp mốc "last year".
+Source: original
+[QUESTION]
+Blank (4)
+(A) The film version opens in cinemas soon.
+(B) The 280-page book is available in all major bookstores.
+(C) This recipe needs fresh basil and garlic.
+(D) Tomorrow's weather will be sunny and warm.
+Answer: B
+Explanation: Cuối bài điểm sách cần câu về nơi mua ("Reviewed by Karen Doyle"). | (A) "The film version opens in cinemas soon." — không phim nào được nhắc tới. | (B) "The 280-page book is available in all major bookstores." — đúng câu kết nối tiếp mạch điểm sách. | (C) "This recipe needs fresh basil and garlic." — công thức nấu ăn không liên quan. | (D) "Tomorrow's weather will be sunny and warm." — thời tiết không dính dáng.
+Source: original

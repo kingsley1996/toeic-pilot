@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) Two workers are washing the car together.
+(B) The worker is drying the car with a towel.
+(C) The worker is spraying water onto the windshield.
+(D) The price board is hanging above the entrance.
+Answer: C
+Explanation: Trong ảnh một nhân viên rửa xe đang xịt nước lên kính chắn gió của xe sedan bạc, bọt trắng phủ kín nắp capo, phía sau có hàng xe chờ và bảng giá treo trên cột sắt. | (A) "Two workers are washing" — trong ảnh chỉ có một người: số nhiều nói thành số ít. | (B) "drying the car with a towel" — trong ảnh không có khăn hay xô nào: vật không hề có trong ảnh. | (C) "spraying water onto the windshield" — đúng việc người này đang làm. | (D) "hanging above the entrance" — bảng giá treo đúng trên cột sắt chứ không phải phía trên lối vào: đúng vật, sai vị trí.
+Source: original

@@ -1,0 +1,4 @@
+kind: map
+Fair Food Court Layout
+Juice Stand: Zone A, by the north gate | Crepe Corner: Zone B, across from Zone A
+Grill House: Zone C, east side | Dessert Tent: Zone D, south side

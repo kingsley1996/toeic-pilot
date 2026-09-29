@@ -19,6 +19,7 @@ và tự nạp khi đọc tệp khớp `paths:`:
 | `visual-scenes.md` | `content/scenes/**`, `scene-*.tsx`, `planning/scenes/**` — tạo/sửa cảnh 3D: đọc `SPEC-VISUAL-VOCAB-3D` §7–§9 trước |
 | `learning-domain.md` | services + route học — bất biến từ vựng và dictation |
 | `content-pipeline.md` | `apps/api/app/content/**` — audio, ảnh, nhãn, sinh đề, và lệnh của chúng |
+| `exam-model.md` | `apps/api/app/content/exam*/**`, `apps/api/content/generated/**` — đóng vai model viết đề mới qua graph, không gọi LLM ngoài |
 | `testing.md` | `apps/api/tests/**`, `apps/web/e2e/**` |
 | `docker.md` | `docker/**`, `Dockerfile*`, `.dockerignore` |
 

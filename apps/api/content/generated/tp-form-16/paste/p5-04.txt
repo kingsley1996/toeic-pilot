@@ -1,0 +1,9 @@
+[QUESTION]
+All defective products ------- back to the factory before the refund is issued.
+(A) must send
+(B) must be sent
+(C) must have sent
+(D) must be sending
+Answer: B
+Explanation: Chủ ngữ "products" chịu tác động của "send" nên cần bị động với "must". | (A) "must send" — chủ động, nghĩa thành sản phẩm tự gửi, sai thể. | (B) "must be sent" — bị động với động từ khuyết thiếu, đúng cấu trúc. | (C) "must have sent" — chủ động hoàn thành, sai thể và sai nghĩa. | (D) "must be sending" — bị động tiếp diễn, không hợp với quy trình trả hàng.
+Source: original

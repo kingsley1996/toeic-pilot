@@ -1,0 +1,64 @@
+[PASSAGE]
+Green Skills Workshop — Timetable (Saturday)
+
+8:00–9:00 Keynote: The Future of Green Jobs
+9:00–9:30 Coffee break in the lobby
+9:30–12:00 Immersive labs: solar wiring, composting, rain barrels
+12:00–1:00 Lunch with the trainers
+
+Doors open at half past seven. All sessions run on the second floor. Lab groups are small so everyone practices. The afternoon repeats the morning labs for latecomers. Certificates go to participants attending all sessions. Water bottles are provided at every table. Name tags wait at the entrance desk. The keynote allows photos but no recordings. Early birds get a free notebook on arrival.
+
+[PASSAGE]
+From: Green Skills Team
+To: Registered Participants
+Subject: Payment and Seats
+
+Thank you for registering! The fee of fifty dollars covers materials and lunch. Please pay by Friday at the front desk.
+
+The morning labs have only twenty seats, allocated first-come first-served, so arrive before eight to choose your group. Groups are capped at ten people for safety. Vegetarian lunch boxes need a request by Thursday. Bring a printed ticket or show the code on your phone. The lobby café opens at seven for breakfast. Shared taxis leave the station every hour. Printed handouts replace phone screens in labs. The team answers emails within one working day. Wi-Fi codes are printed behind badges. Refunds are possible until Wednesday with a receipt. Latecomers join the afternoon repeat.
+
+[QUESTION]
+Why should participants arrive before eight?
+(A) The keynote ends at eight
+(B) Lab seats are limited and first-come
+(C) Breakfast is served until eight
+(D) The fee doubles after eight
+Answer: B
+Explanation: Email ghi "The morning labs have only twenty seats, allocated first-come first-served" còn thời khóa biểu ghi "9:30–12:00 Immersive labs" với nhóm nhỏ. | (A) "The keynote ends at eight" — keynote từ tám đến chín, không kết thúc lúc tám. | (B) "Lab seats are limited and first-come" — đúng giới hạn hai mươi chỗ trong email. | (C) "Breakfast is served until eight" — chỉ có giải lao cà phê lúc chín, không có bữa sáng. | (D) "The fee doubles after eight" — phí năm mươi đô cố định, không tăng theo giờ.
+Source: original
+[QUESTION]
+When is the keynote speech?
+(A) 9:30–12:00
+(B) 9:00–9:30
+(C) 8:00–9:00
+(D) 12:00–1:00
+Answer: C
+Explanation: Thời khóa biểu ghi "8:00–9:00 Keynote: The Future of Green Jobs". | (A) "9:30–12:00" — khung đó là lab thực hành. | (B) "9:00–9:30" — khung đó nghỉ cà phê ở sảnh. | (C) "8:00–9:00" — đúng giờ diễn thuyết chính. | (D) "12:00–1:00" — khung đó ăn trưa với giảng viên.
+Source: original
+[QUESTION]
+According to the survey, which aspect did Minh rate lowest?
+(A) Content
+(B) Trainer
+(C) Schedule
+(D) Materials
+Answer: D
+Explanation: Bảng cho hàng Minh: Materials 4.0 là thấp nhất (Content 4.5, Trainer 4.2, Schedule 4.7). | (A) "Content" — nội dung được 4.5, không phải thấp nhất. | (B) "Trainer" — giảng viên được 4.2. | (C) "Schedule" — lịch trình được 4.7, cao nhất hàng. | (D) "Materials" — đúng khía cạnh Minh chấm thấp nhất.
+Source: original
+[QUESTION]
+Which of the following is NOT stated?
+(A) Certificates are issued the same day
+(B) Labs repeat in the afternoon
+(C) Sessions run on the second floor
+(D) Lunch is included in the fee
+Answer: A
+Explanation: Email và thời khóa biểu nêu phí, lab, bữa trưa — chứng chỉ chỉ nói cấp cho người đủ buổi, không nói ngày. | (A) "Certificates are issued the same day" — không ngày cấp nào được nêu. | (B) "Labs repeat in the afternoon" — thời khóa biểu ghi buổi chiều lặp lại cho người muộn. | (C) "Sessions run on the second floor" — thời khóa biểu ghi các buổi ở tầng hai. | (D) "Lunch is included in the fee" — email nói phí gồm tài liệu và bữa trưa.
+Source: original
+[QUESTION]
+In the timetable, the word "immersive" is closest in meaning to
+(A) expensive
+(B) engaging
+(C) short
+(D) free
+Answer: B
+Explanation: Từ "immersive" trong cụm "9:30–12:00 Immersive labs: solar wiring, composting, rain barrels". | (A) "expensive" — đắt đỏ, sai nghĩa. | (B) "engaging" — đúng nghĩa đắm chìm, cuốn hút. | (C) "short" — ngắn, sai nghĩa. | (D) "free" — miễn phí, sai nghĩa.
+Source: original

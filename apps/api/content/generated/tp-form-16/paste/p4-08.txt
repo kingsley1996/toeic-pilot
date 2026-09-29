@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Attention, tenants of Green Tower. Both passenger elevators will stop from Friday evening to Sunday night for cable replacement. Floors ten to eighteen are affected, so expect some waiting. The freight elevator runs Saturday morning only, and every trip must be booked at the lobby desk. Restaurants on the ground floor stay open as usual. Thank you for your patience while we make the building safer.
+
+[QUESTION]
+Where is the announcement made?
+(A) In an office tower
+(B) At the Green Tower lobby
+(C) In the freight elevator
+(D) At a Sunday market
+Answer: A
+Explanation: Mở đầu "Attention, tenants of Green Tower" về bảo trì thang máy. | (A) "In an office tower" — đúng nơi phát thông báo. | (B) "At the Green Tower lobby" — sảnh chỉ là nơi đặt bàn đăng ký thang hàng. | (C) "In the freight elevator" — thang hàng chỉ chạy sáng thứ Bảy, thông báo phát cả tòa nhà. | (D) "At a Sunday market" — không chợ nào xuất hiện.
+Source: original
+[QUESTION]
+Which floors are affected by the works?
+(A) Floors one to nine
+(B) Floors ten to eighteen
+(C) The ground floor only
+(D) Every floor above ten
+Answer: B
+Explanation: Phạm vi "Floors ten to eighteen are affected". | (A) "Floors one to nine" — các tầng dưới không bị ảnh hưởng. | (B) "Floors ten to eighteen" — đúng các tầng bị ảnh hưởng. | (C) "The ground floor only" — tầng trệt vẫn mở bình thường. | (D) "Every floor above ten" — trên tầng mười tám không được nhắc tới.
+Source: original
+[QUESTION]
+What can be inferred about the freight elevator?
+(A) Tenants must book the Saturday elevator
+(B) It runs every evening
+(C) Its cables need replacement too
+(D) The lobby desk books trips
+Answer: A
+Explanation: Thang hàng "runs Saturday morning only, and every trip must be booked at the lobby desk". | (A) "Tenants must book the Saturday elevator" — đúng điều suy ra: muốn chuyển đồ cuối tuần phải đặt trước. | (B) "It runs every evening" — thang chỉ chạy sáng thứ Bảy. | (C) "Its cables need replacement too" — cáp thay là của thang khách. | (D) "The lobby desk books trips" — bàn sảnh chỉ nhận đặt chỗ, không đi thang thay ai.
+Source: original

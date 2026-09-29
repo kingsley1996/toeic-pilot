@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Team, a change to the opening ceremony plan. The stage is booked all Friday, so we must rehearse Thursday afternoon instead of Friday morning.
+voice: ca_male_1
+Thursday at two, then. I'll move the sound check and tell the dancers to arrive by one.
+voice: au_male_1
+What about the guest welcome? The mayor's office confirmed Friday at ten.
+voice: uk_female_1
+The welcome stays Friday morning. Only the rehearsal moves, and I'll update the printed schedule tonight.
+voice: ca_male_1
+After Thursday's rehearsal, let's have dinner together and review the final cues.
+voice: uk_female_1
+Good idea. Book a table near the centre for six people.
+
+[QUESTION]
+What will probably happen on Thursday afternoon?
+(A) The guests will arrive early
+(B) The team will rehearse on stage
+(C) Rehearse Friday morning
+(D) The ceremony will open
+Answer: B
+Explanation: Lịch diễn tập đổi: "we must rehearse Thursday afternoon instead of Friday morning". | (A) "The guests will arrive early" — khách vẫn tới thứ Sáu như cũ. | (B) "The team will rehearse on stage" — đúng việc dời sang chiều thứ Năm. | (C) "Rehearse Friday morning" — đó là lịch cũ đã bị thay. | (D) "The ceremony will open" — lễ vẫn khai mạc đúng hẹn, không mở sớm.
+Source: original
+[QUESTION]
+When will the dancers arrive on Thursday?
+(A) At ten o'clock
+(B) Friday morning
+(C) By one o'clock
+(D) After dinner
+Answer: C
+Explanation: Marco nói "tell the dancers to arrive by one". | (A) "At ten o'clock" — mười giờ là giờ đón khách thứ Sáu, không phải giờ vũ công tới. | (B) "Friday morning" — sáng thứ Sáu là lễ chào khách, không phải diễn tập. | (C) "By one o'clock" — đúng giờ Marco dặn vũ công tới. | (D) "After dinner" — bữa tối diễn ra sau diễn tập, không phải giờ tới.
+Source: original
+[QUESTION]
+What will the speakers do after the rehearsal?
+(A) Print new invitations
+(B) Visit the mayor's office
+(C) Cancel the ceremony
+(D) Review cues over dinner
+Answer: D
+Explanation: Marco rủ "let's have dinner together and review the final cues". | (A) "Print new invitations" — không thiệp mời nào được nhắc tới. | (B) "Visit the mayor's office" — văn phòng thị trưởng chỉ xác nhận giờ, không ai tới. | (C) "Cancel the ceremony" — mọi thứ vẫn diễn ra, không hủy gì. | (D) "Review cues over dinner" — đúng việc cả nhóm làm sau diễn tập.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Where is the visitors' parking area?
+voice: au_male_1
+(A) I just got here myself, so I couldn't say.
+(B) It opens at eight o'clock.
+(C) Park the car over there.
+Answer: A
+Explanation: Câu hỏi tìm chỗ đỗ xe cho khách, người đáp mới tới nên không biết: "I just got here myself, so I couldn't say". | (A) "I just got here myself, so I couldn't say." — nói rõ mình không biết, đúng kiểu đáp gián tiếp. | (B) "It opens at eight o'clock." — trả lời giờ giấc cho câu hỏi nơi chốn. | (C) "Park the car over there." — ra lệnh, không cho biết chỗ đỗ xe ở đâu.
+Source: original

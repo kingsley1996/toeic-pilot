@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Morning, everyone. We have three days left before we hand the system over to the client, so let's go through the open bugs.
+voice: ca_male_1
+The payment screen still crashes when the discount code has more than ten characters. I can reproduce it every time.
+voice: au_male_1
+How bad is the list overall? The client expects zero critical issues on Friday.
+voice: us_female_1
+Just two critical ones, including the payment crash. The rest are minor display glitches we can fix after the handover.
+voice: ca_male_1
+I'll take the payment bug. Give me tonight and I'll push a new build before midnight.
+voice: au_male_1
+Good. I'll tell the client the handover stays on Friday, and I'll note the minor fixes for next week.
+
+[QUESTION]
+Why are the speakers meeting?
+(A) To train new testers
+(B) To design a payment screen
+(C) To review bugs before a handover
+(D) To cancel a client contract
+Answer: C
+Explanation: Cuộc họp rà soát lỗi trước ngày bàn giao: "let's go through the open bugs" và "zero critical issues on Friday". | (A) "To train new testers" — không buổi đào tạo nào được nhắc tới. | (B) "To design a payment screen" — màn hình thanh toán chỉ là con lỗi đang bàn, không phải việc thiết kế. | (C) "To review bugs before a handover" — đúng việc cả nhóm đang làm trước thứ Sáu bàn giao. | (D) "To cancel a client contract" — lịch bàn giao vẫn giữ thứ Sáu, không hủy gì.
+Source: original
+[QUESTION]
+Who most likely is Alex?
+(A) A client representative
+(B) A bug test engineer
+(C) A build release writer
+(D) A project manager
+Answer: D
+Explanation: Alex giao việc, chốt lịch với khách: "I'll tell the client the handover stays on Friday". | (A) "A client representative" — phía khách chỉ được nhắc tới, không ai trong thoại là khách. | (B) "A bug test engineer" — người báo lỗi là Tom, Alex không đụng vào lỗi. | (C) "A build release writer" — không ai viết tài liệu trong thoại. | (D) "A project manager" — đúng người phân việc và giữ lịch bàn giao.
+Source: original
+[QUESTION]
+What will Tom do?
+(A) Fix a bug overnight
+(B) Write a user manual
+(C) Cancel the handover
+(D) Test the display screens
+Answer: A
+Explanation: Tom nhận lỗi thanh toán: "I'll take the payment bug" và "push a new build before midnight". | (A) "Fix a bug overnight" — đúng việc Tom nhận làm trong đêm. | (B) "Write a user manual" — không tài liệu nào được nhắc tới. | (C) "Cancel the handover" — lịch bàn giao giữ nguyên thứ Sáu. | (D) "Test the display screens" — màn hình chỉ là lỗi nhỏ để tuần sau, Tom không nhận.
+Source: original

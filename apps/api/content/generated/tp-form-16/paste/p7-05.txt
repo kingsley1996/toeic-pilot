@@ -1,0 +1,72 @@
+[PASSAGE]
+Weekend Picnic Crew [group chat]
+
+Khanh [9:05 A.M.]
+Sunday picnic is ON! Meet at the park's east gate at nine. Reply with what food you bring so we don't double up.
+
+Hoa [9:12 A.M.]
+I'll bring the grill and a bag of charcoal. Someone please bring matches and paper plates.
+
+Mai [9:20 A.M.]
+I'll bring spring rolls and fruit. Note the park bans open fires after 6 P.M., so grill early!
+
+Nam [4:02 P.M.]
+Count me out if it rains. I'll check the forecast tonight and confirm by eight.
+
+Khanh [9:30 A.M.]
+Don't forget sunscreen and trash bags. Leave no trace!
+
+Hoa [9:40 A.M.]
+I have an extra cooler if anyone needs space for drinks.
+
+Mai [10:05 A.M.]
+The lake shelter fits thirty people and has power outlets.
+
+Mai [10:20 A.M.]
+I also pack paper cups and rubbish bins.
+
+Khanh [8:30 P.M.]
+Gate parking fills fast, come by bus if you can.
+
+Khanh [4:10 P.M.]
+Backup plan: if the grass is wet, we move to the covered shelter near the lake. Same time!
+
+Nam [8:00 P.M.]
+Forecast is clear! See you at nine.
+
+[QUESTION]
+What is the purpose of the chat?
+(A) To cancel a football match
+(B) To organise a Sunday picnic
+(C) To plan a work meeting
+(D) To sell used grills
+Answer: B
+Explanation: Nhóm bàn "Sunday picnic is ON" với giờ giấc, đồ ăn, phương án dự phòng. | (A) "To cancel a football match" — không trận bóng nào bị hủy. | (B) "To organise a Sunday picnic" — đúng mục đích cả nhóm chat. | (C) "To plan a work meeting" — không công việc nào được bàn. | (D) "To sell used grills" — bếp nướng là đồ Hoa mang theo, không phải rao bán.
+Source: original
+[QUESTION]
+What will Hoa bring?
+(A) Matches and plates
+(B) Spring rolls and fruit
+(C) A grill and charcoal
+(D) Drinks and ice
+Answer: C
+Explanation: Hoa nhận "I'll bring the grill and a bag of charcoal". | (A) "Matches and plates" — diêm và đĩa là thứ Hoa nhờ người khác mang. | (B) "Spring rolls and fruit" — đó là phần của Mai. | (C) "A grill and charcoal" — đúng đồ Hoa mang. | (D) "Drinks and ice" — không ai nhận mang đồ uống.
+Source: original
+[QUESTION]
+At 4:02 P.M., what does Nam mean when he writes, "Count me out if it rains"?
+(A) He is leaving the group
+(B) He cannot count the guests
+(C) He dislikes outdoor food
+(D) He will skip the picnic in bad weather
+Answer: D
+Explanation: Nam viết "Count me out if it rains" kèm xem dự báo tối nay. | (A) "He is leaving the group" — anh vẫn ở lại nhóm và chốt đi khi trời quang. | (B) "He cannot count the guests" — đếm khách không liên quan. | (C) "He dislikes outdoor food" — không chê đồ ăn nào. | (D) "He will skip the picnic in bad weather" — đúng nghĩa hàm của câu nói.
+Source: original
+[QUESTION]
+What can be inferred about the grilling plan?
+(A) It must finish before the evening ban
+(B) It starts after six o'clock
+(C) Charcoal is banned all day
+(D) The shelter has no grill space
+Answer: A
+Explanation: Công viên "bans open fires after 6 P.M." nên Mai dặn "grill early". | (A) "It must finish before the evening ban" — đúng điều suy ra: nướng xong trước giờ cấm. | (B) "It starts after six o'clock" — sau sáu giờ là lúc bị cấm, ngược hẳn. | (C) "Charcoal is banned all day" — chỉ cấm lửa sau sáu giờ, than không bị cấm. | (D) "The shelter has no grill space" — lán trú mưa đủ chỗ cho ba mươi người.
+Source: original

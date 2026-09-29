@@ -1,0 +1,64 @@
+[PASSAGE]
+Head Office Notice: Tet Holiday Schedule
+
+Dear Staff,
+
+The office closes from January 28 to January 31 for the Tet holiday. No regular services run during these four days. An emergency duty team stays each day to receive urgent deliveries and handle incidents. For urgent issues, call Mr. Long at 090-444-1188 at any hour.
+
+January payslips are available online from the twenty-fifth. The parking garage closes at ten each night of the holiday. Party decorations must come down by February 2. Security patrols double around the warehouse during Tet. The canteen serves free sticky rice on January 27. Gifts for staff arrive on January 26. The elevator maintenance finishes before Tet. Firecrackers are banned inside the building. Banks close from January 29 to February 1. Translators are available for foreign staff on January 28. The New Year party starts at four on January 27. First-aid boxes are checked on January 26. Normal work resumes on February 1. Happy New Year!
+
+[PASSAGE]
+Tet Duty Roster — January
+
+Jan 28: An, Binh
+Jan 29: Chi
+Jan 30: Duc, Em
+Jan 31: An
+
+Note: duty members keep phones on and stay within the city. Swap requests need Mr. Long's approval by January 25. Chi swaps with Binh if it rains. Em brings the first-aid kit on January 30. Duc drives the company van that week. Binh drives Chi home after night duty.
+
+[QUESTION]
+What is the purpose of the notice?
+(A) To announce the Tet holiday schedule
+(B) To hire holiday staff
+(C) To close the company forever
+(D) To change phone numbers
+Answer: A
+Explanation: Thông báo lịch nghỉ Tết "The office closes from January 28 to January 31". | (A) "To announce the Tet holiday schedule" — đúng mục đích thông báo. | (B) "To hire holiday staff" — đội trực đã xếp sẵn, không tuyển. | (C) "To close the company forever" — đóng bốn ngày lễ, không phải đóng cửa công ty. | (D) "To change phone numbers" — số ông Long cho việc khẩn cấp, không đổi số.
+Source: original
+[QUESTION]
+Who is on duty on January 29?
+(A) An
+(B) Chi
+(C) Duc
+(D) Binh
+Answer: B
+Explanation: Bảng phân công ghi "Jan 29: Chi". | (A) "An" — An trực ngày 28 và 31. | (B) "Chi" — đúng người trực ngày 29. | (C) "Duc" — Đức trực ngày 30. | (D) "Binh" — Bình trực ngày 28.
+Source: original
+[QUESTION]
+On January 28, who receives an urgent delivery?
+(A) Mr. Long personally
+(B) Chi alone
+(C) An and Binh
+(D) The full staff
+Answer: C
+Explanation: Thông báo ghi "An emergency duty team stays each day to receive urgent deliveries" còn bảng phân công ghi "Jan 28: An, Binh". | (A) "Mr. Long personally" — ông Long chỉ nhận cuộc gọi khẩn, không trực nhận hàng. | (B) "Chi alone" — Chi trực ngày 29 chứ không phải 28. | (C) "An and Binh" — đúng hai người trực ngày 28 theo bảng. | (D) "The full staff" — văn phòng đóng cửa, chỉ đội trực ở lại.
+Source: original
+[QUESTION]
+Which of the following is NOT stated?
+(A) The office closes for four days
+(B) Mr. Long takes urgent calls
+(C) Work resumes February 1
+(D) Bonuses are paid before Tet
+Answer: D
+Explanation: Thông báo nêu đóng cửa bốn ngày, gọi ông Long khi khẩn, làm lại mùng một tháng Hai — không tiền thưởng. | (A) "The office closes for four days" — thông báo ghi rõ nghỉ 28–31. | (B) "Mr. Long takes urgent calls" — thông báo cho số ông Long nhận việc khẩn. | (C) "Work resumes February 1" — thông báo hẹn mùng một tháng Hai làm lại. | (D) "Bonuses are paid before Tet" — không tiền thưởng nào được nhắc tới.
+Source: original
+[QUESTION]
+What can be inferred about An?
+(A) An is on duty twice
+(B) An leads the duty team
+(C) An works on February 1
+(D) An takes urgent calls
+Answer: A
+Explanation: Bảng ghi An trực "Jan 28" và "Jan 31", hai ngày khác nhau. | (A) "An is on duty twice" — đúng: An có tên hai ngày trong bảng. | (B) "An leads the duty team" — không ai nói An làm đội trưởng. | (C) "An works on February 1" — mùng một tháng Hai là ngày làm lại của cả văn phòng. | (D) "An takes urgent calls" — cuộc gọi khẩn là việc của ông Long.
+Source: original

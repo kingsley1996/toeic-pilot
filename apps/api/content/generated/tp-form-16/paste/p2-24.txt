@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+What time does the shuttle pick us up?
+voice: us_female_1
+(A) At seven forty-five sharp.
+(B) The shuttle is blue.
+(C) We booked twelve seats.
+Answer: A
+Explanation: Câu hỏi mấy giờ xe đưa đón tới, câu đúng cho giờ chính xác "At seven forty-five sharp". | (A) "At seven forty-five sharp." — trả lời thẳng giờ xe tới. | (B) "The shuttle is blue." — nói màu xe, không cho giờ. | (C) "We booked twelve seats." — nói số chỗ, không cho giờ.
+Source: original

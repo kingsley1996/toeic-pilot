@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, this is Helen from Bright Accounting. I'm calling about your application for the payroll specialist role.
+voice: au_male_1
+Thanks for calling. I sent my resume last week. Is the position still open?
+voice: uk_female_1
+Yes. I'd like to invite you to a video interview on Thursday at two o'clock. It lasts about forty minutes.
+voice: au_male_1
+Thursday works for me. I've handled payroll and tax filing for five years at my current firm.
+voice: uk_female_1
+That's good to hear. Please email a copy of your degree and two reference letters before the interview.
+voice: au_male_1
+I will send them tonight. Should I prepare anything else?
+voice: uk_female_1
+Just bring questions about the team. We look forward to meeting you.
+
+[QUESTION]
+Why is the woman calling?
+(A) To offer him the payroll position now
+(B) To invite him to an interview
+(C) To ask about his tax filing work
+(D) To cancel Thursday's interview plan
+Answer: B
+Explanation: Helen gọi về đơn ứng tuyển: "I'm calling about your application for the payroll specialist role" rồi hẹn phỏng vấn video. | (A) "To offer him the payroll position now" — cô chỉ mời phỏng vấn, chưa mời nhận việc. | (B) "To invite him to an interview" — đúng lý do cuộc gọi: hẹn phỏng vấn thứ Năm. | (C) "To ask about his tax filing work" — kinh nghiệm thuế do anh tự kể, không phải điều cô hỏi. | (D) "To cancel Thursday's interview plan" — lịch hẹn vẫn giữ, không hủy.
+Source: original
+[QUESTION]
+What does the man say about his experience?
+(A) He has managed an accounting team
+(B) He has taught payroll classes
+(C) He has a five-year payroll background
+(D) He has audited large tax firms
+Answer: C
+Explanation: Anh kể "I've handled payroll and tax filing for five years at my current firm". | (A) "He has managed an accounting team" — anh không nói đã quản lý ai. | (B) "He has taught payroll classes" — anh làm lương, không dạy học. | (C) "He has a five-year payroll background" — đúng kinh nghiệm năm năm anh tự kể. | (D) "He has audited large tax firms" — anh làm khai thuế, không kiểm toán.
+Source: original
+[QUESTION]
+What will the man send before the interview?
+(A) The team's reference list
+(B) His firm salary slip
+(C) Photos of the accounting team
+(D) His degree and reference letters
+Answer: D
+Explanation: Cô dặn "email a copy of your degree and two reference letters before the interview". | (A) "The team's reference list" — không danh sách nào được nhắc tới. | (B) "His firm salary slip" — không ai hỏi phiếu lương. | (C) "Photos of the accounting team" — không ai hỏi ảnh. | (D) "His degree and reference letters" — đúng hai thứ cô dặn gửi trước phỏng vấn.
+Source: original

@@ -76,6 +76,26 @@ NodeUpdate = dict[str, Any]
 Node = Callable[[SlotState], NodeUpdate]
 
 
+def _merge_reports(mine: list[Any]) -> Any | None:
+    """Gộp các báo cáo từng câu của MỘT ô thành một verdict cho cả ô.
+
+    Một ô Part 3/4 có BA báo cáo (mỗi câu một cái): lấy báo cáo ĐẦU thì lỗi
+    riêng của câu 2/3 (nhiễu lạc đề, hàm ý thiếu span) lọt qua và ô được nhận
+    dù chưa sạch — đo thật trên tp-form-16 (p3-01 nhận với câu 33 đỏ). Ô sạch
+    khi mọi câu sạch: blocked lan ra cả ô, problems/flags hợp lại khử trùng.
+    """
+    if not mine:
+        return None
+    from app.content.exam.check import SlotReport
+
+    return SlotReport(
+        slot_id=mine[0].slot_id,
+        number=mine[0].number,
+        problems=list(dict.fromkeys(p for r in mine for p in r.problems)),
+        flags=list(dict.fromkeys(f for r in mine for f in r.flags)),
+    )
+
+
 class _Parts:
     """Tra slot + part theo id, một lần cho cả lượt chạy."""
 
@@ -209,7 +229,7 @@ def _check_node(
 
         part = parts.part(state["slot_id"])
         reports = check_blueprint(blueprint, workdir, gateway=None, only=part, quiet=True)
-        report = next((r for r in reports if r.slot_id == state["slot_id"]), None)
+        report = _merge_reports([r for r in reports if r.slot_id == state["slot_id"]])
         # Tầng trả tiền chỉ ĐỔI được kết cục ở ô có hình: phán quyết luật hình
         # là findings duy nhất thành `problem`, còn `verify_answer` và
         # `count_workable_options` chỉ sinh cờ. Chạy nó ở ô khác là trả tiền cho
@@ -230,7 +250,9 @@ def _check_node(
                 quiet=True,
                 slot_id=state["slot_id"],
             )
-            report = next((r for r in paid if r.slot_id == state["slot_id"]), report)
+            pmine = [r for r in paid if r.slot_id == state["slot_id"]]
+            if pmine:
+                report = _merge_reports(pmine)
         if report is None:
             return {
                 "blocked": True,

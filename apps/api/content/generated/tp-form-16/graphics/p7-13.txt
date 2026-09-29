@@ -1,0 +1,6 @@
+kind: survey
+Lab Satisfaction Scores
+Trainee | Content | Trainer | Materials | Schedule
+Minh | 4.5 | 4.2 | 4.0 | 4.7
+An | 4.8 | 4.6 | 4.5 | 4.4
+Thu | 4.3 | 4.7 | 4.6 | 4.5

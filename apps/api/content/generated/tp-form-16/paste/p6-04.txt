@@ -1,0 +1,45 @@
+[PASSAGE]
+Memo: Front Desk Duty Roster for the Holidays
+
+All visitors ------- (1) at the front desk by security staff upon arrival, without exception. Wear your company badge ------- (2) at all times so the guards can recognise staff quickly. Delivery drivers should wait at the side entrance, not the lobby. Meeting rooms on level two need no badge after nine in the morning. Lost badges cost ten dollars to replace at the security office. The roster is pinned beside the elevators on every floor. Guards check badges again after lunch.
+
+Weekend shifts are split between two teams. ------- (3) Please swap only with your team partner and inform security one day ahead.
+
+The night guard patrols all floors twice after midnight. Smoking is allowed only in the back garden shelter. The new roster ------- (4) effect next Monday and runs through January.
+
+[QUESTION]
+Blank (1)
+(A) must register
+(B) must have registered
+(C) must be registered
+(D) must be registering
+Answer: C
+Explanation: Khách được nhân viên an ninh đăng ký ("by security staff"), thể bị động. | (A) "must register" — chủ động thì "by security staff" thừa và sai. | (B) "must have registered" — hoàn thành chủ động, sai thể. | (C) "must be registered" — bị động với khuyết thiếu, đúng với "by security staff". | (D) "must be registering" — bị động tiếp diễn, không hợp quy định chung.
+Source: original
+[QUESTION]
+Blank (2)
+(A) scarcely
+(B) audibly
+(C) allegedly
+(D) visibly
+Answer: D
+Explanation: Đeo thẻ để bảo vệ nhận ra nhanh ("recognise staff quickly"). | (A) "scarcely" — hiếm khi, ngược yêu cầu luôn đeo. | (B) "audibly" — nghe thấy, không liên quan thẻ. | (C) "allegedly" — nghe nói, không nói cách đeo. | (D) "visibly" — đúng cách đeo thẻ để dễ nhận ra.
+Source: original
+[QUESTION]
+Blank (3)
+(A) Temporary passes are available from the security office.
+(B) The pool is closed for cleaning on Mondays.
+(C) Lunch break is extended during summer.
+(D) The director's car uses the back gate.
+Answer: A
+Explanation: Đoạn ca trực cuối tuần, câu đúng về thẻ tạm của bộ phận an ninh. | (A) "Temporary passes are available from the security office." — đúng câu nối tiếp mạch trực lễ tân. | (B) "The pool is closed for cleaning on Mondays." — hồ bơi không xuất hiện trong memo. | (C) "Lunch break is extended during summer." — giờ nghỉ trưa không liên quan trực. | (D) "The director's car uses the back gate." — xe giám đốc không được nhắc tới.
+Source: original
+[QUESTION]
+Blank (4)
+(A) took
+(B) takes
+(C) has taken
+(D) taking
+Answer: B
+Explanation: Lịch mới có hiệu lực ("effect next Monday"), cụm "take effect". | (A) "took" — quá khứ, trong khi lịch áp từ thứ Hai tới. | (B) "takes" — đúng cụm "take effect" ở hiện tại. | (C) "has taken" — hoàn thành, sai cụm cố định. | (D) "taking" — V-ing không làm vị ngữ chính.
+Source: original

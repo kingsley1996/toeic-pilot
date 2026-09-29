@@ -1,0 +1,59 @@
+[PASSAGE]
+From: Riverside Fair Committee
+To: All Stall Owners
+Subject: Saturday Food Fair — Final Details
+Date: October 2
+
+Dear Owners,
+
+The autumn food fair opens this Saturday at nine in the morning, rain or shine. The cooking contest starts at noon on the central stage, and judges will visit every stall before eleven. Expect bustling crowds from nearby schools, so keep your counters stocked all day.
+
+Our crepe stall is right across from the juice stand, so follow the smell of fresh juice to find us. Enter through the north gate where volunteers hand out maps. Parking is behind the main hall. The contest winner receives five hundred dollars and a trophy. Stall owners must clean their zone before eight in the evening. Free drinking water stations stand beside every toilet block. Last year over three thousand visitors came through the gates. Dogs are welcome but must stay on a leash. Winners are announced at five on the central stage. Stall fees include power and two chairs. Lost children are brought to the information tent. The fair ends at nine with fireworks. Bus shuttles run every twenty minutes from the station. Food safety inspectors visit every stall at ten. The committee provides free ice to all stalls. Noise must stop by eight in the evening.
+
+See you Saturday!
+
+[QUESTION]
+What is the purpose of the e-mail?
+(A) To hire more volunteers
+(B) To cancel the cooking contest
+(C) To sell parking tickets
+(D) To announce fair details for stall owners
+Answer: D
+Explanation: Thư gửi chủ gian hàng "Final Details" với giờ mở, thi nấu ăn, giữ quầy đầy hàng. | (A) "To hire more volunteers" — tình nguyện viên phát bản đồ đã có sẵn. | (B) "To cancel the cooking contest" — thi nấu ăn vẫn diễn ra lúc noon. | (C) "To sell parking tickets" — bãi đậu xe miễn phí phía sau hội trường. | (D) "To announce fair details for stall owners" — đúng mục đích thư gửi các chủ gian hàng.
+Source: original
+[QUESTION]
+When does the fair open?
+(A) At nine in the morning
+(B) At eight in the morning
+(C) At noon
+(D) In the evening
+Answer: A
+Explanation: Hội chợ mở "this Saturday at nine in the morning". | (A) "At nine in the morning" — đúng giờ mở cửa. | (B) "At eight in the morning" — tám giờ là lúc chủ gian dọn dẹp, không phải giờ mở. | (C) "At noon" — trưa là giờ thi nấu ăn. | (D) "In the evening" — tối là lúc bế mạc với pháo hoa.
+Source: original
+[QUESTION]
+Which stall is closest to the north gate?
+(A) Crepe Corner
+(B) Juice Stand
+(C) Grill House
+(D) Dessert Tent
+Answer: B
+Explanation: Cổng bắc ("Enter through the north gate"), sơ đồ ghi Juice Stand ở Zone A cạnh cổng bắc. | (A) "Crepe Corner" — quầy crepe đối diện Juice Stand, xa cổng hơn. | (B) "Juice Stand" — đúng gian cạnh cổng bắc trên sơ đồ. | (C) "Grill House" — gian nướng ở phía đông. | (D) "Dessert Tent" — lều tráng miệng ở phía nam.
+Source: original
+[QUESTION]
+What will judges do before eleven?
+(A) Close the north gate
+(B) Announce the winners
+(C) Visit every stall
+(D) Judge the parking area
+Answer: C
+Explanation: Giám khảo "will visit every stall before eleven". | (A) "Close the north gate" — cổng không đóng. | (B) "Announce the winners" — công bố giải lúc năm giờ chiều. | (C) "Visit every stall" — đúng việc giám khảo làm trước mười một giờ. | (D) "Judge the parking area" — bãi xe không ai chấm.
+Source: original
+[QUESTION]
+In paragraph 2, the word "bustling" is closest in meaning to
+(A) lost
+(B) noisy
+(C) hungry
+(D) busy
+Answer: D
+Explanation: Từ "bustling" trong cụm "Expect bustling crowds from nearby schools". | (A) "lost" — lạc đường, sai nghĩa. | (B) "noisy" — ồn ào, chỉ tả âm thanh. | (C) "hungry" — đói bụng, sai nghĩa. | (D) "busy" — đúng nghĩa đông đúc, nhộn nhịp.
+Source: original

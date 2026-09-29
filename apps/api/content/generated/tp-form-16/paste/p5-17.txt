@@ -1,0 +1,9 @@
+[QUESTION]
+The IT team reset the passwords, but several employees forgot ------- immediately.
+(A) they
+(B) their
+(C) them
+(D) themselves
+Answer: C
+Explanation: Động từ "forgot" cần tân ngữ trực tiếp chỉ mật khẩu vừa nhắc tới. | (A) "they" — đại từ chủ ngữ, không làm tân ngữ. | (B) "their" — tính từ sở hữu, sau nó thiếu danh từ. | (C) "them" — đại từ tân ngữ thay cho "passwords", đúng vị trí. | (D) "themselves" — phản thân chỉ chính nhân viên, sai đối tượng quên.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Could I take tomorrow off for a medical checkup?
+voice: uk_female_1
+(A) You should drink more water.
+(B) The clinic opens at eight.
+(C) Of course, I hope it goes well.
+Answer: C
+Explanation: Câu hỏi xin nghỉ một ngày đi khám, câu đúng đồng ý "Of course, I hope it goes well". | (A) "You should drink more water." — lời khuyên sức khỏe chung, không trả lời xin nghỉ. | (B) "The clinic opens at eight." — nói giờ phòng khám, không cho phép nghỉ. | (C) "Of course, I hope it goes well." — đồng ý cho nghỉ đúng yêu cầu.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where is the company's new warehouse located?
+voice: us_female_1
+(A) It stores all our products.
+(B) In the industrial park outside town.
+(C) The old one was smaller.
+Answer: B
+Explanation: Câu hỏi nhà kho mới nằm ở khu nào, câu đúng chỉ khu "In the industrial park outside town". | (A) "In the industrial park outside town." — trả lời thẳng nhà kho ở đâu. | (B) "It stores all our products." — nói công dụng kho, không chỉ vị trí. | (C) "The old one was smaller." — so với kho cũ, không cho biết kho mới ở đâu.
+Source: original

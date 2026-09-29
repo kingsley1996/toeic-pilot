@@ -1,0 +1,40 @@
+[PASSAGE]
+Green Tower Management — Urgent Notice
+
+Water Supply Interruption This Weekend
+
+Dear Residents,
+
+The main pump will be replaced this weekend, so water will be cut in the whole building from 8 A.M. to 4 P.M. on Sunday. On Saturday the supply may be intermittent as engineers test the new pump, with pressure rising and falling without warning.
+
+The new pump lasts about fifteen years. Residents on floor one keep pressure longest. Hot water returns one hour after cold water. Please store enough water before Sunday morning for cooking and washing. The roof tanks are being cleaned and cannot be used. The pump serves all twelve floors and the basement garage. Bottled water will be sold at cost in the lobby on Sunday morning. Laundry rooms on floors three and seven close for the weekend. For emergencies, call the technician Mr. Bao at 0913-555-027.
+
+We apologise for the inconvenience.
+
+[QUESTION]
+When will the water be completely cut?
+(A) Sunday from 8 A.M. to 4 P.M.
+(B) All day Saturday
+(C) Sunday evening only
+(D) The whole weekend
+Answer: A
+Explanation: Cắt nước "from 8 A.M. to 4 P.M. on Sunday". | (A) "Sunday from 8 A.M. to 4 P.M." — đúng khung cắt nước toàn tòa nhà. | (B) "All day Saturday" — thứ Bảy chỉ chập chờn, không cắt hẳn. | (C) "Sunday evening only" — tối Chủ nhật nước đã có lại. | (D) "The whole weekend" — thứ Bảy vẫn có nước lúc mạnh lúc yếu.
+Source: original
+[QUESTION]
+What can be inferred about Saturday?
+(A) The pump works perfectly
+(B) Residents should store water early
+(C) Technicians are on holiday
+(D) Roof tanks supply the building
+Answer: B
+Explanation: Thứ Bảy nước chập chờn ("intermittent") rồi Chủ nhật cắt hẳn, nên "store enough water before Sunday morning". | (A) "The pump works perfectly" — máy bơm đang phải thay, không hoàn hảo. | (B) "Residents should store water early" — đúng điều suy ra cho ngày thứ Bảy. | (C) "Technicians are on holiday" — kỹ thuật viên đang thử máy mới. | (D) "Roof tanks supply the building" — bể mái đang vệ sinh, không dùng được.
+Source: original
+[QUESTION]
+In paragraph 2, the word "intermittent" is closest in meaning to
+(A) cold
+(B) dirty
+(C) irregular
+(D) free
+Answer: C
+Explanation: Từ "intermittent" trong câu "the supply may be intermittent", nghĩa lúc có lúc không. | (A) "cold" — lạnh, tả nhiệt độ. | (B) "dirty" — bẩn, tả chất lượng. | (C) "irregular" — đúng nghĩa không đều, chập chờn. | (D) "free" — miễn phí, sai nghĩa.
+Source: original

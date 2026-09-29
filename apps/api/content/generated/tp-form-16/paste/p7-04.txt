@@ -1,0 +1,43 @@
+[PASSAGE]
+Lan Pham [2:10 P.M.]
+Hi Hung. Can you pick up Minh from school today? I have a dentist appointment at three that I cannot move.
+
+Hung Do [2:15 P.M.]
+Yes, but my car is in the garage until Friday. I'll take the bus and be at the school by three.
+
+Lan Pham [2:20 P.M.]
+School ends at half past three. Wait for him at the main gate with the other parents.
+
+Hung Do [2:25 P.M.]
+OK. I'll bring his football boots too. Training starts at four.
+
+Lan Pham [2:30 P.M.]
+His red schoolbag is by the front door. Please grab it.
+
+Hung Do [2:35 P.M.]
+Got it. Does training end at five as usual? Traffic looks heavy and I might be five minutes late.
+
+Lan Pham [2:40 P.M.]
+Yes. Bring him straight home after training, dinner is at six.
+
+Lan Pham [2:50 P.M.]
+Thanks! Minh's allergy medicine is in the bag's front pocket.
+
+[QUESTION]
+Why can't Lan pick up Minh?
+(A) She forgot the time
+(B) Her car broke down
+(C) She is stuck at work
+(D) She has a dentist appointment
+Answer: D
+Explanation: Lan nhờ vì "I have a dentist appointment at three that I cannot move". | (A) "She forgot the time" — cô nhớ rõ giờ hẹn nha sĩ. | (B) "Her car broke down" — xe hỏng là của Hùng, không phải Lan. | (C) "She is stuck at work" — không công việc nào được nhắc tới. | (D) "She has a dentist appointment" — đúng lý do Lan không đón Minh được.
+Source: original
+[QUESTION]
+At 2:15 P.M., what does Hung mean when he writes, "I'll take the bus"?
+(A) His car is unavailable
+(B) He likes bus rides
+(C) The school is far away
+(D) Buses are faster today
+Answer: A
+Explanation: Hùng nói xe "in the garage until Friday" nên "I'll take the bus". | (A) "His car is unavailable" — đúng nghĩa hàm: xe trong gara nên phải đi xe buýt. | (B) "He likes bus rides" — không sở thích nào được nói. | (C) "The school is far away" — khoảng cách không được nhắc tới. | (D) "Buses are faster today" — không so sánh tốc độ nào.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The trellis is leaning against the tool shed.
+(B) The planters are stacked on top of each other.
+(C) The wooden planters are arranged in rows.
+(D) Water is flowing from the watering cans.
+Answer: C
+Explanation: Trong ảnh vườn rau trên mái: luống gỗ trồng rau xanh xếp thành hàng, giàn tre dựng ở cuối luống, bình tưới và xẻng nhỏ đặt cạnh luống, chòi tôn đựng dụng cụ ở bên cạnh. | (A) "leaning against the tool shed" — giàn tre dựng ở cuối luống, còn chòi tôn đứng riêng một bên: đúng vật, sai vị trí. | (B) "stacked on top of each other" — các luống đặt thành hàng trên mặt sàn chứ không chồng lên nhau: đúng vật, sai vị trí. | (C) "arranged in rows" — đúng cách các luống gỗ được xếp. | (D) "Water is flowing" — các bình tưới chỉ đặt cạnh luống, không có nước chảy: hành động đang diễn ra mà ảnh không thể hiện.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The flagpole is standing in the middle of the yard.
+(B) The benches are stacked in a corner.
+(C) A ladder is leaning against the flagpole.
+(D) Footballs are scattered across the schoolyard.
+Answer: A
+Explanation: Trong ảnh sân trường vắng: cột cờ đứng giữa sân gạch, ghế đá xếp thành hàng dọc tường rào phủ dây leo, khung thành mini ở góc cạnh cột bóng rổ không có lưới, không có quả bóng nào. | (A) "standing in the middle of the yard" — đúng vị trí cột cờ. | (B) "stacked in a corner" — ghế đá xếp thành hàng dọc tường rào chứ không chồng ở góc: đúng vật, sai vị trí. | (C) "leaning against the flagpole" — trong ảnh không có chiếc thang nào: vật không hề có trong ảnh. | (D) "Footballs are scattered" — trong ảnh không có quả bóng nào: vật không hề có trong ảnh.
+Source: original

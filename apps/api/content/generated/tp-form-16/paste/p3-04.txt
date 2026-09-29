@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+This is our model unit on the twelfth floor. Two bedrooms, a wide balcony, and morning sun in the kitchen.
+voice: ca_male_1
+I like the light. My office is near Central Station, so the location matters a lot to me.
+voice: us_female_1
+Good news then. The Green Line stops right outside, and it's only two stops to Central Station.
+voice: ca_male_1
+That sounds convenient. What about the monthly management fee?
+voice: us_female_1
+Two hundred a month, including parking. Prices go up next quarter, so a deposit this week would hold this rate.
+voice: ca_male_1
+I'll discuss it with my wife tonight and let you know tomorrow.
+
+[QUESTION]
+Where are the speakers?
+(A) At a furniture store
+(B) At a train station
+(C) In a bank office
+(D) In a model apartment
+Answer: D
+Explanation: Cô giới thiệu "This is our model unit on the twelfth floor". | (A) "At a furniture store" — không cửa hàng nội thất nào được nhắc tới. | (B) "At a train station" — nhà ga chỉ là chỗ làm của anh, không phải nơi hai người đứng. | (C) "In a bank office" — không ngân hàng nào xuất hiện. | (D) "In a model apartment" — đúng nơi hai người đang xem căn mẫu.
+Source: original
+[QUESTION]
+What can be inferred about the man's commute?
+(A) It will be short by train
+(B) He will drive past Central Station
+(C) He works near Green Line stops
+(D) He is paying monthly fees
+Answer: A
+Explanation: Anh làm gần Central Station, "it's only two stops to Central Station". | (A) "It will be short by train" — ghép chỗ làm gần ga trung tâm với chỉ hai trạm đi, ra đường đi ngắn. | (B) "He will drive past Central Station" — anh đi tàu chứ không lái xe. | (C) "He works near Green Line stops" — Green Line là tuyến tới căn hộ, không phải chỗ làm. | (D) "He is paying monthly fees" — phí quản lý là chuyện của căn hộ, không nói về đường đi.
+Source: original
+[QUESTION]
+What does the woman suggest?
+(A) Visiting the twelfth floor
+(B) Paying a deposit this week
+(C) Meeting his wife tonight
+(D) Waiting for prices to drop
+Answer: B
+Explanation: Cô giục "a deposit this week would hold this rate". | (A) "Visiting the twelfth floor" — hai người đang đứng ở đó rồi. | (B) "Paying a deposit this week" — đúng điều cô gợi ý để giữ giá. | (C) "Meeting his wife tonight" — gặp vợ là việc của anh, không phải gợi ý của cô. | (D) "Waiting for prices to drop" — ngược hẳn: giá sắp tăng quý tới.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Hi, I bought this shirt online last week, and the sleeves are too short for me. Can I exchange it for a larger size?
+voice: au_male_1
+Of course. Do you have the order number? I can look it up right away.
+voice: us_female_1
+Yes, it's in my email. I ordered a medium, but I think a large will fit better.
+voice: au_male_1
+Let me check the shelf. We have the large in blue, but the white one is out of stock.
+voice: us_female_1
+Blue is fine. Can I try it on first?
+voice: au_male_1
+The fitting rooms are just behind you. If it fits, I'll process the exchange now.
+
+[QUESTION]
+Why is the woman at the store?
+(A) To exchange a shirt for a larger size
+(B) To return a damaged shirt
+(C) To pick up an online order
+(D) To apply for a refund
+Answer: A
+Explanation: Chị mua áo online muốn đổi: "Can I exchange it for a larger size". | (A) "To exchange a shirt for a larger size" — đúng việc chị tới cửa hàng. | (B) "To return a damaged shirt" — áo chỉ ngắn tay, không hỏng. | (C) "To pick up an online order" — đơn đã nhận từ tuần trước, chị tới để đổi. | (D) "To apply for a refund" — chị xin đổi size, không xin trả tiền.
+Source: original
+[QUESTION]
+What is wrong with the shirt she bought?
+(A) The blue colour is darker
+(B) The sleeves are too short
+(C) It has a shelf stain
+(D) It arrived in an email
+Answer: B
+Explanation: Chị nói "the sleeves are too short for me". | (A) "The blue colour is darker" — màu xanh là chiếc cỡ lớn trên kệ, không phải lỗi. | (B) "The sleeves are too short" — đúng lỗi chị nêu. | (C) "It has a shelf stain" — không vết bẩn nào được nhắc tới. | (D) "It arrived in an email" — email chỉ chứa mã đơn hàng, áo giao bình thường.
+Source: original
+[QUESTION]
+What does the man suggest?
+(A) Ordering the blue shirt online
+(B) Waiting for the white one
+(C) Trying the shirt in the fitting room
+(D) Washing the shirt first
+Answer: C
+Explanation: Anh nhân viên chỉ "The fitting rooms are just behind you". | (A) "Ordering the blue shirt online" — áo có sẵn trên kệ, không cần đặt online. | (B) "Waiting for the white one" — màu trắng hết hàng, chờ không giải quyết. | (C) "Trying the shirt in the fitting room" — đúng điều anh gợi ý trước khi đổi. | (D) "Washing the shirt first" — không ai nhắc tới giặt.
+Source: original

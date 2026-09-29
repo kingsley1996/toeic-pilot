@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Is your office dusty by Friday every week? Sparkle Clean offers weekend office cleaning with no disruption to your staff. Our team vacuums every carpet, washes all interior windows, and empties every bin. All cleaning supplies are included in the price, and our staff are fully insured. This month, book before Friday and get twenty percent off your first three visits. One call keeps your office spotless all year. Dial 555-0193 now for a free quote today.
+
+[QUESTION]
+What is the advertisement for?
+(A) To rent office space
+(B) To hire weekend security guards
+(C) To sell carpet shampoo
+(D) A weekend office cleaning service
+Answer: D
+Explanation: Sparkle Clean chào "weekend office cleaning with no disruption to your staff". | (A) "To rent office space" — không mặt bằng nào cho thuê. | (B) "To hire weekend security guards" — bảo vệ không xuất hiện trong quảng cáo. | (C) "To sell carpet shampoo" — hóa chất là đồ nghề kèm theo, không phải thứ bán. | (D) "A weekend office cleaning service" — đúng dịch vụ được quảng cáo.
+Source: original
+[QUESTION]
+What is included in the service?
+(A) Window washing and carpet vacuuming
+(B) Dusting and Friday visits
+(C) Free quotes and supplies
+(D) Insured staff visits
+Answer: A
+Explanation: Đội "vacuums every carpet, washes all interior windows, and empties every bin". | (A) "Window washing and carpet vacuuming" — đúng hai việc liệt kê trong gói. | (B) "Dusting and Friday visits" — không lau bụi hay thăm khám nào được nêu. | (C) "Free quotes and supplies" — báo giá miễn phí là chuyện gọi điện, không phải việc dọn. | (D) "Insured staff visits" — bảo hiểm là thuộc tính của nhân viên, không phải việc làm.
+Source: original
+[QUESTION]
+What should listeners do to get a discount?
+(A) Call for a free quote
+(B) Book before Friday
+(C) Pay the monthly price
+(D) Keep the office spotless
+Answer: B
+Explanation: Ưu đãi "book before Friday and get twenty percent off your first three visits". | (A) "Call for a free quote" — gọi báo giá không cho giảm giá. | (B) "Book before Friday" — đúng điều kiện hưởng giảm 20%. | (C) "Pay the monthly price" — không gói tháng nào được nêu. | (D) "Keep the office spotless" — giữ sạch là kết quả, không phải điều kiện.
+Source: original

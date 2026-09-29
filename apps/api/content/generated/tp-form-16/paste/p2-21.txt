@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Should we meet in person or online with the branch?
+voice: us_female_1
+(A) Online saves everyone the trip.
+(B) The branch opened last year.
+(C) The branch is closed today.
+Answer: A
+Explanation: Câu hỏi họp trực tiếp hay trực tuyến với chi nhánh, câu đúng chọn trực tuyến vì "saves everyone the trip". | (A) "Online saves everyone the trip." — chọn trực tuyến với lý do rõ ràng. | (B) "The branch opened last year." — nói tuổi chi nhánh, không chọn hình thức họp. | (C) "The branch is closed today." — nói chi nhánh đóng cửa, không trả lời họp kiểu gì.
+Source: original

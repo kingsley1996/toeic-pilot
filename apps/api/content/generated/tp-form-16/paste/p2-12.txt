@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+This new elevator runs very smoothly.
+voice: us_female_1
+(A) I haven't ridden it yet, I take the stairs.
+(B) It was installed last month.
+(C) The stairs are over there.
+Answer: A
+Explanation: Câu nhận xét thang máy mới chạy êm, người đáp chưa đi bao giờ: "I haven't ridden it yet, I take the stairs". | (A) "I haven't ridden it yet, I take the stairs." — nói rõ mình không biết vì chưa đi. | (B) "It was installed last month." — nói tuổi thang máy, không phải trải nghiệm. | (C) "The stairs are over there." — chỉ chỗ cầu thang, không bình luận thang máy.
+Source: original
