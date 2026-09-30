@@ -11991,6 +11991,20 @@
             ],
             "title": "Source Note"
           },
+          "spoken": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spoken"
+          },
           "translations": {
             "anyOf": [
               {

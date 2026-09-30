@@ -9897,6 +9897,10 @@ export interface components {
             source?: string | null;
             /** Source Note */
             source_note?: string | null;
+            /** Spoken */
+            spoken?: {
+                [key: string]: string;
+            } | null;
             /** Translations */
             translations?: {
                 [key: string]: string;
