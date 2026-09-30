@@ -279,21 +279,6 @@
     repeating-linear-gradient(to bottom, rgb(var(--rule) / 0.4) 0 1px, transparent 1px 32px);
 }
 
-/* Light mode riêng: 0.4 trên nền sáng mờ gần như không thấy (người dùng
- * 2026-09-30). Dark giữ nguyên — nền tối đã đủ tương phản ở alpha cũ. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .grid-backdrop {
-    background-image:
-      repeating-linear-gradient(to right, rgb(var(--rule) / 0.7) 0 1px, transparent 1px 32px),
-      repeating-linear-gradient(to bottom, rgb(var(--rule) / 0.7) 0 1px, transparent 1px 32px);
-  }
-}
-:root[data-theme="light"] .grid-backdrop {
-  background-image:
-    repeating-linear-gradient(to right, rgb(var(--rule) / 0.7) 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(to bottom, rgb(var(--rule) / 0.7) 0 1px, transparent 1px 32px);
-}
-
 /* Sao băng: một vệt sáng lao chéo qua khung rồi tắt.
  *
  * Chỉ động `transform` và `opacity`, và đó là YÊU CẦU chứ không phải tối ưu.
