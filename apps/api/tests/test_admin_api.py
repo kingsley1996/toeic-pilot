@@ -1011,6 +1011,76 @@ def test_editing_a_set_script_makes_its_audio_look_stale(
     assert body["audio_may_be_stale"] is True
 
 
+def test_editing_spoken_text_of_a_part1_question(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Part 1/2 không in đáp án nên `options` (chữ in) không có gì để sửa —
+    chỗ sửa là lời đọc (`spoken_text`). Trước đây UI hiện nó dạng đọc và
+    server không nhận khoá nào ghi vào đó, nên transcript sai chỉ sửa được
+    bằng SQL.
+    """
+    headers = auth("editor")
+    client.post(
+        "/api/v1/admin/tests",
+        json={"slug": "spoken-test", "title": "Nghe", "kind": "mini"},
+        headers=headers,
+    )
+    parsed = client.post(
+        "/api/v1/admin/tests/spoken-test/parts/1/parse",
+        json={
+            "raw_text": (
+                "[QUESTION]\nvoice: us_female_1\n"
+                "(A) A man is painting a wall.\n(B) A man is climbing a ladder.\n"
+                "(C) A man is washing a car.\n(D) A man is planting a tree.\n"
+                "answer: B\nsource: original\n"
+            )
+        },
+        headers=headers,
+    ).json()
+    committed = client.post(
+        "/api/v1/admin/tests/spoken-test/parts",
+        json={"part": 1, "groups": parsed["groups"]},
+        headers=headers,
+    )
+    assert committed.status_code == 201
+    (question,) = client.get("/api/v1/admin/tests/spoken-test/questions", headers=headers).json()
+
+    edited = client.patch(
+        f"/api/v1/admin/questions/{question['id']}",
+        json={"spoken": {"B": "A man is climbing a step ladder."}},
+        headers=headers,
+    )
+    assert edited.status_code == 200
+    options = {o["label"]: o for o in edited.json()["options"]}
+    assert options["B"]["spoken_text"] == "A man is climbing a step ladder."
+    assert options["A"]["spoken_text"] != "A man is climbing a step ladder."
+
+    refused = client.patch(
+        f"/api/v1/admin/questions/{question['id']}",
+        json={"spoken": {"Z": "Câu này không có đáp án Z."}},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+
+
+def test_a_reading_question_refuses_spoken_text(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Lời đọc chỉ tồn tại ở Part 1/2. Part đọc-hiểu không đọc gì — ghi vào
+    đó là tạo bản sao mà không bản thu nào ứng với, đúng lỗi `audio_script`
+    đã chặn cho Part 3/4 ở chiều ngược lại.
+    """
+    headers = auth("editor")
+    _commit_one_reading_part(client, headers, "spoken-refuse")
+    (question,) = client.get("/api/v1/admin/tests/spoken-refuse/questions", headers=headers).json()
+    refused = client.patch(
+        f"/api/v1/admin/questions/{question['id']}",
+        json={"spoken": {"A": "Part 7 không đọc đáp án."}},
+        headers=headers,
+    )
+    assert refused.status_code == 400
+
+
 def test_editing_a_set_script_sends_its_published_questions_back_to_draft(
     client: TestClient, auth: Callable[[str], dict[str, str]]
 ) -> None:

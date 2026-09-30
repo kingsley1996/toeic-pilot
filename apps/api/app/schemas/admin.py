@@ -713,6 +713,11 @@ class QuestionEdit(BaseModel):
     #
     # Chuỗi rỗng nghĩa là XOÁ bản dịch (ghi NULL), khác với vắng mặt là để nguyên.
     translations: dict[str, str] | None = None
+    # Lời đọc của từng đáp án, theo nhãn. Chỉ Part 1 và 2 — ở đó đáp án KHÔNG
+    # in mà chỉ đọc lên, nên `options` (chữ in) không có gì để sửa còn lời đọc
+    # thì có. Sửa ở đây KHÔNG thu lại audio: bản thu cũ vẫn phát câu cũ cho tới
+    # khi thu lại, nên UI phải cảnh báo điều đó chứ schema thì không chặn.
+    spoken: dict[str, str] | None = None
     # Chỉ Part 1 và 2. Part 3/4 giữ lời thoại ở cụm, và endpoint từ chối thẳng
     # thay vì ghi vào một cột không ai đọc — xem `edit_question`.
     #

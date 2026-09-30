@@ -430,6 +430,25 @@ def edit_question(
             # dòng trống dưới đáp án mà không ai hiểu ở đâu ra.
             by_label[label].content_vi = text.strip() or None
 
+    spoken = changes.pop("spoken", None)
+    if spoken is not None:
+        # Lời đọc chỉ tồn tại ở Part 1 và 2. Part 3/4 đọc từ lời thoại của cụm,
+        # còn part đọc-hiểu không đọc gì — ghi vào đó là tạo một bản sao mà
+        # không bản thu nào ứng với, đúng lỗi mà `audio_script` đã chặn ở trên.
+        if question.part not in (1, 2):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Part {question.part} in đáp án nên không có lời đọc riêng",
+            )
+        by_label = {option.label: option for option in question.options}
+        for label, text in spoken.items():
+            if label not in by_label:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Đáp án {label!r} không có trong {sorted(by_label)}",
+                )
+            by_label[label].spoken_text = text.strip() or None
+
     correct = changes.pop("correct_label", None)
     if correct:
         labels = {option.label for option in question.options}

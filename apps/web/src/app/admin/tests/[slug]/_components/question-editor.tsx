@@ -31,17 +31,25 @@ export function QuestionEditor({
   const [options, setOptions] = useState<Record<string, string>>(
     Object.fromEntries(question.options.map((option) => [option.label, option.content ?? ""])),
   );
+  // Part 1/2 không in đáp án mà chỉ đọc lên — ô này sửa thẳng lời đọc
+  // (`spoken_text`). Không đụng tới bản thu: audio cũ vẫn phát câu cũ cho tới
+  // khi thu lại, nên sửa xong phải kiểm lại bằng tai trước khi xuất bản.
+  const [spoken, setSpoken] = useState<Record<string, string>>(
+    Object.fromEntries(question.options.map((option) => [option.label, option.spoken_text ?? ""])),
+  );
   const [translations, setTranslations] = useState<Record<string, string>>(
     Object.fromEntries(question.options.map((option) => [option.label, option.content_vi ?? ""])),
   );
 
-  // Part 1 và 2 KHÔNG in gì cả, nên ở đó không có đề bài và không có nội dung
-  // đáp án để sửa — chữ của chúng nằm trong lời thoại, sửa ở khung Lời thoại.
+  // Part 1 và 2 KHÔNG in gì cả, nên ở đó không có đề bài và không có ô nội
+  // dung đáp án — thay vào đó là ô LỜI ĐỌC (`spoken_text`), vì chữ của chúng
+  // nằm trong bản thu. Sửa lời đọc không thu lại audio: bản thu cũ vẫn phát
+  // câu cũ, nên kiểm bằng tai trước khi xuất bản.
   //
-  // Không phải chuyện gọn mắt: hai ô đó gửi `""` lên server, mà `""` không phải
-  // NULL, nên `validate_question` từ chối và câu Part 1/2 nào cũng không lưu
-  // nổi. Ẩn ô đi mà vẫn gửi khoá thì vẫn hỏng y hệt — nên khoá cũng bị bỏ khỏi
-  // payload bên dưới.
+  // Không phải chuyện gọn mắt: hai ô đề bài/nội dung gửi `""` lên server, mà
+  // `""` không phải NULL, nên `validate_question` từ chối và câu Part 1/2 nào
+  // cũng không lưu nổi. Ẩn ô đi mà vẫn gửi khoá thì vẫn hỏng y hệt — nên khoá
+  // cũng bị bỏ khỏi payload bên dưới.
   const printed = question.part !== 1 && question.part !== 2;
 
   return (
@@ -75,11 +83,11 @@ export function QuestionEditor({
                 onChange={(event) => setOptions({ ...options, [option.label]: event.target.value })}
               />
             ) : (
-              <span className="text-small text-ink-faint">
-                {/* Part 1/2 không in đáp án, nhưng LỜI ĐỌC thì có — hiện nó ở
-                    đây để người soạn biết mình đang dịch câu nào. */}
-                {option.spoken_text ?? "đọc lên, không in — sửa ở khung Lời thoại"}
-              </span>
+              <Input
+                value={spoken[option.label] ?? ""}
+                onChange={(event) => setSpoken({ ...spoken, [option.label]: event.target.value })}
+                aria-label={`Lời đọc đáp án ${option.label}`}
+              />
             )}
           </div>
         ))}
@@ -148,6 +156,9 @@ export function QuestionEditor({
                     // `translations` đi kèm CẢ ở Part 1/2, khác `options`: chỗ
                     // này dịch lời đọc, và lời đọc thì hai part đó có.
                     translations,
+                    // Lời đọc sửa thẳng ở đây; bản thu cũ vẫn phát câu cũ cho
+                    // tới khi thu lại — kiểm bằng tai trước khi xuất bản.
+                    spoken,
                   },
             )
           }
