@@ -13,3 +13,7 @@ canvas, dấu lật dọc, rào/yard vẽ theo footprint số, biển thương h
 camera nhìn theo nhãn chứ không theo đất. Đọc xong vẫn verify như §7.11:
 tsc + eslint + e2e visual-vocab + regen preview (`SCENE_PREVIEWS=1`) + mắt
 xem ảnh preview.
+
+Tạo cảnh mới từ đầu thì làm theo skill `scene-3d`
+(`.claude/skills/scene-3d/SKILL.md`) — quy trình scene file + shapes +
+environment + verify, khỏi dò lại từng tệp.
