@@ -1,9 +1,11 @@
 /**
  * Lựa chọn theme của người dùng, và chỗ nó được lưu.
  *
- * Ba trạng thái chứ không phải hai: `system` là mặc định và có nghĩa "đi theo hệ
- * điều hành", khác hẳn với việc chọn `light`. Nếu gộp `system` vào `light` thì
- * người dùng máy đang để chế độ tối sẽ bị ép sáng ngay lần đầu vào app.
+ * Ba trạng thái chứ không phải hai, và mặc định là `dark` (người dùng
+ * 2026-09-30), KHÔNG phải `system`: khách mới chưa chọn gì vào là thấy nền
+ * tối ngay. `system` vẫn giữ cho ai muốn đi theo hệ điều hành — vì thế nó được
+ * ghi EXPLICIT vào localStorage, chứ không còn là "không có khoá" như trước:
+ * "không có khoá" giờ nghĩa là chưa chọn, tức là dark.
  *
  * Cùng khuôn với `auth-storage.ts` và vì cùng một lý do: sự kiện `storage` của
  * trình duyệt chỉ bắn ở CÁC TAB KHÁC, nên ghi rồi mong React tự nhận ra sẽ âm
@@ -31,10 +33,12 @@ export function getThemePref(): ThemePref {
   if (typeof window === "undefined") return "system";
   try {
     const stored = localStorage.getItem(KEY);
-    return stored === "light" || stored === "dark" ? stored : "system";
+    if (stored === "light" || stored === "dark" || stored === "system") return stored;
+    // Không có khoá = chưa chọn bao giờ = dark (mặc định dự án).
+    return "dark";
   } catch {
     // Safari ở chế độ riêng tư ném lỗi khi đọc localStorage.
-    return "system";
+    return "dark";
   }
 }
 
@@ -46,7 +50,8 @@ export function serverThemePref(): undefined {
 export function setThemePref(pref: ThemePref): void {
   try {
     if (pref === "system") {
-      localStorage.removeItem(KEY);
+      // Ghi explicit, không xoá: "không có khoá" đã mang nghĩa dark.
+      localStorage.setItem(KEY, pref);
       delete document.documentElement.dataset.theme;
     } else {
       localStorage.setItem(KEY, pref);
@@ -63,9 +68,10 @@ export function setThemePref(pref: ThemePref): void {
 /**
  * Chạy đồng bộ trong `<head>`, TRƯỚC khi trang vẽ.
  *
- * Không có nó, người chọn theme tối sẽ thấy một nháy trắng mỗi lần tải — React
- * chưa kịp chạy thì HTML đã được sơn. `try/catch` là bắt buộc: Safari riêng tư
- * ném lỗi khi đọc localStorage, và một lỗi ở đây sẽ làm hỏng cả lần dựng đầu.
+ * Không có nó, khách mới (mặc định dark) sẽ thấy một nháy sáng mỗi lần tải —
+ * React chưa kịp chạy thì HTML đã được sơn. `try/catch` là bắt buộc: Safari
+ * riêng tư ném lỗi khi đọc localStorage, và một lỗi ở đây sẽ làm hỏng cả lần
+ * dựng đầu.
  */
 export const THEME_INIT_SCRIPT =
-  'try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}';
+  'try{var t=localStorage.getItem("theme");if(t==="light")document.documentElement.dataset.theme=t;else if(t!=="system")document.documentElement.dataset.theme="dark"}catch(e){}';
