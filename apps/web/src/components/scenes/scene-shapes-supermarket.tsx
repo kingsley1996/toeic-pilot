@@ -534,7 +534,11 @@ function CouponStand() {
         <Box size={[0.9, 1.6, 0.06]} at={[0, 0.75, -0.17]} color={PALETTE.concrete} />
       </group>
       {face && (
-        <mesh position={[0, 0.95, 0.36]} rotation={[0.22, 0, 0]}>
+        // Ôm mặt cánh trước: tâm cánh ra world (0, 0.695, 0.330), pháp tuyến
+        // (0, −sin0.22, cos0.22) — đặt mặt nổi 0.005 trên nửa dày 0.03.
+        // Lần trước để [0, 0.95, 0.36] là lệch lên 0.25, đọc như biển rời
+        // lơ lửng cạnh bảng.
+        <mesh position={[0, 0.687, 0.364]} rotation={[0.22, 0, 0]}>
           <planeGeometry args={[0.8, 1.0]} />
           <meshBasicMaterial map={face} toneMapped={false} />
         </mesh>
