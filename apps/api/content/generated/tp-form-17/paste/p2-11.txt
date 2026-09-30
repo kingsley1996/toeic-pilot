@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Should new staff take accident or health insurance?
+voice: ca_male_1
+(A) In the personnel office upstairs.
+(B) Health, it covers more everyday needs.
+(C) The new stuff arrived this morning.
+Answer: B
+Explanation: Câu hỏi là "Should new staff take accident or health insurance?", đây là một câu hỏi LỰA CHỌN giữa hai gói bảo hiểm. | (A) "In the personnel office upstairs." — nêu nơi chốn cho một câu hỏi lựa chọn, không chọn gói nào. | (B) "Health, it covers more everyday needs." — chọn một gói trong hai gói được hỏi. | (C) "The new stuff arrived this morning." — từ "stuff" đồng âm với "staff" trong câu hỏi nhưng nói về hàng đến, không chọn gói bảo hiểm.
+Source: original

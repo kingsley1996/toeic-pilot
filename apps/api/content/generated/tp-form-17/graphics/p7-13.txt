@@ -1,0 +1,7 @@
+kind: table
+Spring Charity Concert - Ticket Prices
+Performance | Time | Price
+Morning Melodies | Sat Apr 12 10:00 AM | $12
+Afternoon Harmony | Sat Apr 12 2:30 PM | $18
+Evening Serenade | Sat Apr 12 6:00 PM | $22
+Finale Night | Sat Apr 12 8:30 PM | $28

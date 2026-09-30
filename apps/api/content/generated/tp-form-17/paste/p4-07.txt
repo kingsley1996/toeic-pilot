@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Hi, this is Karen from Westfield Paper Supply with a message for Mr. Ellis. Your order of printing paper was scheduled for delivery this Thursday, but our mill shut down for repairs, so the truck will now arrive next Monday instead. I mention our warehouse stock of two extra rolls because those should cover your Wednesday print run until the new delivery arrives. The price and quality remain the same despite the delay. Please email me back by Friday morning to confirm that the Monday date still works for you. Thanks for your patience, and sorry again for the short notice.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To change the price and quality terms
+(B) To confirm Thursday delivery as planned
+(C) To announce a mill shutdown for repairs
+(D) To inform about a delayed paper delivery
+Answer: D
+Explanation: Người nói báo "delivery this Thursday" rồi sửa "will now arrive next Monday instead" — mục đích là báo dời giao giấy. | (A) "To change the price and quality terms" — mượn "price and quality" nhưng bài nói khẳng định chúng giữ nguyên. | (B) "To confirm Thursday delivery as planned" — thứ Năm là lịch cũ đã bị dời. | (C) "To announce a mill shutdown for repairs" — mượn "mill shut down for repairs" nhưng đó chỉ là lý do dời, không phải mục đích gọi. | (D) "To inform about a delayed paper delivery" — đúng mục đích lời nhắn.
+Source: original
+[QUESTION]
+Why does the speaker mention the two extra rolls?
+(A) To reassure that production will not stop
+(B) To sell additional paper at the same price
+(C) To explain why the mill shut down
+(D) To cancel the Wednesday print run
+Answer: A
+Explanation: Người nói nói "those should cover your Wednesday print run until the new delivery arrives" — chức năng là trấn an chứ không phải nội dung cuộn giấy. | (A) "To reassure that production will not stop" — đúng chức năng trấn an dây chuyền vẫn chạy. | (B) "To sell additional paper at the same price" — mượn "paper" và "same" nhưng hiểu theo nghĩa đen là chào bán. | (C) "To explain why the mill shut down" — xưởng ngừng máy là chi tiết thật ở chỗ khác, không phải lý do nhắc cuộn giấy. | (D) "To cancel the Wednesday print run" — mượn "Wednesday print run" nhưng đảo thành hủy thay vì giữ.
+Source: original
+[QUESTION]
+What does the speaker ask the listener to do?
+(A) Wait for delivery on Thursday
+(B) Email back by Friday about the new date
+(C) Call the mill about the repairs
+(D) Use the two rolls after Monday arrives
+Answer: B
+Explanation: Bài nói nêu sớm lịch mới "will now arrive next Monday instead" rồi dặn muộn "Please email me back by Friday morning" — ghép hai chỗ mới ra việc cần làm. | (A) "Wait for delivery on Thursday" — thứ Năm là lịch cũ đã bị sửa. | (B) "Email back by Friday about the new date" — khớp đúng lời nhờ xác nhận lịch mới. | (C) "Call the mill about the repairs" — mượn "mill" và "repairs" nhưng đổi bên thực hiện, người nghe không gọi cho xưởng. | (D) "Use the two rolls after Monday arrives" — mượn "two extra rolls" và "Monday" nhưng đảo quan hệ, cuộn giấy dùng trước khi hàng mới tới.
+Source: original

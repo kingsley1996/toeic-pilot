@@ -1,0 +1,55 @@
+[PASSAGE]
+Dana Ruiz [9:02 A.M.]
+Hi team, does anyone know where the marketing storage projector is? I need it for our sales presentation in Room 4B this Thursday at 9 A.M. The client group is large, so our small meeting-room screen will not be enough.
+
+Kevin Tran [9:06 A.M.]
+I borrowed it last week, and it is back on the second shelf now. But the marketing team reserved it for their own product launch rehearsal all day Wednesday, so please do not take it before Thursday morning.
+
+Priya Nair [9:11 A.M.]
+Borrowing the big one on Thursday morning sounds risky because the launch team may run late. I can try to bring my portable projector from home instead. It worked fine for the finance review, though its remote control is missing, so someone must press the buttons on the machine.
+
+Dana Ruiz [9:15 A.M.]
+That would be a lifesaver, Priya. I will pick it up from your desk at 8 A.M. on Thursday and set it up in Room 4B before the clients arrive. Kevin, could you bring an HDMI cable? Mine stopped working yesterday.
+
+Kevin Tran [9:19 A.M.]
+Sure, I will leave a spare cable on your chair on Wednesday evening. Please return everything by Friday noon because the training group needs the portable unit for their new-staff workshop. They asked me twice already.
+
+Priya Nair [9:23 A.M.]
+Agreed. My unit plus Kevin's cable should cover the whole morning.
+
+[QUESTION]
+What are the employees discussing?
+(A) Repairing the shelves in the storage room
+(B) Ordering a new screen for the meeting room
+(C) Arranging a projector for a Thursday presentation
+(D) Postponing the product launch rehearsal
+Answer: C
+Explanation: Dana mở đầu hỏi mượn máy chiếu cho "our sales presentation in Room 4B this Thursday", cả nhóm bàn cách xoay máy chiếu và dây cáp. | (A) "Repairing the shelves in the storage room" — kệ kho chỉ là chỗ cất máy, không ai sửa. | (B) "Ordering a new screen for the meeting room" — không ai đặt mua màn hình mới. | (C) "Arranging a projector for a Thursday presentation" — đúng việc cả nhóm đang bàn. | (D) "Postponing the product launch rehearsal" — buổi tập của nhóm marketing vẫn diễn ra thứ Tư, không ai dời.
+Source: original
+[QUESTION]
+When must the borrowed equipment be returned?
+(A) On Wednesday evening
+(B) At 8 A.M. on Thursday
+(C) Before Wednesday morning
+(D) By midday on Friday
+Answer: D
+Explanation: Kevin dặn "Please return everything by Friday noon", tức hạn trả là trưa thứ Sáu. | (A) "On Wednesday evening" — là lúc Kevin để dây cáp lên ghế, không phải hạn trả. | (B) "At 8 A.M. on Thursday" — là giờ Dana lấy máy ở bàn Priya, không phải hạn trả. | (C) "Before Wednesday morning" — ngược hẳn: nhóm marketing giữ máy cả ngày thứ Tư. | (D) "By midday on Friday" — đúng hạn trả vừa dẫn.
+Source: original
+[QUESTION]
+At 9:11 A.M., what does Ms. Nair mean when she writes, "I can try"?
+(A) She will attempt to bring her portable projector
+(B) She will repair the missing remote control
+(C) She refuses to lend her equipment
+(D) She will cancel the finance review
+Answer: A
+Explanation: Priya viết "I can try to bring my portable projector from home instead", tức nhận mang máy cá nhân thay thế. | (A) "She will attempt to bring her portable projector" — đúng ý câu vừa dẫn. | (B) "She will repair the missing remote control" — điều khiển mất nhưng cô chỉ bảo bấm nút trên máy, không sửa. | (C) "She refuses to lend her equipment" — ngược hẳn: cô chủ động cho mượn. | (D) "She will cancel the finance review" — buổi họp tài chính chỉ là ví dụ máy từng dùng tốt, không ai hủy.
+Source: original
+[QUESTION]
+What can be inferred about Thursday's presentation?
+(A) It will be held in the marketing storage room
+(B) It will depend on Priya's unit and Kevin's cable
+(C) It will start after the training workshop
+(D) It was cancelled because of the missing remote
+Answer: B
+Explanation: Dana hẹn "I will pick it up from your desk at 8 A.M. on Thursday" còn Kevin hứa "I will leave a spare cable on your chair", nên buổi thuyết trình trông vào hai món mượn này. | (A) "It will be held in the marketing storage room" — địa điểm là Room 4B, kho chỉ là chỗ cất máy. | (B) "It will depend on Priya's unit and Kevin's cable" — đúng điều suy ra từ hai lời hẹn vừa dẫn. | (C) "It will start after the training workshop" — nhóm tập huấn cần máy vào thứ Sáu, sau buổi thuyết trình. | (D) "It was cancelled because of the missing remote" — thiếu điều khiển nhưng vẫn bấm nút tay được, không ai hủy.
+Source: original

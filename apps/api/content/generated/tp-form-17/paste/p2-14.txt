@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you reissue my access card for the north gate?
+voice: ca_male_1
+(A) At the north gate office.
+(B) I'm not sure yet, I'll have to check first.
+(C) The cards were printed last week.
+Answer: B
+Explanation: Câu hỏi là "Could you reissue my access card for the north gate?", đây là một YÊU CẦU chứ không phải câu hỏi thông tin. | (A) "At the north gate office." — nêu nơi chốn cho một yêu cầu cần hành động, dùng lại cụm "north gate" để đánh lừa. | (B) "I'm not sure yet, I'll have to check first." — nói chưa biết và cần kiểm tra thêm, đúng cách đáp gián tiếp khi chưa trả lời được. | (C) "The cards were printed last week." — dùng lại từ "cards" nhưng kể thông tin không ai hỏi, không nhận lời cũng không từ chối.
+Source: original

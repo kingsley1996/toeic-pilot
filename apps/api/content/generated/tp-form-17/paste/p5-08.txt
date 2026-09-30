@@ -1,0 +1,9 @@
+[QUESTION]
+The elevator maintenance contract ------- with the new contractor last month covers quarterly inspections and emergency repairs.
+(A) signed
+(B) to sign
+(C) signing
+(D) sign
+Answer: A
+Explanation: Chủ ngữ "contract" chịu tác động của "sign" nên cần phân từ hai rút gọn mệnh đề quan hệ. | (A) "signed" — phân từ hai bị động, hợp với chủ ngữ chịu tác động. | (B) "to sign" — nguyên mẫu không rút gọn được mệnh đề đã hoàn thành này. | (C) "signing" — phân từ một mang nghĩa chủ động, sai thể vì hợp đồng không tự ký. | (D) "sign" — nguyên mẫu trần, không đứng được ở vị trí rút gọn.
+Source: original

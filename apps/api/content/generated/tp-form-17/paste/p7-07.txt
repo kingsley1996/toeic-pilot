@@ -1,0 +1,23 @@
+[PASSAGE]
+Quarterly Air-Conditioner Care for Offices
+
+Is your office ready for the hot season? BrightCool Services offers quarterly cleaning plans for workplaces with at least ten air conditioners. Each visit covers filter washing, gas checks, drain clearing, and thermostat testing for every registered unit, including both wall and ceiling models. Our technicians visit in January, April, July, and October, and members receive free minor parts plus 24-hour priority for emergency repairs. Technicians also check remote controls and clean vents during every visit. Reports after each visit list completed tasks for office managers. The fee is $45 per unit per visit, with a minimum of ten units per office. To book a visit, please call before Friday of the first month of each quarter. One-time cleanings are also available, but they cost 30 percent more and do not include priority repairs or free parts. Call 555-0148 today.
+
+[QUESTION]
+What can be inferred about the quarterly plan?
+(A) It costs less per visit than one-time cleaning
+(B) It covers only wall units
+(C) It is free for offices with ten units
+(D) It needs no advance booking
+Answer: A
+Explanation: Bảng giá ghi "$45 per unit per visit" và dịch vụ lẻ thì "they cost 30 percent more", nên gói quý rẻ hơn mỗi lần vệ sinh. | (A) "It costs less per visit than one-time cleaning" — đúng điều suy ra từ hai mức giá vừa dẫn. | (B) "It covers only wall units" — trái với "including both wall and ceiling models". | (C) "It is free for offices with ten units" — mười là số lượng tối thiểu, phí vẫn là $45 mỗi máy. | (D) "It needs no advance booking" — thư yêu cầu "call before Friday of the first month of each quarter".
+Source: original
+[QUESTION]
+What must customers do to arrange a quarterly visit?
+(A) Register at least twenty units
+(B) Call early in the first month of every quarter
+(C) Pay the full yearly fee in January
+(D) Send a parts list to the technicians
+Answer: B
+Explanation: Thư yêu cầu "call before Friday of the first month of each quarter", tức phải gọi đặt lịch đầu mỗi quý. | (A) "Register at least twenty units" — mức tối thiểu là mười máy, không phải hai mươi. | (B) "Call early in the first month of every quarter" — đúng yêu cầu đặt lịch vừa dẫn. | (C) "Pay the full yearly fee in January" — thư không hề nhắc trả phí cả năm. | (D) "Send a parts list to the technicians" — phụ tùng nhỏ miễn phí do bên dịch vụ lo, không ai đòi danh sách.
+Source: original

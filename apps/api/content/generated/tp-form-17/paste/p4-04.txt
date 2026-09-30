@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, team, thanks for joining our monthly sales review meeting. Last month's total rose five percent, mainly from strong online orders placed at home. Our High Street store was quiet on weekdays, however weekend traffic improved clearly after we moved the new display to the entrance doors. We originally expected home goods to lead the month, but instead small accessories sold best by far. Please send your restock lists by Friday afternoon, and you are asked to keep the entrance display unchanged through Sunday evening. As I said, the new display did the heavy lifting, so let's not touch it yet.
+
+[QUESTION]
+Who is most likely the speaker?
+(A) A customer placing an online order
+(B) A supplier delivering home goods
+(C) A retail manager reviewing sales
+(D) A cashier sending a restock list
+Answer: C
+Explanation: Người nói mở đầu "Good morning, team, thanks for joining our monthly sales review meeting". | (A) "A customer placing an online order" — đặt hàng online ("online orders") là việc của khách, còn diễn giả chủ trì buổi họp: nhầm vai ai làm gì. | (B) "A supplier delivering home goods" — hàng gia dụng ("home goods") là nhóm hàng bị vượt mặt, không phải vai diễn giả: đúng từ, sai vai. | (C) "A retail manager reviewing sales" — đúng vai người chủ trì đánh giá doanh số với cả nhóm. | (D) "A cashier sending a restock list" — gửi danh sách bổ sung ("send your restock lists") là việc nhóm được yêu cầu, không phải việc diễn giả: nhầm vai.
+Source: original
+[QUESTION]
+What sold best last month?
+(A) Home goods
+(B) Online orders for weekdays
+(C) Weekday visits to the store
+(D) Small accessories
+Answer: D
+Explanation: Người nói chốt "We originally expected home goods to lead the month, but instead small accessories sold best by far". | (A) "Home goods" — đây là dự đoán cũ đã bị thay: đã công bố rồi sửa. | (B) "Online orders for weekdays" — đơn online giúp tổng tăng ("rose five percent") nhưng gắn sai với ngày thường ("quiet on weekdays"): đúng từ, sai quan hệ. | (C) "Weekday visits to the store" — cửa hàng vắng ngày thường, đông lên cuối tuần: đúng từ, sai việc. | (D) "Small accessories" — đúng nhóm bán chạy nhất sau khi đổi, phải ghép kỳ vọng cũ với kết quả mới.
+Source: original
+[QUESTION]
+What does the speaker mean when he says, "the new display did the heavy lifting"?
+(A) It brought most of the improvement
+(B) The display is very heavy to lift
+(C) Online orders stopped completely
+(D) Staff must send restock lists now
+Answer: A
+Explanation: Cụm trích "the new display did the heavy lifting" đi sau câu "weekend traffic improved clearly after we moved the new display to the entrance doors". | (A) "It brought most of the improvement" — đúng nghĩa hàm: quầy trưng bày là nguyên nhân chính của tiến triển. | (B) "The display is very heavy to lift" — đây là nghĩa đen của từ "heavy lifting", không phải ý diễn giả. | (C) "Online orders stopped completely" — đơn online vẫn tăng mạnh ("rose five percent"): suy ra bị phần còn lại bác bỏ. | (D) "Staff must send restock lists now" — gửi danh sách là chỉ dẫn có thật nhưng trả lời câu hỏi khác.
+Source: original

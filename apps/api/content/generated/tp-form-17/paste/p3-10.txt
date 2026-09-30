@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for coming. Have you coordinated deliveries in the city before?
+voice: ca_male_1
+Yes, for two years I scheduled evening routes for grocery stores.
+voice: uk_female_1
+Good. This job needs early mornings and a valid driving licence.
+voice: ca_male_1
+I have the licence, and I live ten minutes from the depot.
+voice: uk_female_1
+Perfect. Can you start next Monday and work the holiday roster?
+voice: ca_male_1
+Yes, and I will bring my references tomorrow.
+
+[QUESTION]
+Who most likely is the woman?
+(A) A hiring manager
+(B) A grocery routes planner
+(C) An evening deliveries driver
+(D) A licence office clerk
+Answer: A
+Explanation: Cô phỏng vấn "Have you coordinated deliveries in the city before" rồi nêu yêu cầu "This job needs early mornings". | (A) "A hiring manager" — đúng người tuyển điều phối giao hàng. | (B) "A grocery routes planner" — mượn từ "grocery stores" và "routes" trong câu "scheduled evening routes for grocery stores" nhưng đó là việc cũ của anh, không phải chức của cô. | (C) "An evening deliveries driver" — mượn từ "evening" và "deliveries" nhưng lái xe ca tối là kinh nghiệm của anh, không phải cô. | (D) "A licence office clerk" — mượn từ "driving licence" nhưng giấy phép chỉ là yêu cầu cô nêu, cô không cấp phép.
+Source: original
+[QUESTION]
+What can be inferred about the man?
+(A) He needs a driving licence to apply
+(B) He scheduled grocery routes for two years and lives ten minutes from the depot
+(C) He worked early mornings at grocery stores
+(D) He will keep his evening grocery routes
+Answer: B
+Explanation: Anh kể "for two years I scheduled evening routes for grocery stores" và cho biết "I live ten minutes from the depot", ghép hai câu ở hai chỗ khác nhau mới thấy anh vừa có kinh nghiệm vừa ở gần. | (A) "He needs a driving licence to apply" — mượn từ "valid driving licence" nhưng anh đã nói "I have the licence", nên không còn thiếu. | (B) "scheduled grocery routes for two years and lives ten minutes from the depot" — đúng suy ra từ hai câu tách rời vừa dẫn. | (C) "He worked early mornings at grocery stores" — mượn từ "early mornings" của yêu cầu và "grocery stores" của kinh nghiệm nhưng anh làm "evening routes", đảo ca. | (D) "He will keep his evening grocery routes" — mượn từ "evening routes" và "grocery stores" nhưng việc mới cần "early mornings", giữ tuyến cũ là trái yêu cầu.
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Bring references tomorrow
+(B) Continue evening routes for grocery stores
+(C) Start next Monday and work the holiday roster
+(D) Keep scheduling evening grocery routes
+Answer: C
+Explanation: Cô hỏi "Can you start next Monday and work the holiday roster" và anh đáp "Yes". | (A) "Bring references tomorrow" — mượn từ "I will bring my references tomorrow" nhưng đó là lời anh tự hứa, không phải yêu cầu của cô. | (B) "Continue evening routes for grocery stores" — mượn từ "scheduled evening routes for grocery stores" nhưng đó là việc cũ của anh, cô không yêu cầu tiếp tục. | (C) "Start next Monday and work the holiday roster" — đúng yêu cầu cô đưa ra. | (D) "Keep scheduling evening grocery routes" — mượn từ "scheduled evening routes" nhưng ca mới cần "early mornings", giữ tuyến tối là trái điều cô vừa nêu.
+Source: original

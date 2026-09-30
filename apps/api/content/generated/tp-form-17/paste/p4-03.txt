@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Attention, library users. This is an announcement from the central reading room team. Starting this Saturday, our weekend hours will be extended for the busy exam season. We originally planned to close at six o'clock, but instead we will stay open until nine o'clock every Saturday and Sunday evening. Please enter through the side door after six, and you are asked to show your library card at the front desk. Group study tables must be booked in advance at the counter. Thank you for keeping quiet while you enjoy the extra study time.
+
+[QUESTION]
+Where is the announcement being made?
+(A) In an examination hall
+(B) In a group study office
+(C) At a weekend book sale
+(D) In a library
+Answer: D
+Explanation: Người nói mở đầu "Attention, library users. This is an announcement from the central reading room team". | (A) "In an examination hall" — mùa thi ("exam season") chỉ là lý do kéo dài giờ, không phải nơi phát loa: đúng từ, sai bối cảnh. | (B) "In a group study office" — bàn học nhóm ("Group study tables") là tiện ích bên trong, không phải toàn bộ địa điểm. | (C) "At a weekend book sale" — cuối tuần là mốc giờ mở cửa, không có bán sách: đúng từ, sai việc. | (D) "In a library" — đúng nơi có phòng đọc trung tâm và người dùng thư viện.
+Source: original
+[QUESTION]
+What will probably happen on Saturday evening?
+(A) The reading room will stay open until nine o'clock
+(B) The reading room will close at six o'clock
+(C) The exam season will end early
+(D) The library will open only on Saturday morning
+Answer: A
+Explanation: Người nói sửa giờ đóng cửa bằng "We originally planned to close at six o'clock, but instead we will stay open until nine o'clock every Saturday and Sunday evening". | (A) "The reading room will stay open until nine o'clock" — đúng hệ quả của bản đã sửa, phải ghép vế cũ với vế mới. | (B) "The reading room will close at six o'clock" — đây là kế hoạch cũ đã bị thay: đã công bố rồi sửa. | (C) "The exam season will end early" — mùa thi là lý do kéo dài giờ, không có gì nói nó kết thúc: suy ra bị phần còn lại bác bỏ. | (D) "The library will open only on Saturday morning" — thư viện mở cả tối thứ Bảy và Chủ nhật: đúng từ "Saturday", sai nghĩa.
+Source: original
+[QUESTION]
+What must users do at the front desk?
+(A) Enter through the front desk door
+(B) Display their membership card
+(C) Reserve a group study table there
+(D) Book the side door in advance
+Answer: B
+Explanation: Người nói dặn "you are asked to show your library card at the front desk". | (A) "Enter through the front desk door" — cửa phải dùng là "the side door after six": đúng động từ, sai cửa. | (B) "Display their membership card" — đúng việc phải làm với thẻ thư viện. | (C) "Reserve a group study table there" — đặt bàn là việc có thật nhưng làm ở quầy ("at the counter"), không phải việc xuất trình ở bàn lễ tân. | (D) "Book the side door in advance" — phải đặt trước là bàn học nhóm ("must be booked"), không phải cửa: gộp sai hai chi tiết.
+Source: original

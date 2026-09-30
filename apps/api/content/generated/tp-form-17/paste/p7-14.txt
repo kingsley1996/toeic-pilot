@@ -1,0 +1,79 @@
+[PASSAGE]
+From: Daniel Kim <daniel.kim@example-mail.net>
+To: Harborview Hall Events <events@harborview-hall.example>
+Subject: Room booking for Regional Sales Conference
+Date: April 28
+
+Dear Events Team,
+
+I would like to book rooms for our Regional Sales Conference on May 15-16. We expect 45 attendees and need the Grand Room for plenary talks plus one breakout room for group work.
+
+We need projection equipment, microphones, and catering for two lunches and one dinner. Our budget allows $2,000 for rooms and equipment, and we prefer rooms on the second floor near the elevators.
+
+Please confirm availability and total cost by May 5. I can visit on May 6 to check the setup and sign the agreement. Our team will arrive at 8:00 A.M. on May 15 for rehearsal. We will also need extra chairs for late registrants and a signboard at the entrance.
+
+Best regards,
+Daniel Kim, Office Assistant
+
+[PASSAGE]
+From: Harborview Hall Events <events@harborview-hall.example>
+To: Daniel Kim <daniel.kim@example-mail.net>
+Subject: Re: Room booking for Regional Sales Conference
+Date: May 2
+
+Dear Mr. Kim,
+
+Thank you for choosing Harborview Hall. The Grand Room and Breakout Room 2 are available on May 15-16 for 45 guests. The total for rooms and equipment is $1,850, within your budget. Catering for two lunches and one dinner is included in the price.
+
+We apologize for the technical interruption during your April event. We have reviewed your satisfaction survey and will replace the equipment that received your lowest rating before your May conference. Our technician will test all microphones the day before the event and stay on site during the plenary talks. Printed agendas will be placed on every seat before the opening remarks.
+
+Please sign the attached agreement by May 8 to keep the rooms.
+
+Warm regards,
+Laura Jensen, Events Manager
+
+[QUESTION]
+Why did Mr. Kim write to Harborview Hall?
+(A) To complain about the catering bill
+(B) To reserve rooms for the May sales conference
+(C) To cancel the April product briefing
+(D) To apply for a technician job
+Answer: B
+Explanation: Thư của Kim mở đầu bằng "I would like to book rooms for our Regional Sales Conference on May 15-16" với 45 người dự. | (A) "To complain about the catering bill" — thư chỉ hỏi suất ăn cho tháng Năm, không hề phàn nàn hóa đơn. | (B) "To reserve rooms for the May sales conference" — đúng mục đích đặt phòng hội nghị tháng Năm. | (C) "To cancel the April product briefing" — sự kiện tháng Tư đã qua, thư chỉ đặt chỗ cho tháng Năm. | (D) "To apply for a technician job" — thư không hề xin việc kỹ thuật viên.
+Source: original
+[QUESTION]
+How many people are expected at the May conference?
+(A) 28
+(B) 52
+(C) 45
+(D) 60
+Answer: C
+Explanation: Thư đặt chỗ ghi rõ "We expect 45 attendees" và thư trả lời nhắc lại "for 45 guests". | (A) "28" — con số này không xuất hiện trong tài liệu. | (B) "52" — con số này không xuất hiện trong tài liệu. | (C) "45" — khớp số người dự nêu ở cả hai thư. | (D) "60" — con số này không xuất hiện trong tài liệu.
+Source: original
+[QUESTION]
+What is NOT stated about the May booking?
+(A) The total stays within the budget
+(B) Catering covers two lunches and one dinner
+(C) A technician will test the microphones
+(D) Free parking is offered to attendees
+Answer: D
+Explanation: Thư trả lời nêu giá, suất ăn và kiểm tra micro nhưng không hề nhắc chỗ đậu xe. | (A) "The total stays within the budget" — thư ghi "The total for rooms and equipment is $1,850, within your budget". | (B) "Catering covers two lunches and one dinner" — thư ghi "Catering for two lunches and one dinner is included". | (C) "A technician will test the microphones" — thư ghi "Our technician will test all microphones the day before". | (D) "Free parking is offered to attendees" — không chỗ nào nhắc bãi đậu xe miễn phí.
+Source: original
+[QUESTION]
+What equipment will the venue replace before the May conference?
+(A) Projector
+(B) Microphones
+(C) Coffee machines
+(D) Name tags
+Answer: A
+Explanation: Thư hứa "will replace the equipment that received your lowest rating before your May conference", còn phiếu khảo sát liệt kê mức thấp nhất là Equipment 2.4 với ghi chú "Projector in Grand Room stopped twice" nên ra đúng thiết bị. | (A) "Projector" — khớp thiết bị điểm thấp nhất trong khảo sát cần thay. | (B) "Microphones" — thư nói kỹ thuật viên chỉ kiểm tra micro, không thay. | (C) "Coffee machines" — máy pha cà phê không được nhắc ở đâu. | (D) "Name tags" — thẻ tên không được nhắc ở đâu.
+Source: original
+[QUESTION]
+What can be inferred from the satisfaction survey?
+(A) Catering received the lowest rating
+(B) Staff Support received the highest rating
+(C) Equipment scored above average
+(D) Room Comfort stopped twice
+Answer: B
+Explanation: Bảng khảo sát cho hàng Staff Support 4.8 cao nhất, còn Equipment 2.4 thấp nhất với ghi chú projector. | (A) "Catering received the lowest rating" — phục vụ ăn uống được 4.2, thấp nhất là Equipment 2.4. | (B) "Staff Support received the highest rating" — đúng mức 4.8 cao nhất bảng. | (C) "Equipment scored above average" — mức 2.4 là thấp nhất, ngược với đáp án. | (D) "Room Comfort stopped twice" — cụm "stopped twice" thuộc hàng Equipment về máy chiếu, không phải phòng.
+Source: original

@@ -1,0 +1,31 @@
+[PASSAGE]
+Tom Becker [8:40 A.M.]
+Hi Lisa, could we swap weekend shifts? My sister arrives this Saturday, and I promised to meet her at noon. I can cover your Sunday night route instead.
+
+Lisa Myers [9:05 A.M.]
+Saturday noon is my airport shuttle run, so I cannot trade the whole day. You can take my Sunday night route if you drive the morning market loop for me on Saturday.
+
+Tom Becker [9:18 A.M.]
+Deal. I will drive the Sunday night route. Could you leave the fare box at the office on Friday evening?
+
+Lisa Myers [10:23 A.M.]
+I can try. My airport run ends at 6:00 P.M., so I should reach the office by seven. Traffic is usually light at that hour.
+
+[QUESTION]
+What will Tom Becker do on Sunday?
+(A) Meet his sister at noon on Saturday
+(B) Drive the airport shuttle run
+(C) Drive the Sunday night route
+(D) Leave the fare box at the office
+Answer: C
+Explanation: Phải nối 2 chỗ: Lisa đề nghị "You can take my Sunday night route" (9:05) + Tom chốt "Deal. I will drive the Sunday night route" (9:18). | (A) "Meet his sister at noon on Saturday" — bẫy đúng-nhưng-trả-lời-câu-khác: đó là việc thứ Bảy, câu hỏi hỏi Chủ nhật. | (B) "Drive the airport shuttle run" — đó là ca của Lisa, không phải Tom. | (C) "Drive the Sunday night route" — đúng việc Tom nhận sau khi đổi ca. | (D) "Leave the fare box at the office" — đó là việc Lisa được nhờ, không phải Tom.
+Source: original
+[QUESTION]
+At 10:23 A.M., what does Ms. Myers mean when she writes, "I can try"?
+(A) She asks Tom to drive the airport run
+(B) She refuses to visit the office
+(C) She has already delivered the fare box
+(D) She will attempt to bring the fare box on Friday evening
+Answer: D
+Explanation: Câu quyết định nguyên văn: "I can try. My airport run ends at 6:00 P.M., so I should reach the office by seven. Traffic is usually light at that hour." | (A) "She asks Tom to drive the airport run" — ca sân bay vẫn của cô ấy, không nhờ Tom. | (B) "She refuses to visit the office" — trái hẳn: cô ấy đồng ý cố gắng, không từ chối. | (C) "She has already delivered the fare box" — bẫy sai thì: "should reach" là dự định, chưa làm xong. | (D) "She will attempt to bring the fare box on Friday evening" — đúng: nhận lời sẽ cố mang hộp vé tới văn phòng.
+Source: original

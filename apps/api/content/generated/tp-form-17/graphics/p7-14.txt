@@ -1,0 +1,7 @@
+kind: survey
+April Conference - Satisfaction Survey
+Aspect | Rating | Comment
+Room Comfort | 4.6 | Spacious and quiet
+Equipment | 2.4 | Projector in Grand Room stopped twice
+Catering | 4.2 | Lunch served on time
+Staff Support | 4.8 | Helpful and quick to respond

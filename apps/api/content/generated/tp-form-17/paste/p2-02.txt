@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+When will the food truck reach the east offices?
+voice: au_male_1
+(A) Behind the east lobby entrance.
+(B) It arrives at half past eleven.
+(C) Yes, the sandwiches are very fresh.
+Answer: B
+Explanation: Câu hỏi là "When will the food truck reach the east offices?", hỏi về THỜI GIAN xe đến. | (A) "Behind the east lobby entrance." — dùng lại từ "east" nhưng nêu nơi chốn cho một câu hỏi về thời gian. | (B) "It arrives at half past eleven." — nêu đúng một thời điểm đến. | (C) "Yes, the sandwiches are very fresh." — đáp Yes cho một câu hỏi When, bỏ Yes đi vẫn chỉ nói món ăn ngon chứ không cho thời gian.
+Source: original

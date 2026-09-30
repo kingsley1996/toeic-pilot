@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Which street has the vacant retail space?
+voice: au_male_1
+(A) On Park Street, near the station.
+(B) The rent increased last quarter.
+(C) Available from next month onward.
+Answer: A
+Explanation: Câu hỏi là "Which street has the vacant retail space?", hỏi NƠI CHỐN. | (A) "On Park Street, near the station." — nêu đúng tên đường và vị trí. | (B) "The rent increased last quarter." — mượn từ "rent" nhưng kể giá thuê tăng, không nói mặt bằng ở đường nào. | (C) "Available from next month onward." — trả lời thời điểm trống cho câu hỏi đường nào, mượn ý còn trống để đánh lừa.
+Source: original

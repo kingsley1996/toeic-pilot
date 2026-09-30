@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+We need a room for the new staff training next week.
+voice: au_male_1
+How many people are coming, and what time works?
+voice: us_female_1
+About forty people, and the trainer prefers after lunch.
+voice: au_male_1
+The morning slot is too small, but I will check the list.
+voice: us_female_1
+Good. We also need a projector and drinking water.
+voice: au_male_1
+I will book the matching room and email the trainer tonight.
+
+[QUESTION]
+Why are the colleagues talking?
+(A) To check the morning list
+(B) To book a room for new staff training
+(C) To arrange lunch for forty people
+(D) To email the trainer tonight
+Answer: B
+Explanation: Hai người chốt phòng: "We need a room for the new staff training" rồi "I will book the matching room". | (A) "To check the morning list" — mượn từ "morning slot" và "check the list" nhưng xem danh sách chỉ là bước trung gian, không phải mục đích. | (B) "To book a room for new staff training" — đúng mục đích đặt phòng đào tạo. | (C) "To arrange lunch for forty people" — mượn từ "forty people" và "after lunch" nhưng đó là số người và giờ học, họ không đặt bữa trưa. | (D) "To email the trainer tonight" — mượn từ "email the trainer tonight" nhưng gửi mail chỉ là việc sau khi đặt, không phải lý do họp.
+Source: original
+[QUESTION]
+What does the woman say they need?
+(A) The morning slot too small
+(B) Forty people after lunch
+(C) A projector and drinking water
+(D) The matching room tonight
+Answer: C
+Explanation: Chị nêu "We also need a projector and drinking water". | (A) "The morning slot too small" — mượn từ "morning slot is too small" nhưng đó là lời của anh chê suất sáng, không phải nhu cầu của chị. | (B) "Forty people after lunch" — mượn từ "About forty people" và "after lunch" nhưng đó là số người và giờ học, không phải thứ cần mua sắm, trả lời câu hỏi khác. | (C) "A projector and drinking water" — đúng thứ chị nói cần. | (D) "The matching room tonight" — mượn từ "book the matching room" và "tonight" nhưng ghép sai quan hệ: phòng khớp đặt cho tuần tới, tối nay chỉ gửi mail.
+Source: original
+[QUESTION]
+Look at the graphic. Which session will they book?
+(A) Early Session
+(B) Morning Session
+(C) Evening Session
+(D) Afternoon Session
+Answer: D
+Explanation: Nhóm cần "About forty people" và "after lunch", phiếu ghi Afternoon Session bốn mươi chỗ lúc hai giờ, phải nghe mới biết tra suất nào. | (A) "Early Session" — suất hai mươi chỗ lúc tám giờ, thiếu chỗ cho bốn mươi người. | (B) "Morning Session" — suất ba mươi chỗ lúc mười giờ, vẫn thiếu chỗ và là suất anh chê nhỏ. | (C) "Evening Session" — suất hai mươi lăm chỗ lúc năm giờ, thiếu chỗ và sai buổi. | (D) "Afternoon Session" — đúng suất bốn mươi chỗ khớp số người và giờ sau trưa.
+Source: original

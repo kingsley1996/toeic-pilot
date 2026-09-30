@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Which floor holds the temporary storage room?
+voice: uk_female_1
+(A) On the third floor, near the elevator.
+(B) After lunch, around one o'clock.
+(C) The storage boxes arrived this morning.
+Answer: A
+Explanation: Câu hỏi là "Which floor holds the temporary storage room?", hỏi VỊ TRÍ tầng. | (A) "On the third floor, near the elevator." — nêu đúng tầng và vị trí kho. | (B) "After lunch, around one o'clock." — trả lời thời điểm cho câu hỏi nơi chốn. | (C) "The storage boxes arrived this morning." — mượn từ "storage" nhưng kể hàng đến lúc nào, không nói kho ở tầng nào.
+Source: original

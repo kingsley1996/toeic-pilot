@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Attention, spectators, welcome to the city stadium for tonight's final match of the season. Groups of ten or more will now use the new north gate to avoid crowding at the entrance. We originally directed all fans to Gate A, but group ticket holders must enter through Gate C from today onward. Please have your group tickets ready in your hands, and you are asked to follow the yellow signs along the parking area outside. The main gate remains open for individual ticket holders arriving alone. Enjoy the game and please stay in your assigned section.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At Gate A of a parking area
+(B) At a city stadium
+(C) In an assigned section office
+(D) In a parking ticket line
+Answer: B
+Explanation: Người nói mở đầu "Attention, spectators, welcome to the city stadium for tonight's final match". | (A) "At Gate A of a parking area" — cổng A là hướng dẫn cũ đã đổi, còn bãi đỗ là chỗ có biển chỉ ("along the parking area"): gộp sai hai chi tiết. | (B) "At a city stadium" — đúng nơi phát thông báo trước trận chung kết. | (C) "In an assigned section office" — khu vực chỉ định ("assigned section") là chỗ ngồi xem, không phải nơi phát loa: đúng từ, sai chỗ. | (D) "In a parking ticket line" — vé nhóm và bãi đỗ là hai chi tiết khác nhau, không có hàng vé nào trong bài.
+Source: original
+[QUESTION]
+Which gate must group ticket holders use?
+(A) Gate A
+(B) The main gate
+(C) Gate C
+(D) The north parking entrance
+Answer: C
+Explanation: Người nói sửa cổng bằng "We originally directed all fans to Gate A, but group ticket holders must enter through Gate C from today onward". | (A) "Gate A" — đây là hướng dẫn cũ đã bị thay: đã công bố rồi sửa. | (B) "The main gate" — cổng chính còn mở cho khách lẻ ("for individual ticket holders"): nhầm vai nhóm với cá nhân. | (C) "Gate C" — đúng cổng mới của khách đoàn, phải ghép vế cũ với vế mới. | (D) "The north parking entrance" — cổng bắc ("north gate") gộp sai với bãi đỗ ("parking area"): đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+What can be inferred about group spectators?
+(A) They left their tickets in the parking area
+(B) The main gate is now closed to everyone
+(C) They will watch the game from the parking area
+(D) They will enter separately from individual fans
+Answer: D
+Explanation: Bài nói dặn khách đoàn "must enter through Gate C" ở đầu và chốt "The main gate remains open for individual ticket holders arriving alone" ở cuối, phải ghép hai chỗ mới ra. | (A) "They left their tickets in the parking area" — bài bắt "have your group tickets ready": suy ra bị phần còn lại bác bỏ. | (B) "The main gate is now closed to everyone" — cổng chính vẫn mở cho khách lẻ: ý bị gạt. | (C) "They will watch the game from the parking area" — bãi đỗ chỉ là đường có biển chỉ ("yellow signs along the parking area"): đúng từ, sai quan hệ. | (D) "They will enter separately from individual fans" — đúng điều chỉ suy ra khi ghép hai lối vào khác nhau, không câu nào nói thẳng.
+Source: original

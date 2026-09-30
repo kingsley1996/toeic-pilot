@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When does the receptionist interview round end?
+voice: uk_female_1
+(A) In the main meeting room.
+(B) Ask the hiring manager for the schedule.
+(C) The interviews went very well yesterday.
+Answer: B
+Explanation: Câu hỏi là "When does the receptionist interview round end?", hỏi THỜI ĐIỂM. | (A) "In the main meeting room." — trả lời nơi chốn cho câu hỏi thời điểm. | (B) "Ask the hiring manager for the schedule." — chỉ sang người khác mà không nêu thời điểm, đúng cách đáp gián tiếp. | (C) "The interviews went very well yesterday." — mượn từ "interviews" nhưng kể kết quả phỏng vấn, mốc "yesterday" không cho biết vòng này kết thúc khi nào.
+Source: original

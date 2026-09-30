@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) The barber is trimming a customer's hair with scissors.
+(B) The barber is wiping the clippers with a cloth.
+(C) The barber is sitting in the barber chair waiting.
+(D) Two customers are waiting beside the empty chairs.
+Answer: B
+Explanation: Trong ảnh một thợ cắt tóc đứng bên chiếc ghế cắt tóc còn trống đang lau tông đơ bằng khăn vải, ghế ngả dưới tấm gương lớn, áo choàng treo trên móc dọc tường và quạt trần quay phía trên, không có khách hay cây kéo nào. | (A) "trimming a customer's hair with scissors" — trong ảnh không có khách hàng lẫn cây kéo nào: người và vật không hề có trong ảnh. | (B) "wiping the clippers with a cloth" — đúng việc thợ cắt tóc đang làm. | (C) "sitting in the barber chair" — thợ cắt tóc đang đứng bên ghế chứ không ngồi trong ghế: đúng vật, sai hành động. | (D) "Two customers are waiting" — trong ảnh chỉ có đúng một người nên không thể có hai khách đang chờ: số ít bị nói thành số nhiều.
+Source: original

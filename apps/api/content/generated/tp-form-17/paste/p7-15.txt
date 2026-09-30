@@ -1,0 +1,85 @@
+[PASSAGE]
+Maple Street Reading Club - Invitation to New Members
+Date: May 10
+From: Anna Cole, Club Organizer
+
+Dear Neighbors,
+
+We invite you to join our new Reading Club for a season of stimulating discussions and friendly gatherings. This season focuses on mystery novels, starting with a first meetup on Saturday, June 7, at 10:00 A.M. in Room 3 of the community library.
+
+We meet once a month, and each session explores one book chosen by vote. New members can borrow the first book free from the front desk. Light refreshments are served during the break. Please reply by May 25 if you wish to join. We look forward to reading with you!
+
+Warmly,
+Anna Cole
+
+[PASSAGE]
+Maple Street Reading Club - Meeting Guidelines
+
+1. Members may borrow up to two books at a time for three weeks.
+2. Members who join the mystery novel group must bring a notebook with three discussion questions to each meeting.
+3. Please arrive ten minutes early; late arrivals after 10:15 A.M. wait until the break to enter.
+4. Turn off mobile phones during discussions.
+5. Cancellations must be sent by email one day before the meeting.
+
+Thank you for keeping our meetings pleasant and on time!
+
+[PASSAGE]
+From: Anna Cole <anna.cole@example-mail.net>
+To: New Members <members@example-mail.net>
+Subject: First meetup confirmed - June 7
+Date: May 28
+
+Hello everyone,
+
+Our first meetup on Saturday, June 7, at 10:00 A.M. is confirmed in Room 3. Mr. Park has joined the mystery novel group, and Ms. Rivera will lead the poetry corner for interested readers.
+
+Please bring your library card for book checkout. The front desk will have name tags ready at the entrance. If you cannot attend, email me by June 5 so we can adjust seats and refreshments.
+
+See you soon!
+Anna
+
+[QUESTION]
+When will the first meetup be held?
+(A) May 10 at 10:00 A.M.
+(B) May 25 at 10:00 A.M.
+(C) Saturday, June 7, at 10:00 A.M.
+(D) June 5 at 10:15 A.M.
+Answer: C
+Explanation: Thư mời và thư xác nhận đều ghi "on Saturday, June 7, at 10:00 A.M. in Room 3". | (A) "May 10 at 10:00 A.M." — đó là ngày gửi thư mời, không phải ngày họp. | (B) "May 25 at 10:00 A.M." — đó là hạn trả lời thư mời, không phải ngày họp. | (C) "Saturday, June 7, at 10:00 A.M." — khớp ngày giờ họp nêu ở cả hai thư. | (D) "June 5 at 10:15 A.M." — June 5 là hạn báo vắng, 10:15 là giờ trễ, ghép sai chi tiết.
+Source: original
+[QUESTION]
+What is NOT stated about the Reading Club?
+(A) The first book is free for new members
+(B) Members may borrow up to two books at a time
+(C) Members should come ten minutes early
+(D) Meetings are held every week
+Answer: D
+Explanation: Thư mời và nội quy nêu sách miễn phí, mượn hai cuốn và quy định giờ giấc, chỉ tần suất hằng tuần là sai. | (A) "The first book is free for new members" — thư mời ghi "borrow the first book free from the front desk". | (B) "Members may borrow up to two books at a time" — nội quy ghi "borrow up to two books at a time". | (C) "Members should come ten minutes early" — nội quy ghi "Please arrive ten minutes early". | (D) "Meetings are held every week" — thư mời ghi họp mỗi tháng một lần, không phải hằng tuần.
+Source: original
+[QUESTION]
+What must Mr. Park bring to the first meeting?
+(A) A notebook with three discussion questions
+(B) A poetry collection for the corner
+(C) Refreshments for all members
+(D) A mobile phone for voting
+Answer: A
+Explanation: Nội quy yêu cầu "Members who join the mystery novel group must bring a notebook with three discussion questions to each meeting", còn thư xác nhận nêu "Mr. Park has joined the mystery novel group" nên ra đúng vật cần mang. | (A) "A notebook with three discussion questions" — khớp đúng quy định cho nhóm trinh thám của ông Park. | (B) "A poetry collection for the corner" — góc thơ do cô Rivera phụ trách, không phải việc của ông Park. | (C) "Refreshments for all members" — đồ ăn nhẹ do câu lạc bộ phục vụ, thành viên không phải mang. | (D) "A mobile phone for voting" — nội quy yêu cầu tắt điện thoại khi thảo luận, ngược với đáp án.
+Source: original
+[QUESTION]
+What is implied about a member who arrives at 10:20 A.M. on June 7?
+(A) He or she will receive a free book
+(B) He or she will wait until the break to enter
+(C) He or she will lead the poetry corner
+(D) He or she will get a new library card
+Answer: B
+Explanation: Giờ họp là "on Saturday, June 7, at 10:00 A.M." mà nội quy ghi "late arrivals after 10:15 A.M. wait until the break to enter" nên người đến 10:20 phải đợi. | (A) "He or she will receive a free book" — sách miễn phí dành cho thành viên mới, không liên quan giờ đến. | (B) "He or she will wait until the break to enter" — đúng quy định trễ sau 10:15 phải đợi giờ nghỉ. | (C) "He or she will lead the poetry corner" — góc thơ do cô Rivera phụ trách, không phải người đến trễ. | (D) "He or she will get a new library card" — thẻ thư viện chỉ để mượn sách, không phải phần thưởng đến trễ.
+Source: original
+[QUESTION]
+In the invitation, the word "stimulating" in paragraph 1 is closest in meaning to
+(A) dull
+(B) brief
+(C) inspiring
+(D) costly
+Answer: C
+Explanation: Từ "stimulating" nằm trong cụm "for a season of stimulating discussions and friendly gatherings". | (A) "dull" — nghĩa buồn tẻ, trái nghĩa hoàn toàn. | (B) "brief" — nghĩa ngắn gọn, sai nghĩa. | (C) "inspiring" — đúng nghĩa gây hứng thú, khớp ngữ cảnh thảo luận. | (D) "costly" — nghĩa tốn kém, sai nghĩa.
+Source: original

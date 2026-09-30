@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Hi, I'm in unit 10B. There was loud drilling from upstairs after midnight again.
+voice: au_male_1
+Sorry about that. The crew is repairing the bathroom in 12B, which should have finished last week.
+voice: us_female_1
+I start work at six in the morning, so I really need quiet nights this week.
+voice: au_male_1
+Noisy work is only allowed between nine and five. They stayed late because a pipe burst yesterday.
+voice: us_female_1
+Can you make sure it doesn't happen again tonight?
+voice: au_male_1
+I'll speak to the contractor now and send a written notice to every worker.
+
+[QUESTION]
+Why is the woman calling?
+(A) To report a burst pipe in her bathroom
+(B) To request a room in a quieter unit
+(C) To apply for repair work upstairs
+(D) To complain about late-night noise from upstairs
+Answer: D
+Explanation: Người thuê phàn nàn tiếng khoan sau nửa đêm: "There was loud drilling from upstairs after midnight again." | (A) "burst pipe in her bathroom" — ghép sai quan hệ, ống vỡ hôm qua khiến thợ làm muộn, còn phòng tắm đang sửa ở căn 12B chứ không phải của cô. | (B) "request a room in a quieter unit" — cô chỉ xin đêm yên tĩnh ("quiet nights"), không hề xin đổi phòng. | (C) "apply for repair work" — đội thợ đang sửa tầng trên, cô không xin việc sửa chữa. | (D) "complain about late-night noise from upstairs" — đúng lý do cô gọi cho ban quản lý.
+Source: original
+[QUESTION]
+What does the man say he will do?
+(A) He will speak to the contractor and warn workers in writing
+(B) He will repair the bathroom in 12B himself
+(C) He will allow drilling until midnight tonight
+(D) He will burst a pipe to stop the work
+Answer: A
+Explanation: Người quản lý hứa chấn chỉnh đội thợ: "I'll speak to the contractor now and send a written notice to every worker." | (A) "speak to the contractor and warn workers in writing" — đúng hai việc ông nhận làm ngay. | (B) "He will repair the bathroom in 12B himself" — sai người, bên đang "repairing the bathroom in 12B" là đội thợ. | (C) "allow drilling until midnight" — bẻ sai giờ giấc, việc ồn chỉ được phép "between nine and five", nửa đêm chính là điều bị cấm. | (D) "burst a pipe" — ghép đúng từ sai quan hệ, ống vỡ là sự cố hôm qua chứ không phải cách ông xử lý.
+Source: original
+[QUESTION]
+What can be inferred about the renovation project?
+(A) It was cancelled after the pipe burst
+(B) It is running behind schedule
+(C) It will move to unit 10B next
+(D) It involves only quiet painting work
+Answer: B
+Explanation: Việc lẽ ra xong tuần trước mà nửa đêm vẫn khoan: "should have finished last week" cộng "drilling from upstairs after midnight again", tức tiến độ đang trễ mà thoại không nói thẳng. | (A) "cancelled after the pipe burst" — suy luận bị phần còn lại bác bỏ, thợ vẫn làm và quản lý còn gửi thông báo tiếp. | (B) "running behind schedule" — đúng suy luận phải ghép mốc xong hụt với tiếng ồn lúc nửa đêm. | (C) "move to unit 10B" — 10B là căn của người gọi phàn nàn, không phải nơi sửa chữa. | (D) "only quiet painting work" — bị tiếng khoan nửa đêm bác bỏ, "quiet" là thứ cô xin chứ không phải tính chất công trình.
+Source: original

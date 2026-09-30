@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+The third-quarter report went to audit, didn't it?
+voice: uk_female_1
+(A) In the finance office upstairs.
+(B) Yes, it was sent last Friday.
+(C) The audit team hired new staff.
+Answer: B
+Explanation: Câu hỏi là "The third-quarter report went to audit, didn't it?", đây là CÂU HỎI ĐUÔI cần xác nhận. | (A) "In the finance office upstairs." — nêu nơi chốn cho câu hỏi đuôi cần xác nhận đúng sai. | (B) "Yes, it was sent last Friday." — xác nhận báo cáo đã gửi đúng như hỏi. | (C) "The audit team hired new staff." — mượn từ "audit" nhưng kể chuyện nhân sự, không xác nhận báo cáo đã gửi hay chưa.
+Source: original

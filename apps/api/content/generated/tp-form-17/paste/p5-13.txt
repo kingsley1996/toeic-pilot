@@ -1,0 +1,9 @@
+[QUESTION]
+The head chef ------- the revised luncheon menu yesterday after the partners requested milder dishes.
+(A) will approve
+(B) approved
+(C) is approving
+(D) approves
+Answer: B
+Explanation: Mốc "yesterday" đã qua nên cần quá khứ đơn. | (A) "will approve" — tương lai đơn, mâu thuẫn mốc quá khứ. | (B) "approved" — quá khứ đơn hợp với mốc "yesterday". | (C) "is approving" — tiếp diễn hiện tại, không đi với mốc quá khứ. | (D) "approves" — hiện tại đơn, sai thì với mốc đã qua.
+Source: original

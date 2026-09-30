@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Should we rent the storage unit monthly or quarterly?
+voice: ca_male_1
+(A) Near the loading dock entrance.
+(B) Monthly, so we can adjust later.
+(C) The rent receipt is in my drawer.
+Answer: B
+Explanation: Câu hỏi là "Should we rent the storage unit monthly or quarterly?", đây là một câu hỏi LỰA CHỌN giữa hai cách thuê. | (A) "Near the loading dock entrance." — nêu nơi chốn cho một câu hỏi lựa chọn, không chọn phương án nào. | (B) "Monthly, so we can adjust later." — chọn một phương án trong hai phương án được hỏi. | (C) "The rent receipt is in my drawer." — dùng lại từ "rent" nhưng nói về biên lai, không chọn cách thuê nào.
+Source: original

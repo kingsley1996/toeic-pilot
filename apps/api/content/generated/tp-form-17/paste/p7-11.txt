@@ -1,0 +1,65 @@
+[PASSAGE]
+From: training@harbor-services.com
+To: All front-desk staff
+Subject: Invitation: Customer Service Workshop on June 12
+Date: May 28
+
+Dear Team Members,
+
+We are pleased to invite you to our full-day Customer Service Workshop on Thursday, June 12, from 9 A.M. to 4:30 P.M. The program includes four practical sessions: Listening Skills, Phone Etiquette, Service Recovery, and Feedback Workshop. Attendance is required for all front-desk employees hired after March, and a printed certificate will be given to everyone who completes the full day. Ms. Patel, our senior service coach with twelve years of counter experience, will lead the opening session, and printed handouts will be provided for every topic.
+
+The morning program focuses on everyday contact with callers and visitors, while the afternoon program turns to harder cases such as complaints and damaged deliveries. Both afternoon sessions will meet in Room 305. Employees who earned a service certificate last spring may skip the morning program but must join both afternoon sessions. Please bring your staff photo ID for registration, and arrive ten minutes before your first session so we can check names at the door.
+
+A hot lunch will be served at noon in the second-floor cafeteria for all registered participants. To streamline the check-in process, please confirm your attendance by replying to this e-mail no later than June 5. Late replies cannot be guaranteed a seat because each room holds only forty chairs. Buses from the north branch leave at 8:10 A.M. and return by 5:15 P.M. If you have questions, call the training desk at 555-0276.
+
+We look forward to seeing you there.
+
+Best regards,
+Nora Ellis
+Training Coordinator
+
+[QUESTION]
+What is the purpose of the e-mail?
+(A) To dismiss the training-room staff
+(B) To sell lunch tickets in the cafeteria
+(C) To invite front-desk staff to a workshop
+(D) To cancel the June program
+Answer: C
+Explanation: Thư mở đầu "We are pleased to invite you to our full-day Customer Service Workshop on Thursday, June 12", tức thư mời dự hội thảo. | (A) "To dismiss the training-room staff" — thư không sa thải ai. | (B) "To sell lunch tickets in the cafeteria" — bữa trưa phục vụ người đã đăng ký, không bán vé. | (C) "To invite front-desk staff to a workshop" — đúng mục đích vừa dẫn. | (D) "To cancel the June program" — chương trình vẫn diễn ra June 12, không bị hủy.
+Source: original
+[QUESTION]
+What must employees do by June 5?
+(A) Collect their printed certificates
+(B) Reserve a seat in Room 305
+(C) Pay for lunch in the cafeteria
+(D) Confirm attendance by replying to the e-mail
+Answer: D
+Explanation: Thư yêu cầu "please confirm your attendance by replying to this e-mail no later than June 5", tức phải trả lời thư trước June 5. | (A) "Collect their printed certificates" — chứng chỉ phát cho người học xong cả ngày, không phải việc làm trước June 5. | (B) "Reserve a seat in Room 305" — phòng do ban tổ chức xếp, nhân viên không tự đặt. | (C) "Pay for lunch in the cafeteria" — bữa trưa phục vụ người đã đăng ký, thư không hề thu tiền. | (D) "Confirm attendance by replying to the e-mail" — đúng yêu cầu vừa dẫn.
+Source: original
+[QUESTION]
+According to the e-mail and the schedule, in which room is the Service Recovery session held?
+(A) In Room 305
+(B) In Room 201
+(C) In Room 204
+(D) In the second-floor cafeteria
+Answer: A
+Explanation: Thư ghi "Both afternoon sessions will meet in Room 305" còn lịch xếp "Service Recovery" vào khung giờ "1:15-2:45" và để trống ô phòng của phiên này, tức phòng của phiên chiều này phải lấy theo thư. | (A) "In Room 305" — đúng phòng mà thư xếp cho các phiên chiều. | (B) "In Room 201" — là phòng của Listening Skills buổi sáng, không phải phiên này. | (C) "In Room 204" — là phòng của Phone Etiquette buổi sáng, không phải phiên này. | (D) "In the second-floor cafeteria" — là nơi ăn trưa, không phải phòng học.
+Source: original
+[QUESTION]
+At what time does the Feedback Workshop end?
+(A) At 2:45 P.M.
+(B) At 4:30 P.M.
+(C) At 12:15 P.M.
+(D) At 10:30 A.M.
+Answer: B
+Explanation: Lịch ghi phiên "Feedback Workshop" trong khung "3:00-4:30", tức phiên này kết thúc lúc 4:30. | (A) "At 2:45 P.M." — là giờ kết thúc của Service Recovery, không phải phiên này. | (B) "At 4:30 P.M." — đúng giờ kết thúc vừa dẫn. | (C) "At 12:15 P.M." — là giờ kết thúc của Phone Etiquette, không phải phiên này. | (D) "At 10:30 A.M." — là giờ kết thúc của Listening Skills, không phải phiên này.
+Source: original
+[QUESTION]
+In the e-mail, the word "streamline" in paragraph 4 is closest in meaning to
+(A) postpone
+(B) hinder
+(C) simplify
+(D) inspect
+Answer: C
+Explanation: Từ "streamline" ở cụm "To streamline the check-in process", nghĩa làm cho quy trình gọn và nhanh hơn. | (A) "postpone" — nghĩa hoãn lại, ngược với ý đẩy nhanh. | (B) "hinder" — nghĩa cản trở, ngược hẳn. | (C) "simplify" — đúng nghĩa làm gọn như vừa dẫn. | (D) "inspect" — nghĩa kiểm tra, sai trường nghĩa.
+Source: original

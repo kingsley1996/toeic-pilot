@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The return counter will stay open late this December.
+voice: us_female_1
+(A) Good, I can stop by after work.
+(B) He will return from his trip soon.
+(C) At the main entrance on weekdays.
+Answer: A
+Explanation: Câu hỏi là "The return counter will stay open late this December.", đây là một thông báo về giờ mở cửa kéo dài chứ không phải câu hỏi thông tin. | (A) "Good, I can stop by after work." — phản ứng đúng với thông báo giờ mở cửa kéo dài. | (B) "He will return from his trip soon." — dùng lại từ "return" nhưng nói về người trở về, không phản ứng với thông báo giờ mở cửa. | (C) "At the main entrance on weekdays." — nêu nơi chốn cho một thông báo, không phản ứng lại thông tin được nghe.
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Have you seen the shortlist for the translator position? Six candidates passed the written test.
+voice: ca_male_1
+Yes, and the meeting room is only free Friday afternoon. Can we fit them all in?
+voice: us_female_1
+If we allow twenty minutes each, we'll finish by five. I'll ask the reception desk to bring water.
+voice: ca_male_1
+Good. Two panel members are traveling, so we'll interview by video call from the small room.
+voice: us_female_1
+Then I'll email the candidates the video link tonight and reserve the small room.
+voice: ca_male_1
+Please do. I'll print the score sheets and meet you there at one.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To arrange interviews for translator candidates
+(B) To mark written tests for new hires
+(C) To order water for the reception desk
+(D) To book flights for traveling panel members
+Answer: A
+Explanation: Hai đồng nghiệp xếp lịch phỏng vấn biên dịch viên: "the shortlist for the translator position" rồi "Can we fit them all in?" | (A) "arrange interviews for translator candidates" — đúng việc cả hai đang xếp lịch chiều thứ Sáu. | (B) "mark written tests" — bài viết đã chấm xong ("passed the written test"), giờ chỉ xếp phỏng vấn. | (C) "order water for the reception desk" — đảo sai quan hệ, quầy lễ tân mang nước đến ("bring water") chứ không phải được đặt nước. | (D) "book flights" — hai giám khảo đi công tác nên phỏng vấn qua video, không ai đặt vé máy bay.
+Source: original
+[QUESTION]
+What do the speakers agree about the interviews?
+(A) Each candidate takes a written test in the small room
+(B) Each candidate gets twenty minutes by video call
+(C) The panel will travel to meet candidates Friday afternoon
+(D) The reception desk will email the video link
+Answer: B
+Explanation: Mỗi ứng viên hai mươi phút và phỏng vấn qua video: "If we allow twenty minutes each" cộng "we'll interview by video call from the small room". | (A) "takes a written test" — bài viết đã xong từ trước, buổi này chỉ phỏng vấn miệng. | (B) "twenty minutes by video call" — đúng phương án đã chốt sau khi ghép hai chi tiết. | (C) "panel will travel" — ý bị bác, vì giám khảo đi công tác nên mới phải gọi video. | (D) "reception desk will email" — sai người, chính người phụ nữ gửi link ("I'll email the candidates"), lễ tân chỉ mang nước.
+Source: original
+[QUESTION]
+What will the woman send to the candidates tonight?
+(A) The printed score sheets
+(B) The written test papers
+(C) Instructions to join the online interview
+(D) Bottles of water from reception
+Answer: C
+Explanation: Tối nay cô gửi link gọi video cho ứng viên: "I'll email the candidates the video link tonight". | (A) "printed score sheets" — việc của người kia ("I'll print the score sheets"), không phải của cô. | (B) "written test papers" — bài viết thuộc vòng đã qua, không ai gửi lại. | (C) "Instructions to join the online interview" — đúng là đường link tham gia buổi phỏng vấn trực tuyến. | (D) "water from reception" — nước do lễ tân mang đến phòng họp, không phải thứ gửi ứng viên.
+Source: original

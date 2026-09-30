@@ -1,0 +1,37 @@
+[PASSAGE]
+Northgate Company Newsletter
+Green Commute: Carpool Program Expands
+
+More than 120 employees have joined our carpool program since March, easing the morning parking shortage at the Northgate site. The program groups staff who live in the same district so they can share fuel costs and take turns driving. Managers say fewer solo cars have also cut traffic jams at the front gate during rush hour.
+
+To join, please finalize the registration form on the staff portal by Friday, May 16. New members must attend a fifteen-minute safety briefing in Room 101 before their first shared trip. Briefing sessions run every Tuesday and Thursday at 4:30 P.M. throughout May.
+
+Carpool groups with three or more riders receive priority parking near the main entrance and monthly fuel vouchers worth twenty dollars per driver. Solo drivers will park in the distant east lot starting in June. A mobile app showing live seat availability will be released to members next quarter. Questions about routes or schedules? Contact Mr. Alan Reese at extension 308.
+
+[QUESTION]
+What must employees do to join the carpool program?
+(A) Pay twenty dollars per month
+(B) Sign up on the staff portal by May 16
+(C) Visit Room 101 every Tuesday
+(D) Share fuel costs in March
+Answer: B
+Explanation: Bài nêu "please finalize the registration form on the staff portal by Friday, May 16". | (A) "Pay twenty dollars per month" — bẫy từ quen: twenty dollars là voucher tặng tài xế, không phải phí tham gia. | (B) "Sign up on the staff portal by May 16" — đúng, paraphrase của đăng ký trên portal trước 16/5. | (C) "Visit Room 101 every Tuesday" — Room 101 là buổi briefing an toàn, không phải cách đăng ký. | (D) "Share fuel costs in March" — March là mốc chương trình bắt đầu, không phải việc cần làm.
+Source: original
+[QUESTION]
+What can be inferred about parking at the Northgate site?
+(A) The east lot will be closed in June
+(B) Visitors must pay for parking
+(C) Spaces near the entrance are limited
+(D) Solo drivers get fuel vouchers
+Answer: C
+Explanation: Phải nối 2 chỗ: "easing the morning parking shortage" + "priority parking near the main entrance" và solo ra "distant east lot". | (A) "The east lot will be closed in June" — bẫy chi tiết sai: bãi đông là nơi solo drivers chuyển tới, không bị đóng. | (B) "Visitors must pay for parking" — không hề nhắc tới khách thăm. | (C) "Spaces near the entrance are limited" — đúng: khan chỗ nên chỉ nhóm carpool được ưu tiên cổng chính. | (D) "Solo drivers get fuel vouchers" — voucher chỉ cho tài xế carpool, không cho solo.
+Source: original
+[QUESTION]
+In the article, the word "finalize" in paragraph 2 is closest in meaning to
+(A) delay
+(B) cancel
+(C) discuss
+(D) complete
+Answer: D
+Explanation: Cụm quyết định là "the registration form on the staff portal by Friday, May 16" — điền/hoàn tất đơn trước hạn. | (A) "delay" — trái nghĩa (trì hoãn). | (B) "cancel" — bẫy: hủy bỏ, trái nghĩa. | (C) "discuss" — thảo luận, không liên quan ngữ cảnh điền đơn. | (D) "complete" — đúng: hoàn tất đơn đăng ký.
+Source: original

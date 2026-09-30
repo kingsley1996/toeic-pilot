@@ -1,0 +1,39 @@
+[PASSAGE]
+From: Administration Office
+To: All Staff
+Subject: Mandatory Password Update for the Internal Portal
+Date: September 2
+
+For system security, every employee must change the internal portal password between September 8 and September 12. Log in with your staff number, click "Security Settings", and create a password of at least ten characters mixing letters and numbers. The portal stays open during the lunch break throughout the update week.
+
+The old portal address will stop working on September 15, so please update any saved bookmarks. If you forget your staff number, ask Ms. Fiona Grant in Room 305 before noon on weekdays. The IT desk does not reset passwords by phone, so in-person visits are required for locked accounts.
+
+Staff on business trips may authorize a colleague in writing to collect a temporary code. Temporary codes expire after twenty-four hours and cannot be reused. After the update, the portal offers faster search and a new leave-request form. Thank you for keeping our data safe.
+
+[QUESTION]
+What must employees do between September 8 and September 12?
+(A) Collect a temporary code in person
+(B) Update their saved bookmarks
+(C) Visit Room 305 before noon
+(D) Change their portal password
+Answer: D
+Explanation: Bài nêu "must change the internal portal password between September 8 and September 12". | (A) "Collect a temporary code in person" — bẫy: chỉ cho nhân viên đi công tác, không phải tất cả. | (B) "Update their saved bookmarks" — bẫy đúng-nhưng-khác-mốc: cập nhật bookmark vì địa chỉ cũ dừng ngày 15/9. | (C) "Visit Room 305 before noon" — bẫy: chỉ dành cho ai quên mã nhân viên, không phải tất cả. | (D) "Change their portal password" — đúng việc phải làm trong khung 8–12/9.
+Source: original
+[QUESTION]
+What is NOT stated in the e-mail?
+(A) The portal adds a new payroll calculator
+(B) The old address stops on September 15
+(C) Passwords must mix letters and numbers
+(D) Locked accounts need in-person visits
+Answer: A
+Explanation: Bài kể mật khẩu trộn chữ-số, địa chỉ cũ dừng 15/9, tài khoản khóa phải tới trực tiếp — không máy tính lương nào. | (A) "The portal adds a new payroll calculator" — tính năng mới là faster search và leave-request form, không payroll calculator. | (B) "The old address stops on September 15" — bài ghi stop working on September 15. | (C) "Passwords must mix letters and numbers" — bài ghi mixing letters and numbers. | (D) "Locked accounts need in-person visits" — bài ghi in-person visits are required for locked accounts.
+Source: original
+[QUESTION]
+What can be inferred about an employee who forgets both the password and the staff number?
+(A) They can reset it by calling the IT desk
+(B) They must visit the office in person
+(C) They lose portal access forever
+(D) They should wait until September 15
+Answer: B
+Explanation: Phải nối 2 chỗ: "ask Ms. Fiona Grant in Room 305" (quên mã số) + "The IT desk does not reset passwords by phone". | (A) "They can reset it by calling the IT desk" — trái bài: IT desk không reset qua điện thoại. | (B) "They must visit the office in person" — đúng: quên mã thì tới Room 305, tài khoản khóa cũng phải tới trực tiếp. | (C) "They lose portal access forever" — bẫy quá đà: chỉ cần tới trực tiếp là xử lý được. | (D) "They should wait until September 15" — 15/9 là ngày địa chỉ cũ dừng, chờ đợi không giải quyết gì.
+Source: original

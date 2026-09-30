@@ -1,0 +1,7 @@
+kind: table
+Year-End Party Packages
+Package | Price
+Maple Gathering | $48
+Cedar Celebration | $62
+Oak Banquet | $79
+Pine Feast | $95

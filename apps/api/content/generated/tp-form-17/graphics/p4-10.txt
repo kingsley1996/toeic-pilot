@@ -1,0 +1,4 @@
+kind: map
+Ground Floor Directory
+Counter 1: Fashion | Counter 2: Book Corner
+Counter 3: Cafe | Counter 4: Flowers

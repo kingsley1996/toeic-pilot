@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Envelopes are stacked on top of the plastic trays.
+(B) Plastic trays are stacked on the long counter.
+(C) Stamps are hanging from a rack above the counter.
+(D) A clerk is standing behind the long counter helping.
+Answer: B
+Explanation: Trong ảnh khu vực giao dịch bưu điện vắng người, các khay thư nhựa xếp chồng trên mặt quầy dài, ô gỗ phía sau quầy đựng phong bì đã phân loại và tem, trên tường có đồng hồ treo. | (A) "stacked on top of the plastic trays" — phong bì nằm trong ô gỗ phía sau chứ không chồng trên khay: đúng vật, sai vị trí. | (B) "stacked on the long counter" — đúng vị trí của các khay thư nhựa. | (C) "hanging from a rack above the counter" — trong ảnh không có giá treo nào, tem nằm trong ô gỗ phía sau: vật không hề có trong ảnh. | (D) "A clerk is standing behind the counter" — trong ảnh không có một người nào: người không hề có trong ảnh.
+Source: original

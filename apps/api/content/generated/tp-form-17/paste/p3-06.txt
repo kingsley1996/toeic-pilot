@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, my tablet battery dies after two hours. I bought it on your website three months ago.
+voice: au_male_1
+Sorry to hear that. This counter only handles in-store purchases, with a paper receipt.
+voice: uk_female_1
+I have the order number in my email. Can't you replace the battery here?
+voice: au_male_1
+Online orders go through the service center downtown. They keep every battery model in stock.
+voice: uk_female_1
+Do I need an appointment, or can I just walk in?
+voice: au_male_1
+Just bring the tablet and the order number. They test every battery free of charge.
+
+[QUESTION]
+Who most likely is the man?
+(A) A clerk at the service counter
+(B) An online website designer
+(C) A battery manufacturer
+(D) A downtown delivery driver
+Answer: A
+Explanation: Người đàn ông đứng quầy và nêu giới hạn tiếp nhận của quầy: "This counter only handles in-store purchases". | (A) "clerk at the service counter" — đúng nhân viên quầy dịch vụ đang tiếp khách. | (B) "website designer" — ghép sai quan hệ, website chỉ là nơi cô mua máy ("bought it on your website"). | (C) "battery manufacturer" — trung tâm chỉ trữ sẵn pin ("keep every battery model in stock"), không ai sản xuất pin trong thoại. | (D) "downtown delivery driver" — trung tâm ở downtown là nơi bảo hành, không có lái xe giao hàng nào.
+Source: original
+[QUESTION]
+Why does the man mention "in-store purchases"?
+(A) To claim website tablets never lose power in two hours
+(B) To explain why he cannot process her request
+(C) To ask her to bring a paper receipt for an in-store purchase
+(D) To describe how downtown stocks and tests batteries
+Answer: B
+Explanation: Câu đó nêu giới hạn của quầy, đơn online thuộc về trung tâm: "This counter only handles in-store purchases" đặt cạnh "Online orders go through the service center downtown". | (A) "website tablets never lose power in two hours" — mượn từ "website" và "two hours" nhưng tuyệt đối hóa sai, câu đó chỉ nói phạm vi tiếp nhận của quầy. | (B) "explain why he cannot process her request" — đúng mục đích, đơn online thuộc trung tâm nên quầy không nhận. | (C) "bring a paper receipt for an in-store purchase" — mượn từ "paper receipt" và "in-store purchases" nhưng hóa đơn giấy chỉ là điều kiện của đơn tại cửa hàng, cô mua online nên không áp dụng. | (D) "downtown stocks and tests batteries" — mượn từ "downtown" và "test every battery" nhưng đó là việc của trung tâm, không phải mục đích của câu nói.
+Source: original
+[QUESTION]
+What does the man suggest the woman do?
+(A) Email the order number to the website
+(B) Replace the battery herself at home
+(C) Take the tablet and order number to the service center
+(D) Buy a paper receipt at the counter
+Answer: C
+Explanation: Anh ta hướng cô đến trung tâm bảo hành mang theo máy và mã đơn: "Online orders go through the service center downtown" cộng "Just bring the tablet and the order number". | (A) "Email the order number to the website" — đảo sai cách thức, mã đơn để mang đến đối chiếu trực tiếp chứ không gửi email. | (B) "Replace the battery herself" — ý bị bác, cô xin thay pin tại quầy nhưng được hướng đến trung tâm. | (C) "Take the tablet and order number to the service center" — đúng lời dặn phải ghép hai chỗ mới đủ. | (D) "Buy a paper receipt" — ghép đúng từ sai quan hệ, hóa đơn giấy chỉ là điều kiện của đơn mua tại cửa hàng.
+Source: original

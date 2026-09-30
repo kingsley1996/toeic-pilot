@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) Two workers are carrying cartons toward the truck.
+(B) One worker is pushing a handcart beside the truck.
+(C) One worker is carrying a carton toward the truck.
+(D) The workers are sitting inside the truck talking.
+Answer: C
+Explanation: Trong ảnh hai nhân viên giao hàng chất thùng các-tông lên xe tải, một người bê thùng tiến về phía thùng xe còn một người giữ cửa thùng phía sau, các thùng đã xếp trong khoang xe, phía sau là mặt đường và dãy nhà phố, không có xe đẩy tay nào. | (A) "Two workers are carrying cartons" — chỉ một người bê thùng, người còn lại giữ cửa: số ít bị nói thành số nhiều. | (B) "pushing a handcart" — trong ảnh không có chiếc xe đẩy tay nào: vật không hề có trong ảnh. | (C) "carrying a carton toward the truck" — đúng việc một nhân viên đang làm. | (D) "sitting inside the truck talking" — cả hai đang chất hàng chứ không ngồi nói chuyện: đúng người, sai hành động.
+Source: original

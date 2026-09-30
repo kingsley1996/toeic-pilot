@@ -1,0 +1,9 @@
+[QUESTION]
+Electronic medical records of patients with scheduled follow-up visits must remain ------- to authorized physicians only.
+(A) confidentially
+(B) confidential
+(C) confidentiality
+(D) confide
+Answer: B
+Explanation: Sau liên động từ "remain" cần tính từ làm bổ ngữ chỉ tính chất. | (A) "confidentially" — là trạng từ, không làm bổ ngữ sau "remain". | (B) "confidential" — là tính từ chỉ bảo mật, hợp nghĩa hồ sơ y tế. | (C) "confidentiality" — là danh từ, sai từ loại sau "remain". | (D) "confide" — là động từ, không đứng sau "remain".
+Source: original

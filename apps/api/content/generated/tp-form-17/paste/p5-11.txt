@@ -1,0 +1,9 @@
+[QUESTION]
+The self-drive car must be returned to the depot ------- the rental office closes at 6 p.m.
+(A) during
+(B) without
+(C) despite
+(D) before
+Answer: D
+Explanation: Sau chỗ trống là mệnh đề đầy đủ nên cần liên từ chứ không phải giới từ. | (A) "during" — giới từ chỉ đi với cụm danh từ, không đi với mệnh đề. | (B) "without" — giới từ không đứng trước mệnh đề đầy đủ. | (C) "despite" — giới từ chỉ đi với cụm danh từ hoặc danh động từ. | (D) "before" — liên từ chỉ thời gian, nối được hai mệnh đề.
+Source: original

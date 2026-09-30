@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Why was the vegetable stall closed this morning?
+voice: uk_female_1
+(A) The morning market opens very early.
+(B) At seven o'clock this morning.
+(C) The owner had a family emergency today.
+Answer: C
+Explanation: Câu hỏi là "Why was the vegetable stall closed this morning?", hỏi LÝ DO. | (A) "The morning market opens very early." — mượn từ "morning" nhưng nói giờ mở chợ chung, không giải thích vì sao quầy nghỉ. | (B) "At seven o'clock this morning." — trả lời thời điểm cho câu hỏi lý do, dùng lại cụm "this morning" để đánh lừa. | (C) "The owner had a family emergency today." — nêu đúng một lý do nghỉ bán.
+Source: original

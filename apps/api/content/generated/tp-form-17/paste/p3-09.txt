@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, my coffee maker is leaking from the bottom.
+voice: au_male_1
+Sorry to hear that. When did you buy it, and do you have the receipt?
+voice: uk_female_1
+About three months ago. I have the receipt and the warranty card here.
+voice: au_male_1
+Good. Did you use tap water or filtered water in the tank?
+voice: uk_female_1
+Tap water, and I never cleaned the filter.
+voice: au_male_1
+Please bring the machine tomorrow, and do not use it tonight.
+
+[QUESTION]
+Why is the woman talking to the man?
+(A) To buy a new water filter
+(B) To repair a leaking coffee maker
+(C) To return the receipt and warranty card
+(D) To clean the tank tonight
+Answer: B
+Explanation: Chị mở đầu bằng "my coffee maker is leaking from the bottom" và mang máy tới quầy bảo hành. | (A) "To buy a new water filter" — mượn từ "buy" trong câu "When did you buy it" và "water filter" nhưng chị không mua lọc mới, chỉ kể đã dùng nước máy. | (B) "To repair a leaking coffee maker" — đúng mục đích: sửa máy rò nước. | (C) "To return the receipt and warranty card" — mượn từ "receipt and the warranty card" nhưng chị mang theo để bảo hành, không phải để trả lại. | (D) "To clean the tank tonight" — mượn từ "tank" trong câu "in the tank" và "tonight" nhưng anh dặn "do not use it tonight", ngược với vệ sinh.
+Source: original
+[QUESTION]
+What does the woman say about the machine?
+(A) The warranty card left at home
+(B) The filter cleaned with tap water
+(C) The leaking machine from three months ago
+(D) The receipt for filtered water
+Answer: C
+Explanation: Chị nói máy "is leaking from the bottom" và mua "About three months ago", ghép hai câu mới ra, máy đó chính là "the machine" anh nhắc. | (A) "The warranty card left at home" — mượn từ "warranty card" nhưng chị nói "I have" ở đây, không để ở nhà, "left" và "home" không ai nói. | (B) "The filter cleaned with tap water" — mượn từ "cleaned the filter" và "tap water" nhưng chị nói "never cleaned", ngược nghĩa. | (C) "The leaking machine from three months ago" — đúng mô tả, khớp cả hai câu. | (D) "The receipt for filtered water" — mượn từ "receipt" và "filtered water" nhưng ghép sai quan hệ: biên lai là của máy, không phải của nước.
+Source: original
+[QUESTION]
+What does the man ask the woman to do?
+(A) Buy filtered water for the tank tonight
+(B) Use tap water tonight
+(C) Clean the filter here
+(D) Bring the machine tomorrow
+Answer: D
+Explanation: Anh dặn "Please bring the machine tomorrow, and do not use it tonight". | (A) "Buy filtered water for the tank tonight" — mượn từ "filtered water" và "tank" trong câu "filtered water in the tank" nhưng anh chỉ hỏi đã dùng nước nào, không hề bảo mua nước mới. | (B) "Use tap water tonight" — mượn từ "tap water" và "tonight" nhưng anh cấm dùng "do not use it tonight", ngược yêu cầu. | (C) "Clean the filter here" — mượn từ "cleaned the filter" nhưng chị đã nói chưa từng vệ sinh, anh không yêu cầu làm ở đây, "here" là thẻ bảo hành chứ không phải chỗ vệ sinh. | (D) "Bring the machine tomorrow" — đúng yêu cầu anh đưa ra.
+Source: original

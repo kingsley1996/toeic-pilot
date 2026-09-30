@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who is leading the Monday morning briefing?
+voice: uk_female_1
+(A) In the large meeting room.
+(B) Yes, the briefing starts very soon.
+(C) Mr. Lee from the sales team.
+Answer: C
+Explanation: Câu hỏi là "Who is leading the Monday morning briefing?", hỏi NGƯỜI. | (A) "In the large meeting room." — trả lời nơi chốn cho câu hỏi về người. | (B) "Yes, the briefing starts very soon." — đáp Yes kèm thời gian cho câu hỏi Who, bỏ "Yes" đi vẫn không nêu được ai chủ trì. | (C) "Mr. Lee from the sales team." — nêu đúng tên người chủ trì.
+Source: original

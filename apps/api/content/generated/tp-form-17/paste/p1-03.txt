@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) Flowerbeds are scattered across the middle of the walkway.
+(B) Garden lamps are hanging above the stone benches.
+(C) A man is sitting on a stone bench reading.
+(D) Stone benches are lined up along the paved walkway.
+Answer: D
+Explanation: Trong ảnh lối đi lát gạch ven sông vắng người, ghế đá xếp thành hàng dọc lối đi, đèn vườn dựng trên cột phía sau ghế gần lan can sông, bồn hoa trồng thành luống dài ở phía đối diện, xa xa là mặt sông và hàng cây. | (A) "scattered across the middle of the walkway" — bồn hoa trồng thành luống bên lối đi chứ không nằm giữa lối: đúng vật, sai vị trí. | (B) "hanging above the stone benches" — đèn vườn dựng trên cột phía sau ghế chứ không treo phía trên ghế: đúng vật, sai vị trí. | (C) "A man is sitting on a stone bench" — trong ảnh không có một người nào: người không hề có trong ảnh. | (D) "lined up along the paved walkway" — đúng vị trí của hàng ghế đá.
+Source: original

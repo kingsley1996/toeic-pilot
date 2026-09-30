@@ -1,0 +1,42 @@
+[PASSAGE]
+Patient Review — Booking Visits With CareBook
+By a Local Patient
+
+Our clinic introduced an online booking app for medical visits last month. The change has ------- (1) waiting times at the front desk and cut the number of missed appointments. Patients can choose a time slot and register ------- (2) the app instead of calling the clinic. Nurses update the available hours every Friday afternoon to reflect doctor schedules. The app also stores past visit records so returning patients avoid repeating basic health forms. Staff at the reception desk guide first-time users through each setup step. Reminders arrive one day before each visit. ------- (3), patients who miss the message can still attend by showing an ID card. The calendar is clear even for elderly users, and confirmation messages are easy to read. ------- (4)
+
+[QUESTION]
+Blank (1)
+(A) lengthened
+(B) shortened
+(C) forgotten
+(D) borrowed
+Answer: B
+Explanation: Câu sau liệt kê kết quả tích cực ("cut the number of missed appointments") nên thời gian chờ phải giảm. | (A) "lengthened" — kéo dài, ngược với cải thiện. | (B) "shortened" — rút ngắn, đúng hướng tích cực. | (C) "forgotten" — quên, vô nghĩa với "waiting times". | (D) "borrowed" — mượn, không đi với "waiting times".
+Source: original
+[QUESTION]
+Blank (2)
+(A) under
+(B) between
+(C) through
+(D) against
+Answer: C
+Explanation: Cụm "choose a time slot and register ... the app instead of calling the clinic" cần giới từ chỉ phương tiện đặt lịch. | (A) "under" — bên dưới, không chỉ phương tiện. | (B) "between" — giữa hai đối tượng, không hợp ở đây. | (C) "through" — qua, đúng cách đặt lịch bằng app. | (D) "against" — chống lại, ngược nghĩa văn cảnh.
+Source: original
+[QUESTION]
+Blank (3)
+(A) Therefore
+(B) Moreover
+(C) Otherwise
+(D) However
+Answer: D
+Explanation: Câu trước khẳng định nhắc lịch luôn được gửi ("Reminders arrive one day before each visit.") mà câu này vẫn cho phép đến khi lỡ tin nhắn nên cần nhượng bộ. | (A) "Therefore" — kết quả, sai vì đây là ngoại lệ chứ không phải hệ quả. | (B) "Moreover" — bổ sung cùng hướng, sai vì hai câu ngược nhau. | (C) "Otherwise" — nếu không thì, sai vì câu trước không phải điều kiện hay mệnh lệnh. | (D) "However" — tương phản, đúng mối quan hệ nhượng bộ.
+Source: original
+[QUESTION]
+Blank (4)
+(A) Patients who tried the app say they will recommend it to their neighbours.
+(B) Parking fees must be paid in cash at the gate.
+(C) The holiday parade starts at noon on Sunday.
+(D) The cafeteria opens at six o'clock every morning.
+Answer: A
+Explanation: Cả đoạn là bài đánh giá khen app đặt lịch ("The calendar is clear", "confirmation messages are easy to read") nên câu tổng kết lời giới thiệu nối mạch nhất. | (A) "Patients who tried the app say they will recommend it to their neighbours." — đúng câu kết nối tiếp mạch bài. | (B) "Parking fees must be paid in cash at the gate." — phí đậu xe không được nhắc tới. | (C) "The holiday parade starts at noon on Sunday." — diễu hành không liên quan app khám bệnh. | (D) "The cafeteria opens at six o'clock every morning." — căng tin không xuất hiện trong bài.
+Source: original

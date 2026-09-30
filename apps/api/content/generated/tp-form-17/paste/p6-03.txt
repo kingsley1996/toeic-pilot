@@ -1,0 +1,49 @@
+[PASSAGE]
+To: Group Guests
+From: Riverside Hotel
+Subject: Change of Check-in Date Confirmed
+Date: February 10
+
+Dear Ms. Tran,
+
+Thank you for choosing our hotel for your group stay. Your request to change the check-in date is fully ------- (1), and we have moved your booking ------- (2) March 14 as asked. Our front desk team has updated the guest list and room assignments for all twenty members of your group. Luggage storage on the arrival day is free, and late checkout until noon can be arranged on request. The meeting room you requested is ------- (3) for the new dates with the same seating plan. Breakfast for the whole group stays included in the room rate. Our shuttle bus runs every half hour between the station and the lobby throughout the day. ------- (4) Please reply to this email if any detail needs correction.
+
+Best regards,
+Reservation Team
+
+[QUESTION]
+Blank (1)
+(A) crowded
+(B) confirmed
+(C) noisy
+(D) expensive
+Answer: B
+Explanation: Câu mở đầu nói khách yêu cầu đổi ngày ("Your request to change the check-in date") nên yêu cầu phải được xác nhận. | (A) "crowded" — đông đúc, không nói về yêu cầu. | (B) "confirmed" — được xác nhận, đúng mạch email. | (C) "noisy" — ồn ào, không hợp văn cảnh. | (D) "expensive" — đắt, không nói về yêu cầu đổi ngày.
+Source: original
+[QUESTION]
+Blank (2)
+(A) on
+(B) at
+(C) to
+(D) for
+Answer: C
+Explanation: Động từ "we have moved your booking ... March 14 as asked" chỉ chuyển sang mốc mới nên cần "to". | (A) "on" — không đi với "moved" theo nghĩa dời lịch. | (B) "at" — chỉ địa điểm, không hợp ngày tháng ở đây. | (C) "to" — sang, đúng sau "moved your booking". | (D) "for" — dành cho, không diễn đạt việc dời sang ngày mới.
+Source: original
+[QUESTION]
+Blank (3)
+(A) reserving
+(B) reserve
+(C) reserves
+(D) reserved
+Answer: D
+Explanation: Cấu trúc bị động "The meeting room you requested is ... for the new dates with the same seating plan" cần quá khứ phân từ, phòng được giữ chỗ. | (A) "reserving" — chủ động, sai vì phòng được giữ. | (B) "reserve" — nguyên thể, không đi sau "is". | (C) "reserves" — ngôi ba số ít, không hợp chủ ngữ "room". | (D) "reserved" — phân từ bị động, đúng sau "is".
+Source: original
+[QUESTION]
+Blank (4)
+(A) Our team will send the updated invoice tomorrow morning.
+(B) The cafeteria will serve noodles on Fridays.
+(C) Parking spaces are reserved for managers only.
+(D) The holiday party is planned for December.
+Answer: A
+Explanation: Đoạn trước đổi ngày nhận phòng và giữ phòng họp ("moved your booking", "is reserved for the new dates") nên câu gửi hóa đơn cập nhật nối mạch nhất trước câu kiểm tra lại chi tiết. | (A) "Our team will send the updated invoice tomorrow morning." — đúng câu kết nối tiếp mạch email. | (B) "The cafeteria will serve noodles on Fridays." — căng tin không xuất hiện trong email. | (C) "Parking spaces are reserved for managers only." — bãi đậu xe không được nhắc tới. | (D) "The holiday party is planned for December." — tiệc lễ không liên quan đổi ngày nhận phòng.
+Source: original

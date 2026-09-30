@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Looking for a new way to stay fit after work? Join our evening swimming program at Lakeside Sports Center! Our certified coaches offer small group lessons every Tuesday and Thursday from seven to eight thirty. We originally planned Saturday morning sessions, but all beginner classes now meet on weekday evenings instead. Your first trial lesson is free, and the monthly fee is only forty dollars, including personal coaching and pool access. Places fill quickly, so please call us before Thursday to save your spot. Dive in and build your confidence in the water tonight!
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To promote after-work swim lessons
+(B) To explain water confidence techniques
+(C) To announce Saturday morning sessions
+(D) To hire certified swim coaches
+Answer: A
+Explanation: Người nói kêu gọi "Join our evening swimming program at Lakeside Sports Center" — quảng cáo khóa bơi buổi tối. | (A) "To promote after-work swim lessons" — diễn đạt lại đúng mục đích quảng cáo khóa bơi. | (B) "To explain water confidence techniques" — mượn "confidence in the water" nhưng đó chỉ là câu kết, không phải mục đích. | (C) "To announce Saturday morning sessions" — sáng thứ Bảy là kế hoạch đã nêu rồi sửa thành tối ngày thường. | (D) "To hire certified swim coaches" — mượn "certified coaches" nhưng họ là người dạy, không phải vị trí cần tuyển.
+Source: original
+[QUESTION]
+What is included in the monthly fee?
+(A) Saturday morning beginner classes
+(B) Personal coaching and pool access
+(C) A free trial lesson every month
+(D) Small group diving certificates
+Answer: B
+Explanation: Bài nói nêu "including personal coaching and pool access" sau mức phí bốn mươi đô. | (A) "Saturday morning beginner classes" — sáng thứ Bảy là lịch cũ đã bị đổi. | (B) "Personal coaching and pool access" — khớp đúng hai thứ kèm theo phí. | (C) "A free trial lesson every month" — mượn "first trial lesson is free" nhưng chỉ buổi đầu miễn phí, không phải mỗi tháng. | (D) "Small group diving certificates" — mượn "small group" nhưng ghép với lặn và chứng chỉ không ai nhắc tới.
+Source: original
+[QUESTION]
+What does the speaker suggest listeners do?
+(A) Build confidence alone in the water
+(B) Join a Saturday morning session
+(C) Call before Thursday to reserve a place
+(D) Wait until Thursday to start swimming
+Answer: C
+Explanation: Bài nói dặn sớm "Your first trial lesson is free" rồi chốt muộn "please call us before Thursday to save your spot" — ghép hai chỗ mới ra điều nên làm. | (A) "Build confidence alone in the water" — mượn "build your confidence in the water" nhưng khóa học có huấn luyện viên kèm cặp, không phải tự tập một mình. | (B) "Join a Saturday morning session" — sáng thứ Bảy là phương án đã bỏ. | (C) "Call before Thursday to reserve a place" — diễn đạt lại đúng lời dặn giữ chỗ. | (D) "Wait until Thursday to start swimming" — mượn "Thursday" nhưng đảo thành chờ tới đó thay vì gọi trước đó.
+Source: original

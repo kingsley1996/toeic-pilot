@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Have you seen the caterer's email about the year-end dinner?
+voice: ca_male_1
+Yes. Our budget is sixty-two dollars per guest, right?
+voice: us_female_1
+Right. And we need a hall for about eighty people near home.
+voice: ca_male_1
+The supplier offers four options, but the dear ones are over budget.
+voice: us_female_1
+Let's pick the one that fits our budget and call them from home tonight.
+voice: ca_male_1
+Agreed. I will ask about parking and the dessert menu too.
+
+[QUESTION]
+Why are the couple talking?
+(A) To raise the budget per guest
+(B) To ask about parking and dessert
+(C) To discuss the caterer's dinner email
+(D) To choose a year-end party package
+Answer: D
+Explanation: Hai người so gói tiệc: "The supplier offers four options" rồi chốt "Let's pick the one that fits our budget". | (A) "To raise the budget per guest" — mượn từ "budget is sixty-two dollars per guest" nhưng ngân sách đã chốt, họ không nâng. | (B) "To ask about parking and dessert" — mượn từ "parking and the dessert menu" nhưng đó chỉ là việc phụ anh hỏi thêm, không phải mục đích. | (C) "To discuss the caterer's dinner email" — mượn từ "caterer's email about the year-end dinner" nhưng email chỉ là thứ mở đầu, họ bàn chọn gói chứ không bàn email. | (D) "To choose a year-end party package" — đúng mục đích chọn gói tất niên.
+Source: original
+[QUESTION]
+Where are the speakers?
+(A) At home
+(B) At the supplier's office
+(C) In the dinner hall
+(D) At a dessert shop
+Answer: A
+Explanation: Chị nói "call them from home tonight" và cần hội trường "near home", tức đang ở nhà. | (A) "At home" — đúng nơi hai người đang nói. | (B) "At the supplier's office" — mượn từ "supplier" nhưng họ chỉ gọi cho nhà cung cấp từ nhà, không ở văn phòng họ. | (C) "In the dinner hall" — mượn từ "hall" trong câu "need a hall for about eighty people" và "dinner" nhưng hội trường là thứ cần thuê, không phải chỗ đang đứng. | (D) "At a dessert shop" — mượn từ "dessert" trong câu "dessert menu" nhưng tráng miệng là món trong thực đơn, không phải cửa hàng.
+Source: original
+[QUESTION]
+Look at the graphic. Which package will the couple choose?
+(A) Maple Gathering
+(B) Cedar Celebration
+(C) Oak Banquet
+(D) Pine Feast
+Answer: B
+Explanation: Ngân sách "Our budget is sixty-two dollars per guest", bảng ghi Cedar Celebration giá $62, chỉ nghe hoặc chỉ nhìn đều không chốt được. | (A) "Maple Gathering" — gói $48 dưới ngân sách và thiếu món theo bảng, không phải gói khớp ngân sách. | (B) "Cedar Celebration" — đúng hàng có giá khớp ngân sách hai người nêu. | (C) "Oak Banquet" — gói $79 vượt ngân sách, thuộc nhóm "dear ones are over budget". | (D) "Pine Feast" — gói $95 vượt xa ngân sách, cũng thuộc nhóm quá đắt.
+Source: original

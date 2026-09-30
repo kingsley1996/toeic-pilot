@@ -1,0 +1,9 @@
+[QUESTION]
+The relocation company will assign a coordinator to assist the foreign specialists with ------- customs paperwork.
+(A) its
+(B) his
+(C) their
+(D) our
+Answer: C
+Explanation: Trước danh từ "customs paperwork" với tiền ngữ số nhiều "specialists" cần tính từ sở hữu số nhiều. | (A) "its" — là sở hữu số ít, trái tiền ngữ số nhiều. | (B) "his" — là sở hữu đơn số ít giống đực, trái tiền ngữ. | (C) "their" — là sở hữu số nhiều, hợp với "specialists". | (D) "our" — là sở hữu ngôi thứ nhất, trái tiền ngữ ngôi thứ ba.
+Source: original

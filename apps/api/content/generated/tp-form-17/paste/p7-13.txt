@@ -1,0 +1,78 @@
+[PASSAGE]
+Notice: Fire Safety Training for Spring Charity Concert Volunteers
+Date: February 20
+From: Safety Office
+
+All volunteers supporting the Spring Charity Concert on April 12 must attend one full training session. The concert hall requires trained ushers for every performance.
+
+Attendance at one full session is mandatory for all ushers and ticket assistants.
+
+Session A: Tuesday, March 4, 9:00 A.M. to 11:00 A.M., Room 201
+Session B: Thursday, March 6, 2:00 P.M. to 4:00 P.M., Room 201
+
+The training covers fire extinguisher use, evacuation routes, and crowd guidance. Attendance will be recorded at the door. Please bring your volunteer badge and arrive ten minutes early. Late arrivals after 9:10 A.M. for Session A or 2:10 P.M. for Session B cannot receive a completion stamp. If you miss both sessions, contact the Safety Office by March 7 to arrange makeup. Questions about parking or seating duties can be sent to the volunteer desk by March 1.
+
+[PASSAGE]
+From: Mina Lee <mina.lee@example-mail.net>
+To: Volunteer Coordinator <volunteers@riverside-center.example>
+Subject: Request to change training session
+Date: February 26
+
+Dear Ms. Torres,
+
+I registered for Session A on Tuesday morning, March 4, but I must work the morning shift at my store that week. May I move to Session B on Thursday afternoon instead?
+
+I will usher at the Saturday evening performance, the Finale Night, and Session B fits my schedule better. I have my volunteer badge and can arrive early for the Thursday class. I understand attendance is checked at the door and I will stay for the full two hours.
+
+Please let me know if the change is possible. I can complete any form you need before March 1.
+
+Thank you for organizing the concert volunteers.
+
+Best regards,
+Mina Lee
+
+[QUESTION]
+What is the ticket price for the performance Ms. Lee will help with?
+(A) $28
+(B) $18
+(C) $12
+(D) $22
+Answer: A
+Explanation: Thư của Lee xác định ca trực với câu "I will usher at the Saturday evening performance, the Finale Night", còn bảng giá liệt kê suất "Finale Night" lúc "Sat Apr 12 8:30 PM" với giá 28 đô nên ra đúng giá vé. | (A) "$28" — khớp đúng hàng Finale Night trong bảng giá. | (B) "$18" — là giá của Afternoon Harmony, sai suất diễn Lee trực. | (C) "$12" — là giá của Morning Melodies, sai suất diễn Lee trực. | (D) "$22" — là giá của Evening Serenade, sai suất diễn Lee trực.
+Source: original
+[QUESTION]
+When is Session B scheduled?
+(A) Tuesday, March 4, 9:00 A.M. to 11:00 A.M.
+(B) Thursday, March 6, 2:00 P.M. to 4:00 P.M.
+(C) Saturday, April 12, 8:30 P.M.
+(D) Friday, March 7, 2:00 P.M.
+Answer: B
+Explanation: Thông báo ghi rõ "Session B: Thursday, March 6, 2:00 P.M. to 4:00 P.M., Room 201". | (A) "Tuesday, March 4, 9:00 A.M. to 11:00 A.M." — đó là giờ của Session A, sai ca được hỏi. | (B) "Thursday, March 6, 2:00 P.M. to 4:00 P.M." — khớp nguyên văn lịch Session B. | (C) "Saturday, April 12, 8:30 P.M." — là giờ diễn Finale Night trong bảng giá, không phải lịch tập huấn. | (D) "Friday, March 7, 2:00 P.M." — là hạn liên hệ học bù, không phải giờ Session B.
+Source: original
+[QUESTION]
+Why does Ms. Lee request a session change?
+(A) She has lost her volunteer badge
+(B) The Thursday class is shorter than Tuesday
+(C) She must work the morning shift that week
+(D) The concert date was moved to April
+Answer: C
+Explanation: Thư nêu hai ý khớp nhau là "I registered for Session A on Tuesday morning, March 4" và "I must work the morning shift at my store that week" nên lý do là trùng ca làm buổi sáng. | (A) "She has lost her volunteer badge" — thư nói "I have my volunteer badge", ngược với đáp án. | (B) "The Thursday class is shorter than Tuesday" — cả hai ca đều dài hai tiếng, không có chi tiết này. | (C) "She must work the morning shift that week" — đúng nguyên nhân trùng ca sáng trong thư. | (D) "The concert date was moved to April" — ngày hòa nhạc vẫn April 12 từ đầu, không hề dời.
+Source: original
+[QUESTION]
+What can be inferred about Ms. Lee's plan for Session B?
+(A) She wants to skip the evacuation-routes section
+(B) She has already missed both training sessions
+(C) She asks to arrive after 2:10 P.M. on Thursday
+(D) She plans to meet the mandatory full-session rule
+Answer: D
+Explanation: Thông báo quy định "Attendance at one full session is mandatory for all ushers and ticket assistants" còn thư của Lee khẳng định "I will stay for the full two hours" nên cô đáp ứng đúng quy tắc bắt buộc của ca muốn đổi. | (A) "She wants to skip the evacuation-routes section" — thư không hề xin bỏ nội dung "evacuation routes". | (B) "She has already missed both training sessions" — sai: thư ngày February 26 xin đổi trước các mốc March 4 và March 6. | (C) "She asks to arrive after 2:10 P.M. on Thursday" — ngược với "can arrive early for the Thursday class" và quy định trễ sau 2:10 không được đóng dấu. | (D) "She plans to meet the mandatory full-session rule" — khớp cả quy định bắt buộc và cam kết ở lại đủ hai tiếng.
+Source: original
+[QUESTION]
+In the notice, the word "mandatory" in paragraph 2 is closest in meaning to
+(A) required
+(B) optional
+(C) brief
+(D) costly
+Answer: A
+Explanation: Từ "mandatory" nằm trong câu "Attendance at one full session is mandatory for all ushers and ticket assistants". | (A) "required" — đúng nghĩa bắt buộc của câu vừa dẫn. | (B) "optional" — nghĩa tự nguyện, trái với yêu cầu bắt buộc. | (C) "brief" — nghĩa ngắn gọn, sai nghĩa. | (D) "costly" — nghĩa tốn kém, sai nghĩa.
+Source: original

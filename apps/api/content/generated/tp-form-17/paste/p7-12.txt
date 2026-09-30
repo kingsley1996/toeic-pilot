@@ -1,0 +1,71 @@
+[PASSAGE]
+From: Helen Marsh, Office Manager, Northgate Legal
+To: Sunrise Catering
+Subject: Poor lunch service on March 8
+Date: March 10
+
+Dear Mr. Coleman,
+
+Our firm ordered sixty boxed lunches for our client conference on March 8, and the service fell far below the standard in your contract. Your van arrived ninety minutes late, so our guests waited hungry in the meeting hall. Two of our partners had flown in from Chicago for this event, which made the delay especially embarrassing. Worse, twelve vegetarian meals were missing entirely, leaving several clients with nothing to eat. The chicken in the remaining boxes was cold and dry. We paid $900 in advance for this order and expect a partial refund within two weeks. Unless this matter is resolved fairly, we will place our monthly orders with another supplier. Please respond by March 14.
+
+Sincerely,
+Helen Marsh
+
+[PASSAGE]
+From: David Coleman, Sunrise Catering
+To: Helen Marsh
+Subject: Our apology and compensation
+Date: March 12
+
+Dear Ms. Marsh,
+
+Thank you for your letter of March 10, and please accept our sincere apology for the failed lunch delivery. Our delivery van broke down on the highway, which caused the ninety-minute delay you described. The twelve vegetarian meals were packed but left behind at our kitchen during the rush to reload, and our head chef has added a checklist so no special meal is ever left behind. To make up for this poor service, we will reimburse twenty-five percent of your payment this week, prepare twelve replacement vegetarian meals free of charge for your April seminar, and provide free dessert at that event. We have hired a second dispatcher to prevent future delays. I hope you will give us one more chance to serve your firm.
+
+Best regards,
+David Coleman
+
+[QUESTION]
+What went wrong with the delivery on March 8?
+(A) It served cold dessert in the meeting hall
+(B) It was sent to the wrong address
+(C) It cost more than the agreed price
+(D) It arrived an hour and a half behind schedule
+Answer: D
+Explanation: Thư khiếu nại ghi "Your van arrived ninety minutes late", tức xe đến trễ chín mươi phút. | (A) "It served cold dessert in the meeting hall" — sai: bữa March 8 chỉ có gà bị nguội, tráng miệng chỉ được hứa cho sự kiện sau. | (B) "It was sent to the wrong address" — thư không hề nhắc giao nhầm địa chỉ. | (C) "It cost more than the agreed price" — giá $900 trả trước đúng thỏa thuận, không ai tính thêm. | (D) "It arrived an hour and a half behind schedule" — đúng sự cố vừa dẫn.
+Source: original
+[QUESTION]
+In the second letter, the word "reimburse" in paragraph 4 is closest in meaning to
+(A) repay
+(B) repeat
+(C) refuse
+(D) retain
+Answer: A
+Explanation: Từ "reimburse" ở cụm "we will reimburse twenty-five percent of your payment", nghĩa hoàn trả tiền. | (A) "repay" — đúng nghĩa hoàn tiền như vừa dẫn. | (B) "repeat" — nghĩa lặp lại, sai trường nghĩa. | (C) "refuse" — nghĩa từ chối, ngược hẳn. | (D) "retain" — nghĩa giữ lại, ngược hẳn.
+Source: original
+[QUESTION]
+According to both letters, which remedy matches the complaint about the special meals?
+(A) A second dispatcher to speed up future deliveries
+(B) Twelve free replacement vegetarian meals for the April seminar
+(C) Free dessert at the March conference
+(D) A full refund of the $900 payment
+Answer: B
+Explanation: Thư thứ nhất ghi "twelve vegetarian meals were missing entirely" còn thư thứ hai hứa "prepare twelve replacement vegetarian meals free of charge", tức món chay thiếu được bù đúng số lượng. | (A) "A second dispatcher to speed up future deliveries" — là cách chống trễ chung, không phải món bù cho bữa chay thiếu. | (B) "Twelve free replacement vegetarian meals for the April seminar" — đúng cách khắc phục khớp với khiếu nại vừa dẫn. | (C) "Free dessert at the March conference" — tráng miệng miễn phí dành cho hội thảo April, không phải March. | (D) "A full refund of the $900 payment" — trái với "twenty-five percent", chỉ hoàn một phần.
+Source: original
+[QUESTION]
+What is NOT stated about the catering company?
+(A) Its van broke down on the highway
+(B) It hired a second dispatcher
+(C) It opened a new branch downtown
+(D) It promised dessert at that gathering
+Answer: C
+Explanation: Hai thư có nhắc "broke down on the highway", "hired a second dispatcher" và "free dessert at that event", còn chi nhánh mới thì không nơi nào nhắc tới. | (A) "Its van broke down on the highway" — đúng câu vừa dẫn nên bị loại. | (B) "It hired a second dispatcher" — đúng câu vừa dẫn nên bị loại. | (C) "It opened a new branch downtown" — không thư nào nhắc chi nhánh mới. | (D) "It promised dessert at that gathering" — đúng lời hứa tráng miệng ở sự kiện sau nên bị loại.
+Source: original
+[QUESTION]
+Why was the second letter written?
+(A) To cancel all future seminars
+(B) To request new recipes from the firm
+(C) To raise the price of boxed lunches
+(D) To apologize and offer compensation for a failed delivery
+Answer: D
+Explanation: Thư thứ hai mở đầu "please accept our sincere apology for the failed lunch delivery" rồi đưa ra bù đắp, tức thư xin lỗi và đền bù. | (A) "To cancel all future seminars" — ngược hẳn: hãng mong "give us one more chance". | (B) "To request new recipes from the firm" — công thức món ăn không xuất hiện. | (C) "To raise the price of boxed lunches" — giá không hề được nhắc tăng. | (D) "To apologize and offer compensation for a failed delivery" — đúng mục đích vừa dẫn.
+Source: original

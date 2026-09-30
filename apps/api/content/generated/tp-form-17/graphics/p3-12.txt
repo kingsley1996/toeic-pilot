@@ -1,0 +1,6 @@
+kind: schedule
+Holiday Front Desk Roster
+Name | 9-10 | 10-11 | 13-14 | 14-15
+Nina | Desk duty |  | Desk duty | Desk duty
+Omar | Meeting | Meeting | Desk duty | 
+Tara | Desk duty | Desk duty |  | Desk duty

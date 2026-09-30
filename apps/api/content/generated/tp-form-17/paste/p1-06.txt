@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) A coiled hose is hanging above the garden path.
+(B) A bamboo trellis is lying flat on the patio.
+(C) Potted plants are arranged in rows on the patio.
+(D) A gardener is watering the potted plants now.
+Answer: C
+Explanation: Trong ảnh sân gạch ngoài trời vắng người, chậu kiểng xếp thành hàng trên sân, cuộn vòi tưới nằm trên mặt đất cạnh lối đi, giàn tre đứng ở phía xa, phía sau là hàng rào gỗ và cây xanh. | (A) "hanging above the garden path" — cuộn vòi nằm dưới đất cạnh lối đi chứ không treo phía trên: giới từ gần nghĩa bị tráo. | (B) "lying flat on the patio" — giàn tre đang đứng ở phía xa chứ không nằm trên sân: đúng vật, sai vị trí. | (C) "arranged in rows on the patio" — đúng vị trí của các chậu kiểng. | (D) "watering the potted plants" — trong ảnh không có người làm vườn nào: người không hề có trong ảnh.
+Source: original

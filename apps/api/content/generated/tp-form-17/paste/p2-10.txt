@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When will the car loan be paid out?
+voice: uk_female_1
+(A) On the third of next month.
+(B) At the branch on Main Street.
+(C) Yes, the loan form is ready.
+Answer: A
+Explanation: Câu hỏi là "When will the car loan be paid out?", hỏi về THỜI ĐIỂM giải ngân khoản vay. | (A) "On the third of next month." — nêu đúng một mốc thời gian giải ngân. | (B) "At the branch on Main Street." — nêu nơi chốn cho một câu hỏi When, không cho thời gian. | (C) "Yes, the loan form is ready." — đáp Yes cho một câu hỏi When, bỏ Yes đi vẫn chỉ nói biểu mẫu đã xong chứ không cho thời gian.
+Source: original

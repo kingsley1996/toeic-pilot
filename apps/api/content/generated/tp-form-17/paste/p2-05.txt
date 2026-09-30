@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Is there a discount for school groups at the museum?
+voice: uk_female_1
+(A) At the front gate ticket office.
+(B) I haven't seen the new price list yet.
+(C) The school bus leaves at noon.
+Answer: B
+Explanation: Câu hỏi là "Is there a discount for school groups at the museum?", đây là một câu hỏi Yes-No về giảm giá vé. | (A) "At the front gate ticket office." — nêu nơi chốn cho một câu hỏi Yes-No, không xác nhận hay nói không biết. | (B) "I haven't seen the new price list yet." — nói chưa thể trả lời vì chưa thấy bảng giá mới, đúng kiểu né không biết mà vẫn là phản hồi hợp lý. | (C) "The school bus leaves at noon." — dùng lại từ "school" nhưng nói giờ xe buýt, trả lời thời gian cho một câu hỏi Yes-No.
+Source: original

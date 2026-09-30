@@ -1,0 +1,9 @@
+[QUESTION]
+Readers ------- library cards expire in June must renew them before borrowing additional books.
+(A) who
+(B) which
+(C) whose
+(D) where
+Answer: C
+Explanation: Ngay sau chỗ trống là cụm danh từ "library cards" nên cần đại từ quan hệ sở hữu. | (A) "who" — là chủ ngữ quan hệ, sau nó phải là động từ. | (B) "which" — dùng cho vật với mệnh đề đầy đủ, không đi trước danh từ. | (C) "whose" — chỉ sở hữu, hợp với "library cards". | (D) "where" — chỉ nơi chốn, không đứng trước danh từ.
+Source: original

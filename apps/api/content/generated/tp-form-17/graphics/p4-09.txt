@@ -1,0 +1,6 @@
+kind: chart
+Regional Sales by Quarter in thousands
+First quarter | 47
+Second quarter | 63
+Third quarter | 52
+Fourth quarter | 88

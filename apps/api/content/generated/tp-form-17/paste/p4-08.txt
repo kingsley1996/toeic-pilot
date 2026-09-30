@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Hello, this is Bright Smile Clinic calling for Mr. Harris. This is a reminder of your cleaning appointment on Friday at eleven in the morning. We originally booked you for Wednesday afternoon, but the dentist rescheduled, so your visit is now on Friday instead. Please arrive ten minutes early and bring your insurance card and appointment letter with you. If you need to move the time again, please call us back before Wednesday noon. Our clinic is on the second floor of Maple House, and the elevator is behind the front desk. We look forward to seeing you soon.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To request advance payment for insurance
+(B) To confirm a visit on Wednesday afternoon
+(C) To remind about Friday's hygiene visit
+(D) To introduce a dentist on Maple House
+Answer: C
+Explanation: Người nói mở đầu "This is a reminder of your cleaning appointment on Friday" — mục đích là nhắc lịch răng. | (A) "To request advance payment for insurance" — mượn "insurance card" nhưng đổi thành thu tiền bảo hiểm. | (B) "To confirm a visit on Wednesday afternoon" — chiều thứ Tư là lịch cũ đã bị dời. | (C) "To remind about Friday's hygiene visit" — diễn đạt lại đúng mục đích nhắc lịch. | (D) "To introduce a dentist on Maple House" — mượn "dentist" và "Maple House" nhưng ghép sai quan hệ, không ai giới thiệu nha sĩ.
+Source: original
+[QUESTION]
+What should the patient bring to the appointment?
+(A) Cash for Friday's treatment
+(B) An elevator key from the front desk
+(C) Ten minutes of early arrival time
+(D) Insurance card and appointment letter
+Answer: D
+Explanation: Bài nói dặn "bring your insurance card and appointment letter with you" — đúng hai thứ cần mang. | (A) "Cash for Friday's treatment" — tiền mặt chưa từng được nhắc tới. | (B) "An elevator key from the front desk" — mượn "elevator" và "front desk" nhưng đổi thành chìa khóa không ai nhắc. | (C) "Ten minutes of early arrival time" — mượn "ten minutes early" nhưng đó là giờ đến, không phải đồ mang theo. | (D) "Insurance card and appointment letter" — khớp đúng lời dặn.
+Source: original
+[QUESTION]
+What should the listener do if he needs to change the time?
+(A) Contact the clinic before Wednesday noon to rearrange
+(B) Arrive ten minutes early on Friday
+(C) Come on Wednesday afternoon instead
+(D) Wait behind the front desk for the elevator
+Answer: A
+Explanation: Bài nói nêu sớm lịch hẹn "your cleaning appointment on Friday at eleven" rồi dặn muộn "please call us back before Wednesday noon" — ghép hai chỗ mới ra cách đổi giờ. | (A) "Contact the clinic before Wednesday noon to rearrange" — diễn đạt lại đúng điều cần làm khi đổi giờ. | (B) "Arrive ten minutes early on Friday" — đến sớm là việc chung, không phải cách đổi giờ. | (C) "Come on Wednesday afternoon instead" — chiều thứ Tư là lịch cũ đã bị sửa. | (D) "Wait behind the front desk for the elevator" — mượn "behind the front desk" và "elevator" nhưng đổi thành chờ thang máy.
+Source: original

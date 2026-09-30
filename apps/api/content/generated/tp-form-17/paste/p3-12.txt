@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Nina, Omar and Tara, we must cover the front desk over the holidays.
+voice: ca_male_1
+I am Omar. I have a meeting all morning, but I am free late.
+voice: au_male_1
+I am Tara. I can take the gap after lunch if needed.
+voice: uk_female_1
+Thanks, Tara. Nina will handle the morning visitors, and I will print the roster.
+voice: ca_male_1
+Good. I will bring extra badges before the weekend.
+voice: au_male_1
+And I will lock the storage room tonight.
+
+[QUESTION]
+Who most likely are the speakers?
+(A) Meeting organisers
+(B) Morning visitors
+(C) Front-desk coordinators
+(D) Storage guards
+Answer: C
+Explanation: Ba người xếp trực: "we must cover the front desk over the holidays" và nhắc "print the roster". | (A) "Meeting organisers" — mượn từ "meeting" trong câu "I have a meeting all morning" nhưng họp chỉ là lịch bận của Omar, không phải chức nhóm. | (B) "Morning visitors" — mượn từ "morning visitors" trong câu "Nina will handle the morning visitors" nhưng khách là đối tượng họ đón, không phải người họp. | (C) "Front-desk coordinators" — đúng nhóm điều phối quầy lễ tân. | (D) "Storage guards" — mượn từ "lock the storage room" nhưng khóa kho chỉ là việc Tara làm thêm tối nay, không phải nghề.
+Source: original
+[QUESTION]
+What will Omar do before the weekend?
+(A) Lock the storage room tonight
+(B) Print the roster
+(C) Handle the morning visitors
+(D) Bring extra badges
+Answer: D
+Explanation: Omar hẹn "I will bring extra badges before the weekend". | (A) "Lock the storage room tonight" — mượn từ "lock the storage room tonight" nhưng đó là việc của Tara, nhầm người và sai thời điểm. | (B) "Print the roster" — mượn từ "I will print the roster" nhưng đó là việc của chị, không phải Omar. | (C) "Handle the morning visitors" — mượn từ "Nina will handle the morning visitors" nhưng đó là việc của Nina, nhầm người. | (D) "Bring extra badges" — đúng việc Omar làm.
+Source: original
+[QUESTION]
+Look at the graphic. When will Tara cover the front desk?
+(A) 13-14
+(B) 10-11
+(C) 9-10
+(D) 14-15
+Answer: A
+Explanation: Tara nhận "I can take the gap after lunch", bảng ghi hàng Tara chỉ trống ô 13-14, phải nghe mới biết tra hàng nào. | (A) "13-14" — đúng ô trống duy nhất của Tara trên bảng. | (B) "10-11" — ô trống của Nina trên bảng, nhầm hàng. | (C) "9-10" — giờ đó cả ba đều trực, không ai trống. | (D) "14-15" — ô trống của Omar trên bảng, nhầm hàng.
+Source: original

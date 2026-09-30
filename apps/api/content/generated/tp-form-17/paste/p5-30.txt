@@ -1,0 +1,9 @@
+[QUESTION]
+The ------- of the premises lease was extended by two years after the final round of negotiation.
+(A) endure
+(B) durable
+(C) duration
+(D) durably
+Answer: C
+Explanation: Sau mạo từ "The" trước "of" ở vị trí chủ ngữ cần danh từ số ít. | (A) "endure" — là động từ, không đứng sau mạo từ. | (B) "durable" — là tính từ, sai từ loại trước "of". | (C) "duration" — là danh từ chỉ thời hạn, hợp nghĩa gia hạn thuê. | (D) "durably" — là trạng từ, không làm chủ ngữ.
+Source: original

@@ -1,0 +1,44 @@
+[PASSAGE]
+City Transit News — New Tram Line to the Industrial Zone
+By Staff Reporter
+
+The city has opened a new tram line that links the industrial zone with the central station. The service will ------- (1) travel time for morning commuters from forty minutes to about fifteen. Trains run every ten minutes, and commuters can check live schedules on ------- (2) mobile phones before leaving home. The city transport office has assigned extra staff to guide passengers during peak hours. Monthly passes cost the same as bus passes, and tickets can be bought at station machines. The first trams are ------- (3) to arrive at the central platform at 5:30 a.m. each day. Local shops near the new stops expect more visitors during lunch hours. ------- (4)
+
+Written by the City News Desk
+
+[QUESTION]
+Blank (1)
+(A) increase
+(B) reduce
+(C) delay
+(D) miss
+Answer: B
+Explanation: Câu "from forty minutes to about fifteen" cho thấy thời gian rút ngắn nên cần "reduce". | (A) "increase" — tăng, ngược với số liệu. | (B) "reduce" — giảm, đúng hướng rút ngắn. | (C) "delay" — trì hoãn, không hợp tuyến mới nhanh hơn. | (D) "miss" — bỏ lỡ, vô nghĩa với "travel time".
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) them
+(C) their
+(D) theirs
+Answer: C
+Explanation: Cụm "commuters can check live schedules ... mobile phones before leaving home" cần tính từ sở hữu trước danh từ, chủ ngữ số nhiều là "commuters". | (A) "they" — chủ ngữ, không đứng trước danh từ. | (B) "them" — tân ngữ, không đứng trước danh từ. | (C) "their" — sở hữu, đúng trước "mobile phones". | (D) "theirs" — đại từ độc lập, không đi kèm danh từ.
+Source: original
+[QUESTION]
+Blank (3)
+(A) expects
+(B) expecting
+(C) expect
+(D) expected
+Answer: D
+Explanation: Cấu trúc bị động "The first trams are ... to arrive at the central platform" cần quá khứ phân từ. | (A) "expects" — ngôi ba số ít, không hợp chủ ngữ số nhiều. | (B) "expecting" — chủ động, sai vì tàu được chờ đợi. | (C) "expect" — nguyên thể, không đi sau "are". | (D) "expected" — phân từ bị động, đúng sau "are".
+Source: original
+[QUESTION]
+Blank (4)
+(A) Residents are invited to try the line free of charge during its first week.
+(B) The cafeteria menu will change on Fridays.
+(C) Parking fines must be paid within ten days.
+(D) The holiday concert is planned for December.
+Answer: A
+Explanation: Đoạn văn giới thiệu tuyến xe điện mới ("links the industrial zone with the central station") nên câu mời trải nghiệm miễn phí nối mạch nhất. | (A) "Residents are invited to try the line free of charge during its first week." — đúng câu kết nối tiếp mạch bài. | (B) "The cafeteria menu will change on Fridays." — căng tin không xuất hiện trong bài. | (C) "Parking fines must be paid within ten days." — tiền phạt đậu xe không được nhắc tới. | (D) "The holiday concert is planned for December." — hòa nhạc không liên quan tuyến xe điện.
+Source: original

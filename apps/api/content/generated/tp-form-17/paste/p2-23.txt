@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Where did the customer service desk move after the renovation?
+voice: us_female_1
+(A) To the second floor lobby.
+(B) It closed during the renovation period.
+(C) Last Monday morning, I think.
+Answer: B
+Explanation: Câu hỏi là "Where did the customer service desk move after the renovation?", hỏi NƠI CHỐN. | (A) "To the second floor lobby." — nêu một nơi chốn nghe hợp lý nhưng sai, vì quầy đã đóng cửa chứ không chuyển đi. | (B) "It closed during the renovation period." — cho biết quầy đã đóng nên câu hỏi chuyển đi đâu không còn ý nghĩa, mà không nêu nơi nào. | (C) "Last Monday morning, I think." — trả lời thời điểm cho câu hỏi nơi chốn.
+Source: original

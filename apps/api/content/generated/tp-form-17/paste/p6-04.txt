@@ -1,0 +1,50 @@
+[PASSAGE]
+To: All Residents
+From: Building Management
+Subject: New Basement Parking Rules
+Date: February 20
+
+Dear Residents,
+
+All vehicles ------- (1) in the basement must display a new permit from March 1. The permit sticker is free and remains valid for one full year. Residents can collect the sticker package with a building map at the front counter. Each household may register up to two cars under the same address. Please ------- (2) the registration form at the lobby desk and return it before February 27. Cars without a permit will be locked during working hours.
+------- (3)
+The security team will check every vehicle on Monday morning. The new rules ------- (4) effect on March 1, so please act early. Visitor cars may use the outdoor lot next to the main gate during this period. Drivers who lose the sticker can request a replacement at the front counter with a valid ID card.
+
+Building Management
+
+[QUESTION]
+Blank (1)
+(A) parking
+(B) parked
+(C) park
+(D) parks
+Answer: B
+Explanation: Động từ chính đã là "must display" nên chỗ trống cần phân từ rút gọn mệnh đề, xe được đậu ở tầng hầm. | (A) "parking" — chủ động, sai vì xe được đậu. | (B) "parked" — phân từ bị động rút gọn, đúng bổ nghĩa "vehicles". | (C) "park" — nguyên thể, tạo hai động từ chính trong một câu. | (D) "parks" — ngôi ba số ít, tạo hai động từ chính trong một câu.
+Source: original
+[QUESTION]
+Blank (2)
+(A) borrow
+(B) destroy
+(C) complete
+(D) guess
+Answer: C
+Explanation: Câu sau yêu cầu nộp lại trước hạn ("return it before February 27") nên hành động với đơn đăng ký phải là điền đơn. | (A) "borrow" — mượn, không đi với đơn cần nộp. | (B) "destroy" — phá hủy, ngược với việc nộp lại. | (C) "complete" — điền, đúng với "registration form". | (D) "guess" — đoán, vô nghĩa với "registration form".
+Source: original
+[QUESTION]
+Blank (3)
+(A) The gym opens early on weekends for members.
+(B) The holiday concert takes place in December.
+(C) The cafeteria menu changes every Friday morning.
+(D) Please move any unregistered car out of the basement before Sunday evening.
+Answer: D
+Explanation: Câu trước dọa khóa xe không phép ("Cars without a permit will be locked") và câu sau bảo vệ kiểm tra sáng thứ Hai ("will check every vehicle on Monday morning") nên câu yêu cầu dời xe trước tối Chủ nhật nối hai mạch. | (A) "The gym opens early on weekends for members." — phòng gym không xuất hiện trong thông báo. | (B) "The holiday concert takes place in December." — hòa nhạc không liên quan quy định gửi xe. | (C) "The cafeteria menu changes every Friday morning." — căng tin không được nhắc tới. | (D) "Please move any unregistered car out of the basement before Sunday evening." — đúng câu nối xe bị khóa với đợt kiểm tra.
+Source: original
+[QUESTION]
+Blank (4)
+(A) will take
+(B) took
+(C) take
+(D) have taken
+Answer: A
+Explanation: Thông báo đề ngày 20 tháng Hai ("Date: February 20") mà quy định áp dụng ngày 1 tháng Ba ("effect on March 1") nên cần tương lai. | (A) "will take" — tương lai, đúng cụm "take effect" với mốc sắp tới. | (B) "took" — quá khứ, ngược với ngày hiệu lực chưa tới. | (C) "take" — hiện tại, sai với mốc tương lai "on March 1". | (D) "have taken" — hoàn thành, sai vì quy định chưa có hiệu lực.
+Source: original

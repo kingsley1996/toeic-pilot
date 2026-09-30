@@ -1,0 +1,9 @@
+[QUESTION]
+Night-shift employees can ------- register for gym membership through the staff portal.
+(A) easily
+(B) ease
+(C) easiness
+(D) easy
+Answer: A
+Explanation: Trước động từ nguyên thể "register" sau động từ khuyết thiếu "can" cần trạng từ chỉ cách thức. | (A) "easily" — là trạng từ, hợp nghĩa đăng ký dễ dàng. | (B) "ease" — là động từ hoặc danh từ, sai từ loại ở đây. | (C) "easiness" — là danh từ, không đứng trước động từ. | (D) "easy" — là tính từ, không bổ nghĩa động từ.
+Source: original

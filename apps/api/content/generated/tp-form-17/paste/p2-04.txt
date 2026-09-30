@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Can I keep these books until after the holidays?
+voice: us_female_1
+(A) Yes, the due date is January fifth.
+(B) On the second floor near the lifts.
+(C) I keep the receipts in my desk.
+Answer: A
+Explanation: Câu hỏi là "Can I keep these books until after the holidays?", đây là một câu hỏi Yes-No về hạn mượn sách. | (A) "Yes, the due date is January fifth." — xác nhận được giữ sách và cho hạn mới. | (B) "On the second floor near the lifts." — nêu nơi chốn cho một câu hỏi Yes-No, không xác nhận hay từ chối. | (C) "I keep the receipts in my desk." — dùng lại từ "keep" nhưng nói về biên lai, không trả lời việc mượn sách.
+Source: original

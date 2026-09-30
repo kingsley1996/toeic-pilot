@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Attention, shoppers! Welcome to Harborview Shopping Center. Our holiday gift exchange starts today on the ground floor. We originally set up the exchange desk on the first floor, but it has now moved to the ground floor instead. To collect your gift, please visit the counter right next to the cafe, directly across from the book corner, and bring your gift voucher plus photo identification. Please come before eight in the evening, as the line closes early. Thank you for shopping with us, and enjoy the holiday season with your family!
+
+[QUESTION]
+Where is the announcement being made?
+(A) In a shopping center
+(B) On the first floor
+(C) At a cafe
+(D) In a book corner
+Answer: A
+Explanation: Người nói chào "Welcome to Harborview Shopping Center" cùng lời gọi "Attention, shoppers" — chỉ có trung tâm mua sắm. | (A) "In a shopping center" — khớp đúng nơi phát thông báo. | (B) "On the first floor" — tầng một là chỗ cũ đã chuyển đi. | (C) "At a cafe" — mượn "cafe" nhưng đó chỉ là mốc chỉ đường, không phải nơi phát loa. | (D) "In a book corner" — mượn "book corner" nhưng đó cũng chỉ là mốc đối diện.
+Source: original
+[QUESTION]
+Look at the graphic. Which counter should listeners visit to collect gifts?
+(A) Counter 1
+(B) Counter 4
+(C) Counter 3
+(D) Counter 2
+Answer: B
+Explanation: Bài nói cấp tọa độ "right next to the cafe, directly across from the book corner" rồi tra lên sơ đồ mới ra số quầy — nhìn hình một mình không biết quầy đổi quà là quầy nào. | (A) "Counter 1" — quầy này gần khu thời trang, không khớp tọa độ đã nghe. | (B) "Counter 4" — đúng quầy kề quán cà phê và đối diện góc sách. | (C) "Counter 3" — quầy này chính là mốc quán cà phê, không phải quầy cần tới. | (D) "Counter 2" — quầy này chính là mốc góc sách, không phải quầy cần tới.
+Source: original
+[QUESTION]
+What must listeners bring to receive a gift?
+(A) Family shopping bags from Harborview
+(B) First-floor exchange desk passes
+(C) Gift voucher plus photo identification
+(D) Coffee and books from nearby stores
+Answer: C
+Explanation: Bài nói nêu sớm "bring your gift voucher plus photo identification" rồi chốt muộn "Please come before eight in the evening" — ghép giấy tờ cần mang với hạn đến mới đủ điều kiện nhận quà. | (A) "Family shopping bags from Harborview" — mượn "family", "shopping" và "Harborview" nhưng ghép thành túi đồ không ai đòi. | (B) "First-floor exchange desk passes" — mượn "first floor" và "exchange desk" nhưng đó là chỗ cũ, không có thẻ nào. | (C) "Gift voucher plus photo identification" — khớp đúng hai thứ được yêu cầu. | (D) "Coffee and books from nearby stores" — mượn "cafe" và "book corner" nhưng đổi thành đồ phải mua mang theo.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The company vehicle repair service ------- on weekends will resume on Monday morning.
+(A) suspending
+(B) suspended
+(C) suspension
+(D) suspend
+Answer: B
+Explanation: Cụm danh từ "service" có mệnh đề rút gọn bị động nên cần phân từ hai. | (A) "suspending" — là V-ing chủ động, nghĩa dịch vụ tự ngưng thứ gì đó. | (B) "suspended" — là phân từ hai bị động, hợp nghĩa tạm ngưng. | (C) "suspension" — là danh từ, khiến câu thiếu động từ. | (D) "suspend" — là động từ nguyên thể, gây hai động từ chính trong câu.
+Source: original

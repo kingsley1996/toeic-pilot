@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, I'm calling about the front door. Someone tried to force the basement entrance last night.
+voice: ca_male_1
+I saw the caretaker's report this morning. The old lock held, but it needs replacing.
+voice: uk_female_1
+We cannot leave it another night. Could we get a stronger lock this week?
+voice: ca_male_1
+I've already ordered one, and the locksmith can come Thursday morning. The building fund covers the cost.
+voice: uk_female_1
+I work from home Thursdays, so I can let him in through the side gate.
+voice: ca_male_1
+Perfect. I'll confirm the visit and send you the receipt afterward.
+
+[QUESTION]
+Why are the speakers talking?
+(A) To report a burglary in the basement
+(B) To discuss replacing a lock after an attempted break-in
+(C) To order a new side gate for the building
+(D) To hire a new caretaker for the basement
+Answer: B
+Explanation: Kẻ lạ định cạy cửa tầng hầm đêm qua nhưng bất thành: "Someone tried to force the basement entrance last night" và "it needs replacing", tức hai người bàn thay ổ khóa. | (A) "report a burglary in the basement" — vụ cạy cửa hụt vì "The old lock held", không mất gì nên không phải báo mất trộm. | (B) "discuss replacing a lock after an attempted break-in" — đúng việc hai người đang bàn sau vụ cạy cửa. | (C) "order a new side gate" — cái được đặt là ổ khóa ("I've already ordered one"), còn "side gate" chỉ là lối người thuê mở cho thợ. | (D) "hire a new caretaker" — người quản gia chỉ viết báo cáo ("the caretaker's report"), không ai tuyển người mới.
+Source: original
+[QUESTION]
+What will happen on Thursday morning?
+(A) The landlord will send the receipt before the visit
+(B) The caretaker will force the basement entrance
+(C) The tenant will let the locksmith in
+(D) The old lock will be repaired overnight
+Answer: C
+Explanation: Thợ khóa đến sáng thứ Năm và người thuê mở cửa cho thợ: "the locksmith can come Thursday morning" rồi "I can let him in through the side gate". | (A) "send the receipt before the visit" — ông chủ nhà "send you the receipt afterward", tức hóa đơn gửi sau chứ không gửi trước. | (B) "The caretaker will force the basement entrance" — người cạy cửa là kẻ lạ đêm qua, còn quản gia chỉ viết báo cáo. | (C) "The tenant will let the locksmith in" — đúng việc người thuê làm việc ở nhà thứ Năm để đón thợ. | (D) "The old lock will be repaired overnight" — khóa cũ được thay mới sáng thứ Năm chứ không sửa qua đêm, "night" là từ của câu giục "another night".
+Source: original
+[QUESTION]
+What does the man mean when he says, "Perfect. I'll confirm the visit and send you the receipt afterward"?
+(A) He will wait at the side gate overnight
+(B) The caretaker must write another report
+(C) The front door will stay open
+(D) He will finalize the appointment and provide payment proof later
+Answer: D
+Explanation: Anh chốt sẽ xác nhận lịch hẹn rồi gửi chứng từ thanh toán sau: "Perfect. I'll confirm the visit and send you the receipt afterward." | (A) "wait at the side gate overnight" — mượn từ "side gate" trong câu "let him in through the side gate" nhưng trực đêm là việc khác, anh chỉ xác nhận lịch chứ không trực. | (B) "caretaker must write another report" — mượn từ "caretaker's report" nhưng báo cáo đã xong sáng nay ("I saw the caretaker's report this morning"), không phải việc anh hứa. | (C) "front door will stay open" — bẻ ngược ý, cửa cần khóa chặt sau vụ cạy cửa chứ không để mở. | (D) "finalize the appointment and provide payment proof later" — đúng hàm ý chốt lịch hẹn và gửi hóa đơn sau.
+Source: original

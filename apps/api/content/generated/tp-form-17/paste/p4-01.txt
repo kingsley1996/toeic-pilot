@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, everyone, and welcome to your customer service training session. I am Daniel, head of client support for the region. Today we will practice handling difficult calls calmly and clearly with real examples. We originally booked the main hall for today, but it was double-booked, so we moved to training room three for the morning. Please silence your phones, and you are asked to leave the feedback form on your chair before lunch. Listen to this short recording. Notice how a brief apology softens even an angry caller. That small habit is what turns complaints into loyalty.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To sell mobile phones to new staff
+(B) To open a training session on handling calls
+(C) To book the main hall for training
+(D) To apologize for a double booking
+Answer: B
+Explanation: Người nói mở đầu bằng "Good morning, everyone, and welcome to your customer service training session" và nói "we will practice handling difficult calls calmly and clearly". | (A) "To sell mobile phones" — điện thoại chỉ được nhắc khi yêu cầu "silence your phones": đúng từ, sai việc. | (B) "To open a training session on handling calls" — khớp đúng mục đích mở buổi tập huấn. | (C) "To book the main hall" — sảnh chính là kế hoạch đã bị đổi sau câu "we moved to training room three": đã công bố rồi sửa. | (D) "To apologize for a double booking" — lời xin lỗi trong bài ("a brief apology") là về cách nghe điện thoại, không phải về phòng họp: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+Where is the session being held?
+(A) In the main hall
+(B) On a difficult customer call
+(C) In training room three
+(D) In the lunch room
+Answer: C
+Explanation: Người nói chốt địa điểm bằng "we moved to training room three for the morning" sau khi nói "We originally booked the main hall for today, but it was double-booked". | (A) "In the main hall" — đây là kế hoạch cũ đã bị đổi, không phải chỗ hiện tại. | (B) "On a difficult customer call" — cuộc gọi khó là nội dung luyện tập ("handling difficult calls"), không phải địa điểm: đúng từ, sai quan hệ. | (C) "In training room three" — đúng nơi diễn ra sau khi đổi, phải ghép hai câu mới loại được đáp án cũ. | (D) "In the lunch room" — bữa trưa chỉ là mốc thời gian "before lunch": đúng từ, sai chỗ.
+Source: original
+[QUESTION]
+Why does the speaker mention a brief apology?
+(A) To describe the feedback form
+(B) To apologize for changing the room
+(C) To ask listeners to silence their phones
+(D) To emphasize its power to build loyalty
+Answer: D
+Explanation: Người nói dẫn "Notice how a brief apology softens even an angry caller" rồi chốt "That small habit is what turns complaints into loyalty". | (A) "To describe the feedback form" — phiếu góp ý là chi tiết có thật nhưng trả lời câu hỏi khác. | (B) "To apologize for changing the room" — không lời xin lỗi nào về phòng họp, đây là cách đọc nghĩa đen bị phần còn lại của bài bác bỏ. | (C) "To ask listeners to silence their phones" — tắt điện thoại là chỉ dẫn khác trong bài, không phải việc lời xin lỗi làm. | (D) "To emphasize its power to build loyalty" — đúng chức năng của chi tiết: nêu tác dụng biến phàn nàn thành trung thành.
+Source: original

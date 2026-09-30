@@ -1,0 +1,48 @@
+[PASSAGE]
+From: events@maple-hall.com
+To: Daniel Hale
+Subject: Correction to your banquet booking
+Date: May 8
+
+Dear Mr. Hale, [1] Thank you for choosing our riverside hall for your retirement dinner on May 16. [2] I am writing to correct an error in our records, which show your party arriving at 6 P.M. instead of the 7 P.M. you requested. [3] Your booking for forty guests in the private Lotus Room on May 16 is otherwise unchanged, and the deposit of $200 has been received. [4] Our kitchen will serve the seafood set menu you selected, and a birthday cake can be stored in our cooler until serving time. The remaining balance of $680 is due on the evening of the event. If any guest needs a vegetarian dish, please let us know by May 12. Soft drinks and tea are included, while wine can be ordered at an extra charge. Our coordinator, Ms. Lane, will call you on May 14 to review the seating plan. A microphone and a small stage are ready for speeches at no extra cost. Please arrive fifteen minutes early so our staff can guide your guests to the room. Free parking is available behind the building for all attendees. We look forward to hosting your celebration.
+
+Best regards,
+Tom Reed
+Events Manager
+
+[QUESTION]
+Why was the e-mail sent?
+(A) To cancel a retirement dinner
+(B) To request a higher deposit
+(C) To correct the recorded arrival time for a banquet
+(D) To advertise a new riverside hall
+Answer: C
+Explanation: Thư mở đầu "I am writing to correct an error in our records, which show your party arriving at 6 P.M. instead of the 7 P.M. you requested", tức mục đích là sửa giờ đã ghi sai. | (A) "To cancel a retirement dinner" — tiệc vẫn diễn ra ngày May 16, không ai hủy. | (B) "To request a higher deposit" — tiền cọc $200 đã nhận, không ai đòi thêm. | (C) "To correct the recorded arrival time for a banquet" — đúng lý do gửi thư vừa dẫn. | (D) "To advertise a new riverside hall" — thư không chào bán hội trường nào.
+Source: original
+[QUESTION]
+How many guests are expected at the dinner?
+(A) Twelve
+(B) Sixteen
+(C) Two hundred
+(D) Forty guests
+Answer: D
+Explanation: Thư xác nhận "Your booking for forty guests in the private Lotus Room", tức tiệc bốn mươi khách. | (A) "Twelve" — là hạn báo món chay May 12, không phải số khách. | (B) "Sixteen" — là ngày May 16, không phải số khách. | (C) "Two hundred" — là tiền cọc $200, không phải số khách. | (D) "Forty guests" — đúng con số vừa dẫn.
+Source: original
+[QUESTION]
+What can be inferred about the booking?
+(A) Most of the total cost is still unpaid
+(B) The event was moved to another date
+(C) The menu has not been chosen yet
+(D) Parking must be paid separately
+Answer: A
+Explanation: Thư ghi "the deposit of $200 has been received" và "The remaining balance of $680 is due", nên phần lớn chi phí vẫn chưa trả. | (A) "Most of the total cost is still unpaid" — đúng điều suy ra từ hai con số vừa dẫn. | (B) "The event was moved to another date" — trái với "on May 16 is otherwise unchanged". | (C) "The menu has not been chosen yet" — trái với "the seafood set menu you selected". | (D) "Parking must be paid separately" — trái với "Free parking is available behind the building".
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Please reply to this message to confirm that the corrected time works for you."
+(A) [1]
+(B) [3]
+(C) [2]
+(D) [4]
+Answer: B
+Explanation: Câu mới nhắc giờ đã sửa nên hợp nhất ngay sau câu báo lỗi "instead of the 7 P.M. you requested", tức vị trí [3]. | (A) "[1]" — sau lời chào, chưa hề nhắc lỗi giờ. | (B) "[3]" — đúng chỗ nối tiếp câu sửa giờ vừa dẫn. | (C) "[2]" — sau câu cảm ơn chọn hội trường, chưa liên quan giờ giấc. | (D) "[4]" — đã chuyển sang chi tiết món ăn và tiền cọc, quá muộn để hẹn xác nhận giờ.
+Source: original

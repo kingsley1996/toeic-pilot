@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+We need to cover the advice booth from nine to three tomorrow.
+voice: uk_female_1
+I can take the morning shift, but I have a campus tour at noon.
+voice: ca_male_1
+I will stay through lunch, so the booth is never empty.
+voice: us_female_1
+Good, and remember, we cannot leave the booth empty.
+voice: uk_female_1
+Should I bring the printed guides from the office?
+voice: ca_male_1
+Yes, please. I will bring extra chairs before ten.
+voice: us_female_1
+Thanks. I will email the organiser tonight with our plan.
+
+[QUESTION]
+What does the first woman mean when she says, "we cannot leave the booth empty"?
+(A) The morning shift is cancelled
+(B) The booth has no empty boxes
+(C) Someone must stay at all times
+(D) The campus tour is at noon
+Answer: C
+Explanation: Cô nhấn mạnh "we cannot leave the booth empty" ngay sau câu "I will stay through lunch, so the booth is never empty", ý là luôn phải có người trực. | (A) "The morning shift is cancelled" — mượn từ "morning shift" trong câu "I can take the morning shift" nhưng ca sáng vẫn giữ, không bị hủy. | (B) "The booth has no empty boxes" — mượn từ "booth" và "empty" nhưng hiểu đen thành thùng rỗng, trong khi cô nói về người trực. | (C) "Someone must stay at all times" — đúng nghĩa hàm cô muốn nói. | (D) "The campus tour is at noon" — chi tiết có thật trong câu "I have a campus tour at noon" nhưng trả lời câu hỏi khác, không phải ý câu được trích.
+Source: original
+[QUESTION]
+Who will be at the booth around noon?
+(A) The volunteer who will bring the guides
+(B) The woman on the campus tour
+(C) The woman arranging cover from nine to three
+(D) The man who will stay at the booth through lunch
+Answer: D
+Explanation: Anh nói "I will stay through lunch, so the booth is never empty" trong khi chị kia nói "I have a campus tour at noon", nên chỉ anh ở lại lúc trưa, ghép hai câu mới ra. | (A) "The volunteer who will bring the guides" — mượn từ "bring the printed guides" nhưng mang tài liệu là việc khác, không quyết định ai trực. | (B) "The woman on the campus tour" — mượn từ "campus tour" nhưng chị ấy đi tour lúc trưa nên vắng mặt, không phải người trực. | (C) "arranging cover from nine to three" — mượn từ "cover" và "nine to three" trong câu "We need to cover the advice booth from nine to three tomorrow" nhưng xếp lịch chung không đồng nghĩa trực trưa, lúc đó chỉ anh ở lại. | (D) "The man who will stay at the booth through lunch" — đúng người ở lại, khớp cả hai câu.
+Source: original
+[QUESTION]
+What will the first woman do tonight?
+(A) Email the organiser tonight
+(B) Bring extra chairs before ten
+(C) Bring the printed guides from the office
+(D) Take the campus tour at noon
+Answer: A
+Explanation: Chị hẹn "I will email the organiser tonight with our plan". | (A) "Email the organiser tonight" — đúng việc chị làm tối nay. | (B) "Bring extra chairs before ten" — mượn từ "I will bring extra chairs before ten" nhưng đó là việc của anh, không phải của chị. | (C) "Bring the printed guides from the office" — mượn từ "bring the printed guides from the office" nhưng đó là việc chị thứ hai hỏi làm, không phải việc tối nay của chị đầu. | (D) "Take the campus tour at noon" — mượn từ "campus tour at noon" nhưng đó là lịch của chị thứ hai lúc trưa, không phải việc tối nay.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Candidates shortlisted for the general accounting position will be notified ------- their second-round interview schedule by email next week.
+(A) on
+(B) of
+(C) to
+(D) for
+Answer: B
+Explanation: Chỗ trống cần giới từ đi với "notified" trước cụm danh từ chỉ nội dung được báo. | (A) "on" — không đi với "notify" theo nghĩa thông báo. | (B) "of" — đúng collocation "notify somebody of something". | (C) "to" — sau "notify" cần nguyên mẫu có "to", không phải cụm danh từ. | (D) "for" — không tạo collocation với "notify" trong nghĩa này.
+Source: original

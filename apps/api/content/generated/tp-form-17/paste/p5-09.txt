@@ -1,0 +1,9 @@
+[QUESTION]
+The premium mobile plan offers ------- data allowance than the basic plan assigned to sales representatives.
+(A) large
+(B) larger
+(C) largely
+(D) largest
+Answer: B
+Explanation: Có "than" so sánh hai gói cước nên cần tính từ so sánh hơn. | (A) "large" — nguyên thể, không đi với "than". | (B) "larger" — so sánh hơn hợp với cấu trúc có "than". | (C) "largely" — trạng từ, sai từ loại trước danh từ. | (D) "largest" — so sánh nhất, không đi với "than".
+Source: original

@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: us_female_1
+Let's book the rooftop restaurant for your sister's birthday? Saturday tables fill fast.
+voice: ca_male_1
+Good idea. I called yesterday and they still have the corner table for eight at seven.
+voice: us_female_1
+Perfect, it overlooks the river. Did they ask for a deposit?
+voice: ca_male_1
+Twenty dollars by phone, and the rest on the night. They also allow a birthday cake.
+voice: us_female_1
+I'll order the cake from the bakery downstairs then.
+voice: ca_male_1
+I'll pay the deposit tonight and send you the confirmation message.
+
+[QUESTION]
+Where will the birthday party be held?
+(A) At the man's house on Saturday
+(B) At the bakery downstairs
+(C) At a riverside bakery
+(D) At a rooftop restaurant
+Answer: D
+Explanation: Hai người chốt nhà hàng tầng thượng cho tiệc sinh nhật: "Let's book the rooftop restaurant for your sister's birthday?" | (A) "man's house" — nhà riêng không được nhắc tới, "Saturday" chỉ là tối dự tiệc. | (B) "bakery downstairs" — tiệm bánh chỉ là nơi đặt bánh ("order the cake from the bakery"), không phải nơi tổ chức. | (C) "riverside bakery" — ghép sai quan hệ, sông chỉ là cảnh nhìn từ bàn ("overlooks the river"), tiệc không ở bờ sông. | (D) "rooftop restaurant" — đúng địa điểm được nêu ngay đầu cuộc trò chuyện.
+Source: original
+[QUESTION]
+What does the man say about Saturday evening?
+(A) Space for eight guests is still open at seven
+(B) The deposit must be paid in cash on the night
+(C) The corner table is already fully booked
+(D) The bakery delivers cakes to the tables
+Answer: A
+Explanation: Anh ta gọi hôm qua và bàn góc vẫn còn trống: "they still have the corner table for eight at seven." | (A) "Space for eight guests is still open at seven" — đúng tình trạng chỗ ngồi anh ta báo lại. | (B) "The deposit must be paid in cash on the night" — đảo sai quan hệ, tiền cọc trả "by phone" còn "on the night" chỉ trả phần còn lại. | (C) "corner table is already fully booked" — bị câu thoại bác bỏ vì "they still have the corner table", bàn vẫn còn chứ không kín. | (D) "bakery delivers cakes" — ghép sai quan hệ, người phụ nữ tự đặt bánh ở tiệm chứ tiệm không mang đến.
+Source: original
+[QUESTION]
+What will the man do tonight?
+(A) Order a birthday cake from the bakery
+(B) Pay the deposit by phone and share the confirmation
+(C) Call the restaurant to find a table
+(D) Send the confirmation message to the bakery
+Answer: B
+Explanation: Tối nay anh ta trả cọc qua điện thoại rồi gửi xác nhận: "Twenty dollars by phone" cộng "I'll pay the deposit tonight and send you the confirmation message". | (A) "Order a birthday cake" — việc của người phụ nữ ("I'll order the cake"), không phải của anh ta. | (B) "Pay the deposit by phone and share the confirmation" — đúng việc anh ta nhận sau khi ghép cách trả với thời điểm trả. | (C) "Call the restaurant to find a table" — cuộc gọi đã xong hôm qua ("I called yesterday"), tối nay không gọi dò bàn nữa. | (D) "Send the confirmation message to the bakery" — mượn từ "confirmation message" và "bakery" nhưng anh gửi xác nhận cho người phụ nữ ("send you the confirmation message"), không phải cho tiệm bánh.
+Source: original

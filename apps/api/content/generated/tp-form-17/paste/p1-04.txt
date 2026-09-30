@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) Two technicians are stretching a backdrop on the stage.
+(B) One technician is playing a guitar on the stage.
+(C) One worker is climbing a ladder beside the stage.
+(D) Three workers are sitting in the audience seats together.
+Answer: A
+Explanation: Trong ảnh hai kỹ thuật viên đứng trên sân khấu hội trường cùng căng tấm phông nền, điều phối viên đứng trước sân khấu thử micro, thang xếp dựa trống bên cánh gà, loa đặt hai bên sân khấu, phía sau là hàng ghế trống. | (A) "stretching a backdrop on the stage" — đúng việc hai kỹ thuật viên đang làm. | (B) "playing a guitar on the stage" — trong ảnh không có cây đàn nào: vật không hề có trong ảnh. | (C) "climbing a ladder" — chiếc thang đang dựa trống, không ai trèo: đúng vật, sai hành động. | (D) "sitting in the audience seats" — cả ba người đều đang đứng làm việc, không ai ngồi: đúng người, sai hành động.
+Source: original

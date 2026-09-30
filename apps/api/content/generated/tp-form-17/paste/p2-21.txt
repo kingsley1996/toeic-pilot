@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+The fourth-floor printer keeps jamming this week.
+voice: au_male_1
+(A) Next to the fourth-floor elevator.
+(B) The printer manual is on my desk.
+(C) Have you called the maintenance team yet?
+Answer: C
+Explanation: Câu hỏi là "The fourth-floor printer keeps jamming this week.", đây là CÂU TRẦN THUẬT báo sự cố. | (A) "Next to the fourth-floor elevator." — nêu nơi chốn cho câu trần thuật cần phản ứng, mượn cụm "fourth-floor" để đánh lừa. | (B) "The printer manual is on my desk." — mượn từ "printer" nhưng nói vị trí sách hướng dẫn, không phản ứng với sự cố kẹt giấy. | (C) "Have you called the maintenance team yet?" — đáp lại bằng một câu hỏi như người thật sẽ hỏi khi nghe báo hỏng.
+Source: original

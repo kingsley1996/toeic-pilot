@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How soon will the fair booth be ready?
+voice: au_male_1
+(A) The whole fair was called off.
+(B) Twice a week in summer.
+(C) On Monday next week.
+Answer: A
+Explanation: Câu hỏi là "How soon will the fair booth be ready?", hỏi BAO LÂU NỮA gian hàng sẽ xong. | (A) "The whole fair was called off." — làm câu hỏi trở nên vô nghĩa vì hội chợ đã bị hủy, đúng kiểu né mà vẫn là phản hồi hợp lý. | (B) "Twice a week in summer." — đưa tần suất cho một câu hỏi How soon, sai chiều thông tin. | (C) "On Monday next week." — đưa một mốc thời gian cụ thể cho một câu hỏi How soon, sai chiều thông tin.
+Source: original

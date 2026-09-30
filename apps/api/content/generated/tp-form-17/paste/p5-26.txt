@@ -1,0 +1,9 @@
+[QUESTION]
+The station ------- the farming weather bulletin at 5 AM every day before fieldwork begins.
+(A) is broadcast
+(B) was broadcast
+(C) broadcasts
+(D) be broadcast
+Answer: C
+Explanation: Chủ ngữ tác nhân "station" với mốc thói quen hằng ngày cần chủ động hiện tại đơn. | (A) "is broadcast" — là bị động, trái chủ ngữ tác nhân. | (B) "was broadcast" — là bị động quá khứ, trái cả thể và mốc thói quen. | (C) "broadcasts" — là chủ động hiện tại đơn, hợp nghĩa phát sóng hằng ngày. | (D) "be broadcast" — là nguyên thể bị động, thiếu trợ động từ cho câu chính.
+Source: original

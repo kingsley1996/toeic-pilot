@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Has the power company restored electricity to the factory?
+voice: ca_male_1
+(A) At the substation near the port.
+(B) The powerful engine runs all day.
+(C) It's already back on this morning.
+Answer: C
+Explanation: Câu hỏi là "Has the power company restored electricity to the factory?", đây là một câu hỏi Yes-No về việc khôi phục điện. | (A) "At the substation near the port." — nêu nơi chốn cho một câu hỏi Yes-No, không xác nhận việc có điện lại. | (B) "The powerful engine runs all day." — từ "powerful" nhại từ "power" trong câu hỏi nhưng nói về động cơ, không trả lời việc khôi phục điện. | (C) "It's already back on this morning." — xác nhận điện đã có lại mà không cần dùng từ Yes.
+Source: original

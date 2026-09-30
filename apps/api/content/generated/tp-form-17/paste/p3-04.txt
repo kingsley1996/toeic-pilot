@@ -1,0 +1,43 @@
+[SCRIPT]
+voice: us_female_1
+Let's compare the lamp counts before Friday's report. The system shows three hundred units.
+voice: ca_male_1
+I counted only two hundred sixty on the shelves this morning. Forty seem missing.
+voice: us_female_1
+Could they be in the loading area? Last quarter five boxes sat there for a week.
+voice: ca_male_1
+I checked there already. Nothing but empty cartons behind the back door.
+voice: au_male_1
+Sorry I'm late. I moved forty lamps to the outlet store on Monday and forgot to log it.
+voice: us_female_1
+That explains it. Can you add the transfer note today?
+voice: au_male_1
+I'll update the system tonight, and we'll recount the shelves together tomorrow.
+
+[QUESTION]
+What are the speakers discussing?
+(A) A sale at the outlet store on Monday
+(B) Empty cartons behind the back door
+(C) A gap between the system record and the shelf count
+(D) Five boxes lost last quarter
+Answer: C
+Explanation: Sổ sách ba trăm mà kệ chỉ hai trăm sáu: "The system shows three hundred units" cộng "I counted only two hundred sixty on the shelves", tức lệch số liệu kiểm kê. | (A) "sale at the outlet store" — bẻ sai bản chất, bốn mươi đèn được chuyển đến cửa hàng bán lẻ ("moved forty lamps"), không phải đợt giảm giá. | (B) "Empty cartons behind the back door" — chi tiết có thật nhưng trả lời câu hỏi khác, đó chỉ là thứ anh ta thấy khi kiểm tra. | (C) "gap between the system record and the shelf count" — đúng vấn đề cả nhóm đang đối chiếu. | (D) "Five boxes lost last quarter" — chuyện quý trước ("Last quarter five boxes"), không phải vụ lệch bốn mươi đơn vị lần này.
+Source: original
+[QUESTION]
+Who most likely are the speakers?
+(A) Outside auditors writing Friday's report
+(B) Outlet store customers
+(C) Delivery drivers unloading at the back door
+(D) Warehouse inventory staff
+Answer: D
+Explanation: Cả ba tự tay đếm kệ và cập nhật sổ sách: "Let's compare the lamp counts before Friday's report". | (A) "Outside auditors" — báo cáo thứ Sáu do chính nhóm làm sau khi đếm lại, không phải kiểm toán thuê ngoài. | (B) "Outlet store customers" — cửa hàng bán lẻ chỉ là nơi bốn mươi đèn được chuyển đến, không ai trong thoại là khách mua. | (C) "Delivery drivers" — khu chất hàng ("loading area") đã được kiểm tra xong, không ai giao hàng trong thoại. | (D) "Warehouse inventory staff" — đúng nhóm kiểm kê kho đối chiếu số liệu quý.
+Source: original
+[QUESTION]
+What will the speakers do tomorrow?
+(A) Count the shelves again together
+(B) Search the loading area for missing boxes
+(C) Submit Friday's report tonight
+(D) Move forty lamps to the outlet store
+Answer: A
+Explanation: Ngày mai cả nhóm đếm lại kệ cùng nhau: "we'll recount the shelves together tomorrow". | (A) "Count the shelves again together" — đúng việc cả nhóm hẹn làm ngày mai. | (B) "Search the loading area" — ý bị bác vì đã kiểm tra rồi ("I checked there already"). | (C) "Submit Friday's report tonight" — đảo sai quan hệ, tối nay chỉ cập nhật hệ thống ("update the system tonight"), báo cáo để thứ Sáu. | (D) "Move forty lamps" — việc đã xong từ thứ Hai ("moved forty lamps to the outlet store on Monday"), không phải việc ngày mai.
+Source: original

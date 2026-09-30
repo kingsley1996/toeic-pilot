@@ -1,0 +1,9 @@
+[QUESTION]
+A sudden ------- in the water bill for the west building prompted an inspection for leaking pipes.
+(A) fluctuated
+(B) fluctuate
+(C) fluctuating
+(D) fluctuation
+Answer: D
+Explanation: Sau cụm "A sudden" trước giới từ "in" ở vị trí chủ ngữ cần danh từ số ít. | (A) "fluctuated" — là phân từ hai, không làm chủ ngữ ở đây. | (B) "fluctuate" — là động từ, không đứng sau "sudden". | (C) "fluctuating" — là V-ing, sai từ loại sau mạo từ và tính từ. | (D) "fluctuation" — là danh từ chỉ biến động, hợp nghĩa hóa đơn tăng.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The job description states that the newly hired administrative assistant must be ------- with confidential client records.
+(A) organized
+(B) organizing
+(C) organization
+(D) organize
+Answer: A
+Explanation: Chỗ trống sau "must be" cần tính từ làm bổ ngữ chỉ phẩm chất. | (A) "organized" — là tính từ chỉ năng lực sắp xếp, hợp nghĩa hồ sơ mật. | (B) "organizing" — là V-ing, không đứng sau "be" theo nghĩa này. | (C) "organization" — là danh từ, sai từ loại sau "be". | (D) "organize" — là động từ nguyên thể, không đi sau "be".
+Source: original

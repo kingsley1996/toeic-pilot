@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+How far is the new warehouse from the bus station?
+voice: us_female_1
+(A) About three kilometers down the road.
+(B) Around forty dollars per delivery.
+(C) About twenty minutes by car.
+Answer: A
+Explanation: Câu hỏi là "How far is the new warehouse from the bus station?", hỏi KHOẢNG CÁCH. | (A) "About three kilometers down the road." — nêu đúng một khoảng cách. | (B) "Around forty dollars per delivery." — đưa giá tiền thay vì khoảng cách, đúng dạng con số nhưng sai chiều. | (C) "About twenty minutes by car." — đưa thời lượng di chuyển thay vì khoảng cách, đúng dạng con số nhưng sai chiều.
+Source: original

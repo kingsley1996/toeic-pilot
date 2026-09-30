@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The garage replaced the brake pads on time, didn't it?
+voice: au_male_1
+(A) We took a short break at noon.
+(B) In the lot behind the station.
+(C) Yes, they finished it yesterday morning.
+Answer: C
+Explanation: Câu hỏi là "The garage replaced the brake pads on time, didn't it?", đây là một câu hỏi đuôi cần xác nhận việc sửa xe đúng hẹn. | (A) "We took a short break at noon." — từ "break" đồng âm với "brake" trong câu hỏi nhưng nói về giờ nghỉ, không xác nhận việc sửa xe. | (B) "In the lot behind the station." — nêu nơi chốn cho một câu hỏi đuôi, không xác nhận hay đính chính thông tin. | (C) "Yes, they finished it yesterday morning." — xác nhận đúng việc đã xong đúng hẹn.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone, and thank you for joining our year-end sales review. I'm Lisa, head of regional sales. We originally expected sixty thousand in total, but we actually closed at two hundred fifty thousand instead. One quarter really stood out, when we finally passed eighty thousand thanks to holiday orders. I will need your updated customer lists for next year's planning. Please email them to me by Monday morning. Next month we will feature that standout period in our newsletter and invite its top sellers to share tips. Great work, team, and let's aim higher next year!
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To announce sixty thousand in total sales
+(B) To review yearly sales results
+(C) To explain holiday ordering procedures
+(D) To set higher sales targets for next year
+Answer: B
+Explanation: Người nói mở đầu "thank you for joining our year-end sales review" cùng vai trò trưởng phòng kinh doanh — mục đích là tổng kết doanh số. | (A) "To announce sixty thousand in total sales" — sáu mươi nghìn là con số dự kiến ban đầu rồi bị sửa. | (B) "To review yearly sales results" — đúng mục đích buổi họp. | (C) "To explain holiday ordering procedures" — mượn "holiday orders" nhưng đổi thành quy trình đặt hàng. | (D) "To set higher sales targets for next year" — mượn "aim higher next year" nhưng đó là câu kết, không phải mục đích chính.
+Source: original
+[QUESTION]
+Look at the graphic. Which quarter will be featured in the newsletter?
+(A) First quarter
+(B) Second quarter
+(C) Fourth quarter
+(D) Third quarter
+Answer: C
+Explanation: Bài nói nêu tọa độ "when we finally passed eighty thousand" và chỉ ô duy nhất vượt tám mươi nghìn trên hình mới tra ra quý thắng — nhìn hình một mình không biết sẽ vinh danh quý nào. | (A) "First quarter" — quý này chỉ bốn mươi bảy nghìn, dưới mốc tám mươi nghìn. | (B) "Second quarter" — quý này sáu mươi ba nghìn, chưa vượt mốc được nêu. | (C) "Fourth quarter" — đúng ô tám mươi tám nghìn, khớp tọa độ đã nghe. | (D) "Third quarter" — quý này năm mươi hai nghìn, cũng dưới mốc.
+Source: original
+[QUESTION]
+What are team members asked to do by Monday morning?
+(A) Expect sixty thousand for the holiday orders
+(B) Invite top sellers to a sales review
+(C) Close two hundred fifty thousand in sales
+(D) Email updated customer lists
+Answer: D
+Explanation: Bài nói nêu sớm "I will need your updated customer lists" rồi dặn muộn "Please email them to me by Monday morning" — ghép hai chỗ mới ra việc cần làm. | (A) "Expect sixty thousand for the holiday orders" — sáu mươi nghìn là dự kiến cũ đã bị sửa, ghép sai với đơn dịp lễ. | (B) "Invite top sellers to a sales review" — mượn "invite" và "top sellers" nhưng đổi bên thực hiện, đó là việc diễn giả sẽ làm. | (C) "Close two hundred fifty thousand in sales" — mượn con số tổng đã chốt, không phải việc phải làm. | (D) "Email updated customer lists" — khớp đúng việc và hạn được giao.
+Source: original

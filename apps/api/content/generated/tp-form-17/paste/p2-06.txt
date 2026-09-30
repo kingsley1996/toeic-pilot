@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why was Thursday evening yoga class cancelled?
+voice: au_male_1
+(A) In the studio on the second floor.
+(B) Yes, Thursday evenings are usually busy.
+(C) Ask the fitness coordinator at the desk.
+Answer: C
+Explanation: Câu hỏi là "Why was Thursday evening yoga class cancelled?", hỏi về LÝ DO lớp bị hủy. | (A) "In the studio on the second floor." — nêu nơi chốn cho một câu hỏi Why, không nói lý do. | (B) "Yes, Thursday evenings are usually busy." — đáp Yes cho một câu hỏi Why, bỏ Yes đi vẫn chỉ nhận xét chung chứ không nêu lý do hủy. | (C) "Ask the fitness coordinator at the desk." — chỉ sang người khác mà không nêu lý do, đúng kiểu né chỉ sang người khác mà vẫn là phản hồi hợp lý.
+Source: original

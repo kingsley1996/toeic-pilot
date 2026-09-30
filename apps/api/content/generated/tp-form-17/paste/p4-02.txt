@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Hello, furniture lovers! Our Harbor Street showroom is moving soon, so everything must go before Sunday evening. Sofas, tables, and beds are on sale for three days only at our old address. We originally offered twenty percent off, but instead everything is now fifty percent off storewide for the final clearance. Solid oak tables start at two hundred dollars, and delivery is free within the city limits all weekend. Please bring this radio coupon, and you are asked to visit before noon for the best choice of styles. Do not miss this special moving sale. Hurry in today!
+
+[QUESTION]
+What is the advertisement for?
+(A) A moving sale at a furniture store
+(B) A new showroom opening on Harbor Street
+(C) A free delivery service for offices
+(D) A clearance of oak tables only
+Answer: A
+Explanation: Quảng cáo mở đầu "Our Harbor Street showroom is moving soon, so everything must go" và chốt "Do not miss this special moving sale". | (A) "A moving sale at a furniture store" — đúng thứ được quảng cáo: xả hàng vì chuyển cửa hàng. | (B) "A new showroom opening" — cửa hàng đang dọn đi khỏi địa chỉ cũ, không phải khai trương mới: đúng từ, sai nghĩa. | (C) "A free delivery service" — giao hàng miễn phí ("delivery is free") chỉ là ưu đãi kèm, không phải món chính. | (D) "A clearance of oak tables only" — bàn gỗ sồi chỉ là một ví dụ ("Sofas, tables, and beds"), không phải toàn bộ đợt sale.
+Source: original
+[QUESTION]
+What discount is currently offered?
+(A) Twenty percent off
+(B) Fifty percent off
+(C) Two hundred dollars off
+(D) Free delivery on all items
+Answer: B
+Explanation: Người nói sửa mức giảm bằng "We originally offered twenty percent off, but instead everything is now fifty percent off storewide". | (A) "Twenty percent off" — đây là mức cũ đã bị thay: đã công bố rồi sửa. | (B) "Fifty percent off" — đúng mức hiện tại sau khi đổi, phải ghép hai vế mới loại được đáp án cũ. | (C) "Two hundred dollars off" — hai trăm đô là giá khởi điểm ("tables start at two hundred dollars"), không phải mức giảm: đúng từ, sai quan hệ. | (D) "Free delivery on all items" — miễn phí giao hàng là ưu đãi khác, không phải đáp án cho câu hỏi giảm giá.
+Source: original
+[QUESTION]
+What are listeners asked to do?
+(A) Pay two hundred dollars for a coupon
+(B) Pay for delivery within the city
+(C) Arrive early with the radio voucher
+(D) Wait until Sunday evening to visit
+Answer: C
+Explanation: Người nói dặn "Please bring this radio coupon, and you are asked to visit before noon for the best choice of styles". | (A) "Pay two hundred dollars for a coupon" — phiếu radio chỉ cần mang theo, còn hai trăm đô là giá bàn: gộp sai hai chi tiết. | (B) "Pay for delivery within the city" — giao hàng đã nói là miễn phí ("delivery is free"): ý bị gạt. | (C) "Arrive early with the radio voucher" — đúng việc phải làm, ghép phiếu giảm giá với mốc giờ từ hai chỗ tách rời. | (D) "Wait until Sunday evening to visit" — hạn chót là trước tối Chủ nhật ("before Sunday evening") mà còn phải tới trước buổi trưa: đúng từ, sai nghĩa.
+Source: original

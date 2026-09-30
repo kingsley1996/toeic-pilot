@@ -1,0 +1,27 @@
+[PASSAGE]
+Building Management Notice
+Elevator Maintenance and Power Interruption
+May 8
+
+Please note that the main elevator will stop from 9:00 A.M. to 3:00 P.M. on Saturday, May 17, for cable replacement. During the same period, electricity on floors 4 and 5 will be cut for safety checks. The service elevator at the rear entrance will operate normally and can carry small loads only.
+
+Residents expecting deliveries should collect parcels at the ground-floor reception desk on that day. Residents planning to move large furniture should wait until after May 17, as the small service elevator cannot carry bulky items. The management office apologizes for the inconvenience and thanks residents for their cooperation. For urgent assistance, call the hotline at 555-0182.
+
+[QUESTION]
+What is the purpose of the notice?
+(A) To announce elevator work and a power cut
+(B) To introduce a new delivery service
+(C) To report a broken service elevator
+(D) To invite residents to a safety meeting
+Answer: A
+Explanation: Bài báo thang máy chính dừng thay cáp và điện tầng 4-5 bị cắt ngày 17/5. | (A) "To announce elevator work and a power cut" — đúng mục đích thông báo. | (B) "To introduce a new delivery service" — bẫy: nhận bưu kiện ở lễ tân chỉ là sắp xếp tạm thời, không phải dịch vụ mới. | (C) "To report a broken service elevator" — chi tiết sai: thang máy dịch vụ vẫn chạy bình thường. | (D) "To invite residents to a safety meeting" — "safety checks" là kiểm tra kỹ thuật, không có cuộc họp nào.
+Source: original
+[QUESTION]
+What can be inferred about Saturday, May 17?
+(A) The rear entrance will be closed all day
+(B) Upper-floor residents cannot use the main elevator
+(C) The hotline stops working at 3:00 P.M.
+(D) Deliveries will be cancelled that day
+Answer: B
+Explanation: Phải nối 2 chỗ: "the main elevator will stop from 9:00 A.M. to 3:00 P.M." + "electricity on floors 4 and 5 will be cut". | (A) "The rear entrance will be closed all day" — trái bài: thang máy dịch vụ cửa sau vẫn chạy bình thường. | (B) "Upper-floor residents cannot use the main elevator" — đúng: thang chính dừng nên cư dân tầng trên phải dùng thang bộ hoặc thang dịch vụ. | (C) "The hotline stops working at 3:00 P.M." — 3:00 P.M. là giờ thang máy chạy lại, không liên quan hotline. | (D) "Deliveries will be cancelled that day" — bẫy: hàng vẫn giao, chỉ đổi sang nhận ở lễ tân tầng trệt.
+Source: original

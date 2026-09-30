@@ -1,0 +1,37 @@
+[PASSAGE]
+Pour & Shine Bar Academy
+Evening Bartending Course for Restaurant Staff
+
+Learn to mix forty classic cocktails in just six weeks! Our evening course meets every Monday and Wednesday from 6:30 P.M. to 9:00 P.M., starting June 4 at 22 Harbor Street. The fee of $180 covers ingredients, tools, and a printed recipe handbook. The academy has trained over 900 bartenders since 2015.
+
+Instructor Carla Nunez, a national cocktail champion, leads small classes of at most twelve trainees, so each learner gets daily hands-on practice behind a real bar counter. Graduates receive a skills certificate and free job-placement advice for hotels and cruise ships. All practice tools, from shakers to glassware, are provided during lessons and stored in personal lockers overnight. Coffee and snacks are served during the break at no extra charge.
+
+Register by May 28 to save twenty percent. Morning trial lessons are free on May 20 and May 21. Free parking is available behind the building after 5:00 P.M. Call 555-7640 or visit our front desk. Please note that trainees must be at least eighteen years old.
+
+[QUESTION]
+When do the regular classes meet?
+(A) On May 20 and 21 in the morning
+(B) Every weekday at 6:30 P.M.
+(C) On Monday and Wednesday evenings
+(D) On Tuesday and Thursday evenings
+Answer: C
+Explanation: Bài nêu "meets every Monday and Wednesday from 6:30 P.M. to 9:00 P.M.". | (A) "On May 20 and 21 in the morning" — bẫy đúng-nhưng-trả-lời-câu-khác: đó là buổi học thử miễn phí, không phải lớp chính. | (B) "Every weekday at 6:30 P.M." — bẫy từ quen: chỉ 2 buổi/tuần, không phải mọi ngày. | (C) "On Monday and Wednesday evenings" — đúng lịch lớp chính. | (D) "On Tuesday and Thursday evenings" — chi tiết sai ngày.
+Source: original
+[QUESTION]
+What is NOT stated in the advertisement?
+(A) The fee covers ingredients
+(B) Graduates get job-placement advice
+(C) Classes hold twelve trainees at most
+(D) Trainees receive free uniforms
+Answer: D
+Explanation: Bài kể học phí gồm nguyên liệu, lớp tối đa mười hai người, cựu học viên được tư vấn việc làm — không đồng phục nào. | (A) "The fee covers ingredients" — bài ghi fee covers ingredients. | (B) "Graduates get job-placement advice" — bài ghi free job-placement advice. | (C) "Classes hold twelve trainees at most" — bài ghi at most twelve trainees. | (D) "Trainees receive free uniforms" — không đồng phục nào được nhắc tới.
+Source: original
+[QUESTION]
+What can be inferred about the trainees?
+(A) Beginners get hands-on bar practice
+(B) The certificate guarantees a cruise-ship job
+(C) Trial lessons require advance payment
+(D) Sixteen-year-olds may enroll with parents
+Answer: A
+Explanation: Phải nối 2 chỗ: "small classes of at most twelve trainees" + "each learner gets daily hands-on practice behind a real bar counter". | (A) "Beginners get hands-on bar practice" — đúng: lớp nhỏ để ai cũng được thực hành quầy thật. | (B) "The certificate guarantees a cruise-ship job" — bẫy: bài chỉ cho advice (tư vấn), không guarantee (đảm bảo). | (C) "Trial lessons require advance payment" — trái bài: trial lessons are free. | (D) "Sixteen-year-olds may enroll with parents" — trái bài: phải at least eighteen years old.
+Source: original

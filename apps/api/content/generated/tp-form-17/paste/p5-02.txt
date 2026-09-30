@@ -1,0 +1,9 @@
+[QUESTION]
+The maintenance team ------- the elevator repairs by last Friday, according to Monday morning's meeting minutes.
+(A) completes
+(B) will complete
+(C) completed
+(D) has completed
+Answer: C
+Explanation: Mốc "by last Friday" đã qua nên cần quá khứ đơn. | (A) "completes" — hiện tại đơn, sai thì với mốc quá khứ. | (B) "will complete" — tương lai đơn, mâu thuẫn mốc quá khứ. | (C) "completed" — quá khứ đơn hợp với mốc thời gian đã qua. | (D) "has completed" — hiện tại hoàn thành không đi với mốc quá khứ xác định.
+Source: original

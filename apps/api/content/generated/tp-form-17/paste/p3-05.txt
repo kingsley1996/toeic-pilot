@@ -1,0 +1,41 @@
+[SCRIPT]
+voice: uk_female_1
+Welcome aboard. Before your first shift, you must pass the safety test on Friday morning.
+voice: ca_male_1
+I read the handbook last night. Is the test in Room 4 with the written questions?
+voice: uk_female_1
+It was, but the inspector visits Thursday, so we moved the drill to Wednesday afternoon in the warehouse.
+voice: ca_male_1
+A hands-on drill? I've only practiced forklift signals on video.
+voice: uk_female_1
+Watch the online module tonight, and you'll be fine. It takes about thirty minutes.
+voice: ca_male_1
+I'll finish it after dinner and meet you at the warehouse gate Wednesday.
+
+[QUESTION]
+Who most likely is the woman?
+(A) The inspector visiting on Thursday
+(B) A supervisor instructing a new employee
+(C) A new employee asking about Room 4
+(D) A technician repairing a forklift
+Answer: B
+Explanation: Người phụ nữ đón nhân viên mới và giao yêu cầu kiểm tra: "Welcome aboard. Before your first shift, you must pass the safety test". | (A) "inspector visiting on Thursday" — sai người, thanh tra là người khác ghé thăm thứ Năm. | (B) "supervisor instructing a new employee" — đúng vai trò trưởng ca hướng dẫn lính mới. | (C) "new employee asking about Room 4" — người hỏi phòng 4 là anh nhân viên nam, không phải cô. | (D) "technician repairing a forklift" — ghép sai quan hệ, tín hiệu xe nâng chỉ được anh ta luyện qua video chứ không có sửa chữa nào.
+Source: original
+[QUESTION]
+What does the man still need to do?
+(A) Take a written test in Room 4 on Friday
+(B) Inspect the warehouse on Thursday
+(C) Attend a practical drill in the warehouse
+(D) Practice forklift signals on video again
+Answer: C
+Explanation: Kế hoạch thi viết bị đổi thành diễn tập thực hành: "Is the test in Room 4 with the written questions?" rồi "we moved the drill to Wednesday afternoon in the warehouse", nên đáp án theo bản đã sửa. | (A) "written test in Room 4 on Friday" — bản cũ bị thay thế ("It was"), là bẫy kế hoạch bị đổi. | (B) "Inspect the warehouse on Thursday" — việc của thanh tra ("the inspector visits Thursday"), không phải của anh nhân viên. | (C) "practical drill in the warehouse" — đúng việc anh ta phải dự theo lịch mới chiều thứ Tư. | (D) "forklift signals on video" — thứ anh ta đã luyện rồi ("I've only practiced"), không phải việc còn phải làm.
+Source: original
+[QUESTION]
+What will the man do tonight?
+(A) Read the handbook for the first time
+(B) Meet the woman at the warehouse gate
+(C) Take the safety test in the warehouse
+(D) Complete a short online training module
+Answer: D
+Explanation: Tối nay anh ta học module trực tuyến khoảng ba mươi phút: "Watch the online module tonight" và "It takes about thirty minutes". | (A) "Read the handbook for the first time" — việc đã xong tối qua ("I read the handbook last night"), không phải việc tối nay. | (B) "Meet the woman at the warehouse gate" — sai thời điểm, cuộc hẹn ở cổng kho là thứ Tư ("meet you at the warehouse gate Wednesday"). | (C) "Take the safety test" — bài kiểm tra diễn ra chiều thứ Tư trong kho, không phải tối nay. | (D) "Complete a short online training module" — đúng việc anh ta hứa làm sau bữa tối ("I'll finish it after dinner").
+Source: original

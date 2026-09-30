@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How many trainees joined the internal training course?
+voice: ca_male_1
+(A) Twice a year, in spring.
+(B) About fifty dollars per person.
+(C) Almost thirty people signed up.
+Answer: C
+Explanation: Câu hỏi là "How many trainees joined the internal training course?", hỏi SỐ LƯỢNG đếm được. | (A) "Twice a year, in spring." — đưa tần suất thay vì số người, đúng dạng con số nhưng sai chiều. | (B) "About fifty dollars per person." — đưa giá tiền thay vì số người, đúng dạng con số nhưng sai chiều. | (C) "Almost thirty people signed up." — nêu đúng một số lượng người.
+Source: original

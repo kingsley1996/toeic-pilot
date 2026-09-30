@@ -1,0 +1,9 @@
+[QUESTION]
+The inventory clerk ------- the stationery stock on the last working day of each month.
+(A) audited
+(B) audits
+(C) will audit
+(D) has audited
+Answer: B
+Explanation: Cụm "of each month" chỉ thói quen lặp lại nên cần hiện tại đơn. | (A) "audited" — quá khứ đơn, sai thì với thói quen lặp lại. | (B) "audits" — hiện tại đơn hợp với chủ ngữ số ít và thói quen. | (C) "will audit" — tương lai đơn, không diễn tả thói quen. | (D) "has audited" — hiện tại hoàn thành không đi với mốc lặp lại "each month".
+Source: original

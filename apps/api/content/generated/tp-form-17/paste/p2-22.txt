@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you resend the fall campaign budget today?
+voice: ca_male_1
+(A) Sure, I'll send it this afternoon.
+(B) The campaign budget was approved early.
+(C) In the marketing shared folder.
+Answer: A
+Explanation: Câu hỏi là "Could you resend the fall campaign budget today?", đây là một YÊU CẦU chứ không phải câu hỏi thông tin. | (A) "Sure, I'll send it this afternoon." — nhận lời và cam kết thời điểm gửi, đúng cách phản hồi một yêu cầu. | (B) "The campaign budget was approved early." — mượn cụm "campaign budget" nhưng kể việc đã duyệt, không nhận lời gửi lại. | (C) "In the marketing shared folder." — nêu nơi chốn cho một yêu cầu cần hành động, mượn từ "marketing" để đánh lừa.
+Source: original

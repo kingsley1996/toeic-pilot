@@ -1,0 +1,41 @@
+[PASSAGE]
+Riverside Weekend Farm Market Returns
+
+The riverside market by the old ferry pier opens every Saturday from 8 A.M. to 1 P.M. starting June 7. [1] More than thirty local farms will sell fresh vegetables, fruit, honey, and flowers directly to visitors. [2] A cooking demonstration begins at 10 A.M. on the wooden stage, where two guest chefs prepare simple dishes with morning produce. [3] Entry is free, and all stalls accept bank cards in addition to cash. [4] Families can rest in the new children's corner with small tables, while free parking is available across the bridge. A short workshop on home gardening starts at eleven near the east gate, with seats limited to twenty people. Baskets can be borrowed with a small deposit at the information booth. Local bakers join the market twice a month with fresh bread and pastries. Vendors cover their own tables, so visitors should bring reusable bags. The market runs rain or shine on the covered walkway, and it is cancelled only during heavy storms. Last spring the event drew nearly five thousand shoppers each weekend. Dogs are welcome if kept on short leads. The market office answers questions by phone from Monday to Friday. The organizers plan a harvest festival in October with live music and twice the stalls.
+
+[QUESTION]
+According to the article, how can visitors pay at the stalls?
+(A) By monthly invoice
+(B) By phone order only
+(C) By bank card or cash
+(D) By market coupons
+Answer: C
+Explanation: Bài ghi "all stalls accept bank cards in addition to cash", tức trả bằng thẻ hoặc tiền mặt. | (A) "By monthly invoice" — bài không hề nhắc hóa đơn tháng. | (B) "By phone order only" — điện thoại chỉ để hỏi văn phòng chợ, không phải để trả tiền. | (C) "By bank card or cash" — đúng hai cách trả vừa dẫn. | (D) "By market coupons" — phiếu chợ không xuất hiện trong bài.
+Source: original
+[QUESTION]
+What can be inferred about the market in bad weather?
+(A) It moves indoors every Saturday morning
+(B) It charges vendors extra for covered tables
+(C) It closes for the whole month of June
+(D) It stays open in light rain but closes in heavy storms
+Answer: D
+Explanation: Bài ghi chợ họp "rain or shine on the covered walkway" và "cancelled only during heavy storms", nên mưa nhẹ vẫn họp, bão lớn mới nghỉ. | (A) "It moves indoors every Saturday morning" — chợ họp ngoài lối có mái che, không dời vào nhà. | (B) "It charges vendors extra for covered tables" — người bán tự che quầy, không ai thu thêm tiền. | (C) "It closes for the whole month of June" — chợ mở từ June 7, không nghỉ cả tháng. | (D) "It stays open in light rain but closes in heavy storms" — đúng điều suy ra từ hai câu vừa dẫn.
+Source: original
+[QUESTION]
+What is NOT stated about the market?
+(A) Guided tours are offered in English
+(B) Dogs are welcome on short leads
+(C) A cooking demonstration starts at 10 A.M.
+(D) Entry is free
+Answer: A
+Explanation: Bài nêu "Entry is free", "Dogs are welcome if kept on short leads" và "A cooking demonstration begins at 10 A.M.", còn tour hướng dẫn thì không được nhắc tới. | (A) "Guided tours are offered in English" — bài không hề nhắc tour hướng dẫn. | (B) "Dogs are welcome on short leads" — đúng câu vừa dẫn nên bị loại. | (C) "A cooking demonstration starts at 10 A.M." — đúng giờ demo vừa dẫn nên bị loại. | (D) "Entry is free" — đúng câu vừa dẫn nên bị loại.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Shoppers who arrive before nine can enjoy free coffee from the welcome tent."
+(A) [2]
+(B) [1]
+(C) [3]
+(D) [4]
+Answer: B
+Explanation: Câu mới nói khách đến trước chín giờ nên hợp nhất ngay sau câu giờ mở cửa "from 8 A.M. to 1 P.M. starting June 7", tức vị trí [1]. | (A) "[2]" — đã chuyển sang quầy nông sản, lạc đề cà phê chào mừng. | (B) "[1]" — đúng chỗ nối tiếp giờ mở cửa vừa dẫn. | (C) "[3]" — sau phần demo nấu ăn, không liên quan giờ đến sớm. | (D) "[4]" — sau chuyện trả tiền và chỗ đậu xe, quá muộn.
+Source: original

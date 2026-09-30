@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Could you repeat the morning weather bulletin, please?
+voice: us_female_1
+(A) The bulletin was updated at dawn.
+(B) In the studio on Park Road.
+(C) Certainly, I'll read it again slowly.
+Answer: C
+Explanation: Câu hỏi là "Could you repeat the morning weather bulletin, please?", đây là một YÊU CẦU đọc lại bản tin chứ không phải câu hỏi thông tin. | (A) "The bulletin was updated at dawn." — dùng lại từ "bulletin" nhưng trả lời thông tin không ai hỏi, không nhận lời yêu cầu. | (B) "In the studio on Park Road." — nêu nơi chốn cho một yêu cầu, không nhận lời hay cam kết hành động. | (C) "Certainly, I'll read it again slowly." — nhận lời và cam kết đọc lại, đúng cách phản hồi một yêu cầu.
+Source: original
