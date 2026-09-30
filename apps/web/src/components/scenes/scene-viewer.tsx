@@ -51,6 +51,10 @@ import {
   HOTEL_ROOM_SHAPES,
   HotelRoomEnvironment,
 } from "@/components/scenes/scene-shapes-hotel-room";
+import {
+  SUPERMARKET_SHAPES,
+  SupermarketEnvironment,
+} from "@/components/scenes/scene-shapes-supermarket";
 import type { Patrol, SceneDef, SceneObjectDef, ShapeKey } from "@/content/scenes";
 import { apiFetch } from "@/lib/api";
 import { Alert, Button, Panel, Skeleton, cx } from "@/components/ui";
@@ -80,6 +84,7 @@ const SHAPES: Record<ShapeKey, FC> = {
   ...RESTAURANT_SHAPES,
   ...AIRPORT_SHAPES,
   ...HOTEL_ROOM_SHAPES,
+  ...SUPERMARKET_SHAPES,
 };
 
 const entryKey = (o: { headword: string; partOfSpeech: string }) =>
@@ -541,6 +546,8 @@ function SceneCanvas({
         <AirportEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "hotel-room" ? (
         <HotelRoomEnvironment onBrandPick={onBrandPick} />
+      ) : scene.environment === "supermarket-hall" ? (
+        <SupermarketEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "museum-hall" ? (
         <MuseumEnvironment onBrandPick={onBrandPick} />
       ) : scene.environment === "construction-site" ? (

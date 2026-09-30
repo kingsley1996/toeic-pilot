@@ -200,6 +200,30 @@ export type ShapeKey =
   | "overhead-bin"
   | "aisle-seat"
   | "flight-attendant"
+  // siêu thị (topic `supermarket`) — entry-door dùng chung cho entrance+exit
+  | "entry-door"
+  | "basket-stack"
+  | "list-board"
+  | "gondola-shelf"
+  | "aisle-sign"
+  | "shop-cart"
+  | "endcap-tag"
+  | "produce-stand"
+  | "produce-scale"
+  | "sample-stand"
+  | "dairy-cooler"
+  | "chest-freezer"
+  | "bakery-counter"
+  | "deli-counter"
+  | "checkout-lane"
+  | "cashier"
+  | "receipt-slip"
+  | "barcode-box"
+  | "paper-bags"
+  | "promo-tower"
+  | "coupon-stand"
+  | "discount-totem"
+  | "service-desk"
   // phòng khách sạn (topic `hotel`)
   | "bed-frame"
   | "pillow-pair"
@@ -300,7 +324,8 @@ export interface SceneDef {
     | "park-grounds"
     | "restaurant-hall"
     | "airport-terminal"
-    | "hotel-room";
+    | "hotel-room"
+    | "supermarket-hall";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

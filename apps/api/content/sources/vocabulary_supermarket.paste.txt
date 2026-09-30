@@ -1,0 +1,24 @@
+aisle | noun | /aɪl/ | a passage between shelves in a store | lối đi giữa các kệ hàng | The cereals are in aisle five. | Ngũ cốc ở lối đi số năm.
+shelf | noun | /ʃelf/ | a flat board for displaying goods in a store | kệ hàng | The shelves were restocked this morning. | Các kệ hàng đã được bổ sung sáng nay.
+cart | noun | /kɑːrt/ | a large basket on wheels for carrying goods while shopping | xe đẩy hàng | Take a cart by the entrance. | Lấy xe đẩy ở gần cửa vào.
+basket | noun | /ˈbæskɪt/ | a small container for carrying a few items while shopping | giỏ mua hàng | Baskets are stacked next to the door. | Các giỏ mua hàng xếp chồng cạnh cửa ra vào.
+checkout | noun | /ˈtʃekaʊt/ | the counter where customers pay for goods | quầy thanh toán | Only two checkouts are open now. | Hiện chỉ có hai quầy thanh toán mở.
+cashier | noun | /kæˈʃɪr/ | a person who takes payments at a checkout | thu ngân | The cashier scanned each item quickly. | Thu ngân quét từng món hàng rất nhanh.
+receipt | noun | /rɪˈsiːt/ | a printed proof of payment | hóa đơn | Keep the receipt for a refund. | Giữ hóa đơn để được hoàn tiền.
+barcode | noun | /ˈbɑːrkoʊd/ | a printed pattern of lines scanned at checkout | mã vạch | The barcode on this box is torn. | Mã vạch trên hộp này bị rách.
+produce | noun | /ˈprɑːduːs/ | fresh fruit and vegetables sold in a store | quầy rau củ quả | Fresh produce arrives every morning. | Rau củ quả tươi được giao mỗi sáng.
+dairy | noun | /ˈderi/ | milk, cheese, and butter products | quầy sữa | Dairy products are at the back of the store. | Các sản phẩm sữa ở phía cuối cửa hàng.
+freezer | noun | /ˈfriːzər/ | a large chilled cabinet for frozen food | tủ đông | Ice cream is in the freezer aisle. | Kem ở tủ đông.
+bakery | noun | /ˈbeɪkəri/ | a counter selling fresh bread and cakes | quầy bánh mì | The bakery smells wonderful today. | Quầy bánh mì hôm nay thơm quá.
+deli | noun | /ˈdeli/ | a counter selling cooked meats and salads | quầy đồ nguội | Sliced ham is available at the deli. | Quầy đồ nguội có giăm bông thái lát.
+coupon | noun | /ˈkuːpɑːn/ | a ticket giving a discount on goods | phiếu giảm giá | This coupon saves you twenty percent. | Phiếu giảm giá này giúp bạn tiết kiệm hai mươi phần trăm.
+discount | noun | /ˈdɪskaʊnt/ | a reduction in the usual price | giảm giá | Members get an extra discount today. | Hôm nay thành viên được giảm giá thêm.
+sample | noun | /ˈsæmpl/ | a small amount of food offered for tasting | hàng ăn thử | Free samples are offered near the entrance. | Hàng ăn thử miễn phí gần cửa vào.
+scale | noun | /skeɪl/ | a device for weighing fruit and vegetables | cân | Weigh the apples on the scale. | Cân táo trên cân đi.
+price tag | noun | /praɪs tæɡ/ | a small label showing the price of goods | thẻ giá | The price tag says five dollars. | Thẻ giá ghi năm đô la.
+promotion | noun | /prəˈmoʊʃn/ | a special offer to encourage buying | khuyến mãi | The promotion ends on Sunday. | Chương trình khuyến mãi kết thúc vào Chủ nhật.
+shopping list | noun | /ˈʃɑːpɪŋ lɪst/ | a written list of things to buy | danh sách mua sắm | Check the shopping list before you pay. | Kiểm tra danh sách mua sắm trước khi thanh toán.
+entrance | noun | /ˈentrəns/ | the door for coming into a store | cửa vào | Carts are parked by the entrance. | Xe đẩy đậu gần cửa vào.
+exit | noun | /ˈeɡzɪt/ | the door for leaving a store | cửa ra | Please use the exit on the right. | Vui lòng dùng cửa ra bên phải.
+bag | noun | /bæɡ/ | a paper or plastic container for carrying shopping | túi đựng hàng | Paper bags are free of charge. | Túi giấy được miễn phí.
+refund | noun | /ˈriːfʌnd/ | money paid back for returned goods | hoàn tiền | Ask at the desk for a full refund. | Hỏi ở quầy để được hoàn tiền đầy đủ.

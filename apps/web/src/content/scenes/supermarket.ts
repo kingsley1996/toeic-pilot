@@ -1,0 +1,339 @@
+import type { SceneDef } from "@/content/scenes/types";
+
+/**
+ * Siêu thị (topic `supermarket`, 24 từ — 19 nhập mới + receipt/coupon/
+ * discount/promotion/refund gắn lại từ topic cũ).
+ *
+ * Bố cục nam→bắc: tường kính nam (entrance x −6, exit x +6) → sảnh giữa với
+ * 3 dãy kệ song song Z + xe đẩy patrol aisle giữa → quầy thu ngân bắc +
+ * bakery/deli hai góc. Đông là produce, tây là dairy/freezer.
+ *
+ * Một object một dãy: chỉ dãy kệ giữa mang nhãn `shelf`, hai dãy bên là
+ * decor trong environment (không hotspot — recall chỉ hỏi object còn lại).
+ * Tương tự checkout: một shape 3 làn, một nhãn.
+ *
+ * Nhãn treo cao tính dư 0.05 trên 0.8 (§9.9). Đồ trên mặt quầy (receipt/
+ * barcode/bag): đáy lút 0.005, nhãn ôm mặt hoặc mũi tên ngắn, tách khỏi
+ * nhãn checkout bằng cao độ + vị trí x.
+ */
+export const supermarketScene: SceneDef = {
+  id: "supermarket-aisles-01",
+  title: "Siêu thị",
+  description:
+    "Buổi mua sắm trong siêu thị — dãy kệ đầy hàng, xe đẩy dọc lối đi, quầy thu ngân và góc khuyến mãi cuối tuần.",
+  topicSlug: "supermarket",
+  sky: "#dfe9ef",
+  environment: "supermarket-hall",
+  // Trong nhà: camera ngoài tường kính nam nhìn xuyên vào (mẫu office) —
+  // đứng trong phòng là tường bắc dồn pill (§10.1).
+  home: { pos: [2, 8, 18], look: [-0.5, 1, -4] },
+  badges: ["new", "beta"],
+  objects: [
+    {
+      id: "obj-entrance",
+      shape: "entry-door",
+      headword: "entrance",
+      partOfSpeech: "noun",
+      // Cửa trượt tây trên tường kính nam.
+      position: [-6, 0, 10],
+      focusDistance: 8,
+      hotspotY: 3.6,
+      topY: 2.7,
+      ringRadius: 2,
+    },
+    {
+      id: "obj-exit",
+      shape: "entry-door",
+      headword: "exit",
+      partOfSpeech: "noun",
+      // Cửa trượt đông — cùng shape cửa vào (một ShapeKey hai object).
+      position: [6, 0, 10],
+      focusDistance: 8,
+      hotspotY: 3.6,
+      topY: 2.7,
+      ringRadius: 2,
+    },
+    {
+      id: "obj-basket",
+      shape: "basket-stack",
+      headword: "basket",
+      partOfSpeech: "noun",
+      // Chồng giỏ cạnh cửa vào, đông bảng mua sắm.
+      position: [-3.2, 0, 8.6],
+      focusDistance: 4,
+      hotspotY: 1.9,
+      topY: 1.0,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-list",
+      shape: "list-board",
+      headword: "shopping list",
+      partOfSpeech: "noun",
+      // Bảng danh sách giữa-đông sảnh, mặt +Z về cửa (về camera). Đặt x 3.2
+      // cho khỏi cùng trục nhìn với biển aisle (x 0.2) — wrapper drei của
+      // bảng gần camera phủ rộng, đè pill biển sau.
+      position: [3.2, 0, 8.8],
+      focusDistance: 4,
+      hotspotY: 2.6,
+      topY: 1.75,
+      ringRadius: 1.2,
+    },
+    {
+      id: "obj-shelf",
+      shape: "gondola-shelf",
+      headword: "shelf",
+      partOfSpeech: "noun",
+      // Dãy giữa (x −2.5, z −3..5). Nhãn vào giữa dãy — bay tới đầu thì
+      // chỉ thấy đầu (§types `focus`).
+      position: [-2.5, 0, 1],
+      focus: [-2.5, 1, 1],
+      focusDistance: 6,
+      hotspotY: 2.9,
+      topY: 2.0,
+      ringRadius: 3.5,
+    },
+    {
+      id: "obj-aisle",
+      shape: "aisle-sign",
+      headword: "aisle",
+      partOfSpeech: "noun",
+      // Cổng biển số 5 đầu nam aisle giữa. Xe đẩy lùi tới z 5.0 là dừng —
+      // chân cổng ở z 6.2 nên không đâm.
+      position: [0.2, 0, 6.2],
+      focusDistance: 6,
+      hotspotY: 3.5,
+      topY: 2.6,
+      ringRadius: 2,
+    },
+    {
+      id: "obj-cart",
+      shape: "shop-cart",
+      headword: "cart",
+      partOfSpeech: "noun",
+      // Patrol aisle TÂY (x −5.2, z −2..4), KHÔNG phải aisle giữa: wrapper
+      // drei của pill xe (rộng hơn nút, vẫn bắt elementFromPoint dù nút đã
+      // pointer-events-none) quét cùng cột x với biển aisle là đè pill tĩnh
+      // theo timing (§11.6). Nhãn treo cao trên thân xe (§7.5).
+      position: [-5.2, 0, 1],
+      patrol: { axis: "z", range: 3, speed: 0.5 },
+      focusDistance: 5,
+      hotspotY: 2.3,
+      topY: 1.05,
+      ringRadius: 1.4,
+    },
+    {
+      id: "obj-tag",
+      shape: "endcap-tag",
+      headword: "price tag",
+      partOfSpeech: "noun",
+      // Đầu cap cuối nam dãy kệ giữa — tách khỏi nhãn shelf bằng z.
+      position: [-2.5, 0, 5.9],
+      focusDistance: 4,
+      hotspotY: 2.0,
+      topY: 1.1,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-produce",
+      shape: "produce-stand",
+      headword: "produce",
+      partOfSpeech: "noun",
+      // Sạp rau phía đông, bàn gỗ + thùng hàng.
+      position: [11, 0, 3],
+      focusDistance: 6,
+      hotspotY: 2.5,
+      topY: 1.6,
+      ringRadius: 2.2,
+    },
+    {
+      id: "obj-scale",
+      shape: "produce-scale",
+      headword: "scale",
+      partOfSpeech: "noun",
+      // Cân bàn cạnh sạp rau — chân đế riêng, không chung footprint.
+      position: [9.2, 0, 4.6],
+      focusDistance: 4,
+      hotspotY: 2.4,
+      topY: 1.5,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-sample",
+      shape: "sample-stand",
+      headword: "sample",
+      partOfSpeech: "noun",
+      // Khay ăn thử đông-nam, giữa produce và lối đi chính.
+      position: [8.5, 0, 6.5],
+      focusDistance: 4,
+      hotspotY: 2.2,
+      topY: 1.3,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-dairy",
+      shape: "dairy-cooler",
+      headword: "dairy",
+      partOfSpeech: "noun",
+      // Tủ sữa mở áp tường tây, mặt +X vào phòng. Dài 2.4 theo world X sau
+      // yaw: lưng hở tường 0.1, mặt hở dãy kệ decor 0.65.
+      position: [-12.55, 0, -2],
+      rotationY: Math.PI / 2,
+      focusDistance: 5,
+      hotspotY: 2.6,
+      topY: 1.7,
+      ringRadius: 2,
+    },
+    {
+      id: "obj-freezer",
+      shape: "chest-freezer",
+      headword: "freezer",
+      partOfSpeech: "noun",
+      // Tủ đông nắp kính nam tủ sữa, cùng tường tây.
+      position: [-12.6, 0, -6.5],
+      rotationY: Math.PI / 2,
+      focusDistance: 5,
+      hotspotY: 2.2,
+      topY: 1.3,
+      ringRadius: 2,
+    },
+    {
+      id: "obj-bakery",
+      shape: "bakery-counter",
+      headword: "bakery",
+      partOfSpeech: "noun",
+      // Quầy bánh đông-bắc, đối xứng deli bên tây.
+      position: [10, 0, -7],
+      focusDistance: 6,
+      hotspotY: 2.6,
+      topY: 1.7,
+      ringRadius: 2.2,
+    },
+    {
+      id: "obj-deli",
+      shape: "deli-counter",
+      headword: "deli",
+      partOfSpeech: "noun",
+      // Quầy đồ nguội kính tây-bắc.
+      position: [-10, 0, -7],
+      focusDistance: 6,
+      hotspotY: 2.7,
+      topY: 1.8,
+      ringRadius: 2.2,
+    },
+    {
+      id: "obj-checkout",
+      shape: "checkout-lane",
+      headword: "checkout",
+      partOfSpeech: "noun",
+      // Một shape 3 làn, một nhãn — 3 object là 3 nhãn đè nhau.
+      // Nhãn lên 2.7 cho thoát khỏi receipt/barcode/bag trên mặt quầy.
+      position: [0, 0, -8.5],
+      focus: [0.5, 0.9, -8.5],
+      focusDistance: 7,
+      hotspotY: 2.7,
+      topY: 0.95,
+      ringRadius: 4,
+    },
+    {
+      id: "obj-cashier",
+      shape: "cashier",
+      headword: "cashier",
+      partOfSpeech: "noun",
+      // Thu ngân sau quầy làn tây — lệch x khỏi nhãn checkout (focus x 0.5)
+      // cho khỏi đè, tách khỏi receipt bằng cao độ.
+      position: [-2.4, 0, -9.4],
+      rotationY: -Math.PI / 2,
+      focusDistance: 4,
+      hotspotY: 2.6,
+      topY: 1.72,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-receipt",
+      shape: "receipt-slip",
+      headword: "receipt",
+      partOfSpeech: "noun",
+      // Giấy in trên quầy tây — vật bẹt, nhãn ôm mặt, thấp hơn nhãn
+      // checkout 1.1 m nên không đè.
+      position: [-2, 0, -8.3],
+      focusDistance: 3,
+      hotspotY: 1.6,
+      ringRadius: 0.6,
+    },
+    {
+      id: "obj-barcode",
+      shape: "barcode-box",
+      headword: "barcode",
+      partOfSpeech: "noun",
+      // Hộp ngũ cốc dựng trên quầy, mặt mã vạch về camera.
+      position: [-1, 0, -8.3],
+      focusDistance: 3,
+      hotspotY: 2.3,
+      topY: 1.4,
+      ringRadius: 0.6,
+    },
+    {
+      id: "obj-bag",
+      shape: "paper-bags",
+      headword: "bag",
+      partOfSpeech: "noun",
+      // Chồng túi giấy cuối đông quầy — đông receipt 4.5 m theo x.
+      position: [2.5, 0, -8.5],
+      focusDistance: 3.5,
+      hotspotY: 2.4,
+      topY: 1.5,
+      ringRadius: 0.8,
+    },
+    {
+      id: "obj-promo",
+      shape: "promo-tower",
+      headword: "promotion",
+      partOfSpeech: "noun",
+      // Tháp hàng giữa sảnh trước quầy — điểm hút mắt của cảnh.
+      position: [8.5, 0, -1],
+      focusDistance: 6,
+      hotspotY: 3.0,
+      topY: 2.1,
+      ringRadius: 2.4,
+    },
+    {
+      id: "obj-coupon",
+      shape: "coupon-stand",
+      headword: "coupon",
+      partOfSpeech: "noun",
+      // Biển chữ A trước quầy tây — xuống đất vì tường bắc hết chỗ (§10.3).
+      position: [-4, 0, -6],
+      focusDistance: 4,
+      hotspotY: 2.5,
+      topY: 1.6,
+      ringRadius: 1,
+    },
+    {
+      id: "obj-discount",
+      shape: "discount-totem",
+      headword: "discount",
+      partOfSpeech: "noun",
+      // Cột biển cam cạnh tháp khuyến mãi — cách 2.4 m, không chung tia
+      // nhìn với nhãn promotion từ camera đầu.
+      position: [6.3, 0, 0.8],
+      focusDistance: 5,
+      hotspotY: 3.35,
+      topY: 2.45,
+      ringRadius: 1.2,
+    },
+    {
+      id: "obj-refund",
+      shape: "service-desk",
+      headword: "refund",
+      partOfSpeech: "noun",
+      // Quầy dịch vụ KH tây-nam, gần cửa vào đúng đời (đổi trả ngay khi vào).
+      // Dời z 8 cho hở đầu nam dãy kệ decor tây (kết z 7).
+      position: [-11, 0, 8],
+      focusDistance: 5,
+      hotspotY: 2.8,
+      topY: 1.9,
+      ringRadius: 1.6,
+    },
+  ],
+};
