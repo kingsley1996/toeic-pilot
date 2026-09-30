@@ -974,15 +974,7 @@
   --l-line-strong: rgb(var(--rule-strong));
   --l-card: rgb(var(--panel));
   --l-sunken: rgb(var(--recess));
-  /* Dải quality là beat tối duy nhất của trang, nền mực ở CẢ hai mode — nên
-     chữ trong dải có biến riêng: token `--ink` lật sáng ở dark, không dùng
-     được. Chữ sáng trên nền tối nên tương phản thừa AA mà không cần bảng
-     riêng (ink ~14:1, muted ~7.5:1, kicker ~8:1 trên #1c2530). */
-  --l-ai-bg: #1c2530;
-  --l-ai-ink: #f2f5f8;
-  --l-ai-muted: #b7c3cd;
-  --l-ai-kicker: #f2b183;
-  --l-ai-line: rgb(255 255 255 / 0.14);
+  --l-green: rgb(var(--ok));
   --console-top: #f2f4f8;
   --console-face: #dde1e9;
   --console-edge: #bcc3cf;
@@ -996,10 +988,8 @@
   --l-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.18);
   --l-radius: 24px;
 
-  /* Mặc định không nền để lộ lưới kẻ ô của `shell` (`z-index:-10`). Ngoại lệ
-     duy nhất là base light ở khối riêng phía dưới: trắng MỜ + quầng cam, mờ
-     để lưới vẫn thoảng qua. Chỉ những dải `.l-alt` (và giờ là `.l-ai`,
-     `.l-final`) mới che lưới đặc, và đó là nhịp của trang. */
+  /* KHÔNG đặt nền: nền mờ ở đây sẽ phủ mất lưới kẻ ô mà `shell` vẽ ở
+     `z-index:-10`. Chỉ những dải `.l-alt` mới che lưới, và đó là nhịp của trang. */
   color: var(--l-ink);
   line-height: 1.55;
 }
@@ -1018,7 +1008,6 @@
     --l-shadow: 0 18px 50px rgb(0 0 0 / 0.5);
     --l-shadow-sm: 0 12px 40px rgb(0 0 0 / 0.4);
     --l-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.5);
-    --l-ai-bg: #131b23;
   }
 }
 :root[data-theme="dark"] .landing {
@@ -1032,31 +1021,6 @@
   --l-shadow: 0 18px 50px rgb(0 0 0 / 0.5);
   --l-shadow-sm: 0 12px 40px rgb(0 0 0 / 0.4);
   --l-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.5);
-  --l-ai-bg: #131b23;
-}
-
-/* Base light: trắng mờ + quầng cam sau hero. Mờ chứ không đặc — đặc là che
- * mất lưới kẻ ô của shell (xem chú thích ở khối `.landing` gốc). Dark không
- * đụng: nền tối + lưới mờ hiện tại đã ổn, không ai kêu. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .landing {
-    background:
-      radial-gradient(
-        1000px 520px at 82% -80px,
-        rgb(var(--action-tint)) 0%,
-        rgb(var(--action-tint) / 0) 70%
-      ),
-      rgb(var(--panel) / 0.9);
-  }
-}
-:root[data-theme="light"] .landing {
-  background:
-    radial-gradient(
-      1000px 520px at 82% -80px,
-      rgb(var(--action-tint)) 0%,
-      rgb(var(--action-tint) / 0) 70%
-    ),
-    rgb(var(--panel) / 0.9);
 }
 
 .landing .l-container {
@@ -1213,9 +1177,6 @@
 }
 .landing .l-section.l-alt {
   background: var(--l-cream);
-  /* Base giờ trắng nên mép dải xám tự hiện — hairline chỉ gọt cho sắc. */
-  border-top: 1px solid var(--l-line);
-  border-bottom: 1px solid var(--l-line);
 }
 .landing .l-head {
   max-width: 700px;
@@ -1252,9 +1213,7 @@
   padding: 27px;
 }
 .landing .l-section.l-alt .l-tile {
-  /* Card TRẮNG trên dải xám, không phải xám trên xám: `--l-paper` (= ground)
-     đặt trên `--l-cream` (= recess) chênh chưa tới 1.1:1, card tan vào nền. */
-  background: var(--l-card);
+  background: var(--l-paper);
 }
 .landing .l-num {
   font-size: 13px;
@@ -1438,47 +1397,18 @@
 }
 
 /*
- * Dải quality là beat tối duy nhất của trang — quyết định của người dùng
- * 2026-09-30, đảo ngược chú thích cũ bên dưới.
+ * Dải này KHÔNG có nền riêng, và đó là bản sửa của một lần chọn sai.
  *
- * Lịch sử để lại: bản mẫu tô #18212b viết cứng (hỏng dark); bản đầu đổi sang
- * bậc `panel` cho khỏi trùng dải `.l-alt`, nhưng thành dải trắng đục lạc lõng,
- * mất lưới, lật ngược tương phản. Lần này nền mực có biến riêng cả hai mode
- * (`--l-ai-*`), nên dark không còn là bản bị quên.
+ * Bản mẫu tô nó bằng #18212b viết cứng. Bản đầu ở đây đổi sang bậc `panel` chỉ
+ * để khỏi trùng màu với dải `.l-alt` ngay trên nó — giải quyết được chuyện trùng
+ * nhưng đổi lấy chuyện lạc lõng: nó thành dải trắng đục DUY NHẤT của trang, sáng
+ * hơn mọi thứ, mất lưới kẻ ô mà các dải thường đều để lộ, và bên trong thì lật
+ * ngược tương phản — ô xám trên nền trắng, ngược với mọi khối khác.
+ *
+ * Nhịp xen kẽ giờ do THỨ TỰ dải lo, không do dải này tự bịa ra một bậc thứ ba:
+ * `.l-pet-layout` phía dưới nhận `.l-alt`, và `habits` nhả nó ra. Xem chú thích
+ * ở `app/page.tsx`.
  */
-.landing .l-section.l-ai {
-  background: var(--l-ai-bg);
-  color: var(--l-ai-ink);
-}
-.landing .l-ai h2 {
-  color: var(--l-ai-ink);
-}
-.landing .l-ai .l-kicker {
-  color: var(--l-ai-kicker);
-}
-.landing .l-ai .l-head p {
-  color: var(--l-ai-muted);
-}
-.landing .l-ai .l-pipe {
-  background: rgb(255 255 255 / 0.05);
-  border-color: var(--l-ai-line);
-}
-.landing .l-ai .l-pipe h4 {
-  color: var(--l-ai-ink);
-}
-.landing .l-ai .l-pipe p,
-.landing .l-ai .l-pipe .l-num,
-.landing .l-ai .l-pipe-arrow {
-  color: var(--l-ai-muted);
-}
-.landing .l-ai .l-note {
-  background: transparent;
-  border-color: var(--l-ai-line);
-  color: var(--l-ai-muted);
-}
-.landing .l-ai .l-note b {
-  color: var(--l-ai-ink);
-}
 .landing .l-pipeline {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
@@ -1662,10 +1592,6 @@
 .landing .l-final {
   text-align: center;
   padding: 105px 0;
-  /* Kết bằng dải tint cam thay vì xám trơn: trang mở bằng quầng ấm ở hero thì
-     khép bằng hơi ấm ở cuối. Token tự lật nâu tối ở dark. */
-  background: var(--l-orange-tint);
-  border-top: 1px solid var(--l-line);
 }
 .landing .l-final p {
   max-width: 580px;
