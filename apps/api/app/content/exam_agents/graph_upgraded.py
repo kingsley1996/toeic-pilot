@@ -340,10 +340,11 @@ def _merge_reports(mine: list[Any]) -> Any | None:
 
     from app.content.exam.check import SlotReport
 
+    # KHÔNG truyền blocked: nó là property suy từ problems (check.py:81),
+    # truyền vào là TypeError và content_check chết ở slot đầu tiên.
     return SlotReport(
         slot_id=mine[0].slot_id,
         number=mine[0].number,
-        blocked=any(bool(r.blocked) for r in mine),
         problems=list(
             dict.fromkeys(
                 p
@@ -550,7 +551,11 @@ def _write_node(
             "status": "draft",
         }
 
+        # GIỮ `update`: nó mang revision/metrics vừa tính. Trả literal mới ở
+        # đây là vứt cả hai — revision kẹt ở 0, verdict không bao giờ tới trần
+        # và graph quay vô hạn ở đúng đường chính (viết được nhưng còn lỗi).
         return {
+            **update,
             "draft": block,
             "blocked": False,
             "fatal": False,
@@ -560,7 +565,6 @@ def _write_node(
             "revision_plan": None,
             "fix_hint": None,
             "artifacts": state.get("artifacts", []) + [artifact],
-            "metrics": metrics,
             "log": [
                 f"vòng {revision}: write xong ({elapsed_ms / 1000:.1f}s)"
             ],
@@ -841,8 +845,10 @@ def _evaluator_node(
                 f"{f.get('message')}"
                 for f in error_findings
             )
+            # Cắt như critic cũ (4000 ký tự): draft P3/P4 nguyên văn vừa tốn
+            # input vừa làm evaluator sa đà vào văn bản thay vì lỗi.
             + "\n\n--- DRAFT ---\n"
-            + state["draft"]
+            + state["draft"][:4000]
             + "\n\n"
             "Trả lời ngắn gọn theo cấu trúc:\n"
             "SUMMARY:\n"
@@ -1051,7 +1057,9 @@ def _route_after_verdict(state: SlotState) -> str:
 
 
 def _route_after_evaluator(state: SlotState) -> str:
-    if state.get("revision_plan", {}).get("should_regenerate", True):
+    # revision_plan None = evaluator không có gì để lên kế hoạch (vd draft
+    # rỗng sau MissingBlock) — viết lại mù thay vì chết AttributeError.
+    if (state.get("revision_plan") or {}).get("should_regenerate", True):
         return "write"
 
     return "escalate"
@@ -1536,8 +1544,8 @@ def main(
         "--verify",
         action="store_true",
         help=(
-            "bật paid checker/evaluator cho slot sạch ở "
-            "tầng deterministic"
+            "bật paid checker cho ô có hình đã sạch ở tầng deterministic "
+            "(như bản graph cũ) — evaluator vẫn chạy khi revise"
         ),
     )
 
@@ -1567,7 +1575,9 @@ def main(
         args.part,
         args.max_tokens,
         verifier=gateway if args.verify else None,
-        verify_all=args.verify,
+        # Giữ ngữ nghĩa bản cũ: paid check chỉ ô có hình. Đấu verify_all=True
+        # là trả tiền cho cả 103 ô mà không báo trước.
+        verify_all=False,
         max_revisions=args.revisions,
     )
 
