@@ -1,5 +1,11 @@
 # TOEIC Pilot — Production-Grade LangGraph Graph
 
+> BẢN CHÍNH của vòng per-slot (`graph.py` cũ đã đổi tên thành
+> `graph_legacy.py`). Code chạy thực tế nằm ở package `upgraded/`
+> (`state/findings/write/validate/evaluate/verdict/assemble/runner`),
+> `graph_upgraded.py` chỉ là shim re-export. Phần "Source" cuối file này là
+> bản copy lúc tách module — đọc code thật ở `upgraded/`, đừng đọc copy.
+
 Bản nâng cấp trực tiếp từ graph write → check → critic → write. File chạy thực tế nằm ở `graph_upgraded.py`.
 
 ## Thay đổi chính

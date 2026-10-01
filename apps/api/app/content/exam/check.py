@@ -1480,7 +1480,7 @@ def check_blueprint(
         if not quiet:
             # Dòng tiến độ là để người chạy `check` biết nó chưa treo. Đồ thị gọi
             # lại hàm này cho MỖI vòng của MỖI ô, nên ở đó nó chỉ là nhiễu che
-            # mất dòng kết cục — xem `exam_agents/graph.py`.
+            # mất dòng kết cục — xem `exam_agents/upgraded/validate.py` (quiet=True).
             print(f"  … [{slot_index}/{len(slots)}] {slot.id} (part {part_number})", flush=True)
         report = SlotReport(slot_id=slot.id, number=slot.number)
         path = paste_path(workdir, slot)

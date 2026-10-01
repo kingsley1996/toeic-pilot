@@ -159,7 +159,7 @@ màn hình.
 Đó chính là ground truth **theo định nghĩa** — đáp án đúng được xác định *bằng*
 nó. Nó tốt hơn việc bảo một vision model đọc lại tấm ảnh, vì tấm ảnh chỉ là thứ
 tìm được để *xấp xỉ* mô tả đó; hai bên lệch nhau thì mô tả mới là thứ câu hỏi
-được viết dựa vào. `graph.py` ghi nó ra `workdir/photos/<slot>.txt` rồi thôi —
+được viết dựa vào. Node write (`upgraded/write.py`) ghi nó ra `workdir/photos/<slot>.txt` rồi thôi —
 nó chết theo workdir.
 
 ### 4.5 Kết luận

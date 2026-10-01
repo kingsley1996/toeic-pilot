@@ -714,7 +714,7 @@ nó không đo được.
     không cần một cổng chặn tự đánh oan các cụm khó nhất.
 
     Kèm theo: `cmd_write` từng bỏ qua `writer.max_tokens_for()` — hàm ấy chỉ được
-    `exam_agents/graph.py` gọi — nên mọi lượt `write` chạy ở trần 6000 bất kể part,
+    node write của graph gọi (`upgraded/write.py`) — nên mọi lượt `write` chạy ở
     trong khi bảng trần đo sẵn cho Part 6 là 16000 và cho ô có hình là 24000. Hai ô
     mất vì đúng chỗ này (`p1-03` cụt giữa lời giải thích, `p3-10` trả về 0 ký tự),
     và cái cụt không hiện ra như lỗi mà như một ô đã ghi xong. Đã nối lại

@@ -1,6 +1,6 @@
-"""Đồ thị đầy đủ: plan → (write → check → critic)× cho MỌI ô của đề.
+"""Đồ thị đầy đủ: plan → (write → validate → verdict → evaluate)× cho MỌI ô của đề.
 
-So với `graph.py` (chỉ vòng per-slot), đồ thị này thêm node đầu tiên —
+So với vòng per-slot cũ (`graph_legacy.py`), đồ thị này thêm node đầu tiên —
 **plan** — và một node điều phối **next** chạy vòng qua các ô còn thiếu. Nói
 cách khác: từ một dòng lệnh với chỉ `--slug`, ra một đề đầy đủ tệp dán.
 

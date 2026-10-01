@@ -17,7 +17,7 @@ là dữ liệu, không phải framework. Không thêm service, DB, hay framewor
 | Gắn nhãn / backfill explanation (`content/enrich_skills.py`, `content/backfill_explanations.py`) | offline, queue = query, cổng duyệt, shape check | L4 | accuracy/consistency/usability KPIs chưa đo (P0) |
 | Planner V2 (`services/planner_llm.py` + `content/eval_planner.py`) | candidate-list + FK guard + fallback V1 + compare script | L3–L4 | failure observable + eval có ngưỡng (P0, P3) |
 | Assistant / coach_chat + RAG (`services/assistant.py`, `chat.py`, `knowledge.py`, `retrieval.py`) | tools hẹp, history vào `user`, lexical + vector dự phòng | L2–L3 | retrieval eval, metadata, phân biệt retrieval vs generation lỗi (P1) |
-| Sinh đề (`content/exam_agents/graph.py`, `content/exam/check*`) | graph viết→kiểm→phê→escalate, state explicit, trần vòng | L4 | judge calibration + regression dataset thành reference (P5) |
+| Sinh đề (`content/exam_agents/upgraded/`, `content/exam/check*`) | write→validate→verdict→evaluate, finding có cấu trúc, escalate sớm | L4 | judge calibration + regression dataset thành reference (P5) |
 
 ## P0. Eval harness + regression gate (§6, §7, §8, §9, §10) — LÀM TRƯỚC
 
@@ -151,8 +151,9 @@ theo `request_id` (tránh phình bảng nóng).
 ## P5. Sinh đề thành reference implementation (§20)
 
 - Đóng băng 10–20 slot golden (input blueprint + draft đạt + verdict) làm
-  `eval/datasets/exam_slots.jsonl`; `graph.py` chạy được ở chế độ `--replay`
-  (không gọi model) để regression parser/checker/critic trong CI.
+  `eval/datasets/exam_slots.jsonl`; `graph_upgraded` (+ FakeGateway như skill
+  exam-model) chạy được ở chế độ `--replay` (không gọi model) để regression
+  parser/checker/evaluator trong CI.
 - Calibrate judge `exam_verify`: so judge vs verdict người trên mẫu golden,
   ghi agreement rate; judge prompt versioned như mọi prompt runtime.
 - Acceptance: [ ] `eval_ai --suite exam` xanh offline; [ ] doc 1 trang

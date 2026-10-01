@@ -1,4 +1,9 @@
-"""Đồ thị viết → kiểm → phê cho MỘT ô của pipeline sinh đề (LangGraph).
+"""Đồ thị viết → kiểm → phê cho MỘT ô của pipeline sinh đề (LangGraph) — LEGACY.
+
+ĐỪNG dùng cho việc mới. Bản chính là `graph_upgraded` (package `upgraded/`):
+finding có cấu trúc, verdict escalate sớm, checkpointer inject được, CLI có
+`--revisions` thật. File này giữ lại để đối chiếu + test cũ (`test_exam_agents_graph.py`) vẫn chạy
+nó cho khỏi hỏng lặng. Việc mới dùng bản upgraded.
 
 Kết nối ba thứ **đã có sẵn** của pipeline, không viết lại cái nào:
 

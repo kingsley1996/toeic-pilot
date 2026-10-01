@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from app.content.exam_agents.graph import MAX_REVISIONS, build
+from app.content.exam_agents.graph_legacy import MAX_REVISIONS, build
 from app.services.llm.gateway import Tally
 
 
@@ -136,7 +136,7 @@ def test_escalation_prints_why(
     chạy `check` lần nữa, nên test này kiểm ĐẦU RA chứ không kiểm state.
     """
     from app.content.exam import blueprint as bp
-    from app.content.exam_agents.graph import run_pending
+    from app.content.exam_agents.graph_legacy import run_pending
 
     monkeypatch.setattr(bp, "load", lambda path: _Blueprint())
     gw = FakeGateway()
@@ -250,7 +250,7 @@ def test_a_failed_call_does_not_kill_the_whole_run(
     bảy lần, nên không có bản nháp nào để chấm và ba vòng viết lại sẽ hỏng y hệt.
     """
     from app.content.exam import blueprint as bp
-    from app.content.exam_agents.graph import run_pending
+    from app.content.exam_agents.graph_legacy import run_pending
     from app.services.llm.base import LLMError
 
     def _slot(slot_id: str) -> _Slot:

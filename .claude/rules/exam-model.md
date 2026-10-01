@@ -9,7 +9,8 @@ paths:
 Chế độ này khác runbook (`planning/docs/EXAM-GENERATION-RUNBOOK.md`): ở đó model
 ngoài viết nội dung qua `--model`; ở đây **agent tự viết mọi nội dung model**
 (plan scenes + từng khối ô) và chỉ dùng code pipeline để dẫn vòng
-write→check→critic (`app/content/exam_agents/graph.py`, `full.py`).
+write→validate→verdict→evaluate (`app/content/exam_agents/upgraded/`,
+`graph_legacy.py` đã nghỉ hưu, `full.py` gọi bản mới).
 Dùng khi tạo đề `tp-form-NN` mới mà không đốt quota LLM.
 
 Mọi lệnh chạy từ `apps/api/`. `<SLUG>` là đề mới — kiểm tra chưa tồn tại trong
