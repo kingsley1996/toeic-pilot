@@ -70,10 +70,10 @@ export const supermarketScene: SceneDef = {
       shape: "list-board",
       headword: "shopping list",
       partOfSpeech: "noun",
-      // Bảng danh sách giữa-đông sảnh, mặt +Z về cửa (về camera). Đặt x 3.2
-      // cho khỏi cùng trục nhìn với biển aisle (x 0.2) — wrapper drei của
-      // bảng gần camera phủ rộng, đè pill biển sau.
-      position: [3.2, 0, 8.8],
+      // Bảng danh sách đông sảnh, mặt +Z về cửa (về camera). x 1.8: né trụ
+      // mặt tiền x 3.5 (bay tới là trụ án ngữ) mà vẫn tách cột nhìn với
+      // biển aisle (x 0.2) — wrapper drei của bảng gần camera phủ rộng.
+      position: [1.8, 0, 8.8],
       focusDistance: 4,
       hotspotY: 2.6,
       topY: 1.75,
@@ -111,11 +111,12 @@ export const supermarketScene: SceneDef = {
       shape: "shop-cart",
       headword: "cart",
       partOfSpeech: "noun",
-      // Patrol aisle TÂY (x −5.2, z −2..4), KHÔNG phải aisle giữa: wrapper
-      // drei của pill xe (rộng hơn nút, vẫn bắt elementFromPoint dù nút đã
-      // pointer-events-none) quét cùng cột x với biển aisle là đè pill tĩnh
-      // theo timing (§11.6). Nhãn treo cao trên thân xe (§7.5).
-      position: [-5.2, 0, 1],
+      // Patrol aisle ĐÔNG (x 1.4, z −2..4): lối chính rộng nhìn thẳng từ
+      // camera đầu (để ở aisle tây là kệ giữa che mất thân xe). Lệch cột
+      // với biển aisle (x 0.2) cho wrapper drei của pill xe khỏi đè pill
+      // tĩnh theo timing (§11.6); cách pill tĩnh gần nhất >2 m.
+      // Nhãn treo cao trên thân xe (§7.5).
+      position: [1.4, 0, 1],
       patrol: { axis: "z", range: 3, speed: 0.5 },
       focusDistance: 5,
       hotspotY: 2.3,
@@ -151,8 +152,9 @@ export const supermarketScene: SceneDef = {
       shape: "produce-scale",
       headword: "scale",
       partOfSpeech: "noun",
-      // Cân bàn cạnh sạp rau — chân đế riêng, không chung footprint.
-      position: [9.2, 0, 4.6],
+      // Cân bàn giữa sảnh đông — đứng riêng ngoài footprint produce (bay
+      // tới từ nam là sạp rau che mất) mà vẫn cạnh sạp cho đúng chuyện.
+      position: [7.8, 0, 5.0],
       focusDistance: 4,
       hotspotY: 2.4,
       topY: 1.5,
@@ -175,10 +177,11 @@ export const supermarketScene: SceneDef = {
       shape: "dairy-cooler",
       headword: "dairy",
       partOfSpeech: "noun",
-      // Tủ sữa mở áp tường tây, mặt +X vào phòng. Dài 2.4 theo world X sau
-      // yaw: lưng hở tường 0.1, mặt hở dãy kệ decor 0.65.
-      position: [-12.55, 0, -2],
-      rotationY: Math.PI / 2,
+      // Tủ sữa mở áp tường tây, mặt +X vào phòng. KHÔNG yaw: shape đã dựng
+      // mặt mở theo +X, yaw π/2 là quay mặt mở vào tường tây (mắt kiểm cận
+      // dairy lần 1: chỉ thấy lưng tủ). Dài 2.4 theo X: lưng hở tường 0.7,
+      // mặt hở dãy kệ decor 0.35.
+      position: [-12.75, 0, -2],
       focusDistance: 5,
       hotspotY: 2.6,
       topY: 1.7,
@@ -240,11 +243,12 @@ export const supermarketScene: SceneDef = {
       shape: "cashier",
       headword: "cashier",
       partOfSpeech: "noun",
-      // Thu ngân sau quầy làn tây — lệch x khỏi nhãn checkout (focus x 0.5)
-      // cho khỏi đè, tách khỏi receipt bằng cao độ.
-      position: [-2.4, 0, -9.4],
-      rotationY: -Math.PI / 2,
-      focusDistance: 4,
+      // Thu ngân đầu TÂY quầy (ngoài làn, không chôn sau quầy) — mặt +X
+      // nhìn dọc quầy đúng việc. Focus vào đầu người, đứng 5 m cho khung
+      // thoáng (4 m là chui vào cụm receipt/barcode).
+      position: [-4.2, 0, -8.7],
+      focus: [-4.2, 1.2, -8.7],
+      focusDistance: 5,
       hotspotY: 2.6,
       topY: 1.72,
       ringRadius: 1,
@@ -328,9 +332,11 @@ export const supermarketScene: SceneDef = {
       headword: "refund",
       partOfSpeech: "noun",
       // Quầy dịch vụ KH tây-nam, gần cửa vào đúng đời (đổi trả ngay khi vào).
-      // Dời z 8 cho hở đầu nam dãy kệ decor tây (kết z 7).
+      // Dời z 8 cho hở đầu nam dãy kệ decor tây (kết z 7). Focus vào mặt
+      // quầy + đứng 3.5 m: 6 m là camera hạ ngoài tường tây nhìn vào tường.
       position: [-11, 0, 8],
-      focusDistance: 5,
+      focus: [-11, 1.0, 8.2],
+      focusDistance: 3.5,
       hotspotY: 2.8,
       topY: 1.9,
       ringRadius: 1.6,
