@@ -31,7 +31,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
 
 from app.content.exam.blueprint import Blueprint
-from app.content.exam_agents.graph import (
+from app.content.exam_agents.graph_upgraded import (
     run_pending,
 )
 from app.services.llm.gateway import Gateway
