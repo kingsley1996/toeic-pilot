@@ -268,7 +268,7 @@ export const supermarketScene: SceneDef = {
       position: [-2, 0, -8.3],
       focusDistance: 3,
       hotspotY: 1.4,
-      topY: 0.97,
+      topY: 0.945,
       ringRadius: 0.6,
     },
     {
@@ -280,7 +280,7 @@ export const supermarketScene: SceneDef = {
       position: [-1, 0, -8.3],
       focusDistance: 3,
       hotspotY: 2.3,
-      topY: 1.4,
+      topY: 1.42,
       ringRadius: 0.6,
     },
     {
@@ -292,7 +292,7 @@ export const supermarketScene: SceneDef = {
       position: [2.5, 0, -8.5],
       focusDistance: 3.5,
       hotspotY: 2.4,
-      topY: 1.5,
+      topY: 1.47,
       ringRadius: 0.8,
     },
     {
