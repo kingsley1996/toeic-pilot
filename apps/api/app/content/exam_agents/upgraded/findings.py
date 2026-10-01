@@ -7,15 +7,16 @@ cũng dùng nên nằm riêng để `write`/`validate`/`evaluate` không nhập 
 from __future__ import annotations
 
 import hashlib
+from datetime import UTC
 from typing import Any
 
 from app.content.exam_agents.upgraded.state import Finding, FindingCategory
 
 
 def _now_iso() -> str:
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _content_hash(content: str) -> str:
@@ -92,21 +93,9 @@ def _diff_findings(
     previous_map = {_finding_key(f): f for f in previous}
     current_map = {_finding_key(f): f for f in current}
 
-    fixed = [
-        finding
-        for key, finding in previous_map.items()
-        if key not in current_map
-    ]
-    new = [
-        finding
-        for key, finding in current_map.items()
-        if key not in previous_map
-    ]
-    persistent = [
-        finding
-        for key, finding in current_map.items()
-        if key in previous_map
-    ]
+    fixed = [finding for key, finding in previous_map.items() if key not in current_map]
+    new = [finding for key, finding in current_map.items() if key not in previous_map]
+    persistent = [finding for key, finding in current_map.items() if key in previous_map]
 
     return fixed, new, persistent
 
@@ -116,11 +105,7 @@ def _same_error_count(
     current: list[Finding],
 ) -> int:
     previous_keys = {_finding_key(f) for f in previous}
-    return sum(
-        1
-        for finding in current
-        if _finding_key(finding) in previous_keys
-    )
+    return sum(1 for finding in current if _finding_key(finding) in previous_keys)
 
 
 def _merge_reports(mine: list[Any]) -> Any | None:
@@ -139,18 +124,6 @@ def _merge_reports(mine: list[Any]) -> Any | None:
     return SlotReport(
         slot_id=mine[0].slot_id,
         number=mine[0].number,
-        problems=list(
-            dict.fromkeys(
-                p
-                for report in mine
-                for p in report.problems
-            )
-        ),
-        flags=list(
-            dict.fromkeys(
-                flag
-                for report in mine
-                for flag in report.flags
-            )
-        ),
+        problems=list(dict.fromkeys(p for report in mine for p in report.problems)),
+        flags=list(dict.fromkeys(flag for report in mine for flag in report.flags)),
     )

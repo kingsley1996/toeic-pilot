@@ -7,6 +7,7 @@ thứ tự này là chỗ tiết kiệm, đừng đảo.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from app.content.exam.blueprint import Blueprint
 from app.content.exam_agents.upgraded.findings import (
@@ -115,9 +116,7 @@ def _content_check_node(
             quiet=True,
         )
 
-        report = _merge_reports(
-            [r for r in reports if r.slot_id == slot_id]
-        )
+        report = _merge_reports([r for r in reports if r.slot_id == slot_id])
 
         # Nếu structural validator đã có error, vẫn chạy parser/checker để
         # giữ source-of-truth hiện có, nhưng không trả tiền cho evaluator.
@@ -136,13 +135,9 @@ def _content_check_node(
                 "findings": finding_list,
                 "metrics": {
                     **state.get("metrics", {}),
-                    "content_failures": (
-                        state.get("metrics", {}).get("content_failures", 0) + 1
-                    ),
+                    "content_failures": (state.get("metrics", {}).get("content_failures", 0) + 1),
                 },
-                "log": [
-                    f"vòng {state['revision']}: check không đọc được ô này"
-                ],
+                "log": [f"vòng {state['revision']}: check không đọc được ô này"],
             }
 
         checker_findings = _problems_to_findings(report.problems)
@@ -182,28 +177,18 @@ def _content_check_node(
                             *_problems_to_findings(paid_report.problems),
                         ]
                     )
-                    flag_findings.extend(
-                        _flags_to_findings(paid_report.flags)
-                    )
+                    flag_findings.extend(_flags_to_findings(paid_report.flags))
 
-        blocked = any(
-            finding.get("severity") == "error"
-            for finding in findings
-        )
+        blocked = any(finding.get("severity") == "error" for finding in findings)
 
         previous = state.get("previous_findings", [])
         fixed, new, persistent = _diff_findings(previous, findings)
 
         repeated = _same_error_count(previous, findings)
 
-        metrics = dict(state.get("metrics", {}))
-        metrics["content_failures"] = (
-            metrics.get("content_failures", 0) + int(blocked)
-        )
-        metrics["regressions"] = (
-            metrics.get("regressions", 0)
-            + int(bool(new and fixed))
-        )
+        metrics: dict[str, Any] = dict(state.get("metrics", {}))
+        metrics["content_failures"] = metrics.get("content_failures", 0) + int(blocked)
+        metrics["regressions"] = metrics.get("regressions", 0) + int(bool(new and fixed))
 
         summary = (
             "; ".join(
@@ -214,9 +199,7 @@ def _content_check_node(
             or "sạch"
         )
 
-        if blocked and state["revision"] < state.get(
-            "max_revisions", MAX_REVISIONS
-        ):
+        if blocked and state["revision"] < state.get("max_revisions", MAX_REVISIONS):
             print(
                 f"      ↻ vòng {state['revision']}: {summary[:160]}",
                 flush=True,
@@ -235,18 +218,13 @@ def _content_check_node(
                     [
                         *state.get("flags", []),
                         *report.flags,
-                        *[
-                            f.get("message", "")
-                            for f in flag_findings
-                        ],
+                        *[f.get("message", "") for f in flag_findings],
                     ]
                 )
             ),
             "metrics": metrics,
             "status": "evaluating" if not blocked else "revising",
-            "log": [
-                f"vòng {state['revision']}: {summary}"
-            ],
+            "log": [f"vòng {state['revision']}: {summary}"],
         }
 
     return check

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from time import perf_counter
+from typing import Any
 
 from app.content.exam.writer import MissingBlock, max_tokens_for, save_slot, write_slot
 from app.content.exam_agents.upgraded.evaluate import _revision_prompt_adapter
@@ -48,7 +49,7 @@ def _write_node(
         plan = state.get("revision_plan")
         hint = _revision_prompt_adapter(plan)
 
-        metrics = dict(state.get("metrics", {}))
+        metrics: dict[str, Any] = dict(state.get("metrics", {}))
         metrics["revisions"] = revision
         metrics["llm_calls"] = metrics.get("llm_calls", 0) + 1
 
@@ -98,9 +99,7 @@ def _write_node(
                         "message": str(failure),
                     }
                 ],
-                "log": [
-                    f"vòng {revision}: LLM error: {failure}"
-                ],
+                "log": [f"vòng {revision}: LLM error: {failure}"],
             }
             return update
 
@@ -123,12 +122,8 @@ def _write_node(
                         ),
                     }
                 ],
-                "fix_hint": (
-                    "Bị cắt giữa phần suy luận — viết ngắn hơn, đi thẳng vào khối."
-                ),
-                "log": [
-                    f"vòng {revision}: {cut}"
-                ],
+                "fix_hint": ("Bị cắt giữa phần suy luận — viết ngắn hơn, đi thẳng vào khối."),
+                "log": [f"vòng {revision}: {cut}"],
             }
             return update
 
@@ -175,9 +170,7 @@ def _write_node(
             "revision_plan": None,
             "fix_hint": None,
             "artifacts": state.get("artifacts", []) + [artifact],
-            "log": [
-                f"vòng {revision}: write xong ({elapsed_ms / 1000:.1f}s)"
-            ],
+            "log": [f"vòng {revision}: write xong ({elapsed_ms / 1000:.1f}s)"],
         }
 
     return write

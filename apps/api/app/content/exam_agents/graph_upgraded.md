@@ -317,21 +317,9 @@ def _diff_findings(
     previous_map = {_finding_key(f): f for f in previous}
     current_map = {_finding_key(f): f for f in current}
 
-    fixed = [
-        finding
-        for key, finding in previous_map.items()
-        if key not in current_map
-    ]
-    new = [
-        finding
-        for key, finding in current_map.items()
-        if key not in previous_map
-    ]
-    persistent = [
-        finding
-        for key, finding in current_map.items()
-        if key in previous_map
-    ]
+    fixed = [finding for key, finding in previous_map.items() if key not in current_map]
+    new = [finding for key, finding in current_map.items() if key not in previous_map]
+    persistent = [finding for key, finding in current_map.items() if key in previous_map]
 
     return fixed, new, persistent
 
@@ -341,11 +329,7 @@ def _same_error_count(
     current: list[Finding],
 ) -> int:
     previous_keys = {_finding_key(f) for f in previous}
-    return sum(
-        1
-        for finding in current
-        if _finding_key(finding) in previous_keys
-    )
+    return sum(1 for finding in current if _finding_key(finding) in previous_keys)
 
 
 def _merge_reports(mine: list[Any]) -> Any | None:
@@ -363,20 +347,8 @@ def _merge_reports(mine: list[Any]) -> Any | None:
         slot_id=mine[0].slot_id,
         number=mine[0].number,
         blocked=any(bool(r.blocked) for r in mine),
-        problems=list(
-            dict.fromkeys(
-                p
-                for report in mine
-                for p in report.problems
-            )
-        ),
-        flags=list(
-            dict.fromkeys(
-                flag
-                for report in mine
-                for flag in report.flags
-            )
-        ),
+        problems=list(dict.fromkeys(p for report in mine for p in report.problems)),
+        flags=list(dict.fromkeys(flag for report in mine for flag in report.flags)),
     )
 
 
@@ -506,9 +478,7 @@ def _write_node(
                         "message": str(failure),
                     }
                 ],
-                "log": [
-                    f"vòng {revision}: LLM error: {failure}"
-                ],
+                "log": [f"vòng {revision}: LLM error: {failure}"],
             }
             return update
 
@@ -531,12 +501,8 @@ def _write_node(
                         ),
                     }
                 ],
-                "fix_hint": (
-                    "Bị cắt giữa phần suy luận — viết ngắn hơn, đi thẳng vào khối."
-                ),
-                "log": [
-                    f"vòng {revision}: {cut}"
-                ],
+                "fix_hint": ("Bị cắt giữa phần suy luận — viết ngắn hơn, đi thẳng vào khối."),
+                "log": [f"vòng {revision}: {cut}"],
             }
             return update
 
@@ -580,9 +546,7 @@ def _write_node(
             "fix_hint": None,
             "artifacts": state.get("artifacts", []) + [artifact],
             "metrics": metrics,
-            "log": [
-                f"vòng {revision}: write xong ({elapsed_ms / 1000:.1f}s)"
-            ],
+            "log": [f"vòng {revision}: write xong ({elapsed_ms / 1000:.1f}s)"],
         }
 
     return write
@@ -684,9 +648,7 @@ def _content_check_node(
             quiet=True,
         )
 
-        report = _merge_reports(
-            [r for r in reports if r.slot_id == slot_id]
-        )
+        report = _merge_reports([r for r in reports if r.slot_id == slot_id])
 
         # Nếu structural validator đã có error, vẫn chạy parser/checker để
         # giữ source-of-truth hiện có, nhưng không trả tiền cho evaluator.
@@ -705,13 +667,9 @@ def _content_check_node(
                 "findings": finding_list,
                 "metrics": {
                     **state.get("metrics", {}),
-                    "content_failures": (
-                        state.get("metrics", {}).get("content_failures", 0) + 1
-                    ),
+                    "content_failures": (state.get("metrics", {}).get("content_failures", 0) + 1),
                 },
-                "log": [
-                    f"vòng {state['revision']}: check không đọc được ô này"
-                ],
+                "log": [f"vòng {state['revision']}: check không đọc được ô này"],
             }
 
         checker_findings = _problems_to_findings(report.problems)
@@ -751,14 +709,9 @@ def _content_check_node(
                             *_problems_to_findings(paid_report.problems),
                         ]
                     )
-                    flag_findings.extend(
-                        _flags_to_findings(paid_report.flags)
-                    )
+                    flag_findings.extend(_flags_to_findings(paid_report.flags))
 
-        blocked = any(
-            finding.get("severity") == "error"
-            for finding in findings
-        )
+        blocked = any(finding.get("severity") == "error" for finding in findings)
 
         previous = state.get("previous_findings", [])
         fixed, new, persistent = _diff_findings(previous, findings)
@@ -766,13 +719,8 @@ def _content_check_node(
         repeated = _same_error_count(previous, findings)
 
         metrics = dict(state.get("metrics", {}))
-        metrics["content_failures"] = (
-            metrics.get("content_failures", 0) + int(blocked)
-        )
-        metrics["regressions"] = (
-            metrics.get("regressions", 0)
-            + int(bool(new and fixed))
-        )
+        metrics["content_failures"] = metrics.get("content_failures", 0) + int(blocked)
+        metrics["regressions"] = metrics.get("regressions", 0) + int(bool(new and fixed))
 
         summary = (
             "; ".join(
@@ -783,9 +731,7 @@ def _content_check_node(
             or "sạch"
         )
 
-        if blocked and state["revision"] < state.get(
-            "max_revisions", MAX_REVISIONS
-        ):
+        if blocked and state["revision"] < state.get("max_revisions", MAX_REVISIONS):
             print(
                 f"      ↻ vòng {state['revision']}: {summary[:160]}",
                 flush=True,
@@ -804,18 +750,13 @@ def _content_check_node(
                     [
                         *state.get("flags", []),
                         *report.flags,
-                        *[
-                            f.get("message", "")
-                            for f in flag_findings
-                        ],
+                        *[f.get("message", "") for f in flag_findings],
                     ]
                 )
             ),
             "metrics": metrics,
             "status": "evaluating" if not blocked else "revising",
-            "log": [
-                f"vòng {state['revision']}: {summary}"
-            ],
+            "log": [f"vòng {state['revision']}: {summary}"],
         }
 
     return check
@@ -843,11 +784,7 @@ def _evaluator_node(
         if not state.get("draft"):
             return {}
 
-        error_findings = [
-            finding
-            for finding in findings
-            if finding.get("severity") == "error"
-        ]
+        error_findings = [finding for finding in findings if finding.get("severity") == "error"]
 
         user = (
             "Bạn là evaluator cho nội dung TOEIC.\n\n"
@@ -855,9 +792,7 @@ def _evaluator_node(
             "Hãy xác định lỗi nào cần sửa để lượt writer tiếp theo sửa đúng.\n\n"
             "Các lỗi hiện tại:\n"
             + "\n".join(
-                f"- [{f.get('code')}] "
-                f"{f.get('location')}: "
-                f"{f.get('message')}"
+                f"- [{f.get('code')}] {f.get('location')}: {f.get('message')}"
                 for f in error_findings
             )
             + "\n\n--- DRAFT ---\n"
@@ -899,22 +834,16 @@ def _evaluator_node(
         )
 
         metrics = dict(state.get("metrics", {}))
-        metrics["evaluator_calls"] = (
-            metrics.get("evaluator_calls", 0) + 1
-        )
+        metrics["evaluator_calls"] = metrics.get("evaluator_calls", 0) + 1
         metrics["llm_calls"] = metrics.get("llm_calls", 0) + 1
-        metrics["latency_ms"] = (
-            metrics.get("latency_ms", 0.0) + elapsed_ms
-        )
+        metrics["latency_ms"] = metrics.get("latency_ms", 0.0) + elapsed_ms
 
         return {
             "revision_plan": plan,
             "fix_hint": _revision_prompt_adapter(plan),
             "status": "revising",
             "metrics": metrics,
-            "log": [
-                f"vòng {state['revision']}: evaluator xong ({elapsed_ms / 1000:.1f}s)"
-            ],
+            "log": [f"vòng {state['revision']}: evaluator xong ({elapsed_ms / 1000:.1f}s)"],
         }
 
     return evaluate
@@ -976,9 +905,7 @@ def _parse_revision_plan(
 
     if not changes:
         changes = [
-            finding.get("suggested_fix")
-            or finding.get("message")
-            or "Sửa finding tương ứng."
+            finding.get("suggested_fix") or finding.get("message") or "Sửa finding tương ứng."
             for finding in findings
         ]
 
@@ -1012,11 +939,7 @@ def _verdict_node(policy: RetryPolicy) -> Node:
             }
 
         findings = state.get("findings", [])
-        errors = [
-            finding
-            for finding in findings
-            if finding.get("severity") == "error"
-        ]
+        errors = [finding for finding in findings if finding.get("severity") == "error"]
 
         if not errors:
             return {
@@ -1037,18 +960,14 @@ def _verdict_node(policy: RetryPolicy) -> Node:
             return {
                 "status": "escalated",
                 "outcome": "escalated",
-                "log": [
-                    "Escalate: cùng finding lặp quá ngưỡng."
-                ],
+                "log": ["Escalate: cùng finding lặp quá ngưỡng."],
             }
 
         if state.get("regression_count", 0) > policy.max_regressions:
             return {
                 "status": "escalated",
                 "outcome": "escalated",
-                "log": [
-                    "Escalate: revision tạo regression liên tiếp."
-                ],
+                "log": ["Escalate: revision tạo regression liên tiếp."],
             }
 
         return {
@@ -1095,9 +1014,7 @@ def _accept(state: SlotState) -> NodeUpdate:
         "status": "accepted",
         "blocked": False,
         "artifacts": artifacts,
-        "log": [
-            f"accepted ở revision {state['revision']}"
-        ],
+        "log": [f"accepted ở revision {state['revision']}"],
     }
 
 
@@ -1234,9 +1151,7 @@ def build(
     builder.add_edge("accept", END)
     builder.add_edge("escalate", END)
 
-    return builder.compile(
-        checkpointer=checkpointer or InMemorySaver()
-    )
+    return builder.compile(checkpointer=checkpointer or InMemorySaver())
 
 
 # ---------------------------------------------------------------------------
@@ -1282,24 +1197,12 @@ def run_pending(
         ),
     )
 
-    wanted = {
-        slot.id
-        for slot in pending(blueprint, workdir)
-    } | set(retry or ())
+    wanted = {slot.id for slot in pending(blueprint, workdir)} | set(retry or ())
 
-    slots = [
-        slot
-        for part in blueprint.parts
-        for slot in part.slots
-        if slot.id in wanted
-    ]
+    slots = [slot for part in blueprint.parts for slot in part.slots if slot.id in wanted]
 
     if only is not None:
-        slots = [
-            slot
-            for slot in slots
-            if parts_of(blueprint, slot.id) == only
-        ]
+        slots = [slot for slot in slots if parts_of(blueprint, slot.id) == only]
 
     if limit is not None:
         slots = slots[:limit]
@@ -1332,8 +1235,7 @@ def run_pending(
     ) -> None:
         while not stop.wait(60):
             print(
-                f"      … {label} vẫn đang chạy "
-                f"({perf_counter() - since:.0f}s)",
+                f"      … {label} vẫn đang chạy ({perf_counter() - since:.0f}s)",
                 flush=True,
             )
 
@@ -1408,8 +1310,7 @@ def run_pending(
                 escalated += 1
 
             print(
-                f"  ✓ [{done}/{total}] {slot.id} → {outcome} "
-                f"({perf_counter() - started:.0f}s)",
+                f"  ✓ [{done}/{total}] {slot.id} → {outcome} ({perf_counter() - started:.0f}s)",
                 flush=True,
             )
 
@@ -1423,9 +1324,7 @@ def run_pending(
                 for finding in final.get("findings", []):
                     if finding.get("severity") == "error":
                         print(
-                            "      ✗ "
-                            f"[{finding.get('code')}] "
-                            f"{finding.get('message')}",
+                            f"      ✗ [{finding.get('code')}] {finding.get('message')}",
                             flush=True,
                         )
 
@@ -1436,18 +1335,9 @@ def run_pending(
                 )
 
         elapsed = perf_counter() - run_started
-        left = (
-            (elapsed / done) * (total - done)
-            if done
-            else 0.0
-        )
+        left = (elapsed / done) * (total - done) if done else 0.0
 
-        tail = (
-            f" · còn {total - done} ô, "
-            f"ước {left / 60:.0f} phút"
-            if done < total
-            else ""
-        )
+        tail = f" · còn {total - done} ô, ước {left / 60:.0f} phút" if done < total else ""
 
         print(
             f"  part {part}: {accepted} nhận · "
@@ -1475,10 +1365,7 @@ def parts_of(
     slot_id: str,
 ) -> int:
     for part in blueprint.parts:
-        if any(
-            slot.id == slot_id
-            for slot in part.slots
-        ):
+        if any(slot.id == slot_id for slot in part.slots):
             return part.part
 
     raise KeyError(slot_id)
@@ -1499,10 +1386,7 @@ def main(
     )
 
     parser = argparse.ArgumentParser(
-        description=(
-            "Production-grade vòng "
-            "write → validate → evaluate → revise."
-        )
+        description=("Production-grade vòng write → validate → evaluate → revise.")
     )
 
     parser.add_argument(
@@ -1539,10 +1423,7 @@ def main(
         "--max-tokens",
         type=int,
         default=None,
-        help=(
-            "trần output mỗi lượt viết; nếu bỏ qua, "
-            "writer tự chọn theo part/slot"
-        ),
+        help=("trần output mỗi lượt viết; nếu bỏ qua, writer tự chọn theo part/slot"),
     )
 
     parser.add_argument(
@@ -1554,10 +1435,7 @@ def main(
     parser.add_argument(
         "--verify",
         action="store_true",
-        help=(
-            "bật paid checker/evaluator cho slot sạch ở "
-            "tầng deterministic"
-        ),
+        help=("bật paid checker/evaluator cho slot sạch ở tầng deterministic"),
     )
 
     args = parser.parse_args(argv)
@@ -1565,17 +1443,11 @@ def main(
     if args.revisions < 1:
         parser.error("--revisions phải >= 1")
 
-    blueprint = bp.load(
-        blueprint_path(args.slug)
-    )
+    blueprint = bp.load(blueprint_path(args.slug))
 
     gateway = _gateway(args.model)
 
-    tier = (
-        Tier.STRONG
-        if args.tier == "strong"
-        else Tier.CHEAP
-    )
+    tier = Tier.STRONG if args.tier == "strong" else Tier.CHEAP
 
     results = run_pending(
         gateway,
@@ -1590,17 +1462,9 @@ def main(
         max_revisions=args.revisions,
     )
 
-    accepted = sum(
-        1
-        for _, outcome in results
-        if outcome == "accepted"
-    )
+    accepted = sum(1 for _, outcome in results if outcome == "accepted")
 
-    escalated = sum(
-        1
-        for _, outcome in results
-        if outcome == "escalated"
-    )
+    escalated = sum(1 for _, outcome in results if outcome == "escalated")
 
     print(
         f"\n{len(results)} ô · "
@@ -1614,5 +1478,4 @@ def main(
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
 ```

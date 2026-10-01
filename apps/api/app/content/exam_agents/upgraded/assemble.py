@@ -141,6 +141,4 @@ def build(
     builder.add_edge("accept", END)
     builder.add_edge("escalate", END)
 
-    return builder.compile(
-        checkpointer=checkpointer or InMemorySaver()
-    )
+    return builder.compile(checkpointer=checkpointer or InMemorySaver())

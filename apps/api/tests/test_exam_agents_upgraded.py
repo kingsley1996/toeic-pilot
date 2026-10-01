@@ -27,10 +27,7 @@ def test_route_after_evaluator_tolerates_missing_plan():
 
     assert _route_after_evaluator({"revision_plan": None}) == "write"
     assert _route_after_evaluator({}) == "write"
-    assert (
-        _route_after_evaluator({"revision_plan": {"should_regenerate": False}})
-        == "escalate"
-    )
+    assert _route_after_evaluator({"revision_plan": {"should_regenerate": False}}) == "escalate"
 
 
 def test_shim_reexports_public_surface():

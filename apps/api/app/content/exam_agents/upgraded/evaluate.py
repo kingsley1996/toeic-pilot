@@ -7,7 +7,7 @@ sản phẩm của revision planning); node `write` nhập về để đưa vào
 from __future__ import annotations
 
 from time import perf_counter
-from typing import Literal
+from typing import Any, Literal
 
 from app.content.exam.prompts._registry import exam_prompt
 from app.content.exam_agents.upgraded.state import (
@@ -68,11 +68,7 @@ def _evaluator_node(
         if not state.get("draft"):
             return {}
 
-        error_findings = [
-            finding
-            for finding in findings
-            if finding.get("severity") == "error"
-        ]
+        error_findings = [finding for finding in findings if finding.get("severity") == "error"]
 
         user = (
             "Bạn là evaluator cho nội dung TOEIC.\n\n"
@@ -80,9 +76,7 @@ def _evaluator_node(
             "Hãy xác định lỗi nào cần sửa để lượt writer tiếp theo sửa đúng.\n\n"
             "Các lỗi hiện tại:\n"
             + "\n".join(
-                f"- [{f.get('code')}] "
-                f"{f.get('location')}: "
-                f"{f.get('message')}"
+                f"- [{f.get('code')}] {f.get('location')}: {f.get('message')}"
                 for f in error_findings
             )
             # Cắt như critic cũ (4000 ký tự): draft P3/P4 nguyên văn vừa tốn
@@ -125,23 +119,17 @@ def _evaluator_node(
             findings=error_findings,
         )
 
-        metrics = dict(state.get("metrics", {}))
-        metrics["evaluator_calls"] = (
-            metrics.get("evaluator_calls", 0) + 1
-        )
+        metrics: dict[str, Any] = dict(state.get("metrics", {}))
+        metrics["evaluator_calls"] = metrics.get("evaluator_calls", 0) + 1
         metrics["llm_calls"] = metrics.get("llm_calls", 0) + 1
-        metrics["latency_ms"] = (
-            metrics.get("latency_ms", 0.0) + elapsed_ms
-        )
+        metrics["latency_ms"] = metrics.get("latency_ms", 0.0) + elapsed_ms
 
         return {
             "revision_plan": plan,
             "fix_hint": _revision_prompt_adapter(plan),
             "status": "revising",
             "metrics": metrics,
-            "log": [
-                f"vòng {state['revision']}: evaluator xong ({elapsed_ms / 1000:.1f}s)"
-            ],
+            "log": [f"vòng {state['revision']}: evaluator xong ({elapsed_ms / 1000:.1f}s)"],
         }
 
     return evaluate
@@ -188,7 +176,12 @@ def _parse_revision_plan(
 
         if upper.startswith("RISK:"):
             value = line.split(":", 1)[1].strip().lower()
-            risk = value if value in {"low", "medium", "high"} else "medium"
+            if value == "low":
+                risk = "low"
+            elif value == "high":
+                risk = "high"
+            else:
+                risk = "medium"
             continue
 
         if line.startswith("-"):
@@ -203,9 +196,7 @@ def _parse_revision_plan(
 
     if not changes:
         changes = [
-            finding.get("suggested_fix")
-            or finding.get("message")
-            or "Sửa finding tương ứng."
+            finding.get("suggested_fix") or finding.get("message") or "Sửa finding tương ứng."
             for finding in findings
         ]
 

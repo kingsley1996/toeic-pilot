@@ -52,24 +52,12 @@ def run_pending(
         ),
     )
 
-    wanted = {
-        slot.id
-        for slot in pending(blueprint, workdir)
-    } | set(retry or ())
+    wanted = {slot.id for slot in pending(blueprint, workdir)} | set(retry or ())
 
-    slots = [
-        slot
-        for part in blueprint.parts
-        for slot in part.slots
-        if slot.id in wanted
-    ]
+    slots = [slot for part in blueprint.parts for slot in part.slots if slot.id in wanted]
 
     if only is not None:
-        slots = [
-            slot
-            for slot in slots
-            if parts_of(blueprint, slot.id) == only
-        ]
+        slots = [slot for slot in slots if parts_of(blueprint, slot.id) == only]
 
     if limit is not None:
         slots = slots[:limit]
@@ -102,8 +90,7 @@ def run_pending(
     ) -> None:
         while not stop.wait(60):
             print(
-                f"      … {label} vẫn đang chạy "
-                f"({perf_counter() - since:.0f}s)",
+                f"      … {label} vẫn đang chạy ({perf_counter() - since:.0f}s)",
                 flush=True,
             )
 
@@ -178,8 +165,7 @@ def run_pending(
                 escalated += 1
 
             print(
-                f"  ✓ [{done}/{total}] {slot.id} → {outcome} "
-                f"({perf_counter() - started:.0f}s)",
+                f"  ✓ [{done}/{total}] {slot.id} → {outcome} ({perf_counter() - started:.0f}s)",
                 flush=True,
             )
 
@@ -193,9 +179,7 @@ def run_pending(
                 for finding in final.get("findings", []):
                     if finding.get("severity") == "error":
                         print(
-                            "      ✗ "
-                            f"[{finding.get('code')}] "
-                            f"{finding.get('message')}",
+                            f"      ✗ [{finding.get('code')}] {finding.get('message')}",
                             flush=True,
                         )
 
@@ -206,18 +190,9 @@ def run_pending(
                     )
 
         elapsed = perf_counter() - run_started
-        left = (
-            (elapsed / done) * (total - done)
-            if done
-            else 0.0
-        )
+        left = (elapsed / done) * (total - done) if done else 0.0
 
-        tail = (
-            f" · còn {total - done} ô, "
-            f"ước {left / 60:.0f} phút"
-            if done < total
-            else ""
-        )
+        tail = f" · còn {total - done} ô, ước {left / 60:.0f} phút" if done < total else ""
 
         print(
             f"  part {part}: {accepted} nhận · "
@@ -240,10 +215,7 @@ def parts_of(
     slot_id: str,
 ) -> int:
     for part in blueprint.parts:
-        if any(
-            slot.id == slot_id
-            for slot in part.slots
-        ):
+        if any(slot.id == slot_id for slot in part.slots):
             return part.part
 
     raise KeyError(slot_id)
@@ -264,10 +236,7 @@ def main(
     )
 
     parser = argparse.ArgumentParser(
-        description=(
-            "Production-grade vòng "
-            "write → validate → evaluate → revise."
-        )
+        description=("Production-grade vòng write → validate → evaluate → revise.")
     )
 
     parser.add_argument(
@@ -304,10 +273,7 @@ def main(
         "--max-tokens",
         type=int,
         default=None,
-        help=(
-            "trần output mỗi lượt viết; nếu bỏ qua, "
-            "writer tự chọn theo part/slot"
-        ),
+        help=("trần output mỗi lượt viết; nếu bỏ qua, writer tự chọn theo part/slot"),
     )
 
     parser.add_argument(
@@ -330,17 +296,11 @@ def main(
     if args.revisions < 1:
         parser.error("--revisions phải >= 1")
 
-    blueprint = bp.load(
-        blueprint_path(args.slug)
-    )
+    blueprint = bp.load(blueprint_path(args.slug))
 
     gateway = _gateway(args.model)
 
-    tier = (
-        Tier.STRONG
-        if args.tier == "strong"
-        else Tier.CHEAP
-    )
+    tier = Tier.STRONG if args.tier == "strong" else Tier.CHEAP
 
     results = run_pending(
         gateway,
@@ -357,17 +317,9 @@ def main(
         max_revisions=args.revisions,
     )
 
-    accepted = sum(
-        1
-        for _, outcome in results
-        if outcome == "accepted"
-    )
+    accepted = sum(1 for _, outcome in results if outcome == "accepted")
 
-    escalated = sum(
-        1
-        for _, outcome in results
-        if outcome == "escalated"
-    )
+    escalated = sum(1 for _, outcome in results if outcome == "escalated")
 
     print(
         f"\n{len(results)} ô · "

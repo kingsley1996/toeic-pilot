@@ -9,8 +9,8 @@ from app.content.exam_agents.upgraded.runner import main, parts_of, run_pending
 from app.content.exam_agents.upgraded.state import (
     ArtifactVersion,
     Finding,
-    RevisionPlan,
     RetryPolicy,
+    RevisionPlan,
     RunMetrics,
     SlotState,
 )

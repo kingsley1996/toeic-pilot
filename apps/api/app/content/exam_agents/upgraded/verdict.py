@@ -23,11 +23,7 @@ def _verdict_node(policy: RetryPolicy) -> Node:
             }
 
         findings = state.get("findings", [])
-        errors = [
-            finding
-            for finding in findings
-            if finding.get("severity") == "error"
-        ]
+        errors = [finding for finding in findings if finding.get("severity") == "error"]
 
         if not errors:
             return {
@@ -48,18 +44,14 @@ def _verdict_node(policy: RetryPolicy) -> Node:
             return {
                 "status": "escalated",
                 "outcome": "escalated",
-                "log": [
-                    "Escalate: cùng finding lặp quá ngưỡng."
-                ],
+                "log": ["Escalate: cùng finding lặp quá ngưỡng."],
             }
 
         if state.get("regression_count", 0) > policy.max_regressions:
             return {
                 "status": "escalated",
                 "outcome": "escalated",
-                "log": [
-                    "Escalate: revision tạo regression liên tiếp."
-                ],
+                "log": ["Escalate: revision tạo regression liên tiếp."],
             }
 
         return {
@@ -103,9 +95,7 @@ def _accept(state: SlotState) -> NodeUpdate:
         "status": "accepted",
         "blocked": False,
         "artifacts": artifacts,
-        "log": [
-            f"accepted ở revision {state['revision']}"
-        ],
+        "log": [f"accepted ở revision {state['revision']}"],
     }
 
 
