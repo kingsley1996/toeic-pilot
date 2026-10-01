@@ -101,14 +101,34 @@ function GondolaShelf() {
   );
 }
 
-/** Cửa kính trượt: khung + 2 cánh kính trong + thảm. Cao 2.7 m. */
-function EntryDoor() {
+/** Cửa kính trượt: khung + 2 cánh kính trong + thảm + biển treo trên đầu.
+ *  IN biển xanh, EXIT biển lục — hai cửa cùng shape là không phân biệt nổi.
+ *  Biển trên đỉnh khung (tâm y 3.05): nhãn ôm nóc biển, không mũi tên. */
+function DoorWithSign({ text, bg }: { text: string; bg: string }) {
+  const face = useMemo(
+    () =>
+      marketCanvas(256, 96, (ctx) => {
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, 256, 96);
+        ctx.fillStyle = "#f7f7f4";
+        ctx.font = "bold 56px sans-serif";
+        ctx.fillText(text, 24, 66);
+      }),
+    [text, bg],
+  );
   return (
     <group>
       {[-1.1, 1.1].map((x) => (
-        <Box key={x} size={[0.18, 2.7, 0.3]} at={[x, 0, 0]} color={PALETTE.wallTrim} />
+        <Box key={x} size={[0.18, 3.3, 0.3]} at={[x, 0, 0]} color={PALETTE.wallTrim} />
       ))}
       <Box size={[2.4, 0.25, 0.3]} at={[0, 2.7, 0]} color={PALETTE.wallTrim} />
+      <Box size={[1.3, 0.5, 0.08]} at={[0, 3.05, 0]} color={PALETTE.wallTrim} />
+      {face && (
+        <mesh position={[0, 3.05, 0.05]}>
+          <planeGeometry args={[1.2, 0.42]} />
+          <meshBasicMaterial map={face} toneMapped={false} />
+        </mesh>
+      )}
       {[-0.52, 0.52].map((x) => (
         <mesh key={x} position={[x, 1.45, 0]}>
           <planeGeometry args={[0.95, 2.3]} />
@@ -118,6 +138,12 @@ function EntryDoor() {
       <Box size={[2.2, 0.03, 1.2]} at={[0, 0, 0.8]} color={PALETTE.asphalt} />
     </group>
   );
+}
+function EntryDoor() {
+  return <DoorWithSign text="IN" bg="#1d5c96" />;
+}
+function ExitDoor() {
+  return <DoorWithSign text="EXIT" bg="#1d7a3a" />;
 }
 
 /** Chồng 3 giỏ xách tay lồng nhau (hộp mở thu dần). */
@@ -348,11 +374,13 @@ function DairyCooler() {
       {[0.45, 0.9, 1.35].map((y, tier) => (
         <group key={y}>
           <Box size={[0.6, 0.04, 2.2]} at={[0.15, y, 0]} color={PALETTE.concrete} />
+          {/* hộp NGỒI TRÊN mặt kệ (mặt y+0.02 + nửa cao 0.16): lần trước để
+              y+0.04 là chìm 0.14 trong kệ */}
           {[-0.8, -0.4, 0, 0.4, 0.8].map((z, i) => (
             <Box
               key={z}
               size={[0.3, 0.32, 0.32]}
-              at={[0.15, y + 0.04, z]}
+              at={[0.15, y + 0.18, z]}
               color={MILK[(tier + i) % MILK.length]}
             />
           ))}
@@ -362,19 +390,47 @@ function DairyCooler() {
   );
 }
 
-/** Tủ đông nắp kính: thân XÁM (trắng trơn đọc như thùng rỗng) + nắp kính
- *  xanh đục 0.35 + gờ trắng. Kính 0.28 trên nền trắng là vô hình. */
+/** Tủ đông ĐỨNG cửa kính: vỏ rỗng mặt +X (lưng/nóc/đáy/2 hông) + 3 kệ
+ *  đồ đông đầy màu + 2 cánh kính trong + đố cửa.
+ *  Tủ nằm nhìn từ thấp chỉ thấy nắp (muốn thấy food phải nhìn từ trên —
+ *  người học không bao giờ lên đó). Tủ đứng thì food đối mặt camera.
+ *  Cao 2.0 m, mặt mở sẵn +X nên khỏi yaw. */
+const FROST = ["#a31220", "#3b6ea5", "#5f8a52", "#f7f7f4", "#e8b93c"] as const;
 function ChestFreezer() {
   return (
     <group>
-      <Box size={[1.1, 1.0, 2.6]} at={[0, 0, 0]} color={PALETTE.concreteDark} />
-      <Box size={[1.14, 0.1, 2.64]} at={[0, 1.0, 0]} color={PALETTE.vanWhite} />
-      <mesh position={[0, 1.06, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.0, 2.5]} />
-        <meshStandardMaterial color="#5b9bc0" transparent opacity={0.5} />
+      {/* vỏ: lưng + nóc + đáy + 2 hông (ruột sáng màu sương) */}
+      <Box size={[0.1, 2.0, 2.4]} at={[-0.55, 0, 0]} color={PALETTE.concreteDark} />
+      <Box size={[1.2, 0.1, 2.4]} at={[0, 1.95, 0]} color={PALETTE.concreteDark} />
+      <Box size={[1.2, 0.12, 2.4]} at={[0, 0, 0]} color={PALETTE.concreteDark} />
+      {[-1.15, 1.15].map((z) => (
+        <Box key={z} size={[1.2, 2.0, 0.1]} at={[0, 0, z]} color={PALETTE.concreteDark} />
+      ))}
+      <Box size={[1.0, 1.9, 2.2]} at={[-0.05, 0.05, 0]} color="#e8f1f5" />
+      {/* 3 kệ + đồ đông đầy màu (ngồi trên mặt kệ, không chìm) */}
+      {[0.55, 1.05, 1.55].map((y, tier) => (
+        <group key={y}>
+          <Box size={[0.9, 0.05, 2.2]} at={[-0.05, y, 0]} color={PALETTE.steel} />
+          {[-0.8, -0.4, 0, 0.4, 0.8].map((z, i) => (
+            <Box
+              key={z}
+              size={[0.55, 0.4, 0.32]}
+              at={[-0.05, y + 0.22, z]}
+              color={FROST[(tier * 5 + i) % FROST.length]}
+            />
+          ))}
+        </group>
+      ))}
+      {/* 2 cánh kính trong (0.28 cho xuyên) + đố — kính hở tường 0.05,
+          dưới là flicker mép (§10.6) */}
+      <mesh position={[0.6, 1.0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[2.2, 1.8]} />
+        <meshStandardMaterial color={PALETTE.glass} transparent opacity={0.28} />
       </mesh>
-      <Box size={[1.14, 0.08, 0.1]} at={[0, 1.0, 1.2]} color={PALETTE.steel} />
-      <Box size={[1.14, 0.08, 0.1]} at={[0, 1.0, -1.2]} color={PALETTE.steel} />
+      <Box size={[0.06, 1.8, 0.08]} at={[0.6, 1.0, 0]} color={PALETTE.steelDark} />
+      {[-1.1, 1.1].map((z) => (
+        <Box key={z} size={[0.06, 1.8, 0.08]} at={[0.6, 1.0, z]} color={PALETTE.steelDark} />
+      ))}
     </group>
   );
 }
@@ -462,8 +518,9 @@ function DeliCounter() {
         <Box key={x} size={[0.08, 1.8, 0.08]} at={[x, 0.9, -0.3]} color={PALETTE.steelDark} />
       ))}
       <Box size={[2.6, 0.7, 0.06]} at={[0, 1.45, -0.3]} color={PALETTE.wallTrim} />
+      {/* mặt bảng trước ở −0.27: chữ nổi 0.035, dưới 0.02 là flicker (§10.6) */}
       {menu && (
-        <mesh position={[0, 1.45, -0.26]}>
+        <mesh position={[0, 1.45, -0.235]}>
           <planeGeometry args={[2.4, 0.6]} />
           <meshBasicMaterial map={menu} toneMapped={false} />
         </mesh>
@@ -494,48 +551,68 @@ function CheckoutLane() {
   );
 }
 
-/** Giấy in trên quầy: tờ mỏng + 4 dòng chữ (nổi 0.02 chống flicker §10.6). */
+/** Giấy in trên quầy: tờ TO (0.4 × 0.55) + 4 dòng đậm — tờ cũ bé bằng nửa
+ *  bàn tay, nhìn xa như vệt trắng. Ngồi trên mặt băng (đỉnh 0.93), không chìm. */
 function ReceiptSlip() {
   return (
     <group>
-      <Box size={[0.3, 0.015, 0.45]} at={[0, 0.9, 0]} color={PALETTE.paper} />
+      <Box size={[0.4, 0.02, 0.55]} at={[0, 0.93, 0]} color="#ffffff" />
       {[0, 1, 2, 3].map((i) => (
-        <Box key={i} size={[0.22 - i * 0.03, 0.005, 0.025]} at={[0, 0.92, -0.14 + i * 0.08]} color={PALETTE.steel} />
+        <Box
+          key={i}
+          size={[0.3 - i * 0.04, 0.005, 0.03]}
+          at={[0, 0.97, -0.18 + i * 0.1]}
+          color={PALETTE.steelDark}
+        />
       ))}
     </group>
   );
 }
 
-/** Hộp ngũ cốc dựng: thân + nhãn trắng + vạch đen. */
+/** Hộp ngũ cốc dựng: thân + nhãn trắng + vạch đen. Ngồi trên mặt băng
+ *  (đỉnh 0.93), không chìm. */
 function BarcodeBox() {
   return (
     <group>
-      <Box size={[0.4, 0.5, 0.15]} at={[0, 0.9, 0]} color={PALETTE.cone} />
-      <Box size={[0.3, 0.3, 0.02]} at={[0, 1.05, 0.09]} color={PALETTE.paper} />
+      <Box size={[0.4, 0.5, 0.15]} at={[0, 0.93, 0]} color={PALETTE.cone} />
+      <Box size={[0.3, 0.3, 0.02]} at={[0, 1.08, 0.09]} color={PALETTE.paper} />
+      {/* vạch nổi 0.025 trên nhãn — dưới 0.02 là flicker (§10.6) */}
       {[0, 1, 2, 3, 4].map((i) => (
-        <Box key={i} size={[0.025, 0.22, 0.005]} at={[-0.1 + i * 0.05, 1.05, 0.105]} color={PALETTE.tire} />
+        <Box key={i} size={[0.025, 0.22, 0.005]} at={[-0.1 + i * 0.05, 1.08, 0.125]} color={PALETTE.tire} />
       ))}
     </group>
   );
 }
 
-/** Chồng 3 túi giấy lồng nhau trên quầy. */
+/** Chồng 3 túi giấy lồng nhau trên quầy (đáy ngồi trên mặt băng 0.93). */
 function PaperBags() {
   return (
     <group>
       {[0, 1, 2].map((i) => (
         <group key={i} position={[0, i * 0.2, 0]}>
-          <Box size={[0.5 - i * 0.05, 0.04, 0.35 - i * 0.04]} at={[0, 0.9, 0]} color={PALETTE.cardbox} />
-          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.94, 0.16 - i * 0.02]} color={PALETTE.cardbox} />
-          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.94, -0.16 + i * 0.02]} color={PALETTE.cardbox} />
+          <Box size={[0.5 - i * 0.05, 0.04, 0.35 - i * 0.04]} at={[0, 0.93, 0]} color={PALETTE.cardbox} />
+          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.97, 0.16 - i * 0.02]} color={PALETTE.cardbox} />
+          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.97, -0.16 + i * 0.02]} color={PALETTE.cardbox} />
         </group>
       ))}
     </group>
   );
 }
 
-/** Tháp khuyến mãi: pallet + kim tự tháp hộp 3-2-1 + biển trên đỉnh. */
+/** Tháp khuyến mãi: pallet + kim tự tháp hộp 3-2-1 + biển PROMO chữ trắng.
+ *  Biển đỏ trơn không chữ đọc như cờ hiệu — thêm chữ là rõ chuyện ngay. */
 function PromoTower() {
+  const face = useMemo(
+    () =>
+      marketCanvas(256, 128, (ctx) => {
+        ctx.fillStyle = "#a31220";
+        ctx.fillRect(0, 0, 256, 128);
+        ctx.fillStyle = "#f7f7f4";
+        ctx.font = "bold 60px sans-serif";
+        ctx.fillText("PROMO", 36, 84);
+      }),
+    [],
+  );
   return (
     <group>
       <Box size={[1.6, 0.12, 1.6]} at={[0, 0, 0]} color={PALETTE.woodDark} />
@@ -549,18 +626,26 @@ function PromoTower() {
       <Box size={[0.55, 0.5, 0.55]} at={[0, 1.22, 0]} color={PALETTE.paper} />
       <Box size={[0.08, 0.5, 0.08]} at={[0, 1.5, -0.2]} color={PALETTE.steelDark} />
       <Box size={[0.9, 0.5, 0.06]} at={[0, 1.85, -0.2]} color={PALETTE.lampRed} />
+      {/* mặt biển trước ở −0.17: chữ nổi 0.035, dưới 0.02 là flicker */}
+      {face && (
+        <mesh position={[0, 1.85, -0.135]}>
+          <planeGeometry args={[0.82, 0.42]} />
+          <meshBasicMaterial map={face} toneMapped={false} />
+        </mesh>
+      )}
     </group>
   );
 }
 
-/** Biển chữ A mặt đỏ chữ % trắng. */
+/** Biển chữ A: CẢ bảng đỏ + mặt % trắng — một khối đọc liền, không phải
+ *  hai mảnh (bảng trắng + vá đỏ rời đọc như biển lơ lửng cạnh bảng). */
 function CouponStand() {
   const face = useMemo(
     () =>
       marketCanvas(160, 200, (ctx) => {
-        ctx.fillStyle = "#a31220";
-        ctx.fillRect(0, 0, 160, 200);
         ctx.fillStyle = "#f7f7f4";
+        ctx.fillRect(0, 0, 160, 200);
+        ctx.fillStyle = "#a31220";
         ctx.font = "bold 120px sans-serif";
         ctx.fillText("%", 30, 150);
       }),
@@ -571,18 +656,16 @@ function CouponStand() {
       {/* hai cánh nghiêng: rotation.x ±0.22 — dấu tính như thang (§8.2):
           cánh trước ngả đỉnh về +Z là dương */}
       <group rotation={[0.22, 0, 0]}>
-        <Box size={[0.9, 1.6, 0.06]} at={[0, 0.75, 0.17]} color={PALETTE.paper} />
+        <Box size={[0.9, 1.6, 0.06]} at={[0, 0.75, 0.17]} color={PALETTE.lampRed} />
       </group>
       <group rotation={[-0.22, 0, 0]}>
         <Box size={[0.9, 1.6, 0.06]} at={[0, 0.75, -0.17]} color={PALETTE.concrete} />
       </group>
       {face && (
-        // Ôm mặt cánh trước: tâm cánh ra world (0, 0.695, 0.330), pháp tuyến
-        // (0, −sin0.22, cos0.22) — đặt mặt nổi 0.005 trên nửa dày 0.03.
-        // Lần trước để [0, 0.95, 0.36] là lệch lên 0.25, đọc như biển rời
-        // lơ lửng cạnh bảng.
+        // % phủ gần kín bảng (0.85 × 1.2 trên bảng 0.9 × 1.6): vá nhỏ lọt
+        // thỏm giữa bảng to là đọc như mảnh rời. Cùng tâm + pháp tuyến cũ.
         <mesh position={[0, 0.687, 0.364]} rotation={[0.22, 0, 0]}>
-          <planeGeometry args={[0.8, 1.0]} />
+          <planeGeometry args={[0.85, 1.2]} />
           <meshBasicMaterial map={face} toneMapped={false} />
         </mesh>
       )}
@@ -652,6 +735,7 @@ function ServiceDesk() {
 
 export const SUPERMARKET_SHAPES = {
   "entry-door": EntryDoor,
+  "exit-door": ExitDoor,
   "basket-stack": BasketStack,
   "list-board": ListBoard,
   "gondola-shelf": GondolaShelf,

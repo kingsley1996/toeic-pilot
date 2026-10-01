@@ -200,8 +200,9 @@ export type ShapeKey =
   | "overhead-bin"
   | "aisle-seat"
   | "flight-attendant"
-  // siêu thị (topic `supermarket`) — entry-door dùng chung cho entrance+exit
+  // siêu thị (topic `supermarket`)
   | "entry-door"
+  | "exit-door"
   | "basket-stack"
   | "list-board"
   | "gondola-shelf"

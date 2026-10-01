@@ -34,23 +34,24 @@ export const supermarketScene: SceneDef = {
       shape: "entry-door",
       headword: "entrance",
       partOfSpeech: "noun",
-      // Cửa trượt tây trên tường kính nam.
+      // Cửa trượt tây trên tường kính nam. Biển IN/EXIT trên đầu (topY 3.3)
+      // nên nhãn ôm nóc biển, không mũi tên.
       position: [-6, 0, 10],
       focusDistance: 8,
       hotspotY: 3.6,
-      topY: 2.7,
+      topY: 3.3,
       ringRadius: 2,
     },
     {
       id: "obj-exit",
-      shape: "entry-door",
+      shape: "exit-door",
       headword: "exit",
       partOfSpeech: "noun",
-      // Cửa trượt đông — cùng shape cửa vào (một ShapeKey hai object).
+      // Cửa trượt đông — shape riêng biển EXIT xanh (phân biệt với IN).
       position: [6, 0, 10],
       focusDistance: 8,
       hotspotY: 3.6,
-      topY: 2.7,
+      topY: 3.3,
       ringRadius: 2,
     },
     {
@@ -98,9 +99,10 @@ export const supermarketScene: SceneDef = {
       shape: "aisle-sign",
       headword: "aisle",
       partOfSpeech: "noun",
-      // Cổng biển số 5 đầu nam aisle giữa. Xe đẩy lùi tới z 5.0 là dừng —
-      // chân cổng ở z 6.2 nên không đâm.
-      position: [0.2, 0, 6.2],
+      // Cổng biển số 5 đầu ĐÔNG aisle (x 2.6): làn xe ngang quét dải
+      // x −3.5..0.5, để cổng ở cột cũ (x 0.2) là wrapper drei của pill xe
+      // đè pill biển. Chân cổng z 6.2, làn xe tới z 3.9 là dừng.
+      position: [2.6, 0, 6.2],
       focusDistance: 6,
       hotspotY: 3.5,
       topY: 2.6,
@@ -111,16 +113,17 @@ export const supermarketScene: SceneDef = {
       shape: "shop-cart",
       headword: "cart",
       partOfSpeech: "noun",
-      // Patrol aisle ĐÔNG (x 1.4, z −2..4): lối chính rộng nhìn thẳng từ
-      // camera đầu (để ở aisle tây là kệ giữa che mất thân xe). Lệch cột
-      // với biển aisle (x 0.2) cho wrapper drei của pill xe khỏi đè pill
-      // tĩnh theo timing (§11.6); cách pill tĩnh gần nhất >2 m.
-      // Nhãn treo cao trên thân xe (§7.5).
-      position: [1.4, 0, 1],
-      patrol: { axis: "z", range: 3, speed: 0.5 },
+      // Patrol ngang aisle ĐÔNG-TÂY phía nam dãy kệ giữa (z 3, x −3.5..0.5):
+      // kệ dài theo X nên làn cũ x 1.4 đâm xuyên dãy giữa (x −6.5..1.5).
+      // Làn này hở cả hai đầu (tây hết x −4, đông hết x 1.5) và hở price-tag
+      // (z ≥5.4) lẫn cổng biển (z 6.2). Cách pill tĩnh gần nhất >2 m (§11.6).
+      // Nhãn treo cao trên thân xe (§7.5) — đỉnh thật là đầu người đẩy
+      // (1.72) nên topY theo nó, không theo giỏ.
+      position: [-1.5, 0, 3],
+      patrol: { axis: "x", range: 2, speed: 0.5 },
       focusDistance: 5,
       hotspotY: 2.3,
-      topY: 1.05,
+      topY: 1.75,
       ringRadius: 1.4,
     },
     {
@@ -192,12 +195,12 @@ export const supermarketScene: SceneDef = {
       shape: "chest-freezer",
       headword: "freezer",
       partOfSpeech: "noun",
-      // Tủ đông nắp kính nam tủ sữa, cùng tường tây.
+      // Tủ đông ĐỨNG cửa kính tây-bắc — food đối mặt camera, không phải
+      // nhìn từ trên như tủ nằm. Cao 2.0 m.
       position: [-12.6, 0, -6.5],
-      rotationY: Math.PI / 2,
       focusDistance: 5,
-      hotspotY: 2.2,
-      topY: 1.3,
+      hotspotY: 2.9,
+      topY: 2.05,
       ringRadius: 2,
     },
     {
@@ -243,12 +246,14 @@ export const supermarketScene: SceneDef = {
       shape: "cashier",
       headword: "cashier",
       partOfSpeech: "noun",
-      // Thu ngân đầu TÂY quầy (ngoài làn, không chôn sau quầy) — mặt +X
-      // nhìn dọc quầy đúng việc. Focus vào đầu người, đứng 5 m cho khung
-      // thoáng (4 m là chui vào cụm receipt/barcode).
-      position: [-4.2, 0, -8.7],
-      focus: [-4.2, 1.2, -8.7],
-      focusDistance: 5,
+      // Thu ngân SAU quầy làn TÂY, mặt +Z về khách (θ = atan2(−1, 0)) —
+      // để làn giữa là pill thu ngân đè pill checkout cùng cột. Đứng 7 m +
+      // nhìn hơi từ trên (y 1.5) cho thấy người qua mặt quầy thấp (0.9).
+      // Tách receipt/barcode bằng x.
+      position: [-2.4, 0, -9.4],
+      rotationY: -Math.PI / 2,
+      focus: [-2.4, 1.5, -9.4],
+      focusDistance: 7,
       hotspotY: 2.6,
       topY: 1.72,
       ringRadius: 1,
@@ -258,11 +263,12 @@ export const supermarketScene: SceneDef = {
       shape: "receipt-slip",
       headword: "receipt",
       partOfSpeech: "noun",
-      // Giấy in trên quầy tây — vật bẹt, nhãn ôm mặt, thấp hơn nhãn
-      // checkout 1.1 m nên không đè.
+      // Giấy in trên quầy tây — vật nhỏ nên nhãn ôm sát (1.4) thay vì
+      // treo cao; thấp hơn nhãn checkout 1.3 m nên không đè.
       position: [-2, 0, -8.3],
       focusDistance: 3,
-      hotspotY: 1.6,
+      hotspotY: 1.4,
+      topY: 0.97,
       ringRadius: 0.6,
     },
     {
