@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Hello Minh, this is Lan from Bright Home Realty. I am calling to fix our visit to the model apartment this Saturday.
+voice: au_male_1
+Hi Lan. Yes, I am free most of Saturday. What time slots do you have?
+voice: uk_female_1
+We have four options: nine, eleven, two, and four o'clock. Which suits you best?
+voice: au_male_1
+Morning works for me, but I have a dentist appointment at two in the afternoon.
+voice: uk_female_1
+Noted. I am tied up with another client at eleven, so that hour is out for me.
+voice: au_male_1
+What about nine o'clock then? I could come early.
+voice: uk_female_1
+The building office only opens the show flat after ten, so nine is too early.
+voice: au_male_1
+I see. Then four o'clock seems open for both of us, right?
+voice: uk_female_1
+Exactly. We are both free at four, so let us meet at the sales office then.
+voice: au_male_1
+Perfect. I will bring my ID and income documents on Saturday.
+[QUESTION]
+Why is the woman calling the man?
+(A) To arrange a Saturday apartment viewing
+(B) To sell a dental clinic office
+(C) To cancel a dentist appointment
+(D) To open a new realty branch
+Answer: A
+Explanation: Bằng chứng "to fix our visit to the model apartment this Saturday" nêu rõ lý do gọi | (A) "To arrange a Saturday apartment viewing" — đúng, chốt giờ xem căn hộ | (B) "To sell a dental clinic office" — nha sĩ chỉ là việc trùng giờ | (C) "To cancel a dentist appointment" — người đàn ông có hẹn, không hề hủy | (D) "To open a new realty branch" — không mở chi nhánh
+Source: original
+[QUESTION]
+Where will the speakers most likely meet?
+(A) At a dentist appointment room
+(B) At the model apartment sales office
+(C) At a building construction site
+(D) At the client's private home
+Answer: B
+Explanation: Bằng chứng "let us meet at the sales office then" cùng với chuyến xem căn hộ cho biết điểm hẹn | (A) "At a dentist appointment room" — nha sĩ là việc trùng giờ | (B) "At the model apartment sales office" — đúng, điểm hẹn đã thống nhất | (C) "At a building construction site" — đi xem căn mẫu, không phải công trường | (D) "At the client's private home" — họ gặp ở văn phòng
+Source: original
+[QUESTION]
+Look at the graphic. When will the speakers meet on Saturday?
+(A) 9h
+(B) 11h
+(C) 16h
+(D) 14h
+Answer: C
+Explanation: Bằng chứng "We are both free at four" cùng với biểu đồ cả hai đều rảnh lúc mười sáu giờ | (A) "9h" — phòng trưng bày mở sau mười giờ | (B) "11h" — Lan bận lúc mười một giờ | (C) "16h" — đúng, khung giờ duy nhất cả hai đều rảnh | (D) "14h" — Minh bận lúc mười bốn giờ
+Source: original

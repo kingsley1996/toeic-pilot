@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon. Welcome to our service counter. How can I help you today?
+voice: au_male_1
+Hi. I bought a washing machine here three months ago, and it makes a loud noise when spinning.
+voice: us_female_1
+I am sorry to hear that. Is the noise constant or only during the spin cycle?
+voice: au_male_1
+Only when it spins fast. It sounds like metal hitting metal.
+voice: us_female_1
+That usually points to a faulty motor bearing. Did you overload the machine recently?
+voice: au_male_1
+No, I always follow the load limit in the manual.
+voice: us_female_1
+Good. Since it is still under warranty, the inspection will be completely free.
+voice: au_male_1
+That is great. What is the next step?
+voice: us_female_1
+I will book our technician to visit your home on Saturday morning to check the motor.
+voice: au_male_1
+Saturday morning works for me. Should I unplug the machine beforehand?
+[QUESTION]
+Where does this conversation most likely take place?
+(A) At a motor manufacturing plant
+(B) At a laundromat washing area
+(C) At an appliance store service counter
+(D) At a furniture delivery dock
+Answer: C
+Explanation: Bằng chứng "Welcome to our service counter" cùng với hỗ trợ bảo hành cho biết địa điểm | (A) "At a motor manufacturing plant" — bàn về động cơ chứ không phải nhà máy | (B) "At a laundromat washing area" — anh ấy để máy ở nhà | (C) "At an appliance store service counter" — đúng, mua máy ở đây, quầy bảo hành | (D) "At a furniture delivery dock" — đây là thiết bị điện, không phải nội thất
+Source: original
+[QUESTION]
+What detail is mentioned about the washing machine?
+(A) It was purchased second-hand last year
+(B) It stops working during the wash cycle
+(C) It was damaged because the load limit was ignored
+(D) Its spinning noise likely comes from an internal defect
+Answer: D
+Explanation: Bằng chứng "That usually points to a faulty motor bearing" và "metal hitting metal" cho biết chẩn đoán | (A) "It was purchased second-hand last year" — sai, mua ở đây ba tháng trước | (B) "It stops working during the wash cycle" — sai, máy vẫn chạy chỉ ồn khi vắt | (C) "It was damaged because the load limit was ignored" — sai, anh ấy đã tuân thủ giới hạn tải | (D) "Its spinning noise likely comes from an internal defect" — đúng, diễn đạt lại lỗi vòng bi
+Source: original
+[QUESTION]
+What will the woman do next?
+(A) Have the technician examine the washing machine on Saturday
+(B) Charge for the inspection despite the warranty
+(C) Replace the faulty unit on the spot
+(D) Tell him to unplug the machine beforehand
+Answer: A
+Explanation: Bằng chứng "book our technician to visit your home on Saturday morning" và "inspection will be completely free" cho thấy kế hoạch | (A) "Have the technician examine the washing machine on Saturday" — đúng, diễn đạt lại việc kỹ thuật viên tới nhà | (B) "Charge for the inspection despite the warranty" — sai, kiểm tra miễn phí trong thời gian bảo hành | (C) "Replace the faulty unit on the spot" — sai, kiểm tra trước chứ không thay ngay | (D) "Tell him to unplug the machine beforehand" — đó là câu hỏi của anh ấy, không phải việc cô ấy làm
+Source: original

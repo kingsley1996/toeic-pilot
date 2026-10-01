@@ -1,0 +1,64 @@
+[PASSAGE]
+From: Ms. Julia Tran, BrightSoft Company
+To: Sunrise Catering
+Subject: Confirmation of company party booking
+Date: November 18
+
+Dear Mr. Bell,
+
+Our company will hold its year-end party in your Grand Hall on Friday, December 12, starting at 7:00 P.M. This email confirms our booking for sixty guests, including twelve vegetarians. We have chosen the Gold package with free drinks for all guests.
+
+Please set up a buffet near the stage and a small gift table at the entrance. Our manager, Mr. David Lu, will arrive at 5:00 P.M. to check the seating plan. The remaining payment of $1,000 will be made on the party day. Please reply before November 25 if anything is unclear.
+
+Best regards,
+Julia Tran
+
+[PASSAGE]
+Sunrise Catering — Company Party Menus
+Dear clients, our Silver, Gold, and Platinum packages suit parties of 20 to 100 guests. The Gold package includes roast chicken, grilled fish, six vegetarian dishes, fresh salad, sweet dessert, and free drinks for every guest. Parties of 41 to 70 guests enjoy reduced per-guest prices, and all menus are served buffet-style in your chosen hall. Please note that guests must vacate the hall by 11:00 P.M. Tastings are free every Friday afternoon at our main kitchen.
+
+[QUESTION]
+According to the email and the price table, what is the per-guest price of the Gold package for this party?
+(A) $32 per guest
+(B) $28 per guest
+(C) $25 per guest
+(D) $40 per guest
+Answer: A
+Explanation: Thư chốt tiệc sáu mươi khách ("confirms our booking for sixty guests") nên rơi vào hàng 41–70 khách với giá Gold $32 (hàng 41–70 khách với giá Gold $32 theo bảng giá). | (A) "$32 per guest" — đúng giá Gold của hàng 41–70 khách. | (B) "$28 per guest" — là giá Silver của hàng 20–40 khách, sai cả gói lẫn hàng. | (C) "$25 per guest" — là giá gói Silver cùng hàng, sai gói được chọn. | (D) "$40 per guest" — là giá Platinum cùng hàng, sai gói được chọn.
+Source: original
+[QUESTION]
+In the menu, the word "vacate" is closest in meaning to
+(A) decorate
+(B) leave
+(C) clean
+(D) rent
+Answer: B
+Explanation: Từ "vacate" nằm trong câu khách phải rời sảnh trước 11 giờ đêm ("guests must vacate the hall by 11:00 P.M."). | (A) "decorate" — nghĩa trang trí, sai trường nghĩa. | (B) "leave" — đúng nghĩa rời đi như vừa dẫn. | (C) "clean" — nghĩa dọn dẹp, không hợp giờ rời sảnh. | (D) "rent" — nghĩa thuê, ngược hẳn ngữ cảnh.
+Source: original
+[QUESTION]
+What can be inferred about the client's party?
+(A) It is too small for the Grand Hall gathering
+(B) It must use the Platinum package for sixty guests
+(C) It qualifies for reduced prices and offers vegetarian dishes
+(D) It will end well after midnight
+Answer: C
+Explanation: Thư chốt sáu mươi khách ("confirms our booking for sixty guests") còn thực đơn ghi hàng 41–70 khách được giảm giá ("Parties of 41 to 70 guests enjoy reduced per-guest prices") kèm sáu món chay ("six vegetarian dishes") nên tiệc vừa được giảm giá vừa có món chay. | (A) "It is too small for the Grand Hall gathering" — sáu mươi khách nằm gọn trong gói 20–100 khách. | (B) "It must use the Platinum package for sixty guests" — khách đã chọn gói Gold, không bắt buộc Platinum. | (C) "It qualifies for reduced prices and offers vegetarian dishes" — đúng điều suy ra từ hai tài liệu vừa dẫn. | (D) "It will end well after midnight" — trái với phải rời sảnh trước 11 giờ đêm.
+Source: original
+[QUESTION]
+What is NOT stated about the catering service?
+(A) Friday tastings at the main kitchen are free
+(B) The Gold package includes free drinks
+(C) Menus are served buffet-style in the hall
+(D) The Grand Hall can hold two hundred guests
+Answer: D
+Explanation: Hai tài liệu có nêu thử món miễn phí thứ Sáu, gói Gold kèm đồ uống và phục vụ buffet — không sức chứa hai trăm khách nào. | (A) "Friday tastings at the main kitchen are free" — thực đơn ghi Tastings are free every Friday afternoon. | (B) "The Gold package includes free drinks" — thư và thực đơn đều ghi free drinks. | (C) "Menus are served buffet-style in the hall" — thực đơn ghi served buffet-style in your chosen hall. | (D) "The Grand Hall can hold two hundred guests" — gói tiệc chỉ tới 100 khách, không con số này.
+Source: original
+[QUESTION]
+Why did Ms. Tran write the email?
+(A) To confirm the company party booking for December 12
+(B) To cancel the year-end party booking
+(C) To apply for a catering job in December
+(D) To complain about last year's party menu
+Answer: A
+Explanation: Thư mở đầu chốt đặt tiệc ("This email confirms our booking for sixty guests") cho tối December 12 tại Grand Hall. | (A) "To confirm the company party booking for December 12" — đúng mục đích vừa dẫn. | (B) "To cancel the year-end party booking" — ngược hẳn: thư xác nhận giữ tiệc. | (C) "To apply for a catering job in December" — thư không hề xin việc. | (D) "To complain about last year's party menu" — không lời phàn nàn nào trong thư.
+Source: original

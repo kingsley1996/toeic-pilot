@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Is next month's internal training course compulsory for new employees?
+voice: uk_female_1
+(A) New employees receive a welcome package.
+(B) The course covers basic safety rules.
+(C) No, only supervisors are required to attend.
+Answer: C
+Explanation: Câu hỏi xác nhận nhân viên mới có bắt buộc dự khóa đào tạo tháng tới không, đáp án đúng trả lời không và nêu rõ đối tượng phải dự | (A) "New employees receive a welcome package." - dùng lại chữ new employees mà không trả lời | (B) "The course covers basic safety rules." - chỉ mô tả nội dung, không nói nghĩa vụ | (C) "No, only supervisors are required to attend." - trả lời không kèm đối tượng phải dự
+Source: original

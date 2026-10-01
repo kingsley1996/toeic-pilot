@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Hello, welcome to Bloom Corner. Are you planning flowers for a special event?
+voice: ca_male_1
+Yes. I am organizing my wedding reception and need fresh flowers for the main hall.
+voice: us_female_1
+Congratulations. We source roses and orchids directly from Da Lat every week.
+voice: ca_male_1
+Wonderful. Can you personally arrange the bouquets for the tables?
+voice: us_female_1
+I am the shop owner, not the florist, but our designer Emma will handle the arrangements.
+voice: ca_male_1
+I see. How far in advance should I finalize the order?
+voice: us_female_1
+Please confirm the flower colors before the weekend so we can place the Da Lat order in time.
+voice: ca_male_1
+Understood. My fiancée prefers white and pink roses.
+voice: us_female_1
+Lovely choice. Those colors sell out fast during the wedding season.
+voice: ca_male_1
+Then I will discuss it with her tonight and call you back.
+[QUESTION]
+What is the purpose of the man's visit?
+(A) To order birthday balloons
+(B) To order wedding hall flowers
+(C) To sell roses from Da Lat
+(D) To apply for a designer job
+Answer: B
+Explanation: Bằng chứng "need fresh flowers for the main hall" cùng với tiệc cưới cho thấy mục đích | (A) "To order birthday balloons" — hoa cưới, không phải bóng bay | (B) "To order wedding hall flowers" — đúng, trang trí sảnh tiệc | (C) "To sell roses from Da Lat" — cửa hàng lấy từ Đà Lạt, anh ấy là người mua | (D) "To apply for a designer job" — anh ấy là khách hàng
+Source: original
+[QUESTION]
+Who is the woman most likely to be?
+(A) The professional florist Emma
+(B) A wedding guest singer
+(C) The flower shop owner
+(D) A Da Lat flower farmer
+Answer: C
+Explanation: Bằng chứng "I am the shop owner, not the florist" là lời nói trực tiếp | (A) "The professional florist Emma" — Emma là thợ thiết kế, cô ấy là chủ | (B) "A wedding guest singer" — không có ngữ cảnh âm nhạc | (C) "The flower shop owner" — đúng, vai trò tự nêu | (D) "A Da Lat flower farmer" — lấy hàng từ Đà Lạt, không phải nông dân
+Source: original
+[QUESTION]
+What does the woman suggest the man do?
+(A) Ask the designer to arrange balloons for the tables
+(B) Visit Da Lat to buy flowers
+(C) Grow his own roses at home
+(D) Confirm flower colors before the weekend
+Answer: D
+Explanation: Bằng chứng "Please confirm the flower colors before the weekend" là yêu cầu trực tiếp | (A) "Ask the designer to arrange balloons for the tables" — thợ thiết kế bó hoa, không phải bóng bay | (B) "Visit Da Lat to buy flowers" — cửa hàng đặt từ đó, anh ấy không phải đi | (C) "Grow his own roses at home" — không hề gợi ý | (D) "Confirm flower colors before the weekend" — đúng, để đặt hàng kịp thời
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) The clerk is watering plants in the back room.
+(B) A customer is paying with a credit card at the door.
+(C) Two women are arranging flowers on the sidewalk display.
+(D) The shop assistant is handing a bouquet to a customer at the counter.
+Answer: D
+Explanation: Trong ảnh người bán trao bó hoa hồng cho một phụ nữ qua quầy hoa | (A) "The clerk is watering plants in the back room." — không có hành động tưới cây nào | (B) "A customer is paying with a credit card at the door." — không có cảnh trả tiền ở cửa | (C) "Two women are arranging flowers on the sidewalk display." — hành động diễn ra trong cửa hàng và chỉ có một lần trao hoa | (D) "The shop assistant is handing a bouquet to a customer at the counter." — đúng
+Source: original

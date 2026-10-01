@@ -1,0 +1,9 @@
+[QUESTION]
+Bank clerks instructed customers to complete the savings-account application form and activate online banking -------.
+(A) secure
+(B) securely
+(C) security
+(D) secured
+Answer: B
+Explanation: Cuối câu sau động từ thường cần trạng từ chỉ cách thức thực hiện. | (A) "secure" — là tính từ, không bổ nghĩa cho động từ "activate". | (B) "securely" — là trạng từ nghĩa một cách an toàn, hợp nghĩa kích hoạt ngân hàng trực tuyến. | (C) "security" — là danh từ, sai từ loại ở vị trí cuối câu này. | (D) "secured" — là phân từ hai, không đứng một mình sau động từ chính.
+Source: original

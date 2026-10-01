@@ -1,0 +1,69 @@
+[PASSAGE]
+From: OfficePlus Supply <billing@officeplus.com>
+To: BrightStar Travel
+Subject: Reminder: Invoice #IV-207 is 20 days overdue
+Date: October 5
+
+Dear Mr. Hale,
+
+Our records show invoice #IV-207 for $486, due on September 15, is still unpaid after twenty days. The invoice covers stationery delivered to your office on August 28. Please pay the full amount before October 10 to avoid extra charges.
+
+If you have already paid, please ignore this message and send us the transfer receipt. For questions, call Ms. Ruby Chen at 555-0130.
+
+Thank you,
+OfficePlus Supply
+
+[PASSAGE]
+OfficePlus Supply — Invoice #IV-207
+Bill to: BrightStar Travel, 9 Hill Street. Date: August 28.
+Printer paper, 20 boxes: $220. Ballpoint pens, 200 pieces: $96. File folders, 150 pieces: $120. Desk staplers, 10 pieces: $50. Total due: $486. Payment due within 30 days of delivery.
+
+[PASSAGE]
+OfficePlus Supply — How to Pay and Late Fees
+Please pay by bank transfer to First City Bank, account 881-200-45, or in cash at our store at 30 Market Road. Cheques are no longer accepted. A late fee of two percent per month will be added as a penalty for payments after October 10. Receipts are emailed within one day.
+
+[QUESTION]
+According to the invoice, which item has the highest amount?
+(A) Ballpoint pens in bulk boxes
+(B) Desk staplers in small packs
+(C) File folders for the office
+(D) Printer paper at two twenty
+Answer: D
+Explanation: Hóa đơn liệt kê giấy in $220 cao nhất ("Printer paper, 20 boxes: $220") trên bút $96 và kẹp $120. | (A) "Ballpoint pens in bulk boxes" — bút chỉ $96, thấp hơn giấy in. | (B) "Desk staplers in small packs" — dập ghim chỉ $50, thấp nhất hóa đơn. | (C) "File folders for the office" — kẹp hồ sơ $120, thấp hơn giấy in. | (D) "Printer paper at two twenty" — đúng món cao nhất vừa dẫn.
+Source: original
+[QUESTION]
+What is NOT stated about the payment?
+(A) Early payments earn a five percent discount
+(B) Receipts are emailed within one day
+(C) Cash is accepted at the Market Road store
+(D) Paper cheques are no longer accepted
+Answer: A
+Explanation: Thông báo có nêu không nhận séc, biên lai gửi trong một ngày và nhận tiền mặt ở Market Road — không giảm giá nào cho trả sớm. | (A) "Early payments earn a five percent discount" — không giảm giá trả sớm nào được nhắc tới. | (B) "Receipts are emailed within one day" — thông báo ghi Receipts are emailed within one day. | (C) "Cash is accepted at the Market Road store" — thông báo ghi in cash at our store at 30 Market Road. | (D) "Paper cheques are no longer accepted" — thông báo ghi Cheques are no longer accepted.
+Source: original
+[QUESTION]
+What can be inferred if BrightStar pays after October 10?
+(A) The delivered stationery will be taken back
+(B) A monthly late fee will be added to the bill
+(C) The invoice total will drop to $450
+(D) Paper cheques will be accepted again
+Answer: B
+Explanation: Thư giục trả trước October 10 để tránh phí thêm ("pay the full amount before October 10 to avoid extra charges") còn thông báo ghi phí chậm ("A late fee of two percent per month will be added") nên trả muộn bị cộng phí hằng tháng. | (A) "The delivered stationery will be taken back" — hàng đã giao August 28, không ai đòi lại. | (B) "A monthly late fee will be added to the bill" — đúng điều suy ra từ hai tài liệu vừa dẫn. | (C) "The invoice total will drop to $450" — ngược hẳn: trả muộn chỉ làm tổng tăng thêm. | (D) "Paper cheques will be accepted again" — trái với séc không còn được nhận.
+Source: original
+[QUESTION]
+What can be inferred from the reminder and the invoice?
+(A) The invoice covers hotel room charges
+(B) BrightStar has already paid the full amount
+(C) The goods were delivered before payment was requested
+(D) The stationery arrived in October
+Answer: C
+Explanation: Thư ghi hàng đã giao tới văn phòng ("stationery delivered to your office on August 28") còn hóa đơn hẹn thanh toán sau giao hàng ("Payment due within 30 days of delivery") nên hàng giao trước khi bị giục trả. | (A) "The invoice covers hotel room charges" — hóa đơn toàn văn phòng phẩm, không phòng khách sạn. | (B) "BrightStar has already paid the full amount" — ngược hẳn: thư giục vì still unpaid after twenty days. | (C) "The goods were delivered before payment was requested" — đúng điều suy ra từ hai tài liệu vừa dẫn. | (D) "The stationery arrived in October" — bẫy: giao August 28, October 5 là ngày thư giục.
+Source: original
+[QUESTION]
+In the payment notice, the word "penalty" is closest in meaning to
+(A) reward
+(B) discount
+(C) receipt
+(D) fine
+Answer: D
+Explanation: Từ "penalty" nằm trong cụm phí chậm trả ("will be added as a penalty for payments after October 10"). | (A) "reward" — nghĩa phần thưởng, ngược hẳn. | (B) "discount" — nghĩa giảm giá, ngược với phí phạt. | (C) "receipt" — nghĩa biên lai, sai trường nghĩa. | (D) "fine" — đúng nghĩa khoản phạt như vừa dẫn.
+Source: original

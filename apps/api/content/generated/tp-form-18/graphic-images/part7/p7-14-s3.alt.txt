@@ -1,0 +1,1 @@
+SellManager — Plan Prices. Plan: Basic, Monthly Fee: $29. Plan: Standard, Monthly Fee: $59. Plan: Pro, Monthly Fee: $99. Plan: Enterprise, Monthly Fee: $149.

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The annual membership renewal is still forty dollars, isn't it?
+voice: uk_female_1
+(A) Yes, the yearly rate has not changed.
+(B) The library opens at nine on weekdays.
+(C) He renewed his passport last month.
+Answer: A
+Explanation: Câu hỏi xác nhận phí thường niên thư viện vẫn là bốn mươi đô la, đáp án đúng khẳng định mức phí không đổi | (A) "Yes, the yearly rate has not changed." - xác nhận trực tiếp mức phí | (B) "The library opens at nine on weekdays." - lạc đề về giờ mở cửa | (C) "He renewed his passport last month." - dùng lại chữ renew với hộ chiếu không liên quan
+Source: original

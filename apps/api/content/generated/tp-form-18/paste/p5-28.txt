@@ -1,0 +1,9 @@
+[QUESTION]
+The contractor had to obtain a foundation-work permit to ------- safety and avoid disturbing the adjacent residential area.
+(A) ensuring
+(B) ensure
+(C) ensured
+(D) ensures
+Answer: B
+Explanation: Sau giới từ chỉ mục đích trước tân ngữ song song cần nguyên thể làm động từ. | (A) "ensuring" — là danh động từ, không đứng sau "to" chỉ mục đích. | (B) "ensure" — là nguyên thể sau "to", song song với "avoid" trong câu. | (C) "ensured" — là dạng quá khứ, sai dạng sau "to" trong câu. | (D) "ensures" — là dạng chia ngôi thứ ba, không đứng sau "to" chỉ mục đích.
+Source: original

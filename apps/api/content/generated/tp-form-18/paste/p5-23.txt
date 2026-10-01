@@ -1,0 +1,9 @@
+[QUESTION]
+The apartment household receiving a sudden spike in its electricity bill called the hotline to have ------- meter rechecked.
+(A) its
+(B) her
+(C) their
+(D) his
+Answer: A
+Explanation: Trước danh từ số ít với tiền ngữ phi người số ít cần tính từ sở hữu tương ứng. | (A) "its" — là sở hữu số ít phi người, hợp với tiền ngữ "household". | (B) "her" — là sở hữu giống cái số ít chỉ người, sai với tiền ngữ phi người. | (C) "their" — là sở hữu số nhiều, sai số với tiền ngữ số ít trong câu. | (D) "his" — là sở hữu giống đực số ít chỉ người, sai với tiền ngữ chỉ hộ gia đình.
+Source: original

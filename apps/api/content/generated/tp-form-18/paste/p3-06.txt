@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Hi Daniel, thanks for meeting us at the office. Sophie and I need your input on the annual client conference next month.
+voice: au_male_1
+Hi Emma, hi Sophie. Of course. Last year we ran out of seats, so the venue choice matters a lot.
+voice: uk_female_1
+Hello. I checked the guest list, and we already have around two hundred confirmations.
+voice: us_female_1
+Exactly. As the main event coordinator, I am comparing two downtown hotels right now.
+voice: au_male_1
+Which one looks better so far?
+voice: us_female_1
+The Grand Plaza. It has a bigger hall and free parking for our guests.
+voice: uk_female_1
+I agree. Their catering menu also fits our budget better than the other hotel.
+voice: au_male_1
+Then you have my approval. Just go ahead and reserve the hall.
+voice: us_female_1
+Thank you. I will book the hotel ballroom and send the invitations next week.
+voice: au_male_1
+Perfect. Sophie, please copy me on the final guest list when it is ready.
+[QUESTION]
+What is the conversation mainly about?
+(A) Cancelling last year's conference
+(B) Planning the annual client conference
+(C) Hiring parking attendants
+(D) Repairing a downtown hotel
+Answer: B
+Explanation: Bằng chứng "annual client conference next month" cùng với địa điểm và thư mời cho thấy chủ đề | (A) "Cancelling last year's conference" — đang lên kế hoạch kỳ tới, không phải hủy | (B) "Planning the annual client conference" — đúng, địa điểm và thư mời | (C) "Hiring parking attendants" — nhắc tới giữ xe miễn phí, không tuyển người | (D) "Repairing a downtown hotel" — so sánh khách sạn, không phải sửa chữa
+Source: original
+[QUESTION]
+Who is Emma most likely to be?
+(A) A hotel receptionist
+(B) An invited client guest
+(C) The main event coordinator
+(D) A parking lot manager
+Answer: C
+Explanation: Bằng chứng "As the main event coordinator, I am comparing two downtown hotels" là lời nói trực tiếp | (A) "A hotel receptionist" — cô ấy đặt sảnh, không phải nhân viên khách sạn | (B) "An invited client guest" — cô ấy tổ chức, không phải khách mời | (C) "The main event coordinator" — đúng, vai trò tự nêu | (D) "A parking lot manager" — giữ xe chỉ là chi tiết nhỏ
+Source: original
+[QUESTION]
+Why do the speakers favor the Grand Plaza?
+(A) It will send invitations without a reservation
+(B) It is the only downtown hotel still operating
+(C) It agreed to cut the guest list to twenty
+(D) It has a bigger hall, free parking, and budget-friendly catering
+Answer: D
+Explanation: Bằng chứng "It has a bigger hall and free parking for our guests" và "catering menu also fits our budget better" cho thấy lý do ưa thích | (A) "It will send invitations without a reservation" — sai, Emma sẽ đặt rồi mới gửi thư mời | (B) "It is the only downtown hotel still operating" — sai, đang so sánh hai khách sạn | (C) "It agreed to cut the guest list to twenty" — sai, có khoảng hai trăm xác nhận | (D) "It has a bigger hall, free parking, and budget-friendly catering" — đúng, gộp ý của cả hai người nói
+Source: original

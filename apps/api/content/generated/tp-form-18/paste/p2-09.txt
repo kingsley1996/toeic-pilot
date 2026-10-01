@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where can I hear the morning weather report?
+voice: uk_female_1
+(A) The report is due on Friday.
+(B) I heard it will rain in the morning.
+(C) On channel two, right after the news headlines.
+Answer: C
+Explanation: Câu hỏi tìm kênh phát bản tin thời tiết buổi sáng, đáp án đúng nêu rõ kênh cụ thể | (A) "The report is due on Friday." - dùng lại chữ report với hạn nộp | (B) "I heard it will rain in the morning." - dùng lại chữ morning mà không nêu kênh | (C) "On channel two, right after the news headlines." - nêu tên chính xác kênh
+Source: original

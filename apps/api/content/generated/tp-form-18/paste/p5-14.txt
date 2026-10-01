@@ -1,0 +1,9 @@
+[QUESTION]
+The riverside restaurant has added a vegetarian menu to serve guests with ------- requirements at the year-end banquet.
+(A) diet
+(B) dieting
+(C) dieted
+(D) dietary
+Answer: D
+Explanation: Trước danh từ số nhiều chỉ yêu cầu cần tính từ bổ nghĩa. | (A) "diet" — là danh từ, không bổ nghĩa trực tiếp cho danh từ khác theo nghĩa này. | (B) "dieting" — là danh động từ chỉ hành động ăn kiêng, sai từ loại trước danh từ. | (C) "dieted" — không phải dạng tính từ chuẩn, sai từ loại và sai nghĩa. | (D) "dietary" — là tính từ nghĩa thuộc chế độ ăn, hợp cụm "dietary requirements".
+Source: original

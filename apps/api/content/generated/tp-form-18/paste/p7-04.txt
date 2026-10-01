@@ -1,0 +1,49 @@
+[PASSAGE]
+From: Ms. Laura Bennett
+To: Customer Service, First City Bank
+Subject: Double service fee on my September statement
+Date: October 2
+
+Dear Sir or Madam, [1] I am writing about a $35 monthly service fee that appears twice on my September statement. [2] I called your helpline on September 20, but nobody could explain the extra charge. [3] I have kept more than $2,000 in this savings account for over a year, so no monthly fee should apply at all. [4] Please remove both charges and return $70 to my account within ten working days.
+
+I opened this account five years ago and have never missed a payment. If this matter is not fixed soon, I will move my savings to another bank. You can reach me at 555-0193 after 6:00 P.M. on weekdays. I have attached a copy of the statement with the two charges marked in red.
+
+Yours faithfully,
+Laura Bennett
+
+[QUESTION]
+Why did Ms. Bennett write the letter?
+(A) To open a new savings account for her family
+(B) To complain about a double fee and ask for a $70 refund
+(C) To report a lost bank card to the police
+(D) To thank the bank staff for quick service
+Answer: B
+Explanation: Thư mở đầu nêu phí bị tính hai lần ("a $35 monthly service fee that appears twice") rồi yêu cầu trả lại $70. | (A) "To open a new savings account for her family" — tài khoản đã mở năm năm, không mở mới. | (B) "To complain about a double fee and ask for a $70 refund" — đúng mục đích kép vừa dẫn. | (C) "To report a lost bank card to the police" — không thẻ mất nào được nhắc tới. | (D) "To thank the bank staff for quick service" — ngược hẳn: cô ấy dọa chuyển tiền sang ngân hàng khác.
+Source: original
+[QUESTION]
+According to the letter, how much was charged twice?
+(A) $70
+(B) $2,000
+(C) $35
+(D) $20
+Answer: C
+Explanation: Thư ghi rõ mức phí tính trùng ("a $35 monthly service fee that appears twice on my September statement"). | (A) "$70" — bẫy: đó là tổng hai lần phí phải trả lại, không phải mức phí. | (B) "$2,000" — là số dư duy trì trong tài khoản, không phải phí. | (C) "$35" — đúng mức phí vừa dẫn. | (D) "$20" — con số này không xuất hiện trong thư.
+Source: original
+[QUESTION]
+What can be inferred about Ms. Bennett?
+(A) She opened her account last month
+(B) She works at the bank helpline
+(C) She refuses to pay any fee ever again
+(D) She tried to solve the problem by phone before writing
+Answer: D
+Explanation: Cô ấy kể đã gọi đường dây nóng ("I called your helpline on September 20") rồi mới viết thư này nên đã thử giải quyết qua điện thoại. | (A) "She opened her account last month" — trái với mở tài khoản năm năm trước. | (B) "She works at the bank helpline" — cô ấy là người gọi tới, không phải nhân viên. | (C) "She refuses to pay any fee ever again" — bẫy quá đà: cô chỉ đòi xóa khoản phí sai này. | (D) "She tried to solve the problem by phone before writing" — đúng điều suy ra từ cuộc gọi trước khi viết.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Please send me a written confirmation once the refund is made."
+(A) [4]
+(B) [2]
+(C) [3]
+(D) [1]
+Answer: A
+Explanation: Câu mới xin xác nhận bằng văn bản sau khi hoàn tiền nên hợp nhất ngay sau câu yêu cầu trả lại $70, tức vị trí [4]. | (A) "[4]" — đúng chỗ nối tiếp yêu cầu trả lại $70 vừa dẫn. | (B) "[2]" — sau câu nêu phí trùng, chưa tới yêu cầu hoàn tiền. | (C) "[3]" — sau câu gọi điện không kết quả, lạc đề xác nhận hoàn tiền. | (D) "[1]" — sau lời chào, chưa hề nhắc khoản phí nào.
+Source: original

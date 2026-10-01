@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who is responsible for maintaining the printer on the third floor?
+voice: us_female_1
+(A) The third floor has a nice view.
+(B) The printer printed fifty pages today.
+(C) Daniel from technical support handles it.
+Answer: C
+Explanation: Câu hỏi tìm ai bảo trì máy in tầng ba, đáp án đúng nêu tên người phụ trách | (A) "The third floor has a nice view." - dùng lại chữ floor với cảnh quan không liên quan | (B) "The printer printed fifty pages today." - lặp lại chữ printer mà không nêu tên ai | (C) "Daniel from technical support handles it." - nêu tên người phụ trách
+Source: original

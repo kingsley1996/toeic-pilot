@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Hi Mark, do you know anything about the new annual leave policy? I heard something changed.
+voice: ca_male_1
+Hi Lisa. Yes, human resources sent an email yesterday. The yearly allowance is now twelve days.
+voice: us_female_1
+Twelve? But we used to get fifteen days every year. That is a big cut.
+voice: ca_male_1
+I know. They said the reduction is due to the new project deadlines.
+voice: us_female_1
+Can we still carry over unused days to next year?
+voice: ca_male_1
+Only up to three days, and you have to use them by March.
+voice: us_female_1
+That is strict. I was planning a two-week trip in the summer.
+voice: ca_male_1
+Then you should submit your leave request early before all the slots are taken.
+voice: us_female_1
+Good point. Everyone will rush to book the summer weeks now.
+voice: ca_male_1
+Exactly. I already sent mine this morning for the first week of July.
+[QUESTION]
+What detail is mentioned about the new leave policy?
+(A) Staff now get less annual time off than before
+(B) The old fifteen-day allowance stays unchanged
+(C) Unused days are automatically paid out in cash
+(D) Summer travel is strictly forbidden for everyone
+Answer: A
+Explanation: Bằng chứng "The yearly allowance is now twelve days" và "we used to get fifteen days" cho thấy mức giảm | (A) "Staff now get less annual time off than before" — đúng, diễn đạt lại việc giảm ngày phép | (B) "The old fifteen-day allowance stays unchanged" — sai, đã giảm từ mười lăm xuống còn mười hai | (C) "Unused days are automatically paid out in cash" — sai, chỉ nhắc tới chuyển ngày phép sang năm sau | (D) "Summer travel is strictly forbidden for everyone" — sai, chỉ giới hạn suất nghỉ chứ không cấm
+Source: original
+[QUESTION]
+What does the man imply when he says, "The reduction is due to the new project deadlines"?
+(A) The deadlines will be extended soon
+(B) The projects caused the leave cut
+(C) Employees voted for fewer holidays
+(D) Human resources forgot to send emails
+Answer: B
+Explanation: Bằng chứng "They said the reduction is due to the new project deadlines" chỉ ra nguyên nhân | (A) "The deadlines will be extended soon" — không hề nhắc tới gia hạn | (B) "The projects caused the leave cut" — đúng, tiến độ dự án buộc phải giảm phép | (C) "Employees voted for fewer holidays" — mức giảm bị áp đặt, không phải do bỏ phiếu | (D) "Human resources forgot to send emails" — thư đã được gửi hôm qua
+Source: original
+[QUESTION]
+What does the man suggest the woman do?
+(A) Complain to human resources about deadlines
+(B) Cancel her two-week summer trip
+(C) Book her summer holiday before places run out
+(D) Transfer her unused days to a coworker
+Answer: C
+Explanation: Bằng chứng "you should submit your leave request early before all the slots are taken" là lời khuyên trực tiếp | (A) "Complain to human resources about deadlines" — sai, không hề gợi ý khiếu nại | (B) "Cancel her two-week summer trip" — sai, khuyên đặt sớm chứ không phải hủy chuyến đi | (C) "Book her summer holiday before places run out" — đúng, diễn đạt lại việc đặt sớm | (D) "Transfer her unused days to a coworker" — sai, không hề nhắc tới chuyển ngày phép
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+Patients booked for dental checkups must ------- skip breakfast and bring previous medical records for comparison.
+(A) either
+(B) neither
+(C) both
+(D) also
+Answer: C
+Explanation: Trước hai động từ song song nối bằng liên từ cần từ tương quan nghĩa cả hai. | (A) "either" — đi với "or", không hợp cấu trúc có "and" trong câu. | (B) "neither" — đi với "nor" và mang nghĩa phủ định, trái nghĩa câu. | (C) "both" — tạo cụm "both skip and bring", hợp nghĩa vừa nhịn ăn vừa mang hồ sơ. | (D) "also" — là trạng từ, không tạo cấu trúc song song hai hành động này.
+Source: original

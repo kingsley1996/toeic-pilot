@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why was the quarterly financial report sent back for revision?
+voice: us_female_1
+(A) The quarter ends in December.
+(B) Several figures in section three need verification.
+(C) Please report to the reception desk.
+Answer: B
+Explanation: Câu hỏi tìm lý do báo cáo tài chính quý bị trả lại, đáp án đúng nêu lý do cần xác minh số liệu | (A) "The quarter ends in December." - dùng lại chữ quarter mà không nêu lý do | (B) "Several figures in section three need verification." - nêu lý do cần sửa | (C) "Please report to the reception desk." - dùng lại chữ report với nghĩa khác
+Source: original

@@ -1,0 +1,7 @@
+kind: table
+Gói tiệc tất niên
+Package | Price
+Basic | 45 triệu
+Standard | 68 triệu
+Premium | 92 triệu
+Deluxe | 120 triệu

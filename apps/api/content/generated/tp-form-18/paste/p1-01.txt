@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Two mechanics are repairing an engine under the hood.
+(B) A man is filling a fuel tank with gasoline.
+(C) A worker is cleaning the windshield of a car.
+(D) A driver is paying for fuel at the cashier counter.
+Answer: C
+Explanation: Trong ảnh nhân viên mặc đồng phục lau kính chắn gió cạnh trụ bơm xăng ban ngày | (A) "Two mechanics are repairing an engine under the hood." — chỉ có một nhân viên và nắp ca-pô đang đóng | (B) "A man is filling a fuel tank with gasoline." — không thấy hành động đổ xăng nào | (C) "A worker is cleaning the windshield of a car." — đúng | (D) "A driver is paying for fuel at the cashier counter." — không ai ở quầy thu ngân
+Source: original

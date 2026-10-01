@@ -1,0 +1,6 @@
+kind: chart
+Annual Retail Sales by Quarter (thousand USD)
+Q1 | 45
+Q2 | 62
+Q3 | 55
+Q4 | 80

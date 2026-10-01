@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Where is the evening yoga class held?
+voice: us_female_1
+(A) At seven in the evening.
+(B) Yoga mats are on sale this week.
+(C) In Studio B on the second floor.
+Answer: C
+Explanation: Câu hỏi tìm phòng tổ chức lớp yoga buổi tối, đáp án đúng nêu rõ phòng cụ thể | (A) "At seven in the evening." - chỉ nêu giờ giấc thay vì địa điểm | (B) "Yoga mats are on sale this week." - dùng lại chữ yoga với chuyện giảm giá | (C) "In Studio B on the second floor." - nêu tên chính xác căn phòng
+Source: original

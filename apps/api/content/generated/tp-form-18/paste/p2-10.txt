@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Will the exhibition booth be open to the public tomorrow?
+voice: ca_male_1
+(A) Yes, visitors are welcome all day.
+(B) The booth was painted by local artists.
+(C) Tomorrow we will exhibit antique coins.
+Answer: A
+Explanation: Câu hỏi xác nhận gian hàng có mở cửa cho công chúng vào ngày mai không, đáp án đúng khẳng định khách được chào đón | (A) "Yes, visitors are welcome all day." - xác nhận cho phép công chúng vào | (B) "The booth was painted by local artists." - chỉ mô tả trang trí, không nói quyền vào | (C) "Tomorrow we will exhibit antique coins." - dùng lại chữ tomorrow và exhibit mà không trả lời
+Source: original

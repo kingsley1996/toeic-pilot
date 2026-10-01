@@ -1,0 +1,7 @@
+kind: schedule
+November Sales Skills Course — Sessions
+Session | Nov 7 | Nov 14 | Nov 21 | Nov 28
+Greeting Customers | Room 402 |  |  | 
+Handling Complaints |  | Room 402 |  | 
+Closing Sales |  |  | Room 402 | 
+Closing-Sales Contest |  |  |  | Room 305

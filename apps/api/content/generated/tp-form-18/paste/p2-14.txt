@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+When will I receive the result of the final interview?
+voice: ca_male_1
+(A) The interview room is on the third floor.
+(B) By the end of next week by email.
+(C) You interviewed very well in the final round.
+Answer: B
+Explanation: Câu hỏi tìm khi nào nhận kết quả phỏng vấn cuối, đáp án đúng nêu rõ thời gian và cách thức | (A) "The interview room is on the third floor." - dùng lại chữ interview với địa điểm | (B) "By the end of next week by email." - nêu rõ thời gian và phương thức | (C) "You interviewed very well in the final round." - lặp lại từ ngữ mà không nêu ngày
+Source: original

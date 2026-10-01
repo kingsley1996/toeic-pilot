@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon, Ms. Parker, this is Jenny from Bright Smile Dental Clinic calling to remind you of your checkup at nine o'clock on Tuesday morning with Dr. Harris. Please arrive fifteen minutes early so we can update your patient file before your appointment. We originally kept paper records for returning patients, but instead we have now switched to a digital system, so please bring your insurance card to help us complete your new profile quickly. Free parking is available behind the building on Green Street. Dr. Harris will also review your previous treatment plan during the same visit to save you another trip. If you need to change the time, please call us back before six o'clock this evening. We look forward to seeing you soon and keeping your smile healthy and bright.
+
+[QUESTION]
+What is the purpose of the message?
+(A) To change Dr. Harris's working hours
+(B) To advertise free parking on Green Street
+(C) To remind a patient of a Tuesday checkup
+(D) To cancel all paper records in the city
+Answer: C
+Explanation: Người nói mở đầu "calling to remind you of your checkup at nine o'clock on Tuesday morning with Dr. Harris". | (A) "To change Dr. Harris's working hours" — giờ bác sĩ không đổi, chỉ nhắc lịch hẹn: đúng từ, sai việc. | (B) "To advertise free parking on Green Street" — chỗ đậu xe ("Free parking") chỉ là tiện ích kèm, không phải mục đích. | (C) "To remind a patient of a Tuesday checkup" — đúng mục đích nhắc lịch tái khám. | (D) "To cancel all paper records in the city" — hồ sơ giấy ("paper records") chỉ đổi sang số trong phòng khám, không phải hủy toàn thành phố: đúng từ, sai nghĩa.
+Source: original
+[QUESTION]
+What can be inferred about the patient's file?
+(A) It will be lost behind the Green Street building
+(B) It must be completed at nine o'clock on Tuesday morning
+(C) Paper records can still be used on Tuesday
+(D) It needs updating in a new digital system
+Answer: D
+Explanation: "It needs updating in a new digital system" — đúng điều chỉ suy ra khi ghép lý do tới sớm ("so we can update your patient file") với hệ thống mới ("we have now switched to a digital system"). | (A) "It will be lost behind the Green Street building" — phía sau tòa nhà là bãi đậu xe ("Free parking is available behind the building"): gộp sai hai chi tiết. | (B) "It must be completed at nine o'clock on Tuesday morning" — chín giờ ("nine o'clock on Tuesday morning") là giờ hẹn khám, còn hồ sơ cập nhật trước đó khi tới sớm: đúng từ, sai mốc giờ. | (C) "Paper records can still be used on Tuesday" — hồ sơ giấy đã bị thay ("instead we have now switched"), ngược hẳn ý bài. | (D) "It needs updating in a new digital system" — đúng điều chỉ suy ra khi ghép lý do tới sớm với hệ thống mới.
+Source: original
+[QUESTION]
+What is the patient asked to do if she needs a different appointment time?
+(A) Call back before six o'clock this evening
+(B) Arrive fifteen minutes early on Tuesday morning
+(C) Update her file behind the building on Green Street
+(D) Review the treatment plan with Dr. Harris
+Answer: A
+Explanation: "Call back before six o'clock this evening" — đúng việc được dặn khi cần đổi giờ ("please call us back before six o'clock this evening"). | (A) "Call back before six o'clock this evening" — đúng việc được yêu cầu khi cần đổi lịch hẹn. | (B) "Arrive fifteen minutes early on Tuesday morning" — tới sớm ("Please arrive fifteen minutes early") là để giữ lịch hẹn, không phải để đổi giờ: đúng từ, sai việc. | (C) "Update her file behind the building on Green Street" — cập nhật hồ sơ ("update your patient file") là việc của phòng khám, còn phía sau tòa nhà là bãi đậu xe ("Free parking is available behind the building"): gộp sai hai chi tiết. | (D) "Review the treatment plan with Dr. Harris" — xem lại kế hoạch ("review your previous treatment plan") là việc của bác sĩ, không phải của bệnh nhân: nhầm vai ai làm gì.
+Source: original

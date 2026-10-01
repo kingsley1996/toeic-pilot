@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How do I return a faulty product?
+voice: au_male_1
+(A) Our products are manufactured locally.
+(B) Bring the receipt to the service desk for an exchange.
+(C) The fault was caused by heavy rain.
+Answer: B
+Explanation: Câu hỏi tìm thủ tục trả hàng lỗi, đáp án đúng hướng dẫn các bước đổi hàng | (A) "Our products are manufactured locally." - dùng lại chữ product với xuất xứ | (B) "Bring the receipt to the service desk for an exchange." - nêu các bước trả hàng | (C) "The fault was caused by heavy rain." - dùng lại chữ fault với nguyên nhân không liên quan
+Source: original

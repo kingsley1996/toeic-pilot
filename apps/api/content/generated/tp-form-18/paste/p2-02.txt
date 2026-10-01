@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Where is the new exhibition hall?
+voice: ca_male_1
+(A) It was painted white last year.
+(B) Down the corridor, past the ticket counter.
+(C) You can buy snacks where the bus stops.
+Answer: B
+Explanation: Câu hỏi tìm vị trí phòng triển lãm mới, đáp án đúng chỉ đường rõ ràng | (A) "It was painted white last year." - chỉ nêu lịch sử sơn màu, không chỉ vị trí | (B) "Down the corridor, past the ticket counter." - chỉ đường rõ ràng | (C) "You can buy snacks where the bus stops." - dùng lại chữ where với địa điểm không liên quan
+Source: original

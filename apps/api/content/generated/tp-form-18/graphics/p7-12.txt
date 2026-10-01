@@ -1,0 +1,6 @@
+kind: table
+Sunrise Catering — Price per Guest
+Party Size | Silver | Gold | Platinum
+20-40 guests | $28 | $35 | $44
+41-70 guests | $25 | $32 | $40
+71-100 guests | $22 | $29 | $37

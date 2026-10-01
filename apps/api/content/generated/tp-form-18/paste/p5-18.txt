@@ -1,0 +1,9 @@
+[QUESTION]
+The freshman city library membership will expire at the end of this semester ------- it is renewed in time.
+(A) because
+(B) although
+(C) during
+(D) unless
+Answer: D
+Explanation: Sau mệnh đề chính trước mệnh đề điều kiện phủ định cần liên từ nghĩa nếu không. | (A) "because" — chỉ nguyên nhân, sai nghĩa điều kiện gia hạn ở đây. | (B) "although" — chỉ nhượng bộ, trái nghĩa với điều kiện hết hạn. | (C) "during" — là giới từ chỉ đi với cụm danh từ, không đứng trước mệnh đề đầy đủ. | (D) "unless" — nghĩa trừ khi, hợp cấu trúc "will expire unless renewed".
+Source: original

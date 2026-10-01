@@ -1,0 +1,9 @@
+[QUESTION]
+All customer complaints about service charges are logged and resolved within 24 hours ------- receipt by the call center agents.
+(A) upon
+(B) despite
+(C) without
+(D) during
+Answer: A
+Explanation: Trước cụm danh từ chỉ thời điểm tiếp nhận cần giới từ nghĩa ngay khi. | (A) "upon" — tạo cụm "upon receipt" nghĩa ngay khi nhận được, hợp ngữ cảnh xử lý 24 giờ. | (B) "despite" — nghĩa mặc dù, chỉ sự nhượng bộ chứ không chỉ thời điểm. | (C) "without" — nghĩa không có, trái nghĩa với việc đã tiếp nhận khiếu nại. | (D) "during" — nghĩa trong suốt, không đi với danh từ chỉ một thời điểm tiếp nhận.
+Source: original

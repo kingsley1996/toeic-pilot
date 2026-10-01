@@ -1,0 +1,9 @@
+[QUESTION]
+The assistant sent an email reminding all employees to confirm their ------- at the quarterly performance review meeting on Friday.
+(A) attend
+(B) attended
+(C) attentive
+(D) attendance
+Answer: D
+Explanation: Sau tính từ sở hữu trước giới từ chỉ sự kiện cần danh từ làm tân ngữ. | (A) "attend" — là động từ nguyên thể, không đứng sau tính từ sở hữu. | (B) "attended" — là phân từ hai, không làm tân ngữ sau tính từ sở hữu. | (C) "attentive" — là tính từ, không làm tân ngữ ở đây. | (D) "attendance" — là danh từ chỉ sự tham dự, hợp nghĩa xác nhận tham dự.
+Source: original

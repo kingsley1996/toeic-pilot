@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The business trip has been moved to Friday, hasn't it?
+voice: au_male_1
+(A) Business is growing rapidly this year.
+(B) The trip to Paris was wonderful.
+(C) Yes, the flight is now booked for Friday morning.
+Answer: C
+Explanation: Câu hỏi đuôi xác nhận chuyến công tác đã dời sang thứ Sáu, đáp án đúng khẳng định lịch bay mới | (A) "Business is growing rapidly this year." - dùng lại chữ business với tin chung chung | (B) "The trip to Paris was wonderful." - dùng lại chữ trip với sự kiện quá khứ không liên quan | (C) "Yes, the flight is now booked for Friday morning." - xác nhận kế hoạch mới vào thứ Sáu
+Source: original

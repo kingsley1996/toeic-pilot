@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Morning, everyone. The setup for the product launch ceremony is far behind schedule.
+voice: ca_male_1
+Morning, Rachel. The stage installation at the site stopped two days ago.
+voice: au_male_1
+Hello. I walked past the site this morning, and half the scaffolding is still empty.
+voice: uk_female_1
+What happened, Chris? Were we not supposed to finish the lighting yesterday?
+voice: ca_male_1
+The subcontractor pulled half their workers off to another project downtown.
+voice: au_male_1
+That is worrying. Without the full crew, we cannot meet the Friday deadline.
+voice: ca_male_1
+True. And I heard their manager is talking about quitting the contract entirely.
+voice: uk_female_1
+If they walk away, the whole launch event could collapse.
+voice: au_male_1
+So what is our backup plan?
+voice: uk_female_1
+I will hire a different construction team starting tomorrow to take over the stage work.
+[QUESTION]
+What does the man imply when he says, "Their manager is talking about quitting the contract entirely"?
+(A) The manager wants a higher salary for the crew
+(B) The lighting work finished ahead of schedule
+(C) The stage design was fully approved downtown
+(D) The Friday launch event could collapse without a backup crew
+Answer: D
+Explanation: Bằng chứng "pulled half their workers off" và "cannot meet the Friday deadline" và "whole launch event could collapse" báo hiệu rủi ro | (A) "The manager wants a higher salary for the crew" — bỏ hợp đồng, không phải đòi lương | (B) "The lighting work finished ahead of schedule" — việc chuẩn bị còn chậm xa | (C) "The stage design was fully approved downtown" — công nhân chuyển đi, không phải duyệt thiết kế | (D) "The Friday launch event could collapse without a backup crew" — đúng, gộp việc mất nhân sự và nguy cơ trễ hạn
+Source: original
+[QUESTION]
+What detail is mentioned about the delay?
+(A) On-site work was halted recently
+(B) The lighting was finished yesterday as planned
+(C) The launch ceremony was moved downtown
+(D) The Friday deadline was cancelled entirely
+Answer: A
+Explanation: Bằng chứng "The stage installation at the site stopped two days ago" là lời nói trực tiếp | (A) "On-site work was halted recently" — đúng, diễn đạt lại việc dừng hai ngày trước | (B) "The lighting was finished yesterday as planned" — sai, đáng lẽ xong nhưng vẫn chậm | (C) "The launch ceremony was moved downtown" — công nhân chuyển đi, không phải buổi lễ | (D) "The Friday deadline was cancelled entirely" — hạn chót bị nguy hiểm, không phải bị hủy
+Source: original
+[QUESTION]
+What will the woman do tomorrow?
+(A) Approve the final lighting design
+(B) Find another contractor crew before Friday
+(C) Offer the subcontractor's manager a higher salary
+(D) Extend the Friday deadline by a month
+Answer: B
+Explanation: Bằng chứng "I will hire a different construction team starting tomorrow" là việc trực tiếp cô ấy sẽ làm | (A) "Approve the final lighting design" — không hề nhắc tới phê duyệt | (B) "Find another contractor crew before Friday" — đúng, diễn đạt lại việc thuê đội khác | (C) "Offer the subcontractor's manager a higher salary" — thay họ, không phải thưởng | (D) "Extend the Friday deadline by a month" — không hề nhắc tới gia hạn
+Source: original

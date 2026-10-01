@@ -62,7 +62,15 @@ function useTileFloor() {
 
 // Hàng trên kệ: màu chọn bằng công thức chỉ số, KHÔNG random — hai lần load
 // phải ra một ảnh (quy tắc deterministic §8.7).
-const GOODS = ["#c0392b", "#e67e22", "#e8b93c", "#5f8a52", "#3b6ea5", "#8a5a33", "#f7f7f4"] as const;
+const GOODS = [
+  "#c0392b",
+  "#e67e22",
+  "#e8b93c",
+  "#5f8a52",
+  "#3b6ea5",
+  "#8a5a33",
+  "#f7f7f4",
+] as const;
 const goodsColor = (i: number, j: number) => GOODS[(i * 5 + j * 3) % GOODS.length];
 
 /** Một mặt kệ dài 8 m: 4 tầng, mỗi tầng 10 hộp cùng cỡ (0.6 × 0.35 × 0.4).
@@ -158,9 +166,21 @@ function BasketStack() {
     <group>
       {[0, 1, 2].map((i) => (
         <group key={i} position={[0, i * 0.28, 0]}>
-          <Box size={[0.62 - i * 0.06, 0.05, 0.42 - i * 0.05]} at={[0, 0, 0]} color={PALETTE.cone} />
-          <Box size={[0.62 - i * 0.06, 0.3, 0.04]} at={[0, 0.05, 0.19 - i * 0.025]} color={PALETTE.cone} />
-          <Box size={[0.62 - i * 0.06, 0.3, 0.04]} at={[0, 0.05, -0.19 + i * 0.025]} color={PALETTE.cone} />
+          <Box
+            size={[0.62 - i * 0.06, 0.05, 0.42 - i * 0.05]}
+            at={[0, 0, 0]}
+            color={PALETTE.cone}
+          />
+          <Box
+            size={[0.62 - i * 0.06, 0.3, 0.04]}
+            at={[0, 0.05, 0.19 - i * 0.025]}
+            color={PALETTE.cone}
+          />
+          <Box
+            size={[0.62 - i * 0.06, 0.3, 0.04]}
+            at={[0, 0.05, -0.19 + i * 0.025]}
+            color={PALETTE.cone}
+          />
         </group>
       ))}
     </group>
@@ -450,7 +470,12 @@ function ChestFreezer() {
         <meshStandardMaterial color={PALETTE.glass} transparent opacity={0.28} />
       </mesh>
       {[0.64, 0.64, 0.64].map((x, i) => (
-        <Box key={i} size={[0.08, 1.8, 0.1]} at={[x, 1.05, [-1.0, 0, 1.0][i]]} color={PALETTE.steelDark} />
+        <Box
+          key={i}
+          size={[0.08, 1.8, 0.1]}
+          at={[x, 1.05, [-1.0, 0, 1.0][i]]}
+          color={PALETTE.steelDark}
+        />
       ))}
     </group>
   );
@@ -565,7 +590,12 @@ function CheckoutLane() {
           <Box size={[1.8, 0.06, 0.7]} at={[0, 0.895, 0]} color={PALETTE.tire} />
           {/* trụ quét + xà lút vào nhau; trụ màn lút vào băng */}
           {[-0.7, 0.7].map((sx) => (
-            <Box key={sx} size={[0.08, 0.5, 0.08]} at={[sx, 0.955, -0.2]} color={PALETTE.steelDark} />
+            <Box
+              key={sx}
+              size={[0.08, 0.5, 0.08]}
+              at={[sx, 0.955, -0.2]}
+              color={PALETTE.steelDark}
+            />
           ))}
           <Box size={[1.5, 0.08, 0.08]} at={[0, 1.41, -0.2]} color={PALETTE.steelDark} />
           <Box size={[0.08, 0.7, 0.08]} at={[0.6, 0.955, 0.25]} color={PALETTE.steelDark} />
@@ -603,7 +633,12 @@ function BarcodeBox() {
       <Box size={[0.3, 0.3, 0.02]} at={[0, 1.075, 0.09]} color={PALETTE.paper} />
       {/* vạch nổi 0.025 trên nhãn — dưới 0.02 là flicker (§10.6) */}
       {[0, 1, 2, 3, 4].map((i) => (
-        <Box key={i} size={[0.025, 0.22, 0.005]} at={[-0.1 + i * 0.05, 1.075, 0.125]} color={PALETTE.tire} />
+        <Box
+          key={i}
+          size={[0.025, 0.22, 0.005]}
+          at={[-0.1 + i * 0.05, 1.075, 0.125]}
+          color={PALETTE.tire}
+        />
       ))}
     </group>
   );
@@ -615,9 +650,21 @@ function PaperBags() {
     <group>
       {[0, 1, 2].map((i) => (
         <group key={i} position={[0, i * 0.2, 0]}>
-          <Box size={[0.5 - i * 0.05, 0.04, 0.35 - i * 0.04]} at={[0, 0.925, 0]} color={PALETTE.cardbox} />
-          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.96, 0.16 - i * 0.02]} color={PALETTE.cardbox} />
-          <Box size={[0.5 - i * 0.05, 0.22, 0.03]} at={[0, 0.96, -0.16 + i * 0.02]} color={PALETTE.cardbox} />
+          <Box
+            size={[0.5 - i * 0.05, 0.04, 0.35 - i * 0.04]}
+            at={[0, 0.925, 0]}
+            color={PALETTE.cardbox}
+          />
+          <Box
+            size={[0.5 - i * 0.05, 0.22, 0.03]}
+            at={[0, 0.96, 0.16 - i * 0.02]}
+            color={PALETTE.cardbox}
+          />
+          <Box
+            size={[0.5 - i * 0.05, 0.22, 0.03]}
+            at={[0, 0.96, -0.16 + i * 0.02]}
+            color={PALETTE.cardbox}
+          />
         </group>
       ))}
     </group>
@@ -644,7 +691,12 @@ function PromoTower() {
       {/* tầng chồng tầng: đáy lút 0.005 vào đỉnh tầng dưới */}
       {[-0.5, 0.5].map((x) =>
         [-0.5, 0.5].map((z) => (
-          <Box key={`${x}${z}`} size={[0.55, 0.55, 0.55]} at={[x, 0.115, z]} color={PALETTE.cardbox} />
+          <Box
+            key={`${x}${z}`}
+            size={[0.55, 0.55, 0.55]}
+            at={[x, 0.115, z]}
+            color={PALETTE.cardbox}
+          />
         )),
       )}
       <Box size={[0.55, 0.55, 0.55]} at={[-0.28, 0.665, 0]} color={PALETTE.cone} />

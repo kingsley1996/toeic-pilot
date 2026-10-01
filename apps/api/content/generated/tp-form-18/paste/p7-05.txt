@@ -1,0 +1,44 @@
+[PASSAGE]
+Golden Crust Bakery Doubles Its Bread Line
+By Staff Reporter
+
+Our town's oldest bakery, Golden Crust, will double its bread line this spring. [1] The family firm bought two large ovens in January and will add a night shift starting March 10. [2] Twenty new workers will join the forty staff already at the King Street factory. [3] Owner Mr. Alan Price says the extra bread will supply schools and hotels across the county. [4] A new shop next to the factory will sell warm loaves every morning from 7:00 A.M.
+
+The bakery has served the town for thirty years and still uses the founder's recipes. Job applications close on February 28, and training for new workers begins in the first week of March. Delivery trucks leave the King Street factory twice daily to keep shelves stocked.
+
+[QUESTION]
+According to the article, when will the night shift start?
+(A) In January
+(B) On March 10
+(C) On February 28
+(D) At 7:00 A.M. daily
+Answer: B
+Explanation: Bài ghi rõ ca đêm bắt đầu ("will add a night shift starting March 10"). | (A) "In January" — bẫy: đó là lúc mua lò nướng, không phải mở ca đêm. | (B) "On March 10" — đúng mốc vừa dẫn. | (C) "On February 28" — là hạn nộp đơn xin việc, không phải mở ca. | (D) "At 7:00 A.M. daily" — là giờ cửa hàng mới bán bánh, không phải ca đêm.
+Source: original
+[QUESTION]
+What can be inferred about Golden Crust?
+(A) It bakes only during the night hours
+(B) It will close the King Street factory
+(C) It needs more bread for new customers
+(D) It opened its very first shop this year
+Answer: C
+Explanation: Bài cho biết bánh thêm để cung cấp cho trường học và khách sạn ("the extra bread will supply schools and hotels") nên lò cần thêm bánh cho khách mới. | (A) "It bakes only during the night hours" — bẫy: ca đêm chỉ là ca bổ sung, cửa hàng bán từ sáng. | (B) "It will close the King Street factory" — ngược hẳn: lò tuyển thêm hai mươi người. | (C) "It needs more bread for new customers" — đúng điều suy ra từ bánh thêm cho trường và khách sạn. | (D) "It opened its very first shop this year" — trái với phục vụ thị trấn đã ba mươi năm.
+Source: original
+[QUESTION]
+What is NOT stated in the article?
+(A) The bakery bought two large ovens
+(B) New workers begin training in March
+(C) A new shop opens beside the factory
+(D) The founder still runs the night shift
+Answer: D
+Explanation: Bài có nêu mua hai lò nướng, đào tạo tháng Ba và cửa hàng mới cạnh lò — không câu nào nói người sáng lập trực ca đêm. | (A) "The bakery bought two large ovens" — bài ghi bought two large ovens in January. | (B) "New workers begin training in March" — bài ghi training begins in the first week of March. | (C) "A new shop opens beside the factory" — bài ghi shop next to the factory. | (D) "The founder still runs the night shift" — bài chỉ nói vẫn dùng công thức của người sáng lập.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Flour for the extra bread will come from two local farms."
+(A) [3]
+(B) [2]
+(C) [1]
+(D) [4]
+Answer: A
+Explanation: Câu mới nói bột mì cho mẻ bánh thêm nên hợp nhất ngay trước câu bánh thêm cung cấp cho trường học, tức vị trí [3]. | (A) "[3]" — đúng chỗ nối bột mì với bánh thêm cung cấp. | (B) "[2]" — sau câu mua lò nướng, chưa tới chuyện bánh thêm. | (C) "[1]" — đầu bài, chưa hề nhắc tăng sản lượng bánh. | (D) "[4]" — đã chuyển sang cửa hàng bán lẻ buổi sáng, quá muộn.
+Source: original

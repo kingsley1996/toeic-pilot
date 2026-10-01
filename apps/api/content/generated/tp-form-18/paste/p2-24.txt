@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+When can I check in and start using the swimming pool?
+voice: uk_female_1
+(A) The pool is cleaned every morning.
+(B) Check-in desks are located in the lobby.
+(C) Rooms are ready from two, and the pool opens at nine.
+Answer: C
+Explanation: Câu hỏi tìm giờ nhận phòng và giờ dùng hồ bơi, đáp án đúng nêu cả hai mốc giờ | (A) "The pool is cleaned every morning." - dùng lại chữ pool mà không nêu giờ | (B) "Check-in desks are located in the lobby." - dùng lại chữ check-in với vị trí | (C) "Rooms are ready from two, and the pool opens at nine." - nêu cả hai mốc giờ
+Source: original

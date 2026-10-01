@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon, team, and thank you for attending this progress meeting here at our London office. I am Susan Clarke, head of product development, and I want to update you on our new smartphone prototype. Over the past month, our engineers have completed durability tests on the screen and battery, and the results are generally very encouraging. However, we found a software error that sometimes freezes the camera when switching between photo modes. The programming team will therefore release a fix by next Wednesday before further testing continues. We originally planned to start mass production in May, but instead we will begin in June to allow more testing time. Please send your test reports to me by Friday afternoon. Your careful feedback will help us deliver a reliable product to our customers.
+
+[QUESTION]
+Who is most likely the speaker?
+(A) A customer testing a new smartphone
+(B) A head of product development updating her team
+(C) A programming team member testing photo modes in the office
+(D) An engineer reporting screen and battery results to customers
+Answer: B
+Explanation: "A head of product development updating her team" — đúng vai người đứng đầu cập nhật tiến độ ("I am Susan Clarke, head of product development"). | (A) "A customer testing a new smartphone" — thử nghiệm là việc của kỹ sư ("engineers have completed durability tests"), còn diễn giả chủ trì họp ("thank you for attending this progress meeting"): nhầm vai. | (B) "A head of product development updating her team" — đúng vai người đứng đầu cập nhật tiến độ mẫu mới. | (C) "A programming team member testing photo modes in the office" — nhóm lập trình ("programming team") chỉ sửa lỗi ("release a fix"), còn chế độ chụp ("switching between photo modes") là chỗ phát hiện lỗi: đúng từ, sai vai ai nói. | (D) "An engineer reporting screen and battery results to customers" — màn hình và pin ("durability tests on the screen and battery") là bộ phận được kiểm tra, không phải hàng đang giao: đúng từ, sai việc.
+Source: original
+[QUESTION]
+What problem was found during testing?
+(A) The battery cannot be removed from the phone
+(B) Mass production started too early in May
+(C) A software error sometimes freezes the camera
+(D) The screen broke during every durability test
+Answer: C
+Explanation: Người nói nêu "we found a software error that sometimes freezes the camera when switching between photo modes". | (A) "The battery cannot be removed from the phone" — pin chỉ được kiểm tra độ bền ("durability tests on the screen and battery"), không có lỗi tháo lắp nào. | (B) "Mass production started too early in May" — sản xuất hàng loạt dời sang June ("we will begin in June"), chưa hề bắt đầu: đúng từ, sai quan hệ. | (C) "A software error sometimes freezes the camera" — đúng lỗi được phát hiện khi thử nghiệm. | (D) "The screen broke during every durability test" — kết quả "generally very encouraging", chỉ camera bị đơ: ý bị gạt.
+Source: original
+[QUESTION]
+What does the speaker mean when she says, "we will begin in June to allow more testing time"?
+(A) Test reports are no longer needed on Friday
+(B) Mass production already finished before the London meeting
+(C) The camera will be fixed without any further testing
+(D) Mass production was planned for May but delayed until June
+Answer: D
+Explanation: Người nói sửa kế hoạch bằng "We originally planned to start mass production in May, but instead we will begin in June to allow more testing time". | (A) "Test reports are no longer needed on Friday" — báo cáo vẫn phải gửi ("send your test reports to me by Friday"): ý bị gạt. | (B) "Mass production already finished before the London meeting" — sản xuất còn chưa bắt đầu: suy ra bị phần còn lại bác bỏ. | (C) "The camera will be fixed without any further testing" — bản vá do nhóm lập trình phát hành ("release a fix"), còn sản xuất chỉ lùi để thử thêm: gộp sai hai chi tiết. | (D) "Mass production was planned for May but delayed until June" — đúng điều suy ra phải ghép vế cũ với vế mới.
+Source: original

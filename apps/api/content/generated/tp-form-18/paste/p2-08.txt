@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Who is handling my compensation claim?
+voice: au_male_1
+(A) The garage handles oil changes daily.
+(B) Please hold and I will transfer you to extension four-two.
+(C) He claimed the luggage at the airport.
+Answer: B
+Explanation: Câu hỏi tìm ai phụ trách yêu cầu bồi thường, đáp án đúng chuyển máy cho người phụ trách | (A) "The garage handles oil changes daily." - dùng lại chữ handles với dịch vụ xe hơi | (B) "Please hold and I will transfer you to extension four-two." - gián tiếp nối máy tới đúng người phụ trách | (C) "He claimed the luggage at the airport." - dùng lại chữ claim với hành lý không liên quan
+Source: original

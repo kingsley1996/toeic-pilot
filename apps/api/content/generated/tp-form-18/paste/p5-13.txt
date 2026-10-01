@@ -1,0 +1,9 @@
+[QUESTION]
+Bus 12 bound for the eastern station ------- the depot at 7 in the morning and reached the transit stop at exactly 7:40.
+(A) leaves
+(B) will leave
+(C) left
+(D) has left
+Answer: C
+Explanation: Mốc giờ cụ thể đã qua trong quá khứ cần quá khứ đơn cho cả hai hành động. | (A) "leaves" — là hiện tại đơn, sai thì với mốc giờ đã qua. | (B) "will leave" — là tương lai đơn, mâu thuẫn mốc thời gian đã qua. | (C) "left" — là quá khứ đơn, song song với "reached" trong câu. | (D) "has left" — là hiện tại hoàn thành, không đi với mốc giờ xác định đã qua.
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you deliver some extra plants for the weekend market stall?
+voice: ca_male_1
+(A) The coffee tastes excellent this morning.
+(B) Weekends are usually busy downtown.
+(C) Of course, we will add them to Friday's truck.
+Answer: C
+Explanation: Câu hỏi yêu cầu giao thêm cây cho quầy chợ cuối tuần, đáp án đúng đồng ý giao hàng | (A) "The coffee tastes excellent this morning." - lạc đề về cà phê | (B) "Weekends are usually busy downtown." - dùng lại chữ weekend mà không đề nghị giao hàng | (C) "Of course, we will add them to Friday's truck." - đồng ý giao hàng
+Source: original

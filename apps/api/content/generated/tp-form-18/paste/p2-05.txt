@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+How can I rent a temporary storage unit during the cleanup?
+voice: uk_female_1
+(A) The house has three bedrooms and a garage.
+(B) Just complete the form online and we will reserve one.
+(C) We moved the furniture however you instructed.
+Answer: B
+Explanation: Câu hỏi tìm cách thuê kho tạm trong lúc dọn dẹp, đáp án đúng hướng dẫn cách đặt | (A) "The house has three bedrooms and a garage." - chỉ mô tả ngôi nhà, không nói thủ tục | (B) "Just complete the form online and we will reserve one." - giải thích cách đặt chỗ | (C) "We moved the furniture however you instructed." - lạc đề về việc chuyển nhà trước đây
+Source: original

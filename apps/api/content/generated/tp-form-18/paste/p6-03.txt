@@ -1,0 +1,46 @@
+[PASSAGE]
+Roast It Yourself: Downtown Cafes Grind Their Own Beans
+By Lena Morris, City Food Writer
+
+More downtown cafes are roasting coffee beans inside their own shops to win new fans. Owners say the sweet smell draws office workers in and helps each shop build its own flavour. Roasting on-site also cuts ------- (1) costs because green beans travel better than roasted ones. The roasting machines, ------- (2) stand behind tall glass walls, let every visitor watch the whole process. Many shops post short videos of the roast online, and those clips bring in weekend crowds.
+
+Fresh batches ------- (3) every morning, so the coffee on the menu is never more than a day old. Baristas adjust the heat for each kind of bean until the taste is just right. ------- (4) Owners share one strong belief: a cup made from beans roasted in the same room simply tastes better.
+
+Regulars agree, and weekend lines at the most popular counters now stretch around the block.
+
+[QUESTION]
+Blank (1)
+(A) ticket
+(B) pillow
+(C) delivery
+(D) weather
+Answer: C
+Explanation: Rang hạt tại chỗ giúp giảm chi phí ("Roasting on-site also cuts delivery costs because green beans travel better") nên cần loại chi phí vận chuyển. | (A) "ticket" — vé, không đi với chi phí rang cà phê. | (B) "pillow" — gối, vô nghĩa trong văn cảnh. | (C) "delivery" — giao hàng, đúng vì hạt xanh dễ vận chuyển hơn. | (D) "weather" — thời tiết, không phải chi phí cắt giảm được.
+Source: original
+[QUESTION]
+Blank (2)
+(A) they
+(B) what
+(C) whose
+(D) which
+Answer: D
+Explanation: Mệnh đề giữa hai dấu phẩy bổ nghĩa cho máy rang ("The roasting machines, which stand behind tall glass walls") nên cần đại từ quan hệ cho vật. | (A) "they" — tạo hai mệnh đề độc lập, sai dấu câu. | (B) "what" — không làm đại từ quan hệ sau danh từ. | (C) "whose" — sở hữu, sai vì sau nó thiếu danh từ. | (D) "which" — quan hệ cho vật, đúng sau dấu phẩy.
+Source: original
+[QUESTION]
+Blank (3)
+(A) are ground
+(B) ground
+(C) grounds
+(D) grounding
+Answer: A
+Explanation: Mẻ hạt tươi được xay mỗi sáng ("Fresh batches are ground every morning") nên cần bị động ở hiện tại. | (A) "are ground" — bị động hiện tại, đúng vì hạt được xay. | (B) "ground" — quá khứ đơn chủ động, sai nghĩa bị động. | (C) "grounds" — ngôi ba chủ động, sai vì mẻ hạt không tự xay. | (D) "grounding" — phân từ chủ động, không đứng một mình làm vị ngữ.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The night bus leaves the station at eleven sharp.
+(B) Some owners even invite school groups to watch and learn.
+(C) Parking fees must be paid in cash at the gate.
+(D) Library fines must be paid before Friday noon.
+Answer: B
+Explanation: Đoạn kể khách xem máy rang qua tường kính ("let every visitor watch the whole process") và niềm tin của chủ quán nên câu mời nhóm học sinh tới xem nối mạch nhất. | (A) "The night bus leaves the station at eleven sharp." — xe buýt đêm không xuất hiện trong bài. | (B) "Some owners even invite school groups to watch and learn." — đúng câu nối tiếp mạch xem rang hạt. | (C) "Parking fees must be paid in cash at the gate." — phí đậu xe không được nhắc tới. | (D) "Library fines must be paid before Friday noon." — phạt thư viện không liên quan quán cà phê.
+Source: original

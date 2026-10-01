@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for joining me in the meeting room, James. We need to plan extra staffing for the warehouse this December.
+voice: ca_male_1
+Of course. How many seasonal workers are we looking to hire?
+voice: uk_female_1
+Five temporary staff, mainly to cover the night shift from ten to six.
+voice: ca_male_1
+The night shift is always hard to fill. Are we offering a higher hourly rate?
+voice: uk_female_1
+Yes, eighteen dollars an hour, which is three dollars above the day rate.
+voice: ca_male_1
+That should attract applicants. Do they need previous warehouse experience?
+voice: uk_female_1
+Not necessarily, but forklift training would be a big advantage.
+voice: ca_male_1
+Got it. When should we start advertising the positions?
+voice: uk_female_1
+I will post the job advertisement early next week on our website and the local board.
+voice: ca_male_1
+Perfect. I will prepare the shift schedules and the training checklist.
+[QUESTION]
+What is the purpose of the conversation?
+(A) To review warehouse safety rules
+(B) To plan hiring seasonal warehouse staff
+(C) To cancel the holiday schedule
+(D) To complain about shift managers
+Answer: B
+Explanation: Bằng chứng "We need to plan extra staffing for the warehouse" nêu rõ mục đích cuộc trò chuyện | (A) "To review warehouse safety rules" — không hề nhắc tới an toàn | (B) "To plan hiring seasonal warehouse staff" — đúng, tuyển năm nhân viên thời vụ cho tháng Mười Hai | (C) "To cancel the holiday schedule" — ngược lại, bổ sung nhân sự cho dịp lễ | (D) "To complain about shift managers" — không có lời phàn nàn nào
+Source: original
+[QUESTION]
+What detail is mentioned about the night shift?
+(A) It makes forklift training compulsory for everyone
+(B) It requires previous warehouse experience
+(C) It pays three dollars above the day rate
+(D) It covers the day shift from ten to six in December
+Answer: C
+Explanation: Bằng chứng "eighteen dollars an hour, which is three dollars above the day rate" cho biết mức lương | (A) "It makes forklift training compulsory for everyone" — sai, đào tạo chỉ là lợi thế chứ không bắt buộc | (B) "It requires previous warehouse experience" — sai, không yêu cầu kinh nghiệm | (C) "It pays three dollars above the day rate" — đúng, chênh lệch mức lương ca ngày | (D) "It covers the day shift from ten to six in December" — sai, mười giờ tới sáu giờ là ca đêm
+Source: original
+[QUESTION]
+What will the woman do next week?
+(A) Lower the eighteen-dollar hourly rate
+(B) Prepare the shift schedules and the training checklist
+(C) Close the warehouse for night-shift repairs
+(D) Announce the vacancies online early next week
+Answer: D
+Explanation: Bằng chứng "I will post the job advertisement early next week" là việc trực tiếp cô ấy sẽ làm | (A) "Lower the eighteen-dollar hourly rate" — sai, mức lương đã được tăng | (B) "Prepare the shift schedules and the training checklist" — việc của người đàn ông, không phải của cô ấy | (C) "Close the warehouse for night-shift repairs" — sai, không hề bàn tới sửa chữa | (D) "Announce the vacancies online early next week" — đúng, khớp với việc đăng tin trên trang mạng
+Source: original

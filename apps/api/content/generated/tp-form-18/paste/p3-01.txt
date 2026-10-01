@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, Tom. Thanks for stopping by my office. I wanted to discuss moving Daniel from the sales team to the new Riverside branch.
+voice: au_male_1
+Morning, Sarah. I heard Riverside is opening next month. Is Daniel willing to transfer there?
+voice: us_female_1
+Yes, he agreed last week. The problem is that his replacement process is moving too slowly.
+voice: au_male_1
+What do you mean? I thought we still had plenty of time before the transfer.
+voice: us_female_1
+Actually, Daniel is clearing his desk already. He plans to finish all his handover work within two weeks.
+voice: au_male_1
+That soon? Then we really need to speed up the interviews for his position.
+voice: us_female_1
+Exactly. The branch manager keeps calling me about the staffing gap.
+voice: au_male_1
+I see. Should I contact the recruitment agency again?
+voice: us_female_1
+No need. Just send me the files of the replacement candidates before Friday so I can review them.
+voice: au_male_1
+Understood. I will collect their résumés and performance reports this afternoon.
+[QUESTION]
+Who is the woman most likely to be?
+(A) A sales representative
+(B) A branch customer
+(C) A human resources manager
+(D) A recruitment agency caller
+Answer: C
+Explanation: Bằng chứng "discuss moving Daniel from the sales team" cho thấy cô ấy phụ trách nhân sự | (A) "A sales representative" — cô ấy quản lý điều chuyển, không phải bán hàng | (B) "A branch customer" — không có ngữ cảnh mua hàng hay phục vụ | (C) "A human resources manager" — đúng, cô ấy trao đổi việc điều chuyển và xét hồ sơ ứng viên | (D) "A recruitment agency caller" — cô ấy nhận hồ sơ, không phải người của công ty tuyển dụng
+Source: original
+[QUESTION]
+What does the woman imply when she says, "He is clearing his desk already"?
+(A) Daniel has changed his mind
+(B) Daniel keeps his office untidy
+(C) Daniel lost his personal items
+(D) Daniel will leave very soon
+Answer: D
+Explanation: Bằng chứng "He plans to finish all his handover work within two weeks" cho thấy tính gấp rút | (A) "Daniel has changed his mind" — anh ấy đã đồng ý, không hề đổi ý | (B) "Daniel keeps his office untidy" — hiểu sai theo nghĩa đen việc dọn bàn | (C) "Daniel lost his personal items" — không có gì về việc mất đồ | (D) "Daniel will leave very soon" — đúng, dọn bàn báo hiệu sắp rời đi
+Source: original
+[QUESTION]
+What does the woman ask the man to do?
+(A) Send candidate files before Friday
+(B) Call the branch manager immediately
+(C) Interview Daniel for a new role
+(D) Delay the transfer until next month
+Answer: A
+Explanation: Bằng chứng "send me the files of the replacement candidates before Friday" là yêu cầu trực tiếp | (A) "Send candidate files before Friday" — đúng, chính xác yêu cầu được nêu | (B) "Call the branch manager immediately" — quản lý gọi cho cô ấy, cô ấy không yêu cầu gọi | (C) "Interview Daniel for a new role" — Daniel đã đồng ý điều chuyển rồi | (D) "Delay the transfer until next month" — cô ấy muốn đẩy nhanh, không phải trì hoãn
+Source: original

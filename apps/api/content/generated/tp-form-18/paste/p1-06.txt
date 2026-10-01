@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) A customer is reading a newspaper at a table.
+(B) A cashier is scanning items at the checkout desk.
+(C) Two students are carrying boxes out of the store.
+(D) A librarian is placing books onto a tall wooden shelf.
+Answer: D
+Explanation: Trong ảnh một nhân viên xếp sách mới lên kệ gỗ cao cạnh cửa sổ | (A) "A customer is reading a newspaper at a table." — không có người đọc nào và không có cái bàn nào | (B) "A cashier is scanning items at the checkout desk." — quầy thu ngân không có người trông | (C) "Two students are carrying boxes out of the store." — sai người và sai hành động | (D) "A librarian is placing books onto a tall wooden shelf." — đúng
+Source: original

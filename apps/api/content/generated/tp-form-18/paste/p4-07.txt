@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Attention, shoppers, this is Mark Stevens, the store manager, speaking from the main lobby of Greenfield Supermarket. Thank you for visiting us this busy Saturday morning. For your safety, the east entrance will be temporarily closed from today until Thursday for urgent floor repairs near the checkout area. We originally directed everyone to wait at the east doors, but instead please now use the west entrance, which is fully open with extra staff to help you. The west doors beside the car park will stay open until ten o'clock tonight. All fresh food counters remain fully open as usual throughout the repairs. We apologise for any inconvenience, and gift vouchers will be given at the service desk to thank you for your patience today. Enjoy your shopping with us.
+
+[QUESTION]
+Where is the announcement being made?
+(A) In a supermarket main lobby
+(B) At a checkout area under floor repairs
+(C) In a service desk giving gift vouchers
+(D) At the fresh food counters on Saturday morning
+Answer: A
+Explanation: "In a supermarket main lobby" — đúng nơi phát thông báo ("speaking from the main lobby of Greenfield Supermarket"). | (A) "In a supermarket main lobby" — đúng nơi phát thông báo tại sảnh chính siêu thị. | (B) "At a checkout area under floor repairs" — khu thu ngân ("checkout area") là chỗ sửa sàn, không phải nơi đặt loa: đúng từ, sai quan hệ. | (C) "In a service desk giving gift vouchers" — quầy dịch vụ ("service desk") chỉ là nơi nhận phiếu quà, không phải toàn bộ địa điểm. | (D) "At the fresh food counters on Saturday morning" — quầy tươi vẫn mở ("All fresh food counters remain fully open as usual"), còn sáng thứ Bảy ("this busy Saturday morning") chỉ là lúc ghé thăm: đúng từ, sai chỗ.
+Source: original
+[QUESTION]
+What does the speaker mean when he says, "gift vouchers will be given at the service desk"?
+(A) The east entrance will sell vouchers until Thursday
+(B) Shoppers are thanked for their patience during repairs
+(C) Fresh food counters will close until Thursday
+(D) Staff must repair the floor at the service desk
+Answer: B
+Explanation: "Shoppers are thanked for their patience during repairs" — đúng hàm ý phiếu quà để cảm ơn ("gift vouchers will be given at the service desk to thank you for your patience today"). | (A) "The east entrance will sell vouchers until Thursday" — lối đông ("east entrance") đang đóng để sửa, không bán gì: đúng từ, sai quan hệ. | (B) "Shoppers are thanked for their patience during repairs" — đúng hàm ý phiếu quà để cảm ơn và xin lỗi vì bất tiện. | (C) "Fresh food counters will close until Thursday" — quầy tươi vẫn mở ("remain fully open as usual"), còn thứ Năm ("until Thursday") là hạn đóng lối đông ("temporarily closed from today until Thursday"): gộp sai hai chi tiết. | (D) "Staff must repair the floor at the service desk" — sửa sàn ("floor repairs") ở gần thu ngân, còn quầy chỉ phát phiếu: gộp sai hai chi tiết.
+Source: original
+[QUESTION]
+What will shoppers probably do next?
+(A) Wait at the east doors for more repairs
+(B) Leave the supermarket before ten o'clock
+(C) Use the west entrance beside the car park
+(D) Close the checkout area until Thursday
+Answer: C
+Explanation: Người nói sửa hướng dẫn bằng "We originally directed everyone to wait at the east doors, but instead please now use the west entrance". | (A) "Wait at the east doors for more repairs" — đây là hướng dẫn cũ đã bị thay: đã công bố rồi sửa. | (B) "Leave the supermarket before ten o'clock" — mười giờ tối là giờ đóng cửa tây ("stay open until ten o'clock"), không phải lệnh ra về: đúng từ, sai nghĩa. | (C) "Use the west entrance beside the car park" — đúng việc khách sẽ làm theo bản mới, ghép lối vào với mốc bãi đậu. | (D) "Close the checkout area until Thursday" — đóng cửa là việc của ban quản lý với lối đông, không phải việc của khách: nhầm vai ai làm gì.
+Source: original

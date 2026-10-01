@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Your order is already on the truck and will arrive today.
+voice: au_male_1
+(A) What time should we expect the driver?
+(B) Trucks are parked behind the warehouse.
+(C) I ordered lunch for the whole team.
+Answer: A
+Explanation: Câu thông báo hàng đã lên xe và sẽ đến hôm nay, đáp án đúng hỏi cụ thể giờ giao | (A) "What time should we expect the driver?" - hỏi cụ thể giờ giao hàng | (B) "Trucks are parked behind the warehouse." - dùng lại chữ truck với chi tiết đỗ xe | (C) "I ordered lunch for the whole team." - dùng lại chữ ordered với bữa trưa không liên quan
+Source: original

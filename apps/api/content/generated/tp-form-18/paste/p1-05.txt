@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) Spectators are standing and applauding loudly.
+(B) Actors are performing on an illuminated stage.
+(C) The stage curtain is closed in front of rows of empty seats.
+(D) A technician is adjusting a spotlight on the balcony.
+Answer: C
+Explanation: Trong ảnh tấm màn sân khấu đã khép, đối diện các hàng ghế đỏ ngay ngắn còn trống dưới đèn chùm | (A) "Spectators are standing and applauding loudly." — khán phòng trống không | (B) "Actors are performing on an illuminated stage." — không có diễn viên nào và màn đã khép | (C) "The stage curtain is closed in front of rows of empty seats." — đúng | (D) "A technician is adjusting a spotlight on the balcony." — không có kỹ thuật viên nào
+Source: original

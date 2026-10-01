@@ -1,0 +1,9 @@
+[QUESTION]
+Tourists checking into the 20th-floor suite with a river-view balcony are entitled to complimentary sauna access ------- in the room rate.
+(A) included
+(B) including
+(C) includes
+(D) include
+Answer: A
+Explanation: Cụm chỉ quyền lợi được bao gồm trong giá phòng cần phân từ hai bị động. | (A) "included" — là phân từ hai bị động, hợp cụm "included in the rate". | (B) "including" — là phân từ chủ động nghĩa bao gồm thêm, sai thể với chủ ngữ chịu tác động. | (C) "includes" — là động từ chia ngôi thứ ba, gây hai động từ chính trong câu. | (D) "include" — là nguyên thể, không đứng cuối cụm bị động này.
+Source: original

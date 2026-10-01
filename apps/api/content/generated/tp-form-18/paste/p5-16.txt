@@ -1,0 +1,9 @@
+[QUESTION]
+The restaurant accepted the 200-guest wedding booking and pledged to serve hot appetizers ------- at the start of the reception.
+(A) prompt
+(B) promptly
+(C) promptness
+(D) prompting
+Answer: B
+Explanation: Trước cụm giới từ chỉ thời điểm sau động từ thường cần trạng từ chỉ cách thức. | (A) "prompt" — là tính từ, không bổ nghĩa cho động từ "serve". | (B) "promptly" — là trạng từ nghĩa đúng giờ, hợp nghĩa phục vụ nóng hổi. | (C) "promptness" — là danh từ, sai từ loại ở vị trí này. | (D) "prompting" — là phân từ một, không đứng một mình sau động từ chính.
+Source: original

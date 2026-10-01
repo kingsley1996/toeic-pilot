@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is Mark Davis, warehouse manager at Bolton Parts, calling for Mr. Lewis at Apex Components at ten thirty on Tuesday morning. I am calling about order number 4471, which arrived at our warehouse yesterday afternoon. Unfortunately, the shipment contained only eight hundred units instead of one thousand, so two hundred units are missing from the delivery. We originally asked your driver to return immediately for a check, but instead please arrange a supplementary delivery before Friday morning because our production line cannot wait. Please confirm the new delivery time by calling me back at 555-0142 today. Our assembly team is waiting for these parts, and any further delay will force us to slow down the whole production schedule. Thank you very much for your prompt help with this urgent matter.
+
+[QUESTION]
+What is the purpose of the call?
+(A) To confirm a warehouse address in Bolton
+(B) To thank a driver for a prompt delivery
+(C) To order one thousand new production lines
+(D) To report a shipment short of two hundred units
+Answer: D
+Explanation: Người nói nêu "I am calling about order number 4471" rồi chốt "two hundred units are missing from the delivery". | (A) "To confirm a warehouse address in Bolton" — Bolton Parts là tên kho của người gọi, không có xác nhận địa chỉ nào: đúng từ, sai việc. | (B) "To thank a driver for a prompt delivery" — tài xế ("your driver") được nhắc khi đổi yêu cầu, còn hàng đang thiếu: đúng từ, sai quan hệ. | (C) "To order one thousand new production lines" — một nghìn là tổng đơn ("instead of one thousand"), còn dây chuyền ("production line") chỉ là lý do cần gấp: gộp sai hai chi tiết. | (D) "To report a shipment short of two hundred units" — đúng mục đích báo lô hàng thiếu.
+Source: original
+[QUESTION]
+When did the shipment arrive at the warehouse?
+(A) Yesterday afternoon
+(B) At ten thirty on Tuesday morning
+(C) This morning when the driver returned
+(D) Today when the delivery time is confirmed
+Answer: A
+Explanation: "Yesterday afternoon" — đúng lúc hàng tới ("arrived at our warehouse yesterday afternoon"). | (A) "Yesterday afternoon" — đúng lúc hàng tới kho theo bài nói. | (B) "At ten thirty on Tuesday morning" — đây là giờ gọi ("calling for Mr. Lewis at Apex Components at ten thirty on Tuesday morning"), không phải giờ hàng tới: đúng từ, sai việc. | (C) "This morning when the driver returned" — tài xế được yêu cầu quay lại ("asked your driver to return immediately") là chuyện khác, còn hàng tới từ chiều hôm qua: gộp sai hai chi tiết. | (D) "Today when the delivery time is confirmed" — hôm nay ("today") là hạn gọi lại xác nhận giờ giao ("calling me back at 555-0142 today"), không phải lúc hàng tới: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+What will the supplier probably do next?
+(A) Cancel order number 4471 completely
+(B) Arrange an extra delivery before Friday morning
+(C) Wait until the production line stops
+(D) Ask the driver to return immediately for a check
+Answer: B
+Explanation: "Arrange an extra delivery before Friday morning" — đúng việc nhà cung cấp sẽ làm tiếp theo ("please arrange a supplementary delivery before Friday morning"). | (A) "Cancel order number 4471 completely" — đơn hàng vẫn cần bổ sung, không có hủy nào. | (B) "Arrange an extra delivery before Friday morning" — đúng việc nhà cung cấp sẽ làm tiếp theo. | (C) "Wait until the production line stops" — dây chuyền không thể chờ ("our production line cannot wait"), ngược hẳn yêu cầu gấp. | (D) "Ask the driver to return immediately for a check" — đây là yêu cầu cũ đã bị thay ("We originally asked your driver to return immediately for a check, but instead"): đã công bố rồi sửa.
+Source: original

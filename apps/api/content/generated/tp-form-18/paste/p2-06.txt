@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Could you please check why my bill rose sharply after last week's outage?
+voice: au_male_1
+(A) Our office closes at five o'clock.
+(B) The weather was unusually cold yesterday.
+(C) Certainly, I will review your usage records today.
+Answer: C
+Explanation: Câu hỏi yêu cầu kiểm tra hóa đơn tăng đột ngột, đáp án đúng đồng ý xem lại số liệu sử dụng | (A) "Our office closes at five o'clock." - lạc đề về giờ làm việc | (B) "The weather was unusually cold yesterday." - bình luận không liên quan về thời tiết | (C) "Certainly, I will review your usage records today." - đồng ý kiểm tra hóa đơn
+Source: original

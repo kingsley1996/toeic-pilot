@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+When will a returned car be available for me?
+voice: us_female_1
+(A) One should be back in about an hour.
+(B) Cars must be returned with a full tank.
+(C) I returned your call yesterday afternoon.
+Answer: A
+Explanation: Câu hỏi tìm khi nào có xe trả về để dùng, đáp án đúng nêu gián tiếp thời gian chờ | (A) "One should be back in about an hour." - nêu gián tiếp thời gian chờ | (B) "Cars must be returned with a full tank." - dùng lại chữ returned với quy định xăng xe | (C) "I returned your call yesterday afternoon." - dùng lại chữ returned với cuộc gọi điện thoại
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+The sales procedure manual for newly hired staff was ------- by the training supervisor on their first morning.
+(A) distributing
+(B) distributed
+(C) distribution
+(D) distribute
+Answer: B
+Explanation: Sau trợ động từ bị động quá khứ cần phân từ hai làm động từ chính. | (A) "distributing" — là phân từ một chủ động, sai thể vì tài liệu chịu tác động. | (B) "distributed" — là phân từ hai bị động, hợp nghĩa tài liệu được phát. | (C) "distribution" — là danh từ, khiến câu thiếu động từ chính. | (D) "distribute" — là nguyên thể, không đứng sau "was" trong câu bị động.
+Source: original

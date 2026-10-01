@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning. Welcome to our dry-cleaning counter. Are you looking for a regular service?
+voice: ca_male_1
+Yes. My company needs office uniforms cleaned every week. Do you offer a monthly plan?
+voice: uk_female_1
+We do. Our business package covers shirts, trousers, and suits with pickup twice a week.
+voice: ca_male_1
+How much does it cost? We have about thirty shirts per week.
+voice: uk_female_1
+For that volume, it is two dollars per shirt, with trousers at three dollars each.
+voice: ca_male_1
+That sounds fair. How long does each batch take?
+voice: uk_female_1
+Forty-eight hours from pickup to delivery, pressed and ready to wear.
+voice: ca_male_1
+Good. Can I try the service once before signing the contract?
+voice: uk_female_1
+Absolutely. Just bring a sample laundry load first, and we will process it the same way.
+voice: ca_male_1
+Great. I will bring twenty shirts tomorrow morning.
+[QUESTION]
+Why did the man come to the shop?
+(A) To apply for a twice-weekly pickup job
+(B) To pick up twenty pressed shirts tomorrow morning
+(C) To inquire about regular cleaning services for work clothes
+(D) To complain about a two-dollar shirt charge
+Answer: C
+Explanation: Bằng chứng "My company needs office uniforms cleaned every week" cho thấy ý định | (A) "To apply for a twice-weekly pickup job" — anh ấy là khách, không phải ứng viên | (B) "To pick up twenty pressed shirts tomorrow morning" — anh ấy sẽ mang áo tới, không phải tới lấy | (C) "To inquire about regular cleaning services for work clothes" — đúng, hỏi về gói dịch vụ cho doanh nghiệp | (D) "To complain about a two-dollar shirt charge" — không phàn nàn, còn khen giá hợp lý
+Source: original
+[QUESTION]
+What detail is mentioned about the service?
+(A) Pickup happens only once a month
+(B) Suits and trousers are excluded from service
+(C) Each shirt costs five dollars to clean
+(D) Finished items come back quickly, ready to wear
+Answer: D
+Explanation: Bằng chứng "Forty-eight hours from pickup to delivery, pressed and ready to wear" cho biết thời gian | (A) "Pickup happens only once a month" — sai, lấy đồ hai lần mỗi tuần | (B) "Suits and trousers are excluded from service" — sai, com-lê được bao gồm rõ ràng | (C) "Each shirt costs five dollars to clean" — sai, thực tế hai đô la một áo | (D) "Finished items come back quickly, ready to wear" — đúng, diễn đạt lại việc trả sau bốn mươi tám giờ
+Source: original
+[QUESTION]
+What will the man do tomorrow?
+(A) Try out the cleaning with a small trial order
+(B) Ask for twice-weekly pickup without charge
+(C) Open a competing shop next to the counter
+(D) Pay for thirty shirts in advance tomorrow
+Answer: A
+Explanation: Bằng chứng "Just bring a sample laundry load first" cùng với sự đồng ý của anh ấy cho thấy kế hoạch | (A) "Try out the cleaning with a small trial order" — đúng, diễn đạt lại việc thử mẫu | (B) "Ask for twice-weekly pickup without charge" — đã nêu tần suất lấy đồ, không xin miễn phí | (C) "Open a competing shop next to the counter" — không có kế hoạch như vậy | (D) "Pay for thirty shirts in advance tomorrow" — thử trước, số lượng là hai mươi chứ không phải ba mươi
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Hello, fitness fans! Are you ready to get in shape this spring? FitLife, the city's newest gym chain, is now open in three convenient locations near you. Our modern centres offer swimming pools, yoga studios, and the latest exercise machines for every fitness level. This month only, new members pay half price for the first month, so joining today costs far less than usual. You will also receive a free trial session with a personal trainer who will design a workout plan just for you. We originally offered evening classes only, but instead morning and weekend sessions are now available for every member. No joining fee, no waiting list, just real results. Call 555-0193 today or visit our website to claim this special opening offer before Sunday!
+
+[QUESTION]
+What is the advertisement for?
+(A) A new gym chain opening in the city
+(B) A swimming pool construction company
+(C) A personal trainer looking for a job
+(D) A website selling exercise machines
+Answer: A
+Explanation: Quảng cáo mở đầu "FitLife, the city's newest gym chain, is now open in three convenient locations near you". | (A) "A new gym chain opening in the city" — đúng thứ được quảng cáo là chuỗi phòng gym mới. | (B) "A swimming pool construction company" — bể bơi ("swimming pools") chỉ là tiện ích bên trong, không phải thứ bán: đúng từ, sai việc. | (C) "A personal trainer looking for a job" — huấn luyện viên ("personal trainer") là người hướng dẫn buổi thử, không phải người tìm việc: nhầm vai. | (D) "A website selling exercise machines" — máy tập ("exercise machines") là thiết bị trong trung tâm, còn website chỉ để nhận ưu đãi: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+What special offer is mentioned for new members?
+(A) Free evening classes for the whole spring
+(B) A half-price opening deal with a free coaching session
+(C) A workout plan designed without any trainer
+(D) Three convenient locations near their homes
+Answer: B
+Explanation: "A half-price opening deal with a free coaching session" — đúng ưu đãi ghép từ hai chỗ ("half price for the first month", "free trial session with a personal trainer"). | (A) "Free evening classes for the whole spring" — lớp tối chỉ là một khung giờ đã mở rộng ("morning and weekend sessions"), không có miễn phí cả mùa: đúng từ, sai nghĩa. | (B) "A half-price opening deal with a free coaching session" — đúng ưu đãi ghép từ hai chỗ trong bài. | (C) "A workout plan designed without any trainer" — kế hoạch do huấn luyện viên thiết kế ("with a personal trainer"), ngược hẳn ý không cần ai. | (D) "Three convenient locations near their homes" — ba địa điểm ("three convenient locations") là nơi mở cửa, không phải ưu đãi giá.
+Source: original
+[QUESTION]
+What are listeners asked to do?
+(A) Design a workout plan for a personal trainer
+(B) Teach yoga classes at the weekend
+(C) Call or visit the website before Sunday
+(D) Pay the full joining fee in advance
+Answer: C
+Explanation: "Call or visit the website before Sunday" — đúng việc được yêu cầu để nhận ưu đãi ("Call 555-0193 today or visit our website to claim this special opening offer before Sunday"). | (A) "Design a workout plan for a personal trainer" — kế hoạch do huấn luyện viên thiết kế cho bạn ("design a workout plan just for you"), không phải bạn thiết kế cho họ: nhầm vai. | (B) "Teach yoga classes at the weekend" — yoga ("yoga studios") là tiện ích tập, còn người nghe là hội viên mới: nhầm vai. | (C) "Call or visit the website before Sunday" — đúng việc được yêu cầu để nhận ưu đãi. | (D) "Pay the full joining fee in advance" — bài nói rõ ("No joining fee"): ý bị gạt.
+Source: original

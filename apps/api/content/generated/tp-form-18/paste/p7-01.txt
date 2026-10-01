@@ -1,0 +1,35 @@
+[PASSAGE]
+Young Founders Startup Seminar — Online Registration
+City Youth Centre, Saturday, October 18
+
+[1] Please complete this form before October 10 to reserve your seat. [2] The seminar is open to all university students, and admission is free for the first eighty applicants. [3] Two identical sessions run on the day: Session A from 9:00 A.M. to 11:30 A.M. and Session B from 1:30 P.M. to 4:00 P.M. [4] Every participant may attend only one session because seats in the main hall are limited.
+
+Registration details: enter your full name, your university, and your major. Tick the box for Session A or Session B. Students who need a vegetarian lunch box must tick the meal box as well, since lunch is served at noon for both groups. A confirmation email with your seat number will arrive within two days. For help, call Ms. Dana Cole at 555-0134 before 5:00 P.M. on weekdays.
+
+[QUESTION]
+What must students do to reserve a seat?
+(A) Attend both sessions on Saturday
+(B) Pay eighty dollars for admission
+(C) Complete the form before October 10
+(D) Call Ms. Cole after 5:00 P.M.
+Answer: C
+Explanation: Đơn yêu cầu điền trước hạn ("Please complete this form before October 10 to reserve your seat") nên phải hoàn tất đơn đúng hạn. | (A) "Attend both sessions on Saturday" — trái với mỗi người chỉ dự một buổi. | (B) "Pay eighty dollars for admission" — bẫy từ quen: eighty là số người được miễn phí, không phải số tiền. | (C) "Complete the form before October 10" — đúng việc cần làm vừa dẫn. | (D) "Call Ms. Cole after 5:00 P.M." — trái với gọi trước 5 giờ chiều ngày thường.
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Students who miss the deadline will be placed on a waiting list."
+(A) [1]
+(B) [4]
+(C) [3]
+(D) [2]
+Answer: D
+Explanation: Câu mới nói quá hạn phải chờ ("Students who miss the deadline will be placed on a waiting list") nên hợp nhất ngay sau câu hạn chót October 10, tức vị trí [2]. | (A) "[1]" — đầu đơn, chưa hề nhắc hạn chót. | (B) "[4]" — sau quy định một người một buổi, quá muộn để nói quá hạn. | (C) "[3]" — đã chuyển sang giờ hai buổi học, lạc đề chờ chỗ. | (D) "[2]" — đúng chỗ nối tiếp câu hạn chót vừa dẫn.
+Source: original
+[QUESTION]
+What is NOT stated in the registration form?
+(A) Parking behind the centre is free
+(B) Vegetarian lunch boxes are available
+(C) Early applicants pay no admission fee
+(D) The seminar takes place on October 18
+Answer: A
+Explanation: Đơn có ghi ngày October 18, hộp cơm chay và miễn phí cho tám mươi người đầu — không chỗ đậu xe nào. | (A) "Parking behind the centre is free" — không chỗ nào nhắc bãi đậu xe. | (B) "Vegetarian lunch boxes are available" — đơn ghi tick the meal box cho cơm chay. | (C) "Early applicants pay no admission fee" — đơn ghi free for the first eighty applicants. | (D) "The seminar takes place on October 18" — tiêu đề ghi Saturday, October 18.
+Source: original

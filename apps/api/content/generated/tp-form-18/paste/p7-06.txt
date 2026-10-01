@@ -1,0 +1,51 @@
+[PASSAGE]
+Store Shift Changes — Weekend Cover
+Anna Cole (store manager) [Friday 4:02 P.M.]
+Hi Ben, can you cover the Saturday morning shift? Our cashier Mia is sick, and the store opens at 8:00 A.M. I can take your Sunday afternoon shift in return.
+Ben Harris [Friday 4:20 P.M.]
+Saturday morning is difficult because my bus arrives at 9:30. I can work from 10:00 A.M. to the end of the shift at 1:00 P.M. if someone opens the store.
+Anna Cole [Friday 4:35 P.M.]
+I can try. I will open the store myself at 8:00 A.M. and stay until you arrive at ten.
+Ben Harris [Friday 4:41 P.M.]
+Deal. I will close the Sunday salad bar early so we both leave on time.
+Ben Harris [Friday 4:47 P.M.]
+Thanks, Anna. I will bring the new price tags on Saturday and stack them on the morning shelves before customers arrive.
+Anna Cole [Friday 4:52 P.M.]
+Perfect. I will confirm the weekend roster tonight and send you both a copy.
+
+[QUESTION]
+What are the speakers discussing?
+(A) Ordering new salad bar supplies for Sunday
+(B) Arranging cover for the Saturday morning shift
+(C) Hiring a full-time cashier for the store
+(D) Closing the store for the whole weekend
+Answer: B
+Explanation: Anna mở đầu nhờ trực ca sáng thứ Bảy ("can you cover the Saturday morning shift") rồi hai người chia ca đón khách. | (A) "Ordering new salad bar supplies for Sunday" — quầy salad chỉ được nhắc lúc đóng sớm, không ai đặt hàng. | (B) "Arranging cover for the Saturday morning shift" — đúng việc cả hai đang bàn. | (C) "Hiring a full-time cashier for the store" — Mia chỉ ốm tạm thời, không ai tuyển người. | (D) "Closing the store for the whole weekend" — ngược hẳn: cả hai cố giữ cửa hàng mở cửa.
+Source: original
+[QUESTION]
+What will Ben Harris do on Saturday?
+(A) Open the store at 8:00 A.M. alone
+(B) Take over the Sunday afternoon shift
+(C) Work from 10:00 A.M. to 1:00 P.M.
+(D) Drive Mia to the hospital at noon
+Answer: C
+Explanation: Ben chốt ca của mình ("I can work from 10:00 A.M. to the end of the shift at 1:00 P.M."). | (A) "Open the store at 8:00 A.M. alone" — đó là việc Anna nhận, không phải Ben. | (B) "Take over the Sunday afternoon shift" — bẫy đúng-nhưng-trả-lời-câu-khác: Anna mới là người nhận ca Chủ nhật. | (C) "Work from 10:00 A.M. to 1:00 P.M." — đúng ca Ben chốt vừa dẫn. | (D) "Drive Mia to the hospital at noon" — Mia chỉ ốm nên nghỉ, không ai đưa đi viện.
+Source: original
+[QUESTION]
+At 4:35 P.M., what does Ms. Cole mean when she writes, "I can try"?
+(A) She asks Ben to arrive at eight o'clock
+(B) She refuses to come to the store on Saturday
+(C) She has already opened the store that morning
+(D) She will attempt to open the store and stay until ten
+Answer: D
+Explanation: Câu quyết định nguyên văn: "I can try. I will open the store myself at 8:00 A.M. and stay until you arrive at ten." | (A) "She asks Ben to arrive at eight o'clock" — Ben chỉ tới được lúc mười giờ vì xe buýt. | (B) "She refuses to come to the store on Saturday" — ngược hẳn: cô ấy nhận mở cửa sáng thứ Bảy. | (C) "She has already opened the store that morning" — bẫy sai thì: will open là dự định thứ Bảy tới. | (D) "She will attempt to open the store and stay until ten" — đúng: nhận mở cửa và chờ tới mười giờ.
+Source: original
+[QUESTION]
+What can be inferred from the messages?
+(A) Ms. Cole will work on both Saturday and Sunday
+(B) The store will stay closed all weekend
+(C) Mia has left the company for good
+(D) Ben will open the store alone on Saturday
+Answer: A
+Explanation: Anna nhận mở cửa sáng thứ Bảy ("I will open the store myself at 8:00 A.M.") và nhận ca chiều Chủ nhật ("I can take your Sunday afternoon shift") nên cô trực cả hai ngày cuối tuần. | (A) "Ms. Cole will work on both Saturday and Sunday" — đúng điều suy ra từ hai lời nhận vừa dẫn. | (B) "The store will stay closed all weekend" — ngược hẳn: cả hai xếp ca để mở cửa. | (C) "Mia has left the company for good" — Mia chỉ ốm nên nghỉ ca này. | (D) "Ben will open the store alone on Saturday" — Ben chỉ tới lúc mười giờ, Anna mới là người mở cửa.
+Source: original

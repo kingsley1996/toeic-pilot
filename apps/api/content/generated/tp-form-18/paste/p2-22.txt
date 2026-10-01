@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Could you repair the electrical system before we renew the lease?
+voice: uk_female_1
+(A) I will ask an electrician to inspect it this week.
+(B) The lease was signed two years ago.
+(C) Electric cars are becoming more popular.
+Answer: A
+Explanation: Câu hỏi yêu cầu sửa hệ thống điện trước khi gia hạn hợp đồng thuê, đáp án đúng đồng ý thu xếp thợ kiểm tra | (A) "I will ask an electrician to inspect it this week." - đồng ý thu xếp việc sửa chữa | (B) "The lease was signed two years ago." - dùng lại chữ lease với lịch sử ký kết | (C) "Electric cars are becoming more popular." - dùng lại chữ electric với chủ đề không liên quan
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: ca_male_1
+Good morning, everyone, and welcome to our year-end sales review here at the head office. I am Robert Lane, the sales director, and I want to thank you all for a strong year in our busy retail stores across the region. Sales grew steadily through the year, but the final quarter set a remarkable new record thanks to our holiday campaign and longer opening hours. We originally planned to renovate the downtown shop next spring, but instead we will open a brand-new store in the Riverside district in March with ten new staff. Please send your staffing suggestions to me by the end of January. Your ideas built this success, and I am confident next year will be even better for us all.
+
+[QUESTION]
+What is the purpose of the meeting?
+(A) To close all retail stores at the head office
+(B) To review a strong year of retail sales results
+(C) To renovate the downtown shop next spring
+(D) To shorten opening hours for the holiday campaign
+Answer: B
+Explanation: Người nói mở đầu "welcome to our year-end sales review" và nói "thank you all for a strong year in our busy retail stores". | (A) "To close all retail stores at the head office" — trụ sở ("head office") là nơi họp, không có đóng cửa nào: đúng từ, sai việc. | (B) "To review a strong year of retail sales results" — đúng mục đích tổng kết doanh số bán lẻ. | (C) "To renovate the downtown shop next spring" — đây là kế hoạch cũ đã bị thay ("instead we will open a brand-new store"): đã công bố rồi sửa. | (D) "To shorten opening hours for the holiday campaign" — giờ mở kéo dài ("longer opening hours") giúp lập kỷ lục, ngược hẳn ý rút ngắn.
+Source: original
+[QUESTION]
+Look at the graphic. Which quarter set the sales record mentioned in the talk?
+(A) Q1
+(B) Q2
+(C) Q4
+(D) Q3
+Answer: C
+Explanation: "Q4" — đúng quý cuối lập kỷ lục ("the final quarter set a remarkable new record"), cột cao nhất trên hình ("Q4 | 80"). | (A) "Q1" — Q1 chỉ 45 nghìn, không phải quý kỷ lục. | (B) "Q2" — Q2 là 62 nghìn, không phải quý được nêu. | (C) "Q4" — đúng quý cuối lập kỷ lục với 80 nghìn trên hình. | (D) "Q3" — Q3 là 55 nghìn, không phải quý kỷ lục.
+Source: original
+[QUESTION]
+What will the company probably do in March?
+(A) End the holiday campaign at the head office
+(B) Renovate the downtown shop for ten days
+(C) Send staffing suggestions to the sales director
+(D) Open a new store in the Riverside district
+Answer: D
+Explanation: Người nói chốt "we will open a brand-new store in the Riverside district in March with ten new staff". | (A) "End the holiday campaign at the head office" — chiến dịch lễ ("holiday campaign") là nguyên nhân kỷ lục quý cuối, không có kết thúc nào vào tháng Ba. | (B) "Renovate the downtown shop for ten days" — sửa cửa hàng trung tâm là kế hoạch cũ đã bỏ ("originally planned to renovate"), còn mười là số nhân viên mới: gộp sai hai chi tiết. | (C) "Send staffing suggestions to the sales director" — gửi gợi ý ("send your staffing suggestions") là việc của nhân viên trước cuối January, không phải việc công ty tháng Ba: nhầm vai và mốc giờ. | (D) "Open a new store in the Riverside district" — đúng việc sẽ làm vào tháng Ba.
+Source: original

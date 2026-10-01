@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone. Thank you for meeting in the conference room to review our four quarterly sales results.
+voice: uk_female_1
+Good morning. I prepared the bar chart. The second quarter reached one point eight billion, our highest ever.
+voice: ca_male_1
+Impressive. That was driven by the summer promotion campaign, I assume?
+voice: uk_female_1
+Exactly. The first quarter was one point two billion, and the fourth quarter closed at one point five billion.
+voice: ca_male_1
+What about the third quarter? I remember heavy rain affected store traffic.
+voice: uk_female_1
+Right. The third quarter dropped to one point one billion, the lowest of the year.
+voice: us_female_1
+Since that quarter was our weakest, I suggest holding the customer appreciation event then to save on venue costs.
+voice: ca_male_1
+Smart idea. Low season means cheaper hotels and more available guests.
+voice: us_female_1
+Agreed. I will book the Riverside Hall for the third quarter event.
+voice: ca_male_1
+Perfect. Please share the budget draft with both of us tomorrow.
+[QUESTION]
+Who is the second woman most likely to be?
+(A) A store security guard
+(B) A hotel receptionist
+(C) The company accountant
+(D) A seasonal sales clerk
+Answer: C
+Explanation: Bằng chứng "I prepared the bar chart" cùng với số liệu theo quý báo hiệu vai trò tài chính | (A) "A store security guard" — không có ngữ cảnh an ninh | (B) "A hotel receptionist" — đặt địa điểm sau, không phải cô ấy | (C) "The company accountant" — đúng, trình bày số liệu biểu đồ | (D) "A seasonal sales clerk" — trình bày cả bốn quý, vai trò cấp cao
+Source: original
+[QUESTION]
+What detail is mentioned about the second quarter?
+(A) It was the weakest quarter of the year
+(B) It suffered heavy rain and low traffic
+(C) It closed at one point five billion dong
+(D) It had the highest sales from the summer promotion
+Answer: D
+Explanation: Bằng chứng "The second quarter reached one point eight billion" cùng với đợt khuyến mãi mùa hè cho biết đỉnh doanh thu | (A) "It was the weakest quarter of the year" — yếu nhất là quý ba | (B) "It suffered heavy rain and low traffic" — đó là quý ba | (C) "It closed at one point five billion dong" — đó là quý bốn | (D) "It had the highest sales from the summer promotion" — đúng, đỉnh một phẩy tám tỷ
+Source: original
+[QUESTION]
+Look at the graphic. In which quarter will the speakers hold the appreciation event?
+(A) Q3
+(B) Q2
+(C) Q1
+(D) Q4
+Answer: A
+Explanation: Bằng chứng "holding the customer appreciation event then" ám chỉ quý yếu nhất | (A) "Q3" — đúng, quý thấp nhất tiết kiệm chi phí | (B) "Q2" — quý cao nhất, mùa cao điểm | (C) "Q1" — quý tầm trung, không được chọn | (D) "Q4" — quý mạnh, không được chọn
+Source: original

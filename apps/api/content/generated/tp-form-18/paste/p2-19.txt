@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+How can I track the performance of our online marketing campaign?
+voice: au_male_1
+(A) Use the analytics dashboard to monitor weekly results.
+(B) Marketing meetings are held every Monday.
+(C) Our campaign performed well last quarter.
+Answer: A
+Explanation: Câu hỏi tìm cách theo dõi hiệu quả chiến dịch marketing trực tuyến, đáp án đúng chỉ rõ công cụ theo dõi | (A) "Use the analytics dashboard to monitor weekly results." - giải thích phương pháp theo dõi | (B) "Marketing meetings are held every Monday." - dùng lại chữ marketing với lịch họp | (C) "Our campaign performed well last quarter." - lặp lại chữ campaign và performed mà không nêu cách làm
+Source: original

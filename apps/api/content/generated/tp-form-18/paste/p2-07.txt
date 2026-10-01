@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Has my home loan application been approved yet?
+voice: us_female_1
+(A) Yes, it was approved this morning.
+(B) The bank approved the new branch design.
+(C) You should apply for a credit card instead.
+Answer: A
+Explanation: Câu hỏi xác nhận đơn vay mua nhà đã được duyệt chưa, đáp án đúng trả lời có kèm thời gian | (A) "Yes, it was approved this morning." - trả lời có kèm mốc thời gian | (B) "The bank approved the new branch design." - dùng lại chữ approved với thiết kế không liên quan | (C) "You should apply for a credit card instead." - gợi ý một sản phẩm khác
+Source: original

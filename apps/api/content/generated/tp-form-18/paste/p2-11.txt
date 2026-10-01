@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+The building permit has been approved, so work will begin next week.
+voice: ca_male_1
+(A) I will renew my driving permit soon.
+(B) Great, I will schedule the crew for Monday.
+(C) Permits are framed on the office wall.
+Answer: B
+Explanation: Câu thông báo giấy phép xây dựng đã được duyệt và công việc bắt đầu tuần tới, đáp án đúng hưởng ứng và xếp lịch đội thi công | (A) "I will renew my driving permit soon." - dùng lại chữ permit với giấy phép lái xe không liên quan | (B) "Great, I will schedule the crew for Monday." - phản hồi phù hợp với việc khởi công | (C) "Permits are framed on the office wall." - lạc đề về việc trưng bày
+Source: original

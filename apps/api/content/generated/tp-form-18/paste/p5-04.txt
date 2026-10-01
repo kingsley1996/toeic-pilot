@@ -1,0 +1,9 @@
+[QUESTION]
+The third-quarter revenue report with growth charts will be ------- by the chief financial officer before the board of directors.
+(A) presenting
+(B) presented
+(C) presentation
+(D) present
+Answer: B
+Explanation: Sau trợ động từ bị động tương lai cần phân từ hai làm động từ chính. | (A) "presenting" — là phân từ một chủ động, sai thể với cấu trúc bị động. | (B) "presented" — là phân từ hai bị động, hợp nghĩa báo cáo được trình bày. | (C) "presentation" — là danh từ, khiến câu thiếu động từ chính. | (D) "present" — là nguyên thể hoặc tính từ, không đứng sau "will be" theo nghĩa này.
+Source: original

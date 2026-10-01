@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good morning, everyone, and welcome to the main auditorium at our head office. I am David Thompson, the human resources director, and I am delighted to open this training course for our newest staff members. Over the next two weeks, you will join workshops on communication, teamwork, and customer care led by senior managers. Today I am pleased to introduce our new mentoring program, which pairs each newcomer with an experienced adviser for the first three months. We originally asked newcomers to sign up individually online, but instead please now register in groups of three at the reception desk before this weekend. Working in small teams will help you share experience and support one another. Thank you for joining us, and I wish you every success in your new roles.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To announce repairs to the main auditorium
+(B) To sell teamwork workshops to senior managers
+(C) To open a training course and introduce a mentoring program
+(D) To pair advisers with customer care teams
+Answer: C
+Explanation: Người nói mở đầu "welcome to the main auditorium" với tư cách "the human resources director" và nói "I am delighted to open this training course" rồi "introduce our new mentoring program". | (A) "To announce repairs to the main auditorium" — hội trường chỉ là nơi tổ chức, không có sửa chữa nào được nhắc. | (B) "To sell teamwork workshops to senior managers" — quản lý cấp cao là người dẫn ("led by senior managers"), còn học viên là nhân viên mới: nhầm vai ai học. | (C) "To open a training course and introduce a mentoring program" — khớp đúng mục đích khai mạc khóa đào tạo và giới thiệu cố vấn. | (D) "To pair advisers with customer care teams" — chương trình ghép newcomer với adviser ("pairs each newcomer with an experienced adviser"), không phải ghép với nhóm chăm sóc khách: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+What does the speaker mean when he says, "Working in small teams will help you share experience and support one another"?
+(A) Small teams must support senior managers for two weeks
+(B) Advisers will work alone without any teams
+(C) Workshops on customer care are now cancelled
+(D) Group registration helps newcomers help each other
+Answer: D
+Explanation: "Group registration helps newcomers help each other" — đúng hàm ý đăng ký nhóm để cùng hỗ trợ nhau, ngay sau yêu cầu ("register in groups of three at the reception desk"). | (A) "Small teams must support senior managers for two weeks" — nhóm nhỏ giúp nhau ("support one another"), còn quản lý cấp cao ("senior managers") chỉ dẫn hội thảo và hai tuần ("Over the next two weeks") là thời lượng hội thảo: đúng từ, sai quan hệ. | (B) "Advisers will work alone without any teams" — ngược hẳn ý làm việc nhóm trong câu trích. | (C) "Workshops on customer care are now cancelled" — hội thảo vẫn diễn ra ("you will join workshops"), không có hủy bỏ nào. | (D) "Group registration helps newcomers help each other" — đúng hàm ý đăng ký nhóm để cùng hỗ trợ nhau.
+Source: original
+[QUESTION]
+What will the new employees probably do before the weekend?
+(A) Register in groups of three at the reception desk
+(B) Lead workshops on communication and teamwork
+(C) Pair newcomers with advisers for three months
+(D) Sign up individually online as first asked
+Answer: A
+Explanation: "Register in groups of three at the reception desk" — đúng việc sẽ làm theo bản đã sửa ("please now register in groups of three at the reception desk before this weekend"). | (A) "Register in groups of three at the reception desk" — đúng việc sẽ làm theo bản đã sửa. | (B) "Lead workshops on communication and teamwork" — dẫn hội thảo là việc của quản lý cấp cao ("led by senior managers"): nhầm vai ai làm gì. | (C) "Pair newcomers with advisers for three months" — ghép cặp ("pairs each newcomer with an experienced adviser") là việc của chương trình trong ba tháng ("for the first three months"), không phải việc nhân viên làm trước cuối tuần: nhầm việc và mốc giờ. | (D) "Sign up individually online as first asked" — đây là cách cũ đã bị thay ("We originally asked newcomers to sign up individually online, but instead"): đã công bố rồi sửa.
+Source: original

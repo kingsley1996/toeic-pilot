@@ -1,0 +1,4 @@
+kind: map
+Ground-Floor Lobby — Service Counter Layout (2 rows)
+Ticket Counter (front row, left) | Information Counter (front row, right)
+Left-Luggage Counter (back row, left) | Customer Support Counter (back row, right)

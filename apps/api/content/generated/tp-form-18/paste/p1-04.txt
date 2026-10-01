@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) Visitors are looking through telescopes at the stars at night.
+(B) A row of telescopes is facing the valley beside empty benches.
+(C) Boats are sailing across the valley lake below.
+(D) A guide is explaining a map to a group of tourists.
+Answer: B
+Explanation: Trong ảnh đài quan sát ban ngày, các kính viễn vọng hướng ra thung lũng và băng ghế trống bên cạnh | (A) "Visitors are looking through telescopes at the stars at night." — ảnh chụp ban ngày và không có ai ở đó | (B) "A row of telescopes is facing the valley beside empty benches." — đúng | (C) "Boats are sailing across the valley lake below." — không thấy con thuyền nào | (D) "A guide is explaining a map to a group of tourists." — không có hướng dẫn viên và không có đoàn khách nào
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: us_female_1
+Are you struggling to speak English with confidence? Meet SpeakUp, the smart language app trusted by over two million learners worldwide. With daily speaking practice, instant feedback, and live online tutors, you will improve fast from home or on the bus. Thousands of busy office workers already study with us every evening after work. Right now, our annual plan is forty percent off, so you pay only fifty-nine dollars for twelve months of full access. We originally offered one free bonus month, but instead new subscribers now receive two extra months of live conversation classes at no additional cost. No textbook, no classroom, just real progress on your phone. Visit our website today and start your free seven-day trial before this special offer ends on Friday!
+
+[QUESTION]
+What is the advertisement for?
+(A) A bus tour for two million learners
+(B) A classroom textbook for tutors
+(C) A phone that costs fifty-nine dollars
+(D) An English speaking app called SpeakUp
+Answer: D
+Explanation: Quảng cáo mở đầu "Meet SpeakUp, the smart language app trusted by over two million learners worldwide". | (A) "A bus tour for two million learners" — xe buýt ("on the bus") chỉ là nơi học, còn hai triệu là số người dùng: gộp sai hai chi tiết. | (B) "A classroom textbook for tutors" — bài nói rõ "No textbook, no classroom", ngược hẳn ý quảng cáo. | (C) "A phone that costs fifty-nine dollars" — năm mươi chín đô là giá gói năm ("fifty-nine dollars for twelve months"), không phải giá điện thoại: đúng từ, sai quan hệ. | (D) "An English speaking app called SpeakUp" — đúng thứ được quảng cáo là ứng dụng học nói.
+Source: original
+[QUESTION]
+What special offer is mentioned for new subscribers?
+(A) Forty percent off the annual plan this week
+(B) Two extra months for every office worker
+(C) Live tutors who speak forty percent faster
+(D) Two million dollars for twelve months
+Answer: A
+Explanation: "Forty percent off the annual plan this week" — đúng ưu đãi giảm giá gói năm ("our annual plan is forty percent off"). | (A) "Forty percent off the annual plan this week" — đúng ưu đãi giảm giá gói năm. | (B) "Two extra months for every office worker" — hai tháng thêm ("two extra months") chỉ cho người đăng ký mới ("new subscribers now receive two extra months"), còn nhân viên văn phòng ("office workers") chỉ là nhóm học buổi tối: nhầm ai được gì. | (C) "Live tutors who speak forty percent faster" — gia sư trực tuyến ("live online tutors") là tính năng, còn bốn mươi phần trăm gắn với giá: đúng từ, sai quan hệ. | (D) "Two million dollars for twelve months" — hai triệu là số người học ("two million learners"), không phải số tiền: đúng từ, sai việc.
+Source: original
+[QUESTION]
+What are listeners asked to do?
+(A) Buy a new phone before Friday
+(B) Visit the website and start a free trial
+(C) Pay full price for one bonus month
+(D) Write a textbook for the app
+Answer: B
+Explanation: Quảng cáo giục "Visit our website today and start your free seven-day trial before this special offer ends on Friday". | (A) "Buy a new phone before Friday" — thứ Sáu là hạn ưu đãi ("ends on Friday"), không có bán điện thoại nào. | (B) "Visit the website and start a free trial" — đúng việc được yêu cầu làm. | (C) "Pay full price for one bonus month" — một tháng ("one free bonus month") là mức cũ đã đổi thành hai tháng miễn phí: đã công bố rồi sửa. | (D) "Write a textbook for the app" — bài nói rõ không cần sách ("No textbook"): ý bị gạt.
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, everyone, and welcome aboard our city sightseeing bus. My name is Emily, and I will be your guide for today's tour of the old town. We will first visit the historic castle, then walk through the craft market before returning here for lunch at noon at the Riverside Restaurant. After lunch, please gather at the main square fountain at two o'clock for our afternoon walk across the stone bridge to the museum. We originally planned to finish at four o'clock, but instead we will end at five to give you more free time for photos. Please keep your seatbelts fastened while the bus is moving, and do not hesitate to ask me any questions. I hope you enjoy this beautiful historic city with us today.
+
+[QUESTION]
+What is the purpose of the talk?
+(A) To open a craft market on the stone bridge
+(B) To describe the itinerary of an old town bus tour
+(C) To sell seatbelts for a sightseeing bus
+(D) To close the historic castle and museum
+Answer: B
+Explanation: "To describe the itinerary of an old town bus tour" — đúng mục đích thuyết minh hành trình ("welcome aboard our city sightseeing bus", "your guide for today's tour of the old town"). | (A) "To open a craft market on the stone bridge" — chợ thủ công ("walk through the craft market") chỉ là điểm đi bộ buổi sáng, còn cầu đá ("walk across the stone bridge") là lối đi buổi chiều: gộp sai hai chi tiết. | (B) "To describe the itinerary of an old town bus tour" — đúng mục đích thuyết minh hành trình tham quan. | (C) "To sell seatbelts for a sightseeing bus" — thắt dây ("keep your seatbelts fastened") là quy định an toàn, không có bán gì: đúng từ, sai quan hệ. | (D) "To close the historic castle and museum" — lâu đài và bảo tàng là điểm đến, không có đóng cửa nào.
+Source: original
+[QUESTION]
+Where will the group have lunch?
+(A) On the stone bridge across the river
+(B) At the main square fountain at two
+(C) At the Riverside Restaurant at noon
+(D) Inside the historic castle museum
+Answer: C
+Explanation: Người nói dặn "returning here for lunch at noon at the Riverside Restaurant". | (A) "On the stone bridge across the river" — cầu đá ("stone bridge") là điểm đi bộ buổi chiều, không phải chỗ ăn: đúng từ, sai chỗ. | (B) "At the main square fountain at two" — đài phun nước ("main square fountain") là điểm tập trung lúc hai giờ chiều: gộp sai giờ với địa điểm ăn. | (C) "At the Riverside Restaurant at noon" — đúng chỗ và giờ ăn trưa. | (D) "Inside the historic castle museum" — lâu đài và bảo tàng là điểm thăm buổi sáng và chiều, không phải quán ăn: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+What can be inferred about the tour schedule?
+(A) Photos are not allowed on the bus tour
+(B) The craft market will be closed at noon
+(C) The bus has already finished at four o'clock
+(D) The tour will end later than first planned
+Answer: D
+Explanation: Người nói sửa giờ kết thúc bằng "We originally planned to finish at four o'clock, but instead we will end at five to give you more free time for photos". | (A) "Photos are not allowed on the bus tour" — ngược hẳn ý cho thêm giờ chụp ảnh ("more free time for photos"). | (B) "The craft market will be closed at noon" — chợ ("craft market") chỉ là điểm đi bộ buổi sáng, trưa là giờ ăn: gộp sai hai chi tiết. | (C) "The bus has already finished at four o'clock" — bốn giờ là kế hoạch cũ đã bỏ, tour còn chưa đi: đã công bố rồi sửa. | (D) "The tour will end later than first planned" — đúng điều suy ra phải ghép giờ cũ với giờ mới.
+Source: original

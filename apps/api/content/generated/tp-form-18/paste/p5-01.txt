@@ -1,0 +1,9 @@
+[QUESTION]
+Candidates for the general accounting position will attend the final interview at headquarters ------- Monday morning.
+(A) at
+(B) in
+(C) on
+(D) for
+Answer: C
+Explanation: Cụm thời gian với buổi cụ thể trong tuần cần giới từ chỉ ngày. | (A) "at" — đi với giờ cụ thể, không đi với buổi kèm ngày. | (B) "in" — đi với buổi chung chung, không đi với ngày cụ thể. | (C) "on" — hợp collocation "on Monday morning". | (D) "for" — chỉ mục đích hoặc khoảng thời gian, sai nghĩa ở đây.
+Source: original

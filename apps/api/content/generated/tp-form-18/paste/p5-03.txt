@@ -1,0 +1,9 @@
+[QUESTION]
+The consignment of electronic components held up at the port is expected to be ------- to the central warehouse by this weekend.
+(A) dispatched
+(B) recruited
+(C) garnished
+(D) renovated
+Answer: A
+Explanation: Chỗ trống cần phân từ hai bị động nghĩa điều hàng đi với cụm chỉ kho nhận. | (A) "dispatched" — nghĩa gửi hàng đi, hợp collocation "dispatch goods to a warehouse". | (B) "recruited" — nghĩa tuyển dụng, thuộc trường nhân sự chứ không đi với lô hàng. | (C) "garnished" — nghĩa trang trí món ăn, thuộc trường ẩm thực chứ không đi với linh kiện. | (D) "renovated" — nghĩa cải tạo, thuộc trường xây dựng chứ không đi với hàng hóa gửi kho.
+Source: original

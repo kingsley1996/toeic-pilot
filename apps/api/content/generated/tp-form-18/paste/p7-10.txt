@@ -1,0 +1,32 @@
+[PASSAGE]
+HomeStyle Furniture Needs Weekend Sales Staff
+HomeStyle Furniture at 88 Lake Avenue is hiring two part-time sales assistants for weekends. Work hours are Saturday and Sunday from 10:00 A.M. to 6:00 P.M., with a one-hour lunch break. Pay is $14 per hour, plus a bonus for high sales.
+No experience is needed because full training is given in the first week. Applicants must be friendly, speak clearly, and be able to lift light boxes. Students are welcome to apply. Send your resume to jobs@homestyle.com before October 5. Interviews will be held on October 8, and the job starts on October 12.
+
+[QUESTION]
+According to the advertisement, what are the weekend work hours?
+(A) From 10:00 A.M. to 6:00 P.M.
+(B) From 8:00 A.M. to 10:00 P.M.
+(C) Every weekday evening after school
+(D) Only on Sunday mornings
+Answer: A
+Explanation: Bài ghi rõ giờ cuối tuần ("Work hours are Saturday and Sunday from 10:00 A.M. to 6:00 P.M."). | (A) "From 10:00 A.M. to 6:00 P.M." — đúng giờ vừa dẫn. | (B) "From 8:00 A.M. to 10:00 P.M." — khung giờ này không xuất hiện trong bài. | (C) "Every weekday evening after school" — ngược hẳn: việc chỉ làm thứ Bảy và Chủ nhật. | (D) "Only on Sunday mornings" — bẫy thiếu: làm cả hai ngày cuối tuần.
+Source: original
+[QUESTION]
+What is NOT stated in the advertisement?
+(A) The hourly pay rate is $14
+(B) A free hot lunch is served on weekends
+(C) Full training is given in week one
+(D) The successful staff start on October 12
+Answer: B
+Explanation: Bài có nêu lương $14, đào tạo tuần đầu và ngày bắt đầu October 12 — không bữa trưa miễn phí nào. | (A) "The hourly pay rate is $14" — bài ghi Pay is $14 per hour. | (B) "A free hot lunch is served on weekends" — bài chỉ nói nghỉ trưa một giờ, không bữa miễn phí. | (C) "Full training is given in week one" — bài ghi training is given in the first week. | (D) "The successful staff start on October 12" — bài ghi the job starts on October 12.
+Source: original
+[QUESTION]
+What can be inferred about the job?
+(A) Only store managers receive a sales bonus
+(B) Resumes are accepted after October 5
+(C) Students with no experience may apply
+(D) The store stays closed every weekend
+Answer: C
+Explanation: Bài viết không cần kinh nghiệm ("No experience is needed") và chào đón sinh viên ("Students are welcome to apply") nên sinh viên chưa có kinh nghiệm được nộp đơn. | (A) "Only store managers receive a sales bonus" — bẫy: thưởng cho high sales của nhân viên bán hàng. | (B) "Resumes are accepted after October 5" — trái với hạn before October 5. | (C) "Students with no experience may apply" — đúng điều suy ra từ hai câu vừa dẫn. | (D) "The store stays closed every weekend" — ngược hẳn: tuyển người làm cuối tuần.
+Source: original

@@ -1,0 +1,23 @@
+[PASSAGE]
+City Library Notice — Temporary Closure for System Upgrade
+The Central City Library at 12 Park Road will close from Monday, November 3 to Friday, November 7 to upgrade its borrowing system. During this week, no books can be borrowed or returned at the main desk, and the reading rooms will stay open only until 6:00 P.M. each day.
+Online reservations remain available day and night, and the book drop box outside the main door can also be used at any hour. The upgrade will shorten checkout times and add self-service machines on the first floor for faster loans. We thank all readers for their patience during this short closure. For questions, please call 555-0116 on weekdays.
+
+[QUESTION]
+What is the purpose of the notice?
+(A) To announce a temporary closure for a system upgrade
+(B) To open a new library branch on Park Road
+(C) To sell old books at very low prices
+(D) To hire new librarians for the main desk
+Answer: A
+Explanation: Thông báo báo thư viện đóng cửa tạm ("will close from Monday, November 3 to Friday, November 7 to upgrade its borrowing system"). | (A) "To announce a temporary closure for a system upgrade" — đúng mục đích vừa dẫn. | (B) "To open a new library branch on Park Road" — ngược hẳn: thư viện đóng cửa một tuần. | (C) "To sell old books at very low prices" — không sách thanh lý nào được nhắc tới. | (D) "To hire new librarians for the main desk" — máy tự phục vụ được lắp thêm, không tuyển người.
+Source: original
+[QUESTION]
+What can be inferred about the closure week?
+(A) The library will lend twice as many books
+(B) Readers can still return books through the drop box
+(C) The phone line stops working all week
+(D) New books cannot be reserved online anymore
+Answer: B
+Explanation: Quầy chính không nhận trả sách ("no books can be borrowed or returned at the main desk") nhưng hòm trả ngoài cửa dùng được mọi giờ ("can also be used at any hour") nên vẫn trả được qua hòm. | (A) "The library will lend twice as many books" — bẫy: quầy chính còn ngừng cho mượn cả tuần. | (B) "Readers can still return books through the drop box" — đúng điều suy ra từ hai câu vừa dẫn. | (C) "The phone line stops working all week" — số điện thoại vẫn nhận hỏi đáp ngày thường. | (D) "New books cannot be reserved online anymore" — trái với đặt trực tuyến vẫn mở ngày đêm.
+Source: original

@@ -1,0 +1,53 @@
+[PASSAGE]
+To: Ms. Anna Bell
+From: Harbor View Hotel
+Subject: Change of Booking Dates Confirmed
+Date: March 3
+
+Dear Ms. Bell,
+
+Thank you for choosing Harbor View Hotel for your weekend stay. Your request to move the check-in date is fully ------- (1), and we have shifted your reservation to the following week as asked. Your room will be ready ------- (2) the whole weekend, and the late checkout you asked for has also been arranged. The meeting room on the second floor remains booked under your name with the same seating plan.
+
+The difference of $120 ------- (3) and should appear on your credit card within five working days. Breakfast for two guests stays included in the room rate, and free parking is available in the basement garage. ------- (4) Please reply to this email if any detail still needs correction.
+
+We look forward to welcoming you soon.
+
+Best regards,
+Kevin Marsh, Front Desk Manager
+
+[QUESTION]
+Blank (1)
+(A) crowded
+(B) noisy
+(C) confirmed
+(D) distant
+Answer: C
+Explanation: Câu mở đầu nói khách yêu cầu dời ngày nhận phòng ("Your request to move the check-in date is fully confirmed") nên yêu cầu phải được xác nhận. | (A) "crowded" — đông đúc, không nói về yêu cầu. | (B) "noisy" — ồn ào, không hợp văn cảnh. | (C) "confirmed" — được xác nhận, đúng mạch email. | (D) "distant" — xa xôi, không nói về yêu cầu dời ngày.
+Source: original
+[QUESTION]
+Blank (2)
+(A) by
+(B) at
+(C) to
+(D) during
+Answer: D
+Explanation: Phòng sẵn sàng suốt cuối tuần ("Your room will be ready during the whole weekend") nên cần giới từ chỉ khoảng thời gian. | (A) "by" — không đi với cụm kéo dài suốt cuối tuần. | (B) "at" — chỉ thời điểm, không hợp khoảng suốt cuối tuần. | (C) "to" — chỉ hướng, không diễn đạt suốt khoảng thời gian. | (D) "during" — trong suốt, đúng với phòng sẵn sàng cả cuối tuần.
+Source: original
+[QUESTION]
+Blank (3)
+(A) has been processed
+(B) has processed
+(C) processes
+(D) processing
+Answer: A
+Explanation: Khoản tiền được xử lý hoàn lại ("The difference of $120 has been processed") nên cần bị động ở hiện tại hoàn thành. | (A) "has been processed" — bị động hoàn thành, đúng vì tiền được xử lý. | (B) "has processed" — chủ động, sai vì khoản tiền không tự xử lý. | (C) "processes" — hiện tại chủ động, sai nghĩa bị động. | (D) "processing" — phân từ chủ động, không đứng một mình làm vị ngữ.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The rooftop pool is cleaned every Monday at dawn.
+(B) Our team will send the updated invoice tomorrow morning.
+(C) The flower shop next door closes at nine o'clock.
+(D) The night train leaves the station at eleven sharp.
+Answer: B
+Explanation: Đoạn trước đổi ngày nhận phòng và hoàn tiền ("we have shifted your reservation", "The difference of $120 has been processed") nên câu gửi hóa đơn cập nhật nối mạch nhất trước câu kiểm tra chi tiết. | (A) "The rooftop pool is cleaned every Monday at dawn." — hồ bơi không xuất hiện trong email. | (B) "Our team will send the updated invoice tomorrow morning." — đúng câu nối tiếp mạch đổi đặt phòng. | (C) "The flower shop next door closes at nine o'clock." — tiệm hoa không được nhắc tới. | (D) "The night train leaves the station at eleven sharp." — tàu đêm không liên quan khách sạn.
+Source: original

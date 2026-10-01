@@ -1,0 +1,7 @@
+kind: survey
+SparkleClean — March Client Survey
+Aspect | Rating | Comment
+Dusting | 2.1 | Dust found on desks
+Trash Removal | 3.8 | Bins emptied on time
+Restrooms | 2.4 | Soap missing twice
+Staff Attitude | 4.5 | Polite and friendly

@@ -1,0 +1,64 @@
+[PASSAGE]
+GreenTech Fair 2026 — Two-Day Program for Small Shops
+The GreenTech Fair for owners of small retail shops will run on June 4 and 5 at the Riverside Expo Centre. Day 1 covers online payments and delivery apps, with keynote talks from 9:00 A.M. to noon. Day 2 offers hands-on workshops on stock control and price tags, plus a technology fair with twenty booths.
+Tickets cost $30 for both days, including lunch and free parking. Visitors who register before May 20 receive a free gift set. For details, call 555-0188.
+
+[PASSAGE]
+From: sales@sellmanager.com
+To: GreenTech Fair visitors
+Subject: Try SellManager free for 30 days
+Date: May 28
+
+Dear Shop Owner,
+
+SellManager streamlines daily sales tasks such as billing, stock counts, and staff rosters. Visit our live demo at Booth 12 during the fair and get a free 30-day trial with full support. Shops that order at the fair save an extra 20% on every plan for the first year.
+
+Our team will help you move old records into the new system in one day. Reply to this email before June 3 to book your demo seat. We look forward to meeting you.
+
+Tom Beck, Sales Team
+
+[QUESTION]
+What can be inferred from the program and the email?
+(A) Entry tickets are free for every shop owner
+(B) The expo centre sells desktop computers at Booth 12
+(C) Visitors can watch a live software demo during the fair
+(D) The free trial ends one day after it starts
+Answer: C
+Explanation: Chương trình có khu công nghệ hai mươi gian ("a technology fair with twenty booths") còn thư mời xem demo trực tiếp ("Visit our live demo at Booth 12 during the fair") nên khách xem được demo phần mềm tại hội chợ. | (A) "Entry tickets are free for every shop owner" — trái với vé $30 cho hai ngày. | (B) "The expo centre sells desktop computers at Booth 12" — Booth 12 demo phần mềm, không bán máy tính. | (C) "Visitors can watch a live software demo during the fair" — đúng điều suy ra từ hai tài liệu vừa dẫn. | (D) "The free trial ends one day after it starts" — bẫy: trial miễn phí kéo dài 30 ngày, không kết thúc sau một ngày.
+Source: original
+[QUESTION]
+According to the email and the price table, which plan costs $59 per month?
+(A) The Basic plan for small teams
+(B) The Enterprise plan with full tools
+(C) The Pro plan with stock control
+(D) The Standard plan for growing shops
+Answer: D
+Explanation: Thư nói giảm giá cho every plan còn bảng giá liệt kê ("Standard | $59") nên gói $59 là Standard. | (A) "The Basic plan for small teams" — Basic giá $29, không phải $59. | (B) "The Enterprise plan with full tools" — Enterprise giá $149, không phải $59. | (C) "The Pro plan with stock control" — Pro giá $99, không phải $59. | (D) "The Standard plan for growing shops" — đúng hàng giá vừa dẫn.
+Source: original
+[QUESTION]
+What is implied about orders placed at the fair?
+(A) They cost less for the first year
+(B) They require full payment in cash at once
+(C) They arrive a full year after ordering
+(D) They include free desktop computers
+Answer: A
+Explanation: Thư hứa đặt tại hội chợ được bớt thêm ("Shops that order at the fair save an extra 20% on every plan for the first year"). | (A) "They cost less for the first year" — đúng điều suy ra từ giảm 20% vừa dẫn. | (B) "They require full payment in cash at once" — thư không hề nhắc tiền mặt hay trả một lần. | (C) "They arrive a full year after ordering" — bẫy: first year là thời gian giảm giá, không phải giao hàng. | (D) "They include free desktop computers" — máy tính không xuất hiện ở đâu.
+Source: original
+[QUESTION]
+What is NOT stated about the GreenTech Fair?
+(A) Day 1 sessions cover online payments
+(B) The riverside fair runs for a whole month
+(C) Early visitors receive a free gift set
+(D) A two-day ticket costs thirty dollars
+Answer: B
+Explanation: Chương trình có nêu ngày 1 thanh toán online, vé $30 hai ngày và quà cho người đăng ký sớm — không hội chợ nào kéo dài cả tháng. | (A) "Day 1 sessions cover online payments" — chương trình ghi Day 1 covers online payments. | (B) "The riverside fair runs for a whole month" — hội chợ chỉ diễn ra June 4 and 5. | (C) "Early visitors receive a free gift set" — chương trình ghi register before May 20 receive a free gift set. | (D) "A two-day ticket costs thirty dollars" — chương trình ghi Tickets cost $30 for both days.
+Source: original
+[QUESTION]
+In the email, the word "streamlines" in paragraph 1 is closest in meaning to
+(A) complicates
+(B) delays
+(C) simplifies
+(D) inspects
+Answer: C
+Explanation: Từ "streamlines" nằm trong cụm phần mềm gọn việc bán hàng ("SellManager streamlines daily sales tasks such as billing"). | (A) "complicates" — nghĩa làm phức tạp, ngược hẳn. | (B) "delays" — nghĩa trì hoãn, không hợp ngữ cảnh gọn việc. | (C) "simplifies" — đúng nghĩa làm đơn giản như vừa dẫn. | (D) "inspects" — nghĩa kiểm tra, sai trường nghĩa.
+Source: original

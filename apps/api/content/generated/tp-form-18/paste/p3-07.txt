@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Welcome to our sales office, Alex. This model apartment on the eighteenth floor faces the central park.
+voice: ca_male_1
+Thank you, Jessica. The view is impressive. What is the total floor area?
+voice: us_female_1
+Sixty-eight square meters, with two bedrooms and a wide balcony.
+voice: ca_male_1
+Nice. Which direction does the balcony face? I want good morning sunlight.
+voice: us_female_1
+It faces east, so you get sunshine every morning and shade in the afternoon.
+voice: ca_male_1
+Perfect. What about the monthly management fee? Is it included in the price?
+voice: us_female_1
+It is currently two dollars per square meter, but the board will raise it starting next month.
+voice: ca_male_1
+I see. So I should sign the contract sooner rather than later?
+voice: us_female_1
+That would save you money. The park-view units are selling very quickly.
+voice: ca_male_1
+All right. Can I visit the actual unit upstairs tomorrow?
+[QUESTION]
+What is the purpose of the man's visit?
+(A) To view a model apartment
+(B) To apply for a sales position
+(C) To repair a broken balcony
+(D) To measure the morning sunlight on the balcony
+Answer: A
+Explanation: Bằng chứng "Welcome to our sales office" cùng với chi tiết căn mẫu cho thấy mục đích | (A) "To view a model apartment" — đúng, căn hướng công viên tầng mười tám | (B) "To apply for a sales position" — anh ấy là người mua, không phải ứng viên | (C) "To repair a broken balcony" — bàn hướng ban công, không sửa chữa | (D) "To measure the morning sunlight on the balcony" — nắng chỉ là chi tiết, không phải mục đích
+Source: original
+[QUESTION]
+What detail is mentioned about the apartment?
+(A) It is located on the eighth floor
+(B) It has an east-facing balcony
+(C) It faces away from the park
+(D) It has only one small bedroom
+Answer: B
+Explanation: Bằng chứng "It faces east, so you get sunshine every morning" cho biết chi tiết | (A) "It is located on the eighth floor" — sai số tầng, thực tế là tầng mười tám | (B) "It has an east-facing balcony" — đúng, nắng sớm buổi sáng | (C) "It faces away from the park" — căn hộ hướng ra công viên trung tâm | (D) "It has only one small bedroom" — đã nêu có hai phòng ngủ
+Source: original
+[QUESTION]
+What does the woman imply when she says, "The board will raise it starting next month"?
+(A) The balcony will be rebuilt soon
+(B) The park view will soon disappear
+(C) The management fee will soon increase
+(D) The sales office will soon close
+Answer: C
+Explanation: Bằng chứng "It is currently two dollars per square meter" gắn với chủ đề phí quản lý | (A) "The balcony will be rebuilt soon" — không hề nhắc tới xây dựng | (B) "The park view will soon disappear" — quang cảnh là điểm bán, không đổi | (C) "The management fee will soon increase" — đúng, tăng nói tới phí | (D) "The sales office will soon close" — căn bán nhanh, không đóng cửa
+Source: original

@@ -1,0 +1,31 @@
+[SCRIPT]
+voice: au_male_1
+Good afternoon, visitors, this is Peter Walsh, manager of the Riverside Exhibition Centre, speaking from the ground-floor lobby. To reduce crowding during peak hours, we have rearranged our four service counters into two clear rows for easier access. The front row handles arrivals, while the back row supports visitors who need extra help after entry. If you have large bags or suitcases, please leave them at the left counter in the back row before entering the exhibition halls. Tickets can still be collected at the front, and our friendly staff at the other counters will be happy to guide you. Please follow the blue signs on the floor, and do not hesitate to ask any member of staff. Thank you for your cooperation, and enjoy the exhibition today.
+
+[QUESTION]
+Where is the announcement being made?
+(A) At the blue signs of a supermarket floor
+(B) In the front row of an airport terminal
+(C) In the ground-floor lobby of an exhibition centre
+(D) Inside an exhibition hall that is now closed
+Answer: C
+Explanation: Người nói mở đầu "manager of the Riverside Exhibition Centre, speaking from the ground-floor lobby". | (A) "At the blue signs of a supermarket floor" — biển xanh ("blue signs") chỉ là chỉ dẫn, không có siêu thị nào: đúng từ, sai chỗ. | (B) "In the front row of an airport terminal" — hàng trước ("front row") là dãy quầy, không có sân bay nào: đúng từ, sai bối cảnh. | (C) "In the ground-floor lobby of an exhibition centre" — đúng nơi phát thông báo tại sảnh tầng trệt. | (D) "Inside an exhibition hall that is now closed" — sảnh triển lãm vẫn mở ("enjoy the exhibition"), loa phát ở sảnh ngoài: đúng từ, sai quan hệ.
+Source: original
+[QUESTION]
+Look at the graphic. Where should visitors with large bags go?
+(A) Ticket Counter (front row, left)
+(B) Information Counter (front row, right)
+(C) Customer Support Counter (back row, right)
+(D) Left-Luggage Counter (back row, left)
+Answer: D
+Explanation: "Left-Luggage Counter (back row, left)" — đúng quầy khi ghép chỗ được nêu trong thoại ("the left counter in the back row") với vị trí trên hình. | (A) "Ticket Counter (front row, left)" — quầy vé đúng hàng trước bên trái nhưng không phải quầy gửi đồ. | (B) "Information Counter (front row, right)" — quầy thông tin ở hàng trước bên phải, không phải quầy gửi đồ hàng sau. | (C) "Customer Support Counter (back row, right)" — quầy hỗ trợ đúng ở hàng sau nhưng bên phải, sai phía trái được nêu. | (D) "Left-Luggage Counter (back row, left)" — đúng quầy khi ghép mô tả thoại với vị trí trên hình.
+Source: original
+[QUESTION]
+Why were the service counters rearranged?
+(A) To reduce crowding during peak hours
+(B) To close the exhibition halls during peak hours
+(C) To sell tickets beside the blue signs
+(D) To remove the blue signs from the floor
+Answer: A
+Explanation: "To reduce crowding during peak hours" — đúng lý do giảm ùn tắc giờ cao điểm ("To reduce crowding during peak hours"). | (A) "To reduce crowding during peak hours" — đúng lý do giảm ùn tắc giờ cao điểm. | (B) "To close the exhibition halls during peak hours" — sảnh vẫn mở ("enjoy the exhibition"), ngược hẳn ý sắp xếp lại. | (C) "To sell tickets beside the blue signs" — vé vẫn lấy phía trước ("Tickets can still be collected at the front"), còn biển xanh chỉ là chỉ dẫn đi theo: gộp sai hai chi tiết. | (D) "To remove the blue signs from the floor" — biển xanh là thứ cần đi theo, không phải thứ dỡ bỏ: đúng từ, sai việc.
+Source: original

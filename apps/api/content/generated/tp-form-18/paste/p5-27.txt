@@ -1,0 +1,9 @@
+[QUESTION]
+The trade-fair organizers issued entry passes to vendors so that they could introduce their products ------- to visiting customers.
+(A) themselves
+(B) theirs
+(C) they
+(D) them
+Answer: A
+Explanation: Sau tân ngữ chỉ sản phẩm cần đại từ nhấn mạnh chính người bán tự giới thiệu. | (A) "themselves" — là đại từ phản thân nhấn mạnh, hợp nghĩa gian hàng tự giới thiệu. | (B) "theirs" — là đại từ sở hữu, không đứng sau tân ngữ theo nghĩa này. | (C) "they" — là chủ ngữ, không đứng cuối mệnh đề làm từ nhấn mạnh. | (D) "them" — là tân ngữ, gây trùng lặp tân ngữ trong cùng mệnh đề.
+Source: original

@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Good afternoon. Thank you for meeting me here at the office about the year-end party for one hundred twenty guests.
+voice: ca_male_1
+Good afternoon. Yes, we need a full package with dinner, music, and a stage for speeches.
+voice: uk_female_1
+We offer four packages. The Basic is forty-five million, and the Standard is sixty-eight million dong.
+voice: ca_male_1
+What do the higher tiers include?
+voice: uk_female_1
+The Premium is ninety-two million with live band, and the Deluxe is one hundred twenty million with fireworks.
+voice: ca_male_1
+Our budget is around seventy million. The Deluxe with fireworks sounds exciting, though.
+voice: uk_female_1
+It is impressive, but it would exceed your budget by fifty million. The Standard already includes dinner, music, and the stage you need.
+voice: ca_male_1
+That makes sense. Let us go with the Standard package then.
+voice: uk_female_1
+Great choice. I will send the contract and the stage layout tomorrow.
+voice: ca_male_1
+Thank you. Please include vegetarian options for about twenty guests.
+[QUESTION]
+What is the conversation mainly about?
+(A) Ordering office lunch delivery
+(B) Booking wedding fireworks display
+(C) Hiring a live band for a concert
+(D) Planning a year-end party package
+Answer: D
+Explanation: Bằng chứng "about the year-end party for one hundred twenty guests" nêu rõ chủ đề | (A) "Ordering office lunch delivery" — tiệc tối, không phải đặt cơm trưa | (B) "Booking wedding fireworks display" — pháo hoa thuộc gói đắt nhất, sự kiện là tiệc | (C) "Hiring a live band for a concert" — ban nhạc chỉ thuộc một gói cao hơn | (D) "Planning a year-end party package" — đúng, chọn hạng gói
+Source: original
+[QUESTION]
+What detail is mentioned about the Standard package?
+(A) It covers dinner, music, and stage
+(B) It lacks a stage for speeches
+(C) It includes fireworks and band
+(D) It costs forty-five million dong
+Answer: A
+Explanation: Bằng chứng "The Standard already includes dinner, music, and the stage you need" là lời nói trực tiếp | (A) "It covers dinner, music, and stage" — đúng, vừa nhu cầu trong ngân sách | (B) "It lacks a stage for speeches" — ngược lại, đã bao gồm sân khấu | (C) "It includes fireworks and band" — hai món đó thuộc hai gói cao hơn | (D) "It costs forty-five million dong" — đó là giá của gói rẻ nhất
+Source: original
+[QUESTION]
+Look at the graphic. Which party package did the speakers choose?
+(A) Basic
+(B) Standard
+(C) Premium
+(D) Deluxe
+Answer: B
+Explanation: Bằng chứng "Let us go with the Standard package then" vừa với ngân sách bảy mươi triệu | (A) "Basic" — hạng rẻ nhất, không được chọn | (B) "Standard" — đúng, gồm ăn tối nhạc và sân khấu | (C) "Premium" — vượt ngân sách vì có ban nhạc | (D) "Deluxe" — vượt xa ngân sách vì có pháo hoa
+Source: original

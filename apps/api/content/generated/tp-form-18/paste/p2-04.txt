@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why do I need to bring my old files for the follow-up visit?
+voice: ca_male_1
+(A) It is our archiving policy for returning patients.
+(B) The old building will be repainted soon.
+(C) You should file your insurance claim first.
+Answer: A
+Explanation: Câu hỏi tìm lý do mang hồ sơ cũ khi tái khám, đáp án đúng giải thích quy định lưu trữ | (A) "It is our archiving policy for returning patients." - giải thích quy định về hồ sơ | (B) "The old building will be repainted soon." - dùng lại chữ old với việc sửa chữa không liên quan | (C) "You should file your insurance claim first." - dùng lại chữ file với nghĩa khác
+Source: original

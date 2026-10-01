@@ -1,0 +1,60 @@
+[PASSAGE]
+From: hr@meridian-retail.com
+To: All sales staff
+Subject: Sales Skills Training in November
+Date: October 20
+
+Dear Team,
+
+Our November sales skills course will run on four Friday afternoons, from 2:00 P.M. to 5:00 P.M. The course covers greeting customers, handling complaints, and closing sales. A short appraisal form must be finished after every session. Attendance at all four sessions is required for staff hired this year, and a certificate will be given at the end.
+
+The first three sessions will meet in Room 402. The final session on November 28 will meet in Room 305, where the closing-sales contest will be held. Please bring your staff ID card and arrive ten minutes early. Confirm your place by replying to this email before October 27. Employees who complete all four sessions will receive priority scheduling for the December holiday shifts and a meal voucher. If you have questions, call Ms. Hana Yoo at 555-0128.
+
+Best regards,
+Peter Han, HR Manager
+
+[QUESTION]
+What is the purpose of the email?
+(A) To invite sales staff to a November training course
+(B) To dismiss part-time cashiers at the branches
+(C) To sell tickets for the closing-sales contest
+(D) To close Room 402 for urgent repairs
+Answer: A
+Explanation: Thư mở đầu mời dự khóa học ("Our November sales skills course will run on four Friday afternoons"). | (A) "To invite sales staff to a November training course" — đúng mục đích vừa dẫn. | (B) "To dismiss part-time cashiers at the branches" — thư không sa thải ai. | (C) "To sell tickets for the closing-sales contest" — cuộc thi nằm trong khóa học, không bán vé. | (D) "To close Room 402 for urgent repairs" — Room 402 là nơi học ba buổi đầu, không bị đóng.
+Source: original
+[QUESTION]
+What must staff hired this year do?
+(A) Teach the opening session on November 7
+(B) Attend all four sessions of the course
+(C) Pay an extra fee for the certificate
+(D) Arrive after five o'clock on Fridays
+Answer: B
+Explanation: Thư yêu cầu dự đủ ("Attendance at all four sessions is required for staff hired this year"). | (A) "Teach the opening session on November 7" — buổi mở đầu do Ms. Hana Yoo dạy, không phải học viên. | (B) "Attend all four sessions of the course" — đúng yêu cầu vừa dẫn. | (C) "Pay an extra fee for the certificate" — chứng chỉ phát cuối khóa, thư không thu phí. | (D) "Arrive after five o'clock on Fridays" — trái với khóa học từ 2 giờ tới 5 giờ chiều.
+Source: original
+[QUESTION]
+What can be inferred about the course?
+(A) Trainers work only on Friday mornings
+(B) The program welcomes outside shoppers
+(C) Room 305 hosts every single session
+(D) Staff who miss a session may miss the certificate
+Answer: D
+Explanation: Thư bắt dự đủ bốn buổi ("Attendance at all four sessions is required") và chứng chỉ phát cuối khóa ("a certificate will be given at the end") nên vắng một buổi có thể mất chứng chỉ. | (A) "Trainers work only on Friday mornings" — trái với khóa học chiều thứ Sáu 2 giờ tới 5 giờ. | (B) "The program welcomes outside shoppers" — khóa học dành cho nhân viên bán hàng, không phải khách mua ngoài. | (C) "Room 305 hosts every single session" — bẫy: chỉ buổi cuối November 28 họp ở Room 305. | (D) "Staff who miss a session may miss the certificate" — đúng điều suy ra từ hai câu vừa dẫn.
+Source: original
+[QUESTION]
+According to the email and the schedule, where will the November 21 session meet?
+(A) In Room 305 with Ms. Hana Yoo
+(B) In Room 101 near the main hall
+(C) In Room 402 with the group
+(D) In the second-floor cafeteria
+Answer: C
+Explanation: Lịch xếp phiên November 21 vào ô Room 402 ("Closing Sales |  |  | Room 402 |") và thư ghi ba buổi đầu họp ở Room 402 ("The first three sessions will meet in Room 402") nên ra đúng phòng. | (A) "In Room 305 with Ms. Hana Yoo" — là phòng của buổi cuối November 28, không phải phiên này. | (B) "In Room 101 near the main hall" — phòng này không xuất hiện ở đâu. | (C) "In Room 402 with the group" — đúng phòng ba buổi đầu vừa dẫn. | (D) "In the second-floor cafeteria" — căng tin không phải phòng học.
+Source: original
+[QUESTION]
+In the email, the word "appraisal" in paragraph 1 is closest in meaning to
+(A) journey
+(B) receipt
+(C) holiday
+(D) evaluation
+Answer: D
+Explanation: Từ "appraisal" nằm trong cụm phiếu đánh giá sau mỗi buổi ("A short appraisal form must be finished after every session"). | (A) "journey" — nghĩa hành trình, sai trường nghĩa. | (B) "receipt" — nghĩa biên lai, không hợp phiếu sau buổi học. | (C) "holiday" — nghĩa kỳ nghỉ, sai hẳn ngữ cảnh. | (D) "evaluation" — đúng nghĩa đánh giá như vừa dẫn.
+Source: original

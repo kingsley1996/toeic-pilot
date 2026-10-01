@@ -1,0 +1,75 @@
+[PASSAGE]
+From: Ms. Karen Doyle, Bright Office Co.
+To: SparkleClean Services
+Subject: Poor cleaning service on March 3
+Date: March 5
+
+Dear Ms. Frost,
+
+Your team cleaned our office on the evening of March 3, but the result was far below our contract. There was still dust on the desks, the bins on the second floor were full, and the restrooms had no soap or paper towels. Two of our meeting rooms were left unlocked overnight, which worries us greatly.
+
+We pay $600 a month for daily cleaning and expect much better. Please send a supervisor to inspect our office at 9:00 A.M. on March 10 and fix every problem the same week. If nothing improves, we will end the contract in April.
+
+Yours sincerely,
+Karen Doyle
+
+[PASSAGE]
+From: Ms. Anna Frost, SparkleClean Services
+To: Ms. Karen Doyle
+Subject: Our apology and action plan
+Date: March 7
+
+Dear Ms. Doyle,
+
+Thank you for your letter of March 5. Please accept our apology for the poor cleaning on March 3. The regular team leader was sick that evening, and a new helper missed several tasks on his checklist.
+
+To rectify the problems, we will clean your whole office again free of charge on March 9, assign a supervisor to check the work every evening, and cut 15% off your April bill. I will also call you on March 10 after the inspection. We value your contract and hope to keep your trust.
+
+Best regards,
+Anna Frost
+
+[QUESTION]
+What can be inferred from the two letters?
+(A) The client ended the cleaning contract in April
+(B) The company admitted the fault and offered free remedies
+(C) The March 10 inspection visit was cancelled
+(D) Trash removal earned the worst survey score
+Answer: B
+Explanation: Thư thứ nhất chê bụi còn trên bàn ("There was still dust on the desks") còn thư thứ hai hứa dọn lại miễn phí ("we will clean your whole office again free of charge") nên công ty nhận lỗi và bù đắp. | (A) "The client ended the cleaning contract in April" — bẫy: hủy hợp đồng chỉ là lời dọa nếu không cải thiện. | (B) "The company admitted the fault and offered free remedies" — đúng điều suy ra từ hai thư vừa dẫn. | (C) "The March 10 inspection visit was cancelled" — ngược hẳn: thư hẹn gọi sau buổi kiểm tra March 10. | (D) "Trash removal earned the worst survey score" — bẫy đúng-nhưng-trả-lời-câu-khác: thấp nhất là Dusting 2.1, không phải Trash Removal.
+Source: original
+[QUESTION]
+What is NOT stated in the two letters?
+(A) The bins on the second floor were full
+(B) A supervisor will inspect the office on March 10
+(C) SparkleClean opened a new branch downtown
+(D) The April bill will be cut by fifteen percent
+Answer: C
+Explanation: Hai thư có nêu thùng rác đầy tầng hai, giám sát kiểm tra March 10 và giảm 15% hóa đơn April — không chi nhánh mới nào. | (A) "The bins on the second floor were full" — thư thứ nhất ghi bins on the second floor were full. | (B) "A supervisor will inspect the office on March 10" — thư thứ nhất hẹn inspect at 9:00 A.M. on March 10. | (C) "SparkleClean opened a new branch downtown" — không thư nào nhắc chi nhánh mới. | (D) "The April bill will be cut by fifteen percent" — thư thứ hai hứa cut 15% off your April bill.
+Source: original
+[QUESTION]
+In the second letter, the word "rectify" in paragraph 2 is closest in meaning to
+(A) repeat
+(B) delay
+(C) ignore
+(D) correct
+Answer: D
+Explanation: Từ "rectify" nằm trong cụm hứa khắc phục ("To rectify the problems, we will clean your whole office again"). | (A) "repeat" — nghĩa lặp lại, sai hướng sửa chữa. | (B) "delay" — nghĩa trì hoãn, không hợp ngữ cảnh dọn bù. | (C) "ignore" — nghĩa bỏ qua, ngược hẳn. | (D) "correct" — đúng nghĩa sửa cho đúng như vừa dẫn.
+Source: original
+[QUESTION]
+According to the survey, which aspect received the lowest rating?
+(A) Dusting at only two point one
+(B) Restrooms without soap on two days
+(C) Trash Removal with a full comment list
+(D) Staff Attitude from polite workers
+Answer: A
+Explanation: Bảng khảo sát liệt kê Dusting 2.1 thấp nhất ("Dusting | 2.1 | Dust found on desks") dưới Restrooms 2.4. | (A) "Dusting at only two point one" — đúng hàng điểm thấp nhất vừa dẫn. | (B) "Restrooms without soap on two days" — Restrooms được 2.4, cao hơn Dusting. | (C) "Trash Removal with a full comment list" — Trash Removal được 3.8, không phải thấp nhất. | (D) "Staff Attitude from polite workers" — thái độ nhân viên được 4.5 cao nhất.
+Source: original
+[QUESTION]
+What does the survey suggest about the March 3 cleaning?
+(A) Restrooms earned the highest rating overall
+(B) It confirms the client's complaint about dust
+(C) Office trash was never removed that week
+(D) Cleaning staff were rude to the client
+Answer: B
+Explanation: Phiếu ghi bụi trên bàn ("Dust found on desks") khớp lời chê của khách ("There was still dust on the desks") nên khảo sát củng cố khiếu nại về bụi. | (A) "Restrooms earned the highest rating overall" — trái với cao nhất là Staff Attitude 4.5. | (B) "It confirms the client's complaint about dust" — đúng điều suy ra từ hai chỗ vừa dẫn. | (C) "Office trash was never removed that week" — bẫy quá đà: Trash Removal được 3.8 với bins emptied on time. | (D) "Cleaning staff were rude to the client" — ngược với Polite and friendly 4.5.
+Source: original

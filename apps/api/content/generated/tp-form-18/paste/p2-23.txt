@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Should I keep my old ticket for a change or buy a completely new one?
+voice: ca_male_1
+(A) The airport is crowded this morning.
+(B) Keep the old one; the change fee is much lower.
+(C) New tickets are printed on blue paper.
+Answer: B
+Explanation: Câu hỏi chọn giữ vé cũ để đổi hay mua vé mới hoàn toàn, đáp án đúng khuyên giữ vé cũ kèm lý do | (A) "The airport is crowded this morning." - lạc đề về đám đông | (B) "Keep the old one; the change fee is much lower." - khuyên giữ vé cũ kèm lý do | (C) "New tickets are printed on blue paper." - dùng lại chữ new với chi tiết giấy in
+Source: original

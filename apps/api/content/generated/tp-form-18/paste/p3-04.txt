@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Welcome, David. Let us take a look at the kitchen together. You mentioned a leak, right?
+voice: au_male_1
+Yes, thank you, Mrs. Brown. There is water pooling under the sink every morning.
+voice: uk_female_1
+I see it. The pipe joint looks worn out. Did you notice when it started?
+voice: au_male_1
+About three days ago. I put a bucket underneath to catch the drips.
+voice: uk_female_1
+Good thinking. I will call our usual plumber to replace the whole joint.
+voice: au_male_1
+Will the repair cost come out of my deposit? I hope not.
+voice: uk_female_1
+No, do not worry. Plumbing wear and tear is the landlord's responsibility.
+voice: au_male_1
+That is a relief. When will the plumber arrive?
+voice: uk_female_1
+Well, she promised this afternoon, but she just texted that her van broke down.
+voice: au_male_1
+So she cannot make it today at all?
+[QUESTION]
+Why are the speakers together in the kitchen?
+(A) To replace the whole pipe joint themselves
+(B) To return the tenant's deposit in the kitchen
+(C) To collect drips with a bucket for the plumber
+(D) To inspect a water leak
+Answer: D
+Explanation: Bằng chứng "There is water pooling under the sink every morning" cho biết lý do họ gặp nhau | (A) "To replace the whole pipe joint themselves" — thợ sửa sẽ thay, họ chỉ kiểm tra | (B) "To return the tenant's deposit in the kitchen" — tiền cọc không bị động tới, chủ nhà trả tiền sửa | (C) "To collect drips with a bucket for the plumber" — xô chỉ là hứng tạm trước đó, không phải mục đích | (D) "To inspect a water leak" — đúng, kiểm tra chỗ rò rỉ dưới bồn rửa
+Source: original
+[QUESTION]
+What detail is mentioned about the repair cost?
+(A) The landlord covers plumbing wear and tear
+(B) The repair cost comes out of the tenant's deposit
+(C) The plumber will waive the joint replacement charge
+(D) The van breakdown adds half to the deposit deduction
+Answer: A
+Explanation: Bằng chứng "Plumbing wear and tear is the landlord's responsibility" nêu rõ chi phí | (A) "The landlord covers plumbing wear and tear" — đúng, chủ nhà chi trả | (B) "The repair cost comes out of the tenant's deposit" — sai, khách thuê lo lắng nhưng đã được trấn an | (C) "The plumber will waive the joint replacement charge" — sai, không hề nhắc tới miễn phí | (D) "The van breakdown adds half to the deposit deduction" — sai, xe hỏng chỉ làm chậm buổi hẹn
+Source: original
+[QUESTION]
+What does the woman imply when she says, "She just texted that her van broke down"?
+(A) The plumber bought a new van this afternoon
+(B) The plumber will not come today
+(C) The tenant should replace the joint with a bucket
+(D) The plumber finished the joint replacement early
+Answer: B
+Explanation: Bằng chứng "she promised this afternoon" cùng với sự cố xe báo hiệu sự chậm trễ | (A) "The plumber bought a new van this afternoon" — xe bị hỏng, không phải mua mới | (B) "The plumber will not come today" — đúng, xe hỏng nên thợ không tới được | (C) "The tenant should replace the joint with a bucket" — cô ấy sẽ gọi thợ, không phải tự sửa | (D) "The plumber finished the joint replacement early" — việc sửa còn chưa bắt đầu
+Source: original

@@ -1,0 +1,5 @@
+kind: schedule
+Lịch xem căn hộ chiều thứ Bảy
+Người | 9h | 11h | 14h | 16h
+Lan | Rảnh | Bận | Rảnh | Rảnh
+Minh | Rảnh | Rảnh | Bận | Rảnh

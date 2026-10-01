@@ -1,0 +1,46 @@
+[PASSAGE]
+Customer Review: My New BrewMaster Home Coffee Maker
+By Thomas Reed
+
+I bought the BrewMaster coffee maker three weeks ago after my old machine broke down. It brews a full pot in under five minutes and keeps it ------- (1) for two hours without tasting burnt. I am very pleased ------- (2) the rich flavour, and guests always ask which beans I use. The buttons are large and clearly marked, so even my father can make coffee by himself.
+
+------- (3), the machine is quite noisy early in the morning, and the water tank is smaller than I expected. I must fill it twice when friends come over at the weekend. Cleaning takes only a few minutes because every part comes off easily. The carafe pours smoothly without dripping, and the cord easily reaches my kitchen counter. ------- (4)
+
+For the price, this is still the best coffee maker I have owned, and I would buy it again.
+
+[QUESTION]
+Blank (1)
+(A) wooden
+(B) loud
+(C) warm
+(D) late
+Answer: C
+Explanation: Bình cà phê giữ được độ nóng ("keeps it warm for two hours without tasting burnt") nên cần tính từ chỉ nhiệt độ. | (A) "wooden" — bằng gỗ, vô nghĩa với chất lỏng. | (B) "loud" — ồn, không đi với giữ bình cà phê. | (C) "warm" — ấm, đúng với giữ nóng bình cà phê. | (D) "late" — muộn, không hợp văn cảnh giữ nóng.
+Source: original
+[QUESTION]
+Blank (2)
+(A) on
+(B) for
+(C) to
+(D) with
+Answer: D
+Explanation: Cụm tính từ hài lòng đi với giới từ cố định ("I am very pleased with the rich flavour") nên cần giới từ đúng. | (A) "on" — không đi với pleased theo nghĩa hài lòng. | (B) "for" — chỉ mục đích, không đi với pleased. | (C) "to" — chỉ hướng, sai cụm cố định. | (D) "with" — đúng cụm pleased with chỉ sự hài lòng.
+Source: original
+[QUESTION]
+Blank (3)
+(A) However
+(B) Moreover
+(C) Therefore
+(D) Otherwise
+Answer: A
+Explanation: Câu trước khen nút bấm dễ dùng ("even my father can make coffee by himself") mà câu này chê ồn nên cần liên từ tương phản. | (A) "However" — tương phản, đúng mối quan hệ khen chê. | (B) "Moreover" — bổ sung cùng hướng, sai vì hai câu ngược nhau. | (C) "Therefore" — kết quả, sai vì câu sau không phải hệ quả của khen. | (D) "Otherwise" — nếu không thì, sai vì câu trước không phải điều kiện.
+Source: original
+[QUESTION]
+Blank (4)
+(A) The train station is ten minutes away on foot.
+(B) The shop offers free beans for the first month after purchase.
+(C) The cinema next door sells tickets until midnight.
+(D) The post office closes early on Saturday afternoons.
+Answer: B
+Explanation: Cả bài là đánh giá khen máy pha cà phê ("the best coffee maker I have owned") nên câu cửa hàng tặng hạt dùng thử nối mạch nhất. | (A) "The train station is ten minutes away on foot." — ga tàu không xuất hiện trong bài. | (B) "The shop offers free beans for the first month after purchase." — đúng câu nối tiếp mạch đánh giá máy. | (C) "The cinema next door sells tickets until midnight." — rạp phim không liên quan máy pha cà phê. | (D) "The post office closes early on Saturday afternoons." — bưu điện không được nhắc tới.
+Source: original

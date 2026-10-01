@@ -1,0 +1,31 @@
+[PASSAGE]
+BrightHome Customer Support Chat — Order #HB-3390
+Customer Tina Vo [Tuesday 9:14 A.M.]
+Hello, my order arrived this morning, but two coffee mugs are missing from the box. The packing list shows six mugs, yet I count only four.
+Agent Sam Reed [Tuesday 9:16 A.M.]
+I am sorry about that, Ms. Vo. I can see your order on my screen. We will send the two missing mugs by express delivery tomorrow morning.
+Customer Tina Vo [Tuesday 9:19 A.M.]
+Thank you. Must I stay home to receive them?
+Agent Sam Reed [Tuesday 9:21 A.M.]
+There is no need to stay home. The driver will leave the small box with your building guard and call you before arrival.
+Customer Tina Vo [Tuesday 9:24 A.M.]
+Great. My guard sits near the front gate until 6:00 P.M. every day.
+
+[QUESTION]
+According to the chat, what is the problem with the order?
+(A) Six mugs arrived cracked and broken
+(B) The whole order never arrived at all
+(C) Two coffee mugs are missing from the box
+(D) The packing list itself is missing
+Answer: C
+Explanation: Khách báo thiếu hàng ("two coffee mugs are missing from the box") dù phiếu ghi sáu chiếc. | (A) "Six mugs arrived cracked and broken" — bẫy: sáu là số trên phiếu, hàng vỡ không được nhắc. | (B) "The whole order never arrived at all" — ngược hẳn: hàng đã tới sáng nay, chỉ thiếu hai chiếc. | (C) "Two coffee mugs are missing from the box" — đúng sự cố vừa dẫn. | (D) "The packing list itself is missing" — phiếu vẫn có nên khách mới đọc được số sáu.
+Source: original
+[QUESTION]
+At 9:21 A.M., what does Mr. Reed mean when he writes, "There is no need to stay home"?
+(A) The express redelivery has been cancelled
+(B) Tina must wait at the front gate all day
+(C) The building guard will pay for the missing mugs
+(D) Tina can go out; the driver will leave the box with the guard
+Answer: D
+Explanation: Câu quyết định nguyên văn: "There is no need to stay home. The driver will leave the small box with your building guard and call you before arrival." | (A) "The express redelivery has been cancelled" — ngược hẳn: hàng bù vẫn gửi sáng mai. | (B) "Tina must wait at the front gate all day" — ngược với khỏi cần ở nhà. | (C) "The building guard will pay for the missing mugs" — bảo vệ chỉ nhận hộ hộp, không trả tiền. | (D) "Tina can go out; the driver will leave the box with the guard" — đúng ý câu vừa dẫn.
+Source: original

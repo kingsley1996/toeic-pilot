@@ -1,0 +1,9 @@
+[QUESTION]
+Customers may bring blenders with defective motors to the counter to have them ------- under the one-year warranty policy.
+(A) replaced
+(B) repainted
+(C) applauded
+(D) sharpened
+Answer: A
+Explanation: Chỗ trống cần phân từ hai nghĩa đổi mới đi với tân ngữ chỉ máy lỗi thuộc diện bảo hành. | (A) "replaced" — nghĩa thay thế bằng máy mới, hợp collocation "replace defective goods". | (B) "repainted" — nghĩa sơn lại, thuộc trường bề mặt chứ không hợp chính sách đổi máy lỗi. | (C) "applauded" — nghĩa vỗ tay khen, thuộc trường hành vi chứ không nhận tân ngữ máy móc. | (D) "sharpened" — nghĩa mài sắc, thuộc trường dao kéo chứ không đi với máy xay được đổi mới.
+Source: original

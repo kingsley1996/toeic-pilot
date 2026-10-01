@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Should we sign one contract for the whole project or split it by phase?
+voice: us_female_1
+(A) Let's split it by phase to reduce the risk.
+(B) The project manager is on leave.
+(C) We split the lunch bill yesterday.
+Answer: A
+Explanation: Câu hỏi chọn ký một hợp đồng duy nhất hay chia theo giai đoạn, đáp án đúng chọn chia giai đoạn kèm lý do | (A) "Let's split it by phase to reduce the risk." - chọn một phương án kèm lý do | (B) "The project manager is on leave." - lạc đề về việc vắng mặt | (C) "We split the lunch bill yesterday." - dùng lại chữ split với hóa đơn không liên quan
+Source: original

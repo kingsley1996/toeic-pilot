@@ -1,0 +1,9 @@
+[QUESTION]
+Passengers booked on the evening flight to Da Nang must proceed to the departure gate ------- ground staff are checking travel documents.
+(A) which
+(B) whose
+(C) what
+(D) where
+Answer: D
+Explanation: Sau danh từ chỉ địa điểm trước mệnh đề đầy đủ cần trạng từ quan hệ chỉ nơi chốn. | (A) "which" — làm chủ ngữ hoặc tân ngữ, không nối địa điểm với mệnh đề đầy đủ. | (B) "whose" — chỉ sở hữu và đứng trước danh từ, sai cấu trúc ở đây. | (C) "what" — không phải đại từ quan hệ, không nối được hai mệnh đề. | (D) "where" — chỉ nơi chốn, hợp với tiền ngữ "departure gate".
+Source: original

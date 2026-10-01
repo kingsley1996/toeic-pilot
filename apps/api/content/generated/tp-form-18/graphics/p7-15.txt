@@ -1,0 +1,8 @@
+kind: table
+Invoice #IV-207 — Items
+Item | Amount
+Printer paper, 20 boxes | $220
+Ballpoint pens, 200 pieces | $96
+File folders, 150 pieces | $120
+Desk staplers, 10 pieces | $50
+Total | $486

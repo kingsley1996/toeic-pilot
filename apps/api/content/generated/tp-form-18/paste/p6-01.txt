@@ -1,0 +1,49 @@
+[PASSAGE]
+Weekend Air-Conditioning Maintenance — A Notice From the Building Manager
+
+Dear Residents,
+
+The central air-conditioning system on all floors will be serviced this coming weekend. ------- (1) the technicians will work as quietly as possible, residents may still hear some noise on Saturday afternoon. The detailed timetable is ------- (2) on the noticeboard in the lobby, so please check the exact hours for your own floor. All filters in the hallways will be replaced, and the rooftop units will be cleaned at the same time.
+
+Please keep your windows closed while the work continues so that dust does not enter your rooms. Residents who hear strange sounds from the vents should call the office before Friday evening. ------- (3) The power supply to the upper floors may be switched off for short periods during the tests, and the elevators will run as usual.
+
+The whole system ------- (4) by Sunday evening, and normal cooling should return before Monday morning. Thank you for your patience and cooperation.
+
+Daniel Ford, Building Manager
+
+[QUESTION]
+Blank (1)
+(A) Because
+(B) Unless
+(C) Although
+(D) Since
+Answer: C
+Explanation: Câu sau nói kỹ thuật viên sẽ làm êm nhất có thể mà khách vẫn có thể nghe tiếng ồn ("the technicians will work as quietly as possible, residents may still hear some noise on Saturday afternoon") nên cần liên từ nhượng bộ. | (A) "Because" — chỉ nguyên nhân, sai vì vế sau là sự nhượng bộ chứ không phải kết quả. | (B) "Unless" — đưa điều kiện, sai vì câu không đặt điều kiện nào. | (C) "Although" — nhượng bộ, đúng với cặp làm êm mà vẫn ồn. | (D) "Since" — chỉ nguyên nhân, sai mạch nhượng bộ của câu.
+Source: original
+[QUESTION]
+Blank (2)
+(A) repaired
+(B) folded
+(C) borrowed
+(D) displayed
+Answer: D
+Explanation: Thời gian biểu chi tiết được dán ở bảng tin ("The detailed timetable is displayed on the noticeboard in the lobby") nên cần phân từ hợp với bảng tin. | (A) "repaired" — sửa chữa, không hợp với tờ lịch dán tường. | (B) "folded" — gấp lại, không đi với dán bảng tin. | (C) "borrowed" — mượn, vô nghĩa với thời gian biểu. | (D) "displayed" — trưng bày, đúng với thời gian biểu trên bảng tin.
+Source: original
+[QUESTION]
+Blank (3)
+(A) Our staff will note your room number and send someone the same day.
+(B) Parking fines must be paid within ten days at the office.
+(C) The holiday concert in the lobby is planned for December.
+(D) The basement gym opens early on weekends for members.
+Answer: A
+Explanation: Đoạn trước dặn gọi văn phòng khi nghe tiếng lạ ("Residents who hear strange sounds from the vents should call the office before Friday evening") nên câu ghi nhận số phòng và cử người trong ngày nối mạch nhất. | (A) "Our staff will note your room number and send someone the same day." — đúng câu nối tiếp mạch gọi báo tiếng lạ. | (B) "Parking fines must be paid within ten days at the office." — phạt đậu xe không được nhắc tới. | (C) "The holiday concert in the lobby is planned for December." — hòa nhạc không liên quan bảo trì điều hòa. | (D) "The basement gym opens early on weekends for members." — phòng gym không xuất hiện trong thông báo.
+Source: original
+[QUESTION]
+Blank (4)
+(A) serviced
+(B) will be serviced
+(C) services
+(D) is servicing
+Answer: B
+Explanation: Hệ thống xong trước tối Chủ nhật ("The whole system will be serviced by Sunday evening") mà thông báo viết giữa tuần nên cần tương lai bị động. | (A) "serviced" — quá khứ, sai vì việc chưa xảy ra. | (B) "will be serviced" — tương lai bị động, đúng với hệ thống được bảo trì. | (C) "services" — chủ động ngôi ba, sai vì hệ thống được bảo trì. | (D) "is servicing" — tiếp diễn chủ động, sai nghĩa bị động cần có.
+Source: original

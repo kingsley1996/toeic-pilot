@@ -1,0 +1,9 @@
+[QUESTION]
+The morning radio weather bulletin predicts that the heavy rain will last ------- three days across the coastal region.
+(A) during
+(B) since
+(C) from
+(D) for
+Answer: D
+Explanation: Trước cụm số lượng ngày chỉ khoảng thời gian kéo dài cần giới từ chỉ thời lượng. | (A) "during" — đi với cụm danh từ xác định, không đi với số lượng ngày trần. | (B) "since" — đi với mốc bắt đầu, không đi với khoảng thời gian kéo dài. | (C) "from" — chỉ điểm xuất phát, không diễn tả thời lượng ba ngày. | (D) "for" — tạo cụm "last for three days", hợp nghĩa mưa kéo dài.
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) A ball is lying on the ground near the fence of an empty playground.
+(B) A man is walking his dog across the playground.
+(C) Children are riding bicycles around the fountain.
+(D) Workers are installing a new swing set in the park.
+Answer: A
+Explanation: Trong ảnh sân chơi vắng người, có cầu trượt, xích đu và một quả bóng cạnh hàng rào | (A) "A ball is lying on the ground near the fence of an empty playground." — đúng | (B) "A man is walking his dog across the playground." — không có người đàn ông nào và không có con chó nào | (C) "Children are riding bicycles around the fountain." — không có trẻ em, không xe đạp, không đài phun nước | (D) "Workers are installing a new swing set in the park." — không có công nhân nào và thiết bị đã lắp cố định
+Source: original

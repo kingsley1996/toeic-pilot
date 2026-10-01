@@ -1,0 +1,9 @@
+[QUESTION]
+The travel agency announced the extension fee for the 16-seat rental cars ------- to business trips in the central region.
+(A) application
+(B) applicable
+(C) apply
+(D) applied
+Answer: B
+Explanation: Sau danh từ chỉ mức phí trước cụm giới từ cần tính từ bổ nghĩa. | (A) "application" — là danh từ, không bổ nghĩa trực tiếp cho danh từ đứng trước. | (B) "applicable" — là tính từ nghĩa được áp dụng, hợp cụm "applicable to trips". | (C) "apply" — là động từ nguyên thể, sai từ loại ở vị trí này. | (D) "applied" — là phân từ hai, không tạo collocation tính từ với giới từ này.
+Source: original
