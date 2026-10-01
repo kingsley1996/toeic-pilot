@@ -120,8 +120,11 @@ function DoorWithSign({ text, bg }: { text: string; bg: string }) {
   );
   return (
     <group>
+      {/* cột DÀY hơn dải tường ngang (0.34 vs 0.3): cùng độ dày là mặt hông
+          cột trùng mặt hông dải đúng đoạn giao nhau → flicker. Lồi 0.02 mỗi
+          bên đọc như gờ trụ, có chủ ý. */}
       {[-1.1, 1.1].map((x) => (
-        <Box key={x} size={[0.18, 3.3, 0.3]} at={[x, 0, 0]} color={PALETTE.wallTrim} />
+        <Box key={x} size={[0.18, 3.3, 0.34]} at={[x, 0, 0]} color={PALETTE.wallTrim} />
       ))}
       <Box size={[2.4, 0.25, 0.3]} at={[0, 2.7, 0]} color={PALETTE.wallTrim} />
       <Box size={[1.3, 0.5, 0.08]} at={[0, 3.05, 0]} color={PALETTE.wallTrim} />
@@ -219,8 +222,9 @@ function AisleSign() {
   );
   return (
     <group>
+      {/* chân lút 0.05 vào xà (đỉnh chân chạm đỉnh xà là trùng mặt) */}
       {[-1.4, 1.4].map((x) => (
-        <Box key={x} size={[0.14, 2.7, 0.14]} at={[x, 0, 0]} color={PALETTE.steelDark} />
+        <Box key={x} size={[0.14, 2.62, 0.14]} at={[x, 0, 0]} color={PALETTE.steelDark} />
       ))}
       <Box size={[2.94, 0.14, 0.14]} at={[0, 2.63, 0]} color={PALETTE.steelDark} />
       <Box size={[0.7, 0.7, 0.08]} at={[0, 2.15, 0]} color={PALETTE.brandBlue} />
@@ -372,25 +376,32 @@ function SampleStand() {
   );
 }
 
-/** Tủ sữa mở: thân XÁM + hộp xen trắng/xanh/đỏ.
- *  Thân trắng + hộp trắng là tàng hình (mắt kiểm cận dairy) — sữa thật cũng
- *  nhận diện bằng nắp/mác màu. Dài 2.4 (world X sau yaw): lưng lút tường 0.1,
- *  mặt trước hở dãy kệ decor phía đông 0.6. */
+/** Tủ sữa mở: VỎ RỖNG mặt +X (lưng/đáy/nóc/2 hông) + 3 kệ thò ra + hộp
+ *  sữa đầy màu NGỒI HẲN NGOÀI thân.
+ *  Bản cũ chôn kệ+hộp trong khối đặc: mặt trước hộp trùng khít mặt trước
+ *  thân (cùng x = 0.3) nên flicker diện rộng. Vỏ rỗng thì không còn mặt
+ *  nào để trùng. Cao 1.7 m, mặt mở sẵn +X nên khỏi yaw. */
 const MILK = ["#f7f7f4", "#3b6ea5", "#f7f7f4", "#a31220", "#f7f7f4"] as const;
 function DairyCooler() {
   return (
     <group>
-      <Box size={[0.8, 1.7, 2.4]} at={[-0.1, 0, 0]} color={PALETTE.concreteDark} />
-      {/* nắp lút vào thân; hộp ngồi lút 0.005 trên mặt kệ (§12.3) */}
-      <Box size={[0.7, 0.08, 2.3]} at={[-0.05, 1.69, 0]} color={PALETTE.steelDark} />
-      {[0.45, 0.9, 1.35].map((y, tier) => (
+      {/* vỏ: đáy + lưng + nóc + 2 hông (chân lút nhau, đỉnh hông chìm
+          dưới nóc cho khỏi trùng mặt) */}
+      <Box size={[0.8, 0.12, 2.4]} at={[-0.2, 0, 0]} color={PALETTE.concreteDark} />
+      <Box size={[0.12, 1.58, 2.4]} at={[-0.54, 0.115, 0]} color={PALETTE.concreteDark} />
+      <Box size={[0.8, 0.1, 2.4]} at={[-0.2, 1.6, 0]} color={PALETTE.concreteDark} />
+      {[-1.14, 1.14].map((z) => (
+        <Box key={z} size={[0.8, 1.68, 0.12]} at={[-0.2, 0, z]} color={PALETTE.concreteDark} />
+      ))}
+      {/* 3 kệ thò ra khỏi mặt mở (đuôi lút vào lưng) + hộp ngồi lút 0.005 */}
+      {[0.42, 0.8, 1.18].map((y, tier) => (
         <group key={y}>
-          <Box size={[0.6, 0.04, 2.2]} at={[0.15, y, 0]} color={PALETTE.concrete} />
+          <Box size={[0.75, 0.05, 2.1]} at={[-0.2, y, 0]} color={PALETTE.concrete} />
           {[-0.8, -0.4, 0, 0.4, 0.8].map((z, i) => (
             <Box
               key={z}
               size={[0.3, 0.32, 0.32]}
-              at={[0.15, y + 0.175, z]}
+              at={[-0.12, y + 0.205, z]}
               color={MILK[(tier + i) % MILK.length]}
             />
           ))}
@@ -829,8 +840,10 @@ export function SupermarketEnvironment({
       <Box size={[0.3, 4.0, 22]} at={[14, 0, 0]} color={PALETTE.wall} />
       {/* mặt kính nam: trụ + dải kính, chừa 2 ô cửa (x −7..−5, 5..7) cho
           entry-door/exit-door vẽ khung riêng */}
+      {/* trụ mặt tiền DÀY hơn dải ngang (0.34 vs 0.3) + đâm lút vào dải:
+          cùng độ dày là mặt hông trùng nhau đúng đoạn giao → flicker */}
       {[-13.5, -10, -3.5, 0, 3.5, 10, 13.5].map((x) => (
-        <Box key={x} size={[0.6, 3.2, 0.3]} at={[x, 0, 10]} color={PALETTE.wall} />
+        <Box key={x} size={[0.6, 3.3, 0.34]} at={[x, 0, 10]} color={PALETTE.wall} />
       ))}
       <Box size={[28, 0.8, 0.3]} at={[0, 3.2, 10]} color={PALETTE.wall} />
       {[

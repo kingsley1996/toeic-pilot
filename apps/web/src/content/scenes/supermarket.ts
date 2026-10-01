@@ -182,9 +182,8 @@ export const supermarketScene: SceneDef = {
       partOfSpeech: "noun",
       // Tủ sữa mở áp tường tây, mặt +X vào phòng. KHÔNG yaw: shape đã dựng
       // mặt mở theo +X, yaw π/2 là quay mặt mở vào tường tây (mắt kiểm cận
-      // dairy lần 1: chỉ thấy lưng tủ). Dài 2.4 theo X: lưng hở tường 0.7,
-      // mặt hở dãy kệ decor 0.35.
-      position: [-12.75, 0, -2],
+      // dairy lần 1: chỉ thấy lưng tủ). Lưng hở tường 0.05, mặt hở kệ 1.0.
+      position: [-13.2, 0, -2],
       focusDistance: 5,
       hotspotY: 2.6,
       topY: 1.7,
