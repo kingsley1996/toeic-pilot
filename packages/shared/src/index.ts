@@ -219,6 +219,9 @@ export type UserActivity = components["schemas"]["UserActivity"];
 export type ComparePayload = components["schemas"]["ComparePayload"];
 export type EvalRow = components["schemas"]["EvalRow"];
 export type AdminUserPage = components["schemas"]["Page_AdminUserPublic_"];
+export type TestAnalytics = components["schemas"]["TestAnalytics"];
+export type TestAnalyticsRow = components["schemas"]["TestAnalyticsRow"];
+export type CompareOut = components["schemas"]["CompareOut"];
 export type PlacementGate = components["schemas"]["PlacementGate"];
 export type PlacementResultPublic = components["schemas"]["PlacementResultPublic"];
 export type StudyPlanPublic = components["schemas"]["StudyPlanPublic"];
@@ -526,6 +529,11 @@ export const API_ROUTES = {
   adminCollectionArchive: (slug: string) => `/api/v1/admin/test-collections/${slug}/archive`,
   adminCollection: (slug: string) => `/api/v1/admin/test-collections/${slug}`,
   adminTestSets: (slug: string) => `/api/v1/admin/tests/${slug}/sets`,
+  // Khóa chất lượng đề: đọc từ DB + blueprint, không ghi gì.
+  adminAnalyticsTests: "/api/v1/admin/analytics/tests",
+  adminAnalyticsTest: (slug: string) => `/api/v1/admin/analytics/tests/${slug}`,
+  adminAnalyticsCompare: (slugs: string) =>
+    `/api/v1/admin/analytics/compare?slugs=${encodeURIComponent(slugs)}`,
   adminQuestionSet: (setId: string) => `/api/v1/admin/question-sets/${setId}`,
   adminVoices: "/api/v1/admin/voices",
   adminAudioRequests: "/api/v1/admin/media/audio/requests",

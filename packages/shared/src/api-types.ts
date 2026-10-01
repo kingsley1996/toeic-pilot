@@ -347,6 +347,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/analytics/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare */
+        get: operations["compare_api_v1_admin_analytics_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/tests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Analytics Tests
+         * @description Một hàng mỗi đề + số câu, để màn hình chọn đề so sánh.
+         */
+        get: operations["list_analytics_tests_api_v1_admin_analytics_tests_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/tests/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Test Key */
+        get: operations["test_key_api_v1_admin_analytics_tests__slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/backdrop": {
         parameters: {
             query?: never;
@@ -5553,6 +5607,15 @@ export interface components {
             /** Provider */
             provider: string;
         };
+        /** AnalyticsFlag */
+        AnalyticsFlag: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /** Part */
+            part?: number | null;
+        };
         /**
          * AnswerSaved
          * @description Trạng thái MỚI NHẤT của đúng câu vừa lưu, sau khi áp luật lộ.
@@ -6364,6 +6427,11 @@ export interface components {
             problems: string[];
             /** Skipped */
             skipped: number;
+        };
+        /** CompareOut */
+        CompareOut: {
+            /** Tests */
+            tests?: components["schemas"]["TestAnalytics"][];
         };
         /** ComparePayload */
         ComparePayload: {
@@ -7486,6 +7554,29 @@ export interface components {
             labels: components["schemas"]["LabelCatalogItem"][];
             /** Owner */
             owner: string;
+        };
+        /** FacetCodeCount */
+        FacetCodeCount: {
+            /** Code */
+            code: string;
+            /** Count */
+            count: number;
+            /** Label Vi */
+            label_vi: string;
+        };
+        /** FacetKey */
+        FacetKey: {
+            /** Codes */
+            codes?: components["schemas"]["FacetCodeCount"][];
+            /** Facet */
+            facet: string;
+            /** Label Vi */
+            label_vi: string;
+            /**
+             * Missing
+             * @default 0
+             */
+            missing: number;
         };
         /** FacetShare */
         FacetShare: {
@@ -8856,6 +8947,38 @@ export interface components {
              */
             transcript: components["schemas"]["TranscriptTurn"][];
         };
+        /** PartKey */
+        PartKey: {
+            /** Answers */
+            answers?: {
+                [key: string]: number;
+            };
+            /**
+             * Audio Covered
+             * @default 0
+             */
+            audio_covered: number;
+            /** Count */
+            count: number;
+            /** Difficulty */
+            difficulty?: {
+                [key: string]: number;
+            };
+            /**
+             * Explained
+             * @default 0
+             */
+            explained: number;
+            /** Hard Planned */
+            hard_planned?: number | null;
+            /**
+             * Image Covered
+             * @default 0
+             */
+            image_covered: number;
+            /** Part */
+            part: number;
+        };
         /**
          * PartLabelCount
          * @description Một nhãn của một part, kèm số câu published đang mang nó.
@@ -9057,6 +9180,20 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /** PerformanceKey */
+        PerformanceKey: {
+            /**
+             * Attempts
+             * @default 0
+             */
+            attempts: number;
+            /** Avg P */
+            avg_p?: number | null;
+            /** Per Part */
+            per_part?: {
+                [key: string]: number | null;
+            };
         };
         /** PetActionRequest */
         PetActionRequest: {
@@ -10136,6 +10273,24 @@ export interface components {
             /** Due */
             due: number;
         };
+        /** ReviewKey */
+        ReviewKey: {
+            /**
+             * Agree
+             * @default 0
+             */
+            agree: number;
+            /**
+             * Labels Total
+             * @default 0
+             */
+            labels_total: number;
+            /**
+             * Reviewed
+             * @default 0
+             */
+            reviewed: number;
+        };
         /** ReviewResult */
         ReviewResult: {
             /** Due At */
@@ -10578,6 +10733,40 @@ export interface components {
             time_limit_seconds: number | null;
             /** Title */
             title: string;
+        };
+        /** TestAnalytics */
+        TestAnalytics: {
+            /** Facets */
+            facets?: components["schemas"]["FacetKey"][];
+            /** Flags */
+            flags?: components["schemas"]["AnalyticsFlag"][];
+            /** Kind */
+            kind: string;
+            /** Parts */
+            parts?: components["schemas"]["PartKey"][];
+            performance?: components["schemas"]["PerformanceKey"];
+            review?: components["schemas"]["ReviewKey"];
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Title */
+            title: string;
+            /** Total */
+            total: number;
+        };
+        /** TestAnalyticsRow */
+        TestAnalyticsRow: {
+            /** Kind */
+            kind: string;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Title */
+            title: string;
+            /** Total */
+            total: number;
         };
         /**
          * TestConnectionResult
@@ -11907,6 +12096,89 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TestConnectionResult"][];
+                };
+            };
+        };
+    };
+    compare_api_v1_admin_analytics_compare_get: {
+        parameters: {
+            query: {
+                /** @description danh sách slug cách nhau bằng dấu phẩy, tối đa 6 */
+                slugs: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompareOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_analytics_tests_api_v1_admin_analytics_tests_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAnalyticsRow"][];
+                };
+            };
+        };
+    };
+    test_key_api_v1_admin_analytics_tests__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAnalytics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

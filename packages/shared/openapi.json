@@ -235,6 +235,35 @@
         "title": "AiFeatureWrite",
         "type": "object"
       },
+      "AnalyticsFlag": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "part": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Part"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "AnalyticsFlag",
+        "type": "object"
+      },
       "AnswerSaved": {
         "description": "Trạng thái MỚI NHẤT của đúng câu vừa lưu, sau khi áp luật lộ.\n\nPATCH trước đây trả cả `AttemptState` — rebuild 200 câu cho một cú bấm —\ntrong khi giao diện chỉ đọc lại ba trường này của đúng câu vừa đụng. Câu\nkế bên client đã có; gửi lại là băng thông bỏ đi.",
         "properties": {
@@ -2343,6 +2372,19 @@
           "problems"
         ],
         "title": "CommitResult",
+        "type": "object"
+      },
+      "CompareOut": {
+        "properties": {
+          "tests": {
+            "items": {
+              "$ref": "#/components/schemas/TestAnalytics"
+            },
+            "title": "Tests",
+            "type": "array"
+          }
+        },
+        "title": "CompareOut",
         "type": "object"
       },
       "ComparePayload": {
@@ -5394,6 +5436,59 @@
           "labels"
         ],
         "title": "FacetCatalog",
+        "type": "object"
+      },
+      "FacetCodeCount": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "label_vi",
+          "count"
+        ],
+        "title": "FacetCodeCount",
+        "type": "object"
+      },
+      "FacetKey": {
+        "properties": {
+          "codes": {
+            "items": {
+              "$ref": "#/components/schemas/FacetCodeCount"
+            },
+            "title": "Codes",
+            "type": "array"
+          },
+          "facet": {
+            "title": "Facet",
+            "type": "string"
+          },
+          "label_vi": {
+            "title": "Label Vi",
+            "type": "string"
+          },
+          "missing": {
+            "default": 0,
+            "title": "Missing",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "facet",
+          "label_vi"
+        ],
+        "title": "FacetKey",
         "type": "object"
       },
       "FacetShare": {
@@ -9131,6 +9226,64 @@
         "title": "PartDrillQuestion",
         "type": "object"
       },
+      "PartKey": {
+        "properties": {
+          "answers": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Answers",
+            "type": "object"
+          },
+          "audio_covered": {
+            "default": 0,
+            "title": "Audio Covered",
+            "type": "integer"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "difficulty": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Difficulty",
+            "type": "object"
+          },
+          "explained": {
+            "default": 0,
+            "title": "Explained",
+            "type": "integer"
+          },
+          "hard_planned": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hard Planned"
+          },
+          "image_covered": {
+            "default": 0,
+            "title": "Image Covered",
+            "type": "integer"
+          },
+          "part": {
+            "title": "Part",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "part",
+          "count"
+        ],
+        "title": "PartKey",
+        "type": "object"
+      },
       "PartLabelCount": {
         "description": "Một nhãn của một part, kèm số câu published đang mang nó.",
         "properties": {
@@ -9742,6 +9895,42 @@
           "new_password"
         ],
         "title": "PasswordChange",
+        "type": "object"
+      },
+      "PerformanceKey": {
+        "properties": {
+          "attempts": {
+            "default": 0,
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "avg_p": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg P"
+          },
+          "per_part": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Per Part",
+            "type": "object"
+          }
+        },
+        "title": "PerformanceKey",
         "type": "object"
       },
       "PetActionRequest": {
@@ -12624,6 +12813,27 @@
         "title": "ReviewDueCount",
         "type": "object"
       },
+      "ReviewKey": {
+        "properties": {
+          "agree": {
+            "default": 0,
+            "title": "Agree",
+            "type": "integer"
+          },
+          "labels_total": {
+            "default": 0,
+            "title": "Labels Total",
+            "type": "integer"
+          },
+          "reviewed": {
+            "default": 0,
+            "title": "Reviewed",
+            "type": "integer"
+          }
+        },
+        "title": "ReviewKey",
+        "type": "object"
+      },
       "ReviewResult": {
         "properties": {
           "due_at": {
@@ -13816,6 +14026,99 @@
           "parts"
         ],
         "title": "TestAdmin",
+        "type": "object"
+      },
+      "TestAnalytics": {
+        "properties": {
+          "facets": {
+            "items": {
+              "$ref": "#/components/schemas/FacetKey"
+            },
+            "title": "Facets",
+            "type": "array"
+          },
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/AnalyticsFlag"
+            },
+            "title": "Flags",
+            "type": "array"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/PartKey"
+            },
+            "title": "Parts",
+            "type": "array"
+          },
+          "performance": {
+            "$ref": "#/components/schemas/PerformanceKey"
+          },
+          "review": {
+            "$ref": "#/components/schemas/ReviewKey"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "total"
+        ],
+        "title": "TestAnalytics",
+        "type": "object"
+      },
+      "TestAnalyticsRow": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "kind",
+          "status",
+          "total"
+        ],
+        "title": "TestAnalyticsRow",
         "type": "object"
       },
       "TestConnectionResult": {
@@ -17046,6 +17349,133 @@
         "summary": "Test Connections",
         "tags": [
           "admin-ai"
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/compare": {
+      "get": {
+        "operationId": "compare_api_v1_admin_analytics_compare_get",
+        "parameters": [
+          {
+            "description": "danh sách slug cách nhau bằng dấu phẩy, tối đa 6",
+            "in": "query",
+            "name": "slugs",
+            "required": true,
+            "schema": {
+              "description": "danh sách slug cách nhau bằng dấu phẩy, tối đa 6",
+              "title": "Slugs",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Compare",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/tests": {
+      "get": {
+        "description": "Một hàng mỗi đề + số câu, để màn hình chọn đề so sánh.",
+        "operationId": "list_analytics_tests_api_v1_admin_analytics_tests_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TestAnalyticsRow"
+                  },
+                  "title": "Response List Analytics Tests Api V1 Admin Analytics Tests Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Analytics Tests",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/tests/{slug}": {
+      "get": {
+        "operationId": "test_key_api_v1_admin_analytics_tests__slug__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestAnalytics"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Test Key",
+        "tags": [
+          "admin"
         ]
       }
     },

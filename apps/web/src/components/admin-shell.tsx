@@ -94,7 +94,10 @@ const ADMIN_LINKS: AdminNavItem[] = [
     group: "Content",
     // Nhóm đề đầu vào là một LÁT của khu đề thi — đúng quan hệ mà "Collections
     // & topics" có với Vocabulary — nên nó là mục con, không phải mục gốc.
-    children: [{ href: "/admin/placement", label: "Placement pool", Icon: Shuffle }],
+    children: [
+      { href: "/admin/placement", label: "Placement pool", Icon: Shuffle },
+      { href: "/admin/analytics", label: "Chất lượng đề", Icon: Gauge },
+    ],
   },
   { href: "/admin/grammar", label: "Grammar", Icon: GraduationCap, group: "Content" },
   { href: "/admin/parts", label: "Part tactics", Icon: BookOpenText, group: "Content" },
