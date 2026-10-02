@@ -733,6 +733,82 @@ Source: original
 """
 
 
+_FILLER_SENTENCE = "Please review the quarterly budget report before Friday morning. "
+_QUESTIONS_TAIL = PART3_GOOD.split("[QUESTION]", 1)[1]
+
+
+def _p3_block(content_repeats: int) -> str:
+    """Khối P3 với thoại dài đúng hẹn: mỗi lần lặp = 8 từ nội dung."""
+    turns = []
+    for index in range(content_repeats):
+        voice = "au_female_1" if index % 2 == 0 else "au_male_1"
+        turns.append(f"voice: {voice}\n{_FILLER_SENTENCE.strip()}")
+    return "[SCRIPT]\n" + "\n".join(turns) + "\n\n[QUESTION]" + _QUESTIONS_TAIL
+
+
+def _p3_volume_plan(tmp_path, repeats: list[int]):
+    """Đề P3 nhiều cụm, mỗi cụm dài theo số lần lặp cho trước."""
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    plan.parts[0].slots = plan.parts[0].slots[: len(repeats)]
+    for slot, count in zip(plan.parts[0].slots, repeats):
+        writer.save_slot(tmp_path, slot, _p3_block(count))
+    return plan
+
+
+def test_an_overlong_script_blocks_not_flags(tmp_path):
+    """Thoại dài hơn trần (85 từ nội dung) thì CHẶN — dài là lệch chuẩn có hướng,
+    luôn dễ hơn đề thật, và vòng revise chỉ viết lại khi có error."""
+    plan = _part3_plan(tmp_path)
+    slot = plan.parts[0].slots[0]
+    writer.save_slot(tmp_path, slot, _p3_block(12))  # 96 từ nội dung
+    reports = checker.check_blueprint(plan, tmp_path)
+    assert any(r.blocked for r in reports)
+    assert any("dài bất thường" in p for r in reports for p in r.problems)
+
+
+def test_a_normal_script_passes_the_ceiling(tmp_path):
+    """Thoại trong trần thì không có problem độ dài — chứng minh cổng đo độ dài,
+    không phải cứ Part 3 là chặn."""
+    plan = _part3_plan(tmp_path)
+    slot = plan.parts[0].slots[0]
+    writer.save_slot(tmp_path, slot, _p3_block(7))  # 56 từ nội dung
+    reports = checker.check_blueprint(plan, tmp_path)
+    assert not any("dài bất thường" in p for r in reports for p in r.problems)
+
+
+def test_script_volume_flags_a_part_that_runs_long(tmp_path):
+    """Cả part dồn một đầu thì lỗi ở tầng đề: trung bình ngoài 45–75 là problem,
+    gọi tên 3 cụm dài nhất để rút gọn."""
+    from app.content.exam import check as gate
+
+    plan = _p3_volume_plan(tmp_path, [12] * 8)
+    problems = gate.check_script_volume(tmp_path, plan)
+    assert len(problems) == 1
+    assert "trung bình 108" in problems[0]
+    for slot in plan.parts[0].slots[:3]:
+        assert slot.id in problems[0]
+
+
+def test_script_volume_stays_silent_on_a_balanced_part(tmp_path):
+    """Part giống đề thật (trung bình ~60, biên độ rộng) thì cổng im lặng."""
+    from app.content.exam import check as gate
+
+    plan = _p3_volume_plan(tmp_path, [5, 6, 7, 8, 9, 6, 7, 8])
+    assert gate.check_script_volume(tmp_path, plan) == []
+
+
+def test_script_volume_stays_silent_on_a_partial_part(tmp_path):
+    """Part viết dở (thiếu tệp) thì im lặng: thiếu tệp đã có cổng từng-ô chặn."""
+    from app.content.exam import check as gate
+
+    plan = bp.build_part3("tp-test", "Test", seed=7)
+    plain = [s for s in plan.parts[0].slots if "PART_3_IMPLICATION" not in s.question_types]
+    plan.parts[0].slots = plain[:8]
+    for slot in plan.parts[0].slots[:3]:
+        writer.save_slot(tmp_path, slot, _p3_block(12))
+    assert gate.check_script_volume(tmp_path, plan) == []
+
+
 def _result(text: str):  # type: ignore[no-untyped-def]
     """`LLMResult` tối thiểu cho các gateway giả."""
     from app.services.llm.base import LLMResult, Usage
@@ -2703,6 +2779,35 @@ def test_an_answer_that_shares_nothing_with_the_source_is_flagged() -> None:
     assert check_thin_paraphrase(plain, GYM_TALK) == []
 
 
+def test_a_verbatim_correct_answer_blocks_an_inference_question() -> None:
+    """Mặt còn lại của thin-paraphrase: đáp đúng copy nguyên chữ thoại thì câu suy
+    luận thành câu dò chữ. Đo trên đề tham chiếu (đáp ≥5 từ): thật 0/17 vượt 0.8,
+    form-18 8/25. CHẶN để vòng revise viết lại — warning thì ô được accept luôn."""
+    from app.content.exam.check import check_copy_answer
+
+    copied = _q(
+        "What does the speaker imply?",
+        "Visit the front desk before closing on Friday",
+        ["Join online"],
+    )
+    assert check_copy_answer(copied, GYM_TALK, "PART_4_IMPLICATION")
+
+    # Cùng đáp án copy đó ở câu detail thì không chặn — đề thật cũng giữ từ ở
+    # detail ("Move their vehicles").
+    assert check_copy_answer(copied, GYM_TALK, "PART_4_DETAIL") == []
+
+    # Đáp ngắn 2–4 chữ trùng khít là tất yếu ("A company picnic" cũng trùng) —
+    # đề thật có 3 câu như thế, không chặn.
+    short = _q("What is the purpose?", "The new City Fitness Center", ["Join online"])
+    assert check_copy_answer(short, GYM_TALK, "PART_4_TOPIC_OR_PURPOSE") == []
+
+    # Diễn đạt lại thật (không trùng chữ nào ngoài ý) thì sạch.
+    paraphrased = _q(
+        "What does the speaker imply?", "A change will not be immediate", ["Join online"]
+    )
+    assert check_copy_answer(paraphrased, GYM_TALK, "PART_4_IMPLICATION") == []
+
+
 def test_purpose_and_implication_do_not_count_toward_the_balance_gate() -> None:
     """`p4-06` rớt cổng này hai lượt sinh liên tiếp dù cụm đúng hình dạng prompt
     đòi — một câu khớp cụm từ (phủ 1.00), một câu mục đích (0.25), một câu hàm ý
@@ -2858,3 +2963,167 @@ def test_full_load_attaches_labels_but_part_load_does_not(monkeypatch) -> None:
     partial = argparse.Namespace(slug="tp-test", token="t", api="http://x", part=5, slot=None)
     assert load_cmd.cmd_load(partial) == 0
     assert calls == [], "load --part không được gọi apply_labels (các ô part khác chưa nạp)"
+
+
+def _write_part_contexts(root: Path, slug: str, part: int, contexts: list[str]) -> None:
+    builder = {2: bp.build_part2, 3: bp.build_part3, 6: bp.build_part6, 7: bp.build_part7}[part]
+    form = builder(slug, slug, seed=1)
+    target = next(p for p in form.parts if p.part == part)
+    for slot, context in zip(target.slots, contexts):
+        slot.context = context
+    (root / slug).mkdir(parents=True, exist_ok=True)
+    bp.save(form, root / slug / "blueprint.json")
+
+
+def test_prefer_novel_keeps_pool_for_near_dups() -> None:
+    """Lọc cứng sau dặn mềm: ô nào na ná lịch sử hoặc na ná ô đã duyệt thì trả về
+    bản pool — đề vẫn đủ số ô, chỉ kém mới ở ô đó."""
+    from app.content.exam_cli.plan import _prefer_novel
+
+    pool = ["pool-a", "pool-b", "pool-c"]
+    prior = ["cuộc họp bàn doanh số quý ba của phòng kinh doanh"]
+    fresh = [
+        "cuộc họp bàn doanh số quý ba của phòng kinh doanh",  # copy nguyên → pool
+        "tour tham quan nhà kính vườn thực vật vào sáng thứ bảy",  # mới → giữ
+        "cuộc họp bàn về doanh số quý ba của phòng kinh doanh",  # na ná ô 1 → pool
+    ]
+    assert _prefer_novel(pool, fresh, prior) == [pool[0], fresh[1], pool[2]]
+
+
+def test_part_avoid_lists_prior_contexts_not_motifs(tmp_path: Path, monkeypatch) -> None:
+    """P2–7 liệt câu văn thật (cắt 60 dòng gần nhất), không gom motif như P1."""
+    from app.content.exam_cli import plan
+
+    _write_part_contexts(tmp_path, "tp-old", 3, ["hội thoại về lịch bảo trì thang máy"] * 13)
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", tmp_path)
+    avoid = plan._part_avoid_text("tp-new", 3)
+    assert "lịch bảo trì thang máy" in avoid
+    assert plan._part_avoid_text("tp-new", 5) == "", "part khác không lẫn vào"
+    assert plan._part_avoid_text("tp-old", 3) == "", "đề đang chạy không tự tránh mình"
+
+
+def test_generate_part_scenes_falls_back_per_slot(tmp_path: Path, monkeypatch) -> None:
+    """Model nhả 1 dòng trùng lịch sử + 3 dòng mới → đúng ô trùng trả về bản pool."""
+    from app.content.exam_cli import plan
+
+    history = ["email đặt chỗ hội thảo và lịch các phiên"]
+    _write_part_contexts(tmp_path, "tp-old", 6, history * 4)
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", tmp_path)
+
+    class _SceneGateway:
+        def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+            return _result(
+                "email đặt chỗ hội thảo và lịch các phiên\n"
+                "thông báo tặng bánh mì cuối ngày cho người cần\n"
+                "tờ hướng dẫn lắp ráp kệ sách trong hộp hàng\n"
+                "bài đánh giá ấm đun nước mới của trang gia dụng"
+            )
+
+    from app.services.llm.router import Tier
+
+    pool = [f"pool-{i}" for i in range(4)]
+    scenes = plan.generate_part_scenes(
+        _SceneGateway(),
+        Tier.CHEAP,
+        6,
+        ["ràng buộc"] * 4,
+        slug="tp-new",
+        fallback=pool,
+    )
+    assert scenes[0] == "pool-0", "dòng trùng lịch sử phải trả về bản pool"
+    assert scenes[1].startswith("thông báo tặng bánh mì")
+    assert len(scenes) == 4
+
+
+def test_column_and_line_share_the_chart_axis_and_limits() -> None:
+    """Hai kiểu vẽ mới chung dữ liệu (nhãn | số), trục đáp án (nhãn) và giới
+    hạn hàng với chart — chỉ khác bộ vẽ. Mọi chỗ rẽ theo chart phải dùng
+    `_CHART_LIKE`, nếu không kind mới lọt khe (đã lọt một lần: hàng đầu bị đọc
+    thành tiêu đề cột)."""
+    from app.content.exam.graphics import parse_graphic
+
+    column = parse_graphic(
+        "kind: column\nMonthly Orders\nJanuary | 120\nFebruary | 95\nMarch | 140\nApril | 110"
+    )
+    assert column.problems() == []
+    assert column.answer_axis() == ["January", "February", "March", "April"]
+
+    line = parse_graphic(
+        "kind: line\nAverage Temperature\nWeek 1 | 18\nWeek 2 | 21\nWeek 3 | 24\nWeek 4 | 22"
+    )
+    assert line.problems() == []
+    assert line.answer_axis() == ["Week 1", "Week 2", "Week 3", "Week 4"]
+
+    short = parse_graphic("kind: line\nToo Short\nWeek 1 | 18\nWeek 2 | 21")
+    assert any("cần 3–6 hàng" in problem for problem in short.problems())
+
+    bad_row = parse_graphic(
+        "kind: column\nNo Number\nJanuary | soon\nFebruary | 95\nMarch | 140\nApril | 110"
+    )
+    assert any("nhãn | số" in problem for problem in bad_row.problems())
+
+
+def test_column_and_line_render_png(tmp_path: Path) -> None:
+    """Hai bộ vẽ mới ra PNG đọc được, đúng số điểm/cột."""
+    from PIL import Image
+
+    from app.content.exam.graphics import parse_graphic, render
+
+    for kind, body in (
+        ("column", "January | 120\nFebruary | 95\nMarch | 140\nApril | 110"),
+        ("line", "Week 1 | 18\nWeek 2 | 21\nWeek 3 | 24\nWeek 4 | 22"),
+    ):
+        graphic = parse_graphic(f"kind: {kind}\nTitle\n{body}")
+        assert graphic.problems() == []
+        out = tmp_path / f"{kind}.png"
+        render(graphic, out)
+        with Image.open(out) as image:
+            assert image.size[0] > 400 and image.size[1] > 200
+
+
+def test_graphic_pools_use_only_renderable_kinds() -> None:
+    """Mọi brief pool phải thuộc KINDS — brief lạ chết ở `generate_part_graphics`
+    (model) hoặc lọt vào blueprint rồi chết ở cổng vẽ."""
+    from app.content.exam import mixes
+    from app.content.exam.graphics import KINDS
+
+    for name in ("PART3_GRAPHIC_POOL", "PART4_GRAPHIC_POOL", "PART7_GRAPHIC_POOL"):
+        for brief in getattr(mixes, name):
+            assert brief.split(":", 1)[0].strip() in KINDS, (name, brief)
+
+
+def test_generate_part_graphics_falls_back_per_brief(tmp_path: Path, monkeypatch) -> None:
+    """Brief nào na ná hình cũ thì trả về bản pool — số brief vẫn đủ."""
+    from app.content.exam_cli import plan
+
+    old = "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price"
+    form = bp.build_part3("tp-old", "T", seed=1)
+    for slot in form.parts[0].slots:
+        slot.graphic = "" if slot.id not in ("p3-11",) else old
+    (tmp_path / "tp-old").mkdir(parents=True)
+    bp.save(form, tmp_path / "tp-old" / "blueprint.json")
+    monkeypatch.setattr(plan, "DEFAULT_ROOT", tmp_path)
+
+    class _BriefGateway:
+        def run(self, request, feature, tier):  # noqa: ANN001, ARG002
+            return _result(
+                "table: bảng giá bốn gói dịch vụ tổ chức sự kiện, cột Package và Price\n"
+                "line: số cuộc gọi hỗ trợ bốn tuần, nhãn Week 1, Week 2, Week 3, Week 4\n"
+                "map: sơ đồ bốn gian hàng hội chợ sách, mỗi ô tên gian hàng"
+            )
+
+    from app.services.llm.router import Tier
+
+    pool = (
+        "table: bảng giá bốn gói bảo hiểm xe, cột Plan và Premium",
+        "line: nhiệt độ kho lạnh bốn tuần, nhãn Week 1, Week 2, Week 3, Week 4",
+        "map: sơ đồ khu kho gồm bốn nhà kho xếp thành hai hàng",
+    )
+    briefs = plan.generate_part_graphics(
+        _BriefGateway(), Tier.CHEAP, 3, ["ô 1", "ô 2", "ô 3"], slug="tp-new", pool=pool
+    )
+    assert len(briefs) == 3
+    assert briefs[0] in pool and not briefs[0].startswith("table: bảng giá bốn gói dịch vụ"), (
+        "brief trùng hình cũ phải trả về một bản pool"
+    )
+    assert briefs[1].startswith("line: số cuộc gọi")
