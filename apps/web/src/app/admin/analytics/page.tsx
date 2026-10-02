@@ -695,7 +695,8 @@ export default function AdminAnalyticsPage() {
           Cột độ khó trong DB hiện mọi câu đều là 3 — pipeline load chưa truyền độ khó thật. Ô hard
           không phải độ khó: nó là ràng buộc sinh đề (mỗi ô phải có bấy nhiêu câu ghép chứng cứ từ
           hai chỗ tách rời), P3/P4 bị ép cứng mọi ô nên đề nào cùng đời cũng ra 34; đề đời cũ hiện
-          &ldquo;—&rdquo; vì blueprint chưa có cờ này. Muốn đo khó thật thì đọc p-value khi đề đã có lượt làm.
+          &ldquo;—&rdquo; vì blueprint chưa có cờ này. Muốn đo khó thật thì đọc p-value khi đề đã có
+          lượt làm.
         </p>
       )}
     </Page>
