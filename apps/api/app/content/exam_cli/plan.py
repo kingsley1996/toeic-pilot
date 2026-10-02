@@ -12,7 +12,12 @@ from time import perf_counter
 from app.content.exam import blueprint as bp
 from app.content.exam import writer
 from app.content.exam.blueprint import Blueprint
-from app.content.exam.mixes import PART1_MOTIF_KEYWORDS
+from app.content.exam.mixes import (
+    PART1_MOTIF_KEYWORDS,
+    PART3_GRAPHIC_POOL,
+    PART4_GRAPHIC_POOL,
+    PART7_GRAPHIC_POOL,
+)
 from app.content.exam.prompts._registry import exam_prompt
 from app.content.exam_cli.paths import DEFAULT_ROOT, _gateway, blueprint_path
 from app.services.llm.gateway import Gateway
@@ -61,9 +66,11 @@ PLAN_MAX_TOKENS = 8000
 # và cho phép cảnh CŨ quay vòng sau K đề, đúng tinh thần cache eviction.
 PART1_AVOID_WINDOW = 8
 
+_GRAPHIC_POOLS = {3: PART3_GRAPHIC_POOL, 4: PART4_GRAPHIC_POOL, 7: PART7_GRAPHIC_POOL}
 
-def _prior_part1_contexts(exclude_slug: str) -> list[str]:
-    """Bối cảnh part 1 của K đề GẦN NHẤT (sửa theo `mtime`), trừ đề đang chạy.
+
+def _prior_contexts(exclude_slug: str, part: int) -> list[str]:
+    """Bối cảnh một part của K đề GẦN NHẤT (sửa theo `mtime`), trừ đề đang chạy.
 
     Nguồn là tệp, không phải DB — cùng lý do `pending` là một truy vấn trên thư
     mục: một lượt plan không cần cả stack để biết nó từng sinh gì. Bỏ qua đề đang
@@ -83,7 +90,7 @@ def _prior_part1_contexts(exclude_slug: str) -> list[str]:
             mtime = path.stat().st_mtime
         except (OSError, ValueError, KeyError):
             continue  # blueprint hỏng/đọc dở — bỏ qua, đừng làm chết lượt plan
-        part1 = next((p for p in plan.parts if p.part == 1), None)
+        part1 = next((p for p in plan.parts if p.part == part), None)
         if not part1:
             continue
         form_texts = [slot.context for slot in part1.slots if slot.context]
@@ -94,6 +101,86 @@ def _prior_part1_contexts(exclude_slug: str) -> list[str]:
     for _, form_texts in per_form[:PART1_AVOID_WINDOW]:
         texts.extend(form_texts)
     return texts
+
+
+def _prior_part1_contexts(exclude_slug: str) -> list[str]:
+    return _prior_contexts(exclude_slug, 1)
+
+
+def _prior_graphics(exclude_slug: str, part: int) -> list[str]:
+    """Brief hình cùng-part của các đề trước, để dặn model đừng vẽ lại.
+
+    P3/4 đọc `slot.graphic`, P7 đọc các passage không rỗng — đúng hai chỗ
+    `build_part*` dán brief vào. Không cắt window như context: brief ngắn, cả họ
+    gộp lại cũng chỉ vài chục dòng, và hình lặp liên-đề lộ hơn context lặp.
+    """
+    out: list[str] = []
+    for path in DEFAULT_ROOT.glob("*/blueprint.json"):
+        if path.parent.name == exclude_slug:
+            continue
+        try:
+            plan = bp.load(path)
+        except (OSError, ValueError, KeyError):
+            continue
+        for part_plan in plan.parts:
+            if part_plan.part != part:
+                continue
+            for slot in part_plan.slots:
+                if part == 7:
+                    out.extend(p for p in slot.passages if p)
+                elif slot.graphic:
+                    out.append(slot.graphic)
+    return out
+
+
+def _part_avoid_text(slug: str, part: int, limit: int = 60) -> str:
+    """Danh sách bối cảnh cùng-part của các đề trước, để dặn model đừng lặp lại.
+
+    Part 1 gom về motif vì pool chỉ có 6 ảnh; các part còn lại liệt câu văn thật
+    (cắt ở `limit` dòng gần nhất) — bối cảnh P2–P7 dài và khác nhau ở chi tiết,
+    gom motif cho chúng là một bảng từ khoá nữa cần bảo trì mà lợi không hơn liệt
+    kê. Kèm quy tắc "đổi nơi chốn/ngành nghề, không chỉ đổi tên" vì model có tật
+    giữ nguyên cuộc họp mà đổi tên công ty rồi tưởng là mới.
+    """
+    prior = _prior_contexts(slug, part)[:limit]
+    if not prior:
+        return ""
+    lines = "\n".join(f"- {text}" for text in prior)
+    return (
+        "BỐI CẢNH CÁC ĐỀ TRƯỚC ĐÃ DÙNG (cùng Part) — KHÔNG lặp lại tình huống "
+        "tương tự. Đổi thật: nơi chốn, ngành nghề, nhân vật và sự việc khác hẳn; "
+        "đổi tên công ty mà giữ nguyên cuộc họp thì vẫn là lặp:\n" + lines
+    )
+
+
+# Ngưỡng gần-trùng bối cảnh (trigram-Jaccard). Đo trên các đề đã có: context mới
+# do người viết giống lịch sử nhất cũng chỉ 0.48 (P7), trung bình 0.14–0.36 —
+# 0.55 chặn đúng thứ na ná mà không chạm thứ mới thật.
+SCENE_NOVELTY_LIMIT = 0.55
+
+
+def _prefer_novel(
+    pool: list[str], fresh: list[str], prior: list[str], limit: float = SCENE_NOVELTY_LIMIT
+) -> list[str]:
+    """Giữ bối cảnh model ở những ô mới thật, trả ô na ná về bản pool.
+
+    Lọc cứng sau prompt dặn: model vẫn nhả "cuộc họp bàn doanh số" dù đã dặn
+    tránh, và không có gì đo được ngoài so chuỗi. So trigram-Jaccard với lịch sử
+    CÙNG part + với chính các ô đã duyệt trong batch (tránh lặp trong đề). Ô nào
+    rớt thì giữ nguyên bản pool — đề vẫn đủ số ô, chỉ kém mới ở ô đó.
+    """
+    from app.content.exam_cli.compare import _jaccard, _trigrams
+
+    seen = [_trigrams(text) for text in prior]
+    out: list[str] = []
+    for old, new in zip(pool, fresh):
+        grams = _trigrams(new)
+        if any(_jaccard(grams, known) >= limit for known in seen):
+            out.append(old)
+        else:
+            out.append(new)
+            seen.append(grams)
+    return out
 
 
 def _part1_avoid_and_lean(slug: str, seed: int) -> tuple[str, str]:
@@ -191,6 +278,8 @@ def generate_part_scenes(
     hosts: list[str],
     *,
     max_tokens: int = PLAN_MAX_TOKENS,
+    slug: str = "",
+    fallback: list[str] | tuple[str, ...] = (),
 ) -> list[str]:
     """Hỏi model sinh bối cảnh MỚI cho các ô của một part (2–7).
 
@@ -233,6 +322,7 @@ def generate_part_scenes(
         # dụng. Và `topic` đi vào `question_set_label`, nên thống kê theo chủ
         # đề đếm sai chứ không chỉ đọc lạ.
         hosts=_numbered(hosts),
+        avoid=_part_avoid_text(slug, part),
     )
     _progress(f"  part {part}: đang sinh {count} bối cảnh…")
     started = perf_counter()
@@ -263,10 +353,23 @@ def generate_part_scenes(
     # đẩy một mã máy vào chỗ đáng lẽ chỉ có văn xuôi.
     import re as _re
 
-    return [
+    scenes = [
         _re.sub(r"^[A-Z][A-Z0-9_]{4,}\s*[–—-]\s*", "", _re.sub(r"^\d+[.)]\s*", "", scene))
         for scene in scenes
     ]
+    if not fallback:
+        return scenes
+    # Lọc cứng sau dặn mềm: ô nào na ná lịch sử (cùng part) hoặc na ná ô đã
+    # duyệt trong batch thì trả về bản pool — đề vẫn đủ số ô.
+    pool = list(fallback)
+    if len(pool) != len(scenes):
+        return scenes
+    return _prefer_novel(pool, scenes, _prior_contexts(slug, part))
+
+
+def _pool_contexts(plan: Blueprint) -> list[str]:
+    """Bối cảnh gốc của bảng, đúng thứ tự `_override_contexts` dán vào."""
+    return [slot.context for part_plan in plan.parts for slot in part_plan.slots]
 
 
 def _override_contexts(plan: Blueprint, scenes: list[str]) -> None:
@@ -331,6 +434,8 @@ def generate_part_graphics(
     hosts: list[str],
     *,
     max_tokens: int = PLAN_MAX_TOKENS,
+    slug: str = "",
+    pool: tuple[str, ...] = (),
 ) -> list[str]:
     """Hỏi model sinh brief hình MỚI cho các vị trí graphic của part (3, 4, 7).
 
@@ -355,6 +460,14 @@ def generate_part_graphics(
     if not count:
         raise ValueError(f"Part {part} không có ô hình nào để sinh brief")
     kinds = ", ".join(KINDS)
+    prior = _prior_graphics(slug, part)
+    avoid = (
+        "HÌNH CÁC ĐỀ TRƯỚC ĐÃ DÙNG (cùng Part) — KHÔNG vẽ lại cùng một hình "
+        "(đổi số liệu mà giữ nguyên bảng giá 4 gói là vẫn lặp):\n"
+        + "\n".join(f"- {brief}" for brief in prior)
+        if prior
+        else ""
+    )
     prompt = exam_prompt("plan_graphics").render(
         count=count,
         part=part,
@@ -364,6 +477,7 @@ def generate_part_graphics(
         # người viết đề nhận hai yêu cầu không liên quan — đó là cách một hội
         # thoại kho hàng mọc ra câu về số khách bảo tàng.
         hosts=_numbered(hosts),
+        avoid=avoid,
     )
     _progress(f"  part {part}: đang sinh {count} brief hình…")
     started = perf_counter()
@@ -392,7 +506,15 @@ def generate_part_graphics(
         briefs.append(line)
     if len(briefs) != count:
         raise ValueError(f"cần đúng {count} brief hình Part {part}, model trả {len(briefs)}")
-    return briefs
+    if not pool:
+        return briefs
+    # Lọc cứng sau dặn mềm (cùng cơ chế bối cảnh): brief nào na ná hình cũ thì
+    # trả về bản pool — số brief vẫn đủ, chỉ kém mới ở ô đó.
+    fallback = list(pool)
+    if len(fallback) < count:
+        return briefs
+    rng = random.Random(f"{slug}-graphics-fallback:{part}")
+    return _prefer_novel(rng.sample(fallback, count), briefs, _prior_graphics(slug, part))
 
 
 def seed_for(slug: str) -> int:
@@ -440,7 +562,13 @@ def cmd_plan(args: argparse.Namespace) -> int:
                 built = bp.build_part1(args.slug, title, seed, scenes)
             else:
                 contexts = generate_part_scenes(
-                    gateway, Tier(args.tier), args.part, _scene_hosts(built), max_tokens=max_tokens
+                    gateway,
+                    Tier(args.tier),
+                    args.part,
+                    _scene_hosts(built),
+                    max_tokens=max_tokens,
+                    slug=args.slug,
+                    fallback=_pool_contexts(built),
                 )
                 if args.part in (3, 4, 7):
                     # Bối cảnh model phải áp TRƯỚC: `_graphic_hosts` đọc `context`,
@@ -452,6 +580,8 @@ def cmd_plan(args: argparse.Namespace) -> int:
                         args.part,
                         _graphic_hosts(built),
                         max_tokens=max_tokens,
+                        slug=args.slug,
+                        pool=_GRAPHIC_POOLS[args.part],
                     )
                     built = {
                         3: bp.build_part3,

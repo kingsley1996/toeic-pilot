@@ -28,6 +28,22 @@ Third quarter | 35
 Fourth quarter | 71
 
 {GRAPHIC_MARKER}
+kind: column
+Monthly Orders
+January | 120
+February | 95
+March | 140
+April | 110
+
+{GRAPHIC_MARKER}
+kind: line
+Average Temperature by Week
+Week 1 | 18
+Week 2 | 21
+Week 3 | 24
+Week 4 | 22
+
+{GRAPHIC_MARKER}
 kind: map
 Mall Directory, Ground Floor
 Store 1: Electronics | Store 2: Bookstore
@@ -38,6 +54,8 @@ Where the answer options come from, per kind:
   table     the four ROW NAMES
   schedule  the four TIME SLOTS — the column headings, NOT the people
   chart     the four LABELS
+  column    the four LABELS under the vertical bars (same data shape as chart)
+  line      the four LABELS of the points in order (same data shape as chart)
   map       the four CELL NAMES, the part before any colon
 
 For `schedule`, LEAVE A CELL EMPTY when that person is free; that emptiness is
@@ -57,7 +75,7 @@ THIS ITEM COMES WITH A GRAPHIC
 The test book prints a small graphic beside the three questions. EXACTLY ONE
 question begins with "Look at the graphic", and it is question number {{ordinal}}
 of the three — not any other. Emit the graphic first, as data. The first line
-names its kind. Four kinds exist; use the one you are told to.
+names its kind. Eight kinds exist; use the one you are told to.
 
 {GRAPHIC_MARKER}
 kind: table
@@ -104,8 +122,8 @@ Three rules make it a real graphic question rather than a detail question:
      about fifty dollars"). The graphic maps that value to a row name.
    - schedule / survey: which ROW ("Room B", "the downtown branch"). The graphic
      maps that row to its free — or highest, or lowest — column.
-   - chart: a value or a comparison ("the quarter we finally passed ninety
-     thousand"). The graphic maps that value to a bar label.
+   - chart / column / line: a value or a comparison ("the quarter we finally
+     passed ninety thousand"). The graphic maps that value to a bar/point label.
    - map: a position or a relation ("right across from the bookstore", "the unit
      at the end of the corridor"). The graphic maps that position to a name.
 
@@ -124,6 +142,8 @@ _TALK_SUPPLIES = {
     "schedule": "HÀNG nào (tên người, tên phòng)",
     "survey": "HÀNG nào (ai, chi nhánh nào trả lời)",
     "chart": "một trị số hoặc một phép so sánh",
+    "column": "một trị số hoặc một phép so sánh",
+    "line": "một trị số hoặc một phép so sánh (tháng/tuần nào đạt đỉnh...)",
     "map": "một vị trí hoặc một quan hệ vị trí",
 }
 

@@ -66,7 +66,7 @@ PAPER = (255, 255, 255)
 # thay ảnh phải đọc khác nhau — "Sơ đồ", "Biểu đồ cột", "Phiếu khảo sát" nói cho
 # người dùng máy đọc màn hình biết họ đang nghe cái gì, và đó là toàn bộ nội
 # dung mà họ có.
-KINDS = ("table", "schedule", "chart", "map", "survey", "form")
+KINDS = ("table", "schedule", "chart", "column", "line", "map", "survey", "form")
 
 # Trục đáp án của từng dạng, viết ra để MÁY dùng được — `answer_axis()` ở dưới
 # là bản thi hành, còn đây là bản cho lời nhắc đọc.
@@ -87,6 +87,10 @@ AXIS_BRIEF = """\
   KHÔNG viết brief kiểu bảng hai cột "Thời gian | Hoạt động" — dạng đó là
   `table`, không phải `schedule`.
 - chart: bốn lựa chọn là NHÃN của từng cột biểu đồ. Vd `chart: doanh số bốn quý, nhãn "Q1".."Q4"`.
+- column: như `chart` nhưng vẽ CỘT ĐỨNG thay vì thanh ngang — bốn lựa chọn vẫn là
+  NHÃN dưới chân mỗi cột. Vd `column: số đơn hàng bốn tháng, nhãn "Jan".."Apr"`.
+- line: như `chart` nhưng vẽ ĐƯỜNG nối các điểm theo thứ tự hàng — bốn lựa chọn
+  vẫn là NHÃN của từng điểm. Vd `line: nhiệt độ bốn tuần, nhãn "Week 1".."Week 4"`.
 - map: bốn lựa chọn là TÊN Ô trên sơ đồ.
   Vd `map: sơ đồ bốn gian hàng, mỗi ô `Booth N: tên tiếng Anh``.
 - survey: vẽ như `schedule`, nên trục là TIÊU ĐỀ CỘT — KHÔNG phải tên bốn mục
@@ -100,6 +104,12 @@ AXIS_BRIEF = """\
 
 # Dạng nào vẽ bằng bộ vẽ nào. `answer_axis` cũng theo bảng này.
 _LIKE = {"survey": "schedule", "form": "table"}
+
+# Ba kiểu biểu đồ chung một dữ liệu (nhãn | số), một trục đáp án (nhãn) và một
+# giới hạn số hàng — chỉ khác bộ vẽ (ngang/dọc/đường). Mọi chỗ rẽ theo "chart"
+# phải dùng bộ này, nếu không kind mới lọt qua khe (đã lọt một lần: hàng đầu bị
+# đọc thành tiêu đề cột).
+_CHART_LIKE = ("chart", "column", "line")
 
 
 @dataclass
@@ -128,9 +138,11 @@ class Graphic:
             out.append("hình không có hàng nào")
             return out
 
-        if self.shape == "chart":
-            # Biểu đồ là (nhãn, số). Không đọc được số thì không vẽ được cột, và
-            # một cột cao bằng 0 trông như dữ liệu thật.
+        if self.shape in _CHART_LIKE:
+            # Biểu đồ là (nhãn, số) — áp cho cả ba kiểu vẽ (ngang/dọc/đường), vì
+            # cả ba cùng một dữ liệu và cùng một trục đáp án (nhãn). Không đọc
+            # được số thì không vẽ được cột/điểm, và một cột cao bằng 0 trông
+            # như dữ liệu thật.
             for index, row in enumerate(self.rows):
                 if len(row) != 2 or _number(row[1]) is None:
                     out.append(f"hàng {index + 1} của biểu đồ phải là `nhãn | số`")
@@ -172,8 +184,11 @@ class Graphic:
             if part == 7
             else {"schedule": (2, 4), "table": (3, 6), "chart": (3, 6)}
         )
-        if self.shape in limits:
-            low, high = limits[self.shape]
+        # Ba kiểu biểu đồ chung một giới hạn số hàng (cùng dữ liệu, cùng trục) —
+        # tra bằng shape chuẩn hoá thay vì shape vẽ.
+        limit_shape = "chart" if self.shape in _CHART_LIKE else self.shape
+        if limit_shape in limits:
+            low, high = limits[limit_shape]
             if not low <= len(self.rows) <= high:
                 out.append(f"hình dạng {self.kind} cần {low}–{high} hàng, đang có {len(self.rows)}")
         # Trục đáp án chỉ có nghĩa với hình của Part 3/4, nơi bốn lựa chọn CHÍNH
@@ -213,8 +228,13 @@ class Graphic:
             "form": "Phiếu đã điền.",
         }.get(self.kind)
         lines = [f"{self.title}."] + ([lead] if lead else [])
-        if self.shape == "chart":
-            lines.append("Biểu đồ cột.")
+        if self.shape in _CHART_LIKE:
+            noun = {
+                "chart": "Biểu đồ cột.",
+                "column": "Biểu đồ cột dọc.",
+                "line": "Biểu đồ đường.",
+            }[self.shape]
+            lines.append(noun)
             # Hàng thiếu cột là lỗi `problems()` đã bắt; ở đây chỉ cần KHÔNG
             # nổ, vì đây là hàm dựng chữ chứ không phải cổng kiểm.
             lines += [f"{row[0]}: {row[1]}." for row in self.rows if len(row) >= 2]
@@ -298,7 +318,7 @@ def parse_graphic(text: str) -> Graphic:
     # Đọc hàng đầu thành tiêu đề cột làm chữ thay ảnh ghép chéo nhãn với giá trị
     # của hàng khác ("Name: Membership level, Anil Bhatia: Patron"), và người
     # dùng máy đọc màn hình nhận về dữ liệu sai chứ không phải dữ liệu thiếu.
-    if kind == "form" or _LIKE.get(kind, kind) in ("chart", "map"):
+    if kind == "form" or _LIKE.get(kind, kind) in ("chart", "map") or kind in _CHART_LIKE:
         return Graphic(kind=kind, title=title, rows=cells)
     return Graphic(kind=kind, title=title, columns=cells[0], rows=cells[1:])
 
@@ -306,6 +326,10 @@ def parse_graphic(text: str) -> Graphic:
 # Cỡ chữ nhỏ nhất còn đọc được ở kích thước hiển thị của đề. Dưới mức này thì
 # thu nhỏ không còn cứu được gì, và chữ bị cắt đúng hơn là chữ không đọc nổi.
 MIN_FONT = 13
+
+# Chiều cao vùng vẽ của biểu đồ TRỤC ĐỨNG (cột dọc/đường): cố định vì số điểm
+# tăng theo chiều ngang, không theo chiều dọc như cột ngang.
+_PLOT_HEIGHT = 220
 
 
 def _fit(draw, text: str, room: int, size: int, bold: bool):  # type: ignore[no-untyped-def]
@@ -343,6 +367,10 @@ def render(graphic: Graphic, path: Path) -> None:
 
     if graphic.shape == "chart":
         height = TITLE_HEIGHT + ROW_HEIGHT * len(graphic.rows) + PADDING * 2 + 10
+    elif graphic.shape in ("column", "line"):
+        # Vùng vẽ cố định theo chiều cao (trục đứng là giá trị), không theo số
+        # hàng như cột ngang — 8 điểm vẫn vừa một khung.
+        height = TITLE_HEIGHT + _PLOT_HEIGHT + 44 + PADDING * 2
     elif graphic.shape == "map":
         height = TITLE_HEIGHT + 96 * len(graphic.rows) + PADDING * 2
     elif graphic.kind == "form":
@@ -370,6 +398,45 @@ def render(graphic: Graphic, path: Path) -> None:
             draw.text((PADDING + label_width + length + 10, y + 12), row[1], font=body, fill=INK)
             y += ROW_HEIGHT
         draw.line([PADDING + label_width, top, PADDING + label_width, y], fill=RULE, width=2)
+    elif graphic.shape in ("column", "line"):
+        values = [(_number(row[1]) or 0.0) for row in graphic.rows]
+        widest = max(values) or 1.0
+        labels = [row[0] for row in graphic.rows]
+        count = max(len(values), 1)
+        left, right = PADDING + 8, width - PADDING - 8
+        slot = (right - left) / count
+        base = top + _PLOT_HEIGHT
+        # Trục đứng + trục ngang: khung đọc của cả hai kiểu vẽ.
+        draw.line([left, top, left, base], fill=RULE, width=2)
+        draw.line([left, base, right, base], fill=RULE, width=2)
+        points = []
+        for index, (label, size) in enumerate(zip(labels, values, strict=True)):
+            cx = left + slot * (index + 0.5)
+            cy = base - int(_PLOT_HEIGHT * size / widest)
+            points.append((cx, cy))
+            value, value_font = _fit(draw, graphic.rows[index][1], int(slot - 8), 20, False)
+            draw.text(
+                (cx - draw.textlength(value, font=value_font) / 2, cy - 30),
+                value,
+                font=value_font,
+                fill=INK,
+            )
+            name, name_font = _fit(draw, label, int(slot - 8), 20, False)
+            draw.text(
+                (cx - draw.textlength(name, font=name_font) / 2, base + 8),
+                name,
+                font=name_font,
+                fill=INK,
+            )
+        if graphic.shape == "column":
+            bar = min(56, int(slot * 0.55))
+            for (cx, cy), size in zip(points, values, strict=True):
+                if size > 0:
+                    draw.rectangle([cx - bar / 2, cy, cx + bar / 2, base], fill=BAR)
+        else:
+            draw.line(points, fill=INK, width=3)
+            for cx, cy in points:
+                draw.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=INK)
     elif graphic.shape == "map":
         y = top
         for row in graphic.rows:

@@ -86,8 +86,10 @@ def plan_blueprint(
     from app.content.exam import blueprint as bp
     from app.content.exam_cli.paths import _gateway, blueprint_path
     from app.content.exam_cli.plan import (
+        _GRAPHIC_POOLS,
         _graphic_hosts,
         _override_contexts,
+        _pool_contexts,
         _scene_hosts,
         generate_part1_scenes,
         generate_part_graphics,
@@ -117,13 +119,25 @@ def plan_blueprint(
                     scenes = generate_part1_scenes(gateway, tier, slug=slug, seed=seed)
                     built = bp.build_part1(slug, title, seed, scenes)
                 else:
-                    contexts = generate_part_scenes(gateway, tier, part_number, _scene_hosts(built))
+                    contexts = generate_part_scenes(
+                        gateway,
+                        tier,
+                        part_number,
+                        _scene_hosts(built),
+                        slug=slug,
+                        fallback=_pool_contexts(built),
+                    )
                     if part_number in (3, 4, 7):
                         # Bối cảnh model phải áp TRƯỚC: `_graphic_hosts` đọc `context`,
                         # và bản của bảng sắp bị dập đè ở dòng dưới.
                         _override_contexts(built, contexts)
                         graphics = generate_part_graphics(
-                            gateway, tier, part_number, _graphic_hosts(built)
+                            gateway,
+                            tier,
+                            part_number,
+                            _graphic_hosts(built),
+                            slug=slug,
+                            pool=_GRAPHIC_POOLS[part_number],
                         )
                         built = builder(slug, title, seed, graphics)
                     _override_contexts(built, contexts)

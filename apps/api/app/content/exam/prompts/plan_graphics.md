@@ -7,3 +7,4 @@ Trục đáp án khác nhau theo từng kind — mô tả sai trục thì hình 
 {axis_brief}
 MỖI hình phải THUỘC VỀ đúng ô nó đi kèm. Bối cảnh {count} ô, theo đúng thứ tự phải trả lời:
 {hosts}{count} hình KHÁC NHAU về kind. Không thêm tiêu đề, không thêm dòng nào khác.
+{avoid}
